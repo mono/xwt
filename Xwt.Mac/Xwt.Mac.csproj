@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</ProjectGuid>
+    <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Xwt.Mac</RootNamespace>
+    <AssemblyName>Xwt.Mac</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="MonoMac">
+    </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Xwt.Mac\BoxBackend.cs" />
+    <Compile Include="Xwt.Mac\ButtonBackend.cs" />
+    <Compile Include="Xwt.Mac\LabelBackend.cs" />
+    <Compile Include="Xwt.Mac\MacEngine.cs" />
+    <Compile Include="Xwt.Mac\NotebookBackend.cs" />
+    <Compile Include="Xwt.Mac\TreeViewBackend.cs" />
+    <Compile Include="Xwt.Mac\Util.cs" />
+    <Compile Include="Xwt.Mac\ViewBackend.cs" />
+    <Compile Include="Xwt.Mac\WindowBackend.cs" />
+    <Compile Include="Xwt.Mac.CellViews\CompositeCell.cs" />
+    <Compile Include="Xwt.Mac.CellViews\ICellRenderer.cs" />
+    <Compile Include="Xwt.Mac.CellViews\ICellSource.cs" />
+    <Compile Include="Xwt.Mac.CellViews\TextTableCell.cs" />
+    <Compile Include="Xwt.Mac.CellViews\CellUtil.cs" />
+    <Compile Include="Xwt.Mac\ImageHandler.cs" />
+    <Compile Include="Xwt.Mac.CellViews\ImageTableCell.cs" />
+    <Compile Include="Xwt.Mac\ContextBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\CanvasBackend.cs" />
+    <Compile Include="Xwt.Mac\GradientBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\TextLayoutBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\FontBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\ListViewBackend.cs" />
+    <Compile Include="Xwt.Mac\TableViewBackend.cs" />
+    <Compile Include="Xwt.Mac\MenuBackend.cs" />
+    <Compile Include="Xwt.Mac\MenuItemBackend.cs" />
+    <Compile Include="Xwt.Mac\ObjcHelper.cs" />
+    <Compile Include="Xwt.Mac\IViewObject.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Xwt\Xwt.csproj">
+      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
+      <Name>Xwt</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Xwt.Mac\" />
+    <Folder Include="Xwt.Mac.CellViews\" />
+  </ItemGroup>
+</Project>

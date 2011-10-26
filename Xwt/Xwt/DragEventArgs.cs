@@ -1,0 +1,114 @@
+// 
+// DragEventArgs.cs
+//  
+// Author:
+//       Lluis Sanchez <lluis@xamarin.com>
+// 
+// Copyright (c) 2011 Xamarin Inc
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+using System;
+
+namespace Xwt
+{
+	public class DragCheckEventArgs: EventArgs
+	{
+		public DragCheckEventArgs (Point position, string[] types, DragDropAction action)
+		{
+			DataTypes = types;
+			Action = action;
+			Position = position;
+			Result = DragDropResult.None;
+		}
+		
+		public string[] DataTypes { get; private set; }
+		
+		public Point Position { get; private set; }
+		
+		public DragDropAction Action { get; private set; }
+		
+		public DragDropResult Result { get; set; }
+	}
+
+	public class DragEventArgs: EventArgs
+	{
+		public DragEventArgs (Point position, TransferDataStore dataStore, DragDropAction action)
+		{
+			Data = dataStore;
+			Position = position;
+			Action = action;
+			Success = false;
+		}
+		
+		public ITransferData Data { get; private set; }
+		
+		public Point Position { get; private set; }
+		
+		public DragDropAction Action { get; private set; }
+		
+		public bool Success { get; set; }
+	}
+	
+	public class DragOverCheckEventArgs: EventArgs
+	{
+		public DragOverCheckEventArgs (Point position, string[] types, DragDropAction action)
+		{
+			DataTypes = types;
+			Action = action;
+			Position = position;
+			AllowedAction = DragDropAction.Default;
+		}
+		
+		public string[] DataTypes { get; private set; }
+		
+		public Point Position { get; private set; }
+		
+		public DragDropAction Action { get; private set; }
+		
+		public DragDropAction AllowedAction { get; set; }
+	}
+
+	public class DragOverEventArgs: EventArgs
+	{
+		public DragOverEventArgs (Point position, ITransferData dataStore, DragDropAction action)
+		{
+			Position = position;
+			Data = dataStore;
+			Action = action;
+			AllowedAction = DragDropAction.Default;
+		}
+		
+		public ITransferData Data { get; private set; }
+		
+		public Point Position { get; private set; }
+		
+		public DragDropAction Action { get; private set; }
+		
+		public DragDropAction AllowedAction { get; set; }
+	}
+	
+	public enum DragDropResult
+	{
+		Success,
+		Canceled,
+		None
+	}
+}
+

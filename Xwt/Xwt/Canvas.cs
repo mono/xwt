@@ -1,0 +1,177 @@
+// 
+// Canvas.cs
+//  
+// Author:
+//       Lluis Sanchez <lluis@xamarin.com>
+// 
+// Copyright (c) 2011 Xamarin Inc
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+using System;
+using Xwt.Backends;
+using Xwt.Drawing;
+using System.Windows.Markup;
+using System.ComponentModel;
+
+namespace Xwt
+{
+	public class Canvas: Widget
+	{
+		Size minSize;
+		Size naturalSize;
+		
+		protected new class EventSink: Widget.EventSink, ICanvasEventSink
+		{
+			public void OnDraw (object context)
+			{
+				Context ctx = null;
+				try {
+					if (context == null)
+						ctx = new Context (Parent);
+					else
+						ctx = new Context (context);
+					((Canvas)Parent).OnDraw (ctx);
+				}
+				finally {
+					ctx.Dispose ();
+				}
+			}
+			
+			public void OnButtonPressed (ButtonEventArgs args)
+			{
+				((Canvas)Parent).OnButtonPressed (args);
+			}
+			
+			public void OnButtonReleased (ButtonEventArgs args)
+			{
+				((Canvas)Parent).OnButtonReleased (args);
+			}
+			
+			public void OnMouseMoved (MouseMovedEventArgs args)
+			{
+				((Canvas)Parent).OnMouseMoved (args);
+			}
+			
+			public void OnBoundsChanged ()
+			{
+				((Canvas)Parent).OnBoundsChanged ();
+			}
+		}
+		
+		public Canvas ()
+		{
+		}
+		
+		protected override Widget.EventSink CreateEventSink ()
+		{
+			return new EventSink ();
+		}
+		
+		new ICanvasBackend Backend {
+			get { return (ICanvasBackend) base.Backend; }
+		}
+		
+		public void QueueDraw ()
+		{
+			Backend.QueueDraw ();
+		}
+		
+		protected virtual void OnButtonPressed (ButtonEventArgs args)
+		{
+			if (ButtonPressed != null)
+				ButtonPressed (this, args);
+		}
+		
+		protected virtual void OnButtonReleased (ButtonEventArgs args)
+		{
+			if (ButtonReleased != null)
+				ButtonReleased (this, args);
+		}
+		
+		protected virtual void OnMouseMoved (MouseMovedEventArgs args)
+		{
+			if (MouseMoved != null)
+				MouseMoved (this, args);
+		}
+		
+		protected virtual void OnDraw (Context ctx)
+		{
+		}
+		
+		protected virtual void OnBoundsChanged ()
+		{
+		}
+		
+		public Rectangle Bounds {
+			get { return Backend.Bounds; }
+		}
+		
+		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+		public Size MinSize {
+			get { return minSize; }
+			set {
+				minSize = value;
+				if (naturalSize.Width < minSize.Width)
+					naturalSize.Width = minSize.Width;
+				if (naturalSize.Height < minSize.Height)
+					naturalSize.Height = minSize.Height;
+				OnPreferredSizeChanged ();
+			}
+		}
+		
+		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+		public Size NaturalSize {
+			get { return naturalSize; }
+			set {
+				naturalSize = value;
+				if (minSize.Width > naturalSize.Width)
+					minSize.Width = naturalSize.Width;
+				if (minSize.Height > naturalSize.Height)
+					minSize.Height = naturalSize.Height;
+				OnPreferredSizeChanged ();
+			}
+		}
+		
+		protected override WidgetSize OnGetPreferredWidth ()
+		{
+			return new WidgetSize (minSize.Width, naturalSize.Width);
+		}
+		
+		protected override WidgetSize OnGetPreferredHeight ()
+		{
+			return new WidgetSize (minSize.Height, naturalSize.Width);
+		}
+		
+		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
+		{
+			return OnGetPreferredHeight ();
+		}
+		
+		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
+		{
+			return OnGetPreferredWidth ();
+		}
+		
+		public event EventHandler<ButtonEventArgs> ButtonPressed;
+		public event EventHandler<ButtonEventArgs> ButtonReleased;
+		public event EventHandler<MouseMovedEventArgs> MouseMoved;
+	}
+}
+

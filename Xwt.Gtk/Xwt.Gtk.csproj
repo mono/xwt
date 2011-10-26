@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Xwt.GtkBackend</RootNamespace>
+    <AssemblyName>Xwt.Gtk</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Cairo" />
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Xwt.GtkBackend\LabelBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\WidgetBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\WindowBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkEngine.cs" />
+    <Compile Include="Xwt.GtkBackend\BoxBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\NotebookBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TreeStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TreeViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CellUtil.cs" />
+    <Compile Include="Xwt.GtkBackend\ImageHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\ContextBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\CanvasBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GradientBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\Util.cs" />
+    <Compile Include="Xwt.GtkBackend\TextLayoutBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\FontBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\ListViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TableViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ListStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TableStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\MenuBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\MenuItemBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\Platform.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Xwt\Xwt.csproj">
+      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
+      <Name>Xwt</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Xwt.GtkBackend\" />
+    <Folder Include="Xwt.GtkBackend.CellViews\" />
+  </ItemGroup>
+</Project>

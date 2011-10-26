@@ -1,0 +1,138 @@
+// 
+// Color.cs
+//  
+// Author:
+//       Lluis Sanchez <lluis@xamarin.com>
+// 
+// Copyright (c) 2011 Xamarin Inc
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+using System;
+
+namespace Xwt.Drawing
+{
+	public struct Color
+	{
+		double r, g, b, a;
+		HslColor hsl;
+		
+		public static Color Black = new Color (0, 0, 0);
+		public static Color White = new Color (1, 1, 1);
+		
+		public double Red {
+			get { return r; }
+			set { r = value; hsl = null; }
+		}
+		
+		public double Green {
+			get { return g; }
+			set { g = value; hsl = null; }
+		}
+		
+		public double Blue {
+			get { return b; }
+			set { b = value; hsl = null; }
+		}
+		
+		public double Alpha {
+			get { return a; }
+			set { a = value; }
+		}
+		
+		public double Hue {
+			get {
+				return Hsl.H;
+			}
+			set {
+				Hsl = new HslColor (value, Hsl.S, Hsl.L);
+			}
+		}
+		
+		public double Saturation {
+			get {
+				return Hsl.S;
+			}
+			set {
+				Hsl = new HslColor (Hsl.H, value, Hsl.L);
+			}
+		}
+		
+		public double Light {
+			get {
+				return Hsl.L;
+			}
+			set {
+				Hsl = new HslColor (Hsl.H, Hsl.S, value);
+			}
+		}
+		
+		public double Brightness {
+			get {
+				return System.Math.Sqrt (Red * .241 + Green * .691 + Blue * .068);
+			}
+		}
+		
+		HslColor Hsl {
+			get {
+				if (hsl == null)
+					hsl = (HslColor)this;
+				return hsl;
+			}
+			set {
+				hsl = value;
+				Color c = (Color)value;
+				r = c.r;
+				b = c.b;
+				g = c.g;
+			}
+		}
+		
+		public Color (double red, double green, double blue): this ()
+		{
+			Red = red;
+			Green = green;
+			Blue = blue;
+			Alpha = 1f;
+		}
+		
+		public Color (double red, double green, double blue, double alpha): this ()
+		{
+			Red = red;
+			Green = green;
+			Blue = blue;
+			Alpha = alpha;
+		}
+		
+		public static Color FromHsl (double h, double s, double l)
+		{
+			return FromHsl (h, s, l, 1);
+		}
+		
+		public static Color FromHsl (double h, double s, double l, double alpha)
+		{
+			HslColor hsl = new HslColor (h, s, l);
+			Color c = (Color)hsl;
+			c.Alpha = alpha;
+			c.hsl = hsl;
+			return c;
+		}
+	}
+}
+
