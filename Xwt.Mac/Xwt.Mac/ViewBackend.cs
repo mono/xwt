@@ -106,6 +106,19 @@ namespace Xwt.Mac
 			set { }
 		}
 		
+		public virtual bool CanGetFocus {
+			get { return true; }
+			set { }
+		}
+		
+		public virtual bool HasFocus {
+			get { return false; }
+		}
+		
+		public void SetFocus ()
+		{
+		}
+		
 		public virtual void Dispose ()
 		{
 		}

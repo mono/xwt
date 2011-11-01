@@ -161,6 +161,19 @@ namespace Xwt
 			return GetValue (type);
 		}
 		
+		T ITransferData.GetValue<T> ()
+		{
+			object ob = GetValue (typeof(T).FullName);
+			if (ob == null || ob.GetType () == typeof(Type))
+				return (T) ob;
+			if (ob is byte[]) {
+				T val = (T) TransferDataSource.DeserializeValue ((byte[])ob);
+				data[typeof(T).FullName] = val;
+				return val;
+			}
+			return (T) ob;
+		}
+		
 		bool ITransferData.HasType (string type)
 		{
 			return data.ContainsKey (type);
@@ -193,6 +206,7 @@ namespace Xwt
 		Xwt.Drawing.Image Image { get; }
 		
 		object GetValue (string type);
+		T GetValue<T> () where T:class;
 		bool HasType (string type);
 	}
 	

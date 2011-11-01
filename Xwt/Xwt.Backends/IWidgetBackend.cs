@@ -34,7 +34,11 @@ namespace Xwt.Backends
 		
 		bool Visible { get; set; }
 		bool Sensitive { get; set; }
+		bool CanGetFocus { get; set; }
+		bool HasFocus { get; }
 		Size Size { get; }
+		
+		void SetFocus ();
 		
 		void UpdateLayout ();
 		WidgetSize GetPreferredWidth ();

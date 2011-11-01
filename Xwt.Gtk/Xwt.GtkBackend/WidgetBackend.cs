@@ -39,10 +39,6 @@ namespace Xwt.GtkBackend
 		Gtk.Alignment alignment;
 		S eventSink;
 		
-		static Dictionary<string, Gtk.TargetEntry[]> dragTargets = new Dictionary<string, Gtk.TargetEntry[]> ();
-		static Dictionary<string, string> atomToType = new Dictionary<string, string> ();
-		static uint targetIdCounter = 0;
-		
 		bool dragEventsSet;
 		TransferDataSource currentDragData;
 		Gdk.DragAction destDragAction;
@@ -101,6 +97,20 @@ namespace Xwt.GtkBackend
 		public virtual bool Sensitive {
 			get { return Widget.Sensitive; }
 			set { Widget.Sensitive = value; }
+		}
+		
+		public bool CanGetFocus {
+			get { return Widget.CanFocus; }
+			set { Widget.CanFocus = value; }
+		}
+		
+		public bool HasFocus {
+			get { return Widget.HasFocus; }
+		}
+		
+		public void SetFocus ()
+		{
+			Widget.GrabFocus ();
 		}
 		
 		public virtual void Dispose ()
@@ -249,7 +259,7 @@ namespace Xwt.GtkBackend
 					ac = ConvertDragAction (destDragAction);
 			}
 			else {
-				DragOverCheckEventArgs da = new DragOverCheckEventArgs (new Point (args.X, args.Y), GetDragTypes (args.Context.Targets), ConvertDragAction (args.Context.Actions));
+				DragOverCheckEventArgs da = new DragOverCheckEventArgs (new Point (args.X, args.Y), Util.GetDragTypes (args.Context.Targets), ConvertDragAction (args.Context.Actions));
 				EventSink.OnDragOverCheck (da);
 				ac = da.AllowedAction;
 				if (!dragMotionEventEnabled && ac == DragDropAction.Default)
@@ -285,7 +295,7 @@ namespace Xwt.GtkBackend
 					res = DragDropResult.Canceled;
 			}
 			else {
-				DragCheckEventArgs da = new DragCheckEventArgs (new Point (args.X, args.Y), GetDragTypes (args.Context.Targets), ConvertDragAction (args.Context.Actions));
+				DragCheckEventArgs da = new DragCheckEventArgs (new Point (args.X, args.Y), Util.GetDragTypes (args.Context.Targets), ConvertDragAction (args.Context.Actions));
 				EventSink.OnDragDropCheck (da);
 				res = da.Result;
 				if (!dropEventEnabled && res == DragDropResult.None)
@@ -319,7 +329,6 @@ namespace Xwt.GtkBackend
 			foreach (var t in validDropTypes) {
 				Console.WriteLine ("-> GetData");
 				var at = Gdk.Atom.Intern (t.Target, true);
-				data.Add (at);
 				Gtk.Drag.GetData (Widget, ctx, at, time);
 			}
 		}
@@ -329,8 +338,8 @@ namespace Xwt.GtkBackend
 			Console.WriteLine ("DataReceived");
 			dragDataRequests--;
 			
-			string type;
-			if (!atomToType.TryGetValue (args.SelectionData.Target.Name, out type)) {
+			string type = Util.AtomToType (args.SelectionData.Target.Name);
+			if (type == null) {
 				args.RetVal = false;
 				return;
 			}
@@ -371,28 +380,13 @@ namespace Xwt.GtkBackend
 			currentDragData = data;
 			Widget.DragEnd += HandleWidgetDragEnd;
 			Widget.DragDataGet += HandleWidgetDragDataGet;
-			Gtk.Drag.Begin (Widget, BuildTargetTable (data.DataTypes), action, 0, Gtk.Global.CurrentEvent);
+			Gtk.Drag.Begin (Widget, Util.BuildTargetTable (data.DataTypes), action, 0, Gtk.Global.CurrentEvent);
 		}
 
 		void HandleWidgetDragDataGet (object o, Gtk.DragDataGetArgs args)
 		{
-			foreach (var t in currentDragData.DataTypes) {
-				object val = currentDragData.GetValue (t);
-				if (val == null)
-					continue;
-				if (val is string)
-					args.SelectionData.Text = (string)currentDragData.GetValue (t);
-				else if (val is Xwt.Drawing.Image)
-					args.SelectionData.SetPixbuf ((Gdk.Pixbuf) WidgetRegistry.GetBackend (val));
-				else {
-					var at = Gdk.Atom.Intern (t, false);
-					data.Add (at);
-					args.SelectionData.Set (at, 0, TransferDataSource.SerializeValue (val));
-				}
-			}
+			Util.SetDragData (currentDragData, args);
 		}
-		
-		List<object> data = new List<object> ();
 
 		void HandleWidgetDragEnd (object o, Gtk.DragEndArgs args)
 		{
@@ -403,7 +397,7 @@ namespace Xwt.GtkBackend
 		public void SetDragTarget (string[] types, DragDropAction dragAction)
 		{
 			destDragAction = ConvertDragAction (dragAction);
-			var table = BuildTargetTable (types);
+			var table = Util.BuildTargetTable (types);
 			validDropTypes = (Gtk.TargetEntry[]) table;
 			Gtk.Drag.DestSet (Widget, Gtk.DestDefaults.Highlight, validDropTypes, destDragAction);
 		}
@@ -411,7 +405,7 @@ namespace Xwt.GtkBackend
 		public void SetDragSource (string[] types, DragDropAction dragAction)
 		{
 			sourceDragAction = ConvertDragAction (dragAction);
-			var table = BuildTargetTable (types);
+			var table = Util.BuildTargetTable (types);
 			Gtk.Drag.SourceSet (Widget, (Gdk.ModifierType)0, (Gtk.TargetEntry[]) table, sourceDragAction);
 		}
 		
@@ -437,73 +431,6 @@ namespace Xwt.GtkBackend
 			if ((dragAction & Gdk.DragAction.Link) != 0)
 				action |= DragDropAction.Link;
 			return action;
-		}
-		
-		string[] GetDragTypes (Gdk.Atom[] dropTypes)
-		{
-			List<string> types = new List<string> ();
-			foreach (var dt in dropTypes) {
-				string type;
-				if (atomToType.TryGetValue (dt.ToString (), out type))
-					types.Add (type);
-			}
-			return types.ToArray ();
-		}
-		
-		Gtk.TargetList BuildTargetTable (string[] types)
-		{
-			var tl = new Gtk.TargetList ();
-			foreach (var tt in types)
-				tl.AddTable (CreateTargetEntries (tt));
-			data.Add (tl);
-			return tl;
-		}
-		
-		Gtk.TargetEntry[] CreateTargetEntries (string type)
-		{
-			lock (dragTargets) {
-				Gtk.TargetEntry[] entries;
-				if (dragTargets.TryGetValue (type, out entries))
-					return entries;
-				
-				uint id = targetIdCounter++;
-				
-				switch (type) {
-				case TransferDataType.Uri: {
-					Gtk.TargetList list = new Gtk.TargetList ();
-					list.AddUriTargets (id);
-					entries = (Gtk.TargetEntry[]) list;
-					break;
-				}
-				case TransferDataType.Text: {
-					Gtk.TargetList list = new Gtk.TargetList ();
-					list.AddTextTargets (id);
-					//HACK: work around gtk_selection_data_set_text causing crashes on Mac w/ QuickSilver, Clipbard History etc.
-					if (Platform.IsMac) {
-						list.Remove ("COMPOUND_TEXT");
-						list.Remove ("TEXT");
-						list.Remove ("STRING");
-					}
-					entries = (Gtk.TargetEntry[]) list;
-					break;
-				}
-				case TransferDataType.Rtf: {
-					Gdk.Atom atom;
-					if (Platform.IsMac)
-						atom = Gdk.Atom.Intern ("NSRTFPboardType", false); //TODO: use public.rtf when dep on MacOS 10.6
-					else
-						atom = Gdk.Atom.Intern ("text/rtf", false);
-					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
-					break;
-				}
-				default:
-					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type, false), 0, id) };
-					break;
-				}
-				foreach (var a in entries.Select (e => e.Target))
-					atomToType [a] = type;
-				return dragTargets [type] = entries;
-			}
 		}
 	}
 	

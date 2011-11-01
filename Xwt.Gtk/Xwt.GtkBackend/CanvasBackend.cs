@@ -31,6 +31,10 @@ namespace Xwt.GtkBackend
 {
 	public class CanvasBackend<T,S>: WidgetBackend<T, S>, ICanvasBackend where T:Gtk.DrawingArea where S:ICanvasEventSink
 	{
+		public CanvasBackend ()
+		{
+		}
+		
 		public override void Initialize ()
 		{
 			Widget = (T) new Gtk.DrawingArea ();

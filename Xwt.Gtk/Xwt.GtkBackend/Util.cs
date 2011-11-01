@@ -26,15 +26,111 @@
 
 using System;
 using Xwt.Drawing;
+using Xwt.Engine;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Xwt.GtkBackend
 {
 	public static class Util
 	{
+		static uint targetIdCounter = 0;
+		static Dictionary<string, Gtk.TargetEntry[]> dragTargets = new Dictionary<string, Gtk.TargetEntry[]> ();
+		static Dictionary<string, string> atomToType = new Dictionary<string, string> ();
+
 		public static Cairo.Color ToCairoColor (this Color col)
 		{
 			return new Cairo.Color (col.Red, col.Green, col.Blue, col.Alpha);
 		}
-	}
+		
+		public static void SetDragData (TransferDataSource data, Gtk.DragDataGetArgs args)
+		{
+			foreach (var t in data.DataTypes) {
+				object val = data.GetValue (t);
+				if (val == null)
+					continue;
+				if (val is string)
+					args.SelectionData.Text = (string)data.GetValue (t);
+				else if (val is Xwt.Drawing.Image)
+					args.SelectionData.SetPixbuf ((Gdk.Pixbuf) WidgetRegistry.GetBackend (val));
+				else {
+					var at = Gdk.Atom.Intern (t, false);
+					args.SelectionData.Set (at, 0, TransferDataSource.SerializeValue (val));
+				}
+			}
+		}
+		
+		internal static string AtomToType (string targetName)
+		{
+			string type;
+			atomToType.TryGetValue (targetName, out type);
+			return type;
+		}
+		
+		internal static string[] GetDragTypes (Gdk.Atom[] dropTypes)
+		{
+			List<string> types = new List<string> ();
+			foreach (var dt in dropTypes) {
+				string type;
+				if (atomToType.TryGetValue (dt.ToString (), out type))
+					types.Add (type);
+			}
+			return types.ToArray ();
+		}
+		
+		public static Gtk.TargetList BuildTargetTable (string[] types)
+		{
+			var tl = new Gtk.TargetList ();
+			foreach (var tt in types)
+				tl.AddTable (CreateTargetEntries (tt));
+			return tl;
+		}
+		
+		static Gtk.TargetEntry[] CreateTargetEntries (string type)
+		{
+			lock (dragTargets) {
+				Gtk.TargetEntry[] entries;
+				if (dragTargets.TryGetValue (type, out entries))
+					return entries;
+				
+				uint id = targetIdCounter++;
+				
+				switch (type) {
+				case TransferDataType.Uri: {
+					Gtk.TargetList list = new Gtk.TargetList ();
+					list.AddUriTargets (id);
+					entries = (Gtk.TargetEntry[]) list;
+					break;
+				}
+				case TransferDataType.Text: {
+					Gtk.TargetList list = new Gtk.TargetList ();
+					list.AddTextTargets (id);
+					//HACK: work around gtk_selection_data_set_text causing crashes on Mac w/ QuickSilver, Clipbard History etc.
+					if (Platform.IsMac) {
+						list.Remove ("COMPOUND_TEXT");
+						list.Remove ("TEXT");
+						list.Remove ("STRING");
+					}
+					entries = (Gtk.TargetEntry[]) list;
+					break;
+				}
+				case TransferDataType.Rtf: {
+					Gdk.Atom atom;
+					if (Platform.IsMac)
+						atom = Gdk.Atom.Intern ("NSRTFPboardType", false); //TODO: use public.rtf when dep on MacOS 10.6
+					else
+						atom = Gdk.Atom.Intern ("text/rtf", false);
+					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
+					break;
+				}
+				default:
+					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type, false), 0, id) };
+					break;
+				}
+				foreach (var a in entries.Select (e => e.Target))
+					atomToType [a] = type;
+				return dragTargets [type] = entries;
+			}
+		}	}
 }
 

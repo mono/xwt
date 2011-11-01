@@ -84,6 +84,19 @@ namespace Xwt.Mac
 			}
 		}
 		
+		public virtual bool CanGetFocus {
+			get { return true; }
+			set { }
+		}
+		
+		public virtual bool HasFocus {
+			get { return false; }
+		}
+		
+		public void SetFocus ()
+		{
+		}
+		
 		#region IWindowBackend implementation
 		void IWidgetBackend.Initialize (IWidgetEventSink eventSink)
 		{

@@ -32,6 +32,7 @@ using Xwt.Engine;
 using Xwt.Drawing;
 using System.Reflection;
 using System.Xaml;
+using System.Linq;
 
 namespace Xwt
 {
@@ -126,6 +127,17 @@ namespace Xwt
 			set { Backend.Sensitive = value; }
 		}
 		
+		[DefaultValue (true)]
+		public bool CanGetFocus {
+			get { return Backend.CanGetFocus; }
+			set { Backend.CanGetFocus = value; }
+		}
+		
+		[DefaultValue (true)]
+		public bool HasFocus {
+			get { return Backend.HasFocus; }
+		}
+		
 		[DefaultValue (null)]
 		public string Name { get; set; }
 		
@@ -135,6 +147,11 @@ namespace Xwt
 		public bool ShouldSerializeParent ()
 		{
 			return false;
+		}
+		
+		public void SetFocus ()
+		{
+			Backend.SetFocus ();
 		}
 		
 		public DragOperation CreateDragOperation ()
@@ -152,9 +169,19 @@ namespace Xwt
 			Backend.SetDragTarget (types, DragDropAction.All);
 		}
 		
+		public void SetDragDropTarget (params Type[] types)
+		{
+			Backend.SetDragTarget (types.Select (t => t.FullName).ToArray (), DragDropAction.All);
+		}
+		
 		public void SetDragDropTarget (DragDropAction dragAction, params string[] types)
 		{
 			Backend.SetDragTarget (types, dragAction);
+		}
+		
+		public void SetDragDropTarget (DragDropAction dragAction, params Type[] types)
+		{
+			Backend.SetDragTarget (types.Select (t => t.FullName).ToArray(), dragAction);
 		}
 		
 		public void SetDragSource (params string[] types)
@@ -162,9 +189,19 @@ namespace Xwt
 			Backend.SetDragSource (types, DragDropAction.All);
 		}
 		
+		public void SetDragSource (params Type[] types)
+		{
+			Backend.SetDragSource (types.Select (t => t.FullName).ToArray(), DragDropAction.All);
+		}
+		
 		public void SetDragSource (DragDropAction dragAction, params string[] types)
 		{
 			Backend.SetDragSource (types, dragAction);
+		}
+		
+		public void SetDragSource (DragDropAction dragAction, params Type[] types)
+		{
+			Backend.SetDragSource (types.Select (t => t.FullName).ToArray(), dragAction);
 		}
 		
 		protected override void OnBackendCreated ()
