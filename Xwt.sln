@@ -7,12 +7,30 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk", "Xwt.Gtk\Xwt.Gtk.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Mac", "Xwt.Mac\Xwt.Mac.csproj", "{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacTest", "MacTest\MacTest.csproj", "{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "Samples\Samples.csproj", "{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkTest", "GtkTest\GtkTest.csproj", "{0AF50CE4-E455-4A9D-92AD-711CBD068A55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0AF50CE4-E455-4A9D-92AD-711CBD068A55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AF50CE4-E455-4A9D-92AD-711CBD068A55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AF50CE4-E455-4A9D-92AD-711CBD068A55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AF50CE4-E455-4A9D-92AD-711CBD068A55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,7 +45,7 @@ Global
 		{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Xwt\Xwt.csproj
+		StartupItem = MacTest\MacTest.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
