@@ -1,5 +1,5 @@
 // 
-// IButtonBackend.cs
+// ButtonSample.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,25 +23,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
+using Xwt;
+using Xwt.Drawing;
 
-namespace Xwt.Backends
+namespace Samples
 {
-	public interface IButtonBackend: IWidgetBackend
+	public class ButtonSample: VBox
 	{
-		void SetButtonStyle (ButtonStyle style);
-		void SetContent (string label, object imageBackend);
-	}
-	
-	public interface IButtonEventSink: IWidgetEventSink
-	{
-		void OnClicked ();
-	}
-	
-	public enum ButtonEvent
-	{
-		Clicked = 1
+		public ButtonSample ()
+		{
+			Button b1 = new Button ("Click me");
+			b1.Clicked += delegate {
+				b1.Label = "Clicked!";
+			};
+			PackStart (b1);
+			
+			Button b2 = new Button ("Click me");
+			b2.Style = ButtonStyle.Flat;
+			b2.Clicked += delegate {
+				b2.Label = "Clicked!";
+			};
+			PackStart (b2);
+			
+			PackStart (new Button (Image.FromIcon (StockIcons.ZoomIn, IconSize.Medium)));
+		}
 	}
 }
 

@@ -41,12 +41,35 @@ namespace Xwt.GtkBackend
 			Widget.Show ();
 		}
 
-		public string Label {
-			get {
-				return Widget.Label;
+		public void SetContent (string label, object imageBackend)
+		{
+			Gdk.Pixbuf pix = (Gdk.Pixbuf)imageBackend;
+			if (label != null && imageBackend == null)
+				Widget.Label = label;
+			else if (label == null && imageBackend != null) {
+				var img = new Gtk.Image (pix);
+				img.Show ();
+				Widget.Image = img;
+			} else if (label != null && imageBackend != null) {
+				Gtk.HBox box = new Gtk.HBox (false, 3);
+				var img = new Gtk.Image (pix);
+				box.PackStart (img, false, false, 0);
+				var lab = new Gtk.Label (label);
+				box.PackStart (lab, false, false, 0);
+				box.ShowAll ();
+				Widget.Image = box;
 			}
-			set {
-				Widget.Label = value;
+		}
+		
+		public void SetButtonStyle (ButtonStyle style)
+		{
+			switch (style) {
+			case ButtonStyle.Normal:
+				Widget.Relief = Gtk.ReliefStyle.Normal;
+				break;
+			case ButtonStyle.Flat:
+				Widget.Relief = Gtk.ReliefStyle.None;
+				break;
 			}
 		}
 		

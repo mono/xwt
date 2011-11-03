@@ -1,5 +1,5 @@
 // 
-// IButtonBackend.cs
+// StockIcons.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,25 +23,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface IButtonBackend: IWidgetBackend
+	public static class StockIcons
 	{
-		void SetButtonStyle (ButtonStyle style);
-		void SetContent (string label, object imageBackend);
-	}
-	
-	public interface IButtonEventSink: IWidgetEventSink
-	{
-		void OnClicked ();
-	}
-	
-	public enum ButtonEvent
-	{
-		Clicked = 1
+		public const string ZoomIn = "ZoomIn";
+		public const string ZoomOut = "ZoomOut";
+		public const string ZoomFit = "ZoomFit";
+		public const string Zoom100 = "Zoom100";
 	}
 }
 

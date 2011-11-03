@@ -133,6 +133,9 @@
     <Compile Include="Xwt\DragEventArgs.cs" />
     <Compile Include="Xwt\ScrollView.cs" />
     <Compile Include="Xwt.Backends\IScrollViewBackend.cs" />
+    <Compile Include="Xwt\ButtonStyle.cs" />
+    <Compile Include="Xwt\StockIcons.cs" />
+    <Compile Include="Xwt\IconSize.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

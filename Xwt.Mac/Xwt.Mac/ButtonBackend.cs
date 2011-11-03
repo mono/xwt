@@ -53,16 +53,28 @@ namespace Xwt.Mac
 		{
 			((Button)Widget).DisableEvent (ev);
 		}
-
-		public string Label {
-			get {
-				return Widget.StringValue;
-			}
-			set {
-				Widget.StringValue = value;
-				Widget.SizeToFit ();
+		
+		public void SetContent (string label, object imageBackend)
+		{
+			Widget.Title = label;
+			Widget.Image = (NSImage)imageBackend;
+			Widget.SizeToFit ();
+		}
+		
+		public void SetButtonStyle (ButtonStyle style)
+		{
+			switch (style) {
+			case ButtonStyle.Normal:
+				Widget.BezelStyle = NSBezelStyle.RoundRect;
+				Widget.SetButtonType (NSButtonType.MomentaryPushIn);
+				break;
+			case ButtonStyle.Flat:
+				Widget.BezelStyle = NSBezelStyle.RoundRect;
+				Widget.ShowsBorderOnlyWhileMouseInside ();
+				break;
 			}
 		}
+		
 		#endregion
 	}
 	

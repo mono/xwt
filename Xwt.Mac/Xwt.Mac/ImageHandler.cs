@@ -46,6 +46,11 @@ namespace Xwt.Mac
 			return new NSImage (file);
 		}
 		
+		public override object LoadFromIcon (string id, IconSize size)
+		{
+			throw new NotImplementedException ();
+		}
+		
 		public override Size GetSize (object handle)
 		{
 			NSImage img = (NSImage)handle;

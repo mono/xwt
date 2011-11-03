@@ -148,6 +148,33 @@ namespace Xwt.Drawing
 			c.hsl = hsl;
 			return c;
 		}
+		
+		public static Color FromName (string name)
+		{
+			uint val;
+			if (!TryParseColourFromHex (name, out val))
+				return Color.Black;
+			return Color.FromBytes ((byte)(val >> 24), (byte)((val >> 16) & 0xff), (byte)((val >> 8) & 0xff), (byte)(val & 0xff));
+		}
+		
+
+		static bool TryParseColourFromHex (string str, out uint val)
+		{
+			val = 0;
+			
+			if (str.Length > 9)
+				return false;
+			
+			if (!uint.TryParse (str.Substring (1), System.Globalization.NumberStyles.HexNumber, null, out val))
+				return false;
+			
+			val = val << (9 - str.Length * 4);
+			
+			if (str.Length <= 7)
+				val |= 0xff;
+			
+			return true;
+		}
 	}
 }
 

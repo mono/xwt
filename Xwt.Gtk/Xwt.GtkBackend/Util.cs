@@ -97,32 +97,32 @@ namespace Xwt.GtkBackend
 				
 				switch (type) {
 				case TransferDataType.Uri: {
-					Gtk.TargetList list = new Gtk.TargetList ();
-					list.AddUriTargets (id);
-					entries = (Gtk.TargetEntry[]) list;
-					break;
-				}
-				case TransferDataType.Text: {
-					Gtk.TargetList list = new Gtk.TargetList ();
-					list.AddTextTargets (id);
-					//HACK: work around gtk_selection_data_set_text causing crashes on Mac w/ QuickSilver, Clipbard History etc.
-					if (Platform.IsMac) {
-						list.Remove ("COMPOUND_TEXT");
-						list.Remove ("TEXT");
-						list.Remove ("STRING");
+						Gtk.TargetList list = new Gtk.TargetList ();
+						list.AddUriTargets (id);
+						entries = (Gtk.TargetEntry[])list;
+						break;
 					}
-					entries = (Gtk.TargetEntry[]) list;
-					break;
-				}
+				case TransferDataType.Text: {
+						Gtk.TargetList list = new Gtk.TargetList ();
+						list.AddTextTargets (id);
+						//HACK: work around gtk_selection_data_set_text causing crashes on Mac w/ QuickSilver, Clipbard History etc.
+						if (Platform.IsMac) {
+							list.Remove ("COMPOUND_TEXT");
+							list.Remove ("TEXT");
+							list.Remove ("STRING");
+						}
+						entries = (Gtk.TargetEntry[])list;
+						break;
+					}
 				case TransferDataType.Rtf: {
-					Gdk.Atom atom;
-					if (Platform.IsMac)
-						atom = Gdk.Atom.Intern ("NSRTFPboardType", false); //TODO: use public.rtf when dep on MacOS 10.6
-					else
-						atom = Gdk.Atom.Intern ("text/rtf", false);
-					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
-					break;
-				}
+						Gdk.Atom atom;
+						if (Platform.IsMac)
+							atom = Gdk.Atom.Intern ("NSRTFPboardType", false); //TODO: use public.rtf when dep on MacOS 10.6
+						else
+							atom = Gdk.Atom.Intern ("text/rtf", false);
+						entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
+						break;
+					}
 				default:
 					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type, false), 0, id) };
 					break;
@@ -131,6 +131,36 @@ namespace Xwt.GtkBackend
 					atomToType [a] = type;
 				return dragTargets [type] = entries;
 			}
-		}	}
+		}	
+		
+		static Dictionary<string,string> icons;
+
+		public static string ToGtkStock (string id)
+		{
+			if (icons == null) {
+				icons = new Dictionary<string, string> ();
+				icons [StockIcons.ZoomIn] = Gtk.Stock.ZoomIn;
+				icons [StockIcons.ZoomOut] = Gtk.Stock.ZoomOut;
+				icons [StockIcons.Zoom100] = Gtk.Stock.Zoom100;
+				icons [StockIcons.ZoomFit] = Gtk.Stock.ZoomFit;
+			}
+			string res;
+			icons.TryGetValue (id, out res);
+			return res;
+		}
+		
+		public static Gtk.IconSize ToGtkSize (Xwt.IconSize size)
+		{
+			switch (size) {
+			case IconSize.Small:
+				return Gtk.IconSize.Menu;
+			case IconSize.Medium:
+				return Gtk.IconSize.Button;
+			case IconSize.Large:
+				return Gtk.IconSize.Dialog;
+			}
+			return Gtk.IconSize.Dialog;
+		}
+	}
 }
 

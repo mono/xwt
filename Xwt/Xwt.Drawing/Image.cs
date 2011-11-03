@@ -71,6 +71,11 @@ namespace Xwt.Drawing
 			return new Image (handler.LoadFromStream (stream));
 		}
 		
+		public static Image FromIcon (string id, IconSize size)
+		{
+			return new Image (handler.LoadFromIcon (id, size));
+		}
+		
 		public Size Size {
 			get { return handler.GetSize (Backend); }
 		}
@@ -98,6 +103,16 @@ namespace Xwt.Drawing
 		{
 			double r = Math.Min (width / Size.Width, height / Size.Height);
 			return new Image (handler.Resize (Backend, Size.Width * r, Size.Height * r));
+		}
+		
+		public Image ToGrayscale ()
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public Image SetOpacity (double opacity)
+		{
+			throw new NotImplementedException ();
 		}
 		
 		public void Dispose ()

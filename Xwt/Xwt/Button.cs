@@ -26,12 +26,16 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt
 {
 	public class Button: Widget
 	{
 		EventHandler clicked;
+		ButtonStyle style = ButtonStyle.Normal;
+		Image image;
+		string label;
 		
 		protected new class EventSink: Widget.EventSink, IButtonEventSink
 		{
@@ -55,6 +59,17 @@ namespace Xwt
 			Label = label;
 		}
 		
+		public Button (Image img, string label): this ()
+		{
+			Label = label;
+			Image = img;
+		}
+		
+		public Button (Image img): this ()
+		{
+			Image = img;
+		}
+		
 		protected override Widget.EventSink CreateEventSink ()
 		{
 			return new EventSink ();
@@ -65,14 +80,34 @@ namespace Xwt
 		}
 		
 		public string Label {
-			get { return Backend.Label; }
-			set { Backend.Label = value; }
+			get { return label; }
+			set {
+				label = value;
+				Backend.SetContent (label, image);
+			}
+		}
+		
+		public Image Image {
+			get { return image; }
+			set {
+				image = value;
+				Backend.SetContent (label, XwtObject.GetBackend (value)); 
+			}
+		}
+		
+		public ButtonStyle Style {
+			get { return style; }
+			set {
+				style = value;
+				Backend.SetButtonStyle (style);
+			}
 		}
 		
 		protected override void OnBackendCreated ()
 		{
 			base.OnBackendCreated ();
 			Backend.Initialize ((EventSink)WidgetEventSink);
+			Backend.SetButtonStyle (style);
 		}
 		
 		protected virtual void OnClicked (EventArgs e)

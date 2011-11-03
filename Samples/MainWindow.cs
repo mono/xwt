@@ -46,12 +46,13 @@ namespace Samples
 			samplesTree = new TreeView ();
 			samplesTree.Columns.Add ("Name", iconCol, nameCol);
 			
+			AddSample (null, "Boxes", typeof(Boxes));
+			AddSample (null, "Buttons", typeof(ButtonSample));
+			AddSample (null, "Drag & Drop", typeof(DragDrop));
 			var n = AddSample (null, "Drawing", null);
 			AddSample (n, "Chart", typeof(ChartSample));
-			AddSample (null, "Notebook", typeof(NotebookSample));
-			AddSample (null, "Boxes", typeof(Boxes));
 			AddSample (null, "List View", typeof(ListView1));
-			AddSample (null, "Drag & Drop", typeof(DragDrop));
+			AddSample (null, "Notebook", typeof(NotebookSample));
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
 			
 			samplesTree.DataSource = store;

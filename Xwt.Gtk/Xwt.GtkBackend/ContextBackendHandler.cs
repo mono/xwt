@@ -196,8 +196,8 @@ namespace Xwt.GtkBackend
 		
 		public void DrawImage (object backend, Image img, double x, double y)
 		{
-			Gdk.Pixbuf pb = (Gdk.Pixbuf) WidgetRegistry.GetBackend (img);
-			GtkContext ctx = (GtkContext) backend;
+			Gdk.Pixbuf pb = (Gdk.Pixbuf)WidgetRegistry.GetBackend (img);
+			GtkContext ctx = (GtkContext)backend;
 			Gdk.CairoHelper.SetSourcePixbuf (ctx.Context, pb, x, y);
 			ctx.Context.Paint ();
 		}

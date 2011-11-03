@@ -58,6 +58,8 @@ namespace Xwt.Backends
 		
 		public abstract object LoadFromStream (Stream stream);
 		
+		public abstract object LoadFromIcon (string id, IconSize size);
+		
 		public abstract Size GetSize (object handle);
 		
 		public abstract object Resize (object handle, double width, double height);

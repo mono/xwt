@@ -37,6 +37,24 @@ namespace Xwt.GtkBackend
 				return loader.Pixbuf;
 		}
 		
+		public override object LoadFromIcon (string id, IconSize size)
+		{
+			string stockId = Util.ToGtkStock (id);
+			var gsize = Util.ToGtkSize (size);
+			
+			Gtk.IconSet iconset = Gtk.IconFactory.LookupDefault (stockId);
+			if (iconset != null) 
+				return iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null);
+			
+			if (Gtk.IconTheme.Default.HasIcon (stockId)) {
+				int w, h;
+				Gtk.Icon.SizeLookup (gsize, out w, out h);
+				Gdk.Pixbuf result = Gtk.IconTheme.Default.LoadIcon (stockId, h, (Gtk.IconLookupFlags)0);
+				return result;
+			}
+			return null;
+		}
+		
 		public override void Dispose (object backend)
 		{
 			((Gdk.Pixbuf)backend).Dispose ();
