@@ -28,6 +28,7 @@ using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+using System.Drawing;
 
 namespace Xwt.Mac
 {
@@ -47,8 +48,13 @@ namespace Xwt.Mac
 		
 		public override Size GetSize (object handle)
 		{
-			NSImage img = (NSImage) handle;
+			NSImage img = (NSImage)handle;
 			return new Size ((int)img.Size.Width, (int)img.Size.Height);
+		}
+		
+		public override object Resize (object handle, double width, double height)
+		{
+			throw new NotImplementedException ();
 		}
 	}
 }

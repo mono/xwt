@@ -120,6 +120,21 @@ namespace Xwt.Drawing
 			Alpha = alpha;
 		}
 		
+		public static Color FromBytes (byte red, byte green, byte blue)
+		{
+			return FromBytes (red, green, blue, 255);
+		}
+		
+		public static Color FromBytes (byte red, byte green, byte blue, byte alpha)
+		{
+			return new Color {
+				Red = ((double)red) / 255.0,
+				Green = ((double)green) / 255.0,
+				Blue = ((double)blue) / 255.0,
+				Alpha = ((double)alpha) / 255.0
+			};
+		}
+		
 		public static Color FromHsl (double h, double s, double l)
 		{
 			return FromHsl (h, s, l, 1);

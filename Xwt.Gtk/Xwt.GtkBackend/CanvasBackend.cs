@@ -37,21 +37,46 @@ namespace Xwt.GtkBackend
 		
 		public override void Initialize ()
 		{
-			Widget = (T) new Gtk.DrawingArea ();
+			Widget = (T)new Gtk.DrawingArea ();
 			Widget.Events |= Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask;
 			Widget.ExposeEvent += HandleWidgetExposeEvent;
 			Widget.ButtonPressEvent += HandleWidgetButtonPressEvent;
 			Widget.ButtonReleaseEvent += HandleWidgetButtonReleaseEvent;
 			Widget.MotionNotifyEvent += HandleWidgetMotionNotifyEvent;
 			Widget.SizeAllocated += HandleWidgetSizeAllocated;
+			Widget.SizeRequested += HandleSizeRequested;
 			Widget.Show ();
 		}
-		
+
 		public void QueueDraw ()
 		{
 			Widget.QueueDraw ();
 		}
+		
+		public void QueueDraw (Rectangle rect)
+		{
+			Widget.QueueDrawArea ((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
+		}
+		
+		public void OnPreferredSizeChanged ()
+		{
+			Widget.QueueResize ();
+		}
 
+		void HandleSizeRequested (object o, Gtk.SizeRequestedArgs args)
+		{
+			IWidgetSurface ws = (IWidgetSurface)Frontend;
+			Gtk.Requisition req = args.Requisition;
+			int w = (int)ws.GetPreferredWidth ().MinSize;
+			int h = (int)ws.GetPreferredHeight ().MinSize;
+			if (req.Width < w)
+				req.Width = w;
+			if (req.Height < h)
+				req.Height = h;
+			Console.WriteLine ("RR: " + req.Width + " " + req.Height);
+			args.Requisition = req;
+		}
+		
 		void HandleWidgetMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
 		{
 			var a = new MouseMovedEventArgs ();

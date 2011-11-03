@@ -93,6 +93,11 @@ namespace Xwt
 			Backend.QueueDraw ();
 		}
 		
+		public void QueueDraw (Rectangle rect)
+		{
+			Backend.QueueDraw (rect);
+		}
+		
 		protected virtual void OnButtonPressed (ButtonEventArgs args)
 		{
 			if (ButtonPressed != null)
@@ -167,6 +172,12 @@ namespace Xwt
 		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
 		{
 			return OnGetPreferredWidth ();
+		}
+		
+		protected override void OnPreferredSizeChanged ()
+		{
+			base.OnPreferredSizeChanged ();
+			Backend.OnPreferredSizeChanged ();
 		}
 		
 		public event EventHandler<ButtonEventArgs> ButtonPressed;

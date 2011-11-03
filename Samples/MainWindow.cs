@@ -14,7 +14,7 @@ namespace Samples
 		Widget currentSample;
 		
 		DataField<string> nameCol = new DataField<string> ();
-		DataField<Widget> widgetCol = new DataField<Widget> ();
+		DataField<Sample> widgetCol = new DataField<Sample> ();
 		DataField<Image> iconCol = new DataField<Image> ();
 		
 		public MainWindow ()
@@ -47,11 +47,12 @@ namespace Samples
 			samplesTree.Columns.Add ("Name", iconCol, nameCol);
 			
 			var n = AddSample (null, "Drawing", null);
-			AddSample (n, "Chart", new ChartSample ());
-			AddSample (null, "Notebook", new NotebookSample ());
-			AddSample (null, "Boxes", new Boxes ());
-			AddSample (null, "List View", new ListView1 ());
-			AddSample (null, "Drag & Drop", new DragDrop ());
+			AddSample (n, "Chart", typeof(ChartSample));
+			AddSample (null, "Notebook", typeof(NotebookSample));
+			AddSample (null, "Boxes", typeof(Boxes));
+			AddSample (null, "List View", typeof(ListView1));
+			AddSample (null, "Drag & Drop", typeof(DragDrop));
+			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
 			
 			samplesTree.DataSource = store;
 			
@@ -73,20 +74,35 @@ namespace Samples
 			if (samplesTree.SelectedItem != null) {
 				if (currentSample != null)
 					sampleBox.Remove (currentSample);
-				Widget w = store.GetNavigatorAt (samplesTree.SelectedItem).GetValue (widgetCol);
-				if (w != null)
-					sampleBox.PackStart (w, BoxMode.FillAndExpand);
-				string txt = System.Xaml.XamlServices.Save (w);
-				currentSample = w;
+				Sample s = store.GetNavigatorAt (samplesTree.SelectedItem).GetValue (widgetCol);
+				if (s.Type != null) {
+					if (s.Widget == null)
+						s.Widget = (Widget) Activator.CreateInstance (s.Type);
+					sampleBox.PackStart (s.Widget, BoxMode.FillAndExpand);
+				}
+				
+//				string txt = System.Xaml.XamlServices.Save (s);
+				currentSample = s.Widget;
 			}
 		}
 		
-		TreePosition AddSample (TreePosition pos, string name, Widget page)
+		TreePosition AddSample (TreePosition pos, string name, Type sampleType)
 		{
 			//if (page != null)
 			//	page.Margin.SetAll (5);
-			return store.AddNode (pos).SetValue (nameCol, name).SetValue (iconCol, icon).SetValue (widgetCol, page).CurrentPosition;
+			return store.AddNode (pos).SetValue (nameCol, name).SetValue (iconCol, icon).SetValue (widgetCol, new Sample (sampleType)).CurrentPosition;
 		}
+	}
+	
+	class Sample
+	{
+		public Sample (Type type)
+		{
+			Type = type;
+		}
+
+		public Type Type;
+		public Widget Widget;
 	}
 }
 

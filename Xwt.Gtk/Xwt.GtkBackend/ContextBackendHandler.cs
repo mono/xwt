@@ -36,7 +36,6 @@ namespace Xwt.GtkBackend
 		public Cairo.Context Context;
 		public Cairo.Surface TempSurface;
 		public Gtk.Widget Widget;
-		public Point Origin;
 	}
 	
 	public class ContextBackendHandler: IContextBackendHandler
@@ -65,7 +64,7 @@ namespace Xwt.GtkBackend
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
 			GtkContext gc = (GtkContext) backend;
-			gc.Context.Arc (gc.Origin.X + xc, gc.Origin.Y + yc, radius, (angle1 * System.Math.PI) / 180, (angle2 * System.Math.PI) / 180);
+			gc.Context.Arc (xc, yc, radius, (angle1 * System.Math.PI) / 180, (angle2 * System.Math.PI) / 180);
 		}
 
 		public void Clip (object backend)
@@ -95,7 +94,7 @@ namespace Xwt.GtkBackend
 		public void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
 		{
 			GtkContext gc = (GtkContext) backend;
-			gc.Context.CurveTo (gc.Origin.X + x1, gc.Origin.Y + y1, gc.Origin.X + x2, gc.Origin.Y + y2, gc.Origin.X + x3, gc.Origin.Y + y3);
+			gc.Context.CurveTo (x1, y1, x2, y2, x3, y3);
 		}
 
 		public void Fill (object backend)
@@ -113,13 +112,13 @@ namespace Xwt.GtkBackend
 		public void LineTo (object backend, double x, double y)
 		{
 			GtkContext gc = (GtkContext) backend;
-			gc.Context.LineTo (gc.Origin.X + x, gc.Origin.Y + y);
+			gc.Context.LineTo (x + 0.5, y + 0.5);
 		}
 
 		public void MoveTo (object backend, double x, double y)
 		{
 			GtkContext gc = (GtkContext) backend;
-			gc.Context.MoveTo (gc.Origin.X + x, gc.Origin.Y + y);
+			gc.Context.MoveTo (x + 0.5, y + 0.5);
 		}
 
 		public void NewPath (object backend)
@@ -131,7 +130,7 @@ namespace Xwt.GtkBackend
 		public void Rectangle (object backend, double x, double y, double width, double height)
 		{
 			GtkContext gc = (GtkContext) backend;
-			gc.Context.Rectangle (gc.Origin.X + x, gc.Origin.Y + y, width, height);
+			gc.Context.Rectangle (x, y, width, height);
 		}
 
 		public void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
@@ -192,7 +191,7 @@ namespace Xwt.GtkBackend
 			GtkContext ctx = (GtkContext) backend;
 			
 			Gdk.GC gc = ctx.Widget.Style.BlackGC;
-			ctx.Widget.GdkWindow.DrawLayout (gc, (int)(ctx.Origin.X + x), (int)(ctx.Origin.Y + y), pl);
+			ctx.Widget.GdkWindow.DrawLayout (gc, (int)x, (int)y, pl);
 		}
 		
 		public void DrawImage (object backend, Image img, double x, double y)

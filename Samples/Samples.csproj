@@ -52,6 +52,7 @@
     <Compile Include="MonoDevelop.Components.Chart\IntegerAxis.cs" />
     <Compile Include="MonoDevelop.Components.Chart\Serie.cs" />
     <Compile Include="MonoDevelop.Components.Chart\TickEnumerator.cs" />
+    <Compile Include="Samples\ScrollWindowSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

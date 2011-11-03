@@ -1,5 +1,5 @@
 // 
-// IContainerBackend.cs
+// IScrollViewBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,13 +23,36 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 
 namespace Xwt.Backends
 {
-	public interface IContainerBackend
+	public interface IScrollViewBackend: IWidgetBackend
 	{
+		void SetChild (IWidgetBackend child);
+		
+		ScrollPolicy VerticalScrollPolicy {
+			get;
+			set; 
+		}
+
+		ScrollPolicy HorizontalScrollPolicy {
+			get;
+			set;
+		}
+		
+		Rectangle VisibleRect { get; }
+	}
+	
+	public interface IScrollViewEventSink: IWidgetEventSink
+	{
+		void OnVisibleRectChanged ();
+	}
+	
+	
+	public enum ScrollViewEvent
+	{
+		VisibleRectChanged = 1
 	}
 }
 

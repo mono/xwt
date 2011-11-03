@@ -54,6 +54,16 @@ namespace Xwt.Mac
 		{
 			view.NeedsDisplay = true;
 		}
+		
+		public void QueueDraw (Rectangle rect)
+		{
+			view.NeedsToDraw (new System.Drawing.RectangleF ((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height));
+		}
+		
+		public void OnPreferredSizeChanged ()
+		{
+			
+		}
 	}
 	
 	class CanvasView: NSView, IViewObject<NSView>

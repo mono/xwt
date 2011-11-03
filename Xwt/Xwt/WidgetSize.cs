@@ -95,6 +95,11 @@ namespace Xwt
 			if (s2.NaturalSize > NaturalSize)
 				NaturalSize = s2.NaturalSize;
 		}
+		
+		public override string ToString ()
+		{
+			return string.Format ("[WidgetSize: MinSize={0}, NaturalSize={1}]", MinSize, NaturalSize);
+		}
 	}
 }
 

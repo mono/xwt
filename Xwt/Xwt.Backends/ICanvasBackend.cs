@@ -30,7 +30,10 @@ namespace Xwt.Backends
 {
 	public interface ICanvasBackend
 	{
+		void OnPreferredSizeChanged ();
 		void QueueDraw ();
+		void QueueDraw (Rectangle rect);
+
 		Rectangle Bounds { get; }
 	}
 	

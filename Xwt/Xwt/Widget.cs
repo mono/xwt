@@ -397,6 +397,7 @@ namespace Xwt
 		{
 			if (children == null)
 				children = new List<Widget> ();
+			w.Parent = this;
 			children.Add (w);
 		}
 		

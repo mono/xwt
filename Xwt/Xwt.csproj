@@ -52,7 +52,6 @@
     <Compile Include="Xwt\XwtComponent.cs" />
     <Compile Include="Xwt\Box.cs" />
     <Compile Include="Xwt\WidgetCollection.cs" />
-    <Compile Include="Xwt.Backends\IContainerBackend.cs" />
     <Compile Include="Xwt.Backends\IBoxBackend.cs" />
     <Compile Include="Xwt\HBox.cs" />
     <Compile Include="Xwt\VBox.cs" />
@@ -132,6 +131,8 @@
     <Compile Include="Xwt\DragDropAction.cs" />
     <Compile Include="Xwt\DragOperation.cs" />
     <Compile Include="Xwt\DragEventArgs.cs" />
+    <Compile Include="Xwt\ScrollView.cs" />
+    <Compile Include="Xwt.Backends\IScrollViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

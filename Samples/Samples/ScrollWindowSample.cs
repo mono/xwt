@@ -1,5 +1,5 @@
 // 
-// ImageHandler.cs
+// ScrollWindowSample.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,35 +23,48 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Backends;
+using Xwt;
 
-namespace Xwt.GtkBackend
+namespace Samples
 {
-	public class ImageHandler: ImageBackendHandler
+	public class ScrollWindowSample: VBox
 	{
-		public override object LoadFromStream (System.IO.Stream stream)
+		public ScrollWindowSample ()
 		{
-			using (Gdk.PixbufLoader loader = new Gdk.PixbufLoader (stream))
-				return loader.Pixbuf;
-		}
-		
-		public override void Dispose (object backend)
-		{
-			((Gdk.Pixbuf)backend).Dispose ();
-		}
-		
-		public override Size GetSize (object handle)
-		{
-			var pix = (Gdk.Pixbuf)handle;
-			return new Size (pix.Width, pix.Height);
-		}
-		
-		public override object Resize (object handle, double width, double height)
-		{
-			var pix = (Gdk.Pixbuf)handle;
-			return pix.ScaleSimple ((int)width, (int)height, Gdk.InterpType.Bilinear);
+			ScrollView v1 = new ScrollView ();
+			VBox b1 = new VBox ();
+			for (int n=0; n<30; n++)
+				b1.PackStart (new Label ("Line " + n), BoxMode.None);
+			v1.Child = b1;
+			v1.VerticalScrollPolicy = ScrollPolicy.Always;
+			PackStart (v1, BoxMode.FillAndExpand);
+			
+			ScrollView v2 = new ScrollView ();
+			VBox b2 = new VBox ();
+			for (int n=0; n<30; n++)
+				b2.PackStart (new Label ("Line " + n), BoxMode.None);
+			v2.Child = b2;
+			v2.VerticalScrollPolicy = ScrollPolicy.Never;
+			PackStart (v2, BoxMode.FillAndExpand);
+			
+			ScrollView v3 = new ScrollView ();
+			VBox b3 = new VBox ();
+			Button b = new Button ("Click to add items");
+			b.Clicked += delegate {
+				for (int n=0; n<10; n++)
+					b3.PackStart (new Label ("Line " + n), BoxMode.None);
+			};
+			b3.PackStart (b);
+			v3.Child = b3;
+			v3.VerticalScrollPolicy = ScrollPolicy.Automatic;
+			PackStart (v3, BoxMode.FillAndExpand);
+			
+			ScrollView v4 = new ScrollView ();
+			PackStart (v4, BoxMode.FillAndExpand);
+			SimpleBox sb = new SimpleBox (1000);
+			v4.Child = sb;
+			v4.VerticalScrollPolicy = ScrollPolicy.Always;
 		}
 	}
 }

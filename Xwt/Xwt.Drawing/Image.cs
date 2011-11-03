@@ -75,6 +75,31 @@ namespace Xwt.Drawing
 			get { return handler.GetSize (Backend); }
 		}
 		
+		public Image Scale (double scale)
+		{
+			double w = Size.Width * scale;
+			double h = Size.Height * scale;
+			return new Image (handler.Resize (Backend, w, h));
+		}
+		
+		public Image Scale (double scaleX, double scaleY)
+		{
+			double w = Size.Width * scaleX;
+			double h = Size.Height * scaleY;
+			return new Image (handler.Resize (Backend, w, h));
+		}
+		
+		public Image Resize (double width, double height)
+		{
+			return new Image (handler.Resize (Backend, width, height));
+		}
+		
+		public Image ResizeToFitBox (double width, double height)
+		{
+			double r = Math.Min (width / Size.Width, height / Size.Height);
+			return new Image (handler.Resize (Backend, Size.Width * r, Size.Height * r));
+		}
+		
 		public void Dispose ()
 		{
 			handler.Dispose (Backend);
