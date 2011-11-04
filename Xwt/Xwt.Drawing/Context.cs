@@ -56,6 +56,16 @@ namespace Xwt.Drawing
 		{
 		}
 		
+		public void Save ()
+		{
+			handler.Save (Backend);
+		}
+		
+		public void Restore ()
+		{
+			handler.Restore (Backend);
+		}
+		
 		public void SetColor (Color color)
 		{
 			handler.SetColor (Backend, color);
@@ -199,6 +209,27 @@ namespace Xwt.Drawing
 		public void DrawImage (Image img, double x, double y)
 		{
 			handler.DrawImage (Backend, img, x, y);
+		}
+		
+		/// <summary>
+		/// Applies a rotation transformation
+		/// </summary>
+		/// <param name='angle'>
+		/// Angle in degrees
+		/// </param>
+		/// <remarks>
+		/// Modifies the current transformation matrix (CTM) by rotating the user-space axes by angle degrees.
+		/// The rotation of the axes takes places after any existing transformation of user space.
+		/// The rotation direction for positive angles is from the positive X axis toward the positive Y axis.
+		/// </remarks>
+		public void Rotate (double angle)
+		{
+			handler.Rotate (Backend, angle);
+		}
+		
+		public void Translate (double tx, double ty)
+		{
+			handler.Translate (Backend, tx, ty);
 		}
 		
 		public void Dispose ()

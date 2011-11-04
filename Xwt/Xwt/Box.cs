@@ -98,7 +98,7 @@ namespace Xwt
 		
 		public void PackStart (Widget widget, BoxMode mode, int padding)
 		{
-			Pack (widget, mode, padding, PackType.Start);
+			Pack (widget, mode, padding, PackOrigin.Start);
 		}
 		
 		public void PackEnd (Widget widget)
@@ -113,15 +113,15 @@ namespace Xwt
 		
 		public void PackEnd (Widget widget, BoxMode mode, int padding)
 		{
-			Pack (widget, mode, padding, PackType.End);
+			Pack (widget, mode, padding, PackOrigin.End);
 		}
 		
-		void Pack (Widget widget, BoxMode mode, int padding, PackType ptype)
+		void Pack (Widget widget, BoxMode mode, int padding, PackOrigin ptype)
 		{
 			var p = new BoxPlacement ((EventSink)WidgetEventSink, widget);
 			p.BoxMode = mode;
 			p.Padding = padding;
-			p.PackType = ptype;
+			p.PackOrigin = ptype;
 			children.Add (p);
 		}
 		
@@ -167,19 +167,29 @@ namespace Xwt
 			var size = Backend.Size;
 			if (direction == Orientation.Horizontal) {
 				CalcDefaultSizes (((IWidgetSurface)this).SizeRequestMode, size.Width, size.Height);
-				double x = 0;
+				double xs = 0;
+				double xe = size.Width + spacing;
 				foreach (var bp in children) {
+					if (bp.PackOrigin == PackOrigin.End)
+						xe -= bp.NextSize + spacing;
+					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
 					Backend.SetAllocation ((IWidgetBackend)GetBackend (bp.Child), new Rectangle (x, 0, bp.NextSize, size.Height));
 					((IWidgetSurface)bp.Child).Reallocate ();
-					x += bp.NextSize + spacing;
+					if (bp.PackOrigin == PackOrigin.Start)
+						xs += bp.NextSize + spacing;
 				}
 			} else {
 				CalcDefaultSizes (((IWidgetSurface)this).SizeRequestMode, size.Height, size.Width);
-				double y = 0;
+				double ys = 0;
+				double ye = size.Height + spacing;
 				foreach (var bp in children) {
+					if (bp.PackOrigin == PackOrigin.End)
+						ye -= bp.NextSize + spacing;
+					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
 					Backend.SetAllocation ((IWidgetBackend)GetBackend (bp.Child), new Rectangle (0, y, size.Width, bp.NextSize));
 					((IWidgetSurface)bp.Child).Reallocate ();
-					y += bp.NextSize + spacing;
+					if (bp.PackOrigin == PackOrigin.Start)
+						ys += bp.NextSize + spacing;
 				}
 			}
 		}
@@ -333,7 +343,7 @@ namespace Xwt
 		int position;
 		BoxMode boxMode = BoxMode.None;
 		int padding;
-		PackType packType = PackType.Start;
+		PackOrigin packType = PackOrigin.Start;
 		Widget child;
 		
 		internal BoxPlacement (IContainerEventSink<BoxPlacement> parent, Widget child)
@@ -376,8 +386,8 @@ namespace Xwt
 			}
 		}
 
-		[DefaultValue (PackType.Start)]
-		public PackType PackType {
+		[DefaultValue (PackOrigin.Start)]
+		public PackOrigin PackOrigin {
 			get {
 				return this.packType;
 			}
@@ -397,7 +407,7 @@ namespace Xwt
 		}
 	}
 	
-	public enum PackType
+	public enum PackOrigin
 	{
 		Start,
 		End

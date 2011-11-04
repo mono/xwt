@@ -60,6 +60,18 @@ namespace Xwt.GtkBackend
 			ctx.Widget = b.Widget;
 			return ctx;
 		}
+		
+		public void Save (object backend)
+		{
+			GtkContext gc = (GtkContext)backend;
+			gc.Context.Save ();
+		}
+		
+		public void Restore (object backend)
+		{
+			GtkContext gc = (GtkContext)backend;
+			gc.Context.Restore ();
+		}
 
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
@@ -200,6 +212,18 @@ namespace Xwt.GtkBackend
 			GtkContext ctx = (GtkContext)backend;
 			Gdk.CairoHelper.SetSourcePixbuf (ctx.Context, pb, x, y);
 			ctx.Context.Paint ();
+		}
+		
+		public void Rotate (object backend, double angle)
+		{
+			GtkContext gc = (GtkContext)backend;
+			gc.Context.Rotate ((angle * System.Math.PI) / 180);
+		}
+		
+		public void Translate (object backend, double tx, double ty)
+		{
+			GtkContext gc = (GtkContext)backend;
+			gc.Context.Translate (tx, ty);
 		}
 		
 		public void Dispose (object backend)

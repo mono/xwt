@@ -50,7 +50,8 @@ namespace Samples
 			AddSample (null, "Buttons", typeof(ButtonSample));
 			AddSample (null, "Drag & Drop", typeof(DragDrop));
 			var n = AddSample (null, "Drawing", null);
-			AddSample (n, "Chart", typeof(ChartSample));
+//			AddSample (n, "Chart", typeof(ChartSample));
+			AddSample (n, "Transformations", typeof(DrawingTransforms));
 			AddSample (null, "List View", typeof(ListView1));
 			AddSample (null, "Notebook", typeof(NotebookSample));
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));

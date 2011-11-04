@@ -73,7 +73,6 @@ namespace Xwt.GtkBackend
 				req.Width = w;
 			if (req.Height < h)
 				req.Height = h;
-			Console.WriteLine ("RR: " + req.Width + " " + req.Height);
 			args.Requisition = req;
 		}
 		

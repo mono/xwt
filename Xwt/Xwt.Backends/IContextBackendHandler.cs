@@ -33,6 +33,10 @@ namespace Xwt.Backends
 	{
 		object CreateContext (Widget w);
 		
+		void Save (object backend);
+
+		void Restore (object backend);
+
 		void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2);
 		
 		void Clip (object backend);
@@ -78,6 +82,10 @@ namespace Xwt.Backends
 		void DrawTextLayout (object backend, TextLayout layout, double x, double y);
 		
 		void DrawImage (object backend, Image img, double x, double y);
+		
+		void Rotate (object backend, double angle);
+		
+		void Translate (object backend, double tx, double ty);
 		
 		void Dispose (object backend);
 	}

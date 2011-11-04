@@ -74,7 +74,7 @@ namespace Xwt
 		/// if the timer can be discarded.
 		/// The execution of the funciton can be canceled by disposing the returned object.
 		/// </remarks>
-		public static IDisposable TimeoutInvoke (Func<bool> action, TimeSpan timeSpan)
+		public static IDisposable TimeoutInvoke (TimeSpan timeSpan, Func<bool> action)
 		{
 			Timer t = new Timer ();
 			t.Id = engine.TimeoutInvoke (action, timeSpan);

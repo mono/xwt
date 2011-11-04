@@ -29,6 +29,7 @@ using Xwt.Backends;
 using Xwt.Engine;
 using MonoMac.AppKit;
 using Xwt.Drawing;
+using MonoMac.Foundation;
 
 namespace Xwt.Mac
 {
@@ -49,6 +50,16 @@ namespace Xwt.Mac
 			ContextInfo c = new ContextInfo ();
 			c.Path = new NSBezierPath ();
 			return c;
+		}
+
+		public void Save (object backend)
+		{
+			NSGraphicsContext.CurrentContext.SaveGraphicsState ();
+		}
+		
+		public void Restore (object backend)
+		{
+			NSGraphicsContext.CurrentContext.RestoreGraphicsState ();
 		}
 
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
@@ -205,6 +216,20 @@ namespace Xwt.Mac
 		public void DrawImage (object backend, Xwt.Drawing.Image img, double x, double y)
 		{
 			throw new NotImplementedException ();
+		}
+		
+		public void Rotate (object backend, double angle)
+		{
+			NSAffineTransform t = new NSAffineTransform ();
+			t.RotateByDegrees ((float)angle);
+			t.Concat ();
+		}
+		
+		public void Translate (object backend, double tx, double ty)
+		{
+			NSAffineTransform t = new NSAffineTransform ();
+			t.Translate ((float)tx, (float)ty);
+			t.Concat ();
 		}
 		
 		public void Dispose (object backend)
