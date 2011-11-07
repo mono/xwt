@@ -57,8 +57,7 @@ namespace Xwt
 		
 		public static Rectangle FromLTRB (double left, double top, double right, double bottom)
 		{
-			return new Rectangle (left, top, right - left,
-					      bottom - top);
+			return new Rectangle (left, top, right - left + 1, bottom - top + 1);
 		}
 		
 		// Equality
@@ -113,7 +112,7 @@ namespace Xwt
 			return Union (this, r);
 		}
 		
-		public static Rectangle Union (Rectangle r1, Rectangle r2)
+		Rectangle Union (Rectangle r1, Rectangle r2)
 		{
 			return FromLTRB (Math.Min (r1.Left, r2.Left),
 					 Math.Min (r1.Top, r2.Top),
@@ -126,7 +125,7 @@ namespace Xwt
 			return Intersect (this, r);
 		}
 		
-		public static Rectangle Intersect (Rectangle r1, Rectangle r2)
+		Rectangle Intersect (Rectangle r1, Rectangle r2)
 		{
 			if (!r1.IntersectsWith (r2))
 				return new Rectangle ();
@@ -179,52 +178,32 @@ namespace Xwt
 		}
 		
 		// Inflate and Offset
-		public void Inflate (Size sz)
+		public Rectangle Inflate (Size sz)
 		{
-			Inflate (sz.Width, sz.Height);
+			return Inflate (sz.Width, sz.Height);
 		}
 		
-		public void Inflate (double width, double height)
+		public Rectangle Inflate (double width, double height)
 		{
-			X -= width;
-			Y -= height;
-			Width += width * 2;
-			Height += height * 2;
-		}
-		
-		public static Rectangle Inflate (Rectangle rect, double x, double y)
-		{
-			Rectangle r = rect;
-			r.Inflate (x, y);
+			Rectangle r = this;
+			r.X -= width;
+			r.Y -= height;
+			r.Width += width * 2;
+			r.Height += height * 2;
 			return r;
 		}
 		
-		public static Rectangle Inflate (Rectangle rect, Size sz)
+		public Rectangle Offset (double dx, double dy)
 		{
-			return Inflate (rect, sz.Width, sz.Height);
-		}
-		
-		public void Offset (double dx, double dy)
-		{
-			X += dx;
-			Y += dy;
-		}
-		
-		public void Offset (Point dr)
-		{
-			Offset (dr.X, dr.Y);
-		}
-		
-		public static Rectangle Offset (Rectangle rect, double dx, double dy)
-		{
-			Rectangle r = rect;
-			r.Offset (dx, dy);
+			Rectangle r = this;
+			r.X += dx;
+			r.Y += dy;
 			return r;
 		}
 		
-		public static Rectangle Offset (Rectangle rect, Point dr)
+		public Rectangle Offset (Point dr)
 		{
-			return Offset (rect, dr.X, dr.Y);
+			return Offset (dr.X, dr.Y);
 		}
 	}
 }
