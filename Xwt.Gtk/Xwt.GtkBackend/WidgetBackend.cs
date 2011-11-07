@@ -248,7 +248,6 @@ namespace Xwt.GtkBackend
 		
 		void HandleWidgetDragMotion (object o, Gtk.DragMotionArgs args)
 		{
-			Console.WriteLine ("DragMotion");
 			lastDragPosition = new Point (args.X, args.Y);
 			
 			DragDropAction ac;
@@ -277,14 +276,12 @@ namespace Xwt.GtkBackend
 			else {
 //				Gtk.Drag.Highlight (Widget);
 				args.RetVal = true;
-				Console.WriteLine ("-> Status");
 				Gdk.Drag.Status (args.Context, ConvertDragAction (ac), args.Time);
 			}
 		}
 		
 		void HandleWidgetDragDrop (object o, Gtk.DragDropArgs args)
 		{
-			Console.WriteLine ("DragDrop");
 			lastDragPosition = new Point (args.X, args.Y);
 
 			DragDropResult res;
@@ -327,7 +324,6 @@ namespace Xwt.GtkBackend
 			dragData = new TransferDataStore ();
 			dragDataRequests = validDropTypes.Length;
 			foreach (var t in validDropTypes) {
-				Console.WriteLine ("-> GetData");
 				var at = Gdk.Atom.Intern (t.Target, true);
 				Gtk.Drag.GetData (Widget, ctx, at, time);
 			}
@@ -335,7 +331,6 @@ namespace Xwt.GtkBackend
 		
 		void HandleWidgetDragDataReceived (object o, Gtk.DragDataReceivedArgs args)
 		{
-			Console.WriteLine ("DataReceived");
 			dragDataRequests--;
 			
 			string type = Util.AtomToType (args.SelectionData.Target.Name);
@@ -363,13 +358,11 @@ namespace Xwt.GtkBackend
 //					if (da.AllowedAction != DragDropAction.None)
 //						Gtk.Drag.Highlight (Widget);
 					Gdk.Drag.Status (args.Context, ConvertDragAction (da.AllowedAction), args.Time);
-					Console.WriteLine ("-> Status");
 				}
 				else {
 					DragEventArgs da = new DragEventArgs (lastDragPosition, dragData, ConvertDragAction (args.Context.Actions));
 					EventSink.OnDragDrop (da);
 					Gtk.Drag.Finish (args.Context, da.Success, false, args.Time);
-					Console.WriteLine ("-> Finish");
 				}
 			}
 		}

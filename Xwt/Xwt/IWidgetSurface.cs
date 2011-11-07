@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Xwt
 {
@@ -38,6 +39,7 @@ namespace Xwt
 		WidgetSize GetPreferredHeightForWidth (double width);
 		WidgetSize GetPreferredWidthForHeight (double height);
 		object NativeWidget { get; }
+		IEnumerable<Widget> Children { get; }
 	}
 }
 

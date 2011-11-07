@@ -42,7 +42,7 @@ namespace Samples
 			
 			ScrollView v2 = new ScrollView ();
 			VBox b2 = new VBox ();
-			for (int n=0; n<30; n++)
+			for (int n=0; n<10; n++)
 				b2.PackStart (new Label ("Line " + n), BoxMode.None);
 			v2.Child = b2;
 			v2.VerticalScrollPolicy = ScrollPolicy.Never;

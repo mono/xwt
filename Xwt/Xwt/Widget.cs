@@ -38,6 +38,7 @@ namespace Xwt
 {
 	public abstract class Widget: XwtComponent, IWidgetSurface
 	{
+		static Widget[] emptyList = new Widget[0];
 		List<Widget> children;
 		WidgetSpacing margin;
 		WidgetSize width;
@@ -393,6 +394,12 @@ namespace Xwt
 			return new Context (this);
 		}
 		
+		IEnumerable<Widget> IWidgetSurface.Children {
+			get {
+				return (IEnumerable<Widget>)children ?? (IEnumerable<Widget>) emptyList; 
+			}
+		}
+
 		protected void RegisterChild (Widget w)
 		{
 			if (children == null)

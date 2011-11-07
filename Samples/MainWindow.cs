@@ -79,13 +79,23 @@ namespace Samples
 				Sample s = store.GetNavigatorAt (samplesTree.SelectedItem).GetValue (widgetCol);
 				if (s.Type != null) {
 					if (s.Widget == null)
-						s.Widget = (Widget) Activator.CreateInstance (s.Type);
+						s.Widget = (Widget)Activator.CreateInstance (s.Type);
 					sampleBox.PackStart (s.Widget, BoxMode.FillAndExpand);
 				}
 				
 //				string txt = System.Xaml.XamlServices.Save (s);
 				currentSample = s.Widget;
+				Dump (currentSample, 0);
 			}
+		}
+		
+		void Dump (IWidgetSurface w, int ind)
+		{
+			if (w == null)
+				return;
+			Console.WriteLine (new string (' ', ind * 2) + " " + w.GetType ().Name + " " + w.GetPreferredWidth () + " " + w.GetPreferredHeight ());
+			foreach (var c in w.Children)
+				Dump (c, ind + 1);
 		}
 		
 		TreePosition AddSample (TreePosition pos, string name, Type sampleType)

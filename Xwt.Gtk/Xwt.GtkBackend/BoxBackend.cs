@@ -98,14 +98,13 @@ namespace Xwt.GtkBackend
 		
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
-			requisition.Height = requisition.Width = 0;
-			foreach (var cr in children) {
-				cr.Key.SizeRequest ();
-				if (cr.Value.Right + 1 > requisition.Width)
-					requisition.Width = (int)cr.Value.Right + 1;
-				if (cr.Value.Bottom + 1 > requisition.Height)
-					requisition.Height = (int)cr.Value.Bottom + 1;
-			}
+			IWidgetSurface ws = Frontend;
+			int w = (int)ws.GetPreferredWidth ().MinSize;
+			int h = (int)ws.GetPreferredHeight ().MinSize;
+			if (requisition.Width < w)
+				requisition.Width = w;
+			if (requisition.Height < h)
+				requisition.Height = h;
 		}
 		
 		protected override void OnUnrealized ()

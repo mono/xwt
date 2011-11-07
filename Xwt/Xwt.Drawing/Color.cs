@@ -120,6 +120,13 @@ namespace Xwt.Drawing
 			Alpha = alpha;
 		}
 		
+		public Color WithAlpha (double alpha)
+		{
+			Color c = this;
+			c.Alpha = alpha;
+			return c;
+		}
+		
 		public static Color FromBytes (byte red, byte green, byte blue)
 		{
 			return FromBytes (red, green, blue, 255);

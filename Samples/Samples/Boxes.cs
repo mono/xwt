@@ -49,10 +49,9 @@ namespace Samples
 		{
 			ctx.SetColor (new Color (0.5, 0.5, 0.5));
 			ctx.Rectangle (Bounds);
-			Console.WriteLine ("b1:" + Bounds);
 			ctx.Fill ();
 			ctx.SetColor (new Color (0.8, 0.8, 0.8));
-			ctx.Rectangle (Rectangle.Inflate (Bounds, -margin, -margin)); 
+			ctx.Rectangle (Bounds.Inflate (-margin, -margin)); 
 			ctx.Fill ();
 			ctx.SetColor (Color);
 			ctx.Rectangle (Bounds.Width / 2 - coreSize / 2, Bounds.Height / 2 - coreSize / 2, coreSize, coreSize);
