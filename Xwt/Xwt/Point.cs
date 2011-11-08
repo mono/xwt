@@ -67,10 +67,12 @@ namespace Xwt {
 			return X.GetHashCode () ^ Y.GetHashCode ();
 		}
 		
-		public void Offset (double dx, double dy)
+		public Point Offset (double dx, double dy)
 		{
-			X += dx;
-			Y += dy;
+			Point p = this;
+			p.X += dx;
+			p.Y += dy;
+			return p;
 		}
 		
 		public bool IsEmpty {

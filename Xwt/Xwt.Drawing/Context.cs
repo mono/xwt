@@ -232,6 +232,11 @@ namespace Xwt.Drawing
 			handler.Translate (Backend, tx, ty);
 		}
 		
+		public void Translate (Point p)
+		{
+			handler.Translate (Backend, p.X, p.Y);
+		}
+		
 		public void Dispose ()
 		{
 			handler.Dispose (Backend);

@@ -177,6 +177,12 @@ namespace Xwt
 			}
 		}
 		
+		public Point Center {
+			get {
+				return new Point (X + Width / 2, Y + Height / 2);
+			}
+		}
+		
 		// Inflate and Offset
 		public Rectangle Inflate (Size sz)
 		{
