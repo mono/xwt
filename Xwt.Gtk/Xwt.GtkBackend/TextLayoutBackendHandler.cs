@@ -47,8 +47,14 @@ namespace Xwt.GtkBackend
 
 		public void SetFont (object backend, Xwt.Drawing.Font font)
 		{
-			Pango.Layout tl = (Pango.Layout) backend;
-			tl.FontDescription = (Pango.FontDescription) WidgetRegistry.GetBackend (font);
+			Pango.Layout tl = (Pango.Layout)backend;
+			tl.FontDescription = (Pango.FontDescription)WidgetRegistry.GetBackend (font);
+		}
+		
+		public void SetWidth (object backend, double value)
+		{
+			Pango.Layout tl = (Pango.Layout)backend;
+			tl.Width = (int) value;
 		}
 
 		public Size GetSize (object backend)

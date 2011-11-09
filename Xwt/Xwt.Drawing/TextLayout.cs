@@ -36,6 +36,7 @@ namespace Xwt.Drawing
 		
 		Font font;
 		string text;
+		double width;
 		
 		static TextLayout ()
 		{
@@ -60,7 +61,13 @@ namespace Xwt.Drawing
 		
 		public string Text {
 			get { return text; }
-			set { text = value; handler.SetText (Backend, text); }
+			set { text = value;
+				handler.SetText (Backend, text); }
+		}
+		
+		public double Width {
+			get { return width; }
+			set { width = value; handler.SetWidth (Backend, value); }
 		}
 		
 		public Size GetSize ()

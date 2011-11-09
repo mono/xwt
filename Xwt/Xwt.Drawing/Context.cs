@@ -201,14 +201,34 @@ namespace Xwt.Drawing
 			handler.SetLineWidth (Backend, width);
 		}
 		
+		public void DrawTextLayout (TextLayout layout, Point location)
+		{
+			handler.DrawTextLayout (Backend, layout, location.X, location.Y);
+		}
+		
 		public void DrawTextLayout (TextLayout layout, double x, double y)
 		{
 			handler.DrawTextLayout (Backend, layout, x, y);
 		}
 		
+		public void DrawImage (Image img, Point location)
+		{
+			handler.DrawImage (Backend, img, location.X, location.Y, 1);
+		}
+		
 		public void DrawImage (Image img, double x, double y)
 		{
-			handler.DrawImage (Backend, img, x, y);
+			handler.DrawImage (Backend, img, x, y, 1);
+		}
+		
+		public void DrawImage (Image img, Point location, double alpha)
+		{
+			handler.DrawImage (Backend, img, location.X, location.Y, alpha);
+		}
+		
+		public void DrawImage (Image img, double x, double y, double alpha)
+		{
+			handler.DrawImage (Backend, img, x, y, alpha);
 		}
 		
 		/// <summary>
