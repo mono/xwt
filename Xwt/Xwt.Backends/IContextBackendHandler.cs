@@ -81,7 +81,7 @@ namespace Xwt.Backends
 		
 		void DrawTextLayout (object backend, TextLayout layout, double x, double y);
 		
-		void DrawImage (object backend, Image img, double x, double y);
+		void DrawImage (object backend, Image img, double x, double y, double alpha);
 		
 		void Rotate (object backend, double angle);
 		

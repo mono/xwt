@@ -189,8 +189,11 @@ namespace Xwt.GtkBackend
 		
 		public void SetPattern (object backend, Pattern p)
 		{
-			Cairo.Context ctx = ((GtkContext) backend).Context;
-			ctx.Pattern = (Cairo.Pattern) WidgetRegistry.GetBackend (p);
+			Cairo.Context ctx = ((GtkContext)backend).Context;
+			if (p != null)
+				ctx.Pattern = (Cairo.Pattern)WidgetRegistry.GetBackend (p);
+			else
+				ctx.Pattern = null;
 		}
 		
 		public void SetFont (object backend, Font font)
@@ -206,12 +209,15 @@ namespace Xwt.GtkBackend
 			ctx.Widget.GdkWindow.DrawLayout (gc, (int)x, (int)y, pl);
 		}
 		
-		public void DrawImage (object backend, Image img, double x, double y)
+		public void DrawImage (object backend, Image img, double x, double y, double alpha)
 		{
 			Gdk.Pixbuf pb = (Gdk.Pixbuf)WidgetRegistry.GetBackend (img);
 			GtkContext ctx = (GtkContext)backend;
 			Gdk.CairoHelper.SetSourcePixbuf (ctx.Context, pb, x, y);
-			ctx.Context.Paint ();
+			if (alpha == 1)
+				ctx.Context.Paint ();
+			else
+				ctx.Context.PaintWithAlpha (alpha);
 		}
 		
 		public void Rotate (object backend, double angle)

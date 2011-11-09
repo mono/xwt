@@ -45,9 +45,10 @@ namespace Xwt.Drawing
 			}
 		}
 		
-		public void AddColorStop (double pos, Color color)
+		public Gradient AddColorStop (double pos, Color color)
 		{
 			handler.AddColorStop (Backend, pos, color);
+			return this;
 		}
 	}
 }

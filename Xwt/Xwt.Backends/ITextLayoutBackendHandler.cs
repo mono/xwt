@@ -32,6 +32,7 @@ namespace Xwt.Backends
 	public interface ITextLayoutBackendHandler: IBackendHandler
 	{
 		object Create (Context context);
+		void SetWidth (object backend, double value);
 		void SetText (object backend, string text);
 		void SetFont (object backend, Font font);
 		Size GetSize (object backend);

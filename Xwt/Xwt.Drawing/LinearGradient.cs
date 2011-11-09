@@ -31,9 +31,9 @@ namespace Xwt.Drawing
 {
 	public class LinearGradient: Gradient
 	{
-		public LinearGradient (double d1, double d2, double d3, double d4)
+		public LinearGradient (double xStart, double yStart, double xEnd, double yEnd)
 		{
-			Backend = ((IGradientBackendHandler)BackendHandler).CreateLinear (d1,d2,d3,d4);
+			Backend = ((IGradientBackendHandler)BackendHandler).CreateLinear (xStart, yStart, xEnd, yEnd);
 		}
 	}
 }

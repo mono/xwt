@@ -213,7 +213,7 @@ namespace Xwt.Mac
 			TextLayoutBackendHandler.Draw (null, WidgetRegistry.GetBackend (layout), x, y);
 		}
 		
-		public void DrawImage (object backend, Xwt.Drawing.Image img, double x, double y)
+		public void DrawImage (object backend, Xwt.Drawing.Image img, double x, double y, double alpha)
 		{
 			throw new NotImplementedException ();
 		}
