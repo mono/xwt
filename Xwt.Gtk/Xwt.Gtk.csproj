@@ -65,6 +65,7 @@
     <Compile Include="Xwt.GtkBackend\MenuItemBackend.cs" />
     <Compile Include="Xwt.GtkBackend\Platform.cs" />
     <Compile Include="Xwt.GtkBackend\ScrollViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ComboBoxBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

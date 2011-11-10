@@ -1,5 +1,5 @@
 // 
-// ListViewBackend.cs
+// ComboBoxBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,14 +23,43 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class ListViewBackend: TableViewBackend, IListViewBackend
+	public class ComboBoxBackend: WidgetBackend, IComboBoxBackend, ICellRendererTarget
 	{
+		public ComboBoxBackend ()
+		{
+		}
+
+		public override void Initialize ()
+		{
+			Widget = new Gtk.ComboBox ();
+			var cr = new Gtk.CellRendererText ();
+			Widget.PackStart (cr, false);
+			Widget.AddAttribute (cr, "text", 0);
+			Widget.Show ();
+		}
+		
+		protected new Gtk.ComboBox Widget {
+			get { return (Gtk.ComboBox)base.Widget; }
+			set { base.Widget = value; }
+		}
+		
+		protected new IComboBoxEventSink EventSink {
+			get { return (IComboBoxEventSink)base.EventSink; }
+		}
+
+		#region IComboBoxBackend implementation
+		public void SetViews (CellViewCollection views)
+		{
+			Widget.Clear ();
+			foreach (var v in views)
+				CellUtil.CreateCellRenderer (this, null, v);
+		}
+
 		public void SetSource (IListViewSource source, IBackend sourceBackend)
 		{
 			ListStoreBackend b = sourceBackend as ListStoreBackend;
@@ -39,31 +68,32 @@ namespace Xwt.GtkBackend
 			Widget.Model = b.Store;
 		}
 
-		public void SelectRow (int row)
-		{
-			Gtk.TreeIter it;
-			if (!Widget.Model.IterNthChild (out it, row))
-				return;
-			Widget.Selection.SelectIter (it);
-		}
-
-		public void UnselectRow (int row)
-		{
-			Gtk.TreeIter it;
-			if (!Widget.Model.IterNthChild (out it, row))
-				return;
-			Widget.Selection.UnselectIter (it);
-		}
-
-		public int[] SelectedRows {
+		public int SelectedRow {
 			get {
-				var sel = Widget.Selection.GetSelectedRows ();
-				int[] res = new int [sel.Length];
-				for (int n=0; n<sel.Length; n++)
-					res [n] = sel [n].Indices[0];
-				return res;
+				return Widget.Active;
+			}
+			set {
+				Widget.Active = value;
 			}
 		}
+		#endregion
+
+		#region ICellRendererTarget implementation
+		public void PackStart (object target, Gtk.CellRenderer cr, bool expand)
+		{
+			Widget.PackStart (cr, expand);
+		}
+
+		public void PackEnd (object target, Gtk.CellRenderer cr, bool expand)
+		{
+			Widget.PackEnd (cr, expand);
+		}
+
+		public void AddAttribute (object target, Gtk.CellRenderer cr, string field, int column)
+		{
+			Widget.AddAttribute (cr, field, column);
+		}
+		#endregion
 	}
 }
 

@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class WindowBackend<T,S>: WidgetBackend<T,S>, IWindowBackend where T:Gtk.Window where S:IWindowEventSink
+	public class WindowBackend: WidgetBackend, IWindowBackend
 	{
 		Gtk.Alignment alignment;
 		Gtk.MenuBar mainMenu;
@@ -37,13 +37,22 @@ namespace Xwt.GtkBackend
 		
 		public WindowBackend ()
 		{
-			Widget = (T) new Gtk.Window ("");
+			Widget = new Gtk.Window ("");
 			mainBox = new Gtk.VBox ();
 			Widget.Add (mainBox);
 			mainBox.Show ();
 			alignment = new Gtk.Alignment (0, 0, 1, 1);
 			mainBox.PackStart (alignment, true, true, 0);
 			alignment.Show ();
+		}
+		
+		protected new Gtk.Window Widget {
+			get { return (Gtk.Window)base.Widget; }
+			set { base.Widget = value; }
+		}
+		
+		protected new IWindowEventSink EventSink {
+			get { return (IWindowEventSink) base.EventSink; }
 		}
 		
 		public string Title {

@@ -36,17 +36,17 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.Application.Init ();
 			
-			WidgetRegistry.RegisterBackend (typeof(Xwt.Window), typeof(WindowBackend<Gtk.Window, IWindowEventSink>));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.Label), typeof(LabelBackend<Gtk.Label,IWidgetEventSink>));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.HBox), typeof(BoxBackend<CustomContainer,IWidgetEventSink>));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.VBox), typeof(BoxBackend<CustomContainer,IWidgetEventSink>));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.Button), typeof(ButtonBackend<Gtk.Button,IButtonEventSink>));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.Notebook), typeof(NotebookBackend<Gtk.Notebook,IWidgetEventSink>));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.TreeView), typeof(TreeViewBackend<Gtk.TreeView,ITreeViewEventSink>));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Window), typeof(WindowBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Label), typeof(LabelBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.HBox), typeof(BoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.VBox), typeof(BoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Button), typeof(ButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Notebook), typeof(NotebookBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.TreeView), typeof(TreeViewBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.TreeStore), typeof(TreeStoreBackend));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.ListView), typeof(ListViewBackend<Gtk.TreeView,IListViewEventSink>));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ListView), typeof(ListViewBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ListStore), typeof(ListStoreBackend));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.Canvas), typeof(CanvasBackend<Gtk.DrawingArea,ICanvasEventSink>));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Canvas), typeof(CanvasBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Image), typeof(ImageHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Gradient), typeof(GradientBackendHandler));
@@ -54,7 +54,8 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Font), typeof(FontBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Menu), typeof(MenuBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.MenuItem), typeof(MenuItemBackend));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.ScrollView), typeof(ScrollViewBackend<Gtk.ScrolledWindow,IScrollViewEventSink>));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ScrollView), typeof(ScrollViewBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ComboBox), typeof(ComboBoxBackend));
 		}
 
 		public override void RunApplication ()

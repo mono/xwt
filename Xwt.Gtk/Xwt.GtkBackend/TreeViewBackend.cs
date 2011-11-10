@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class TreeViewBackend<T, S>: TableViewBackend<T, S>, ITreeViewBackend where T:Gtk.TreeView where S:ITreeViewEventSink
+	public class TreeViewBackend: TableViewBackend, ITreeViewBackend
 	{
 		public void SetSource (ITreeViewSource source, IBackend sourceBackend)
 		{

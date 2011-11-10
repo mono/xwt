@@ -28,12 +28,21 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class ScrollViewBackend<T,S>: WidgetBackend<T,S>, IScrollViewBackend where T:Gtk.ScrolledWindow where S:IScrollViewEventSink
+	public class ScrollViewBackend: WidgetBackend, IScrollViewBackend
 	{
 		public ScrollViewBackend ()
 		{
-			Widget = (T)new Gtk.ScrolledWindow ();
+			Widget = new Gtk.ScrolledWindow ();
 			Widget.Show ();
+		}
+		
+		protected new Gtk.ScrolledWindow Widget {
+			get { return (Gtk.ScrolledWindow)base.Widget; }
+			set { base.Widget = value; }
+		}
+		
+		protected new IScrollViewEventSink EventSink {
+			get { return (IScrollViewEventSink)base.EventSink; }
 		}
 
 		public void SetChild (IWidgetBackend child)

@@ -29,12 +29,17 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class NotebookBackend<T,S>: WidgetBackend<T,S>, INotebookBackend where T:Gtk.Notebook where S:IWidgetEventSink
+	public class NotebookBackend: WidgetBackend, INotebookBackend
 	{
 		public NotebookBackend ()
 		{
-			Widget = (T) new Gtk.Notebook ();
+			Widget = new Gtk.Notebook ();
 			Widget.Show ();
+		}
+		
+		new Gtk.Notebook Widget {
+			get { return (Gtk.Notebook)base.Widget; }
+			set { base.Widget = value; }
 		}
 
 		public void Add (IWidgetBackend widget, NotebookTab tab)

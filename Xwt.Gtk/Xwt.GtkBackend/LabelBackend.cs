@@ -30,14 +30,19 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	class LabelBackend<T,S>: WidgetBackend<T,S>, ILabelBackend where T:Gtk.Label where S:IWidgetEventSink
+	class LabelBackend: WidgetBackend, ILabelBackend
 	{
 		public LabelBackend ()
 		{
-			Widget = (T) new Gtk.Label ();
+			Widget = new Gtk.Label ();
 			Widget.Show ();
 			Widget.Xalign = 0;
 			Widget.Yalign = 0;
+		}
+		
+		new Gtk.Label Widget {
+			get { return (Gtk.Label) base.Widget; }
+			set { base.Widget = value; }
 		}
 		
 		public string Text {

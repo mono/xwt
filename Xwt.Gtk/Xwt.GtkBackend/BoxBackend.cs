@@ -32,12 +32,17 @@ using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
-	class BoxBackend<T, S>: WidgetBackend<T, S>, IBoxBackend where T:CustomContainer where S:IWidgetEventSink
+	class BoxBackend: WidgetBackend, IBoxBackend
 	{
 		public BoxBackend ()
 		{
-			Widget = (T) new CustomContainer ();
+			Widget = new CustomContainer ();
 			Widget.Show ();
+		}
+		
+		new CustomContainer Widget {
+			get { return (CustomContainer)base.Widget; }
+			set { base.Widget = value; }
 		}
 		
 		public override void Initialize ()

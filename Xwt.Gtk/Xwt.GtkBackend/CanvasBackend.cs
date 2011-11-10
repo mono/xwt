@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class CanvasBackend<T,S>: WidgetBackend<T, S>, ICanvasBackend where T:Gtk.DrawingArea where S:ICanvasEventSink
+	public class CanvasBackend: WidgetBackend, ICanvasBackend
 	{
 		public CanvasBackend ()
 		{
@@ -37,7 +37,7 @@ namespace Xwt.GtkBackend
 		
 		public override void Initialize ()
 		{
-			Widget = (T)new Gtk.DrawingArea ();
+			Widget = new Gtk.DrawingArea ();
 			Widget.Events |= Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask;
 			Widget.ExposeEvent += HandleWidgetExposeEvent;
 			Widget.ButtonPressEvent += HandleWidgetButtonPressEvent;
@@ -46,6 +46,15 @@ namespace Xwt.GtkBackend
 			Widget.SizeAllocated += HandleWidgetSizeAllocated;
 			Widget.SizeRequested += HandleSizeRequested;
 			Widget.Show ();
+		}
+		
+		protected new Gtk.DrawingArea Widget {
+			get { return (Gtk.DrawingArea)base.Widget; }
+			set { base.Widget = value; }
+		}
+		
+		protected new ICanvasEventSink EventSink {
+			get { return (ICanvasEventSink)base.EventSink; }
 		}
 
 		public void QueueDraw ()

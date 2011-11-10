@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	class ButtonBackend<T,S>: WidgetBackend<T,S>, IButtonBackend where T:Gtk.Button where S:IButtonEventSink
+	class ButtonBackend: WidgetBackend, IButtonBackend
 	{
 		public ButtonBackend ()
 		{
@@ -37,8 +37,17 @@ namespace Xwt.GtkBackend
 
 		public override void Initialize ()
 		{
-			Widget = (T) new Gtk.Button ();
+			Widget = new Gtk.Button ();
 			Widget.Show ();
+		}
+		
+		protected new Gtk.Button Widget {
+			get { return (Gtk.Button)base.Widget; }
+			set { base.Widget = value; }
+		}
+		
+		protected new IButtonEventSink EventSink {
+			get { return (IButtonEventSink)base.EventSink; }
 		}
 
 		public void SetContent (string label, object imageBackend)

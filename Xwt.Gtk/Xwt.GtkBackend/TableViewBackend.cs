@@ -29,14 +29,23 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class TableViewBackend<T,S>: WidgetBackend<T,S> where T:Gtk.TreeView where S:ITableViewEventSink
+	public class TableViewBackend: WidgetBackend, ICellRendererTarget
 	{
 		public TableViewBackend ()
 		{
-			Widget = (T) new Gtk.TreeView ();
+			Widget = new Gtk.TreeView ();
 			Widget.Show ();
 		}
 		
+		protected new Gtk.TreeView Widget {
+			get { return (Gtk.TreeView)base.Widget; }
+			set { base.Widget = value; }
+		}
+		
+		protected new ITableViewEventSink EventSink {
+			get { return (ITableViewEventSink)base.EventSink; }
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
@@ -81,7 +90,7 @@ namespace Xwt.GtkBackend
 		void MapColumn (ListViewColumn col, Gtk.TreeViewColumn tc)
 		{
 			foreach (var v in col.Views) {
-				CellUtil.CreateCellRenderer (tc, v);
+				CellUtil.CreateCellRenderer (this, tc, v);
 			}
 		}
 		
@@ -118,6 +127,23 @@ namespace Xwt.GtkBackend
 			case SelectionMode.Multiple: Widget.Selection.Mode = Gtk.SelectionMode.Multiple; break;
 			}
 		}
+
+		#region ICellRendererTarget implementation
+		public void PackStart (object target, Gtk.CellRenderer cr, bool expand)
+		{
+			((Gtk.TreeViewColumn)target).PackStart (cr, expand);
+		}
+
+		public void PackEnd (object target, Gtk.CellRenderer cr, bool expand)
+		{
+			((Gtk.TreeViewColumn)target).PackEnd (cr, expand);
+		}
+		
+		public void AddAttribute (object target, Gtk.CellRenderer cr, string field, int col)
+		{
+			((Gtk.TreeViewColumn)target).AddAttribute (cr, field, col);
+		}
+		#endregion
 	}
 }
 

@@ -33,11 +33,11 @@ using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
-	public class WidgetBackend<T,S>: IWidgetBackend, IGtkWidgetBackend where T:Gtk.Widget where S:IWidgetEventSink
+	public class WidgetBackend: IWidgetBackend, IGtkWidgetBackend
 	{
 		Widget frontend;
 		Gtk.Alignment alignment;
-		S eventSink;
+		IWidgetEventSink eventSink;
 		
 		bool dragEventsSet;
 		TransferDataSource currentDragData;
@@ -59,7 +59,7 @@ namespace Xwt.GtkBackend
 		
 		void IWidgetBackend.Initialize (IWidgetEventSink sink)
 		{
-			eventSink = (S) sink;
+			eventSink = sink;
 			Initialize ();
 		}
 		
@@ -67,7 +67,7 @@ namespace Xwt.GtkBackend
 		{
 		}
 		
-		public S EventSink {
+		public IWidgetEventSink EventSink {
 			get { return eventSink; }
 		}
 		
@@ -81,7 +81,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public T Widget { get; set; }
+		public Gtk.Widget Widget { get; set; }
 		
 		public Gtk.Widget RootWidget {
 			get {

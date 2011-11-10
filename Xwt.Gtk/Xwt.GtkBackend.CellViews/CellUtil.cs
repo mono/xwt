@@ -32,24 +32,24 @@ namespace Xwt.GtkBackend
 {
 	public static class CellUtil
 	{
-		public static Gtk.CellRenderer CreateCellRenderer (Gtk.TreeViewColumn col, CellView view)
+		public static Gtk.CellRenderer CreateCellRenderer (ICellRendererTarget col, object target, CellView view)
 		{
 			if (view is TextCellView) {
 				Gtk.CellRendererText cr = new Gtk.CellRendererText ();
-				col.PackStart (cr, false);
-				col.AddAttribute (cr, "text", ((TextCellView)view).TextField.Index);
+				col.PackStart (target, cr, false);
+				col.AddAttribute (target, cr, "text", ((TextCellView)view).TextField.Index);
 				return cr;
 			}
 			else if (view is CheckBoxCellView) {
 				Gtk.CellRendererToggle cr = new Gtk.CellRendererToggle ();
-				col.PackStart (cr, false);
-				col.AddAttribute (cr, "active", ((CheckBoxCellView)view).ActiveField.Index);
+				col.PackStart (target, cr, false);
+				col.AddAttribute (target, cr, "active", ((CheckBoxCellView)view).ActiveField.Index);
 				return cr;
 			}
 			else if (view is ImageCellView) {
 				Gtk.CellRendererPixbuf cr = new Gtk.CellRendererPixbuf ();
-				col.PackStart (cr, false);
-				col.AddAttribute (cr, "pixbuf", ((ImageCellView)view).ImageField.Index);
+				col.PackStart (target, cr, false);
+				col.AddAttribute (target, cr, "pixbuf", ((ImageCellView)view).ImageField.Index);
 				return cr;
 			}
 			throw new NotSupportedException ("Unknown cell view type: " + view.GetType ());
@@ -78,6 +78,13 @@ namespace Xwt.GtkBackend
 			}
 			throw new NotImplementedException ();
 		}
+	}
+	
+	public interface ICellRendererTarget
+	{
+		void PackStart (object target, Gtk.CellRenderer cr, bool expand);
+		void PackEnd (object target, Gtk.CellRenderer cr, bool expand);
+		void AddAttribute (object target, Gtk.CellRenderer cr, string field, int column);
 	}
 }
 
