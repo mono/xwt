@@ -74,7 +74,6 @@
     <Compile Include="Xwt\WidgetSize.cs" />
     <Compile Include="Xwt\Alignment.cs" />
     <Compile Include="Xwt.Drawing\Image.cs" />
-    <Compile Include="Xwt\ITreeViewSource.cs" />
     <Compile Include="Xwt\TreeStore.cs" />
     <Compile Include="Xwt\DataField.cs" />
     <Compile Include="Xwt\TreeNavigator.cs" />
@@ -113,7 +112,6 @@
     <Compile Include="Xwt\ListView.cs" />
     <Compile Include="Xwt.Backends\IListViewBackend.cs" />
     <Compile Include="Xwt.Backends\IColumnContainerBackend.cs" />
-    <Compile Include="Xwt\IListViewSource.cs" />
     <Compile Include="Xwt\ListStore.cs" />
     <Compile Include="Xwt.Backends\IListStoreBackend.cs" />
     <Compile Include="Xwt.Backends\ITableViewBackend.cs" />
@@ -140,6 +138,8 @@
     <Compile Include="Xwt\ItemCollection.cs" />
     <Compile Include="Xwt.Backends\IComboBoxBackend.cs" />
     <Compile Include="Xwt\Command.cs" />
+    <Compile Include="Xwt\IListDataSource.cs" />
+    <Compile Include="Xwt\ITreeDataSource.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

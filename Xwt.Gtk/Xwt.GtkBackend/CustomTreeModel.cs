@@ -154,7 +154,7 @@ namespace Xwt.GtkBackend
 				var c = source.GetChild (parent, n);
 				if (c == null)
 					return -1;
-				if (c == pos)
+				if (c == pos || c.Equals(pos))
 					return n;
 				n++;
 			} while (true);
