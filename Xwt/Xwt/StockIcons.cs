@@ -29,6 +29,8 @@ namespace Xwt
 {
 	public static class StockIcons
 	{
+		public const string OrientationPortrait = "Portrait";
+		public const string OrientationLandscape = "Landscape";
 		public const string ZoomIn = "ZoomIn";
 		public const string ZoomOut = "ZoomOut";
 		public const string ZoomFit = "ZoomFit";
