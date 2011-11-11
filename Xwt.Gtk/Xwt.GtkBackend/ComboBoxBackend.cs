@@ -51,6 +51,29 @@ namespace Xwt.GtkBackend
 		protected new IComboBoxEventSink EventSink {
 			get { return (IComboBoxEventSink)base.EventSink; }
 		}
+		
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is ComboBoxEvent) {
+				if ((ComboBoxEvent)eventId == ComboBoxEvent.SelectionChanged)
+					Widget.Changed += HandleChanged;
+			}
+		}
+		
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is ComboBoxEvent) {
+				if ((ComboBoxEvent)eventId == ComboBoxEvent.SelectionChanged)
+					Widget.Changed -= HandleChanged;
+			}
+		}
+
+		void HandleChanged (object sender, EventArgs e)
+		{
+			EventSink.OnSelectionChanged ();
+		}
 
 		#region IComboBoxBackend implementation
 		public void SetViews (CellViewCollection views)

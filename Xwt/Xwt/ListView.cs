@@ -160,6 +160,7 @@ namespace Xwt
 				selectionChanged -= value;
 				OnAfterEventRemove (TableViewEvent.SelectionChanged, selectionChanged);
 			}
-		}	}
+		}	
+	}
 }
 

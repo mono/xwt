@@ -35,8 +35,6 @@ namespace Xwt.Mac
 		public object CreateFromName (string fontName, double size)
 		{
 			object o  = NSFont.FromFontName (fontName, (float)size);
-			if (o == null)
-				Console.WriteLine ("kk");
 			return o;
 		}
 	}

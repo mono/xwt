@@ -214,10 +214,6 @@ namespace Xwt
 					nexpands++;
 			}
 			
-			if (nexpands == 0) {
-				Console.WriteLine ();
-			}
-			
 			double remaining = totalSize - naturalSize - (spacing * (double)(children.Count - 1));
 			if (remaining < 0) {
 				// The box is not big enough to fit the widgets using its natural size.

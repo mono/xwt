@@ -32,13 +32,19 @@ namespace Samples
 	{
 		public ComboBoxes ()
 		{
+			HBox box = new HBox ();
 			ComboBox c = new ComboBox ();
 			c.Items.Add ("One");
 			c.Items.Add ("Two");
 			c.Items.Add ("Three");
 			c.SelectedIndex = 1;
-			
-			PackStart (c);
+			box.PackStart (c);
+			Label la = new Label ();
+			box.PackStart (la);
+			c.SelectionChanged += delegate {
+				la.Text = "Selected: " + (string) c.SelectedItem;
+			};
+			PackStart (box);
 		}
 	}
 }

@@ -33,11 +33,16 @@ namespace Xwt
 		CellViewCollection views;
 		IListDataSource source;
 		
-		protected new class EventSink: Widget.EventSink, ICellContainer
+		protected new class EventSink: Widget.EventSink, IComboBoxEventSink, ICellContainer
 		{
 			public void NotifyCellChanged ()
 			{
 				((ComboBox)Parent).OnCellChanged ();
+			}
+			
+			public void OnSelectionChanged ()
+			{
+				((ComboBox)Parent).OnSelectionChanged (EventArgs.Empty);
 			}
 		}
 		
@@ -79,18 +84,43 @@ namespace Xwt
 		}
 		
 		public int SelectedIndex {
-			get;
-			set;
+			get { return Backend.SelectedRow; }
+			set { Backend.SelectedRow = value; }
 		}
 		
 		public object SelectedItem {
-			get;
-			set;
+			get {
+				if (Backend.SelectedRow == -1)
+					return null;
+				return Items [Backend.SelectedRow];
+			}
+			set {
+				SelectedIndex = Items.IndexOf (value);
+			}
 		}
 		
 		void OnCellChanged ()
 		{
+			Backend.SetViews (views);
+		}
+		
+		EventHandler selectionChanged;
+		
+		public event EventHandler SelectionChanged {
+			add {
+				OnBeforeEventAdd (ComboBoxEvent.SelectionChanged, selectionChanged);
+				selectionChanged += value;
+			}
+			remove {
+				selectionChanged -= value;
+				OnAfterEventRemove (ComboBoxEvent.SelectionChanged, selectionChanged);
+			}
+		}	
+		
+		protected virtual void OnSelectionChanged (EventArgs args)
+		{
+			if (selectionChanged != null)
+				selectionChanged (this, args);
 		}
 	}
 }
-

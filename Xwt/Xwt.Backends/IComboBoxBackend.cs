@@ -36,6 +36,12 @@ namespace Xwt.Backends
 	
 	public interface IComboBoxEventSink: IWidgetEventSink
 	{
+		void OnSelectionChanged ();
+	}
+	
+	public enum ComboBoxEvent
+	{
+		SelectionChanged
 	}
 }
 

@@ -82,7 +82,6 @@ namespace Xwt.Mac
 	{
 		public Button (IntPtr p): base (p)
 		{
-			Console.WriteLine ("NSBUTTON CREATED");
 		}
 		
 		public Button (IButtonEventSink eventSink)
