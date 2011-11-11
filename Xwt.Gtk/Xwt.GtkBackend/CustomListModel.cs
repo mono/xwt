@@ -112,6 +112,10 @@ namespace Xwt.GtkBackend
 			if (path.Indices.Length == 0)
 				return false;
 			int row = path.Indices [0];
+			if (row >= source.RowCount) {
+				iter = Gtk.TreeIter.Zero;
+				return false;
+			}
 			iter = IterFromNode (row);
 			return true;
 		}
