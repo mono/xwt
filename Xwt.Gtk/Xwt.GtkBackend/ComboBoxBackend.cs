@@ -87,7 +87,7 @@ namespace Xwt.GtkBackend
 		{
 			ListStoreBackend b = sourceBackend as ListStoreBackend;
 			if (b == null) {
-				CustomListModel model = new CustomListModel (source);
+				CustomListModel model = new CustomListModel (source, Widget);
 				Widget.Model = model.Store;
 			} else
 				Widget.Model = b.Store;

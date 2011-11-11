@@ -78,9 +78,28 @@ namespace Xwt
 		public IListDataSource ItemsSource {
 			get { return source; }
 			set {
+				if (source != null) {
+					source.RowChanged -= HandleModelChanged;
+					source.RowDeleted -= HandleModelChanged;
+					source.RowInserted -= HandleModelChanged;
+					source.RowsReordered -= HandleModelChanged;
+				}
+				
 				source = value;
 				Backend.SetSource (source, source is XwtComponent ? GetBackend ((XwtComponent)source) : null);
+				
+				if (source != null) {
+					source.RowChanged += HandleModelChanged;
+					source.RowDeleted += HandleModelChanged;
+					source.RowInserted += HandleModelChanged;
+					source.RowsReordered += HandleModelChanged;
+				}
 			}
+		}
+
+		void HandleModelChanged (object sender, ListRowEventArgs e)
+		{
+			OnPreferredSizeChanged ();
 		}
 		
 		public int SelectedIndex {

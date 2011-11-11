@@ -45,7 +45,7 @@ namespace Xwt
 		WidgetSize height;
 		bool widthCached;
 		bool heightCached;
-		
+		static HashSet<Widget> resizeRequestQueue = new HashSet<Widget> ();
 		EventSink eventSink;
 		
 		protected class EventSink: IWidgetEventSink
@@ -75,6 +75,11 @@ namespace Xwt
 			public void OnDragLeave (EventArgs args)
 			{
 				Parent.OnDragLeave (args);
+			}
+			
+			public void OnPreferredSizeChanged ()
+			{
+				Parent.OnPreferredSizeChanged ();
 			}
 		}
 		
@@ -380,8 +385,21 @@ namespace Xwt
 			IWidgetSurface surface = this;
 			surface.ResetCachedSizes ();
 			Backend.UpdateLayout ();
-			if (Parent != null)
-				Parent.OnChildPreferredSizeChanged (this);
+			if (Parent != null) {
+				if (resizeRequestQueue.Count == 0)
+					Application.Invoke (DelayedResizeRequest);
+				resizeRequestQueue.Add (this);
+			}
+		}
+		
+		void DelayedResizeRequest ()
+		{
+			var copy = resizeRequestQueue.ToArray ();
+			resizeRequestQueue.Clear ();
+			foreach (var w in copy) {
+				if (w.Parent != null)
+					w.Parent.OnChildPreferredSizeChanged (w);
+			}
 		}
 		
 		internal void NotifyPaddingChanged ()

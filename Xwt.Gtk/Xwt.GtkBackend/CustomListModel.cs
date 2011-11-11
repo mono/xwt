@@ -37,9 +37,11 @@ namespace Xwt.GtkBackend
 		Type[] colTypes;
 		int counter = 1;
 		Gtk.TreeModelAdapter adapter;
+		Gtk.Widget parent;
 		
-		public CustomListModel (IListDataSource source)
+		public CustomListModel (IListDataSource source, Gtk.Widget w)
 		{
+			parent = w;
 			this.source = source;
 			adapter = new Gtk.TreeModelAdapter (this);
 			colTypes = source.ColumnTypes;
@@ -54,6 +56,7 @@ namespace Xwt.GtkBackend
 			var p = new Gtk.TreePath (new int[] { e.Row });
 			var it = IterFromNode (e.Row);
 			adapter.EmitRowsReordered (p, it, e.ChildrenOrder);
+			parent.QueueResize ();
 		}
 
 		void HandleRowInserted (object sender, ListRowEventArgs e)
@@ -61,12 +64,14 @@ namespace Xwt.GtkBackend
 			var p = new Gtk.TreePath (new int[] { e.Row });
 			var it = IterFromNode (e.Row);
 			adapter.EmitRowInserted (p, it);
+			parent.QueueResize ();
 		}
 
 		void HandleRowDeleted (object sender, ListRowEventArgs e)
 		{
 			var p = new Gtk.TreePath (new int[] { e.Row });
 			adapter.EmitRowDeleted (p);
+			parent.QueueResize ();
 		}
 
 		void HandleRowChanged (object sender, ListRowEventArgs e)
@@ -74,6 +79,7 @@ namespace Xwt.GtkBackend
 			var p = new Gtk.TreePath (new int[] { e.Row });
 			var it = IterFromNode (e.Row);
 			adapter.EmitRowChanged (p, it);
+			parent.QueueResize ();
 		}
 		
 		public Gtk.TreeModelAdapter Store {

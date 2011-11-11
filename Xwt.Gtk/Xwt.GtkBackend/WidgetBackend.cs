@@ -85,7 +85,7 @@ namespace Xwt.GtkBackend
 		
 		public Gtk.Widget RootWidget {
 			get {
-				return alignment != null ? alignment : (Gtk.Widget) Widget;
+				return alignment ?? (Gtk.Widget) Widget;
 			}
 		}
 		

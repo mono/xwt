@@ -60,6 +60,20 @@ namespace Xwt.Backends
 		void OnDragDropCheck (DragCheckEventArgs args);
 		void OnDragDrop (DragEventArgs args);
 		void OnDragLeave (EventArgs args);
+		
+		/// <summary>
+		/// Notifies the frontend that the preferred size of this widget has changed
+		/// </summary>
+		/// <remarks>
+		/// This method must be called when the widget changes its preferred size.
+		/// This method doesn't need to be called if the resize is the result of changing
+		/// a widget property. For example, it is not necessary to call it when the text
+		/// of a label is changed (the fronted will automatically rise this event when
+		/// the property changes). However, it has to be called when the the shape of the
+		/// widget changes on its own, for example if the size of a button changes as
+		/// a result of clicking on it.
+		/// </remarks>
+		void OnPreferredSizeChanged ();
 	}
 	
 	[Flags]

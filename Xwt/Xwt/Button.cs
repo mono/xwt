@@ -84,6 +84,7 @@ namespace Xwt
 			set {
 				label = value;
 				Backend.SetContent (label, image);
+				OnPreferredSizeChanged ();
 			}
 		}
 		
@@ -92,6 +93,7 @@ namespace Xwt
 			set {
 				image = value;
 				Backend.SetContent (label, XwtObject.GetBackend (value)); 
+				OnPreferredSizeChanged ();
 			}
 		}
 		
@@ -100,6 +102,7 @@ namespace Xwt
 			set {
 				style = value;
 				Backend.SetButtonStyle (style);
+				OnPreferredSizeChanged ();
 			}
 		}
 		

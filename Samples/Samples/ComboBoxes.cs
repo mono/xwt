@@ -42,7 +42,19 @@ namespace Samples
 			Label la = new Label ();
 			box.PackStart (la);
 			c.SelectionChanged += delegate {
-				la.Text = "Selected: " + (string) c.SelectedItem;
+				la.Text = "Selected: " + (string)c.SelectedItem;
+			};
+			PackStart (box);
+			
+			box = new HBox ();
+			ComboBox c2 = new ComboBox ();
+			box.PackStart (c2);
+			Button b = new Button ("Fill combo (should grow)");
+			box.PackStart (b);
+			b.Clicked += delegate {
+				for (int n=0; n<10; n++) {
+					c2.Items.Add ("Item " + new string ('#', n));
+				}
 			};
 			PackStart (box);
 		}

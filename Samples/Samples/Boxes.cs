@@ -28,6 +28,16 @@ namespace Samples
 			box3.PackEnd (new SimpleBox (30));
 			box3.PackStart (new SimpleBox (10) {Color = new Color (1, 0.5, 0.5)}, BoxMode.FillAndExpand);
 			PackStart (box3);
+			
+			HBox box4 = new HBox ();
+			Button b = new Button ("Click me");
+			b.Clicked += delegate {
+				b.Label = "Button has grown";
+			};
+			box4.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box4.PackStart (b);
+			box4.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			PackStart (box4);
 		}
 	}
 	
