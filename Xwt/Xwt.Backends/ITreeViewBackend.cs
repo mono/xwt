@@ -31,7 +31,7 @@ namespace Xwt.Backends
 {
 	public interface ITreeViewBackend: ITableViewBackend
 	{
-		void SetSource (ITreeViewSource source, IBackend sourceBackend);
+		void SetSource (ITreeDataSource source, IBackend sourceBackend);
 		TreePosition[] SelectedItems { get; }
 		void SelectItem (TreePosition pos);
 		void UnselectItem (TreePosition pos);

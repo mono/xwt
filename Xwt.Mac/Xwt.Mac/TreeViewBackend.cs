@@ -35,7 +35,7 @@ namespace Xwt.Mac
 {
 	public class TreeViewBackend: TableViewBackend<NSOutlineView,ITreeViewEventSink>, ITreeViewBackend
 	{
-		ITreeViewSource source;
+		ITreeDataSource source;
 		TreeSource tsource;
 		
 		NSOutlineView Tree {
@@ -59,7 +59,7 @@ namespace Xwt.Mac
 			return tcol;
 		}
 		
-		public void SetSource (ITreeViewSource source, IBackend sourceBackend)
+		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
 			this.source = source;
 			tsource = new TreeSource (source);
@@ -117,12 +117,12 @@ namespace Xwt.Mac
 	
 	class TreeSource: NSOutlineViewDataSource
 	{
-		ITreeViewSource source;
+		ITreeDataSource source;
 		
 		// TODO: remove unused positions
 		Dictionary<TreePosition,TreeItem> items = new Dictionary<TreePosition, TreeItem> ();
 		
-		public TreeSource (ITreeViewSource source)
+		public TreeSource (ITreeDataSource source)
 		{
 			this.source = source;
 		}

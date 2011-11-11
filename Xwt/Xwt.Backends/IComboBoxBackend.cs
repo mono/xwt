@@ -30,7 +30,7 @@ namespace Xwt.Backends
 	public interface IComboBoxBackend: IWidgetBackend
 	{
 		void SetViews (CellViewCollection views);
-		void SetSource (IListViewSource source, IBackend sourceBackend);
+		void SetSource (IListDataSource source, IBackend sourceBackend);
 		int SelectedRow { get; set; }
 	}
 	

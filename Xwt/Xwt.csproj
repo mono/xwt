@@ -139,6 +139,7 @@
     <Compile Include="Xwt\ComboBox.cs" />
     <Compile Include="Xwt\ItemCollection.cs" />
     <Compile Include="Xwt.Backends\IComboBoxBackend.cs" />
+    <Compile Include="Xwt\Command.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -28,7 +28,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IListStoreBackend: IListViewSource, IBackend
+	public interface IListStoreBackend: IListDataSource, IBackend
 	{
 		void Initialize (Type[] columnTypes);
 		

@@ -66,6 +66,8 @@
     <Compile Include="Xwt.GtkBackend\Platform.cs" />
     <Compile Include="Xwt.GtkBackend\ScrollViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ComboBoxBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\CustomTreeModel.cs" />
+    <Compile Include="Xwt.GtkBackend\CustomListModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

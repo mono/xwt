@@ -1,5 +1,5 @@
 // 
-// ITreeStoreBackend.cs
+// IListViewSource.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -26,17 +26,45 @@
 
 using System;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface ITreeStoreBackend: ITreeDataSource, IBackend
+	public interface IListDataSource
 	{
-		void Initialize (Type[] columnTypes);
-		TreePosition InsertBefore (TreePosition pos);
-		TreePosition InsertAfter (TreePosition pos);
-		TreePosition AddChild (TreePosition pos);
-		void Remove (TreePosition pos);
-		TreePosition GetNext (TreePosition pos);
-		TreePosition GetPrevious (TreePosition pos);
+		int RowCount { get; }
+		object GetValue (int row, int column);
+		void SetValue (int row, int column, object value);
+		Type[] ColumnTypes { get; }
+		
+		event EventHandler<ListRowEventArgs> RowInserted;
+		event EventHandler<ListRowEventArgs> RowDeleted;
+		event EventHandler<ListRowEventArgs> RowChanged;
+		event EventHandler<ListRowOrderEventArgs> RowsReordered;
+	}
+	
+	public class ListRowEventArgs: EventArgs
+	{
+		public ListRowEventArgs (int row)
+		{
+			Row = row;
+		}
+		
+		public int Row {
+			get;
+			private set;
+		}
+	}
+	
+	public class ListRowOrderEventArgs: ListRowEventArgs
+	{
+		public ListRowOrderEventArgs (int parentRow, int[] rows): base (parentRow)
+		{
+			ChildrenOrder = rows;
+		}
+		
+		public int[] ChildrenOrder {
+			get;
+			private set;
+		}
 	}
 }
 

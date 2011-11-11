@@ -36,7 +36,7 @@ namespace Xwt
 	public class TreeView: Widget, IColumnContainer
 	{
 		ListViewColumnCollection columns;
-		ITreeViewSource dataSource;
+		ITreeDataSource dataSource;
 		SelectionMode mode;
 		
 		protected new class EventSink: Widget.EventSink, ITreeViewEventSink
@@ -73,7 +73,7 @@ namespace Xwt
 			columns.Attach (Backend);
 		}
 		
-		public TreeView (ITreeViewSource source): this ()
+		public TreeView (ITreeDataSource source): this ()
 		{
 			DataSource = source;
 		}
@@ -84,7 +84,7 @@ namespace Xwt
 			}
 		}
 		
-		public ITreeViewSource DataSource {
+		public ITreeDataSource DataSource {
 			get {
 				return dataSource;
 			}

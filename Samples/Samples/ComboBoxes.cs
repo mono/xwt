@@ -1,5 +1,5 @@
 // 
-// ITreeViewSource.cs
+// ComboBoxes.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,19 +23,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Drawing;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
+using Xwt;
 
-namespace Xwt
+namespace Samples
 {
-	public interface ITreeViewSource
+	public class ComboBoxes: VBox
 	{
-		TreePosition GetChild (TreePosition pos, int index);
-		int GetChildrenCount (TreePosition pos);
-		object GetValue (TreePosition pos, int column);
-		void SetValue (TreePosition pos, int column, object value);
+		public ComboBoxes ()
+		{
+			ComboBox c = new ComboBox ();
+			c.Items.Add ("One");
+			c.Items.Add ("Two");
+			c.Items.Add ("Three");
+			c.SelectedIndex = 1;
+			
+			PackStart (c);
+		}
 	}
 }
+

@@ -32,11 +32,19 @@ namespace Xwt.GtkBackend
 {
 	public class ListStoreBackend: TableStoreBackend, IListStoreBackend
 	{
+		Type[] columnTypes;
+		
 		public override Gtk.TreeModel InitializeModel (Type[] columnTypes)
 		{
+			this.columnTypes = columnTypes;
 			return new Gtk.ListStore (columnTypes);
 		}
 		
+		public event EventHandler<ListRowEventArgs> RowInserted;
+		public event EventHandler<ListRowEventArgs> RowDeleted;
+		public event EventHandler<ListRowEventArgs> RowChanged;
+		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
+
 		public Gtk.ListStore List {
 			get { return (Gtk.ListStore) Store; }
 		}
@@ -60,6 +68,12 @@ namespace Xwt.GtkBackend
 		public int RowCount {
 			get {
 				return List.IterNChildren ();
+			}
+		}
+		
+		public Type[] ColumnTypes {
+			get {
+				return columnTypes;
 			}
 		}
 		

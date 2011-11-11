@@ -33,7 +33,7 @@ namespace Xwt
 	public class ListView: Widget, IColumnContainer
 	{
 		ListViewColumnCollection columns;
-		IListViewSource dataSource;
+		IListDataSource dataSource;
 		SelectionMode mode;
 		
 		protected new class EventSink: Widget.EventSink, IListViewEventSink
@@ -49,7 +49,7 @@ namespace Xwt
 			MapEvent (TableViewEvent.SelectionChanged, typeof(ListView), "OnSelectionChanged");
 		}
 		
-		public ListView (IListViewSource source): this ()
+		public ListView (IListDataSource source): this ()
 		{
 			DataSource = source;
 		}
@@ -80,7 +80,7 @@ namespace Xwt
 			}
 		}
 		
-		public IListViewSource DataSource {
+		public IListDataSource DataSource {
 			get {
 				return dataSource;
 			}

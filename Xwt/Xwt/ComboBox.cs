@@ -24,13 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
 
 namespace Xwt
 {
 	public class ComboBox: Widget
 	{
 		CellViewCollection views;
-		IListViewSource source;
+		IListDataSource source;
 		
 		protected new class EventSink: Widget.EventSink, ICellContainer
 		{
@@ -38,6 +39,10 @@ namespace Xwt
 			{
 				((ComboBox)Parent).OnCellChanged ();
 			}
+		}
+		
+		new IComboBoxBackend Backend {
+			get { return (IComboBoxBackend) base.Backend; }
 		}
 		
 		public ComboBox ()
@@ -57,7 +62,7 @@ namespace Xwt
 		public ItemCollection Items {
 			get {
 				if (source == null)
-					source = new ItemCollection ();
+					ItemsSource = new ItemCollection ();
 				ItemCollection col = source as ItemCollection;
 				if (col == null)
 					throw new InvalidOperationException ("The Items collection is not available when a custom items source is set");
@@ -65,9 +70,12 @@ namespace Xwt
 			}
 		}
 		
-		public IListViewSource ItemsSource {
+		public IListDataSource ItemsSource {
 			get { return source; }
-			set { source = value; }
+			set {
+				source = value;
+				Backend.SetSource (source, source is XwtComponent ? GetBackend ((XwtComponent)source) : null);
+			}
 		}
 		
 		public int SelectedIndex {

@@ -29,50 +29,72 @@ using System.Collections.ObjectModel;
 
 namespace Xwt
 {
-	public class ItemCollection: Collection<Object>, IListViewSource
+	public class ItemCollection: Collection<Object>, IListDataSource
 	{
 		internal ItemCollection ()
 		{
 		}
 		
+		public event EventHandler<ListRowEventArgs> RowInserted;
+		public event EventHandler<ListRowEventArgs> RowDeleted;
+		public event EventHandler<ListRowEventArgs> RowChanged;
+		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
+
 		protected override void InsertItem (int index, object item)
 		{
 			base.InsertItem (index, item);
+			if (RowInserted != null)
+				RowInserted (this, new ListRowEventArgs (index));
 		}
 		
 		protected override void RemoveItem (int index)
 		{
 			base.RemoveItem (index);
+			if (RowDeleted != null)
+				RowDeleted (this, new ListRowEventArgs (index));
 		}
 		
 		protected override void SetItem (int index, object item)
 		{
 			base.SetItem (index, item);
+			if (RowChanged != null)
+				RowChanged (this, new ListRowEventArgs (index));
 		}
 		
 		protected override void ClearItems ()
 		{
+			int count = Count;
 			base.ClearItems ();
+			for (int n=count - 1; n >= 0; n--) {
+				if (RowDeleted != null)
+					RowDeleted (this, new ListRowEventArgs (n));
+			}
 		}
 
 		#region IListViewSource implementation
-		object IListViewSource.GetValue (int row, int column)
+		object IListDataSource.GetValue (int row, int column)
 		{
 			if (column != 0)
 				throw new InvalidOperationException ("Not data for column " + column);
 			return this [row];
 		}
 
-		void IListViewSource.SetValue (int row, int column, object value)
+		void IListDataSource.SetValue (int row, int column, object value)
 		{
 			if (column != 0)
 				throw new InvalidOperationException ("Not data for column " + column);
 			this [row] = value;
 		}
 
-		int IListViewSource.RowCount {
+		int IListDataSource.RowCount {
 			get {
 				return Count;
+			}
+		}
+
+		Type[] IListDataSource.ColumnTypes {
+			get {
+				return new Type[] { typeof(string) };
 			}
 		}
 		#endregion

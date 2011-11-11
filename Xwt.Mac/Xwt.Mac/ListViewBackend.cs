@@ -34,7 +34,7 @@ namespace Xwt.Mac
 {
 	public class ListViewBackend: TableViewBackend<NSTableView,IListViewEventSink>, IListViewBackend
 	{
-		IListViewSource source;
+		IListDataSource source;
 		ListSource tsource;
 		
 		protected override NSTableView CreateView ()
@@ -46,7 +46,7 @@ namespace Xwt.Mac
 			get { return "NSTableViewSelectionDidChangeNotification"; }
 		}
 		
-		public void SetSource (IListViewSource source, IBackend sourceBackend)
+		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
 			this.source = source;
 			tsource = new ListSource (source);
@@ -90,9 +90,9 @@ namespace Xwt.Mac
 	
 	class ListSource: NSTableViewDataSource
 	{
-		IListViewSource source;
+		IListDataSource source;
 		
-		public ListSource (IListViewSource source)
+		public ListSource (IListDataSource source)
 		{
 			this.source = source;
 		}

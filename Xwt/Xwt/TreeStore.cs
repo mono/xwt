@@ -32,7 +32,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class TreeStore: XwtComponent, ITreeViewSource
+	public class TreeStore: XwtComponent, ITreeDataSource
 	{
 		DataField[] fields;
 		
@@ -47,7 +47,7 @@ namespace Xwt
 		}
 		
 		new ITreeStoreBackend Backend {
-			get { return (ITreeStoreBackend) base.Backend; }
+			get { return (ITreeStoreBackend)base.Backend; }
 		}
 		
 		protected override IBackend OnCreateBackend ()
@@ -82,24 +82,52 @@ namespace Xwt
 			return new TreeNavigator (Backend, pos);
 		}
 
-		TreePosition ITreeViewSource.GetChild (TreePosition pos, int index)
+		event EventHandler<TreeNodeEventArgs> ITreeDataSource.NodeInserted {
+			add { Backend.NodeInserted += value; }
+			remove { Backend.NodeInserted -= value; }
+		}
+		event EventHandler<TreeNodeChildEventArgs> ITreeDataSource.NodeDeleted {
+			add { Backend.NodeDeleted += value; }
+			remove { Backend.NodeDeleted -= value; }
+		}
+		event EventHandler<TreeNodeEventArgs> ITreeDataSource.NodeChanged {
+			add { Backend.NodeChanged += value; }
+			remove { Backend.NodeChanged -= value; }
+		}
+		event EventHandler<TreeNodeOrderEventArgs> ITreeDataSource.NodesReordered {
+			add { Backend.NodesReordered += value; }
+			remove { Backend.NodesReordered -= value; }
+		}
+		
+		TreePosition ITreeDataSource.GetChild (TreePosition pos, int index)
 		{
 			return Backend.GetChild (pos, index);
 		}
 
-		int ITreeViewSource.GetChildrenCount (TreePosition pos)
+		TreePosition ITreeDataSource.GetParent (TreePosition pos)
+		{
+			return Backend.GetParent (pos);
+		}
+
+		int ITreeDataSource.GetChildrenCount (TreePosition pos)
 		{
 			return Backend.GetChildrenCount (pos);
 		}
 
-		object ITreeViewSource.GetValue (TreePosition pos, int column)
+		object ITreeDataSource.GetValue (TreePosition pos, int column)
 		{
 			return Backend.GetValue (pos, column);
 		}
 
-		void ITreeViewSource.SetValue (TreePosition pos, int column, object val)
+		void ITreeDataSource.SetValue (TreePosition pos, int column, object val)
 		{
 			Backend.SetValue (pos, column, val);
+		}
+		
+		Type[] ITreeDataSource.ColumnTypes {
+			get {
+				return fields.Select (f => f.FieldType).ToArray ();
+			}
 		}
 	}
 	
@@ -142,6 +170,11 @@ namespace Xwt
 		int version;
 		int nextNodeId;
 		
+		public event EventHandler<TreeNodeEventArgs> NodeInserted;
+		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
+		public event EventHandler<TreeNodeEventArgs> NodeChanged;
+		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
+
 		public void Initialize (object frontend)
 		{
 		}
@@ -174,12 +207,14 @@ namespace Xwt
 		public void SetValue (TreePosition pos, int column, object value)
 		{
 			NodePosition n = GetPosition (pos);
-			Node node = n.ParentList[n.NodeIndex];
+			Node node = n.ParentList [n.NodeIndex];
 			if (node.Data == null) {
 				node.Data = new object [columnTypes.Length];
-				n.ParentList[n.NodeIndex] = node;
+				n.ParentList [n.NodeIndex] = node;
 			}
 			node.Data [column] = value;
+			if (NodeChanged != null)
+				NodeChanged (this, new TreeNodeEventArgs (pos));
 		}
 
 		public object GetValue (TreePosition pos, int column)
@@ -246,7 +281,10 @@ namespace Xwt
 			np.NodeIndex++;
 			np.StoreVersion = version;
 			
-			return new NodePosition () { ParentList = np.ParentList, NodeId = nn.NodeId, NodeIndex = np.NodeIndex - 1, StoreVersion = version };
+			var node = new NodePosition () { ParentList = np.ParentList, NodeId = nn.NodeId, NodeIndex = np.NodeIndex - 1, StoreVersion = version };
+			if (NodeInserted != null)
+				NodeInserted (this, new TreeNodeEventArgs (node));
+			return node;
 		}
 
 		public TreePosition InsertAfter (TreePosition pos)
@@ -261,7 +299,10 @@ namespace Xwt
 			// Update the provided position is still valid
 			np.StoreVersion = version;
 			
-			return new NodePosition () { ParentList = np.ParentList, NodeId = nn.NodeId, NodeIndex = np.NodeIndex + 1, StoreVersion = version };
+			var node = new NodePosition () { ParentList = np.ParentList, NodeId = nn.NodeId, NodeIndex = np.NodeIndex + 1, StoreVersion = version };
+			if (NodeInserted != null)
+				NodeInserted (this, new TreeNodeEventArgs (node));
+			return node;
 		}
 		
 		public TreePosition AddChild (TreePosition pos)
@@ -275,9 +316,8 @@ namespace Xwt
 			
 			if (pos == null) {
 				list = rootNodes;
-			}
-			else {
-				Node n = np.ParentList[np.NodeIndex];
+			} else {
+				Node n = np.ParentList [np.NodeIndex];
 				if (n.Children == null) {
 					n.Children = new NodeList ();
 					n.Children.Parent = new NodePosition () { ParentList = np.ParentList, NodeId = n.NodeId, NodeIndex = np.NodeIndex, StoreVersion = version };
@@ -292,7 +332,17 @@ namespace Xwt
 			if (np != null)
 				np.StoreVersion = version;
 			
-			return new NodePosition () { ParentList = list, NodeId = nn.NodeId, NodeIndex = list.Count - 1, StoreVersion = version };
+			var node = new NodePosition () { ParentList = list, NodeId = nn.NodeId, NodeIndex = list.Count - 1, StoreVersion = version };
+			if (NodeInserted != null)
+				NodeInserted (this, new TreeNodeEventArgs (node));
+			return node;
+		}
+		
+		public void Remove (TreePosition pos)
+		{
+			NodePosition np = GetPosition (pos);
+			np.ParentList.RemoveAt (np.NodeIndex);
+			version++;
 		}
 		
 		public TreePosition GetParent (TreePosition pos)
@@ -302,6 +352,12 @@ namespace Xwt
 				return null;
 			var parent = np.ParentList.Parent;
 			return new NodePosition () { ParentList = parent.ParentList, NodeId = parent.NodeId, NodeIndex = parent.NodeIndex, StoreVersion = version };
+		}
+		
+		public Type[] ColumnTypes {
+			get {
+				return columnTypes;
+			}
 		}
 		
 		public void EnableEvent (object eventId)

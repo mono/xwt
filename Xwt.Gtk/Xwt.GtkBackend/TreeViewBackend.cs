@@ -31,12 +31,14 @@ namespace Xwt.GtkBackend
 {
 	public class TreeViewBackend: TableViewBackend, ITreeViewBackend
 	{
-		public void SetSource (ITreeViewSource source, IBackend sourceBackend)
+		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
 			TreeStoreBackend b = sourceBackend as TreeStoreBackend;
-			if (b == null)
-				throw new NotSupportedException ("Custom tree stores are not supported");
-			Widget.Model = b.Store;
+			if (b == null) {
+				CustomTreeModel model = new CustomTreeModel (source);
+				Widget.Model = model.Store;
+			} else
+				Widget.Model = b.Store;
 		}
 
 		public TreePosition[] SelectedItems {

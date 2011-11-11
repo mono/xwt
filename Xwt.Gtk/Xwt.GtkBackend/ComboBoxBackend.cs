@@ -60,12 +60,14 @@ namespace Xwt.GtkBackend
 				CellUtil.CreateCellRenderer (this, null, v);
 		}
 
-		public void SetSource (IListViewSource source, IBackend sourceBackend)
+		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
 			ListStoreBackend b = sourceBackend as ListStoreBackend;
-			if (b == null)
-				throw new NotSupportedException ("Custom list stores are not supported");
-			Widget.Model = b.Store;
+			if (b == null) {
+				CustomListModel model = new CustomListModel (source);
+				Widget.Model = model.Store;
+			} else
+				Widget.Model = b.Store;
 		}
 
 		public int SelectedRow {
