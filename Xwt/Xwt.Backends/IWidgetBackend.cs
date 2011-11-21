@@ -48,7 +48,7 @@ namespace Xwt.Backends
 		
 		object NativeWidget { get; }
 		
-		void DragStart (TransferDataSource data, DragDropAction dragAction);
+		void DragStart (TransferDataSource data, DragDropAction dragAction, object imageBackend, int hotX, int hotY);
 		void SetDragSource (string[] types, DragDropAction dragAction);
 		void SetDragTarget (string[] types, DragDropAction dragAction);
 	}

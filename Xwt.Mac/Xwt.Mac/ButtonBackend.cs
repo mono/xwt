@@ -57,7 +57,8 @@ namespace Xwt.Mac
 		public void SetContent (string label, object imageBackend)
 		{
 			Widget.Title = label;
-			Widget.Image = (NSImage)imageBackend;
+			if (imageBackend != null)
+				Widget.Image = (NSImage)imageBackend;
 			Widget.SizeToFit ();
 		}
 		

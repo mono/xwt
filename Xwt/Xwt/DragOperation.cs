@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -36,6 +37,11 @@ namespace Xwt
 	{
 		TransferDataSource data = new TransferDataSource ();
 		Widget source;
+		DragDropAction action;
+		bool started;
+		Image image;
+		int hotX;
+		int hotY;
 		
 		internal DragOperation (Widget w)
 		{
@@ -43,15 +49,32 @@ namespace Xwt
 			Action = DragDropAction.Copy;
 		}
 		
-		public DragDropAction Action { get; set; }
+		public DragDropAction Action {
+			get { return action; } 
+			set {
+				if (started)
+					throw new InvalidOperationException ("The drag action must be set before starting the drag operation");
+				action = value;
+			}
+		}
 		
 		public TransferDataSource Data {
 			get { return data; }
 		}
 		
+		public void SetDragImage (Image image, int hotX, int hotY)
+		{
+			if (started)
+				throw new InvalidOperationException ("The drag image must be set before starting the drag operation");
+			this.image = image;
+			this.hotX = hotX;
+			this.hotY = hotY;
+		}
+		
 		public void Start ()
 		{
-			source.DragStart (data, Action);
+			started = true;
+			source.DragStart (data, action, XwtObject.GetBackend (image), hotX, hotY);
 		}
 	}
 	

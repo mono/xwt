@@ -165,9 +165,9 @@ namespace Xwt
 			return new DragOperation (this);
 		}
 		
-		internal void DragStart (TransferDataSource data, DragDropAction dragAction)
+		internal void DragStart (TransferDataSource data, DragDropAction dragAction, object image, int hotX, int hotY)
 		{
-			Backend.DragStart (data, dragAction);
+			Backend.DragStart (data, dragAction, image, hotX, hotY);
 		}
 		
 		public void SetDragDropTarget (params string[] types)

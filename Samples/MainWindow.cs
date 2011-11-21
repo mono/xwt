@@ -47,15 +47,16 @@ namespace Samples
 			samplesTree.Columns.Add ("Name", iconCol, nameCol);
 			
 			AddSample (null, "Boxes", typeof(Boxes));
-			AddSample (null, "Buttons", typeof(ButtonSample));
-			AddSample (null, "ComboBox", typeof(ComboBoxes));
+//			AddSample (null, "Buttons", typeof(ButtonSample));
+//			AddSample (null, "ComboBox", typeof(ComboBoxes));
+//			AddSample (null, "Designer", typeof(Designer));
 			AddSample (null, "Drag & Drop", typeof(DragDrop));
 			var n = AddSample (null, "Drawing", null);
-//			AddSample (n, "Chart", typeof(ChartSample));
+			AddSample (n, "Chart", typeof(ChartSample));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
 			AddSample (null, "List View", typeof(ListView1));
 			AddSample (null, "Notebook", typeof(NotebookSample));
-			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
+//			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
 			
 			samplesTree.DataSource = store;
 			

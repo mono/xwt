@@ -1,10 +1,10 @@
 // 
-// DesignerSurface.cs
+// Designer.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       lluis <${AuthorEmail}>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2011 lluis
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,45 +23,33 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Backends;
-using System.Xml;
-using System.Xaml;
-using Xwt.Drawing;
+using Xwt;
+using Xwt.Design;
 
-namespace Xwt.Design
+namespace Samples
 {
-	public class DesignerSurface: Widget
+	public class Designer: VBox
 	{
-		Widget widget;
-		
-		public DesignerSurface ()
+		public Designer ()
 		{
-		}
-		
-		new IDesignerSurfaceBackend Backend {
-			get { return (IDesignerSurfaceBackend) base.Backend; }
-		}
-		
-		public void Load (XmlReader r)
-		{
-			object o = XamlServices.Load (r);
-			if (!(o is Widget))
-				throw new InvalidOperationException ("Invalid object type. Expected Xwt.Widget, found: " + o.GetType ());
-			widget = (Widget)o;
-			Backend.Load (widget);
-		}
-		
-		public void Load (Widget widget)
-		{
-			this.widget = widget;
-			Backend.Load (widget);
-		}
-		
-		public void Save (XmlWriter w)
-		{
-			XamlServices.Save (w, widget);
+			VBox box = new VBox ();
+			Button b = new Button ("Hi there");
+			box.PackStart (b);
+			Label la = new Label ("Some label");
+			box.PackStart (la);
+			HBox hb = new HBox ();
+			hb.PackStart (new Label ("Text"));
+			var cb = new ComboBox ();
+			cb.Items.Add ("One");
+			cb.Items.Add ("Two");
+			cb.SelectedIndex = 0;
+			hb.PackStart (cb);
+			box.PackStart (hb);
+			
+			DesignerSurface ds = new DesignerSurface ();
+			ds.Load (box);
+			PackStart (ds, BoxMode.FillAndExpand);
 		}
 	}
 }

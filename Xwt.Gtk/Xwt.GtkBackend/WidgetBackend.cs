@@ -367,15 +367,16 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public void DragStart (TransferDataSource data, DragDropAction dragAction)
+		public void DragStart (TransferDataSource data, DragDropAction dragAction, object imageBackend, int hotX, int hotY)
 		{
 			Gdk.DragAction action = ConvertDragAction (dragAction);
 			currentDragData = data;
 			Widget.DragEnd += HandleWidgetDragEnd;
 			Widget.DragDataGet += HandleWidgetDragDataGet;
-			Gtk.Drag.Begin (Widget, Util.BuildTargetTable (data.DataTypes), action, 0, Gtk.Global.CurrentEvent);
+			var ctx = Gtk.Drag.Begin (Widget, Util.BuildTargetTable (data.DataTypes), action, 0, Gtk.Global.CurrentEvent);
+			Gtk.Drag.SetIconPixbuf (ctx, (Gdk.Pixbuf)imageBackend, hotX, hotY);
 		}
-
+		
 		void HandleWidgetDragDataGet (object o, Gtk.DragDataGetArgs args)
 		{
 			Util.SetDragData (currentDragData, args);

@@ -234,7 +234,7 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public void DragStart (TransferDataSource data, DragDropAction dragAction)
+		public void DragStart (TransferDataSource data, DragDropAction dragAction, object image, int xhot, int yhot)
 		{
 			var pb = NSPasteboard.FromName (NSPasteboard.NSDragPasteboardName);
 			InitPasteboard (pb, data);

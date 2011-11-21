@@ -1,10 +1,10 @@
 // 
-// DesignerSurface.cs
+// DesignerSurfaceBackend.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       lluis <${AuthorEmail}>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2011 lluis
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,46 +23,60 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Xwt.Backends;
-using System.Xml;
-using System.Xaml;
-using Xwt.Drawing;
+using Xwt.Engine;
 
-namespace Xwt.Design
+namespace Xwt.GtkBackend
 {
-	public class DesignerSurface: Widget
+	public class DesignerSurfaceBackend: WidgetBackend, IDesignerSurfaceBackend
 	{
-		Widget widget;
+		Gtk.EventBox box;
 		
-		public DesignerSurface ()
+		public DesignerSurfaceBackend ()
 		{
+			box = new DesignerBox ();
+			box.Show ();
+			Widget = box;
 		}
 		
-		new IDesignerSurfaceBackend Backend {
-			get { return (IDesignerSurfaceBackend) base.Backend; }
-		}
-		
-		public void Load (XmlReader r)
+		public void Load (Widget w)
 		{
-			object o = XamlServices.Load (r);
-			if (!(o is Widget))
-				throw new InvalidOperationException ("Invalid object type. Expected Xwt.Widget, found: " + o.GetType ());
-			widget = (Widget)o;
-			Backend.Load (widget);
-		}
-		
-		public void Load (Widget widget)
-		{
-			this.widget = widget;
-			Backend.Load (widget);
-		}
-		
-		public void Save (XmlWriter w)
-		{
-			XamlServices.Save (w, widget);
+			var wb = (IGtkWidgetBackend) WidgetRegistry.GetBackend (w);
+			box.Add (wb.Widget);
 		}
 	}
+	
+	class DesignerBox: Gtk.EventBox
+	{
+		Gtk.EventBox surface;
+		
+		public DesignerBox ()
+		{
+			surface = new Gtk.EventBox ();
+			surface.ShowAll ();
+			surface.VisibleWindow = false;
+			surface.Parent = this;
+		}
+		
+		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
+		{
+			base.OnSizeAllocated (allocation);
+			surface.Allocation = new Gdk.Rectangle (0,0, allocation.Width, allocation.Height);
+		}
+		
+		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		{
+			base.OnSizeRequested (ref requisition);
+			surface.SizeRequest ();
+		}
+		
+		protected override void ForAll (bool include_internals, Gtk.Callback callback)
+		{
+			base.ForAll (include_internals, callback);
+			callback (surface);
+		}
+	}
+		
 }
 
