@@ -234,13 +234,21 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public void DragStart (TransferDataSource data, DragDropAction dragAction, object image, int xhot, int yhot)
+		public void DragStart (TransferDataSource data, DragDropAction dragAction, object image, double xhot, double yhot)
 		{
+			var lo = RootWidget.ConvertPointToBase (new PointF (Widget.Bounds.X, Widget.Bounds.Y));
+			lo = RootWidget.Window.ConvertBaseToScreen (lo);
+			var ml = NSEvent.CurrentMouseLocation;
 			var pb = NSPasteboard.FromName (NSPasteboard.NSDragPasteboardName);
+			if (pb == null)
+				throw new InvalidOperationException ("Could not get pasteboard");
+			if (data == null)
+				throw new ArgumentNullException ("data");
 			InitPasteboard (pb, data);
-			var pos = new PointF (Widget.Bounds.X + Widget.Bounds.Width/2, Widget.Bounds.Y + Widget.Bounds.Height / 2);
-			var img = new NSImage ("/Users/lluis/prog/work/Xwt/MacTest/class.png");
-			Widget.DragImage (img, pos, new SizeF (0,0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
+			var img = (NSImage)image;
+			var pos = new PointF (ml.X - lo.X - (float)xhot, lo.Y - ml.Y - (float)yhot + img.Size.Height);
+			Console.WriteLine ("P:" + NSApplication.SharedApplication.CurrentEvent);
+			Widget.DragImage (img, pos, new SizeF (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
 		}
 		
 		public void SetDragSource (string[] types, DragDropAction dragAction)

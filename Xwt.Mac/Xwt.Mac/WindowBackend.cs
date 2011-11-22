@@ -221,7 +221,7 @@ namespace Xwt.Mac
 			
 		}
 		
-		public void DragStart (TransferDataSource data, DragDropAction dragAction, object dragImage, int xhot, int yhot)
+		public void DragStart (TransferDataSource data, DragDropAction dragAction, object dragImage, double xhot, double yhot)
 		{
 			throw new NotImplementedException ();
 		}

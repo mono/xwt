@@ -45,7 +45,7 @@ Global
 		{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = MacTest\MacTest.csproj
+		StartupItem = GtkTest\GtkTest.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

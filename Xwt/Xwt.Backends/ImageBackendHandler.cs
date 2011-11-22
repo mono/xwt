@@ -63,6 +63,14 @@ namespace Xwt.Backends
 		public abstract Size GetSize (object handle);
 		
 		public abstract object Resize (object handle, double width, double height);
+		
+		public abstract object Copy (object handle);
+
+		public abstract void CopyArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY);
+
+		public abstract object Crop (object handle, int srcX, int srcY, int width, int height);
+
+		public abstract object ChangeOpacity (object backend, double opacity);
 	}
 }
 

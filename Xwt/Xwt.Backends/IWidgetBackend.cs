@@ -48,7 +48,7 @@ namespace Xwt.Backends
 		
 		object NativeWidget { get; }
 		
-		void DragStart (TransferDataSource data, DragDropAction dragAction, object imageBackend, int hotX, int hotY);
+		void DragStart (TransferDataSource data, DragDropAction allowedDragActions, object imageBackend, double hotX, double hotY);
 		void SetDragSource (string[] types, DragDropAction dragAction);
 		void SetDragTarget (string[] types, DragDropAction dragAction);
 	}
@@ -60,6 +60,7 @@ namespace Xwt.Backends
 		void OnDragDropCheck (DragCheckEventArgs args);
 		void OnDragDrop (DragEventArgs args);
 		void OnDragLeave (EventArgs args);
+		void OnDragFinished (DragFinishedEventArgs args);
 		
 		/// <summary>
 		/// Notifies the frontend that the preferred size of this widget has changed

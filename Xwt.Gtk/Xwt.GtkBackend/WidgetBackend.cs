@@ -299,11 +299,13 @@ namespace Xwt.GtkBackend
 					res = DragDropResult.Canceled;
 			}
 			if (res == DragDropResult.Canceled) {
-				args.RetVal = false;
+				args.RetVal = true;
+				Gtk.Drag.Finish (args.Context, false, false, args.Time);
 			}
 			else if (res == DragDropResult.Success) {
 				args.RetVal = true;
-				Gtk.Drag.Finish (args.Context, true, false, args.Time);
+				var cda = ConvertDragAction (args.Context.Actions);
+				Gtk.Drag.Finish (args.Context, true, cda == DragDropAction.Move, args.Time);
 			}
 			else {
 				// Undefined, we need more data
@@ -360,21 +362,53 @@ namespace Xwt.GtkBackend
 					Gdk.Drag.Status (args.Context, ConvertDragAction (da.AllowedAction), args.Time);
 				}
 				else {
-					DragEventArgs da = new DragEventArgs (lastDragPosition, dragData, ConvertDragAction (args.Context.Actions));
+					var cda = ConvertDragAction (args.Context.Actions);
+					DragEventArgs da = new DragEventArgs (lastDragPosition, dragData, cda);
 					EventSink.OnDragDrop (da);
-					Gtk.Drag.Finish (args.Context, da.Success, false, args.Time);
+					Gtk.Drag.Finish (args.Context, da.Success, cda == DragDropAction.Move, args.Time);
 				}
 			}
 		}
 		
-		public void DragStart (TransferDataSource data, DragDropAction dragAction, object imageBackend, int hotX, int hotY)
+		class IconInitializer
+		{
+			public Gdk.Pixbuf Image;
+			public double HotX, HotY;
+			public Gtk.Widget Widget;
+			
+			public static void Init (Gtk.Widget w, Gdk.Pixbuf image, double hotX, double hotY)
+			{
+				IconInitializer ii = new WidgetBackend.IconInitializer ();
+				ii.Image = image;
+				ii.HotX = hotX;
+				ii.HotY = hotY;
+				ii.Widget = w;
+				w.DragBegin += ii.Begin;
+			}
+			
+			void Begin (object o, Gtk.DragBeginArgs args)
+			{
+				Gtk.Drag.SetIconPixbuf (args.Context, Image, (int)HotX, (int)HotY);
+				Widget.DragBegin -= Begin;
+			}
+		}
+		
+		public void DragStart (TransferDataSource data, DragDropAction dragAction, object imageBackend, double hotX, double hotY)
 		{
 			Gdk.DragAction action = ConvertDragAction (dragAction);
 			currentDragData = data;
+			Widget.DragBegin += HandleDragBegin;
+			IconInitializer.Init (Widget, (Gdk.Pixbuf) imageBackend, hotX, hotY);
+			Gtk.Drag.Begin (Widget, Util.BuildTargetTable (data.DataTypes), action, 1, Gtk.Global.CurrentEvent);
+		}
+
+		void HandleDragBegin (object o, Gtk.DragBeginArgs args)
+		{
+			Console.WriteLine ("Begin drag");
 			Widget.DragEnd += HandleWidgetDragEnd;
+			Widget.DragFailed += HandleDragFailed;
+			Widget.DragDataDelete += HandleDragDataDelete;
 			Widget.DragDataGet += HandleWidgetDragDataGet;
-			var ctx = Gtk.Drag.Begin (Widget, Util.BuildTargetTable (data.DataTypes), action, 0, Gtk.Global.CurrentEvent);
-			Gtk.Drag.SetIconPixbuf (ctx, (Gdk.Pixbuf)imageBackend, hotX, hotY);
 		}
 		
 		void HandleWidgetDragDataGet (object o, Gtk.DragDataGetArgs args)
@@ -382,10 +416,29 @@ namespace Xwt.GtkBackend
 			Util.SetDragData (currentDragData, args);
 		}
 
+		void HandleDragFailed (object o, Gtk.DragFailedArgs args)
+		{
+			Console.WriteLine ("FAILED");
+		}
+
+		void HandleDragDataDelete (object o, Gtk.DragDataDeleteArgs args)
+		{
+			FinishDrag (true);
+		}
+		
 		void HandleWidgetDragEnd (object o, Gtk.DragEndArgs args)
+		{
+			FinishDrag (false);
+		}
+		
+		void FinishDrag (bool delete)
 		{
 			Widget.DragEnd -= HandleWidgetDragEnd;
 			Widget.DragDataGet -= HandleWidgetDragDataGet;
+			Widget.DragFailed -= HandleDragFailed;
+			Widget.DragDataDelete -= HandleDragDataDelete;
+			Widget.DragBegin -= HandleDragBegin;
+			eventSink.OnDragFinished (new DragFinishedEventArgs (delete));
 		}
 		
 		public void SetDragTarget (string[] types, DragDropAction dragAction)

@@ -61,6 +61,26 @@ namespace Xwt.Mac
 		{
 			throw new NotImplementedException ();
 		}
+		
+		public override object Copy (object handle)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public override void CopyArea (object backend, int srcX, int srcY, int width, int height, object dest, int destX, int destY)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public override object Crop (object backend, int srcX, int srcY, int width, int height)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public override object ChangeOpacity (object backend, double opacity)
+		{
+			throw new NotImplementedException ();
+		}
 	}
 }
 

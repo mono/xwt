@@ -40,16 +40,21 @@ namespace Xwt
 		DragDropAction action;
 		bool started;
 		Image image;
-		int hotX;
-		int hotY;
+		double hotX;
+		double hotY;
+		
+		public event EventHandler<DragFinishedEventArgs> Finished;
 		
 		internal DragOperation (Widget w)
 		{
 			source = w;
-			Action = DragDropAction.Copy;
+			AllowedActions = DragDropAction.All;
 		}
 		
-		public DragDropAction Action {
+		/// <summary>
+		/// A bitmask of the allowed drag actions for this drag.
+		/// </summary>
+		public DragDropAction AllowedActions {
 			get { return action; } 
 			set {
 				if (started)
@@ -62,7 +67,7 @@ namespace Xwt
 			get { return data; }
 		}
 		
-		public void SetDragImage (Image image, int hotX, int hotY)
+		public void SetDragImage (Image image, double hotX, double hotY)
 		{
 			if (started)
 				throw new InvalidOperationException ("The drag image must be set before starting the drag operation");
@@ -76,6 +81,14 @@ namespace Xwt
 			started = true;
 			source.DragStart (data, action, XwtObject.GetBackend (image), hotX, hotY);
 		}
+
+		internal void NotifyFinished (DragFinishedEventArgs args)
+		{
+			Console.WriteLine ("Notify finished " + args.DeleteSource);
+			if (Finished != null)
+				Finished (this, args);
+		}
+		
 	}
 	
 	public class TransferDataSource

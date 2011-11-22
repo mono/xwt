@@ -71,6 +71,39 @@ namespace Xwt.GtkBackend
 			var pix = (Gdk.Pixbuf)handle;
 			return pix.ScaleSimple ((int)width, (int)height, Gdk.InterpType.Bilinear);
 		}
+		
+		public override object Copy (object handle)
+		{
+			var pix = (Gdk.Pixbuf)handle;
+			return pix.Copy ();
+		}
+		
+		public override void CopyArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
+		{
+			var pixSrc = (Gdk.Pixbuf)srcHandle;
+			var pixDst = (Gdk.Pixbuf)destHandle;
+			pixSrc.CopyArea (srcX, srcY, width, height, pixDst, destX, destY);
+		}
+		
+		public override object Crop (object handle, int srcX, int srcY, int width, int height)
+		{
+			var pix = (Gdk.Pixbuf)handle;
+			Gdk.Pixbuf res = new Gdk.Pixbuf (pix.Colorspace, pix.HasAlpha, pix.BitsPerSample, width, height);
+			res.Fill (0);
+			Console.WriteLine ("pp:" + srcX + " " + srcY + " " + width + " " + height);
+			pix.CopyArea (srcX, srcY, width, height, res, 0, 0);
+			return res;
+		}
+		
+		public override object ChangeOpacity (object backend, double opacity)
+		{
+			Gdk.Pixbuf image = (Gdk.Pixbuf) backend;
+			Gdk.Pixbuf result = image.Copy ();
+			result.Fill (0);
+			result = result.AddAlpha (true, 0, 0, 0);
+			image.Composite (result, 0, 0, image.Width, image.Height, 0, 0, 1, 1, Gdk.InterpType.Bilinear, (int)(255 * opacity));
+			return result;
+		}
 	}
 }
 

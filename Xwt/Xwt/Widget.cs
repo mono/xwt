@@ -47,6 +47,7 @@ namespace Xwt
 		bool heightCached;
 		static HashSet<Widget> resizeRequestQueue = new HashSet<Widget> ();
 		EventSink eventSink;
+		DragOperation currentDragOperation;
 		
 		protected class EventSink: IWidgetEventSink
 		{
@@ -80,6 +81,11 @@ namespace Xwt
 			public void OnPreferredSizeChanged ()
 			{
 				Parent.OnPreferredSizeChanged ();
+			}
+			
+			public void OnDragFinished (DragFinishedEventArgs args)
+			{
+				Parent.OnDragFinished (args);
 			}
 		}
 		
@@ -162,12 +168,13 @@ namespace Xwt
 		
 		public DragOperation CreateDragOperation ()
 		{
-			return new DragOperation (this);
+			currentDragOperation = new DragOperation (this);
+			return currentDragOperation;
 		}
 		
-		internal void DragStart (TransferDataSource data, DragDropAction dragAction, object image, int hotX, int hotY)
+		internal void DragStart (TransferDataSource data, DragDropAction allowedDragActions, object image, double hotX, double hotY)
 		{
-			Backend.DragStart (data, dragAction, image, hotX, hotY);
+			Backend.DragStart (data, allowedDragActions, image, hotX, hotY);
 		}
 		
 		public void SetDragDropTarget (params string[] types)
@@ -244,6 +251,15 @@ namespace Xwt
 		{
 			if (dragLeave != null)
 				dragLeave (this, args);
+		}
+		
+		internal protected virtual void OnDragFinished (DragFinishedEventArgs args)
+		{
+			if (currentDragOperation != null) {
+				var dop = currentDragOperation;
+				currentDragOperation = null;
+				dop.NotifyFinished (args);
+			}
 		}
 		
 		protected static IWidgetBackend GetWidgetBackend (Widget w)

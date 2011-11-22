@@ -80,8 +80,18 @@ namespace Xwt
 		
 		public Point Position { get; private set; }
 		
+		/// <summary>
+		/// Proposed drop action, which depends on the control keys being pressed
+		/// </summary>
 		public DragDropAction Action { get; private set; }
-		
+
+		/// <summary>
+		/// Allowed action
+		/// </summary>
+		/// <remarks>
+		/// To be set by the handler of the event. Specifies the action that will be performed if the item is dropped.
+		/// If not specified or set to Default, the action will be determined by the handler of DragOver.
+		/// </remarks>
 		public DragDropAction AllowedAction { get; set; }
 	}
 
@@ -102,6 +112,16 @@ namespace Xwt
 		public DragDropAction Action { get; private set; }
 		
 		public DragDropAction AllowedAction { get; set; }
+	}
+	
+	public class DragFinishedEventArgs: EventArgs
+	{
+		public DragFinishedEventArgs (bool deleteSource)
+		{
+			DeleteSource = deleteSource;
+		}
+		
+		public bool DeleteSource { get; private set; }
 	}
 	
 	public enum DragDropResult

@@ -51,14 +51,24 @@ namespace Xwt.Drawing
 		{
 		}
 		
+		public Image (Image image): base (handler.Copy (image.Backend))
+		{
+		}
+		
 		public static Image FromResource (Type type, string resource)
 		{
-			return new Image (handler.LoadFromResource (type.Assembly, resource));
+			var img = handler.LoadFromResource (type.Assembly, resource);
+			if (img == null)
+				throw new InvalidOperationException ("Resource not found: " + resource);
+			return new Image (img);
 		}
 		
 		public static Image FromResource (Assembly asm, string resource)
 		{
-			return new Image (handler.LoadFromResource (asm, resource));
+			var img = handler.LoadFromResource (asm, resource);
+			if (img == null)
+				throw new InvalidOperationException ("Resource not found: " + resource);
+			return new Image (img);
 		}
 		
 		public static Image FromFile (string file)
@@ -110,9 +120,19 @@ namespace Xwt.Drawing
 			throw new NotImplementedException ();
 		}
 		
-		public Image SetOpacity (double opacity)
+		public Image ChangeOpacity (double opacity)
 		{
-			throw new NotImplementedException ();
+			return new Image (handler.ChangeOpacity (Backend, opacity));
+		}
+		
+		public void CopyArea (int srcX, int srcY, int width, int height, Image dest, int destX, int destY)
+		{
+			handler.CopyArea (Backend, srcX, srcY, width, height, dest.Backend, destX, destY);
+		}
+		
+		public Image Crop (int srcX, int srcY, int width, int height)
+		{
+			return new Image (handler.Crop (Backend, srcX, srcY, width, height));
 		}
 		
 		public void Dispose ()
