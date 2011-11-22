@@ -283,6 +283,7 @@ namespace Xwt.GtkBackend
 		void HandleWidgetDragDrop (object o, Gtk.DragDropArgs args)
 		{
 			lastDragPosition = new Point (args.X, args.Y);
+			var cda = ConvertDragAction (args.Context.Action);
 
 			DragDropResult res;
 			if (!dropCheckEventEnabled) {
@@ -292,7 +293,7 @@ namespace Xwt.GtkBackend
 					res = DragDropResult.Canceled;
 			}
 			else {
-				DragCheckEventArgs da = new DragCheckEventArgs (new Point (args.X, args.Y), Util.GetDragTypes (args.Context.Targets), ConvertDragAction (args.Context.Actions));
+				DragCheckEventArgs da = new DragCheckEventArgs (new Point (args.X, args.Y), Util.GetDragTypes (args.Context.Targets), cda);
 				EventSink.OnDragDropCheck (da);
 				res = da.Result;
 				if (!dropEventEnabled && res == DragDropResult.None)
@@ -304,7 +305,6 @@ namespace Xwt.GtkBackend
 			}
 			else if (res == DragDropResult.Success) {
 				args.RetVal = true;
-				var cda = ConvertDragAction (args.Context.Actions);
 				Gtk.Drag.Finish (args.Context, true, cda == DragDropAction.Move, args.Time);
 			}
 			else {
@@ -357,12 +357,11 @@ namespace Xwt.GtkBackend
 				if (dragDataForMotion) {
 					DragOverEventArgs da = new DragOverEventArgs (lastDragPosition, dragData, ConvertDragAction (args.Context.Actions));
 					EventSink.OnDragOver (da);
-//					if (da.AllowedAction != DragDropAction.None)
-//						Gtk.Drag.Highlight (Widget);
 					Gdk.Drag.Status (args.Context, ConvertDragAction (da.AllowedAction), args.Time);
 				}
 				else {
-					var cda = ConvertDragAction (args.Context.Actions);
+					// Use Context.Action here since that's the action selected in DragOver
+					var cda = ConvertDragAction (args.Context.Action);
 					DragEventArgs da = new DragEventArgs (lastDragPosition, dragData, cda);
 					EventSink.OnDragDrop (da);
 					Gtk.Drag.Finish (args.Context, da.Success, cda == DragDropAction.Move, args.Time);

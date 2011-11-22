@@ -247,7 +247,6 @@ namespace Xwt.Mac
 			InitPasteboard (pb, data);
 			var img = (NSImage)image;
 			var pos = new PointF (ml.X - lo.X - (float)xhot, lo.Y - ml.Y - (float)yhot + img.Size.Height);
-			Console.WriteLine ("P:" + NSApplication.SharedApplication.CurrentEvent);
 			Widget.DragImage (img, pos, new SizeF (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
 		}
 		
@@ -399,6 +398,8 @@ namespace Xwt.Mac
 		
 		static DragDropAction ConvertAction (NSDragOperation action)
 		{
+			if (action == NSDragOperation.AllObsolete)
+				return DragDropAction.All;
 			DragDropAction res = (DragDropAction)0;
 			if ((action & NSDragOperation.Copy) != 0)
 				res |= DragDropAction.Copy;

@@ -35,12 +35,15 @@ namespace Samples
 
 		void HandleB2DragOver (object sender, DragOverEventArgs e)
 		{
-			e.AllowedAction = e.Action;
+			if (e.Action == DragDropAction.All)
+				e.AllowedAction = DragDropAction.Move;
+			else
+				e.AllowedAction = e.Action;
 		}
 
 		void HandleB2DragDrop (object sender, DragEventArgs e)
 		{
-			Console.WriteLine ("Dropped!");
+			Console.WriteLine ("Dropped! " + e.Action);
 			Console.WriteLine ("Text: " + e.Data.GetValue (TransferDataType.Text));
 			Console.WriteLine ("Uris:");
 			foreach (var u in e.Data.Uris)
