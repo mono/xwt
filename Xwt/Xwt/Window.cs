@@ -163,6 +163,16 @@ namespace Xwt
 			}
 		}
 		
+		public bool Decorated {
+			get { return Backend.Decorated; }
+			set { Backend.Decorated = value; }
+		}
+		
+		public bool ShowInTaskbar {
+			get { return Backend.ShowInTaskbar; }
+			set { Backend.ShowInTaskbar = value; }
+		}
+		
 		protected override WidgetSize OnGetPreferredWidth ()
 		{
 			WidgetSize s;

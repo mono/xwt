@@ -57,6 +57,7 @@
     <Compile Include="Samples\DrawingTransforms.cs" />
     <Compile Include="Samples\ComboBoxes.cs" />
     <Compile Include="Samples\Designer.cs" />
+    <Compile Include="Samples\Windows.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

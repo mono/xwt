@@ -146,6 +146,14 @@ namespace Xwt.Mac
 		}
 
 		#region IWidgetBackend implementation
+		
+		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
+		{
+			var lo = Widget.ConvertPointToBase (new PointF ((float)widgetCoordinates.X, (float)widgetCoordinates.Y));
+			lo = Widget.Window.ConvertBaseToScreen (lo);
+			return new Point (lo.X, lo.Y);
+		}
+		
 		public WidgetSize GetPreferredWidth ()
 		{
 			double w = Widget.WidgetWidth () + frontend.Margin.HorizontalSpacing;

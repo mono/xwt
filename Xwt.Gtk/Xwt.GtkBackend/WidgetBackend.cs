@@ -125,6 +125,16 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
+		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
+		{
+			int x, y;
+			Widget.GdkWindow.GetOrigin (out x, out y);
+			var a = Widget.Allocation;
+			x += a.X;
+			y += a.Y;
+			return new Point (x, y);
+		}
+		
 		public virtual WidgetSize GetPreferredWidth ()
 		{
 			return new WidgetSize (Widget.SizeRequest ().Width) + frontend.Margin.HorizontalSpacing;
@@ -151,7 +161,7 @@ namespace Xwt.GtkBackend
 		
 		public static Gtk.Widget GetWidget (IWidgetBackend w)
 		{
-			return ((IGtkWidgetBackend)w).Widget;
+			return w != null ? ((IGtkWidgetBackend)w).Widget : null;
 		}
 		
 		public virtual void UpdateLayout ()

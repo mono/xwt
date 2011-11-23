@@ -37,6 +37,7 @@ namespace Xwt.Backends
 		bool CanGetFocus { get; set; }
 		bool HasFocus { get; }
 		Size Size { get; }
+		Point ConvertToScreenCoordinates (Point widgetCoordinates);
 		
 		void SetFocus ();
 		

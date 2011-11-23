@@ -27,6 +27,8 @@
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
+using System.Drawing;
+using MonoMac.ObjCRuntime;
 
 namespace Xwt.Mac
 {
@@ -36,6 +38,10 @@ namespace Xwt.Mac
 		IWindowEventSink eventSink;
 		Window frontend;
 		IMacViewBackend child;
+		
+		public WindowBackend (IntPtr ptr): base (ptr)
+		{
+		}
 		
 		public WindowBackend ()
 		{
@@ -102,6 +108,12 @@ namespace Xwt.Mac
 		{
 			this.eventSink = (IWindowEventSink) eventSink;
 		}
+		
+		Point IWidgetBackend.ConvertToScreenCoordinates (Point widgetCoordinates)
+		{
+			var lo = ConvertBaseToScreen (new PointF ((float)widgetCoordinates.X, (float)widgetCoordinates.Y));
+			return new Point (lo.X, lo.Y);
+		}
 
 		void IBackend.EnableEvent (object ev)
 		{
@@ -130,6 +142,26 @@ namespace Xwt.Mac
 				ContentView.AddSubview (this.child.View);
 				UpdateLayout ();
 				this.child.View.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
+			}
+		}
+		
+		bool IWindowBackend.Decorated {
+			get {
+				return (StyleMask & NSWindowStyle.Titled) != 0;
+			}
+			set {
+				if (value)
+					StyleMask |= NSWindowStyle.Titled;
+				else
+					StyleMask &= ~(NSWindowStyle.Titled | NSWindowStyle.Borderless);
+			}
+		}
+		
+		bool IWindowBackend.ShowInTaskbar {
+			get {
+				return false;
+			}
+			set {
 			}
 		}
 		
@@ -216,9 +248,11 @@ namespace Xwt.Mac
 		}
 		#endregion
 
+		static Selector closeSel = new Selector ("close");
+		
 		void IDisposable.Dispose ()
 		{
-			
+			Messaging.void_objc_msgSend (this.Handle, closeSel.Handle);
 		}
 		
 		public void DragStart (TransferDataSource data, DragDropAction dragAction, object dragImage, double xhot, double yhot)

@@ -140,6 +140,9 @@
     <Compile Include="Xwt\Command.cs" />
     <Compile Include="Xwt\IListDataSource.cs" />
     <Compile Include="Xwt\ITreeDataSource.cs" />
+    <Compile Include="Xwt\Dialog.cs" />
+    <Compile Include="Xwt.Backends\ICustomWidgetBackend.cs" />
+    <Compile Include="Xwt\PopupWindow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

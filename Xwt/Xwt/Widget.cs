@@ -48,6 +48,7 @@ namespace Xwt
 		static HashSet<Widget> resizeRequestQueue = new HashSet<Widget> ();
 		EventSink eventSink;
 		DragOperation currentDragOperation;
+		Widget contentWidget;
 		
 		protected class EventSink: IWidgetEventSink
 		{
@@ -110,6 +111,23 @@ namespace Xwt
 			return new EventSink ();
 		}
 		
+		protected override IBackend OnCreateBackend ()
+		{
+			var backend = base.OnCreateBackend ();
+			if (backend == null) {
+				// If this is a custom widget, not implemented in Xwt, then we provide the default
+				// backend, which allows setting a content widget
+				Type t = GetType ();
+				Type wt = typeof(Widget);
+				while (t != wt) {
+					if (t.Assembly == wt.Assembly)
+						return null; // It's a core widget
+				}
+				return WidgetRegistry.CreateBackend<IBackend> (wt);
+			}
+			return backend;
+		}
+		
 		protected EventSink WidgetEventSink {
 			get { return eventSink; }
 		}
@@ -155,6 +173,30 @@ namespace Xwt
 		
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public Widget Parent { get; set; }
+		
+		protected Widget Content {
+			get { return contentWidget; }
+			set {
+				ICustomWidgetBackend bk = Backend as ICustomWidgetBackend;
+				if (bk == null)
+					throw new InvalidOperationException ("The Content widget can only be set when directly subclassing Xwt.Widget");
+				bk.SetContent ((IWidgetBackend)GetBackend (value));
+				contentWidget = value;
+			}
+		}
+		
+		public Size Size {
+			get { return Backend.Size; }
+		}
+		
+		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
+		{
+			return Backend.ConvertToScreenCoordinates (widgetCoordinates);
+		}
+		
+		public Rectangle ScreenBounds {
+			get { return new Rectangle (ConvertToScreenCoordinates (new Point (0,0)), Size); }
+		}
 		
 		public bool ShouldSerializeParent ()
 		{

@@ -64,6 +64,24 @@ namespace Xwt.GtkBackend
 			get { return mainBox; }
 		}
 		
+		public bool Decorated {
+			get {
+				return Widget.Decorated;
+			}
+			set {
+				Widget.Decorated = value;
+			}
+		}
+		
+		public bool ShowInTaskbar {
+			get {
+				return !Widget.SkipTaskbarHint;
+			}
+			set {
+				Widget.SkipTaskbarHint = !value;
+			}
+		}
+		
 		public void SetChild (IWidgetBackend child)
 		{
 			var w = (IGtkWidgetBackend) child;

@@ -1,5 +1,5 @@
 // 
-// IWindowBackend.cs
+// Windows.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,32 +23,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Xwt;
 
-namespace Xwt.Backends
+namespace Samples
 {
-	public interface IWindowBackend: IWidgetBackend
+	public class Windows: VBox
 	{
-		Rectangle Bounds { get; set; }
-		
-		string Title { get; set; }
-		void SetChild (IWidgetBackend child);
-		void SetMainMenu (IMenuBackend menu);
-		
-		bool Decorated { get; set; }
-		bool ShowInTaskbar { get; set; }
-	}
-	
-	public interface IWindowEventSink: IWidgetEventSink
-	{
-		void OnBoundsChanged (Rectangle bounds);
-	}
-	
-	public enum WindowEvent
-	{
-		BoundsChanged = 1
+		public Windows ()
+		{
+			Button b = new Button ("Show borderless window");
+			PackStart (b);
+			b.Clicked += delegate {
+				Window w = new Window ();
+				w.Decorated = false;
+				Button c = new Button ("This is a window");
+//				c.Margin.SetAll (10);
+				w.Add (c);
+				c.Clicked += delegate {
+					w.Dispose ();
+				};
+				var bpos = b.ScreenBounds;
+				w.Bounds = new Rectangle (bpos.X, bpos.Y + b.Size.Height, w.Bounds.Width, w.Bounds.Height);
+				w.Show ();
+			};
+		}
 	}
 }
 

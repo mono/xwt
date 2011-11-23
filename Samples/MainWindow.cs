@@ -57,6 +57,7 @@ namespace Samples
 			AddSample (null, "List View", typeof(ListView1));
 			AddSample (null, "Notebook", typeof(NotebookSample));
 //			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
+			AddSample (null, "Windows", typeof(Windows));
 			
 			samplesTree.DataSource = store;
 			

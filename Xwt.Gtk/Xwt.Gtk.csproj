@@ -69,6 +69,7 @@
     <Compile Include="Xwt.GtkBackend\CustomTreeModel.cs" />
     <Compile Include="Xwt.GtkBackend\CustomListModel.cs" />
     <Compile Include="Xwt.GtkBackend\DesignerSurfaceBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\CustomWidgetBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

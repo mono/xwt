@@ -1,5 +1,5 @@
 // 
-// IWindowBackend.cs
+// CustomWidgetBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,32 +23,32 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt;
+using Xwt.Backends;
 
-namespace Xwt.Backends
+namespace Xwt.GtkBackend
 {
-	public interface IWindowBackend: IWidgetBackend
+	public class CustomWidgetBackend: WidgetBackend, ICustomWidgetBackend
 	{
-		Rectangle Bounds { get; set; }
+		public CustomWidgetBackend ()
+		{
+		}
+
+		public override void Initialize ()
+		{
+			Widget = new Gtk.EventBox ();
+			Widget.Show ();
+		}
 		
-		string Title { get; set; }
-		void SetChild (IWidgetBackend child);
-		void SetMainMenu (IMenuBackend menu);
-		
-		bool Decorated { get; set; }
-		bool ShowInTaskbar { get; set; }
-	}
-	
-	public interface IWindowEventSink: IWidgetEventSink
-	{
-		void OnBoundsChanged (Rectangle bounds);
-	}
-	
-	public enum WindowEvent
-	{
-		BoundsChanged = 1
+		protected new Gtk.EventBox Widget {
+			get { return (Gtk.EventBox)base.Widget; }
+			set { base.Widget = value; }
+		}
+
+		public void SetContent (IWidgetBackend widget)
+		{
+			Widget.Child = GetWidget (widget);
+		}
 	}
 }
 
