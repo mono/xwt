@@ -50,6 +50,15 @@ namespace Xwt.GtkBackend
 			set { Widget.Text = value; }
 		}
 		
+		public bool ReadOnly {
+			get {
+				return !Widget.Editable;
+			}
+			set {
+				Widget.Editable = !value;
+			}
+		}
+		
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

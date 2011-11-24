@@ -109,7 +109,6 @@ namespace Xwt
 		protected override void OnBackendCreated ()
 		{
 			base.OnBackendCreated ();
-			Backend.Initialize ((EventSink)WidgetEventSink);
 			Backend.SetButtonStyle (style);
 		}
 		

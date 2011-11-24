@@ -30,6 +30,7 @@ namespace Xwt.Backends
 	public interface ITextEntryBackend: IWidgetBackend
 	{
 		string Text { get; set; }
+		bool ReadOnly { get; set; }
 	}
 	
 	public interface ITextEntryEventSink

@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using System.ComponentModel;
 
 namespace Xwt
 {
@@ -58,9 +59,16 @@ namespace Xwt
 			get { return (ITextEntryBackend) base.Backend; }
 		}
 		
+		[DefaultValue ("")]
 		public string Text {
 			get { return Backend.Text; }
 			set { Backend.Text = value; }
+		}
+		
+		[DefaultValue (false)]
+		public bool ReadOnly {
+			get { return Backend.ReadOnly; }
+			set { Backend.ReadOnly = value; }
 		}
 		
 		protected virtual void OnChanged (EventArgs e)

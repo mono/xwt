@@ -62,6 +62,11 @@ namespace Xwt
 		{
 		}
 		
+		protected override Widget.EventSink CreateEventSink ()
+		{
+			return new EventSink ();
+		}
+		
 		new IToggleButtonBackend Backend {
 			get { return (IToggleButtonBackend) base.Backend; }
 		}

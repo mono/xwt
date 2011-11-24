@@ -37,6 +37,11 @@ namespace Xwt
 		{
 		}
 		
+		public ImageView (Image image)
+		{
+			Image = image;
+		}
+		
 		new IImageViewBackend Backend {
 			get { return (IImageViewBackend) base.Backend; }
 		}
