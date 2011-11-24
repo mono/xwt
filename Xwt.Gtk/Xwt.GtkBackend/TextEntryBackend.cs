@@ -1,5 +1,5 @@
 // 
-// TextView.cs
+// TextEntryBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,15 +23,56 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
+using Xwt.Backends;
 
-namespace Xwt
+namespace Xwt.GtkBackend
 {
-	public class TextView
+	public class TextEntryBackend: WidgetBackend, ITextEntryBackend
 	{
-		public TextView ()
+		public override void Initialize ()
 		{
+			Widget = new Gtk.Entry ();
+			Widget.Show ();
+		}
+		
+		protected new Gtk.Entry Widget {
+			get { return (Gtk.Entry)base.Widget; }
+			set { base.Widget = value; }
+		}
+		
+		protected new ITextEntryEventSink EventSink {
+			get { return (ITextEntryEventSink)base.EventSink; }
+		}
+
+		public string Text {
+			get { return Widget.Text; }
+			set { Widget.Text = value; }
+		}
+		
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is TextEntryEvent) {
+				switch ((TextEntryEvent)eventId) {
+				case TextEntryEvent.Changed: Widget.Changed += HandleChanged; break;
+				}
+			}
+		}
+		
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is TextEntryEvent) {
+				switch ((TextEntryEvent)eventId) {
+				case TextEntryEvent.Changed: Widget.Changed -= HandleChanged; break;
+				}
+			}
+		}
+
+		void HandleChanged (object sender, EventArgs e)
+		{
+			EventSink.OnChanged ();
 		}
 	}
 }

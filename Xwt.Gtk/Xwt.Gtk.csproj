@@ -71,6 +71,7 @@
     <Compile Include="Xwt.GtkBackend\DesignerSurfaceBackend.cs" />
     <Compile Include="Xwt.GtkBackend\CustomWidgetBackend.cs" />
     <Compile Include="Xwt.GtkBackend\MenuButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TextEntryBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -64,7 +64,6 @@
     <Compile Include="Xwt\HPaned.cs" />
     <Compile Include="Xwt.Backends\IPanedBackend.cs" />
     <Compile Include="Xwt\HScale.cs" />
-    <Compile Include="Xwt\TextView.cs" />
     <Compile Include="Xwt\TreeView.cs" />
     <Compile Include="Xwt\DataStore.cs" />
     <Compile Include="Xwt\SizeRequestMode.cs" />
@@ -145,6 +144,8 @@
     <Compile Include="Xwt\PopupWindow.cs" />
     <Compile Include="Xwt\MenuButton.cs" />
     <Compile Include="Xwt.Backends\IMenuButtonBackend.cs" />
+    <Compile Include="Xwt\TextEntry.cs" />
+    <Compile Include="Xwt.Backends\ITextEntryBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

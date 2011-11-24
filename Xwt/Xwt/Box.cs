@@ -78,6 +78,11 @@ namespace Xwt
 			direction = dir;
 		}
 		
+		public double Spacing {
+			get { return spacing; }
+			set { spacing = value; OnPreferredSizeChanged (); }
+		}
+		
 		public ChildrenCollection<BoxPlacement> Placements {
 			get { return children; }
 		}
@@ -134,6 +139,14 @@ namespace Xwt
 				}
 			}
 			return false;
+		}
+		
+		/// <summary>
+		/// Removes all children
+		/// </summary>
+		public void Clear ()
+		{
+			children.Clear ();
 		}
 		
 		void OnAdd (Widget child, BoxPlacement placement)

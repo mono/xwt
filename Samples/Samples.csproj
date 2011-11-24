@@ -58,6 +58,7 @@
     <Compile Include="Samples\ComboBoxes.cs" />
     <Compile Include="Samples\Designer.cs" />
     <Compile Include="Samples\Windows.cs" />
+    <Compile Include="Samples\TextEntries.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

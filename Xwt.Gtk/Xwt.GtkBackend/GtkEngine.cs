@@ -58,6 +58,7 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ComboBox), typeof(ComboBoxBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Design.DesignerSurface), typeof(DesignerSurfaceBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.MenuButton), typeof(MenuButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.TextEntry), typeof(TextEntryBackend));
 		}
 
 		public override void RunApplication ()
