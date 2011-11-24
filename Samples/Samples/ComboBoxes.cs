@@ -57,6 +57,22 @@ namespace Samples
 				}
 			};
 			PackStart (box);
+			
+			// Combo with custom labels
+			
+			box = new HBox ();
+			ComboBox c3 = new ComboBox ();
+			c3.Items.Add (0, "Combo with custom labels");
+			c3.Items.Add (1, "One");
+			c3.Items.Add (2, "Two");
+			c3.Items.Add (3, "Three");
+			la = new Label ();
+			box.PackStart (c3);
+			box.PackStart (la);
+			c3.SelectionChanged += delegate {
+				la.Text = "Selected item: " + c3.SelectedItem;
+			};
+			PackStart (box);
 		}
 	}
 }

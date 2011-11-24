@@ -48,7 +48,7 @@ namespace Samples
 			
 			AddSample (null, "Boxes", typeof(Boxes));
 			AddSample (null, "Buttons", typeof(ButtonSample));
-//			AddSample (null, "ComboBox", typeof(ComboBoxes));
+			AddSample (null, "ComboBox", typeof(ComboBoxes));
 //			AddSample (null, "Designer", typeof(Designer));
 			AddSample (null, "Drag & Drop", typeof(DragDrop));
 			var n = AddSample (null, "Drawing", null);

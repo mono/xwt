@@ -118,6 +118,17 @@ namespace Xwt
 			}
 		}
 		
+		public object SelectedText {
+			get {
+				if (Backend.SelectedRow == -1)
+					return null;
+				return Items [Backend.SelectedRow];
+			}
+			set {
+				SelectedIndex = Items.IndexOf (value);
+			}
+		}
+		
 		void OnCellChanged ()
 		{
 			Backend.SetViews (views);
