@@ -142,13 +142,16 @@ namespace Xwt
 		
 		public void Show ()
 		{
-			Backend.Visible = true;
+			Visible = true;
 		}
 		
 		[DefaultValue (true)]
 		public bool Visible {
 			get { return Backend.Visible; }
-			set { Backend.Visible = value; }
+			set {
+				Backend.Visible = value; 
+				OnPreferredSizeChanged ();
+			}
 		}
 		
 		[DefaultValue (true)]

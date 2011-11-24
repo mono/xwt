@@ -70,6 +70,7 @@
     <Compile Include="Xwt.GtkBackend\CustomListModel.cs" />
     <Compile Include="Xwt.GtkBackend\DesignerSurfaceBackend.cs" />
     <Compile Include="Xwt.GtkBackend\CustomWidgetBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\MenuButtonBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

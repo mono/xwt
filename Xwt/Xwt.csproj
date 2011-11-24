@@ -143,6 +143,8 @@
     <Compile Include="Xwt\Dialog.cs" />
     <Compile Include="Xwt.Backends\ICustomWidgetBackend.cs" />
     <Compile Include="Xwt\PopupWindow.cs" />
+    <Compile Include="Xwt\MenuButton.cs" />
+    <Compile Include="Xwt.Backends\IMenuButtonBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

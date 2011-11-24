@@ -38,6 +38,18 @@ namespace Samples
 			box4.PackStart (b);
 			box4.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
 			PackStart (box4);
+			
+			HBox box5 = new HBox ();
+			Button b2 = new Button ("Hide / Show");
+			box5.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			var hsb = new SimpleBox (20);
+			box5.PackStart (hsb, BoxMode.None);
+			box5.PackStart (b2);
+			box5.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			b2.Clicked += delegate {
+				hsb.Visible = !hsb.Visible;
+			};
+			PackStart (box5);
 		}
 	}
 	

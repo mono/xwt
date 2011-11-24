@@ -170,6 +170,8 @@ namespace Xwt
 				double xs = 0;
 				double xe = size.Width + spacing;
 				foreach (var bp in children) {
+					if (!bp.Child.Visible)
+						continue;
 					if (bp.PackOrigin == PackOrigin.End)
 						xe -= bp.NextSize + spacing;
 					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
@@ -183,6 +185,8 @@ namespace Xwt
 				double ys = 0;
 				double ye = size.Height + spacing;
 				foreach (var bp in children) {
+					if (!bp.Child.Visible)
+						continue;
 					if (bp.PackOrigin == PackOrigin.End)
 						ye -= bp.NextSize + spacing;
 					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
@@ -201,8 +205,12 @@ namespace Xwt
 			int nexpands = 0;
 			double naturalSize = 0;
 			
+			var visibleChildren = children.Where (b => b.Child.Visible);
+			int childrenCount = 0;
+			
 			// Get the natural size of each child
-			foreach (var bp in children) {
+			foreach (var bp in visibleChildren) {
+				childrenCount++;
 				WidgetSize s;
 				if (useLengthConstraint)
 					s = GetPreferredLengthForSize (mode, bp.Child, lengthConstraint);
@@ -214,14 +222,14 @@ namespace Xwt
 					nexpands++;
 			}
 			
-			double remaining = totalSize - naturalSize - (spacing * (double)(children.Count - 1));
+			double remaining = totalSize - naturalSize - (spacing * (double)(childrenCount - 1));
 			if (remaining < 0) {
 				// The box is not big enough to fit the widgets using its natural size.
 				// We have to shrink the widgets.
-				var sizePart = new SizeSplitter (-remaining, children.Count);
+				var sizePart = new SizeSplitter (-remaining, childrenCount);
 				var toAdjust = new List<BoxPlacement> ();
 				double adjustSize = 0;
-				foreach (var bp in children) {
+				foreach (var bp in visibleChildren) {
 					WidgetSize s;
 					if (useLengthConstraint)
 						s = GetPreferredLengthForSize (mode, bp.Child, lengthConstraint);
@@ -240,7 +248,7 @@ namespace Xwt
 			}
 			else {
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
-				foreach (var bp in children) {
+				foreach (var bp in visibleChildren) {
 					if ((bp.BoxMode & BoxMode.Expand) != 0)
 						bp.NextSize += expandRemaining.NextSizePart ();
 				}
@@ -252,11 +260,14 @@ namespace Xwt
 			WidgetSize s = new WidgetSize ();
 			
 			if (direction == Orientation.Horizontal) {
-				foreach (IWidgetSurface cw in Children)
+				int count = 0;
+				foreach (IWidgetSurface cw in Children.Where (b => b.Visible)) {
 					s += cw.GetPreferredWidth ();
-				s += spacing * (double)(children.Count - 1);
+					count++;
+				}
+				s += spacing * (double)(count - 1);
 			} else {
-				foreach (IWidgetSurface cw in Children)
+				foreach (IWidgetSurface cw in Children.Where (b => b.Visible))
 					s.UnionWith (cw.GetPreferredWidth ());
 			}
 			return s;
@@ -267,11 +278,14 @@ namespace Xwt
 			WidgetSize s = new WidgetSize ();
 			
 			if (direction == Orientation.Vertical) {
-				foreach (IWidgetSurface cw in Children)
+				int count = 0;
+				foreach (IWidgetSurface cw in Children.Where (b => b.Visible)) {
 					s += cw.GetPreferredHeight ();
-				s += spacing * (double)(children.Count - 1);
+					count++;
+				}
+				s += spacing * (double)(count - 1);
 			} else {
-				foreach (IWidgetSurface cw in Children)
+				foreach (IWidgetSurface cw in Children.Where (b => b.Visible))
 					s.UnionWith (cw.GetPreferredHeight ());
 			}
 			return s;
@@ -293,14 +307,17 @@ namespace Xwt
 			
 			if ((direction == Orientation.Horizontal && mode == SizeRequestMode.HeightForWidth) || (direction == Orientation.Vertical && mode == SizeRequestMode.WidthForHeight)) {
 				CalcDefaultSizes (mode, width, -1);
-				foreach (var bp in children) {
+				foreach (var bp in children.Where (b => b.Child.Visible)) {
 					s.UnionWith (GetPreferredLengthForSize (mode, bp.Child, bp.NextSize));
 				}
 			}
 			else {
-				foreach (var bp in children)
+				int count = 0;
+				foreach (var bp in children.Where (b => b.Child.Visible)) {
 					s += GetPreferredLengthForSize (mode, bp.Child, width);
-				s += spacing * (double)(children.Count - 1);
+					count++;
+				}
+				s += spacing * (double)(count - 1);
 			}
 			return s;
 		}
