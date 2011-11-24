@@ -146,6 +146,10 @@
     <Compile Include="Xwt.Backends\IMenuButtonBackend.cs" />
     <Compile Include="Xwt\TextEntry.cs" />
     <Compile Include="Xwt.Backends\ITextEntryBackend.cs" />
+    <Compile Include="Xwt\ToggleButton.cs" />
+    <Compile Include="Xwt.Backends\IToggleButtonBackend.cs" />
+    <Compile Include="Xwt\ImageView.cs" />
+    <Compile Include="Xwt.Backends\IImageViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

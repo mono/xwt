@@ -59,6 +59,7 @@
     <Compile Include="Samples\Designer.cs" />
     <Compile Include="Samples\Windows.cs" />
     <Compile Include="Samples\TextEntries.cs" />
+    <Compile Include="Samples\Images.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -73,6 +74,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="package.png">
       <LogicalName>package.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Samples\cow.jpg">
+      <LogicalName>cow.jpg</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>

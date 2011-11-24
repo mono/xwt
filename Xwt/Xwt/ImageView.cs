@@ -1,5 +1,5 @@
 // 
-// ButtonSample.cs
+// ImageView.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,46 +24,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt;
 using Xwt.Drawing;
+using Xwt.Backends;
 
-namespace Samples
+namespace Xwt
 {
-	public class ButtonSample: VBox
+	public class ImageView: Widget
 	{
-		public ButtonSample ()
+		Image image;
+		
+		public ImageView ()
 		{
-			Button b1 = new Button ("Click me");
-			b1.Clicked += delegate {
-				b1.Label = "Clicked!";
-			};
-			PackStart (b1);
-			
-			Button b2 = new Button ("Click me");
-			b2.Style = ButtonStyle.Flat;
-			b2.Clicked += delegate {
-				b2.Label = "Clicked!";
-			};
-			PackStart (b2);
-			
-			PackStart (new Button (Image.FromIcon (StockIcons.ZoomIn, IconSize.Medium)));
-			
-			MenuButton mb = new MenuButton ("This is a Menu Button");
-			Menu men = new Menu ();
-			men.Items.Add (new MenuItem ("First"));
-			men.Items.Add (new MenuItem ("Second"));
-			men.Items.Add (new MenuItem ("Third"));
-			mb.Menu = men;
-			PackStart (mb);
-			foreach (var mi in men.Items) {
-				var cmi = mi;
-				mi.Clicked += delegate {
-					mb.Label = cmi.Label + " Clicked";
-				};
+		}
+		
+		new IImageViewBackend Backend {
+			get { return (IImageViewBackend) base.Backend; }
+		}
+		
+		public Image Image {
+			get { return image; }
+			set {
+				image = value;
+				Backend.SetImage (XwtObject.GetBackend (value)); 
+				OnPreferredSizeChanged ();
 			}
-			
-			ToggleButton tb = new ToggleButton ("Toggle me");
-			PackStart (tb);
 		}
 	}
 }

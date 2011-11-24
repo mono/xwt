@@ -54,6 +54,7 @@ namespace Samples
 			var n = AddSample (null, "Drawing", null);
 			AddSample (n, "Chart", typeof(ChartSample));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
+			AddSample (null, "Images", typeof(Images));
 			AddSample (null, "List View", typeof(ListView1));
 			AddSample (null, "Notebook", typeof(NotebookSample));
 //			AddSample (null, "Scroll View", typeof(ScrollWindowSample));

@@ -1,5 +1,5 @@
 // 
-// ButtonSample.cs
+// ImageViewBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,47 +24,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt;
-using Xwt.Drawing;
 
-namespace Samples
+namespace Xwt.Backends
 {
-	public class ButtonSample: VBox
+	public interface IImageViewBackend: IWidgetBackend
 	{
-		public ButtonSample ()
-		{
-			Button b1 = new Button ("Click me");
-			b1.Clicked += delegate {
-				b1.Label = "Clicked!";
-			};
-			PackStart (b1);
-			
-			Button b2 = new Button ("Click me");
-			b2.Style = ButtonStyle.Flat;
-			b2.Clicked += delegate {
-				b2.Label = "Clicked!";
-			};
-			PackStart (b2);
-			
-			PackStart (new Button (Image.FromIcon (StockIcons.ZoomIn, IconSize.Medium)));
-			
-			MenuButton mb = new MenuButton ("This is a Menu Button");
-			Menu men = new Menu ();
-			men.Items.Add (new MenuItem ("First"));
-			men.Items.Add (new MenuItem ("Second"));
-			men.Items.Add (new MenuItem ("Third"));
-			mb.Menu = men;
-			PackStart (mb);
-			foreach (var mi in men.Items) {
-				var cmi = mi;
-				mi.Clicked += delegate {
-					mb.Label = cmi.Label + " Clicked";
-				};
-			}
-			
-			ToggleButton tb = new ToggleButton ("Toggle me");
-			PackStart (tb);
-		}
+		void SetImage (object imageBackend);
 	}
 }
 

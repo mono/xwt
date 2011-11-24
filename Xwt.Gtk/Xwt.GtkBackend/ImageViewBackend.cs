@@ -1,5 +1,5 @@
 // 
-// ButtonSample.cs
+// ImageViewBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,46 +24,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt;
-using Xwt.Drawing;
+using Xwt.Backends;
 
-namespace Samples
+namespace Xwt.GtkBackend
 {
-	public class ButtonSample: VBox
+	public class ImageViewBackend: WidgetBackend, IImageViewBackend
 	{
-		public ButtonSample ()
+		public override void Initialize ()
 		{
-			Button b1 = new Button ("Click me");
-			b1.Clicked += delegate {
-				b1.Label = "Clicked!";
-			};
-			PackStart (b1);
-			
-			Button b2 = new Button ("Click me");
-			b2.Style = ButtonStyle.Flat;
-			b2.Clicked += delegate {
-				b2.Label = "Clicked!";
-			};
-			PackStart (b2);
-			
-			PackStart (new Button (Image.FromIcon (StockIcons.ZoomIn, IconSize.Medium)));
-			
-			MenuButton mb = new MenuButton ("This is a Menu Button");
-			Menu men = new Menu ();
-			men.Items.Add (new MenuItem ("First"));
-			men.Items.Add (new MenuItem ("Second"));
-			men.Items.Add (new MenuItem ("Third"));
-			mb.Menu = men;
-			PackStart (mb);
-			foreach (var mi in men.Items) {
-				var cmi = mi;
-				mi.Clicked += delegate {
-					mb.Label = cmi.Label + " Clicked";
-				};
-			}
-			
-			ToggleButton tb = new ToggleButton ("Toggle me");
-			PackStart (tb);
+			Widget = new Gtk.Image ();
+			Widget.Show ();
+		}
+		
+		protected new Gtk.Image Widget {
+			get { return (Gtk.Image)base.Widget; }
+			set { base.Widget = value; }
+		}
+		
+		public void SetImage (object imageBackend)
+		{
+			Widget.Pixbuf = (Gdk.Pixbuf)imageBackend;
 		}
 	}
 }

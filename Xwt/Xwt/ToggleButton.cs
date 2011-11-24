@@ -1,5 +1,5 @@
 // 
-// ButtonSample.cs
+// ToggleButton.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,46 +24,68 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt;
+using Xwt.Backends;
 using Xwt.Drawing;
 
-namespace Samples
+namespace Xwt
 {
-	public class ButtonSample: VBox
+	public class ToggleButton: Button
 	{
-		public ButtonSample ()
+		EventHandler toggledEvent;
+		
+		protected new class EventSink: Button.EventSink, IToggleButtonEventSink
 		{
-			Button b1 = new Button ("Click me");
-			b1.Clicked += delegate {
-				b1.Label = "Clicked!";
-			};
-			PackStart (b1);
-			
-			Button b2 = new Button ("Click me");
-			b2.Style = ButtonStyle.Flat;
-			b2.Clicked += delegate {
-				b2.Label = "Clicked!";
-			};
-			PackStart (b2);
-			
-			PackStart (new Button (Image.FromIcon (StockIcons.ZoomIn, IconSize.Medium)));
-			
-			MenuButton mb = new MenuButton ("This is a Menu Button");
-			Menu men = new Menu ();
-			men.Items.Add (new MenuItem ("First"));
-			men.Items.Add (new MenuItem ("Second"));
-			men.Items.Add (new MenuItem ("Third"));
-			mb.Menu = men;
-			PackStart (mb);
-			foreach (var mi in men.Items) {
-				var cmi = mi;
-				mi.Clicked += delegate {
-					mb.Label = cmi.Label + " Clicked";
-				};
+			public void OnToggled ()
+			{
+				((ToggleButton)Parent).OnToggled (EventArgs.Empty);
 			}
-			
-			ToggleButton tb = new ToggleButton ("Toggle me");
-			PackStart (tb);
+		}
+		
+		static ToggleButton ()
+		{
+			MapEvent (ToggleButtonEvent.Toggled, typeof(ToggleButton), "OnToggled");
+		}
+		
+		public ToggleButton ()
+		{
+		}
+		
+		public ToggleButton (string label): base (label)
+		{
+		}
+		
+		public ToggleButton (Image img, string label): base (img, label)
+		{
+		}
+		
+		public ToggleButton (Image img): base (img)
+		{
+		}
+		
+		new IToggleButtonBackend Backend {
+			get { return (IToggleButtonBackend) base.Backend; }
+		}
+		
+		public bool Active {
+			get { return Backend.Active; }
+			set { Backend.Active = value; }
+		}
+		
+		protected void OnToggled (EventArgs a)
+		{
+			if (toggledEvent != null)
+				toggledEvent (this, a);
+		}
+		
+		public event EventHandler Toggled {
+			add {
+				OnBeforeEventAdd (ToggleButtonEvent.Toggled, toggledEvent);
+				toggledEvent += value;
+			}
+			remove {
+				toggledEvent -= value;
+				OnAfterEventRemove (ToggleButtonEvent.Toggled, toggledEvent);
+			}
 		}
 	}
 }

@@ -72,6 +72,8 @@
     <Compile Include="Xwt.GtkBackend\CustomWidgetBackend.cs" />
     <Compile Include="Xwt.GtkBackend\MenuButtonBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TextEntryBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ToggleButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ImageViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
