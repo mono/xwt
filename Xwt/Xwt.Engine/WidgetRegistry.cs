@@ -65,6 +65,8 @@ namespace Xwt.Engine
 				return XwtComponent.GetBackend ((XwtComponent)obj);
 			else if (obj is XwtObject)
 				return XwtObject.GetBackend ((XwtObject)obj);
+			else if (obj == null)
+				return null;
 			else
 				throw new InvalidOperationException ("Object doesn't have a backend");
 		}

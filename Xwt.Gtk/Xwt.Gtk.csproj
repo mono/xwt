@@ -37,6 +37,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Mono.Cairo" />
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -74,6 +75,11 @@
     <Compile Include="Xwt.GtkBackend\TextEntryBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ToggleButtonBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ImageViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\AlertDialogBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkAlertDialog.cs" />
+    <Compile Include="Xwt.GtkBackend\MessageService.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkWorkarounds.cs" />
+    <Compile Include="Xwt.GtkBackend\PangoUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -85,5 +91,10 @@
   <ItemGroup>
     <Folder Include="Xwt.GtkBackend\" />
     <Folder Include="Xwt.GtkBackend.CellViews\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Xwt.Gtk.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

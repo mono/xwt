@@ -47,6 +47,11 @@ namespace Samples
 				w.Bounds = new Rectangle (bpos.X, bpos.Y + b.Size.Height, w.Bounds.Width, w.Bounds.Height);
 				w.Show ();
 			};
+			b = new Button ("Show message dialog");
+			PackStart (b);
+			b.Clicked += delegate {
+				MessageDialog.ShowMessage (ParentWindow, "Hi there!");
+			};
 		}
 	}
 }

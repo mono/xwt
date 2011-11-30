@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt
 {
-	public class Dialog
+	public class Dialog: Window
 	{
 		public Dialog ()
 		{

@@ -49,6 +49,7 @@ namespace Xwt
 		EventSink eventSink;
 		DragOperation currentDragOperation;
 		Widget contentWidget;
+		Window parentWindow;
 		
 		protected class EventSink: IWidgetEventSink
 		{
@@ -104,6 +105,22 @@ namespace Xwt
 			MapEvent (WidgetEvent.DragDropCheck, typeof(Widget), "OnDragDropCheck");
 			MapEvent (WidgetEvent.DragDrop, typeof(Widget), "OnDragDrop");
 			MapEvent (WidgetEvent.DragLeave, typeof(Widget), "OnDragLeave");
+		}
+		
+		public Window ParentWindow {
+			get {
+				if (Parent is Window)
+					return (Window) Parent;
+				else if (Parent != null)
+					return Parent.ParentWindow;
+				else
+					return parentWindow;
+			}
+		}
+		
+		internal void SetParentWindow (Window win)
+		{
+			parentWindow = win;
 		}
 		
 		protected virtual EventSink CreateEventSink ()

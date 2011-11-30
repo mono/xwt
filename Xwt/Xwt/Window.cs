@@ -77,6 +77,7 @@ namespace Xwt
 			if (this.child != null)
 				throw new InvalidOperationException ("The window already has a child");
 			this.child = child;
+			child.SetParentWindow (this);
 			RegisterChild (child);
 			Backend.SetChild ((IWidgetBackend)GetBackend (child));
 			AdjustSize ();
@@ -140,6 +141,7 @@ namespace Xwt
 			if (this.child == child) {
 				UnregisterChild (child);
 				this.child = null;
+				child.SetParentWindow (null);
 				Backend.SetChild ((IWidgetBackend)GetBackend (child));
 			}
 		}
