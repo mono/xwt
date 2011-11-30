@@ -25,7 +25,9 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Xwt.Backends;
+using System.Linq;
 
 namespace Xwt.GtkBackend
 {
@@ -37,7 +39,8 @@ namespace Xwt.GtkBackend
 		
 		public override void Initialize ()
 		{
-			Widget = new Gtk.DrawingArea ();
+			Widget = new CustomCanvas ();
+			Widget.Frontend = Frontend;
 			Widget.Events |= Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask;
 			Widget.ExposeEvent += HandleWidgetExposeEvent;
 			Widget.ButtonPressEvent += HandleWidgetButtonPressEvent;
@@ -47,9 +50,9 @@ namespace Xwt.GtkBackend
 			Widget.SizeRequested += HandleSizeRequested;
 			Widget.Show ();
 		}
-		
-		protected new Gtk.DrawingArea Widget {
-			get { return (Gtk.DrawingArea)base.Widget; }
+
+		new CustomCanvas Widget {
+			get { return (CustomCanvas)base.Widget; }
 			set { base.Widget = value; }
 		}
 		
@@ -108,6 +111,12 @@ namespace Xwt.GtkBackend
 			a.X = args.Event.X;
 			a.Y = args.Event.Y;
 			a.Button = (int) args.Event.Button;
+			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
+				a.MultiplePress = 2;
+			else if (args.Event.Type == Gdk.EventType.ThreeButtonPress)
+				a.MultiplePress = 3;
+			else
+				a.MultiplePress = 1;
 			EventSink.OnButtonPressed (a);
 		}
 
@@ -125,6 +134,98 @@ namespace Xwt.GtkBackend
 		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
 		{
 			EventSink.OnBoundsChanged ();
+		}
+		
+		public void AddChild (IWidgetBackend widget)
+		{
+			var w = ((IGtkWidgetBackend)widget).Widget;
+			Widget.Add (w);
+		}
+		
+		public void RemoveChild (IWidgetBackend widget)
+		{
+			var w = ((IGtkWidgetBackend)widget).Widget;
+			Widget.Remove (w);
+		}
+		
+		public void SetChildBounds (IWidgetBackend widget, Rectangle bounds)
+		{
+			var w = ((IGtkWidgetBackend)widget).Widget;
+			Widget.SetAllocation (w, bounds);
+		}
+	}
+	
+	class CustomCanvas: Gtk.EventBox
+	{
+		public Widget Frontend;
+		Dictionary<Gtk.Widget, Rectangle> children = new Dictionary<Gtk.Widget, Rectangle> ();
+		
+		public CustomCanvas (IntPtr p): base (p)
+		{
+		}
+		
+		public CustomCanvas ()
+		{
+			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
+		}
+		
+		public void SetAllocation (Gtk.Widget w, Rectangle rect)
+		{
+			children [w] = rect;
+			QueueResize ();
+		}
+		
+		protected override void OnAdded (Gtk.Widget widget)
+		{
+			children.Add (widget, new Rectangle (0,0,0,0));
+			widget.Parent = this;
+			QueueResize ();
+		}
+		
+		protected override void OnRemoved (Gtk.Widget widget)
+		{
+			children.Remove (widget);
+			widget.Unparent ();
+		}
+		
+		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		{
+			IWidgetSurface ws = Frontend;
+			int w = (int)ws.GetPreferredWidth ().MinSize;
+			int h = (int)ws.GetPreferredHeight ().MinSize;
+			if (requisition.Width < w)
+				requisition.Width = w;
+			if (requisition.Height < h)
+				requisition.Height = h;
+			foreach (var cr in children)
+				cr.Key.SizeRequest ();
+		}
+		
+		protected override void OnUnrealized ()
+		{
+			base.OnUnrealized ();
+			lastAllocation = new Gdk.Rectangle ();
+		}
+		
+		Gdk.Rectangle lastAllocation;
+		
+		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
+		{
+			base.OnSizeAllocated (allocation);
+			if (!lastAllocation.Equals (allocation))
+				((IWidgetSurface)Frontend).Reallocate ();
+			lastAllocation = allocation;
+			foreach (var cr in children) {
+				var r = cr.Value;
+				cr.Key.SizeAllocate (new Gdk.Rectangle ((int)r.X, (int)r.Y, (int)r.Width, (int)r.Height));
+			}
+		}
+		
+		protected override void ForAll (bool includeInternals, Gtk.Callback callback)
+		{
+			base.ForAll (includeInternals, callback);
+			foreach (var c in children.Keys.ToArray ())
+				callback (c);
 		}
 	}
 }

@@ -64,6 +64,21 @@ namespace Xwt.Mac
 		{
 			
 		}
+		
+		public void AddChild (IWidgetBackend widget)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public void RemoveChild (IWidgetBackend widget)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public void SetChildBounds (IWidgetBackend widget, Rectangle bounds)
+		{
+			throw new NotImplementedException ();
+		}
 	}
 	
 	class CanvasView: NSView, IViewObject<NSView>

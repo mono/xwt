@@ -31,6 +31,7 @@ namespace Xwt.Backends
 	{
 		string Text { get; set; }
 		bool ReadOnly { get; set; }
+		bool ShowFrame { get; set; }
 	}
 	
 	public interface ITextEntryEventSink

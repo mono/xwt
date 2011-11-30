@@ -52,6 +52,7 @@ namespace Samples
 //			AddSample (null, "Designer", typeof(Designer));
 			AddSample (null, "Drag & Drop", typeof(DragDrop));
 			var n = AddSample (null, "Drawing", null);
+			AddSample (n, "Canvas with Widget", typeof(CanvasWithWidget));
 			AddSample (n, "Chart", typeof(ChartSample));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
 			AddSample (null, "Images", typeof(Images));

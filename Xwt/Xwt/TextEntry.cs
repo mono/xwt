@@ -71,6 +71,12 @@ namespace Xwt
 			set { Backend.ReadOnly = value; }
 		}
 		
+		[DefaultValue (true)]
+		public bool ShowFrame {
+			get { return Backend.ShowFrame; }
+			set { Backend.ShowFrame = value; }
+		}
+		
 		protected virtual void OnChanged (EventArgs e)
 		{
 			if (changed != null)

@@ -1,5 +1,5 @@
 // 
-// ICanvasBackend.cs
+// CanvasWithWidget.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,31 +23,46 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
+using Xwt;
+using Xwt.Drawing;
 
-namespace Xwt.Backends
+namespace Samples
 {
-	public interface ICanvasBackend
+	public class CanvasWithWidget: VBox
 	{
-		void OnPreferredSizeChanged ();
-		void QueueDraw ();
-		void QueueDraw (Rectangle rect);
-		
-		void AddChild (IWidgetBackend widget);
-		void SetChildBounds (IWidgetBackend widget, Rectangle bounds);
-		void RemoveChild (IWidgetBackend widget);
-
-		Rectangle Bounds { get; }
+		public CanvasWithWidget ()
+		{
+			MyCanvas c = new MyCanvas ();
+			PackStart (c, BoxMode.FillAndExpand);
+		}
 	}
 	
-	public interface ICanvasEventSink: IWidgetEventSink
+	class MyCanvas: Canvas
 	{
-		void OnDraw (object context);
-		void OnBoundsChanged ();
-		void OnButtonPressed (ButtonEventArgs args);
-		void OnButtonReleased (ButtonEventArgs args);
-		void OnMouseMoved (MouseMovedEventArgs args);
+		Rectangle rect = new Rectangle (30, 30, 100, 30);
+		
+		public MyCanvas ()
+		{
+			var entry = new TextEntry () { ShowFrame = false };
+			AddChild (entry, rect);
+		}
+		
+		protected override void OnDraw (Xwt.Drawing.Context ctx)
+		{
+			ctx.Rectangle (0, 0, Bounds.Width, Bounds.Height);
+			var g = new LinearGradient (0, 0, Bounds.Width, Bounds.Height);
+			g.AddColorStop (0, new Color (1, 0, 0));
+			g.AddColorStop (1, new Color (0, 1, 0));
+			ctx.Pattern = g;
+			ctx.Fill ();
+			
+			Rectangle r = rect.Inflate (5, 5);
+			ctx.Rectangle (r);
+			ctx.SetColor (new Color (0,0,1));
+			ctx.SetLineWidth (1);
+			ctx.Stroke ();
+		}
 	}
 }
 

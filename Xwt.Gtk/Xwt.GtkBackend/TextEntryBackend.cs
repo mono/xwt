@@ -52,10 +52,19 @@ namespace Xwt.GtkBackend
 		
 		public bool ReadOnly {
 			get {
-				return !Widget.Editable;
+				return !Widget.IsEditable;
 			}
 			set {
-				Widget.Editable = !value;
+				Widget.IsEditable = !value;
+			}
+		}
+		
+		public bool ShowFrame {
+			get {
+				return Widget.HasFrame;
+			}
+			set {
+				Widget.HasFrame = value;
 			}
 		}
 		
