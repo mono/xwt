@@ -46,6 +46,11 @@ namespace Samples
 		{
 			var entry = new TextEntry () { ShowFrame = false };
 			AddChild (entry, rect);
+			
+			var box = new HBox ();
+			box.PackStart (new Button ("..."));
+			box.PackStart (new TextEntry (), BoxMode.FillAndExpand);
+			AddChild (box, new Rectangle (30, 70, 100, 30));
 		}
 		
 		protected override void OnDraw (Xwt.Drawing.Context ctx)

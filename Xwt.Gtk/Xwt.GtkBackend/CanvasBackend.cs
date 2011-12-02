@@ -41,8 +41,8 @@ namespace Xwt.GtkBackend
 		{
 			Widget = new CustomCanvas ();
 			Widget.Frontend = Frontend;
+			Widget.EventSink = EventSink;
 			Widget.Events |= Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask;
-			Widget.ExposeEvent += HandleWidgetExposeEvent;
 			Widget.ButtonPressEvent += HandleWidgetButtonPressEvent;
 			Widget.ButtonReleaseEvent += HandleWidgetButtonReleaseEvent;
 			Widget.MotionNotifyEvent += HandleWidgetMotionNotifyEvent;
@@ -120,11 +120,6 @@ namespace Xwt.GtkBackend
 			EventSink.OnButtonPressed (a);
 		}
 
-		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
-		{
-			EventSink.OnDraw (null);
-		}
-		
 		public Rectangle Bounds {
 			get {
 				return new Rectangle (0, 0, Widget.Allocation.Width, Widget.Allocation.Height);
@@ -158,6 +153,7 @@ namespace Xwt.GtkBackend
 	class CustomCanvas: Gtk.EventBox
 	{
 		public Widget Frontend;
+		public ICanvasEventSink EventSink;
 		Dictionary<Gtk.Widget, Rectangle> children = new Dictionary<Gtk.Widget, Rectangle> ();
 		
 		public CustomCanvas (IntPtr p): base (p)
@@ -226,6 +222,12 @@ namespace Xwt.GtkBackend
 			base.ForAll (includeInternals, callback);
 			foreach (var c in children.Keys.ToArray ())
 				callback (c);
+		}
+		
+		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		{
+			EventSink.OnDraw (null);
+			return base.OnExposeEvent (evnt);
 		}
 	}
 }
