@@ -26,6 +26,8 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Drawing;
+using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
@@ -34,6 +36,8 @@ namespace Xwt.GtkBackend
 		IMenuItemEventSink eventSink;
 		Gtk.MenuItem item;
 		Gtk.Label label;
+		List<MenuItemEvent> enabledEvents;
+		bool changingCheck;
 		
 		public MenuItemBackend ()
 		{
@@ -60,6 +64,20 @@ namespace Xwt.GtkBackend
 				item.Submenu = m;
 			}
 		}
+		
+		public void SetImage (object imageBackend)
+		{
+			Gtk.ImageMenuItem it = item as Gtk.ImageMenuItem;
+			if (it == null)
+				return;
+			if (imageBackend != null) {
+				var img = new Gtk.Image ((Gdk.Pixbuf) imageBackend);
+				img.ShowAll ();
+				it.Image = img;
+			}
+			else
+				it.Image = null;
+		}
 
 		public string Label {
 			get {
@@ -69,6 +87,89 @@ namespace Xwt.GtkBackend
 				label.Text = value;
 			}
 		}
+		
+		public bool Sensitive {
+			get {
+				return item.Sensitive;
+			}
+			set {
+				item.Sensitive = value;
+			}
+		}
+		
+		public bool Visible {
+			get {
+				return item.Visible;
+			}
+			set {
+				item.Visible = value;
+			}
+		}
+		
+		public bool Checked {
+			get { return (item is Gtk.CheckMenuItem) && ((Gtk.CheckMenuItem)item).Active; }
+			set {
+				if (item is Gtk.CheckMenuItem) {
+					changingCheck = true;
+					((Gtk.CheckMenuItem)item).Active = value;
+					changingCheck = false;
+				}
+			}
+		}
+		
+		public void SetType (MenuItemType type)
+		{
+			string text = label.Text;
+			
+			Gtk.MenuItem newItem = null;
+			switch (type) {
+			case MenuItemType.Normal:
+				if (!(item is Gtk.ImageMenuItem))
+					newItem = new Gtk.ImageMenuItem (text);
+				break;
+			case MenuItemType.CheckBox:
+				if (item.GetType () != typeof(Gtk.CheckMenuItem))
+					newItem = new Gtk.CheckMenuItem (text);
+				break;
+			case MenuItemType.RadioButton:
+				if (!(item is Gtk.RadioMenuItem))
+					newItem = new Gtk.RadioMenuItem (text);
+				break;
+			}
+			
+			if (newItem != null) {
+				if ((newItem is Gtk.CheckMenuItem) && (item is Gtk.CheckMenuItem))
+					((Gtk.CheckMenuItem)item).Active = ((Gtk.CheckMenuItem)newItem).Active;
+				newItem.Sensitive = item.Sensitive;
+				if (item.Parent != null) {
+					Gtk.Menu m = (Gtk.Menu)item.Parent;
+					int pos = Array.IndexOf (m.Children, item);
+					m.Insert (newItem, pos);
+					m.Remove (item);
+				}
+				newItem.ShowAll ();
+				if (!item.Visible)
+					newItem.Hide ();
+				
+				if (enabledEvents != null) {
+					foreach (var ob in enabledEvents)
+						DisableEvent (ob);
+				}
+				
+				item = newItem;
+				label = (Gtk.Label) item.Child;
+				
+				if (enabledEvents != null) {
+					foreach (var ob in enabledEvents)
+						EnableEvent (ob);
+				}
+			}
+		}
+		
+		public void SetSeparator ()
+		{
+			throw new NotImplementedException ();
+		}
 
 		public void Initialize (object frontend)
 		{
@@ -77,6 +178,9 @@ namespace Xwt.GtkBackend
 		public void EnableEvent (object eventId)
 		{
 			if (eventId is MenuItemEvent) {
+				if (enabledEvents == null)
+					enabledEvents = new List<MenuItemEvent> ();
+				enabledEvents.Add ((MenuItemEvent)eventId);
 				if ((MenuItemEvent)eventId == MenuItemEvent.Clicked)
 					item.Activated += HandleItemActivated;
 			}
@@ -85,6 +189,7 @@ namespace Xwt.GtkBackend
 		public void DisableEvent (object eventId)
 		{
 			if (eventId is MenuItemEvent) {
+				enabledEvents.Remove ((MenuItemEvent)eventId);
 				if ((MenuItemEvent)eventId == MenuItemEvent.Clicked)
 					item.Activated -= HandleItemActivated;
 			}
@@ -92,7 +197,8 @@ namespace Xwt.GtkBackend
 
 		void HandleItemActivated (object sender, EventArgs e)
 		{
-			eventSink.OnClicked ();
+			if (!changingCheck)
+				eventSink.OnClicked ();
 		}
 	}
 }

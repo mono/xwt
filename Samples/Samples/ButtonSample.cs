@@ -53,6 +53,10 @@ namespace Samples
 			men.Items.Add (new MenuItem ("First"));
 			men.Items.Add (new MenuItem ("Second"));
 			men.Items.Add (new MenuItem ("Third"));
+			men.Items.Add (new MenuItem ("Check") { Type = MenuItemType.CheckBox, Checked = true });
+			men.Items.Add (new MenuItem ("Radio") { Type = MenuItemType.RadioButton, Checked = true });
+			men.Items.Add (new MenuItem ("With image") { Image = Image.FromResource (typeof(App), "class.png") });
+
 			mb.Menu = men;
 			PackStart (mb);
 			foreach (var mi in men.Items) {

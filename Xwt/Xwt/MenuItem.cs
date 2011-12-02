@@ -26,6 +26,8 @@
 
 using System;
 using Xwt.Backends;
+using System.ComponentModel;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -35,6 +37,8 @@ namespace Xwt
 		Menu subMenu;
 		EventSink eventSink;
 		EventHandler clicked;
+		MenuItemType type;
+		Image image;
 		
 		static MenuItem ()
 		{
@@ -51,6 +55,12 @@ namespace Xwt
 			Label = label;
 		}
 		
+		public MenuItem (string label, MenuItemType type): this ()
+		{
+			Label = label;
+			Type = type;
+		}
+		
 		new IMenuItemBackend Backend {
 			get { return (IMenuItemBackend) base.Backend; }
 		}
@@ -61,9 +71,49 @@ namespace Xwt
 			Backend.Initialize (eventSink);
 		}
 		
+		[DefaultValue ("")]
 		public string Label {
 			get { return Backend.Label; }
 			set { Backend.Label = value; }
+		}
+		
+		[DefaultValue (true)]
+		public bool Sensitive {
+			get { return Backend.Sensitive; }
+			set { Backend.Sensitive = value; }
+		}
+		
+		[DefaultValue (true)]
+		public bool Visible {
+			get { return Backend.Visible; }
+			set { Backend.Visible = value; }
+		}
+		
+		[DefaultValue (true)]
+		public bool Checked {
+			get { return Backend.Checked; }
+			set { Backend.Checked = value; }
+		}
+		
+		public Image Image {
+			get { return image; }
+			set { image = value; Backend.SetImage (XwtObject.GetBackend (value)); }
+		}
+		
+		[DefaultValue (MenuItemType.Normal)]
+		public MenuItemType Type {
+			get { return type; }
+			set { type = value; Backend.SetType (type); }
+		}
+		
+		public void Show ()
+		{
+			Visible = true;
+		}
+		
+		public void Hide ()
+		{
+			Visible = false;
 		}
 		
 		public CellViewCollection Cells {
@@ -113,6 +163,13 @@ namespace Xwt
 				OnAfterEventRemove (MenuItemEvent.Clicked, clicked);
 			}
 		}
+	}
+	
+	public enum MenuItemType
+	{
+		Normal,
+		CheckBox,
+		RadioButton
 	}
 }
 

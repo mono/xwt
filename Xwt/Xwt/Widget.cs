@@ -162,6 +162,11 @@ namespace Xwt
 			Visible = true;
 		}
 		
+		public void Hide ()
+		{
+			Visible = false;
+		}
+		
 		[DefaultValue (true)]
 		public bool Visible {
 			get { return Backend.Visible; }

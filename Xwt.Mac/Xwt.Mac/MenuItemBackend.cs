@@ -52,6 +52,48 @@ namespace Xwt.Mac
 				Title = value;
 			}
 		}
+		
+		public void SetType (MenuItemType type)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public void SetImage (object imageBackend)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public bool Visible {
+			get {
+				throw new NotImplementedException ();
+			}
+			set {
+				throw new NotImplementedException ();
+			}
+		}
+		
+		public bool Sensitive {
+			get {
+				throw new NotImplementedException ();
+			}
+			set {
+				throw new NotImplementedException ();
+			}
+		}
+		
+		public bool Checked {
+			get {
+				throw new NotImplementedException ();
+			}
+			set {
+				throw new NotImplementedException ();
+			}
+		}
+		
+		public void SetSeparator ()
+		{
+			throw new NotImplementedException ();
+		}
 
 		#region IBackend implementation
 		public void Initialize (object frontend)
