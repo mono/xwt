@@ -66,6 +66,7 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Font), typeof(FontBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Menu), typeof(MenuBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.MenuItem), typeof(MenuItemBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ComboBox), typeof(ComboBoxBackend));
 		}
 
 		public override void RunApplication ()
