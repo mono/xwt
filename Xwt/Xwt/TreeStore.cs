@@ -236,7 +236,7 @@ namespace Xwt
 			} else {
 				NodePosition np = GetPosition (pos);
 				Node n = np.ParentList[np.NodeIndex];
-				return new NodePosition () { ParentList = n.Children, NodeId = n.NodeId, NodeIndex = index, StoreVersion = version };
+				return new NodePosition () { ParentList = n.Children, NodeId = n.Children[index].NodeId, NodeIndex = index, StoreVersion = version };
 			}
 		}
 		

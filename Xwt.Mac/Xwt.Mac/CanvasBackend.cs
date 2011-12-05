@@ -67,17 +67,21 @@ namespace Xwt.Mac
 		
 		public void AddChild (IWidgetBackend widget)
 		{
-			throw new NotImplementedException ();
+			var v = GetWidget (widget);
+			view.AddSubview (v);
 		}
 		
 		public void RemoveChild (IWidgetBackend widget)
 		{
-			throw new NotImplementedException ();
+			var v = GetWidget (widget);
+			v.RemoveFromSuperview ();
 		}
 		
-		public void SetChildBounds (IWidgetBackend widget, Rectangle bounds)
+		public void SetChildBounds (IWidgetBackend widget, Rectangle rect)
 		{
-			throw new NotImplementedException ();
+			var w = GetWidget (widget);
+			w.SetWidgetBounds (rect);
+			w.NeedsDisplay = true;
 		}
 	}
 	

@@ -1,5 +1,5 @@
 // 
-// ITextEntryBackend.cs
+// ImageViewBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,24 +24,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
+using MonoMac.AppKit;
 
-namespace Xwt.Backends
+namespace Xwt.Mac
 {
-	public interface ITextEntryBackend: IWidgetBackend
+	public class ImageViewBackend: ViewBackend<NSImageView,IWidgetEventSink>, IImageViewBackend
 	{
-		string Text { get; set; }
-		bool ReadOnly { get; set; }
-		bool ShowFrame { get; set; }
+		public ImageViewBackend ()
+		{
+		}
+		
+		public override void Initialize ()
+		{
+			base.Initialize ();
+			ViewObject = new CustomNSImageView ();
+			Widget.SizeToFit ();
+		}
+
+		public void SetImage (object imageBackend)
+		{
+			Widget.Image = (NSImage) imageBackend;
+			Widget.SetFrameSize (Widget.Image.Size);
+		}
 	}
 	
-	public interface ITextEntryEventSink: IWidgetEventSink
+	class CustomNSImageView: NSImageView, IViewObject<NSImageView>
 	{
-		void OnChanged ();
-	}
-	
-	public enum TextEntryEvent
-	{
-		Changed
+		public NSImageView View {
+			get {
+				return this;
+			}
+		}
+
+		public Widget Frontend { get; set; }
 	}
 }
 
