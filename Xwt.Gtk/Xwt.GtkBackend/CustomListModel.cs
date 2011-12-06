@@ -114,12 +114,12 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool GetIter (out Gtk.TreeIter iter, Gtk.TreePath path)
-		{
+        {
+            iter = Gtk.TreeIter.Zero;
 			if (path.Indices.Length == 0)
 				return false;
 			int row = path.Indices [0];
 			if (row >= source.RowCount) {
-				iter = Gtk.TreeIter.Zero;
 				return false;
 			}
 			iter = IterFromNode (row);
@@ -150,7 +150,8 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool IterChildren (out Gtk.TreeIter iter, Gtk.TreeIter parent)
-		{
+        {
+            iter = Gtk.TreeIter.Zero;
 			return false;
 		}
 
