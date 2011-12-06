@@ -120,7 +120,8 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool GetIter (out Gtk.TreeIter iter, Gtk.TreePath path)
-		{
+        {
+            iter = Gtk.TreeIter.Zero;
 			TreePosition pos = null;
 			int[] indices = path.Indices;
 			if (indices.Length == 0)
@@ -181,7 +182,8 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool IterChildren (out Gtk.TreeIter iter, Gtk.TreeIter parent)
-		{
+        {
+            iter = Gtk.TreeIter.Zero;
 			TreePosition pos = NodeFromIter (parent);
 			pos = source.GetChild (pos, 0);
 			if (pos != null) {
@@ -204,7 +206,8 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool IterNthChild (out Gtk.TreeIter iter, Gtk.TreeIter parent, int n)
-		{
+        {
+            iter = Gtk.TreeIter.Zero;
 			TreePosition pos = NodeFromIter (parent);
 			pos = source.GetChild (pos, n);
 			if (pos != null) {
@@ -215,7 +218,8 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool IterParent (out Gtk.TreeIter iter, Gtk.TreeIter child)
-		{
+        {
+            iter = Gtk.TreeIter.Zero;
 			TreePosition pos = NodeFromIter (iter);
 			pos = source.GetParent (pos);
 			if (pos != null) {
