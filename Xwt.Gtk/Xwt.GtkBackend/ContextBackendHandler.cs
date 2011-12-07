@@ -237,8 +237,9 @@ namespace Xwt.GtkBackend
 			var ctx = (GtkContext) backend;
 			IDisposable d = (IDisposable) ctx.Context;
 			d.Dispose ();
-			if (ctx.TempSurface != null)
-				ctx.TempSurface.Dispose ();
+            d = (IDisposable)ctx.TempSurface;
+			if (d != null)
+				d.Dispose ();
 		}
 		#endregion
 	}
