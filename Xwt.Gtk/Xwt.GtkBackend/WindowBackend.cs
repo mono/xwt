@@ -92,11 +92,14 @@ namespace Xwt.GtkBackend
 		{
 			if (mainMenu != null)
 				mainBox.Remove (mainMenu);
-
-			MenuBackend m = (MenuBackend) menu;
-			mainMenu = m.MenuBar;
-			mainBox.PackStart (mainMenu, false, false, 0);
-			((Gtk.Box.BoxChild)mainBox[mainMenu]).Position = 0;
+			
+			if (menu != null) {
+				MenuBackend m = (MenuBackend) menu;
+				mainMenu = m.MenuBar;
+				mainBox.PackStart (mainMenu, false, false, 0);
+				((Gtk.Box.BoxChild)mainBox[mainMenu]).Position = 0;
+			} else
+				mainMenu = null;
 		}
 
 		#region IWindowBackend implementation
