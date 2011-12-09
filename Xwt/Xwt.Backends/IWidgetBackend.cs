@@ -62,6 +62,8 @@ namespace Xwt.Backends
 		void OnDragDrop (DragEventArgs args);
 		void OnDragLeave (EventArgs args);
 		void OnDragFinished (DragFinishedEventArgs args);
+		void OnKeyPressed (KeyEventArgs args);
+		void OnKeyReleased (KeyEventArgs args);
 		
 		/// <summary>
 		/// Notifies the frontend that the preferred size of this widget has changed
@@ -82,10 +84,12 @@ namespace Xwt.Backends
 	public enum WidgetEvent
 	{
 		DragOverCheck = 1,
-		DragOver = 2,
-		DragDropCheck = 4,
-		DragDrop = 8,
-		DragLeave = 16
+		DragOver = 1 << 1,
+		DragDropCheck = 1 << 2,
+		DragDrop = 1 << 3,
+		DragLeave = 1 << 4,
+		KeyPressed = 1 << 5,
+		KeyReleased = 1 << 6
 	}
 	
 	public interface DragOperationEventSink

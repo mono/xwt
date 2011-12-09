@@ -210,6 +210,12 @@ namespace Xwt.GtkBackend
 				case WidgetEvent.DragLeave:
 					Widget.DragLeave += HandleWidgetDragLeave;;
 					break;
+				case WidgetEvent.KeyPressed:
+					Widget.KeyPressEvent += HandleKeyPressEvent;
+					break;
+				case WidgetEvent.KeyReleased:
+					Widget.KeyReleaseEvent += HandleKeyReleaseEvent;
+					break;
 				}
 				if (dropEventEnabled || dropCheckEventEnabled || dragMotionCheckEventEnabled || dragMotionEventEnabled) {
 					if (!dragEventsSet) {
@@ -242,6 +248,12 @@ namespace Xwt.GtkBackend
 				case WidgetEvent.DragLeave:
 					Widget.DragLeave -= HandleWidgetDragLeave;
 					break;
+				case WidgetEvent.KeyPressed:
+					Widget.KeyPressEvent -= HandleKeyPressEvent;
+					break;
+				case WidgetEvent.KeyReleased:
+					Widget.KeyReleaseEvent -= HandleKeyReleaseEvent;
+					break;
 				}
 				if (!dropEventEnabled && !dropCheckEventEnabled && !dragMotionCheckEventEnabled && !dragMotionEventEnabled) {
 					if (dragEventsSet) {
@@ -252,6 +264,40 @@ namespace Xwt.GtkBackend
 					}
 				}
 			}
+		}
+
+		[GLib.ConnectBefore]
+		void HandleKeyReleaseEvent (object o, Gtk.KeyReleaseEventArgs args)
+		{
+			Key k = (Key)args.Event.KeyValue;
+			ModifierKeys m = ModifierKeys.None;
+			if ((args.Event.State & Gdk.ModifierType.ShiftMask) != 0)
+				m |= ModifierKeys.Shift;
+			if ((args.Event.State & Gdk.ModifierType.ControlMask) != 0)
+				m |= ModifierKeys.Control;
+			if ((args.Event.State & Gdk.ModifierType.Mod1Mask) != 0)
+				m |= ModifierKeys.Alt;
+			KeyEventArgs kargs = new KeyEventArgs (k, m, false, (long)args.Event.Time);
+			EventSink.OnKeyReleased (kargs);
+			if (kargs.IsEventCanceled)
+				args.RetVal = true;
+		}
+
+		[GLib.ConnectBefore]
+		void HandleKeyPressEvent (object o, Gtk.KeyPressEventArgs args)
+		{
+			Key k = (Key)args.Event.KeyValue;
+			ModifierKeys m = ModifierKeys.None;
+			if ((args.Event.State & Gdk.ModifierType.ShiftMask) != 0)
+				m |= ModifierKeys.Shift;
+			if ((args.Event.State & Gdk.ModifierType.ControlMask) != 0)
+				m |= ModifierKeys.Control;
+			if ((args.Event.State & Gdk.ModifierType.Mod1Mask) != 0)
+				m |= ModifierKeys.Alt;
+			KeyEventArgs kargs = new KeyEventArgs (k, m, false, (long)args.Event.Time);
+			EventSink.OnKeyPressed (kargs);
+			if (kargs.IsEventCanceled)
+				args.RetVal = true;
 		}
 		
 		Point lastDragPosition;

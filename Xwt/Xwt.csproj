@@ -152,6 +152,9 @@
     <Compile Include="Xwt.Backends\IImageViewBackend.cs" />
     <Compile Include="Xwt\MessageDialog.cs" />
     <Compile Include="Xwt.Backends\IAlertDialogBackend.cs" />
+    <Compile Include="Xwt\Key.cs" />
+    <Compile Include="Xwt\ModifierKeys.cs" />
+    <Compile Include="Xwt\KeyEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

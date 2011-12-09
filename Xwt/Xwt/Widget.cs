@@ -51,6 +51,15 @@ namespace Xwt
 		Widget contentWidget;
 		Window parentWindow;
 		
+		EventHandler<DragOverCheckEventArgs> dragOverCheck;
+		EventHandler<DragOverEventArgs> dragOver;
+		EventHandler<DragCheckEventArgs> dragDropCheck;
+		EventHandler<DragEventArgs> dragDrop;
+		EventHandler dragLeave;
+		
+		EventHandler<KeyEventArgs> keyPressed;
+		EventHandler<KeyEventArgs> keyReleased;
+		
 		protected class EventSink: IWidgetEventSink
 		{
 			public Widget Parent { get; internal set; }
@@ -89,6 +98,16 @@ namespace Xwt
 			{
 				Parent.OnDragFinished (args);
 			}
+			
+			public void OnKeyPressed (KeyEventArgs args)
+			{
+				Parent.OnKeyPressed (args);
+			}
+			
+			public void OnKeyReleased (KeyEventArgs args)
+			{
+				Parent.OnKeyReleased (args);
+			}
 		}
 		
 		public Widget ()
@@ -105,6 +124,8 @@ namespace Xwt
 			MapEvent (WidgetEvent.DragDropCheck, typeof(Widget), "OnDragDropCheck");
 			MapEvent (WidgetEvent.DragDrop, typeof(Widget), "OnDragDrop");
 			MapEvent (WidgetEvent.DragLeave, typeof(Widget), "OnDragLeave");
+			MapEvent (WidgetEvent.KeyPressed, typeof(Widget), "OnKeyPressed");
+			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyPressed");
 		}
 		
 		public Window ParentWindow {
@@ -329,6 +350,18 @@ namespace Xwt
 			}
 		}
 		
+		internal protected virtual void OnKeyPressed (KeyEventArgs args)
+		{
+			if (keyPressed != null)
+				keyPressed (this, args);
+		}
+		
+		internal protected virtual void OnKeyReleased (KeyEventArgs args)
+		{
+			if (keyReleased != null)
+				keyReleased (this, args);
+		}
+		
 		protected static IWidgetBackend GetWidgetBackend (Widget w)
 		{
 			return (IWidgetBackend) GetBackend (w);
@@ -515,12 +548,6 @@ namespace Xwt
 				throw new InvalidOperationException ("Widget is not a child of this widget");
 		}
 		
-		EventHandler<DragOverCheckEventArgs> dragOverCheck;
-		EventHandler<DragOverEventArgs> dragOver;
-		EventHandler<DragCheckEventArgs> dragDropCheck;
-		EventHandler<DragEventArgs> dragDrop;
-		EventHandler dragLeave;
-		
 		public event EventHandler<DragOverCheckEventArgs> DragOverCheck {
 			add {
 				OnBeforeEventAdd (WidgetEvent.DragOverCheck, dragOverCheck);
@@ -573,6 +600,28 @@ namespace Xwt
 			remove {
 				dragLeave -= value;
 				OnAfterEventRemove (WidgetEvent.DragLeave, dragLeave);
+			}
+		}
+		
+		public event EventHandler<KeyEventArgs> KeyPressed {
+			add {
+				OnBeforeEventAdd (WidgetEvent.KeyPressed, keyPressed);
+				keyPressed += value;
+			}
+			remove {
+				keyPressed -= value;
+				OnAfterEventRemove (WidgetEvent.KeyPressed, keyPressed);
+			}
+		}
+		
+		public event EventHandler<KeyEventArgs> KeyReleased {
+			add {
+				OnBeforeEventAdd (WidgetEvent.KeyReleased, keyReleased);
+				keyReleased += value;
+			}
+			remove {
+				keyReleased -= value;
+				OnAfterEventRemove (WidgetEvent.KeyReleased, keyReleased);
 			}
 		}
 	}

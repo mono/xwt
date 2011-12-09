@@ -1,0 +1,5 @@
+XWT is a cross-platform widget toolkit for .NET and Mono.
+
+This library is still in a very early stage of development,
+so there can be big changes and refactorings in the
+internal infrastructure and public api.
