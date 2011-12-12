@@ -72,7 +72,7 @@ namespace Samples
 			
 			box.PackStart (sampleBox, BoxMode.FillAndExpand);
 			
-			Add (box);
+			Content = box;
 			
 			samplesTree.SelectionChanged += HandleSamplesTreeSelectionChanged;
 		}

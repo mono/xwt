@@ -144,8 +144,10 @@ namespace Xwt.Mac
 		
 		internal void ShowWindow (WindowBackend w)
 		{
-			if (!launched)
-				pendingWindows.Add (w);
+			if (!launched) {
+				if (!pendingWindows.Contains (w))
+					pendingWindows.Add (w);
+			}
 			else
 				w.InternalShow ();
 		}

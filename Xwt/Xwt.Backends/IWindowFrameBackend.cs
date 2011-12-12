@@ -1,5 +1,5 @@
 // 
-// IWindowBackend.cs
+// IWindowFrameBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,16 +23,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt;
 
 namespace Xwt.Backends
 {
-	public interface IWindowBackend: IWindowFrameBackend
+	public interface IWindowFrameBackend: IBackend
 	{
-		void SetChild (IWidgetBackend child);
-		void SetMainMenu (IMenuBackend menu);
+		void Initialize (IWindowFrameEventSink eventSink);
+		
+		Rectangle Bounds { get; set; }
+		bool Visible { get; set; }
+		string Title { get; set; }
+		
+		bool Decorated { get; set; }
+		bool ShowInTaskbar { get; set; }
+	}
+	
+	public interface IWindowFrameEventSink
+	{
+		void OnBoundsChanged (Rectangle bounds);
+	}
+	
+	public enum WindowFrameEvent
+	{
+		BoundsChanged = 1
 	}
 }
 

@@ -29,130 +29,41 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class Window: Widget
+	public class Window: WindowFrame
 	{
 		Widget child;
-		EventHandler boundsChanged;
-		Rectangle bounds;
+		WidgetSpacing padding;
 		Menu mainMenu;
 		
-		protected new class EventSink: Widget.EventSink, IWindowEventSink
+		protected new class EventSink: WindowFrame.EventSink, ISpacingListener
 		{
-			public void OnBoundsChanged (Rectangle bounds)
+			public void OnSpacingChanged (string spacingType)
 			{
-				((Window)Parent).OnBoundsChanged (new BoundsChangedEventArgs () { Bounds = bounds });
 			}
 		}
 		
-		public Window ()
-		{
-			Margin.SetAll (6);
-		}
-		
-		public Window (string title): this ()
-		{
-			Backend.Title = title;
-		}
-		
-		new IWindowBackend Backend {
-			get { return (IWindowBackend) base.Backend; }
-		}
-		
-		protected override void OnBackendCreated ()
-		{
-			base.OnBackendCreated ();
-			bounds = Backend.Bounds;
-			Backend.EnableEvent (WindowEvent.BoundsChanged);
-		}
-		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override WindowFrame.EventSink CreateEventSink ()
 		{
 			return new EventSink ();
 		}
 		
-		public void Add (Widget child)
+		public Window ()
 		{
-			if (child == null)
-				throw new ArgumentNullException ("child");
-			if (this.child != null)
-				throw new InvalidOperationException ("The window already has a child");
-			this.child = child;
-			child.SetParentWindow (this);
-			RegisterChild (child);
-			Backend.SetChild ((IWidgetBackend)GetBackend (child));
-			AdjustSize ();
-			((IWidgetSurface)this).Reallocate ();
+			padding = new WidgetSpacing ((EventSink)WindowEventSink, null);
+			padding.SetAll (6);
 		}
 		
-		void AdjustSize ()
+		public Window (string title): base (title)
 		{
-			IWidgetSurface s = child;
-			var w = s.GetPreferredWidth ().MinSize + Margin.Left + Margin.Right;
-			if (w > Width)
-				Width = w;
-			var h = s.GetPreferredHeightForWidth (Width).MinSize + Margin.Top + Margin.Bottom;
-			if (h > Height)
-				Height = h;
+			padding = new WidgetSpacing ((EventSink)WindowEventSink, null);
 		}
 		
-		public Rectangle Bounds {
-			get {
-				LoadBackend();
-				return bounds;
-			}
-			set {
-				Backend.Bounds = value;
-			}
+		new IWindowBackend Backend {
+			get { return (IWindowBackend) base.Backend; } 
 		}
 		
-		public double X {
-			get { return Bounds.X; }
-			set { Bounds = new Xwt.Rectangle (value, Y, Width, Height); }
-		}
-		
-		public double Y {
-			get { return Bounds.Y; }
-			set { Bounds = new Xwt.Rectangle (X, value, Width, Height); }
-		}
-		
-		public double Width {
-			get { return Bounds.Width; }
-			set { Bounds = new Xwt.Rectangle (X, Y, value, Height); }
-		}
-		
-		public double Height {
-			get { return Bounds.Height; }
-			set { Bounds = new Xwt.Rectangle (X, Y, Width, value); }
-		}
-		
-		public Size Size {
-			get { return Bounds.Size; }
-			set { Bounds = new Rectangle (X, Y, value.Width, value.Height); }
-		}
-		
-		public Point Location {
-			get { return Bounds.Location; }
-			set { Bounds = new Rectangle (value.X, value.Y, Width, Height); }
-		}
-		
-		
-		public void Remove (Widget child)
-		{
-			if (this.child == child) {
-				UnregisterChild (child);
-				this.child = null;
-				child.SetParentWindow (null);
-				Backend.SetChild ((IWidgetBackend)GetBackend (child));
-			}
-		}
-		
-		public Widget Child {
-			get { return child; }
-		}
-		
-		public string Title {
-			get { return Backend.Title; }
-			set { Backend.Title = value; }
+		public WidgetSpacing Padding {
+			get { return padding; }
 		}
 		
 		public Menu MainMenu {
@@ -165,87 +76,37 @@ namespace Xwt
 			}
 		}
 		
-		public bool Decorated {
-			get { return Backend.Decorated; }
-			set { Backend.Decorated = value; }
-		}
-		
-		public bool ShowInTaskbar {
-			get { return Backend.ShowInTaskbar; }
-			set { Backend.ShowInTaskbar = value; }
-		}
-		
-		protected override WidgetSize OnGetPreferredWidth ()
-		{
-			WidgetSize s;
-			if (child != null)
-				s = ((IWidgetSurface)child).GetPreferredWidth ();
-			else
-				s = new WidgetSize ();
-			s.MinSize += Margin.Left + Margin.Right;
-			s.NaturalSize += Margin.Left + Margin.Right;
-			return s;
-		}
-		
-		protected override WidgetSize OnGetPreferredHeight ()
-		{
-			WidgetSize s;
-			if (child != null)
-				s = ((IWidgetSurface)child).GetPreferredHeight ();
-			else
-				s = new WidgetSize ();
-			s.MinSize += Margin.Top + Margin.Bottom;
-			s.NaturalSize += Margin.Top + Margin.Bottom;
-			return s;
-		}
-		
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			WidgetSize s;
-			if (child != null)
-				s = ((IWidgetSurface)child).GetPreferredHeightForWidth (width);
-			else
-				s = new WidgetSize ();
-			s.MinSize += Margin.Top + Margin.Bottom;
-			s.NaturalSize += Margin.Top + Margin.Bottom;
-			return s;
-		}
-		
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			WidgetSize s;
-			if (child != null)
-				s = ((IWidgetSurface)child).GetPreferredWidthForHeight (height);
-			else
-				s = new WidgetSize ();
-			s.MinSize += Margin.Left + Margin.Right;
-			s.NaturalSize += Margin.Left + Margin.Right;
-			return s;
-		}
-		
-		protected virtual void OnBoundsChanged (BoundsChangedEventArgs a)
-		{
-			if (bounds != a.Bounds) {
-				bounds = a.Bounds;
-				((IWidgetSurface)this).Reallocate ();
-				if (boundsChanged != null)
-					boundsChanged (this, a);
+		public Widget Content {
+			get {
+				return child;
+			}
+			set {
+				if (child != null)
+					child.SetParentWindow (null);
+				this.child = value;
+				child.SetParentWindow (this);
+				Backend.SetChild ((IWidgetBackend)GetBackend (child));
+				AdjustSize ();
 			}
 		}
 		
-		public event EventHandler BoundsChanged {
-			add {
-				boundsChanged += value;
-			}
-			remove {
-				boundsChanged -= value;
+		protected override void OnReallocate ()
+		{
+			if (child != null) {
+				((IWidgetSurface)child).Reallocate ();
 			}
 		}
-	}
-	
-	public class BoundsChangedEventArgs: EventArgs
-	{
-		public Rectangle Bounds { get; set; }
+		
+		void AdjustSize ()
+		{
+			IWidgetSurface s = child;
+			var w = s.GetPreferredWidth ().MinSize;
+			if (w > Width)
+				Width = w;
+			var h = s.GetPreferredHeightForWidth (Width).MinSize;
+			if (h > Height)
+				Height = h;
+		}
 	}
 }
 

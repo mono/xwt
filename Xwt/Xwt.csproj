@@ -155,6 +155,8 @@
     <Compile Include="Xwt\Key.cs" />
     <Compile Include="Xwt\ModifierKeys.cs" />
     <Compile Include="Xwt\KeyEventArgs.cs" />
+    <Compile Include="Xwt\WindowFrame.cs" />
+    <Compile Include="Xwt.Backends\IWindowFrameBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

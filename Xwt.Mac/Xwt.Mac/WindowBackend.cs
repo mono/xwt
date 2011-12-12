@@ -35,7 +35,7 @@ namespace Xwt.Mac
 	public class WindowBackend: NSWindow, IWindowBackend
 	{
 		WindowBackendController controller;
-		IWindowEventSink eventSink;
+		IWindowFrameEventSink eventSink;
 		Window frontend;
 		IMacViewBackend child;
 		
@@ -57,15 +57,15 @@ namespace Xwt.Mac
 			this.frontend = (Window) frontend;
 		}
 		
+		public void Initialize (IWindowFrameEventSink eventSink)
+		{
+			this.eventSink = eventSink;
+		}
+		
 		public object NativeWidget {
 			get {
 				return this;
 			}
-		}
-		
-		public void ShowAll ()
-		{
-			MacEngine.App.ShowWindow (this);
 		}
 		
 		internal void InternalShow ()
@@ -78,6 +78,8 @@ namespace Xwt.Mac
 				return !ContentView.Hidden;
 			}
 			set {
+				if (value)
+					MacEngine.App.ShowWindow (this);
 				ContentView.Hidden = !value;
 			}
 		}
@@ -104,26 +106,15 @@ namespace Xwt.Mac
 		}
 		
 		#region IWindowBackend implementation
-		void IWidgetBackend.Initialize (IWidgetEventSink eventSink)
-		{
-			this.eventSink = (IWindowEventSink) eventSink;
-		}
-		
-		Point IWidgetBackend.ConvertToScreenCoordinates (Point widgetCoordinates)
-		{
-			var lo = ConvertBaseToScreen (new PointF ((float)widgetCoordinates.X, (float)widgetCoordinates.Y));
-			return new Point (lo.X, lo.Y);
-		}
-
 		void IBackend.EnableEvent (object ev)
 		{
-			if ((ev is WindowEvent) && ((WindowEvent)ev) == WindowEvent.BoundsChanged)
+			if ((ev is WindowFrameEvent) && ((WindowFrameEvent)ev) == WindowFrameEvent.BoundsChanged)
 				DidResize += HandleDidResize;
 		}
 
 		void IBackend.DisableEvent (object ev)
 		{
-			if ((ev is WindowEvent) && ((WindowEvent)ev) == WindowEvent.BoundsChanged)
+			if ((ev is WindowFrameEvent) && ((WindowFrameEvent)ev) == WindowFrameEvent.BoundsChanged)
 				DidResize -= HandleDidResize;
 		}
 
@@ -145,7 +136,7 @@ namespace Xwt.Mac
 			}
 		}
 		
-		bool IWindowBackend.Decorated {
+		bool IWindowFrameBackend.Decorated {
 			get {
 				return (StyleMask & NSWindowStyle.Titled) != 0;
 			}
@@ -157,7 +148,7 @@ namespace Xwt.Mac
 			}
 		}
 		
-		bool IWindowBackend.ShowInTaskbar {
+		bool IWindowFrameBackend.ShowInTaskbar {
 			get {
 				return false;
 			}
@@ -169,15 +160,15 @@ namespace Xwt.Mac
 		{
 			if (child != null) {
 				var frame = ContentView.Frame;
-				frame.X += frontend.Margin.Left;
-				frame.Width -= frontend.Margin.HorizontalSpacing;
-				frame.Y += frontend.Margin.Top;
-				frame.Height -= frontend.Margin.VerticalSpacing;
+				frame.X += frontend.Padding.Left;
+				frame.Width -= frontend.Padding.HorizontalSpacing;
+				frame.Y += frontend.Padding.Top;
+				frame.Height -= frontend.Padding.VerticalSpacing;
 				child.View.Frame = frame;
 			}
 		}
 		
-		Rectangle IWindowBackend.Bounds {
+		Rectangle IWindowFrameBackend.Bounds {
 			get {
 				var r = ContentRectFor (Frame);
 				return new Rectangle ((int)r.X, (int)r.Y, (int)r.Width, (int)r.Height);
@@ -195,57 +186,6 @@ namespace Xwt.Mac
 //			base.Menu = m;
 		}
 		
-		#endregion
-
-		#region IWidgetBackend implementation
-
-		Size IWidgetBackend.Size {
-			get { return ((IWindowBackend)this).Bounds.Size; }
-		}
-		
-		WidgetSize IWidgetBackend.GetPreferredWidth ()
-		{
-			int w = (int)Frame.Width + frontend.Margin.HorizontalSpacing;
-			return new WidgetSize (w, w);
-		}
-
-		WidgetSize IWidgetBackend.GetPreferredHeightForWidth (double width)
-		{
-			int h = (int) Frame.Height + frontend.Margin.VerticalSpacing;
-			return new WidgetSize (h, h);
-		}
-
-		WidgetSize IWidgetBackend.GetPreferredHeight ()
-		{
-			int h = (int) Frame.Height + frontend.Margin.VerticalSpacing;
-			return new WidgetSize (h, h);
-		}
-
-		WidgetSize IWidgetBackend.GetPreferredWidthForHeight (double height)
-		{
-			int w = (int)Frame.Width + frontend.Margin.HorizontalSpacing;
-			return new WidgetSize (w, w);
-		}
-
-		bool IWidgetBackend.Visible {
-			get {
-				return IsVisible;
-			}
-			set {
-				if (value)
-					MakeKeyAndOrderFront (controller);
-				else
-					OrderOut (controller);
-			}
-		}
-
-		bool IWidgetBackend.Sensitive {
-			get {
-				return true;
-			}
-			set {
-			}
-		}
 		#endregion
 
 		static Selector closeSel = new Selector ("close");

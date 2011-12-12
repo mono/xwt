@@ -49,7 +49,7 @@ namespace Xwt
 		EventSink eventSink;
 		DragOperation currentDragOperation;
 		Widget contentWidget;
-		Window parentWindow;
+		WindowFrame parentWindow;
 		
 		EventHandler<DragOverCheckEventArgs> dragOverCheck;
 		EventHandler<DragOverEventArgs> dragOver;
@@ -60,7 +60,7 @@ namespace Xwt
 		EventHandler<KeyEventArgs> keyPressed;
 		EventHandler<KeyEventArgs> keyReleased;
 		
-		protected class EventSink: IWidgetEventSink
+		protected class EventSink: IWidgetEventSink, ISpacingListener
 		{
 			public Widget Parent { get; internal set; }
 			
@@ -108,13 +108,18 @@ namespace Xwt
 			{
 				Parent.OnKeyReleased (args);
 			}
+			
+			public void OnSpacingChanged (string spacingType)
+			{
+				Parent.OnPreferredSizeChanged ();
+			}
 		}
 		
 		public Widget ()
 		{
 			eventSink = CreateEventSink ();
 			eventSink.Parent = this;
-			margin = new Xwt.WidgetSpacing (this);
+			margin = new Xwt.WidgetSpacing (eventSink, null);
 		}
 		
 		static Widget ()
@@ -128,18 +133,16 @@ namespace Xwt
 			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyPressed");
 		}
 		
-		public Window ParentWindow {
+		public WindowFrame ParentWindow {
 			get {
-				if (Parent is Window)
-					return (Window) Parent;
-				else if (Parent != null)
+				if (Parent != null)
 					return Parent.ParentWindow;
 				else
 					return parentWindow;
 			}
 		}
 		
-		internal void SetParentWindow (Window win)
+		internal void SetParentWindow (WindowFrame win)
 		{
 			parentWindow = win;
 		}
@@ -518,11 +521,6 @@ namespace Xwt
 			}
 		}
 		
-		internal void NotifyPaddingChanged ()
-		{
-			OnPreferredSizeChanged ();
-		}
-		
 		public Context CreateContext ()
 		{
 			return new Context (this);
@@ -640,17 +638,19 @@ namespace Xwt
 	
 	public class WidgetSpacing
 	{
-		Widget parent;
+		ISpacingListener parent;
 		int top, left, right, bottom;
+		string spacingType;
 		
-		internal WidgetSpacing (Widget parent)
+		internal WidgetSpacing (ISpacingListener parent, string spacingType)
 		{
+			this.spacingType = spacingType;
 			this.parent = parent;
 		}
 		
 		void NotifyChanged ()
 		{
-			parent.NotifyPaddingChanged ();
+			parent.OnSpacingChanged (spacingType);
 		}
 		
 		public int Left {
@@ -710,6 +710,11 @@ namespace Xwt
 			this.right = padding;
 			NotifyChanged ();
 		}
+	}
+	
+	public interface ISpacingListener
+	{
+		void OnSpacingChanged (string spacingType);
 	}
 }
 

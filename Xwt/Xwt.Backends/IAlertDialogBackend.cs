@@ -30,7 +30,7 @@ namespace Xwt.Backends
 {
 	public interface IAlertDialogBackend: IDisposable
 	{
-		Command Run (Window transientFor, MessageDescription message);
+		Command Run (WindowFrame transientFor, MessageDescription message);
 		
 		bool ApplyToAll { get; }
 	}

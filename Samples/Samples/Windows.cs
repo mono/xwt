@@ -39,7 +39,7 @@ namespace Samples
 				w.Decorated = false;
 				Button c = new Button ("This is a window");
 //				c.Margin.SetAll (10);
-				w.Add (c);
+				w.Content = c;
 				c.Clicked += delegate {
 					w.Dispose ();
 				};

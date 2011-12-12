@@ -32,14 +32,14 @@ namespace Xwt
 {
 	public static class MessageDialog
 	{
-		public static Window RootWindow { get; set; }
+		public static WindowFrame RootWindow { get; set; }
 		
 		#region ShowError
 		public static void ShowError (string primaryText)
 		{
 			ShowError (RootWindow, primaryText);
 		}
-		public static void ShowError (Window parent, string primaryText)
+		public static void ShowError (WindowFrame parent, string primaryText)
 		{
 			ShowError (parent, primaryText, null);
 		}
@@ -47,7 +47,7 @@ namespace Xwt
 		{
 			ShowError (RootWindow, primaryText, secondaryText);
 		}
-		public static void ShowError (Window parent, string primaryText, string secondaryText)
+		public static void ShowError (WindowFrame parent, string primaryText, string secondaryText)
 		{
 			GenericAlert (parent, StockIcons.Error, primaryText, secondaryText, Command.Ok);
 		}
@@ -58,7 +58,7 @@ namespace Xwt
 		{
 			ShowWarning (RootWindow, primaryText);
 		}
-		public static void ShowWarning (Window parent, string primaryText)
+		public static void ShowWarning (WindowFrame parent, string primaryText)
 		{
 			ShowWarning (parent, primaryText, null);
 		}
@@ -66,7 +66,7 @@ namespace Xwt
 		{
 			ShowWarning (RootWindow, primaryText, secondaryText);
 		}
-		public static void ShowWarning (Window parent, string primaryText, string secondaryText)
+		public static void ShowWarning (WindowFrame parent, string primaryText, string secondaryText)
 		{
 			GenericAlert (parent, StockIcons.Warning, primaryText, secondaryText, Command.Ok);
 		}
@@ -78,7 +78,7 @@ namespace Xwt
 		{
 			ShowMessage (RootWindow, primaryText);
 		}
-		public static void ShowMessage (Window parent, string primaryText)
+		public static void ShowMessage (WindowFrame parent, string primaryText)
 		{
 			ShowMessage (parent, primaryText, null);
 		}
@@ -86,7 +86,7 @@ namespace Xwt
 		{
 			ShowMessage (RootWindow, primaryText, secondaryText);
 		}
-		public static void ShowMessage (Window parent, string primaryText, string secondaryText)
+		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText)
 		{
 			GenericAlert (parent, StockIcons.Information, primaryText, secondaryText, Command.Ok);
 		}
@@ -144,12 +144,12 @@ namespace Xwt
 		}
 		#endregion
 		
-		static Command GenericAlert (Window parent, string icon, string primaryText, string secondaryText, params Command[] buttons)
+		static Command GenericAlert (WindowFrame parent, string icon, string primaryText, string secondaryText, params Command[] buttons)
 		{
 			return GenericAlert (parent, icon, primaryText, secondaryText, buttons.Length - 1, buttons);
 		}
 		
-		static Command GenericAlert (Window parent, string icon, string primaryText, string secondaryText, int defaultButton, params Command[] buttons)
+		static Command GenericAlert (WindowFrame parent, string icon, string primaryText, string secondaryText, int defaultButton, params Command[] buttons)
 		{
 			GenericMessage message = new GenericMessage () {
 				Icon = icon,
@@ -163,7 +163,7 @@ namespace Xwt
 			return GenericAlert (parent, message);
 		}
 		
-		static Command GenericAlert (Window parent, MessageDescription message)
+		static Command GenericAlert (WindowFrame parent, MessageDescription message)
 		{
 			if (message.ApplyToAllButton != null)
 				return message.ApplyToAllButton;
