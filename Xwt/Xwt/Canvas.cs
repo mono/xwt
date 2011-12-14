@@ -234,12 +234,12 @@ namespace Xwt
 		
 		protected override WidgetSize OnGetPreferredWidth ()
 		{
-			return new WidgetSize (minSize.Width, naturalSize.Width);
+			return new WidgetSize (minSize.Width);
 		}
 		
 		protected override WidgetSize OnGetPreferredHeight ()
 		{
-			return new WidgetSize (minSize.Height, naturalSize.Width);
+			return new WidgetSize (minSize.Height);
 		}
 		
 		protected override WidgetSize OnGetPreferredHeightForWidth (double width)

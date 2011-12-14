@@ -61,6 +61,7 @@
     <Compile Include="Samples\TextEntries.cs" />
     <Compile Include="Samples\Images.cs" />
     <Compile Include="Samples\CanvasWithWidget.cs" />
+    <Compile Include="Samples\Tables.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

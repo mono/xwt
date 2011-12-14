@@ -69,6 +69,7 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ComboBox), typeof(ComboBoxBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.TextEntry), typeof(TextEntryBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ImageView), typeof(ImageViewBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Table), typeof(BoxBackend));
 		}
 
 		public override void RunApplication ()

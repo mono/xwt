@@ -59,6 +59,7 @@ namespace Samples
 			AddSample (null, "List View", typeof(ListView1));
 			AddSample (null, "Notebook", typeof(NotebookSample));
 //			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
+			AddSample (null, "Tables", typeof(Tables));
 			AddSample (null, "Text Entry", typeof(TextEntries));
 			AddSample (null, "Windows", typeof(Windows));
 			
