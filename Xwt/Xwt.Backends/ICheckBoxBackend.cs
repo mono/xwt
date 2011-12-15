@@ -1,8 +1,8 @@
 // 
-// IFontBackendHandler.cs
+// ICheckBoxBackend.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Lluis Sanchez Gual <lluis@xamarin.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -23,29 +23,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IFontBackendHandler: IBackendHandler
+	public interface ICheckBoxBackend: IWidgetBackend
 	{
-		object CreateFromName (string fontName, double size);
-		object Copy (object handle);
-		
-		object SetSize (object handle, double size);
-		object SetFamily (object handle, string family);
-		object SetStyle (object handle, FontStyle style);
-		object SetWeight (object handle, FontWeight weight);
-		object SetStretch (object handle, FontStretch stretch);
-		
-		double GetSize (object handle);
-		string GetFamily (object handle);
-		FontStyle GetStyle (object handle);
-		FontWeight GetWeight (object handle);
-		FontStretch GetStretch (object handle);
-		
+		void SetContent (IWidgetBackend widget);
+		void SetContent (string label);
+		bool Active { get; set; }
+	}
+	
+	public interface ICheckBoxEventSink: IWidgetEventSink
+	{
+		void OnClicked ();
+		void OnToggled ();
+	}
+	
+	public enum CheckBoxEvent
+	{
+		Clicked = 1,
+		Toggled = 2
 	}
 }
 

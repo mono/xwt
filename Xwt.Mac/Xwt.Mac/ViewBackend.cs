@@ -46,6 +46,7 @@ namespace Xwt.Mac
 		S eventSink;
 		IViewObject<T> viewObject;
 		WidgetEvent currentEvents;
+		Size minSize;
 		
 		void IBackend.Initialize (object frontend)
 		{
@@ -144,7 +145,16 @@ namespace Xwt.Mac
 		{
 			return GetWidget ((IWidgetBackend)WidgetRegistry.GetBackend (w));
 		}
-
+		
+		public virtual object Font {
+			get {
+				throw new NotImplementedException ();
+			}
+			set {
+				throw new NotImplementedException ();
+			}
+		}
+		
 		#region IWidgetBackend implementation
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
@@ -156,26 +166,38 @@ namespace Xwt.Mac
 		
 		public WidgetSize GetPreferredWidth ()
 		{
-			double w = Widget.WidgetWidth () + frontend.Margin.HorizontalSpacing;
-			return new Xwt.WidgetSize (w, w);
-		}
-
-		public WidgetSize GetPreferredHeightForWidth (double width)
-		{
-			double w = Widget.WidgetHeight () + frontend.Margin.VerticalSpacing;
-			return new Xwt.WidgetSize (w, w);
+			double w = Widget.WidgetWidth() + frontend.Margin.HorizontalSpacing;
+			var s = new Xwt.WidgetSize (w, w);
+			if (minWidth != -1 && s.MinSize > minWidth)
+				s.MinSize = minWidth;
+			return s;
 		}
 
 		public WidgetSize GetPreferredHeight ()
 		{
-			double w = Widget.WidgetHeight () + frontend.Margin.VerticalSpacing;
-			return new Xwt.WidgetSize (w, w);
+			double h = Widget.WidgetHeight() + frontend.Margin.VerticalSpacing;
+			var s = new Xwt.WidgetSize (h, h);
+			if (minHeight != -1 && s.MinSize > minHeight)
+				s.MinSize = minHeight;
+			return s;
+		}
+
+		public WidgetSize GetPreferredHeightForWidth (double width)
+		{
+			return GetPreferredHeight ();
 		}
 
 		public WidgetSize GetPreferredWidthForHeight (double height)
 		{
-			double w = Widget.WidgetWidth () + frontend.Margin.HorizontalSpacing;
-			return new Xwt.WidgetSize (w, w);
+			return GetPreferredWidth ();
+		}
+		
+		double minWidth = -1, minHeight = -1;
+		
+		public void SetMinSize (double width, double height)
+		{
+			minWidth = width;
+			minHeight = height;
 		}
 		
 		public virtual void UpdateLayout ()

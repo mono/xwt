@@ -38,19 +38,18 @@ namespace Xwt.GtkBackend
 		Widget frontend;
 		Gtk.Alignment alignment;
 		IWidgetEventSink eventSink;
+		WidgetEvent enabledEvents;
 		
-		bool dragEventsSet;
 		TransferDataSource currentDragData;
 		Gdk.DragAction destDragAction;
 		Gdk.DragAction sourceDragAction;
-		bool dropCheckEventEnabled;
-		bool dropEventEnabled;
-		bool dragMotionCheckEventEnabled;
-		bool dragMotionEventEnabled;
 		int dragDataRequests;
 		TransferDataStore dragData;
 		bool dragDataForMotion;
 		Gtk.TargetEntry[] validDropTypes;
+
+		const WidgetEvent dragDropEvents = WidgetEvent.DragDropCheck | WidgetEvent.DragDrop | WidgetEvent.DragOver | WidgetEvent.DragOverCheck;
+		const WidgetEvent sizeCheckEvents = WidgetEvent.PreferredWidthCheck | WidgetEvent.PreferredHeightCheck | WidgetEvent.PreferredHeightForWidthCheck | WidgetEvent.PreferredWidthForHeightCheck;
 		
 		void IBackend.Initialize (object frontend)
 		{
@@ -137,22 +136,58 @@ namespace Xwt.GtkBackend
 		
 		public virtual WidgetSize GetPreferredWidth ()
 		{
-			return new WidgetSize (Widget.SizeRequest ().Width) + frontend.Margin.HorizontalSpacing;
+			try {
+				gettingPreferredSize = true;
+				return new WidgetSize (Widget.SizeRequest ().Width) + frontend.Margin.HorizontalSpacing;
+			} finally {
+				gettingPreferredSize = false;
+			}
 		}
 		
 		public virtual WidgetSize GetPreferredHeight ()
 		{
-			return new WidgetSize (Widget.SizeRequest ().Height) + frontend.Margin.VerticalSpacing;
+			try {
+				gettingPreferredSize = true;
+				return new WidgetSize (Widget.SizeRequest ().Height) + frontend.Margin.VerticalSpacing;
+			} finally {
+				gettingPreferredSize = false;
+			}
 		}
 		
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
-			return new WidgetSize (Widget.SizeRequest ().Height) + frontend.Margin.VerticalSpacing;
+			try {
+				gettingPreferredSize = true;
+				return new WidgetSize (Widget.SizeRequest ().Height) + frontend.Margin.VerticalSpacing;
+			} finally {
+				gettingPreferredSize = false;
+			}
 		}
 		
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
-			return new WidgetSize (Widget.SizeRequest ().Width) + frontend.Margin.HorizontalSpacing;
+			try {
+				gettingPreferredSize = true;
+				return new WidgetSize (Widget.SizeRequest ().Width) + frontend.Margin.HorizontalSpacing;
+			} finally {
+				gettingPreferredSize = false;
+			}
+		}
+		
+		public void SetMinSize (double width, double height)
+		{
+			Widget.WidthRequest = (int) width;
+			Widget.HeightRequest = (int) height;
+		}
+		
+		public object Font {
+			get {
+				return Widget.Style.FontDescription;
+			}
+			set {
+				var fd = (Pango.FontDescription) value;
+				Widget.ModifyFont (fd);
+			}
 		}
 		
 		Gtk.Widget IGtkWidgetBackend.Widget {
@@ -195,20 +230,8 @@ namespace Xwt.GtkBackend
 			if (eventId is WidgetEvent) {
 				WidgetEvent ev = (WidgetEvent) eventId;
 				switch (ev) {
-				case WidgetEvent.DragDropCheck:
-					dropCheckEventEnabled = true;
-					break;
-				case WidgetEvent.DragDrop:
-					dropEventEnabled = true;
-					break;
-				case WidgetEvent.DragOverCheck:
-					dragMotionCheckEventEnabled = true;
-					break;
-				case WidgetEvent.DragOver:
-					dragMotionEventEnabled = true;
-					break;
 				case WidgetEvent.DragLeave:
-					Widget.DragLeave += HandleWidgetDragLeave;;
+					Widget.DragLeave += HandleWidgetDragLeave;
 					break;
 				case WidgetEvent.KeyPressed:
 					Widget.KeyPressEvent += HandleKeyPressEvent;
@@ -217,14 +240,18 @@ namespace Xwt.GtkBackend
 					Widget.KeyReleaseEvent += HandleKeyReleaseEvent;
 					break;
 				}
-				if (dropEventEnabled || dropCheckEventEnabled || dragMotionCheckEventEnabled || dragMotionEventEnabled) {
-					if (!dragEventsSet) {
-						dragEventsSet = true;
-						Widget.DragDrop += HandleWidgetDragDrop;
-						Widget.DragMotion += HandleWidgetDragMotion;
-						Widget.DragDataReceived += HandleWidgetDragDataReceived;
-					}
+				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
+					// Enabling a drag&drop event for the first time
+					Widget.DragDrop += HandleWidgetDragDrop;
+					Widget.DragMotion += HandleWidgetDragMotion;
+					Widget.DragDataReceived += HandleWidgetDragDataReceived;
 				}
+				if ((ev & sizeCheckEvents) != 0 && (enabledEvents & sizeCheckEvents) == 0) {
+					// Enabling a size request event for the first time
+					Widget.SizeRequested += HandleWidgetSizeRequested;
+					Widget.SizeAllocated += HandleWidgetSizeAllocated;;
+				}
+				enabledEvents |= ev;
 			}
 		}
 		
@@ -233,18 +260,6 @@ namespace Xwt.GtkBackend
 			if (eventId is WidgetEvent) {
 				WidgetEvent ev = (WidgetEvent) eventId;
 				switch (ev) {
-				case WidgetEvent.DragDropCheck:
-					dropCheckEventEnabled = false;
-					break;
-				case WidgetEvent.DragDrop:
-					dropEventEnabled = false;
-					break;
-				case WidgetEvent.DragOverCheck:
-					dragMotionCheckEventEnabled = false;
-					break;
-				case WidgetEvent.DragOver:
-					dragMotionEventEnabled = false;
-					break;
 				case WidgetEvent.DragLeave:
 					Widget.DragLeave -= HandleWidgetDragLeave;
 					break;
@@ -255,13 +270,98 @@ namespace Xwt.GtkBackend
 					Widget.KeyReleaseEvent -= HandleKeyReleaseEvent;
 					break;
 				}
-				if (!dropEventEnabled && !dropCheckEventEnabled && !dragMotionCheckEventEnabled && !dragMotionEventEnabled) {
-					if (dragEventsSet) {
-						dragEventsSet = false;
-						Widget.DragDrop -= HandleWidgetDragDrop;
-						Widget.DragMotion -= HandleWidgetDragMotion;
-						Widget.DragDataReceived -= HandleWidgetDragDataReceived;
+				
+				enabledEvents &= ~ev;
+				
+				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
+					// All drag&drop events have been disabled
+					Widget.DragDrop -= HandleWidgetDragDrop;
+					Widget.DragMotion -= HandleWidgetDragMotion;
+					Widget.DragDataReceived -= HandleWidgetDragDataReceived;
+				}
+				if ((ev & sizeCheckEvents) != 0 && (enabledEvents & sizeCheckEvents) == 0) {
+					// All size request events have been disabled
+					Widget.SizeRequested -= HandleWidgetSizeRequested;
+					Widget.SizeAllocated -= HandleWidgetSizeAllocated;;
+				}
+			}
+		}
+		
+		enum SizeCheckStep
+		{
+			SizeRequest,
+			PreAllocate,
+			AdjustSize,
+			FinalAllocate
+		}
+		
+		SizeCheckStep sizeCheckStep = SizeCheckStep.SizeRequest;
+		int realRequestedWidth;
+		int realRequestedHeight;
+		bool gettingPreferredSize;
+
+		void HandleWidgetSizeRequested (object o, Gtk.SizeRequestedArgs args)
+		{
+			if (gettingPreferredSize)
+				return;
+			
+			var req = args.Requisition;
+			
+			if (sizeCheckStep == SizeCheckStep.AdjustSize) {
+				req.Width = realRequestedWidth;
+				req.Height = realRequestedHeight;
+				sizeCheckStep = SizeCheckStep.FinalAllocate;
+			}
+			else {
+				if (EventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
+					if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
+					    var w = eventSink.OnGetPreferredWidth ();
+						req.Width = (int) w.MinSize;
 					}
+					if ((enabledEvents & WidgetEvent.PreferredHeightForWidthCheck) != 0) {
+						req.Height = 1;
+						sizeCheckStep = SizeCheckStep.PreAllocate;
+					}
+					else if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
+						var h = eventSink.OnGetPreferredHeight ();
+						req.Height = (int) h.MinSize;
+						sizeCheckStep = SizeCheckStep.FinalAllocate;
+					}
+				} else {
+					if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
+						var h = eventSink.OnGetPreferredHeight ();
+						req.Height = (int) h.MinSize;
+					}
+					if ((enabledEvents & WidgetEvent.PreferredWidthForHeightCheck) != 0) {
+						req.Width = 1;
+						sizeCheckStep = SizeCheckStep.PreAllocate;
+					}
+					else if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
+					    var w = eventSink.OnGetPreferredWidth ();
+						req.Width = (int) w.MinSize;
+						sizeCheckStep = SizeCheckStep.FinalAllocate;
+					}
+				}
+			}
+			args.Requisition = req;
+		}
+
+		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
+		{
+			if (sizeCheckStep == SizeCheckStep.SizeRequest) {
+				Console.WriteLine ("SizeRequest not called. Should not happen");
+			}
+			else if (sizeCheckStep == SizeCheckStep.PreAllocate || sizeCheckStep == SizeCheckStep.AdjustSize) {
+				if (EventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
+					realRequestedWidth = args.Allocation.Width;
+					realRequestedHeight = (int) eventSink.OnGetPreferredHeightForWidth (args.Allocation.Width).MinSize;
+					sizeCheckStep = SizeCheckStep.AdjustSize;
+					Widget.QueueResize ();
+				} else {
+					realRequestedHeight = args.Allocation.Height;
+					realRequestedWidth = (int) eventSink.OnGetPreferredWidthForHeight (args.Allocation.Height).MinSize;
+					sizeCheckStep = SizeCheckStep.AdjustSize;
+					Widget.QueueResize ();
 				}
 			}
 		}
@@ -307,8 +407,8 @@ namespace Xwt.GtkBackend
 			lastDragPosition = new Point (args.X, args.Y);
 			
 			DragDropAction ac;
-			if (!dragMotionCheckEventEnabled) {
-				if (dragMotionEventEnabled)
+			if ((enabledEvents & WidgetEvent.DragOverCheck) == 0) {
+				if ((enabledEvents & WidgetEvent.DragOver) != 0)
 					ac = DragDropAction.Default;
 				else
 					ac = ConvertDragAction (destDragAction);
@@ -317,7 +417,7 @@ namespace Xwt.GtkBackend
 				DragOverCheckEventArgs da = new DragOverCheckEventArgs (new Point (args.X, args.Y), Util.GetDragTypes (args.Context.Targets), ConvertDragAction (args.Context.Actions));
 				EventSink.OnDragOverCheck (da);
 				ac = da.AllowedAction;
-				if (!dragMotionEventEnabled && ac == DragDropAction.Default)
+				if ((enabledEvents & WidgetEvent.DragOver) == 0 && ac == DragDropAction.Default)
 					ac = DragDropAction.None;
 			}
 			
@@ -342,8 +442,8 @@ namespace Xwt.GtkBackend
 			var cda = ConvertDragAction (args.Context.Action);
 
 			DragDropResult res;
-			if (!dropCheckEventEnabled) {
-				if (dropEventEnabled)
+			if ((enabledEvents & WidgetEvent.DragDropCheck) == 0) {
+				if ((enabledEvents & WidgetEvent.DragDrop) != 0)
 					res = DragDropResult.None;
 				else
 					res = DragDropResult.Canceled;
@@ -352,7 +452,7 @@ namespace Xwt.GtkBackend
 				DragCheckEventArgs da = new DragCheckEventArgs (new Point (args.X, args.Y), Util.GetDragTypes (args.Context.Targets), cda);
 				EventSink.OnDragDropCheck (da);
 				res = da.Result;
-				if (!dropEventEnabled && res == DragDropResult.None)
+				if ((enabledEvents & WidgetEvent.DragDrop) == 0 && res == DragDropResult.None)
 					res = DragDropResult.Canceled;
 			}
 			if (res == DragDropResult.Canceled) {

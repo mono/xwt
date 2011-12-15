@@ -40,6 +40,11 @@ namespace Samples
 			te.Changed += delegate {
 				la.Text = "Text: " + te.Text;
 			};
+			
+			PackStart (new Label ("Entry with small font"));
+			te = new TextEntry ();
+			te.Font = te.Font.WithSize (te.Font.Size / 2);
+			PackStart (te);
 		}
 	}
 }

@@ -81,6 +81,7 @@
     <Compile Include="Xwt.GtkBackend\GtkWorkarounds.cs" />
     <Compile Include="Xwt.GtkBackend\PangoUtil.cs" />
     <Compile Include="Xwt.GtkBackend\WindowFrameBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\CheckBoxBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

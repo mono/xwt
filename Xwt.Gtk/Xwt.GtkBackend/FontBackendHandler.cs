@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using Pango;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -36,6 +37,87 @@ namespace Xwt.GtkBackend
 		{
 			return FontDescription.FromString (fontName + " " + size);
 		}
+
+		#region IFontBackendHandler implementation
+		
+		public object Copy (object handle)
+		{
+			FontDescription d = (FontDescription) handle;
+			return d.Copy ();
+		}
+		
+		public object SetSize (object handle, double size)
+		{
+			FontDescription d = (FontDescription) handle;
+			d = d.Copy ();
+			d.Size = (int) size;
+			return d;
+		}
+
+		public object SetFamily (object handle, string family)
+		{
+			FontDescription fd = (FontDescription) handle;
+			fd = fd.Copy ();
+			fd.Family = family;
+			return fd;
+		}
+
+		public object SetStyle (object handle, FontStyle style)
+		{
+			FontDescription fd = (FontDescription) handle;
+			fd = fd.Copy ();
+			fd.Style = (Pango.Style)(int)style;
+			return fd;
+		}
+
+		public object SetWeight (object handle, FontWeight weight)
+		{
+			FontDescription fd = (FontDescription) handle;
+			fd = fd.Copy ();
+			fd.Weight = (Pango.Weight)(int)weight;
+			return fd;
+		}
+
+		public object SetStretch (object handle, FontStretch stretch)
+		{
+			FontDescription fd = (FontDescription) handle;
+			fd = fd.Copy ();
+			fd.Stretch = (Pango.Stretch)(int)stretch;
+			return fd;
+		}
+		
+		public double GetSize (object handle)
+		{
+			FontDescription fd = (FontDescription) handle;
+			return fd.Size;
+		}
+
+		public string GetFamily (object handle)
+		{
+			FontDescription fd = (FontDescription) handle;
+			return fd.Family;
+		}
+
+		public FontStyle GetStyle (object handle)
+		{
+			FontDescription fd = (FontDescription) handle;
+			return (FontStyle)(int)fd.Style;
+		}
+
+		public FontWeight GetWeight (object handle)
+		{
+			FontDescription fd = (FontDescription) handle;
+			return (FontWeight)(int)fd.Weight;
+		}
+
+		public FontStretch GetStretch (object handle)
+		{
+			FontDescription fd = (FontDescription) handle;
+			return (FontStretch)(int)fd.Stretch;
+		}
+		#endregion
+
+
 	}
 }
 

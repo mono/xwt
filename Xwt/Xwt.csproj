@@ -157,6 +157,8 @@
     <Compile Include="Xwt\KeyEventArgs.cs" />
     <Compile Include="Xwt\WindowFrame.cs" />
     <Compile Include="Xwt.Backends\IWindowFrameBackend.cs" />
+    <Compile Include="Xwt\CheckBox.cs" />
+    <Compile Include="Xwt.Backends\ICheckBoxBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

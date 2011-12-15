@@ -50,6 +50,7 @@ namespace Xwt
 		DragOperation currentDragOperation;
 		Widget contentWidget;
 		WindowFrame parentWindow;
+		double minWidth, minHeight;
 		
 		EventHandler<DragOverCheckEventArgs> dragOverCheck;
 		EventHandler<DragOverEventArgs> dragOver;
@@ -112,6 +113,31 @@ namespace Xwt
 			public void OnSpacingChanged (string spacingType)
 			{
 				Parent.OnPreferredSizeChanged ();
+			}
+			
+			public WidgetSize OnGetPreferredWidth ()
+			{
+				return Parent.OnGetPreferredWidth ();
+			}
+			
+			public WidgetSize OnGetPreferredHeight ()
+			{
+				return Parent.OnGetPreferredWidth ();
+			}
+			
+			public WidgetSize OnGetPreferredHeightForWidth (double width)
+			{
+				return Parent.OnGetPreferredHeightForWidth (width);
+			}
+			
+			public WidgetSize OnGetPreferredWidthForHeight (double height)
+			{
+				return Parent.OnGetPreferredWidthForHeight (height);
+			}
+			
+			public SizeRequestMode GetSizeRequestMode ()
+			{
+				return ((IWidgetSurface)Parent).SizeRequestMode;
 			}
 		}
 		
@@ -236,6 +262,59 @@ namespace Xwt
 		
 		public Size Size {
 			get { return Backend.Size; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the minimum width.
+		/// </summary>
+		/// <value>
+		/// The minimum width.
+		/// </value>
+		/// <remarks>
+		/// Minimum width for the widget. If the value is -1, the value is ignored
+		/// </remarks>
+		[DefaultValue((double)-1)]
+		public double MinWidth {
+			get { return minWidth; }
+			set {
+				minWidth = value;
+				Backend.SetMinSize (minWidth >= 0 ? minWidth : -1, minHeight >= 0 ? minHeight : -1);
+				OnPreferredSizeChanged ();
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the minimum height.
+		/// </summary>
+		/// <value>
+		/// The minimum height.
+		/// </value>
+		/// <remarks>
+		/// Minimum height for the widget. If the value is -1, the value is ignored
+		/// </remarks>
+		[DefaultValue((double)-1)]
+		public double MinHeight {
+			get { return minHeight; }
+			set {
+				minHeight = value;
+				Backend.SetMinSize (minWidth >= 0 ? minWidth : -1, minHeight >= 0 ? minHeight : -1);
+				OnPreferredSizeChanged ();
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the font of the widget.
+		/// </summary>
+		/// <value>
+		/// The font.
+		/// </value>
+		public Font Font {
+			get {
+				return new Font (Backend.Font);
+			}
+			set {
+				Backend.Font = value.Backend;
+			}
 		}
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
