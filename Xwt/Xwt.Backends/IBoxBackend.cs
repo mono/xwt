@@ -32,7 +32,7 @@ namespace Xwt.Backends
 	{
 		void Add (IWidgetBackend widget);
 		void Remove (IWidgetBackend widget);
-		void SetAllocation (IWidgetBackend widget, Rectangle rect);
+		void SetAllocation (IWidgetBackend[] widget, Rectangle[] rect);
 	}
 	
 	public enum Orientation

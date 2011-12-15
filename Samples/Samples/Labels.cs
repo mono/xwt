@@ -1,5 +1,5 @@
 // 
-// LabelBackend.cs
+// Labels.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,58 +23,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using MonoMac.AppKit;
-using Xwt.Backends;
+using Xwt;
 
-namespace Xwt.Mac
+namespace Samples
 {
-	public class LabelBackend: ViewBackend<NSTextField,IWidgetEventSink>, ILabelBackend
+	public class Labels: VBox
 	{
-		public LabelBackend ()
+		public Labels ()
 		{
-			ViewObject = new TextFieldView ();
-			Widget.Editable = false;
-			Widget.Bezeled = false;
-			Widget.DrawsBackground = false;
-			Widget.SizeToFit ();
-		}
-
-		public string Text {
-			get {
-				return Widget.StringValue;
-			}
-			set {
-				Widget.StringValue = value;
-				Widget.SizeToFit ();
-			}
-		}
-		
-		public Alignment TextAlignment {
-			get {
-				switch (Widget.Alignment) {
-				case NSTextAlignment.Left: return Alignment.Start;
-				case NSTextAlignment.Center: return Alignment.Center;
-				case NSTextAlignment.Right: return Alignment.End;
-				}
-				return Alignment.Start;
-			}
-			set {
-				switch (value) {
-				case Alignment.Start: Widget.Alignment = NSTextAlignment.Left; break;
-				case Alignment.Center: Widget.Alignment = NSTextAlignment.Center; break;
-				case Alignment.End: Widget.Alignment = NSTextAlignment.Right; break;
-				}
-			}
-		}
-	}
-	
-	class TextFieldView: NSTextField, IViewObject<NSTextField>
-	{
-		public Widget Frontend { get; set; }
-		public NSTextField View {
-			get { return this; }
+			Label la = new Label ("Simple label");
+			PackStart (la);
+			
+			la = new Label ("Label with red background");
+			la.BackgroundColor = new Xwt.Drawing.Color (1, 0, 0);
+			PackStart (la);
 		}
 	}
 }

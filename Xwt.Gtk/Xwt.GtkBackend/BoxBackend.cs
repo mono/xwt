@@ -60,10 +60,21 @@ namespace Xwt.GtkBackend
 			Widget.Remove (GetWidget (widget));
 		}
 		
-		public void SetAllocation (IWidgetBackend widget, Rectangle rect)
+		public void SetAllocation (IWidgetBackend[] widgets, Rectangle[] rects)
 		{
-			var w = GetWidget (widget);
-			Widget.SetAllocation (w, rect);
+			bool changed = false;
+			for (int n=0; n<widgets.Length; n++) {
+				var w = GetWidget (widgets[n]);
+				if (Widget.SetAllocation (w, rects[n]))
+					changed = true;
+			}
+			if (changed)
+				Widget.QueueResize ();
+		}
+		
+		public override void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
+		{
+			Widget.ReplaceChild (oldWidget, newWidget);
 		}
 	}
 	
@@ -81,11 +92,23 @@ namespace Xwt.GtkBackend
 			WidgetFlags |= Gtk.WidgetFlags.NoWindow;
 		}
 		
-		
-		public void SetAllocation (Gtk.Widget w, Rectangle rect)
+		public void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
 		{
-			children [w] = rect;
-			QueueResize ();
+			Rectangle r = children [oldWidget];
+			Remove (oldWidget);
+			Add (newWidget);
+			children [newWidget] = r;
+		}
+		
+		public bool SetAllocation (Gtk.Widget w, Rectangle rect)
+		{
+			Rectangle r;
+			children.TryGetValue (w, out r);
+			if (r != rect) {
+				children [w] = rect;
+				return true;
+			} else
+				return false;
 		}
 		
 		protected override void OnAdded (Gtk.Widget widget)

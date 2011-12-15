@@ -79,8 +79,7 @@ namespace Xwt
 		
 		public ScrollPolicy HorizontalScrollPolicy {
 			get { return Backend.HorizontalScrollPolicy; }
-			set { Backend.HorizontalScrollPolicy = value;
-				OnPreferredSizeChanged (); }
+			set { Backend.HorizontalScrollPolicy = value; OnPreferredSizeChanged (); }
 		}
 		
 		public Rectangle VisibleRect {

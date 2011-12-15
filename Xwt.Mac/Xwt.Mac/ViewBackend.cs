@@ -46,7 +46,6 @@ namespace Xwt.Mac
 		S eventSink;
 		IViewObject<T> viewObject;
 		WidgetEvent currentEvents;
-		Size minSize;
 		
 		void IBackend.Initialize (object frontend)
 		{
@@ -147,6 +146,15 @@ namespace Xwt.Mac
 		}
 		
 		public virtual object Font {
+			get {
+				throw new NotImplementedException ();
+			}
+			set {
+				throw new NotImplementedException ();
+			}
+		}
+		
+		public Xwt.Drawing.Color BackgroundColor {
 			get {
 				throw new NotImplementedException ();
 			}

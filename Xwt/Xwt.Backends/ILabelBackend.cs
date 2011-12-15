@@ -31,6 +31,6 @@ namespace Xwt.Backends
 	public interface ILabelBackend: IWidgetBackend
 	{
 		string Text { get; set; }
-		Alignment HorizontalAlignment { get; set; }
+		Alignment TextAlignment { get; set; }
 	}
 }

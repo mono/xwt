@@ -190,12 +190,19 @@ namespace Xwt
 				CalcDefaultSizes (mode, size.Width, false, true);
 			}
 			
-			foreach (var bp in children) {
-				if (!bp.Child.Visible)
-					continue;
-				Backend.SetAllocation ((IWidgetBackend)GetBackend (bp.Child), new Rectangle (bp.NextX, bp.NextY, bp.NextWidth, bp.NextHeight));
-				((IWidgetSurface)bp.Child).Reallocate ();
+			var visibleChildren = children.Where (c => c.Child.Visible).ToArray ();
+			IWidgetBackend[] widgets = new IWidgetBackend [visibleChildren.Length];
+			Rectangle[] rects = new Rectangle [visibleChildren.Length];
+			for (int n=0; n<visibleChildren.Length; n++) {
+				var bp = visibleChildren [n];
+				widgets [n] = (IWidgetBackend)GetBackend (bp.Child);
+				rects [n] = new Rectangle (bp.NextX, bp.NextY, bp.NextWidth, bp.NextHeight);
 			}
+			
+			Backend.SetAllocation (widgets, rects);
+			
+			foreach (var bp in visibleChildren)
+				((IWidgetSurface)bp.Child).Reallocate ();
 		}
 		
 		double GetSpacing (int cell, bool isRow)
@@ -369,6 +376,7 @@ namespace Xwt
 			spacing = 0;
 			for (int n=1; n<lastCell; n++)
 				spacing += GetSpacing (n, calcHeights);
+			
 		}
 		
 		void CalcDefaultSizes (SizeRequestMode mode, double totalSize, bool calcHeights, bool calcOffsets)

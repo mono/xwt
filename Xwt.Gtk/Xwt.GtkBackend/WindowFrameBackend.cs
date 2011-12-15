@@ -52,6 +52,11 @@ namespace Xwt.GtkBackend
 			this.frontend = (WindowFrame) frontend;
 		}
 
+		public virtual void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
+		{
+			throw new NotSupportedException ();
+		}
+		
 		#region IWindowFrameBackend implementation
 		void IWindowFrameBackend.Initialize (IWindowFrameEventSink eventSink)
 		{

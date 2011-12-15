@@ -178,18 +178,22 @@ namespace Xwt
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
+			
+			var visibleChildren = children.Where (c => c.Child.Visible).ToArray ();
+			IWidgetBackend[] widgets = new IWidgetBackend [visibleChildren.Length];
+			Rectangle[] rects = new Rectangle [visibleChildren.Length];
+			
 			if (direction == Orientation.Horizontal) {
 				CalcDefaultSizes (((IWidgetSurface)this).SizeRequestMode, size.Width, size.Height);
 				double xs = 0;
 				double xe = size.Width + spacing;
-				foreach (var bp in children) {
-					if (!bp.Child.Visible)
-						continue;
+				for (int n=0; n<visibleChildren.Length; n++) {
+					var bp = visibleChildren [n];
 					if (bp.PackOrigin == PackOrigin.End)
 						xe -= bp.NextSize + spacing;
 					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
-					Backend.SetAllocation ((IWidgetBackend)GetBackend (bp.Child), new Rectangle (x, 0, bp.NextSize, size.Height));
-					((IWidgetSurface)bp.Child).Reallocate ();
+					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
+					rects[n] = new Rectangle (x, 0, bp.NextSize, size.Height);
 					if (bp.PackOrigin == PackOrigin.Start)
 						xs += bp.NextSize + spacing;
 				}
@@ -197,18 +201,20 @@ namespace Xwt
 				CalcDefaultSizes (((IWidgetSurface)this).SizeRequestMode, size.Height, size.Width);
 				double ys = 0;
 				double ye = size.Height + spacing;
-				foreach (var bp in children) {
-					if (!bp.Child.Visible)
-						continue;
+				for (int n=0; n<visibleChildren.Length; n++) {
+					var bp = visibleChildren [n];
 					if (bp.PackOrigin == PackOrigin.End)
 						ye -= bp.NextSize + spacing;
 					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
-					Backend.SetAllocation ((IWidgetBackend)GetBackend (bp.Child), new Rectangle (0, y, size.Width, bp.NextSize));
-					((IWidgetSurface)bp.Child).Reallocate ();
+					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
+					rects[n] = new Rectangle (0, y, size.Width, bp.NextSize);
 					if (bp.PackOrigin == PackOrigin.Start)
 						ys += bp.NextSize + spacing;
 				}
 			}
+			Backend.SetAllocation (widgets, rects);
+			foreach (var bp in visibleChildren)
+				((IWidgetSurface)bp.Child).Reallocate ();
 		}
 		
 		void CalcDefaultSizes (SizeRequestMode mode, double totalSize, double lengthConstraint)

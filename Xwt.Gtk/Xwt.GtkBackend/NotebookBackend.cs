@@ -53,6 +53,25 @@ namespace Xwt.GtkBackend
 		{
 			Widget.Remove (GetWidget (widget));
 		}
+		
+		public override void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
+		{
+			Gtk.Notebook.NotebookChild nc = (Gtk.Notebook.NotebookChild) Widget[oldWidget];
+			var detachable = nc.Detachable;
+			var pos = nc.Position;
+			var reorderable = nc.Reorderable;
+			var tabExpand = nc.TabExpand;
+			var tabFill = nc.TabFill;
+			var label = Widget.GetTabLabel (oldWidget);
+			Widget.Remove (oldWidget);
+			Widget.InsertPage (newWidget, label, pos);
+			
+			nc = (Gtk.Notebook.NotebookChild) Widget[newWidget];
+			nc.Detachable = detachable;
+			nc.Reorderable = reorderable;
+			nc.TabExpand = tabExpand;
+			nc.TabFill = tabFill;
+		}
 	}
 }
 

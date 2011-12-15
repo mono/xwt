@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
@@ -65,6 +66,7 @@ namespace Xwt.Backends
 		void SetDragTarget (string[] types, DragDropAction dragAction);
 		
 		object Font { get; set; }
+		Color BackgroundColor { get; set; }
 	}
 	
 	public interface IWidgetEventSink

@@ -68,6 +68,17 @@ namespace Xwt.GtkBackend
 			throw new NotImplementedException ();
 		}
 		
+		public object Font {
+			get {
+				return base.Font;
+			}
+			set {
+				var fd = (Pango.FontDescription) value;
+				foreach (var c in Widget.Children)
+					c.ModifyFont (fd);
+			}
+		}
+		
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

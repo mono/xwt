@@ -30,11 +30,13 @@ using Xwt;
 using System.Collections.Generic;
 using System.Linq;
 using Xwt.Engine;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
 	public class WidgetBackend: IWidgetBackend, IGtkWidgetBackend
 	{
+		Gtk.Widget widget;
 		Widget frontend;
 		Gtk.Alignment alignment;
 		IWidgetEventSink eventSink;
@@ -80,7 +82,22 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public Gtk.Widget Widget { get; set; }
+		public Gtk.Widget Widget {
+			get { return widget; }
+			set {
+				if (widget != null) {
+					if (Frontend.Parent != null) {
+						WidgetBackend bk = (WidgetBackend) WidgetRegistry.GetBackend (Frontend.Parent);
+						bk.ReplaceChild (widget, value);
+					}
+					else if (Frontend.ParentWindow != null) {
+						WindowFrameBackend bk = (WindowFrameBackend) WidgetRegistry.GetBackend (Frontend.ParentWindow);
+						bk.ReplaceChild (widget, value);
+					}
+				}
+				widget = value;
+			}
+		}
 		
 		public Gtk.Widget RootWidget {
 			get {
@@ -110,6 +127,11 @@ namespace Xwt.GtkBackend
 		public void SetFocus ()
 		{
 			Widget.GrabFocus ();
+		}
+		
+		public virtual void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
+		{
+			throw new NotSupportedException ();
 		}
 		
 		public virtual void Dispose ()
@@ -180,13 +202,28 @@ namespace Xwt.GtkBackend
 			Widget.HeightRequest = (int) height;
 		}
 		
-		public object Font {
+		Pango.FontDescription customFont;
+		
+		public virtual object Font {
 			get {
-				return Widget.Style.FontDescription;
+				return customFont ?? Widget.Style.FontDescription;
 			}
 			set {
 				var fd = (Pango.FontDescription) value;
+				customFont = fd;
 				Widget.ModifyFont (fd);
+			}
+		}
+		
+		Color? customBackgroundColor;
+		
+		public virtual Color BackgroundColor {
+			get {
+				return customBackgroundColor.HasValue ? customBackgroundColor.Value : Util.ToXwtColor (Widget.Style.Background (Gtk.StateType.Normal));
+			}
+			set {
+				customBackgroundColor = value;
+				Widget.ModifyBg (Gtk.StateType.Normal, Util.ToGdkColor (value));
 			}
 		}
 		

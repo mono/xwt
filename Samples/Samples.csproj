@@ -62,6 +62,8 @@
     <Compile Include="Samples\Images.cs" />
     <Compile Include="Samples\CanvasWithWidget.cs" />
     <Compile Include="Samples\Tables.cs" />
+    <Compile Include="Samples\Labels.cs" />
+    <Compile Include="Samples\Colors.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

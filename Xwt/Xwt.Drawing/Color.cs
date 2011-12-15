@@ -127,6 +127,23 @@ namespace Xwt.Drawing
 			return c;
 		}
 		
+		public Color WithIncreasedLight (double lightIncrement)
+		{
+			Color c = this;
+			c.Light += lightIncrement;
+			return c;
+		}
+		
+		public Color WithIncreasedContrast (Color referenceColor, double amount)
+		{
+			Color c = this;
+			if (referenceColor.Brightness > Brightness)
+				c.Light -= amount;
+			else
+				c.Light += amount;
+			return c;
+		}
+		
 		public static Color FromBytes (byte red, byte green, byte blue)
 		{
 			return FromBytes (red, green, blue, 255);

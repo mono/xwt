@@ -52,11 +52,13 @@ namespace Xwt.Mac
 			w.RemoveFromSuperview ();
 		}
 		
-		public void SetAllocation (IWidgetBackend widget, Rectangle rect)
+		public void SetAllocation (IWidgetBackend[] widgets, Rectangle[] rects)
 		{
-			var w = GetWidget (widget);
-			w.SetWidgetBounds (rect);
-			w.NeedsDisplay = true;
+			for (int n=0; n<widgets.Length; n++) {
+				var w = GetWidget (widgets[n]);
+				w.SetWidgetBounds (rects[n]);
+				w.NeedsDisplay = true;
+			}
 		}
 	}
 	

@@ -317,6 +317,11 @@ namespace Xwt
 			}
 		}
 		
+		public Color BackgroundColor {
+			get { return Backend.BackgroundColor; }
+			set { Backend.BackgroundColor = value; }
+		}
+		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
 			return Backend.ConvertToScreenCoordinates (widgetCoordinates);
@@ -455,9 +460,16 @@ namespace Xwt
 			heightCached = false;
 		}
 		
+		static int ind;
+		
 		void IWidgetSurface.Reallocate ()
 		{
+//			Console.WriteLine (new string (' ', ind) + ">> " + GetType ().Name);
+			DateTime t = DateTime.Now;
+			ind += 2;
 			OnReallocate ();
+			ind -= 2;
+//			Console.WriteLine (new string (' ', ind) + "<< (" + (DateTime.Now - t).TotalMilliseconds + ") " + GetType ().Name);
 		}
 		
 		SizeRequestMode IWidgetSurface.SizeRequestMode {

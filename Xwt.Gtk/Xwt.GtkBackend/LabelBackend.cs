@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 
 namespace Xwt.GtkBackend
@@ -35,37 +36,75 @@ namespace Xwt.GtkBackend
 		public LabelBackend ()
 		{
 			Widget = new Gtk.Label ();
-			Widget.Show ();
-			Widget.Xalign = 0;
-			Widget.Yalign = 0;
+			Label.Show ();
+			Label.Xalign = 0;
+			Label.Yalign = 0.5f;
 		}
 		
-		new Gtk.Label Widget {
-			get { return (Gtk.Label) base.Widget; }
-			set { base.Widget = value; }
+		Gtk.Label Label {
+			get {
+				if (Widget is Gtk.Label)
+					return (Gtk.Label) Widget;
+				else
+					return (Gtk.Label) ((Gtk.EventBox)base.Widget).Child;
+			}
+		}
+		
+		public override Xwt.Drawing.Color BackgroundColor {
+			get {
+				return base.BackgroundColor;
+			}
+			set {
+				CustomLabel cla = Widget as CustomLabel;
+				if (cla == null) {
+					cla = new CustomLabel ();
+					cla.Text = Label.Text;
+					cla.Xalign = Label.Xalign;
+					cla.Visible = Label.Visible;
+					Widget = cla;
+				}
+				cla.BackgroundColor = value;
+				cla.QueueDraw ();
+			}
 		}
 		
 		public string Text {
-			get { return Widget.Text; }
-			set { Widget.Text = value; }
+			get { return Label.Text; }
+			set { Label.Text = value; }
 		}
 
-		public Alignment HorizontalAlignment {
+		public Alignment TextAlignment {
 			get {
-				if (Widget.Xalign == 0)
+				if (Label.Xalign == 0)
 					return Alignment.Start;
-				else if (Widget.Xalign == 1)
+				else if (Label.Xalign == 1)
 					return Alignment.End;
 				else
 					return Alignment.Center;
 			}
 			set {
 				switch (value) {
-				case Alignment.Start: Widget.Xalign = 0; break;
-				case Alignment.End: Widget.Xalign = 1; break;
-				case Alignment.Center: Widget.Xalign = 0.5f; break;
+				case Alignment.Start: Label.Xalign = 0; break;
+				case Alignment.End: Label.Xalign = 1; break;
+				case Alignment.Center: Label.Xalign = 0.5f; break;
 				}
 			}
+		}
+	}
+	
+	class CustomLabel: Gtk.Label
+	{
+		public Color BackgroundColor;
+		
+		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		{
+			using (var ctx = Gdk.CairoHelper.Create (this.GdkWindow)) {
+				ctx.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
+				ctx.Color = Util.ToCairoColor (BackgroundColor);
+				ctx.Fill ();
+			}
+			
+			return base.OnExposeEvent (evnt);
 		}
 	}
 }

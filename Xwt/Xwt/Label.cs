@@ -52,10 +52,10 @@ namespace Xwt
 			}
 		}
 		
-		public Alignment HorizontalAlignment {
-			get { return Backend.HorizontalAlignment; }
+		public Alignment TextAlignment {
+			get { return Backend.TextAlignment; }
 			set {
-				Backend.HorizontalAlignment = value; 
+				Backend.TextAlignment = value; 
 				OnPreferredSizeChanged ();
 			}
 		}
