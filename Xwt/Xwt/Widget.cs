@@ -61,6 +61,9 @@ namespace Xwt
 		EventHandler<KeyEventArgs> keyPressed;
 		EventHandler<KeyEventArgs> keyReleased;
 		
+		EventHandler gotFocus;
+		EventHandler lostFocus;
+		
 		protected class EventSink: IWidgetEventSink, ISpacingListener
 		{
 			public Widget Parent { get; internal set; }
@@ -110,9 +113,10 @@ namespace Xwt
 				Parent.OnKeyReleased (args);
 			}
 			
-			public void OnSpacingChanged (string spacingType)
+			public virtual void OnSpacingChanged (WidgetSpacing source)
 			{
-				Parent.OnPreferredSizeChanged ();
+				if (source == Parent.margin)
+					Parent.OnPreferredSizeChanged ();
 			}
 			
 			public WidgetSize OnGetPreferredWidth ()
@@ -139,13 +143,23 @@ namespace Xwt
 			{
 				return ((IWidgetSurface)Parent).SizeRequestMode;
 			}
+			
+			public void OnGotFocus ()
+			{
+				Parent.OnGotFocus (EventArgs.Empty);
+			}
+			
+			public void OnLostFocus ()
+			{
+				Parent.OnLostFocus (EventArgs.Empty);
+			}
 		}
 		
 		public Widget ()
 		{
 			eventSink = CreateEventSink ();
 			eventSink.Parent = this;
-			margin = new Xwt.WidgetSpacing (eventSink, null);
+			margin = new Xwt.WidgetSpacing (eventSink);
 		}
 		
 		static Widget ()
@@ -157,6 +171,8 @@ namespace Xwt
 			MapEvent (WidgetEvent.DragLeave, typeof(Widget), "OnDragLeave");
 			MapEvent (WidgetEvent.KeyPressed, typeof(Widget), "OnKeyPressed");
 			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyPressed");
+			MapEvent (WidgetEvent.GotFocus, typeof(Widget), "OnGotFocus");
+			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
 		}
 		
 		public WindowFrame ParentWindow {
@@ -313,7 +329,7 @@ namespace Xwt
 				return new Font (Backend.Font);
 			}
 			set {
-				Backend.Font = value.Backend;
+				Backend.Font = WidgetRegistry.GetBackend (value);
 			}
 		}
 		
@@ -449,6 +465,18 @@ namespace Xwt
 				keyReleased (this, args);
 		}
 		
+		internal protected virtual void OnGotFocus (EventArgs args)
+		{
+			if (gotFocus != null)
+				gotFocus (this, args);
+		}
+		
+		internal protected virtual void OnLostFocus (EventArgs args)
+		{
+			if (lostFocus != null)
+				lostFocus (this, args);
+		}
+		
 		protected static IWidgetBackend GetWidgetBackend (Widget w)
 		{
 			return (IWidgetBackend) GetBackend (w);
@@ -460,16 +488,9 @@ namespace Xwt
 			heightCached = false;
 		}
 		
-		static int ind;
-		
 		void IWidgetSurface.Reallocate ()
 		{
-//			Console.WriteLine (new string (' ', ind) + ">> " + GetType ().Name);
-			DateTime t = DateTime.Now;
-			ind += 2;
 			OnReallocate ();
-			ind -= 2;
-//			Console.WriteLine (new string (' ', ind) + "<< (" + (DateTime.Now - t).TotalMilliseconds + ") " + GetType ().Name);
 		}
 		
 		SizeRequestMode IWidgetSurface.SizeRequestMode {
@@ -713,6 +734,28 @@ namespace Xwt
 				OnAfterEventRemove (WidgetEvent.KeyReleased, keyReleased);
 			}
 		}
+		
+		public event EventHandler GotFocus {
+			add {
+				OnBeforeEventAdd (WidgetEvent.GotFocus, gotFocus);
+				gotFocus += value;
+			}
+			remove {
+				gotFocus -= value;
+				OnAfterEventRemove (WidgetEvent.GotFocus, gotFocus);
+			}
+		}
+		
+		public event EventHandler LostFocus {
+			add {
+				OnBeforeEventAdd (WidgetEvent.LostFocus, lostFocus);
+				lostFocus += value;
+			}
+			remove {
+				lostFocus -= value;
+				OnAfterEventRemove (WidgetEvent.LostFocus, lostFocus);
+			}
+		}
 	}
 	
 	class EventMap
@@ -730,26 +773,24 @@ namespace Xwt
 	public class WidgetSpacing
 	{
 		ISpacingListener parent;
-		int top, left, right, bottom;
-		string spacingType;
+		double top, left, right, bottom;
 		
-		internal WidgetSpacing (ISpacingListener parent, string spacingType)
+		internal WidgetSpacing (ISpacingListener parent)
 		{
-			this.spacingType = spacingType;
 			this.parent = parent;
 		}
 		
 		void NotifyChanged ()
 		{
-			parent.OnSpacingChanged (spacingType);
+			parent.OnSpacingChanged (this);
 		}
 		
-		public int Left {
+		public double Left {
 			get { return left; }
 			set { left = value; NotifyChanged (); }
 		}
 		
-		public int Bottom {
+		public double Bottom {
 			get {
 				return this.bottom;
 			}
@@ -758,7 +799,7 @@ namespace Xwt
 			}
 		}
 	
-		public int Right {
+		public double Right {
 			get {
 				return this.right;
 			}
@@ -767,7 +808,7 @@ namespace Xwt
 			}
 		}
 	
-		public int Top {
+		public double Top {
 			get {
 				return this.top;
 			}
@@ -776,15 +817,15 @@ namespace Xwt
 			}
 		}
 		
-		public int HorizontalSpacing {
+		public double HorizontalSpacing {
 			get { return left + right; }
 		}
 		
-		public int VerticalSpacing {
+		public double VerticalSpacing {
 			get { return top + bottom; }
 		}
 		
-		public void Set (int left, int top, int right, int bottom)
+		public void Set (double left, double top, double right, double bottom)
 		{
 			this.left = left;
 			this.top = top;
@@ -793,7 +834,7 @@ namespace Xwt
 			NotifyChanged ();
 		}
 		
-		public void SetAll (int padding)
+		public void SetAll (double padding)
 		{
 			this.left = padding;
 			this.top = padding;
@@ -805,7 +846,7 @@ namespace Xwt
 	
 	public interface ISpacingListener
 	{
-		void OnSpacingChanged (string spacingType);
+		void OnSpacingChanged (WidgetSpacing source);
 	}
 }
 

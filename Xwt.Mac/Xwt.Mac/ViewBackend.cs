@@ -147,10 +147,13 @@ namespace Xwt.Mac
 		
 		public virtual object Font {
 			get {
-				throw new NotImplementedException ();
+				/// TODO
+//				throw new NotImplementedException ();
+				return null;
 			}
 			set {
-				throw new NotImplementedException ();
+				/// TODO
+//				throw new NotImplementedException ();
 			}
 		}
 		

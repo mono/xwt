@@ -38,22 +38,22 @@ namespace Xwt.Drawing
 		
 		public double Red {
 			get { return r; }
-			set { r = value; hsl = null; }
+			set { r = Normalize (value); hsl = null; }
 		}
 		
 		public double Green {
 			get { return g; }
-			set { g = value; hsl = null; }
+			set { g = Normalize (value); hsl = null; }
 		}
 		
 		public double Blue {
 			get { return b; }
-			set { b = value; hsl = null; }
+			set { b = Normalize (value); hsl = null; }
 		}
 		
 		public double Alpha {
 			get { return a; }
-			set { a = value; }
+			set { a = Normalize (value); }
 		}
 		
 		public double Hue {
@@ -61,7 +61,7 @@ namespace Xwt.Drawing
 				return Hsl.H;
 			}
 			set {
-				Hsl = new HslColor (value, Hsl.S, Hsl.L);
+				Hsl = new HslColor (Normalize (value), Hsl.S, Hsl.L);
 			}
 		}
 		
@@ -70,7 +70,7 @@ namespace Xwt.Drawing
 				return Hsl.S;
 			}
 			set {
-				Hsl = new HslColor (Hsl.H, value, Hsl.L);
+				Hsl = new HslColor (Hsl.H, Normalize (value), Hsl.L);
 			}
 		}
 		
@@ -79,8 +79,15 @@ namespace Xwt.Drawing
 				return Hsl.L;
 			}
 			set {
-				Hsl = new HslColor (Hsl.H, Hsl.S, value);
+				Hsl = new HslColor (Hsl.H, Hsl.S, Normalize (value));
 			}
+		}
+		
+		double Normalize (double v)
+		{
+			if (v < 0) return 0;
+			if (v > 1) return 1;
+			return v;
 		}
 		
 		public double Brightness {
@@ -143,7 +150,22 @@ namespace Xwt.Drawing
 				c.Light += amount;
 			return c;
 		}
+			
+		public Color BlendWith (Color target, double amount)
+		{
+			if (amount < 0 || amount > 1)
+				throw new ArgumentException ("Blend amount must be between 0 and 1");
+			return new Color (BlendValue (r, target.r, amount), BlendValue (g, target.g, amount), BlendValue (b, target.b, amount));
+		}
 		
+		double BlendValue (double s, double t, double amount)
+		{
+			if (t > s)
+				return s + (t - s) * amount;
+			else
+				return t + (s - t) * amount;
+		}
+	
 		public static Color FromBytes (byte red, byte green, byte blue)
 		{
 			return FromBytes (red, green, blue, 255);

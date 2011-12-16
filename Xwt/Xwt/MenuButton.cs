@@ -30,15 +30,12 @@ using Xwt.Engine;
 
 namespace Xwt
 {
-	public class MenuButton: Widget
+	public class MenuButton: Button
 	{
-		ButtonStyle style = ButtonStyle.Normal;
-		Image image;
-		string label;
 		Menu menu;
 		Func<Menu> creator;
 		
-		protected new class EventSink: Widget.EventSink, IMenuButtonEventSink
+		protected new class EventSink: Button.EventSink, IMenuButtonEventSink
 		{
 			public IMenuBackend OnCreateMenu ()
 			{
@@ -48,6 +45,8 @@ namespace Xwt
 		
 		public MenuButton ()
 		{
+			ImagePosition = ContentPosition.Right;
+			Type = ButtonType.DropDown;
 		}
 		
 		public MenuButton (string label): this ()
@@ -71,41 +70,8 @@ namespace Xwt
 			return new EventSink ();
 		}
 		
-		protected override void OnBackendCreated ()
-		{
-			base.OnBackendCreated ();
-			Backend.SetButtonStyle (style);
-		}
-		
 		new IMenuButtonBackend Backend {
 			get { return (IMenuButtonBackend) base.Backend; }
-		}
-				
-		public string Label {
-			get { return label; }
-			set {
-				label = value;
-				Backend.SetContent (label, image);
-				OnPreferredSizeChanged ();
-			}
-		}
-		
-		public Image Image {
-			get { return image; }
-			set {
-				image = value;
-				Backend.SetContent (label, XwtObject.GetBackend (value)); 
-				OnPreferredSizeChanged ();
-			}
-		}
-		
-		public ButtonStyle Style {
-			get { return style; }
-			set {
-				style = value;
-				Backend.SetButtonStyle (style);
-				OnPreferredSizeChanged ();
-			}
 		}
 		
 		public Menu Menu {

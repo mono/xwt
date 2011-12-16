@@ -65,6 +65,12 @@ namespace Xwt
 			set { Backend.Text = value; }
 		}
 		
+		[DefaultValue ("")]
+		public string PlaceholderText {
+			get { return Backend.PlaceholderText; }
+			set { Backend.PlaceholderText = value; }
+		}
+		
 		[DefaultValue (false)]
 		public bool ReadOnly {
 			get { return Backend.ReadOnly; }

@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class MenuButtonBackend: WidgetBackend, IMenuButtonBackend
+	public class MenuButtonBackend: ButtonBackend, IMenuButtonBackend
 	{
 		public MenuButtonBackend ()
 		{
@@ -56,65 +56,16 @@ namespace Xwt.GtkBackend
 			MenuBackend m = (MenuBackend) EventSink.OnCreateMenu ();
 			return m != null ? m.Menu : null;
 		}
-
-		#region IMenuButtonBackend implementation
-
-		public void SetContent (string label, object imageBackend)
-		{
-			Gdk.Pixbuf pix = (Gdk.Pixbuf)imageBackend;
-			if (label != null && imageBackend == null)
-				Widget.Label = label;
-			else if (label == null && imageBackend != null) {
-				var img = new Gtk.Image (pix);
-				img.Show ();
-				Widget.Image = img;
-			} else if (label != null && imageBackend != null) {
-				Gtk.HBox box = new Gtk.HBox (false, 3);
-				var img = new Gtk.Image (pix);
-				box.PackStart (img, false, false, 0);
-				var lab = new Gtk.Label (label);
-				box.PackStart (lab, false, false, 0);
-				box.ShowAll ();
-				Widget.Image = box;
-			}
-		}
-		
-		public void SetButtonStyle (ButtonStyle style)
-		{
-			switch (style) {
-			case ButtonStyle.Normal:
-				Widget.Relief = Gtk.ReliefStyle.Normal;
-				break;
-			case ButtonStyle.Flat:
-				Widget.Relief = Gtk.ReliefStyle.None;
-				break;
-			}
-		}
-		#endregion
-
 	}
 	
 	class InternalMenuButton : Gtk.Button
 	{
 		MenuCreator creator;
-		Gtk.Label label;
-		Gtk.Image image;
-		Gtk.Arrow arrow;
 		bool isOpen;
 		
 		public InternalMenuButton ()
 			: base ()
 		{
-			Gtk.HBox box = new Gtk.HBox();
-			box.Spacing = 6;
-			Add (box);
-			
-			image = new Gtk.Image ();
-			box.PackStart (image, false, false, 0);
-			label = new Gtk.Label ();
-			box.PackStart (label, false, false, 0);
-			ArrowType = Gtk.ArrowType.Down;
-			base.Label = null;
 		}
 		
 		protected InternalMenuButton (IntPtr raw)
@@ -187,54 +138,10 @@ namespace Xwt.GtkBackend
 			push_in = true;
 		}
 		
-		public Gtk.ArrowType? ArrowType {
-			get { return arrow == null? (Gtk.ArrowType?) null : arrow.ArrowType; }
-			set {
-				if (value == null) {
-					if (arrow != null) {
-						((Gtk.HBox)arrow.Parent).Remove (arrow);
-						arrow.Destroy ();
-						arrow = null;
-					}
-				} else {
-					if (arrow == null ) {
-						arrow = new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out);
-						arrow.Show ();
-						((Gtk.HBox)label.Parent).PackEnd (arrow, false, false, 0);
-					}
-					arrow.ArrowType = value?? Gtk.ArrowType.Down;
-				}
-			}
-		}
-		
 		protected override void OnDestroyed ()
 		{
 			creator = null;
 			base.OnDestroyed ();
-		}
-
-		public new string Label {
-			get { return label.Text; }
-			set { label.Text = value; }
-		}
-		
-		public new bool UseUnderline {
-			get { return label.UseUnderline; }
-			set { label.UseUnderline = value; }
-		}
-		
-		public string StockImage {
-			set { image.Pixbuf = RenderIcon (value, Gtk.IconSize.Button, null); }
-		}
-		
-		public bool UseMarkup
-		{
-			get { return label.UseMarkup; }
-			set { label.UseMarkup = value; }
-		}
-		
-		public string Markup {
-			set { label.Markup = value; }
 		}
 	}
 	

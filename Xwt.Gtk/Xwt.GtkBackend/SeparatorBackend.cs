@@ -1,5 +1,5 @@
 // 
-// IMenuButtonBackend.cs
+// SeparatorBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,16 +24,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
 
-namespace Xwt.Backends
+namespace Xwt.GtkBackend
 {
-	public interface IMenuButtonBackend: IButtonBackend
+	public class SeparatorBackend: WidgetBackend, ISeparatorBackend
 	{
-	}
-	
-	public interface IMenuButtonEventSink
-	{
-		IMenuBackend OnCreateMenu ();
+		public void Initialize (Orientation dir)
+		{
+			if (dir == Orientation.Horizontal)
+				Widget = new Gtk.HSeparator ();
+			else
+				Widget = new Gtk.VSeparator ();
+			Widget.Show ();
+		}
 	}
 }
 

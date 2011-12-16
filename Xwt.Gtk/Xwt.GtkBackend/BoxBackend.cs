@@ -71,14 +71,9 @@ namespace Xwt.GtkBackend
 			if (changed)
 				Widget.QueueResize ();
 		}
-		
-		public override void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
-		{
-			Widget.ReplaceChild (oldWidget, newWidget);
-		}
 	}
 	
-	class CustomContainer: Gtk.Container
+	class CustomContainer: Gtk.Container, IGtkContainer
 	{
 		public Widget Frontend;
 		Dictionary<Gtk.Widget, Rectangle> children = new Dictionary<Gtk.Widget, Rectangle> ();

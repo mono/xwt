@@ -86,14 +86,8 @@ namespace Xwt.GtkBackend
 			get { return widget; }
 			set {
 				if (widget != null) {
-					if (Frontend.Parent != null) {
-						WidgetBackend bk = (WidgetBackend) WidgetRegistry.GetBackend (Frontend.Parent);
-						bk.ReplaceChild (widget, value);
-					}
-					else if (Frontend.ParentWindow != null) {
-						WindowFrameBackend bk = (WindowFrameBackend) WidgetRegistry.GetBackend (Frontend.ParentWindow);
-						bk.ReplaceChild (widget, value);
-					}
+					value.Visible = widget.Visible;
+					GtkEngine.ReplaceChild (widget, value);
 				}
 				widget = value;
 			}
@@ -107,7 +101,11 @@ namespace Xwt.GtkBackend
 		
 		public virtual bool Visible {
 			get { return Widget.Visible; }
-			set { Widget.Visible = value; }
+			set {
+				Widget.Visible = value; 
+				if (alignment != null)
+					alignment.Visible = value;
+			}
 		}
 		
 		public virtual bool Sensitive {
@@ -127,11 +125,6 @@ namespace Xwt.GtkBackend
 		public void SetFocus ()
 		{
 			Widget.GrabFocus ();
-		}
-		
-		public virtual void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
-		{
-			throw new NotSupportedException ();
 		}
 		
 		public virtual void Dispose ()
@@ -227,6 +220,10 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
+		public bool UsingCustomBackgroundColor {
+			get { return customBackgroundColor.HasValue; }
+		}
+		
 		Gtk.Widget IGtkWidgetBackend.Widget {
 			get { return RootWidget; }
 		}
@@ -241,19 +238,16 @@ namespace Xwt.GtkBackend
 			if (frontend.Margin.HorizontalSpacing == 0 && frontend.Margin.VerticalSpacing == 0) {
 				if (alignment != null) {
 					alignment.Remove (Widget);
-					Gtk.Container cont = alignment.Parent as Gtk.Container;
-					if (cont != null)
-						GtkEngine.ReplaceChild (cont, alignment, Widget);
+					GtkEngine.ReplaceChild (alignment, Widget);
 					alignment.Destroy ();
 					alignment = null;
 				}
 			} else {
 				if (alignment == null) {
 					alignment = new Gtk.Alignment (0, 0, 1, 1);
-					Gtk.Container cont = Widget.Parent as Gtk.Container;
-					if (cont != null)
-						GtkEngine.ReplaceChild (cont, Widget, alignment);
+					GtkEngine.ReplaceChild (Widget, alignment);
 					alignment.Add (Widget);
+					alignment.Visible = Widget.Visible;
 				}
 				alignment.LeftPadding = (uint) frontend.Margin.Left;
 				alignment.RightPadding = (uint) frontend.Margin.Right;
@@ -275,6 +269,12 @@ namespace Xwt.GtkBackend
 					break;
 				case WidgetEvent.KeyReleased:
 					Widget.KeyReleaseEvent += HandleKeyReleaseEvent;
+					break;
+				case WidgetEvent.GotFocus:
+					Widget.FocusInEvent += HandleWidgetFocusInEvent;
+					break;
+				case WidgetEvent.LostFocus:
+					Widget.FocusOutEvent += HandleWidgetFocusOutEvent;
 					break;
 				}
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
@@ -305,6 +305,12 @@ namespace Xwt.GtkBackend
 					break;
 				case WidgetEvent.KeyReleased:
 					Widget.KeyReleaseEvent -= HandleKeyReleaseEvent;
+					break;
+				case WidgetEvent.GotFocus:
+					Widget.FocusInEvent -= HandleWidgetFocusInEvent;
+					break;
+				case WidgetEvent.LostFocus:
+					Widget.FocusOutEvent -= HandleWidgetFocusOutEvent;
 					break;
 				}
 				
@@ -435,6 +441,16 @@ namespace Xwt.GtkBackend
 			EventSink.OnKeyPressed (kargs);
 			if (kargs.IsEventCanceled)
 				args.RetVal = true;
+		}
+
+		void HandleWidgetFocusOutEvent (object o, Gtk.FocusOutEventArgs args)
+		{
+			EventSink.OnLostFocus ();
+		}
+
+		void HandleWidgetFocusInEvent (object o, Gtk.FocusInEventArgs args)
+		{
+			EventSink.OnGotFocus ();
 		}
 		
 		Point lastDragPosition;

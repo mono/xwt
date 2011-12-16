@@ -160,10 +160,10 @@ namespace Xwt.Mac
 		{
 			if (child != null) {
 				var frame = ContentView.Frame;
-				frame.X += frontend.Padding.Left;
-				frame.Width -= frontend.Padding.HorizontalSpacing;
-				frame.Y += frontend.Padding.Top;
-				frame.Height -= frontend.Padding.VerticalSpacing;
+				frame.X += (float) frontend.Padding.Left;
+				frame.Width -= (float) frontend.Padding.HorizontalSpacing;
+				frame.Y += (float) frontend.Padding.Top;
+				frame.Height -= (float) frontend.Padding.VerticalSpacing;
 				child.View.Frame = frame;
 			}
 		}

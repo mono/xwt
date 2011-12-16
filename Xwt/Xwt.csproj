@@ -159,6 +159,13 @@
     <Compile Include="Xwt.Backends\IWindowFrameBackend.cs" />
     <Compile Include="Xwt\CheckBox.cs" />
     <Compile Include="Xwt.Backends\ICheckBoxBackend.cs" />
+    <Compile Include="Xwt\ContentPosition.cs" />
+    <Compile Include="Xwt\Frame.cs" />
+    <Compile Include="Xwt.Backends\IFrameBackend.cs" />
+    <Compile Include="Xwt\Separator.cs" />
+    <Compile Include="Xwt.Backends\ISeparatorBackend.cs" />
+    <Compile Include="Xwt\HSeparator.cs" />
+    <Compile Include="Xwt\VSeparator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

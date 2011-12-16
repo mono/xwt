@@ -1,5 +1,5 @@
 // 
-// IMenuButtonBackend.cs
+// ContentPosition.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -25,15 +25,15 @@
 // THE SOFTWARE.
 using System;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface IMenuButtonBackend: IButtonBackend
+	public enum ContentPosition
 	{
-	}
-	
-	public interface IMenuButtonEventSink
-	{
-		IMenuBackend OnCreateMenu ();
+		Center,
+		Left,
+		Right,
+		Top,
+		Bottom
 	}
 }
 

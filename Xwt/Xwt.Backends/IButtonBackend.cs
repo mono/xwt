@@ -31,7 +31,8 @@ namespace Xwt.Backends
 	public interface IButtonBackend: IWidgetBackend
 	{
 		void SetButtonStyle (ButtonStyle style);
-		void SetContent (string label, object imageBackend);
+		void SetButtonType (ButtonType type);
+		void SetContent (string label, object imageBackend, ContentPosition position);
 	}
 	
 	public interface IButtonEventSink: IWidgetEventSink

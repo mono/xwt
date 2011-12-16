@@ -34,8 +34,10 @@ namespace Xwt
 	{
 		EventHandler clicked;
 		ButtonStyle style = ButtonStyle.Normal;
+		ButtonType type = ButtonType.Normal;
 		Image image;
 		string label;
+		ContentPosition imagePosition = ContentPosition.Left;
 		
 		protected new class EventSink: Widget.EventSink, IButtonEventSink
 		{
@@ -83,7 +85,7 @@ namespace Xwt
 			get { return label; }
 			set {
 				label = value;
-				Backend.SetContent (label, image);
+				Backend.SetContent (label, XwtObject.GetBackend (image), imagePosition);
 				OnPreferredSizeChanged ();
 			}
 		}
@@ -92,7 +94,16 @@ namespace Xwt
 			get { return image; }
 			set {
 				image = value;
-				Backend.SetContent (label, XwtObject.GetBackend (value)); 
+				Backend.SetContent (label, XwtObject.GetBackend (value), imagePosition); 
+				OnPreferredSizeChanged ();
+			}
+		}
+		
+		public ContentPosition ImagePosition {
+			get { return imagePosition; }
+			set {
+				imagePosition = value;
+				Backend.SetContent (label, XwtObject.GetBackend (image), imagePosition); 
 				OnPreferredSizeChanged ();
 			}
 		}
@@ -102,6 +113,15 @@ namespace Xwt
 			set {
 				style = value;
 				Backend.SetButtonStyle (style);
+				OnPreferredSizeChanged ();
+			}
+		}
+		
+		public ButtonType Type {
+			get { return type; }
+			set {
+				type = value;
+				Backend.SetButtonType (type);
 				OnPreferredSizeChanged ();
 			}
 		}

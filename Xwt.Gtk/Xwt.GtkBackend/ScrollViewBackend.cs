@@ -54,15 +54,7 @@ namespace Xwt.GtkBackend
 				else
 					Widget.AddWithViewport (w);
 			} else
-				Widget = null;
-		}
-		
-		public override void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
-		{
-			if (newWidget is Gtk.Viewport)
-				Widget.Child = newWidget;
-			else
-				Widget.AddWithViewport (newWidget);
+				Widget.Child = null;
 		}
 		
 		public override void EnableEvent (object eventId)

@@ -51,11 +51,14 @@ namespace Samples
 			AddSample (null, "ComboBox", typeof(ComboBoxes));
 //			AddSample (null, "Designer", typeof(Designer));
 			AddSample (null, "Drag & Drop", typeof(DragDrop));
+			
 			var n = AddSample (null, "Drawing", null);
 			AddSample (n, "Canvas with Widget", typeof(CanvasWithWidget));
 			AddSample (n, "Chart", typeof(ChartSample));
 			AddSample (n, "Colors", typeof(Colors));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
+			
+			AddSample (null, "Frames", typeof(Frames));
 			AddSample (null, "Images", typeof(Images));
 			AddSample (null, "Labels", typeof(Labels));
 			AddSample (null, "List View", typeof(ListView1));

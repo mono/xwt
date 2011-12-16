@@ -1,5 +1,5 @@
 // 
-// IMenuButtonBackend.cs
+// Separator.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,16 +24,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface IMenuButtonBackend: IButtonBackend
+	public abstract class Separator: Widget
 	{
-	}
-	
-	public interface IMenuButtonEventSink
-	{
-		IMenuBackend OnCreateMenu ();
+		internal abstract Orientation Orientation { get; }
+		
+		internal Separator ()
+		{
+		}
+		
+		protected override IBackend OnCreateBackend ()
+		{
+			ISeparatorBackend b = (ISeparatorBackend) base.OnCreateBackend ();
+			b.Initialize (Orientation);
+			return b;
+		}
 	}
 }
 

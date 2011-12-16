@@ -25,11 +25,14 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
 	public class TextEntryBackend: WidgetBackend, ITextEntryBackend
 	{
+		string placeHolderText;
+		
 		public override void Initialize ()
 		{
 			Widget = new Gtk.Entry ();
@@ -46,8 +49,61 @@ namespace Xwt.GtkBackend
 		}
 
 		public string Text {
-			get { return Widget.Text; }
-			set { Widget.Text = value; }
+			get {
+				return Widget.Text;
+			}
+			set {
+				Widget.Text = value;
+			}
+		}
+		
+		public string PlaceholderText {
+			get { return placeHolderText; }
+			set {
+				if (placeHolderText != value) {
+					if (placeHolderText == null)
+						Widget.ExposeEvent += HandleWidgetExposeEvent;
+					else if (value == null)
+						Widget.ExposeEvent -= HandleWidgetExposeEvent;
+				}
+				placeHolderText = value;
+			}
+		}
+
+		Pango.Layout layout;
+		
+		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
+		{
+			// The Entry's GdkWindow is the top level window onto which
+			// the frame is drawn; the actual text entry is drawn into a
+			// separate window, so we can ensure that for themes that don't
+			// respect HasFrame, we never ever allow the base frame drawing
+			// to happen
+			if (args.Event.Window == Widget.GdkWindow)
+				return;
+			
+			if (Widget.Text.Length > 0)
+				return;
+			
+			if (layout == null) {
+				layout = new Pango.Layout (Widget.PangoContext);
+				layout.FontDescription = Widget.PangoContext.FontDescription.Copy ();
+			}
+			
+			int wh, ww;
+			args.Event.Window.GetSize (out ww, out wh);
+			
+			int width, height;
+			layout.SetText (placeHolderText);
+			layout.GetPixelSize (out width, out height);
+			Gdk.GC gc = new Gdk.GC (args.Event.Window);
+			gc.Copy (Widget.Style.TextGC (Gtk.StateType.Normal));
+			Color color_a = Util.ToXwtColor (Widget.Style.Base (Gtk.StateType.Normal));
+			Color color_b = Util.ToXwtColor (Widget.Style.Text (Gtk.StateType.Normal));
+			gc.RgbFgColor = Util.ToGdkColor (color_b.BlendWith (color_a, 0.5));
+			
+			args.Event.Window.DrawLayout (gc, 2, (wh - height) / 2 + 1, layout);
+			gc.Dispose ();
 		}
 		
 		public bool ReadOnly {

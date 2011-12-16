@@ -45,6 +45,11 @@ namespace Samples
 			te = new TextEntry ();
 			te.Font = te.Font.WithSize (te.Font.Size / 2);
 			PackStart (te);
+			
+			PackStart (new Label ("Entry with placeholder text"));
+			te = new TextEntry ();
+			te.PlaceholderText = "Placeholder text";
+			PackStart (te);
 		}
 	}
 }

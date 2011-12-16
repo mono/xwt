@@ -32,5 +32,12 @@ namespace Xwt
 		Normal,
 		Flat
 	}
+	
+	public enum ButtonType
+	{
+		Normal,
+		DropDown,
+		Disclosure
+	}
 }
 

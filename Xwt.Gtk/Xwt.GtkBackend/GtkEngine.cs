@@ -64,6 +64,9 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Table), typeof(BoxBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.CheckBox), typeof(CheckBoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Frame), typeof(FrameBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.VSeparator), typeof(SeparatorBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.HSeparator), typeof(SeparatorBackend));
 		}
 
 		public override void RunApplication ()
@@ -71,10 +74,32 @@ namespace Xwt.GtkBackend
 			Gtk.Application.Run ();
 		}
 
-		public static void ReplaceChild (Gtk.Container cont, Gtk.Widget oldWidget, Gtk.Widget newWidget)
+		public static void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
 		{
+			Gtk.Container cont = oldWidget.Parent as Gtk.Container;
+			if (cont == null)
+				return;
+			
 			if (cont is IGtkContainer) {
 				((IGtkContainer)cont).ReplaceChild (oldWidget, newWidget);
+			}
+			else if (cont is Gtk.Notebook) {
+				Gtk.Notebook notebook = (Gtk.Notebook) cont;
+				Gtk.Notebook.NotebookChild nc = (Gtk.Notebook.NotebookChild) notebook[oldWidget];
+				var detachable = nc.Detachable;
+				var pos = nc.Position;
+				var reorderable = nc.Reorderable;
+				var tabExpand = nc.TabExpand;
+				var tabFill = nc.TabFill;
+				var label = notebook.GetTabLabel (oldWidget);
+				notebook.Remove (oldWidget);
+				notebook.InsertPage (newWidget, label, pos);
+				
+				nc = (Gtk.Notebook.NotebookChild) notebook[newWidget];
+				nc.Detachable = detachable;
+				nc.Reorderable = reorderable;
+				nc.TabExpand = tabExpand;
+				nc.TabFill = tabFill;
 			}
 			else if (cont is Gtk.Bin) {
 				((Gtk.Bin)cont).Remove (oldWidget);

@@ -68,7 +68,7 @@ namespace Xwt.GtkBackend
 			throw new NotImplementedException ();
 		}
 		
-		public object Font {
+		public override object Font {
 			get {
 				return base.Font;
 			}

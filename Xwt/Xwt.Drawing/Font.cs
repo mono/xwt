@@ -30,10 +30,8 @@ using Xwt.Engine;
 
 namespace Xwt.Drawing
 {
-	public struct Font
+	public class Font: XwtObject
 	{
-		object backend;
-			
 		static IFontBackendHandler handler;
 		
 		static Font ()
@@ -41,13 +39,15 @@ namespace Xwt.Drawing
 			handler = WidgetRegistry.CreateSharedBackend<IFontBackendHandler> (typeof(Font));
 		}
 		
-		internal Font (object backend)
-		{
-			this.backend = backend;
+		protected override IBackendHandler BackendHandler {
+			get {
+				return handler;
+			}
 		}
 		
-		internal object Backend {
-			get { return backend; }
+		internal Font (object backend)
+		{
+			Backend = backend;
 		}
 		
 		public static Font FromName (string name, double size)
@@ -57,57 +57,57 @@ namespace Xwt.Drawing
 		
 		public Font WithFamily (string fontFamily)
 		{
-			return new Font (handler.SetFamily (backend, fontFamily));
+			return new Font (handler.SetFamily (Backend, fontFamily));
 		}
 		
 		public string Family {
 			get {
-				return handler.GetFamily (backend);
+				return handler.GetFamily (Backend);
 			}
 		}
 		
 		public double Size {
 			get {
-				return handler.GetSize (backend);
+				return handler.GetSize (Backend);
 			}
 		}
 		
 		public Font WithSize (double size)
 		{
-			return new Font (handler.SetSize (backend, size));
+			return new Font (handler.SetSize (Backend, size));
 		}
 		
 		public FontStyle Style {
 			get {
-				return handler.GetStyle (backend);
+				return handler.GetStyle (Backend);
 			}
 		}
 		
 		public Font WithStyle (FontStyle style)
 		{
-			return new Font (handler.SetStyle (backend, style));
+			return new Font (handler.SetStyle (Backend, style));
 		}
 		
 		public FontWeight Weight {
 			get {
-				return handler.GetWeight (backend);
+				return handler.GetWeight (Backend);
 			}
 		}
 		
 		public Font WithWeight (FontWeight weight)
 		{
-			return new Font (handler.SetWeight (backend, weight));
+			return new Font (handler.SetWeight (Backend, weight));
 		}
 		
 		public FontStretch Stretch {
 			get {
-				return handler.GetStretch (backend);
+				return handler.GetStretch (Backend);
 			}
 		}
 		
 		public Font WithStretch (FontStretch stretch)
 		{
-			return new Font (handler.SetStretch (backend, stretch));
+			return new Font (handler.SetStretch (Backend, stretch));
 		}
 	}
 	

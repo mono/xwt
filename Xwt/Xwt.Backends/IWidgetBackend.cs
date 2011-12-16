@@ -80,6 +80,8 @@ namespace Xwt.Backends
 		void OnDragFinished (DragFinishedEventArgs args);
 		void OnKeyPressed (KeyEventArgs args);
 		void OnKeyReleased (KeyEventArgs args);
+		void OnGotFocus ();
+		void OnLostFocus ();
 
 		// Events
 		WidgetSize OnGetPreferredWidth ();
@@ -116,7 +118,9 @@ namespace Xwt.Backends
 		PreferredWidthCheck = 1 << 7,
 		PreferredHeightCheck = 1 << 8,
 		PreferredWidthForHeightCheck = 1 << 9,
-		PreferredHeightForWidthCheck = 1 << 10
+		PreferredHeightForWidthCheck = 1 << 10,
+		GotFocus = 1 << 11,
+		LostFocus = 1 << 12
 	}
 	
 	public interface DragOperationEventSink

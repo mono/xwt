@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -49,22 +50,47 @@ namespace Xwt.GtkBackend
 		protected new IButtonEventSink EventSink {
 			get { return (IButtonEventSink)base.EventSink; }
 		}
-
-		public void SetContent (string label, object imageBackend)
+		
+		public void SetContent (string label, object imageBackend, ContentPosition position)
 		{
+			Button b = (Button) Frontend;
+			
 			Gdk.Pixbuf pix = (Gdk.Pixbuf)imageBackend;
-			if (label != null && imageBackend == null)
+			
+			Gtk.Widget imageWidget = null;
+			
+			switch (b.Type) {
+			case ButtonType.Normal:
+				if (pix != null)
+					imageWidget = new Gtk.Image (pix);
+				break;
+			case ButtonType.DropDown:
+				imageWidget = new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out);
+				break;
+			case ButtonType.Disclosure:
+				label = null;
+				imageWidget = new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out);
+				break;
+			}
+			
+			if (label != null && imageWidget == null) {
 				Widget.Label = label;
-			else if (label == null && imageBackend != null) {
-				var img = new Gtk.Image (pix);
-				img.Show ();
-				Widget.Image = img;
-			} else if (label != null && imageBackend != null) {
-				Gtk.HBox box = new Gtk.HBox (false, 3);
-				var img = new Gtk.Image (pix);
-				box.PackStart (img, false, false, 0);
+			}
+			else if (label == null && imageWidget != null) {
+				imageWidget.Show ();
+				Widget.Image = imageWidget;
+			} else if (label != null && imageWidget != null) {
+				Gtk.Box box = position == ContentPosition.Left || position == ContentPosition.Right ? (Gtk.Box) new Gtk.HBox (false, 3) : (Gtk.Box) new Gtk.VBox (false, 3);
 				var lab = new Gtk.Label (label);
-				box.PackStart (lab, false, false, 0);
+				
+				if (position == ContentPosition.Left || position == ContentPosition.Top) {
+					box.PackStart (imageWidget, false, false, 0);
+					box.PackStart (lab, false, false, 0);
+				} else {
+					box.PackStart (lab, false, false, 0);
+					box.PackStart (imageWidget, false, false, 0);
+				}
+				
 				box.ShowAll ();
 				Widget.Image = box;
 			}
@@ -80,6 +106,12 @@ namespace Xwt.GtkBackend
 				Widget.Relief = Gtk.ReliefStyle.None;
 				break;
 			}
+		}
+		
+		public void SetButtonType (ButtonType type)
+		{
+			Button b = (Button) Frontend;
+			SetContent (b.Label, WidgetRegistry.GetBackend (b.Image), b.ImagePosition);
 		}
 		
 		public override void EnableEvent (object eventId)

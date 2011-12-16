@@ -64,6 +64,7 @@
     <Compile Include="Samples\Tables.cs" />
     <Compile Include="Samples\Labels.cs" />
     <Compile Include="Samples\Colors.cs" />
+    <Compile Include="Samples\Frames.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -56,11 +56,6 @@ namespace Xwt.GtkBackend
 			alignment.Child = w.Widget;
 		}
 		
-		public virtual void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
-		{
-			alignment.Child = newWidget;
-		}
-		
 		public void SetMainMenu (IMenuBackend menu)
 		{
 			if (mainMenu != null)

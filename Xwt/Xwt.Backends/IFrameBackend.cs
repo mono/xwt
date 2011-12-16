@@ -1,5 +1,5 @@
 // 
-// IMenuButtonBackend.cs
+// IFrameBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,16 +24,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IMenuButtonBackend: IButtonBackend
+	public interface IFrameBackend: IWidgetBackend
 	{
+		string Label { get; set; }
+		Color BorderColor { get; set; }
+		
+		void SetFrameType (FrameType type);
+		void SetContent (IWidgetBackend child);
+		void SetBorderSize (double left, double right, double top, double bottom);
+		void SetPadding (double left, double right, double top, double bottom);
 	}
 	
-	public interface IMenuButtonEventSink
+	public interface IFrameEventSink: IWidgetEventSink
 	{
-		IMenuBackend OnCreateMenu ();
 	}
 }
 

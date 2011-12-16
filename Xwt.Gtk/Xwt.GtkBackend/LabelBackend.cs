@@ -33,6 +33,9 @@ namespace Xwt.GtkBackend
 {
 	class LabelBackend: WidgetBackend, ILabelBackend
 	{
+		Color backColor;
+		bool usingCustomColor;
+		
 		public LabelBackend ()
 		{
 			Widget = new Gtk.Label ();
@@ -52,19 +55,25 @@ namespace Xwt.GtkBackend
 		
 		public override Xwt.Drawing.Color BackgroundColor {
 			get {
-				return base.BackgroundColor;
+				return usingCustomColor ? backColor : base.BackgroundColor;
 			}
 			set {
-				CustomLabel cla = Widget as CustomLabel;
-				if (cla == null) {
-					cla = new CustomLabel ();
-					cla.Text = Label.Text;
-					cla.Xalign = Label.Xalign;
-					cla.Visible = Label.Visible;
-					Widget = cla;
+				if (!usingCustomColor) {
+					Label.ExposeEvent += HandleLabelExposeEvent;
+					usingCustomColor = true;
 				}
-				cla.BackgroundColor = value;
-				cla.QueueDraw ();
+				backColor = value;
+				Label.QueueDraw ();
+			}
+		}
+		
+		[GLib.ConnectBefore]
+		void HandleLabelExposeEvent (object o, Gtk.ExposeEventArgs args)
+		{
+			using (var ctx = Gdk.CairoHelper.Create (Label.GdkWindow)) {
+				ctx.Rectangle (Label.Allocation.X, Label.Allocation.Y, Label.Allocation.Width, Label.Allocation.Height);
+				ctx.Color = Util.ToCairoColor (backColor);
+				ctx.Fill ();
 			}
 		}
 		
@@ -89,22 +98,6 @@ namespace Xwt.GtkBackend
 				case Alignment.Center: Label.Xalign = 0.5f; break;
 				}
 			}
-		}
-	}
-	
-	class CustomLabel: Gtk.Label
-	{
-		public Color BackgroundColor;
-		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
-		{
-			using (var ctx = Gdk.CairoHelper.Create (this.GdkWindow)) {
-				ctx.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
-				ctx.Color = Util.ToCairoColor (BackgroundColor);
-				ctx.Fill ();
-			}
-			
-			return base.OnExposeEvent (evnt);
 		}
 	}
 }

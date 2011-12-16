@@ -37,7 +37,7 @@ namespace Xwt
 		
 		protected new class EventSink: WindowFrame.EventSink, ISpacingListener
 		{
-			public void OnSpacingChanged (string spacingType)
+			public void OnSpacingChanged (WidgetSpacing source)
 			{
 			}
 		}
@@ -49,13 +49,13 @@ namespace Xwt
 		
 		public Window ()
 		{
-			padding = new WidgetSpacing ((EventSink)WindowEventSink, null);
+			padding = new WidgetSpacing ((EventSink)WindowEventSink);
 			padding.SetAll (6);
 		}
 		
 		public Window (string title): base (title)
 		{
-			padding = new WidgetSpacing ((EventSink)WindowEventSink, null);
+			padding = new WidgetSpacing ((EventSink)WindowEventSink);
 		}
 		
 		new IWindowBackend Backend {
