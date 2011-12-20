@@ -121,6 +121,9 @@ namespace Xwt
 			if (LoadBackend ("Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0"))
 				return;
 			
+			if (LoadBackend ("Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=1.0.0.0"))
+				return;
+			
 			throw new InvalidOperationException ("Xwt engine not found");
 		}
 	}
