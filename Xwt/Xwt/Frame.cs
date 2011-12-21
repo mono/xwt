@@ -70,8 +70,19 @@ namespace Xwt
 			padding = new WidgetSpacing (this.WidgetEventSink);
 		}
 		
+		public Frame (FrameType frameType): this ()
+		{
+			Type = frameType;
+		}
+		
 		public Frame (Widget content): this ()
 		{
+			Content = content;
+		}
+		
+		public Frame (Widget content, FrameType frameType): this ()
+		{
+			Type = frameType;
 			Content = content;
 		}
 		
