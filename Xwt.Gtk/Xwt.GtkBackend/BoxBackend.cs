@@ -110,7 +110,7 @@ namespace Xwt.GtkBackend
 		{
 			children.Add (widget, new Rectangle (0,0,0,0));
 			widget.Parent = this;
-			QueueResize ();
+			// QueueResize ();
 		}
 		
 		protected override void OnRemoved (Gtk.Widget widget)
