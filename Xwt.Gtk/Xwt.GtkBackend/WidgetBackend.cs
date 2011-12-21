@@ -127,9 +127,9 @@ namespace Xwt.GtkBackend
 			Widget.GrabFocus ();
 		}
 		
-		public virtual void Dispose ()
+		public virtual void Dispose (bool disposing)
 		{
-			if (Widget != null)
+			if (Widget != null && !disposing && Widget.Parent == null)
 				Widget.Destroy ();
 		}
 		

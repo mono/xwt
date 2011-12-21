@@ -175,6 +175,13 @@ namespace Xwt
 			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
 		}
 		
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			if (Backend != null)
+				Backend.Dispose (disposing);
+		}
+		
 		public WindowFrame ParentWindow {
 			get {
 				if (Parent != null)

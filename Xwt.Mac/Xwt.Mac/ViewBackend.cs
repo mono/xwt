@@ -119,7 +119,7 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public virtual void Dispose ()
+		public virtual void Dispose (bool disposing)
 		{
 		}
 		
