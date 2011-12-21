@@ -54,11 +54,12 @@ namespace Xwt.GtkBackend
 
 		public void SetContent (IWidgetBackend child)
 		{
+			Gtk.Bin parent = paddingAlign != null ? paddingAlign : Widget;
 			if (child != null) {
 				var w = GetWidget (child);
-				Widget.Child = w;
+				parent.Child = w;
 			} else {
-				Widget.Child = null;
+				parent.Child = null;
 			}
 		}
 		public void SetFrameType (FrameType type)
