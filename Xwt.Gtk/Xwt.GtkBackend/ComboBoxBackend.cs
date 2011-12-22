@@ -41,6 +41,7 @@ namespace Xwt.GtkBackend
 			Widget.PackStart (cr, false);
 			Widget.AddAttribute (cr, "text", 0);
 			Widget.Show ();
+			Widget.RowSeparatorFunc = IsRowSeparator;
 		}
 		
 		protected new Gtk.ComboBox Widget {
@@ -50,6 +51,12 @@ namespace Xwt.GtkBackend
 		
 		protected new IComboBoxEventSink EventSink {
 			get { return (IComboBoxEventSink)base.EventSink; }
+		}
+		
+		bool IsRowSeparator (Gtk.TreeModel model, Gtk.TreeIter iter)
+		{
+			Gtk.TreePath path = model.GetPath (iter);
+			return EventSink.RowIsSeparator (path.Indices[0]);
 		}
 		
 		public override void EnableEvent (object eventId)

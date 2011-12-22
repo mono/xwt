@@ -99,9 +99,13 @@ namespace Xwt.Mac
 				source.RowChanged += HandleSourceRowChanged;
 				source.RowsReordered += HandleSourceRowsReordered;
 				for (int n=0; n<source.RowCount; n++) {
-					NSMenuItem it = new NSMenuItem ();
-					UpdateItem (it, n);
-					Widget.Menu.AddItem (it);
+					if (EventSink.RowIsSeparator (n))
+						Widget.Menu.AddItem (NSMenuItem.SeparatorItem);
+					else {
+						NSMenuItem it = new NSMenuItem ();
+						UpdateItem (it, n);
+						Widget.Menu.AddItem (it);
+					}
 				}
 			}
 		}
@@ -113,8 +117,21 @@ namespace Xwt.Mac
 		void HandleSourceRowChanged (object sender, ListRowEventArgs e)
 		{
 			NSMenuItem mi = Widget.ItemAtIndex (e.Row);
-			UpdateItem (mi, e.Row);
-			Widget.SynchronizeTitleAndSelectedItem ();
+			if (EventSink.RowIsSeparator (e.Row)) {
+				if (!mi.IsSeparatorItem) {
+					Widget.Menu.InsertItematIndex (NSMenuItem.SeparatorItem, e.Row);
+					Widget.Menu.RemoveItemAt (e.Row + 1);
+				}
+			}
+			else {
+				if (mi.IsSeparatorItem) {
+					mi = new NSMenuItem ();
+					Widget.Menu.InsertItematIndex (mi, e.Row);
+					Widget.Menu.RemoveItemAt (e.Row + 1);
+				}
+				UpdateItem (mi, e.Row);
+				Widget.SynchronizeTitleAndSelectedItem ();
+			}
 			Widget.SizeToFit ();
 		}
 
@@ -127,8 +144,13 @@ namespace Xwt.Mac
 
 		void HandleSourceRowInserted (object sender, ListRowEventArgs e)
 		{
-			NSMenuItem mi = new NSMenuItem ();
-			UpdateItem (mi, e.Row);
+			NSMenuItem mi;
+			if (EventSink.RowIsSeparator (e.Row))
+				mi = NSMenuItem.SeparatorItem;
+			else {
+				mi = new NSMenuItem ();
+				UpdateItem (mi, e.Row);
+			}
 			Widget.Menu.InsertItematIndex (mi, e.Row);
 			Widget.SynchronizeTitleAndSelectedItem ();
 			Widget.SizeToFit ();

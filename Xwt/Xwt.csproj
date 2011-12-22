@@ -166,6 +166,7 @@
     <Compile Include="Xwt.Backends\ISeparatorBackend.cs" />
     <Compile Include="Xwt\HSeparator.cs" />
     <Compile Include="Xwt\VSeparator.cs" />
+    <Compile Include="Xwt\ItemSeparator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

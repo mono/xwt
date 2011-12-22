@@ -1,5 +1,5 @@
 // 
-// IComboBoxBackend.cs
+// ItemSeparator.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -25,24 +25,15 @@
 // THE SOFTWARE.
 using System;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface IComboBoxBackend: IWidgetBackend
+	public class ItemSeparator
 	{
-		void SetViews (CellViewCollection views);
-		void SetSource (IListDataSource source, IBackend sourceBackend);
-		int SelectedRow { get; set; }
-	}
-	
-	public interface IComboBoxEventSink: IWidgetEventSink
-	{
-		void OnSelectionChanged ();
-		bool RowIsSeparator (int rowIndex);
-	}
-	
-	public enum ComboBoxEvent
-	{
-		SelectionChanged
+		public static readonly ItemSeparator Instance = new Xwt.ItemSeparator ();
+		
+		public ItemSeparator ()
+		{
+		}
 	}
 }
 

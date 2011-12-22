@@ -136,7 +136,7 @@ namespace Xwt.GtkBackend
 		{
 			int row = NodeFromIter (iter);
 			var v = source.GetValue (row, column);
-			value = new GLib.Value (v);
+			value = v != null ? new GLib.Value (v) : GLib.Value.Empty;
 		}
 
 		public bool IterNext (ref Gtk.TreeIter iter)

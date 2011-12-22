@@ -66,6 +66,8 @@ namespace Samples
 			c3.Items.Add (1, "One");
 			c3.Items.Add (2, "Two");
 			c3.Items.Add (3, "Three");
+			c3.Items.Add (ItemSeparator.Instance);
+			c3.Items.Add (4, "Maybe more");
 			la = new Label ();
 			box.PackStart (c3);
 			box.PackStart (la);

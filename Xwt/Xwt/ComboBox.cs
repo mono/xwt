@@ -44,6 +44,11 @@ namespace Xwt
 			{
 				((ComboBox)Parent).OnSelectionChanged (EventArgs.Empty);
 			}
+			
+			public bool RowIsSeparator (int rowIndex)
+			{
+				return ((ComboBox)Parent).RowIsSeparator (rowIndex);
+			}
 		}
 		
 		new IComboBoxBackend Backend {
@@ -129,6 +134,10 @@ namespace Xwt
 			}
 		}
 		
+		public Func<int,bool> RowSeparatorCheck {
+			get; set;
+		}
+		
 		void OnCellChanged ()
 		{
 			Backend.SetViews (views);
@@ -145,12 +154,19 @@ namespace Xwt
 				selectionChanged -= value;
 				OnAfterEventRemove (ComboBoxEvent.SelectionChanged, selectionChanged);
 			}
-		}	
+		}
 		
 		protected virtual void OnSelectionChanged (EventArgs args)
 		{
 			if (selectionChanged != null)
 				selectionChanged (this, args);
+		}
+		
+		protected virtual bool RowIsSeparator (int rowIndex)
+		{
+			if (RowSeparatorCheck != null)
+				return RowSeparatorCheck (rowIndex);
+			return Items [rowIndex] is ItemSeparator;
 		}
 	}
 }
