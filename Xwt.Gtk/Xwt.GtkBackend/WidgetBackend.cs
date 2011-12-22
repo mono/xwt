@@ -475,7 +475,8 @@ namespace Xwt.GtkBackend
 			}
 			
 			if (ac == DragDropAction.None) {
-				args.RetVal = false;
+				args.RetVal = true;
+				Gdk.Drag.Status (args.Context, (Gdk.DragAction)0, args.Time);
 			}
 			else if (ac == DragDropAction.Default) {
 				// Undefined, we need more data
