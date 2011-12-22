@@ -421,30 +421,60 @@ namespace Xwt
 			base.OnBackendCreated ();
 		}
 		
+		/// <summary>
+		/// Raises the DragOverCheck event.
+		/// </summary>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
 		internal protected virtual void OnDragOverCheck (DragOverCheckEventArgs args)
 		{
 			if (dragOverCheck != null)
 				dragOverCheck (this, args);
 		}
 		
+		/// <summary>
+		/// Raises the DragOver event.
+		/// </summary>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
 		internal protected virtual void OnDragOver (DragOverEventArgs args)
 		{
 			if (dragOver != null)
 				dragOver (this, args);
 		}
 		
+		/// <summary>
+		/// Raises the DragDropCheck event.
+		/// </summary>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
 		internal protected virtual void OnDragDropCheck (DragCheckEventArgs args)
 		{
 			if (dragDropCheck != null)
 				dragDropCheck (this, args);
 		}
 		
+		/// <summary>
+		/// Raises the DragDrop event.
+		/// </summary>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
 		internal protected virtual void OnDragDrop (DragEventArgs args)
 		{
 			if (dragDrop != null)
 				dragDrop (this, args);
 		}
 		
+		/// <summary>
+		/// Raises the DragLeave event.
+		/// </summary>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
 		internal protected virtual void OnDragLeave (EventArgs args)
 		{
 			if (dragLeave != null)
@@ -665,6 +695,19 @@ namespace Xwt
 				throw new InvalidOperationException ("Widget is not a child of this widget");
 		}
 		
+		/// <summary>
+		/// Raised when the mouse is moved over the widget in a drag&drop operation
+		/// </summary>
+		/// <remarks>
+		/// The subscriber of the event should set the value of AllowedAction in the
+		/// provided event args object. If the value is not set or it is set to Default,
+		/// the action will be determined by the result of the DragOver event.
+		/// 
+		/// This event provides information about the type of the data that is going
+		/// to be dropped, but not the actual data. If you need the actual data
+		/// to decide if the drop is allowed or not, you have to subscribe the DragOver
+		/// event.
+		/// </remarks>
 		public event EventHandler<DragOverCheckEventArgs> DragOverCheck {
 			add {
 				OnBeforeEventAdd (WidgetEvent.DragOverCheck, dragOverCheck);
@@ -676,6 +719,19 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raised when the mouse is moved over the widget in a drag&drop operation
+		/// </summary>
+		/// <remarks>
+		/// The subscriber of the event should set the value of AllowedAction in the
+		/// provided event args object. If the value is not set or it is set to Default,
+		/// the action will be determined by the result of the DragDropCheck event.
+		/// 
+		/// This event provides information about the actual data that is going
+		/// to be dropped. Getting the data may be inneficient in some cross-process drag&drop scenarios,
+		/// so if you don't need the actual data to decide the allowed drop operation, 
+		/// and knowing the type of the data is enough, then the DragOverCheck event is a better option.
+		/// </remarks>
 		public event EventHandler<DragOverEventArgs> DragOver {
 			add {
 				OnBeforeEventAdd (WidgetEvent.DragOver, dragOver);
@@ -687,6 +743,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raised to check if a drop operation is allowed on the widget
+		/// </summary>
 		public event EventHandler<DragCheckEventArgs> DragDropCheck {
 			add {
 				OnBeforeEventAdd (WidgetEvent.DragDropCheck, dragDropCheck);
@@ -698,6 +757,13 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raised when dropping on the widget
+		/// </summary>
+		/// <remarks>
+		/// The subscriber of the event should set the value of Success in the
+		/// provided event args object.
+		/// </remarks>
 		public event EventHandler<DragEventArgs> DragDrop {
 			add {
 				OnBeforeEventAdd (WidgetEvent.DragDrop, dragDrop);
@@ -742,6 +808,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raised when the widget gets the focus
+		/// </summary>
 		public event EventHandler GotFocus {
 			add {
 				OnBeforeEventAdd (WidgetEvent.GotFocus, gotFocus);
@@ -753,6 +822,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raised when the widget loses the focus
+		/// </summary>
 		public event EventHandler LostFocus {
 			add {
 				OnBeforeEventAdd (WidgetEvent.LostFocus, lostFocus);

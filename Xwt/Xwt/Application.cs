@@ -54,13 +54,19 @@ namespace Xwt
 			engine.RunApplication ();
 		}
 		
+		/// <summary>
+		/// Invokes an action in the GUI thread
+		/// </summary>
+		/// <param name='action'>
+		/// The action to execute.
+		/// </param>
 		public static void Invoke (Action action)
 		{
 			engine.Invoke (action);
 		}
 		
 		/// <summary>
-		/// Invokes a method after the provided time span
+		/// Invokes an action in the GUI thread after the provided time span
 		/// </summary>
 		/// <returns>
 		/// A timer object
