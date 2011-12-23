@@ -142,9 +142,11 @@ namespace Xwt.GtkBackend
 
 		public virtual void DisableEvent (object ev)
 		{
-			switch ((WindowFrameEvent)ev) {
-			case WindowFrameEvent.BoundsChanged:
-				Window.SizeAllocated -= HandleWidgetSizeAllocated; break;
+			if (ev is WindowFrameEvent) {
+				switch ((WindowFrameEvent)ev) {
+				case WindowFrameEvent.BoundsChanged:
+					Window.SizeAllocated -= HandleWidgetSizeAllocated; break;
+				}
 			}
 		}
 	}

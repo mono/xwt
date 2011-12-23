@@ -140,6 +140,12 @@ namespace Xwt.GtkBackend
 			win.Window = (Gtk.Window) nativeWindow;
 			return win;
 		}
+		
+		public override object GetNativeParentWindow (Widget w)
+		{
+			IGtkWidgetBackend wb = (IGtkWidgetBackend)Xwt.Engine.WidgetRegistry.GetBackend (w);
+			return wb.Widget.Toplevel as Gtk.Window;
+		}
 	}
 	
 	public interface IGtkContainer

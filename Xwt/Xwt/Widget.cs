@@ -186,8 +186,12 @@ namespace Xwt
 			get {
 				if (Parent != null)
 					return Parent.ParentWindow;
-				else
-					return parentWindow;
+				else if (parentWindow == null) {
+					var p = Application.EngineBackend.GetNativeParentWindow (this);
+					if (p != null)
+						parentWindow = WidgetRegistry.WrapWindow (p);
+				}
+				return parentWindow;
 			}
 		}
 		

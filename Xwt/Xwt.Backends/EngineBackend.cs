@@ -47,6 +47,11 @@ namespace Xwt.Backends
 		public abstract object GetNativeWidget (Widget w);
 		
 		public abstract IWindowFrameBackend GetBackendForWindow (object nativeWindow);
+		
+		public virtual object GetNativeParentWindow (Widget w)
+		{
+			return null;
+		}
 	}
 }
 
