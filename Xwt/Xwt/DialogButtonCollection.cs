@@ -1,5 +1,5 @@
 // 
-// IWindowBackend.cs
+// CommandCollection.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,21 +23,54 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Xwt.Backends;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface IWindowBackend: IWindowFrameBackend
+	public class DialogButtonCollection: Collection<DialogButton>
 	{
-		void SetChild (IWidgetBackend child);
-		void SetMainMenu (IMenuBackend menu);
-		void SetPadding (double left, double top, double right, double bottom);
-	}
-	
-	public interface IWindowEventSink: IWindowFrameEventSink
-	{
+		ICollectionListener listener;
+		
+		public DialogButtonCollection (ICollectionListener listener)
+		{
+			this.listener = listener;
+		}
+		
+		protected override void InsertItem (int index, DialogButton item)
+		{
+			base.InsertItem (index, item);
+			if (listener != null)
+				listener.ItemAdded (this, item);
+		}
+		
+		protected override void RemoveItem (int index)
+		{
+			object ob = this [index];
+			base.RemoveItem (index);
+			if (listener != null)
+				listener.ItemRemoved (this, ob);
+		}
+		
+		protected override void SetItem (int index, DialogButton item)
+		{
+			object ob = this [index];
+			base.SetItem (index, item);
+			if (listener != null)
+				listener.ItemRemoved (this, ob);
+			if (listener != null)
+				listener.ItemAdded (this, item);
+		}
+		
+		protected override void ClearItems ()
+		{
+			List<DialogButton> copy = new List<DialogButton> (this);
+			base.ClearItems ();
+			foreach (var c in copy)
+				listener.ItemRemoved (this, c);
+		}
 	}
 }
 

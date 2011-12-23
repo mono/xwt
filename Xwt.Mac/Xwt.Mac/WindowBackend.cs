@@ -131,7 +131,7 @@ namespace Xwt.Mac
 			this.child = (IMacViewBackend) child;
 			if (child != null) {
 				ContentView.AddSubview (this.child.View);
-				UpdateLayout ();
+				SetPadding (frontend.Padding.Left, frontend.Padding.Top, frontend.Padding.Right, frontend.Padding.Bottom);
 				this.child.View.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			}
 		}
@@ -156,14 +156,14 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public virtual void UpdateLayout ()
+		public void SetPadding (double left, double top, double right, double bottom)
 		{
 			if (child != null) {
 				var frame = ContentView.Frame;
-				frame.X += (float) frontend.Padding.Left;
-				frame.Width -= (float) frontend.Padding.HorizontalSpacing;
-				frame.Y += (float) frontend.Padding.Top;
-				frame.Height -= (float) frontend.Padding.VerticalSpacing;
+				frame.X += (float) left;
+				frame.Width -= (float) (left + right);
+				frame.Y += (float) top;
+				frame.Height -= (float) (top + bottom);
 				child.View.Frame = frame;
 			}
 		}
@@ -190,9 +190,10 @@ namespace Xwt.Mac
 
 		static Selector closeSel = new Selector ("close");
 		
-		void IDisposable.Dispose ()
+		void IWindowFrameBackend.Dispose (bool disposing)
 		{
-			Messaging.void_objc_msgSend (this.Handle, closeSel.Handle);
+			if (disposing)
+				Messaging.void_objc_msgSend (this.Handle, closeSel.Handle);
 		}
 		
 		public void DragStart (TransferDataSource data, DragDropAction dragAction, object dragImage, double xhot, double yhot)

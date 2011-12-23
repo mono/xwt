@@ -67,6 +67,7 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Frame), typeof(FrameBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.VSeparator), typeof(SeparatorBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.HSeparator), typeof(SeparatorBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Dialog), typeof(DialogBackend));
 		}
 
 		public override void RunApplication ()

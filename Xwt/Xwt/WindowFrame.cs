@@ -81,6 +81,12 @@ namespace Xwt
 			Backend.Title = title;
 		}
 		
+		protected override void Dispose (bool release_all)
+		{
+			base.Dispose (release_all);
+			Backend.Dispose (release_all);
+		}
+		
 		new IWindowFrameBackend Backend {
 			get { return (IWindowFrameBackend) base.Backend; } 
 		}

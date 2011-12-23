@@ -85,6 +85,7 @@
     <Compile Include="Xwt.GtkBackend\FrameBackend.cs" />
     <Compile Include="Xwt.GtkBackend\HeaderBox.cs" />
     <Compile Include="Xwt.GtkBackend\SeparatorBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\DialogBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

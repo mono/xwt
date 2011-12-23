@@ -24,14 +24,180 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
+using Xwt.Drawing;
+using Xwt.Engine;
 
 namespace Xwt
 {
 	public class Dialog: Window
 	{
+		DialogButtonCollection commands;
+		Command resultCommand;
+		bool loopEnded;
+		
 		public Dialog ()
 		{
+			commands = new DialogButtonCollection ((EventSink)WindowEventSink);
 		}
+		
+		protected new class EventSink: Window.EventSink, ICollectionListener, IDialogEventSink
+		{
+			new Dialog Parent { get { return (Dialog) base.Parent; } }
+			
+			public virtual void ItemAdded (object collection, object item)
+			{
+				Parent.Backend.SetButtons (Parent.commands);
+			}
+
+			public virtual void ItemRemoved (object collection, object item)
+			{
+				Parent.Backend.SetButtons (Parent.commands);
+			}
+			
+			public void OnDialogButtonClicked (DialogButton btn)
+			{
+				btn.RaiseClicked ();
+				if (btn.Command != null)
+					Parent.OnCommandActivated (btn.Command);
+			}
+		}
+		
+		protected override WindowFrame.EventSink CreateEventSink ()
+		{
+			return new EventSink ();
+		}
+		
+		new IDialogBackend Backend {
+			get { return (IDialogBackend) base.Backend; } 
+		}
+		
+		public DialogButtonCollection Buttons {
+			get { return commands; }
+		}
+		
+		protected virtual void OnCommandActivated (Command cmd)
+		{
+			Respond (cmd);
+		}
+		
+		public Command Run ()
+		{
+			return Run (null);
+		}
+		
+		public Command Run (WindowFrame parent)
+		{
+			Backend.RunLoop ((IWindowFrameBackend) WidgetRegistry.GetBackend (parent));
+			return resultCommand;
+		}
+		
+		public void Respond (Command cmd)
+		{
+			resultCommand = cmd;
+			if (!loopEnded) {
+				loopEnded = true;
+				Backend.EndLoop ();
+			}
+		}
+		
+		internal void UpdateButton (DialogButton btn)
+		{
+			Backend.UpdateButton (btn);
+		}
+	}
+	
+	public class DialogButton
+	{
+		Command command;
+		string label;
+		Image image;
+		bool visible;
+		bool sensitive;
+		internal Dialog ParentDialog;
+		
+		public DialogButton (string label)
+		{
+			this.label = label;
+		}
+		
+		public DialogButton (string label, Command cmd)
+		{
+			this.label = label;
+			this.command = cmd;
+		}
+		
+		public DialogButton (string label, Image icon)
+		{
+			this.label = label;
+			this.image = icon;
+		}
+		
+		public DialogButton (string label, Image icon, Command cmd)
+		{
+			this.label = label;
+			this.command = cmd;
+			this.image = icon;
+		}
+		
+		public DialogButton (Command cmd)
+		{
+			this.command = cmd;
+		}
+		
+		public Command Command {
+			get { return command; }
+		}
+		
+		public string Label {
+			get {
+				if (label != null)
+					return label;
+				if (command != null)
+					return command.Label;
+				return "";
+			}
+			set {
+				label = value;
+				ParentDialog.UpdateButton (this);
+			}
+		}
+		
+		public Image Image {
+			get {
+				if (image != null)
+					return image;
+				return null;
+			}
+			set {
+				image = value;
+				ParentDialog.UpdateButton (this);
+			}
+		}
+		
+		public bool Visible { 
+			get { return visible; }
+			set {
+				visible = value;
+				ParentDialog.UpdateButton (this);
+			}
+		}
+		
+		public bool Sensitive { 
+			get { return sensitive; }
+			set {
+				sensitive = value;
+				ParentDialog.UpdateButton (this);
+			}
+		}
+		
+		internal void RaiseClicked ()
+		{
+			if (Clicked != null)
+				Clicked (this, EventArgs.Empty);
+		}
+		
+		public event EventHandler Clicked;
 	}
 }
 

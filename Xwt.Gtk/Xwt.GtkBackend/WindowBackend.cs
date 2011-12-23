@@ -35,15 +35,20 @@ namespace Xwt.GtkBackend
 		Gtk.MenuBar mainMenu;
 		Gtk.VBox mainBox;
 		
-		public WindowBackend ()
+		public override void Initialize ()
 		{
 			Window = new Gtk.Window ("");
+			Window.Add (CreateMainLayout ());
+		}
+		
+		protected virtual Gtk.Widget CreateMainLayout ()
+		{
 			mainBox = new Gtk.VBox ();
-			Window.Add (mainBox);
 			mainBox.Show ();
 			alignment = new Gtk.Alignment (0, 0, 1, 1);
 			mainBox.PackStart (alignment, true, true, 0);
 			alignment.Show ();
+			return mainBox;
 		}
 		
 		public Gtk.VBox MainBox {
@@ -70,19 +75,14 @@ namespace Xwt.GtkBackend
 				mainMenu = null;
 		}
 
-		#region IWindowBackend implementation
-		
-		
-		public void UpdateLayout ()
+		public void SetPadding (double left, double top, double right, double bottom)
 		{
 			Window win = (Window) Frontend;
-			alignment.LeftPadding = (uint) win.Padding.Left;
-			alignment.RightPadding = (uint) win.Padding.Right;
-			alignment.TopPadding = (uint) win.Padding.Top;
-			alignment.BottomPadding = (uint) win.Padding.Bottom;
+			alignment.LeftPadding = (uint) left;
+			alignment.RightPadding = (uint) right;
+			alignment.TopPadding = (uint) top;
+			alignment.BottomPadding = (uint) bottom;
 		}
-		
-		#endregion
 	}
 }
 

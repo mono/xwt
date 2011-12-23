@@ -1,5 +1,5 @@
 // 
-// IWindowBackend.cs
+// ICollectionListener.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,21 +23,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt;
 
 namespace Xwt.Backends
 {
-	public interface IWindowBackend: IWindowFrameBackend
+	public interface ICollectionListener
 	{
-		void SetChild (IWidgetBackend child);
-		void SetMainMenu (IMenuBackend menu);
-		void SetPadding (double left, double top, double right, double bottom);
-	}
-	
-	public interface IWindowEventSink: IWindowFrameEventSink
-	{
+		void ItemAdded (object collection, object item);
+		void ItemRemoved (object collection, object item);
 	}
 }
 

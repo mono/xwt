@@ -30,6 +30,7 @@ namespace Xwt.Backends
 	public interface IWindowFrameBackend: IBackend
 	{
 		void Initialize (IWindowFrameEventSink eventSink);
+		void Dispose (bool disposing);
 		
 		Rectangle Bounds { get; set; }
 		bool Visible { get; set; }

@@ -38,7 +38,7 @@ namespace Xwt.GtkBackend
 		{
 		}
 		
-		protected Gtk.Window Window {
+		public Gtk.Window Window {
 			get { return window; }
 			set { window = value; }
 		}
@@ -66,6 +66,12 @@ namespace Xwt.GtkBackend
 		
 		public virtual void Initialize ()
 		{
+		}
+		
+		public virtual void Dispose (bool disposing)
+		{
+			if (disposing)
+				Window.Destroy ();
 		}
 		
 		public IWindowFrameEventSink EventSink {

@@ -52,6 +52,29 @@ namespace Samples
 			b.Clicked += delegate {
 				MessageDialog.ShowMessage (ParentWindow, "Hi there!");
 			};
+			
+			Button db = new Button ("Show custom dialog");
+			PackStart (db);
+			db.Clicked += delegate {
+				Dialog d = new Dialog ();
+				d.Title = "This is a dialog";
+				Table t = new Table ();
+				t.Attach (new Label ("Some field:"), 0, 1, 0, 1);
+				t.Attach (new TextEntry (), 1, 2, 0, 1);
+				t.Attach (new Label ("Another field:"), 0, 1, 1, 2);
+				t.Attach (new TextEntry (), 1, 2, 1, 2);
+				d.Content = t;
+				
+				Command custom = new Command ("Custom");
+				d.Buttons.Add (new DialogButton (custom));
+				d.Buttons.Add (new DialogButton ("Custom OK", Command.Ok));
+				d.Buttons.Add (new DialogButton (Command.Cancel));
+				d.Buttons.Add (new DialogButton (Command.Ok));
+				
+				var r = d.Run (this.ParentWindow);
+				db.Label = "Result: " + r.Label;
+				d.Dispose ();
+			};
 		}
 	}
 }

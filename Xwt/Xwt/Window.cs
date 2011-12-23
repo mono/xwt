@@ -39,6 +39,8 @@ namespace Xwt
 		{
 			public void OnSpacingChanged (WidgetSpacing source)
 			{
+				var w = (Window) Parent;
+				w.Backend.SetPadding (w.padding.Left, w.padding.Top, w.padding.Right, w.padding.Bottom);
 			}
 		}
 		

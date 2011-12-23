@@ -167,6 +167,9 @@
     <Compile Include="Xwt\HSeparator.cs" />
     <Compile Include="Xwt\VSeparator.cs" />
     <Compile Include="Xwt\ItemSeparator.cs" />
+    <Compile Include="Xwt.Backends\ICollectionListener.cs" />
+    <Compile Include="Xwt.Backends\IDialogBackend.cs" />
+    <Compile Include="Xwt\DialogButtonCollection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
