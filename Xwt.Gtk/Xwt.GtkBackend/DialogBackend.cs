@@ -89,7 +89,11 @@ namespace Xwt.GtkBackend
 				box.PackStart (new Gtk.Label (btn.Label), true, true, 0);
 				b.Image = box;
 			}
-			b.ShowAll ();
+			if (btn.Visible)
+				b.ShowAll ();
+			else
+				b.Hide ();
+			b.Sensitive = btn.Sensitive;
 		}
 		
 		void HandleButtonClicked (object o, EventArgs a)
@@ -107,7 +111,7 @@ namespace Xwt.GtkBackend
 		public void RunLoop (IWindowFrameBackend parent)
 		{
 			var p = (WindowFrameBackend) parent;
-			MessageService.ShowCustomDialog (Window, p.Window);
+			MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
 		}
 
 		public void EndLoop ()

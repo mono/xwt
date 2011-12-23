@@ -127,6 +127,16 @@ namespace Xwt.Mac
 			throw new NotImplementedException ();
 		}
 		
+		public override object GetNativeWidget (Widget w)
+		{
+			IMacViewBackend wb = (IMacViewBackend)Xwt.Engine.WidgetRegistry.GetBackend (w);
+			return wb.View;
+		}
+		
+		public override Xwt.Backends.IWindowFrameBackend GetBackendForWindow (object nativeWindow)
+		{
+			throw new NotImplementedException ();
+		}
 	}
 	
 	public interface IViewContainer

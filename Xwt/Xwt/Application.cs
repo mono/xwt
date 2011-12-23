@@ -35,6 +35,10 @@ namespace Xwt
 	{
 		static EngineBackend engine;
 		
+		internal static EngineBackend EngineBackend {
+			get { return engine; }
+		}
+		
 		public static void Initialize ()
 		{
 			if (engine != null)

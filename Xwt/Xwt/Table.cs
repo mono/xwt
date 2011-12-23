@@ -115,6 +115,16 @@ namespace Xwt
 			get { return children.Select (c => c.Child); }
 		}
 		
+		public void Attach (Widget widget, int left, int top)
+		{
+			Attach (widget, left, top, AttachOptions.Fill | AttachOptions.Expand, AttachOptions.Fill | AttachOptions.Expand);
+		}
+		
+		public void Attach (Widget widget, int left, int top, AttachOptions xOptions, AttachOptions yOptions)
+		{
+			Attach (widget, left, left + 1, top, top + 1, xOptions, yOptions);
+		}
+		
 		public void Attach (Widget widget, int left, int right, int top, int bottom)
 		{
 			Attach (widget, left, right, top, bottom, AttachOptions.Fill | AttachOptions.Expand, AttachOptions.Fill | AttachOptions.Expand);

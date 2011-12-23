@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Xwt.Backends;
+using System.Linq;
 
 namespace Xwt
 {
@@ -37,6 +38,17 @@ namespace Xwt
 		public DialogButtonCollection (ICollectionListener listener)
 		{
 			this.listener = listener;
+		}
+		
+		public void Add (params Command[] commands)
+		{
+			foreach (var c in commands)
+				Add (new DialogButton (c));
+		}
+		
+		public DialogButton GetCommandButton (Command cmd)
+		{
+			return this.FirstOrDefault (b => b.Command == cmd);
 		}
 		
 		protected override void InsertItem (int index, DialogButton item)

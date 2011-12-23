@@ -47,12 +47,18 @@ namespace Xwt
 			
 			public virtual void ItemAdded (object collection, object item)
 			{
-				Parent.Backend.SetButtons (Parent.commands);
+				if (collection == Parent.commands) {
+					((DialogButton)item).ParentDialog = Parent;
+					Parent.Backend.SetButtons (Parent.commands);
+				}
 			}
 
 			public virtual void ItemRemoved (object collection, object item)
 			{
-				Parent.Backend.SetButtons (Parent.commands);
+				if (collection == Parent.commands) {
+					((DialogButton)item).ParentDialog = null;
+					Parent.Backend.SetButtons (Parent.commands);
+				}
 			}
 			
 			public void OnDialogButtonClicked (DialogButton btn)
@@ -101,6 +107,34 @@ namespace Xwt
 			}
 		}
 		
+		public void EnableCommand (Command cmd)
+		{
+			var btn = Buttons.GetCommandButton (cmd);
+			if (btn != null)
+				btn.Sensitive = true;
+		}
+		
+		public void DisableCommand (Command cmd)
+		{
+			var btn = Buttons.GetCommandButton (cmd);
+			if (btn != null)
+				btn.Sensitive = false;
+		}
+		
+		public void ShowCommand (Command cmd)
+		{
+			var btn = Buttons.GetCommandButton (cmd);
+			if (btn != null)
+				btn.Visible = true;
+		}
+		
+		public void HideCommand (Command cmd)
+		{
+			var btn = Buttons.GetCommandButton (cmd);
+			if (btn != null)
+				btn.Visible = false;
+		}
+		
 		internal void UpdateButton (DialogButton btn)
 		{
 			Backend.UpdateButton (btn);
@@ -112,8 +146,8 @@ namespace Xwt
 		Command command;
 		string label;
 		Image image;
-		bool visible;
-		bool sensitive;
+		bool visible = true;
+		bool sensitive = true;
 		internal Dialog ParentDialog;
 		
 		public DialogButton (string label)

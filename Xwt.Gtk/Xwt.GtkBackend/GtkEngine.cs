@@ -127,6 +127,19 @@ namespace Xwt.GtkBackend
 		{
 			GLib.Source.Remove ((uint)id);
 		}
+		
+		public override object GetNativeWidget (Widget w)
+		{
+			IGtkWidgetBackend wb = (IGtkWidgetBackend)Xwt.Engine.WidgetRegistry.GetBackend (w);
+			return wb.Widget;
+		}
+		
+		public override IWindowFrameBackend GetBackendForWindow (object nativeWindow)
+		{
+			var win = new WindowFrameBackend ();
+			win.Window = (Gtk.Window) nativeWindow;
+			return win;
+		}
 	}
 	
 	public interface IGtkContainer

@@ -75,6 +75,31 @@ namespace Xwt.Engine
 		{
 			return (T) Activator.CreateInstance (typeof(T), backend);
 		}
+		
+		public static object GetNativeWidget (Widget w)
+		{
+			return Application.EngineBackend.GetNativeWidget (w);
+		}
+		
+		public static WindowFrame WrapWindow (object nativeWindow)
+		{
+			return new NativeWindowFrame (Application.EngineBackend.GetBackendForWindow (nativeWindow));
+		}
+	}
+	
+	class NativeWindowFrame: WindowFrame
+	{
+		IWindowFrameBackend backend;
+		
+		public NativeWindowFrame (IWindowFrameBackend backend)
+		{
+			this.backend = backend;
+		}
+		
+		protected override IBackend OnCreateBackend ()
+		{
+			return backend;
+		}
 	}
 }
 
