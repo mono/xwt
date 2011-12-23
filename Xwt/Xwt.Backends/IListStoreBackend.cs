@@ -28,8 +28,17 @@ using System;
 
 namespace Xwt.Backends
 {
+	/// <summary>
+	/// A ListStore backend.
+	/// </summary>
 	public interface IListStoreBackend: IListDataSource, IBackend
 	{
+		// WARNING: You don't need to implement this backend.
+		// Xwt provides a default implementation.
+		// You only need to implement it if the underlying widget
+		// toolkit has its own list store implementation which
+		// can be plugged into a ListView or ComboBox
+		
 		void Initialize (Type[] columnTypes);
 		
 		int AddRow ();

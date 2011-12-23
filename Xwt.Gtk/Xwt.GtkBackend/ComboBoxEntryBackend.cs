@@ -1,5 +1,5 @@
 // 
-// ITreeStoreBackend.cs
+// ComboBoxEntryBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,26 +23,50 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
+using Xwt.Backends;
 
-namespace Xwt.Backends
+namespace Xwt.GtkBackend
 {
-	public interface ITreeStoreBackend: ITreeDataSource, IBackend
+	public class ComboBoxEntryBackend: ComboBoxBackend, IComboBoxEntryBackend
 	{
-		// WARNING: You don't need to implement this backend.
-		// Xwt provides a default implementation.
-		// You only need to implement it if the underlying widget
-		// toolkit has its own tree store implementation which
-		// can be plugged into a TreeView
+		TextEntryBackend entryBackend;
 		
-		void Initialize (Type[] columnTypes);
-		TreePosition InsertBefore (TreePosition pos);
-		TreePosition InsertAfter (TreePosition pos);
-		TreePosition AddChild (TreePosition pos);
-		void Remove (TreePosition pos);
-		TreePosition GetNext (TreePosition pos);
-		TreePosition GetPrevious (TreePosition pos);
+		protected override Gtk.Widget CreateWidget ()
+		{
+			var c = new Gtk.ComboBoxEntry ();
+			c.Clear ();
+			entryBackend = new CustomComboEntryBackend ((Gtk.Entry)c.Child);
+			return c;
+		}
+		
+		public override void Initialize ()
+		{
+			base.Initialize ();
+			((Gtk.ComboBoxEntry)Widget).TextColumn = 0;
+		}
+		
+		public ITextEntryBackend TextEntryBackend {
+			get {
+				return entryBackend;
+			}
+		}
+	}
+	
+	class CustomComboEntryBackend: TextEntryBackend
+	{
+		Gtk.Entry entry;
+		
+		public CustomComboEntryBackend (Gtk.Entry entry)
+		{
+			this.entry = entry;
+		}
+		
+		public override void Initialize ()
+		{
+			Widget = entry;
+			entry.Show ();
+		}
 	}
 }
 

@@ -1,5 +1,5 @@
 // 
-// ITreeStoreBackend.cs
+// IComboBoxEntryBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,26 +23,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 
 namespace Xwt.Backends
 {
-	public interface ITreeStoreBackend: ITreeDataSource, IBackend
+	public interface IComboBoxEntryBackend: IComboBoxBackend
 	{
-		// WARNING: You don't need to implement this backend.
-		// Xwt provides a default implementation.
-		// You only need to implement it if the underlying widget
-		// toolkit has its own tree store implementation which
-		// can be plugged into a TreeView
-		
-		void Initialize (Type[] columnTypes);
-		TreePosition InsertBefore (TreePosition pos);
-		TreePosition InsertAfter (TreePosition pos);
-		TreePosition AddChild (TreePosition pos);
-		void Remove (TreePosition pos);
-		TreePosition GetNext (TreePosition pos);
-		TreePosition GetPrevious (TreePosition pos);
+		ITextEntryBackend TextEntryBackend { get; }
+	}
+	
+	public interface IComboBoxEntryEventSink: IComboBoxEventSink
+	{
 	}
 }
 

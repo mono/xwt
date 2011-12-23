@@ -1,5 +1,5 @@
 // 
-// ITreeStoreBackend.cs
+// ComboBoxEntry.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,26 +23,44 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
+using Xwt.Backends;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface ITreeStoreBackend: ITreeDataSource, IBackend
+	public class ComboBoxEntry: ComboBox
 	{
-		// WARNING: You don't need to implement this backend.
-		// Xwt provides a default implementation.
-		// You only need to implement it if the underlying widget
-		// toolkit has its own tree store implementation which
-		// can be plugged into a TreeView
+		TextEntry entry;
 		
-		void Initialize (Type[] columnTypes);
-		TreePosition InsertBefore (TreePosition pos);
-		TreePosition InsertAfter (TreePosition pos);
-		TreePosition AddChild (TreePosition pos);
-		void Remove (TreePosition pos);
-		TreePosition GetNext (TreePosition pos);
-		TreePosition GetPrevious (TreePosition pos);
+		public ComboBoxEntry ()
+		{
+			entry = new CustomComboTextEntry (Backend.TextEntryBackend);
+		}
+		
+		new IComboBoxEntryBackend Backend {
+			get { return (IComboBoxEntryBackend) base.Backend; }
+		}
+		
+		public TextEntry TextEntry {
+			get {
+				return entry;
+			}
+		}
+	}
+	
+	class CustomComboTextEntry: TextEntry
+	{
+		ITextEntryBackend backend;
+		
+		public CustomComboTextEntry (ITextEntryBackend backend)
+		{
+			this.backend = backend;
+		}
+		
+		protected override IBackend OnCreateBackend ()
+		{
+			return backend;
+		}
 	}
 }
 

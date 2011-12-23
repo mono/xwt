@@ -68,11 +68,26 @@ namespace Samples
 			c3.Items.Add (3, "Three");
 			c3.Items.Add (ItemSeparator.Instance);
 			c3.Items.Add (4, "Maybe more");
-			la = new Label ();
+			var la3 = new Label ();
 			box.PackStart (c3);
-			box.PackStart (la);
+			box.PackStart (la3);
 			c3.SelectionChanged += delegate {
-				la.Text = "Selected item: " + c3.SelectedItem;
+				la3.Text = "Selected item: " + c3.SelectedItem;
+			};
+			PackStart (box);
+			
+			box = new HBox ();
+			var c4 = new ComboBoxEntry ();
+			var la4 = new Label ();
+			box.PackStart (c4);
+			box.PackStart (la4);
+			
+			c4.Items.Add (1, "One");
+			c4.Items.Add (2, "Two");
+			c4.Items.Add (3, "Three");
+			c4.TextEntry.PlaceholderText = "This is an entry";
+			c4.TextEntry.Changed += delegate {
+				la4.Text = "Selected text: " + c4.TextEntry.Text;
 			};
 			PackStart (box);
 		}
