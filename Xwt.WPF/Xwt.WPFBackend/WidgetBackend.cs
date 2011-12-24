@@ -31,6 +31,7 @@ using System.Text;
 using System.Windows;
 
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.WPFBackend
 {
@@ -54,7 +55,7 @@ namespace Xwt.WPFBackend
 		{
 		}
 
-		public void Dispose ()
+		public virtual void Dispose (bool disposing)
 		{
 		}
 
@@ -71,6 +72,21 @@ namespace Xwt.WPFBackend
 		}
 
 		public FrameworkElement Widget { get; set; }
+
+		public virtual Color BackgroundColor {
+			get { throw new NotImplementedException (); }
+			set { throw new NotImplementedException (); }
+		}
+
+		public bool UsingCustomBackgroundColor {
+			get { throw new NotImplementedException (); }
+		}
+
+		public virtual object Font
+		{
+			get { throw new NotImplementedException (); }
+			set { throw new NotImplementedException (); }
+		}
 
 		public bool CanGetFocus {
 			get { return Widget.Focusable; }
@@ -139,6 +155,12 @@ namespace Xwt.WPFBackend
 			return new WidgetSize (size.Height) + frontend.Margin.VerticalSpacing;
 		}
 
+		public void SetMinSize (double width, double height)
+		{
+			Widget.MinWidth = width;
+			Widget.MinHeight = height;
+		}
+
 		public virtual void UpdateLayout ()
 		{
 			throw new NotImplementedException ();
@@ -164,6 +186,12 @@ namespace Xwt.WPFBackend
 						break;
 					case WidgetEvent.KeyReleased:
 						Widget.KeyDown += WidgetKeyUpHandler;
+						break;
+					case WidgetEvent.GotFocus:
+						Widget.GotFocus += WidgetGotFocusHandler;
+						break;
+					case WidgetEvent.LostFocus:
+						Widget.LostFocus += WidgetLostFocusHandler;
 						break;
 				}
 			}
@@ -218,6 +246,16 @@ namespace Xwt.WPFBackend
 
 			result = new KeyEventArgs (key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
 			return true;
+		}
+
+		void WidgetGotFocusHandler (object o, RoutedEventArgs e)
+		{
+			eventSink.OnGotFocus ();
+		}
+
+		void WidgetLostFocusHandler (object o, RoutedEventArgs e)
+		{
+			eventSink.OnLostFocus ();
 		}
 
 		public void DragStart (TransferDataSource data, DragDropAction dragAction, object imageBackend, double hotX, double hotY)
