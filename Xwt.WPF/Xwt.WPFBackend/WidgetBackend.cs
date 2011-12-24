@@ -107,24 +107,36 @@ namespace Xwt.WPFBackend
 			return new Point (p.X, p.Y);
 		}
 
+		System.Windows.Size GetWidgetDesiredSize ()
+		{
+			if (!Widget.IsMeasureValid)
+				Widget.Measure (new System.Windows.Size (Double.PositiveInfinity, Double.PositiveInfinity));
+
+			return Widget.DesiredSize;
+		}
+
 		public virtual WidgetSize GetPreferredWidth ()
 		{
-			throw new NotImplementedException ();
+			var size = GetWidgetDesiredSize ();
+			return new WidgetSize (size.Width) + frontend.Margin.HorizontalSpacing;
 		}
 
 		public virtual WidgetSize GetPreferredHeight ()
 		{
-			throw new NotImplementedException ();
+			var size = GetWidgetDesiredSize ();
+			return new WidgetSize (size.Height) + frontend.Margin.VerticalSpacing;
 		}
 
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
-			throw new NotImplementedException ();
+			var size = GetWidgetDesiredSize ();
+			return new WidgetSize (size.Width) + frontend.Margin.HorizontalSpacing;
 		}
 
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
-			throw new NotImplementedException ();
+			var size = GetWidgetDesiredSize ();
+			return new WidgetSize (size.Height) + frontend.Margin.VerticalSpacing;
 		}
 
 		public virtual void UpdateLayout ()
