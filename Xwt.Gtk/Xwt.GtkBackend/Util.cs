@@ -145,6 +145,8 @@ namespace Xwt.GtkBackend
 				icons [StockIcons.ZoomFit] = Gtk.Stock.ZoomFit;
 				icons [StockIcons.OrientationPortrait] = Gtk.Stock.OrientationPortrait;
 				icons [StockIcons.OrientationLandscape] = Gtk.Stock.OrientationLandscape;
+				icons [StockIcons.Add] = Gtk.Stock.Add;
+				icons [StockIcons.Remove] = Gtk.Stock.Remove;
 			}
 			string res;
 			icons.TryGetValue (id, out res);

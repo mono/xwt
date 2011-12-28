@@ -39,6 +39,8 @@ namespace Xwt
 		public const string ZoomOut = "ZoomOut";
 		public const string ZoomFit = "ZoomFit";
 		public const string Zoom100 = "Zoom100";
+		public const string Add = "Add";
+		public const string Remove = "Remove";
 	}
 }
 
