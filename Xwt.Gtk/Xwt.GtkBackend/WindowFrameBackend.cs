@@ -129,15 +129,12 @@ namespace Xwt.GtkBackend
 
 		public virtual void EnableEvent (object ev)
 		{
-			switch ((WindowFrameEvent)ev) {
-			case WindowFrameEvent.BoundsChanged:
-				Window.SizeAllocated += HandleWidgetSizeAllocated; break;
+			if (ev is WindowFrameEvent) {
+				switch ((WindowFrameEvent)ev) {
+				case WindowFrameEvent.BoundsChanged:
+					Window.SizeAllocated += HandleWidgetSizeAllocated; break;
+				}
 			}
-		}
-
-		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
-		{
-			EventSink.OnBoundsChanged (new Rectangle (args.Allocation.X, args.Allocation.Y, args.Allocation.Width, args.Allocation.Height));
 		}
 
 		public virtual void DisableEvent (object ev)
@@ -148,6 +145,11 @@ namespace Xwt.GtkBackend
 					Window.SizeAllocated -= HandleWidgetSizeAllocated; break;
 				}
 			}
+		}
+
+		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
+		{
+			EventSink.OnBoundsChanged (new Rectangle (args.Allocation.X, args.Allocation.Y, args.Allocation.Width, args.Allocation.Height));
 		}
 	}
 }
