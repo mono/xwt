@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using SWM = System.Windows.Media;
 
 using Xwt.Backends;
 using Xwt.Drawing;
@@ -71,15 +73,27 @@ namespace Xwt.WPFBackend
 			get { return Widget; }
 		}
 
-		public FrameworkElement Widget { get; set; }
+		public Control Widget { get; set; }
+
+		Color? customBackgroundColor;
 
 		public virtual Color BackgroundColor {
-			get { throw new NotImplementedException (); }
-			set { throw new NotImplementedException (); }
+			get {
+				if (customBackgroundColor.HasValue)
+					return customBackgroundColor.Value;
+
+				// we shouldn't be using any but solid brushes.
+				var color = ((SWM.SolidColorBrush)Widget.Background).Color;
+				return Util.ToXwtColor (color);
+			}
+			set {
+				customBackgroundColor = value;
+				Widget.Background = ResPool.GetSolidBrush (value);
+			}
 		}
 
 		public bool UsingCustomBackgroundColor {
-			get { throw new NotImplementedException (); }
+			get { return customBackgroundColor.HasValue; }
 		}
 
 		public virtual object Font
