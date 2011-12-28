@@ -28,6 +28,7 @@ using System;
 using MonoMac.AppKit;
 using Xwt.Backends;
 using System.Collections.Generic;
+using Xwt.Engine;
 
 namespace Xwt.Mac
 {
@@ -37,6 +38,33 @@ namespace Xwt.Mac
 		{
 			ViewObject = new TabView ();
 			Widget.AutoresizesSubviews = true;
+		}
+		
+		public override void EnableEvent (object eventId)
+		{
+			if (eventId is NotebookEvent) {
+				NotebookEvent ev = (NotebookEvent) eventId;
+				if (ev == NotebookEvent.CurrentTabChanged) {
+					Widget.WillSelect += HandleWidgetWillSelect;
+				}
+			}
+			base.EnableEvent (eventId);
+		}
+		
+		public override void DisableEvent (object eventId)
+		{
+			if (eventId is NotebookEvent) {
+				NotebookEvent ev = (NotebookEvent) eventId;
+				if (ev == NotebookEvent.CurrentTabChanged) {
+					Widget.WillSelect -= HandleWidgetWillSelect;
+				}
+			}
+			base.DisableEvent (eventId);
+		}
+
+		void HandleWidgetWillSelect (object sender, NSTabViewItemEventArgs e)
+		{
+			((INotebookEventSink)EventSink).OnCurrentTabChanged ();
 		}
 
 		#region INotebookBackend implementation
@@ -51,14 +79,38 @@ namespace Xwt.Mac
 		public void Remove (IWidgetBackend widget)
 		{
 			var v = GetWidget (widget);
-			foreach (var t in Widget.Items) {
-				if (t.View == v) {
-					Widget.Remove (t);
-					return;
-				}
+			var t = FindTab (v);
+			if (t != null)
+				Widget.Remove (t);
+		}
+		
+		public void UpdateLabel (NotebookTab tab, string hint)
+		{
+			IWidgetBackend widget = (IWidgetBackend) WidgetRegistry.GetBackend (tab.Child);
+			var v = GetWidget (widget);
+			var t = FindTab (v);
+			if (t != null)
+				t.Label = tab.Label;
+		}
+		
+		public int CurrentTab {
+			get {
+				return Widget.IndexOf (Widget.Selected);
+			}
+			set {
+				Widget.SelectAt (value);
 			}
 		}
 		#endregion
+		
+		NSTabViewItem FindTab (NSView v)
+		{
+			foreach (var t in Widget.Items) {
+				if (t.View == v)
+					return t;
+			}
+			return null;
+		}
 	}
 	
 	class TabView: NSTabView, IViewObject<NSTabView>

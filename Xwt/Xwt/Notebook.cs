@@ -33,8 +33,9 @@ namespace Xwt
 	public class Notebook: Widget
 	{
 		ChildrenCollection<NotebookTab> tabs;
+		EventHandler currentTabChanged;
 		
-		protected new class EventSink: Widget.EventSink, ICollectionEventSink<NotebookTab>, IContainerEventSink<NotebookTab>
+		protected new class EventSink: Widget.EventSink, INotebookEventSink, ICollectionEventSink<NotebookTab>, IContainerEventSink<NotebookTab>
 		{
 			public void AddedItem (NotebookTab item, int index)
 			{
@@ -48,12 +49,24 @@ namespace Xwt
 			
 			public void ChildChanged (NotebookTab child, string hint)
 			{
+				((Notebook)Parent).Backend.UpdateLabel (child, hint);
+				((Notebook)Parent).OnPreferredSizeChanged ();
 			}
 			
 			public void ChildReplaced (NotebookTab child, Widget oldWidget, Widget newWidget)
 			{
 				((Notebook)Parent).OnReplaceChild (child, oldWidget, newWidget);
 			}
+			
+			public void OnCurrentTabChanged ()
+			{
+				((Notebook)Parent).OnCurrentTabChanged (EventArgs.Empty);
+			}
+		}
+		
+		static Notebook ()
+		{
+			MapEvent (NotebookEvent.CurrentTabChanged, typeof(Notebook), "OnCurrentTabChanged");
 		}
 		
 		public Notebook ()
@@ -81,12 +94,14 @@ namespace Xwt
 		{
 			UnregisterChild (child);
 			Backend.Remove ((IWidgetBackend)GetBackend (child));
+			OnPreferredSizeChanged ();
 		}
 		
 		void OnAdd (NotebookTab tab)
 		{
 			RegisterChild (tab.Child);
 			Backend.Add ((IWidgetBackend)GetBackend (tab.Child), tab);
+			OnPreferredSizeChanged ();
 		}
 		
 		void OnReplaceChild (NotebookTab tab, Widget oldWidget, Widget newWidget)
@@ -98,6 +113,43 @@ namespace Xwt
 		
 		public ChildrenCollection<NotebookTab> Tabs {
 			get { return tabs; }
+		}
+		
+		public NotebookTab CurrentTab {
+			get {
+				return tabs [Backend.CurrentTab];
+			}
+			set {
+				for (int n=0; n<tabs.Count; n++) {
+					if (tabs[n] == value) {
+						Backend.CurrentTab = n;
+						return;
+					}
+				}
+				CurrentTabIndex = -1;
+			}
+		}
+		
+		public int CurrentTabIndex {
+			get { return Backend.CurrentTab; }
+			set { Backend.CurrentTab = value; }
+		}
+		
+		protected virtual void OnCurrentTabChanged (EventArgs e)
+		{
+			if (currentTabChanged != null)
+				currentTabChanged (this, e);
+		}
+		
+		public event EventHandler CurrentTabChanged {
+			add {
+				OnBeforeEventAdd (NotebookEvent.CurrentTabChanged, currentTabChanged);
+				currentTabChanged += value;
+			}
+			remove {
+				currentTabChanged -= value;
+				OnAfterEventRemove (NotebookEvent.CurrentTabChanged, currentTabChanged);
+			}
 		}
 	}
 	

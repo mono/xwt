@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -42,16 +43,63 @@ namespace Xwt.GtkBackend
 			set { base.Widget = value; }
 		}
 
+		public override void EnableEvent (object eventId)
+		{
+			if (eventId is NotebookEvent) {
+				NotebookEvent ev = (NotebookEvent) eventId;
+				if (ev == NotebookEvent.CurrentTabChanged) {
+					Widget.SwitchPage += HandleWidgetSwitchPage;
+				}
+			}
+			base.EnableEvent (eventId);
+		}
+		
+		public override void DisableEvent (object eventId)
+		{
+			if (eventId is NotebookEvent) {
+				NotebookEvent ev = (NotebookEvent) eventId;
+				if (ev == NotebookEvent.CurrentTabChanged) {
+					Widget.SwitchPage -= HandleWidgetSwitchPage;
+				}
+			}
+			base.DisableEvent (eventId);
+		}
+
+		void HandleWidgetSwitchPage (object o, Gtk.SwitchPageArgs args)
+		{
+			((INotebookEventSink)EventSink).OnCurrentTabChanged ();
+		}
+		
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
-			Gtk.Label label = new Gtk.Label (tab.Label);
-			label.Show ();
-			Widget.AppendPage (GetWidget (widget), label);
+			Widget.AppendPage (GetWidget (widget), CreateLabel (tab));
 		}
 
 		public void Remove (IWidgetBackend widget)
 		{
 			Widget.Remove (GetWidget (widget));
+		}
+		
+		public void UpdateLabel (NotebookTab tab, string hint)
+		{
+			IWidgetBackend widget = (IWidgetBackend) WidgetRegistry.GetBackend (tab.Child);
+			Widget.SetTabLabel (GetWidget (widget), CreateLabel (tab));
+		}
+		
+		public int CurrentTab {
+			get {
+				return Widget.CurrentPage;
+			}
+			set {
+				Widget.CurrentPage = value;
+			}
+		}
+		
+		Gtk.Widget CreateLabel (NotebookTab tab)
+		{
+			Gtk.Label label = new Gtk.Label (tab.Label);
+			label.Show ();
+			return label;
 		}
 	}
 }

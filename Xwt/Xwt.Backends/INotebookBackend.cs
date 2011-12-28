@@ -32,6 +32,18 @@ namespace Xwt.Backends
 	{
 		void Add (IWidgetBackend widget, NotebookTab tab);
 		void Remove (IWidgetBackend widget);
+		void UpdateLabel (NotebookTab tab, string hint);
+		int CurrentTab { get; set; }
+	}
+	
+	public interface INotebookEventSink: IWidgetEventSink
+	{
+		void OnCurrentTabChanged ();
+	}
+	
+	public enum NotebookEvent
+	{
+		CurrentTabChanged
 	}
 }
 
