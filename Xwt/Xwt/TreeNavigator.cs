@@ -122,5 +122,19 @@ namespace Xwt
 		{
 			return (T) backend.GetValue (pos, field.Index);
 		}
+		
+		public void Remove ()
+		{
+			backend.Remove (pos);
+		}
+		
+		public void RemoveChildren ()
+		{
+			TreePosition child = backend.GetChild (pos, 0);
+			while (child != null) {
+				backend.Remove (child);
+				child = backend.GetChild (pos, 0);
+			}
+		}
 	}
 }

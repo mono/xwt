@@ -66,6 +66,11 @@ namespace Xwt.GtkBackend
 		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
 		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
+		
+		public void Clear ()
+		{
+			Tree.Clear ();
+		}
 
 		public TreePosition GetChild (TreePosition pos, int index)
 		{

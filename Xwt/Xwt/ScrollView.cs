@@ -56,10 +56,10 @@ namespace Xwt
 		
 		public ScrollView (Widget child)
 		{
-			Child = child;
+			Content = child;
 		}
 		
-		public Widget Child {
+		public new Widget Content {
 			get { return child; }
 			set {
 				if (child != null)

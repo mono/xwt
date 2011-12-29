@@ -43,6 +43,7 @@ namespace Xwt.Backends
 		void Remove (TreePosition pos);
 		TreePosition GetNext (TreePosition pos);
 		TreePosition GetPrevious (TreePosition pos);
+		void Clear ();
 	}
 }
 

@@ -81,6 +81,11 @@ namespace Xwt
 			var pos = Backend.AddChild (position);
 			return new TreeNavigator (Backend, pos);
 		}
+		
+		public void Clear ()
+		{
+			Backend.Clear ();
+		}
 
 		event EventHandler<TreeNodeEventArgs> ITreeDataSource.NodeInserted {
 			add { Backend.NodeInserted += value; }
@@ -182,6 +187,11 @@ namespace Xwt
 		public void Initialize (Type[] columnTypes)
 		{
 			this.columnTypes = columnTypes;
+		}
+		
+		public void Clear ()
+		{
+			rootNodes.Clear ();
 		}
 		
 		NodePosition GetPosition (TreePosition pos)
