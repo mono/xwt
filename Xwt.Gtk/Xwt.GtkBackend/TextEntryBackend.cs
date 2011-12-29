@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -146,7 +147,9 @@ namespace Xwt.GtkBackend
 
 		void HandleChanged (object sender, EventArgs e)
 		{
-			EventSink.OnChanged ();
+			Toolkit.Invoke (delegate {
+				EventSink.OnChanged ();
+			});
 		}
 	}
 }

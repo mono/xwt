@@ -99,7 +99,9 @@ namespace Xwt.GtkBackend
 		void HandleButtonClicked (object o, EventArgs a)
 		{
 			int i = Array.IndexOf (buttons, (Gtk.Button) o);
-			EventSink.OnDialogButtonClicked (dialogButtons[i]);
+			Toolkit.Invoke (delegate {
+				EventSink.OnDialogButtonClicked (dialogButtons[i]);
+			});
 		}
 
 		public void UpdateButton (DialogButton btn)

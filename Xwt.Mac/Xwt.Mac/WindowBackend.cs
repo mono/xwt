@@ -29,6 +29,7 @@ using Xwt.Backends;
 using MonoMac.AppKit;
 using System.Drawing;
 using MonoMac.ObjCRuntime;
+using Xwt.Engine;
 
 namespace Xwt.Mac
 {
@@ -120,7 +121,9 @@ namespace Xwt.Mac
 
 		void HandleDidResize (object sender, EventArgs e)
 		{
-			eventSink.OnBoundsChanged (((IWindowBackend)this).Bounds);
+			Toolkit.Invoke (delegate {
+				eventSink.OnBoundsChanged (((IWindowBackend)this).Bounds);
+			});
 		}
 
 		void IWindowBackend.SetChild (IWidgetBackend child)

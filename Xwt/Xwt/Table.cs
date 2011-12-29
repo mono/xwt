@@ -211,8 +211,10 @@ namespace Xwt
 			
 			Backend.SetAllocation (widgets, rects);
 			
-			foreach (var bp in visibleChildren)
-				((IWidgetSurface)bp.Child).Reallocate ();
+			if (!Application.EngineBackend.HandlesSizeNegotiation) {
+				foreach (var bp in visibleChildren)
+					((IWidgetSurface)bp.Child).Reallocate ();
+			}
 		}
 		
 		double GetSpacing (int cell, bool isRow)
@@ -242,7 +244,7 @@ namespace Xwt
 			HashSet<int> cellsWithWidget = new HashSet<int> ();
 			sizes = new WidgetSize [visibleChildren.Length];
 			
-			// Get the size of each widget and store the fixed sizes for widget which don't span more than one cell
+			// Get the size of each widget and store the fixed sizes for widgets which don't span more than one cell
 			
 			for (int n=0; n<visibleChildren.Length; n++) {
 				var bp = visibleChildren[n];
@@ -266,7 +268,9 @@ namespace Xwt
 				else
 					s = GetPreferredSize (calcHeights, bp.Child);
 				sizes [n] = s;
+				
 				if (end == start + 1) {
+					// The widget only takes one cell. Store its size if it is the biggest
 					bool changed = false;
 					WidgetSize fs;
 					fixedSizesByCell.TryGetValue (start, out fs);
@@ -318,18 +322,29 @@ namespace Xwt
 				WidgetSize sizeToGrow = sizes [n] - fixedSize - new WidgetSize (spanSpacing);
 				
 				WidgetSize sizeToGrowPart = new WidgetSize (sizeToGrow.MinSize / (end - start), sizeToGrow.NaturalSize / (end - start));
+
+				// Split the size to grow between the cells of the widget. We need to know how much size the widget
+				// requires for each cell it covers.
+				
 				WidgetSize[] widgetGrowSizes = new WidgetSize [end - start];
 				for (int i=0; i<widgetGrowSizes.Length; i++)
 					widgetGrowSizes [i] = sizeToGrowPart;
 				growSizes[bp] = widgetGrowSizes;
 			}
 			
+			// Now size-to-grow values have to be adjusted. For example, let's say widget A requires 100px for column 1 and 100px for column 2, and widget B requires
+			// 60px for column 2 and 60px for column 3. So the widgets are overlapping at column 2. Since A requires at least 100px in column 2, it means that B can assume
+			// that it will have 100px available in column 2, which means 40px more than it requested. Those extra 40px can then be substracted from the 60px that
+			// it required for column 3.
+			
 			foreach (var n in cellsWithWidget) {
+				// Get a list of all widgets that cover this cell
 				var colCells = widgetsToAdjust.Where (bp => GetStartAttach (bp, calcHeights) <= n && GetEndAttach (bp, calcHeights) > n).ToArray ();
 				WidgetSize maxv = new WidgetSize (0);
 				TablePlacement maxtMin = null;
 				TablePlacement maxtNatural = null;
 				
+				// Find the widget that requires the maximum size for this cell
 				foreach (var bp in colCells) {
 					WidgetSize cv = growSizes[bp][n - GetStartAttach (bp, calcHeights)];
 					if (cv.MinSize > maxv.MinSize) {
@@ -341,11 +356,15 @@ namespace Xwt
 						maxtNatural = bp;
 					}
 				}
+				
+				// Adjust the required size of all widgets of the cell (excluding the widget with the max size)
 				foreach (var bp in colCells) {
 					WidgetSize[] widgetGrows = growSizes[bp];
 					int cellIndex = n - GetStartAttach (bp, calcHeights);
 					if (bp != maxtMin) {
 						double cv = widgetGrows[cellIndex].MinSize;
+						// splitExtraSpace is the additional space that the widget can take from this cell (because there is a widget
+						// that is requiring more space), split among all other cells of the widget
 						double splitExtraSpace = (maxv.MinSize - cv) / (widgetGrows.Length - 1);
 						for (int i=0; i<widgetGrows.Length; i++)
 							widgetGrows[i].MinSize -= splitExtraSpace;
@@ -358,6 +377,8 @@ namespace Xwt
 					}
 				}
 			}
+			
+			// Find the maximum size-to-grow for each cell
 			
 			Dictionary<int,WidgetSize> finalGrowTable = new Dictionary<int, WidgetSize> ();
 			
@@ -376,6 +397,8 @@ namespace Xwt
 					finalGrowTable [n] = curGrow;
 				}
 			}
+			
+			// Add the final size-to-grow to the fixed sizes calculated at the begining
 			
 			foreach (var it in finalGrowTable) {
 				WidgetSize ws;

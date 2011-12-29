@@ -33,11 +33,48 @@ namespace Xwt
 	{
 		void ResetCachedSizes ();
 		void Reallocate ();
+		
 		SizeRequestMode SizeRequestMode { get; }
+		
+		/// <summary>
+		/// Gets the preferred width of the widget (includes the margin)
+		/// </summary>
+		/// <returns>
+		/// The preferred width.
+		/// </returns>
 		WidgetSize GetPreferredWidth ();
+		
+		/// <summary>
+		/// Gets the preferred height of the widget (includes the margin)
+		/// </summary>
+		/// <returns>
+		/// The preferred height.
+		/// </returns>
 		WidgetSize GetPreferredHeight ();
+		
+		/// <summary>
+		/// Gets the preferred height for a given width (includes the margin). Called only when using HeightForWidth size request mode.
+		/// </summary>
+		/// <returns>
+		/// The preferred height
+		/// </returns>
+		/// <param name='width'>
+		/// Width.
+		/// </param>
 		WidgetSize GetPreferredHeightForWidth (double width);
+		
+		/// <summary>
+		/// Gets the preferred width for a given height (includes the margin).  Called only when using WidthForHeight size request mode.
+		/// </summary>
+		/// <returns>
+		/// The preferred width
+		/// </returns>
+		/// <param name='height'>
+		/// Height.
+		/// </param>
+		/// 
 		WidgetSize GetPreferredWidthForHeight (double height);
+		
 		object NativeWidget { get; }
 		IEnumerable<Widget> Children { get; }
 	}

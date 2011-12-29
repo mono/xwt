@@ -39,6 +39,10 @@ namespace Xwt.GtkBackend
 		Gtk.TreeModelAdapter adapter;
 		Gtk.Widget parent;
 		
+		public CustomListModel (IntPtr p): base (p)
+		{
+		}
+		
 		public CustomListModel (IListDataSource source, Gtk.Widget w)
 		{
 			parent = w;

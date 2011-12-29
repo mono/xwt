@@ -49,10 +49,11 @@ namespace Xwt.GtkBackend
 		{
 			Widget.Frontend = Frontend;
 		}
-
+		
 		public void Add (IWidgetBackend widget)
 		{
-			Widget.Add (GetWidget (widget));
+			WidgetBackend wb = (WidgetBackend) widget;
+			Widget.Add (wb.Frontend, GetWidget (widget));
 		}
 
 		public void Remove (IWidgetBackend widget)
@@ -76,7 +77,13 @@ namespace Xwt.GtkBackend
 	class CustomContainer: Gtk.Container, IGtkContainer
 	{
 		public Widget Frontend;
-		Dictionary<Gtk.Widget, Rectangle> children = new Dictionary<Gtk.Widget, Rectangle> ();
+		Dictionary<Gtk.Widget, WidgetData> children = new Dictionary<Gtk.Widget, WidgetData> ();
+		
+		struct WidgetData
+		{
+			public Rectangle Rect;
+			public Widget Widget;
+		}
 		
 		public CustomContainer (IntPtr p): base (p)
 		{
@@ -89,7 +96,7 @@ namespace Xwt.GtkBackend
 		
 		public void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
 		{
-			Rectangle r = children [oldWidget];
+			WidgetData r = children [oldWidget];
 			Remove (oldWidget);
 			Add (newWidget);
 			children [newWidget] = r;
@@ -97,18 +104,24 @@ namespace Xwt.GtkBackend
 		
 		public bool SetAllocation (Gtk.Widget w, Rectangle rect)
 		{
-			Rectangle r;
+			WidgetData r;
 			children.TryGetValue (w, out r);
-			if (r != rect) {
-				children [w] = rect;
+			if (r.Rect != rect) {
+				r.Rect = rect;
+				children [w] = r;
 				return true;
 			} else
 				return false;
 		}
 		
+		public void Add (Widget w, Gtk.Widget gw)
+		{
+			children.Add (gw, new WidgetData () { Widget = w, Rect = new Rectangle (0,0,0,0) });
+			Add (gw);
+		}
+		
 		protected override void OnAdded (Gtk.Widget widget)
 		{
-			children.Add (widget, new Rectangle (0,0,0,0));
 			widget.Parent = this;
 			// QueueResize ();
 		}
@@ -122,8 +135,8 @@ namespace Xwt.GtkBackend
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			IWidgetSurface ws = Frontend;
-			int w = (int)ws.GetPreferredWidth ().MinSize;
-			int h = (int)ws.GetPreferredHeight ().MinSize;
+			int w = (int)(ws.GetPreferredWidth ().MinSize - Frontend.Margin.HorizontalSpacing);
+			int h = (int)(ws.GetPreferredHeight ().MinSize - Frontend.Margin.VerticalSpacing);
 			if (requisition.Width < w)
 				requisition.Width = w;
 			if (requisition.Height < h)
@@ -133,19 +146,14 @@ namespace Xwt.GtkBackend
 		protected override void OnUnrealized ()
 		{
 			base.OnUnrealized ();
-			lastAllocation = new Gdk.Rectangle ();
 		}
-		
-		Gdk.Rectangle lastAllocation;
 		
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
-			if (!lastAllocation.Equals (allocation))
-				((IWidgetSurface)Frontend).Reallocate ();
-			lastAllocation = allocation;
+			((IWidgetSurface)Frontend).Reallocate ();
 			foreach (var cr in children) {
-				var r = cr.Value;
+				var r = cr.Value.Rect;
 				cr.Key.SizeAllocate (new Gdk.Rectangle (allocation.X + (int)r.X, allocation.Y + (int)r.Y, (int)r.Width, (int)r.Height));
 			}
 		}

@@ -55,7 +55,9 @@ namespace Xwt
 		
 		public static void Run ()
 		{
-			engine.RunApplication ();
+			Toolkit.InvokePlatformCode (delegate {
+				engine.RunApplication ();
+			});
 		}
 		
 		/// <summary>
@@ -66,7 +68,15 @@ namespace Xwt
 		/// </param>
 		public static void Invoke (Action action)
 		{
-			engine.Invoke (action);
+			engine.Invoke (delegate {
+				try {
+					Toolkit.EnterUserCode ();
+					action ();
+					Toolkit.ExitUserCode (null);
+				} catch (Exception ex) {
+					Toolkit.ExitUserCode (ex);
+				}
+			});
 		}
 		
 		/// <summary>
@@ -87,7 +97,17 @@ namespace Xwt
 		public static IDisposable TimeoutInvoke (TimeSpan timeSpan, Func<bool> action)
 		{
 			Timer t = new Timer ();
-			t.Id = engine.TimeoutInvoke (action, timeSpan);
+			t.Id = engine.TimeoutInvoke (delegate {
+				bool res = false;
+				try {
+					Toolkit.EnterUserCode ();
+					res = action ();
+					Toolkit.ExitUserCode (null);
+				} catch (Exception ex) {
+					Toolkit.ExitUserCode (ex);
+				}
+				return res;
+			}, timeSpan);
 			return t;
 		}
 		
@@ -122,6 +142,7 @@ namespace Xwt
 		
 		static void InitBackend (string type)
 		{
+			Toolkit.EnterUserCode ();
 			if (type != null && LoadBackend (type))
 				return;
 			
@@ -135,6 +156,11 @@ namespace Xwt
 				return;
 			
 			throw new InvalidOperationException ("Xwt engine not found");
+		}
+		
+		internal static void NotifyException (Exception ex)
+		{
+			Console.WriteLine (ex);
 		}
 	}
 }

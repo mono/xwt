@@ -213,8 +213,11 @@ namespace Xwt
 				}
 			}
 			Backend.SetAllocation (widgets, rects);
-			foreach (var bp in visibleChildren)
-				((IWidgetSurface)bp.Child).Reallocate ();
+			
+			if (!Application.EngineBackend.HandlesSizeNegotiation) {
+				foreach (var bp in visibleChildren)
+					((IWidgetSurface)bp.Child).Reallocate ();
+			}
 		}
 		
 		void CalcDefaultSizes (SizeRequestMode mode, double totalSize, double lengthConstraint)

@@ -136,7 +136,9 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetClicked (object sender, EventArgs e)
 		{
-			EventSink.OnClicked ();
+			Toolkit.Invoke (delegate {
+				EventSink.OnClicked ();
+			});
 		}
 	}
 }

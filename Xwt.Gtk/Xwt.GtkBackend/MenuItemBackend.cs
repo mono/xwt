@@ -28,6 +28,7 @@ using System;
 using Xwt.Backends;
 using Xwt.Drawing;
 using System.Collections.Generic;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -197,8 +198,11 @@ namespace Xwt.GtkBackend
 
 		void HandleItemActivated (object sender, EventArgs e)
 		{
-			if (!changingCheck)
-				eventSink.OnClicked ();
+			if (!changingCheck) {
+				Toolkit.Invoke (delegate {
+					eventSink.OnClicked ();
+				});
+			}
 		}
 	}
 }

@@ -172,6 +172,7 @@
     <Compile Include="Xwt\DialogButtonCollection.cs" />
     <Compile Include="Xwt\ComboBoxEntry.cs" />
     <Compile Include="Xwt.Backends\IComboBoxEntryBackend.cs" />
+    <Compile Include="Xwt.Engine\Toolkit.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

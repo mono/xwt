@@ -1,5 +1,5 @@
 // 
-// EngineBackend.cs
+// Toolkit.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,38 +23,68 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using System.Reflection;
-using System.IO;
+using System.Collections.Generic;
 
-namespace Xwt.Backends
+namespace Xwt.Engine
 {
-	public abstract class EngineBackend
+	public static class Toolkit
 	{
-		public virtual void InitializeApplication ()
+		static int inUserCode;
+		static Queue<Action> exitActions = new Queue<Action> ();
+		
+		public static bool Invoke (Action a)
 		{
+			try {
+				EnterUserCode ();
+				a ();
+				ExitUserCode (null);
+				return true;
+			} catch (Exception ex) {
+				ExitUserCode (ex);
+				return false;
+			}
 		}
 		
-		public abstract void RunApplication ();
-		
-		public abstract void Invoke (Action action);
-
-		public abstract object TimeoutInvoke (Func<bool> action, TimeSpan timeSpan);
-
-		public abstract void CancelTimeoutInvoke (object id);
-		
-		public abstract object GetNativeWidget (Widget w);
-		
-		public abstract IWindowFrameBackend GetBackendForWindow (object nativeWindow);
-		
-		public virtual object GetNativeParentWindow (Widget w)
+		public static void InvokePlatformCode (Action a)
 		{
-			return null;
+			try {
+				ExitUserCode (null);
+				a ();
+			} finally {
+				EnterUserCode ();
+			}
 		}
 		
-		public virtual bool HandlesSizeNegotiation {
-			get { return false; }
+		public static void EnterUserCode ()
+		{
+			inUserCode++;
+		}
+		
+		public static void ExitUserCode (Exception error)
+		{
+			if (error != null) {
+				Invoke (delegate {
+					Application.NotifyException (error);
+				});
+			}
+			if (inUserCode == 1) {
+				while (exitActions.Count > 0) {
+					try {
+						exitActions.Dequeue ()();
+					} catch (Exception ex) {
+						Invoke (delegate {
+							Application.NotifyException (ex);
+						});
+					}
+				}
+			}
+			inUserCode--;
+		}
+		
+		public static void QueueExitAction (Action a)
+		{
+			exitActions.Enqueue (a);
 		}
 	}
 }

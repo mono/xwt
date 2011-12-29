@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -103,12 +104,16 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetActivated (object sender, EventArgs e)
 		{
-			EventSink.OnToggled ();
+			Toolkit.Invoke (delegate {
+				EventSink.OnToggled ();
+			});
 		}
 
 		void HandleWidgetClicked (object sender, EventArgs e)
 		{
-			EventSink.OnClicked ();
+			Toolkit.Invoke (delegate {
+				EventSink.OnClicked ();
+			});
 		}
 	}
 }

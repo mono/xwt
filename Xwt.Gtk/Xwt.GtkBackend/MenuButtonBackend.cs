@@ -26,6 +26,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -53,7 +54,10 @@ namespace Xwt.GtkBackend
 		
 		Gtk.Menu CreateMenu (InternalMenuButton mb)
 		{
-			MenuBackend m = (MenuBackend) EventSink.OnCreateMenu ();
+			MenuBackend m = null;
+			Toolkit.Invoke (delegate {
+				m = (MenuBackend) EventSink.OnCreateMenu ();
+			});
 			return m != null ? m.Menu : null;
 		}
 	}

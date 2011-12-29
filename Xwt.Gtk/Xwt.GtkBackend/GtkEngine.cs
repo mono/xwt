@@ -75,6 +75,12 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.Application.Run ();
 		}
+		
+		public override bool HandlesSizeNegotiation {
+			get {
+				return true;
+			}
+		}
 
 		public static void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
 		{

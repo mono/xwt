@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -61,7 +62,11 @@ namespace Xwt.GtkBackend
 		bool IsRowSeparator (Gtk.TreeModel model, Gtk.TreeIter iter)
 		{
 			Gtk.TreePath path = model.GetPath (iter);
-			return EventSink.RowIsSeparator (path.Indices[0]);
+			bool res = false;
+			Toolkit.Invoke (delegate {
+				res = EventSink.RowIsSeparator (path.Indices[0]);
+			});
+			return res;
 		}
 		
 		public override void EnableEvent (object eventId)
@@ -84,7 +89,9 @@ namespace Xwt.GtkBackend
 
 		void HandleChanged (object sender, EventArgs e)
 		{
-			EventSink.OnSelectionChanged ();
+			Toolkit.Invoke (delegate {
+				EventSink.OnSelectionChanged ();
+			});
 		}
 
 		#region IComboBoxBackend implementation

@@ -51,6 +51,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt
 {
@@ -59,6 +60,7 @@ namespace Xwt
 		EventHandler boundsChanged;
 		Rectangle bounds;
 		EventSink eventSink;
+		bool pendingReallocation;
 		
 		protected class EventSink: IWindowFrameEventSink
 		{
@@ -182,9 +184,20 @@ namespace Xwt
 		{
 			if (bounds != a.Bounds) {
 				bounds = a.Bounds;
-				OnReallocate ();
+				Reallocate ();
 				if (boundsChanged != null)
 					boundsChanged (this, a);
+			}
+		}
+		
+		internal void Reallocate ()
+		{
+			if (!pendingReallocation) {
+				pendingReallocation = true;
+				Toolkit.QueueExitAction (delegate {
+					pendingReallocation = false;
+					OnReallocate ();
+				});
 			}
 		}
 		

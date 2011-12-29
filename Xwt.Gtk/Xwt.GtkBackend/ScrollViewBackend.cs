@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -82,7 +83,9 @@ namespace Xwt.GtkBackend
 		[GLib.ConnectBefore]
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			EventSink.OnVisibleRectChanged ();
+			Toolkit.Invoke (delegate {
+				EventSink.OnVisibleRectChanged ();
+			});
 		}
 		
 		public Rectangle VisibleRect {

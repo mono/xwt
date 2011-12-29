@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -66,7 +67,9 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetSelectionChanged (object sender, EventArgs e)
 		{
-			EventSink.OnSelectionChanged ();
+			Toolkit.Invoke (delegate {
+				EventSink.OnSelectionChanged ();
+			});
 		}
 		
 		public object AddColumn (ListViewColumn col)

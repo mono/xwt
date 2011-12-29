@@ -94,12 +94,12 @@ namespace Xwt
 		
 		protected override void OnReallocate ()
 		{
-			if (child != null) {
+			if (child != null && !Application.EngineBackend.HandlesSizeNegotiation) {
 				((IWidgetSurface)child).Reallocate ();
 			}
 		}
 		
-		void AdjustSize ()
+		internal void AdjustSize ()
 		{
 			IWidgetSurface s = child;
 			var w = s.GetPreferredWidth ().MinSize;

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using Xwt.Backends;
 using System.Linq;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -93,7 +94,9 @@ namespace Xwt.GtkBackend
 			var a = new MouseMovedEventArgs ();
 			a.X = args.Event.X;
 			a.Y = args.Event.Y;
-			EventSink.OnMouseMoved (a);
+			Toolkit.Invoke (delegate {
+				EventSink.OnMouseMoved (a);
+			});
 		}
 
 		void HandleWidgetButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
@@ -102,7 +105,9 @@ namespace Xwt.GtkBackend
 			a.X = args.Event.X;
 			a.Y = args.Event.Y;
 			a.Button = (int) args.Event.Button;
-			EventSink.OnButtonReleased (a);
+			Toolkit.Invoke (delegate {
+				EventSink.OnButtonReleased (a);
+			});
 		}
 
 		void HandleWidgetButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
@@ -117,7 +122,9 @@ namespace Xwt.GtkBackend
 				a.MultiplePress = 3;
 			else
 				a.MultiplePress = 1;
-			EventSink.OnButtonPressed (a);
+			Toolkit.Invoke (delegate {
+				EventSink.OnButtonPressed (a);
+			});
 		}
 
 		public Rectangle Bounds {
@@ -128,7 +135,9 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
 		{
-			EventSink.OnBoundsChanged ();
+			Toolkit.Invoke (delegate {
+				EventSink.OnBoundsChanged ();
+			});
 		}
 		
 		public void AddChild (IWidgetBackend widget)
@@ -226,7 +235,9 @@ namespace Xwt.GtkBackend
 		
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
-			EventSink.OnDraw (null);
+			Toolkit.Invoke (delegate {
+				EventSink.OnDraw (null);
+			});
 			return base.OnExposeEvent (evnt);
 		}
 	}

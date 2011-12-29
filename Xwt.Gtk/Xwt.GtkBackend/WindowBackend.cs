@@ -77,7 +77,6 @@ namespace Xwt.GtkBackend
 
 		public void SetPadding (double left, double top, double right, double bottom)
 		{
-			Window win = (Window) Frontend;
 			alignment.LeftPadding = (uint) left;
 			alignment.RightPadding = (uint) right;
 			alignment.TopPadding = (uint) top;

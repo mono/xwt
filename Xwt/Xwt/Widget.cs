@@ -45,12 +45,11 @@ namespace Xwt
 		WidgetSize height;
 		bool widthCached;
 		bool heightCached;
-		static HashSet<Widget> resizeRequestQueue = new HashSet<Widget> ();
 		EventSink eventSink;
 		DragOperation currentDragOperation;
 		Widget contentWidget;
 		WindowFrame parentWindow;
-		double minWidth, minHeight;
+		double minWidth = -1, minHeight = -1;
 		
 		EventHandler<DragOverCheckEventArgs> dragOverCheck;
 		EventHandler<DragOverEventArgs> dragOver;
@@ -531,6 +530,7 @@ namespace Xwt
 		
 		void IWidgetSurface.Reallocate ()
 		{
+			reallocationQueue.Remove (this);
 			OnReallocate ();
 		}
 		
@@ -543,8 +543,14 @@ namespace Xwt
 			if (widthCached)
 				return width;
 			else {
-				widthCached = true;
-				return width = OnGetPreferredWidth ();
+				if (!Application.EngineBackend.HandlesSizeNegotiation)
+					widthCached = true;
+				width = OnGetPreferredWidth () + Margin.HorizontalSpacing;
+				if (minWidth != -1 && width.MinSize < minWidth)
+					width.MinSize = minWidth;
+				if (width.NaturalSize < width.MinSize)
+					width.NaturalSize = width.MinSize;
+				return width;
 			}
 		}
 		
@@ -553,8 +559,14 @@ namespace Xwt
 			if (heightCached)
 				return height;
 			else {
-				heightCached = true;
-				return height = OnGetPreferredHeight ();
+				if (!Application.EngineBackend.HandlesSizeNegotiation)
+					heightCached = true;
+				height = OnGetPreferredHeight () + Margin.VerticalSpacing;
+				if (minHeight != -1 && height.MinSize < minHeight)
+					height.MinSize = minHeight;
+				if (height.NaturalSize < height.MinSize)
+					height.NaturalSize = height.MinSize;
+				return height;
 			}
 		}
 		
@@ -563,8 +575,17 @@ namespace Xwt
 			if (heightCached)
 				return height;
 			else {
-				heightCached = true;
-				return height = OnGetPreferredHeightForWidth (width);
+				if (!Application.EngineBackend.HandlesSizeNegotiation)
+					heightCached = true;
+				// Horizontal margin is substracted here because that's space which
+				// can't really be used to render the widget
+				width = Math.Max (width - Margin.HorizontalSpacing, 0);
+				height = OnGetPreferredHeightForWidth (width);
+				if (minHeight != -1 && height.MinSize < minHeight)
+					height.MinSize = minHeight;
+				if (height.NaturalSize < height.MinSize)
+					height.NaturalSize = height.MinSize;
+				return height;
 			}
 		}
 		
@@ -573,8 +594,17 @@ namespace Xwt
 			if (widthCached)
 				return width;
 			else {
-				widthCached = true;
-				return width = OnGetPreferredWidthForHeight (height);
+				if (!Application.EngineBackend.HandlesSizeNegotiation)
+					widthCached = true;
+				// Vertical margin is substracted here because that's space which
+				// can't really be used to render the widget
+				height = Math.Max (height - Margin.VerticalSpacing, 0);
+				width = OnGetPreferredWidthForHeight (height);
+				if (minWidth != -1 && width.MinSize < minWidth)
+					width.MinSize = minWidth;
+				if (width.NaturalSize < width.MinSize)
+					width.NaturalSize = width.MinSize;
+				return width;
 			}
 		}
 		
@@ -595,82 +625,185 @@ namespace Xwt
 			return SizeRequestMode.HeightForWidth;
 		}
 		
+		
+		/// <summary>
+		/// Gets the preferred width of the widget (it must not include the widget margin)
+		/// </summary>
 		protected virtual WidgetSize OnGetPreferredWidth ()
 		{
 			return Backend.GetPreferredWidth ();
 		}
 		
+		/// <summary>
+		/// Gets the preferred height of the widget (it must not include the widget margin)
+		/// </summary>
 		protected virtual WidgetSize OnGetPreferredHeight ()
 		{
 			return Backend.GetPreferredHeight ();
 		}
 		
+		/// <summary>
+		/// Gets the preferred height of the widget for a given width (it must not include the widget margin)
+		/// </summary>
 		protected virtual WidgetSize OnGetPreferredHeightForWidth (double width)
 		{
 			return Backend.GetPreferredHeightForWidth (width);
 		}
 		
+		/// <summary>
+		/// Gets the preferred width of the widget for a given height (it must not include the widget margin)
+		/// </summary>
 		protected virtual WidgetSize OnGetPreferredWidthForHeight (double height)
 		{
 			return Backend.GetPreferredWidthForHeight (height);
 		}
 		
-		protected virtual void OnChildPreferredSizeChanged (Widget w)
+		void OnChildPreferredSizeChanged ()
 		{
-			if (Parent != null && (!widthCached || !heightCached)) {
-				Parent.OnChildPreferredSizeChanged (w);
+			IWidgetSurface surface = this;
+			
+			if (Parent != null && resizeRequestQueue.Contains (Parent)) {
+				// Size for this widget will be checked when checking the parent
+				surface.ResetCachedSizes ();
 				return;
 			}
+			
+			// Determine if the size change of the child implies a size change
+			// of this widget. If it does, the size change notification
+			// has to be propagated to the parent
 			
 			var oldWidth = width;
 			var oldHeight = height;
 			
-			bool notifyParent = Parent != null;
-			IWidgetSurface surface = this;
 			surface.ResetCachedSizes ();
+			
+			bool changed = true;
 			
 			if (surface.SizeRequestMode == SizeRequestMode.HeightForWidth) {
 				var nw = surface.GetPreferredWidth ();
 				if (nw == oldWidth) {
 					var nh = surface.GetPreferredHeightForWidth (Backend.Size.Width);
 					if (nh == oldHeight)
-						notifyParent = false;
+						changed = false;
 				}
 			} else {
 				var nh = surface.GetPreferredHeight ();
 				if (nh == oldHeight) {
 					var nw = surface.GetPreferredWidthForHeight (Backend.Size.Height);
 					if (nw == oldWidth)
-						notifyParent = false;
+						changed = false;
 				}
 			}
-			if (notifyParent) {
-				if (Parent != null)
-					Parent.OnChildPreferredSizeChanged (this);
-			}
+			if (changed)
+				NotifySizeChangeToParent ();
 			else
-				surface.Reallocate ();
+				QueueForReallocate (this);
 		}
+		
+		static HashSet<Widget> resizeRequestQueue = new HashSet<Widget> ();
+		static HashSet<Widget> reallocationQueue = new HashSet<Widget> ();
+		static List<int> resizeDepths = new List<int> ();
+		static List<Widget> resizeWidgets = new List<Widget> ();
+		static List<Window> resizeWindows = new List<Window> ();
+		static bool delayedSizeNegotiationRequested;
 		
 		protected virtual void OnPreferredSizeChanged ()
 		{
+			// When the preferred size changes, we reset the sizes we have cached
+			// The parent also has to be notified of the size change, since it
+			// may imply a change of the size of the parent. However, we don't do
+			// it immediately, but we queue the resizing request
+			
 			IWidgetSurface surface = this;
 			surface.ResetCachedSizes ();
 			Backend.UpdateLayout ();
+			if (!Application.EngineBackend.HandlesSizeNegotiation)
+				NotifySizeChangeToParent ();
+		}
+		
+		void NotifySizeChangeToParent ()
+		{
 			if (Parent != null) {
-				if (resizeRequestQueue.Count == 0)
-					Application.Invoke (DelayedResizeRequest);
-				resizeRequestQueue.Add (this);
+				QueueForSizeCheck (Parent);
+				if (!delayedSizeNegotiationRequested) {
+					delayedSizeNegotiationRequested = true;
+					Toolkit.QueueExitAction (DelayedResizeRequest);
+				}
+			} else if (ParentWindow is Window) {
+				resizeWindows.Add ((Window)ParentWindow);
+				if (!delayedSizeNegotiationRequested) {
+					delayedSizeNegotiationRequested = true;
+					Toolkit.QueueExitAction (DelayedResizeRequest);
+				}
+			}
+		}
+		
+		void QueueForReallocate (Widget w)
+		{
+			reallocationQueue.Add (w);
+		}
+		
+		void QueueForSizeCheck (Widget w)
+		{
+			if (resizeRequestQueue.Add (Parent)) {
+				int depth = w.Depth;
+				bool inserted = false;
+				for (int n=0; n<resizeDepths.Count; n++) {
+					if (resizeDepths[n] < depth) {
+						resizeDepths.Insert (n, depth);
+						resizeWidgets.Insert (n, w);
+						inserted = true;
+						break;
+					}
+				}
+				if (!inserted) {
+					resizeDepths.Add (depth);
+					resizeWidgets.Add (w);
+				}
 			}
 		}
 		
 		void DelayedResizeRequest ()
 		{
-			var copy = resizeRequestQueue.ToArray ();
-			resizeRequestQueue.Clear ();
-			foreach (var w in copy) {
-				if (w.Parent != null)
-					w.Parent.OnChildPreferredSizeChanged (w);
+			// First of all, query the preferred size for those
+			// widgets that were changed
+
+			try {
+				int n = 0;
+				while (n < resizeWidgets.Count) {
+					var w = resizeWidgets[n];
+					w.OnChildPreferredSizeChanged ();
+					n++;
+				}
+				
+				// Now reallocate the widgets whose size has actually changed
+				
+				var toReallocate = reallocationQueue.OrderBy (w => w.Depth).ToArray ();
+				foreach (var w in toReallocate) {
+					// The widget may already have been reallocated as a result of reallocating the parent
+					// so we have to check if it is still in the queue
+					if (reallocationQueue.Contains (w))
+						((IWidgetSurface)w).Reallocate ();
+				}
+				foreach (var w in resizeWindows.ToArray ()) {
+					w.AdjustSize ();
+					w.Reallocate ();
+				}
+			} finally {
+				resizeRequestQueue.Clear ();
+				resizeDepths.Clear ();
+				resizeWidgets.Clear ();
+				reallocationQueue.Clear ();
+				resizeWindows.Clear ();
+				delayedSizeNegotiationRequested = false;
+			}
+		}
+		
+		int Depth {
+			get {
+				if (Parent != null)
+					return Parent.Depth + 1;
+				return 0;
 			}
 		}
 		

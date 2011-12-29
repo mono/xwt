@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
+using Xwt.Engine;
 
 namespace Xwt.Mac
 {
@@ -108,7 +109,9 @@ namespace Xwt.Mac
 
 		public override void DrawRect (System.Drawing.RectangleF dirtyRect)
 		{
-			eventSink.OnDraw (null);
+			Toolkit.Invoke (delegate {
+				eventSink.OnDraw (null);
+			});
 		}
 		
 		public override void MouseDown (NSEvent theEvent)
@@ -118,7 +121,9 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = theEvent.ButtonNumber + 1;
-			eventSink.OnButtonPressed (args);
+			Toolkit.Invoke (delegate {
+				eventSink.OnButtonPressed (args);
+			});
 		}
 		
 		public override void MouseUp (NSEvent theEvent)
@@ -128,7 +133,9 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = theEvent.ButtonNumber + 1;
-			eventSink.OnButtonReleased (args);
+			Toolkit.Invoke (delegate {
+				eventSink.OnButtonReleased (args);
+			});
 		}
 		
 		public override void MouseMoved (NSEvent theEvent)
@@ -137,7 +144,9 @@ namespace Xwt.Mac
 			MouseMovedEventArgs args = new MouseMovedEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
-			eventSink.OnMouseMoved (args);
+			Toolkit.Invoke (delegate {
+				eventSink.OnMouseMoved (args);
+			});
 		}
 		
 		public override void MouseDragged (NSEvent theEvent)
@@ -146,13 +155,17 @@ namespace Xwt.Mac
 			MouseMovedEventArgs args = new MouseMovedEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
-			eventSink.OnMouseMoved (args);
+			Toolkit.Invoke (delegate {
+				eventSink.OnMouseMoved (args);
+			});
 		}
 		
 		public override void SetFrameSize (System.Drawing.SizeF newSize)
 		{
 			base.SetFrameSize (newSize);
-			eventSink.OnBoundsChanged ();
+			Toolkit.Invoke (delegate {
+				eventSink.OnBoundsChanged ();
+			});
 		}
 	}
 }

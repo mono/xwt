@@ -94,7 +94,9 @@ namespace Xwt
 		
 		public Command Run (WindowFrame parent)
 		{
-			Backend.RunLoop ((IWindowFrameBackend) WidgetRegistry.GetBackend (parent));
+			Toolkit.InvokePlatformCode (delegate {
+				Backend.RunLoop ((IWindowFrameBackend) WidgetRegistry.GetBackend (parent));
+			});
 			return resultCommand;
 		}
 		
