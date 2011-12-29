@@ -85,10 +85,10 @@ namespace Samples
 
 		void HandleSamplesTreeSelectionChanged (object sender, EventArgs e)
 		{
-			if (samplesTree.SelectedItem != null) {
+			if (samplesTree.SelectedRow != null) {
 				if (currentSample != null)
 					sampleBox.Remove (currentSample);
-				Sample s = store.GetNavigatorAt (samplesTree.SelectedItem).GetValue (widgetCol);
+				Sample s = store.GetNavigatorAt (samplesTree.SelectedRow).GetValue (widgetCol);
 				if (s.Type != null) {
 					if (s.Widget == null)
 						s.Widget = (Widget)Activator.CreateInstance (s.Type);

@@ -92,6 +92,15 @@ namespace Xwt
 			}
 		}
 		
+		public bool HeadersVisible {
+			get {
+				return Backend.HeadersVisible;
+			}
+			set {
+				Backend.HeadersVisible = value;
+			}
+		}
+		
 		public SelectionMode SelectionMode {
 			get {
 				return mode;

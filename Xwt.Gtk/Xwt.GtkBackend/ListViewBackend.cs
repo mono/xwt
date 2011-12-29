@@ -66,6 +66,15 @@ namespace Xwt.GtkBackend
 				return res;
 			}
 		}
+		
+		public bool HeadersVisible {
+			get {
+				return Widget.HeadersVisible;
+			}
+			set {
+				Widget.HeadersVisible = value;
+			}
+		}
 	}
 }
 

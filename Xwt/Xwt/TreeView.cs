@@ -96,6 +96,15 @@ namespace Xwt
 			}
 		}
 		
+		public bool HeadersVisible {
+			get {
+				return Backend.HeadersVisible;
+			}
+			set {
+				Backend.HeadersVisible = value;
+			}
+		}
+		
 		public SelectionMode SelectionMode {
 			get {
 				return mode;
@@ -106,9 +115,9 @@ namespace Xwt
 			}
 		}
 		
-		public TreePosition SelectedItem {
+		public TreePosition SelectedRow {
 			get {
-				var items = SelectedItems;
+				var items = SelectedRows;
 				if (items.Length == 0)
 					return null;
 				else
@@ -116,20 +125,20 @@ namespace Xwt
 			}
 		}
 		
-		public TreePosition[] SelectedItems {
+		public TreePosition[] SelectedRows {
 			get {
-				return Backend.SelectedItems;
+				return Backend.SelectedRows;
 			}
 		}
 		
-		public void SelectItem (TreePosition pos)
+		public void SelectRow (TreePosition pos)
 		{
-			Backend.SelectItem (pos);
+			Backend.SelectRow (pos);
 		}
 		
-		public void UnselectItem (TreePosition pos)
+		public void UnselectRow (TreePosition pos)
 		{
-			Backend.UnselectItem (pos);
+			Backend.UnselectRow (pos);
 		}
 		
 		public void SelectAll ()
@@ -140,6 +149,43 @@ namespace Xwt
 		public void UnselectAll ()
 		{
 			Backend.UnselectAll ();
+		}
+		
+		public bool IsRowSelected (TreePosition pos)
+		{
+			return Backend.IsRowSelected (pos);
+		}
+		
+		public bool IsRowExpanded (TreePosition pos)
+		{
+			return Backend.IsRowExpanded (pos);
+		}
+		
+		public void ExpandRow (TreePosition pos, bool expandedChildren)
+		{
+			Backend.ExpandRow (pos, expandedChildren);
+		}
+		
+		public void CollapseRow (TreePosition pos)
+		{
+			Backend.CollapseRow (pos);
+		}
+		
+		/// <summary>
+		/// Saves the status of the tree
+		/// </summary>
+		/// <remarks>
+		/// The status information includes node expansion and selection status. The returned object
+		/// can be used to restore the status by calling RestoreStatus.
+		/// </remarks>
+		public TreeViewStatus SaveStatus (IDataField idField)
+		{
+			return new TreeViewStatus (this, idField.Index);
+		}
+		
+		public void RestoreStatus (TreeViewStatus status)
+		{
+			status.Load (this);
 		}
 		
 		void IColumnContainer.NotifyColumnsChanged ()

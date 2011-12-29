@@ -135,6 +135,20 @@ namespace Xwt.Mac
 			get { return Table.RowHeight; }
 			set { Table.RowHeight = value; }
 		}
+		
+		public bool HeadersVisible {
+			get {
+				return Table.HeaderView != null;
+			}
+			set {
+				if (value) {
+					if (Table.HeaderView == null)
+						Table.HeaderView = new NSTableHeaderView ();
+				} else {
+					Table.HeaderView = null;
+				}
+			}
+		}
 	}
 	
 	class ScrollView: NSScrollView, IViewObject<NSScrollView>

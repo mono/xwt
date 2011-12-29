@@ -32,9 +32,16 @@ namespace Xwt.Backends
 	public interface ITreeViewBackend: ITableViewBackend
 	{
 		void SetSource (ITreeDataSource source, IBackend sourceBackend);
-		TreePosition[] SelectedItems { get; }
-		void SelectItem (TreePosition pos);
-		void UnselectItem (TreePosition pos);
+		TreePosition[] SelectedRows { get; }
+		void SelectRow (TreePosition pos);
+		void UnselectRow (TreePosition pos);
+		
+		bool IsRowSelected (TreePosition pos);
+		bool IsRowExpanded (TreePosition pos);
+		void ExpandRow (TreePosition pos, bool expandChildren);
+		void CollapseRow (TreePosition pos);
+		
+		bool HeadersVisible { get; set; }
 	}
 	
 	public enum ListViewColumnChange

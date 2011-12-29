@@ -41,27 +41,56 @@ namespace Xwt.GtkBackend
 				Widget.Model = b.Store;
 		}
 
-		public TreePosition[] SelectedItems {
+		public TreePosition[] SelectedRows {
 			get {
 				var rows = Widget.Selection.GetSelectedRows ();
 				IterPos[] sel = new IterPos [rows.Length];
 				for (int i = 0; i < rows.Length; i++) {
 					Gtk.TreeIter it;
 					Widget.Model.GetIter (out it, rows[i]);
-					sel[i] = new IterPos (it);
+					sel[i] = new IterPos (-1, it);
 				}
 				return sel;
 			}
 		}
 		
-		public void SelectItem (TreePosition pos)
+		public void SelectRow (TreePosition pos)
 		{
 			Widget.Selection.SelectIter (((IterPos)pos).Iter);
 		}
 		
-		public void UnselectItem (TreePosition pos)
+		public void UnselectRow (TreePosition pos)
 		{
 			Widget.Selection.UnselectIter (((IterPos)pos).Iter);
+		}
+		
+		public bool IsRowSelected (TreePosition pos)
+		{
+			return Widget.Selection.IterIsSelected (((IterPos)pos).Iter);
+		}
+		
+		public bool IsRowExpanded (TreePosition pos)
+		{
+			return Widget.GetRowExpanded (Widget.Model.GetPath (((IterPos)pos).Iter));
+		}
+		
+		public void ExpandRow (TreePosition pos, bool expandedChildren)
+		{
+			Widget.ExpandRow (Widget.Model.GetPath (((IterPos)pos).Iter), expandedChildren);
+		}
+		
+		public void CollapseRow (TreePosition pos)
+		{
+			Widget.CollapseRow (Widget.Model.GetPath (((IterPos)pos).Iter));
+		}
+		
+		public bool HeadersVisible {
+			get {
+				return Widget.HeadersVisible;
+			}
+			set {
+				Widget.HeadersVisible = value;
+			}
 		}
 	}
 }

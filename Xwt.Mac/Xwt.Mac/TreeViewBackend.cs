@@ -71,7 +71,7 @@ namespace Xwt.Mac
 			return source.GetValue ((TreePosition)pos, nField);
 		}
 		
-		public TreePosition[] SelectedItems {
+		public TreePosition[] SelectedRows {
 			get {
 				TreePosition[] res = new TreePosition [Table.SelectedRowCount];
 				int n = 0;
@@ -82,18 +82,44 @@ namespace Xwt.Mac
 			}
 		}
 
-		public void SelectItem (TreePosition pos)
+		public void SelectRow (TreePosition pos)
 		{
 			var it = tsource.GetItem (pos);
 			if (it != null)
 				Table.SelectRow (Tree.RowForItem (it), false);
 		}
 
-		public void UnselectItem (TreePosition pos)
+		public void UnselectRow (TreePosition pos)
 		{
 			var it = tsource.GetItem (pos);
 			if (it != null)
 				Table.DeselectRow (Tree.RowForItem (it));
+		}
+		
+		public bool IsRowSelected (TreePosition pos)
+		{
+			var it = tsource.GetItem (pos);
+			return it != null && Table.IsRowSelected (Tree.RowForItem (it));
+		}
+		
+		public bool IsRowExpanded (TreePosition pos)
+		{
+			var it = tsource.GetItem (pos);
+			return it != null && Tree.IsItemExpanded (it);
+		}
+		
+		public void ExpandRow (TreePosition pos, bool expandChildren)
+		{
+			var it = tsource.GetItem (pos);
+			if (it != null)
+				Tree.ExpandItem (it, expandChildren);
+		}
+		
+		public void CollapseRow (TreePosition pos)
+		{
+			var it = tsource.GetItem (pos);
+			if (it != null)
+				Tree.CollapseItem (it);
 		}
 	}
 	

@@ -28,7 +28,12 @@ using System;
 
 namespace Xwt
 {
-	public abstract class DataField
+	public interface IDataField
+	{
+		int Index { get; }
+	}
+	
+	public abstract class DataField: IDataField
 	{
 		public DataField ()
 		{
