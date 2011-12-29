@@ -36,7 +36,7 @@ namespace Samples
 			VBox b1 = new VBox ();
 			for (int n=0; n<30; n++)
 				b1.PackStart (new Label ("Line " + n), BoxMode.None);
-			v1.Child = b1;
+			v1.Content = b1;
 			v1.VerticalScrollPolicy = ScrollPolicy.Always;
 			PackStart (v1, BoxMode.FillAndExpand);
 			
@@ -44,7 +44,7 @@ namespace Samples
 			VBox b2 = new VBox ();
 			for (int n=0; n<10; n++)
 				b2.PackStart (new Label ("Line " + n), BoxMode.None);
-			v2.Child = b2;
+			v2.Content = b2;
 			v2.VerticalScrollPolicy = ScrollPolicy.Never;
 			PackStart (v2, BoxMode.FillAndExpand);
 			
@@ -56,14 +56,14 @@ namespace Samples
 					b3.PackStart (new Label ("Line " + n), BoxMode.None);
 			};
 			b3.PackStart (b);
-			v3.Child = b3;
+			v3.Content = b3;
 			v3.VerticalScrollPolicy = ScrollPolicy.Automatic;
 			PackStart (v3, BoxMode.FillAndExpand);
 			
 			ScrollView v4 = new ScrollView ();
 			PackStart (v4, BoxMode.FillAndExpand);
 			SimpleBox sb = new SimpleBox (1000);
-			v4.Child = sb;
+			v4.Content = sb;
 			v4.VerticalScrollPolicy = ScrollPolicy.Always;
 		}
 	}
