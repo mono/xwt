@@ -38,6 +38,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Xwt.WPFBackend\DataConverter.cs" />
+    <Compile Include="Xwt.WPFBackend\FontBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\KeyboardUtil.cs" />
     <Compile Include="Xwt.WPFBackend\MenuBackend.cs" />
     <Compile Include="Xwt.WPFBackend\MenuItemBackend.cs" />

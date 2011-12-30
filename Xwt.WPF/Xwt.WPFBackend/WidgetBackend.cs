@@ -96,10 +96,16 @@ namespace Xwt.WPFBackend
 			get { return customBackgroundColor.HasValue; }
 		}
 
-		public virtual object Font
-		{
-			get { throw new NotImplementedException (); }
-			set { throw new NotImplementedException (); }
+		public virtual object Font {
+			get { return FontData.FromControl (Widget); }
+			set {
+				var font = (FontData)value;
+				Widget.FontFamily = font.Family;
+				Widget.FontSize = font.Size;
+				Widget.FontStyle = font.Style;
+				Widget.FontWeight = font.Weight;
+				Widget.FontStretch = font.Stretch;
+			}
 		}
 
 		public bool CanGetFocus {

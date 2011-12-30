@@ -26,6 +26,7 @@
 using System;
 
 using Xwt.Backends;
+using Xwt.Drawing;
 using Xwt.Engine;
 
 namespace Xwt.WPFBackend
@@ -41,6 +42,8 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Window), typeof (WindowBackend));
 			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
 			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
+
+			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
 		}
 
 		public override void RunApplication ()
