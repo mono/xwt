@@ -54,15 +54,15 @@ namespace Xwt.GtkBackend
 		public void SetWidth (object backend, double value)
 		{
 			Pango.Layout tl = (Pango.Layout)backend;
-			tl.Width = (int) value;
+			tl.Width = (int) (value * Pango.Scale.PangoScale);
 		}
 
 		public Size GetSize (object backend)
 		{
 			Pango.Layout tl = (Pango.Layout) backend;
 			int w, h;
-			tl.GetSize (out w, out h);
-			return new Size ((double)w / (double)Pango.Scale.PangoScale, (double)h / (double)Pango.Scale.PangoScale);
+			tl.GetPixelSize (out w, out h);
+			return new Size ((double)w, (double)h);
 		}
 	}
 }
