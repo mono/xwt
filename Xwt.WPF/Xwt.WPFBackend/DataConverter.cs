@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SW = System.Windows;
-using System.Windows.Media;
 
 using Xwt.Backends;
 using Xwt.Drawing;
@@ -12,6 +11,23 @@ namespace Xwt.WPFBackend
 {
 	internal static class DataConverter
 	{
+		//
+		// Color
+		//
+		public static Color ToXwtColor (SW.Media.Color color)
+		{
+			return Color.FromBytes (color.R, color.G, color.B, color.A);
+		}
+
+		public static SW.Media.Color ToWpfColor (Color color)
+		{
+			return SW.Media.Color.FromArgb (
+				(byte)(color.Alpha * 255.0),
+				(byte)(color.Red * 255.0),
+				(byte)(color.Green * 255.0),
+				(byte)(color.Blue * 255.0));
+		}
+
 		//
 		// Font
 		//

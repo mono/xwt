@@ -84,7 +84,7 @@ namespace Xwt.WPFBackend
 
 				// we shouldn't be using any but solid brushes.
 				var color = ((SWM.SolidColorBrush)Widget.Background).Color;
-				return Util.ToXwtColor (color);
+				return DataConverter.ToXwtColor (color);
 			}
 			set {
 				customBackgroundColor = value;

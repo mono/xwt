@@ -39,18 +39,5 @@ namespace Xwt.WPFBackend
 {
 	public static class Util
 	{
-		public static Color ToXwtColor (SW.Media.Color color)
-		{
-			return Color.FromBytes (color.R, color.G, color.B, color.A);
-		}
-
-		public static SWM.Color ToWpfColor (Color color)
-		{
-			return SWM.Color.FromArgb (
-				(byte)(color.Alpha * 255.0),
-				(byte)(color.Red * 255.0),
-				(byte)(color.Green * 255.0),
-				(byte)(color.Blue * 255.0));
-		}
 	}
 }

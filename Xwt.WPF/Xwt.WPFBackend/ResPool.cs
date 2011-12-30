@@ -43,7 +43,7 @@ namespace Xwt.WPFBackend
 
 		public static SolidColorBrush GetSolidBrush (Xwt.Drawing.Color color)
 		{
-			return GetSolidBrush (Util.ToWpfColor (color));
+			return GetSolidBrush (DataConverter.ToWpfColor (color));
 		}
 
 		public static SolidColorBrush GetSolidBrush (Color color)
