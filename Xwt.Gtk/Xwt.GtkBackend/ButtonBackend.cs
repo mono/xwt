@@ -53,33 +53,35 @@ namespace Xwt.GtkBackend
 		
 		public void SetContent (string label, object imageBackend, ContentPosition position)
 		{
-			Button b = (Button) Frontend;
+			if (label != null && label.Length == 0)
+				label = null;
 			
-			Gdk.Pixbuf pix = (Gdk.Pixbuf)imageBackend;
+			Button b = (Button) Frontend;
+			if (label != null && imageBackend == null && b.Type == ButtonType.Normal) {
+				Widget.Label = label;
+				return;
+			}
+			
+			if (b.Type == ButtonType.Disclosure) {
+				Widget.Label = null;
+				Widget.Image = new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out);
+				Widget.Image.ShowAll ();
+				return;
+			}
+			
+			Gtk.Widget contentWidget = null;
 			
 			Gtk.Widget imageWidget = null;
-			
-			switch (b.Type) {
-			case ButtonType.Normal:
-				if (pix != null)
-					imageWidget = new Gtk.Image (pix);
-				break;
-			case ButtonType.DropDown:
-				imageWidget = new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out);
-				break;
-			case ButtonType.Disclosure:
-				label = null;
-				imageWidget = new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out);
-				break;
-			}
+			if (imageBackend != null)
+				imageWidget = new Gtk.Image ((Gdk.Pixbuf)imageBackend);
 			
 			if (label != null && imageWidget == null) {
-				Widget.Label = label;
+				contentWidget = new Gtk.Label (label); 
 			}
 			else if (label == null && imageWidget != null) {
-				imageWidget.Show ();
-				Widget.Image = imageWidget;
-			} else if (label != null && imageWidget != null) {
+				contentWidget = imageWidget;
+			}
+			else if (label != null && imageWidget != null) {
 				Gtk.Box box = position == ContentPosition.Left || position == ContentPosition.Right ? (Gtk.Box) new Gtk.HBox (false, 3) : (Gtk.Box) new Gtk.VBox (false, 3);
 				var lab = new Gtk.Label (label);
 				
@@ -91,9 +93,23 @@ namespace Xwt.GtkBackend
 					box.PackStart (imageWidget, false, false, 0);
 				}
 				
-				box.ShowAll ();
-				Widget.Image = box;
+				contentWidget = box;
 			}
+			if (b.Type == ButtonType.DropDown) {
+				if (contentWidget != null) {
+					Gtk.HBox box = new Gtk.HBox (false, 3);
+					box.PackStart (contentWidget, true, true, 0);
+					box.PackStart (new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out), false, false, 0);
+					contentWidget = box;
+				} else
+					contentWidget = new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out);
+			}
+			if (contentWidget != null) {
+				contentWidget.ShowAll ();
+				Widget.Label = null;
+				Widget.Image = contentWidget;
+			} else
+				Widget.Label = null;
 		}
 		
 		public void SetButtonStyle (ButtonStyle style)

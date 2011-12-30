@@ -48,6 +48,7 @@ namespace Xwt.GtkBackend
 		int dragDataRequests;
 		TransferDataStore dragData;
 		bool dragDataForMotion;
+		bool minSizeSet;
 		Gtk.TargetEntry[] validDropTypes;
 
 		const WidgetEvent dragDropEvents = WidgetEvent.DragDropCheck | WidgetEvent.DragDrop | WidgetEvent.DragOver | WidgetEvent.DragOverCheck;
@@ -153,7 +154,10 @@ namespace Xwt.GtkBackend
 		{
 			try {
 				gettingPreferredSize = true;
-				return new WidgetSize (Widget.SizeRequest ().Width);
+				var s = new WidgetSize (Widget.SizeRequest ().Width);
+				if (minSizeSet && Frontend.MinWidth != -1)
+					s.MinSize = Frontend.MinWidth;
+				return s;
 			} finally {
 				gettingPreferredSize = false;
 			}
@@ -163,7 +167,10 @@ namespace Xwt.GtkBackend
 		{
 			try {
 				gettingPreferredSize = true;
-				return new WidgetSize (Widget.SizeRequest ().Height);
+				var s = new WidgetSize (Widget.SizeRequest ().Height);
+				if (minSizeSet && Frontend.MinHeight != -1)
+					s.MinSize = Frontend.MinHeight;
+				return s;
 			} finally {
 				gettingPreferredSize = false;
 			}
@@ -173,7 +180,10 @@ namespace Xwt.GtkBackend
 		{
 			try {
 				gettingPreferredSize = true;
-				return new WidgetSize (Widget.SizeRequest ().Height);
+				var s = new WidgetSize (Widget.SizeRequest ().Height);
+				if (minSizeSet && Frontend.MinHeight != -1)
+					s.MinSize = Frontend.MinHeight;
+				return s;
 			} finally {
 				gettingPreferredSize = false;
 			}
@@ -183,7 +193,10 @@ namespace Xwt.GtkBackend
 		{
 			try {
 				gettingPreferredSize = true;
-				return new WidgetSize (Widget.SizeRequest ().Width);
+				var s = new WidgetSize (Widget.SizeRequest ().Width);
+				if (minSizeSet && Frontend.MinWidth != -1)
+					s.MinSize = Frontend.MinWidth;
+				return s;
 			} finally {
 				gettingPreferredSize = false;
 			}
@@ -191,8 +204,19 @@ namespace Xwt.GtkBackend
 		
 		public void SetMinSize (double width, double height)
 		{
-			Widget.WidthRequest = (int) width;
-			Widget.HeightRequest = (int) height;
+			if (width != -1 || height != -1) {
+				EnableSizeCheckEvents ();
+				minSizeSet = true;
+			}
+			else {
+				minSizeSet = false;
+				DisableSizeCheckEvents ();
+			}
+		}
+		
+		public void SetNaturalSize (double width, double height)
+		{
+			// Nothing to do
 		}
 		
 		Pango.FontDescription customFont;
@@ -283,12 +307,19 @@ namespace Xwt.GtkBackend
 					Widget.DragMotion += HandleWidgetDragMotion;
 					Widget.DragDataReceived += HandleWidgetDragDataReceived;
 				}
-				if ((ev & sizeCheckEvents) != 0 && (enabledEvents & sizeCheckEvents) == 0) {
-					// Enabling a size request event for the first time
-					Widget.SizeRequested += HandleWidgetSizeRequested;
-					Widget.SizeAllocated += HandleWidgetSizeAllocated;;
+				if ((ev & sizeCheckEvents) != 0) {
+					EnableSizeCheckEvents ();
 				}
 				enabledEvents |= ev;
+			}
+		}
+		
+		void EnableSizeCheckEvents ()
+		{
+			if ((enabledEvents & sizeCheckEvents) == 0 && !minSizeSet) {
+				// Enabling a size request event for the first time
+				Widget.SizeRequested += HandleWidgetSizeRequested;
+				Widget.SizeAllocated += HandleWidgetSizeAllocated;;
 			}
 		}
 		
@@ -322,11 +353,18 @@ namespace Xwt.GtkBackend
 					Widget.DragMotion -= HandleWidgetDragMotion;
 					Widget.DragDataReceived -= HandleWidgetDragDataReceived;
 				}
-				if ((ev & sizeCheckEvents) != 0 && (enabledEvents & sizeCheckEvents) == 0) {
-					// All size request events have been disabled
-					Widget.SizeRequested -= HandleWidgetSizeRequested;
-					Widget.SizeAllocated -= HandleWidgetSizeAllocated;;
+				if ((ev & sizeCheckEvents) != 0) {
+					DisableSizeCheckEvents ();
 				}
+			}
+		}
+		
+		void DisableSizeCheckEvents ()
+		{
+			if ((enabledEvents & sizeCheckEvents) == 0 && !minSizeSet) {
+				// All size request events have been disabled
+				Widget.SizeRequested -= HandleWidgetSizeRequested;
+				Widget.SizeAllocated -= HandleWidgetSizeAllocated;;
 			}
 		}
 		
@@ -349,6 +387,15 @@ namespace Xwt.GtkBackend
 				return;
 			
 			var req = args.Requisition;
+			
+			if ((enabledEvents & sizeCheckEvents) == 0) {
+				// If no sizing event is set, it means this handler was set because there is a min size.
+				if (Frontend.MinWidth != -1)
+					req.Width = (int) Frontend.MinWidth;
+				if (Frontend.MinHeight != -1)
+					req.Height = (int) Frontend.MinHeight;
+				return;
+			}
 			
 			if (sizeCheckStep == SizeCheckStep.AdjustSize) {
 				req.Width = realRequestedWidth;
@@ -393,6 +440,12 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
 		{
+			if ((enabledEvents & sizeCheckEvents) == 0) {
+				// If no sizing event is set, it means this handler was set because there is a min size.
+				// In that case, there isn't any thing left to do here
+				return;
+			}
+			
 			Toolkit.Invoke (delegate {
 				if (sizeCheckStep == SizeCheckStep.SizeRequest) {
 					Console.WriteLine ("SizeRequest not called. Should not happen");

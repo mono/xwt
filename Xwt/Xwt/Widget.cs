@@ -50,6 +50,7 @@ namespace Xwt
 		Widget contentWidget;
 		WindowFrame parentWindow;
 		double minWidth = -1, minHeight = -1;
+		double naturalWidth = -1, naturalHeight = -1;
 		
 		EventHandler<DragOverCheckEventArgs> dragOverCheck;
 		EventHandler<DragOverEventArgs> dragOver;
@@ -297,7 +298,7 @@ namespace Xwt
 		/// The minimum width.
 		/// </value>
 		/// <remarks>
-		/// Minimum width for the widget. If the value is -1, the value is ignored
+		/// Minimum width for the widget. If set to -1, the widget's default minimun size will be used.
 		/// </remarks>
 		[DefaultValue((double)-1)]
 		public double MinWidth {
@@ -316,7 +317,7 @@ namespace Xwt
 		/// The minimum height.
 		/// </value>
 		/// <remarks>
-		/// Minimum height for the widget. If the value is -1, the value is ignored
+		/// Minimum height for the widget. If set to -1, the widget's default minimun size will be used.
 		/// </remarks>
 		[DefaultValue((double)-1)]
 		public double MinHeight {
@@ -324,6 +325,44 @@ namespace Xwt
 			set {
 				minHeight = value;
 				Backend.SetMinSize (minWidth >= 0 ? minWidth : -1, minHeight >= 0 ? minHeight : -1);
+				OnPreferredSizeChanged ();
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the natural width.
+		/// </summary>
+		/// <value>
+		/// The natural width, or -1 if no custom natural width has been set
+		/// </value>
+		/// <remarks>
+		/// Natural width for the widget. If set to -1, the default natural size is used.
+		/// </remarks>
+		[DefaultValue((double)-1)]
+		public double NaturalWidth {
+			get { return minWidth; }
+			set {
+				naturalWidth = value;
+				Backend.SetNaturalSize (naturalWidth >= 0 ? naturalWidth : -1, naturalHeight >= 0 ? naturalHeight : -1);
+				OnPreferredSizeChanged ();
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the natural height.
+		/// </summary>
+		/// <value>
+		/// The natural height, or -1 if no custom natural height has been set
+		/// </value>
+		/// <remarks>
+		/// Natural height for the widget. If set to -1, the default natural size is used.
+		/// </remarks>
+		[DefaultValue((double)-1)]
+		public double NaturalHeight {
+			get { return naturalHeight; }
+			set {
+				naturalHeight = value;
+				Backend.SetNaturalSize (naturalWidth >= 0 ? naturalWidth : -1, naturalHeight >= 0 ? naturalHeight : -1);
 				OnPreferredSizeChanged ();
 			}
 		}
@@ -545,8 +584,12 @@ namespace Xwt
 			else {
 				if (!Application.EngineBackend.HandlesSizeNegotiation)
 					widthCached = true;
+				if (minWidth != -1 && naturalWidth != -1)
+					return new WidgetSize (minWidth, naturalWidth);
 				width = OnGetPreferredWidth () + Margin.HorizontalSpacing;
-				if (minWidth != -1 && width.MinSize < minWidth)
+				if (naturalWidth != -1)
+					width.NaturalSize = naturalWidth;
+				if (minWidth != -1)
 					width.MinSize = minWidth;
 				if (width.NaturalSize < width.MinSize)
 					width.NaturalSize = width.MinSize;
@@ -561,8 +604,12 @@ namespace Xwt
 			else {
 				if (!Application.EngineBackend.HandlesSizeNegotiation)
 					heightCached = true;
+				if (minHeight != -1 && naturalHeight != -1)
+					return new WidgetSize (minHeight, naturalHeight);
 				height = OnGetPreferredHeight () + Margin.VerticalSpacing;
-				if (minHeight != -1 && height.MinSize < minHeight)
+				if (naturalHeight != -1)
+					height.NaturalSize = naturalHeight;
+				if (minHeight != -1)
 					height.MinSize = minHeight;
 				if (height.NaturalSize < height.MinSize)
 					height.NaturalSize = height.MinSize;
@@ -577,11 +624,15 @@ namespace Xwt
 			else {
 				if (!Application.EngineBackend.HandlesSizeNegotiation)
 					heightCached = true;
+				if (minHeight != -1 && naturalHeight != -1)
+					return new WidgetSize (minHeight, naturalHeight);
 				// Horizontal margin is substracted here because that's space which
 				// can't really be used to render the widget
 				width = Math.Max (width - Margin.HorizontalSpacing, 0);
 				height = OnGetPreferredHeightForWidth (width);
-				if (minHeight != -1 && height.MinSize < minHeight)
+				if (naturalHeight != -1)
+					height.NaturalSize = naturalHeight;
+				if (minHeight != -1)
 					height.MinSize = minHeight;
 				if (height.NaturalSize < height.MinSize)
 					height.NaturalSize = height.MinSize;
@@ -596,11 +647,15 @@ namespace Xwt
 			else {
 				if (!Application.EngineBackend.HandlesSizeNegotiation)
 					widthCached = true;
+				if (minWidth != -1 && naturalWidth != -1)
+					return new WidgetSize (minWidth, naturalWidth);
 				// Vertical margin is substracted here because that's space which
 				// can't really be used to render the widget
 				height = Math.Max (height - Margin.VerticalSpacing, 0);
 				width = OnGetPreferredWidthForHeight (height);
-				if (minWidth != -1 && width.MinSize < minWidth)
+				if (naturalWidth != -1)
+					width.NaturalSize = naturalWidth;
+				if (minWidth != -1)
 					width.MinSize = minWidth;
 				if (width.NaturalSize < width.MinSize)
 					width.NaturalSize = width.MinSize;

@@ -227,46 +227,54 @@ namespace Xwt
 			int nexpands = 0;
 			double naturalSize = 0;
 			
-			var visibleChildren = children.Where (b => b.Child.Visible);
-			int childrenCount = 0;
+			var visibleChildren = children.Where (b => b.Child.Visible).ToArray ();
+			var sizes = new Dictionary<BoxPlacement,WidgetSize> ();
 			
 			// Get the natural size of each child
 			foreach (var bp in visibleChildren) {
-				childrenCount++;
 				WidgetSize s;
 				if (useLengthConstraint)
 					s = GetPreferredLengthForSize (mode, bp.Child, lengthConstraint);
 				else
 					s = GetPreferredSize (calcHeights, bp.Child);
+				sizes [bp] = s;
 				naturalSize += s.NaturalSize;
 				bp.NextSize = s.NaturalSize;
 				if ((bp.BoxMode & BoxMode.Expand) != 0)
 					nexpands++;
 			}
 			
-			double remaining = totalSize - naturalSize - (spacing * (double)(childrenCount - 1));
+			double remaining = totalSize - naturalSize - (spacing * (double)(visibleChildren.Length - 1));
 			if (remaining < 0) {
 				// The box is not big enough to fit the widgets using its natural size.
 				// We have to shrink the widgets.
-				var sizePart = new SizeSplitter (-remaining, childrenCount);
-				var toAdjust = new List<BoxPlacement> ();
-				double adjustSize = 0;
-				foreach (var bp in visibleChildren) {
-					WidgetSize s;
-					if (useLengthConstraint)
-						s = GetPreferredLengthForSize (mode, bp.Child, lengthConstraint);
-					else
-						s = GetPreferredSize (calcHeights, bp.Child);
-					bp.NextSize = s.NaturalSize - sizePart.NextSizePart ();
-					if (bp.NextSize < s.MinSize) {
-						adjustSize += (s.MinSize - bp.NextSize);
-						bp.NextSize = s.MinSize;
-					} else
-						toAdjust.Add (bp);
+				
+				// List of widgets that we have to shrink
+				var toShrink = new List<BoxPlacement> (visibleChildren);
+				
+				// The total amount we have to shrink
+				double shrinkSize = -remaining;
+				
+				while (toShrink.Count > 0 && shrinkSize > 0) {
+					SizeSplitter sizePart = new SizeSplitter (shrinkSize, toShrink.Count);
+					shrinkSize = 0;
+					for (int i=0; i < toShrink.Count; i++) {
+						var bp = toShrink[i];
+						bp.NextSize -= sizePart.NextSizePart ();
+						
+						WidgetSize size = sizes [bp];
+						
+						if (bp.NextSize < size.MinSize) {
+							// If the widget can't be shrinked anymore, we remove it from the shrink list
+							// and increment the remaining shrink size. We'll loop again and this size will be
+							// substracted from the cells which can still be reduced
+							shrinkSize += (size.MinSize - bp.NextSize);
+							bp.NextSize = size.MinSize;
+							toShrink.RemoveAt (i);
+							i--;
+						}
+					}
 				}
-				sizePart = new SizeSplitter (adjustSize, toAdjust.Count);
-				foreach (var bp in toAdjust)
-					bp.NextSize += sizePart.NextSizePart ();
 			}
 			else {
 				var expandRemaining = new SizeSplitter (remaining, nexpands);

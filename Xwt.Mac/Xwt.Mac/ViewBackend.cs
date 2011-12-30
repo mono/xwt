@@ -211,6 +211,11 @@ namespace Xwt.Mac
 			minHeight = height;
 		}
 		
+		public void SetNaturalSize (double width, double height)
+		{
+			// Nothing to do
+		}
+		
 		public virtual void UpdateLayout ()
 		{
 			if (frontend.Margin.HorizontalSpacing == 0 && frontend.Margin.VerticalSpacing == 0) {

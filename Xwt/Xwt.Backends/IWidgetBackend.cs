@@ -51,6 +51,7 @@ namespace Xwt.Backends
 		/// Minimum height. If the value is -1, it means no minimum height.
 		/// </param>
 		void SetMinSize (double width, double height);
+		void SetNaturalSize (double width, double height);
 		
 		void SetFocus ();
 		
