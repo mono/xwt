@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,8 +38,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Xwt.WPFBackend\BoxBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\DataConverter.cs" />
+    <Compile Include="Xwt.WPFBackend\FontBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\KeyboardUtil.cs" />
     <Compile Include="Xwt.WPFBackend\MenuBackend.cs" />
     <Compile Include="Xwt.WPFBackend\MenuItemBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\ResPool.cs" />
+    <Compile Include="Xwt.WPFBackend\Util.cs" />
+    <Compile Include="Xwt.WPFBackend\WidgetBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WindowBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WindowFrameBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WPFEngine.cs" />

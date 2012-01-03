@@ -1,5 +1,5 @@
-// 
-// WPFEngine.cs
+﻿// 
+// ResPool.cs
 //  
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
@@ -23,49 +23,38 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows.Media;
 
 using Xwt.Backends;
-using Xwt.Drawing;
-using Xwt.Engine;
+
+// This is similar in spirit to Mono's System.Windows.Forms.SystemResPool,
+// to be able to recycle resources. Guess we will be able to add more elements later.
 
 namespace Xwt.WPFBackend
 {
-	public class WPFEngine : Xwt.Backends.EngineBackend
+	public static class ResPool
 	{
-		System.Windows.Application application;
+		static Dictionary<int, SolidColorBrush> solidBrushes = new Dictionary<int, SolidColorBrush> ();
 
-		public override void InitializeApplication ()
+		public static SolidColorBrush GetSolidBrush (Xwt.Drawing.Color color)
 		{
-			application = new System.Windows.Application ();
-
-			WidgetRegistry.RegisterBackend (typeof (Window), typeof (WindowBackend));
-			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
-			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
-			WidgetRegistry.RegisterBackend (typeof (Box), typeof (BoxBackend));
-
-			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
+			return GetSolidBrush (DataConverter.ToWpfColor (color));
 		}
 
-		public override void RunApplication ()
+		public static SolidColorBrush GetSolidBrush (Color color)
 		{
-			application.Run ();
-		}
+			lock (solidBrushes) {
+				int hashcode = color.GetHashCode ();
+				if (!solidBrushes.ContainsKey (hashcode))
+					solidBrushes [hashcode] = new SolidColorBrush (color);
 
-		public override void Invoke (Action action)
-		{
-			application.Dispatcher.BeginInvoke (action, new object [0]);
-		}
-
-		public override object TimeoutInvoke (Func<bool> action, TimeSpan timeSpan)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override void CancelTimeoutInvoke (object id)
-		{
-			throw new NotImplementedException ();
+				return solidBrushes [hashcode];
+			}
 		}
 	}
 }
-

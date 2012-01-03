@@ -1,10 +1,10 @@
-// 
-// WPFEngine.cs
+﻿// 
+// BoxBackend.cs
 //  
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
 // 
-// Copyright (c) 2011 Carlos Alberto Cortez
+// Copyright (c) 2012 Carlos Alberto Cortez
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,49 +23,51 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SW = System.Windows;
+using SWC = System.Windows.Controls;
 
 using Xwt.Backends;
 using Xwt.Drawing;
-using Xwt.Engine;
 
 namespace Xwt.WPFBackend
 {
-	public class WPFEngine : Xwt.Backends.EngineBackend
+	public class BoxBackend : WidgetBackend
 	{
-		System.Windows.Application application;
-
-		public override void InitializeApplication ()
+		public BoxBackend ()
 		{
-			application = new System.Windows.Application ();
-
-			WidgetRegistry.RegisterBackend (typeof (Window), typeof (WindowBackend));
-			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
-			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
-			WidgetRegistry.RegisterBackend (typeof (Box), typeof (BoxBackend));
-
-			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
+			Widget = new CustomPanel ();
 		}
 
-		public override void RunApplication ()
-		{
-			application.Run ();
+		new CustomPanel Widget {
+			get { return (CustomPanel)base.Widget; }
+			set { base.Widget = value; }
 		}
 
-		public override void Invoke (Action action)
+		public void Add (IWidgetBackend widget)
 		{
-			application.Dispatcher.BeginInvoke (action, new object [0]);
+			Widget.Children.Add (GetFrameworkElement (widget));
 		}
 
-		public override object TimeoutInvoke (Func<bool> action, TimeSpan timeSpan)
+		public void Remove (IWidgetBackend widget)
 		{
-			throw new NotImplementedException ();
+			Widget.Children.Remove (GetFrameworkElement (widget));
 		}
 
-		public override void CancelTimeoutInvoke (object id)
+		public void SetAllocation (IWidgetBackend [] widget, Rectangle [] rect)
 		{
-			throw new NotImplementedException ();
+			for (int i = 0; i < widget.Length; i++) {
+				var e = GetFrameworkElement (widget [i]);
+				e.Arrange (DataConverter.ToWpfRect (rect [i]));
+			}
 		}
 	}
-}
 
+	public class CustomPanel : SWC.Canvas
+	{
+	}
+}
