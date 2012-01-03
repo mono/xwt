@@ -123,6 +123,15 @@ namespace Xwt.WPFBackend
 			};
 		}
 
+		public static FontData SystemDefault {
+			get {
+				return new FontData (SW.SystemFonts.MessageFontFamily, SW.SystemFonts.MessageFontSize) {
+					Style = SW.SystemFonts.MessageFontStyle,
+					Weight = SW.SystemFonts.MessageFontWeight
+				};
+			}
+		}
+
 		// Didn't implement IClone on purpose (recommended by the Framework Design guidelines)
 		public FontData Clone ()
 		{

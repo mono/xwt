@@ -12,6 +12,29 @@ namespace Xwt.WPFBackend
 	internal static class DataConverter
 	{
 		//
+		// Rect/Point
+		//
+		public static Rectangle ToXwtRect (SW.Rect rect)
+		{
+			return new Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
+		}
+
+		public static SW.Rect ToWpfRect (Rectangle rect)
+		{
+			return new SW.Rect (rect.X, rect.Y, rect.Width, rect.Height);
+		}
+
+		public static Point ToXwtPoint (SW.Point point)
+		{
+			return new Point (point.X, point.Y);
+		}
+
+		public static SW.Point ToWpfPoint (Point point)
+		{
+			return new SW.Point (point.X, point.Y);
+		}
+
+		//
 		// Color
 		//
 		public static Color ToXwtColor (SW.Media.Color color)

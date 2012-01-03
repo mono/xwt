@@ -31,6 +31,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using SWM = System.Windows.Media;
+using SWC = System.Windows.Controls; // When we need to resolve ambigituies.
 
 using Xwt.Backends;
 using Xwt.Drawing;
@@ -73,7 +74,7 @@ namespace Xwt.WPFBackend
 			get { return Widget; }
 		}
 
-		public Control Widget { get; set; }
+		public FrameworkElement Widget { get; set; }
 
 		Color? customBackgroundColor;
 
@@ -82,14 +83,34 @@ namespace Xwt.WPFBackend
 				if (customBackgroundColor.HasValue)
 					return customBackgroundColor.Value;
 
-				// we shouldn't be using any but solid brushes.
-				var color = ((SWM.SolidColorBrush)Widget.Background).Color;
-				return DataConverter.ToXwtColor (color);
+				return DataConverter.ToXwtColor (GetWidgetColor ());
 			}
 			set {
 				customBackgroundColor = value;
-				Widget.Background = ResPool.GetSolidBrush (value);
+				SetWidgetColor (value);
 			}
+		}
+
+		SWM.Color GetWidgetColor ()
+		{
+			if (Widget is Control) {
+				var control = (Control)Widget;
+				return ((SWM.SolidColorBrush)control.Background).Color;
+			}
+			if (Widget is SWC.Panel) {
+				var panel = (SWC.Panel)Widget;
+				return ((SWM.SolidColorBrush)panel.Background).Color;
+			}
+
+			return SystemColors.ControlColor;
+		}
+
+		void SetWidgetColor (Color value)
+		{
+			if ((Widget is Control))
+				((Control)Widget).Background = ResPool.GetSolidBrush (value);
+			if ((Widget is System.Windows.Controls.Panel))
+				((SWC.Panel)Widget).Background = ResPool.GetSolidBrush (value);
 		}
 
 		public bool UsingCustomBackgroundColor {
@@ -97,15 +118,31 @@ namespace Xwt.WPFBackend
 		}
 
 		public virtual object Font {
-			get { return FontData.FromControl (Widget); }
+			get { return GetWidgetFont (); }
 			set {
-				var font = (FontData)value;
-				Widget.FontFamily = font.Family;
-				Widget.FontSize = font.Size;
-				Widget.FontStyle = font.Style;
-				Widget.FontWeight = font.Weight;
-				Widget.FontStretch = font.Stretch;
+				SetWidgetFont ((FontData)value);
 			}
+		}
+
+		FontData GetWidgetFont ()
+		{
+			if (!(Widget is Control))
+				return FontData.SystemDefault;
+
+			return FontData.FromControl ((Control)Widget);
+		}
+
+		void SetWidgetFont (FontData font)
+		{
+			if (!(Widget is Control))
+				return;
+
+			var control = (Control)Widget;
+			control.FontFamily = font.Family;
+			control.FontSize = font.Size;
+			control.FontStyle = font.Style;
+			control.FontWeight = font.Weight;
+			control.FontStretch = font.Stretch;
 		}
 
 		public bool CanGetFocus {
@@ -134,6 +171,11 @@ namespace Xwt.WPFBackend
 		public virtual bool Visible {
 			get { return Widget.Visibility == Visibility.Visible; }
 			set { Widget.Visibility = value ? Visibility.Visible : Visibility.Hidden; }
+		}
+
+		public static FrameworkElement GetFrameworkElement (IWidgetBackend backend)
+		{
+			return backend == null ? null : (FrameworkElement)backend.NativeWidget;
 		}
 
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
@@ -183,7 +225,6 @@ namespace Xwt.WPFBackend
 
 		public virtual void UpdateLayout ()
 		{
-			throw new NotImplementedException ();
 		}
 
 		public virtual void EnableEvent (object eventId)
