@@ -1,5 +1,5 @@
-// 
-// WPFEngine.cs
+﻿// 
+// Util.cs
 //  
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
@@ -23,49 +23,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using Xwt.Backends;
 using Xwt.Drawing;
-using Xwt.Engine;
+
+using SW = System.Windows;
+using SWM = System.Windows.Media;
 
 namespace Xwt.WPFBackend
 {
-	public class WPFEngine : Xwt.Backends.EngineBackend
+	public static class Util
 	{
-		System.Windows.Application application;
-
-		public override void InitializeApplication ()
-		{
-			application = new System.Windows.Application ();
-
-			WidgetRegistry.RegisterBackend (typeof (Window), typeof (WindowBackend));
-			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
-			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
-			WidgetRegistry.RegisterBackend (typeof (Box), typeof (BoxBackend));
-
-			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
-		}
-
-		public override void RunApplication ()
-		{
-			application.Run ();
-		}
-
-		public override void Invoke (Action action)
-		{
-			application.Dispatcher.BeginInvoke (action, new object [0]);
-		}
-
-		public override object TimeoutInvoke (Func<bool> action, TimeSpan timeSpan)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override void CancelTimeoutInvoke (object id)
-		{
-			throw new NotImplementedException ();
-		}
 	}
 }
-
