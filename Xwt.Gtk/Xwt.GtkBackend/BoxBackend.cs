@@ -123,7 +123,6 @@ namespace Xwt.GtkBackend
 		protected override void OnAdded (Gtk.Widget widget)
 		{
 			widget.Parent = this;
-			// QueueResize ();
 		}
 		
 		protected override void OnRemoved (Gtk.Widget widget)
@@ -137,10 +136,8 @@ namespace Xwt.GtkBackend
 			IWidgetSurface ws = Frontend;
 			int w = (int)(ws.GetPreferredWidth ().MinSize - Frontend.Margin.HorizontalSpacing);
 			int h = (int)(ws.GetPreferredHeight ().MinSize - Frontend.Margin.VerticalSpacing);
-			if (requisition.Width < w)
-				requisition.Width = w;
-			if (requisition.Height < h)
-				requisition.Height = h;
+			requisition.Width = w;
+			requisition.Height = h;
 		}
 		
 		protected override void OnUnrealized ()
