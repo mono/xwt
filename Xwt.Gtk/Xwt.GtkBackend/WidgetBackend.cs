@@ -147,7 +147,7 @@ namespace Xwt.GtkBackend
 			var a = Widget.Allocation;
 			x += a.X;
 			y += a.Y;
-			return new Point (x, y);
+			return new Point (x + widgetCoordinates.X, y + widgetCoordinates.Y);
 		}
 		
 		public virtual WidgetSize GetPreferredWidth ()
