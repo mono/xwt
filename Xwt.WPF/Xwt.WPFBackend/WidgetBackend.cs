@@ -180,8 +180,7 @@ namespace Xwt.WPFBackend
 
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
-			// The Gtk+ impl seems to ignore the widgetCoordinates param
-			var p = Widget.PointToScreen (new System.Windows.Point (0.0, 0.0));
+			var p = Widget.PointToScreen (new System.Windows.Point (widgetCoordinates.X, widgetCoordinates.Y));
 			return new Point (p.X, p.Y);
 		}
 
