@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.WPFBackend
 {
@@ -158,7 +159,9 @@ namespace Xwt.WPFBackend
 
 		void MenuItemClickHandler (object sender, EventArgs args)
 		{
-			eventSink.OnClicked ();
+			Toolkit.Invoke (delegate {
+				eventSink.OnClicked ();
+			});
 		}
 	}
 }

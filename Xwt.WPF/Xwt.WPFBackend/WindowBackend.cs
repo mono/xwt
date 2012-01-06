@@ -76,5 +76,10 @@ namespace Xwt.WPFBackend
 			mainMenu = m;
 			mainMenuBackend = menuBackend;
 		}
+
+		public void SetPadding (double left, double top, double right, double bottom)
+		{
+			Window.Padding = new Thickness (left, top, right, bottom);
+		}
 	}
 }
