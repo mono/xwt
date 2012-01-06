@@ -31,6 +31,7 @@ using System.Text;
 using System.Windows;
 
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.WPFBackend
 {
@@ -57,6 +58,11 @@ namespace Xwt.WPFBackend
 
 		public virtual void Initialize ()
 		{
+		}
+
+		public virtual void Dispose (bool disposing)
+		{
+			Window.Close ();
 		}
 
 		public System.Windows.Window Window {
@@ -103,7 +109,9 @@ namespace Xwt.WPFBackend
 				window.Left = value.Left;
 				window.Width = value.Width;
 				window.Height = value.Height;
-				eventSink.OnBoundsChanged (Bounds);
+				Toolkit.Invoke (delegate {
+					eventSink.OnBoundsChanged (Bounds);
+				});
 			}
 		}
 
@@ -133,7 +141,9 @@ namespace Xwt.WPFBackend
 
 		void BoundsChangedHandler (object o, EventArgs args)
 		{
-			eventSink.OnBoundsChanged (Bounds);
+			Toolkit.Invoke (delegate () {
+				eventSink.OnBoundsChanged (Bounds);
+			});
 		}
 	}
 }
