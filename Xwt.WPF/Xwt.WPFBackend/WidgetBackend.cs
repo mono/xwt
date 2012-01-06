@@ -35,6 +35,7 @@ using SWC = System.Windows.Controls; // When we need to resolve ambigituies.
 
 using Xwt.Backends;
 using Xwt.Drawing;
+using Xwt.Engine;
 
 namespace Xwt.WPFBackend
 {
@@ -291,14 +292,18 @@ namespace Xwt.WPFBackend
 		{
 			KeyEventArgs args;
 			if (MapToXwtKeyArgs (e, out args))
-				eventSink.OnKeyPressed (args);
+				Toolkit.Invoke (delegate {
+					eventSink.OnKeyPressed (args);
+				});
 		}
 
 		void WidgetKeyUpHandler (object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			KeyEventArgs args;
 			if (MapToXwtKeyArgs (e, out args))
-				eventSink.OnKeyReleased (args);
+				Toolkit.Invoke (delegate {
+					eventSink.OnKeyReleased (args);
+				});
 		}
 
 		bool MapToXwtKeyArgs (System.Windows.Input.KeyEventArgs e, out KeyEventArgs result)
@@ -315,12 +320,16 @@ namespace Xwt.WPFBackend
 
 		void WidgetGotFocusHandler (object o, RoutedEventArgs e)
 		{
-			eventSink.OnGotFocus ();
+			Toolkit.Invoke (delegate {
+				eventSink.OnGotFocus ();
+			});
 		}
 
 		void WidgetLostFocusHandler (object o, RoutedEventArgs e)
 		{
-			eventSink.OnLostFocus ();
+			Toolkit.Invoke (delegate {
+				eventSink.OnLostFocus ();
+			});
 		}
 
 		public void DragStart (TransferDataSource data, DragDropAction dragAction, object imageBackend, double hotX, double hotY)
@@ -340,7 +349,9 @@ namespace Xwt.WPFBackend
 
 		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)
 		{
-			eventSink.OnDragLeave (EventArgs.Empty);
+			Toolkit.Invoke (delegate {
+				eventSink.OnDragLeave (EventArgs.Empty);
+			});
 		}
 	}
 
