@@ -59,6 +59,11 @@ namespace Xwt.WPFBackend
 		{
 		}
 
+		public virtual void Dispose (bool disposing)
+		{
+			Window.Close ();
+		}
+
 		public System.Windows.Window Window {
 			get { return window; }
 			set { window = value; }

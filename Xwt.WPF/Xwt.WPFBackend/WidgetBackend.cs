@@ -38,7 +38,7 @@ using Xwt.Drawing;
 
 namespace Xwt.WPFBackend
 {
-	public class WidgetBackend : IWidgetBackend
+	public class WidgetBackend : IWidgetBackend, IWpfWidgetBackend
 	{
 		Widget frontend;
 		IWidgetEventSink eventSink;
@@ -222,6 +222,11 @@ namespace Xwt.WPFBackend
 			Widget.MinHeight = height;
 		}
 
+		public void SetNaturalSize (double width, double height)
+		{
+			// Nothing do it in WPF, it seems.
+		}
+
 		public virtual void UpdateLayout ()
 		{
 		}
@@ -337,5 +342,10 @@ namespace Xwt.WPFBackend
 		{
 			eventSink.OnDragLeave (EventArgs.Empty);
 		}
+	}
+
+	public interface IWpfWidgetBackend
+	{
+		FrameworkElement Widget { get; }
 	}
 }
