@@ -36,6 +36,12 @@ namespace Samples
 			VBox b1 = new VBox ();
 			for (int n=0; n<30; n++)
 				b1.PackStart (new Label ("Line " + n), BoxMode.None);
+			Button u = new Button ("Click to remove");
+			u.Clicked += delegate {
+				b1.Remove (u);
+			};
+			b1.PackStart (u);
+			
 			v1.Content = b1;
 			v1.VerticalScrollPolicy = ScrollPolicy.Always;
 			PackStart (v1, BoxMode.FillAndExpand);
