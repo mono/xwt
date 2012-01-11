@@ -134,8 +134,8 @@ namespace Xwt.GtkBackend
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			IWidgetSurface ws = Frontend;
-			int w = (int)(ws.GetPreferredWidth ().MinSize - Frontend.Margin.HorizontalSpacing);
-			int h = (int)(ws.GetPreferredHeight ().MinSize - Frontend.Margin.VerticalSpacing);
+			int w = (int) ws.GetPreferredWidth ().MinSize;
+			int h = (int) ws.GetPreferredHeight ().MinSize;
 			requisition.Width = w;
 			requisition.Height = h;
 		}
