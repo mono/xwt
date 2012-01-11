@@ -36,6 +36,7 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.Application.Init ();
 			
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Widget), typeof(CustomWidgetBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Window), typeof(WindowBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Label), typeof(LabelBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.HBox), typeof(BoxBackend));
