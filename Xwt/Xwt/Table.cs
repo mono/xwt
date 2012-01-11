@@ -407,8 +407,10 @@ namespace Xwt
 			}
 			
 			spacing = 0;
-			for (int n=1; n<lastCell; n++)
-				spacing += GetSpacing (n, calcHeights);
+			for (int n=1; n<lastCell; n++) {
+				if (cellsWithWidget.Contains (n))
+					spacing += GetSpacing (n, calcHeights);
+			}
 			
 		}
 		
