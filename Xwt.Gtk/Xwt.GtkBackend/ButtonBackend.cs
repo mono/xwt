@@ -32,6 +32,8 @@ namespace Xwt.GtkBackend
 {
 	public class ButtonBackend: WidgetBackend, IButtonBackend
 	{
+		protected bool ignoreClickEvents;
+		
 		public ButtonBackend ()
 		{
 		}
@@ -152,9 +154,11 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetClicked (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
-				EventSink.OnClicked ();
-			});
+			if (!ignoreClickEvents) {
+				Toolkit.Invoke (delegate {
+					EventSink.OnClicked ();
+				});
+			}
 		}
 	}
 }

@@ -81,7 +81,9 @@ namespace Xwt.GtkBackend
 				return Widget.Active;
 			}
 			set {
+				ignoreClickEvents = true;
 				Widget.Active = value;
+				ignoreClickEvents = false;
 			}
 		}
 		
