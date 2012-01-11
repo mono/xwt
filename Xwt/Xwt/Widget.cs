@@ -216,6 +216,7 @@ namespace Xwt
 				while (t != wt) {
 					if (t.Assembly == wt.Assembly)
 						return null; // It's a core widget
+					t = t.BaseType;
 				}
 				return WidgetRegistry.CreateBackend<IBackend> (wt);
 			}
@@ -629,7 +630,7 @@ namespace Xwt
 				// Horizontal margin is substracted here because that's space which
 				// can't really be used to render the widget
 				width = Math.Max (width - Margin.HorizontalSpacing, 0);
-				height = OnGetPreferredHeightForWidth (width);
+				height = OnGetPreferredHeightForWidth (width) + Margin.VerticalSpacing;
 				if (naturalHeight != -1)
 					height.NaturalSize = naturalHeight;
 				if (minHeight != -1)
@@ -652,7 +653,7 @@ namespace Xwt
 				// Vertical margin is substracted here because that's space which
 				// can't really be used to render the widget
 				height = Math.Max (height - Margin.VerticalSpacing, 0);
-				width = OnGetPreferredWidthForHeight (height);
+				width = OnGetPreferredWidthForHeight (height) + Margin.HorizontalSpacing;
 				if (naturalWidth != -1)
 					width.NaturalSize = naturalWidth;
 				if (minWidth != -1)
