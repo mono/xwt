@@ -100,6 +100,18 @@ namespace Xwt
 			set { Backend.Active = value; }
 		}
 		
+		[DefaultValue (false)]
+		public bool Mixed {
+			get { return Backend.Mixed; }
+			set { Backend.Mixed = value; }
+		}
+		
+		[DefaultValue (false)]
+		public bool AllowMixed {
+			get { return Backend.AllowMixed; }
+			set { Backend.AllowMixed = value; }
+		}
+		
 		protected virtual void OnClicked (EventArgs e)
 		{
 			if (clicked != null)

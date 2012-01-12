@@ -1,10 +1,10 @@
 // 
-// ICheckBoxBackend.cs
+// Checkboxes.cs
 //  
 // Author:
-//       Lluis Sanchez Gual <lluis@xamarin.com>
+//       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,28 +24,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt;
 
-namespace Xwt.Backends
+namespace Samples
 {
-	public interface ICheckBoxBackend: IWidgetBackend
+	public class Checkboxes: VBox
 	{
-		void SetContent (IWidgetBackend widget);
-		void SetContent (string label);
-		bool Active { get; set; }
-		bool Mixed { get; set; }
-		bool AllowMixed { get; set; }
-	}
-	
-	public interface ICheckBoxEventSink: IWidgetEventSink
-	{
-		void OnClicked ();
-		void OnToggled ();
-	}
-	
-	public enum CheckBoxEvent
-	{
-		Clicked = 1,
-		Toggled = 2
+		public Checkboxes ()
+		{
+			PackStart (new CheckBox ("Normal checkbox"));
+			
+			var b = new CheckBox ("Allows mixed") { AllowMixed = true };
+			PackStart (b);
+			
+			int clicks = 0, toggles = 0;
+			Label la = new Label ();
+			PackStart (la);
+			
+			b.Clicked += delegate {
+				clicks++;
+				la.Text = string.Format ("active:{0}, mixed:{1}, clicks:{2}, toggles:{3}", b.Active, b.Mixed, clicks, toggles);
+			};
+			
+			b.Toggled += delegate {
+				toggles++;
+				la.Text = string.Format ("active:{0}, mixed:{1}, clicks:{2}, toggles:{3}", b.Active, b.Mixed, clicks, toggles);
+			};
+		}
 	}
 }
 

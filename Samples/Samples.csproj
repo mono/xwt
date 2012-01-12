@@ -65,6 +65,7 @@
     <Compile Include="Samples\Labels.cs" />
     <Compile Include="Samples\Colors.cs" />
     <Compile Include="Samples\Frames.cs" />
+    <Compile Include="Samples\Checkboxes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,10 +1,10 @@
 // 
-// ICheckBoxBackend.cs
+// Clipboard.cs
 //  
 // Author:
-//       Lluis Sanchez Gual <lluis@xamarin.com>
+//       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,27 +25,13 @@
 // THE SOFTWARE.
 using System;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface ICheckBoxBackend: IWidgetBackend
+	public static class Clipboard
 	{
-		void SetContent (IWidgetBackend widget);
-		void SetContent (string label);
-		bool Active { get; set; }
-		bool Mixed { get; set; }
-		bool AllowMixed { get; set; }
-	}
-	
-	public interface ICheckBoxEventSink: IWidgetEventSink
-	{
-		void OnClicked ();
-		void OnToggled ();
-	}
-	
-	public enum CheckBoxEvent
-	{
-		Clicked = 1,
-		Toggled = 2
+		public static void Copy (TransferDataSource data)
+		{
+		}
 	}
 }
 

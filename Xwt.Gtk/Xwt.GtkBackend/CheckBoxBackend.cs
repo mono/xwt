@@ -31,6 +31,9 @@ namespace Xwt.GtkBackend
 {
 	public class CheckBoxBackend: WidgetBackend, ICheckBoxBackend
 	{
+		bool allowMixed;
+		bool internalActiveUpdate;
+		
 		public CheckBoxBackend ()
 		{
 		}
@@ -39,6 +42,7 @@ namespace Xwt.GtkBackend
 		{
 			Widget = new Gtk.CheckButton ();
 			Widget.Show ();
+			Widget.Clicked += HandleWidgetPreClicked;
 		}
 		
 		protected new Gtk.CheckButton Widget {
@@ -52,11 +56,25 @@ namespace Xwt.GtkBackend
 		
 		public bool Active {
 			get {
-				return Widget.Active;
+				return Widget.Active && !Widget.Inconsistent;
 			}
 			set {
 				Widget.Active = value;
 			}
+		}
+		
+		public bool AllowMixed {
+			get {
+				return allowMixed;
+			}
+			set {
+				allowMixed = value;
+			}
+		}
+		
+		public bool Mixed {
+			get { return Widget.Inconsistent; }
+			set { Widget.Inconsistent = value; }
 		}
 		
 		public void SetContent (string label)
@@ -102,8 +120,26 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		void HandleWidgetPreClicked (object sender, EventArgs e)
+		{
+			if (allowMixed) {
+				if (!Widget.Active) {
+					if (Widget.Inconsistent)
+						Widget.Inconsistent = false;
+					else {
+						Widget.Inconsistent = true;
+						internalActiveUpdate = true;
+						Widget.Active = true;
+						internalActiveUpdate = false;
+					}
+				}
+			}
+		}
+		
 		void HandleWidgetActivated (object sender, EventArgs e)
 		{
+			if (internalActiveUpdate)
+				return;
 			Toolkit.Invoke (delegate {
 				EventSink.OnToggled ();
 			});
@@ -111,6 +147,8 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetClicked (object sender, EventArgs e)
 		{
+			if (internalActiveUpdate)
+				return;
 			Toolkit.Invoke (delegate {
 				EventSink.OnClicked ();
 			});
