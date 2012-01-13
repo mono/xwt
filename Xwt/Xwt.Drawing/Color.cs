@@ -197,10 +197,20 @@ namespace Xwt.Drawing
 		
 		public static Color FromName (string name)
 		{
+			Color color;
+			TryParse (name, out color);
+			return color;
+		}
+		
+		public static bool TryParse (string name, out Color color)
+		{
 			uint val;
-			if (!TryParseColourFromHex (name, out val))
-				return Color.Black;
-			return Color.FromBytes ((byte)(val >> 24), (byte)((val >> 16) & 0xff), (byte)((val >> 8) & 0xff), (byte)(val & 0xff));
+			if (!TryParseColourFromHex (name, out val)) {
+				color = Color.White;
+				return false;
+			}
+			color = Color.FromBytes ((byte)(val >> 24), (byte)((val >> 16) & 0xff), (byte)((val >> 8) & 0xff), (byte)(val & 0xff));
+			return true;
 		}
 		
 
