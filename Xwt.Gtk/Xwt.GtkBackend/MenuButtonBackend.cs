@@ -32,108 +32,69 @@ namespace Xwt.GtkBackend
 {
 	public class MenuButtonBackend: ButtonBackend, IMenuButtonBackend
 	{
+		bool isOpen;
+		
 		public MenuButtonBackend ()
 		{
 		}
 
 		public override void Initialize ()
 		{
-			Widget = new InternalMenuButton ();
-			Widget.ShowAll ();
-			Widget.MenuCreator = CreateMenu;
-		}
-		
-		new InternalMenuButton Widget {
-			get { return (InternalMenuButton)base.Widget; }
-			set { base.Widget = value; }
+			base.Initialize ();
+			Widget.Clicked += HandleClicked;
+			((Gtk.Widget)Widget).StateChanged += HandleStateChanged;
 		}
 		
 		new IMenuButtonEventSink EventSink {
 			get { return (IMenuButtonEventSink)base.EventSink; }
 		}
-		
-		Gtk.Menu CreateMenu (InternalMenuButton mb)
+
+		void HandleClicked (object sender, EventArgs e)
 		{
-			MenuBackend m = null;
-			Toolkit.Invoke (delegate {
-				m = (MenuBackend) EventSink.OnCreateMenu ();
-			});
-			return m != null ? m.Menu : null;
-		}
-	}
-	
-	class InternalMenuButton : Gtk.Button
-	{
-		MenuCreator creator;
-		bool isOpen;
-		
-		public InternalMenuButton ()
-			: base ()
-		{
-		}
-		
-		protected InternalMenuButton (IntPtr raw)
-			: base (raw)
-		{
+			Gtk.Menu menu = CreateMenu ();
 			
-		}
-		
-		public MenuCreator MenuCreator {
-			get { return creator; }
-			set { creator = value; }
-		}
-		
-		protected override void OnClicked ()
-		{
-			base.OnClicked ();
-			
-			if (creator != null) {
-				Gtk.Menu menu = creator (this);
+			if (menu != null) {
+				isOpen = true;
 				
-				if (menu != null) {
-					isOpen = true;
+				//make sure the button looks depressed
+				Gtk.ReliefStyle oldRelief = Widget.Relief;
+				Widget.Relief = Gtk.ReliefStyle.Normal;
+				
+				//clean up after the menu's done
+				menu.Hidden += delegate {
+					Widget.Relief = oldRelief ;
+					isOpen = false;
+					((Gtk.Widget)Widget).State = Gtk.StateType.Normal;
 					
-					//make sure the button looks depressed
-					Gtk.ReliefStyle oldRelief = this.Relief;
-					this.Relief = Gtk.ReliefStyle.Normal;
-					
-					//clean up after the menu's done
-					menu.Hidden += delegate {
-						this.Relief = oldRelief ;
-						isOpen = false;
-						this.State = Gtk.StateType.Normal;
-						
-						//FIXME: for some reason the menu's children don't get activated if we destroy 
-						//directly here, so use a timeout to delay it
-						GLib.Timeout.Add (100, delegate {
-							//menu.Destroy ();
-							return false;
-						});
-					};
-					menu.Popup (null, null, PositionFunc, 0, Gtk.Global.CurrentEventTime);
-				}
+					//FIXME: for some reason the menu's children don't get activated if we destroy 
+					//directly here, so use a timeout to delay it
+					GLib.Timeout.Add (100, delegate {
+						//menu.Destroy ();
+						return false;
+					});
+				};
+				menu.Popup (null, null, PositionFunc, 0, Gtk.Global.CurrentEventTime);
 			}
-			
 		}
-		
-		protected override void OnStateChanged (Gtk.StateType previous_state)
+
+		void HandleStateChanged (object o, Gtk.StateChangedArgs args)
 		{
-			base.OnStateChanged (previous_state);
-			
+			Gtk.Widget w = (Gtk.Widget)Widget;
 			//while the menu's open, make sure the button looks depressed
-			if (isOpen && this.State != Gtk.StateType.Active)
-				this.State = Gtk.StateType.Active;
+			if (isOpen && w.State != Gtk.StateType.Active)
+				w.State = Gtk.StateType.Active;
 		}
-		
+
 		void PositionFunc (Gtk.Menu mn, out int x, out int y, out bool push_in)
 		{
-			this.GdkWindow.GetOrigin (out x, out y);
-			Gdk.Rectangle rect = this.Allocation;
+			Gtk.Widget w = (Gtk.Widget)Widget;
+			w.GdkWindow.GetOrigin (out x, out y);
+			Gdk.Rectangle rect = w.Allocation;
 			x += rect.X;
 			y += rect.Y + rect.Height;
 			
 			//if the menu would be off the bottom of the screen, "drop" it upwards
-			if (y + mn.Requisition.Height > this.Screen.Height) {
+			if (y + mn.Requisition.Height > w.Screen.Height) {
 				y -= mn.Requisition.Height;
 				y -= rect.Height;
 			}
@@ -142,13 +103,14 @@ namespace Xwt.GtkBackend
 			push_in = true;
 		}
 		
-		protected override void OnDestroyed ()
+		Gtk.Menu CreateMenu ()
 		{
-			creator = null;
-			base.OnDestroyed ();
+			MenuBackend m = null;
+			Toolkit.Invoke (delegate {
+				m = (MenuBackend) EventSink.OnCreateMenu ();
+			});
+			return m != null ? m.Menu : null;
 		}
 	}
-	
-	delegate Gtk.Menu MenuCreator (InternalMenuButton button);
 }
 
