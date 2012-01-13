@@ -48,6 +48,10 @@ namespace Xwt.GtkBackend
 		{
 		}
 		
+		public HeaderBox (IntPtr p): base (p)
+		{
+		}
+		
 		public HeaderBox (int topMargin, int bottomMargin, int leftMargin, int rightMargin)
 		{
 			SetMargins (topMargin, bottomMargin, leftMargin, rightMargin);
