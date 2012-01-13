@@ -94,6 +94,26 @@ namespace Xwt
 		/// if the timer can be discarded.
 		/// The execution of the funciton can be canceled by disposing the returned object.
 		/// </remarks>
+		public static IDisposable TimeoutInvoke (int ms, Func<bool> action)
+		{
+			return TimeoutInvoke (TimeSpan.FromMilliseconds (ms), action);
+		}
+		
+		/// <summary>
+		/// Invokes an action in the GUI thread after the provided time span
+		/// </summary>
+		/// <returns>
+		/// A timer object
+		/// </returns>
+		/// <param name='action'>
+		/// The action to execute.
+		/// </param>
+		/// <remarks>
+		/// This method schedules the execution of the provided function. The function
+		/// must return 'true' if it has to be executed again after the time span, or 'false'
+		/// if the timer can be discarded.
+		/// The execution of the funciton can be canceled by disposing the returned object.
+		/// </remarks>
 		public static IDisposable TimeoutInvoke (TimeSpan timeSpan, Func<bool> action)
 		{
 			Timer t = new Timer ();
