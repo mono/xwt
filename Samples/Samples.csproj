@@ -66,6 +66,7 @@
     <Compile Include="Samples\Colors.cs" />
     <Compile Include="Samples\Frames.cs" />
     <Compile Include="Samples\Checkboxes.cs" />
+    <Compile Include="Samples\WidgetEvents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

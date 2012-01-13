@@ -57,9 +57,10 @@ namespace Xwt
 		EventHandler<DragCheckEventArgs> dragDropCheck;
 		EventHandler<DragEventArgs> dragDrop;
 		EventHandler dragLeave;
-		
 		EventHandler<KeyEventArgs> keyPressed;
 		EventHandler<KeyEventArgs> keyReleased;
+		EventHandler mouseEntered;
+		EventHandler mouseExited;
 		
 		EventHandler gotFocus;
 		EventHandler lostFocus;
@@ -153,6 +154,16 @@ namespace Xwt
 			{
 				Parent.OnLostFocus (EventArgs.Empty);
 			}
+			
+			public void OnMouseEntered ()
+			{
+				Parent.OnMouseEntered (EventArgs.Empty);
+			}
+			
+			public void OnMouseExited ()
+			{
+				Parent.OnMouseExited (EventArgs.Empty);
+			}
 		}
 		
 		public Widget ()
@@ -173,6 +184,8 @@ namespace Xwt
 			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyPressed");
 			MapEvent (WidgetEvent.GotFocus, typeof(Widget), "OnGotFocus");
 			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
+			MapEvent (WidgetEvent.MouseEntered, typeof(Widget), "OnMouseEntered");
+			MapEvent (WidgetEvent.MouseExited, typeof(Widget), "OnMouseExited");
 		}
 		
 		protected override void Dispose (bool disposing)
@@ -555,6 +568,30 @@ namespace Xwt
 		{
 			if (lostFocus != null)
 				lostFocus (this, args);
+		}
+		
+		/// <summary>
+		/// Called when the mouse enters the widget
+		/// </summary>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
+		protected virtual void OnMouseEntered (EventArgs args)
+		{
+			if (mouseEntered != null)
+				mouseEntered (this, args);
+		}
+		
+		/// <summary>
+		/// Called when the mouse leaves the widget
+		/// </summary>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
+		protected virtual void OnMouseExited (EventArgs args)
+		{
+			if (mouseExited != null)
+				mouseExited (this, args);
 		}
 		
 		protected static IWidgetBackend GetWidgetBackend (Widget w)
@@ -1026,6 +1063,34 @@ namespace Xwt
 			remove {
 				lostFocus -= value;
 				OnAfterEventRemove (WidgetEvent.LostFocus, lostFocus);
+			}
+		}
+
+		/// <summary>
+		/// Occurs when the mouse enters the widget
+		/// </summary>
+		public event EventHandler MouseEntered {
+			add {
+				OnBeforeEventAdd (WidgetEvent.MouseEntered, mouseEntered);
+				mouseEntered += value;
+			}
+			remove {
+				mouseEntered -= value;
+				OnAfterEventRemove (WidgetEvent.MouseEntered, mouseEntered);
+			}
+		}
+
+		/// <summary>
+		/// Occurs when the mouse exits the widget
+		/// </summary>
+		public event EventHandler MouseExited {
+			add {
+				OnBeforeEventAdd (WidgetEvent.MouseExited, mouseExited);
+				mouseExited += value;
+			}
+			remove {
+				mouseExited -= value;
+				OnAfterEventRemove (WidgetEvent.MouseExited, mouseExited);
 			}
 		}
 	}

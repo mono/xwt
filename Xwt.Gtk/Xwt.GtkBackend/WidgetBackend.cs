@@ -39,6 +39,7 @@ namespace Xwt.GtkBackend
 		Gtk.Widget widget;
 		Widget frontend;
 		Gtk.Alignment alignment;
+		Gtk.EventBox eventBox;
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
 		
@@ -96,7 +97,7 @@ namespace Xwt.GtkBackend
 		
 		public Gtk.Widget RootWidget {
 			get {
-				return alignment ?? (Gtk.Widget) Widget;
+				return alignment ?? eventBox ?? (Gtk.Widget) Widget;
 			}
 		}
 		
@@ -106,12 +107,18 @@ namespace Xwt.GtkBackend
 				Widget.Visible = value; 
 				if (alignment != null)
 					alignment.Visible = value;
+				if (eventBox != null)
+					eventBox.Visible = value;
 			}
 		}
 		
 		public virtual bool Sensitive {
 			get { return Widget.Sensitive; }
-			set { Widget.Sensitive = value; }
+			set {
+				Widget.Sensitive = value;
+				if (eventBox != null)
+					eventBox.Sensitive = value;
+			}
 		}
 		
 		public bool CanGetFocus {
@@ -252,6 +259,10 @@ namespace Xwt.GtkBackend
 			get { return RootWidget; }
 		}
 		
+		Gtk.Widget EventsRootWidget {
+			get { return eventBox ?? Widget; }
+		}
+		
 		public static Gtk.Widget GetWidget (IWidgetBackend w)
 		{
 			return w != null ? ((IGtkWidgetBackend)w).Widget : null;
@@ -261,22 +272,40 @@ namespace Xwt.GtkBackend
 		{
 			if (frontend.Margin.HorizontalSpacing == 0 && frontend.Margin.VerticalSpacing == 0) {
 				if (alignment != null) {
-					alignment.Remove (Widget);
-					GtkEngine.ReplaceChild (alignment, Widget);
+					alignment.Remove (alignment.Child);
+					GtkEngine.ReplaceChild (alignment, EventsRootWidget);
 					alignment.Destroy ();
 					alignment = null;
 				}
 			} else {
 				if (alignment == null) {
 					alignment = new Gtk.Alignment (0, 0, 1, 1);
-					GtkEngine.ReplaceChild (Widget, alignment);
-					alignment.Add (Widget);
+					GtkEngine.ReplaceChild (EventsRootWidget, alignment);
+					alignment.Add (EventsRootWidget);
 					alignment.Visible = Widget.Visible;
 				}
 				alignment.LeftPadding = (uint) frontend.Margin.Left;
 				alignment.RightPadding = (uint) frontend.Margin.Right;
 				alignment.TopPadding = (uint) frontend.Margin.Top;
 				alignment.BottomPadding = (uint) frontend.Margin.Bottom;
+			}
+		}
+		
+		void AllocEventBox ()
+		{
+			// Wraps the widget with an event box. Required for some
+			// widgets such as Label which doesn't have its own gdk window
+			
+			if (eventBox == null && Widget.IsNoWindow) {
+				eventBox = new Gtk.EventBox ();
+				eventBox.Visible = Widget.Visible;
+				eventBox.Sensitive = Widget.Sensitive;
+				if (alignment != null) {
+					alignment.Remove (alignment.Child);
+					alignment.Add (eventBox);
+				} else
+					GtkEngine.ReplaceChild (Widget, eventBox);
+				eventBox.Add (Widget);
 			}
 		}
 		
@@ -299,6 +328,16 @@ namespace Xwt.GtkBackend
 					break;
 				case WidgetEvent.LostFocus:
 					Widget.FocusOutEvent += HandleWidgetFocusOutEvent;
+					break;
+				case WidgetEvent.MouseEntered:
+					AllocEventBox ();
+					EventsRootWidget.Events |= Gdk.EventMask.EnterNotifyMask;
+					EventsRootWidget.EnterNotifyEvent += HandleEnterNotifyEvent;
+					break;
+				case WidgetEvent.MouseExited:
+					AllocEventBox ();
+					EventsRootWidget.Events |= Gdk.EventMask.LeaveNotifyMask;
+					EventsRootWidget.LeaveNotifyEvent += HandleLeaveNotifyEvent;
 					break;
 				}
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
@@ -342,6 +381,12 @@ namespace Xwt.GtkBackend
 					break;
 				case WidgetEvent.LostFocus:
 					Widget.FocusOutEvent -= HandleWidgetFocusOutEvent;
+					break;
+				case WidgetEvent.MouseEntered:
+					EventsRootWidget.EnterNotifyEvent -= HandleEnterNotifyEvent;
+					break;
+				case WidgetEvent.MouseExited:
+					EventsRootWidget.LeaveNotifyEvent -= HandleLeaveNotifyEvent;
 					break;
 				}
 				
@@ -519,6 +564,20 @@ namespace Xwt.GtkBackend
 		{
 			Toolkit.Invoke (delegate {
 				EventSink.OnGotFocus ();
+			});
+		}
+
+		void HandleLeaveNotifyEvent (object o, Gtk.LeaveNotifyEventArgs args)
+		{
+			Toolkit.Invoke (delegate {
+				EventSink.OnMouseExited ();
+			});
+		}
+
+		void HandleEnterNotifyEvent (object o, Gtk.EnterNotifyEventArgs args)
+		{
+			Toolkit.Invoke (delegate {
+				EventSink.OnMouseEntered ();
 			});
 		}
 		
