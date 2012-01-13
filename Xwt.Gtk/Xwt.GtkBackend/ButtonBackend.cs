@@ -41,7 +41,8 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Widget = new Gtk.Button ();
-			Widget.Show ();
+			base.Widget.Show ();
+			
 		}
 		
 		protected new Gtk.Button Widget {
@@ -118,9 +119,15 @@ namespace Xwt.GtkBackend
 		{
 			switch (style) {
 			case ButtonStyle.Normal:
+				SetMiniMode (false);
 				Widget.Relief = Gtk.ReliefStyle.Normal;
 				break;
 			case ButtonStyle.Flat:
+				SetMiniMode (false);
+				Widget.Relief = Gtk.ReliefStyle.None;
+				break;
+			case ButtonStyle.Borderless:
+				SetMiniMode (true);
 				Widget.Relief = Gtk.ReliefStyle.None;
 				break;
 			}
@@ -159,6 +166,46 @@ namespace Xwt.GtkBackend
 					EventSink.OnClicked ();
 				});
 			}
+		}
+		
+		bool miniMode;
+		
+		protected void SetMiniMode (bool miniMode)
+		{
+//			Gtk.Rc.ParseString ("style \"Xwt.GtkBackend.CustomButton\" {\n GtkButton::inner-border = {0,0,0,0} GtkButton::child-displacement-x = {0} GtkButton::child-displacement-y = {0}\n }\n");
+//			Gtk.Rc.ParseString ("widget \"*.Xwt.GtkBackend.CustomButton\" style  \"Xwt.GtkBackend.CustomButton\"\n");
+//			Name = "Xwt.GtkBackend.CustomButton";
+			
+			if (this.miniMode == miniMode)
+				return;
+			this.miniMode = miniMode;
+			if (miniMode) {
+				Widget.ExposeEvent += HandleExposeEvent;
+				Widget.SizeAllocated += HandleSizeAllocated;
+				Widget.SizeRequested += HandleSizeRequested;
+			}
+			Widget.QueueResize ();
+		}
+
+		void HandleSizeRequested (object o, Gtk.SizeRequestedArgs args)
+		{
+			args.Requisition = Widget.Child.SizeRequest ();
+		}
+
+		[GLib.ConnectBefore]
+		void HandleSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
+		{
+			Widget.Child.SizeAllocate (args.Allocation);
+			args.RetVal = true;
+		}
+
+		[GLib.ConnectBefore]
+		void HandleExposeEvent (object o, Gtk.ExposeEventArgs args)
+		{
+			var gc = Widget.Style.BackgroundGC (Widget.State);
+			Widget.GdkWindow.DrawRectangle (gc, true, Widget.Allocation);
+			Widget.PropagateExpose (Widget.Child, args.Event);
+			args.RetVal = true;
 		}
 	}
 }

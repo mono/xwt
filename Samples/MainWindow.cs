@@ -67,6 +67,7 @@ namespace Samples
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
 			AddSample (null, "Tables", typeof(Tables));
 			AddSample (null, "Text Entry", typeof(TextEntries));
+			AddSample (null, "WidgetEvents", typeof(WidgetEvents));
 			AddSample (null, "Windows", typeof(Windows));
 			
 			samplesTree.DataSource = store;

@@ -68,6 +68,14 @@ namespace Samples
 			
 			ToggleButton tb = new ToggleButton ("Toggle me");
 			PackStart (tb);
+			
+			var b = new Button ("Mini button");
+			b.Style = ButtonStyle.Borderless;
+			PackStart (b);
+			
+			tb = new ToggleButton ("Mini toggle");
+			tb.Style = ButtonStyle.Borderless;
+			PackStart (tb);
 		}
 	}
 }
