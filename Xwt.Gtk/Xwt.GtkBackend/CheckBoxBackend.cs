@@ -33,6 +33,7 @@ namespace Xwt.GtkBackend
 	{
 		bool allowMixed;
 		bool internalActiveUpdate;
+		bool toggleEventEnabled;
 		
 		public CheckBoxBackend ()
 		{
@@ -42,7 +43,6 @@ namespace Xwt.GtkBackend
 		{
 			Widget = new Gtk.CheckButton ();
 			Widget.Show ();
-			Widget.Clicked += HandleWidgetPreClicked;
 		}
 		
 		protected new Gtk.CheckButton Widget {
@@ -68,13 +68,22 @@ namespace Xwt.GtkBackend
 				return allowMixed;
 			}
 			set {
+				if (value)
+					UpdateToggleEventStatus (true);
 				allowMixed = value;
+				if (!value)
+					UpdateToggleEventStatus (false);
 			}
 		}
 		
 		public bool Mixed {
 			get { return Widget.Inconsistent; }
-			set { Widget.Inconsistent = value; }
+			set {
+				internalActiveUpdate = true;
+				Widget.Inconsistent = value;
+				Widget.Active = value;
+				internalActiveUpdate = false;
+			}
 		}
 		
 		public void SetContent (string label)
@@ -103,8 +112,8 @@ namespace Xwt.GtkBackend
 			base.EnableEvent (eventId);
 			if (eventId is CheckBoxEvent) {
 				switch ((CheckBoxEvent)eventId) {
+				case CheckBoxEvent.Toggled: UpdateToggleEventStatus (true); toggleEventEnabled = true; break;
 				case CheckBoxEvent.Clicked: Widget.Clicked += HandleWidgetClicked; break;
-				case CheckBoxEvent.Toggled: Widget.Toggled += HandleWidgetActivated; break;
 				}
 			}
 		}
@@ -114,14 +123,25 @@ namespace Xwt.GtkBackend
 			base.DisableEvent (eventId);
 			if (eventId is CheckBoxEvent) {
 				switch ((CheckBoxEvent)eventId) {
+				case CheckBoxEvent.Toggled: toggleEventEnabled = false; UpdateToggleEventStatus (false); break;
 				case CheckBoxEvent.Clicked: Widget.Clicked -= HandleWidgetClicked; break;
-				case CheckBoxEvent.Toggled: Widget.Toggled -= HandleWidgetActivated; break;
 				}
 			}
 		}
-
-		void HandleWidgetPreClicked (object sender, EventArgs e)
+		
+		void UpdateToggleEventStatus (bool enable)
 		{
+			if (enable && !toggleEventEnabled && !allowMixed)
+				Widget.Toggled += HandleWidgetActivated;
+			else if (!enable && !toggleEventEnabled && !allowMixed)
+				Widget.Toggled -= HandleWidgetActivated;
+		}
+		
+		void HandleWidgetActivated (object sender, EventArgs e)
+		{
+			if (internalActiveUpdate)
+				return;
+			
 			if (allowMixed) {
 				if (!Widget.Active) {
 					if (Widget.Inconsistent)
@@ -134,21 +154,19 @@ namespace Xwt.GtkBackend
 					}
 				}
 			}
-		}
-		
-		void HandleWidgetActivated (object sender, EventArgs e)
-		{
-			if (internalActiveUpdate)
-				return;
-			Toolkit.Invoke (delegate {
-				EventSink.OnToggled ();
-			});
+			
+			if (toggleEventEnabled) {
+				Toolkit.Invoke (delegate {
+					EventSink.OnToggled ();
+				});
+			}
 		}
 
 		void HandleWidgetClicked (object sender, EventArgs e)
 		{
 			if (internalActiveUpdate)
 				return;
+			
 			Toolkit.Invoke (delegate {
 				EventSink.OnClicked ();
 			});
