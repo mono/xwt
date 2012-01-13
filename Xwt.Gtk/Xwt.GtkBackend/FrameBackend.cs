@@ -57,6 +57,8 @@ namespace Xwt.GtkBackend
 			Gtk.Bin parent = paddingAlign != null ? paddingAlign : Widget;
 			if (child != null) {
 				var w = GetWidget (child);
+				if (parent.Child != null)
+					parent.Remove (parent.Child);
 				parent.Child = w;
 			} else {
 				parent.Child = null;
