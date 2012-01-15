@@ -45,6 +45,7 @@ namespace Samples
 				b2.Label = "Clicked!";
 			};
 			PackStart (b2);
+			PackStart (new Widget ());
 			
 			PackStart (new Button (Image.FromIcon (StockIcons.ZoomIn, IconSize.Medium)));
 			
