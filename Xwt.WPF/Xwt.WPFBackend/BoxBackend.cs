@@ -36,7 +36,7 @@ using Xwt.Drawing;
 
 namespace Xwt.WPFBackend
 {
-	public class BoxBackend : WidgetBackend
+	public class BoxBackend : WidgetBackend, IBoxBackend
 	{
 		public BoxBackend ()
 		{

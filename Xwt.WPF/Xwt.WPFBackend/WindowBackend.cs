@@ -51,7 +51,7 @@ namespace Xwt.WPFBackend
 
 		public void SetChild (IWidgetBackend child)
 		{
-			throw new NotImplementedException ();
+			Window.Content = ((IWpfWidgetBackend)child).Widget;
 		}
 
 		public void SetMainMenu (IMenuBackend menu)

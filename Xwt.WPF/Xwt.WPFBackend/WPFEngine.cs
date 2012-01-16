@@ -44,6 +44,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
 			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
 			WidgetRegistry.RegisterBackend (typeof (Box), typeof (BoxBackend));
+			WidgetRegistry.RegisterBackend (typeof (Label), typeof (LabelBackend));
 
 			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
 		}
