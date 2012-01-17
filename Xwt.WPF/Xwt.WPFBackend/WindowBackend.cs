@@ -51,7 +51,10 @@ namespace Xwt.WPFBackend
 
 		public void SetChild (IWidgetBackend child)
 		{
-			Window.Content = ((IWpfWidgetBackend)child).Widget;
+			var widget = ((IWpfWidgetBackend)child).Widget;
+
+			DockPanel.SetDock (widget, Dock.Bottom);
+			Window.Content = widget;
 		}
 
 		public void SetMainMenu (IMenuBackend menu)
@@ -71,6 +74,7 @@ namespace Xwt.WPFBackend
 			foreach (var item in menuBackend.Items)
 				m.Items.Add (item.MenuItem);
 
+			DockPanel.SetDock (m, Dock.Top);
 			rootPanel.Children.Add (m);
 
 			mainMenu = m;
