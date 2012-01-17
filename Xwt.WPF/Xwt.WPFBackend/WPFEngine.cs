@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
+//       Luis Reis <luiscubal@gmail.com>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
+// Copyright (c) 2012 Luís Reis
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +47,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
 			WidgetRegistry.RegisterBackend (typeof (Box), typeof (BoxBackend));
 			WidgetRegistry.RegisterBackend (typeof (Label), typeof (LabelBackend));
+			WidgetRegistry.RegisterBackend (typeof (Button), typeof(ButtonBackend));
 
 			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
 		}
