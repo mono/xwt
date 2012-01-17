@@ -62,16 +62,17 @@ namespace Xwt
 		
 		protected override void InsertItem (int index, object item)
 		{
-			base.InsertItem (index, item);
 			store.InsertRowBefore (index);
 			if (item is ItemWithLabel) {
 				var itl = (ItemWithLabel) item;
 				store.SetValue (index, labelField, itl.Label);
 				store.SetValue (index, dataField, itl.Item);
+				item = itl.Item;
 			} else {
 				store.SetValue (index, labelField, item.ToString ());
 				store.SetValue (index, dataField, item);
 			}
+			base.InsertItem (index, item);
 		}
 		
 		protected override void RemoveItem (int index)
