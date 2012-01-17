@@ -30,7 +30,75 @@ using System.Collections.ObjectModel;
 
 namespace Xwt
 {
-	public sealed class ItemCollection: Collection<Object>, IListDataSource
+	// This implementation is a workaround to a Windows GTK# bug,
+	// which crashes when using custom model implementations.
+	// I'll switch to the other version when the bug is fixed
+	
+	public sealed class ItemCollection: Collection<Object>
+	{
+		ListStore store;
+		DataField<string> labelField = new DataField<string> ();
+		DataField<object> dataField = new DataField<object> ();
+		
+		class ItemWithLabel {
+			public object Item;
+			public string Label;
+		}
+		
+		internal ItemCollection ()
+		{
+			store = new ListStore (labelField, dataField);
+		}
+		
+		public void Add (object item, string label)
+		{
+			Add (new ItemWithLabel () { Item = item, Label = label });
+		}
+
+		public void Insert (int index, object item, string label)
+		{
+			Insert (index, new ItemWithLabel () { Item = item, Label = label });
+		}
+		
+		protected override void InsertItem (int index, object item)
+		{
+			base.InsertItem (index, item);
+			store.InsertRowBefore (index);
+			if (item is ItemWithLabel) {
+				var itl = (ItemWithLabel) item;
+				store.SetValue (index, labelField, itl.Label);
+				store.SetValue (index, dataField, itl.Item);
+			} else {
+				store.SetValue (index, labelField, item.ToString ());
+				store.SetValue (index, dataField, item);
+			}
+		}
+		
+		protected override void RemoveItem (int index)
+		{
+			base.RemoveItem (index);
+			store.RemoveRow (index);
+		}
+		
+		protected override void SetItem (int index, object item)
+		{
+			base.SetItem (index, item);
+			store.SetValue (index, dataField, item);
+		}
+		
+		protected override void ClearItems ()
+		{
+			base.ClearItems ();
+			while (store.RowCount > 0)
+				store.RemoveRow (0);
+		}
+
+		internal IListDataSource DataSource {
+			get { return store; }
+		}
+	}
+	
+/*	public sealed class ItemCollection: Collection<Object>, IListDataSource
 	{
 		List<string> labels;
 		
@@ -110,6 +178,10 @@ namespace Xwt
 			}
 		}
 
+		internal IListDataSource DataSource {
+			get { return this; }
+		}
+		
 		#region IListViewSource implementation
 		object IListDataSource.GetValue (int row, int column)
 		{
@@ -143,6 +215,6 @@ namespace Xwt
 			}
 		}
 		#endregion
-	}
+	}*/
 }
 

@@ -32,6 +32,7 @@ namespace Xwt
 	{
 		CellViewCollection views;
 		IListDataSource source;
+		ItemCollection itemCollection;
 		
 		protected new class EventSink: Widget.EventSink, IComboBoxEventSink, ICellContainer
 		{
@@ -71,12 +72,14 @@ namespace Xwt
 		
 		public ItemCollection Items {
 			get {
-				if (source == null)
-					ItemsSource = new ItemCollection ();
-				ItemCollection col = source as ItemCollection;
-				if (col == null)
-					throw new InvalidOperationException ("The Items collection is not available when a custom items source is set");
-				return col;
+				if (itemCollection == null) {
+					itemCollection = new ItemCollection ();
+					ItemsSource = itemCollection.DataSource;
+				} else {
+					if (ItemsSource != itemCollection.DataSource)
+						throw new InvalidOperationException ("The Items collection can't be used when a custom DataSource is set");
+				}
+				return itemCollection;
 			}
 		}
 		
