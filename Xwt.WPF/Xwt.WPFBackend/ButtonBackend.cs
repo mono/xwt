@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Media;
 using SWC = System.Windows.Controls;
 
 using Xwt.Backends;
@@ -51,7 +52,24 @@ namespace Xwt.WPFBackend
 		}
 
 		public void SetButtonStyle(ButtonStyle style) {
-			//TODO
+			switch (style)
+			{
+				case ButtonStyle.Normal:
+					Button.ClearValue(SWC.Button.BackgroundProperty);
+					Button.ClearValue(SWC.Button.BorderThicknessProperty);
+					Button.ClearValue(SWC.Button.BorderBrushProperty);
+					break;
+				case ButtonStyle.Flat:
+					Button.Background = SystemColors.ControlBrush;
+					Button.ClearValue(SWC.Button.BorderThicknessProperty);
+					Button.ClearValue(SWC.Button.BorderBrushProperty);
+					break;
+				case ButtonStyle.Borderless:
+					Button.ClearValue(SWC.Button.BackgroundProperty);
+					Button.BorderThickness = new Thickness(0);
+					Button.BorderBrush = new SolidColorBrush(Colors.Transparent);
+					break;
+			}
 		}
 
 		public void SetButtonType(ButtonType type) {
