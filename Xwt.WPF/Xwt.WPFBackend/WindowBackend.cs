@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
+//       Luís Reis <luiscubal@gmail.com>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
+// Copyright (c) 2012 Luís Reis
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,8 +40,9 @@ namespace Xwt.WPFBackend
 	public class WindowBackend : WindowFrameBackend, IWindowBackend
 	{
 		DockPanel rootPanel;
-		System.Windows.Controls.Menu mainMenu;
+		public System.Windows.Controls.Menu mainMenu;
 		MenuBackend mainMenuBackend;
+		FrameworkElement widget;
 
 		public WindowBackend ()
 		{
@@ -51,20 +54,24 @@ namespace Xwt.WPFBackend
 
 		public void SetChild (IWidgetBackend child)
 		{
-			var widget = ((IWpfWidgetBackend)child).Widget;
+			if (widget != null)
+				rootPanel.Children.Remove(widget);
+			widget = ((IWpfWidgetBackend)child).Widget;
 
 			DockPanel.SetDock (widget, Dock.Bottom);
-			Window.Content = widget;
+			rootPanel.Children.Add(widget);
 		}
 
 		public void SetMainMenu (IMenuBackend menu)
 		{
+			if (mainMenu != null) {
+				mainMenuBackend.ParentWindow = null;
+				rootPanel.Children.Remove (mainMenu);
+			}
+		
 			if (menu == null) {
-				if (mainMenu != null) {
-					rootPanel.Children.Remove (mainMenu);
-					mainMenu = null;
-					mainMenuBackend = null;
-				}
+				mainMenu = null;
+				mainMenuBackend = null;
 				return;
 			}
 
@@ -79,6 +86,7 @@ namespace Xwt.WPFBackend
 
 			mainMenu = m;
 			mainMenuBackend = menuBackend;
+			mainMenuBackend.ParentWindow = this;
 		}
 
 		public void SetPadding (double left, double top, double right, double bottom)
