@@ -84,7 +84,6 @@ namespace Xwt
 
 		internal void NotifyFinished (DragFinishedEventArgs args)
 		{
-			Console.WriteLine ("Notify finished " + args.DeleteSource);
 			if (Finished != null)
 				Finished (this, args);
 		}

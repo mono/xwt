@@ -751,7 +751,6 @@ namespace Xwt.GtkBackend
 
 		void HandleDragBegin (object o, Gtk.DragBeginArgs args)
 		{
-			Console.WriteLine ("Begin drag");
 			Widget.DragEnd += HandleWidgetDragEnd;
 			Widget.DragFailed += HandleDragFailed;
 			Widget.DragDataDelete += HandleDragDataDelete;

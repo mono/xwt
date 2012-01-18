@@ -90,7 +90,6 @@ namespace Xwt.GtkBackend
 			var pix = (Gdk.Pixbuf)handle;
 			Gdk.Pixbuf res = new Gdk.Pixbuf (pix.Colorspace, pix.HasAlpha, pix.BitsPerSample, width, height);
 			res.Fill (0);
-			Console.WriteLine ("pp:" + srcX + " " + srcY + " " + width + " " + height);
 			pix.CopyArea (srcX, srcY, width, height, res, 0, 0);
 			return res;
 		}
