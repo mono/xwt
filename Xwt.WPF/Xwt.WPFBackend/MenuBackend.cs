@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
+//       Luís Reis <luiscubal@gmail.com>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
+// Copyright (c) 2012 Luís Reis
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -54,12 +56,19 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
+		public WindowBackend ParentWindow {
+			get;
+			set;
+		}
+
 		public void InsertItem (int index, IMenuItemBackend item)
 		{
 			var itemBackend = (MenuItemBackend)item;
 			items.Insert (index, itemBackend);
 			if (ParentItem != null)
 				ParentItem.MenuItem.Items.Insert (index, itemBackend.MenuItem);
+			else if (ParentWindow != null)
+				ParentWindow.mainMenu.Items.Insert (index, itemBackend.MenuItem);
 		}
 
 		public void RemoveItem (IMenuItemBackend item)
@@ -68,6 +77,8 @@ namespace Xwt.WPFBackend
 			items.Remove (itemBackend);
 			if (ParentItem != null)
 				ParentItem.MenuItem.Items.Remove (itemBackend.MenuItem);
+			else if (ParentWindow != null)
+				ParentWindow.mainMenu.Items.Remove (itemBackend.MenuItem);
 		}
 
 		public void RemoveFromParentItem ()
