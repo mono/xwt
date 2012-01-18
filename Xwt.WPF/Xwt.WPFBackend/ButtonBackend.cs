@@ -31,6 +31,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using SWC = System.Windows.Controls;
+using SWMI = System.Windows.Media.Imaging;
 
 using Xwt.Backends;
 
@@ -77,10 +78,25 @@ namespace Xwt.WPFBackend
 		}
 
 		public void SetContent(string label, object imageBackend, ContentPosition position) {
-			Button.Content = label;
+			if (imageBackend == null)
+			{
+				Button.Content = label;
+			}
+			else
+			{
+				SWC.DockPanel grid = new SWC.DockPanel();
 
-			//TODO imageBackend
-			//TODO position
+				SWC.Image imageCtrl = new SWC.Image();
+				imageCtrl.Source = (SWMI.BitmapSource)imageBackend;
+				SWC.DockPanel.SetDock (imageCtrl, DataConverter.ToWpfDock (position));
+				grid.Children.Add(imageCtrl);
+
+				SWC.Label labelCtrl = new SWC.Label();
+				labelCtrl.Content = label;
+				grid.Children.Add (labelCtrl);
+
+				Button.Content = grid;
+			}
 		}
 
 		public override void EnableEvent(object eventId)

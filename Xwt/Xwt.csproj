@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,33 +38,63 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Xwt\Widget.cs" />
-    <Compile Include="Xwt\Window.cs" />
-    <Compile Include="Xwt\Button.cs" />
-    <Compile Include="Xwt\Label.cs" />
-    <Compile Include="Xwt.Engine\WidgetRegistry.cs" />
+    <Compile Include="Xwt\Widget.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\Window.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\Button.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\Label.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt.Engine\WidgetRegistry.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IWidgetBackend.cs" />
     <Compile Include="Xwt.Backends\ILabelBackend.cs" />
     <Compile Include="Xwt.Backends\IWindowBackend.cs" />
     <Compile Include="Xwt\Application.cs" />
     <Compile Include="Xwt.Backends\EngineBackend.cs" />
     <Compile Include="Xwt.Backends\IBackend.cs" />
-    <Compile Include="Xwt\XwtComponent.cs" />
-    <Compile Include="Xwt\Box.cs" />
+    <Compile Include="Xwt\XwtComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\Box.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt\WidgetCollection.cs" />
     <Compile Include="Xwt.Backends\IBoxBackend.cs" />
-    <Compile Include="Xwt\HBox.cs" />
-    <Compile Include="Xwt\VBox.cs" />
-    <Compile Include="Xwt\Table.cs" />
+    <Compile Include="Xwt\HBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\VBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\Table.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IButtonBackend.cs" />
-    <Compile Include="Xwt\Notebook.cs" />
+    <Compile Include="Xwt\Notebook.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\INotebookBackend.cs" />
-    <Compile Include="Xwt\Paned.cs" />
-    <Compile Include="Xwt\VPaned.cs" />
-    <Compile Include="Xwt\HPaned.cs" />
+    <Compile Include="Xwt\Paned.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\VPaned.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\HPaned.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IPanedBackend.cs" />
     <Compile Include="Xwt\HScale.cs" />
-    <Compile Include="Xwt\TreeView.cs" />
+    <Compile Include="Xwt\TreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt\DataStore.cs" />
     <Compile Include="Xwt\SizeRequestMode.cs" />
     <Compile Include="Xwt\Rectangle.cs" />
@@ -73,7 +103,9 @@
     <Compile Include="Xwt\WidgetSize.cs" />
     <Compile Include="Xwt\Alignment.cs" />
     <Compile Include="Xwt.Drawing\Image.cs" />
-    <Compile Include="Xwt\TreeStore.cs" />
+    <Compile Include="Xwt\TreeStore.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt\DataField.cs" />
     <Compile Include="Xwt\TreeNavigator.cs" />
     <Compile Include="Xwt\TreePosition.cs" />
@@ -91,7 +123,9 @@
     <Compile Include="Xwt.Drawing\Context.cs" />
     <Compile Include="Xwt\Distance.cs" />
     <Compile Include="Xwt.Backends\IContextBackendHandler.cs" />
-    <Compile Include="Xwt\Canvas.cs" />
+    <Compile Include="Xwt\Canvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\ICanvasBackend.cs" />
     <Compile Include="Xwt.Drawing\Color.cs" />
     <Compile Include="Xwt.Drawing\HslColor.cs" />
@@ -108,17 +142,27 @@
     <Compile Include="Xwt\SelectionMode.cs" />
     <Compile Include="Xwt\ListViewColumn.cs" />
     <Compile Include="Xwt\ListViewColumnCollection.cs" />
-    <Compile Include="Xwt\ListView.cs" />
+    <Compile Include="Xwt\ListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IListViewBackend.cs" />
     <Compile Include="Xwt.Backends\IColumnContainerBackend.cs" />
-    <Compile Include="Xwt\ListStore.cs" />
+    <Compile Include="Xwt\ListStore.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IListStoreBackend.cs" />
     <Compile Include="Xwt.Backends\ITableViewBackend.cs" />
     <Compile Include="Xwt\CheckBoxCellView.cs" />
-    <Compile Include="Xwt.Design\DesignerSurface.cs" />
+    <Compile Include="Xwt.Design\DesignerSurface.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IDesignerSurfaceBackend.cs" />
-    <Compile Include="Xwt\Menu.cs" />
-    <Compile Include="Xwt\MenuItem.cs" />
+    <Compile Include="Xwt\Menu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\MenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt\MenuItemCollection.cs" />
     <Compile Include="Xwt.Backends\IMenuBackend.cs" />
     <Compile Include="Xwt.Backends\IMenuItemBackend.cs" />
@@ -128,62 +172,84 @@
     <Compile Include="Xwt\DragDropAction.cs" />
     <Compile Include="Xwt\DragOperation.cs" />
     <Compile Include="Xwt\DragEventArgs.cs" />
-    <Compile Include="Xwt\ScrollView.cs" />
+    <Compile Include="Xwt\ScrollView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IScrollViewBackend.cs" />
     <Compile Include="Xwt\ButtonStyle.cs" />
     <Compile Include="Xwt\StockIcons.cs" />
     <Compile Include="Xwt\IconSize.cs" />
-    <Compile Include="Xwt\ComboBox.cs" />
+    <Compile Include="Xwt\ComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt\ItemCollection.cs" />
     <Compile Include="Xwt.Backends\IComboBoxBackend.cs" />
     <Compile Include="Xwt\Command.cs" />
     <Compile Include="Xwt\IListDataSource.cs" />
     <Compile Include="Xwt\ITreeDataSource.cs" />
-    <Compile Include="Xwt\Dialog.cs" />
+    <Compile Include="Xwt\Dialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\ICustomWidgetBackend.cs" />
     <Compile Include="Xwt\PopupWindow.cs" />
-    <Compile Include="Xwt\MenuButton.cs" />
+    <Compile Include="Xwt\MenuButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IMenuButtonBackend.cs" />
-    <Compile Include="Xwt\TextEntry.cs" />
+    <Compile Include="Xwt\TextEntry.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\ITextEntryBackend.cs" />
-    <Compile Include="Xwt\ToggleButton.cs" />
+    <Compile Include="Xwt\ToggleButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IToggleButtonBackend.cs" />
-    <Compile Include="Xwt\ImageView.cs" />
+    <Compile Include="Xwt\ImageView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IImageViewBackend.cs" />
     <Compile Include="Xwt\MessageDialog.cs" />
     <Compile Include="Xwt.Backends\IAlertDialogBackend.cs" />
     <Compile Include="Xwt\Key.cs" />
     <Compile Include="Xwt\ModifierKeys.cs" />
     <Compile Include="Xwt\KeyEventArgs.cs" />
-    <Compile Include="Xwt\WindowFrame.cs" />
+    <Compile Include="Xwt\WindowFrame.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IWindowFrameBackend.cs" />
-    <Compile Include="Xwt\CheckBox.cs" />
+    <Compile Include="Xwt\CheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\ICheckBoxBackend.cs" />
     <Compile Include="Xwt\ContentPosition.cs" />
-    <Compile Include="Xwt\Frame.cs" />
+    <Compile Include="Xwt\Frame.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IFrameBackend.cs" />
-    <Compile Include="Xwt\Separator.cs" />
+    <Compile Include="Xwt\Separator.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\ISeparatorBackend.cs" />
-    <Compile Include="Xwt\HSeparator.cs" />
-    <Compile Include="Xwt\VSeparator.cs" />
+    <Compile Include="Xwt\HSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\VSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt\ItemSeparator.cs" />
     <Compile Include="Xwt.Backends\ICollectionListener.cs" />
     <Compile Include="Xwt.Backends\IDialogBackend.cs" />
     <Compile Include="Xwt\DialogButtonCollection.cs" />
-    <Compile Include="Xwt\ComboBoxEntry.cs" />
+    <Compile Include="Xwt\ComboBoxEntry.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.Engine\Toolkit.cs" />
     <Compile Include="Xwt\TreeViewStatus.cs" />
     <Compile Include="Xwt\Clipboard.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Xwt\" />
-    <Folder Include="Xwt.Engine\" />
-    <Folder Include="Xwt.Backends\" />
-    <Folder Include="Xwt.Drawing\" />
-    <Folder Include="Xwt.Design\" />
-  </ItemGroup>
+  <ItemGroup />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
