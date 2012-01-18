@@ -33,6 +33,7 @@ namespace Xwt.GtkBackend
 	public abstract class TableStoreBackend
 	{
 		Gtk.TreeModel store;
+		Type[] types;
 		
 		public Gtk.TreeModel Store {
 			get {
@@ -42,10 +43,12 @@ namespace Xwt.GtkBackend
 
 		public void Initialize (Type[] columnTypes)
 		{
-			Type[] types = new Type[columnTypes.Length];
+			types = new Type[columnTypes.Length];
 			for (int n=0; n<types.Length; n++) {
 				if (columnTypes [n] == typeof(Image))
 					types [n] = typeof(Gdk.Pixbuf);
+				else if (columnTypes [n] == typeof(Object))
+					types [n] = typeof(ObjectWrapper);
 				else
 					types [n] = columnTypes [n];
 			}
@@ -60,7 +63,9 @@ namespace Xwt.GtkBackend
 
 		public void SetValue (Gtk.TreeIter it, int column, object value)
 		{
-			if (value is string)
+			if (types [column] == typeof(ObjectWrapper) && value != null)
+				store.SetValue (it, column, new ObjectWrapper (value));
+			else if (value is string)
 				store.SetValue (it, column, (string)value);
 			else if (value is Image)
 				store.SetValue (it, column, (Gdk.Pixbuf)WidgetRegistry.GetBackend (value));
@@ -75,8 +80,20 @@ namespace Xwt.GtkBackend
 				return WidgetRegistry.CreateFrontend<Image> (val);
 			else if (val is DBNull)
 				return null;
+			else if (val is ObjectWrapper)
+				return ((ObjectWrapper)val).Object;
 			else
 				return val;
+		}
+	}
+	
+	class ObjectWrapper
+	{
+		public object Object;
+		
+		public ObjectWrapper (object ob)
+		{
+			Object = ob;
 		}
 	}
 }
