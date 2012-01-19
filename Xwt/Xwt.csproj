@@ -175,6 +175,8 @@
     <Compile Include="Xwt.Engine\Toolkit.cs" />
     <Compile Include="Xwt\TreeViewStatus.cs" />
     <Compile Include="Xwt\Clipboard.cs" />
+    <Compile Include="Xwt.Backends\IClipboardBackend.cs" />
+    <Compile Include="Xwt\PointerButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

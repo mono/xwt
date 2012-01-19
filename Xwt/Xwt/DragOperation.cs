@@ -90,7 +90,7 @@ namespace Xwt
 		
 	}
 	
-	public class TransferDataSource
+	public sealed class TransferDataSource
 	{
 		public DataRequestDelegate DataRequestCallback { get; set; }
 		Dictionary<string,object> data = new Dictionary<string,object> ();
@@ -99,12 +99,7 @@ namespace Xwt
 		{
 			if (value == null)
 				throw new ArgumentNullException ("value");
-			if (value is string)
-				data [TransferDataType.Text] = value;
-			else if (value is Xwt.Drawing.Image)
-				data [TransferDataType.Image] = value;
-			else
-				data [value.GetType ().FullName] = value;
+			data [TransferDataType.GetDataType (value.GetType ())] = value;
 		}
 		
 		public void AddType (string type)
@@ -114,7 +109,7 @@ namespace Xwt
 		
 		public void AddType (Type type)
 		{
-			data [type.FullName] = null;
+			data [TransferDataType.GetDataType (type)] = null;
 		}
 		
 		public string[] DataTypes {
@@ -198,12 +193,12 @@ namespace Xwt
 		
 		T ITransferData.GetValue<T> ()
 		{
-			object ob = GetValue (typeof(T).FullName);
+			object ob = GetValue (TransferDataType.GetDataType (typeof(T)));
 			if (ob == null || ob.GetType () == typeof(Type))
 				return (T) ob;
 			if (ob is byte[]) {
 				T val = (T) TransferDataSource.DeserializeValue ((byte[])ob);
-				data[typeof(T).FullName] = val;
+				data[TransferDataType.GetDataType (typeof(T))] = val;
 				return val;
 			}
 			return (T) ob;
@@ -251,6 +246,16 @@ namespace Xwt
 		public const string Text = "text";
 		public const string Rtf = "rtf";
 		public const string Image = "image";
+		
+		public static string GetDataType (Type type)
+		{
+			if (type == typeof(string))
+				return TransferDataType.Text;
+			else if (type == typeof(Xwt.Drawing.Image))
+				return TransferDataType.Image;
+			else
+				return type.AssemblyQualifiedName;
+		}
 	}
 	
 	public delegate object DataRequestDelegate (string type);

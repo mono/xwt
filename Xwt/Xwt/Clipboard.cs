@@ -24,13 +24,151 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
+using Xwt.Backends;
+using Xwt.Drawing;
+using Xwt.Engine;
 
 namespace Xwt
 {
 	public static class Clipboard
 	{
-		public static void Copy (TransferDataSource data)
+		static IClipboardBackend _backend;
+		
+		static IClipboardBackend Backend {
+			get {
+				if (_backend == null)
+					_backend = WidgetRegistry.CreateSharedBackend<IClipboardBackend> (typeof(Clipboard));
+				return _backend;
+			}
+		}
+		
+		public static void Clear ()
 		{
+			Backend.Clear ();
+		}
+		
+		public static bool ContainsData (string type)
+		{
+			return Backend.IsTypeAvailable (type);
+		}
+		
+		public static bool ContainsText ()
+		{
+			return ContainsData (TransferDataType.Text);
+		}
+		
+		public static bool ContainsImage ()
+		{
+			return ContainsData (TransferDataType.Image);
+		}
+		
+		public static Image GetImage ()
+		{
+			return (Image) GetData (TransferDataType.Image);
+		}
+		
+		public static IAsyncResult BeginGetImage (AsyncCallback callback, object state)
+		{
+			return Backend.BeginGetData (TransferDataType.Image, callback, state);
+		}
+		
+		public static Image EndGetImage (IAsyncResult ares)
+		{
+			return (Image) Backend.EndGetData (ares);
+		}
+		
+		public static string GetText ()
+		{
+			return (string) GetData (TransferDataType.Text);
+		}
+		
+		public static IAsyncResult BeginGetText (AsyncCallback callback, object state)
+		{
+			return Backend.BeginGetData (TransferDataType.Text, callback, state);
+		}
+		
+		public static string EndGetText (IAsyncResult ares)
+		{
+			return (string) Backend.EndGetData (ares);
+		}
+		
+		public static object GetData (string type)
+		{
+			return Backend.GetData (type);
+		}
+		
+		public static T GetData<T> ()
+		{
+			return (T) Backend.GetData (TransferDataType.GetDataType (typeof(T)));
+		}
+		
+		public static IAsyncResult BeginGetData (string type, AsyncCallback callback, object state)
+		{
+			return Backend.BeginGetData (type, callback, state);
+		}
+		
+		public static object EndGetData (IAsyncResult ares)
+		{
+			return Backend.EndGetData (ares);
+		}
+		
+		public static IAsyncResult BeginGetData<T> (AsyncCallback callback, object state)
+		{
+			return Backend.BeginGetData (TransferDataType.GetDataType (typeof(T)), callback, state);
+		}
+		
+		public static T EndGetData<T> (IAsyncResult ares)
+		{
+			return (T) Backend.EndGetData (ares);
+		}
+		
+		public static void SetText (string text)
+		{
+			Backend.SetData (TransferDataType.Text, delegate {
+				return text;
+			});
+		}
+		
+		public static void SetText (Func<string> textSource)
+		{
+			Backend.SetData (TransferDataType.Text, textSource);
+		}
+		
+		public static void SetImage (Image image)
+		{
+			Backend.SetData (TransferDataType.Image, delegate {
+				return image;
+			});
+		}
+		
+		public static void SetImage (Func<Image> imageSource)
+		{
+			Backend.SetData (TransferDataType.Image, imageSource);
+		}
+		
+		public static void SetData<T> (T data)
+		{
+			if (data == null)
+				throw new ArgumentNullException ("data");
+			SetData (TransferDataType.GetDataType (data.GetType ()), data);
+		}
+		
+		public static void SetData (string type, object data)
+		{
+			Backend.SetData (type, delegate {
+				return data;
+			});
+		}
+		
+		public static void SetData (string type, Func<object> dataSource)
+		{
+			Backend.SetData (type, dataSource);
+		}
+		
+		public static void SetData<T> (Func<T> dataSource)
+		{
+			Backend.SetData (TransferDataType.GetDataType (typeof(T)), dataSource);
 		}
 	}
 }
