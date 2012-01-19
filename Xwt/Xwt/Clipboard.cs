@@ -53,6 +53,11 @@ namespace Xwt
 			return Backend.IsTypeAvailable (type);
 		}
 		
+		public static bool ContainsData<T> ()
+		{
+			return Backend.IsTypeAvailable (TransferDataType.GetDataType (typeof(T)));
+		}
+		
 		public static bool ContainsText ()
 		{
 			return ContainsData (TransferDataType.Text);
