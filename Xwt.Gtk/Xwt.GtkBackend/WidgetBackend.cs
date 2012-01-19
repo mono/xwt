@@ -339,6 +339,21 @@ namespace Xwt.GtkBackend
 					EventsRootWidget.Events |= Gdk.EventMask.LeaveNotifyMask;
 					EventsRootWidget.LeaveNotifyEvent += HandleLeaveNotifyEvent;
 					break;
+				case WidgetEvent.ButtonPressed:
+					AllocEventBox ();
+					EventsRootWidget.Events |= Gdk.EventMask.ButtonPressMask;
+					EventsRootWidget.ButtonPressEvent += HandleButtonPressEvent;
+					break;
+				case WidgetEvent.ButtonReleased:
+					AllocEventBox ();
+					EventsRootWidget.Events |= Gdk.EventMask.ButtonReleaseMask;
+					EventsRootWidget.ButtonReleaseEvent += HandleButtonReleaseEvent;
+					break;
+				case WidgetEvent.MouseMoved:
+					AllocEventBox ();
+					EventsRootWidget.Events |= Gdk.EventMask.PointerMotionMask;
+					EventsRootWidget.MotionNotifyEvent += HandleMotionNotifyEvent;
+					break;
 				}
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
 					// Enabling a drag&drop event for the first time
@@ -387,6 +402,18 @@ namespace Xwt.GtkBackend
 					break;
 				case WidgetEvent.MouseExited:
 					EventsRootWidget.LeaveNotifyEvent -= HandleLeaveNotifyEvent;
+					break;
+				case WidgetEvent.ButtonPressed:
+					EventsRootWidget.Events &= ~Gdk.EventMask.ButtonPressMask;
+					EventsRootWidget.ButtonPressEvent -= HandleButtonPressEvent;
+					break;
+				case WidgetEvent.ButtonReleased:
+					EventsRootWidget.Events &= Gdk.EventMask.ButtonReleaseMask;
+					EventsRootWidget.ButtonReleaseEvent -= HandleButtonReleaseEvent;
+					break;
+				case WidgetEvent.MouseMoved:
+					EventsRootWidget.Events &= Gdk.EventMask.PointerMotionMask;
+					EventsRootWidget.MotionNotifyEvent -= HandleMotionNotifyEvent;
 					break;
 				}
 				
@@ -580,6 +607,44 @@ namespace Xwt.GtkBackend
 				EventSink.OnMouseEntered ();
 			});
 		}
+
+		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
+		{
+			var a = new MouseMovedEventArgs ();
+			a.X = args.Event.X;
+			a.Y = args.Event.Y;
+			Toolkit.Invoke (delegate {
+				EventSink.OnMouseMoved (a);
+			});
+		}
+
+		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
+		{
+			var a = new ButtonEventArgs ();
+			a.X = args.Event.X;
+			a.Y = args.Event.Y;
+			a.Button = (PointerButton) args.Event.Button;
+			Toolkit.Invoke (delegate {
+				EventSink.OnButtonReleased (a);
+			});
+		}
+
+		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
+		{
+			var a = new ButtonEventArgs ();
+			a.X = args.Event.X;
+			a.Y = args.Event.Y;
+			a.Button = (PointerButton) args.Event.Button;
+			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
+				a.MultiplePress = 2;
+			else if (args.Event.Type == Gdk.EventType.ThreeButtonPress)
+				a.MultiplePress = 3;
+			else
+				a.MultiplePress = 1;
+			Toolkit.Invoke (delegate {
+				EventSink.OnButtonPressed (a);
+			});
+		}
 		
 		Point lastDragPosition;
 		
@@ -679,24 +744,11 @@ namespace Xwt.GtkBackend
 		{
 			dragDataRequests--;
 			
-			string type = Util.AtomToType (args.SelectionData.Target.Name);
-			if (type == null) {
+			if (!Util.GetSelectionData (args.SelectionData, dragData)) {
 				args.RetVal = false;
 				return;
 			}
 
-			if (args.SelectionData.Length > 0) {
-				if (type == TransferDataType.Text)
-					dragData.AddText (args.SelectionData.Text);
-				else if (args.SelectionData.TargetsIncludeImage (false))
-					dragData.AddImage (WidgetRegistry.CreateFrontend<Xwt.Drawing.Image> (args.SelectionData.Pixbuf));
-				else if (type == TransferDataType.Uri) {
-					var uris = System.Text.Encoding.UTF8.GetString (args.SelectionData.Data).Split ('\n').Where (u => !string.IsNullOrEmpty(u)).Select (u => new Uri (u)).ToArray ();
-					dragData.AddUris (uris);
-				}
-				else
-					dragData.AddValue (type, args.SelectionData.Data);
-			}
 			if (dragDataRequests == 0) {
 				if (dragDataForMotion) {
 					DragOverEventArgs da = new DragOverEventArgs (lastDragPosition, dragData, ConvertDragAction (args.Context.Actions));

@@ -86,6 +86,9 @@ namespace Xwt.Backends
 		void OnLostFocus ();
 		void OnMouseEntered ();
 		void OnMouseExited ();
+		void OnButtonPressed (ButtonEventArgs args);
+		void OnButtonReleased (ButtonEventArgs args);
+		void OnMouseMoved (MouseMovedEventArgs args);
 
 		// Events
 		WidgetSize OnGetPreferredWidth ();
@@ -126,7 +129,10 @@ namespace Xwt.Backends
 		GotFocus = 1 << 11,
 		LostFocus = 1 << 12,
 		MouseEntered = 1 << 13,
-		MouseExited = 1 << 14
+		MouseExited = 1 << 14,
+		ButtonPressed = 1 << 15,
+		ButtonReleased = 1 << 16,
+		MouseMoved = 1 << 17,
 	}
 	
 	public interface DragOperationEventSink

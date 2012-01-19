@@ -44,9 +44,6 @@ namespace Xwt.GtkBackend
 			Widget.Frontend = Frontend;
 			Widget.EventSink = EventSink;
 			Widget.Events |= Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask;
-			Widget.ButtonPressEvent += HandleWidgetButtonPressEvent;
-			Widget.ButtonReleaseEvent += HandleWidgetButtonReleaseEvent;
-			Widget.MotionNotifyEvent += HandleWidgetMotionNotifyEvent;
 			Widget.SizeAllocated += HandleWidgetSizeAllocated;
 			Widget.SizeRequested += HandleSizeRequested;
 			Widget.Show ();
@@ -89,44 +86,6 @@ namespace Xwt.GtkBackend
 			args.Requisition = req;
 		}
 		
-		void HandleWidgetMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
-		{
-			var a = new MouseMovedEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
-			Toolkit.Invoke (delegate {
-				EventSink.OnMouseMoved (a);
-			});
-		}
-
-		void HandleWidgetButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
-		{
-			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
-			a.Button = (int) args.Event.Button;
-			Toolkit.Invoke (delegate {
-				EventSink.OnButtonReleased (a);
-			});
-		}
-
-		void HandleWidgetButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
-		{
-			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
-			a.Button = (int) args.Event.Button;
-			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
-				a.MultiplePress = 2;
-			else if (args.Event.Type == Gdk.EventType.ThreeButtonPress)
-				a.MultiplePress = 3;
-			else
-				a.MultiplePress = 1;
-			Toolkit.Invoke (delegate {
-				EventSink.OnButtonPressed (a);
-			});
-		}
-
 		public Rectangle Bounds {
 			get {
 				return new Rectangle (0, 0, Widget.Allocation.Width, Widget.Allocation.Height);

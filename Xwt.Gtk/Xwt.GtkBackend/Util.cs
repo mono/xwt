@@ -47,17 +47,41 @@ namespace Xwt.GtkBackend
 		{
 			foreach (var t in data.DataTypes) {
 				object val = data.GetValue (t);
-				if (val == null)
-					continue;
-				if (val is string)
-					args.SelectionData.Text = (string)data.GetValue (t);
-				else if (val is Xwt.Drawing.Image)
-					args.SelectionData.SetPixbuf ((Gdk.Pixbuf) WidgetRegistry.GetBackend (val));
-				else {
-					var at = Gdk.Atom.Intern (t, false);
-					args.SelectionData.Set (at, 0, TransferDataSource.SerializeValue (val));
-				}
+				SetSelectionData (args.SelectionData, t, val);
 			}
+		}
+		
+		public static void SetSelectionData (Gtk.SelectionData data, string atomType, object val)
+		{
+			if (val == null)
+				return;
+			if (val is string)
+				data.Text = (string)val;
+			else if (val is Xwt.Drawing.Image)
+				data.SetPixbuf ((Gdk.Pixbuf) WidgetRegistry.GetBackend (val));
+			else {
+				var at = Gdk.Atom.Intern (atomType, false);
+				data.Set (at, 0, TransferDataSource.SerializeValue (val));
+			}
+		}
+		
+		public static bool GetSelectionData (Gtk.SelectionData data, TransferDataStore target)
+		{
+			string type = Util.AtomToType (data.Target.Name);
+			if (type == null || data.Length <= 0)
+				return false;
+
+			if (type == TransferDataType.Text)
+				target.AddText (data.Text);
+			else if (data.TargetsIncludeImage (false))
+				target.AddImage (WidgetRegistry.CreateFrontend<Xwt.Drawing.Image> (data.Pixbuf));
+			else if (type == TransferDataType.Uri) {
+				var uris = System.Text.Encoding.UTF8.GetString (data.Data).Split ('\n').Where (u => !string.IsNullOrEmpty(u)).Select (u => new Uri (u)).ToArray ();
+				target.AddUris (uris);
+			}
+			else
+				target.AddValue (type, data.Data);
+			return true;
 		}
 		
 		internal static string AtomToType (string targetName)

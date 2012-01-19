@@ -114,13 +114,37 @@ namespace Xwt.Mac
 			});
 		}
 		
+		public override void RightMouseDown (NSEvent theEvent)
+		{
+			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			ButtonEventArgs args = new ButtonEventArgs ();
+			args.X = p.X;
+			args.Y = p.Y;
+			args.Button = PointerButton.Right;
+			Toolkit.Invoke (delegate {
+				eventSink.OnButtonPressed (args);
+			});
+		}
+		
+		public override void RightMouseUp (NSEvent theEvent)
+		{
+			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			ButtonEventArgs args = new ButtonEventArgs ();
+			args.X = p.X;
+			args.Y = p.Y;
+			args.Button = PointerButton.Right;
+			Toolkit.Invoke (delegate {
+				eventSink.OnButtonReleased (args);
+			});
+		}
+		
 		public override void MouseDown (NSEvent theEvent)
 		{
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
-			args.Button = theEvent.ButtonNumber + 1;
+			args.Button = PointerButton.Left;
 			Toolkit.Invoke (delegate {
 				eventSink.OnButtonPressed (args);
 			});
@@ -132,7 +156,7 @@ namespace Xwt.Mac
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
-			args.Button = theEvent.ButtonNumber + 1;
+			args.Button = (PointerButton) theEvent.ButtonNumber + 1;
 			Toolkit.Invoke (delegate {
 				eventSink.OnButtonReleased (args);
 			});

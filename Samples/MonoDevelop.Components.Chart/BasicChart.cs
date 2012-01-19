@@ -841,7 +841,7 @@ namespace MonoDevelop.Components.Chart
 		
 		protected override void OnButtonPressed (ButtonEventArgs ev)
 		{
-			if (ev.Button == 1) {
+			if (ev.Button == PointerButton.Left) {
 				foreach (ChartCursor cursor in cursors) {
 					int cx, cy;
 					GetPoint (cursor.Value, cursor.Value, out cx, out cy);

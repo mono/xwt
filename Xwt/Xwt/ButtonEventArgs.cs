@@ -34,7 +34,7 @@ namespace Xwt
 		{
 		}
 		
-		public int Button { get; set; }
+		public PointerButton Button { get; set; }
 		
 		public double X { get; set; }
 		public double Y { get; set; }

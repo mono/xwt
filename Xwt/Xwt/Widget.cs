@@ -61,6 +61,9 @@ namespace Xwt
 		EventHandler<KeyEventArgs> keyReleased;
 		EventHandler mouseEntered;
 		EventHandler mouseExited;
+		EventHandler<ButtonEventArgs> buttonPressed;
+		EventHandler<ButtonEventArgs> buttonReleased;
+		EventHandler<MouseMovedEventArgs> mouseMoved;
 		
 		EventHandler gotFocus;
 		EventHandler lostFocus;
@@ -164,6 +167,21 @@ namespace Xwt
 			{
 				Parent.OnMouseExited (EventArgs.Empty);
 			}
+			
+			public void OnButtonPressed (ButtonEventArgs args)
+			{
+				Parent.OnButtonPressed (args);
+			}
+			
+			public void OnButtonReleased (ButtonEventArgs args)
+			{
+				Parent.OnButtonReleased (args);
+			}
+			
+			public void OnMouseMoved (MouseMovedEventArgs args)
+			{
+				Parent.OnMouseMoved (args);
+			}
 		}
 		
 		public Widget ()
@@ -186,6 +204,9 @@ namespace Xwt
 			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
 			MapEvent (WidgetEvent.MouseEntered, typeof(Widget), "OnMouseEntered");
 			MapEvent (WidgetEvent.MouseExited, typeof(Widget), "OnMouseExited");
+			MapEvent (WidgetEvent.ButtonPressed, typeof(Widget), "OnButtonPressed");
+			MapEvent (WidgetEvent.ButtonReleased, typeof(Widget), "OnButtonReleased");
+			MapEvent (WidgetEvent.MouseMoved, typeof(Widget), "OnMouseMoved");
 		}
 		
 		protected override void Dispose (bool disposing)
@@ -438,7 +459,7 @@ namespace Xwt
 		
 		public void SetDragDropTarget (params Type[] types)
 		{
-			Backend.SetDragTarget (types.Select (t => t.FullName).ToArray (), DragDropAction.All);
+			Backend.SetDragTarget (types.Select (t => TransferDataType.GetDataType (t)).ToArray (), DragDropAction.All);
 		}
 		
 		public void SetDragDropTarget (DragDropAction dragAction, params string[] types)
@@ -448,7 +469,7 @@ namespace Xwt
 		
 		public void SetDragDropTarget (DragDropAction dragAction, params Type[] types)
 		{
-			Backend.SetDragTarget (types.Select (t => t.FullName).ToArray(), dragAction);
+			Backend.SetDragTarget (types.Select (t => TransferDataType.GetDataType (t)).ToArray(), dragAction);
 		}
 		
 		public void SetDragSource (params string[] types)
@@ -458,7 +479,7 @@ namespace Xwt
 		
 		public void SetDragSource (params Type[] types)
 		{
-			Backend.SetDragSource (types.Select (t => t.FullName).ToArray(), DragDropAction.All);
+			Backend.SetDragSource (types.Select (t => TransferDataType.GetDataType (t)).ToArray(), DragDropAction.All);
 		}
 		
 		public void SetDragSource (DragDropAction dragAction, params string[] types)
@@ -468,7 +489,7 @@ namespace Xwt
 		
 		public void SetDragSource (DragDropAction dragAction, params Type[] types)
 		{
-			Backend.SetDragSource (types.Select (t => t.FullName).ToArray(), dragAction);
+			Backend.SetDragSource (types.Select (t => TransferDataType.GetDataType (t)).ToArray(), dragAction);
 		}
 		
 		protected override void OnBackendCreated ()
@@ -592,6 +613,24 @@ namespace Xwt
 		{
 			if (mouseExited != null)
 				mouseExited (this, args);
+		}
+		
+		protected virtual void OnButtonPressed (ButtonEventArgs args)
+		{
+			if (buttonPressed != null)
+				buttonPressed (this, args);
+		}
+		
+		protected virtual void OnButtonReleased (ButtonEventArgs args)
+		{
+			if (buttonReleased != null)
+				buttonReleased (this, args);
+		}
+		
+		protected virtual void OnMouseMoved (MouseMovedEventArgs args)
+		{
+			if (mouseMoved != null)
+				mouseMoved (this, args);
 		}
 		
 		protected static IWidgetBackend GetWidgetBackend (Widget w)
@@ -1091,6 +1130,39 @@ namespace Xwt
 			remove {
 				mouseExited -= value;
 				OnAfterEventRemove (WidgetEvent.MouseExited, mouseExited);
+			}
+		}
+		
+		public event EventHandler<ButtonEventArgs> ButtonPressed {
+			add {
+				OnBeforeEventAdd (WidgetEvent.ButtonPressed, buttonPressed);
+				buttonPressed += value;
+			}
+			remove {
+				buttonPressed -= value;
+				OnAfterEventRemove (WidgetEvent.ButtonPressed, buttonPressed);
+			}
+		}
+		
+		public event EventHandler<ButtonEventArgs> ButtonReleased {
+			add {
+				OnBeforeEventAdd (WidgetEvent.ButtonReleased, buttonReleased);
+				buttonReleased += value;
+			}
+			remove {
+				buttonReleased -= value;
+				OnAfterEventRemove (WidgetEvent.ButtonReleased, buttonReleased);
+			}
+		}
+		
+		public event EventHandler<MouseMovedEventArgs> MouseMoved {
+			add {
+				OnBeforeEventAdd (WidgetEvent.MouseMoved, mouseMoved);
+				mouseMoved += value;
+			}
+			remove {
+				mouseMoved -= value;
+				OnAfterEventRemove (WidgetEvent.MouseMoved, mouseMoved);
 			}
 		}
 	}

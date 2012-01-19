@@ -82,21 +82,6 @@ namespace Xwt
 				}
 			}
 			
-			public void OnButtonPressed (ButtonEventArgs args)
-			{
-				((Canvas)Parent).OnButtonPressed (args);
-			}
-			
-			public void OnButtonReleased (ButtonEventArgs args)
-			{
-				((Canvas)Parent).OnButtonReleased (args);
-			}
-			
-			public void OnMouseMoved (MouseMovedEventArgs args)
-			{
-				((Canvas)Parent).OnMouseMoved (args);
-			}
-			
 			public void OnBoundsChanged ()
 			{
 				((Canvas)Parent).OnBoundsChanged ();
@@ -176,24 +161,6 @@ namespace Xwt
 			Backend.QueueDraw (rect);
 		}
 		
-		protected virtual void OnButtonPressed (ButtonEventArgs args)
-		{
-			if (ButtonPressed != null)
-				ButtonPressed (this, args);
-		}
-		
-		protected virtual void OnButtonReleased (ButtonEventArgs args)
-		{
-			if (ButtonReleased != null)
-				ButtonReleased (this, args);
-		}
-		
-		protected virtual void OnMouseMoved (MouseMovedEventArgs args)
-		{
-			if (MouseMoved != null)
-				MouseMoved (this, args);
-		}
-		
 		protected virtual void OnDraw (Context ctx)
 		{
 		}
@@ -257,10 +224,6 @@ namespace Xwt
 			base.OnPreferredSizeChanged ();
 			Backend.OnPreferredSizeChanged ();
 		}
-		
-		public event EventHandler<ButtonEventArgs> ButtonPressed;
-		public event EventHandler<ButtonEventArgs> ButtonReleased;
-		public event EventHandler<MouseMovedEventArgs> MouseMoved;
 	}
 }
 
