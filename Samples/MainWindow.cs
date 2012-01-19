@@ -49,6 +49,7 @@ namespace Samples
 			AddSample (null, "Boxes", typeof(Boxes));
 			AddSample (null, "Buttons", typeof(ButtonSample));
 			AddSample (null, "CheckBox", typeof(Checkboxes));
+			AddSample (null, "Clipboard", typeof(ClipboardSample));
 			AddSample (null, "ComboBox", typeof(ComboBoxes));
 //			AddSample (null, "Designer", typeof(Designer));
 			AddSample (null, "Drag & Drop", typeof(DragDrop));
@@ -63,6 +64,7 @@ namespace Samples
 			AddSample (null, "Images", typeof(Images));
 			AddSample (null, "Labels", typeof(Labels));
 			AddSample (null, "List View", typeof(ListView1));
+			AddSample (null, "Menu", typeof(MenuSamples));
 			AddSample (null, "Notebook", typeof(NotebookSample));
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
 			AddSample (null, "Tables", typeof(Tables));

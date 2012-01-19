@@ -67,6 +67,8 @@
     <Compile Include="Samples\Frames.cs" />
     <Compile Include="Samples\Checkboxes.cs" />
     <Compile Include="Samples\WidgetEvents.cs" />
+    <Compile Include="Samples\ClipboardSample.cs" />
+    <Compile Include="Samples\MenuSamples.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

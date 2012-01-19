@@ -53,6 +53,16 @@ namespace Xwt.Mac
 		public void DisableEvent (object eventId)
 		{
 		}
+		
+		public void Popup ()
+		{
+			throw new System.NotImplementedException ();
+		}
+		
+		public void Popup (IWidgetBackend widget, double x, double y)
+		{
+			throw new System.NotImplementedException ();
+		}
 	}
 }
 

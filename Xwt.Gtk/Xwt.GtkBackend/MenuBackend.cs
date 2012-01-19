@@ -97,6 +97,16 @@ namespace Xwt.GtkBackend
 		public void DisableEvent (object eventId)
 		{
 		}
+		
+		public void Popup ()
+		{
+			GtkWorkarounds.ShowContextMenu (Menu, null, Gdk.Rectangle.Zero);
+		}
+		
+		public void Popup (IWidgetBackend widget, double x, double y)
+		{
+			GtkWorkarounds.ShowContextMenu (Menu, ((WidgetBackend)widget).Widget, new Gdk.Rectangle ((int)x, (int)y, 0, 0));
+		}
 	}
 }
 

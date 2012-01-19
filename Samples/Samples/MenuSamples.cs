@@ -1,10 +1,10 @@
 // 
-// Menu.cs
+// MenuSamples.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,47 +23,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Backends;
+using Xwt;
 
-namespace Xwt
+namespace Samples
 {
-	public class Menu: XwtComponent
+	public class MenuSamples: VBox
 	{
-		MenuItemCollection items;
+		Menu menu;
 		
-		public Menu ()
+		public MenuSamples ()
 		{
-			items = new MenuItemCollection (this);
+			Label la = new Label ("Right click here to show the context menu");
+			menu = new Menu ();
+			menu.Items.Add (new MenuItem ("One"));
+			menu.Items.Add (new MenuItem ("Two"));
+			menu.Items.Add (new MenuItem ("Three"));
+			
+			la.ButtonPressed += HandleButtonPressed;
+			PackStart (la);
 		}
-		
-		new IMenuBackend Backend {
-			get { return (IMenuBackend) base.Backend; }
-		}
-		
-		public MenuItemCollection Items {
-			get { return items; }
-		}
-		
-		internal void InsertItem (int n, MenuItem item)
+
+		void HandleButtonPressed (object sender, ButtonEventArgs e)
 		{
-			Backend.InsertItem (n, (IMenuItemBackend)GetBackend (item));
-		}
-		
-		internal void RemoveItem (MenuItem item)
-		{
-			Backend.RemoveItem ((IMenuItemBackend)GetBackend (item));
-		}
-		
-		public void Popup ()
-		{
-			Backend.Popup ();
-		}
-		
-		public void Popup (Widget parentWidget, double x, double y)
-		{
-			Backend.Popup ((IWidgetBackend)GetBackend (parentWidget), x, y);
+			if (e.Button == PointerButton.Right)
+				menu.Popup ();
 		}
 	}
 }

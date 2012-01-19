@@ -32,6 +32,8 @@ namespace Xwt.Backends
 	{
 		void InsertItem (int index, IMenuItemBackend menuItem);
 		void RemoveItem (IMenuItemBackend menuItem);
+		void Popup ();
+		void Popup (IWidgetBackend widget, double x, double y);
 	}
 }
 
