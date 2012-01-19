@@ -53,6 +53,8 @@ namespace Xwt
 		public static Command Remove = new Command ("Remove");
 		public static Command Clear = new Command ("Clear");
 		public static Command Copy = new Command ("Copy");
+		public static Command Cut = new Command ("Cut");
+		public static Command Paste = new Command ("Paste");
 		public static Command Save = new Command ("Save");
 		public static Command SaveAs = new Command ("SaveAs");
 		public static Command Stop = new Command ("Stop");
