@@ -50,6 +50,13 @@ namespace Xwt
 			eventSink = new EventSink () { Parent = this };
 		}
 		
+		public MenuItem (Command command): this ()
+		{
+			Label = command.Label;
+			if (!string.IsNullOrEmpty (command.Icon))
+				Image = Image.FromIcon (command.Icon, IconSize.Small);
+		}
+		
 		public MenuItem (string label): this ()
 		{
 			Label = label;
