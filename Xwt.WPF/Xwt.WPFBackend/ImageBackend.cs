@@ -34,9 +34,9 @@ namespace Xwt.WPFBackend
 {
 	public class ImageBackend: ImageBackendHandler
 	{
-		public override object LoadFromStream(Stream stream)
+		public override object LoadFromStream (Stream stream)
 		{
-			var img = new SWMI.BitmapImage();
+			var img = new SWMI.BitmapImage ();
 			img.BeginInit();
 			img.CacheOption = SWMI.BitmapCacheOption.OnLoad;
 			img.StreamSource = stream;
@@ -45,80 +45,80 @@ namespace Xwt.WPFBackend
 			return img;
 		}
 
-		public override object LoadFromIcon(string id, IconSize size)
+		public override object LoadFromIcon (string id, IconSize size)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException ();
 		}
 
-		private static double WidthToDPI(SWMI.BitmapSource img, double pixels)
+		private static double WidthToDPI (SWMI.BitmapSource img, double pixels)
 		{
 			return pixels * 96 / img.DpiX;
 		}
 
-		private static double HeightToDPI(SWMI.BitmapSource img, double pixels)
+		private static double HeightToDPI (SWMI.BitmapSource img, double pixels)
 		{
 			return pixels * 96 / img.DpiY;
 		}
 
-		public override Size GetSize(object handle)
+		public override Size GetSize (object handle)
 		{
 			var img = (SWMI.BitmapSource)handle;
 
-			return new Size(img.PixelWidth, img.PixelHeight);
+			return new Size (img.PixelWidth, img.PixelHeight);
 		}
 
-		public override object Resize(object handle, double width, double height)
+		public override object Resize (object handle, double width, double height)
 		{
 			var oldImg = (SWMI.BitmapSource)handle;
 
-			width = WidthToDPI(oldImg, width);
-			height = HeightToDPI(oldImg, height);
+			width = WidthToDPI (oldImg, width);
+			height = HeightToDPI (oldImg, height);
 
-			SWM.DrawingVisual visual = new SWM.DrawingVisual();
-			using (SWM.DrawingContext ctx = visual.RenderOpen())
+			SWM.DrawingVisual visual = new SWM.DrawingVisual ();
+			using (SWM.DrawingContext ctx = visual.RenderOpen ())
 			{
-				ctx.DrawImage(oldImg, new System.Windows.Rect(0, 0, width, height));
+				ctx.DrawImage (oldImg, new System.Windows.Rect (0, 0, width, height));
 			}
 
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, oldImg.Format);
-			bmp.Render(visual);
+			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, oldImg.Format);
+			bmp.Render (visual);
 
 			return bmp;
 		}
 
-		public override object Copy(object handle)
+		public override object Copy (object handle)
 		{
-			return ((SWMI.BitmapSource)handle).Clone();
+			return ((SWMI.BitmapSource)handle).Clone ();
 		}
 
 		public override object Crop(object handle, int srcX, int srcY, int w, int h)
 		{
 			var oldImg = (SWMI.BitmapSource)handle;
 
-			double width = WidthToDPI(oldImg, w);
-			double height = HeightToDPI(oldImg, h);
+			double width = WidthToDPI (oldImg, w);
+			double height = HeightToDPI (oldImg, h);
 
-			SWM.DrawingVisual visual = new SWM.DrawingVisual();
-			using (SWM.DrawingContext ctx = visual.RenderOpen())
+			SWM.DrawingVisual visual = new SWM.DrawingVisual ();
+			using (SWM.DrawingContext ctx = visual.RenderOpen ())
 			{
 				//Not sure whether this actually works, untested
-				ctx.DrawImage(oldImg, new System.Windows.Rect(-srcX, -srcY, srcX+width, srcY+height));
+				ctx.DrawImage(oldImg, new System.Windows.Rect (-srcX, -srcY, srcX+width, srcY+height));
 			}
 
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, oldImg.Format);
-			bmp.Render(visual);
+			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, oldImg.Format);
+			bmp.Render (visual);
 
 			return bmp;
 		}
 
-		public override object ChangeOpacity(object backend, double opacity)
+		public override object ChangeOpacity (object backend, double opacity)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException ();
 		}
 
-		public override void CopyArea(object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
+		public override void CopyArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException ();
 		}
 	}
 }

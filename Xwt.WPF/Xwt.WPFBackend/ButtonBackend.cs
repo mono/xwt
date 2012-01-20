@@ -39,9 +39,9 @@ namespace Xwt.WPFBackend
 {
 	public class ButtonBackend : WidgetBackend, IButtonBackend
 	{
-		public ButtonBackend()
+		public ButtonBackend ()
 		{
-			Widget = new SWC.Button();
+			Widget = new SWC.Button ();
 		}
 
 		SWC.Button Button {
@@ -52,23 +52,23 @@ namespace Xwt.WPFBackend
 			get { return (IButtonEventSink)base.EventSink; }
 		}
 
-		public void SetButtonStyle(ButtonStyle style) {
+		public void SetButtonStyle (ButtonStyle style) {
 			switch (style)
 			{
 				case ButtonStyle.Normal:
-					Button.ClearValue(SWC.Button.BackgroundProperty);
-					Button.ClearValue(SWC.Button.BorderThicknessProperty);
-					Button.ClearValue(SWC.Button.BorderBrushProperty);
+					Button.ClearValue (SWC.Button.BackgroundProperty);
+					Button.ClearValue (SWC.Button.BorderThicknessProperty);
+					Button.ClearValue (SWC.Button.BorderBrushProperty);
 					break;
 				case ButtonStyle.Flat:
 					Button.Background = SystemColors.ControlBrush;
-					Button.ClearValue(SWC.Button.BorderThicknessProperty);
-					Button.ClearValue(SWC.Button.BorderBrushProperty);
+					Button.ClearValue (SWC.Button.BorderThicknessProperty);
+					Button.ClearValue (SWC.Button.BorderBrushProperty);
 					break;
 				case ButtonStyle.Borderless:
-					Button.ClearValue(SWC.Button.BackgroundProperty);
-					Button.BorderThickness = new Thickness(0);
-					Button.BorderBrush = new SolidColorBrush(Colors.Transparent);
+					Button.ClearValue (SWC.Button.BackgroundProperty);
+					Button.BorderThickness = new Thickness (0);
+					Button.BorderBrush = new SolidColorBrush (Colors.Transparent);
 					break;
 			}
 		}
@@ -84,7 +84,7 @@ namespace Xwt.WPFBackend
 			}
 			else
 			{
-				SWC.DockPanel grid = new SWC.DockPanel();
+				SWC.DockPanel grid = new SWC.DockPanel ();
 
 				var img = (SWMI.BitmapSource)imageBackend;
 				SWC.Image imageCtrl = new SWC.Image
@@ -95,9 +95,9 @@ namespace Xwt.WPFBackend
 				};
 
 				SWC.DockPanel.SetDock (imageCtrl, DataConverter.ToWpfDock (position));
-				grid.Children.Add(imageCtrl);
+				grid.Children.Add (imageCtrl);
 
-				SWC.Label labelCtrl = new SWC.Label();
+				SWC.Label labelCtrl = new SWC.Label ();
 				labelCtrl.Content = label;
 				grid.Children.Add (labelCtrl);
 
@@ -105,9 +105,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void EnableEvent(object eventId)
+		public override void EnableEvent (object eventId)
 		{
-			base.EnableEvent(eventId);
+			base.EnableEvent (eventId);
 			if (eventId is ButtonEvent)
 			{
 				switch ((ButtonEvent)eventId)
@@ -117,9 +117,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void DisableEvent(object eventId)
+		public override void DisableEvent (object eventId)
 		{
-			base.DisableEvent(eventId);
+			base.DisableEvent (eventId);
 			if (eventId is ButtonEvent)
 			{
 				switch ((ButtonEvent)eventId)
@@ -129,9 +129,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		void HandleWidgetClicked(object sender, EventArgs e)
+		void HandleWidgetClicked (object sender, EventArgs e)
 		{
-			EventSink.OnClicked();
+			EventSink.OnClicked ();
 		}
 	}
 }
