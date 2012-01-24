@@ -146,5 +146,16 @@ namespace Xwt.WPFBackend
 			
 			return SW.FontWeights.Normal;
 		}
+
+		// Dock
+
+		public static SW.Controls.Dock ToWpfDock(ContentPosition value)
+		{
+			if (value == ContentPosition.Left) return SW.Controls.Dock.Left;
+			if (value == ContentPosition.Top) return SW.Controls.Dock.Top;
+			if (value == ContentPosition.Bottom) return SW.Controls.Dock.Bottom;
+
+			return SW.Controls.Dock.Right;
+		}
 	}
 }
