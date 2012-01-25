@@ -153,7 +153,7 @@ namespace Xwt.GtkBackend
 		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
 		{
 			Toolkit.Invoke (delegate {
-				EventSink.OnBoundsChanged (new Rectangle (args.Allocation.X, args.Allocation.Y, args.Allocation.Width, args.Allocation.Height));
+				EventSink.OnBoundsChanged (Bounds);
 			});
 		}
 	}
