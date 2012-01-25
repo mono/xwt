@@ -119,6 +119,15 @@ namespace Xwt.Mac
 		{
 		}
 		
+		public string TooltipText {
+			get {
+				return Widget.ToolTip;
+			}
+			set {
+				Widget.ToolTip = value;
+			}
+		}
+		
 		public virtual void Dispose (bool disposing)
 		{
 		}

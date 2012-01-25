@@ -135,6 +135,15 @@ namespace Xwt.GtkBackend
 			Widget.GrabFocus ();
 		}
 		
+		public string TooltipText {
+			get {
+				return Widget.TooltipText;
+			}
+			set {
+				Widget.TooltipText = value;
+			}
+		}
+		
 		public virtual void Dispose (bool disposing)
 		{
 			if (Widget != null && !disposing && Widget.Parent == null)
