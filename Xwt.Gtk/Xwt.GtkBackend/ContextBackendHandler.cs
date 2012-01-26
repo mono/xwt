@@ -187,6 +187,12 @@ namespace Xwt.GtkBackend
 			ctx.LineWidth = width;
 		}
 		
+		public void SetLineDash (object backend, double offset, params double[] pattern)
+		{
+			Cairo.Context ctx = ((GtkContext) backend).Context;
+			ctx.SetDash (pattern, offset);
+		}
+		
 		public void SetPattern (object backend, Pattern p)
 		{
 			Cairo.Context ctx = ((GtkContext)backend).Context;

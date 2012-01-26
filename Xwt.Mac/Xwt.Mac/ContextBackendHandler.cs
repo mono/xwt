@@ -198,6 +198,15 @@ namespace Xwt.Mac
 			ctx.Path.LineWidth = (float) width;
 		}
 		
+		public void SetLineDash (object backend, double offset, params double[] pattern)
+		{
+			ContextInfo ctx = (ContextInfo) backend;
+			float[] array = new float[pattern.Length];
+			for (int n=0; n<pattern.Length; n++)
+				array [n] = (float) pattern[n];
+			ctx.Path.SetLineDash (array, (float)offset);
+		}
+		
 		public void SetPattern (object backend, Pattern p)
 		{
 			ContextInfo ctx = (ContextInfo) backend;

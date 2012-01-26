@@ -38,6 +38,12 @@ namespace Samples
 		protected override void OnDraw (Xwt.Drawing.Context ctx)
 		{
 			base.OnDraw (ctx);
+			
+			ctx.SetLineDash (15, 10, 10, 5, 5);
+			ctx.Rectangle (100, 100, 100, 100);
+			ctx.Stroke ();
+			ctx.SetLineDash (0);
+			
 			ctx.Translate (30, 30);
 			double end = 270;
 			

@@ -75,6 +75,8 @@ namespace Xwt.Backends
 		
 		void SetLineWidth (object backend, double width);
 		
+		void SetLineDash (object backend, double offset, params double[] pattern);
+		
 		void SetPattern (object backend, Pattern p);
 		
 		void SetFont (object backend, Font font);

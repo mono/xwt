@@ -271,6 +271,11 @@ namespace Xwt.Drawing
 			get { return font; }
 			set { font = value; handler.SetFont (Backend, value); }
 		}
+		
+		public void SetLineDash (double offset, params double[] pattern)
+		{
+			handler.SetLineDash (Backend, offset, pattern);
+		}
 	}
 }
 
