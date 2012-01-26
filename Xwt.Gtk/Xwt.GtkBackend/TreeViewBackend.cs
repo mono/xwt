@@ -84,6 +84,16 @@ namespace Xwt.GtkBackend
 			Widget.CollapseRow (Widget.Model.GetPath (((IterPos)pos).Iter));
 		}
 		
+		public void ScrollToRow (TreePosition pos)
+		{
+			Widget.ScrollToCell (Widget.Model.GetPath (((IterPos)pos).Iter), Widget.Columns[0], false, 0, 0);
+		}
+		
+		public void ExpandToRow (TreePosition pos)
+		{
+			Widget.ExpandToPath (Widget.Model.GetPath (((IterPos)pos).Iter));
+		}
+		
 		public bool HeadersVisible {
 			get {
 				return Widget.HeadersVisible;

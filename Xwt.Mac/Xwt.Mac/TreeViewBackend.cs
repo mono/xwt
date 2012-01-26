@@ -121,6 +121,26 @@ namespace Xwt.Mac
 			if (it != null)
 				Tree.CollapseItem (it);
 		}
+		
+		public void ScrollToRow (TreePosition pos)
+		{
+			var it = tsource.GetItem (pos);
+			if (it != null)
+				Tree.ScrollRowToVisible (Tree.RowForItem (it));
+		}
+		
+		public void ExpandToRow (TreePosition pos)
+		{
+			NSObject it = tsource.GetItem (pos);
+			if (it == null)
+				return;
+			
+			it = Tree.GetParent (it);
+			while (it != null) {
+				Tree.ExpandItem (it, false);
+				it = Tree.GetParent (it);
+			}
+		}
 	}
 	
 	class TreeItem: NSObject, ITablePosition
