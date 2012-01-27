@@ -89,6 +89,7 @@
     <Compile Include="Xwt.GtkBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ClipboardBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ImageBuilderBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ImagePatternBackendHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

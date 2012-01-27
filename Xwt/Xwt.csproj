@@ -181,6 +181,8 @@
     <Compile Include="Xwt.Drawing\ImageBuilder.cs" />
     <Compile Include="Xwt.Backends\IImageBuilderBackendHandler.cs" />
     <Compile Include="Xwt.Drawing\ImageFormat.cs" />
+    <Compile Include="Xwt.Drawing\ImagePattern.cs" />
+    <Compile Include="Xwt.Backends\IImagePatternBackendHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

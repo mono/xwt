@@ -49,11 +49,20 @@ namespace Samples
 			ib.Context.SetColor (new Color (1, 0, 1));
 			ib.Context.Rectangle (0, 0, 5, 5);
 			ib.Context.Fill ();
-			ctx.DrawImage (ib.ToImage (), 90, 90);
+			var img = ib.ToImage ();
+			ctx.DrawImage (img, 90, 90);
+			ctx.DrawImage (img, 90, 140, 50, 10);
 			
 			ctx.Arc (190, 190, 15, 0, 360);
 			ctx.SetColor (new Color (1, 0, 1, 0.4));
 			ctx.Fill ();
+			
+			ctx.Save ();
+			ctx.Translate (90, 220);
+			ctx.Pattern = new ImagePattern (img);
+			ctx.Rectangle (0, 0, 100, 70);
+			ctx.Fill ();
+			ctx.Restore ();
 			
 			ctx.Translate (30, 30);
 			double end = 270;
