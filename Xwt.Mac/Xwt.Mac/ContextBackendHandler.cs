@@ -227,6 +227,11 @@ namespace Xwt.Mac
 			throw new NotImplementedException ();
 		}
 		
+		public void DrawImage (object backend, Xwt.Drawing.Image img, double x, double y, double width, double height, double alpha)
+		{
+			throw new NotImplementedException ();
+		}
+		
 		public void Rotate (object backend, double angle)
 		{
 			NSAffineTransform t = new NSAffineTransform ();

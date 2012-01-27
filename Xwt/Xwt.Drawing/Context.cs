@@ -231,6 +231,21 @@ namespace Xwt.Drawing
 			handler.DrawImage (Backend, img, x, y, alpha);
 		}
 		
+		public void DrawImage (Image img, Rectangle rect)
+		{
+			handler.DrawImage (Backend, img, rect.X, rect.Y, rect.Width, rect.Height, 1);
+		}
+		
+		public void DrawImage (Image img, double x, double y, double width, double height)
+		{
+			handler.DrawImage (Backend, img, x, y, width, height, 1);
+		}
+		
+		public void DrawImage (Image img, Rectangle rect, double alpha)
+		{
+			handler.DrawImage (Backend, img, rect.X, rect.Y, rect.Width, rect.Height, alpha);
+		}
+		
 		/// <summary>
 		/// Applies a rotation transformation
 		/// </summary>

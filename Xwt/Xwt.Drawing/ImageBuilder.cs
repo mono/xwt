@@ -35,6 +35,8 @@ namespace Xwt.Drawing
 		Context ctx;
 		static IImageBuilderBackendHandler handler;
 		object backend;
+		int width;
+		int height;
 		
 		static ImageBuilder ()
 		{
@@ -47,12 +49,23 @@ namespace Xwt.Drawing
 		
 		public ImageBuilder (int width, int height, ImageFormat format)
 		{
+			this.width = width;
+			this.height = height;
 			backend = handler.CreateImageBuilder (width, height, format);
 			ctx = new Context (handler.CreateContext (backend));
 		}
 		
+		public int Width {
+			get { return width; }
+		}
+		
+		public int Height {
+			get { return height; }
+		}
+		
 		public void Dispose ()
 		{
+			ctx.Dispose ();
 			handler.Dispose (backend);
 			GC.SuppressFinalize (this);
 		}
