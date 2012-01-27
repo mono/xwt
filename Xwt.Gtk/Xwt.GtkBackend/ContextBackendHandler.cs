@@ -35,7 +35,6 @@ namespace Xwt.GtkBackend
 	{
 		public Cairo.Context Context;
 		public Cairo.Surface TempSurface;
-		public Gtk.Widget Widget;
 	}
 	
 	public class ContextBackendHandler: IContextBackendHandler
@@ -57,7 +56,6 @@ namespace Xwt.GtkBackend
 			} else {
 				ctx.Context = Gdk.CairoHelper.Create (b.Widget.GdkWindow);
 			}
-			ctx.Widget = b.Widget;
 			return ctx;
 		}
 		
@@ -210,9 +208,7 @@ namespace Xwt.GtkBackend
 		{
 			Pango.Layout pl = (Pango.Layout) WidgetRegistry.GetBackend (layout);
 			GtkContext ctx = (GtkContext) backend;
-			
-			Gdk.GC gc = ctx.Widget.Style.BlackGC;
-			ctx.Widget.GdkWindow.DrawLayout (gc, (int)x, (int)y, pl);
+			Pango.CairoHelper.ShowLayout (ctx.Context, pl);
 		}
 		
 		public void DrawImage (object backend, Image img, double x, double y, double alpha)

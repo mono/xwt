@@ -177,6 +177,10 @@
     <Compile Include="Xwt\Clipboard.cs" />
     <Compile Include="Xwt.Backends\IClipboardBackend.cs" />
     <Compile Include="Xwt\PointerButton.cs" />
+    <Compile Include="Xwt\MenuItemSeparator.cs" />
+    <Compile Include="Xwt.Drawing\ImageBuilder.cs" />
+    <Compile Include="Xwt.Backends\IImageBuilderBackendHandler.cs" />
+    <Compile Include="Xwt.Drawing\ImageFormat.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -44,6 +44,17 @@ namespace Samples
 			ctx.Stroke ();
 			ctx.SetLineDash (0);
 			
+			ImageBuilder ib = new ImageBuilder (30, 30, ImageFormat.ARGB32);
+			ib.Context.Arc (15, 15, 15, 0, 360);
+			ib.Context.SetColor (new Color (1, 0, 1));
+			ib.Context.Rectangle (0, 0, 5, 5);
+			ib.Context.Fill ();
+			ctx.DrawImage (ib.ToImage (), 90, 90);
+			
+			ctx.Arc (190, 190, 15, 0, 360);
+			ctx.SetColor (new Color (1, 0, 1, 0.4));
+			ctx.Fill ();
+			
 			ctx.Translate (30, 30);
 			double end = 270;
 			

@@ -1,10 +1,10 @@
 // 
-// TextLayoutBackendHandler.cs
+// IImageBuilder.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,48 +23,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Backends;
 using Xwt.Drawing;
-using Xwt.Engine;
 
-namespace Xwt.GtkBackend
+namespace Xwt.Backends
 {
-	public class TextLayoutBackendHandler: ITextLayoutBackendHandler
+	public interface IImageBuilderBackendHandler: IBackendHandler
 	{
-		public object Create (Context context)
-		{
-			GtkContext c = (GtkContext) WidgetRegistry.GetBackend (context);
-			var pl = Pango.CairoHelper.CreateLayout (c.Context);
-			return pl;
-		}
-
-		public void SetText (object backend, string text)
-		{
-			Pango.Layout tl = (Pango.Layout) backend;
-			tl.SetText (text);
-		}
-
-		public void SetFont (object backend, Xwt.Drawing.Font font)
-		{
-			Pango.Layout tl = (Pango.Layout)backend;
-			tl.FontDescription = (Pango.FontDescription)WidgetRegistry.GetBackend (font);
-		}
-		
-		public void SetWidth (object backend, double value)
-		{
-			Pango.Layout tl = (Pango.Layout)backend;
-			tl.Width = (int) (value * Pango.Scale.PangoScale);
-		}
-
-		public Size GetSize (object backend)
-		{
-			Pango.Layout tl = (Pango.Layout) backend;
-			int w, h;
-			tl.GetPixelSize (out w, out h);
-			return new Size ((double)w, (double)h);
-		}
+		object CreateImageBuilder (int width, int height, ImageFormat format);
+		object CreateContext (object backend);
+		object CreateImage (object backend);
+		void Dispose (object backend);
 	}
 }
 
