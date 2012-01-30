@@ -107,7 +107,7 @@ namespace Xwt.GtkBackend
 
 		public void Dispose (object backend)
 		{
-			Cairo.ImageSurface sf = (Cairo.ImageSurface) backend;
+			IDisposable sf = (IDisposable) backend;
 			sf.Dispose ();
 		}
 		#endregion
