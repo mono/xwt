@@ -177,12 +177,17 @@
     <Compile Include="Xwt\Clipboard.cs" />
     <Compile Include="Xwt.Backends\IClipboardBackend.cs" />
     <Compile Include="Xwt\PointerButton.cs" />
-    <Compile Include="Xwt\MenuItemSeparator.cs" />
     <Compile Include="Xwt.Drawing\ImageBuilder.cs" />
     <Compile Include="Xwt.Backends\IImageBuilderBackendHandler.cs" />
     <Compile Include="Xwt.Drawing\ImageFormat.cs" />
     <Compile Include="Xwt.Drawing\ImagePattern.cs" />
     <Compile Include="Xwt.Backends\IImagePatternBackendHandler.cs" />
+    <Compile Include="Xwt\CheckBoxMenuItem.cs" />
+    <Compile Include="Xwt\RadioButtonMenuItem.cs" />
+    <Compile Include="Xwt\SeparatorMenuItem.cs" />
+    <Compile Include="Xwt.Backends\ICheckBoxMenuItemBackend.cs" />
+    <Compile Include="Xwt.Backends\IRadioButtonMenuItemBackend.cs" />
+    <Compile Include="Xwt.Backends\ISeparatorMenuItemBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

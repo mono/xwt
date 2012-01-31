@@ -90,6 +90,9 @@
     <Compile Include="Xwt.GtkBackend\ClipboardBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ImageBuilderBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ImagePatternBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\CheckBoxMenuItemBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\RadioButtonMenuItemBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SeparatorMenuItemBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,5 +1,5 @@
 // 
-// MenuItemSeparator.cs
+// ISeparatorMenuItemBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -25,13 +25,10 @@
 // THE SOFTWARE.
 using System;
 
-namespace Xwt
+namespace Xwt.Backends
 {
-	public class MenuItemSeparator: MenuItem
+	public interface ISeparatorMenuItemBackend: IMenuItemBackend
 	{
-		public MenuItemSeparator ()
-		{
-		}
 	}
 }
 

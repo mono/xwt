@@ -1,10 +1,10 @@
 // 
-// IMenuItemBackend.cs
+// SeparatorMenuItemBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,29 +23,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
+using Xwt.Backends;
 
-namespace Xwt.Backends
+namespace Xwt.GtkBackend
 {
-	public interface IMenuItemBackend: IBackend
+	public class SeparatorMenuItemBackend: MenuItemBackend, ISeparatorMenuItemBackend
 	{
-		void Initialize (IMenuItemEventSink eventSink);
-		void SetSubmenu (IMenuBackend menu);
-		void SetImage (object imageBackend);
-		string Label { get; set; }
-		bool Sensitive { get; set; }
-		bool Visible { get; set; }
-	}
-	
-	public interface IMenuItemEventSink
-	{
-		void OnClicked ();
-	}
-	
-	public enum MenuItemEvent
-	{
-		Clicked = 1
+		public SeparatorMenuItemBackend (): base (new Gtk.SeparatorMenuItem ())
+		{
+		}
 	}
 }
 

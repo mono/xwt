@@ -65,6 +65,25 @@ namespace Xwt
 		{
 			Backend.Popup ((IWidgetBackend)GetBackend (parentWidget), x, y);
 		}
+		
+		/// <summary>
+		/// Removes all separators of the menu which follow another separator
+		/// </summary>
+		public void CollapseSeparators ()
+		{
+			bool wasSeparator = true;
+			for (int n=0; n<Items.Count; n++) {
+				if (Items[n] is SeparatorMenuItem) {
+					if (wasSeparator)
+						Items.RemoveAt (n--);
+					else
+						wasSeparator = true;
+				} else
+					wasSeparator = false;
+			}
+			if (Items.Count > 0 && Items[Items.Count - 1] is SeparatorMenuItem)
+				Items.RemoveAt (Items.Count - 1);
+		}
 	}
 }
 

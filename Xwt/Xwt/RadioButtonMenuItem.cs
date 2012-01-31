@@ -1,10 +1,10 @@
 // 
-// IMenuItemBackend.cs
+// RadioButtonMenuItem.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,29 +23,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
+using Xwt.Backends;
+using System.ComponentModel;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface IMenuItemBackend: IBackend
+	public class RadioButtonMenuItem: MenuItem
 	{
-		void Initialize (IMenuItemEventSink eventSink);
-		void SetSubmenu (IMenuBackend menu);
-		void SetImage (object imageBackend);
-		string Label { get; set; }
-		bool Sensitive { get; set; }
-		bool Visible { get; set; }
-	}
-	
-	public interface IMenuItemEventSink
-	{
-		void OnClicked ();
-	}
-	
-	public enum MenuItemEvent
-	{
-		Clicked = 1
+		public RadioButtonMenuItem ()
+		{
+		}
+		
+		public RadioButtonMenuItem (Command command): base (command)
+		{
+		}
+		
+		public RadioButtonMenuItem (string label): base (label)
+		{
+		}
+		
+		new IRadioButtonMenuItemBackend Backend {
+			get { return (IRadioButtonMenuItemBackend) base.Backend; }
+		}
+		
+		[DefaultValue (true)]
+		public bool Checked {
+			get { return Backend.Checked; }
+			set { Backend.Checked = value; }
+		}
 	}
 }
 
