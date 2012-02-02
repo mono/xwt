@@ -161,7 +161,7 @@ namespace Xwt.Mac
 		
 		void UpdateItem (NSMenuItem mi, int index)
 		{
-			mi.Title = (string) source.GetValue (index, 0);
+			mi.Title = (string) source.GetValue (index, 0) ?? "";
 		}
 
 		public int SelectedRow {

@@ -71,6 +71,14 @@
     <Compile Include="Xwt.Mac\ComboBoxBackend.cs" />
     <Compile Include="Xwt.Mac\TextEntryBackend.cs" />
     <Compile Include="Xwt.Mac\ImageViewBackend.cs" />
+    <Compile Include="Xwt.Mac\CheckBoxMenuItemBackend.cs" />
+    <Compile Include="Xwt.Mac\RadioButtonMenuItemBackend.cs" />
+    <Compile Include="Xwt.Mac\SeparatorMenuItemBackend.cs" />
+    <Compile Include="Xwt.Mac\CheckBoxBackend.cs" />
+    <Compile Include="Xwt.Mac\ComboBoxEntryBackend.cs" />
+    <Compile Include="Xwt.Mac\ImageBuilderBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\ImagePatternBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\FrameBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -83,5 +91,23 @@
   <ItemGroup>
     <Folder Include="Xwt.Mac\" />
     <Folder Include="Xwt.Mac.CellViews\" />
+    <Folder Include="icons\" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icons\magnifier-zoom-in.png">
+      <LogicalName>magnifier-zoom-in.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\magnifier-zoom-out.png">
+      <LogicalName>magnifier-zoom-out.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

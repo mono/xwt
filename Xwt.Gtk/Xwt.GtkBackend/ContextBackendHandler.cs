@@ -191,11 +191,11 @@ namespace Xwt.GtkBackend
 			ctx.SetDash (pattern, offset);
 		}
 		
-		public void SetPattern (object backend, Pattern p)
+		public void SetPattern (object backend, object p)
 		{
 			Cairo.Context ctx = ((GtkContext)backend).Context;
 			if (p != null)
-				ctx.Pattern = (Cairo.Pattern)WidgetRegistry.GetBackend (p);
+				ctx.Pattern = (Cairo.Pattern) p;
 			else
 				ctx.Pattern = null;
 		}
@@ -212,9 +212,9 @@ namespace Xwt.GtkBackend
 			Pango.CairoHelper.ShowLayout (ctx.Context, pl);
 		}
 		
-		public void DrawImage (object backend, Image img, double x, double y, double alpha)
+		public void DrawImage (object backend, object img, double x, double y, double alpha)
 		{
-			Gdk.Pixbuf pb = (Gdk.Pixbuf)WidgetRegistry.GetBackend (img);
+			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
 			GtkContext ctx = (GtkContext)backend;
 			Gdk.CairoHelper.SetSourcePixbuf (ctx.Context, pb, x, y);
 			if (alpha == 1)
@@ -223,13 +223,13 @@ namespace Xwt.GtkBackend
 				ctx.Context.PaintWithAlpha (alpha);
 		}
 		
-		public void DrawImage (object backend, Image img, double x, double y, double width, double height, double alpha)
+		public void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
-			Gdk.Pixbuf pb = (Gdk.Pixbuf)WidgetRegistry.GetBackend (img);
+			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
 			GtkContext ctx = (GtkContext)backend;
 			ctx.Context.Save ();
-			double sx = ((double) width) / img.Size.Width;
-			double sy = ((double) height) / img.Size.Height;
+			double sx = ((double) width) / pb.Width;
+			double sy = ((double) height) / pb.Height;
 			ctx.Context.Translate (x, y);
 			ctx.Context.Scale (sx, sy);
 			Gdk.CairoHelper.SetSourcePixbuf (ctx.Context, pb, 0, 0);

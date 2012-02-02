@@ -1,10 +1,10 @@
 // 
-// MenuBackend.cs
+// ImagePatternBackendHandler.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,45 +23,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using MonoMac.AppKit;
 using Xwt.Backends;
+using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	public class MenuBackend: NSMenu, IMenuBackend
+	public class ImagePatternBackendHandler: IImagePatternBackendHandler
 	{
-		public void InsertItem (int index, IMenuItemBackend menuItem)
+		public object Create (object img)
 		{
-			InsertItematIndex (((MenuItemBackend)menuItem).Item, index);
-		}
-
-		public void RemoveItem (IMenuItemBackend menuItem)
-		{
-			RemoveItem ((NSMenuItem)menuItem);
-		}
-
-		public void Initialize (object frontend)
-		{
-		}
-
-		public void EnableEvent (object eventId)
-		{
-		}
-
-		public void DisableEvent (object eventId)
-		{
-		}
-		
-		public void Popup ()
-		{
-			throw new System.NotImplementedException ();
-		}
-		
-		public void Popup (IWidgetBackend widget, double x, double y)
-		{
-			throw new System.NotImplementedException ();
+			NSImage nimg = (NSImage) img;
+			return NSColor.FromPatternImage (nimg);
 		}
 	}
 }

@@ -63,7 +63,7 @@ Global
 		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Win-Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = GtkTest\GtkTest.csproj
+		StartupItem = MacTest\MacTest.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

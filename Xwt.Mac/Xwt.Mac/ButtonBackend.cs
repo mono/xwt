@@ -41,23 +41,23 @@ namespace Xwt.Mac
 		#region IButtonBackend implementation
 		public override void Initialize ()
 		{
-			ViewObject = new Button (EventSink);
+			ViewObject = new MacButton (EventSink);
 			Widget.SizeToFit ();
 		}
 
 		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
 		{
-			((Button)Widget).EnableEvent (ev);
+			((MacButton)Widget).EnableEvent (ev);
 		}
 
 		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
 		{
-			((Button)Widget).DisableEvent (ev);
+			((MacButton)Widget).DisableEvent (ev);
 		}
 		
 		public void SetContent (string label, object imageBackend, ContentPosition imagePosition)
 		{
-			Widget.Title = label;
+			Widget.Title = label ?? "";
 			if (imageBackend != null) {
 				Widget.Image = (NSImage)imageBackend;
 				switch (imagePosition) {
@@ -92,15 +92,24 @@ namespace Xwt.Mac
 		#endregion
 	}
 	
-	class Button: NSButton, IViewObject<NSButton>
+	class MacButton: NSButton, IViewObject<NSButton>
 	{
-		public Button (IntPtr p): base (p)
+		public MacButton (IntPtr p): base (p)
 		{
 		}
 		
-		public Button (IButtonEventSink eventSink)
+		public MacButton (IButtonEventSink eventSink)
 		{
 			BezelStyle = NSBezelStyle.Rounded;
+			Activated += delegate {
+				Toolkit.Invoke (delegate {
+					eventSink.OnClicked ();
+				});
+			};
+		}
+		
+		public MacButton (ICheckBoxEventSink eventSink)
+		{
 			Activated += delegate {
 				Toolkit.Invoke (delegate {
 					eventSink.OnClicked ();

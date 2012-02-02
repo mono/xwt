@@ -1,10 +1,10 @@
 // 
-// MenuBackend.cs
+// ImageBuilderBackendHandler.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,46 +23,45 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using MonoMac.AppKit;
 using Xwt.Backends;
+using Xwt.Drawing;
+using MonoMac.AppKit;
+using System.Drawing;
 
 namespace Xwt.Mac
 {
-	public class MenuBackend: NSMenu, IMenuBackend
+	public class ImageBuilderBackendHandler: IImageBuilderBackendHandler
 	{
-		public void InsertItem (int index, IMenuItemBackend menuItem)
-		{
-			InsertItematIndex (((MenuItemBackend)menuItem).Item, index);
-		}
-
-		public void RemoveItem (IMenuItemBackend menuItem)
-		{
-			RemoveItem ((NSMenuItem)menuItem);
-		}
-
-		public void Initialize (object frontend)
+		public ImageBuilderBackendHandler ()
 		{
 		}
 
-		public void EnableEvent (object eventId)
+		#region IImageBuilderBackendHandler implementation
+		public object CreateImageBuilder (int width, int height, ImageFormat format)
 		{
+			return new NSImage (new SizeF (width, height));
 		}
 
-		public void DisableEvent (object eventId)
+		public object CreateContext (object backend)
 		{
+			NSImage img = (NSImage) backend;
+			return new ContextInfo (img);
 		}
-		
-		public void Popup ()
+
+		public object CreateImage (object backend)
 		{
-			throw new System.NotImplementedException ();
+			return (NSImage) backend;
 		}
-		
-		public void Popup (IWidgetBackend widget, double x, double y)
+
+		public void Dispose (object backend)
 		{
-			throw new System.NotImplementedException ();
+			NSImage img = (NSImage) backend;
+			img.Dispose ();
 		}
+		#endregion
+
+
 	}
 }
 

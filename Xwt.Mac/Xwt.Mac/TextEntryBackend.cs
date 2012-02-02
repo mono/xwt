@@ -36,11 +36,20 @@ namespace Xwt.Mac
 		{
 		}
 		
+		internal TextEntryBackend (MacComboBox field)
+		{
+			ViewObject = field;
+		}
+		
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			ViewObject = new CustomTextField (EventSink);
-			Widget.SizeToFit ();
+			if (ViewObject is MacComboBox) {
+				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
+			} else {
+				ViewObject = new CustomTextField (EventSink);
+				Widget.SizeToFit ();
+			}
 		}
 
 		#region ITextEntryBackend implementation

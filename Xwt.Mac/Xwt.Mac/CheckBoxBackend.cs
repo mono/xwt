@@ -1,10 +1,10 @@
 // 
-// MenuItemBackend.cs
+// CheckBoxBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,98 +23,60 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	public class MenuItemBackend: IMenuItemBackend
+	public class CheckBoxBackend: ViewBackend<NSButton,ICheckBoxEventSink>, ICheckBoxBackend
 	{
-		NSMenuItem item;
-		
-		public MenuItemBackend (): this (new NSMenuItem ())
-		{
-		}
-		
-		public MenuItemBackend (NSMenuItem item)
-		{
-			this.item = item;
-		}
-		
-		public NSMenuItem Item {
-			get { return item; }
-		}
-		
-		public void Initialize (IMenuItemEventSink eventSink)
+		public CheckBoxBackend ()
 		{
 		}
 
-		public void SetSubmenu (IMenuBackend menu)
+		public override void Initialize ()
 		{
-			if (menu == null)
-				item.Submenu = null;
-			else
-				item.Submenu = ((MenuBackend)menu);
-		}
-
-		public string Label {
-			get {
-				return item.Title;
-			}
-			set {
-				item.Title = value;
-			}
+			ViewObject = new MacButton (EventSink);
+			ViewObject.View.SetButtonType (NSButtonType.Switch);
+			Widget.SizeToFit ();
 		}
 		
-		public void SetImage (object imageBackend)
-		{
-			var img = (NSImage) imageBackend;
-			item.Image = img;
-		}
-		
-		public bool Visible {
-			get {
-				return !item.Hidden;
-			}
-			set {
-				item.Hidden = !value;
-			}
-		}
-		
-		public bool Sensitive {
-			get {
-				return item.Enabled;
-			}
-			set {
-				item.Enabled = value;
-			}
-		}
-		
-		public bool Checked {
-			get {
-				return item.State == NSCellStateValue.On;
-			}
-			set {
-				if (value)
-					item.State = NSCellStateValue.On;
-				else
-					item.State = NSCellStateValue.Off;
-			}
-		}
-		
-		#region IBackend implementation
-		public void Initialize (object frontend)
+		#region ICheckBoxBackend implementation
+		public void SetContent (IWidgetBackend widget)
 		{
 		}
 
-		public void EnableEvent (object eventId)
+		public void SetContent (string label)
 		{
+			Widget.Title = label;
 		}
 
-		public void DisableEvent (object eventId)
-		{
+		public bool Active {
+			get {
+				return Widget.State == NSCellStateValue.On;
+			}
+			set {
+				Widget.State = value ? NSCellStateValue.On : NSCellStateValue.Off;
+			}
+		}
+
+		public bool Mixed {
+			get {
+				return Widget.State == NSCellStateValue.Mixed;
+			}
+			set {
+				Widget.State = value ? NSCellStateValue.Mixed : NSCellStateValue.Off;
+			}
+		}
+
+		public bool AllowMixed {
+			get {
+				return Widget.AllowsMixedState;
+			}
+			set {
+				Widget.AllowsMixedState = value;
+			}
 		}
 		#endregion
 	}

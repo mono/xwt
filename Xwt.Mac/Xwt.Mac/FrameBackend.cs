@@ -1,10 +1,10 @@
 // 
-// MenuItemBackend.cs
+// FrameBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,99 +23,88 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Backends;
 using MonoMac.AppKit;
+using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
-	public class MenuItemBackend: IMenuItemBackend
+	public class FrameBackend: ViewBackend<NSBox,IFrameEventSink>, IFrameBackend
 	{
-		NSMenuItem item;
+		Color borderColor;
 		
-		public MenuItemBackend (): this (new NSMenuItem ())
+		public override void Initialize ()
 		{
+			ViewObject = new MacFrame ();
+			Widget.SizeToFit ();
 		}
-		
-		public MenuItemBackend (NSMenuItem item)
+
+		#region IFrameBackend implementation
+		public void SetFrameType (FrameType type)
 		{
-			this.item = item;
+			switch (type) {
+			case FrameType.WidgetBox: Widget.BoxType = NSBoxType.NSBoxPrimary; break;
+			case FrameType.Custom: Widget.BoxType = NSBoxType.NSBoxCustom; break;
+			}
 		}
-		
-		public NSMenuItem Item {
-			get { return item; }
+
+		public void SetContent (IWidgetBackend child)
+		{
+			Widget.ContentView = GetWidget (child);
+			Widget.SizeToFit ();
 		}
-		
-		public void Initialize (IMenuItemEventSink eventSink)
+
+		public void SetBorderSize (double left, double right, double top, double bottom)
 		{
 		}
 
-		public void SetSubmenu (IMenuBackend menu)
+		public void SetPadding (double left, double right, double top, double bottom)
 		{
-			if (menu == null)
-				item.Submenu = null;
-			else
-				item.Submenu = ((MenuBackend)menu);
 		}
 
 		public string Label {
 			get {
-				return item.Title;
+				return Widget.Title;
 			}
 			set {
-				item.Title = value;
+				Widget.Title = value;
 			}
-		}
-		
-		public void SetImage (object imageBackend)
-		{
-			var img = (NSImage) imageBackend;
-			item.Image = img;
-		}
-		
-		public bool Visible {
-			get {
-				return !item.Hidden;
-			}
-			set {
-				item.Hidden = !value;
-			}
-		}
-		
-		public bool Sensitive {
-			get {
-				return item.Enabled;
-			}
-			set {
-				item.Enabled = value;
-			}
-		}
-		
-		public bool Checked {
-			get {
-				return item.State == NSCellStateValue.On;
-			}
-			set {
-				if (value)
-					item.State = NSCellStateValue.On;
-				else
-					item.State = NSCellStateValue.Off;
-			}
-		}
-		
-		#region IBackend implementation
-		public void Initialize (object frontend)
-		{
 		}
 
-		public void EnableEvent (object eventId)
-		{
+		public Xwt.Drawing.Color BorderColor {
+			get {
+				return borderColor;
+			}
+			set {
+				borderColor = value;
+				Widget.BorderColor = value.ToNSColor ();
+			}
+		}
+		
+		public override Color BackgroundColor {
+			get {
+				return Widget.FillColor.ToXwtColor ();
+			}
+			set {
+				Widget.FillColor = value.ToNSColor ();
+			}
+		}
+		
+		#endregion
+	}
+	
+	class MacFrame: NSBox, IViewObject<NSBox>
+	{
+		#region IViewObject implementation
+		public NSBox View {
+			get {
+				return this;
+			}
 		}
 
-		public void DisableEvent (object eventId)
-		{
-		}
+		public Widget Frontend { get; set; }
+		
 		#endregion
 	}
 }

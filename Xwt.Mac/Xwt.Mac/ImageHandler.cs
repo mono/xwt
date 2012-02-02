@@ -29,11 +29,14 @@ using Xwt.Backends;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace Xwt.Mac
 {
 	public class ImageHandler: ImageBackendHandler
 	{
+		static Dictionary<string, NSImage> stockIcons = new Dictionary<string, NSImage> ();
+		
 		public override object LoadFromStream (System.IO.Stream stream)
 		{
 			using (NSData data = NSData.FromStream (stream)) {
@@ -48,7 +51,12 @@ namespace Xwt.Mac
 		
 		public override object LoadFromIcon (string id, IconSize size)
 		{
-			throw new NotImplementedException ();
+			NSImage img;
+			if (!stockIcons.TryGetValue (id + size, out img)) {
+				img = LoadStockIcon (id, size);
+				stockIcons [id + size] = img;
+			}
+			return img;
 		}
 		
 		public override Size GetSize (object handle)
@@ -80,6 +88,24 @@ namespace Xwt.Mac
 		public override object ChangeOpacity (object backend, double opacity)
 		{
 			throw new NotImplementedException ();
+		}
+		
+		static NSImage FromResource (string res)
+		{
+			var stream = typeof(ImageHandler).Assembly.GetManifestResourceStream (res);
+			using (stream)
+			using (NSData data = NSData.FromStream (stream)) {
+				return new NSImage (data);
+			}
+		}
+		
+		static NSImage LoadStockIcon (String id, IconSize size)
+		{
+			switch (id) {
+			case StockIcons.ZoomIn: return FromResource ("magnifier-zoom-in.png");
+			case StockIcons.ZoomOut: return FromResource ("magnifier-zoom-out.png");
+			}
+			throw new NotSupportedException ();
 		}
 	}
 }

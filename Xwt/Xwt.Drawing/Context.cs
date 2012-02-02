@@ -213,37 +213,37 @@ namespace Xwt.Drawing
 		
 		public void DrawImage (Image img, Point location)
 		{
-			handler.DrawImage (Backend, img, location.X, location.Y, 1);
+			handler.DrawImage (Backend, GetBackend (img), location.X, location.Y, 1);
 		}
 		
 		public void DrawImage (Image img, double x, double y)
 		{
-			handler.DrawImage (Backend, img, x, y, 1);
+			handler.DrawImage (Backend, GetBackend (img), x, y, 1);
 		}
 		
 		public void DrawImage (Image img, Point location, double alpha)
 		{
-			handler.DrawImage (Backend, img, location.X, location.Y, alpha);
+			handler.DrawImage (Backend, GetBackend (img), location.X, location.Y, alpha);
 		}
 		
 		public void DrawImage (Image img, double x, double y, double alpha)
 		{
-			handler.DrawImage (Backend, img, x, y, alpha);
+			handler.DrawImage (Backend, GetBackend (img), x, y, alpha);
 		}
 		
 		public void DrawImage (Image img, Rectangle rect)
 		{
-			handler.DrawImage (Backend, img, rect.X, rect.Y, rect.Width, rect.Height, 1);
+			handler.DrawImage (Backend, GetBackend (img), rect.X, rect.Y, rect.Width, rect.Height, 1);
 		}
 		
 		public void DrawImage (Image img, double x, double y, double width, double height)
 		{
-			handler.DrawImage (Backend, img, x, y, width, height, 1);
+			handler.DrawImage (Backend, GetBackend (img), x, y, width, height, 1);
 		}
 		
 		public void DrawImage (Image img, Rectangle rect, double alpha)
 		{
-			handler.DrawImage (Backend, img, rect.X, rect.Y, rect.Width, rect.Height, alpha);
+			handler.DrawImage (Backend, GetBackend (img), rect.X, rect.Y, rect.Width, rect.Height, alpha);
 		}
 		
 		/// <summary>
@@ -279,7 +279,7 @@ namespace Xwt.Drawing
 		
 		public Pattern Pattern {
 			get { return pattern; }
-			set { pattern = value; handler.SetPattern (Backend, value); }
+			set { pattern = value; handler.SetPattern (Backend, GetBackend (value)); }
 		}
 		
 		public Font Font {
