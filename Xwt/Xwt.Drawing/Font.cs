@@ -47,6 +47,8 @@ namespace Xwt.Drawing
 		
 		internal Font (object backend)
 		{
+			if (backend == null)
+				throw new ArgumentNullException ("backend");
 			Backend = backend;
 		}
 		
