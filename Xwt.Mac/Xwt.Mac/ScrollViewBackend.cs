@@ -1,10 +1,10 @@
 // 
-// MenuBackend.cs
+// ScrollViewBackend.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Lluis Sanchez Gual <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,55 +23,37 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using MonoMac.AppKit;
 using Xwt.Backends;
-using MonoMac.Foundation;
+using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	public class MenuBackend: NSMenu, IMenuBackend
+	public class ScrollViewBackend: ViewBackend<NSScrollView,IScrollViewEventSink>, IScrollViewBackend
 	{
-		public void Initialize (object frontend)
+		public void SetChild (IWidgetBackend child)
 		{
-		}
-
-		public void InsertItem (int index, IMenuItemBackend menuItem)
-		{
-			InsertItematIndex (((MenuItemBackend)menuItem).Item, index);
-		}
-
-		public void RemoveItem (IMenuItemBackend menuItem)
-		{
-			RemoveItem ((NSMenuItem)menuItem);
 		}
 		
-		public void SetMainMenuMode ()
-		{
-			for (int n=0; n<Count; n++) {
-				var it = ItemAt (n);
-				if (it.Menu != null)
-					it.Submenu.Title = it.Title;
+		public ScrollPolicy VerticalScrollPolicy {
+			get {
+			}
+			set {
 			}
 		}
 
-		public void EnableEvent (object eventId)
-		{
-		}
-
-		public void DisableEvent (object eventId)
-		{
-		}
-		
-		public void Popup ()
-		{
-			NSMenu.PopUpContextMenu (this, null, null, null);
+		public ScrollPolicy HorizontalScrollPolicy {
+			get {
+				
+			}
+			set {
+			}
 		}
 		
-		public void Popup (IWidgetBackend widget, double x, double y)
-		{
-			NSMenu.PopUpContextMenu (this, null, ((IMacViewBackend)widget).View, null);
+		public Rectangle VisibleRect {
+			get {
+				return Rectangle.Zero;
+			}
 		}
 	}
 }

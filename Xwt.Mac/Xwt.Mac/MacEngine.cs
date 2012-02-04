@@ -78,6 +78,7 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Table), typeof(BoxBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.CheckBox), typeof(CheckBoxBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Frame), typeof(FrameBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ScrollView), typeof(ScrollViewBackend));
 		}
 
 		public override void RunApplication ()

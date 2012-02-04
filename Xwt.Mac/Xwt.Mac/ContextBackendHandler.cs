@@ -236,14 +236,16 @@ namespace Xwt.Mac
 		
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
 		{
+			GetContext (backend);
 			var image = (NSImage) img;
-			image.Draw (new PointF ((float)x, (float)y), RectangleF.Empty, NSCompositingOperation.Copy, (float)alpha);
+			image.Draw (new PointF ((float)x, (float)y), RectangleF.Empty, NSCompositingOperation.SourceOver, (float)alpha);
 		}
 		
 		public void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
+			GetContext (backend);
 			var image = (NSImage) img;
-			image.DrawInRect (new RectangleF ((float)x, (float)y, (float)width, (float)height), RectangleF.Empty, NSCompositingOperation.Copy, (float)alpha);
+			image.DrawInRect (new RectangleF ((float)x, (float)y, (float)width, (float)height), RectangleF.Empty, NSCompositingOperation.SourceOver, (float)alpha);
 		}
 		
 		public void Rotate (object backend, double angle)

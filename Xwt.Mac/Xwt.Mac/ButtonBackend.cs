@@ -58,6 +58,8 @@ namespace Xwt.Mac
 		public void SetContent (string label, object imageBackend, ContentPosition imagePosition)
 		{
 			Widget.Title = label ?? "";
+			if (string.IsNullOrEmpty (label))
+				imagePosition = ContentPosition.Center;
 			if (imageBackend != null) {
 				Widget.Image = (NSImage)imageBackend;
 				switch (imagePosition) {
@@ -65,6 +67,7 @@ namespace Xwt.Mac
 				case ContentPosition.Left: Widget.ImagePosition = NSCellImagePosition.ImageLeft; break;
 				case ContentPosition.Right: Widget.ImagePosition = NSCellImagePosition.ImageRight; break;
 				case ContentPosition.Top: Widget.ImagePosition = NSCellImagePosition.ImageAbove; break;
+				case ContentPosition.Center: Widget.ImagePosition = NSCellImagePosition.ImageOverlaps; break;
 				}
 			}
 			Widget.SizeToFit ();

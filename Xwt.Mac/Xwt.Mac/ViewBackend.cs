@@ -156,6 +156,10 @@ namespace Xwt.Mac
 		
 		public virtual object Font {
 			get {
+				if (Widget is NSControl)
+					return ((NSControl)(object)Widget).Font;
+				if (Widget is NSText)
+					return ((NSText)(object)Widget).Font;
 				/// TODO
 //				throw new NotImplementedException ();
 				return null;
