@@ -37,6 +37,7 @@ namespace Xwt.Mac
 		
 		public ScrollPolicy VerticalScrollPolicy {
 			get {
+				return ScrollPolicy.Automatic;
 			}
 			set {
 			}
@@ -44,7 +45,7 @@ namespace Xwt.Mac
 
 		public ScrollPolicy HorizontalScrollPolicy {
 			get {
-				
+				return ScrollPolicy.Automatic;
 			}
 			set {
 			}
