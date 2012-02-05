@@ -173,7 +173,9 @@ namespace Xwt
 		
 		public static void SetData<T> (Func<T> dataSource)
 		{
-			Backend.SetData (TransferDataType.GetDataType (typeof(T)), dataSource);
+			Backend.SetData (TransferDataType.GetDataType (typeof(T)), delegate () {
+				return dataSource ();
+			});
 		}
 	}
 }
