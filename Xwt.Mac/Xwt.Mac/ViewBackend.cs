@@ -194,7 +194,7 @@ namespace Xwt.Mac
 		
 		public WidgetSize GetPreferredWidth ()
 		{
-			double w1 = Widget.FittingSize.Width + frontend.Margin.HorizontalSpacing;
+//			double w1 = Widget.FittingSize.Width + frontend.Margin.HorizontalSpacing;
 			double w = Widget.WidgetWidth() + frontend.Margin.HorizontalSpacing;
 			var s = new Xwt.WidgetSize (w, w);
 			if (minWidth != -1 && s.MinSize > minWidth)
@@ -204,7 +204,7 @@ namespace Xwt.Mac
 
 		public WidgetSize GetPreferredHeight ()
 		{
-			double h1 = Widget.FittingSize.Height + frontend.Margin.VerticalSpacing;
+//			double h1 = Widget.FittingSize.Height + frontend.Margin.VerticalSpacing;
 			double h = Widget.WidgetHeight() + frontend.Margin.VerticalSpacing;
 			var s = new Xwt.WidgetSize (h, h);
 			if (minHeight != -1 && s.MinSize > minHeight)

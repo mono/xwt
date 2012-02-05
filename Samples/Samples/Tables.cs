@@ -37,19 +37,19 @@ namespace Samples
 			SimpleBox b = new SimpleBox (200, 20);
 			t.Attach (b, 0, 1, 0, 1);
 			
-			b = new SimpleBox (10, 20);
+			b = new SimpleBox (5, 20);
 			t.Attach (b, 1, 2, 0, 1);
 			
-			b = new SimpleBox (500, 20);
+			b = new SimpleBox (250, 20);
 			t.Attach (b, 0, 2, 1, 2, AttachOptions.Expand, AttachOptions.Expand);
 			
-			b = new SimpleBox (600, 20);
+			b = new SimpleBox (300, 20);
 			t.Attach (b, 1, 3, 2, 3);
 			
-			b = new SimpleBox (200, 20);
+			b = new SimpleBox (100, 20);
 			t.Attach (b, 2, 3, 3, 4);
 			
-			b = new SimpleBox (900, 20);
+			b = new SimpleBox (450, 20);
 			t.Attach (b, 0, 3, 4, 5);
 			
 			PackStart (t);

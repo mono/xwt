@@ -27,10 +27,16 @@ using System;
 
 namespace Xwt.Mac
 {
-	public class ToggleButtonBackend
+	public class ToggleButtonBackend: ButtonBackend
 	{
 		public ToggleButtonBackend ()
 		{
+		}
+		
+		public override void Initialize ()
+		{
+			base.Initialize ();
+			Widget.SetButtonType (MonoMac.AppKit.NSButtonType.Toggle);
 		}
 	}
 }
