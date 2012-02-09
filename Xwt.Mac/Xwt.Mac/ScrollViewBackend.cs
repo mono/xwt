@@ -56,6 +56,14 @@ namespace Xwt.Mac
 				return Rectangle.Zero;
 			}
 		}
+		
+		public bool BorderVisible {
+			get {
+				return false;
+			}
+			set {
+			}
+		}
 	}
 }
 

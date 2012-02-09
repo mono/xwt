@@ -44,6 +44,7 @@ namespace Samples
 			
 			v1.Content = b1;
 			v1.VerticalScrollPolicy = ScrollPolicy.Always;
+			v1.BorderVisible = false;
 			PackStart (v1, BoxMode.FillAndExpand);
 			
 			ScrollView v2 = new ScrollView ();
