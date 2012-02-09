@@ -605,6 +605,8 @@ namespace Xwt.GtkBackend
 
 		void HandleLeaveNotifyEvent (object o, Gtk.LeaveNotifyEventArgs args)
 		{
+			if (args.Event.Detail == Gdk.NotifyType.Inferior)
+				return;
 			Toolkit.Invoke (delegate {
 				EventSink.OnMouseExited ();
 			});
@@ -612,6 +614,8 @@ namespace Xwt.GtkBackend
 
 		void HandleEnterNotifyEvent (object o, Gtk.EnterNotifyEventArgs args)
 		{
+			if (args.Event.Detail == Gdk.NotifyType.Inferior)
+				return;
 			Toolkit.Invoke (delegate {
 				EventSink.OnMouseEntered ();
 			});
