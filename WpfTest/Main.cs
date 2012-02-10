@@ -28,12 +28,12 @@ using Samples;
 
 namespace WpfTest
 {
-    class MainClass
-    {
-        [STAThread]
-        public static void Main(string[] args)
-        {
+	class MainClass
+	{
+		[STAThread]
+		public static void Main(string[] args)
+		{
 			App.Run ("Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=1.0.0.0");
-        }
-    }
+		}
+	}
 }
