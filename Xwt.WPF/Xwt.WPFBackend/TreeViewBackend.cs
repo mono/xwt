@@ -25,21 +25,38 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using Xwt.Engine;
 using Xwt.Backends;
+using Xwt.WPFBackend.Utilities;
 using SWC=System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
 	public class TreeViewBackend : WidgetBackend, ITreeViewBackend
 	{
-		public SWC.TreeView Tree
+		private IList<ListViewColumn> columns = new List<ListViewColumn> ();
+
+		protected new ITreeViewEventSink EventSink
 		{
-			get { return (SWC.TreeView)Widget; }
+			get { return (ITreeViewEventSink)base.EventSink; }
 		}
 
 		public TreeViewBackend ()
 		{
-			Widget = new SWC.TreeView ();
+			Tree = new SWC.TreeView ();
+		}
+
+		public SWC.TreeView Tree
+		{
+			get
+			{
+				return (SWC.TreeView)Widget;
+			}
+			set
+			{
+				Widget = value;
+			}
 		}
 
 		public void UnselectRow (TreePosition pos)
@@ -49,11 +66,38 @@ namespace Xwt.WPFBackend
 
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
-			throw new NotImplementedException ();
+			Tree.Items.Clear ();
+			TreeStoreBackend treeStore = sourceBackend as TreeStoreBackend;
+			if (treeStore != null)
+			{
+				TreeNode node = treeStore.RootNode;
+				foreach (TreeNode child in node.Children)
+				{
+					Tree.Items.Add (GenerateTreeViewItem (child));
+				}
+			}
+		}
+
+		private MultiColumnTreeViewItem GenerateTreeViewItem (TreeNode node)
+		{
+			MultiColumnTreeViewItem item = new MultiColumnTreeViewItem (node);
+
+			foreach (ListViewColumn column in columns)
+			{
+				item.AddColumn (column);
+			}
+
+			foreach (TreeNode child in node.Children)
+			{
+				item.Items.Add (GenerateTreeViewItem (child));
+			}
+
+			return item;
 		}
 
 		public void SelectRow (TreePosition pos)
 		{
+			throw new NotImplementedException ();
 		}
 
 		public TreePosition[] SelectedRows
@@ -123,7 +167,40 @@ namespace Xwt.WPFBackend
 
 		public object AddColumn (ListViewColumn column)
 		{
-			throw new NotImplementedException ();
+			columns.Add (column);
+
+			foreach (SWC.TreeViewItem item in Tree.Items)
+				((MultiColumnTreeViewItem)item).AddColumn (column);
+
+			return column;
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is TableViewEvent)
+			{
+				if (((TableViewEvent)eventId) == TableViewEvent.SelectionChanged)
+					Tree.SelectedItemChanged += HandleWidgetSelectionChanged;
+			}
+		}
+
+		void HandleWidgetSelectionChanged (object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+		{
+			Toolkit.Invoke (delegate
+			{
+				EventSink.OnSelectionChanged ();
+			});
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is TableViewEvent)
+			{
+				if (((TableViewEvent)eventId) == TableViewEvent.SelectionChanged)
+					Tree.SelectedItemChanged -= HandleWidgetSelectionChanged;
+			}
 		}
 	}
 }

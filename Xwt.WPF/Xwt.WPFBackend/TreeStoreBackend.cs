@@ -25,10 +25,28 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
+	class TreeNode : TreePosition
+	{
+		public object[] Values;
+		public IList<TreeNode> Children = new List<TreeNode>();
+		public TreeNode Previous;
+		public TreeNode Next;
+		public TreeNode Parent;
+
+		public TreeNode LastChild
+		{
+			get
+			{
+				return Children.Count == 0 ? null : Children[Children.Count - 1];
+			}
+		}
+	}
+
 	public class TreeStoreBackend: ITreeStoreBackend
 	{
 		public event EventHandler<TreeNodeEventArgs> NodeInserted;
@@ -36,9 +54,16 @@ namespace Xwt.WPFBackend
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
 		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
 
+		private Type[] columnTypes;
+		private TreeNode rootNode = new TreeNode ();
+
 		public void Initialize (Type[] columnTypes)
 		{
-			throw new NotImplementedException ();
+			this.columnTypes = new Type [columnTypes.Length];
+			for (int n = 0; n < columnTypes.Length; n++)
+			{
+				this.columnTypes[n] = columnTypes[n];
+			}
 		}
 
 		public void Initialize (object frontend)
@@ -47,47 +72,73 @@ namespace Xwt.WPFBackend
 
 		public void Clear ()
 		{
-			throw new NotImplementedException ();
+			rootNode.Children.Clear ();
+		}
+
+		internal TreeNode RootNode
+		{
+			get
+			{
+				return rootNode;
+			}
 		}
 
 		public TreePosition AddChild (TreePosition pos)
 		{
-			throw new NotImplementedException ();
+			TreeNode parent = pos as TreeNode ?? rootNode;
+			TreeNode node = new TreeNode();
+			node.Previous = parent.LastChild;
+			node.Values = new object[columnTypes.Length];
+			node.Parent = parent;
+			if (parent.LastChild != null)
+				parent.LastChild.Next = node;
+			parent.Children.Add (node);
+			return node;
 		}
 
 		public TreePosition GetPrevious (TreePosition pos)
 		{
-			throw new NotImplementedException ();
+			TreeNode node = pos as TreeNode;
+			return node.Previous;
 		}
 
 		public TreePosition GetNext (TreePosition pos)
 		{
-			throw new NotImplementedException ();
+			TreeNode node = pos as TreeNode;
+			return node.Next;
 		}
 
 		public void SetValue (TreePosition pos, int column, object value)
 		{
-			throw new NotImplementedException ();
+			TreeNode node = pos as TreeNode;
+			node.Values[column] = value;
 		}
 
 		public object GetValue (TreePosition pos, int column)
 		{
-			throw new NotImplementedException ();
+			TreeNode node = pos as TreeNode;
+			return node.Values[column];
 		}
 
 		public TreePosition GetParent (TreePosition pos)
 		{
-			throw new NotImplementedException ();
+			TreeNode node = pos as TreeNode;
+			TreeNode parent = node.Parent;
+			if (parent == rootNode)
+				return null;
+			return parent;
 		}
 
 		public int GetChildrenCount (TreePosition pos)
 		{
-			throw new NotImplementedException ();
+			TreeNode node = pos as TreeNode;
+			return node.Children.Count;
 		}
 
 		public TreePosition GetChild (TreePosition pos, int index)
 		{
-			throw new NotImplementedException ();
+			TreeNode node = pos as TreeNode;
+			return node.Children[index];
 		}
 
 		public void Remove (TreePosition pos)
