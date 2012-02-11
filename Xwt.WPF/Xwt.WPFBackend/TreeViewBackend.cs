@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using Xwt.Engine;
 using Xwt.Backends;
 using Xwt.WPFBackend.Utilities;
+using System.Windows;
 using SWC=System.Windows.Controls;
 
 namespace Xwt.WPFBackend
@@ -104,7 +105,13 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				throw new NotImplementedException ();
+				List<TreePosition> Positions = new List<TreePosition> ();
+				foreach (SWC.TreeViewItem item in Tree.Items)
+				{
+					MultiColumnTreeViewItem multiColumnItem = (MultiColumnTreeViewItem)item;
+					multiColumnItem.AppendSelections (Positions);
+				}
+				return Positions.ToArray ();
 			}
 		}
 

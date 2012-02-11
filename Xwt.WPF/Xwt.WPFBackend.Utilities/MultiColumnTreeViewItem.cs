@@ -27,5 +27,16 @@ namespace Xwt.WPFBackend.Utilities
 				SWC.DockPanel.SetDock (elem, SWC.Dock.Left);
 			}
 		}
+
+		public void AppendSelections (IList<TreePosition> positions)
+		{
+			if (IsSelected)
+				positions.Add (Node);
+			foreach (SWC.TreeViewItem item in Items)
+			{
+				MultiColumnTreeViewItem multiColumnItem = (MultiColumnTreeViewItem)item;
+				multiColumnItem.AppendSelections (positions);
+			}
+		}
 	}
 }
