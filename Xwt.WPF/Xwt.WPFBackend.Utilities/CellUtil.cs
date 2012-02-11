@@ -43,8 +43,8 @@ namespace Xwt.WPFBackend.Utilities
 			{
 				DataField field = ((TextCellView) view).TextField;
 				int index = field.Index;
-				SWC.Label label = new SWC.Label ();
-				label.Content = node.Values[index];
+				SWC.TextBlock label = new SWC.TextBlock ();
+				label.Text = (node.Values[index] ?? "null").ToString();
 				label.Padding = new Thickness(2);
 				return label;
 			}
