@@ -59,6 +59,14 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
+		
+		public EllipsizeMode Ellipsize {
+			get { return Backend.Ellipsize; }
+			set {
+				Backend.Ellipsize = value;
+				OnPreferredSizeChanged ();
+			}
+		}
 	}
 }
 

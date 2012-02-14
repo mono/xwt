@@ -68,6 +68,25 @@ namespace Xwt.Mac
 				}
 			}
 		}
+		
+		public EllipsizeMode Ellipsize {
+			get {
+				switch (Widget.Cell.LineBreakMode) {
+				case NSLineBreakMode.TruncatingHead: return Xwt.EllipsizeMode.Start;
+				case NSLineBreakMode.TruncatingMiddle: return Xwt.EllipsizeMode.Middle;
+				case NSLineBreakMode.TruncatingTail: return Xwt.EllipsizeMode.End;
+				default: return Xwt.EllipsizeMode.None;
+				}
+			}
+			set {
+				switch (value) {
+				case Xwt.EllipsizeMode.None: Widget.Cell.LineBreakMode = NSLineBreakMode.Clipping; break;
+				case Xwt.EllipsizeMode.Start: Widget.Cell.LineBreakMode = NSLineBreakMode.TruncatingHead; break;
+				case Xwt.EllipsizeMode.Middle: Widget.Cell.LineBreakMode = NSLineBreakMode.TruncatingMiddle; break;
+				case Xwt.EllipsizeMode.End: Widget.Cell.LineBreakMode = NSLineBreakMode.TruncatingTail; break;
+				}
+			}
+		}
 	}
 	
 	class TextFieldView: NSTextField, IViewObject<NSTextField>
