@@ -574,6 +574,7 @@ namespace Xwt
 		{
 			DragStartedEventArgs args = new DragStartedEventArgs ();
 			args.DragOperation = new DragOperation (this);
+			currentDragOperation = args.DragOperation;
 			OnDragStarted (args);
 			return args.DragOperation.GetStartData ();
 		}

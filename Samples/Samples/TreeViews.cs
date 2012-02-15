@@ -53,24 +53,38 @@ namespace Samples
 			Label la = new Label ();
 			PackStart (la);
 			
-			view.SetDragDropTarget (TransferDataType.Text);
-			view.SetDragSource (TransferDataType.Text);
+			view.SetDragDropTarget (DragDropAction.All, TransferDataType.Text);
+			view.SetDragSource (DragDropAction.All, TransferDataType.Text);
+			
 			view.DragDrop += delegate(object sender, DragEventArgs e) {
 				TreePosition node;
 				RowDropPosition pos;
 				view.GetDropTargetRow (e.Position.X, e.Position.Y, out pos, out node);
 				var nav = store.GetNavigatorAt (node);
 				la.Text += "Dropped \"" + e.Data.Text + "\" into \"" + nav.GetValue (text) + "\" " + pos + "\n";
+				e.Success = true;
+			};
+			view.DragOver += delegate(object sender, DragOverEventArgs e) {
+				TreePosition node;
+				RowDropPosition pos;
+				view.GetDropTargetRow (e.Position.X, e.Position.Y, out pos, out node);
+				if (pos == RowDropPosition.Into)
+					e.AllowedAction = DragDropAction.None;
+				else
+					e.AllowedAction = e.Action;
 			};
 			view.DragStarted += delegate(object sender, DragStartedEventArgs e) {
 				var val = store.GetNavigatorAt (view.SelectedRow).GetValue (text);
 				e.DragOperation.Data.AddValue (val);
+				e.DragOperation.Finished += delegate(object s, DragFinishedEventArgs args) {
+					Console.WriteLine ("D:" + args.DeleteSource);
+				};
 			};
 		}
 
 		void HandleDragOver (object sender, DragOverEventArgs e)
 		{
-			e.AllowedAction = DragDropAction.Copy;
+			e.AllowedAction = e.Action;
 		}
 	}
 }

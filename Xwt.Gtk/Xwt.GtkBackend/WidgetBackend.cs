@@ -43,14 +43,21 @@ namespace Xwt.GtkBackend
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
 		
-		TransferDataSource currentDragData;
-		Gdk.DragAction destDragAction;
-		Gdk.DragAction sourceDragAction;
-		int dragDataRequests;
-		TransferDataStore dragData;
-		bool dragDataForMotion;
 		bool minSizeSet;
-		Gtk.TargetEntry[] validDropTypes;
+		
+		class DragDropData
+		{
+			public TransferDataSource CurrentDragData;
+			public Gdk.DragAction DestDragAction;
+			public Gdk.DragAction SourceDragAction;
+			public int DragDataRequests;
+			public TransferDataStore DragData;
+			public bool DragDataForMotion;
+			public Gtk.TargetEntry[] ValidDropTypes;
+			public Point LastDragPosition;
+		}
+		
+		DragDropData dragDropInfo;
 
 		const WidgetEvent dragDropEvents = WidgetEvent.DragDropCheck | WidgetEvent.DragDrop | WidgetEvent.DragOver | WidgetEvent.DragOverCheck;
 		const WidgetEvent sizeCheckEvents = WidgetEvent.PreferredWidthCheck | WidgetEvent.PreferredHeightCheck | WidgetEvent.PreferredHeightForWidthCheck | WidgetEvent.PreferredWidthForHeightCheck;
@@ -153,6 +160,14 @@ namespace Xwt.GtkBackend
 		public Size Size {
 			get {
 				return new Size (Widget.Allocation.Width, Widget.Allocation.Height);
+			}
+		}
+		
+		DragDropData DragDropInfo {
+			get {
+				if (dragDropInfo == null)
+					dragDropInfo = new DragDropData ();
+				return dragDropInfo;
 			}
 		}
 		
@@ -665,21 +680,31 @@ namespace Xwt.GtkBackend
 			});
 		}
 		
-		Point lastDragPosition;
-		
+		[GLib.ConnectBefore]
 		void HandleWidgetDragMotion (object o, Gtk.DragMotionArgs args)
 		{
-			lastDragPosition = new Point (args.X, args.Y);
+			args.RetVal = DoDragMotion (args.Context, args.X, args.Y, args.Time);
+		}
+		
+		internal bool DoDragMotion (Gdk.DragContext context, int x, int y, uint time)
+		{
+			DragDropInfo.LastDragPosition = new Point (x, y);
 			
 			DragDropAction ac;
 			if ((enabledEvents & WidgetEvent.DragOverCheck) == 0) {
 				if ((enabledEvents & WidgetEvent.DragOver) != 0)
 					ac = DragDropAction.Default;
 				else
-					ac = ConvertDragAction (destDragAction);
+					ac = ConvertDragAction (DragDropInfo.DestDragAction);
 			}
 			else {
-				DragOverCheckEventArgs da = new DragOverCheckEventArgs (new Point (args.X, args.Y), Util.GetDragTypes (args.Context.Targets), ConvertDragAction (args.Context.Actions));
+				// This is a workaround to what seems to be a mac gtk bug.
+				// Suggested action is set to all when no control key is pressed
+				var cact = ConvertDragAction (context.Actions);
+				if (cact == DragDropAction.All)
+					cact = DragDropAction.Move;
+				
+				DragOverCheckEventArgs da = new DragOverCheckEventArgs (new Point (x, y), Util.GetDragTypes (context.Targets), cact);
 				Toolkit.Invoke (delegate {
 					EventSink.OnDragOverCheck (da);
 				});
@@ -689,25 +714,31 @@ namespace Xwt.GtkBackend
 			}
 			
 			if (ac == DragDropAction.None) {
-				args.RetVal = true;
-				Gdk.Drag.Status (args.Context, (Gdk.DragAction)0, args.Time);
+				OnSetDragStatus (context, x, y, time, (Gdk.DragAction)0);
+				return true;
 			}
 			else if (ac == DragDropAction.Default) {
 				// Undefined, we need more data
-				args.RetVal = true;
-				QueryDragData (args.Context, args.Time, true);
+				QueryDragData (context, time, true);
+				return true;
 			}
 			else {
 //				Gtk.Drag.Highlight (Widget);
-				args.RetVal = true;
-				Gdk.Drag.Status (args.Context, ConvertDragAction (ac), args.Time);
+				OnSetDragStatus (context, x, y, time, ConvertDragAction (ac));
+				return true;
 			}
 		}
 		
+		[GLib.ConnectBefore]
 		void HandleWidgetDragDrop (object o, Gtk.DragDropArgs args)
 		{
-			lastDragPosition = new Point (args.X, args.Y);
-			var cda = ConvertDragAction (args.Context.Action);
+			args.RetVal = DoDragDrop (args.Context, args.X, args.Y, args.Time);
+		}
+		
+		internal bool DoDragDrop (Gdk.DragContext context, int x, int y, uint time)
+		{
+			DragDropInfo.LastDragPosition = new Point (x, y);
+			var cda = ConvertDragAction (context.Action);
 
 			DragDropResult res;
 			if ((enabledEvents & WidgetEvent.DragDropCheck) == 0) {
@@ -717,7 +748,7 @@ namespace Xwt.GtkBackend
 					res = DragDropResult.Canceled;
 			}
 			else {
-				DragCheckEventArgs da = new DragCheckEventArgs (new Point (args.X, args.Y), Util.GetDragTypes (args.Context.Targets), cda);
+				DragCheckEventArgs da = new DragCheckEventArgs (new Point (x, y), Util.GetDragTypes (context.Targets), cda);
 				Toolkit.Invoke (delegate {
 					EventSink.OnDragDropCheck (da);
 				});
@@ -726,23 +757,22 @@ namespace Xwt.GtkBackend
 					res = DragDropResult.Canceled;
 			}
 			if (res == DragDropResult.Canceled) {
-				args.RetVal = true;
-				Gtk.Drag.Finish (args.Context, false, false, args.Time);
+				Gtk.Drag.Finish (context, false, false, time);
+				return true;
 			}
 			else if (res == DragDropResult.Success) {
-				args.RetVal = true;
-				Gtk.Drag.Finish (args.Context, true, cda == DragDropAction.Move, args.Time);
+				Gtk.Drag.Finish (context, true, cda == DragDropAction.Move, time);
+				return true;
 			}
 			else {
 				// Undefined, we need more data
-				args.RetVal = true;
-				QueryDragData (args.Context, args.Time, false);
+				QueryDragData (context, time, false);
+				return true;
 			}
 		}
 
 		void HandleWidgetDragLeave (object o, Gtk.DragLeaveArgs args)
 		{
-//			Gtk.Drag.Unhighlight (Widget);
 			Toolkit.Invoke (delegate {
 				eventSink.OnDragLeave (EventArgs.Empty);
 			});
@@ -750,10 +780,10 @@ namespace Xwt.GtkBackend
 		
 		void QueryDragData (Gdk.DragContext ctx, uint time, bool isMotionEvent)
 		{
-			dragDataForMotion = isMotionEvent;
-			dragData = new TransferDataStore ();
-			dragDataRequests = validDropTypes.Length;
-			foreach (var t in validDropTypes) {
+			DragDropInfo.DragDataForMotion = isMotionEvent;
+			DragDropInfo.DragData = new TransferDataStore ();
+			DragDropInfo.DragDataRequests = DragDropInfo.ValidDropTypes.Length;
+			foreach (var t in DragDropInfo.ValidDropTypes) {
 				var at = Gdk.Atom.Intern (t.Target, true);
 				Gtk.Drag.GetData (Widget, ctx, at, time);
 			}
@@ -761,38 +791,56 @@ namespace Xwt.GtkBackend
 		
 		void HandleWidgetDragDataReceived (object o, Gtk.DragDataReceivedArgs args)
 		{
-			if (dragDataRequests == 0) {
+			args.RetVal = DoDragDataReceived (args.Context, args.X, args.Y, args.SelectionData, args.Info, args.Time);
+		}
+		
+		internal bool DoDragDataReceived (Gdk.DragContext context, int x, int y, Gtk.SelectionData selectionData, uint info, uint time)
+		{
+			if (DragDropInfo.DragDataRequests == 0) {
 				// Got the data without requesting it. Create the datastore here
-				dragData = new TransferDataStore ();
-				lastDragPosition = new Point (args.X, args.Y);
-				dragDataRequests = 1;
+				DragDropInfo.DragData = new TransferDataStore ();
+				DragDropInfo.LastDragPosition = new Point (x, y);
+				DragDropInfo.DragDataRequests = 1;
 			}
 			
-			dragDataRequests--;
+			DragDropInfo.DragDataRequests--;
 			
-			if (!Util.GetSelectionData (args.SelectionData, dragData)) {
-				args.RetVal = false;
-				return;
+			if (!Util.GetSelectionData (selectionData, DragDropInfo.DragData)) {
+				return false;
 			}
 
-			if (dragDataRequests == 0) {
-				if (dragDataForMotion) {
-					DragOverEventArgs da = new DragOverEventArgs (lastDragPosition, dragData, ConvertDragAction (args.Context.Actions));
+			if (DragDropInfo.DragDataRequests == 0) {
+				if (DragDropInfo.DragDataForMotion) {
+					// This is a workaround to what seems to be a mac gtk bug.
+					// Suggested action is set to all when no control key is pressed
+					var cact = ConvertDragAction (context.Actions);
+					if (cact == DragDropAction.All)
+						cact = DragDropAction.Move;
+					
+					DragOverEventArgs da = new DragOverEventArgs (DragDropInfo.LastDragPosition, DragDropInfo.DragData, cact);
 					Toolkit.Invoke (delegate {
 						EventSink.OnDragOver (da);
 					});
-					Gdk.Drag.Status (args.Context, ConvertDragAction (da.AllowedAction), args.Time);
+					OnSetDragStatus (context, (int)DragDropInfo.LastDragPosition.X, (int)DragDropInfo.LastDragPosition.Y, time, ConvertDragAction (da.AllowedAction));
+					return true;
 				}
 				else {
 					// Use Context.Action here since that's the action selected in DragOver
-					var cda = ConvertDragAction (args.Context.Action);
-					DragEventArgs da = new DragEventArgs (lastDragPosition, dragData, cda);
+					var cda = ConvertDragAction (context.Action);
+					DragEventArgs da = new DragEventArgs (DragDropInfo.LastDragPosition, DragDropInfo.DragData, cda);
 					Toolkit.Invoke (delegate {
 						EventSink.OnDragDrop (da);
 					});
-					Gtk.Drag.Finish (args.Context, da.Success, cda == DragDropAction.Move, args.Time);
+					Gtk.Drag.Finish (context, da.Success, cda == DragDropAction.Move, time);
+					return true;
 				}
-			}
+			} else
+				return false;
+		}
+		
+		protected virtual void OnSetDragStatus (Gdk.DragContext context, int x, int y, uint time, Gdk.DragAction action)
+		{
+			Gdk.Drag.Status (context, action, time);
 		}
 		
 		void HandleWidgetDragBegin (object o, Gtk.DragBeginArgs args)
@@ -805,11 +853,12 @@ namespace Xwt.GtkBackend
 			if (sdata == null)
 				return;
 			
-			currentDragData = sdata.Data;
+			DragDropInfo.CurrentDragData = sdata.Data;
 			
 			if (sdata.ImageBackend != null)
 				Gtk.Drag.SetIconPixbuf (args.Context, (Gdk.Pixbuf) sdata.ImageBackend, (int)sdata.HotX, (int)sdata.HotY);
-			Widget.DragDataGet += HandleWidgetDragDataGet;
+			
+			HandleDragBegin (null, args);
 		}
 		
 		class IconInitializer
@@ -838,7 +887,7 @@ namespace Xwt.GtkBackend
 		public void DragStart (DragStartData sdata)
 		{
 			Gdk.DragAction action = ConvertDragAction (sdata.DragAction);
-			currentDragData = sdata.Data;
+			DragDropInfo.CurrentDragData = sdata.Data;
 			Widget.DragBegin += HandleDragBegin;
 			if (sdata.ImageBackend != null)
 				IconInitializer.Init (Widget, (Gdk.Pixbuf) sdata.ImageBackend, sdata.HotX, sdata.HotY);
@@ -855,15 +904,20 @@ namespace Xwt.GtkBackend
 		
 		void HandleWidgetDragDataGet (object o, Gtk.DragDataGetArgs args)
 		{
-			Util.SetDragData (currentDragData, args);
+			Util.SetDragData (DragDropInfo.CurrentDragData, args);
 		}
 
 		void HandleDragFailed (object o, Gtk.DragFailedArgs args)
 		{
 			Console.WriteLine ("FAILED");
 		}
-
+		
 		void HandleDragDataDelete (object o, Gtk.DragDataDeleteArgs args)
+		{
+			DoDragaDataDelete ();
+		}
+		
+		internal void DoDragaDataDelete ()
 		{
 			FinishDrag (true);
 		}
@@ -879,7 +933,7 @@ namespace Xwt.GtkBackend
 			Widget.DragDataGet -= HandleWidgetDragDataGet;
 			Widget.DragFailed -= HandleDragFailed;
 			Widget.DragDataDelete -= HandleDragDataDelete;
-			Widget.DragBegin -= HandleDragBegin;
+			Widget.DragBegin -= HandleDragBegin; // This event is subscribed only when manualy starting a drag
 			Toolkit.Invoke (delegate {
 				eventSink.OnDragFinished (new DragFinishedEventArgs (delete));
 			});
@@ -887,10 +941,10 @@ namespace Xwt.GtkBackend
 		
 		public void SetDragTarget (TransferDataType[] types, DragDropAction dragAction)
 		{
-			destDragAction = ConvertDragAction (dragAction);
+			DragDropInfo.DestDragAction = ConvertDragAction (dragAction);
 			var table = Util.BuildTargetTable (types);
-			validDropTypes = (Gtk.TargetEntry[]) table;
-			OnSetDragTarget (validDropTypes, destDragAction);
+			DragDropInfo.ValidDropTypes = (Gtk.TargetEntry[]) table;
+			OnSetDragTarget (DragDropInfo.ValidDropTypes, DragDropInfo.DestDragAction);
 		}
 		
 		protected virtual void OnSetDragTarget (Gtk.TargetEntry[] table, Gdk.DragAction actions)
@@ -900,9 +954,9 @@ namespace Xwt.GtkBackend
 		
 		public void SetDragSource (TransferDataType[] types, DragDropAction dragAction)
 		{
-			sourceDragAction = ConvertDragAction (dragAction);
+			DragDropInfo.SourceDragAction = ConvertDragAction (dragAction);
 			var table = Util.BuildTargetTable (types);
-			OnSetDragSource (Gdk.ModifierType.Button1Mask, (Gtk.TargetEntry[]) table, sourceDragAction);
+			OnSetDragSource (Gdk.ModifierType.Button1Mask, (Gtk.TargetEntry[]) table, DragDropInfo.SourceDragAction);
 		}
 		
 		protected virtual void OnSetDragSource (Gdk.ModifierType modifierType, Gtk.TargetEntry[] table, Gdk.DragAction actions)

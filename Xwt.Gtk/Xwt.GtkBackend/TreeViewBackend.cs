@@ -31,6 +31,9 @@ namespace Xwt.GtkBackend
 {
 	public class TreeViewBackend: TableViewBackend, ITreeViewBackend
 	{
+		Gtk.TreePath autoExpandPath;
+		uint expandTimer;
+		
 		protected override void OnSetDragTarget (Gtk.TargetEntry[] table, Gdk.DragAction actions)
 		{
 			base.OnSetDragTarget (table, actions);
@@ -41,6 +44,43 @@ namespace Xwt.GtkBackend
 		{
 			base.OnSetDragSource (modifierType, table, actions);
 			Widget.EnableModelDragSource (modifierType, table, actions);
+		}
+		
+		protected override void OnSetDragStatus (Gdk.DragContext context, int x, int y, uint time, Gdk.DragAction action)
+		{
+			base.OnSetDragStatus (context, x, y, time, action);
+			
+			// We are overriding the TreeView methods for handling drag & drop, so we need
+			// to manually highlight the selected row
+			
+			Gtk.TreeViewDropPosition tpos;
+			Gtk.TreePath path;
+			if (!Widget.GetDestRowAtPos (x, y, out path, out tpos))
+				path = null;
+			
+			if (expandTimer == 0 || autoExpandPath != path) {
+				if (expandTimer != 0)
+					GLib.Source.Remove (expandTimer);
+				if (path != null) {
+					expandTimer = GLib.Timeout.Add (600, delegate {
+						Widget.ExpandRow (path, false);
+						return false;
+					});
+				}
+				autoExpandPath = path;
+			}
+			
+			if (path != null && action != 0)
+				Widget.SetDragDestRow (path, tpos);
+			else
+				Widget.SetDragDestRow (null, 0);
+		}
+		
+		public override void Dispose (bool disposing)
+		{
+			if (expandTimer != 0)
+				GLib.Source.Remove (expandTimer);
+			base.Dispose (disposing);
 		}
 		
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)

@@ -34,7 +34,7 @@ namespace Xwt.GtkBackend
 	{
 		public TableViewBackend ()
 		{
-			Widget = new Gtk.TreeView ();
+			Widget = new CustomTreeView (this);
 			Widget.Show ();
 		}
 		
@@ -147,6 +147,24 @@ namespace Xwt.GtkBackend
 			((Gtk.TreeViewColumn)target).AddAttribute (cr, field, col);
 		}
 		#endregion
+	}
+	
+	class CustomTreeView: Gtk.TreeView
+	{
+		WidgetBackend backend;
+		
+		public CustomTreeView (WidgetBackend b)
+		{
+			backend = b;
+		}
+		
+		protected override void OnDragDataDelete (Gdk.DragContext context)
+		{
+			// This method is override to avoid the default implementation
+			// being called. The default implementation deletes the
+			// row being dragged, and we don't want that
+			backend.DoDragaDataDelete ();
+		}
 	}
 }
 
