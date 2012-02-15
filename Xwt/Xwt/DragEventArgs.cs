@@ -30,7 +30,7 @@ namespace Xwt
 {
 	public class DragCheckEventArgs: EventArgs
 	{
-		public DragCheckEventArgs (Point position, string[] types, DragDropAction action)
+		public DragCheckEventArgs (Point position, TransferDataType[] types, DragDropAction action)
 		{
 			DataTypes = types;
 			Action = action;
@@ -38,7 +38,7 @@ namespace Xwt
 			Result = DragDropResult.None;
 		}
 		
-		public string[] DataTypes { get; private set; }
+		public TransferDataType[] DataTypes { get; private set; }
 		
 		public Point Position { get; private set; }
 		
@@ -68,7 +68,7 @@ namespace Xwt
 	
 	public class DragOverCheckEventArgs: EventArgs
 	{
-		public DragOverCheckEventArgs (Point position, string[] types, DragDropAction action)
+		public DragOverCheckEventArgs (Point position, TransferDataType[] types, DragDropAction action)
 		{
 			DataTypes = types;
 			Action = action;
@@ -79,7 +79,7 @@ namespace Xwt
 		/// <summary>
 		/// Type of the data being dropped
 		/// </summary>
-		public string[] DataTypes { get; private set; }
+		public TransferDataType[] DataTypes { get; private set; }
 		
 		/// <summary>
 		/// Drop coordinates (in widget coordinates)

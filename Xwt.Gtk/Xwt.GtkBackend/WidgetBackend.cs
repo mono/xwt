@@ -885,7 +885,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 		
-		public void SetDragTarget (string[] types, DragDropAction dragAction)
+		public void SetDragTarget (TransferDataType[] types, DragDropAction dragAction)
 		{
 			destDragAction = ConvertDragAction (dragAction);
 			var table = Util.BuildTargetTable (types);
@@ -898,7 +898,7 @@ namespace Xwt.GtkBackend
 			Gtk.Drag.DestSet (Widget, Gtk.DestDefaults.Highlight, table, actions);
 		}
 		
-		public void SetDragSource (string[] types, DragDropAction dragAction)
+		public void SetDragSource (TransferDataType[] types, DragDropAction dragAction)
 		{
 			sourceDragAction = ConvertDragAction (dragAction);
 			var table = Util.BuildTargetTable (types);

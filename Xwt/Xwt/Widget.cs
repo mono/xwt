@@ -464,44 +464,44 @@ namespace Xwt
 			Backend.DragStart (sdata);
 		}
 		
-		public void SetDragDropTarget (params string[] types)
+		public void SetDragDropTarget (params TransferDataType[] types)
 		{
 			Backend.SetDragTarget (types, DragDropAction.All);
 		}
 		
 		public void SetDragDropTarget (params Type[] types)
 		{
-			Backend.SetDragTarget (types.Select (t => TransferDataType.GetDataType (t)).ToArray (), DragDropAction.All);
+			Backend.SetDragTarget (types.Select (t => TransferDataType.FromType (t)).ToArray (), DragDropAction.All);
 		}
 		
-		public void SetDragDropTarget (DragDropAction dragAction, params string[] types)
+		public void SetDragDropTarget (DragDropAction dragAction, params TransferDataType[] types)
 		{
 			Backend.SetDragTarget (types, dragAction);
 		}
 		
 		public void SetDragDropTarget (DragDropAction dragAction, params Type[] types)
 		{
-			Backend.SetDragTarget (types.Select (t => TransferDataType.GetDataType (t)).ToArray(), dragAction);
+			Backend.SetDragTarget (types.Select (t => TransferDataType.FromType (t)).ToArray(), dragAction);
 		}
 		
-		public void SetDragSource (params string[] types)
+		public void SetDragSource (params TransferDataType[] types)
 		{
 			Backend.SetDragSource (types, DragDropAction.All);
 		}
 		
 		public void SetDragSource (params Type[] types)
 		{
-			Backend.SetDragSource (types.Select (t => TransferDataType.GetDataType (t)).ToArray(), DragDropAction.All);
+			Backend.SetDragSource (types.Select (t => TransferDataType.FromType (t)).ToArray(), DragDropAction.All);
 		}
 		
-		public void SetDragSource (DragDropAction dragAction, params string[] types)
+		public void SetDragSource (DragDropAction dragAction, params TransferDataType[] types)
 		{
 			Backend.SetDragSource (types, dragAction);
 		}
 		
 		public void SetDragSource (DragDropAction dragAction, params Type[] types)
 		{
-			Backend.SetDragSource (types.Select (t => TransferDataType.GetDataType (t)).ToArray(), dragAction);
+			Backend.SetDragSource (types.Select (t => TransferDataType.FromType (t)).ToArray(), dragAction);
 		}
 		
 		protected override void OnBackendCreated ()

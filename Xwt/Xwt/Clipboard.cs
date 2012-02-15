@@ -48,14 +48,14 @@ namespace Xwt
 			Backend.Clear ();
 		}
 		
-		public static bool ContainsData (string type)
+		public static bool ContainsData (TransferDataType type)
 		{
 			return Backend.IsTypeAvailable (type);
 		}
 		
 		public static bool ContainsData<T> ()
 		{
-			return Backend.IsTypeAvailable (TransferDataType.GetDataType (typeof(T)));
+			return Backend.IsTypeAvailable (TransferDataType.FromType (typeof(T)));
 		}
 		
 		public static bool ContainsText ()
@@ -98,17 +98,17 @@ namespace Xwt
 			return (string) Backend.EndGetData (ares);
 		}
 		
-		public static object GetData (string type)
+		public static object GetData (TransferDataType type)
 		{
 			return Backend.GetData (type);
 		}
 		
 		public static T GetData<T> ()
 		{
-			return (T) Backend.GetData (TransferDataType.GetDataType (typeof(T)));
+			return (T) Backend.GetData (TransferDataType.FromType (typeof(T)));
 		}
 		
-		public static IAsyncResult BeginGetData (string type, AsyncCallback callback, object state)
+		public static IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state)
 		{
 			return Backend.BeginGetData (type, callback, state);
 		}
@@ -120,7 +120,7 @@ namespace Xwt
 		
 		public static IAsyncResult BeginGetData<T> (AsyncCallback callback, object state)
 		{
-			return Backend.BeginGetData (TransferDataType.GetDataType (typeof(T)), callback, state);
+			return Backend.BeginGetData (TransferDataType.FromType (typeof(T)), callback, state);
 		}
 		
 		public static T EndGetData<T> (IAsyncResult ares)
@@ -156,24 +156,24 @@ namespace Xwt
 		{
 			if (data == null)
 				throw new ArgumentNullException ("data");
-			SetData (TransferDataType.GetDataType (data.GetType ()), data);
+			SetData (TransferDataType.FromType (data.GetType ()), data);
 		}
 		
-		public static void SetData (string type, object data)
+		public static void SetData (TransferDataType type, object data)
 		{
 			Backend.SetData (type, delegate {
 				return data;
 			});
 		}
 		
-		public static void SetData (string type, Func<object> dataSource)
+		public static void SetData (TransferDataType type, Func<object> dataSource)
 		{
 			Backend.SetData (type, dataSource);
 		}
 		
 		public static void SetData<T> (Func<T> dataSource)
 		{
-			Backend.SetData (TransferDataType.GetDataType (typeof(T)), delegate () {
+			Backend.SetData (TransferDataType.FromType (typeof(T)), delegate () {
 				return dataSource ();
 			});
 		}

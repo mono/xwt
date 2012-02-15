@@ -64,8 +64,8 @@ namespace Xwt.Backends
 		object NativeWidget { get; }
 		
 		void DragStart (DragStartData data);
-		void SetDragSource (string[] types, DragDropAction dragAction);
-		void SetDragTarget (string[] types, DragDropAction dragAction);
+		void SetDragSource (TransferDataType[] types, DragDropAction dragAction);
+		void SetDragTarget (TransferDataType[] types, DragDropAction dragAction);
 		
 		object Font { get; set; }
 		Color BackgroundColor { get; set; }

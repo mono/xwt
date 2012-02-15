@@ -48,11 +48,11 @@ namespace Xwt.GtkBackend
 			clipboard.Clear ();
 		}
 
-		public void SetData (string type, Func<object> dataSource)
+		public void SetData (TransferDataType type, Func<object> dataSource)
 		{
-			clipboard.SetWithData ((Gtk.TargetEntry[])Util.BuildTargetTable (new string[] { type }), 
+			clipboard.SetWithData ((Gtk.TargetEntry[])Util.BuildTargetTable (new TransferDataType[] { type }), 
 			  delegate (Gtk.Clipboard cb, Gtk.SelectionData data, uint id) {
-				string ttype = Util.AtomToType (data.Target.Name);
+				TransferDataType ttype = Util.AtomToType (data.Target.Name);
 				if (ttype == type)
 					Util.SetSelectionData (data, data.Target.Name, dataSource ());
 			},
@@ -60,7 +60,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		public bool IsTypeAvailable (string type)
+		public bool IsTypeAvailable (TransferDataType type)
 		{
 			if (type == TransferDataType.Text)
 				return clipboard.WaitIsTextAvailable ();
@@ -74,13 +74,13 @@ namespace Xwt.GtkBackend
 			return false;
 		}
 		
-		IEnumerable<Gdk.Atom> GetAtomsForType (string type)
+		IEnumerable<Gdk.Atom> GetAtomsForType (TransferDataType type)
 		{
-			foreach (Gtk.TargetEntry te in (Gtk.TargetEntry[])Util.BuildTargetTable (new string[] { type }))
+			foreach (Gtk.TargetEntry te in (Gtk.TargetEntry[])Util.BuildTargetTable (new TransferDataType[] { type }))
 				yield return Gdk.Atom.Intern (te.Target, false);
 		}
 
-		public object GetData (string type)
+		public object GetData (TransferDataType type)
 		{
 			if (type == TransferDataType.Text)
 				return clipboard.WaitForText ();
@@ -96,7 +96,7 @@ namespace Xwt.GtkBackend
 			return ((ITransferData)store).GetValue (type);
 		}
 
-		public IAsyncResult BeginGetData (string type, AsyncCallback callback, object state)
+		public IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state)
 		{
 			var atts = GetAtomsForType (type).ToArray ();
 			return new DataRequest (clipboard, callback, state, type, atts);
@@ -117,10 +117,10 @@ namespace Xwt.GtkBackend
 		int index = 0;
 		ManualResetEvent doneEvent;
 		bool complete;
-		string type;
+		TransferDataType type;
 		AsyncCallback callback;
 		
-		public DataRequest (Gtk.Clipboard clipboard, AsyncCallback callback, object state, string type, Gdk.Atom[] atoms)
+		public DataRequest (Gtk.Clipboard clipboard, AsyncCallback callback, object state, TransferDataType type, Gdk.Atom[] atoms)
 		{
 			this.callback = callback;
 			this.type = type;

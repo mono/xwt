@@ -315,11 +315,11 @@ namespace Xwt.Mac
 			Widget.DragImage (img, pos, new SizeF (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
 		}
 		
-		public void SetDragSource (string[] types, DragDropAction dragAction)
+		public void SetDragSource (TransferDataType[] types, DragDropAction dragAction)
 		{
 		}
 		
-		public void SetDragTarget (string[] types, DragDropAction dragAction)
+		public void SetDragTarget (TransferDataType[] types, DragDropAction dragAction)
 		{
 			SetupForDragDrop (Widget.GetType ());
 			var dtypes = types.Select (t => ToNSDragType (t)).ToArray ();
@@ -495,18 +495,16 @@ namespace Xwt.Mac
 			return res;
 		}
 		
-		static string ToNSDragType (string type)
+		static string ToNSDragType (TransferDataType type)
 		{
-			switch (type) {
-			case TransferDataType.Text: return NSPasteboard.NSStringType;
-			case TransferDataType.Uri: return NSPasteboard.NSFilenamesType;
-			case TransferDataType.Image: return NSPasteboard.NSPictType;
-			case TransferDataType.Rtf: return NSPasteboard.NSRtfType;
-			}
-			return type;
+			if (type == TransferDataType.Text) return NSPasteboard.NSStringType;
+			if (type == TransferDataType.Uri) return NSPasteboard.NSFilenamesType;
+			if (type == TransferDataType.Image) return NSPasteboard.NSPictType;
+			if (type == TransferDataType.Rtf) return NSPasteboard.NSRtfType;
+			return type.Id;
 		}
 		
-		static string ToXwtDragType (string type)
+		static TransferDataType ToXwtDragType (string type)
 		{
 			if (type == NSPasteboard.NSStringType)
 				return TransferDataType.Text;
@@ -516,7 +514,7 @@ namespace Xwt.Mac
 				return TransferDataType.Image;
 			if (type == NSPasteboard.NSRtfType)
 				return TransferDataType.Rtf;
-			return type;
+			return TransferDataType.FromId (type);
 		}
 		
 		#endregion

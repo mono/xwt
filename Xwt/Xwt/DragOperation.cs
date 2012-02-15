@@ -102,32 +102,32 @@ namespace Xwt
 	public sealed class TransferDataSource
 	{
 		public DataRequestDelegate DataRequestCallback { get; set; }
-		Dictionary<string,object> data = new Dictionary<string,object> ();
+		Dictionary<TransferDataType,object> data = new Dictionary<TransferDataType,object> ();
 		
 		public void AddValue (object value)
 		{
 			if (value == null)
 				throw new ArgumentNullException ("value");
-			data [TransferDataType.GetDataType (value.GetType ())] = value;
+			data [TransferDataType.FromType (value.GetType ())] = value;
 		}
 		
-		public void AddType (string type)
+		public void AddType (TransferDataType type)
 		{
 			data [type] = null;
 		}
 		
 		public void AddType (Type type)
 		{
-			data [TransferDataType.GetDataType (type)] = null;
+			data [TransferDataType.FromType (type)] = null;
 		}
 		
-		public string[] DataTypes {
+		public TransferDataType[] DataTypes {
 			get {
 				return data.Keys.ToArray ();
 			}
 		}
 		
-		public object GetValue (string type)
+		public object GetValue (TransferDataType type)
 		{
 			object val;
 			if (data.TryGetValue (type, out val)) {
@@ -159,7 +159,7 @@ namespace Xwt
 	
 	public class TransferDataStore: ITransferData
 	{
-		Dictionary<string,object> data = new Dictionary<string,object> ();
+		Dictionary<TransferDataType,object> data = new Dictionary<TransferDataType,object> ();
 		
 		public void AddText (string text)
 		{
@@ -176,16 +176,16 @@ namespace Xwt
 			data [TransferDataType.Uri] = uris;
 		}
 		
-		public void AddValue (string type, byte[] value)
+		public void AddValue (TransferDataType type, byte[] value)
 		{
-			Type t = Type.GetType (type);
+			Type t = Type.GetType (type.Id);
 			if (t != null)
 				data [type] = TransferDataSource.DeserializeValue (value);
 			else
 				data [type] = value;
 		}
 		
-		object GetValue (string type)
+		object GetValue (TransferDataType type)
 		{
 			object val;
 			if (data.TryGetValue (type, out val)) {
@@ -195,25 +195,25 @@ namespace Xwt
 			return null;
 		}
 		
-		object ITransferData.GetValue (string type)
+		object ITransferData.GetValue (TransferDataType type)
 		{
 			return GetValue (type);
 		}
 		
 		T ITransferData.GetValue<T> ()
 		{
-			object ob = GetValue (TransferDataType.GetDataType (typeof(T)));
+			object ob = GetValue (TransferDataType.FromType (typeof(T)));
 			if (ob == null || ob.GetType () == typeof(Type))
 				return (T) ob;
 			if (ob is byte[]) {
 				T val = (T) TransferDataSource.DeserializeValue ((byte[])ob);
-				data[TransferDataType.GetDataType (typeof(T))] = val;
+				data[TransferDataType.FromType (typeof(T))] = val;
 				return val;
 			}
 			return (T) ob;
 		}
 		
-		bool ITransferData.HasType (string type)
+		bool ITransferData.HasType (TransferDataType type)
 		{
 			return data.ContainsKey (type);
 		}
@@ -244,29 +244,72 @@ namespace Xwt
 		Uri[] Uris { get; }
 		Xwt.Drawing.Image Image { get; }
 		
-		object GetValue (string type);
+		object GetValue (TransferDataType type);
 		T GetValue<T> () where T:class;
-		bool HasType (string type);
+		bool HasType (TransferDataType type);
 	}
 	
-	public static class TransferDataType
+	public class TransferDataType
 	{
-		public const string Uri = "uri";
-		public const string Text = "text";
-		public const string Rtf = "rtf";
-		public const string Image = "image";
+		string id;
 		
-		public static string GetDataType (Type type)
+		public static readonly TransferDataType Uri = FromId ("uri");
+		public static readonly TransferDataType Text = FromId ("text");
+		public static readonly TransferDataType Rtf = FromId ("rtf");
+		public static readonly TransferDataType Image = FromId ("image");
+		
+		private TransferDataType (string id)
+		{
+			this.id = id;
+		}
+		
+		public string Id {
+			get { return id; }
+		}
+		
+		public static TransferDataType FromId (string name)
+		{
+			return new TransferDataType (name);
+		}
+		
+		public static TransferDataType FromType (Type type)
 		{
 			if (type == typeof(string))
 				return TransferDataType.Text;
 			else if (type == typeof(Xwt.Drawing.Image))
 				return TransferDataType.Image;
 			else
-				return type.AssemblyQualifiedName;
+				return FromId (type.AssemblyQualifiedName);
+		}
+		
+		public override bool Equals (object obj)
+		{
+			TransferDataType t = obj as TransferDataType;
+			return t != null && t.id == id;
+		}
+		
+		public override int GetHashCode ()
+		{
+			return id.GetHashCode ();
+		}
+		
+		public static bool operator == (TransferDataType c1, TransferDataType c2) 
+		{
+			if (object.ReferenceEquals (c1, c2))
+				return true;
+			
+			if ((object)c1 == null || (object)c2 == null)
+				return false;
+			
+			return c1.id == c2.id;
+		}
+		
+		public static bool operator != (TransferDataType c1, TransferDataType c2) 
+		{
+			return !(c1 == c2);
 		}
 	}
 	
-	public delegate object DataRequestDelegate (string type);
+	public delegate object DataRequestDelegate (TransferDataType type);
 }
 

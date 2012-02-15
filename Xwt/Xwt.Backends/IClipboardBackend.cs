@@ -30,11 +30,11 @@ namespace Xwt.Backends
 	public interface IClipboardBackend
 	{
 		void Clear ();
-		void SetData (string type, Func<object> dataSource);
+		void SetData (TransferDataType type, Func<object> dataSource);
 		
-		bool IsTypeAvailable (string type);
-		object GetData (string type);
-		IAsyncResult BeginGetData (string type, AsyncCallback callback, object state);
+		bool IsTypeAvailable (TransferDataType type);
+		object GetData (TransferDataType type);
+		IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state);
 		object EndGetData (IAsyncResult ares);
 	}
 }
