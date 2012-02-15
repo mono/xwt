@@ -1,6 +1,11 @@
 This document is an introduction to XWT, a cross-platform UI toolkit
 for creating desktop applications.
 
+If you have any question about XWT or do you want to contribute
+a discussion group for XWT is available here:
+
+http://groups.google.com/group/xwt-list
+
 Introduction
 ============
 
@@ -10,8 +15,11 @@ one unified API across all environments that is mapped to a set of
 native controls on each platform.
 
 This means that Xwt tends to focus on providing controls that will
-work across all platforms.   Which means that the functionality
-available is usually a common denominator across all platforms. 
+work across all platforms. However, that doesn't mean that the
+functionality available is a common denominator of all platforms.
+If a specific feature or widget is not available in the
+native framework of a platform, it will be emulated or implemented
+as a set of native widgets.
 
 Xwt can be used a standalone framework to power the entire application
 or it can be embedded into an existing host.  This allows developers
@@ -46,11 +54,11 @@ Using Xwt in your app
 Based on your platform and the backend that you want to use, you need
 to pick the libraries that you want to use in your project.
 
-Windows+WPF: Xwt.dll + Xwt.WPF.dll (requires WPF)
-Windows+Gtk: Xwt.dll + Xwt.Gtk.dll (requires Gtk#)
-Linux+Gtk:   Xwt.dll + Xwt.Gtk.dll (requires Gtk#)
-Mac+Gtk:     Xwt.dll + Xwt.Gtk.dll (requires Gtk#)
-Mac+Cocoa:   Xwt.dll + Xwt.Mac.dll (requires MonoMac.dll)
+* Windows+WPF: Xwt.dll + Xwt.WPF.dll (requires WPF)
+* Windows+Gtk: Xwt.dll + Xwt.Gtk.dll (requires Gtk#)
+* Linux+Gtk: Xwt.dll + Xwt.Gtk.dll (requires Gtk#)
+* Mac+Gtk: Xwt.dll + Xwt.Gtk.dll (requires Gtk#)
+* Mac+Cocoa: Xwt.dll + Xwt.Mac.dll (requires MonoMac.dll)
 
 Hello World
 -----------
@@ -62,22 +70,22 @@ at compile time.
 
 This is the simplest Xwt program you can write:
 
-using Xwt;
-
-class XwtDemo {
-    static void Main ()
-    {
-        Application.Initialize ();
-	var mainWindow = new Window (){
-	   Title = "Xwt Demo Application",
-	   Width = 500,
-	   Height = 400
-	};
-	mainWindow.Show ();
-	Application.Run ();
-	mainWindow.Dispose ();
-    }
-}
+	using Xwt;
+	
+	class XwtDemo {
+		static void Main ()
+		{
+			Application.Initialize ();
+			var mainWindow = new Window (){
+				Title = "Xwt Demo Application",
+				Width = 500,
+				Height = 400
+			};
+			mainWindow.Show ();
+			Application.Run ();
+			mainWindow.Dispose ();
+	    }
+	}
 
 You use the Application.Initialize() method to get the backend
 initialized and the Application.Run method to get the UI events
@@ -106,36 +114,36 @@ availble in Gtk and HTML allowing the user interface to grow or shrink
 based on the contents of the childrens on it.
 
 * XwtComponent 
-** Menu
-** MenuItem
-** Widget
-*** Box (Container)
-**** HBox (Container)
-**** VBox (Container)
-*** Button
-**** MenuButton
-**** ToggleButton
-*** Canvas (Container)
-*** Checkbox
-*** ComboBox
-*** Frame
-*** ImageView
-*** Label
-*** ListView
-*** NoteBook
-*** Paned (Container)
-**** HPaned (Container)
-**** VPaned (Container)
-*** ScrollView
-*** Separator
-**** VSeparator
-**** HSeparator
-*** Table (Container)
-*** TextEntry
-*** TreeView
-** WindowFrame
-*** Window
-**** Dialog
+    * Menu
+    * MenuItem
+    * Widget
+        * Box (Container)
+            * HBox (Container)
+            * VBox (Container)
+        * Button
+            * MenuButton
+            * ToggleButton
+        * Canvas (Container)
+        * Checkbox
+        * ComboBox
+        * Frame
+        * ImageView
+        * Label
+        * ListView
+        * NoteBook
+        * Paned (Container)
+            * HPaned (Container)
+            * VPaned (Container)
+        * ScrollView
+        * Separator
+            * VSeparator
+            * HSeparator
+        * Table (Container)
+        * TextEntry
+        * TreeView
+    * WindowFrame
+        * Window
+            * Dialog
 
 For example, the following attaches various labels and data entries to
 a Table:
