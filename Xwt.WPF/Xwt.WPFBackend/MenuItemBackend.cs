@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using SWMI = System.Windows.Media.Imaging;
 using Xwt.Backends;
 using Xwt.Engine;
 
@@ -89,7 +89,18 @@ namespace Xwt.WPFBackend
 
 		public void SetImage (object imageBackend)
 		{
-			throw new NotImplementedException ();
+			if (imageBackend == null)
+				item.Icon = null;
+			else
+			{
+				var img = (SWMI.BitmapSource) imageBackend;
+				item.Icon = new System.Windows.Controls.Image
+				{
+					Source = img,
+					Width = img.Width,
+					Height = img.Height
+				};
+			}
 		}
 
 		public void SetSeparator ()

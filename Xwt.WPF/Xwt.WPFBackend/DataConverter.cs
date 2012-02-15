@@ -34,6 +34,28 @@ namespace Xwt.WPFBackend
 			return new SW.Point (point.X, point.Y);
 		}
 
+
+		//
+		// Alignment
+		//
+		public static Alignment ToXwtAlignment (SW.HorizontalAlignment alignment)
+		{
+			switch (alignment) {
+				case SW.HorizontalAlignment.Left: return Alignment.Start;
+				case SW.HorizontalAlignment.Center: return Alignment.Center;
+				default: return Alignment.End;
+			}
+		}
+
+		public static SW.HorizontalAlignment ToWpfAlignment (Alignment alignment)
+		{
+			switch (alignment) {
+				case Alignment.Start: return SW.HorizontalAlignment.Left;
+				case Alignment.Center: return SW.HorizontalAlignment.Center;
+				default: return SW.HorizontalAlignment.Right;
+			}
+		}
+
 		//
 		// Color
 		//
@@ -123,6 +145,17 @@ namespace Xwt.WPFBackend
 			if (value == FontWeight.Heavy) return SW.FontWeights.Black;
 			
 			return SW.FontWeights.Normal;
+		}
+
+		// Dock
+
+		public static SW.Controls.Dock ToWpfDock(ContentPosition value)
+		{
+			if (value == ContentPosition.Left) return SW.Controls.Dock.Left;
+			if (value == ContentPosition.Top) return SW.Controls.Dock.Top;
+			if (value == ContentPosition.Bottom) return SW.Controls.Dock.Bottom;
+
+			return SW.Controls.Dock.Right;
 		}
 	}
 }

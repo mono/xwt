@@ -1,5 +1,5 @@
 ﻿// 
-// BoxBackend.cs
+// LabelBackend.cs
 //  
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
@@ -28,46 +28,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SW = System.Windows;
+using System.Windows;
 using SWC = System.Windows.Controls;
 
 using Xwt.Backends;
-using Xwt.Drawing;
 
 namespace Xwt.WPFBackend
 {
-	public class BoxBackend : WidgetBackend, IBoxBackend
+	public class LabelBackend : WidgetBackend, ILabelBackend
 	{
-		public BoxBackend ()
+		public LabelBackend ()
 		{
-			Widget = new CustomPanel ();
+			Widget = new SWC.Label ();
 		}
 
-		new CustomPanel Widget {
-			get { return (CustomPanel)base.Widget; }
-			set { base.Widget = value; }
+		SWC.Label Label {
+			get { return (SWC.Label)Widget; }
 		}
 
-		public void Add (IWidgetBackend widget)
-		{
-			Widget.Children.Add (GetFrameworkElement (widget));
+		public string Text {
+			get { return (string)Label.Content; }
+			set { Label.Content = value; }
 		}
 
-		public void Remove (IWidgetBackend widget)
-		{
-			Widget.Children.Remove (GetFrameworkElement (widget));
+		public Alignment TextAlignment {
+			get { return DataConverter.ToXwtAlignment (Label.HorizontalContentAlignment); }
+			set { Label.HorizontalContentAlignment = DataConverter.ToWpfAlignment (value); }
 		}
-
-		public void SetAllocation (IWidgetBackend [] widget, Rectangle [] rect)
-		{
-			for (int i = 0; i < widget.Length; i++) {
-				var e = GetFrameworkElement (widget [i]);
-				e.Arrange (DataConverter.ToWpfRect (rect [i]));
-			}
-		}
-	}
-
-	public class CustomPanel : SWC.Canvas
-	{
 	}
 }
