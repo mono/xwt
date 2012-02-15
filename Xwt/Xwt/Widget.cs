@@ -56,6 +56,7 @@ namespace Xwt
 		EventHandler<DragOverEventArgs> dragOver;
 		EventHandler<DragCheckEventArgs> dragDropCheck;
 		EventHandler<DragEventArgs> dragDrop;
+		EventHandler<DragStartedEventArgs> dragStarted;
 		EventHandler dragLeave;
 		EventHandler<KeyEventArgs> keyPressed;
 		EventHandler<KeyEventArgs> keyReleased;
@@ -105,6 +106,11 @@ namespace Xwt
 			public void OnDragFinished (DragFinishedEventArgs args)
 			{
 				Parent.OnDragFinished (args);
+			}
+			
+			public DragStartData OnDragStarted ()
+			{
+				return Parent.InternalDragStarted ();
 			}
 			
 			public void OnKeyPressed (KeyEventArgs args)
@@ -207,6 +213,7 @@ namespace Xwt
 			MapEvent (WidgetEvent.ButtonPressed, typeof(Widget), "OnButtonPressed");
 			MapEvent (WidgetEvent.ButtonReleased, typeof(Widget), "OnButtonReleased");
 			MapEvent (WidgetEvent.MouseMoved, typeof(Widget), "OnMouseMoved");
+			MapEvent (WidgetEvent.DragStarted, typeof(Widget), "OnDragStarted");
 		}
 		
 		protected override void Dispose (bool disposing)
@@ -452,9 +459,9 @@ namespace Xwt
 			return currentDragOperation;
 		}
 		
-		internal void DragStart (TransferDataSource data, DragDropAction allowedDragActions, object image, double hotX, double hotY)
+		internal void DragStart (DragStartData sdata)
 		{
-			Backend.DragStart (data, allowedDragActions, image, hotX, hotY);
+			Backend.DragStart (sdata);
 		}
 		
 		public void SetDragDropTarget (params string[] types)
@@ -561,6 +568,26 @@ namespace Xwt
 		{
 			if (dragLeave != null)
 				dragLeave (this, args);
+		}
+		
+		protected DragStartData InternalDragStarted ()
+		{
+			DragStartedEventArgs args = new DragStartedEventArgs ();
+			args.DragOperation = new DragOperation (this);
+			OnDragStarted (args);
+			return args.DragOperation.GetStartData ();
+		}
+
+		/// <summary>
+		/// Raises the DragStarted event.
+		/// </summary>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
+		protected virtual void OnDragStarted (DragStartedEventArgs args)
+		{
+			if (dragStarted != null)
+				dragStarted (this, args);
 		}
 		
 		internal protected virtual void OnDragFinished (DragFinishedEventArgs args)
@@ -1057,6 +1084,17 @@ namespace Xwt
 			remove {
 				dragLeave -= value;
 				OnAfterEventRemove (WidgetEvent.DragLeave, dragLeave);
+			}
+		}
+		
+		public event EventHandler<DragStartedEventArgs> DragStarted {
+			add {
+				OnBeforeEventAdd (WidgetEvent.DragStarted, dragStarted);
+				dragStarted += value;
+			}
+			remove {
+				dragStarted -= value;
+				OnAfterEventRemove (WidgetEvent.DragStarted, dragStarted);
 			}
 		}
 		

@@ -189,6 +189,7 @@
     <Compile Include="Xwt.Backends\IRadioButtonMenuItemBackend.cs" />
     <Compile Include="Xwt.Backends\ISeparatorMenuItemBackend.cs" />
     <Compile Include="Xwt\EllipsizeMode.cs" />
+    <Compile Include="Xwt\RowDropPosition.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

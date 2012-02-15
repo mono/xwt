@@ -143,6 +143,11 @@ namespace Xwt
 		public bool DeleteSource { get; private set; }
 	}
 	
+	public class DragStartedEventArgs: EventArgs
+	{
+		public DragOperation DragOperation { get; internal set; }
+	}
+	
 	public enum DragDropResult
 	{
 		Success,

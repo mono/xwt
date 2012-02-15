@@ -30,6 +30,8 @@ using System.Linq;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Xwt.Drawing;
+using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt
 {
@@ -78,14 +80,21 @@ namespace Xwt
 		
 		public void Start ()
 		{
-			started = true;
-			source.DragStart (data, action, XwtObject.GetBackend (image), hotX, hotY);
+			if (!started) {
+				started = true;
+				source.DragStart (GetStartData ());
+			}
 		}
 
 		internal void NotifyFinished (DragFinishedEventArgs args)
 		{
 			if (Finished != null)
 				Finished (this, args);
+		}
+		
+		internal DragStartData GetStartData ()
+		{
+			return new DragStartData (data, action, WidgetRegistry.GetBackend (image), hotX, hotY);
 		}
 		
 	}

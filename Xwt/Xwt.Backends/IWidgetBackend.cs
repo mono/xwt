@@ -63,7 +63,7 @@ namespace Xwt.Backends
 		
 		object NativeWidget { get; }
 		
-		void DragStart (TransferDataSource data, DragDropAction allowedDragActions, object imageBackend, double hotX, double hotY);
+		void DragStart (DragStartData data);
 		void SetDragSource (string[] types, DragDropAction dragAction);
 		void SetDragTarget (string[] types, DragDropAction dragAction);
 		
@@ -81,6 +81,7 @@ namespace Xwt.Backends
 		void OnDragDrop (DragEventArgs args);
 		void OnDragLeave (EventArgs args);
 		void OnDragFinished (DragFinishedEventArgs args);
+		DragStartData OnDragStarted ();
 		void OnKeyPressed (KeyEventArgs args);
 		void OnKeyReleased (KeyEventArgs args);
 		void OnGotFocus ();
@@ -134,6 +135,7 @@ namespace Xwt.Backends
 		ButtonPressed = 1 << 15,
 		ButtonReleased = 1 << 16,
 		MouseMoved = 1 << 17,
+		DragStarted = 1 << 18
 	}
 	
 	public interface DragOperationEventSink
@@ -144,6 +146,24 @@ namespace Xwt.Backends
 	public interface ITransferDataSource
 	{
 		string[] Types { get; }
+	}
+	
+	public class DragStartData
+	{
+		public TransferDataSource Data { get; private set; }
+		public DragDropAction DragAction { get; private set; }
+		public object ImageBackend { get; private set; }
+		public double HotX { get; private set; }
+		public double HotY { get; private set; }
+		
+		internal DragStartData (TransferDataSource data, DragDropAction action, object imageBackend, double hotX, double hotY)
+		{
+			Data = data;
+			DragAction = action;
+			ImageBackend = imageBackend;
+			HotX = hotX;
+			HotY = hotY;
+		}
 	}
 }
 

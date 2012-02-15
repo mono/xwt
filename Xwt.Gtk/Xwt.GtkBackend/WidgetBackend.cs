@@ -326,6 +326,9 @@ namespace Xwt.GtkBackend
 				case WidgetEvent.DragLeave:
 					Widget.DragLeave += HandleWidgetDragLeave;
 					break;
+				case WidgetEvent.DragStarted:
+					Widget.DragBegin += HandleWidgetDragBegin;
+					break;
 				case WidgetEvent.KeyPressed:
 					Widget.KeyPressEvent += HandleKeyPressEvent;
 					break;
@@ -393,6 +396,9 @@ namespace Xwt.GtkBackend
 				switch (ev) {
 				case WidgetEvent.DragLeave:
 					Widget.DragLeave -= HandleWidgetDragLeave;
+					break;
+				case WidgetEvent.DragStarted:
+					Widget.DragBegin -= HandleWidgetDragBegin;
 					break;
 				case WidgetEvent.KeyPressed:
 					Widget.KeyPressEvent -= HandleKeyPressEvent;
@@ -755,6 +761,13 @@ namespace Xwt.GtkBackend
 		
 		void HandleWidgetDragDataReceived (object o, Gtk.DragDataReceivedArgs args)
 		{
+			if (dragDataRequests == 0) {
+				// Got the data without requesting it. Create the datastore here
+				dragData = new TransferDataStore ();
+				lastDragPosition = new Point (args.X, args.Y);
+				dragDataRequests = 1;
+			}
+			
 			dragDataRequests--;
 			
 			if (!Util.GetSelectionData (args.SelectionData, dragData)) {
@@ -782,6 +795,23 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
+		void HandleWidgetDragBegin (object o, Gtk.DragBeginArgs args)
+		{
+			DragStartData sdata = null;
+			Toolkit.Invoke (delegate {
+				sdata = EventSink.OnDragStarted ();
+			});
+			
+			if (sdata == null)
+				return;
+			
+			currentDragData = sdata.Data;
+			
+			if (sdata.ImageBackend != null)
+				Gtk.Drag.SetIconPixbuf (args.Context, (Gdk.Pixbuf) sdata.ImageBackend, (int)sdata.HotX, (int)sdata.HotY);
+			Widget.DragDataGet += HandleWidgetDragDataGet;
+		}
+		
 		class IconInitializer
 		{
 			public Gdk.Pixbuf Image;
@@ -805,13 +835,14 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public void DragStart (TransferDataSource data, DragDropAction dragAction, object imageBackend, double hotX, double hotY)
+		public void DragStart (DragStartData sdata)
 		{
-			Gdk.DragAction action = ConvertDragAction (dragAction);
-			currentDragData = data;
+			Gdk.DragAction action = ConvertDragAction (sdata.DragAction);
+			currentDragData = sdata.Data;
 			Widget.DragBegin += HandleDragBegin;
-			IconInitializer.Init (Widget, (Gdk.Pixbuf) imageBackend, hotX, hotY);
-			Gtk.Drag.Begin (Widget, Util.BuildTargetTable (data.DataTypes), action, 1, Gtk.Global.CurrentEvent);
+			if (sdata.ImageBackend != null)
+				IconInitializer.Init (Widget, (Gdk.Pixbuf) sdata.ImageBackend, sdata.HotX, sdata.HotY);
+			Gtk.Drag.Begin (Widget, Util.BuildTargetTable (sdata.Data.DataTypes), action, 1, Gtk.Global.CurrentEvent);
 		}
 
 		void HandleDragBegin (object o, Gtk.DragBeginArgs args)
@@ -859,14 +890,24 @@ namespace Xwt.GtkBackend
 			destDragAction = ConvertDragAction (dragAction);
 			var table = Util.BuildTargetTable (types);
 			validDropTypes = (Gtk.TargetEntry[]) table;
-			Gtk.Drag.DestSet (Widget, Gtk.DestDefaults.Highlight, validDropTypes, destDragAction);
+			OnSetDragTarget (validDropTypes, destDragAction);
+		}
+		
+		protected virtual void OnSetDragTarget (Gtk.TargetEntry[] table, Gdk.DragAction actions)
+		{
+			Gtk.Drag.DestSet (Widget, Gtk.DestDefaults.Highlight, table, actions);
 		}
 		
 		public void SetDragSource (string[] types, DragDropAction dragAction)
 		{
 			sourceDragAction = ConvertDragAction (dragAction);
 			var table = Util.BuildTargetTable (types);
-			Gtk.Drag.SourceSet (Widget, (Gdk.ModifierType)0, (Gtk.TargetEntry[]) table, sourceDragAction);
+			OnSetDragSource (Gdk.ModifierType.Button1Mask, (Gtk.TargetEntry[]) table, sourceDragAction);
+		}
+		
+		protected virtual void OnSetDragSource (Gdk.ModifierType modifierType, Gtk.TargetEntry[] table, Gdk.DragAction actions)
+		{
+			Gtk.Drag.SourceSet (Widget, modifierType, table, actions);
 		}
 		
 		Gdk.DragAction ConvertDragAction (DragDropAction dragAction)

@@ -70,6 +70,7 @@ namespace Samples
 			AddSample (null, "Tables", typeof(Tables));
 			AddSample (null, "Text Entry", typeof(TextEntries));
 			AddSample (null, "Tooltips", typeof(Tooltips));
+			AddSample (null, "TreeView", typeof(TreeViews));
 			AddSample (null, "WidgetEvents", typeof(WidgetEvents));
 			AddSample (null, "Windows", typeof(Windows));
 			

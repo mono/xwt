@@ -141,6 +141,35 @@ namespace Xwt.Mac
 				it = Tree.GetParent (it);
 			}
 		}
+		
+		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
+		{
+			pos = RowDropPosition.Into;
+			nodePosition = null;
+			return false;
+		}
+		
+/*		protected override void OnDragOverCheck (NSDraggingInfo di, DragOverCheckEventArgs args)
+		{
+			base.OnDragOverCheck (di, args);
+			var row = Tree.GetRow (new System.Drawing.PointF (di.DraggingLocation.X, di.DraggingLocation.Y));
+			if (row != -1) {
+				var item = Tree.ItemAtRow (row);
+				Tree.SetDropItem (item, row);
+			}
+		}
+		
+		protected override void OnDragOver (NSDraggingInfo di, DragOverEventArgs args)
+		{
+			base.OnDragOver (di, args);
+			var p = Tree.ConvertPointFromView (di.DraggingLocation, null);
+			var row = Tree.GetRow (p);
+			if (row != -1) {
+				Tree.SetDropRowDropOperation (row, NSTableViewDropOperation.On);
+				var item = Tree.ItemAtRow (row);
+				Tree.SetDropItem (item, 0);
+			}
+		}*/
 	}
 	
 	class TreeItem: NSObject, ITablePosition

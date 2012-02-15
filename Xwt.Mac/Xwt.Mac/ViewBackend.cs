@@ -192,7 +192,7 @@ namespace Xwt.Mac
 			return new Point (lo.X, lo.Y);
 		}
 		
-		public WidgetSize GetPreferredWidth ()
+		public virtual WidgetSize GetPreferredWidth ()
 		{
 //			double w1 = Widget.FittingSize.Width + frontend.Margin.HorizontalSpacing;
 			double w = Widget.WidgetWidth() + frontend.Margin.HorizontalSpacing;
@@ -202,7 +202,7 @@ namespace Xwt.Mac
 			return s;
 		}
 
-		public WidgetSize GetPreferredHeight ()
+		public virtual WidgetSize GetPreferredHeight ()
 		{
 //			double h1 = Widget.FittingSize.Height + frontend.Margin.VerticalSpacing;
 			double h = Widget.WidgetHeight() + frontend.Margin.VerticalSpacing;
@@ -299,7 +299,7 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public void DragStart (TransferDataSource data, DragDropAction dragAction, object image, double xhot, double yhot)
+		public void DragStart (DragStartData sdata)
 		{
 			var lo = RootWidget.ConvertPointToBase (new PointF (Widget.Bounds.X, Widget.Bounds.Y));
 			lo = RootWidget.Window.ConvertBaseToScreen (lo);
@@ -307,11 +307,11 @@ namespace Xwt.Mac
 			var pb = NSPasteboard.FromName (NSPasteboard.NSDragPasteboardName);
 			if (pb == null)
 				throw new InvalidOperationException ("Could not get pasteboard");
-			if (data == null)
+			if (sdata.Data == null)
 				throw new ArgumentNullException ("data");
-			InitPasteboard (pb, data);
-			var img = (NSImage)image;
-			var pos = new PointF (ml.X - lo.X - (float)xhot, lo.Y - ml.Y - (float)yhot + img.Size.Height);
+			InitPasteboard (pb, sdata.Data);
+			var img = (NSImage)sdata.ImageBackend;
+			var pos = new PointF (ml.X - lo.X - (float)sdata.HotX, lo.Y - ml.Y - (float)sdata.HotY + img.Size.Height);
 			Widget.DragImage (img, pos, new SizeF (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
 		}
 		
@@ -344,9 +344,7 @@ namespace Xwt.Mac
 			
 			if ((backend.currentEvents & WidgetEvent.DragOverCheck) != 0) {
 				var args = new DragOverCheckEventArgs (pos, types, ConvertAction (di.DraggingSourceOperationMask));
-				Toolkit.Invoke (delegate {
-					backend.eventSink.OnDragOverCheck (args);
-				});
+				backend.OnDragOverCheck (di, args);
 				if (args.AllowedAction == DragDropAction.None)
 					return NSDragOperation.None;
 				if (args.AllowedAction != DragDropAction.Default)
@@ -357,9 +355,7 @@ namespace Xwt.Mac
 				TransferDataStore store = new TransferDataStore ();
 				FillDataStore (store, di.DraggingPasteboard, ob.View.RegisteredDragTypes ());
 				var args = new DragOverEventArgs (pos, store, ConvertAction (di.DraggingSourceOperationMask));
-				Toolkit.Invoke (delegate {
-					backend.eventSink.OnDragOver (args);
-				});
+				backend.OnDragOver (di, args);
 				if (args.AllowedAction == DragDropAction.None)
 					return NSDragOperation.None;
 				if (args.AllowedAction != DragDropAction.Default)
@@ -429,6 +425,20 @@ namespace Xwt.Mac
 		static void ConcludeDragOperation (IntPtr sender, IntPtr sel, IntPtr dragInfo)
 		{
 			Console.WriteLine ("ConcludeDragOperation");
+		}
+		
+		protected virtual void OnDragOverCheck (NSDraggingInfo di, DragOverCheckEventArgs args)
+		{
+			Toolkit.Invoke (delegate {
+				eventSink.OnDragOverCheck (args);
+			});
+		}
+		
+		protected virtual void OnDragOver (NSDraggingInfo di, DragOverEventArgs args)
+		{
+			Toolkit.Invoke (delegate {
+				eventSink.OnDragOver (args);
+			});
 		}
 		
 		void InitPasteboard (NSPasteboard pb, TransferDataSource data)

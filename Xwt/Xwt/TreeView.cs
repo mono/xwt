@@ -312,6 +312,11 @@ namespace Xwt
 			Backend.ExpandToRow (pos);
 		}
 		
+		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
+		{
+			return Backend.GetDropTargetRow (x, y, out pos, out nodePosition);
+		}
+		
 		void IColumnContainer.NotifyColumnsChanged ()
 		{
 		}

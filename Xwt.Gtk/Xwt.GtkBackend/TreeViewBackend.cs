@@ -31,6 +31,18 @@ namespace Xwt.GtkBackend
 {
 	public class TreeViewBackend: TableViewBackend, ITreeViewBackend
 	{
+		protected override void OnSetDragTarget (Gtk.TargetEntry[] table, Gdk.DragAction actions)
+		{
+			base.OnSetDragTarget (table, actions);
+			Widget.EnableModelDragDest (table, actions);
+		}
+		
+		protected override void OnSetDragSource (Gdk.ModifierType modifierType, Gtk.TargetEntry[] table, Gdk.DragAction actions)
+		{
+			base.OnSetDragSource (modifierType, table, actions);
+			Widget.EnableModelDragSource (modifierType, table, actions);
+		}
+		
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
 			TreeStoreBackend b = sourceBackend as TreeStoreBackend;
@@ -101,6 +113,27 @@ namespace Xwt.GtkBackend
 			set {
 				Widget.HeadersVisible = value;
 			}
+		}
+		
+		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
+		{
+			Gtk.TreeViewDropPosition tpos;
+			Gtk.TreePath path;
+			if (!Widget.GetDestRowAtPos ((int)x, (int)y, out path, out tpos)) {
+				pos = RowDropPosition.Into;
+				nodePosition = null;
+				return false;
+			}
+			
+			Gtk.TreeIter it;
+			Widget.Model.GetIter (out it, path);
+			nodePosition = new IterPos (-1, it);
+			switch (tpos) {
+			case Gtk.TreeViewDropPosition.After: pos = RowDropPosition.After; break;
+			case Gtk.TreeViewDropPosition.Before: pos = RowDropPosition.Before; break;
+			default: pos = RowDropPosition.Into; break;
+			}
+			return true;
 		}
 	}
 }

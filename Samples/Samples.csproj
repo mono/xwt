@@ -70,6 +70,7 @@
     <Compile Include="Samples\ClipboardSample.cs" />
     <Compile Include="Samples\MenuSamples.cs" />
     <Compile Include="Samples\Tooltips.cs" />
+    <Compile Include="Samples\TreeViews.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
