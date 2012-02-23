@@ -248,6 +248,13 @@ namespace Xwt.Mac
 			image.DrawInRect (new RectangleF ((float)x, (float)y, (float)width, (float)height), RectangleF.Empty, NSCompositingOperation.SourceOver, (float)alpha);
 		}
 		
+		public void ResetTransform (object backend)
+		{
+			GetContext (backend);
+			NSAffineTransform t = new NSAffineTransform ();
+			t.Set ();
+		}
+		
 		public void Rotate (object backend, double angle)
 		{
 			GetContext (backend);
