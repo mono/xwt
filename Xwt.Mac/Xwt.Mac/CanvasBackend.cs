@@ -167,9 +167,7 @@ namespace Xwt.Mac
 		public override void MouseMoved (NSEvent theEvent)
 		{
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
-			MouseMovedEventArgs args = new MouseMovedEventArgs ();
-			args.X = p.X;
-			args.Y = p.Y;
+			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
 			Toolkit.Invoke (delegate {
 				eventSink.OnMouseMoved (args);
 			});
@@ -178,9 +176,7 @@ namespace Xwt.Mac
 		public override void MouseDragged (NSEvent theEvent)
 		{
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
-			MouseMovedEventArgs args = new MouseMovedEventArgs ();
-			args.X = p.X;
-			args.Y = p.Y;
+			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
 			Toolkit.Invoke (delegate {
 				eventSink.OnMouseMoved (args);
 			});

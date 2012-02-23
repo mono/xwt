@@ -644,9 +644,7 @@ namespace Xwt.GtkBackend
 
 		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
 		{
-			var a = new MouseMovedEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+			var a = new MouseMovedEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y);
 			Toolkit.Invoke (delegate {
 				EventSink.OnMouseMoved (a);
 			});

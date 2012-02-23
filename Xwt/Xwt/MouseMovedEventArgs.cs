@@ -30,12 +30,17 @@ namespace Xwt
 {
 	public class MouseMovedEventArgs: EventArgs
 	{
-		public MouseMovedEventArgs ()
+		public MouseMovedEventArgs (long timestamp, double x, double y)
 		{
+			X = x;
+			Y = y;
+			Timestamp  = timestamp;
 		}
 		
-		public double X { get; set; }
-		public double Y { get; set; }
+		public double X { get; private set; }
+		public double Y { get; private set; }
+		
+		public long Timestamp { get; private set; }
 	}
 }
 
