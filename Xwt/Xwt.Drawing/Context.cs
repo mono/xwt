@@ -245,6 +245,15 @@ namespace Xwt.Drawing
 		{
 			handler.DrawImage (Backend, GetBackend (img), rect.X, rect.Y, rect.Width, rect.Height, alpha);
 		}
+
+        /// <summary>
+        /// Resets the Current Trasnformation Matrix (CTM) to the Identity Matrix
+        /// </summary>
+		public void ResetTransform ()
+		{
+			handler.ResetTransform (Backend);
+		}
+		
 		
 		/// <summary>
 		/// Applies a rotation transformation

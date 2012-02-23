@@ -254,7 +254,13 @@ namespace Xwt.GtkBackend
 			ctx.Context.Fill ();*/
 		}
 		
-		public void Rotate (object backend, double angle)
+		public void ResetTransform (object backend)
+		{
+			GtkContext gc = (GtkContext)backend;
+			gc.Context.IdentityMatrix();
+		}
+
+        public void Rotate (object backend, double angle)
 		{
 			GtkContext gc = (GtkContext)backend;
 			gc.Context.Rotate ((angle * System.Math.PI) / 180);
