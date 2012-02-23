@@ -60,6 +60,13 @@ namespace Xwt
 			});
 		}
 		
+		public static void Exit ()
+		{
+			Toolkit.InvokePlatformCode (delegate {
+				engine.ExitApplication ();
+			});
+		}
+		
 		/// <summary>
 		/// Invokes an action in the GUI thread
 		/// </summary>

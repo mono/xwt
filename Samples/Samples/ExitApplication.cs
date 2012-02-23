@@ -1,10 +1,9 @@
 // 
-// EngineBackend.cs
+// ExitApplication.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Taco Ditiecher <taco@tdev.org>
 // 
-// Copyright (c) 2011 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,40 +22,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using System.Reflection;
-using System.IO;
+using Xwt;
 
-namespace Xwt.Backends
+namespace Samples
 {
-	public abstract class EngineBackend
+	public class ExitApplication : VBox
 	{
-		public virtual void InitializeApplication ()
+		public ExitApplication ()
 		{
-		}
-		
-		public abstract void RunApplication ();
-		
-		public abstract void ExitApplication ();
-		
-		public abstract void Invoke (Action action);
-
-		public abstract object TimeoutInvoke (Func<bool> action, TimeSpan timeSpan);
-
-		public abstract void CancelTimeoutInvoke (object id);
-		
-		public abstract object GetNativeWidget (Widget w);
-		
-		public abstract IWindowFrameBackend GetBackendForWindow (object nativeWindow);
-		
-		public virtual object GetNativeParentWindow (Widget w)
-		{
-			return null;
-		}
-		
-		public virtual bool HandlesSizeNegotiation {
-			get { return false; }
+			Button button = new Button("Exit the application");
+			button.Clicked += (sender, e) => Application.Exit();
+			PackStart (button);
 		}
 	}
 }

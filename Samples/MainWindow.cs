@@ -46,6 +46,7 @@ namespace Samples
 			samplesTree = new TreeView ();
 			samplesTree.Columns.Add ("Name", iconCol, nameCol);
 			
+			AddSample (null, "Exit App", typeof(ExitApplication));
 			AddSample (null, "Boxes", typeof(Boxes));
 			AddSample (null, "Buttons", typeof(ButtonSample));
 			AddSample (null, "CheckBox", typeof(Checkboxes));
