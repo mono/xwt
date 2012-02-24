@@ -53,7 +53,7 @@ namespace Xwt.WPFBackend
 			application.Run ();
 		}
 
-		public override void RunApplication ()
+		public override void ExitApplication ()
 		{
 			application.Current.Shutdown ();
 		}
