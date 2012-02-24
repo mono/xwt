@@ -231,6 +231,29 @@ namespace Xwt.Drawing
 			
 			return true;
 		}
+		
+		public static bool operator == (Color c1, Color c2)
+		{
+			return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
+		}
+		
+		public static bool operator != (Color c1, Color c2)
+		{
+			return c1.r != c2.r || c1.g != c2.g || c1.b != c2.b || c1.a != c2.a;
+		}
+		
+		public override bool Equals (object o)
+		{
+			if (!(o is Color))
+				return false;
+		
+			return (this == (Color) o);
+		}
+		
+		public override int GetHashCode ()
+		{
+			return r.GetHashCode () ^ g.GetHashCode () ^ b.GetHashCode () ^ a.GetHashCode ();
+		}
 	}
 }
 
