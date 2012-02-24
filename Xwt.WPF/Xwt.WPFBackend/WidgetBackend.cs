@@ -174,6 +174,11 @@ namespace Xwt.WPFBackend
 			set { Widget.Visibility = value ? Visibility.Visible : Visibility.Hidden; }
 		}
 
+		public string TooltipText {
+			get { return Widget.ToolTip.ToString (); }
+			set { Widget.ToolTip = value; }
+		}
+
 		public static FrameworkElement GetFrameworkElement (IWidgetBackend backend)
 		{
 			return backend == null ? null : (FrameworkElement)backend.NativeWidget;
@@ -332,17 +337,17 @@ namespace Xwt.WPFBackend
 			});
 		}
 
-		public void DragStart (TransferDataSource data, DragDropAction dragAction, object imageBackend, double hotX, double hotY)
+		public void DragStart (DragStartData data)
 		{
 			throw new NotImplementedException ();
 		}
 
-		public void SetDragTarget (string [] types, DragDropAction dragAction)
+		public void SetDragTarget (TransferDataType [] types, DragDropAction dragAction)
 		{
 			throw new NotImplementedException ();
 		}
 
-		public void SetDragSource (string [] types, DragDropAction dragAction)
+		public void SetDragSource (TransferDataType [] types, DragDropAction dragAction)
 		{
 			throw new NotImplementedException ();
 		}
