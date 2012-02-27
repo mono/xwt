@@ -50,6 +50,11 @@ namespace Samples
 			te = new TextEntry ();
 			te.PlaceholderText = "Placeholder text";
 			PackStart (te);
+
+			PackStart (new Label ("Entry with no frame"));
+			te = new TextEntry();
+			te.ShowFrame = false;
+			PackStart (te);
 		}
 	}
 }
