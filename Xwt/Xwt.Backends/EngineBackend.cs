@@ -3,8 +3,9 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Eric Maupin <ermau@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2011-2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +39,11 @@ namespace Xwt.Backends
 		
 		public abstract void RunApplication ();
 		
-		public abstract void Invoke (Action action);
+		/// <summary>
+		/// Asynchronously invokes <paramref name="action"/> on the engine UI thread.
+		/// </summary>
+		/// <param name="action">The action to invoke.</param>
+		public abstract void InvokeAsync (Action action);
 
 		public abstract object TimeoutInvoke (Func<bool> action, TimeSpan timeSpan);
 

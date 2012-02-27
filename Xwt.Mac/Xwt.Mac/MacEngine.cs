@@ -120,7 +120,7 @@ namespace Xwt.Mac
 			return Messaging.bool_objc_msgSend_IntPtr_IntPtr (self, hijackedSel.Handle, filePath, owner);
 		}
 		
-		public override void Invoke (Action action)
+		public override void InvokeAsync (Action action)
 		{
 			NSApplication.SharedApplication.BeginInvokeOnMainThread (delegate {
 				action ();

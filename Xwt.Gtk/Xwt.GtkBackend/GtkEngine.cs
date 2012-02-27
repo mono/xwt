@@ -122,7 +122,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public override void Invoke (Action action)
+		public override void InvokeAsync (Action action)
 		{
 			Gtk.Application.Invoke (delegate {
 				action ();

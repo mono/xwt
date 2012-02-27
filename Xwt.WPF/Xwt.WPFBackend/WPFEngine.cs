@@ -60,7 +60,7 @@ namespace Xwt.WPFBackend
 			application.Run ();
 		}
 
-		public override void Invoke (Action action)
+		public override void InvokeAsync (Action action)
 		{
 			application.Dispatcher.BeginInvoke (action, new object [0]);
 		}

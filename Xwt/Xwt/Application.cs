@@ -68,7 +68,7 @@ namespace Xwt
 		/// </param>
 		public static void Invoke (Action action)
 		{
-			engine.Invoke (delegate {
+			engine.InvokeAsync (delegate {
 				try {
 					Toolkit.EnterUserCode ();
 					action ();
