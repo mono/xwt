@@ -83,6 +83,11 @@ namespace Xwt.GtkBackend
 			Gtk.Application.Run ();
 		}
 		
+		public override void ExitApplication ()
+		{
+			Gtk.Application.Quit ();
+		}
+		
 		public override bool HandlesSizeNegotiation {
 			get {
 				return true;

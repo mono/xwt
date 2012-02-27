@@ -88,6 +88,11 @@ namespace Xwt.Mac
 			NSApplication.Main (new string [0]);
 			pool = new NSAutoreleasePool ();
 		}
+		
+		public override void ExitApplication ()
+		{
+			NSApplication.SharedApplication.Terminate(appDelegate);
+		}
 
 		public static void ReplaceChild (NSView cont, NSView oldView, NSView newView)
 		{

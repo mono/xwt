@@ -53,6 +53,11 @@ namespace Xwt.WPFBackend
 			application.Run ();
 		}
 
+		public override void ExitApplication ()
+		{
+			application.Current.Shutdown ();
+		}
+
 		public override void Invoke (Action action)
 		{
 			application.Dispatcher.BeginInvoke (action, new object [0]);
