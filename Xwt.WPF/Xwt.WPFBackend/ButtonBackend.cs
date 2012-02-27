@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using SWC = System.Windows.Controls;
 using SWMI = System.Windows.Media.Imaging;
@@ -40,12 +41,20 @@ namespace Xwt.WPFBackend
 	public class ButtonBackend : WidgetBackend, IButtonBackend
 	{
 		public ButtonBackend ()
+			: this (new SWC.Button())
 		{
-			Widget = new SWC.Button ();
 		}
 
-		protected SWC.Button Button {
-			get { return (SWC.Button)Widget; }
+		protected ButtonBackend (ButtonBase impl)
+		{
+			if (impl == null)
+				throw new ArgumentNullException ("impl");
+
+			Widget = impl;
+		}
+
+		protected ButtonBase Button {
+			get { return (ButtonBase)Widget; }
 		}
 
 		protected new IButtonEventSink EventSink {
@@ -56,17 +65,17 @@ namespace Xwt.WPFBackend
 			switch (style)
 			{
 				case ButtonStyle.Normal:
-					Button.ClearValue (SWC.Button.BackgroundProperty);
-					Button.ClearValue (SWC.Button.BorderThicknessProperty);
-					Button.ClearValue (SWC.Button.BorderBrushProperty);
+					Button.ClearValue (SWC.Control.BackgroundProperty);
+					Button.ClearValue (SWC.Control.BorderThicknessProperty);
+					Button.ClearValue (SWC.Control.BorderBrushProperty);
 					break;
 				case ButtonStyle.Flat:
 					Button.Background = SystemColors.ControlBrush;
-					Button.ClearValue (SWC.Button.BorderThicknessProperty);
-					Button.ClearValue (SWC.Button.BorderBrushProperty);
+					Button.ClearValue (SWC.Control.BorderThicknessProperty);
+					Button.ClearValue (SWC.Control.BorderBrushProperty);
 					break;
 				case ButtonStyle.Borderless:
-					Button.ClearValue (SWC.Button.BackgroundProperty);
+					Button.ClearValue (SWC.Control.BackgroundProperty);
 					Button.BorderThickness = new Thickness (0);
 					Button.BorderBrush = new SolidColorBrush (Colors.Transparent);
 					break;
