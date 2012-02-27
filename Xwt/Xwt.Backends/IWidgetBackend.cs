@@ -45,7 +45,7 @@ namespace Xwt.Backends
 		/// Sets the minimum size of the widget
 		/// </summary>
 		/// <param name='width'>
-		/// Minimun width. If the value is -1, it means no minimum width.
+		/// Minimum width. If the value is -1, it means no minimum width.
 		/// </param>
 		/// <param name='height'>
 		/// Minimum height. If the value is -1, it means no minimum height.
