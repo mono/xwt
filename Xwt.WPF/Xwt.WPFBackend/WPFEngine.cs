@@ -62,12 +62,15 @@ namespace Xwt.WPFBackend
 
 		public override void InvokeAsync (Action action)
 		{
+			if (action == null)
+				throw new ArgumentNullException ("action");
+
 			application.Dispatcher.BeginInvoke (action, new object [0]);
 		}
 
 		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 
 		public override void CancelTimerInvoke (object id)

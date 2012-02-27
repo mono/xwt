@@ -124,6 +124,9 @@ namespace Xwt.GtkBackend
 		
 		public override void InvokeAsync (Action action)
 		{
+			if (action == null)
+				throw new ArgumentNullException ("action");
+
 			Gtk.Application.Invoke (delegate {
 				action ();
 			});
@@ -131,6 +134,11 @@ namespace Xwt.GtkBackend
 
 		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
 		{
+			if (action == null)
+				throw new ArgumentNullException ("action");
+			if (timeSpan.TotalMilliseconds >= 0)
+				throw new ArgumentException ("Timer period must be >=0", "timeSpan");
+
 			return GLib.Timeout.Add ((uint) timeSpan.TotalMilliseconds, delegate {
 				return action ();
 			});
@@ -138,9 +146,12 @@ namespace Xwt.GtkBackend
 
 		public override void CancelTimerInvoke (object id)
 		{
+			if (id == null)
+				throw new ArgumentNullException ("id");
+
 			GLib.Source.Remove ((uint)id);
 		}
-		
+
 		public override object GetNativeWidget (Widget w)
 		{
 			IGtkWidgetBackend wb = (IGtkWidgetBackend)Xwt.Engine.WidgetRegistry.GetBackend (w);

@@ -43,6 +43,7 @@ namespace Xwt.Backends
 		/// Asynchronously invokes <paramref name="action"/> on the engine UI thread.
 		/// </summary>
 		/// <param name="action">The action to invoke.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="action"/> is <c>null</c>.</exception>
 		public abstract void InvokeAsync (Action action);
 
 		/// <summary>

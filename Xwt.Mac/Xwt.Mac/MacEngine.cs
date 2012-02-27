@@ -122,6 +122,9 @@ namespace Xwt.Mac
 		
 		public override void InvokeAsync (Action action)
 		{
+			if (action == null)
+				throw new ArgumentNullException ("action");
+
 			NSApplication.SharedApplication.BeginInvokeOnMainThread (delegate {
 				action ();
 			});
