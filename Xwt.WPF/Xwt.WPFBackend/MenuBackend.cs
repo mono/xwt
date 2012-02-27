@@ -79,6 +79,16 @@ namespace Xwt.WPFBackend
 			ParentItem = null;
 		}
 
+		public void Popup ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void Popup (IWidgetBackend widget, double x, double y)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public void EnableEvent (object eventId)
 		{
 		}
