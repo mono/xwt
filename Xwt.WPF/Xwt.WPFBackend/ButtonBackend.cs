@@ -44,7 +44,7 @@ namespace Xwt.WPFBackend
 			Widget = new SWC.Button ();
 		}
 
-		SWC.Button Button {
+		protected SWC.Button Button {
 			get { return (SWC.Button)Widget; }
 		}
 

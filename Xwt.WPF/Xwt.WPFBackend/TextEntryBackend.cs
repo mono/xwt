@@ -43,11 +43,6 @@ namespace Xwt.WPFBackend
 			Widget.LostFocus += OnLostFocus;
 		}
 
-		public TextBox TextBox
-		{
-			get { return (TextBox) Widget; }
-		}
-
 		public string Text
 		{
 			get { return TextBox.Text; }
@@ -105,6 +100,11 @@ namespace Xwt.WPFBackend
 						break;
 				}
 			}
+		}
+
+		protected TextBox TextBox
+		{
+			get { return (TextBox) Widget; }
 		}
 
 		protected new ITextEntryEventSink EventSink {
