@@ -50,6 +50,7 @@
     <Compile Include="Xwt.WPFBackend\MenuBackend.cs" />
     <Compile Include="Xwt.WPFBackend\MenuItemBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ResPool.cs" />
+    <Compile Include="Xwt.WPFBackend\TextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\TreeStoreBackend.cs" />
     <Compile Include="Xwt.WPFBackend\TreeViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\Util.cs" />
