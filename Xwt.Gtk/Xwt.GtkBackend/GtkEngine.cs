@@ -136,7 +136,7 @@ namespace Xwt.GtkBackend
 		{
 			if (action == null)
 				throw new ArgumentNullException ("action");
-			if (timeSpan.TotalMilliseconds >= 0)
+			if (timeSpan.TotalMilliseconds < 0)
 				throw new ArgumentException ("Timer period must be >=0", "timeSpan");
 
 			return GLib.Timeout.Add ((uint) timeSpan.TotalMilliseconds, delegate {
