@@ -70,9 +70,11 @@ at compile time.
 
 This is the simplest Xwt program you can write:
 
+	using System;
 	using Xwt;
 	
 	class XwtDemo {
+		[STAThread]
 		static void Main ()
 		{
 			Application.Initialize ();
@@ -84,7 +86,7 @@ This is the simplest Xwt program you can write:
 			mainWindow.Show ();
 			Application.Run ();
 			mainWindow.Dispose ();
-	    }
+		}
 	}
 
 You use the Application.Initialize() method to get the backend
@@ -174,11 +176,11 @@ For example, you can force the initialization of the backend to be
 specifically Gtk+ or specifically MonoMac based on MacOS.   This is
 currently done like this:
 
-    Application.Initialize ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0");
+	Application.Initialize ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0");
 
 or:
 
-    Application.Initialize ("Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0");
+	Application.Initialize ("Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0");
 
 As you saw from the Hello World sample, toplevel windows are created
 by creating an instance of the "Xwt.Window" class.   This class
