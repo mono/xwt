@@ -125,6 +125,11 @@ namespace Xwt.WPFBackend
 			throw new NotImplementedException ();
 		}
 
+		public void ExpandToRow (TreePosition pos)
+		{
+			throw new NotImplementedException();
+		}
+
 		public bool HeadersVisible
 		{
 			get
@@ -137,6 +142,11 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void ExpandRow (TreePosition row, bool expandChildren)
 		{
 			throw new NotImplementedException ();
@@ -145,6 +155,11 @@ namespace Xwt.WPFBackend
 		public void CollapseRow (TreePosition row)
 		{
 			throw new NotImplementedException ();
+		}
+
+		public void ScrollToRow (TreePosition pos)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void UnselectAll ()
