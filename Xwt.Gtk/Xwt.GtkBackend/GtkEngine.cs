@@ -128,15 +128,15 @@ namespace Xwt.GtkBackend
 				action ();
 			});
 		}
-		
-		public override object TimeoutInvoke (Func<bool> action, TimeSpan timeSpan)
+
+		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
 		{
 			return GLib.Timeout.Add ((uint) timeSpan.TotalMilliseconds, delegate {
 				return action ();
 			});
 		}
-		
-		public override void CancelTimeoutInvoke (object id)
+
+		public override void CancelTimerInvoke (object id)
 		{
 			GLib.Source.Remove ((uint)id);
 		}

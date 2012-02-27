@@ -45,9 +45,22 @@ namespace Xwt.Backends
 		/// <param name="action">The action to invoke.</param>
 		public abstract void InvokeAsync (Action action);
 
-		public abstract object TimeoutInvoke (Func<bool> action, TimeSpan timeSpan);
+		/// <summary>
+		/// Begins invoking <paramref name="action"/> on a timer period of <paramref name="timeSpan"/>.
+		/// </summary>
+		/// <param name="action">The function to invoke. Returning <c>false</c> stops the timer.</param>
+		/// <param name="timeSpan">The period before the initial invoke and between subsequent invokes.</param>
+		/// <returns>An identifying object that can be used to cancel the timer with <seealso cref="CancelTimerInvoke"/>.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="action"/> is <c>null</c>.</exception>
+		/// <seealso cref="CancelTimerInvoke"/>
+		public abstract object TimerInvoke (Func<bool> action, TimeSpan timeSpan);
 
-		public abstract void CancelTimeoutInvoke (object id);
+		/// <summary>
+		/// Cancels an invoke timer started from <see cref="TimerInvoke"/>.
+		/// </summary>
+		/// <param name="id">The unique object returned from <see cref="TimerInvoke"/>.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="id"/> is <c>null</c>.</exception>
+		public abstract void CancelTimerInvoke (object id);
 		
 		public abstract object GetNativeWidget (Widget w);
 		

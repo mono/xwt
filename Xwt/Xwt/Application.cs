@@ -117,7 +117,7 @@ namespace Xwt
 		public static IDisposable TimeoutInvoke (TimeSpan timeSpan, Func<bool> action)
 		{
 			Timer t = new Timer ();
-			t.Id = engine.TimeoutInvoke (delegate {
+			t.Id = engine.TimerInvoke (delegate {
 				bool res = false;
 				try {
 					Toolkit.EnterUserCode ();
@@ -136,7 +136,7 @@ namespace Xwt
 			public object Id;
 			public void Dispose ()
 			{
-				Application.engine.CancelTimeoutInvoke (Id);
+				Application.engine.CancelTimerInvoke (Id);
 			}
 		}
 		

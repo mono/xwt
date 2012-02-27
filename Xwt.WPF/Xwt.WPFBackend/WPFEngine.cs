@@ -65,12 +65,12 @@ namespace Xwt.WPFBackend
 			application.Dispatcher.BeginInvoke (action, new object [0]);
 		}
 
-		public override object TimeoutInvoke (Func<bool> action, TimeSpan timeSpan)
+		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
 		{
 			throw new NotImplementedException ();
 		}
 
-		public override void CancelTimeoutInvoke (object id)
+		public override void CancelTimerInvoke (object id)
 		{
 			throw new NotImplementedException ();
 		}
