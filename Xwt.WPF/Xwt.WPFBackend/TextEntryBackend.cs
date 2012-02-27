@@ -96,7 +96,22 @@ namespace Xwt.WPFBackend
 				{
 					// TODO: Should we ignore this for placeholder changes?
 					case TextEntryEvent.Changed:
-						TextBox.TextChanged += (s, e) => EventSink.OnChanged();
+						TextBox.TextChanged += OnTextChanged;
+						break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+
+			if (eventId is TextEntryEvent)
+			{
+				switch ((TextEntryEvent)eventId)
+				{
+					case TextEntryEvent.Changed:
+						TextBox.TextChanged -= OnTextChanged;
 						break;
 				}
 			}
@@ -109,6 +124,11 @@ namespace Xwt.WPFBackend
 
 		protected new ITextEntryEventSink EventSink {
 			get { return (ITextEntryEventSink)base.EventSink; }
+		}
+
+		private void OnTextChanged (object s, TextChangedEventArgs e)
+		{
+			EventSink.OnChanged();
 		}
 
 		private void UpdatePlaceholder (string newPlaceholder = null)
