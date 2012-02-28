@@ -91,9 +91,9 @@ namespace Xwt {
 		}
 		
 		public static explicit operator Point(Size size) 
-        {
-            return new Point( size.Width, size.Height );
-        }
+		{
+			return new Point (size.Width, size.Height);
+		}
 		
 		public override bool Equals (object ob)
 		{
