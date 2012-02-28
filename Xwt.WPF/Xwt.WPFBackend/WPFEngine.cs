@@ -78,12 +78,18 @@ namespace Xwt.WPFBackend
 
 		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
 		{
-			throw new NotImplementedException();
+			if (action == null)
+				throw new ArgumentNullException ("action");
+
+			return Timeout.Add (action, timeSpan, application.Dispatcher);
 		}
 
 		public override void CancelTimerInvoke (object id)
 		{
-			throw new NotImplementedException ();
+			if (id == null)
+				throw new ArgumentNullException ("id");
+
+			Timeout.CancelTimeout ((uint)id);
 		}
 
 		public override IWindowFrameBackend GetBackendForWindow (object nativeWindow)
