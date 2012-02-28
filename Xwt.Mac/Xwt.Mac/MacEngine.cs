@@ -89,6 +89,11 @@ namespace Xwt.Mac
 			pool = new NSAutoreleasePool ();
 		}
 
+		public override void ExitApplication ()
+		{
+			NSApplication.SharedApplication.Terminate(appDelegate);
+		}
+
 		public static void ReplaceChild (NSView cont, NSView oldView, NSView newView)
 		{
 			if (cont is IViewContainer) {

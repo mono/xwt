@@ -39,6 +39,8 @@ namespace Xwt.Backends
 		
 		public abstract void RunApplication ();
 		
+		public abstract void ExitApplication ();
+		
 		/// <summary>
 		/// Asynchronously invokes <paramref name="action"/> on the engine UI thread.
 		/// </summary>
