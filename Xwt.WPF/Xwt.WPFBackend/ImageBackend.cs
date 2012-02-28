@@ -3,8 +3,10 @@
 //  
 // Author:
 //	   Luís Reis <luiscubal@gmail.com>
+//	   Eric Maupin <ermau@xamarin.com>
 // 
 // Copyright (c) 2012 Luís Reis
+// Copyright (c) 2012 Xamarin, Inc.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +29,7 @@
 using System;
 using System.IO;
 using Xwt.Backends;
+using Xwt.WPFBackend.Interop;
 using SWM = System.Windows.Media;
 using SWMI = System.Windows.Media.Imaging;
 
@@ -47,7 +50,47 @@ namespace Xwt.WPFBackend
 
 		public override object LoadFromIcon (string id, IconSize size)
 		{
-			throw new NotImplementedException ();
+			if (Environment.OSVersion.Version.Major <= 5)
+				throw new NotImplementedException();
+
+			var options = GetNativeStockOptionsFromSize (size);
+
+			switch (id) {
+			case StockIcons.Add:
+				throw new NotImplementedException();
+			case StockIcons.Error:
+				return NativeMethods.GetImage (NativeStockIcon.Error, options);
+			case StockIcons.Information:
+				return NativeMethods.GetImage (NativeStockIcon.Info, options);
+			case StockIcons.OrientationLandscape:
+			case StockIcons.OrientationPortrait:
+				throw new NotImplementedException();
+			case StockIcons.Question:
+				return NativeMethods.GetImage (NativeStockIcon.Help, options);
+			case StockIcons.Remove:
+				return NativeMethods.GetImage (NativeStockIcon.Delete, options);
+			case StockIcons.Warning:
+				return NativeMethods.GetImage (NativeStockIcon.Warning, options);
+			case StockIcons.Zoom100:
+			case StockIcons.ZoomFit:
+			case StockIcons.ZoomIn:
+			case StockIcons.ZoomOut:
+				return NativeMethods.GetImage (NativeStockIcon.Find, options);
+
+			default:
+				throw new ArgumentException ("Unknown icon id", "id");
+			}
+		}
+
+		private static NativeStockIconOptions GetNativeStockOptionsFromSize (IconSize size)
+		{
+			switch (size) {
+			case IconSize.Small:
+				return NativeStockIconOptions.Small;
+
+			default:
+				return NativeStockIconOptions.Large;
+			}
 		}
 
 		private static double WidthToDPI (SWMI.BitmapSource img, double pixels)
