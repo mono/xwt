@@ -64,7 +64,7 @@ namespace Xwt.WPFBackend
 
 		public override void ExitApplication ()
 		{
-			application.Current.Shutdown ();
+			application.Shutdown();
 		}
 
 		public override void InvokeAsync (Action action)
