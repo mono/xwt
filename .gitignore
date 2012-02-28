@@ -1,5 +1,12 @@
 bin
 obj
+*~
+*.sln.cache
 *.suo
 *.user
 *.dotCover
+*.pidb
+*.userprefs
+*.usertasks
+*.mdb
+.DS_Store
