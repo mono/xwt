@@ -1,5 +1,5 @@
 ﻿// 
-// ButtonBackend.cs
+// ImageHandler.cs
 //  
 // Author:
 //	   Luís Reis <luiscubal@gmail.com>
@@ -35,7 +35,7 @@ using SWMI = System.Windows.Media.Imaging;
 
 namespace Xwt.WPFBackend
 {
-	public class ImageBackend: ImageBackendHandler
+	public class ImageHandler: ImageBackendHandler
 	{
 		public override object LoadFromStream (Stream stream)
 		{

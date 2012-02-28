@@ -42,7 +42,7 @@
     <Compile Include="Xwt.WPFBackend.Utilities\CellUtil.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\MultiColumnTreeViewItem.cs" />
     <Compile Include="Xwt.WPFBackend\ButtonBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ImageBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\ImageHandler.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\NativeMethods.cs" />
     <Compile Include="Xwt.WPFBackend\ImageViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\LabelBackend.cs" />

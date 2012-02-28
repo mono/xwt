@@ -54,7 +54,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (TreeStore), typeof (TreeStoreBackend));
 			WidgetRegistry.RegisterBackend (typeof (ImageView), typeof (ImageViewBackend));
 
-			WidgetRegistry.RegisterBackend (typeof (Image), typeof (ImageBackend));
+			WidgetRegistry.RegisterBackend (typeof (Image), typeof (ImageHandler));
 			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
 		}
 
