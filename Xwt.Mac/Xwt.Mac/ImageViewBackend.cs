@@ -42,9 +42,16 @@ namespace Xwt.Mac
 			Widget.SizeToFit ();
 		}
 
-		public void SetImage (object imageBackend)
+		public void SetImage (object nativeImage)
 		{
-			Widget.Image = (NSImage) imageBackend;
+			if (nativeImage == null)
+				throw new ArgumentNullException ("nativeImage");
+
+			NSImage image = nativeImage as NSImage;
+			if (image == null)
+				throw new ArgumentException ("nativeImage is not of the expected type", "nativeImage");
+
+			Widget.Image = image;
 			Widget.SetFrameSize (Widget.Image.Size);
 		}
 	}

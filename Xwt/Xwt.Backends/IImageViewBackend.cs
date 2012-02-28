@@ -29,7 +29,13 @@ namespace Xwt.Backends
 {
 	public interface IImageViewBackend: IWidgetBackend
 	{
-		void SetImage (object imageBackend);
+		/// <summary>
+		/// Sets the image view to use the supplied image backend.
+		/// </summary>
+		/// <param name="nativeImage">A native image widget.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="nativeImage"/> is <c>null</c>.</exception>
+		/// <exception cref="ArgumentException"><paramref name="nativeImage"/> is not of the expected type.</exception>
+		void SetImage (object nativeImage);
 	}
 }
 

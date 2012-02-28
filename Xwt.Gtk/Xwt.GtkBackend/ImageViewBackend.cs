@@ -41,9 +41,16 @@ namespace Xwt.GtkBackend
 			set { base.Widget = value; }
 		}
 		
-		public void SetImage (object imageBackend)
+		public void SetImage (object nativeImage)
 		{
-			Widget.Pixbuf = (Gdk.Pixbuf)imageBackend;
+			if (nativeImage == null)
+				throw new ArgumentNullException ("nativeImage");
+
+			Gdk.Pixbuf pbuf = nativeImage as Gdk.Pixbuf;
+			if (pbuf == null)
+				throw new ArgumentException ("nativeImage is not of the expected type", "nativeImage");
+
+			Widget.Pixbuf = pbuf;
 		}
 	}
 }
