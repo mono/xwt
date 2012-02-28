@@ -44,6 +44,7 @@
     <Compile Include="Xwt.WPFBackend\ButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ImageBackend.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\NativeMethods.cs" />
+    <Compile Include="Xwt.WPFBackend\ImageViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\LabelBackend.cs" />
     <Compile Include="Xwt.WPFBackend\BoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DataConverter.cs" />

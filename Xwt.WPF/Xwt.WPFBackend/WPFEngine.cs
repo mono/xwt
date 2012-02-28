@@ -52,6 +52,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (ToggleButton), typeof (ToggleButtonBackend));
 			WidgetRegistry.RegisterBackend (typeof (TreeView), typeof (TreeViewBackend));
 			WidgetRegistry.RegisterBackend (typeof (TreeStore), typeof (TreeStoreBackend));
+			WidgetRegistry.RegisterBackend (typeof (ImageView), typeof (ImageViewBackend));
 
 			WidgetRegistry.RegisterBackend (typeof (Image), typeof (ImageBackend));
 			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
