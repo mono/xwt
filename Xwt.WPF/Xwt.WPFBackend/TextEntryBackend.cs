@@ -131,7 +131,7 @@ namespace Xwt.WPFBackend
 			EventSink.OnChanged();
 		}
 
-		private void UpdatePlaceholder (string newPlaceholder = null)
+		private void UpdatePlaceholder (string newPlaceholder)
 		{
 			if (TextBox.Text == this.placeholderText)
 				TextBox.Text = newPlaceholder;
@@ -152,12 +152,12 @@ namespace Xwt.WPFBackend
 
 		private void OnGotFocus (object sender, RoutedEventArgs e)
 		{
-			UpdatePlaceholder();
+			UpdatePlaceholder (this.placeholderText);
 		}
 
 		private void OnLostFocus(object sender, RoutedEventArgs e)
 		{
-			UpdatePlaceholder();
+			UpdatePlaceholder (this.placeholderText);
 		}
 	}
 }
