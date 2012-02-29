@@ -53,6 +53,7 @@
     <Compile Include="Xwt.WPFBackend\MenuBackend.cs" />
     <Compile Include="Xwt.WPFBackend\MenuItemBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ResPool.cs" />
+    <Compile Include="Xwt.WPFBackend\SeparatorBackend.cs" />
     <Compile Include="Xwt.WPFBackend\TextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\Timeout.cs" />
     <Compile Include="Xwt.WPFBackend\ToggleButtonBackend.cs" />
