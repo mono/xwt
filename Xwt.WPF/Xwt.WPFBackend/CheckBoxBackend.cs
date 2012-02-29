@@ -77,6 +77,53 @@ namespace Xwt.WPFBackend
 			set { CheckBox.IsThreeState = value; }
 		}
 
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is CheckBoxEvent) {
+				switch ((CheckBoxEvent)eventId) {
+				case CheckBoxEvent.Clicked:
+					CheckBox.Click += OnClicked;
+					break;
+
+				case CheckBoxEvent.Toggled:
+					CheckBox.Checked += OnChecked;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is CheckBoxEvent) {
+				switch ((CheckBoxEvent)eventId) {
+				case CheckBoxEvent.Clicked:
+					CheckBox.Click -= OnClicked;
+					break;
+
+				case CheckBoxEvent.Toggled:
+					CheckBox.Checked -= OnChecked;
+					break;
+				}
+			}
+		}
+
+		private void OnChecked (object sender, RoutedEventArgs routedEventArgs)
+		{
+			CheckBoxEventSink.OnToggled();
+		}
+
+		private void OnClicked (object sender, RoutedEventArgs e)
+		{
+			CheckBoxEventSink.OnClicked();
+		}
+
+		protected ICheckBoxEventSink CheckBoxEventSink
+		{
+			get { return (ICheckBoxEventSink) EventSink; }
+		}
+
 		protected WindowsCheckBox CheckBox
 		{
 			get { return (WindowsCheckBox) Widget; }
