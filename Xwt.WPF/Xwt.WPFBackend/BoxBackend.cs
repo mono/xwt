@@ -60,14 +60,46 @@ namespace Xwt.WPFBackend
 
 		public void SetAllocation (IWidgetBackend [] widget, Rectangle [] rect)
 		{
-			for (int i = 0; i < widget.Length; i++) {
-				var e = GetFrameworkElement (widget [i]);
-				e.Arrange (DataConverter.ToWpfRect (rect [i]));
-			}
+			Widget.SetAllocation (widget, rect);
 		}
 	}
 
-	public class CustomPanel : SWC.Canvas
+	// A Canvas cannot be used, as manually setting Width/Height disables the
+	// expected behavior of DesiredSize (used in the GetPreferredSize* methods).
+	public class CustomPanel : SWC.Panel
 	{
+		IWidgetBackend [] widgets;
+		Rectangle [] rects;
+
+		public void SetAllocation (IWidgetBackend [] widgets, Rectangle [] rects)
+		{
+			this.widgets = widgets;
+			this.rects = rects;
+
+			ArrangeChildren (true);
+		}
+
+		// Whenever a control gets a change affecting its size/appearance,
+		// it keep literaly *waiting* for a call to Arrange(), sometimes even if not truly needed.
+		// In this cases ArrangeOverride is called, and we 'refresh' the controls that require it
+		// (this is done by all the containers inheriting from Panel).
+		protected override SW.Size ArrangeOverride (SW.Size finalSize)
+		{
+			ArrangeChildren (false);
+			return base.ArrangeOverride (finalSize);
+		}
+
+		void ArrangeChildren (bool force)
+		{
+			if (widgets == null || rects == null)
+				return;
+
+			// Use the 'widgets' field so we can easily map a control position by looking at 'rects'.
+			for (int i = 0; i < widgets.Length; i++) {
+				var element = WidgetBackend.GetFrameworkElement (widgets [i]);
+				if (!element.IsArrangeValid || force)
+					element.Arrange (DataConverter.ToWpfRect (rects [i]));
+			}
+		}
 	}
 }
