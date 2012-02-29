@@ -317,6 +317,12 @@ namespace Xwt
 			return Backend.GetDropTargetRow (x, y, out pos, out nodePosition);
 		}
 		
+		protected sealed override bool SupportsCustomScrolling {
+			get {
+				return false;
+			}
+		}
+		
 		void IColumnContainer.NotifyColumnsChanged ()
 		{
 		}

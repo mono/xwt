@@ -35,10 +35,21 @@ namespace Xwt
 	public abstract class XwtComponent: Component
 	{
 		IBackend backend;
+		bool usingCustomBackend;
 		
 		HashSet<object> defaultEnabledEvents;
 		static Dictionary<Type, List<EventMap>> overridenEventMap = new Dictionary<Type, List<EventMap>> ();
 		static Dictionary<Type, HashSet<object>> overridenEvents = new Dictionary<Type, HashSet<object>> ();
+		
+		public XwtComponent ()
+		{
+		}
+		
+		protected XwtComponent (IBackend backend)
+		{
+			this.backend = backend;
+			usingCustomBackend = true;
+		}
 		
 		protected IBackend Backend {
 			get {
@@ -74,7 +85,12 @@ namespace Xwt
 		
 		protected void LoadBackend ()
 		{
-			if (backend == null) {
+			if (usingCustomBackend) {
+				usingCustomBackend = false;
+				backend.Initialize (this);
+				OnBackendCreated ();
+			}
+			else if (backend == null) {
 				backend = OnCreateBackend ();
 				if (backend == null)
 					throw new InvalidOperationException ("No backend found for widget: " + GetType ());

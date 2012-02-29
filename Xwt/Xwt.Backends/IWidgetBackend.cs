@@ -112,6 +112,9 @@ namespace Xwt.Backends
 		/// </remarks>
 		void OnPreferredSizeChanged ();
 		SizeRequestMode GetSizeRequestMode ();
+		
+		bool SupportsCustomScrolling ();
+		void SetScrollAdjustments (IScrollAdjustmentBackend horizontal, IScrollAdjustmentBackend vertical);
 	}
 	
 	[Flags]

@@ -188,6 +188,18 @@ namespace Xwt
 			{
 				Parent.OnMouseMoved (args);
 			}
+			
+			public bool SupportsCustomScrolling ()
+			{
+				return Parent.SupportsCustomScrolling;
+			}
+			
+			public void SetScrollAdjustments (IScrollAdjustmentBackend horizontal, IScrollAdjustmentBackend vertical)
+			{
+				var h = new ScrollAdjustment (horizontal);
+				var v = new ScrollAdjustment (vertical);
+				Parent.SetScrollAdjustments (h, v);
+			}
 		}
 		
 		public Widget ()
@@ -504,6 +516,14 @@ namespace Xwt
 			Backend.SetDragSource (types.Select (t => TransferDataType.FromType (t)).ToArray(), dragAction);
 		}
 		
+		protected virtual bool SupportsCustomScrolling {
+			get { return false; }
+		}
+		
+		protected virtual void SetScrollAdjustments (ScrollAdjustment horizontal, ScrollAdjustment vertical)
+		{
+		}
+
 		protected override void OnBackendCreated ()
 		{
 			Backend.Initialize (eventSink);

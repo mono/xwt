@@ -93,6 +93,7 @@
     <Compile Include="Xwt.GtkBackend\CheckBoxMenuItemBackend.cs" />
     <Compile Include="Xwt.GtkBackend\RadioButtonMenuItemBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SeparatorMenuItemBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ScrollAdjustmentBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

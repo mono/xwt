@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt;
+using Xwt.Drawing;
 
 namespace Samples
 {
@@ -69,9 +70,70 @@ namespace Samples
 			
 			ScrollView v4 = new ScrollView ();
 			PackStart (v4, BoxMode.FillAndExpand);
-			SimpleBox sb = new SimpleBox (1000);
+			var sb = new ScrollableCanvas ();
 			v4.Content = sb;
 			v4.VerticalScrollPolicy = ScrollPolicy.Always;
+		}
+	}
+	
+	class ScrollableCanvas: Canvas
+	{
+		ScrollAdjustment hscroll;
+		ScrollAdjustment vscroll;
+		int imageSize = 500;
+		
+		public ScrollableCanvas ()
+		{
+			MinWidth = 100;
+			MinHeight = 100;
+		}
+		
+		protected override void OnDraw (Context ctx)
+		{
+			ctx.Translate (-hscroll.Value, -vscroll.Value);
+			ctx.Rectangle (new Rectangle (0, 0, imageSize, imageSize));
+			ctx.SetColor (Color.White);
+			ctx.Fill ();
+			ctx.Arc (imageSize / 2, imageSize / 2, imageSize / 2 - 20, 0, 360);
+			ctx.SetColor (new Color (0,0,1));
+			ctx.Fill ();
+			ctx.ResetTransform ();
+			
+			ctx.Rectangle (0, 0, Bounds.Width, 30);
+			ctx.SetColor (new Color (1, 0, 0, 0.5));
+			ctx.Fill ();
+		}
+		
+		protected override bool SupportsCustomScrolling {
+			get {
+				return true;
+			}
+		}
+		
+		protected override void SetScrollAdjustments (ScrollAdjustment horizontal, ScrollAdjustment vertical)
+		{
+			hscroll = horizontal;
+			vscroll = vertical;
+			
+			hscroll.UpperValue = imageSize;
+			hscroll.PageIncrement = Bounds.Width;
+			hscroll.PageSize = Bounds.Width;
+			hscroll.ValueChanged += delegate {
+				QueueDraw ();
+			};
+			
+			vscroll.UpperValue = imageSize;
+			vscroll.PageIncrement = Bounds.Height;
+			vscroll.PageSize = Bounds.Height;
+			vscroll.ValueChanged += delegate {
+				QueueDraw ();
+			};
+		}
+		
+		protected override void OnBoundsChanged ()
+		{
+			vscroll.PageSize = vscroll.PageIncrement = Bounds.Height;
+			hscroll.PageSize = hscroll.PageIncrement = Bounds.Width;
 		}
 	}
 }

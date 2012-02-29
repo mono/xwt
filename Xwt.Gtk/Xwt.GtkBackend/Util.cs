@@ -167,6 +167,9 @@ namespace Xwt.GtkBackend
 				icons [StockIcons.OrientationLandscape] = Gtk.Stock.OrientationLandscape;
 				icons [StockIcons.Add] = Gtk.Stock.Add;
 				icons [StockIcons.Remove] = Gtk.Stock.Remove;
+				icons [StockIcons.Warning] = Gtk.Stock.DialogWarning;
+				icons [StockIcons.Error] = Gtk.Stock.DialogError;
+				icons [StockIcons.Information] = Gtk.Stock.DialogInfo;
 			}
 			string res;
 			icons.TryGetValue (id, out res);
