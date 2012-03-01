@@ -33,7 +33,8 @@ namespace Samples
 		public Checkboxes ()
 		{
 			PackStart (new CheckBox ("Normal checkbox"));
-			
+			PackStart (new CheckBox ("Mixed to start") { Mixed = true });
+
 			var b = new CheckBox ("Allows mixed") { AllowMixed = true };
 			PackStart (b);
 			
