@@ -27,19 +27,18 @@
 using System;
 using System.Collections;
 using System.Globalization;
-using Xwt;
 
 namespace Xwt
 {
-	public struct Rectangle {
-        
-        public static Rectangle Zero = new Rectangle();
-        
-        public double X { get; set; }
+	public struct Rectangle
+	{
+		public double X { get; set; }
 		public double Y { get; set; }
 		public double Width { get; set; }
 		public double Height { get; set; }
 
+		public static Rectangle Zero = new Rectangle ();
+		
 		public override string ToString ()
 		{
 			return String.Format ("{0},{1}/{2}x{3}", X.ToString (CultureInfo.InvariantCulture), Y.ToString (CultureInfo.InvariantCulture), Width.ToString (CultureInfo.InvariantCulture), Height.ToString (CultureInfo.InvariantCulture));
@@ -58,7 +57,7 @@ namespace Xwt
 		
 		public static Rectangle FromLTRB (double left, double top, double right, double bottom)
 		{
-			return new Rectangle (left, top, right - left, bottom - top);
+			return new Rectangle (left, top, right - left + 1, bottom - top + 1);
 		}
 		
 		// Equality
@@ -98,14 +97,14 @@ namespace Xwt
 		
 		public bool Contains (double x, double y)
 		{
-			return ((x >= Left) && (x < Right) && 
-				(y >= Top) && (y < Bottom));
+			return ((x >= Left) && (x <= Right) && 
+				(y >= Top) && (y <= Bottom));
 		}
 		
 		public bool IntersectsWith (Rectangle r)
 		{
-            return !((Left >= r.Right) || (Right <= r.Left) ||
-                     (Top >= r.Bottom) || (Bottom <= r.Top));
+			return !((Left > r.Right) || (Right < r.Left) ||
+			    (Top > r.Bottom) || (Bottom < r.Top));
 		}
 		
 		public Rectangle Union (Rectangle r)
@@ -113,7 +112,7 @@ namespace Xwt
 			return Union (this, r);
 		}
 		
-		public static Rectangle Union (Rectangle r1, Rectangle r2)
+		Rectangle Union (Rectangle r1, Rectangle r2)
 		{
 			return FromLTRB (Math.Min (r1.Left, r2.Left),
 					 Math.Min (r1.Top, r2.Top),
@@ -125,19 +124,15 @@ namespace Xwt
 		{
 			return Intersect (this, r);
 		}
-
-        public static Rectangle Intersect (Rectangle r1, Rectangle r2)
+		
+		Rectangle Intersect (Rectangle r1, Rectangle r2)
 		{
-			var x = Math.Max (r1.X, r2.X);
-			var y = Math.Max (r1.Y, r2.Y);
-			var width = Math.Min (r1.Right, r2.Right) - x;
-			var height = Math.Min (r1.Bottom, r2.Bottom) - y;
-
-			if (width < 0 || height < 0) 
-			{
-				return Rectangle.Zero;
-			}
-			return new Rectangle (x, y, width, height);
+			if (!r1.IntersectsWith (r2))
+				return new Rectangle ();
+			return FromLTRB (Math.Max (r1.Left, r2.Left),
+					 Math.Max (r1.Top, r2.Top),
+					 Math.Min (r1.Right, r2.Right),
+					 Math.Min (r1.Bottom, r2.Bottom));
 		}
 		
 		// Position/Size
@@ -146,12 +141,12 @@ namespace Xwt
 			set { Y = value; }
 		}
 		public double Bottom {
-			get { return Y + Height; }
-			set { Height = value - Y; }
+			get { return Y + Height - 1; }
+			set { Height = value - Y + 1; }
 		}
 		public double Right {
-			get { return X + Width; }
-			set { Width = value - X; }
+			get { return X + Width - 1; }
+			set { Width = value - X + 1; }
 		}
 		public double Left {
 			get { return X; }
@@ -159,7 +154,7 @@ namespace Xwt
 		}
 		
 		public bool IsEmpty {
-			get { return (Width <= 0) || (Height <= 0); }
+			get { return (Width == 0) || (Height == 0); }
 		}
 		
 		public Size Size {
