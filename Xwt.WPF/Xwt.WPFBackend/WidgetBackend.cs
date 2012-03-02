@@ -25,9 +25,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using SWM = System.Windows.Media;
@@ -39,15 +36,10 @@ using Xwt.Engine;
 
 namespace Xwt.WPFBackend
 {
-	public class WidgetBackend : IWidgetBackend, IWpfWidgetBackend
+	public abstract class WidgetBackend
+		: Backend, IWidgetBackend, IWpfWidgetBackend
 	{
-		Widget frontend;
 		IWidgetEventSink eventSink;
-
-		void IBackend.Initialize (object frontend)
-		{
-			this.frontend = (Widget) frontend;
-		}
 
 		void IWidgetBackend.Initialize (IWidgetEventSink eventSink)
 		{
@@ -55,7 +47,7 @@ namespace Xwt.WPFBackend
 			Initialize ();
 		}
 
-		public virtual void Initialize ()
+		protected virtual void Initialize ()
 		{
 		}
 
@@ -237,7 +229,7 @@ namespace Xwt.WPFBackend
 		{
 		}
 
-		public virtual void EnableEvent (object eventId)
+		public override void EnableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent) {
 				switch ((WidgetEvent)eventId) {
@@ -268,7 +260,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public virtual void DisableEvent (object eventId)
+		public override void DisableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent) {
 				switch ((WidgetEvent)eventId) {
