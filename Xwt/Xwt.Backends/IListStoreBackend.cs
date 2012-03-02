@@ -3,8 +3,9 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Eric Maupin <ermau@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2011-2012 Xamarin, Inc.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -39,14 +40,46 @@ namespace Xwt.Backends
 		// toolkit has its own list store implementation which
 		// can be plugged into a ListView or ComboBox
 		
+		/// <summary>
+		/// Initializes the backend with the given <paramref name="columnTypes"/>.
+		/// </summary>
+		/// <param name="columnTypes">The data types of the columns for this list store.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="columnTypes"/> is <c>null</c>.</exception>
 		void Initialize (Type[] columnTypes);
 		
+		/// <summary>
+		/// Adds a new row and returns the index.
+		/// </summary>
+		/// <returns>The index of the newly added row.</returns>
 		int AddRow ();
 		
+		/// <summary>
+		/// Inserts a new row after <paramref name="row"/> and returns the index.
+		/// </summary>
+		/// <param name="row">The index of the row to insert a new row after.</param>
+		/// <returns>The index of the newly added row.</returns>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// <paramref name="row"/> is &gt;= <see cref="IListDataSource.RowCount" />
+		/// </exception>
 		int InsertRowAfter (int row);
 		
+		/// <summary>
+		/// Inserts a new row before <paramref name="row"/> and returns the index.
+		/// </summary>
+		/// <param name="row">The index of the row to insert a new row before.</param>
+		/// <returns>The index of the newly added row.</returns>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// <paramref name="row"/> is &gt;= <see cref="IListDataSource.RowCount" />
+		/// </exception>
 		int InsertRowBefore (int row);
 		
+		/// <summary>
+		/// Removes a row at the given index (<paramref name="row"/>).
+		/// </summary>
+		/// <param name="row">The index of the row to remove.</param>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// <paramref name="row"/> is &gt;= <see cref="IListDataSource.RowCount" />
+		/// </exception>
 		void RemoveRow (int row);
 	}
 }
