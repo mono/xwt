@@ -122,13 +122,13 @@ namespace Xwt.GtkBackend
 		public void LineTo (object backend, double x, double y)
 		{
 			GtkContext gc = (GtkContext) backend;
-			gc.Context.LineTo (x + 0.5, y + 0.5);
+			gc.Context.LineTo (x, y);
 		}
 
 		public void MoveTo (object backend, double x, double y)
 		{
 			GtkContext gc = (GtkContext) backend;
-			gc.Context.MoveTo (x + 0.5, y + 0.5);
+			gc.Context.MoveTo (x, y);
 		}
 
 		public void NewPath (object backend)

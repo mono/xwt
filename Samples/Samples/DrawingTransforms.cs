@@ -39,6 +39,41 @@ namespace Samples
 		{
 			base.OnDraw (ctx);
 			
+			// Simple rectangles
+			
+			ctx.SetLineWidth (1);
+			ctx.Rectangle (100, 5, 10, 10);
+			ctx.SetColor (Color.Black);
+			ctx.Fill ();
+			
+			ctx.Rectangle (115, 5, 10, 10);
+			ctx.SetColor (Color.Black);
+			ctx.Stroke ();
+			
+			//
+			
+			ctx.SetLineWidth (3);
+			ctx.Rectangle (100, 20, 10, 10);
+			ctx.SetColor (Color.Black);
+			ctx.Fill ();
+			
+			ctx.Rectangle (115, 20, 10, 10);
+			ctx.SetColor (Color.Black);
+			ctx.Stroke ();
+			
+			// Rectangle with hole
+			
+			ctx.Rectangle (10, 100, 40, 40);
+			ctx.MoveTo (45, 135);
+			ctx.RelLineTo (0, -20);
+			ctx.RelLineTo (-20, 0);
+			ctx.RelLineTo (0, 20);
+			ctx.ClosePath ();
+			ctx.SetColor (Color.Black);
+			ctx.Fill ();
+			
+			// Dashed lines
+			
 			ctx.SetLineDash (15, 10, 10, 5, 5);
 			ctx.Rectangle (100, 100, 100, 100);
 			ctx.Stroke ();
@@ -77,6 +112,8 @@ namespace Samples
 				ctx.Stroke ();
 				ctx.Restore ();
 			}
+			
+			ctx.ResetTransform ();
 		}
 	}
 }
