@@ -58,6 +58,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Image), typeof (ImageHandler));
 			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (Clipboard), typeof (ClipboardBackend));
+			WidgetRegistry.RegisterBackend (typeof (ComboBox), typeof (ComboBoxBackend));
 		}
 
 		public override void RunApplication ()
