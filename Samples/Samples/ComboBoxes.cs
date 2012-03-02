@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt;
+using Xwt.Drawing;
 
 namespace Samples
 {
@@ -90,6 +91,40 @@ namespace Samples
 				la4.Text = "Selected text: " + c4.TextEntry.Text;
 			};
 			PackStart (box);
+			
+			// A complex combobox
+			
+			// Three data fields
+			var imgField = new DataField<Image> ();
+			var textField = new DataField<string> ();
+			var descField = new DataField<string> ();
+			
+			ComboBox cbox = new ComboBox ();
+			ListStore store = new ListStore (textField, imgField, descField);
+			
+			cbox.ItemsSource = store;
+			var r = store.AddRow ();
+			store.SetValue (r, textField, "Information");
+			store.SetValue (r, descField, "Icons are duplicated on purpose");
+			store.SetValue (r, imgField, Image.FromIcon (StockIcons.Information, IconSize.Small));
+			r = store.AddRow ();
+			store.SetValue (r, textField, "Error");
+			store.SetValue (r, descField, "Another item");
+			store.SetValue (r, imgField, Image.FromIcon (StockIcons.Error, IconSize.Small));
+			r = store.AddRow ();
+			store.SetValue (r, textField, "Warning");
+			store.SetValue (r, descField, "A third item");
+			store.SetValue (r, imgField, Image.FromIcon (StockIcons.Warning, IconSize.Small));
+			
+			// Four views to show three data fields
+			cbox.Views.Add (new ImageCellView (imgField));
+			cbox.Views.Add (new TextCellView (textField));
+			cbox.Views.Add (new ImageCellView (imgField));
+			cbox.Views.Add (new TextCellView (descField));
+			
+			cbox.SelectedIndex = 0;
+			
+			PackStart (cbox);
 		}
 	}
 }

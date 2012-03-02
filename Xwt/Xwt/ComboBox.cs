@@ -169,7 +169,10 @@ namespace Xwt
 		{
 			if (RowSeparatorCheck != null)
 				return RowSeparatorCheck (rowIndex);
-			return Items [rowIndex] is ItemSeparator;
+			if (itemCollection != null && itemCollection.DataSource == source)
+				return Items [rowIndex] is ItemSeparator;
+			else
+				return false;
 		}
 	}
 }
