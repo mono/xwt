@@ -30,6 +30,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Xwt.Backends;
+using Xwt.WPFBackend.Utilities;
 
 namespace Xwt.WPFBackend
 {
@@ -38,28 +39,19 @@ namespace Xwt.WPFBackend
 	{
 		public TextEntryBackend()
 		{
-			Widget = new TextBox();
-			Widget.GotFocus += OnGotFocus;
-			Widget.LostFocus += OnLostFocus;
+			Widget = new ExTextBox();
 		}
 
-		public string Text
+		public virtual string Text
 		{
 			get { return TextBox.Text; }
 			set { TextBox.Text = value; }
 		}
 
-		private string placeholderText;
 		public string PlaceholderText
 		{
-			get { return this.placeholderText; }
-			set
-			{
-				if (this.placeholderText == value)
-					return;
-
-				UpdatePlaceholder (value);
-			}
+			get { return TextBox.PlaceholderText; }
+			set { TextBox.PlaceholderText = value; }
 		}
 
 		public bool ReadOnly
@@ -68,22 +60,10 @@ namespace Xwt.WPFBackend
 			set { TextBox.IsReadOnly = true; }
 		}
 
-		private bool showFrame = true;
 		public bool ShowFrame
 		{
-			get { return this.showFrame; }
-			set
-			{
-				if (this.showFrame == value)
-					return;
-
-				if (value)
-					TextBox.ClearValue (Control.BorderBrushProperty);
-				else
-					TextBox.BorderBrush = null;
-
-				this.showFrame = value;
-			}
+			get { return TextBox.ShowFrame; }
+			set { TextBox.ShowFrame = value; }
 		}
 
 		public override void EnableEvent (object eventId)
@@ -117,9 +97,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		protected TextBox TextBox
+		protected ExTextBox TextBox
 		{
-			get { return (TextBox) Widget; }
+			get { return (ExTextBox) Widget; }
 		}
 
 		protected new ITextEntryEventSink EventSink {
@@ -129,35 +109,6 @@ namespace Xwt.WPFBackend
 		private void OnTextChanged (object s, TextChangedEventArgs e)
 		{
 			EventSink.OnChanged();
-		}
-
-		private void UpdatePlaceholder (string newPlaceholder)
-		{
-			if (TextBox.Text == this.placeholderText)
-				TextBox.Text = newPlaceholder;
-
-			this.placeholderText = newPlaceholder;
-
-			if (TextBox.IsFocused && TextBox.Text == PlaceholderText)
-			{
-				TextBox.Text = null;
-				TextBox.ClearValue (Control.ForegroundProperty);
-			}
-			else if (!TextBox.IsFocused && String.IsNullOrEmpty (TextBox.Text))
-			{
-				TextBox.Text = PlaceholderText;
-				TextBox.Foreground = Brushes.LightGray;
-			}
-		}
-
-		private void OnGotFocus (object sender, RoutedEventArgs e)
-		{
-			UpdatePlaceholder (this.placeholderText);
-		}
-
-		private void OnLostFocus(object sender, RoutedEventArgs e)
-		{
-			UpdatePlaceholder (this.placeholderText);
 		}
 	}
 }
