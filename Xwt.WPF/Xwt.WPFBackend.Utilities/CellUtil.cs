@@ -27,14 +27,11 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using SWC = System.Windows.Controls;
 using SWM = System.Windows.Media;
 using Xwt.Engine;
-using Xwt.Drawing;
 
 namespace Xwt.WPFBackend.Utilities
 {
@@ -72,11 +69,10 @@ namespace Xwt.WPFBackend.Utilities
 			TextCellView textView = view as TextCellView;
 			if (textView != null) {
 				FrameworkElementFactory factory = new FrameworkElementFactory (typeof (SWC.TextBlock));
+				factory.SetValue (FrameworkElement.MarginProperty, new Thickness (2));
 
 				if (textView.TextField != null)
 					factory.SetBinding (SWC.TextBlock.TextProperty, new Binding (".[" + textView.TextField.Index + "]"));
-
-				factory.SetValue (SWC.Control.PaddingProperty, new Thickness (2));
 
 				return factory;
 			}
@@ -84,6 +80,7 @@ namespace Xwt.WPFBackend.Utilities
 			ImageCellView imageView = view as ImageCellView;
 			if (imageView != null) {
 				FrameworkElementFactory factory = new FrameworkElementFactory (typeof (SWC.Image));
+				factory.SetValue (FrameworkElement.MarginProperty, new Thickness (2));
 
 				if (imageView.ImageField != null) {
 					var binding = new Binding (".[" + imageView.ImageField.Index + "]")
