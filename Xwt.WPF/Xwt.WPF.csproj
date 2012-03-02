@@ -42,6 +42,7 @@
     <Compile Include="Xwt.WPFBackend.Utilities\CellUtil.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\ImageToImageSourceConverter.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\MultiColumnTreeViewItem.cs" />
+    <Compile Include="Xwt.WPFBackend.Utilities\TypeToStringConverter.cs" />
     <Compile Include="Xwt.WPFBackend\ButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CheckBoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ClipboardBackend.cs" />
