@@ -46,6 +46,7 @@
     <Compile Include="Xwt.WPFBackend\ButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CheckBoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ClipboardBackend.cs" />
+    <Compile Include="Xwt.WPFBackend.Utilities\DataSourceNotifyWrapper.cs" />
     <Compile Include="Xwt.WPFBackend\ImageHandler.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\NativeMethods.cs" />
     <Compile Include="Xwt.WPFBackend\ImageViewBackend.cs" />
