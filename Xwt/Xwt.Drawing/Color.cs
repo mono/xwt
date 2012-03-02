@@ -155,15 +155,12 @@ namespace Xwt.Drawing
 		{
 			if (amount < 0 || amount > 1)
 				throw new ArgumentException ("Blend amount must be between 0 and 1");
-			return new Color (BlendValue (r, target.r, amount), BlendValue (g, target.g, amount), BlendValue (b, target.b, amount));
+			return new Color (BlendValue (r, target.r, amount), BlendValue (g, target.g, amount), BlendValue (b, target.b, amount), target.Alpha);
 		}
 		
 		double BlendValue (double s, double t, double amount)
 		{
-			if (t > s)
-				return s + (t - s) * amount;
-			else
-				return t + (s - t) * amount;
+			return s + (t - s) * amount;
 		}
 	
 		public static Color FromBytes (byte red, byte green, byte blue)
