@@ -59,6 +59,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (Clipboard), typeof (ClipboardBackend));
 			WidgetRegistry.RegisterBackend (typeof (ComboBox), typeof (ComboBoxBackend));
+			WidgetRegistry.RegisterBackend (typeof (ScrollView), typeof (ScrollViewBackend));
 		}
 
 		public override void RunApplication ()
