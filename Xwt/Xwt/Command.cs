@@ -58,6 +58,7 @@ namespace Xwt
 		public static Command Save = new Command ("Save");
 		public static Command SaveAs = new Command ("SaveAs");
 		public static Command Stop = new Command ("Stop");
+		public static Command Apply = new Command ("Apply");
 	}
 }
 
