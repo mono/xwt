@@ -3,8 +3,9 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Eric Maupin <ermau@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2011-2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,10 +32,32 @@ namespace Xwt.Backends
 	public interface IMenuItemBackend: IBackend
 	{
 		void Initialize (IMenuItemEventSink eventSink);
+
+		/// <summary>
+		/// Sets a submenu for this menu item.
+		/// </summary>
+		/// <param name="menu">The menu to use as a submenu of this item.</param>
 		void SetSubmenu (IMenuBackend menu);
+
+		/// <summary>
+		/// Sets the image to display for the menu item.
+		/// </summary>
+		/// <param name="imageBackend">The image backend to set as the image for this menu item.</param>
 		void SetImage (object imageBackend);
+
+		/// <summary>
+		/// Gets or sets the label for the menu item.
+		/// </summary>
 		string Label { get; set; }
+		
+		/// <summary>
+		/// Gets or sets whether the menu item is enabled.
+		/// </summary>
 		bool Sensitive { get; set; }
+
+		/// <summary>
+		/// Gets or sets whether the menu item is visible.
+		/// </summary>
 		bool Visible { get; set; }
 	}
 	
