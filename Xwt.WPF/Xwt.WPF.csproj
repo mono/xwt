@@ -43,6 +43,7 @@
     <Compile Include="Xwt.WPFBackend.Utilities\ExTextBox.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\ImageToImageSourceConverter.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\MultiColumnTreeViewItem.cs" />
+    <Compile Include="Xwt.WPFBackend.Utilities\TypeConverters.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\TypeToStringConverter.cs" />
     <Compile Include="Xwt.WPFBackend\Backend.cs" />
     <Compile Include="Xwt.WPFBackend\ButtonBackend.cs" />
