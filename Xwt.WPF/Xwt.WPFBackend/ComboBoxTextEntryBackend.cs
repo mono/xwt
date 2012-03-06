@@ -102,10 +102,7 @@ namespace Xwt.WPFBackend
 			this.placeholderText = newPlaceholder;
 
 			if (focused && Text == PlaceholderText)
-			{
-				this.combobox.SetBinding (TextBox.TextProperty, new Binding (".[0]"));
 				this.combobox.ClearValue (Control.ForegroundProperty);
-			}
 			else if (!focused && String.IsNullOrEmpty (Text))
 			{
 				Text = PlaceholderText;
