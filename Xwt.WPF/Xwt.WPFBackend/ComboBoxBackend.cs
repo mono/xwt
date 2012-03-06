@@ -41,13 +41,13 @@ namespace Xwt.WPFBackend
 		: WidgetBackend, IComboBoxBackend
 	{
 		private static readonly Style ContainerStyle;
-		private static readonly DataTemplate Defaulttemplate;
+		//private static readonly DataTemplate DefaultTemplate;
 
 		static ComboBoxBackend()
 		{
 			var factory = new FrameworkElementFactory (typeof (WindowsSeparator));
-	        factory.SetValue (UIElement.IsEnabledProperty, false);
-	        factory.SetValue (FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+			factory.SetValue (UIElement.IsEnabledProperty, false);
+			factory.SetValue (FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
 			
 			var sepTemplate = new ControlTemplate (typeof (ComboBoxItem));
 			sepTemplate.VisualTree = factory;
@@ -60,21 +60,23 @@ namespace Xwt.WPFBackend
 			ContainerStyle = new Style (typeof (ComboBoxItem));
 			ContainerStyle.Triggers.Add (trigger);
 
-			FrameworkElementFactory f = new FrameworkElementFactory (typeof (TextBlock));
-			f.SetBinding (TextBlock.TextProperty, new Binding (".[0]"));
-			Defaulttemplate = new DataTemplate { VisualTree = f };
+			//FrameworkElementFactory f = new FrameworkElementFactory (typeof (TextBlock));
+			//f.SetBinding (TextBlock.TextProperty, new Binding (".[0]"));
+			//DefaultTemplate = new DataTemplate { VisualTree = f };
 		}
 
 		public ComboBoxBackend()
 		{
 			Widget = new WindowsComboBox();
 
-			ComboBox.ItemTemplate = Defaulttemplate;
+			ComboBox.DisplayMemberPath = ".[0]";
+			//ComboBox.ItemTemplate = DefaultTemplate;
 			ComboBox.ItemContainerStyle = ContainerStyle;
 		}
 
 		public void SetViews (CellViewCollection views)
 		{
+			ComboBox.DisplayMemberPath = null;
 			ComboBox.ItemTemplate = GetDataTemplate (views);
 		}
 
