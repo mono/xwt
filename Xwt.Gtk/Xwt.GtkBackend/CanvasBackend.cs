@@ -44,7 +44,6 @@ namespace Xwt.GtkBackend
 			Widget.Frontend = Frontend;
 			Widget.EventSink = EventSink;
 			Widget.Events |= Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask;
-			Widget.SizeAllocated += HandleWidgetSizeAllocated;
 			Widget.SizeRequested += HandleSizeRequested;
 			Widget.Show ();
 		}
@@ -92,13 +91,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
-		{
-			Toolkit.Invoke (delegate {
-				EventSink.OnBoundsChanged ();
-			});
-		}
-		
 		public void AddChild (IWidgetBackend widget)
 		{
 			var w = ((IGtkWidgetBackend)widget).Widget;

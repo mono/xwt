@@ -65,6 +65,7 @@ namespace Xwt
 		EventHandler<ButtonEventArgs> buttonPressed;
 		EventHandler<ButtonEventArgs> buttonReleased;
 		EventHandler<MouseMovedEventArgs> mouseMoved;
+		EventHandler boundsChanged;
 		
 		EventHandler gotFocus;
 		EventHandler lostFocus;
@@ -200,6 +201,11 @@ namespace Xwt
 				var v = new ScrollAdjustment (vertical);
 				Parent.SetScrollAdjustments (h, v);
 			}
+			
+			public void OnBoundsChanged ()
+			{
+				Parent.OnBoundsChanged ();
+			}
 		}
 		
 		public Widget ()
@@ -226,6 +232,7 @@ namespace Xwt
 			MapEvent (WidgetEvent.ButtonReleased, typeof(Widget), "OnButtonReleased");
 			MapEvent (WidgetEvent.MouseMoved, typeof(Widget), "OnMouseMoved");
 			MapEvent (WidgetEvent.DragStarted, typeof(Widget), "OnDragStarted");
+			MapEvent (WidgetEvent.BoundsChanged, typeof(Widget), "OnBoundsChanged");
 		}
 		
 		protected override void Dispose (bool disposing)
@@ -684,6 +691,12 @@ namespace Xwt
 		{
 			if (mouseMoved != null)
 				mouseMoved (this, args);
+		}
+		
+		protected virtual void OnBoundsChanged ()
+		{
+			if (boundsChanged != null)
+				boundsChanged (this, EventArgs.Empty);
 		}
 		
 		protected static IWidgetBackend GetWidgetBackend (Widget w)
@@ -1227,6 +1240,17 @@ namespace Xwt
 			remove {
 				mouseMoved -= value;
 				OnAfterEventRemove (WidgetEvent.MouseMoved, mouseMoved);
+			}
+		}
+		
+		public event EventHandler BoundsChanged {
+			add {
+				OnBeforeEventAdd (WidgetEvent.BoundsChanged, boundsChanged);
+				boundsChanged += value;
+			}
+			remove {
+				boundsChanged -= value;
+				OnAfterEventRemove (WidgetEvent.BoundsChanged, boundsChanged);
 			}
 		}
 	}

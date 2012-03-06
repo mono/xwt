@@ -381,6 +381,9 @@ namespace Xwt.GtkBackend
 					EventsRootWidget.Events |= Gdk.EventMask.PointerMotionMask;
 					EventsRootWidget.MotionNotifyEvent += HandleMotionNotifyEvent;
 					break;
+				case WidgetEvent.BoundsChanged:
+					Widget.SizeAllocated += HandleWidgetBoundsChanged;
+					break;
 				}
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
 					// Enabling a drag&drop event for the first time
@@ -445,6 +448,9 @@ namespace Xwt.GtkBackend
 					EventsRootWidget.Events &= Gdk.EventMask.PointerMotionMask;
 					EventsRootWidget.MotionNotifyEvent -= HandleMotionNotifyEvent;
 					break;
+				case WidgetEvent.BoundsChanged:
+					Widget.SizeAllocated -= HandleWidgetBoundsChanged;
+					break;
 				}
 				
 				enabledEvents &= ~ev;
@@ -468,6 +474,13 @@ namespace Xwt.GtkBackend
 				Widget.SizeRequested -= HandleWidgetSizeRequested;
 				Widget.SizeAllocated -= HandleWidgetSizeAllocated;;
 			}
+		}
+		
+		void HandleWidgetBoundsChanged (object o, Gtk.SizeAllocatedArgs args)
+		{
+			Toolkit.Invoke (delegate {
+				EventSink.OnBoundsChanged ();
+			});
 		}
 		
 		enum SizeCheckStep

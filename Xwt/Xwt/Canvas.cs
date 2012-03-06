@@ -81,11 +81,6 @@ namespace Xwt
 					ctx.Dispose ();
 				}
 			}
-			
-			public void OnBoundsChanged ()
-			{
-				((Canvas)Parent).OnBoundsChanged ();
-			}
 		}
 		
 		public Canvas ()
@@ -162,10 +157,6 @@ namespace Xwt
 		}
 		
 		protected virtual void OnDraw (Context ctx)
-		{
-		}
-		
-		protected virtual void OnBoundsChanged ()
 		{
 		}
 		

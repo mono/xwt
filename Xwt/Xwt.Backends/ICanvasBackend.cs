@@ -44,7 +44,6 @@ namespace Xwt.Backends
 	public interface ICanvasEventSink: IWidgetEventSink
 	{
 		void OnDraw (object context);
-		void OnBoundsChanged ();
 	}
 }
 
