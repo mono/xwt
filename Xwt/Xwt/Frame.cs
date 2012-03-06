@@ -92,10 +92,10 @@ namespace Xwt
 			set { type = value; Backend.SetFrameType (type); }
 		}
 		
-		[DefaultValue ("")]
+		[DefaultValue (null)]
 		public string Label {
-			get { return Backend.Label ?? ""; }
-			set { Backend.Label = value ?? ""; }
+			get { return Backend.Label; }
+			set { Backend.Label = value; }
 		}
 		
 		public WidgetSpacing Padding {
