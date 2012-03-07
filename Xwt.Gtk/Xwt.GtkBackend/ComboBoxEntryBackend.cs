@@ -46,6 +46,11 @@ namespace Xwt.GtkBackend
 			((Gtk.ComboBoxEntry)Widget).TextColumn = 0;
 		}
 		
+		public void SetTextColumn (int column)
+		{
+			((Gtk.ComboBoxEntry)Widget).TextColumn = column;
+		}
+		
 		public ITextEntryBackend TextEntryBackend {
 			get {
 				return entryBackend;

@@ -36,6 +36,7 @@ namespace Xwt.Mac
 		IListDataSource source;
 		ComboDataSource tsource;
 		TextEntryBackend entryBackend;
+		int textColumn;
 		
 		public ComboBoxEntryBackend ()
 		{
@@ -67,6 +68,7 @@ namespace Xwt.Mac
 		{
 			this.source = source;
 			tsource = new ComboDataSource (source);
+			tsource.TextColumn = textColumn;
 			Widget.UsesDataSource = true;
 			Widget.DataSource = tsource;
 		}
@@ -78,6 +80,13 @@ namespace Xwt.Mac
 			set {
 				Widget.SelectItem (value);
 			}
+		}
+		
+		public void SetTextColumn (int column)
+		{
+			textColumn = column;
+			if (tsource != null)
+				tsource.TextColumn = column;
 		}
 		#endregion
 	}
@@ -131,6 +140,8 @@ namespace Xwt.Mac
 	{
 		IListDataSource source;
 		
+		public int TextColumn;
+		
 		public ComboDataSource (IListDataSource source)
 		{
 			this.source = source;
@@ -138,7 +149,7 @@ namespace Xwt.Mac
 		
 		public override NSObject ObjectValueForItem (NSComboBox comboBox, int index)
 		{
-			return NSObject.FromObject (source.GetValue (index, 0));
+			return NSObject.FromObject (source.GetValue (index, TextColumn));
 		}
 		
 		public override int ItemCount (NSComboBox comboBox)

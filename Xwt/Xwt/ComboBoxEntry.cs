@@ -31,10 +31,17 @@ namespace Xwt
 	public class ComboBoxEntry: ComboBox
 	{
 		TextEntry entry;
+		DataField textField;
 		
 		public ComboBoxEntry ()
 		{
 			entry = new CustomComboTextEntry (Backend.TextEntryBackend);
+		}
+		
+		protected override void OnBackendCreated ()
+		{
+			base.OnBackendCreated ();
+			Backend.SetTextColumn (0);
 		}
 		
 		new IComboBoxEntryBackend Backend {
@@ -44,6 +51,23 @@ namespace Xwt
 		public TextEntry TextEntry {
 			get {
 				return entry;
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the column that contains the text to be shown in the text entry when an item is selected
+		/// </summary>
+		/// <value>
+		/// The text field.
+		/// </value>
+		public DataField TextField {
+			get { return textField; }
+			set {
+				textField = value;
+				if (value != null)
+					Backend.SetTextColumn (value.Index);
+				else
+					Backend.SetTextColumn (0);
 			}
 		}
 	}

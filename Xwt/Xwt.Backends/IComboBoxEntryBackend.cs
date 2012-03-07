@@ -29,6 +29,20 @@ namespace Xwt.Backends
 {
 	public interface IComboBoxEntryBackend: IComboBoxBackend
 	{
+		/// <summary>
+		/// Sets the column that contains the text to be shown in the text entry when an item is selected
+		/// </summary>
+		/// <param name='column'>
+		/// The column number
+		/// </param>
+		void SetTextColumn (int column);
+		
+		/// <summary>
+		/// Gets the backend for the text entry of the combobox
+		/// </summary>
+		/// <value>
+		/// The text entry backend.
+		/// </value>
 		ITextEntryBackend TextEntryBackend { get; }
 	}
 	
