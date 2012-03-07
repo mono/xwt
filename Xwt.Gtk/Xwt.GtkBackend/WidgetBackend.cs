@@ -173,6 +173,8 @@ namespace Xwt.GtkBackend
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
+			if (Widget.GdkWindow == null)
+				return Point.Zero;
 			int x, y;
 			Widget.GdkWindow.GetOrigin (out x, out y);
 			var a = Widget.Allocation;

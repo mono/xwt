@@ -30,9 +30,58 @@ namespace Xwt.Backends
 {
 	public interface IPanedBackend
 	{
+		/// <summary>
+		/// Initializes the paned
+		/// </summary>
+		/// <param name='dir'>
+		/// Orientation of the paned
+		/// </param>
 		void Initialize (Orientation dir);
-		void SetPanel (int panel, IWidgetBackend widget, Panel placement);
-		void Update (int panel, Panel placement);
+		
+		/// <summary>
+		/// Gets or sets the position of the panel separator
+		/// </summary>
+		/// <value>
+		/// The position.
+		/// </value>
+		double Position { get; set; }
+		
+		/// <summary>
+		/// Sets the content of a panel
+		/// </summary>
+		/// <param name='panel'>
+		/// Panel number: 1 or 2
+		/// </param>
+		/// <param name='widget'>
+		/// Child widget
+		/// </param>
+		/// <param name='resize'>
+		/// If set to <c>true</c> the panel is resized when the Paned view is resized
+		/// </param>
+		void SetPanel (int panel, IWidgetBackend widget, bool resize);
+		
+		/// <summary>
+		/// Updates the panel settings
+		/// </summary>
+		/// <param name='panel'>
+		/// Panel number: 1 or 2
+		/// </param>
+		/// <param name='resize'>
+		/// If set to <c>true</c> the panel is resized when the Paned view is resized
+		/// </param>
+		void UpdatePanel (int panel, bool resize);
+		
+		/// <summary>
+		/// Removes the content of a panel.
+		/// </summary>
+		/// <param name='panel'>
+		/// Panel number: 1 or 2
+		/// </param>
+		void RemovePanel (int panel);
+	}
+	
+	public interface IPanedEventSink: IWidgetEventSink
+	{
 	}
 }
 
