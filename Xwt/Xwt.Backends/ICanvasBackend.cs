@@ -28,21 +28,65 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICanvasBackend
+	public interface ICanvasBackend: IWidgetBackend
 	{
 		void OnPreferredSizeChanged ();
+		
+		/// <summary>
+		/// Invalidates and forces the redraw of the whole area of the widget
+		/// </summary>
 		void QueueDraw ();
+		
+		/// <summary>
+		/// Invalidates and forces the redraw of a rectangular area of the widget
+		/// </summary>
 		void QueueDraw (Rectangle rect);
 		
-		void AddChild (IWidgetBackend widget);
+		/// <summary>
+		/// Adds a child widget.
+		/// </summary>
+		/// <param name='widget'>
+		/// The widget
+		/// </param>
+		/// <param name='bounds'>
+		/// Position and size of the child widget, in container coordinates
+		/// </param>
+		/// <remarks>
+		/// The widget is placed in the canvas area, in the specified coordinates and
+		/// using the specified size
+		/// </remarks>
+		void AddChild (IWidgetBackend widget, Rectangle bounds);
+		
+		/// <summary>
+		/// Sets the position and size of a child widget
+		/// </summary>
+		/// <param name='widget'>
+		/// The child widget. It must have been added using the AddChild method.
+		/// </param>
+		/// <param name='bounds'>
+		/// New bounds, in container coordinates
+		/// </param>
+		/// <exception cref="System.InvalidOperationException">If the widget is not a child of this canvas</exception>
 		void SetChildBounds (IWidgetBackend widget, Rectangle bounds);
+		
+		/// <summary>
+		/// Removes a child widget
+		/// </summary>
+		/// <param name='widget'>
+		/// The widget to remove. The widget must have been previously added using AddChild.
+		/// </param>
+		/// <exception cref="System.InvalidOperationException">If the widget is not a child of this canvas</exception>
 		void RemoveChild (IWidgetBackend widget);
-
-		Rectangle Bounds { get; }
 	}
 	
 	public interface ICanvasEventSink: IWidgetEventSink
 	{
+		/// <summary>
+		/// Raises the draw event.
+		/// </summary>
+		/// <param name='context'>
+		/// Drawing context
+		/// </param>
 		void OnDraw (object context);
 	}
 }

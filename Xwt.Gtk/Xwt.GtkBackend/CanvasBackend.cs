@@ -91,10 +91,11 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public void AddChild (IWidgetBackend widget)
+		public void AddChild (IWidgetBackend widget, Rectangle bounds)
 		{
 			var w = ((IGtkWidgetBackend)widget).Widget;
 			Widget.Add (w);
+			Widget.SetAllocation (w, bounds);
 		}
 		
 		public void RemoveChild (IWidgetBackend widget)

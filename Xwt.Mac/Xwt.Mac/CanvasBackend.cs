@@ -66,10 +66,14 @@ namespace Xwt.Mac
 			
 		}
 		
-		public void AddChild (IWidgetBackend widget)
+		public void AddChild (IWidgetBackend widget, Rectangle rect)
 		{
 			var v = GetWidget (widget);
 			view.AddSubview (v);
+			
+			// Not using SetWidgetBounds because the view is flipped
+			v.Frame = new System.Drawing.RectangleF ((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height);;
+			v.NeedsDisplay = true;
 		}
 		
 		public void RemoveChild (IWidgetBackend widget)
