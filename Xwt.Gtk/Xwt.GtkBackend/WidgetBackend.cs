@@ -341,10 +341,12 @@ namespace Xwt.GtkBackend
 				WidgetEvent ev = (WidgetEvent) eventId;
 				switch (ev) {
 				case WidgetEvent.DragLeave:
-					Widget.DragLeave += HandleWidgetDragLeave;
+					AllocEventBox ();
+					EventsRootWidget.DragLeave += HandleWidgetDragLeave;
 					break;
 				case WidgetEvent.DragStarted:
-					Widget.DragBegin += HandleWidgetDragBegin;
+					AllocEventBox ();
+					EventsRootWidget.DragBegin += HandleWidgetDragBegin;
 					break;
 				case WidgetEvent.KeyPressed:
 					Widget.KeyPressEvent += HandleKeyPressEvent;
@@ -909,10 +911,10 @@ namespace Xwt.GtkBackend
 
 		void HandleDragBegin (object o, Gtk.DragBeginArgs args)
 		{
-			Widget.DragEnd += HandleWidgetDragEnd;
-			Widget.DragFailed += HandleDragFailed;
-			Widget.DragDataDelete += HandleDragDataDelete;
-			Widget.DragDataGet += HandleWidgetDragDataGet;
+			EventsRootWidget.DragEnd += HandleWidgetDragEnd;
+			EventsRootWidget.DragFailed += HandleDragFailed;
+			EventsRootWidget.DragDataDelete += HandleDragDataDelete;
+			EventsRootWidget.DragDataGet += HandleWidgetDragDataGet;
 		}
 		
 		void HandleWidgetDragDataGet (object o, Gtk.DragDataGetArgs args)
@@ -967,6 +969,7 @@ namespace Xwt.GtkBackend
 		
 		public void SetDragSource (TransferDataType[] types, DragDropAction dragAction)
 		{
+			AllocEventBox ();
 			DragDropInfo.SourceDragAction = ConvertDragAction (dragAction);
 			var table = Util.BuildTargetTable (types);
 			OnSetDragSource (Gdk.ModifierType.Button1Mask, (Gtk.TargetEntry[]) table, DragDropInfo.SourceDragAction);
@@ -974,7 +977,7 @@ namespace Xwt.GtkBackend
 		
 		protected virtual void OnSetDragSource (Gdk.ModifierType modifierType, Gtk.TargetEntry[] table, Gdk.DragAction actions)
 		{
-			Gtk.Drag.SourceSet (Widget, modifierType, table, actions);
+			Gtk.Drag.SourceSet (EventsRootWidget, modifierType, table, actions);
 		}
 		
 		Gdk.DragAction ConvertDragAction (DragDropAction dragAction)
