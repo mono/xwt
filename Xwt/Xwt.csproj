@@ -274,6 +274,7 @@
     <Compile Include="Xwt\ObjectCollection.cs" />
     <Compile Include="Xwt.Backends\ISelectFolderDialogBackend.cs" />
     <Compile Include="Xwt\SelectFolderDialog.cs" />
+    <Compile Include="Xwt\WidgetSpacing.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
