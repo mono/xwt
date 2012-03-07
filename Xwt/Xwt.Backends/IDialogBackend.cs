@@ -30,15 +30,38 @@ namespace Xwt.Backends
 {
 	public interface IDialogBackend: IWindowBackend
 	{
+		/// <summary>
+		/// Sets the buttons to be shown in the dialog. It can be called multiple times.
+		/// </summary>
 		void SetButtons (IEnumerable<DialogButton> buttons);
+		
+		/// <summary>
+		/// Called when the properties of a button have changed
+		/// </summary>
 		void UpdateButton (DialogButton btn);
 		
+		/// <summary>
+		/// Shows the dialog and starts running the gui loop. The method has to return when EndLoop is called.
+		/// </summary>
+		/// <param name='parent'>
+		/// Parent window
+		/// </param>
 		void RunLoop (IWindowFrameBackend parent);
+		
+		/// <summary>
+		/// Ends the gui loop, causing the RunLoop method to return
+		/// </summary>
 		void EndLoop ();
 	}
 	
 	public interface IDialogEventSink: IWindowEventSink
 	{
+		/// <summary>
+		/// Notifies that a dialog button has been clicked. It can only be called while RunLoop is being executed.
+		/// </summary>
+		/// <param name='btn'>
+		/// The clicked button
+		/// </param>
 		void OnDialogButtonClicked (DialogButton btn);
 	}
 }
