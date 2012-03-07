@@ -264,6 +264,16 @@
     <Compile Include="Xwt\RowDropPosition.cs" />
     <Compile Include="Xwt\ScrollAdjustment.cs" />
     <Compile Include="Xwt.Backends\IScrollAdjustmentBackend.cs" />
+    <Compile Include="Xwt\OpenFileDialog.cs" />
+    <Compile Include="Xwt\SaveFileDialog.cs" />
+    <Compile Include="Xwt\FileDialog.cs" />
+    <Compile Include="Xwt.Backends\IFileDialogBackend.cs" />
+    <Compile Include="Xwt.Backends\IOpenFileDialogBackend.cs" />
+    <Compile Include="Xwt.Backends\ISaveFileDialogBackend.cs" />
+    <Compile Include="Xwt\FileDialogFilter.cs" />
+    <Compile Include="Xwt\ObjectCollection.cs" />
+    <Compile Include="Xwt.Backends\ISelectFolderDialogBackend.cs" />
+    <Compile Include="Xwt\SelectFolderDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

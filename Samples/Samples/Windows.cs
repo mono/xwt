@@ -75,6 +75,39 @@ namespace Samples
 				db.Label = "Result: " + r.Label;
 				d.Dispose ();
 			};
+			
+			b = new Button ("Show Open File dialog");
+			PackStart (b);
+			b.Clicked += delegate {
+				OpenFileDialog dlg = new OpenFileDialog ("Select a file");
+				dlg.InitialFileName = "Some file";
+				dlg.Multiselect = true;
+				dlg.Filters.Add (new FileDialogFilter ("Xwt files", "*.xwt"));
+				dlg.Filters.Add (new FileDialogFilter ("All files", "*.*"));
+				if (dlg.Run ())
+					MessageDialog.ShowMessage ("Files have been selected!", string.Join ("\n", dlg.FileNames));
+			};
+			
+			b = new Button ("Show Save File dialog");
+			PackStart (b);
+			b.Clicked += delegate {
+				SaveFileDialog dlg = new SaveFileDialog ("Select a file");
+				dlg.InitialFileName = "Some file";
+				dlg.Multiselect = true;
+				dlg.Filters.Add (new FileDialogFilter ("Xwt files", "*.xwt"));
+				dlg.Filters.Add (new FileDialogFilter ("All files", "*.*"));
+				if (dlg.Run ())
+					MessageDialog.ShowMessage ("Files have been selected!", string.Join ("\n", dlg.FileNames));
+			};
+			
+			b = new Button ("Show Select Folder dialog");
+			PackStart (b);
+			b.Clicked += delegate {
+				SelectFolderDialog dlg = new SelectFolderDialog ("Select a folder");
+				dlg.Multiselect = true;
+				if (dlg.Run ())
+					MessageDialog.ShowMessage ("Folders have been selected!", string.Join ("\n", dlg.Folders));
+			};
 		}
 	}
 }
