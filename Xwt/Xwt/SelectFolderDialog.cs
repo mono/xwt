@@ -145,7 +145,7 @@ namespace Xwt
 				folders = Backend.Folders; 
 				currentFolder = Backend.CurrentFolder;
 				running = false;
-				Backend.Close ();
+				Backend.Cleanup ();
 			}
 		}	
 	}

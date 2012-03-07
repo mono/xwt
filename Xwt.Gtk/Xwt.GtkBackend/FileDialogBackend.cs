@@ -130,7 +130,7 @@ namespace Xwt.GtkBackend
 			return result == (int) Gtk.ResponseType.Ok;
 		}
 		
-		public void Close ()
+		public void Cleanup ()
 		{
 			dialog.Destroy ();
 		}

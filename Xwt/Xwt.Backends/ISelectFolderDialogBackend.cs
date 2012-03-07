@@ -76,24 +76,29 @@ namespace Xwt.Backends
 		string CurrentFolder { get; set; }
 
 		/// <summary>
-		/// Shows the dialog.
+		/// Runs the dialog, allowing the user to select a folder
 		/// </summary>
 		/// <param name='parent'>
 		/// Parent window (the dialog will be modal to this window). It can be null.
 		/// </param>
+		/// <returns>
+		/// <c>true</c> if the user clicked OK, <c>false</c> otherwise
+		/// </returns>
 		/// <remarks>
 		/// The Run method will always be called once (and only once) after an Initialize call.
+		/// The dialog must be shown in modal mode. The method returns when the user clicks on
+		/// OK or Cancel. The dialog must be already closed when this method returns.
 		/// </remarks>
 		bool Run (IWindowFrameBackend parent);
 		
 		/// <summary>
-		/// Closes the dialog.
+		/// Frees native resources
 		/// </summary>
 		/// <remarks>
 		/// This method is called after Run, so that the backend can release
-		/// the native resources. The Initialize method can be called after Close.
+		/// the native resources. The Initialize method can be called after Cleanup.
 		/// </remarks>
-		void Close ();	
+		void Cleanup ();	
 	}
 }
 

@@ -188,7 +188,7 @@ namespace Xwt
 				fileNames = Backend.FileNames; 
 				currentFolder = Backend.CurrentFolder;
 				running = false;
-				Backend.Close ();
+				Backend.Cleanup ();
 			}
 		}
 	}
