@@ -1,10 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SW = System.Windows;
+﻿//
+// DataConverter.cs
+//
+// Authors:
+//       Carlos Alberto Cortez <calberto.cortez@gmail.com>
+//       Luís Reis <luiscubal@gmail.com>
+//       Eric Maupin <ermau@xamarin.com>
+//
+// Copyright (c) 2011-2012 Carlos Alberto Cortez
+// Copyright (c) 2012 Luís Reis
+// Copyright (c) 2012 Xamarin, Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
-using Xwt.Backends;
+using System;
+using SW = System.Windows;
 using Xwt.Drawing;
 
 namespace Xwt.WPFBackend
@@ -14,31 +39,30 @@ namespace Xwt.WPFBackend
 		//
 		// Rect/Point
 		//
-		public static Rectangle ToXwtRect (SW.Rect rect)
+		public static Rectangle ToXwtRect (this SW.Rect rect)
 		{
 			return new Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
-		public static SW.Rect ToWpfRect (Rectangle rect)
+		public static SW.Rect ToWpfRect (this Rectangle rect)
 		{
 			return new SW.Rect (rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
-		public static Point ToXwtPoint (SW.Point point)
+		public static Point ToXwtPoint (this SW.Point point)
 		{
 			return new Point (point.X, point.Y);
 		}
 
-		public static SW.Point ToWpfPoint (Point point)
+		public static SW.Point ToWpfPoint (this Point point)
 		{
 			return new SW.Point (point.X, point.Y);
 		}
 
-
 		//
 		// Alignment
 		//
-		public static Alignment ToXwtAlignment (SW.HorizontalAlignment alignment)
+		public static Alignment ToXwtAlignment (this SW.HorizontalAlignment alignment)
 		{
 			switch (alignment) {
 				case SW.HorizontalAlignment.Left: return Alignment.Start;
@@ -47,7 +71,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public static SW.HorizontalAlignment ToWpfAlignment (Alignment alignment)
+		public static SW.HorizontalAlignment ToWpfAlignment (this Alignment alignment)
 		{
 			switch (alignment) {
 				case Alignment.Start: return SW.HorizontalAlignment.Left;
@@ -59,12 +83,21 @@ namespace Xwt.WPFBackend
 		//
 		// Color
 		//
-		public static Color ToXwtColor (SW.Media.Color color)
+		public static Color ToXwtColor (this SW.Media.Color color)
 		{
 			return Color.FromBytes (color.R, color.G, color.B, color.A);
 		}
 
-		public static SW.Media.Color ToWpfColor (Color color)
+		public static Color ToXwtColor (this SW.Media.Brush brush)
+		{
+			var solidBrush = brush as SW.Media.SolidColorBrush;
+			if (solidBrush == null)
+				throw new ArgumentException();
+
+			return solidBrush.Color.ToXwtColor();
+		}
+
+		public static SW.Media.Color ToWpfColor (this Color color)
 		{
 			return SW.Media.Color.FromArgb (
 				(byte)(color.Alpha * 255.0),
@@ -76,7 +109,7 @@ namespace Xwt.WPFBackend
 		//
 		// Font
 		//
-		public static FontStyle ToXwtFontStyle (SW.FontStyle value)
+		public static FontStyle ToXwtFontStyle (this SW.FontStyle value)
 		{
 			// No, SW.FontStyles is not an enum
 			if (value == SW.FontStyles.Italic) return FontStyle.Italic;
@@ -85,7 +118,7 @@ namespace Xwt.WPFBackend
 			return FontStyle.Normal;
 		}
 
-		public static SW.FontStyle ToWpfFontStyle (FontStyle value)
+		public static SW.FontStyle ToWpfFontStyle (this FontStyle value)
 		{
 			if (value == FontStyle.Italic) return SW.FontStyles.Italic;
 			if (value == FontStyle.Oblique) return SW.FontStyles.Oblique;
@@ -93,7 +126,7 @@ namespace Xwt.WPFBackend
 			return SW.FontStyles.Normal;
 		}
 
-		public static FontStretch ToXwtFontStretch (SW.FontStretch value)
+		public static FontStretch ToXwtFontStretch (this SW.FontStretch value)
 		{
 			// No, SW.FontStretches is not an enum
 			if (value == SW.FontStretches.UltraCondensed) return FontStretch.UltraCondensed;
@@ -108,7 +141,7 @@ namespace Xwt.WPFBackend
 			return FontStretch.Normal;
 		}
 
-		public static SW.FontStretch ToWpfFontStretch (FontStretch value)
+		public static SW.FontStretch ToWpfFontStretch (this FontStretch value)
 		{
 			if (value == FontStretch.UltraCondensed) return SW.FontStretches.UltraCondensed;
 			if (value == FontStretch.ExtraCondensed) return SW.FontStretches.ExtraCondensed;
@@ -122,7 +155,7 @@ namespace Xwt.WPFBackend
 			return SW.FontStretches.Normal;
 		}
 
-		public static FontWeight ToXwtFontWeight (SW.FontWeight value)
+		public static FontWeight ToXwtFontWeight (this SW.FontWeight value)
 		{
 			// No, SW.FontWeights is not an enum
 			if (value == SW.FontWeights.UltraLight) return FontWeight.Ultralight;
@@ -135,7 +168,7 @@ namespace Xwt.WPFBackend
 			return FontWeight.Normal;
 		}
 
-		public static SW.FontWeight ToWpfFontWeight (FontWeight value)
+		public static SW.FontWeight ToWpfFontWeight (this FontWeight value)
 		{
 			if (value == FontWeight.Ultralight) return SW.FontWeights.UltraLight;
 			if (value == FontWeight.Light) return SW.FontWeights.Light;
@@ -149,7 +182,7 @@ namespace Xwt.WPFBackend
 
 		// Dock
 
-		public static SW.Controls.Dock ToWpfDock(ContentPosition value)
+		public static SW.Controls.Dock ToWpfDock (this ContentPosition value)
 		{
 			if (value == ContentPosition.Left) return SW.Controls.Dock.Left;
 			if (value == ContentPosition.Top) return SW.Controls.Dock.Top;
