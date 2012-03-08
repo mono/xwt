@@ -110,7 +110,7 @@ namespace Xwt
 			get { return eventSink; }
 		}
 		
-		public Rectangle Bounds {
+		public Rectangle ScreenBounds {
 			get {
 				LoadBackend();
 				return bounds;
@@ -121,33 +121,33 @@ namespace Xwt
 		}
 		
 		public double X {
-			get { return Bounds.X; }
-			set { Bounds = new Xwt.Rectangle (value, Y, Width, Height); }
+			get { return ScreenBounds.X; }
+			set { ScreenBounds = new Xwt.Rectangle (value, Y, Width, Height); }
 		}
 		
 		public double Y {
-			get { return Bounds.Y; }
-			set { Bounds = new Xwt.Rectangle (X, value, Width, Height); }
+			get { return ScreenBounds.Y; }
+			set { ScreenBounds = new Xwt.Rectangle (X, value, Width, Height); }
 		}
 		
 		public double Width {
-			get { return Bounds.Width; }
-			set { Bounds = new Xwt.Rectangle (X, Y, value, Height); }
+			get { return ScreenBounds.Width; }
+			set { ScreenBounds = new Xwt.Rectangle (X, Y, value, Height); }
 		}
 		
 		public double Height {
-			get { return Bounds.Height; }
-			set { Bounds = new Xwt.Rectangle (X, Y, Width, value); }
+			get { return ScreenBounds.Height; }
+			set { ScreenBounds = new Xwt.Rectangle (X, Y, Width, value); }
 		}
 		
 		public Size Size {
-			get { return Bounds.Size; }
-			set { Bounds = new Rectangle (X, Y, value.Width, value.Height); }
+			get { return ScreenBounds.Size; }
+			set { ScreenBounds = new Rectangle (X, Y, value.Width, value.Height); }
 		}
 		
 		public Point Location {
-			get { return Bounds.Location; }
-			set { Bounds = new Rectangle (value.X, value.Y, Width, Height); }
+			get { return ScreenBounds.Location; }
+			set { ScreenBounds = new Rectangle (value.X, value.Y, Width, Height); }
 		}
 		
 		public string Title {

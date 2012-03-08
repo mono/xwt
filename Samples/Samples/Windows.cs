@@ -44,7 +44,7 @@ namespace Samples
 					w.Dispose ();
 				};
 				var bpos = b.ScreenBounds;
-				w.Bounds = new Rectangle (bpos.X, bpos.Y + b.Size.Height, w.Bounds.Width, w.Bounds.Height);
+				w.ScreenBounds = new Rectangle (bpos.X, bpos.Y + b.Size.Height, w.Width, w.Height);
 				w.Show ();
 			};
 			b = new Button ("Show message dialog");
