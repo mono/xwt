@@ -26,7 +26,7 @@
 
 namespace Xwt.Drawing
 {
-	public class Colors
+	public static class Colors
 	{
 
 		public static Color Transparent = Color.FromBytes (255, 255, 255, 0);
