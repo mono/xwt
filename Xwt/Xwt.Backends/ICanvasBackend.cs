@@ -30,8 +30,6 @@ namespace Xwt.Backends
 {
 	public interface ICanvasBackend: IWidgetBackend
 	{
-		void OnPreferredSizeChanged ();
-		
 		/// <summary>
 		/// Invalidates and forces the redraw of the whole area of the widget
 		/// </summary>

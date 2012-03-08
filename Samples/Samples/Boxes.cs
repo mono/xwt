@@ -72,14 +72,15 @@ namespace Samples
 		{
 			Color = new Color (0.5, 0.5, 1);
 			this.coreSize = new Size (coreSize, coreSize);
-			MinSize = new Size (coreSize + margin * 2, coreSize + margin * 2);
+			MinWidth = MinHeight = coreSize + margin * 2;
 		}
 		
 		public SimpleBox (double coreWidth, double coreHeight)
 		{
 			Color = new Color (0.5, 0.5, 1);
 			this.coreSize = new Size (coreWidth, coreHeight);
-			MinSize = new Size (coreSize.Width + margin * 2, coreSize.Height + margin * 2);
+			MinWidth = coreSize.Width + margin * 2;
+			MinHeight = coreSize.Height + margin * 2;
 		}
 		
 		protected override void OnDraw (Context ctx)

@@ -61,11 +61,6 @@ namespace Xwt.Mac
 			view.NeedsToDraw (new System.Drawing.RectangleF ((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height));
 		}
 		
-		public void OnPreferredSizeChanged ()
-		{
-			
-		}
-		
 		public void AddChild (IWidgetBackend widget, Rectangle rect)
 		{
 			var v = GetWidget (widget);

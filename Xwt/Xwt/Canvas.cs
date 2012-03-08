@@ -61,8 +61,6 @@ namespace Xwt
 {
 	public class Canvas: Widget
 	{
-		Size minSize;
-		Size naturalSize;
 		Dictionary<Widget,Rectangle> positions;
 		
 		protected new class EventSink: Widget.EventSink, ICanvasEventSink
@@ -257,58 +255,6 @@ namespace Xwt
 				var s = Size;
 				return new Rectangle (0, 0, s.Width, s.Height); 
 			}
-		}
-		
-		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-		public Size MinSize {
-			get { return minSize; }
-			set {
-				minSize = value;
-				if (naturalSize.Width < minSize.Width)
-					naturalSize.Width = minSize.Width;
-				if (naturalSize.Height < minSize.Height)
-					naturalSize.Height = minSize.Height;
-				OnPreferredSizeChanged ();
-			}
-		}
-		
-		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-		public Size NaturalSize {
-			get { return naturalSize; }
-			set {
-				naturalSize = value;
-				if (minSize.Width > naturalSize.Width)
-					minSize.Width = naturalSize.Width;
-				if (minSize.Height > naturalSize.Height)
-					minSize.Height = naturalSize.Height;
-				OnPreferredSizeChanged ();
-			}
-		}
-		
-		protected override WidgetSize OnGetPreferredWidth ()
-		{
-			return new WidgetSize (minSize.Width);
-		}
-		
-		protected override WidgetSize OnGetPreferredHeight ()
-		{
-			return new WidgetSize (minSize.Height);
-		}
-		
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			return OnGetPreferredHeight ();
-		}
-		
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			return OnGetPreferredWidth ();
-		}
-		
-		protected override void OnPreferredSizeChanged ()
-		{
-			base.OnPreferredSizeChanged ();
-			Backend.OnPreferredSizeChanged ();
 		}
 	}
 }

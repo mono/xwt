@@ -67,11 +67,6 @@ namespace Xwt.GtkBackend
 			Widget.QueueDrawArea ((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
 		}
 		
-		public void OnPreferredSizeChanged ()
-		{
-			Widget.QueueResize ();
-		}
-
 		void HandleSizeRequested (object o, Gtk.SizeRequestedArgs args)
 		{
 			IWidgetSurface ws = (IWidgetSurface)Frontend;
