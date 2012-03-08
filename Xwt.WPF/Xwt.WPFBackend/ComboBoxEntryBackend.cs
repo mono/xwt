@@ -45,6 +45,12 @@ namespace Xwt.WPFBackend
 			get { return this.textBackend; }
 		}
 
+		public void SetTextColumn (int column)
+		{
+			if (ComboBox.DisplayMemberPath != null)
+				ComboBox.DisplayMemberPath = ".[" + column + "]";
+		}
+
 		private readonly ComboBoxTextEntryBackend textBackend;
 	}
 }
