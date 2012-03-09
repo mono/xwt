@@ -61,6 +61,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (ComboBox), typeof (ComboBoxBackend));
 			WidgetRegistry.RegisterBackend (typeof (ComboBoxEntry), typeof (ComboBoxEntryBackend));
 			WidgetRegistry.RegisterBackend (typeof (ScrollView), typeof (ScrollViewBackend));
+			WidgetRegistry.RegisterBackend (typeof (Gradient), typeof (GradientBackendHandler));
 		}
 
 		public override void RunApplication ()

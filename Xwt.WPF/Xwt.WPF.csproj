@@ -33,6 +33,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -54,6 +55,7 @@
     <Compile Include="Xwt.WPFBackend.Utilities\DataSourceNotifyWrapper.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\FrameBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\GradientBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\ImageHandler.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\NativeMethods.cs" />
     <Compile Include="Xwt.WPFBackend\ImageViewBackend.cs" />
