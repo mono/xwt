@@ -276,6 +276,9 @@
     <Compile Include="Xwt\SelectFolderDialog.cs" />
     <Compile Include="Xwt\WidgetSpacing.cs" />
     <Compile Include="Xwt.Drawing\Colors.cs" />
+    <Compile Include="Xwt\TransferDataSource.cs" />
+    <Compile Include="Xwt\TransferDataType.cs" />
+    <Compile Include="Xwt.Backends\TransferDataStore.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

@@ -63,8 +63,37 @@ namespace Xwt.Backends
 		
 		object NativeWidget { get; }
 		
+		/// <summary>
+		/// Starts a drag operation originated in this widget
+		/// </summary>
+		/// <param name='data'>
+		/// Drag operation arguments
+		/// </param>
 		void DragStart (DragStartData data);
+		
+		/// <summary>
+		/// Sets up a widget so that XWT will start a drag operation when the user clicks and drags on the widget.
+		/// </summary>
+		/// <param name='types'>
+		/// Types of data that can be dragged from this widget
+		/// </param>
+		/// <param name='dragAction'>
+		/// Bitmask of possible actions for a drag from this widget
+		/// </param>
+		/// <remarks>
+		/// When a drag operation is started, the backend should fire the OnDragStarted event
+		/// </remarks>
 		void SetDragSource (TransferDataType[] types, DragDropAction dragAction);
+		
+		/// <summary>
+		/// Sets a widget as a potential drop destination
+		/// </summary>
+		/// <param name='types'>
+		/// Types.
+		/// </param>
+		/// <param name='dragAction'>
+		/// Drag action.
+		/// </param>
 		void SetDragTarget (TransferDataType[] types, DragDropAction dragAction);
 		
 		object Font { get; set; }
@@ -80,7 +109,9 @@ namespace Xwt.Backends
 		void OnDragDropCheck (DragCheckEventArgs args);
 		void OnDragDrop (DragEventArgs args);
 		void OnDragLeave (EventArgs args);
+		
 		void OnDragFinished (DragFinishedEventArgs args);
+		
 		DragStartData OnDragStarted ();
 		void OnKeyPressed (KeyEventArgs args);
 		void OnKeyReleased (KeyEventArgs args);
@@ -143,18 +174,9 @@ namespace Xwt.Backends
 		BoundsChanged = 1 << 19
 	}
 	
-	public interface DragOperationEventSink
-	{
-		
-	}
-	
-	public interface ITransferDataSource
-	{
-		string[] Types { get; }
-	}
-	
 	public class DragStartData
 	{
+		
 		public TransferDataSource Data { get; private set; }
 		public DragDropAction DragAction { get; private set; }
 		public object ImageBackend { get; private set; }

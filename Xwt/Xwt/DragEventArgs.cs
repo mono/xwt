@@ -49,7 +49,7 @@ namespace Xwt
 
 	public class DragEventArgs: EventArgs
 	{
-		public DragEventArgs (Point position, TransferDataStore dataStore, DragDropAction action)
+		public DragEventArgs (Point position, Xwt.Backends.TransferDataStore dataStore, DragDropAction action)
 		{
 			Data = dataStore;
 			Position = position;
