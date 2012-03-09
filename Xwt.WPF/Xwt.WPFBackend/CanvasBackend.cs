@@ -53,7 +53,7 @@ namespace Xwt.WPFBackend
 
 		public void QueueDraw()
 		{
-			this.dirtyRects.Clear();
+			this.fullRedraw = true;
 
 			if (!this.queued) {
 				Toolkit.QueueExitAction (() => OnRender (this, EventArgs.Empty));
@@ -63,6 +63,9 @@ namespace Xwt.WPFBackend
 
 		public void QueueDraw (Rectangle rect)
 		{
+			if (this.fullRedraw)
+				return;
+
 			this.dirtyRects.Add (rect.ToInt32Rect());
 
 			if (!this.queued) {
@@ -103,6 +106,7 @@ namespace Xwt.WPFBackend
 		}
 
 		private bool queued;
+		private bool fullRedraw;
 
 		private readonly SWC.Image image;
 		private WriteableBitmap wbitmap;
@@ -151,14 +155,15 @@ namespace Xwt.WPFBackend
 			using (Graphics g = Graphics.FromImage (this.bbitmap))
 				CanvasEventSink.OnDraw (new DrawingContext (g));
 
-			if (this.dirtyRects.Count > 0) {
+			if (this.fullRedraw || this.dirtyRects.Count == 0) {
+				this.wbitmap.AddDirtyRect (new Int32Rect (0, 0, this.wbitmap.PixelWidth, this.wbitmap.PixelHeight));
+				this.fullRedraw = false;
+			} else {
 				for (int i = 0; i < this.dirtyRects.Count; ++i)
 					this.wbitmap.AddDirtyRect (this.dirtyRects [i]);
+			}
 
-				this.dirtyRects.Clear();
-			} else
-				this.wbitmap.AddDirtyRect (new Int32Rect (0, 0, this.wbitmap.PixelWidth, this.wbitmap.PixelHeight));
-
+			this.dirtyRects.Clear();
 			this.wbitmap.Unlock();
 		}
 	}
