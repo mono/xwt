@@ -55,6 +55,7 @@
     <Compile Include="Xwt.WPFBackend.Utilities\DataSourceNotifyWrapper.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DrawingContext.cs" />
+    <Compile Include="Xwt.WPFBackend\ContextBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\FrameBackend.cs" />
     <Compile Include="Xwt.WPFBackend\GradientBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\ImageHandler.cs" />

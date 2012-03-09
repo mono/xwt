@@ -30,6 +30,7 @@
 
 using System;
 using SW = System.Windows;
+using SD = System.Drawing;
 using Xwt.Drawing;
 
 namespace Xwt.WPFBackend
@@ -106,9 +107,27 @@ namespace Xwt.WPFBackend
 				(byte)(color.Blue * 255.0));
 		}
 
+		public static System.Drawing.Color ToDrawingColor (this Color color)
+		{
+			return System.Drawing.Color.FromArgb (
+				(byte) (color.Alpha * 255.0),
+				(byte) (color.Red * 255.0),
+				(byte) (color.Green * 255.0),
+				(byte) (color.Blue * 255.0));
+		}
+
 		//
 		// Font
 		//
+		public static SD.Font ToDrawingFont (this Font font)
+		{
+			SD.FontStyle style = font.Style.ToDrawingFontStyle ();
+			if (font.Weight > FontWeight.Normal)
+				style |= SD.FontStyle.Bold;
+
+			return new SD.Font (font.Family, (float)font.Size, style);
+		}
+		
 		public static FontStyle ToXwtFontStyle (this SW.FontStyle value)
 		{
 			// No, SW.FontStyles is not an enum
@@ -124,6 +143,19 @@ namespace Xwt.WPFBackend
 			if (value == FontStyle.Oblique) return SW.FontStyles.Oblique;
 			
 			return SW.FontStyles.Normal;
+		}
+
+		public static SD.FontStyle ToDrawingFontStyle (this FontStyle value)
+		{
+			switch (value) {
+				case FontStyle.Normal:
+					return SD.FontStyle.Regular;
+				case FontStyle.Italic:
+					return SD.FontStyle.Italic;
+				
+				default:
+					throw new NotImplementedException();
+			}
 		}
 
 		public static FontStretch ToXwtFontStretch (this SW.FontStretch value)
