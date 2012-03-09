@@ -29,9 +29,13 @@
 // THE SOFTWARE.
 
 using System;
+using System.Windows;
 using SW = System.Windows;
 using SD = System.Drawing;
 using Xwt.Drawing;
+using FontStretch = Xwt.Drawing.FontStretch;
+using FontStyle = Xwt.Drawing.FontStyle;
+using FontWeight = Xwt.Drawing.FontWeight;
 
 namespace Xwt.WPFBackend
 {
