@@ -44,7 +44,6 @@ namespace Xwt.WPFBackend
 		{
 			Canvas = new ExCanvas();
 			Canvas.Render += OnRender;
-			Canvas.SizeChanged += OnSizeChanged;
 
 			this.image = new SWC.Image();
 			SWC.Panel.SetZIndex (this.image, -1);
@@ -97,10 +96,12 @@ namespace Xwt.WPFBackend
 		}
 
 		private readonly SWC.Image image;
-		private bool resized = true;
 		private WriteableBitmap wbitmap;
 		private Bitmap bbitmap;
 		private Rectangle clip;
+
+		private double pwidth;
+		private double pheight;
 
 		private ExCanvas Canvas
 		{
@@ -113,14 +114,9 @@ namespace Xwt.WPFBackend
 			get { return (ICanvasEventSink) EventSink; }
 		}
 
-		private void OnSizeChanged (object sender, SizeChangedEventArgs e)
-		{
-			this.resized = true;
-		}
-
 		private void OnRender (object sender, EventArgs e)
 		{
-			if (this.resized)
+			if (Canvas.ActualHeight != this.pheight || Canvas.ActualWidth != this.pwidth)
 			{
 				double heightRatio = HeightPixelRatio;
 				double widthRatio = WidthPixelRatio;
@@ -134,7 +130,9 @@ namespace Xwt.WPFBackend
 				this.wbitmap = new WriteableBitmap (nwidth, nheight, widthRatio * 96, heightRatio * 96, PixelFormats.Pbgra32, null);
 				this.bbitmap = new Bitmap (nwidth, nheight, this.wbitmap.BackBufferStride, PixelFormat.Format32bppPArgb, this.wbitmap.BackBuffer);
 				this.image.Source = this.wbitmap;
-				this.resized = false;
+
+				this.pheight = Canvas.ActualHeight;
+				this.pwidth = Canvas.ActualWidth;
 			}
 
 			this.wbitmap.Lock();
