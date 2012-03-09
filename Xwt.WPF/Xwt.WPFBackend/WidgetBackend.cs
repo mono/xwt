@@ -27,6 +27,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using SWM = System.Windows.Media;
 using SWC = System.Windows.Controls; // When we need to resolve ambigituies.
@@ -265,6 +266,12 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.LostFocus:
 						Widget.LostFocus += WidgetLostFocusHandler;
 						break;
+					case WidgetEvent.MouseEntered:
+						Widget.MouseEnter += WidgetMouseEnteredHandler;
+						break;
+					case WidgetEvent.MouseExited:
+						Widget.MouseLeave += WidgetMouseExitedHandler;
+						break;
 				}
 			}
 		}
@@ -289,6 +296,12 @@ namespace Xwt.WPFBackend
 						break;
 					case WidgetEvent.KeyReleased:
 						Widget.KeyUp -= WidgetKeyUpHandler;
+						break;
+					case WidgetEvent.MouseEntered:
+						Widget.MouseEnter -= WidgetMouseEnteredHandler;
+						break;
+					case WidgetEvent.MouseExited:
+						Widget.MouseLeave -= WidgetMouseExitedHandler;
 						break;
 				}
 			}
@@ -384,6 +397,16 @@ namespace Xwt.WPFBackend
 			Toolkit.Invoke (delegate {
 				eventSink.OnDragLeave (EventArgs.Empty);
 			});
+		}
+
+		private void WidgetMouseEnteredHandler (object sender, MouseEventArgs e)
+		{
+			Toolkit.Invoke (eventSink.OnMouseEntered);
+		}
+
+		private void WidgetMouseExitedHandler (object sender, MouseEventArgs e)
+		{
+			Toolkit.Invoke (eventSink.OnMouseExited);
 		}
 	}
 
