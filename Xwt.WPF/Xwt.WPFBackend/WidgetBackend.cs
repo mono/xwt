@@ -27,12 +27,13 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using SWM = System.Windows.Media;
 using SWC = System.Windows.Controls; // When we need to resolve ambigituies.
 
 using Xwt.Backends;
-using Xwt.Drawing;
 using Xwt.Engine;
+using Color = Xwt.Drawing.Color;
 
 namespace Xwt.WPFBackend
 {
@@ -219,17 +220,18 @@ namespace Xwt.WPFBackend
 			if (width == -1)
 				Widget.ClearValue (FrameworkElement.MinWidthProperty);
 			else
-				Widget.MinWidth = width;
+				Widget.MinWidth = width / WidthPixelRatio;
 
 			if (height == -1)
 				Widget.ClearValue (FrameworkElement.MinHeightProperty);
 			else
-				Widget.MinHeight = height;
+				Widget.MinHeight = height / HeightPixelRatio;
 		}
 
 		public void SetNaturalSize (double width, double height)
 		{
-			// Nothing do it in WPF, it seems.
+			Widget.Width = width / WidthPixelRatio;
+			Widget.Height = height / HeightPixelRatio;
 		}
 
 		public virtual void UpdateLayout ()
@@ -289,6 +291,32 @@ namespace Xwt.WPFBackend
 						Widget.KeyUp -= WidgetKeyUpHandler;
 						break;
 				}
+			}
+		}
+
+		protected double WidthPixelRatio
+		{
+			get
+			{
+				PresentationSource source = PresentationSource.FromVisual (Widget);
+				if (source == null)
+					return 1;
+
+				Matrix m = source.CompositionTarget.TransformToDevice;
+				return m.M11;
+			}
+		}
+
+		protected double HeightPixelRatio
+		{
+			get
+			{
+				PresentationSource source = PresentationSource.FromVisual (Widget);
+				if (source == null)
+					return 1;
+
+				Matrix m = source.CompositionTarget.TransformToDevice;
+				return m.M22;
 			}
 		}
 
