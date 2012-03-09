@@ -36,7 +36,12 @@ namespace Xwt.WPFBackend
 			this.frontend = (Widget) frontend;
 		}
 
-		public abstract void EnableEvent (object eventId);
-		public abstract void DisableEvent (object eventId);
+		public virtual void EnableEvent (object eventId)
+		{
+		}
+
+		public virtual void DisableEvent (object eventId)
+		{
+		}
 	}
 }
