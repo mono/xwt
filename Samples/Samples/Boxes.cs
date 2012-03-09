@@ -65,6 +65,7 @@ namespace Samples
 	{
 		Size coreSize;
 		double margin = 1;
+		bool highlight;
 		
 		public Color Color { get; set; }
 		
@@ -83,6 +84,20 @@ namespace Samples
 			MinHeight = coreSize.Height + margin * 2;
 		}
 		
+		protected override void OnMouseEntered (EventArgs args)
+		{
+			base.OnMouseEntered (args);
+			highlight = true;
+			QueueDraw ();
+		}
+		
+		protected override void OnMouseExited (EventArgs args)
+		{
+			base.OnMouseExited (args);
+			QueueDraw ();
+			highlight = false;
+		}
+		
 		protected override void OnDraw (Context ctx)
 		{
 			ctx.SetColor (new Color (0.5, 0.5, 0.5));
@@ -91,7 +106,7 @@ namespace Samples
 			ctx.SetColor (new Color (0.8, 0.8, 0.8));
 			ctx.Rectangle (Bounds.Inflate (-margin, -margin)); 
 			ctx.Fill ();
-			ctx.SetColor (Color);
+			ctx.SetColor (highlight ? Color.BlendWith (Color.White, 0.5) : Color);
 			ctx.Rectangle (Bounds.Width / 2 - coreSize.Width / 2, Bounds.Height / 2 - coreSize.Height / 2, coreSize.Width, coreSize.Height);
 			ctx.Fill ();
 		}
