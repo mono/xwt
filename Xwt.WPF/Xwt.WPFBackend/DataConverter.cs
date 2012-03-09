@@ -50,6 +50,11 @@ namespace Xwt.WPFBackend
 			return new SW.Rect (rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
+		public static Int32Rect ToInt32Rect (this Rectangle rect)
+		{
+			return new Int32Rect ((int) rect.X, (int) rect.Y, (int) rect.Width, (int) rect.Height);
+		}
+
 		public static Point ToXwtPoint (this SW.Point point)
 		{
 			return new Point (point.X, point.Y);
