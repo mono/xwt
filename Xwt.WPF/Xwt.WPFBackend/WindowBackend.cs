@@ -52,6 +52,10 @@ namespace Xwt.WPFBackend
 			Window.Content = rootPanel;
 		}
 
+		public override bool HasMenu {
+			get { return mainMenu != null; }
+		}
+
 		public void SetChild (IWidgetBackend child)
 		{
 			if (widget != null)
