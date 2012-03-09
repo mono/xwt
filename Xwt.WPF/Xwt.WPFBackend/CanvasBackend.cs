@@ -1,21 +1,21 @@
-﻿// 
-// WindowFrameBackend.cs
-//  
+﻿//
+// CanvasBackend.cs
+//
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
-// 
+//
 // Copyright (c) 2012 Xamarin, Inc.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,8 +30,8 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Xwt.Engine;
 using SWC = System.Windows.Controls;
-using System.Windows.Data;
 using Xwt.Backends;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -53,15 +53,22 @@ namespace Xwt.WPFBackend
 
 		public void QueueDraw()
 		{
-			this.clip = Rectangle.Zero;
-			OnRender (this, EventArgs.Empty);
+			this.dirtyRects.Clear();
+
+			if (!this.queued) {
+				Toolkit.QueueExitAction (() => OnRender (this, EventArgs.Empty));
+				this.queued = true;
+			}
 		}
 
 		public void QueueDraw (Rectangle rect)
 		{
-			this.clip = rect;
-			OnRender (this, EventArgs.Empty);
-			this.clip = Rectangle.Zero;
+			this.dirtyRects.Add (rect.ToInt32Rect());
+
+			if (!this.queued) {
+				Toolkit.QueueExitAction (() => OnRender (this, EventArgs.Empty));
+				this.queued = true;
+			}
 		}
 
 		public void AddChild (IWidgetBackend widget, Rectangle bounds)
@@ -95,10 +102,12 @@ namespace Xwt.WPFBackend
 			Canvas.Children.Remove (element);
 		}
 
+		private bool queued;
+
 		private readonly SWC.Image image;
 		private WriteableBitmap wbitmap;
 		private Bitmap bbitmap;
-		private Rectangle clip;
+		private readonly List<Int32Rect> dirtyRects = new List<Int32Rect> ();
 
 		private double pwidth;
 		private double pheight;
@@ -116,6 +125,8 @@ namespace Xwt.WPFBackend
 
 		private void OnRender (object sender, EventArgs e)
 		{
+			this.queued = false;
+
 			if (Canvas.ActualHeight != this.pheight || Canvas.ActualWidth != this.pwidth)
 			{
 				double heightRatio = HeightPixelRatio;
@@ -136,18 +147,18 @@ namespace Xwt.WPFBackend
 			}
 
 			this.wbitmap.Lock();
+
 			using (Graphics g = Graphics.FromImage (this.bbitmap))
 				CanvasEventSink.OnDraw (new DrawingContext (g));
 
-			int x = 0, y = 0, width = this.wbitmap.PixelWidth, height = this.wbitmap.PixelHeight;
-			if (this.clip != Rectangle.Zero) {
-				x = (int)this.clip.X;
-				y = (int)this.clip.Y;
-				width = (int)this.clip.Width;
-				height = (int)this.clip.Height;
-			}
+			if (this.dirtyRects.Count > 0) {
+				for (int i = 0; i < this.dirtyRects.Count; ++i)
+					this.wbitmap.AddDirtyRect (this.dirtyRects [i]);
 
-			this.wbitmap.AddDirtyRect (new Int32Rect (x, y, width, height));
+				this.dirtyRects.Clear();
+			} else
+				this.wbitmap.AddDirtyRect (new Int32Rect (0, 0, this.wbitmap.PixelWidth, this.wbitmap.PixelHeight));
+
 			this.wbitmap.Unlock();
 		}
 	}
