@@ -33,11 +33,21 @@ namespace Xwt.GtkBackend
 {
 	public class TextLayoutBackendHandler: ITextLayoutBackendHandler
 	{
+		static Cairo.Context SharedContext;
+		
+		static TextLayoutBackendHandler ()
+		{
+			Cairo.Surface sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, 1, 1);
+			SharedContext = new Cairo.Context (sf);
+		}
+		
 		public object Create (Context context)
 		{
-			GtkContext c = (GtkContext) WidgetRegistry.GetBackend (context);
-			var pl = Pango.CairoHelper.CreateLayout (c.Context);
-			return pl;
+			if (context != null) {
+				GtkContext c = (GtkContext) WidgetRegistry.GetBackend (context);
+				return Pango.CairoHelper.CreateLayout (c.Context);
+			} else
+				return Pango.CairoHelper.CreateLayout (SharedContext);
 		}
 
 		public void SetText (object backend, string text)

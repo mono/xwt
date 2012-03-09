@@ -31,8 +31,6 @@ namespace Xwt.Backends
 {
 	public interface IContextBackendHandler: IBackendHandler
 	{
-		object CreateContext (Widget w);
-		
 		void Save (object backend);
 
 		void Restore (object backend);

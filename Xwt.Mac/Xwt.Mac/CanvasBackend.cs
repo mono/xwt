@@ -111,7 +111,7 @@ namespace Xwt.Mac
 		public override void DrawRect (System.Drawing.RectangleF dirtyRect)
 		{
 			Toolkit.Invoke (delegate {
-				eventSink.OnDraw (null);
+				eventSink.OnDraw (new ContextInfo ());
 			});
 		}
 		

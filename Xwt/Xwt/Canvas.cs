@@ -69,10 +69,7 @@ namespace Xwt
 			{
 				Context ctx = null;
 				try {
-					if (context == null)
-						ctx = new Context (Parent);
-					else
-						ctx = new Context (context);
+					ctx = new Context (context);
 					((Canvas)Parent).OnDraw (ctx);
 				}
 				finally {

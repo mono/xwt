@@ -48,10 +48,6 @@ namespace Xwt.Drawing
 			}
 		}
 		
-		internal Context (Widget w): base (handler.CreateContext (w))
-		{
-		}
-		
 		internal Context (object backend): base (backend)
 		{
 		}

@@ -618,7 +618,7 @@ namespace Xwt
 				dragStarted (this, args);
 		}
 		
-		internal protected virtual void OnDragFinished (DragFinishedEventArgs args)
+		internal void OnDragFinished (DragFinishedEventArgs args)
 		{
 			if (currentDragOperation != null) {
 				var dop = currentDragOperation;
@@ -1003,11 +1003,6 @@ namespace Xwt
 					return Parent.Depth + 1;
 				return 0;
 			}
-		}
-		
-		public Context CreateContext ()
-		{
-			return new Context (this);
 		}
 		
 		IEnumerable<Widget> IWidgetSurface.Children {

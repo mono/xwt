@@ -183,9 +183,23 @@ namespace Xwt.GtkBackend
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			Toolkit.Invoke (delegate {
-				EventSink.OnDraw (null);
+				EventSink.OnDraw (CreateContext ());
 			});
 			return base.OnExposeEvent (evnt);
+		}
+		
+		public object CreateContext ()
+		{
+			GtkContext ctx = new GtkContext ();
+			if (!IsRealized) {
+				Cairo.Surface sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, 1, 1);
+				Cairo.Context c = new Cairo.Context (sf);
+				ctx.Context = c;
+				ctx.TempSurface = sf;
+			} else {
+				ctx.Context = Gdk.CairoHelper.Create (GdkWindow);
+			}
+			return ctx;
 		}
 	}
 }

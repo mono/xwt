@@ -40,11 +40,6 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public object CreateContext (Widget w)
-		{
-			return new ContextInfo ();
-		}
-		
 		ContextInfo GetContext (object backend)
 		{
 			var ctx = (ContextInfo) backend;
