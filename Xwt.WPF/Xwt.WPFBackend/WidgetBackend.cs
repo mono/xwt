@@ -195,25 +195,25 @@ namespace Xwt.WPFBackend
 		public virtual WidgetSize GetPreferredWidth ()
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Width) + frontend.Margin.HorizontalSpacing;
+			return new WidgetSize (size.Width);
 		}
 
 		public virtual WidgetSize GetPreferredHeight ()
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Height) + frontend.Margin.VerticalSpacing;
+			return new WidgetSize (size.Height);
 		}
 
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Width) + frontend.Margin.HorizontalSpacing;
+			return new WidgetSize (size.Width);
 		}
 
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Height) + frontend.Margin.VerticalSpacing;
+			return new WidgetSize (size.Height);
 		}
 
 		public void SetMinSize (double width, double height)
