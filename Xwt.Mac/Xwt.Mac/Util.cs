@@ -28,6 +28,7 @@ using System;
 using MonoMac.AppKit;
 using Xwt.Drawing;
 using MonoMac.CoreGraphics;
+using SizeF = System.Drawing.SizeF;
 
 namespace Xwt.Mac
 {
@@ -85,6 +86,38 @@ namespace Xwt.Mac
 		{
 			var cs = col.Components;
 			return new Color (cs[0], cs[1], cs[2], col.Alpha);
+		}
+
+		// /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/IconsCore.h
+		public static int ToIconType (string id)
+		{
+			switch (id) {
+			case StockIcons.Error:       return 1937010544; // 'stop'
+			case StockIcons.Warning:     return 1667331444; // 'caut'
+			case StockIcons.Information: return 1852798053; // 'note'
+			case StockIcons.Question:    return 1903519091; // 'ques'
+			case StockIcons.Remove:      return 1952736620; // 'tdel'
+			}
+			return 0;
+		}
+
+		/* To get the above int values, pass the four char code thru this:
+		public static int C (string code)
+		{
+			return ((int)code[0]) << 24
+			     | ((int)code[1]) << 16
+			     | ((int)code[2]) << 8
+			     | ((int)code[3]);
+		}
+		*/
+
+		public static SizeF ToIconSize (IconSize size)
+		{
+			switch (size) {
+			case IconSize.Small: return new SizeF (16f, 16f);
+			case IconSize.Large: return new SizeF (64f, 64f);
+			}
+			return new SizeF (32f, 32f);
 		}
 	}
 }

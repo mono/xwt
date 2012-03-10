@@ -28,13 +28,20 @@ using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Xwt.Mac
 {
 	public class ImageHandler: ImageBackendHandler
 	{
+		static readonly IntPtr sel_alloc = new Selector ("alloc").Handle;
+		static readonly IntPtr sel_release = new Selector ("release").Handle;
+		static readonly IntPtr sel_initWithIconRef = new Selector ("initWithIconRef:").Handle;
+		static readonly IntPtr cls_NSImage = new Class (typeof (NSImage)).Handle;
+
 		static Dictionary<string, NSImage> stockIcons = new Dictionary<string, NSImage> ();
 		
 		public override object LoadFromStream (System.IO.Stream stream)
@@ -99,14 +106,36 @@ namespace Xwt.Mac
 			}
 		}
 		
-		static NSImage LoadStockIcon (String id, IconSize size)
+		static NSImage LoadStockIcon (string id, IconSize size)
 		{
+			NSImage image = null;
+
 			switch (id) {
-			case StockIcons.ZoomIn: return FromResource ("magnifier-zoom-in.png");
-			case StockIcons.ZoomOut: return FromResource ("magnifier-zoom-out.png");
+			case StockIcons.ZoomIn:  image = FromResource ("magnifier-zoom-in.png"); break;
+			case StockIcons.ZoomOut: image = FromResource ("magnifier-zoom-out.png"); break;
 			}
-			throw new NotSupportedException ();
+
+			IntPtr iconRef;
+			var type = Util.ToIconType (id);
+			if (type != 0 && GetIconRef (-32768/*kOnSystemDisk*/, 1835098995/*kSystemIconsCreator*/, type, out iconRef) == 0) {
+				try {
+					image = new NSImage (Messaging.IntPtr_objc_msgSend_IntPtr (Messaging.IntPtr_objc_msgSend (cls_NSImage, sel_alloc), sel_initWithIconRef, iconRef));
+					// NSImage (IntPtr) ctor retains, but since it is the sole owner, we don't want that
+					Messaging.void_objc_msgSend (image.Handle, sel_release);
+				} finally {
+					ReleaseIconRef (iconRef);
+				}
+			}
+
+			if (image != null)
+				image.Size = Util.ToIconSize (size);
+			return image;
 		}
+
+		[DllImport ("/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/LaunchServices")]
+		static extern int GetIconRef (short vRefNum, int creator, int iconType, out IntPtr iconRef);
+		[DllImport ("/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/LaunchServices")]
+		static extern int ReleaseIconRef (IntPtr iconRef);
 	}
 }
 
