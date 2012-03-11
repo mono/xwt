@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Reflection;
 using Xwt;
 using Xwt.Drawing;
 
@@ -36,6 +37,40 @@ namespace Samples
 			ImageView img = new ImageView ();
 			img.Image = Image.FromResource (GetType (), "cow.jpg");
 			PackStart (img);
+
+			var stockIcons = typeof (StockIcons).GetFields (BindingFlags.Public | BindingFlags.Static);
+			var perRow = 6;
+
+			HBox row = null;
+			for (var i = 0; i < stockIcons.Length; i++) {
+				if (stockIcons [i].FieldType != typeof (string))
+					continue;
+
+				if ((i % perRow) == 0) {
+					if (row != null)
+						PackStart (row);
+					row = new HBox ();
+				}
+
+				var vbox = new VBox ();
+
+				var stockId = (string)stockIcons [i].GetValue (null);
+				var imageView = new ImageView ();
+				var label = new Label (stockId);
+
+				try {
+					var icon = Image.FromIcon (stockId, IconSize.Medium);
+					if (icon != null)
+						imageView.Image = icon;
+				} catch { }
+
+				vbox.PackStart (imageView);
+				vbox.PackEnd (label);
+
+				row.PackStart (vbox);
+			}
+			if (row != null)
+				PackStart (row);
 		}
 	}
 }
