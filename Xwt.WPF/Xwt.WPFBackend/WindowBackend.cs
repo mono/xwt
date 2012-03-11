@@ -39,17 +39,34 @@ namespace Xwt.WPFBackend
 {
 	public class WindowBackend : WindowFrameBackend, IWindowBackend
 	{
-		DockPanel rootPanel;
+		Grid rootPanel;
 		public System.Windows.Controls.Menu mainMenu;
 		MenuBackend mainMenuBackend;
 		FrameworkElement widget;
+		Thickness padding;
 
 		public WindowBackend ()
 		{
 			Window = new System.Windows.Window ();
-			rootPanel = new DockPanel ();
+			rootPanel = CreateMainGrid ();
 
 			Window.Content = rootPanel;
+		}
+
+		// A Grid with a single column, and two rows (menu and child control).
+		static Grid CreateMainGrid ()
+		{
+			var grid = new Grid ();
+
+			grid.ColumnDefinitions.Add (new ColumnDefinition ());
+
+			var menuRow = new RowDefinition () { Height = GridLength.Auto }; // Only take the menu requested space.
+			var contentRow = new RowDefinition (); // Take all the remaining space (default).
+
+			grid.RowDefinitions.Add (menuRow);
+			grid.RowDefinitions.Add (contentRow);
+
+			return grid;
 		}
 
 		public override bool HasMenu {
@@ -62,8 +79,11 @@ namespace Xwt.WPFBackend
 				rootPanel.Children.Remove(widget);
 			widget = ((IWpfWidgetBackend)child).Widget;
 
-			DockPanel.SetDock (widget, Dock.Bottom);
-			rootPanel.Children.Add(widget);
+			widget.Margin = padding;
+			Grid.SetColumn (widget, 0);
+			Grid.SetRow (widget, 1);
+
+			rootPanel.Children.Add (widget);
 		}
 
 		public void SetMainMenu (IMenuBackend menu)
@@ -85,7 +105,8 @@ namespace Xwt.WPFBackend
 			foreach (var item in menuBackend.Items)
 				m.Items.Add (item.MenuItem);
 
-			DockPanel.SetDock (m, Dock.Top);
+			Grid.SetColumn (m, 0);
+			Grid.SetRow (m, 0);
 			rootPanel.Children.Add (m);
 
 			mainMenu = m;
@@ -95,7 +116,9 @@ namespace Xwt.WPFBackend
 
 		public void SetPadding (double left, double top, double right, double bottom)
 		{
-			Window.Padding = new Thickness (left, top, right, bottom);
+			padding = new Thickness (left, top, right, bottom);
+			if (widget != null)
+				widget.Margin = padding;
 		}
 	}
 }
