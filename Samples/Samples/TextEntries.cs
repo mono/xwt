@@ -32,29 +32,29 @@ namespace Samples
 	{
 		public TextEntries ()
 		{
-			TextEntry te = new TextEntry ();
-			PackStart (te);
+			TextEntry te1 = new TextEntry ();
+			PackStart (te1);
 			
 			Label la = new Label ();
 			PackStart (la);
-			te.Changed += delegate {
-				la.Text = "Text: " + te.Text;
+			te1.Changed += delegate {
+				la.Text = "Text: " + te1.Text;
 			};
 			
 			PackStart (new Label ("Entry with small font"));
-			te = new TextEntry ();
-			te.Font = te.Font.WithSize (te.Font.Size / 2);
-			PackStart (te);
+			TextEntry te2 = new TextEntry ();
+			te2.Font = te2.Font.WithSize (te2.Font.Size / 2);
+			PackStart (te2);
 			
 			PackStart (new Label ("Entry with placeholder text"));
-			te = new TextEntry ();
-			te.PlaceholderText = "Placeholder text";
-			PackStart (te);
+			TextEntry te3 = new TextEntry ();
+			te3.PlaceholderText = "Placeholder text";
+			PackStart (te3);
 
 			PackStart (new Label ("Entry with no frame"));
-			te = new TextEntry();
-			te.ShowFrame = false;
-			PackStart (te);
+			TextEntry te4 = new TextEntry();
+			te4.ShowFrame = false;
+			PackStart (te4);
 		}
 	}
 }
