@@ -238,8 +238,6 @@ namespace Xwt
 		protected override void Dispose (bool disposing)
 		{
 			base.Dispose (disposing);
-			if (Backend != null)
-				Backend.Dispose (disposing);
 		}
 		
 		public WindowFrame ParentWindow {
