@@ -29,10 +29,9 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IWidgetBackend: IBackend
+	public interface IWidgetBackend: IBackend, IDisposable
 	{
 		void Initialize (IWidgetEventSink eventSink);
-		void Dispose (bool disposing);
 		
 		bool Visible { get; set; }
 		bool Sensitive { get; set; }

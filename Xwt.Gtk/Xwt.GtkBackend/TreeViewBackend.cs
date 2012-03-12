@@ -76,7 +76,7 @@ namespace Xwt.GtkBackend
 				Widget.SetDragDestRow (null, 0);
 		}
 		
-		public override void Dispose (bool disposing)
+		protected override void Dispose (bool disposing)
 		{
 			if (expandTimer != 0)
 				GLib.Source.Remove (expandTimer);

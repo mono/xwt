@@ -52,8 +52,19 @@ namespace Xwt.WPFBackend
 		protected virtual void Initialize ()
 		{
 		}
-
-		public virtual void Dispose (bool disposing)
+		
+		~WidgetBackend ()
+		{
+			Dispose (false);
+		}
+		
+		public void Dispose ()
+		{
+			GC.SuppressFinalize (this);
+			Dispose (true);
+		}
+		
+		protected virtual void Dispose (bool disposing)
 		{
 		}
 

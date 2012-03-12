@@ -187,7 +187,18 @@ namespace Xwt.GtkBackend
 			EventsRootWidget.GdkWindow.Cursor = gc;
 		}
 		
-		public virtual void Dispose (bool disposing)
+		~WidgetBackend ()
+		{
+			Dispose (false);
+		}
+		
+		public void Dispose ()
+		{
+			GC.SuppressFinalize (this);
+			Dispose (true);
+		}
+		
+		protected virtual void Dispose (bool disposing)
 		{
 			if (Widget != null && !disposing && Widget.Parent == null)
 				Widget.Destroy ();

@@ -156,7 +156,18 @@ namespace Xwt.Mac
 			// TODO: assign the cursor
 		}
 		
-		public virtual void Dispose (bool disposing)
+		~ViewBackend ()
+		{
+			Dispose (false);
+		}
+		
+		public void Dispose ()
+		{
+			GC.SuppressFinalize (this);
+			Dispose (true);
+		}
+		
+		protected virtual void Dispose (bool disposing)
 		{
 		}
 		
