@@ -128,6 +128,34 @@ namespace Xwt.Mac
 			}
 		}
 		
+		public void SetCursor (CursorType cursor)
+		{
+			NSCursor ctype;
+			if (cursor == CursorType.Arrow)
+				ctype = NSCursor.ArrowCursor;
+			else if (cursor == CursorType.Crosshair)
+				ctype = NSCursor.CrosshairCursor;
+			else if (cursor == CursorType.Hand)
+				ctype = NSCursor.ClosedHandCursor;
+			else if (cursor == CursorType.IBeam)
+				ctype = NSCursor.IBeamCursor;
+			else if (cursor == CursorType.ResizeDown)
+				ctype = NSCursor.ResizeDownCursor;
+			else if (cursor == CursorType.ResizeUp)
+				ctype = NSCursor.ResizeUpCursor;
+			else if (cursor == CursorType.ResizeLeft)
+				ctype = NSCursor.ResizeLeftCursor;
+			else if (cursor == CursorType.ResizeRight)
+				ctype = NSCursor.ResizeRightCursor;
+			else if (cursor == CursorType.ResizeLeftRight)
+				ctype = NSCursor.ResizeLeftRightCursor;
+			else if (cursor == CursorType.ResizeUpDown)
+				ctype = NSCursor.ResizeUpDownCursor;
+			else
+				ctype = NSCursor.ArrowCursor;
+			// TODO: assign the cursor
+		}
+		
 		public virtual void Dispose (bool disposing)
 		{
 		}

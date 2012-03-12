@@ -151,6 +151,42 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
+		static Dictionary<CursorType,Gdk.Cursor> gtkCursors = new Dictionary<CursorType, Gdk.Cursor> ();
+		
+		public void SetCursor (CursorType cursor)
+		{
+			AllocEventBox ();
+			Gdk.Cursor gc;
+			if (!gtkCursors.TryGetValue (cursor, out gc)) {
+				Gdk.CursorType ctype;
+				if (cursor == CursorType.Arrow)
+					ctype = Gdk.CursorType.LeftPtr;
+				else if (cursor == CursorType.Crosshair)
+					ctype = Gdk.CursorType.Crosshair;
+				else if (cursor == CursorType.Hand)
+					ctype = Gdk.CursorType.Hand1;
+				else if (cursor == CursorType.IBeam)
+					ctype = Gdk.CursorType.Xterm;
+				else if (cursor == CursorType.ResizeDown)
+					ctype = Gdk.CursorType.BottomSide;
+				else if (cursor == CursorType.ResizeUp)
+					ctype = Gdk.CursorType.TopSide;
+				else if (cursor == CursorType.ResizeLeft)
+					ctype = Gdk.CursorType.LeftSide;
+				else if (cursor == CursorType.ResizeRight)
+					ctype = Gdk.CursorType.RightSide;
+				else if (cursor == CursorType.ResizeLeftRight)
+					ctype = Gdk.CursorType.SbHDoubleArrow;
+				else if (cursor == CursorType.ResizeUpDown)
+					ctype = Gdk.CursorType.SbVDoubleArrow;
+				else
+					ctype = Gdk.CursorType.Arrow;
+				
+				gtkCursors [cursor] = gc = new Gdk.Cursor (ctype);
+			}
+			EventsRootWidget.GdkWindow.Cursor = gc;
+		}
+		
 		public virtual void Dispose (bool disposing)
 		{
 			if (Widget != null && !disposing && Widget.Parent == null)

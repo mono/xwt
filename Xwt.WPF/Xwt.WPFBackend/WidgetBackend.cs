@@ -237,6 +237,11 @@ namespace Xwt.WPFBackend
 			Widget.Height = height / HeightPixelRatio;
 		}
 
+		public void SetCursor (CursorType cursor)
+		{
+			// TODO
+		}
+		
 		public virtual void UpdateLayout ()
 		{
 		}
