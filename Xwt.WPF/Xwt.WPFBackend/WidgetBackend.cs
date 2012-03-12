@@ -186,8 +186,10 @@ namespace Xwt.WPFBackend
 
 		System.Windows.Size GetWidgetDesiredSize ()
 		{
-			if (!Widget.IsMeasureValid)
+			if (!Widget.IsMeasureValid) {
+				Widget.UpdateLayout ();
 				Widget.Measure (new System.Windows.Size (Double.PositiveInfinity, Double.PositiveInfinity));
+			}
 
 			return Widget.DesiredSize;
 		}

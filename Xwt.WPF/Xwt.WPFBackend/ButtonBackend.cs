@@ -35,6 +35,7 @@ using SWC = System.Windows.Controls;
 using SWMI = System.Windows.Media.Imaging;
 
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.WPFBackend
 {
@@ -80,10 +81,12 @@ namespace Xwt.WPFBackend
 					Button.BorderBrush = new SolidColorBrush (Colors.Transparent);
 					break;
 			}
+			Button.InvalidateMeasure ();
 		}
 
 		public void SetButtonType(ButtonType type) {
 			//TODO
+			Button.InvalidateMeasure ();
 		}
 
 		public void SetContent(string label, object imageBackend, ContentPosition position) {
@@ -112,6 +115,7 @@ namespace Xwt.WPFBackend
 
 				Button.Content = grid;
 			}
+			Button.InvalidateMeasure ();
 		}
 
 		public override void EnableEvent (object eventId)
@@ -140,7 +144,7 @@ namespace Xwt.WPFBackend
 
 		void HandleWidgetClicked (object sender, EventArgs e)
 		{
-			EventSink.OnClicked ();
+			Toolkit.Invoke (EventSink.OnClicked);
 		}
 	}
 }
