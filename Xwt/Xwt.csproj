@@ -279,6 +279,7 @@
     <Compile Include="Xwt\TransferDataSource.cs" />
     <Compile Include="Xwt\TransferDataType.cs" />
     <Compile Include="Xwt.Backends\TransferDataStore.cs" />
+    <Compile Include="Xwt\CursorType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
