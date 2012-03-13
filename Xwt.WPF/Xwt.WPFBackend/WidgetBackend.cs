@@ -262,6 +262,12 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.KeyReleased:
 						Widget.KeyDown += WidgetKeyUpHandler;
 						break;
+					case WidgetEvent.ButtonPressed:
+						Widget.MouseDown += WidgetMouseDownHandler;
+						break;
+					case WidgetEvent.ButtonReleased:
+						Widget.MouseUp += WidgetMouseUpHandler;
+						break;
 					case WidgetEvent.GotFocus:
 						Widget.GotFocus += WidgetGotFocusHandler;
 						break;
@@ -298,6 +304,12 @@ namespace Xwt.WPFBackend
 						break;
 					case WidgetEvent.KeyReleased:
 						Widget.KeyUp -= WidgetKeyUpHandler;
+						break;
+					case WidgetEvent.ButtonPressed:
+						Widget.MouseDown -= WidgetMouseDownHandler;
+						break;
+					case WidgetEvent.ButtonReleased:
+						Widget.MouseUp -= WidgetMouseUpHandler;
 						break;
 					case WidgetEvent.MouseEntered:
 						Widget.MouseEnter -= WidgetMouseEnteredHandler;
@@ -363,6 +375,32 @@ namespace Xwt.WPFBackend
 
 			result = new KeyEventArgs (key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
 			return true;
+		}
+
+		void WidgetMouseDownHandler (object o, MouseButtonEventArgs e)
+		{
+			Toolkit.Invoke (delegate () {
+				eventSink.OnButtonPressed (ToXwtButtonArgs (e));
+			});
+		}
+
+		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
+		{
+			var args = ToXwtButtonArgs (e);
+			Toolkit.Invoke (delegate () {
+				eventSink.OnButtonReleased (ToXwtButtonArgs (e));
+			});
+		}
+
+		ButtonEventArgs ToXwtButtonArgs (MouseButtonEventArgs e)
+		{
+			var pos = e.GetPosition (Widget);
+			return new ButtonEventArgs () {
+				X = pos.X,
+				Y = pos.Y,
+				MultiplePress = e.ClickCount,
+				Button = e.ChangedButton.ToXwtButton ()
+			};
 		}
 
 		void WidgetGotFocusHandler (object o, RoutedEventArgs e)
