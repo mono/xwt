@@ -30,6 +30,7 @@
 
 using System;
 using System.Windows;
+using System.Windows.Input;
 using SW = System.Windows;
 using SD = System.Drawing;
 using Xwt.Drawing;
@@ -230,6 +231,28 @@ namespace Xwt.WPFBackend
 			if (value == ContentPosition.Bottom) return SW.Controls.Dock.Bottom;
 
 			return SW.Controls.Dock.Right;
+		}
+
+		// 
+		// Mouse/Pointer Button
+		//
+
+		public static PointerButton ToXwtButton (this MouseButton value)
+		{
+			switch (value) {
+				case MouseButton.Left: return PointerButton.Left;
+				case MouseButton.Middle: return PointerButton.Middle;
+				default: return PointerButton.Right;
+			}
+		}
+
+		public static MouseButton ToWpfButton (this PointerButton value)
+		{
+			switch (value) {
+				case PointerButton.Left: return MouseButton.Left;
+				case PointerButton.Middle: return MouseButton.Middle;
+				default: return MouseButton.Right;
+			}
 		}
 	}
 }
