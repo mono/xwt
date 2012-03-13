@@ -195,6 +195,9 @@ namespace Xwt.WPFBackend
 				loc.Y += SystemParameters.MenuBarHeight;
 			}
 
+			size.Width = Math.Max (0, size.Width);
+			size.Height = Math.Max (0, size.Height);
+
 			return new Rectangle (loc, size);
 		}
 	}
