@@ -68,6 +68,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof(Context), typeof(ContextBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Gradient), typeof(GradientBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Notebook), typeof(NotebookBackend));
 		}
 
 		public override void RunApplication ()
