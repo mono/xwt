@@ -69,6 +69,7 @@
     <Compile Include="Xwt.WPFBackend\KeyboardUtil.cs" />
     <Compile Include="Xwt.WPFBackend\MenuBackend.cs" />
     <Compile Include="Xwt.WPFBackend\MenuItemBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\PanedBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ResPool.cs" />
     <Compile Include="Xwt.WPFBackend\ScrollViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\SeparatorBackend.cs" />

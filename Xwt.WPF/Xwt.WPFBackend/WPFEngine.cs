@@ -65,6 +65,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Canvas), typeof (CanvasBackend));
 			WidgetRegistry.RegisterBackend (typeof (Context), typeof (ContextBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (Gradient), typeof (GradientBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof (Paned), typeof (PanedBackend));
 		}
 
 		public override void RunApplication ()
