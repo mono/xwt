@@ -7,7 +7,7 @@
 //		 Thomas Ziegler <ziegler.thomas@web.de>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
-// Copyright (c) 2012 Luís Reis
+// Copyright (c) 2012 LuÃ­s Reis
 // Copyright (c) 2012 Thomas Ziegler
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -78,7 +78,7 @@ namespace Xwt.WPFBackend
 
 		public override void ExitApplication ()
 		{
-			application.Shutdown ();
+			application.Shutdown();
 		}
 
 		public override void InvokeAsync (Action action)
@@ -108,19 +108,19 @@ namespace Xwt.WPFBackend
 		public override IWindowFrameBackend GetBackendForWindow (object nativeWindow)
 		{
 			return new WindowFrameBackend () {
-				Window = (System.Windows.Window)nativeWindow
+				Window = (System.Windows.Window) nativeWindow
 			};
 		}
 
 		public override object GetNativeWidget (Widget w)
 		{
-			var backend = (IWpfWidgetBackend)WidgetRegistry.GetBackend (w);
+			var backend = (IWpfWidgetBackend) WidgetRegistry.GetBackend (w);
 			return backend.Widget;
 		}
 
 		public override object GetNativeParentWindow (Widget w)
 		{
-			var backend = (IWpfWidgetBackend)WidgetRegistry.GetBackend (w);
+			var backend = (IWpfWidgetBackend) WidgetRegistry.GetBackend (w);
 
 			FrameworkElement e = backend.Widget;
 			while ((e = e.Parent as FrameworkElement) != null)
