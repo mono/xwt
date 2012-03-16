@@ -26,11 +26,15 @@
 using System;
 using Xwt.Backends;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Xwt
 {
 	public class RadioButtonMenuItem: MenuItem
 	{
+		RadioButtonGroup radioGroup;
+		
 		public RadioButtonMenuItem ()
 		{
 		}
@@ -50,8 +54,47 @@ namespace Xwt
 		[DefaultValue (true)]
 		public bool Checked {
 			get { return Backend.Checked; }
-			set { Backend.Checked = value; }
+			set {
+				Backend.Checked = value;
+				if (value)
+					ValidateCheckedValue ();
+			}
 		}
+		
+		public RadioButtonGroup RadioButtonGroup {
+			get { return radioGroup; }
+			set {
+				if (radioGroup != null)
+					radioGroup.Items.Remove (this);
+				radioGroup = value;
+				if (radioGroup != null) {
+					radioGroup.Items.Add (this);
+					if (Checked)
+						ValidateCheckedValue ();
+				}
+			}
+		}
+		
+		internal override void DoClick ()
+		{
+			ValidateCheckedValue ();
+			base.DoClick ();
+		}
+		
+		void ValidateCheckedValue ()
+		{
+			if (radioGroup != null) {
+				foreach (var rb in radioGroup.Items.OfType<RadioButtonMenuItem> ()) {
+					if (rb != this && rb.Checked)
+						rb.Checked = false;
+				}
+			}
+		}
+	}
+	
+	public class RadioButtonGroup
+	{
+		internal List<object> Items = new List<object> ();
 	}
 }
 
