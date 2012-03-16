@@ -28,6 +28,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using Xwt.Backends;
+using Xwt.Engine;
 using WindowsCheckBox = System.Windows.Controls.CheckBox;
 
 namespace Xwt.WPFBackend
@@ -111,12 +112,12 @@ namespace Xwt.WPFBackend
 
 		private void OnChecked (object sender, RoutedEventArgs routedEventArgs)
 		{
-			CheckBoxEventSink.OnToggled();
+			Toolkit.Invoke (CheckBoxEventSink.OnToggled);
 		}
 
 		private void OnClicked (object sender, RoutedEventArgs e)
 		{
-			CheckBoxEventSink.OnClicked();
+			Toolkit.Invoke (CheckBoxEventSink.OnClicked);
 		}
 
 		protected ICheckBoxEventSink CheckBoxEventSink

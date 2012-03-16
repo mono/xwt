@@ -44,6 +44,7 @@ namespace Xwt.WPFBackend
 		{
 			application = new System.Windows.Application ();
 
+<<<<<<< HEAD
 			WidgetRegistry.RegisterBackend (typeof(Window), typeof(WindowBackend));
 			WidgetRegistry.RegisterBackend (typeof(Menu), typeof(MenuBackend));
 			WidgetRegistry.RegisterBackend (typeof(MenuItem), typeof(MenuItemBackend));
@@ -69,6 +70,33 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof(Gradient), typeof(GradientBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof(Notebook), typeof(NotebookBackend));
+=======
+			WidgetRegistry.RegisterBackend (typeof (Window), typeof (WindowBackend));
+			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
+			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
+			WidgetRegistry.RegisterBackend (typeof (Box), typeof (BoxBackend));
+			WidgetRegistry.RegisterBackend (typeof (Label), typeof (LabelBackend));
+			WidgetRegistry.RegisterBackend (typeof (TextEntry), typeof (TextEntryBackend));
+			WidgetRegistry.RegisterBackend (typeof (Button), typeof (ButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof (ToggleButton), typeof (ToggleButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof (CheckBox), typeof (CheckBoxBackend));
+			WidgetRegistry.RegisterBackend (typeof (TreeView), typeof (TreeViewBackend));
+			WidgetRegistry.RegisterBackend (typeof (TreeStore), typeof (TreeStoreBackend));
+			WidgetRegistry.RegisterBackend (typeof (ImageView), typeof (ImageViewBackend));
+			WidgetRegistry.RegisterBackend (typeof (Separator), typeof (SeparatorBackend));
+			WidgetRegistry.RegisterBackend (typeof (Image), typeof (ImageHandler));
+			WidgetRegistry.RegisterBackend (typeof (Font), typeof (FontBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof (Clipboard), typeof (ClipboardBackend));
+			WidgetRegistry.RegisterBackend (typeof (ComboBox), typeof (ComboBoxBackend));
+			WidgetRegistry.RegisterBackend (typeof (ComboBoxEntry), typeof (ComboBoxEntryBackend));
+			WidgetRegistry.RegisterBackend (typeof (ScrollView), typeof (ScrollViewBackend));
+			WidgetRegistry.RegisterBackend (typeof (Frame), typeof (FrameBackend));
+			WidgetRegistry.RegisterBackend (typeof (Canvas), typeof (CanvasBackend));
+			WidgetRegistry.RegisterBackend (typeof (Context), typeof (ContextBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof (Gradient), typeof (GradientBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof (Widget), typeof (CustomWidgetBackend));
+			WidgetRegistry.RegisterBackend (typeof (Paned), typeof (PanedBackend));
+>>>>>>> 8c42e48fb1652d7202934807ae1284b9180774c7
 		}
 
 		public override void RunApplication ()
