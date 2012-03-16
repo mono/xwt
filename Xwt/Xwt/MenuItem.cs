@@ -39,6 +39,16 @@ namespace Xwt
 		EventHandler clicked;
 		Image image;
 		
+		class EventSink: IMenuItemEventSink
+		{
+			public MenuItem Parent;
+			
+			public void OnClicked ()
+			{
+				Parent.DoClick ();
+			}
+		}
+		
 		static MenuItem ()
 		{
 			MapEvent (MenuItemEvent.Clicked, typeof(MenuItem), "OnClicked");
@@ -125,14 +135,9 @@ namespace Xwt
 			throw new NotImplementedException ();
 		}
 		
-		class EventSink: IMenuItemEventSink
+		internal virtual void DoClick ()
 		{
-			public MenuItem Parent;
-			
-			public void OnClicked ()
-			{
-				Parent.OnClicked (EventArgs.Empty);
-			}
+			OnClicked (EventArgs.Empty);
 		}
 		
 		protected virtual void OnClicked (EventArgs e)

@@ -60,10 +60,9 @@ namespace Xwt.WPFBackend
 		{
 		}
 
-		public virtual void Dispose (bool disposing)
-		{
-			if (disposing)
-				Window.Close ();
+		public virtual void Dispose ()
+		{	
+			Window.Close ();
 		}
 
 		public System.Windows.Window Window {

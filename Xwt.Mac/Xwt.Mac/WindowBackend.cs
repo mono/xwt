@@ -195,10 +195,9 @@ namespace Xwt.Mac
 
 		static Selector closeSel = new Selector ("close");
 		
-		void IWindowFrameBackend.Dispose (bool disposing)
+		void IWindowFrameBackend.Dispose ()
 		{
-			if (disposing)
-				Messaging.void_objc_msgSend (this.Handle, closeSel.Handle);
+			Messaging.void_objc_msgSend (this.Handle, closeSel.Handle);
 		}
 		
 		public void DragStart (TransferDataSource data, DragDropAction dragAction, object dragImage, double xhot, double yhot)

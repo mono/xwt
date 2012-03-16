@@ -35,6 +35,7 @@ namespace Xwt
 		Orientation direction;
 		Panel panel1;
 		Panel panel2;
+		EventHandler positionChanged;
 		
 		protected new class EventSink: Widget.EventSink, IContainerEventSink<Panel>, IPanedEventSink
 		{
@@ -47,6 +48,16 @@ namespace Xwt
 			{
 				((Paned)Parent).OnReplaceChild (child, oldWidget, newWidget);
 			}
+			
+			public void OnPositionChanged ()
+			{
+				((Paned)Parent).NotifyPositionChanged ();
+			}
+		}
+		
+		static Paned ()
+		{
+			MapEvent (PanedEvent.PositionChanged, typeof(Paned), "OnPositionChanged");
 		}
 		
 		internal Paned (Orientation direction)
@@ -54,6 +65,18 @@ namespace Xwt
 			this.direction = direction;
 			panel1 = new Panel ((EventSink)WidgetEventSink, 1);
 			panel2 = new Panel ((EventSink)WidgetEventSink, 2);
+		}
+		
+		protected override IBackend OnCreateBackend ()
+		{
+			IPanedBackend b = (IPanedBackend) base.OnCreateBackend ();
+			
+			// We always want to listen this event because we use it
+			// to reallocate the children
+			if (!Application.EngineBackend.HandlesSizeNegotiation)
+				b.EnableEvent (PanedEvent.PositionChanged);
+			
+			return b;
 		}
 		
 		protected override Widget.EventSink CreateEventSink ()
@@ -88,6 +111,19 @@ namespace Xwt
 		public double Position {
 			get { return Backend.Position; }
 			set { Backend.Position = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the position of the panel separator as a fraction available size
+		/// </summary>
+		/// <value>
+		/// The position.
+		/// </value>
+		public double PositionFraction {
+			get {
+				return Backend.Position / ((direction == Orientation.Horizontal) ? ScreenBounds.Width : ScreenBounds.Height);
+			}
+			set { Backend.Position = ((direction == Orientation.Horizontal) ? ScreenBounds.Width : ScreenBounds.Height) * value; }
 		}
 		
 		protected override void OnBackendCreated ()
@@ -125,6 +161,34 @@ namespace Xwt
 		void OnChildChanged (Panel panel, object hint)
 		{
 			Backend.UpdatePanel (panel.NumPanel, panel.Resize);
+		}
+		
+		void NotifyPositionChanged ()
+		{
+			if (!Application.EngineBackend.HandlesSizeNegotiation) {
+				if (panel1.Content != null)
+					((IWidgetSurface)panel1.Content).Reallocate ();
+				if (panel2.Content != null)
+					((IWidgetSurface)panel2.Content).Reallocate ();
+			}
+			OnPositionChanged ();
+		}
+		
+		protected virtual void OnPositionChanged ()
+		{
+			if (positionChanged != null)
+				positionChanged (this, EventArgs.Empty);
+		}
+		
+		public event EventHandler PositionChanged {
+			add {
+				OnBeforeEventAdd (PanedEvent.PositionChanged, positionChanged);
+				positionChanged += value;
+			}
+			remove {
+				positionChanged -= value;
+				OnAfterEventRemove (PanedEvent.PositionChanged, positionChanged);
+			}
 		}
 	}
 	

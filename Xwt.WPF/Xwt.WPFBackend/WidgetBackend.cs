@@ -296,6 +296,9 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.MouseExited:
 						Widget.MouseLeave += WidgetMouseExitedHandler;
 						break;
+					case WidgetEvent.BoundsChanged:
+						Widget.SizeChanged += WidgetOnSizeChanged;
+						break;
 				}
 			}
 		}
@@ -332,6 +335,9 @@ namespace Xwt.WPFBackend
 						break;
 					case WidgetEvent.MouseExited:
 						Widget.MouseLeave -= WidgetMouseExitedHandler;
+						break;
+					case WidgetEvent.BoundsChanged:
+						Widget.SizeChanged -= WidgetOnSizeChanged;
 						break;
 				}
 			}
@@ -463,6 +469,12 @@ namespace Xwt.WPFBackend
 		private void WidgetMouseExitedHandler (object sender, MouseEventArgs e)
 		{
 			Toolkit.Invoke (eventSink.OnMouseExited);
+		}
+
+		private void WidgetOnSizeChanged (object sender, SizeChangedEventArgs e)
+		{
+			if (Widget.IsVisible)
+				Toolkit.Invoke (this.eventSink.OnBoundsChanged);
 		}
 	}
 
