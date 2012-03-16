@@ -4,9 +4,11 @@
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
 //       Luis Reis <luiscubal@gmail.com>
+//		 Thomas Ziegler <ziegler.thomas@web.de>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
-// Copyright (c) 2012 Luís Reis
+// Copyright (c) 2012 LuÃ­s Reis
+// Copyright (c) 2012 Thomas Ziegler
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +44,8 @@ namespace Xwt.WPFBackend
 		{
 			application = new System.Windows.Application ();
 
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Notebook), typeof(NotebookBackend));
 			WidgetRegistry.RegisterBackend (typeof (Window), typeof (WindowBackend));
 			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
 			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
