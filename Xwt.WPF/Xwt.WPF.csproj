@@ -75,6 +75,8 @@
     <Compile Include="Xwt.WPFBackend\ScrollViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\SeparatorBackend.cs" />
     <Compile Include="Xwt.WPFBackend\TextEntryBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\TextLayoutBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\TextLayoutContext.cs" />
     <Compile Include="Xwt.WPFBackend\Timeout.cs" />
     <Compile Include="Xwt.WPFBackend\ToggleButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\TreeStoreBackend.cs" />
