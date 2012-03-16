@@ -4,9 +4,11 @@
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
 //       Luis Reis <luiscubal@gmail.com>
+//       Thomas Ziegler <ziegler.thomas@web.de>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
 // Copyright (c) 2012 Luís Reis
+// Copyright (c) 2012 Thomas Ziegler
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -65,6 +67,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Canvas), typeof (CanvasBackend));
 			WidgetRegistry.RegisterBackend (typeof (Context), typeof (ContextBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (Gradient), typeof (GradientBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof (Xwt.Backends.IAlertDialogBackend), typeof (AlertDialogBackend));
 		}
 
 		public override void RunApplication ()
