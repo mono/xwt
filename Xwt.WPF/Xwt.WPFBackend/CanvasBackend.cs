@@ -129,6 +129,9 @@ namespace Xwt.WPFBackend
 
 		private void OnRender (object sender, EventArgs e)
 		{
+			if (!Widget.IsVisible)
+				return;
+
 			this.queued = false;
 
 			if (Canvas.ActualHeight != this.pheight || Canvas.ActualWidth != this.pwidth)
