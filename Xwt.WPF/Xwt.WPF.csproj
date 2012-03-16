@@ -83,6 +83,7 @@
     <Compile Include="Xwt.WPFBackend\WindowFrameBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WPFEngine.cs" />
     <Compile Include="Xwt.WPFBackend\AlertDialogBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\NotebookBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
