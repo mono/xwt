@@ -49,7 +49,7 @@ namespace Xwt.WPFBackend
 			Font = new Font (f.FontFamily, f.Size, f.Style, f.Unit, f.GdiCharSet, f.GdiVerticalFont);
 			Pen = new Pen (context.Pen.Brush, context.Pen.Width);
 			Brush = (Brush)context.Brush.Clone ();
-			Path = new GraphicsPath (context.Path.PathPoints, context.Path.PathTypes, context.Path.FillMode);
+			Path = (GraphicsPath) context.Path.Clone();
 			
 			CurrentX = context.CurrentX;
 			CurrentY = context.CurrentY;
