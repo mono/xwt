@@ -1,5 +1,5 @@
 ﻿// 
-// Colors.cs
+// GdiConverter.cs
 //  
 // Author:
 //       Lytico 
@@ -24,90 +24,105 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using Xwt.Drawing;
+using System.Drawing;
+using Xwt.Engine;
+using Color = Xwt.Drawing.Color;
+using Font = Xwt.Drawing.Font;
+using FontStyle = Xwt.Drawing.FontStyle;
 
-namespace Xwt.Gdi
-{
-	public static class GdiConverter
-	{
+namespace Xwt.Gdi {
 
-		public static System.Drawing.Color ToGdi (this Color color)
-		{
-			return System.Drawing.Color.FromArgb ((int)ToArgb (color));
-		}
+    public static class GdiConverter {
 
-		public static Color ToXwt (this System.Drawing.Color color)
-		{
-			return FromArgb ((uint)color.ToArgb ());
-		}
+        public static System.Drawing.Color ToGdi(this Color color) {
+            return System.Drawing.Color.FromArgb((int)ToArgb(color));
+        }
 
-		public static uint ToArgb (Color color)
-		{
-			return
-		                (uint)(color.Alpha * 255) << 24
-		                | (uint)(color.Red * 255) << 16
-		                | (uint)(color.Green * 255) << 8
-		                | (uint)(color.Blue * 255);
+        public static Color ToXwt(this System.Drawing.Color color) {
+            return FromArgb((uint)color.ToArgb());
+        }
 
-		}
+        public static uint ToArgb(Color color) {
+            return
+                (uint)(color.Alpha * 255) << 24
+                | (uint)(color.Red * 255) << 16
+                | (uint)(color.Green * 255) << 8
+                | (uint)(color.Blue * 255);
 
-		public static Color FromArgb (uint argb)
-		{
-			var a = (argb >> 24) / 255d;
-			var r = ((argb >> 16) & 0xFF) / 255d;
-			var g = ((argb >> 8) & 0xFF) / 255d;
-			var b = (argb & 0xFF) / 255d;
-			return new Color (r, g, b, a);
+        }
 
-		}
+        public static Color FromArgb(uint argb) {
+            var a = (argb >> 24) / 255d;
+            var r = ((argb >> 16) & 0xFF) / 255d;
+            var g = ((argb >> 8) & 0xFF) / 255d;
+            var b = (argb & 0xFF) / 255d;
+            return new Color(r, g, b, a);
 
-		public static Color FromArgb (byte a, Color color)
-		{
-			return new Color (color.Red, color.Green, color.Blue, a);
-		}
+        }
 
-		public static Color FromArgb (byte a, byte r, byte g, byte b)
-		{
-			return Color.FromBytes (r, g, b, a);
-		}
+        public static Color FromArgb(byte a, Color color) {
+            return new Color(color.Red, color.Green, color.Blue, a);
+        }
 
-		public static Color FromArgb (byte r, byte g, byte b)
-		{
-			return Color.FromBytes (r, g, b);
-		}
+        public static Color FromArgb(byte a, byte r, byte g, byte b) {
+            return Color.FromBytes(r, g, b, a);
+        }
 
-		public static System.Drawing.FontStyle ToGdi (this FontStyle value)
-		{
-			var result = System.Drawing.FontStyle.Regular;
-			if (value == null)
-				return result;
-			if ((value & FontStyle.Italic) != 0) {
-				result |= System.Drawing.FontStyle.Italic;
-			}
-			//if ((value & FontStyle.Underline) != 0) {
-			//    result |= System.Drawing.FontStyle.Underline;
-			//}
-			if ((value & FontStyle.Oblique) != 0) {
-				result |= System.Drawing.FontStyle.Bold;
-			}
-			return result;
-		}
+        public static Color FromArgb(byte r, byte g, byte b) {
+            return Color.FromBytes(r, g, b);
+        }
 
-		public static FontStyle ToXwt (this System.Drawing.FontStyle value)
-		{
-			var result = FontStyle.Normal;
-			if (value == null)
-				return result;
-			if ((value & System.Drawing.FontStyle.Italic) != 0) {
-				result |= FontStyle.Italic;
-			}
-			//if ((native & System.Drawing.FontStyle.Underline) != 0) {
-			//    result |= FontStyle.Underline;
-			//}
-			if ((value & System.Drawing.FontStyle.Bold) != 0) {
-				result |= FontStyle.Oblique;
-			}
-			return result;
-		}
-	}
+        public static System.Drawing.FontStyle ToGdi(this FontStyle value) {
+            var result = System.Drawing.FontStyle.Regular;
+            if (value == null)
+                return result;
+            if ((value & FontStyle.Italic) != 0) {
+                result |= System.Drawing.FontStyle.Italic;
+            }
+            //if ((value & FontStyle.Underline) != 0) {
+            //    result |= System.Drawing.FontStyle.Underline;
+            //}
+            if ((value & FontStyle.Oblique) != 0) {
+                result |= System.Drawing.FontStyle.Bold;
+            }
+            return result;
+        }
+
+        public static FontStyle ToXwt(this System.Drawing.FontStyle value) {
+            var result = FontStyle.Normal;
+            if (value == null)
+                return result;
+            if ((value & System.Drawing.FontStyle.Italic) != 0) {
+                result |= FontStyle.Italic;
+            }
+            //if ((native & System.Drawing.FontStyle.Underline) != 0) {
+            //    result |= FontStyle.Underline;
+            //}
+            if ((value & System.Drawing.FontStyle.Bold) != 0) {
+                result |= FontStyle.Oblique;
+            }
+            return result;
+        }
+
+        public static System.Drawing.Font ToGdi (this Font value) {
+            return (System.Drawing.Font) WidgetRegistry.GetBackend (value);
+        }
+
+        public static Size ToXwt (this SizeF value) {
+            return new Size (value.Width, value.Height);
+        }
+
+        public static System.Drawing.StringFormat GetDefaultStringFormat() {
+            var stringFormat =
+                StringFormat.GenericTypographic;
+            stringFormat.Trimming = StringTrimming.EllipsisWord;
+            //stringFormat.FormatFlags = StringFormatFlags.FitBlackBox;
+            stringFormat.FormatFlags = stringFormat.FormatFlags
+                                       & ~StringFormatFlags.NoClip
+                                       & ~StringFormatFlags.FitBlackBox
+                                       & StringFormatFlags.LineLimit
+                ;
+            return stringFormat;
+        }
+    }
 }

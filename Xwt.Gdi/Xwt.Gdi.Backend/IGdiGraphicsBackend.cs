@@ -1,5 +1,5 @@
 // 
-// Colors.cs
+// IGdiGraphicsBackend.cs
 //  
 // Author:
 //       Lytico 
@@ -24,10 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace Xwt.Gdi.Backend
-{
-	public interface IGdiGraphicsBackend
-	{
-		System.Drawing.Graphics Graphics { get; }
-	}
+namespace Xwt.Gdi.Backend {
+    public interface IGdiGraphicsBackend {
+        System.Drawing.Graphics Graphics { get; }
+    }
 }
