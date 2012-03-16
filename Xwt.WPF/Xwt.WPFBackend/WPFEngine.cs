@@ -4,10 +4,10 @@
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
 //       Luis Reis <luiscubal@gmail.com>
-//       Thomas Ziegler <ziegler.thomas@web.de>
+//		 Thomas Ziegler <ziegler.thomas@web.de>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
-// Copyright (c) 2012 Luís Reis
+// Copyright (c) 2012 LuÃ­s Reis
 // Copyright (c) 2012 Thomas Ziegler
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -44,6 +44,8 @@ namespace Xwt.WPFBackend
 		{
 			application = new System.Windows.Application ();
 
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Notebook), typeof(NotebookBackend));
 			WidgetRegistry.RegisterBackend (typeof (Window), typeof (WindowBackend));
 			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
 			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
@@ -67,8 +69,8 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Canvas), typeof (CanvasBackend));
 			WidgetRegistry.RegisterBackend (typeof (Context), typeof (ContextBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (Gradient), typeof (GradientBackendHandler));
-			WidgetRegistry.RegisterBackend (typeof (Xwt.Backends.IAlertDialogBackend), typeof (AlertDialogBackend));
-			WidgetRegistry.RegisterBackend (typeof (Notebook), typeof (NotebookBackend));
+			WidgetRegistry.RegisterBackend (typeof (Widget), typeof (CustomWidgetBackend));
+			WidgetRegistry.RegisterBackend (typeof (Paned), typeof (PanedBackend));
 		}
 
 		public override void RunApplication ()

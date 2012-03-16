@@ -42,9 +42,9 @@ namespace Xwt.WPFBackend
 		public NotebookBackend ()
 		{
 			this.TabControl = new SWC.TabControl ();
-
+			
 		}
-
+		
 		public SWC.TabControl TabControl {
 			get { return (SWC.TabControl)Widget; }
 			set { Widget = value; }
@@ -91,3 +91,4 @@ namespace Xwt.WPFBackend
 		#endregion
 	}
 }
+
