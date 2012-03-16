@@ -236,6 +236,16 @@ namespace Xwt
 			MapEvent (WidgetEvent.BoundsChanged, typeof(Widget), "OnBoundsChanged");
 		}
 		
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			
+			// Don't dispose the backend if this object is being finalized
+			// The backend has to handle the finalizing on its own
+			if (disposing && BackendCreated)
+				Backend.Dispose ();
+		}
+		
 		public WindowFrame ParentWindow {
 			get {
 				if (Parent != null)

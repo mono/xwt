@@ -58,6 +58,10 @@ namespace Xwt
 			}
 		}
 		
+		internal bool BackendCreated {
+			get { return backend != null; }
+		}
+		
 		protected virtual void OnBackendCreated ()
 		{
 			foreach (var ev in DefaultEnabledEvents)
@@ -74,19 +78,6 @@ namespace Xwt
 				t = t.BaseType;
 			}
 			return null;
-		}
-		
-		protected override void Dispose (bool disposing)
-		{
-			base.Dispose (disposing);
-			
-			// Don't dispose the backend if this object is being finalized
-			// The backend has to handle the finalizing on its own
-			if (disposing) {
-				IDisposable disp = backend as IDisposable;
-				if (disp != null)
-					disp.Dispose ();
-			}
 		}
 		
 		protected void LoadBackend ()

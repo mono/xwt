@@ -69,10 +69,9 @@ namespace Xwt.GtkBackend
 		{
 		}
 		
-		public virtual void Dispose (bool disposing)
+		public virtual void Dispose ()
 		{
-			if (disposing)
-				Window.Destroy ();
+			Window.Destroy ();
 		}
 		
 		public IWindowFrameEventSink EventSink {

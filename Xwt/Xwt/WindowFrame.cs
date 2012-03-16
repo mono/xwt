@@ -83,6 +83,16 @@ namespace Xwt
 			Backend.Title = title;
 		}
 		
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			
+			// Don't dispose the backend if this object is being finalized
+			// The backend has to handle the finalizing on its own
+			if (disposing && BackendCreated)
+				Backend.Dispose ();
+		}
+		
 		new IWindowFrameBackend Backend {
 			get { return (IWindowFrameBackend) base.Backend; } 
 		}
