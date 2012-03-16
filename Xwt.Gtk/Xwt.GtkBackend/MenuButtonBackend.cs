@@ -41,7 +41,7 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			Widget.Clicked += HandleClicked;
+			Widget.ButtonPressEvent += HandleClicked;
 			((Gtk.Widget)Widget).StateChanged += HandleStateChanged;
 		}
 		
@@ -49,8 +49,12 @@ namespace Xwt.GtkBackend
 			get { return (IMenuButtonEventSink)base.EventSink; }
 		}
 
-		void HandleClicked (object sender, EventArgs e)
+		[GLib.ConnectBefore]
+		void HandleClicked (object sender, Gtk.ButtonPressEventArgs e)
 		{
+			if (e.Event.Button != 1)
+				return;
+			
 			Gtk.Menu menu = CreateMenu ();
 			
 			if (menu != null) {
@@ -73,7 +77,7 @@ namespace Xwt.GtkBackend
 						return false;
 					});
 				};
-				menu.Popup (null, null, PositionFunc, 0, Gtk.Global.CurrentEventTime);
+				menu.Popup (null, null, PositionFunc, 1, Gtk.Global.CurrentEventTime);
 			}
 		}
 

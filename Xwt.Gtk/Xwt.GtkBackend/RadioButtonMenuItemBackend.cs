@@ -30,7 +30,7 @@ namespace Xwt.GtkBackend
 {
 	public class RadioButtonMenuItemBackend: MenuItemBackend, IRadioButtonMenuItemBackend
 	{
-		public RadioButtonMenuItemBackend (): base (new Gtk.RadioMenuItem (""))
+		public RadioButtonMenuItemBackend (): base (new Gtk.CheckMenuItem ("") { DrawAsRadio = true })
 		{
 		}
 	}
