@@ -28,7 +28,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IPanedBackend
+	public interface IPanedBackend: IWidgetBackend
 	{
 		/// <summary>
 		/// Initializes the paned
@@ -82,6 +82,12 @@ namespace Xwt.Backends
 	
 	public interface IPanedEventSink: IWidgetEventSink
 	{
+		void OnPositionChanged ();
+	}
+	
+	public enum PanedEvent
+	{
+		PositionChanged
 	}
 }
 
