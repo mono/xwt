@@ -40,7 +40,7 @@ namespace Xwt.Gdi.Backend {
             WidgetRegistry.RegisterBackend(typeof(Xwt.Drawing.Font), typeof(FontBackendHandler));
             WidgetRegistry.RegisterBackend (typeof (Xwt.Drawing.TextLayout), typeof (TextLayoutBackendHandler));
             WidgetRegistry.RegisterBackend (typeof (Xwt.Drawing.Context), typeof (ContextBackendHandler));
-
+            WidgetRegistry.RegisterBackend (typeof (Xwt.Drawing.ImageBuilder), typeof (ImageBuilderBackendHandler));
         }
 
         //public override void Invoke(Action action) {

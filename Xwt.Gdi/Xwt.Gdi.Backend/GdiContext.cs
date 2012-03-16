@@ -27,21 +27,45 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System;
+using System.Collections.Generic;
+
 
 namespace Xwt.Gdi.Backend {
     public class GdiContext:IDisposable {
+        public GdiContext() {
+            Color = Color.Black;
+            LineWidth = 1;
+        }
 
+        public GdiContext (GdiContext c):this() {
+            c.SaveTo(this);
+        }
         public Graphics Graphics;
         public GraphicsState State { get; set; }
+        public GraphicsContainer State1 { get; set; }
 
         private PointF _current;
         public PointF Current {
             get {
-                if (Path.PointCount == 0)
+                if (_path==null || Path.PointCount == 0)
                     return _current;
-                return Path.GetLastPoint ();
+                return (_current = Path.GetLastPoint());
             }
-            set { _current=value;}
+            set {
+                if (_path!=null && Path.PointCount != 0 ) {
+                    var _lastpoint = Path.GetLastPoint();
+                    if (_lastpoint != value) {
+                        //var _lastpoint = Path.PathPoints[Path.PathData.Points.Length - 1];
+                        var _p = new GraphicsPath ();
+                        //Path.AddPath (_p, true); //empty paths are not allowed
+                        _p.AddPath(Path,true);
+                        _transformed = false;
+                        _path = _p;
+                        //Path.PathData.Points[Path.PathData.Points.Length - 1] = value;
+                    }
+                }
+                _current = value;
+            }
         }
 
         GraphicsPath _path = null;
@@ -57,7 +81,7 @@ namespace Xwt.Gdi.Backend {
             set {
                 if (_path != value && _path != null)
                     _path.Dispose ();
-                if (_transformPath)
+                if (_path != value)
                     _transformed = false;
                 _path = value;
             }
@@ -77,8 +101,8 @@ namespace Xwt.Gdi.Backend {
                 if (_matrix != value && _matrix != null)
                     _matrix.Dispose ();
                 _matrix = value;
-                if (_transformPath)
-                    _path.Transform (Matrix);
+                //if (_transformPath)
+                //    _path.Transform (Matrix);
             }
         }
         public Color Color { get; set; }
@@ -169,5 +193,49 @@ namespace Xwt.Gdi.Backend {
         public void TranslatePath (float x, float y) {
             Matrix.Translate (x, y);
         }
+        public class ContextState {
+            public Drawing.Font Font { get; set; }
+
+            public Pen Pen { get; set; }
+
+            public SolidBrush Brush { get; set; }
+
+            public GraphicsPath Path { get; set; }
+
+            public Matrix Matrix { get; set; }
+
+            public PointF Current { get; set; }
+        }
+
+        public void SaveTo (GdiContext c) {
+            c.Font = this.Font;
+            c.Pen = this._pen;
+            c.Brush = this._brush;
+            c.Path = this._path;
+            c.Matrix = this._matrix;
+            c.Current = this.Current;
+            //return c;
+        }
+
+        public void Save () {
+            if (this.contexts == null)
+                this.contexts = new Stack<GdiContext> ();
+           
+            this.contexts.Push ( new GdiContext(this) {State=Graphics.Save()} );
+        }
+        
+
+        public void Restore () {
+            if (this.contexts == null || this.contexts.Count == 0)
+                throw new InvalidOperationException ();
+
+            var c = this.contexts.Pop ();
+            c.SaveTo(this);
+            Graphics.Restore(c.State);
+       
+        }
+
+        private Stack<GdiContext> contexts;
+        
     }
 }
