@@ -135,8 +135,10 @@ namespace Xwt
 		/// </remarks>
 		public void AddChild (Widget widget, Rectangle bounds)
 		{
-			if (positions != null)
+			if (positions == null)
 				positions = new Dictionary<Widget,Rectangle> ();
+			
+			positions [widget] = bounds;
 			var bk = (IWidgetBackend)Widget.GetBackend (widget);
 			Backend.AddChild (bk, bounds);
 			RegisterChild (widget);
@@ -152,8 +154,10 @@ namespace Xwt
 		/// <exception cref="System.ArgumentException">If the widget is not a child of this canvas</exception>
 		public void RemoveChild (Widget widget)
 		{
-			if (positions != null)
-				positions.Remove (widget);
+			if (positions == null || widget.Parent != this)
+				throw new ArgumentException ("Widget is not a child of the canvas");
+			
+			positions.Remove (widget);
 			Backend.RemoveChild ((IWidgetBackend)Widget.GetBackend (widget));
 			UnregisterChild (widget);
 			OnPreferredSizeChanged ();
@@ -171,6 +175,10 @@ namespace Xwt
 		/// <exception cref="System.ArgumentException">If the widget is not a child of this canvas</exception>
 		public void SetChildBounds (Widget widget, Rectangle bounds)
 		{
+			if (positions == null || widget.Parent != this)
+				throw new ArgumentException ("Widget is not a child of the canvas");
+			
+			positions [widget] = bounds;
 			Backend.SetChildBounds ((IWidgetBackend)Widget.GetBackend (widget), bounds);
 			OnPreferredSizeChanged ();
 		}
@@ -198,6 +206,8 @@ namespace Xwt
 		public Rectangle GetChildBounds (Widget widget)
 		{
 			Rectangle rect;
+			if (positions == null || widget.Parent != this)
+				throw new ArgumentException ("Widget is not a child of the canvas");
 			if (positions.TryGetValue (widget, out rect))
 				return rect;
 			return Rectangle.Zero;
