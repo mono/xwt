@@ -46,6 +46,12 @@ namespace Xwt.Gdi.Backend {
             return ctx;
         }
 
+        /// <summary>
+        /// Makes a copy of the current state of the Context and saves it on an internal stack of saved states.
+        /// When Restore() is called, it will be restored to the saved state. 
+        /// Multiple calls to Save() and Restore() can be nested; 
+        /// each call to restore() restores the state from the matching paired save().
+        /// </summary>
         public virtual void Save (object backend) {
             var gc = (GdiContext) backend;
             gc.Save ();
@@ -53,7 +59,7 @@ namespace Xwt.Gdi.Backend {
 
         public virtual void Restore (object backend) {
             var gc = (GdiContext) backend;
-           gc.Restore ();
+            gc.Restore ();
         }
 
         // http://cairographics.org/documentation/cairomm/reference/classCairo_1_1Context.html
@@ -84,6 +90,7 @@ namespace Xwt.Gdi.Backend {
                 (float) (xc - radius), (float) (yc - radius),
                 (float) radius * 2, (float) radius * 2,
                 (float) angle1, (float) angle2);
+            gc.Current = gc.Path.GetLastPoint ();
         }
 
         /// <summary>
@@ -131,7 +138,7 @@ namespace Xwt.Gdi.Backend {
                 (float) x1, (float) y1,
                 (float) x2, (float) y2,
                 (float) x3, (float) y3);
-
+            gc.Current = new PointF ((float) x3, (float) y3);
         }
 
         public virtual void Fill (object backend) {
@@ -150,6 +157,7 @@ namespace Xwt.Gdi.Backend {
         public virtual void LineTo (object backend, double x, double y) {
             var gc = (GdiContext) backend;
             gc.Path.AddLine (gc.Current, new PointF ((float) x, (float) y));
+            gc.Current = new PointF ((float) x, (float) y);
         }
 
         /// <summary>
@@ -172,11 +180,26 @@ namespace Xwt.Gdi.Backend {
         public virtual void Rectangle (object backend, double x, double y, double width, double height) {
             var gc = (GdiContext) backend;
             gc.Path.AddRectangle (new RectangleF ((float) x, (float) y, (float) width, (float) height));
+            gc.Current = gc.Path.GetLastPoint ();
         }
 
+        /// <summary>
+        /// Relative-coordinate version of curve_to().
+        /// All offsets are relative to the current point. 
+        /// Adds a cubic Bezier spline to the path from the current point to a point offset 
+        /// from the current point by (dx3, dy3), using points offset by (dx1, dy1) and (dx2, dy2) 
+        /// as the control points. After this call the current point will be offset by (dx3, dy3).
+        /// Given a current point of (x, y), RelCurveTo(dx1, dy1, dx2, dy2, dx3, dy3)
+        /// is logically equivalent to CurveTo(x + dx1, y + dy1, x + dx2, y + dy2, x + dx3, y + dy3).
+        /// </summary>
         public virtual void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3) {
             var gc = (GdiContext) backend;
-
+            gc.Path.AddBezier (
+                (float) gc.Current.X, (float) gc.Current.Y,
+               (float) (gc.Current.X + dx1), (float) (gc.Current.Y + dy1),
+               (float) (gc.Current.X + dx2), (float) (gc.Current.Y + dy2),
+               (float) (gc.Current.X + dx3), (float) (gc.Current.Y + dy3));
+            gc.Current = new PointF ((float) (gc.Current.X + dx3), (float) (gc.Current.Y + dy3));
         }
 
         /// <summary>
@@ -184,11 +207,12 @@ namespace Xwt.Gdi.Backend {
         /// is offset from the current point by (dx, dy) in user space. 
         /// After this call the current point will be offset by (dx, dy).
         /// Given a current point of (x, y), 
-        /// rel_line_to(dx, dy) is logically equivalent to line_to(x + dx, y + dy).
+        /// RelLineTo(dx, dy) is logically equivalent to LineTo(x + dx, y + dy).
         public virtual void RelLineTo (object backend, double dx, double dy) {
             var gc = (GdiContext) backend;
             gc.Path.AddLine (gc.Current,
                 new PointF ((float) (gc.Current.X + dx), (float) (gc.Current.Y + dy)));
+            gc.Current = gc.Path.GetLastPoint ();
         }
 
         /// <summary>
@@ -261,6 +285,9 @@ namespace Xwt.Gdi.Backend {
         public virtual void Rotate (object backend, double angle) {
             var gc = (GdiContext) backend;
             gc.Rotate ((float) angle);
+            if (gc.Path.PointCount != 0) {
+                gc.Current = gc.Path.GetLastPoint ();
+            }
         }
 
         public virtual void Translate (object backend, double tx, double ty) {

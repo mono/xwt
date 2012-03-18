@@ -57,6 +57,7 @@
     <Compile Include="Xwt.Gdi.Backend\GradientBackendHandler.cs" />
     <Compile Include="Xwt.Gdi.Backend\IGdiGraphicsBackend.cs" />
     <Compile Include="Xwt.Gdi.Backend\ImageBuilderBackendHandler.cs" />
+    <Compile Include="Xwt.Gdi.Backend\ImageHandler.cs" />
     <Compile Include="Xwt.Gdi.Backend\TextLayoutBackend.cs" />
     <Compile Include="Xwt.Gdi.Backend\TextLayoutBackendHandler.cs" />
     <Compile Include="Xwt.Gdi.Backend\XwtDrawingExtensions.cs" />
