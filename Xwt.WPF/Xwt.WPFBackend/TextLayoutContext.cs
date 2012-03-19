@@ -43,9 +43,7 @@ namespace Xwt.WPFBackend
 
 		public Size GetSize()
 		{
-			SizeF textSize = new SizeF();
-			textSize = context.Graphics.MeasureString (Text, Font, (int)Width);
-			return new Size (textSize.Width, textSize.Height);
+			return context.Graphics.MeasureString (Text, Font, (int) Width).ToXwtSize ();
 		}
 	}
 }
