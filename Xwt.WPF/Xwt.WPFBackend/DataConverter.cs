@@ -70,6 +70,11 @@ namespace Xwt.WPFBackend
 			return new SW.Point (point.X, point.Y);
 		}
 
+		public static Size ToXwtSize (this SD.SizeF self)
+		{
+			return new Size (self.Width, self.Height);
+		}
+
 		//
 		// Alignment
 		//
