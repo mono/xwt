@@ -3,7 +3,8 @@
 //  
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
-// 
+//       Hywel Thomas <hywel.w.thomas@gmail.com>
+//
 // Copyright (c) 2012 Xamarin, Inc.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -135,10 +136,21 @@ namespace Xwt.WPFBackend
 
 		public void RelLineTo (object backend, double dx, double dy)
 		{
+			var c = (DrawingContext) backend;
+			
+			float x = c.CurrentX;
+			float y = c.CurrentY;
+			c.CurrentX += (float)dx;
+			c.CurrentY += (float)dy;
+
+			c.Path.AddLine (x, y, c.CurrentX, c.CurrentY);
 		}
 
 		public void RelMoveTo (object backend, double dx, double dy)
 		{
+			var c = (DrawingContext) backend;
+			c.CurrentX += (float)dx;
+			c.CurrentY += (float)dy;
 		}
 
 		public void Stroke (object backend)
@@ -169,13 +181,16 @@ namespace Xwt.WPFBackend
 		public void SetLineDash (object backend, double offset, params double[] pattern)
 		{
 			var c = (DrawingContext) backend;
-			c.Pen.DashOffset = (float) offset;
+			c.Pen.DashOffset = (float)offset;
 
-			float[] fp = new float[pattern.Length];
-			for (int i = 0; i < fp.Length; ++i)
-				fp [i] = (float)pattern[i];
+			if (pattern.Length != 0) {
+				float[] fp = new float[pattern.Length];
+				for (int i = 0; i < fp.Length; ++i)
+					fp[i] = (float)pattern[i];
 
-			c.Pen.DashPattern = fp;
+				c.Pen.DashPattern = fp;
+			}
+
 		}
 
 		public void SetPattern (object backend, object p)
@@ -227,16 +242,20 @@ namespace Xwt.WPFBackend
 
 		public void ResetTransform (object backend)
 		{
+			var c = (DrawingContext)backend;
+			c.Graphics.ResetTransform();
 		}
 
 		public void Rotate (object backend, double angle)
 		{
-			var g = (Graphics) backend;
-			g.RotateTransform ((float)angle);
+			var c = (DrawingContext)backend;
+			c.Graphics.RotateTransform((float)angle);
 		}
 
 		public void Translate (object backend, double tx, double ty)
 		{
+			var c = (DrawingContext)backend;
+			c.Graphics.TranslateTransform ((float)tx, (float)ty);
 		}
 
 		public void Dispose (object backend)
