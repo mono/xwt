@@ -29,11 +29,11 @@ namespace Xwt.WPFBackend
 	public abstract class Backend
 		: IBackend
 	{
-		protected Widget frontend;
+		protected object frontend;
 
 		void IBackend.Initialize (object frontend)
 		{
-			this.frontend = (Widget) frontend;
+			this.frontend = frontend;
 		}
 
 		public virtual void EnableEvent (object eventId)

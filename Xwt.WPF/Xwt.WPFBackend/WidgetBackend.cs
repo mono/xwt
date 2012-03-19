@@ -72,10 +72,6 @@ namespace Xwt.WPFBackend
 			get { return eventSink; }
 		}
 
-		public Widget Frontend {
-			get { return frontend; }
-		}
-
 		public object NativeWidget {
 			get { return Widget; }
 		}
