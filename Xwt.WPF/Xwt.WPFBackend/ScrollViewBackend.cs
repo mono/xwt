@@ -41,7 +41,16 @@ namespace Xwt.WPFBackend
 
 		public void SetChild (IWidgetBackend child)
 		{
-			ScrollViewer.Content = child.NativeWidget;
+			var widget = (WidgetBackend) child;
+			if (widget.EventSink.SupportsCustomScrolling()) {
+				var vbackend = new ScrollAdjustmentBackend ();
+				var hbackend = new ScrollAdjustmentBackend ();
+				widget.EventSink.SetScrollAdjustments (hbackend, vbackend);
+				var vp = new CustomScrollViewPort (widget.NativeWidget, vbackend, hbackend);
+				ScrollViewer.Content = vp;
+				vp.ScrollOwner = ScrollViewer;
+			} else
+				ScrollViewer.Content = child.NativeWidget;
 		}
 
 		public ScrollPolicy VerticalScrollPolicy
