@@ -48,91 +48,76 @@ namespace Xwt.WPFBackend
 			this.defaultResult = MessageBoxResult.Cancel;
 		}
 
-		#region IAlertDialogBackend implementation
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{
-			this.icon = getIcon (message.Icon);
-			this.buttons = convertButtons(message.Buttons);
+			this.icon = GetIcon (message.Icon);
+			this.buttons = ConvertButtons (message.Buttons);
 			if (message.SecondaryText == null)
-			{
-				message.SecondaryText = "";
-			} else {
+				message.SecondaryText = String.Empty;
+			else {
 				message.Text = message.Text + "\r\n\r\n" + message.SecondaryText;
-				message.SecondaryText = "";
+				message.SecondaryText = String.Empty;
 			}
+
 			var wb = (WindowFrameBackend)WidgetRegistry.GetBackend (transientFor);
-			if (wb != null){
+			if (wb != null) {
 				this.dialogResult = MessageBox.Show (wb.Window, message.Text,message.SecondaryText,
-				                                this.buttons,this.icon,this.defaultResult,this.options);
+													this.buttons, this.icon, this.defaultResult, this.options);
 			} else {
 				this.dialogResult = MessageBox.Show (message.Text, message.SecondaryText, this.buttons, 
-				                                this.icon, this.defaultResult, this.options);
+													this.icon, this.defaultResult, this.options);
 			}
-			return convertResultToCommand(this.dialogResult);
+
+			return ConvertResultToCommand (this.dialogResult);
 		}
 
-		public bool ApplyToAll {
+		public bool ApplyToAll
+		{
 			get;
 			set;
 		}
-		#endregion
 
-		MessageBoxImage getIcon(string iconText)
+		MessageBoxImage GetIcon (string iconText)
 		{
-			MessageBoxImage result = MessageBoxImage.None;
-
 			switch (iconText) {
 			case StockIcons.Error:
-				result = MessageBoxImage.Error;
-				break;
+				return MessageBoxImage.Error;
 			case StockIcons.Warning:
-				result = MessageBoxImage.Warning;
-				break;
+				return MessageBoxImage.Warning;
 			case StockIcons.Information:
-				result = MessageBoxImage.Information;
-				break;
+				return MessageBoxImage.Information;
 			case StockIcons.Question:
-				result = MessageBoxImage.Question;
-				break;
+				return MessageBoxImage.Question;
 			default:
-				break;
+				return MessageBoxImage.None;
 			}
-			return result;
 		}
 
-		Command convertResultToCommand(MessageBoxResult dialogResult)
+		Command ConvertResultToCommand (MessageBoxResult dialogResult)
 		{
-			Command command = Command.Cancel;
 			switch (dialogResult) {
 			case MessageBoxResult.None:
-				command = Command.No;
-				break;
+				return Command.No;
 			case MessageBoxResult.Cancel:
-				command = Command.Cancel;
-				break;
+				return Command.Cancel;
 			case MessageBoxResult.No:
-				command = Command.No;
-				break;
+				return Command.No;
 			case MessageBoxResult.Yes:
-				command = Command.Yes;
-				break;
+				return Command.Yes;
 			case MessageBoxResult.OK:
-				command = Command.Ok;
-				break;
+				return Command.Ok;
 			default:
-				command = Command.Cancel;
-				break;
+				return Command.Cancel;
 			}
-			return command;
 		}
 
-		MessageBoxButton convertButtons(IList<Command> buttons)
+		MessageBoxButton ConvertButtons (IList<Command> buttons)
 		{
 			MessageBoxButton result;
 
 			switch (buttons.Count){
 			case 1:
-				if (buttons.Contains(Command.Ok)){
+				if (buttons.Contains(Command.Ok)) {
 					result = MessageBoxButton.OK;
 				} else {
 					throw new NotImplementedException ();
@@ -148,7 +133,7 @@ namespace Xwt.WPFBackend
 				}
 				break;
 			case 3:
-				if (buttons.Contains (Command.Yes) && buttons.Contains (Command.No) && buttons.Contains (Command.Cancel)){
+				if (buttons.Contains (Command.Yes) && buttons.Contains (Command.No) && buttons.Contains (Command.Cancel)) {
 					result = MessageBoxButton.YesNoCancel;
 				} else {
 					throw new NotImplementedException ();
@@ -161,11 +146,8 @@ namespace Xwt.WPFBackend
 			return result;
 		}
 
-		#region IDisposable implementation
 		public void Dispose ()
 		{
 		}
-		#endregion
-
 	}
 }
