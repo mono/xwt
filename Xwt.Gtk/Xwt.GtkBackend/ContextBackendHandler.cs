@@ -33,6 +33,7 @@ namespace Xwt.GtkBackend
 {
 	class GtkContext
 	{
+		public double GlobalAlpha = 1;
 		public Cairo.Context Context;
 		public Cairo.Surface TempSurface;
 	}
@@ -69,6 +70,12 @@ namespace Xwt.GtkBackend
 		{
 			GtkContext gc = (GtkContext)backend;
 			gc.Context.Restore ();
+		}
+		
+		public void SetGlobalAlpha (object backend, double alpha)
+		{
+			GtkContext gc = (GtkContext) backend;
+			gc.GlobalAlpha = alpha;
 		}
 
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
@@ -109,8 +116,16 @@ namespace Xwt.GtkBackend
 
 		public void Fill (object backend)
 		{
-			Cairo.Context ctx = ((GtkContext) backend).Context;
-			ctx.Fill ();
+			var gtkc = (GtkContext) backend;
+			Cairo.Context ctx = gtkc.Context;
+			if (gtkc.GlobalAlpha == 1)
+				ctx.Fill ();
+			else {
+				ctx.PushGroup ();
+				ctx.Fill ();
+				ctx.PopGroupToSource ();
+				ctx.PaintWithAlpha (gtkc.GlobalAlpha);
+			}
 		}
 
 		public void FillPreserve (object backend)
@@ -175,8 +190,8 @@ namespace Xwt.GtkBackend
 
 		public void SetColor (object backend, Xwt.Drawing.Color color)
 		{
-			Cairo.Context ctx = ((GtkContext) backend).Context;
-			ctx.Color = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha);
+			var gtkContext = (GtkContext) backend;
+			gtkContext.Context.Color = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha * gtkContext.GlobalAlpha);
 		}
 		
 		public void SetLineWidth (object backend, double width)
@@ -217,6 +232,7 @@ namespace Xwt.GtkBackend
 			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
 			GtkContext ctx = (GtkContext)backend;
 			Gdk.CairoHelper.SetSourcePixbuf (ctx.Context, pb, x, y);
+			alpha = alpha * ctx.GlobalAlpha;
 			if (alpha == 1)
 				ctx.Context.Paint ();
 			else
@@ -233,6 +249,7 @@ namespace Xwt.GtkBackend
 			ctx.Context.Translate (x, y);
 			ctx.Context.Scale (sx, sy);
 			Gdk.CairoHelper.SetSourcePixbuf (ctx.Context, pb, 0, 0);
+			alpha = alpha * ctx.GlobalAlpha;
 			if (alpha == 1)
 				ctx.Context.Paint ();
 			else

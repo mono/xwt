@@ -91,6 +91,12 @@ namespace Xwt.Backends
 		
 		void Translate (object backend, double tx, double ty);
 		
+		/// <summary>
+		/// Sets a global alpha to be applied to all drawing operations.
+		/// It doesn't affect colors that have already been set.
+		/// </summary>
+		void SetGlobalAlpha (object backend, double globalAlpha);
+		
 		void Dispose (object backend);
 	}
 }

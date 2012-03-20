@@ -36,6 +36,7 @@ namespace Xwt.Drawing
 		
 		Pattern pattern;
 		Font font;
+		double globalAlpha = 1;
 		
 		static Context ()
 		{
@@ -60,6 +61,14 @@ namespace Xwt.Drawing
 		public void Restore ()
 		{
 			handler.Restore (Backend);
+		}
+		
+		public double GlobalAlpha {
+			get { return globalAlpha; }
+			set {
+				globalAlpha = value;
+				handler.SetGlobalAlpha (Backend, globalAlpha);
+			}
 		}
 		
 		public void SetColor (Color color)

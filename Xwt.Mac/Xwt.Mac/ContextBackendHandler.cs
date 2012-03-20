@@ -59,6 +59,11 @@ namespace Xwt.Mac
 			NSGraphicsContext.CurrentContext.RestoreGraphicsState ();
 		}
 
+		public void SetGlobalAlpha (object backend, double alpha)
+		{
+			// TODO
+		}
+
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
 			var ctx = GetContext (backend);
