@@ -725,6 +725,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
+		[GLib.ConnectBeforeAttribute]
 		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
