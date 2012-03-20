@@ -97,10 +97,10 @@ namespace Xwt.GtkBackend
 
 		bool IWindowFrameBackend.Visible {
 			get {
-				return window.Visible;
+				return Window.Visible;
 			}
 			set {
-				window.Visible = value;
+				Window.Visible = value;
 			}
 		}
 
