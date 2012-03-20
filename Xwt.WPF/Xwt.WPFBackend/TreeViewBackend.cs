@@ -130,16 +130,11 @@ namespace Xwt.WPFBackend
 			throw new NotImplementedException();
 		}
 
+		// TODO
 		public bool HeadersVisible
 		{
-			get
-			{
-				throw new NotImplementedException ();
-			}
-			set
-			{
-				throw new NotImplementedException ();
-			}
+			get;
+			set;
 		}
 
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)

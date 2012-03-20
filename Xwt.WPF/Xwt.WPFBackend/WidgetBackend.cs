@@ -435,19 +435,17 @@ namespace Xwt.WPFBackend
 			});
 		}
 
+		// TODO
 		public void DragStart (DragStartData data)
 		{
-			throw new NotImplementedException ();
 		}
 
 		public void SetDragTarget (TransferDataType [] types, DragDropAction dragAction)
 		{
-			throw new NotImplementedException ();
 		}
 
 		public void SetDragSource (TransferDataType [] types, DragDropAction dragAction)
 		{
-			throw new NotImplementedException ();
 		}
 
 		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)

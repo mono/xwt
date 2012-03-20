@@ -43,10 +43,11 @@ namespace Xwt.WPFBackend
 			Grid = new Grid();
 		}
 
+		// TODO
 		public double Position
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			get;
+			set;
 		}
 
 		public void SetPanel (int panel, IWidgetBackend widget, bool resize)
