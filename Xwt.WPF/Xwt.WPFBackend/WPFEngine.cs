@@ -73,6 +73,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Widget), typeof (CustomWidgetBackend));
 			WidgetRegistry.RegisterBackend (typeof (Paned), typeof (PanedBackend));
 			WidgetRegistry.RegisterBackend (typeof (ScrollAdjustment), typeof (ScrollAdjustmentBackend));
+			WidgetRegistry.RegisterBackend (typeof (SelectFolderDialog), typeof (SelectFolderDialogBackend));
 		}
 
 		public override void RunApplication ()
