@@ -25,13 +25,14 @@
 // THE SOFTWARE.
 
 using System;
-using System.Drawing;
+
 using System.Drawing.Drawing2D;
 using Xwt.Backends;
 using Xwt.Engine;
+using SD = System.Drawing;
 
 namespace Xwt.Gdi.Backend {
-
+    
     public class ContextBackendHandler : IContextBackendHandler {
 
         public virtual object CreateContext (Widget w) {
@@ -113,7 +114,7 @@ namespace Xwt.Gdi.Backend {
 
         public virtual void ClipPreserve (object backend) {
             var gc = (GdiContext) backend;
-            gc.Graphics.Clip = new Region (gc.Path);
+            gc.Graphics.Clip = new SD.Region(gc.Path);
         }
 
         public virtual void ResetClip (object backend) {
@@ -138,7 +139,7 @@ namespace Xwt.Gdi.Backend {
                 (float) x1, (float) y1,
                 (float) x2, (float) y2,
                 (float) x3, (float) y3);
-            gc.Current = new PointF ((float) x3, (float) y3);
+            gc.Current = new SD.PointF((float)x3, (float)y3);
         }
 
         public virtual void Fill (object backend) {
@@ -156,8 +157,8 @@ namespace Xwt.Gdi.Backend {
 
         public virtual void LineTo (object backend, double x, double y) {
             var gc = (GdiContext) backend;
-            gc.Path.AddLine (gc.Current, new PointF ((float) x, (float) y));
-            gc.Current = new PointF ((float) x, (float) y);
+            gc.Path.AddLine(gc.Current, new SD.PointF((float)x, (float)y));
+            gc.Current = new SD.PointF((float)x, (float)y);
         }
 
         /// <summary>
@@ -169,7 +170,7 @@ namespace Xwt.Gdi.Backend {
         /// <param name="y"></param>
         public virtual void MoveTo (object backend, double x, double y) {
             var gc = (GdiContext) backend;
-            gc.Current = new PointF ((float) x, (float) y);
+            gc.Current = new SD.PointF((float)x, (float)y);
         }
 
         public virtual void NewPath (object backend) {
@@ -179,7 +180,7 @@ namespace Xwt.Gdi.Backend {
 
         public virtual void Rectangle (object backend, double x, double y, double width, double height) {
             var gc = (GdiContext) backend;
-            gc.Path.AddRectangle (new RectangleF ((float) x, (float) y, (float) width, (float) height));
+            gc.Path.AddRectangle(new SD.RectangleF((float)x, (float)y, (float)width, (float)height));
             gc.Current = gc.Path.GetLastPoint ();
         }
 
@@ -199,7 +200,7 @@ namespace Xwt.Gdi.Backend {
                (float) (gc.Current.X + dx1), (float) (gc.Current.Y + dy1),
                (float) (gc.Current.X + dx2), (float) (gc.Current.Y + dy2),
                (float) (gc.Current.X + dx3), (float) (gc.Current.Y + dy3));
-            gc.Current = new PointF ((float) (gc.Current.X + dx3), (float) (gc.Current.Y + dy3));
+            gc.Current = new SD.PointF((float)(gc.Current.X + dx3), (float)(gc.Current.Y + dy3));
         }
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace Xwt.Gdi.Backend {
         public virtual void RelLineTo (object backend, double dx, double dy) {
             var gc = (GdiContext) backend;
             gc.Path.AddLine (gc.Current,
-                new PointF ((float) (gc.Current.X + dx), (float) (gc.Current.Y + dy)));
+                new SD.PointF((float)(gc.Current.X + dx), (float)(gc.Current.Y + dy)));
             gc.Current = gc.Path.GetLastPoint ();
         }
 
@@ -223,7 +224,7 @@ namespace Xwt.Gdi.Backend {
         /// </summary>
         public virtual void RelMoveTo (object backend, double dx, double dy) {
             var gc = (GdiContext) backend;
-            gc.Current = new PointF ((float) (gc.Current.X + dx), (float) (gc.Current.Y + dy));
+            gc.Current = new SD.PointF((float)(gc.Current.X + dx), (float)(gc.Current.Y + dy));
         }
 
         public virtual void Stroke (object backend) {
@@ -249,15 +250,33 @@ namespace Xwt.Gdi.Backend {
             var gc = (GdiContext) backend;
             gc.LineWidth = width;
         }
-
+        /// <summary>
+        /// Sets the dash pattern to be used by stroke().
+        /// A dash pattern is specified by dashes, an array of positive values. 
+        /// Each value provides the user-space length of altenate "on" and "off" portions of the stroke. 
+        /// The offset specifies an offset into the pattern at which the stroke begins.
+        /// If dashes is empty dashing is disabled. If the size of dashes is 1, 
+        /// a symmetric pattern is assumed with alternating on and off portions of the size specified by the single value in dashes.
+        /// It is invalid for any value in dashes to be negative, or for all values to be 0. 
+        /// If this is the case, an exception will be thrown
+        /// </summary>
         public virtual void SetLineDash (object backend, double offset, params double[] pattern) {
-            var gc = (GdiContext) backend;
-            gc.LineDash = pattern;
+            var gc = (GdiContext)backend;
+            if (pattern.Length != 0) {
+                gc.Pen.DashOffset = (float)(offset / gc.LineWidth);
+                var fp = new float[pattern.Length];
+                for (int i = 0; i < fp.Length; ++i)
+                    fp[i] = (float)(pattern[i] / gc.LineWidth);
+                gc.Pen.DashStyle = DashStyle.Custom;
+                gc.Pen.DashPattern = fp;
+            } else {
+                gc.Pen.DashStyle = DashStyle.Solid;
+            }
         }
 
         public virtual void SetPattern (object backend, object p) {
             var gc = (GdiContext) backend;
-            gc.Pattern = p;
+            gc.Brush = (SD.TextureBrush)p;
         }
 
         public virtual void SetFont (object backend, Xwt.Drawing.Font font) {
@@ -275,11 +294,22 @@ namespace Xwt.Gdi.Backend {
         }
 
         public virtual void DrawImage (object backend, object img, double x, double y, double alpha) {
+            var context = (GdiContext)backend;
+            var image = (SD.Image) img;
+            var q = context.Graphics.SetQuality(GdiConverter.DrawHighQuality);
+            context.Graphics.DrawImage(image, (float) x, (float) y);
+            context.Graphics.SetQuality(q);
+
 
         }
 
         public virtual void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha) {
-
+            var context = (GdiContext)backend;
+            var image = (SD.Image)img;
+            var r = new SD.RectangleF((float) x, (float) y, (float) width, (float) height);
+            var q = context.Graphics.SetQuality(GdiConverter.DrawHighQuality);
+            context.Graphics.DrawImage(image, r);
+            context.Graphics.SetQuality(q);
         }
 
         public virtual void Rotate (object backend, double angle) {

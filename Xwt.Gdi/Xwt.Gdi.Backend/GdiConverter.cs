@@ -29,6 +29,7 @@ using Xwt.Engine;
 using Color = Xwt.Drawing.Color;
 using Font = Xwt.Drawing.Font;
 using FontStyle = Xwt.Drawing.FontStyle;
+using System.Drawing.Drawing2D;
 
 namespace Xwt.Gdi {
 
@@ -123,6 +124,63 @@ namespace Xwt.Gdi {
                                        & StringFormatFlags.LineLimit
                 ;
             return stringFormat;
+        }
+
+        public class GraphicsQuality {
+            public InterpolationMode InterpolationMode { get; set; }
+            public CompositingMode CompositingMode { get; set; }
+            public CompositingQuality CompositingQuality { get; set; }
+
+            public SmoothingMode SmoothingMode { get; set; }
+
+            public System.Drawing.Text.TextRenderingHint TextRenderingHint { get; set; }
+        }
+
+        public static GraphicsQuality DrawHighQuality {
+            get {
+                return new GraphicsQuality {
+                    InterpolationMode = InterpolationMode.HighQualityBilinear,
+                    CompositingMode = CompositingMode.SourceOver,
+                    CompositingQuality = CompositingQuality.HighQuality
+                };
+            }
+        }
+        public static GraphicsQuality PaintHighQuality {
+            get {
+                return new GraphicsQuality {
+                    InterpolationMode = InterpolationMode.HighQualityBilinear,
+                    CompositingMode = CompositingMode.SourceOver,
+                    CompositingQuality = CompositingQuality.AssumeLinear,
+                    SmoothingMode = SmoothingMode.AntiAlias,
+                    TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit,
+                };
+            }
+        }
+        public static GraphicsQuality CopyHighQuality {
+            get {
+                return new GraphicsQuality {
+                    InterpolationMode = InterpolationMode.HighQualityBilinear,
+                    CompositingMode = CompositingMode.SourceCopy,
+                    CompositingQuality = CompositingQuality.HighQuality
+                };
+            }
+        }
+        public static GraphicsQuality SetQuality(this Graphics g,GraphicsQuality quality ) {
+            var result = new GraphicsQuality {
+                InterpolationMode = g.InterpolationMode,
+                CompositingMode = g.CompositingMode,
+                CompositingQuality = g.CompositingQuality,
+                SmoothingMode = g.SmoothingMode,
+                TextRenderingHint = g.TextRenderingHint
+            };
+            if (true) {
+                g.InterpolationMode = quality.InterpolationMode;
+                g.CompositingMode = quality.CompositingMode;
+                g.CompositingQuality = quality.CompositingQuality;
+                g.SmoothingMode = quality.SmoothingMode;
+                g.TextRenderingHint = quality.TextRenderingHint;
+            }
+            return result;
         }
     }
 }

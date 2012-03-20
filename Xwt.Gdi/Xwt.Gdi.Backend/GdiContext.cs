@@ -83,6 +83,8 @@ namespace Xwt.Gdi.Backend {
                 if (_matrix != value && _matrix != null)
                     _matrix.Dispose ();
                 _matrix = value;
+                if (_path != null)
+                    _path.Transform(Matrix);
             }
         }
 
@@ -91,16 +93,16 @@ namespace Xwt.Gdi.Backend {
         public double[] LineDash { get; set; }
         public object Pattern { get; set; }
 
-        SolidBrush _brush = null;
+        Brush _brush = null;
         public Brush Brush {
             get {
                 if (_brush == null)
                     _brush = new SolidBrush (this.Color);
-                else
-                    _brush.Color = this.Color;
+                else if(_brush is SolidBrush)
+                    ((SolidBrush)_brush).Color = this.Color;
                 return _brush;
             }
-            set { _brush = value as SolidBrush; }
+            set { _brush = value; }
         }
 
         Pen _pen = null;
@@ -128,7 +130,7 @@ namespace Xwt.Gdi.Backend {
                 _matrix.Dispose ();
             if (this.contexts != null) {
                 foreach (var c in this.contexts)
-                    c.Dispose ();
+                    c.Dispose();
                 contexts.Clear ();
             }
         }
@@ -174,9 +176,10 @@ namespace Xwt.Gdi.Backend {
         public void SaveTo (GdiContext c) {
             c.Font = this.Font;
             c.Pen = this._pen;
+            c.LineDash = this.LineDash;
             c.Brush = this._brush;
-            c.Path = this._path;
             c.Matrix = this._matrix;
+            c.Path = this._path;
             c.Current = this.Current;
             //return c;
         }
