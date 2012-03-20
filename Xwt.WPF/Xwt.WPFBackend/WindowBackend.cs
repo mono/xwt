@@ -48,6 +48,7 @@ namespace Xwt.WPFBackend
 		public WindowBackend ()
 		{
 			Window = new System.Windows.Window ();
+			Window.UseLayoutRounding = true;
 			rootPanel = CreateMainGrid ();
 
 			Window.Content = rootPanel;

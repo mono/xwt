@@ -39,6 +39,7 @@ namespace Xwt.WPFBackend
 				throw new ArgumentNullException ("graphics");
 
 			graphics.SmoothingMode = SmoothingMode.AntiAlias;
+			graphics.PixelOffsetMode = PixelOffsetMode.Half;
 			Graphics = graphics;
 		}
 
