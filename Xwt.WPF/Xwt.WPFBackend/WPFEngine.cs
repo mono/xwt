@@ -7,7 +7,7 @@
 //       Thomas Ziegler <ziegler.thomas@web.de>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
-// Copyright (c) 2012 Luís Reis
+// Copyright (c) 2012 LuÃ­s Reis
 // Copyright (c) 2012 Thomas Ziegler
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -73,6 +73,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Widget), typeof (CustomWidgetBackend));
 			WidgetRegistry.RegisterBackend (typeof (Paned), typeof (PanedBackend));
 			WidgetRegistry.RegisterBackend (typeof (ScrollAdjustment), typeof (ScrollAdjustmentBackend));
+			WidgetRegistry.RegisterBackend (typeof (IAlertDialogBackend), typeof(AlertDialogBackend));
 		}
 
 		public override void RunApplication ()
