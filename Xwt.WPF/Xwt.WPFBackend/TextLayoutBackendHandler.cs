@@ -57,7 +57,7 @@ namespace Xwt.WPFBackend
 
 		public Size GetSize (object backend)
 		{
-			return new Size (0,0);
+			return ((TextLayoutContext) backend).GetSize ();
 		}
 	}
 }
