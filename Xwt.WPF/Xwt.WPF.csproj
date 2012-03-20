@@ -63,6 +63,7 @@
     <Compile Include="Xwt.WPFBackend\FileDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\FrameBackend.cs" />
     <Compile Include="Xwt.WPFBackend\GradientBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\ImageBuilderBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\ImageHandler.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\NativeMethods.cs" />
     <Compile Include="Xwt.WPFBackend\ImageViewBackend.cs" />

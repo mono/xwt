@@ -29,6 +29,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Input;
 using SW = System.Windows;
@@ -37,6 +38,7 @@ using Xwt.Drawing;
 using FontStretch = Xwt.Drawing.FontStretch;
 using FontStyle = Xwt.Drawing.FontStyle;
 using FontWeight = Xwt.Drawing.FontWeight;
+using ImageFormat = Xwt.Drawing.ImageFormat;
 
 namespace Xwt.WPFBackend
 {
@@ -257,6 +259,18 @@ namespace Xwt.WPFBackend
 				case PointerButton.Left: return MouseButton.Left;
 				case PointerButton.Middle: return MouseButton.Middle;
 				default: return MouseButton.Right;
+			}
+		}
+
+		public static SD.Imaging.PixelFormat ToPixelFormat (this ImageFormat self)
+		{
+			switch (self) {
+				case ImageFormat.ARGB32:
+					return PixelFormat.Format32bppArgb;
+				case ImageFormat.RGB24:
+					return PixelFormat.Format24bppRgb;
+				default:
+					throw new ArgumentException();
 			}
 		}
 	}
