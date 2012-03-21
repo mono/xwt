@@ -25,9 +25,10 @@
 // THE SOFTWARE.
 
 using System;
-using System.Windows.Controls;
+using System.Drawing;
 using System.Windows.Media;
 using Xwt.Backends;
+using Image = System.Windows.Controls.Image;
 
 namespace Xwt.WPFBackend
 {
@@ -44,7 +45,8 @@ namespace Xwt.WPFBackend
 			if (nativeImage == null)
 				throw new ArgumentNullException ("nativeImage");
 
-			ImageSource source = nativeImage as ImageSource;
+			ImageSource source = DataConverter.AsImageSource (nativeImage);
+
 			if (source == null)
 				throw new ArgumentException ("nativeImage is not of the expected type", "nativeImage");
 

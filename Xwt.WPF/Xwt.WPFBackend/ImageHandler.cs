@@ -27,9 +27,15 @@
 // THE SOFTWARE.
 
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Xwt.Backends;
 using Xwt.WPFBackend.Interop;
+using Color = System.Drawing.Color;
 using SWM = System.Windows.Media;
 using SWMI = System.Windows.Media.Imaging;
 
@@ -105,9 +111,15 @@ namespace Xwt.WPFBackend
 
 		public override Size GetSize (object handle)
 		{
-			var img = (SWMI.BitmapSource)handle;
+			BitmapSource source = handle as BitmapSource;
+			if (source != null)
+				return new Size (source.PixelWidth, source.PixelHeight);
 
-			return new Size (img.PixelWidth, img.PixelHeight);
+			Bitmap bitmp = handle as Bitmap;
+			if (bitmp != null)
+				return new Size (bitmp.Width, bitmp.Height);
+
+			throw new ArgumentException();
 		}
 
 		public override object Resize (object handle, double width, double height)
@@ -156,7 +168,19 @@ namespace Xwt.WPFBackend
 
 		public override object ChangeOpacity (object backend, double opacity)
 		{
-			throw new NotImplementedException ();
+			Bitmap bitmap = DataConverter.AsBitmap (backend);
+			if (bitmap != null) {
+				for (int x = 0; x < bitmap.Width; ++x) {
+					for (int y = 0; y < bitmap.Height; ++y) {
+						Color c = bitmap.GetPixel (x, y);
+						bitmap.SetPixel (x, y, Color.FromArgb ((int) (opacity * 255), c.R, c.G, c.B));
+					}
+				}
+
+				return bitmap;
+			}
+
+			throw new ArgumentException();
 		}
 
 		public override void CopyArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)

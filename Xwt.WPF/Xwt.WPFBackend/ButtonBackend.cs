@@ -98,7 +98,7 @@ namespace Xwt.WPFBackend
 			{
 				SWC.DockPanel grid = new SWC.DockPanel ();
 
-				var img = (SWMI.BitmapSource)imageBackend;
+				var img = DataConverter.AsImageSource (imageBackend);
 				SWC.Image imageCtrl = new SWC.Image
 				{
 					Source = img,
