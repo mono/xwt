@@ -162,8 +162,19 @@ namespace Xwt.WPFBackend
 				this.wbitmap.AddDirtyRect (new Int32Rect (0, 0, this.wbitmap.PixelWidth, this.wbitmap.PixelHeight));
 				this.fullRedraw = false;
 			} else {
-				for (int i = 0; i < this.dirtyRects.Count; ++i)
-					this.wbitmap.AddDirtyRect (this.dirtyRects [i]);
+				for (int i = 0; i < this.dirtyRects.Count; ++i) {
+					Int32Rect r = this.dirtyRects [i];
+					if (r.X < 0)
+						r.X = 0;
+					if (r.Y < 0)
+						r.Y = 0;
+					if (r.X + r.Width > this.wbitmap.PixelWidth)
+						r.Width = this.wbitmap.PixelWidth - r.X;
+					if (r.Y + r.Height > this.wbitmap.PixelHeight)
+						r.Height = this.wbitmap.PixelHeight - r.Y;
+
+					this.wbitmap.AddDirtyRect (r);
+				}
 			}
 
 			this.dirtyRects.Clear();
