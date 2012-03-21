@@ -184,7 +184,14 @@ namespace Xwt.GtkBackend
 				
 				gtkCursors [cursor] = gc = new Gdk.Cursor (ctype);
 			}
-			EventsRootWidget.GdkWindow.Cursor = gc;
+			if (EventsRootWidget.GdkWindow == null) {
+				EventHandler h = null;
+				h = delegate {
+					EventsRootWidget.GdkWindow.Cursor = gc;
+					EventsRootWidget.Realized -= h;
+				};
+				EventsRootWidget.Realized += h;
+			}
 		}
 		
 		~WidgetBackend ()
