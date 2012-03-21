@@ -75,7 +75,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (ScrollAdjustment), typeof (ScrollAdjustmentBackend));
 			WidgetRegistry.RegisterBackend (typeof (OpenFileDialog), typeof (OpenFileDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof (SelectFolderDialog), typeof (SelectFolderDialogBackend));
-			WidgetRegistry.RegisterBackend (typeof (MessageDialog), typeof (AlertDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof (IAlertDialogBackend), typeof (AlertDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof (ImageBuilder), typeof (ImageBuilderBackendHandler));
 		}
 
