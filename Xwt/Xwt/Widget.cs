@@ -348,6 +348,10 @@ namespace Xwt
 				if (bk == null)
 					throw new InvalidOperationException ("The Content widget can only be set when directly subclassing Xwt.Widget");
 				bk.SetContent ((IWidgetBackend)GetBackend (value));
+				if (contentWidget != null)
+					UnregisterChild (contentWidget);
+				if (value != null)
+					RegisterChild (value);
 				contentWidget = value;
 			}
 		}
