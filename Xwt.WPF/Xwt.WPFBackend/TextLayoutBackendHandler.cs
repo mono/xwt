@@ -25,9 +25,11 @@
 // THE SOFTWARE.
 
 using System;
+using System.Drawing;
 using Xwt.Backends;
 using Xwt.Drawing;
 using Xwt.Engine;
+using Font = Xwt.Drawing.Font;
 
 namespace Xwt.WPFBackend
 {
@@ -36,7 +38,12 @@ namespace Xwt.WPFBackend
 	{
 		public object Create (Context context)
 		{
-			var drawingContext = (DrawingContext)WidgetRegistry.GetBackend (context);
+			DrawingContext drawingContext;
+			if (context == null)
+				drawingContext = new DrawingContext (Graphics.FromImage (new Bitmap (1, 1)));
+			else
+				drawingContext = (DrawingContext)WidgetRegistry.GetBackend (context);
+
 			return new TextLayoutContext (drawingContext);
 		}
 
