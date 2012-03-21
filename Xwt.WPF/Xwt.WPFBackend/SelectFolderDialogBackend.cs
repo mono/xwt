@@ -55,7 +55,14 @@ namespace Xwt.WPFBackend
 
 		public string Folder
 		{
-			get { return this.dialog.SelectedPath; }
+			get 
+			{ 
+				try {
+					return this.dialog.SelectedPath; 
+				} catch (NullReferenceException) {
+					return null;
+				}
+			}
 		}
 
 		public string[] Folders
@@ -68,11 +75,10 @@ namespace Xwt.WPFBackend
 			get
 			{
 				string current = Folder;
-				if (current == null)
+				if (String.IsNullOrEmpty(current))
 					return null;
 
-				string dir = Path.GetDirectoryName (current);
-				return (String.IsNullOrEmpty (dir) ? current : dir);
+				return Path.GetDirectoryName (current);
 			}
 			set { this.dialog.SelectedPath = value; }
 		}
@@ -87,7 +93,7 @@ namespace Xwt.WPFBackend
 
 		public void Cleanup ()
 		{
-			this.dialog.Dispose();
+
 		}
 
 		private WindowsFolderBrowserDialog dialog;

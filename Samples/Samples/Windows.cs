@@ -100,13 +100,22 @@ namespace Samples
 					MessageDialog.ShowMessage ("Files have been selected!", string.Join ("\n", dlg.FileNames));
 			};
 			
-			b = new Button ("Show Select Folder dialog");
+			b = new Button ("Show Select Folder dialog (Multi select)");
 			PackStart (b);
 			b.Clicked += delegate {
-				SelectFolderDialog dlg = new SelectFolderDialog ("Select a folder");
+				SelectFolderDialog dlg = new SelectFolderDialog ("Select some folders");
 				dlg.Multiselect = true;
 				if (dlg.Run ())
 					MessageDialog.ShowMessage ("Folders have been selected!", string.Join ("\n", dlg.Folders));
+			};
+			
+			b = new Button ("Show Select Folder dialog (Single select)");
+			PackStart (b);
+			b.Clicked += delegate {
+				SelectFolderDialog dlg = new SelectFolderDialog ("Select a folder");
+				dlg.Multiselect = false;
+				if (dlg.Run ())
+					MessageDialog.ShowMessage ("Folder have been selected!", string.Join ("\n", dlg.Folders));
 			};
 		}
 	}
