@@ -34,6 +34,7 @@ namespace Xwt
 	{
 		Color color = Colors.Transparent;
 		string title = "";
+		bool supportsAlpha;
 		
 		public SelectColorDialog ()
 		{
@@ -66,6 +67,11 @@ namespace Xwt
 			set { color = value; }
 		}
 		
+		public bool SupportsAlpha {
+			get { return supportsAlpha; }
+			set { supportsAlpha = value; }
+		}
+		
 		/// <summary>
 		/// Shows the dialog.
 		/// </summary>
@@ -81,11 +87,9 @@ namespace Xwt
 		{
 			var backend = WidgetRegistry.CreateBackend<ISelectColorDialogBackend> (GetType ());
 			try {
-				if (!string.IsNullOrEmpty (title))
-					backend.Title = title;
 				if (color != Colors.Transparent)
 					backend.Color = color;
-				return backend.Run ((IWindowFrameBackend)WidgetRegistry.GetBackend (parentWindow));
+				return backend.Run ((IWindowFrameBackend)WidgetRegistry.GetBackend (parentWindow), title, supportsAlpha);
 			} finally {
 				color = backend.Color;
 				backend.Dispose ();

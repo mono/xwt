@@ -113,8 +113,9 @@ namespace Samples
 			PackStart (b);
 			b.Clicked += delegate {
 				SelectColorDialog dlg = new SelectColorDialog ("Select a color");
+				dlg.SupportsAlpha = true;
 				dlg.Color = Xwt.Drawing.Colors.AliceBlue;
-				if (dlg.Run ())
+				if (dlg.Run (ParentWindow))
 					MessageDialog.ShowMessage ("A color has been selected!", dlg.Color.ToString ());
 			};
 		}

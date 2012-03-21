@@ -32,6 +32,7 @@ namespace Xwt.GtkBackend
 	public class SelectColorDialogBackend: ISelectColorDialogBackend
 	{
 		Gtk.ColorSelectionDialog dlg;
+		Color color;
 		
 		public SelectColorDialogBackend ()
 		{
@@ -39,9 +40,26 @@ namespace Xwt.GtkBackend
 		}
 
 		#region ISelectColorDialogBackend implementation
-		public bool Run (IWindowFrameBackend parent)
+		public bool Run (IWindowFrameBackend parent, string title, bool supportsAlpha)
 		{
-			return dlg.Run () == (int) Gtk.ResponseType.Ok;
+			dlg.Title = title;
+			dlg.ColorSelection.HasOpacityControl = supportsAlpha;
+			
+			dlg.ColorSelection.CurrentColor = color.ToGdkColor ();
+			if (supportsAlpha)
+				dlg.ColorSelection.CurrentAlpha = (ushort) (((double)ushort.MaxValue) * color.Alpha);
+		
+			var p = (WindowFrameBackend) parent;
+			int result = MessageService.RunCustomDialog (dlg, p != null ? p.Window : null);
+			
+			if (result == (int) Gtk.ResponseType.Ok) {
+				color = dlg.ColorSelection.CurrentColor.ToXwtColor ();
+				if (supportsAlpha)
+					color = color.WithAlpha ((double)dlg.ColorSelection.CurrentAlpha / (double)ushort.MaxValue);
+				return true;
+			}
+			else
+				return false;
 		}
 
 		public void Dispose ()
@@ -49,14 +67,13 @@ namespace Xwt.GtkBackend
 			dlg.Destroy ();
 		}
 
-		public string Title {
-			get { return dlg.Title; }
-			set { dlg.Title = value; }
-		}
-
 		public Color Color {
-			get { return dlg.ColorSelection.CurrentColor.ToXwtColor (); }
-			set { dlg.ColorSelection.CurrentColor = value.ToGdkColor (); }
+			get {
+				return color;
+			}
+			set {
+				color = value;
+			}
 		}
 		
 		#endregion

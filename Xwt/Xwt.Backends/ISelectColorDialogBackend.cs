@@ -31,11 +31,6 @@ namespace Xwt.Backends
 	public interface ISelectColorDialogBackend
 	{
 		/// <summary>
-		/// Gets or sets the title of the dialog
-		/// </summary>
-		string Title { get; set; }
-		
-		/// <summary>
 		/// Gets or sets the selected color
 		/// </summary>
 		Color Color { get; set; }
@@ -46,6 +41,12 @@ namespace Xwt.Backends
 		/// <param name='parent'>
 		/// Parent window (the dialog will be modal to this window). It can be null.
 		/// </param>
+		/// <param name='title'>
+		/// Title of the dialog
+		/// </param>
+		/// <param name='supportsAlpha'>
+		/// <c>true</c> if the dialog has to allow selecting an alpha value for the color
+		/// </param>
 		/// <returns>
 		/// <c>true</c> if the user clicked OK, <c>false</c> otherwise
 		/// </returns>
@@ -54,7 +55,7 @@ namespace Xwt.Backends
 		/// The dialog must be shown in modal mode. The method returns when the user clicks on
 		/// OK or Cancel. The dialog must be already closed when this method returns.
 		/// </remarks>
-		bool Run (IWindowFrameBackend parent);
+		bool Run (IWindowFrameBackend parent, string title, bool supportsAlpha);
 		
 		/// <summary>
 		/// Frees native resources
