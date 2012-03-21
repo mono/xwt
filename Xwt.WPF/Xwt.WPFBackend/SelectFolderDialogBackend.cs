@@ -55,7 +55,7 @@ namespace Xwt.WPFBackend
 
 		public string Folder
 		{
-			get { return this.dialog.SelectedPath; }
+			get { return (this.dialog != null) ? this.dialog.SelectedPath : null; }
 		}
 
 		public string[] Folders
@@ -68,7 +68,7 @@ namespace Xwt.WPFBackend
 			get
 			{
 				string current = Folder;
-				if (current == null)
+				if (String.IsNullOrEmpty (current))
 					return null;
 
 				string dir = Path.GetDirectoryName (current);
