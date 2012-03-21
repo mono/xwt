@@ -70,6 +70,16 @@ namespace Xwt.GtkBackend
 				placeHolderText = value;
 			}
 		}
+		
+		public override Color BackgroundColor {
+			get {
+				return base.BackgroundColor;
+			}
+			set {
+				base.BackgroundColor = value;
+				Widget.ModifyBase (Gtk.StateType.Normal, Util.ToGdkColor (value));
+			}
+		}
 
 		Pango.Layout layout;
 		
