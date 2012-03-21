@@ -228,10 +228,10 @@ namespace Xwt.GtkBackend
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
-			if (Widget.GdkWindow == null)
+			if (Widget.ParentWindow == null)
 				return Point.Zero;
 			int x, y;
-			Widget.GdkWindow.GetOrigin (out x, out y);
+			Widget.ParentWindow.GetOrigin (out x, out y);
 			var a = Widget.Allocation;
 			x += a.X;
 			y += a.Y;
@@ -716,7 +716,8 @@ namespace Xwt.GtkBackend
 
 		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
 		{
-			var a = new MouseMovedEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y);
+			var sc = ConvertToScreenCoordinates (new Point (0, 0));
+			var a = new MouseMovedEventArgs ((long) args.Event.Time, args.Event.XRoot - sc.X, args.Event.YRoot - sc.Y);
 			Toolkit.Invoke (delegate {
 				EventSink.OnMouseMoved (a);
 			});
