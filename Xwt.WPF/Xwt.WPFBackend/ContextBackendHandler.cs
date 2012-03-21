@@ -28,7 +28,10 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Windows;
+using System.Windows.Media.Imaging;
 using Xwt.Backends;
 using Xwt.Drawing;
 using Xwt.Engine;
@@ -239,10 +242,18 @@ namespace Xwt.WPFBackend
 
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
 		{
+			var c = (DrawingContext) backend;
+
+			Bitmap bmp = GetBitmap (img);
+			DrawImageCore (c, bmp, (float) x, (float) y, bmp.Width, bmp.Height, (float)alpha);
 		}
 
 		public void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
+			var c = (DrawingContext) backend;
+
+			Bitmap bmp = GetBitmap (img);
+			DrawImageCore (c, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
 		}
 
 		public void ResetTransform (object backend)
@@ -265,6 +276,52 @@ namespace Xwt.WPFBackend
 
 		public void Dispose (object backend)
 		{
+		}
+
+		private void DrawImageCore (DrawingContext c, Bitmap bmp, float x, float y, float width, float height, float alpha)
+		{
+			if (bmp == null)
+				throw new ArgumentException();
+
+			if (alpha < 1) {
+				var attr = new ImageAttributes ();
+
+				float[][] matrixItems = new[] {
+					new float[] { 1, 0, 0, 0, 0 },
+					new float[] { 0, 1, 0, 0, 0 },
+					new float[] { 0, 0, 1, 0, 0 },
+					new float[] { 0, 0, 0, alpha, 0 },
+					new float[] { 0, 0, 0, 0, 1 },
+				};
+
+				attr.SetColorMatrix (new ColorMatrix (matrixItems), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+				PointF[] points = new PointF[3];
+				points [0] = new PointF (x, y);
+				points [1] = new PointF (x + width, y);
+				points [2] = new PointF (x, y + height);
+
+				c.Graphics.DrawImage (bmp, points, new RectangleF (0, 0, bmp.Width, bmp.Height), GraphicsUnit.Pixel, attr);
+			}
+			else
+				c.Graphics.DrawImage (bmp, x, y, width, height);
+		}
+
+		private Bitmap GetBitmap (object img)
+		{
+			Bitmap bmp = img as Bitmap;
+			if (bmp == null) {
+				var bs = img as BitmapSource;
+				if (bs != null) {
+					bmp = new Bitmap (bs.PixelWidth, bs.PixelHeight, bs.Format.ToPixelFormat ());
+					BitmapData data = bmp.LockBits (new System.Drawing.Rectangle (0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly,
+					                                bmp.PixelFormat);
+					bs.CopyPixels (new Int32Rect (0, 0, bmp.Width, bmp.Height), data.Scan0, data.Height * data.Stride, data.Stride);
+					bmp.UnlockBits (data);
+				}
+			}
+
+			return bmp;
 		}
 	}
 }
