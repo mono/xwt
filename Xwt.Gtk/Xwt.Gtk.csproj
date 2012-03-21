@@ -96,6 +96,7 @@
     <Compile Include="Xwt.GtkBackend\ScrollAdjustmentBackend.cs" />
     <Compile Include="Xwt.GtkBackend\FileDialogBackend.cs" />
     <Compile Include="Xwt.GtkBackend\PanedBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SelectColorDialogBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

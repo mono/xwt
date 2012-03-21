@@ -108,6 +108,15 @@ namespace Samples
 				if (dlg.Run ())
 					MessageDialog.ShowMessage ("Folders have been selected!", string.Join ("\n", dlg.Folders));
 			};
+			
+			b = new Button ("Show Select Color dialog");
+			PackStart (b);
+			b.Clicked += delegate {
+				SelectColorDialog dlg = new SelectColorDialog ("Select a color");
+				dlg.Color = Xwt.Drawing.Colors.AliceBlue;
+				if (dlg.Run ())
+					MessageDialog.ShowMessage ("A color has been selected!", dlg.Color.ToString ());
+			};
 		}
 	}
 }

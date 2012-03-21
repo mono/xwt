@@ -251,6 +251,11 @@ namespace Xwt.Drawing
 		{
 			return r.GetHashCode () ^ g.GetHashCode () ^ b.GetHashCode () ^ a.GetHashCode ();
 		}
+		
+		public override string ToString ()
+		{
+			return string.Format ("[Color: Red={0}, Green={1}, Blue={2}, Alpha={3}]", Red, Green, Blue, Alpha);
+		}
 	}
 }
 

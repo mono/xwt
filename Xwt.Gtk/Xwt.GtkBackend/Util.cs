@@ -190,12 +190,12 @@ namespace Xwt.GtkBackend
 			return Gtk.IconSize.Dialog;
 		}
 		
-		public static Gdk.Color ToGdkColor (Xwt.Drawing.Color color)
+		public static Gdk.Color ToGdkColor (this Xwt.Drawing.Color color)
 		{
 			return new Gdk.Color ((byte)(color.Red * 255), (byte)(color.Green * 255), (byte)(color.Blue * 255));
 		}
 		
-		public static Color ToXwtColor (Gdk.Color color)
+		public static Color ToXwtColor (this Gdk.Color color)
 		{
 			return new Color ((double)color.Red / (double)ushort.MaxValue, (double)color.Green / (double)ushort.MaxValue, (double)color.Blue / (double)ushort.MaxValue);
 		}

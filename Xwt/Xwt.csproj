@@ -280,6 +280,8 @@
     <Compile Include="Xwt\TransferDataType.cs" />
     <Compile Include="Xwt.Backends\TransferDataStore.cs" />
     <Compile Include="Xwt\CursorType.cs" />
+    <Compile Include="Xwt\SelectColorDialog.cs" />
+    <Compile Include="Xwt.Backends\ISelectColorDialogBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

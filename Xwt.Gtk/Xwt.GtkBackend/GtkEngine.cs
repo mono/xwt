@@ -81,6 +81,7 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.SaveFileDialog), typeof(SaveFileDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.SelectFolderDialog), typeof(SelectFolderDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Paned), typeof(PanedBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.SelectColorDialog), typeof(SelectColorDialogBackend));
 		}
 
 		public override void RunApplication ()

@@ -161,7 +161,8 @@ namespace Xwt
 					}
 				}
 			}
-			catch {
+			catch (Exception ex) {
+				Console.WriteLine (ex);
 			}
 			return false;
 		}
