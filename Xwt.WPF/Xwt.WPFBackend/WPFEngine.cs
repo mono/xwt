@@ -77,6 +77,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (SelectFolderDialog), typeof (SelectFolderDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof (IAlertDialogBackend), typeof (AlertDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof (ImageBuilder), typeof (ImageBuilderBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof (ImagePattern), typeof (ImagePatternBackendHandler));
 		}
 
 		public override void RunApplication ()

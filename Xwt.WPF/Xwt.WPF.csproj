@@ -66,6 +66,7 @@
     <Compile Include="Xwt.WPFBackend\ImageBuilderBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\ImageHandler.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\NativeMethods.cs" />
+    <Compile Include="Xwt.WPFBackend\ImagePatternBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\ImageViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\LabelBackend.cs" />
     <Compile Include="Xwt.WPFBackend\BoxBackend.cs" />
