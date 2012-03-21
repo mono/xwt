@@ -191,7 +191,8 @@ namespace Xwt.GtkBackend
 					EventsRootWidget.Realized -= h;
 				};
 				EventsRootWidget.Realized += h;
-			}
+			} else
+				EventsRootWidget.GdkWindow.Cursor = gc;
 		}
 		
 		~WidgetBackend ()
