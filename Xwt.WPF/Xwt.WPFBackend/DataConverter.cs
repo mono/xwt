@@ -301,5 +301,22 @@ namespace Xwt.WPFBackend
 
 			throw new ArgumentException();
 		}
+
+		public static SD.Bitmap AsBitmap (object backend)
+		{
+			var bmp = backend as SD.Bitmap;
+			if (bmp == null) {
+				var bs = backend as SWM.Imaging.BitmapSource;
+				if (bs != null) {
+					bmp = new SD.Bitmap (bs.PixelWidth, bs.PixelHeight, bs.Format.ToPixelFormat ());
+					SDI.BitmapData data = bmp.LockBits (new System.Drawing.Rectangle (0, 0, bmp.Width, bmp.Height), SDI.ImageLockMode.WriteOnly,
+					                                bmp.PixelFormat);
+					bs.CopyPixels (new Int32Rect (0, 0, bmp.Width, bmp.Height), data.Scan0, data.Height * data.Stride, data.Stride);
+					bmp.UnlockBits (data);
+				}
+			}
+
+			return bmp;
+		}
 	}
 }

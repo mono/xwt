@@ -250,7 +250,7 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext) backend;
 
-			Bitmap bmp = GetBitmap (img);
+			Bitmap bmp = DataConverter.AsBitmap (img);
 			DrawImageCore (c, bmp, (float) x, (float) y, bmp.Width, bmp.Height, (float)alpha);
 		}
 
@@ -258,7 +258,7 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext) backend;
 
-			Bitmap bmp = GetBitmap (img);
+			Bitmap bmp = DataConverter.AsBitmap (img);
 			DrawImageCore (c, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
 		}
 
@@ -311,23 +311,6 @@ namespace Xwt.WPFBackend
 			}
 			else
 				c.Graphics.DrawImage (bmp, x, y, width, height);
-		}
-
-		private Bitmap GetBitmap (object img)
-		{
-			Bitmap bmp = img as Bitmap;
-			if (bmp == null) {
-				var bs = img as BitmapSource;
-				if (bs != null) {
-					bmp = new Bitmap (bs.PixelWidth, bs.PixelHeight, bs.Format.ToPixelFormat ());
-					BitmapData data = bmp.LockBits (new System.Drawing.Rectangle (0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly,
-					                                bmp.PixelFormat);
-					bs.CopyPixels (new Int32Rect (0, 0, bmp.Width, bmp.Height), data.Scan0, data.Height * data.Stride, data.Stride);
-					bmp.UnlockBits (data);
-				}
-			}
-
-			return bmp;
 		}
 	}
 }
