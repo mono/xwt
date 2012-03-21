@@ -29,6 +29,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using SW = System.Windows;
@@ -317,6 +318,30 @@ namespace Xwt.WPFBackend
 			}
 
 			return bmp;
+		}
+
+		[DllImport ("gdi32")]
+		private static extern int DeleteObject (IntPtr o);
+
+		public static SWM.ImageSource AsImageSource (object nativeImage)
+		{
+			var source = nativeImage as SWM.ImageSource;
+			if (source == null) {
+				var bitmap = nativeImage as SD.Bitmap;
+				if (bitmap != null) {
+					IntPtr ptr = bitmap.GetHbitmap ();
+
+					try {
+						return SW.Interop.Imaging.CreateBitmapSourceFromHBitmap (ptr, IntPtr.Zero, Int32Rect.Empty,
+																	  SWM.Imaging.BitmapSizeOptions.FromEmptyOptions ());
+					}
+					finally {
+						DeleteObject (ptr);
+					}
+				}
+			}
+
+			return source;
 		}
 	}
 }

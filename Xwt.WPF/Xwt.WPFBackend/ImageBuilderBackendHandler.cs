@@ -24,13 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Xwt.Backends;
 using Xwt.Drawing;
 
@@ -52,16 +46,7 @@ namespace Xwt.WPFBackend
 
 		public object CreateImage (object backend)
 		{
-			Bitmap bmp = (Bitmap) backend;
-			IntPtr ptr = bmp.GetHbitmap ();
-
-			try {
-				return Imaging.CreateBitmapSourceFromHBitmap (ptr, IntPtr.Zero, Int32Rect.Empty,
-				                                              BitmapSizeOptions.FromEmptyOptions ());
-			}
-			finally {
-				DeleteObject (ptr);
-			}
+			return DataConverter.AsImageSource (backend);
 		}
 
 		public void Dispose (object backend)
@@ -69,8 +54,5 @@ namespace Xwt.WPFBackend
 			Bitmap bmp = (Bitmap) backend;
 			bmp.Dispose();
 		}
-
-		[DllImport ("gdi32")]
-		private static extern int DeleteObject (IntPtr o);
 	}
 }
