@@ -61,14 +61,21 @@ namespace Xwt.WPFBackend
 
 		public FileDialogFilter ActiveFilter
 		{
-			get { return this.filters [this.dialog.FilterIndex - 1]; }
+			get
+			{
+				if (this.filters.Count == 0)
+					return null;
+
+				return this.filters [this.dialog.FilterIndex - 1];
+			}
+
 			set { this.dialog.FilterIndex = this.filters.IndexOf (value); }
 		}
 
 		public bool Run (IWindowFrameBackend parent)
 		{
 			bool? ok;
-				
+
 			WindowBackend windowBackend = parent as WindowBackend;
 			if (windowBackend != null){
 				ok = this.dialog.ShowDialog (windowBackend.Window);				
