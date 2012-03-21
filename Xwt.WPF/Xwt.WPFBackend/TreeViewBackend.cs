@@ -60,11 +60,6 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void UnselectRow (TreePosition pos)
-		{
-			throw new NotImplementedException ();
-		}
-
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
 			Tree.Items.Clear ();
@@ -96,11 +91,6 @@ namespace Xwt.WPFBackend
 			return item;
 		}
 
-		public void SelectRow (TreePosition pos)
-		{
-			throw new NotImplementedException ();
-		}
-
 		public TreePosition[] SelectedRows
 		{
 			get
@@ -115,26 +105,38 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public bool IsRowSelected (TreePosition row)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public bool IsRowExpanded (TreePosition row)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public void ExpandToRow (TreePosition pos)
-		{
-			throw new NotImplementedException();
-		}
-
 		// TODO
 		public bool HeadersVisible
 		{
 			get;
 			set;
+		}
+
+		public void SelectRow (TreePosition pos)
+		{
+			// TODO
+		}
+
+		public void UnselectRow (TreePosition pos)
+		{
+			// TODO
+		}
+
+		public bool IsRowSelected (TreePosition row)
+		{
+			// TODO
+			return false;
+		}
+
+		public bool IsRowExpanded (TreePosition row)
+		{
+			// TODO
+			return false;
+		}
+
+		public void ExpandToRow (TreePosition pos)
+		{
+			// TODO
 		}
 
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
@@ -144,32 +146,32 @@ namespace Xwt.WPFBackend
 
 		public void ExpandRow (TreePosition row, bool expandChildren)
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void CollapseRow (TreePosition row)
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void ScrollToRow (TreePosition pos)
 		{
-			throw new NotImplementedException();
+			// TODO
 		}
 
 		public void UnselectAll ()
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void SetSelectionMode (SelectionMode mode)
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void SelectAll ()
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void UpdateColumn (ListViewColumn column, object handle, ListViewColumnChange change)
