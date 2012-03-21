@@ -244,6 +244,12 @@ namespace Xwt.WPFBackend
 
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
+			var c = (DrawingContext) backend;
+			var sfont = layout.Font.ToDrawingFont ();
+			var measure = c.Graphics.MeasureString (layout.Text, sfont);
+
+			c.Graphics.DrawString (layout.Text, layout.Font.ToDrawingFont (), c.Brush,
+			                       new RectangleF ((float) x, (float) y, (float)layout.Width, measure.Height));
 		}
 
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
