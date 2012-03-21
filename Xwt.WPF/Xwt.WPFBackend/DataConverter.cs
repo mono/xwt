@@ -29,12 +29,14 @@
 // THE SOFTWARE.
 
 using System;
-using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Input;
 using SW = System.Windows;
+using SWM = System.Windows.Media;
 using SD = System.Drawing;
+using SDI = System.Drawing.Imaging;
 using Xwt.Drawing;
+using Color = Xwt.Drawing.Color;
 using FontStretch = Xwt.Drawing.FontStretch;
 using FontStyle = Xwt.Drawing.FontStyle;
 using FontWeight = Xwt.Drawing.FontWeight;
@@ -262,16 +264,42 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public static SD.Imaging.PixelFormat ToPixelFormat (this ImageFormat self)
+		public static SDI.PixelFormat ToPixelFormat (this ImageFormat self)
 		{
 			switch (self) {
 				case ImageFormat.ARGB32:
-					return PixelFormat.Format32bppArgb;
+					return SDI.PixelFormat.Format32bppArgb;
 				case ImageFormat.RGB24:
-					return PixelFormat.Format24bppRgb;
+					return SDI.PixelFormat.Format24bppRgb;
 				default:
 					throw new ArgumentException();
 			}
+		}
+
+		public static SDI.PixelFormat ToPixelFormat (this SW.Media.PixelFormat self)
+		{
+			if (self == SWM.PixelFormats.Rgb24)
+				return SDI.PixelFormat.Format24bppRgb;
+			if (self == SWM.PixelFormats.Bgra32)
+				return SDI.PixelFormat.Format32bppArgb;
+			if (self == SWM.PixelFormats.Pbgra32)
+				return SDI.PixelFormat.Format32bppPArgb;
+			if (self == SWM.PixelFormats.Prgba64)
+				return SDI.PixelFormat.Format64bppPArgb;
+			if (self == SWM.PixelFormats.Indexed1)
+				return SDI.PixelFormat.Format1bppIndexed;
+			if (self == SWM.PixelFormats.Indexed4)
+				return SDI.PixelFormat.Format4bppIndexed;
+			if (self == SWM.PixelFormats.Indexed8)
+				return SDI.PixelFormat.Format8bppIndexed;
+			if (self == SWM.PixelFormats.Gray16)
+				return SDI.PixelFormat.Format16bppGrayScale;
+			if (self == SWM.PixelFormats.Bgr24)
+				return SDI.PixelFormat.Format24bppRgb;
+			if (self == SWM.PixelFormats.Bgr32)
+				return SDI.PixelFormat.Format32bppRgb;
+
+			throw new ArgumentException();
 		}
 	}
 }
