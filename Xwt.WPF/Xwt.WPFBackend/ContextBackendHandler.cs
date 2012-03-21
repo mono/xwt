@@ -63,6 +63,12 @@ namespace Xwt.WPFBackend
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
 			var c = (DrawingContext) backend;
+			c.Path.AddArc ((float) (xc - radius), (float) (yc - radius), (float) radius * 2, (float) radius * 2, (float) angle1,
+			               (float) angle2);
+
+			var current = c.Path.GetLastPoint ();
+			c.CurrentX = current.X;
+			c.CurrentY = current.Y;
 		}
 
 		public void Clip (object backend)
