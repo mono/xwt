@@ -164,6 +164,9 @@ namespace Xwt.WPFBackend
 			} else {
 				for (int i = 0; i < this.dirtyRects.Count; ++i) {
 					Int32Rect r = this.dirtyRects [i];
+					if (r.X >= this.wbitmap.PixelWidth || r.Y >= this.wbitmap.PixelHeight)
+						continue;
+
 					if (r.X < 0)
 						r.X = 0;
 					if (r.Y < 0)
