@@ -38,12 +38,13 @@ namespace Xwt.WPFBackend
 	{
 		public object Create (Context context)
 		{
-			DrawingContext drawingContext;
-			if (context == null)
-				drawingContext = new DrawingContext (Graphics.FromImage (new Bitmap (1, 1)));
-			else
-				drawingContext = (DrawingContext)WidgetRegistry.GetBackend (context);
+			var drawingContext = (DrawingContext)WidgetRegistry.GetBackend (context);
+			return new TextLayoutContext (drawingContext);
+		}
 
+		public object Create (ICanvasBackend canvas)
+		{
+			var drawingContext = new DrawingContext (Graphics.FromImage (new Bitmap (1, 1)));
 			return new TextLayoutContext (drawingContext);
 		}
 

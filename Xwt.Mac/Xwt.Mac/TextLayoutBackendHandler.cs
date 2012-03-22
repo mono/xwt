@@ -45,6 +45,11 @@ namespace Xwt.Mac
 		{
 			return new LayoutInfo ();
 		}
+		
+		public object Create (ICanvasBackend canvas)
+		{
+			return new LayoutInfo ();
+		}
 
 		public void SetText (object backend, string text)
 		{

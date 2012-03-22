@@ -44,11 +44,13 @@ namespace Xwt.GtkBackend
 		
 		public object Create (Context context)
 		{
-			if (context != null) {
-				CairoContextBackend c = (CairoContextBackend) WidgetRegistry.GetBackend (context);
-				return Pango.CairoHelper.CreateLayout (c.Context);
-			} else
-				return Pango.CairoHelper.CreateLayout (SharedContext);
+			CairoContextBackend c = (CairoContextBackend) WidgetRegistry.GetBackend (context);
+			return Pango.CairoHelper.CreateLayout (c.Context);
+		}
+		
+		public object Create (ICanvasBackend canvas)
+		{
+			return Pango.CairoHelper.CreateLayout (SharedContext);
 		}
 
 		public void SetText (object backend, string text)

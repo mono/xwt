@@ -49,8 +49,9 @@ namespace Xwt.Drawing
 			}
 		}
 		
-		public TextLayout (): this (null)
+		public TextLayout (Canvas canvas)
 		{
+			Backend = handler.Create ((ICanvasBackend)WidgetRegistry.GetBackend (canvas));
 		}
 		
 		public TextLayout (Context ctx)
