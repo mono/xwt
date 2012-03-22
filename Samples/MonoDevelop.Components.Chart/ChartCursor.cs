@@ -37,7 +37,7 @@ namespace MonoDevelop.Components.Chart
 	{
 		double val;
 		internal AxisDimension Dimension;
-		Color color = Color.Black;
+		Color color = Colors.Black;
 		int handleSize = 6;
 		bool visible = true;
 		bool showValueLabel;

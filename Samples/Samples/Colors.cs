@@ -28,9 +28,9 @@ using Xwt;
 
 namespace Samples
 {
-	public class Colors: VBox
+	public class ColorsSample: VBox
 	{
-		public Colors ()
+		public ColorsSample ()
 		{
 			Label la = new Label ("Normal color");
 			la.BackgroundColor = la.BackgroundColor;

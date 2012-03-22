@@ -417,7 +417,7 @@ namespace MonoDevelop.Components.Chart
 				ctx.Fill ();
 			}
 //			win.DrawRectangle (Style.WhiteGC, true, left - 1, top - 1, width + 2, height + 2);
-			ctx.SetColor (Color.Black);
+			ctx.SetColor (Colors.Black);
 			ctx.Rectangle (left - AreaBorderWidth, top - AreaBorderWidth, width + AreaBorderWidth*2, height + AreaBorderWidth*2);
 			ctx.Stroke ();
 			
@@ -762,11 +762,11 @@ namespace MonoDevelop.Components.Chart
 					double tt = top + 4;
 					if (tl + ts.Width + 2 >= left + width) tl = left + width - ts.Width - 1;
 					if (tl < left + 1) tl = left + 1;
-					ctx.SetColor (Color.White);
+					ctx.SetColor (Colors.White);
 					ctx.Rectangle (tl - 1, tt - 1, ts.Width + 2, ts.Height + 2);
 					ctx.Fill ();
 					ctx.Rectangle (tl - 2, tt - 2, ts.Width + 3, ts.Height + 3);
-					ctx.SetColor (Color.Black);
+					ctx.SetColor (Colors.Black);
 					ctx.DrawTextLayout (layout, tl, tt);
 				}
 			} else {

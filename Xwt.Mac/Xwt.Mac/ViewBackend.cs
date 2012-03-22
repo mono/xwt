@@ -214,7 +214,7 @@ namespace Xwt.Mac
 				if (Widget.Layer != null)
 					return Widget.Layer.BackgroundColor.ToXwtColor ();
 				else
-					return Xwt.Drawing.Color.Black;
+					return Xwt.Drawing.Colors.Black;
 			}
 			set {
 				if (Widget.Layer != null)

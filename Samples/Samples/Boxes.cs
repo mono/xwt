@@ -106,7 +106,7 @@ namespace Samples
 			ctx.SetColor (new Color (0.8, 0.8, 0.8));
 			ctx.Rectangle (Bounds.Inflate (-margin, -margin)); 
 			ctx.Fill ();
-			ctx.SetColor (highlight ? Color.BlendWith (Color.White, 0.5) : Color);
+			ctx.SetColor (highlight ? Color.BlendWith (Xwt.Drawing.Colors.White, 0.5) : Color);
 			ctx.Rectangle (Bounds.Width / 2 - coreSize.Width / 2, Bounds.Height / 2 - coreSize.Height / 2, coreSize.Width, coreSize.Height);
 			ctx.Fill ();
 		}

@@ -43,22 +43,22 @@ namespace Samples
 			
 			ctx.SetLineWidth (1);
 			ctx.Rectangle (100, 5, 10, 10);
-			ctx.SetColor (Color.Black);
+			ctx.SetColor (Colors.Black);
 			ctx.Fill ();
 			
 			ctx.Rectangle (115, 5, 10, 10);
-			ctx.SetColor (Color.Black);
+			ctx.SetColor (Colors.Black);
 			ctx.Stroke ();
 			
 			//
 			
 			ctx.SetLineWidth (3);
 			ctx.Rectangle (100, 20, 10, 10);
-			ctx.SetColor (Color.Black);
+			ctx.SetColor (Colors.Black);
 			ctx.Fill ();
 			
 			ctx.Rectangle (115, 20, 10, 10);
-			ctx.SetColor (Color.Black);
+			ctx.SetColor (Colors.Black);
 			ctx.Stroke ();
 			
 			// Rectangle with hole
@@ -69,7 +69,7 @@ namespace Samples
 			ctx.RelLineTo (-20, 0);
 			ctx.RelLineTo (0, 20);
 			ctx.ClosePath ();
-			ctx.SetColor (Color.Black);
+			ctx.SetColor (Colors.Black);
 			ctx.Fill ();
 			
 			// Dashed lines

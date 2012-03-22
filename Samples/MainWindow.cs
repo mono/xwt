@@ -38,7 +38,7 @@ namespace Samples
 			MainMenu = menu;
 			
 			
-			HBox box = new HBox ();
+			HPaned box = new HPaned ();
 			
 			icon = Image.FromResource (typeof(App), "class.png");
 			
@@ -57,7 +57,7 @@ namespace Samples
 			var n = AddSample (null, "Drawing", null);
 			AddSample (n, "Canvas with Widget", typeof(CanvasWithWidget));
 			AddSample (n, "Chart", typeof(ChartSample));
-			AddSample (n, "Colors", typeof(Colors));
+			AddSample (n, "Colors", typeof(ColorsSample));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
 			
 			AddSample (null, "Frames", typeof(Frames));
@@ -77,13 +77,14 @@ namespace Samples
 			
 			samplesTree.DataSource = store;
 			
-			box.PackStart (samplesTree);
+			box.Panel1.Content = samplesTree;
 			
 			sampleBox = new VBox ();
 			title = new Label ("Sample:");
 			sampleBox.PackStart (title, BoxMode.None);
 			
-			box.PackStart (sampleBox, BoxMode.FillAndExpand);
+			box.Panel2.Content = sampleBox;
+			box.Panel2.Resize = true;
 			
 			Content = box;
 			

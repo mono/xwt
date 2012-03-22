@@ -92,7 +92,7 @@ namespace Samples
 		{
 			ctx.Translate (-hscroll.Value, -vscroll.Value);
 			ctx.Rectangle (new Rectangle (0, 0, imageSize, imageSize));
-			ctx.SetColor (Color.White);
+			ctx.SetColor (Xwt.Drawing.Colors.White);
 			ctx.Fill ();
 			ctx.Arc (imageSize / 2, imageSize / 2, imageSize / 2 - 20, 0, 360);
 			ctx.SetColor (new Color (0,0,1));

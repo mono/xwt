@@ -33,9 +33,6 @@ namespace Xwt.Drawing
 		double r, g, b, a;
 		HslColor hsl;
 		
-		public static Color Black = new Color (0, 0, 0);
-		public static Color White = new Color (1, 1, 1);
-		
 		public double Red {
 			get { return r; }
 			set { r = Normalize (value); hsl = null; }
@@ -203,7 +200,7 @@ namespace Xwt.Drawing
 		{
 			uint val;
 			if (!TryParseColourFromHex (name, out val)) {
-				color = Color.White;
+				color = Colors.White;
 				return false;
 			}
 			color = Color.FromBytes ((byte)(val >> 24), (byte)((val >> 16) & 0xff), (byte)((val >> 8) & 0xff), (byte)(val & 0xff));
