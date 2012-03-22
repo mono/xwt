@@ -243,8 +243,15 @@ namespace Xwt.WPFBackend
 
 		public void SetNaturalSize (double width, double height)
 		{
-			Widget.Width = width / WidthPixelRatio;
-			Widget.Height = height / HeightPixelRatio;
+			if (width == -1)
+				Widget.ClearValue (FrameworkElement.WidthProperty);
+			else
+				Widget.Width = width / WidthPixelRatio;
+
+			if (height == -1)
+				Widget.ClearValue (FrameworkElement.HeightProperty);
+			else
+				Widget.Height = height / HeightPixelRatio;
 		}
 
 		public void SetCursor (CursorType cursor)
