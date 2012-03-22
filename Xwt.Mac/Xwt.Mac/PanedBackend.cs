@@ -1,10 +1,10 @@
 // 
-// ImageViewBackend.cs
+// PanedBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,37 +26,70 @@
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
+using Xwt.Engine;
 
 namespace Xwt.Mac
 {
-	public class ImageViewBackend: ViewBackend<NSImageView,IWidgetEventSink>, IImageViewBackend
+	public class PanedBackend: ViewBackend<NSSplitView,IPanedEventSink>, IPanedBackend
 	{
-		public ImageViewBackend ()
+		SplitViewDelegate viewDelegate;
+		
+		class SplitViewDelegate: NSSplitViewDelegate
 		{
+			public PanedBackend PanedBackend;
+			
+			public override void DidResizeSubviews (MonoMac.Foundation.NSNotification notification)
+			{
+				PanedBackend.DidResizeSubviews ();
+			}
 		}
 		
-		public override void Initialize ()
+		public PanedBackend ()
 		{
-			base.Initialize ();
-			ViewObject = new CustomNSImageView ();
-			Widget.SizeToFit ();
 		}
 
-		public void SetImage (object nativeImage)
+		#region IPanedBackend implementation
+		public void Initialize (Orientation dir)
 		{
-			if (nativeImage == null)
-				throw new ArgumentNullException ("nativeImage");
-
-			NSImage image = nativeImage as NSImage;
-			if (image == null)
-				throw new ArgumentException ("nativeImage is not of the expected type", "nativeImage");
-
-			Widget.Image = image;
-			Widget.SetFrameSize (Widget.Image.Size);
+			ViewObject = new CustomSplitView ();
+			if (dir == Orientation.Horizontal)
+				Widget.IsVertical = true;
+			viewDelegate = new SplitViewDelegate () { PanedBackend = this };
+			Widget.Delegate = viewDelegate;
 		}
+
+		public void SetPanel (int panel, IWidgetBackend widget, bool resize)
+		{
+			IMacViewBackend view = (IMacViewBackend) widget;
+			Widget.AddSubview (view.View);
+			Widget.AdjustSubviews ();
+			view.NotifyPreferredSizeChanged ();
+		}
+		
+		void DidResizeSubviews ()
+		{
+			EventSink.OnPositionChanged ();
+		}
+
+		public void UpdatePanel (int panel, bool resize)
+		{
+		}
+
+		public void RemovePanel (int panel)
+		{
+		}
+
+		public double Position {
+			get {
+				return 0;
+			}
+			set {
+			}
+		}
+		#endregion
 	}
 	
-	class CustomNSImageView: NSImageView, IViewObject
+	class CustomSplitView: NSSplitView, IViewObject
 	{
 		public NSView View {
 			get {

@@ -87,7 +87,7 @@ namespace Xwt.Mac
 		}
 	}
 	
-	class CanvasView: NSView, IViewObject<NSView>
+	class CanvasView: NSView, IViewObject
 	{
 		ICanvasEventSink eventSink;
 		

@@ -80,6 +80,10 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Frame), typeof(FrameBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ScrollView), typeof(ScrollViewBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ToggleButton), typeof(ToggleButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.VSeparator), typeof(SeparatorBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.HSeparator), typeof(SeparatorBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.HPaned), typeof(PanedBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.VPaned), typeof(PanedBackend));
 		}
 
 		public override void RunApplication ()
@@ -94,18 +98,6 @@ namespace Xwt.Mac
 			NSApplication.SharedApplication.Terminate(appDelegate);
 		}
 
-		public static void ReplaceChild (NSView cont, NSView oldView, NSView newView)
-		{
-			if (cont is IViewContainer) {
-				((IViewContainer)cont).ReplaceChild (oldView, newView);
-			}
-			else if (cont is NSView) {
-				newView.Frame = oldView.Frame;
-				oldView.RemoveFromSuperview ();
-				newView.AddSubview (newView);
-			}
-		}
-		
 		static Selector hijackedSel = new Selector ("hijacked_loadNibNamed:owner:");
 		static Selector originalSel = new Selector ("loadNibNamed:owner:");
 		
@@ -159,7 +151,7 @@ namespace Xwt.Mac
 	
 	public interface IViewContainer
 	{
-		void ReplaceChild (NSView oldView, NSView newView);
+		void UpdateChildMargins (IMacViewBackend view);
 	}
 	
 	public class AppDelegate : NSApplicationDelegate

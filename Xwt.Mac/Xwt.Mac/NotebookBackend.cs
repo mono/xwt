@@ -113,10 +113,10 @@ namespace Xwt.Mac
 		}
 	}
 	
-	class TabView: NSTabView, IViewObject<NSTabView>
+	class TabView: NSTabView, IViewObject
 	{
 		public Widget Frontend { get; set; }
-		public NSTabView View {
+		public NSView View {
 			get { return this; }
 		}
 	}

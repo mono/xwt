@@ -1,10 +1,10 @@
 // 
-// IViewObject.cs
+// SeparatorBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,16 +23,37 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using MonoMac.AppKit;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public interface IViewObject
+	public class SeparatorBackend: ViewBackend<NSBox,IWidgetEventSink>, ISeparatorBackend
 	{
-		NSView View { get; }
-		Widget Frontend { get; set; }
+		public SeparatorBackend ()
+		{
+		}
+		
+		public void Initialize (Orientation dir)
+		{
+			ViewObject = new SeparatorWidget ();
+			Widget.SizeToFit ();
+		}
+	}
+	
+	class SeparatorWidget: NSBox, IViewObject
+	{
+		public SeparatorWidget ()
+		{
+			BoxType = NSBoxType.NSBoxSeparator;
+		}
+		
+		public Widget Frontend { get; set; }
+		
+		public NSView View {
+			get { return this; }
+		}
 	}
 }
 

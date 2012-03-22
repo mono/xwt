@@ -161,10 +161,10 @@ namespace Xwt.Mac
 		}
 	}
 	
-	class ScrollView: NSScrollView, IViewObject<NSScrollView>
+	class ScrollView: NSScrollView, IViewObject
 	{
 		public Widget Frontend { get; set; }
-		public NSScrollView View {
+		public NSView View {
 			get { return this; }
 		}
 	}

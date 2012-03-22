@@ -177,17 +177,15 @@ namespace Xwt.Mac
 		#endregion
 	}
 	
-	class PopUpButton: NSPopUpButton, IViewObject<NSPopUpButton>
+	class PopUpButton: NSPopUpButton, IViewObject
 	{
-		public NSPopUpButton View {
+		public NSView View {
 			get {
 				return this;
 			}
 		}
 
 		public Widget Frontend { get; set; }
-		
-		
 	}
 }
 

@@ -38,7 +38,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new MacButton (EventSink);
-			ViewObject.View.SetButtonType (NSButtonType.Switch);
+			Widget.SetButtonType (NSButtonType.Switch);
 			Widget.SizeToFit ();
 		}
 		

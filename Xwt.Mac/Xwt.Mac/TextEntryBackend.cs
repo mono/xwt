@@ -91,7 +91,7 @@ namespace Xwt.Mac
 		#endregion
 	}
 	
-	class CustomTextField: NSTextField, IViewObject<NSTextField>
+	class CustomTextField: NSTextField, IViewObject
 	{
 		ITextEntryEventSink eventSink;
 		
@@ -100,7 +100,7 @@ namespace Xwt.Mac
 			this.eventSink = eventSink;
 		}
 		
-		public NSTextField View {
+		public NSView View {
 			get {
 				return this;
 			}

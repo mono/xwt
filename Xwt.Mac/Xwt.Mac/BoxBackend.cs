@@ -62,7 +62,7 @@ namespace Xwt.Mac
 		}
 	}
 	
-	class BoxView: NSView, IViewObject<NSView>
+	class BoxView: NSView, IViewObject
 	{
 		public Widget Frontend { get; set; }
 		public NSView View {

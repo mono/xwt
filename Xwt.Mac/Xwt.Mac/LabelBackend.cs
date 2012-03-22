@@ -89,10 +89,10 @@ namespace Xwt.Mac
 		}
 	}
 	
-	class TextFieldView: NSTextField, IViewObject<NSTextField>
+	class TextFieldView: NSTextField, IViewObject
 	{
 		public Widget Frontend { get; set; }
-		public NSTextField View {
+		public NSView View {
 			get { return this; }
 		}
 	}

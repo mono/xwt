@@ -37,6 +37,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new MacFrame ();
+			Widget.ContentViewMargins = new System.Drawing.SizeF (0,0);
 			Widget.SizeToFit ();
 		}
 
@@ -51,7 +52,7 @@ namespace Xwt.Mac
 
 		public void SetContent (IWidgetBackend child)
 		{
-			Widget.ContentView = GetWidget (child);
+			Widget.ContentView = AddMargins ((IMacViewBackend)child, null);
 			Widget.SizeToFit ();
 		}
 
@@ -94,10 +95,10 @@ namespace Xwt.Mac
 		#endregion
 	}
 	
-	class MacFrame: NSBox, IViewObject<NSBox>
+	class MacFrame: NSBox, IViewObject, IViewContainer
 	{
 		#region IViewObject implementation
-		public NSBox View {
+		public NSView View {
 			get {
 				return this;
 			}
@@ -106,6 +107,11 @@ namespace Xwt.Mac
 		public Widget Frontend { get; set; }
 		
 		#endregion
+		
+		void IViewContainer.UpdateChildMargins (IMacViewBackend view)
+		{
+			ContentView = FrameBackend.AddMargins (view, (NSView)ContentView);
+		}
 	}
 }
 
