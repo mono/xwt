@@ -398,6 +398,11 @@ namespace Xwt.Drawing
 			handler.Rotate (Backend, angle);
 		}
 		
+		public void Scale (double scaleX, double scaleY)
+		{
+			handler.Scale (Backend, scaleX, scaleY);
+		}
+		
 		public void Translate (double tx, double ty)
 		{
 			handler.Translate (Backend, tx, ty);

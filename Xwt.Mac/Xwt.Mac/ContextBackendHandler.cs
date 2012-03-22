@@ -263,6 +263,14 @@ namespace Xwt.Mac
 			t.Concat ();
 		}
 		
+		public void Scale (object backend, double scaleX, double scaleY)
+		{
+			GetContext (backend);
+			NSAffineTransform t = new NSAffineTransform ();
+			t.Scale ((float)scaleX, (float)scaleY);
+			t.Concat ();
+		}
+		
 		public void Translate (object backend, double tx, double ty)
 		{
 			GetContext (backend);

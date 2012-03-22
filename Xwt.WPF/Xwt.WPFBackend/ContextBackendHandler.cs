@@ -293,6 +293,12 @@ namespace Xwt.WPFBackend
 			c.Graphics.RotateTransform((float)angle);
 		}
 
+		public void Scale (object backend, double scaleX, double scaleY)
+		{
+			var c = (DrawingContext)backend;
+			c.Graphics.ScaleTransform ((float)scaleX, (float)scaleY);
+		}
+		
 		public void Translate (object backend, double tx, double ty)
 		{
 			var c = (DrawingContext)backend;
