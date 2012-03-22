@@ -251,48 +251,54 @@ namespace Xwt.WPFBackend
 
 		public void SetFont (object backend, Font font)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Font = font.ToDrawingFont ();
 		}
 
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			var sfont = layout.Font.ToDrawingFont ();
 			var measure = c.Graphics.MeasureString (layout.Text, sfont);
 
 			c.Graphics.DrawString (layout.Text, layout.Font.ToDrawingFont (), c.Brush,
-			                       new RectangleF ((float) x, (float) y, (float)layout.Width, measure.Height));
+			                       new RectangleF ((float)x, (float)y, (float)layout.Width, measure.Height));
 		}
 
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c, bmp, (float) x, (float) y, bmp.Width, bmp.Height, (float)alpha);
+			DrawImageCore (c, bmp, (float)x, (float)y, bmp.Width, bmp.Height, (float)alpha);
 		}
 
 		public void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
+			DrawImageCore (c, bmp, (float)x, (float)y, (float)width, (float)height, (float)alpha);
 		}
 
 		public void ResetTransform (object backend)
 		{
 			var c = (DrawingContext)backend;
-			c.Graphics.ResetTransform();
+			c.Graphics.ResetTransform ();
 		}
 
 		public void Rotate (object backend, double angle)
 		{
 			var c = (DrawingContext)backend;
-			c.Graphics.RotateTransform((float)angle);
+			c.Graphics.RotateTransform ((float)angle);
 		}
-
+		
+		public void Scale (object backend, double scaleX, double scaleY)
+		{
+			var c = (DrawingContext)backend;
+			c.Graphics.ScaleTransform ((float)scaleX, (float)scaleY);
+		}
+		
 		public void Translate (object backend, double tx, double ty)
 		{
 			var c = (DrawingContext)backend;
