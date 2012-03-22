@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -69,6 +69,7 @@
     <Compile Include="Samples\ScrollWindowSample.cs" />
     <Compile Include="Samples\ButtonSample.cs" />
     <Compile Include="Samples\DrawingTransforms.cs" />
+    <Compile Include="Samples\ReferencePainter.cs" />
     <Compile Include="Samples\ComboBoxes.cs" />
     <Compile Include="Samples\Designer.cs" />
     <Compile Include="Samples\Windows.cs" />
