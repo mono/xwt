@@ -25,7 +25,11 @@ namespace Samples
 			file.SubMenu = new Menu ();
 			file.SubMenu.Items.Add (new MenuItem ("Open"));
 			file.SubMenu.Items.Add (new MenuItem ("New"));
-			file.SubMenu.Items.Add (new MenuItem ("Close"));
+			MenuItem mi = new MenuItem ("Close");
+			mi.Clicked += delegate {
+				Application.Exit();
+			};
+			file.SubMenu.Items.Add (mi);
 			menu.Items.Add (file);
 			
 			var edit = new MenuItem ("Edit");
