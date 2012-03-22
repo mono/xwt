@@ -23,7 +23,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Xwt.Backends;
 using Xwt.Engine;
@@ -33,7 +32,6 @@ namespace Xwt.Drawing
 	public sealed class Context: XwtObject, IDisposable
 	{
 		static IContextBackendHandler handler;
-		
 		Pattern pattern;
 		Font font;
 		double globalAlpha = 1;
@@ -53,6 +51,12 @@ namespace Xwt.Drawing
 		{
 		}
 		
+		/// <summary>
+		/// Makes a copy of the current state of the Context and saves it on an internal stack of saved states.
+		/// When Restore() is called, it will be restored to the saved state. 
+		/// Multiple calls to Save() and Restore() can be nested; 
+		/// each call to Restore() restores the state from the matching paired save().
+		/// </summary>
 		public void Save ()
 		{
 			handler.Save (Backend);
@@ -76,27 +80,64 @@ namespace Xwt.Drawing
 			handler.SetColor (Backend, color);
 		}
 		
+		/// <summary>
+		/// Adds a circular arc of the given radius to the current path.
+		/// The arc is centered at (xc, yc), 
+		/// begins at angle1 and proceeds in the direction of increasing angles to end at angle2. 
+		/// If angle2 is less than angle1 
+		/// it will be progressively increased by 2*M_PI until it is greater than angle1.
+		/// If there is a current point, an initial line segment will be added to the path 
+		/// to connect the current point to the beginning of the arc. 
+		/// If this initial line is undesired, 
+		/// it can be avoided by calling begin_new_sub_path() before calling arc().
+		/// </summary>
+		/// <param name='xc'>
+		/// Xc.
+		/// </param>
+		/// <param name='yc'>
+		/// Yc.
+		/// </param>
+		/// <param name='radius'>
+		/// Radius.
+		/// </param>
+		/// <param name='angle1'>
+		/// Angle1.
+		/// </param>
+		/// <param name='angle2'>
+		/// Angle2.
+		/// </param>
 		public void Arc (double xc, double yc, double radius, double angle1, double angle2)
 		{
 			handler.Arc (Backend, xc, yc, radius, angle1, angle2);
 		}
 		
-		public void Clip()
+		/// <summary>
+		/// Establishes a new clip region by intersecting the current clip region with the current Path 
+		/// as it would be filled by fill() and according to the current fill rule.
+		/// After clip(), the current path will be cleared from the Context.
+		/// The current clip region affects all drawing operations by effectively masking out any changes to the surface 
+		/// that are outside the current clip region.
+		/// Calling clip() can only make the clip region smaller, never larger. 
+		/// But the current clip is part of the graphics state, 
+		/// so a temporary restriction of the clip region can be achieved by calling clip() within a save()/restore() pair. 
+		/// The only other means of increasing the size of the clip region is reset_clip().
+		/// </summary>
+		public void Clip ()
 		{
 			handler.Clip (Backend);
 		}
 		
-		public void ClipPreserve()
+		public void ClipPreserve ()
 		{
 			handler.ClipPreserve (Backend);
 		}
 		
-		public void ResetClip()
+		public void ResetClip ()
 		{
 			handler.ResetClip (Backend);
 		}
 		
-		public void ClosePath()
+		public void ClosePath ()
 		{
 			handler.ClosePath (Backend);
 		}
@@ -106,6 +147,28 @@ namespace Xwt.Drawing
 			CurveTo (p1.X, p1.Y, p2.X, p2.Y, p3.X, p3.Y);
 		}
 		
+		/// <summary>
+		/// Adds a cubic Bezier spline to the path from the current point to position (x3, y3) in user-space coordinates, 
+		/// using (x1, y1) and (x2, y2) as the control points. 
+		/// </summary>
+		/// <param name='x1'>
+		/// X1.
+		/// </param>
+		/// <param name='y1'>
+		/// Y1.
+		/// </param>
+		/// <param name='x2'>
+		/// X2.
+		/// </param>
+		/// <param name='y2'>
+		/// Y2.
+		/// </param>
+		/// <param name='x3'>
+		/// X3.
+		/// </param>
+		/// <param name='y3'>
+		/// Y3.
+		/// </param>
 		public void CurveTo (double x1, double y1, double x2, double y2, double x3, double y3)
 		{
 			handler.CurveTo (Backend, x1, y1, x2, y2, x3, y3);
@@ -136,6 +199,16 @@ namespace Xwt.Drawing
 			MoveTo (p.X, p.Y);
 		}
 		
+		/// <summary>
+		/// If the current subpath is not empty, begin a new subpath.
+		/// After this call the current point will be (x, y).
+		/// </summary>
+		/// <param name='x'>
+		/// X.
+		/// </param>
+		/// <param name='y'>
+		/// Y.
+		/// </param>
 		public void MoveTo (double x, double y)
 		{
 			handler.MoveTo (Backend, x, y);
@@ -166,6 +239,33 @@ namespace Xwt.Drawing
 			RelCurveTo (d1.Dx, d1.Dy, d2.Dx, d2.Dy, d3.Dx, d3.Dy);
 		}
 		
+		/// <summary>
+		/// Relative-coordinate version of curve_to().
+		/// All offsets are relative to the current point. 
+		/// Adds a cubic Bezier spline to the path from the current point to a point offset 
+		/// from the current point by (dx3, dy3), using points offset by (dx1, dy1) and (dx2, dy2) 
+		/// as the control points. After this call the current point will be offset by (dx3, dy3).
+		/// Given a current point of (x, y), RelCurveTo(dx1, dy1, dx2, dy2, dx3, dy3)
+		/// is logically equivalent to CurveTo(x + dx1, y + dy1, x + dx2, y + dy2, x + dx3, y + dy3).
+		/// </summary>
+		/// <param name='dx1'>
+		/// Dx1.
+		/// </param>
+		/// <param name='dy1'>
+		/// Dy1.
+		/// </param>
+		/// <param name='dx2'>
+		/// Dx2.
+		/// </param>
+		/// <param name='dy2'>
+		/// Dy2.
+		/// </param>
+		/// <param name='dx3'>
+		/// Dx3.
+		/// </param>
+		/// <param name='dy3'>
+		/// Dy3.
+		/// </param>
 		public void RelCurveTo (double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
 		{
 			handler.RelCurveTo (Backend, dx1, dy1, dx2, dy2, dx3, dy3);
@@ -176,11 +276,33 @@ namespace Xwt.Drawing
 			RelLineTo (d.Dx, d.Dy);
 		}
 		
+		/// <summary>
+		/// Adds a line to the path from the current point to a point that 
+		/// is offset from the current point by (dx, dy) in user space. 
+		/// After this call the current point will be offset by (dx, dy).
+		/// Given a current point of (x, y), 
+		/// RelLineTo(dx, dy) is logically equivalent to LineTo(x + dx, y + dy).
+		/// </summary>
+		/// <param name='dx'>
+		/// Dx.
+		/// </param>
+		/// <param name='dy'>
+		/// Dy.
+		/// </param>
 		public void RelLineTo (double dx, double dy)
 		{
 			handler.RelLineTo (Backend, dx, dy);
 		}
 		
+		/// <summary>
+		/// If the current subpath is not empty, begin a new subpath.
+		/// After this call the current point will offset by (x, y).
+		/// Given a current point of (x, y), 
+		/// RelMoveTo(dx, dy) is logically equivalent to MoveTo(x + dx, y + dy).
+		/// </summary>
+		/// <param name='d'>
+		/// D.
+		/// </param>
 		public void RelMoveTo (Distance d)
 		{
 			RelMoveTo (d.Dx, d.Dy);
@@ -251,14 +373,13 @@ namespace Xwt.Drawing
 			handler.DrawImage (Backend, GetBackend (img), rect.X, rect.Y, rect.Width, rect.Height, alpha);
 		}
 
-        /// <summary>
-        /// Resets the Current Trasnformation Matrix (CTM) to the Identity Matrix
-        /// </summary>
+		/// <summary>
+		/// Resets the current trasnformation matrix (CTM) to the Identity Matrix
+		/// </summary>
 		public void ResetTransform ()
 		{
 			handler.ResetTransform (Backend);
 		}
-		
 		
 		/// <summary>
 		/// Applies a rotation transformation
@@ -271,6 +392,7 @@ namespace Xwt.Drawing
 		/// The rotation of the axes takes places after any existing transformation of user space.
 		/// The rotation direction for positive angles is from the positive X axis toward the positive Y axis.
 		/// </remarks>
+		/// </summary>
 		public void Rotate (double angle)
 		{
 			handler.Rotate (Backend, angle);
@@ -293,14 +415,36 @@ namespace Xwt.Drawing
 		
 		public Pattern Pattern {
 			get { return pattern; }
-			set { pattern = value; handler.SetPattern (Backend, GetBackend (value)); }
+			set {
+				pattern = value;
+				handler.SetPattern (Backend, GetBackend (value));
+			}
 		}
 		
 		public Font Font {
 			get { return font; }
-			set { font = value; handler.SetFont (Backend, value); }
+			set {
+				font = value;
+				handler.SetFont (Backend, value);
+			}
 		}
 		
+		/// <summary>
+		/// Sets the dash pattern to be used by stroke().
+		/// A dash pattern is specified by dashes, an array of positive values. 
+		/// Each value provides the user-space length of altenate "on" and "off" portions of the stroke. 
+		/// The offset specifies an offset into the pattern at which the stroke begins.
+		/// If dashes is empty dashing is disabled. If the size of dashes is 1, 
+		/// a symmetric pattern is assumed with alternating on and off portions of the size specified by the single value in dashes.
+		/// It is invalid for any value in dashes to be negative, or for all values to be 0. 
+		/// If this is the case, an exception will be thrown
+		/// </summary>
+		/// <param name='offset'>
+		/// Offset.
+		/// </param>
+		/// <param name='pattern'>
+		/// Pattern.
+		/// </param>
 		public void SetLineDash (double offset, params double[] pattern)
 		{
 			handler.SetLineDash (Backend, offset, pattern);
