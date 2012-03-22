@@ -80,6 +80,7 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Frame), typeof(FrameBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ScrollView), typeof(ScrollViewBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ToggleButton), typeof(ToggleButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
 		}
 
 		public override void RunApplication ()
