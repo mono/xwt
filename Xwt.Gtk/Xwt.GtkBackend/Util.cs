@@ -39,11 +39,6 @@ namespace Xwt.GtkBackend
 		static Dictionary<TransferDataType, Gtk.TargetEntry[]> dragTargets = new Dictionary<TransferDataType, Gtk.TargetEntry[]> ();
 		static Dictionary<string, TransferDataType> atomToType = new Dictionary<string, TransferDataType> ();
 
-		public static Cairo.Color ToCairoColor (this Color col)
-		{
-			return new Cairo.Color (col.Red, col.Green, col.Blue, col.Alpha);
-		}
-		
 		public static void SetDragData (TransferDataSource data, Gtk.DragDataGetArgs args)
 		{
 			foreach (var t in data.DataTypes) {

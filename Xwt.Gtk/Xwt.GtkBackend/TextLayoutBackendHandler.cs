@@ -28,6 +28,7 @@ using System;
 using Xwt.Backends;
 using Xwt.Drawing;
 using Xwt.Engine;
+using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
@@ -44,7 +45,7 @@ namespace Xwt.GtkBackend
 		public object Create (Context context)
 		{
 			if (context != null) {
-				GtkContext c = (GtkContext) WidgetRegistry.GetBackend (context);
+				CairoContextBackend c = (CairoContextBackend) WidgetRegistry.GetBackend (context);
 				return Pango.CairoHelper.CreateLayout (c.Context);
 			} else
 				return Pango.CairoHelper.CreateLayout (SharedContext);

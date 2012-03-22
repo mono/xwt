@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using Xwt.Backends;
 using System.Linq;
 using Xwt.Engine;
+using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
@@ -190,7 +191,7 @@ namespace Xwt.GtkBackend
 		
 		public object CreateContext ()
 		{
-			GtkContext ctx = new GtkContext ();
+			CairoContextBackend ctx = new CairoContextBackend ();
 			if (!IsRealized) {
 				Cairo.Surface sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, 1, 1);
 				Cairo.Context c = new Cairo.Context (sf);

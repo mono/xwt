@@ -1,10 +1,10 @@
 // 
-// GradientBackendHandler.cs
+// CairoConversion.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,23 +23,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Backends;
+using Xwt.Drawing;
 
-namespace Xwt.GtkBackend
+namespace Xwt.CairoBackend
 {
-	public class GradientBackendHandler: IGradientBackendHandler
+	public static class CairoConversion
 	{
-		public object CreateLinear (double x0, double y0, double x1, double y1)
+		public static Cairo.Color ToCairoColor (this Color col)
 		{
-			return new Cairo.LinearGradient (x0, y0, x1, y1);
-		}
-
-		public void AddColorStop (object backend, double position, Xwt.Drawing.Color color)
-		{
-			Cairo.Gradient g = (Cairo.Gradient) backend;
-			g.AddColorStop (position, color.ToCairoColor ());
+			return new Cairo.Color (col.Red, col.Green, col.Blue, col.Alpha);
 		}
 	}
 }

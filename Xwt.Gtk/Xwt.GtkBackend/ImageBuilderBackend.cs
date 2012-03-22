@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
+using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
@@ -49,7 +50,7 @@ namespace Xwt.GtkBackend
 		public object CreateContext (object backend)
 		{
 			Cairo.Surface sf = (Cairo.Surface) backend;
-			GtkContext ctx = new GtkContext ();
+			CairoContextBackend ctx = new CairoContextBackend ();
 			ctx.Context = new Cairo.Context (sf);
 			return ctx;
 		}

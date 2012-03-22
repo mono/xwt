@@ -27,6 +27,7 @@
 using System;
 using Xwt.Engine;
 using Xwt.Backends;
+using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
@@ -49,7 +50,7 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ListStore), typeof(ListStoreBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Canvas), typeof(CanvasBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Image), typeof(ImageHandler));
-			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(Xwt.CairoBackend.ContextBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Gradient), typeof(GradientBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(TextLayoutBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Font), typeof(FontBackendHandler));

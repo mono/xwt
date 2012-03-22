@@ -52,9 +52,7 @@
     <Compile Include="Xwt.GtkBackend\TreeViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CellUtil.cs" />
     <Compile Include="Xwt.GtkBackend\ImageHandler.cs" />
-    <Compile Include="Xwt.GtkBackend\ContextBackendHandler.cs" />
     <Compile Include="Xwt.GtkBackend\CanvasBackend.cs" />
-    <Compile Include="Xwt.GtkBackend\GradientBackendHandler.cs" />
     <Compile Include="Xwt.GtkBackend\Util.cs" />
     <Compile Include="Xwt.GtkBackend\TextLayoutBackendHandler.cs" />
     <Compile Include="Xwt.GtkBackend\FontBackendHandler.cs" />
@@ -97,6 +95,9 @@
     <Compile Include="Xwt.GtkBackend\FileDialogBackend.cs" />
     <Compile Include="Xwt.GtkBackend\PanedBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SelectColorDialogBackend.cs" />
+    <Compile Include="Xwt.CairoBackend\ContextBackendHandler.cs" />
+    <Compile Include="Xwt.CairoBackend\GradientBackendHandler.cs" />
+    <Compile Include="Xwt.CairoBackend\CairoConversion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -108,6 +109,7 @@
   <ItemGroup>
     <Folder Include="Xwt.GtkBackend\" />
     <Folder Include="Xwt.GtkBackend.CellViews\" />
+    <Folder Include="Xwt.CairoBackend\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Xwt.Gtk.dll.config">
