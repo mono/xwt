@@ -45,7 +45,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 	
-	public class ContextBackendHandlerWithPango: CairoContextBackendHandler
+	public class ContextBackendHandlerWithPango: ContextBackendHandler
 	{
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
