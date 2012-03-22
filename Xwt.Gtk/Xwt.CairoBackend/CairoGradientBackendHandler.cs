@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt.CairoBackend
 {
-	public class GradientBackendHandler: IGradientBackendHandler
+	public class CairoGradientBackendHandler: IGradientBackendHandler
 	{
 		public object CreateLinear (double x0, double y0, double x1, double y1)
 		{
