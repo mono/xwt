@@ -1,21 +1,23 @@
-﻿// 
+﻿//
 // WidgetBackend.cs
-//  
-// Author:
+//
+// Authors:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
-// 
+//       Eric Maupin <ermau@xamarin.com>
+//
 // Copyright (c) 2011 Carlos Alberto Cortez
-// 
+// Copyright (c) 2012 Xamarin, Inc.
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -97,11 +99,12 @@ namespace Xwt.WPFBackend
 		{
 			if (Widget is Control) {
 				var control = (Control)Widget;
-				return ((SWM.SolidColorBrush)control.Background).Color;
-			}
-			if (Widget is SWC.Panel) {
+				if (control.Background != null)
+					return ((SWM.SolidColorBrush)control.Background).Color;
+			} else if (Widget is SWC.Panel) {
 				var panel = (SWC.Panel)Widget;
-				return ((SWM.SolidColorBrush)panel.Background).Color;
+				if (panel.Background != null)
+					return ((SWM.SolidColorBrush)panel.Background).Color;
 			}
 
 			return SystemColors.ControlColor;
