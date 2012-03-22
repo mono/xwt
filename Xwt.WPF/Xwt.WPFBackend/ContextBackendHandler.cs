@@ -4,6 +4,7 @@
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
 //       Hywel Thomas <hywel.w.thomas@gmail.com>
+//       Lytico (http://limada.sourceforge.net)
 //
 // Copyright (c) 2012 Xamarin, Inc.
 // 
@@ -95,12 +96,23 @@ namespace Xwt.WPFBackend
 		public void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
 		{
 			var c = (DrawingContext) backend;
-			c.Path.AddCurve (new []
-			{
-				new PointF ((float)x1, (float)y1),
-				new PointF ((float)x2, (float)y2), 
-				new PointF ((float)x3, (float)y3), 
-			});
+			bool moved = false;
+			if (c.Path.PointCount != 0) {
+				var lastPoint = c.Path.GetLastPoint ();
+				moved = lastPoint.X != c.CurrentX && lastPoint.Y != c.CurrentY;
+			}
+
+			var path = moved ? new GraphicsPath () : c.Path;
+			path.AddBezier (c.CurrentX, c.CurrentY,
+							(float) x1, (float) y1,
+							(float) x2, (float) y2,
+							(float) x3, (float) y3);
+
+			if (moved)
+				c.Path.AddPath (path, connect: false);
+
+			c.CurrentX = (float) x3;
+			c.CurrentY = (float) y3;
 		}
 
 		public void Fill (object backend)
