@@ -71,14 +71,13 @@ namespace Xwt.WPFBackend
 					Button.ClearValue (SWC.Control.BorderBrushProperty);
 					break;
 				case ButtonStyle.Flat:
-					Button.Background = SystemColors.ControlBrush;
-					Button.ClearValue (SWC.Control.BorderThicknessProperty);
-					Button.ClearValue (SWC.Control.BorderBrushProperty);
+					Button.Background = Brushes.Transparent;
+					Button.BorderBrush = Brushes.Transparent;
 					break;
 				case ButtonStyle.Borderless:
 					Button.ClearValue (SWC.Control.BackgroundProperty);
 					Button.BorderThickness = new Thickness (0);
-					Button.BorderBrush = new SolidColorBrush (Colors.Transparent);
+					Button.BorderBrush = Brushes.Transparent;
 					break;
 			}
 			Button.InvalidateMeasure ();
