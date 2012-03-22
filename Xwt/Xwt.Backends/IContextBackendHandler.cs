@@ -89,6 +89,8 @@ namespace Xwt.Backends
 
 		void Rotate (object backend, double angle);
 		
+		void Scale (object backend, double scaleX, double scaleY);
+		
 		void Translate (object backend, double tx, double ty);
 		
 		/// <summary>

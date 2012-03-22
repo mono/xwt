@@ -262,6 +262,12 @@ namespace Xwt.CairoBackend
 			gc.Context.Rotate ((angle * System.Math.PI) / 180);
 		}
 		
+		public void Scale (object backend, double scaleX, double scaleY)
+		{
+			CairoContextBackend gc = (CairoContextBackend)backend;
+			gc.Context.Scale (scaleX, scaleY);
+		}
+		
 		public void Translate (object backend, double tx, double ty)
 		{
 			CairoContextBackend gc = (CairoContextBackend)backend;
