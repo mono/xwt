@@ -207,16 +207,17 @@ namespace Xwt.WPFBackend
 		public void SetLineDash (object backend, double offset, params double[] pattern)
 		{
 			var c = (DrawingContext) backend;
-			c.Pen.DashOffset = (float)offset;
 
 			if (pattern.Length != 0) {
-				float[] fp = new float[pattern.Length];
+				c.Pen.DashOffset = (float) (offset / c.Pen.Width);
+				float[] fp = new float [pattern.Length];
 				for (int i = 0; i < fp.Length; ++i)
-					fp[i] = (float)pattern[i];
+					fp [i] = (float) (pattern [i] / c.Pen.Width);
 
+				c.Pen.DashStyle = DashStyle.Custom;
 				c.Pen.DashPattern = fp;
-			}
-
+			} else
+				c.Pen.DashStyle = DashStyle.Solid;
 		}
 
 		public void SetPattern (object backend, object p)
