@@ -50,7 +50,7 @@ namespace Xwt.GtkBackend
 		{
 			FontDescription d = (FontDescription) handle;
 			d = d.Copy ();
-			d.Size = (int) size;
+			d.Size = (int) (size * Pango.Scale.PangoScale);
 			return d;
 		}
 
@@ -89,7 +89,7 @@ namespace Xwt.GtkBackend
 		public double GetSize (object handle)
 		{
 			FontDescription fd = (FontDescription) handle;
-			return fd.Size;
+			return (double)fd.Size / (double) Pango.Scale.PangoScale;
 		}
 
 		public string GetFamily (object handle)

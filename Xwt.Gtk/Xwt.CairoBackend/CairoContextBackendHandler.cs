@@ -38,9 +38,9 @@ namespace Xwt.CairoBackend
 		public Cairo.Surface TempSurface;
 	}
 	
-	public class ContextBackendHandler: IContextBackendHandler
+	public class CairoContextBackendHandler: IContextBackendHandler
 	{
-		public ContextBackendHandler ()
+		public CairoContextBackendHandler ()
 		{
 		}
 
@@ -205,19 +205,17 @@ namespace Xwt.CairoBackend
 		{
 		}
 		
-		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
+		public virtual void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			Pango.Layout pl = (Pango.Layout) WidgetRegistry.GetBackend (layout);
-			CairoContextBackend ctx = (CairoContextBackend) backend;
-			ctx.Context.MoveTo (x, y);
-			Pango.CairoHelper.ShowLayout (ctx.Context, pl);
+			Cairo.Context ctx = ((CairoContextBackend)backend).Context;
+			var lb = WidgetRegistry.GetBackend (layout);
+			CairoTextLayoutBackendHandler.Draw (ctx, lb, x, y);
 		}
 		
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
 		{
-			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
 			CairoContextBackend ctx = (CairoContextBackend)backend;
-			Gdk.CairoHelper.SetSourcePixbuf (ctx.Context, pb, x, y);
+			SetSourceImage (ctx.Context, img, x, y);
 			alpha = alpha * ctx.GlobalAlpha;
 			if (alpha == 1)
 				ctx.Context.Paint ();
@@ -225,22 +223,31 @@ namespace Xwt.CairoBackend
 				ctx.Context.PaintWithAlpha (alpha);
 		}
 		
+		protected virtual void SetSourceImage (Cairo.Context ctx, object img, double x, double y)
+		{
+		}
+		
 		public void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
-			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.Save ();
-			double sx = ((double) width) / pb.Width;
-			double sy = ((double) height) / pb.Height;
+			var s = GetImageSize (img);
+			double sx = ((double) width) / s.Width;
+			double sy = ((double) height) / s.Height;
 			ctx.Context.Translate (x, y);
 			ctx.Context.Scale (sx, sy);
-			Gdk.CairoHelper.SetSourcePixbuf (ctx.Context, pb, 0, 0);
+			SetSourceImage (ctx.Context, img, 0, 0);
 			alpha = alpha * ctx.GlobalAlpha;
 			if (alpha == 1)
 				ctx.Context.Paint ();
 			else
 				ctx.Context.PaintWithAlpha (alpha);
 			ctx.Context.Restore ();
+		}
+		
+		protected virtual Size GetImageSize (object img)
+		{
+			return new Size (0,0);
 		}
 		
 		public void ResetTransform (object backend)

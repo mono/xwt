@@ -95,9 +95,11 @@
     <Compile Include="Xwt.GtkBackend\FileDialogBackend.cs" />
     <Compile Include="Xwt.GtkBackend\PanedBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SelectColorDialogBackend.cs" />
-    <Compile Include="Xwt.CairoBackend\ContextBackendHandler.cs" />
     <Compile Include="Xwt.CairoBackend\GradientBackendHandler.cs" />
     <Compile Include="Xwt.CairoBackend\CairoConversion.cs" />
+    <Compile Include="Xwt.CairoBackend\CairoTextLayoutBackendHandler.cs" />
+    <Compile Include="Xwt.CairoBackend\CairoContextBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\ContextBackendHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

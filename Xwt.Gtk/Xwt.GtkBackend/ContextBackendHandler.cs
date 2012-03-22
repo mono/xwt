@@ -1,5 +1,5 @@
 // 
-// CairoConversion.cs
+// ContextBackendHandler.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,29 +24,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.CairoBackend;
 using Xwt.Drawing;
+using Xwt.Engine;
 
-namespace Xwt.CairoBackend
+namespace Xwt.GtkBackend
 {
-	public static class CairoConversion
+	public class ContextBackendHandler: CairoContextBackendHandler
 	{
-		public static Cairo.Color ToCairoColor (this Color col)
+		protected override void SetSourceImage (Cairo.Context ctx, object img, double x, double y)
 		{
-			return new Cairo.Color (col.Red, col.Green, col.Blue, col.Alpha);
+			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
+			Gdk.CairoHelper.SetSourcePixbuf (ctx, pb, x, y);
 		}
 		
-		public static void SelectFont (this Cairo.Context ctx, Font font)
+		protected override Size GetImageSize (object img)
 		{
-			Cairo.FontSlant slant;
-			switch (font.Style) {
-			case FontStyle.Oblique: slant = Cairo.FontSlant.Oblique; break;
-			case FontStyle.Italic: slant = Cairo.FontSlant.Italic; break;
-			default: slant = Cairo.FontSlant.Normal; break;
-			}
-			
-			Cairo.FontWeight w = font.Weight >= FontWeight.Bold ? Cairo.FontWeight.Bold : Cairo.FontWeight.Normal;
-			
-			ctx.SelectFontFace (font.Family, slant, w);
+			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
+			return new Size (pb.Width, pb.Height);
+		}
+	}
+	
+	public class ContextBackendHandlerWithPango: CairoContextBackendHandler
+	{
+		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
+		{
+			Pango.Layout pl = (Pango.Layout) WidgetRegistry.GetBackend (layout);
+			CairoContextBackend ctx = (CairoContextBackend) backend;
+			ctx.Context.MoveTo (x, y);
+			Pango.CairoHelper.ShowLayout (ctx.Context, pl);
 		}
 	}
 }
