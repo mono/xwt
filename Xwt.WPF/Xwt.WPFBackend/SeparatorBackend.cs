@@ -25,8 +25,9 @@
 // THE SOFTWARE.
 
 using System.Windows;
+using System.Windows.Media;
 using Xwt.Backends;
-using WindowsSeparator = System.Windows.Controls.Separator;
+using WindowsRectangle = System.Windows.Shapes.Rectangle;
 
 namespace Xwt.WPFBackend
 {
@@ -35,16 +36,37 @@ namespace Xwt.WPFBackend
 	{
 		public SeparatorBackend()
 		{
-			Widget = new WindowsSeparator ();
+			Separator = new WindowsRectangle ();
+			Separator.Stroke = Brushes.DarkGray;
 		}
 
 		public void Initialize (Orientation dir)
 		{
+			this.direction = dir;
 		}
 
-		protected WindowsSeparator Separator
+		private Orientation direction;
+
+		protected WindowsRectangle Separator
 		{
-			get { return (WindowsSeparator) Widget; }
+			get { return (WindowsRectangle) Widget; }
+			set { Widget = value; }
+		}
+
+		public override WidgetSize GetPreferredHeight()
+		{
+			if (this.direction == Orientation.Vertical)
+				return new WidgetSize (((FrameworkElement) Widget.Parent).ActualHeight / HeightPixelRatio);
+
+			return new WidgetSize (1);
+		}
+
+		public override WidgetSize GetPreferredWidth()
+		{
+			if (this.direction == Orientation.Horizontal)
+				return new WidgetSize (((FrameworkElement) Widget.Parent).ActualWidth / WidthPixelRatio);
+
+			return new WidgetSize (1);
 		}
 	}
 }
