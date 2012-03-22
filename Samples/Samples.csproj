@@ -69,6 +69,7 @@
     <Compile Include="Samples\ScrollWindowSample.cs" />
     <Compile Include="Samples\ButtonSample.cs" />
     <Compile Include="Samples\DrawingTransforms.cs" />
+	<Compile Include="Samples\ReferencePainter.cs" />
     <Compile Include="Samples\ComboBoxes.cs" />
     <Compile Include="Samples\Designer.cs" />
     <Compile Include="Samples\Windows.cs" />
