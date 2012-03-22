@@ -207,7 +207,7 @@ namespace Xwt.CairoBackend
 			
 			var text = la.Text;
 			
-			y += ctx.ScaledFont.FontExtents.Ascent;
+			y += ctx.FontExtents.Ascent;
 			ctx.MoveTo (x, y);
 			
 			if (la.Font != null) {
