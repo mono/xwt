@@ -68,6 +68,9 @@ namespace Xwt.Drawing
 			}
 		}
 		
+		/// <summary>
+		/// Font size in points
+		/// </summary>
 		public double Size {
 			get {
 				return handler.GetSize (Backend);
