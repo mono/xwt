@@ -28,7 +28,9 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Xwt.Backends;
+using Xwt.Engine;
 using Orientation = Xwt.Backends.Orientation;
 
 namespace Xwt.WPFBackend
@@ -64,6 +66,8 @@ namespace Xwt.WPFBackend
 						HorizontalAlignment = HorizontalAlignment.Center,
 						Width = SplitterSize
 					};
+					splitter.DragDelta += SplitterOnDragDelta;
+
 					Grid.ColumnDefinitions.Insert (panel, new ColumnDefinition { Width = GridLength.Auto });
 					Grid.SetColumn (splitter, panel++);
 					Grid.Children.Add (splitter);
@@ -82,6 +86,8 @@ namespace Xwt.WPFBackend
 						VerticalAlignment = VerticalAlignment.Center,
 						Height = SplitterSize
 					};
+					splitter.DragDelta += SplitterOnDragDelta;
+
 					Grid.RowDefinitions.Insert (panel, new RowDefinition { Height = GridLength.Auto });
 					Grid.SetRow (splitter, panel++);
 					Grid.Children.Add (splitter);
@@ -136,13 +142,46 @@ namespace Xwt.WPFBackend
 			RemoveElementsForPanel (panel);
 		}
 
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+
+			if (eventId is PanedEvent) {
+				switch ((PanedEvent)eventId) {
+				case PanedEvent.PositionChanged:
+					this.reportPositionChanged = true;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+
+			if (eventId is PanedEvent) {
+				switch ((PanedEvent)eventId) {
+				case PanedEvent.PositionChanged:
+					this.reportPositionChanged = false;
+					break;
+				}
+			}
+		}
+
 		private const int SplitterSize = 4;
 		private Orientation direction;
+		private bool reportPositionChanged;
 
 		private Grid Grid
 		{
 			get { return (Grid) Widget; }
 			set { Widget = value; }
+		}
+
+		private void SplitterOnDragDelta (object sender, DragDeltaEventArgs e)
+		{
+			if (this.reportPositionChanged)
+				Toolkit.Invoke (((IPanedEventSink)EventSink).OnPositionChanged);
 		}
 
 		private void RemoveElementsForPanel (int panel)
