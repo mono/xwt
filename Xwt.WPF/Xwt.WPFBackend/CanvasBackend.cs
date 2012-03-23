@@ -86,14 +86,17 @@ namespace Xwt.WPFBackend
 
 		public void SetChildBounds (IWidgetBackend widget, Rectangle bounds)
 		{
-			UIElement element = widget.NativeWidget as UIElement;
+			FrameworkElement element = widget.NativeWidget as FrameworkElement;
 			if (element == null)
 				throw new ArgumentException();
 
-			SWC.Canvas.SetTop (element, bounds.Top);
-			SWC.Canvas.SetLeft (element, bounds.Left);
-			SWC.Canvas.SetRight (element, bounds.Right);
-			SWC.Canvas.SetBottom (element, bounds.Bottom);
+			double hratio = HeightPixelRatio;
+			double wratio = WidthPixelRatio;
+
+			SWC.Canvas.SetTop (element, bounds.Top * hratio);
+			SWC.Canvas.SetLeft (element, bounds.Left * wratio);
+			element.Height = bounds.Height * hratio;
+			element.Width = bounds.Width * wratio;
 		}
 
 		public void RemoveChild (IWidgetBackend widget)
