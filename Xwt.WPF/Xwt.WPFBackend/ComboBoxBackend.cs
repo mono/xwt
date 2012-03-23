@@ -82,7 +82,7 @@ namespace Xwt.WPFBackend
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
-			ComboBox.ItemsSource = new DataSourceNotifyWrapper (source);
+			ComboBox.ItemsSource = new ListSourceNotifyWrapper (source);
 		}
 
 		public int SelectedRow

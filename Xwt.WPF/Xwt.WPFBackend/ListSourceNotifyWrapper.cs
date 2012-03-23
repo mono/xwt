@@ -1,5 +1,5 @@
 // 
-// DataSourceNotifyWrapper.cs
+// ListSourceNotifyWrapper.cs
 //  
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
@@ -28,12 +28,12 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 
-namespace Xwt.WPFBackend.Utilities
+namespace Xwt.WPFBackend
 {
-	internal class DataSourceNotifyWrapper
+	internal class ListSourceNotifyWrapper
 		: IEnumerable, INotifyCollectionChanged
 	{
-		public DataSourceNotifyWrapper (IListDataSource source)
+		public ListSourceNotifyWrapper (IListDataSource source)
 		{
 			if (source == null)
 				throw new ArgumentNullException ("source");
