@@ -54,7 +54,6 @@
     <Compile Include="Xwt.WPFBackend\ClipboardBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
-    <Compile Include="Xwt.WPFBackend.Utilities\DataSourceNotifyWrapper.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CustomWidgetBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DrawingContext.cs" />
@@ -73,6 +72,7 @@
     <Compile Include="Xwt.WPFBackend\DataConverter.cs" />
     <Compile Include="Xwt.WPFBackend\FontBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\KeyboardUtil.cs" />
+    <Compile Include="Xwt.WPFBackend\ListSourceNotifyWrapper.cs" />
     <Compile Include="Xwt.WPFBackend\MenuBackend.cs" />
     <Compile Include="Xwt.WPFBackend\MenuItemBackend.cs" />
     <Compile Include="Xwt.WPFBackend\OpenFileDialogBackend.cs" />
