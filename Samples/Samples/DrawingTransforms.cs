@@ -1,8 +1,9 @@
 // 
 // DrawingTransforms.cs
 //  
-// Author:
+// Authors:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -45,14 +46,13 @@ namespace Samples
 		public Drawings (Test test)
 		{
 			this.test = test;
+			this.BackgroundColor = Colors.White;
 		}
 		
 		protected override void OnDraw (Context ctx)
 		{
 			base.OnDraw (ctx);
-			ctx.SetColor(Colors.White);
-			ctx.Rectangle(this.Bounds);
-			ctx.Fill();
+			
 			switch (test) {
 			case Test.Figures:
 				Figures (ctx, 5, 5);
@@ -67,13 +67,15 @@ namespace Samples
 				Transforms (ctx, 5, 5);
 				break;
 			}
-			ctx.SetColor(this.BackgroundColor);
+			ctx.SetColor (this.BackgroundColor);
 		}
 
 		public virtual void Figures (Context ctx, double x, double y)
 		{
 			Rectangles (ctx, x, y);
 			Curves1 (ctx, x, y + 60);
+			Curves2 (ctx, x + 100, y + 60);
+
 		}
 
 		public virtual void Rectangles (Context ctx, double x, double y)
@@ -155,6 +157,7 @@ namespace Samples
 				ctx.MoveTo (0, 30);
 				ctx.CurveTo (20, 0, 50, 0, 60, 25);
 			};
+			// curve2 with lineTo; curve1 is closed
 			Action curve2 = () => {
 				ctx.LineTo (0, 0);
 				ctx.CurveTo (20, 30, 50, 30, 60, 5);
@@ -171,20 +174,49 @@ namespace Samples
 			paint ();
 
 			ctx.Translate (0, 40);
+			// curve2 with moveTo; curve1 is open
 			curve2 = () => {
 				ctx.MoveTo (0, 0);
 				ctx.CurveTo (20, 30, 50, 30, 60, 5);
 			};
 			paint ();
 			ctx.Restore ();
+			
+			//Todo: same stuff with arc
 		}
 
+		public virtual void Curves2 (Context ctx, double sx, double sy)
+		{
+			ctx.Save ();
+			ctx.Translate (sx, sy);
+			ctx.SetColor (Colors.Black);
+			
+			double x = 0, y = 40;
+			double x1 = y - x, y1 = x1 + y, x2 = x + y, y2 = x, x3 = y1, y3 = y;
+
+			ctx.MoveTo (x, y);
+			ctx.CurveTo (x1, y1, x2, y2, x3, y3);
+
+			ctx.SetLineWidth (2.0);
+			ctx.Stroke ();
+
+			ctx.SetColor (new Color (1, 0.2, 0.2, 0.6));
+			ctx.SetLineWidth (1.0);
+			ctx.MoveTo (x, y);
+			ctx.LineTo (x1, y1);
+			ctx.MoveTo (x2, y2);
+			ctx.LineTo (x3, y3);
+			ctx.Stroke ();
+			
+			ctx.Restore ();
+		}
+		
 		public virtual void PatternsAndImages (Context ctx, double x, double y)
 		{
 			ctx.Save ();
 			ctx.Translate (x, y);
 			
-			ctx.SetColor(Colors.Black);
+			ctx.SetColor (Colors.Black);
 			// Dashed lines
 			
 			ctx.SetLineDash (15, 10, 10, 5, 5);
@@ -206,7 +238,7 @@ namespace Samples
 			ctx.DrawImage (img, 0, 50, 50, 10);
 			
 			ctx.Arc (100, 100, 15, 0, 360);
-			arcColor.Alpha=0.4;
+			arcColor.Alpha = 0.4;
 			ctx.SetColor (arcColor);
 			ctx.Fill ();
 			
@@ -227,33 +259,75 @@ namespace Samples
 		{
 			ctx.Save ();
             
-   			ctx.Translate (x, y);
+			ctx.Translate (x, y);
 		
 			ctx.SetColor (Colors.Black);
-
+			
+			var col1 = new Rectangle ();
+			var col2 = new Rectangle ();
+			
 			var text = new TextLayout (ctx);
 			text.Font = this.Font.WithSize (10);
 			
+			// first text
 			text.Text = "Lorem ipsum dolor sit amet,";
-			ctx.DrawTextLayout (text, 0, 0);
 			var size1 = text.GetSize ();
+			col1.Width = size1.Width;
+			col1.Height += size1.Height + 10;
+			ctx.DrawTextLayout (text, 0, 0);
+			
 			
 			// proofing width; test should align with text above
 			ctx.SetColor (Colors.DarkMagenta);
 			text.Text = "consetetur sadipscing elitr, sed diam nonumy";
-			text.Width = size1.Width;
-			ctx.DrawTextLayout (text, 0, size1.Height+10);
-			
+			text.Width = col1.Width;
 			var size2 = text.GetSize ();
-			text.Text = string.Format ("Size 1 {0}\r\nSize 2 {1}", size1, size2);
 			
-			ctx.Save ();
+			ctx.DrawTextLayout (text, 0, col1.Bottom);
+			col1.Height += size2.Height + 10;
+			
 			ctx.SetColor (Colors.Black);
-
-			ctx.Rotate (10);
+			
+			// proofing scale, on second col
+			ctx.Save ();
+			ctx.SetColor (Colors.Red);
+			col2.Left = col1.Right + 10;
+			
+			text.Text = "eirmod tempor invidunt ut";
+			
+			var scale = 1.2;
+			text.Width = text.Width / scale;
+			var size3 = text.GetSize ();
+			col2.Height = size3.Height * scale;
+			col2.Width = size3.Width * scale + 5;
+			ctx.Scale (scale, scale);
+			ctx.DrawTextLayout (text, col2.Left / scale, col2.Top / scale);
+			ctx.Restore ();
+			
+			
+			// drawing col line
+			ctx.SetLineWidth (1);
+			
+			ctx.SetColor (Colors.Black.WithAlpha (.5));
+			ctx.MoveTo (col1.Right + 5, col1.Top);
+			ctx.LineTo (col1.Right + 5, col1.Bottom);
+			ctx.Stroke ();
+			ctx.MoveTo (col2.Right + 5, col2.Top);
+			ctx.LineTo (col2.Right + 5, col2.Bottom);
+			ctx.Stroke ();
+			ctx.SetColor (Colors.Black);
+			
+			// proofing rotate, and printing size to see the values
+			ctx.Save ();
+			text = new TextLayout (ctx);
+			text.Font = this.Font.WithSize (10);
+			text.Text = string.Format ("Size 1 {0}\r\nSize 2 {1}\r\nSize 3 {2} Scale {3}", 
+			                           size1, size2, size3, scale);
+			//text.Width = -1; // this clears textsize
+			ctx.Rotate (5);
 			// maybe someone knows a formula with angle and textsize to calculyte ty
 			var ty = 30; 
-			ctx.DrawTextLayout (text, ty, size1.Height+size2.Height+20);
+			ctx.DrawTextLayout (text, ty, col1.Bottom + 10);
 
 			ctx.Restore ();
 			
@@ -273,7 +347,7 @@ namespace Samples
 		{
 			ctx.Save ();
 			ctx.Translate (x + 30, y + 30);
-			
+			ctx.SetLineWidth (3);
 			// Rotation
 			
 			double end = 270;
@@ -297,20 +371,24 @@ namespace Samples
 		{
 			ctx.Save ();
 			ctx.Translate (ax, ay);
-			
+			ctx.SetColor (Colors.Black);
 			ctx.SetLineWidth (1);
 			
 			var x = 0d;
 			var y = 0d;
 			var w = 10d;
-
-			for (var i = 1d; i < 3; i += .5) {
+			var inc = .1d;
+			for (var i = inc; i < 3.5d; i +=inc) {
 				ctx.Save ();
+				ctx.Scale (i, i);
 				ctx.Rectangle (x, y, w, w);
-//				ctx.Scale (i, i);
+				ctx.SetColor (Colors.Yellow.WithAlpha (1 / i));
+				ctx.FillPreserve ();
+				ctx.SetColor (Colors.Red.WithAlpha (1 / i));
 				ctx.Stroke ();
+				ctx.MoveTo (x += w * inc, y += w * inc / 3);
 				ctx.Restore ();
-				ctx.MoveTo (x += w / 2, y += w / 2);
+				
 			}
 
 			ctx.Restore ();
