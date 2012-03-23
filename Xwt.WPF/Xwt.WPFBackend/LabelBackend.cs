@@ -56,10 +56,11 @@ namespace Xwt.WPFBackend
 			set { Label.HorizontalContentAlignment = DataConverter.ToWpfAlignment (value); }
 		}
 
+		// TODO
 		public EllipsizeMode Ellipsize
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			get;
+			set;
 		}
 	}
 }
