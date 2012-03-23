@@ -63,11 +63,13 @@ namespace Xwt.CairoBackend
 			CairoContextBackend gc = (CairoContextBackend) backend;
 			gc.GlobalAlpha = alpha;
 		}
+		
+		const double degrees = System.Math.PI / 180d;
 
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
-			CairoContextBackend gc = (CairoContextBackend) backend;
-			gc.Context.Arc (xc, yc, radius, (angle1 * System.Math.PI) / 180, (angle2 * System.Math.PI) / 180);
+			CairoContextBackend gc = (CairoContextBackend)backend;
+			gc.Context.Arc (xc, yc, radius, angle1 * degrees, angle2 * degrees);
 		}
 
 		public void Clip (object backend)

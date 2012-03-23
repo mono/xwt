@@ -83,13 +83,14 @@ namespace Xwt.Drawing
 		/// <summary>
 		/// Adds a circular arc of the given radius to the current path.
 		/// The arc is centered at (xc, yc), 
-		/// begins at angle1 and proceeds in the direction of increasing angles to end at angle2. 
-		/// If angle2 is less than angle1 
-		/// it will be progressively increased by 2*M_PI until it is greater than angle1.
+		/// begins at angle1 and proceeds in the direction 
+		/// of increasing angles to end at angle2. 
+		/// If angle2 is less than angle1,
+		/// it will be progressively increased by 2*Math.PI until it is greater than angle1.
 		/// If there is a current point, an initial line segment will be added to the path 
 		/// to connect the current point to the beginning of the arc. 
 		/// If this initial line is undesired, 
-		/// it can be avoided by calling begin_new_sub_path() before calling arc().
+		/// it can be avoided by calling NewPath() before calling Arc().
 		/// </summary>
 		/// <param name='xc'>
 		/// Xc.
@@ -101,10 +102,10 @@ namespace Xwt.Drawing
 		/// Radius.
 		/// </param>
 		/// <param name='angle1'>
-		/// Angle1.
+		/// Angle1 in degrees
 		/// </param>
 		/// <param name='angle2'>
-		/// Angle2.
+		/// Angle2 in degrees
 		/// </param>
 		public void Arc (double xc, double yc, double radius, double angle1, double angle2)
 		{

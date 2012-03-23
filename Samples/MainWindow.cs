@@ -62,7 +62,10 @@ namespace Samples
 			AddSample (n, "Canvas with Widget", typeof(CanvasWithWidget));
 			AddSample (n, "Chart", typeof(ChartSample));
 			AddSample (n, "Colors", typeof(ColorsSample));
+			AddSample (n, "Figures", typeof(DrawingFigures));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
+			AddSample (n, "Images and Patterns", typeof(DrawingPatternsAndImages));
+			AddSample (n, "Text", typeof(DrawingTexts));
 			
 			AddSample (null, "Frames", typeof(Frames));
 			AddSample (null, "Images", typeof(Images));
