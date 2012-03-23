@@ -86,6 +86,9 @@
     <Compile Include="Samples\Tooltips.cs" />
     <Compile Include="Samples\TreeViews.cs" />
     <Compile Include="Samples\PanedViews.cs" />
+    <Compile Include="Samples\DrawingText.cs" />
+    <Compile Include="Samples\DrawingFigures.cs" />
+    <Compile Include="Samples\DrawingPatternsAndImages.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

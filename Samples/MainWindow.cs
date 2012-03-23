@@ -65,7 +65,7 @@ namespace Samples
 			AddSample (n, "Figures", typeof(DrawingFigures));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
 			AddSample (n, "Images and Patterns", typeof(DrawingPatternsAndImages));
-			AddSample (n, "Text", typeof(DrawingTexts));
+			AddSample (n, "Text", typeof(DrawingText));
 			
 			AddSample (null, "Frames", typeof(Frames));
 			AddSample (null, "Images", typeof(Images));
