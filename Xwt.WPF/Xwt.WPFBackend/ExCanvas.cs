@@ -1,5 +1,5 @@
 ﻿//
-// CanvasBackend.cs
+// ExCanvas.cs
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
