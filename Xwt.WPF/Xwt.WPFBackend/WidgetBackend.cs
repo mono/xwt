@@ -190,8 +190,13 @@ namespace Xwt.WPFBackend
 
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
-			var p = Widget.PointToScreen (new System.Windows.Point (widgetCoordinates.X, widgetCoordinates.Y));
-			return new Point (p.X, p.Y);
+			double wratio = WidthPixelRatio;
+			double hratio = HeightPixelRatio;
+
+			var p = Widget.PointToScreen (new System.Windows.Point (
+				widgetCoordinates.X / wratio, widgetCoordinates.Y / hratio));
+			
+			return new Point (p.X * wratio, p.Y * hratio);
 		}
 
 		System.Windows.Size GetWidgetDesiredSize ()
@@ -430,8 +435,8 @@ namespace Xwt.WPFBackend
 		{
 			var pos = e.GetPosition (Widget);
 			return new ButtonEventArgs () {
-				X = pos.X,
-				Y = pos.Y,
+				X = pos.X * WidthPixelRatio,
+				Y = pos.Y * HeightPixelRatio,
 				MultiplePress = e.ClickCount,
 				Button = e.ChangedButton.ToXwtButton ()
 			};
