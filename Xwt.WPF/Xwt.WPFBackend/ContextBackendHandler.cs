@@ -65,7 +65,7 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext) backend;
 			c.Path.AddArc ((float) (xc - radius), (float) (yc - radius), (float) radius * 2, (float) radius * 2, (float) angle1,
-			               (float) angle2);
+			               (float) (angle2 - angle1));
 
 			var current = c.Path.GetLastPoint ();
 			c.CurrentX = current.X;
@@ -140,8 +140,11 @@ namespace Xwt.WPFBackend
 		public void MoveTo (object backend, double x, double y)
 		{
 			var c = (DrawingContext) backend;
-			c.CurrentX = (float) x;
-			c.CurrentY = (float) y;
+			if (c.CurrentX != x || c.CurrentY != y) {
+				c.Path.StartFigure ();
+				c.CurrentX = (float)x;
+				c.CurrentY = (float)y;
+			}
 		}
 
 		public void NewPath (object backend)
@@ -153,7 +156,11 @@ namespace Xwt.WPFBackend
 		public void Rectangle (object backend, double x, double y, double width, double height)
 		{
 			var c = (DrawingContext) backend;
-			c.Path.AddRectangle (new RectangleF ((float) x, (float) y, (float) width, (float) height));
+			if (c.CurrentX != x || c.CurrentY != y)
+				c.Path.StartFigure ();
+			c.Path.AddRectangle (new RectangleF ((float)x, (float)y, (float)width, (float)height));
+			c.CurrentX = (float)x;
+			c.CurrentY = (float)y;
 		}
 
 		public void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
@@ -175,6 +182,7 @@ namespace Xwt.WPFBackend
 		public void RelMoveTo (object backend, double dx, double dy)
 		{
 			var c = (DrawingContext) backend;
+			c.Path.StartFigure ();
 			c.CurrentX += (float)dx;
 			c.CurrentY += (float)dy;
 		}
