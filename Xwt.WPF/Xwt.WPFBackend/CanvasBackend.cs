@@ -56,8 +56,8 @@ namespace Xwt.WPFBackend
 			this.fullRedraw = true;
 
 			if (!this.queued) {
-				Toolkit.QueueExitAction (() => OnRender (this, EventArgs.Empty));
-				this.queued = true;
+			    Toolkit.QueueExitAction (Render);
+			    this.queued = true;
 			}
 		}
 
@@ -69,8 +69,8 @@ namespace Xwt.WPFBackend
 			this.dirtyRects.Add (rect.ToInt32Rect());
 
 			if (!this.queued) {
-				Toolkit.QueueExitAction (() => OnRender (this, EventArgs.Empty));
-				this.queued = true;
+			    Toolkit.QueueExitAction (Render);
+			    this.queued = true;
 			}
 		}
 
@@ -128,6 +128,11 @@ namespace Xwt.WPFBackend
 		}
 
 		private void OnRender (object sender, EventArgs e)
+		{
+			Render();
+		}
+
+		private void Render()
 		{
 			if (!Widget.IsVisible)
 				return;
