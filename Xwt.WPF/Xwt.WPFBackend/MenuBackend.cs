@@ -106,7 +106,7 @@ namespace Xwt.WPFBackend
 
 			double hratio = 1;
 			double vratio = 1;
-			PresentationSource source = PresentationSource.FromVisual (Widget);
+			PresentationSource source = PresentationSource.FromVisual ((Visual)widget.NativeWidget);
 			if (source != null) {
 				Matrix m = source.CompositionTarget.TransformToDevice;
 				hratio = m.M11;
