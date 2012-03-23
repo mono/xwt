@@ -200,32 +200,32 @@ namespace Xwt.WPFBackend
 				Widget.UpdateLayout ();
 				Widget.Measure (new System.Windows.Size (Double.PositiveInfinity, Double.PositiveInfinity));
 			}
-
+			
 			return Widget.DesiredSize;
 		}
 
 		public virtual WidgetSize GetPreferredWidth ()
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Width);
+			return new WidgetSize (size.Width * WidthPixelRatio);
 		}
 
 		public virtual WidgetSize GetPreferredHeight ()
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Height);
+			return new WidgetSize (size.Height * WidthPixelRatio);
 		}
 
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Width);
+			return new WidgetSize (size.Width * WidthPixelRatio);
 		}
 
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Height);
+			return new WidgetSize (size.Height * HeightPixelRatio);
 		}
 
 		public void SetMinSize (double width, double height)
@@ -485,7 +485,8 @@ namespace Xwt.WPFBackend
 		{
 			Toolkit.Invoke (() => {
 				var p = e.GetPosition (Widget);
-				eventSink.OnMouseMoved (new MouseMovedEventArgs (e.Timestamp, p.X, p.Y));
+				eventSink.OnMouseMoved (new MouseMovedEventArgs (
+					e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio));
 			});
 		}
 
