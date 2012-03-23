@@ -72,6 +72,23 @@ namespace Xwt
 			}
 		}
 		
+		protected override void OnReallocate ()
+		{
+			base.OnReallocate ();
+			if (child != null && !child.SupportsCustomScrolling) {
+				var ws = (IWidgetSurface) child;
+				if (ws.SizeRequestMode == SizeRequestMode.HeightForWidth) {
+					var w = ws.GetPreferredWidth ();
+					var h = ws.GetPreferredHeightForWidth (w.NaturalSize);
+					Backend.SetChildSize (new Size (w.NaturalSize, h.NaturalSize));
+				} else {
+					var h = ws.GetPreferredHeight ();
+					var w = ws.GetPreferredWidthForHeight (h.NaturalSize);
+					Backend.SetChildSize (new Size (w.NaturalSize, h.NaturalSize));
+				}
+			}
+		}
+		
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return Backend.VerticalScrollPolicy; }
 			set { Backend.VerticalScrollPolicy = value; OnPreferredSizeChanged (); }

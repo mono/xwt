@@ -317,7 +317,7 @@ namespace Xwt
 			return Backend.GetDropTargetRow (x, y, out pos, out nodePosition);
 		}
 		
-		protected sealed override bool SupportsCustomScrolling {
+		internal protected sealed override bool SupportsCustomScrolling {
 			get {
 				return false;
 			}

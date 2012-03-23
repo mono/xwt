@@ -545,7 +545,7 @@ namespace Xwt
 			Backend.SetDragSource (types.Select (t => TransferDataType.FromType (t)).ToArray(), dragAction);
 		}
 		
-		protected virtual bool SupportsCustomScrolling {
+		internal protected virtual bool SupportsCustomScrolling {
 			get { return false; }
 		}
 		
