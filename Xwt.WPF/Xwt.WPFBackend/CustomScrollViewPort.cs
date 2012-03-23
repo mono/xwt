@@ -173,7 +173,7 @@ namespace Xwt.WPFBackend
 				offset = 0;
 
 			this.horizontalOffset = offset;
-			this.horizontalBackend.EventSink.OnValueChanged();
+			Xwt.Engine.Toolkit.Invoke (this.horizontalBackend.EventSink.OnValueChanged);
 			ScrollOwner.InvalidateScrollInfo();
 		}
 
@@ -183,7 +183,7 @@ namespace Xwt.WPFBackend
 				offset = 0;
 
 			this.verticalOffset = offset;
-			this.verticalBackend.EventSink.OnValueChanged();
+			Xwt.Engine.Toolkit.Invoke (this.verticalBackend.EventSink.OnValueChanged);
 			ScrollOwner.InvalidateScrollInfo();
 		}
 	}

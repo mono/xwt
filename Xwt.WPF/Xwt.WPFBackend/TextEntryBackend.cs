@@ -108,7 +108,7 @@ namespace Xwt.WPFBackend
 
 		private void OnTextChanged (object s, TextChangedEventArgs e)
 		{
-			EventSink.OnChanged();
+			Xwt.Engine.Toolkit.Invoke (EventSink.OnChanged);
 		}
 	}
 }

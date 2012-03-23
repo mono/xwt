@@ -87,7 +87,7 @@ namespace Xwt.WPFBackend
 
 		private void OnButtonChecked (object s, RoutedEventArgs e)
 		{
-			EventSink.OnToggled();
+			Xwt.Engine.Toolkit.Invoke (EventSink.OnToggled);
 		}
 	}
 }
