@@ -64,6 +64,10 @@ namespace Xwt.Mac
 			set {
 			}
 		}
+		
+		public void SetChildSize (Size s)
+		{
+		}
 	}
 }
 

@@ -83,6 +83,10 @@ namespace Xwt.GtkBackend
 			UpdateBorder ();
 		}
 		
+		public void SetChildSize (Size s)
+		{
+		}
+		
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

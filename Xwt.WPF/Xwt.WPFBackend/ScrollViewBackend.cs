@@ -52,6 +52,10 @@ namespace Xwt.WPFBackend
 			} else
 				ScrollViewer.Content = child.NativeWidget;
 		}
+		
+		public void SetChildSize (Size s)
+		{
+		}
 
 		public ScrollPolicy VerticalScrollPolicy
 		{
