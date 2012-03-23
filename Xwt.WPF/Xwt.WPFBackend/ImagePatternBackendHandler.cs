@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using System.Drawing;
 
 namespace Xwt.WPFBackend
 {
@@ -34,8 +35,8 @@ namespace Xwt.WPFBackend
 	{
 		public object Create (object img)
 		{
-			// TODO
-			return new object();
+			Bitmap bmp = DataConverter.AsBitmap (img);
+			return new TextureBrush (bmp, System.Drawing.Drawing2D.WrapMode.Tile);
 		}
 	}
 }

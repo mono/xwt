@@ -235,11 +235,11 @@ namespace Xwt.WPFBackend
 			var lg = p as LinearGradient;
 			if (lg != null) {
 				if (lg.ColorStops.Count == 0)
-					throw new ArgumentException();
+					throw new ArgumentException ();
 
 				var stops = lg.ColorStops.OrderBy (t => t.Item1).ToArray ();
-				var first = stops [0];
-				var last = stops [stops.Length - 1];
+				var first = stops[0];
+				var last = stops[stops.Length - 1];
 
 				var brush = new LinearGradientBrush (lg.Start, lg.End, first.Item2.ToDrawingColor (),
 														last.Item2.ToDrawingColor ());
@@ -255,6 +255,8 @@ namespace Xwt.WPFBackend
 
 				c.Brush = brush;
 			}
+			else if (p is Brush)
+				c.Brush = (Brush)p;
 		}
 
 		public void SetFont (object backend, Font font)
@@ -278,7 +280,7 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext) backend;
 
 			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c, bmp, (float) x, (float) y, bmp.Width, bmp.Height, (float)alpha);
+			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, bmp.Width, bmp.Height, (float)alpha);
 		}
 
 		public void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
@@ -286,7 +288,7 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext) backend;
 
 			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
+			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
 		}
 
 		public void ResetTransform (object backend)
@@ -317,7 +319,7 @@ namespace Xwt.WPFBackend
 		{
 		}
 
-		private void DrawImageCore (DrawingContext c, Bitmap bmp, float x, float y, float width, float height, float alpha)
+		internal static void DrawImageCore (Graphics g, Bitmap bmp, float x, float y, float width, float height, float alpha)
 		{
 			if (bmp == null)
 				throw new ArgumentException();
@@ -340,10 +342,10 @@ namespace Xwt.WPFBackend
 				points [1] = new PointF (x + width, y);
 				points [2] = new PointF (x, y + height);
 
-				c.Graphics.DrawImage (bmp, points, new RectangleF (0, 0, bmp.Width, bmp.Height), GraphicsUnit.Pixel, attr);
+				g.DrawImage (bmp, points, new RectangleF (0, 0, bmp.Width, bmp.Height), GraphicsUnit.Pixel, attr);
 			}
 			else
-				c.Graphics.DrawImage (bmp, x, y, width, height);
+				g.DrawImage (bmp, x, y, width, height);
 		}
 	}
 }

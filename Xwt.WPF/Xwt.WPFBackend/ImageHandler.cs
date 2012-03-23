@@ -169,18 +169,13 @@ namespace Xwt.WPFBackend
 		public override object ChangeOpacity (object backend, double opacity)
 		{
 			Bitmap bitmap = DataConverter.AsBitmap (backend);
-			if (bitmap != null) {
-				for (int x = 0; x < bitmap.Width; ++x) {
-					for (int y = 0; y < bitmap.Height; ++y) {
-						Color c = bitmap.GetPixel (x, y);
-						bitmap.SetPixel (x, y, Color.FromArgb ((int) (opacity * 255), c.R, c.G, c.B));
-					}
-				}
-
-				return bitmap;
-			}
-
-			throw new ArgumentException();
+			if (bitmap == null)
+				throw new ArgumentException ();
+			Bitmap result = new Bitmap (bitmap.Width, bitmap.Height, bitmap.PixelFormat);
+			Graphics g = Graphics.FromImage (result);
+			ContextBackendHandler.DrawImageCore (g, bitmap, 0, 0, bitmap.Width, bitmap.Height, (float)opacity);
+			g.Dispose ();
+			return result;
 		}
 
 		public override void CopyArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
