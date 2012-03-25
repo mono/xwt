@@ -85,7 +85,7 @@ namespace Samples
 			addButton.Clicked += delegate(object sender, EventArgs e) {
 				store.AddNode ().SetValue (text, "Added").SetValue (desc, "Desc");
 			};
-			PackStart(addButton);
+			PackStart (addButton);
 			
 			Button removeButton = new Button ("Remove Selection");
 			removeButton.Clicked += delegate(object sender, EventArgs e) {
@@ -93,7 +93,7 @@ namespace Samples
 					store.GetNavigatorAt (row).Remove ();
 				}
 			};
-			PackStart(removeButton);
+			PackStart (removeButton);
 		}
 
 		void HandleDragOver (object sender, DragOverEventArgs e)
