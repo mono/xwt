@@ -67,6 +67,7 @@ namespace Xwt.WPFBackend
 			if (treeStore != null)
 			{
 				TreeNode node = treeStore.RootNode;
+				node.TreeViewData.Add (Tuple.Create<TreeViewBackend, SWC.ItemsControl>(this, Tree));
 				foreach (TreeNode child in node.Children)
 				{
 					Tree.Items.Add (GenerateTreeViewItem (child));
@@ -74,9 +75,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		private MultiColumnTreeViewItem GenerateTreeViewItem (TreeNode node)
+		internal MultiColumnTreeViewItem GenerateTreeViewItem (TreeNode node)
 		{
-			MultiColumnTreeViewItem item = new MultiColumnTreeViewItem (node);
+			MultiColumnTreeViewItem item = new MultiColumnTreeViewItem (this, node);
 
 			foreach (ListViewColumn column in columns)
 			{

@@ -27,11 +27,14 @@
 using System;
 using System.Collections.Generic;
 using Xwt.Backends;
+using Xwt.WPFBackend.Utilities;
+using SWC=System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
 	class TreeNode : TreePosition
 	{
+		public IList<Tuple<TreeViewBackend, SWC.ItemsControl>> TreeViewData = new List<Tuple<TreeViewBackend, SWC.ItemsControl>> ();
 		public object[] Values;
 		public IList<TreeNode> Children = new List<TreeNode>();
 		public TreeNode Previous;
@@ -93,6 +96,14 @@ namespace Xwt.WPFBackend
 			if (parent.LastChild != null)
 				parent.LastChild.Next = node;
 			parent.Children.Add (node);
+
+			foreach (Tuple<TreeViewBackend, SWC.ItemsControl> parentData in parent.TreeViewData)
+			{
+				MultiColumnTreeViewItem childItem = parentData.Item1.GenerateTreeViewItem (node);
+				node.TreeViewData.Add (Tuple.Create<TreeViewBackend, SWC.ItemsControl>(parentData.Item1, childItem));
+				parentData.Item2.Items.Add (childItem);
+			}
+
 			return node;
 		}
 
@@ -111,7 +122,18 @@ namespace Xwt.WPFBackend
 		public void SetValue (TreePosition pos, int column, object value)
 		{
 			TreeNode node = pos as TreeNode;
+
+			if (node == rootNode)
+				throw new InvalidOperationException("Root node can not have data");
+
 			node.Values[column] = value;
+
+			foreach (var treeViewData in node.TreeViewData)
+			{
+				//We can perform this cast since Item2 is always a MultiColumnTreeViewItem for any non-root node.
+				MultiColumnTreeViewItem treeViewItem = (MultiColumnTreeViewItem)treeViewData.Item2;
+				treeViewItem.UpdateColumn (column, value);
+			}
 		}
 
 		public object GetValue (TreePosition pos, int column)
@@ -143,7 +165,19 @@ namespace Xwt.WPFBackend
 
 		public void Remove (TreePosition pos)
 		{
-			throw new NotImplementedException ();
+			TreeNode node = pos as TreeNode;
+
+			if (node == rootNode)
+				throw new InvalidOperationException ("Can not remove root node");
+
+			node.Parent.Children.Remove (node);
+
+			foreach (var treeViewData in node.TreeViewData)
+			{
+				var item = treeViewData.Item2;
+				var parent = item.Parent;
+				((SWC.ItemsControl)parent).Items.Remove (item);
+			}
 		}
 
 		public TreePosition InsertBefore (TreePosition pos)
