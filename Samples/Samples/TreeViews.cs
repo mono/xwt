@@ -80,6 +80,20 @@ namespace Samples
 					Console.WriteLine ("D:" + args.DeleteSource);
 				};
 			};
+			
+			Button addButton = new Button ("Add");
+			addButton.Clicked += delegate(object sender, EventArgs e) {
+				store.AddNode ().SetValue (text, "Added").SetValue (desc, "Desc");
+			};
+			PackStart(addButton);
+			
+			Button removeButton = new Button ("Remove Selection");
+			removeButton.Clicked += delegate(object sender, EventArgs e) {
+				foreach (TreePosition row in view.SelectedRows) {
+					store.GetNavigatorAt (row).Remove ();
+				}
+			};
+			PackStart(removeButton);
 		}
 
 		void HandleDragOver (object sender, DragOverEventArgs e)
