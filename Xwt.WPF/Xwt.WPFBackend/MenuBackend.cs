@@ -70,6 +70,8 @@ namespace Xwt.WPFBackend
 				ParentItem.MenuItem.Items.Insert (index, itemBackend.Item);
 			else if (ParentWindow != null)
 				ParentWindow.mainMenu.Items.Insert (index, itemBackend.Item);
+			else if (this.menu != null)
+				this.menu.Items.Insert (index, itemBackend.Item);
 		}
 
 		public void RemoveItem (IMenuItemBackend item)
@@ -80,6 +82,8 @@ namespace Xwt.WPFBackend
 				ParentItem.MenuItem.Items.Remove (itemBackend.Item);
 			else if (ParentWindow != null)
 				ParentWindow.mainMenu.Items.Remove (itemBackend.Item);
+			else if (this.menu != null)
+				this.menu.Items.Remove (itemBackend.Item);
 		}
 
 		public void RemoveFromParentItem ()
@@ -129,14 +133,11 @@ namespace Xwt.WPFBackend
 		private ContextMenu menu;
 		internal ContextMenu CreateContextMenu()
 		{
-			if (this.menu != null) {
-				this.menu.IsOpen = false;
-				this.menu.Items.Clear ();
+			if (this.menu == null) {
+				this.menu = new ContextMenu ();
+				foreach (var item in Items)
+					this.menu.Items.Add (item.Item);
 			}
-
-			this.menu = new ContextMenu ();
-			foreach (var item in Items)
-				this.menu.Items.Add (item.Item);
 
 			return menu;
 		}
