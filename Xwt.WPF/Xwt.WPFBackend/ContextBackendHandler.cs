@@ -45,13 +45,13 @@ namespace Xwt.WPFBackend
 	{
 		public void Save (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Save ();
 		}
 
 		public void Restore (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Restore ();
 		}
 
@@ -62,11 +62,11 @@ namespace Xwt.WPFBackend
 
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			if (angle1 > 0 && angle2 == 0)
 				angle2 = 360;
-			c.Path.AddArc ((float) (xc - radius), (float) (yc - radius), (float) radius * 2, (float) radius * 2, (float) angle1,
-			               (float) (angle2 - angle1));
+			c.Path.AddArc ((float)(xc - radius), (float)(yc - radius), (float)radius * 2, (float)radius * 2, (float)angle1,
+			               (float)(angle2 - angle1));
 
 			var current = c.Path.GetLastPoint ();
 			c.CurrentX = current.X;
@@ -75,149 +75,149 @@ namespace Xwt.WPFBackend
 
 		public void Clip (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 		}
 
 		public void ClipPreserve (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 		}
 
 		public void ResetClip (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 		}
 
 		public void ClosePath (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Path.CloseFigure ();
 		}
 
 		public void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Path.AddBezier (c.CurrentX, c.CurrentY,
-					(float) x1, (float) y1,
-					(float) x2, (float) y2,
-					(float) x3, (float) y3);
-			c.CurrentX = (float) x3;
-			c.CurrentY = (float) y3;
+					(float)x1, (float)y1,
+					(float)x2, (float)y2,
+					(float)x3, (float)y3);
+			c.CurrentX = (float)x3;
+			c.CurrentY = (float)y3;
 		}
 
 		public void Fill (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Graphics.FillPath (c.Brush, c.Path);
 			c.Path.Reset ();
 		}
 
 		public void FillPreserve (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Graphics.FillPath (c.Brush, c.Path);
 		}
 
 		public void LineTo (object backend, double x, double y)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
-			c.Path.AddLine (c.CurrentX, c.CurrentY, (float) x, (float) y);
-			c.CurrentX = (float) x;
-			c.CurrentY = (float) y;
+			c.Path.AddLine (c.CurrentX, c.CurrentY, (float)x, (float)y);
+			c.CurrentX = (float)x;
+			c.CurrentY = (float)y;
 		}
 
 		public void MoveTo (object backend, double x, double y)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			if (c.CurrentX != x || c.CurrentY != y) {
 				c.Path.StartFigure ();
-				c.CurrentX = (float) x;
-				c.CurrentY = (float) y;
+				c.CurrentX = (float)x;
+				c.CurrentY = (float)y;
 			}
 		}
 
 		public void NewPath (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Path.Reset ();
 		}
 
 		public void Rectangle (object backend, double x, double y, double width, double height)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			if (c.CurrentX != x || c.CurrentY != y)
 				c.Path.StartFigure ();
-			c.Path.AddRectangle (new RectangleF ((float) x, (float) y, (float) width, (float) height));
-			c.CurrentX = (float) x;
-			c.CurrentY = (float) y;
+			c.Path.AddRectangle (new RectangleF ((float)x, (float)y, (float)width, (float)height));
+			c.CurrentX = (float)x;
+			c.CurrentY = (float)y;
 		}
 
 		public void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Path.AddBezier (c.CurrentX, c.CurrentY,
-					(float) (c.CurrentX + dx1), (float) (c.CurrentY + dy1),
-					(float) (c.CurrentX + dx2), (float) (c.CurrentY + dy2),
-					(float) (c.CurrentX + dx3), (float) (c.CurrentY + dy3));
-			c.CurrentX = (float) (c.CurrentX + dx3);
-			c.CurrentY = (float) (c.CurrentX + dy3);
+					(float)(c.CurrentX + dx1), (float)(c.CurrentY + dy1),
+					(float)(c.CurrentX + dx2), (float)(c.CurrentY + dy2),
+					(float)(c.CurrentX + dx3), (float)(c.CurrentY + dy3));
+			c.CurrentX = (float)(c.CurrentX + dx3);
+			c.CurrentY = (float)(c.CurrentX + dy3);
 		}
 
 		public void RelLineTo (object backend, double dx, double dy)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			
 			float x = c.CurrentX;
 			float y = c.CurrentY;
-			c.CurrentX += (float) dx;
-			c.CurrentY += (float) dy;
+			c.CurrentX += (float)dx;
+			c.CurrentY += (float)dy;
 
 			c.Path.AddLine (x, y, c.CurrentX, c.CurrentY);
 		}
 
 		public void RelMoveTo (object backend, double dx, double dy)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Path.StartFigure ();
-			c.CurrentX += (float) dx;
-			c.CurrentY += (float) dy;
+			c.CurrentX += (float)dx;
+			c.CurrentY += (float)dy;
 		}
 
 		public void Stroke (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Graphics.DrawPath (c.Pen, c.Path);
 			c.Path.Reset ();
 		}
 
 		public void StrokePreserve (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Graphics.DrawPath (c.Pen, c.Path);
 		}
 
 		public void SetColor (object backend, Color color)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.SetColor (color.ToDrawingColor ());
 		}
 
 		public void SetLineWidth (object backend, double width)
 		{
-			var c = (DrawingContext) backend;
-			c.Pen.Width = (float) width;
+			var c = (DrawingContext)backend;
+			c.Pen.Width = (float)width;
 		}
 
 		public void SetLineDash (object backend, double offset, params double[] pattern)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			if (pattern.Length != 0) {
-				c.Pen.DashOffset = (float) (offset / c.Pen.Width);
+				c.Pen.DashOffset = (float)(offset / c.Pen.Width);
 				float[] fp = new float [pattern.Length];
 				for (int i = 0; i < fp.Length; ++i)
-					fp [i] = (float) (pattern [i] / c.Pen.Width);
+					fp [i] = (float)(pattern [i] / c.Pen.Width);
 
 				c.Pen.DashStyle = DashStyle.Custom;
 				c.Pen.DashPattern = fp;
@@ -227,7 +227,7 @@ namespace Xwt.WPFBackend
 
 		public void SetPattern (object backend, object p)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			var lg = p as LinearGradient;
 			if (lg != null) {
@@ -252,63 +252,63 @@ namespace Xwt.WPFBackend
 
 				c.Brush = brush;
 			} else if (p is Brush)
-				c.Brush = (Brush) p;
+				c.Brush = (Brush)p;
 		}
 
 		public void SetFont (object backend, Font font)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Font = font.ToDrawingFont ();
 		}
 			
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			var sfont = layout.Font.ToDrawingFont ();
 			var measure = layout.GetSize ();
 			
 			c.Graphics.DrawString (layout.Text, layout.Font.ToDrawingFont (), c.Brush,
-			                       new RectangleF ((float) x, (float) y, (float) measure.Width, (float) measure.Height), TextLayoutContext.StringFormat);
+			                       new RectangleF ((float)x, (float)y, (float)measure.Width, (float)measure.Height), TextLayoutContext.StringFormat);
 		}
 
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, bmp.Width, bmp.Height, (float) alpha);
+			DrawImageCore (c.Graphics, bmp, (float)x, (float)y, bmp.Width, bmp.Height, (float)alpha);
 		}
 
 		public void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
+			DrawImageCore (c.Graphics, bmp, (float)x, (float)y, (float)width, (float)height, (float)alpha);
 		}
 
 		public void ResetTransform (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Graphics.ResetTransform ();
 		}
 
 		public void Rotate (object backend, double angle)
 		{
-			var c = (DrawingContext) backend;
-			c.Graphics.RotateTransform ((float) angle);
+			var c = (DrawingContext)backend;
+			c.Graphics.RotateTransform ((float)angle);
 		}
 
 		public void Scale (object backend, double scaleX, double scaleY)
 		{
-			var c = (DrawingContext) backend;
-			c.Graphics.ScaleTransform ((float) scaleX, (float) scaleY);
+			var c = (DrawingContext)backend;
+			c.Graphics.ScaleTransform ((float)scaleX, (float)scaleY);
 		}
 		
 		public void Translate (object backend, double tx, double ty)
 		{
-			var c = (DrawingContext) backend;
-			c.Graphics.TranslateTransform ((float) tx, (float) ty);
+			var c = (DrawingContext)backend;
+			c.Graphics.TranslateTransform ((float)tx, (float)ty);
 		}
 
 		public void Dispose (object backend)
