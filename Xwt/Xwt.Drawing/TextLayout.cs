@@ -71,6 +71,12 @@ namespace Xwt.Drawing
 				handler.SetText (Backend, text); }
 		}
 		
+		/// <summary>
+		/// Gets or sets the desired width.
+		/// </summary>
+		/// <value>
+		/// The width. A value of -1 uses GetSize().Width on drawings
+		/// </value>
 		public double Width {
 			get { return width; }
 			set { width = value; handler.SetWidth (Backend, value); }

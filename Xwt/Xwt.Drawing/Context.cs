@@ -86,7 +86,7 @@ namespace Xwt.Drawing
 		/// begins at angle1 and proceeds in the direction 
 		/// of increasing angles to end at angle2. 
 		/// If angle2 is less than angle1,
-		/// it will be progressively increased by 2*Math.PI until it is greater than angle1.
+		/// it will be progressively increased by 1 degree until it is greater than angle1.
 		/// If there is a current point, an initial line segment will be added to the path 
 		/// to connect the current point to the beginning of the arc. 
 		/// If this initial line is undesired, 
