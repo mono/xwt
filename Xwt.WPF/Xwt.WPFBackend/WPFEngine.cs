@@ -49,6 +49,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
 			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
 			WidgetRegistry.RegisterBackend (typeof (CheckBoxMenuItem), typeof (CheckboxMenuItemBackend));
+			WidgetRegistry.RegisterBackend (typeof (RadioButtonMenuItem), typeof (RadioButtonMenuItemBackend));
 			WidgetRegistry.RegisterBackend (typeof (SeparatorMenuItem), typeof (SeparatorMenuItemBackend));
 			WidgetRegistry.RegisterBackend (typeof (Table), typeof (BoxBackend));
 			WidgetRegistry.RegisterBackend (typeof (Box), typeof (BoxBackend));

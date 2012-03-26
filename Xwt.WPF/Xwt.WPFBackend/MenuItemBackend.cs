@@ -143,14 +143,13 @@ namespace Xwt.WPFBackend
 		public void SetType (MenuItemType type)
 		{
 			switch (type) {
+				case MenuItemType.RadioButton:
 				case MenuItemType.CheckBox:
 					this.menuItem.IsCheckable = true;
 					break;
 				case MenuItemType.Normal:
 					this.menuItem.IsCheckable = false;
 					break;
-				case MenuItemType.RadioButton:
-					throw new NotImplementedException ("RadioButton type is not implemented for WPF");
 			}
 
 			this.type = type;

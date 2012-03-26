@@ -78,6 +78,7 @@
     <Compile Include="Xwt.WPFBackend\MenuItemBackend.cs" />
     <Compile Include="Xwt.WPFBackend\OpenFileDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\PanedBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\RadioButtonMenuItemBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ResPool.cs" />
     <Compile Include="Xwt.WPFBackend\ScrollViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\SelectFolderDialogBackend.cs" />
