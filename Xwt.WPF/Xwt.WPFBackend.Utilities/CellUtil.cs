@@ -53,6 +53,9 @@ namespace Xwt.WPFBackend.Utilities
 				DataField field = ((ImageCellView)view).ImageField;
 				int index = field.Index;
 				SWM.ImageSource image = (SWM.ImageSource) WidgetRegistry.GetBackend(node.Values[index]);
+				if (image == null)
+					return null;
+
 				SWC.Image imageCtrl = new SWC.Image
 				{
 					Source = image,
@@ -88,7 +91,6 @@ namespace Xwt.WPFBackend.Utilities
 
 					factory.SetBinding (SWC.Image.SourceProperty, binding);
 				}
-					
 
 				return factory;
 			}

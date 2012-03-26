@@ -34,6 +34,9 @@ namespace Xwt.WPFBackend.Utilities
 		private void AddControlForView (CellView view)
 		{
 			FrameworkElement elem = CellUtil.CreateCellRenderer (Node, view);
+			if (elem == null)
+				return;
+			
 			DockPanel.Children.Add (elem);
 			SWC.DockPanel.SetDock (elem, SWC.Dock.Left);
 		}
