@@ -54,7 +54,8 @@ namespace Xwt.WPFBackend
 				switch ((ToggleButtonEvent)eventId)
 				{
 					case ToggleButtonEvent.Toggled:
-						ToggleButton.Checked += OnButtonChecked;
+						ToggleButton.Checked += OnButtonToggled;
+						ToggleButton.Unchecked += OnButtonToggled;
 						break;
 				}
 			}
@@ -69,7 +70,8 @@ namespace Xwt.WPFBackend
 				switch ((ToggleButtonEvent)eventId)
 				{
 					case ToggleButtonEvent.Toggled:
-						ToggleButton.Checked -= OnButtonChecked;
+						ToggleButton.Checked -= OnButtonToggled;
+						ToggleButton.Unchecked -= OnButtonToggled;
 						break;
 				}
 			}
@@ -85,7 +87,7 @@ namespace Xwt.WPFBackend
 			get { return (SWCP.ToggleButton) NativeWidget; }
 		}
 
-		private void OnButtonChecked (object s, RoutedEventArgs e)
+		private void OnButtonToggled (object s, RoutedEventArgs e)
 		{
 			Xwt.Engine.Toolkit.Invoke (EventSink.OnToggled);
 		}
