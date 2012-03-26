@@ -104,7 +104,7 @@ namespace Xwt.WPFBackend
 
 			var m = new System.Windows.Controls.Menu ();
 			foreach (var item in menuBackend.Items)
-				m.Items.Add (item.MenuItem);
+				m.Items.Add (item.Item);
 
 			Grid.SetColumn (m, 0);
 			Grid.SetRow (m, 0);
