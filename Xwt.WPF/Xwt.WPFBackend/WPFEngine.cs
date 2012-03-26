@@ -57,6 +57,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (TextEntry), typeof (TextEntryBackend));
 			WidgetRegistry.RegisterBackend (typeof (Button), typeof (ButtonBackend));
 			WidgetRegistry.RegisterBackend (typeof (ToggleButton), typeof (ToggleButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof (MenuButton), typeof (MenuButtonBackend));
 			WidgetRegistry.RegisterBackend (typeof (CheckBox), typeof (CheckBoxBackend));
 			WidgetRegistry.RegisterBackend (typeof (TreeView), typeof (TreeViewBackend));
 			WidgetRegistry.RegisterBackend (typeof (TreeStore), typeof (TreeStoreBackend));

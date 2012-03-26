@@ -127,7 +127,7 @@ namespace Xwt.WPFBackend
 		}
 
 		private ContextMenu menu;
-		private ContextMenu CreateContextMenu()
+		internal ContextMenu CreateContextMenu()
 		{
 			if (this.menu != null) {
 				this.menu.IsOpen = false;

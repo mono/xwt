@@ -59,6 +59,7 @@
     <Compile Include="Xwt.WPFBackend\CustomWidgetBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DrawingContext.cs" />
     <Compile Include="Xwt.WPFBackend\ContextBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\DropDownButton.cs" />
     <Compile Include="Xwt.WPFBackend\ExCanvas.cs" />
     <Compile Include="Xwt.WPFBackend\FileDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\FrameBackend.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Xwt.WPFBackend\KeyboardUtil.cs" />
     <Compile Include="Xwt.WPFBackend\ListSourceNotifyWrapper.cs" />
     <Compile Include="Xwt.WPFBackend\MenuBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\MenuButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\MenuItemBackend.cs" />
     <Compile Include="Xwt.WPFBackend\OpenFileDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\PanedBackend.cs" />
