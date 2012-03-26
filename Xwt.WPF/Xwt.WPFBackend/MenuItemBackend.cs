@@ -179,9 +179,7 @@ namespace Xwt.WPFBackend
 
 		void MenuItemClickHandler (object sender, EventArgs args)
 		{
-			Toolkit.Invoke (delegate {
-				eventSink.OnClicked ();
-			});
+			Toolkit.Invoke (eventSink.OnClicked);
 		}
 	}
 }
