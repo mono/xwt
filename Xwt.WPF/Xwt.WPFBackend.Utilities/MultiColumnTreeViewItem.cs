@@ -9,12 +9,16 @@ namespace Xwt.WPFBackend.Utilities
 {
 	public class MultiColumnTreeViewItem : SWC.TreeViewItem
 	{
+		internal TreeViewBackend TreeView { get; private set; }
 		internal TreeNode Node { get; private set; }
 		public SWC.DockPanel DockPanel;
+		private IList<CellView> cellViews = new List<CellView> ();
 
-		internal MultiColumnTreeViewItem (TreeNode node)
+		internal MultiColumnTreeViewItem (TreeViewBackend treeView, TreeNode node)
 		{
 			Node = node;
+			TreeView = treeView;
+			(Node as TreeNode).TreeViewData.Add (Tuple.Create<TreeViewBackend, SWC.ItemsControl>(TreeView, this));
 			Header = DockPanel = new SWC.DockPanel ();
 		}
 
@@ -22,10 +26,24 @@ namespace Xwt.WPFBackend.Utilities
 		{
 			foreach (CellView view in column.Views)
 			{
-				FrameworkElement elem = CellUtil.CreateCellRenderer (Node, view);
-				DockPanel.Children.Add (elem);
-				SWC.DockPanel.SetDock (elem, SWC.Dock.Left);
+				cellViews.Add (view);
+				AddControlForView (view);
 			}
+		}
+
+		private void AddControlForView (CellView view)
+		{
+			FrameworkElement elem = CellUtil.CreateCellRenderer (Node, view);
+			DockPanel.Children.Add (elem);
+			SWC.DockPanel.SetDock (elem, SWC.Dock.Left);
+		}
+
+		public void UpdateColumn (int column, object newValue)
+		{
+			DockPanel.Children.Clear ();
+
+			foreach (CellView view in cellViews)
+				AddControlForView (view);
 		}
 
 		public void AppendSelections (IList<TreePosition> positions)
