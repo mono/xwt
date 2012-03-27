@@ -45,6 +45,11 @@ namespace Xwt
 			{
 				((TreeView)Parent).OnSelectionChanged (EventArgs.Empty);
 			}
+			
+			public override Size GetDefaultNaturalSize ()
+			{
+				return Xwt.Engine.DefaultNaturalSizes.TreeView;
+			}
 		}
 		
 		static TreeView ()

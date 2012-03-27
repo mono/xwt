@@ -42,6 +42,11 @@ namespace Xwt
 			{
 				((ListView)Parent).OnSelectionChanged (EventArgs.Empty);
 			}
+			
+			public override Size GetDefaultNaturalSize ()
+			{
+				return Xwt.Engine.DefaultNaturalSizes.ListView;
+			}
 		}
 		
 		static ListView ()

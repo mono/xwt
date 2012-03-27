@@ -207,6 +207,17 @@ namespace Xwt
 			{
 				Parent.OnBoundsChanged ();
 			}
+			
+			/// <summary>
+			/// Gets the default natural size for this type of widget
+			/// </summary>
+			/// <returns>
+			/// The default natural size.
+			/// </returns>
+			public virtual Size GetDefaultNaturalSize ()
+			{
+				return new Size (0, 0);
+			}
 		}
 		
 		public Widget ()

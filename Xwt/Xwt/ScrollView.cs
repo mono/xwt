@@ -39,6 +39,11 @@ namespace Xwt
 			{
 				((ScrollView)Parent).OnVisibleRectChanged (EventArgs.Empty);
 			}
+			
+			public override Size GetDefaultNaturalSize ()
+			{
+				return Xwt.Engine.DefaultNaturalSizes.ScrollView;
+			}
 		}
 		
 		protected override Widget.EventSink CreateEventSink ()

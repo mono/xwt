@@ -155,6 +155,19 @@ namespace Xwt.Backends
 		
 		bool SupportsCustomScrolling ();
 		void SetScrollAdjustments (IScrollAdjustmentBackend horizontal, IScrollAdjustmentBackend vertical);
+		
+		/// <summary>
+		/// Gets the default natural size of the widget
+		/// </summary>
+		/// <returns>
+		/// The default natural size.
+		/// </returns>
+		/// <remarks>
+		/// This method should only be used if there isn't a platform-specific natural
+		/// size for the widget. There may be widgets for which XWT can't provide
+		/// a default natural width or height, in which case it return 0.
+		/// </remarks>
+		Size GetDefaultNaturalSize ();
 	}
 	
 	[Flags]

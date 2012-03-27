@@ -44,6 +44,11 @@ namespace Xwt
 			{
 				((TextEntry)Parent).OnChanged (EventArgs.Empty);
 			}
+			
+			public override Size GetDefaultNaturalSize ()
+			{
+				return Xwt.Engine.DefaultNaturalSizes.TextEntry;
+			}
 		}
 		
 		public TextEntry ()

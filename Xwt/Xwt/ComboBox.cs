@@ -50,6 +50,11 @@ namespace Xwt
 			{
 				return ((ComboBox)Parent).RowIsSeparator (rowIndex);
 			}
+			
+			public override Size GetDefaultNaturalSize ()
+			{
+				return Xwt.Engine.DefaultNaturalSizes.ComboBox;
+			}
 		}
 		
 		new IComboBoxBackend Backend {
