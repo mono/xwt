@@ -39,7 +39,7 @@ namespace Xwt.WPFBackend
 {
 	public class WindowBackend : WindowFrameBackend, IWindowBackend
 	{
-		Grid rootPanel;
+		protected Grid rootPanel;
 		public System.Windows.Controls.Menu mainMenu;
 		MenuBackend mainMenuBackend;
 		FrameworkElement widget;

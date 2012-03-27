@@ -45,6 +45,7 @@ namespace Xwt.WPFBackend
 			application = new System.Windows.Application ();
 
 			WidgetRegistry.RegisterBackend (typeof (Window), typeof (WindowBackend));
+			WidgetRegistry.RegisterBackend (typeof (Dialog), typeof (DialogBackend));
 			WidgetRegistry.RegisterBackend (typeof (Notebook), typeof (NotebookBackend));
 			WidgetRegistry.RegisterBackend (typeof (Menu), typeof (MenuBackend));
 			WidgetRegistry.RegisterBackend (typeof (MenuItem), typeof (MenuItemBackend));
