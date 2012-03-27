@@ -32,6 +32,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using Xwt.Backends;
+using Xwt.Engine;
 using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
@@ -114,7 +115,7 @@ namespace Xwt.WPFBackend
 
 		private void OnButtonClicked (DialogButton button)
 		{
-			DialogEventSink.OnDialogButtonClicked (button);
+			Toolkit.Invoke (() => DialogEventSink.OnDialogButtonClicked (button));
 		}
 
 		private static readonly ItemsPanelTemplate PanelTemplate;
