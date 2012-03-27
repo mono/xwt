@@ -63,6 +63,7 @@
     <Compile Include="Xwt.WPFBackend\ContextBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\DropDownButton.cs" />
     <Compile Include="Xwt.WPFBackend\ExCanvas.cs" />
+    <Compile Include="Xwt.WPFBackend\ExListView.cs" />
     <Compile Include="Xwt.WPFBackend\FileDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\FrameBackend.cs" />
     <Compile Include="Xwt.WPFBackend\GradientBackendHandler.cs" />
