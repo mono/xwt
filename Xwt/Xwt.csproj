@@ -91,7 +91,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Xwt.Backends\IPanedBackend.cs" />
-    <Compile Include="Xwt\HScale.cs" />
     <Compile Include="Xwt\TreeView.cs">
       <SubType>Component</SubType>
     </Compile>
