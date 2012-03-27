@@ -25,7 +25,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -46,14 +45,14 @@ namespace Xwt.WPFBackend
 	{
 		public void Save (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Save();
+			var c = (DrawingContext)backend;
+			c.Save ();
 		}
 
 		public void Restore (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Restore();
+			var c = (DrawingContext)backend;
+			c.Restore ();
 		}
 
 		public void SetGlobalAlpha (object backend, double alpha)
@@ -76,23 +75,23 @@ namespace Xwt.WPFBackend
 
 		public void Clip (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 		}
 
 		public void ClipPreserve (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 		}
 
 		public void ResetClip (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 		}
 
 		public void ClosePath (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Path.CloseFigure();
+			var c = (DrawingContext)backend;
+			c.Path.CloseFigure ();
 		}
 
 		public void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
@@ -108,29 +107,29 @@ namespace Xwt.WPFBackend
 
 		public void Fill (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Graphics.FillPath (c.Brush, c.Path);
-			c.Path.Reset();
+			c.Path.Reset ();
 		}
 
 		public void FillPreserve (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Graphics.FillPath (c.Brush, c.Path);
 		}
 
 		public void LineTo (object backend, double x, double y)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
-			c.Path.AddLine (c.CurrentX, c.CurrentY, (float) x, (float) y);
-			c.CurrentX = (float) x;
-			c.CurrentY = (float) y;
+			c.Path.AddLine (c.CurrentX, c.CurrentY, (float)x, (float)y);
+			c.CurrentX = (float)x;
+			c.CurrentY = (float)y;
 		}
 
 		public void MoveTo (object backend, double x, double y)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			if (c.CurrentX != x || c.CurrentY != y) {
 				c.Path.StartFigure ();
 				c.CurrentX = (float)x;
@@ -140,13 +139,13 @@ namespace Xwt.WPFBackend
 
 		public void NewPath (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Path.Reset();
+			var c = (DrawingContext)backend;
+			c.Path.Reset ();
 		}
 
 		public void Rectangle (object backend, double x, double y, double width, double height)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			if (c.CurrentX != x || c.CurrentY != y)
 				c.Path.StartFigure ();
 			c.Path.AddRectangle (new RectangleF ((float)x, (float)y, (float)width, (float)height));
@@ -167,7 +166,7 @@ namespace Xwt.WPFBackend
 
 		public void RelLineTo (object backend, double dx, double dy)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			
 			float x = c.CurrentX;
 			float y = c.CurrentY;
@@ -179,7 +178,7 @@ namespace Xwt.WPFBackend
 
 		public void RelMoveTo (object backend, double dx, double dy)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Path.StartFigure ();
 			c.CurrentX += (float)dx;
 			c.CurrentY += (float)dy;
@@ -187,38 +186,38 @@ namespace Xwt.WPFBackend
 
 		public void Stroke (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Graphics.DrawPath (c.Pen, c.Path);
-			c.Path.Reset();
+			c.Path.Reset ();
 		}
 
 		public void StrokePreserve (object backend)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Graphics.DrawPath (c.Pen, c.Path);
 		}
 
 		public void SetColor (object backend, Color color)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.SetColor (color.ToDrawingColor ());
 		}
 
 		public void SetLineWidth (object backend, double width)
 		{
-			var c = (DrawingContext) backend;
-			c.Pen.Width = (float) width;
+			var c = (DrawingContext)backend;
+			c.Pen.Width = (float)width;
 		}
 
 		public void SetLineDash (object backend, double offset, params double[] pattern)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			if (pattern.Length != 0) {
-				c.Pen.DashOffset = (float) (offset / c.Pen.Width);
+				c.Pen.DashOffset = (float)(offset / c.Pen.Width);
 				float[] fp = new float [pattern.Length];
 				for (int i = 0; i < fp.Length; ++i)
-					fp [i] = (float) (pattern [i] / c.Pen.Width);
+					fp [i] = (float)(pattern [i] / c.Pen.Width);
 
 				c.Pen.DashStyle = DashStyle.Custom;
 				c.Pen.DashPattern = fp;
@@ -228,7 +227,7 @@ namespace Xwt.WPFBackend
 
 		public void SetPattern (object backend, object p)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			var lg = p as LinearGradient;
 			if (lg != null) {
@@ -236,8 +235,8 @@ namespace Xwt.WPFBackend
 					throw new ArgumentException ();
 
 				var stops = lg.ColorStops.OrderBy (t => t.Item1).ToArray ();
-				var first = stops[0];
-				var last = stops[stops.Length - 1];
+				var first = stops [0];
+				var last = stops [stops.Length - 1];
 
 				var brush = new LinearGradientBrush (lg.Start, lg.End, first.Item2.ToDrawingColor (),
 														last.Item2.ToDrawingColor ());
@@ -252,20 +251,19 @@ namespace Xwt.WPFBackend
 				//}
 
 				c.Brush = brush;
-			}
-			else if (p is Brush)
+			} else if (p is Brush)
 				c.Brush = (Brush)p;
 		}
 
 		public void SetFont (object backend, Font font)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			c.Font = font.ToDrawingFont ();
 		}
-
+			
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 			var sfont = layout.Font.ToDrawingFont ();
 			var measure = layout.GetSize ();
 			
@@ -275,30 +273,30 @@ namespace Xwt.WPFBackend
 
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, bmp.Width, bmp.Height, (float)alpha);
+			DrawImageCore (c.Graphics, bmp, (float)x, (float)y, bmp.Width, bmp.Height, (float)alpha);
 		}
 
 		public void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
-			var c = (DrawingContext) backend;
+			var c = (DrawingContext)backend;
 
 			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
+			DrawImageCore (c.Graphics, bmp, (float)x, (float)y, (float)width, (float)height, (float)alpha);
 		}
 
 		public void ResetTransform (object backend)
 		{
 			var c = (DrawingContext)backend;
-			c.Graphics.ResetTransform();
+			c.Graphics.ResetTransform ();
 		}
 
 		public void Rotate (object backend, double angle)
 		{
 			var c = (DrawingContext)backend;
-			c.Graphics.RotateTransform((float)angle);
+			c.Graphics.RotateTransform ((float)angle);
 		}
 
 		public void Scale (object backend, double scaleX, double scaleY)
@@ -320,7 +318,7 @@ namespace Xwt.WPFBackend
 		internal static void DrawImageCore (Graphics g, Bitmap bmp, float x, float y, float width, float height, float alpha)
 		{
 			if (bmp == null)
-				throw new ArgumentException();
+				throw new ArgumentException ();
 
 			if (alpha < 1) {
 				var attr = new ImageAttributes ();
@@ -341,8 +339,7 @@ namespace Xwt.WPFBackend
 				points [2] = new PointF (x, y + height);
 
 				g.DrawImage (bmp, points, new RectangleF (0, 0, bmp.Width, bmp.Height), GraphicsUnit.Pixel, attr);
-			}
-			else
+			} else
 				g.DrawImage (bmp, x, y, width, height);
 		}
 	}
