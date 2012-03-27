@@ -102,11 +102,11 @@ namespace Samples
 			
 			// proofing rotate, and printing size to see the values
 			ctx.Save ();
-			text = new TextLayout (ctx);
+			
 			text.Font = this.Font.WithSize (10);
 			text.Text = string.Format ("Size 1 {0}\r\nSize 2 {1}\r\nSize 3 {2} Scale {3}", 
 			                           size1, size2, size3, scale);
-			//text.Width = -1; // this clears textsize
+			text.Width = -1; // this clears textsize
 			ctx.Rotate (5);
 			// maybe someone knows a formula with angle and textsize to calculyte ty
 			var ty = 30; 
