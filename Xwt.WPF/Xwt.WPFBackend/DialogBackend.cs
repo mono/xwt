@@ -96,8 +96,6 @@ namespace Xwt.WPFBackend
 
 		public void RunLoop (IWindowFrameBackend parent)
 		{
-			// HACK
-			//Window.Loaded += (s, e) => this.cmd.NotifyExecutabilityChanged ();
 			Window.ShowDialog ();
 		}
 
