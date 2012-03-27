@@ -279,6 +279,26 @@ namespace Xwt.Mac
 			t.Concat ();
 		}
 		
+		public void TransformPoint (object backend, ref double x, ref double y)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void TransformDistance (object backend, ref double dx, ref double dy)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void TransformPoints (object backend, Point[] points)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void TransformDistances (object backend, Distance[] vectors)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public void Dispose (object backend)
 		{
 			ContextInfo ctx = (ContextInfo) backend;

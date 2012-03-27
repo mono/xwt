@@ -49,7 +49,7 @@ namespace Samples
 		public virtual void Transforms (Xwt.Drawing.Context ctx, double x, double y)
 		{
 			Rotate (ctx, x, y);
-			Scale (ctx, x + 100, y);
+			Scale (ctx, x + 120, y);
 		}
 		
 		public virtual void Rotate (Xwt.Drawing.Context ctx, double x, double y)
@@ -57,22 +57,35 @@ namespace Samples
 			ctx.Save ();
 			ctx.Translate (x + 30, y + 30);
 			ctx.SetLineWidth (3);
+
 			// Rotation
 			
 			double end = 270;
+			double r = 30;
 			
 			for (double n = 0; n<=end; n += 5) {
 				ctx.Save ();
 				ctx.Rotate (n);
 				ctx.MoveTo (0, 0);
-				ctx.RelLineTo (30, 0);
+				ctx.RelLineTo (r, 0);
 				double c = n / end;
 				ctx.SetColor (new Color (c, c, c));
 				ctx.Stroke ();
+
+				// Visual test for TransformPoints
+				Point p0 = new Point (0,0);
+				Point p1 = new Point (0, -r);
+				Point[] p = new Point[] {p0, p1};
+				ctx.TransformPoints (p);
+				ctx.ResetTransform ();
+				ctx.Translate (2 * r + 1, 0);
+				ctx.MoveTo (p[0]);
+				ctx.LineTo (p[1]);
+				c = 1-c;
+				ctx.SetColor (new Color (c, c, c));
+				ctx.Stroke();
 				ctx.Restore ();
 			}
-			
-			ctx.ResetTransform ();
 			ctx.Restore ();
 		}
 		
