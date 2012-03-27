@@ -63,14 +63,16 @@ namespace Xwt.WPFBackend
 
 			switch (id) {
 			case StockIcons.Add:
-				throw new NotImplementedException();
+				return NativeMethods.GetImage (NativeStockIcon.Help, options);
+				//throw new NotImplementedException();
 			case StockIcons.Error:
 				return NativeMethods.GetImage (NativeStockIcon.Error, options);
 			case StockIcons.Information:
 				return NativeMethods.GetImage (NativeStockIcon.Info, options);
 			case StockIcons.OrientationLandscape:
 			case StockIcons.OrientationPortrait:
-				throw new NotImplementedException();
+				return NativeMethods.GetImage (NativeStockIcon.Help, options);
+				//throw new NotImplementedException();
 			case StockIcons.Question:
 				return NativeMethods.GetImage (NativeStockIcon.Help, options);
 			case StockIcons.Remove:
