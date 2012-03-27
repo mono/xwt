@@ -31,8 +31,35 @@ namespace Xwt.Mac
 {
 	public class ScrollViewBackend: ViewBackend<NSScrollView,IScrollViewEventSink>, IScrollViewBackend
 	{
+		public override void Initialize ()
+		{
+			ViewObject = new CustomScrollView ();
+			Widget.HasHorizontalScroller = true;
+			Widget.HasVerticalScroller = true;
+			Widget.AutoresizesSubviews = true;
+		}
+		
+		protected override Size GetNaturalSize ()
+		{
+			return EventSink.GetDefaultNaturalSize ();
+		}
+		
 		public void SetChild (IWidgetBackend child)
 		{
+			IMacViewBackend backend = (IMacViewBackend) child;
+			if (backend.EventSink.SupportsCustomScrolling ()) {
+				var vs = new ScrollAdjustmentBackend (Widget, true);
+				var hs = new ScrollAdjustmentBackend (Widget, false);
+				CustomClipView clipView = new CustomClipView (hs, vs);
+				Widget.ContentView = clipView;
+				clipView.DocumentView = backend.View;
+				backend.EventSink.SetScrollAdjustments (hs, vs);
+				backend.View.Frame = new System.Drawing.RectangleF (0, 0, 500,500);
+			}
+			else {
+				Widget.DocumentView = backend.View;
+				backend.View.Frame = Widget.ContentView.DocumentRect;
+			}
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {
@@ -67,6 +94,52 @@ namespace Xwt.Mac
 		
 		public void SetChildSize (Size s)
 		{
+			NSView view = (NSView) Widget.DocumentView;
+			view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)s.Width, (float)s.Height);
+		}
+	}
+	
+	class CustomScrollView: NSScrollView, IViewObject
+	{
+		public NSView View {
+			get {
+				return this;
+			}
+		}
+
+		public Widget Frontend { get; set; }
+		
+		public override bool IsFlipped {
+			get {
+				return true;
+			}
+		}
+	}
+	
+	class CustomClipView: NSClipView
+	{
+		ScrollAdjustmentBackend hScroll;
+		ScrollAdjustmentBackend vScroll;
+		System.Drawing.RectangleF visibleRect;
+		
+		public CustomClipView (ScrollAdjustmentBackend hScroll, ScrollAdjustmentBackend vScroll)
+		{
+			this.hScroll = hScroll;
+			this.vScroll = vScroll;
+			CopiesOnScroll = false;
+			
+		}
+		
+		public override void ScrollToPoint (System.Drawing.PointF newOrigin)
+		{
+			visibleRect = new System.Drawing.RectangleF (newOrigin.X, newOrigin.Y, 100, 100);
+			hScroll.NotifyValueChanged ();
+			vScroll.NotifyValueChanged ();
+		}
+		
+		public override System.Drawing.RectangleF DocumentVisibleRect ()
+		{
+			return visibleRect;
 		}
 	}
 }
