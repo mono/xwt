@@ -48,6 +48,12 @@ namespace Xwt.Mac
 			ViewObject = new MacComboBox (EventSink);
 			Widget.SizeToFit ();
 		}
+		
+		protected override Size GetNaturalSize ()
+		{
+			var s = base.GetNaturalSize ();
+			return new Size (EventSink.GetDefaultNaturalSize ().Width, s.Height);
+		}
 
 		#region IComboBoxEntryBackend implementation
 		public ITextEntryBackend TextEntryBackend {

@@ -32,7 +32,7 @@ using MonoMac.Foundation;
 
 namespace Xwt.Mac
 {
-	public class ListViewBackend: TableViewBackend<NSTableView,IListViewEventSink>, IListViewBackend
+	public class ListViewBackend: TableViewBackend<NSTableView, IListViewEventSink>, IListViewBackend
 	{
 		IListDataSource source;
 		ListSource tsource;

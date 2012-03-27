@@ -51,6 +51,12 @@ namespace Xwt.Mac
 				Widget.SizeToFit ();
 			}
 		}
+		
+		protected override Size GetNaturalSize ()
+		{
+			var s = base.GetNaturalSize ();
+			return new Size (EventSink.GetDefaultNaturalSize ().Width, s.Height);
+		}
 
 		#region ITextEntryBackend implementation
 		public string Text {

@@ -66,6 +66,10 @@ namespace Xwt.Mac
 		public S EventSink {
 			get { return eventSink; }
 		}
+		
+		IWidgetEventSink IMacViewBackend.EventSink {
+			get { return EventSink; }
+		}
 
 		public Widget Frontend {
 			get {
@@ -199,13 +203,13 @@ namespace Xwt.Mac
 					return ((NSControl)(object)Widget).Font;
 				if (Widget is NSText)
 					return ((NSText)(object)Widget).Font;
-				/// TODO
-//				throw new NotImplementedException ();
-				return null;
+				return NSFont.ControlContentFontOfSize (NSFont.SystemFontSize);
 			}
 			set {
-				/// TODO
-//				throw new NotImplementedException ();
+				if (Widget is NSControl)
+					((NSControl)(object)Widget).Font = (NSFont) value;
+				if (Widget is NSText)
+					((NSText)(object)Widget).Font = (NSFont) value;
 			}
 		}
 		
@@ -231,20 +235,24 @@ namespace Xwt.Mac
 			return new Point (lo.X, lo.Y);
 		}
 		
-		public virtual WidgetSize GetPreferredWidth ()
+		protected virtual Size GetNaturalSize ()
 		{
-//			double w1 = Widget.FittingSize.Width + frontend.Margin.HorizontalSpacing;
-			double w = Widget.WidgetWidth() + frontend.Margin.HorizontalSpacing;
+			double w1 = Widget.FittingSize.Width;
+			return new Size (Widget.WidgetWidth(), Widget.WidgetHeight ());
+		}
+
+		public WidgetSize GetPreferredWidth ()
+		{
+			var w = GetNaturalSize ().Width;
 			var s = new Xwt.WidgetSize (w, w);
 			if (minWidth != -1 && s.MinSize > minWidth)
 				s.MinSize = minWidth;
 			return s;
 		}
-
-		public virtual WidgetSize GetPreferredHeight ()
+		
+		public WidgetSize GetPreferredHeight ()
 		{
-//			double h1 = Widget.FittingSize.Height + frontend.Margin.VerticalSpacing;
-			double h = Widget.WidgetHeight() + frontend.Margin.VerticalSpacing;
+			var h = GetNaturalSize ().Height;
 			var s = new Xwt.WidgetSize (h, h);
 			if (minHeight != -1 && s.MinSize > minHeight)
 				s.MinSize = minHeight;
@@ -633,6 +641,7 @@ namespace Xwt.Mac
 		NSView View { get; }
 		Widget Frontend { get; }
 		void NotifyPreferredSizeChanged ();
+		IWidgetEventSink EventSink { get; }
 	}
 }
 

@@ -55,14 +55,9 @@ namespace Xwt.Mac
 			Widget.AutoresizesSubviews = true;
 		}
 		
-		public override WidgetSize GetPreferredHeight ()
+		protected override Size GetNaturalSize ()
 		{
-			return new WidgetSize (0, 100);
-		}
-		
-		public override WidgetSize GetPreferredWidth ()
-		{
-			return new WidgetSize (0, 100);
+			return EventSink.GetDefaultNaturalSize ();
 		}
 		
 		protected abstract NSTableView CreateView ();
