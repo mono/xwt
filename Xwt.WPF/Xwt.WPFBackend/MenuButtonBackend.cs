@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.WPFBackend
 {
@@ -48,7 +49,8 @@ namespace Xwt.WPFBackend
 
 		private void OnMenuOpening (object sender, DropDownButton.MenuOpeningEventArgs e)
 		{
-			e.ContextMenu = ((MenuBackend) MenuButtonEventSink.OnCreateMenu ()).CreateContextMenu ();
+			Toolkit.Invoke (() =>
+				e.ContextMenu = ((MenuBackend) MenuButtonEventSink.OnCreateMenu ()).CreateContextMenu ());
 		}
 	}
 }
