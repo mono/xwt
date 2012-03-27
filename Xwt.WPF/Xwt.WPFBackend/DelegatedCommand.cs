@@ -67,8 +67,6 @@ namespace Xwt.WPFBackend
 
 			this.execute = execute;
 			this.canExecute = canExecute;
-
-			CommandManager.RequerySuggested += (s,e) => NotifyExecutabilityChanged();
 		}
 
 		public event EventHandler CanExecuteChanged
