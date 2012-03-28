@@ -80,6 +80,16 @@ namespace Xwt.GtkBackend
 			get { return Widget.Position; }
 			set { Widget.Position = (int) value; }
 		}
+
+		public Size GetDecorationSize ()
+		{
+			throw new NotSupportedException ();
+		}
+
+		public void GetPanelSizes (double totalSize, out double panel1Size, out double panel2Size)
+		{
+			throw new NotSupportedException ();
+		}
 	}
 }
 

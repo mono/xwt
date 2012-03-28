@@ -87,13 +87,10 @@ namespace Xwt
 		{
 			return new WidgetSize (sz1.MinSize - sz2, sz1.NaturalSize - sz2);
 		}
-		
-		public void UnionWith (WidgetSize s2)
+
+		public WidgetSize UnionWith (WidgetSize s2)
 		{
-			if (s2.MinSize > MinSize)
-				MinSize = s2.MinSize;
-			if (s2.NaturalSize > NaturalSize)
-				NaturalSize = s2.NaturalSize;
+			return new WidgetSize (Math.Max (MinSize, s2.MinSize), Math.Max (NaturalSize, s2.NaturalSize));
 		}
 		
 		public override string ToString ()

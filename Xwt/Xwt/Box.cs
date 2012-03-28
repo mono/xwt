@@ -298,7 +298,7 @@ namespace Xwt
 				s += spacing * (double)(count - 1);
 			} else {
 				foreach (IWidgetSurface cw in Children.Where (b => b.Visible))
-					s.UnionWith (cw.GetPreferredWidth ());
+					s = s.UnionWith (cw.GetPreferredWidth ());
 			}
 			return s;
 		}
@@ -316,7 +316,7 @@ namespace Xwt
 				s += spacing * (double)(count - 1);
 			} else {
 				foreach (IWidgetSurface cw in Children.Where (b => b.Visible))
-					s.UnionWith (cw.GetPreferredHeight ());
+					s = s.UnionWith (cw.GetPreferredHeight ());
 			}
 			return s;
 		}
@@ -338,7 +338,7 @@ namespace Xwt
 			if ((direction == Orientation.Horizontal && mode == SizeRequestMode.HeightForWidth) || (direction == Orientation.Vertical && mode == SizeRequestMode.WidthForHeight)) {
 				CalcDefaultSizes (mode, width, -1);
 				foreach (var bp in children.Where (b => b.Child.Visible)) {
-					s.UnionWith (GetPreferredLengthForSize (mode, bp.Child, bp.NextSize));
+					s = s.UnionWith (GetPreferredLengthForSize (mode, bp.Child, bp.NextSize));
 				}
 			}
 			else {

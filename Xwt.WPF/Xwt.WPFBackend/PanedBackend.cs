@@ -57,6 +57,7 @@ namespace Xwt.WPFBackend
 			public bool Resize;
 			public DefinitionBase Definition;
 			public int PanelIndex;
+			public double MinSize;
 
 			public GridLength Size
 			{
@@ -77,14 +78,43 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override WidgetSize GetPreferredWidth ()
+		public Size GetDecorationSize ()
 		{
-			return new WidgetSize (0);
+			if (panel1.Widget == null || panel2.Widget == null)
+				return Size.Zero;
+			if (direction == Orientation.Horizontal)
+				return new Size (SplitterSize, 0);
+			else
+				return new Size (0, SplitterSize);
 		}
 
-		public override WidgetSize GetPreferredHeight ()
+		public void GetPanelSizes (double totalSize, out double panel1Size, out double panel2Size)
 		{
-			return new WidgetSize (0);
+			if (panel1.Widget != null && panel2.Widget != null) {
+				double availableSize = totalSize - SplitterSize;
+				if (availableSize < 0)
+					availableSize = 0;
+
+				if (position == -1) {
+					panel1Size = panel2Size = availableSize / 2;
+				}
+				else {
+					panel1Size = position;
+					panel2Size = availableSize - position;
+				}
+			}
+			else if (panel1.Widget != null) {
+				panel1Size = totalSize;
+				panel2Size = 0;
+			}
+			else if (panel2 != null) {
+				panel2Size = totalSize;
+				panel1Size = 0;
+			}
+			else {
+				panel1Size = 0;
+				panel2Size = 0;
+			}
 		}
 
 		public void Initialize (Orientation dir)
@@ -188,10 +218,11 @@ namespace Xwt.WPFBackend
 			UpdateSplitterVisibility ();
 		}
 
-		public void UpdatePanel (int panel, bool resize)
+		public void UpdatePanel (int panel, bool resize, double minSize)
 		{
 			var pi = GetPanel (panel);
 			pi.Resize = resize;
+			pi.MinSize = minSize;
 			Grid.InvalidateArrange ();
 		}
 
@@ -210,8 +241,8 @@ namespace Xwt.WPFBackend
 			double availableSize;
 
 			availableSize = newSize - splitterDesiredSize;
-			if (availableSize < 0)
-				availableSize = 0;
+			if (availableSize <= 0)
+				return;
 
 			if (panel1.Widget != null && panel2.Widget != null) {
 
@@ -227,6 +258,11 @@ namespace Xwt.WPFBackend
 					else if (!IsFixed (panel1))
 						position = availableSize * (position / oldAvailableSize);
 				}
+
+				if (position < panel1.MinSize)
+					position = panel1.MinSize;
+				if (availableSize - position < panel2.MinSize)
+					position = availableSize - panel2.MinSize;
 
 				if (position < 0)
 					position = 0;
