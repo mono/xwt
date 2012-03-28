@@ -212,6 +212,10 @@ namespace Xwt.Mac
 		public void SetDragTarget (string[] types, DragDropAction dragAction)
 		{
 		}
+		
+		public void SetMinSize (Size s)
+		{
+		}
 	}
 	
 	public partial class WindowBackendController : MonoMac.AppKit.NSWindowController

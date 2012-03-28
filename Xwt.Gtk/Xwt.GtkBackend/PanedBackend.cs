@@ -68,7 +68,7 @@ namespace Xwt.GtkBackend
 				Widget.Remove (Widget.Child2);
 		}
 		
-		public void UpdatePanel (int panel, bool resize)
+		public void UpdatePanel (int panel, bool resize, double minSize)
 		{
 			if (panel == 1)
 				((Gtk.Paned.PanedChild)Widget [Widget.Child1]).Resize = resize;

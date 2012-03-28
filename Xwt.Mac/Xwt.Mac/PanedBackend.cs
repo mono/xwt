@@ -71,12 +71,22 @@ namespace Xwt.Mac
 			EventSink.OnPositionChanged ();
 		}
 
-		public void UpdatePanel (int panel, bool resize)
+		public void UpdatePanel (int panel, bool resize, double minSize)
 		{
 		}
 
 		public void RemovePanel (int panel)
 		{
+		}
+
+		public Size GetDecorationSize ()
+		{
+			throw new System.NotImplementedException ();
+		}
+
+		public void GetPanelSizes (double totalSize, out double panel1Size, out double panel2Size)
+		{
+			throw new System.NotImplementedException ();
 		}
 
 		public double Position {
