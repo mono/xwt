@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -44,6 +45,10 @@ namespace Xwt.WPFBackend
 		: Backend, IWidgetBackend, IWpfWidgetBackend
 	{
 		IWidgetEventSink eventSink;
+		WidgetEvent enabledEvents;
+		DragDropEffects currentDragEffect;
+
+		const WidgetEvent dragDropEvents = WidgetEvent.DragDropCheck | WidgetEvent.DragDrop | WidgetEvent.DragOver | WidgetEvent.DragOverCheck;
 
 		void IWidgetBackend.Initialize (IWidgetEventSink eventSink)
 		{
@@ -195,7 +200,7 @@ namespace Xwt.WPFBackend
 
 			var p = Widget.PointToScreen (new System.Windows.Point (
 				widgetCoordinates.X / wratio, widgetCoordinates.Y / hratio));
-			
+
 			return new Point (p.X * wratio, p.Y * hratio);
 		}
 
@@ -205,7 +210,7 @@ namespace Xwt.WPFBackend
 				Widget.UpdateLayout ();
 				Widget.Measure (new System.Windows.Size (Double.PositiveInfinity, Double.PositiveInfinity));
 			}
-			
+
 			return Widget.DesiredSize;
 		}
 
@@ -271,15 +276,8 @@ namespace Xwt.WPFBackend
 		public override void EnableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent) {
-				switch ((WidgetEvent)eventId) {
-					case WidgetEvent.DragDropCheck:
-						break;
-					case WidgetEvent.DragDrop:
-						break;
-					case WidgetEvent.DragOverCheck:
-						break;
-					case WidgetEvent.DragOver:
-						break;
+				var ev = (WidgetEvent)eventId;
+				switch (ev) {
 					case WidgetEvent.DragLeave:
 						Widget.DragLeave += WidgetDragLeaveHandler;
 						break;
@@ -314,21 +312,22 @@ namespace Xwt.WPFBackend
 						Widget.SizeChanged += WidgetOnSizeChanged;
 						break;
 				}
+
+				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
+					// Enabling a drag&drop event for the first time
+					Widget.DragOver += WidgetDragOverHandler;
+					Widget.Drop += WidgetDropHandler;
+				}
+
+				enabledEvents |= ev;
 			}
 		}
 
 		public override void DisableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent) {
-				switch ((WidgetEvent)eventId) {
-					case WidgetEvent.DragDropCheck:
-						break;
-					case WidgetEvent.DragDrop:
-						break;
-					case WidgetEvent.DragOverCheck:
-						break;
-					case WidgetEvent.DragOver:
-						break;
+				var ev = (WidgetEvent)eventId;
+				switch (ev) {
 					case WidgetEvent.DragLeave:
 						Widget.DragLeave -= WidgetDragLeaveHandler;
 						break;
@@ -356,6 +355,14 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.BoundsChanged:
 						Widget.SizeChanged -= WidgetOnSizeChanged;
 						break;
+				}
+
+				enabledEvents &= ~ev;
+
+				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
+					// All drag&drop events have been disabled
+					Widget.DragOver -= WidgetDragOverHandler;
+					Widget.Drop -= WidgetDropHandler;
 				}
 			}
 		}
@@ -456,17 +463,132 @@ namespace Xwt.WPFBackend
 			});
 		}
 
-		// TODO
 		public void DragStart (DragStartData data)
 		{
+			if (data.Data == null)
+				throw new ArgumentNullException ("data");
+
+			var dataObj = CreateDataObject (data.Data);
+			DragDrop.DoDragDrop (Widget, dataObj, data.DragAction.ToWpfDropEffect ());
+		}
+
+		static DataObject CreateDataObject (TransferDataSource data)
+		{
+			var retval = new DataObject ();
+			foreach (var type in data.DataTypes) {
+				if (type == TransferDataType.Text)
+					retval.SetText ((string)data.GetValue (type));
+			}
+
+			return retval;
 		}
 
 		public void SetDragTarget (TransferDataType [] types, DragDropAction dragAction)
 		{
+			Widget.AllowDrop = true;
 		}
 
 		public void SetDragSource (TransferDataType [] types, DragDropAction dragAction)
 		{
+		}
+
+		static DragDropAction DetectDragAction (DragDropKeyStates keys)
+		{
+			if ((keys & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey) {
+				if ((keys & DragDropKeyStates.ShiftKey) == DragDropKeyStates.ShiftKey)
+					return DragDropAction.Link;
+				else
+					return DragDropAction.Copy;
+			}
+
+			return DragDropAction.Move;
+		}
+
+		static void FillDataStore (TransferDataStore store, IDataObject data)
+		{
+			foreach (string format in data.GetFormats ()) {
+				if (format == DataFormats.UnicodeText)
+					store.AddText ((string)data.GetData (format));
+			}
+		}
+
+		void WidgetDragOverHandler (object sender, System.Windows.DragEventArgs e)
+		{
+			var types = e.Data.GetFormats ().Select (t => t.ToXwtDragType ()).ToArray ();
+			var pos = e.GetPosition (Widget).ToXwtPoint ();
+			var proposedAction = DetectDragAction (e.KeyStates);
+
+			e.Handled = true; // Prevent default handlers from being used.
+
+			if ((enabledEvents & WidgetEvent.DragOverCheck) > 0) {
+				var checkArgs = new DragOverCheckEventArgs (pos, types, proposedAction);
+				Toolkit.Invoke (delegate {
+					eventSink.OnDragOverCheck (checkArgs);
+				});
+				if (checkArgs.AllowedAction == DragDropAction.None) {
+					e.Effects = currentDragEffect = DragDropEffects.None;
+					return;
+				}
+				if (checkArgs.AllowedAction != DragDropAction.Default) {
+					e.Effects = currentDragEffect = checkArgs.AllowedAction.ToWpfDropEffect ();
+					return;
+				}
+			}
+
+			if ((enabledEvents & WidgetEvent.DragOver) > 0) {
+				var store = new TransferDataStore ();
+				FillDataStore (store, e.Data);
+
+				var args = new DragOverEventArgs (pos, store, proposedAction);
+				Toolkit.Invoke (delegate {
+					eventSink.OnDragOver (args);
+				});
+				if (args.AllowedAction == DragDropAction.None) {
+					e.Effects = currentDragEffect = DragDropEffects.None;
+					return;
+				}
+				if (args.AllowedAction != DragDropAction.Default) {
+					e.Effects = currentDragEffect = args.AllowedAction.ToWpfDropEffect ();
+					return;
+				}
+			}
+
+			e.Effects = currentDragEffect = proposedAction.ToWpfDropEffect ();
+		}
+
+		void WidgetDropHandler (object sender, System.Windows.DragEventArgs e)
+		{
+			var types = e.Data.GetFormats ().Select (t => t.ToXwtDragType ()).ToArray ();
+			var pos = e.GetPosition (Widget).ToXwtPoint ();
+			var actualEffect = currentDragEffect;
+
+			e.Handled = true; // Prevent default handlers from being used.
+
+			if ((enabledEvents & WidgetEvent.DragDropCheck) > 0) {
+				var checkArgs = new DragCheckEventArgs (pos, types, actualEffect.ToXwtDropAction ());
+				bool res = Toolkit.Invoke (delegate {
+					eventSink.OnDragDropCheck (checkArgs);
+				});
+				if (checkArgs.Result == DragDropResult.Canceled || !res) {
+					e.Effects = DragDropEffects.None;
+					return;
+				}
+			}
+
+			if ((enabledEvents & WidgetEvent.DragDrop) > 0) {
+				var store = new TransferDataStore ();
+				FillDataStore (store, e.Data);
+
+				var args = new DragEventArgs (pos, store, actualEffect.ToXwtDropAction ());
+				Toolkit.Invoke (delegate {
+					eventSink.OnDragDrop (args);
+				});
+
+				e.Effects = args.Success ? actualEffect : DragDropEffects.None;
+			}
+
+			// No DrapDropCheck/DragDrop event enabled.
+			e.Effects = DragDropEffects.None;
 		}
 
 		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)
