@@ -43,7 +43,7 @@ namespace Xwt.WPFBackend
 		
 		public static readonly StringFormat StringFormat = 
 			new StringFormat {
-				Trimming = StringTrimming.EllipsisWord		
+				Trimming = StringTrimming.Word		
 			};
 			
 		public Size GetSize ()
