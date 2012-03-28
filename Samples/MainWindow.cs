@@ -92,6 +92,7 @@ namespace Samples
 			
 			box.Panel2.Content = sampleBox;
 			box.Panel2.Resize = true;
+			box.Position = 160;
 			
 			Content = box;
 			

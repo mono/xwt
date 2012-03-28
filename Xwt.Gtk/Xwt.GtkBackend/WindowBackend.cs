@@ -82,6 +82,11 @@ namespace Xwt.GtkBackend
 			alignment.TopPadding = (uint) top;
 			alignment.BottomPadding = (uint) bottom;
 		}
+
+		public void SetMinSize (Size s)
+		{
+			// Not required
+		}
 	}
 }
 

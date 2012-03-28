@@ -961,11 +961,16 @@ namespace Xwt
 					Toolkit.QueueExitAction (DelayedResizeRequest);
 				}
 			} else if (ParentWindow is Window) {
-				resizeWindows.Add ((Window)ParentWindow);
-				if (!delayedSizeNegotiationRequested) {
-					delayedSizeNegotiationRequested = true;
-					Toolkit.QueueExitAction (DelayedResizeRequest);
-				}
+				QueueWindowSizeNegotiation ((Window)ParentWindow);
+			}
+		}
+
+		internal static void QueueWindowSizeNegotiation (Window window)
+		{
+			resizeWindows.Add ((Window)window);
+			if (!delayedSizeNegotiationRequested) {
+				delayedSizeNegotiationRequested = true;
+				Toolkit.QueueExitAction (DelayedResizeRequest);
 			}
 		}
 		
@@ -994,7 +999,7 @@ namespace Xwt
 			}
 		}
 		
-		void DelayedResizeRequest ()
+		static void DelayedResizeRequest ()
 		{
 			// First of all, query the preferred size for those
 			// widgets that were changed

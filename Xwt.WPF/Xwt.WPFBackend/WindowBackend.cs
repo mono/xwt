@@ -121,5 +121,11 @@ namespace Xwt.WPFBackend
 			if (widget != null)
 				widget.Margin = padding;
 		}
+
+		public void SetMinSize (Size s)
+		{
+			Window.MinHeight = s.Height;
+			Window.MinWidth = s.Width;
+		}
 	}
 }

@@ -34,6 +34,7 @@ namespace Xwt
 		Widget child;
 		WidgetSpacing padding;
 		Menu mainMenu;
+		bool shown;
 		
 		protected new class EventSink: WindowFrame.EventSink, ISpacingListener
 		{
@@ -88,7 +89,7 @@ namespace Xwt
 				this.child = value;
 				child.SetParentWindow (this);
 				Backend.SetChild ((IWidgetBackend)GetBackend (child));
-				AdjustSize ();
+				Widget.QueueWindowSizeNegotiation (this);
 			}
 		}
 		
@@ -98,16 +99,67 @@ namespace Xwt
 				((IWidgetSurface)child).Reallocate ();
 			}
 		}
-		
+
+		bool widthSet;
+		bool heightSet;
+		Rectangle initialBounds;
+
+		internal override void SetSize (double width, double height)
+		{
+			if (width != -1)
+				widthSet = true;
+			if (height != -1)
+				heightSet = true;
+			base.SetSize (width, height);
+		}
+
+		internal override Rectangle BackendBounds
+		{
+			get
+			{
+				return shown ? base.BackendBounds : initialBounds;
+			}
+			set
+			{
+				if (shown)
+					base.BackendBounds = value;
+				else
+					initialBounds = value;
+			}
+		}
+
 		internal void AdjustSize ()
 		{
+			if (Application.EngineBackend.HandlesSizeNegotiation)
+				return;
+
 			IWidgetSurface s = child;
-			var w = s.GetPreferredWidth ().MinSize;
-			if (w > Width)
-				Width = w;
-			var h = s.GetPreferredHeightForWidth (Width).MinSize;
-			if (h > Height)
-				Height = h;
+			if (s == null)
+				return;
+
+			var size = shown ? Size : initialBounds.Size;
+
+			var w = s.GetPreferredWidth ();
+
+			if (!shown && !widthSet)
+				size.Width = w.NaturalSize;
+
+			var h = s.GetPreferredHeightForWidth (size.Width);
+
+			if (!shown && !heightSet)
+				size.Height = h.NaturalSize;
+
+			if (w.MinSize > size.Width)
+				size.Width = w.MinSize;
+			if (h.MinSize > size.Height)
+				size.Height = h.MinSize;
+
+			shown = true;
+
+			if (size != Size)
+				Size = size;
+
+			Backend.SetMinSize (new Size (w.MinSize, h.MinSize));
 		}
 	}
 }

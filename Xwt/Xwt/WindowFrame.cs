@@ -116,42 +116,63 @@ namespace Xwt
 		
 		public Rectangle ScreenBounds {
 			get {
-				LoadBackend();
-				return bounds;
+				return BackendBounds;
 			}
 			set {
-				Backend.Bounds = value;
+				if (value.Width < 0)
+					value.Width = 0;
+				if (value.Height < 0)
+					value.Height = 0;
+				SetSize (value.Width, value.Height);
+				BackendBounds = value;
 			}
 		}
-		
+
 		public double X {
-			get { return ScreenBounds.X; }
-			set { ScreenBounds = new Xwt.Rectangle (value, Y, Width, Height); }
+			get { return BackendBounds.X; }
+			set { BackendBounds = new Xwt.Rectangle (value, Y, Width, Height); }
 		}
 		
 		public double Y {
-			get { return ScreenBounds.Y; }
-			set { ScreenBounds = new Xwt.Rectangle (X, value, Width, Height); }
+			get { return BackendBounds.Y; }
+			set { BackendBounds = new Xwt.Rectangle (X, value, Width, Height); }
 		}
 		
 		public double Width {
-			get { return ScreenBounds.Width; }
-			set { ScreenBounds = new Xwt.Rectangle (X, Y, value, Height); }
+			get { return BackendBounds.Width; }
+			set {
+				if (value < 0)
+					value = 0;
+				SetSize (value, -1);
+				BackendBounds = new Rectangle (X, Y, value, Height);
+			}
 		}
 		
 		public double Height {
-			get { return ScreenBounds.Height; }
-			set { ScreenBounds = new Xwt.Rectangle (X, Y, Width, value); }
+			get { return BackendBounds.Height; }
+			set {
+				if (value < 0)
+					value = 0;
+				SetSize (-1, value);
+				BackendBounds = new Rectangle (X, Y, Width, value);
+			}
 		}
 		
 		public Size Size {
-			get { return ScreenBounds.Size; }
-			set { ScreenBounds = new Rectangle (X, Y, value.Width, value.Height); }
+			get { return BackendBounds.Size; }
+			set {
+				if (value.Width < 0)
+					value.Width = 0;
+				if (value.Height < 0)
+					value.Height = 0;
+				SetSize (value.Width, value.Height);
+				BackendBounds = new Rectangle (Location, value);
+			}
 		}
 		
 		public Point Location {
-			get { return ScreenBounds.Location; }
-			set { ScreenBounds = new Rectangle (value.X, value.Y, Width, Height); }
+			get { return BackendBounds.Location; }
+			set { BackendBounds = new Rectangle (value.X, value.Y, Width, Height); }
 		}
 		
 		public string Title {
@@ -182,6 +203,16 @@ namespace Xwt
 		public void Hide ()
 		{
 			Visible = false;
+		}
+
+		internal virtual void SetSize (double width, double height)
+		{
+			BackendBounds = new Rectangle (X, Y, width != -1 ? width : Width, height != -1 ? height : Height);
+		}
+
+		internal virtual Rectangle BackendBounds {
+			get { LoadBackend ();  return bounds; }
+			set { bounds = Backend.Bounds = value; }
 		}
 		
 		protected virtual void OnBoundsChanged (BoundsChangedEventArgs a)
