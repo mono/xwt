@@ -343,5 +343,42 @@ namespace Xwt.WPFBackend
 
 			return source;
 		}
+
+		//
+		// Drag and Drop
+		//
+		public static DragDropAction ToXwtDropAction (this DragDropEffects value)
+		{
+			var action = DragDropAction.None;
+			if ((value & DragDropEffects.Copy) > 0) action |= DragDropAction.Copy;
+			if ((value & DragDropEffects.Move) > 0) action |= DragDropAction.Move;
+			if ((value & DragDropEffects.Link) > 0) action |= DragDropAction.Link;
+			return action;
+		}
+
+		public static DragDropEffects ToWpfDropEffect (this DragDropAction value)
+		{
+			var effects = DragDropEffects.None;
+			if ((value & DragDropAction.Copy) > 0) effects |= DragDropEffects.Copy;
+			if ((value & DragDropAction.Move) > 0) effects |= DragDropEffects.Move;
+			if ((value & DragDropAction.Link) > 0) effects |= DragDropEffects.Link;
+			return effects;
+		}
+
+		public static string ToWpfDragType (this TransferDataType type)
+		{
+			if (type == TransferDataType.Text) return DataFormats.UnicodeText;
+			if (type == TransferDataType.Rtf) return DataFormats.Rtf;
+			if (type == TransferDataType.Uri) return DataFormats.FileDrop;
+			return type.Id;
+		}
+
+		public static TransferDataType ToXwtDragType (this string type)
+		{
+			if (type == DataFormats.UnicodeText) return TransferDataType.Text;
+			if (type == DataFormats.Rtf) return TransferDataType.Rtf;
+			if (type == DataFormats.FileDrop) return TransferDataType.Uri;
+			return TransferDataType.FromId (type);
+		}
 	}
 }
