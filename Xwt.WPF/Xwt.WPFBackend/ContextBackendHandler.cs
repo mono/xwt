@@ -270,7 +270,8 @@ namespace Xwt.WPFBackend
 			var measure = layout.GetSize ();
 			
 			c.Graphics.DrawString (layout.Text, layout.Font.ToDrawingFont (), c.Brush,
-			                       new RectangleF ((float)x, (float)y, (float)measure.Width, (float)measure.Height));
+			                       new RectangleF ((float) x, (float) y, (float) measure.Width, (float) measure.Height),
+			                       TextLayoutContext.StringFormat);
 		}
 
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
