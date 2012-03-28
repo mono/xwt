@@ -40,10 +40,15 @@ namespace Xwt.WPFBackend
 		internal double Width;
 		internal string Text;
 		internal Font Font;
-
-		public Size GetSize()
+		
+		public static readonly StringFormat StringFormat = 
+			new StringFormat {
+				Trimming = StringTrimming.EllipsisWord		
+			};
+			
+		public Size GetSize ()
 		{
-			return context.Graphics.MeasureString (Text, Font, (int) Width).ToXwtSize ();
+			return context.Graphics.MeasureString (Text, Font, (int) Width, StringFormat).ToXwtSize ();
 		}
 	}
 }
