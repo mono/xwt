@@ -120,7 +120,7 @@ namespace Samples
 			
 			// Text boces
 			
-			y = 150;
+			y = 180;
 			
 			// Without wrapping
 			
