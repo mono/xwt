@@ -77,16 +77,20 @@ namespace Xwt.WPFBackend
 		public void Clip (object backend)
 		{
 			var c = (DrawingContext) backend;
+			c.Graphics.SetClip (c.Path);
+			c.Path.Reset ();
 		}
 
 		public void ClipPreserve (object backend)
 		{
 			var c = (DrawingContext) backend;
+			c.Graphics.SetClip (c.Path);
 		}
 
 		public void ResetClip (object backend)
 		{
 			var c = (DrawingContext) backend;
+			c.Graphics.ResetClip ();
 		}
 
 		public void ClosePath (object backend)
