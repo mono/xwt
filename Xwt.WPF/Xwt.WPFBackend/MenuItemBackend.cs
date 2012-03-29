@@ -157,6 +157,9 @@ namespace Xwt.WPFBackend
 
 		public void EnableEvent (object eventId)
 		{
+			if (menuItem == null)
+				return;
+
 			if (eventId is MenuItemEvent) {
 				switch ((MenuItemEvent)eventId) {
 					case MenuItemEvent.Clicked:
@@ -168,6 +171,9 @@ namespace Xwt.WPFBackend
 
 		public void DisableEvent (object eventId)
 		{
+			if (menuItem == null)
+				return;
+
 			if (eventId is MenuItemEvent) {
 				switch ((MenuItemEvent)eventId) {
 					case MenuItemEvent.Clicked:
