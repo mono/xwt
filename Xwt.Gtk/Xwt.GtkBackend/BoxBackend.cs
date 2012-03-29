@@ -131,15 +131,6 @@ namespace Xwt.GtkBackend
 			widget.Unparent ();
 		}
 		
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
-		{
-			IWidgetSurface ws = Frontend;
-			int w = (int) ws.GetPreferredWidth ().MinSize;
-			int h = (int) ws.GetPreferredHeight ().MinSize;
-			requisition.Width = w;
-			requisition.Height = h;
-		}
-		
 		protected override void OnUnrealized ()
 		{
 			base.OnUnrealized ();

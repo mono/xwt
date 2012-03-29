@@ -586,6 +586,7 @@ namespace Xwt.GtkBackend
 						if ((enabledEvents & WidgetEvent.PreferredHeightForWidthCheck) != 0) {
 							req.Height = 1;
 							sizeCheckStep = SizeCheckStep.PreAllocate;
+							realRequestedWidth = req.Width; // Store the width, since it will be used in the next iteration
 						}
 						else if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
 							var h = eventSink.OnGetPreferredHeight ();
@@ -600,6 +601,7 @@ namespace Xwt.GtkBackend
 						if ((enabledEvents & WidgetEvent.PreferredWidthForHeightCheck) != 0) {
 							req.Width = 1;
 							sizeCheckStep = SizeCheckStep.PreAllocate;
+							realRequestedHeight = req.Height; // Store the height, since it will be used in the next iteration
 						}
 						else if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
 						    var w = eventSink.OnGetPreferredWidth ();
@@ -621,19 +623,20 @@ namespace Xwt.GtkBackend
 			}
 			
 			Toolkit.Invoke (delegate {
-				if (sizeCheckStep == SizeCheckStep.SizeRequest) {
-					Console.WriteLine ("SizeRequest not called. Should not happen");
+				if (sizeCheckStep == SizeCheckStep.SizeRequest && (enabledEvents & sizeCheckEvents) != sizeCheckEvents) {
+					var ev = EventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth ? WidgetEvent.PreferredWidthCheck | WidgetEvent.PreferredHeightForWidthCheck : WidgetEvent.PreferredHeightCheck | WidgetEvent.PreferredWidthForHeightCheck;
+					// If all size request methods are overriden, the widget's size request won't be called, so this status is correct
+					if ((enabledEvents & ev) != ev)
+						Console.WriteLine ("SizeRequest not called. Should not happen.");
 				}
 				else if (sizeCheckStep == SizeCheckStep.PreAllocate || sizeCheckStep == SizeCheckStep.AdjustSize) {
 					if (EventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
-						realRequestedWidth = args.Allocation.Width;
 						Toolkit.Invoke (delegate {
 							realRequestedHeight = (int) eventSink.OnGetPreferredHeightForWidth (args.Allocation.Width).MinSize;
 						});
 						sizeCheckStep = SizeCheckStep.AdjustSize;
 						Widget.QueueResize ();
 					} else {
-						realRequestedHeight = args.Allocation.Height;
 						Toolkit.Invoke (delegate {
 							realRequestedWidth = (int) eventSink.OnGetPreferredWidthForHeight (args.Allocation.Height).MinSize;
 						});

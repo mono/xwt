@@ -130,9 +130,6 @@ namespace Xwt
 
 		internal void AdjustSize ()
 		{
-			if (Application.EngineBackend.HandlesSizeNegotiation)
-				return;
-
 			IWidgetSurface s = child;
 			if (s == null)
 				return;
@@ -154,12 +151,15 @@ namespace Xwt
 			if (h.MinSize + padding.VerticalSpacing > size.Height)
 				size.Height = h.MinSize + padding.VerticalSpacing;
 
-			shown = true;
-
-			if (size != Size)
-				Size = size;
-
-			Backend.SetMinSize (new Size (w.MinSize + padding.HorizontalSpacing, h.MinSize + padding.VerticalSpacing));
+			if (!Application.EngineBackend.HandlesSizeNegotiation || !shown) {
+	
+				shown = true;
+	
+				if (size != Size)
+					Size = size;
+	
+				Backend.SetMinSize (new Size (w.MinSize + padding.HorizontalSpacing, h.MinSize + padding.VerticalSpacing));
+			}
 		}
 	}
 }
