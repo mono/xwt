@@ -153,7 +153,7 @@ namespace Xwt.WPFBackend
 			});
 		}
 
-		Rectangle ToNonClientRect (Rectangle rect)
+		protected Rectangle ToNonClientRect (Rectangle rect)
 		{
 			var size = rect.Size;
 			var loc = rect.Location;
@@ -164,7 +164,7 @@ namespace Xwt.WPFBackend
 			loc.Y -= SystemParameters.ResizeFrameHorizontalBorderHeight;
 
 			if (((IWindowFrameBackend)this).Decorated) {
-				size.Height += SystemParameters.CaptionHeight;
+				size.Height += SystemParameters.WindowCaptionHeight;
 				loc.Y -= SystemParameters.CaptionHeight;
 			}
 			if (HasMenu) {
@@ -175,7 +175,7 @@ namespace Xwt.WPFBackend
 			return new Rectangle (loc, size);
 		}
 
-		Rectangle ToClientRect (Rectangle rect)
+		protected Rectangle ToClientRect (Rectangle rect)
 		{
 			var size = rect.Size;
 			var loc = rect.Location;

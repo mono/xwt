@@ -142,24 +142,24 @@ namespace Xwt
 			var w = s.GetPreferredWidth ();
 
 			if (!shown && !widthSet)
-				size.Width = w.NaturalSize;
+				size.Width = w.NaturalSize + padding.HorizontalSpacing;
 
-			var h = s.GetPreferredHeightForWidth (size.Width);
+			var h = s.GetPreferredHeightForWidth (size.Width - padding.HorizontalSpacing);
 
 			if (!shown && !heightSet)
-				size.Height = h.NaturalSize;
+				size.Height = h.NaturalSize + padding.VerticalSpacing;
 
-			if (w.MinSize > size.Width)
-				size.Width = w.MinSize;
-			if (h.MinSize > size.Height)
-				size.Height = h.MinSize;
+			if (w.MinSize + padding.HorizontalSpacing > size.Width)
+				size.Width = w.MinSize + padding.HorizontalSpacing;
+			if (h.MinSize + padding.VerticalSpacing > size.Height)
+				size.Height = h.MinSize + padding.VerticalSpacing;
 
 			shown = true;
 
 			if (size != Size)
 				Size = size;
 
-			Backend.SetMinSize (new Size (w.MinSize, h.MinSize));
+			Backend.SetMinSize (new Size (w.MinSize + padding.HorizontalSpacing, h.MinSize + padding.VerticalSpacing));
 		}
 	}
 }

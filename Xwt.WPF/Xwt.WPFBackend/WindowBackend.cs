@@ -60,7 +60,7 @@ namespace Xwt.WPFBackend
 			var grid = new Grid ();
 
 			grid.ColumnDefinitions.Add (new ColumnDefinition ());
-
+			
 			var menuRow = new RowDefinition () { Height = GridLength.Auto }; // Only take the menu requested space.
 			var contentRow = new RowDefinition (); // Take all the remaining space (default).
 
@@ -122,10 +122,11 @@ namespace Xwt.WPFBackend
 				widget.Margin = padding;
 		}
 
-		public void SetMinSize (Size s)
+		public virtual void SetMinSize (Size s)
 		{
-			Window.MinHeight = s.Height;
-			Window.MinWidth = s.Width;
+			var r = ToNonClientRect (new Rectangle (0, 0, s.Width, s.Height));
+			Window.MinHeight = r.Height;
+			Window.MinWidth = r.Width;
 		}
 	}
 }

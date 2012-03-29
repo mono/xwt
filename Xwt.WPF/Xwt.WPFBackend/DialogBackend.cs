@@ -65,13 +65,25 @@ namespace Xwt.WPFBackend
 			this.buttonContainer.HorizontalAlignment = HorizontalAlignment.Right;
 
 			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
-			var sep = new SWC.Separator ();
-			Grid.SetRow (sep, 2);
-			this.rootPanel.Children.Add (sep);
+			separator = new SWC.Separator ();
+			Grid.SetRow (separator, 2);
+			this.rootPanel.Children.Add (separator);
 
 			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
 			Grid.SetRow (this.buttonContainer, 3);
 			this.rootPanel.Children.Add (this.buttonContainer);
+		}
+
+		public override void SetMinSize (Size s)
+		{
+			// Take into account the size of the button bar and the separator
+
+			buttonContainer.InvalidateMeasure ();
+			buttonContainer.Measure (new System.Windows.Size (double.PositiveInfinity, double.PositiveInfinity));
+			separator.InvalidateMeasure ();
+			separator.Measure (new System.Windows.Size (double.PositiveInfinity, double.PositiveInfinity));
+			s.Height += buttonContainer.DesiredSize.Height + separator.DesiredSize.Height;
+			base.SetMinSize (s);
 		}
 
 		public void SetButtons (IEnumerable<DialogButton> newButtons)
@@ -106,6 +118,7 @@ namespace Xwt.WPFBackend
 
 		private readonly ItemsControl buttonContainer = new ItemsControl();
 		private readonly ObservableCollection<DialogButton> buttons = new ObservableCollection<DialogButton> ();
+		readonly SWC.Separator separator;
 
 		protected IDialogEventSink DialogEventSink {
 			get { return (IDialogEventSink) EventSink; }
