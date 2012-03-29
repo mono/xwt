@@ -140,7 +140,7 @@ namespace Xwt
 			}
 			if (newChild != null) {
 				RegisterChild (newChild);
-				Backend.SetPanel (panel.NumPanel, (IWidgetBackend)GetBackend (newChild), panel.Resize);
+				Backend.SetPanel (panel.NumPanel, (IWidgetBackend)GetBackend (newChild), panel.Resize, panel.Shrink);
 				UpdatePanel (panel);
 			}
 		}
@@ -166,14 +166,7 @@ namespace Xwt
 
 		void UpdatePanel (Panel panel)
 		{
-			double minSize;
-			if (direction == Orientation.Horizontal)
-				minSize = ((IWidgetSurface)panel.Content).GetPreferredWidth ().MinSize;
-			else
-				minSize = ((IWidgetSurface)panel.Content).GetPreferredHeightForWidth (Backend.Size.Width - Backend.GetDecorationSize ().Width).MinSize;
-			if (panel.Shrink)
-				minSize = 0;
-			Backend.UpdatePanel (panel.NumPanel, panel.Resize, minSize);
+			Backend.UpdatePanel (panel.NumPanel, panel.Resize, panel.Shrink);
 		}
 		
 		void NotifyPositionChanged ()
@@ -201,153 +194,6 @@ namespace Xwt
 			remove {
 				positionChanged -= value;
 				OnAfterEventRemove (PanedEvent.PositionChanged, positionChanged);
-			}
-		}
-
-		Panel GetSinglePanel ()
-		{
-			if (panel1.Content != null && panel2.Content == null)
-				return panel1;
-			if (panel2.Content != null && panel1.Content == null)
-				return panel2;
-			return null;
-		}
-
-		protected override WidgetSize OnGetPreferredWidth ()
-		{
-			if (Application.EngineBackend.HandlesSizeNegotiation)
-				return base.OnGetPreferredWidth ();
-
-			if (panel1.Content == null && panel2.Content == null)
-				return new WidgetSize (0);
-
-			Panel singlePanel = GetSinglePanel ();
-			if (singlePanel != null) {
-				var ps = ((IWidgetSurface)singlePanel.Content).GetPreferredWidth ();
-				if (singlePanel.Shrink)
-					ps.MinSize = 0;
-				return ps + Backend.GetDecorationSize ().Width;
-			}
-
-			IWidgetSurface w1 = Panel1.Content;
-			IWidgetSurface w2 = Panel2.Content;
-
-			WidgetSize s = new WidgetSize (0);
-			if (direction == Orientation.Horizontal) {
-				s = w1.GetPreferredWidth ();
-				if (panel1.Shrink)
-					s.MinSize = 0;
-				if (Position != 0)
-					s.NaturalSize = Math.Max (s.NaturalSize, Position);
-
-				var s2 = w2.GetPreferredWidth ();
-				if (panel2.Shrink)
-					s2.MinSize = 0;
-				s += s2;
-			}
-			else {
-				if (panel1.Content != null)
-					s = w1.GetPreferredWidth ();
-				if (panel2.Content != null) {
-					var s2 = w2.GetPreferredWidth ();
-					s = new WidgetSize (Math.Max (s.MinSize, s2.MinSize), Math.Max (s.NaturalSize, s2.NaturalSize));
-				}
-			}
-			s += new WidgetSize (Backend.GetDecorationSize ().Width);
-			return s;
-		}
-
-		protected override WidgetSize OnGetPreferredHeight ()
-		{
-			if (Application.EngineBackend.HandlesSizeNegotiation)
-				return base.OnGetPreferredHeight ();
-
-			if (panel1.Content == null && panel2.Content == null)
-				return new WidgetSize (0);
-
-			Panel singlePanel = GetSinglePanel ();
-			if (singlePanel != null) {
-				var ps = ((IWidgetSurface)singlePanel.Content).GetPreferredHeight ();
-				if (singlePanel.Shrink)
-					ps.MinSize = 0;
-				return ps + Backend.GetDecorationSize ().Height;
-			}
-
-			IWidgetSurface w1 = Panel1.Content;
-			IWidgetSurface w2 = Panel2.Content;
-
-			WidgetSize s = new WidgetSize (0);
-			if (direction == Orientation.Vertical) {
-				s = w1.GetPreferredHeight ();
-				if (panel1.Shrink)
-					s.MinSize = 0;
-				if (Position != 0)
-					s.NaturalSize = Math.Max (s.NaturalSize, Position);
-
-				var s2 = w2.GetPreferredHeight ();
-				if (panel2.Shrink)
-					s2.MinSize = 0;
-				s += s2;
-			}
-			else {
-				if (panel1.Content != null)
-					s = w1.GetPreferredHeight ();
-				if (panel2.Content != null) {
-					var s2 = w2.GetPreferredHeight ();
-					s = new WidgetSize (Math.Max (s.MinSize, s2.MinSize), Math.Max (s.NaturalSize, s2.NaturalSize));
-				}
-			}
-			s += new WidgetSize (Backend.GetDecorationSize ().Height);
-			return s;
-		}
-
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			if (Application.EngineBackend.HandlesSizeNegotiation)
-				return base.OnGetPreferredHeightForWidth (width);
-
-			if (direction == Orientation.Vertical) {
-				WidgetSize s = new WidgetSize (Backend.GetDecorationSize ().Height);
-				if (panel1.Content != null)
-					s += ((IWidgetSurface)panel1.Content).GetPreferredHeightForWidth (width);
-				if (panel2.Content != null)
-					s += ((IWidgetSurface)panel2.Content).GetPreferredHeightForWidth (width);
-				return s;
-			}
-			else {
-				double s1, s2;
-				Backend.GetPanelSizes (width, out s1, out s2);
-				WidgetSize s = new WidgetSize (0);
-				if (panel1.Content != null && s1 > 0)
-					s = ((IWidgetSurface)panel1.Content).GetPreferredHeightForWidth (s1);
-				if (panel2.Content != null && s2 > 0)
-					s = s.UnionWith (((IWidgetSurface)panel2.Content).GetPreferredHeightForWidth (s2));
-				return s + Backend.GetDecorationSize ().Height;
-			}
-		}
-
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			if (Application.EngineBackend.HandlesSizeNegotiation)
-				return base.OnGetPreferredWidthForHeight (height);
-
-			if (direction == Orientation.Horizontal) {
-				WidgetSize s = new WidgetSize (Backend.GetDecorationSize ().Width);
-				if (panel1.Content != null)
-					s += ((IWidgetSurface)panel1.Content).GetPreferredWidthForHeight (height);
-				if (panel2.Content != null)
-					s += ((IWidgetSurface)panel2.Content).GetPreferredWidthForHeight (height);
-				return s;
-			}
-			else {
-				double s1, s2;
-				Backend.GetPanelSizes (height, out s1, out s2);
-				WidgetSize s = new WidgetSize (0);
-				if (panel1.Content != null && s1 > 0)
-					s = ((IWidgetSurface)panel1.Content).GetPreferredWidthForHeight (s1);
-				if (panel2.Content != null && s2 > 0)
-					s = s.UnionWith (((IWidgetSurface)panel2.Content).GetPreferredWidthForHeight (s2));
-				return s + Backend.GetDecorationSize ().Width;
 			}
 		}
 	}

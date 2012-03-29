@@ -57,7 +57,8 @@ namespace Xwt.WPFBackend
 			public bool Resize;
 			public DefinitionBase Definition;
 			public int PanelIndex;
-			public double MinSize;
+			public bool Shrink;
+			public WidgetBackend Backend;
 
 			public GridLength Size
 			{
@@ -75,45 +76,6 @@ namespace Xwt.WPFBackend
 					else
 						((RowDefinition)Definition).Height = value;
 				}
-			}
-		}
-
-		public Size GetDecorationSize ()
-		{
-			if (panel1.Widget == null || panel2.Widget == null)
-				return Size.Zero;
-			if (direction == Orientation.Horizontal)
-				return new Size (SplitterSize, 0);
-			else
-				return new Size (0, SplitterSize);
-		}
-
-		public void GetPanelSizes (double totalSize, out double panel1Size, out double panel2Size)
-		{
-			if (panel1.Widget != null && panel2.Widget != null) {
-				double availableSize = totalSize - SplitterSize;
-				if (availableSize < 0)
-					availableSize = 0;
-
-				if (position == -1) {
-					panel1Size = panel2Size = availableSize / 2;
-				}
-				else {
-					panel1Size = position;
-					panel2Size = availableSize - position;
-				}
-			}
-			else if (panel1.Widget != null) {
-				panel1Size = totalSize;
-				panel2Size = 0;
-			}
-			else if (panel2 != null) {
-				panel2Size = totalSize;
-				panel1Size = 0;
-			}
-			else {
-				panel1Size = 0;
-				panel2Size = 0;
 			}
 		}
 
@@ -200,13 +162,15 @@ namespace Xwt.WPFBackend
 			return panel == 1 ? panel1 : panel2;
 		}
 
-		public void SetPanel (int panel, IWidgetBackend widget, bool resize)
+		public void SetPanel (int panel, IWidgetBackend widget, bool resize, bool shrink)
 		{
 			var panelWidget = (UIElement)widget.NativeWidget;
 
 			var pi = GetPanel (panel);
 			pi.Widget = panelWidget;
+			pi.Backend = (WidgetBackend)widget;
 			pi.Resize = resize;
+			pi.Shrink = shrink;
 
 			if (direction == Orientation.Horizontal)
 				Grid.SetColumn (pi.Widget, pi.PanelIndex);
@@ -218,11 +182,11 @@ namespace Xwt.WPFBackend
 			UpdateSplitterVisibility ();
 		}
 
-		public void UpdatePanel (int panel, bool resize, double minSize)
+		public void UpdatePanel (int panel, bool resize, bool shrink)
 		{
 			var pi = GetPanel (panel);
 			pi.Resize = resize;
-			pi.MinSize = minSize;
+			pi.Shrink = shrink;
 			Grid.InvalidateArrange ();
 		}
 
@@ -259,10 +223,17 @@ namespace Xwt.WPFBackend
 						position = availableSize * (position / oldAvailableSize);
 				}
 
-				if (position < panel1.MinSize)
-					position = panel1.MinSize;
-				if (availableSize - position < panel2.MinSize)
-					position = availableSize - panel2.MinSize;
+				if (!panel1.Shrink) {
+					var min = direction == Orientation.Horizontal ? panel1.Widget.DesiredSize.Width : panel1.Widget.DesiredSize.Height;
+					if (position < min)
+						position = min;
+				}
+				if (!panel2.Shrink) {
+					var min = direction == Orientation.Horizontal ? panel2.Widget.DesiredSize.Width : panel1.Widget.DesiredSize.Height;
+					if (availableSize - position < min) {
+						position = availableSize - min;
+					}
+				}
 
 				if (position < 0)
 					position = 0;
