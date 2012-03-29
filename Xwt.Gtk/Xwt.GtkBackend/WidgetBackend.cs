@@ -240,53 +240,65 @@ namespace Xwt.GtkBackend
 		
 		public virtual WidgetSize GetPreferredWidth ()
 		{
+			bool oldFlag = doubleSizeRequestCheckSupported;
 			try {
 				gettingPreferredSize = true;
+				doubleSizeRequestCheckSupported = false;
 				var s = new WidgetSize (Widget.SizeRequest ().Width);
 				if (minSizeSet && Frontend.MinWidth != -1)
 					s.MinSize = Frontend.MinWidth;
 				return s;
 			} finally {
 				gettingPreferredSize = false;
+				doubleSizeRequestCheckSupported = oldFlag;
 			}
 		}
 		
 		public virtual WidgetSize GetPreferredHeight ()
 		{
+			bool oldFlag = doubleSizeRequestCheckSupported;
 			try {
 				gettingPreferredSize = true;
+				doubleSizeRequestCheckSupported = false;
 				var s = new WidgetSize (Widget.SizeRequest ().Height);
 				if (minSizeSet && Frontend.MinHeight != -1)
 					s.MinSize = Frontend.MinHeight;
 				return s;
 			} finally {
 				gettingPreferredSize = false;
+				doubleSizeRequestCheckSupported = oldFlag;
 			}
 		}
 		
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
+			bool oldFlag = doubleSizeRequestCheckSupported;
 			try {
 				gettingPreferredSize = true;
+				doubleSizeRequestCheckSupported = false;
 				var s = new WidgetSize (Widget.SizeRequest ().Height);
 				if (minSizeSet && Frontend.MinHeight != -1)
 					s.MinSize = Frontend.MinHeight;
 				return s;
 			} finally {
 				gettingPreferredSize = false;
+				doubleSizeRequestCheckSupported = oldFlag;
 			}
 		}
 		
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
+			bool oldFlag = doubleSizeRequestCheckSupported;
 			try {
 				gettingPreferredSize = true;
+				doubleSizeRequestCheckSupported = false;
 				var s = new WidgetSize (Widget.SizeRequest ().Width);
 				if (minSizeSet && Frontend.MinWidth != -1)
 					s.MinSize = Frontend.MinWidth;
 				return s;
 			} finally {
 				gettingPreferredSize = false;
+				doubleSizeRequestCheckSupported = oldFlag;
 			}
 		}
 		
@@ -554,6 +566,7 @@ namespace Xwt.GtkBackend
 		int realRequestedWidth;
 		int realRequestedHeight;
 		bool gettingPreferredSize;
+		static bool doubleSizeRequestCheckSupported = true;
 		
 		public bool IsPreallocating {
 			get { return sizeCheckStep == SizeCheckStep.AdjustSize || sizeCheckStep == SizeCheckStep.PreAllocate; }
@@ -588,9 +601,15 @@ namespace Xwt.GtkBackend
 							req.Width = (int) w.MinSize;
 						}
 						if ((enabledEvents & WidgetEvent.PreferredHeightForWidthCheck) != 0) {
-							req.Height = 1;
-							sizeCheckStep = SizeCheckStep.PreAllocate;
-							realRequestedWidth = req.Width; // Store the width, since it will be used in the next iteration
+							if (doubleSizeRequestCheckSupported) {
+								req.Height = 1;
+								sizeCheckStep = SizeCheckStep.PreAllocate;
+								realRequestedWidth = req.Width; // Store the width, since it will be used in the next iteration
+							} else {
+								var h = eventSink.OnGetPreferredHeightForWidth (req.Width);
+								req.Height = (int) h.MinSize;
+								sizeCheckStep = SizeCheckStep.FinalAllocate;
+							}
 						}
 						else if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
 							var h = eventSink.OnGetPreferredHeight ();
@@ -603,9 +622,15 @@ namespace Xwt.GtkBackend
 							req.Height = (int) h.MinSize;
 						}
 						if ((enabledEvents & WidgetEvent.PreferredWidthForHeightCheck) != 0) {
-							req.Width = 1;
-							sizeCheckStep = SizeCheckStep.PreAllocate;
-							realRequestedHeight = req.Height; // Store the height, since it will be used in the next iteration
+							if (doubleSizeRequestCheckSupported) {
+								req.Width = 1;
+								sizeCheckStep = SizeCheckStep.PreAllocate;
+								realRequestedHeight = req.Height; // Store the height, since it will be used in the next iteration
+							} else {
+								var w = eventSink.OnGetPreferredWidthForHeight (req.Height);
+								req.Width = (int) w.MinSize;
+								sizeCheckStep = SizeCheckStep.FinalAllocate;
+							}
 						}
 						else if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
 						    var w = eventSink.OnGetPreferredWidth ();
