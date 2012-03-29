@@ -36,18 +36,13 @@ namespace Xwt.GtkBackend
 	{
 		public BoxBackend ()
 		{
-			Widget = new CustomContainer ();
+			Widget = new CustomContainer () { Backend = this };
 			Widget.Show ();
 		}
 		
 		new CustomContainer Widget {
 			get { return (CustomContainer)base.Widget; }
 			set { base.Widget = value; }
-		}
-		
-		public override void Initialize ()
-		{
-			Widget.Frontend = Frontend;
 		}
 		
 		public void Add (IWidgetBackend widget)
@@ -69,14 +64,15 @@ namespace Xwt.GtkBackend
 				if (Widget.SetAllocation (w, rects[n]))
 					changed = true;
 			}
-			if (changed)
+			if (changed && !Widget.IsReallocating)
 				Widget.QueueResize ();
 		}
 	}
 	
 	class CustomContainer: Gtk.Container, IGtkContainer
 	{
-		public Widget Frontend;
+		public BoxBackend Backend;
+		public bool IsReallocating;
 		Dictionary<Gtk.Widget, WidgetData> children = new Dictionary<Gtk.Widget, WidgetData> ();
 		
 		struct WidgetData
@@ -139,7 +135,14 @@ namespace Xwt.GtkBackend
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
-			((IWidgetSurface)Frontend).Reallocate ();
+			if (Backend.IsPreallocating)
+				return;
+			try {
+				IsReallocating = true;
+				((IWidgetSurface)Backend.Frontend).Reallocate ();
+			} catch {
+				IsReallocating = false;
+			}
 			foreach (var cr in children) {
 				var r = cr.Value.Rect;
 				cr.Key.SizeAllocate (new Gdk.Rectangle (allocation.X + (int)r.X, allocation.Y + (int)r.Y, (int)r.Width, (int)r.Height));

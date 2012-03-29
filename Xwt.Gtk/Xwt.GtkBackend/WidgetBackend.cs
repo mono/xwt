@@ -554,6 +554,10 @@ namespace Xwt.GtkBackend
 		int realRequestedWidth;
 		int realRequestedHeight;
 		bool gettingPreferredSize;
+		
+		public bool IsPreallocating {
+			get { return sizeCheckStep == SizeCheckStep.AdjustSize || sizeCheckStep == SizeCheckStep.PreAllocate; }
+		}
 
 		void HandleWidgetSizeRequested (object o, Gtk.SizeRequestedArgs args)
 		{
