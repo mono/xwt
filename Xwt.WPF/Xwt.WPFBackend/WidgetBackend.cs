@@ -97,6 +97,7 @@ namespace Xwt.WPFBackend
 				widget = value;
 				if (widget is IWpfWidget)
 					((IWpfWidget)widget).Backend = this;
+				widget.InvalidateMeasure ();
 			}
 		}
 

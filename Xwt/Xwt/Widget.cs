@@ -985,7 +985,7 @@ namespace Xwt
 		
 		void QueueForSizeCheck (Widget w)
 		{
-			if (resizeRequestQueue.Add (Parent)) {
+			if (resizeRequestQueue.Add (w)) {
 				int depth = w.Depth;
 				bool inserted = false;
 				for (int n=0; n<resizeDepths.Count; n++) {
