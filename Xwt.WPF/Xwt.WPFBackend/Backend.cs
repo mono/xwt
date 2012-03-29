@@ -43,5 +43,9 @@ namespace Xwt.WPFBackend
 		public virtual void DisableEvent (object eventId)
 		{
 		}
+
+		public object Frontend {
+			get { return frontend; }
+		}
 	}
 }
