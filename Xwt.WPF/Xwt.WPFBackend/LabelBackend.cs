@@ -48,7 +48,10 @@ namespace Xwt.WPFBackend
 
 		public string Text {
 			get { return (string)Label.Content; }
-			set { Label.Content = value; }
+			set {
+				Label.Content = value;
+				Widget.InvalidateMeasure();
+			}
 		}
 
 		public Alignment TextAlignment {
