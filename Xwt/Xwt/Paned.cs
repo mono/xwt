@@ -128,8 +128,8 @@ namespace Xwt
 		
 		protected override void OnBackendCreated ()
 		{
-			base.OnBackendCreated ();
 			Backend.Initialize (direction);
+			base.OnBackendCreated ();
 		}
 
 		void OnReplaceChild (Panel panel, Widget oldChild, Widget newChild)
