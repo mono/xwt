@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -36,7 +37,9 @@ namespace Xwt.Drawing
 		
 		Font font;
 		string text;
-		double width;
+		double width = -1;
+		double heigth = -1;
+		TextTrimming textTrimming;
 		
 		static TextLayout ()
 		{
@@ -82,10 +85,39 @@ namespace Xwt.Drawing
 			set { width = value; handler.SetWidth (Backend, value); }
 		}
 		
+		/// <summary>
+		/// Gets or sets desired heigth.
+		/// </summary>
+		/// <value>
+		/// The heigth. A value of -1 uses GetSize().Heigth on drawings
+		/// </value>
+		public double Heigth {
+			get { return heigth; }
+			set { heigth = value; handler.SetHeigth (Backend, value); }
+		}
+		
+		/// <summary>
+		/// measures the text
+		/// if Width is other than -1, it measures the height according to Width
+		/// Heigth is ignored
+		/// </summary>
+		/// <returns>
+		/// The size.
+		/// </returns>
 		public Size GetSize ()
 		{
 			return handler.GetSize (Backend);
 		}
+		
+		public TextTrimming Trimming {
+			get { return textTrimming; }
+			set { textTrimming = value; handler.SetTrimming (Backend, value); }
+		}
+	}
+	
+	public enum TextTrimming {
+		Word,
+		WordElipsis
 	}
 }
 

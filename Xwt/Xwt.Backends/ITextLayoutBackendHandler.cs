@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -35,8 +36,10 @@ namespace Xwt.Backends
 		object Create (ICanvasBackend canvas);
 		
 		void SetWidth (object backend, double value);
+		void SetHeigth (object backend, double value);
 		void SetText (object backend, string text);
 		void SetFont (object backend, Font font);
+		void SetTrimming (object backend, TextTrimming textTrimming);
 		Size GetSize (object backend);
 	}
 }
