@@ -47,8 +47,15 @@ namespace Xwt.WPFBackend
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
 		DragDropEffects currentDragEffect;
+		FrameworkElement widget;
 
 		const WidgetEvent dragDropEvents = WidgetEvent.DragDropCheck | WidgetEvent.DragDrop | WidgetEvent.DragOver | WidgetEvent.DragOverCheck;
+
+		// Set to true when measuring a natural size for this widget
+		bool gettingNaturalSize;
+
+		// Set to true when calculating the default preferred size of the widget
+		bool calculatingPreferredSize;
 
 		void IWidgetBackend.Initialize (IWidgetEventSink eventSink)
 		{
@@ -83,7 +90,15 @@ namespace Xwt.WPFBackend
 			get { return Widget; }
 		}
 
-		public FrameworkElement Widget { get; set; }
+		public FrameworkElement Widget {
+			get { return widget; }
+			set
+			{
+				widget = value;
+				if (widget is IWpfWidget)
+					((IWpfWidget)widget).Backend = this;
+			}
+		}
 
 		Color? customBackgroundColor;
 
@@ -204,38 +219,160 @@ namespace Xwt.WPFBackend
 			return new Point (p.X * wratio, p.Y * hratio);
 		}
 
-		System.Windows.Size GetWidgetDesiredSize ()
+		System.Windows.Size GetWidgetDesiredSize (double availableWidth, double availableHeight)
 		{
+			// Calculates the desired size of widget.
+
 			if (!Widget.IsMeasureValid) {
 				Widget.UpdateLayout ();
-				Widget.Measure (new System.Windows.Size (Double.PositiveInfinity, Double.PositiveInfinity));
+				try {
+					calculatingPreferredSize = true;
+					Widget.Measure (new System.Windows.Size (availableWidth, availableHeight));
+				}
+				finally {
+					calculatingPreferredSize = false;
+				}
 			}
 
 			return Widget.DesiredSize;
 		}
 
+		System.Windows.Size GetWidgetNaturalSize (double availableWidth, double availableHeight)
+		{
+			// Calculates the natural size of widget
+			// Since WPF doesn't have the concept of natural size, we use the
+			// normal size calculation, but we set gettingNaturalSize to true.
+			// The flag is checked when the size is measured in MeasureOverride
+			try {
+				gettingNaturalSize = true;
+				return GetWidgetDesiredSize (availableWidth, availableHeight);
+			}
+			finally {
+				gettingNaturalSize = false;
+			}
+		}
+
+		// The GetPreferred* methods are called when the corresponding OnGetPreferred* methods in the
+		// XWT widget are not overriden, or if they are overriden and the new implementation calls
+		// base.OnGetPreferred*. For this reason, we have to ensure that the widget's MeasureOverride
+		// method doesn't end calling the frontend OnGetPreferred* methods. To avoid it we set
+		// the calculatingPreferredSize flag to true, and we check this flag in MeasureOverride
+
 		public virtual WidgetSize GetPreferredWidth ()
 		{
-			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Width * WidthPixelRatio);
+			var size = GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity);
+			var naturalSize = GetWidgetNaturalSize (Double.PositiveInfinity, Double.PositiveInfinity);
+			return new WidgetSize (size.Width * WidthPixelRatio, naturalSize.Width * WidthPixelRatio);
 		}
 
 		public virtual WidgetSize GetPreferredHeight ()
 		{
-			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Height * WidthPixelRatio);
+			var size = GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity);
+			var naturalSize = GetWidgetNaturalSize (Double.PositiveInfinity, Double.PositiveInfinity);
+			return new WidgetSize (size.Height * WidthPixelRatio, naturalSize.Height * HeightPixelRatio);
 		}
 
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
-			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Width * WidthPixelRatio);
+			var size = GetWidgetDesiredSize (Double.PositiveInfinity, height);
+			var naturalSize = GetWidgetNaturalSize (Double.PositiveInfinity, height);
+			return new WidgetSize (size.Width * WidthPixelRatio, naturalSize.Width * WidthPixelRatio);
 		}
 
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
-			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Height * HeightPixelRatio);
+			var size = GetWidgetDesiredSize (width, Double.PositiveInfinity);
+			var naturalSize = GetWidgetNaturalSize (width, Double.PositiveInfinity);
+			return new WidgetSize (size.Height * HeightPixelRatio, naturalSize.Height * HeightPixelRatio);
+		}
+
+		/// <summary>
+		/// A default implementation of MeasureOverride to be used by all WPF widgets
+		/// </summary>
+		/// <param name="constraint">Size constraints</param>
+		/// <param name="wpfMeasure">Size returned by the base MeasureOverride</param>
+		/// <returns></returns>
+		public System.Windows.Size MeasureOverride (System.Windows.Size constraint, System.Windows.Size wpfMeasure)
+		{
+			// Calculate the natural size, if that's what is being measured
+
+			if (gettingNaturalSize) {
+				var defNaturalSize = eventSink.GetDefaultNaturalSize ();
+
+				// -2 means use the WPF default, -1 use the XWT default, any other other value is used as custom natural size
+				var nw = DefaultNaturalWidth;
+				if (nw == -2)
+					nw = wpfMeasure.Width;
+				else if (nw == -1) {
+					nw = defNaturalSize.Width;
+					if (nw == 0)
+						nw = wpfMeasure.Width;
+				}
+
+				var nh = DefaultNaturalHeight;
+				if (nh == -2)
+					nh = wpfMeasure.Height;
+				else if (nh == -1) {
+					nh = defNaturalSize.Height;
+					if (nh == 0)
+						nh = wpfMeasure.Height;
+				}
+			}
+
+			// If we are calculating the default preferred size of the widget we end here.
+			// See note above about when GetPreferred* methods are called.
+			if (calculatingPreferredSize)
+				return wpfMeasure;
+
+			Toolkit.Invoke (delegate
+			{
+				if (eventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
+					// Calculate the preferred width through the frontend, if there is an overriden OnGetPreferredWidth
+					if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
+						var ws = eventSink.OnGetPreferredWidth ();
+						wpfMeasure.Width = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
+					}
+
+					// Now calculate the preferred height for that width, also using the override if available
+					if ((enabledEvents & WidgetEvent.PreferredHeightForWidthCheck) != 0) {
+						var ws = eventSink.OnGetPreferredHeightForWidth (wpfMeasure.Width);
+						wpfMeasure.Height = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
+					}
+				}
+				else {
+					// Calculate the preferred height through the frontend, if there is an overriden OnGetPreferredHeight
+					if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
+						var ws = eventSink.OnGetPreferredHeight ();
+						wpfMeasure.Height = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
+					}
+
+					// Now calculate the preferred width for that height, also using the override if available
+					if ((enabledEvents & WidgetEvent.PreferredWidthForHeightCheck) != 0) {
+						var ws = eventSink.OnGetPreferredWidthForHeight (wpfMeasure.Height);
+						wpfMeasure.Width = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
+					}
+				}
+			});
+			return wpfMeasure;
+		}
+
+		/// <summary>
+		/// Natural width for the widget. It can be any arbitrary custom value, 
+		/// or -1 if the XWT defined default has to be used, 
+		/// or -2 if the WPF desired size has to be used (this is the default)
+		/// </summary>
+		protected virtual double DefaultNaturalWidth {
+			get { return -2; }
+		}
+
+		/// <summary>
+		/// Natural width for the widget. It can be any arbitrary custom value, 
+		/// or -1 if the XWT defined default has to be used, 
+		/// or -2 if the WPF desired size has to be used (this is the default)
+		/// </summary>
+		protected virtual double DefaultNaturalHeight
+		{
+			get { return -2; }
 		}
 
 		public void SetMinSize (double width, double height)
@@ -627,5 +764,10 @@ namespace Xwt.WPFBackend
 	public interface IWpfWidgetBackend
 	{
 		FrameworkElement Widget { get; }
+	}
+
+	public interface IWpfWidget
+	{
+		WidgetBackend Backend { get; set; }
 	}
 }

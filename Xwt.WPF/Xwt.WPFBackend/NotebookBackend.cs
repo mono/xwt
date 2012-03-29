@@ -41,8 +41,7 @@ namespace Xwt.WPFBackend
 	{
 		public NotebookBackend ()
 		{
-			this.TabControl = new SWC.TabControl ();
-
+			this.TabControl = new WpfNotebook ();
 		}
 
 		public SWC.TabControl TabControl {
@@ -89,5 +88,16 @@ namespace Xwt.WPFBackend
 			}
 		}
 		#endregion
+	}
+
+	class WpfNotebook : SWC.TabControl, IWpfWidget
+	{
+		public WidgetBackend Backend { get; set; }
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
+		}
 	}
 }

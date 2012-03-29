@@ -66,12 +66,20 @@ namespace Xwt.WPFBackend
 
 	// A Canvas cannot be used, as manually setting Width/Height disables the
 	// expected behavior of DesiredSize (used in the GetPreferredSize* methods).
-	public class CustomPanel : SWC.Panel
+	public class CustomPanel : SWC.Panel, IWpfWidget
 	{
 		IWidgetBackend [] widgets;
 		Rectangle [] rects;
 
-		public void SetAllocation (IWidgetBackend [] widgets, Rectangle [] rects)
+		public WidgetBackend Backend { get; set; }
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
+		}
+
+		public void SetAllocation (IWidgetBackend[] widgets, Rectangle[] rects)
 		{
 			this.widgets = widgets;
 			this.rects = rects;

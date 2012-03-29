@@ -45,7 +45,15 @@ namespace Xwt.WPFBackend
 
 		public TreeViewBackend ()
 		{
-			Tree = new SWC.TreeView ();
+			Tree = new WpfTreeView ();
+		}
+
+		protected override double DefaultNaturalHeight {
+			get { return -1; }
+		}
+
+		protected override double DefaultNaturalWidth {
+			get { return -1; }
 		}
 
 		public SWC.TreeView Tree
@@ -221,6 +229,17 @@ namespace Xwt.WPFBackend
 				if (((TableViewEvent)eventId) == TableViewEvent.SelectionChanged)
 					Tree.SelectedItemChanged -= HandleWidgetSelectionChanged;
 			}
+		}
+	}
+
+	class WpfTreeView : SWC.TreeView, IWpfWidget
+	{
+		public WidgetBackend Backend { get; set; }
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
 		}
 	}
 }

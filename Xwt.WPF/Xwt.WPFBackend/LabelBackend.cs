@@ -39,7 +39,7 @@ namespace Xwt.WPFBackend
 	{
 		public LabelBackend ()
 		{
-			Widget = new SWC.Label ();
+			Widget = new WpfLabel ();
 		}
 
 		SWC.Label Label {
@@ -61,6 +61,17 @@ namespace Xwt.WPFBackend
 		{
 			get;
 			set;
+		}
+	}
+
+	class WpfLabel : SWC.Label, IWpfWidget
+	{
+		public WidgetBackend Backend { get; set; }
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
 		}
 	}
 }

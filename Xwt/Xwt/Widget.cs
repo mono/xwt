@@ -245,6 +245,10 @@ namespace Xwt
 			MapEvent (WidgetEvent.MouseMoved, typeof(Widget), "OnMouseMoved");
 			MapEvent (WidgetEvent.DragStarted, typeof(Widget), "OnDragStarted");
 			MapEvent (WidgetEvent.BoundsChanged, typeof(Widget), "OnBoundsChanged");
+			MapEvent (WidgetEvent.PreferredHeightCheck, typeof (Widget), "OnGetPreferredHeight");
+			MapEvent (WidgetEvent.PreferredWidthCheck, typeof (Widget), "OnGetPreferredWidth");
+			MapEvent (WidgetEvent.PreferredHeightForWidthCheck, typeof (Widget), "OnGetPreferredHeightForWidth");
+			MapEvent (WidgetEvent.PreferredWidthForHeightCheck, typeof (Widget), "OnGetPreferredWidthForHeight");
 		}
 		
 		protected override void Dispose (bool disposing)
