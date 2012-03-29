@@ -42,7 +42,10 @@ namespace Xwt.WPFBackend
 
 		public override void InitializeApplication ()
 		{
-			application = new System.Windows.Application ();
+			application = System.Windows.Application.Current;
+
+			if (application == null)
+				application = new System.Windows.Application ();
 
 			WidgetRegistry.RegisterBackend (typeof (Window), typeof (WindowBackend));
 			WidgetRegistry.RegisterBackend (typeof (Dialog), typeof (DialogBackend));
