@@ -116,8 +116,8 @@ namespace Xwt.WPFBackend
 		private Bitmap bbitmap;
 		private readonly List<Int32Rect> dirtyRects = new List<Int32Rect> ();
 
-		private double pwidth;
-		private double pheight;
+		private double pwidth = -1;
+		private double pheight = -1;
 
 		private ExCanvas Canvas
 		{
