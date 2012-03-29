@@ -9,6 +9,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.GtkBackend</RootNamespace>
     <AssemblyName>Xwt.Gtk</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
