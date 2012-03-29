@@ -3,6 +3,7 @@
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 //
 // Copyright (c) 2012 Xamarin, Inc.
 //
@@ -52,7 +53,12 @@ namespace Xwt.WPFBackend
 		{
 			((TextLayoutContext) backend).Width = value;
 		}
-
+		
+		public void SetHeigth (object backend, double value)
+		{
+			((TextLayoutContext) backend).Heigth = value;
+		}
+		
 		public void SetText (object backend, string text)
 		{
 			((TextLayoutContext) backend).Text = text;
@@ -62,7 +68,13 @@ namespace Xwt.WPFBackend
 		{
 			((TextLayoutContext) backend).Font = font.ToDrawingFont();
 		}
-
+		
+		public void SetTrimming (object backend, TextTrimming textTrimming)
+		{
+			((TextLayoutContext) backend).StringTrimming = textTrimming.ToDrawingStringTrimming();
+			
+		}
+		
 		public Size GetSize (object backend)
 		{
 			return ((TextLayoutContext) backend).GetSize ();

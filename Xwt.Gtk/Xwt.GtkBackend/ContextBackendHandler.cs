@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
 // Copyright (c) 2012 Xamarin Inc
 // 
@@ -49,10 +50,27 @@ namespace Xwt.GtkBackend
 	{
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			Pango.Layout pl = (Pango.Layout) WidgetRegistry.GetBackend (layout);
-			CairoContextBackend ctx = (CairoContextBackend) backend;
+			Pango.Layout pl = (Pango.Layout)WidgetRegistry.GetBackend (layout);
+			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.MoveTo (x, y);
-			Pango.CairoHelper.ShowLayout (ctx.Context, pl);
+			if (layout.Heigth <= 0) {
+				Pango.CairoHelper.ShowLayout (ctx.Context, pl);
+			} else {
+				var lc = pl.LineCount;
+				var scale = Pango.Scale.PangoScale;
+				double h = 0;
+				for (int i=0; i<lc; i++) {
+					var line = pl.Lines [i];
+					var ext = new Pango.Rectangle ();
+					var extl = new Pango.Rectangle ();
+					line.GetExtents (ref ext, ref extl);
+					h += (extl.Height / scale);
+					if (h > layout.Heigth)
+						break;
+					ctx.Context.MoveTo (x, y + h);
+					Pango.CairoHelper.ShowLayoutLine (ctx.Context, line);
+				}
+			}
 		}
 	}
 }

@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
 // Copyright (c) 2012 Xamarin Inc
 // 
@@ -39,8 +40,10 @@ namespace Xwt.CairoBackend
 		{
 			public CairoContextBackend Context;
 			public double Width = -1;
+			public double Heigth = -1;
 			public string Text;
 			public Font Font;
+			public TextTrimming TextTrimming;
 			public bool Measured;
 			public List<int> LineBreaks = new List<int> ();
 			public List<double> LineHeights = new List<double> ();
@@ -80,7 +83,14 @@ namespace Xwt.CairoBackend
 			la.Width = value;
 			la.Measured = false;
 		}
-
+		
+		public void SetHeigth (object backend, double value)
+		{
+			LayoutBackend la = (LayoutBackend) backend;
+			la.Heigth = value;
+			la.Measured = false;
+		}
+		
 		public void SetText (object backend, string text)
 		{
 			LayoutBackend la = (LayoutBackend) backend;
@@ -94,7 +104,14 @@ namespace Xwt.CairoBackend
 			la.Measured = false;
 			la.Font = font;
 		}
-
+		
+		public void SetTrimming (object backend, TextTrimming textTrimming)
+		{
+			LayoutBackend la = (LayoutBackend) backend;
+			la.TextTrimming = textTrimming;
+			
+		}
+		
 		public Size GetSize (object backend)
 		{
 			return Measure (backend);
@@ -207,7 +224,9 @@ namespace Xwt.CairoBackend
 			
 			var text = la.Text;
 			
-			y += ctx.FontExtents.Ascent;
+			var h = ctx.FontExtents.Ascent;
+			y += h;
+			
 			ctx.MoveTo (x, y);
 			
 			if (la.Font != null) {
@@ -228,10 +247,17 @@ namespace Xwt.CairoBackend
 			int lastStart = 0;
 
 			for (int i=0; i < la.LineBreaks.Count; i++) {
-				var n = la.LineBreaks[i];
-				string s = text.Substring (lastStart, n - lastStart);
+				if (la.Heigth != -1 && h > la.Heigth)
+					break;
+
+				var n = la.LineBreaks [i];
+				string s = text.Substring (lastStart, n - lastStart).TrimEnd('\n','\r');
 				ctx.ShowText (s);
-				y += la.LineHeights[i];
+				
+				var lh = la.LineHeights [i];
+				h += lh;
+				y += lh;
+				
 				ctx.MoveTo (x, y);
 				lastStart = n;
 			}
