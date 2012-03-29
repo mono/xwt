@@ -762,8 +762,6 @@ namespace Xwt
 			if (widthCached)
 				return width;
 			else {
-				if (!Application.EngineBackend.HandlesSizeNegotiation)
-					widthCached = true;
 				if (minWidth != -1 && naturalWidth != -1)
 					return new WidgetSize (minWidth, naturalWidth);
 				width = OnGetPreferredWidth () + Margin.HorizontalSpacing;
@@ -773,6 +771,8 @@ namespace Xwt
 					width.MinSize = minWidth;
 				if (width.NaturalSize < width.MinSize)
 					width.NaturalSize = width.MinSize;
+				if (!Application.EngineBackend.HandlesSizeNegotiation)
+					widthCached = true;
 				return width;
 			}
 		}
@@ -782,8 +782,6 @@ namespace Xwt
 			if (heightCached)
 				return height;
 			else {
-				if (!Application.EngineBackend.HandlesSizeNegotiation)
-					heightCached = true;
 				if (minHeight != -1 && naturalHeight != -1)
 					return new WidgetSize (minHeight, naturalHeight);
 				height = OnGetPreferredHeight () + Margin.VerticalSpacing;
@@ -793,6 +791,8 @@ namespace Xwt
 					height.MinSize = minHeight;
 				if (height.NaturalSize < height.MinSize)
 					height.NaturalSize = height.MinSize;
+				if (!Application.EngineBackend.HandlesSizeNegotiation)
+					heightCached = true;
 				return height;
 			}
 		}
