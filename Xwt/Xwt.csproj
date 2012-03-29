@@ -281,6 +281,8 @@
     <Compile Include="Xwt\CursorType.cs" />
     <Compile Include="Xwt\SelectColorDialog.cs" />
     <Compile Include="Xwt.Backends\ISelectColorDialogBackend.cs" />
+    <Compile Include="Xwt\IScrollableWidget.cs" />
+    <Compile Include="Xwt.Backends\IScrollableWidgetBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

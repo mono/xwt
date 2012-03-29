@@ -34,19 +34,43 @@ namespace Xwt.GtkBackend
 	{
 		public TableViewBackend ()
 		{
-			Widget = new CustomTreeView (this);
-			Widget.Show ();
+			var sw = new Gtk.ScrolledWindow ();
+			sw.Child = new CustomTreeView (this);
+			sw.Child.Show ();
+			sw.Show ();
+			base.Widget = sw;
 		}
 		
 		protected new Gtk.TreeView Widget {
-			get { return (Gtk.TreeView)base.Widget; }
-			set { base.Widget = value; }
+			get { return (Gtk.TreeView)ScrolledWindow.Child; }
+		}
+		
+		protected Gtk.ScrolledWindow ScrolledWindow {
+			get { return (Gtk.ScrolledWindow)base.Widget; }
 		}
 		
 		protected new ITableViewEventSink EventSink {
 			get { return (ITableViewEventSink)base.EventSink; }
 		}
 
+		public ScrollPolicy VerticalScrollPolicy {
+			get {
+				return Util.ConvertScrollPolicy (ScrolledWindow.VscrollbarPolicy);
+			}
+			set {
+				ScrolledWindow.VscrollbarPolicy = Util.ConvertScrollPolicy (value);
+			}
+		}
+		
+		public ScrollPolicy HorizontalScrollPolicy {
+			get {
+				return Util.ConvertScrollPolicy (ScrolledWindow.HscrollbarPolicy);
+			}
+			set {
+				ScrolledWindow.HscrollbarPolicy = Util.ConvertScrollPolicy (value);
+			}
+		}
+		
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

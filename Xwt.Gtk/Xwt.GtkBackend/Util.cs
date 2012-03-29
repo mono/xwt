@@ -194,6 +194,32 @@ namespace Xwt.GtkBackend
 		{
 			return new Color ((double)color.Red / (double)ushort.MaxValue, (double)color.Green / (double)ushort.MaxValue, (double)color.Blue / (double)ushort.MaxValue);
 		}
+		
+		public static ScrollPolicy ConvertScrollPolicy (Gtk.PolicyType p)
+		{
+			switch (p) {
+			case Gtk.PolicyType.Always:
+				return ScrollPolicy.Always;
+			case Gtk.PolicyType.Automatic:
+				return ScrollPolicy.Automatic;
+			case Gtk.PolicyType.Never:
+				return ScrollPolicy.Never;
+			}
+			throw new InvalidOperationException ("Invalid policy value:" + p);
+		}
+		
+		public static Gtk.PolicyType ConvertScrollPolicy (ScrollPolicy p)
+		{
+			switch (p) {
+			case ScrollPolicy.Always:
+				return Gtk.PolicyType.Always;
+			case ScrollPolicy.Automatic:
+				return Gtk.PolicyType.Automatic;
+			case ScrollPolicy.Never:
+				return Gtk.PolicyType.Never;
+			}
+			throw new InvalidOperationException ("Invalid policy value:" + p);
+		}
 	}
 }
 

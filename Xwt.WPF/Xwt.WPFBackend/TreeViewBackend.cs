@@ -82,6 +82,20 @@ namespace Xwt.WPFBackend
 				}
 			}
 		}
+		
+		// TODO
+		public Xwt.ScrollPolicy VerticalScrollPolicy
+		{
+			get { return Xwt.ScrollPolicy.Automatic; }
+			set {  }
+		}
+
+		// TODO
+		public Xwt.ScrollPolicy HorizontalScrollPolicy
+		{
+			get { return Xwt.ScrollPolicy.Automatic; }
+			set {  }
+		}
 
 		internal MultiColumnTreeViewItem GenerateTreeViewItem (TreeNode node)
 		{

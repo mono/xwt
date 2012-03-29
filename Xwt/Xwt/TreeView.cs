@@ -33,7 +33,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class TreeView: Widget, IColumnContainer
+	public class TreeView: Widget, IColumnContainer, IScrollableWidget
 	{
 		ListViewColumnCollection columns;
 		ITreeDataSource dataSource;
@@ -63,6 +63,18 @@ namespace Xwt
 		public TreeView ()
 		{
 			columns = new ListViewColumnCollection (this);
+			VerticalScrollPolicy = HorizontalScrollPolicy = ScrollPolicy.Automatic;
+		}
+		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.TreeView"/> class.
+		/// </summary>
+		/// <param name='source'>
+		/// Data source
+		/// </param>
+		public TreeView (ITreeDataSource source): this ()
+		{
+			DataSource = source;
 		}
 		
 		protected override Widget.EventSink CreateEventSink ()
@@ -81,15 +93,14 @@ namespace Xwt
 			columns.Attach (Backend);
 		}
 		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Xwt.TreeView"/> class.
-		/// </summary>
-		/// <param name='source'>
-		/// Data source
-		/// </param>
-		public TreeView (ITreeDataSource source): this ()
-		{
-			DataSource = source;
+		public ScrollPolicy VerticalScrollPolicy {
+			get { return Backend.VerticalScrollPolicy; }
+			set { Backend.VerticalScrollPolicy = value; }
+		}
+		
+		public ScrollPolicy HorizontalScrollPolicy {
+			get { return Backend.HorizontalScrollPolicy; }
+			set { Backend.HorizontalScrollPolicy = value; }
 		}
 		
 		/// <summary>

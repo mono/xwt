@@ -146,46 +146,20 @@ namespace Xwt.GtkBackend
 		
 		public ScrollPolicy VerticalScrollPolicy {
 			get {
-				return ConvertPolicy (Widget.VscrollbarPolicy);
+				return Util.ConvertScrollPolicy (Widget.VscrollbarPolicy);
 			}
 			set {
-				Widget.VscrollbarPolicy = ConvertPolicy (value);
+				Widget.VscrollbarPolicy = Util.ConvertScrollPolicy (value);
 			}
 		}
 		
 		public ScrollPolicy HorizontalScrollPolicy {
 			get {
-				return ConvertPolicy (Widget.HscrollbarPolicy);
+				return Util.ConvertScrollPolicy (Widget.HscrollbarPolicy);
 			}
 			set {
-				Widget.HscrollbarPolicy = ConvertPolicy (value);
+				Widget.HscrollbarPolicy = Util.ConvertScrollPolicy (value);
 			}
-		}
-		
-		ScrollPolicy ConvertPolicy (Gtk.PolicyType p)
-		{
-			switch (p) {
-			case Gtk.PolicyType.Always:
-				return ScrollPolicy.Always;
-			case Gtk.PolicyType.Automatic:
-				return ScrollPolicy.Automatic;
-			case Gtk.PolicyType.Never:
-				return ScrollPolicy.Never;
-			}
-			throw new InvalidOperationException ("Invalid policy value:" + p);
-		}
-		
-		Gtk.PolicyType ConvertPolicy (ScrollPolicy p)
-		{
-			switch (p) {
-			case ScrollPolicy.Always:
-				return Gtk.PolicyType.Always;
-			case ScrollPolicy.Automatic:
-				return Gtk.PolicyType.Automatic;
-			case ScrollPolicy.Never:
-				return Gtk.PolicyType.Never;
-			}
-			throw new InvalidOperationException ("Invalid policy value:" + p);
 		}
 	}
 	

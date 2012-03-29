@@ -76,9 +76,7 @@ namespace Xwt.GtkBackend
 		
 		public void SetHeigth (object backend, double value)
 		{
-			Pango.Layout tl = (Pango.Layout)backend;
 			this.Heigth = value;
-			
 		}
 		
 		public void SetTrimming (object backend, TextTrimming textTrimming)

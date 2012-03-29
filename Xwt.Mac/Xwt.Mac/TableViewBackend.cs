@@ -55,6 +55,58 @@ namespace Xwt.Mac
 			Widget.AutoresizesSubviews = true;
 		}
 		
+		public ScrollPolicy VerticalScrollPolicy {
+			get {
+				if (scroll.AutohidesScrollers && scroll.HasVerticalScroller)
+					return ScrollPolicy.Automatic;
+				else if (scroll.HasVerticalScroller)
+					return ScrollPolicy.Always;
+				else
+					return ScrollPolicy.Never;
+			}
+			set {
+				switch (value) {
+				case ScrollPolicy.Automatic:
+					scroll.AutohidesScrollers = true;
+					scroll.HasVerticalScroller = true;
+					break;
+				case ScrollPolicy.Always:
+					scroll.AutohidesScrollers = false;
+					scroll.HasVerticalScroller = true;
+					break;
+				case ScrollPolicy.Never:
+					scroll.HasVerticalScroller = false;
+					break;
+				}
+			}
+		}
+
+		public ScrollPolicy HorizontalScrollPolicy {
+			get {
+				if (scroll.AutohidesScrollers && scroll.HasHorizontalScroller)
+					return ScrollPolicy.Automatic;
+				else if (scroll.HasHorizontalScroller)
+					return ScrollPolicy.Always;
+				else
+					return ScrollPolicy.Never;
+			}
+			set {
+				switch (value) {
+				case ScrollPolicy.Automatic:
+					scroll.AutohidesScrollers = true;
+					scroll.HasHorizontalScroller = true;
+					break;
+				case ScrollPolicy.Always:
+					scroll.AutohidesScrollers = false;
+					scroll.HasHorizontalScroller = true;
+					break;
+				case ScrollPolicy.Never:
+					scroll.HasHorizontalScroller = false;
+					break;
+				}
+			}
+		}
+		
 		protected override Size GetNaturalSize ()
 		{
 			return EventSink.GetDefaultNaturalSize ();

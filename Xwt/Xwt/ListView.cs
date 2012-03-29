@@ -30,7 +30,7 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	public class ListView: Widget, IColumnContainer
+	public class ListView: Widget, IColumnContainer, IScrollableWidget
 	{
 		ListViewColumnCollection columns;
 		IListDataSource dataSource;
@@ -62,6 +62,7 @@ namespace Xwt
 		public ListView ()
 		{
 			columns = new ListViewColumnCollection (this);
+			VerticalScrollPolicy = HorizontalScrollPolicy = ScrollPolicy.Automatic;
 		}
 		
 		protected override Widget.EventSink CreateEventSink ()
@@ -77,6 +78,16 @@ namespace Xwt
 		{
 			base.OnBackendCreated ();
 			columns.Attach (Backend);
+		}
+		
+		public ScrollPolicy VerticalScrollPolicy {
+			get { return Backend.VerticalScrollPolicy; }
+			set { Backend.VerticalScrollPolicy = value; }
+		}
+		
+		public ScrollPolicy HorizontalScrollPolicy {
+			get { return Backend.HorizontalScrollPolicy; }
+			set { Backend.HorizontalScrollPolicy = value; }
 		}
 		
 		public ListViewColumnCollection Columns {

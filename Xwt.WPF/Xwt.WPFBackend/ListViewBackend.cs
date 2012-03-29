@@ -43,6 +43,20 @@ namespace Xwt.WPFBackend
 			ListView = new ExListView();
 			ListView.View = this.view;
 		}
+		
+		// TODO
+		public Xwt.ScrollPolicy VerticalScrollPolicy
+		{
+			get { return Xwt.ScrollPolicy.Automatic; }
+			set {  }
+		}
+
+		// TODO
+		public Xwt.ScrollPolicy HorizontalScrollPolicy
+		{
+			get { return Xwt.ScrollPolicy.Automatic; }
+			set {  }
+		}
 
 		public bool HeadersVisible {
 			get { return this.headersVisible; }
