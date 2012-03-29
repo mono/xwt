@@ -37,7 +37,7 @@ namespace Xwt.Drawing
 		
 		Font font;
 		string text;
-		double width = .1;
+		double width = -1;
 		double heigth = -1;
 		TextTrimming textTrimming;
 		
