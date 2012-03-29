@@ -148,6 +148,14 @@ namespace Xwt.WPFBackend
 			return new SD.Font (font.Family, (float)font.Size, style);
 		}
 		
+		public static SD.StringTrimming ToDrawingStringTrimming (this Xwt.Drawing.TextTrimming value)
+		{
+			if (value == Xwt.Drawing.TextTrimming.Word) return SD.StringTrimming.Word;
+			if (value == Xwt.Drawing.TextTrimming.WordElipsis) return SD.StringTrimming.EllipsisWord;
+
+			return SD.StringTrimming.Word;
+		}
+		
 		public static FontStyle ToXwtFontStyle (this SW.FontStyle value)
 		{
 			// No, SW.FontStyles is not an enum

@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -35,6 +36,8 @@ namespace Xwt.GtkBackend
 	public class TextLayoutBackendHandler: ITextLayoutBackendHandler
 	{
 		static Cairo.Context SharedContext;
+		
+		public double Heigth = -1;
 		
 		static TextLayoutBackendHandler ()
 		{
@@ -70,7 +73,24 @@ namespace Xwt.GtkBackend
 			Pango.Layout tl = (Pango.Layout)backend;
 			tl.Width = (int) (value * Pango.Scale.PangoScale);
 		}
-
+		
+		public void SetHeigth (object backend, double value)
+		{
+			Pango.Layout tl = (Pango.Layout)backend;
+			this.Heigth = value;
+			
+		}
+		
+		public void SetTrimming (object backend, TextTrimming textTrimming)
+		{
+			Pango.Layout tl = (Pango.Layout)backend;
+			if (textTrimming == TextTrimming.WordElipsis)
+				tl.Ellipsize = Pango.EllipsizeMode.End;
+			if (textTrimming == TextTrimming.Word)
+				tl.Ellipsize = Pango.EllipsizeMode.None;
+			
+		}
+		
 		public Size GetSize (object backend)
 		{
 			Pango.Layout tl = (Pango.Layout) backend;
