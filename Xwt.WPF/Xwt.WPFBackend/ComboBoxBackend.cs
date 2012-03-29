@@ -46,7 +46,6 @@ namespace Xwt.WPFBackend
 		static ComboBoxBackend()
 		{
 			var factory = new FrameworkElementFactory (typeof (WindowsSeparator));
-			factory.SetValue (UIElement.IsEnabledProperty, false);
 			factory.SetValue (FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
 			
 			var sepTemplate = new ControlTemplate (typeof (ComboBoxItem));
@@ -56,6 +55,7 @@ namespace Xwt.WPFBackend
 			trigger.Binding = new Binding (".[1]") { Converter = new TypeToStringConverter() };
 			trigger.Value = typeof(ItemSeparator).Name;
 			trigger.Setters.Add (new Setter (Control.TemplateProperty, sepTemplate));
+			trigger.Setters.Add (new Setter (UIElement.IsEnabledProperty, false));
 
 			ContainerStyle = new Style (typeof (ComboBoxItem));
 			ContainerStyle.Triggers.Add (trigger);
