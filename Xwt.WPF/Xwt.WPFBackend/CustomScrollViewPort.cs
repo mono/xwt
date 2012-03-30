@@ -112,7 +112,13 @@ namespace Xwt.WPFBackend
 
 		public Rect MakeVisible (Visual visual, Rect rectangle)
 		{
-			throw new System.NotImplementedException();
+			if (rectangle.Top < VerticalOffset || rectangle.Top + rectangle.Height > VerticalOffset + this.viewport.Height)
+				SetVerticalOffset (rectangle.Top);
+
+			if (rectangle.Left < HorizontalOffset || rectangle.Left + rectangle.Width > VerticalOffset + this.viewport.Width)
+				SetHorizontalOffset (rectangle.Left);
+
+			return new Rect (HorizontalOffset, VerticalOffset, this.viewport.Width, this.viewport.Height);
 		}
 
 		public void MouseWheelDown()
