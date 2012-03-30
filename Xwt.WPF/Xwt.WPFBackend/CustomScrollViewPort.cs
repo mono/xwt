@@ -182,7 +182,8 @@ namespace Xwt.WPFBackend
 				offset = this.extent.Width - this.viewport.Width;
 
 			this.contentOffset.X = offset;
-			ScrollOwner.InvalidateScrollInfo();
+			if (ScrollOwner != null)
+				ScrollOwner.InvalidateScrollInfo();
 
 			if (usingCustomScrolling)
 				this.horizontalBackend.SetOffset (offset);
@@ -198,7 +199,8 @@ namespace Xwt.WPFBackend
 				offset = this.extent.Height - this.viewport.Height;
 
 			this.contentOffset.Y = offset;
-			ScrollOwner.InvalidateScrollInfo();
+			if (ScrollOwner != null)
+				ScrollOwner.InvalidateScrollInfo ();
 
 			if (usingCustomScrolling)
 				this.verticalBackend.SetOffset (offset);
