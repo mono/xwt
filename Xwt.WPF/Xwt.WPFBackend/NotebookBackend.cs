@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Thomas Ziegler <ziegler.thomas@web.de>
+//       Eric Maupin <ermau@xamarin.com>
 // 
 // Copyright (c) 2012 Thomas Ziegler
+// Copyright (c) 2012 Xamarin, Inc.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +26,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using SWC = System.Windows.Controls;
-using SWMI = System.Windows.Media.Imaging;
-
 using Xwt.Backends;
 
 namespace Xwt.WPFBackend
@@ -52,14 +47,14 @@ namespace Xwt.WPFBackend
 		#region INotebookBackend implementation
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
-			UIElement element = widget.NativeWidget as UIElement;
-			if (element == null) {
-				throw new ArgumentException ();
-			}
-			SWC.TabItem ti = new SWC.TabItem () {Header = tab.Label};
-			//HACK this is not a propper implementation 
+			UIElement element = (UIElement)widget.NativeWidget;
+			SWC.TabItem ti = new SWC.TabItem  { Header = tab.Label };
+
 			ti.Content = element;
 			TabControl.Items.Add (ti);
+			
+			if (TabControl.SelectedIndex == -1)
+				TabControl.SelectedIndex = 0;
 		}
 
 		public void Remove (IWidgetBackend widget)
