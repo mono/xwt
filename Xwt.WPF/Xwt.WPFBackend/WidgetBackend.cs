@@ -225,9 +225,8 @@ namespace Xwt.WPFBackend
 			// Calculates the desired size of widget.
 
 			if (!Widget.IsMeasureValid) {
-				Widget.UpdateLayout ();
 				try {
-					calculatingPreferredSize = true;
+					calculatingPreferredSize = true;	
 					Widget.Measure (new System.Windows.Size (availableWidth, availableHeight));
 				}
 				finally {

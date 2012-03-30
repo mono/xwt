@@ -71,15 +71,25 @@ namespace Xwt.WPFBackend
 
 		public void SetChild (IWidgetBackend child)
 		{
-			ScrollAdjustmentBackend vbackend = null, hbackend = null;
+			// Remove the old child before adding the new one
+			// The child has to be removed from the viewport
 
-			var widget = (WidgetBackend) child;
-			if (widget.EventSink.SupportsCustomScrolling()) {
+			if (ScrollViewer.Content != null) {
+				var port = (CustomScrollViewPort)ScrollViewer.Content;
+				port.Children.Remove (port.Children[0]);
+			}
+
+			if (child == null)
+				return;
+
+			ScrollAdjustmentBackend vbackend = null, hbackend = null;
+			var widget = (WidgetBackend)child;
+
+			if (widget.EventSink.SupportsCustomScrolling ()) {
 				vbackend = new ScrollAdjustmentBackend ();
 				hbackend = new ScrollAdjustmentBackend ();
 				widget.EventSink.SetScrollAdjustments (hbackend, vbackend);
 			}
-			
 			ScrollViewer.Content = new CustomScrollViewPort (widget.NativeWidget, vbackend, hbackend);
 			ScrollViewer.CanContentScroll = true;
 		}

@@ -26,51 +26,84 @@
 
 using System;
 using Xwt.Backends;
+using System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
 	internal class ScrollAdjustmentBackend
 		: Backend, IScrollAdjustmentBackend
 	{
+		double scrollValue;
+		double lowerValue;
+		double upperValue;
+		double pageIncrement;
+		double stepIncrement;
+		double pageSize;
+
+		public CustomScrollViewPort TargetViewport { get; set; }
+
 		public void Initialize (IScrollAdjustmentEventSink eventSink)
 		{
 			EventSink = eventSink;
 		}
 
+		public void SetOffset (double offset)
+		{
+			// The offset is relative to 0, it has to be converted to the lower/upper value range
+			scrollValue = LowerValue + offset;
+			Xwt.Engine.Toolkit.Invoke (EventSink.OnValueChanged);
+		}
+
 		public double Value
 		{
-			get;
-			set;
+			get { return scrollValue; }
+			set {
+				// Provide the value to the viewport, which will update
+				// the ScrollView. The viewport expects an offset starting at 0.
+				TargetViewport.SetOffset (this, value - LowerValue);
+			}
 		}
 
 		public double LowerValue
 		{
-			get;
-			set;
+			get { return lowerValue; }
+			set { lowerValue = value; InvalidateExtent (); }
 		}
 
 		public double UpperValue
 		{
-			get;
-			set;
+			get { return upperValue; }
+			set { upperValue = value; InvalidateExtent (); }
 		}
 
 		public double PageIncrement
 		{
-			get;
-			set;
+			get { return pageIncrement; }
+			set { pageIncrement = value; InvalidateScrollInfo (); }
 		}
 
 		public double StepIncrement
 		{
-			get;
-			set;
+			get { return stepIncrement; }
+			set { stepIncrement = value; InvalidateScrollInfo (); }
 		}
 
 		public double PageSize
 		{
-			get;
-			set;
+			get { return pageSize; }
+			set { pageSize = value; InvalidateExtent (); }
+		}
+
+		void InvalidateScrollInfo ()
+		{
+			if (TargetViewport != null && TargetViewport.ScrollOwner != null)
+				TargetViewport.ScrollOwner.InvalidateScrollInfo ();
+		}
+
+		void InvalidateExtent ()
+		{
+			if (TargetViewport != null)
+				TargetViewport.UpdateCustomExtent ();
 		}
 
 		internal IScrollAdjustmentEventSink EventSink

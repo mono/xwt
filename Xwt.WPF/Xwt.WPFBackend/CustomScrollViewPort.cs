@@ -3,6 +3,7 @@
 //
 // Author:
 //	   Eric Maupin <ermau@xamarin.com>
+//     Lluis Sanchez <lluis@xamarin.com>
 //
 // Copyright (c) 2012 Xamarin, Inc.
 //
@@ -41,10 +42,16 @@ namespace Xwt.WPFBackend
 			if (widget == null)
 				throw new ArgumentNullException ("widget");
 
-			RenderTransform = this.transform;
+			((FrameworkElement)widget).RenderTransform = this.transform;
 
-			this.verticalBackend = verticalBackend;
-			this.horizontalBackend = horizontalBackend;
+			if (verticalBackend != null) {
+				usingCustomScrolling = true;
+				verticalBackend.TargetViewport = this;
+				this.verticalBackend = verticalBackend;
+				horizontalBackend.TargetViewport = this;
+				this.horizontalBackend = horizontalBackend;
+				UpdateCustomExtent ();
+			}
 			Children.Add ((UIElement) widget);
 		}
 
@@ -176,9 +183,9 @@ namespace Xwt.WPFBackend
 
 			this.contentOffset.X = offset;
 			ScrollOwner.InvalidateScrollInfo();
-			
-			if (this.verticalBackend != null)
-				this.horizontalBackend.EventSink.OnValueChanged();
+
+			if (usingCustomScrolling)
+				this.horizontalBackend.SetOffset (offset);
 			else
 				this.transform.X = -offset;
 		}
@@ -193,16 +200,59 @@ namespace Xwt.WPFBackend
 			this.contentOffset.Y = offset;
 			ScrollOwner.InvalidateScrollInfo();
 
-			if (this.verticalBackend != null)
-				this.verticalBackend.EventSink.OnValueChanged();
+			if (usingCustomScrolling)
+				this.verticalBackend.SetOffset (offset);
 			else
 				this.transform.Y = -offset;
+		}
+
+		public void SetOffset (ScrollAdjustmentBackend scroller, double offset)
+		{
+			if (scroller == verticalBackend)
+				SetVerticalOffset (offset);
+			else
+				SetHorizontalOffset (offset);
+		}
+
+		public void UpdateCustomExtent ()
+		{
+			// Updates the extent and the viewport, based on the scrollbar properties
+
+			var newExtent = new WSize (horizontalBackend.UpperValue - horizontalBackend.LowerValue, verticalBackend.UpperValue - verticalBackend.LowerValue);
+			var newViewport = new WSize (horizontalBackend.PageSize, verticalBackend.PageSize);
+			if (newViewport.Width > newExtent.Width)
+				newViewport.Width = newExtent.Width;
+			if (newViewport.Height > newExtent.Height)
+				newViewport.Height = newExtent.Height;
+
+			if (extent != newExtent || viewport != newViewport) {
+				extent = newExtent;
+				viewport = newViewport;
+				if (!viewportAdjustmentQueued) {
+					viewportAdjustmentQueued = true;
+					Xwt.Engine.Toolkit.QueueExitAction (delegate
+					{
+						// Adjust the position, if it now falls outside the extents.
+						// Doing it in an exit action to make sure the adjustement
+						// is made only once for all changes in the scrollbar properties
+						viewportAdjustmentQueued = false;
+						if (contentOffset.X + viewport.Width > extent.Width)
+							SetHorizontalOffset (extent.Width - viewport.Width);
+						if (contentOffset.Y + viewport.Height > extent.Height)
+							SetVerticalOffset (extent.Height - viewport.Height);
+						if (ScrollOwner != null)
+							ScrollOwner.InvalidateScrollInfo ();
+					});
+				}
+			}
 		}
 
 		private readonly TranslateTransform transform = new TranslateTransform();
 		private readonly ScrollAdjustmentBackend verticalBackend;
 		private readonly ScrollAdjustmentBackend horizontalBackend;
-		
+		private readonly bool usingCustomScrolling;
+
+		private bool viewportAdjustmentQueued;
 		private Point contentOffset;
 		private WSize extent = new WSize (0, 0);
 		private WSize viewport = new WSize (0, 0);
@@ -233,26 +283,21 @@ namespace Xwt.WPFBackend
 		protected override WSize MeasureOverride (WSize constraint)
 		{
 			FrameworkElement child = (FrameworkElement) InternalChildren [0];
-			child.Measure (InfiniteSize);
-			
-			WSize childSize = child.DesiredSize;
 
-			if (Double.IsInfinity (constraint.Width))
-				constraint.Width = 0;
-			if (Double.IsInfinity (constraint.Height))
-				constraint.Height = 0;
-
-			if (this.extent != childSize) {
-				this.extent = childSize;
-				ScrollOwner.InvalidateScrollInfo();
+			if (usingCustomScrolling) {
+				// Measure the child using the constraint because when using custom scrolling,
+				// the child is not really scrolled (its contents are) and its size is whatever
+				// the scroll view decides to assign to the viewport, so the constraint
+				// must be satisfied
+				child.Measure (constraint);
+				return child.DesiredSize;
 			}
-
-			if (this.viewport != constraint) {
-				this.viewport = constraint;
-				ScrollOwner.InvalidateScrollInfo();
+			else {
+				// We don't use the child size here, but WPF requires Measure to
+				// be called for all children of a widget in the container's MeasureOverride
+				child.Measure (InfiniteSize);
+				return new WSize (0, 0);
 			}
-
-			return constraint;
 		}
 
 		protected override System.Windows.Size ArrangeOverride (System.Windows.Size finalSize)
@@ -261,17 +306,30 @@ namespace Xwt.WPFBackend
 
 			WSize childSize = child.DesiredSize;
 
-			if (this.extent != childSize) {
-				this.extent = childSize;
-				ScrollOwner.InvalidateScrollInfo();
+			// The child has to fill all the available space in the ScrollView
+			// if the ScrollView happens to be bigger than the space required by the child
+			if (childSize.Height < finalSize.Height)
+				childSize.Height = finalSize.Height;
+			if (childSize.Width < finalSize.Width)
+				childSize.Width = finalSize.Width;
+
+			if (!usingCustomScrolling) {
+				// The viewport and extent doesn't have to be set when using custom scrolling, since they
+				// are fully controlled by the child widget through the scroll adjustments
+				if (this.extent != childSize) {
+					this.extent = childSize;
+					ScrollOwner.InvalidateScrollInfo ();
+				}
+
+				if (this.viewport != finalSize) {
+					this.viewport = finalSize;
+					ScrollOwner.InvalidateScrollInfo ();
+				}
 			}
 
-			if (this.viewport != finalSize) {
-				this.viewport = finalSize;
-				ScrollOwner.InvalidateScrollInfo();
-			}
-
-			child.Arrange (new Rect (0, 0, child.ActualWidth, child.ActualHeight));
+			child.Arrange (new Rect (0, 0, childSize.Width, childSize.Height));
+			child.UpdateLayout ();
+			((IWidgetSurface)(((IWpfWidget)child).Backend.Frontend)).Reallocate ();
 
 			return finalSize;
 		}
