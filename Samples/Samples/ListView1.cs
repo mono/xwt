@@ -21,7 +21,7 @@ namespace Samples
 			
 			var png = Image.FromResource (typeof(App), "class.png");
 			
-			for (int n=0; n<10; n++) {
+			for (int n=0; n<100; n++) {
 				var r = store.AddRow ();
 				store.SetValue (r, icon, png);
 				store.SetValue (r, name, "Value " + n);

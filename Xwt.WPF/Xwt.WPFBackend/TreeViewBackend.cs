@@ -31,6 +31,7 @@ using Xwt.Backends;
 using Xwt.WPFBackend.Utilities;
 using System.Windows;
 using SWC=System.Windows.Controls;
+using System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
@@ -253,6 +254,11 @@ namespace Xwt.WPFBackend
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
 			var s = base.MeasureOverride (constraint);
+			if (ScrollViewer.GetHorizontalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
+				s.Width = 0;
+			if (ScrollViewer.GetVerticalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
+				s.Height = SystemParameters.CaptionHeight;
+			s = Backend.MeasureOverride (constraint, s);
 			return Backend.MeasureOverride (constraint, s);
 		}
 	}

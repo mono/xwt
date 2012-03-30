@@ -44,18 +44,26 @@ namespace Xwt.WPFBackend
 			ListView.View = this.view;
 		}
 		
-		// TODO
 		public Xwt.ScrollPolicy VerticalScrollPolicy
 		{
-			get { return Xwt.ScrollPolicy.Automatic; }
-			set {  }
+			get {
+				return DataConverter.ToXwtScrollPolicy (ScrollViewer.GetVerticalScrollBarVisibility (ListView));
+			}
+			set {
+				ScrollViewer.SetVerticalScrollBarVisibility (ListView, DataConverter.ToWpfScrollBarVisibility (value));
+			}
 		}
 
-		// TODO
 		public Xwt.ScrollPolicy HorizontalScrollPolicy
 		{
-			get { return Xwt.ScrollPolicy.Automatic; }
-			set {  }
+			get
+			{
+				return DataConverter.ToXwtScrollPolicy (ScrollViewer.GetHorizontalScrollBarVisibility (ListView));
+			}
+			set
+			{
+				ScrollViewer.SetHorizontalScrollBarVisibility (ListView, DataConverter.ToWpfScrollBarVisibility (value));
+			}
 		}
 
 		public bool HeadersVisible {

@@ -33,6 +33,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using SW = System.Windows;
+using SWC = System.Windows.Controls;
 using SWM = System.Windows.Media;
 using SD = System.Drawing;
 using SDI = System.Drawing.Imaging;
@@ -387,6 +388,38 @@ namespace Xwt.WPFBackend
 			if (type == DataFormats.Rtf) return TransferDataType.Rtf;
 			if (type == DataFormats.FileDrop) return TransferDataType.Uri;
 			return TransferDataType.FromId (type);
+		}
+
+		// Scrollbar visibility
+
+		public static SWC.ScrollBarVisibility ToWpfScrollBarVisibility (ScrollPolicy policy)
+		{
+			switch (policy) {
+				case ScrollPolicy.Always:
+					return SWC.ScrollBarVisibility.Visible;
+				case ScrollPolicy.Automatic:
+					return SWC.ScrollBarVisibility.Auto;
+				case ScrollPolicy.Never:
+					return SWC.ScrollBarVisibility.Hidden;
+
+				default:
+					throw new NotSupportedException ();
+			}
+		}
+
+		public static ScrollPolicy ToXwtScrollPolicy (SWC.ScrollBarVisibility visibility)
+		{
+			switch (visibility) {
+				case SWC.ScrollBarVisibility.Auto:
+					return ScrollPolicy.Automatic;
+				case SWC.ScrollBarVisibility.Visible:
+					return ScrollPolicy.Always;
+				case SWC.ScrollBarVisibility.Hidden:
+					return ScrollPolicy.Never;
+
+				default:
+					throw new NotSupportedException ();
+			}
 		}
 	}
 }
