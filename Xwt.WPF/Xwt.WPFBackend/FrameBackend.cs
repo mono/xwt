@@ -40,7 +40,7 @@ namespace Xwt.WPFBackend
 	{
 		public FrameBackend()
 		{
-			GroupBox = new GroupBox();
+			GroupBox = new WpfGroupBox ();
 		}
 
 		public string Label
@@ -109,5 +109,21 @@ namespace Xwt.WPFBackend
 
 		private FrameType frameType;
 		private string label;
+	}
+
+	class WpfGroupBox : GroupBox, IWpfWidget
+	{
+		public WidgetBackend Backend { get; set; }
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
+		}
+
+		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
+		{
+			return base.ArrangeOverride (arrangeBounds);
+		}
 	}
 }
