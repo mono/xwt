@@ -170,10 +170,11 @@ namespace Xwt.WPFBackend
 
 			this.contentOffset.X = offset;
 			ScrollOwner.InvalidateScrollInfo();
-
-			this.transform.X = -offset;
+			
 			if (this.verticalBackend != null)
 				this.horizontalBackend.EventSink.OnValueChanged();
+			else
+				this.transform.X = -offset;
 		}
 
 		public void SetVerticalOffset (double offset)
@@ -186,9 +187,10 @@ namespace Xwt.WPFBackend
 			this.contentOffset.Y = offset;
 			ScrollOwner.InvalidateScrollInfo();
 
-			this.transform.Y = -offset;
 			if (this.verticalBackend != null)
 				this.verticalBackend.EventSink.OnValueChanged();
+			else
+				this.transform.Y = -offset;
 		}
 
 		private readonly TranslateTransform transform = new TranslateTransform();
