@@ -159,6 +159,9 @@ namespace Xwt.WPFBackend
 
 		public TreePosition GetChild (TreePosition pos, int index)
 		{
+			if (pos == null)
+				return RootNode.Children [index];
+
 			TreeNode node = pos as TreeNode;
 			return node.Children[index];
 		}
