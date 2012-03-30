@@ -57,9 +57,11 @@ namespace Xwt
 		
 		public ScrollView ()
 		{
+			HorizontalScrollPolicy = ScrollPolicy.Automatic;
+			VerticalScrollPolicy = ScrollPolicy.Automatic;
 		}
 		
-		public ScrollView (Widget child)
+		public ScrollView (Widget child): this ()
 		{
 			Content = child;
 		}
