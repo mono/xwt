@@ -31,7 +31,7 @@ using WpfCanvas = System.Windows.Controls.Canvas;
 namespace Xwt.WPFBackend
 {
 	internal class ExCanvas
-		: WpfCanvas
+		: WpfCanvas, IWpfWidget
 	{
 		public event EventHandler Render;
 
@@ -42,6 +42,18 @@ namespace Xwt.WPFBackend
 				render (this, EventArgs.Empty);
 
 			base.OnRender (dc);
+		}
+
+		public WidgetBackend Backend
+		{
+			get;
+			set;
+		}
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
 		}
 	}
 }
