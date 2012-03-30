@@ -141,9 +141,10 @@ namespace Xwt.WPFBackend
 
 			splitter.DragDelta += delegate
 			{
-				position = panel1.Size.Value;
-				if (this.reportPositionChanged)
-					Toolkit.Invoke (((IPanedEventSink)EventSink).OnPositionChanged);
+				if (position != panel1.Size.Value) {
+					position = panel1.Size.Value;
+					NotifyPositionChanged ();
+				}
 			};
 		}
 
@@ -156,11 +157,15 @@ namespace Xwt.WPFBackend
 				value /= direction == Orientation.Horizontal ? WidthPixelRatio : HeightPixelRatio;
 				if (position != value) {
 					position = value;
-					Grid.InvalidateArrange ();
-					if (this.reportPositionChanged)
-						Toolkit.Invoke (((IPanedEventSink)EventSink).OnPositionChanged);
+					NotifyPositionChanged ();
 				}
 			}
+		}
+
+		internal void NotifyPositionChanged ()
+		{
+			if (this.reportPositionChanged)
+				Toolkit.Invoke (((IPanedEventSink)EventSink).OnPositionChanged);
 		}
 
 		PanelInfo GetPanel (int panel)
@@ -367,8 +372,8 @@ namespace Xwt.WPFBackend
 				if (position > availableSize)
 					position = availableSize;
 
-				panel1.Size = new GridLength (position, IsFixed(panel1) ? GridUnitType.Pixel : GridUnitType.Star);
-				panel2.Size = new GridLength (availableSize - position, IsFixed (panel2) ? GridUnitType.Pixel : GridUnitType.Star);
+				panel1.Size = new GridLength (position, GridUnitType.Star);
+				panel2.Size = new GridLength (availableSize - position, GridUnitType.Star);
 			}
 			else if (panel1.Widget != null)
 				panel1.Size = new GridLength (1, GridUnitType.Star);
@@ -430,14 +435,25 @@ namespace Xwt.WPFBackend
 
 		protected override SW.Size MeasureOverride (SW.Size constraint)
 		{
+			// HACK: Fixes invalid size measure
+			// This line is hack to fix a measuring issue with Grid. For some reason, the grid 'remembers' the constraint
+			// parameter, so if MeasureOverride is called with a constraining size, but ArrangeOverride is later called
+			// with a bigger size, the Grid still uses the constrained size when determining the size of the children
+			constraint = new SW.Size (double.PositiveInfinity, double.PositiveInfinity);
+
 			var s = base.MeasureOverride (constraint);
 			return Backend.MeasureOverride (constraint, s);
 		}
 
 		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeSize)
 		{
-			((PanedBackend)Backend).ArrangeChildren (arrangeSize);
-			return base.ArrangeOverride (arrangeSize);
+			PanedBackend b = ((PanedBackend)Backend);
+			var oldPos = b.Position;
+			b.ArrangeChildren (arrangeSize);
+			var s = base.ArrangeOverride (arrangeSize);
+			if (oldPos != b.Position)
+				b.NotifyPositionChanged ();
+			return s;
 		}
 	}
 }
