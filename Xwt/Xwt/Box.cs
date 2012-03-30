@@ -295,7 +295,8 @@ namespace Xwt
 					s += cw.GetPreferredWidth ();
 					count++;
 				}
-				s += spacing * (double)(count - 1);
+				if (count > 0)
+					s += spacing * (double)(count - 1);
 			} else {
 				foreach (IWidgetSurface cw in Children.Where (b => b.Visible))
 					s = s.UnionWith (cw.GetPreferredWidth ());
@@ -313,7 +314,8 @@ namespace Xwt
 					s += cw.GetPreferredHeight ();
 					count++;
 				}
-				s += spacing * (double)(count - 1);
+				if (count > 0)
+					s += spacing * (double)(count - 1);
 			} else {
 				foreach (IWidgetSurface cw in Children.Where (b => b.Visible))
 					s = s.UnionWith (cw.GetPreferredHeight ());
@@ -347,7 +349,8 @@ namespace Xwt
 					s += GetPreferredLengthForSize (mode, bp.Child, width);
 					count++;
 				}
-				s += spacing * (double)(count - 1);
+				if (count > 0)
+					s += spacing * (double)(count - 1);
 			}
 			return s;
 		}
