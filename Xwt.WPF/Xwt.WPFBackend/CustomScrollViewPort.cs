@@ -28,30 +28,24 @@ using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Xwt.Backends;
 using SWC = System.Windows.Controls;
+using WSize = System.Windows.Size;
 
 namespace Xwt.WPFBackend
 {
-	public class CustomScrollViewPort
-		: SWC.UserControl, IScrollInfo
+	internal class CustomScrollViewPort
+		: SWC.Panel, IScrollInfo
 	{
-		private readonly ScrollAdjustmentBackend verticalBackend;
-		private readonly ScrollAdjustmentBackend horizontalBackend;
-		private double verticalOffset, horizontalOffset;
-
 		internal CustomScrollViewPort (object widget, ScrollAdjustmentBackend verticalBackend, ScrollAdjustmentBackend horizontalBackend)
 		{
 			if (widget == null)
 				throw new ArgumentNullException ("widget");
-			if (verticalBackend == null)
-				throw new ArgumentNullException ("verticalBackend");
-			if (horizontalBackend == null)
-				throw new ArgumentNullException ("horizontaBackend");
+
+			RenderTransform = this.transform;
 
 			this.verticalBackend = verticalBackend;
 			this.horizontalBackend = horizontalBackend;
-			Content = widget;
+			Children.Add ((UIElement) widget);
 		}
 
 		public bool CanHorizontallyScroll
@@ -68,52 +62,52 @@ namespace Xwt.WPFBackend
 
 		public double ExtentHeight
 		{
-			get { throw new System.NotImplementedException(); }
+			get { return this.extent.Height; }
 		}
 
 		public double ExtentWidth
 		{
-			get { throw new System.NotImplementedException(); }
+			get { return this.extent.Width; }
 		}
 
 		public double ViewportHeight
 		{
-			get { return ActualHeight; }
+			get { return this.viewport.Height; }
 		}
 
 		public double ViewportWidth
 		{
-			get { return ActualWidth; }
+			get { return this.viewport.Width; }
 		}
 
 		public double VerticalOffset
 		{
-			get { return this.verticalOffset; }
+			get { return this.contentOffset.Y; }
 		}
 
 		public double HorizontalOffset
 		{
-			get { return this.horizontalOffset; }
+			get { return this.contentOffset.X; }
 		}
 
 		public void LineDown()
 		{
-			SetVerticalOffset (VerticalOffset + this.verticalBackend.StepIncrement);
+			SetVerticalOffset (VerticalOffset + VerticalStepIncrement);
 		}
 
 		public void LineLeft()
 		{
-			SetVerticalOffset (HorizontalOffset - this.horizontalBackend.StepIncrement);
+			SetVerticalOffset (HorizontalOffset - HorizontalStepIncrement);
 		}
 
 		public void LineRight()
 		{
-			SetVerticalOffset (HorizontalOffset + this.horizontalBackend.StepIncrement);
+			SetVerticalOffset (HorizontalOffset + HorizontalStepIncrement);
 		}
 
 		public void LineUp()
 		{
-			SetVerticalOffset (VerticalOffset - this.verticalBackend.StepIncrement);
+			SetVerticalOffset (VerticalOffset - VerticalStepIncrement);
 		}
 
 		public Rect MakeVisible (Visual visual, Rect rectangle)
@@ -123,42 +117,42 @@ namespace Xwt.WPFBackend
 
 		public void MouseWheelDown()
 		{
-			SetVerticalOffset (VerticalOffset + this.verticalBackend.StepIncrement);
+			SetVerticalOffset (VerticalOffset + VerticalStepIncrement * 4);
 		}
 
 		public void MouseWheelLeft()
 		{
-			SetHorizontalOffset (HorizontalOffset - this.horizontalBackend.StepIncrement);
+			SetHorizontalOffset (HorizontalOffset - HorizontalStepIncrement * 4);
 		}
 
 		public void MouseWheelRight()
 		{
-			SetHorizontalOffset (HorizontalOffset + this.horizontalBackend.StepIncrement);
+			SetHorizontalOffset (HorizontalOffset + HorizontalStepIncrement * 4);
 		}
 
 		public void MouseWheelUp()
 		{
-			SetVerticalOffset (VerticalOffset - this.verticalBackend.StepIncrement);
+			SetVerticalOffset (VerticalOffset - VerticalStepIncrement * 4);
 		}
 
 		public void PageDown()
 		{
-			SetVerticalOffset (VerticalOffset + this.verticalBackend.PageIncrement);
+			SetVerticalOffset (VerticalOffset + VerticalPageIncrement);
 		}
 
 		public void PageLeft()
 		{
-			SetHorizontalOffset (HorizontalOffset - this.horizontalBackend.PageIncrement);
+			SetHorizontalOffset (HorizontalOffset - HorizontalPageIncrement);
 		}
 
 		public void PageRight()
 		{
-			SetHorizontalOffset (HorizontalOffset + this.horizontalBackend.PageIncrement);
+			SetHorizontalOffset (HorizontalOffset + HorizontalPageIncrement);
 		}
 
 		public void PageUp()
 		{
-			SetVerticalOffset (VerticalOffset - this.verticalBackend.PageIncrement);
+			SetVerticalOffset (VerticalOffset - VerticalPageIncrement);
 		}
 
 		public SWC.ScrollViewer ScrollOwner
@@ -169,22 +163,109 @@ namespace Xwt.WPFBackend
 
 		public void SetHorizontalOffset (double offset)
 		{
-			if (offset < 0)
+			if (offset < 0 || this.viewport.Width >= this.extent.Width)
 				offset = 0;
+			else if (offset + this.viewport.Width >= this.extent.Width)
+				offset = this.extent.Width - this.viewport.Width;
 
-			this.horizontalOffset = offset;
-			Xwt.Engine.Toolkit.Invoke (this.horizontalBackend.EventSink.OnValueChanged);
+			this.contentOffset.X = offset;
 			ScrollOwner.InvalidateScrollInfo();
+
+			this.transform.X = -offset;
+			if (this.verticalBackend != null)
+				this.horizontalBackend.EventSink.OnValueChanged();
 		}
 
 		public void SetVerticalOffset (double offset)
 		{
-			if (offset < 0)
+			if (offset < 0 || this.viewport.Height >= this.extent.Height)
 				offset = 0;
+			else if (offset + this.viewport.Height >= this.extent.Height)
+				offset = this.extent.Height - this.viewport.Height;
 
-			this.verticalOffset = offset;
-			Xwt.Engine.Toolkit.Invoke (this.verticalBackend.EventSink.OnValueChanged);
+			this.contentOffset.Y = offset;
 			ScrollOwner.InvalidateScrollInfo();
+
+			this.transform.Y = -offset;
+			if (this.verticalBackend != null)
+				this.verticalBackend.EventSink.OnValueChanged();
+		}
+
+		private readonly TranslateTransform transform = new TranslateTransform();
+		private readonly ScrollAdjustmentBackend verticalBackend;
+		private readonly ScrollAdjustmentBackend horizontalBackend;
+		
+		private Point contentOffset;
+		private WSize extent = new WSize (0, 0);
+		private WSize viewport = new WSize (0, 0);
+
+		private static readonly WSize InfiniteSize
+			= new System.Windows.Size (Double.PositiveInfinity, Double.PositiveInfinity);
+
+		protected double VerticalPageIncrement
+		{
+			get { return (this.verticalBackend != null) ? this.verticalBackend.PageIncrement : 10; }
+		}
+
+		protected double HorizontalPageIncrement
+		{
+			get { return (this.horizontalBackend != null) ? this.horizontalBackend.PageIncrement : 10; }
+		}
+
+		protected double VerticalStepIncrement
+		{
+			get { return (this.verticalBackend != null) ? this.verticalBackend.StepIncrement : 1; }
+		}
+
+		protected double HorizontalStepIncrement
+		{
+			get { return (this.horizontalBackend != null) ? this.horizontalBackend.StepIncrement : 1; }
+		}
+
+		protected override WSize MeasureOverride (WSize constraint)
+		{
+			FrameworkElement child = (FrameworkElement) InternalChildren [0];
+			child.Measure (InfiniteSize);
+			
+			WSize childSize = child.DesiredSize;
+
+			if (Double.IsInfinity (constraint.Width))
+				constraint.Width = ActualWidth;
+			if (Double.IsInfinity (constraint.Height))
+				constraint.Height = ActualHeight;
+
+			if (this.extent != childSize) {
+				this.extent = childSize;
+				ScrollOwner.InvalidateScrollInfo();
+			}
+
+			if (this.viewport != constraint) {
+				this.viewport = constraint;
+				ScrollOwner.InvalidateScrollInfo();
+			}
+
+			return constraint;
+		}
+
+		protected override System.Windows.Size ArrangeOverride (System.Windows.Size finalSize)
+		{
+			FrameworkElement child = (FrameworkElement)InternalChildren [0];
+
+			WSize childSize = child.DesiredSize;
+
+			if (this.extent != childSize) {
+				this.extent = childSize;
+				ScrollOwner.InvalidateScrollInfo();
+			}
+
+			if (this.viewport != finalSize) {
+				this.viewport = finalSize;
+				ScrollOwner.InvalidateScrollInfo();
+			}
+
+			child.Arrange (new Rect (0, 0, child.ActualWidth, child.ActualHeight));
+
+			return finalSize;
 		}
 	}
 }

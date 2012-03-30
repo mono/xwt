@@ -36,25 +36,7 @@ namespace Xwt.WPFBackend
 	{
 		public ScrollViewBackend()
 		{
-			ScrollViewer = new ScrollViewer();
-		}
-
-		public void SetChild (IWidgetBackend child)
-		{
-			var widget = (WidgetBackend) child;
-			if (widget.EventSink.SupportsCustomScrolling()) {
-				var vbackend = new ScrollAdjustmentBackend ();
-				var hbackend = new ScrollAdjustmentBackend ();
-				widget.EventSink.SetScrollAdjustments (hbackend, vbackend);
-				var vp = new CustomScrollViewPort (widget.NativeWidget, vbackend, hbackend);
-				ScrollViewer.Content = vp;
-				vp.ScrollOwner = ScrollViewer;
-			} else
-				ScrollViewer.Content = child.NativeWidget;
-		}
-		
-		public void SetChildSize (Size s)
-		{
+			ScrollViewer = new ExScrollViewer();
 		}
 
 		public ScrollPolicy VerticalScrollPolicy
@@ -87,11 +69,60 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public void SetChild (IWidgetBackend child)
+		{
+			ScrollAdjustmentBackend vbackend = null, hbackend = null;
+
+			var widget = (WidgetBackend) child;
+			if (widget.EventSink.SupportsCustomScrolling()) {
+				vbackend = new ScrollAdjustmentBackend ();
+				hbackend = new ScrollAdjustmentBackend ();
+				widget.EventSink.SetScrollAdjustments (hbackend, vbackend);
+			}
+			
+			ScrollViewer.Content = new CustomScrollViewPort (widget.NativeWidget, vbackend, hbackend);
+			ScrollViewer.CanContentScroll = true;
+		}
+		
+		public void SetChildSize (Size s)
+		{
+
+		}
+
 		public Rectangle VisibleRect
 		{
 			get
 			{
-				throw new NotImplementedException();
+				double wratio = WidthPixelRatio;
+				double hratio = HeightPixelRatio;
+				return new Rectangle (	ScrollViewer.HorizontalOffset * hratio,
+										ScrollViewer.VerticalOffset * hratio,
+										ScrollViewer.ViewportWidth * wratio,
+										ScrollViewer.ViewportHeight * hratio);
+			}
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+
+			if (eventId is ScrollViewEvent) {
+				switch ((ScrollViewEvent)eventId) {
+					case ScrollViewEvent.VisibleRectChanged:
+						break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent(eventId);
+
+			if (eventId is ScrollViewEvent) {
+				switch ((ScrollViewEvent)eventId) {
+					case ScrollViewEvent.VisibleRectChanged:
+						break;
+				}
 			}
 		}
 
