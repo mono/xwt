@@ -238,9 +238,9 @@ namespace Xwt.WPFBackend
 			WSize childSize = child.DesiredSize;
 
 			if (Double.IsInfinity (constraint.Width))
-				constraint.Width = ActualWidth;
+				constraint.Width = 0;
 			if (Double.IsInfinity (constraint.Height))
-				constraint.Height = ActualHeight;
+				constraint.Height = 0;
 
 			if (this.extent != childSize) {
 				this.extent = childSize;
