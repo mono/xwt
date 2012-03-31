@@ -49,6 +49,14 @@ namespace Xwt.WPFBackend
 		DragDropEffects currentDragEffect;
 		FrameworkElement widget;
 
+		class DragDropData
+		{
+			public bool AutodetectDrag;
+			public Rect DragRect;
+		}
+
+		DragDropData dragDropInfo;
+
 		const WidgetEvent dragDropEvents = WidgetEvent.DragDropCheck | WidgetEvent.DragDrop | WidgetEvent.DragOver | WidgetEvent.DragOverCheck;
 
 		// Set to true when measuring a natural size for this widget
@@ -601,6 +609,15 @@ namespace Xwt.WPFBackend
 			});
 		}
 
+		DragDropData DragDropInfo {
+			get {
+				if (dragDropInfo == null)
+					dragDropInfo = new DragDropData ();
+
+				return dragDropInfo;
+			}
+		}
+
 		public void DragStart (DragStartData data)
 		{
 			if (data.Data == null)
@@ -628,6 +645,49 @@ namespace Xwt.WPFBackend
 
 		public void SetDragSource (TransferDataType [] types, DragDropAction dragAction)
 		{
+			if (DragDropInfo.AutodetectDrag)
+				return; // Drag auto detect has been already activated.
+
+			DragDropInfo.AutodetectDrag = true;
+			Widget.MouseDown += WidgetMouseDownForDragHandler;
+			Widget.MouseUp += WidgetMouseUpForDragHandler;
+			Widget.MouseMove += WidgetMouseMoveForDragHandler;
+		}
+
+		void WidgetMouseDownForDragHandler (object o, MouseButtonEventArgs e)
+		{
+			if ((enabledEvents & WidgetEvent.DragStarted) == 0)
+				return;
+
+			var width = SystemParameters.MinimumHorizontalDragDistance;
+			var height = SystemParameters.MinimumVerticalDragDistance;
+			var loc = e.GetPosition (Widget);
+			DragDropInfo.DragRect = new Rect (loc.X - width / 2, loc.Y - height / 2, width, height);
+		}
+
+		void WidgetMouseUpForDragHandler (object o, EventArgs e)
+		{
+			DragDropInfo.DragRect = Rect.Empty;
+		}
+
+		void WidgetMouseMoveForDragHandler (object o, MouseEventArgs e)
+		{
+			if ((enabledEvents & WidgetEvent.DragStarted) == 0)
+				return;
+			if (e.LeftButton != MouseButtonState.Pressed)
+				return;
+			if (DragDropInfo.DragRect.IsEmpty || DragDropInfo.DragRect.Contains (e.GetPosition (Widget)))
+				return;
+
+			DragStartData dragData = null;
+			Toolkit.Invoke (delegate {
+				dragData = eventSink.OnDragStarted ();
+			});
+
+			if (dragData != null)
+				DragStart (dragData);
+
+			DragDropInfo.DragRect = Rect.Empty;
 		}
 
 		static DragDropAction DetectDragAction (DragDropKeyStates keys)
