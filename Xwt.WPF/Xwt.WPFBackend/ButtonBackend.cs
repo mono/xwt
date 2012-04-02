@@ -116,6 +116,7 @@ namespace Xwt.WPFBackend
 				Button.Content = grid;
 			}
 			Button.InvalidateMeasure ();
+			Button.UpdateLayout ();
 		}
 
 		public override void EnableEvent (object eventId)
