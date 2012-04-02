@@ -32,8 +32,16 @@ using System.Windows.Media;
 namespace Xwt.WPFBackend.Utilities
 {
 	public class ExTextBox
-		: System.Windows.Controls.TextBox
+		: System.Windows.Controls.TextBox, IWpfWidget
 	{
+		public WidgetBackend Backend { get; set; }
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
+		}
+
 		public string PlaceholderText
 		{
 			get { return this.placeholderText; }

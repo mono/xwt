@@ -42,6 +42,11 @@ namespace Xwt.WPFBackend
 			Widget = new ExTextBox();
 		}
 
+		protected override double DefaultNaturalWidth
+		{
+			get { return -1; }
+		}
+
 		public virtual string Text
 		{
 			get { return TextBox.Text; }
