@@ -34,6 +34,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using SWM = System.Windows.Media;
 using SWC = System.Windows.Controls; // When we need to resolve ambigituies.
+using SW = System.Windows; // When we need to resolve ambigituies.
 
 using Xwt.Backends;
 using Xwt.Engine;
@@ -220,36 +221,30 @@ namespace Xwt.WPFBackend
 			return new Point (p.X * wratio, p.Y * hratio);
 		}
 
-		System.Windows.Size GetWidgetDesiredSize (double availableWidth, double availableHeight)
+		SW.Size lastNaturalSize;
+
+		void GetWidgetDesiredSize (double availableWidth, double availableHeight, out SW.Size minSize, out SW.Size naturalSize)
 		{
 			// Calculates the desired size of widget.
 
 			if (!Widget.IsMeasureValid) {
 				try {
-					calculatingPreferredSize = true;	
+					calculatingPreferredSize = true;
+					gettingNaturalSize = true;
+					Widget.Measure (new System.Windows.Size (availableWidth, availableHeight));
+					lastNaturalSize = Widget.DesiredSize;
+					gettingNaturalSize = false;
+
+					Widget.InvalidateMeasure ();
 					Widget.Measure (new System.Windows.Size (availableWidth, availableHeight));
 				}
 				finally {
 					calculatingPreferredSize = false;
+					gettingNaturalSize = false;
 				}
 			}
-
-			return Widget.DesiredSize;
-		}
-
-		System.Windows.Size GetWidgetNaturalSize (double availableWidth, double availableHeight)
-		{
-			// Calculates the natural size of widget
-			// Since WPF doesn't have the concept of natural size, we use the
-			// normal size calculation, but we set gettingNaturalSize to true.
-			// The flag is checked when the size is measured in MeasureOverride
-			try {
-				gettingNaturalSize = true;
-				return GetWidgetDesiredSize (availableWidth, availableHeight);
-			}
-			finally {
-				gettingNaturalSize = false;
-			}
+			minSize = Widget.DesiredSize;
+			naturalSize = lastNaturalSize;
 		}
 
 		// The GetPreferred* methods are called when the corresponding OnGetPreferred* methods in the
@@ -260,30 +255,30 @@ namespace Xwt.WPFBackend
 
 		public virtual WidgetSize GetPreferredWidth ()
 		{
-			var size = GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity);
-			var naturalSize = GetWidgetNaturalSize (Double.PositiveInfinity, Double.PositiveInfinity);
-			return new WidgetSize (size.Width * WidthPixelRatio, naturalSize.Width * WidthPixelRatio);
+			SW.Size minSize, natSize;
+			GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity, out minSize, out natSize);
+			return new WidgetSize (minSize.Width * WidthPixelRatio, natSize.Width * WidthPixelRatio);
 		}
 
 		public virtual WidgetSize GetPreferredHeight ()
 		{
-			var size = GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity);
-			var naturalSize = GetWidgetNaturalSize (Double.PositiveInfinity, Double.PositiveInfinity);
-			return new WidgetSize (size.Height * WidthPixelRatio, naturalSize.Height * HeightPixelRatio);
+			SW.Size minSize, natSize;
+			GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity, out minSize, out natSize);
+			return new WidgetSize (minSize.Height * WidthPixelRatio, natSize.Height * HeightPixelRatio);
 		}
 
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
-			var size = GetWidgetDesiredSize (Double.PositiveInfinity, height);
-			var naturalSize = GetWidgetNaturalSize (Double.PositiveInfinity, height);
-			return new WidgetSize (size.Width * WidthPixelRatio, naturalSize.Width * WidthPixelRatio);
+			SW.Size minSize, natSize;
+			GetWidgetDesiredSize (Double.PositiveInfinity, height, out minSize, out natSize);
+			return new WidgetSize (minSize.Width * WidthPixelRatio, natSize.Width * WidthPixelRatio);
 		}
 
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
-			var size = GetWidgetDesiredSize (width, Double.PositiveInfinity);
-			var naturalSize = GetWidgetNaturalSize (width, Double.PositiveInfinity);
-			return new WidgetSize (size.Height * HeightPixelRatio, naturalSize.Height * HeightPixelRatio);
+			SW.Size minSize, natSize;
+			GetWidgetDesiredSize (width, Double.PositiveInfinity, out minSize, out natSize);
+			return new WidgetSize (minSize.Height * HeightPixelRatio, natSize.Height * HeightPixelRatio);
 		}
 
 		/// <summary>
@@ -301,22 +296,24 @@ namespace Xwt.WPFBackend
 
 				// -2 means use the WPF default, -1 use the XWT default, any other other value is used as custom natural size
 				var nw = DefaultNaturalWidth;
-				if (nw == -2)
-					nw = wpfMeasure.Width;
-				else if (nw == -1) {
+				if (nw == -1) {
 					nw = defNaturalSize.Width;
 					if (nw == 0)
 						nw = wpfMeasure.Width;
+					wpfMeasure.Width = nw;
 				}
+				else if (nw != -2)
+					wpfMeasure.Width = nw;
 
 				var nh = DefaultNaturalHeight;
-				if (nh == -2)
-					nh = wpfMeasure.Height;
-				else if (nh == -1) {
+				if (nh == -1) {
 					nh = defNaturalSize.Height;
 					if (nh == 0)
 						nh = wpfMeasure.Height;
+					wpfMeasure.Height = nh;
 				}
+				else if (nh != -2)
+					wpfMeasure.Height = nh;
 			}
 
 			// If we are calculating the default preferred size of the widget we end here.
