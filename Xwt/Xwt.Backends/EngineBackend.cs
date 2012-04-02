@@ -28,6 +28,8 @@
 using System;
 using System.Reflection;
 using System.IO;
+using Xwt.Drawing;
+using Xwt.Engine;
 
 namespace Xwt.Backends
 {
@@ -66,6 +68,11 @@ namespace Xwt.Backends
 		public abstract void CancelTimerInvoke (object id);
 		
 		public abstract object GetNativeWidget (Widget w);
+		
+		public virtual object GetNativeImage (Image image)
+		{
+			return WidgetRegistry.GetBackend (image);
+		}
 		
 		public abstract IWindowFrameBackend GetBackendForWindow (object nativeWindow);
 		

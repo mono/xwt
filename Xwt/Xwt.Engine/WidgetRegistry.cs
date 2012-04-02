@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Engine
 {
@@ -79,6 +80,11 @@ namespace Xwt.Engine
 		public static object GetNativeWidget (Widget w)
 		{
 			return Application.EngineBackend.GetNativeWidget (w);
+		}
+		
+		public static object GetNativeImage (Image image)
+		{
+			return Application.EngineBackend.GetNativeImage (image);
 		}
 		
 		public static WindowFrame WrapWindow (object nativeWindow)
