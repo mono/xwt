@@ -154,12 +154,45 @@ namespace Xwt.WPFBackend
 			ListView.SelectedIndexes.Remove (pos);
 		}
 
+		public override void EnableEvent(object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is TableViewEvent) {
+				switch ((TableViewEvent)eventId) {
+				case TableViewEvent.SelectionChanged:
+					ListView.SelectionChanged += OnSelectionChanged;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is TableViewEvent) {
+				switch ((TableViewEvent)eventId) {
+				case TableViewEvent.SelectionChanged:
+					ListView.SelectionChanged -= OnSelectionChanged;
+					break;
+				}
+			}
+		}
+
+		private void OnSelectionChanged (object sender, SelectionChangedEventArgs e)
+		{
+			Toolkit.Invoke (ListViewEventSink.OnSelectionChanged);
+		}
+
 		private bool headersVisible;
 		private readonly GridView view = new GridView();
 
 		protected ExListView ListView {
 			get { return (ExListView) Widget; }
 			set { Widget = value; }
+		}
+
+		protected IListViewEventSink ListViewEventSink {
+			get { return (IListViewEventSink) EventSink; }
 		}
 	}
 }
