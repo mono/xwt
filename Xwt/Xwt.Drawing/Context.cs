@@ -414,6 +414,38 @@ namespace Xwt.Drawing
 			handler.Translate (Backend, p.X, p.Y);
 		}
 		
+		/// <summary>
+		/// Transforms the point (x, y) by the current transformation matrix (CTM)
+		/// </summary>
+		public void TransformPoint (ref double x, ref double y)
+		{
+			handler.TransformPoint (Backend, ref x, ref y);
+		}
+
+		/// <summary>
+		/// Transforms the distance (dx, dy) by the scale and rotation elements (only) of the CTM
+		/// </summary>
+		public void TransformDistance (ref double dx, ref double dy)
+		{
+			handler.TransformDistance (Backend, ref dx, ref dy);
+		}
+
+		/// <summary>
+		/// Transforms the array of points by the current transformation matrix (CTM)
+		/// </summary>
+		public void TransformPoints (Point[] points)
+		{
+			handler.TransformPoints (Backend, points);
+		}
+
+		/// <summary>
+		/// Transforms the array of distances by the scale and rotation elements (only) of the CTM
+		/// </summary>
+		public void TransformDistances (Distance[] vectors)
+		{
+			handler.TransformDistances (Backend, vectors);
+		}
+
 		public void Dispose ()
 		{
 			handler.Dispose (Backend);
