@@ -1,7 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿//
+// FontBackendHandler.cs
+//
+// Authors:
+//       Carlos Alberto Cortez <calberto.cortez@gmail.com>
+//       Eric Maupin <ermau@xamarin.com>
+//
+// Copyright (c) 2011-2012 Carlos Alberto Cortez
+// Copyright (c) 2012 Xamarin, Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 using SW = System.Windows;
 
 using Xwt.Backends;
@@ -93,6 +117,24 @@ namespace Xwt.WPFBackend
 			var font = (FontData)handle;
 			return DataConverter.ToXwtFontWeight (font.Weight);
 		}
+
+		internal static double GetPointsFromPixels (double pixels, double dpi)
+		{
+			return (pixels / dpi) * 72;
+		}
+
+		internal static double GetPointsFromPixels (SW.Controls.Control control)
+		{
+			Size pixelRatios = control.GetPixelRatios ();
+			double dpi = (pixelRatios.Width * 96); // 96 DPI is WPF's unit
+
+			return GetPointsFromPixels (control.FontSize, dpi);
+		}
+
+		internal static double GetPixelsFromPoints (double points, double dpi)
+		{
+			return points * (dpi / 72);
+		}
 	}
 
 	internal class FontData
@@ -116,20 +158,11 @@ namespace Xwt.WPFBackend
 
 		public static FontData FromControl (SW.Controls.Control control)
 		{
-			return new FontData (control.FontFamily, control.FontSize) {
+			return new FontData (control.FontFamily, FontBackendHandler.GetPointsFromPixels (control)) {
 				Style = control.FontStyle,				
 				Stretch = control.FontStretch,
 				Weight = control.FontWeight
 			};
-		}
-
-		public static FontData SystemDefault {
-			get {
-				return new FontData (SW.SystemFonts.MessageFontFamily, SW.SystemFonts.MessageFontSize) {
-					Style = SW.SystemFonts.MessageFontStyle,
-					Weight = SW.SystemFonts.MessageFontWeight
-				};
-			}
 		}
 
 		// Didn't implement IClone on purpose (recommended by the Framework Design guidelines)

@@ -153,8 +153,14 @@ namespace Xwt.WPFBackend
 
 		FontData GetWidgetFont ()
 		{
-			if (!(Widget is Control))
-				return FontData.SystemDefault;
+			if (!(Widget is Control)) {
+				double size = FontBackendHandler.GetPointsFromPixels (SystemFonts.MessageFontSize, DPI);
+
+				return new FontData (SystemFonts.MessageFontFamily, size) {
+					Style = SystemFonts.MessageFontStyle,
+					Weight = SystemFonts.MessageFontWeight
+				};
+			}
 
 			return FontData.FromControl ((Control)Widget);
 		}
@@ -166,7 +172,7 @@ namespace Xwt.WPFBackend
 
 			var control = (Control)Widget;
 			control.FontFamily = font.Family;
-			control.FontSize = font.Size;
+			control.FontSize = FontBackendHandler.GetPixelsFromPoints (font.Size, DPI);
 			control.FontStyle = font.Style;
 			control.FontWeight = font.Weight;
 			control.FontStretch = font.Stretch;
@@ -525,6 +531,11 @@ namespace Xwt.WPFBackend
 				Matrix m = source.CompositionTarget.TransformToDevice;
 				return m.M22;
 			}
+		}
+
+		protected double DPI
+		{
+			get { return WidthPixelRatio * 96; }
 		}
 
 		void WidgetKeyDownHandler (object sender, System.Windows.Input.KeyEventArgs e)
