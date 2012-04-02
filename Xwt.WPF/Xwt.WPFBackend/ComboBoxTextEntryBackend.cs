@@ -28,19 +28,15 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 using Xwt.Backends;
-using WindowsComboBox = System.Windows.Controls.ComboBox;
 
 namespace Xwt.WPFBackend
 {
 	public class ComboBoxTextEntryBackend
 		: WidgetBackend, ITextEntryBackend
 	{
-		private readonly WindowsComboBox combobox;
-
-		public ComboBoxTextEntryBackend (WindowsComboBox combobox)
+		public ComboBoxTextEntryBackend (ExComboBox combobox)
 		{
 			if (combobox == null)
 				throw new ArgumentNullException ("combobox");
@@ -92,7 +88,41 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is TextEntryEvent) {
+				switch ((TextEntryEvent)eventId) {
+				case TextEntryEvent.Changed:
+					this.combobox.TextChanged += OnTextChanged;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is TextEntryEvent) {
+				switch ((TextEntryEvent)eventId) {
+				case TextEntryEvent.Changed:
+					this.combobox.TextChanged -= OnTextChanged;
+					break;
+				}
+			}
+		}
+
+		private readonly ExComboBox combobox;
 		private string placeholderText;
+
+		protected ITextEntryEventSink TextEntryEventSink {
+			get { return (ITextEntryEventSink) EventSink; }
+		}
+
+		private void OnTextChanged (object sender, EventArgs e)
+		{
+			TextEntryEventSink.OnChanged();
+		}
 
 		private void UpdatePlaceholder (string newPlaceholder, bool focused)
 		{

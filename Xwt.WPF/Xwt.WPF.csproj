@@ -69,6 +69,7 @@
     <Compile Include="Xwt.WPFBackend\ContextBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\DropDownButton.cs" />
     <Compile Include="Xwt.WPFBackend\ExCanvas.cs" />
+    <Compile Include="Xwt.WPFBackend\ExComboBox.cs" />
     <Compile Include="Xwt.WPFBackend\ExListView.cs" />
     <Compile Include="Xwt.WPFBackend\ExScrollViewer.cs" />
     <Compile Include="Xwt.WPFBackend\FileDialogBackend.cs" />

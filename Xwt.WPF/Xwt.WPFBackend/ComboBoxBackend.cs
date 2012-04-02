@@ -59,16 +59,11 @@ namespace Xwt.WPFBackend
 
 			ContainerStyle = new Style (typeof (ComboBoxItem));
 			ContainerStyle.Triggers.Add (trigger);
-
-			//FrameworkElementFactory f = new FrameworkElementFactory (typeof (TextBlock));
-			//f.SetBinding (TextBlock.TextProperty, new Binding (".[0]"));
-			//DefaultTemplate = new DataTemplate { VisualTree = f };
 		}
 
 		public ComboBoxBackend()
 		{
-			Widget = new WindowsComboBox();
-
+			ComboBox = new ExComboBox();
 			ComboBox.DisplayMemberPath = ".[0]";
 			//ComboBox.ItemTemplate = DefaultTemplate;
 			ComboBox.ItemContainerStyle = ContainerStyle;
@@ -119,9 +114,10 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		protected WindowsComboBox ComboBox
+		protected ExComboBox ComboBox
 		{
-			get { return (WindowsComboBox) Widget; }
+			get { return (ExComboBox) Widget; }
+			set { Widget = value; }
 		}
 
 		protected IComboBoxEventSink ComboBoxEventSink

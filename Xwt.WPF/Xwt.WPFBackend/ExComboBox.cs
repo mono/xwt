@@ -1,21 +1,21 @@
-﻿// 
-// ComboBoxEntryBackend.cs
-//  
+﻿//
+// ExComboBox.cs
+//
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
-// 
+//
 // Copyright (c) 2012 Xamarin, Inc.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,30 +24,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using Xwt.Backends;
+using System;
+using System.Windows;
+using SW = System.Windows;
+using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
-	public class ComboBoxEntryBackend
-		: ComboBoxBackend, IComboBoxEntryBackend
+	public class ExComboBox
+		: System.Windows.Controls.ComboBox, IWpfWidget
 	{
-		public ComboBoxEntryBackend()
+		public event EventHandler TextChanged;
+
+		public WidgetBackend Backend
 		{
-			ComboBox.IsEditable = true;
-			this.textBackend = new ComboBoxTextEntryBackend (ComboBox);
+			get;
+			set;
 		}
 
-		public ITextEntryBackend TextEntryBackend
+		protected override SW.Size MeasureOverride (SW.Size constraint)
 		{
-			get { return this.textBackend; }
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
 		}
 
-		public void SetTextColumn (int column)
+		protected override void OnTextInput (SW.Input.TextCompositionEventArgs e)
 		{
-			if (ComboBox.DisplayMemberPath != null)
-				ComboBox.DisplayMemberPath = ".[" + column + "]";
+			base.OnTextInput (e);
+			OnTextChanged (EventArgs.Empty);
 		}
 
-		private readonly ComboBoxTextEntryBackend textBackend;
+		protected override void OnSelectionChanged (SWC.SelectionChangedEventArgs e)
+		{
+			base.OnSelectionChanged (e);
+			OnTextChanged (EventArgs.Empty);
+		}
+
+		protected virtual void OnTextChanged (EventArgs e)
+		{
+			var changed = TextChanged;
+			if (changed != null)
+				changed (this, e);
+		}
 	}
 }
