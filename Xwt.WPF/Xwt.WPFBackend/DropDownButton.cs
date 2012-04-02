@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
