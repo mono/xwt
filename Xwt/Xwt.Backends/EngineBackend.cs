@@ -35,12 +35,21 @@ namespace Xwt.Backends
 {
 	public abstract class EngineBackend
 	{
+		/// <summary>
+		/// Initializes the application.
+		/// </summary>
 		public virtual void InitializeApplication ()
 		{
 		}
 		
+		/// <summary>
+		/// Runs the main GUI loop
+		/// </summary>
 		public abstract void RunApplication ();
 		
+		/// <summary>
+		/// Exits the main GUI loop
+		/// </summary>
 		public abstract void ExitApplication ();
 		
 		/// <summary>
@@ -67,20 +76,66 @@ namespace Xwt.Backends
 		/// <exception cref="ArgumentNullException"><paramref name="id"/> is <c>null</c>.</exception>
 		public abstract void CancelTimerInvoke (object id);
 		
+		/// <summary>
+		/// Gets a reference to the native widget wrapped by an XWT widget
+		/// </summary>
+		/// <returns>
+		/// The native widget.
+		/// </returns>
+		/// <param name='w'>
+		/// A widget
+		/// </param>
 		public abstract object GetNativeWidget (Widget w);
 		
+		/// <summary>
+		/// Gets a reference to the image object wrapped by an XWT Image
+		/// </summary>
+		/// <returns>
+		/// The native image.
+		/// </returns>
+		/// <param name='image'>
+		/// An image.
+		/// </param>
 		public virtual object GetNativeImage (Image image)
 		{
 			return WidgetRegistry.GetBackend (image);
 		}
 		
+		/// <summary>
+		/// Gets the backend for a native window.
+		/// </summary>
+		/// <returns>
+		/// The backend for the window.
+		/// </returns>
+		/// <param name='nativeWindow'>
+		/// A native window reference.
+		/// </param>
 		public abstract IWindowFrameBackend GetBackendForWindow (object nativeWindow);
 		
+		/// <summary>
+		/// Gets the native parent window of a widget
+		/// </summary>
+		/// <returns>
+		/// The native parent window.
+		/// </returns>
+		/// <param name='w'>
+		/// A widget
+		/// </param>
+		/// <remarks>
+		/// This method is used by XWT to get the window of a widget, when the widget is
+		/// embedded in a native application
+		/// </remarks>
 		public virtual object GetNativeParentWindow (Widget w)
 		{
 			return null;
 		}
 		
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="Xwt.Backends.EngineBackend"/> handles size negotiation on its own
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if the engine backend handles size negotiation; otherwise, <c>false</c>.
+		/// </value>
 		public virtual bool HandlesSizeNegotiation {
 			get { return false; }
 		}
