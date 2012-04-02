@@ -261,7 +261,11 @@ namespace Xwt.WPFBackend
 			switch (value) {
 				case MouseButton.Left: return PointerButton.Left;
 				case MouseButton.Middle: return PointerButton.Middle;
-				default: return PointerButton.Right;
+				case MouseButton.Right: return PointerButton.Right;
+				case MouseButton.XButton1: return PointerButton.ExtendedButton1;
+				case MouseButton.XButton2: return PointerButton.ExtendedButton2;
+
+				default: throw new ArgumentException();
 			}
 		}
 
@@ -270,7 +274,11 @@ namespace Xwt.WPFBackend
 			switch (value) {
 				case PointerButton.Left: return MouseButton.Left;
 				case PointerButton.Middle: return MouseButton.Middle;
-				default: return MouseButton.Right;
+				case PointerButton.Right: return MouseButton.Right;
+				case PointerButton.ExtendedButton1: return MouseButton.XButton1;
+				case PointerButton.ExtendedButton2: return MouseButton.XButton2;
+
+				default: throw new ArgumentException();
 			}
 		}
 
