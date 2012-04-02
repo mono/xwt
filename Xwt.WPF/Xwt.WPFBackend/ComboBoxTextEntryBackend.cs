@@ -131,7 +131,7 @@ namespace Xwt.WPFBackend
 
 			this.placeholderText = newPlaceholder;
 
-			if (focused && Text == PlaceholderText)
+			if (focused && (Text == PlaceholderText || String.IsNullOrEmpty (Text)))
 				this.combobox.ClearValue (Control.ForegroundProperty);
 			else if (!focused && String.IsNullOrEmpty (Text))
 			{
