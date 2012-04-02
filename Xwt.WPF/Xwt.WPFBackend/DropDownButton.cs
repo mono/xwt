@@ -56,6 +56,8 @@ namespace Xwt.WPFBackend
 				return;
 			}
 
+			FocusManager.SetIsFocusScope (menu, false);
+
 			string text = Content as string;
 			if (!String.IsNullOrWhiteSpace (text)) {
 				SWC.MenuItem selected = menu.Items.OfType<SWC.MenuItem>().FirstOrDefault (i => i.Header as string == text);
