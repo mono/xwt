@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
 
@@ -62,7 +63,14 @@ namespace Xwt.WPFBackend
 			UIElement element = widget.NativeWidget as UIElement;
 			if (element == null)
 				throw new ArgumentException ();
-			throw new System.NotImplementedException ();
+			
+			for (int i = 0; i < TabControl.Items.Count; ++i) {
+				TabItem tab = (TabItem)TabControl.Items [i];
+				if (tab.Content == widget.NativeWidget) {
+					TabControl.Items.RemoveAt (i);
+					break;
+				}
+			}
 		}
 
 		public void UpdateLabel (NotebookTab tab, string hint)
