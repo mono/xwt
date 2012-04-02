@@ -730,6 +730,17 @@ namespace Xwt
 				mouseMoved (this, args);
 		}
 		
+		void HandleBoundsChanged ()
+		{
+			// If bounds have changed and the widget has not a parent, chances are that
+			// the widget is embedded in a native application, in which case we
+			// have to call Reallocate here (which is normally called by the root XWT window)
+			if (!Application.EngineBackend.HandlesSizeNegotiation && Parent == null)
+				((IWidgetSurface)this).Reallocate ();
+			
+			OnBoundsChanged ();
+		}
+		
 		protected virtual void OnBoundsChanged ()
 		{
 			if (boundsChanged != null)
