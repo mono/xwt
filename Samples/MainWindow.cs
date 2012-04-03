@@ -70,7 +70,8 @@ namespace Samples
 			AddSample (null, "Frames", typeof(Frames));
 			AddSample (null, "Images", typeof(Images));
 			AddSample (null, "Labels", typeof(Labels));
-			AddSample (null, "List View", typeof(ListView1));
+			AddSample (null, "ListBox", typeof(ListBoxSample));
+			AddSample (null, "ListView", typeof(ListView1));
 			AddSample (null, "Menu", typeof(MenuSamples));
 			AddSample (null, "Notebook", typeof(NotebookSample));
 			AddSample (null, "Paneds", typeof(PanedViews));
