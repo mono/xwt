@@ -72,6 +72,10 @@ namespace Xwt.WPFBackend
 			UIElement element = widget.NativeWidget as UIElement;
 			if (element == null)
 				throw new ArgumentException ();
+
+			FrameworkElement felement = element as FrameworkElement;
+			if (felement != null)
+				felement.Loaded -= OnContentLoaded;
 			
 			for (int i = 0; i < TabControl.Items.Count; ++i) {
 				TabItem tab = (TabItem)TabControl.Items [i];
