@@ -106,6 +106,7 @@ namespace Xwt.WPFBackend
 			}
 
 			this.changingSelection = false;
+			base.OnSelectionChanged (e);
 		}
 
 		protected virtual void OnSelectedIndexesChanged (DependencyPropertyChangedEventArgs e)
