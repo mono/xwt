@@ -82,6 +82,9 @@ namespace Xwt.WPFBackend
 
 		public void SetContent (IWidgetBackend child)
 		{
+			if (child == null)
+				GroupBox.Content = null;
+
 			GroupBox.Content = child.NativeWidget;
 		}
 
