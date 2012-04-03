@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,6 +37,11 @@ namespace Xwt.WPFBackend
 	public class ExListBox
 		: SWC.ListBox, IWpfWidget
 	{
+		public ExListBox()
+		{
+			SelectedIndexes = new ObservableCollection<int> ();
+		}
+
 		public WidgetBackend Backend {
 			get;
 			set;
@@ -48,14 +54,7 @@ namespace Xwt.WPFBackend
 
 		public ICollection<int> SelectedIndexes
 		{
-			get
-			{
-				if (SelectionMode == SWC.SelectionMode.Single)
-					throw new InvalidOperationException();
-
-				return (ICollection<int>) GetValue (SelectedIndexesProperty);
-			}
-
+			get { return (ICollection<int>) GetValue (SelectedIndexesProperty); }
 			set { SetValue (SelectedIndexesProperty, value); }
 		}
 
