@@ -31,7 +31,7 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public class TextLayout: XwtObject
+	public sealed class TextLayout: XwtObject
 	{
 		static ITextLayoutBackendHandler handler;
 		

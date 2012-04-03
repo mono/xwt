@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public class LinearGradient: Gradient
+	public sealed class LinearGradient: Gradient
 	{
 		public LinearGradient (double xStart, double yStart, double xEnd, double yEnd)
 		{

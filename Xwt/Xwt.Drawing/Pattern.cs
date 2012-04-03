@@ -30,6 +30,9 @@ namespace Xwt.Drawing
 {
 	public abstract class Pattern: XwtObject
 	{
+		internal Pattern ()
+		{
+		}
 	}
 }
 

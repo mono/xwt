@@ -30,7 +30,7 @@ using Xwt.Engine;
 
 namespace Xwt.Drawing
 {
-	public class Font: XwtObject
+	public sealed class Font: XwtObject
 	{
 		static IFontBackendHandler handler;
 		

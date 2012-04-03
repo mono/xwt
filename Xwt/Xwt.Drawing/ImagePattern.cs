@@ -29,7 +29,7 @@ using Xwt.Engine;
 
 namespace Xwt.Drawing
 {
-	public class ImagePattern: Pattern
+	public sealed class ImagePattern: Pattern
 	{
 		static IImagePatternBackendHandler handler;
 		
