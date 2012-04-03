@@ -102,6 +102,7 @@
     <Compile Include="Xwt.CairoBackend\CairoContextBackendHandler.cs" />
     <Compile Include="Xwt.GtkBackend\ContextBackendHandler.cs" />
     <Compile Include="Xwt.CairoBackend\CairoGradientBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\ListBoxBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
