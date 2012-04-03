@@ -406,7 +406,26 @@ namespace Xwt.WPFBackend
 
 		public void SetCursor (CursorType cursor)
 		{
-			// TODO
+			if (cursor == CursorType.Arrow)
+				Widget.Cursor = Cursors.Arrow;
+			else if (cursor == CursorType.Crosshair)
+				Widget.Cursor = Cursors.Cross;
+			else if (cursor == CursorType.Hand)
+				Widget.Cursor = Cursors.Hand;
+			else if (cursor == CursorType.IBeam)
+				Widget.Cursor = Cursors.IBeam;
+			else if (cursor == CursorType.ResizeDown)
+				Widget.Cursor = Cursors.ScrollS;
+			else if (cursor == CursorType.ResizeUp)
+				Widget.Cursor = Cursors.ScrollN;
+			else if (cursor == CursorType.ResizeUpDown)
+				Widget.Cursor = Cursors.SizeNS;
+			else if (cursor == CursorType.ResizeLeft)
+				Widget.Cursor = Cursors.ScrollW;
+			else if (cursor == CursorType.ResizeRight)
+				Widget.Cursor = Cursors.ScrollE;
+			else if (cursor == CursorType.ResizeLeftRight)
+				widget.Cursor = Cursors.SizeWE;
 		}
 		
 		public virtual void UpdateLayout ()
