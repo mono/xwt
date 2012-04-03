@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Hywel Thomas <hywel.w.thomas@gmail.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -92,7 +93,15 @@ namespace Xwt.Backends
 		void Scale (object backend, double scaleX, double scaleY);
 		
 		void Translate (object backend, double tx, double ty);
-		
+
+		void TransformPoint (object backend, ref double x, ref double y);
+
+		void TransformDistance (object backend, ref double dx, ref double dy);
+
+		void TransformPoints (object backend, Point[] points);
+
+		void TransformDistances (object backend, Distance[] vectors);
+
 		/// <summary>
 		/// Sets a global alpha to be applied to all drawing operations.
 		/// It doesn't affect colors that have already been set.
