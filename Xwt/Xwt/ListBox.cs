@@ -29,6 +29,9 @@ using System.ComponentModel;
 
 namespace Xwt
 {
+	/// <summary>
+	/// A list of selectable items
+	/// </summary>
 	public class ListBox: Widget
 	{
 		CellViewCollection views;
@@ -68,10 +71,19 @@ namespace Xwt
 			return new EventSink ();
 		}
 		
+		/// <summary>
+		/// Views to be used to display the data of the items
+		/// </summary>
 		public CellViewCollection Views {
 			get { return views; }
 		}
-		
+
+		/// <summary>
+		/// Items shown in the list
+		/// </summary>
+		/// <remarks>
+		/// The Items collection can only be used when no custom DataSource is set.
+		/// </remarks>
 		public ItemCollection Items {
 			get {
 				if (itemCollection == null) {
@@ -84,7 +96,16 @@ namespace Xwt
 				return itemCollection;
 			}
 		}
-		
+
+		/// <summary>
+		/// Gets or sets the data source from which to get the data of the items
+		/// </summary>
+		/// <value>
+		/// The data source.
+		/// </value>
+		/// <remarks>
+		/// Then a DataSource is set, the Items collection can't be used.
+		/// </remarks>
 		public IListDataSource DataSource {
 			get { return source; }
 			set {
@@ -107,16 +128,34 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Gets or sets the vertical scroll policy.
+		/// </summary>
+		/// <value>
+		/// The vertical scroll policy.
+		/// </value>
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return Backend.VerticalScrollPolicy; }
 			set { Backend.VerticalScrollPolicy = value; }
 		}
 		
+		/// <summary>
+		/// Gets or sets the horizontal scroll policy.
+		/// </summary>
+		/// <value>
+		/// The horizontal scroll policy.
+		/// </value>
 		public ScrollPolicy HorizontalScrollPolicy {
 			get { return Backend.HorizontalScrollPolicy; }
 			set { Backend.HorizontalScrollPolicy = value; }
 		}
 		
+		/// <summary>
+		/// Gets or sets the selection mode.
+		/// </summary>
+		/// <value>
+		/// The selection mode.
+		/// </value>
 		public SelectionMode SelectionMode {
 			get {
 				return mode;
@@ -127,6 +166,12 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Gets the selected row.
+		/// </summary>
+		/// <value>
+		/// The selected row.
+		/// </value>
 		public int SelectedRow {
 			get {
 				var items = SelectedRows;
@@ -137,6 +182,12 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Gets the selected rows.
+		/// </summary>
+		/// <value>
+		/// The selected rows.
+		/// </value>
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public int[] SelectedRows {
 			get {
@@ -144,21 +195,43 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Selects a row.
+		/// </summary>
+		/// <param name='row'>
+		/// a row.
+		/// </param>
+		/// <remarks>
+		/// In single selection mode, the row will be selected and the previously selected row will be deselected.
+		/// In multiple selection mode, the row will be added to the set of selected rows.
+		/// </remarks>
 		public void SelectRow (int row)
 		{
 			Backend.SelectRow (row);
 		}
 		
+		/// <summary>
+		/// Unselects a row.
+		/// </summary>
+		/// <param name='row'>
+		/// A row
+		/// </param>
 		public void UnselectRow (int row)
 		{
 			Backend.UnselectRow (row);
 		}
 		
+		/// <summary>
+		/// Selects all rows
+		/// </summary>
 		public void SelectAll ()
 		{
 			Backend.SelectAll ();
 		}
 		
+		/// <summary>
+		/// Clears the selection
+		/// </summary>
 		public void UnselectAll ()
 		{
 			Backend.UnselectAll ();
@@ -176,6 +249,9 @@ namespace Xwt
 		
 		EventHandler selectionChanged;
 		
+		/// <summary>
+		/// Occurs when selection changes
+		/// </summary>
 		public event EventHandler SelectionChanged {
 			add {
 				OnBeforeEventAdd (ComboBoxEvent.SelectionChanged, selectionChanged);
@@ -187,6 +263,12 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raises the selection changed event.
+		/// </summary>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
 		protected virtual void OnSelectionChanged (EventArgs args)
 		{
 			if (selectionChanged != null)
