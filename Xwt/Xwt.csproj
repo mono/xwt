@@ -285,6 +285,8 @@
     <Compile Include="Xwt.Backends\ISelectColorDialogBackend.cs" />
     <Compile Include="Xwt\IScrollableWidget.cs" />
     <Compile Include="Xwt.Backends\IScrollableWidgetBackend.cs" />
+    <Compile Include="Xwt\ListBox.cs" />
+    <Compile Include="Xwt.Backends\IListBoxBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
