@@ -47,7 +47,7 @@ namespace Xwt
 			entry = new CustomComboTextEntry (Backend.TextEntryBackend);
 		}
 		
-		protected override Widget.WidgetBackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}

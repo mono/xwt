@@ -93,16 +93,9 @@ namespace Xwt.Backends
 	
 	class NativeWindowFrame: WindowFrame
 	{
-		IWindowFrameBackend backend;
-		
 		public NativeWindowFrame (IWindowFrameBackend backend)
 		{
-			this.backend = backend;
-		}
-		
-		protected override WindowBackendHost CreateBackendHost ()
-		{
-			return new WindowBackendHost (backend);
+			BackendHost.SetCustomBackend (backend);
 		}
 	}
 	

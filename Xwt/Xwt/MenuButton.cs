@@ -65,7 +65,7 @@ namespace Xwt
 			Image = img;
 		}
 		
-		protected override Widget.WidgetBackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}

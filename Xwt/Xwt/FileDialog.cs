@@ -41,11 +41,12 @@ namespace Xwt
 		string fileName;
 		string[] fileNames = new string[0];
 		
-		BackendHost<FileDialog> backendHost = new BackendHost<FileDialog> ();
+		BackendHost<FileDialog,IFileDialogBackend> backendHost;
 		
 		internal FileDialog ()
 		{
 			filters = new FileDialogFilterCollection (AddRemoveItem);
+			backendHost = new BackendHost<FileDialog,IFileDialogBackend> ();
 			backendHost.Parent = this;
 		}
 
@@ -55,7 +56,7 @@ namespace Xwt
 		}
 
 		IFileDialogBackend Backend {
-			get { return (IFileDialogBackend) backendHost.Backend; }
+			get { return backendHost.Backend; }
 		}
 		
 		void AddRemoveItem (FileDialogFilter filter, bool added)

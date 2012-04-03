@@ -84,7 +84,7 @@ namespace Xwt
 			DataSource = source;
 		}
 		
-		protected override Widget.WidgetBackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}

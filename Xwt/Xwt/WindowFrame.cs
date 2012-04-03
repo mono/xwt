@@ -56,30 +56,20 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	public class WindowFrame: Component
+	public class WindowFrame: XwtComponent
 	{
 		EventHandler boundsChanged;
 		Rectangle bounds;
-		WindowBackendHost backendHost;
 		bool pendingReallocation;
 		
-		protected class WindowBackendHost: BackendHost<WindowFrame>, IWindowFrameEventSink
+		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
 		{
-			public WindowBackendHost ()
-			{
-			}
-			
-			public WindowBackendHost (IBackend backend): base (backend)
-			{
-			}
-			
 			protected override void OnBackendCreated ()
 			{
 				base.OnBackendCreated ();
-				var b = (IWindowFrameBackend)Backend;
-				b.Initialize (this);
-				Parent.bounds = b.Bounds;
-				b.EnableEvent (WindowFrameEvent.BoundsChanged);
+				Backend.Initialize (this);
+				Parent.bounds = Backend.Bounds;
+				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
 			}
 			
 			public void OnBoundsChanged (Rectangle bounds)
@@ -90,8 +80,8 @@ namespace Xwt
 		
 		public WindowFrame ()
 		{
-			backendHost = CreateBackendHost ();
-			backendHost.Parent = this;
+			if (!(base.BackendHost is WindowBackendHost))
+				throw new InvalidOperationException ("CreateBackendHost for WindowFrame did not return a WindowBackendHost instance");
 		}
 		
 		public WindowFrame (string title): this ()
@@ -113,13 +103,13 @@ namespace Xwt
 			get { return (IWindowFrameBackend) BackendHost.Backend; } 
 		}
 		
-		protected virtual WindowBackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new WindowBackendHost ();
 		}
 		
-		protected WindowBackendHost BackendHost {
-			get { return backendHost; }
+		protected new WindowBackendHost BackendHost {
+			get { return (WindowBackendHost) base.BackendHost; }
 		}
 		
 		public Rectangle ScreenBounds {

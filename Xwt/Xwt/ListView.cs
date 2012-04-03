@@ -71,7 +71,7 @@ namespace Xwt
 			VerticalScrollPolicy = HorizontalScrollPolicy = ScrollPolicy.Automatic;
 		}
 		
-		protected override Widget.WidgetBackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}

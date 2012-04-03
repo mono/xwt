@@ -74,7 +74,7 @@ namespace Xwt
 			tabs = new ChildrenCollection <NotebookTab> ((WidgetBackendHost) BackendHost);
 		}
 		
-		protected override Widget.WidgetBackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}

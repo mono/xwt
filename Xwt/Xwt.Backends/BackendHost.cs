@@ -29,19 +29,19 @@ using Xwt.Engine;
 
 namespace Xwt.Backends
 {
-	public class BackendHost<T>: BackendHost
+	public class BackendHost<T,B>: BackendHost where B:IBackend
 	{
 		public BackendHost ()
-		{
-		}
-		
-		protected BackendHost (IBackend backend): base (backend)
 		{
 		}
 		
 		public new T Parent {
 			get { return (T)base.Parent; }
 			set { base.Parent = value; }
+		}
+		
+		public new B Backend {
+			get { return (B)base.Backend; }
 		}
 	}
 	
@@ -56,7 +56,7 @@ namespace Xwt.Backends
 		{
 		}
 		
-		protected BackendHost (IBackend backend)
+		public void SetCustomBackend (IBackend backend)
 		{
 			this.backend = backend;
 			usingCustomBackend = true;
@@ -113,11 +113,6 @@ namespace Xwt.Backends
 				backend.InitializeBackend (Parent);
 				OnBackendCreated ();
 			}
-		}
-		
-		protected static void MapEvent (object eventId, Type type, string methodName)
-		{
-			EventUtil.MapEvent (eventId, type, methodName);
 		}
 		
 		public void OnBeforeEventAdd (object eventId, Delegate eventDelegate)

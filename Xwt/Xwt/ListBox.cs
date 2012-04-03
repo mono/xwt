@@ -67,7 +67,7 @@ namespace Xwt
 			views = new CellViewCollection ((ICellContainer)BackendHost);
 		}
 		
-		protected override Widget.WidgetBackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}

@@ -35,15 +35,12 @@ namespace Xwt
 	{
 		DataField[] fields;
 		
-		class ListStoreBackendHost: BackendHost<ListStore>
+		class ListStoreBackendHost: BackendHost<ListStore,IListStoreBackend>
 		{
-			protected override IBackend OnCreateBackend ()
+			protected override void OnBackendCreated ()
 			{
-				IBackend b = base.OnCreateBackend ();
-				if (b == null)
-					b = new DefaultListStoreBackend ();
-				((IListStoreBackend)b).Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
-				return b;
+				Backend.Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
+				base.OnBackendCreated ();
 			}
 		}
 		

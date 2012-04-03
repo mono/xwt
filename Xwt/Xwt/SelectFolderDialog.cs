@@ -46,8 +46,8 @@ namespace Xwt
 			this.title = title;
 		}
 
-		new ISelectFolderDialogBackend Backend {
-			get { return (ISelectFolderDialogBackend) base.Backend; }
+		ISelectFolderDialogBackend Backend {
+			get { return (ISelectFolderDialogBackend) BackendHost.Backend; }
 		}
 		
 		public string Title {

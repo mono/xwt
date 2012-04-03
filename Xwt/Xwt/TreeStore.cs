@@ -37,15 +37,12 @@ namespace Xwt
 	{
 		DataField[] fields;
 		
-		class TreeStoreBackendHost: BackendHost<TreeStore>
+		class TreeStoreBackendHost: BackendHost<TreeStore,ITreeStoreBackend>
 		{
-			protected override IBackend OnCreateBackend ()
+			protected override void OnBackendCreated ()
 			{
-				IBackend b = base.OnCreateBackend ();
-				if (b == null)
-					b = new DefaultTreeStoreBackend ();
-				((ITreeStoreBackend)b).Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
-				return b;
+				Backend.Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
+				base.OnBackendCreated ();
 			}
 		}
 		

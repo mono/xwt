@@ -69,7 +69,7 @@ namespace Xwt
 			}
 		}
 		
-		protected override WindowFrame.WindowBackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new WindowBackendHost ();
 		}

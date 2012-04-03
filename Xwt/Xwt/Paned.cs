@@ -85,7 +85,7 @@ namespace Xwt
 			panel2 = new Panel ((WidgetBackendHost)BackendHost, 2);
 		}
 		
-		protected override Widget.WidgetBackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}

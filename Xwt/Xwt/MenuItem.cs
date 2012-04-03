@@ -38,12 +38,12 @@ namespace Xwt
 		EventHandler clicked;
 		Image image;
 		
-		protected class MenuItemBackendHost: BackendHost<MenuItem>, IMenuItemEventSink
+		protected class MenuItemBackendHost: BackendHost<MenuItem,IMenuItemBackend>, IMenuItemEventSink
 		{
 			protected override void OnBackendCreated ()
 			{
 				base.OnBackendCreated ();
-				((IMenuItemBackend)Backend).Initialize (this);
+				Backend.Initialize (this);
 			}
 			
 			public void OnClicked ()

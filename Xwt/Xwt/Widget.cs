@@ -36,7 +36,7 @@ using System.Linq;
 
 namespace Xwt
 {
-	public abstract class Widget: Component, IWidgetSurface, IFrontend
+	public abstract class Widget: XwtComponent, IWidgetSurface
 	{
 		static Widget[] emptyList = new Widget[0];
 		List<Widget> children;
@@ -45,7 +45,6 @@ namespace Xwt
 		WidgetSize height;
 		bool widthCached;
 		bool heightCached;
-		WidgetBackendHost backendHost;
 		DragOperation currentDragOperation;
 		Widget contentWidget;
 		WindowFrame parentWindow;
@@ -82,16 +81,12 @@ namespace Xwt
 			}
 		}
 		
-		protected class WidgetBackendHost: BackendHost<Widget>, IWidgetEventSink, ISpacingListener
+		protected class WidgetBackendHost: BackendHost<Widget, IWidgetBackend>, IWidgetEventSink, ISpacingListener
 		{
 			public WidgetBackendHost ()
 			{
 			}
 			
-			public WidgetBackendHost (IBackend backend): base (backend)
-			{
-			}
-		
 			protected override IBackend OnCreateBackend ()
 			{
 				var backend = base.OnCreateBackend ();
@@ -263,9 +258,9 @@ namespace Xwt
 		
 		public Widget ()
 		{
-			backendHost = CreateBackendHost ();
-			backendHost.Parent = this;
-			margin = new Xwt.WidgetSpacing (backendHost);
+			if (!(base.BackendHost is WidgetBackendHost))
+				throw new InvalidOperationException ("CreateBackendHost for Widget did not return a WidgetBackendHost instance");
+			margin = new Xwt.WidgetSpacing (BackendHost);
 		}
 		
 		static Widget ()
@@ -292,14 +287,18 @@ namespace Xwt
 			MapEvent (WidgetEvent.PreferredWidthForHeightCheck, typeof (Widget), "OnGetPreferredWidthForHeight");
 		}
 		
-		protected static void MapEvent (object eventId, Type type, string methodName)
-		{
-			EventUtil.MapEvent (eventId, type, methodName);
-		}
-		
 		internal protected static IBackend GetBackend (Widget w)
 		{
 			return w != null ? w.Backend : null;
+		}
+		
+		protected new WidgetBackendHost BackendHost {
+			get { return (WidgetBackendHost) base.BackendHost; }
+		}
+		
+		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		{
+			return new WidgetBackendHost ();
 		}
 		
 		protected override void Dispose (bool disposing)
@@ -330,21 +329,17 @@ namespace Xwt
 			parentWindow = win;
 		}
 		
-		protected virtual WidgetBackendHost CreateBackendHost ()
+/*		protected virtual WidgetBackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}
 		
 		protected WidgetBackendHost BackendHost {
 			get { return backendHost; }
-		}
+		}*/
 		
 		IWidgetBackend Backend {
-			get { return (IWidgetBackend) backendHost.Backend; }
-		}
-		
-		object IFrontend.Backend {
-			get { return Backend; }
+			get { return (IWidgetBackend) BackendHost.Backend; }
 		}
 		
 		public WidgetSpacing Margin {
