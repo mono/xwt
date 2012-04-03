@@ -40,7 +40,6 @@ namespace Xwt.WPFBackend
 		public NotebookBackend ()
 		{
 			TabControl = new WpfNotebook ();
-			TabControl.SelectionChanged += OnTabSelectionChanged;
 		}
 
 		public int CurrentTab {
@@ -50,12 +49,18 @@ namespace Xwt.WPFBackend
 
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
-			this.widgets.Add (widget);
-
 			UIElement element = (UIElement)widget.NativeWidget;
-			TabItem ti = new TabItem  { Header = tab.Label };
+			TabItem ti = new TabItem {
+				Content = element,
+				Header = tab.Label,
+			};
 
-			ti.Content = element;
+			FrameworkElement felement = element as FrameworkElement;
+			if (felement != null) {
+				felement.Tag = widget;
+				felement.Loaded += OnContentLoaded;
+			}
+
 			TabControl.Items.Add (ti);
 			
 			if (TabControl.SelectedIndex == -1)
@@ -64,8 +69,6 @@ namespace Xwt.WPFBackend
 
 		public void Remove (IWidgetBackend widget)
 		{
-			this.widgets.Remove (widget);
-
 			UIElement element = widget.NativeWidget as UIElement;
 			if (element == null)
 				throw new ArgumentException ();
@@ -88,16 +91,15 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		private readonly List<IWidgetBackend> widgets = new List<IWidgetBackend> ();
-
 		protected TabControl TabControl {
 			get { return (TabControl)Widget; }
 			set { Widget = value; }
 		}
 
-		private void OnTabSelectionChanged (object sender, SelectionChangedEventArgs e)
+		private void OnContentLoaded (object sender, RoutedEventArgs routedEventArgs)
 		{
-			var backend = (WidgetBackend)this.widgets [TabControl.SelectedIndex];
+			WidgetBackend backend = (WidgetBackend)((FrameworkElement) sender).Tag;
+
 			var surface = backend.Frontend as IWidgetSurface;
 			if (surface == null)
 				return;
