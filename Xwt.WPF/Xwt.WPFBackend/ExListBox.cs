@@ -49,7 +49,7 @@ namespace Xwt.WPFBackend
 
 		public static readonly DependencyProperty SelectedIndexesProperty = DependencyProperty.Register (
 			"SelectedIndexes",
-			typeof (ICollection<int>), typeof (ExListView),
+			typeof (ICollection<int>), typeof (ExListBox),
 			new UIPropertyMetadata (OnSelectedIndexesPropertyChanged));
 
 		public ICollection<int> SelectedIndexes
