@@ -74,14 +74,7 @@ namespace Xwt.WPFBackend
 
 		public ICollection<int> SelectedIndexes
 		{
-			get
-			{
-				if (SelectionMode == SWC.SelectionMode.Single)
-					throw new InvalidOperationException();
-
-				return (ICollection<int>) GetValue (SelectedIndexesProperty);
-			}
-
+			get { return (ICollection<int>) GetValue (SelectedIndexesProperty); }
 			set { SetValue (SelectedIndexesProperty, value); }
 		}
 
@@ -114,9 +107,6 @@ namespace Xwt.WPFBackend
 			var oldNotifying = e.OldValue as INotifyCollectionChanged;
 			if (oldNotifying != null)
 				oldNotifying.CollectionChanged -= SelectedIndexesChanged;
-
-			if (SelectionMode == SWC.SelectionMode.Single)
-				throw new InvalidOperationException();
 
 			var newNotifying = e.NewValue as INotifyCollectionChanged;
 			if (newNotifying != null)

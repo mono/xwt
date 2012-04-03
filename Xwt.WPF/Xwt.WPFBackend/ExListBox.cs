@@ -88,9 +88,6 @@ namespace Xwt.WPFBackend
 			if (oldNotifying != null)
 				oldNotifying.CollectionChanged -= SelectedIndexesChanged;
 
-			if (SelectionMode == SWC.SelectionMode.Single)
-				throw new InvalidOperationException();
-
 			var newNotifying = e.NewValue as INotifyCollectionChanged;
 			if (newNotifying != null)
 				newNotifying.CollectionChanged += SelectedIndexesChanged;
