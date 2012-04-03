@@ -182,6 +182,23 @@ namespace Xwt
 			}
 		}
 		
+		public object SelectedItem {
+			get {
+				if (SelectedRow == -1)
+					return null;
+				return Items [SelectedRow];
+			}
+			set {
+				if (SelectionMode == Xwt.SelectionMode.Multiple)
+					UnselectAll ();
+				var i = Items.IndexOf (value);
+				if (i != -1)
+					SelectRow (i);
+				else
+					UnselectAll ();
+			}
+		}
+		
 		/// <summary>
 		/// Gets the selected rows.
 		/// </summary>
@@ -254,12 +271,12 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler SelectionChanged {
 			add {
-				OnBeforeEventAdd (ComboBoxEvent.SelectionChanged, selectionChanged);
+				OnBeforeEventAdd (ListBoxEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
 			remove {
 				selectionChanged -= value;
-				OnAfterEventRemove (ComboBoxEvent.SelectionChanged, selectionChanged);
+				OnAfterEventRemove (ListBoxEvent.SelectionChanged, selectionChanged);
 			}
 		}
 		

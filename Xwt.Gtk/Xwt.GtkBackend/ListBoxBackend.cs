@@ -37,6 +37,10 @@ namespace Xwt.GtkBackend
 		{
 		}
 		
+		protected new IListBoxEventSink EventSink {
+			get { return (IListBoxEventSink)((WidgetBackend)this).EventSink; }
+		}
+		
 		public override void Initialize ()
 		{
 			base.Initialize ();
