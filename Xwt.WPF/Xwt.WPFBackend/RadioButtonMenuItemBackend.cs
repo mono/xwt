@@ -31,5 +31,9 @@ namespace Xwt.WPFBackend
 	public class RadioButtonMenuItemBackend
 		: MenuItemBackend, IRadioButtonMenuItemBackend
 	{
+		public RadioButtonMenuItemBackend()
+		{
+			MenuItem.IsCheckable = true;
+		}
 	}
 }

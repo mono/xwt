@@ -31,5 +31,9 @@ namespace Xwt.WPFBackend
 	public class CheckboxMenuItemBackend
 		: MenuItemBackend, ICheckBoxMenuItemBackend
 	{
+		public CheckboxMenuItemBackend()
+		{
+			MenuItem.IsCheckable = true;
+		}
 	}
 }
