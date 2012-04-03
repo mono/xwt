@@ -87,6 +87,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (ImageBuilder), typeof (ImageBuilderBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (ImagePattern), typeof (ImagePatternBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (ListView), typeof (ListViewBackend));
+			WidgetRegistry.RegisterBackend (typeof (ListStore), typeof (ListDataSource));
 		}
 
 		public override void RunApplication ()

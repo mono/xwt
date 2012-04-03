@@ -85,6 +85,7 @@
     <Compile Include="Xwt.WPFBackend\DataConverter.cs" />
     <Compile Include="Xwt.WPFBackend\FontBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\KeyboardUtil.cs" />
+    <Compile Include="Xwt.WPFBackend\ListDataSource.cs" />
     <Compile Include="Xwt.WPFBackend\ListSourceNotifyWrapper.cs" />
     <Compile Include="Xwt.WPFBackend\ListViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\MenuBackend.cs" />
