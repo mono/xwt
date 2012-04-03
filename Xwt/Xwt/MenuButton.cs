@@ -35,7 +35,7 @@ namespace Xwt
 		Menu menu;
 		Func<Menu> creator;
 		
-		protected new class EventSink: Button.EventSink, IMenuButtonEventSink
+		protected new class WidgetBackendHost: Button.WidgetBackendHost, IMenuButtonEventSink
 		{
 			public IMenuBackend OnCreateMenu ()
 			{
@@ -65,13 +65,13 @@ namespace Xwt
 			Image = img;
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new IMenuButtonBackend Backend {
-			get { return (IMenuButtonBackend) base.Backend; }
+		IMenuButtonBackend Backend {
+			get { return (IMenuButtonBackend) BackendHost.Backend; }
 		}
 		
 		public Menu Menu {

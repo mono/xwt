@@ -38,10 +38,10 @@ namespace Xwt
 		
 		public Dialog ()
 		{
-			commands = new DialogButtonCollection ((EventSink)WindowEventSink);
+			commands = new DialogButtonCollection ((WindowBackendHost)BackendHost);
 		}
 		
-		protected new class EventSink: Window.EventSink, ICollectionListener, IDialogEventSink
+		protected new class WindowBackendHost: Window.WindowBackendHost, ICollectionListener, IDialogEventSink
 		{
 			new Dialog Parent { get { return (Dialog) base.Parent; } }
 			
@@ -69,13 +69,13 @@ namespace Xwt
 			}
 		}
 		
-		protected override WindowFrame.EventSink CreateEventSink ()
+		protected override WindowFrame.WindowBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WindowBackendHost ();
 		}
 		
-		new IDialogBackend Backend {
-			get { return (IDialogBackend) base.Backend; } 
+		IDialogBackend Backend {
+			get { return (IDialogBackend) BackendHost.Backend; } 
 		}
 		
 		public DialogButtonCollection Buttons {

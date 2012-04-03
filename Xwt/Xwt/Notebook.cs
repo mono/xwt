@@ -35,7 +35,7 @@ namespace Xwt
 		ChildrenCollection<NotebookTab> tabs;
 		EventHandler currentTabChanged;
 		
-		protected new class EventSink: Widget.EventSink, INotebookEventSink, ICollectionEventSink<NotebookTab>, IContainerEventSink<NotebookTab>
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, INotebookEventSink, ICollectionEventSink<NotebookTab>, IContainerEventSink<NotebookTab>
 		{
 			public void AddedItem (NotebookTab item, int index)
 			{
@@ -71,21 +71,21 @@ namespace Xwt
 		
 		public Notebook ()
 		{
-			tabs = new ChildrenCollection <NotebookTab> ((EventSink) WidgetEventSink);
+			tabs = new ChildrenCollection <NotebookTab> ((WidgetBackendHost) BackendHost);
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new INotebookBackend Backend {
-			get { return (INotebookBackend) base.Backend; }
+		INotebookBackend Backend {
+			get { return (INotebookBackend) BackendHost.Backend; }
 		}
 		
 		public void Add (Widget w, string label)
 		{
-			NotebookTab t = new NotebookTab ((EventSink)WidgetEventSink, w);
+			NotebookTab t = new NotebookTab ((WidgetBackendHost)BackendHost, w);
 			t.Label = label;
 			tabs.Add (t);
 		}
@@ -143,12 +143,12 @@ namespace Xwt
 		
 		public event EventHandler CurrentTabChanged {
 			add {
-				OnBeforeEventAdd (NotebookEvent.CurrentTabChanged, currentTabChanged);
+				BackendHost.OnBeforeEventAdd (NotebookEvent.CurrentTabChanged, currentTabChanged);
 				currentTabChanged += value;
 			}
 			remove {
 				currentTabChanged -= value;
-				OnAfterEventRemove (NotebookEvent.CurrentTabChanged, currentTabChanged);
+				BackendHost.OnAfterEventRemove (NotebookEvent.CurrentTabChanged, currentTabChanged);
 			}
 		}
 	}

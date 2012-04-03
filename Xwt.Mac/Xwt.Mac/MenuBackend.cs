@@ -33,7 +33,7 @@ namespace Xwt.Mac
 {
 	public class MenuBackend: NSMenu, IMenuBackend
 	{
-		public void Initialize (object frontend)
+		public void InitializeBackend (object frontend)
 		{
 		}
 

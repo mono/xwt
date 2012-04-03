@@ -42,7 +42,7 @@ namespace Xwt
 		Dictionary<int,double> rowSpacing;
 		Dictionary<int,double> colSpacing;
 		
-		protected new class EventSink: Widget.EventSink, ICollectionEventSink<TablePlacement>, IContainerEventSink<TablePlacement>
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICollectionEventSink<TablePlacement>, IContainerEventSink<TablePlacement>
 		{
 			public void AddedItem (TablePlacement item, int index)
 			{
@@ -65,18 +65,18 @@ namespace Xwt
 			}
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new IBoxBackend Backend {
-			get { return (IBoxBackend) base.Backend; }
+		IBoxBackend Backend {
+			get { return (IBoxBackend) BackendHost.Backend; }
 		}
 		
 		public Table ()
 		{
-			children = new ChildrenCollection<TablePlacement> ((EventSink)WidgetEventSink);
+			children = new ChildrenCollection<TablePlacement> ((WidgetBackendHost)BackendHost);
 		}
 		
 		[DefaultValue(6)]
@@ -132,7 +132,7 @@ namespace Xwt
 		
 		public void Attach (Widget widget, int left, int right, int top, int bottom, AttachOptions xOptions, AttachOptions yOptions)
 		{
-			var p = new TablePlacement ((EventSink)WidgetEventSink, widget) {
+			var p = new TablePlacement ((WidgetBackendHost)BackendHost, widget) {
 				Left = left,
 				Right = right,
 				Top = top,

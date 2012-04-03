@@ -32,15 +32,23 @@ namespace Xwt
 	{
 		internal abstract Orientation Orientation { get; }
 		
-		internal Separator ()
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost<Separator,ISeparatorBackend>
 		{
+			protected override IBackend OnCreateBackend ()
+			{
+				ISeparatorBackend b = (ISeparatorBackend) base.OnCreateBackend ();
+				b.Initialize (Parent.Orientation);
+				return b;
+			}
 		}
 		
-		protected override IBackend OnCreateBackend ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			ISeparatorBackend b = (ISeparatorBackend) base.OnCreateBackend ();
-			b.Initialize (Orientation);
-			return b;
+			return new WidgetBackendHost ();
+		}
+		
+		internal Separator ()
+		{
 		}
 	}
 }

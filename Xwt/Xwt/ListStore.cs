@@ -35,6 +35,23 @@ namespace Xwt
 	{
 		DataField[] fields;
 		
+		class ListStoreBackendHost: BackendHost<ListStore>
+		{
+			protected override IBackend OnCreateBackend ()
+			{
+				IBackend b = base.OnCreateBackend ();
+				if (b == null)
+					b = new DefaultListStoreBackend ();
+				((IListStoreBackend)b).Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
+				return b;
+			}
+		}
+		
+		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		{
+			return new ListStoreBackendHost ();
+		}
+		
 		public ListStore (params DataField[] fields)
 		{
 			for (int n=0; n<fields.Length; n++) {
@@ -45,18 +62,8 @@ namespace Xwt
 			this.fields = fields;
 		}
 		
-		new IListStoreBackend Backend {
-			get { return (IListStoreBackend) base.Backend; }
-		}
-		
-		protected override IBackend OnCreateBackend ()
-		{
-			IBackend b = base.OnCreateBackend ();
-			if (b == null)
-				b = new DefaultListStoreBackend ();
-			((IListStoreBackend)b).Initialize (fields.Select (f => f.FieldType).ToArray ());
-			return b;
-		
+		IListStoreBackend Backend {
+			get { return (IListStoreBackend) BackendHost.Backend; }
 		}
 		
 		public ListStore ()
@@ -143,7 +150,7 @@ namespace Xwt
 		public event EventHandler<ListRowEventArgs> RowChanged;
 		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
 
-		public void Initialize (object frontend)
+		public void InitializeBackend (object frontend)
 		{
 		}
 		

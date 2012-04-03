@@ -38,8 +38,8 @@ namespace Xwt
 			items = new MenuItemCollection (this);
 		}
 		
-		new IMenuBackend Backend {
-			get { return (IMenuBackend) base.Backend; }
+		IMenuBackend Backend {
+			get { return (IMenuBackend) BackendHost.Backend; }
 		}
 		
 		public MenuItemCollection Items {
@@ -48,12 +48,12 @@ namespace Xwt
 		
 		internal void InsertItem (int n, MenuItem item)
 		{
-			Backend.InsertItem (n, (IMenuItemBackend)GetBackend (item));
+			Backend.InsertItem (n, (IMenuItemBackend)WidgetRegistry.GetBackend (item));
 		}
 		
 		internal void RemoveItem (MenuItem item)
 		{
-			Backend.RemoveItem ((IMenuItemBackend)GetBackend (item));
+			Backend.RemoveItem ((IMenuItemBackend)WidgetRegistry.GetBackend (item));
 		}
 		
 		public void Popup ()
@@ -63,7 +63,7 @@ namespace Xwt
 		
 		public void Popup (Widget parentWidget, double x, double y)
 		{
-			Backend.Popup ((IWidgetBackend)GetBackend (parentWidget), x, y);
+			Backend.Popup ((IWidgetBackend)WidgetRegistry.GetBackend (parentWidget), x, y);
 		}
 		
 		/// <summary>

@@ -37,8 +37,26 @@ namespace Xwt
 		Panel panel2;
 		EventHandler positionChanged;
 		
-		protected new class EventSink: Widget.EventSink, IContainerEventSink<Panel>, IPanedEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost<Paned,IPanedBackend>, IContainerEventSink<Panel>, IPanedEventSink
 		{
+			protected override IBackend OnCreateBackend ()
+			{
+				IPanedBackend b = (IPanedBackend) base.OnCreateBackend ();
+				
+				// We always want to listen this event because we use it
+				// to reallocate the children
+				if (!Application.EngineBackend.HandlesSizeNegotiation)
+					b.EnableEvent (PanedEvent.PositionChanged);
+				
+				return b;
+			}
+		
+			protected override void OnBackendCreated ()
+			{
+				Backend.Initialize (Parent.direction);
+				base.OnBackendCreated ();
+			}
+				
 			public void ChildChanged (Panel child, string hint)
 			{
 				((Paned)Parent).OnChildChanged (child, hint);
@@ -63,29 +81,17 @@ namespace Xwt
 		internal Paned (Orientation direction)
 		{
 			this.direction = direction;
-			panel1 = new Panel ((EventSink)WidgetEventSink, 1);
-			panel2 = new Panel ((EventSink)WidgetEventSink, 2);
+			panel1 = new Panel ((WidgetBackendHost)BackendHost, 1);
+			panel2 = new Panel ((WidgetBackendHost)BackendHost, 2);
 		}
 		
-		protected override IBackend OnCreateBackend ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			IPanedBackend b = (IPanedBackend) base.OnCreateBackend ();
-			
-			// We always want to listen this event because we use it
-			// to reallocate the children
-			if (!Application.EngineBackend.HandlesSizeNegotiation)
-				b.EnableEvent (PanedEvent.PositionChanged);
-			
-			return b;
+			return new WidgetBackendHost ();
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
-		{
-			return new EventSink ();
-		}
-		
-		new IPanedBackend Backend {
-			get { return (IPanedBackend) base.Backend; }
+		IPanedBackend Backend {
+			get { return (IPanedBackend) BackendHost.Backend; }
 		}
 		
 		/// <summary>
@@ -124,12 +130,6 @@ namespace Xwt
 				return Backend.Position / ((direction == Orientation.Horizontal) ? ScreenBounds.Width : ScreenBounds.Height);
 			}
 			set { Backend.Position = ((direction == Orientation.Horizontal) ? ScreenBounds.Width : ScreenBounds.Height) * value; }
-		}
-		
-		protected override void OnBackendCreated ()
-		{
-			Backend.Initialize (direction);
-			base.OnBackendCreated ();
 		}
 
 		void OnReplaceChild (Panel panel, Widget oldChild, Widget newChild)
@@ -188,12 +188,12 @@ namespace Xwt
 		
 		public event EventHandler PositionChanged {
 			add {
-				OnBeforeEventAdd (PanedEvent.PositionChanged, positionChanged);
+				BackendHost.OnBeforeEventAdd (PanedEvent.PositionChanged, positionChanged);
 				positionChanged += value;
 			}
 			remove {
 				positionChanged -= value;
-				OnAfterEventRemove (PanedEvent.PositionChanged, positionChanged);
+				BackendHost.OnAfterEventRemove (PanedEvent.PositionChanged, positionChanged);
 			}
 		}
 	}

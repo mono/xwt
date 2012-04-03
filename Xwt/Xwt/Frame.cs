@@ -37,7 +37,7 @@ namespace Xwt
 		WidgetSpacing padding;
 		FrameType type;
 		
-		protected new class EventSink: Widget.EventSink, IFrameEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IFrameEventSink
 		{
 			public override void OnSpacingChanged (WidgetSpacing source)
 			{
@@ -55,19 +55,19 @@ namespace Xwt
 			}
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new IFrameBackend Backend {
-			get { return (IFrameBackend)base.Backend; }
+		IFrameBackend Backend {
+			get { return (IFrameBackend)BackendHost.Backend; }
 		}
 		
 		public Frame ()
 		{
-			borderWidth = new WidgetSpacing (this.WidgetEventSink);
-			padding = new WidgetSpacing (this.WidgetEventSink);
+			borderWidth = new WidgetSpacing (this.BackendHost);
+			padding = new WidgetSpacing (this.BackendHost);
 		}
 		
 		public Frame (FrameType frameType): this ()

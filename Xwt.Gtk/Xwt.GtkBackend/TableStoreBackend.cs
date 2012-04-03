@@ -27,6 +27,7 @@
 using System;
 using Xwt.Drawing;
 using Xwt.Engine;
+using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
@@ -57,7 +58,7 @@ namespace Xwt.GtkBackend
 		
 		public abstract Gtk.TreeModel InitializeModel (Type[] columnTypes);
 		
-		public void Initialize (object frontend)
+		public void InitializeBackend (object frontend)
 		{
 		}
 

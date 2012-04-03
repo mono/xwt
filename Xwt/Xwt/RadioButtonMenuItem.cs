@@ -47,8 +47,8 @@ namespace Xwt
 		{
 		}
 		
-		new IRadioButtonMenuItemBackend Backend {
-			get { return (IRadioButtonMenuItemBackend) base.Backend; }
+		IRadioButtonMenuItemBackend Backend {
+			get { return (IRadioButtonMenuItemBackend) BackendHost.Backend; }
 		}
 		
 		[DefaultValue (true)]

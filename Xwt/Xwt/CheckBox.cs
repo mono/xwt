@@ -36,7 +36,7 @@ namespace Xwt
 		EventHandler toggled;
 		string label = "";
 		
-		protected new class EventSink: Widget.EventSink, ICheckBoxEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICheckBoxEventSink
 		{
 			public void OnClicked ()
 			{
@@ -62,13 +62,13 @@ namespace Xwt
 			Label = label;
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new ICheckBoxBackend Backend {
-			get { return (ICheckBoxBackend) base.Backend; }
+		ICheckBoxBackend Backend {
+			get { return (ICheckBoxBackend) BackendHost.Backend; }
 		}
 		
 		[DefaultValue ("")]
@@ -126,23 +126,23 @@ namespace Xwt
 		
 		public event EventHandler Clicked {
 			add {
-				OnBeforeEventAdd (CheckBoxEvent.Clicked, clicked);
+				BackendHost.OnBeforeEventAdd (CheckBoxEvent.Clicked, clicked);
 				clicked += value;
 			}
 			remove {
 				clicked -= value;
-				OnAfterEventRemove (CheckBoxEvent.Clicked, clicked);
+				BackendHost.OnAfterEventRemove (CheckBoxEvent.Clicked, clicked);
 			}
 		}
 		
 		public event EventHandler Toggled {
 			add {
-				OnBeforeEventAdd (CheckBoxEvent.Toggled, toggled);
+				BackendHost.OnBeforeEventAdd (CheckBoxEvent.Toggled, toggled);
 				toggled += value;
 			}
 			remove {
 				toggled -= value;
-				OnAfterEventRemove (CheckBoxEvent.Toggled, toggled);
+				BackendHost.OnAfterEventRemove (CheckBoxEvent.Toggled, toggled);
 			}
 		}
 	}

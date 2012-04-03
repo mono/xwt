@@ -36,7 +36,7 @@ namespace Xwt
 		Menu mainMenu;
 		bool shown;
 		
-		protected new class EventSink: WindowFrame.EventSink, ISpacingListener
+		protected new class WindowBackendHost: WindowFrame.WindowBackendHost, ISpacingListener
 		{
 			public void OnSpacingChanged (WidgetSpacing source)
 			{
@@ -45,24 +45,24 @@ namespace Xwt
 			}
 		}
 		
-		protected override WindowFrame.EventSink CreateEventSink ()
+		protected override WindowFrame.WindowBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WindowBackendHost ();
 		}
 		
 		public Window ()
 		{
-			padding = new WidgetSpacing ((EventSink)WindowEventSink);
+			padding = new WidgetSpacing ((WindowBackendHost)BackendHost);
 			padding.SetAll (6);
 		}
 		
 		public Window (string title): base (title)
 		{
-			padding = new WidgetSpacing ((EventSink)WindowEventSink);
+			padding = new WidgetSpacing ((WindowBackendHost)BackendHost);
 		}
 		
-		new IWindowBackend Backend {
-			get { return (IWindowBackend) base.Backend; } 
+		IWindowBackend Backend {
+			get { return (IWindowBackend) BackendHost.Backend; } 
 		}
 		
 		public WidgetSpacing Padding {
@@ -75,7 +75,7 @@ namespace Xwt
 			}
 			set {
 				mainMenu = value;
-				Backend.SetMainMenu ((IMenuBackend)GetBackend (mainMenu));
+				Backend.SetMainMenu ((IMenuBackend)WidgetRegistry.GetBackend (mainMenu));
 			}
 		}
 		
@@ -88,7 +88,7 @@ namespace Xwt
 					child.SetParentWindow (null);
 				this.child = value;
 				child.SetParentWindow (this);
-				Backend.SetChild ((IWidgetBackend)GetBackend (child));
+				Backend.SetChild ((IWidgetBackend)WidgetRegistry.GetBackend (child));
 				Widget.QueueWindowSizeNegotiation (this);
 			}
 		}

@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using System.ComponentModel;
+using Xwt.Engine;
 
 namespace Xwt
 {
@@ -39,7 +40,7 @@ namespace Xwt
 		ItemCollection itemCollection;
 		SelectionMode mode;
 		
-		protected new class EventSink: Widget.EventSink, IListBoxEventSink, ICellContainer
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IListBoxEventSink, ICellContainer
 		{
 			public void NotifyCellChanged ()
 			{
@@ -53,22 +54,22 @@ namespace Xwt
 			
 			public override Size GetDefaultNaturalSize ()
 			{
-				return Xwt.Engine.DefaultNaturalSizes.ComboBox;
+				return Xwt.Backends.DefaultNaturalSizes.ComboBox;
 			}
 		}
 		
-		new IListBoxBackend Backend {
-			get { return (IListBoxBackend) base.Backend; }
+		IListBoxBackend Backend {
+			get { return (IListBoxBackend) BackendHost.Backend; }
 		}
 		
 		public ListBox ()
 		{
-			views = new CellViewCollection ((ICellContainer)WidgetEventSink);
+			views = new CellViewCollection ((ICellContainer)BackendHost);
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
 		/// <summary>
@@ -117,7 +118,7 @@ namespace Xwt
 				}
 				
 				source = value;
-				Backend.SetSource (source, source is XwtComponent ? GetBackend ((XwtComponent)source) : null);
+				Backend.SetSource (source, source is IFrontend ? (IBackend) WidgetRegistry.GetBackend (source) : null);
 				
 				if (source != null) {
 					source.RowChanged += HandleModelChanged;
@@ -254,12 +255,12 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler SelectionChanged {
 			add {
-				OnBeforeEventAdd (ComboBoxEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnBeforeEventAdd (ComboBoxEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
 			remove {
 				selectionChanged -= value;
-				OnAfterEventRemove (ComboBoxEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnAfterEventRemove (ComboBoxEvent.SelectionChanged, selectionChanged);
 			}
 		}
 		

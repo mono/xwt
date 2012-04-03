@@ -31,8 +31,8 @@ namespace Xwt
 {
 	public class Label: Widget
 	{
-		new ILabelBackend Backend {
-			get { return (ILabelBackend) base.Backend; }
+		ILabelBackend Backend {
+			get { return (ILabelBackend) BackendHost.Backend; }
 		}
 		
 		public Label ()

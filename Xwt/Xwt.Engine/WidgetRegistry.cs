@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using Xwt.Backends;
 using Xwt.Drawing;
 
-namespace Xwt.Engine
+namespace Xwt.Backends
 {
 	public static class WidgetRegistry
 	{
@@ -62,10 +62,8 @@ namespace Xwt.Engine
 		
 		public static object GetBackend (object obj)
 		{
-			if (obj is XwtComponent)
-				return XwtComponent.GetBackend ((XwtComponent)obj);
-			else if (obj is XwtObject)
-				return XwtObject.GetBackend ((XwtObject)obj);
+			if (obj is IFrontend)
+				return ((IFrontend)obj).Backend;
 			else if (obj == null)
 				return null;
 			else
@@ -102,9 +100,9 @@ namespace Xwt.Engine
 			this.backend = backend;
 		}
 		
-		protected override IBackend OnCreateBackend ()
+		protected override WindowBackendHost CreateBackendHost ()
 		{
-			return backend;
+			return new WindowBackendHost (backend);
 		}
 	}
 	

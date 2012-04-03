@@ -40,7 +40,7 @@ namespace Xwt
 		Orientation direction;
 		double spacing = 6;
 		
-		protected new class EventSink: Widget.EventSink, ICollectionEventSink<BoxPlacement>, IContainerEventSink<BoxPlacement>
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICollectionEventSink<BoxPlacement>, IContainerEventSink<BoxPlacement>
 		{
 			public void AddedItem (BoxPlacement item, int index)
 			{
@@ -63,18 +63,18 @@ namespace Xwt
 			}
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new IBoxBackend Backend {
-			get { return (IBoxBackend) base.Backend; }
+		IBoxBackend Backend {
+			get { return (IBoxBackend) BackendHost.Backend; }
 		}
 		
 		internal Box (Orientation dir)
 		{
-			children = new ChildrenCollection<BoxPlacement> ((EventSink)WidgetEventSink);
+			children = new ChildrenCollection<BoxPlacement> ((WidgetBackendHost)BackendHost);
 			direction = dir;
 		}
 		
@@ -123,7 +123,7 @@ namespace Xwt
 		
 		void Pack (Widget widget, BoxMode mode, int padding, PackOrigin ptype)
 		{
-			var p = new BoxPlacement ((EventSink)WidgetEventSink, widget);
+			var p = new BoxPlacement ((WidgetBackendHost)BackendHost, widget);
 			p.BoxMode = mode;
 			p.Padding = padding;
 			p.PackOrigin = ptype;

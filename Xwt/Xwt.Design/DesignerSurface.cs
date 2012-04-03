@@ -40,8 +40,8 @@ namespace Xwt.Design
 		{
 		}
 		
-		new IDesignerSurfaceBackend Backend {
-			get { return (IDesignerSurfaceBackend) base.Backend; }
+		IDesignerSurfaceBackend Backend {
+			get { return (IDesignerSurfaceBackend) BackendHost.Backend; }
 		}
 		
 		public void Load (XmlReader r)

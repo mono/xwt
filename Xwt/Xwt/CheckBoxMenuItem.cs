@@ -43,8 +43,8 @@ namespace Xwt
 		{
 		}
 		
-		new ICheckBoxMenuItemBackend Backend {
-			get { return (ICheckBoxMenuItemBackend) base.Backend; }
+		ICheckBoxMenuItemBackend Backend {
+			get { return (ICheckBoxMenuItemBackend) this.BackendHost.Backend; }
 		}
 		
 		[DefaultValue (true)]

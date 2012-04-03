@@ -52,19 +52,35 @@
 using System;
 using Xwt.Backends;
 using Xwt.Engine;
+using System.ComponentModel;
 
 namespace Xwt
 {
-	public class WindowFrame: XwtComponent
+	public class WindowFrame: Component
 	{
 		EventHandler boundsChanged;
 		Rectangle bounds;
-		EventSink eventSink;
+		WindowBackendHost backendHost;
 		bool pendingReallocation;
 		
-		protected class EventSink: IWindowFrameEventSink
+		protected class WindowBackendHost: BackendHost<WindowFrame>, IWindowFrameEventSink
 		{
-			internal protected WindowFrame Parent { get; set; }
+			public WindowBackendHost ()
+			{
+			}
+			
+			public WindowBackendHost (IBackend backend): base (backend)
+			{
+			}
+			
+			protected override void OnBackendCreated ()
+			{
+				base.OnBackendCreated ();
+				var b = (IWindowFrameBackend)Backend;
+				b.Initialize (this);
+				Parent.bounds = b.Bounds;
+				b.EnableEvent (WindowFrameEvent.BoundsChanged);
+			}
 			
 			public void OnBoundsChanged (Rectangle bounds)
 			{
@@ -74,8 +90,8 @@ namespace Xwt
 		
 		public WindowFrame ()
 		{
-			eventSink = CreateEventSink ();
-			eventSink.Parent = this;
+			backendHost = CreateBackendHost ();
+			backendHost.Parent = this;
 		}
 		
 		public WindowFrame (string title): this ()
@@ -89,29 +105,21 @@ namespace Xwt
 			
 			// Don't dispose the backend if this object is being finalized
 			// The backend has to handle the finalizing on its own
-			if (disposing && BackendCreated)
+			if (disposing && BackendHost.BackendCreated)
 				Backend.Dispose ();
 		}
 		
-		new IWindowFrameBackend Backend {
-			get { return (IWindowFrameBackend) base.Backend; } 
+		IWindowFrameBackend Backend {
+			get { return (IWindowFrameBackend) BackendHost.Backend; } 
 		}
 		
-		protected override void OnBackendCreated ()
+		protected virtual WindowBackendHost CreateBackendHost ()
 		{
-			base.OnBackendCreated ();
-			Backend.Initialize (eventSink);
-			bounds = Backend.Bounds;
-			Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
+			return new WindowBackendHost ();
 		}
 		
-		protected virtual EventSink CreateEventSink ()
-		{
-			return new EventSink ();
-		}
-		
-		protected EventSink WindowEventSink {
-			get { return eventSink; }
+		protected WindowBackendHost BackendHost {
+			get { return backendHost; }
 		}
 		
 		public Rectangle ScreenBounds {
@@ -211,7 +219,7 @@ namespace Xwt
 		}
 
 		internal virtual Rectangle BackendBounds {
-			get { LoadBackend ();  return bounds; }
+			get { BackendHost.EnsureBackendLoaded ();  return bounds; }
 			set { bounds = Backend.Bounds = value; }
 		}
 		

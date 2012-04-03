@@ -46,7 +46,7 @@ namespace Xwt.Mac
 		IViewObject viewObject;
 		WidgetEvent currentEvents;
 		
-		void IBackend.Initialize (object frontend)
+		void IBackend.InitializeBackend (object frontend)
 		{
 			this.frontend = (Widget) frontend;
 			if (viewObject != null)

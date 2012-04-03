@@ -30,7 +30,7 @@ namespace Xwt
 {
 	public interface IBackend
 	{
-		void Initialize (object frontend);
+		void InitializeBackend (object frontend);
 		void EnableEvent (object eventId);
 		void DisableEvent (object eventId);
 	}

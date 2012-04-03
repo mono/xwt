@@ -63,7 +63,7 @@ namespace Xwt
 	{
 		Dictionary<Widget,Rectangle> positions;
 		
-		protected new class EventSink: Widget.EventSink, ICanvasEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICanvasEventSink
 		{
 			public void OnDraw (object context)
 			{
@@ -213,13 +213,13 @@ namespace Xwt
 			return Rectangle.Zero;
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new ICanvasBackend Backend {
-			get { return (ICanvasBackend) base.Backend; }
+		ICanvasBackend Backend {
+			get { return (ICanvasBackend) BackendHost.Backend; }
 		}
 		
 		/// <summary>

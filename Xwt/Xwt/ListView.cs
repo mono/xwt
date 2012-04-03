@@ -36,8 +36,14 @@ namespace Xwt
 		IListDataSource dataSource;
 		SelectionMode mode;
 		
-		protected new class EventSink: Widget.EventSink, IListViewEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost<ListView,IListViewBackend>, IListViewEventSink
 		{
+			protected override void OnBackendCreated ()
+			{
+				base.OnBackendCreated ();
+				Parent.columns.Attach (Backend);
+			}
+			
 			public void OnSelectionChanged ()
 			{
 				((ListView)Parent).OnSelectionChanged (EventArgs.Empty);
@@ -45,7 +51,7 @@ namespace Xwt
 			
 			public override Size GetDefaultNaturalSize ()
 			{
-				return Xwt.Engine.DefaultNaturalSizes.ListView;
+				return Xwt.Backends.DefaultNaturalSizes.ListView;
 			}
 		}
 		
@@ -65,19 +71,13 @@ namespace Xwt
 			VerticalScrollPolicy = HorizontalScrollPolicy = ScrollPolicy.Automatic;
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new IListViewBackend Backend {
-			get { return (IListViewBackend) base.Backend; }
-		}
-		
-		protected override void OnBackendCreated ()
-		{
-			base.OnBackendCreated ();
-			columns.Attach (Backend);
+		IListViewBackend Backend {
+			get { return (IListViewBackend) BackendHost.Backend; }
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {
@@ -103,7 +103,7 @@ namespace Xwt
 			set {
 				if (dataSource != value) {
 					dataSource = value;
-					Backend.SetSource (dataSource, dataSource is XwtComponent ? GetBackend ((XwtComponent)dataSource) : null);
+					Backend.SetSource (dataSource, dataSource is IFrontend ? (IBackend) WidgetRegistry.GetBackend (dataSource) : null);
 				}
 			}
 		}
@@ -178,12 +178,12 @@ namespace Xwt
 		
 		public event EventHandler SelectionChanged {
 			add {
-				OnBeforeEventAdd (TableViewEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnBeforeEventAdd (TableViewEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
 			remove {
 				selectionChanged -= value;
-				OnAfterEventRemove (TableViewEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnAfterEventRemove (TableViewEvent.SelectionChanged, selectionChanged);
 			}
 		}	
 	}

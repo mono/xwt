@@ -33,19 +33,27 @@ namespace Xwt
 		TextEntry entry;
 		DataField textField;
 		
+		protected new class WidgetBackendHost: ComboBox.WidgetBackendHost
+		{
+			protected override void OnBackendCreated ()
+			{
+				base.OnBackendCreated ();
+				((IComboBoxEntryBackend)Backend).SetTextColumn (0);
+			}
+		}
+		
 		public ComboBoxEntry ()
 		{
 			entry = new CustomComboTextEntry (Backend.TextEntryBackend);
 		}
 		
-		protected override void OnBackendCreated ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			base.OnBackendCreated ();
-			Backend.SetTextColumn (0);
+			return new WidgetBackendHost ();
 		}
 		
-		new IComboBoxEntryBackend Backend {
-			get { return (IComboBoxEntryBackend) base.Backend; }
+		IComboBoxEntryBackend Backend {
+			get { return (IComboBoxEntryBackend) BackendHost.Backend; }
 		}
 		
 		public TextEntry TextEntry {
@@ -76,14 +84,17 @@ namespace Xwt
 	{
 		ITextEntryBackend backend;
 		
+		protected new class WidgetBackendHost: TextEntry.WidgetBackendHost
+		{
+			protected override IBackend OnCreateBackend ()
+			{
+				return ((CustomComboTextEntry)Parent).backend;
+			}
+		}
+		
 		public CustomComboTextEntry (ITextEntryBackend backend)
 		{
 			this.backend = backend;
-		}
-		
-		protected override IBackend OnCreateBackend ()
-		{
-			return backend;
 		}
 	}
 }

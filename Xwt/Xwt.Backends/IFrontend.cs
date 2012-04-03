@@ -1,10 +1,10 @@
 // 
-// ImageTableCell.cs
+// IFrontend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,44 +23,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using MonoMac.AppKit;
-using Xwt.Engine;
-using Xwt.Drawing;
-using Xwt.Backends;
 
-namespace Xwt.Mac
+namespace Xwt.Backends
 {
-	class ImageTableCell: NSImageCell, ICellRenderer
+	interface IFrontend
 	{
-		ImageCellView cellView;
-		
-		public ImageTableCell (IntPtr p): base (p)
-		{
-		}
-		
-		public ImageTableCell (ImageCellView cellView)
-		{
-			this.cellView = cellView;
-		}
-		
-		public void Fill (ICellSource source, object pos)
-		{
-			Image img = (Image) source.GetValue (pos, cellView.ImageField.Index);
-			if (img != null)
-				ObjectValue = (NSImage) WidgetRegistry.GetBackend (img);
-		}
-		
-		public override System.Drawing.SizeF CellSize {
-			get {
-				NSImage img = ObjectValue as NSImage;
-				if (img != null)
-					return img.Size;
-				else
-					return base.CellSize;
-			}
-		}
+		object Backend { get; }
 	}
 }
 

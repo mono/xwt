@@ -39,8 +39,14 @@ namespace Xwt
 		string label;
 		ContentPosition imagePosition = ContentPosition.Left;
 		
-		protected new class EventSink: Widget.EventSink, IButtonEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IButtonEventSink
 		{
+			protected override void OnBackendCreated ()
+			{
+				base.OnBackendCreated ();
+				((IButtonBackend)Backend).SetButtonStyle (((Button)Parent).style);
+			}
+			
 			public void OnClicked ()
 			{
 				((Button)Parent).OnClicked (EventArgs.Empty);
@@ -72,13 +78,13 @@ namespace Xwt
 			Image = img;
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new IButtonBackend Backend {
-			get { return (IButtonBackend) base.Backend; }
+		IButtonBackend Backend {
+			get { return (IButtonBackend) BackendHost.Backend; }
 		}
 		
 		public string Label {
@@ -126,12 +132,6 @@ namespace Xwt
 			}
 		}
 		
-		protected override void OnBackendCreated ()
-		{
-			base.OnBackendCreated ();
-			Backend.SetButtonStyle (style);
-		}
-		
 		protected virtual void OnClicked (EventArgs e)
 		{
 			if (clicked != null)
@@ -140,12 +140,12 @@ namespace Xwt
 		
 		public event EventHandler Clicked {
 			add {
-				OnBeforeEventAdd (ButtonEvent.Clicked, clicked);
+				BackendHost.OnBeforeEventAdd (ButtonEvent.Clicked, clicked);
 				clicked += value;
 			}
 			remove {
 				clicked -= value;
-				OnAfterEventRemove (ButtonEvent.Clicked, clicked);
+				BackendHost.OnAfterEventRemove (ButtonEvent.Clicked, clicked);
 			}
 		}
 	}

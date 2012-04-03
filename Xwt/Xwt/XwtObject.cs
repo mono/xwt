@@ -30,7 +30,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public abstract class XwtObject
+	public abstract class XwtObject: IFrontend
 	{
 		object backend;
 		
@@ -53,6 +53,10 @@ namespace Xwt
 			set {
 				backend = value;
 			}
+		}
+		
+		object IFrontend.Backend {
+			get { return Backend; }
 		}
 		
 		protected void LoadBackend ()

@@ -48,7 +48,7 @@ namespace Xwt.GtkBackend
 			get { return frontend; }
 		}
 		
-		void IBackend.Initialize (object frontend)
+		void IBackend.InitializeBackend (object frontend)
 		{
 			this.frontend = (WindowFrame) frontend;
 		}

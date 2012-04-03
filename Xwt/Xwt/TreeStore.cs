@@ -29,12 +29,30 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Xwt.Backends;
+using System.ComponentModel;
 
 namespace Xwt
 {
 	public class TreeStore: XwtComponent, ITreeDataSource
 	{
 		DataField[] fields;
+		
+		class TreeStoreBackendHost: BackendHost<TreeStore>
+		{
+			protected override IBackend OnCreateBackend ()
+			{
+				IBackend b = base.OnCreateBackend ();
+				if (b == null)
+					b = new DefaultTreeStoreBackend ();
+				((ITreeStoreBackend)b).Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
+				return b;
+			}
+		}
+		
+		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		{
+			return new TreeStoreBackendHost ();
+		}
 		
 		public TreeStore (params DataField[] fields)
 		{
@@ -46,17 +64,8 @@ namespace Xwt
 			this.fields = fields;
 		}
 		
-		new ITreeStoreBackend Backend {
-			get { return (ITreeStoreBackend)base.Backend; }
-		}
-		
-		protected override IBackend OnCreateBackend ()
-		{
-			IBackend b = base.OnCreateBackend ();
-			if (b == null)
-				b = new DefaultTreeStoreBackend ();
-			((ITreeStoreBackend)b).Initialize (fields.Select (f => f.FieldType).ToArray ());
-			return b;
+		ITreeStoreBackend Backend {
+			get { return (ITreeStoreBackend)BackendHost.Backend; }
 		}
 		
 		public TreeNavigator GetFirstNode ()
@@ -180,7 +189,7 @@ namespace Xwt
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
 		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
 
-		public void Initialize (object frontend)
+		public void InitializeBackend (object frontend)
 		{
 		}
 		

@@ -38,7 +38,7 @@ namespace Xwt
 			MapEvent (TextEntryEvent.Changed, typeof(TextEntry), "OnChanged");
 		}
 		
-		protected new class EventSink: Widget.EventSink, ITextEntryEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ITextEntryEventSink
 		{
 			public void OnChanged ()
 			{
@@ -47,7 +47,7 @@ namespace Xwt
 			
 			public override Size GetDefaultNaturalSize ()
 			{
-				return Xwt.Engine.DefaultNaturalSizes.TextEntry;
+				return Xwt.Backends.DefaultNaturalSizes.TextEntry;
 			}
 		}
 		
@@ -55,13 +55,13 @@ namespace Xwt
 		{
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new ITextEntryBackend Backend {
-			get { return (ITextEntryBackend) base.Backend; }
+		ITextEntryBackend Backend {
+			get { return (ITextEntryBackend) BackendHost.Backend; }
 		}
 		
 		[DefaultValue ("")]
@@ -96,12 +96,12 @@ namespace Xwt
 		
 		public event EventHandler Changed {
 			add {
-				OnBeforeEventAdd (TextEntryEvent.Changed, changed);
+				BackendHost.OnBeforeEventAdd (TextEntryEvent.Changed, changed);
 				changed += value;
 			}
 			remove {
 				changed -= value;
-				OnAfterEventRemove (TextEntryEvent.Changed, changed);
+				BackendHost.OnAfterEventRemove (TextEntryEvent.Changed, changed);
 			}
 		}
 	}

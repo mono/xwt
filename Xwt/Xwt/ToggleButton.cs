@@ -33,7 +33,7 @@ namespace Xwt
 	{
 		EventHandler toggledEvent;
 		
-		protected new class EventSink: Button.EventSink, IToggleButtonEventSink
+		protected new class WidgetBackendHost: Button.WidgetBackendHost, IToggleButtonEventSink
 		{
 			public void OnToggled ()
 			{
@@ -62,13 +62,13 @@ namespace Xwt
 		{
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
-		new IToggleButtonBackend Backend {
-			get { return (IToggleButtonBackend) base.Backend; }
+		IToggleButtonBackend Backend {
+			get { return (IToggleButtonBackend) BackendHost.Backend; }
 		}
 		
 		public bool Active {
@@ -84,12 +84,12 @@ namespace Xwt
 		
 		public event EventHandler Toggled {
 			add {
-				OnBeforeEventAdd (ToggleButtonEvent.Toggled, toggledEvent);
+				BackendHost.OnBeforeEventAdd (ToggleButtonEvent.Toggled, toggledEvent);
 				toggledEvent += value;
 			}
 			remove {
 				toggledEvent -= value;
-				OnAfterEventRemove (ToggleButtonEvent.Toggled, toggledEvent);
+				BackendHost.OnAfterEventRemove (ToggleButtonEvent.Toggled, toggledEvent);
 			}
 		}
 	}

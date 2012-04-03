@@ -35,18 +35,26 @@ namespace Xwt
 	{
 		CellViewCollection cells;
 		Menu subMenu;
-		EventSink eventSink;
 		EventHandler clicked;
 		Image image;
 		
-		class EventSink: IMenuItemEventSink
+		protected class MenuItemBackendHost: BackendHost<MenuItem>, IMenuItemEventSink
 		{
-			public MenuItem Parent;
+			protected override void OnBackendCreated ()
+			{
+				base.OnBackendCreated ();
+				((IMenuItemBackend)Backend).Initialize (this);
+			}
 			
 			public void OnClicked ()
 			{
 				Parent.DoClick ();
 			}
+		}
+		
+		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		{
+			return new MenuItemBackendHost ();
 		}
 		
 		static MenuItem ()
@@ -56,7 +64,6 @@ namespace Xwt
 		
 		public MenuItem ()
 		{
-			eventSink = new EventSink () { Parent = this };
 		}
 		
 		public MenuItem (Command command): this ()
@@ -71,14 +78,8 @@ namespace Xwt
 			Label = label;
 		}
 		
-		new IMenuItemBackend Backend {
-			get { return (IMenuItemBackend) base.Backend; }
-		}
-		
-		protected override void OnBackendCreated ()
-		{
-			base.OnBackendCreated ();
-			Backend.Initialize (eventSink);
+		IMenuItemBackend Backend {
+			get { return (IMenuItemBackend) base.BackendHost.Backend; }
 		}
 		
 		[DefaultValue ("")]
@@ -126,7 +127,7 @@ namespace Xwt
 			get { return subMenu; }
 			set {
 				subMenu = value;
-				Backend.SetSubmenu ((IMenuBackend) GetBackend (subMenu));
+				Backend.SetSubmenu ((IMenuBackend) WidgetRegistry.GetBackend (subMenu));
 			}
 		}
 		
@@ -148,12 +149,12 @@ namespace Xwt
 		
 		public event EventHandler Clicked {
 			add {
-				OnBeforeEventAdd (MenuItemEvent.Clicked, clicked);
+				base.BackendHost.OnBeforeEventAdd (MenuItemEvent.Clicked, clicked);
 				clicked += value;
 			}
 			remove {
 				clicked -= value;
-				OnAfterEventRemove (MenuItemEvent.Clicked, clicked);
+				base.BackendHost.OnAfterEventRemove (MenuItemEvent.Clicked, clicked);
 			}
 		}
 	}

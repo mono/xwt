@@ -31,6 +31,7 @@ using MonoMac.AppKit;
 using MonoMac.ObjCRuntime;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -140,7 +141,7 @@ namespace Xwt.Mac
 		
 		public override object GetNativeWidget (Widget w)
 		{
-			IMacViewBackend wb = (IMacViewBackend)Xwt.Engine.WidgetRegistry.GetBackend (w);
+			IMacViewBackend wb = (IMacViewBackend)WidgetRegistry.GetBackend (w);
 			return wb.View;
 		}
 		

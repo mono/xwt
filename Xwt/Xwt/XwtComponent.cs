@@ -29,17 +29,16 @@ using System.ComponentModel;
 using Xwt.Engine;
 using System.Collections.Generic;
 using System.Reflection;
+using Xwt.Backends;
 
 namespace Xwt
 {
-	public abstract class XwtComponent: Component
+/*	public abstract class XwtComponent: Component, IFrontend
 	{
 		IBackend backend;
 		bool usingCustomBackend;
 		
 		HashSet<object> defaultEnabledEvents;
-		static Dictionary<Type, List<EventMap>> overridenEventMap = new Dictionary<Type, List<EventMap>> ();
-		static Dictionary<Type, HashSet<object>> overridenEvents = new Dictionary<Type, HashSet<object>> ();
 		
 		public XwtComponent ()
 		{
@@ -56,6 +55,10 @@ namespace Xwt
 				LoadBackend ();
 				return backend;
 			}
+		}
+		
+		object IFrontend.Backend {
+			get { return Backend; }
 		}
 		
 		internal bool BackendCreated {
@@ -84,35 +87,26 @@ namespace Xwt
 		{
 			if (usingCustomBackend) {
 				usingCustomBackend = false;
-				backend.Initialize (this);
+				backend.InitializeBackend (this);
 				OnBackendCreated ();
 			}
 			else if (backend == null) {
 				backend = OnCreateBackend ();
 				if (backend == null)
 					throw new InvalidOperationException ("No backend found for widget: " + GetType ());
-				backend.Initialize (this);
+				backend.InitializeBackend (this);
 				OnBackendCreated ();
 			}
 		}
 		
-		internal protected static IBackend GetBackend (XwtComponent w)
+		internal static IBackend GetBackend (XwtComponent w)
 		{
 			return w != null ? w.Backend : null;
 		}
 		
 		protected static void MapEvent (object eventId, Type type, string methodName)
 		{
-			List<EventMap> events;
-			if (!overridenEventMap.TryGetValue (type, out events)) {
-				events = new List<EventMap> ();
-				overridenEventMap [type] = events;
-			}
-			EventMap emap = new EventMap () {
-				MethodName = methodName,
-				EventId = eventId
-			};
-			events.Add (emap);
+			EventUtil.MapEvent (eventId, type, methodName);
 		}
 		
 		protected void OnBeforeEventAdd (object eventId, Delegate eventDelegate)
@@ -127,31 +121,85 @@ namespace Xwt
 				Backend.DisableEvent (eventId);
 		}
 		
-		HashSet<object> DefaultEnabledEvents {
+		internal HashSet<object> DefaultEnabledEvents {
 			get {
-				if (defaultEnabledEvents == null) {
-					Type thisType = GetType ();
-					if (!overridenEvents.TryGetValue (thisType, out defaultEnabledEvents)) {
-						defaultEnabledEvents = new HashSet<object> ();
-						Type t = thisType;
-						while (t != typeof(XwtComponent)) {
-							List<EventMap> emaps;
-							if (overridenEventMap.TryGetValue (t, out emaps)) {
-								foreach (var emap in emaps) {
-									if (IsOverriden (emap, thisType, t))
-										defaultEnabledEvents.Add (emap.EventId);
-								}
-							}
-							t = t.BaseType;
-						}
-						overridenEvents [GetType ()] = defaultEnabledEvents;
-					}
-				}
+				if (defaultEnabledEvents == null)
+					defaultEnabledEvents = EventUtil.GetDefaultEnabledEvents (GetType ());
 				return defaultEnabledEvents;
 			}
 		}
+	}
+	*/
+	public abstract class XwtComponent: Component, IFrontend
+	{
+		BackendHost backendHost;
 		
-		bool IsOverriden (EventMap emap, Type thisType, Type t)
+		public XwtComponent ()
+		{
+			backendHost = CreateBackendHost ();
+			backendHost.Parent = this;
+		}
+		
+		protected virtual BackendHost CreateBackendHost ()
+		{
+			return new BackendHost ();
+		}
+		
+		protected BackendHost BackendHost {
+			get { return backendHost; }
+		}
+		
+		object IFrontend.Backend {
+			get { return backendHost.Backend; }
+		}
+		
+		protected static void MapEvent (object eventId, Type type, string methodName)
+		{
+			EventUtil.MapEvent (eventId, type, methodName);
+		}
+	}
+	
+	class EventUtil
+	{
+		static Dictionary<Type, List<EventMap>> overridenEventMap = new Dictionary<Type, List<EventMap>> ();
+		static Dictionary<Type, HashSet<object>> overridenEvents = new Dictionary<Type, HashSet<object>> ();
+		
+		public static void MapEvent (object eventId, Type type, string methodName)
+		{
+			List<EventMap> events;
+			if (!overridenEventMap.TryGetValue (type, out events)) {
+				events = new List<EventMap> ();
+				overridenEventMap [type] = events;
+			}
+			EventMap emap = new EventMap () {
+				MethodName = methodName,
+				EventId = eventId
+			};
+			events.Add (emap);
+		}
+		
+		public static HashSet<object> GetDefaultEnabledEvents (Type type)
+		{
+			HashSet<object> defaultEnabledEvents;
+			if (!overridenEvents.TryGetValue (type, out defaultEnabledEvents)) {
+				defaultEnabledEvents = new HashSet<object> ();
+				Type t = type;
+				while (t != typeof(Component)) {
+					List<EventMap> emaps;
+					if (overridenEventMap.TryGetValue (t, out emaps)) {
+						foreach (var emap in emaps) {
+							if (IsOverriden (emap, type, t))
+								defaultEnabledEvents.Add (emap.EventId);
+						}
+					}
+					t = t.BaseType;
+				}
+				overridenEvents [type] = defaultEnabledEvents;
+			}
+			return defaultEnabledEvents;
+		}
+		
+		static bool IsOverriden (EventMap emap, Type thisType, Type t)
 		{
 			var method = thisType.GetMethod (emap.MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			return method.DeclaringType != t;

@@ -32,14 +32,23 @@ namespace Xwt
 	{
 		EventHandler valueChanged;
 		
-		class EventSink: IScrollAdjustmentEventSink
+		class BackendHost: BackendHost<ScrollAdjustment>, IScrollAdjustmentEventSink
 		{
-			public ScrollAdjustment Parent;
+			protected override void OnBackendCreated ()
+			{
+				base.OnBackendCreated ();
+				Backend.Initialize (new EventSink () { Parent = this });
+			}
 			
 			public void OnValueChanged ()
 			{
-				Parent.OnValueChanged (EventArgs.Empty);
+				((IScrollAdjustmentBackend)Parent).OnValueChanged (EventArgs.Empty);
 			}
+		}
+		
+		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		{
+			return new ScrollAdjustment.BackendHost ();
 		}
 		
 		static ScrollAdjustment ()
@@ -62,13 +71,7 @@ namespace Xwt
 		}
 		
 		new IScrollAdjustmentBackend Backend {
-			get { return (IScrollAdjustmentBackend) base.Backend; }
-		}
-		
-		protected override void OnBackendCreated ()
-		{
-			base.OnBackendCreated ();
-			Backend.Initialize (new EventSink () { Parent = this });
+			get { return (IScrollAdjustmentBackend) BackendHost.Backend; }
 		}
 		
 		/// <summary>

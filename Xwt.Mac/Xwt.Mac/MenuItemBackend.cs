@@ -110,7 +110,7 @@ namespace Xwt.Mac
 		}
 		
 		#region IBackend implementation
-		public void Initialize (object frontend)
+		public void InitializeBackend (object frontend)
 		{
 		}
 

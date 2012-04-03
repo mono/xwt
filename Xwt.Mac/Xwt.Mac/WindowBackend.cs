@@ -53,7 +53,7 @@ namespace Xwt.Mac
 			Center ();
 		}
 
-		public virtual void Initialize (object frontend)
+		public virtual void InitializeBackend (object frontend)
 		{
 			this.frontend = (Window) frontend;
 		}

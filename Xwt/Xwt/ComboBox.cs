@@ -34,7 +34,7 @@ namespace Xwt
 		IListDataSource source;
 		ItemCollection itemCollection;
 		
-		protected new class EventSink: Widget.EventSink, IComboBoxEventSink, ICellContainer
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IComboBoxEventSink, ICellContainer
 		{
 			public void NotifyCellChanged ()
 			{
@@ -53,22 +53,22 @@ namespace Xwt
 			
 			public override Size GetDefaultNaturalSize ()
 			{
-				return Xwt.Engine.DefaultNaturalSizes.ComboBox;
+				return Xwt.Backends.DefaultNaturalSizes.ComboBox;
 			}
 		}
 		
-		new IComboBoxBackend Backend {
-			get { return (IComboBoxBackend) base.Backend; }
+		IComboBoxBackend Backend {
+			get { return (IComboBoxBackend) BackendHost.Backend; }
 		}
 		
 		public ComboBox ()
 		{
-			views = new CellViewCollection ((ICellContainer)WidgetEventSink);
+			views = new CellViewCollection ((ICellContainer)BackendHost);
 		}
 		
-		protected override Widget.EventSink CreateEventSink ()
+		protected override Widget.WidgetBackendHost CreateBackendHost ()
 		{
-			return new EventSink ();
+			return new WidgetBackendHost ();
 		}
 		
 		public CellViewCollection Views {
@@ -99,7 +99,7 @@ namespace Xwt
 				}
 				
 				source = value;
-				Backend.SetSource (source, source is XwtComponent ? GetBackend ((XwtComponent)source) : null);
+				Backend.SetSource (source, source is IFrontend ? (IBackend) WidgetRegistry.GetBackend (source) : null);
 				
 				if (source != null) {
 					source.RowChanged += HandleModelChanged;
@@ -155,12 +155,12 @@ namespace Xwt
 		
 		public event EventHandler SelectionChanged {
 			add {
-				OnBeforeEventAdd (ComboBoxEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnBeforeEventAdd (ComboBoxEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
 			remove {
 				selectionChanged -= value;
-				OnAfterEventRemove (ComboBoxEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnAfterEventRemove (ComboBoxEvent.SelectionChanged, selectionChanged);
 			}
 		}
 		

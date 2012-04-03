@@ -174,7 +174,7 @@ namespace Xwt.GtkBackend
 
 		public override object GetNativeWidget (Widget w)
 		{
-			IGtkWidgetBackend wb = (IGtkWidgetBackend)Xwt.Engine.WidgetRegistry.GetBackend (w);
+			IGtkWidgetBackend wb = (IGtkWidgetBackend)WidgetRegistry.GetBackend (w);
 			return wb.Widget;
 		}
 		
@@ -187,7 +187,7 @@ namespace Xwt.GtkBackend
 		
 		public override object GetNativeParentWindow (Widget w)
 		{
-			IGtkWidgetBackend wb = (IGtkWidgetBackend)Xwt.Engine.WidgetRegistry.GetBackend (w);
+			IGtkWidgetBackend wb = (IGtkWidgetBackend)WidgetRegistry.GetBackend (w);
 			return wb.Widget.Toplevel as Gtk.Window;
 		}
 	}
