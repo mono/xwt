@@ -26,8 +26,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Xwt.Engine;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
 
@@ -37,19 +39,21 @@ namespace Xwt.WPFBackend
 	{
 		public NotebookBackend ()
 		{
-			this.TabControl = new WpfNotebook ();
+			TabControl = new WpfNotebook ();
+			TabControl.SelectionChanged += OnTabSelectionChanged;
 		}
 
-		public SWC.TabControl TabControl {
-			get { return (SWC.TabControl)Widget; }
-			set { Widget = value; }
+		public int CurrentTab {
+			get { return TabControl.SelectedIndex; }
+			set { TabControl.SelectedIndex = value; }
 		}
 
-		#region INotebookBackend implementation
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
+			this.widgets.Add (widget);
+
 			UIElement element = (UIElement)widget.NativeWidget;
-			SWC.TabItem ti = new SWC.TabItem  { Header = tab.Label };
+			TabItem ti = new TabItem  { Header = tab.Label };
 
 			ti.Content = element;
 			TabControl.Items.Add (ti);
@@ -60,6 +64,8 @@ namespace Xwt.WPFBackend
 
 		public void Remove (IWidgetBackend widget)
 		{
+			this.widgets.Remove (widget);
+
 			UIElement element = widget.NativeWidget as UIElement;
 			if (element == null)
 				throw new ArgumentException ();
@@ -75,22 +81,29 @@ namespace Xwt.WPFBackend
 
 		public void UpdateLabel (NotebookTab tab, string hint)
 		{
-			foreach (SWC.TabItem item in TabControl.Items) {
+			foreach (TabItem item in TabControl.Items) {
 				if (item.Header.ToString () == tab.Label) {
 					item.Header = hint;
 				}	
 			}
 		}
 
-		public int CurrentTab {
-			get {
-				return TabControl.SelectedIndex;
-			}
-			set {
-				TabControl.SelectedIndex = value;
-			}
+		private readonly List<IWidgetBackend> widgets = new List<IWidgetBackend> ();
+
+		protected TabControl TabControl {
+			get { return (TabControl)Widget; }
+			set { Widget = value; }
 		}
-		#endregion
+
+		private void OnTabSelectionChanged (object sender, SelectionChangedEventArgs e)
+		{
+			var backend = (WidgetBackend)this.widgets [TabControl.SelectedIndex];
+			var surface = backend.Frontend as IWidgetSurface;
+			if (surface == null)
+				return;
+
+			surface.Reallocate();
+		}
 	}
 
 	class WpfNotebook : SWC.TabControl, IWpfWidget
