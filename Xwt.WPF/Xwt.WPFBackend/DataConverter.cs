@@ -400,7 +400,7 @@ namespace Xwt.WPFBackend
 
 		// Scrollbar visibility
 
-		public static SWC.ScrollBarVisibility ToWpfScrollBarVisibility (ScrollPolicy policy)
+		public static SWC.ScrollBarVisibility ToWpfScrollBarVisibility (this ScrollPolicy policy)
 		{
 			switch (policy) {
 				case ScrollPolicy.Always:
@@ -415,7 +415,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public static ScrollPolicy ToXwtScrollPolicy (SWC.ScrollBarVisibility visibility)
+		public static ScrollPolicy ToXwtScrollPolicy (this SWC.ScrollBarVisibility visibility)
 		{
 			switch (visibility) {
 				case SWC.ScrollBarVisibility.Auto:

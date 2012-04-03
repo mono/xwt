@@ -70,6 +70,7 @@
     <Compile Include="Xwt.WPFBackend\DropDownButton.cs" />
     <Compile Include="Xwt.WPFBackend\ExCanvas.cs" />
     <Compile Include="Xwt.WPFBackend\ExComboBox.cs" />
+    <Compile Include="Xwt.WPFBackend\ExListBox.cs" />
     <Compile Include="Xwt.WPFBackend\ExListView.cs" />
     <Compile Include="Xwt.WPFBackend\ExScrollViewer.cs" />
     <Compile Include="Xwt.WPFBackend\FileDialogBackend.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Xwt.WPFBackend\DataConverter.cs" />
     <Compile Include="Xwt.WPFBackend\FontBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\KeyboardUtil.cs" />
+    <Compile Include="Xwt.WPFBackend\ListBoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ListDataSource.cs" />
     <Compile Include="Xwt.WPFBackend\ListSourceNotifyWrapper.cs" />
     <Compile Include="Xwt.WPFBackend\ListViewBackend.cs" />

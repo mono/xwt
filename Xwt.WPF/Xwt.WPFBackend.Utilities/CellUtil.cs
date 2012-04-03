@@ -68,15 +68,15 @@ namespace Xwt.WPFBackend.Utilities
 			throw new NotImplementedException ();
 		}
 
-		internal static FrameworkElementFactory CreateBoundColumnTemplate (ListViewColumn column)
+		internal static FrameworkElementFactory CreateBoundColumnTemplate (CellViewCollection views)
 		{
-			if (column.Views.Count == 1)
-				return CreateBoundCellRenderer (column.Views [0]);
+			if (views.Count == 1)
+				return CreateBoundCellRenderer (views [0]);
 			
 			FrameworkElementFactory container = new FrameworkElementFactory (typeof (StackPanel));
 			container.SetValue (StackPanel.OrientationProperty, Orientation.Horizontal);
 
-			foreach (CellView view in column.Views) {
+			foreach (CellView view in views) {
 				container.AppendChild (CreateBoundCellRenderer (view));
 			}
 

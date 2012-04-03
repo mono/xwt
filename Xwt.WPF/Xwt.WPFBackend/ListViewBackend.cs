@@ -91,7 +91,7 @@ namespace Xwt.WPFBackend
 		public object AddColumn (ListViewColumn col)
 		{
 			var column = new GridViewColumn ();
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (col) };
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (col.Views) };
 			if (col.HeaderView != null)
 				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (col.HeaderView) };
 			else
@@ -110,7 +110,7 @@ namespace Xwt.WPFBackend
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			var column = (GridViewColumn) handle;
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (col) };
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (col.Views) };
 			if (col.HeaderView != null)
 				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (col.HeaderView) };
 			else
