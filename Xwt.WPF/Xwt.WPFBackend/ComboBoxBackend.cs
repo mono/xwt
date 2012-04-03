@@ -77,7 +77,11 @@ namespace Xwt.WPFBackend
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
-			ComboBox.ItemsSource = new ListSourceNotifyWrapper (source);
+			var dataSource = sourceBackend as ListDataSource;
+			if (dataSource != null)
+				ComboBox.ItemsSource = dataSource;
+			else
+				ComboBox.ItemsSource = new ListSourceNotifyWrapper (source);
 		}
 
 		public int SelectedRow

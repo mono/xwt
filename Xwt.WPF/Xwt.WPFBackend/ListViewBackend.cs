@@ -142,7 +142,11 @@ namespace Xwt.WPFBackend
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
-			ListView.ItemsSource = new ListSourceNotifyWrapper (source);
+			var dataSource = sourceBackend as ListDataSource;
+			if (dataSource != null)
+				ListView.ItemsSource = dataSource;
+			else
+				ListView.ItemsSource = new ListSourceNotifyWrapper (source);
 		}
 
 		public void SelectRow (int pos)
