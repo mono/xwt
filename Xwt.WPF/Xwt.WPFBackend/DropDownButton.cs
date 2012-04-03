@@ -34,9 +34,15 @@ using SWC = System.Windows.Controls;
 namespace Xwt.WPFBackend
 {
 	public class DropDownButton
-		: SWC.Primitives.ToggleButton
+		: SWC.Primitives.ToggleButton, IWpfWidget
 	{
 		public event EventHandler<MenuOpeningEventArgs> MenuOpening;
+
+		public WidgetBackend Backend
+		{
+			get;
+			set;
+		}
 
 		protected override void OnToggle()
 		{
@@ -71,6 +77,12 @@ namespace Xwt.WPFBackend
 			menu.PlacementTarget = this;
 			menu.Placement = PlacementMode.Bottom;
 			menu.IsOpen = true;
+		}
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
 		}
 
 		private void OnMenuClosed (object sender, RoutedEventArgs e)
