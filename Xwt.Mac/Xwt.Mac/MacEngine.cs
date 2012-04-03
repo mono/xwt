@@ -84,6 +84,7 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.HSeparator), typeof(SeparatorBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.HPaned), typeof(PanedBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.VPaned), typeof(PanedBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
 		}
 
 		public override void RunApplication ()
