@@ -49,11 +49,8 @@ namespace Xwt.WPFBackend
 
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
-			// This line is commented because it breaks listview scrolling
-			// We have to find a solution because the current implementation is not fully correct
-			// var s = base.MeasureOverride (constraint);
+			var s = base.MeasureOverride (constraint);
 
-			var s = new System.Windows.Size (0, 0);
 			if (ScrollViewer.GetHorizontalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
 				s.Width = 0;
 			if (ScrollViewer.GetVerticalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
