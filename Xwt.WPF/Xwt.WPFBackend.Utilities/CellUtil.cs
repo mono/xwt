@@ -38,7 +38,7 @@ namespace Xwt.WPFBackend.Utilities
 		internal static FrameworkElementFactory CreateBoundColumnTemplate (CellViewCollection views, string dataPath = ".")
 		{
 			if (views.Count == 1)
-				return CreateBoundCellRenderer (views [0]);
+				return CreateBoundCellRenderer (views [0], dataPath);
 			
 			FrameworkElementFactory container = new FrameworkElementFactory (typeof (StackPanel));
 			container.SetValue (StackPanel.OrientationProperty, Orientation.Horizontal);

@@ -155,7 +155,7 @@ namespace Xwt.WPFBackend
 			UpdateColumn (column, col, ListViewColumnChange.Title);
 			UpdateColumn (column, col, ListViewColumnChange.Cells);
 
-			Tree.Columns.Add (col);
+			this.columns.Add (column);
 
 			UpdateTemplate ();
 
@@ -170,15 +170,15 @@ namespace Xwt.WPFBackend
 				col.Header = column.Title;
 				break;
 			case ListViewColumnChange.Cells:
-				col.CellTemplate = new DataTemplate
-					{ VisualTree = CellUtil.CreateBoundColumnTemplate (column.Views, "Values") };
+				//col.CellTemplate = new DataTemplate
+				//    { VisualTree = CellUtil.CreateBoundColumnTemplate (column.Views, "Values") };
 				break;
 			}
 		}
 
 		public void RemoveColumn (ListViewColumn column, object handle)
 		{
-			Tree.Columns.Add ((GridViewColumn) handle);
+			this.columns.Remove (column);
 
 			UpdateTemplate ();
 		}
@@ -213,6 +213,8 @@ namespace Xwt.WPFBackend
 				}
 			}
 		}
+
+		private readonly List<ListViewColumn> columns = new List<ListViewColumn> ();
 
 		protected ExTreeView Tree
 		{
@@ -267,13 +269,13 @@ namespace Xwt.WPFBackend
 		{
 			// Multi-column currently isn't supported
 
-			if (Tree.Columns.Count == 0) {
+			if (this.columns.Count == 0) {
 				Tree.ItemTemplate = null;
 				return;
 			}
 
 			Tree.ItemTemplate = new HierarchicalDataTemplate {
-				VisualTree = Tree.Columns[0].CellTemplate.VisualTree,
+				VisualTree = CellUtil.CreateBoundColumnTemplate (this.columns[0].Views, "Values"),
 				ItemsSource = new Binding ("Children")
 			};
 		}
