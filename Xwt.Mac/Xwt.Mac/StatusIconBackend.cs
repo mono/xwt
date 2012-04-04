@@ -38,13 +38,12 @@ namespace Xwt.Mac
 		static int NSVariableStatusItemLength = -1;
 		
 		NSStatusItem status_item;
-		NSImage image;
 		
-		public new void InitializeBackend (object frontend)
+		public override void InitializeBackend (object frontend)
 		{
+			base.InitializeBackend (frontend);
 			status_item = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
 			status_item.Menu = this;
-			status_item.Image = image;
 		}
 		
 		public string PathToImage {
@@ -52,15 +51,10 @@ namespace Xwt.Mac
 				if (String.IsNullOrEmpty (value)) {
 					throw new ArgumentNullException ("pathToImage");
 				}
-				image = new NSImage (value);
-				
 				if (status_item == null) {
-					InitializeBackend (null);
+					throw new InvalidOperationException ("backend was not initialized");
 				}
-				
-				if (status_item != null) {
-					status_item.Image = image;
-				}
+				status_item.Image = new NSImage (value);
 			}
 		}
 	}
