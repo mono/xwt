@@ -38,8 +38,6 @@ namespace Xwt
 		{
 			Backend.SetComponents (pathToImage, menuItems);
 		}
-
-		Menu Menu { get; set; }
 		
 		IStatusIconBackend Backend {
 			get { return (IStatusIconBackend) BackendHost.Backend; }
