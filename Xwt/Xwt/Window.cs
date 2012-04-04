@@ -96,7 +96,7 @@ namespace Xwt
 		protected override void OnReallocate ()
 		{
 			if (child != null && !Application.EngineBackend.HandlesSizeNegotiation) {
-				((IWidgetSurface)child).Reallocate ();
+				child.Surface.Reallocate ();
 			}
 		}
 
@@ -130,9 +130,10 @@ namespace Xwt
 
 		internal void AdjustSize ()
 		{
-			IWidgetSurface s = child;
-			if (s == null)
+			if (child == null)
 				return;
+			
+			IWidgetSurface s = child.Surface;
 
 			var size = shown ? Size : initialBounds.Size;
 

@@ -200,7 +200,7 @@ namespace Xwt
 			
 			SizeRequestMode IWidgetEventSink.GetSizeRequestMode ()
 			{
-				return ((IWidgetSurface)Parent).SizeRequestMode;
+				return Parent.Surface.SizeRequestMode;
 			}
 			
 			void IWidgetEventSink.OnGotFocus ()
@@ -387,6 +387,11 @@ namespace Xwt
 		
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public Widget Parent { get; set; }
+		
+		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+		public IWidgetSurface Surface {
+			get { return this; }
+		}
 		
 		protected Widget Content {
 			get { return contentWidget; }
@@ -762,7 +767,7 @@ namespace Xwt
 			// the widget is embedded in a native application, in which case we
 			// have to call Reallocate here (which is normally called by the root XWT window)
 			if (!Application.EngineBackend.HandlesSizeNegotiation && Parent == null)
-				((IWidgetSurface)this).Reallocate ();
+				Surface.Reallocate ();
 			
 			OnBoundsChanged ();
 		}
@@ -778,7 +783,7 @@ namespace Xwt
 			return (IWidgetBackend) GetBackend (w);
 		}
 		
-		void IWidgetSurface.ResetCachedSizes ()
+		void ResetCachedSizes ()
 		{
 			widthCached = false;
 			heightCached = false;
@@ -887,8 +892,8 @@ namespace Xwt
 		protected virtual void OnReallocate ()
 		{
 			if (children != null) {
-				foreach (IWidgetSurface c in children)
-					c.Reallocate ();
+				foreach (Widget w in children)
+					w.Surface.Reallocate ();
 			}
 		}
 		
@@ -932,11 +937,9 @@ namespace Xwt
 		
 		void OnChildPreferredSizeChanged ()
 		{
-			IWidgetSurface surface = this;
-			
 			if (Parent != null && resizeRequestQueue.Contains (Parent)) {
 				// Size for this widget will be checked when checking the parent
-				surface.ResetCachedSizes ();
+				ResetCachedSizes ();
 				return;
 			}
 			
@@ -947,21 +950,21 @@ namespace Xwt
 			var oldWidth = width;
 			var oldHeight = height;
 			
-			surface.ResetCachedSizes ();
+			ResetCachedSizes ();
 			
 			bool changed = true;
 			
-			if (surface.SizeRequestMode == SizeRequestMode.HeightForWidth) {
-				var nw = surface.GetPreferredWidth ();
+			if (Surface.SizeRequestMode == SizeRequestMode.HeightForWidth) {
+				var nw = Surface.GetPreferredWidth ();
 				if (nw == oldWidth) {
-					var nh = surface.GetPreferredHeightForWidth (Backend.Size.Width);
+					var nh = Surface.GetPreferredHeightForWidth (Backend.Size.Width);
 					if (nh == oldHeight)
 						changed = false;
 				}
 			} else {
-				var nh = surface.GetPreferredHeight ();
+				var nh = Surface.GetPreferredHeight ();
 				if (nh == oldHeight) {
-					var nw = surface.GetPreferredWidthForHeight (Backend.Size.Height);
+					var nw = Surface.GetPreferredWidthForHeight (Backend.Size.Height);
 					if (nw == oldWidth)
 						changed = false;
 				}
@@ -986,8 +989,7 @@ namespace Xwt
 			// may imply a change of the size of the parent. However, we don't do
 			// it immediately, but we queue the resizing request
 			
-			IWidgetSurface surface = this;
-			surface.ResetCachedSizes ();
+			ResetCachedSizes ();
 			Backend.UpdateLayout ();
 			if (!Application.EngineBackend.HandlesSizeNegotiation)
 				NotifySizeChangeToParent ();
@@ -1060,7 +1062,7 @@ namespace Xwt
 					// The widget may already have been reallocated as a result of reallocating the parent
 					// so we have to check if it is still in the queue
 					if (reallocationQueue.Contains (w))
-						((IWidgetSurface)w).Reallocate ();
+						w.Surface.Reallocate ();
 				}
 				foreach (var w in resizeWindows.ToArray ()) {
 					w.AdjustSize ();

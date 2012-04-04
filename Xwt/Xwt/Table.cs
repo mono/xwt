@@ -191,7 +191,7 @@ namespace Xwt
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
-			var mode = ((IWidgetSurface)this).SizeRequestMode;
+			var mode = Surface.SizeRequestMode;
 			if (mode == SizeRequestMode.HeightForWidth) {
 				CalcDefaultSizes (mode, size.Width, false, true);
 				CalcDefaultSizes (mode, size.Height, true, true);
@@ -213,7 +213,7 @@ namespace Xwt
 			
 			if (!Application.EngineBackend.HandlesSizeNegotiation) {
 				foreach (var bp in visibleChildren)
-					((IWidgetSurface)bp.Child).Reallocate ();
+					bp.Child.Surface.Reallocate ();
 			}
 		}
 		
@@ -593,18 +593,17 @@ namespace Xwt
 		WidgetSize GetPreferredSize (bool calcHeight, Widget w)
 		{
 			if (calcHeight)
-				return ((IWidgetSurface)w).GetPreferredHeight ();
+				return w.Surface.GetPreferredHeight ();
 			else
-				return ((IWidgetSurface)w).GetPreferredWidth ();
+				return w.Surface.GetPreferredWidth ();
 		}
 		
 		WidgetSize GetPreferredLengthForSize (SizeRequestMode mode, Widget w, double width)
 		{
-			IWidgetSurface surface = w;
 			if (mode == SizeRequestMode.WidthForHeight)
-				return surface.GetPreferredWidthForHeight (width);
+				return w.Surface.GetPreferredWidthForHeight (width);
 			else
-				return surface.GetPreferredHeightForWidth (width);
+				return w.Surface.GetPreferredHeightForWidth (width);
 		}
 	}
 	

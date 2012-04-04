@@ -83,14 +83,13 @@ namespace Xwt
 		{
 			base.OnReallocate ();
 			if (child != null && !child.SupportsCustomScrolling) {
-				var ws = (IWidgetSurface) child;
-				if (ws.SizeRequestMode == SizeRequestMode.HeightForWidth) {
-					var w = ws.GetPreferredWidth ();
-					var h = ws.GetPreferredHeightForWidth (w.NaturalSize);
+				if (child.Surface.SizeRequestMode == SizeRequestMode.HeightForWidth) {
+					var w = child.Surface.GetPreferredWidth ();
+					var h = child.Surface.GetPreferredHeightForWidth (w.NaturalSize);
 					Backend.SetChildSize (new Size (w.NaturalSize, h.NaturalSize));
 				} else {
-					var h = ws.GetPreferredHeight ();
-					var w = ws.GetPreferredWidthForHeight (h.NaturalSize);
+					var h = child.Surface.GetPreferredHeight ();
+					var w = child.Surface.GetPreferredWidthForHeight (h.NaturalSize);
 					Backend.SetChildSize (new Size (w.NaturalSize, h.NaturalSize));
 				}
 			}

@@ -115,9 +115,8 @@ namespace Xwt
 		/// </remarks>
 		public void AddChild (Widget w, double x, double y)
 		{
-			var ws = w as IWidgetSurface;
-			var pw = ws.GetPreferredWidth ().NaturalSize;
-			AddChild (w, new Rectangle (x, y, pw, ws.GetPreferredHeightForWidth (pw).NaturalSize));
+			var pw = w.Surface.GetPreferredWidth ().NaturalSize;
+			AddChild (w, new Rectangle (x, y, pw, w.Surface.GetPreferredHeightForWidth (pw).NaturalSize));
 		}
 		
 		/// <summary>
@@ -190,7 +189,7 @@ namespace Xwt
 		/// The children.
 		/// </value>
 		public IEnumerable<Widget> Children {
-			get { return ((IWidgetSurface)this).Children; }
+			get { return Surface.Children; }
 		}
 		
 		/// <summary>

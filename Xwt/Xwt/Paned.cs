@@ -173,9 +173,9 @@ namespace Xwt
 		{
 			if (!Application.EngineBackend.HandlesSizeNegotiation) {
 				if (panel1.Content != null)
-					((IWidgetSurface)panel1.Content).Reallocate ();
+					panel1.Content.Surface.Reallocate ();
 				if (panel2.Content != null)
-					((IWidgetSurface)panel2.Content).Reallocate ();
+					panel2.Content.Surface.Reallocate ();
 			}
 			OnPositionChanged ();
 		}

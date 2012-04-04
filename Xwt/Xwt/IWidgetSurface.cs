@@ -31,7 +31,6 @@ namespace Xwt
 {
 	public interface IWidgetSurface
 	{
-		void ResetCachedSizes ();
 		void Reallocate ();
 		
 		SizeRequestMode SizeRequestMode { get; }
