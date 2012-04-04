@@ -28,6 +28,7 @@ using System;
 using Xwt.Backends;
 using System.ComponentModel;
 using Xwt.Drawing;
+using Xwt.Engine;
 
 namespace Xwt
 {
