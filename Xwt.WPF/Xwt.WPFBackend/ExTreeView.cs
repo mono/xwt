@@ -221,7 +221,8 @@ namespace Xwt.WPFBackend
 
 			default:
 				if (!changeActive && SelectionMode == System.Windows.Controls.SelectionMode.Single) {
-					SelectedItems.Clear();
+					if (SelectedItems.Count > 0)
+						SelectedItems.Clear();
 					if (e.NewItems != null && e.NewItems.Count > 0)
 						SelectedItems.Add (e.NewItems [0]);
 				}
