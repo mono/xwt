@@ -65,7 +65,12 @@ namespace Xwt.Backends
 			else
 				data [type] = value;
 		}
-		
+
+		public void AddValue (TransferDataType type, object value)
+		{
+			data[type] = value;
+		}
+
 		object GetValue (TransferDataType type)
 		{
 			object val;
