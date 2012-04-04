@@ -142,6 +142,12 @@ namespace Xwt.WPFBackend
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
 			var s = base.MeasureOverride (constraint);
+
+			if (ScrollViewer.GetHorizontalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
+				s.Width = 0;
+			if (ScrollViewer.GetVerticalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
+				s.Height = SystemParameters.CaptionHeight;
+
 			return Backend.MeasureOverride (constraint, s);
 		}
 	}

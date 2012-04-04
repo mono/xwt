@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -105,9 +106,42 @@ namespace Xwt.WPFBackend
 			ListBox.SelectedIndexes.Remove (pos);
 		}
 
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is ListBoxEvent) {
+				switch ((ListBoxEvent)eventId) {
+				case ListBoxEvent.SelectionChanged:
+					ListBox.SelectionChanged += OnSelectionChanged;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is ListBoxEvent) {
+				switch ((ListBoxEvent)eventId) {
+				case ListBoxEvent.SelectionChanged:
+					ListBox.SelectionChanged -= OnSelectionChanged;
+					break;
+				}
+			}
+		}
+
+		private void OnSelectionChanged (object sender, SelectionChangedEventArgs e)
+		{
+			ListBoxEventSink.OnSelectionChanged();
+		}
+
 		protected ExListBox ListBox {
 			get { return (ExListBox) Widget; }
 			set { Widget = value; }
+		}
+
+		protected IListBoxEventSink ListBoxEventSink {
+			get { return (IListBoxEventSink) EventSink; }
 		}
 	}
 }

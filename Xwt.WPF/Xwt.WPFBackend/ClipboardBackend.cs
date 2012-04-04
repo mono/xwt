@@ -90,8 +90,8 @@ namespace Xwt.WPFBackend
 			}
 			if (type == TransferDataType.Rtf)
 				return WindowsClipboard.ContainsText (TextDataFormat.Rtf);
-			
-			throw new NotImplementedException();
+
+			return false;
 		}
 
 		public object GetData (TransferDataType type)
