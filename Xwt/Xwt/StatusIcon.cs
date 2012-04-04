@@ -46,7 +46,7 @@ namespace Xwt
 			foreach (MenuItem menuItem in menuItems) {
 				InsertItem (this.Items.Count, menuItem);
 			}
-			Backend.SetComponents (pathToImage);
+			Backend.PathToImage = pathToImage;
 		}
 		
 		IStatusIconBackend Backend {
