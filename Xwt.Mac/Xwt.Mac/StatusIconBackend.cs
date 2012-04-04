@@ -37,17 +37,30 @@ namespace Xwt.Mac
 		// https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusBar_Class/Reference/Reference.html#//apple_ref/doc/constant_group/Status_Bar_Item_Length
 		static int NSVariableStatusItemLength = -1;
 		
+		NSStatusItem status_item;
+		NSImage image;
+		
+		public new void InitializeBackend (object frontend)
+		{
+			status_item = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
+			status_item.Menu = this;
+			status_item.Image = image;
+		}
+		
 		public string PathToImage {
 			set {
 				if (String.IsNullOrEmpty (value)) {
 					throw new ArgumentNullException ("pathToImage");
 				}
+				image = new NSImage (value);
 				
-				var image = new NSImage (value);
-				var status_item = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
-				status_item.Image = image;
+				if (status_item == null) {
+					InitializeBackend (null);
+				}
 				
-				status_item.Menu = this;
+				if (status_item != null) {
+					status_item.Image = image;
+				}
 			}
 		}
 	}
