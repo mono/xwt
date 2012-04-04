@@ -415,15 +415,15 @@ namespace Xwt.WPFBackend
 			else if (cursor == CursorType.IBeam)
 				Widget.Cursor = Cursors.IBeam;
 			else if (cursor == CursorType.ResizeDown)
-				Widget.Cursor = Cursors.ScrollS;
+				Widget.Cursor = Cursors.SizeNS;
 			else if (cursor == CursorType.ResizeUp)
-				Widget.Cursor = Cursors.ScrollN;
+				Widget.Cursor = Cursors.SizeNS;
 			else if (cursor == CursorType.ResizeUpDown)
 				Widget.Cursor = Cursors.SizeNS;
 			else if (cursor == CursorType.ResizeLeft)
-				Widget.Cursor = Cursors.ScrollW;
+				Widget.Cursor = Cursors.SizeWE;
 			else if (cursor == CursorType.ResizeRight)
-				Widget.Cursor = Cursors.ScrollE;
+				Widget.Cursor = Cursors.SizeWE;
 			else if (cursor == CursorType.ResizeLeftRight)
 				widget.Cursor = Cursors.SizeWE;
 		}
