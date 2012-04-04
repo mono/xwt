@@ -42,6 +42,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +73,8 @@
     <Compile Include="Xwt.WPFBackend\ExListBox.cs" />
     <Compile Include="Xwt.WPFBackend\ExListView.cs" />
     <Compile Include="Xwt.WPFBackend\ExScrollViewer.cs" />
+    <Compile Include="Xwt.WPFBackend\ExTreeView.cs" />
+    <Compile Include="Xwt.WPFBackend\ExTreeViewItem.cs" />
     <Compile Include="Xwt.WPFBackend\FileDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\FrameBackend.cs" />
     <Compile Include="Xwt.WPFBackend\GradientBackendHandler.cs" />
@@ -128,5 +131,10 @@
     <None Include="..\xwt.snk">
       <Link>xwt.snk</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Xwt.WPFBackend\TreeView.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
   </ItemGroup>
 </Project>
