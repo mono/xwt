@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using Xwt;
 using Xwt.Drawing;
 
@@ -19,6 +20,10 @@ namespace Samples
 		
 		public MainWindow ()
 		{
+			var statusIconMenuItems = new Collection<MenuItem> ();
+			statusIconMenuItems.Add (new MenuItem ("Test"));
+			new StatusIconSample (statusIconMenuItems);
+			
 			Menu menu = new Menu ();
 			
 			var file = new MenuItem ("File");

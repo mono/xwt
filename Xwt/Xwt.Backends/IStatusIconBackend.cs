@@ -1,5 +1,5 @@
 // 
-// StatusIcon.cs
+// IStatusIconBackend.cs
 //  
 // Author:
 //       Andres G. Aragoneses <knocte@gmail.com>
@@ -27,23 +27,11 @@
 using System;
 using System.Collections.ObjectModel;
 
-using Xwt.Drawing;
-using Xwt.Backends;
-
-namespace Xwt
+namespace Xwt.Backends
 {
-	public class StatusIcon : Widget
+	public interface IStatusIconBackend : IWidgetBackend
 	{
-		public StatusIcon (string pathToImage, Collection<MenuItem> menuItems)
-		{
-			Backend.SetComponents (pathToImage, menuItems);
-		}
-
-		Menu Menu { get; set; }
-		
-		IStatusIconBackend Backend {
-			get { return (IStatusIconBackend) BackendHost.Backend; }
-		}
+		void SetComponents (string pathToImage, Collection<MenuItem> menuItems);
 	}
 }
 

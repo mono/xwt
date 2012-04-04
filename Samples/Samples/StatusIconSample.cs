@@ -4,7 +4,7 @@
 // Author:
 //       Andres G. Aragoneses <knocte@gmail.com>
 // 
-// Copyright (c) 2012 
+// Copyright (c) 2012 Andres G. Aragoneses
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,14 +26,16 @@
 
 using System;
 using System.IO;
+using System.Collections.ObjectModel;
 using Xwt;
 
 namespace Samples
 {
 	public class StatusIconSample : StatusIcon
 	{
-		public StatusIconSample ()
-		: base (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "package.png"))
+		public StatusIconSample (Collection<MenuItem> menuItems)
+		: base (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "package.png"),
+		        menuItems)
 		{
 		}
 	}
