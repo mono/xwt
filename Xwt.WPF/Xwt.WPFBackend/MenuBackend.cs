@@ -41,7 +41,7 @@ namespace Xwt.WPFBackend
 	{
 		List<MenuItemBackend> items;
 
-		public void Initialize (object frontend)
+		public void InitializeBackend (object frontend)
 		{
 			items = new List<MenuItemBackend> ();
 		}

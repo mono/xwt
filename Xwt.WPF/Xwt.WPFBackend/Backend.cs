@@ -31,7 +31,7 @@ namespace Xwt.WPFBackend
 	{
 		protected object frontend;
 
-		void IBackend.Initialize (object frontend)
+		void IBackend.InitializeBackend (object frontend)
 		{
 			this.frontend = frontend;
 		}

@@ -69,7 +69,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void Initialize (object frontend)
+		public void InitializeBackend (object frontend)
 		{
 		}
 

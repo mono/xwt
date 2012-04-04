@@ -62,7 +62,7 @@ namespace Xwt.WPFBackend
 			this.eventSink = eventSink;
 		}
 
-		public void Initialize (object frontend)
+		public void InitializeBackend (object frontend)
 		{
 		}
 

@@ -45,7 +45,7 @@ namespace Xwt.WPFBackend
 		{
 		}
 
-		void IBackend.Initialize (object frontend)
+		void IBackend.InitializeBackend (object frontend)
 		{
 			this.frontend = (WindowFrame) frontend;
 		}
