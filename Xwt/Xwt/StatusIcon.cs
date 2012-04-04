@@ -32,11 +32,21 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class StatusIcon : Widget
+	public class StatusIcon : Menu
 	{
 		public StatusIcon (string pathToImage, Collection<MenuItem> menuItems)
 		{
-			Backend.SetComponents (pathToImage, menuItems);
+			if (menuItems == null) {
+				throw new ArgumentNullException ("menuItems");
+			}
+			if (menuItems.Count == 0) {
+				throw new ArgumentException ("menuItems must contain at least one item", "menuItems");
+			}
+			
+			foreach (MenuItem menuItem in menuItems) {
+				InsertItem (this.Items.Count, menuItem);
+			}
+			Backend.SetComponents (pathToImage);
 		}
 		
 		IStatusIconBackend Backend {

@@ -32,75 +32,23 @@ using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	public class StatusIconBackend : IStatusIconBackend
+	public class StatusIconBackend : MenuBackend, IStatusIconBackend
 	{
 		// https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusBar_Class/Reference/Reference.html#//apple_ref/doc/constant_group/Status_Bar_Item_Length
 		static int NSVariableStatusItemLength = -1;
 		
-		public void InitializeBackend (object frontend)
-		{
-		}
-		
-		public void EnableEvent (object eventId) { throw new NotImplementedException (); }
-		public void DisableEvent (object eventId) { throw new NotImplementedException (); }
-		
-		public void SetComponents (string pathToImage, Collection<MenuItem> menuItems)
+		public void SetComponents (string pathToImage)
 		{
 			if (String.IsNullOrEmpty (pathToImage)) {
 				throw new ArgumentNullException ("pathToImage");
-			}
-			if (menuItems == null) {
-				throw new ArgumentNullException ("menuItems");
-			}
-			if (menuItems.Count == 0) {
-				throw new ArgumentException ("menuItems must contain at least one item", "menuItems");
 			}
 			
 			var image = new NSImage (pathToImage);
 			var status_item = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
 			status_item.Image = image;
 			
-			status_item.Menu = new NSMenu();
-			foreach (var menuItem in menuItems) {
-				status_item.Menu.AddItem (new NSMenuItem (menuItem.Label));
-			}
+			status_item.Menu = this;
 		}
-		
-		public void Initialize (IWidgetEventSink eventSink)
-		{
-		}
-		public void Dispose () { throw new NotImplementedException (); }
-		
-		public bool Visible { get; set; }
-		public bool Sensitive { get; set; }
-		public bool CanGetFocus { get; set; }
-		public bool HasFocus { get { throw new NotImplementedException (); } }
-		public Size Size { get { throw new NotImplementedException (); } }
-		public Point ConvertToScreenCoordinates (Point widgetCoordinates) { throw new NotImplementedException (); }
-		
-		public void SetMinSize (double width, double height) { throw new NotImplementedException (); }
-		public void SetNaturalSize (double width, double height) { throw new NotImplementedException (); }
-		
-		public void SetFocus () { throw new NotImplementedException (); }
-		
-		public void UpdateLayout () { throw new NotImplementedException (); }
-		public WidgetSize GetPreferredWidth () { throw new NotImplementedException (); }
-		public WidgetSize GetPreferredHeightForWidth (double width) { throw new NotImplementedException (); }
-		public WidgetSize GetPreferredHeight () { throw new NotImplementedException (); }
-		public WidgetSize GetPreferredWidthForHeight (double height) { throw new NotImplementedException (); }
-		
-		public object NativeWidget { get { throw new NotImplementedException (); } }
-		
-		public void DragStart (DragStartData data) { throw new NotImplementedException (); }
-		public void SetDragSource (TransferDataType[] types, DragDropAction dragAction) { throw new NotImplementedException (); }
-		
-		public void SetDragTarget (TransferDataType[] types, DragDropAction dragAction) { throw new NotImplementedException (); }
-		
-		public object Font { get; set; }
-		public Color BackgroundColor { get; set; }
-		public string TooltipText { get; set; }
-
-		public void SetCursor (CursorType cursorType) { throw new NotImplementedException (); }
 	}
 }
 
