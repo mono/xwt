@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -51,8 +52,11 @@ namespace Xwt.WPFBackend
 
 		class DragDropData
 		{
+			// Source
 			public bool AutodetectDrag;
 			public Rect DragRect;
+			// Target
+			public TransferDataType [] TargetTypes = new TransferDataType [0];
 		}
 
 		DragDropData dragDropInfo;
@@ -631,8 +635,16 @@ namespace Xwt.WPFBackend
 		{
 			var retval = new DataObject ();
 			foreach (var type in data.DataTypes) {
+				var value = data.GetValue (type);
+
 				if (type == TransferDataType.Text)
-					retval.SetText ((string)data.GetValue (type));
+					retval.SetText ((string)value);
+				else if (type == TransferDataType.Uri) {
+					var uris = new StringCollection ();
+					uris.Add (((Uri)value).LocalPath);
+					retval.SetFileDropList (uris);
+				} else
+					retval.SetData (type.Id, TransferDataSource.SerializeValue (value));
 			}
 
 			return retval;
@@ -640,6 +652,7 @@ namespace Xwt.WPFBackend
 
 		public void SetDragTarget (TransferDataType [] types, DragDropAction dragAction)
 		{
+			DragDropInfo.TargetTypes = types == null ? new TransferDataType [0] : types;
 			Widget.AllowDrop = true;
 		}
 
@@ -702,11 +715,21 @@ namespace Xwt.WPFBackend
 			return DragDropAction.Move;
 		}
 
-		static void FillDataStore (TransferDataStore store, IDataObject data)
+		static void FillDataStore (TransferDataStore store, IDataObject data, TransferDataType [] types)
 		{
-			foreach (string format in data.GetFormats ()) {
-				if (format == DataFormats.UnicodeText)
-					store.AddText ((string)data.GetData (format));
+			foreach (var type in types) {
+				string format = type.ToWpfDragType ();
+				if (!data.GetDataPresent (format))
+					continue;
+
+				var value = data.GetData (format);
+				if (type == TransferDataType.Text)
+					store.AddText ((string)value);
+				else if (type == TransferDataType.Uri) {
+					var uris = ((string [])value).Select (f => new Uri (f)).ToArray ();
+					store.AddUris (uris);
+				} else
+					store.AddValue (type, (byte[]) data.GetData (format));
 			}
 		}
 
@@ -735,7 +758,7 @@ namespace Xwt.WPFBackend
 
 			if ((enabledEvents & WidgetEvent.DragOver) > 0) {
 				var store = new TransferDataStore ();
-				FillDataStore (store, e.Data);
+				FillDataStore (store, e.Data, DragDropInfo.TargetTypes);
 
 				var args = new DragOverEventArgs (pos, store, proposedAction);
 				Toolkit.Invoke (delegate {
@@ -775,7 +798,7 @@ namespace Xwt.WPFBackend
 
 			if ((enabledEvents & WidgetEvent.DragDrop) > 0) {
 				var store = new TransferDataStore ();
-				FillDataStore (store, e.Data);
+				FillDataStore (store, e.Data, DragDropInfo.TargetTypes);
 
 				var args = new DragEventArgs (pos, store, actualEffect.ToXwtDropAction ());
 				Toolkit.Invoke (delegate {
