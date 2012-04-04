@@ -2,9 +2,9 @@
 // TreeStoreBackend.cs
 //  
 // Author:
-//       Luís Reis <luiscubal@gmail.com>
+//       Eric Maupin <ermau@xamarin.com>
 // 
-// Copyright (c) 2011 Luís Reis
+// Copyright (c) 2012 Xamarin, Inc.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -12,10 +12,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,188 +25,211 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
 using Xwt.Backends;
-using Xwt.WPFBackend.Utilities;
-using SWC=System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
-	class TreeNode : TreePosition
+	public class TreeStoreBackend
+		: Backend, ITreeStoreBackend, INotifyPropertyChanged, INotifyCollectionChanged, IEnumerable
 	{
-		public IList<Tuple<TreeViewBackend, SWC.ItemsControl>> TreeViewData = new List<Tuple<TreeViewBackend, SWC.ItemsControl>> ();
-		public object[] Values;
-		public IList<TreeNode> Children = new List<TreeNode>();
-		public TreeNode Previous;
-		public TreeNode Next;
-		public TreeNode Parent;
+		public event PropertyChangedEventHandler PropertyChanged;
 
-		public TreeNode LastChild
+		public event NotifyCollectionChangedEventHandler CollectionChanged
 		{
-			get
-			{
-				return Children.Count == 0 ? null : Children[Children.Count - 1];
-			}
+			add { this.topNodes.CollectionChanged += value; }
+			remove { this.topNodes.CollectionChanged -= value; }
 		}
-	}
 
-	public class TreeStoreBackend: ITreeStoreBackend
-	{
 		public event EventHandler<TreeNodeEventArgs> NodeInserted;
 		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
 		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
 
-		private Type[] columnTypes;
-		private TreeNode rootNode = new TreeNode ();
+		public Type[] ColumnTypes
+		{
+			get { return this.columnTypes; }
+		}
 
 		public void Initialize (Type[] columnTypes)
 		{
-			this.columnTypes = new Type [columnTypes.Length];
-			for (int n = 0; n < columnTypes.Length; n++)
-			{
-				this.columnTypes[n] = columnTypes[n];
-			}
-		}
-
-		public void InitializeBackend (object frontend)
-		{
-		}
-
-		public void Clear ()
-		{
-			rootNode.Children.Clear ();
-		}
-
-		internal TreeNode RootNode
-		{
-			get
-			{
-				return rootNode;
-			}
-		}
-
-		public TreePosition AddChild (TreePosition pos)
-		{
-			TreeNode parent = pos as TreeNode ?? rootNode;
-			TreeNode node = new TreeNode();
-			node.Previous = parent.LastChild;
-			node.Values = new object[columnTypes.Length];
-			node.Parent = parent;
-			if (parent.LastChild != null)
-				parent.LastChild.Next = node;
-			parent.Children.Add (node);
-
-			foreach (Tuple<TreeViewBackend, SWC.ItemsControl> parentData in parent.TreeViewData)
-			{
-				MultiColumnTreeViewItem childItem = parentData.Item1.GenerateTreeViewItem (node);
-				node.TreeViewData.Add (Tuple.Create<TreeViewBackend, SWC.ItemsControl>(parentData.Item1, childItem));
-				parentData.Item2.Items.Add (childItem);
-			}
-
-			return node;
-		}
-
-		public TreePosition GetPrevious (TreePosition pos)
-		{
-			TreeNode node = pos as TreeNode;
-			return node.Previous;
-		}
-
-		public TreePosition GetNext (TreePosition pos)
-		{
-			TreeNode node = pos as TreeNode;
-			return node.Next;
-		}
-
-		public void SetValue (TreePosition pos, int column, object value)
-		{
-			TreeNode node = pos as TreeNode;
-
-			if (node == rootNode)
-				throw new InvalidOperationException("Root node can not have data");
-
-			node.Values[column] = value;
-
-			foreach (var treeViewData in node.TreeViewData)
-			{
-				//We can perform this cast since Item2 is always a MultiColumnTreeViewItem for any non-root node.
-				MultiColumnTreeViewItem treeViewItem = (MultiColumnTreeViewItem)treeViewData.Item2;
-				treeViewItem.UpdateColumn (column, value);
-			}
-		}
-
-		public object GetValue (TreePosition pos, int column)
-		{
-			TreeNode node = pos as TreeNode;
-			return node.Values[column];
+			this.columnTypes = columnTypes.ToArray ();
+			OnPropertyChanged ("ColumnTypes");
 		}
 
 		public TreePosition GetParent (TreePosition pos)
 		{
-			TreeNode node = pos as TreeNode;
-			TreeNode parent = node.Parent;
-			if (parent == rootNode)
+			var node = (TreeStoreNode) pos;
+			if (node.Parent == null)
 				return null;
-			return parent;
-		}
 
-		public int GetChildrenCount (TreePosition pos)
-		{
-			TreeNode node = pos as TreeNode;
-			return node.Children.Count;
+			return node.Parent;
 		}
 
 		public TreePosition GetChild (TreePosition pos, int index)
 		{
-			if (pos == null)
-				return RootNode.Children [index];
-
-			TreeNode node = pos as TreeNode;
-			return node.Children[index];
+			var node = (TreeStoreNode) pos;
+			return GetListForNode (node) [index];
 		}
 
-		public void Remove (TreePosition pos)
+		public int GetChildrenCount (TreePosition pos)
 		{
-			TreeNode node = pos as TreeNode;
+			return ((TreeStoreNode) pos).Children.Count;
+		}
 
-			if (node == rootNode)
-				throw new InvalidOperationException ("Can not remove root node");
+		public object GetValue (TreePosition pos, int column)
+		{
+			return ((TreeStoreNode) pos).Values[column];
+		}
 
-			node.Parent.Children.Remove (node);
+		public void SetValue (TreePosition pos, int column, object value)
+		{
+			var node = (TreeStoreNode) pos;
+			node.SetValue (column, value);
 
-			foreach (var treeViewData in node.TreeViewData)
-			{
-				var item = treeViewData.Item2;
-				var parent = item.Parent;
-				((SWC.ItemsControl)parent).Items.Remove (item);
-			}
+			OnNodeChanged (new TreeNodeEventArgs (pos));
 		}
 
 		public TreePosition InsertBefore (TreePosition pos)
 		{
-			throw new NotImplementedException ();
+			var node = (TreeStoreNode) pos;
+
+			var newNode = new TreeStoreNode (
+				new object[this.columnTypes.Length],
+				node);
+
+			var list = GetContainingList (node);
+			int index = list.IndexOf (node);
+			list.Insert (index, newNode);
+			
+			OnNodeInserted (new TreeNodeEventArgs (newNode));
+
+			return newNode;
 		}
 
 		public TreePosition InsertAfter (TreePosition pos)
 		{
-			throw new NotImplementedException ();
+			var node = (TreeStoreNode) pos;
+
+			var newNode = new TreeStoreNode (
+				new object[this.columnTypes.Length],
+				node);
+
+			var list = GetContainingList (node);
+			int index = list.IndexOf (node);
+			list.Insert (index + 1, newNode);
+			
+			OnNodeInserted (new TreeNodeEventArgs (newNode));
+
+			return newNode;
 		}
 
-		public Type[] ColumnTypes
+		public TreePosition AddChild (TreePosition pos)
 		{
-			get
-			{
-				throw new NotImplementedException ();
-			}
+			var parent = (TreeStoreNode) pos;
+
+			var childNode = new TreeStoreNode (
+				new object[this.columnTypes.Length],
+				parent);
+
+			GetListForNode (parent).Add (childNode);
+
+			OnNodeInserted (new TreeNodeEventArgs (childNode));
+
+			return childNode;
 		}
 
-		public void EnableEvent (object eventId)
+		public void Remove (TreePosition pos)
 		{
+			var node = (TreeStoreNode) pos;
+
+			var list = GetContainingList (node);
+			int index = list.IndexOf (node);
+			list.RemoveAt (index);
+
+			OnNodeDeleted (new TreeNodeChildEventArgs (node.Parent, index));
 		}
 
-		public void DisableEvent (object eventId)
+		public TreePosition GetNext (TreePosition pos)
 		{
+			var node = (TreeStoreNode) pos;
+
+			var list = GetContainingList (node);
+			int index = list.IndexOf (node) + 1;
+
+			return (index < list.Count) ? list [index] : null;
+		}
+
+		public TreePosition GetPrevious (TreePosition pos)
+		{
+			var node = (TreeStoreNode) pos;
+
+			var list = GetContainingList (node);
+			int index = list.IndexOf (node) - 1;
+
+			return (index > 0) ? list [index] : null;
+		}
+
+		public void Clear ()
+		{
+			this.topNodes.Clear();
+		}
+
+		public IEnumerator GetEnumerator ()
+		{
+			return this.topNodes.GetEnumerator ();
+		}
+
+		private Type[] columnTypes;
+		private readonly ObservableCollection<TreeStoreNode> topNodes = new ObservableCollection<TreeStoreNode> ();
+
+		private ObservableCollection<TreeStoreNode> GetContainingList (TreeStoreNode node)
+		{
+			return (node.Parent == null) ? this.topNodes : node.Parent.Children;
+		}
+
+		private ObservableCollection<TreeStoreNode> GetListForNode (TreeStoreNode node)
+		{
+			return (node == null) ? this.topNodes : node.Children;
+		}
+
+		private void OnPropertyChanged (string name)
+		{
+			var changed = PropertyChanged;
+			if (changed != null)
+				changed (this, new PropertyChangedEventArgs (name));
+		}
+
+		private void OnNodeInserted (TreeNodeEventArgs e)
+		{
+			var handler = NodeInserted;
+			if (handler != null)
+				handler (this, e);
+		}
+
+		private void OnNodeDeleted (TreeNodeChildEventArgs e)
+		{
+			var handler = NodeDeleted;
+			if (handler != null)
+				handler (this, e);
+		}
+
+		private void OnNodeChanged (TreeNodeEventArgs e)
+		{
+			var handler = NodeChanged;
+			if (handler != null)
+				handler (this, e);
+		}
+
+		private void OnNodesReordered (TreeNodeOrderEventArgs e)
+		{
+			var handler = NodesReordered;
+			if (handler != null)
+				handler (this, e);
 		}
 	}
 }
