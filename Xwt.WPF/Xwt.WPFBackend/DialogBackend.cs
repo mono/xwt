@@ -55,13 +55,11 @@ namespace Xwt.WPFBackend
 
 		public DialogBackend()
 		{
-			cmd = new DelegatedCommand<DialogButton> (OnButtonClicked, s => s != null);
+			cmd = new DelegatedCommand<DialogButton> (OnButtonClicked);
 
-			//this.buttonContainer.DataContext = this;
 			this.buttonContainer.ItemsPanel = PanelTemplate;
 			this.buttonContainer.ItemTemplateSelector =  new DialogButtonTemplateSelector (ButtonStyle, cmd);
 			this.buttonContainer.ItemsSource = this.buttons;
-			//this.buttonContainer.SetBinding (ItemsControl.ItemsSourceProperty, new Binding ("Buttons"));
 			this.buttonContainer.HorizontalAlignment = HorizontalAlignment.Right;
 
 			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });

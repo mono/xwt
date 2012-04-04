@@ -38,6 +38,7 @@ namespace Xwt.WPFBackend
 		public ListBoxBackend()
 		{
 			ListBox = new ExListBox();
+			ListBox.DisplayMemberPath = ".[0]";
 		}
 
 		public ScrollPolicy VerticalScrollPolicy
@@ -54,6 +55,7 @@ namespace Xwt.WPFBackend
 
 		public void SetViews (CellViewCollection views)
 		{
+			ListBox.DisplayMemberPath = null;
 			ListBox.ItemTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (views) };
 		}
 

@@ -35,6 +35,7 @@ namespace Xwt.GtkBackend
 		public TableViewBackend ()
 		{
 			var sw = new Gtk.ScrolledWindow ();
+			sw.ShadowType = Gtk.ShadowType.In;
 			sw.Child = new CustomTreeView (this);
 			sw.Child.Show ();
 			sw.Show ();

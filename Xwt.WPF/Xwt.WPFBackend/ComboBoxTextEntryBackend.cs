@@ -48,8 +48,8 @@ namespace Xwt.WPFBackend
 
 		public string Text
 		{
-			get { return this.combobox.Text; }
-			set { this.combobox.Text = value; }
+			get { return this.combobox.Text ?? String.Empty; }
+			set { this.combobox.Text = value ?? String.Empty; }
 		}
 
 		public string PlaceholderText
