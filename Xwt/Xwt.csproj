@@ -290,6 +290,7 @@
     <Compile Include="Xwt.Backends\BackendHost.cs" />
     <Compile Include="Xwt.Backends\IFrontend.cs" />
     <Compile Include="Xwt.Backends\DefaultNaturalSizes.cs" />
+    <Compile Include="Xwt\StatusIcon.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

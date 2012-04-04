@@ -90,6 +90,7 @@
     <Compile Include="Samples\DrawingFigures.cs" />
     <Compile Include="Samples\DrawingPatternsAndImages.cs" />
     <Compile Include="Samples\ListBoxSample.cs" />
+    <Compile Include="Samples\StatusIconSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -104,6 +105,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="package.png">
       <LogicalName>package.png</LogicalName>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Samples\cow.jpg">
       <LogicalName>cow.jpg</LogicalName>
