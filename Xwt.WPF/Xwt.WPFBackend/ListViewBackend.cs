@@ -181,7 +181,7 @@ namespace Xwt.WPFBackend
 
 		public override void DisableEvent (object eventId)
 		{
-			base.EnableEvent (eventId);
+			base.DisableEvent (eventId);
 			if (eventId is TableViewEvent) {
 				switch ((TableViewEvent)eventId) {
 				case TableViewEvent.SelectionChanged:
