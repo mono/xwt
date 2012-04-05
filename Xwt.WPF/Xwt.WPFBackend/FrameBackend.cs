@@ -25,13 +25,15 @@
 // THE SOFTWARE.
 
 
+using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using SWC = System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using Xwt.Backends;
-using Xwt.WPFBackend.Utilities;
 using Color = Xwt.Drawing.Color;
-using WpfLabel = System.Windows.Controls.Label;
 
 namespace Xwt.WPFBackend
 {
@@ -40,7 +42,26 @@ namespace Xwt.WPFBackend
 	{
 		public FrameBackend()
 		{
-			GroupBox = new WpfGroupBox ();
+			ExGrid grid = new ExGrid();
+			grid.Children.Add (this.groupBox = new SWC.GroupBox ());
+			grid.Children.Add (this.flippedGroupBox = new SWC.GroupBox ());
+
+			this.flippedGroupBox.SetBinding (FrameworkElement.WidthProperty, new Binding ("ActualWidth") { Source = this.groupBox });
+			this.flippedGroupBox.SetBinding (FrameworkElement.HeightProperty, new Binding ("ActualHeight") { Source = this.groupBox });
+			this.flippedGroupBox.SetBinding (UIElement.IsEnabledProperty, new Binding ("IsEnabled") { Source = this.groupBox });
+			this.flippedGroupBox.SetBinding (Control.BorderBrushProperty, new Binding ("BorderBrush") { Source = this.groupBox });
+			this.flippedGroupBox.SetBinding (Control.BorderThicknessProperty,
+				new Binding ("BorderThickness") {
+					Source = this.groupBox,
+					Converter =  new HFlippedBorderThicknessConverter ()
+				});
+
+			this.flippedGroupBox.RenderTransformOrigin = new System.Windows.Point (0.5, 0.5);
+			this.flippedGroupBox.RenderTransform = new ScaleTransform (-1, 1);
+			this.flippedGroupBox.Focusable = false;
+			SWC.Panel.SetZIndex (this.flippedGroupBox, -1);
+
+			Widget = grid;
 		}
 
 		public string Label
@@ -51,9 +72,10 @@ namespace Xwt.WPFBackend
 				if (this.label == value)
 					return;
 
-				// TODO: Handle no label
 				this.label = value;
 				GroupBox.Header = value;
+
+				this.flippedGroupBox.Visibility = String.IsNullOrEmpty (value) ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 
@@ -104,29 +126,33 @@ namespace Xwt.WPFBackend
 			GroupBox.Padding = new Thickness (left, top, right, bottom);
 		}
 
-		protected GroupBox GroupBox
-		{
-			get { return (GroupBox) Widget; }
-			set { Widget = value; }
+		private SWC.GroupBox GroupBox {
+			get { return this.groupBox; }
 		}
+
+		private readonly SWC.GroupBox groupBox;
+		private readonly SWC.GroupBox flippedGroupBox;
 
 		private FrameType frameType;
 		private string label;
-	}
 
-	class WpfGroupBox : GroupBox, IWpfWidget
-	{
-		public WidgetBackend Backend { get; set; }
-
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		private class HFlippedBorderThicknessConverter
+			: IValueConverter
 		{
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
-		}
+			public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+			{
+				Thickness t = (Thickness) value;
+				double right = t.Right;
+				t.Right = t.Left;
+				t.Left = right;
 
-		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
-		{
-			return base.ArrangeOverride (arrangeBounds);
+				return t;
+			}
+
+			public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+			{
+				throw new NotImplementedException ();
+			}
 		}
 	}
 }
