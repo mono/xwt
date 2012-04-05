@@ -78,7 +78,7 @@ namespace Xwt.WPFBackend
 
 		public int GetChildrenCount (TreePosition pos)
 		{
-			return ((TreeStoreNode) pos).Children.Count;
+			return GetListForNode ((TreeStoreNode) pos).Count;
 		}
 
 		public object GetValue (TreePosition pos, int column)
