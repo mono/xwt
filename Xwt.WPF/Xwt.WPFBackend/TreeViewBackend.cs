@@ -278,7 +278,7 @@ namespace Xwt.WPFBackend
 			}
 
 			Tree.ItemTemplate = new HierarchicalDataTemplate {
-				VisualTree = CellUtil.CreateBoundColumnTemplate (this.columns[0].Views, "Values"),
+				VisualTree = CellUtil.CreateBoundColumnTemplate (this.columns[0].Views),
 				ItemsSource = new Binding ("Children")
 			};
 		}

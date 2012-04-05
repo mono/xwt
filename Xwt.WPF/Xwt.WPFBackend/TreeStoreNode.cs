@@ -31,21 +31,12 @@ using System.ComponentModel;
 namespace Xwt.WPFBackend
 {
 	internal class TreeStoreNode
-		: TreePosition, INotifyPropertyChanged
+		: ValuesContainer, TreePosition
 	{
 		public TreeStoreNode (object[] values, TreeStoreNode parent)
+			: base (values)
 		{
-			if (values == null)
-				throw new ArgumentNullException ("values");
-
-			this.values = values;
 			Parent = parent;
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		public object[] Values {
-			get { return this.values; }
 		}
 
 		public TreeStoreNode Parent {
@@ -73,20 +64,6 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void SetValue (int column, object value)
-		{
-			this.values [column] = value;
-			OnPropertyChanged (new PropertyChangedEventArgs ("Values"));
-		}
-
 		private readonly ObservableCollection<TreeStoreNode> children = new ObservableCollection<TreeStoreNode> ();
-		private readonly object[] values;
-
-		private void OnPropertyChanged (PropertyChangedEventArgs e)
-		{
-			var handler = this.PropertyChanged;
-			if (handler != null)
-				handler (this, e);
-		}
 	}
 }

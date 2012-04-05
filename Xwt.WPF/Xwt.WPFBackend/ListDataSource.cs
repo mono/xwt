@@ -26,9 +26,8 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
 using Xwt.Backends;
 
 namespace Xwt.WPFBackend
@@ -40,7 +39,12 @@ namespace Xwt.WPFBackend
 		public event EventHandler<ListRowEventArgs> RowDeleted;
 		public event EventHandler<ListRowEventArgs> RowChanged;
 		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
-		public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+		public event NotifyCollectionChangedEventHandler CollectionChanged
+		{
+			add { this.rows.CollectionChanged += value; }
+			remove { this.rows.CollectionChanged -= value; }
+		}
 
 		public int RowCount
 		{
@@ -62,11 +66,10 @@ namespace Xwt.WPFBackend
 
 		public int AddRow ()
 		{
-			this.rows.Add (new object[this.columnTypes.Length]);
+			this.rows.Add (new ValuesContainer (this.columnTypes.Length));
 			int index = this.rows.Count - 1;
 
-			OnRowInserted (new NotifyCollectionChangedEventArgs (
-				NotifyCollectionChangedAction.Add, (object)this.rows[index], index));
+			OnRowInserted (new ListRowEventArgs (index));
 
 			return index;
 		}
@@ -81,10 +84,9 @@ namespace Xwt.WPFBackend
 			if (row == this.rows.Count)
 				return AddRow ();
 
-			this.rows.Insert (row, new object[this.columnTypes.Length]);
+			this.rows.Insert (row, new ValuesContainer (this.columnTypes.Length));
 
-			OnRowInserted (new NotifyCollectionChangedEventArgs (
-				NotifyCollectionChangedAction.Add, (object)this.rows[row], row));
+			OnRowInserted (new ListRowEventArgs (row));
 
 			return row;
 		}
@@ -98,10 +100,9 @@ namespace Xwt.WPFBackend
 				return AddRow ();
 
 			row--;
-			this.rows.Insert (row, new object[this.columnTypes.Length]);
+			this.rows.Insert (row, new ValuesContainer (this.columnTypes.Length));
 
-			OnRowInserted (new NotifyCollectionChangedEventArgs (
-				NotifyCollectionChangedAction.Add, (object)this.rows[row], row));
+			OnRowInserted (new ListRowEventArgs (row));
 
 			return row;
 		}
@@ -111,11 +112,9 @@ namespace Xwt.WPFBackend
 			if (row >= this.rows.Count)
 				throw new ArgumentOutOfRangeException ("row");
 
-			object value = this.rows [row];
 			this.rows.RemoveAt (row);
 
-			OnRowDeleted (new NotifyCollectionChangedEventArgs (
-				NotifyCollectionChangedAction.Remove, value, row));
+			OnRowDeleted (new ListRowEventArgs (row));
 		}
 
 		public object GetValue (int row, int column)
@@ -132,22 +131,19 @@ namespace Xwt.WPFBackend
 		{
 			int rowsInserted = 0;
 			while (row >= this.rows.Count) {
-				object[] nrow = new object[this.ColumnTypes.Length];
-				this.rows.Add (nrow);
+				this.rows.Add (new ValuesContainer (this.columnTypes.Length));
 				rowsInserted++;
 			}
 
-			object[] orow = this.rows[row];
+			ValuesContainer orow = this.rows[row];
 			orow[column] = value;
 
 			if (rowsInserted == 0) {
-				OnRowChanged (new NotifyCollectionChangedEventArgs (
-				              	NotifyCollectionChangedAction.Replace, (object)orow, (object)orow, row));
+				OnRowChanged (new ListRowEventArgs (row));
 			} else {
 				for (int i = rowsInserted; i > 0; --i) {
 					int r = rowsInserted - i;
-					OnRowInserted (new NotifyCollectionChangedEventArgs (
-						NotifyCollectionChangedAction.Add, (object)orow, r));
+					OnRowInserted (new ListRowEventArgs (r));
 				}
 			}
 		}
@@ -165,40 +161,28 @@ namespace Xwt.WPFBackend
 			return this.rows.GetEnumerator ();
 		}
 
-		private readonly List<object[]> rows = new List<object[]> ();
+		private readonly ObservableCollection<ValuesContainer> rows = new ObservableCollection<ValuesContainer> ();
 		private Type[] columnTypes;
 
-		private void OnRowInserted (NotifyCollectionChangedEventArgs e)
+		private void OnRowInserted (ListRowEventArgs e)
 		{
 			var inserted = RowInserted;
 			if (inserted != null)
-			    inserted (this, new ListRowEventArgs (e.NewStartingIndex));
-
-			var collChanged = CollectionChanged;
-			if (collChanged != null)
-			    collChanged (this, e);
+			    inserted (this, e);
 		}
 
-		private void OnRowChanged (NotifyCollectionChangedEventArgs e)
+		private void OnRowChanged (ListRowEventArgs e)
 		{
 			var changed = RowChanged;
 			if (changed != null)
-				changed (this, new ListRowEventArgs (e.OldStartingIndex));
-
-			var collChanged = CollectionChanged;
-			if (collChanged != null)
-				collChanged (this, e);
+				changed (this, e);
 		}
 
-		private void OnRowDeleted (NotifyCollectionChangedEventArgs e)
+		private void OnRowDeleted (ListRowEventArgs e)
 		{
 			var deleted = RowDeleted;
 			if (deleted != null)
-				deleted (this, new ListRowEventArgs (e.OldStartingIndex));
-
-			var collChanged = CollectionChanged;
-			if (collChanged != null)
-				collChanged (this, e);
+				deleted (this, e);
 		}
 	}
 }

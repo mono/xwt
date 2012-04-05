@@ -113,6 +113,7 @@
     <Compile Include="Xwt.WPFBackend\TreeStoreNode.cs" />
     <Compile Include="Xwt.WPFBackend\TreeViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\Util.cs" />
+    <Compile Include="Xwt.WPFBackend\ValuesContainer.cs" />
     <Compile Include="Xwt.WPFBackend\WidgetBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WindowBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WindowFrameBackend.cs" />
