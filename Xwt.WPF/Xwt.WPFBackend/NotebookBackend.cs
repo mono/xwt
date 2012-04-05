@@ -95,9 +95,42 @@ namespace Xwt.WPFBackend
 				item.Header = tab.Label;
 		}
 
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is NotebookEvent) {
+				switch ((NotebookEvent)eventId) {
+				case NotebookEvent.CurrentTabChanged:
+					TabControl.SelectionChanged += OnCurrentTabChanged;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is NotebookEvent) {
+				switch ((NotebookEvent)eventId) {
+				case NotebookEvent.CurrentTabChanged:
+					TabControl.SelectionChanged -= OnCurrentTabChanged;
+					break;
+				}
+			}
+		}
+
+		private void OnCurrentTabChanged (object sender, SelectionChangedEventArgs e)
+		{
+			Toolkit.Invoke (NotebookEventSink.OnCurrentTabChanged);
+		}
+
 		protected TabControl TabControl {
 			get { return (TabControl)Widget; }
 			set { Widget = value; }
+		}
+
+		protected INotebookEventSink NotebookEventSink {
+			get { return (INotebookEventSink) EventSink; }
 		}
 
 		private void OnContentLoaded (object sender, RoutedEventArgs routedEventArgs)
