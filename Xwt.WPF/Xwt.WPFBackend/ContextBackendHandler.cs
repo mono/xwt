@@ -5,6 +5,7 @@
 //       Eric Maupin <ermau@xamarin.com>
 //       Hywel Thomas <hywel.w.thomas@gmail.com>
 //       Lytico (http://limada.sourceforge.net)
+//       Luís Reis <luiscubal@gmail.com>
 //
 // Copyright (c) 2012 Xamarin, Inc.
 // 
@@ -300,6 +301,15 @@ namespace Xwt.WPFBackend
 			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
 		}
 
+		public void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha)
+		{
+			var c = (DrawingContext) backend;
+
+			Bitmap bmp = DataConverter.AsBitmap (img);
+
+			DrawImageCore (c.Graphics, bmp, srcRect, destRect, (float) alpha);
+		}
+
 		public void ResetTransform (object backend)
 		{
 			var c = (DrawingContext)backend;
@@ -405,6 +415,33 @@ namespace Xwt.WPFBackend
 			}
 			else
 				g.DrawImage (bmp, x, y, width, height);
+		}
+
+		internal void DrawImageCore (Graphics g, Bitmap bmp, Rectangle srcRect, Rectangle destRect, float alpha)
+		{
+			if (alpha < 1)
+			{
+				var attr = new ImageAttributes ();
+
+				float[][] matrixItems = new[] {
+					new float[] { 1, 0, 0, 0, 0 },
+					new float[] { 0, 1, 0, 0, 0 },
+					new float[] { 0, 0, 1, 0, 0 },
+					new float[] { 0, 0, 0, alpha, 0 },
+					new float[] { 0, 0, 0, 0, 1 },
+				};
+
+				attr.SetColorMatrix (new ColorMatrix (matrixItems), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+				PointF[] points = new PointF[3];
+				points[0] = new PointF ((float) destRect.X, (float) destRect.Y);
+				points[1] = new PointF ((float) (destRect.X + destRect.Width), (float) destRect.Y);
+				points[2] = new PointF ((float) destRect.X, (float) (destRect.Y + destRect.Height));
+
+				g.DrawImage (bmp, points, srcRect.ToSDRectF (), GraphicsUnit.Pixel, attr);
+			}
+			else
+				g.DrawImage (bmp, destRect.ToSDRectF (), srcRect.ToSDRectF (), GraphicsUnit.Pixel);
 		}
 	}
 }

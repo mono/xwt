@@ -61,6 +61,11 @@ namespace Xwt.WPFBackend
 			return new SW.Rect (rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
+		public static SD.RectangleF ToSDRectF (this Rectangle rect)
+		{
+			return new SD.RectangleF ((float) rect.X, (float) rect.Y, (float) rect.Width, (float) rect.Height);
+		}
+
 		public static Int32Rect ToInt32Rect (this Rectangle rect)
 		{
 			return new Int32Rect ((int) rect.X, (int) rect.Y, (int) rect.Width, (int) rect.Height);
