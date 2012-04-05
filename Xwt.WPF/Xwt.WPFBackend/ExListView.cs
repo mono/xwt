@@ -24,13 +24,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using SWC = System.Windows.Controls;
@@ -40,11 +33,6 @@ namespace Xwt.WPFBackend
 	public class ExListView
 		: SWC.ListView, IWpfWidget
 	{
-		public ExListView()
-		{
-			SelectedIndexes = new ObservableCollection<int> ();
-		}
-
 		public WidgetBackend Backend { get; set; }
 
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
@@ -57,103 +45,6 @@ namespace Xwt.WPFBackend
 				s.Height = SystemParameters.CaptionHeight;
 			s = Backend.MeasureOverride (constraint, s);
 			return s;
-		}
-
-		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
-		{
-			return base.ArrangeOverride (arrangeBounds);
-		}
-
-		public static readonly DependencyProperty SelectedIndexesProperty = DependencyProperty.Register (
-			"SelectedIndexes",
-			typeof (ICollection<int>), typeof (ExListView),
-			new UIPropertyMetadata (OnSelectedIndexesPropertyChanged));
-
-		public ICollection<int> SelectedIndexes
-		{
-			get { return (ICollection<int>) GetValue (SelectedIndexesProperty); }
-			set { SetValue (SelectedIndexesProperty, value); }
-		}
-
-		protected override void OnSelectionChanged (SelectionChangedEventArgs e)
-		{
-			if (this.changingSelection) {
-				base.OnSelectionChanged (e);
-				return;
-			}
-
-			this.changingSelection = true;
-			if (e.AddedItems != null) {
-				foreach (object item in e.AddedItems) {
-					SelectedIndexes.Add (Items.IndexOf (item));
-				}
-			}
-
-			if (e.RemovedItems != null) {
-				foreach (object item in e.RemovedItems) {
-					SelectedIndexes.Remove (Items.IndexOf (item));
-				}
-			}
-
-			this.changingSelection = false;
-			base.OnSelectionChanged (e);
-		}
-
-		protected virtual void OnSelectedIndexesChanged (DependencyPropertyChangedEventArgs e)
-		{
-			var oldNotifying = e.OldValue as INotifyCollectionChanged;
-			if (oldNotifying != null)
-				oldNotifying.CollectionChanged -= SelectedIndexesChanged;
-
-			var newNotifying = e.NewValue as INotifyCollectionChanged;
-			if (newNotifying != null)
-				newNotifying.CollectionChanged += SelectedIndexesChanged;
-		}
-
-		private bool changingSelection;
-		private void SelectedIndexesChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			if (this.changingSelection)
-				return;
-
-			this.changingSelection = true;
-
-			if (SelectionMode == SWC.SelectionMode.Single) {
-				SelectedItem = null;
-				if (e.NewItems != null && e.NewItems.Count > 0)
-					SelectedItem = Items [(int) e.NewItems [0]];
-
-				this.changingSelection = false;
-				return;
-			}
-
-			if (e.Action == NotifyCollectionChangedAction.Reset) {
-				SelectedItems.Clear();
-				foreach (int index in SelectedIndexes)
-				{
-					SelectedItems.Add (Items[index]);
-					if (SelectionMode == SWC.SelectionMode.Single)
-						break;
-				}
-			} else {
-				if (e.NewItems != null) {
-					foreach (int index in e.NewItems)
-						SelectedItems.Add (Items[index]);
-				}
-
-				if (e.OldItems != null) {
-					foreach (int index in e.OldItems)
-						SelectedItems.Remove (Items [index]);
-				}
-			}
-
-			this.changingSelection = false;
-		}
-
-		private static void OnSelectedIndexesPropertyChanged (DependencyObject dobj, DependencyPropertyChangedEventArgs e)
-		{
-			var view = (ExListView) dobj;
-			view.OnSelectedIndexesChanged (e);
 		}
 	}
 }

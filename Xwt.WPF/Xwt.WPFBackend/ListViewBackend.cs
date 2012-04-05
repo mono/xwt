@@ -85,7 +85,7 @@ namespace Xwt.WPFBackend
 		}
 
 		public int[] SelectedRows {
-			get { return ListView.SelectedIndexes.ToArray (); }
+			get { return ListView.SelectedItems.Cast<object>().Select (ListView.Items.IndexOf).ToArray (); }
 		}
 
 		public object AddColumn (ListViewColumn col)
@@ -151,12 +151,20 @@ namespace Xwt.WPFBackend
 
 		public void SelectRow (int pos)
 		{
-			ListView.SelectedIndexes.Add (pos);
+			object item = ListView.Items [pos];
+			if (ListView.SelectionMode == System.Windows.Controls.SelectionMode.Single)
+				ListView.SelectedItem = item;
+			else
+				ListView.SelectedItems.Add (item);
 		}
 
 		public void UnselectRow (int pos)
 		{
-			ListView.SelectedIndexes.Remove (pos);
+			object item = ListView.Items [pos];
+			if (ListView.SelectionMode == System.Windows.Controls.SelectionMode.Extended)
+				ListView.SelectedItems.Remove (item);
+			else if (ListView.SelectedItem == item)
+				ListView.SelectedItem = null;
 		}
 
 		public override void EnableEvent(object eventId)

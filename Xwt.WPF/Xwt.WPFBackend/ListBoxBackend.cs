@@ -91,19 +91,26 @@ namespace Xwt.WPFBackend
 			ListBox.UnselectAll();
 		}
 
-		public int[] SelectedRows
-		{
-			get { return ListBox.SelectedIndexes.ToArray (); }
+		public int[] SelectedRows {
+			get { return ListBox.SelectedItems.Cast<object>().Select (ListBox.Items.IndexOf).ToArray(); }
 		}
 
 		public void SelectRow (int pos)
 		{
-			ListBox.SelectedIndexes.Add (pos);
+			object item = ListBox.Items [pos];
+			if (ListBox.SelectionMode == System.Windows.Controls.SelectionMode.Single)
+				ListBox.SelectedItem = item;
+			else
+				ListBox.SelectedItems.Add (item);
 		}
 
 		public void UnselectRow (int pos)
 		{
-			ListBox.SelectedIndexes.Remove (pos);
+			object item = ListBox.Items [pos];
+			if (ListBox.SelectionMode == System.Windows.Controls.SelectionMode.Extended)
+				ListBox.SelectedItems.Remove (item);
+			else if (ListBox.SelectedItem == item)
+				ListBox.SelectedItem = null;
 		}
 
 		public override void EnableEvent (object eventId)
