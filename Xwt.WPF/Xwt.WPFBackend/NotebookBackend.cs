@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Xwt.Engine;
@@ -53,6 +54,7 @@ namespace Xwt.WPFBackend
 			TabItem ti = new TabItem {
 				Content = element,
 				Header = tab.Label,
+				Tag = tab
 			};
 
 			FrameworkElement felement = element as FrameworkElement;
@@ -88,11 +90,9 @@ namespace Xwt.WPFBackend
 
 		public void UpdateLabel (NotebookTab tab, string hint)
 		{
-			foreach (TabItem item in TabControl.Items) {
-				if (item.Header.ToString () == tab.Label) {
-					item.Header = hint;
-				}	
-			}
+			TabItem item = TabControl.Items.Cast<TabItem> ().FirstOrDefault (t => t.Tag == tab);
+			if (item != null)
+				item.Header = tab.Label;
 		}
 
 		protected TabControl TabControl {
