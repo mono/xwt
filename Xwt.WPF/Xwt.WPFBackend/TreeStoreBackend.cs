@@ -73,7 +73,11 @@ namespace Xwt.WPFBackend
 		public TreePosition GetChild (TreePosition pos, int index)
 		{
 			var node = (TreeStoreNode) pos;
-			return GetListForNode (node) [index];
+			var list = GetListForNode (node);
+			if (list.Count == 0 || index >= list.Count)
+				return null;
+
+			return list [index];
 		}
 
 		public int GetChildrenCount (TreePosition pos)
