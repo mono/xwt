@@ -50,8 +50,12 @@ namespace Samples
 		protected override void OnDraw (Context ctx)
 		{
 			base.OnDraw (ctx);
-
-			ctx.DrawImage (img, new Rectangle (10, 10, 50, 50), new Rectangle (0, 0, 50, 50));
+			
+			for (int y = 0; y < img.Size.Height / 50; ++y) {
+				for (int x = 0; x < img.Size.Width / 50; ++x) {
+					ctx.DrawImage (img, new Rectangle (x*50, y*50, 50, 50), new Rectangle (x*55, y*55, 50, 50));
+				}
+			}
 		}
 	}
 }
