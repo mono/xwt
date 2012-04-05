@@ -185,7 +185,10 @@ namespace Xwt.WPFBackend
 
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
-			throw new NotImplementedException();
+			pos = default(RowDropPosition);
+			nodePosition = default(TreePosition);
+			// TODO
+			return false;
 		}
 
 		public override void EnableEvent (object eventId)
