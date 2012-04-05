@@ -29,6 +29,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -428,6 +429,25 @@ namespace Xwt.WPFBackend
 				default:
 					throw new NotSupportedException ();
 			}
+		}
+
+		public static DataObject ToDataObject (this TransferDataSource data)
+		{
+			var retval = new DataObject ();
+			foreach (var type in data.DataTypes) {
+				var value = data.GetValue (type);
+
+				if (type == TransferDataType.Text)
+					retval.SetText ((string)value);
+				else if (type == TransferDataType.Uri) {
+					var uris = new StringCollection ();
+					uris.Add (((Uri)value).LocalPath);
+					retval.SetFileDropList (uris);
+				} else
+					retval.SetData (type.Id, TransferDataSource.SerializeValue (value));
+			}
+
+			return retval;
 		}
 	}
 }

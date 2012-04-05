@@ -653,27 +653,12 @@ namespace Xwt.WPFBackend
 			if (data.Data == null)
 				throw new ArgumentNullException ("data");
 
-			var dataObj = CreateDataObject (data.Data);
-			DragDrop.DoDragDrop (Widget, dataObj, data.DragAction.ToWpfDropEffect ());
-		}
+			DataObject dataObj = data.Data.ToDataObject();
 
-		static DataObject CreateDataObject (TransferDataSource data)
-		{
-			var retval = new DataObject ();
-			foreach (var type in data.DataTypes) {
-				var value = data.GetValue (type);
-
-				if (type == TransferDataType.Text)
-					retval.SetText ((string)value);
-				else if (type == TransferDataType.Uri) {
-					var uris = new StringCollection ();
-					uris.Add (((Uri)value).LocalPath);
-					retval.SetFileDropList (uris);
-				} else
-					retval.SetData (type.Id, TransferDataSource.SerializeValue (value));
-			}
-
-			return retval;
+			Widget.Dispatcher.BeginInvoke (
+				(Func<DependencyObject, object, DragDropEffects, DragDropEffects>)DragDrop.DoDragDrop,
+				Widget, dataObj, data.DragAction.ToWpfDropEffect ()
+			);
 		}
 
 		public void SetDragTarget (TransferDataType [] types, DragDropAction dragAction)
@@ -816,11 +801,15 @@ namespace Xwt.WPFBackend
 				bool res = Toolkit.Invoke (delegate {
 					eventSink.OnDragDropCheck (checkArgs);
 				});
+
 				if (checkArgs.Result == DragDropResult.Canceled || !res) {
 					e.Effects = DragDropEffects.None;
+					eventSink.OnDragFinished (new DragFinishedEventArgs (false));
 					return;
 				}
 			}
+
+			bool deleteSource = false;
 
 			if ((enabledEvents & WidgetEvent.DragDrop) > 0) {
 				var store = new TransferDataStore ();
@@ -831,11 +820,14 @@ namespace Xwt.WPFBackend
 					eventSink.OnDragDrop (args);
 				});
 
+				deleteSource = args.Success;
 				e.Effects = args.Success ? actualEffect : DragDropEffects.None;
 			}
 
 			// No DrapDropCheck/DragDrop event enabled.
 			e.Effects = DragDropEffects.None;
+
+			this.eventSink.OnDragFinished (new DragFinishedEventArgs (deleteSource));
 		}
 
 		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)
