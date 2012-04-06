@@ -97,6 +97,8 @@ namespace Xwt.WPFBackend
 			SWC.Canvas.SetLeft (element, bounds.Left * wratio);
 			element.Height = (bounds.Height > 0) ? bounds.Height * hratio : 0;
 			element.Width = (bounds.Width > 0) ? bounds.Width * wratio : 0;
+
+			((FrameworkElement) widget.NativeWidget).UpdateLayout();
 		}
 
 		public void RemoveChild (IWidgetBackend widget)
