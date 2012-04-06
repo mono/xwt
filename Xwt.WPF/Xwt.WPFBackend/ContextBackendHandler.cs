@@ -211,7 +211,7 @@ namespace Xwt.WPFBackend
 		public void SetLineWidth (object backend, double width)
 		{
 			var c = (DrawingContext) backend;
-			c.Pen.Width = (float) width;
+			c.SetWidth ((float) width);
 		}
 
 		public void SetLineDash (object backend, double offset, params double[] pattern)
@@ -376,6 +376,8 @@ namespace Xwt.WPFBackend
 
 		public void Dispose (object backend)
 		{
+			var c = (DrawingContext) backend;
+			c.Dispose();
 		}
 
 		internal static void DrawImageCore (Graphics g, Bitmap bmp, float x, float y, float width, float height, float alpha)

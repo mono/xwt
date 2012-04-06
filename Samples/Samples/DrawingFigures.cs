@@ -43,6 +43,7 @@ namespace Samples
 			Rectangles (ctx, x, y);
 			Curves1 (ctx, x, y + 60);
 			Curves2 (ctx, x + 100, y + 60);
+			SaveRestore (ctx, x, y + 150);
 
 		}
 
@@ -177,7 +178,45 @@ namespace Samples
 			ctx.Stroke ();
 			
 			ctx.Restore ();
-		}	
+		}
+		
+		public virtual void SaveRestore (Context ctx, double sx, double sy)
+		{
+			ctx.Save ();
+			ctx.Translate (sx, sy);
+			
+			
+			// testing save and restore of color, width, and path
+			var x1 = 10;
+			var y1 = 10;
+			var lw1 = 5;
+			var ll1 = 40;
+			var x2 = x1;
+			var y2 = y1 + lw1*2;
+			var lw2 = 10;
+			var ll2 = ll1;
+			
+			ctx.MoveTo (x1, y1);
+			ctx.SetColor (Colors.Red);
+			ctx.SetLineWidth (lw1);
+			ctx.LineTo (x1 + ll1, y1);
+			ctx.StrokePreserve ();
+			ctx.MoveTo (x1, y1);
+			ctx.Save ();
+			
+			ctx.MoveTo (x2, y2);
+			ctx.SetColor (Colors.Yellow);
+			ctx.SetLineWidth (lw2);
+			ctx.LineTo (x2 + ll2, y2);
+			ctx.StrokePreserve ();
+			
+			ctx.Restore ();
+			ctx.RelMoveTo (0, lw1 + lw2);
+			ctx.RelLineTo (ll1, 0);
+			ctx.StrokePreserve ();
+			
+			ctx.Restore ();
+		}
 	}
 }
 

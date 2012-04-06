@@ -38,7 +38,7 @@ namespace Samples
 		}
 	}
 	
-	public class DrawingTransforms: Canvas
+	public class DrawingTransforms: Drawings
 	{
 		protected override void OnDraw (Context ctx)
 		{

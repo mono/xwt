@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
 // Copyright (c) 2012 Xamarin, Inc.
 // 
@@ -23,7 +24,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,79 +31,171 @@ using System.Drawing.Drawing2D;
 
 namespace Xwt.WPFBackend
 {
-	internal class DrawingContext
+	internal class DrawingContext:IDisposable
 	{
 		internal DrawingContext (Graphics graphics)
 		{
 			if (graphics == null)
 				throw new ArgumentNullException ("graphics");
-
-			graphics.SmoothingMode = SmoothingMode.HighSpeed;
-			graphics.PixelOffsetMode = PixelOffsetMode.Half;
+			
+			var displayTier = (System.Windows.Media.RenderCapability.Tier >> 16);
+			displayTier = 0; //debug code; remove that!
+			if (displayTier == 0) {//no hardware acceleration
+				graphics.SmoothingMode = SmoothingMode.None;
+				graphics.PixelOffsetMode = PixelOffsetMode.Half;
+				graphics.CompositingQuality = CompositingQuality.HighSpeed;
+			} else if (displayTier == 1) {//partial hardware acceleration
+				graphics.SmoothingMode = SmoothingMode.AntiAlias;
+				graphics.PixelOffsetMode = PixelOffsetMode.Half;
+				graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+				graphics.CompositingQuality = CompositingQuality.AssumeLinear;
+			} else {//supports hardware acceleration
+				graphics.SmoothingMode = SmoothingMode.AntiAlias;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+			}
+			
 			Graphics = graphics;
 		}
 
 		internal DrawingContext (DrawingContext context)
 		{
-			Graphics = context.Graphics;
 			
-			var f = context.Font;
-			Font = new Font (f.FontFamily, f.Size, f.Style, f.Unit, f.GdiCharSet, f.GdiVerticalFont);
-			Pen = new Pen (context.Pen.Brush, context.Pen.Width);
-			Brush = (Brush)context.Brush.Clone ();
-			Path = (GraphicsPath) context.Path.Clone();
-			Transform = Graphics.Transform;
+			context.CopyTo (this, false);
 			
 			CurrentX = context.CurrentX;
 			CurrentY = context.CurrentY;
 		}
 
 		internal readonly Graphics Graphics;
+		Font font = null;
 
-		internal Font Font = new Font (FontFamily.GenericSansSerif, 12);
-		internal Pen Pen = new Pen (Color.Black, 1);
-		internal Brush Brush = new SolidBrush (Color.Black);
-		internal Matrix Transform;
+		internal Font Font {
+			get { return font ?? (font = new Font (FontFamily.GenericSansSerif, 12));}
+			set { font = value;}
+		}
 
+		Color color = Color.Black;
+		float width = 1;
+		Pen pen = null;
+
+		internal Pen Pen {
+			get { return pen ?? (pen = new Pen (color, width));}
+			set { pen = value;}
+		}
+
+		Brush brush = null;
+
+		internal Brush Brush {
+			get { return brush ?? (brush = new SolidBrush (color));}
+			set { brush = value;}
+		}
+
+		internal GraphicsState State;
 		internal float CurrentX;
 		internal float CurrentY;
+		GraphicsPath path = null;
 
-		internal GraphicsPath Path = new GraphicsPath();
+		internal GraphicsPath Path {
+			get { return path ?? (path = new GraphicsPath ());}
+			set { path = value;}
+		}
 
 		internal void SetColor (Color color)
 		{
-			Pen.Color = color;
-			Brush = new SolidBrush (color);
+			if (this.color != color) {
+				if (pen != null && pen.Color != color) {
+//					pen.Dispose ();
+					pen.Color = color;
+//					pen = null;
+				}
+				if (brush is SolidBrush && ((SolidBrush) brush).Color != color) {
+					brush.Dispose ();
+					brush = null;
+				}
+			}
+			this.color = color;
 		}
-
-		internal void Save()
+		
+		internal void SetWidth (float width)
+		{
+			if (this.width != width) {
+				if (pen != null) {
+					pen.Width = width;
+				}
+			}
+			this.width = width;
+		}
+		
+		internal void CopyTo (DrawingContext dc, bool toCurrent)
+		{
+			if (toCurrent) 
+				dc.Graphics.Restore (this.State);
+			else 
+				dc.State = this.Graphics.Save ();
+			dc.Font = this.font;
+			dc.Brush = this.brush;
+			dc.Pen = this.pen;
+			dc.SetWidth (this.width);
+			dc.SetColor (this.color);
+			dc.CurrentX = this.CurrentX;
+			dc.CurrentY = this.CurrentY;
+			if (this.path != null && this.path.PointCount > 0)
+				dc.Path = (GraphicsPath) this.path.Clone ();
+		}
+		
+		internal void Save ()
 		{
 			if (this.contexts == null)
 				this.contexts = new Stack<DrawingContext> ();
 
 			this.contexts.Push (new DrawingContext (this));
 		}
-
-		internal void Restore()
+		
+		internal void Restore ()
 		{
 			if (this.contexts == null || this.contexts.Count == 0)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException ();
 
 			var dc = this.contexts.Pop ();
 
-			Font = dc.Font;
-			Pen = dc.Pen;
-			Brush = dc.Brush;
-			Path = dc.Path;
-			if (dc.Transform != null)
-				Graphics.Transform = dc.Transform;
-			else
-				Graphics.ResetTransform ();
+			dc.CopyTo (this, true);
+			dc.Dispose (true);
 
-			CurrentX = dc.CurrentX;
-			CurrentY = dc.CurrentY;
 		}
 
 		private Stack<DrawingContext> contexts;
+
+		public void Dispose (bool stacked)
+		{
+			if (!stacked) {
+				if (font != null)
+					font.Dispose ();
+				if (brush != null)
+					brush.Dispose ();
+				if (pen != null)
+					pen.Dispose ();
+			}
+			
+			if (path != null)
+				path.Dispose ();
+			
+			if (contexts != null)
+				while (contexts.Count!=0) {
+					var c = contexts.Pop ();
+					c.Dispose (true);
+				}
+		}
+		
+		public void Dispose ()
+		{
+			Dispose (false);
+		}
+		
+		~DrawingContext ()
+		{
+			Dispose (false);
+		}
 	}
 }
