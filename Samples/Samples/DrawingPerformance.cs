@@ -1,5 +1,5 @@
 // 
-// DrawingText.cs
+// DrawingPerformance.cs
 //  
 // Author:
 //       Lytico (http://limada.sourceforge.net)
@@ -55,14 +55,8 @@ namespace Samples
 		
 			public string Run ()
 			{
-				//Frames = 1;
-				//Stopwatch.Reset();
-				//Stopwatch.Start ();
 				int i = 0;
 				while (i++<Iterations) {
-					//?? how to force redraw??
-//					this.Hide();
-//					this.Show();
 					Application.Invoke (() => this.QueueDraw ());
 					
 				}
@@ -74,7 +68,6 @@ namespace Samples
 				                     Frames / (ms / 1000d),
 				                     Frames);
 				
-				//Frames = 1;
 				Stopwatch.Reset ();
 			}
 			
