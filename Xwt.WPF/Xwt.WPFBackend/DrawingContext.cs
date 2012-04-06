@@ -106,9 +106,7 @@ namespace Xwt.WPFBackend
 		{
 			if (this.color != color) {
 				if (pen != null && pen.Color != color) {
-//					pen.Dispose ();
 					pen.Color = color;
-//					pen = null;
 				}
 				if (brush is SolidBrush && ((SolidBrush) brush).Color != color) {
 					brush.Dispose ();
