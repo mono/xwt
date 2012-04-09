@@ -728,7 +728,7 @@ namespace Xwt.WPFBackend
 		static void FillDataStore (TransferDataStore store, IDataObject data, TransferDataType [] types)
 		{
 			foreach (var type in types) {
-				string format = type.ToWpfDragType ();
+				string format = type.ToWpfDataFormat ();
 				if (!data.GetDataPresent (format))
 					continue;
 
@@ -745,7 +745,7 @@ namespace Xwt.WPFBackend
 
 		void WidgetDragOverHandler (object sender, System.Windows.DragEventArgs e)
 		{
-			var types = e.Data.GetFormats ().Select (t => t.ToXwtDragType ()).ToArray ();
+			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
 			var pos = e.GetPosition (Widget).ToXwtPoint ();
 			var proposedAction = DetectDragAction (e.KeyStates);
 
@@ -791,7 +791,7 @@ namespace Xwt.WPFBackend
 		{
 			WidgetDragLeaveHandler (sender, e);
 
-			var types = e.Data.GetFormats ().Select (t => t.ToXwtDragType ()).ToArray ();
+			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
 			var pos = e.GetPosition (Widget).ToXwtPoint ();
 			var actualEffect = currentDragEffect;
 
