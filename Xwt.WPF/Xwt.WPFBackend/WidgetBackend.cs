@@ -790,6 +790,8 @@ namespace Xwt.WPFBackend
 
 		void WidgetDropHandler (object sender, System.Windows.DragEventArgs e)
 		{
+			WidgetDragLeaveHandler (sender, e);
+
 			var types = e.Data.GetFormats ().Select (t => t.ToXwtDragType ()).ToArray ();
 			var pos = e.GetPosition (Widget).ToXwtPoint ();
 			var actualEffect = currentDragEffect;
