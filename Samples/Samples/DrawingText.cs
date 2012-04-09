@@ -92,13 +92,13 @@ namespace Samples
 			ctx.SetColor (Colors.DarkCyan);
 			text.Text = "Praesent ac lacus nec dolor pulvinar feugiat a id elit.";
 			var size4 = text.GetSize ();
-			text.Heigth = size4.Height / 2;
+			text.Height = size4.Height / 2;
 			text.Trimming=TextTrimming.WordElipsis;
 			ctx.DrawTextLayout (text, col2.Left, col2.Bottom + 5);
 			
 			ctx.SetLineWidth (1);
 			ctx.SetColor (Colors.Blue);
-			ctx.Rectangle (new Rectangle (col2.Left, col2.Bottom + 5, text.Width, text.Heigth));
+			ctx.Rectangle (new Rectangle (col2.Left, col2.Bottom + 5, text.Width, text.Height));
 			ctx.Stroke();
 			ctx.Restore ();
 			
@@ -121,7 +121,7 @@ namespace Samples
 			text.Text = string.Format ("Size 1 {0}\r\nSize 2 {1}\r\nSize 3 {2} Scale {3}", 
 			                           size1, size2, size3, scale);
 			text.Width = -1; // this clears textsize
-			text.Heigth = -1;
+			text.Height = -1;
 			ctx.Rotate (5);
 			// maybe someone knows a formula with angle and textsize to calculyte ty
 			var ty = 30; 
