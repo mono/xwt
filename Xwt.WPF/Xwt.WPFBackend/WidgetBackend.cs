@@ -608,7 +608,6 @@ namespace Xwt.WPFBackend
 
 		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
 		{
-			var args = ToXwtButtonArgs (e);
 			Toolkit.Invoke (delegate () {
 				eventSink.OnButtonReleased (ToXwtButtonArgs (e));
 			});
