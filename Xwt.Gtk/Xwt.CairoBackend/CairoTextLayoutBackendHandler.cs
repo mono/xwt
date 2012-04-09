@@ -84,7 +84,7 @@ namespace Xwt.CairoBackend
 			la.Measured = false;
 		}
 		
-		public void SetHeigth (object backend, double value)
+		public void SetHeight (object backend, double value)
 		{
 			LayoutBackend la = (LayoutBackend) backend;
 			la.Heigth = value;

@@ -36,7 +36,7 @@ namespace Xwt.Backends
 		object Create (ICanvasBackend canvas);
 		
 		void SetWidth (object backend, double value);
-		void SetHeigth (object backend, double value);
+		void SetHeight (object backend, double value);
 		void SetText (object backend, string text);
 		void SetFont (object backend, Font font);
 		void SetTrimming (object backend, TextTrimming textTrimming);

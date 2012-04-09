@@ -74,7 +74,7 @@ namespace Xwt.GtkBackend
 			tl.Width = (int) (value * Pango.Scale.PangoScale);
 		}
 		
-		public void SetHeigth (object backend, double value)
+		public void SetHeight (object backend, double value)
 		{
 			this.Heigth = value;
 		}

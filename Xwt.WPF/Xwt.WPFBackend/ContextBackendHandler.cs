@@ -272,10 +272,11 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext)backend;
 			var sfont = layout.Font.ToDrawingFont ();
 			var measure = layout.GetSize ();
-			var h = layout.Heigth > 0 ? (float)layout.Heigth : (float)measure.Height;
+			var h = layout.Height > 0 ? (float)layout.Height : (float)measure.Height;
 			var stringFormat = TextLayoutContext.StringFormat;
 			var sdStringFormat = layout.Trimming.ToDrawingStringTrimming ();
-			if (layout.Heigth > 0 && stringFormat.Trimming != sdStringFormat) {
+
+			if (layout.Height > 0 && stringFormat.Trimming != sdStringFormat) {
 				stringFormat = (System.Drawing.StringFormat)stringFormat.Clone ();
 				stringFormat.Trimming = sdStringFormat;
 			}

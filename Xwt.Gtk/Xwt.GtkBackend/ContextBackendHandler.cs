@@ -54,7 +54,7 @@ namespace Xwt.GtkBackend
 			Pango.Layout pl = (Pango.Layout)WidgetRegistry.GetBackend (layout);
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.MoveTo (x, y);
-			if (layout.Heigth <= 0) {
+			if (layout.Height <= 0) {
 				Pango.CairoHelper.ShowLayout (ctx.Context, pl);
 			} else {
 				var lc = pl.LineCount;
@@ -66,7 +66,7 @@ namespace Xwt.GtkBackend
 					var extl = new Pango.Rectangle ();
 					line.GetExtents (ref ext, ref extl);
 					h += (extl.Height / scale);
-					if (h > layout.Heigth)
+					if (h > layout.Height)
 						break;
 					ctx.Context.MoveTo (x, y + h);
 					Pango.CairoHelper.ShowLayoutLine (ctx.Context, line);
