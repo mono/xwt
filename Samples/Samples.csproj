@@ -89,6 +89,7 @@
     <Compile Include="Samples\DrawingText.cs" />
     <Compile Include="Samples\DrawingFigures.cs" />
     <Compile Include="Samples\DrawingPatternsAndImages.cs" />
+	<Compile Include="Samples\DrawingPerformance.cs" />
     <Compile Include="Samples\ListBoxSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
