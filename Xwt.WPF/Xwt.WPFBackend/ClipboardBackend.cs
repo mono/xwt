@@ -27,8 +27,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media.Imaging;
 using Xwt.Backends;
 using WindowsClipboard = System.Windows.Clipboard;
 
@@ -48,33 +46,8 @@ namespace Xwt.WPFBackend
 				throw new ArgumentNullException ("type");
 			if (dataSource == null)
 				throw new ArgumentNullException ("dataSource");
-			
-			if (type == TransferDataType.Image) {
-				BitmapSource bmp = dataSource() as BitmapSource;
-				if (bmp == null)
-					throw new ArgumentException ("data is not the incorrect type", "data");
 
-				WindowsClipboard.SetImage (bmp);
-				return;
-			}
-
-			if (type == TransferDataType.Text) {
-				string text = dataSource() as string;
-				if (text == null)
-					throw new ArgumentException ("data is not the correct type", "data");
-
-				WindowsClipboard.SetText (text);
-				return;
-			}
-
-			if (type == TransferDataType.Text) {
-				string text = dataSource () as string;
-				if (text == null)
-					throw new ArgumentException ("data is not the correct type", "data");
-
-				WindowsClipboard.SetText (text, TextDataFormat.Rtf);
-				return;
-			}
+			WindowsClipboard.SetData (type.ToWpfDataFormat (), dataSource ());
 		}
 
 		public bool IsTypeAvailable (TransferDataType type)
@@ -82,16 +55,7 @@ namespace Xwt.WPFBackend
 			if (type == null)
 				throw new ArgumentNullException ("type");
 
-			if (type == TransferDataType.Image)
-				return WindowsClipboard.ContainsImage ();
-			if (type == TransferDataType.Text) {
-				return WindowsClipboard.ContainsText (TextDataFormat.UnicodeText) ||
-				       WindowsClipboard.ContainsText (TextDataFormat.Text);
-			}
-			if (type == TransferDataType.Rtf)
-				return WindowsClipboard.ContainsText (TextDataFormat.Rtf);
-
-			return false;
+			return WindowsClipboard.ContainsData (type.ToWpfDataFormat ());
 		}
 
 		public object GetData (TransferDataType type)
@@ -102,18 +66,7 @@ namespace Xwt.WPFBackend
 			while (!IsTypeAvailable (type))
 				Thread.Sleep (1);
 
-			if (type == TransferDataType.Image)
-				return WindowsClipboard.GetImage ();
-			if (type == TransferDataType.Rtf)
-				return WindowsClipboard.GetText (TextDataFormat.Rtf);
-			if (type == TransferDataType.Text) {
-				if (WindowsClipboard.ContainsText (TextDataFormat.UnicodeText))
-					return WindowsClipboard.GetText();
-				
-				return WindowsClipboard.GetText (TextDataFormat.Text);
-			}
-
-			throw new NotImplementedException();
+			return WindowsClipboard.GetData (type.ToWpfDataFormat ());
 		}
 
 		public IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state)
