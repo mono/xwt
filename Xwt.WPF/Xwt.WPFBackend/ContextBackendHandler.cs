@@ -205,7 +205,14 @@ namespace Xwt.WPFBackend
 		public void SetColor (object backend, Color color)
 		{
 			var c = (DrawingContext) backend;
-			c.SetColor (color.ToDrawingColor ());
+
+			var dc = color.ToDrawingColor ();
+			if (c.Pen.Color != dc) {
+				c.Pen.Color = dc;
+
+				c.Brush.Dispose();
+				c.Brush = new SolidBrush (dc);
+			}
 		}
 
 		public void SetLineWidth (object backend, double width)
@@ -264,13 +271,13 @@ namespace Xwt.WPFBackend
 		public void SetFont (object backend, Font font)
 		{
 			var c = (DrawingContext) backend;
+			c.Font.Dispose();
 			c.Font = font.ToDrawingFont ();
 		}
 
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			var c = (DrawingContext)backend;
-			var sfont = layout.Font.ToDrawingFont ();
 			var measure = layout.GetSize ();
 			var h = layout.Height > 0 ? (float)layout.Height : (float)measure.Height;
 			var stringFormat = TextLayoutContext.StringFormat;
@@ -280,6 +287,7 @@ namespace Xwt.WPFBackend
 				stringFormat = (System.Drawing.StringFormat)stringFormat.Clone ();
 				stringFormat.Trimming = sdStringFormat;
 			}
+
 			c.Graphics.DrawString (layout.Text, layout.Font.ToDrawingFont (), c.Brush,
 			                       new RectangleF ((float)x, (float)y, (float)measure.Width, h),
 			                       stringFormat);
@@ -304,13 +312,13 @@ namespace Xwt.WPFBackend
 		public void ResetTransform (object backend)
 		{
 			var c = (DrawingContext)backend;
-			c.Graphics.ResetTransform();
+			c.Graphics.ResetTransform ();
 		}
 
 		public void Rotate (object backend, double angle)
 		{
 			var c = (DrawingContext)backend;
-			c.Graphics.RotateTransform((float)angle);
+			c.Graphics.RotateTransform ((float)angle);
 		}
 
 		public void Scale (object backend, double scaleX, double scaleY)
@@ -329,7 +337,7 @@ namespace Xwt.WPFBackend
 		{
 			Matrix m = ((DrawingContext)backend).Graphics.Transform;
 			PointF p = new PointF ((float)x, (float)y);
-			PointF[] pts = new PointF[] {p};
+			PointF[] pts = new PointF[] { p };
 			m.TransformPoints (pts);
 			x = pts[0].X;
 			y = pts[0].Y;
@@ -377,6 +385,7 @@ namespace Xwt.WPFBackend
 
 		public void Dispose (object backend)
 		{
+			((DrawingContext)backend).Dispose();
 		}
 
 		internal static void DrawImageCore (Graphics g, Bitmap bmp, float x, float y, float width, float height, float alpha)

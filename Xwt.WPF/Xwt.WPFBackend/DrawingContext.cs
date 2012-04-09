@@ -32,6 +32,7 @@ using System.Drawing.Drawing2D;
 namespace Xwt.WPFBackend
 {
 	internal class DrawingContext
+		: IDisposable
 	{
 		internal DrawingContext (Graphics graphics)
 		{
@@ -58,6 +59,23 @@ namespace Xwt.WPFBackend
 			CurrentY = context.CurrentY;
 		}
 
+		public void Dispose()
+		{
+			Font.Dispose();
+			Pen.Dispose();
+			Brush.Dispose();
+			Path.Dispose();
+			
+			if (Transform != null)
+				Transform.Dispose();
+
+			if (this.contexts != null) {
+				foreach (var drawingContext in this.contexts) {
+					drawingContext.Dispose ();
+				}
+			}
+		}
+
 		internal readonly Graphics Graphics;
 
 		internal Font Font = new Font (FontFamily.GenericSansSerif, 12);
@@ -69,12 +87,6 @@ namespace Xwt.WPFBackend
 		internal float CurrentY;
 
 		internal GraphicsPath Path = new GraphicsPath();
-
-		internal void SetColor (Color color)
-		{
-			Pen.Color = color;
-			Brush = new SolidBrush (color);
-		}
 
 		internal void Save()
 		{
