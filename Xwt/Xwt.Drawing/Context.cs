@@ -374,6 +374,16 @@ namespace Xwt.Drawing
 			handler.DrawImage (Backend, GetBackend (img), rect.X, rect.Y, rect.Width, rect.Height, alpha);
 		}
 
+		public void DrawImage (Image img, Rectangle srcRect, Rectangle destRect)
+		{
+			handler.DrawImage (Backend, GetBackend (img), srcRect, destRect, 1);
+		}
+
+		public void DrawImage (Image img, Rectangle srcRect, Rectangle destRect, double alpha)
+		{
+			handler.DrawImage (Backend, GetBackend (img), srcRect, destRect, alpha);
+		}
+
 		/// <summary>
 		/// Resets the current trasnformation matrix (CTM) to the Identity Matrix
 		/// </summary>
