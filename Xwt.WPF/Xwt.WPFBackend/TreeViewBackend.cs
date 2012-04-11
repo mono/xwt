@@ -59,20 +59,17 @@ namespace Xwt.WPFBackend
 			//VirtualizingStackPanel.SetIsVirtualizing (Tree, false);
 		}
 		
-		public ScrollPolicy VerticalScrollPolicy
-		{
+		public ScrollPolicy VerticalScrollPolicy {
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (Tree).ToXwtScrollPolicy (); }
 			set { ScrollViewer.SetVerticalScrollBarVisibility (Tree, value.ToWpfScrollBarVisibility ()); }
 		}
 
-		public ScrollPolicy HorizontalScrollPolicy
-		{
+		public ScrollPolicy HorizontalScrollPolicy {
 			get { return ScrollViewer.GetHorizontalScrollBarVisibility (Tree).ToXwtScrollPolicy (); }
 			set { ScrollViewer.SetHorizontalScrollBarVisibility (Tree, value.ToWpfScrollBarVisibility ()); }
 		}
 
-		public TreePosition[] SelectedRows
-		{
+		public TreePosition[] SelectedRows {
 			get { return Tree.SelectedItems.Cast<TreePosition> ().ToArray (); }
 		}
 
@@ -192,7 +189,7 @@ namespace Xwt.WPFBackend
 
 				int index = Tree.View.Columns.IndexOf (col);
 				if (index == 0) {
-				    var dockFactory = CreateExpanderDock ();
+					var dockFactory = CreateExpanderDock ();
 					dockFactory.AppendChild (cellTemplate);
 
 					col.CellTemplate.VisualTree = dockFactory;
@@ -218,8 +215,7 @@ namespace Xwt.WPFBackend
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
-			if (eventId is TableViewEvent)
-			{
+			if (eventId is TableViewEvent) {
 				switch ((TableViewEvent)eventId) {
 				case TableViewEvent.SelectionChanged:
 					Tree.SelectedItemsChanged += OnSelectedItemsChanged;
@@ -231,8 +227,7 @@ namespace Xwt.WPFBackend
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			if (eventId is TableViewEvent)
-			{
+			if (eventId is TableViewEvent) {
 				switch ((TableViewEvent)eventId) {
 				case TableViewEvent.SelectionChanged:
 					Tree.SelectedItemsChanged -= OnSelectedItemsChanged;
@@ -241,14 +236,12 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		protected ExTreeView Tree
-		{
+		protected ExTreeView Tree {
 			get { return (ExTreeView)Widget; }
 			set { Widget = value; }
 		}
 
-		protected ITreeViewEventSink TreeViewEventSink
-		{
+		protected ITreeViewEventSink TreeViewEventSink {
 			get { return (ITreeViewEventSink)EventSink; }
 		}
 

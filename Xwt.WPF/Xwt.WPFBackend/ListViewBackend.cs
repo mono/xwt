@@ -43,43 +43,31 @@ namespace Xwt.WPFBackend
 		{
 			ListView = new ExListView();
 			ListView.View = this.view;
+			VirtualizingStackPanel.SetIsVirtualizing (ListView, false);
 		}
 		
-		public Xwt.ScrollPolicy VerticalScrollPolicy
-		{
-			get {
-				return DataConverter.ToXwtScrollPolicy (ScrollViewer.GetVerticalScrollBarVisibility (ListView));
-			}
-			set {
-				ScrollViewer.SetVerticalScrollBarVisibility (ListView, DataConverter.ToWpfScrollBarVisibility (value));
-			}
+		public ScrollPolicy VerticalScrollPolicy {
+			get { return ScrollViewer.GetVerticalScrollBarVisibility (this.ListView).ToXwtScrollPolicy (); }
+			set { ScrollViewer.SetVerticalScrollBarVisibility (ListView, value.ToWpfScrollBarVisibility ()); }
 		}
 
-		public Xwt.ScrollPolicy HorizontalScrollPolicy
-		{
-			get
-			{
-				return DataConverter.ToXwtScrollPolicy (ScrollViewer.GetHorizontalScrollBarVisibility (ListView));
-			}
-			set
-			{
-				ScrollViewer.SetHorizontalScrollBarVisibility (ListView, DataConverter.ToWpfScrollBarVisibility (value));
-			}
+		public ScrollPolicy HorizontalScrollPolicy {
+			get { return ScrollViewer.GetHorizontalScrollBarVisibility (this.ListView).ToXwtScrollPolicy (); }
+			set { ScrollViewer.SetHorizontalScrollBarVisibility (ListView, value.ToWpfScrollBarVisibility ()); }
 		}
 
 		public bool HeadersVisible {
 			get { return this.headersVisible; }
-			set
-			{
+			set {
 				this.headersVisible = value;
 				if (value) {
-					if (this.view.ColumnHeaderContainerStyle != null)
-						this.view.ColumnHeaderContainerStyle.Setters.Clear ();
-				}
-				else {
-					this.view.ColumnHeaderContainerStyle = new Style();
-					this.view.ColumnHeaderContainerStyle.Setters.Add (
-						new Setter (UIElement.VisibilityProperty, Visibility.Collapsed));
+				    if (this.view.ColumnHeaderContainerStyle != null)
+						this.view.ColumnHeaderContainerStyle.Setters.Remove (HideHeadersSetter);
+				} else {
+					if (this.view.ColumnHeaderContainerStyle == null)
+						this.view.ColumnHeaderContainerStyle = new Style();
+
+					this.view.ColumnHeaderContainerStyle.Setters.Add (HideHeadersSetter);
 				}
 			}
 		}
@@ -207,5 +195,7 @@ namespace Xwt.WPFBackend
 		protected IListViewEventSink ListViewEventSink {
 			get { return (IListViewEventSink) EventSink; }
 		}
+
+		private static readonly Setter HideHeadersSetter = new Setter (UIElement.VisibilityProperty, Visibility.Collapsed);
 	}
 }
