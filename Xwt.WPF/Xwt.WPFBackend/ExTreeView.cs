@@ -53,15 +53,11 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
-		//public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register ("Columns",
-		//    typeof (GridViewColumnCollection), typeof (ExTreeView),
-		//    new PropertyMetadata (new GridViewColumnCollection()));
-
-		//public GridViewColumnCollection Columns
-		//{
-		//    get { return (GridViewColumnCollection) GetValue (ColumnsProperty); }
-		//    set { SetValue (ColumnsProperty, value); }
-		//}
+		private readonly GridView view = new GridView();
+		public GridView View
+		{
+			get { return this.view; }
+		}
 
 		public static readonly DependencyProperty SelectionModeProperty = DependencyProperty.Register ("SelectionMode",
 			typeof (System.Windows.Controls.SelectionMode), typeof (ExTreeView),

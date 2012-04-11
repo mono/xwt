@@ -26,10 +26,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using Xwt.Engine;
 using Xwt.Backends;
 using Xwt.WPFBackend.Utilities;
@@ -53,6 +54,9 @@ namespace Xwt.WPFBackend
 		{
 			Tree = new ExTreeView();
 			Tree.Resources.MergedDictionaries.Add (TreeResourceDictionary);
+			Tree.ItemTemplate = new HierarchicalDataTemplate { ItemsSource = new Binding ("Children") };
+
+			//VirtualizingStackPanel.SetIsVirtualizing (Tree, false);
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy
@@ -72,11 +76,22 @@ namespace Xwt.WPFBackend
 			get { return Tree.SelectedItems.Cast<TreePosition> ().ToArray (); }
 		}
 
-		// TODO
-		public bool HeadersVisible
-		{
-			get;
-			set;
+		private bool headersVisible = true;
+		public bool HeadersVisible {
+			get { return this.headersVisible; }
+			set
+			{
+				this.headersVisible = value;
+				if (value) {
+					if (Tree.View.ColumnHeaderContainerStyle != null)
+						Tree.View.ColumnHeaderContainerStyle.Setters.Remove (HideHeaderSetter);
+				} else {
+					if (Tree.View.ColumnHeaderContainerStyle == null)
+						Tree.View.ColumnHeaderContainerStyle = new Style();
+
+				    Tree.View.ColumnHeaderContainerStyle.Setters.Add (HideHeaderSetter);
+				}
+			}
 		}
 
 		public void SelectRow (TreePosition pos)
@@ -152,12 +167,12 @@ namespace Xwt.WPFBackend
 		public object AddColumn (ListViewColumn column)
 		{
 			var col = new GridViewColumn ();
+
 			UpdateColumn (column, col, ListViewColumnChange.Title);
+
+			Tree.View.Columns.Add (col);
+			
 			UpdateColumn (column, col, ListViewColumnChange.Cells);
-
-			this.columns.Add (column);
-
-			UpdateTemplate ();
 
 			return col;
 		}
@@ -169,18 +184,27 @@ namespace Xwt.WPFBackend
 			case ListViewColumnChange.Title:
 				col.Header = column.Title;
 				break;
+
 			case ListViewColumnChange.Cells:
-				//col.CellTemplate = new DataTemplate
-				//    { VisualTree = CellUtil.CreateBoundColumnTemplate (column.Views, "Values") };
+				var cellTemplate = CellUtil.CreateBoundColumnTemplate (column.Views);
+
+				col.CellTemplate = new DataTemplate { VisualTree = cellTemplate };
+
+				int index = Tree.View.Columns.IndexOf (col);
+				if (index == 0) {
+				    var dockFactory = CreateExpanderDock ();
+					dockFactory.AppendChild (cellTemplate);
+
+					col.CellTemplate.VisualTree = dockFactory;
+				}
+
 				break;
 			}
 		}
 
 		public void RemoveColumn (ListViewColumn column, object handle)
 		{
-			this.columns.Remove (column);
-
-			UpdateTemplate ();
+			Tree.View.Columns.Remove ((GridViewColumn) handle);
 		}
 
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
@@ -216,8 +240,6 @@ namespace Xwt.WPFBackend
 				}
 			}
 		}
-
-		private readonly List<ListViewColumn> columns = new List<ListViewColumn> ();
 
 		protected ExTreeView Tree
 		{
@@ -268,19 +290,82 @@ namespace Xwt.WPFBackend
 			return treeItem;
 		}
 
-		private void UpdateTemplate()
+		private FrameworkElementFactory CreateExpanderDock ()
 		{
-			// Multi-column currently isn't supported
+			var dockFactory = new FrameworkElementFactory (typeof (DockPanel));
 
-			if (this.columns.Count == 0) {
-				Tree.ItemTemplate = null;
-				return;
-			}
+			var source = new RelativeSource (RelativeSourceMode.FindAncestor, typeof (ExTreeViewItem), 1);
 
-			Tree.ItemTemplate = new HierarchicalDataTemplate {
-				VisualTree = CellUtil.CreateBoundColumnTemplate (this.columns[0].Views),
-				ItemsSource = new Binding ("Children")
-			};
+			Style expanderStyle = new Style (typeof (SWC.Primitives.ToggleButton));
+			expanderStyle.Setters.Add (new Setter (UIElement.FocusableProperty, false));
+			expanderStyle.Setters.Add (new Setter (FrameworkElement.WidthProperty, 19d));
+			expanderStyle.Setters.Add (new Setter (FrameworkElement.HeightProperty, 13d));
+
+			var expanderTemplate = new ControlTemplate (typeof (SWC.Primitives.ToggleButton));
+
+			var outerBorderFactory = new FrameworkElementFactory (typeof (Border));
+			outerBorderFactory.SetValue (FrameworkElement.WidthProperty, 19d);
+			outerBorderFactory.SetValue (FrameworkElement.HeightProperty, 13d);
+			outerBorderFactory.SetValue (Control.BackgroundProperty, Brushes.Transparent);
+			outerBorderFactory.SetBinding (UIElement.VisibilityProperty,
+				new Binding ("HasItems") { RelativeSource = source, Converter = BoolVisibilityConverter });
+
+			var innerBorderFactory = new FrameworkElementFactory (typeof (Border));
+			innerBorderFactory.SetValue (FrameworkElement.WidthProperty, 9d);
+			innerBorderFactory.SetValue (FrameworkElement.HeightProperty, 9d);
+			innerBorderFactory.SetValue (Control.BorderThicknessProperty, new Thickness (1));
+			innerBorderFactory.SetValue (Control.BorderBrushProperty, new SolidColorBrush (Color.FromRgb (120, 152, 181)));
+			innerBorderFactory.SetValue (Border.CornerRadiusProperty, new CornerRadius (1));
+			innerBorderFactory.SetValue (UIElement.SnapsToDevicePixelsProperty, true);
+
+			innerBorderFactory.SetValue (Control.BackgroundProperty, ExpanderBackgroundBrush);
+
+			var pathFactory = new FrameworkElementFactory (typeof (Path));
+			pathFactory.SetValue (FrameworkElement.MarginProperty, new Thickness (1));
+			pathFactory.SetValue (Shape.FillProperty, Brushes.Black);
+			pathFactory.SetBinding (Path.DataProperty, 
+				new Binding ("IsChecked") {
+					RelativeSource = new RelativeSource (RelativeSourceMode.FindAncestor, typeof (SWC.Primitives.ToggleButton), 1),
+					Converter = BooleanGeometryConverter
+			});
+
+			innerBorderFactory.AppendChild (pathFactory);
+			outerBorderFactory.AppendChild (innerBorderFactory);
+
+			expanderTemplate.VisualTree = outerBorderFactory;
+
+			expanderStyle.Setters.Add (new Setter (Control.TemplateProperty, expanderTemplate));
+
+			var toggleFactory = new FrameworkElementFactory (typeof (SWC.Primitives.ToggleButton));
+			toggleFactory.SetValue (FrameworkElement.StyleProperty, expanderStyle);
+			toggleFactory.SetBinding (FrameworkElement.MarginProperty,
+				new Binding ("Level") { RelativeSource = source, Converter = LevelConverter });
+			toggleFactory.SetBinding (SWC.Primitives.ToggleButton.IsCheckedProperty,
+				new Binding ("IsExpanded") { RelativeSource = source });
+			toggleFactory.SetValue (SWC.Primitives.ButtonBase.ClickModeProperty, ClickMode.Press);
+
+			dockFactory.AppendChild (toggleFactory);
+			return dockFactory;
 		}
+
+		private static readonly LevelToIndentConverter LevelConverter = new LevelToIndentConverter();
+		private static readonly BooleanToVisibilityConverter BoolVisibilityConverter = new BooleanToVisibilityConverter();
+
+		private static readonly LinearGradientBrush ExpanderBackgroundBrush = new LinearGradientBrush {
+			StartPoint = new System.Windows.Point (0, 0),
+			EndPoint = new System.Windows.Point (1, 1),
+			GradientStops = new GradientStopCollection {
+				new GradientStop (Colors.White, 0.2),
+				new GradientStop (Color.FromRgb (192, 183, 166), 1)
+			}
+		};
+
+		private static readonly Geometry Plus = Geometry.Parse ("M 0 2 L 0 3 L 2 3 L 2 5 L 3 5 L 3 3 L 5 3 L 5 2 L 3 2 L 3 0 L 2 0 L 2 2 Z");
+		private static readonly Geometry Minus = Geometry.Parse ("M 0 2 L 0 3 L 5 3 L 5 2 Z");
+
+		private static readonly BooleanToValueConverter BooleanGeometryConverter = 
+			new BooleanToValueConverter { TrueValue = Minus, FalseValue = Plus };
+
+		private static readonly Setter HideHeaderSetter = new Setter (UIElement.VisibilityProperty, Visibility.Collapsed);
 	}
 }

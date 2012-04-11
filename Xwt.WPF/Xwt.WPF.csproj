@@ -54,6 +54,7 @@
     <Compile Include="Xwt.WPFBackend.Utilities\TypeToStringConverter.cs" />
     <Compile Include="Xwt.WPFBackend\AlertDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\Backend.cs" />
+    <Compile Include="Xwt.WPFBackend\BooleanToValueConverter.cs" />
     <Compile Include="Xwt.WPFBackend\ButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CanvasBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CheckBoxBackend.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Xwt.WPFBackend\DataConverter.cs" />
     <Compile Include="Xwt.WPFBackend\FontBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\KeyboardUtil.cs" />
+    <Compile Include="Xwt.WPFBackend\LevelToIndentConverter.cs" />
     <Compile Include="Xwt.WPFBackend\ListBoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ListDataSource.cs" />
     <Compile Include="Xwt.WPFBackend\ListSourceNotifyWrapper.cs" />
