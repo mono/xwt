@@ -50,12 +50,13 @@ namespace Xwt.WPFBackend.Utilities
 			return container;
 		}
 
+		private static readonly Thickness CellMargins = new Thickness (2);
 		internal static FrameworkElementFactory CreateBoundCellRenderer (CellView view, string dataPath = ".")
 		{
 			TextCellView textView = view as TextCellView;
 			if (textView != null) {
 				FrameworkElementFactory factory = new FrameworkElementFactory (typeof (SWC.TextBlock));
-				factory.SetValue (FrameworkElement.MarginProperty, new Thickness (2));
+				factory.SetValue (FrameworkElement.MarginProperty, CellMargins);
 
 				if (textView.TextField != null)
 					factory.SetBinding (SWC.TextBlock.TextProperty, new Binding (dataPath + "[" + textView.TextField.Index + "]"));
@@ -66,7 +67,7 @@ namespace Xwt.WPFBackend.Utilities
 			ImageCellView imageView = view as ImageCellView;
 			if (imageView != null) {
 				FrameworkElementFactory factory = new FrameworkElementFactory (typeof (SWC.Image));
-				factory.SetValue (FrameworkElement.MarginProperty, new Thickness (2));
+				factory.SetValue (FrameworkElement.MarginProperty, CellMargins);
 
 				if (imageView.ImageField != null) {
 					var binding = new Binding (dataPath + "[" + imageView.ImageField.Index + "]")
