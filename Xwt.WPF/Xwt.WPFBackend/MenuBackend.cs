@@ -98,7 +98,7 @@ namespace Xwt.WPFBackend
 		public void Popup ()
 		{
 			var menu = CreateContextMenu ();
-			menu.Placement = PlacementMode.Mouse;
+			menu.Placement = PlacementMode.MousePoint;
 			menu.IsOpen = true;
 		}
 
