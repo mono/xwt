@@ -30,6 +30,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.WPFBackend
 {
@@ -121,7 +122,7 @@ namespace Xwt.WPFBackend
 
 		private void OnTextChanged (object sender, EventArgs e)
 		{
-			TextEntryEventSink.OnChanged();
+			Toolkit.Invoke (TextEntryEventSink.OnChanged);
 		}
 
 		private void UpdatePlaceholder (string newPlaceholder, bool focused)
