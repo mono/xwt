@@ -247,6 +247,11 @@ namespace Xwt.Mac
 			var image = (NSImage) img;
 			image.DrawInRect (new RectangleF ((float)x, (float)y, (float)width, (float)height), RectangleF.Empty, NSCompositingOperation.SourceOver, (float)alpha);
 		}
+
+		public void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha)
+		{
+			// TODO
+		}
 		
 		public void ResetTransform (object backend)
 		{

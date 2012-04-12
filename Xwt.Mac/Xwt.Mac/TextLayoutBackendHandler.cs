@@ -75,7 +75,7 @@ namespace Xwt.Mac
 			li.Width = value;
 		}
 		
-		public void SetHeigth (object backend, double value)
+		public void SetHeight (object backend, double value)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
 			li.Heigth = value;
