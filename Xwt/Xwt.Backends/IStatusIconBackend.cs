@@ -31,7 +31,7 @@ namespace Xwt.Backends
 {
 	public interface IStatusIconBackend : IMenuBackend
 	{
-		string PathToImage { set; }
+		void SetContent (object imageBackend);
 	}
 }
 

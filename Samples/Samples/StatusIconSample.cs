@@ -28,13 +28,14 @@ using System;
 using System.IO;
 using System.Collections.ObjectModel;
 using Xwt;
+using Xwt.Drawing;
 
 namespace Samples
 {
 	public class StatusIconSample : StatusIcon
 	{
 		public StatusIconSample (Collection<MenuItem> menuItems)
-		: base (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "package.png"),
+		: base (Image.FromResource (typeof (StatusIconSample), "package.png"),
 		        menuItems)
 		{
 		}

@@ -46,16 +46,14 @@ namespace Xwt.Mac
 			status_item.Menu = this;
 		}
 		
-		public string PathToImage {
-			set {
-				if (String.IsNullOrEmpty (value)) {
-					throw new ArgumentNullException ("pathToImage");
-				}
-				if (status_item == null) {
-					throw new InvalidOperationException ("backend was not initialized");
-				}
-				status_item.Image = new NSImage (value);
+		public void SetContent (object imageBackend) {
+			if (imageBackend == null) {
+				throw new ArgumentNullException ("imageBackend");
 			}
+			if (status_item == null) {
+				throw new InvalidOperationException ("backend was not initialized");
+			}
+			status_item.Image = (NSImage)imageBackend;
 		}
 	}
 }
