@@ -358,7 +358,11 @@ namespace Xwt
 		{
 			NodePosition np = GetPosition (pos);
 			np.ParentList.RemoveAt (np.NodeIndex);
+			var parent = np.ParentList.Parent;
+			var index = np.NodeIndex;
 			version++;
+			if (NodeDeleted != null)
+				NodeDeleted (this, new TreeNodeChildEventArgs (parent, index));
 		}
 		
 		public TreePosition GetParent (TreePosition pos)
