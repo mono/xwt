@@ -4,7 +4,7 @@
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
 //
-// Copyright (c) 2012 Eric Maupin
+// Copyright (c) 2012 Xamarin, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
