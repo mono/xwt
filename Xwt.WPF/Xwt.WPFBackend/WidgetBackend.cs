@@ -738,8 +738,10 @@ namespace Xwt.WPFBackend
 				else if (type == TransferDataType.Uri) {
 					var uris = ((string [])value).Select (f => new Uri (f)).ToArray ();
 					store.AddUris (uris);
-				} else
-					store.AddValue (type, (byte[]) data.GetData (format));
+				} else if (value is byte[])
+					store.AddValue (type, (byte[]) value);
+				else
+					store.AddValue (type, value);
 			}
 		}
 
