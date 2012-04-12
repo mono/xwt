@@ -92,6 +92,11 @@ namespace Xwt
 			}
 		}
 		
+		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		{
+			return new WidgetBackendHost ();
+		}
+		
 		public CustomComboTextEntry (ITextEntryBackend backend)
 		{
 			this.backend = backend;
