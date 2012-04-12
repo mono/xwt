@@ -237,7 +237,7 @@ namespace Xwt.Mac
 		
 		protected virtual Size GetNaturalSize ()
 		{
-			double w1 = Widget.FittingSize.Width;
+//			double w1 = Widget.FittingSize.Width;
 			return new Size (Widget.WidgetWidth(), Widget.WidgetHeight ());
 		}
 
