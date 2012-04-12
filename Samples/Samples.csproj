@@ -66,30 +66,81 @@
     <Compile Include="MonoDevelop.Components.Chart\IntegerAxis.cs" />
     <Compile Include="MonoDevelop.Components.Chart\Serie.cs" />
     <Compile Include="MonoDevelop.Components.Chart\TickEnumerator.cs" />
-    <Compile Include="Samples\ScrollWindowSample.cs" />
-    <Compile Include="Samples\ButtonSample.cs" />
-    <Compile Include="Samples\DrawingTransforms.cs" />
-    <Compile Include="Samples\ComboBoxes.cs" />
-    <Compile Include="Samples\Designer.cs" />
-    <Compile Include="Samples\Windows.cs" />
-    <Compile Include="Samples\TextEntries.cs" />
-    <Compile Include="Samples\Images.cs" />
-    <Compile Include="Samples\CanvasWithWidget.cs" />
-    <Compile Include="Samples\Tables.cs" />
-    <Compile Include="Samples\Labels.cs" />
-    <Compile Include="Samples\Colors.cs" />
-    <Compile Include="Samples\Frames.cs" />
-    <Compile Include="Samples\Checkboxes.cs" />
-    <Compile Include="Samples\WidgetEvents.cs" />
-    <Compile Include="Samples\ClipboardSample.cs" />
-    <Compile Include="Samples\MenuSamples.cs" />
-    <Compile Include="Samples\Tooltips.cs" />
-    <Compile Include="Samples\TreeViews.cs" />
-    <Compile Include="Samples\PanedViews.cs" />
-    <Compile Include="Samples\DrawingText.cs" />
-    <Compile Include="Samples\DrawingFigures.cs" />
-    <Compile Include="Samples\DrawingPatternsAndImages.cs" />
-    <Compile Include="Samples\ListBoxSample.cs" />
+    <Compile Include="Samples\PartialImages.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ScrollWindowSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ButtonSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\DrawingTransforms.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ComboBoxes.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Designer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Windows.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\TextEntries.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Images.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\CanvasWithWidget.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Tables.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Labels.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Colors.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Frames.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Checkboxes.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\WidgetEvents.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ClipboardSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\MenuSamples.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Tooltips.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\TreeViews.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\PanedViews.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\DrawingText.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\DrawingFigures.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\DrawingPatternsAndImages.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ListBoxSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

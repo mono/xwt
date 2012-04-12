@@ -248,6 +248,26 @@ namespace Xwt.CairoBackend
 			ctx.Context.Restore ();
 		}
 		
+		public void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha)
+		{
+			CairoContextBackend ctx = (CairoContextBackend)backend;
+			ctx.Context.Save ();
+			ctx.Context.NewPath();
+			ctx.Context.Rectangle (destRect.X, destRect.Y, destRect.Width, destRect.Height);
+			ctx.Context.Clip ();
+			ctx.Context.Translate (destRect.X-srcRect.X, destRect.Y-srcRect.Y);
+			double sx = destRect.Width / srcRect.Width;
+			double sy = destRect.Height / srcRect.Height;
+			ctx.Context.Scale (sx, sy);
+			SetSourceImage (ctx.Context, img, 0, 0);
+			alpha = alpha * ctx.GlobalAlpha;
+			if (alpha == 1)
+				ctx.Context.Paint ();
+			else
+				ctx.Context.PaintWithAlpha (alpha);
+			ctx.Context.Restore ();
+		}
+		
 		protected virtual Size GetImageSize (object img)
 		{
 			return new Size (0,0);
