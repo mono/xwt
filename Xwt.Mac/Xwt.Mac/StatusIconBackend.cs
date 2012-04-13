@@ -32,29 +32,34 @@ using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	public class StatusIconBackend : MenuBackend, IStatusIconBackend
+	public class StatusIconBackend : IStatusIconBackend
 	{
 		// https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusBar_Class/Reference/Reference.html#//apple_ref/doc/constant_group/Status_Bar_Item_Length
 		static int NSVariableStatusItemLength = -1;
 		
 		NSStatusItem status_item;
 		
-		public override void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend)
 		{
-			base.InitializeBackend (frontend);
 			status_item = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
-			status_item.Menu = this;
 		}
 		
-		public void SetContent (object imageBackend) {
+		public void SetContent (object imageBackend, object menuBackend) {
 			if (imageBackend == null) {
 				throw new ArgumentNullException ("imageBackend");
+			}
+			if (menuBackend == null) {
+				throw new ArgumentNullException ("menuBackend");
 			}
 			if (status_item == null) {
 				throw new InvalidOperationException ("backend was not initialized");
 			}
 			status_item.Image = (NSImage)imageBackend;
+			status_item.Menu = (NSMenu)menuBackend;
 		}
+		
+		public void EnableEvent (object eventId) { throw new NotImplementedException (); }
+		public void DisableEvent (object eventId) { throw new NotImplementedException (); }
 	}
 }
 

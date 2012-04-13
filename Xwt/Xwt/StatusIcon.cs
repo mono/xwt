@@ -32,7 +32,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class StatusIcon : Menu
+	public class StatusIcon : XwtComponent
 	{
 		public StatusIcon (Image image, Collection<MenuItem> menuItems)
 		{
@@ -43,11 +43,14 @@ namespace Xwt
 				throw new ArgumentException ("menuItems must contain at least one item", "menuItems");
 			}
 			
+			Menu = new Menu ();
 			foreach (MenuItem menuItem in menuItems) {
-				InsertItem (this.Items.Count, menuItem);
+				Menu.InsertItem (Menu.Items.Count, menuItem);
 			}
-			Backend.SetContent (XwtObject.GetBackend (image));
+			Backend.SetContent (XwtObject.GetBackend (image), Menu.Backend);
 		}
+		
+		public Menu Menu { get; private set; }
 
 		IStatusIconBackend Backend {
 			get { return (IStatusIconBackend) BackendHost.Backend; }

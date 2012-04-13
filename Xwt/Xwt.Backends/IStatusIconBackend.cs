@@ -29,9 +29,9 @@ using System.Collections.ObjectModel;
 
 namespace Xwt.Backends
 {
-	public interface IStatusIconBackend : IMenuBackend
+	public interface IStatusIconBackend : IBackend
 	{
-		void SetContent (object imageBackend);
+		void SetContent (object imageBackend, object menuBackend);
 	}
 }
 
