@@ -28,7 +28,6 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
@@ -36,6 +35,11 @@ namespace Xwt.WPFBackend
 	public class DropDownButton
 		: SWC.Primitives.ToggleButton, IWpfWidget
 	{
+		public DropDownButton()
+		{
+			Checked += OnChecked;
+		}
+
 		public event EventHandler<MenuOpeningEventArgs> MenuOpening;
 
 		public WidgetBackend Backend
@@ -44,10 +48,14 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
-		protected override void OnToggle()
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
-			base.OnToggle();
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
+		}
 
+		private void OnChecked (object sender, RoutedEventArgs routedEventArgs)
+		{
 			if (!IsChecked.HasValue || !IsChecked.Value)
 				return;
 
@@ -62,9 +70,7 @@ namespace Xwt.WPFBackend
 				IsChecked = false;
 				return;
 			}
-
-			FocusManager.SetIsFocusScope (menu, false);
-
+			
 			string text = Content as string;
 			if (!String.IsNullOrWhiteSpace (text)) {
 				SWC.MenuItem selected = menu.Items.OfType<SWC.MenuItem>().FirstOrDefault (i => i.Header as string == text);
@@ -77,12 +83,6 @@ namespace Xwt.WPFBackend
 			menu.PlacementTarget = this;
 			menu.Placement = PlacementMode.Bottom;
 			menu.IsOpen = true;
-		}
-
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
-		{
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
 		}
 
 		private void OnMenuClosed (object sender, RoutedEventArgs e)
