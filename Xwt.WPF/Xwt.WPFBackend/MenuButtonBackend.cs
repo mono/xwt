@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Windows;
 using Xwt.Backends;
 using Xwt.Engine;
 
@@ -45,6 +46,21 @@ namespace Xwt.WPFBackend
 
 		protected IMenuButtonEventSink MenuButtonEventSink {
 			get { return (IMenuButtonEventSink) EventSink; }
+		}
+
+		public override void SetButtonType (ButtonType type)
+		{
+			switch (type) {
+			case ButtonType.Normal:
+				DropDownButton.Style = null;
+				break;
+
+			case ButtonType.DropDown:
+				DropDownButton.Style = (Style) ButtonResources["MenuDropDown"];
+				break;
+			}
+
+			DropDownButton.InvalidateMeasure();
 		}
 
 		private void OnMenuOpening (object sender, DropDownButton.MenuOpeningEventArgs e)
