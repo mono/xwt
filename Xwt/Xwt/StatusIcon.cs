@@ -35,25 +35,17 @@ namespace Xwt
 	public class StatusIcon : XwtComponent
 	{
 		Image image;
+		Menu menu;
 		
-		public StatusIcon (Collection<MenuItem> menuItems)
+		public StatusIcon ()
 		{
-			if (menuItems == null) {
-				throw new ArgumentNullException ("menuItems");
-			}
-			if (menuItems.Count == 0) {
-				throw new ArgumentException ("menuItems must contain at least one item", "menuItems");
-			}
-			
-			Menu = new Menu ();
-			foreach (MenuItem menuItem in menuItems) {
-				Menu.InsertItem (Menu.Items.Count, menuItem);
-			}
-			Backend.SetContent (Menu.Backend);
 		}
-		
-		public Menu Menu { get; private set; }
-		
+
+		public Menu Menu {
+			get { return menu; }
+			set { menu = value; Backend.SetMenu (Menu.Backend); }
+		}
+
 		public Image Image {
 			get { return image; }
 			set { image = value; Backend.SetImage (XwtObject.GetBackend (value)); }

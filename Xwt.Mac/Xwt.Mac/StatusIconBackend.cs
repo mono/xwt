@@ -44,13 +44,11 @@ namespace Xwt.Mac
 			status_item = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
 		}
 		
-		public void SetContent (object menuBackend) {
+		public void SetMenu (object menuBackend) {
 			if (menuBackend == null) {
 				throw new ArgumentNullException ("menuBackend");
 			}
-			if (status_item == null) {
-				throw new InvalidOperationException ("backend was not initialized");
-			}
+			
 			status_item.Menu = (NSMenu)menuBackend;
 		}
 		

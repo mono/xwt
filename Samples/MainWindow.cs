@@ -20,9 +20,9 @@ namespace Samples
 		
 		public MainWindow ()
 		{
-			var statusIconMenuItems = new Collection<MenuItem> ();
-			statusIconMenuItems.Add (new MenuItem ("Test"));
-			new StatusIconSample (statusIconMenuItems);
+			var statusIcon = new StatusIconSample ();
+			statusIcon.Menu = new Menu ();
+			statusIcon.Menu.Items.Add (new MenuItem ("Test"));
 			
 			Menu menu = new Menu ();
 			
