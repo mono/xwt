@@ -35,9 +35,9 @@ namespace Samples
 	public class StatusIconSample : StatusIcon
 	{
 		public StatusIconSample (Collection<MenuItem> menuItems)
-		: base (Image.FromResource (typeof (StatusIconSample), "package.png"),
-		        menuItems)
+		: base (menuItems)
 		{
+			Image = Image.FromResource (typeof (StatusIconSample), "package.png");
 		}
 	}
 }

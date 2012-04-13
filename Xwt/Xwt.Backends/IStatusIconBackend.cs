@@ -31,7 +31,9 @@ namespace Xwt.Backends
 {
 	public interface IStatusIconBackend : IBackend
 	{
-		void SetContent (object imageBackend, object menuBackend);
+		void SetContent (object menuBackend);
+		
+		void SetImage (object imageBackend);
 	}
 }
 

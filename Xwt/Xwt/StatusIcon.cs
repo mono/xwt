@@ -34,7 +34,9 @@ namespace Xwt
 {
 	public class StatusIcon : XwtComponent
 	{
-		public StatusIcon (Image image, Collection<MenuItem> menuItems)
+		Image image;
+		
+		public StatusIcon (Collection<MenuItem> menuItems)
 		{
 			if (menuItems == null) {
 				throw new ArgumentNullException ("menuItems");
@@ -47,10 +49,15 @@ namespace Xwt
 			foreach (MenuItem menuItem in menuItems) {
 				Menu.InsertItem (Menu.Items.Count, menuItem);
 			}
-			Backend.SetContent (XwtObject.GetBackend (image), Menu.Backend);
+			Backend.SetContent (Menu.Backend);
 		}
 		
 		public Menu Menu { get; private set; }
+		
+		public Image Image {
+			get { return image; }
+			set { image = value; Backend.SetImage (XwtObject.GetBackend (value)); }
+		}
 
 		IStatusIconBackend Backend {
 			get { return (IStatusIconBackend) BackendHost.Backend; }
