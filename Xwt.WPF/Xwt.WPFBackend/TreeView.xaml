@@ -63,17 +63,20 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-						<DockPanel>
-							<GridViewHeaderRowPresenter
-								DockPanel.Dock="Top"
-								Columns="{Binding Path=View.Columns, RelativeSource={x:Static RelativeSource.TemplatedParent}}"
-								ColumnHeaderContainerStyle="{Binding Path=View.ColumnHeaderContainerStyle, RelativeSource={x:Static RelativeSource.TemplatedParent}}"
-								ColumnHeaderTemplate="{Binding Path=View.ColumnHeaderTemplate, RelativeSource={x:Static RelativeSource.TemplatedParent}}"
-								ColumnHeaderTemplateSelector="{Binding Path=View.ColumnHeaderTemplateSelector, RelativeSource={x:Static RelativeSource.TemplatedParent}}"
-							/>
-							<ItemsPresenter />
-						</DockPanel>
+					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+						<ScrollViewer Background="{TemplateBinding Background}" CanContentScroll="false" Focusable="false" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+							<DockPanel>
+								<GridViewHeaderRowPresenter
+									DockPanel.Dock="Top"
+									Columns="{Binding Path=View.Columns, RelativeSource={x:Static RelativeSource.TemplatedParent}}"
+									ColumnHeaderContainerStyle="{Binding Path=View.ColumnHeaderContainerStyle, RelativeSource={x:Static RelativeSource.TemplatedParent}}"
+									ColumnHeaderTemplate="{Binding Path=View.ColumnHeaderTemplate, RelativeSource={x:Static RelativeSource.TemplatedParent}}"
+									ColumnHeaderTemplateSelector="{Binding Path=View.ColumnHeaderTemplateSelector, RelativeSource={x:Static RelativeSource.TemplatedParent}}"
+								/>
+							
+								<ItemsPresenter />
+							</DockPanel>
+						</ScrollViewer>
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>
