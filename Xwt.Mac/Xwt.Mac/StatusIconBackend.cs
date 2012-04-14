@@ -37,11 +37,11 @@ namespace Xwt.Mac
 		// https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusBar_Class/Reference/Reference.html#//apple_ref/doc/constant_group/Status_Bar_Item_Length
 		static int NSVariableStatusItemLength = -1;
 		
-		NSStatusItem status_item;
+		NSStatusItem statusItem;
 		
 		public void InitializeBackend (object frontend)
 		{
-			status_item = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
+			statusItem = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
 		}
 		
 		public void SetMenu (object menuBackend) {
@@ -49,7 +49,7 @@ namespace Xwt.Mac
 				throw new ArgumentNullException ("menuBackend");
 			}
 			
-			status_item.Menu = (NSMenu)menuBackend;
+			statusItem.Menu = (NSMenu)menuBackend;
 		}
 		
 		public void SetImage (object imageBackend) {
@@ -57,7 +57,7 @@ namespace Xwt.Mac
 				throw new ArgumentNullException ("imageBackend");
 			}
 			
-			status_item.Image = (NSImage)imageBackend;
+			statusItem.Image = (NSImage)imageBackend;
 		}
 		
 		public void EnableEvent (object eventId) { throw new NotImplementedException (); }
