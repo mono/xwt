@@ -104,7 +104,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="package.png">
       <LogicalName>package.png</LogicalName>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Samples\cow.jpg">
       <LogicalName>cow.jpg</LogicalName>
