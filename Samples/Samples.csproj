@@ -90,7 +90,6 @@
     <Compile Include="Samples\DrawingFigures.cs" />
     <Compile Include="Samples\DrawingPatternsAndImages.cs" />
     <Compile Include="Samples\ListBoxSample.cs" />
-    <Compile Include="Samples\StatusIconSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

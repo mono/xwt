@@ -37,7 +37,7 @@ namespace Xwt
 		Image image;
 		Menu menu;
 		
-		public StatusIcon ()
+		internal StatusIcon ()
 		{
 		}
 

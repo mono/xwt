@@ -20,9 +20,10 @@ namespace Samples
 		
 		public MainWindow ()
 		{
-			var statusIcon = new StatusIconSample ();
+			var statusIcon = Application.CreateStatusIcon ();
 			statusIcon.Menu = new Menu ();
 			statusIcon.Menu.Items.Add (new MenuItem ("Test"));
+			statusIcon.Image = Image.FromResource (GetType (), "package.png");
 			
 			Menu menu = new Menu ();
 			
