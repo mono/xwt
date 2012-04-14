@@ -29,7 +29,7 @@ using System.Collections.ObjectModel;
 
 namespace Xwt.Backends
 {
-	public interface IStatusIconBackend : IBackend
+	public interface IStatusIconBackend : IBackend, IDisposable
 	{
 		void SetMenu (object menuBackend);
 		

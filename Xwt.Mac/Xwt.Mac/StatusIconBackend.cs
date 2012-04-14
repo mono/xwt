@@ -62,6 +62,12 @@ namespace Xwt.Mac
 		
 		public void EnableEvent (object eventId) { throw new NotImplementedException (); }
 		public void DisableEvent (object eventId) { throw new NotImplementedException (); }
+
+		public void Dispose ()
+		{
+			statusItem.Dispose ();
+			statusItem = null;
+		}
 	}
 }
 

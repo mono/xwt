@@ -54,6 +54,16 @@ namespace Xwt
 		IStatusIconBackend Backend {
 			get { return (IStatusIconBackend) BackendHost.Backend; }
 		}
+		
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			
+			// Don't dispose the backend if this object is being finalized
+			// The backend has to handle the finalizing on its own
+			if (disposing && BackendHost.BackendCreated)
+				Backend.Dispose ();
+		}
 	}
 }
 
