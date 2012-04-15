@@ -137,6 +137,11 @@ namespace Xwt
 			return t;
 		}
 		
+		public static StatusIcon CreateStatusIcon ()
+		{
+			return new StatusIcon ();
+		}
+		
 		class Timer: IDisposable
 		{
 			public object Id;

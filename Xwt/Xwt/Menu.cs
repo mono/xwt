@@ -39,7 +39,7 @@ namespace Xwt
 			items = new MenuItemCollection (this);
 		}
 		
-		IMenuBackend Backend {
+		internal IMenuBackend Backend {
 			get { return (IMenuBackend) BackendHost.Backend; }
 		}
 		
