@@ -43,8 +43,12 @@ namespace Xwt.WPFBackend
 {
 	public class ImageHandler: ImageBackendHandler
 	{
-		public override object LoadFromStream (Stream stream)
+		public override object LoadFromStream (Stream stream, string name)
 		{
+			if (name != null && name.ToLower ().EndsWith (".ico"))
+			{
+				return new Icon (stream);
+			}
 			var img = new SWMI.BitmapImage ();
 			img.BeginInit();
 			img.CacheOption = SWMI.BitmapCacheOption.OnLoad;

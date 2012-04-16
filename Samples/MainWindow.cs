@@ -22,7 +22,7 @@ namespace Samples
 			var statusIcon = Application.CreateStatusIcon ();
 			statusIcon.Menu = new Menu ();
 			statusIcon.Menu.Items.Add (new MenuItem ("Test"));
-			statusIcon.Image = Image.FromResource (GetType (), "package.png");
+			statusIcon.Image = Image.FromResource (GetType (), "copyleft-16x16.ico");
 			
 			Menu menu = new Menu ();
 			
