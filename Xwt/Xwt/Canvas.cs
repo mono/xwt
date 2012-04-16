@@ -65,7 +65,7 @@ namespace Xwt
 		
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICanvasEventSink
 		{
-			public void OnDraw (object context)
+			public void OnDraw (object context, Rectangle dirtyRect)
 			{
 				Context ctx = null;
 				try {

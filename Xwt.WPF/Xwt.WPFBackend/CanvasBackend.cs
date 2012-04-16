@@ -166,7 +166,7 @@ namespace Xwt.WPFBackend
 			this.wbitmap.Lock();
 
 			using (Graphics g = Graphics.FromImage (this.bbitmap))
-				CanvasEventSink.OnDraw (new DrawingContext (g));
+				CanvasEventSink.OnDraw (new DrawingContext (g), new Rectangle (0, 0, this.wbitmap.PixelWidth, this.wbitmap.PixelHeight));
 
 			if (this.fullRedraw || this.dirtyRects.Count == 0) {
 				this.wbitmap.AddDirtyRect (new Int32Rect (0, 0, this.wbitmap.PixelWidth, this.wbitmap.PixelHeight));

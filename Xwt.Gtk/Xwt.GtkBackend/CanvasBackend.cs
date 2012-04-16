@@ -184,7 +184,8 @@ namespace Xwt.GtkBackend
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			Toolkit.Invoke (delegate {
-				EventSink.OnDraw (CreateContext ());
+				var a = evnt.Area;
+				EventSink.OnDraw (CreateContext (), new Rectangle (a.X, a.Y, a.Width, a.Height));
 			});
 			return base.OnExposeEvent (evnt);
 		}

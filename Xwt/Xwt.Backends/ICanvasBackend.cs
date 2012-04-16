@@ -85,7 +85,7 @@ namespace Xwt.Backends
 		/// <param name='context'>
 		/// Drawing context
 		/// </param>
-		void OnDraw (object context);
+		void OnDraw (object context, Rectangle dirtyRect);
 	}
 }
 
