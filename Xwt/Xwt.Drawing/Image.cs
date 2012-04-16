@@ -90,6 +90,16 @@ namespace Xwt.Drawing
 			get { return handler.GetSize (Backend); }
 		}
 		
+		public void SetPixel (int x, int y, Color color)
+		{
+			handler.SetPixel (Backend, x, y, color);
+		}
+		
+		public Color GetPixel (int x, int y)
+		{
+			return handler.GetPixel (Backend, x, y);
+		}
+		
 		public Image Scale (double scale)
 		{
 			double w = Size.Width * scale;

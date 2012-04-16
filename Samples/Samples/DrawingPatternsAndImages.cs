@@ -80,6 +80,18 @@ namespace Samples
 			ctx.Restore ();
 			
 			ctx.Restore ();
+			
+			// Setting pixels
+			
+			ib = new ImageBuilder (50, 50);
+			img = ib.ToImage ();
+			for (int i=0; i<50;i++) {
+				for (var j=0; j<50;j++) {
+					img.SetPixel (i,j, Color.FromHsl (0.5, (double)i / 50d, (double)j / 50d));
+				}
+			}
+			
+			ctx.DrawImage (img, 0, y + 110);
 		}	
 	}
 }

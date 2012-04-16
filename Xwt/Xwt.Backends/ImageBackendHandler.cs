@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
@@ -71,6 +72,10 @@ namespace Xwt.Backends
 		public abstract object Crop (object handle, int srcX, int srcY, int width, int height);
 
 		public abstract object ChangeOpacity (object backend, double opacity);
+		
+		public abstract void SetPixel (object handle, int x, int y, Color color);
+		
+		public abstract Color GetPixel (object handle, int x, int y);
 	}
 }
 

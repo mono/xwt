@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using Xwt.Backends;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
@@ -32,6 +33,7 @@ using MonoMac.ObjCRuntime;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -64,6 +66,26 @@ namespace Xwt.Mac
 				stockIcons [id + size] = img;
 			}
 			return img;
+		}
+		
+		public override Xwt.Drawing.Color GetPixel (object handle, int x, int y)
+		{
+			NSImage img = (NSImage)handle;
+			NSBitmapImageRep bitmap = img.Representations ().OfType<NSBitmapImageRep> ().FirstOrDefault ();
+			if (bitmap != null)
+				return bitmap.ColorAt (x, y).ToXwtColor ();
+			else
+				throw new InvalidOperationException ("Not a bitmnap image");
+		}
+		
+		public override void SetPixel (object handle, int x, int y, Xwt.Drawing.Color color)
+		{
+			NSImage img = (NSImage)handle;
+			NSBitmapImageRep bitmap = img.Representations ().OfType<NSBitmapImageRep> ().FirstOrDefault ();
+			if (bitmap != null)
+				bitmap.SetColorAt (color.ToNSColor (), x, y);
+			else
+				throw new InvalidOperationException ("Not a bitmnap image");
 		}
 		
 		public override Size GetSize (object handle)

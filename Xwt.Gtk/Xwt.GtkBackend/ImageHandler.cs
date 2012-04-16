@@ -55,6 +55,31 @@ namespace Xwt.GtkBackend
 			return null;
 		}
 		
+		public override void SetPixel (object handle, int x, int y, Xwt.Drawing.Color color)
+		{
+			var pix = (Gdk.Pixbuf)handle;
+			
+			unsafe {
+				byte* p = (byte*) pix.Pixels;
+				p += y * pix.Rowstride + x * pix.NChannels;
+				p[0] = (byte)(color.Red * 255);
+				p[1] = (byte)(color.Green * 255);
+				p[2] = (byte)(color.Blue * 255);
+				p[3] = (byte)(color.Alpha * 255);
+			}
+		}
+		
+		public override Xwt.Drawing.Color GetPixel (object handle, int x, int y)
+		{
+			var pix = (Gdk.Pixbuf)handle;
+			
+			unsafe {
+				byte* p = (byte*) pix.Pixels;
+				p += y * pix.Rowstride + x * pix.NChannels;
+				return Xwt.Drawing.Color.FromBytes (p[0], p[1], p[2], p[3]);
+			}
+		}
+		
 		public override void Dispose (object backend)
 		{
 			((Gdk.Pixbuf)backend).Dispose ();
