@@ -45,7 +45,7 @@ namespace Xwt.WPFBackend
 		}
 
 		public ObservableCollection<TreeStoreNode> Children {
-			get { return this.children; }
+			get { return this.children ?? (this.children = new ObservableCollection<TreeStoreNode> ()); }
 		}
 
 		private bool isExpanded;
@@ -64,6 +64,6 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		private readonly ObservableCollection<TreeStoreNode> children = new ObservableCollection<TreeStoreNode> ();
+		private ObservableCollection<TreeStoreNode> children;
 	}
 }
