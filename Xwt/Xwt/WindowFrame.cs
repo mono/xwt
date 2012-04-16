@@ -219,8 +219,9 @@ namespace Xwt
 
 		protected virtual void OnShown ()
 		{
-			if(shown != null)
-				shown (this, EventArgs.Empty);
+			EventHandler handler = shown;
+			if (handler != null)
+				handler (this, EventArgs.Empty);
 		}
 		
 		public void Hide ()
@@ -230,8 +231,9 @@ namespace Xwt
 
 		protected virtual void OnHidden ()
 		{
-			if (hidden != null)
-				hidden (this, EventArgs.Empty);
+			EventHandler handler = hidden;
+			if (handler != null)
+				handler (this, EventArgs.Empty);
 		}
 
 		internal virtual void SetSize (double width, double height)
