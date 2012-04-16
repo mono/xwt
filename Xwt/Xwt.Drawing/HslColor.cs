@@ -97,9 +97,7 @@ namespace Xwt.Drawing
 				g = clr[1];
 				b = clr[2];
 			}
-			return new Color ((byte)(255 * r), 
-			                  (byte)(255 * g), 
-			                  (byte)(255 * b));
+			return new Color (r, g, b);
 		}
 		
 		public static implicit operator HslColor (Color color)
@@ -109,9 +107,9 @@ namespace Xwt.Drawing
 		
 		public HslColor (Color color)
 		{
-			double r = color.Red   / (double)ushort.MaxValue;
-			double g = color.Green / (double)ushort.MaxValue;
-			double b = color.Blue  / (double)ushort.MaxValue;
+			double r = color.Red;
+			double g = color.Green;
+			double b = color.Blue;
 
 			double v = System.Math.Max (r, g);
 			v = System.Math.Max (v, b);
