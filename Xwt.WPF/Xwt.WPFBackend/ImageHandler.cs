@@ -90,6 +90,16 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public override Xwt.Drawing.Color GetPixel (object handle, int x, int y)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public override void SetPixel (object handle, int x, int y, Drawing.Color color)
+		{
+			throw new NotImplementedException ();
+		}
+
 		private static NativeStockIconOptions GetNativeStockOptionsFromSize (IconSize size)
 		{
 			switch (size) {
