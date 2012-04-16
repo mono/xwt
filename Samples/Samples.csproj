@@ -159,6 +159,9 @@
     <EmbeddedResource Include="Samples\cow.jpg">
       <LogicalName>cow.jpg</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="copyleft-16x16.ico">
+      <LogicalName>copyleft-16x16.ico</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

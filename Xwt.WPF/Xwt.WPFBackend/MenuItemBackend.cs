@@ -45,6 +45,7 @@ namespace Xwt.WPFBackend
 		MenuBackend subMenu;
 		MenuItemType type;
 		IMenuItemEventSink eventSink;
+		private System.Windows.Forms.MenuItem swfMenuItem;
 
 		public MenuItemBackend ()
 			: this (new SWC.MenuItem())
@@ -74,6 +75,16 @@ namespace Xwt.WPFBackend
 			get { return this.menuItem; }
 		}
 
+		public System.Windows.Forms.MenuItem SwfMenuItem
+		{
+			get
+			{
+				if (swfMenuItem == null)
+					swfMenuItem = new System.Windows.Forms.MenuItem(Label);
+				return swfMenuItem;
+			}
+		}
+
 		public IMenuItemEventSink EventSink {
 			get { return eventSink; }
 		}
@@ -89,17 +100,38 @@ namespace Xwt.WPFBackend
 
 		public string Label {
 			get { return this.menuItem.Header.ToString (); }
-			set { this.menuItem.Header = value; }
+			set
+			{
+				this.menuItem.Header = value;
+				if (swfMenuItem != null)
+				{
+					this.swfMenuItem.Text = Label;
+				}
+			}
 		}
 
 		public bool Sensitive {
 			get { return this.menuItem.IsEnabled; }
-			set { this.menuItem.IsEnabled = value; }
+			set
+			{
+				this.menuItem.IsEnabled = value;
+				if (this.swfMenuItem != null)
+				{
+					this.swfMenuItem.Enabled = value;
+				}
+			}
 		}
 
 		public bool Visible {
 			get { return this.menuItem.IsVisible; }
-			set { this.menuItem.Visibility = (value) ? Visibility.Visible : Visibility.Collapsed; }
+			set
+			{
+				this.menuItem.Visibility = (value) ? Visibility.Visible : Visibility.Collapsed;
+				if (this.swfMenuItem != null)
+				{
+					this.swfMenuItem.Visible = value;
+				}
+			}
 		}
 
 		public void SetImage (object imageBackend)

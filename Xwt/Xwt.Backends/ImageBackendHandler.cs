@@ -46,17 +46,17 @@ namespace Xwt.Backends
 			using (var s = asm.GetManifestResourceStream (name)) {
 				if (s == null)
 					throw new InvalidOperationException ("Resource not found: " + name);
-				return LoadFromStream (s);
+				return LoadFromStream (s, name);
 			}
 		}
 		
 		public virtual object LoadFromFile (string file)
 		{
 			using (var s = File.OpenRead (file))
-				return LoadFromStream (s);
+				return LoadFromStream (s, file);
 		}
 		
-		public abstract object LoadFromStream (Stream stream);
+		public abstract object LoadFromStream (Stream stream, string name);
 		
 		public abstract object LoadFromIcon (string id, IconSize size);
 		

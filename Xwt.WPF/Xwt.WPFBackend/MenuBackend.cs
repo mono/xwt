@@ -72,6 +72,9 @@ namespace Xwt.WPFBackend
 				ParentWindow.mainMenu.Items.Insert (index, itemBackend.Item);
 			else if (this.menu != null)
 				this.menu.Items.Insert (index, itemBackend.Item);
+
+			if (this.swfMenu != null)
+				this.swfMenu.MenuItems.Add (index, ((MenuItemBackend) item).SwfMenuItem);
 		}
 
 		public void RemoveItem (IMenuItemBackend item)
@@ -84,6 +87,9 @@ namespace Xwt.WPFBackend
 				ParentWindow.mainMenu.Items.Remove (itemBackend.Item);
 			else if (this.menu != null)
 				this.menu.Items.Remove (itemBackend.Item);
+
+			if (this.swfMenu != null)
+				this.swfMenu.MenuItems.Remove (((MenuItemBackend)item).SwfMenuItem);
 		}
 
 		public void RemoveFromParentItem ()
@@ -141,5 +147,19 @@ namespace Xwt.WPFBackend
 
 			return menu;
 		}
+
+		//only used by NotifyIcon for now, which should switch soon to a proper WPF backend
+		internal System.Windows.Forms.ContextMenu CreateSwfContextMenu ()
+		{
+			if (this.swfMenu == null)
+			{
+				this.swfMenu = new System.Windows.Forms.ContextMenu ();
+				foreach (var item in Items)
+					this.swfMenu.MenuItems.Add (item.SwfMenuItem);
+			}
+
+			return swfMenu;
+		}
+		private System.Windows.Forms.ContextMenu swfMenu;
 	}
 }

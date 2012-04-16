@@ -78,7 +78,7 @@ namespace Xwt.Drawing
 		
 		public static Image FromStream (Stream stream)
 		{
-			return new Image (handler.LoadFromStream (stream));
+			return new Image (handler.LoadFromStream (stream, null));
 		}
 		
 		public static Image FromIcon (string id, IconSize size)
