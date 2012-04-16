@@ -81,7 +81,7 @@ namespace Xwt.WPFBackend.Utilities
 
 			this.placeholderText = newPlaceholder;
 
-			if (IsFocused && Text == PlaceholderText)
+			if (IsFocused && Text == (PlaceholderText ?? String.Empty))
 			{
 				Text = null;
 				ClearValue (Control.ForegroundProperty);
