@@ -39,10 +39,13 @@ namespace Xwt
 		
 		class TreeStoreBackendHost: BackendHost<TreeStore,ITreeStoreBackend>
 		{
-			protected override void OnBackendCreated ()
+			protected override IBackend OnCreateBackend ()
 			{
-				Backend.Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
-				base.OnBackendCreated ();
+				var b = base.OnCreateBackend ();
+				if (b == null)
+					b = new DefaultTreeStoreBackend ();
+				((ITreeStoreBackend)b).Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
+				return b;
 			}
 		}
 		
