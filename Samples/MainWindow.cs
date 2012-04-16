@@ -19,10 +19,14 @@ namespace Samples
 		
 		public MainWindow ()
 		{
-			var statusIcon = Application.CreateStatusIcon ();
-			statusIcon.Menu = new Menu ();
-			statusIcon.Menu.Items.Add (new MenuItem ("Test"));
-			statusIcon.Image = Image.FromResource (GetType (), "package.png");
+			try {
+				var statusIcon = Application.CreateStatusIcon ();
+				statusIcon.Menu = new Menu ();
+				statusIcon.Menu.Items.Add (new MenuItem ("Test"));
+				statusIcon.Image = Image.FromResource (GetType (), "package.png");
+			} catch {
+				Console.WriteLine ("Status icon could not be shown");
+			}
 			
 			Menu menu = new Menu ();
 			
