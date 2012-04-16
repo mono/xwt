@@ -40,6 +40,7 @@ namespace Xwt.WPFBackend
 		public TextEntryBackend()
 		{
 			Widget = new ExTextBox();
+			TextBox.IsReadOnlyCaretVisible = true;
 		}
 
 		protected override double DefaultNaturalWidth
