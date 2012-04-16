@@ -50,7 +50,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\NativeStockIcon.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\CellUtil.cs" />
-    <Compile Include="Xwt.WPFBackend.Utilities\ExTextBox.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\ImageToImageSourceConverter.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\TypeToStringConverter.cs" />
     <Compile Include="Xwt.WPFBackend\AlertDialogBackend.cs" />
@@ -76,6 +75,7 @@
     <Compile Include="Xwt.WPFBackend\ExListBox.cs" />
     <Compile Include="Xwt.WPFBackend\ExListView.cs" />
     <Compile Include="Xwt.WPFBackend\ExScrollViewer.cs" />
+    <Compile Include="Xwt.WPFBackend\ExTextBox.cs" />
     <Compile Include="Xwt.WPFBackend\ExTreeView.cs" />
     <Compile Include="Xwt.WPFBackend\ExTreeViewItem.cs" />
     <Compile Include="Xwt.WPFBackend\FileDialogBackend.cs" />
