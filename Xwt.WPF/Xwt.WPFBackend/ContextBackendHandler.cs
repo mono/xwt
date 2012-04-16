@@ -208,18 +208,13 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext) backend;
 
 			var dc = color.ToDrawingColor ();
-			if (c.Pen.Color != dc) {
-				c.Pen.Color = dc;
-
-				c.Brush.Dispose();
-				c.Brush = new SolidBrush (dc);
-			}
+			c.SetColor (dc);
 		}
 
 		public void SetLineWidth (object backend, double width)
 		{
 			var c = (DrawingContext) backend;
-			c.Pen.Width = (float) width;
+			c.SetWidth ((float) width);
 		}
 
 		public void SetLineDash (object backend, double offset, params double[] pattern)
