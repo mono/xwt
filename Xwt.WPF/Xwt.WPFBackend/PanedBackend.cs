@@ -374,20 +374,6 @@ namespace Xwt.WPFBackend
 
 				panel1.Size = new GridLength (position, GridUnitType.Star);
 				panel2.Size = new GridLength (availableSize - position, GridUnitType.Star);
-
-				// The measure method has to be called on the children. Widgets like TreeView require
-				// a Measure call with the real size constraints, otherwise it can't decide if the
-				// scrollbars have to be shown or not
-				panel1.Widget.InvalidateMeasure ();
-				panel2.Widget.InvalidateMeasure ();
-				if (direction == Orientation.Horizontal) {
-					panel1.Widget.Measure (new SW.Size (position, size.Height));
-					panel2.Widget.Measure (new SW.Size (availableSize - position, size.Height));
-				}
-				else {
-					panel1.Widget.Measure (new SW.Size (size.Width, position));
-					panel2.Widget.Measure (new SW.Size (size.Width, availableSize - position));
-				}
 			}
 			else if (panel1.Widget != null)
 				panel1.Size = new GridLength (1, GridUnitType.Star);
