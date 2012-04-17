@@ -253,6 +253,26 @@ namespace Xwt.WPFBackend
 			get { return -1; }
 		}
 
+		public override WidgetSize GetPreferredHeight()
+		{
+			return new WidgetSize (0);
+		}
+
+		public override WidgetSize GetPreferredHeightForWidth(double width)
+		{
+			return GetPreferredHeight ();
+		}
+
+		public override WidgetSize GetPreferredWidth()
+		{
+			return new WidgetSize (0);
+		}
+
+		public override WidgetSize GetPreferredWidthForHeight(double height)
+		{
+			return GetPreferredWidth ();
+		}
+
 		private void OnSelectedItemsChanged (object sender, EventArgs e)
 		{
 			Toolkit.Invoke (TreeViewEventSink.OnSelectionChanged);
