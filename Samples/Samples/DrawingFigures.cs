@@ -32,9 +32,9 @@ namespace Samples
 {
 	public class DrawingFigures: Drawings
 	{
-		protected override void OnDraw (Context ctx)
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
-			base.OnDraw (ctx);
+			base.OnDraw (ctx, dirtyRect);
 			Figures (ctx, 5, 5);
 		}
 		

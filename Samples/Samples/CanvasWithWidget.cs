@@ -53,7 +53,7 @@ namespace Samples
 			AddChild (box, new Rectangle (30, 70, 100, 30));
 		}
 		
-		protected override void OnDraw (Xwt.Drawing.Context ctx)
+		protected override void OnDraw (Xwt.Drawing.Context ctx, Rectangle dirtyRect)
 		{
 			ctx.Rectangle (0, 0, Bounds.Width, Bounds.Height);
 			var g = new LinearGradient (0, 0, Bounds.Width, Bounds.Height);

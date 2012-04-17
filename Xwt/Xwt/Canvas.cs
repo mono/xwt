@@ -70,7 +70,7 @@ namespace Xwt
 				Context ctx = null;
 				try {
 					ctx = new Context (context);
-					((Canvas)Parent).OnDraw (ctx);
+					((Canvas)Parent).OnDraw (ctx, dirtyRect);
 				}
 				finally {
 					ctx.Dispose ();
@@ -246,7 +246,7 @@ namespace Xwt
 		/// <param name='ctx'>
 		/// Drawing context
 		/// </param>
-		protected virtual void OnDraw (Context ctx)
+		protected virtual void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
 		}
 		

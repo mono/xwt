@@ -40,9 +40,9 @@ namespace Samples
 	
 	public class DrawingTransforms: Canvas
 	{
-		protected override void OnDraw (Context ctx)
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
-			base.OnDraw (ctx);
+			base.OnDraw (ctx, dirtyRect);
 			Transforms (ctx, 5, 5);
 		}
 

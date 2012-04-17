@@ -47,9 +47,9 @@ namespace Samples
 			img = Image.FromResource (GetType (), "cow.jpg");
 		}
 
-		protected override void OnDraw (Context ctx)
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
-			base.OnDraw (ctx);
+			base.OnDraw (ctx, dirtyRect);
 			
 			for (int y = 0; y < img.Size.Height / 50; ++y) {
 				for (int x = 0; x < img.Size.Width / 50; ++x) {

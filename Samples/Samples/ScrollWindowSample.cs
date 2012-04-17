@@ -88,7 +88,7 @@ namespace Samples
 			MinHeight = 100;
 		}
 		
-		protected override void OnDraw (Context ctx)
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
 			ctx.Translate (-hscroll.Value, -vscroll.Value);
 			ctx.Rectangle (new Rectangle (0, 0, imageSize, imageSize));

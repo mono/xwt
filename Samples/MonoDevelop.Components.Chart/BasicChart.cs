@@ -328,7 +328,7 @@ namespace MonoDevelop.Components.Chart
 			return (((double) minTickStep) * (GetEnd (ad) - GetStart (ad))) / (double) GetAreaSize (ad);
 		}
 		
-		protected override void OnDraw (Context ctx)
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
 			double rwidth = Bounds.Width, rheight = Bounds.Height;
 			

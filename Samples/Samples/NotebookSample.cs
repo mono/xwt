@@ -17,7 +17,7 @@ namespace Samples
 	
 	class MyWidget: Canvas
 	{
-		protected override void OnDraw (Context ctx)
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
 			ctx.SetLineWidth (5);
 			ctx.SetColor (new Color (1.0f, 0f, 0.5f));

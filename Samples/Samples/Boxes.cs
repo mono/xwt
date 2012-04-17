@@ -98,7 +98,7 @@ namespace Samples
 			highlight = false;
 		}
 		
-		protected override void OnDraw (Context ctx)
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
 			ctx.SetColor (new Color (0.5, 0.5, 0.5));
 			ctx.Rectangle (Bounds);
