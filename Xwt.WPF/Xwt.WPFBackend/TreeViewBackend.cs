@@ -55,8 +55,7 @@ namespace Xwt.WPFBackend
 			Tree = new ExTreeView();
 			Tree.Resources.MergedDictionaries.Add (TreeResourceDictionary);
 			Tree.ItemTemplate = new HierarchicalDataTemplate { ItemsSource = new Binding ("Children") };
-
-			//VirtualizingStackPanel.SetIsVirtualizing (Tree, false);
+			Tree.SetValue (VirtualizingStackPanel.IsVirtualizingProperty, true);
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {
