@@ -80,7 +80,9 @@ namespace Xwt.WPFBackend
 			if (element == null)
 				throw new ArgumentException();
 
-			Canvas.Children.Add (element);
+			if (!Canvas.Children.Contains (element))
+				Canvas.Children.Add (element);
+
 			SetChildBounds (widget, bounds);
 		}
 
