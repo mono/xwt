@@ -79,12 +79,12 @@ namespace Xwt
 				Parent.OnBoundsChanged (new BoundsChangedEventArgs () { Bounds = bounds });
 			}
 
-			public void OnShown ()
+			public virtual void OnShown ()
 			{
 				Parent.OnShown ();
 			}
 
-			public void OnHidden ()
+			public virtual void OnHidden ()
 			{
 				Parent.OnHidden ();
 			}
@@ -210,11 +210,11 @@ namespace Xwt
 			Visible = true;
 		}
 
-		public void OnShown ()
+		protected virtual void OnShown ()
 		{
 			var shown = Shown;
 			if(shown != null)
-				shown (this, new EventArgs ());
+				shown (this, EventArgs.Empty);
 		}
 		
 		public void Hide ()
@@ -226,7 +226,7 @@ namespace Xwt
 		{
 			var hidden = Hidden;
 			if (hidden != null)
-				hidden (this, new EventArgs ());
+				hidden (this, EventArgs.Empty);
 		}
 
 		internal virtual void SetSize (double width, double height)
