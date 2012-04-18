@@ -70,14 +70,26 @@ namespace Xwt
 				Backend.Initialize (this);
 				Parent.bounds = Backend.Bounds;
 				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
+				Backend.EnableEvent (WindowFrameEvent.Shown);
+				Backend.EnableEvent (WindowFrameEvent.Hidden);
 			}
 			
 			public void OnBoundsChanged (Rectangle bounds)
 			{
 				Parent.OnBoundsChanged (new BoundsChangedEventArgs () { Bounds = bounds });
 			}
+
+			public void OnShown ()
+			{
+				Parent.OnShown ();
+			}
+
+			public void OnHidden ()
+			{
+				Parent.OnHidden ();
+			}
 		}
-		
+
 		public WindowFrame ()
 		{
 			if (!(base.BackendHost is WindowBackendHost))
@@ -197,10 +209,24 @@ namespace Xwt
 		{
 			Visible = true;
 		}
+
+		public void OnShown ()
+		{
+			var shown = Shown;
+			if(shown != null)
+				shown (this, new EventArgs ());
+		}
 		
 		public void Hide ()
 		{
 			Visible = false;
+		}
+
+		public void OnHidden ()
+		{
+			var hidden = Hidden;
+			if (hidden != null)
+				hidden (this, new EventArgs ());
 		}
 
 		internal virtual void SetSize (double width, double height)
@@ -245,7 +271,11 @@ namespace Xwt
 			remove {
 				boundsChanged -= value;
 			}
-		}	
+		}
+
+		public EventHandler Shown;
+		public EventHandler Hidden;
+
 	}
 	
 	public class BoundsChangedEventArgs: EventArgs

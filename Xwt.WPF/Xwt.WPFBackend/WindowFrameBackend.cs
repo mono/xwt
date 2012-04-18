@@ -130,9 +130,17 @@ namespace Xwt.WPFBackend
 						window.LocationChanged += BoundsChangedHandler;
 						window.SizeChanged += BoundsChangedHandler;
 						break;
+					case WindowFrameEvent.Shown:
+						window.IsVisibleChanged += ShownHandler;
+						break;
+					case WindowFrameEvent.Hidden:
+						window.IsVisibleChanged += HiddenHandler;
+						break;
 				}
 			}
 		}
+
+	
 
 		public virtual void DisableEvent (object eventId)
 		{
@@ -141,6 +149,12 @@ namespace Xwt.WPFBackend
 					case WindowFrameEvent.BoundsChanged:
 						window.LocationChanged -= BoundsChangedHandler;
 						window.SizeChanged -= BoundsChangedHandler;
+						break;
+					case WindowFrameEvent.Shown:
+						window.IsVisibleChanged -= ShownHandler;
+						break;
+					case WindowFrameEvent.Hidden:
+						window.IsVisibleChanged -= HiddenHandler;
 						break;
 				}
 			}
@@ -151,6 +165,28 @@ namespace Xwt.WPFBackend
 			Toolkit.Invoke (delegate () {
 				eventSink.OnBoundsChanged (Bounds);
 			});
+		}
+
+		private void ShownHandler (object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if((bool)e.NewValue)
+			{
+				Toolkit.Invoke (delegate ()
+				{
+					eventSink.OnShown ();
+				});
+			}
+		}
+
+		private void HiddenHandler (object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if((bool)e.NewValue == false)
+			{
+				Toolkit.Invoke (delegate ()
+				{
+					eventSink.OnHidden ();
+				});
+			}
 		}
 
 		protected Rectangle ToNonClientRect (Rectangle rect)
