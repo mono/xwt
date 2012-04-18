@@ -45,7 +45,6 @@ namespace Xwt.GtkBackend
 			Widget.Frontend = Frontend;
 			Widget.EventSink = EventSink;
 			Widget.Events |= Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask;
-			Widget.SizeRequested += HandleSizeRequested;
 			Widget.Show ();
 		}
 
@@ -66,19 +65,6 @@ namespace Xwt.GtkBackend
 		public void QueueDraw (Rectangle rect)
 		{
 			Widget.QueueDrawArea ((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
-		}
-		
-		void HandleSizeRequested (object o, Gtk.SizeRequestedArgs args)
-		{
-			IWidgetSurface ws = (IWidgetSurface)Frontend;
-			Gtk.Requisition req = args.Requisition;
-			int w = (int)ws.GetPreferredWidth ().MinSize;
-			int h = (int)ws.GetPreferredHeight ().MinSize;
-			if (req.Width < w)
-				req.Width = w;
-			if (req.Height < h)
-				req.Height = h;
-			args.Requisition = req;
 		}
 		
 		public Rectangle Bounds {
@@ -143,9 +129,16 @@ namespace Xwt.GtkBackend
 		
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
-			IWidgetSurface ws = Frontend;
-			int w = (int)ws.GetPreferredWidth ().MinSize;
-			int h = (int)ws.GetPreferredHeight ().MinSize;
+			base.OnSizeRequested (ref requisition);
+			IWidgetSurface ws = Frontend.Surface;
+			int h, w;
+			if (ws.SizeRequestMode == SizeRequestMode.HeightForWidth) {
+				w = (int)ws.GetPreferredWidth ().MinSize;
+				h = (int)ws.GetPreferredHeightForWidth (w).MinSize;
+			} else {
+				h = (int)ws.GetPreferredHeight ().MinSize;
+				w = (int)ws.GetPreferredWidthForHeight(h).MinSize;
+			}
 			if (requisition.Width < w)
 				requisition.Width = w;
 			if (requisition.Height < h)
