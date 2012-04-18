@@ -188,10 +188,15 @@ namespace Xwt.WPFBackend
 
 				int index = Tree.View.Columns.IndexOf (col);
 				if (index == 0) {
-					var dockFactory = CreateExpanderDock ();
-					dockFactory.AppendChild (cellTemplate);
+					//var dockFactory = CreateExpanderDock ();
+					//dockFactory.AppendChild (cellTemplate);
 
-					col.CellTemplate.VisualTree = dockFactory;
+					//col.CellTemplate.VisualTree = dockFactory;
+
+					//Tree.ItemTemplate = new HierarchicalDataTemplate {
+					//                                                    VisualTree = cellTemplate,
+					//                                                    ItemsSource = new Binding("Children")
+					//                                                 };
 				}
 
 				break;

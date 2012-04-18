@@ -198,20 +198,20 @@ namespace Xwt.WPFBackend
 
 		private void OnLoaded (object sender, RoutedEventArgs routedEventArgs)
 		{
-			ItemsControl parent = ItemsControlFromItemContainer (this);
-			if (parent == null)
-				return;
+			//ItemsControl parent = ItemsControlFromItemContainer (this);
+			//if (parent == null)
+			//    return;
 
-			int index = parent.Items.IndexOf (DataContext);
-			if (index != parent.Items.Count - 1)
-				return;
+			//int index = parent.Items.IndexOf (DataContext);
+			//if (index != parent.Items.Count - 1)
+			//    return;
 
-			foreach (var column in this.view.View.Columns) {
-				if (Double.IsNaN (column.Width))
-					column.Width = column.ActualWidth;
+			//foreach (var column in this.view.View.Columns) {
+			//    if (Double.IsNaN (column.Width))
+			//        column.Width = column.ActualWidth;
 
-				column.Width = Double.NaN;
-			}
+			//    column.Width = Double.NaN;
+			//}
 		}
 	}
 }
