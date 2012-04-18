@@ -823,7 +823,7 @@ namespace Xwt.WPFBackend
 					eventSink.OnDragDrop (args);
 				});
 
-				deleteSource = args.Success;
+				deleteSource = args.Success && !actualEffect.HasFlag (DragDropEffects.Copy);
 				e.Effects = args.Success ? actualEffect : DragDropEffects.None;
 			}
 
