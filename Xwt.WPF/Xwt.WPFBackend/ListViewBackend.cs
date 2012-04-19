@@ -43,7 +43,6 @@ namespace Xwt.WPFBackend
 		{
 			ListView = new ExListView();
 			ListView.View = this.view;
-			VirtualizingStackPanel.SetIsVirtualizing (ListView, false);
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {
