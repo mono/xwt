@@ -135,6 +135,11 @@ namespace Xwt
 		{
 			Backend.RemoveRow (row);
 		}
+		
+		public void Clear ()
+		{
+			Backend.Clear ();
+		}
 	}
 	
 	class DefaultListStoreBackend: IListStoreBackend
@@ -221,6 +226,16 @@ namespace Xwt
 		
 		public void DisableEvent (object eventId)
 		{
+		}
+		
+		public void Clear ()
+		{
+			int count = list.Count;
+			list.Clear ();
+			for (int n=0; n<count; n++) {
+				if (RowDeleted != null)
+					RowDeleted (this, new ListRowEventArgs (n));
+			}
 		}
 	}
 }

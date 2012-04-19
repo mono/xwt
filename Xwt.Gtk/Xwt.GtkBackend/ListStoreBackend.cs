@@ -110,6 +110,11 @@ namespace Xwt.GtkBackend
 		public void DisableEvent (object eventId)
 		{
 		}
+		
+		public void Clear ()
+		{
+			List.Clear ();
+		}
 	}
 }
 

@@ -81,6 +81,11 @@ namespace Xwt.Backends
 		/// <paramref name="row"/> is &gt;= <see cref="IListDataSource.RowCount" />
 		/// </exception>
 		void RemoveRow (int row);
+
+		/// <summary>
+		/// Removes all rows
+		/// </summary>
+		void Clear ();
 	}
 }
 
