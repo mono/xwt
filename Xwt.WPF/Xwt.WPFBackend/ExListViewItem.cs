@@ -1,5 +1,5 @@
 ﻿//
-// ExListView.cs
+// ExListViewItem.cs
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
@@ -24,37 +24,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
-	public class ExListView
-		: SWC.ListView, IWpfWidget
+	public class ExListViewItem
+		: ListViewItem
 	{
-		public WidgetBackend Backend { get; set; }
-
-		protected override bool IsItemItsOwnContainerOverride(object item)
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
-			return item is ExListViewItem;
+			if (e.Property.Name == "IsVisible" && IsVisible) {
+				foreach (var column in ((GridView)ListView.View).Columns) {
+					if (!Double.IsNaN (column.Width))
+						continue;
+					
+					column.Width = column.ActualWidth;
+					column.Width = Double.NaN;
+				}
+			}
+
+			base.OnPropertyChanged(e);
 		}
 
-		protected override DependencyObject GetContainerForItemOverride()
-		{
-			return new ExListViewItem();
+		private ExListView view;
+		protected ExListView ListView {
+			get {
+				if (this.view == null)
+					this.view = FindListView ((FrameworkElement) VisualParent);
+
+				return this.view;
+			}
 		}
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		private ExListView FindListView (FrameworkElement element)
 		{
-			var s = base.MeasureOverride (constraint);
+			if (element == null)
+				return null;
 
-			if (ScrollViewer.GetHorizontalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
-				s.Width = 0;
-			if (ScrollViewer.GetVerticalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
-				s.Height = SystemParameters.CaptionHeight;
-			s = Backend.MeasureOverride (constraint, s);
-			return s;
+			ExListView view = element as ExListView;
+			if (view != null)
+				return view;
+
+			return FindListView (element.TemplatedParent as FrameworkElement);
 		}
 	}
 }

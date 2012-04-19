@@ -74,6 +74,7 @@
     <Compile Include="Xwt.WPFBackend\ExGrid.cs" />
     <Compile Include="Xwt.WPFBackend\ExListBox.cs" />
     <Compile Include="Xwt.WPFBackend\ExListView.cs" />
+    <Compile Include="Xwt.WPFBackend\ExListViewItem.cs" />
     <Compile Include="Xwt.WPFBackend\ExScrollViewer.cs" />
     <Compile Include="Xwt.WPFBackend\ExTextBox.cs" />
     <Compile Include="Xwt.WPFBackend\ExTreeView.cs" />
