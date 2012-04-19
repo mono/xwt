@@ -222,7 +222,7 @@ namespace Xwt
 			Visible = false;
 		}
 
-		public void OnHidden ()
+		protected virtual void OnHidden ()
 		{
 			var hidden = Hidden;
 			if (hidden != null)
