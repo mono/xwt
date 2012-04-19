@@ -106,7 +106,8 @@ namespace Xwt.WPFBackend
 
 		public void RunLoop (IWindowFrameBackend parent)
 		{
-			Window.Owner = ((WindowFrameBackend) parent).Window;
+			if (parent != null)
+				Window.Owner = ((WindowFrameBackend) parent).Window;
 			Window.ShowDialog ();
 		}
 
