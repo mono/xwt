@@ -127,6 +127,25 @@ namespace Samples
 				if (dlg.Run (ParentWindow))
 					MessageDialog.ShowMessage ("A color has been selected!", dlg.Color.ToString ());
 			};
+
+			b = new Button("Show window shown event");
+			PackStart(b);
+			b.Clicked += delegate
+			{
+				Window w = new Window();
+				w.Decorated = false;
+				Button c = new Button("This is a window with events on");
+				w.Content = c;
+				c.Clicked += delegate
+				{
+					w.Dispose();
+				};
+				w.Shown += (sender, args) => MessageDialog.ShowMessage("My Parent has been shown");
+				w.Hidden += (sender, args) => MessageDialog.ShowMessage("My Parent has been hidden");
+
+				w.Show();
+				
+			};
 		}
 	}
 }

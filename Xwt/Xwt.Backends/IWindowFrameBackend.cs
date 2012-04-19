@@ -43,11 +43,15 @@ namespace Xwt.Backends
 	public interface IWindowFrameEventSink
 	{
 		void OnBoundsChanged (Rectangle bounds);
+		void OnShown ();
+		void OnHidden ();
 	}
 	
 	public enum WindowFrameEvent
 	{
-		BoundsChanged = 1
+		BoundsChanged = 1,
+		Shown,
+		Hidden
 	}
 }
 
