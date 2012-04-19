@@ -729,8 +729,13 @@ namespace Xwt.WPFBackend
 		{
 			foreach (var type in types) {
 				string format = type.ToWpfDataFormat ();
-				if (!data.GetDataPresent (format))
-					continue;
+				if (!data.GetDataPresent (format)) {
+					// This is a workaround to support type names which don't include the assembly name.
+					// It eases integration with Windows DND.
+					format = NormalizeTypeName (format);
+					if (!data.GetDataPresent (format))
+						continue;
+				}
 
 				var value = data.GetData (format);
 				if (type == TransferDataType.Text)
@@ -743,6 +748,22 @@ namespace Xwt.WPFBackend
 				else
 					store.AddValue (type, value);
 			}
+		}
+
+		static string NormalizeTypeName (string dataType)
+		{
+			// If the string is a fully qualified type name, strip the assembly name
+			int i = dataType.IndexOf (',');
+			if (i == -1)
+				return dataType;
+			string asmName = dataType.Substring (i + 1).Trim ();
+			try {
+				new System.Reflection.AssemblyName (asmName);
+			}
+			catch {
+				return dataType;
+			}
+			return dataType.Substring (0, i).Trim ();
 		}
 
 		void WidgetDragOverHandler (object sender, System.Windows.DragEventArgs e)
