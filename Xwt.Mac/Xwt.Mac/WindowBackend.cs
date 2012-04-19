@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Andres G. Aragoneses <andres.aragoneses@7digital.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 7Digital Media Ltd
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +27,10 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Xwt.Backends;
 using MonoMac.AppKit;
+using MonoMac.Foundation;
 using System.Drawing;
 using MonoMac.ObjCRuntime;
 using Xwt.Engine;
@@ -107,16 +111,97 @@ namespace Xwt.Mac
 		}
 		
 		#region IWindowBackend implementation
-		void IBackend.EnableEvent (object ev)
+		void IBackend.EnableEvent (object eventId)
 		{
-			if ((ev is WindowFrameEvent) && ((WindowFrameEvent)ev) == WindowFrameEvent.BoundsChanged)
-				DidResize += HandleDidResize;
+			if (eventId is WindowFrameEvent) {
+				var @event = (WindowFrameEvent)eventId;
+				switch (@event) {
+					case WindowFrameEvent.BoundsChanged:
+						DidResize += HandleDidResize;
+						break;
+					case WindowFrameEvent.Hidden:
+						EnableVisibilityEvent (@event);
+						this.WillClose += OnWillClose;
+						break;
+					case WindowFrameEvent.Shown:
+						EnableVisibilityEvent (@event);
+						break;
+				}
+			}
+		}
+		
+		void OnWillClose (object sender, EventArgs args) {
+			OnHidden ();
+		}
+		
+		HashSet<WindowFrameEvent> eventsEnabled = new HashSet<WindowFrameEvent> ();
+		NSString HiddenProperty {
+			get { return new NSString ("hidden"); }
+		}
+		
+		void EnableVisibilityEvent (WindowFrameEvent ev)
+		{
+			if (eventsEnabled.Count == 0) {
+				ContentView.AddObserver (this, HiddenProperty, NSKeyValueObservingOptions.New, IntPtr.Zero);
+			}
+			if (!eventsEnabled.Contains (ev)) {
+				eventsEnabled.Add (ev);
+			}
 		}
 
-		void IBackend.DisableEvent (object ev)
+		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
 		{
-			if ((ev is WindowFrameEvent) && ((WindowFrameEvent)ev) == WindowFrameEvent.BoundsChanged)
-				DidResize -= HandleDidResize;
+			if (keyPath.ToString () == HiddenProperty.ToString () && ofObject.Equals (ContentView)) {
+				if (ContentView.Hidden) {
+					if (eventsEnabled.Contains (WindowFrameEvent.Hidden)) {
+						OnHidden ();
+					}
+				} else {
+					if (eventsEnabled.Contains (WindowFrameEvent.Shown)) {
+						OnShown ();
+					}
+				}
+			}
+		}
+
+		void OnHidden () {
+			Toolkit.Invoke (delegate ()
+			{
+				eventSink.OnHidden ();
+			});
+		}
+
+		void OnShown () {
+			Toolkit.Invoke (delegate ()
+			{
+				eventSink.OnShown ();
+			});
+		}
+
+		void DisableVisibilityEvent (WindowFrameEvent ev){
+			eventsEnabled.Remove (ev);
+			if (eventsEnabled.Count == 0) {
+				ContentView.RemoveObserver (this, HiddenProperty);
+			}
+		}
+
+		void IBackend.DisableEvent (object eventId)
+		{
+			if (eventId is WindowFrameEvent) {
+				var @event = (WindowFrameEvent)eventId;
+				switch (@event) {
+					case WindowFrameEvent.BoundsChanged:
+						DidResize -= HandleDidResize;
+						break;
+					case WindowFrameEvent.Hidden:
+						this.WillClose -= OnWillClose;
+						DisableVisibilityEvent (@event);
+						break;
+					case WindowFrameEvent.Shown:
+						DisableVisibilityEvent (@event);
+						break;
+				}
+			}
 		}
 
 		void HandleDidResize (object sender, EventArgs e)
