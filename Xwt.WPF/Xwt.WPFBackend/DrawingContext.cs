@@ -91,15 +91,21 @@ namespace Xwt.WPFBackend
 
 		internal void SetColor (Color color)
 		{
-			if (this.color != color) {
-				if (pen != null && pen.Color != color) {
-					pen.Color = color;
-				}
-				if (brush is SolidBrush && ((SolidBrush) brush).Color != color) {
+			if (this.color == color)
+				return;
+			
+			if (pen != null)
+				pen.Color = color;
+
+			if (brush != null) {
+				SolidBrush solidBrush = brush as SolidBrush;
+				if (solidBrush == null) {
 					brush.Dispose ();
 					brush = null;
-				}
+				} else
+					solidBrush.Color = color;
 			}
+
 			this.color = color;
 		}
 		
