@@ -59,6 +59,9 @@ namespace Xwt
 	public class WindowFrame: XwtComponent
 	{
 		EventHandler boundsChanged;
+		EventHandler shown;
+		EventHandler hidden;
+
 		Rectangle bounds;
 		bool pendingReallocation;
 		
@@ -70,8 +73,6 @@ namespace Xwt
 				Backend.Initialize (this);
 				Parent.bounds = Backend.Bounds;
 				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
-				Backend.EnableEvent (WindowFrameEvent.Shown);
-				Backend.EnableEvent (WindowFrameEvent.Hidden);
 			}
 			
 			public void OnBoundsChanged (Rectangle bounds)
@@ -88,6 +89,12 @@ namespace Xwt
 			{
 				Parent.OnHidden ();
 			}
+		}
+
+		static WindowFrame()
+		{
+			MapEvent(WindowFrameEvent.Shown, typeof(Window), "OnShown");
+			MapEvent(WindowFrameEvent.Hidden, typeof(Window), "OnHidden");
 		}
 
 		public WindowFrame ()
@@ -212,7 +219,6 @@ namespace Xwt
 
 		protected virtual void OnShown ()
 		{
-			var shown = Shown;
 			if(shown != null)
 				shown (this, EventArgs.Empty);
 		}
@@ -224,7 +230,6 @@ namespace Xwt
 
 		protected virtual void OnHidden ()
 		{
-			var hidden = Hidden;
 			if (hidden != null)
 				hidden (this, EventArgs.Empty);
 		}
@@ -273,9 +278,27 @@ namespace Xwt
 			}
 		}
 
-		public EventHandler Shown;
-		public EventHandler Hidden;
+		public event EventHandler Shown {
+			add {
+				BackendHost.OnBeforeEventAdd (WindowFrameEvent.Shown, shown);
+				shown += value;
+			}
+			remove {
+				shown -= value;
+				BackendHost.OnAfterEventRemove (WindowFrameEvent.Shown, shown);
+			}
+		}
 
+		public event EventHandler Hidden {
+			add {
+				BackendHost.OnBeforeEventAdd (WindowFrameEvent.Hidden, hidden);
+				hidden += value;
+			}
+			remove {
+				hidden -= value;
+				BackendHost.OnAfterEventRemove (WindowFrameEvent.Hidden, hidden);
+			}
+		}
 	}
 	
 	public class BoundsChangedEventArgs: EventArgs
