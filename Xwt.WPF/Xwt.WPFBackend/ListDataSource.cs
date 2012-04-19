@@ -158,14 +158,6 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void Clear ()
-		{
-			int count = rows.Count;
-			rows.Clear ();
-			for (int row = 0; row < count; row++)
-				OnRowDeleted (new ListRowEventArgs (row));
-		}
-
 		public override void EnableEvent (object eventId)
 		{
 		}
