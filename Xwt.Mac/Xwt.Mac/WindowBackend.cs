@@ -73,6 +73,11 @@ namespace Xwt.Mac
 		{
 			MakeKeyAndOrderFront (MacEngine.App);
 		}
+		
+		public void Present ()
+		{
+			MakeKeyAndOrderFront (MacEngine.App);
+		}
 
 		public bool Visible {
 			get {

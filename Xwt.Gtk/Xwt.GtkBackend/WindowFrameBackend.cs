@@ -155,6 +155,12 @@ namespace Xwt.GtkBackend
 				EventSink.OnBoundsChanged (Bounds);
 			});
 		}
+
+		public void Present ()
+		{
+			Window.Present ();
+		}
+	
 	}
 }
 

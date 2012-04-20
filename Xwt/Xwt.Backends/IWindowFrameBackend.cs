@@ -38,6 +38,12 @@ namespace Xwt.Backends
 		
 		bool Decorated { get; set; }
 		bool ShowInTaskbar { get; set; }
+		
+		/// <summary>
+		/// Presents a window to the user. This may mean raising the window in the stacking order,
+		/// deiconifying it, moving it to the current desktop, and/or giving it the keyboard focus
+		/// </summary>
+		void Present ();
 	}
 	
 	public interface IWindowFrameEventSink

@@ -104,6 +104,11 @@ namespace Xwt.WPFBackend
 			set { window.Visibility = value ? Visibility.Visible : Visibility.Hidden; }
 		}
 
+		void IWindowFrameBackend.Present ()
+		{
+			window.Activate ();
+		}
+		
 		public Rectangle Bounds {
 			get {
 				double width = Double.IsNaN (window.Width) ? window.ActualWidth : window.Width;

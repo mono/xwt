@@ -91,10 +91,10 @@ namespace Xwt
 			}
 		}
 
-		static WindowFrame()
+		static WindowFrame ()
 		{
-			MapEvent(WindowFrameEvent.Shown, typeof(Window), "OnShown");
-			MapEvent(WindowFrameEvent.Hidden, typeof(Window), "OnHidden");
+			MapEvent (WindowFrameEvent.Shown, typeof(WindowFrame), "OnShown");
+			MapEvent (WindowFrameEvent.Hidden, typeof(WindowFrame), "OnHidden");
 		}
 
 		public WindowFrame ()
@@ -215,6 +215,15 @@ namespace Xwt
 		public void Show ()
 		{
 			Visible = true;
+		}
+		
+		/// <summary>
+		/// Presents a window to the user. This may mean raising the window in the stacking order,
+		/// deiconifying it, moving it to the current desktop, and/or giving it the keyboard focus
+		/// </summary>
+		public void Present ()
+		{
+			Backend.Present ();
 		}
 
 		protected virtual void OnShown ()
