@@ -63,6 +63,7 @@ namespace Samples
 			AddSample (null, "Buttons", typeof(ButtonSample));
 			AddSample (null, "CheckBox", typeof(Checkboxes));
 			AddSample (null, "Clipboard", typeof(ClipboardSample));
+			AddSample (null, "ColorSelector", typeof(ColorSelectorSample));
 			AddSample (null, "ComboBox", typeof(ComboBoxes));
 //			AddSample (null, "Designer", typeof(Designer));
 			AddSample (null, "Drag & Drop", typeof(DragDrop));

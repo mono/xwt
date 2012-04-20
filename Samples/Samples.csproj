@@ -141,6 +141,7 @@
     <Compile Include="Samples\ListBoxSample.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Samples\ColorSelectorSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

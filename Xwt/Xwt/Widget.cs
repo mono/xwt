@@ -90,7 +90,7 @@ namespace Xwt
 			protected override IBackend OnCreateBackend ()
 			{
 				var backend = base.OnCreateBackend ();
-				if (backend == null) {
+				if (backend == null || backend is XwtWidgetBackend) {
 					// If this is a custom widget, not implemented in Xwt, then we provide the default
 					// backend, which allows setting a content widget
 					Type t = Parent.GetType ();
@@ -289,6 +289,8 @@ namespace Xwt
 		
 		internal protected static IBackend GetBackend (Widget w)
 		{
+			if (w.Backend is XwtWidgetBackend)
+				return GetBackend ((XwtWidgetBackend)w.Backend);
 			return w != null ? w.Backend : null;
 		}
 		
