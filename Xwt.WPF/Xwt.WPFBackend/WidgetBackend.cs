@@ -633,16 +633,12 @@ namespace Xwt.WPFBackend
 
 		void WidgetGotFocusHandler (object o, RoutedEventArgs e)
 		{
-			Toolkit.Invoke (delegate {
-				eventSink.OnGotFocus ();
-			});
+			Toolkit.Invoke (this.eventSink.OnGotFocus);
 		}
 
 		void WidgetLostFocusHandler (object o, RoutedEventArgs e)
 		{
-			Toolkit.Invoke (delegate {
-				eventSink.OnLostFocus ();
-			});
+			Toolkit.Invoke (eventSink.OnLostFocus);
 		}
 
 		DragDropData DragDropInfo {
