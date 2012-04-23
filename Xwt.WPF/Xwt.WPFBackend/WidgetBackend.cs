@@ -216,7 +216,7 @@ namespace Xwt.WPFBackend
 
 		public virtual bool Visible {
 			get { return Widget.Visibility == Visibility.Visible; }
-			set { Widget.Visibility = value ? Visibility.Visible : Visibility.Hidden; }
+			set { Widget.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
 		}
 
 		public string TooltipText {
