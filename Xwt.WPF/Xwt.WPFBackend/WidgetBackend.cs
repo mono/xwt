@@ -31,6 +31,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using SWM = System.Windows.Media;
@@ -653,12 +654,18 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		private ImageAdorner adorner;
 		public void DragStart (DragStartData data)
 		{
 			if (data.Data == null)
 				throw new ArgumentNullException ("data");
-
+			
 			DataObject dataObj = data.Data.ToDataObject();
+
+			if (data.ImageBackend != null) {
+				this.adorner = new ImageAdorner (Widget, data.ImageBackend);
+				AdornerLayer.GetAdornerLayer (Widget).Add (this.adorner);
+			}
 
 			Widget.Dispatcher.BeginInvoke (
 				(Func<DependencyObject, object, DragDropEffects, DragDropEffects>)DragDrop.DoDragDrop,
@@ -780,6 +787,9 @@ namespace Xwt.WPFBackend
 
 			e.Handled = true; // Prevent default handlers from being used.
 
+			if (this.adorner != null)
+				this.adorner.Offset = new Point (pos.X, pos.Y);
+
 			if ((enabledEvents & WidgetEvent.DragOverCheck) > 0) {
 				var checkArgs = new DragOverCheckEventArgs (pos, types, proposedAction);
 				Toolkit.Invoke (delegate {
@@ -825,6 +835,11 @@ namespace Xwt.WPFBackend
 			var actualEffect = currentDragEffect;
 
 			e.Handled = true; // Prevent default handlers from being used.
+
+			if (this.adorner != null) {
+				AdornerLayer.GetAdornerLayer (Widget).Remove (this.adorner);
+				this.adorner = null;
+			}
 
 			if ((enabledEvents & WidgetEvent.DragDropCheck) > 0) {
 				var checkArgs = new DragCheckEventArgs (pos, types, actualEffect.ToXwtDropAction ());
