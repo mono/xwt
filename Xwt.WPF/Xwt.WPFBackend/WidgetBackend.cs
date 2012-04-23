@@ -572,19 +572,25 @@ namespace Xwt.WPFBackend
 		void WidgetKeyDownHandler (object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			KeyEventArgs args;
-			if (MapToXwtKeyArgs (e, out args))
+			if (MapToXwtKeyArgs (e, out args)) {
 				Toolkit.Invoke (delegate {
 					eventSink.OnKeyPressed (args);
 				});
+				if (args.IsEventCanceled)
+					e.Handled = true;
+			}
 		}
 
 		void WidgetKeyUpHandler (object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			KeyEventArgs args;
-			if (MapToXwtKeyArgs (e, out args))
+			if (MapToXwtKeyArgs (e, out args)) {
 				Toolkit.Invoke (delegate {
 					eventSink.OnKeyReleased (args);
 				});
+				if (args.IsEventCanceled)
+					e.Handled = true;
+			}
 		}
 
 		bool MapToXwtKeyArgs (System.Windows.Input.KeyEventArgs e, out KeyEventArgs result)
