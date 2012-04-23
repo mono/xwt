@@ -40,7 +40,7 @@ namespace Xwt.WPFBackend
 	public class ButtonBackend : WidgetBackend, IButtonBackend
 	{
 		public ButtonBackend ()
-			: this (new SWC.Button())
+			: this (new WpfButton ())
 		{
 		}
 
@@ -123,7 +123,6 @@ namespace Xwt.WPFBackend
 				Button.Content = grid;
 			}
 			Button.InvalidateMeasure ();
-			Button.UpdateLayout ();
 		}
 
 		public override void EnableEvent (object eventId)
@@ -167,6 +166,22 @@ namespace Xwt.WPFBackend
 
 				return buttonsDictionary;
 			}
+		}
+	}
+
+	class WpfButton : SWC.Button, IWpfWidget
+	{
+		public WidgetBackend Backend { get; set; }
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
+		}
+
+		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
+		{
+			return base.ArrangeOverride (arrangeBounds);
 		}
 	}
 }

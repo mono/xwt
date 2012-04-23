@@ -114,6 +114,7 @@ namespace Xwt.WPFBackend
 					element.Measure (new SW.Size (rects[i].Width, rects[i].Height));
 
 					element.Arrange (DataConverter.ToWpfRect (rects[i]));
+					element.UpdateLayout ();
 				}
 			}
 		}
