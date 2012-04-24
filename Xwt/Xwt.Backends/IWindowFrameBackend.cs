@@ -46,12 +46,13 @@ namespace Xwt.Backends
 		void OnShown ();
 		void OnHidden ();
 	}
-	
+
+	[Flags]
 	public enum WindowFrameEvent
 	{
 		BoundsChanged = 1,
-		Shown,
-		Hidden
+		Shown = 2,
+		Hidden = 4
 	}
 }
 
