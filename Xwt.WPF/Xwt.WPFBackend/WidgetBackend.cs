@@ -650,7 +650,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		private bool adorned;
 		private ImageAdorner adorner;
+
 		public void DragStart (DragStartData data)
 		{
 			if (data.Data == null)
@@ -659,6 +661,7 @@ namespace Xwt.WPFBackend
 			DataObject dataObj = data.Data.ToDataObject();
 
 			if (data.ImageBackend != null) {
+				this.adorned = true;
 				this.adorner = new ImageAdorner (Widget, data.ImageBackend);
 				AdornerLayer.GetAdornerLayer (Widget).Add (this.adorner);
 			}
@@ -783,8 +786,14 @@ namespace Xwt.WPFBackend
 
 			e.Handled = true; // Prevent default handlers from being used.
 
-			if (this.adorner != null)
+			if (this.adorner != null) {
+				if (!this.adorned) {
+					AdornerLayer.GetAdornerLayer (Widget).Add (this.adorner);
+					this.adorned = true;
+				}
+
 				this.adorner.Offset = new Point (pos.X, pos.Y);
+			}
 
 			if ((enabledEvents & WidgetEvent.DragOverCheck) > 0) {
 				var checkArgs = new DragOverCheckEventArgs (pos, types, proposedAction);
@@ -835,6 +844,7 @@ namespace Xwt.WPFBackend
 			if (this.adorner != null) {
 				AdornerLayer.GetAdornerLayer (Widget).Remove (this.adorner);
 				this.adorner = null;
+				this.adorned = false;
 			}
 
 			if ((enabledEvents & WidgetEvent.DragDropCheck) > 0) {
@@ -873,6 +883,11 @@ namespace Xwt.WPFBackend
 
 		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)
 		{
+			if (this.adorner != null) {
+				AdornerLayer.GetAdornerLayer (Widget).Remove (this.adorner);
+				this.adorned = false;
+			}
+
 			Toolkit.Invoke (delegate {
 				eventSink.OnDragLeave (EventArgs.Empty);
 			});
