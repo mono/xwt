@@ -116,6 +116,8 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext) backend;
 			c.Graphics.FillPath (c.Brush, c.Path);
 			c.Path.Reset();
+			c.CurrentX = 0;
+			c.CurrentY = 0;
 		}
 
 		public void FillPreserve (object backend)
