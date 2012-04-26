@@ -116,6 +116,8 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext) backend;
 			c.Graphics.FillPath (c.Brush, c.Path);
 			c.Path.Reset();
+			c.CurrentX = 0;
+			c.CurrentY = 0;
 		}
 
 		public void FillPreserve (object backend)
@@ -147,6 +149,8 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext) backend;
 			c.Path.Reset();
+			c.CurrentX = 0;
+			c.CurrentY = 0;
 		}
 
 		public void Rectangle (object backend, double x, double y, double width, double height)
@@ -195,6 +199,8 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext) backend;
 			c.Graphics.DrawPath (c.Pen, c.Path);
 			c.Path.Reset();
+			c.CurrentX = 0;
+			c.CurrentY = 0;
 		}
 
 		public void StrokePreserve (object backend)
