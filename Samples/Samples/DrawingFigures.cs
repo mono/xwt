@@ -4,6 +4,7 @@
 // Author:
 //       Lytico (http://limada.sourceforge.net)
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Hywel Thomas <hywel.w.thomas@gmail.com>
 // 
 // Copyright (c) 2012 Xamarin Inc
 // 
@@ -35,15 +36,61 @@ namespace Samples
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
 			base.OnDraw (ctx, dirtyRect);
-			Figures (ctx, 5, 5);
+			Figures (ctx, 5, 25);
 		}
 		
 		public virtual void Figures (Context ctx, double x, double y)
 		{
-			Rectangles (ctx, x, y);
-			Curves1 (ctx, x, y + 60);
-			Curves2 (ctx, x + 100, y + 60);
+			Lines (ctx);
 
+			Rectangles (ctx, x, y + 20);
+			Curves1 (ctx, x, y + 80);
+			Curves2 (ctx, x + 100, y + 80);
+
+		}
+
+		/// <summary>
+		/// Visual test for pixel alignment and odd/even line widths
+		/// </summary>
+		public void Lines (Context ctx)
+		{
+			ctx.Save ();
+
+			ctx.SetColor (Colors.Black);
+
+			int nPairs = 4;
+			double length = 90;
+			double gap = 2;
+
+			// set half-pixel y-coordinate for sharp single-pixel-wide line
+			// on first line of Canvas, extending to match line pairs below
+			ctx.SetLineWidth (1);
+			double x = 0;
+			double y = 0.5;
+			double end = x + 2*(length - 1) + gap;
+			ctx.MoveTo (x, y);
+			ctx.LineTo (end, y);
+			ctx.Stroke ();
+
+			// draw pairs of lines with odd and even widths,
+			// each pair aligned on half-pixel y-coordinates
+			y = 4.5;
+			for (int w = 1; w <= nPairs; ++w) {
+				x = 0;
+				ctx.SetLineWidth (w);
+				ctx.MoveTo (x, y);
+				ctx.RelLineTo (length-1, 0);
+				ctx.Stroke ();
+
+				ctx.SetLineWidth (w + 1);
+				x += (gap + length - 1);
+				ctx.MoveTo (x, y);
+				ctx.RelLineTo (length-1, 0);
+				ctx.Stroke ();
+				y += w * 2 + gap;
+			}
+
+			ctx.Restore ();
 		}
 
 		public virtual void Rectangles (Context ctx, double x, double y)
