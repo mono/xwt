@@ -87,6 +87,14 @@ namespace Xwt.Mac
 				}
 			}
 		}
+
+		public override Xwt.Drawing.Color BackgroundColor {
+			get { return Widget.BackgroundColor.ToXwtColor (); }
+			set {
+				Widget.BackgroundColor = value.ToNSColor ();
+				Widget.DrawsBackground = true;
+			}
+		}
 	}
 	
 	class TextFieldView: NSTextField, IViewObject
