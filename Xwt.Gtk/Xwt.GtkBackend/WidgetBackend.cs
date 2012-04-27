@@ -208,7 +208,7 @@ namespace Xwt.GtkBackend
 		
 		protected virtual void Dispose (bool disposing)
 		{
-			if (Widget != null && !disposing && Widget.Parent == null)
+			if (Widget != null && disposing && Widget.Parent == null)
 				Widget.Destroy ();
 		}
 		
