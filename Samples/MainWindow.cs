@@ -17,10 +17,12 @@ namespace Samples
 		DataField<Sample> widgetCol = new DataField<Sample> ();
 		DataField<Image> iconCol = new DataField<Image> ();
 		
+		StatusIcon statusIcon;
+		
 		public MainWindow ()
 		{
 			try {
-				var statusIcon = Application.CreateStatusIcon ();
+				statusIcon = Application.CreateStatusIcon ();
 				statusIcon.Menu = new Menu ();
 				statusIcon.Menu.Items.Add (new MenuItem ("Test"));
 				statusIcon.Image = Image.FromResource (GetType (), "package.png");
@@ -109,6 +111,15 @@ namespace Samples
 			Content = box;
 			
 			samplesTree.SelectionChanged += HandleSamplesTreeSelectionChanged;
+		}
+		
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			
+			if (statusIcon != null) {
+				statusIcon.Dispose ();
+			}
 		}
 
 		void HandleSamplesTreeSelectionChanged (object sender, EventArgs e)
