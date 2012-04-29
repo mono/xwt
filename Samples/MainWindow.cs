@@ -80,6 +80,7 @@ namespace Samples
 			AddSample (n, "Text", typeof(DrawingText));
 			AddSample (n, "Partial Images", typeof (PartialImages));
 			
+			AddSample (null, "Progress bars", typeof(ProgressBarSample));
 			AddSample (null, "Frames", typeof(Frames));
 			AddSample (null, "Images", typeof(Images));
 			AddSample (null, "Labels", typeof(Labels));
