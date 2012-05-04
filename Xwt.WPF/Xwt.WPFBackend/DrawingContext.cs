@@ -177,14 +177,13 @@ namespace Xwt.WPFBackend
 					var c = contexts.Pop ();
 					c.Dispose (true);
 				}
+			font = null;
+			brush = null;
+			pen = null;
+			path = null;
 		}
 		
 		public void Dispose ()
-		{
-			Dispose (false);
-		}
-		
-		~DrawingContext ()
 		{
 			Dispose (false);
 		}
