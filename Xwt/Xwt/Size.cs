@@ -27,6 +27,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Markup;
+using System.Globalization;
 
 namespace Xwt {
 	
@@ -107,7 +108,7 @@ namespace Xwt {
 
 		public override string ToString ()
 		{
-			return String.Format ("[Width={0}, Height={1}]", width, height);
+			return String.Format ("{{Width={0} Height={1}}}", width.ToString (CultureInfo.InvariantCulture), height.ToString (CultureInfo.InvariantCulture));
 		}
 	}
 	

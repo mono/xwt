@@ -41,7 +41,7 @@ namespace Xwt
 		
 		public override string ToString ()
 		{
-			return String.Format ("{0},{1}/{2}x{3}", X.ToString (CultureInfo.InvariantCulture), Y.ToString (CultureInfo.InvariantCulture), Width.ToString (CultureInfo.InvariantCulture), Height.ToString (CultureInfo.InvariantCulture));
+			return String.Format ("{{X={0} Y={1} Width={2} Height={3}}}", X.ToString (CultureInfo.InvariantCulture), Y.ToString (CultureInfo.InvariantCulture), Width.ToString (CultureInfo.InvariantCulture), Height.ToString (CultureInfo.InvariantCulture));
 		}
 		
 		// constructors
