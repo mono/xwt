@@ -39,7 +39,7 @@ namespace Xwt {
 
 		public override string ToString ()
 		{
-			return String.Format ("({0},{1})", X.ToString (CultureInfo.InvariantCulture), Y.ToString (CultureInfo.InvariantCulture));
+			return String.Format ("{{X={0} Y={1}}}", X.ToString (CultureInfo.InvariantCulture), Y.ToString (CultureInfo.InvariantCulture));
 		}
 		
 		public Point (double x, double y): this ()
