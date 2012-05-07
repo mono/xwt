@@ -63,7 +63,7 @@ namespace Xwt.WPFBackend
 
 			switch (id) {
 			case StockIcons.Add:
-					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("list-add.png"))
+					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.list-add.png"))
 						return LoadFromStream (s);
 				//throw new NotImplementedException();
 			case StockIcons.Error:
@@ -77,7 +77,7 @@ namespace Xwt.WPFBackend
 			case StockIcons.Question:
 				return NativeMethods.GetImage (NativeStockIcon.Help, options);
 			case StockIcons.Remove:
-				using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("list-remove.png"))
+				using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.list-remove.png"))
 					return LoadFromStream (s);
 			case StockIcons.Warning:
 				return NativeMethods.GetImage (NativeStockIcon.Warning, options);
