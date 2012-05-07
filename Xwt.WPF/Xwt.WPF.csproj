@@ -149,4 +149,9 @@
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="icons\list-add.png" />
+    <EmbeddedResource Include="icons\list-remove.png" />
+  </ItemGroup>
 </Project>
