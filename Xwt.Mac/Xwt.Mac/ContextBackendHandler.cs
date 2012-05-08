@@ -30,6 +30,7 @@ using Xwt.Engine;
 using MonoMac.AppKit;
 using Xwt.Drawing;
 using MonoMac.Foundation;
+using MonoMac.CoreGraphics;
 using System.Drawing;
 
 namespace Xwt.Mac
@@ -286,22 +287,56 @@ namespace Xwt.Mac
 		
 		public void TransformPoint (object backend, ref double x, ref double y)
 		{
-			throw new NotImplementedException ();
+			GetContext (backend);
+			CGContext gp = NSGraphicsContext.CurrentContext.GraphicsPort;
+			CGAffineTransform t = gp.GetCTM();
+
+			PointF p = t.TransformPoint (new PointF ((float)x, (float)y));
+			x = p.X;
+			y = p.Y;
 		}
 
 		public void TransformDistance (object backend, ref double dx, ref double dy)
 		{
-			throw new NotImplementedException ();
+			GetContext (backend);
+			CGContext gp = NSGraphicsContext.CurrentContext.GraphicsPort;
+			CGAffineTransform t = gp.GetCTM();
+			// remove translational elements from CTM
+			t.x0 = 0;
+			t.y0 = 0;
+
+			PointF p = t.TransformPoint (new PointF ((float)dx, (float)dy));
+			dx = p.X;
+			dy = p.Y;
 		}
 
 		public void TransformPoints (object backend, Point[] points)
 		{
-			throw new NotImplementedException ();
+			GetContext (backend);
+			CGContext gp = NSGraphicsContext.CurrentContext.GraphicsPort;
+			CGAffineTransform t = gp.GetCTM();
+
+			PointF p;
+			for (int i = 0; i < points.Length; ++i) {
+				p = t.TransformPoint (new PointF ((float)points[i].X, (float)points[i].Y));
+				points[i].X = p.X;
+				points[i].Y = p.Y;
+			}
 		}
 
 		public void TransformDistances (object backend, Distance[] vectors)
 		{
-			throw new NotImplementedException ();
+			GetContext (backend);
+			CGContext gp = NSGraphicsContext.CurrentContext.GraphicsPort;
+			CGAffineTransform t = gp.GetCTM();
+			t.x0 = 0;
+			t.y0 = 0;
+			PointF p;
+			for (int i = 0; i < points.Length; ++i) {
+				p = t.TransformPoint (new PointF ((float)vectors[i].Dx, (float)vectors[i].Dy));
+				vectors[i].Dx = p.X;
+				vectors[i].Dy = p.Y;
+			}
 		}
 
 		public void Dispose (object backend)
