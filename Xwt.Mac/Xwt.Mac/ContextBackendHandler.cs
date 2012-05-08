@@ -332,7 +332,7 @@ namespace Xwt.Mac
 			t.x0 = 0;
 			t.y0 = 0;
 			PointF p;
-			for (int i = 0; i < points.Length; ++i) {
+			for (int i = 0; i < vectors.Length; ++i) {
 				p = t.TransformPoint (new PointF ((float)vectors[i].Dx, (float)vectors[i].Dy));
 				vectors[i].Dx = p.X;
 				vectors[i].Dy = p.Y;
