@@ -352,7 +352,7 @@ namespace Xwt.GtkBackend
 			get { return RootWidget; }
 		}
 		
-		Gtk.Widget EventsRootWidget {
+		protected virtual Gtk.Widget EventsRootWidget {
 			get { return eventBox ?? Widget; }
 		}
 		
@@ -388,8 +388,8 @@ namespace Xwt.GtkBackend
 		{
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
-			
-			if (eventBox == null && Widget.IsNoWindow) {
+
+			if (eventBox == null && EventsRootWidget.IsNoWindow) {
 				eventBox = new Gtk.EventBox ();
 				eventBox.Visible = Widget.Visible;
 				eventBox.Sensitive = Widget.Sensitive;
@@ -458,9 +458,10 @@ namespace Xwt.GtkBackend
 				}
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
 					// Enabling a drag&drop event for the first time
-					Widget.DragDrop += HandleWidgetDragDrop;
-					Widget.DragMotion += HandleWidgetDragMotion;
-					Widget.DragDataReceived += HandleWidgetDragDataReceived;
+					AllocEventBox ();
+					EventsRootWidget.DragDrop += HandleWidgetDragDrop;
+					EventsRootWidget.DragMotion += HandleWidgetDragMotion;
+					EventsRootWidget.DragDataReceived += HandleWidgetDragDataReceived;
 				}
 				if ((ev & sizeCheckEvents) != 0) {
 					EnableSizeCheckEvents ();
@@ -484,10 +485,10 @@ namespace Xwt.GtkBackend
 				WidgetEvent ev = (WidgetEvent) eventId;
 				switch (ev) {
 				case WidgetEvent.DragLeave:
-					Widget.DragLeave -= HandleWidgetDragLeave;
+					EventsRootWidget.DragLeave -= HandleWidgetDragLeave;
 					break;
 				case WidgetEvent.DragStarted:
-					Widget.DragBegin -= HandleWidgetDragBegin;
+					EventsRootWidget.DragBegin -= HandleWidgetDragBegin;
 					break;
 				case WidgetEvent.KeyPressed:
 					Widget.KeyPressEvent -= HandleKeyPressEvent;
@@ -528,9 +529,9 @@ namespace Xwt.GtkBackend
 				
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
 					// All drag&drop events have been disabled
-					Widget.DragDrop -= HandleWidgetDragDrop;
-					Widget.DragMotion -= HandleWidgetDragMotion;
-					Widget.DragDataReceived -= HandleWidgetDragDataReceived;
+					EventsRootWidget.DragDrop -= HandleWidgetDragDrop;
+					EventsRootWidget.DragMotion -= HandleWidgetDragMotion;
+					EventsRootWidget.DragDataReceived -= HandleWidgetDragDataReceived;
 				}
 				if ((ev & sizeCheckEvents) != 0) {
 					DisableSizeCheckEvents ();
@@ -889,7 +890,7 @@ namespace Xwt.GtkBackend
 			DragDropInfo.DragDataRequests = DragDropInfo.ValidDropTypes.Length;
 			foreach (var t in DragDropInfo.ValidDropTypes) {
 				var at = Gdk.Atom.Intern (t.Target, true);
-				Gtk.Drag.GetData (Widget, ctx, at, time);
+				Gtk.Drag.GetData (EventsRootWidget, ctx, at, time);
 			}
 		}
 		
@@ -996,10 +997,10 @@ namespace Xwt.GtkBackend
 		{
 			Gdk.DragAction action = ConvertDragAction (sdata.DragAction);
 			DragDropInfo.CurrentDragData = sdata.Data;
-			Widget.DragBegin += HandleDragBegin;
+			EventsRootWidget.DragBegin += HandleDragBegin;
 			if (sdata.ImageBackend != null)
-				IconInitializer.Init (Widget, (Gdk.Pixbuf) sdata.ImageBackend, sdata.HotX, sdata.HotY);
-			Gtk.Drag.Begin (Widget, Util.BuildTargetTable (sdata.Data.DataTypes), action, 1, Gtk.Global.CurrentEvent);
+				IconInitializer.Init (EventsRootWidget, (Gdk.Pixbuf) sdata.ImageBackend, sdata.HotX, sdata.HotY);
+			Gtk.Drag.Begin (EventsRootWidget, Util.BuildTargetTable (sdata.Data.DataTypes), action, 1, Gtk.Global.CurrentEvent);
 		}
 
 		void HandleDragBegin (object o, Gtk.DragBeginArgs args)
@@ -1037,11 +1038,11 @@ namespace Xwt.GtkBackend
 		
 		void FinishDrag (bool delete)
 		{
-			Widget.DragEnd -= HandleWidgetDragEnd;
-			Widget.DragDataGet -= HandleWidgetDragDataGet;
-			Widget.DragFailed -= HandleDragFailed;
-			Widget.DragDataDelete -= HandleDragDataDelete;
-			Widget.DragBegin -= HandleDragBegin; // This event is subscribed only when manualy starting a drag
+			EventsRootWidget.DragEnd -= HandleWidgetDragEnd;
+			EventsRootWidget.DragDataGet -= HandleWidgetDragDataGet;
+			EventsRootWidget.DragFailed -= HandleDragFailed;
+			EventsRootWidget.DragDataDelete -= HandleDragDataDelete;
+			EventsRootWidget.DragBegin -= HandleDragBegin; // This event is subscribed only when manualy starting a drag
 			Toolkit.Invoke (delegate {
 				eventSink.OnDragFinished (new DragFinishedEventArgs (delete));
 			});
@@ -1057,7 +1058,7 @@ namespace Xwt.GtkBackend
 		
 		protected virtual void OnSetDragTarget (Gtk.TargetEntry[] table, Gdk.DragAction actions)
 		{
-			Gtk.Drag.DestSet (Widget, Gtk.DestDefaults.Highlight, table, actions);
+			Gtk.Drag.DestSet (EventsRootWidget, Gtk.DestDefaults.Highlight, table, actions);
 		}
 		
 		public void SetDragSource (TransferDataType[] types, DragDropAction dragAction)

@@ -54,6 +54,12 @@ namespace Xwt.GtkBackend
 			get { return (ITableViewEventSink)base.EventSink; }
 		}
 
+		protected override Gtk.Widget EventsRootWidget {
+			get {
+				return ScrolledWindow.Child;
+			}
+		}
+
 		public ScrollPolicy VerticalScrollPolicy {
 			get {
 				return Util.ConvertScrollPolicy (ScrolledWindow.VscrollbarPolicy);
