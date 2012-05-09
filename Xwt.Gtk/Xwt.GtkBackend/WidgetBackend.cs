@@ -685,7 +685,7 @@ namespace Xwt.GtkBackend
 			Toolkit.Invoke (delegate {
 				EventSink.OnKeyReleased (kargs);
 			});
-			if (kargs.IsEventCanceled)
+			if (kargs.Handled)
 				args.RetVal = true;
 		}
 
@@ -704,7 +704,7 @@ namespace Xwt.GtkBackend
 			Toolkit.Invoke (delegate {
 				EventSink.OnKeyPressed (kargs);
 			});
-			if (kargs.IsEventCanceled)
+			if (kargs.Handled)
 				args.RetVal = true;
 		}
 
@@ -747,6 +747,8 @@ namespace Xwt.GtkBackend
 			Toolkit.Invoke (delegate {
 				EventSink.OnMouseMoved (a);
 			});
+			if (a.Handled)
+				args.RetVal = true;
 		}
 
 		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
@@ -758,6 +760,8 @@ namespace Xwt.GtkBackend
 			Toolkit.Invoke (delegate {
 				EventSink.OnButtonReleased (a);
 			});
+			if (a.Handled)
+				args.RetVal = true;
 		}
 
 		[GLib.ConnectBeforeAttribute]
@@ -776,6 +780,8 @@ namespace Xwt.GtkBackend
 			Toolkit.Invoke (delegate {
 				EventSink.OnButtonPressed (a);
 			});
+			if (a.Handled)
+				args.RetVal = true;
 		}
 		
 		[GLib.ConnectBefore]
@@ -943,6 +949,10 @@ namespace Xwt.GtkBackend
 		
 		void HandleWidgetDragBegin (object o, Gtk.DragBeginArgs args)
 		{
+			// If SetDragSource has not been called, ignore the event
+			if (DragDropInfo.SourceDragAction == default (Gdk.DragAction))
+				return;
+
 			DragStartData sdata = null;
 			Toolkit.Invoke (delegate {
 				sdata = EventSink.OnDragStarted ();

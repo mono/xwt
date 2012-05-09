@@ -29,8 +29,6 @@ namespace Xwt
 {
 	public class KeyEventArgs: EventArgs
 	{
-		bool canceled;
-		
 		public KeyEventArgs (Key key, ModifierKeys modifiers, bool isRepeat, long timestamp)
 		{
 			this.Key = key;
@@ -47,14 +45,7 @@ namespace Xwt
 		
 		public long Timestamp { get; private set; }
 		
-		public void CancelEvent ()
-		{
-			canceled = true;
-		}
-		
-		public bool IsEventCanceled {
-			get { return canceled; }
-		}
+		public bool Handled { get; set; }
 	}
 }
 

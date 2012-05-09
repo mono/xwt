@@ -37,6 +37,8 @@ namespace Xwt
 			Timestamp  = timestamp;
 		}
 		
+		public bool Handled { get; set; }
+		
 		public double X { get; private set; }
 		public double Y { get; private set; }
 		
