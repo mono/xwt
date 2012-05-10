@@ -149,7 +149,7 @@ namespace Xwt.WPFBackend
 				ctx.DrawImage (oldImg, new System.Windows.Rect (0, 0, width, height));
 			}
 
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, oldImg.Format);
+			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, PixelFormats.Pbgra32);
 			bmp.Render (visual);
 
 			return bmp;
@@ -174,7 +174,7 @@ namespace Xwt.WPFBackend
 				ctx.DrawImage(oldImg, new System.Windows.Rect (-srcX, -srcY, srcX+width, srcY+height));
 			}
 
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, oldImg.Format);
+			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, PixelFormats.Pbgra32);
 			bmp.Render (visual);
 
 			return bmp;
