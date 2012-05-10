@@ -577,7 +577,7 @@ namespace Xwt.WPFBackend
 				Toolkit.Invoke (delegate {
 					eventSink.OnKeyPressed (args);
 				});
-				if (args.IsEventCanceled)
+				if (args.Handled)
 					e.Handled = true;
 			}
 		}
@@ -589,7 +589,7 @@ namespace Xwt.WPFBackend
 				Toolkit.Invoke (delegate {
 					eventSink.OnKeyReleased (args);
 				});
-				if (args.IsEventCanceled)
+				if (args.Handled)
 					e.Handled = true;
 			}
 		}
@@ -608,16 +608,22 @@ namespace Xwt.WPFBackend
 
 		void WidgetMouseDownHandler (object o, MouseButtonEventArgs e)
 		{
+			var args = ToXwtButtonArgs (e);
 			Toolkit.Invoke (delegate () {
-				eventSink.OnButtonPressed (ToXwtButtonArgs (e));
+				eventSink.OnButtonPressed (args);
 			});
+			if (args.Handled)
+				e.Handled = true;
 		}
 
 		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
 		{
+			var args = ToXwtButtonArgs (e);
 			Toolkit.Invoke (delegate () {
-				eventSink.OnButtonReleased (ToXwtButtonArgs (e));
+				eventSink.OnButtonReleased (args);
 			});
+			if (args.Handled)
+				e.Handled = true;
 		}
 
 		ButtonEventArgs ToXwtButtonArgs (MouseButtonEventArgs e)
