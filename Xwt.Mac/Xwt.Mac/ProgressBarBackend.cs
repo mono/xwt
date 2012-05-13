@@ -53,7 +53,7 @@ namespace Xwt.Mac
 			widget.StartAnimation (null);
 		}
 		
-		public void SetFraction (double? fraction)
+		public void SetFraction (double fraction)
 		{
 			var widget = (NSProgressIndicator)ViewObject;
 
