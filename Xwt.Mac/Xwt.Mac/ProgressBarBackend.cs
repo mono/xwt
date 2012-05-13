@@ -50,7 +50,6 @@ namespace Xwt.Mac
 			widget.DoubleValue = 0.0;
 
 			widget.Indeterminate = false;
-			widget.StartAnimation (null);
 		}
 		
 		public void SetFraction (double fraction)
@@ -70,6 +69,8 @@ namespace Xwt.Mac
 				return;
 
 			widget.Indeterminate = value;
+			if (value)
+				widget.StartAnimation (null);
 		}
 	}
 	
