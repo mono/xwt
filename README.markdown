@@ -136,7 +136,7 @@ based on the contents of the childrens on it.
         * Paned (Container)
             * HPaned (Container)
             * VPaned (Container)
-	* ProgressBar
+        * ProgressBar
         * ScrollView
         * Separator
             * VSeparator
