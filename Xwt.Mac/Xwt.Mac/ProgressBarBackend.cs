@@ -39,28 +39,24 @@ namespace Xwt.Mac
 		{
 		}
 
-		#region IButtonBackend implementation
 		public override void Initialize ()
 		{
-			ViewObject = new MacProgressBar (EventSink);
+			var widget = new MacProgressBar (EventSink);
+			ViewObject = widget;
 			Widget.SizeToFit ();
 			
-			((NSProgressIndicator)ViewObject).Indeterminate = true;
-			((NSProgressIndicator)ViewObject).MinValue = 0.0;
-			((NSProgressIndicator)ViewObject).MaxValue = 1.0;
-			((NSProgressIndicator)ViewObject).StartAnimation (null);
-//			((NSProgressIndicator)ViewObject).DoubleValue = (double)40;
-//			((NSProgressIndicator)ViewObject).IncrementBy((double)20.0);
+			widget.Indeterminate = true;
+			widget.MinValue = 0.0;
+			widget.MaxValue = 1.0;
+			widget.StartAnimation (null);
 		}
 
 		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
 		{
-			//((MacButton)Widget).EnableEvent (ev);
 		}
 
 		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
 		{
-			//((MacButton)Widget).DisableEvent (ev);
 		}
 		
 		public void SetFraction (double? fraction)
@@ -72,38 +68,7 @@ namespace Xwt.Mac
 			} else {
 				widget.Indeterminate = true;
 			}
-			//Widget.Title = label ?? "";
-			//if (string.IsNullOrEmpty (label))
-			//	imagePosition = ContentPosition.Center;
-			//Widget.SizeToFit ();
 		}
-		
-		public void SetButtonStyle (ButtonStyle style)
-		{
-//			switch (style) {
-//			case ButtonStyle.Normal:
-//				Widget.BezelStyle = NSBezelStyle.RoundRect;
-//				Widget.SetButtonType (NSButtonType.MomentaryPushIn);
-//				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
-//				break;
-//			case ButtonStyle.Flat:
-//				Widget.BezelStyle = NSBezelStyle.RoundRect;
-//				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
-//				break;
-//			}
-		}
-		
-		static Selector selSetShowsBorderOnlyWhileMouseInside = new Selector ("setShowsBorderOnlyWhileMouseInside:");
-		
-		public void SetButtonType (ButtonType type)
-		{
-//			switch (type) {
-//			case ButtonType.Disclosure: Widget.BezelStyle = NSBezelStyle.Disclosure; break;
-//			default: Widget.BezelStyle = NSBezelStyle.RoundRect; break;
-//			}
-		}
-		
-		#endregion
 	}
 	
 	class MacProgressBar: NSProgressIndicator, IViewObject
@@ -114,22 +79,10 @@ namespace Xwt.Mac
 		
 		public MacProgressBar (IWidgetEventSink eventSink)
 		{
-
-//			BezelStyle = NSBezelStyle.Rounded;
-//			Activated += delegate {
-//				Toolkit.Invoke (delegate {
-//					eventSink.OnClicked ();
-//				});
-//			};
 		}
 		
 		public MacProgressBar (ICheckBoxEventSink eventSink)
 		{
-//			Activated += delegate {
-//				Toolkit.Invoke (delegate {
-//					eventSink.OnClicked ();
-//				});
-//			};
 		}
 		
 		public Widget Frontend { get; set; }
