@@ -1,5 +1,5 @@
 ﻿// 
-// CheckBoxbackend.cs
+// ProgressBarBackend.cs
 //  
 // Author:
 //       Andres G. Aragoneses

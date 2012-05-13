@@ -1,5 +1,5 @@
 // 
-// ButtonSample.cs
+// ProgressBarSample.cs
 //  
 // Author:
 //       Andres G. Aragoneses <knocte@gmail.com>
