@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Timers;
 using Xwt;
 using Xwt.Drawing;
 
@@ -32,7 +33,7 @@ namespace Samples
 {
 	public class ProgressBarSample : VBox
 	{
-		System.Timers.Timer timer = new System.Timers.Timer (100);
+		Timer timer = new Timer (100);
 		ProgressBar determinateProgressBar;
 		ProgressBar indeterminateProgressBar;
 
@@ -49,7 +50,7 @@ namespace Samples
 			timer.Start ();
 		}
 
-		public void Increase (object sender, System.Timers.ElapsedEventArgs args)
+		public void Increase (object sender, ElapsedEventArgs args)
 		{
 			double nextFraction;
 			double? currentFraction = determinateProgressBar.Fraction;
