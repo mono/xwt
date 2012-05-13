@@ -24,7 +24,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
@@ -34,7 +33,7 @@ using MonoMac.ObjCRuntime;
 
 namespace Xwt.Mac
 {
-	public class ProgressBarBackend: ViewBackend<NSProgressIndicator,IProgressBarEventSink>, IProgressBarBackend
+	public class ProgressBarBackend: ViewBackend<NSProgressIndicator, IWidgetEventSink>, IProgressBarBackend
 	{
 		public ProgressBarBackend ()
 		{
@@ -46,12 +45,12 @@ namespace Xwt.Mac
 			ViewObject = new MacProgressBar (EventSink);
 			Widget.SizeToFit ();
 			
-			((NSProgressIndicator)ViewObject).Indeterminate = false;
-			((NSProgressIndicator)ViewObject).MinValue = (double)0;
-			((NSProgressIndicator)ViewObject).MaxValue = (double)100;
+			((NSProgressIndicator)ViewObject).Indeterminate = true;
+			((NSProgressIndicator)ViewObject).MinValue = 0.0;
+			((NSProgressIndicator)ViewObject).MaxValue = 0.1;
 			((NSProgressIndicator)ViewObject).StartAnimation (null);
-			((NSProgressIndicator)ViewObject).DoubleValue = (double)40;
-			((NSProgressIndicator)ViewObject).IncrementBy((double)20.0);
+//			((NSProgressIndicator)ViewObject).DoubleValue = (double)40;
+//			((NSProgressIndicator)ViewObject).IncrementBy((double)20.0);
 		}
 
 		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
@@ -64,12 +63,19 @@ namespace Xwt.Mac
 			//((MacButton)Widget).DisableEvent (ev);
 		}
 		
-		public void SetContent (string label, ContentPosition imagePosition)
+		public void SetFraction (double? fraction)
 		{
+			var widget = (NSProgressIndicator)ViewObject;
+			if (fraction != null) {
+				widget.Indeterminate = false;
+				widget.DoubleValue = fraction.Value;
+			} else {
+				widget.Indeterminate = true;
+			}
 			//Widget.Title = label ?? "";
-			if (string.IsNullOrEmpty (label))
-				imagePosition = ContentPosition.Center;
-			Widget.SizeToFit ();
+			//if (string.IsNullOrEmpty (label))
+			//	imagePosition = ContentPosition.Center;
+			//Widget.SizeToFit ();
 		}
 		
 		public void SetButtonStyle (ButtonStyle style)
@@ -106,7 +112,7 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public MacProgressBar (IProgressBarEventSink eventSink)
+		public MacProgressBar (IWidgetEventSink eventSink)
 		{
 
 //			BezelStyle = NSBezelStyle.Rounded;
