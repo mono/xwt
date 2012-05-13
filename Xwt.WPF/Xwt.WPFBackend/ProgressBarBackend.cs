@@ -24,12 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Windows;
-using System.Windows.Controls;
 using Xwt.Backends;
-using Xwt.Engine;
-using WindowsCheckBox = System.Windows.Controls.CheckBox;
 
 namespace Xwt.WPFBackend
 {
@@ -56,106 +51,6 @@ namespace Xwt.WPFBackend
 			} else {
 				widget.IsIndeterminate = true;
 			}
-		}
-
-		public void SetContent(string label)
-		{
-			CheckBox.Content = new TextBlock { Text = label };
-		}
-
-		public bool Active
-		{
-			get { return CheckBox.IsChecked.HasValue && CheckBox.IsChecked.Value; }
-			set { CheckBox.IsChecked = value; }
-		}
-
-		public bool Mixed
-		{
-			get { return !CheckBox.IsChecked.HasValue; }
-			set
-			{
-				if (value)
-					CheckBox.IsChecked = null;
-				else
-					CheckBox.IsChecked = false;
-			}
-		}
-
-		public bool AllowMixed
-		{
-			get { return CheckBox.IsThreeState; }
-			set { CheckBox.IsThreeState = value; }
-		}
-
-		public override void EnableEvent(object eventId)
-		{
-			base.EnableEvent(eventId);
-			if (eventId is CheckBoxEvent)
-			{
-				switch ((CheckBoxEvent)eventId)
-				{
-					case CheckBoxEvent.Clicked:
-						CheckBox.Click += OnClicked;
-						break;
-
-					case CheckBoxEvent.Toggled:
-						CheckBox.Checked += OnChecked;
-						break;
-				}
-			}
-		}
-
-		public override void DisableEvent(object eventId)
-		{
-			base.DisableEvent(eventId);
-			if (eventId is CheckBoxEvent)
-			{
-				switch ((CheckBoxEvent)eventId)
-				{
-					case CheckBoxEvent.Clicked:
-						CheckBox.Click -= OnClicked;
-						break;
-
-					case CheckBoxEvent.Toggled:
-						CheckBox.Checked -= OnChecked;
-						break;
-				}
-			}
-		}
-
-		private void OnChecked(object sender, RoutedEventArgs routedEventArgs)
-		{
-			Toolkit.Invoke(CheckBoxEventSink.OnToggled);
-		}
-
-		private void OnClicked(object sender, RoutedEventArgs e)
-		{
-			Toolkit.Invoke(CheckBoxEventSink.OnClicked);
-		}
-
-		protected ICheckBoxEventSink CheckBoxEventSink
-		{
-			get { return (ICheckBoxEventSink)EventSink; }
-		}
-
-		protected WindowsCheckBox CheckBox
-		{
-			get { return (WindowsCheckBox)Widget; }
-		}
-
-		public void SetButtonStyle(ButtonStyle style)
-		{
-			//throw new NotImplementedException();
-		}
-
-		public void SetButtonType(ButtonType type)
-		{
-			//throw new NotImplementedException();
-		}
-
-		public void SetContent(string label, ContentPosition position)
-		{
-			CheckBox.Content = new TextBlock { Text = label };
 		}
 	}
 }
