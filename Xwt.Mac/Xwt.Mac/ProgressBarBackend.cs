@@ -33,7 +33,7 @@ using MonoMac.ObjCRuntime;
 
 namespace Xwt.Mac
 {
-	public class ProgressBarBackend: ViewBackend<NSProgressIndicator, IWidgetEventSink>, IProgressBarBackend
+	public class ProgressBarBackend: ViewBackend<ProgressIndicatorView, IWidgetEventSink>, IProgressBarBackend
 	{
 		public ProgressBarBackend ()
 		{
@@ -41,7 +41,7 @@ namespace Xwt.Mac
 
 		public override void Initialize ()
 		{
-			var widget = new MacProgressBar (EventSink);
+			var widget = new ProgressIndicatorView ();
 			ViewObject = widget;
 			Widget.SizeToFit ();
 			
@@ -49,14 +49,6 @@ namespace Xwt.Mac
 			widget.MinValue = 0.0;
 			widget.MaxValue = 1.0;
 			widget.StartAnimation (null);
-		}
-
-		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
-		{
-		}
-
-		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
-		{
 		}
 		
 		public void SetFraction (double? fraction)
@@ -71,17 +63,9 @@ namespace Xwt.Mac
 		}
 	}
 	
-	class MacProgressBar: NSProgressIndicator, IViewObject
+	public class ProgressIndicatorView: NSProgressIndicator, IViewObject
 	{
-		public MacProgressBar (IntPtr p): base (p)
-		{
-		}
-		
-		public MacProgressBar (IWidgetEventSink eventSink)
-		{
-		}
-		
-		public MacProgressBar (ICheckBoxEventSink eventSink)
+		public ProgressIndicatorView ()
 		{
 		}
 		
@@ -89,14 +73,6 @@ namespace Xwt.Mac
 		
 		public NSView View {
 			get { return this; }
-		}
-		
-		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
-		{
-		}
-
-		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
-		{
 		}
 	}
 }
