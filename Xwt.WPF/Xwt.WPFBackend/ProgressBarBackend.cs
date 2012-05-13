@@ -39,19 +39,23 @@ namespace Xwt.WPFBackend
 		{
 			var progressBar = new System.Windows.Controls.ProgressBar();
 			Widget = progressBar;
-			progressBar.Maximum = 100;
-			progressBar.Minimum = 0;
-			progressBar.Value = 40;
+			progressBar.Maximum = 1.0;
+			progressBar.Minimum = 0.0;
 			progressBar.Height = 40;
 			progressBar.Width = 80;
+			progressBar.IsIndeterminate = true;
 		}
 
-		public void SetContent(IWidgetBackend widget)
+		public void SetFraction(double? fraction)
 		{
-			if (widget == null)
-				throw new ArgumentNullException("widget");
-
-			CheckBox.Content = widget.NativeWidget;
+			var widget = (System.Windows.Controls.ProgressBar) Widget;
+			if (fraction.HasValue)
+			{
+				widget.IsIndeterminate = false;
+				widget.Value = fraction.Value;
+			} else {
+				widget.IsIndeterminate = true;
+			}
 		}
 
 		public void SetContent(string label)
