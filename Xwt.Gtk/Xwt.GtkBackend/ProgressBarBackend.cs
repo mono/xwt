@@ -32,9 +32,7 @@ namespace Xwt.GtkBackend
 {
 	public class ProgressBarBackend: WidgetBackend, IProgressBarBackend
 	{
-		bool allowMixed;
-		bool internalActiveUpdate;
-		bool toggleEventEnabled;
+		System.Timers.Timer timer;
 		
 		public ProgressBarBackend ()
 		{
@@ -44,9 +42,11 @@ namespace Xwt.GtkBackend
 		{
 			var progressBar = new Gtk.ProgressBar ();
 			Widget = progressBar;
-			progressBar.Fraction = 0.4;
+			progressBar.Pulse ();
 			Widget.Show ();
-
+			timer = new System.Timers.Timer (100);
+			timer.Elapsed += (sender, e) => progressBar.Pulse ();
+			timer.Start ();
 		}
 		
 		protected new Gtk.ProgressBar Widget {
@@ -60,7 +60,6 @@ namespace Xwt.GtkBackend
 
 		public void SetContent (string label, ContentPosition position)
 		{
-			//Widget.Label = label;
 		}
 		
 		public void SetContent (IWidgetBackend widget)
@@ -74,16 +73,6 @@ namespace Xwt.GtkBackend
 		
 		public override void DisableEvent (object eventId)
 		{
-		}
-
-		void HandleWidgetClicked (object sender, EventArgs e)
-		{
-			if (internalActiveUpdate)
-				return;
-			
-			Toolkit.Invoke (delegate {
-				EventSink.OnClicked ();
-			});
 		}
 
 		public void SetButtonStyle (ButtonStyle style)
