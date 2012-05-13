@@ -92,6 +92,7 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.SelectColorDialog), typeof(SelectColorDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ListBox), typeof(ListBoxBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.StatusIcon), typeof(StatusIconBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ProgressBar), typeof(ProgressBarBackend));
 		}
 
 		public override void RunApplication ()

@@ -116,6 +116,7 @@
     <Compile Include="Xwt.CairoBackend\CairoGradientBackendHandler.cs" />
     <Compile Include="Xwt.GtkBackend\ListBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\StatusIconBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ProgressBarBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
