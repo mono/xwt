@@ -47,7 +47,7 @@ namespace Xwt.Mac
 			
 			((NSProgressIndicator)ViewObject).Indeterminate = true;
 			((NSProgressIndicator)ViewObject).MinValue = 0.0;
-			((NSProgressIndicator)ViewObject).MaxValue = 0.1;
+			((NSProgressIndicator)ViewObject).MaxValue = 1.0;
 			((NSProgressIndicator)ViewObject).StartAnimation (null);
 //			((NSProgressIndicator)ViewObject).DoubleValue = (double)40;
 //			((NSProgressIndicator)ViewObject).IncrementBy((double)20.0);
