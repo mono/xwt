@@ -32,10 +32,33 @@ namespace Samples
 {
 	public class ProgressBarSample : VBox
 	{
+		System.Timers.Timer timer = new System.Timers.Timer (100);
+		ProgressBar determinateProgressBar;
+		ProgressBar indeterminateProgressBar;
+
 		public ProgressBarSample ()
 		{
-			var progressBar = new ProgressBar ();
-			PackStart (progressBar);
+			indeterminateProgressBar = new ProgressBar ();
+			PackStart (indeterminateProgressBar);
+
+			timer.Elapsed += Increase;
+			determinateProgressBar = new ProgressBar ();
+			determinateProgressBar.Fraction = 0.0;
+			PackStart (determinateProgressBar);
+
+			timer.Start ();
+		}
+
+		public void Increase (object sender, System.Timers.ElapsedEventArgs args)
+		{
+			double nextFraction;
+			double? currentFraction = determinateProgressBar.Fraction;
+			if (currentFraction != null && currentFraction.Value >= 0.0 && currentFraction.Value <= 0.9) {
+				nextFraction = currentFraction.Value + 0.1;
+			} else {
+				nextFraction = 0.0;
+			}
+			Application.Invoke ( () => determinateProgressBar.Fraction = nextFraction );
 		}
 	}
 }

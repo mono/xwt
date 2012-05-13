@@ -32,38 +32,10 @@ namespace Xwt
 {
 	public class ProgressBar : Widget
 	{
-		EventHandler clicked;
-		ButtonStyle style = ButtonStyle.Normal;
-		ButtonType type = ButtonType.Normal;
-		string label;
-		ContentPosition imagePosition = ContentPosition.Left;
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IProgressBarEventSink
-		{
-			protected override void OnBackendCreated ()
-			{
-				base.OnBackendCreated ();
-				((IProgressBarBackend)Backend).SetButtonStyle (((ProgressBar)Parent).style);
-			}
-			
-			public void OnClicked ()
-			{
-				((ProgressBar)Parent).OnClicked (EventArgs.Empty);
-			}
-		}
-		
-		static ProgressBar ()
-		{
-			MapEvent (ButtonEvent.Clicked, typeof(Button), "OnClicked");
-		}
+		double? fraction;
 		
 		public ProgressBar ()
 		{
-		}
-		
-		public ProgressBar (string label): this ()
-		{
-			Label = label;
 		}
 		
 		protected override BackendHost CreateBackendHost ()
@@ -75,56 +47,11 @@ namespace Xwt
 			get { return (IProgressBarBackend) BackendHost.Backend; }
 		}
 		
-		public string Label {
-			get { return label; }
+		public double? Fraction {
+			get { return fraction; }
 			set {
-				label = value;
-				Backend.SetContent (label, imagePosition);
-				OnPreferredSizeChanged ();
-			}
-		}
-		
-		public ContentPosition ImagePosition {
-			get { return imagePosition; }
-			set {
-				imagePosition = value;
-				Backend.SetContent (label, imagePosition); 
-				OnPreferredSizeChanged ();
-			}
-		}
-		
-		public ButtonStyle Style {
-			get { return style; }
-			set {
-				style = value;
-				Backend.SetButtonStyle (style);
-				OnPreferredSizeChanged ();
-			}
-		}
-		
-		public ButtonType Type {
-			get { return type; }
-			set {
-				type = value;
-				Backend.SetButtonType (type);
-				OnPreferredSizeChanged ();
-			}
-		}
-		
-		protected virtual void OnClicked (EventArgs e)
-		{
-			if (clicked != null)
-				clicked (this, e);
-		}
-		
-		public event EventHandler Clicked {
-			add {
-				BackendHost.OnBeforeEventAdd (ButtonEvent.Clicked, clicked);
-				clicked += value;
-			}
-			remove {
-				clicked -= value;
-				BackendHost.OnAfterEventRemove (ButtonEvent.Clicked, clicked);
+				fraction = value;
+				Backend.SetFraction (fraction);
 			}
 		}
 	}

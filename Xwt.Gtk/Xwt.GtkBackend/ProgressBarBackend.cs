@@ -32,8 +32,8 @@ namespace Xwt.GtkBackend
 {
 	public class ProgressBarBackend: WidgetBackend, IProgressBarBackend
 	{
-		System.Timers.Timer timer;
-		
+		System.Timers.Timer timer = new System.Timers.Timer (100);
+
 		public ProgressBarBackend ()
 		{
 		}
@@ -43,44 +43,35 @@ namespace Xwt.GtkBackend
 			var progressBar = new Gtk.ProgressBar ();
 			Widget = progressBar;
 			progressBar.Pulse ();
+			lock(timer)
+				timer.Elapsed += Pulse;
 			Widget.Show ();
-			timer = new System.Timers.Timer (100);
-			timer.Elapsed += (sender, e) => progressBar.Pulse ();
-			timer.Start ();
+			lock (timer)
+				timer.Start ();
+		}
+
+		private void Pulse (object sender, System.Timers.ElapsedEventArgs args)
+		{
+			Application.Invoke (() => Widget.Pulse ());
 		}
 		
 		protected new Gtk.ProgressBar Widget {
 			get { return (Gtk.ProgressBar)base.Widget; }
 			set { base.Widget = value; }
 		}
-		
-		protected new ICheckBoxEventSink EventSink {
-			get { return (ICheckBoxEventSink)base.EventSink; }
-		}
 
-		public void SetContent (string label, ContentPosition position)
+		public void SetFraction (double? fraction)
 		{
-		}
-		
-		public void SetContent (IWidgetBackend widget)
-		{
-			throw new NotImplementedException ();
-		}
-		
-		public override void EnableEvent (object eventId)
-		{
-		}
-		
-		public override void DisableEvent (object eventId)
-		{
-		}
-
-		public void SetButtonStyle (ButtonStyle style)
-		{
-		}
-		
-		public void SetButtonType (ButtonType type)
-		{
+			if (fraction == null)
+			{
+				lock (timer)
+					timer.Start ();
+				Widget.Fraction = 0.1;
+			} else {
+				lock (timer)
+					timer.Stop ();
+				Widget.Fraction = fraction.Value;
+			}
 		}
 	}
 }
