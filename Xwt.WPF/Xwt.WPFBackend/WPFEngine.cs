@@ -89,6 +89,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (ListView), typeof (ListViewBackend));
 			WidgetRegistry.RegisterBackend (typeof (ListStore), typeof (ListDataSource));
 			WidgetRegistry.RegisterBackend (typeof (ListBox), typeof (ListBoxBackend));
+			WidgetRegistry.RegisterBackend (typeof (ProgressBar), typeof (ProgressBarBackend));
 		}
 
 		public override void RunApplication ()
