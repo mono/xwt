@@ -44,7 +44,6 @@ namespace Xwt.GtkBackend
 			var progressBar = new Gtk.ProgressBar ();
 			Widget = progressBar;
 			Widget.Show ();
-			Indeterminate = true;
 		}
 
 		private bool Pulse ()
@@ -58,31 +57,25 @@ namespace Xwt.GtkBackend
 			set { base.Widget = value; }
 		}
 
-		private bool Indeterminate {
-			set {
-				if (value && timerId != null)
+		public void SetIndeterminate (bool value) {
+			if (value) {
+				if (timerId != null)
 					return;
 
-				if (!value && timerId == null)
+				timerId = GLib.Timeout.Add (100, Pulse);
+
+			} else {
+
+				if (timerId == null)
 					return;
 
-				if (value) {
-					timerId = GLib.Timeout.Add (100, Pulse);
-				} else {
-					DisposeTimeout ();
-				}
+				DisposeTimeout ();
 			}
 		}
 
-		public void SetFraction (double? fraction)
+		public void SetFraction (double fraction)
 		{
-			if (fraction == null)
-			{
-				Indeterminate = true;
-			} else {
-				Widget.Fraction = fraction.Value;
-				Indeterminate = false;
-			}
+			Widget.Fraction = fraction;
 		}
 
 		protected void DisposeTimeout ()

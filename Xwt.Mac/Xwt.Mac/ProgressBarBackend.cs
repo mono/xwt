@@ -48,18 +48,28 @@ namespace Xwt.Mac
 			widget.Indeterminate = true;
 			widget.MinValue = 0.0;
 			widget.MaxValue = 1.0;
+			widget.DoubleValue = 0.0;
+			widget.Indeterminate = false;
 			widget.StartAnimation (null);
 		}
 		
 		public void SetFraction (double? fraction)
 		{
 			var widget = (NSProgressIndicator)ViewObject;
-			if (fraction != null) {
-				widget.Indeterminate = false;
-				widget.DoubleValue = fraction.Value;
-			} else {
-				widget.Indeterminate = true;
-			}
+
+			if (fraction == widget.DoubleValue)
+				return;
+
+			widget.DoubleValue = fraction;
+		}
+
+		public void SetIndeterminate (bool value) {
+			var widget = (NSProgressIndicator)ViewObject;
+
+			if (widget.Indeterminate == value)
+				return;
+
+			widget.Indeterminate = value;
 		}
 	}
 	

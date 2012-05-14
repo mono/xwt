@@ -30,7 +30,8 @@ namespace Xwt.Backends
 {
 	public interface IProgressBarBackend: IWidgetBackend
 	{
-		void SetFraction (double? fraction);
+		void SetFraction (double fraction);
+		void SetIndeterminate (bool indeterminate);
 	}
 }
 

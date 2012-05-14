@@ -32,7 +32,8 @@ namespace Xwt
 {
 	public class ProgressBar : Widget
 	{
-		double? fraction;
+		double fraction = 0.0;
+		bool indeterminate = false;
 		
 		public ProgressBar ()
 		{
@@ -47,16 +48,26 @@ namespace Xwt
 			get { return (IProgressBarBackend) BackendHost.Backend; }
 		}
 		
-		public double? Fraction {
+		public double Fraction {
 			get { return fraction; }
 			set {
 				// TODO: allow any value, by implementing MinValue and MaxValue properties
 				// and then adjusting the fraction to a [0.0..1.0] range only in the Gtk backend
 				if (value < 0.0 || value > 1.0)
 					throw new NotSupportedException ("Fraction value can only be in the [0.0..1.0] range");
-				
+
 				fraction = value;
 				Backend.SetFraction (fraction);
+			}
+		}
+
+		public bool Indeterminate {
+			get { return indeterminate; }
+			set {
+				if (indeterminate != value) {
+					indeterminate = value;
+					Backend.SetIndeterminate (value);
+				}
 			}
 		}
 	}

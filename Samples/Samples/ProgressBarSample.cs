@@ -41,12 +41,12 @@ namespace Samples
 		{
 			indeterminateProgressBar = new ProgressBar ();
 			PackStart (indeterminateProgressBar, BoxMode.FillAndExpand);
+			indeterminateProgressBar.Indeterminate = true;
 
 			timer.Elapsed += Increase;
 			determinateProgressBar = new ProgressBar ();
 			determinateProgressBar.Fraction = 0.0;
 			PackStart(determinateProgressBar, BoxMode.FillAndExpand);
-
 			timer.Start ();
 		}
 

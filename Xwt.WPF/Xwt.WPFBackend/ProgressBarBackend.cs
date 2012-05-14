@@ -38,21 +38,28 @@ namespace Xwt.WPFBackend
 			Widget = progressBar;
 			progressBar.Maximum = 1.0;
 			progressBar.Minimum = 0.0;
+			progressBar.Value = 0.0;
 
-			progressBar.IsIndeterminate = true;
+			progressBar.IsIndeterminate = false;
 		}
 
-		public void SetFraction(double? fraction)
+		public void SetFraction (double fraction)
 		{
 			var widget = (System.Windows.Controls.ProgressBar) Widget;
 
-			if (fraction.HasValue)
-			{
-				widget.IsIndeterminate = false;
-				widget.Value = fraction.Value;
-			} else {
-				widget.IsIndeterminate = true;
-			}
+			if (widget.Value == fraction)
+				return;
+
+			widget.Value = fraction;
+		}
+
+		public void SetIndeterminate (bool value) {
+			var widget = (System.Windows.Controls.ProgressBar) Widget;
+
+			if (widget.IsIndeterminate == value)
+				return;
+
+			widget.IsIndeterminate = value;
 		}
 	}
 }
