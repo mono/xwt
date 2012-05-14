@@ -33,24 +33,24 @@ namespace Xwt.GtkBackend
 {
 	public class ProgressBarBackend: WidgetBackend, IProgressBarBackend
 	{
-		Timer timer = new Timer (100);
-
 		public ProgressBarBackend ()
 		{
 		}
+
+		uint? timerId = null;
 
 		public override void Initialize ()
 		{
 			var progressBar = new Gtk.ProgressBar ();
 			Widget = progressBar;
-			timer.Elapsed += Pulse;
 			Widget.Show ();
-			timer.Start ();
+			Indeterminate = true;
 		}
 
-		private void Pulse (object sender, ElapsedEventArgs args)
+		private bool Pulse ()
 		{
 			Application.Invoke (() => Widget.Pulse ());
+			return true;
 		}
 		
 		protected new Gtk.ProgressBar Widget {
@@ -58,15 +58,38 @@ namespace Xwt.GtkBackend
 			set { base.Widget = value; }
 		}
 
+		private bool Indeterminate {
+			set {
+				if (value && timerId != null)
+					return;
+
+				if (!value && timerId == null)
+					return;
+
+				if (value) {
+					timerId = GLib.Timeout.Add (100, Pulse);
+				} else {
+					DisposeTimeout ();
+				}
+			}
+		}
+
 		public void SetFraction (double? fraction)
 		{
 			if (fraction == null)
 			{
-				timer.Start ();
-				Widget.Fraction = 0.1;
+				Indeterminate = true;
 			} else {
-				timer.Stop ();
 				Widget.Fraction = fraction.Value;
+				Indeterminate = false;
+			}
+		}
+
+		protected void DisposeTimeout ()
+		{
+			if (timerId != null) {
+				GLib.Source.Remove (timerId.Value);
+				timerId = null;
 			}
 		}
 
@@ -74,11 +97,7 @@ namespace Xwt.GtkBackend
 		{
 			base.Dispose (disposing);
 
-			if (timer != null) {
-				timer.Stop ();
-				timer.Dispose ();
-				timer = null;
-			}
+			DisposeTimeout ();
 		}
 	}
 }
