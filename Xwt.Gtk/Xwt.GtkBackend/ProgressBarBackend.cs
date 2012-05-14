@@ -70,6 +70,17 @@ namespace Xwt.GtkBackend
 				Widget.Fraction = fraction.Value;
 			}
 		}
+
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+
+			if (timer != null) {
+				timer.Stop ();
+				timer.Dispose ();
+				timer = null;
+			}
+		}
 	}
 }
 
