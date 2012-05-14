@@ -44,11 +44,11 @@ namespace Xwt.Mac
 			var widget = new ProgressIndicatorView ();
 			ViewObject = widget;
 			Widget.SizeToFit ();
-			
-			widget.Indeterminate = true;
+
 			widget.MinValue = 0.0;
 			widget.MaxValue = 1.0;
 			widget.DoubleValue = 0.0;
+
 			widget.Indeterminate = false;
 			widget.StartAnimation (null);
 		}
