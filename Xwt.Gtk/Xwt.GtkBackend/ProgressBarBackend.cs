@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Timers;
 using Xwt.Backends;
 using Xwt.Engine;
 
@@ -32,7 +33,7 @@ namespace Xwt.GtkBackend
 {
 	public class ProgressBarBackend: WidgetBackend, IProgressBarBackend
 	{
-		System.Timers.Timer timer = new System.Timers.Timer (100);
+		Timer timer = new Timer (100);
 
 		public ProgressBarBackend ()
 		{
@@ -48,7 +49,7 @@ namespace Xwt.GtkBackend
 			timer.Start ();
 		}
 
-		private void Pulse (object sender, System.Timers.ElapsedEventArgs args)
+		private void Pulse (object sender, ElapsedEventArgs args)
 		{
 			Application.Invoke (() => Widget.Pulse ());
 		}
