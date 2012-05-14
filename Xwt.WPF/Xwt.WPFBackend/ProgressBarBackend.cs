@@ -39,21 +39,13 @@ namespace Xwt.WPFBackend
 			progressBar.Maximum = 1.0;
 			progressBar.Minimum = 0.0;
 
-			SizeToFit(progressBar);
-
 			progressBar.IsIndeterminate = true;
-		}
-
-		private static void SizeToFit(System.Windows.Controls.ProgressBar progressBar)
-		{
-			//FIXME: don't hardcode this values
-			progressBar.Height = 40;
-			progressBar.Width = 80;
 		}
 
 		public void SetFraction(double? fraction)
 		{
 			var widget = (System.Windows.Controls.ProgressBar) Widget;
+
 			if (fraction.HasValue)
 			{
 				widget.IsIndeterminate = false;

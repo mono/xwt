@@ -40,12 +40,12 @@ namespace Samples
 		public ProgressBarSample ()
 		{
 			indeterminateProgressBar = new ProgressBar ();
-			PackStart (indeterminateProgressBar);
+			PackStart (indeterminateProgressBar, BoxMode.FillAndExpand);
 
 			timer.Elapsed += Increase;
 			determinateProgressBar = new ProgressBar ();
 			determinateProgressBar.Fraction = 0.0;
-			PackStart (determinateProgressBar);
+			PackStart(determinateProgressBar, BoxMode.FillAndExpand);
 
 			timer.Start ();
 		}
