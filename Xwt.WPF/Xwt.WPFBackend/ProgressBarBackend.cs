@@ -36,9 +36,17 @@ namespace Xwt.WPFBackend
 			Widget = progressBar;
 			progressBar.Maximum = 1.0;
 			progressBar.Minimum = 0.0;
+
+			SizeToFit(progressBar);
+
+			progressBar.IsIndeterminate = true;
+		}
+
+		private static void SizeToFit(System.Windows.Controls.ProgressBar progressBar)
+		{
+			//FIXME: don't hardcode this values
 			progressBar.Height = 40;
 			progressBar.Width = 80;
-			progressBar.IsIndeterminate = true;
 		}
 
 		public void SetFraction(double? fraction)
