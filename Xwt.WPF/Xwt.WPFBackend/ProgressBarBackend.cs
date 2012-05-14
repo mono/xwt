@@ -30,8 +30,10 @@ namespace Xwt.WPFBackend
 {
 	public class ProgressBarBackend: WidgetBackend, IProgressBarBackend
 	{
-		public ProgressBarBackend()
+		protected override void Initialize()
 		{
+			base.Initialize();
+
 			var progressBar = new System.Windows.Controls.ProgressBar();
 			Widget = progressBar;
 			progressBar.Maximum = 1.0;
