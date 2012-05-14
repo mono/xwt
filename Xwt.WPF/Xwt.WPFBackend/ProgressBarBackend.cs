@@ -2,7 +2,7 @@
 // ProgressBarBackend.cs
 //  
 // Author:
-//       Andres G. Aragoneses
+//       Andres G. Aragoneses <knocte@gmail.com>
 // 
 // Copyright (c) 2012 Andres G. Aragoneses
 // 
