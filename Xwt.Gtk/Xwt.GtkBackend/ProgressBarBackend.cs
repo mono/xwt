@@ -43,7 +43,6 @@ namespace Xwt.GtkBackend
 		{
 			var progressBar = new Gtk.ProgressBar ();
 			Widget = progressBar;
-			progressBar.Pulse ();
 			timer.Elapsed += Pulse;
 			Widget.Show ();
 			timer.Start ();
