@@ -48,7 +48,7 @@ namespace Xwt.GtkBackend
 
 		private bool Pulse ()
 		{
-			Application.Invoke (() => Widget.Pulse ());
+			Widget.Pulse ();
 			return true;
 		}
 		
