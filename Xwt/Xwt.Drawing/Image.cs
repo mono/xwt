@@ -32,7 +32,7 @@ using System.IO;
 
 namespace Xwt.Drawing
 {
-	public sealed class Image: XwtObject
+	public sealed class Image: XwtObject, IDisposable
 	{
 		static ImageBackendHandler handler;
 		
