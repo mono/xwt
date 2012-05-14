@@ -43,11 +43,9 @@ namespace Xwt.GtkBackend
 			var progressBar = new Gtk.ProgressBar ();
 			Widget = progressBar;
 			progressBar.Pulse ();
-			lock(timer)
-				timer.Elapsed += Pulse;
+			timer.Elapsed += Pulse;
 			Widget.Show ();
-			lock (timer)
-				timer.Start ();
+			timer.Start ();
 		}
 
 		private void Pulse (object sender, System.Timers.ElapsedEventArgs args)
@@ -64,12 +62,10 @@ namespace Xwt.GtkBackend
 		{
 			if (fraction == null)
 			{
-				lock (timer)
-					timer.Start ();
+				timer.Start ();
 				Widget.Fraction = 0.1;
 			} else {
-				lock (timer)
-					timer.Stop ();
+				timer.Stop ();
 				Widget.Fraction = fraction.Value;
 			}
 		}
