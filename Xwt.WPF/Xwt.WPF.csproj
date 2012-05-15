@@ -63,6 +63,7 @@
     <Compile Include="Xwt.WPFBackend\ComboBoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\ProgressBarBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CustomWidgetBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DelegatedCommand.cs" />
     <Compile Include="Xwt.WPFBackend\DialogBackend.cs" />
