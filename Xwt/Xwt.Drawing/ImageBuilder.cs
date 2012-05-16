@@ -67,12 +67,6 @@ namespace Xwt.Drawing
 		{
 			ctx.Dispose ();
 			handler.Dispose (backend);
-			GC.SuppressFinalize (this);
-		}
-		
-		~ImageBuilder ()
-		{
-			handler.Dispose (backend);
 		}
 		
 		protected override IBackendHandler BackendHandler {
