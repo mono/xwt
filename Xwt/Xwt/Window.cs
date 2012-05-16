@@ -160,6 +160,8 @@ namespace Xwt
 				if (size != Size)
 					Size = size;
 	
+				Location = initialBounds.Location;
+
 				Backend.SetMinSize (new Size (w.MinSize + padding.HorizontalSpacing, h.MinSize + padding.VerticalSpacing));
 			}
 		}
