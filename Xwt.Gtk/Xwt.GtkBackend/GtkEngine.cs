@@ -93,6 +93,7 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ListBox), typeof(ListBoxBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.StatusIcon), typeof(StatusIconBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ProgressBar), typeof(ProgressBarBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.SpinButton), typeof (SpinButtonBackend));
 		}
 
 		public override void RunApplication ()
