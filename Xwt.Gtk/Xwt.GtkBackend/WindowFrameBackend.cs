@@ -34,7 +34,7 @@ namespace Xwt.GtkBackend
 		Gtk.Window window;
 		IWindowFrameEventSink eventSink;
 		WindowFrame frontend;
-		
+
 		public WindowFrameBackend ()
 		{
 		}
@@ -115,6 +115,15 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				Window.Decorated = value;
+			}
+		}
+
+		double IWindowFrameBackend.Opacity {
+			get {
+				return Window.Opacity;
+			}
+			set {
+				Window.Opacity = value;
 			}
 		}
 

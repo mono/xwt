@@ -201,7 +201,12 @@ namespace Xwt
 			get { return Backend.Decorated; }
 			set { Backend.Decorated = value; }
 		}
-		
+
+		public double Opacity {
+			get { return Backend.Opacity; }
+			set { Backend.Opacity = value; }
+		}
+
 		public bool ShowInTaskbar {
 			get { return Backend.ShowInTaskbar; }
 			set { Backend.ShowInTaskbar = value; }
