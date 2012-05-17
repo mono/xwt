@@ -37,7 +37,6 @@ namespace Xwt.Backends
 		string Title { get; set; }
 		
 		bool Decorated { get; set; }
-		double Opacity { get; set; }
 		bool ShowInTaskbar { get; set; }
 		
 		/// <summary>
