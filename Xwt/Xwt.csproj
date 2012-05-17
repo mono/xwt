@@ -297,6 +297,10 @@
     <Compile Include="Xwt.Backends\XwtWidgetBackend.cs" />
     <Compile Include="Xwt\ProgressBar.cs" />
     <Compile Include="Xwt.Backends\IProgressBarBackend.cs" />
+    <Compile Include="Xwt\Popover.cs" />
+    <Compile Include="Xwt.Backends\IPopoverBackend.cs" />
+    <Compile Include="Xwt.Backends\ISpinButtonBackend.cs" />
+    <Compile Include="Xwt\SpinButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

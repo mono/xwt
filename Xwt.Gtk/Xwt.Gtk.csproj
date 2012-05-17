@@ -117,6 +117,8 @@
     <Compile Include="Xwt.GtkBackend\ListBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\StatusIconBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ProgressBarBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\PopoverBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SpinButtonBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
