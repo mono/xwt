@@ -17,6 +17,7 @@ namespace Xwt.GtkBackend
 			Widget = (Gtk.SpinButton) CreateWidget ();
 			Widget.Numeric = true;
 			Widget.Alignment = 1.0f;
+			Widget.Show ();
 		}
 		
 		protected virtual Gtk.Widget CreateWidget ()
