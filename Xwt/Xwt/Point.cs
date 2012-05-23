@@ -30,6 +30,7 @@ using System.Globalization;
 
 namespace Xwt {
 
+	[Serializable]
 	public struct Point {
 
 		public double X { get; set; }
