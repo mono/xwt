@@ -808,8 +808,10 @@ namespace Xwt.GtkBackend
 				var cact = ConvertDragAction (context.Actions);
 				if (cact == DragDropAction.All)
 					cact = DragDropAction.Move;
-				
-				DragOverCheckEventArgs da = new DragOverCheckEventArgs (new Point (x, y), Util.GetDragTypes (context.Targets), cact);
+
+				var target = Gtk.Drag.DestFindTarget (EventsRootWidget, context, null);
+				var targetTypes = Util.GetDragTypes (new Gdk.Atom[] { target });
+				DragOverCheckEventArgs da = new DragOverCheckEventArgs (new Point (x, y), targetTypes, cact);
 				Toolkit.Invoke (delegate {
 					EventSink.OnDragOverCheck (da);
 				});
@@ -995,6 +997,7 @@ namespace Xwt.GtkBackend
 		
 		public void DragStart (DragStartData sdata)
 		{
+			AllocEventBox ();
 			Gdk.DragAction action = ConvertDragAction (sdata.DragAction);
 			DragDropInfo.CurrentDragData = sdata.Data;
 			EventsRootWidget.DragBegin += HandleDragBegin;
@@ -1058,6 +1061,7 @@ namespace Xwt.GtkBackend
 		
 		protected virtual void OnSetDragTarget (Gtk.TargetEntry[] table, Gdk.DragAction actions)
 		{
+			AllocEventBox ();
 			Gtk.Drag.DestSet (EventsRootWidget, Gtk.DestDefaults.Highlight, table, actions);
 		}
 		

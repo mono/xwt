@@ -92,7 +92,7 @@ namespace Xwt.GtkBackend
 			List<TransferDataType> types = new List<TransferDataType> ();
 			foreach (var dt in dropTypes) {
 				TransferDataType type;
-				if (atomToType.TryGetValue (dt.ToString (), out type))
+				if (atomToType.TryGetValue (dt.Name, out type))
 					types.Add (type);
 			}
 			return types.ToArray ();
