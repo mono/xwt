@@ -119,6 +119,7 @@
     <Compile Include="Xwt.GtkBackend\ProgressBarBackend.cs" />
     <Compile Include="Xwt.GtkBackend\PopoverBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SpinButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\DatePickerBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -301,6 +301,8 @@
     <Compile Include="Xwt.Backends\IPopoverBackend.cs" />
     <Compile Include="Xwt.Backends\ISpinButtonBackend.cs" />
     <Compile Include="Xwt\SpinButton.cs" />
+    <Compile Include="Xwt\DatePicker.cs" />
+    <Compile Include="Xwt.Backends\IDatePickerBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

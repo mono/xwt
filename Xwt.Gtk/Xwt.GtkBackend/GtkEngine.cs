@@ -95,6 +95,7 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ProgressBar), typeof(ProgressBarBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Popover), typeof (PopoverBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.SpinButton), typeof (SpinButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.DatePicker), typeof (DatePickerBackend));
 		}
 
 		public override void RunApplication ()
