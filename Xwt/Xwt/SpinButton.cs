@@ -5,6 +5,14 @@ namespace Xwt
 {
 	public class SpinButton : Widget
 	{
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ISpinButtonEventSink
+		{
+			public void ValueChanged ()
+			{
+				((SpinButton)Parent).OnValueChanged (EventArgs.Empty);
+			}
+		}
+		
 		ISpinButtonBackend Backend {
 			get { return (ISpinButtonBackend) BackendHost.Backend; }
 		}
@@ -47,6 +55,12 @@ namespace Xwt
 		public double IncrementValue {
 			get { return Backend.IncrementValue; }
 			set { Backend.IncrementValue = value; }
+		}
+		
+		protected virtual void OnValueChanged (EventArgs e)
+		{
+			if (valueChanged != null)
+				valueChanged (this, e);
 		}
 
 		EventHandler valueChanged;
