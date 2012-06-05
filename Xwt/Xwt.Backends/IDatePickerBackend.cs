@@ -4,7 +4,6 @@ namespace Xwt.Backends
 	public interface IDatePickerBackend : IWidgetBackend
 	{
 		DateTime DateTime { get; set; }
-		
 	}
 
 	public interface IDatePickerEventSink: IWidgetEventSink
@@ -12,7 +11,7 @@ namespace Xwt.Backends
 		void ValueChanged ();
 	}
 	
-	public enum IDatePickerEvent
+	public enum DatePickerEvent
 	{
 		ValueChanged
 	}

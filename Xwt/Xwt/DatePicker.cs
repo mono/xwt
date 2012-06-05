@@ -11,6 +11,14 @@ namespace Xwt
 	
 	public class DatePicker : Widget
 	{
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IDatePickerEventSink
+		{
+			public void ValueChanged ()
+			{
+				((DatePicker)Parent).OnValueChanged (EventArgs.Empty);
+			}
+		}
+		
 		IDatePickerBackend Backend {
 			get { return (IDatePickerBackend) BackendHost.Backend; }
 		}
@@ -33,17 +41,23 @@ namespace Xwt
 			get;
 			set;
 		}
+		
+		protected virtual void OnValueChanged (EventArgs e)
+		{
+			if (valueChanged != null)
+				valueChanged (this, e);
+		}
 
 		EventHandler valueChanged;
 		
 		public event EventHandler ValueChanged {
 			add {
-				BackendHost.OnBeforeEventAdd (SpinButtonEvent.ValueChanged, valueChanged);
+				BackendHost.OnBeforeEventAdd (DatePickerEvent.ValueChanged, valueChanged);
 				valueChanged += value;
 			}
 			remove {
 				valueChanged -= value;
-				BackendHost.OnAfterEventRemove (SpinButtonEvent.ValueChanged, valueChanged);
+				BackendHost.OnAfterEventRemove (DatePickerEvent.ValueChanged, valueChanged);
 			}
 		}
 	}

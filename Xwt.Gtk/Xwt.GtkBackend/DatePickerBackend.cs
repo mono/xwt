@@ -20,8 +20,8 @@ namespace Xwt.GtkBackend
 			set { base.Widget = value; }
 		}
 		
-		protected new ISpinButtonEventSink EventSink {
-			get { return (ISpinButtonEventSink)base.EventSink; }
+		protected new IDatePickerEventSink EventSink {
+			get { return (IDatePickerEventSink)base.EventSink; }
 		}
 		
 		public DateTime DateTime {
@@ -36,18 +36,18 @@ namespace Xwt.GtkBackend
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
-			if (eventId is SpinButtonEvent) {
-				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueChanged)
-					Widget.ChangeValue += HandleValueChanged;
+			if (eventId is DatePickerEvent) {
+				if ((DatePickerEvent)eventId == DatePickerEvent.ValueChanged)
+					Widget.ValueChanged += HandleValueChanged;
 			}
 		}
 		
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			if (eventId is SpinButtonEvent) {
-				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueChanged)
-					Widget.ChangeValue -= HandleValueChanged;
+			if (eventId is DatePickerEvent) {
+				if ((DatePickerEvent)eventId == DatePickerEvent.ValueChanged)
+					Widget.ValueChanged -= HandleValueChanged;
 			}
 		}
 
