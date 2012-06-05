@@ -82,6 +82,8 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				ignoreClickEvents = true;
+				if (value != Widget.Active)
+					ChangeImageIfDisclosure ();
 				Widget.Active = value;
 				ignoreClickEvents = false;
 			}
@@ -109,9 +111,34 @@ namespace Xwt.GtkBackend
 
 		void HandleToggled (object sender, EventArgs e)
 		{
+			ChangeImageIfDisclosure ();
 			Toolkit.Invoke (delegate {
 				EventSink.OnToggled ();
 			});
+		}
+		
+		void ChangeImageIfDisclosure ()
+		{
+			if (((Button)Frontend).Type != ButtonType.Disclosure)
+				return;
+			
+			Gtk.ArrowType newArrowType = Gtk.ArrowType.None;
+			switch (((Gtk.Arrow)Widget.Image).ArrowType) {
+			case Gtk.ArrowType.Down:
+				newArrowType = Gtk.ArrowType.Up;
+				break;
+			case Gtk.ArrowType.Up:
+				newArrowType = Gtk.ArrowType.Down;
+				break;
+			case Gtk.ArrowType.Left:
+				newArrowType = Gtk.ArrowType.Right;
+				break;
+			case Gtk.ArrowType.Right:
+				newArrowType = Gtk.ArrowType.Left;
+				break;
+			}
+			Widget.Image = new Gtk.Arrow (newArrowType, Gtk.ShadowType.Out);
+			Widget.Image.ShowAll ();
 		}
 	}
 }
