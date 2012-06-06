@@ -224,7 +224,7 @@ namespace Xwt.WPFBackend
 				return false;
 			}
 
-			double edge = element.ActualHeight * 0.18;
+			double edge = element.ActualHeight * 0.15;
 			if (result.PointHit.Y <= edge) {
 				pos = RowDropPosition.Before;
 			} else if (result.PointHit.Y >= element.ActualHeight - edge)
