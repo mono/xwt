@@ -846,6 +846,7 @@ namespace Xwt.WPFBackend
 			var actualEffect = currentDragEffect;
 
 			e.Handled = true; // Prevent default handlers from being used.
+			e.Effects = DragDropEffects.None;
 
 			if (this.adorner != null) {
 				AdornerLayer.GetAdornerLayer (Widget).Remove (this.adorner);
@@ -882,9 +883,6 @@ namespace Xwt.WPFBackend
 				deleteSource = args.Success && !actualEffect.HasFlag (DragDropEffects.Copy);
 				e.Effects = args.Success ? actualEffect : DragDropEffects.None;
 			}
-
-			// No DrapDropCheck/DragDrop event enabled.
-			e.Effects = DragDropEffects.None;
 
 			Toolkit.Invoke (delegate {
 				this.eventSink.OnDragFinished (new DragFinishedEventArgs (deleteSource));
