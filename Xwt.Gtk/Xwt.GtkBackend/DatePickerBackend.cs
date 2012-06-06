@@ -11,7 +11,6 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Widget = new GtkDatePickerEntry ();
-			Widget.ValueChanged += HandleValueChanged;
 			Widget.ShowAll ();
 		}
 		
@@ -76,6 +75,7 @@ namespace Xwt.GtkBackend
 			const string DateTimeFormat = "MM/dd/yyyy HH:mm:ss";
 			Component selectedComponent;
 			double oldValue = -1;
+			int internalChangeCntd;
 	
 			int startPos = -1, endPos = -1;
 			int currentDigitInsert;
@@ -95,17 +95,20 @@ namespace Xwt.GtkBackend
 			void HandleValueChanged (object sender, EventArgs e)
 			{
 				// Prevent reentrant call
-				if (oldValue < 0)
+				if (internalChangeCntd > 0) {
+					internalChangeCntd--;
 					return;
-				double old = oldValue;
-				oldValue = -1;
+				}
+				double currentValue = oldValue;
 
-				var value = Adjustment.Value;
-				Adjustment.Value = old;
-				if (value > old)
-					GoUp ();
-				else if (value < old)
-					GoDown ();
+				var adjustedValue = Adjustment.Value;
+				if (adjustedValue > currentValue)
+					GoUp (ref currentValue);
+				else if (adjustedValue < currentValue)
+					GoDown (ref currentValue);
+				
+				internalChangeCntd++;
+				Adjustment.Value = currentValue;
 				RaiseChangedEvent ();
 	
 				oldValue = Adjustment.Value;
@@ -125,50 +128,50 @@ namespace Xwt.GtkBackend
 				return 1;
 			}
 	
-			void GoDown ()
+			void GoDown (ref double newValue)
 			{
 				switch (selectedComponent) {
 				case Component.Second:
-					Adjustment.Value -= TimeSpan.TicksPerSecond;
+					newValue -= TimeSpan.TicksPerSecond;
 					break;
 				case Component.Minute:
-					Adjustment.Value -= TimeSpan.TicksPerMinute;
+					newValue -= TimeSpan.TicksPerMinute;
 					break;
 				case Component.Hour:
-					Adjustment.Value -= TimeSpan.TicksPerHour;
+					newValue -= TimeSpan.TicksPerHour;
 					break;
 				case Component.Day:
-					Adjustment.Value = CurrentValue.AddDays (-1).Ticks;
+					newValue = CurrentValue.AddDays (-1).Ticks;
 					break;
 				case Component.Month:
-					Adjustment.Value = CurrentValue.AddMonths (-1).Ticks;
+					newValue = CurrentValue.AddMonths (-1).Ticks;
 					break;
 				case Component.Year:
-					Adjustment.Value = CurrentValue.AddYears (-1).Ticks;
+					newValue = CurrentValue.AddYears (-1).Ticks;
 					break;
 				}
 			}
 	
-			void GoUp ()
+			void GoUp (ref double newValue)
 			{
 				switch (selectedComponent) {
 				case Component.Second:
-					Adjustment.Value += TimeSpan.TicksPerSecond;
+					newValue += TimeSpan.TicksPerSecond;
 					break;
 				case Component.Minute:
-					Adjustment.Value += TimeSpan.TicksPerMinute;
+					newValue += TimeSpan.TicksPerMinute;
 					break;
 				case Component.Hour:
-					Adjustment.Value += TimeSpan.TicksPerHour;
+					newValue += TimeSpan.TicksPerHour;
 					break;
 				case Component.Day:
-					Adjustment.Value = CurrentValue.AddDays (1).Ticks;
+					newValue = CurrentValue.AddDays (1).Ticks;
 					break;
 				case Component.Month:
-					Adjustment.Value = CurrentValue.AddMonths (1).Ticks;
+					newValue = CurrentValue.AddMonths (1).Ticks;
 					break;
 				case Component.Year:
-					Adjustment.Value = CurrentValue.AddYears (1).Ticks;
+					newValue = CurrentValue.AddYears (1).Ticks;
 					break;
 				}
 			}
@@ -237,7 +240,7 @@ namespace Xwt.GtkBackend
 			protected override bool OnKeyReleaseEvent (Gdk.EventKey evnt)
 			{
 				char pressedKey = (char)Gdk.Keyval.ToUnicode (evnt.KeyValue);
-				if (char.IsDigit (pressedKey) && selectedComponent != Component.None) {
+				if (char.IsDigit (pressedKey) && selectedComponent != Component.None && pressedKey > '0') {
 					try {
 						int value = (int)pressedKey - (int)'0';
 						DateTime current = CurrentValue;
@@ -318,7 +321,7 @@ namespace Xwt.GtkBackend
 				}
 				set {
 					// Inhibit our custom handler for specific set
-					oldValue = -1;
+					internalChangeCntd++;
 					Adjustment.Value = value.Ticks;
 					oldValue = value.Ticks;
 					RaiseChangedEvent ();
