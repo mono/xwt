@@ -861,7 +861,9 @@ namespace Xwt.WPFBackend
 
 				if (checkArgs.Result == DragDropResult.Canceled || !res) {
 					e.Effects = DragDropEffects.None;
-					eventSink.OnDragFinished (new DragFinishedEventArgs (false));
+					Toolkit.Invoke (delegate {
+						eventSink.OnDragFinished (new DragFinishedEventArgs (false));
+					});
 					return;
 				}
 			}
@@ -884,7 +886,9 @@ namespace Xwt.WPFBackend
 			// No DrapDropCheck/DragDrop event enabled.
 			e.Effects = DragDropEffects.None;
 
-			this.eventSink.OnDragFinished (new DragFinishedEventArgs (deleteSource));
+			Toolkit.Invoke (delegate {
+				this.eventSink.OnDragFinished (new DragFinishedEventArgs (deleteSource));
+			});
 		}
 
 		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)
