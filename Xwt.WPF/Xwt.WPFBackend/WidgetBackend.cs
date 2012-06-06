@@ -672,10 +672,19 @@ namespace Xwt.WPFBackend
 				AdornerLayer.GetAdornerLayer (Widget).Add (this.adorner);
 			}
 
-			Widget.Dispatcher.BeginInvoke (
-				(Func<DependencyObject, object, DragDropEffects, DragDropEffects>)DragDrop.DoDragDrop,
-				Widget, dataObj, data.DragAction.ToWpfDropEffect ()
-			);
+			Widget.Dispatcher.BeginInvoke ((Action)(() => {
+				var effect = DragDrop.DoDragDrop (Widget, dataObj, data.DragAction.ToWpfDropEffect ());
+
+				Toolkit.Invoke (delegate {
+					this.eventSink.OnDragFinished (new DragFinishedEventArgs (effect == DragDropEffects.Move));
+				});
+
+				if (this.adorner != null) {
+					AdornerLayer.GetAdornerLayer (Widget).Remove (this.adorner);
+					this.adorner = null;
+					this.adorned = false;
+				}
+			}));
 		}
 
 		public void SetDragTarget (TransferDataType [] types, DragDropAction dragAction)
@@ -848,12 +857,6 @@ namespace Xwt.WPFBackend
 			e.Handled = true; // Prevent default handlers from being used.
 			e.Effects = DragDropEffects.None;
 
-			if (this.adorner != null) {
-				AdornerLayer.GetAdornerLayer (Widget).Remove (this.adorner);
-				this.adorner = null;
-				this.adorned = false;
-			}
-
 			if ((enabledEvents & WidgetEvent.DragDropCheck) > 0) {
 				var checkArgs = new DragCheckEventArgs (pos, types, actualEffect.ToXwtDropAction ());
 				bool res = Toolkit.Invoke (delegate {
@@ -862,14 +865,9 @@ namespace Xwt.WPFBackend
 
 				if (checkArgs.Result == DragDropResult.Canceled || !res) {
 					e.Effects = DragDropEffects.None;
-					Toolkit.Invoke (delegate {
-						eventSink.OnDragFinished (new DragFinishedEventArgs (false));
-					});
 					return;
 				}
 			}
-
-			bool deleteSource = false;
 
 			if ((enabledEvents & WidgetEvent.DragDrop) > 0) {
 				var store = new TransferDataStore ();
@@ -880,13 +878,9 @@ namespace Xwt.WPFBackend
 					eventSink.OnDragDrop (args);
 				});
 
-				deleteSource = args.Success && !actualEffect.HasFlag (DragDropEffects.Copy);
-				e.Effects = args.Success ? actualEffect : DragDropEffects.None;
+				if (args.Success)
+					e.Effects = actualEffect;
 			}
-
-			Toolkit.Invoke (delegate {
-				this.eventSink.OnDragFinished (new DragFinishedEventArgs (deleteSource));
-			});
 		}
 
 		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)
