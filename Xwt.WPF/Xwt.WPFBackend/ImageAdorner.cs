@@ -45,7 +45,7 @@ namespace Xwt.WPFBackend
 			};
 		}
 
-		public Point Offset
+		public System.Windows.Point Offset
 		{
 			set
 			{
@@ -62,7 +62,7 @@ namespace Xwt.WPFBackend
 			return result;
 		}
 
-		private Point offset;
+		private System.Windows.Point offset;
 		private readonly UIElement child;
 
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)

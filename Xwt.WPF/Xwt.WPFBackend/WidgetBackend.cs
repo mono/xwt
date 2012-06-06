@@ -656,8 +656,22 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		private bool adorned;
-		private ImageAdorner adorner;
+		private static ImageAdorner Adorner;
+		private static AdornerLayer AdornedLayer;
+		private static System.Windows.Window AdornedWindow;
+
+		private SW.Window GetParentWindow()
+		{
+			FrameworkElement current = Widget;
+			while (current != null) {
+				if (current is SW.Window)
+					return (SW.Window)current;
+
+				current = current.Parent as FrameworkElement;
+			}
+
+			return null;
+		}
 
 		public void DragStart (DragStartData data)
 		{
@@ -667,9 +681,17 @@ namespace Xwt.WPFBackend
 			DataObject dataObj = data.Data.ToDataObject();
 
 			if (data.ImageBackend != null) {
-				this.adorned = true;
-				this.adorner = new ImageAdorner (Widget, data.ImageBackend);
-				AdornerLayer.GetAdornerLayer (Widget).Add (this.adorner);
+				AdornedWindow = GetParentWindow ();
+				AdornedWindow.AllowDrop = true;
+
+				var e = (UIElement)AdornedWindow.Content;
+
+				Adorner = new ImageAdorner (e, data.ImageBackend);
+
+				AdornedLayer = AdornerLayer.GetAdornerLayer (e);
+				AdornedLayer.Add (Adorner);
+
+				AdornedWindow.DragOver += AdornedWindowOnDragOver;
 			}
 
 			Widget.Dispatcher.BeginInvoke ((Action)(() => {
@@ -679,12 +701,21 @@ namespace Xwt.WPFBackend
 					this.eventSink.OnDragFinished (new DragFinishedEventArgs (effect == DragDropEffects.Move));
 				});
 
-				if (this.adorner != null) {
-					AdornerLayer.GetAdornerLayer (Widget).Remove (this.adorner);
-					this.adorner = null;
-					this.adorned = false;
+				if (Adorner != null) {
+					AdornedLayer.Remove (Adorner);
+					AdornedLayer = null;
+					Adorner = null;
+
+					AdornedWindow.AllowDrop = false;
+					AdornedWindow.DragOver -= AdornedWindowOnDragOver;
+					AdornedWindow = null;
 				}
 			}));
+		}
+
+		private void AdornedWindowOnDragOver (object sender, System.Windows.DragEventArgs e)
+		{
+			WidgetDragOverHandler (sender, e);
 		}
 
 		public void SetDragTarget (TransferDataType [] types, DragDropAction dragAction)
@@ -801,13 +832,25 @@ namespace Xwt.WPFBackend
 
 			e.Handled = true; // Prevent default handlers from being used.
 
-			if (this.adorner != null) {
-				if (!this.adorned) {
-					AdornerLayer.GetAdornerLayer (Widget).Add (this.adorner);
-					this.adorned = true;
+			if (Adorner != null) {
+				var w = GetParentWindow ();
+				var v = (UIElement)w.Content;
+
+				if (w != AdornedWindow) {
+					AdornedLayer.Remove (Adorner);
+
+					AdornedWindow.AllowDrop = false;
+					AdornedWindow.DragOver -= AdornedWindowOnDragOver;
+
+					AdornedWindow = w;
+					AdornedWindow.AllowDrop = true;
+					AdornedWindow.DragOver += AdornedWindowOnDragOver;
+
+					AdornedLayer = AdornerLayer.GetAdornerLayer (v);
+					AdornedLayer.Add (Adorner);
 				}
 
-				this.adorner.Offset = new Point (pos.X, pos.Y);
+				Adorner.Offset = e.GetPosition (v);
 			}
 
 			if ((enabledEvents & WidgetEvent.DragOverCheck) > 0) {
@@ -885,11 +928,6 @@ namespace Xwt.WPFBackend
 
 		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)
 		{
-			if (this.adorner != null) {
-				AdornerLayer.GetAdornerLayer (Widget).Remove (this.adorner);
-				this.adorned = false;
-			}
-
 			Toolkit.Invoke (delegate {
 				eventSink.OnDragLeave (EventArgs.Empty);
 			});
