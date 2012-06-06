@@ -205,10 +205,33 @@ namespace Xwt.WPFBackend
 
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
-			pos = default(RowDropPosition);
-			nodePosition = default(TreePosition);
-			// TODO
-			return false;
+			pos = RowDropPosition.Into;
+
+			x *= WidthPixelRatio;
+			y *= HeightPixelRatio;
+
+			var result = VisualTreeHelper.HitTest (Tree, new System.Windows.Point (x, y)) as PointHitTestResult;
+			var element = (result != null) ? result.VisualHit as FrameworkElement : null;
+			while (element != null) {
+				if (element is ExTreeViewItem)
+					break;
+
+				element = VisualTreeHelper.GetParent (element) as FrameworkElement;
+			}
+
+			if (element == null) {
+				nodePosition = default(TreePosition);
+				return false;
+			}
+
+			double edge = element.ActualHeight * 0.18;
+			if (result.PointHit.Y <= edge) {
+				pos = RowDropPosition.Before;
+			} else if (result.PointHit.Y >= element.ActualHeight - edge)
+				pos = RowDropPosition.After;
+			
+			nodePosition = element.DataContext as TreeStoreNode;
+			return true;
 		}
 
 		public override void EnableEvent (object eventId)
