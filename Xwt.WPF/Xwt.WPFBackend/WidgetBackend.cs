@@ -667,7 +667,7 @@ namespace Xwt.WPFBackend
 				if (current is SW.Window)
 					return (SW.Window)current;
 
-				current = current.Parent as FrameworkElement;
+				current = VisualTreeHelper.GetParent (current) as FrameworkElement;
 			}
 
 			return null;
