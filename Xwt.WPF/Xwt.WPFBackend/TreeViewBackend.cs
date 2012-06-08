@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -203,15 +204,19 @@ namespace Xwt.WPFBackend
 			Tree.View.Columns.Remove ((GridViewColumn) handle);
 		}
 
+		private RowDropPosition dropPosition;
+		private ExTreeViewItem dropTarget;
+		private Adorner dropAdorner;
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
 			nodePosition = null;
-			pos = RowDropPosition.Into;
+			this.dropPosition = pos = RowDropPosition.Into;
 
 			x *= WidthPixelRatio;
 			y *= HeightPixelRatio;
 
 			var result = VisualTreeHelper.HitTest (Tree, new System.Windows.Point (x, y)) as PointHitTestResult;
+
 			var element = (result != null) ? result.VisualHit as FrameworkElement : null;
 			while (element != null) {
 				if (element is ExTreeViewItem)
@@ -221,18 +226,20 @@ namespace Xwt.WPFBackend
 
 				element = VisualTreeHelper.GetParent (element) as FrameworkElement;
 			}
-
-			if (element == null) {
-				nodePosition = default(TreePosition);
+			
+			this.dropTarget = (ExTreeViewItem)element;
+			
+			if (element == null)
 				return false;
-			}
+
+			var point = ((UIElement)result.VisualHit).TranslatePoint (result.PointHit, element);
 
 			double edge = element.ActualHeight * 0.15;
-			if (result.PointHit.Y <= edge) {
-				pos = RowDropPosition.Before;
-			} else if (result.PointHit.Y >= element.ActualHeight - edge)
-				pos = RowDropPosition.After;
-			
+			if (point.Y <= edge)
+				this.dropPosition = pos = RowDropPosition.Before;
+			else if (point.Y >= element.ActualHeight - edge)
+				this.dropPosition = pos = RowDropPosition.After;
+
 			nodePosition = element.DataContext as TreeStoreNode;
 			return true;
 		}
@@ -303,6 +310,34 @@ namespace Xwt.WPFBackend
 			Toolkit.Invoke (TreeViewEventSink.OnSelectionChanged);
 		}
 
+		protected override void OnDragOver (object sender, DragOverEventArgs e)
+		{
+			AdornerLayer layer = AdornerLayer.GetAdornerLayer (Widget);
+			if (this.dropAdorner != null)
+			    layer.Remove (this.dropAdorner);
+
+			base.OnDragOver (sender, e);
+
+			if (this.dropTarget != null)
+			    layer.Add (this.dropAdorner = new TreeViewDropAdorner (this.dropTarget, this.dropPosition));
+		}
+
+		protected override void OnDragLeave (object sender, EventArgs e)
+		{
+			base.OnDragLeave (sender, e);
+
+			if (this.dropAdorner != null)
+				AdornerLayer.GetAdornerLayer (Widget).Remove (this.dropAdorner);
+		}
+
+		protected override void OnDragFinished (object sender, DragFinishedEventArgs e)
+		{
+			base.OnDragFinished (sender, e);
+
+			if (this.dropAdorner != null)
+				AdornerLayer.GetAdornerLayer (Widget).Remove (this.dropAdorner);
+		}
+
 		private ExTreeViewItem GetVisibleTreeItem (TreePosition pos, Action<ExTreeViewItem> walk = null)
 		{
 			Stack<TreeStoreNode> nodes = new Stack<TreeStoreNode> ();
@@ -314,7 +349,7 @@ namespace Xwt.WPFBackend
 			} while (node != null);
 
 			ExTreeViewItem treeItem = null;
-			ItemContainerGenerator g = this.Tree.ItemContainerGenerator;
+			ItemContainerGenerator g = Tree.ItemContainerGenerator;
 			while (nodes.Count > 0) {
 				node = nodes.Pop ();
 				treeItem = (ExTreeViewItem) g.ContainerFromItem (node);

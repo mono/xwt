@@ -450,9 +450,6 @@ namespace Xwt.WPFBackend
 			if (eventId is WidgetEvent) {
 				var ev = (WidgetEvent)eventId;
 				switch (ev) {
-					case WidgetEvent.DragLeave:
-						Widget.DragLeave += WidgetDragLeaveHandler;
-						break;
 					case WidgetEvent.KeyPressed:
 						Widget.KeyDown += WidgetKeyDownHandler;
 						break;
@@ -489,6 +486,7 @@ namespace Xwt.WPFBackend
 					// Enabling a drag&drop event for the first time
 					Widget.DragOver += WidgetDragOverHandler;
 					Widget.Drop += WidgetDropHandler;
+					widget.DragLeave += WidgetDragLeaveHandler;
 				}
 
 				enabledEvents |= ev;
@@ -500,9 +498,6 @@ namespace Xwt.WPFBackend
 			if (eventId is WidgetEvent) {
 				var ev = (WidgetEvent)eventId;
 				switch (ev) {
-					case WidgetEvent.DragLeave:
-						Widget.DragLeave -= WidgetDragLeaveHandler;
-						break;
 					case WidgetEvent.KeyPressed:
 						Widget.KeyDown -= WidgetKeyDownHandler;
 						break;
@@ -535,6 +530,7 @@ namespace Xwt.WPFBackend
 					// All drag&drop events have been disabled
 					Widget.DragOver -= WidgetDragOverHandler;
 					Widget.Drop -= WidgetDropHandler;
+					Widget.DragLeave -= WidgetDragLeaveHandler;
 				}
 			}
 		}
@@ -697,9 +693,7 @@ namespace Xwt.WPFBackend
 			Widget.Dispatcher.BeginInvoke ((Action)(() => {
 				var effect = DragDrop.DoDragDrop (Widget, dataObj, data.DragAction.ToWpfDropEffect ());
 
-				Toolkit.Invoke (delegate {
-					this.eventSink.OnDragFinished (new DragFinishedEventArgs (effect == DragDropEffects.Move));
-				});
+				OnDragFinished (this, new DragFinishedEventArgs (effect == DragDropEffects.Move));
 
 				if (Adorner != null) {
 					AdornedLayer.Remove (Adorner);
@@ -824,6 +818,27 @@ namespace Xwt.WPFBackend
 			return dataType.Substring (0, i).Trim ();
 		}
 
+		protected virtual void OnDragFinished (object sender, DragFinishedEventArgs e)
+		{
+			Toolkit.Invoke (delegate {
+				this.eventSink.OnDragFinished (e);
+			});
+		}
+
+		protected virtual void OnDragOver (object sender, DragOverEventArgs e)
+		{
+			Toolkit.Invoke (delegate {
+				eventSink.OnDragOver (e);
+			});
+		}
+
+		protected virtual void OnDragLeave (object sender, EventArgs e)
+		{
+			Toolkit.Invoke (delegate {
+				eventSink.OnDragLeave (e);
+			});
+		}
+
 		void WidgetDragOverHandler (object sender, System.Windows.DragEventArgs e)
 		{
 			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
@@ -873,9 +888,7 @@ namespace Xwt.WPFBackend
 				FillDataStore (store, e.Data, DragDropInfo.TargetTypes);
 
 				var args = new DragOverEventArgs (pos, store, proposedAction);
-				Toolkit.Invoke (delegate {
-					eventSink.OnDragOver (args);
-				});
+				OnDragOver (sender, args);
 				if (args.AllowedAction == DragDropAction.None) {
 					e.Effects = currentDragEffect = DragDropEffects.None;
 					return;
@@ -928,9 +941,7 @@ namespace Xwt.WPFBackend
 
 		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)
 		{
-			Toolkit.Invoke (delegate {
-				eventSink.OnDragLeave (EventArgs.Empty);
-			});
+			OnDragLeave (sender, e);
 		}
 
 		private void WidgetMouseEnteredHandler (object sender, MouseEventArgs e)

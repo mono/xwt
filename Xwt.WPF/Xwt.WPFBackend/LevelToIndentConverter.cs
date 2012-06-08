@@ -44,6 +44,6 @@ namespace Xwt.WPFBackend
 			throw new NotImplementedException ();
 		}
 
-		private const int IndentSize = 19;
+		internal const int IndentSize = 19;
 	}
 }
