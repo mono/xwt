@@ -205,6 +205,7 @@ namespace Xwt.WPFBackend
 
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
+			nodePosition = null;
 			pos = RowDropPosition.Into;
 
 			x *= WidthPixelRatio;
@@ -215,6 +216,8 @@ namespace Xwt.WPFBackend
 			while (element != null) {
 				if (element is ExTreeViewItem)
 					break;
+				if (element is ExTreeView) // We can't succeed past this point
+					return false;
 
 				element = VisualTreeHelper.GetParent (element) as FrameworkElement;
 			}
