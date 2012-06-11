@@ -724,16 +724,12 @@ namespace Xwt.WPFBackend
 				return; // Drag auto detect has been already activated.
 
 			DragDropInfo.AutodetectDrag = true;
-			Widget.MouseDown += WidgetMouseDownForDragHandler;
 			Widget.MouseUp += WidgetMouseUpForDragHandler;
 			Widget.MouseMove += WidgetMouseMoveForDragHandler;
 		}
 
-		void WidgetMouseDownForDragHandler (object o, MouseButtonEventArgs e)
+		private void SetupDragRect (MouseEventArgs e)
 		{
-			if ((enabledEvents & WidgetEvent.DragStarted) == 0)
-				return;
-
 			var width = SystemParameters.MinimumHorizontalDragDistance;
 			var height = SystemParameters.MinimumVerticalDragDistance;
 			var loc = e.GetPosition (Widget);
@@ -751,7 +747,11 @@ namespace Xwt.WPFBackend
 				return;
 			if (e.LeftButton != MouseButtonState.Pressed)
 				return;
-			if (DragDropInfo.DragRect.IsEmpty || DragDropInfo.DragRect.Contains (e.GetPosition (Widget)))
+
+			if (DragDropInfo.DragRect.IsEmpty)
+				SetupDragRect (e);
+
+			if (DragDropInfo.DragRect.Contains (e.GetPosition (Widget)))
 				return;
 
 			DragStartData dragData = null;
