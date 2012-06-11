@@ -151,13 +151,16 @@ namespace Xwt.WPFBackend
 					add = false;
 			}
 
-			if (add)
-				TreeView.SelectedItems.Add (DataContext);
-			else
-				TreeView.SelectedItems.Remove (DataContext);
+			if (!add || !IsSelected) {
+				if (add)
+					TreeView.SelectedItems.Add (DataContext);
+				else
+					TreeView.SelectedItems.Remove (DataContext);
 
-			e.Handled = true;
-			base.OnMouseLeftButtonDown(e);
+				e.Handled = true;
+			}
+
+			base.OnMouseLeftButtonDown (e);
 		}
 
 		private ExTreeView TreeView
