@@ -340,6 +340,7 @@ namespace Xwt.WPFBackend
 
 		private ExTreeViewItem GetVisibleTreeItem (TreePosition pos, Action<ExTreeViewItem> walk = null)
 		{
+			Tree.UpdateLayout();
 			Stack<TreeStoreNode> nodes = new Stack<TreeStoreNode> ();
 
 			TreeStoreNode node = (TreeStoreNode) pos;
