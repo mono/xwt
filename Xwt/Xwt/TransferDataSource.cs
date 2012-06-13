@@ -64,11 +64,11 @@ namespace Xwt
 		/// <param name='value'>
 		/// Value.
 		/// </param>
-		public void AddValue (object value)
+		public void AddValue<T> (T value) where T : class
 		{
 			if (value == null)
 				throw new ArgumentNullException ("value");
-			data [TransferDataType.FromType (value.GetType ())] = value;
+			data [TransferDataType.FromType (typeof (T))] = value;
 		}
 		
 		/// <summary>
