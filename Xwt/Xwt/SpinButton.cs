@@ -5,6 +5,8 @@ namespace Xwt
 {
 	public class SpinButton : Widget
 	{
+		ButtonStyle style;
+
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ISpinButtonEventSink
 		{
 			public void ValueChanged ()
@@ -55,6 +57,15 @@ namespace Xwt
 		public double IncrementValue {
 			get { return Backend.IncrementValue; }
 			set { Backend.IncrementValue = value; }
+		}
+
+		public ButtonStyle Style {
+			get { return style; }
+			set {
+				style = value;
+				Backend.SetButtonStyle (style);
+				OnPreferredSizeChanged ();
+			}
 		}
 		
 		protected virtual void OnValueChanged (EventArgs e)

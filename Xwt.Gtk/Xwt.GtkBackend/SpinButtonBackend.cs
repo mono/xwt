@@ -93,6 +93,19 @@ namespace Xwt.GtkBackend
 			get { return Widget.Adjustment.StepIncrement; }
 			set { Widget.Adjustment.StepIncrement = value; }
 		}
+
+		public void SetButtonStyle (ButtonStyle style)
+		{
+			switch (style) {
+			case ButtonStyle.Borderless:
+			case ButtonStyle.Flat:
+				Widget.HasFrame = false;
+				break;
+			default:
+				Widget.HasFrame = true;
+				break;
+			}
+		}
 	}
 }
 

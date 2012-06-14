@@ -10,6 +10,7 @@ namespace Xwt.Backends
 		double MinimumValue { get; set; }
 		double MaximumValue { get; set; }
 		double IncrementValue { get; set; }
+		void SetButtonStyle (ButtonStyle style);
 	}
 
 	public interface ISpinButtonEventSink: IWidgetEventSink
