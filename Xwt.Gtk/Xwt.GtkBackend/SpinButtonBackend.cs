@@ -39,7 +39,7 @@ namespace Xwt.GtkBackend
 			base.EnableEvent (eventId);
 			if (eventId is SpinButtonEvent) {
 				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueChanged)
-					Widget.ChangeValue += HandleValueChanged;
+					Widget.ValueChanged += HandleValueChanged;
 			}
 		}
 		
@@ -48,7 +48,7 @@ namespace Xwt.GtkBackend
 			base.DisableEvent (eventId);
 			if (eventId is SpinButtonEvent) {
 				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueChanged)
-					Widget.ChangeValue -= HandleValueChanged;
+					Widget.ValueChanged -= HandleValueChanged;
 			}
 		}
 
