@@ -74,9 +74,9 @@ namespace Xwt.GtkBackend
 			{
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
-				var bounds = new Xwt.Rectangle (5, 5, w - 5, h - 5);
+				var bounds = new Xwt.Rectangle (5, 5, w - 6, h - 6);
 				var backgroundColor = Xwt.Drawing.Color.FromBytes (230, 230, 230, 230);
-				var black = Xwt.Drawing.Colors.Black;
+				var black = Xwt.Drawing.Color.FromBytes (60, 60, 60);
 
 				using (Context ctx = Gdk.CairoHelper.Create (this.GdkWindow)) {
 					// We clear the surface with a transparent color if possible
@@ -90,16 +90,16 @@ namespace Xwt.GtkBackend
 					var calibratedRect = RecalibrateChildRectangle (bounds);
 					// Fill it with one round rectangle
 					RoundRectangle (ctx, calibratedRect, 10);
-					ctx.Color = new Color (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
-					ctx.FillPreserve ();
-					ctx.LineWidth = .5;
+					ctx.LineWidth = .8;
 					ctx.Color = new Color (black.Red, black.Green, black.Blue, black.Alpha);
-					ctx.Stroke ();
+					ctx.StrokePreserve ();
+					ctx.Color = new Color (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
+					ctx.Fill ();
 
 					// Triangle
 					// We first begin by positionning ourselves at the top-center or bottom center of the previous rectangle
 					var arrowX = bounds.Center.X;
-					var arrowY = arrowPosition == Xwt.Popover.Position.Top ? calibratedRect.Top : calibratedRect.Bottom;
+					var arrowY = arrowPosition == Xwt.Popover.Position.Top ? calibratedRect.Top + ctx.LineWidth : calibratedRect.Bottom - ctx.LineWidth;
 					ctx.NewPath ();
 					ctx.MoveTo (arrowX, arrowY);
 					// We draw the rectangle path
@@ -129,15 +129,18 @@ namespace Xwt.GtkBackend
 
 			void RoundRectangle (Context ctx, Rectangle rect, double radius)
 			{
-				var pi = Math.PI;
-				var a = rect.Left;
-				var b = rect.Right;
-				var c = rect.Top;
-				var d = rect.Bottom;
-				ctx.Arc(a + radius, c + radius, radius, 2*(pi/2), 3*(pi/2));
-				ctx.Arc(b - radius, c + radius, radius, 3*(pi/2), 4*(pi/2));
-				ctx.Arc(b - radius, d - radius, radius, 0*(pi/2), 1*(pi/2));
-				ctx.Arc(a + radius, d - radius, radius, 1*(pi/2), 2*(pi/2));
+				radius = rect.Height / radius;
+				double degrees = Math.PI / 180;
+				var x = rect.X;
+				var y = rect.Y;
+				var height = rect.Height;
+				var width = rect.Width;
+
+				ctx.NewSubPath ();
+				ctx.Arc (x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees);
+				ctx.Arc (x + width - radius, y + height - radius, radius, 0 * degrees, 90 * degrees);
+				ctx.Arc (x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees);
+				ctx.Arc (x + radius, y + radius, radius, 180 * degrees, 270 * degrees);
 				ctx.ClosePath ();
 			}
 
