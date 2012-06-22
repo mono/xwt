@@ -34,7 +34,7 @@ namespace Xwt.Backends
 	{
 		event EventHandler Closed;
 		void Init (IWindowFrameBackend parent, IWidgetBackend child, Popover.Position arrowPosition);
-		void Run (Point reference);
+		void Run (IWidgetBackend referenceWidget);
 	}
 }
 

@@ -61,6 +61,12 @@ namespace Xwt.GtkBackend
 				OnScreenChanged (null);
 			}
 
+			public Xwt.Popover.Position ArrowPosition {
+				get {
+					return arrowPosition;
+				}
+			}
+
 			void HandleFocusOutEvent (object o, FocusOutEventArgs args)
 			{
 				this.HideAll ();
@@ -197,14 +203,16 @@ namespace Xwt.GtkBackend
 			};
 		}
 
-		public void Run (Point position)
+		public void Run (IWidgetBackend referenceWidget)
 		{
+			var reference = ((WidgetBackend)referenceWidget).Frontend;
+			var position = new Point (reference.ScreenBounds.Center.X, popover.ArrowPosition == Popover.Position.Top ? reference.ScreenBounds.Bottom : reference.ScreenBounds.Top);
 			popover.ShowAll ();
 			popover.GrabFocus ();
 			int w, h;
 			popover.GetSize (out w, out h);
 			popover.Move ((int)position.X - w / 2, (int)position.Y);
-			popover.SizeAllocated += (o, args) => popover.Move ((int)position.X - args.Allocation.Width / 2, (int)position.Y);
+			popover.SizeAllocated += (o, args) => { popover.Move ((int)position.X - args.Allocation.Width / 2, (int)position.Y); popover.GrabFocus (); };
 		}
 
 		public void Dispose ()

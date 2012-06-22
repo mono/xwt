@@ -61,8 +61,7 @@ namespace Xwt
 		{
 			if (backend == null)
 				throw new InvalidOperationException ("The Popover was disposed");
-			var location = new Point (referenceWidget.ScreenBounds.Center.X, arrowPosition == Position.Top ? referenceWidget.ScreenBounds.Bottom : referenceWidget.ScreenBounds.Top);
-			backend.Run (location);
+			backend.Run ((IWidgetBackend) WidgetRegistry.GetBackend (referenceWidget));
 		}
 
 		public void Dispose ()
