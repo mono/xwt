@@ -33,6 +33,7 @@ namespace Xwt {
 	
 	[TypeConverter (typeof(SizeValueConverter))]
 	[ValueSerializer (typeof(SizeValueSerializer))]
+	[Serializable]
 	public struct Size
 	{		
 		double width, height;
