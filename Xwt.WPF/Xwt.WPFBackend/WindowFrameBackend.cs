@@ -108,7 +108,29 @@ namespace Xwt.WPFBackend
 		{
 			window.Activate ();
 		}
-		
+
+		public void Move (double x, double y)
+		{
+			var value = ToNonClientRect (new Rectangle (x, y, 1, 1));
+			window.Top = value.Top;
+			window.Left = value.Left;
+			Toolkit.Invoke (delegate
+			{
+				eventSink.OnBoundsChanged (Bounds);
+			});
+		}
+
+		public void Resize (double width, double height)
+		{
+			var value = ToNonClientRect (new Rectangle (0, 0, width, height));
+			window.Width = value.Width;
+			window.Height = value.Height;
+			Toolkit.Invoke (delegate
+			{
+				eventSink.OnBoundsChanged (Bounds);
+			});
+		}
+
 		public Rectangle Bounds {
 			get {
 				double width = Double.IsNaN (window.Width) ? window.ActualWidth : window.Width;
