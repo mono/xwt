@@ -78,6 +78,23 @@ namespace Xwt.GtkBackend
 			get { return eventSink; }
 		}
 
+		public void Move (double x, double y)
+		{
+			Window.Move ((int)x, (int)y);
+			Toolkit.Invoke (delegate {
+				EventSink.OnBoundsChanged (Bounds);
+			});
+		}
+
+		public void Resize (double width, double height)
+		{
+			Window.Resize ((int)width, (int)height);
+			Window.SetDefaultSize ((int)width, (int)height);
+			Toolkit.Invoke (delegate {
+				EventSink.OnBoundsChanged (Bounds);
+			});
+		}
+
 		public Rectangle Bounds {
 			get {
 				int w, h, x, y;

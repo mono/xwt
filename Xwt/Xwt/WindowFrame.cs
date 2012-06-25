@@ -62,7 +62,8 @@ namespace Xwt
 		EventHandler shown;
 		EventHandler hidden;
 
-		Rectangle bounds;
+		Point location;
+		Size size;
 		bool pendingReallocation;
 		
 		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
@@ -71,7 +72,8 @@ namespace Xwt
 			{
 				base.OnBackendCreated ();
 				Backend.Initialize (this);
-				Parent.bounds = Backend.Bounds;
+				Parent.location = Backend.Bounds.Location;
+				Parent.size = Backend.Bounds.Size;
 				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
 			}
 			
@@ -140,19 +142,18 @@ namespace Xwt
 					value.Width = 0;
 				if (value.Height < 0)
 					value.Height = 0;
-				SetSize (value.Width, value.Height);
 				BackendBounds = value;
 			}
 		}
 
 		public double X {
 			get { return BackendBounds.X; }
-			set { BackendBounds = new Xwt.Rectangle (value, Y, Width, Height); }
+			set { SetBackendLocation (value, Y); }
 		}
 		
 		public double Y {
 			get { return BackendBounds.Y; }
-			set { BackendBounds = new Xwt.Rectangle (X, value, Width, Height); }
+			set { SetBackendLocation (X, value); }
 		}
 		
 		public double Width {
@@ -160,8 +161,7 @@ namespace Xwt
 			set {
 				if (value < 0)
 					value = 0;
-				SetSize (value, -1);
-				BackendBounds = new Rectangle (X, Y, value, Height);
+				SetBackendSize (value, -1);
 			}
 		}
 		
@@ -170,8 +170,7 @@ namespace Xwt
 			set {
 				if (value < 0)
 					value = 0;
-				SetSize (-1, value);
-				BackendBounds = new Rectangle (X, Y, Width, value);
+				SetBackendSize (-1, value);
 			}
 		}
 		
@@ -182,14 +181,13 @@ namespace Xwt
 					value.Width = 0;
 				if (value.Height < 0)
 					value.Height = 0;
-				SetSize (value.Width, value.Height);
-				BackendBounds = new Rectangle (Location, value);
+				SetBackendSize (value.Width, value.Height);
 			}
 		}
 		
 		public Point Location {
 			get { return BackendBounds.Location; }
-			set { BackendBounds = new Rectangle (value.X, value.Y, Width, Height); }
+			set { SetBackendLocation (value.X, value.Y); }
 		}
 		
 		public string Title {
@@ -243,20 +241,36 @@ namespace Xwt
 				hidden (this, EventArgs.Empty);
 		}
 
-		internal virtual void SetSize (double width, double height)
+		internal virtual void SetBackendSize (double width, double height)
 		{
-			BackendBounds = new Rectangle (X, Y, width != -1 ? width : Width, height != -1 ? height : Height);
+			size = new Size (width != -1 ? width : Width, height != -1 ? height : Height);
+			Backend.Resize (size.Width, size.Height);
+		}
+
+		internal virtual void SetBackendLocation (double x, double y)
+		{
+			location = new Point (x, y);
+			Backend.Move (x, y);
 		}
 
 		internal virtual Rectangle BackendBounds {
-			get { BackendHost.EnsureBackendLoaded ();  return bounds; }
-			set { bounds = Backend.Bounds = value; }
+			get {
+				BackendHost.EnsureBackendLoaded ();
+				return new Rectangle (location, size);
+			}
+			set {
+				size = value.Size;
+				location = value.Location;
+				Backend.Bounds = value;
+			}
 		}
 		
 		protected virtual void OnBoundsChanged (BoundsChangedEventArgs a)
 		{
+			var bounds = new Rectangle (location, size);
 			if (bounds != a.Bounds) {
-				bounds = a.Bounds;
+				size = a.Bounds.Size;
+				location = a.Bounds.Location;
 				Reallocate ();
 				if (boundsChanged != null)
 					boundsChanged (this, a);

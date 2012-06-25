@@ -223,9 +223,6 @@
     </Compile>
     <Compile Include="Xwt.Backends\ICheckBoxBackend.cs" />
     <Compile Include="Xwt\ContentPosition.cs" />
-    <Compile Include="Xwt\Frame.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Xwt.Backends\IFrameBackend.cs" />
     <Compile Include="Xwt\Separator.cs">
       <SubType>Component</SubType>
@@ -303,6 +300,7 @@
     <Compile Include="Xwt\SpinButton.cs" />
     <Compile Include="Xwt\DatePicker.cs" />
     <Compile Include="Xwt.Backends\IDatePickerBackend.cs" />
+    <Compile Include="Xwt\Frame.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

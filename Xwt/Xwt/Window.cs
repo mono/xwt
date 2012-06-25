@@ -103,15 +103,34 @@ namespace Xwt
 
 		bool widthSet;
 		bool heightSet;
+		bool locationSet;
 		Rectangle initialBounds;
 
-		internal override void SetSize (double width, double height)
+		internal override void SetBackendSize (double width, double height)
 		{
-			if (width != -1)
-				widthSet = true;
-			if (height != -1)
-				heightSet = true;
-			base.SetSize (width, height);
+			if (shown) {
+				base.SetBackendSize (width, height);
+			}
+			else {
+				if (width != -1) {
+					initialBounds.Width = width;
+					widthSet = true;
+				}
+				if (height != -1) {
+					heightSet = true;
+					initialBounds.Height = height;
+				}
+			}
+		}
+
+		internal override void SetBackendLocation (double x, double y)
+		{
+			if (shown)
+				base.SetBackendLocation (x, y);
+			else {
+				locationSet = true;
+				initialBounds.Location = new Point (x, y);
+			}
 		}
 
 		internal override Rectangle BackendBounds
@@ -124,8 +143,10 @@ namespace Xwt
 			{
 				if (shown)
 					base.BackendBounds = value;
-				else
+				else {
+					widthSet = heightSet = locationSet = true;
 					initialBounds = value;
+				}
 			}
 		}
 
@@ -157,11 +178,15 @@ namespace Xwt
 	
 				shown = true;
 	
-				if (size != Size)
-					Size = size;
+				if (size != Size) {
+					if (locationSet)
+						Backend.Bounds = initialBounds;
+					else
+						Size = size;
+				}
+				else if (locationSet)
+					Backend.Move (initialBounds.X, initialBounds.Y);
 	
-				Location = initialBounds.Location;
-
 				Backend.SetMinSize (new Size (w.MinSize + padding.HorizontalSpacing, h.MinSize + padding.VerticalSpacing));
 			}
 		}

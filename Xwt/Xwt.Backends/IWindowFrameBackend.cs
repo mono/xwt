@@ -33,6 +33,9 @@ namespace Xwt.Backends
 		void Dispose ();
 		
 		Rectangle Bounds { get; set; }
+		void Move (double x, double y);
+		void Resize (double width, double height);
+
 		bool Visible { get; set; }
 		string Title { get; set; }
 		

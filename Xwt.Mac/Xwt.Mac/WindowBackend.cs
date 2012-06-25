@@ -268,6 +268,19 @@ namespace Xwt.Mac
 				child.View.Frame = frame;
 			}
 		}
+
+		void IWindowFrameBackend.Move (double x, double y)
+		{
+			var r = FrameRectFor (new System.Drawing.RectangleF ((float)x, (float)y, Frame.Width, Frame.Height));
+			SetFrame (r, true);
+		}
+		
+		void IWindowFrameBackend.Resize (double width, double height)
+		{
+			var cr = ContentRectFor (Frame);
+			var r = FrameRectFor (new System.Drawing.RectangleF ((float)cr.X, (float)cr.Y, (float)width, (float)height));
+			SetFrame (r, true);
+		}
 		
 		Rectangle IWindowFrameBackend.Bounds {
 			get {
