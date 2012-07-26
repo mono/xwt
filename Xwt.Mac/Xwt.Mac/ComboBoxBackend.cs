@@ -170,6 +170,9 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.SelectItem (value);
+				Toolkit.Invoke (delegate {
+					EventSink.OnSelectionChanged ();
+				});
 				Widget.SynchronizeTitleAndSelectedItem ();
 				Widget.SizeToFit ();
 			}
