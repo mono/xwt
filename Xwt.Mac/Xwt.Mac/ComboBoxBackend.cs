@@ -177,6 +177,15 @@ namespace Xwt.Mac
 				Widget.SizeToFit ();
 			}
 		}
+
+		public override bool Sensitive {
+			get {
+				return Widget.Enabled;
+			}
+			set {
+				Widget.Enabled = value;
+			}
+		}
 		#endregion
 	}
 	
