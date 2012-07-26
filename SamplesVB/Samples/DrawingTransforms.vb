@@ -105,7 +105,9 @@ Namespace Samples
                 ctx.FillPreserve()
                 ctx.SetColor(Colors.Red.WithAlpha(1.0 / i))
                 ctx.Stroke()
-                ctx.MoveTo(x = (x + w * inc), y = (y + w * inc / 3.0))
+                x = x + w * inc
+                y = y + w * inc / 3.0
+                ctx.MoveTo(x, y)
                 ctx.Restore()
                 i += inc
             End While

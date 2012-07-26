@@ -72,7 +72,7 @@ Namespace Samples
                                              Dim val As String = store.GetNavigatorAt(view.SelectedRow).GetValue(Of String)(Me.text)
                                              e.DragOperation.Data.AddValue(Of String)(val)
                                              AddHandler e.DragOperation.Finished, Sub(s As Object, args As DragFinishedEventArgs)
-                                                                                      Console.WriteLine("D:" + args.DeleteSource)
+                                                                                      Console.WriteLine("D:" & args.DeleteSource)
                                                                                   End Sub
                                          End Sub
 

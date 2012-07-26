@@ -1,6 +1,7 @@
 ﻿Imports System
 Imports Xwt
 Imports Xwt.Drawing
+Imports System.IO
 
 Namespace Samples
     Public Class MainWindow
@@ -31,7 +32,9 @@ Namespace Samples
                 Me.statusIcon = Application.CreateStatusIcon()
                 Me.statusIcon.Menu = New Menu()
                 Me.statusIcon.Menu.Items.Add(New MenuItem("Test"))
-                Me.statusIcon.Image = Image.FromResource(MyBase.[GetType](), "package.png")
+                Dim ms1 As New IO.MemoryStream()
+                SamplesVB.My.Resources.package.Save(ms1, System.Drawing.Imaging.ImageFormat.Png)
+                Me.statusIcon.Image = Image.FromStream(ms1)
             Catch ex As Exception
                 Console.WriteLine("Status icon could not be shown")
             End Try
@@ -53,8 +56,13 @@ Namespace Samples
             edit.SubMenu.Items.Add(New MenuItem("Paste"))
             menu.Items.Add(edit)
             MyBase.MainMenu = menu
+
             Dim box As HPaned = New HPaned()
-            Me.icon = Image.FromResource(GetType(App), "class.png")
+
+            Dim ms As New IO.MemoryStream()
+            SamplesVB.My.Resources._class.Save(ms, System.Drawing.Imaging.ImageFormat.Png)
+            Me.icon = Image.FromStream(ms)
+
             Me.store = New TreeStore({Me.nameCol, Me.iconCol, Me.widgetCol})
             Me.samplesTree = New TreeView()
             Me.samplesTree.Columns.Add("Name", {Me.iconCol, Me.nameCol})
@@ -128,7 +136,7 @@ Namespace Samples
 
         Private Sub Dump(w As IWidgetSurface, ind As Integer)
             If w IsNot Nothing Then
-                Console.WriteLine(New String(" ", ind * 2), " ", w.[GetType]().Name, " ", w.GetPreferredWidth(), " ", w.GetPreferredHeight())
+                Console.WriteLine(New String(" "c, ind * 2), " ", w.[GetType]().Name, " ", w.GetPreferredWidth(), " ", w.GetPreferredHeight())
                 For Each c As Widget In w.Children
                     Me.Dump(c, ind + 1)
                 Next

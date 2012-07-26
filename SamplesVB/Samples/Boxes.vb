@@ -31,48 +31,54 @@ Namespace Samples
         Inherits VBox
 
         Public Sub New()
-            Dim box As HBox = New HBox()
-            Dim box2 As VBox = New VBox()
-            box2.PackStart(New SimpleBox(30.0), BoxMode.None)
-            box2.PackStart(New SimpleBox(30.0), BoxMode.None)
-            box2.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
-            box.PackStart(box2, BoxMode.FillAndExpand)
-            box.PackStart(New SimpleBox(30.0), BoxMode.None)
-            box.PackStart(New SimpleBox(30.0), BoxMode.Expand)
-            MyBase.PackStart(box, BoxMode.None)
-            Dim box3 As HBox = New HBox()
-            box3.PackEnd(New SimpleBox(30.0))
-            box3.PackStart(New SimpleBox(20.0) With {.Color = New Color(1.0, 0.5, 0.5)})
-            box3.PackEnd(New SimpleBox(40.0))
-            box3.PackStart(New SimpleBox(10.0) With {.Color = New Color(1.0, 0.5, 0.5)})
-            box3.PackEnd(New SimpleBox(30.0))
-            box3.PackStart(New SimpleBox(10.0) With {.Color = New Color(1.0, 0.5, 0.5)}, BoxMode.FillAndExpand)
-            MyBase.PackStart(box3)
-            Dim box4 As HBox = New HBox()
-            Dim b As Button = New Button("Click me")
-            AddHandler b.Clicked, Sub()
-                                      b.Label = "Button has grown"
-                                  End Sub
-            box4.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
-            box4.PackStart(b)
-            box4.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
-            MyBase.PackStart(box4)
-            Dim box5 As HBox = New HBox()
-            Dim b2 As Button = New Button("Hide / Show")
-            box5.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
-            Dim hsb As SimpleBox = New SimpleBox(20.0)
-            box5.PackStart(hsb, BoxMode.None)
-            box5.PackStart(b2)
-            box5.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
-            AddHandler b2.Clicked, Sub()
-                                       hsb.Visible = Not hsb.Visible
-                                   End Sub
-            MyBase.PackStart(box5)
-            Dim box6 As HBox = New HBox()
-            For i As Integer = 0 To 15 - 1
-                box6.PackStart(New Label("TestLabel" + i) With {.MinWidth = 10.0})
-            Next
-            MyBase.PackStart(box6)
+            Try
+
+
+                Dim box As HBox = New HBox()
+                Dim box2 As VBox = New VBox()
+                box2.PackStart(New SimpleBox(30.0), BoxMode.None)
+                box2.PackStart(New SimpleBox(30.0), BoxMode.None)
+                box2.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
+                box.PackStart(box2, BoxMode.FillAndExpand)
+                box.PackStart(New SimpleBox(30.0), BoxMode.None)
+                box.PackStart(New SimpleBox(30.0), BoxMode.Expand)
+                MyBase.PackStart(box, BoxMode.None)
+                Dim box3 As HBox = New HBox()
+                box3.PackEnd(New SimpleBox(30.0))
+                box3.PackStart(New SimpleBox(20.0) With {.Color = New Color(1.0, 0.5, 0.5)})
+                box3.PackEnd(New SimpleBox(40.0))
+                box3.PackStart(New SimpleBox(10.0) With {.Color = New Color(1.0, 0.5, 0.5)})
+                box3.PackEnd(New SimpleBox(30.0))
+                box3.PackStart(New SimpleBox(10.0) With {.Color = New Color(1.0, 0.5, 0.5)}, BoxMode.FillAndExpand)
+                MyBase.PackStart(box3)
+                Dim box4 As HBox = New HBox()
+                Dim b As Button = New Button("Click me")
+                AddHandler b.Clicked, Sub()
+                                          b.Label = "Button has grown"
+                                      End Sub
+                box4.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
+                box4.PackStart(b)
+                box4.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
+                MyBase.PackStart(box4)
+                Dim box5 As HBox = New HBox()
+                Dim b2 As Button = New Button("Hide / Show")
+                box5.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
+                Dim hsb As SimpleBox = New SimpleBox(20.0)
+                box5.PackStart(hsb, BoxMode.None)
+                box5.PackStart(b2)
+                box5.PackStart(New SimpleBox(30.0), BoxMode.FillAndExpand)
+                AddHandler b2.Clicked, Sub()
+                                           hsb.Visible = Not hsb.Visible
+                                       End Sub
+                MyBase.PackStart(box5)
+                Dim box6 As HBox = New HBox()
+                For i As Integer = 0 To 15 - 1
+                    box6.PackStart(New Label("TestLabel" & i) With {.MinWidth = 10.0})
+                Next
+                MyBase.PackStart(box6)
+            Catch ex As Exception
+                System.Console.WriteLine(ex.Message)
+            End Try
         End Sub
     End Class
 
@@ -90,7 +96,8 @@ Namespace Samples
         Public Sub New(coreSize As Double)
             Me.Color = New Color(0.5, 0.5, 1.0)
             Me.coreSize = New Size(coreSize, coreSize)
-            MyBase.MinWidth = (MyBase.MinHeight = coreSize + Me.margin * 2.0)
+            MyBase.MinHeight = coreSize + Me.margin * 2.0
+            MyBase.MinWidth = MyBase.MinHeight
         End Sub
 
         Public Sub New(coreWidth As Double, coreHeight As Double)

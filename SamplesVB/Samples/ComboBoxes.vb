@@ -54,7 +54,7 @@ Namespace Samples
             box.PackStart(b)
             AddHandler b.Clicked, Sub()
                                       For i As Integer = 0 To 10 - 1
-                                          c2.Items.Add("Item " + New String("#", i))
+                                          c2.Items.Add("Item " + New String("#"c, i))
                                       Next
                                   End Sub
             MyBase.PackStart(box)
@@ -70,7 +70,7 @@ Namespace Samples
             box.PackStart(c3)
             box.PackStart(la3)
             AddHandler c3.SelectionChanged, Sub()
-                                                la3.Text = "Selected item: " + c3.SelectedItem
+                                                la3.Text = "Selected item: " & c3.SelectedItem.ToString
                                             End Sub
             MyBase.PackStart(box)
             box = New HBox()

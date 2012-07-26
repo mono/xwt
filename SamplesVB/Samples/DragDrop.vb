@@ -63,8 +63,8 @@ Namespace Samples
         End Sub
 
         Private Sub HandleB2DragDrop(sender As Object, e As DragEventArgs)
-            Console.WriteLine("Dropped! " + e.Action)
-            Console.WriteLine("Text: " + e.Data.GetValue(TransferDataType.Text))
+            Console.WriteLine("Dropped! " & e.Action)
+            Console.WriteLine("Text: " & e.Data.GetValue(TransferDataType.Text).ToString)
             Console.WriteLine("Uris:")
             Dim uris As Uri() = e.Data.Uris
             For i As Integer = 0 To uris.Length - 1

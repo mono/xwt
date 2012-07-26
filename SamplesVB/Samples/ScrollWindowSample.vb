@@ -37,7 +37,7 @@ Namespace Samples
             Dim v As ScrollView = New ScrollView()
             Dim b1 As VBox = New VBox()
             For i As Integer = 0 To 30 - 1
-                b1.PackStart(New Label("Line " + i), BoxMode.None)
+                b1.PackStart(New Label("Line " & i), BoxMode.None)
             Next
             Dim u As Button = New Button("Click to remove")
             AddHandler u.Clicked, Sub()
@@ -51,7 +51,7 @@ Namespace Samples
             Dim v2 As ScrollView = New ScrollView()
             Dim b2 As VBox = New VBox()
             For i As Integer = 0 To 10 - 1
-                b2.PackStart(New Label("Line " + i), BoxMode.None)
+                b2.PackStart(New Label("Line " & i), BoxMode.None)
             Next
             v2.Content = b2
             v2.VerticalScrollPolicy = ScrollPolicy.Never
@@ -61,7 +61,7 @@ Namespace Samples
             Dim b4 As Button = New Button("Click to add items")
             AddHandler b4.Clicked, Sub()
                                        For j As Integer = 0 To 10 - 1
-                                           b3.PackStart(New Label("Line " + j), BoxMode.None)
+                                           b3.PackStart(New Label("Line " & j), BoxMode.None)
                                        Next
                                    End Sub
             b3.PackStart(b4)
@@ -128,8 +128,11 @@ Namespace Samples
         End Sub
 
         Protected Overrides Sub OnBoundsChanged()
-            Me.vscroll.PageSize = (Me.vscroll.PageIncrement = MyBase.Bounds.Height)
-            Me.hscroll.PageSize = (Me.hscroll.PageIncrement = MyBase.Bounds.Width)
+            Me.vscroll.PageIncrement = MyBase.Bounds.Height
+            Me.vscroll.PageSize = Me.vscroll.PageIncrement
+
+            Me.hscroll.PageIncrement = MyBase.Bounds.Width
+            Me.hscroll.PageSize = Me.hscroll.PageIncrement
         End Sub
     End Class
 

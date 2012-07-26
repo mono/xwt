@@ -48,9 +48,9 @@ Namespace Samples
             For i As Integer = 0 To 100 - 1
                 Dim r As Integer = store.AddRow()
                 store.SetValue(Of Image)(r, Me.icon, png)
-                store.SetValue(Of String)(r, Me.name, "Value " + i)
+                store.SetValue(Of String)(r, Me.name, "Value " & i)
                 store.SetValue(Of Image)(r, Me.icon2, png)
-                store.SetValue(Of String)(r, Me.text, "Text " + i)
+                store.SetValue(Of String)(r, Me.text, "Text " & i)
             Next
             MyBase.PackStart(list, BoxMode.FillAndExpand)
         End Sub
