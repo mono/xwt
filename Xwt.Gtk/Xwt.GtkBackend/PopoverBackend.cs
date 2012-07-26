@@ -121,7 +121,7 @@ namespace Xwt.GtkBackend
 
 					var calibratedRect = RecalibrateChildRectangle (bounds);
 					// Fill it with one round rectangle
-					RoundRectangle (ctx, calibratedRect, 10);
+					RoundRectangle (ctx, calibratedRect, 15);
 					ctx.LineWidth = .8;
 					ctx.Color = new Color (black.Red, black.Green, black.Blue, black.Alpha);
 					ctx.StrokePreserve ();
@@ -189,23 +189,25 @@ namespace Xwt.GtkBackend
 		}
 
 		PopoverWindow popover;
-
 		public event EventHandler Closed;
 
-		public void Init (IWindowFrameBackend parent, IWidgetBackend child, Xwt.Popover.Position orientation)
+		public Xwt.Engine.WidgetRegistry PreferredRegistry {
+			get {
+				return GtkEngine.Registry;
+			}
+		}
+
+		public void Run (Xwt.WindowFrame parent, Xwt.Popover.Position orientation, Func<Xwt.Widget> childSource, Xwt.Widget reference)
 		{
-			popover = new PopoverWindow ((Gtk.Widget)child.NativeWidget, orientation);
-			popover.TransientFor = ((WindowFrameBackend)parent).Window;
+			var child = childSource ();
+			popover = new PopoverWindow ((Gtk.Widget)((WidgetBackend)GtkEngine.Registry.GetBackend (child)).NativeWidget, orientation);
+			popover.TransientFor = ((WindowFrameBackend)GtkEngine.Registry.GetBackend (parent)).Window;
 			popover.DestroyWithParent = true;
 			popover.Hidden += (o, args) => {
 				if (Closed != null)
 					Closed (this, EventArgs.Empty);
 			};
-		}
 
-		public void Run (IWidgetBackend referenceWidget)
-		{
-			var reference = ((WidgetBackend)referenceWidget).Frontend;
 			var position = new Point (reference.ScreenBounds.Center.X, popover.ArrowPosition == Popover.Position.Top ? reference.ScreenBounds.Bottom : reference.ScreenBounds.Top);
 			popover.ShowAll ();
 			popover.GrabFocus ();
