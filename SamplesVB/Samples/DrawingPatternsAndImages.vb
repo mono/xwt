@@ -43,10 +43,14 @@ Namespace Samples
             ctx.Save()
             ctx.Translate(x, y)
             ctx.SetColor(Colors.Black)
+
+            ' Dashed lines
             ctx.SetLineDash(15.0, {10.0, 10.0, 5.0, 5.0})
             ctx.Rectangle(10.0, 10.0, 100.0, 100.0)
             ctx.Stroke()
-            ctx.SetLineDash(0.0, 0D)
+            ctx.SetLineDash(0.0)
+
+            ' Image
             Dim arcColor As Color = New Color(1.0, 0.0, 1.0)
             Dim ib As ImageBuilder = New ImageBuilder(30, 30, ImageFormat.ARGB32)
             ib.Context.Arc(15.0, 15.0, 15.0, 0.0, 360.0)
@@ -62,6 +66,9 @@ Namespace Samples
             arcColor.Alpha = 0.4
             ctx.SetColor(arcColor)
             ctx.Fill()
+
+            ' ImagePattern
+
             ctx.Save()
             ctx.Translate(x + 130.0, y)
             ctx.Pattern = New ImagePattern(img)
@@ -69,6 +76,10 @@ Namespace Samples
             ctx.Fill()
             ctx.Restore()
             ctx.Restore()
+
+
+            ' // Setting pixels
+
             ctx.SetLineWidth(1.0)
             For i As Integer = 0 To 50 - 1
                 For j As Integer = 0 To 50 - 1

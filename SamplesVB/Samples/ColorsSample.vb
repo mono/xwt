@@ -33,9 +33,16 @@ Namespace Samples
         Inherits VBox
 
         Public Sub New()
-            Dim la As Label = New Label("Normal color")
-            la.BackgroundColor = la.BackgroundColor
-            MyBase.PackStart(la)
+            Try
+
+
+
+                Dim la As Label = New Label("Normal color")
+                la.BackgroundColor = la.BackgroundColor
+                MyBase.PackStart(la)
+            Catch ex As Exception
+                System.Console.WriteLine(ex.Message)
+            End Try
         End Sub
     End Class
 End Namespace

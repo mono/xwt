@@ -45,7 +45,11 @@ Namespace Samples
         Private img As Image
 
         Public Sub New()
-            Me.img = Image.FromResource(MyBase.[GetType](), "cow.jpg")
+
+            Dim ms As New IO.MemoryStream()
+            SamplesVB.My.Resources.cow.Save(ms, System.Drawing.Imaging.ImageFormat.Png)
+
+            Me.img = Image.FromStream(ms)
         End Sub
 
         Protected Overrides Sub OnDraw(ctx As Context, dirtyRect As Rectangle)

@@ -49,7 +49,10 @@ Namespace Samples
             customList.Views.Add(New ImageCellView(Me.icon))
             customList.Views.Add(New TextCellView(Me.name))
 
-            Dim png As Image = Image.FromResource(GetType(App), "class.png")
+            Dim ms As New IO.MemoryStream()
+            SamplesVB.My.Resources._class.Save(ms, System.Drawing.Imaging.ImageFormat.Png)
+
+            Dim png As Image = Image.FromStream(ms)
             For i As Integer = 0 To 100 - 1
                 Dim r As Integer = store.AddRow()
                 store.SetValue(Of Image)(r, Me.icon, png)

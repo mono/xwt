@@ -41,7 +41,11 @@ Namespace Samples
             AddHandler b1.ButtonPressed, Sub()
                                              Dim d As DragOperation = b1.CreateDragOperation()
                                              d.Data.AddValue(Of String)("Hola")
-                                             Dim img As Image = Image.FromResource(Me.[GetType](), "class.png")
+
+                                             Dim ms As New IO.MemoryStream()
+                                             SamplesVB.My.Resources._class.Save(ms, System.Drawing.Imaging.ImageFormat.Png)
+
+                                             Dim img As Image = Image.FromStream(ms)
                                              d.SetDragImage(img, CDec((CInt(img.Size.Width))), CDec((CInt(img.Size.Height))))
                                              d.AllowedActions = DragDropAction.All
                                              d.Start()

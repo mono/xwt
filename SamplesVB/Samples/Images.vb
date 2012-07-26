@@ -37,7 +37,11 @@ Namespace Samples
         Public Sub New()
   
             Dim img As New ImageView()
-            img.Image = Image.FromResource(MyBase.GetType, "cow.jpg")
+
+            Dim ms As New IO.MemoryStream()
+            SamplesVB.My.Resources.cow.Save(ms, System.Drawing.Imaging.ImageFormat.Png)
+
+            img.Image = Image.FromStream(ms)
             PackStart(img)
 
             Dim stockIcons As FieldInfo() = GetType(StockIcons).GetFields(BindingFlags.[Static] Or BindingFlags.[Public])
