@@ -65,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.vb" />
+    <Compile Include="MainWindow.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -132,6 +135,42 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Samples\ListView1.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\MenuSamples.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\NotebookSample.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\PanedViews.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\PartialImages.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ProgressBarSample.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ScrollWindowSample.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Tables.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\TextEntries.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Tooltips.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\TreeViews.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\WidgetEvents.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Windows.vb">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
