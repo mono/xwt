@@ -65,7 +65,7 @@ namespace Xwt.Mac
 		public void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Font = (NSFont)WidgetRegistry.GetBackend (font);
+			li.Font = (NSFont)MacEngine.Registry.GetBackend (font);
 			UpdateInfo (li);
 		}
 		

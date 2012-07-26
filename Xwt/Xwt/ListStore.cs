@@ -142,7 +142,7 @@ namespace Xwt
 		}
 	}
 	
-	class DefaultListStoreBackend: IListStoreBackend
+	public class DefaultListStoreBackend: IListStoreBackend
 	{
 		List<object[]> list = new List<object[]> ();
 		Type[] columnTypes;

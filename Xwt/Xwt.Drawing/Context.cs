@@ -38,7 +38,7 @@ namespace Xwt.Drawing
 		
 		static Context ()
 		{
-			handler = WidgetRegistry.CreateSharedBackend<IContextBackendHandler> (typeof(Context));
+			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<IContextBackendHandler> (typeof(Context));
 		}
 		
 		protected override IBackendHandler BackendHandler {

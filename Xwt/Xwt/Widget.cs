@@ -89,6 +89,10 @@ namespace Xwt
 			
 			protected override IBackend OnCreateBackend ()
 			{
+				if (Parent.Parent != null) {
+					Console.WriteLine ("Reuse : {0}", Parent.Parent.BackendHost.WidgetRegistry != null);
+					WidgetRegistry = Parent.Parent.BackendHost.WidgetRegistry;
+				}
 				var backend = base.OnCreateBackend ();
 				if (backend == null || backend is XwtWidgetBackend) {
 					// If this is a custom widget, not implemented in Xwt, then we provide the default
@@ -320,7 +324,7 @@ namespace Xwt
 				else if (parentWindow == null) {
 					var p = Application.EngineBackend.GetNativeParentWindow (this);
 					if (p != null)
-						parentWindow = WidgetRegistry.WrapWindow (p);
+						parentWindow = BackendHost.WidgetRegistry.WrapWindow (p);
 				}
 				return parentWindow;
 			}
@@ -501,7 +505,7 @@ namespace Xwt
 				return new Font (Backend.Font);
 			}
 			set {
-				Backend.Font = WidgetRegistry.GetBackend (value);
+				Backend.Font = BackendHost.WidgetRegistry.GetBackend (value);
 			}
 		}
 		

@@ -54,7 +54,7 @@ namespace Xwt.GtkBackend
 			if (val is string)
 				data.Text = (string)val;
 			else if (val is Xwt.Drawing.Image)
-				data.SetPixbuf ((Gdk.Pixbuf) WidgetRegistry.GetBackend (val));
+				data.SetPixbuf ((Gdk.Pixbuf) GtkEngine.Registry.GetBackend (val));
 			else {
 				var at = Gdk.Atom.Intern (atomType, false);
 				data.Set (at, 0, TransferDataSource.SerializeValue (val));
@@ -70,7 +70,7 @@ namespace Xwt.GtkBackend
 			if (type == TransferDataType.Text)
 				target.AddText (data.Text);
 			else if (data.TargetsIncludeImage (false))
-				target.AddImage (WidgetRegistry.CreateFrontend<Xwt.Drawing.Image> (data.Pixbuf));
+				target.AddImage (GtkEngine.Registry.CreateFrontend<Xwt.Drawing.Image> (data.Pixbuf));
 			else if (type == TransferDataType.Uri) {
 				var uris = System.Text.Encoding.UTF8.GetString (data.Data).Split ('\n').Where (u => !string.IsNullOrEmpty(u)).Select (u => new Uri (u)).ToArray ();
 				target.AddUris (uris);

@@ -68,7 +68,7 @@ namespace Xwt.GtkBackend
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{			GtkAlertDialog alertDialog = new GtkAlertDialog (message);
 			alertDialog.FocusButton (message.DefaultButton);
-			var wb = (WindowFrameBackend)WidgetRegistry.GetBackend (transientFor);
+			var wb = (WindowFrameBackend)GtkEngine.Registry.GetBackend (transientFor);
 			var win = wb != null ? wb.Window : null;
 			MessageService.ShowCustomDialog (alertDialog, win);
 			if (alertDialog.ApplyToAll)
