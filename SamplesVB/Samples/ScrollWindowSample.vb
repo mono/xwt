@@ -39,15 +39,18 @@ Namespace Samples
             For i As Integer = 0 To 30 - 1
                 b1.PackStart(New Label("Line " & i), BoxMode.None)
             Next
+
             Dim u As Button = New Button("Click to remove")
             AddHandler u.Clicked, Sub()
                                       b1.Remove(u)
                                   End Sub
             b1.PackStart(u)
+
             v.Content = b1
             v.VerticalScrollPolicy = ScrollPolicy.Always
             v.BorderVisible = False
             MyBase.PackStart(v, BoxMode.FillAndExpand)
+
             Dim v2 As ScrollView = New ScrollView()
             Dim b2 As VBox = New VBox()
             For i As Integer = 0 To 10 - 1
@@ -56,6 +59,7 @@ Namespace Samples
             v2.Content = b2
             v2.VerticalScrollPolicy = ScrollPolicy.Never
             MyBase.PackStart(v2, BoxMode.FillAndExpand)
+
             Dim v3 As ScrollView = New ScrollView()
             Dim b3 As VBox = New VBox()
             Dim b4 As Button = New Button("Click to add items")
@@ -68,6 +72,7 @@ Namespace Samples
             v3.Content = b3
             v3.VerticalScrollPolicy = ScrollPolicy.Automatic
             MyBase.PackStart(v3, BoxMode.FillAndExpand)
+
             Dim v4 As ScrollView = New ScrollView()
             MyBase.PackStart(v4, BoxMode.FillAndExpand)
             Dim sb As ScrollableCanvas = New ScrollableCanvas()
@@ -80,9 +85,7 @@ Namespace Samples
         Inherits Canvas
 
         Private hscroll As ScrollAdjustment
-
         Private vscroll As ScrollAdjustment
-
         Private imageSize As Integer = 500
 
         Protected Overrides ReadOnly Property SupportsCustomScrolling() As Boolean
@@ -105,6 +108,7 @@ Namespace Samples
             ctx.SetColor(New Color(0.0, 0.0, 1.0))
             ctx.Fill()
             ctx.ResetTransform()
+
             ctx.Rectangle(0.0, 0.0, MyBase.Bounds.Width, 30.0)
             ctx.SetColor(New Color(1.0, 0.0, 0.0, 0.5))
             ctx.Fill()
@@ -113,12 +117,14 @@ Namespace Samples
         Protected Overrides Sub SetScrollAdjustments(horizontal As ScrollAdjustment, vertical As ScrollAdjustment)
             Me.hscroll = horizontal
             Me.vscroll = vertical
+
             Me.hscroll.UpperValue = CDec(Me.imageSize)
             Me.hscroll.PageIncrement = MyBase.Bounds.Width
             Me.hscroll.PageSize = MyBase.Bounds.Width
             AddHandler Me.hscroll.ValueChanged, Sub()
                                                     MyBase.QueueDraw()
                                                 End Sub
+
             Me.vscroll.UpperValue = CDec(Me.imageSize)
             Me.vscroll.PageIncrement = MyBase.Bounds.Height
             Me.vscroll.PageSize = MyBase.Bounds.Height

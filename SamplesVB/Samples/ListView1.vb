@@ -31,11 +31,8 @@ Namespace Samples
         Inherits VBox
 
         Private name As DataField(Of String) = New DataField(Of String)()
-
         Private icon As DataField(Of Image) = New DataField(Of Image)()
-
         Private text As DataField(Of String) = New DataField(Of String)()
-
         Private icon2 As DataField(Of Image) = New DataField(Of Image)()
 
         Public Sub New()

@@ -56,8 +56,11 @@ Namespace Samples
             ctx.Save()
             ctx.Translate(x + 30.0, y + 30.0)
             ctx.SetLineWidth(3.0)
+
+            ' Rotation
             Dim [end] As Double = 270.0
             Dim r As Double = 30.0
+
             Dim i As Double = 0.0
             While i <= [end]
                 ctx.Save()
@@ -67,6 +70,8 @@ Namespace Samples
                 Dim c As Double = i / [end]
                 ctx.SetColor(New Color(c, c, c))
                 ctx.Stroke()
+
+                ' Visual test for TransformPoints
                 Dim p0 As Point = New Point(0.0, 0.0)
                 Dim p As Point = New Point(0.0, -r)
                 Dim p2(2) As Point
@@ -84,6 +89,7 @@ Namespace Samples
                 ctx.Restore()
                 i += 5.0
             End While
+
             ctx.Restore()
         End Sub
 
@@ -92,11 +98,13 @@ Namespace Samples
             ctx.Translate(ax, ay)
             ctx.SetColor(Colors.Black)
             ctx.SetLineWidth(1.0)
+
             Dim x As Double = 0.0
             Dim y As Double = 0.0
             Dim w As Double = 10.0
             Dim inc As Double = 0.1
             Dim i As Double = inc
+
             While i < 3.5
                 ctx.Save()
                 ctx.Scale(i, i)
@@ -111,6 +119,7 @@ Namespace Samples
                 ctx.Restore()
                 i += inc
             End While
+
             ctx.Restore()
         End Sub
     End Class

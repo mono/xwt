@@ -38,11 +38,15 @@ Namespace Samples
         Private icon As DataField(Of Image) = New DataField(Of Image)()
 
         Public Sub New()
+            ' Default list box
             Dim list As ListBox = New ListBox()
             For i As Integer = 0 To 100 - 1
                 list.Items.Add("Value " & i)
             Next
+
             MyBase.PackStart(list, BoxMode.FillAndExpand)
+
+            ' Custom list box
             Dim customList As ListBox = New ListBox()
             Dim store As ListStore = New ListStore(Me.name, Me.icon)
             customList.DataSource = store

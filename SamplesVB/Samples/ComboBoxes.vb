@@ -58,6 +58,10 @@ Namespace Samples
                                       Next
                                   End Sub
             MyBase.PackStart(box)
+
+
+            ' Combo with custom labels
+
             box = New HBox()
             Dim c3 As ComboBox = New ComboBox()
             c3.Items.Add(0, "Combo with custom labels")
@@ -86,12 +90,19 @@ Namespace Samples
                                                  la4.Text = "Selected text: " + c4.TextEntry.Text
                                              End Sub
             MyBase.PackStart(box)
+
+
+            ' A complex combobox
+
+            ' Three data fields
             Dim imgField As DataField(Of Image) = New DataField(Of Image)()
             Dim textField As DataField(Of String) = New DataField(Of String)()
             Dim descField As DataField(Of String) = New DataField(Of String)()
             Dim cbox As ComboBox = New ComboBox()
+
             Dim store As ListStore = New ListStore(textField, imgField, descField)
             cbox.ItemsSource = store
+
             Dim r As Integer = store.AddRow()
             store.SetValue(Of String)(r, textField, "Information")
             store.SetValue(Of String)(r, descField, "Icons are duplicated on purpose")
@@ -104,12 +115,15 @@ Namespace Samples
             store.SetValue(Of String)(r, textField, "Warning")
             store.SetValue(Of String)(r, descField, "A third item")
             store.SetValue(Of Image)(r, imgField, Image.FromIcon("Warning", IconSize.Small))
+
+            ' Four views to show three data fields
             cbox.Views.Add(New ImageCellView(imgField))
             cbox.Views.Add(New TextCellView(textField))
             cbox.Views.Add(New ImageCellView(imgField))
             cbox.Views.Add(New TextCellView(descField))
             cbox.SelectedIndex = 0
             MyBase.PackStart(cbox)
+
         End Sub
     End Class
 End Namespace

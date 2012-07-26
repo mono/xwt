@@ -60,6 +60,7 @@ Namespace Samples
             g.AddColorStop(1.0, New Color(0.0, 1.0, 0.0))
             ctx.Pattern = g
             ctx.Fill()
+
             Dim r As Rectangle = Me.rect.Inflate(5.0, 5.0)
             ctx.Rectangle(r)
             ctx.SetColor(New Color(0.0, 0.0, 1.0))

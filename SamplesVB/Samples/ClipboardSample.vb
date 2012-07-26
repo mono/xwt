@@ -33,14 +33,17 @@ Namespace Samples
         Inherits VBox
 
         Public Sub New()
+
             Dim box As HBox = New HBox()
             Dim source As TextEntry = New TextEntry()
             box.PackStart(source)
+
             Dim b As Button = New Button("Copy")
             box.PackStart(b)
             AddHandler b.Clicked, Sub()
                                       Clipboard.SetText(source.Text)
                                   End Sub
+
             MyBase.PackStart(box)
             box = New HBox()
             Dim dest As TextEntry = New TextEntry()
@@ -50,6 +53,7 @@ Namespace Samples
             AddHandler b.Clicked, Sub()
                                       dest.Text = Clipboard.GetText()
                                   End Sub
+
             MyBase.PackStart(box)
             MyBase.PackStart(New HSeparator())
             box = New HBox()
@@ -60,7 +64,9 @@ Namespace Samples
                                       Dim obj As New ComplexObject
                                       obj.Data = String.Format("Hello world {0}", n + 1)
                                   End Sub
+
             MyBase.PackStart(box)
+
             box = New HBox()
             Dim destComplex As TextEntry = New TextEntry()
             box.PackStart(destComplex)
@@ -74,8 +80,10 @@ Namespace Samples
                                           destComplex.Text = "Data not found"
                                       End If
                                   End Sub
+
             MyBase.PackStart(box)
         End Sub
+
     End Class
 
     <Serializable()>

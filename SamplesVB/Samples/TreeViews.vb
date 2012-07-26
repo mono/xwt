@@ -31,23 +31,28 @@ Namespace Samples
         Inherits VBox
 
         Private text As DataField(Of String) = New DataField(Of String)()
-
         Private desc As DataField(Of String) = New DataField(Of String)()
 
         Public Sub New()
             Dim view As TreeView = New TreeView()
             Dim store As TreeStore = New TreeStore(Me.text, Me.desc)
+
             view.Columns.Add("Item", Me.text)
             view.Columns.Add("Desc", Me.desc)
+
             store.AddNode().SetValue(Of String)(Me.text, "One").SetValue(Of String)(Me.desc, "First")
             store.AddNode().SetValue(Of String)(Me.text, "Two").SetValue(Of String)(Me.desc, "Second").AddChild().SetValue(Of String)(Me.text, "Sub two").SetValue(Of String)(Me.desc, "Sub second")
             store.AddNode().SetValue(Of String)(Me.text, "Three").SetValue(Of String)(Me.desc, "Third").AddChild().SetValue(Of String)(Me.text, "Sub three").SetValue(Of String)(Me.desc, "Sub third")
             MyBase.PackStart(view)
+
             view.DataSource = store
+
             Dim la As Label = New Label()
             MyBase.PackStart(la)
+
             view.SetDragDropTarget(DragDropAction.All, TransferDataType.Text)
             view.SetDragSource(DragDropAction.All, TransferDataType.Text)
+
             AddHandler view.DragDrop, Sub(sender As Object, e As DragEventArgs)
                                           Dim pos As RowDropPosition
                                           Dim node As TreePosition
@@ -81,6 +86,7 @@ Namespace Samples
                                               store.AddNode().SetValue(Of String)(Me.text, "Added").SetValue(Of String)(Me.desc, "Desc")
                                           End Sub
             MyBase.PackStart(addButton)
+
             Dim removeButton As Button = New Button("Remove Selection")
             AddHandler removeButton.Clicked, Sub(sender As Object, e As EventArgs)
                                                  Dim selectedRows As TreePosition() = view.SelectedRows

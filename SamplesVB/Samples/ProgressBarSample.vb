@@ -43,6 +43,7 @@ Namespace Samples
             Me.indeterminateProgressBar = New ProgressBar()
             MyBase.PackStart(Me.indeterminateProgressBar, BoxMode.FillAndExpand)
             Me.indeterminateProgressBar.Indeterminate = True
+
             AddHandler Me.timer.Elapsed, AddressOf Me.Increase
             Me.determinateProgressBar = New ProgressBar()
             Me.determinateProgressBar.Fraction = 0.0

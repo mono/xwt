@@ -40,6 +40,7 @@ Namespace Samples
             Me.menu.Items.Add(New MenuItem("One"))
             Me.menu.Items.Add(New MenuItem("Two"))
             Me.menu.Items.Add(New MenuItem("Three"))
+
             AddHandler la.ButtonPressed, AddressOf Me.HandleButtonPressed
             MyBase.PackStart(la)
         End Sub
