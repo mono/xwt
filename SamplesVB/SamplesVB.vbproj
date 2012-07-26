@@ -116,6 +116,9 @@
     <Compile Include="Samples\DrawingFigures.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Samples\DrawingPatternsAndImages.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Samples\DrawingText.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -201,6 +204,9 @@
       <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
       <Name>Xwt</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="package.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
