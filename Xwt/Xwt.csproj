@@ -301,6 +301,8 @@
     <Compile Include="Xwt\DatePicker.cs" />
     <Compile Include="Xwt.Backends\IDatePickerBackend.cs" />
     <Compile Include="Xwt\Frame.cs" />
+    <Compile Include="Xwt\ForeignPlug.cs" />
+    <Compile Include="Xwt.Backends\IForeignPlugBackend.cs" />
     <Compile Include="Xwt\Expander.cs" />
     <Compile Include="Xwt.Backends\IExpandBackend.cs" />
   </ItemGroup>
