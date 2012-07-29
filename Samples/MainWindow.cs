@@ -79,7 +79,8 @@ namespace Samples
 			AddSample (n, "Images and Patterns", typeof(DrawingPatternsAndImages));
 			AddSample (n, "Text", typeof(DrawingText));
 			AddSample (n, "Partial Images", typeof (PartialImages));
-			
+
+			AddSample (null, "Expander", typeof (ExpanderSample));
 			AddSample (null, "Progress bars", typeof(ProgressBarSample));
 			AddSample (null, "Frames", typeof(Frames));
 			AddSample (null, "Images", typeof(Images));

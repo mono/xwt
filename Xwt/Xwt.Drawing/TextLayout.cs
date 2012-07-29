@@ -43,7 +43,7 @@ namespace Xwt.Drawing
 		
 		static TextLayout ()
 		{
-			handler = WidgetRegistry.CreateSharedBackend<ITextLayoutBackendHandler> (typeof(TextLayout));
+			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<ITextLayoutBackendHandler> (typeof(TextLayout));
 		}
 		
 		protected override IBackendHandler BackendHandler {
@@ -54,7 +54,7 @@ namespace Xwt.Drawing
 		
 		public TextLayout (Canvas canvas)
 		{
-			Backend = handler.Create ((ICanvasBackend)WidgetRegistry.GetBackend (canvas));
+			Backend = handler.Create ((ICanvasBackend)WidgetRegistry.MainRegistry.GetBackend (canvas));
 			Font = canvas.Font;
 		}
 		

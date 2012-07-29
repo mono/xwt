@@ -1,5 +1,5 @@
 //
-// Popover.cs
+// GtkMacInterop.cs
 //
 // Author:
 //       Jérémie Laval <jeremie.laval@xamarin.com>
@@ -23,65 +23,43 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Drawing;
-using Xwt.Engine;
-using Xwt.Backends;
 
-namespace Xwt
+namespace Xwt.GtkBackend.Mac
 {
-	public sealed class Popover : IDisposable
+	public static class GtkMacInterop
 	{
-		public enum Position {
-			Top,
-			Bottom,
-			/*Left,
-				Right*/
-		}
+		const string LibGdk = "libgdk-quartz-2.0.dylib";
+		const string LibGtk = "libgtk-quartz-2.0";
 
-		IPopoverBackend backend;
-		Position arrowPosition;
-		WindowFrame parent;
+		[System.Runtime.InteropServices.DllImport (LibGdk)]
+		static extern IntPtr gdk_quartz_window_get_nsview (IntPtr gdkwindow);
 
-		public event EventHandler Closed;
+		[System.Runtime.InteropServices.DllImport (LibGdk)]
+		static extern IntPtr gdk_quartz_window_get_nswindow (IntPtr gdkwindow);
 
-		public Popover (WindowFrame parent, Position arrowPosition)
+		[System.Runtime.InteropServices.DllImport (LibGtk)]
+		extern static IntPtr gtk_ns_view_new (IntPtr nsview);
+
+		public static MonoMac.AppKit.NSView GetNSViewFromGdkWindow (Gdk.Window window)
 		{
-			this.arrowPosition = arrowPosition;
-			this.parent = parent;
-			backend = WidgetRegistry.MainRegistry.CreateBackend<IPopoverBackend> (GetType ());
-
-			backend.Closed += (sender, e) => {
-				if (Closed != null)
-					Closed (this, EventArgs.Empty);
-			};
+			if (!Platform.IsMac || window == null)
+				return null;
+			IntPtr nsView = gdk_quartz_window_get_nsview (window.Handle);
+			return new MonoMac.AppKit.NSView (nsView);
 		}
 
-		public Func<Widget> ChildSource {
-			get;
-			set;
-		}
+		[System.Runtime.InteropServices.DllImport (LibGtk)]
+		static extern void gtk_widget_set_realized (IntPtr gtkwidget, bool realized);
 
-		public void Run (Widget referenceWidget)
+		public static void SetRealized (Gtk.Widget widget, bool realized)
 		{
-			if (backend == null)
-				throw new InvalidOperationException ("The Popover was disposed");
-			if (ChildSource == null)
-				throw new InvalidOperationException ("A child widget source must be set before running the Popover");
-			backend.Run (parent,
-			             arrowPosition,
-			             ChildSource,
-			             referenceWidget);
+			gtk_widget_set_realized (widget.Handle, realized);
 		}
 
-		public void Dispose ()
+		public static IntPtr NSViewToGtkWidgetPtr (MonoMac.AppKit.NSView view)
 		{
-			if (backend != null) {
-				backend.Dispose ();
-				backend = null;
-			}
+			return gtk_ns_view_new (view.Handle);
 		}
 	}
 }
-
