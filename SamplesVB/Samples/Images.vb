@@ -31,54 +31,54 @@ Imports Xwt
 Imports Xwt.Drawing
 
 Namespace Samples
-    Public Class Images
-        Inherits VBox
+	Public Class Images
+		Inherits VBox
 
-        Public Sub New()
-  
-            Dim img As New ImageView()
+		Public Sub New()
 
-            Dim ms As New IO.MemoryStream()
-            SamplesVB.My.Resources.cow.Save(ms, System.Drawing.Imaging.ImageFormat.Png)
+			Dim img As New ImageView()
 
-            img.Image = Image.FromStream(ms)
-            PackStart(img)
+			Dim ms As New IO.MemoryStream()
+			SamplesVB.My.Resources.cow.Save(ms, System.Drawing.Imaging.ImageFormat.Png)
 
-            Dim stockIcons As FieldInfo() = GetType(StockIcons).GetFields(BindingFlags.[Static] Or BindingFlags.[Public])
-            Dim perRow As Integer = 6
-            Dim row As HBox = Nothing
-            For i As Integer = 0 To stockIcons.Length - 1
+			img.Image = Image.FromStream(ms)
+			PackStart(img)
 
-                If Not (stockIcons(i).FieldType IsNot GetType(String)) Then
-                    If i Mod perRow = 0 Then
-                        If row IsNot Nothing Then
-                            MyBase.PackStart(row)
-                        End If
-                        row = New HBox()
-                    End If
+			Dim stockIcons As FieldInfo() = GetType(StockIcons).GetFields(BindingFlags.[Static] Or BindingFlags.[Public])
+			Dim perRow As Integer = 6
+			Dim row As HBox = Nothing
+			For i As Integer = 0 To stockIcons.Length - 1
 
-                    Dim vbox As VBox = New VBox()
-                    Dim stockId As String = CStr(stockIcons(i).GetValue(Nothing))
-                    Dim imageView As ImageView = New ImageView()
-                    Dim label As Label = New Label(stockId)
+				If Not (stockIcons(i).FieldType IsNot GetType(String)) Then
+					If i Mod perRow = 0 Then
+						If row IsNot Nothing Then
+							MyBase.PackStart(row)
+						End If
+						row = New HBox()
+					End If
 
-                    Try
-                        Dim icon As Image = Image.FromIcon(stockId, IconSize.Medium)
-                        If icon IsNot Nothing Then
-                            imageView.Image = icon
-                        End If
-                    Catch ex As Exception
-                    End Try
+					Dim vbox As VBox = New VBox()
+					Dim stockId As String = CStr(stockIcons(i).GetValue(Nothing))
+					Dim imageView As ImageView = New ImageView()
+					Dim label As Label = New Label(stockId)
 
-                    vbox.PackStart(imageView)
-                    vbox.PackEnd(label)
-                    row.PackStart(vbox)
-                End If
-            Next
+					Try
+						Dim icon As Image = Image.FromIcon(stockId, IconSize.Medium)
+						If icon IsNot Nothing Then
+							imageView.Image = icon
+						End If
+					Catch ex As Exception
+					End Try
 
-            If row IsNot Nothing Then
-                MyBase.PackStart(row)
-            End If
-        End Sub
-    End Class
+					vbox.PackStart(imageView)
+					vbox.PackEnd(label)
+					row.PackStart(vbox)
+				End If
+			Next
+
+			If row IsNot Nothing Then
+				MyBase.PackStart(row)
+			End If
+		End Sub
+	End Class
 End Namespace
