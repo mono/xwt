@@ -33,8 +33,7 @@ namespace Xwt.Backends
 	public interface IPopoverBackend : IDisposable
 	{
 		event EventHandler Closed;
-		void Init (IWindowFrameBackend parent, IWidgetBackend child, Popover.Position arrowPosition);
-		void Run (IWidgetBackend referenceWidget);
+		void Run (WindowFrame parent, Popover.Position arrowPosition, Func<Xwt.Widget> childSource, Widget referenceWidget);
 	}
 }
 
