@@ -45,14 +45,12 @@ namespace Xwt
 				return;
 			InitBackend (null);
 			engine.InitializeApplication ();
-			engine.InitializeRegistry (WidgetRegistry.MainRegistry);
 		}
 		
 		public static void Initialize (string backendType)
 		{
 			InitBackend (backendType);
 			engine.InitializeApplication ();
-			engine.InitializeRegistry (WidgetRegistry.MainRegistry);
 		}
 		
 		public static void Run ()

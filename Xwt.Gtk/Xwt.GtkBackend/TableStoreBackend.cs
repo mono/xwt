@@ -69,7 +69,7 @@ namespace Xwt.GtkBackend
 			else if (value is string)
 				store.SetValue (it, column, (string)value);
 			else if (value is Image)
-				store.SetValue (it, column, (Gdk.Pixbuf)GtkEngine.Registry.GetBackend (value));
+				store.SetValue (it, column, (Gdk.Pixbuf)WidgetRegistry.GetBackend (value));
 			else
 				store.SetValue (it, column, value ?? DBNull.Value);
 		}
@@ -78,7 +78,7 @@ namespace Xwt.GtkBackend
 		{
 			object val = store.GetValue (it, column);
 			if (val is Gdk.Pixbuf)
-				return GtkEngine.Registry.CreateFrontend<Image> (val);
+				return WidgetRegistry.CreateFrontend<Image> (val);
 			else if (val is DBNull)
 				return null;
 			else if (val is ObjectWrapper)

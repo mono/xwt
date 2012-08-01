@@ -36,7 +36,7 @@ namespace Xwt.Drawing
 		
 		static Font ()
 		{
-			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<IFontBackendHandler> (typeof(Font));
+			handler = WidgetRegistry.CreateSharedBackend<IFontBackendHandler> (typeof(Font));
 		}
 		
 		protected override IBackendHandler BackendHandler {

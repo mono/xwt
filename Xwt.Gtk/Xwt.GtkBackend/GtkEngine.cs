@@ -33,81 +33,69 @@ using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
-	public class GtkEngine: Xwt.Backends.EngineBackend
+	class GtkEngine: Xwt.Backends.EngineBackend
 	{
-		public static WidgetRegistry Registry {
-			get;
-			set;
-		}
-
 		public override void InitializeApplication ()
 		{
 			Gtk.Application.Init ();
-		}
-
-		public override void InitializeRegistry (WidgetRegistry registry)
-		{
-			Registry = registry;
-			registry.FromEngine = this;
 			
-			registry.RegisterBackend (typeof(Xwt.Widget), typeof(CustomWidgetBackend));
-			registry.RegisterBackend (typeof(Xwt.Window), typeof(WindowBackend));
-			registry.RegisterBackend (typeof(Xwt.Label), typeof(LabelBackend));
-			registry.RegisterBackend (typeof(Xwt.HBox), typeof(BoxBackend));
-			registry.RegisterBackend (typeof(Xwt.VBox), typeof(BoxBackend));
-			registry.RegisterBackend (typeof(Xwt.Button), typeof(ButtonBackend));
-			registry.RegisterBackend (typeof(Xwt.Notebook), typeof(NotebookBackend));
-			registry.RegisterBackend (typeof(Xwt.TreeView), typeof(TreeViewBackend));
-			registry.RegisterBackend (typeof(Xwt.TreeStore), typeof(TreeStoreBackend));
-			registry.RegisterBackend (typeof(Xwt.ListView), typeof(ListViewBackend));
-			registry.RegisterBackend (typeof(Xwt.ListStore), typeof(ListStoreBackend));
-			registry.RegisterBackend (typeof(Xwt.Canvas), typeof(CanvasBackend));
-			registry.RegisterBackend (typeof(Xwt.Drawing.Image), typeof(ImageHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Widget), typeof(CustomWidgetBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Window), typeof(WindowBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Label), typeof(LabelBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.HBox), typeof(BoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.VBox), typeof(BoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Button), typeof(ButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Notebook), typeof(NotebookBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.TreeView), typeof(TreeViewBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.TreeStore), typeof(TreeStoreBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ListView), typeof(ListViewBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ListStore), typeof(ListStoreBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Canvas), typeof(CanvasBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Image), typeof(ImageHandler));
 #if USE_PANGO
-			registry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandlerWithPango));
-			registry.RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(TextLayoutBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandlerWithPango));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(TextLayoutBackendHandler));
 #else
-			registry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandler));
-			registry.RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(CairoTextLayoutBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(CairoTextLayoutBackendHandler));
 #endif
-			registry.RegisterBackend (typeof(Xwt.Drawing.Gradient), typeof(CairoGradientBackendHandler));
-			registry.RegisterBackend (typeof(Xwt.Drawing.Font), typeof(FontBackendHandler));
-			registry.RegisterBackend (typeof(Xwt.Menu), typeof(MenuBackend));
-			registry.RegisterBackend (typeof(Xwt.MenuItem), typeof(MenuItemBackend));
-			registry.RegisterBackend (typeof(Xwt.CheckBoxMenuItem), typeof(CheckBoxMenuItemBackend));
-			registry.RegisterBackend (typeof(Xwt.RadioButtonMenuItem), typeof(RadioButtonMenuItemBackend));
-			registry.RegisterBackend (typeof(Xwt.SeparatorMenuItem), typeof(SeparatorMenuItemBackend));
-			registry.RegisterBackend (typeof(Xwt.ScrollView), typeof(ScrollViewBackend));
-			registry.RegisterBackend (typeof(Xwt.ComboBox), typeof(ComboBoxBackend));
-			registry.RegisterBackend (typeof(Xwt.Design.DesignerSurface), typeof(DesignerSurfaceBackend));
-			registry.RegisterBackend (typeof(Xwt.MenuButton), typeof(MenuButtonBackend));
-			registry.RegisterBackend (typeof(Xwt.TextEntry), typeof(TextEntryBackend));
-			registry.RegisterBackend (typeof(Xwt.ToggleButton), typeof(ToggleButtonBackend));
-			registry.RegisterBackend (typeof(Xwt.ImageView), typeof(ImageViewBackend));
-			registry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
-			registry.RegisterBackend (typeof(Xwt.Table), typeof(BoxBackend));
-			registry.RegisterBackend (typeof(Xwt.CheckBox), typeof(CheckBoxBackend));
-			registry.RegisterBackend (typeof(Xwt.Frame), typeof(FrameBackend));
-			registry.RegisterBackend (typeof(Xwt.VSeparator), typeof(SeparatorBackend));
-			registry.RegisterBackend (typeof(Xwt.HSeparator), typeof(SeparatorBackend));
-			registry.RegisterBackend (typeof(Xwt.Dialog), typeof(DialogBackend));
-			registry.RegisterBackend (typeof(Xwt.ComboBoxEntry), typeof(ComboBoxEntryBackend));
-			registry.RegisterBackend (typeof(Xwt.Clipboard), typeof(ClipboardBackend));
-			registry.RegisterBackend (typeof(Xwt.Drawing.ImagePattern), typeof(ImagePatternBackendHandler));
-			registry.RegisterBackend (typeof(Xwt.Drawing.ImageBuilder), typeof(ImageBuilderBackend));
-			registry.RegisterBackend (typeof(Xwt.ScrollAdjustment), typeof(ScrollAdjustmentBackend));
-			registry.RegisterBackend (typeof(Xwt.OpenFileDialog), typeof(OpenFileDialogBackend));
-			registry.RegisterBackend (typeof(Xwt.SaveFileDialog), typeof(SaveFileDialogBackend));
-			registry.RegisterBackend (typeof(Xwt.SelectFolderDialog), typeof(SelectFolderDialogBackend));
-			registry.RegisterBackend (typeof(Xwt.Paned), typeof(PanedBackend));
-			registry.RegisterBackend (typeof(Xwt.SelectColorDialog), typeof(SelectColorDialogBackend));
-			registry.RegisterBackend (typeof(Xwt.ListBox), typeof(ListBoxBackend));
-			registry.RegisterBackend (typeof(Xwt.StatusIcon), typeof(StatusIconBackend));
-			registry.RegisterBackend (typeof(Xwt.ProgressBar), typeof(ProgressBarBackend));
-			registry.RegisterBackend (typeof(Xwt.Popover), typeof (PopoverBackend));
-			registry.RegisterBackend (typeof(Xwt.SpinButton), typeof (SpinButtonBackend));
-			registry.RegisterBackend (typeof(Xwt.DatePicker), typeof (DatePickerBackend));
-			registry.RegisterBackend (typeof(Xwt.Expander), typeof (ExpanderBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Gradient), typeof(CairoGradientBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Font), typeof(FontBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Menu), typeof(MenuBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.MenuItem), typeof(MenuItemBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.CheckBoxMenuItem), typeof(CheckBoxMenuItemBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.RadioButtonMenuItem), typeof(RadioButtonMenuItemBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.SeparatorMenuItem), typeof(SeparatorMenuItemBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ScrollView), typeof(ScrollViewBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ComboBox), typeof(ComboBoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Design.DesignerSurface), typeof(DesignerSurfaceBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.MenuButton), typeof(MenuButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.TextEntry), typeof(TextEntryBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ToggleButton), typeof(ToggleButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ImageView), typeof(ImageViewBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Table), typeof(BoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.CheckBox), typeof(CheckBoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Frame), typeof(FrameBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.VSeparator), typeof(SeparatorBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.HSeparator), typeof(SeparatorBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Dialog), typeof(DialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ComboBoxEntry), typeof(ComboBoxEntryBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Clipboard), typeof(ClipboardBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.ImagePattern), typeof(ImagePatternBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.ImageBuilder), typeof(ImageBuilderBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ScrollAdjustment), typeof(ScrollAdjustmentBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.OpenFileDialog), typeof(OpenFileDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.SaveFileDialog), typeof(SaveFileDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.SelectFolderDialog), typeof(SelectFolderDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Paned), typeof(PanedBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.SelectColorDialog), typeof(SelectColorDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ListBox), typeof(ListBoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.StatusIcon), typeof(StatusIconBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.ProgressBar), typeof(ProgressBarBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Popover), typeof (PopoverBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.SpinButton), typeof (SpinButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.DatePicker), typeof (DatePickerBackend));
 		}
 
 		public override void RunApplication ()
@@ -191,7 +179,7 @@ namespace Xwt.GtkBackend
 
 		public override object GetNativeWidget (Widget w)
 		{
-			IGtkWidgetBackend wb = (IGtkWidgetBackend)Registry.GetBackend (w);
+			IGtkWidgetBackend wb = (IGtkWidgetBackend)WidgetRegistry.GetBackend (w);
 			return wb.Widget;
 		}
 		
@@ -204,7 +192,7 @@ namespace Xwt.GtkBackend
 		
 		public override object GetNativeParentWindow (Widget w)
 		{
-			IGtkWidgetBackend wb = (IGtkWidgetBackend)Registry.GetBackend (w);
+			IGtkWidgetBackend wb = (IGtkWidgetBackend)WidgetRegistry.GetBackend (w);
 			return wb.Widget.Toplevel as Gtk.Window;
 		}
 	}

@@ -80,11 +80,11 @@ namespace Xwt.GtkBackend
 			if (!string.IsNullOrEmpty (btn.Label) && btn.Image == null) {
 				b.Label = btn.Label;
 			} else if (string.IsNullOrEmpty (btn.Label) && btn.Image != null) {
-				var pix = (Gdk.Pixbuf) GtkEngine.Registry.GetBackend (btn.Image);
+				var pix = (Gdk.Pixbuf) WidgetRegistry.GetBackend (btn.Image);
 				b.Image = new Gtk.Image (pix);
 			} else if (!string.IsNullOrEmpty (btn.Label)) {
 				Gtk.Box box = new Gtk.HBox (false, 3);
-				var pix = (Gdk.Pixbuf) GtkEngine.Registry.GetBackend (btn.Image);
+				var pix = (Gdk.Pixbuf) WidgetRegistry.GetBackend (btn.Image);
 				box.PackStart (new Gtk.Image (pix), false, false, 0);
 				box.PackStart (new Gtk.Label (btn.Label), true, true, 0);
 				b.Image = box;

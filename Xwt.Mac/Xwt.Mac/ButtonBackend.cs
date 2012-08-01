@@ -102,7 +102,7 @@ namespace Xwt.Mac
 		#endregion
 	}
 	
-	public class MacButton: NSButton, IViewObject
+	class MacButton: NSButton, IViewObject
 	{
 		public MacButton (IntPtr p): base (p)
 		{

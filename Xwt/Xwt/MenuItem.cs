@@ -128,7 +128,7 @@ namespace Xwt
 			get { return subMenu; }
 			set {
 				subMenu = value;
-				Backend.SetSubmenu ((IMenuBackend)BackendHost.WidgetRegistry.GetBackend (subMenu));
+				Backend.SetSubmenu ((IMenuBackend) WidgetRegistry.GetBackend (subMenu));
 			}
 		}
 		
