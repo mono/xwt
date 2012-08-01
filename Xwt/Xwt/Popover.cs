@@ -42,37 +42,26 @@ namespace Xwt
 
 		IPopoverBackend backend;
 		Position arrowPosition;
-		WindowFrame parent;
 
 		public event EventHandler Closed;
 
-		public Popover (WindowFrame parent, Position arrowPosition)
+		public Popover (WindowFrame parent, Widget child, Position arrowPosition)
 		{
 			this.arrowPosition = arrowPosition;
-			this.parent = parent;
-			backend = WidgetRegistry.MainRegistry.CreateBackend<IPopoverBackend> (GetType ());
-
+			backend = WidgetRegistry.CreateBackend<IPopoverBackend> (GetType ());
+			backend.Init ((IWindowFrameBackend) WidgetRegistry.GetBackend (parent),
+			              (IWidgetBackend) WidgetRegistry.GetBackend (child), arrowPosition);
 			backend.Closed += (sender, e) => {
 				if (Closed != null)
 					Closed (this, EventArgs.Empty);
 			};
 		}
 
-		public Func<Widget> ChildSource {
-			get;
-			set;
-		}
-
 		public void Run (Widget referenceWidget)
 		{
 			if (backend == null)
 				throw new InvalidOperationException ("The Popover was disposed");
-			if (ChildSource == null)
-				throw new InvalidOperationException ("A child widget source must be set before running the Popover");
-			backend.Run (parent,
-			             arrowPosition,
-			             ChildSource,
-			             referenceWidget);
+			backend.Run ((IWidgetBackend) WidgetRegistry.GetBackend (referenceWidget));
 		}
 
 		public void Dispose ()
