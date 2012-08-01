@@ -40,7 +40,7 @@ namespace Xwt.Drawing
 		
 		static ImageBuilder ()
 		{
-			handler = WidgetRegistry.CreateSharedBackend<IImageBuilderBackendHandler> (typeof(ImageBuilder));
+			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<IImageBuilderBackendHandler> (typeof(ImageBuilder));
 		}
 		
 		public ImageBuilder (int width, int height): this (width, height, ImageFormat.ARGB32)

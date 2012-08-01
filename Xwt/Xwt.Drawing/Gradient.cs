@@ -36,7 +36,7 @@ namespace Xwt.Drawing
 		
 		static Gradient ()
 		{
-			handler = WidgetRegistry.CreateSharedBackend<IGradientBackendHandler> (typeof(Gradient));
+			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<IGradientBackendHandler> (typeof(Gradient));
 		}
 		
 		protected override Xwt.Backends.IBackendHandler BackendHandler {

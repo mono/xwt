@@ -31,14 +31,31 @@ using Xwt.Drawing;
 
 namespace Xwt.Engine
 {
-	public static class WidgetRegistry
+	public sealed class WidgetRegistry
 	{
-		static Dictionary<Type,Type> backendTypes = new Dictionary<Type, Type> ();
-		static Dictionary<Type,object> sharedBackends = new Dictionary<Type, object> ();
-		
-		internal static T CreateBackend<T> (Type widgetType)
+		static WidgetRegistry mainRegistry = new WidgetRegistry ();
+		Dictionary<Type,Type> backendTypes = new Dictionary<Type, Type> ();
+		Dictionary<Type,object> sharedBackends = new Dictionary<Type, object> ();
+
+		// Get the default widget registry
+		public static WidgetRegistry MainRegistry {
+			get {
+				return mainRegistry;
+			}
+		}
+
+		public static void RunAsIfDefault (WidgetRegistry registry, Action action)
 		{
-			Type bt;
+			var saveRegistry = mainRegistry;
+			mainRegistry = registry;
+			action ();
+			mainRegistry = saveRegistry;
+		}
+		
+		internal T CreateBackend<T> (Type widgetType)
+		{
+			Type bt = null;
+
 			if (!backendTypes.TryGetValue (widgetType, out bt))
 				return default(T);
 			object res = Activator.CreateInstance (bt);
@@ -46,8 +63,13 @@ namespace Xwt.Engine
 				throw new InvalidOperationException ("Invalid backend type.");
 			return (T) res;
 		}
-		
-		internal static T CreateSharedBackend<T> (Type widgetType)
+
+		public EngineBackend FromEngine {
+			get;
+			set;
+		}
+
+		internal T CreateSharedBackend<T> (Type widgetType)
 		{
 			object res;
 			if (!sharedBackends.TryGetValue (widgetType, out res))
@@ -55,12 +77,12 @@ namespace Xwt.Engine
 			return (T)res;
 		}
 		
-		public static void RegisterBackend (Type widgetType, Type backendType)
+		public void RegisterBackend (Type widgetType, Type backendType)
 		{
 			backendTypes [widgetType] = backendType;
 		}
 		
-		public static object GetBackend (object obj)
+		public object GetBackend (object obj)
 		{
 			if (obj is IFrontend)
 				return ((IFrontend)obj).Backend;
@@ -70,23 +92,23 @@ namespace Xwt.Engine
 				throw new InvalidOperationException ("Object doesn't have a backend");
 		}
 		
-		public static T CreateFrontend<T> (object backend)
+		public T CreateFrontend<T> (object backend)
 		{
 			return (T) Activator.CreateInstance (typeof(T), backend);
 		}
 		
-		public static object GetNativeWidget (Widget w)
+		public object GetNativeWidget (Widget w)
 		{
 			w.SetExtractedAsNative ();
 			return Application.EngineBackend.GetNativeWidget (w);
 		}
 		
-		public static object GetNativeImage (Image image)
+		public object GetNativeImage (Image image)
 		{
 			return Application.EngineBackend.GetNativeImage (image);
 		}
 		
-		public static WindowFrame WrapWindow (object nativeWindow)
+		public WindowFrame WrapWindow (object nativeWindow)
 		{
 			return new NativeWindowFrame (Application.EngineBackend.GetBackendForWindow (nativeWindow));
 		}

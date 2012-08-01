@@ -49,6 +49,7 @@ namespace Xwt.Backends
 	{
 		IBackend backend;
 		bool usingCustomBackend;
+		WidgetRegistry registry;
 		
 		HashSet<object> defaultEnabledEvents;
 		
@@ -68,6 +69,17 @@ namespace Xwt.Backends
 			get {
 				LoadBackend ();
 				return backend;
+			}
+		}
+
+		public WidgetRegistry WidgetRegistry {
+			get {
+				if (registry != null)
+					return registry;
+				return registry = WidgetRegistry.MainRegistry;
+			}
+			internal set {
+				registry = value;
 			}
 		}
 		

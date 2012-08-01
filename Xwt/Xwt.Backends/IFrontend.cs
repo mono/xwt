@@ -30,6 +30,7 @@ namespace Xwt.Backends
 	interface IFrontend
 	{
 		object Backend { get; }
+		object GetBackendForRegistry (Xwt.Engine.WidgetRegistry registry);
 	}
 }
 
