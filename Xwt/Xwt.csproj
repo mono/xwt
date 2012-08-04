@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -252,26 +252,42 @@
     <Compile Include="Xwt.Drawing\ImageFormat.cs" />
     <Compile Include="Xwt.Drawing\ImagePattern.cs" />
     <Compile Include="Xwt.Backends\IImagePatternBackendHandler.cs" />
-    <Compile Include="Xwt\CheckBoxMenuItem.cs" />
-    <Compile Include="Xwt\RadioButtonMenuItem.cs" />
-    <Compile Include="Xwt\SeparatorMenuItem.cs" />
+    <Compile Include="Xwt\CheckBoxMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\RadioButtonMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\SeparatorMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\ICheckBoxMenuItemBackend.cs" />
     <Compile Include="Xwt.Backends\IRadioButtonMenuItemBackend.cs" />
     <Compile Include="Xwt.Backends\ISeparatorMenuItemBackend.cs" />
     <Compile Include="Xwt\EllipsizeMode.cs" />
     <Compile Include="Xwt\RowDropPosition.cs" />
-    <Compile Include="Xwt\ScrollAdjustment.cs" />
+    <Compile Include="Xwt\ScrollAdjustment.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IScrollAdjustmentBackend.cs" />
-    <Compile Include="Xwt\OpenFileDialog.cs" />
-    <Compile Include="Xwt\SaveFileDialog.cs" />
-    <Compile Include="Xwt\FileDialog.cs" />
+    <Compile Include="Xwt\OpenFileDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\SaveFileDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\FileDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IFileDialogBackend.cs" />
     <Compile Include="Xwt.Backends\IOpenFileDialogBackend.cs" />
     <Compile Include="Xwt.Backends\ISaveFileDialogBackend.cs" />
     <Compile Include="Xwt\FileDialogFilter.cs" />
     <Compile Include="Xwt\ObjectCollection.cs" />
     <Compile Include="Xwt.Backends\ISelectFolderDialogBackend.cs" />
-    <Compile Include="Xwt\SelectFolderDialog.cs" />
+    <Compile Include="Xwt\SelectFolderDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt\WidgetSpacing.cs" />
     <Compile Include="Xwt.Drawing\Colors.cs" />
     <Compile Include="Xwt\TransferDataSource.cs" />
@@ -282,26 +298,44 @@
     <Compile Include="Xwt.Backends\ISelectColorDialogBackend.cs" />
     <Compile Include="Xwt\IScrollableWidget.cs" />
     <Compile Include="Xwt.Backends\IScrollableWidgetBackend.cs" />
-    <Compile Include="Xwt\ListBox.cs" />
+    <Compile Include="Xwt\ListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IListBoxBackend.cs" />
     <Compile Include="Xwt.Backends\BackendHost.cs" />
     <Compile Include="Xwt.Backends\IFrontend.cs" />
     <Compile Include="Xwt.Backends\DefaultNaturalSizes.cs" />
-    <Compile Include="Xwt\StatusIcon.cs" />
+    <Compile Include="Xwt\StatusIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IStatusIconBackend.cs" />
-    <Compile Include="Xwt\ColorSelector.cs" />
+    <Compile Include="Xwt\ColorSelector.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IColorSelectorBackend.cs" />
-    <Compile Include="Xwt.Backends\XwtWidgetBackend.cs" />
-    <Compile Include="Xwt\ProgressBar.cs" />
+    <Compile Include="Xwt.Backends\XwtWidgetBackend.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\ProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IProgressBarBackend.cs" />
     <Compile Include="Xwt\Popover.cs" />
     <Compile Include="Xwt.Backends\IPopoverBackend.cs" />
     <Compile Include="Xwt.Backends\ISpinButtonBackend.cs" />
-    <Compile Include="Xwt\SpinButton.cs" />
-    <Compile Include="Xwt\DatePicker.cs" />
+    <Compile Include="Xwt\SpinButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\DatePicker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IDatePickerBackend.cs" />
-    <Compile Include="Xwt\Frame.cs" />
-    <Compile Include="Xwt\Expander.cs" />
+    <Compile Include="Xwt\Frame.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\Expander.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\IExpandBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
