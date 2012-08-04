@@ -194,7 +194,7 @@ namespace Xwt.Mac
 
 		public static NSView GetWidget (Widget w)
 		{
-			return GetWidget ((IWidgetBackend)MacEngine.Registry.GetBackend (w));
+			return GetWidget ((IWidgetBackend)WidgetRegistry.GetBackend (w));
 		}
 		
 		public virtual object Font {
@@ -408,7 +408,7 @@ namespace Xwt.Mac
 			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
 			if (ob == null)
 				return NSDragOperation.None;
-			var backend = (ViewBackend<T,S>) MacEngine.Registry.GetBackend (ob.Frontend);
+			var backend = (ViewBackend<T,S>) WidgetRegistry.GetBackend (ob.Frontend);
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
@@ -441,7 +441,7 @@ namespace Xwt.Mac
 		{
 			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
 			if (ob != null) {
-				var backend = (ViewBackend<T,S>) MacEngine.Registry.GetBackend (ob.Frontend);
+				var backend = (ViewBackend<T,S>) WidgetRegistry.GetBackend (ob.Frontend);
 				Toolkit.Invoke (delegate {
 					backend.eventSink.OnDragLeave (EventArgs.Empty);
 				});
@@ -454,7 +454,7 @@ namespace Xwt.Mac
 			if (ob == null)
 				return false;
 			
-			var backend = (ViewBackend<T,S>) MacEngine.Registry.GetBackend (ob.Frontend);
+			var backend = (ViewBackend<T,S>) WidgetRegistry.GetBackend (ob.Frontend);
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
@@ -477,7 +477,7 @@ namespace Xwt.Mac
 			if (ob == null)
 				return false;
 			
-			var backend = (ViewBackend<T,S>) MacEngine.Registry.GetBackend (ob.Frontend);
+			var backend = (ViewBackend<T,S>) WidgetRegistry.GetBackend (ob.Frontend);
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);

@@ -211,7 +211,7 @@ namespace Xwt.CairoBackend
 		public virtual void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			Cairo.Context ctx = ((CairoContextBackend)backend).Context;
-			var lb = Xwt.GtkBackend.GtkEngine.Registry.GetBackend (layout);
+			var lb = WidgetRegistry.GetBackend (layout);
 			CairoTextLayoutBackendHandler.Draw (ctx, lb, x, y);
 		}
 		

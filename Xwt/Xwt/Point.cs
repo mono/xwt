@@ -75,7 +75,15 @@ namespace Xwt {
 			p.Y += dy;
 			return p;
 		}
-		
+
+		public Point Round ()
+		{
+			return new Point (
+				Math.Round (X),
+				Math.Round (Y)
+			);
+		}
+
 		public bool IsEmpty {
 			get {
 				return ((X == 0) && (Y == 0));

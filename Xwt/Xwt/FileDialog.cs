@@ -186,7 +186,7 @@ namespace Xwt
 					Backend.ActiveFilter = activeFilter;
 				if (!string.IsNullOrEmpty (title))
 					Backend.Title = title;
-				return Backend.Run ((IWindowFrameBackend)WidgetRegistry.MainRegistry.GetBackend (parentWindow));
+				return Backend.Run ((IWindowFrameBackend)WidgetRegistry.GetBackend (parentWindow));
 			} finally {
 				currentFolder = Backend.CurrentFolder;
 				activeFilter = Backend.ActiveFilter;

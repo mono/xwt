@@ -41,17 +41,6 @@ namespace Xwt.Backends
 		public virtual void InitializeApplication ()
 		{
 		}
-
-		/// <summary>
-		/// Initializes the widget registry used by the application.
-		/// </summary>
-		/// <remarks>Don't do any toolkit initialization there, do them in InitializeApplication. Override should only call registry.RegisterBackend methods.</remarks>
-		/// <param name='registry'>
-		/// Registry.
-		/// </param>
-		public virtual void InitializeRegistry (WidgetRegistry registry)
-		{
-		}
 		
 		/// <summary>
 		/// Runs the main GUI loop
@@ -109,7 +98,7 @@ namespace Xwt.Backends
 		/// </param>
 		public virtual object GetNativeImage (Image image)
 		{
-			return WidgetRegistry.MainRegistry.GetBackend (image);
+			return WidgetRegistry.GetBackend (image);
 		}
 		
 		/// <summary>

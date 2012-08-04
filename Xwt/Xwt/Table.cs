@@ -210,7 +210,7 @@ namespace Xwt
 			}
 			
 			Backend.SetAllocation (widgets, rects);
-
+			
 			if (!Application.EngineBackend.HandlesSizeNegotiation) {
 				foreach (var bp in visibleChildren)
 					bp.Child.Surface.Reallocate ();

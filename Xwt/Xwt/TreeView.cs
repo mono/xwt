@@ -93,7 +93,7 @@ namespace Xwt
 		ITreeViewBackend Backend {
 			get { return (ITreeViewBackend) BackendHost.Backend; }
 		}
-
+		
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return Backend.VerticalScrollPolicy; }
 			set { Backend.VerticalScrollPolicy = value; }
@@ -129,7 +129,7 @@ namespace Xwt
 			set {
 				if (dataSource != value) {
 					dataSource = value;
-					Backend.SetSource (dataSource, dataSource is IFrontend ? (IBackend)BackendHost.WidgetRegistry.GetBackend (dataSource) : null);
+					Backend.SetSource (dataSource, dataSource is IFrontend ? (IBackend)WidgetRegistry.GetBackend (dataSource) : null);
 				}
 			}
 		}

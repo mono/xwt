@@ -216,5 +216,15 @@ namespace Xwt
 		{
 			return Offset (dr.X, dr.Y);
 		}
+
+		public Rectangle Round ()
+		{
+			return new Rectangle (
+				Math.Round (X),
+				Math.Round (Y),
+				Math.Round (Width),
+				Math.Round (Height)
+			);
+		}
 	}
 }

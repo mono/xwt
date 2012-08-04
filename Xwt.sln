@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.WPF", "Xwt.WPF\Xwt.WPF.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfTest", "WpfTest\WpfTest.csproj", "{E41F4448-15C3-4E95-B310-FD333FDF5D2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk.Mac", "Xwt.Gtk.Mac\Xwt.Gtk.Mac.csproj", "{FB234220-D409-43D9-8926-E2D629A19285}"
-EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SamplesVB", "SamplesVB\SamplesVB.vbproj", "{A2C57DD1-C10E-49F9-8E69-9A22A9CED300}"
 EndProject
 Global

@@ -232,7 +232,7 @@ namespace Xwt.Mac
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			GetContext (backend);
-			TextLayoutBackendHandler.Draw (null, MacEngine.Registry.GetBackend (layout), x, y);
+			TextLayoutBackendHandler.Draw (null, WidgetRegistry.GetBackend (layout), x, y);
 		}
 		
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
