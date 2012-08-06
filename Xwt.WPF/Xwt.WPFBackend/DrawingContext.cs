@@ -41,7 +41,9 @@ namespace Xwt.WPFBackend
 			graphics.SmoothingMode = SmoothingMode.None;
 			graphics.PixelOffsetMode = PixelOffsetMode.Half;
 			graphics.CompositingQuality = CompositingQuality.HighSpeed;
-			
+
+			// necessary for correct text rendering with System.Drawing
+			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 			
 			Graphics = graphics;
 		}
