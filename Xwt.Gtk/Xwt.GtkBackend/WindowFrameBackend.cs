@@ -180,6 +180,8 @@ namespace Xwt.GtkBackend
 
 		public void Present ()
 		{
+			if (Platform.IsMac)
+				GtkWorkarounds.GrabDesktopFocus ();
 			Window.Present ();
 		}
 

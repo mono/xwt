@@ -58,7 +58,7 @@ namespace Xwt.GtkBackend
 		
 		static IntPtr cls_NSScreen;
 		static IntPtr sel_screens, sel_objectEnumerator, sel_nextObject, sel_frame, sel_visibleFrame,
-			sel_requestUserAttention;
+		sel_requestUserAttention, sel_activateIgnoringOtherApps;
 		static IntPtr sharedApp;
 		
 		const int NSCriticalRequest = 0;
@@ -117,6 +117,7 @@ namespace Xwt.GtkBackend
 			sel_visibleFrame = sel_registerName ("visibleFrame");
 			sel_frame = sel_registerName ("frame");
 			sel_requestUserAttention = sel_registerName ("requestUserAttention:");
+			sel_activateIgnoringOtherApps = sel_registerName ("activateIgnoringOtherApps:");
 			sharedApp = objc_msgSend_IntPtr (objc_getClass ("NSApplication"), sel_registerName ("sharedApplication"));
 		}
 		
@@ -175,6 +176,11 @@ namespace Xwt.GtkBackend
 		{
 			int kind = critical?  NSCriticalRequest : NSInformationalRequest;
 			objc_msgSend_int_int (sharedApp, sel_requestUserAttention, kind);
+		}
+		
+		public static void GrabDesktopFocus ()
+		{
+			objc_msgSend_void_bool (sharedApp, sel_activateIgnoringOtherApps, true);
 		}
 		
 		public static Gdk.Rectangle GetUsableMonitorGeometry (this Gdk.Screen screen, int monitor)
