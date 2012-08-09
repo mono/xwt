@@ -151,6 +151,10 @@ namespace Xwt.Mac
 		{
 			throw new NotImplementedException ();
 		}
+
+		public override void DispatchPendingEvents ()
+		{
+		}
 	}
 	
 	public interface IViewContainer
