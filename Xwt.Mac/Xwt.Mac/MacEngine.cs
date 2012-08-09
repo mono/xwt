@@ -47,7 +47,7 @@ namespace Xwt.Mac
 		public override void InitializeApplication ()
 		{
 			NSApplication.Init ();
-			Hijack ();
+			//Hijack ();
 			pool = new NSAutoreleasePool ();
 			NSApplication.SharedApplication.Delegate = appDelegate;
 			
