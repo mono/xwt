@@ -53,6 +53,7 @@ using System;
 using Xwt.Backends;
 using Xwt.Engine;
 using System.ComponentModel;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -65,6 +66,7 @@ namespace Xwt
 		Point location;
 		Size size;
 		bool pendingReallocation;
+        Image icon;
 		
 		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
 		{
@@ -194,6 +196,11 @@ namespace Xwt
 			get { return Backend.Title; }
 			set { Backend.Title = value; }
 		}
+
+        public Image Icon {
+            get { return icon; }
+            set { Backend.SetIcon((value as IFrontend).Backend); }
+        }
 		
 		public bool Decorated {
 			get { return Backend.Decorated; }
