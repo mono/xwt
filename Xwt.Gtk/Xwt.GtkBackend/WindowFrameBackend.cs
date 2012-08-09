@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Engine;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -34,7 +35,7 @@ namespace Xwt.GtkBackend
 		Gtk.Window window;
 		IWindowFrameEventSink eventSink;
 		WindowFrame frontend;
-		
+
 		public WindowFrameBackend ()
 		{
 		}
@@ -143,7 +144,11 @@ namespace Xwt.GtkBackend
 				Window.SkipTaskbarHint = !value;
 			}
 		}
-		
+
+		public void SetIcon(object backendImage)
+		{
+			Window.Icon = backendImage as Gdk.Pixbuf;
+		}
 		#endregion
 
 		public virtual void EnableEvent (object ev)
@@ -177,7 +182,7 @@ namespace Xwt.GtkBackend
 		{
 			Window.Present ();
 		}
-	
+
 	}
 }
 

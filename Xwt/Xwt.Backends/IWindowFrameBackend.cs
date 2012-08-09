@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
@@ -41,6 +42,8 @@ namespace Xwt.Backends
 		
 		bool Decorated { get; set; }
 		bool ShowInTaskbar { get; set; }
+
+		void SetIcon (object imageBackend);
 		
 		/// <summary>
 		/// Presents a window to the user. This may mean raising the window in the stacking order,
