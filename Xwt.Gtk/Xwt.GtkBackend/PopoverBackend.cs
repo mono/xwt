@@ -67,6 +67,11 @@ namespace Xwt.GtkBackend
 				}
 			}
 
+			public void ReleaseInnerWidget ()
+			{
+				alignment.Remove (alignment.Child);
+			}
+
 			void HandleFocusOutEvent (object o, FocusOutEventArgs args)
 			{
 				this.HideAll ();
@@ -198,6 +203,7 @@ namespace Xwt.GtkBackend
 			popover.TransientFor = ((WindowFrameBackend)parent).Window;
 			popover.DestroyWithParent = true;
 			popover.Hidden += (o, args) => {
+				popover.ReleaseInnerWidget ();
 				if (Closed != null)
 					Closed (this, EventArgs.Empty);
 			};
