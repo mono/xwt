@@ -63,6 +63,8 @@ namespace Samples
 			t.Attach (new TextEntry (), 1, 2, 1, 2);
 			t.Attach (new Label ("Three:"), 0, 1, 2, 3);
 			t.Attach (new TextEntry (), 1, 2, 2, 3);
+			t.InsertVertical (new Label ("One-and-a-half"), 0, 1, 1, 2);
+			t.InsertVertical (new TextEntry () { PlaceholderText = "Just inserted" }, 1, 2, 1, 2);
 			box.PackStart (t);
 		}
 	}

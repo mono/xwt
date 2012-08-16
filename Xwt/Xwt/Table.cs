@@ -153,6 +153,41 @@ namespace Xwt
 			}
 			return false;
 		}
+
+		public void InsertVertical (Widget widget, int left, int top)
+		{
+			InsertVertical (widget, left, left + 1, top, top + 1);
+		}
+
+		public void InsertVertical (Widget widget, int left, int right, int top, int bottom)
+		{
+			SortedSet<TablePlacement> potentials = new SortedSet<TablePlacement> (children.Where (c => c.Top >= top && c.Left >= left && c.Right <= right),
+			                                                                      TablePlacementRowComparer.Instance);
+			var currentPos = top;
+			var shift = bottom - top;
+			foreach (var toShift in potentials) {
+				// if the value differs it means the spot is free
+				if (toShift.Top >= currentPos + shift)
+					break;
+				toShift.Top += shift;
+				toShift.Bottom += shift;
+				// Now we shift based on this placement
+				currentPos = toShift.Top;
+				shift = toShift.Bottom - toShift.Top;
+			}
+
+			Attach (widget, left, right, top, bottom);
+		}
+
+		class TablePlacementRowComparer : IComparer<TablePlacement>
+		{
+			public static readonly TablePlacementRowComparer Instance = new TablePlacementRowComparer ();
+
+			public int Compare (TablePlacement tp1, TablePlacement tp2)
+			{
+				return tp1.Top.CompareTo (tp2.Top);
+			}
+		}
 		
 		/// <summary>
 		/// Removes all children
