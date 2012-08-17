@@ -220,6 +220,36 @@ namespace Xwt.GtkBackend
 			}
 			throw new InvalidOperationException ("Invalid policy value:" + p);
 		}
+
+        public static ScrollDirection ConvertScrollDirection(Gdk.ScrollDirection d)
+        {
+            switch(d) {
+            case Gdk.ScrollDirection.Up:
+                return Xwt.ScrollDirection.Up;
+            case Gdk.ScrollDirection.Down:
+                return Xwt.ScrollDirection.Down;
+            case Gdk.ScrollDirection.Left:
+                return Xwt.ScrollDirection.Left;
+            case Gdk.ScrollDirection.Right:
+                return Xwt.ScrollDirection.Right;
+            }
+            throw new InvalidOperationException("Invalid mouse scroll direction value: " + d);
+        }
+
+        public static Gdk.ScrollDirection ConvertScrollDirection(ScrollDirection d)
+        {
+            switch (d) {
+            case ScrollDirection.Up:
+                return Gdk.ScrollDirection.Up;
+            case ScrollDirection.Down:
+                return Gdk.ScrollDirection.Down;
+            case ScrollDirection.Left:
+                return Gdk.ScrollDirection.Left;
+            case ScrollDirection.Right:
+                return Gdk.ScrollDirection.Right;
+            }
+            throw new InvalidOperationException("Invalid mouse scroll direction value: " + d);
+        }
 	}
 }
 

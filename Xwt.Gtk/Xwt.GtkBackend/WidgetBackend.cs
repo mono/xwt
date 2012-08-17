@@ -455,6 +455,11 @@ namespace Xwt.GtkBackend
 				case WidgetEvent.BoundsChanged:
 					Widget.SizeAllocated += HandleWidgetBoundsChanged;
 					break;
+                case WidgetEvent.MouseScrolled:
+                    AllocEventBox();
+                    EventsRootWidget.Events |= Gdk.EventMask.ScrollMask;
+                    Widget.ScrollEvent += HandleScrollEvent;
+                    break;
 				}
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
 					// Enabling a drag&drop event for the first time
@@ -469,7 +474,7 @@ namespace Xwt.GtkBackend
 				enabledEvents |= ev;
 			}
 		}
-		
+
 		void EnableSizeCheckEvents ()
 		{
 			if ((enabledEvents & sizeCheckEvents) == 0 && !minSizeSet) {
@@ -523,6 +528,10 @@ namespace Xwt.GtkBackend
 				case WidgetEvent.BoundsChanged:
 					Widget.SizeAllocated -= HandleWidgetBoundsChanged;
 					break;
+                case WidgetEvent.MouseScrolled:
+                    EventsRootWidget.Events &= ~Gdk.EventMask.ScrollMask;
+                    Widget.ScrollEvent -= HandleScrollEvent;
+                    break;
 				}
 				
 				enabledEvents &= ~ev;
@@ -708,6 +717,21 @@ namespace Xwt.GtkBackend
 			if (kargs.Handled)
 				args.RetVal = true;
 		}
+
+        [GLib.ConnectBefore]
+        void HandleScrollEvent(object o, Gtk.ScrollEventArgs args)
+        {
+            var sc = ConvertToScreenCoordinates (new Point (0, 0));
+            var direction = Util.ConvertScrollDirection(args.Event.Direction);
+
+            var a = new MouseScrolledEventArgs ((long) args.Event.Time, args.Event.XRoot - sc.X, args.Event.YRoot - sc.Y, direction);
+            Toolkit.Invoke (delegate {
+                EventSink.OnMouseScrolled(a);
+            });
+            if (a.Handled)
+                args.RetVal = true;
+        }
+        
 
 		void HandleWidgetFocusOutEvent (object o, Gtk.FocusOutEventArgs args)
 		{

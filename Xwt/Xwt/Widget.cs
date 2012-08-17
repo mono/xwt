@@ -66,6 +66,7 @@ namespace Xwt
 		EventHandler<ButtonEventArgs> buttonReleased;
 		EventHandler<MouseMovedEventArgs> mouseMoved;
 		EventHandler boundsChanged;
+        EventHandler<MouseScrolledEventArgs> mouseScrolled;
 		
 		EventHandler gotFocus;
 		EventHandler lostFocus;
@@ -254,6 +255,11 @@ namespace Xwt
 			{
 				Parent.OnBoundsChanged ();
 			}
+
+            void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
+            {
+                Parent.OnMouseScrolled(args);
+            }
 		}
 		
 		public Widget ()
@@ -773,6 +779,12 @@ namespace Xwt
 			
 			OnBoundsChanged ();
 		}
+
+        protected virtual void OnMouseScrolled(MouseScrolledEventArgs args)
+        {
+            if (mouseScrolled != null)
+                mouseScrolled(this, args);
+        }
 		
 		protected virtual void OnBoundsChanged ()
 		{
@@ -1331,6 +1343,17 @@ namespace Xwt
 				BackendHost.OnAfterEventRemove (WidgetEvent.BoundsChanged, boundsChanged);
 			}
 		}
+
+        public event EventHandler<MouseScrolledEventArgs> MouseScrolled {
+            add {
+                BackendHost.OnBeforeEventAdd(WidgetEvent.MouseScrolled, mouseScrolled);
+                mouseScrolled += value;
+            }
+            remove {
+                mouseScrolled -= value;
+                BackendHost.OnAfterEventRemove(WidgetEvent.MouseScrolled, mouseScrolled);
+            }
+        }
 	}
 	
 	class EventMap
