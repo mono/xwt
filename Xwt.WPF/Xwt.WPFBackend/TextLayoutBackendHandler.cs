@@ -56,7 +56,7 @@ namespace Xwt.WPFBackend
 		
 		public void SetHeight (object backend, double value)
 		{
-			((TextLayoutContext) backend).Heigth = value;
+			((TextLayoutContext) backend).Height = value;
 		}
 		
 		public void SetText (object backend, string text)
