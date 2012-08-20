@@ -338,7 +338,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Xwt.Backends\IExpandBackend.cs" />
-    <Compile Include="MouseScrolledEventArgs.cs" />
+    <Compile Include="Xwt\MouseScrolledEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
