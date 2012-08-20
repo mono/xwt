@@ -111,6 +111,7 @@
     <Compile Include="Xwt.GtkBackend\SpinButtonBackend.cs" />
     <Compile Include="Xwt.GtkBackend\DatePickerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ExpanderBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\LinkLabelBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

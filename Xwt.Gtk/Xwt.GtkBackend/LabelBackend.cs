@@ -45,7 +45,7 @@ namespace Xwt.GtkBackend
 			Label.Yalign = 0.5f;
 		}
 		
-		Gtk.Label Label {
+		protected Gtk.Label Label {
 			get {
 				if (Widget is Gtk.Label)
 					return (Gtk.Label) Widget;

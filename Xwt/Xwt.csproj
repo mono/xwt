@@ -337,6 +337,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Xwt.Backends\IExpandBackend.cs" />
+    <Compile Include="Xwt\LinkLabel.cs" />
+    <Compile Include="Xwt.Backends\ILinkLabelBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
