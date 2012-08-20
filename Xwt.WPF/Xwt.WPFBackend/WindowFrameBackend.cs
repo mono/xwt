@@ -93,6 +93,11 @@ namespace Xwt.WPFBackend
 			set { window.ShowInTaskbar = value; }
 		}
 
+		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
+		{
+
+		}
+
 		public void SetIcon (object imageBackend)
 		{
 			window.Icon = DataConverter.AsImageSource (imageBackend);

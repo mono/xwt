@@ -256,6 +256,12 @@ namespace Xwt.Mac
 			set {
 			}
 		}
+
+		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
+		{
+			// Generally, TransientFor is used to implement dialog, we reproduce the assumption here
+			Level = window == null ? NSWindowLevel.Normal : NSWindowLevel.ModalPanel;
+		}
 		
 		public void SetPadding (double left, double top, double right, double bottom)
 		{

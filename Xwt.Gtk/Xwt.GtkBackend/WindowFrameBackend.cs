@@ -145,6 +145,11 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
+		{
+			Window.TransientFor = ((WindowFrameBackend)window).Window;
+		}
+
 		public void SetIcon(object backendImage)
 		{
 			Window.Icon = backendImage as Gdk.Pixbuf;
