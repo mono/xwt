@@ -88,6 +88,7 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Backends.IAlertDialogBackend), typeof(AlertDialogBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.StatusIcon), typeof(StatusIconBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ProgressBar), typeof(ProgressBarBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Placement), typeof(BoxBackend));
 		}
 
 		public override void RunApplication ()
