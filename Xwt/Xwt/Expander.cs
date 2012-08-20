@@ -45,7 +45,7 @@ namespace Xwt
 				return Backend.Expanded;
 			}
 			set {
-				Backend.Expanded = true;
+				Backend.Expanded = value;
 			}
 		}
 

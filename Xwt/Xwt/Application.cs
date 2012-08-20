@@ -136,6 +136,16 @@ namespace Xwt
 			}, timeSpan);
 			return t;
 		}
+
+		public static void DispatchPendingEvents ()
+		{
+			try {
+				Toolkit.ExitUserCode (null);
+				engine.DispatchPendingEvents ();
+			} finally {
+				Toolkit.EnterUserCode ();
+			}
+		}
 		
 		public static StatusIcon CreateStatusIcon ()
 		{

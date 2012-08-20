@@ -280,14 +280,14 @@ namespace Xwt.WPFBackend
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			var c = (DrawingContext)backend;
-			var measure = layout.GetSize ();
-			var h = layout.Height > 0 ? (float)layout.Height : (float)measure.Height;
-			var stringFormat = TextLayoutContext.StringFormat;
-			var sdStringFormat = layout.Trimming.ToDrawingStringTrimming ();
+			Size measure = layout.GetSize ();
+			float h = layout.Height > 0 ? (float)layout.Height : (float)measure.Height;
+			System.Drawing.StringFormat stringFormat = TextLayoutContext.StringFormat;
+			StringTrimming trimming = layout.Trimming.ToDrawingStringTrimming ();
 
-			if (layout.Height > 0 && stringFormat.Trimming != sdStringFormat) {
+			if (layout.Height > 0 && stringFormat.Trimming != trimming) {
 				stringFormat = (System.Drawing.StringFormat)stringFormat.Clone ();
-				stringFormat.Trimming = sdStringFormat;
+				stringFormat.Trimming = trimming;
 			}
 
 			c.Graphics.DrawString (layout.Text, layout.Font.ToDrawingFont (), c.Brush,

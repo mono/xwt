@@ -47,7 +47,7 @@ namespace Xwt.Mac
 		public override void InitializeApplication ()
 		{
 			NSApplication.Init ();
-			Hijack ();
+			//Hijack ();
 			pool = new NSAutoreleasePool ();
 			NSApplication.SharedApplication.Delegate = appDelegate;
 			
@@ -150,6 +150,10 @@ namespace Xwt.Mac
 		public override Xwt.Backends.IWindowFrameBackend GetBackendForWindow (object nativeWindow)
 		{
 			throw new NotImplementedException ();
+		}
+
+		public override void DispatchPendingEvents ()
+		{
 		}
 	}
 	

@@ -11,22 +11,22 @@
     <AssemblyName>Samples</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -141,9 +141,15 @@
     <Compile Include="Samples\ListBoxSample.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Samples\ColorSelectorSample.cs" />
-    <Compile Include="Samples\ProgressBarSample.cs" />
-    <Compile Include="Samples\ExpanderSample.cs" />
+    <Compile Include="Samples\ColorSelectorSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ProgressBarSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ExpanderSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

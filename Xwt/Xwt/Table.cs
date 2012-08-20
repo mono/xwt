@@ -153,6 +153,16 @@ namespace Xwt
 			}
 			return false;
 		}
+
+		public void InsertRow (int top, int bottom)
+		{
+			var potentials = children.Where (c => c.Top >= top);
+			var shift = bottom - top;
+			foreach (var toShift in potentials) {
+				toShift.Top += shift;
+				toShift.Bottom += shift;
+			}
+		}
 		
 		/// <summary>
 		/// Removes all children
