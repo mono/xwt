@@ -987,15 +987,6 @@ namespace Xwt.WPFBackend
 						e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, ScrollDirection.Down));
 				}
 			});
-
-			/*
-			Toolkit.Invoke (() => {
-				var p = e.GetPosition(Widget);
-				e.Delta
-				eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
-					e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, direction));
-			});
-			*/
 		}
 
 		private void WidgetOnSizeChanged (object sender, SizeChangedEventArgs e)
