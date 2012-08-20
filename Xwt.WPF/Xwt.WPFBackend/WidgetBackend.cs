@@ -480,6 +480,9 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.BoundsChanged:
 						Widget.SizeChanged += WidgetOnSizeChanged;
 						break;
+					case WidgetEvent.MouseScrolled:
+						Widget.MouseWheel += WidgetMouseWheelHandler;
+						break;
 				}
 
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
@@ -521,6 +524,9 @@ namespace Xwt.WPFBackend
 						break;
 					case WidgetEvent.BoundsChanged:
 						Widget.SizeChanged -= WidgetOnSizeChanged;
+						break;
+					case WidgetEvent.MouseScrolled:
+						Widget.MouseWheel -= WidgetMouseWheelHandler;
 						break;
 				}
 
@@ -961,6 +967,35 @@ namespace Xwt.WPFBackend
 				eventSink.OnMouseMoved (new MouseMovedEventArgs (
 					e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio));
 			});
+		}
+
+		private int mouseScrollCumulation = 0;
+
+		private void WidgetMouseWheelHandler (object sender, MouseWheelEventArgs e)
+		{
+			mouseScrollCumulation += e.Delta;
+			int jumps = mouseScrollCumulation / 120;
+			mouseScrollCumulation %= 120;
+			var p = e.GetPosition(Widget);
+			Toolkit.Invoke (delegate {
+				for (int i = 0; i < jumps; i++) {
+					eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
+						e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, ScrollDirection.Up));
+				}
+				for (int i = 0; i > jumps; i--) {
+					eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
+						e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, ScrollDirection.Down));
+				}
+			});
+
+			/*
+			Toolkit.Invoke (() => {
+				var p = e.GetPosition(Widget);
+				e.Delta
+				eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
+					e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, direction));
+			});
+			*/
 		}
 
 		private void WidgetOnSizeChanged (object sender, SizeChangedEventArgs e)
