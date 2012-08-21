@@ -112,6 +112,7 @@
     <Compile Include="Xwt.GtkBackend\DatePickerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ExpanderBackend.cs" />
     <Compile Include="Xwt.GtkBackend\LinkLabelBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SpinnerBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
