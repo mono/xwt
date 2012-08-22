@@ -5,10 +5,12 @@
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
 //       Luis Reis <luiscubal@gmail.com>
 //       Thomas Ziegler <ziegler.thomas@web.de>
+//       Eric Maupin <ermau@xamarin.com>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
 // Copyright (c) 2012 Luís Reis
 // Copyright (c) 2012 Thomas Ziegler
+// Copyright (c) 2012 Xamarin, Inc.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +31,7 @@
 // THE SOFTWARE.
 using System;
 using System.Windows;
-
+using System.Windows.Threading;
 using Xwt.Backends;
 using Xwt.Drawing;
 using Xwt.Engine;
@@ -91,6 +93,11 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (ListBox), typeof (ListBoxBackend));
 			WidgetRegistry.RegisterBackend (typeof (ProgressBar), typeof (ProgressBarBackend));
 			WidgetRegistry.RegisterBackend (typeof (Placement), typeof (BoxBackend));
+		}
+
+		public override void DispatchPendingEvents()
+		{
+			application.Dispatcher.Invoke ((Action)(() => { }), DispatcherPriority.Background);
 		}
 
 		public override void RunApplication ()
