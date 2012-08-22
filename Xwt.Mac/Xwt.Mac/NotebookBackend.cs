@@ -101,6 +101,39 @@ namespace Xwt.Mac
 				Widget.SelectAt (value);
 			}
 		}
+
+		public Xwt.NotebookTabOrientation TabOrientation {
+			get {
+				NotebookTabOrientation tabPos = NotebookTabOrientation.Top;
+				switch (Widget.TabViewType) {
+				case NSTabViewType.NSBottomTabsBezelBorder:
+					tabPos = NotebookTabOrientation.Bottom;
+					break;
+				case NSTabViewType.NSLeftTabsBezelBorder:
+					tabPos = NotebookTabOrientation.Left;
+					break;
+				case NSTabViewType.NSRightTabsBezelBorder:
+					tabPos = NotebookTabOrientation.Right;
+					break;
+				}
+				return tabPos;
+			}
+			set {
+				NSTabViewType type = NSTabViewType.NSTopTabsBezelBorder;
+				switch (value) {
+				case NotebookTabOrientation.Bottom:
+					type = NSTabViewType.NSBottomTabsBezelBorder;
+					break;
+				case NotebookTabOrientation.Left:
+					type = NSTabViewType.NSLeftTabsBezelBorder;
+					break;
+				case NotebookTabOrientation.Right:
+					type = NSTabViewType.NSRightTabsBezelBorder;
+					break;
+				}
+				Widget.TabViewType = type;
+			}
+		}
 		#endregion
 		
 		NSTabViewItem FindTab (NSView v)
