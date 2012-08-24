@@ -33,6 +33,7 @@ namespace Xwt.Backends
 		void EmitOpenList (object buffer);
 		void EmitOpenBullet (object buffer);
 		void EmitCloseBullet (object buffet);
+		void EmitCloseList (object buffer);
 
 		// Emit a link displaying text and opening the href URL
 		void EmitLink (object buffer, string href, string text);
