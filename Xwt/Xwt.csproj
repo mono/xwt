@@ -342,6 +342,7 @@
     <Compile Include="Xwt\Placement.cs" />
     <Compile Include="Xwt\Spinner.cs" />
     <Compile Include="Xwt.Backends\ISpinnerBackend.cs" />
+    <Compile Include="Xwt.Backends\IMarkdownViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
