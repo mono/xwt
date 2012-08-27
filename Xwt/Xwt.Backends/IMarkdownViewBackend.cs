@@ -23,10 +23,14 @@ namespace Xwt.Backends
 
 		// Emit unstyled text
 		void EmitText (object buffer, string text);
+
 		// Emit a header (h1, h2, ...)
 		void EmitHeader (object buffer, string title, int level);
+
 		// What's outputed afterwards will be a in new paragrapgh
-		void EmitNewParagraph (object buffer);
+		void EmitStartParagraph (object buffer);
+		void EmitEndParagraph (object buffer);
+
 		// Emit a list
 		// Chain is:
 		// open-list, open-bullet, <above methods>, close-bullet, close-list
@@ -40,6 +44,9 @@ namespace Xwt.Backends
 
 		// Emit code in a preformated blockquote
 		void EmitCodeBlock (object buffer, string code);
+
+		// Emit an horizontal ruler
+		void EmitHorizontalRuler (object buffer);
 
 		// Display the passed buffer
 		void SetBuffer (object buffer);
