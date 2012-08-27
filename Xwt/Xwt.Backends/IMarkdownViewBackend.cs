@@ -39,7 +39,7 @@ namespace Xwt.Backends
 		// open-list, open-bullet, <above methods>, close-bullet, close-list
 		void EmitOpenList (object buffer);
 		void EmitOpenBullet (object buffer);
-		void EmitCloseBullet (object buffet);
+		void EmitCloseBullet (object buffer);
 		void EmitCloseList (object buffer);
 
 		// Emit a link displaying text and opening the href URL
