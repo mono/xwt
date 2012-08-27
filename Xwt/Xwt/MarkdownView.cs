@@ -144,7 +144,7 @@ namespace Xwt
 			var match = richText.Match (line);
 			int currentIndex = 0;
 			while (match.Success) {
-				var text = line.Substring (currentIndex, match.Index);
+				var text = line.Substring (currentIndex, match.Index - currentIndex);
 				if (!string.IsNullOrEmpty (text))
 					Backend.EmitText (buffer, text);
 				// Emphasis

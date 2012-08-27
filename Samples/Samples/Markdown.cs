@@ -19,7 +19,7 @@ Project Site: http://xamarin.com/mobileapi
 
 # Overview
 
-Xamarin.Mobile is a library that runs on iPhone, Android and Windows Phone which abstracts the underlying functionality and exposes a common API that developers can build against:
+Xamarin.Mobile is a library that runs on **iPhone**, __Android__ and Windows Phone which abstracts the underlying functionality and exposes a common API that developers can build against:
 
 - Contacts
 - GPS/Location
