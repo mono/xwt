@@ -37,6 +37,7 @@ namespace Xwt.GtkBackend
 		public LinkLabelBackend ()
 		{
 			Label.UseMarkup = true;
+			Label.SetLinkHandler (OpenLink);
 		}
 
 		public Uri Uri {
@@ -49,6 +50,11 @@ namespace Xwt.GtkBackend
 				string url = string.Format ("<a href=\"{1}\">{0}</a>", text, uri.ToString ());
 				Label.Markup = url;
 			}
+		}
+
+		internal static void OpenLink (string link)
+		{
+			System.Diagnostics.Process.Start (link);
 		}
 	}
 }
