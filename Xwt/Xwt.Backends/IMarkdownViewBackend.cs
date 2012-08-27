@@ -10,7 +10,7 @@ using System;
 namespace Xwt.Backends
 {
 	[Flags]
-	enum MarkdownInlineStyle
+	public enum MarkdownInlineStyle
 	{
 		Italic,
 		Bold,
