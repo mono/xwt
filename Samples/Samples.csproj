@@ -150,6 +150,7 @@
     <Compile Include="Samples\ExpanderSample.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Samples\Markdown.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
