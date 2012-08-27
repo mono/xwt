@@ -24,6 +24,9 @@ namespace Xwt.Backends
 		// Emit unstyled text
 		void EmitText (object buffer, string text);
 
+		// Emit text using combination of the MarkdownInlineStyle
+		void EmitStyledText (object buffer, string text, MarkdownInlineStyle style);
+
 		// Emit a header (h1, h2, ...)
 		void EmitHeader (object buffer, string title, int level);
 
