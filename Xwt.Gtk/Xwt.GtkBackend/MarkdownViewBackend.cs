@@ -28,6 +28,7 @@ using System.Collections.Generic;
 
 using Xwt;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -171,8 +172,9 @@ namespace Xwt.GtkBackend
 			var b = (Gtk.TextBuffer)buffer;
 			var iter = b.EndIter;
 			var anchor = b.CreateChildAnchor (ref iter);
-			var link = (ILinkLabelBackend) new LinkLabel (text) { Uri = new Uri (href, UriKind.RelativeOrAbsolute) };
-			links.Add (new KeyValuePair<Gtk.TextChildAnchor, Gtk.Widget> (anchor, (Gtk.Widget) link.NativeWidget));
+			var link = new LinkLabel (text) { Uri = new Uri (href, UriKind.RelativeOrAbsolute) };
+			var gtkWidget = (Gtk.Widget) WidgetRegistry.GetNativeWidget (link);
+			links.Add (new KeyValuePair<Gtk.TextChildAnchor, Gtk.Widget> (anchor, gtkWidget));
 		}
 
 		public void EmitCodeBlock (object buffer, string code)
