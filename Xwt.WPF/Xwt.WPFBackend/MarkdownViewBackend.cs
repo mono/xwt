@@ -121,11 +121,13 @@ namespace Xwt.WPFBackend
 
 		void IMarkdownViewBackend.EmitCodeBlock (object buffer, string code)
 		{
-			Writer.WriteStartElement ("Section");
 			((IMarkdownViewBackend) this).EmitStartParagraph (buffer);
-			((IMarkdownViewBackend) this).EmitStyledText (buffer, code, MarkdownInlineStyle.Monospace);
+			Writer.WriteAttributeString ("xml", "space", null, "preserve");
+			Writer.WriteAttributeString ("TextIndent", "0");
+			Writer.WriteAttributeString ("Margin", "50,0,0,0");
+			Writer.WriteAttributeString ("FontFamily", "GlobalMonospace.CompositeFont");
+			Writer.WriteString (code);
 			((IMarkdownViewBackend) this).EmitEndParagraph (buffer);
-			Writer.WriteEndElement ();
 		}
 
 		void IMarkdownViewBackend.SetBuffer (object buffer)
