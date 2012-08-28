@@ -95,7 +95,7 @@ namespace Xwt.WPFBackend
 
 		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
 		{
-
+			this.Window.Owner = ((WindowFrameBackend) window).Window;
 		}
 
 		public void SetIcon (object imageBackend)
