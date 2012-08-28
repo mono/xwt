@@ -19,5 +19,10 @@ namespace Xwt.Backends
 	{
 		void OnClicked ();
 	}
+
+	public enum LinkLabelEvent
+	{
+		Clicked = 1
+	}
 }
 

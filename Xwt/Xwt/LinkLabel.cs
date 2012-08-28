@@ -29,6 +29,18 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	public class LinkLabelClickedEventArgs : EventArgs
+	{
+		public bool Handled {
+			get; private set;
+		}
+
+		public void SetHandled ()
+		{
+			Handled = true;
+		}
+	}
+
 	public class LinkLabel: Label
 	{
 		protected new class WidgetBackendHost : Label.WidgetBackendHost, ILinkLabelEventSink
@@ -36,6 +48,18 @@ namespace Xwt
 			public void OnClicked ()
 			{
 				((LinkLabel) Parent).OnClicked (EventArgs.Empty);
+			}
+		}
+
+		EventHandler<LinkLabelClickedEventArgs> clicked;
+		public event EventHandler<LinkLabelClickedEventArgs> Clicked {
+			add {
+				BackendHost.OnBeforeEventAdd (LinkLabelEvent.Clicked, clicked);
+				clicked += value;
+			}
+			remove {
+				clicked -= value;
+				BackendHost.OnAfterEventRemove (LinkLabelEvent.Clicked, clicked);
 			}
 		}
 
@@ -48,12 +72,28 @@ namespace Xwt
 			set { Backend.Uri = value; }
 		}
 
+		static LinkLabel ()
+		{
+			MapEvent (LinkLabelEvent.Clicked, typeof(LinkLabel), "OnClicked");
+		}
+
 		public LinkLabel ()
+			: this ("")
 		{
 		}
 
 		public LinkLabel (string text) : base (text)
 		{
+			Clicked += HandleClicked;
+
+		}
+
+		void HandleClicked (object sender, LinkLabelClickedEventArgs e)
+		{
+			if (!e.Handled) {
+				System.Diagnostics.Process.Start (Uri.ToString ());
+				e.SetHandled ();
+			}
 		}
 
 		protected override BackendHost CreateBackendHost ()
@@ -61,9 +101,10 @@ namespace Xwt
 			return new WidgetBackendHost ();
 		}
 
-		void OnClicked (EventArgs eventArgs)
+		protected virtual void OnClicked (EventArgs e)
 		{
-			System.Diagnostics.Process.Start (Uri.ToString ());
+			if (clicked != null)
+				clicked (this, new LinkLabelClickedEventArgs ());
 		}
 	}
 }

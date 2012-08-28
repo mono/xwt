@@ -27,17 +27,23 @@
 using System;
 using Xwt;
 using Xwt.Backends;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
 	class LinkLabelBackend : LabelBackend, ILinkLabelBackend
 	{
 		Uri uri;
+		event EventHandler Clicked;
 
 		public LinkLabelBackend ()
 		{
 			Label.UseMarkup = true;
 			Label.SetLinkHandler (OpenLink);
+		}
+
+		new ILinkLabelEventSink EventSink {
+			get { return (ILinkLabelEventSink)base.EventSink; }
 		}
 
 		public Uri Uri {
@@ -52,9 +58,42 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is LinkLabelEvent) {
+				switch ((LinkLabelEvent) eventId) {
+				case LinkLabelEvent.Clicked:
+					Clicked += HandleClicked;
+					break;
+				}
+			}
+		}
+		
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is LinkLabelEvent) {
+				switch ((LinkLabelEvent) eventId) {
+				case LinkLabelEvent.Clicked:
+					Clicked -= HandleClicked;
+					break;
+				}
+			}
+		}
+		
+		void HandleClicked (object sender, EventArgs e)
+		{
+			Xwt.Engine.Toolkit.Invoke (() => {
+				EventSink.OnClicked ();
+			});
+		}
+
 		void OpenLink (string link)
 		{
-			((ILinkLabelEventSink) EventSink).OnClicked ();
+			if (Clicked != null)
+				Clicked (this, EventArgs.Empty);
 		}
 	}
 }

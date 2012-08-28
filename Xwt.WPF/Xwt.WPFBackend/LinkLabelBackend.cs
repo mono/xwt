@@ -44,9 +44,6 @@ namespace Xwt.WPFBackend
 		public LinkLabelBackend ()
 		{
 			Widget = new WpfLinkLabel ();
-			Widget.Hyperlink.RequestNavigate += delegate {
-				EventSink.OnClicked ();
-			};
 		}
 
 		new ILinkLabelEventSink EventSink {
@@ -84,6 +81,37 @@ namespace Xwt.WPFBackend
 		{
 			get;
 			set;
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is LinkLabelEvent) {
+				switch ((LinkLabelEvent) eventId) {
+				case LinkLabelEvent.Clicked:
+					Widget.Hyperlink.RequestNavigate += HandleClicked;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is LinkLabelEvent) {
+				switch ((LinkLabelEvent) eventId) {
+				case LinkLabelEvent.Clicked:
+					Widget.Hyperlink.RequestNavigate -= HandleClicked;
+					break;
+				}
+			}
+		}
+
+		void HandleClicked (object sender, EventArgs e)
+		{
+			Xwt.Engine.Toolkit.Invoke (() => {
+				EventSink.OnClicked ();
+			});
 		}
 	}
 
