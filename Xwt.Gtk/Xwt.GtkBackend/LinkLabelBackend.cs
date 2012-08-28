@@ -52,9 +52,9 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		internal static void OpenLink (string link)
+		void OpenLink (string link)
 		{
-			System.Diagnostics.Process.Start (link);
+			((ILinkLabelEventSink) EventSink).OnClicked ();
 		}
 	}
 }

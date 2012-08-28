@@ -171,13 +171,8 @@ namespace Xwt.GtkBackend
 			var b = (Gtk.TextBuffer)buffer;
 			var iter = b.EndIter;
 			var anchor = b.CreateChildAnchor (ref iter);
-			var link = new Gtk.Label {
-				UseMarkup = true,
-				Markup = string.Format ("<a href=\"{0}\">{1}</a>", href, text)
-			};
-			link.ShowAll ();
-			link.SetLinkHandler (LinkLabelBackend.OpenLink);
-			links.Add (new KeyValuePair<Gtk.TextChildAnchor, Gtk.Widget> (anchor, link));
+			var link = (ILinkLabelBackend) new LinkLabel (text) { Uri = new Uri (href, UriKind.RelativeOrAbsolute) };
+			links.Add (new KeyValuePair<Gtk.TextChildAnchor, Gtk.Widget> (anchor, (Gtk.Widget) link.NativeWidget));
 		}
 
 		public void EmitCodeBlock (object buffer, string code)

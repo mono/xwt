@@ -64,6 +64,7 @@
     <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ExRichTextBox.cs" />
+    <Compile Include="Xwt.WPFBackend\LinkLabelBackend.cs" />
     <Compile Include="Xwt.WPFBackend\MarkdownViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ProgressBarBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CustomWidgetBackend.cs" />

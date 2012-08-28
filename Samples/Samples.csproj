@@ -39,6 +39,9 @@
     <Compile Include="Samples\ChartSample.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Samples\LinkLabels.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Samples\NotebookSample.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -150,7 +153,9 @@
     <Compile Include="Samples\ExpanderSample.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Samples\Markdown.cs" />
+    <Compile Include="Samples\Markdown.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

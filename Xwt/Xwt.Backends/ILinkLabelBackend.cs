@@ -14,5 +14,10 @@ namespace Xwt.Backends
 	{
 		Uri Uri { get; set; }
 	}
+
+	public interface ILinkLabelEventSink : IWidgetEventSink
+	{
+		void OnClicked ();
+	}
 }
 

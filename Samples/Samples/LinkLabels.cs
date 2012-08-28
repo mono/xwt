@@ -1,10 +1,10 @@
-// 
-// LinkLabel.cs
+﻿// 
+// Labels.cs
 //  
 // Author:
-//       Jérémie Laval <jeremie.laval@xamarin.com>
+//       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2011 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,48 +23,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Backends;
+using Xwt;
 
-namespace Xwt
+namespace Samples
 {
-	public class LinkLabel: Label
+	public class LinkLabels : VBox
 	{
-		protected new class WidgetBackendHost : Label.WidgetBackendHost, ILinkLabelEventSink
+		public LinkLabels ()
 		{
-			public void OnClicked ()
-			{
-				((LinkLabel) Parent).OnClicked (EventArgs.Empty);
-			}
-		}
-
-		ILinkLabelBackend Backend {
-			get { return (ILinkLabelBackend) BackendHost.Backend; }
-		}
-
-		public Uri Uri {
-			get { return Backend.Uri; }
-			set { Backend.Uri = value; }
-		}
-
-		public LinkLabel ()
-		{
-		}
-
-		public LinkLabel (string text) : base (text)
-		{
-		}
-
-		protected override BackendHost CreateBackendHost ()
-		{
-			return new WidgetBackendHost ();
-		}
-
-		void OnClicked (EventArgs eventArgs)
-		{
-			System.Diagnostics.Process.Start (Uri.ToString ());
+			PackStart (new LinkLabel ("Mono") {
+				Uri = new Uri ("http://www.mono-project.com")
+			});
+			PackStart (new LinkLabel ("MonoDevelop") {
+				Uri = new Uri ("http://www.monodevelop.com")
+			});
+			PackStart (new LinkLabel ("Xamarin") {
+				Uri = new Uri ("http://www.xamarin.com")
+			});
 		}
 	}
 }
-

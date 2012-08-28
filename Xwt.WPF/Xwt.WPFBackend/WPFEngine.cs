@@ -94,6 +94,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (ProgressBar), typeof (ProgressBarBackend));
 			WidgetRegistry.RegisterBackend (typeof (Placement), typeof (BoxBackend));
 			WidgetRegistry.RegisterBackend (typeof (MarkdownView), typeof (MarkdownViewBackend));
+			WidgetRegistry.RegisterBackend (typeof (LinkLabel), typeof (LinkLabelBackend));
 		}
 
 		public override void DispatchPendingEvents()

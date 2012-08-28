@@ -86,6 +86,7 @@ namespace Samples
 			AddSample (null, "Images", typeof(Images));
 			AddSample (null, "Labels", typeof(Labels));
 			AddSample (null, "ListBox", typeof(ListBoxSample));
+			AddSample (null, "LinkLabels", typeof(LinkLabels));
 			AddSample (null, "ListView", typeof(ListView1));
 			AddSample (null, "Markdown", typeof (MarkDownSample));
 			AddSample (null, "Menu", typeof(MenuSamples));
