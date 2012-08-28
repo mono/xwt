@@ -57,7 +57,7 @@ namespace Xwt
 		}
 
 		/* The subset we support:
-		 *   - Headers in Atx-style i.e. prefixed with the '#' character
+		 *   - Headers in Atx-style i.e. prefixed with the '#' character and in Setex-style i.e. underlined '=' or '-'
 		 *   - Paragraph are separated by a new line
 		 *   - A link has the syntax: "[This link](http://example.net/)" only
 		 *   - Code blocks are normal paragraph with a 4-spaces or 1-tab space prepended
@@ -88,8 +88,15 @@ namespace Xwt
 					Backend.EmitHeader (buffer, line.Trim (' ', '#'), level);
 				}
 
+				// Title (setex-style)
+				else if (i < lines.Length - 1 && !string.IsNullOrEmpty (lines[i + 1]) && lines[i + 1].All (c => c == '=' || c == '-')) {
+					var level = lines[i + 1][0] == '=' ? 1 : 2;
+					Backend.EmitHeader (buffer, line, level);
+					i++;
+				}
+
 				// Ruler
-				else if (line.All (c => c == '-') && line.Length > 3) {
+				else if (line.All (c => c == '-') && line.Length >= 3) {
 					Backend.EmitHorizontalRuler (buffer);
 				}
 

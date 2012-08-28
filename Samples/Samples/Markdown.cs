@@ -17,7 +17,8 @@ namespace Samples
 
 Project Site: http://xamarin.com/mobileapi
 
-# Overview
+Overview
+========
 
 Xamarin.Mobile is a library that runs on **iPhone**, __Android__ and Windows Phone which abstracts the underlying functionality and exposes a common API that developers can build against:
 
@@ -96,7 +97,8 @@ Fixes:
  - Fixed an issue with cancelling MediaPicker on iOS devices
  - Fixed an issue with rotation in MediaPicker on Android
 
-## Release 0.3
+Release 0.3
+-----------
 
 Features:
 
