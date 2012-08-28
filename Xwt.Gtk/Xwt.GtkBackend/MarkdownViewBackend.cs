@@ -80,12 +80,6 @@ namespace Xwt.GtkBackend
 				Family = "Monospace",
 				Indent = 14
 			});
-			var atag = new Gtk.TextTag ("a") {
-				Foreground = "#0000FF",
-				Underline = Pango.Underline.Single
-			};
-			atag.TextEvent += (o, args) => Console.WriteLine ("Clicked");
-			table.Add (atag);
 		}
 
 		protected new Gtk.TextView Widget {
@@ -135,6 +129,7 @@ namespace Xwt.GtkBackend
 		{
 			var b = ((Gtk.TextBuffer)buffer);
 			var iter = b.EndIter;
+			b.Insert (ref iter, NewLine);
 			b.InsertWithTagsByName (ref iter, title, "h" + level);
 			b.Insert (ref iter, NewLine);
 		}
@@ -168,7 +163,7 @@ namespace Xwt.GtkBackend
 
 		public void EmitCloseList (object buffer)
 		{
-			EmitText (buffer, NewLine);
+
 		}
 
 		public void EmitLink (object buffer, string href, string text)
@@ -189,6 +184,7 @@ namespace Xwt.GtkBackend
 		{
 			var b = ((Gtk.TextBuffer)buffer);
 			var iter = b.EndIter;
+			b.Insert (ref iter, NewLine);
 			b.InsertWithTagsByName (ref iter, code, "pre");
 		}
 
