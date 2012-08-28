@@ -35,6 +35,7 @@ using System.Windows.Markup;
 using Xwt.Backends;
 
 using Xwt.WPFBackend.Utilities;
+using System.Windows.Data;
 
 namespace Xwt.WPFBackend
 {
@@ -131,7 +132,11 @@ namespace Xwt.WPFBackend
 		{
 			Writer.WriteEndElement ();
 			Writer.Flush ();
+
+			if (Widget.Document != null)
+				Widget.Document.ClearValue (FlowDocument.PageWidthProperty);
 			Widget.Document = (FlowDocument) XamlReader.Parse (Builder.ToString ());
+			Widget.Document.SetBinding (FlowDocument.PageWidthProperty, new Binding ("ActualWidth") { Source = Widget });
 		}
 
 		void IMarkdownViewBackend.EmitStyledText (object buffer, string text, MarkdownInlineStyle style)
