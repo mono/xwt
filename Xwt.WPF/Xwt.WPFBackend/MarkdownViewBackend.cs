@@ -171,9 +171,10 @@ namespace Xwt.WPFBackend
 
 		void IMarkdownViewBackend.EmitHorizontalRuler (object buffer)
 		{
-			//Writer.WriteStartElement("BlockUIContainer");
-			//Writer.WriteElementString("Separator", "");
-			//Writer.WriteEndElement();
+			Writer.WriteStartElement("BlockUIContainer");
+			Writer.WriteAttributeString ("Margin", "0,0,0,0");
+			Writer.WriteElementString("Separator", "");
+			Writer.WriteEndElement();
 		}
 	}
 }
