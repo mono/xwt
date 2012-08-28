@@ -68,13 +68,12 @@ namespace Xwt
 		 */
 		object ParseMarkdown (string markdown)
 		{
-			var lines = markdown.Split (new[] { '\n', '\r' });
+			var lines = markdown.Replace ("\r\n", "\n").Split (new[] { '\n' });
 			var buffer = Backend.CreateBuffer ();
 			var wasParagraph = false;
 
 			for (int i = 0; i < lines.Length; i++) {
 				var line = lines[i];
-
 				// New paragraph
 				if (string.IsNullOrWhiteSpace (line)) {
 					if (wasParagraph) {
