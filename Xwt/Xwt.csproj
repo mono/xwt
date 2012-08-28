@@ -337,13 +337,21 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Xwt.Backends\IExpandBackend.cs" />
-    <Compile Include="Xwt\LinkLabel.cs" />
+    <Compile Include="Xwt\LinkLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\ILinkLabelBackend.cs" />
-    <Compile Include="Xwt\Placement.cs" />
-    <Compile Include="Xwt\Spinner.cs" />
+    <Compile Include="Xwt\Placement.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt\Spinner.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Xwt.Backends\ISpinnerBackend.cs" />
     <Compile Include="Xwt.Backends\IMarkdownViewBackend.cs" />
-    <Compile Include="Xwt\MarkdownView.cs" />
+    <Compile Include="Xwt\MarkdownView.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
