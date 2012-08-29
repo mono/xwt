@@ -90,6 +90,8 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.ProgressBar), typeof(ProgressBarBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Placement), typeof(BoxBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Spinner), typeof(SpinnerBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.SpinButton), typeof(SpinButtonBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Expander), typeof(ExpanderBackend));
 		}
 
 		public override void RunApplication ()

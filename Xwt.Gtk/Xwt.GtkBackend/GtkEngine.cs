@@ -100,6 +100,7 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Placement), typeof (BoxBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Spinner), typeof (SpinnerBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.MarkdownView), typeof (MarkdownViewBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Expander), typeof (ExpanderBackend));
 		}
 
 		public override void RunApplication ()

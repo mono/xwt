@@ -23,8 +23,8 @@ namespace Xwt
 			return new WidgetBackendHost ();
 		}
 		
-		IExpandBackend Backend {
-			get { return (IExpandBackend)BackendHost.Backend; }
+		IExpanderBackend Backend {
+			get { return (IExpanderBackend)BackendHost.Backend; }
 		}
 
 		public Expander ()
