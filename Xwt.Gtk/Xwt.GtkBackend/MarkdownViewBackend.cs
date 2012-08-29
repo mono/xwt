@@ -173,7 +173,7 @@ namespace Xwt.GtkBackend
 			var iter = b.EndIter;
 			var anchor = b.CreateChildAnchor (ref iter);
 			var link = new LinkLabel (text) { Uri = new Uri (href, UriKind.RelativeOrAbsolute) };
-			var gtkWidget = (Gtk.Widget) WidgetRegistry.GetNativeWidget (link);
+			var gtkWidget = (Gtk.Widget) WidgetRegistry.MainRegistry.GetNativeWidget (link);
 			links.Add (new KeyValuePair<Gtk.TextChildAnchor, Gtk.Widget> (anchor, gtkWidget));
 		}
 
