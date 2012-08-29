@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class LinkLabelClickedEventArgs : EventArgs
+	public class NavigateToUrlEventArgs : EventArgs
 	{
 		public bool Handled {
 			get; private set;
@@ -45,21 +45,21 @@ namespace Xwt
 	{
 		protected new class WidgetBackendHost : Label.WidgetBackendHost, ILinkLabelEventSink
 		{
-			public void OnClicked ()
+			public void OnNavigateToUrl ()
 			{
-				((LinkLabel) Parent).OnClicked (new LinkLabelClickedEventArgs ());
+				((LinkLabel) Parent).OnNavigateToUrl (new NavigateToUrlEventArgs ());
 			}
 		}
 
-		EventHandler<LinkLabelClickedEventArgs> clicked;
-		public event EventHandler<LinkLabelClickedEventArgs> Clicked {
+		EventHandler<NavigateToUrlEventArgs> navigateToUrl;
+		public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl {
 			add {
-				BackendHost.OnBeforeEventAdd (LinkLabelEvent.Clicked, clicked);
-				clicked += value;
+				BackendHost.OnBeforeEventAdd (LinkLabelEvent.NavigateToUrl, navigateToUrl);
+				navigateToUrl += value;
 			}
 			remove {
-				clicked -= value;
-				BackendHost.OnAfterEventRemove (LinkLabelEvent.Clicked, clicked);
+				navigateToUrl -= value;
+				BackendHost.OnAfterEventRemove (LinkLabelEvent.NavigateToUrl, navigateToUrl);
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace Xwt
 
 		static LinkLabel ()
 		{
-			MapEvent (LinkLabelEvent.Clicked, typeof(LinkLabel), "OnClicked");
+			MapEvent (LinkLabelEvent.NavigateToUrl, typeof (LinkLabel), "OnNavigateToUrl");
 		}
 
 		public LinkLabel ()
@@ -84,11 +84,10 @@ namespace Xwt
 
 		public LinkLabel (string text) : base (text)
 		{
-			Clicked += HandleClicked;
-
+			NavigateToUrl += HandleClicked;
 		}
 
-		void HandleClicked (object sender, LinkLabelClickedEventArgs e)
+		void HandleClicked (object sender, NavigateToUrlEventArgs e)
 		{
 			if (!e.Handled) {
 				System.Diagnostics.Process.Start (Uri.ToString ());
@@ -101,10 +100,10 @@ namespace Xwt
 			return new WidgetBackendHost ();
 		}
 
-		protected virtual void OnClicked (LinkLabelClickedEventArgs e)
+		protected virtual void OnNavigateToUrl (NavigateToUrlEventArgs e)
 		{
-			if (clicked != null)
-				clicked (this, e);
+			if (navigateToUrl != null)
+				navigateToUrl (this, e);
 		}
 	}
 }

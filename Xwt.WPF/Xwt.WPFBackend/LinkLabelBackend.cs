@@ -88,7 +88,7 @@ namespace Xwt.WPFBackend
 			base.EnableEvent (eventId);
 			if (eventId is LinkLabelEvent) {
 				switch ((LinkLabelEvent) eventId) {
-				case LinkLabelEvent.Clicked:
+				case LinkLabelEvent.NavigateToUrl:
 					Widget.Hyperlink.RequestNavigate += HandleClicked;
 					break;
 				}
@@ -100,7 +100,7 @@ namespace Xwt.WPFBackend
 			base.DisableEvent (eventId);
 			if (eventId is LinkLabelEvent) {
 				switch ((LinkLabelEvent) eventId) {
-				case LinkLabelEvent.Clicked:
+				case LinkLabelEvent.NavigateToUrl:
 					Widget.Hyperlink.RequestNavigate -= HandleClicked;
 					break;
 				}
@@ -110,7 +110,7 @@ namespace Xwt.WPFBackend
 		void HandleClicked (object sender, EventArgs e)
 		{
 			Xwt.Engine.Toolkit.Invoke (() => {
-				EventSink.OnClicked ();
+				EventSink.OnNavigateToUrl ();
 			});
 		}
 	}

@@ -17,12 +17,12 @@ namespace Xwt.Backends
 
 	public interface ILinkLabelEventSink : IWidgetEventSink
 	{
-		void OnClicked ();
+		void OnNavigateToUrl ();
 	}
 
 	public enum LinkLabelEvent
 	{
-		Clicked = 1
+		NavigateToUrl = 1
 	}
 }
 

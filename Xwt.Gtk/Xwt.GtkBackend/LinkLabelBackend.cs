@@ -66,7 +66,7 @@ namespace Xwt.GtkBackend
 			base.EnableEvent (eventId);
 			if (eventId is LinkLabelEvent) {
 				switch ((LinkLabelEvent) eventId) {
-				case LinkLabelEvent.Clicked:
+				case LinkLabelEvent.NavigateToUrl:
 					ClickEnabled = true;
 					break;
 				}
@@ -78,7 +78,7 @@ namespace Xwt.GtkBackend
 			base.DisableEvent (eventId);
 			if (eventId is LinkLabelEvent) {
 				switch ((LinkLabelEvent) eventId) {
-				case LinkLabelEvent.Clicked:
+				case LinkLabelEvent.NavigateToUrl:
 					ClickEnabled = false;
 					break;
 				}
@@ -89,7 +89,7 @@ namespace Xwt.GtkBackend
 		{
 			if (ClickEnabled)
 				Xwt.Engine.Toolkit.Invoke (() => {
-					EventSink.OnClicked ();
+					EventSink.OnNavigateToUrl ();
 				});
 		}
 	}
