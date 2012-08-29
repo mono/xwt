@@ -407,6 +407,7 @@ namespace Xwt
 				if (value != null)
 					RegisterChild (value);
 				contentWidget = value;
+				OnPreferredSizeChanged ();
 			}
 		}
 		
@@ -786,6 +787,16 @@ namespace Xwt
 				Surface.Reallocate ();
 			
 			OnBoundsChanged ();
+		}
+
+		internal void SetExtractedAsNative ()
+		{
+			// If the widget is going to be embedded in another toolkit it is not going
+			// to receive Reallocate calls from its parent, so the widget has to reallocate
+			// itself when its size changes
+			BoundsChanged += delegate {
+				OnReallocate ();
+			};
 		}
 		
 		protected virtual void OnBoundsChanged ()
