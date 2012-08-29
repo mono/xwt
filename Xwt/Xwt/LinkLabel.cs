@@ -47,7 +47,7 @@ namespace Xwt
 		{
 			public void OnClicked ()
 			{
-				((LinkLabel) Parent).OnClicked (EventArgs.Empty);
+				((LinkLabel) Parent).OnClicked (new LinkLabelClickedEventArgs ());
 			}
 		}
 
@@ -101,10 +101,10 @@ namespace Xwt
 			return new WidgetBackendHost ();
 		}
 
-		protected virtual void OnClicked (EventArgs e)
+		protected virtual void OnClicked (LinkLabelClickedEventArgs e)
 		{
 			if (clicked != null)
-				clicked (this, new LinkLabelClickedEventArgs ());
+				clicked (this, e);
 		}
 	}
 }
