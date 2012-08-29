@@ -34,12 +34,9 @@ namespace Xwt.GtkBackend
 	class LinkLabelBackend : LabelBackend, ILinkLabelBackend
 	{
 		Uri uri;
-		event EventHandler Clicked;
 
-		public LinkLabelBackend ()
-		{
-			Label.UseMarkup = true;
-			Label.SetLinkHandler (OpenLink);
+		bool ClickEnabled {
+			get; set;
 		}
 
 		new ILinkLabelEventSink EventSink {
@@ -58,14 +55,19 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		
+		public LinkLabelBackend ()
+		{
+			Label.UseMarkup = true;
+			Label.SetLinkHandler (OpenLink);
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
 			if (eventId is LinkLabelEvent) {
 				switch ((LinkLabelEvent) eventId) {
 				case LinkLabelEvent.Clicked:
-					Clicked += HandleClicked;
+					ClickEnabled = true;
 					break;
 				}
 			}
@@ -77,23 +79,18 @@ namespace Xwt.GtkBackend
 			if (eventId is LinkLabelEvent) {
 				switch ((LinkLabelEvent) eventId) {
 				case LinkLabelEvent.Clicked:
-					Clicked -= HandleClicked;
+					ClickEnabled = false;
 					break;
 				}
 			}
 		}
-		
-		void HandleClicked (object sender, EventArgs e)
-		{
-			Xwt.Engine.Toolkit.Invoke (() => {
-				EventSink.OnClicked ();
-			});
-		}
 
 		void OpenLink (string link)
 		{
-			if (Clicked != null)
-				Clicked (this, EventArgs.Empty);
+			if (ClickEnabled)
+				Xwt.Engine.Toolkit.Invoke (() => {
+					EventSink.OnClicked ();
+				});
 		}
 	}
 }
