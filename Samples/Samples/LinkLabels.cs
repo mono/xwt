@@ -32,15 +32,37 @@ namespace Samples
 	{
 		public LinkLabels ()
 		{
-			PackStart (new LinkLabel ("Mono") {
+			var label = new LinkLabel ("This has no url and does nothing when clicked");
+			PackStart (label);
+
+			label = new LinkLabel ("This has no url and we've attached to the handler but does nothing when clicked");
+			label.NavigateToUrl += (o, e) => {
+				MessageDialog.ShowMessage ("You clicked me!");
+				e.SetHandled ();
+			};
+			PackStart (label);
+
+			label = new LinkLabel ("Mono Url - Default Action") {
 				Uri = new Uri ("http://www.mono-project.com")
-			});
-			PackStart (new LinkLabel ("MonoDevelop") {
-				Uri = new Uri ("http://www.monodevelop.com")
-			});
-			PackStart (new LinkLabel ("Xamarin") {
-				Uri = new Uri ("http://www.xamarin.com")
-			});
+			};
+			PackStart (label);
+
+			label = new LinkLabel ("Mono Url - Custom Action") {
+				Uri = new Uri ("http://mono-project.com")
+			};
+			label.NavigateToUrl += (o, e) => {
+				MessageDialog.ShowMessage ("You clicked me!");
+				e.SetHandled ();
+			};
+			PackStart (label);
+
+			label = new LinkLabel ("Mono Url - Custom Action and default action") {
+				Uri = new Uri ("http://mono-project.com")
+			};
+			label.NavigateToUrl += (o, e) => {
+				MessageDialog.ShowMessage ("When this dialog closes, the default action will happen");
+			};
+			PackStart (label);
 		}
 	}
 }

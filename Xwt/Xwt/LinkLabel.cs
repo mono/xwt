@@ -84,15 +84,7 @@ namespace Xwt
 
 		public LinkLabel (string text) : base (text)
 		{
-			NavigateToUrl += HandleClicked;
-		}
-
-		void HandleClicked (object sender, NavigateToUrlEventArgs e)
-		{
-			if (!e.Handled) {
-				System.Diagnostics.Process.Start (Uri.ToString ());
-				e.SetHandled ();
-			}
+			NavigateToUrl += delegate { };
 		}
 
 		protected override BackendHost CreateBackendHost ()
@@ -104,6 +96,11 @@ namespace Xwt
 		{
 			if (navigateToUrl != null)
 				navigateToUrl (this, e);
+
+			if (!e.Handled) {
+				System.Diagnostics.Process.Start (Uri.ToString ());
+				e.SetHandled ();
+			}
 		}
 	}
 }
