@@ -1,10 +1,10 @@
 ﻿// 
-// LabelBackend.cs
+// LinkLabel.cs
 //  
 // Author:
-//       Carlos Alberto Cortez <calberto.cortez@gmail.com>
+//       Alan McGovern <alan@xamarin.com>
 // 
-// Copyright (c) 2012 Carlos Alberto Cortez
+// Copyright (c) 2012 Alan McGovern
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,6 @@ namespace Xwt.WPFBackend
 {
 	public class LinkLabelBackend : WidgetBackend, ILinkLabelBackend
 	{
-		public event EventHandler Clicked;
-
 		public LinkLabelBackend ()
 		{
 			Widget = new WpfLinkLabel ();
