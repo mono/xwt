@@ -87,10 +87,11 @@ namespace Xwt.GtkBackend
 
 		void OpenLink (string link)
 		{
-			if (ClickEnabled)
+			if (ClickEnabled) {
 				Xwt.Engine.Toolkit.Invoke (() => {
-					EventSink.OnNavigateToUrl ();
+					EventSink.OnNavigateToUrl (new Uri (link, UriKind.RelativeOrAbsolute));
 				});
+			}
 		}
 	}
 }

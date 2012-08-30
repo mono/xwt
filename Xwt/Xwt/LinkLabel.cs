@@ -35,6 +35,15 @@ namespace Xwt
 			get; private set;
 		}
 
+		public Uri Uri {
+			get; private set;
+		}
+
+		public NavigateToUrlEventArgs (Uri uri)
+		{
+			Uri = uri;
+		}
+
 		public void SetHandled ()
 		{
 			Handled = true;
@@ -45,9 +54,9 @@ namespace Xwt
 	{
 		protected new class WidgetBackendHost : Label.WidgetBackendHost, ILinkLabelEventSink
 		{
-			public void OnNavigateToUrl ()
+			public void OnNavigateToUrl (Uri uri)
 			{
-				((LinkLabel) Parent).OnNavigateToUrl (new NavigateToUrlEventArgs ());
+				((LinkLabel) Parent).OnNavigateToUrl (new NavigateToUrlEventArgs (uri));
 			}
 		}
 

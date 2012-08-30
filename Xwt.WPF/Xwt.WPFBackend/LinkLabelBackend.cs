@@ -1,5 +1,5 @@
 ﻿// 
-// LinkLabel.cs
+// LinkLabelBackend.cs
 //  
 // Author:
 //       Alan McGovern <alan@xamarin.com>
@@ -108,7 +108,7 @@ namespace Xwt.WPFBackend
 		void HandleClicked (object sender, EventArgs e)
 		{
 			Xwt.Engine.Toolkit.Invoke (() => {
-				EventSink.OnNavigateToUrl ();
+				EventSink.OnNavigateToUrl (Uri);
 			});
 		}
 	}
