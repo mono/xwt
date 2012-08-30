@@ -95,6 +95,7 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Placement), typeof (BoxBackend));
 			WidgetRegistry.RegisterBackend (typeof (MarkdownView), typeof (MarkdownViewBackend));
 			WidgetRegistry.RegisterBackend (typeof (LinkLabel), typeof (LinkLabelBackend));
+			WidgetRegistry.RegisterBackend (typeof (Spinner), typeof (SpinnerBackend));
 		}
 
 		public override void DispatchPendingEvents()

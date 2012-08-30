@@ -39,6 +39,9 @@
     <Compile Include="Samples\ChartSample.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Samples\Spinners.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Samples\LinkLabels.cs">
       <SubType>Component</SubType>
     </Compile>
