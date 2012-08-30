@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using SWC = System.Windows.Controls;
+using SWM = System.Windows.Media;
 
 using Xwt.Backends;
 
@@ -51,6 +52,20 @@ namespace Xwt.WPFBackend
 			set {
 				Label.Content = value;
 				Widget.InvalidateMeasure();
+			}
+		}
+
+		public Xwt.Drawing.Color TextColor {
+			get {
+				SWM.Color color = SystemColors.ControlColor;
+
+				if (Label.Foreground != null)
+					color = ((SWM.SolidColorBrush) Label.Foreground).Color;
+
+				return DataConverter.ToXwtColor (color);
+			}
+			set {
+				Label.Foreground = ResPool.GetSolidBrush (value);
 			}
 		}
 
