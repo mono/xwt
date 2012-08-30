@@ -38,6 +38,10 @@ namespace Xwt.GtkBackend
 		Gtk.TextTagTable table;
 		List<KeyValuePair<Gtk.TextChildAnchor, Gtk.Widget>> links = new List<KeyValuePair<Gtk.TextChildAnchor, Gtk.Widget>> ();
 
+		bool NavigateToUrlEnabled {
+			get; set;
+		}
+
 		public MarkdownViewBackend ()
 		{
 			Widget = new Gtk.TextView ();
@@ -89,6 +93,30 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				base.Widget = value;
+			}
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is MarkdownViewEvent) {
+				switch ((MarkdownViewEvent) eventId) {
+				case MarkdownViewEvent.NavigateToUrl:
+					NavigateToUrlEnabled = true;
+					break;
+				}
+			}
+		}
+		
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is MarkdownViewEvent) {
+				switch ((MarkdownViewEvent) eventId) {
+				case MarkdownViewEvent.NavigateToUrl:
+					NavigateToUrlEnabled = false;
+					break;
+				}
 			}
 		}
 
@@ -173,6 +201,12 @@ namespace Xwt.GtkBackend
 			var iter = b.EndIter;
 			var anchor = b.CreateChildAnchor (ref iter);
 			var link = new LinkLabel (text) { Uri = new Uri (href, UriKind.RelativeOrAbsolute) };
+			link.NavigateToUrl += (sender, e) => {
+				if (NavigateToUrlEnabled) {
+					((IMarkdownViewEventSink) EventSink).OnNavigateToUrl (e.Uri);
+					e.SetHandled ();
+				}
+			};
 			var gtkWidget = (Gtk.Widget) WidgetRegistry.GetNativeWidget (link);
 			links.Add (new KeyValuePair<Gtk.TextChildAnchor, Gtk.Widget> (anchor, gtkWidget));
 		}
