@@ -107,8 +107,7 @@ namespace Xwt
 				navigateToUrl (this, e);
 
 			if (!e.Handled) {
-				System.Diagnostics.Process.Start (Uri.ToString ());
-				e.SetHandled ();
+				Application.EngineBackend.ShowWebBrowser (e);
 			}
 		}
 	}

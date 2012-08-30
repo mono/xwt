@@ -93,10 +93,8 @@ namespace Xwt
 			if (navigateToUrl != null)
 				navigateToUrl (this, e);
 
-			if (!e.Handled) {
-				System.Diagnostics.Process.Start (e.Uri.ToString ());
-				e.SetHandled ();
-			}
+			if (!e.Handled)
+				Application.EngineBackend.ShowWebBrowser (e);
 		}
 
 		/* The subset we support:

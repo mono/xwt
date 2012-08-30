@@ -101,6 +101,14 @@ namespace Xwt.Backends
 			return WidgetRegistry.GetBackend (image);
 		}
 
+		public virtual void ShowWebBrowser (NavigateToUrlEventArgs e)
+		{
+			if (!e.Handled) {
+				System.Diagnostics.Process.Start (e.Uri.ToString ());
+				e.SetHandled ();
+			}
+		}
+
 		/// <summary>
 		/// Dispatches pending events in the UI event queue
 		/// </summary>
