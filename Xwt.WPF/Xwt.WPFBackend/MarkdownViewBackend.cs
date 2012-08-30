@@ -36,6 +36,7 @@ using Xwt.Backends;
 
 using Xwt.WPFBackend.Utilities;
 using System.Windows.Data;
+using System.Windows.Navigation;
 
 namespace Xwt.WPFBackend
 {
@@ -47,6 +48,10 @@ namespace Xwt.WPFBackend
 
 		StringBuilder Builder {
 			get; set;
+		}
+
+		public new IMarkdownViewEventSink EventSink {
+			get { return (IMarkdownViewEventSink) base.EventSink; }
 		}
 
 		public new ExRichTextBox Widget
@@ -62,6 +67,38 @@ namespace Xwt.WPFBackend
 		public MarkdownViewBackend ()
 		{
 			Widget = new ExRichTextBox ();
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is MarkdownViewEvent) {
+				switch ((MarkdownViewEvent) eventId) {
+					case MarkdownViewEvent.NavigateToUrl:
+						Widget.AddHandler (Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler (HyperlinkNavigated), true);
+						break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is MarkdownViewEvent) {
+				switch ((MarkdownViewEvent) eventId) {
+					case MarkdownViewEvent.NavigateToUrl:
+						Widget.RemoveHandler (Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler (HyperlinkNavigated));
+						break;
+				}
+			}
+		}
+
+		void HyperlinkNavigated (object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+		{
+			Xwt.Engine.Toolkit.Invoke (() => {
+				EventSink.OnNavigateToUrl (e.Uri);
+				e.Handled = true;
+			});
 		}
 
 		object IMarkdownViewBackend.CreateBuffer ()
@@ -139,6 +176,9 @@ namespace Xwt.WPFBackend
 				Widget.Document.ClearValue (FlowDocument.PageWidthProperty);
 			Widget.Document = (FlowDocument) XamlReader.Parse (Builder.ToString ());
 			Widget.Document.SetBinding (FlowDocument.PageWidthProperty, new Binding ("ActualWidth") { Source = Widget });
+			Widget.IsDocumentEnabled = true;
+			Widget.Document.IsEnabled = true;
+			Widget.IsReadOnly = true;
 		}
 
 		void IMarkdownViewBackend.EmitStyledText (object buffer, string text, MarkdownInlineStyle style)

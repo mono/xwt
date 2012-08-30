@@ -35,24 +35,67 @@ namespace Xwt
 {
 	public class MarkdownView : Widget
 	{
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IMarkdownViewEventSink
+		{
+			public void OnNavigateToUrl (Uri uri)
+			{
+				((MarkdownView) Parent).OnNavigateToUrl (new NavigateToUrlEventArgs (uri));
+			}
+		}
+
 		string markdown;
 
 		IMarkdownViewBackend Backend {
 			get { return (IMarkdownViewBackend) BackendHost.Backend; }
 		}
 
-		public MarkdownView ()
+		public string Markdown
 		{
-		}
-
-		public string Markdown {
-			get {
+			get
+			{
 				return markdown;
 			}
-			set {
+			set
+			{
 				markdown = value;
 				object buffer = ParseMarkdown (value);
 				Backend.SetBuffer (buffer);
+			}
+		}
+
+		EventHandler<NavigateToUrlEventArgs> navigateToUrl;
+		public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd (MarkdownViewEvent.NavigateToUrl, navigateToUrl);
+				navigateToUrl += value;
+			}
+			remove
+			{
+				navigateToUrl -= value;
+				BackendHost.OnAfterEventRemove (MarkdownViewEvent.NavigateToUrl, navigateToUrl);
+			}
+		}
+
+		public MarkdownView ()
+		{
+			NavigateToUrl += delegate { }; // ensure the virtual method is always called
+		}
+
+		protected override BackendHost CreateBackendHost ()
+		{
+			return new WidgetBackendHost ();
+		}
+
+		protected virtual void OnNavigateToUrl (NavigateToUrlEventArgs e)
+		{
+			if (navigateToUrl != null)
+				navigateToUrl (this, e);
+
+			if (!e.Handled) {
+				System.Diagnostics.Process.Start (e.Uri.ToString ());
+				e.SetHandled ();
 			}
 		}
 

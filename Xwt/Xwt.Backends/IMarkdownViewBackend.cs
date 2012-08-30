@@ -54,4 +54,14 @@ namespace Xwt.Backends
 		// Display the passed buffer
 		void SetBuffer (object buffer);
 	}
+
+	public interface IMarkdownViewEventSink : IWidgetEventSink
+	{
+		void OnNavigateToUrl (Uri uri);
+	}
+
+	public enum MarkdownViewEvent
+	{
+		NavigateToUrl = 1
+	}
 }
