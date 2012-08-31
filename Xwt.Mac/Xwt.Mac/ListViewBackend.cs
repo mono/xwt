@@ -77,6 +77,9 @@ namespace Xwt.Mac
 		{
 			return source.GetValue ((int)pos, nField);
 		}
+
+		// TODO
+		public bool BorderVisible { get; set; }
 	}
 	
 	class TableRow: NSObject, ITablePosition
