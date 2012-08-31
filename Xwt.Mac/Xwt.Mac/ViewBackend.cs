@@ -45,6 +45,7 @@ namespace Xwt.Mac
 		S eventSink;
 		IViewObject viewObject;
 		WidgetEvent currentEvents;
+		bool autosize;
 		
 		void IBackend.InitializeBackend (object frontend)
 		{
@@ -58,6 +59,14 @@ namespace Xwt.Mac
 			eventSink = (S) sink;
 			Initialize ();
 		}
+
+		public void SetAutosizeMode (bool autosize)
+		{
+			this.autosize = autosize;
+			if (autosize)
+				AutoUpdateSize ();
+		}
+
 		
 		public virtual void Initialize ()
 		{
@@ -287,6 +296,15 @@ namespace Xwt.Mac
 			IViewContainer parent = Widget.Superview as IViewContainer;
 			if (parent != null)
 				parent.UpdateChildMargins (this);
+			if (autosize)
+				AutoUpdateSize ();
+		}
+
+		void AutoUpdateSize ()
+		{
+			var ws = Frontend.Surface.GetPreferredWidth ();
+			var h = Frontend.Surface.GetPreferredHeightForWidth (ws.NaturalSize);
+			Widget.SetWidgetBounds (new Rectangle (0, 0, ws.NaturalSize, h.NaturalSize));
 		}
 		
 		public static NSView AddMargins (IMacViewBackend backend, NSView currentChild)
@@ -642,6 +660,10 @@ namespace Xwt.Mac
 		Widget Frontend { get; }
 		void NotifyPreferredSizeChanged ();
 		IWidgetEventSink EventSink { get; }
+
+		// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
+		// In that case, the widget has to listen to the change event of the children and resize itself
+		void SetAutosizeMode (bool autosize);
 	}
 }
 
