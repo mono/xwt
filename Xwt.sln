@@ -71,11 +71,6 @@ Global
 		{E41F4448-15C3-4E95-B310-FD333FDF5D2F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E41F4448-15C3-4E95-B310-FD333FDF5D2F}.Win-Debug|Any CPU.ActiveCfg = Debug|x86
 		{E41F4448-15C3-4E95-B310-FD333FDF5D2F}.Win-Debug|Any CPU.Build.0 = Debug|x86
-		{FB234220-D409-43D9-8926-E2D629A19285}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB234220-D409-43D9-8926-E2D629A19285}.Mac-Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB234220-D409-43D9-8926-E2D629A19285}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB234220-D409-43D9-8926-E2D629A19285}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FB234220-D409-43D9-8926-E2D629A19285}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = GtkTest\GtkTest.csproj
