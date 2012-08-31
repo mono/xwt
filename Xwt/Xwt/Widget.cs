@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Wolfgang Silbermayr <wolfgang.silbermayr@gmail.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
+// Copyright (C) 2012 Wolfgang Silbermayr
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1370,16 +1372,16 @@ namespace Xwt
 			}
 		}
 
-        public event EventHandler<MouseScrolledEventArgs> MouseScrolled {
-            add {
-                BackendHost.OnBeforeEventAdd(WidgetEvent.MouseScrolled, mouseScrolled);
-                mouseScrolled += value;
-            }
-            remove {
-                mouseScrolled -= value;
-                BackendHost.OnAfterEventRemove(WidgetEvent.MouseScrolled, mouseScrolled);
-            }
-        }
+		public event EventHandler<MouseScrolledEventArgs> MouseScrolled {
+			add {
+				BackendHost.OnBeforeEventAdd(WidgetEvent.MouseScrolled, mouseScrolled);
+					mouseScrolled += value;
+			}
+			remove {
+				mouseScrolled -= value;
+				BackendHost.OnAfterEventRemove(WidgetEvent.MouseScrolled, mouseScrolled);
+			}
+		}
 	}
 	
 	class EventMap
