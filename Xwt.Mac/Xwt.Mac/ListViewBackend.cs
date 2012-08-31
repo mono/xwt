@@ -37,11 +37,6 @@ namespace Xwt.Mac
 		IListDataSource source;
 		ListSource tsource;
 
-		public bool BorderVisible {
-			get { return false; }
-			set { }
-		}
-
 		protected override NSTableView CreateView ()
 		{
 			return new NSTableView ();

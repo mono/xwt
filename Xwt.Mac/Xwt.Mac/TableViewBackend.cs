@@ -193,6 +193,13 @@ namespace Xwt.Mac
 			set { Table.RowHeight = value; }
 		}
 		
+		public bool BorderVisible {
+			get { return scroll.BorderType == NSBorderType.BezelBorder;}
+			set {
+				scroll.BorderType = value ? NSBorderType.BezelBorder : NSBorderType.NoBorder;
+			}
+		}
+
 		public bool HeadersVisible {
 			get {
 				return Table.HeaderView != null;
