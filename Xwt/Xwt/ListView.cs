@@ -80,7 +80,13 @@ namespace Xwt
 		IListViewBackend Backend {
 			get { return (IListViewBackend) BackendHost.Backend; }
 		}
-		
+
+		public bool BorderVisible
+		{
+			get { return Backend.BorderVisible; }
+			set { Backend.BorderVisible = value; }
+		}
+
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return Backend.VerticalScrollPolicy; }
 			set { Backend.VerticalScrollPolicy = value; }
