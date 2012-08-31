@@ -81,6 +81,18 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
+		public Xwt.Drawing.Color TextColor
+		{
+			get
+			{
+				return Widget.Foreground.ToXwtColor ();
+			}
+			set
+			{
+				Widget.Foreground = ResPool.GetSolidBrush (value);
+			}
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
