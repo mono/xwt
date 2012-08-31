@@ -34,9 +34,16 @@ namespace Samples
 		{
 			Label la = new Label ("Simple label");
 			PackStart (la);
-			
-			la = new Label ("Label with red background");
-			la.BackgroundColor = new Xwt.Drawing.Color (1, 0, 0);
+
+			la = new Label ("Label with red background") {
+				BackgroundColor = new Xwt.Drawing.Color (1, 0, 0)
+			};
+			PackStart (la);
+
+			la = new Label ("Label with red background and blue foreground") {
+				BackgroundColor = new Xwt.Drawing.Color (1, 0, 0),
+				TextColor = new Xwt.Drawing.Color (0, 0, 1)
+			};
 			PackStart (la);
 		}
 	}
