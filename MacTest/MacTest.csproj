@@ -42,7 +42,6 @@
     <Reference Include="System.Core" />
     <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral">
       <Private>False</Private>
-      <Package>monodevelop-core-mac-addins</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
