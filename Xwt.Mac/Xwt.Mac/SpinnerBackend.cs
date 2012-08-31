@@ -1,10 +1,10 @@
 // 
-// ILabelBackend.cs
+// ProgressBarBackend.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Jérémie Laval
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,46 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Drawing;
+using Xwt.Backends;
+using Xwt.Engine;
 
-namespace Xwt.Backends
+using MonoMac.AppKit;
+using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
+
+namespace Xwt.Mac
 {
-	public interface ILabelBackend: IWidgetBackend
+	public class SpinnerBackend: ViewBackend<ProgressIndicatorView, IWidgetEventSink>, ISpinnerBackend
 	{
-		string Text { get; set; }
-		Color TextColor { get; set; }
-		Alignment TextAlignment { get; set; }
-		EllipsizeMode Ellipsize { get; set; }
+		bool animating;
+
+		public override void Initialize ()
+		{
+			var widget = new ProgressIndicatorView ();
+			ViewObject = widget;
+			Widget.SizeToFit ();
+
+			widget.Indeterminate = true;
+			widget.Style = NSProgressIndicatorStyle.Spinning;
+		}
+
+		public bool IsAnimating {
+			get {
+				return animating;
+			}
+		}
+
+		public void StartAnimation ()
+		{
+			animating = true;
+			Widget.StartAnimation (Widget);
+		}
+
+		public void StopAnimation ()
+		{
+			animating = false;
+			Widget.StopAnimation (Widget);
+		}
 	}
 }
+

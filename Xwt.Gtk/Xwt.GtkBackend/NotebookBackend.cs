@@ -94,6 +94,19 @@ namespace Xwt.GtkBackend
 				Widget.CurrentPage = value;
 			}
 		}
+
+		public Xwt.NotebookTabOrientation TabOrientation {
+			get {
+				Xwt.NotebookTabOrientation tabPos = Xwt.NotebookTabOrientation.Top;
+				Enum.TryParse (Widget.TabPos.ToString (), out tabPos);
+				return tabPos;
+			}
+			set {
+				Gtk.PositionType tabPos = Gtk.PositionType.Top;
+				Enum.TryParse (value.ToString (), out tabPos);
+				Widget.TabPos = tabPos;
+			}
+		}
 		
 		Gtk.Widget CreateLabel (NotebookTab tab)
 		{

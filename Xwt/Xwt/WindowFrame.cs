@@ -67,6 +67,7 @@ namespace Xwt
 		Size size;
 		bool pendingReallocation;
         Image icon;
+		WindowFrame transientFor;
 		
 		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
 		{
@@ -210,6 +211,14 @@ namespace Xwt
 		public bool ShowInTaskbar {
 			get { return Backend.ShowInTaskbar; }
 			set { Backend.ShowInTaskbar = value; }
+		}
+
+		public WindowFrame TransientFor {
+			get { return transientFor; }
+			set {
+				transientFor = value;
+				Backend.SetTransientFor ((IWindowFrameBackend)(value as IFrontend).Backend);
+			}
 		}
 		
 		public bool Visible {

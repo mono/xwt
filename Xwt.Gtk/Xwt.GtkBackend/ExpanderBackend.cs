@@ -6,7 +6,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class ExpanderBackend : WidgetBackend, IExpandBackend
+	public class ExpanderBackend : WidgetBackend, IExpanderBackend
 	{
 		public ExpanderBackend ()
 		{

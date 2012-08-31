@@ -1,5 +1,5 @@
-// 
-// ILabelBackend.cs
+﻿// 
+// Labels.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,17 +23,46 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Drawing;
+using Xwt;
 
-namespace Xwt.Backends
+namespace Samples
 {
-	public interface ILabelBackend: IWidgetBackend
+	public class LinkLabels : VBox
 	{
-		string Text { get; set; }
-		Color TextColor { get; set; }
-		Alignment TextAlignment { get; set; }
-		EllipsizeMode Ellipsize { get; set; }
+		public LinkLabels ()
+		{
+			var label = new LinkLabel ("This has no url and does nothing when clicked");
+			PackStart (label);
+
+			label = new LinkLabel ("This has no url and we've attached to the handler but does nothing when clicked");
+			label.NavigateToUrl += (o, e) => {
+				MessageDialog.ShowMessage ("You clicked me!");
+				e.SetHandled ();
+			};
+			PackStart (label);
+
+			label = new LinkLabel ("Mono Url - Default Action") {
+				Uri = new Uri ("http://www.mono-project.com")
+			};
+			PackStart (label);
+
+			label = new LinkLabel ("Mono Url - Custom Action") {
+				Uri = new Uri ("http://mono-project.com")
+			};
+			label.NavigateToUrl += (o, e) => {
+				MessageDialog.ShowMessage ("You clicked me!");
+				e.SetHandled ();
+			};
+			PackStart (label);
+
+			label = new LinkLabel ("Mono Url - Custom Action and default action") {
+				Uri = new Uri ("http://mono-project.com")
+			};
+			label.NavigateToUrl += (o, e) => {
+				MessageDialog.ShowMessage ("When this dialog closes, the default action will happen");
+			};
+			PackStart (label);
+		}
 	}
 }

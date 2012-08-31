@@ -50,6 +50,11 @@ namespace Xwt.Mac
 				Widget.SizeToFit ();
 			}
 		}
+
+		public Xwt.Drawing.Color TextColor {
+			get { return Widget.TextColor.ToXwtColor (); }
+			set { Widget.TextColor = value.ToNSColor (); }
+		}
 		
 		public Alignment TextAlignment {
 			get {

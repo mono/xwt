@@ -1,8 +1,8 @@
-// 
-// ILabelBackend.cs
+﻿// 
+// SpinButtons.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Alan McGovern <alan@xamarin.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -23,17 +23,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Drawing;
+using Xwt;
 
-namespace Xwt.Backends
+namespace Samples
 {
-	public interface ILabelBackend: IWidgetBackend
+	public class Spinners : VBox
 	{
-		string Text { get; set; }
-		Color TextColor { get; set; }
-		Alignment TextAlignment { get; set; }
-		EllipsizeMode Ellipsize { get; set; }
+		public Spinners ()
+		{
+			var button = new Spinner ();
+			button.Animate = true;
+
+			PackStart (button);
+			PackStart (new Spinner ());
+		}
 	}
 }

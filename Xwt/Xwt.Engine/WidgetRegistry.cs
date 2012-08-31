@@ -77,6 +77,7 @@ namespace Xwt.Engine
 		
 		public static object GetNativeWidget (Widget w)
 		{
+			w.SetExtractedAsNative ();
 			return Application.EngineBackend.GetNativeWidget (w);
 		}
 		

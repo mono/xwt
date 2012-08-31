@@ -39,6 +39,12 @@
     <Compile Include="Samples\ChartSample.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Samples\Spinners.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\LinkLabels.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Samples\NotebookSample.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -148,6 +154,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Samples\ExpanderSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Markdown.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>

@@ -609,6 +609,41 @@ namespace Xwt.GtkBackend
 			}
 			ctx.CursorLocation = cursor;
 		}
+
+		public static void SetLinkHandler (this Gtk.Label label, Action<string> urlHandler)
+		{
+			if (GtkMinorVersion >= 18)
+				new UrlHandlerClosure (urlHandler).ConnectTo (label);
+		}
+		
+		//create closure manually so we can apply ConnectBefore
+		class UrlHandlerClosure
+		{
+			Action<string> urlHandler;
+			
+			public UrlHandlerClosure (Action<string> urlHandler)
+			{
+				this.urlHandler = urlHandler;
+			}
+			
+			[GLib.ConnectBefore]
+			void HandleLink (object sender, ActivateLinkEventArgs args)
+			{
+				urlHandler (args.Url);
+				args.RetVal = true;
+			}
+			
+			public void ConnectTo (Gtk.Label label)
+			{
+				var signal = GLib.Signal.Lookup (label, "activate-link", typeof(ActivateLinkEventArgs));
+				signal.AddDelegate (new EventHandler<ActivateLinkEventArgs> (HandleLink));
+			}
+			
+			class ActivateLinkEventArgs : GLib.SignalArgs
+			{
+				public string Url { get { return (string)base.Args [0]; } }
+			}
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>

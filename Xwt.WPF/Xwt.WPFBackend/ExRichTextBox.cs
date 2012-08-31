@@ -1,10 +1,10 @@
-// 
-// ILabelBackend.cs
+﻿// 
+// ExRichTextBox.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Alan McGovern <alan@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin, Inc.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Drawing;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows.Controls;
 
-namespace Xwt.Backends
+namespace Xwt.WPFBackend.Utilities
 {
-	public interface ILabelBackend: IWidgetBackend
+	public class ExRichTextBox : RichTextBox, IWpfWidget
 	{
-		string Text { get; set; }
-		Color TextColor { get; set; }
-		Alignment TextAlignment { get; set; }
-		EllipsizeMode Ellipsize { get; set; }
+		public WidgetBackend Backend {
+			get; set;
+		}
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
+		}
 	}
 }

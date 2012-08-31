@@ -96,6 +96,11 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Popover), typeof (PopoverBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.SpinButton), typeof (SpinButtonBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.DatePicker), typeof (DatePickerBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.LinkLabel), typeof (LinkLabelBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Placement), typeof (BoxBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Spinner), typeof (SpinnerBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.MarkdownView), typeof (MarkdownViewBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Expander), typeof (ExpanderBackend));
 		}
 
 		public override void RunApplication ()

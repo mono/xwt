@@ -41,7 +41,7 @@ namespace Xwt
 		ISpacingListener parent;
 		double top, left, right, bottom;
 		
-		internal WidgetSpacing (ISpacingListener parent)
+		public WidgetSpacing (ISpacingListener parent)
 		{
 			this.parent = parent;
 		}

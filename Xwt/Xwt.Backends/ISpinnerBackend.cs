@@ -1,11 +1,11 @@
-// 
-// ILabelBackend.cs
-//  
+//
+// ISpinnerBackend.cs
+//
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
-// 
-// Copyright (c) 2011 Xamarin Inc
-// 
+//       Jérémie Laval <jeremie.laval@xamarin.com>
+//
+// Copyright (c) 2012 Xamarin, Inc.
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -25,15 +25,14 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface ILabelBackend: IWidgetBackend
+	public interface ISpinnerBackend : IWidgetBackend
 	{
-		string Text { get; set; }
-		Color TextColor { get; set; }
-		Alignment TextAlignment { get; set; }
-		EllipsizeMode Ellipsize { get; set; }
+		void StartAnimation ();
+		void StopAnimation ();
+		bool IsAnimating { get; }
 	}
 }
+

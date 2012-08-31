@@ -34,6 +34,7 @@ namespace Xwt.Backends
 		void Remove (IWidgetBackend widget);
 		void UpdateLabel (NotebookTab tab, string hint);
 		int CurrentTab { get; set; }
+		NotebookTabOrientation TabOrientation { get; set; }
 	}
 	
 	public interface INotebookEventSink: IWidgetEventSink

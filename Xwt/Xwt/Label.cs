@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using Xwt.Drawing;
 using Xwt.Backends;
 
 namespace Xwt
@@ -50,6 +51,11 @@ namespace Xwt
 				Backend.Text = value; 
 				OnPreferredSizeChanged ();
 			}
+		}
+
+		public Color TextColor {
+			get { return Backend.TextColor; }
+			set { Backend.TextColor = value; }
 		}
 		
 		public Alignment TextAlignment {
