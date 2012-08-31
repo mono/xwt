@@ -50,7 +50,7 @@ namespace Xwt.Mac
 			//Hijack ();
 			pool = new NSAutoreleasePool ();
 			NSApplication.SharedApplication.Delegate = appDelegate;
-			
+
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Window), typeof(WindowBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Label), typeof(LabelBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.HBox), typeof(BoxBackend));
@@ -93,6 +93,7 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Spinner), typeof(SpinnerBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.SpinButton), typeof(SpinButtonBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Expander), typeof(ExpanderBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Popover), typeof (PopoverBackend));
 		}
 
 		public override void RunApplication ()

@@ -92,6 +92,7 @@ namespace Samples
 			AddSample (null, "Menu", typeof(MenuSamples));
 			AddSample (null, "Notebook", typeof(NotebookSample));
 			AddSample (null, "Paneds", typeof(PanedViews));
+			AddSample (null, "Popover", typeof(PopoverSample));
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
 			AddSample (null, "Spinners", typeof (Spinners));
 			AddSample (null, "Tables", typeof(Tables));
