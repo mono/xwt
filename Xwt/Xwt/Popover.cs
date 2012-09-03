@@ -31,7 +31,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public sealed class Popover : IDisposable
+	public class Popover : XwtComponent
 	{
 		public enum Position {
 			Top,
@@ -40,46 +40,109 @@ namespace Xwt
 				Right*/
 		}
 
-		IPopoverBackend backend;
-		Position arrowPosition;
-		WindowFrame parent;
+		WidgetSpacing padding;
+		Widget content;
+		bool shown;
 
-		public event EventHandler Closed;
-		
-		public Popover (WindowFrame parent, Position arrowPosition)
+		EventHandler closedEvent;
+
+		static Popover ()
 		{
-			this.arrowPosition = arrowPosition;
-			this.parent = parent;
-			backend = Xwt.Engine.WidgetRegistry.CreateBackend<IPopoverBackend> (GetType ());
-			
-			backend.Closed += (sender, e) => {
-				if (Closed != null)
-					Closed (this, EventArgs.Empty);
-			};
+			MapEvent (PopoverEvent.Closed, typeof(Popover), "OnClosed");
+		}
+
+		protected class PopoverBackendHost: BackendHost<Popover,IPopoverBackend>, ISpacingListener, IPopoverEventSink
+		{
+			protected override void OnBackendCreated ()
+			{
+				base.OnBackendCreated ();
+				Backend.Initialize (this);
+			}
+
+			public void OnSpacingChanged (WidgetSpacing source)
+			{
+			}
+
+			public void OnClosed ()
+			{
+			}
 		}
 		
-		public Func<Widget> ChildSource {
-			get;
-			set;
+		protected override BackendHost CreateBackendHost ()
+		{
+			return new PopoverBackendHost ();
 		}
 		
-		public void Run (Widget referenceWidget)
+		IPopoverBackend Backend {
+			get { return ((PopoverBackendHost) BackendHost).Backend; } 
+		}
+
+		public Popover ()
 		{
-			if (backend == null)
-				throw new InvalidOperationException ("The Popover was disposed");
-			if (ChildSource == null)
+			padding = new WidgetSpacing ((PopoverBackendHost) BackendHost);
+		}
+
+		public Popover (Widget content): this ()
+		{
+			Content = content;
+		}
+		
+		public Widget Content {
+			get { return content; }
+			set {
+				if (shown)
+					throw new InvalidOperationException ("The content widget can't be changed while the popover is visible");
+				content = value;
+			}
+		}
+		
+		public WidgetSpacing Padding {
+			get { return padding; }
+		}
+
+		public void Show (Position arrowPosition, Widget referenceWidget)
+		{
+			Show (arrowPosition, referenceWidget, Xwt.Rectangle.Zero);
+		}
+
+		public void Show (Position arrowPosition, Widget referenceWidget, Xwt.Rectangle positionRect)
+		{
+			if (content == null)
 				throw new InvalidOperationException ("A child widget source must be set before running the Popover");
-			backend.Run (parent,
-			             arrowPosition,
-			             ChildSource,
-			             referenceWidget);
+			Backend.Show (arrowPosition, referenceWidget, positionRect, content);
+			shown = true;
+		}
+
+		public void Hide ()
+		{
+			Backend.Hide ();
 		}
 		
-		public void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			if (backend != null) {
-				backend.Dispose ();
-				backend = null;
+			base.Dispose (disposing);
+			
+			// Don't dispose the backend if this object is being finalized
+			// The backend has to handle the finalizing on its own
+			if (disposing && BackendHost.BackendCreated)
+				Backend.Dispose ();
+		}
+
+		protected virtual void OnClosed ()
+		{
+			shown = false;
+			if (closedEvent != null)
+				closedEvent (this, EventArgs.Empty);
+		}
+		
+		public event EventHandler Closed {
+			add {
+				BackendHost.OnBeforeEventAdd (PopoverEvent.Closed, closedEvent);
+				closedEvent += value;
+			}
+			remove {
+				closedEvent -= value;
+				BackendHost.OnAfterEventRemove (PopoverEvent.Closed, closedEvent);
 			}
 		}
 	}
