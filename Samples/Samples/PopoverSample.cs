@@ -58,9 +58,17 @@ namespace Samples
 				table.Attach (new Label ("Size")  { TextAlignment = Alignment.End }, 0, 3);
 				table.Attach (new SpinButton (), 1, 3, AttachOptions.Fill, AttachOptions.Fill | AttachOptions.Expand);
 
+				var b = new Button ("Add more");
+				table.Attach (b, 0, 4);
+				int next = 5;
+				b.Clicked += delegate {
+					table.Attach (new Label ("Row " + next), 0, next++);
+				};
+
+				table.Margin.SetAll (20);
 				popover.Content = table;
 			}
-
+//			popover.Padding.SetAll (20);
 			popover.Show (Popover.Position.Top, (Button)sender);
 		}
 	}
