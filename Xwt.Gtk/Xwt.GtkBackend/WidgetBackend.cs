@@ -87,7 +87,7 @@ namespace Xwt.GtkBackend
 		
 		public object NativeWidget {
 			get {
-				return Widget;
+				return RootWidget;
 			}
 		}
 		
