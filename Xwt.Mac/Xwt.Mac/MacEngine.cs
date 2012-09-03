@@ -162,12 +162,7 @@ namespace Xwt.Mac
 		{
 		}
 	}
-	
-	public interface IViewContainer
-	{
-		void UpdateChildMargins (IMacViewBackend view);
-	}
-	
+
 	public class AppDelegate : NSApplicationDelegate
 	{
 		bool launched;

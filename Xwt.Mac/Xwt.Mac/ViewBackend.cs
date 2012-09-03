@@ -293,9 +293,8 @@ namespace Xwt.Mac
 		
 		public virtual void UpdateLayout ()
 		{
-			IViewContainer parent = Widget.Superview as IViewContainer;
-			if (parent != null)
-				parent.UpdateChildMargins (this);
+			var m = Frontend.Margin;
+			Widget.SetBoundsOrigin (new PointF (-(float)m.Left, -(float)m.Top));
 			if (autosize)
 				AutoUpdateSize ();
 		}
@@ -306,49 +305,6 @@ namespace Xwt.Mac
 			var h = Frontend.Surface.GetPreferredHeightForWidth (ws.NaturalSize);
 			Widget.SetWidgetBounds (new Rectangle (0, 0, ws.NaturalSize, h.NaturalSize));
 		}
-		
-		public static NSView AddMargins (IMacViewBackend backend, NSView currentChild)
-		{
-			if (backend == null)
-				return null;
-			if (backend.Frontend.Margin.HorizontalSpacing == 0 && backend.Frontend.Margin.VerticalSpacing == 0) {
-				if (currentChild is MarginView)
-					backend.View.RemoveFromSuperview ();
-				return backend.View;
-			}
-			else if (currentChild is MarginView) {
-				((MarginView)currentChild).UpdateLayout ();
-				return currentChild;
-			}
-			else {
-				var f = backend.Frontend;
-				var newFrame = backend.View.Frame;
-				newFrame.Width += (float) f.Margin.HorizontalSpacing;
-				newFrame.Height += (float) f.Margin.VerticalSpacing;
-				if (backend.View.Superview != null)
-					backend.View.RemoveFromSuperview ();
-				MarginView marginView = new MarginView (backend);
-				marginView.Frame = newFrame;
-				Rectangle frame = new Rectangle ((int)f.Margin.Left, (int)f.Margin.Top, (int)marginView.Frame.Width - f.Margin.HorizontalSpacing, (int)marginView.Frame.Height - f.Margin.VerticalSpacing);
-				return marginView;
-			}
-		}
-		
-/*		protected void UpdateChildMargins (IMenuBackend backend)
-		{
-			var viewObject = (IViewObject) view;
-			
-			MarginView marginView = new MarginView () { Frontend = frontend };
-			marginView.Frame = viewObject.View.Frame;
-			
-			view.RemoveFromSuperview ();
-			Widget.AddSubview (marginView);
-			
-			marginView.AddSubview (viewObject.View);
-			var f = viewObject.Frontend;
-			Rectangle frame = new Rectangle ((int)f.Margin.Left, (int)f.Margin.Top, (int)marginView.Frame.Width - f.Margin.HorizontalSpacing, (int)marginView.Frame.Height - f.Margin.VerticalSpacing);
-			viewObject.View.SetWidgetBounds (frame);
-		}*/
 		
 		public virtual void EnableEvent (object eventId)
 		{
@@ -609,51 +565,7 @@ namespace Xwt.Mac
 		
 		#endregion
 	}
-	
-	class MarginView: NSView, IViewObject, IViewContainer
-	{
-		public MarginView (IMacViewBackend c)
-		{
-			AddSubview (c.View);
-			ChildBackend = c;
-		}
-		
-		public NSView View {
-			get {
-				return this;
-			}
-		}
-		
-		public IMacViewBackend ChildBackend { get; set; }
-		
-		public void UpdateLayout ()
-		{
-			var rect = this.WidgetBounds ();
-			var f = ChildBackend.Frontend;
-			rect.X += f.Margin.Left;
-			rect.Width -= f.Margin.HorizontalSpacing;
-			rect.Y += f.Margin.Top;
-			rect.Height -= f.Margin.VerticalSpacing;
-			ChildBackend.View.SetWidgetBounds (rect);
-		}
-		
-		public override void SetFrameSize (SizeF newSize)
-		{
-			base.SetFrameSize (newSize);
-			UpdateLayout ();
-		}
 
-		public Widget Frontend { get; set; }
-
-		public void UpdateChildMargins (IMacViewBackend view)
-		{
-			if (view != ChildBackend)
-				throw new InvalidOperationException ();
-			
-			UpdateLayout ();
-		}
-	}
-	
 	public interface IMacViewBackend
 	{
 		NSView View { get; }
