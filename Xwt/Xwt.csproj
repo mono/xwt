@@ -352,6 +352,8 @@
     <Compile Include="Xwt\MarkdownView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Xwt\ClosedEventArgs.cs" />
+    <Compile Include="Xwt\ClosedHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

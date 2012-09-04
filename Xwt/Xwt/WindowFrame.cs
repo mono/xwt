@@ -62,6 +62,7 @@ namespace Xwt
 		EventHandler boundsChanged;
 		EventHandler shown;
 		EventHandler hidden;
+		ClosedHandler closed;
 
 		Point location;
 		Size size;
@@ -94,12 +95,18 @@ namespace Xwt
 			{
 				Parent.OnHidden ();
 			}
+
+			public virtual bool OnClosed ()
+			{
+				return Parent.OnClosed ();
+			}
 		}
 
 		static WindowFrame ()
 		{
 			MapEvent (WindowFrameEvent.Shown, typeof(WindowFrame), "OnShown");
 			MapEvent (WindowFrameEvent.Hidden, typeof(WindowFrame), "OnHidden");
+			MapEvent (WindowFrameEvent.Closed, typeof(WindowFrame), "OnClosed");
 		}
 
 		public WindowFrame ()
@@ -257,6 +264,15 @@ namespace Xwt
 				hidden (this, EventArgs.Empty);
 		}
 
+		protected virtual bool OnClosed ()
+		{
+			if (closed == null)
+				return false;
+			var eventArgs = new ClosedEventArgs();
+			closed (this, eventArgs);
+			return eventArgs.InterceptClose;
+		}
+
 		internal virtual void SetBackendSize (double width, double height)
 		{
 			size = new Size (width != -1 ? width : Width, height != -1 ? height : Height);
@@ -336,6 +352,17 @@ namespace Xwt
 			remove {
 				hidden -= value;
 				BackendHost.OnAfterEventRemove (WindowFrameEvent.Hidden, hidden);
+			}
+		}
+
+		public event ClosedHandler Closed {
+			add {
+				BackendHost.OnBeforeEventAdd (WindowFrameEvent.Closed, closed);
+				closed += value;
+			}
+			remove {
+				closed -= value;
+				BackendHost.OnAfterEventRemove (WindowFrameEvent.Closed, closed);
 			}
 		}
 	}
