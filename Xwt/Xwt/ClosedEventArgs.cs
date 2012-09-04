@@ -1,5 +1,5 @@
 // 
-// IWindowFrameBackend.cs
+// ClosedEventArgs.cs
 //  
 // Author:
 //       Konrad Kruczyński <kkruczynski@antmicro.com>
