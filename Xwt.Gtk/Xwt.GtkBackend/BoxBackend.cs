@@ -81,12 +81,9 @@ namespace Xwt.GtkBackend
 			public Widget Widget;
 		}
 		
-		public CustomContainer (IntPtr p): base (p)
-		{
-		}
-		
 		public CustomContainer ()
 		{
+			GtkWorkarounds.FixContainerLeak (this);
 			WidgetFlags |= Gtk.WidgetFlags.NoWindow;
 		}
 		

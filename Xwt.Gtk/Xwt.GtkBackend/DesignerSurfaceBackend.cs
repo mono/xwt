@@ -53,6 +53,8 @@ namespace Xwt.GtkBackend
 		
 		public DesignerBox ()
 		{
+			GtkWorkarounds.FixContainerLeak (this);
+
 			surface = new Gtk.EventBox ();
 			surface.ShowAll ();
 			surface.VisibleWindow = false;
