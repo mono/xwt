@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Wolfgang Silbermayr <wolfgang.silbermayr@gmail.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
+// Copyright (C) 2012 Wolfgang Silbermayr
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -66,6 +68,7 @@ namespace Xwt
 		EventHandler<ButtonEventArgs> buttonReleased;
 		EventHandler<MouseMovedEventArgs> mouseMoved;
 		EventHandler boundsChanged;
+        EventHandler<MouseScrolledEventArgs> mouseScrolled;
 		
 		EventHandler gotFocus;
 		EventHandler lostFocus;
@@ -254,6 +257,11 @@ namespace Xwt
 			{
 				Parent.OnBoundsChanged ();
 			}
+
+            void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
+            {
+                Parent.OnMouseScrolled(args);
+            }
 		}
 		
 		public Widget ()
@@ -285,6 +293,7 @@ namespace Xwt
 			MapEvent (WidgetEvent.PreferredWidthCheck, typeof (Widget), "OnGetPreferredWidth");
 			MapEvent (WidgetEvent.PreferredHeightForWidthCheck, typeof (Widget), "OnGetPreferredHeightForWidth");
 			MapEvent (WidgetEvent.PreferredWidthForHeightCheck, typeof (Widget), "OnGetPreferredWidthForHeight");
+			MapEvent (WidgetEvent.MouseScrolled, typeof(Widget), "OnMouseScrolled");
 		}
 		
 		internal protected static IBackend GetBackend (Widget w)
@@ -788,6 +797,12 @@ namespace Xwt
 			
 			OnBoundsChanged ();
 		}
+
+    protected virtual void OnMouseScrolled(MouseScrolledEventArgs args)
+    {
+        if (mouseScrolled != null)
+            mouseScrolled(this, args);
+    }
 
 		internal void SetExtractedAsNative ()
 		{
@@ -1354,6 +1369,17 @@ namespace Xwt
 			remove {
 				boundsChanged -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.BoundsChanged, boundsChanged);
+			}
+		}
+
+		public event EventHandler<MouseScrolledEventArgs> MouseScrolled {
+			add {
+				BackendHost.OnBeforeEventAdd(WidgetEvent.MouseScrolled, mouseScrolled);
+					mouseScrolled += value;
+			}
+			remove {
+				mouseScrolled -= value;
+				BackendHost.OnAfterEventRemove(WidgetEvent.MouseScrolled, mouseScrolled);
 			}
 		}
 	}

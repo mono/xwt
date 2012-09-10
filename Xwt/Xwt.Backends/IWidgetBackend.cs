@@ -131,6 +131,7 @@ namespace Xwt.Backends
 		void OnButtonReleased (ButtonEventArgs args);
 		void OnMouseMoved (MouseMovedEventArgs args);
 		void OnBoundsChanged ();
+        void OnMouseScrolled(MouseScrolledEventArgs args);
 
 		// Events
 		WidgetSize OnGetPreferredWidth ();
@@ -192,7 +193,8 @@ namespace Xwt.Backends
 		ButtonReleased = 1 << 16,
 		MouseMoved = 1 << 17,
 		DragStarted = 1 << 18,
-		BoundsChanged = 1 << 19
+		BoundsChanged = 1 << 19,
+        MouseScrolled = 1 << 20
 	}
 	
 	public class DragStartData
