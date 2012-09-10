@@ -162,6 +162,8 @@ namespace Xwt.GtkBackend
 				switch ((WindowFrameEvent)ev) {
 				case WindowFrameEvent.BoundsChanged:
 					Window.SizeAllocated += HandleWidgetSizeAllocated; break;
+				case WindowFrameEvent.Closed:
+					Window.DeleteEvent += HandleClosed; break;
 				}
 			}
 		}
@@ -172,6 +174,8 @@ namespace Xwt.GtkBackend
 				switch ((WindowFrameEvent)ev) {
 				case WindowFrameEvent.BoundsChanged:
 					Window.SizeAllocated -= HandleWidgetSizeAllocated; break;
+				case WindowFrameEvent.Closed:
+					Window.DeleteEvent -= HandleClosed; break;
 				}
 			}
 		}
@@ -180,6 +184,13 @@ namespace Xwt.GtkBackend
 		{
 			Toolkit.Invoke (delegate {
 				EventSink.OnBoundsChanged (Bounds);
+			});
+		}
+
+		void HandleClosed (object o, Gtk.DeleteEventArgs args)
+		{
+			Toolkit.Invoke(delegate {
+				args.RetVal = EventSink.OnClosed ();
 			});
 		}
 

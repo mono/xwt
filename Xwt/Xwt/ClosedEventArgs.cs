@@ -1,10 +1,10 @@
 // 
-// IWindowFrameBackend.cs
+// ClosedEventArgs.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Konrad Kruczyński <kkruczynski@antmicro.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 AntMicro <antmicro.com>
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,51 +23,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
-using Xwt.Drawing;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface IWindowFrameBackend: IBackend
+	public sealed class ClosedEventArgs : EventArgs
 	{
-		void Initialize (IWindowFrameEventSink eventSink);
-		void Dispose ();
-		
-		Rectangle Bounds { get; set; }
-		void Move (double x, double y);
-		void Resize (double width, double height);
-
-		bool Visible { get; set; }
-		string Title { get; set; }
-		
-		bool Decorated { get; set; }
-		bool ShowInTaskbar { get; set; }
-		void SetTransientFor (IWindowFrameBackend window);
-
-		void SetIcon (object imageBackend);
-		
-		/// <summary>
-		/// Presents a window to the user. This may mean raising the window in the stacking order,
-		/// deiconifying it, moving it to the current desktop, and/or giving it the keyboard focus
-		/// </summary>
-		void Present ();
-	}
-	
-	public interface IWindowFrameEventSink
-	{
-		void OnBoundsChanged (Rectangle bounds);
-		void OnShown ();
-		void OnHidden ();
-		bool OnClosed ();
-	}
-
-	[Flags]
-	public enum WindowFrameEvent
-	{
-		BoundsChanged = 1,
-		Shown = 2,
-		Hidden = 4,
-		Closed = 8
+		public bool InterceptClose { get; set; }
 	}
 }
 

@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Konrad Kruczyński <kkruczynski@antmicro.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
