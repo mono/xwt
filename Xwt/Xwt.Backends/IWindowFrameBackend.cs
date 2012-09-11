@@ -58,7 +58,7 @@ namespace Xwt.Backends
 		void OnBoundsChanged (Rectangle bounds);
 		void OnShown ();
 		void OnHidden ();
-		bool OnClosed ();
+		bool OnCloseRequested ();
 	}
 
 	[Flags]
@@ -67,7 +67,7 @@ namespace Xwt.Backends
 		BoundsChanged = 1,
 		Shown = 2,
 		Hidden = 4,
-		Closed = 8
+		CloseRequested = 8
 	}
 }
 
