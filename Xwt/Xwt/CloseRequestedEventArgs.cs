@@ -1,5 +1,5 @@
 // 
-// ClosedEventArgs.cs
+// CloseRequestedEventArgs.cs
 //  
 // Author:
 //       Konrad Kruczyński <kkruczynski@antmicro.com>
@@ -28,9 +28,9 @@ using System;
 
 namespace Xwt
 {
-	public sealed class ClosedEventArgs : EventArgs
+	public sealed class CloseRequestedEventArgs : EventArgs
 	{
-		public bool InterceptClose { get; set; }
+		public bool Handled { get; set; }
 	}
 }
 
