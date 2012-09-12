@@ -43,14 +43,14 @@ namespace Xwt.WPFBackend
 			Widget = new WpfLabel ();
 		}
 
-		SWC.Label Label {
-			get { return (SWC.Label)Widget; }
+		WpfLabel Label {
+			get { return (WpfLabel)Widget; }
 		}
 
 		public string Text {
-			get { return (string)Label.Content; }
+			get { return Label.TextBlock.Text; }
 			set {
-				Label.Content = value;
+				Label.TextBlock.Text = value;
 				Widget.InvalidateMeasure();
 			}
 		}
@@ -74,22 +74,55 @@ namespace Xwt.WPFBackend
 			set { Label.HorizontalContentAlignment = DataConverter.ToWpfAlignment (value); }
 		}
 
-		// TODO
-		public EllipsizeMode Ellipsize
-		{
-			get;
-			set;
+		public EllipsizeMode Ellipsize {
+			get {
+				if (Label.TextBlock.TextTrimming == TextTrimming.None)
+					return Xwt.EllipsizeMode.None;
+				else
+					return Xwt.EllipsizeMode.End;
+			}
+			set {
+				if (value == EllipsizeMode.None)
+					Label.TextBlock.TextTrimming = TextTrimming.None;
+				else
+					Label.TextBlock.TextTrimming = CharacterEllipsis;
+			}
+		}
+
+		public WrapMode Wrap {
+			get {
+				if (Label.TextBlock.TextTrimming == TextTrimming.None)
+					return WrapMode.None;
+				else
+					return WrapMode.Word;
+			} set {
+				if (value == WrapMode.None)
+					Label.TextBlock.TextTrimming = TextTrimming.None;
+				else
+					Label.TextBlock.TextTrimming = TextTrimming.WrapWithOverflow;
+			}
 		}
 	}
 
 	class WpfLabel : SWC.Label, IWpfWidget
 	{
+		public WpfLabel ()
+		{
+			TextBlock = new TextBlock ();
+			Content = TextBlock;
+		}
+
 		public WidgetBackend Backend { get; set; }
 
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
 			var s = base.MeasureOverride (constraint);
 			return Backend.MeasureOverride (constraint, s);
+		}
+
+		public TextBlock TextBlock {
+			get;
+			set;
 		}
 	}
 }

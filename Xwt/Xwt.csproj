@@ -356,6 +356,7 @@
     </Compile>
     <Compile Include="Xwt\CloseRequestedHandler.cs" />
     <Compile Include="Xwt\CloseRequestedEventArgs.cs" />
+    <Compile Include="Xwt\WrapMode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

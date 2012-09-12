@@ -137,6 +137,41 @@ namespace Xwt.GtkBackend
 				}
 			}
 		}
+
+		public WrapMode Wrap {
+			get {
+				if (!Label.LineWrap)
+					return WrapMode.None;
+				else {
+					switch (Label.LineWrapMode) {
+					case Pango.WrapMode.Char:
+						return WrapMode.Character;
+					case Pango.WrapMode.Word:
+						return WrapMode.Word;
+					case Pango.WrapMode.WordChar:
+						return WrapMode.WordAndCharacter;
+					}
+				}
+			}
+			set {
+				if (value == WrapMode.None)
+					Label.LineWrap = false;
+				else {
+					Label.LineWrap = true;
+					switch (value) {
+					case WrapMode.Character:
+						Label.LineWrapMode = Pango.WrapMode.Char;
+						break;
+					case WrapMode.Word:
+						Label.LineWrapMode = Pango.WrapMode.Word;
+						break;
+					case WrapMode.WordAndCharacter:
+						Label.LineWrapMode = Pango.WrapMode.WordChar;
+						break;
+					}
+				}
+			}
+		}
 	}
 }
 

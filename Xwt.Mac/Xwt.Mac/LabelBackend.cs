@@ -100,6 +100,28 @@ namespace Xwt.Mac
 				Widget.DrawsBackground = true;
 			}
 		}
+
+		public WrapMode Wrap {
+			get {
+				switch (Widget.Cell.LineBreakMode) {
+				case NSLineBreakMode.ByWordWrapping:
+					return WrapMode.Word;
+				case NSLineBreakMode.CharWrapping:
+					return WrapMode.Character;
+				default:
+					return WrapMode.None;
+				}
+			}
+			set {
+				switch (value) {
+				case WrapMode.Word:
+				case WrapMode.WordAndCharacter:
+					Widget.Cell.LineBreakMode = NSLineBreakMode.ByWordWrapping;
+				case WrapMode.Character:
+					Widget.Cell.LineBreakMode = NSLineBreakMode.CharWrapping;
+				}
+			}
+		}
 	}
 	
 	class TextFieldView: NSTextField, IViewObject

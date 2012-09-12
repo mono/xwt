@@ -73,6 +73,14 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
+
+		public WrapMode Wrap {
+			get { return Backend.Wrap; }
+			set {
+				Backend.Wrap = value;
+				OnPreferredSizeChanged ();
+			}
+		}
 	}
 }
 
