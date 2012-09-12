@@ -150,6 +150,8 @@ namespace Xwt.GtkBackend
 						return WrapMode.Word;
 					case Pango.WrapMode.WordChar:
 						return WrapMode.WordAndCharacter;
+					default:
+						return WrapMode.None;
 					}
 				}
 			}
