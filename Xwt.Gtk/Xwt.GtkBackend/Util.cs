@@ -140,7 +140,7 @@ namespace Xwt.GtkBackend
 					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
 				}
 				else {
-					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type, false), 0, id) };
+					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type.Id, false), 0, id) };
 				}
 				
 				foreach (var a in entries.Select (e => e.Target))
