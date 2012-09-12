@@ -32,6 +32,7 @@ namespace Xwt.Engine
 	{
 		static int inUserCode;
 		static Queue<Action> exitActions = new Queue<Action> ();
+		static bool exitCallbackRegistered;
 		
 		public static bool Invoke (Action a)
 		{
@@ -81,10 +82,29 @@ namespace Xwt.Engine
 			}
 			inUserCode--;
 		}
+
+		static void DispatchExitActions ()
+		{
+			// This pair of calls will flush the exit action queue
+			exitCallbackRegistered = false;
+			EnterUserCode ();
+			ExitUserCode (null);
+		}
 		
 		public static void QueueExitAction (Action a)
 		{
 			exitActions.Enqueue (a);
+
+			if (inUserCode == 0) {
+				// Not in an XWT handler. This may happen when embedding XWT in another toolkit and
+				// XWT widgets are manipulated from event handlers of the native toolkit which
+				// are not invoked using Toolkit.Invoke.
+				if (!exitCallbackRegistered) {
+					exitCallbackRegistered = true;
+					// Try to use a native method of queuing exit actions
+					Application.EngineBackend.InvokeBeforeMainLoop (DispatchExitActions);
+				}
+			}
 		}
 		
 		public static bool InUserCode {

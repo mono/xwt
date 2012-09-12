@@ -152,6 +152,20 @@ namespace Xwt.Backends
 		public virtual bool HandlesSizeNegotiation {
 			get { return false; }
 		}
+
+		/// <summary>
+		/// Registers a callback to be invoked just before the execution returns to the main loop
+		/// </summary>
+		/// <param name='action'>
+		/// Callback to execute
+		/// </param>
+		/// <remarks>
+		/// The default implementation does the invocation using InvokeAsync.
+		/// </remarks>			
+		public virtual void InvokeBeforeMainLoop (Action action)
+		{
+			InvokeAsync (action);
+		}
 	}
 }
 
