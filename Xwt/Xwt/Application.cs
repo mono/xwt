@@ -28,11 +28,18 @@ using System;
 using System.Reflection;
 using Xwt.Backends;
 using Xwt.Engine;
+using System.Threading.Tasks;
 
 namespace Xwt
 {
 	public static class Application
 	{
+		static readonly TaskScheduler taskScheduler = new XwtTaskScheduler ();
+
+		public static TaskScheduler UITaskScheduler {
+			get { return taskScheduler; }
+		}
+
 		static EngineBackend engine;
 		
 		internal static EngineBackend EngineBackend {
