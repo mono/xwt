@@ -117,8 +117,10 @@ namespace Xwt.Mac
 				case WrapMode.Word:
 				case WrapMode.WordAndCharacter:
 					Widget.Cell.LineBreakMode = NSLineBreakMode.ByWordWrapping;
+					break;
 				case WrapMode.Character:
 					Widget.Cell.LineBreakMode = NSLineBreakMode.CharWrapping;
+					break;
 				}
 			}
 		}
