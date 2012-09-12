@@ -101,8 +101,12 @@ namespace Xwt.Mac
 			}
 		}
 
+		// FIXME: technically not possible if we keep NSTextField
+		// as the backend because it's one-line only
 		public WrapMode Wrap {
 			get {
+				if (!Widget.Cell.Wraps)
+					return WrapMode.None;
 				switch (Widget.Cell.LineBreakMode) {
 				case NSLineBreakMode.ByWordWrapping:
 					return WrapMode.Word;
@@ -113,14 +117,19 @@ namespace Xwt.Mac
 				}
 			}
 			set {
-				switch (value) {
-				case WrapMode.Word:
-				case WrapMode.WordAndCharacter:
-					Widget.Cell.LineBreakMode = NSLineBreakMode.ByWordWrapping;
-					break;
-				case WrapMode.Character:
-					Widget.Cell.LineBreakMode = NSLineBreakMode.CharWrapping;
-					break;
+				if (value == WrapMode.None) {
+					Widget.Cell.Wraps = false;
+				} else {
+					Widget.Cell.Wraps = true;
+					switch (value) {
+					case WrapMode.Word:
+					case WrapMode.WordAndCharacter:
+						Widget.Cell.LineBreakMode = NSLineBreakMode.ByWordWrapping;
+						break;
+					case WrapMode.Character:
+						Widget.Cell.LineBreakMode = NSLineBreakMode.CharWrapping;
+						break;
+					}
 				}
 			}
 		}
