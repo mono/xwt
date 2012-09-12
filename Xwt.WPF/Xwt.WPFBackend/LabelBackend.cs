@@ -85,7 +85,7 @@ namespace Xwt.WPFBackend
 				if (value == EllipsizeMode.None)
 					Label.TextBlock.TextTrimming = TextTrimming.None;
 				else
-					Label.TextBlock.TextTrimming = CharacterEllipsis;
+					Label.TextBlock.TextTrimming = TextTrimming.CharacterEllipsis;
 			}
 		}
 
@@ -99,7 +99,7 @@ namespace Xwt.WPFBackend
 				if (value == WrapMode.None)
 					Label.TextBlock.TextTrimming = TextTrimming.None;
 				else
-					Label.TextBlock.TextTrimming = TextTrimming.WrapWithOverflow;
+					Label.TextBlock.TextTrimming = TextTrimming.WordEllipsis;
 			}
 		}
 	}
@@ -108,7 +108,7 @@ namespace Xwt.WPFBackend
 	{
 		public WpfLabel ()
 		{
-			TextBlock = new TextBlock ();
+			TextBlock = new SWC.TextBlock ();
 			Content = TextBlock;
 		}
 
@@ -120,7 +120,7 @@ namespace Xwt.WPFBackend
 			return Backend.MeasureOverride (constraint, s);
 		}
 
-		public TextBlock TextBlock {
+		public SWC.TextBlock TextBlock {
 			get;
 			set;
 		}

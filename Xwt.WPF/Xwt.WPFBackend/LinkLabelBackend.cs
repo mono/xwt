@@ -81,6 +81,11 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
+		public WrapMode Wrap {
+			get;
+			set;
+		}
+
 		public Xwt.Drawing.Color TextColor
 		{
 			get
