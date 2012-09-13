@@ -122,6 +122,7 @@ namespace Xwt.GtkBackend
 		{
 			children.Remove (widget);
 			widget.Unparent ();
+			QueueResize ();
 		}
 		
 		protected override void OnUnrealized ()
