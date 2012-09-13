@@ -101,7 +101,8 @@ namespace Xwt.GtkBackend
 			if (b.Type == ButtonType.DropDown) {
 				if (contentWidget != null) {
 					Gtk.HBox box = new Gtk.HBox (false, 3);
-					box.PackStart (contentWidget, true, true, 0);
+					box.PackStart (contentWidget, true, true, 3);
+					box.PackStart (new Gtk.VSeparator (), true, true, 0);
 					box.PackStart (new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out), false, false, 0);
 					contentWidget = box;
 				} else
