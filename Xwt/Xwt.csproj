@@ -354,6 +354,7 @@
     </Compile>
     <Compile Include="Xwt\CloseRequestedHandler.cs" />
     <Compile Include="Xwt\CloseRequestedEventArgs.cs" />
+    <Compile Include="Xwt\ExceptionEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

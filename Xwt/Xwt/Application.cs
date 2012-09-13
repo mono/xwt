@@ -152,7 +152,7 @@ namespace Xwt
 			return new StatusIcon ();
 		}
 
-		public static event Action<Exception> OnException;
+		public static event EventHandler<ExceptionEventArgs> UnhandledException;
 		
 		class Timer: IDisposable
 		{
@@ -204,10 +204,10 @@ namespace Xwt
 		
 		internal static void NotifyException (Exception ex)
 		{
-			var onException = OnException;
-			if (onException != null)
+			var unhandledException = UnhandledException;
+			if (unhandledException != null)
 			{
-				onException (ex);
+				unhandledException (null, new ExceptionEventArgs (ex));
 			}
 			else
 			{
