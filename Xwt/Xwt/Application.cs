@@ -158,6 +158,8 @@ namespace Xwt
 		{
 			return new StatusIcon ();
 		}
+
+		public static event Action<Exception> OnException;
 		
 		class Timer: IDisposable
 		{
@@ -209,7 +211,15 @@ namespace Xwt
 		
 		internal static void NotifyException (Exception ex)
 		{
-			Console.WriteLine (ex);
+			var onException = OnException;
+			if (onException != null)
+			{
+				onException (ex);
+			}
+			else
+			{
+				Console.WriteLine (ex);
+			}
 		}
 	}
 }
