@@ -1146,6 +1146,7 @@ namespace Xwt
 		{
 			if (children == null || !children.Remove (w))
 				throw new InvalidOperationException ("Widget is not a child of this widget");
+			w.Parent = null;
 		}
 		
 		/// <summary>
