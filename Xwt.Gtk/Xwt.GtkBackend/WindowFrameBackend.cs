@@ -162,8 +162,8 @@ namespace Xwt.GtkBackend
 				switch ((WindowFrameEvent)ev) {
 				case WindowFrameEvent.BoundsChanged:
 					Window.SizeAllocated += HandleWidgetSizeAllocated; break;
-				case WindowFrameEvent.Closed:
-					Window.DeleteEvent += HandleClosed; break;
+				case WindowFrameEvent.CloseRequested:
+					Window.DeleteEvent += HandleCloseRequested; break;
 				}
 			}
 		}
@@ -174,8 +174,8 @@ namespace Xwt.GtkBackend
 				switch ((WindowFrameEvent)ev) {
 				case WindowFrameEvent.BoundsChanged:
 					Window.SizeAllocated -= HandleWidgetSizeAllocated; break;
-				case WindowFrameEvent.Closed:
-					Window.DeleteEvent -= HandleClosed; break;
+				case WindowFrameEvent.CloseRequested:
+					Window.DeleteEvent -= HandleCloseRequested; break;
 				}
 			}
 		}
@@ -187,10 +187,10 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		void HandleClosed (object o, Gtk.DeleteEventArgs args)
+		void HandleCloseRequested (object o, Gtk.DeleteEventArgs args)
 		{
 			Toolkit.Invoke(delegate {
-				args.RetVal = EventSink.OnClosed ();
+				args.RetVal = EventSink.OnCloseRequested ();
 			});
 		}
 

@@ -62,7 +62,7 @@ namespace Xwt
 		EventHandler boundsChanged;
 		EventHandler shown;
 		EventHandler hidden;
-		ClosedHandler closed;
+		CloseRequestedHandler closeRequested;
 
 		Point location;
 		Size size;
@@ -96,9 +96,9 @@ namespace Xwt
 				Parent.OnHidden ();
 			}
 
-			public virtual bool OnClosed ()
+			public virtual bool OnCloseRequested ()
 			{
-				return Parent.OnClosed ();
+				return Parent.OnCloseRequested ();
 			}
 		}
 
@@ -106,7 +106,7 @@ namespace Xwt
 		{
 			MapEvent (WindowFrameEvent.Shown, typeof(WindowFrame), "OnShown");
 			MapEvent (WindowFrameEvent.Hidden, typeof(WindowFrame), "OnHidden");
-			MapEvent (WindowFrameEvent.Closed, typeof(WindowFrame), "OnClosed");
+			MapEvent (WindowFrameEvent.CloseRequested, typeof(WindowFrame), "OnCloseRequested");
 		}
 
 		public WindowFrame ()
@@ -264,13 +264,13 @@ namespace Xwt
 				hidden (this, EventArgs.Empty);
 		}
 
-		protected virtual bool OnClosed ()
+		protected virtual bool OnCloseRequested ()
 		{
-			if (closed == null)
+			if (closeRequested == null)
 				return false;
-			var eventArgs = new ClosedEventArgs();
-			closed (this, eventArgs);
-			return eventArgs.InterceptClose;
+			var eventArgs = new CloseRequestedEventArgs();
+			closeRequested (this, eventArgs);
+			return eventArgs.Handled;
 		}
 
 		internal virtual void SetBackendSize (double width, double height)
@@ -355,14 +355,14 @@ namespace Xwt
 			}
 		}
 
-		public event ClosedHandler Closed {
+		public event CloseRequestedHandler CloseRequested {
 			add {
-				BackendHost.OnBeforeEventAdd (WindowFrameEvent.Closed, closed);
-				closed += value;
+				BackendHost.OnBeforeEventAdd (WindowFrameEvent.CloseRequested, closeRequested);
+				closeRequested += value;
 			}
 			remove {
-				closed -= value;
-				BackendHost.OnAfterEventRemove (WindowFrameEvent.Closed, closed);
+				closeRequested -= value;
+				BackendHost.OnAfterEventRemove (WindowFrameEvent.CloseRequested, closeRequested);
 			}
 		}
 	}
