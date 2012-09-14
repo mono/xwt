@@ -166,7 +166,7 @@ namespace Xwt
 						Backend.EmitEndParagraph (buffer);
 						wasParagraph = false;
 					}
-					Backend.EmitCodeBlock (buffer, codeblock.ToString ());
+					Backend.EmitCodeBlock (buffer, codeblock.Replace ("\n", Environment.NewLine).ToString ());
 				}
 
 				// List
