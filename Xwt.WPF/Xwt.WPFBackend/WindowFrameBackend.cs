@@ -173,6 +173,9 @@ namespace Xwt.WPFBackend
 					case WindowFrameEvent.Hidden:
 						window.IsVisibleChanged += HiddenHandler;
 						break;
+					case WindowFrameEvent.CloseRequested:
+						window.Closing += ClosingHandler;
+						break;
 				}
 			}
 		}
@@ -192,6 +195,9 @@ namespace Xwt.WPFBackend
 						break;
 					case WindowFrameEvent.Hidden:
 						window.IsVisibleChanged -= HiddenHandler;
+						break;
+					case WindowFrameEvent.CloseRequested:
+						window.Closing -= ClosingHandler;
 						break;
 				}
 			}
@@ -224,6 +230,14 @@ namespace Xwt.WPFBackend
 					eventSink.OnHidden ();
 				});
 			}
+		}
+
+		private void ClosingHandler (object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			Toolkit.Invoke (delegate ()
+			{
+				e.Cancel = eventSink.OnCloseRequested ();
+			});
 		}
 
 		protected Rectangle ToNonClientRect (Rectangle rect)

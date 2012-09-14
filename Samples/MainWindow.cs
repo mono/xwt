@@ -117,6 +117,13 @@ namespace Samples
 			Content = box;
 			
 			samplesTree.SelectionChanged += HandleSamplesTreeSelectionChanged;
+
+			CloseRequested += HandleCloseRequested;
+		}
+
+		void HandleCloseRequested (object sender, CloseRequestedEventArgs args)
+		{
+			args.Handled = !MessageDialog.Confirm ("Samples will be closed", Command.Ok);
 		}
 		
 		protected override void Dispose (bool disposing)
