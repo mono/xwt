@@ -132,6 +132,17 @@ namespace Xwt
 				// Title (setex-style)
 				else if (i < lines.Length - 1 && !string.IsNullOrEmpty (lines[i + 1]) && lines[i + 1].All (c => c == '=' || c == '-')) {
 					var level = lines[i + 1][0] == '=' ? 1 : 2;
+					//
+					//	FooBarBaz
+					//	SomeHeader
+					//	=========
+
+					// In the above Markdown snippet we generate a paragraph and then want to insert a header, so we
+					// must close the paragraph containing 'FooBarBaz' first. Or we should disallow this construct
+					if (wasParagraph) {
+						wasParagraph = false;
+						Backend.EmitEndParagraph (buffer);
+					}
 					Backend.EmitHeader (buffer, line, level);
 					i++;
 				}
