@@ -178,6 +178,10 @@ namespace Xwt
 					wasParagraph = true;
 				}
 			}
+			
+			// If we don't end in a newline we need to end the open paragrah
+			if (wasParagraph)
+				Backend.EmitEndParagraph (buffer);
 
 			return buffer;
 		}
