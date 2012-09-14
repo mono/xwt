@@ -151,6 +151,10 @@ namespace Xwt
 						codeblock.AppendLine (line.StartsWith ("\t") ? line.Substring (1) : line.Substring (4));
 					}
 					i--;
+					if (wasParagraph) {
+						Backend.EmitEndParagraph (buffer);
+						wasParagraph = false;
+					}
 					Backend.EmitCodeBlock (buffer, codeblock.ToString ());
 				}
 
