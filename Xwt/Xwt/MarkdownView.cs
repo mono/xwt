@@ -81,6 +81,7 @@ namespace Xwt
 		public MarkdownView ()
 		{
 			NavigateToUrl += delegate { }; // ensure the virtual method is always called
+			Markdown = string.Empty;
 		}
 
 		protected override BackendHost CreateBackendHost ()
