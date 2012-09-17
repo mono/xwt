@@ -65,6 +65,7 @@ namespace Xwt
 
 			public void OnClosed ()
 			{
+				((Popover)Parent).OnClosed ();
 			}
 		}
 		
