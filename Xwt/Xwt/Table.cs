@@ -31,6 +31,7 @@ using System.ComponentModel;
 
 using Xwt.Backends;
 using System.Windows.Markup;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -77,6 +78,8 @@ namespace Xwt
 		public Table ()
 		{
 			children = new ChildrenCollection<TablePlacement> ((WidgetBackendHost)BackendHost);
+			// For some reason the table has a black background by default in WPF. Lets work around that
+			BackgroundColor = Colors.White;
 		}
 		
 		[DefaultValue(6)]
