@@ -351,15 +351,17 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Xwt.Backends\ISpinnerBackend.cs" />
-    <Compile Include="Xwt.Backends\IMarkdownViewBackend.cs" />
-    <Compile Include="Xwt\MarkdownView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Xwt\CloseRequestedHandler.cs" />
     <Compile Include="Xwt\CloseRequestedEventArgs.cs" />
     <Compile Include="Xwt\WrapMode.cs" />
     <Compile Include="Xwt\XwtTaskScheduler.cs" />
     <Compile Include="Xwt\ExceptionEventArgs.cs" />
+    <Compile Include="Xwt\RichTextView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Xwt.Backends\IRichTextViewBackend.cs" />
+    <Compile Include="Xwt.Formats\TextFormat.cs" />
+    <Compile Include="Xwt.Formats\MarkdownTextFormat.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -372,4 +374,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Xwt.Formats\" />
+  </ItemGroup>
 </Project>

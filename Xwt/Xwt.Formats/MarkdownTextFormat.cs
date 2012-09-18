@@ -1,10 +1,10 @@
 //
-// MarkdownView.cs
+// MarkdownTextFormat.cs
 //
 // Author:
-//       Jérémie Laval <jeremie.laval@xamarin.com>
+//       Alex Corrado <corrado@xamarin.com>
 //
-// Copyright (c) 2012 Xamarin, Inc.
+// Copyright (c) 2012 Xamarin Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,79 +23,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 using Xwt.Backends;
 
-namespace Xwt
+namespace Xwt.Formats
 {
-	public class MarkdownView : Widget
+	public class MarkdownTextFormat : TextFormat
 	{
-		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IMarkdownViewEventSink
+
+		public override void Parse (Stream input, IRichTextBuffer buffer)
 		{
-			public void OnNavigateToUrl (Uri uri)
-			{
-				((MarkdownView) Parent).OnNavigateToUrl (new NavigateToUrlEventArgs (uri));
-			}
-		}
-
-		string markdown;
-
-		IMarkdownViewBackend Backend {
-			get { return (IMarkdownViewBackend) BackendHost.Backend; }
-		}
-
-		public string Markdown
-		{
-			get
-			{
-				return markdown;
-			}
-			set
-			{
-				markdown = value;
-				object buffer = ParseMarkdown (value);
-				Backend.SetBuffer (buffer);
-			}
-		}
-
-		EventHandler<NavigateToUrlEventArgs> navigateToUrl;
-		public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl
-		{
-			add
-			{
-				BackendHost.OnBeforeEventAdd (MarkdownViewEvent.NavigateToUrl, navigateToUrl);
-				navigateToUrl += value;
-			}
-			remove
-			{
-				navigateToUrl -= value;
-				BackendHost.OnAfterEventRemove (MarkdownViewEvent.NavigateToUrl, navigateToUrl);
-			}
-		}
-
-		public MarkdownView ()
-		{
-			NavigateToUrl += delegate { }; // ensure the virtual method is always called
-			Markdown = string.Empty;
-		}
-
-		protected override BackendHost CreateBackendHost ()
-		{
-			return new WidgetBackendHost ();
-		}
-
-		protected virtual void OnNavigateToUrl (NavigateToUrlEventArgs e)
-		{
-			if (navigateToUrl != null)
-				navigateToUrl (this, e);
-
-			if (!e.Handled)
-				Application.EngineBackend.ShowWebBrowser (e);
+			using (var reader = new StreamReader (input))
+				ParseMarkdown (reader.ReadToEnd (), buffer);
 		}
 
 		/* The subset we support:
@@ -108,10 +54,9 @@ namespace Xwt
 		 *   - Inline code is wrapped between the '`' character
 		 *   - horizontal ruler, a line with at least 3 hyphens
 		 */
-		object ParseMarkdown (string markdown)
+		void ParseMarkdown (string markdown, IRichTextBuffer buffer)
 		{
 			var lines = markdown.Replace ("\r\n", "\n").Split (new[] { '\n' });
-			var buffer = Backend.CreateBuffer ();
 			var wasParagraph = false;
 
 			for (int i = 0; i < lines.Length; i++) {
@@ -119,7 +64,7 @@ namespace Xwt
 				// New paragraph
 				if (string.IsNullOrWhiteSpace (line)) {
 					if (wasParagraph) {
-						Backend.EmitEndParagraph (buffer);
+						buffer.EmitEndParagraph ();
 						wasParagraph = false;
 					}
 				}
@@ -127,7 +72,7 @@ namespace Xwt
 				// Title
 				else if (line.StartsWith ("#")) {
 					var level = line.TakeWhile (c => c == '#').Count ();
-					Backend.EmitHeader (buffer, line.Trim (' ', '#'), level);
+					buffer.EmitHeader (line.Trim (' ', '#'), level);
 				}
 
 				// Title (setex-style)
@@ -142,15 +87,15 @@ namespace Xwt
 					// must close the paragraph containing 'FooBarBaz' first. Or we should disallow this construct
 					if (wasParagraph) {
 						wasParagraph = false;
-						Backend.EmitEndParagraph (buffer);
+						buffer.EmitEndParagraph ();
 					}
-					Backend.EmitHeader (buffer, line, level);
+					buffer.EmitHeader (line, level);
 					i++;
 				}
 
 				// Ruler
 				else if (line.All (c => c == '-') && line.Length >= 3) {
-					Backend.EmitHorizontalRuler (buffer);
+					buffer.EmitHorizontalRuler ();
 				}
 
 				// Code blocks
@@ -164,45 +109,43 @@ namespace Xwt
 					}
 					i--;
 					if (wasParagraph) {
-						Backend.EmitEndParagraph (buffer);
+						buffer.EmitEndParagraph ();
 						wasParagraph = false;
 					}
-					Backend.EmitCodeBlock (buffer, codeblock.Replace ("\n", Environment.NewLine).ToString ());
+					buffer.EmitCodeBlock (codeblock.Replace ("\n", Environment.NewLine).ToString ());
 				}
 
 				// List
 				else if (new[] { '+', '-', '*' }.Contains (line.TrimStart()[0])) {
-					Backend.EmitOpenList (buffer);
+					buffer.EmitOpenList ();
 					var bullet = line[0].ToString ();
 					for (; i < lines.Length; i++) {
 						line = lines[i];
 						if (!line.StartsWith (bullet))
 							break;
-						Backend.EmitOpenBullet (buffer);
+						buffer.EmitOpenBullet ();
 						ParseText (buffer, line.TrimStart (' ', '-'));
-						Backend.EmitCloseBullet (buffer);
+						buffer.EmitCloseBullet ();
 					}
 					i--;
-					Backend.EmitCloseList (buffer);
+					buffer.EmitCloseList ();
 				}
 
 				// Normal paragraph
 				else {
 					if (!wasParagraph)
-						Backend.EmitStartParagraph (buffer);
+						buffer.EmitStartParagraph ();
 					ParseText (buffer, line);
 					wasParagraph = true;
 				}
 			}
-			
+
 			// If we don't end in a newline we need to end the open paragrah
 			if (wasParagraph)
-				Backend.EmitEndParagraph (buffer);
-
-			return buffer;
+				buffer.EmitEndParagraph ();
 		}
 
-		void ParseText (object buffer, string line)
+		void ParseText (IRichTextBuffer buffer, string line)
 		{
 			// First transform any embedded URL into a proper format
 			line = autoUrl.Replace (line, m => string.Format ("[{0}]({1})", m.Value, m.Value));
@@ -213,34 +156,34 @@ namespace Xwt
 			while (match.Success) {
 				var text = line.Substring (currentIndex, match.Index - currentIndex);
 				if (!string.IsNullOrEmpty (text))
-					Backend.EmitText (buffer, text);
+					buffer.EmitText (text);
 				// Emphasis
 				if (match.Groups["char"].Success) {
-					MarkdownInlineStyle style = 0;
+					RichTextInlineStyle style = 0;
 					switch (match.Groups["char"].Value[0]) {
 					case '*':
-						style |= MarkdownInlineStyle.Bold;
+						style |= RichTextInlineStyle.Bold;
 						break;
 					case '_':
-						style |= MarkdownInlineStyle.Italic;
+						style |= RichTextInlineStyle.Italic;
 						break;
 					case '`':
-						style |= MarkdownInlineStyle.Monospace;
+						style |= RichTextInlineStyle.Monospace;
 						break;
 					}
-					Backend.EmitStyledText (buffer, match.Groups["emph"].Value, style);
+					buffer.EmitStyledText (match.Groups["emph"].Value, style);
 				}
 				// Link
 				else {
 					var url = match.Groups["url"].Value;
 					var name = match.Groups["name"].Value;
-					Backend.EmitLink (buffer, url, name);
+					buffer.EmitLink (url, name);
 				}
 				currentIndex = match.Index + match.Length;
 				match = match.NextMatch ();
 			}
 			// Add remaining text
-			Backend.EmitText (buffer, line.Substring (currentIndex));
+			buffer.EmitText (line.Substring (currentIndex));
 		}
 
 		static Regex richText = new Regex (@"\[(?<name>.+)\]\((?<url>.+)\)

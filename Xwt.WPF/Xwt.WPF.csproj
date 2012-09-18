@@ -65,7 +65,6 @@
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ExRichTextBox.cs" />
     <Compile Include="Xwt.WPFBackend\LinkLabelBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\MarkdownViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\PopoverBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ProgressBarBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CustomWidgetBackend.cs" />
@@ -133,6 +132,7 @@
     <Compile Include="Xwt.WPFBackend\NotebookBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ScrollAdjustmentBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CustomScrollViewPort.cs" />
+    <Compile Include="Xwt.WPFBackend\RichTextViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
