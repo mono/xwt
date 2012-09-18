@@ -1045,8 +1045,14 @@ namespace Xwt
 					delayedSizeNegotiationRequested = true;
 					Toolkit.QueueExitAction (DelayedResizeRequest);
 				}
-			} else if (ParentWindow is Window) {
+			}
+			else if (ParentWindow is Window) {
 				QueueWindowSizeNegotiation ((Window)ParentWindow);
+			}
+			else {
+				// This may happen when the widget is embedded in another toolkit. In this case,
+				// this is the root widget, so it has to reallocate itself
+				QueueForReallocate (this);
 			}
 		}
 
