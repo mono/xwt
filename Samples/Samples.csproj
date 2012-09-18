@@ -159,7 +159,9 @@
     <Compile Include="Samples\Markdown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Samples\PopoverSample.cs" />
+    <Compile Include="Samples\PopoverSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

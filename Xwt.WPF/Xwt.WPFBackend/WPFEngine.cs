@@ -91,8 +91,9 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (ListView), typeof (ListViewBackend));
 			WidgetRegistry.RegisterBackend (typeof (ListStore), typeof (ListDataSource));
 			WidgetRegistry.RegisterBackend (typeof (ListBox), typeof (ListBoxBackend));
-			WidgetRegistry.RegisterBackend (typeof (ProgressBar), typeof (ProgressBarBackend));
 			WidgetRegistry.RegisterBackend (typeof (Placement), typeof (BoxBackend));
+			WidgetRegistry.RegisterBackend (typeof (Popover), typeof (PopoverBackend));
+			WidgetRegistry.RegisterBackend (typeof (ProgressBar), typeof (ProgressBarBackend));
 			WidgetRegistry.RegisterBackend (typeof (MarkdownView), typeof (MarkdownViewBackend));
 			WidgetRegistry.RegisterBackend (typeof (LinkLabel), typeof (LinkLabelBackend));
 			WidgetRegistry.RegisterBackend (typeof (Spinner), typeof (SpinnerBackend));
