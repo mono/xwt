@@ -198,7 +198,7 @@ namespace Xwt.WPFBackend
 				writer.WriteAttributeString ("xml", "space", null, "preserve");
 				writer.WriteAttributeString ("TextIndent", "0");
 				writer.WriteAttributeString ("Margin", "50,0,0,0");
-				writer.WriteAttributeString ("FontFamily", "GlobalMonospace.CompositeFont");
+				writer.WriteAttributeString ("FontFamily", "Global Monospace");
 				writer.WriteString (code);
 				EmitEndParagraph ();
 			}
@@ -214,7 +214,7 @@ namespace Xwt.WPFBackend
 
 				case RichTextInlineStyle.Monospace:
 					writer.WriteStartElement ("Run");
-					writer.WriteAttributeString ("FontFamily", "GlobalMonospace.CompositeFont");
+					writer.WriteAttributeString ("FontFamily", "Global Monospace");
 					writer.WriteString (text);
 					break;
 
