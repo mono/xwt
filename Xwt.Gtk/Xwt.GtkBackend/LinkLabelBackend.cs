@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Security;
 using Xwt;
 using Xwt.Backends;
 using Xwt.Engine;
@@ -50,7 +51,7 @@ namespace Xwt.GtkBackend
 			set {
 				uri = value;
 				var text = Label.Text;
-				string url = string.Format ("<a href=\"{1}\">{0}</a>", text, uri.ToString ());
+				string url = string.Format ("<a href=\"{1}\">{0}</a>", SecurityElement.Escape (text), SecurityElement.Escape (uri.ToString ()));
 				Label.Markup = url;
 			}
 		}
