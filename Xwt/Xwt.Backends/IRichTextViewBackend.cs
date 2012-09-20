@@ -12,9 +12,10 @@ namespace Xwt.Backends
 	[Flags]
 	public enum RichTextInlineStyle
 	{
-		Italic,
-		Bold,
-		Monospace
+		Normal    = 0,
+		Italic    = 1 << 0,
+		Bold      = 1 << 1,
+		Monospace = 1 << 2,
 	}
 
 	public interface IRichTextViewBackend : IWidgetBackend
@@ -27,17 +28,15 @@ namespace Xwt.Backends
 
 	public interface IRichTextBuffer
 	{
-		// Emit unstyled text
-		void EmitText (string text);
-
-		// Emit text using combination of the MarkdownInlineStyle
-		void EmitStyledText (string text, RichTextInlineStyle style);
+		// Emit text using specified style mask
+		void EmitText (string text, RichTextInlineStyle style);
 
 		// Emit a header (h1, h2, ...)
-		void EmitHeader (string title, int level);
+		void EmitStartHeader (int level);
+		void EmitEndHeader ();
 
 		// What's outputed afterwards will be a in new paragrapgh
-		void EmitStartParagraph ();
+		void EmitStartParagraph (int indentLevel);
 		void EmitEndParagraph ();
 
 		// Emit a list
@@ -48,8 +47,9 @@ namespace Xwt.Backends
 		void EmitCloseBullet ();
 		void EmitCloseList ();
 
-		// Emit a link displaying text and opening the href URL
-		void EmitLink (string href, string text);
+		// Emit a link opening the href URL with the mouseover title
+		void EmitStartLink (string href, string title);
+		void EmitEndLink ();
 
 		// Emit code in a preformated blockquote
 		void EmitCodeBlock (string code);

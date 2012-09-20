@@ -128,18 +128,32 @@ namespace Xwt.WPFBackend
 
 			public void EmitText (string text)
 			{
-				if (!string.IsNullOrEmpty (text))
-					writer.WriteElementString ("Run", text);
+				if (string.IsNullOrEmpty(text))
+					return;
+
+				var lines = text.Split (new[] { Environment.NewLine }, StringSplitOptions.None);
+				var first = true;
+				foreach (var line in lines) {
+					if (!first) {
+						writer.WriteStartElement ("LineBreak");
+						writer.WriteEndElement ();
+					}
+					writer.WriteElementString ("Run", line);
+					first = false;
+				}
 			}
 
-			public void EmitHeader (string title, int level)
+			public void EmitStartHeader (int level)
 			{
-				EmitStartParagraph ();
-				writer.WriteStartElement ("Run");
+				EmitStartParagraph (0);
+				writer.WriteStartElement ("Span");
 				writer.WriteAttributeString ("FontSize", (FontSize + HeaderIncrement * level).ToString ());
-				writer.WriteString (title);
-				writer.WriteEndElement ();
-				EmitEndParagraph ();
+			}
+
+			public void EmitEndHeader()
+			{
+				writer.WriteEndElement();
+				EmitEndParagraph();
 			}
 
 			public void EmitOpenList ()
@@ -150,7 +164,7 @@ namespace Xwt.WPFBackend
 			public void EmitOpenBullet ()
 			{
 				writer.WriteStartElement ("ListItem");
-				EmitStartParagraph ();
+				EmitStartParagraph (0);
 			}
 
 			public void EmitCloseBullet ()
@@ -165,17 +179,22 @@ namespace Xwt.WPFBackend
 				writer.WriteEndElement ();
 			}
 
-			public void EmitLink (string href, string text)
+			public void EmitStartLink (string href, string title)
 			{
 				writer.WriteStartElement ("Hyperlink");
 				writer.WriteAttributeString ("NavigateUri", href);
-				EmitText (text);
-				writer.WriteEndElement ();
+				if (!string.IsNullOrEmpty (title))
+					writer.WriteAttributeString ("ToolTip", title);
+			}
+
+			public void EmitEndLink()
+			{
+				writer.WriteEndElement();
 			}
 
 			public void EmitCodeBlock (string code)
 			{
-				EmitStartParagraph ();
+				EmitStartParagraph (0);
 				writer.WriteAttributeString ("xml", "space", null, "preserve");
 				writer.WriteAttributeString ("TextIndent", "0");
 				writer.WriteAttributeString ("Margin", "50,0,0,0");
@@ -184,7 +203,7 @@ namespace Xwt.WPFBackend
 				EmitEndParagraph ();
 			}
 
-			public void EmitStyledText (string text, RichTextInlineStyle style)
+			public void EmitText (string text, RichTextInlineStyle style)
 			{
 				switch (style) {
 				case RichTextInlineStyle.Bold:
@@ -198,12 +217,17 @@ namespace Xwt.WPFBackend
 					writer.WriteAttributeString ("FontFamily", "GlobalMonospace.CompositeFont");
 					writer.WriteString (text);
 					break;
+
+				default:
+					EmitText (text);
+					return;
 				}
 				writer.WriteEndElement ();
 			}
 
-			public void EmitStartParagraph ()
+			public void EmitStartParagraph (int indentLevel)
 			{
+				//FIXME: indentLevel
 				writer.WriteStartElement ("Paragraph");
 			}
 
