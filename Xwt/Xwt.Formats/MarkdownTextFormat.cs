@@ -162,10 +162,6 @@ namespace Xwt.Formats
 
 		static void ParseInline (IRichTextBuffer buffer, string line)
 		{
-			// First transform any embedded URL into a proper format
-			line = autoUrl.Replace (line, m => string.Format ("[{0}]({1})", m.Value, m.Value.Replace (")", "%29")));
-
-			// Then do the rich text parsing
 			var match = inline.Match (line);
 			int currentIndex = 0;
 			while (match.Success) {
@@ -179,7 +175,7 @@ namespace Xwt.Formats
 					// Link
 					{
 						var url = match.Groups["url"].Value;
-						var name = match.Groups["name"].Value;
+						var name = match.Groups["name"].Success? match.Groups["name"].Value : url;
 						var title = match.Groups["title"].Value;
 						buffer.EmitStartLink (url, title);
 						ParseText (buffer, name);
@@ -230,7 +226,9 @@ namespace Xwt.Formats
 		}
 
 		static readonly Regex escape = new Regex (@"\\(?<next>.)", RegexOptions.Singleline | RegexOptions.Compiled);
-		static readonly Regex inline = new Regex (@"\[(?<name>.+)\]\((?<url>[^\s""\)]+)(?:[ \t]*""(?<title>.*)"")?\)" //link
+		static readonly Regex inline = new Regex (@"\[(?<name>.+)\]\((?<url>[^\s""\)]+)(?:[ \t]*""(?<title>.*)"")?\)" + //link
+		                                          // See http://daringfireball.net/2010/07/improved_regex_for_matching_urls
+		                                          @"|(?i)\b(?<url>(?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'"".,<>?«»“”‘’]))"
 		                                               //FIXME: image, etc...
 		                                           , RegexOptions.Singleline | RegexOptions.Compiled);
 
@@ -238,10 +236,6 @@ namespace Xwt.Formats
 		                                          @"|(?<single>\*|_)(?<italic>[^\s]+.*)(?<!\s)\k<single>" + // emphasis: single * or _ for italic
 		                                          @"|`(?<code>.+)`" // inline code
 		                                          , RegexOptions.Compiled);
-
-		// See http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-		static Regex autoUrl = new Regex (@"(?i)(?(\b)(?<!\]\(|\/)|\b)((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'"".,<>?«»“”‘’]))",
-		                                  RegexOptions.Singleline | RegexOptions.Compiled);
 	}
 }
 
