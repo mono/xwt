@@ -262,6 +262,18 @@ namespace Xwt.Mac
 			// Generally, TransientFor is used to implement dialog, we reproduce the assumption here
 			Level = window == null ? NSWindowLevel.Normal : NSWindowLevel.ModalPanel;
 		}
+
+		bool IWindowFrameBackend.Resizable {
+			get {
+				return (StyleMask & NSWindowStyle.Resizable) != 0;
+			}
+			set {
+				if (value)
+					StyleMask |= NSWindowStyle.Resizable;
+				else
+					StyleMask &= ~NSWindowStyle.Resizable;
+			}
+		}
 		
 		public void SetPadding (double left, double top, double right, double bottom)
 		{

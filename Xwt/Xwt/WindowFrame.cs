@@ -227,6 +227,11 @@ namespace Xwt
 				Backend.SetTransientFor ((IWindowFrameBackend)(value as IFrontend).Backend);
 			}
 		}
+
+		public bool Resizable {
+			get { return Backend.Resizable; }
+			set { Backend.Resizable = value; }
+		}
 		
 		public bool Visible {
 			get { return Backend.Visible; }

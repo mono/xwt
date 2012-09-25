@@ -98,6 +98,15 @@ namespace Xwt.WPFBackend
 			this.Window.Owner = ((WindowFrameBackend) window).Window;
 		}
 
+		bool IWindowFrameBackend.Resizable {
+			get {
+				return window.ResizeMode == ResizeMode.CanResize;
+			}
+			set {
+				window.ResizeMode = value ? ResizeMode.CanResize : ResizeMode.NoResize;
+			}
+		}
+
 		public void SetIcon (object imageBackend)
 		{
 			window.Icon = DataConverter.AsImageSource (imageBackend);

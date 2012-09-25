@@ -150,6 +150,15 @@ namespace Xwt.GtkBackend
 			Window.TransientFor = ((WindowFrameBackend)window).Window;
 		}
 
+		public bool Resizable {
+			get {
+				return Window.Resizable;
+			}
+			set {
+				Window.Resizable = value;
+			}
+		}
+
 		public void SetIcon(object backendImage)
 		{
 			Window.Icon = backendImage as Gdk.Pixbuf;
