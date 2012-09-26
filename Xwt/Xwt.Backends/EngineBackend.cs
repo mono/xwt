@@ -103,7 +103,7 @@ namespace Xwt.Backends
 
 		public virtual void ShowWebBrowser (NavigateToUrlEventArgs e)
 		{
-			if (!e.Handled) {
+			if (!e.Handled && e.Uri != null) {
 				System.Diagnostics.Process.Start (e.Uri.ToString ());
 				e.SetHandled ();
 			}

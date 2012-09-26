@@ -50,9 +50,15 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				uri = value;
-				var text = Label.Text;
-				string url = string.Format ("<a href=\"{1}\">{0}</a>", SecurityElement.Escape (text), SecurityElement.Escape (uri.ToString ()));
-				Label.Markup = url;
+				SetMarkup ();
+			}
+		}
+
+		public override string Text {
+			get { return base.Text; }
+			set {
+				base.Text = value;
+				SetMarkup ();
 			}
 		}
 
@@ -86,11 +92,19 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		void SetMarkup ()
+		{
+			var text = Label.Text;
+			string url = string.Format ("<a href=\"{1}\">{0}</a>", SecurityElement.Escape (text), uri != null ? SecurityElement.Escape (uri.ToString ()) : "");
+			Label.Markup = url;
+		}
+
 		void OpenLink (string link)
 		{
 			if (ClickEnabled) {
+				var uri = !string.IsNullOrEmpty (link)? new Uri (link, UriKind.RelativeOrAbsolute) : null;
 				Xwt.Engine.Toolkit.Invoke (() => {
-					EventSink.OnNavigateToUrl (new Uri (link, UriKind.RelativeOrAbsolute));
+					EventSink.OnNavigateToUrl (uri);
 				});
 			}
 		}

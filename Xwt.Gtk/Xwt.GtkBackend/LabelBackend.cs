@@ -98,7 +98,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public string Text {
+		public virtual string Text {
 			get { return Label.Text; }
 			set { Label.Text = value; }
 		}

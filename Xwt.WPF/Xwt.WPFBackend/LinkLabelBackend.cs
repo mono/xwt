@@ -104,7 +104,7 @@ namespace Xwt.WPFBackend
 			if (eventId is LinkLabelEvent) {
 				switch ((LinkLabelEvent) eventId) {
 				case LinkLabelEvent.NavigateToUrl:
-					Widget.Hyperlink.RequestNavigate += HandleClicked;
+					Widget.Hyperlink.Click += HandleClicked;
 					break;
 				}
 			}
@@ -116,7 +116,7 @@ namespace Xwt.WPFBackend
 			if (eventId is LinkLabelEvent) {
 				switch ((LinkLabelEvent) eventId) {
 				case LinkLabelEvent.NavigateToUrl:
-					Widget.Hyperlink.RequestNavigate -= HandleClicked;
+					Widget.Hyperlink.Click -= HandleClicked;
 					break;
 				}
 			}

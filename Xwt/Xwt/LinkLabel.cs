@@ -78,7 +78,15 @@ namespace Xwt
 
 		public Uri Uri {
 			get { return Backend.Uri; }
-			set { Backend.Uri = value; }
+			set {
+				Backend.Uri = value;
+				if (value != null) {
+					// add a dummy handler so the default action is enabled
+					NavigateToUrl += DummyHandleNavigateToUrl;
+				} else {
+					NavigateToUrl -= DummyHandleNavigateToUrl;
+				}
+			}
 		}
 
 		static LinkLabel ()
@@ -93,7 +101,6 @@ namespace Xwt
 
 		public LinkLabel (string text) : base (text)
 		{
-			NavigateToUrl += delegate { };
 		}
 
 		protected override BackendHost CreateBackendHost ()
@@ -106,9 +113,12 @@ namespace Xwt
 			if (navigateToUrl != null)
 				navigateToUrl (this, e);
 
-			if (!e.Handled) {
-				Application.EngineBackend.ShowWebBrowser (e);
-			}
+			// this method checks for e.Handled
+			Application.EngineBackend.ShowWebBrowser (e);
+		}
+
+		static void DummyHandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)
+		{
 		}
 	}
 }

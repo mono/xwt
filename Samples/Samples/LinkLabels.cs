@@ -35,10 +35,9 @@ namespace Samples
 			var label = new LinkLabel ("This has no url and does nothing when clicked");
 			PackStart (label);
 
-			label = new LinkLabel ("This has no url and we've attached to the handler but does nothing when clicked");
+			label = new LinkLabel ("This has no url and we've attached a handler");
 			label.NavigateToUrl += (o, e) => {
 				MessageDialog.ShowMessage ("You clicked me!");
-				e.SetHandled ();
 			};
 			PackStart (label);
 
