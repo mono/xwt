@@ -76,9 +76,11 @@ namespace Xwt.Mac
 		{
 			return new CGColor ((float)col.Red, (float)col.Green, (float)col.Blue, (float)col.Alpha);
 		}
-		
+
+		static readonly string DeviceRGB = NSColorSpace.DeviceRGB.ToString ();
 		public static Color ToXwtColor (this NSColor col)
 		{
+			col = col.UsingColorSpace (DeviceRGB);
 			return new Color (col.RedComponent, col.GreenComponent, col.BlueComponent, col.AlphaComponent);
 		}
 		
