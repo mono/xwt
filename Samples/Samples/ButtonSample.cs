@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
+
 using Xwt;
 using Xwt.Drawing;
 
@@ -31,6 +33,15 @@ namespace Samples
 {
 	public class ButtonSample: VBox
 	{
+		public class MyWidget : Widget
+		{
+			public new Widget Content
+			{
+				get { return base.Content; }
+				set { base.Content = value; }
+			}
+		}
+
 		public ButtonSample ()
 		{
 			Button b1 = new Button ("Click me");
@@ -77,6 +88,21 @@ namespace Samples
 			tb = new ToggleButton ("Mini toggle");
 			tb.Style = ButtonStyle.Borderless;
 			PackStart (tb);
+
+
+			var child = new VBox ();
+			var container = new MyWidget { Content = child };
+
+			var button = new Xwt.Button ("Click to add a child");
+			button.Clicked += delegate {
+				child.PackStart (new Xwt.Label ("Child" + child.Children.Count ()), BoxMode.Fill);
+			};
+
+			var content = new Xwt.VBox ();
+			content.PackStart (button, BoxMode.Fill);
+			content.PackStart (container, BoxMode.Fill);
+
+			PackStart (content);
 		}
 	}
 }
