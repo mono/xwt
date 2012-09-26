@@ -33,15 +33,20 @@ namespace Xwt.Mac
 	public class LabelBackend: ViewBackend<NSTextField,IWidgetEventSink>, ILabelBackend
 	{
 		public LabelBackend ()
+			: this (new TextFieldView ())
 		{
-			ViewObject = new TextFieldView ();
+		}
+
+		protected LabelBackend (IViewObject viewObject)
+		{
+			ViewObject = viewObject;
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
 			Widget.SizeToFit ();
 		}
 
-		public string Text {
+		public virtual string Text {
 			get {
 				return Widget.StringValue;
 			}
