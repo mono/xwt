@@ -91,6 +91,7 @@ namespace Xwt.GtkBackend
 		{
 			Window.Resize ((int)width, (int)height);
 			Window.SetDefaultSize ((int)width, (int)height);
+			Window.SetSizeRequest ((int)width, (int)height);
 			Toolkit.Invoke (delegate {
 				EventSink.OnBoundsChanged (Bounds);
 			});
@@ -107,6 +108,7 @@ namespace Xwt.GtkBackend
 				Window.Move ((int)value.X, (int)value.Y);
 				Window.Resize ((int)value.Width, (int)value.Height);
 				Window.SetDefaultSize ((int)value.Width, (int)value.Height);
+				Window.SetSizeRequest ((int)value.Width, (int)value.Height);
 				Toolkit.Invoke (delegate {
 					EventSink.OnBoundsChanged (Bounds);
 				});
