@@ -64,9 +64,23 @@ namespace Xwt.WPFBackend
 
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
+			// ensure sweep angle is always positive
+			if (angle2 < angle1)
+				angle2 = 360 + angle2;
+			ArcInternal (backend, xc, yc, radius, angle1, angle2);
+		}
+
+		public void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		{
+			// ensure sweep angle is always negative
+			if (angle1 < angle2)
+				angle1 = 360 + angle1;
+			ArcInternal (backend, xc, yc, radius, angle1, angle2);
+		}
+
+		void ArcInternal (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		{
 			var c = (DrawingContext)backend;
-			if (angle1 > 0 && angle2 == 0)
-				angle2 = 360;
 			c.Path.AddArc ((float)(xc - radius), (float)(yc - radius), (float)radius * 2, (float)radius * 2, (float)angle1,
 			               (float)(angle2 - angle1));
 

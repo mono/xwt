@@ -73,6 +73,12 @@ namespace Xwt.CairoBackend
 			gc.Context.Arc (xc, yc, radius, angle1 * degrees, angle2 * degrees);
 		}
 
+		public void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		{
+			CairoContextBackend gc = (CairoContextBackend)backend;
+			gc.Context.ArcNegative (xc, yc, radius, angle1 * degrees, angle2 * degrees);
+		}
+
 		public void Clip (object backend)
 		{
 			Cairo.Context ctx = ((CairoContextBackend) backend).Context;

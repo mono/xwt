@@ -37,7 +37,9 @@ namespace Xwt.Backends
 		void Restore (object backend);
 
 		void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2);
-		
+
+		void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2);
+
 		void Clip (object backend);
 		
 		void ClipPreserve(object backend);
