@@ -31,15 +31,10 @@ namespace Xwt.Drawing
 {
 	public sealed class Context: XwtObject, IDisposable
 	{
-		static IContextBackendHandler handler;
+		IContextBackendHandler handler;
 		Pattern pattern;
 		Font font;
 		double globalAlpha = 1;
-		
-		static Context ()
-		{
-			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<IContextBackendHandler> (typeof(Context));
-		}
 		
 		protected override IBackendHandler BackendHandler {
 			get {
@@ -49,6 +44,7 @@ namespace Xwt.Drawing
 		
 		internal Context (object backend): base (backend)
 		{
+			handler = ToolkitEngine.CurrentEngine.ContextBackendHandler;
 		}
 		
 		/// <summary>

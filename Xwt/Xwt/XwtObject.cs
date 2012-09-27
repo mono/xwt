@@ -59,11 +59,6 @@ namespace Xwt
 			get { return Backend; }
 		}
 
-		object IFrontend.GetBackendForRegistry (WidgetRegistry registry)
-		{
-			return Backend;
-		}
-		
 		protected void LoadBackend ()
 		{
 			if (backend == null) {

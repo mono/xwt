@@ -89,10 +89,6 @@ namespace Xwt
 			
 			protected override IBackend OnCreateBackend ()
 			{
-				if (Parent.Parent != null) {
-					Console.WriteLine ("Reuse : {0}", Parent.Parent.BackendHost.WidgetRegistry != null);
-					WidgetRegistry = Parent.Parent.BackendHost.WidgetRegistry;
-				}
 				var backend = base.OnCreateBackend ();
 				if (backend == null || backend is XwtWidgetBackend) {
 					// If this is a custom widget, not implemented in Xwt, then we provide the default
@@ -104,7 +100,7 @@ namespace Xwt
 							return null; // It's a core widget
 						t = t.BaseType;
 					}
-					return WidgetRegistry.CreateBackend<IBackend> (wt);
+					return ToolkitEngine.Backend.CreateBackend<IBackend> (wt);
 				}
 				return backend;
 			}
@@ -322,9 +318,9 @@ namespace Xwt
 				if (Parent != null)
 					return Parent.ParentWindow;
 				else if (parentWindow == null) {
-					var p = Application.EngineBackend.GetNativeParentWindow (this);
+					var p = BackendHost.EngineBackend.GetNativeParentWindow (this);
 					if (p != null)
-						parentWindow = BackendHost.WidgetRegistry.WrapWindow (p);
+						parentWindow = BackendHost.ToolkitEngine.WrapWindow (p);
 				}
 				return parentWindow;
 			}
@@ -392,7 +388,7 @@ namespace Xwt
 		public string Name { get; set; }
 		
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-		public Widget Parent { get; set; }
+		public Widget Parent { get; private set; }
 		
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public IWidgetSurface Surface {
@@ -431,6 +427,8 @@ namespace Xwt
 		public double MinWidth {
 			get { return minWidth; }
 			set {
+				if (value < -1)
+					throw new ArgumentException ("MinWidth can't be less that -1");
 				minWidth = value;
 				Backend.SetMinSize (minWidth >= 0 ? minWidth : -1, minHeight >= 0 ? minHeight : -1);
 				OnPreferredSizeChanged ();
@@ -450,6 +448,8 @@ namespace Xwt
 		public double MinHeight {
 			get { return minHeight; }
 			set {
+				if (value < -1)
+					throw new ArgumentException ("MinHeight can't be less that -1");
 				minHeight = value;
 				Backend.SetMinSize (minWidth >= 0 ? minWidth : -1, minHeight >= 0 ? minHeight : -1);
 				OnPreferredSizeChanged ();
@@ -469,6 +469,8 @@ namespace Xwt
 		public double NaturalWidth {
 			get { return minWidth; }
 			set {
+				if (value < -1)
+					throw new ArgumentException ("NaturalWidth can't be less that -1");
 				naturalWidth = value;
 				Backend.SetNaturalSize (naturalWidth >= 0 ? naturalWidth : -1, naturalHeight >= 0 ? naturalHeight : -1);
 				OnPreferredSizeChanged ();
@@ -488,6 +490,8 @@ namespace Xwt
 		public double NaturalHeight {
 			get { return naturalHeight; }
 			set {
+				if (value < -1)
+					throw new ArgumentException ("NaturalHeight can't be less that -1");
 				naturalHeight = value;
 				Backend.SetNaturalSize (naturalWidth >= 0 ? naturalWidth : -1, naturalHeight >= 0 ? naturalHeight : -1);
 				OnPreferredSizeChanged ();
@@ -505,7 +509,7 @@ namespace Xwt
 				return new Font (Backend.Font);
 			}
 			set {
-				Backend.Font = BackendHost.WidgetRegistry.GetBackend (value);
+				Backend.Font = ToolkitEngine.GetBackend (value);
 			}
 		}
 		
@@ -537,7 +541,13 @@ namespace Xwt
 		{
 			return Backend.ConvertToScreenCoordinates (widgetCoordinates);
 		}
-		
+
+		/// <summary>
+		/// Gets the bounds of the widget in screen coordinates
+		/// </summary>
+		/// <value>
+		/// The widget bounds
+		/// </value>
 		public Rectangle ScreenBounds {
 			get { return new Rectangle (ConvertToScreenCoordinates (new Point (0,0)), Size); }
 		}

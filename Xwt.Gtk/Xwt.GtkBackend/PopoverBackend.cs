@@ -191,12 +191,6 @@ namespace Xwt.GtkBackend
 		PopoverWindow popover;
 		public event EventHandler Closed;
 
-		public Xwt.Engine.WidgetRegistry PreferredRegistry {
-			get {
-				return GtkEngine.Registry;
-			}
-		}
-
 		public void Run (Xwt.WindowFrame parent, Xwt.Popover.Position orientation, Func<Xwt.Widget> childSource, Xwt.Widget reference)
 		{
 			var child = childSource ();

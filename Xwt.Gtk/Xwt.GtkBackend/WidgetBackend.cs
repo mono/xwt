@@ -134,12 +134,22 @@ namespace Xwt.GtkBackend
 		}
 		
 		public bool HasFocus {
-			get { return Widget.HasFocus; }
+			get { return Widget.IsFocus; }
 		}
 		
 		public void SetFocus ()
 		{
-			Widget.GrabFocus ();
+			Widget.IsFocus = true;
+//			SetFocus (Widget);
+		}
+
+		void SetFocus (Gtk.Widget w)
+		{
+			if (w.Parent != null)
+				SetFocus (w.Parent);
+			w.GrabFocus ();
+			w.IsFocus = true;
+			w.HasFocus = true;
 		}
 		
 		public string TooltipText {
@@ -422,9 +432,11 @@ namespace Xwt.GtkBackend
 					Widget.KeyReleaseEvent += HandleKeyReleaseEvent;
 					break;
 				case WidgetEvent.GotFocus:
-					Widget.FocusInEvent += HandleWidgetFocusInEvent;
+					EventsRootWidget.Events |= Gdk.EventMask.FocusChangeMask;
+					Widget.FocusGrabbed += HandleWidgetFocusInEvent;
 					break;
 				case WidgetEvent.LostFocus:
+					EventsRootWidget.Events |= Gdk.EventMask.FocusChangeMask;
 					Widget.FocusOutEvent += HandleWidgetFocusOutEvent;
 					break;
 				case WidgetEvent.MouseEntered:
@@ -535,6 +547,9 @@ namespace Xwt.GtkBackend
 				}
 				if ((ev & sizeCheckEvents) != 0) {
 					DisableSizeCheckEvents ();
+				}
+				if ((ev & WidgetEvent.GotFocus) == 0 && (enabledEvents & WidgetEvent.LostFocus) == 0) {
+					EventsRootWidget.Events &= ~Gdk.EventMask.FocusChangeMask;
 				}
 			}
 		}
@@ -716,7 +731,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		void HandleWidgetFocusInEvent (object o, Gtk.FocusInEventArgs args)
+		void HandleWidgetFocusInEvent (object o, EventArgs args)
 		{
 			Toolkit.Invoke (delegate {
 				EventSink.OnGotFocus ();

@@ -31,12 +31,7 @@ namespace Xwt.Drawing
 {
 	public sealed class ImagePattern: Pattern
 	{
-		static IImagePatternBackendHandler handler;
-		
-		static ImagePattern ()
-		{
-			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<IImagePatternBackendHandler> (typeof(ImagePattern));
-		}
+		IImagePatternBackendHandler handler;
 		
 		protected override Xwt.Backends.IBackendHandler BackendHandler {
 			get {
@@ -46,6 +41,7 @@ namespace Xwt.Drawing
 		
 		public ImagePattern (Image img)
 		{
+			handler = ToolkitEngine.CurrentEngine.ImagePatternBackendHandler;
 			Backend = ((IImagePatternBackendHandler)BackendHandler).Create (GetBackend (img));
 		}
 	}

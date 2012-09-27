@@ -33,18 +33,13 @@ namespace Xwt.Drawing
 {
 	public sealed class TextLayout: XwtObject
 	{
-		static ITextLayoutBackendHandler handler;
+		ITextLayoutBackendHandler handler;
 		
 		Font font;
 		string text;
 		double width = -1;
 		double height = -1;
 		TextTrimming textTrimming;
-		
-		static TextLayout ()
-		{
-			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<ITextLayoutBackendHandler> (typeof(TextLayout));
-		}
 		
 		protected override IBackendHandler BackendHandler {
 			get {
@@ -54,12 +49,14 @@ namespace Xwt.Drawing
 		
 		public TextLayout (Canvas canvas)
 		{
-			Backend = handler.Create ((ICanvasBackend)WidgetRegistry.MainRegistry.GetBackend (canvas));
+			handler = ToolkitEngine.CurrentEngine.TextLayoutBackendHandler;
+			Backend = handler.Create ((ICanvasBackend)ToolkitEngine.GetBackend (canvas));
 			Font = canvas.Font;
 		}
 		
 		public TextLayout (Context ctx)
 		{
+			handler = ToolkitEngine.CurrentEngine.TextLayoutBackendHandler;
 			Backend = handler.Create (ctx);
 		}
 		

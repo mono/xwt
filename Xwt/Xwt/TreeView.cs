@@ -129,7 +129,7 @@ namespace Xwt
 			set {
 				if (dataSource != value) {
 					dataSource = value;
-					Backend.SetSource (dataSource, dataSource is IFrontend ? (IBackend)BackendHost.WidgetRegistry.GetBackend (dataSource) : null);
+					Backend.SetSource (dataSource, dataSource is IFrontend ? (IBackend)ToolkitEngine.GetBackend (dataSource) : null);
 				}
 			}
 		}

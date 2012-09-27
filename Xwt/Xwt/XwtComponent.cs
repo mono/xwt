@@ -56,12 +56,6 @@ namespace Xwt
 			get { return backendHost.Backend; }
 		}
 
-		object IFrontend.GetBackendForRegistry (WidgetRegistry registry)
-		{
-			backendHost.WidgetRegistry = registry;
-			return backendHost.Backend;
-		}
-		
 		protected static void MapEvent (object eventId, Type type, string methodName)
 		{
 			EventUtil.MapEvent (eventId, type, methodName);

@@ -45,14 +45,14 @@ namespace Xwt
 				return;
 			InitBackend (null);
 			engine.InitializeApplication ();
-			engine.InitializeRegistry (WidgetRegistry.MainRegistry);
+			engine.InitializeRegistry ();
 		}
 		
 		public static void Initialize (string backendType)
 		{
 			InitBackend (backendType);
 			engine.InitializeApplication ();
-			engine.InitializeRegistry (WidgetRegistry.MainRegistry);
+			engine.InitializeRegistry ();
 		}
 		
 		public static void Run ()
@@ -137,6 +137,16 @@ namespace Xwt
 				return res;
 			}, timeSpan);
 			return t;
+		}
+
+		public static void DispatchPendingEvents ()
+		{
+			try {
+				Toolkit.ExitUserCode (null);
+				engine.DispatchPendingEvents ();
+			} finally {
+				Toolkit.EnterUserCode ();
+			}
 		}
 		
 		public static StatusIcon CreateStatusIcon ()

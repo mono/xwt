@@ -168,7 +168,7 @@ namespace Xwt
 			if (message.ApplyToAllButton != null)
 				return message.ApplyToAllButton;
 
-			IAlertDialogBackend backend = WidgetRegistry.MainRegistry.CreateBackend<IAlertDialogBackend> (typeof(IAlertDialogBackend));
+			IAlertDialogBackend backend = ToolkitEngine.CurrentEngine.Backend.CreateBackend<IAlertDialogBackend> (typeof(IAlertDialogBackend));
 			
 			using (backend) {
 				var res = backend.Run (parent ?? RootWindow, message);

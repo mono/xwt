@@ -38,7 +38,7 @@ namespace Xwt.Drawing
 		
 		static Image ()
 		{
-			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<ImageBackendHandler> (typeof(Image));
+			handler = ToolkitEngine.CurrentEngine.Backend.CreateSharedBackend<ImageBackendHandler> (typeof(Image));
 		}
 		
 		protected override IBackendHandler BackendHandler {

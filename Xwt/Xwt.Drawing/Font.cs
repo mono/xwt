@@ -32,12 +32,7 @@ namespace Xwt.Drawing
 {
 	public sealed class Font: XwtObject
 	{
-		static IFontBackendHandler handler;
-		
-		static Font ()
-		{
-			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<IFontBackendHandler> (typeof(Font));
-		}
+		IFontBackendHandler handler;
 		
 		protected override IBackendHandler BackendHandler {
 			get {
@@ -47,6 +42,7 @@ namespace Xwt.Drawing
 		
 		internal Font (object backend)
 		{
+			handler = ToolkitEngine.CurrentEngine.FontBackendHandler;
 			if (backend == null)
 				throw new ArgumentNullException ("backend");
 			Backend = backend;
@@ -54,11 +50,13 @@ namespace Xwt.Drawing
 		
 		public static Font FromName (string name, double size)
 		{
+			var handler = ToolkitEngine.CurrentEngine.FontBackendHandler;
 			return new Font (handler.CreateFromName (name, size));
 		}
 		
 		public Font WithFamily (string fontFamily)
 		{
+			var handler = ToolkitEngine.CurrentEngine.FontBackendHandler;
 			return new Font (handler.SetFamily (Backend, fontFamily));
 		}
 		

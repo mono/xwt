@@ -94,7 +94,7 @@ namespace Xwt
 		
 		internal DragStartData GetStartData ()
 		{
-			return new DragStartData (data, action, WidgetRegistry.MainRegistry.GetBackend (image), hotX, hotY);
+			return new DragStartData (data, action, ToolkitEngine.GetBackend (image), hotX, hotY);
 		}
 		
 	}

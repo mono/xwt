@@ -32,11 +32,11 @@ namespace Xwt.Drawing
 {
 	public abstract class Gradient: Pattern
 	{
-		static IGradientBackendHandler handler;
+		IGradientBackendHandler handler;
 		
-		static Gradient ()
+		public Gradient ()
 		{
-			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<IGradientBackendHandler> (typeof(Gradient));
+			handler = ToolkitEngine.CurrentEngine.GradientBackendHandler;
 		}
 		
 		protected override Xwt.Backends.IBackendHandler BackendHandler {

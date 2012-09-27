@@ -49,12 +49,13 @@ namespace Xwt.Backends
 	{
 		IBackend backend;
 		bool usingCustomBackend;
-		WidgetRegistry registry;
+		ToolkitEngine engine;
 		
 		HashSet<object> defaultEnabledEvents;
 		
 		public BackendHost ()
 		{
+			engine = ToolkitEngine.CurrentEngine;
 		}
 		
 		public void SetCustomBackend (IBackend backend)
@@ -72,15 +73,19 @@ namespace Xwt.Backends
 			}
 		}
 
-		public WidgetRegistry WidgetRegistry {
+		public ToolkitEngine ToolkitEngine {
 			get {
-				if (registry != null)
-					return registry;
-				return registry = WidgetRegistry.MainRegistry;
+				if (engine != null)
+					return engine;
+				return engine = ToolkitEngine.CurrentEngine;
 			}
 			internal set {
-				registry = value;
+				engine = value;
 			}
+		}
+
+		internal EngineBackend EngineBackend {
+			get { return ToolkitEngine.Backend; }
 		}
 		
 		internal bool BackendCreated {
@@ -97,7 +102,7 @@ namespace Xwt.Backends
 		{
 			Type t = Parent.GetType ();
 			while (t != typeof(object)) {
-				IBackend b = WidgetRegistry.CreateBackend<IBackend> (t);
+				IBackend b = EngineBackend.CreateBackend<IBackend> (t);
 				if (b != null)
 					return b;
 				t = t.BaseType;

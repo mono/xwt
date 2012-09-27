@@ -50,7 +50,7 @@ namespace Xwt
 		{
 			this.arrowPosition = arrowPosition;
 			this.parent = parent;
-			backend = WidgetRegistry.MainRegistry.CreateBackend<IPopoverBackend> (GetType ());
+			backend = ToolkitEngine.CurrentEngine.Backend.CreateBackend<IPopoverBackend> (GetType ());
 
 			backend.Closed += (sender, e) => {
 				if (Closed != null)

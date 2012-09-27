@@ -33,15 +33,10 @@ namespace Xwt.Drawing
 	public sealed class ImageBuilder: XwtObject, IDisposable
 	{
 		Context ctx;
-		static IImageBuilderBackendHandler handler;
+		IImageBuilderBackendHandler handler;
 		object backend;
 		int width;
 		int height;
-		
-		static ImageBuilder ()
-		{
-			handler = WidgetRegistry.MainRegistry.CreateSharedBackend<IImageBuilderBackendHandler> (typeof(ImageBuilder));
-		}
 		
 		public ImageBuilder (int width, int height): this (width, height, ImageFormat.ARGB32)
 		{
@@ -49,6 +44,7 @@ namespace Xwt.Drawing
 		
 		public ImageBuilder (int width, int height, ImageFormat format)
 		{
+			handler = ToolkitEngine.CurrentEngine.ImageBuilderBackendHandler;
 			this.width = width;
 			this.height = height;
 			backend = handler.CreateImageBuilder (width, height, format);

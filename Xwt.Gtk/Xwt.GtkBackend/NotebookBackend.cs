@@ -82,7 +82,7 @@ namespace Xwt.GtkBackend
 		
 		public void UpdateLabel (NotebookTab tab, string hint)
 		{
-			IWidgetBackend widget = (IWidgetBackend) GtkEngine.Registry.GetBackend (tab.Child);
+			IWidgetBackend widget = (IWidgetBackend) ToolkitEngine.GetBackend (tab.Child);
 			Widget.SetTabLabel (GetWidget (widget), CreateLabel (tab));
 		}
 		

@@ -30,11 +30,15 @@ using System.Reflection;
 using System.IO;
 using Xwt.Drawing;
 using Xwt.Engine;
+using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
 	public abstract class EngineBackend
 	{
+		Dictionary<Type,Type> backendTypes = new Dictionary<Type, Type> ();
+		Dictionary<Type,object> sharedBackends = new Dictionary<Type, object> ();
+
 		/// <summary>
 		/// Initializes the application.
 		/// </summary>
@@ -49,7 +53,7 @@ namespace Xwt.Backends
 		/// <param name='registry'>
 		/// Registry.
 		/// </param>
-		public virtual void InitializeRegistry (WidgetRegistry registry)
+		public virtual void InitializeRegistry ()
 		{
 		}
 		
@@ -109,8 +113,13 @@ namespace Xwt.Backends
 		/// </param>
 		public virtual object GetNativeImage (Image image)
 		{
-			return WidgetRegistry.MainRegistry.GetBackend (image);
+			return ToolkitEngine.GetBackend (image);
 		}
+
+		/// <summary>
+		/// Dispatches pending events in the UI event queue
+		/// </summary>
+		public abstract void DispatchPendingEvents ();
 		
 		/// <summary>
 		/// Gets the backend for a native window.
@@ -149,6 +158,36 @@ namespace Xwt.Backends
 		/// </value>
 		public virtual bool HandlesSizeNegotiation {
 			get { return false; }
+		}
+
+		internal T CreateBackend<T> (Type widgetType)
+		{
+			Type bt = null;
+			
+			if (!backendTypes.TryGetValue (widgetType, out bt))
+				return default(T);
+			object res = Activator.CreateInstance (bt);
+			if (!typeof(T).IsInstanceOfType (res))
+				throw new InvalidOperationException ("Invalid backend type.");
+			return (T) res;
+		}
+
+		internal T CreateSharedBackend<T> (Type widgetType)
+		{
+			object res;
+			if (!sharedBackends.TryGetValue (widgetType, out res))
+				res = sharedBackends [widgetType] = CreateBackend<T> (widgetType);
+			return (T)res;
+		}
+		
+		public void RegisterBackend (Type widgetType, Type backendType)
+		{
+			backendTypes [widgetType] = backendType;
+		}
+		
+		public T CreateFrontend<T> (object backend)
+		{
+			return (T) Activator.CreateInstance (typeof(T), backend);
 		}
 	}
 }

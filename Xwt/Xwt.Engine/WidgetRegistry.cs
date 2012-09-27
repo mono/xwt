@@ -31,7 +31,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Engine
 {
-	public sealed class WidgetRegistry
+/*	public sealed class WidgetRegistry
 	{
 		static WidgetRegistry mainRegistry = new WidgetRegistry ();
 		Dictionary<Type,Type> backendTypes = new Dictionary<Type, Type> ();
@@ -82,36 +82,11 @@ namespace Xwt.Engine
 			backendTypes [widgetType] = backendType;
 		}
 		
-		public object GetBackend (object obj)
-		{
-			if (obj is IFrontend)
-				return ((IFrontend)obj).Backend;
-			else if (obj == null)
-				return null;
-			else
-				throw new InvalidOperationException ("Object doesn't have a backend");
-		}
-		
 		public T CreateFrontend<T> (object backend)
 		{
 			return (T) Activator.CreateInstance (typeof(T), backend);
 		}
-		
-		public object GetNativeWidget (Widget w)
-		{
-			return Application.EngineBackend.GetNativeWidget (w);
-		}
-		
-		public object GetNativeImage (Image image)
-		{
-			return Application.EngineBackend.GetNativeImage (image);
-		}
-		
-		public WindowFrame WrapWindow (object nativeWindow)
-		{
-			return new NativeWindowFrame (Application.EngineBackend.GetBackendForWindow (nativeWindow));
-		}
-	}
+	}*/
 	
 	class NativeWindowFrame: WindowFrame
 	{

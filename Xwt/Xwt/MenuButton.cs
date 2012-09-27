@@ -86,7 +86,7 @@ namespace Xwt
 		
 		IMenuBackend CreateMenu ()
 		{
-			return ((IMenuBackend)BackendHost.WidgetRegistry.GetBackend (OnCreateMenu()));
+			return ((IMenuBackend)ToolkitEngine.GetBackend (OnCreateMenu()));
 		}
 		
 		protected virtual Menu OnCreateMenu ()

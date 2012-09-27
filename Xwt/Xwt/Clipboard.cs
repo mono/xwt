@@ -36,11 +36,7 @@ namespace Xwt
 		static IClipboardBackend _backend;
 		
 		static IClipboardBackend Backend {
-			get {
-				if (_backend == null)
-					_backend = WidgetRegistry.MainRegistry.CreateSharedBackend<IClipboardBackend> (typeof(Clipboard));
-				return _backend;
-			}
+			get { return ToolkitEngine.CurrentEngine.ClipboardBackend; }
 		}
 		
 		public static void Clear ()
