@@ -111,6 +111,11 @@ namespace Xwt.Backends
 		{
 			return WidgetRegistry.MainRegistry.GetBackend (image);
 		}
+
+		/// <summary>
+		/// Dispatches pending events in the UI event queue
+		/// </summary>
+		public abstract void DispatchPendingEvents ();
 		
 		/// <summary>
 		/// Gets the backend for a native window.

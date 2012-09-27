@@ -32,9 +32,9 @@ namespace Samples
 	{
 		public Windows ()
 		{
-			Button b = new Button ("Show borderless window");
-			PackStart (b);
-			b.Clicked += delegate {
+			Button bp = new Button ("Show borderless window");
+			PackStart (bp);
+			bp.Clicked += delegate {
 				Window w = new Window ();
 				w.Decorated = false;
 				Button c = new Button ("This is a window");
@@ -43,11 +43,11 @@ namespace Samples
 				c.Clicked += delegate {
 					w.Dispose ();
 				};
-				var bpos = b.ScreenBounds;
-				w.ScreenBounds = new Rectangle (bpos.X, bpos.Y + b.Size.Height, w.Width, w.Height);
+				var bpos = bp.ScreenBounds;
+				w.ScreenBounds = new Rectangle (bpos.X, bpos.Y + bp.Size.Height, w.Width, w.Height);
 				w.Show ();
 			};
-			b = new Button ("Show message dialog");
+			Button b = new Button ("Show message dialog");
 			PackStart (b);
 			b.Clicked += delegate {
 				MessageDialog.ShowMessage (ParentWindow, "Hi there!");
