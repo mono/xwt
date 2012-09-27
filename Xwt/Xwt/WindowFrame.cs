@@ -74,8 +74,8 @@ namespace Xwt
 		{
 			protected override void OnBackendCreated ()
 			{
-				base.OnBackendCreated ();
 				Backend.Initialize (this);
+				base.OnBackendCreated ();
 				Parent.location = Backend.Bounds.Location;
 				Parent.size = Backend.Bounds.Size;
 				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
