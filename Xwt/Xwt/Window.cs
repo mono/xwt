@@ -182,12 +182,12 @@ namespace Xwt
 					if (locationSet)
 						Backend.Bounds = initialBounds;
 					else
-						Size = size;
+						Size = size + Backend.ImplicitMinSize;
 				}
 				else if (locationSet)
 					Backend.Move (initialBounds.X, initialBounds.Y);
 	
-				Backend.SetMinSize (new Size (w.MinSize + padding.HorizontalSpacing, h.MinSize + padding.VerticalSpacing));
+				Backend.SetMinSize (Backend.ImplicitMinSize + new Size (w.MinSize + padding.HorizontalSpacing, h.MinSize + padding.VerticalSpacing));
 			}
 		}
 	}

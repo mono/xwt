@@ -35,6 +35,7 @@ namespace Xwt.GtkBackend
 		Gtk.Window window;
 		IWindowFrameEventSink eventSink;
 		WindowFrame frontend;
+		Size requestedSize;
 
 		public WindowFrameBackend ()
 		{
@@ -64,6 +65,16 @@ namespace Xwt.GtkBackend
 		{
 			this.eventSink = eventSink;
 			Initialize ();
+			Window.Child.SizeRequested += delegate(object o, Gtk.SizeRequestedArgs args) {
+				if (!Window.Resizable) {
+					var r = args.Requisition;
+					if (args.Requisition.Width < (int) requestedSize.Width)
+						r = new Gtk.Requisition () { Width = (int) requestedSize.Width, Height = args.Requisition.Height};
+					if (args.Requisition.Height < (int) requestedSize.Height)
+						r = new Gtk.Requisition () { Width = args.Requisition.Width, Height = (int) requestedSize.Height};
+					args.Requisition = r;
+				}
+			};
 		}
 		
 		public virtual void Initialize ()
@@ -89,9 +100,9 @@ namespace Xwt.GtkBackend
 
 		public void Resize (double width, double height)
 		{
+			requestedSize = new Size (width, height);
 			Window.Resize ((int)width, (int)height);
 			Window.SetDefaultSize ((int)width, (int)height);
-			Window.SetSizeRequest ((int)width, (int)height);
 			Toolkit.Invoke (delegate {
 				EventSink.OnBoundsChanged (Bounds);
 			});
@@ -105,10 +116,11 @@ namespace Xwt.GtkBackend
 				return new Rectangle (x, y, w, h);
 			}
 			set {
+				requestedSize = value.Size;
 				Window.Move ((int)value.X, (int)value.Y);
 				Window.Resize ((int)value.Width, (int)value.Height);
 				Window.SetDefaultSize ((int)value.Width, (int)value.Height);
-				Window.SetSizeRequest ((int)value.Width, (int)value.Height);
+//				Window.SetSizeRequest ((int)value.Width, (int)value.Height);
 				Toolkit.Invoke (delegate {
 					EventSink.OnBoundsChanged (Bounds);
 				});
@@ -212,6 +224,9 @@ namespace Xwt.GtkBackend
 			Window.Present ();
 		}
 
+		public virtual Size ImplicitMinSize {
+			get { return new Size (0,0); }
+		}
 	}
 }
 
