@@ -68,7 +68,10 @@ namespace Xwt.GtkBackend
 			
 			for (int n=0; n<dialogButtons.Length; n++) {
 				var db = dialogButtons[n];
-				Gtk.Button b = (Gtk.Button) Window.AddButton (db.Label, Gtk.ResponseType.None);
+				Gtk.Button b = new Gtk.Button ();
+				b.Show ();
+				b.Label = db.Label;
+				Window.ActionArea.Add (b);
 				UpdateButton (db, b);
 				buttons[n] = b;
 				buttons[n].Clicked += HandleButtonClicked;
