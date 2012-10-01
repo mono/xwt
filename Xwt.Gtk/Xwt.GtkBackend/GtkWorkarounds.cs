@@ -298,7 +298,7 @@ namespace Xwt.GtkBackend
 			adj.Value = System.Math.Max (adj.Lower, System.Math.Min (adj.Value + value, adj.Upper - adj.PageSize));
 		}
 		
-		[DllImport (PangoUtil.LIBGTK)]
+		[DllImport (PangoUtil.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		extern static bool gdk_event_get_scroll_deltas (IntPtr eventScroll, out double deltaX, out double deltaY);
 		static bool scrollDeltasNotSupported;
 		
@@ -416,11 +416,11 @@ namespace Xwt.GtkBackend
 		}
 		
 		//introduced in GTK 2.20
-		[DllImport (PangoUtil.LIBGDK)]
+		[DllImport (PangoUtil.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
 		extern static bool gdk_keymap_add_virtual_modifiers (IntPtr keymap, ref Gdk.ModifierType state);
 		
 		//Custom patch in Mono Mac w/GTK+ 2.24.8+
-		[DllImport (PangoUtil.LIBGDK)]
+		[DllImport (PangoUtil.LIBGDK, CallingConvention = CallingConvention.Cdecl))]
 		extern static bool gdk_quartz_set_fix_modifiers (bool fix);
 		
 		static Gdk.Keymap keymap = Gdk.Keymap.Default;

@@ -47,7 +47,7 @@ namespace Xwt.GtkBackend
 		[Obsolete]
 		protected Spinner(GLib.GType gtype) : base(gtype) {}
 
-		[DllImport("libgtk-win32-2.0-0.dll")]
+		[DllImport ("libgtk-win32-2.0-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_spinner_new();
 
 		public Spinner () : base(IntPtr.Zero)
@@ -75,7 +75,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		[DllImport("libgtk-win32-2.0-0.dll")]
+		[DllImport ("libgtk-win32-2.0-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_spinner_start(IntPtr raw);
 
 		public void Start()
@@ -83,7 +83,7 @@ namespace Xwt.GtkBackend
 			gtk_spinner_start(Handle);
 		}
 
-		[DllImport("libgtk-win32-2.0-0.dll")]
+		[DllImport ("libgtk-win32-2.0-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_spinner_stop(IntPtr raw);
 
 		public void Stop ()
