@@ -34,6 +34,20 @@ namespace Xwt.Backends
 		void SetChild (IWidgetBackend child);
 		void SetMainMenu (IMenuBackend menu);
 		void SetPadding (double left, double top, double right, double bottom);
+
+		/// <summary>
+		/// Gets the minimum size of the window, without including the content
+		/// </summary>
+		/// <remarks>
+		/// This property should return the minimum size of the decorations around
+		/// the content widget. It should include for example the minimum size required
+		/// by the menu bar, dialog button bar, etc. Do not include content padding.
+		/// </remarks>
+		Size ImplicitMinSize { get; }
+
+		/// <summary>
+		/// Sets the minimum size of the window
+		/// </summary>
 		void SetMinSize (Size size);
 	}
 	
