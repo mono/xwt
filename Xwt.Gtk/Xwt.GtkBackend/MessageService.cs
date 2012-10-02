@@ -118,7 +118,12 @@ namespace Xwt.GtkBackend
 		{
 			child.Child.Show ();
 			int w, h, winw, winh, x, y, winx, winy;
-			child.GetSize (out w, out h);
+			if (child.Visible)
+				child.GetSize (out w, out h);
+			else {
+				w = child.DefaultSize.Width;
+				h = child.DefaultSize.Height;
+			}
 			parent.GetSize (out winw, out winh);
 			parent.GetPosition (out winx, out winy);
 			x = Math.Max (0, (winw - w) /2) + winx;
