@@ -127,7 +127,7 @@ namespace Xwt.Formats
 						buffer.EmitEndParagraph ();
 						wasParagraph = false;
 					}
-					buffer.EmitCodeBlock (codeblock.Replace ("\n", Environment.NewLine).ToString ());
+					buffer.EmitCodeBlock (codeblock.ToString ());
 				}
 
 				// List
