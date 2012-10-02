@@ -65,7 +65,7 @@ namespace Xwt.GtkBackend
 		{
 			this.eventSink = eventSink;
 			Initialize ();
-			Window.Child.SizeRequested += delegate(object o, Gtk.SizeRequestedArgs args) {
+			Window.SizeRequested += delegate(object o, Gtk.SizeRequestedArgs args) {
 				if (!Window.Resizable) {
 					int w = args.Requisition.Width, h = args.Requisition.Height;
 					if (w < (int) requestedSize.Width)
