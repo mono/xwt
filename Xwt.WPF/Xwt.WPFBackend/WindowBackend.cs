@@ -128,9 +128,5 @@ namespace Xwt.WPFBackend
 			Window.MinHeight = r.Height;
 			Window.MinWidth = r.Width;
 		}
-
-		public virtual Size ImplicitMinSize {
-			get { return new Size (0,0); }
-		}
 	}
 }

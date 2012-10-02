@@ -32,24 +32,9 @@ namespace Xwt.Backends
 	{
 		void Initialize (IWindowFrameEventSink eventSink);
 		void Dispose ();
-
-		/// <summary>
-		/// Size and position of the window content in screen coordinates
-		/// </summary>
+		
 		Rectangle Bounds { get; set; }
 		void Move (double x, double y);
-
-		/// <summary>
-		/// Sets the size of the window
-		/// </summary>
-		/// <param name='width'>
-		/// New width.
-		/// </param>
-		/// <param name='height'>
-		/// New height.
-		/// </param>
-		/// <remarks>
-		/// </remarks>
 		void Resize (double width, double height);
 
 		bool Visible { get; set; }

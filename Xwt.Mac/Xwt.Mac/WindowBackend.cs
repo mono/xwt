@@ -349,10 +349,6 @@ namespace Xwt.Mac
 		public void SetIcon (object imageBackend)
 		{
 		}
-
-		public virtual Size ImplicitMinSize {
-			get { return new Size (0,0); }
-		}
 	}
 	
 	public partial class WindowBackendController : MonoMac.AppKit.NSWindowController
