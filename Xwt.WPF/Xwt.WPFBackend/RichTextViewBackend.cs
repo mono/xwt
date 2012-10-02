@@ -192,15 +192,31 @@ namespace Xwt.WPFBackend
 				writer.WriteEndElement();
 			}
 
+			int rtbCounter;
 			public void EmitCodeBlock (string code)
 			{
-				EmitStartParagraph (0);
+				writer.WriteStartElement ("BlockUIContainer");
+				writer.WriteAttributeString ("Margin", "15");
+
+				string name = "rtb" + (rtbCounter++);
+
+				writer.WriteStartElement ("RichTextBox");
+				writer.WriteAttributeString ("Name", name);
+				writer.WriteAttributeString ("HorizontalScrollBarVisibility", "Auto");
+
+				writer.WriteStartElement ("FlowDocument");
+				writer.WriteAttributeString ("PageWidth", "1000");
+				//writer.WriteAttributeString ("PageWidth", "{Binding ElementName=" + name + ",Path=ActualWidth}");
+				writer.WriteStartElement ("Paragraph");
+
 				writer.WriteAttributeString ("xml", "space", null, "preserve");
-				writer.WriteAttributeString ("TextIndent", "0");
-				writer.WriteAttributeString ("Margin", "50,0,0,0");
 				writer.WriteAttributeString ("FontFamily", "Global Monospace");
 				writer.WriteString (code);
-				EmitEndParagraph ();
+
+				writer.WriteEndElement ();
+				writer.WriteEndElement ();
+				writer.WriteEndElement ();
+				writer.WriteEndElement ();
 			}
 
 			public void EmitText (string text, RichTextInlineStyle style)
