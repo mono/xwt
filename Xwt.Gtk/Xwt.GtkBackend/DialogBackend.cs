@@ -44,6 +44,7 @@ namespace Xwt.GtkBackend
 		{
 			Window = new Gtk.Dialog ();
 			Window.VBox.PackStart (CreateMainLayout ());
+			Window.ActionArea.Hide ();
 		}
 		
 		new Gtk.Dialog Window {
@@ -76,6 +77,12 @@ namespace Xwt.GtkBackend
 				buttons[n] = b;
 				buttons[n].Clicked += HandleButtonClicked;
 			}
+			UpdateActionAreaVisibility ();
+		}
+
+		void UpdateActionAreaVisibility ()
+		{
+			Window.ActionArea.Visible = Window.ActionArea.Children.Any (c => c.Visible);
 		}
 		
 		void UpdateButton (DialogButton btn, Gtk.Button b)
@@ -97,6 +104,7 @@ namespace Xwt.GtkBackend
 			else
 				b.Hide ();
 			b.Sensitive = btn.Sensitive;
+			UpdateActionAreaVisibility ();
 		}
 		
 		void HandleButtonClicked (object o, EventArgs a)
