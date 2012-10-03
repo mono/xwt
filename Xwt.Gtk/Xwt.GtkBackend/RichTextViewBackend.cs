@@ -167,6 +167,30 @@ namespace Xwt.GtkBackend
 		{
 			const string NewLine = "\n";
 
+			bool needsParagraphBreak;
+			bool needsListBreak;
+
+			void BreakParagraph ()
+			{
+				if (needsParagraphBreak) {
+					var end = EndIter;
+					Insert (ref end, NewLine);
+					Insert (ref end, NewLine);
+					needsParagraphBreak = false;
+					return;
+				}
+			}
+
+			void BreakList ()
+			{
+				if (needsListBreak) {
+					var end = EndIter;
+					Insert (ref end, NewLine);
+					needsListBreak = false;
+					return;
+				}
+			}
+
 			public List<Link> Links {
 				get; private set;
 			}
@@ -219,49 +243,53 @@ namespace Xwt.GtkBackend
 
 			public void EmitStartHeader (int level)
 			{
+				BreakParagraph ();
 				var iter = EndIter;
-				Insert (ref iter, NewLine);
 				openHeaders.Push (new StartState (CreateMark (null, iter, true), level));
 			}
+
 			public void EmitEndHeader ()
 			{
 				var start = openHeaders.Pop ();
 				var iterStart = GetIterAtMark (start.Mark);
 				var iterEnd = EndIter;
 				ApplyTag ("h" + start.Data, iterStart, iterEnd);
-				Insert (ref iterEnd, NewLine);
 				DeleteMark (start.Mark);
+				needsParagraphBreak = true;
 			}
 
 			public void EmitStartParagraph (int indentLevel)
 			{
+				BreakParagraph ();
 				//FIXME: support indentLevel
-				var iter = EndIter;
-				Insert (ref iter, NewLine);
 			}
+
 			public void EmitEndParagraph ()
 			{
-				var iter = EndIter;
-				Insert (ref iter, NewLine);
+				needsParagraphBreak = true;
 			}
 
 			public void EmitOpenList ()
 			{
-				var iter = EndIter;
-				Insert (ref iter, NewLine);
+				BreakParagraph ();
 			}
+
 			public void EmitOpenBullet ()
 			{
+				BreakList ();
 				var iter = EndIter;
 				InsertWithTagsByName (ref iter, "• ", "li");
 			}
+
 			public void EmitCloseBullet ()
 			{
-				var iter = EndIter;
-				Insert (ref iter, NewLine);
+				needsListBreak = true;
 			}
+
 			public void EmitCloseList ()
 			{
+				needsListBreak = false;
+				needsParagraphBreak = true;
 			}
 
 			public void EmitStartLink (string href, string title)
@@ -276,6 +304,7 @@ namespace Xwt.GtkBackend
 					Anchor = anchor
 				});
 			}
+
 			public void EmitEndLink ()
 			{
 				Links.Add (openLinks.Pop ());
@@ -283,9 +312,10 @@ namespace Xwt.GtkBackend
 
 			public void EmitCodeBlock (string code)
 			{
+				BreakParagraph ();
 				var iter = EndIter;
-				Insert (ref iter, NewLine);
-				InsertWithTagsByName (ref iter, code, "pre");
+				InsertWithTagsByName (ref iter, code.Trim (), "pre");
+				needsParagraphBreak = true;
 			}
 
 			public void EmitHorizontalRuler ()
