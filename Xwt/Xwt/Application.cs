@@ -55,20 +55,19 @@ namespace Xwt
 		{
 			if (engine != null)
 				return;
-			InitBackend (null);
-			engine.InitializeApplication ();
+			Initialize (null);
 		}
 		
 		public static void Initialize (string backendType)
 		{
 			InitBackend (backendType);
 			engine.InitializeApplication ();
+			UIThread = System.Threading.Thread.CurrentThread;
 		}
 		
 		public static void Run ()
 		{
 			Toolkit.InvokePlatformCode (delegate {
-				UIThread = System.Threading.Thread.CurrentThread;
 				engine.RunApplication ();
 			});
 		}
