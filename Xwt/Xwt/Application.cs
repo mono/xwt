@@ -40,6 +40,11 @@ namespace Xwt
 			get { return taskScheduler; }
 		}
 
+		internal static System.Threading.Thread UIThread {
+			get;
+			private set;
+		}
+
 		static EngineBackend engine;
 		
 		internal static EngineBackend EngineBackend {
@@ -63,6 +68,7 @@ namespace Xwt
 		public static void Run ()
 		{
 			Toolkit.InvokePlatformCode (delegate {
+				UIThread = System.Threading.Thread.CurrentThread;
 				engine.RunApplication ();
 			});
 		}

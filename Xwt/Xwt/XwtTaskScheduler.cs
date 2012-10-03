@@ -55,14 +55,18 @@ namespace Xwt
 		protected override bool TryExecuteTaskInline (Task task, bool taskWasPreviouslyQueued)
 		{
 			bool success = true;
-			var evt = new ManualResetEvent (false);
 
-			Xwt.Application.Invoke (() => {
+			if (Application.UIThread == null || Application.UIThread.ManagedThreadId != Thread.CurrentThread.ManagedThreadId) {
+				var evt = new ManualResetEvent (false);
+				Xwt.Application.Invoke (() => {
+					success = TryExecuteTask (task);
+					Thread.MemoryBarrier ();
+					evt.Set ();
+				});
+				evt.WaitOne ();
+			} else {
 				success = TryExecuteTask (task);
-				Thread.MemoryBarrier ();
-				evt.Set ();
-			});
-			evt.WaitOne ();
+			}
 
 			return success;
 		}
