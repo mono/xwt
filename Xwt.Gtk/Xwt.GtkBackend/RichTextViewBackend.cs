@@ -82,7 +82,8 @@ namespace Xwt.GtkBackend
 			});
 			table.Add (new Gtk.TextTag ("pre") {
 				Family = "Monospace",
-				Indent = 14
+				Indent = 14,
+				WrapMode = Gtk.WrapMode.None
 			});
 		}
 
