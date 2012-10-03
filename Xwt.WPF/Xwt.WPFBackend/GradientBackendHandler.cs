@@ -44,6 +44,11 @@ namespace Xwt.WPFBackend
 				new PointF ((float) x1, (float) y1));
 		}
 
+		public object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public void AddColorStop (object backend, double position, Color color)
 		{
 			((GradientBase)backend).ColorStops.Add (new Tuple<double, Color> (position, color));
