@@ -71,8 +71,9 @@ namespace Samples
 			AddSample (null, "Drag & Drop", typeof(DragDrop));
 			
 			var n = AddSample (null, "Drawing", null);
-			AddSample (n, "Canvas with Widget", typeof(CanvasWithWidget));
-			AddSample (n, "Chart", typeof(ChartSample));
+			AddSample (n, "Canvas with Widget (Linear)", typeof (CanvasWithWidget_Linear));
+			AddSample (n, "Canvas with Widget (Radial)", typeof (CanvasWithWidget_Radial));
+			AddSample (n, "Chart", typeof (ChartSample));
 			AddSample (n, "Colors", typeof(ColorsSample));
 			AddSample (n, "Figures", typeof(DrawingFigures));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
