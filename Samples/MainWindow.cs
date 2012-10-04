@@ -95,8 +95,9 @@ namespace Samples
 			AddSample (null, "Popover", typeof(PopoverSample));
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
 			AddSample (null, "Spinners", typeof (Spinners));
-			AddSample (null, "Tables", typeof(Tables));
-			AddSample (null, "Text Entry", typeof(TextEntries));
+			AddSample (null, "ReliefFrame", typeof (ReliefFrameSample));
+			AddSample (null, "Tables", typeof (Tables));
+			AddSample (null, "Text Entry", typeof (TextEntries));
 			AddSample (null, "Tooltips", typeof(Tooltips));
 			AddSample (null, "TreeView", typeof(TreeViews));
 			AddSample (null, "WidgetEvents", typeof(WidgetEvents));
