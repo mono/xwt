@@ -52,7 +52,7 @@ namespace Xwt.Mac
 		{
 			this.controller = new WindowBackendController ();
 			controller.Window = this;
-			StyleMask |= NSWindowStyle.Resizable;
+			StyleMask |= NSWindowStyle.Resizable | NSWindowStyle.Closable | NSWindowStyle.Miniaturizable;
 			ContentView.AutoresizesSubviews = true;
 			Center ();
 		}

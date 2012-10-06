@@ -95,6 +95,8 @@ namespace Xwt.Mac
 			WidgetRegistry.RegisterBackend (typeof(Xwt.SpinButton), typeof(SpinButtonBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Expander), typeof(ExpanderBackend));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Popover), typeof (PopoverBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.SelectFolderDialog), typeof(SelectFolderDialogBackend));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.OpenFileDialog), typeof(OpenFileDialogBackend));
 		}
 
 		public override void RunApplication ()
