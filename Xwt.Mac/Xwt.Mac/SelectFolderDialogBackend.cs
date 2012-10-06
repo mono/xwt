@@ -55,7 +55,7 @@ namespace Xwt.Mac
 
 		public string[] Folders {
 			get {
-				return this.Urls.Select(x=> x.Path).ToArray();
+				return this.Urls.Select (x=> x.Path).ToArray ();
 			}
 		}
 

@@ -39,25 +39,20 @@ namespace Xwt.Mac
 		}
 
 		#region IFileDialogBackend implementation
-		string initialDirectory;
-		string initialFileName;
-
 		public void Initialize (System.Collections.Generic.IEnumerable<FileDialogFilter> filters, bool multiselect, string initialFileName)
 		{
 			this.AllowsMultipleSelection = multiselect;
 			this.CanChooseFiles = true;
 			this.CanChooseDirectories = false;
-			if(!string.IsNullOrEmpty(initialFileName))
-			{
-				this.DirectoryUrl = new MonoMac.Foundation.NSUrl(initialFileName,true);
-			}
+			if (!string.IsNullOrEmpty (initialFileName))
+				this.DirectoryUrl = new MonoMac.Foundation.NSUrl (initialFileName,true);
 			
 			this.Prompt = "Select File" + (multiselect ? "s" : "");
 		}
 
 		public bool Run (IWindowFrameBackend parent)
 		{
-			var returnValue = this.RunModal();
+			var returnValue = this.RunModal ();
 			return returnValue == 1;
 		}
 
@@ -68,13 +63,13 @@ namespace Xwt.Mac
 
 		public string FileName {
 			get {
-				return this.Url == null ? "" :  Url.Path;
+				return this.Url == null ? string.Empty :  Url.Path;
 			}
 		}
 
 		public string[] FileNames {
 			get {
-				return this.Urls.Length == 0 ? new string[0] : this.Urls.Select(x=> x.Path).ToArray();
+				return this.Urls.Length == 0 ? new string[0] : this.Urls.Select (x=> x.Path).ToArray ();
 			}
 		}
 
@@ -83,7 +78,7 @@ namespace Xwt.Mac
 				return DirectoryUrl.AbsoluteString;
 			}
 			set {
-				this.DirectoryUrl = new MonoMac.Foundation.NSUrl(value,true);
+				this.DirectoryUrl = new MonoMac.Foundation.NSUrl (value,true);
 			}
 		}
 
