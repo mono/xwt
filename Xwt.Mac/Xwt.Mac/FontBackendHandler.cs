@@ -34,7 +34,7 @@ namespace Xwt.Mac
 {
 	public class FontBackendHandler: IFontBackendHandler
 	{
-		public object CreateFromName (string fontName, double size)
+		public object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			object o  = NSFont.FromFontName (fontName, (float)size);
 			return o;
@@ -47,7 +47,7 @@ namespace Xwt.Mac
 			return NSFont.FromDescription (f.FontDescriptor, f.FontDescriptor.Matrix);
 		}
 		
-		public object SetSize (object handle, double size)
+		public object SetSize (object handle, double size, FontSizeUnit sizeUnit)
 		{
 			NSFont f = (NSFont) handle;
 			var matrix = f.FontDescriptor.Matrix ?? new NSAffineTransform ();

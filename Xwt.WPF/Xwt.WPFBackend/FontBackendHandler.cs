@@ -37,7 +37,7 @@ namespace Xwt.WPFBackend
 {
 	public class FontBackendHandler : IFontBackendHandler
 	{
-		public object CreateFromName (string fontName, double size)
+		public object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			return new FontData (new FontFamily (fontName), size);
 		}
@@ -48,7 +48,7 @@ namespace Xwt.WPFBackend
 			return font.Clone ();
 		}
 
-		public object SetSize (object handle, double size)
+		public object SetSize (object handle, double size, FontSizeUnit sizeUnit)
 		{
 			var font = (FontData)handle;
 			font = font.Clone ();

@@ -31,10 +31,10 @@ namespace Xwt.Backends
 {
 	public interface IFontBackendHandler: IBackendHandler
 	{
-		object CreateFromName (string fontName, double size);
+		object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch);
 		object Copy (object handle);
 		
-		object SetSize (object handle, double size);
+		object SetSize (object handle, double size, FontSizeUnit unit);
 		object SetFamily (object handle, string family);
 		object SetStyle (object handle, FontStyle style);
 		object SetWeight (object handle, FontWeight weight);
