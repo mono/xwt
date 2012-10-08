@@ -117,6 +117,11 @@ namespace Xwt.Drawing
 			return new Font (handler.SetSize (Backend, size, FontSizeUnit.Pixels));
 		}
 		
+		public Font WithScaledSize (double scale)
+		{
+			return new Font (handler.SetSize (Backend, Size * scale, unit));
+		}
+		
 		public FontStyle Style {
 			get {
 				return handler.GetStyle (Backend);
