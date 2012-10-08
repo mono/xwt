@@ -42,6 +42,7 @@ namespace Xwt.GtkBackend
 		Gtk.EventBox eventBox;
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
+		bool destroyed;
 		
 		bool minSizeSet;
 		
@@ -208,10 +209,20 @@ namespace Xwt.GtkBackend
 		
 		protected virtual void Dispose (bool disposing)
 		{
-			if (Widget != null && disposing && Widget.Parent == null)
+			if (Widget != null && disposing && Widget.Parent == null && !destroyed) {
+				MarkDestroyed (Frontend);
 				Widget.Destroy ();
+			}
 		}
-		
+
+		void MarkDestroyed (Widget w)
+		{
+			var bk = (WidgetBackend) WidgetRegistry.GetBackend (w);
+			bk.destroyed = true;
+			foreach (var c in w.Surface.Children)
+				MarkDestroyed (c);
+		}
+
 		public Size Size {
 			get {
 				return new Size (Widget.Allocation.Width, Widget.Allocation.Height);

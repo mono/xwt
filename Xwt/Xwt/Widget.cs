@@ -318,8 +318,12 @@ namespace Xwt
 			
 			// Don't dispose the backend if this object is being finalized
 			// The backend has to handle the finalizing on its own
-			if (disposing && BackendHost.BackendCreated)
-				Backend.Dispose ();
+			if (disposing) {
+				if (BackendHost.BackendCreated)
+					Backend.Dispose ();
+				if (children != null)
+					children.ForEach (c => c.Dispose ());
+			}
 		}
 		
 		public WindowFrame ParentWindow {
