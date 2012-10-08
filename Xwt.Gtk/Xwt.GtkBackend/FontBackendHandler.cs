@@ -33,9 +33,10 @@ namespace Xwt.GtkBackend
 {
 	public class FontBackendHandler: IFontBackendHandler
 	{
-		public object CreateFromName (string fontName, double size)
+		public object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			return FontDescription.FromString (fontName + " " + size);
+			string s = sizeUnit == FontSizeUnit.Points ? size.ToString () : size + "px";
+			return FontDescription.FromString (fontName + " " + s);
 		}
 
 		#region IFontBackendHandler implementation
@@ -46,11 +47,14 @@ namespace Xwt.GtkBackend
 			return d.Copy ();
 		}
 		
-		public object SetSize (object handle, double size)
+		public object SetSize (object handle, double size, FontSizeUnit sizeUnit)
 		{
 			FontDescription d = (FontDescription) handle;
 			d = d.Copy ();
-			d.Size = (int) (size * Pango.Scale.PangoScale);
+			if (sizeUnit == FontSizeUnit.Points)
+				d.Size = (int) (size * Pango.Scale.PangoScale);
+			else
+				d.AbsoluteSize = (int) (size * Pango.Scale.PangoScale);
 			return d;
 		}
 
