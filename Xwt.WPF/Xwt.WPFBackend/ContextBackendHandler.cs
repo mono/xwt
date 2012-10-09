@@ -257,31 +257,12 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext) backend;
 
-			var lg = p as LinearGradient;
-			if (lg != null) {
-				if (lg.ColorStops.Count == 0)
-					throw new ArgumentException ();
-
-				var stops = lg.ColorStops.OrderBy (t => t.Item1).ToArray ();
-				var first = stops[0];
-				var last = stops[stops.Length - 1];
-
-				var brush = new LinearGradientBrush (lg.Start, lg.End, first.Item2.ToDrawingColor (),
-														last.Item2.ToDrawingColor ());
-
-				//brush.InterpolationColors = new ColorBlend (stops.Length);
-				//var blend = brush.InterpolationColors;
-				//for (int i = 0; i < stops.Length; ++i) {
-				//    var s = stops [i];
-
-				//    blend.Positions [i] = (float)s.Item1;
-				//    blend.Colors [i] = s.Item2.ToDrawingColor ();
-				//}
-
-				c.Brush = brush;
-			}
-			else if (p is Brush)
-				c.Brush = (Brush)p;
+			if (p is LinearGradient) {
+				c.Brush = ((LinearGradient) p).CreateBrush ();
+			} else if (p is RadialGradient) {
+				c.Brush = ((RadialGradient) p).CreateBrush ();
+			} else if (p is Brush)
+				c.Brush = (Brush) p;
 		}
 
 		public void SetFont (object backend, Font font)
