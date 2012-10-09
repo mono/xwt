@@ -56,6 +56,7 @@ namespace Xwt.WPFBackend
 		public RichTextViewBackend ()
 		{
 			Widget = new ExRichTextBox ();
+			Widget.BorderThickness = new System.Windows.Thickness (0);
 		}
 
 		public override void EnableEvent (object eventId)

@@ -110,6 +110,7 @@ namespace Xwt.WPFBackend
 		{
 			TextBlock = new SWC.TextBlock ();
 			Content = TextBlock;
+			Padding = new Thickness (0);
 		}
 
 		public WidgetBackend Backend { get; set; }
