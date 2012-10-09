@@ -79,7 +79,7 @@ namespace Xwt.Drawing
 				if (!double.TryParse (s, out size))
 					throw new ArgumentException ("Invalid font size: " + s);
 			}
-			return new Font (handler.Create (name, size, unit, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal));
+			return new Font (handler.Create (parts[0], size, unit, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal));
 		}
 		
 		public Font WithFamily (string fontFamily)

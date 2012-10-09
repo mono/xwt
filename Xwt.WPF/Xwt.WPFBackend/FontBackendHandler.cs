@@ -39,7 +39,7 @@ namespace Xwt.WPFBackend
 	{
 		public object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			return new FontData (new FontFamily (fontName), size);
+			return new FontData (new FontFamily (fontName), size, sizeUnit);
 		}
 
 		public object Copy (object handle)
@@ -131,22 +131,28 @@ namespace Xwt.WPFBackend
 			return GetPointsFromPixels (control.FontSize, dpi);
 		}
 
-		internal static double GetPixelsFromPoints (double points, double dpi)
+		internal static double GetDeviceUnitsFromPoints (double points)
 		{
-			return points * (dpi / 72);
+			return points * (96d / 72d);
+		}
+
+		internal static double GetPointsFromDeviceUnits (double deviceUnits)
+		{
+			return deviceUnits * (72d / 96d);
 		}
 	}
 
 	internal class FontData
 	{
-		public FontData (FontFamily family, double size)
+		public FontData (FontFamily family, double size, FontSizeUnit unit)
 		{
+			Unit = unit;
 			Family = family;
 			Size = size;
 		}
 
-		public FontData (string family, double size) :
-			this (new FontFamily (family), size)
+		public FontData (string family, double size, FontSizeUnit unit) :
+			this (new FontFamily (family), size, unit)
 		{
 		}
 
@@ -155,10 +161,24 @@ namespace Xwt.WPFBackend
 		public SW.FontWeight Weight { get; set; }
 		public SW.FontStyle Style { get; set; }
 		public SW.FontStretch Stretch { get; set; }
+		public FontSizeUnit Unit { get; set; }
+
+		public double GetDeviceIndependentPixelSize (SW.Controls.Control control)
+		{
+			if (Unit == FontSizeUnit.Points)
+				return FontBackendHandler.GetDeviceUnitsFromPoints (Size);
+			else {
+				Size pixelRatios = control.GetPixelRatios ();
+				return Size / pixelRatios.Width;
+			}
+		}
 
 		public static FontData FromControl (SW.Controls.Control control)
 		{
-			return new FontData (control.FontFamily, FontBackendHandler.GetPointsFromPixels (control)) {
+			Size pixelRatios = control.GetPixelRatios ();
+			var pixelSize = control.FontSize * pixelRatios.Width;
+
+			return new FontData (control.FontFamily, pixelSize, FontSizeUnit.Pixels) {
 				Style = control.FontStyle,				
 				Stretch = control.FontStretch,
 				Weight = control.FontWeight
@@ -168,7 +188,7 @@ namespace Xwt.WPFBackend
 		// Didn't implement IClone on purpose (recommended by the Framework Design guidelines)
 		public FontData Clone ()
 		{
-			return new FontData (Family, Size) {
+			return new FontData (Family, Size, Unit) {
 				Style = Style,
 				Stretch = Stretch,
 				Weight = Weight
