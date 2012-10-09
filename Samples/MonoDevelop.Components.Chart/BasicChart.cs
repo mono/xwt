@@ -69,7 +69,7 @@ namespace MonoDevelop.Components.Chart
 		ChartCursor selectionStart;
 		ChartCursor selectionEnd;
 		
-		Font chartFont = Font.FromName ("Tahoma", 8);
+		Font chartFont = Font.FromName ("Tahoma 8");
 
 		
 		public BasicChart ()

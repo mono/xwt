@@ -43,7 +43,7 @@ namespace Samples
 			
 			PackStart (new Label ("Entry with small font"));
 			TextEntry te2 = new TextEntry ();
-			te2.Font = te2.Font.WithSize (te2.Font.Size / 2);
+			te2.Font = te2.Font.WithScaledSize (0.5);
 			PackStart (te2);
 			
 			PackStart (new Label ("Entry with placeholder text"));
