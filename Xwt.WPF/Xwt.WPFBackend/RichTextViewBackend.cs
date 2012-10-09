@@ -203,11 +203,11 @@ namespace Xwt.WPFBackend
 
 				writer.WriteStartElement ("RichTextBox");
 				writer.WriteAttributeString ("Name", name);
-				writer.WriteAttributeString ("HorizontalScrollBarVisibility", "Auto");
+				writer.WriteAttributeString ("HorizontalScrollBarVisibility", "Hidden");
 
 				writer.WriteStartElement ("FlowDocument");
-				writer.WriteAttributeString ("PageWidth", "1000");
-				//writer.WriteAttributeString ("PageWidth", "{Binding ElementName=" + name + ",Path=ActualWidth}");
+				//writer.WriteAttributeString ("PageWidth", "1000");
+				writer.WriteAttributeString ("PageWidth", "{Binding ElementName=" + name + ",Path=ActualWidth}");
 				writer.WriteStartElement ("Paragraph");
 
 				writer.WriteAttributeString ("xml", "space", null, "preserve");
