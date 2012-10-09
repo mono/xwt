@@ -193,7 +193,7 @@ namespace Xwt
 						xe -= bp.NextSize + spacing;
 					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (x, 0, bp.NextSize, size.Height);
+					rects[n] = new Rectangle (x, 0, bp.NextSize >= 0 ? bp.NextSize : 0, size.Height >= 0 ? size.Height : 0);
 					if (bp.PackOrigin == PackOrigin.Start)
 						xs += bp.NextSize + spacing;
 				}
@@ -207,7 +207,7 @@ namespace Xwt
 						ye -= bp.NextSize + spacing;
 					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (0, y, size.Width, bp.NextSize);
+					rects[n] = new Rectangle (0, y, size.Width >= 0 ? size.Width : 0, bp.NextSize >= 0 ? bp.NextSize : 0);
 					if (bp.PackOrigin == PackOrigin.Start)
 						ys += bp.NextSize + spacing;
 				}
