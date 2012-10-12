@@ -279,7 +279,7 @@ namespace Xwt
 			MapEvent (WidgetEvent.DragDrop, typeof(Widget), "OnDragDrop");
 			MapEvent (WidgetEvent.DragLeave, typeof(Widget), "OnDragLeave");
 			MapEvent (WidgetEvent.KeyPressed, typeof(Widget), "OnKeyPressed");
-			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyPressed");
+			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyReleased");
 			MapEvent (WidgetEvent.GotFocus, typeof(Widget), "OnGotFocus");
 			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
 			MapEvent (WidgetEvent.MouseEntered, typeof(Widget), "OnMouseEntered");
