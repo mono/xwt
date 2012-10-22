@@ -39,7 +39,10 @@ namespace Xwt
 	{
 		protected override void QueueTask (Task task)
 		{
-			Xwt.Application.Invoke (() => TryExecuteTask (task));
+			if (Application.UIThread != null)
+				Xwt.Application.Invoke (() => TryExecuteTask (task));
+			else
+				TryExecuteTask (task);
 		}
 
 		protected override System.Collections.Generic.IEnumerable<Task> GetScheduledTasks ()
@@ -56,7 +59,7 @@ namespace Xwt
 		{
 			bool success = true;
 
-			if (Application.UIThread == null || Application.UIThread.ManagedThreadId != Thread.CurrentThread.ManagedThreadId) {
+			if (Application.UIThread != null && Application.UIThread.ManagedThreadId != Thread.CurrentThread.ManagedThreadId) {
 				var evt = new ManualResetEvent (false);
 				Xwt.Application.Invoke (() => {
 					success = TryExecuteTask (task);
