@@ -65,7 +65,7 @@ namespace Samples
 					table.Attach (new Label ("Row " + next), 0, next++);
 				};
 
-				table.Margin.SetAll (20);
+				table.Margin = 20;
 				popover.Content = table;
 			}
 //			popover.Padding.SetAll (20);

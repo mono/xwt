@@ -84,7 +84,7 @@ namespace Xwt
 			}
 		}
 		
-		protected class WidgetBackendHost: BackendHost<Widget, IWidgetBackend>, IWidgetEventSink, ISpacingListener
+		protected class WidgetBackendHost: BackendHost<Widget, IWidgetBackend>, IWidgetEventSink
 		{
 			public WidgetBackendHost ()
 			{
@@ -123,12 +123,6 @@ namespace Xwt
 			public virtual Size GetDefaultNaturalSize ()
 			{
 				return new Size (0, 0);
-			}
-			
-			public virtual void OnSpacingChanged (WidgetSpacing source)
-			{
-				if (source == Parent.margin)
-					Parent.OnPreferredSizeChanged ();
 			}
 			
 			void IWidgetEventSink.OnDragOverCheck (DragOverCheckEventArgs args)
@@ -268,7 +262,6 @@ namespace Xwt
 		{
 			if (!(base.BackendHost is WidgetBackendHost))
 				throw new InvalidOperationException ("CreateBackendHost for Widget did not return a WidgetBackendHost instance");
-			margin = new Xwt.WidgetSpacing (BackendHost);
 		}
 		
 		static Widget ()
@@ -359,8 +352,44 @@ namespace Xwt
 		
 		public WidgetSpacing Margin {
 			get { return margin; }
+			set {
+				margin = value;
+				OnPreferredSizeChanged ();
+			}
 		}
-		
+
+		public double MarginLeft {
+			get { return margin.Left; }
+			set {
+				margin.Left = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
+		public double MarginRight {
+			get { return margin.Right; }
+			set {
+				margin.Right = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
+		public double MarginTop {
+			get { return margin.Top; }
+			set {
+				margin.Top = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
+		public double MarginBottom {
+			get { return margin.Bottom; }
+			set {
+				margin.Bottom = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
 		public void Show ()
 		{
 			Visible = true;

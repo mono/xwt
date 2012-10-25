@@ -13,15 +13,10 @@ namespace Xwt
 	public class Placement : Widget
 	{
 		Widget child;
+		WidgetSpacing padding;
 
-		protected new class WidgetBackendHost : Widget.WidgetBackendHost<Placement,IBoxBackend>, ISpacingListener
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost<Placement,IBoxBackend>
 		{
-			public override void OnSpacingChanged (WidgetSpacing source)
-			{
-				base.OnSpacingChanged (source);
-				if (source == Parent.Padding)
-					Parent.OnPreferredSizeChanged();
-			}
 		}
 
 		protected override BackendHost CreateBackendHost ()
@@ -35,7 +30,6 @@ namespace Xwt
 
 		public Placement ()
 		{
-			Padding = new WidgetSpacing (BackendHost);
 		}
 
 		public Widget Child {
@@ -67,8 +61,48 @@ namespace Xwt
 		}
 
 		public WidgetSpacing Padding {
-			get;
-			private set;
+			get { return padding; }
+			set {
+				padding = value;
+				UpdatePadding ();
+			}
+		}
+
+		public double PaddingLeft {
+			get { return padding.Left; }
+			set {
+				padding.Left = value;
+				UpdatePadding (); 
+			}
+		}
+
+		public double PaddingRight {
+			get { return padding.Right; }
+			set {
+				padding.Right = value;
+				UpdatePadding (); 
+			}
+		}
+
+		public double PaddingTop {
+			get { return padding.Top; }
+			set {
+				padding.Top = value;
+				UpdatePadding (); 
+			}
+		}
+
+		public double PaddingBottom {
+			get { return padding.Bottom; }
+			set {
+				padding.Bottom = value;
+				UpdatePadding (); 
+			}
+		}
+
+		void UpdatePadding ()
+		{
+			OnPreferredSizeChanged();
 		}
 
 		protected override void OnReallocate ()

@@ -55,10 +55,10 @@ namespace Samples
 		{
 			var f = new Frame (FrameType.Custom);
 			f.BorderColor = fixedp ? new Color (1,0,0) : new Color (0,0,1);
-			f.BorderWidth.SetAll (1);
-			f.Margin.SetAll (10);
+			f.BorderWidth = 1;
+			f.Margin = 10;
 			f.Content = new Label (text);
-			f.Content.Margin.SetAll (10);
+			f.Content.Margin = 10;
 			return f;
 		}
 	}

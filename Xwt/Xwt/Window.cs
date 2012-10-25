@@ -37,13 +37,8 @@ namespace Xwt
 		Menu mainMenu;
 		bool shown;
 		
-		protected new class WindowBackendHost: WindowFrame.WindowBackendHost, ISpacingListener
+		protected new class WindowBackendHost: WindowFrame.WindowBackendHost
 		{
-			public void OnSpacingChanged (WidgetSpacing source)
-			{
-				var w = (Window) Parent;
-				w.Backend.SetPadding (w.padding.Left, w.padding.Top, w.padding.Right, w.padding.Bottom);
-			}
 		}
 		
 		protected override BackendHost CreateBackendHost ()
@@ -53,13 +48,11 @@ namespace Xwt
 		
 		public Window ()
 		{
-			padding = new WidgetSpacing ((WindowBackendHost)BackendHost);
-			padding.SetAll (6);
+			padding = 6;
 		}
 		
 		public Window (string title): base (title)
 		{
-			padding = new WidgetSpacing ((WindowBackendHost)BackendHost);
 		}
 		
 		IWindowBackend Backend {
@@ -68,8 +61,49 @@ namespace Xwt
 		
 		public WidgetSpacing Padding {
 			get { return padding; }
+			set {
+				padding = value;
+				UpdatePadding ();
+			}
 		}
-		
+
+		public double PaddingLeft {
+			get { return padding.Left; }
+			set {
+				padding.Left = value;
+				UpdatePadding (); 
+			}
+		}
+
+		public double PaddingRight {
+			get { return padding.Right; }
+			set {
+				padding.Right = value;
+				UpdatePadding (); 
+			}
+		}
+
+		public double PaddingTop {
+			get { return padding.Top; }
+			set {
+				padding.Top = value;
+				UpdatePadding (); 
+			}
+		}
+
+		public double PaddingBottom {
+			get { return padding.Bottom; }
+			set {
+				padding.Bottom = value;
+				UpdatePadding (); 
+			}
+		}
+
+		void UpdatePadding ()
+		{
+			Backend.SetPadding (padding.Left, padding.Top, padding.Right, padding.Bottom);
+		}
+
 		public Menu MainMenu {
 			get {
 				return mainMenu;

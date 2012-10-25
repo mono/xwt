@@ -51,16 +51,12 @@ namespace Xwt
 			MapEvent (PopoverEvent.Closed, typeof(Popover), "OnClosed");
 		}
 
-		protected class PopoverBackendHost: BackendHost<Popover,IPopoverBackend>, ISpacingListener, IPopoverEventSink
+		protected class PopoverBackendHost: BackendHost<Popover,IPopoverBackend>, IPopoverEventSink
 		{
 			protected override void OnBackendCreated ()
 			{
 				base.OnBackendCreated ();
 				Backend.Initialize (this);
-			}
-
-			public void OnSpacingChanged (WidgetSpacing source)
-			{
 			}
 
 			public void OnClosed ()
@@ -80,7 +76,6 @@ namespace Xwt
 
 		public Popover ()
 		{
-			padding = new WidgetSpacing ((PopoverBackendHost) BackendHost);
 		}
 
 		public Popover (Widget content): this ()
@@ -96,9 +91,49 @@ namespace Xwt
 				content = value;
 			}
 		}
-		
+
 		public WidgetSpacing Padding {
 			get { return padding; }
+			set {
+				padding = value;
+				UpdatePadding ();
+			}
+		}
+
+		public double PaddingLeft {
+			get { return padding.Left; }
+			set {
+				padding.Left = value;
+				UpdatePadding (); 
+			}
+		}
+
+		public double PaddingRight {
+			get { return padding.Right; }
+			set {
+				padding.Right = value;
+				UpdatePadding (); 
+			}
+		}
+
+		public double PaddingTop {
+			get { return padding.Top; }
+			set {
+				padding.Top = value;
+				UpdatePadding (); 
+			}
+		}
+
+		public double PaddingBottom {
+			get { return padding.Bottom; }
+			set {
+				padding.Bottom = value;
+				UpdatePadding (); 
+			}
+		}
+
+		void UpdatePadding ()
+		{
 		}
 
 		public void Show (Position arrowPosition, Widget referenceWidget)

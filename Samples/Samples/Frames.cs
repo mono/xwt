@@ -44,28 +44,28 @@ namespace Samples
 			
 			f = new Frame ();
 			f.Type = FrameType.Custom;
-			f.BorderWidth.Left = 1;
-			f.BorderWidth.Top = 2;
-			f.BorderWidth.Right = 3;
-			f.BorderWidth.Bottom = 4;
+			f.BorderWidthLeft = 1;
+			f.BorderWidthTop = 2;
+			f.BorderWidthRight = 3;
+			f.BorderWidthBottom = 4;
 			f.BorderColor = new Color (0, 0, 1);
 			f.Content = new Label ("Custom");
 			PackStart (f);
 			
 			f = new Frame ();
 			f.Type = FrameType.Custom;
-			f.BorderWidth.SetAll (2);
-			f.Padding.Left = 10;
-			f.Padding.Top = 20;
-			f.Padding.Right = 30;
-			f.Padding.Bottom = 40;
+			f.BorderWidth = 2;
+			f.PaddingLeft = 10;
+			f.PaddingTop = 20;
+			f.PaddingRight = 30;
+			f.PaddingBottom = 40;
 			f.Content = new SimpleBox (50);
 			PackStart (f);
 			
 			f = new Frame ();
 			f.Type = FrameType.Custom;
-			f.BorderWidth.SetAll (2);
-			f.Padding.SetAll (10);
+			f.BorderWidth = 2;
+			f.Padding = 10;
 			f.Content = new Label ("With red background");
 			f.BackgroundColor = new Color (1,0,0);
 			PackStart (f);
