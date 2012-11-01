@@ -285,6 +285,7 @@ namespace Xwt.WPFBackend
 				stringFormat.Trimming = trimming;
 			}
 
+			c.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 			c.Graphics.DrawString (layout.Text, layout.Font.ToDrawingFont (), c.Brush,
 			                       new RectangleF ((float)x, (float)y, (float)measure.Width, h),
 			                       stringFormat);
