@@ -1,0 +1,17 @@
+<Type Name="NodePosition" FullName="Xwt.NodePosition">
+  <TypeSignature Language="C#" Value="public struct NodePosition" />
+  <TypeSignature Language="ILAsm" Value=".class public sequential ansi sealed beforefieldinit NodePosition extends System.ValueType" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.ValueType</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members />
+</Type>

@@ -1,0 +1,40 @@
+<Type Name="LinearGradient" FullName="Xwt.Drawing.LinearGradient">
+  <TypeSignature Language="C#" Value="public class LinearGradient : Xwt.Drawing.Gradient" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit LinearGradient extends Xwt.Drawing.Gradient" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Xwt.Drawing.Gradient</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public LinearGradient (double xStart, double yStart, double xEnd, double yEnd);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(float64 xStart, float64 yStart, float64 xEnd, float64 yEnd) cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="xStart" Type="System.Double" />
+        <Parameter Name="yStart" Type="System.Double" />
+        <Parameter Name="xEnd" Type="System.Double" />
+        <Parameter Name="yEnd" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="xStart">To be added.</param>
+        <param name="yStart">To be added.</param>
+        <param name="xEnd">To be added.</param>
+        <param name="yEnd">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,14 @@
+<Type Name="IBackendHandler" FullName="Xwt.Backends.IBackendHandler">
+  <TypeSignature Language="C#" Value="public interface IBackendHandler" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IBackendHandler" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members />
+</Type>

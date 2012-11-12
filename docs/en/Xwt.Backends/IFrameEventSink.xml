@@ -1,0 +1,18 @@
+<Type Name="IFrameEventSink" FullName="Xwt.Backends.IFrameEventSink">
+  <TypeSignature Language="C#" Value="public interface IFrameEventSink : Xwt.Backends.IWidgetEventSink" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IFrameEventSink implements class Xwt.Backends.IWidgetEventSink" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.Backends.IWidgetEventSink</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members />
+</Type>

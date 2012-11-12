@@ -1,0 +1,92 @@
+<Type Name="IDialogBackend" FullName="Xwt.Backends.IDialogBackend">
+  <TypeSignature Language="C#" Value="public interface IDialogBackend : Xwt.Backends.IWindowBackend" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IDialogBackend implements class Xwt.Backends.IWindowBackend, class Xwt.Backends.IWindowFrameBackend, class Xwt.IBackend" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.Backends.IWindowBackend</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="EndLoop">
+      <MemberSignature Language="C#" Value="public void EndLoop ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void EndLoop() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RunLoop">
+      <MemberSignature Language="C#" Value="public void RunLoop (Xwt.Backends.IWindowFrameBackend parent);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RunLoop(class Xwt.Backends.IWindowFrameBackend parent) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="parent" Type="Xwt.Backends.IWindowFrameBackend" />
+      </Parameters>
+      <Docs>
+        <param name="parent">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetButtons">
+      <MemberSignature Language="C#" Value="public void SetButtons (System.Collections.Generic.IEnumerable&lt;Xwt.DialogButton&gt; buttons);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetButtons(class System.Collections.Generic.IEnumerable`1&lt;class Xwt.DialogButton&gt; buttons) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="buttons" Type="System.Collections.Generic.IEnumerable&lt;Xwt.DialogButton&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="buttons">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="UpdateButton">
+      <MemberSignature Language="C#" Value="public void UpdateButton (Xwt.DialogButton btn);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void UpdateButton(class Xwt.DialogButton btn) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="btn" Type="Xwt.DialogButton" />
+      </Parameters>
+      <Docs>
+        <param name="btn">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

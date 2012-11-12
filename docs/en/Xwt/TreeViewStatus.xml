@@ -1,0 +1,17 @@
+<Type Name="TreeViewStatus" FullName="Xwt.TreeViewStatus">
+  <TypeSignature Language="C#" Value="public class TreeViewStatus" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit TreeViewStatus extends System.Object" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members />
+</Type>

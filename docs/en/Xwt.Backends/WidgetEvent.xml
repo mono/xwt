@@ -1,0 +1,232 @@
+<Type Name="WidgetEvent" FullName="Xwt.Backends.WidgetEvent">
+  <TypeSignature Language="C#" Value="public enum WidgetEvent" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed WidgetEvent extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Attributes>
+    <Attribute>
+      <AttributeName>System.Flags</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="DragDrop">
+      <MemberSignature Language="C#" Value="DragDrop" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent DragDrop = int32(8)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="DragDropCheck">
+      <MemberSignature Language="C#" Value="DragDropCheck" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent DragDropCheck = int32(4)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="DragLeave">
+      <MemberSignature Language="C#" Value="DragLeave" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent DragLeave = int32(16)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="DragOver">
+      <MemberSignature Language="C#" Value="DragOver" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent DragOver = int32(2)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="DragOverCheck">
+      <MemberSignature Language="C#" Value="DragOverCheck" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent DragOverCheck = int32(1)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="GotFocus">
+      <MemberSignature Language="C#" Value="GotFocus" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent GotFocus = int32(2048)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="KeyPressed">
+      <MemberSignature Language="C#" Value="KeyPressed" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent KeyPressed = int32(32)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="KeyReleased">
+      <MemberSignature Language="C#" Value="KeyReleased" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent KeyReleased = int32(64)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="LostFocus">
+      <MemberSignature Language="C#" Value="LostFocus" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent LostFocus = int32(4096)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="MouseEntered">
+      <MemberSignature Language="C#" Value="MouseEntered" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent MouseEntered = int32(8192)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="MouseExited">
+      <MemberSignature Language="C#" Value="MouseExited" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent MouseExited = int32(16384)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="PreferredHeightCheck">
+      <MemberSignature Language="C#" Value="PreferredHeightCheck" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent PreferredHeightCheck = int32(256)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="PreferredHeightForWidthCheck">
+      <MemberSignature Language="C#" Value="PreferredHeightForWidthCheck" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent PreferredHeightForWidthCheck = int32(1024)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="PreferredWidthCheck">
+      <MemberSignature Language="C#" Value="PreferredWidthCheck" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent PreferredWidthCheck = int32(128)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="PreferredWidthForHeightCheck">
+      <MemberSignature Language="C#" Value="PreferredWidthForHeightCheck" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.WidgetEvent PreferredWidthForHeightCheck = int32(512)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.WidgetEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

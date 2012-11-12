@@ -1,0 +1,69 @@
+<Type Name="Gradient" FullName="Xwt.Drawing.Gradient">
+  <TypeSignature Language="C#" Value="public abstract class Gradient : Xwt.Drawing.Pattern" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract Gradient extends Xwt.Drawing.Pattern" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Xwt.Drawing.Pattern</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="protected Gradient ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig specialname rtspecialname instance void .ctor() cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="AddColorStop">
+      <MemberSignature Language="C#" Value="public Xwt.Drawing.Gradient AddColorStop (double pos, Xwt.Drawing.Color color);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class Xwt.Drawing.Gradient AddColorStop(float64 pos, valuetype Xwt.Drawing.Color color) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Gradient</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="pos" Type="System.Double" />
+        <Parameter Name="color" Type="Xwt.Drawing.Color" />
+      </Parameters>
+      <Docs>
+        <param name="pos">To be added.</param>
+        <param name="color">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="BackendHandler">
+      <MemberSignature Language="C#" Value="protected override Xwt.Backends.IBackendHandler BackendHandler { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xwt.Backends.IBackendHandler BackendHandler" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.IBackendHandler</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

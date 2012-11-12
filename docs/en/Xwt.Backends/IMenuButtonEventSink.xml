@@ -1,0 +1,32 @@
+<Type Name="IMenuButtonEventSink" FullName="Xwt.Backends.IMenuButtonEventSink">
+  <TypeSignature Language="C#" Value="public interface IMenuButtonEventSink" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IMenuButtonEventSink" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="OnCreateMenu">
+      <MemberSignature Language="C#" Value="public Xwt.Backends.IMenuBackend OnCreateMenu ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Xwt.Backends.IMenuBackend OnCreateMenu() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.IMenuBackend</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

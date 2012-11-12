@@ -1,0 +1,542 @@
+<Type Name="MessageDialog" FullName="Xwt.MessageDialog">
+  <TypeSignature Language="C#" Value="public static class MessageDialog" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit MessageDialog extends System.Object" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="AskQuestion">
+      <MemberSignature Language="C#" Value="public static Xwt.Command AskQuestion (Xwt.QuestionMessage message);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xwt.Command AskQuestion(class Xwt.QuestionMessage message) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Command</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="message" Type="Xwt.QuestionMessage" />
+      </Parameters>
+      <Docs>
+        <param name="message">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="AskQuestion">
+      <MemberSignature Language="C#" Value="public static Xwt.Command AskQuestion (string primaryText, Xwt.Command[] buttons);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xwt.Command AskQuestion(string primaryText, class Xwt.Command[] buttons) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Command</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="buttons" Type="Xwt.Command[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="buttons">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="AskQuestion">
+      <MemberSignature Language="C#" Value="public static Xwt.Command AskQuestion (string primaryText, int defaultButton, Xwt.Command[] buttons);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xwt.Command AskQuestion(string primaryText, int32 defaultButton, class Xwt.Command[] buttons) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Command</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="defaultButton" Type="System.Int32" />
+        <Parameter Name="buttons" Type="Xwt.Command[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="defaultButton">To be added.</param>
+        <param name="buttons">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="AskQuestion">
+      <MemberSignature Language="C#" Value="public static Xwt.Command AskQuestion (string primaryText, string secondaryText, Xwt.Command[] buttons);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xwt.Command AskQuestion(string primaryText, string secondaryText, class Xwt.Command[] buttons) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Command</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+        <Parameter Name="buttons" Type="Xwt.Command[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <param name="buttons">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="AskQuestion">
+      <MemberSignature Language="C#" Value="public static Xwt.Command AskQuestion (string primaryText, string secondaryText, int defaultButton, Xwt.Command[] buttons);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xwt.Command AskQuestion(string primaryText, string secondaryText, int32 defaultButton, class Xwt.Command[] buttons) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Command</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+        <Parameter Name="defaultButton" Type="System.Int32" />
+        <Parameter Name="buttons" Type="Xwt.Command[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <param name="defaultButton">To be added.</param>
+        <param name="buttons">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Confirm">
+      <MemberSignature Language="C#" Value="public static bool Confirm (Xwt.ConfirmationMessage message);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Confirm(class Xwt.ConfirmationMessage message) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="message" Type="Xwt.ConfirmationMessage" />
+      </Parameters>
+      <Docs>
+        <param name="message">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Confirm">
+      <MemberSignature Language="C#" Value="public static bool Confirm (string primaryText, Xwt.Command button);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Confirm(string primaryText, class Xwt.Command button) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="button" Type="Xwt.Command" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="button">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Confirm">
+      <MemberSignature Language="C#" Value="public static bool Confirm (string primaryText, string secondaryText, Xwt.Command button);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Confirm(string primaryText, string secondaryText, class Xwt.Command button) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+        <Parameter Name="button" Type="Xwt.Command" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <param name="button">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Confirm">
+      <MemberSignature Language="C#" Value="public static bool Confirm (string primaryText, Xwt.Command button, bool confirmIsDefault);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Confirm(string primaryText, class Xwt.Command button, bool confirmIsDefault) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="button" Type="Xwt.Command" />
+        <Parameter Name="confirmIsDefault" Type="System.Boolean" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="button">To be added.</param>
+        <param name="confirmIsDefault">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Confirm">
+      <MemberSignature Language="C#" Value="public static bool Confirm (string primaryText, string secondaryText, Xwt.Command button, bool confirmIsDefault);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Confirm(string primaryText, string secondaryText, class Xwt.Command button, bool confirmIsDefault) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+        <Parameter Name="button" Type="Xwt.Command" />
+        <Parameter Name="confirmIsDefault" Type="System.Boolean" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <param name="button">To be added.</param>
+        <param name="confirmIsDefault">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RootWindow">
+      <MemberSignature Language="C#" Value="public static Xwt.WindowFrame RootWindow { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property class Xwt.WindowFrame RootWindow" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.WindowFrame</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowError">
+      <MemberSignature Language="C#" Value="public static void ShowError (string primaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowError(string primaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowError">
+      <MemberSignature Language="C#" Value="public static void ShowError (string primaryText, string secondaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowError(string primaryText, string secondaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowError">
+      <MemberSignature Language="C#" Value="public static void ShowError (Xwt.WindowFrame parent, string primaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowError(class Xwt.WindowFrame parent, string primaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="parent" Type="Xwt.WindowFrame" />
+        <Parameter Name="primaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="parent">To be added.</param>
+        <param name="primaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowError">
+      <MemberSignature Language="C#" Value="public static void ShowError (Xwt.WindowFrame parent, string primaryText, string secondaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowError(class Xwt.WindowFrame parent, string primaryText, string secondaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="parent" Type="Xwt.WindowFrame" />
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="parent">To be added.</param>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowMessage">
+      <MemberSignature Language="C#" Value="public static void ShowMessage (string primaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowMessage(string primaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowMessage">
+      <MemberSignature Language="C#" Value="public static void ShowMessage (string primaryText, string secondaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowMessage(string primaryText, string secondaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowMessage">
+      <MemberSignature Language="C#" Value="public static void ShowMessage (Xwt.WindowFrame parent, string primaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowMessage(class Xwt.WindowFrame parent, string primaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="parent" Type="Xwt.WindowFrame" />
+        <Parameter Name="primaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="parent">To be added.</param>
+        <param name="primaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowMessage">
+      <MemberSignature Language="C#" Value="public static void ShowMessage (Xwt.WindowFrame parent, string primaryText, string secondaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowMessage(class Xwt.WindowFrame parent, string primaryText, string secondaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="parent" Type="Xwt.WindowFrame" />
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="parent">To be added.</param>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowWarning">
+      <MemberSignature Language="C#" Value="public static void ShowWarning (string primaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowWarning(string primaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowWarning">
+      <MemberSignature Language="C#" Value="public static void ShowWarning (string primaryText, string secondaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowWarning(string primaryText, string secondaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowWarning">
+      <MemberSignature Language="C#" Value="public static void ShowWarning (Xwt.WindowFrame parent, string primaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowWarning(class Xwt.WindowFrame parent, string primaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="parent" Type="Xwt.WindowFrame" />
+        <Parameter Name="primaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="parent">To be added.</param>
+        <param name="primaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShowWarning">
+      <MemberSignature Language="C#" Value="public static void ShowWarning (Xwt.WindowFrame parent, string primaryText, string secondaryText);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ShowWarning(class Xwt.WindowFrame parent, string primaryText, string secondaryText) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="parent" Type="Xwt.WindowFrame" />
+        <Parameter Name="primaryText" Type="System.String" />
+        <Parameter Name="secondaryText" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="parent">To be added.</param>
+        <param name="primaryText">To be added.</param>
+        <param name="secondaryText">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

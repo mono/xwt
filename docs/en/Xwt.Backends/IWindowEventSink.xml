@@ -1,0 +1,18 @@
+<Type Name="IWindowEventSink" FullName="Xwt.Backends.IWindowEventSink">
+  <TypeSignature Language="C#" Value="public interface IWindowEventSink : Xwt.Backends.IWindowFrameEventSink" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IWindowEventSink implements class Xwt.Backends.IWindowFrameEventSink" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.Backends.IWindowFrameEventSink</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members />
+</Type>
