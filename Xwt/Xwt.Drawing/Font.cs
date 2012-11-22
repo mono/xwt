@@ -34,15 +34,15 @@ namespace Xwt.Drawing
 	{
 		IFontBackendHandler handler;
 		
-		protected override IBackendHandler BackendHandler {
-			get {
-				return handler;
-			}
+		internal Font (object backend): this (backend, null)
+		{
 		}
 		
-		internal Font (object backend)
+		internal Font (object backend, ToolkitEngine toolkit)
 		{
-			handler = ToolkitEngine.CurrentEngine.FontBackendHandler;
+			if (toolkit != null)
+				ToolkitEngine = toolkit;
+			handler = ToolkitEngine.FontBackendHandler;
 			if (backend == null)
 				throw new ArgumentNullException ("backend");
 			Backend = backend;
@@ -50,14 +50,14 @@ namespace Xwt.Drawing
 		
 		public static Font FromName (string name, double size)
 		{
-			var handler = ToolkitEngine.CurrentEngine.FontBackendHandler;
-			return new Font (handler.CreateFromName (name, size));
+			var toolkit = ToolkitEngine.CurrentEngine;
+			var handler = toolkit.FontBackendHandler;
+			return new Font (handler.CreateFromName (name, size), toolkit);
 		}
 		
 		public Font WithFamily (string fontFamily)
 		{
-			var handler = ToolkitEngine.CurrentEngine.FontBackendHandler;
-			return new Font (handler.SetFamily (Backend, fontFamily));
+			return new Font (ToolkitEngine.FontBackendHandler.SetFamily (Backend, fontFamily), ToolkitEngine);
 		}
 		
 		public string Family {
@@ -77,7 +77,7 @@ namespace Xwt.Drawing
 		
 		public Font WithSize (double size)
 		{
-			return new Font (handler.SetSize (Backend, size));
+			return new Font (handler.SetSize (Backend, size), ToolkitEngine);
 		}
 		
 		public FontStyle Style {
@@ -88,7 +88,7 @@ namespace Xwt.Drawing
 		
 		public Font WithStyle (FontStyle style)
 		{
-			return new Font (handler.SetStyle (Backend, style));
+			return new Font (handler.SetStyle (Backend, style), ToolkitEngine);
 		}
 		
 		public FontWeight Weight {
@@ -99,7 +99,7 @@ namespace Xwt.Drawing
 		
 		public Font WithWeight (FontWeight weight)
 		{
-			return new Font (handler.SetWeight (Backend, weight));
+			return new Font (handler.SetWeight (Backend, weight), ToolkitEngine);
 		}
 		
 		public FontStretch Stretch {
@@ -110,7 +110,7 @@ namespace Xwt.Drawing
 		
 		public Font WithStretch (FontStretch stretch)
 		{
-			return new Font (handler.SetStretch (Backend, stretch));
+			return new Font (handler.SetStretch (Backend, stretch), ToolkitEngine);
 		}
 	}
 	

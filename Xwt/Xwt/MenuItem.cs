@@ -127,8 +127,8 @@ namespace Xwt
 		public Menu SubMenu {
 			get { return subMenu; }
 			set {
+				Backend.SetSubmenu ((IMenuBackend)BackendHost.ToolkitEngine.GetSafeBackend (subMenu));
 				subMenu = value;
-				Backend.SetSubmenu ((IMenuBackend)ToolkitEngine.GetBackend (subMenu));
 			}
 		}
 		

@@ -33,18 +33,28 @@ namespace Xwt
 	public abstract class XwtObject: IFrontend
 	{
 		object backend;
+
+		internal ToolkitEngine ToolkitEngine { get; set; }
 		
-		protected XwtObject (object backend)
+		protected XwtObject (object backend): this (backend, ToolkitEngine.CurrentEngine)
+		{
+		}
+		
+		protected XwtObject (object backend, ToolkitEngine toolkit)
 		{
 			this.backend = backend;
+			ToolkitEngine = ToolkitEngine.CurrentEngine;
 		}
 
 		protected XwtObject ()
 		{
+			ToolkitEngine = ToolkitEngine.CurrentEngine;
 		}
 
-		protected abstract IBackendHandler BackendHandler { get; }
-		
+		ToolkitEngine IFrontend.ToolkitEngine {
+			get { return ToolkitEngine; }
+		}
+
 		protected object Backend {
 			get {
 				LoadBackend ();

@@ -34,95 +34,91 @@ namespace Xwt.Drawing
 {
 	public sealed class Image: XwtObject, IDisposable
 	{
-		static ImageBackendHandler handler;
-		
-		static Image ()
-		{
-			handler = ToolkitEngine.CurrentEngine.Backend.CreateSharedBackend<ImageBackendHandler> (typeof(Image));
-		}
-		
-		protected override IBackendHandler BackendHandler {
-			get {
-				return handler;
-			}
-		}
-		
 		internal Image (object backend): base (backend)
 		{
 		}
 		
-		public Image (Image image): base (handler.Copy (image.Backend))
+		internal Image (object backend, ToolkitEngine toolkit): base (backend, toolkit)
+		{
+		}
+		
+		public Image (Image image): base (image.ToolkitEngine.ImageBackendHandler.Copy (image.Backend), image.ToolkitEngine)
 		{
 		}
 		
 		public static Image FromResource (Type type, string resource)
 		{
-			var img = handler.LoadFromResource (type.Assembly, resource);
+			var toolkit = ToolkitEngine.CurrentEngine;
+			var img = toolkit.ImageBackendHandler.LoadFromResource (type.Assembly, resource);
 			if (img == null)
 				throw new InvalidOperationException ("Resource not found: " + resource);
-			return new Image (img);
+			return new Image (img, toolkit);
 		}
 		
 		public static Image FromResource (Assembly asm, string resource)
 		{
-			var img = handler.LoadFromResource (asm, resource);
+			var toolkit = ToolkitEngine.CurrentEngine;
+			var img = toolkit.ImageBackendHandler.LoadFromResource (asm, resource);
 			if (img == null)
 				throw new InvalidOperationException ("Resource not found: " + resource);
-			return new Image (img);
+			return new Image (img, toolkit);
 		}
 		
 		public static Image FromFile (string file)
 		{
-			return new Image (handler.LoadFromFile (file));
+			var toolkit = ToolkitEngine.CurrentEngine;
+			return new Image (toolkit.ImageBackendHandler.LoadFromFile (file), toolkit);
 		}
 		
 		public static Image FromStream (Stream stream)
 		{
-			return new Image (handler.LoadFromStream (stream));
+			var toolkit = ToolkitEngine.CurrentEngine;
+			return new Image (toolkit.ImageBackendHandler.LoadFromStream (stream), toolkit);
 		}
 		
 		public static Image FromIcon (string id, IconSize size)
 		{
-			return new Image (handler.LoadFromIcon (id, size));
+			var toolkit = ToolkitEngine.CurrentEngine;
+			return new Image (toolkit.ImageBackendHandler.LoadFromIcon (id, size), toolkit);
 		}
 		
 		public Size Size {
-			get { return handler.GetSize (Backend); }
+			get { return ToolkitEngine.ImageBackendHandler.GetSize (Backend); }
 		}
 		
 		public void SetPixel (int x, int y, Color color)
 		{
-			handler.SetPixel (Backend, x, y, color);
+			ToolkitEngine.ImageBackendHandler.SetPixel (Backend, x, y, color);
 		}
 		
 		public Color GetPixel (int x, int y)
 		{
-			return handler.GetPixel (Backend, x, y);
+			return ToolkitEngine.ImageBackendHandler.GetPixel (Backend, x, y);
 		}
 		
 		public Image Scale (double scale)
 		{
 			double w = Size.Width * scale;
 			double h = Size.Height * scale;
-			return new Image (handler.Resize (Backend, w, h));
+			return new Image (ToolkitEngine.ImageBackendHandler.Resize (Backend, w, h));
 		}
 		
 		public Image Scale (double scaleX, double scaleY)
 		{
 			double w = Size.Width * scaleX;
 			double h = Size.Height * scaleY;
-			return new Image (handler.Resize (Backend, w, h));
+			return new Image (ToolkitEngine.ImageBackendHandler.Resize (Backend, w, h));
 		}
 		
 		public Image Resize (double width, double height)
 		{
-			return new Image (handler.Resize (Backend, width, height));
+			return new Image (ToolkitEngine.ImageBackendHandler.Resize (Backend, width, height));
 		}
 		
 		public Image ResizeToFitBox (double width, double height)
 		{
 			double r = Math.Min (width / Size.Width, height / Size.Height);
-			return new Image (handler.Resize (Backend, Size.Width * r, Size.Height * r));
+			return new Image (ToolkitEngine.ImageBackendHandler.Resize (Backend, Size.Width * r, Size.Height * r));
 		}
 		
 		public Image ToGrayscale ()
@@ -132,22 +128,22 @@ namespace Xwt.Drawing
 		
 		public Image ChangeOpacity (double opacity)
 		{
-			return new Image (handler.ChangeOpacity (Backend, opacity));
+			return new Image (ToolkitEngine.ImageBackendHandler.ChangeOpacity (Backend, opacity));
 		}
 		
 		public void CopyArea (int srcX, int srcY, int width, int height, Image dest, int destX, int destY)
 		{
-			handler.CopyArea (Backend, srcX, srcY, width, height, dest.Backend, destX, destY);
+			ToolkitEngine.ImageBackendHandler.CopyArea (Backend, srcX, srcY, width, height, dest.Backend, destX, destY);
 		}
 		
 		public Image Crop (int srcX, int srcY, int width, int height)
 		{
-			return new Image (handler.Crop (Backend, srcX, srcY, width, height));
+			return new Image (ToolkitEngine.ImageBackendHandler.Crop (Backend, srcX, srcY, width, height));
 		}
 		
 		public void Dispose ()
 		{
-			handler.Dispose (Backend);
+			ToolkitEngine.ImageBackendHandler.Dispose (Backend);
 		}
 	}
 }

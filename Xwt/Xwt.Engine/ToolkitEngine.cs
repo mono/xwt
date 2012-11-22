@@ -52,6 +52,19 @@ namespace Xwt.Engine
 			ClipboardBackend = Backend.CreateSharedBackend<IClipboardBackend> (typeof(Clipboard));
 			ImageBuilderBackendHandler = Backend.CreateSharedBackend<IImageBuilderBackendHandler> (typeof(ImageBuilder));
 			ImagePatternBackendHandler = Backend.CreateSharedBackend<IImagePatternBackendHandler> (typeof(ImagePattern));
+			ImageBackendHandler = Backend.CreateSharedBackend<ImageBackendHandler> (typeof(Image));
+		}
+
+		public object GetNativeWidget (Widget w)
+		{
+			ValidateObject (w);
+			return backend.GetNativeWidget (w);
+		}
+
+		public object GetNativeImage (Image image)
+		{
+			ValidateObject (image);
+			return backend.GetNativeImage (image);
 		}
 
 		public object CreateObject<T> () where T:new()
@@ -81,6 +94,21 @@ namespace Xwt.Engine
 			return new NativeWindowFrame (backend.GetBackendForWindow (nativeWindow));
 		}
 
+		public object ValidateObject (object obj)
+		{
+			if (obj is IFrontend) {
+				if (((IFrontend)obj).ToolkitEngine != this)
+					throw new InvalidOperationException ("Object belongs to a different toolkit");
+			}
+			return obj;
+		}
+
+		public object GetSafeBackend (object obj)
+		{
+			ValidateObject (obj);
+			return GetBackend (obj);
+		}
+
 		public static object GetBackend (object obj)
 		{
 			if (obj is IFrontend)
@@ -98,6 +126,7 @@ namespace Xwt.Engine
 		internal IClipboardBackend ClipboardBackend;
 		internal IImageBuilderBackendHandler ImageBuilderBackendHandler;
 		internal IImagePatternBackendHandler ImagePatternBackendHandler;
+		internal ImageBackendHandler ImageBackendHandler;
 	}
 }
 

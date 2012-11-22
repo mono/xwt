@@ -110,6 +110,7 @@ namespace Xwt
 		public IListDataSource DataSource {
 			get { return source; }
 			set {
+				BackendHost.ToolkitEngine.ValidateObject (value);
 				if (source != null) {
 					source.RowChanged -= HandleModelChanged;
 					source.RowDeleted -= HandleModelChanged;

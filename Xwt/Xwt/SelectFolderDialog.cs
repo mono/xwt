@@ -139,7 +139,7 @@ namespace Xwt
 					Backend.CurrentFolder = currentFolder;
 				if (!string.IsNullOrEmpty (title))
 					Backend.Title = title;
-				return Backend.Run ((IWindowFrameBackend)ToolkitEngine.GetBackend (parentWindow));
+				return Backend.Run ((IWindowFrameBackend)BackendHost.ToolkitEngine.GetSafeBackend (parentWindow));
 			} finally {
 				currentFolder = Backend.CurrentFolder;
 				folder = Backend.Folder;

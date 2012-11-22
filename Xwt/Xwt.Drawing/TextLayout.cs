@@ -41,22 +41,18 @@ namespace Xwt.Drawing
 		double height = -1;
 		TextTrimming textTrimming;
 		
-		protected override IBackendHandler BackendHandler {
-			get {
-				return handler;
-			}
-		}
-		
 		public TextLayout (Canvas canvas)
 		{
-			handler = ToolkitEngine.CurrentEngine.TextLayoutBackendHandler;
+			ToolkitEngine = canvas.Surface.ToolkitEngine;
+			handler = ToolkitEngine.TextLayoutBackendHandler;
 			Backend = handler.Create ((ICanvasBackend)ToolkitEngine.GetBackend (canvas));
 			Font = canvas.Font;
 		}
 		
 		public TextLayout (Context ctx)
 		{
-			handler = ToolkitEngine.CurrentEngine.TextLayoutBackendHandler;
+			ToolkitEngine = ctx.ToolkitEngine;
+			handler = ToolkitEngine.TextLayoutBackendHandler;
 			Backend = handler.Create (ctx);
 		}
 		

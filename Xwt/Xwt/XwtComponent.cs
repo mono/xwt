@@ -47,9 +47,13 @@ namespace Xwt
 		{
 			return new BackendHost ();
 		}
-		
+
 		protected BackendHost BackendHost {
 			get { return backendHost; }
+		}
+		
+		ToolkitEngine IFrontend.ToolkitEngine {
+			get { return backendHost.ToolkitEngine; }
 		}
 		
 		object IFrontend.Backend {

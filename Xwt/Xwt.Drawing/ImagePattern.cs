@@ -31,18 +31,9 @@ namespace Xwt.Drawing
 {
 	public sealed class ImagePattern: Pattern
 	{
-		IImagePatternBackendHandler handler;
-		
-		protected override Xwt.Backends.IBackendHandler BackendHandler {
-			get {
-				return handler;
-			}
-		}
-		
 		public ImagePattern (Image img)
 		{
-			handler = ToolkitEngine.CurrentEngine.ImagePatternBackendHandler;
-			Backend = ((IImagePatternBackendHandler)BackendHandler).Create (GetBackend (img));
+			Backend = ToolkitEngine.ImagePatternBackendHandler.Create (GetBackend (img));
 		}
 	}
 }

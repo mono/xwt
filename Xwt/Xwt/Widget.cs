@@ -509,7 +509,7 @@ namespace Xwt
 				return new Font (Backend.Font);
 			}
 			set {
-				Backend.Font = ToolkitEngine.GetBackend (value);
+				Backend.Font = BackendHost.ToolkitEngine.GetSafeBackend (value);
 			}
 		}
 		
@@ -905,6 +905,10 @@ namespace Xwt
 			get { return Backend.NativeWidget; }
 		}
 		
+		ToolkitEngine IWidgetSurface.ToolkitEngine {
+			get { return BackendHost.ToolkitEngine; }
+		}
+		
 		protected virtual void OnReallocate ()
 		{
 			if (children != null) {
@@ -1110,6 +1114,10 @@ namespace Xwt
 
 		protected void RegisterChild (Widget w)
 		{
+			if (w.Parent != null)
+				throw new InvalidOperationException ("Widget is already a child of another widget");
+			if (w.Surface.ToolkitEngine != Surface.ToolkitEngine)
+				throw new InvalidOperationException ("Widget belongs to a different toolkit");
 			if (children == null)
 				children = new List<Widget> ();
 			w.Parent = this;

@@ -44,7 +44,7 @@ namespace Xwt.Drawing
 		
 		public ImageBuilder (int width, int height, ImageFormat format)
 		{
-			handler = ToolkitEngine.CurrentEngine.ImageBuilderBackendHandler;
+			handler = ToolkitEngine.ImageBuilderBackendHandler;
 			this.width = width;
 			this.height = height;
 			backend = handler.CreateImageBuilder (width, height, format);
@@ -64,13 +64,7 @@ namespace Xwt.Drawing
 			ctx.Dispose ();
 			handler.Dispose (backend);
 		}
-		
-		protected override IBackendHandler BackendHandler {
-			get {
-				return handler;
-			}
-		}
-		
+
 		public Context Context {
 			get {
 				return ctx;
@@ -79,7 +73,7 @@ namespace Xwt.Drawing
 		
 		public Image ToImage ()
 		{
-			return new Image (handler.CreateImage (backend));
+			return new Image (handler.CreateImage (backend), ToolkitEngine);
 		}
 	}
 }

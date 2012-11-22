@@ -76,7 +76,7 @@ namespace Xwt
 			}
 			set {
 				mainMenu = value;
-				Backend.SetMainMenu ((IMenuBackend)ToolkitEngine.GetBackend (mainMenu));
+				Backend.SetMainMenu ((IMenuBackend)BackendHost.ToolkitEngine.GetSafeBackend (mainMenu));
 			}
 		}
 		
@@ -89,7 +89,7 @@ namespace Xwt
 					child.SetParentWindow (null);
 				this.child = value;
 				child.SetParentWindow (this);
-				Backend.SetChild ((IWidgetBackend)ToolkitEngine.GetBackend (child));
+				Backend.SetChild ((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend (child));
 				Widget.QueueWindowSizeNegotiation (this);
 			}
 		}

@@ -44,15 +44,13 @@ namespace Xwt
 			if (engine != null)
 				return;
 			InitBackend (null);
-			engine.InitializeApplication ();
-			engine.InitializeRegistry ();
+			engine.Initialize ();
 		}
 		
 		public static void Initialize (string backendType)
 		{
 			InitBackend (backendType);
-			engine.InitializeApplication ();
-			engine.InitializeRegistry ();
+			engine.Initialize ();
 		}
 		
 		public static void Run ()

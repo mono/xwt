@@ -33,7 +33,7 @@ namespace Xwt.Drawing
 	{
 		public LinearGradient (double xStart, double yStart, double xEnd, double yEnd)
 		{
-			Backend = ((IGradientBackendHandler)BackendHandler).CreateLinear (xStart, yStart, xEnd, yEnd);
+			Backend = ToolkitEngine.GradientBackendHandler.CreateLinear (xStart, yStart, xEnd, yEnd);
 		}
 	}
 }

@@ -49,12 +49,12 @@ namespace Xwt
 		
 		internal void InsertItem (int n, MenuItem item)
 		{
-			Backend.InsertItem (n, (IMenuItemBackend)ToolkitEngine.GetBackend (item));
+			Backend.InsertItem (n, (IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend (item));
 		}
 		
 		internal void RemoveItem (MenuItem item)
 		{
-			Backend.RemoveItem ((IMenuItemBackend)ToolkitEngine.GetBackend (item));
+			Backend.RemoveItem ((IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend (item));
 		}
 		
 		public void Popup ()
@@ -64,7 +64,7 @@ namespace Xwt
 		
 		public void Popup (Widget parentWidget, double x, double y)
 		{
-			Backend.Popup ((IWidgetBackend)ToolkitEngine.GetBackend (parentWidget), x, y);
+			Backend.Popup ((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend (parentWidget), x, y);
 		}
 		
 		/// <summary>

@@ -36,15 +36,9 @@ namespace Xwt.Drawing
 		Font font;
 		double globalAlpha = 1;
 		
-		protected override IBackendHandler BackendHandler {
-			get {
-				return handler;
-			}
-		}
-		
 		internal Context (object backend): base (backend)
 		{
-			handler = ToolkitEngine.CurrentEngine.ContextBackendHandler;
+			handler = ToolkitEngine.ContextBackendHandler;
 		}
 		
 		/// <summary>

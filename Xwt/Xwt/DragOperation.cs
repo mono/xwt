@@ -73,6 +73,7 @@ namespace Xwt
 		{
 			if (started)
 				throw new InvalidOperationException ("The drag image must be set before starting the drag operation");
+			source.Surface.ToolkitEngine.ValidateObject (image);
 			this.image = image;
 			this.hotX = hotX;
 			this.hotY = hotY;

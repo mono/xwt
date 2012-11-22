@@ -36,8 +36,17 @@ namespace Xwt.Backends
 {
 	public abstract class ToolkitEngineBackend
 	{
-		Dictionary<Type,Type> backendTypes = new Dictionary<Type, Type> ();
+		Dictionary<Type,Type> backendTypes;
 		Dictionary<Type,object> sharedBackends = new Dictionary<Type, object> ();
+
+		internal void Initialize ()
+		{
+			if (backendTypes == null) {
+				backendTypes = new Dictionary<Type, Type> ();
+				InitializeBackends ();
+			}
+			InitializeApplication ();
+		}
 
 		/// <summary>
 		/// Initializes the application.
@@ -49,11 +58,11 @@ namespace Xwt.Backends
 		/// <summary>
 		/// Initializes the widget registry used by the application.
 		/// </summary>
-		/// <remarks>Don't do any toolkit initialization there, do them in InitializeApplication. Override should only call registry.RegisterBackend methods.</remarks>
-		/// <param name='registry'>
-		/// Registry.
-		/// </param>
-		public virtual void InitializeRegistry ()
+		/// <remarks>
+		/// Don't do any toolkit initialization there, do them in InitializeApplication.
+		/// Override to register the backend classes, by calling RegisterBackend() methods.
+		/// </remarks>
+		public virtual void InitializeBackends ()
 		{
 		}
 		
@@ -160,10 +169,17 @@ namespace Xwt.Backends
 			get { return false; }
 		}
 
+		void CheckInitialized ()
+		{
+			if (backendTypes == null)
+				throw new InvalidOperationException ("XWT toolkit not initialized");
+		}
+
 		internal T CreateBackend<T> (Type widgetType)
 		{
+			CheckInitialized ();
 			Type bt = null;
-			
+
 			if (!backendTypes.TryGetValue (widgetType, out bt))
 				return default(T);
 			object res = Activator.CreateInstance (bt);
@@ -174,6 +190,7 @@ namespace Xwt.Backends
 
 		internal T CreateSharedBackend<T> (Type widgetType)
 		{
+			CheckInitialized ();
 			object res;
 			if (!sharedBackends.TryGetValue (widgetType, out res))
 				res = sharedBackends [widgetType] = CreateBackend<T> (widgetType);
@@ -182,6 +199,7 @@ namespace Xwt.Backends
 		
 		public void RegisterBackend (Type widgetType, Type backendType)
 		{
+			CheckInitialized ();
 			backendTypes [widgetType] = backendType;
 		}
 		
