@@ -35,7 +35,7 @@ using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public class MacEngine: Xwt.Backends.EngineBackend
+	public class MacEngine: Xwt.Backends.ToolkitEngineBackend
 	{
 		static AppDelegate appDelegate = new AppDelegate ();
 		static NSAutoreleasePool pool;

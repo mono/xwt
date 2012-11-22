@@ -31,7 +31,7 @@ namespace Xwt.GtkBackend.Mac
 {
 	public class GtkMacEngine : Xwt.GtkBackend.GtkEngine
 	{
-		public static Xwt.Backends.EngineBackend MacEngine {
+		public static Xwt.Backends.ToolkitEngineBackend MacEngine {
 			get;
 			set;
 		}

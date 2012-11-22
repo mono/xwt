@@ -84,7 +84,7 @@ namespace Xwt.Backends
 			}
 		}
 
-		internal EngineBackend EngineBackend {
+		internal ToolkitEngineBackend EngineBackend {
 			get { return ToolkitEngine.Backend; }
 		}
 		

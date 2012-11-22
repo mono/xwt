@@ -34,7 +34,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
-	public abstract class EngineBackend
+	public abstract class ToolkitEngineBackend
 	{
 		Dictionary<Type,Type> backendTypes = new Dictionary<Type, Type> ();
 		Dictionary<Type,object> sharedBackends = new Dictionary<Type, object> ();

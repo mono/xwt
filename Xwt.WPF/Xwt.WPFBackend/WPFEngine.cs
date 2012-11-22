@@ -7,7 +7,7 @@
 //       Thomas Ziegler <ziegler.thomas@web.de>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
-// Copyright (c) 2012 Luís Reis
+// Copyright (c) 2012 Luï¿½s Reis
 // Copyright (c) 2012 Thomas Ziegler
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,7 +36,7 @@ using Xwt.Engine;
 
 namespace Xwt.WPFBackend
 {
-	public class WPFEngine : Xwt.Backends.EngineBackend
+	public class WPFEngine : Xwt.Backends.ToolkitEngineBackend
 	{
 		System.Windows.Application application;
 

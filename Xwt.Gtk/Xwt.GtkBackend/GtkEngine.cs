@@ -33,7 +33,7 @@ using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
-	public class GtkEngine: Xwt.Backends.EngineBackend
+	public class GtkEngine: Xwt.Backends.ToolkitEngineBackend
 	{
 		public override void InitializeApplication ()
 		{

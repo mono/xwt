@@ -33,9 +33,9 @@ namespace Xwt
 {
 	public static class Application
 	{
-		static EngineBackend engine;
+		static ToolkitEngineBackend engine;
 		
-		internal static EngineBackend EngineBackend {
+		internal static ToolkitEngineBackend EngineBackend {
 			get { return engine; }
 		}
 		
@@ -173,7 +173,7 @@ namespace Xwt
 				if (asm != null) {
 					Type t = asm.GetType (type);
 					if (t != null) {
-						engine = (EngineBackend) Activator.CreateInstance (t);
+						engine = (ToolkitEngineBackend) Activator.CreateInstance (t);
 						return true;
 					}
 				}

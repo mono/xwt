@@ -59,7 +59,6 @@
     <Compile Include="Xwt.Backends\ILabelBackend.cs" />
     <Compile Include="Xwt.Backends\IWindowBackend.cs" />
     <Compile Include="Xwt\Application.cs" />
-    <Compile Include="Xwt.Backends\EngineBackend.cs" />
     <Compile Include="Xwt.Backends\IBackend.cs" />
     <Compile Include="Xwt\XwtComponent.cs">
       <SubType>Component</SubType>
@@ -306,6 +305,7 @@
     <Compile Include="Xwt\Expander.cs" />
     <Compile Include="Xwt.Backends\IExpandBackend.cs" />
     <Compile Include="Xwt.Engine\ToolkitEngine.cs" />
+    <Compile Include="Xwt.Backends\ToolkitEngineBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

@@ -33,13 +33,13 @@ namespace Xwt.Engine
 	{
 		static ToolkitEngine currentEngine;
 
-		EngineBackend backend;
+		ToolkitEngineBackend backend;
 
 		public static ToolkitEngine CurrentEngine {
 			get { return currentEngine; }
 		}
 
-		internal EngineBackend Backend {
+		internal ToolkitEngineBackend Backend {
 			get { return backend; }
 		}
 
