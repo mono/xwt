@@ -30,7 +30,7 @@ using Xwt.Backends;
 
 using Gtk;
 using Cairo;
-using Xwt.Engine;
+
 
 namespace Xwt.GtkBackend
 {
@@ -216,9 +216,9 @@ namespace Xwt.GtkBackend
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget reference, Xwt.Rectangle positionRect, Widget child)
 		{
 			var parent = reference.ParentWindow;
-			popover = new PopoverWindow ((Gtk.Widget)((WidgetBackend)Xwt.Engine.Toolkit.GetBackend (child)).NativeWidget, orientation);
+			popover = new PopoverWindow ((Gtk.Widget)((WidgetBackend)Toolkit.GetBackend (child)).NativeWidget, orientation);
 			popover.SetPadding (frontend.Padding);
-			popover.TransientFor = ((WindowFrameBackend)Xwt.Engine.Toolkit.GetBackend (parent)).Window;
+			popover.TransientFor = ((WindowFrameBackend)Toolkit.GetBackend (parent)).Window;
 			popover.DestroyWithParent = true;
 			popover.Hidden += (o, args) => {
 				popover.ReleaseInnerWidget ();

@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Drawing;
-using Xwt.Engine;
+
 using Xwt.Backends;
 
 namespace Xwt

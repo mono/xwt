@@ -29,7 +29,7 @@ using System;
 using System.Drawing;
 using Xwt.Backends;
 using Xwt.Drawing;
-using Xwt.Engine;
+
 using Font = Xwt.Drawing.Font;
 
 namespace Xwt.WPFBackend

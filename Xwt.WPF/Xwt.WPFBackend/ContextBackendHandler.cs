@@ -36,7 +36,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Xwt.Backends;
 using Xwt.Drawing;
-using Xwt.Engine;
+
 using Color = Xwt.Drawing.Color;
 using Font = Xwt.Drawing.Font;
 

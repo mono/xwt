@@ -28,7 +28,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using Xwt.Backends;
-using Xwt.Engine;
+
 using WindowsCheckBox = System.Windows.Controls.CheckBox;
 
 namespace Xwt.WPFBackend

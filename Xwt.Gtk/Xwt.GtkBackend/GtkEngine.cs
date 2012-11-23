@@ -27,7 +27,7 @@
 #define USE_PANGO
 
 using System;
-using Xwt.Engine;
+
 using Xwt.Backends;
 using Xwt.CairoBackend;
 

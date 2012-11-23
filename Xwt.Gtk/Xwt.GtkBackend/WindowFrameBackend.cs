@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using Xwt.Engine;
+
 using Xwt.Drawing;
 
 namespace Xwt.GtkBackend

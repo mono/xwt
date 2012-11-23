@@ -31,7 +31,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Xwt.Backends;
-using Xwt.Engine;
+
 using Orientation = Xwt.Backends.Orientation;
 using SW = System.Windows;
 using SWC = System.Windows.Controls;

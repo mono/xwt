@@ -28,7 +28,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
-using Xwt.Engine;
+
 using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend

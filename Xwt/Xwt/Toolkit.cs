@@ -29,7 +29,7 @@ using Xwt.Drawing;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace Xwt.Engine
+namespace Xwt
 {
 	public class Toolkit
 	{

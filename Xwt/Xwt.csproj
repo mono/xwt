@@ -363,7 +363,7 @@
     <Compile Include="Xwt.Backends\TextLayoutBackendHandler.cs" />
     <Compile Include="Xwt.Backends\ClipboardBackend.cs" />
     <Compile Include="Xwt.Backends\ApplicationContext.cs" />
-    <Compile Include="Xwt.Engine\Toolkit.cs" />
+    <Compile Include="Xwt\Toolkit.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -377,4 +377,7 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Xwt.Engine\" />
+  </ItemGroup>
 </Project>

@@ -31,7 +31,7 @@ using Xwt.Backends;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
 using MonoMac.ObjCRuntime;
-using Xwt.Engine;
+
 
 namespace Xwt.Mac
 {
@@ -63,7 +63,7 @@ namespace Xwt.Mac
 			
 			public override void LoadView ()
 			{
-				var backend = (IMacViewBackend)Xwt.Engine.Toolkit.GetBackend (child);
+				var backend = (IMacViewBackend)Toolkit.GetBackend (child);
 				view = ((IWidgetBackend)backend).NativeWidget as NSView;
 				ForceChildLayout ();
 				backend.SetAutosizeMode (true);

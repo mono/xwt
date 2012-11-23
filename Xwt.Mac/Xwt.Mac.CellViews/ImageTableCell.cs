@@ -26,7 +26,7 @@
 
 using System;
 using MonoMac.AppKit;
-using Xwt.Engine;
+
 using Xwt.Drawing;
 using Xwt.Backends;
 
