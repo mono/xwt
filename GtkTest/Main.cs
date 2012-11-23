@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Samples;
+using Xwt;
 
 namespace GtkTest
 {
@@ -32,7 +33,7 @@ namespace GtkTest
 	{
 		public static void Main (string[] args)
 		{
-			App.Run ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0");
+			App.Run (ToolkitType.Gtk);
 		}
 	}
 }

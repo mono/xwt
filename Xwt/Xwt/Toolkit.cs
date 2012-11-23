@@ -65,13 +65,13 @@ namespace Xwt
 			if (fullTypeName != null && t.LoadBackend (fullTypeName))
 				return t;
 			
-			if (t.LoadBackend (ToolkitType.Gtk))
+			if (t.LoadBackend (GetBackendType (ToolkitType.Gtk)))
 				return t;
 			
-			if (t.LoadBackend (ToolkitType.Cocoa))
+			if (t.LoadBackend (GetBackendType (ToolkitType.Cocoa)))
 				return t;
 			
-			if (t.LoadBackend (ToolkitType.Wpf))
+			if (t.LoadBackend (GetBackendType (ToolkitType.Wpf)))
 				return t;
 			
 			throw new InvalidOperationException ("Xwt engine not found");
@@ -80,21 +80,21 @@ namespace Xwt
 		public static Toolkit Load (ToolkitType type)
 		{
 			Toolkit t = new Toolkit ();
-			if (t.LoadBackend (type))
+			if (t.LoadBackend (GetBackendType (type)))
 				return t;
 			else
 				throw new InvalidOperationException ("Xwt engine not found");
 		}
 
-		bool LoadBackend (ToolkitType type)
+		internal static string GetBackendType (ToolkitType type)
 		{
 			switch (type) {
 			case ToolkitType.Gtk:
-				return LoadBackend ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0");
+				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0";
 			case ToolkitType.Cocoa:
-				return LoadBackend ("Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0");
+				return "Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0";
 			case ToolkitType.Wpf:
-				return LoadBackend ("Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=1.0.0.0");
+				return "Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=1.0.0.0";
 			default:
 				throw new ArgumentException ("Invalid toolkit type");
 			}
@@ -133,6 +133,11 @@ namespace Xwt
 			ImageBuilderBackendHandler = Backend.CreateSharedBackend<ImageBuilderBackendHandler> (typeof(ImageBuilder));
 			ImagePatternBackendHandler = Backend.CreateSharedBackend<ImagePatternBackendHandler> (typeof(ImagePattern));
 			ImageBackendHandler = Backend.CreateSharedBackend<ImageBackendHandler> (typeof(Image));
+		}
+
+		internal void SetActive ()
+		{
+			currentEngine = this;
 		}
 
 		public object GetNativeWidget (Widget w)

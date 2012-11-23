@@ -36,11 +36,16 @@ namespace Xwt
 	{
 		static Toolkit toolkit;
 		static ToolkitEngineBackend engine;
+		static UILoop mainLoop;
 
 		static readonly TaskScheduler taskScheduler = new XwtTaskScheduler ();
 
 		public static TaskScheduler UITaskScheduler {
 			get { return taskScheduler; }
+		}
+
+		public static UILoop MainLoop {
+			get { return mainLoop; }
 		}
 
 		internal static System.Threading.Thread UIThread {
@@ -55,13 +60,20 @@ namespace Xwt
 			Initialize (null);
 		}
 		
+		public static void Initialize (ToolkitType type)
+		{
+			Initialize (Toolkit.GetBackendType (type));
+		}
+
 		public static void Initialize (string backendType)
 		{
 			if (engine != null)
 				return;
 
 			toolkit = Toolkit.Load (backendType);
+			toolkit.SetActive ();
 			engine = toolkit.Backend;
+			mainLoop = new UILoop (toolkit);
 
 			UIThread = System.Threading.Thread.CurrentThread;
 		}
@@ -150,21 +162,6 @@ namespace Xwt
 			return t;
 		}
 
-		public static void DispatchPendingEvents ()
-		{
-			try {
-				toolkit.ExitUserCode (null);
-				engine.DispatchPendingEvents ();
-			} finally {
-				toolkit.EnterUserCode ();
-			}
-		}
-
-		public static void QueueExitAction (Action a)
-		{
-			Toolkit.CurrentEngine.QueueExitAction (a);
-		}
-		
 		public static StatusIcon CreateStatusIcon ()
 		{
 			return new StatusIcon ();
@@ -180,46 +177,7 @@ namespace Xwt
 				Application.engine.CancelTimerInvoke (Id);
 			}
 		}
-		
-		static bool LoadBackend (string type)
-		{
-			int i = type.IndexOf (',');
-			string assembly = type.Substring (i+1).Trim ();
-			type = type.Substring (0, i).Trim ();
-			try {
-				Assembly asm = Assembly.Load (assembly);
-				if (asm != null) {
-					Type t = asm.GetType (type);
-					if (t != null) {
-						engine = (ToolkitEngineBackend) Activator.CreateInstance (t);
-						return true;
-					}
-				}
-			}
-			catch (Exception ex) {
-				Console.WriteLine (ex);
-			}
-			return false;
-		}
-		
-		static void InitBackend (string type)
-		{
-			toolkit.EnterUserCode ();
-			if (type != null && LoadBackend (type))
-				return;
-			
-			if (LoadBackend ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0"))
-				return;
-			
-			if (LoadBackend ("Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0"))
-				return;
-			
-			if (LoadBackend ("Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=1.0.0.0"))
-				return;
-			
-			throw new InvalidOperationException ("Xwt engine not found");
-		}
-		
+
 		internal static void NotifyException (Exception ex)
 		{
 			var unhandledException = UnhandledException;
@@ -233,6 +191,32 @@ namespace Xwt
 			}
 		}
 	}
+
+	public class UILoop
+	{
+		Toolkit toolkit;
+
+		internal UILoop (Toolkit toolkit)
+		{
+			this.toolkit = toolkit;
+		}
+
+		public void DispatchPendingEvents ()
+		{
+			try {
+				toolkit.ExitUserCode (null);
+				toolkit.Backend.DispatchPendingEvents ();
+			} finally {
+				toolkit.EnterUserCode ();
+			}
+		}
+
+		public void QueueExitAction (Action a)
+		{
+			toolkit.QueueExitAction (a);
+		}
+	}
+
 
 	public enum ToolkitType
 	{

@@ -377,7 +377,4 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="Xwt.Engine\" />
-  </ItemGroup>
 </Project>

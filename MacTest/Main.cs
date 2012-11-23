@@ -10,7 +10,7 @@ namespace MacTest
 	{
 		static void Main (string [] args)
 		{
-			App.Run ("Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0");
+			App.Run (ToolkitType.Cocoa);
 		}
 	}
 }	

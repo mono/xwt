@@ -128,7 +128,7 @@ namespace Xwt
 			}
 			set {
 				if (dataSource != value) {
-					Backend.SetSource (dataSource, dataSource is IFrontend ? (IBackend)BackendHost.ToolkitEngine.GetSafeBackend (dataSource) : null);
+					Backend.SetSource (value, value is IFrontend ? (IBackend)BackendHost.ToolkitEngine.GetSafeBackend (value) : null);
 					dataSource = value;
 				}
 			}
