@@ -58,7 +58,7 @@ namespace Xwt.GtkBackend
 			if (!Widget.GetDestRowAtPos (x, y, out path, out tpos))
 				path = null;
 			
-			if (expandTimer == 0 || autoExpandPath != path) {
+			if (expandTimer == 0 || !object.Equals (autoExpandPath, path)) {
 				if (expandTimer != 0)
 					GLib.Source.Remove (expandTimer);
 				if (path != null) {

@@ -30,10 +30,21 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IPopoverBackend : IDisposable
+	public interface IPopoverBackend : IBackend, IDisposable
 	{
-		event EventHandler Closed;
-		void Run (WindowFrame parent, Popover.Position arrowPosition, Func<Xwt.Widget> childSource, Widget referenceWidget);
+		void Initialize (IPopoverEventSink sink);
+		void Show (Popover.Position arrowPosition, Widget referenceWidget, Xwt.Rectangle positionRect, Xwt.Widget child);
+		void Hide ();
+	}
+
+	public interface IPopoverEventSink
+	{
+		void OnClosed ();
+	}
+
+	public enum PopoverEvent
+	{
+		Closed
 	}
 }
 

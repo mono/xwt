@@ -101,6 +101,38 @@ namespace Xwt.Drawing
 		{
 			handler.Arc (Backend, xc, yc, radius, angle1, angle2);
 		}
+
+		/// <summary>
+		/// Adds a circular arc of the given radius to the current path.
+		/// The arc is centered at (xc, yc), 
+		/// begins at angle1 and proceeds in the direction 
+		/// of decreasing angles to end at angle2. 
+		/// If angle2 is greater than angle1 it will be progressively decreased
+		/// by 1 degree until it is less than angle1.
+		/// If there is a current point, an initial line segment will be added to the path 
+		/// to connect the current point to the beginning of the arc. 
+		/// If this initial line is undesired, 
+		/// it can be avoided by calling NewPath() before calling ArcNegative().
+		/// </summary>
+		/// <param name='xc'>
+		/// Xc.
+		/// </param>
+		/// <param name='yc'>
+		/// Yc.
+		/// </param>
+		/// <param name='radius'>
+		/// Radius.
+		/// </param>
+		/// <param name='angle1'>
+		/// Angle1 in degrees
+		/// </param>
+		/// <param name='angle2'>
+		/// Angle2 in degrees
+		/// </param>
+		public void ArcNegative (double xc, double yc, double radius, double angle1, double angle2)
+		{
+			handler.ArcNegative (Backend, xc, yc, radius, angle1, angle2);
+		}
 		
 		/// <summary>
 		/// Establishes a new clip region by intersecting the current clip region with the current Path 

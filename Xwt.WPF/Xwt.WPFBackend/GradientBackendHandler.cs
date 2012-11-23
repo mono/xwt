@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
+
 using Xwt.Backends;
 using Color = Xwt.Drawing.Color;
 using DrawingColor = System.Drawing.Color;
@@ -44,9 +46,51 @@ namespace Xwt.WPFBackend
 				new PointF ((float) x1, (float) y1));
 		}
 
+		public object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
+		{
+			return new RadialGradient (cx0, cy0, radius0, cx1, cy1, radius1);
+		}
+
 		public void AddColorStop (object backend, double position, Color color)
 		{
 			((GradientBase)backend).ColorStops.Add (new Tuple<double, Color> (position, color));
+		}
+	}
+
+	internal class RadialGradient
+		: GradientBase
+	{
+		GraphicsPath path;
+		double cx0, cy0, r0;
+		double cx1, cy1, r1;
+
+		public RadialGradient (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
+		{
+			this.cx0 = cx0;
+			this.cy0 = cy0;
+			this.r0 = radius0;
+
+			this.cx1 = cx1;
+			this.cy1 = cy1;
+			this.r1 = radius1;
+		}
+
+		public override Brush CreateBrush ()
+		{
+			var path = new GraphicsPath ();
+			path.AddEllipse (new RectangleF ((float)(cx0 - r0), (float)(cy0 - r0), (float)(r0 * 2), (float)(r0 * 2)));
+
+			var brush = new PathGradientBrush (path);
+
+			var orderedStops = ColorStops.OrderBy (t => t.Item1).ToArray ();
+			var colors = orderedStops.Select (i => i.Item2.ToDrawingColor ()).ToArray ();
+			var stops = orderedStops.Select (i => (float) (i.Item1)).ToArray ();
+
+			brush.InterpolationColors = new ColorBlend (colors.Length) {
+				Colors = colors,
+				Positions = stops
+			};
+			return brush;
 		}
 	}
 
@@ -59,6 +103,20 @@ namespace Xwt.WPFBackend
 			End = end;
 		}
 
+		public override System.Drawing.Brush CreateBrush ()
+		{
+			if (ColorStops.Count == 0)
+				throw new ArgumentException ();
+
+			var stops = ColorStops.OrderBy (t => t.Item1).ToArray ();
+			var first = stops[0];
+			var last = stops[stops.Length - 1];
+
+			var brush = new System.Drawing.Drawing2D.LinearGradientBrush (Start, End, first.Item2.ToDrawingColor (),
+													last.Item2.ToDrawingColor ());
+			return brush;
+
+		}
 		internal readonly PointF Start;
 		internal readonly PointF End;
 	}
@@ -66,5 +124,6 @@ namespace Xwt.WPFBackend
 	internal abstract class GradientBase
 	{
 		internal readonly List<Tuple<double, Color>> ColorStops = new List<Tuple<double, Color>> ();
+		public abstract Brush CreateBrush ();
 	}
 }

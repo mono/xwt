@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Engine;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -34,7 +35,8 @@ namespace Xwt.GtkBackend
 		Gtk.Window window;
 		IWindowFrameEventSink eventSink;
 		WindowFrame frontend;
-		
+		Size requestedSize;
+
 		public WindowFrameBackend ()
 		{
 		}
@@ -63,6 +65,16 @@ namespace Xwt.GtkBackend
 		{
 			this.eventSink = eventSink;
 			Initialize ();
+			Window.SizeRequested += delegate(object o, Gtk.SizeRequestedArgs args) {
+				if (!Window.Resizable) {
+					int w = args.Requisition.Width, h = args.Requisition.Height;
+					if (w < (int) requestedSize.Width)
+						w = (int) requestedSize.Width;
+					if (h < (int) requestedSize.Height)
+						h = (int) requestedSize.Height;
+					args.Requisition = new Gtk.Requisition () { Width = w, Height = h };
+				}
+			};
 		}
 		
 		public virtual void Initialize ()
@@ -88,11 +100,9 @@ namespace Xwt.GtkBackend
 
 		public void Resize (double width, double height)
 		{
+			requestedSize = new Size (width, height);
 			Window.Resize ((int)width, (int)height);
 			Window.SetDefaultSize ((int)width, (int)height);
-			Toolkit.Invoke (delegate {
-				EventSink.OnBoundsChanged (Bounds);
-			});
 		}
 
 		public Rectangle Bounds {
@@ -103,6 +113,7 @@ namespace Xwt.GtkBackend
 				return new Rectangle (x, y, w, h);
 			}
 			set {
+				requestedSize = value.Size;
 				Window.Move ((int)value.X, (int)value.Y);
 				Window.Resize ((int)value.Width, (int)value.Height);
 				Window.SetDefaultSize ((int)value.Width, (int)value.Height);
@@ -143,7 +154,25 @@ namespace Xwt.GtkBackend
 				Window.SkipTaskbarHint = !value;
 			}
 		}
-		
+
+		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
+		{
+			Window.TransientFor = ((WindowFrameBackend)window).Window;
+		}
+
+		public bool Resizable {
+			get {
+				return Window.Resizable;
+			}
+			set {
+				Window.Resizable = value;
+			}
+		}
+
+		public void SetIcon(object backendImage)
+		{
+			Window.Icon = backendImage as Gdk.Pixbuf;
+		}
 		#endregion
 
 		public virtual void EnableEvent (object ev)
@@ -152,6 +181,8 @@ namespace Xwt.GtkBackend
 				switch ((WindowFrameEvent)ev) {
 				case WindowFrameEvent.BoundsChanged:
 					Window.SizeAllocated += HandleWidgetSizeAllocated; break;
+				case WindowFrameEvent.CloseRequested:
+					Window.DeleteEvent += HandleCloseRequested; break;
 				}
 			}
 		}
@@ -162,6 +193,8 @@ namespace Xwt.GtkBackend
 				switch ((WindowFrameEvent)ev) {
 				case WindowFrameEvent.BoundsChanged:
 					Window.SizeAllocated -= HandleWidgetSizeAllocated; break;
+				case WindowFrameEvent.CloseRequested:
+					Window.DeleteEvent -= HandleCloseRequested; break;
 				}
 			}
 		}
@@ -173,13 +206,23 @@ namespace Xwt.GtkBackend
 			});
 		}
 
+		void HandleCloseRequested (object o, Gtk.DeleteEventArgs args)
+		{
+			Toolkit.Invoke(delegate {
+				args.RetVal = EventSink.OnCloseRequested ();
+			});
+		}
+
 		public void Present ()
 		{
 			if (Platform.IsMac)
 				GtkWorkarounds.GrabDesktopFocus ();
 			Window.Present ();
 		}
-	
+
+		public virtual Size ImplicitMinSize {
+			get { return new Size (0,0); }
+		}
 	}
 }
 

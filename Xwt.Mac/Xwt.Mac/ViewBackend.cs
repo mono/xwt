@@ -45,6 +45,7 @@ namespace Xwt.Mac
 		S eventSink;
 		IViewObject viewObject;
 		WidgetEvent currentEvents;
+		bool autosize;
 		
 		void IBackend.InitializeBackend (object frontend)
 		{
@@ -58,6 +59,14 @@ namespace Xwt.Mac
 			eventSink = (S) sink;
 			Initialize ();
 		}
+
+		public void SetAutosizeMode (bool autosize)
+		{
+			this.autosize = autosize;
+			if (autosize)
+				AutoUpdateSize ();
+		}
+
 		
 		public virtual void Initialize ()
 		{
@@ -194,7 +203,7 @@ namespace Xwt.Mac
 
 		public static NSView GetWidget (Widget w)
 		{
-			return GetWidget ((IWidgetBackend)MacEngine.Registry.GetBackend (w));
+			return GetWidget ((IWidgetBackend)WidgetRegistry.GetBackend (w));
 		}
 		
 		public virtual object Font {
@@ -284,53 +293,18 @@ namespace Xwt.Mac
 		
 		public virtual void UpdateLayout ()
 		{
-			IViewContainer parent = Widget.Superview as IViewContainer;
-			if (parent != null)
-				parent.UpdateChildMargins (this);
+			var m = Frontend.Margin;
+			Widget.SetBoundsOrigin (new PointF (-(float)m.Left, -(float)m.Top));
+			if (autosize)
+				AutoUpdateSize ();
 		}
-		
-		public static NSView AddMargins (IMacViewBackend backend, NSView currentChild)
+
+		void AutoUpdateSize ()
 		{
-			if (backend == null)
-				return null;
-			if (backend.Frontend.Margin.HorizontalSpacing == 0 && backend.Frontend.Margin.VerticalSpacing == 0) {
-				if (currentChild is MarginView)
-					backend.View.RemoveFromSuperview ();
-				return backend.View;
-			}
-			else if (currentChild is MarginView) {
-				((MarginView)currentChild).UpdateLayout ();
-				return currentChild;
-			}
-			else {
-				var f = backend.Frontend;
-				var newFrame = backend.View.Frame;
-				newFrame.Width += (float) f.Margin.HorizontalSpacing;
-				newFrame.Height += (float) f.Margin.VerticalSpacing;
-				if (backend.View.Superview != null)
-					backend.View.RemoveFromSuperview ();
-				MarginView marginView = new MarginView (backend);
-				marginView.Frame = newFrame;
-				Rectangle frame = new Rectangle ((int)f.Margin.Left, (int)f.Margin.Top, (int)marginView.Frame.Width - f.Margin.HorizontalSpacing, (int)marginView.Frame.Height - f.Margin.VerticalSpacing);
-				return marginView;
-			}
+			var ws = Frontend.Surface.GetPreferredWidth ();
+			var h = Frontend.Surface.GetPreferredHeightForWidth (ws.NaturalSize);
+			Widget.SetWidgetBounds (new Rectangle (0, 0, ws.NaturalSize, h.NaturalSize));
 		}
-		
-/*		protected void UpdateChildMargins (IMenuBackend backend)
-		{
-			var viewObject = (IViewObject) view;
-			
-			MarginView marginView = new MarginView () { Frontend = frontend };
-			marginView.Frame = viewObject.View.Frame;
-			
-			view.RemoveFromSuperview ();
-			Widget.AddSubview (marginView);
-			
-			marginView.AddSubview (viewObject.View);
-			var f = viewObject.Frontend;
-			Rectangle frame = new Rectangle ((int)f.Margin.Left, (int)f.Margin.Top, (int)marginView.Frame.Width - f.Margin.HorizontalSpacing, (int)marginView.Frame.Height - f.Margin.VerticalSpacing);
-			viewObject.View.SetWidgetBounds (frame);
-		}*/
 		
 		public virtual void EnableEvent (object eventId)
 		{
@@ -408,7 +382,7 @@ namespace Xwt.Mac
 			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
 			if (ob == null)
 				return NSDragOperation.None;
-			var backend = (ViewBackend<T,S>) MacEngine.Registry.GetBackend (ob.Frontend);
+			var backend = (ViewBackend<T,S>) WidgetRegistry.GetBackend (ob.Frontend);
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
@@ -441,7 +415,7 @@ namespace Xwt.Mac
 		{
 			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
 			if (ob != null) {
-				var backend = (ViewBackend<T,S>) MacEngine.Registry.GetBackend (ob.Frontend);
+				var backend = (ViewBackend<T,S>) WidgetRegistry.GetBackend (ob.Frontend);
 				Toolkit.Invoke (delegate {
 					backend.eventSink.OnDragLeave (EventArgs.Empty);
 				});
@@ -454,7 +428,7 @@ namespace Xwt.Mac
 			if (ob == null)
 				return false;
 			
-			var backend = (ViewBackend<T,S>) MacEngine.Registry.GetBackend (ob.Frontend);
+			var backend = (ViewBackend<T,S>) WidgetRegistry.GetBackend (ob.Frontend);
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
@@ -477,7 +451,7 @@ namespace Xwt.Mac
 			if (ob == null)
 				return false;
 			
-			var backend = (ViewBackend<T,S>) MacEngine.Registry.GetBackend (ob.Frontend);
+			var backend = (ViewBackend<T,S>) WidgetRegistry.GetBackend (ob.Frontend);
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
@@ -591,57 +565,17 @@ namespace Xwt.Mac
 		
 		#endregion
 	}
-	
-	class MarginView: NSView, IViewObject, IViewContainer
-	{
-		public MarginView (IMacViewBackend c)
-		{
-			AddSubview (c.View);
-			ChildBackend = c;
-		}
-		
-		public NSView View {
-			get {
-				return this;
-			}
-		}
-		
-		public IMacViewBackend ChildBackend { get; set; }
-		
-		public void UpdateLayout ()
-		{
-			var rect = this.WidgetBounds ();
-			var f = ChildBackend.Frontend;
-			rect.X += f.Margin.Left;
-			rect.Width -= f.Margin.HorizontalSpacing;
-			rect.Y += f.Margin.Top;
-			rect.Height -= f.Margin.VerticalSpacing;
-			ChildBackend.View.SetWidgetBounds (rect);
-		}
-		
-		public override void SetFrameSize (SizeF newSize)
-		{
-			base.SetFrameSize (newSize);
-			UpdateLayout ();
-		}
 
-		public Widget Frontend { get; set; }
-
-		public void UpdateChildMargins (IMacViewBackend view)
-		{
-			if (view != ChildBackend)
-				throw new InvalidOperationException ();
-			
-			UpdateLayout ();
-		}
-	}
-	
 	public interface IMacViewBackend
 	{
 		NSView View { get; }
 		Widget Frontend { get; }
 		void NotifyPreferredSizeChanged ();
 		IWidgetEventSink EventSink { get; }
+
+		// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
+		// In that case, the widget has to listen to the change event of the children and resize itself
+		void SetAutosizeMode (bool autosize);
 	}
 }
 

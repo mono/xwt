@@ -1,10 +1,9 @@
 //
-// ForeignPlugMacBackend.cs
+// RadialGradient.cs
 //
-// Author:
-//       Jérémie Laval <jeremie.laval@xamarin.com>
+// Author: Jeffrey Stedfast <jeff@xamarin.com>
 //
-// Copyright (c) 2012 Xamarin, Inc.
+// Copyright (c) 2012 Jeffrey Stedfast
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,14 +22,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+//
 
-namespace Xwt.GtkBackend.Mac
+using System;
+using Xwt.Backends;
+
+namespace Xwt.Drawing
 {
-	public class ForeignPlugMacBackend
+	public sealed class RadialGradient: Gradient
 	{
-		public ForeignPlugMacBackend ()
+		public RadialGradient (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
 		{
+			Backend = ((IGradientBackendHandler)BackendHandler).CreateRadial (cx0, cy0, radius0, cx1, cy1, radius1);
 		}
 	}
 }

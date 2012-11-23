@@ -93,6 +93,25 @@ namespace Xwt.WPFBackend
 			set { window.ShowInTaskbar = value; }
 		}
 
+		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
+		{
+			this.Window.Owner = ((WindowFrameBackend) window).Window;
+		}
+
+		bool IWindowFrameBackend.Resizable {
+			get {
+				return window.ResizeMode == ResizeMode.CanResize;
+			}
+			set {
+				window.ResizeMode = value ? ResizeMode.CanResize : ResizeMode.NoResize;
+			}
+		}
+
+		public void SetIcon (object imageBackend)
+		{
+			window.Icon = DataConverter.AsImageSource (imageBackend);
+		}
+
 		string IWindowFrameBackend.Title {
 			get { return window.Title; }
 			set { window.Title = value; }
@@ -163,6 +182,9 @@ namespace Xwt.WPFBackend
 					case WindowFrameEvent.Hidden:
 						window.IsVisibleChanged += HiddenHandler;
 						break;
+					case WindowFrameEvent.CloseRequested:
+						window.Closing += ClosingHandler;
+						break;
 				}
 			}
 		}
@@ -182,6 +204,9 @@ namespace Xwt.WPFBackend
 						break;
 					case WindowFrameEvent.Hidden:
 						window.IsVisibleChanged -= HiddenHandler;
+						break;
+					case WindowFrameEvent.CloseRequested:
+						window.Closing -= ClosingHandler;
 						break;
 				}
 			}
@@ -214,6 +239,14 @@ namespace Xwt.WPFBackend
 					eventSink.OnHidden ();
 				});
 			}
+		}
+
+		private void ClosingHandler (object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			Toolkit.Invoke (delegate ()
+			{
+				e.Cancel = eventSink.OnCloseRequested ();
+			});
 		}
 
 		protected Rectangle ToNonClientRect (Rectangle rect)

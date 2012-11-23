@@ -31,6 +31,8 @@ namespace Xwt.GtkBackend
 {
 	public class ListViewBackend: TableViewBackend, IListViewBackend
 	{
+		bool showBorder;
+
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
 			ListStoreBackend b = sourceBackend as ListStoreBackend;
@@ -65,6 +67,25 @@ namespace Xwt.GtkBackend
 					res [n] = sel [n].Indices[0];
 				return res;
 			}
+		}
+
+		public bool BorderVisible {
+			get {
+				return ScrolledWindow.ShadowType == Gtk.ShadowType.In;
+			}
+			set {
+				showBorder = value;
+				UpdateBorder ();
+			}
+		}
+		
+		void UpdateBorder ()
+		{
+			var shadowType = showBorder ? Gtk.ShadowType.In : Gtk.ShadowType.None;
+			if (ScrolledWindow.Child is Gtk.Viewport)
+				((Gtk.Viewport) ScrolledWindow.Child).ShadowType = shadowType;
+			else
+				ScrolledWindow.ShadowType = shadowType;
 		}
 		
 		public bool HeadersVisible {

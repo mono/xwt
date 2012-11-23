@@ -34,9 +34,20 @@ namespace Samples
 		{
 			Label la = new Label ("Simple label");
 			PackStart (la);
-			
-			la = new Label ("Label with red background");
-			la.BackgroundColor = new Xwt.Drawing.Color (1, 0, 0);
+
+			la = new Label ("Label with red background") {
+				BackgroundColor = new Xwt.Drawing.Color (1, 0, 0)
+			};
+			PackStart (la);
+
+			la = new Label ("Label with red background and blue foreground") {
+				BackgroundColor = new Xwt.Drawing.Color (1, 0, 0),
+				TextColor = new Xwt.Drawing.Color (0, 0, 1)
+			};
+			PackStart (la);
+
+			la = new Label ("A crazy long label text with a lots of content and information in it but fortunately it should appear wrapped");
+			la.Wrap = WrapMode.Word;
 			PackStart (la);
 		}
 	}

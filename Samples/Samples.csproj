@@ -39,6 +39,15 @@
     <Compile Include="Samples\ChartSample.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Samples\ReliefFrameSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Spinners.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\LinkLabels.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Samples\NotebookSample.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -146,9 +155,21 @@
     <Compile Include="Samples\ListBoxSample.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Samples\ColorSelectorSample.cs" />
-    <Compile Include="Samples\ProgressBarSample.cs" />
-    <Compile Include="Samples\ExpanderSample.cs" />
+    <Compile Include="Samples\ColorSelectorSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ProgressBarSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\ExpanderSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\Markdown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\PopoverSample.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

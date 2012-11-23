@@ -44,6 +44,7 @@ namespace Xwt.GtkBackend
 		{
 			Window = new Gtk.Dialog ();
 			Window.VBox.PackStart (CreateMainLayout ());
+			Window.ActionArea.Hide ();
 		}
 		
 		new Gtk.Dialog Window {
@@ -68,11 +69,20 @@ namespace Xwt.GtkBackend
 			
 			for (int n=0; n<dialogButtons.Length; n++) {
 				var db = dialogButtons[n];
-				Gtk.Button b = (Gtk.Button) Window.AddButton (db.Label, Gtk.ResponseType.None);
+				Gtk.Button b = new Gtk.Button ();
+				b.Show ();
+				b.Label = db.Label;
+				Window.ActionArea.Add (b);
 				UpdateButton (db, b);
 				buttons[n] = b;
 				buttons[n].Clicked += HandleButtonClicked;
 			}
+			UpdateActionAreaVisibility ();
+		}
+
+		void UpdateActionAreaVisibility ()
+		{
+			Window.ActionArea.Visible = Window.ActionArea.Children.Any (c => c.Visible);
 		}
 		
 		void UpdateButton (DialogButton btn, Gtk.Button b)
@@ -80,11 +90,11 @@ namespace Xwt.GtkBackend
 			if (!string.IsNullOrEmpty (btn.Label) && btn.Image == null) {
 				b.Label = btn.Label;
 			} else if (string.IsNullOrEmpty (btn.Label) && btn.Image != null) {
-				var pix = (Gdk.Pixbuf) GtkEngine.Registry.GetBackend (btn.Image);
+				var pix = (Gdk.Pixbuf) WidgetRegistry.GetBackend (btn.Image);
 				b.Image = new Gtk.Image (pix);
 			} else if (!string.IsNullOrEmpty (btn.Label)) {
 				Gtk.Box box = new Gtk.HBox (false, 3);
-				var pix = (Gdk.Pixbuf) GtkEngine.Registry.GetBackend (btn.Image);
+				var pix = (Gdk.Pixbuf) WidgetRegistry.GetBackend (btn.Image);
 				box.PackStart (new Gtk.Image (pix), false, false, 0);
 				box.PackStart (new Gtk.Label (btn.Label), true, true, 0);
 				b.Image = box;
@@ -94,6 +104,7 @@ namespace Xwt.GtkBackend
 			else
 				b.Hide ();
 			b.Sensitive = btn.Sensitive;
+			UpdateActionAreaVisibility ();
 		}
 		
 		void HandleButtonClicked (object o, EventArgs a)

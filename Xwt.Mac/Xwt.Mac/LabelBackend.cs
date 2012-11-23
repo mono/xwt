@@ -33,15 +33,20 @@ namespace Xwt.Mac
 	public class LabelBackend: ViewBackend<NSTextField,IWidgetEventSink>, ILabelBackend
 	{
 		public LabelBackend ()
+			: this (new TextFieldView ())
 		{
-			ViewObject = new TextFieldView ();
+		}
+
+		protected LabelBackend (IViewObject viewObject)
+		{
+			ViewObject = viewObject;
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
 			Widget.SizeToFit ();
 		}
 
-		public string Text {
+		public virtual string Text {
 			get {
 				return Widget.StringValue;
 			}
@@ -49,6 +54,11 @@ namespace Xwt.Mac
 				Widget.StringValue = value;
 				Widget.SizeToFit ();
 			}
+		}
+
+		public Xwt.Drawing.Color TextColor {
+			get { return Widget.TextColor.ToXwtColor (); }
+			set { Widget.TextColor = value.ToNSColor (); }
 		}
 		
 		public Alignment TextAlignment {
@@ -93,6 +103,39 @@ namespace Xwt.Mac
 			set {
 				Widget.BackgroundColor = value.ToNSColor ();
 				Widget.DrawsBackground = true;
+			}
+		}
+
+		// FIXME: technically not possible if we keep NSTextField
+		// as the backend because it's one-line only
+		public WrapMode Wrap {
+			get {
+				if (!Widget.Cell.Wraps)
+					return WrapMode.None;
+				switch (Widget.Cell.LineBreakMode) {
+				case NSLineBreakMode.ByWordWrapping:
+					return WrapMode.Word;
+				case NSLineBreakMode.CharWrapping:
+					return WrapMode.Character;
+				default:
+					return WrapMode.None;
+				}
+			}
+			set {
+				if (value == WrapMode.None) {
+					Widget.Cell.Wraps = false;
+				} else {
+					Widget.Cell.Wraps = true;
+					switch (value) {
+					case WrapMode.Word:
+					case WrapMode.WordAndCharacter:
+						Widget.Cell.LineBreakMode = NSLineBreakMode.ByWordWrapping;
+						break;
+					case WrapMode.Character:
+						Widget.Cell.LineBreakMode = NSLineBreakMode.CharWrapping;
+						break;
+					}
+				}
 			}
 		}
 	}

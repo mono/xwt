@@ -48,6 +48,19 @@ namespace Xwt.WPFBackend
 			set { TabControl.SelectedIndex = value; }
 		}
 
+		public Xwt.NotebookTabOrientation TabOrientation {
+			get {
+				Xwt.NotebookTabOrientation tabPos = Xwt.NotebookTabOrientation.Top;
+				Enum.TryParse (TabControl.TabStripPlacement.ToString (), out tabPos);
+				return tabPos;
+			}
+			set {
+				SWC.Dock tabPos = SWC.Dock.Top;
+				Enum.TryParse (value.ToString (), out tabPos);
+				TabControl.TabStripPlacement = tabPos;
+			}
+		}
+
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
 			UIElement element = (UIElement)widget.NativeWidget;

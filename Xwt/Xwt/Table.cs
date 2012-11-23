@@ -31,6 +31,7 @@ using System.ComponentModel;
 
 using Xwt.Backends;
 using System.Windows.Markup;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -77,6 +78,8 @@ namespace Xwt
 		public Table ()
 		{
 			children = new ChildrenCollection<TablePlacement> ((WidgetBackendHost)BackendHost);
+			// For some reason the table has a black background by default in WPF. Lets work around that
+			BackgroundColor = Colors.White;
 		}
 		
 		[DefaultValue(6)]
@@ -153,6 +156,16 @@ namespace Xwt
 			}
 			return false;
 		}
+
+		public void InsertRow (int top, int bottom)
+		{
+			var potentials = children.Where (c => c.Top >= top);
+			var shift = bottom - top;
+			foreach (var toShift in potentials) {
+				toShift.Top += shift;
+				toShift.Bottom += shift;
+			}
+		}
 		
 		/// <summary>
 		/// Removes all children
@@ -210,7 +223,7 @@ namespace Xwt
 			}
 			
 			Backend.SetAllocation (widgets, rects);
-
+			
 			if (!Application.EngineBackend.HandlesSizeNegotiation) {
 				foreach (var bp in visibleChildren)
 					bp.Child.Surface.Reallocate ();

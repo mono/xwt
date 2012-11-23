@@ -13,7 +13,10 @@ namespace Samples
 		
 		public ListView1 ()
 		{
-			ListView list = new ListView ();
+			PackStart (new Label ("The listview should have a red background"));
+			ListView list = new ListView () {
+				BackgroundColor = Colors.Red
+			};
 			ListStore store = new ListStore (name, icon, text, icon2);
 			list.DataSource = store;
 			list.Columns.Add ("Name", icon, name);

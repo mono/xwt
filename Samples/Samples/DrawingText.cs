@@ -50,7 +50,8 @@ namespace Samples
 			var col2 = new Rectangle ();
 			
 			var text = new TextLayout (ctx);
-			text.Font = this.Font.WithSize (10);
+			text.Font = this.Font.WithPointSize (24);
+			Console.WriteLine (text.Font.Size);
 			
 			// first text
 			text.Text = "Lorem ipsum dolor sit amet,";
@@ -117,7 +118,7 @@ namespace Samples
 			// proofing rotate, and printing size to see the values
 			ctx.Save ();
 			
-			text.Font = this.Font.WithSize (10);
+			text.Font = this.Font.WithPointSize (10);
 			text.Text = string.Format ("Size 1 {0}\r\nSize 2 {1}\r\nSize 3 {2} Scale {3}", 
 			                           size1, size2, size3, scale);
 			text.Width = -1; // this clears textsize

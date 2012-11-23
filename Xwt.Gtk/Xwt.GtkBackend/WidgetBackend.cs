@@ -42,6 +42,7 @@ namespace Xwt.GtkBackend
 		Gtk.EventBox eventBox;
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
+		bool destroyed;
 		
 		bool minSizeSet;
 		
@@ -87,7 +88,7 @@ namespace Xwt.GtkBackend
 		
 		public object NativeWidget {
 			get {
-				return Widget;
+				return RootWidget;
 			}
 		}
 		
@@ -151,7 +152,7 @@ namespace Xwt.GtkBackend
 			w.IsFocus = true;
 			w.HasFocus = true;
 		}
-		
+
 		public string TooltipText {
 			get {
 				return Widget.TooltipText;
@@ -218,10 +219,20 @@ namespace Xwt.GtkBackend
 		
 		protected virtual void Dispose (bool disposing)
 		{
-			if (Widget != null && disposing && Widget.Parent == null)
+			if (Widget != null && disposing && Widget.Parent == null && !destroyed) {
+				MarkDestroyed (Frontend);
 				Widget.Destroy ();
+			}
 		}
-		
+
+		void MarkDestroyed (Widget w)
+		{
+			var bk = (WidgetBackend) WidgetRegistry.GetBackend (w);
+			bk.destroyed = true;
+			foreach (var c in w.Surface.Children)
+				MarkDestroyed (c);
+		}
+
 		public Size Size {
 			get {
 				return new Size (Widget.Allocation.Width, Widget.Allocation.Height);
@@ -467,6 +478,11 @@ namespace Xwt.GtkBackend
 				case WidgetEvent.BoundsChanged:
 					Widget.SizeAllocated += HandleWidgetBoundsChanged;
 					break;
+                case WidgetEvent.MouseScrolled:
+                    AllocEventBox();
+                    EventsRootWidget.Events |= Gdk.EventMask.ScrollMask;
+                    Widget.ScrollEvent += HandleScrollEvent;
+                    break;
 				}
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
 					// Enabling a drag&drop event for the first time
@@ -481,7 +497,7 @@ namespace Xwt.GtkBackend
 				enabledEvents |= ev;
 			}
 		}
-		
+
 		void EnableSizeCheckEvents ()
 		{
 			if ((enabledEvents & sizeCheckEvents) == 0 && !minSizeSet) {
@@ -535,6 +551,10 @@ namespace Xwt.GtkBackend
 				case WidgetEvent.BoundsChanged:
 					Widget.SizeAllocated -= HandleWidgetBoundsChanged;
 					break;
+                case WidgetEvent.MouseScrolled:
+                    EventsRootWidget.Events &= ~Gdk.EventMask.ScrollMask;
+                    Widget.ScrollEvent -= HandleScrollEvent;
+                    break;
 				}
 				
 				enabledEvents &= ~ev;
@@ -724,6 +744,21 @@ namespace Xwt.GtkBackend
 				args.RetVal = true;
 		}
 
+        [GLib.ConnectBefore]
+        void HandleScrollEvent(object o, Gtk.ScrollEventArgs args)
+        {
+            var sc = ConvertToScreenCoordinates (new Point (0, 0));
+            var direction = Util.ConvertScrollDirection(args.Event.Direction);
+
+            var a = new MouseScrolledEventArgs ((long) args.Event.Time, args.Event.XRoot - sc.X, args.Event.YRoot - sc.Y, direction);
+            Toolkit.Invoke (delegate {
+                EventSink.OnMouseScrolled(a);
+            });
+            if (a.Handled)
+                args.RetVal = true;
+        }
+        
+
 		void HandleWidgetFocusOutEvent (object o, Gtk.FocusOutEventArgs args)
 		{
 			Toolkit.Invoke (delegate {
@@ -769,9 +804,10 @@ namespace Xwt.GtkBackend
 
 		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
 		{
+			var sc = ConvertToScreenCoordinates (new Point (0, 0));
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+			a.X = args.Event.XRoot - sc.X;
+			a.Y = args.Event.YRoot - sc.Y;
 			a.Button = (PointerButton) args.Event.Button;
 			Toolkit.Invoke (delegate {
 				EventSink.OnButtonReleased (a);
@@ -783,9 +819,10 @@ namespace Xwt.GtkBackend
 		[GLib.ConnectBeforeAttribute]
 		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
+			var sc = ConvertToScreenCoordinates (new Point (0, 0));
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+			a.X = args.Event.XRoot - sc.X;
+			a.Y = args.Event.YRoot - sc.Y;
 			a.Button = (PointerButton) args.Event.Button;
 			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
 				a.MultiplePress = 2;

@@ -169,7 +169,7 @@ namespace Xwt
 				return message.ApplyToAllButton;
 
 			IAlertDialogBackend backend = ToolkitEngine.CurrentEngine.Backend.CreateBackend<IAlertDialogBackend> (typeof(IAlertDialogBackend));
-			
+
 			using (backend) {
 				var res = backend.Run (parent ?? RootWindow, message);
 				

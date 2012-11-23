@@ -38,6 +38,11 @@ namespace Xwt.Mac
 		{
 			return new GradientInfo () { Linear = true, Start = new Point (x0, y0), End = new Point (x1, y1) };
 		}
+
+		public object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
+		{
+			throw new NotImplementedException ();
+		}
 	
 		public void AddColorStop (object backend, double position, Xwt.Drawing.Color color)
 		{

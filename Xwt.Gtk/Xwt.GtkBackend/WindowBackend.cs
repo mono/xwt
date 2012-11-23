@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Konrad Kruczyński <kkruczynski@antmicro.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -54,10 +55,20 @@ namespace Xwt.GtkBackend
 		public Gtk.VBox MainBox {
 			get { return mainBox; }
 		}
-		
+
+		public override Size ImplicitMinSize {
+			get {
+				var req = Window.Child.SizeRequest ();
+				var creq = mainBox.SizeRequest ();
+				return new Size (req.Width - creq.Width, req.Height - creq.Height);
+			}
+		}
+
 		public void SetChild (IWidgetBackend child)
 		{
 			var w = (IGtkWidgetBackend) child;
+			if (alignment.Child != null)
+				alignment.Remove (alignment.Child);
 			alignment.Child = w.Widget;
 		}
 		

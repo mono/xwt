@@ -167,9 +167,9 @@ namespace Xwt.WPFBackend
 		FontData GetWidgetFont ()
 		{
 			if (!(Widget is Control)) {
-				double size = FontBackendHandler.GetPointsFromPixels (SystemFonts.MessageFontSize, DPI);
+				double size = FontBackendHandler.GetPointsFromDeviceUnits (SystemFonts.MessageFontSize);
 
-				return new FontData (SystemFonts.MessageFontFamily, size) {
+				return new FontData (SystemFonts.MessageFontFamily, size, Drawing.FontSizeUnit.Points) {
 					Style = SystemFonts.MessageFontStyle,
 					Weight = SystemFonts.MessageFontWeight
 				};
@@ -185,7 +185,7 @@ namespace Xwt.WPFBackend
 
 			var control = (Control)Widget;
 			control.FontFamily = font.Family;
-			control.FontSize = FontBackendHandler.GetPixelsFromPoints (font.Size, DPI);
+			control.FontSize = font.GetDeviceIndependentPixelSize (control);
 			control.FontStyle = font.Style;
 			control.FontWeight = font.Weight;
 			control.FontStretch = font.Stretch;
@@ -211,7 +211,7 @@ namespace Xwt.WPFBackend
 		}
 
 		public Size Size {
-			get { return new Size (Widget.ActualWidth, Widget.ActualHeight); }
+			get { return new Size (Widget.ActualWidth - ((Widget)Frontend).Margin.HorizontalSpacing, Widget.ActualHeight - ((Widget)Frontend).Margin.VerticalSpacing); }
 		}
 
 		public virtual bool Visible {
@@ -443,6 +443,8 @@ namespace Xwt.WPFBackend
 		
 		public virtual void UpdateLayout ()
 		{
+			Xwt.Widget frontend = (Xwt.Widget)Frontend;
+			widget.Margin = new Thickness (frontend.Margin.Left, frontend.Margin.Top, frontend.Margin.Right, frontend.Margin.Bottom);
 		}
 
 		public override void EnableEvent (object eventId)
@@ -479,6 +481,9 @@ namespace Xwt.WPFBackend
 						break;
 					case WidgetEvent.BoundsChanged:
 						Widget.SizeChanged += WidgetOnSizeChanged;
+						break;
+					case WidgetEvent.MouseScrolled:
+						Widget.MouseWheel += WidgetMouseWheelHandler;
 						break;
 				}
 
@@ -521,6 +526,9 @@ namespace Xwt.WPFBackend
 						break;
 					case WidgetEvent.BoundsChanged:
 						Widget.SizeChanged -= WidgetOnSizeChanged;
+						break;
+					case WidgetEvent.MouseScrolled:
+						Widget.MouseWheel -= WidgetMouseWheelHandler;
 						break;
 				}
 
@@ -960,6 +968,26 @@ namespace Xwt.WPFBackend
 				var p = e.GetPosition (Widget);
 				eventSink.OnMouseMoved (new MouseMovedEventArgs (
 					e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio));
+			});
+		}
+
+		private int mouseScrollCumulation = 0;
+
+		private void WidgetMouseWheelHandler (object sender, MouseWheelEventArgs e)
+		{
+			mouseScrollCumulation += e.Delta;
+			int jumps = mouseScrollCumulation / 120;
+			mouseScrollCumulation %= 120;
+			var p = e.GetPosition(Widget);
+			Toolkit.Invoke (delegate {
+				for (int i = 0; i < jumps; i++) {
+					eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
+						e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, ScrollDirection.Up));
+				}
+				for (int i = 0; i > jumps; i--) {
+					eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
+						e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, ScrollDirection.Down));
+				}
 			});
 		}
 

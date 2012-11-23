@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
@@ -31,9 +32,24 @@ namespace Xwt.Backends
 	{
 		void Initialize (IWindowFrameEventSink eventSink);
 		void Dispose ();
-		
+
+		/// <summary>
+		/// Size and position of the window content in screen coordinates
+		/// </summary>
 		Rectangle Bounds { get; set; }
 		void Move (double x, double y);
+
+		/// <summary>
+		/// Sets the size of the window
+		/// </summary>
+		/// <param name='width'>
+		/// New width.
+		/// </param>
+		/// <param name='height'>
+		/// New height.
+		/// </param>
+		/// <remarks>
+		/// </remarks>
 		void Resize (double width, double height);
 
 		bool Visible { get; set; }
@@ -41,6 +57,10 @@ namespace Xwt.Backends
 		
 		bool Decorated { get; set; }
 		bool ShowInTaskbar { get; set; }
+		void SetTransientFor (IWindowFrameBackend window);
+		bool Resizable { get; set; }
+
+		void SetIcon (object imageBackend);
 		
 		/// <summary>
 		/// Presents a window to the user. This may mean raising the window in the stacking order,
@@ -54,6 +74,7 @@ namespace Xwt.Backends
 		void OnBoundsChanged (Rectangle bounds);
 		void OnShown ();
 		void OnHidden ();
+		bool OnCloseRequested ();
 	}
 
 	[Flags]
@@ -61,7 +82,8 @@ namespace Xwt.Backends
 	{
 		BoundsChanged = 1,
 		Shown = 2,
-		Hidden = 4
+		Hidden = 4,
+		CloseRequested = 8
 	}
 }
 

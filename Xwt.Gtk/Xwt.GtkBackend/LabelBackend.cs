@@ -34,8 +34,8 @@ namespace Xwt.GtkBackend
 {
 	class LabelBackend: WidgetBackend, ILabelBackend
 	{
-		Color backColor;
-		bool usingCustomColor;
+		Color? bgColor, textColor;
+		int wrapHeight, wrapWidth;
 		
 		public LabelBackend ()
 		{
@@ -45,7 +45,7 @@ namespace Xwt.GtkBackend
 			Label.Yalign = 0.5f;
 		}
 		
-		Gtk.Label Label {
+		protected Gtk.Label Label {
 			get {
 				if (Widget is Gtk.Label)
 					return (Gtk.Label) Widget;
@@ -56,14 +56,13 @@ namespace Xwt.GtkBackend
 		
 		public override Xwt.Drawing.Color BackgroundColor {
 			get {
-				return usingCustomColor ? backColor : base.BackgroundColor;
+				return bgColor.HasValue ? bgColor.Value : base.BackgroundColor;
 			}
 			set {
-				if (!usingCustomColor) {
+				if (!bgColor.HasValue)
 					Label.ExposeEvent += HandleLabelExposeEvent;
-					usingCustomColor = true;
-				}
-				backColor = value;
+
+				bgColor = value;
 				Label.QueueDraw ();
 			}
 		}
@@ -73,14 +72,53 @@ namespace Xwt.GtkBackend
 		{
 			using (var ctx = Gdk.CairoHelper.Create (Label.GdkWindow)) {
 				ctx.Rectangle (Label.Allocation.X, Label.Allocation.Y, Label.Allocation.Width, Label.Allocation.Height);
-				ctx.Color = backColor.ToCairoColor ();
+				ctx.Color = bgColor.Value.ToCairoColor ();
 				ctx.Fill ();
 			}
 		}
+
+		void HandleLabelDynamicSizeAllocate (object o, Gtk.SizeAllocatedArgs args)
+		{
+			int unused;
+			Label.Layout.Width = Pango.Units.FromPixels (args.Allocation.Width);
+			Label.Layout.GetPixelSize (out unused, out wrapHeight);
+			if (wrapWidth != args.Allocation.Width) {
+				wrapWidth = args.Allocation.Width;
+				Label.QueueResize ();
+			}
+		}
+
+		void HandleLabelDynamicSizeRequest (object o, Gtk.SizeRequestedArgs args)
+		{
+			if (wrapHeight > 0) {
+				var req = args.Requisition;
+				req.Width = 0;
+				req.Height = wrapHeight;
+				args.Requisition = req;
+			}
+		}
 		
-		public string Text {
+		public virtual string Text {
 			get { return Label.Text; }
 			set { Label.Text = value; }
+		}
+
+
+		public Xwt.Drawing.Color TextColor {
+			get {
+				return textColor.HasValue ? textColor.Value : Util.ToXwtColor (Widget.Style.Foreground (Gtk.StateType.Normal));
+			}
+			set {
+				var color = value.ToGdkColor ();
+				var attr = new Pango.AttrForeground (color.Red, color.Green, color.Blue);
+				var attrs = new Pango.AttrList ();
+				attrs.Insert (attr);
+
+				Label.Attributes = attrs;
+
+				textColor = value;
+				Label.QueueDraw ();
+			}
 		}
 
 		public Alignment TextAlignment {
@@ -118,6 +156,51 @@ namespace Xwt.GtkBackend
 				case Xwt.EllipsizeMode.Start: Label.Ellipsize = Pango.EllipsizeMode.Start; break;
 				case Xwt.EllipsizeMode.Middle: Label.Ellipsize = Pango.EllipsizeMode.Middle; break;
 				case Xwt.EllipsizeMode.End: Label.Ellipsize = Pango.EllipsizeMode.End; break;
+				}
+			}
+		}
+
+		public WrapMode Wrap {
+			get {
+				if (!Label.LineWrap)
+					return WrapMode.None;
+				else {
+					switch (Label.LineWrapMode) {
+					case Pango.WrapMode.Char:
+						return WrapMode.Character;
+					case Pango.WrapMode.Word:
+						return WrapMode.Word;
+					case Pango.WrapMode.WordChar:
+						return WrapMode.WordAndCharacter;
+					default:
+						return WrapMode.None;
+					}
+				}
+			}
+			set {
+				if (value == WrapMode.None){
+					if (Label.LineWrap) {
+						Label.LineWrap = false;
+						Label.SizeAllocated -= HandleLabelDynamicSizeAllocate;
+						Label.SizeRequested -= HandleLabelDynamicSizeRequest;
+					}
+				} else {
+					if (!Label.LineWrap) {
+						Label.LineWrap = true;
+						Label.SizeAllocated += HandleLabelDynamicSizeAllocate;
+						Label.SizeRequested += HandleLabelDynamicSizeRequest;
+					}
+					switch (value) {
+					case WrapMode.Character:
+						Label.LineWrapMode = Pango.WrapMode.Char;
+						break;
+					case WrapMode.Word:
+						Label.LineWrapMode = Pango.WrapMode.Word;
+						break;
+					case WrapMode.WordAndCharacter:
+						Label.LineWrapMode = Pango.WrapMode.WordChar;
+						break;
+					}
 				}
 			}
 		}

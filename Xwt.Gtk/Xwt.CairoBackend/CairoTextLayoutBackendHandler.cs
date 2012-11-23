@@ -62,7 +62,7 @@ namespace Xwt.CairoBackend
 		#region ITextLayoutBackendHandler implementation
 		public object Create (Context context)
 		{
-			CairoContextBackend c = (CairoContextBackend) Xwt.GtkBackend.GtkEngine.Registry.GetBackend (context);
+			CairoContextBackend c = (CairoContextBackend) WidgetRegistry.GetBackend (context);
 			LayoutBackend b = new LayoutBackend ();
 			b.Context = c;
 			return b;

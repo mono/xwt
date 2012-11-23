@@ -103,7 +103,7 @@ namespace Xwt
 				
 				source = value;
 				Backend.SetSource (source, source is IFrontend ? (IBackend) ToolkitEngine.GetBackend (source) : null);
-				
+
 				if (source != null) {
 					source.RowChanged += HandleModelChanged;
 					source.RowDeleted += HandleModelChanged;
@@ -134,11 +134,11 @@ namespace Xwt
 			}
 		}
 		
-		public object SelectedText {
+		public string SelectedText {
 			get {
 				if (Backend.SelectedRow == -1)
 					return null;
-				return Items [Backend.SelectedRow];
+				return (string)Items.DataSource.GetValue (Backend.SelectedRow, 0);
 			}
 			set {
 				SelectedIndex = Items.IndexOf (value);

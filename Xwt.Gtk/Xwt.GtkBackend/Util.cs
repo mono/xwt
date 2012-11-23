@@ -70,7 +70,7 @@ namespace Xwt.GtkBackend
 			if (type == TransferDataType.Text)
 				target.AddText (data.Text);
 			else if (data.TargetsIncludeImage (false))
-				target.AddImage (GtkEngine.Registry.CreateFrontend<Xwt.Drawing.Image> (data.Pixbuf));
+				target.AddImage (WidgetRegistry.CreateFrontend<Xwt.Drawing.Image> (data.Pixbuf));
 			else if (type == TransferDataType.Uri) {
 				var uris = System.Text.Encoding.UTF8.GetString (data.Data).Split ('\n').Where (u => !string.IsNullOrEmpty(u)).Select (u => new Uri (u)).ToArray ();
 				target.AddUris (uris);
@@ -140,7 +140,7 @@ namespace Xwt.GtkBackend
 					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
 				}
 				else {
-					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type, false), 0, id) };
+					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type.Id, false), 0, id) };
 				}
 				
 				foreach (var a in entries.Select (e => e.Target))
@@ -220,6 +220,36 @@ namespace Xwt.GtkBackend
 			}
 			throw new InvalidOperationException ("Invalid policy value:" + p);
 		}
+
+        public static ScrollDirection ConvertScrollDirection(Gdk.ScrollDirection d)
+        {
+            switch(d) {
+            case Gdk.ScrollDirection.Up:
+                return Xwt.ScrollDirection.Up;
+            case Gdk.ScrollDirection.Down:
+                return Xwt.ScrollDirection.Down;
+            case Gdk.ScrollDirection.Left:
+                return Xwt.ScrollDirection.Left;
+            case Gdk.ScrollDirection.Right:
+                return Xwt.ScrollDirection.Right;
+            }
+            throw new InvalidOperationException("Invalid mouse scroll direction value: " + d);
+        }
+
+        public static Gdk.ScrollDirection ConvertScrollDirection(ScrollDirection d)
+        {
+            switch (d) {
+            case ScrollDirection.Up:
+                return Gdk.ScrollDirection.Up;
+            case ScrollDirection.Down:
+                return Gdk.ScrollDirection.Down;
+            case ScrollDirection.Left:
+                return Gdk.ScrollDirection.Left;
+            case ScrollDirection.Right:
+                return Gdk.ScrollDirection.Right;
+            }
+            throw new InvalidOperationException("Invalid mouse scroll direction value: " + d);
+        }
 	}
 }
 

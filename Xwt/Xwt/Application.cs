@@ -28,13 +28,25 @@ using System;
 using System.Reflection;
 using Xwt.Backends;
 using Xwt.Engine;
+using System.Threading.Tasks;
 
 namespace Xwt
 {
 	public static class Application
 	{
 		static ToolkitEngineBackend engine;
-		
+
+		static readonly TaskScheduler taskScheduler = new XwtTaskScheduler ();
+
+		public static TaskScheduler UITaskScheduler {
+			get { return taskScheduler; }
+		}
+
+		internal static System.Threading.Thread UIThread {
+			get;
+			private set;
+		}
+
 		internal static ToolkitEngineBackend EngineBackend {
 			get { return engine; }
 		}
@@ -43,14 +55,14 @@ namespace Xwt
 		{
 			if (engine != null)
 				return;
-			InitBackend (null);
-			engine.Initialize ();
+			Initialize (null);
 		}
 		
 		public static void Initialize (string backendType)
 		{
 			InitBackend (backendType);
 			engine.Initialize ();
+			UIThread = System.Threading.Thread.CurrentThread;
 		}
 		
 		public static void Run ()
@@ -151,6 +163,8 @@ namespace Xwt
 		{
 			return new StatusIcon ();
 		}
+
+		public static event EventHandler<ExceptionEventArgs> UnhandledException;
 		
 		class Timer: IDisposable
 		{
@@ -202,7 +216,15 @@ namespace Xwt
 		
 		internal static void NotifyException (Exception ex)
 		{
-			Console.WriteLine (ex);
+			var unhandledException = UnhandledException;
+			if (unhandledException != null)
+			{
+				unhandledException (null, new ExceptionEventArgs (ex));
+			}
+			else
+			{
+				Console.WriteLine (ex);
+			}
 		}
 	}
 }

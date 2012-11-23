@@ -102,9 +102,7 @@ namespace Xwt.GtkBackend
 				secondaryText = message.SecondaryText;
 			}
 			
-			image.Stock = message.Icon;
-			image.SetFromIconName (Util.ToGtkStock (message.Icon), Gtk.IconSize.Dialog);
-//			image.Pixbuf = ImageService.GetPixbuf (message.Icon, IconSize.Dialog);
+			image.SetFromStock (Util.ToGtkStock (message.Icon), Gtk.IconSize.Dialog);
 			
 			StringBuilder markup = new StringBuilder (@"<span weight=""bold"" size=""larger"">");
 			markup.Append (GLib.Markup.EscapeText (primaryText));

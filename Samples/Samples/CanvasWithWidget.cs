@@ -29,11 +29,20 @@ using Xwt.Drawing;
 
 namespace Samples
 {
-	public class CanvasWithWidget: VBox
+	public class CanvasWithWidget_Linear: VBox
 	{
-		public CanvasWithWidget ()
+		public CanvasWithWidget_Linear ()
 		{
-			MyCanvas c = new MyCanvas ();
+			MyCanvas c = new MyCanvas (true);
+			PackStart (c, BoxMode.FillAndExpand);
+		}
+	}
+
+	public class CanvasWithWidget_Radial : VBox
+	{
+		public CanvasWithWidget_Radial ()
+		{
+			MyCanvas c = new MyCanvas (false);
 			PackStart (c, BoxMode.FillAndExpand);
 		}
 	}
@@ -41,8 +50,11 @@ namespace Samples
 	class MyCanvas: Canvas
 	{
 		Rectangle rect = new Rectangle (30, 30, 100, 30);
-		
-		public MyCanvas ()
+		bool Linear {
+			get; set;
+		}
+
+		public MyCanvas (bool linear)
 		{
 			var entry = new TextEntry () { ShowFrame = false };
 			AddChild (entry, rect);
@@ -51,12 +63,20 @@ namespace Samples
 			box.PackStart (new Button ("..."));
 			box.PackStart (new TextEntry (), BoxMode.FillAndExpand);
 			AddChild (box, new Rectangle (30, 70, 100, 30));
+			Linear = linear;
 		}
 		
 		protected override void OnDraw (Xwt.Drawing.Context ctx, Rectangle dirtyRect)
 		{
+			if (Bounds.IsEmpty)
+				return;
+
 			ctx.Rectangle (0, 0, Bounds.Width, Bounds.Height);
-			var g = new LinearGradient (0, 0, Bounds.Width, Bounds.Height);
+			Gradient g = null;
+			if (Linear)
+				g = new LinearGradient (0, 0, Bounds.Width, Bounds.Height);
+			else
+				g = new RadialGradient (Bounds.Width / 2, Bounds.Height / 2, Bounds.Width / 2, Bounds.Width / 2, Bounds.Height / 2, Bounds.Width / 4); 
 			g.AddColorStop (0, new Color (1, 0, 0));
 			g.AddColorStop (1, new Color (0, 1, 0));
 			ctx.Pattern = g;

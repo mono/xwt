@@ -63,6 +63,9 @@
     <Compile Include="Xwt.WPFBackend\ComboBoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\ExRichTextBox.cs" />
+    <Compile Include="Xwt.WPFBackend\LinkLabelBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\PopoverBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ProgressBarBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CustomWidgetBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DelegatedCommand.cs" />
@@ -109,6 +112,7 @@
     <Compile Include="Xwt.WPFBackend\SelectFolderDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\SeparatorBackend.cs" />
     <Compile Include="Xwt.WPFBackend\SeparatorMenuItemBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\SpinnerBackend.cs" />
     <Compile Include="Xwt.WPFBackend\TextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\TextLayoutBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\TextLayoutContext.cs" />
@@ -128,6 +132,7 @@
     <Compile Include="Xwt.WPFBackend\NotebookBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ScrollAdjustmentBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CustomScrollViewPort.cs" />
+    <Compile Include="Xwt.WPFBackend\RichTextViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

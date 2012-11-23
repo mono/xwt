@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using SWC = System.Windows.Controls;
+using SWM = System.Windows.Media;
 
 using Xwt.Backends;
 
@@ -42,15 +43,29 @@ namespace Xwt.WPFBackend
 			Widget = new WpfLabel ();
 		}
 
-		SWC.Label Label {
-			get { return (SWC.Label)Widget; }
+		WpfLabel Label {
+			get { return (WpfLabel)Widget; }
 		}
 
 		public string Text {
-			get { return (string)Label.Content; }
+			get { return Label.TextBlock.Text; }
 			set {
-				Label.Content = value;
+				Label.TextBlock.Text = value;
 				Widget.InvalidateMeasure();
+			}
+		}
+
+		public Xwt.Drawing.Color TextColor {
+			get {
+				SWM.Color color = SystemColors.ControlColor;
+
+				if (Label.Foreground != null)
+					color = ((SWM.SolidColorBrush) Label.Foreground).Color;
+
+				return DataConverter.ToXwtColor (color);
+			}
+			set {
+				Label.Foreground = ResPool.GetSolidBrush (value);
 			}
 		}
 
@@ -59,22 +74,56 @@ namespace Xwt.WPFBackend
 			set { Label.HorizontalContentAlignment = DataConverter.ToWpfAlignment (value); }
 		}
 
-		// TODO
-		public EllipsizeMode Ellipsize
-		{
-			get;
-			set;
+		public EllipsizeMode Ellipsize {
+			get {
+				if (Label.TextBlock.TextTrimming == TextTrimming.None)
+					return Xwt.EllipsizeMode.None;
+				else
+					return Xwt.EllipsizeMode.End;
+			}
+			set {
+				if (value == EllipsizeMode.None)
+					Label.TextBlock.TextTrimming = TextTrimming.None;
+				else
+					Label.TextBlock.TextTrimming = TextTrimming.CharacterEllipsis;
+			}
+		}
+
+		public WrapMode Wrap {
+			get {
+				if (Label.TextBlock.TextTrimming == TextTrimming.None)
+					return WrapMode.None;
+				else
+					return WrapMode.Word;
+			} set {
+				if (value == WrapMode.None)
+					Label.TextBlock.TextTrimming = TextTrimming.None;
+				else
+					Label.TextBlock.TextTrimming = TextTrimming.WordEllipsis;
+			}
 		}
 	}
 
 	class WpfLabel : SWC.Label, IWpfWidget
 	{
+		public WpfLabel ()
+		{
+			TextBlock = new SWC.TextBlock ();
+			Content = TextBlock;
+			Padding = new Thickness (0);
+		}
+
 		public WidgetBackend Backend { get; set; }
 
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
 			var s = base.MeasureOverride (constraint);
 			return Backend.MeasureOverride (constraint, s);
+		}
+
+		public SWC.TextBlock TextBlock {
+			get;
+			set;
 		}
 	}
 }

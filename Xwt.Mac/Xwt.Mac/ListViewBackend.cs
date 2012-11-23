@@ -36,12 +36,12 @@ namespace Xwt.Mac
 	{
 		IListDataSource source;
 		ListSource tsource;
-		
+
 		protected override NSTableView CreateView ()
 		{
 			return new NSTableView ();
 		}
-		
+
 		protected override string SelectionChangeEventName {
 			get { return "NSTableViewSelectionDidChangeNotification"; }
 		}
@@ -77,6 +77,9 @@ namespace Xwt.Mac
 		{
 			return source.GetValue ((int)pos, nField);
 		}
+
+		// TODO
+		public bool BorderVisible { get; set; }
 	}
 	
 	class TableRow: NSObject, ITablePosition

@@ -1,5 +1,5 @@
 //
-// GtkMacInterop.cs
+// Spinner.cs
 //
 // Author:
 //       Jérémie Laval <jeremie.laval@xamarin.com>
@@ -12,10 +12,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,43 +23,33 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using Xwt.Backends;
 
-namespace Xwt.GtkBackend.Mac
+namespace Xwt
 {
-	public static class GtkMacInterop
+	public class Spinner : Widget
 	{
-		const string LibGdk = "libgdk-quartz-2.0.dylib";
-		const string LibGtk = "libgtk-quartz-2.0";
-
-		[System.Runtime.InteropServices.DllImport (LibGdk)]
-		static extern IntPtr gdk_quartz_window_get_nsview (IntPtr gdkwindow);
-
-		[System.Runtime.InteropServices.DllImport (LibGdk)]
-		static extern IntPtr gdk_quartz_window_get_nswindow (IntPtr gdkwindow);
-
-		[System.Runtime.InteropServices.DllImport (LibGtk)]
-		extern static IntPtr gtk_ns_view_new (IntPtr nsview);
-
-		public static MonoMac.AppKit.NSView GetNSViewFromGdkWindow (Gdk.Window window)
-		{
-			if (!Platform.IsMac || window == null)
-				return null;
-			IntPtr nsView = gdk_quartz_window_get_nsview (window.Handle);
-			return new MonoMac.AppKit.NSView (nsView);
+		ISpinnerBackend Backend {
+			get { return (ISpinnerBackend) BackendHost.Backend; }
 		}
 
-		[System.Runtime.InteropServices.DllImport (LibGtk)]
-		static extern void gtk_widget_set_realized (IntPtr gtkwidget, bool realized);
-
-		public static void SetRealized (Gtk.Widget widget, bool realized)
+		public Spinner ()
 		{
-			gtk_widget_set_realized (widget.Handle, realized);
 		}
 
-		public static IntPtr NSViewToGtkWidgetPtr (MonoMac.AppKit.NSView view)
-		{
-			return gtk_ns_view_new (view.Handle);
+		public bool Animate {
+			get {
+				return Backend.IsAnimating;
+			}
+			set {
+				if (value)
+					Backend.StartAnimation ();
+				else
+					Backend.StopAnimation ();
+			}
 		}
 	}
 }
+

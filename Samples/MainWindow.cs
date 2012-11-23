@@ -71,8 +71,9 @@ namespace Samples
 			AddSample (null, "Drag & Drop", typeof(DragDrop));
 			
 			var n = AddSample (null, "Drawing", null);
-			AddSample (n, "Canvas with Widget", typeof(CanvasWithWidget));
-			AddSample (n, "Chart", typeof(ChartSample));
+			AddSample (n, "Canvas with Widget (Linear)", typeof (CanvasWithWidget_Linear));
+			AddSample (n, "Canvas with Widget (Radial)", typeof (CanvasWithWidget_Radial));
+			AddSample (n, "Chart", typeof (ChartSample));
 			AddSample (n, "Colors", typeof(ColorsSample));
 			AddSample (n, "Figures", typeof(DrawingFigures));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
@@ -86,13 +87,18 @@ namespace Samples
 			AddSample (null, "Images", typeof(Images));
 			AddSample (null, "Labels", typeof(Labels));
 			AddSample (null, "ListBox", typeof(ListBoxSample));
+			AddSample (null, "LinkLabels", typeof(LinkLabels));
 			AddSample (null, "ListView", typeof(ListView1));
+			AddSample (null, "Markdown", typeof (MarkDownSample));
 			AddSample (null, "Menu", typeof(MenuSamples));
 			AddSample (null, "Notebook", typeof(NotebookSample));
 			AddSample (null, "Paneds", typeof(PanedViews));
+			AddSample (null, "Popover", typeof(PopoverSample));
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
-			AddSample (null, "Tables", typeof(Tables));
-			AddSample (null, "Text Entry", typeof(TextEntries));
+			AddSample (null, "Spinners", typeof (Spinners));
+			AddSample (null, "ReliefFrame", typeof (ReliefFrameSample));
+			AddSample (null, "Tables", typeof (Tables));
+			AddSample (null, "Text Entry", typeof (TextEntries));
 			AddSample (null, "Tooltips", typeof(Tooltips));
 			AddSample (null, "TreeView", typeof(TreeViews));
 			AddSample (null, "WidgetEvents", typeof(WidgetEvents));
@@ -113,6 +119,13 @@ namespace Samples
 			Content = box;
 			
 			samplesTree.SelectionChanged += HandleSamplesTreeSelectionChanged;
+
+			CloseRequested += HandleCloseRequested;
+		}
+
+		void HandleCloseRequested (object sender, CloseRequestedEventArgs args)
+		{
+			args.Handled = !MessageDialog.Confirm ("Samples will be closed", Command.Ok);
 		}
 		
 		protected override void Dispose (bool disposing)

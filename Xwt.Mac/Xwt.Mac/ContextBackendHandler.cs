@@ -68,7 +68,13 @@ namespace Xwt.Mac
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
 			var ctx = GetContext (backend);
-			ctx.Path.AppendPathWithArc (new System.Drawing.PointF ((float)xc, (float)yc), (float)radius, (float)angle1, (float)angle2);
+			ctx.Path.AppendPathWithArc (new System.Drawing.PointF ((float)xc, (float)yc), (float)radius, (float)angle1, (float)angle2, true);
+		}
+
+		public void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		{
+			var ctx = GetContext (backend);
+			ctx.Path.AppendPathWithArc (new System.Drawing.PointF ((float)xc, (float)yc), (float)radius, (float)angle1, (float)angle2, false);
 		}
 
 		public void Clip (object backend)
@@ -232,7 +238,7 @@ namespace Xwt.Mac
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			GetContext (backend);
-			TextLayoutBackendHandler.Draw (null, MacEngine.Registry.GetBackend (layout), x, y);
+			TextLayoutBackendHandler.Draw (null, WidgetRegistry.GetBackend (layout), x, y);
 		}
 		
 		public void DrawImage (object backend, object img, double x, double y, double alpha)

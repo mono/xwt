@@ -34,7 +34,8 @@ namespace Xwt.Backends
 		int[] SelectedRows { get; }
 		void SelectRow (int pos);
 		void UnselectRow (int pos);
-		
+
+		bool BorderVisible { get; set; }
 		bool HeadersVisible { get; set; }
 	}
 	

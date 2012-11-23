@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using Xwt.Drawing;
 using Xwt.Backends;
 
 namespace Xwt
@@ -51,6 +52,11 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
+
+		public Color TextColor {
+			get { return Backend.TextColor; }
+			set { Backend.TextColor = value; }
+		}
 		
 		public Alignment TextAlignment {
 			get { return Backend.TextAlignment; }
@@ -64,6 +70,14 @@ namespace Xwt
 			get { return Backend.Ellipsize; }
 			set {
 				Backend.Ellipsize = value;
+				OnPreferredSizeChanged ();
+			}
+		}
+
+		public WrapMode Wrap {
+			get { return Backend.Wrap; }
+			set {
+				Backend.Wrap = value;
 				OnPreferredSizeChanged ();
 			}
 		}

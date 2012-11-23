@@ -50,7 +50,7 @@ namespace Xwt.Backends
 		IBackend backend;
 		bool usingCustomBackend;
 		ToolkitEngine engine;
-		
+
 		HashSet<object> defaultEnabledEvents;
 		
 		public BackendHost ()
@@ -87,7 +87,7 @@ namespace Xwt.Backends
 		internal ToolkitEngineBackend EngineBackend {
 			get { return ToolkitEngine.Backend; }
 		}
-		
+
 		internal bool BackendCreated {
 			get { return backend != null; }
 		}

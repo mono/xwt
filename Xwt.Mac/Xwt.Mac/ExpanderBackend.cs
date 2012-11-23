@@ -9,7 +9,7 @@ using MonoMac.Foundation;
 
 namespace Xwt.Mac
 {
-	public class ExpanderBackend : ViewBackend<MacExpander, IExpandEventSink>, IExpandBackend
+	public class ExpanderBackend : ViewBackend<MacExpander, IExpandEventSink>, IExpanderBackend
 	{
 		MacExpander expander;
 

@@ -99,12 +99,10 @@ namespace Xwt.GtkBackend
 		public ICanvasEventSink EventSink;
 		Dictionary<Gtk.Widget, Rectangle> children = new Dictionary<Gtk.Widget, Rectangle> ();
 		
-		public CustomCanvas (IntPtr p): base (p)
-		{
-		}
-		
 		public CustomCanvas ()
 		{
+			GtkWorkarounds.FixContainerLeak (this);
+
 			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
 		}
 		

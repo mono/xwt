@@ -52,7 +52,6 @@ namespace Xwt.Mac
 
 		public void SetContent (IWidgetBackend child)
 		{
-			Widget.ContentView = AddMargins ((IMacViewBackend)child, null);
 			Widget.SizeToFit ();
 		}
 
@@ -95,7 +94,7 @@ namespace Xwt.Mac
 		#endregion
 	}
 	
-	class MacFrame: NSBox, IViewObject, IViewContainer
+	class MacFrame: NSBox, IViewObject
 	{
 		#region IViewObject implementation
 		public NSView View {
@@ -107,11 +106,6 @@ namespace Xwt.Mac
 		public Widget Frontend { get; set; }
 		
 		#endregion
-		
-		void IViewContainer.UpdateChildMargins (IMacViewBackend view)
-		{
-			ContentView = FrameBackend.AddMargins (view, (NSView)ContentView);
-		}
 	}
 }
 

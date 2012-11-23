@@ -36,82 +36,51 @@ using System.Linq;
 
 namespace Xwt
 {
-	public class WidgetSpacing
+	public struct WidgetSpacing
 	{
-		ISpacingListener parent;
-		double top, left, right, bottom;
-		
-		internal WidgetSpacing (ISpacingListener parent)
+		static public implicit operator WidgetSpacing (double value)
 		{
-			this.parent = parent;
+			return new WidgetSpacing (value, value, value, value);
 		}
-		
-		void NotifyChanged ()
+
+		public WidgetSpacing (double left = 0, double top = 0, double right = 0, double bottom = 0): this ()
 		{
-			parent.OnSpacingChanged (this);
+			Left = left;
+			Top = top;
+			Bottom = bottom;
+			Right = right;
 		}
-		
-		public double Left {
-			get { return left; }
-			set { left = value; NotifyChanged (); }
-		}
-		
-		public double Bottom {
-			get {
-				return this.bottom;
-			}
-			set {
-				bottom = value; NotifyChanged ();
-			}
-		}
+
+		public double Left { get; internal set; }
+
+		public double Bottom { get; internal set; }
 	
-		public double Right {
-			get {
-				return this.right;
-			}
-			set {
-				right = value; NotifyChanged ();
-			}
-		}
+		public double Right { get; internal set; }
 	
-		public double Top {
-			get {
-				return this.top;
-			}
-			set {
-				top = value; NotifyChanged ();
-			}
-		}
-		
+		public double Top { get; internal set; }
+
 		public double HorizontalSpacing {
-			get { return left + right; }
+			get { return Left + Right; }
 		}
 		
 		public double VerticalSpacing {
-			get { return top + bottom; }
+			get { return Top + Bottom; }
 		}
 		
-		public void Set (double left, double top, double right, double bottom)
+/*		public void Set (double left, double top, double right, double bottom)
 		{
-			this.left = left;
-			this.top = top;
-			this.bottom = bottom;
-			this.right = right;
-			NotifyChanged ();
+			Left = left;
+			Top = top;
+			Bottom = bottom;
+			Right = right;
 		}
 		
 		public void SetAll (double padding)
 		{
-			this.left = padding;
-			this.top = padding;
-			this.bottom = padding;
-			this.right = padding;
-			NotifyChanged ();
-		}
-	}
-	
-	public interface ISpacingListener
-	{
-		void OnSpacingChanged (WidgetSpacing source);
+			Left = padding;
+			Top = padding;
+			Bottom = padding;
+			Right = padding;
+		}*/
 	}
 }

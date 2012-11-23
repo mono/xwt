@@ -47,7 +47,7 @@ namespace Xwt.GtkBackend
 		
 		public object Create (Context context)
 		{
-			CairoContextBackend c = (CairoContextBackend) GtkEngine.Registry.GetBackend (context);
+			CairoContextBackend c = (CairoContextBackend) WidgetRegistry.GetBackend (context);
 			return Pango.CairoHelper.CreateLayout (c.Context);
 		}
 		
@@ -65,7 +65,7 @@ namespace Xwt.GtkBackend
 		public void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			Pango.Layout tl = (Pango.Layout)backend;
-			tl.FontDescription = (Pango.FontDescription)GtkEngine.Registry.GetBackend (font);
+			tl.FontDescription = (Pango.FontDescription)WidgetRegistry.GetBackend (font);
 		}
 		
 		public void SetWidth (object backend, double value)

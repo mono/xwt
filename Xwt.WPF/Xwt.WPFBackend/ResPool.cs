@@ -39,7 +39,7 @@ namespace Xwt.WPFBackend
 {
 	public static class ResPool
 	{
-		static Dictionary<int, SolidColorBrush> solidBrushes = new Dictionary<int, SolidColorBrush> ();
+		static Dictionary<Color, SolidColorBrush> solidBrushes = new Dictionary<Color, SolidColorBrush> ();
 
 		public static SolidColorBrush GetSolidBrush (Xwt.Drawing.Color color)
 		{
@@ -49,11 +49,11 @@ namespace Xwt.WPFBackend
 		public static SolidColorBrush GetSolidBrush (Color color)
 		{
 			lock (solidBrushes) {
-				int hashcode = color.GetHashCode ();
-				if (!solidBrushes.ContainsKey (hashcode))
-					solidBrushes [hashcode] = new SolidColorBrush (color);
+				SolidColorBrush brush;
+				if (!solidBrushes.TryGetValue (color, out brush))
+					solidBrushes [color] = brush = new SolidColorBrush (color);
 
-				return solidBrushes [hashcode];
+				return brush;
 			}
 		}
 	}

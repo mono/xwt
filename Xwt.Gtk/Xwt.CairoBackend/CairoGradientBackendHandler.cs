@@ -36,6 +36,11 @@ namespace Xwt.CairoBackend
 			return new Cairo.LinearGradient (x0, y0, x1, y1);
 		}
 
+		public object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
+		{
+			return new Cairo.RadialGradient (cx0, cy0, radius0, cx1, cy1, radius1);
+		}
+
 		public void AddColorStop (object backend, double position, Xwt.Drawing.Color color)
 		{
 			Cairo.Gradient g = (Cairo.Gradient) backend;

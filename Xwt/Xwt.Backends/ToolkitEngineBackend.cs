@@ -65,7 +65,7 @@ namespace Xwt.Backends
 		public virtual void InitializeBackends ()
 		{
 		}
-		
+
 		/// <summary>
 		/// Runs the main GUI loop
 		/// </summary>
@@ -123,6 +123,14 @@ namespace Xwt.Backends
 		public virtual object GetNativeImage (Image image)
 		{
 			return ToolkitEngine.GetBackend (image);
+		}
+
+		public virtual void ShowWebBrowser (NavigateToUrlEventArgs e)
+		{
+			if (!e.Handled && e.Uri != null) {
+				System.Diagnostics.Process.Start (e.Uri.ToString ());
+				e.SetHandled ();
+			}
 		}
 
 		/// <summary>
@@ -206,6 +214,20 @@ namespace Xwt.Backends
 		public T CreateFrontend<T> (object backend)
 		{
 			return (T) Activator.CreateInstance (typeof(T), backend);
+		}
+
+		/// <summary>
+		/// Registers a callback to be invoked just before the execution returns to the main loop
+		/// </summary>
+		/// <param name='action'>
+		/// Callback to execute
+		/// </param>
+		/// <remarks>
+		/// The default implementation does the invocation using InvokeAsync.
+		/// </remarks>			
+		public virtual void InvokeBeforeMainLoop (Action action)
+		{
+			InvokeAsync (action);
 		}
 	}
 }

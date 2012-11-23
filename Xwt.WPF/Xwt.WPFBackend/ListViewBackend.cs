@@ -55,6 +55,24 @@ namespace Xwt.WPFBackend
 			set { ScrollViewer.SetHorizontalScrollBarVisibility (ListView, value.ToWpfScrollBarVisibility ()); }
 		}
 
+		private bool borderVisible = true;
+		public bool BorderVisible
+		{
+			get { return this.borderVisible; }
+			set
+			{
+				if (this.borderVisible == value)
+					return;
+
+				if (value)
+					ListView.ClearValue (Control.BorderBrushProperty);
+				else
+					ListView.BorderBrush = null;
+
+				this.borderVisible = value;
+			}
+		}
+
 		public bool HeadersVisible {
 			get { return this.headersVisible; }
 			set {

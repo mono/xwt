@@ -63,6 +63,11 @@ namespace Samples
 			t.Attach (new TextEntry (), 1, 2, 1, 2);
 			t.Attach (new Label ("Three:"), 0, 1, 2, 3);
 			t.Attach (new TextEntry (), 1, 2, 2, 3);
+			t.InsertRow (1, 2);
+			t.Attach (new Label ("One-and-a-half"), 0, 1, 1, 2);
+			t.Attach (new TextEntry () { PlaceholderText = "Just inserted" }, 1, 2, 1, 2);
+			t.InsertRow (1, 2);
+			t.Attach (new SimpleBox (300, 20), 0, 2, 1, 2);
 			box.PackStart (t);
 		}
 	}

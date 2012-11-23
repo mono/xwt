@@ -68,7 +68,6 @@ namespace Xwt
 				store.InsertRowBefore (index);
 				store.SetValue (index, labelField, itl.Label);
 				store.SetValue (index, dataField, itl.Item);
-				item = itl.Item;
 			} else {
 				base.InsertItem (index, item);
 				store.InsertRowBefore (index);

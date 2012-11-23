@@ -33,7 +33,8 @@ namespace Xwt.Drawing
 	public sealed class Font: XwtObject
 	{
 		IFontBackendHandler handler;
-		
+		FontSizeUnit unit;
+
 		internal Font (object backend): this (backend, null)
 		{
 		}
@@ -47,12 +48,37 @@ namespace Xwt.Drawing
 				throw new ArgumentNullException ("backend");
 			Backend = backend;
 		}
-		
-		public static Font FromName (string name, double size)
+
+		/// <summary>
+		/// Creates a new font description from a string representation in the form "[FAMILY] [SIZE]"
+		/// </summary>
+		/// <returns>
+		/// The new font
+		/// </returns>
+		/// <param name='name'>
+		/// Font description
+		/// </param>
+		public static Font FromName (string name)
 		{
 			var toolkit = ToolkitEngine.CurrentEngine;
 			var handler = toolkit.FontBackendHandler;
-			return new Font (handler.CreateFromName (name, size), toolkit);
+
+			name = name.Trim ();
+			string[] parts = name.Split (new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+			if (parts.Length == 0)
+				throw new ArgumentException ("Font family name not specified");
+			double size = 0;
+			FontSizeUnit unit = FontSizeUnit.Points;
+			if (parts.Length > 1) {
+				var s = parts[parts.Length - 1];
+				if (s.EndsWith ("px")) {
+					s = s.Substring (0, s.Length - 2);
+					unit = FontSizeUnit.Pixels;
+				}
+				if (!double.TryParse (s, out size))
+					throw new ArgumentException ("Invalid font size: " + s);
+			}
+			return new Font (handler.Create (parts[0], size, unit, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal), toolkit);
 		}
 		
 		public Font WithFamily (string fontFamily)
@@ -67,17 +93,32 @@ namespace Xwt.Drawing
 		}
 		
 		/// <summary>
-		/// Font size in points
+		/// Font size. It can be points or pixels, depending on the value of the SizeUnit property
 		/// </summary>
 		public double Size {
 			get {
 				return handler.GetSize (Backend);
 			}
 		}
-		
-		public Font WithSize (double size)
+
+		public FontSizeUnit SizeUnit {
+			get { return unit; }
+		}
+
+
+		public Font WithPointSize (double size)
 		{
-			return new Font (handler.SetSize (Backend, size), ToolkitEngine);
+			return new Font (handler.SetSize (Backend, size, FontSizeUnit.Points));
+		}
+		
+		public Font WithPixelSize (double size)
+		{
+			return new Font (handler.SetSize (Backend, size, FontSizeUnit.Pixels));
+		}
+		
+		public Font WithScaledSize (double scale)
+		{
+			return new Font (handler.SetSize (Backend, Size * scale, unit), ToolkitEngine);
 		}
 		
 		public FontStyle Style {
@@ -112,6 +153,12 @@ namespace Xwt.Drawing
 		{
 			return new Font (handler.SetStretch (Backend, stretch), ToolkitEngine);
 		}
+	}
+
+	public enum FontSizeUnit
+	{
+		Pixels,
+		Points
 	}
 	
 	public enum FontStyle

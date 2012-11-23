@@ -73,7 +73,9 @@ namespace Samples
 			box.PackStart (c3);
 			box.PackStart (la3);
 			c3.SelectionChanged += delegate {
-				la3.Text = "Selected item: " + c3.SelectedItem;
+				la3.Text = string.Format ("Selected item: {0} with label {1}",
+				                          c3.SelectedItem,
+				                          c3.SelectedText);
 			};
 			PackStart (box);
 			

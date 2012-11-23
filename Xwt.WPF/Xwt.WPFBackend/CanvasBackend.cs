@@ -141,10 +141,10 @@ namespace Xwt.WPFBackend
 
 		private void Render()
 		{
+			this.queued = false;
+
 			if (!Widget.IsVisible)
 				return;
-
-			this.queued = false;
 
 			if (Canvas.ActualHeight != this.pheight || Canvas.ActualWidth != this.pwidth)
 			{

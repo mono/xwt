@@ -53,6 +53,7 @@ using System;
 using Xwt.Backends;
 using Xwt.Engine;
 using System.ComponentModel;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -61,17 +62,20 @@ namespace Xwt
 		EventHandler boundsChanged;
 		EventHandler shown;
 		EventHandler hidden;
+		CloseRequestedHandler closeRequested;
 
 		Point location;
 		Size size;
 		bool pendingReallocation;
+        Image icon;
+		WindowFrame transientFor;
 		
 		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
 		{
 			protected override void OnBackendCreated ()
 			{
-				base.OnBackendCreated ();
 				Backend.Initialize (this);
+				base.OnBackendCreated ();
 				Parent.location = Backend.Bounds.Location;
 				Parent.size = Backend.Bounds.Size;
 				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
@@ -91,12 +95,18 @@ namespace Xwt
 			{
 				Parent.OnHidden ();
 			}
+
+			public virtual bool OnCloseRequested ()
+			{
+				return Parent.OnCloseRequested ();
+			}
 		}
 
 		static WindowFrame ()
 		{
 			MapEvent (WindowFrameEvent.Shown, typeof(WindowFrame), "OnShown");
 			MapEvent (WindowFrameEvent.Hidden, typeof(WindowFrame), "OnHidden");
+			MapEvent (WindowFrameEvent.CloseRequested, typeof(WindowFrame), "OnCloseRequested");
 		}
 
 		public WindowFrame ()
@@ -194,6 +204,11 @@ namespace Xwt
 			get { return Backend.Title; }
 			set { Backend.Title = value; }
 		}
+
+        public Image Icon {
+            get { return icon; }
+            set { Backend.SetIcon((value as IFrontend).Backend); }
+        }
 		
 		public bool Decorated {
 			get { return Backend.Decorated; }
@@ -203,6 +218,19 @@ namespace Xwt
 		public bool ShowInTaskbar {
 			get { return Backend.ShowInTaskbar; }
 			set { Backend.ShowInTaskbar = value; }
+		}
+
+		public WindowFrame TransientFor {
+			get { return transientFor; }
+			set {
+				transientFor = value;
+				Backend.SetTransientFor ((IWindowFrameBackend)(value as IFrontend).Backend);
+			}
+		}
+
+		public bool Resizable {
+			get { return Backend.Resizable; }
+			set { Backend.Resizable = value; }
 		}
 		
 		public bool Visible {
@@ -239,6 +267,15 @@ namespace Xwt
 		{
 			if (hidden != null)
 				hidden (this, EventArgs.Empty);
+		}
+
+		protected virtual bool OnCloseRequested ()
+		{
+			if (closeRequested == null)
+				return false;
+			var eventArgs = new CloseRequestedEventArgs();
+			closeRequested (this, eventArgs);
+			return eventArgs.Handled;
 		}
 
 		internal virtual void SetBackendSize (double width, double height)
@@ -320,6 +357,17 @@ namespace Xwt
 			remove {
 				hidden -= value;
 				BackendHost.OnAfterEventRemove (WindowFrameEvent.Hidden, hidden);
+			}
+		}
+
+		public event CloseRequestedHandler CloseRequested {
+			add {
+				BackendHost.OnBeforeEventAdd (WindowFrameEvent.CloseRequested, closeRequested);
+				closeRequested += value;
+			}
+			remove {
+				closeRequested -= value;
+				BackendHost.OnAfterEventRemove (WindowFrameEvent.CloseRequested, closeRequested);
 			}
 		}
 	}

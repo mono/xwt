@@ -59,8 +59,8 @@ namespace Xwt.GtkBackend
 			RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandlerWithPango));
 			RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(TextLayoutBackendHandler));
 #else
-			registry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandler));
-			registry.RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(CairoTextLayoutBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(CairoTextLayoutBackendHandler));
 #endif
 			RegisterBackend (typeof(Xwt.Drawing.Gradient), typeof(CairoGradientBackendHandler));
 			RegisterBackend (typeof(Xwt.Drawing.Font), typeof(FontBackendHandler));
@@ -99,6 +99,10 @@ namespace Xwt.GtkBackend
 			RegisterBackend (typeof(Xwt.Popover), typeof (PopoverBackend));
 			RegisterBackend (typeof(Xwt.SpinButton), typeof (SpinButtonBackend));
 			RegisterBackend (typeof(Xwt.DatePicker), typeof (DatePickerBackend));
+			RegisterBackend (typeof(Xwt.LinkLabel), typeof (LinkLabelBackend));
+			RegisterBackend (typeof(Xwt.Placement), typeof (BoxBackend));
+			RegisterBackend (typeof(Xwt.Spinner), typeof (SpinnerBackend));
+			RegisterBackend (typeof(Xwt.RichTextView), typeof (RichTextViewBackend));
 			RegisterBackend (typeof(Xwt.Expander), typeof (ExpanderBackend));
 		}
 

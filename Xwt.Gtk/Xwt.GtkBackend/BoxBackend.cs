@@ -81,12 +81,9 @@ namespace Xwt.GtkBackend
 			public Widget Widget;
 		}
 		
-		public CustomContainer (IntPtr p): base (p)
-		{
-		}
-		
 		public CustomContainer ()
 		{
+			GtkWorkarounds.FixContainerLeak (this);
 			WidgetFlags |= Gtk.WidgetFlags.NoWindow;
 		}
 		
@@ -125,6 +122,7 @@ namespace Xwt.GtkBackend
 		{
 			children.Remove (widget);
 			widget.Unparent ();
+			QueueResize ();
 		}
 		
 		protected override void OnUnrealized ()

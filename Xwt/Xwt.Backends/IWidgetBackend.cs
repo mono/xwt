@@ -32,6 +32,16 @@ namespace Xwt.Backends
 	public interface IWidgetBackend: IBackend
 	{
 		void Initialize (IWidgetEventSink eventSink);
+
+		/// <summary>
+		/// Releases all resource used by the widget
+		/// </summary>
+		/// <remarks>
+		/// This method is called to free all managed and unmanaged resources held by the backend.
+		/// In general, the backend should destroy the native widget at this point.
+		/// When a widget that has children is disposed, the Dispose method is called on all
+		/// backends of all widgets in the children hierarchy.
+		/// </remarks>
 		void Dispose ();
 		
 		bool Visible { get; set; }
@@ -131,6 +141,7 @@ namespace Xwt.Backends
 		void OnButtonReleased (ButtonEventArgs args);
 		void OnMouseMoved (MouseMovedEventArgs args);
 		void OnBoundsChanged ();
+        void OnMouseScrolled(MouseScrolledEventArgs args);
 
 		// Events
 		WidgetSize OnGetPreferredWidth ();
@@ -192,7 +203,8 @@ namespace Xwt.Backends
 		ButtonReleased = 1 << 16,
 		MouseMoved = 1 << 17,
 		DragStarted = 1 << 18,
-		BoundsChanged = 1 << 19
+		BoundsChanged = 1 << 19,
+        MouseScrolled = 1 << 20
 	}
 	
 	public class DragStartData

@@ -52,7 +52,7 @@ namespace Xwt.Mac
 		{
 			this.controller = new WindowBackendController ();
 			controller.Window = this;
-			StyleMask |= NSWindowStyle.Resizable;
+			StyleMask |= NSWindowStyle.Resizable | NSWindowStyle.Closable | NSWindowStyle.Miniaturizable;
 			ContentView.AutoresizesSubviews = true;
 			Center ();
 		}
@@ -256,6 +256,24 @@ namespace Xwt.Mac
 			set {
 			}
 		}
+
+		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
+		{
+			// Generally, TransientFor is used to implement dialog, we reproduce the assumption here
+			Level = window == null ? NSWindowLevel.Normal : NSWindowLevel.ModalPanel;
+		}
+
+		bool IWindowFrameBackend.Resizable {
+			get {
+				return (StyleMask & NSWindowStyle.Resizable) != 0;
+			}
+			set {
+				if (value)
+					StyleMask |= NSWindowStyle.Resizable;
+				else
+					StyleMask &= ~NSWindowStyle.Resizable;
+			}
+		}
 		
 		public void SetPadding (double left, double top, double right, double bottom)
 		{
@@ -326,6 +344,14 @@ namespace Xwt.Mac
 		
 		public void SetMinSize (Size s)
 		{
+		}
+
+		public void SetIcon (object imageBackend)
+		{
+		}
+
+		public virtual Size ImplicitMinSize {
+			get { return new Size (0,0); }
 		}
 	}
 	

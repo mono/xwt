@@ -64,9 +64,23 @@ namespace Xwt.WPFBackend
 
 		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
+			// ensure sweep angle is always positive
+			if (angle2 < angle1)
+				angle2 = 360 + angle2;
+			ArcInternal (backend, xc, yc, radius, angle1, angle2);
+		}
+
+		public void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		{
+			// ensure sweep angle is always negative
+			if (angle1 < angle2)
+				angle1 = 360 + angle1;
+			ArcInternal (backend, xc, yc, radius, angle1, angle2);
+		}
+
+		void ArcInternal (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		{
 			var c = (DrawingContext)backend;
-			if (angle1 > 0 && angle2 == 0)
-				angle2 = 360;
 			c.Path.AddArc ((float)(xc - radius), (float)(yc - radius), (float)radius * 2, (float)radius * 2, (float)angle1,
 			               (float)(angle2 - angle1));
 
@@ -243,31 +257,12 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext) backend;
 
-			var lg = p as LinearGradient;
-			if (lg != null) {
-				if (lg.ColorStops.Count == 0)
-					throw new ArgumentException ();
-
-				var stops = lg.ColorStops.OrderBy (t => t.Item1).ToArray ();
-				var first = stops[0];
-				var last = stops[stops.Length - 1];
-
-				var brush = new LinearGradientBrush (lg.Start, lg.End, first.Item2.ToDrawingColor (),
-														last.Item2.ToDrawingColor ());
-
-				//brush.InterpolationColors = new ColorBlend (stops.Length);
-				//var blend = brush.InterpolationColors;
-				//for (int i = 0; i < stops.Length; ++i) {
-				//    var s = stops [i];
-
-				//    blend.Positions [i] = (float)s.Item1;
-				//    blend.Colors [i] = s.Item2.ToDrawingColor ();
-				//}
-
-				c.Brush = brush;
-			}
-			else if (p is Brush)
-				c.Brush = (Brush)p;
+			if (p is LinearGradient) {
+				c.Brush = ((LinearGradient) p).CreateBrush ();
+			} else if (p is RadialGradient) {
+				c.Brush = ((RadialGradient) p).CreateBrush ();
+			} else if (p is Brush)
+				c.Brush = (Brush) p;
 		}
 
 		public void SetFont (object backend, Font font)
@@ -280,14 +275,14 @@ namespace Xwt.WPFBackend
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			var c = (DrawingContext)backend;
-			var measure = layout.GetSize ();
-			var h = layout.Height > 0 ? (float)layout.Height : (float)measure.Height;
-			var stringFormat = TextLayoutContext.StringFormat;
-			var sdStringFormat = layout.Trimming.ToDrawingStringTrimming ();
+			Size measure = layout.GetSize ();
+			float h = layout.Height > 0 ? (float)layout.Height : (float)measure.Height;
+			System.Drawing.StringFormat stringFormat = TextLayoutContext.StringFormat;
+			StringTrimming trimming = layout.Trimming.ToDrawingStringTrimming ();
 
-			if (layout.Height > 0 && stringFormat.Trimming != sdStringFormat) {
+			if (layout.Height > 0 && stringFormat.Trimming != trimming) {
 				stringFormat = (System.Drawing.StringFormat)stringFormat.Clone ();
-				stringFormat.Trimming = sdStringFormat;
+				stringFormat.Trimming = trimming;
 			}
 
 			c.Graphics.DrawString (layout.Text, layout.Font.ToDrawingFont (), c.Brush,

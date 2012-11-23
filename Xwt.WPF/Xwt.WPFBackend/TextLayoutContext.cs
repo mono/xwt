@@ -40,15 +40,16 @@ namespace Xwt.WPFBackend
 		}
 
 		internal double Width;
-		internal double Heigth;
+		internal double Height;
 		internal string Text;
 		internal Font Font;
 		internal StringTrimming StringTrimming;
 		
 		public static readonly StringFormat StringFormat = 
+			// The following FormatFlags are equivalent to StringFormat.GenericTypographic plus Word Trimming
 			new StringFormat {
 				Trimming = StringTrimming.Word,
-				FormatFlags=StringFormatFlags.LineLimit
+				FormatFlags=StringFormatFlags.LineLimit | StringFormatFlags.FitBlackBox | StringFormatFlags.NoClip
 			};
 			
 		public Size GetSize ()

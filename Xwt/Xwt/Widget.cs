@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Wolfgang Silbermayr <wolfgang.silbermayr@gmail.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
+// Copyright (C) 2012 Wolfgang Silbermayr
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -66,6 +68,7 @@ namespace Xwt
 		EventHandler<ButtonEventArgs> buttonReleased;
 		EventHandler<MouseMovedEventArgs> mouseMoved;
 		EventHandler boundsChanged;
+        EventHandler<MouseScrolledEventArgs> mouseScrolled;
 		
 		EventHandler gotFocus;
 		EventHandler lostFocus;
@@ -81,7 +84,7 @@ namespace Xwt
 			}
 		}
 		
-		protected class WidgetBackendHost: BackendHost<Widget, IWidgetBackend>, IWidgetEventSink, ISpacingListener
+		protected class WidgetBackendHost: BackendHost<Widget, IWidgetBackend>, IWidgetEventSink
 		{
 			public WidgetBackendHost ()
 			{
@@ -120,12 +123,6 @@ namespace Xwt
 			public virtual Size GetDefaultNaturalSize ()
 			{
 				return new Size (0, 0);
-			}
-			
-			public virtual void OnSpacingChanged (WidgetSpacing source)
-			{
-				if (source == Parent.margin)
-					Parent.OnPreferredSizeChanged ();
 			}
 			
 			void IWidgetEventSink.OnDragOverCheck (DragOverCheckEventArgs args)
@@ -254,13 +251,17 @@ namespace Xwt
 			{
 				Parent.OnBoundsChanged ();
 			}
+
+            void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
+            {
+                Parent.OnMouseScrolled(args);
+            }
 		}
 		
 		public Widget ()
 		{
 			if (!(base.BackendHost is WidgetBackendHost))
 				throw new InvalidOperationException ("CreateBackendHost for Widget did not return a WidgetBackendHost instance");
-			margin = new Xwt.WidgetSpacing (BackendHost);
 		}
 		
 		static Widget ()
@@ -271,7 +272,7 @@ namespace Xwt
 			MapEvent (WidgetEvent.DragDrop, typeof(Widget), "OnDragDrop");
 			MapEvent (WidgetEvent.DragLeave, typeof(Widget), "OnDragLeave");
 			MapEvent (WidgetEvent.KeyPressed, typeof(Widget), "OnKeyPressed");
-			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyPressed");
+			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyReleased");
 			MapEvent (WidgetEvent.GotFocus, typeof(Widget), "OnGotFocus");
 			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
 			MapEvent (WidgetEvent.MouseEntered, typeof(Widget), "OnMouseEntered");
@@ -285,6 +286,7 @@ namespace Xwt
 			MapEvent (WidgetEvent.PreferredWidthCheck, typeof (Widget), "OnGetPreferredWidth");
 			MapEvent (WidgetEvent.PreferredHeightForWidthCheck, typeof (Widget), "OnGetPreferredHeightForWidth");
 			MapEvent (WidgetEvent.PreferredWidthForHeightCheck, typeof (Widget), "OnGetPreferredWidthForHeight");
+			MapEvent (WidgetEvent.MouseScrolled, typeof(Widget), "OnMouseScrolled");
 		}
 		
 		internal protected static IBackend GetBackend (Widget w)
@@ -309,8 +311,12 @@ namespace Xwt
 			
 			// Don't dispose the backend if this object is being finalized
 			// The backend has to handle the finalizing on its own
-			if (disposing && BackendHost.BackendCreated)
-				Backend.Dispose ();
+			if (disposing) {
+				if (BackendHost.BackendCreated)
+					Backend.Dispose ();
+				if (children != null)
+					children.ForEach (c => c.Dispose ());
+			}
 		}
 		
 		public WindowFrame ParentWindow {
@@ -346,8 +352,44 @@ namespace Xwt
 		
 		public WidgetSpacing Margin {
 			get { return margin; }
+			set {
+				margin = value;
+				OnPreferredSizeChanged ();
+			}
 		}
-		
+
+		public double MarginLeft {
+			get { return margin.Left; }
+			set {
+				margin.Left = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
+		public double MarginRight {
+			get { return margin.Right; }
+			set {
+				margin.Right = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
+		public double MarginTop {
+			get { return margin.Top; }
+			set {
+				margin.Top = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
+		public double MarginBottom {
+			get { return margin.Bottom; }
+			set {
+				margin.Bottom = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
 		public void Show ()
 		{
 			Visible = true;
@@ -407,6 +449,7 @@ namespace Xwt
 				if (value != null)
 					RegisterChild (value);
 				contentWidget = value;
+				OnPreferredSizeChanged ();
 			}
 		}
 		
@@ -787,6 +830,22 @@ namespace Xwt
 			
 			OnBoundsChanged ();
 		}
+
+    protected virtual void OnMouseScrolled(MouseScrolledEventArgs args)
+    {
+        if (mouseScrolled != null)
+            mouseScrolled(this, args);
+    }
+
+		internal void SetExtractedAsNative ()
+		{
+			// If the widget is going to be embedded in another toolkit it is not going
+			// to receive Reallocate calls from its parent, so the widget has to reallocate
+			// itself when its size changes
+			BoundsChanged += delegate {
+				OnReallocate ();
+			};
+		}
 		
 		protected virtual void OnBoundsChanged ()
 		{
@@ -1023,8 +1082,14 @@ namespace Xwt
 					delayedSizeNegotiationRequested = true;
 					Toolkit.QueueExitAction (DelayedResizeRequest);
 				}
-			} else if (ParentWindow is Window) {
+			}
+			else if (ParentWindow is Window) {
 				QueueWindowSizeNegotiation ((Window)ParentWindow);
+			}
+			else {
+				// This may happen when the widget is embedded in another toolkit. In this case,
+				// this is the root widget, so it has to reallocate itself
+				QueueForReallocate (this);
 			}
 		}
 
@@ -1128,6 +1193,7 @@ namespace Xwt
 		{
 			if (children == null || !children.Remove (w))
 				throw new InvalidOperationException ("Widget is not a child of this widget");
+			w.Parent = null;
 		}
 		
 		/// <summary>
@@ -1351,6 +1417,17 @@ namespace Xwt
 			remove {
 				boundsChanged -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.BoundsChanged, boundsChanged);
+			}
+		}
+
+		public event EventHandler<MouseScrolledEventArgs> MouseScrolled {
+			add {
+				BackendHost.OnBeforeEventAdd(WidgetEvent.MouseScrolled, mouseScrolled);
+					mouseScrolled += value;
+			}
+			remove {
+				mouseScrolled -= value;
+				BackendHost.OnAfterEventRemove(WidgetEvent.MouseScrolled, mouseScrolled);
 			}
 		}
 	}

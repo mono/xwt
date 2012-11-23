@@ -32,6 +32,7 @@ namespace Xwt.Backends
 	public interface IGradientBackendHandler: IBackendHandler
 	{
 		object CreateLinear (double x0, double y0, double x1, double y1);
+		object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1);
 		void AddColorStop (object backend, double position, Color color);
 	}
 }
