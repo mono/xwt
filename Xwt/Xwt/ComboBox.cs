@@ -102,7 +102,7 @@ namespace Xwt
 				}
 				
 				source = value;
-				Backend.SetSource (source, source is IFrontend ? (IBackend) ToolkitEngine.GetBackend (source) : null);
+				Backend.SetSource (source, source is IFrontend ? (IBackend) Toolkit.GetBackend (source) : null);
 
 				if (source != null) {
 					source.RowChanged += HandleModelChanged;

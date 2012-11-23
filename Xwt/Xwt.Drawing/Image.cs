@@ -38,7 +38,7 @@ namespace Xwt.Drawing
 		{
 		}
 		
-		internal Image (object backend, ToolkitEngine toolkit): base (backend, toolkit)
+		internal Image (object backend, Toolkit toolkit): base (backend, toolkit)
 		{
 		}
 		
@@ -48,7 +48,7 @@ namespace Xwt.Drawing
 		
 		public static Image FromResource (Type type, string resource)
 		{
-			var toolkit = ToolkitEngine.CurrentEngine;
+			var toolkit = Toolkit.CurrentEngine;
 			var img = toolkit.ImageBackendHandler.LoadFromResource (type.Assembly, resource);
 			if (img == null)
 				throw new InvalidOperationException ("Resource not found: " + resource);
@@ -57,7 +57,7 @@ namespace Xwt.Drawing
 		
 		public static Image FromResource (Assembly asm, string resource)
 		{
-			var toolkit = ToolkitEngine.CurrentEngine;
+			var toolkit = Toolkit.CurrentEngine;
 			var img = toolkit.ImageBackendHandler.LoadFromResource (asm, resource);
 			if (img == null)
 				throw new InvalidOperationException ("Resource not found: " + resource);
@@ -66,19 +66,19 @@ namespace Xwt.Drawing
 		
 		public static Image FromFile (string file)
 		{
-			var toolkit = ToolkitEngine.CurrentEngine;
+			var toolkit = Toolkit.CurrentEngine;
 			return new Image (toolkit.ImageBackendHandler.LoadFromFile (file), toolkit);
 		}
 		
 		public static Image FromStream (Stream stream)
 		{
-			var toolkit = ToolkitEngine.CurrentEngine;
+			var toolkit = Toolkit.CurrentEngine;
 			return new Image (toolkit.ImageBackendHandler.LoadFromStream (stream), toolkit);
 		}
 		
 		public static Image FromIcon (string id, IconSize size)
 		{
-			var toolkit = ToolkitEngine.CurrentEngine;
+			var toolkit = Toolkit.CurrentEngine;
 			return new Image (toolkit.ImageBackendHandler.LoadFromIcon (id, size), toolkit);
 		}
 		

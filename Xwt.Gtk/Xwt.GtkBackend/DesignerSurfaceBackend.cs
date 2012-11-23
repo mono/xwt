@@ -42,7 +42,7 @@ namespace Xwt.GtkBackend
 		
 		public void Load (Widget w)
 		{
-			var wb = (IGtkWidgetBackend) ToolkitEngine.GetBackend (w);
+			var wb = (IGtkWidgetBackend) Toolkit.GetBackend (w);
 			box.Add (wb.Widget);
 		}
 	}

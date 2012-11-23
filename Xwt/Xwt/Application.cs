@@ -34,7 +34,7 @@ namespace Xwt
 {
 	public static class Application
 	{
-		static ToolkitEngine toolkit;
+		static Toolkit toolkit;
 		static ToolkitEngineBackend engine;
 
 		static readonly TaskScheduler taskScheduler = new XwtTaskScheduler ();
@@ -60,7 +60,7 @@ namespace Xwt
 			if (engine != null)
 				return;
 
-			toolkit = ToolkitEngine.Load (backendType);
+			toolkit = Toolkit.Load (backendType);
 			engine = toolkit.Backend;
 
 			UIThread = System.Threading.Thread.CurrentThread;
@@ -162,7 +162,7 @@ namespace Xwt
 
 		public static void QueueExitAction (Action a)
 		{
-			ToolkitEngine.CurrentEngine.QueueExitAction (a);
+			Toolkit.CurrentEngine.QueueExitAction (a);
 		}
 		
 		public static StatusIcon CreateStatusIcon ()

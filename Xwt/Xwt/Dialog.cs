@@ -97,7 +97,7 @@ namespace Xwt
 			BackendHost.ToolkitEngine.ValidateObject (parent);
 
 			BackendHost.ToolkitEngine.InvokePlatformCode (delegate {
-				Backend.RunLoop ((IWindowFrameBackend) ToolkitEngine.GetBackend (parent));
+				Backend.RunLoop ((IWindowFrameBackend) Toolkit.GetBackend (parent));
 			});
 			return resultCommand;
 		}

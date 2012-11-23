@@ -62,7 +62,7 @@ namespace Xwt.CairoBackend
 		#region ITextLayoutBackendHandler implementation
 		public override object Create (Context context)
 		{
-			CairoContextBackend c = (CairoContextBackend) ToolkitEngine.GetBackend (context);
+			CairoContextBackend c = (CairoContextBackend) Toolkit.GetBackend (context);
 			LayoutBackend b = new LayoutBackend ();
 			b.Context = c;
 			return b;

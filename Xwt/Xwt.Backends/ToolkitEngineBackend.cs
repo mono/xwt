@@ -38,9 +38,9 @@ namespace Xwt.Backends
 	{
 		Dictionary<Type,Type> backendTypes;
 		Dictionary<Type,BackendHandler> sharedBackends = new Dictionary<Type, BackendHandler> ();
-		ToolkitEngine toolkit;
+		Toolkit toolkit;
 
-		internal void Initialize (ToolkitEngine toolkit)
+		internal void Initialize (Toolkit toolkit)
 		{
 			this.toolkit = toolkit;
 			if (backendTypes == null) {
@@ -124,7 +124,7 @@ namespace Xwt.Backends
 		/// </param>
 		public virtual object GetNativeImage (Image image)
 		{
-			return ToolkitEngine.GetBackend (image);
+			return Toolkit.GetBackend (image);
 		}
 
 		public virtual void ShowWebBrowser (NavigateToUrlEventArgs e)

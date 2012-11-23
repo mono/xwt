@@ -137,7 +137,7 @@ namespace Xwt.GtkBackend
 		public void SetButtonType (ButtonType type)
 		{
 			Button b = (Button) Frontend;
-			SetContent (b.Label, ToolkitEngine.GetBackend (b.Image), b.ImagePosition);
+			SetContent (b.Label, Toolkit.GetBackend (b.Image), b.ImagePosition);
 		}
 		
 		public override void EnableEvent (object eventId)

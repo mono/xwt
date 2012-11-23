@@ -52,7 +52,7 @@ namespace Xwt
 			get { return backendHost; }
 		}
 		
-		ToolkitEngine IFrontend.ToolkitEngine {
+		Toolkit IFrontend.ToolkitEngine {
 			get { return backendHost.ToolkitEngine; }
 		}
 		

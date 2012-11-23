@@ -217,7 +217,7 @@ namespace Xwt.CairoBackend
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			Cairo.Context ctx = ((CairoContextBackend)backend).Context;
-			var lb = ToolkitEngine.GetBackend (layout);
+			var lb = Toolkit.GetBackend (layout);
 			CairoTextLayoutBackendHandler.Draw (ctx, lb, x, y);
 		}
 		

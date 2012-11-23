@@ -39,7 +39,7 @@ namespace Xwt.Drawing
 		{
 		}
 		
-		internal Font (object backend, ToolkitEngine toolkit)
+		internal Font (object backend, Toolkit toolkit)
 		{
 			if (toolkit != null)
 				ToolkitEngine = toolkit;
@@ -60,7 +60,7 @@ namespace Xwt.Drawing
 		/// </param>
 		public static Font FromName (string name)
 		{
-			var toolkit = ToolkitEngine.CurrentEngine;
+			var toolkit = Toolkit.CurrentEngine;
 			var handler = toolkit.FontBackendHandler;
 
 			name = name.Trim ();

@@ -145,7 +145,7 @@ namespace Xwt.GtkBackend
 					Uri = link.Href
 				};
 				label.NavigateToUrl += HandleNavigateToUrl;
-				Widget.AddChildAtAnchor ((Gtk.Widget) ToolkitEngine.GetBackend (label), link.Anchor);
+				Widget.AddChildAtAnchor ((Gtk.Widget) Toolkit.GetBackend (label), link.Anchor);
 				links [i] = label;
 			}
 		}

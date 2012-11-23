@@ -34,7 +34,7 @@ namespace Xwt
 	public static class Clipboard
 	{
 		static ClipboardBackend Backend {
-			get { return ToolkitEngine.CurrentEngine.ClipboardBackend; }
+			get { return Toolkit.CurrentEngine.ClipboardBackend; }
 		}
 		
 		public static void Clear ()

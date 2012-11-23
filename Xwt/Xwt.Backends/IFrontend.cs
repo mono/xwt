@@ -31,7 +31,7 @@ namespace Xwt.Backends
 	internal interface IFrontend
 	{
 		object Backend { get; }
-		ToolkitEngine ToolkitEngine { get; }
+		Toolkit ToolkitEngine { get; }
 	}
 }
 

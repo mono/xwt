@@ -49,13 +49,13 @@ namespace Xwt.Backends
 	{
 		IBackend backend;
 		bool usingCustomBackend;
-		ToolkitEngine engine;
+		Toolkit engine;
 
 		HashSet<object> defaultEnabledEvents;
 		
 		public BackendHost ()
 		{
-			engine = ToolkitEngine.CurrentEngine;
+			engine = Toolkit.CurrentEngine;
 		}
 		
 		public void SetCustomBackend (IBackend backend)
@@ -73,11 +73,11 @@ namespace Xwt.Backends
 			}
 		}
 
-		public ToolkitEngine ToolkitEngine {
+		public Toolkit ToolkitEngine {
 			get {
 				if (engine != null)
 					return engine;
-				return engine = ToolkitEngine.CurrentEngine;
+				return engine = Toolkit.CurrentEngine;
 			}
 			internal set {
 				engine = value;

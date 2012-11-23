@@ -31,9 +31,9 @@ using System.Collections.Generic;
 
 namespace Xwt.Engine
 {
-	public class ToolkitEngine
+	public class Toolkit
 	{
-		static ToolkitEngine currentEngine;
+		static Toolkit currentEngine;
 
 		ToolkitEngineBackend backend;
 		ApplicationContext context;
@@ -42,7 +42,7 @@ namespace Xwt.Engine
 		Queue<Action> exitActions = new Queue<Action> ();
 		bool exitCallbackRegistered;
 
-		public static ToolkitEngine CurrentEngine {
+		public static Toolkit CurrentEngine {
 			get { return currentEngine; }
 		}
 
@@ -54,14 +54,14 @@ namespace Xwt.Engine
 			get { return backend; }
 		}
 
-		private ToolkitEngine ()
+		private Toolkit ()
 		{
 			context = new ApplicationContext (this);
 		}
 
-		public static ToolkitEngine Load (string fullTypeName)
+		public static Toolkit Load (string fullTypeName)
 		{
-			ToolkitEngine t = new ToolkitEngine ();
+			Toolkit t = new Toolkit ();
 			if (fullTypeName != null && t.LoadBackend (fullTypeName))
 				return t;
 			
@@ -77,9 +77,9 @@ namespace Xwt.Engine
 			throw new InvalidOperationException ("Xwt engine not found");
 		}
 
-		public static ToolkitEngine Load (ToolkitType type)
+		public static Toolkit Load (ToolkitType type)
 		{
-			ToolkitEngine t = new ToolkitEngine ();
+			Toolkit t = new Toolkit ();
 			if (t.LoadBackend (type))
 				return t;
 			else
@@ -230,7 +230,7 @@ namespace Xwt.Engine
 				if (!exitCallbackRegistered) {
 					exitCallbackRegistered = true;
 					// Try to use a native method of queuing exit actions
-					ToolkitEngine.CurrentEngine.Backend.InvokeBeforeMainLoop (DispatchExitActions);
+					Toolkit.CurrentEngine.Backend.InvokeBeforeMainLoop (DispatchExitActions);
 				}
 			}
 		}
@@ -281,6 +281,14 @@ namespace Xwt.Engine
 		internal ImageBuilderBackendHandler ImageBuilderBackendHandler;
 		internal ImagePatternBackendHandler ImagePatternBackendHandler;
 		internal ImageBackendHandler ImageBackendHandler;
+	}
+
+	class NativeWindowFrame: WindowFrame
+	{
+		public NativeWindowFrame (IWindowFrameBackend backend)
+		{
+			BackendHost.SetCustomBackend (backend);
+		}
 	}
 }
 

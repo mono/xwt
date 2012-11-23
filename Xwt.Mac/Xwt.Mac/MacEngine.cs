@@ -156,7 +156,7 @@ namespace Xwt.Mac
 		
 		public override object GetNativeWidget (Widget w)
 		{
-			IMacViewBackend wb = (IMacViewBackend)ToolkitEngine.GetBackend (w);
+			IMacViewBackend wb = (IMacViewBackend)Toolkit.GetBackend (w);
 			return wb.View;
 		}
 		

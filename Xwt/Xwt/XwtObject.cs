@@ -34,24 +34,24 @@ namespace Xwt
 	{
 		object backend;
 
-		internal ToolkitEngine ToolkitEngine { get; set; }
+		internal Toolkit ToolkitEngine { get; set; }
 		
-		protected XwtObject (object backend): this (backend, ToolkitEngine.CurrentEngine)
+		protected XwtObject (object backend): this (backend, Toolkit.CurrentEngine)
 		{
 		}
 		
-		protected XwtObject (object backend, ToolkitEngine toolkit)
+		protected XwtObject (object backend, Toolkit toolkit)
 		{
 			this.backend = backend;
-			ToolkitEngine = ToolkitEngine.CurrentEngine;
+			ToolkitEngine = Toolkit.CurrentEngine;
 		}
 
 		protected XwtObject ()
 		{
-			ToolkitEngine = ToolkitEngine.CurrentEngine;
+			ToolkitEngine = Toolkit.CurrentEngine;
 		}
 
-		ToolkitEngine IFrontend.ToolkitEngine {
+		Toolkit IFrontend.ToolkitEngine {
 			get { return ToolkitEngine; }
 		}
 

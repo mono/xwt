@@ -54,7 +54,7 @@ namespace Xwt.GtkBackend
 			if (val is string)
 				data.Text = (string)val;
 			else if (val is Xwt.Drawing.Image)
-				data.SetPixbuf ((Gdk.Pixbuf) ToolkitEngine.GetBackend (val));
+				data.SetPixbuf ((Gdk.Pixbuf) Toolkit.GetBackend (val));
 			else {
 				var at = Gdk.Atom.Intern (atomType, false);
 				data.Set (at, 0, TransferDataSource.SerializeValue (val));

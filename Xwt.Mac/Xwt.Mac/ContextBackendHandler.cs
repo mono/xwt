@@ -238,7 +238,7 @@ namespace Xwt.Mac
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			GetContext (backend);
-			MacTextLayoutBackendHandler.Draw (null, ToolkitEngine.GetBackend (layout), x, y);
+			MacTextLayoutBackendHandler.Draw (null, Toolkit.GetBackend (layout), x, y);
 		}
 		
 		public override void DrawImage (object backend, object img, double x, double y, double alpha)

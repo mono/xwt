@@ -79,7 +79,7 @@ namespace Xwt
 
 		IEnumerable<Widget> Children { get; }
 
-		ToolkitEngine ToolkitEngine { get; }
+		Toolkit ToolkitEngine { get; }
 	}
 }
 

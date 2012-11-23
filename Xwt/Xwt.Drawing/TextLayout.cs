@@ -45,7 +45,7 @@ namespace Xwt.Drawing
 		{
 			ToolkitEngine = canvas.Surface.ToolkitEngine;
 			handler = ToolkitEngine.TextLayoutBackendHandler;
-			Backend = handler.Create ((ICanvasBackend)ToolkitEngine.GetBackend (canvas));
+			Backend = handler.Create ((ICanvasBackend)Toolkit.GetBackend (canvas));
 			Font = canvas.Font;
 		}
 		

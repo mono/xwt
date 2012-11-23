@@ -47,7 +47,7 @@ namespace Xwt.GtkBackend
 		
 		public override object Create (Context context)
 		{
-			CairoContextBackend c = (CairoContextBackend) ToolkitEngine.GetBackend (context);
+			CairoContextBackend c = (CairoContextBackend) Toolkit.GetBackend (context);
 			return Pango.CairoHelper.CreateLayout (c.Context);
 		}
 		
@@ -65,7 +65,7 @@ namespace Xwt.GtkBackend
 		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			Pango.Layout tl = (Pango.Layout)backend;
-			tl.FontDescription = (Pango.FontDescription)ToolkitEngine.GetBackend (font);
+			tl.FontDescription = (Pango.FontDescription)Toolkit.GetBackend (font);
 		}
 		
 		public override void SetWidth (object backend, double value)

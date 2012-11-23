@@ -63,7 +63,7 @@ namespace Xwt.Mac
 			
 			public override void LoadView ()
 			{
-				var backend = (IMacViewBackend)Xwt.Engine.ToolkitEngine.GetBackend (child);
+				var backend = (IMacViewBackend)Xwt.Engine.Toolkit.GetBackend (child);
 				view = ((IWidgetBackend)backend).NativeWidget as NSView;
 				ForceChildLayout ();
 				backend.SetAutosizeMode (true);
@@ -114,7 +114,7 @@ namespace Xwt.Mac
 			popover = new NSPopover ();
 			popover.Behavior = NSPopoverBehavior.Transient;
 			popover.ContentViewController = controller;
-			IMacViewBackend backend = (IMacViewBackend)ToolkitEngine.GetBackend (referenceWidget);
+			IMacViewBackend backend = (IMacViewBackend)Toolkit.GetBackend (referenceWidget);
 			var reference = backend.View;
 			popover.Show (System.Drawing.RectangleF.Empty,
 			              reference,

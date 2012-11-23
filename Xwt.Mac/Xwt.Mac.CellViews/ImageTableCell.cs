@@ -49,7 +49,7 @@ namespace Xwt.Mac
 		{
 			Image img = (Image) source.GetValue (pos, cellView.ImageField.Index);
 			if (img != null)
-				ObjectValue = (NSImage) ToolkitEngine.GetBackend (img);
+				ObjectValue = (NSImage) Toolkit.GetBackend (img);
 		}
 		
 		public override System.Drawing.SizeF CellSize {

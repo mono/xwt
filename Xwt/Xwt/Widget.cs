@@ -964,7 +964,7 @@ namespace Xwt
 			get { return Backend.NativeWidget; }
 		}
 		
-		ToolkitEngine IWidgetSurface.ToolkitEngine {
+		Toolkit IWidgetSurface.ToolkitEngine {
 			get { return BackendHost.ToolkitEngine; }
 		}
 		

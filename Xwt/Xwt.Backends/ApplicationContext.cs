@@ -30,9 +30,9 @@ namespace Xwt.Backends
 {
 	public class ApplicationContext
 	{
-		ToolkitEngine toolkit;
+		Toolkit toolkit;
 
-		internal ApplicationContext (ToolkitEngine toolkit)
+		internal ApplicationContext (Toolkit toolkit)
 		{
 			this.toolkit = toolkit;
 		}
@@ -52,7 +52,7 @@ namespace Xwt.Backends
 			toolkit.ExitUserCode (error);
 		}
 
-		public ToolkitEngine Toolkit {
+		public Toolkit Toolkit {
 			get { return toolkit; }
 		}
 	}

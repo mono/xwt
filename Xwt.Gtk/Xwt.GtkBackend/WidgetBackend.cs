@@ -233,7 +233,7 @@ namespace Xwt.GtkBackend
 
 		void MarkDestroyed (Widget w)
 		{
-			var bk = (WidgetBackend) ToolkitEngine.GetBackend (w);
+			var bk = (WidgetBackend) Toolkit.GetBackend (w);
 			bk.destroyed = true;
 			foreach (var c in w.Surface.Children)
 				MarkDestroyed (c);
