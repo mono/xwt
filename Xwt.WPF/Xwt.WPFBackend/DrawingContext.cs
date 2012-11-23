@@ -43,8 +43,10 @@ namespace Xwt.WPFBackend
 			graphics.CompositingQuality = CompositingQuality.HighSpeed;
 
 			// necessary for correct text rendering with System.Drawing
-			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-			
+			//graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+			// necessary for none-pixelated text drawing in images, revert to above line if it introduces a performance problem
+			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
 			Graphics = graphics;
 		}
 

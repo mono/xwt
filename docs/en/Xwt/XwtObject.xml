@@ -1,0 +1,128 @@
+<Type Name="XwtObject" FullName="Xwt.XwtObject">
+  <TypeSignature Language="C#" Value="public abstract class XwtObject" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract beforefieldinit XwtObject extends System.Object" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="protected XwtObject ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig specialname rtspecialname instance void .ctor() cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="protected XwtObject (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig specialname rtspecialname instance void .ctor(object backend) cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Backend">
+      <MemberSignature Language="C#" Value="protected object Backend { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance object Backend" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="BackendHandler">
+      <MemberSignature Language="C#" Value="protected abstract Xwt.Backends.IBackendHandler BackendHandler { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xwt.Backends.IBackendHandler BackendHandler" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.IBackendHandler</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="LoadBackend">
+      <MemberSignature Language="C#" Value="protected void LoadBackend ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig instance void LoadBackend() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnBackendCreated">
+      <MemberSignature Language="C#" Value="protected virtual void OnBackendCreated ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance void OnBackendCreated() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnCreateBackend">
+      <MemberSignature Language="C#" Value="protected virtual object OnCreateBackend ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance object OnCreateBackend() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

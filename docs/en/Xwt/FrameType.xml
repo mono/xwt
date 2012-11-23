@@ -1,0 +1,45 @@
+<Type Name="FrameType" FullName="Xwt.FrameType">
+  <TypeSignature Language="C#" Value="public enum FrameType" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed FrameType extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Custom">
+      <MemberSignature Language="C#" Value="Custom" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.FrameType Custom = int32(0)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.FrameType</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="WidgetBox">
+      <MemberSignature Language="C#" Value="WidgetBox" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.FrameType WidgetBox = int32(1)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.FrameType</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

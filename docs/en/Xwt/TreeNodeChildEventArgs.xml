@@ -1,0 +1,52 @@
+<Type Name="TreeNodeChildEventArgs" FullName="Xwt.TreeNodeChildEventArgs">
+  <TypeSignature Language="C#" Value="public class TreeNodeChildEventArgs : Xwt.TreeNodeEventArgs" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit TreeNodeChildEventArgs extends Xwt.TreeNodeEventArgs" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Xwt.TreeNodeEventArgs</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public TreeNodeChildEventArgs (Xwt.TreePosition parent, int childIndex);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class Xwt.TreePosition parent, int32 childIndex) cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="parent" Type="Xwt.TreePosition" />
+        <Parameter Name="childIndex" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="parent">To be added.</param>
+        <param name="childIndex">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ChildIndex">
+      <MemberSignature Language="C#" Value="public int ChildIndex { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance int32 ChildIndex" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Int32</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,80 @@
+<Type Name="IButtonBackend" FullName="Xwt.Backends.IButtonBackend">
+  <TypeSignature Language="C#" Value="public interface IButtonBackend : Xwt.Backends.IWidgetBackend" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IButtonBackend implements class Xwt.Backends.IWidgetBackend, class Xwt.IBackend" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.Backends.IWidgetBackend</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="SetButtonStyle">
+      <MemberSignature Language="C#" Value="public void SetButtonStyle (Xwt.ButtonStyle style);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetButtonStyle(valuetype Xwt.ButtonStyle style) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="style" Type="Xwt.ButtonStyle" />
+      </Parameters>
+      <Docs>
+        <param name="style">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetButtonType">
+      <MemberSignature Language="C#" Value="public void SetButtonType (Xwt.ButtonType type);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetButtonType(valuetype Xwt.ButtonType type) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Xwt.ButtonType" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetContent">
+      <MemberSignature Language="C#" Value="public void SetContent (string label, object imageBackend, Xwt.ContentPosition position);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetContent(string label, object imageBackend, valuetype Xwt.ContentPosition position) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="label" Type="System.String" />
+        <Parameter Name="imageBackend" Type="System.Object" />
+        <Parameter Name="position" Type="Xwt.ContentPosition" />
+      </Parameters>
+      <Docs>
+        <param name="label">To be added.</param>
+        <param name="imageBackend">To be added.</param>
+        <param name="position">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

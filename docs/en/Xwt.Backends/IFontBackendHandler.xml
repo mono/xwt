@@ -1,0 +1,271 @@
+<Type Name="IFontBackendHandler" FullName="Xwt.Backends.IFontBackendHandler">
+  <TypeSignature Language="C#" Value="public interface IFontBackendHandler : Xwt.Backends.IBackendHandler" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IFontBackendHandler implements class Xwt.Backends.IBackendHandler" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.Backends.IBackendHandler</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Copy">
+      <MemberSignature Language="C#" Value="public object Copy (object handle);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object Copy(object handle) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CreateFromName">
+      <MemberSignature Language="C#" Value="public object CreateFromName (string fontName, double size);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object CreateFromName(string fontName, float64 size) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="fontName" Type="System.String" />
+        <Parameter Name="size" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="fontName">To be added.</param>
+        <param name="size">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetFamily">
+      <MemberSignature Language="C#" Value="public string GetFamily (object handle);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance string GetFamily(object handle) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetSize">
+      <MemberSignature Language="C#" Value="public double GetSize (object handle);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance float64 GetSize(object handle) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetStretch">
+      <MemberSignature Language="C#" Value="public Xwt.Drawing.FontStretch GetStretch (object handle);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance valuetype Xwt.Drawing.FontStretch GetStretch(object handle) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetStyle">
+      <MemberSignature Language="C#" Value="public Xwt.Drawing.FontStyle GetStyle (object handle);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance valuetype Xwt.Drawing.FontStyle GetStyle(object handle) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStyle</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetWeight">
+      <MemberSignature Language="C#" Value="public Xwt.Drawing.FontWeight GetWeight (object handle);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance valuetype Xwt.Drawing.FontWeight GetWeight(object handle) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontWeight</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetFamily">
+      <MemberSignature Language="C#" Value="public object SetFamily (object handle, string family);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object SetFamily(object handle, string family) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+        <Parameter Name="family" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <param name="family">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetSize">
+      <MemberSignature Language="C#" Value="public object SetSize (object handle, double size);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object SetSize(object handle, float64 size) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+        <Parameter Name="size" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <param name="size">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetStretch">
+      <MemberSignature Language="C#" Value="public object SetStretch (object handle, Xwt.Drawing.FontStretch stretch);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object SetStretch(object handle, valuetype Xwt.Drawing.FontStretch stretch) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+        <Parameter Name="stretch" Type="Xwt.Drawing.FontStretch" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <param name="stretch">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetStyle">
+      <MemberSignature Language="C#" Value="public object SetStyle (object handle, Xwt.Drawing.FontStyle style);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object SetStyle(object handle, valuetype Xwt.Drawing.FontStyle style) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+        <Parameter Name="style" Type="Xwt.Drawing.FontStyle" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <param name="style">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetWeight">
+      <MemberSignature Language="C#" Value="public object SetWeight (object handle, Xwt.Drawing.FontWeight weight);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object SetWeight(object handle, valuetype Xwt.Drawing.FontWeight weight) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Object" />
+        <Parameter Name="weight" Type="Xwt.Drawing.FontWeight" />
+      </Parameters>
+      <Docs>
+        <param name="handle">To be added.</param>
+        <param name="weight">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

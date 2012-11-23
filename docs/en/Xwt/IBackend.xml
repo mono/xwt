@@ -1,0 +1,72 @@
+<Type Name="IBackend" FullName="Xwt.IBackend">
+  <TypeSignature Language="C#" Value="public interface IBackend" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IBackend" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="DisableEvent">
+      <MemberSignature Language="C#" Value="public void DisableEvent (object eventId);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void DisableEvent(object eventId) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="eventId" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="eventId">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="EnableEvent">
+      <MemberSignature Language="C#" Value="public void EnableEvent (object eventId);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void EnableEvent(object eventId) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="eventId" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="eventId">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Initialize">
+      <MemberSignature Language="C#" Value="public void Initialize (object frontend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Initialize(object frontend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="frontend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="frontend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,444 @@
+<Type Name="Color" FullName="Xwt.Drawing.Color">
+  <TypeSignature Language="C#" Value="public struct Color" />
+  <TypeSignature Language="ILAsm" Value=".class public sequential ansi sealed beforefieldinit Color extends System.ValueType" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.ValueType</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public Color (double red, double green, double blue);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(float64 red, float64 green, float64 blue) cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="red" Type="System.Double" />
+        <Parameter Name="green" Type="System.Double" />
+        <Parameter Name="blue" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="red">To be added.</param>
+        <param name="green">To be added.</param>
+        <param name="blue">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public Color (double red, double green, double blue, double alpha);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(float64 red, float64 green, float64 blue, float64 alpha) cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="red" Type="System.Double" />
+        <Parameter Name="green" Type="System.Double" />
+        <Parameter Name="blue" Type="System.Double" />
+        <Parameter Name="alpha" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="red">To be added.</param>
+        <param name="green">To be added.</param>
+        <param name="blue">To be added.</param>
+        <param name="alpha">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Alpha">
+      <MemberSignature Language="C#" Value="public double Alpha { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Alpha" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Black">
+      <MemberSignature Language="C#" Value="public static Xwt.Drawing.Color Black;" />
+      <MemberSignature Language="ILAsm" Value=".field public static valuetype Xwt.Drawing.Color Black" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="BlendWith">
+      <MemberSignature Language="C#" Value="public Xwt.Drawing.Color BlendWith (Xwt.Drawing.Color target, double amount);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance valuetype Xwt.Drawing.Color BlendWith(valuetype Xwt.Drawing.Color target, float64 amount) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="target" Type="Xwt.Drawing.Color" />
+        <Parameter Name="amount" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="target">To be added.</param>
+        <param name="amount">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Blue">
+      <MemberSignature Language="C#" Value="public double Blue { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Blue" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Brightness">
+      <MemberSignature Language="C#" Value="public double Brightness { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Brightness" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="FromBytes">
+      <MemberSignature Language="C#" Value="public static Xwt.Drawing.Color FromBytes (byte red, byte green, byte blue);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig valuetype Xwt.Drawing.Color FromBytes(unsigned int8 red, unsigned int8 green, unsigned int8 blue) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="red" Type="System.Byte" />
+        <Parameter Name="green" Type="System.Byte" />
+        <Parameter Name="blue" Type="System.Byte" />
+      </Parameters>
+      <Docs>
+        <param name="red">To be added.</param>
+        <param name="green">To be added.</param>
+        <param name="blue">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="FromBytes">
+      <MemberSignature Language="C#" Value="public static Xwt.Drawing.Color FromBytes (byte red, byte green, byte blue, byte alpha);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig valuetype Xwt.Drawing.Color FromBytes(unsigned int8 red, unsigned int8 green, unsigned int8 blue, unsigned int8 alpha) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="red" Type="System.Byte" />
+        <Parameter Name="green" Type="System.Byte" />
+        <Parameter Name="blue" Type="System.Byte" />
+        <Parameter Name="alpha" Type="System.Byte" />
+      </Parameters>
+      <Docs>
+        <param name="red">To be added.</param>
+        <param name="green">To be added.</param>
+        <param name="blue">To be added.</param>
+        <param name="alpha">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="FromHsl">
+      <MemberSignature Language="C#" Value="public static Xwt.Drawing.Color FromHsl (double h, double s, double l);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig valuetype Xwt.Drawing.Color FromHsl(float64 h, float64 s, float64 l) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="h" Type="System.Double" />
+        <Parameter Name="s" Type="System.Double" />
+        <Parameter Name="l" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="h">To be added.</param>
+        <param name="s">To be added.</param>
+        <param name="l">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="FromHsl">
+      <MemberSignature Language="C#" Value="public static Xwt.Drawing.Color FromHsl (double h, double s, double l, double alpha);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig valuetype Xwt.Drawing.Color FromHsl(float64 h, float64 s, float64 l, float64 alpha) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="h" Type="System.Double" />
+        <Parameter Name="s" Type="System.Double" />
+        <Parameter Name="l" Type="System.Double" />
+        <Parameter Name="alpha" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="h">To be added.</param>
+        <param name="s">To be added.</param>
+        <param name="l">To be added.</param>
+        <param name="alpha">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="FromName">
+      <MemberSignature Language="C#" Value="public static Xwt.Drawing.Color FromName (string name);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig valuetype Xwt.Drawing.Color FromName(string name) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="name" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="name">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Green">
+      <MemberSignature Language="C#" Value="public double Green { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Green" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Hue">
+      <MemberSignature Language="C#" Value="public double Hue { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Hue" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Light">
+      <MemberSignature Language="C#" Value="public double Light { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Light" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Red">
+      <MemberSignature Language="C#" Value="public double Red { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Red" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Saturation">
+      <MemberSignature Language="C#" Value="public double Saturation { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Saturation" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TryParse">
+      <MemberSignature Language="C#" Value="public static bool TryParse (string name, out Xwt.Drawing.Color color);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool TryParse(string name, valuetype Xwt.Drawing.Color color) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="name" Type="System.String" />
+        <Parameter Name="color" Type="Xwt.Drawing.Color&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="name">To be added.</param>
+        <param name="color">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="White">
+      <MemberSignature Language="C#" Value="public static Xwt.Drawing.Color White;" />
+      <MemberSignature Language="ILAsm" Value=".field public static valuetype Xwt.Drawing.Color White" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="WithAlpha">
+      <MemberSignature Language="C#" Value="public Xwt.Drawing.Color WithAlpha (double alpha);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance valuetype Xwt.Drawing.Color WithAlpha(float64 alpha) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="alpha" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="alpha">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="WithIncreasedContrast">
+      <MemberSignature Language="C#" Value="public Xwt.Drawing.Color WithIncreasedContrast (Xwt.Drawing.Color referenceColor, double amount);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance valuetype Xwt.Drawing.Color WithIncreasedContrast(valuetype Xwt.Drawing.Color referenceColor, float64 amount) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="referenceColor" Type="Xwt.Drawing.Color" />
+        <Parameter Name="amount" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="referenceColor">To be added.</param>
+        <param name="amount">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="WithIncreasedLight">
+      <MemberSignature Language="C#" Value="public Xwt.Drawing.Color WithIncreasedLight (double lightIncrement);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance valuetype Xwt.Drawing.Color WithIncreasedLight(float64 lightIncrement) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.Color</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="lightIncrement" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="lightIncrement">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

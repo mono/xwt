@@ -1,0 +1,143 @@
+<Type Name="FontStretch" FullName="Xwt.Drawing.FontStretch">
+  <TypeSignature Language="C#" Value="public enum FontStretch" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed FontStretch extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Condensed">
+      <MemberSignature Language="C#" Value="Condensed" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Drawing.FontStretch Condensed = int32(2)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Expanded">
+      <MemberSignature Language="C#" Value="Expanded" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Drawing.FontStretch Expanded = int32(6)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="ExtraCondensed">
+      <MemberSignature Language="C#" Value="ExtraCondensed" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Drawing.FontStretch ExtraCondensed = int32(1)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="ExtraExpanded">
+      <MemberSignature Language="C#" Value="ExtraExpanded" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Drawing.FontStretch ExtraExpanded = int32(7)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Normal">
+      <MemberSignature Language="C#" Value="Normal" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Drawing.FontStretch Normal = int32(4)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="SemiCondensed">
+      <MemberSignature Language="C#" Value="SemiCondensed" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Drawing.FontStretch SemiCondensed = int32(3)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="SemiExpanded">
+      <MemberSignature Language="C#" Value="SemiExpanded" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Drawing.FontStretch SemiExpanded = int32(5)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="UltraCondensed">
+      <MemberSignature Language="C#" Value="UltraCondensed" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Drawing.FontStretch UltraCondensed = int32(0)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="UltraExpanded">
+      <MemberSignature Language="C#" Value="UltraExpanded" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Drawing.FontStretch UltraExpanded = int32(8)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Drawing.FontStretch</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,82 @@
+<Type Name="IWindowBackend" FullName="Xwt.Backends.IWindowBackend">
+  <TypeSignature Language="C#" Value="public interface IWindowBackend : Xwt.Backends.IWindowFrameBackend" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IWindowBackend implements class Xwt.Backends.IWindowFrameBackend, class Xwt.IBackend" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.Backends.IWindowFrameBackend</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="SetChild">
+      <MemberSignature Language="C#" Value="public void SetChild (Xwt.Backends.IWidgetBackend child);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetChild(class Xwt.Backends.IWidgetBackend child) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="child" Type="Xwt.Backends.IWidgetBackend" />
+      </Parameters>
+      <Docs>
+        <param name="child">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetMainMenu">
+      <MemberSignature Language="C#" Value="public void SetMainMenu (Xwt.Backends.IMenuBackend menu);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetMainMenu(class Xwt.Backends.IMenuBackend menu) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="menu" Type="Xwt.Backends.IMenuBackend" />
+      </Parameters>
+      <Docs>
+        <param name="menu">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetPadding">
+      <MemberSignature Language="C#" Value="public void SetPadding (double left, double top, double right, double bottom);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetPadding(float64 left, float64 top, float64 right, float64 bottom) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="left" Type="System.Double" />
+        <Parameter Name="top" Type="System.Double" />
+        <Parameter Name="right" Type="System.Double" />
+        <Parameter Name="bottom" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="left">To be added.</param>
+        <param name="top">To be added.</param>
+        <param name="right">To be added.</param>
+        <param name="bottom">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

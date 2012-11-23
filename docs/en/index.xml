@@ -1,0 +1,260 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Xwt" Version="1.0.4396.35768">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyCompany("")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyConfiguration("")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyCopyright("Xamarin, Inc (http://www.xamarin.com)")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyDescription("")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyProduct("")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyTitle("Xwt")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyTrademark("")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Xwt">
+      <Type Name="AlertOption" Kind="Class" />
+      <Type Name="Alignment" Kind="Enumeration" />
+      <Type Name="Application" Kind="Class" />
+      <Type Name="AttachOptions" Kind="Enumeration" />
+      <Type Name="BoundsChangedEventArgs" Kind="Class" />
+      <Type Name="Box" Kind="Class" />
+      <Type Name="BoxMode" Kind="Enumeration" />
+      <Type Name="BoxPlacement" Kind="Class" />
+      <Type Name="Button" Kind="Class" />
+      <Type Name="ButtonEventArgs" Kind="Class" />
+      <Type Name="ButtonStyle" Kind="Enumeration" />
+      <Type Name="ButtonType" Kind="Enumeration" />
+      <Type Name="Canvas" Kind="Class" />
+      <Type Name="CellView" Kind="Class" />
+      <Type Name="CellViewCollection" Kind="Class" />
+      <Type Name="CheckBox" Kind="Class" />
+      <Type Name="CheckBoxCellView" Kind="Class" />
+      <Type Name="ChildrenCollection`1" DisplayName="ChildrenCollection&lt;T&gt;" Kind="Class" />
+      <Type Name="Clipboard" Kind="Class" />
+      <Type Name="ComboBox" Kind="Class" />
+      <Type Name="ComboBoxCellView" Kind="Class" />
+      <Type Name="ComboBoxEntry" Kind="Class" />
+      <Type Name="Command" Kind="Class" />
+      <Type Name="ConfirmationMessage" Kind="Class" />
+      <Type Name="ContentPosition" Kind="Enumeration" />
+      <Type Name="DataField" Kind="Class" />
+      <Type Name="DataField`1" DisplayName="DataField&lt;T&gt;" Kind="Class" />
+      <Type Name="DataRequestDelegate" Kind="Delegate" />
+      <Type Name="DataStore" Kind="Class" />
+      <Type Name="Dialog" Kind="Class" />
+      <Type Name="DialogButton" Kind="Class" />
+      <Type Name="DialogButtonCollection" Kind="Class" />
+      <Type Name="Distance" Kind="Structure" />
+      <Type Name="DragCheckEventArgs" Kind="Class" />
+      <Type Name="DragDropAction" Kind="Enumeration" />
+      <Type Name="DragDropResult" Kind="Enumeration" />
+      <Type Name="DragEventArgs" Kind="Class" />
+      <Type Name="DragFinishedEventArgs" Kind="Class" />
+      <Type Name="DragOperation" Kind="Class" />
+      <Type Name="DragOverCheckEventArgs" Kind="Class" />
+      <Type Name="DragOverEventArgs" Kind="Class" />
+      <Type Name="EventResult" Kind="Enumeration" />
+      <Type Name="Frame" Kind="Class" />
+      <Type Name="FrameType" Kind="Enumeration" />
+      <Type Name="GenericMessage" Kind="Class" />
+      <Type Name="HBox" Kind="Class" />
+      <Type Name="HPaned" Kind="Class" />
+      <Type Name="HScale" Kind="Class" />
+      <Type Name="HSeparator" Kind="Class" />
+      <Type Name="IBackend" Kind="Interface" />
+      <Type Name="ICollectionEventSink`1" DisplayName="ICollectionEventSink&lt;T&gt;" Kind="Interface" />
+      <Type Name="IconSize" Kind="Enumeration" />
+      <Type Name="IContainerEventSink`1" DisplayName="IContainerEventSink&lt;T&gt;" Kind="Interface" />
+      <Type Name="IconTextCellView" Kind="Class" />
+      <Type Name="IDataField" Kind="Interface" />
+      <Type Name="IListDataSource" Kind="Interface" />
+      <Type Name="ImageCellView" Kind="Class" />
+      <Type Name="ImageView" Kind="Class" />
+      <Type Name="ISpacingListener" Kind="Interface" />
+      <Type Name="ItemCollection" Kind="Class" />
+      <Type Name="ItemSeparator" Kind="Class" />
+      <Type Name="ITransferData" Kind="Interface" />
+      <Type Name="ITreeDataSource" Kind="Interface" />
+      <Type Name="IWidgetSurface" Kind="Interface" />
+      <Type Name="Key" Kind="Enumeration" />
+      <Type Name="KeyEventArgs" Kind="Class" />
+      <Type Name="Label" Kind="Class" />
+      <Type Name="ListRowEventArgs" Kind="Class" />
+      <Type Name="ListRowOrderEventArgs" Kind="Class" />
+      <Type Name="ListStore" Kind="Class" />
+      <Type Name="ListView" Kind="Class" />
+      <Type Name="ListViewColumn" Kind="Class" />
+      <Type Name="ListViewColumnCollection" Kind="Class" />
+      <Type Name="Menu" Kind="Class" />
+      <Type Name="MenuButton" Kind="Class" />
+      <Type Name="MenuItem" Kind="Class" />
+      <Type Name="MenuItemCollection" Kind="Class" />
+      <Type Name="MenuItemType" Kind="Enumeration" />
+      <Type Name="MessageDescription" Kind="Class" />
+      <Type Name="MessageDialog" Kind="Class" />
+      <Type Name="ModifierKeys" Kind="Enumeration" />
+      <Type Name="MouseMovedEventArgs" Kind="Class" />
+      <Type Name="NodePosition" Kind="Structure" />
+      <Type Name="Notebook" Kind="Class" />
+      <Type Name="NotebookTab" Kind="Class" />
+      <Type Name="PackOrigin" Kind="Enumeration" />
+      <Type Name="Paned" Kind="Class" />
+      <Type Name="Panel" Kind="Class" />
+      <Type Name="Point" Kind="Structure" />
+      <Type Name="PopupWindow" Kind="Class" />
+      <Type Name="QuestionMessage" Kind="Class" />
+      <Type Name="Rectangle" Kind="Structure" />
+      <Type Name="ScrollPolicy" Kind="Enumeration" />
+      <Type Name="ScrollView" Kind="Class" />
+      <Type Name="SelectionMode" Kind="Enumeration" />
+      <Type Name="Separator" Kind="Class" />
+      <Type Name="Size" Kind="Structure" />
+      <Type Name="SizeRequestMode" Kind="Enumeration" />
+      <Type Name="StockIcons" Kind="Class" />
+      <Type Name="Table" Kind="Class" />
+      <Type Name="TablePlacement" Kind="Class" />
+      <Type Name="TextCellView" Kind="Class" />
+      <Type Name="TextEntry" Kind="Class" />
+      <Type Name="ToggleButton" Kind="Class" />
+      <Type Name="TransferDataSource" Kind="Class" />
+      <Type Name="TransferDataStore" Kind="Class" />
+      <Type Name="TransferDataType" Kind="Class" />
+      <Type Name="TreeNavigator" Kind="Class" />
+      <Type Name="TreeNodeChildEventArgs" Kind="Class" />
+      <Type Name="TreeNodeEventArgs" Kind="Class" />
+      <Type Name="TreeNodeOrderEventArgs" Kind="Class" />
+      <Type Name="TreePosition" Kind="Interface" />
+      <Type Name="TreeStore" Kind="Class" />
+      <Type Name="TreeView" Kind="Class" />
+      <Type Name="TreeViewStatus" Kind="Class" />
+      <Type Name="VBox" Kind="Class" />
+      <Type Name="VPaned" Kind="Class" />
+      <Type Name="VSeparator" Kind="Class" />
+      <Type Name="Widget" Kind="Class" />
+      <Type Name="WidgetCollection" Kind="Class" />
+      <Type Name="WidgetSize" Kind="Structure" />
+      <Type Name="WidgetSpacing" Kind="Class" />
+      <Type Name="Window" Kind="Class" />
+      <Type Name="WindowFrame" Kind="Class" />
+      <Type Name="XwtComponent" Kind="Class" />
+      <Type Name="XwtObject" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Xwt.Backends">
+      <Type Name="ButtonEvent" Kind="Enumeration" />
+      <Type Name="CheckBoxEvent" Kind="Enumeration" />
+      <Type Name="ComboBoxEvent" Kind="Enumeration" />
+      <Type Name="DragOperationEventSink" Kind="Interface" />
+      <Type Name="EngineBackend" Kind="Class" />
+      <Type Name="IAlertDialogBackend" Kind="Interface" />
+      <Type Name="IBackendHandler" Kind="Interface" />
+      <Type Name="IBoxBackend" Kind="Interface" />
+      <Type Name="IButtonBackend" Kind="Interface" />
+      <Type Name="IButtonEventSink" Kind="Interface" />
+      <Type Name="ICanvasBackend" Kind="Interface" />
+      <Type Name="ICanvasEventSink" Kind="Interface" />
+      <Type Name="ICheckBoxBackend" Kind="Interface" />
+      <Type Name="ICheckBoxEventSink" Kind="Interface" />
+      <Type Name="ICollectionListener" Kind="Interface" />
+      <Type Name="IColumnContainerBackend" Kind="Interface" />
+      <Type Name="IComboBoxBackend" Kind="Interface" />
+      <Type Name="IComboBoxEntryBackend" Kind="Interface" />
+      <Type Name="IComboBoxEntryEventSink" Kind="Interface" />
+      <Type Name="IComboBoxEventSink" Kind="Interface" />
+      <Type Name="IContextBackendHandler" Kind="Interface" />
+      <Type Name="ICustomWidgetBackend" Kind="Interface" />
+      <Type Name="IDesignerSurfaceBackend" Kind="Interface" />
+      <Type Name="IDialogBackend" Kind="Interface" />
+      <Type Name="IDialogEventSink" Kind="Interface" />
+      <Type Name="IFontBackendHandler" Kind="Interface" />
+      <Type Name="IFrameBackend" Kind="Interface" />
+      <Type Name="IFrameEventSink" Kind="Interface" />
+      <Type Name="IGradientBackendHandler" Kind="Interface" />
+      <Type Name="IImageViewBackend" Kind="Interface" />
+      <Type Name="ILabelBackend" Kind="Interface" />
+      <Type Name="IListStoreBackend" Kind="Interface" />
+      <Type Name="IListViewBackend" Kind="Interface" />
+      <Type Name="IListViewEventSink" Kind="Interface" />
+      <Type Name="ImageBackendHandler" Kind="Class" />
+      <Type Name="IMenuBackend" Kind="Interface" />
+      <Type Name="IMenuButtonBackend" Kind="Interface" />
+      <Type Name="IMenuButtonEventSink" Kind="Interface" />
+      <Type Name="IMenuItemBackend" Kind="Interface" />
+      <Type Name="IMenuItemEventSink" Kind="Interface" />
+      <Type Name="INotebookBackend" Kind="Interface" />
+      <Type Name="INotebookEventSink" Kind="Interface" />
+      <Type Name="IPanedBackend" Kind="Interface" />
+      <Type Name="IScrollViewBackend" Kind="Interface" />
+      <Type Name="IScrollViewEventSink" Kind="Interface" />
+      <Type Name="ISeparatorBackend" Kind="Interface" />
+      <Type Name="ITableViewBackend" Kind="Interface" />
+      <Type Name="ITableViewEventSink" Kind="Interface" />
+      <Type Name="ITextEntryBackend" Kind="Interface" />
+      <Type Name="ITextEntryEventSink" Kind="Interface" />
+      <Type Name="ITextLayoutBackendHandler" Kind="Interface" />
+      <Type Name="IToggleButtonBackend" Kind="Interface" />
+      <Type Name="IToggleButtonEventSink" Kind="Interface" />
+      <Type Name="ITransferDataSource" Kind="Interface" />
+      <Type Name="ITreeStoreBackend" Kind="Interface" />
+      <Type Name="ITreeViewBackend" Kind="Interface" />
+      <Type Name="ITreeViewEventSink" Kind="Interface" />
+      <Type Name="IWidgetBackend" Kind="Interface" />
+      <Type Name="IWidgetEventSink" Kind="Interface" />
+      <Type Name="IWindowBackend" Kind="Interface" />
+      <Type Name="IWindowEventSink" Kind="Interface" />
+      <Type Name="IWindowFrameBackend" Kind="Interface" />
+      <Type Name="IWindowFrameEventSink" Kind="Interface" />
+      <Type Name="ListViewColumnChange" Kind="Enumeration" />
+      <Type Name="MenuItemEvent" Kind="Enumeration" />
+      <Type Name="NotebookEvent" Kind="Enumeration" />
+      <Type Name="Orientation" Kind="Enumeration" />
+      <Type Name="ScrollViewEvent" Kind="Enumeration" />
+      <Type Name="TableViewEvent" Kind="Enumeration" />
+      <Type Name="TextEntryEvent" Kind="Enumeration" />
+      <Type Name="ToggleButtonEvent" Kind="Enumeration" />
+      <Type Name="WidgetEvent" Kind="Enumeration" />
+      <Type Name="WindowFrameEvent" Kind="Enumeration" />
+    </Namespace>
+    <Namespace Name="Xwt.Design">
+      <Type Name="DesignerSurface" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Xwt.Drawing">
+      <Type Name="Color" Kind="Structure" />
+      <Type Name="Context" Kind="Class" />
+      <Type Name="Font" Kind="Class" />
+      <Type Name="FontStretch" Kind="Enumeration" />
+      <Type Name="FontStyle" Kind="Enumeration" />
+      <Type Name="FontWeight" Kind="Enumeration" />
+      <Type Name="Gradient" Kind="Class" />
+      <Type Name="Image" Kind="Class" />
+      <Type Name="LinearGradient" Kind="Class" />
+      <Type Name="Pattern" Kind="Class" />
+      <Type Name="TextLayout" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Xwt.Engine">
+      <Type Name="Toolkit" Kind="Class" />
+      <Type Name="WidgetRegistry" Kind="Class" />
+    </Namespace>
+  </Types>
+  <Title>Xwt</Title>
+</Overview>

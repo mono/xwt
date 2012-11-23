@@ -1,0 +1,199 @@
+<Type Name="EngineBackend" FullName="Xwt.Backends.EngineBackend">
+  <TypeSignature Language="C#" Value="public abstract class EngineBackend" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract beforefieldinit EngineBackend extends System.Object" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="protected EngineBackend ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig specialname rtspecialname instance void .ctor() cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CancelTimeoutInvoke">
+      <MemberSignature Language="C#" Value="public abstract void CancelTimeoutInvoke (object id);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void CancelTimeoutInvoke(object id) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="id" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="id">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetBackendForWindow">
+      <MemberSignature Language="C#" Value="public abstract Xwt.Backends.IWindowFrameBackend GetBackendForWindow (object nativeWindow);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class Xwt.Backends.IWindowFrameBackend GetBackendForWindow(object nativeWindow) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.IWindowFrameBackend</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="nativeWindow" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="nativeWindow">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetNativeParentWindow">
+      <MemberSignature Language="C#" Value="public virtual object GetNativeParentWindow (Xwt.Widget w);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object GetNativeParentWindow(class Xwt.Widget w) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="w" Type="Xwt.Widget" />
+      </Parameters>
+      <Docs>
+        <param name="w">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetNativeWidget">
+      <MemberSignature Language="C#" Value="public abstract object GetNativeWidget (Xwt.Widget w);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object GetNativeWidget(class Xwt.Widget w) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="w" Type="Xwt.Widget" />
+      </Parameters>
+      <Docs>
+        <param name="w">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="HandlesSizeNegotiation">
+      <MemberSignature Language="C#" Value="public virtual bool HandlesSizeNegotiation { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool HandlesSizeNegotiation" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="InitializeApplication">
+      <MemberSignature Language="C#" Value="public virtual void InitializeApplication ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void InitializeApplication() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Invoke">
+      <MemberSignature Language="C#" Value="public abstract void Invoke (Action action);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Invoke(class System.Action action) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RunApplication">
+      <MemberSignature Language="C#" Value="public abstract void RunApplication ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RunApplication() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TimeoutInvoke">
+      <MemberSignature Language="C#" Value="public abstract object TimeoutInvoke (Func&lt;bool&gt; action, TimeSpan timeSpan);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object TimeoutInvoke(class System.Func`1&lt;bool&gt; action, valuetype System.TimeSpan timeSpan) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="System.Func&lt;System.Boolean&gt;" />
+        <Parameter Name="timeSpan" Type="System.TimeSpan" />
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <param name="timeSpan">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

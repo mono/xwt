@@ -1,0 +1,31 @@
+<Type Name="ToggleButtonEvent" FullName="Xwt.Backends.ToggleButtonEvent">
+  <TypeSignature Language="C#" Value="public enum ToggleButtonEvent" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed ToggleButtonEvent extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Toggled">
+      <MemberSignature Language="C#" Value="Toggled" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.ToggleButtonEvent Toggled = int32(0)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.ToggleButtonEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

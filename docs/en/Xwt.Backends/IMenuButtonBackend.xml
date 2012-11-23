@@ -1,0 +1,18 @@
+<Type Name="IMenuButtonBackend" FullName="Xwt.Backends.IMenuButtonBackend">
+  <TypeSignature Language="C#" Value="public interface IMenuButtonBackend : Xwt.Backends.IButtonBackend" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IMenuButtonBackend implements class Xwt.Backends.IButtonBackend, class Xwt.Backends.IWidgetBackend, class Xwt.IBackend" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.Backends.IButtonBackend</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members />
+</Type>

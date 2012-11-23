@@ -1,0 +1,358 @@
+<Type Name="Box" FullName="Xwt.Box">
+  <TypeSignature Language="C#" Value="public class Box : Xwt.Widget" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit Box extends Xwt.Widget" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Xwt.Widget</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Children">
+      <MemberSignature Language="C#" Value="public System.Collections.Generic.IEnumerable&lt;Xwt.Widget&gt; Children { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;class Xwt.Widget&gt; Children" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Collections.Generic.IEnumerable&lt;Xwt.Widget&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Clear">
+      <MemberSignature Language="C#" Value="public void Clear ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Clear() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CreateEventSink">
+      <MemberSignature Language="C#" Value="protected override Xwt.Widget.EventSink CreateEventSink ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance class Xwt.Widget/EventSink CreateEventSink() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Widget+EventSink</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnGetPreferredHeight">
+      <MemberSignature Language="C#" Value="protected override Xwt.WidgetSize OnGetPreferredHeight ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance valuetype Xwt.WidgetSize OnGetPreferredHeight() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.WidgetSize</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnGetPreferredHeightForWidth">
+      <MemberSignature Language="C#" Value="protected override Xwt.WidgetSize OnGetPreferredHeightForWidth (double width);" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance valuetype Xwt.WidgetSize OnGetPreferredHeightForWidth(float64 width) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.WidgetSize</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="width" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="width">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnGetPreferredWidth">
+      <MemberSignature Language="C#" Value="protected override Xwt.WidgetSize OnGetPreferredWidth ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance valuetype Xwt.WidgetSize OnGetPreferredWidth() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.WidgetSize</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnGetPreferredWidthForHeight">
+      <MemberSignature Language="C#" Value="protected override Xwt.WidgetSize OnGetPreferredWidthForHeight (double height);" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance valuetype Xwt.WidgetSize OnGetPreferredWidthForHeight(float64 height) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.WidgetSize</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="height" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="height">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnReallocate">
+      <MemberSignature Language="C#" Value="protected override void OnReallocate ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance void OnReallocate() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnReplaceChild">
+      <MemberSignature Language="C#" Value="protected virtual void OnReplaceChild (Xwt.BoxPlacement placement, Xwt.Widget oldWidget, Xwt.Widget newWidget);" />
+      <MemberSignature Language="ILAsm" Value=".method familyorassemblyhidebysig newslot virtual instance void OnReplaceChild(class Xwt.BoxPlacement placement, class Xwt.Widget oldWidget, class Xwt.Widget newWidget) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="placement" Type="Xwt.BoxPlacement" />
+        <Parameter Name="oldWidget" Type="Xwt.Widget" />
+        <Parameter Name="newWidget" Type="Xwt.Widget" />
+      </Parameters>
+      <Docs>
+        <param name="placement">To be added.</param>
+        <param name="oldWidget">To be added.</param>
+        <param name="newWidget">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="PackEnd">
+      <MemberSignature Language="C#" Value="public void PackEnd (Xwt.Widget widget);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void PackEnd(class Xwt.Widget widget) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="widget" Type="Xwt.Widget" />
+      </Parameters>
+      <Docs>
+        <param name="widget">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="PackEnd">
+      <MemberSignature Language="C#" Value="public void PackEnd (Xwt.Widget widget, Xwt.BoxMode mode);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void PackEnd(class Xwt.Widget widget, valuetype Xwt.BoxMode mode) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="widget" Type="Xwt.Widget" />
+        <Parameter Name="mode" Type="Xwt.BoxMode" />
+      </Parameters>
+      <Docs>
+        <param name="widget">To be added.</param>
+        <param name="mode">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="PackEnd">
+      <MemberSignature Language="C#" Value="public void PackEnd (Xwt.Widget widget, Xwt.BoxMode mode, int padding);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void PackEnd(class Xwt.Widget widget, valuetype Xwt.BoxMode mode, int32 padding) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="widget" Type="Xwt.Widget" />
+        <Parameter Name="mode" Type="Xwt.BoxMode" />
+        <Parameter Name="padding" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="widget">To be added.</param>
+        <param name="mode">To be added.</param>
+        <param name="padding">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="PackStart">
+      <MemberSignature Language="C#" Value="public void PackStart (Xwt.Widget widget);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void PackStart(class Xwt.Widget widget) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="widget" Type="Xwt.Widget" />
+      </Parameters>
+      <Docs>
+        <param name="widget">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="PackStart">
+      <MemberSignature Language="C#" Value="public void PackStart (Xwt.Widget widget, Xwt.BoxMode mode);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void PackStart(class Xwt.Widget widget, valuetype Xwt.BoxMode mode) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="widget" Type="Xwt.Widget" />
+        <Parameter Name="mode" Type="Xwt.BoxMode" />
+      </Parameters>
+      <Docs>
+        <param name="widget">To be added.</param>
+        <param name="mode">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="PackStart">
+      <MemberSignature Language="C#" Value="public void PackStart (Xwt.Widget widget, Xwt.BoxMode mode, int padding);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void PackStart(class Xwt.Widget widget, valuetype Xwt.BoxMode mode, int32 padding) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="widget" Type="Xwt.Widget" />
+        <Parameter Name="mode" Type="Xwt.BoxMode" />
+        <Parameter Name="padding" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="widget">To be added.</param>
+        <param name="mode">To be added.</param>
+        <param name="padding">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Placements">
+      <MemberSignature Language="C#" Value="public Xwt.ChildrenCollection&lt;Xwt.BoxPlacement&gt; Placements { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xwt.ChildrenCollection`1&lt;class Xwt.BoxPlacement&gt; Placements" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.ChildrenCollection&lt;Xwt.BoxPlacement&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Remove">
+      <MemberSignature Language="C#" Value="public bool Remove (Xwt.Widget widget);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool Remove(class Xwt.Widget widget) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="widget" Type="Xwt.Widget" />
+      </Parameters>
+      <Docs>
+        <param name="widget">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Spacing">
+      <MemberSignature Language="C#" Value="public double Spacing { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Spacing" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

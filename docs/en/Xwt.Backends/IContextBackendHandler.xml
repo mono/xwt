@@ -1,0 +1,657 @@
+<Type Name="IContextBackendHandler" FullName="Xwt.Backends.IContextBackendHandler">
+  <TypeSignature Language="C#" Value="public interface IContextBackendHandler : Xwt.Backends.IBackendHandler" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IContextBackendHandler implements class Xwt.Backends.IBackendHandler" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.Backends.IBackendHandler</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Arc">
+      <MemberSignature Language="C#" Value="public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Arc(object backend, float64 xc, float64 yc, float64 radius, float64 angle1, float64 angle2) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="xc" Type="System.Double" />
+        <Parameter Name="yc" Type="System.Double" />
+        <Parameter Name="radius" Type="System.Double" />
+        <Parameter Name="angle1" Type="System.Double" />
+        <Parameter Name="angle2" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="xc">To be added.</param>
+        <param name="yc">To be added.</param>
+        <param name="radius">To be added.</param>
+        <param name="angle1">To be added.</param>
+        <param name="angle2">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Clip">
+      <MemberSignature Language="C#" Value="public void Clip (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Clip(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ClipPreserve">
+      <MemberSignature Language="C#" Value="public void ClipPreserve (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void ClipPreserve(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ClosePath">
+      <MemberSignature Language="C#" Value="public void ClosePath (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void ClosePath(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CreateContext">
+      <MemberSignature Language="C#" Value="public object CreateContext (Xwt.Widget w);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance object CreateContext(class Xwt.Widget w) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="w" Type="Xwt.Widget" />
+      </Parameters>
+      <Docs>
+        <param name="w">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CurveTo">
+      <MemberSignature Language="C#" Value="public void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void CurveTo(object backend, float64 x1, float64 y1, float64 x2, float64 y2, float64 x3, float64 y3) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="x1" Type="System.Double" />
+        <Parameter Name="y1" Type="System.Double" />
+        <Parameter Name="x2" Type="System.Double" />
+        <Parameter Name="y2" Type="System.Double" />
+        <Parameter Name="x3" Type="System.Double" />
+        <Parameter Name="y3" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="x1">To be added.</param>
+        <param name="y1">To be added.</param>
+        <param name="x2">To be added.</param>
+        <param name="y2">To be added.</param>
+        <param name="x3">To be added.</param>
+        <param name="y3">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Dispose">
+      <MemberSignature Language="C#" Value="public void Dispose (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Dispose(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="DrawImage">
+      <MemberSignature Language="C#" Value="public void DrawImage (object backend, Xwt.Drawing.Image img, double x, double y, double alpha);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void DrawImage(object backend, class Xwt.Drawing.Image img, float64 x, float64 y, float64 alpha) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="img" Type="Xwt.Drawing.Image" />
+        <Parameter Name="x" Type="System.Double" />
+        <Parameter Name="y" Type="System.Double" />
+        <Parameter Name="alpha" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="img">To be added.</param>
+        <param name="x">To be added.</param>
+        <param name="y">To be added.</param>
+        <param name="alpha">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="DrawTextLayout">
+      <MemberSignature Language="C#" Value="public void DrawTextLayout (object backend, Xwt.Drawing.TextLayout layout, double x, double y);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void DrawTextLayout(object backend, class Xwt.Drawing.TextLayout layout, float64 x, float64 y) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="layout" Type="Xwt.Drawing.TextLayout" />
+        <Parameter Name="x" Type="System.Double" />
+        <Parameter Name="y" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="layout">To be added.</param>
+        <param name="x">To be added.</param>
+        <param name="y">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Fill">
+      <MemberSignature Language="C#" Value="public void Fill (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Fill(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="FillPreserve">
+      <MemberSignature Language="C#" Value="public void FillPreserve (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void FillPreserve(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="LineTo">
+      <MemberSignature Language="C#" Value="public void LineTo (object backend, double x, double y);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void LineTo(object backend, float64 x, float64 y) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="x" Type="System.Double" />
+        <Parameter Name="y" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="x">To be added.</param>
+        <param name="y">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="MoveTo">
+      <MemberSignature Language="C#" Value="public void MoveTo (object backend, double x, double y);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void MoveTo(object backend, float64 x, float64 y) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="x" Type="System.Double" />
+        <Parameter Name="y" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="x">To be added.</param>
+        <param name="y">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="NewPath">
+      <MemberSignature Language="C#" Value="public void NewPath (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void NewPath(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Rectangle">
+      <MemberSignature Language="C#" Value="public void Rectangle (object backend, double x, double y, double width, double height);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Rectangle(object backend, float64 x, float64 y, float64 width, float64 height) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="x" Type="System.Double" />
+        <Parameter Name="y" Type="System.Double" />
+        <Parameter Name="width" Type="System.Double" />
+        <Parameter Name="height" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="x">To be added.</param>
+        <param name="y">To be added.</param>
+        <param name="width">To be added.</param>
+        <param name="height">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RelCurveTo">
+      <MemberSignature Language="C#" Value="public void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RelCurveTo(object backend, float64 dx1, float64 dy1, float64 dx2, float64 dy2, float64 dx3, float64 dy3) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="dx1" Type="System.Double" />
+        <Parameter Name="dy1" Type="System.Double" />
+        <Parameter Name="dx2" Type="System.Double" />
+        <Parameter Name="dy2" Type="System.Double" />
+        <Parameter Name="dx3" Type="System.Double" />
+        <Parameter Name="dy3" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="dx1">To be added.</param>
+        <param name="dy1">To be added.</param>
+        <param name="dx2">To be added.</param>
+        <param name="dy2">To be added.</param>
+        <param name="dx3">To be added.</param>
+        <param name="dy3">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RelLineTo">
+      <MemberSignature Language="C#" Value="public void RelLineTo (object backend, double dx, double dy);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RelLineTo(object backend, float64 dx, float64 dy) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="dx" Type="System.Double" />
+        <Parameter Name="dy" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="dx">To be added.</param>
+        <param name="dy">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RelMoveTo">
+      <MemberSignature Language="C#" Value="public void RelMoveTo (object backend, double dx, double dy);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RelMoveTo(object backend, float64 dx, float64 dy) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="dx" Type="System.Double" />
+        <Parameter Name="dy" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="dx">To be added.</param>
+        <param name="dy">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ResetClip">
+      <MemberSignature Language="C#" Value="public void ResetClip (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void ResetClip(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Restore">
+      <MemberSignature Language="C#" Value="public void Restore (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Restore(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Rotate">
+      <MemberSignature Language="C#" Value="public void Rotate (object backend, double angle);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Rotate(object backend, float64 angle) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="angle" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="angle">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Save">
+      <MemberSignature Language="C#" Value="public void Save (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Save(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetColor">
+      <MemberSignature Language="C#" Value="public void SetColor (object backend, Xwt.Drawing.Color color);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetColor(object backend, valuetype Xwt.Drawing.Color color) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="color" Type="Xwt.Drawing.Color" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="color">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetFont">
+      <MemberSignature Language="C#" Value="public void SetFont (object backend, Xwt.Drawing.Font font);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetFont(object backend, class Xwt.Drawing.Font font) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="font" Type="Xwt.Drawing.Font" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="font">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetLineWidth">
+      <MemberSignature Language="C#" Value="public void SetLineWidth (object backend, double width);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetLineWidth(object backend, float64 width) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="width" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="width">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetPattern">
+      <MemberSignature Language="C#" Value="public void SetPattern (object backend, Xwt.Drawing.Pattern p);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetPattern(object backend, class Xwt.Drawing.Pattern p) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="p" Type="Xwt.Drawing.Pattern" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="p">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Stroke">
+      <MemberSignature Language="C#" Value="public void Stroke (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Stroke(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="StrokePreserve">
+      <MemberSignature Language="C#" Value="public void StrokePreserve (object backend);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void StrokePreserve(object backend) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Translate">
+      <MemberSignature Language="C#" Value="public void Translate (object backend, double tx, double ty);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Translate(object backend, float64 tx, float64 ty) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="backend" Type="System.Object" />
+        <Parameter Name="tx" Type="System.Double" />
+        <Parameter Name="ty" Type="System.Double" />
+      </Parameters>
+      <Docs>
+        <param name="backend">To be added.</param>
+        <param name="tx">To be added.</param>
+        <param name="ty">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

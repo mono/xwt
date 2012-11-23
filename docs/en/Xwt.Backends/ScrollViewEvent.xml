@@ -1,0 +1,31 @@
+<Type Name="ScrollViewEvent" FullName="Xwt.Backends.ScrollViewEvent">
+  <TypeSignature Language="C#" Value="public enum ScrollViewEvent" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed ScrollViewEvent extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="VisibleRectChanged">
+      <MemberSignature Language="C#" Value="VisibleRectChanged" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xwt.Backends.ScrollViewEvent VisibleRectChanged = int32(1)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xwt.Backends.ScrollViewEvent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

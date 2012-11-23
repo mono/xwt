@@ -1,0 +1,38 @@
+<Type Name="ICustomWidgetBackend" FullName="Xwt.Backends.ICustomWidgetBackend">
+  <TypeSignature Language="C#" Value="public interface ICustomWidgetBackend : Xwt.Backends.IWidgetBackend" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract ICustomWidgetBackend implements class Xwt.Backends.IWidgetBackend, class Xwt.IBackend" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.Backends.IWidgetBackend</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="SetContent">
+      <MemberSignature Language="C#" Value="public void SetContent (Xwt.Backends.IWidgetBackend widget);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void SetContent(class Xwt.Backends.IWidgetBackend widget) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="widget" Type="Xwt.Backends.IWidgetBackend" />
+      </Parameters>
+      <Docs>
+        <param name="widget">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

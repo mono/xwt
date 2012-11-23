@@ -1,0 +1,59 @@
+<Type Name="IMenuBackend" FullName="Xwt.Backends.IMenuBackend">
+  <TypeSignature Language="C#" Value="public interface IMenuBackend : Xwt.IBackend" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IMenuBackend implements class Xwt.IBackend" />
+  <AssemblyInfo>
+    <AssemblyName>Xwt</AssemblyName>
+    <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Xwt.IBackend</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="InsertItem">
+      <MemberSignature Language="C#" Value="public void InsertItem (int index, Xwt.Backends.IMenuItemBackend menuItem);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void InsertItem(int32 index, class Xwt.Backends.IMenuItemBackend menuItem) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="index" Type="System.Int32" />
+        <Parameter Name="menuItem" Type="Xwt.Backends.IMenuItemBackend" />
+      </Parameters>
+      <Docs>
+        <param name="index">To be added.</param>
+        <param name="menuItem">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RemoveItem">
+      <MemberSignature Language="C#" Value="public void RemoveItem (Xwt.Backends.IMenuItemBackend menuItem);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RemoveItem(class Xwt.Backends.IMenuItemBackend menuItem) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.4396.35768</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="menuItem" Type="Xwt.Backends.IMenuItemBackend" />
+      </Parameters>
+      <Docs>
+        <param name="menuItem">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
