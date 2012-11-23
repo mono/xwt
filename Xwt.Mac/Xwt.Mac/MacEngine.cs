@@ -37,7 +37,7 @@ namespace Xwt.Mac
 {
 	public class MacEngine: Xwt.Backends.ToolkitEngineBackend
 	{
-		static AppDelegate appDelegate = new AppDelegate ();
+		static AppDelegate appDelegate;
 		static NSAutoreleasePool pool;
 		
 		public static AppDelegate App {
@@ -49,6 +49,7 @@ namespace Xwt.Mac
 			NSApplication.Init ();
 			//Hijack ();
 			pool = new NSAutoreleasePool ();
+			appDelegate = new AppDelegate (IsGuest);
 			NSApplication.SharedApplication.Delegate = appDelegate;
 		}
 
@@ -101,6 +102,7 @@ namespace Xwt.Mac
 			RegisterBackend (typeof(Xwt.Popover), typeof (PopoverBackend));
 			RegisterBackend (typeof(Xwt.SelectFolderDialog), typeof(SelectFolderDialogBackend));
 			RegisterBackend (typeof(Xwt.OpenFileDialog), typeof(OpenFileDialogBackend));
+			RegisterBackend (typeof(Xwt.Clipboard), typeof(MacClipboardBackend));
 		}
 
 		public override void RunApplication ()
@@ -175,8 +177,9 @@ namespace Xwt.Mac
 		bool launched;
 		List<WindowBackend> pendingWindows = new List<WindowBackend> ();
 		
-		public AppDelegate ()
+		public AppDelegate (bool launched)
 		{
+			this.launched = launched;
 		}
 		
 		internal void ShowWindow (WindowBackend w)

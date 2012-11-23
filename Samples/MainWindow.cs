@@ -21,6 +21,10 @@ namespace Samples
 		
 		public MainWindow ()
 		{
+			Title = "Xwt Demo Application";
+			Width = 500;
+			Height = 400;
+
 			try {
 				statusIcon = Application.CreateStatusIcon ();
 				statusIcon.Menu = new Menu ();

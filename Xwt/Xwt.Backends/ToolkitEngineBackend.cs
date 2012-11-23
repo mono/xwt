@@ -39,15 +39,27 @@ namespace Xwt.Backends
 		Dictionary<Type,Type> backendTypes;
 		Dictionary<Type,BackendHandler> sharedBackends = new Dictionary<Type, BackendHandler> ();
 		Toolkit toolkit;
+		bool isGuest;
 
-		internal void Initialize (Toolkit toolkit)
+		internal void Initialize (Toolkit toolkit, bool isGuest)
 		{
 			this.toolkit = toolkit;
+			this.isGuest = isGuest;
 			if (backendTypes == null) {
 				backendTypes = new Dictionary<Type, Type> ();
 				InitializeBackends ();
 			}
 			InitializeApplication ();
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this toolkit is running as a guest of another toolkit
+		/// </summary>
+		/// <remarks>
+		/// A toolkit is a guest toolkit when it is loaded after the main toolkit of an application
+		/// </remarks>
+		public bool IsGuest {
+			get { return isGuest; }
 		}
 
 		/// <summary>
@@ -203,7 +215,10 @@ namespace Xwt.Backends
 			CheckInitialized ();
 			BackendHandler res;
 			if (!sharedBackends.TryGetValue (widgetType, out res)) {
-				res = sharedBackends [widgetType] = CreateBackend<T> (widgetType);
+				res = CreateBackend<T> (widgetType);
+				if (res == null)
+					throw new Exception ("Backend not available for object of type " + widgetType);
+				sharedBackends [widgetType] = res;
 				res.Initialize (toolkit);
 			}
 			return (T)res;

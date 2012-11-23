@@ -61,17 +61,24 @@ namespace Xwt
 
 		public static Toolkit Load (string fullTypeName)
 		{
+			return Load (fullTypeName, true);
+		}
+
+		internal static Toolkit Load (string fullTypeName, bool isGuest)
+		{
 			Toolkit t = new Toolkit ();
-			if (fullTypeName != null && t.LoadBackend (fullTypeName))
+			if (!string.IsNullOrEmpty (fullTypeName)) {
+				t.LoadBackend (fullTypeName, isGuest, true);
+				return t;
+			}
+			
+			if (t.LoadBackend (GetBackendType (ToolkitType.Gtk), isGuest, false))
 				return t;
 			
-			if (t.LoadBackend (GetBackendType (ToolkitType.Gtk)))
+			if (t.LoadBackend (GetBackendType (ToolkitType.Cocoa), isGuest, false))
 				return t;
 			
-			if (t.LoadBackend (GetBackendType (ToolkitType.Cocoa)))
-				return t;
-			
-			if (t.LoadBackend (GetBackendType (ToolkitType.Wpf)))
+			if (t.LoadBackend (GetBackendType (ToolkitType.Wpf), isGuest, false))
 				return t;
 			
 			throw new InvalidOperationException ("Xwt engine not found");
@@ -80,10 +87,8 @@ namespace Xwt
 		public static Toolkit Load (ToolkitType type)
 		{
 			Toolkit t = new Toolkit ();
-			if (t.LoadBackend (GetBackendType (type)))
-				return t;
-			else
-				throw new InvalidOperationException ("Xwt engine not found");
+			t.LoadBackend (GetBackendType (type), true, true);
+			return t;
 		}
 
 		internal static string GetBackendType (ToolkitType type)
@@ -100,7 +105,7 @@ namespace Xwt
 			}
 		}
 
-		bool LoadBackend (string type)
+		bool LoadBackend (string type, bool isGuest, bool throwIfFails)
 		{
 			int i = type.IndexOf (',');
 			string assembly = type.Substring (i+1).Trim ();
@@ -111,20 +116,22 @@ namespace Xwt
 					Type t = asm.GetType (type);
 					if (t != null) {
 						backend = (ToolkitEngineBackend) Activator.CreateInstance (t);
-						Initialize ();
+						Initialize (isGuest);
 						return true;
 					}
 				}
 			}
 			catch (Exception ex) {
-				Console.WriteLine (ex);
+				if (throwIfFails)
+					throw new Exception ("Toolkit could not be loaded", ex);
+				Application.NotifyException (ex);
 			}
 			return false;
 		}
 
-		void Initialize ()
+		void Initialize (bool isGuest)
 		{
-			backend.Initialize (this);
+			backend.Initialize (this, isGuest);
 			ContextBackendHandler = Backend.CreateSharedBackend<ContextBackendHandler> (typeof(Context));
 			GradientBackendHandler = Backend.CreateSharedBackend<GradientBackendHandler> (typeof(Gradient));
 			TextLayoutBackendHandler = Backend.CreateSharedBackend<TextLayoutBackendHandler> (typeof(TextLayout));

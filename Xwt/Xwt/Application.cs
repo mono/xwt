@@ -70,7 +70,7 @@ namespace Xwt
 			if (engine != null)
 				return;
 
-			toolkit = Toolkit.Load (backendType);
+			toolkit = Toolkit.Load (backendType, false);
 			toolkit.SetActive ();
 			engine = toolkit.Backend;
 			mainLoop = new UILoop (toolkit);

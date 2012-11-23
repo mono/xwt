@@ -94,6 +94,7 @@ namespace Xwt.Mac
 		
 		public CanvasView (ICanvasEventSink eventSink, ApplicationContext context)
 		{
+			this.context = context;
 			this.eventSink = eventSink;
 		}
 		

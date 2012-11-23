@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.WPF", "Xwt.WPF\Xwt.WPF.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfTest", "WpfTest\WpfTest.csproj", "{E41F4448-15C3-4E95-B310-FD333FDF5D2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MixedGtkMacTest", "MixedGtkMacTest\MixedGtkMacTest.csproj", "{14CF6E75-0D08-4BBD-B0F5-742196E5656D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Mac-Debug|Any CPU = Mac-Debug|Any CPU
@@ -34,6 +36,16 @@ Global
 		{0AF50CE4-E455-4A9D-92AD-711CBD068A55}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0AF50CE4-E455-4A9D-92AD-711CBD068A55}.Win-Debug|Any CPU.ActiveCfg = Debug|x86
 		{0AF50CE4-E455-4A9D-92AD-711CBD068A55}.Win-Debug|Any CPU.Build.0 = Debug|x86
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Linux-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Linux-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Mac-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Win-Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.Mac-Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -91,7 +103,7 @@ Global
 		{3C7623A9-9E16-41F6-BBB2-0B550F28E749}.Win-Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = GtkTest\GtkTest.csproj
+		StartupItem = MacTest\MacTest.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
