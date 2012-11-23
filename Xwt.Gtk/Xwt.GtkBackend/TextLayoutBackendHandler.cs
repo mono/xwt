@@ -33,53 +33,53 @@ using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
-	public class TextLayoutBackendHandler: ITextLayoutBackendHandler
+	public class GtkTextLayoutBackendHandler: TextLayoutBackendHandler
 	{
 		static Cairo.Context SharedContext;
 		
 		public double Heigth = -1;
 		
-		static TextLayoutBackendHandler ()
+		static GtkTextLayoutBackendHandler ()
 		{
 			Cairo.Surface sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, 1, 1);
 			SharedContext = new Cairo.Context (sf);
 		}
 		
-		public object Create (Context context)
+		public override object Create (Context context)
 		{
-			CairoContextBackend c = (CairoContextBackend) WidgetRegistry.GetBackend (context);
+			CairoContextBackend c = (CairoContextBackend) ToolkitEngine.GetBackend (context);
 			return Pango.CairoHelper.CreateLayout (c.Context);
 		}
 		
-		public object Create (ICanvasBackend canvas)
+		public override object Create (ICanvasBackend canvas)
 		{
 			return Pango.CairoHelper.CreateLayout (SharedContext);
 		}
 
-		public void SetText (object backend, string text)
+		public override void SetText (object backend, string text)
 		{
 			Pango.Layout tl = (Pango.Layout) backend;
 			tl.SetText (text);
 		}
 
-		public void SetFont (object backend, Xwt.Drawing.Font font)
+		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			Pango.Layout tl = (Pango.Layout)backend;
-			tl.FontDescription = (Pango.FontDescription)WidgetRegistry.GetBackend (font);
+			tl.FontDescription = (Pango.FontDescription)ToolkitEngine.GetBackend (font);
 		}
 		
-		public void SetWidth (object backend, double value)
+		public override void SetWidth (object backend, double value)
 		{
 			Pango.Layout tl = (Pango.Layout)backend;
 			tl.Width = (int) (value * Pango.Scale.PangoScale);
 		}
 		
-		public void SetHeight (object backend, double value)
+		public override void SetHeight (object backend, double value)
 		{
 			this.Heigth = value;
 		}
 		
-		public void SetTrimming (object backend, TextTrimming textTrimming)
+		public override void SetTrimming (object backend, TextTrimming textTrimming)
 		{
 			Pango.Layout tl = (Pango.Layout)backend;
 			if (textTrimming == TextTrimming.WordElipsis)
@@ -89,7 +89,7 @@ namespace Xwt.GtkBackend
 			
 		}
 		
-		public Size GetSize (object backend)
+		public override Size GetSize (object backend)
 		{
 			Pango.Layout tl = (Pango.Layout) backend;
 			int w, h;

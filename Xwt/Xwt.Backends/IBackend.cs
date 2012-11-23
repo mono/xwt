@@ -25,12 +25,13 @@
 // THE SOFTWARE.
 
 using System;
+using Xwt.Engine;
 
 namespace Xwt
 {
 	public interface IBackend
 	{
-		void InitializeBackend (object frontend);
+		void InitializeBackend (object frontend, ToolkitEngine toolkit);
 		void EnableEvent (object eventId);
 		void DisableEvent (object eventId);
 	}

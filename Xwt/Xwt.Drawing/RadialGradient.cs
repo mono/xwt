@@ -33,7 +33,7 @@ namespace Xwt.Drawing
 	{
 		public RadialGradient (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
 		{
-			Backend = ((IGradientBackendHandler)BackendHandler).CreateRadial (cx0, cy0, radius0, cx1, cy1, radius1);
+			Backend = ToolkitEngine.GradientBackendHandler.CreateRadial (cx0, cy0, radius0, cx1, cy1, radius1);
 		}
 	}
 }

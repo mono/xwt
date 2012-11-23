@@ -31,7 +31,7 @@ using System.Drawing;
 
 namespace Xwt.Mac
 {
-	public class ImageBuilderBackendHandler: IImageBuilderBackendHandler
+	public class ImageBuilderBackendHandler: ImageBuilderBackendHandler
 	{
 		public ImageBuilderBackendHandler ()
 		{

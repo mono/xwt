@@ -138,7 +138,7 @@ namespace Xwt
 
 				Backend.SetAllocation (new[] { (IWidgetBackend)GetBackend (child) }, new[] { new Rectangle (x, y, childWidth, childHeight) });
 
-				if (!Application.EngineBackend.HandlesSizeNegotiation)
+				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					child.Surface.Reallocate ();
 			}
 		}

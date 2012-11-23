@@ -30,6 +30,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Xwt.Backends;
 using System.ComponentModel;
+using Xwt.Engine;
 
 namespace Xwt
 {
@@ -189,7 +190,7 @@ namespace Xwt
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
 		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
 
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 		}
 		

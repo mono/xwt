@@ -120,12 +120,10 @@
     <Compile Include="Xwt.Backends\ITreeViewBackend.cs" />
     <Compile Include="Xwt.Backends\ITreeStoreBackend.cs" />
     <Compile Include="Xwt\XwtObject.cs" />
-    <Compile Include="Xwt.Backends\IBackendHandler.cs" />
     <Compile Include="Xwt.Backends\ImageBackendHandler.cs" />
     <Compile Include="Xwt\ImageCellView.cs" />
     <Compile Include="Xwt.Drawing\Context.cs" />
     <Compile Include="Xwt\Distance.cs" />
-    <Compile Include="Xwt.Backends\IContextBackendHandler.cs" />
     <Compile Include="Xwt\Canvas.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -138,9 +136,6 @@
     <Compile Include="Xwt.Drawing\RadialGradient.cs" />
     <Compile Include="Xwt.Drawing\TextLayout.cs" />
     <Compile Include="Xwt.Drawing\Font.cs" />
-    <Compile Include="Xwt.Backends\IGradientBackendHandler.cs" />
-    <Compile Include="Xwt.Backends\IFontBackendHandler.cs" />
-    <Compile Include="Xwt.Backends\ITextLayoutBackendHandler.cs" />
     <Compile Include="Xwt\ButtonEventArgs.cs" />
     <Compile Include="Xwt\MouseMovedEventArgs.cs" />
     <Compile Include="Xwt\SelectionMode.cs" />
@@ -248,13 +243,10 @@
     <Compile Include="Xwt.Engine\Toolkit.cs" />
     <Compile Include="Xwt\TreeViewStatus.cs" />
     <Compile Include="Xwt\Clipboard.cs" />
-    <Compile Include="Xwt.Backends\IClipboardBackend.cs" />
     <Compile Include="Xwt\PointerButton.cs" />
     <Compile Include="Xwt.Drawing\ImageBuilder.cs" />
-    <Compile Include="Xwt.Backends\IImageBuilderBackendHandler.cs" />
     <Compile Include="Xwt.Drawing\ImageFormat.cs" />
     <Compile Include="Xwt.Drawing\ImagePattern.cs" />
-    <Compile Include="Xwt.Backends\IImagePatternBackendHandler.cs" />
     <Compile Include="Xwt\CheckBoxMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -367,6 +359,14 @@
     <Compile Include="Xwt.Backends\IRichTextViewBackend.cs" />
     <Compile Include="Xwt.Formats\TextFormat.cs" />
     <Compile Include="Xwt.Formats\MarkdownTextFormat.cs" />
+    <Compile Include="Xwt.Backends\ContextBackendHandler.cs" />
+    <Compile Include="Xwt.Backends\BackendHandler.cs" />
+    <Compile Include="Xwt.Backends\GradientBackendHandler.cs" />
+    <Compile Include="Xwt.Backends\FontBackendHandler.cs" />
+    <Compile Include="Xwt.Backends\ImagePatternBackendHandler.cs" />
+    <Compile Include="Xwt.Backends\ImageBuilderBackendHandler.cs" />
+    <Compile Include="Xwt.Backends\TextLayoutBackendHandler.cs" />
+    <Compile Include="Xwt.Backends\ClipboardBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

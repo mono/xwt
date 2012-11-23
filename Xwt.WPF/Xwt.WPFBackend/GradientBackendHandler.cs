@@ -1,4 +1,4 @@
-﻿// 
+// 
 // GradientBackendHandler.cs
 //  
 // Author:
@@ -37,7 +37,7 @@ using DrawingColor = System.Drawing.Color;
 namespace Xwt.WPFBackend
 {
 	public class GradientBackendHandler
-		: Backend, IGradientBackendHandler
+		: Backend, GradientBackendHandler
 	{
 		public object CreateLinear (double x0, double y0, double x1, double y1)
 		{

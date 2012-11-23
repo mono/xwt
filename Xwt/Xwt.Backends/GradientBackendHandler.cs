@@ -1,10 +1,10 @@
 // 
-// IImagePatternBackendHandler.cs
+// IGradientBackendHandler.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2011 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,13 +23,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IImagePatternBackendHandler: IBackendHandler
+	public abstract class GradientBackendHandler: BackendHandler
 	{
-		object Create (object img);
+		public abstract object CreateLinear (double x0, double y0, double x1, double y1);
+		public abstract object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1);
+		public abstract void AddColorStop (object backend, double position, Color color);
 	}
 }
 

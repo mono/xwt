@@ -61,7 +61,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public static bool GetSelectionData (Gtk.SelectionData data, TransferDataStore target)
+		public static bool GetSelectionData (ToolkitEngine toolkit, Gtk.SelectionData data, TransferDataStore target)
 		{
 			TransferDataType type = Util.AtomToType (data.Target.Name);
 			if (type == null || data.Length <= 0)
@@ -70,7 +70,7 @@ namespace Xwt.GtkBackend
 			if (type == TransferDataType.Text)
 				target.AddText (data.Text);
 			else if (data.TargetsIncludeImage (false))
-				target.AddImage (WidgetRegistry.CreateFrontend<Xwt.Drawing.Image> (data.Pixbuf));
+				target.AddImage (toolkit.CreateFrontend<Xwt.Drawing.Image> (data.Pixbuf));
 			else if (type == TransferDataType.Uri) {
 				var uris = System.Text.Encoding.UTF8.GetString (data.Data).Split ('\n').Where (u => !string.IsNullOrEmpty(u)).Select (u => new Uri (u)).ToArray ();
 				target.AddUris (uris);

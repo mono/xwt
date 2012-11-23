@@ -33,7 +33,7 @@ namespace Xwt.Drawing
 	public sealed class ImageBuilder: XwtObject, IDisposable
 	{
 		Context ctx;
-		IImageBuilderBackendHandler handler;
+		ImageBuilderBackendHandler handler;
 		object backend;
 		int width;
 		int height;

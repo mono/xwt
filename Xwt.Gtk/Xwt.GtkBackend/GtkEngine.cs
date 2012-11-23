@@ -40,7 +40,7 @@ namespace Xwt.GtkBackend
 			Gtk.Application.Init ();
 		}
 
-		public override void InitializeRegistry ()
+		public override void InitializeBackends ()
 		{
 			RegisterBackend (typeof(Xwt.Widget), typeof(CustomWidgetBackend));
 			RegisterBackend (typeof(Xwt.Window), typeof(WindowBackend));
@@ -57,13 +57,13 @@ namespace Xwt.GtkBackend
 			RegisterBackend (typeof(Xwt.Drawing.Image), typeof(ImageHandler));
 #if USE_PANGO
 			RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandlerWithPango));
-			RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(TextLayoutBackendHandler));
+			RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(GtkTextLayoutBackendHandler));
 #else
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(CairoTextLayoutBackendHandler));
 #endif
 			RegisterBackend (typeof(Xwt.Drawing.Gradient), typeof(CairoGradientBackendHandler));
-			RegisterBackend (typeof(Xwt.Drawing.Font), typeof(FontBackendHandler));
+			RegisterBackend (typeof(Xwt.Drawing.Font), typeof(GtkFontBackendHandler));
 			RegisterBackend (typeof(Xwt.Menu), typeof(MenuBackend));
 			RegisterBackend (typeof(Xwt.MenuItem), typeof(MenuItemBackend));
 			RegisterBackend (typeof(Xwt.CheckBoxMenuItem), typeof(CheckBoxMenuItemBackend));
@@ -84,8 +84,8 @@ namespace Xwt.GtkBackend
 			RegisterBackend (typeof(Xwt.HSeparator), typeof(SeparatorBackend));
 			RegisterBackend (typeof(Xwt.Dialog), typeof(DialogBackend));
 			RegisterBackend (typeof(Xwt.ComboBoxEntry), typeof(ComboBoxEntryBackend));
-			RegisterBackend (typeof(Xwt.Clipboard), typeof(ClipboardBackend));
-			RegisterBackend (typeof(Xwt.Drawing.ImagePattern), typeof(ImagePatternBackendHandler));
+			RegisterBackend (typeof(Xwt.Clipboard), typeof(GtkClipboardBackend));
+			RegisterBackend (typeof(Xwt.Drawing.ImagePattern), typeof(GtkImagePatternBackendHandler));
 			RegisterBackend (typeof(Xwt.Drawing.ImageBuilder), typeof(ImageBuilderBackend));
 			RegisterBackend (typeof(Xwt.ScrollAdjustment), typeof(ScrollAdjustmentBackend));
 			RegisterBackend (typeof(Xwt.OpenFileDialog), typeof(OpenFileDialogBackend));

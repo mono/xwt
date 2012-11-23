@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Mac
 {
-	public class GradientBackendHandler: IGradientBackendHandler
+	public class GradientBackendHandler: GradientBackendHandler
 	{
 		public object CreateLinear (double x0, double y0, double x1, double y1)
 		{

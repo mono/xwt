@@ -34,6 +34,7 @@ namespace Xwt
 {
 	public static class Application
 	{
+		static ToolkitEngine toolkit;
 		static ToolkitEngineBackend engine;
 
 		static readonly TaskScheduler taskScheduler = new XwtTaskScheduler ();
@@ -47,10 +48,6 @@ namespace Xwt
 			private set;
 		}
 
-		internal static ToolkitEngineBackend EngineBackend {
-			get { return engine; }
-		}
-		
 		public static void Initialize ()
 		{
 			if (engine != null)
@@ -60,8 +57,12 @@ namespace Xwt
 		
 		public static void Initialize (string backendType)
 		{
-			InitBackend (backendType);
-			engine.Initialize ();
+			if (engine != null)
+				return;
+
+			toolkit = ToolkitEngine.Load (backendType);
+			engine = toolkit.Backend;
+
 			UIThread = System.Threading.Thread.CurrentThread;
 		}
 		
@@ -226,6 +227,13 @@ namespace Xwt
 				Console.WriteLine (ex);
 			}
 		}
+	}
+
+	public enum ToolkitType
+	{
+		Gtk,
+		Cocoa,
+		Wpf
 	}
 }
 

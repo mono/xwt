@@ -1,5 +1,5 @@
 // 
-// IGradientBackendHandler.cs
+// IBackendHandler.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -25,15 +25,18 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Drawing;
+using Xwt.Engine;
 
 namespace Xwt.Backends
 {
-	public interface IGradientBackendHandler: IBackendHandler
+	public abstract class BackendHandler
 	{
-		object CreateLinear (double x0, double y0, double x1, double y1);
-		object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1);
-		void AddColorStop (object backend, double position, Color color);
+		internal void Initialize (ToolkitEngine toolkit)
+		{
+			ToolkitEngine = toolkit;
+		}
+
+		protected ToolkitEngine ToolkitEngine { get; private set; }
 	}
 }
 

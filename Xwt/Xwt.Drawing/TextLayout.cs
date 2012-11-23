@@ -33,7 +33,7 @@ namespace Xwt.Drawing
 {
 	public sealed class TextLayout: XwtObject
 	{
-		ITextLayoutBackendHandler handler;
+		TextLayoutBackendHandler handler;
 		
 		Font font;
 		string text;

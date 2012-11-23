@@ -33,7 +33,7 @@ namespace Xwt
 {
 	public static class Clipboard
 	{
-		static IClipboardBackend Backend {
+		static ClipboardBackend Backend {
 			get { return ToolkitEngine.CurrentEngine.ClipboardBackend; }
 		}
 		

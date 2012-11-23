@@ -35,11 +35,16 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.TreeModel store;
 		Type[] types;
-		
+
 		public Gtk.TreeModel Store {
 			get {
 				return store;
 			}
+		}
+
+		public ToolkitEngine ToolkitEngine {
+			get;
+			private set;
 		}
 
 		public void Initialize (Type[] columnTypes)
@@ -58,8 +63,9 @@ namespace Xwt.GtkBackend
 		
 		public abstract Gtk.TreeModel InitializeModel (Type[] columnTypes);
 		
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
+			ToolkitEngine = toolkit;
 		}
 
 		public void SetValue (Gtk.TreeIter it, int column, object value)
@@ -69,7 +75,7 @@ namespace Xwt.GtkBackend
 			else if (value is string)
 				store.SetValue (it, column, (string)value);
 			else if (value is Image)
-				store.SetValue (it, column, (Gdk.Pixbuf)WidgetRegistry.GetBackend (value));
+				store.SetValue (it, column, (Gdk.Pixbuf)ToolkitEngine.GetBackend (value));
 			else
 				store.SetValue (it, column, value ?? DBNull.Value);
 		}
@@ -78,7 +84,7 @@ namespace Xwt.GtkBackend
 		{
 			object val = store.GetValue (it, column);
 			if (val is Gdk.Pixbuf)
-				return WidgetRegistry.CreateFrontend<Image> (val);
+				return ToolkitEngine.CreateFrontend<Image> (val);
 			else if (val is DBNull)
 				return null;
 			else if (val is ObjectWrapper)

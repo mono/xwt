@@ -45,7 +45,7 @@ namespace Xwt
 				
 				// We always want to listen this event because we use it
 				// to reallocate the children
-				if (!Application.EngineBackend.HandlesSizeNegotiation)
+				if (!EngineBackend.HandlesSizeNegotiation)
 					b.EnableEvent (PanedEvent.PositionChanged);
 				
 				return b;
@@ -171,7 +171,7 @@ namespace Xwt
 		
 		void NotifyPositionChanged ()
 		{
-			if (!Application.EngineBackend.HandlesSizeNegotiation) {
+			if (!BackendHost.EngineBackend.HandlesSizeNegotiation) {
 				if (panel1.Content != null)
 					panel1.Content.Surface.Reallocate ();
 				if (panel2.Content != null)

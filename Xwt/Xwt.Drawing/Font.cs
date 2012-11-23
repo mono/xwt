@@ -32,7 +32,7 @@ namespace Xwt.Drawing
 {
 	public sealed class Font: XwtObject
 	{
-		IFontBackendHandler handler;
+		FontBackendHandler handler;
 		FontSizeUnit unit;
 
 		internal Font (object backend): this (backend, null)

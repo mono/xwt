@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using Xwt.Backends;
 using System.Linq;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -42,7 +43,7 @@ namespace Xwt.GtkBackend
 			this.action = action;
 		}
 
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 		}
 		

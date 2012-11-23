@@ -37,10 +37,12 @@ namespace Xwt.Backends
 	public abstract class ToolkitEngineBackend
 	{
 		Dictionary<Type,Type> backendTypes;
-		Dictionary<Type,object> sharedBackends = new Dictionary<Type, object> ();
+		Dictionary<Type,BackendHandler> sharedBackends = new Dictionary<Type, BackendHandler> ();
+		ToolkitEngine toolkit;
 
-		internal void Initialize ()
+		internal void Initialize (ToolkitEngine toolkit)
 		{
+			this.toolkit = toolkit;
 			if (backendTypes == null) {
 				backendTypes = new Dictionary<Type, Type> ();
 				InitializeBackends ();
@@ -196,12 +198,14 @@ namespace Xwt.Backends
 			return (T) res;
 		}
 
-		internal T CreateSharedBackend<T> (Type widgetType)
+		internal T CreateSharedBackend<T> (Type widgetType) where T:BackendHandler
 		{
 			CheckInitialized ();
-			object res;
-			if (!sharedBackends.TryGetValue (widgetType, out res))
+			BackendHandler res;
+			if (!sharedBackends.TryGetValue (widgetType, out res)) {
 				res = sharedBackends [widgetType] = CreateBackend<T> (widgetType);
+				res.Initialize (toolkit);
+			}
 			return (T)res;
 		}
 		

@@ -28,10 +28,10 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class ImagePatternBackendHandler: IImagePatternBackendHandler
+	public class GtkImagePatternBackendHandler: ImagePatternBackendHandler
 	{
 		#region IImagePatternBackendHandler implementation
-		public object Create (object img)
+		public override object Create (object img)
 		{
 			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
 			var imgs = new Cairo.ImageSurface (Cairo.Format.ARGB32, pb.Width, pb.Height);

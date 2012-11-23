@@ -33,7 +33,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
-	public class TextLayoutBackendHandler: ITextLayoutBackendHandler
+	public class TextLayoutBackendHandler: TextLayoutBackendHandler
 	{
 		class LayoutInfo
 		{

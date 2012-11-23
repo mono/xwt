@@ -99,7 +99,7 @@ namespace Xwt
 				navigateToUrl (this, e);
 
 			if (!e.Handled)
-				Application.EngineBackend.ShowWebBrowser (e);
+				BackendHost.EngineBackend.ShowWebBrowser (e);
 		}
 	}
 

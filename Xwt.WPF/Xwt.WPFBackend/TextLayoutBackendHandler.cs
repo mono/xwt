@@ -1,4 +1,4 @@
-﻿//
+//
 // TextLayoutBackendHandler.cs
 //
 // Author:
@@ -35,7 +35,7 @@ using Font = Xwt.Drawing.Font;
 namespace Xwt.WPFBackend
 {
 	public class TextLayoutBackendHandler
-		: ITextLayoutBackendHandler
+		: TextLayoutBackendHandler
 	{
 		public object Create (Context context)
 		{

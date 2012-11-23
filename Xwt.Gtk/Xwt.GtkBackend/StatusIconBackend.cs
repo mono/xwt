@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using Gdk;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -43,7 +44,7 @@ namespace Xwt.GtkBackend
 			statusItem.Pixbuf = (Pixbuf)imageBackend;
 		}
 		
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 			statusItem = new Gtk.StatusIcon();
 		}

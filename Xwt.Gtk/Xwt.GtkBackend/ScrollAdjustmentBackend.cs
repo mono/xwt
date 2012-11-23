@@ -48,7 +48,7 @@ namespace Xwt.GtkBackend
 		}
 		
 		#region IBackend implementation
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 			if (adjustment == null)
 				adjustment = new Gtk.Adjustment (0, 0, 0, 0, 0, 0);

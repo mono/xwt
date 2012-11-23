@@ -199,7 +199,7 @@ namespace Xwt.GtkBackend
 			this.sink = sink;
 		}
 
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, Xwt.Engine.ToolkitEngine toolkit)
 		{
 			this.frontend = (Popover) frontend;
 		}
@@ -215,9 +215,9 @@ namespace Xwt.GtkBackend
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget reference, Xwt.Rectangle positionRect, Widget child)
 		{
 			var parent = reference.ParentWindow;
-			popover = new PopoverWindow ((Gtk.Widget)((WidgetBackend)Xwt.Engine.WidgetRegistry.GetBackend (child)).NativeWidget, orientation);
+			popover = new PopoverWindow ((Gtk.Widget)((WidgetBackend)Xwt.Engine.ToolkitEngine.GetBackend (child)).NativeWidget, orientation);
 			popover.SetPadding (frontend.Padding);
-			popover.TransientFor = ((WindowFrameBackend)Xwt.Engine.WidgetRegistry.GetBackend (parent)).Window;
+			popover.TransientFor = ((WindowFrameBackend)Xwt.Engine.ToolkitEngine.GetBackend (parent)).Window;
 			popover.DestroyWithParent = true;
 			popover.Hidden += (o, args) => {
 				popover.ReleaseInnerWidget ();

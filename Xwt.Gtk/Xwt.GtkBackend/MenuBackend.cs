@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using System.Collections.Generic;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -34,7 +35,7 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.MenuShell menu;
 		
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 			menu = new Gtk.Menu ();
 			menu.Visible = true;

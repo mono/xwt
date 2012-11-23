@@ -102,7 +102,7 @@ namespace Xwt.Engine
 				if (!exitCallbackRegistered) {
 					exitCallbackRegistered = true;
 					// Try to use a native method of queuing exit actions
-					Application.EngineBackend.InvokeBeforeMainLoop (DispatchExitActions);
+					ToolkitEngine.CurrentEngine.Backend.InvokeBeforeMainLoop (DispatchExitActions);
 				}
 			}
 		}

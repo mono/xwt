@@ -30,14 +30,14 @@ using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
-	public class ImageBuilderBackend: IImageBuilderBackendHandler
+	public class ImageBuilderBackend: ImageBuilderBackendHandler
 	{
 		public ImageBuilderBackend ()
 		{
 		}
 
 		#region IImageBuilderBackendHandler implementation
-		public object CreateImageBuilder (int width, int height, ImageFormat format)
+		public override object CreateImageBuilder (int width, int height, ImageFormat format)
 		{
 			Cairo.Format cformat;
 			switch (format) {
@@ -47,7 +47,7 @@ namespace Xwt.GtkBackend
 			return new Cairo.ImageSurface (cformat, width, height);
 		}
 
-		public object CreateContext (object backend)
+		public override object CreateContext (object backend)
 		{
 			Cairo.Surface sf = (Cairo.Surface) backend;
 			CairoContextBackend ctx = new CairoContextBackend ();
@@ -55,7 +55,7 @@ namespace Xwt.GtkBackend
 			return ctx;
 		}
 
-		public object CreateImage (object backend)
+		public override object CreateImage (object backend)
 		{
 			Cairo.ImageSurface sf = (Cairo.ImageSurface) backend;
 			byte[] cdata = sf.Data;
@@ -106,7 +106,7 @@ namespace Xwt.GtkBackend
 			return new Gdk.Pixbuf (data, Gdk.Colorspace.Rgb, nbytes == 4, 8, sf.Width, sf.Height, sf.Width * nbytes, null);
 		}
 
-		public void Dispose (object backend)
+		public override void Dispose (object backend)
 		{
 			IDisposable sf = (IDisposable) backend;
 			sf.Dispose ();

@@ -172,7 +172,7 @@ namespace Xwt.GtkBackend
 			}
 		}*/
 		
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 		}
 

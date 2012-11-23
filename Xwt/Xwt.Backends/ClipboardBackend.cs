@@ -1,10 +1,10 @@
 // 
-// IFontBackendHandler.cs
+// IClipboardBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2012 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,29 +23,19 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IFontBackendHandler: IBackendHandler
+	public abstract class ClipboardBackend: BackendHandler
 	{
-		object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch);
-		object Copy (object handle);
+		public abstract void Clear ();
+		public abstract void SetData (TransferDataType type, Func<object> dataSource);
 		
-		object SetSize (object handle, double size, FontSizeUnit unit);
-		object SetFamily (object handle, string family);
-		object SetStyle (object handle, FontStyle style);
-		object SetWeight (object handle, FontWeight weight);
-		object SetStretch (object handle, FontStretch stretch);
-		
-		double GetSize (object handle);
-		string GetFamily (object handle);
-		FontStyle GetStyle (object handle);
-		FontWeight GetWeight (object handle);
-		FontStretch GetStretch (object handle);
-		
+		public abstract bool IsTypeAvailable (TransferDataType type);
+		public abstract object GetData (TransferDataType type);
+		public abstract IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state);
+		public abstract object EndGetData (IAsyncResult ares);
 	}
 }
 

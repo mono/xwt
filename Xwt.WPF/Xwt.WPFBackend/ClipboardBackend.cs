@@ -1,4 +1,4 @@
-﻿// 
+// 
 // ClipboardBackend.cs
 //  
 // Author:
@@ -33,7 +33,7 @@ using WindowsClipboard = System.Windows.Clipboard;
 namespace Xwt.WPFBackend
 {
 	public class ClipboardBackend
-		: IClipboardBackend
+		: ClipboardBackend
 	{
 		public void Clear ()
 		{

@@ -32,7 +32,7 @@ using MonoMac.Foundation;
 
 namespace Xwt.Mac
 {
-	public class FontBackendHandler: IFontBackendHandler
+	public class FontBackendHandler: FontBackendHandler
 	{
 		public object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
 		{

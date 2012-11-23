@@ -24,6 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Engine;
+
+
 namespace Xwt.Backends
 {
 	public class XwtWidgetBackend: Widget, IWidgetBackend
@@ -41,7 +44,7 @@ namespace Xwt.Backends
 		}
 
 		#region IBackend implementation
-		void IBackend.InitializeBackend (object frontend)
+		void IBackend.InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 			Frontend = (Widget) frontend;
 		}

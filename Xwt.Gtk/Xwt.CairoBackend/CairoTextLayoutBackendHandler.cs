@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace Xwt.CairoBackend
 {
-	public class CairoTextLayoutBackendHandler: ITextLayoutBackendHandler
+	public class CairoTextLayoutBackendHandler: TextLayoutBackendHandler
 	{
 		static Cairo.Context SharedContext;
 		
@@ -60,15 +60,15 @@ namespace Xwt.CairoBackend
 		}
 
 		#region ITextLayoutBackendHandler implementation
-		public object Create (Context context)
+		public override object Create (Context context)
 		{
-			CairoContextBackend c = (CairoContextBackend) WidgetRegistry.GetBackend (context);
+			CairoContextBackend c = (CairoContextBackend) ToolkitEngine.GetBackend (context);
 			LayoutBackend b = new LayoutBackend ();
 			b.Context = c;
 			return b;
 		}
 
-		public object Create (ICanvasBackend canvas)
+		public override object Create (ICanvasBackend canvas)
 		{
 			LayoutBackend b = new LayoutBackend ();
 			CairoContextBackend ba = new CairoContextBackend ();
@@ -77,42 +77,42 @@ namespace Xwt.CairoBackend
 			return b;
 		}
 
-		public void SetWidth (object backend, double value)
+		public override void SetWidth (object backend, double value)
 		{
 			LayoutBackend la = (LayoutBackend) backend;
 			la.Width = value;
 			la.Measured = false;
 		}
 		
-		public void SetHeight (object backend, double value)
+		public override void SetHeight (object backend, double value)
 		{
 			LayoutBackend la = (LayoutBackend) backend;
 			la.Heigth = value;
 			la.Measured = false;
 		}
 		
-		public void SetText (object backend, string text)
+		public override void SetText (object backend, string text)
 		{
 			LayoutBackend la = (LayoutBackend) backend;
 			la.Text = text;
 			la.Measured = false;
 		}
 
-		public void SetFont (object backend, Font font)
+		public override void SetFont (object backend, Font font)
 		{
 			LayoutBackend la = (LayoutBackend) backend;
 			la.Measured = false;
 			la.Font = font;
 		}
 		
-		public void SetTrimming (object backend, TextTrimming textTrimming)
+		public override void SetTrimming (object backend, TextTrimming textTrimming)
 		{
 			LayoutBackend la = (LayoutBackend) backend;
 			la.TextTrimming = textTrimming;
 			
 		}
 		
-		public Size GetSize (object backend)
+		public override Size GetSize (object backend)
 		{
 			return Measure (backend);
 		}

@@ -31,9 +31,9 @@ using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
-	public class FontBackendHandler: IFontBackendHandler
+	public class GtkFontBackendHandler: FontBackendHandler
 	{
-		public object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
+		public override object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			string s = sizeUnit == FontSizeUnit.Points ? size.ToString () : size + "px";
 			return FontDescription.FromString (fontName + " " + s);
@@ -41,13 +41,13 @@ namespace Xwt.GtkBackend
 
 		#region IFontBackendHandler implementation
 		
-		public object Copy (object handle)
+		public override object Copy (object handle)
 		{
 			FontDescription d = (FontDescription) handle;
 			return d.Copy ();
 		}
 		
-		public object SetSize (object handle, double size, FontSizeUnit sizeUnit)
+		public override object SetSize (object handle, double size, FontSizeUnit sizeUnit)
 		{
 			FontDescription d = (FontDescription) handle;
 			d = d.Copy ();
@@ -58,7 +58,7 @@ namespace Xwt.GtkBackend
 			return d;
 		}
 
-		public object SetFamily (object handle, string family)
+		public override object SetFamily (object handle, string family)
 		{
 			FontDescription fd = (FontDescription) handle;
 			fd = fd.Copy ();
@@ -66,7 +66,7 @@ namespace Xwt.GtkBackend
 			return fd;
 		}
 
-		public object SetStyle (object handle, FontStyle style)
+		public override object SetStyle (object handle, FontStyle style)
 		{
 			FontDescription fd = (FontDescription) handle;
 			fd = fd.Copy ();
@@ -74,7 +74,7 @@ namespace Xwt.GtkBackend
 			return fd;
 		}
 
-		public object SetWeight (object handle, FontWeight weight)
+		public override object SetWeight (object handle, FontWeight weight)
 		{
 			FontDescription fd = (FontDescription) handle;
 			fd = fd.Copy ();
@@ -82,7 +82,7 @@ namespace Xwt.GtkBackend
 			return fd;
 		}
 
-		public object SetStretch (object handle, FontStretch stretch)
+		public override object SetStretch (object handle, FontStretch stretch)
 		{
 			FontDescription fd = (FontDescription) handle;
 			fd = fd.Copy ();
@@ -90,31 +90,31 @@ namespace Xwt.GtkBackend
 			return fd;
 		}
 		
-		public double GetSize (object handle)
+		public override double GetSize (object handle)
 		{
 			FontDescription fd = (FontDescription) handle;
 			return (double)fd.Size / (double) Pango.Scale.PangoScale;
 		}
 
-		public string GetFamily (object handle)
+		public override string GetFamily (object handle)
 		{
 			FontDescription fd = (FontDescription) handle;
 			return fd.Family;
 		}
 
-		public FontStyle GetStyle (object handle)
+		public override FontStyle GetStyle (object handle)
 		{
 			FontDescription fd = (FontDescription) handle;
 			return (FontStyle)(int)fd.Style;
 		}
 
-		public FontWeight GetWeight (object handle)
+		public override FontWeight GetWeight (object handle)
 		{
 			FontDescription fd = (FontDescription) handle;
 			return (FontWeight)(int)fd.Weight;
 		}
 
-		public FontStretch GetStretch (object handle)
+		public override FontStretch GetStretch (object handle)
 		{
 			FontDescription fd = (FontDescription) handle;
 			return (FontStretch)(int)fd.Stretch;

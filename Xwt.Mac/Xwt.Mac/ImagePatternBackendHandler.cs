@@ -29,7 +29,7 @@ using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	public class ImagePatternBackendHandler: IImagePatternBackendHandler
+	public class ImagePatternBackendHandler: ImagePatternBackendHandler
 	{
 		public object Create (object img)
 		{

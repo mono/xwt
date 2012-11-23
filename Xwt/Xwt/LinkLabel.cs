@@ -114,7 +114,7 @@ namespace Xwt
 				navigateToUrl (this, e);
 
 			// this method checks for e.Handled
-			Application.EngineBackend.ShowWebBrowser (e);
+			BackendHost.EngineBackend.ShowWebBrowser (e);
 		}
 
 		static void DummyHandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)

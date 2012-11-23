@@ -43,7 +43,7 @@ namespace Xwt.GtkBackend
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
 		bool destroyed;
-		
+
 		bool minSizeSet;
 		
 		class DragDropData
@@ -63,9 +63,10 @@ namespace Xwt.GtkBackend
 		const WidgetEvent dragDropEvents = WidgetEvent.DragDropCheck | WidgetEvent.DragDrop | WidgetEvent.DragOver | WidgetEvent.DragOverCheck;
 		const WidgetEvent sizeCheckEvents = WidgetEvent.PreferredWidthCheck | WidgetEvent.PreferredHeightCheck | WidgetEvent.PreferredHeightForWidthCheck | WidgetEvent.PreferredWidthForHeightCheck;
 		
-		void IBackend.InitializeBackend (object frontend)
+		void IBackend.InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 			this.frontend = (Widget) frontend;
+			ToolkitEngine = toolkit;
 		}
 		
 		void IWidgetBackend.Initialize (IWidgetEventSink sink)
@@ -85,7 +86,12 @@ namespace Xwt.GtkBackend
 		public Widget Frontend {
 			get { return frontend; }
 		}
-		
+
+		public ToolkitEngine ToolkitEngine {
+			get;
+			private set;
+		}
+
 		public object NativeWidget {
 			get {
 				return RootWidget;
@@ -227,7 +233,7 @@ namespace Xwt.GtkBackend
 
 		void MarkDestroyed (Widget w)
 		{
-			var bk = (WidgetBackend) WidgetRegistry.GetBackend (w);
+			var bk = (WidgetBackend) ToolkitEngine.GetBackend (w);
 			bk.destroyed = true;
 			foreach (var c in w.Surface.Children)
 				MarkDestroyed (c);
@@ -964,7 +970,7 @@ namespace Xwt.GtkBackend
 			
 			DragDropInfo.DragDataRequests--;
 			
-			if (!Util.GetSelectionData (selectionData, DragDropInfo.DragData)) {
+			if (!Util.GetSelectionData (ToolkitEngine, selectionData, DragDropInfo.DragData)) {
 				return false;
 			}
 

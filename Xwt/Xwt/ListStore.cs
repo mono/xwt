@@ -28,6 +28,7 @@ using System;
 using Xwt.Backends;
 using System.Linq;
 using System.Collections.Generic;
+using Xwt.Engine;
 
 namespace Xwt
 {
@@ -152,7 +153,7 @@ namespace Xwt
 		public event EventHandler<ListRowEventArgs> RowChanged;
 		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
 
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 		}
 		

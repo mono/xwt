@@ -31,7 +31,7 @@ namespace Xwt.Drawing
 {
 	public sealed class Context: XwtObject, IDisposable
 	{
-		IContextBackendHandler handler;
+		ContextBackendHandler handler;
 		Pattern pattern;
 		Font font;
 		double globalAlpha = 1;

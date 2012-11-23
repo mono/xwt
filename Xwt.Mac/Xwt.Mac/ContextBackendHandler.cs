@@ -35,7 +35,7 @@ using System.Drawing;
 
 namespace Xwt.Mac
 {
-	public class ContextBackendHandler: IContextBackendHandler
+	public class ContextBackendHandler: ContextBackendHandler
 	{
 		public ContextBackendHandler ()
 		{

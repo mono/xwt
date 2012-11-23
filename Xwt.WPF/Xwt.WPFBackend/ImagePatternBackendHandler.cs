@@ -1,4 +1,4 @@
-﻿//
+//
 // ImagePatternBackendHandler.cs
 //
 // Author:
@@ -31,7 +31,7 @@ using System.Drawing;
 namespace Xwt.WPFBackend
 {
 	public class ImagePatternBackendHandler
-		: IImagePatternBackendHandler
+		: ImagePatternBackendHandler
 	{
 		public object Create (object img)
 		{

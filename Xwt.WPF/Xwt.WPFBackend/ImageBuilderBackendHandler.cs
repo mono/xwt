@@ -1,4 +1,4 @@
-﻿//
+//
 // ImageBuilderBackendHandler.cs
 //
 // Author:
@@ -31,7 +31,7 @@ using Xwt.Drawing;
 namespace Xwt.WPFBackend
 {
 	public class ImageBuilderBackendHandler
-		: IImageBuilderBackendHandler
+		: ImageBuilderBackendHandler
 	{
 		public object CreateImageBuilder (int width, int height, ImageFormat format)
 		{

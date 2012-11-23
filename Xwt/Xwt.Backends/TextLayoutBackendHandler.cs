@@ -1,10 +1,11 @@
 // 
-// IImageBuilder.cs
+// ITextLayoutBackendHandler.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2011 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +24,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IImageBuilderBackendHandler: IBackendHandler
+	public abstract class TextLayoutBackendHandler: BackendHandler
 	{
-		object CreateImageBuilder (int width, int height, ImageFormat format);
-		object CreateContext (object backend);
-		object CreateImage (object backend);
-		void Dispose (object backend);
+		public abstract object Create (Context context);
+		public abstract object Create (ICanvasBackend canvas);
+		
+		public abstract void SetWidth (object backend, double value);
+		public abstract void SetHeight (object backend, double value);
+		public abstract void SetText (object backend, string text);
+		public abstract void SetFont (object backend, Font font);
+		public abstract void SetTrimming (object backend, TextTrimming textTrimming);
+		public abstract Size GetSize (object backend);
 	}
 }
 

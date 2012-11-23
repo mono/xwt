@@ -50,9 +50,15 @@ namespace Xwt.GtkBackend
 			get { return frontend; }
 		}
 		
-		void IBackend.InitializeBackend (object frontend)
+		public ToolkitEngine ToolkitEngine {
+			get;
+			private set;
+		}
+
+		void IBackend.InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 			this.frontend = (WindowFrame) frontend;
+			ToolkitEngine = toolkit;
 		}
 
 		public virtual void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)

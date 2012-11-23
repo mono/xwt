@@ -130,7 +130,7 @@ namespace Xwt
 		
 		protected override void OnReallocate ()
 		{
-			if (child != null && !Application.EngineBackend.HandlesSizeNegotiation) {
+			if (child != null && !BackendHost.EngineBackend.HandlesSizeNegotiation) {
 				child.Surface.Reallocate ();
 			}
 		}
@@ -208,7 +208,7 @@ namespace Xwt
 			if (h.MinSize + padding.VerticalSpacing > size.Height)
 				size.Height = h.MinSize + padding.VerticalSpacing;
 
-			if (!Application.EngineBackend.HandlesSizeNegotiation || !shown) {
+			if (!BackendHost.EngineBackend.HandlesSizeNegotiation || !shown) {
 	
 				shown = true;
 	

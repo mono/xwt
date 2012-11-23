@@ -1,4 +1,4 @@
-﻿// 
+// 
 // ContextBackendHandler.cs
 //  
 // Author:
@@ -43,7 +43,7 @@ using Font = Xwt.Drawing.Font;
 namespace Xwt.WPFBackend
 {
 	public class ContextBackendHandler
-		: Backend, IContextBackendHandler
+		: Backend, ContextBackendHandler
 	{
 		public void Save (object backend)
 		{

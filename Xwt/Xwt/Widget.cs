@@ -825,7 +825,7 @@ namespace Xwt
 			// If bounds have changed and the widget has not a parent, chances are that
 			// the widget is embedded in a native application, in which case we
 			// have to call Reallocate here (which is normally called by the root XWT window)
-			if (!Application.EngineBackend.HandlesSizeNegotiation && Parent == null)
+			if (!BackendHost.EngineBackend.HandlesSizeNegotiation && Parent == null)
 				Surface.Reallocate ();
 			
 			OnBoundsChanged ();
@@ -888,7 +888,7 @@ namespace Xwt
 					width.MinSize = minWidth;
 				if (width.NaturalSize < width.MinSize)
 					width.NaturalSize = width.MinSize;
-				if (!Application.EngineBackend.HandlesSizeNegotiation)
+				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					widthCached = true;
 				return width;
 			}
@@ -908,7 +908,7 @@ namespace Xwt
 					height.MinSize = minHeight;
 				if (height.NaturalSize < height.MinSize)
 					height.NaturalSize = height.MinSize;
-				if (!Application.EngineBackend.HandlesSizeNegotiation)
+				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					heightCached = true;
 				return height;
 			}
@@ -919,7 +919,7 @@ namespace Xwt
 			if (heightCached)
 				return height;
 			else {
-				if (!Application.EngineBackend.HandlesSizeNegotiation)
+				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					heightCached = true;
 				if (minHeight != -1 && naturalHeight != -1)
 					return new WidgetSize (minHeight, naturalHeight);
@@ -942,7 +942,7 @@ namespace Xwt
 			if (widthCached)
 				return width;
 			else {
-				if (!Application.EngineBackend.HandlesSizeNegotiation)
+				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					widthCached = true;
 				if (minWidth != -1 && naturalWidth != -1)
 					return new WidgetSize (minWidth, naturalWidth);
@@ -1070,7 +1070,7 @@ namespace Xwt
 			
 			ResetCachedSizes ();
 			Backend.UpdateLayout ();
-			if (!Application.EngineBackend.HandlesSizeNegotiation)
+			if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 				NotifySizeChangeToParent ();
 		}
 		

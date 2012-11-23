@@ -31,7 +31,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public abstract class ImageBackendHandler: IBackendHandler
+	public abstract class ImageBackendHandler: BackendHandler
 	{
 		public virtual object CreateBackend ()
 		{

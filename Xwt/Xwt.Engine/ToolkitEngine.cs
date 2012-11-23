@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
+using System.Reflection;
 
 namespace Xwt.Engine
 {
@@ -43,15 +44,83 @@ namespace Xwt.Engine
 			get { return backend; }
 		}
 
-		public ToolkitEngine (string backendType)
+		private ToolkitEngine ()
 		{
-			ContextBackendHandler = Backend.CreateSharedBackend<IContextBackendHandler> (typeof(Context));
-			GradientBackendHandler = Backend.CreateSharedBackend<IGradientBackendHandler> (typeof(Gradient));
-			TextLayoutBackendHandler = Backend.CreateSharedBackend<ITextLayoutBackendHandler> (typeof(TextLayout));
-			FontBackendHandler = Backend.CreateSharedBackend<IFontBackendHandler> (typeof(Font));
-			ClipboardBackend = Backend.CreateSharedBackend<IClipboardBackend> (typeof(Clipboard));
-			ImageBuilderBackendHandler = Backend.CreateSharedBackend<IImageBuilderBackendHandler> (typeof(ImageBuilder));
-			ImagePatternBackendHandler = Backend.CreateSharedBackend<IImagePatternBackendHandler> (typeof(ImagePattern));
+		}
+
+		public static ToolkitEngine Load (string fullTypeName)
+		{
+			ToolkitEngine t = new ToolkitEngine ();
+			if (fullTypeName != null && t.LoadBackend (fullTypeName))
+				return t;
+			
+			if (t.LoadBackend (ToolkitType.Gtk))
+				return t;
+			
+			if (t.LoadBackend (ToolkitType.Cocoa))
+				return t;
+			
+			if (t.LoadBackend (ToolkitType.Wpf))
+				return t;
+			
+			throw new InvalidOperationException ("Xwt engine not found");
+		}
+
+		public static ToolkitEngine Load (ToolkitType type)
+		{
+			ToolkitEngine t = new ToolkitEngine ();
+			if (t.LoadBackend (type))
+				return t;
+			else
+				throw new InvalidOperationException ("Xwt engine not found");
+		}
+
+		bool LoadBackend (ToolkitType type)
+		{
+			switch (type) {
+			case ToolkitType.Gtk:
+				return LoadBackend ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0");
+			case ToolkitType.Cocoa:
+				return LoadBackend ("Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0");
+			case ToolkitType.Wpf:
+				return LoadBackend ("Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=1.0.0.0");
+			default:
+				throw new ArgumentException ("Invalid toolkit type");
+			}
+		}
+
+		bool LoadBackend (string type)
+		{
+			int i = type.IndexOf (',');
+			string assembly = type.Substring (i+1).Trim ();
+			type = type.Substring (0, i).Trim ();
+			try {
+				Assembly asm = Assembly.Load (assembly);
+				if (asm != null) {
+					Type t = asm.GetType (type);
+					if (t != null) {
+						backend = (ToolkitEngineBackend) Activator.CreateInstance (t);
+						Initialize ();
+						return true;
+					}
+				}
+			}
+			catch (Exception ex) {
+				Console.WriteLine (ex);
+			}
+			return false;
+		}
+
+		void Initialize ()
+		{
+			backend.Initialize (this);
+			ContextBackendHandler = Backend.CreateSharedBackend<ContextBackendHandler> (typeof(Context));
+			GradientBackendHandler = Backend.CreateSharedBackend<GradientBackendHandler> (typeof(Gradient));
+			TextLayoutBackendHandler = Backend.CreateSharedBackend<TextLayoutBackendHandler> (typeof(TextLayout));
+			FontBackendHandler = Backend.CreateSharedBackend<FontBackendHandler> (typeof(Font));
+			ClipboardBackend = Backend.CreateSharedBackend<ClipboardBackend> (typeof(Clipboard));
+			ImageBuilderBackendHandler = Backend.CreateSharedBackend<ImageBuilderBackendHandler> (typeof(ImageBuilder));
+			ImagePatternBackendHandler = Backend.CreateSharedBackend<ImagePatternBackendHandler> (typeof(ImagePattern));
 			ImageBackendHandler = Backend.CreateSharedBackend<ImageBackendHandler> (typeof(Image));
 		}
 
@@ -119,13 +188,18 @@ namespace Xwt.Engine
 				throw new InvalidOperationException ("Object doesn't have a backend");
 		}
 
-		internal IContextBackendHandler ContextBackendHandler;
-		internal IGradientBackendHandler GradientBackendHandler;
-		internal ITextLayoutBackendHandler TextLayoutBackendHandler;
-		internal IFontBackendHandler FontBackendHandler;
-		internal IClipboardBackend ClipboardBackend;
-		internal IImageBuilderBackendHandler ImageBuilderBackendHandler;
-		internal IImagePatternBackendHandler ImagePatternBackendHandler;
+		public T CreateFrontend<T> (object ob)
+		{
+			throw new NotImplementedException ();
+		}
+
+		internal ContextBackendHandler ContextBackendHandler;
+		internal GradientBackendHandler GradientBackendHandler;
+		internal TextLayoutBackendHandler TextLayoutBackendHandler;
+		internal FontBackendHandler FontBackendHandler;
+		internal ClipboardBackend ClipboardBackend;
+		internal ImageBuilderBackendHandler ImageBuilderBackendHandler;
+		internal ImagePatternBackendHandler ImagePatternBackendHandler;
 		internal ImageBackendHandler ImageBackendHandler;
 	}
 }

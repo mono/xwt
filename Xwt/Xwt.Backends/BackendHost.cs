@@ -120,14 +120,14 @@ namespace Xwt.Backends
 		{
 			if (usingCustomBackend) {
 				usingCustomBackend = false;
-				backend.InitializeBackend (Parent);
+				backend.InitializeBackend (Parent, engine);
 				OnBackendCreated ();
 			}
 			else if (backend == null) {
 				backend = OnCreateBackend ();
 				if (backend == null)
 					throw new InvalidOperationException ("No backend found for object: " + Parent.GetType ());
-				backend.InitializeBackend (Parent);
+				backend.InitializeBackend (Parent, engine);
 				OnBackendCreated ();
 			}
 		}
