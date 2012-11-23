@@ -57,14 +57,20 @@ namespace Xwt.Mac
 			Center ();
 		}
 
-		public virtual void InitializeBackend (object frontend)
+		public virtual void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
+			this.ToolkitEngine = ToolkitEngine;
 			this.frontend = (Window) frontend;
 		}
 		
 		public void Initialize (IWindowFrameEventSink eventSink)
 		{
 			this.eventSink = eventSink;
+		}
+		
+		public ToolkitEngine ToolkitEngine {
+			get;
+			private set;
 		}
 		
 		public object NativeWidget {

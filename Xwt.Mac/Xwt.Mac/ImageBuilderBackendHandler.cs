@@ -31,30 +31,30 @@ using System.Drawing;
 
 namespace Xwt.Mac
 {
-	public class ImageBuilderBackendHandler: ImageBuilderBackendHandler
+	public class MacImageBuilderBackendHandler: ImageBuilderBackendHandler
 	{
-		public ImageBuilderBackendHandler ()
+		public MacImageBuilderBackendHandler ()
 		{
 		}
 
 		#region IImageBuilderBackendHandler implementation
-		public object CreateImageBuilder (int width, int height, ImageFormat format)
+		public override object CreateImageBuilder (int width, int height, ImageFormat format)
 		{
 			return new NSImage (new SizeF (width, height));
 		}
 
-		public object CreateContext (object backend)
+		public override object CreateContext (object backend)
 		{
 			NSImage img = (NSImage) backend;
 			return new ContextInfo (img);
 		}
 
-		public object CreateImage (object backend)
+		public override object CreateImage (object backend)
 		{
 			return (NSImage) backend;
 		}
 
-		public void Dispose (object backend)
+		public override void Dispose (object backend)
 		{
 			NSImage img = (NSImage) backend;
 			img.Dispose ();

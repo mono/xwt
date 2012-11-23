@@ -29,9 +29,9 @@ using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	public class ImagePatternBackendHandler: ImagePatternBackendHandler
+	public class MacImagePatternBackendHandler: ImagePatternBackendHandler
 	{
-		public object Create (object img)
+		public override object Create (object img)
 		{
 			NSImage nimg = (NSImage) img;
 			return NSColor.FromPatternImage (nimg);

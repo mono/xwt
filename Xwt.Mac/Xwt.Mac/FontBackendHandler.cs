@@ -32,35 +32,35 @@ using MonoMac.Foundation;
 
 namespace Xwt.Mac
 {
-	public class FontBackendHandler: FontBackendHandler
+	public class MacFontBackendHandler: FontBackendHandler
 	{
-		public object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
+		public override object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			object o  = NSFont.FromFontName (fontName, (float)size);
 			return o;
 		}
 
 		#region IFontBackendHandler implementation
-		public object Copy (object handle)
+		public override object Copy (object handle)
 		{
 			NSFont f = (NSFont) handle;
 			return NSFont.FromDescription (f.FontDescriptor, f.FontDescriptor.Matrix);
 		}
 		
-		public object SetSize (object handle, double size, FontSizeUnit sizeUnit)
+		public override object SetSize (object handle, double size, FontSizeUnit sizeUnit)
 		{
 			NSFont f = (NSFont) handle;
 			var matrix = f.FontDescriptor.Matrix ?? new NSAffineTransform ();
 			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSize ((float)size), matrix);
 		}
 
-		public object SetFamily (object handle, string family)
+		public override object SetFamily (object handle, string family)
 		{
 			NSFont f = (NSFont) handle;
 			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithFamily (family), f.FontDescriptor.Matrix);
 		}
 
-		public object SetStyle (object handle, FontStyle style)
+		public override object SetStyle (object handle, FontStyle style)
 		{
 			NSFont f = (NSFont) handle;
 			NSFontSymbolicTraits traits = f.FontDescriptor.SymbolicTraits;
@@ -72,7 +72,7 @@ namespace Xwt.Mac
 			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), f.FontDescriptor.Matrix);
 		}
 
-		public object SetWeight (object handle, FontWeight weight)
+		public override object SetWeight (object handle, FontWeight weight)
 		{
 			NSFont f = (NSFont) handle;
 			NSFontSymbolicTraits traits = f.FontDescriptor.SymbolicTraits;
@@ -84,7 +84,7 @@ namespace Xwt.Mac
 			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), f.FontDescriptor.Matrix);
 		}
 
-		public object SetStretch (object handle, FontStretch stretch)
+		public override object SetStretch (object handle, FontStretch stretch)
 		{
 			NSFont f = (NSFont) handle;
 			NSFontSymbolicTraits traits = f.FontDescriptor.SymbolicTraits;
@@ -104,19 +104,19 @@ namespace Xwt.Mac
 			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), f.FontDescriptor.Matrix);
 		}
 		
-		public double GetSize (object handle)
+		public override double GetSize (object handle)
 		{
 			NSFont f = (NSFont) handle;
 			return f.FontDescriptor.PointSize;
 		}
 
-		public string GetFamily (object handle)
+		public override string GetFamily (object handle)
 		{
 			NSFont f = (NSFont) handle;
 			return f.FamilyName;
 		}
 
-		public FontStyle GetStyle (object handle)
+		public override FontStyle GetStyle (object handle)
 		{
 			NSFont f = (NSFont) handle;
 			if ((f.FontDescriptor.SymbolicTraits & NSFontSymbolicTraits.ItalicTrait) != 0)
@@ -125,7 +125,7 @@ namespace Xwt.Mac
 				return FontStyle.Normal;
 		}
 
-		public FontWeight GetWeight (object handle)
+		public override FontWeight GetWeight (object handle)
 		{
 			NSFont f = (NSFont) handle;
 			if ((f.FontDescriptor.SymbolicTraits & NSFontSymbolicTraits.BoldTrait) != 0)
@@ -134,7 +134,7 @@ namespace Xwt.Mac
 				return FontWeight.Normal;
 		}
 
-		public FontStretch GetStretch (object handle)
+		public override FontStretch GetStretch (object handle)
 		{
 			NSFont f = (NSFont) handle;
 			if ((f.FontDescriptor.SymbolicTraits & NSFontSymbolicTraits.CondensedTrait) != 0)

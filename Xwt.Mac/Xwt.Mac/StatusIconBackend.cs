@@ -39,7 +39,7 @@ namespace Xwt.Mac
 		
 		NSStatusItem statusItem;
 		
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, Xwt.Engine.ToolkitEngine toolkit)
 		{
 			statusItem = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
 		}

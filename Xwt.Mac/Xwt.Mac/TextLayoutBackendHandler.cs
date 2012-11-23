@@ -33,7 +33,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
-	public class TextLayoutBackendHandler: TextLayoutBackendHandler
+	public class MacTextLayoutBackendHandler: TextLayoutBackendHandler
 	{
 		class LayoutInfo
 		{
@@ -45,43 +45,43 @@ namespace Xwt.Mac
 			public TextTrimming TextTrimming;
 		}
 		
-		public object Create (Xwt.Drawing.Context context)
+		public override object Create (Xwt.Drawing.Context context)
 		{
 			return new LayoutInfo ();
 		}
 		
-		public object Create (ICanvasBackend canvas)
+		public override object Create (ICanvasBackend canvas)
 		{
 			return new LayoutInfo ();
 		}
 
-		public void SetText (object backend, string text)
+		public override void SetText (object backend, string text)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
 			li.PlainText = text;
 			UpdateInfo (li);
 		}
 
-		public void SetFont (object backend, Xwt.Drawing.Font font)
+		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Font = (NSFont)WidgetRegistry.GetBackend (font);
+			li.Font = (NSFont)ToolkitEngine.GetBackend (font);
 			UpdateInfo (li);
 		}
 		
-		public void SetWidth (object backend, double value)
+		public override void SetWidth (object backend, double value)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
 			li.Width = value;
 		}
 		
-		public void SetHeight (object backend, double value)
+		public override void SetHeight (object backend, double value)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
 			li.Heigth = value;
 		}
 		
-		public void SetTrimming (object backend, TextTrimming value)
+		public override void SetTrimming (object backend, TextTrimming value)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
 			li.TextTrimming = value;
@@ -102,7 +102,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		public Size GetSize (object backend)
+		public override Size GetSize (object backend)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
 			var s = li.Text.Size;

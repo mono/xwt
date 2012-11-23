@@ -86,7 +86,7 @@ namespace Xwt.Mac
 		
 		public void UpdateLabel (NotebookTab tab, string hint)
 		{
-			IWidgetBackend widget = (IWidgetBackend) WidgetRegistry.GetBackend (tab.Child);
+			IWidgetBackend widget = (IWidgetBackend) ToolkitEngine.GetBackend (tab.Child);
 			var v = GetWidget (widget);
 			var t = FindTab (v);
 			if (t != null)

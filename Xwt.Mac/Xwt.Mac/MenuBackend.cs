@@ -28,12 +28,13 @@ using System;
 using MonoMac.AppKit;
 using Xwt.Backends;
 using MonoMac.Foundation;
+using Xwt.Engine;
 
 namespace Xwt.Mac
 {
 	public class MenuBackend: NSMenu, IMenuBackend
 	{
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
 		{
 		}
 

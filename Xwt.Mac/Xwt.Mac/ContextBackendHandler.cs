@@ -35,9 +35,9 @@ using System.Drawing;
 
 namespace Xwt.Mac
 {
-	public class ContextBackendHandler: ContextBackendHandler
+	public class MacContextBackendHandler: ContextBackendHandler
 	{
-		public ContextBackendHandler ()
+		public MacContextBackendHandler ()
 		{
 		}
 		
@@ -48,36 +48,36 @@ namespace Xwt.Mac
 			return ctx;
 		}
 
-		public void Save (object backend)
+		public override void Save (object backend)
 		{
 			GetContext (backend);
 			NSGraphicsContext.CurrentContext.SaveGraphicsState ();
 		}
 		
-		public void Restore (object backend)
+		public override void Restore (object backend)
 		{
 			GetContext (backend);
 			NSGraphicsContext.CurrentContext.RestoreGraphicsState ();
 		}
 
-		public void SetGlobalAlpha (object backend, double alpha)
+		public override void SetGlobalAlpha (object backend, double alpha)
 		{
 			// TODO
 		}
 
-		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		public override void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.AppendPathWithArc (new System.Drawing.PointF ((float)xc, (float)yc), (float)radius, (float)angle1, (float)angle2, true);
 		}
 
-		public void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		public override void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.AppendPathWithArc (new System.Drawing.PointF ((float)xc, (float)yc), (float)radius, (float)angle1, (float)angle2, false);
 		}
 
-		public void Clip (object backend)
+		public override void Clip (object backend)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.AddClip ();
@@ -85,13 +85,13 @@ namespace Xwt.Mac
 			ctx.Path = new NSBezierPath ();
 		}
 
-		public void ClipPreserve (object backend)
+		public override void ClipPreserve (object backend)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.AddClip ();
 		}
 
-		public void ResetClip (object backend)
+		public override void ResetClip (object backend)
 		{
 			GetContext (backend);
 			var path = new NSBezierPath ();
@@ -99,13 +99,13 @@ namespace Xwt.Mac
 			path.SetClip ();
 		}
 		
-		public void ClosePath (object backend)
+		public override void ClosePath (object backend)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.ClosePath ();
 		}
 
-		public void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
+		public override void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.CurveTo (new System.Drawing.PointF ((float)x1, (float)y1),
@@ -113,7 +113,7 @@ namespace Xwt.Mac
 				new System.Drawing.PointF ((float)x3, (float)y3));
 		}
 
-		public void Fill (object backend)
+		public override void Fill (object backend)
 		{
 			var ctx = GetContext (backend);
 			if (ctx.Pattern is GradientInfo) {
@@ -134,7 +134,7 @@ namespace Xwt.Mac
 			ctx.Path = new NSBezierPath ();
 		}
 
-		public void FillPreserve (object backend)
+		public override void FillPreserve (object backend)
 		{
 			var ctx = GetContext (backend);
 			NSGraphicsContext.CurrentContext.SaveGraphicsState ();
@@ -142,31 +142,31 @@ namespace Xwt.Mac
 			NSGraphicsContext.CurrentContext.RestoreGraphicsState ();
 		}
 
-		public void LineTo (object backend, double x, double y)
+		public override void LineTo (object backend, double x, double y)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.LineTo (new System.Drawing.PointF ((float)x, (float)y));
 		}
 
-		public void MoveTo (object backend, double x, double y)
+		public override void MoveTo (object backend, double x, double y)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.MoveTo (new System.Drawing.PointF ((float)x, (float)y));
 		}
 
-		public void NewPath (object backend)
+		public override void NewPath (object backend)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path = new NSBezierPath ();
 		}
 
-		public void Rectangle (object backend, double x, double y, double width, double height)
+		public override void Rectangle (object backend, double x, double y, double width, double height)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.AppendPathWithRect (new System.Drawing.RectangleF ((float)x, (float)y, (float)width, (float)height));
 		}
 
-		public void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
+		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.RelativeCurveTo (new System.Drawing.PointF ((float)dx1, (float)dy1),
@@ -174,19 +174,19 @@ namespace Xwt.Mac
 				new System.Drawing.PointF ((float)dx3, (float)dy3));
 		}
 
-		public void RelLineTo (object backend, double dx, double dy)
+		public override void RelLineTo (object backend, double dx, double dy)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.RelativeLineTo (new System.Drawing.PointF ((float)dx, (float)dy));
 		}
 
-		public void RelMoveTo (object backend, double dx, double dy)
+		public override void RelMoveTo (object backend, double dx, double dy)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.RelativeMoveTo (new System.Drawing.PointF ((float)dx, (float)dy));
 		}
 
-		public void Stroke (object backend)
+		public override void Stroke (object backend)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.Stroke ();
@@ -194,13 +194,13 @@ namespace Xwt.Mac
 			ctx.Path = new NSBezierPath ();
 		}
 
-		public void StrokePreserve (object backend)
+		public override void StrokePreserve (object backend)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.Stroke ();
 		}
 		
-		public void SetColor (object backend, Xwt.Drawing.Color color)
+		public override void SetColor (object backend, Xwt.Drawing.Color color)
 		{
 			GetContext (backend);
 			NSColor col = NSColor.FromDeviceRgba ((float)color.Red, (float)color.Green, (float)color.Blue, (float)color.Alpha);
@@ -208,13 +208,13 @@ namespace Xwt.Mac
 			col.SetFill ();
 		}
 		
-		public void SetLineWidth (object backend, double width)
+		public override void SetLineWidth (object backend, double width)
 		{
 			var ctx = GetContext (backend);
 			ctx.Path.LineWidth = (float) width;
 		}
 		
-		public void SetLineDash (object backend, double offset, params double[] pattern)
+		public override void SetLineDash (object backend, double offset, params double[] pattern)
 		{
 			var ctx = GetContext (backend);
 			float[] array = new float[pattern.Length];
@@ -225,49 +225,49 @@ namespace Xwt.Mac
 			ctx.Path.SetLineDash (array, (float)offset);
 		}
 		
-		public void SetPattern (object backend, object p)
+		public override void SetPattern (object backend, object p)
 		{
 			var ctx = GetContext (backend);
 			ctx.Pattern = p;
 		}
 		
-		public void SetFont (object backend, Xwt.Drawing.Font font)
+		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 		}
 		
-		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
+		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			GetContext (backend);
-			TextLayoutBackendHandler.Draw (null, WidgetRegistry.GetBackend (layout), x, y);
+			MacTextLayoutBackendHandler.Draw (null, ToolkitEngine.GetBackend (layout), x, y);
 		}
 		
-		public void DrawImage (object backend, object img, double x, double y, double alpha)
+		public override void DrawImage (object backend, object img, double x, double y, double alpha)
 		{
 			GetContext (backend);
 			var image = (NSImage) img;
 			image.Draw (new PointF ((float)x, (float)y), RectangleF.Empty, NSCompositingOperation.SourceOver, (float)alpha);
 		}
 		
-		public void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
+		public override void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
 			GetContext (backend);
 			var image = (NSImage) img;
 			image.DrawInRect (new RectangleF ((float)x, (float)y, (float)width, (float)height), RectangleF.Empty, NSCompositingOperation.SourceOver, (float)alpha);
 		}
 
-		public void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha)
+		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha)
 		{
 			// TODO
 		}
 		
-		public void ResetTransform (object backend)
+		public override void ResetTransform (object backend)
 		{
 			GetContext (backend);
 			NSAffineTransform t = new NSAffineTransform ();
 			t.Set ();
 		}
 		
-		public void Rotate (object backend, double angle)
+		public override void Rotate (object backend, double angle)
 		{
 			GetContext (backend);
 			NSAffineTransform t = new NSAffineTransform ();
@@ -275,7 +275,7 @@ namespace Xwt.Mac
 			t.Concat ();
 		}
 		
-		public void Scale (object backend, double scaleX, double scaleY)
+		public override void Scale (object backend, double scaleX, double scaleY)
 		{
 			GetContext (backend);
 			NSAffineTransform t = new NSAffineTransform ();
@@ -283,7 +283,7 @@ namespace Xwt.Mac
 			t.Concat ();
 		}
 		
-		public void Translate (object backend, double tx, double ty)
+		public override void Translate (object backend, double tx, double ty)
 		{
 			GetContext (backend);
 			NSAffineTransform t = new NSAffineTransform ();
@@ -291,7 +291,7 @@ namespace Xwt.Mac
 			t.Concat ();
 		}
 		
-		public void TransformPoint (object backend, ref double x, ref double y)
+		public override void TransformPoint (object backend, ref double x, ref double y)
 		{
 			GetContext (backend);
 			CGContext gp = NSGraphicsContext.CurrentContext.GraphicsPort;
@@ -302,7 +302,7 @@ namespace Xwt.Mac
 			y = p.Y;
 		}
 
-		public void TransformDistance (object backend, ref double dx, ref double dy)
+		public override void TransformDistance (object backend, ref double dx, ref double dy)
 		{
 			GetContext (backend);
 			CGContext gp = NSGraphicsContext.CurrentContext.GraphicsPort;
@@ -316,7 +316,7 @@ namespace Xwt.Mac
 			dy = p.Y;
 		}
 
-		public void TransformPoints (object backend, Point[] points)
+		public override void TransformPoints (object backend, Point[] points)
 		{
 			GetContext (backend);
 			CGContext gp = NSGraphicsContext.CurrentContext.GraphicsPort;
@@ -330,7 +330,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		public void TransformDistances (object backend, Distance[] vectors)
+		public override void TransformDistances (object backend, Distance[] vectors)
 		{
 			GetContext (backend);
 			CGContext gp = NSGraphicsContext.CurrentContext.GraphicsPort;
@@ -345,7 +345,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		public void Dispose (object backend)
+		public override void Dispose (object backend)
 		{
 			ContextInfo ctx = (ContextInfo) backend;
 			ctx.Dispose ();

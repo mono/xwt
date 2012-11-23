@@ -44,7 +44,7 @@ namespace Xwt.Mac
 		}
 
 		#region IBackend implementation
-		public void InitializeBackend (object frontend)
+		public void InitializeBackend (object frontend, Xwt.Engine.ToolkitEngine toolkit)
 		{
 		}
 
