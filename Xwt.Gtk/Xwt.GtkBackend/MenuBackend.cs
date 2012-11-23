@@ -35,7 +35,7 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.MenuShell menu;
 		
-		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			menu = new Gtk.Menu ();
 			menu.Visible = true;

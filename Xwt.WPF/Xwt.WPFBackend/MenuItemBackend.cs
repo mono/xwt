@@ -185,7 +185,7 @@ namespace Xwt.WPFBackend
 
 		void MenuItemClickHandler (object sender, EventArgs args)
 		{
-			Toolkit.Invoke (eventSink.OnClicked);
+			ApplicationContext.InvokeUserCode (eventSink.OnClicked);
 		}
 	}
 }

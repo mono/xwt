@@ -340,7 +340,7 @@ namespace Xwt.WPFBackend
 			if (calculatingPreferredSize)
 				return wpfMeasure;
 
-			Toolkit.Invoke (delegate
+			ApplicationContext.InvokeUserCode (delegate
 			{
 				if (eventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
 					// Calculate the preferred width through the frontend, if there is an overriden OnGetPreferredWidth
@@ -578,7 +578,7 @@ namespace Xwt.WPFBackend
 		{
 			KeyEventArgs args;
 			if (MapToXwtKeyArgs (e, out args)) {
-				Toolkit.Invoke (delegate {
+				ApplicationContext.InvokeUserCode (delegate {
 					eventSink.OnKeyPressed (args);
 				});
 				if (args.Handled)
@@ -590,7 +590,7 @@ namespace Xwt.WPFBackend
 		{
 			KeyEventArgs args;
 			if (MapToXwtKeyArgs (e, out args)) {
-				Toolkit.Invoke (delegate {
+				ApplicationContext.InvokeUserCode (delegate {
 					eventSink.OnKeyReleased (args);
 				});
 				if (args.Handled)
@@ -613,7 +613,7 @@ namespace Xwt.WPFBackend
 		void WidgetMouseDownHandler (object o, MouseButtonEventArgs e)
 		{
 			var args = ToXwtButtonArgs (e);
-			Toolkit.Invoke (delegate () {
+			ApplicationContext.InvokeUserCode (delegate () {
 				eventSink.OnButtonPressed (args);
 			});
 			if (args.Handled)
@@ -623,7 +623,7 @@ namespace Xwt.WPFBackend
 		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
 		{
 			var args = ToXwtButtonArgs (e);
-			Toolkit.Invoke (delegate () {
+			ApplicationContext.InvokeUserCode (delegate () {
 				eventSink.OnButtonReleased (args);
 			});
 			if (args.Handled)
@@ -643,12 +643,12 @@ namespace Xwt.WPFBackend
 
 		void WidgetGotFocusHandler (object o, RoutedEventArgs e)
 		{
-			Toolkit.Invoke (this.eventSink.OnGotFocus);
+			ApplicationContext.InvokeUserCode (this.eventSink.OnGotFocus);
 		}
 
 		void WidgetLostFocusHandler (object o, RoutedEventArgs e)
 		{
-			Toolkit.Invoke (eventSink.OnLostFocus);
+			ApplicationContext.InvokeUserCode (eventSink.OnLostFocus);
 		}
 
 		DragDropData DragDropInfo {
@@ -763,7 +763,7 @@ namespace Xwt.WPFBackend
 				return;
 
 			DragStartData dragData = null;
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				dragData = eventSink.OnDragStarted ();
 			});
 
@@ -828,21 +828,21 @@ namespace Xwt.WPFBackend
 
 		protected virtual void OnDragFinished (object sender, DragFinishedEventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				this.eventSink.OnDragFinished (e);
 			});
 		}
 
 		protected virtual void OnDragOver (object sender, DragOverEventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				eventSink.OnDragOver (e);
 			});
 		}
 
 		protected virtual void OnDragLeave (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				eventSink.OnDragLeave (e);
 			});
 		}
@@ -878,7 +878,7 @@ namespace Xwt.WPFBackend
 
 			if ((enabledEvents & WidgetEvent.DragOverCheck) > 0) {
 				var checkArgs = new DragOverCheckEventArgs (pos, types, proposedAction);
-				Toolkit.Invoke (delegate {
+				ApplicationContext.InvokeUserCode (delegate {
 					eventSink.OnDragOverCheck (checkArgs);
 				});
 				if (checkArgs.AllowedAction == DragDropAction.None) {
@@ -923,7 +923,7 @@ namespace Xwt.WPFBackend
 
 			if ((enabledEvents & WidgetEvent.DragDropCheck) > 0) {
 				var checkArgs = new DragCheckEventArgs (pos, types, actualEffect.ToXwtDropAction ());
-				bool res = Toolkit.Invoke (delegate {
+				bool res = ApplicationContext.InvokeUserCode (delegate {
 					eventSink.OnDragDropCheck (checkArgs);
 				});
 
@@ -938,7 +938,7 @@ namespace Xwt.WPFBackend
 				FillDataStore (store, e.Data, DragDropInfo.TargetTypes);
 
 				var args = new DragEventArgs (pos, store, actualEffect.ToXwtDropAction ());
-				Toolkit.Invoke (delegate {
+				ApplicationContext.InvokeUserCode (delegate {
 					eventSink.OnDragDrop (args);
 				});
 
@@ -954,17 +954,17 @@ namespace Xwt.WPFBackend
 
 		private void WidgetMouseEnteredHandler (object sender, MouseEventArgs e)
 		{
-			Toolkit.Invoke (eventSink.OnMouseEntered);
+			ApplicationContext.InvokeUserCode (eventSink.OnMouseEntered);
 		}
 
 		private void WidgetMouseExitedHandler (object sender, MouseEventArgs e)
 		{
-			Toolkit.Invoke (eventSink.OnMouseExited);
+			ApplicationContext.InvokeUserCode (eventSink.OnMouseExited);
 		}
 
 		private void WidgetMouseMoveHandler (object sender, MouseEventArgs e)
 		{
-			Toolkit.Invoke (() => {
+			ApplicationContext.InvokeUserCode (() => {
 				var p = e.GetPosition (Widget);
 				eventSink.OnMouseMoved (new MouseMovedEventArgs (
 					e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio));
@@ -979,7 +979,7 @@ namespace Xwt.WPFBackend
 			int jumps = mouseScrollCumulation / 120;
 			mouseScrollCumulation %= 120;
 			var p = e.GetPosition(Widget);
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				for (int i = 0; i < jumps; i++) {
 					eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
 						e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, ScrollDirection.Up));
@@ -994,7 +994,7 @@ namespace Xwt.WPFBackend
 		private void WidgetOnSizeChanged (object sender, SizeChangedEventArgs e)
 		{
 			if (Widget.IsVisible)
-				Toolkit.Invoke (this.eventSink.OnBoundsChanged);
+				ApplicationContext.InvokeUserCode (this.eventSink.OnBoundsChanged);
 		}
 	}
 

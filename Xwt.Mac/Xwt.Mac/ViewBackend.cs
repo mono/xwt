@@ -47,9 +47,9 @@ namespace Xwt.Mac
 		WidgetEvent currentEvents;
 		bool autosize;
 		
-		void IBackend.InitializeBackend (object frontend, ToolkitEngine toolkit)
+		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
 		{
-			ToolkitEngine = toolkit;
+			ApplicationContext = context;
 			this.frontend = (Widget) frontend;
 			if (viewObject != null)
 				viewObject.Frontend = (Widget) frontend;
@@ -87,7 +87,7 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public ToolkitEngine ToolkitEngine {
+		public ApplicationContext ApplicationContext {
 			get;
 			private set;
 		}
@@ -422,7 +422,7 @@ namespace Xwt.Mac
 			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
 			if (ob != null) {
 				var backend = (ViewBackend<T,S>) ToolkitEngine.GetBackend (ob.Frontend);
-				Toolkit.Invoke (delegate {
+				backend.ApplicationContext.InvokeUserCode (delegate {
 					backend.eventSink.OnDragLeave (EventArgs.Empty);
 				});
 			}
@@ -442,7 +442,7 @@ namespace Xwt.Mac
 			
 			if ((backend.currentEvents & WidgetEvent.DragDropCheck) != 0) {
 				var args = new DragCheckEventArgs (pos, types, ConvertAction (di.DraggingSourceOperationMask));
-				bool res = Toolkit.Invoke (delegate {
+				bool res = backend.ApplicationContext.InvokeUserCode (delegate {
 					backend.eventSink.OnDragDropCheck (args);
 				});
 				if (args.Result == DragDropResult.Canceled || !res)
@@ -466,7 +466,7 @@ namespace Xwt.Mac
 				TransferDataStore store = new TransferDataStore ();
 				FillDataStore (store, di.DraggingPasteboard, ob.View.RegisteredDragTypes ());
 				var args = new DragEventArgs (pos, store, ConvertAction (di.DraggingSourceOperationMask));
-				Toolkit.Invoke (delegate {
+				backend.ApplicationContext.InvokeUserCode (delegate {
 					backend.eventSink.OnDragDrop (args);
 				});
 				return args.Success;
@@ -481,14 +481,14 @@ namespace Xwt.Mac
 		
 		protected virtual void OnDragOverCheck (NSDraggingInfo di, DragOverCheckEventArgs args)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				eventSink.OnDragOverCheck (args);
 			});
 		}
 		
 		protected virtual void OnDragOver (NSDraggingInfo di, DragOverEventArgs args)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				eventSink.OnDragOver (args);
 			});
 		}

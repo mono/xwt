@@ -103,7 +103,7 @@ namespace Xwt.GtkBackend
 		{
 			if (ClickEnabled) {
 				var uri = !string.IsNullOrEmpty (link)? new Uri (link, UriKind.RelativeOrAbsolute) : null;
-				Xwt.Engine.Toolkit.Invoke (() => {
+				ApplicationContext.InvokeUserCode (() => {
 					EventSink.OnNavigateToUrl (uri);
 				});
 			}

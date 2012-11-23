@@ -29,6 +29,7 @@ using System.Collections.ObjectModel;
 using Xwt.Backends;
 using Xwt.Drawing;
 using MonoMac.AppKit;
+using Xwt.Engine;
 
 namespace Xwt.Mac
 {
@@ -39,7 +40,7 @@ namespace Xwt.Mac
 		
 		NSStatusItem statusItem;
 		
-		public void InitializeBackend (object frontend, Xwt.Engine.ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			statusItem = NSStatusBar.SystemStatusBar.CreateStatusItem (NSVariableStatusItemLength);
 		}

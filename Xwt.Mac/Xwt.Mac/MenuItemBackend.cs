@@ -37,6 +37,7 @@ namespace Xwt.Mac
 		NSMenuItem item;
 		IMenuItemEventSink eventSink;
 		List<MenuItemEvent> enabledEvents;
+		ApplicationContext context;
 		
 		public MenuItemBackend (): this (new NSMenuItem ())
 		{
@@ -110,8 +111,9 @@ namespace Xwt.Mac
 		}
 		
 		#region IBackend implementation
-		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			this.context = context;
 		}
 
 		public void EnableEvent (object eventId)
@@ -137,7 +139,7 @@ namespace Xwt.Mac
 		
 		void HandleItemActivated (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnClicked ();
 			});
 		}

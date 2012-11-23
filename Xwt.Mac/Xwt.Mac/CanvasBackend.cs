@@ -41,7 +41,7 @@ namespace Xwt.Mac
 
 		public override void Initialize ()
 		{
-			view = new CanvasView (EventSink);
+			view = new CanvasView (EventSink, ApplicationContext);
 			ViewObject = view;
 		}
 		
@@ -90,8 +90,9 @@ namespace Xwt.Mac
 	class CanvasView: NSView, IViewObject
 	{
 		ICanvasEventSink eventSink;
+		ApplicationContext context;
 		
-		public CanvasView (ICanvasEventSink eventSink)
+		public CanvasView (ICanvasEventSink eventSink, ApplicationContext context)
 		{
 			this.eventSink = eventSink;
 		}
@@ -110,7 +111,7 @@ namespace Xwt.Mac
 
 		public override void DrawRect (System.Drawing.RectangleF dirtyRect)
 		{
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnDraw (new ContextInfo (), new Rectangle (dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height));
 			});
 		}
@@ -122,7 +123,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = PointerButton.Right;
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnButtonPressed (args);
 			});
 		}
@@ -134,7 +135,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = PointerButton.Right;
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnButtonReleased (args);
 			});
 		}
@@ -146,7 +147,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = PointerButton.Left;
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnButtonPressed (args);
 			});
 		}
@@ -158,7 +159,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = (PointerButton) theEvent.ButtonNumber + 1;
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnButtonReleased (args);
 			});
 		}
@@ -167,7 +168,7 @@ namespace Xwt.Mac
 		{
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
 			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnMouseMoved (args);
 			});
 		}
@@ -176,7 +177,7 @@ namespace Xwt.Mac
 		{
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
 			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnMouseMoved (args);
 			});
 		}
@@ -184,7 +185,7 @@ namespace Xwt.Mac
 		public override void SetFrameSize (System.Drawing.SizeF newSize)
 		{
 			base.SetFrameSize (newSize);
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnBoundsChanged ();
 			});
 		}

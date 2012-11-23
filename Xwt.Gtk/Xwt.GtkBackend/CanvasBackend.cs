@@ -42,7 +42,7 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Widget = new CustomCanvas ();
-			Widget.Frontend = Frontend;
+			Widget.Backend = this;
 			Widget.EventSink = EventSink;
 			Widget.Events |= Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask;
 			Widget.Show ();
@@ -95,7 +95,7 @@ namespace Xwt.GtkBackend
 	
 	class CustomCanvas: Gtk.EventBox
 	{
-		public Widget Frontend;
+		public CanvasBackend Backend;
 		public ICanvasEventSink EventSink;
 		Dictionary<Gtk.Widget, Rectangle> children = new Dictionary<Gtk.Widget, Rectangle> ();
 		
@@ -128,7 +128,7 @@ namespace Xwt.GtkBackend
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			base.OnSizeRequested (ref requisition);
-			IWidgetSurface ws = Frontend.Surface;
+			IWidgetSurface ws = Backend.Frontend.Surface;
 			int h, w;
 			if (ws.SizeRequestMode == SizeRequestMode.HeightForWidth) {
 				w = (int)ws.GetPreferredWidth ().MinSize;
@@ -157,7 +157,7 @@ namespace Xwt.GtkBackend
 		{
 			base.OnSizeAllocated (allocation);
 			if (!lastAllocation.Equals (allocation))
-				((IWidgetSurface)Frontend).Reallocate ();
+				((IWidgetSurface)Backend.Frontend).Reallocate ();
 			lastAllocation = allocation;
 			foreach (var cr in children) {
 				var r = cr.Value;
@@ -174,7 +174,7 @@ namespace Xwt.GtkBackend
 		
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
-			Toolkit.Invoke (delegate {
+			Backend.ApplicationContext.InvokeUserCode (delegate {
 				var a = evnt.Area;
 				EventSink.OnDraw (CreateContext (), new Rectangle (a.X, a.Y, a.Width, a.Height));
 			});

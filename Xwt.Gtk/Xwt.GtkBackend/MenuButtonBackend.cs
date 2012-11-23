@@ -110,7 +110,7 @@ namespace Xwt.GtkBackend
 		Gtk.Menu CreateMenu ()
 		{
 			MenuBackend m = null;
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				m = (MenuBackend) EventSink.OnCreateMenu ();
 			});
 			return m != null ? m.Menu : null;

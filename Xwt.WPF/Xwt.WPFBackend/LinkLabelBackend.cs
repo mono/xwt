@@ -124,7 +124,7 @@ namespace Xwt.WPFBackend
 
 		void HandleClicked (object sender, EventArgs e)
 		{
-			Xwt.Engine.Toolkit.Invoke (() => {
+			Xwt.Engine.ApplicationContext.InvokeUserCode (() => {
 				EventSink.OnNavigateToUrl (Uri);
 			});
 		}

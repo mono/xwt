@@ -27,11 +27,11 @@
 using System;
 using Xwt.Engine;
 
-namespace Xwt
+namespace Xwt.Backends
 {
 	public interface IBackend
 	{
-		void InitializeBackend (object frontend, ToolkitEngine toolkit);
+		void InitializeBackend (object frontend, ApplicationContext context);
 		void EnableEvent (object eventId);
 		void DisableEvent (object eventId);
 	}

@@ -98,7 +98,7 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetSelectionChanged (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnSelectionChanged ();
 			});
 		}

@@ -112,7 +112,7 @@ namespace Xwt.GtkBackend
 		void HandleToggled (object sender, EventArgs e)
 		{
 			ChangeImageIfDisclosure ();
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnToggled ();
 			});
 		}

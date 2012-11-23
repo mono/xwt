@@ -66,7 +66,7 @@ namespace Xwt.GtkBackend
 
 		void HandleExpandedChanged (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.ExpandChanged ();
 			});
 		}

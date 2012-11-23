@@ -156,7 +156,7 @@ namespace Xwt.GtkBackend
 			}
 			
 			if (toggleEventEnabled) {
-				Toolkit.Invoke (delegate {
+				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnToggled ();
 				});
 			}
@@ -167,7 +167,7 @@ namespace Xwt.GtkBackend
 			if (internalActiveUpdate)
 				return;
 			
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnClicked ();
 			});
 		}

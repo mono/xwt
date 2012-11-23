@@ -50,15 +50,15 @@ namespace Xwt.GtkBackend
 			get { return frontend; }
 		}
 		
-		public ToolkitEngine ToolkitEngine {
+		public ApplicationContext ApplicationContext {
 			get;
 			private set;
 		}
 
-		void IBackend.InitializeBackend (object frontend, ToolkitEngine toolkit)
+		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
 		{
 			this.frontend = (WindowFrame) frontend;
-			ToolkitEngine = toolkit;
+			ApplicationContext = context;
 		}
 
 		public virtual void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
@@ -99,7 +99,7 @@ namespace Xwt.GtkBackend
 		public void Move (double x, double y)
 		{
 			Window.Move ((int)x, (int)y);
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnBoundsChanged (Bounds);
 			});
 		}
@@ -123,7 +123,7 @@ namespace Xwt.GtkBackend
 				Window.Move ((int)value.X, (int)value.Y);
 				Window.Resize ((int)value.Width, (int)value.Height);
 				Window.SetDefaultSize ((int)value.Width, (int)value.Height);
-				Toolkit.Invoke (delegate {
+				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnBoundsChanged (Bounds);
 				});
 			}
@@ -207,14 +207,14 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnBoundsChanged (Bounds);
 			});
 		}
 
 		void HandleCloseRequested (object o, Gtk.DeleteEventArgs args)
 		{
-			Toolkit.Invoke(delegate {
+			ApplicationContext.InvokeUserCode(delegate {
 				args.RetVal = EventSink.OnCloseRequested ();
 			});
 		}

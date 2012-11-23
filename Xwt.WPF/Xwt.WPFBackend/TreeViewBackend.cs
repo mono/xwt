@@ -307,7 +307,7 @@ namespace Xwt.WPFBackend
 
 		private void OnSelectedItemsChanged (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (TreeViewEventSink.OnSelectionChanged);
+			ApplicationContext.InvokeUserCode (TreeViewEventSink.OnSelectionChanged);
 		}
 
 		protected override void OnDragOver (object sender, DragOverEventArgs e)

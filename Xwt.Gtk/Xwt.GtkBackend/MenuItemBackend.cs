@@ -39,6 +39,7 @@ namespace Xwt.GtkBackend
 		Gtk.Label label;
 		List<MenuItemEvent> enabledEvents;
 		bool changingCheck;
+		ApplicationContext context;
 		
 		public MenuItemBackend ()
 			: this (new Gtk.ImageMenuItem (""))
@@ -172,8 +173,9 @@ namespace Xwt.GtkBackend
 			}
 		}*/
 		
-		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			this.context = context;
 		}
 
 		public void EnableEvent (object eventId)
@@ -199,7 +201,7 @@ namespace Xwt.GtkBackend
 		void HandleItemActivated (object sender, EventArgs e)
 		{
 			if (!changingCheck) {
-				Toolkit.Invoke (delegate {
+				context.InvokeUserCode (delegate {
 					eventSink.OnClicked ();
 				});
 			}

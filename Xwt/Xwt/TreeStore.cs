@@ -190,7 +190,7 @@ namespace Xwt
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
 		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
 
-		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 		}
 		

@@ -112,7 +112,7 @@ namespace Xwt.GtkBackend
 		[GLib.ConnectBefore]
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnVisibleRectChanged ();
 			});
 		}

@@ -85,7 +85,7 @@ namespace Xwt.WPFBackend
 
 		void HyperlinkNavigated (object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
 		{
-			Xwt.Engine.Toolkit.Invoke (() => {
+			Xwt.Engine.ApplicationContext.InvokeUserCode (() => {
 				EventSink.OnNavigateToUrl (e.Uri);
 				e.Handled = true;
 			});

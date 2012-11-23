@@ -44,7 +44,7 @@ namespace Xwt.GtkBackend
 			statusItem.Pixbuf = (Pixbuf)imageBackend;
 		}
 		
-		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			statusItem = new Gtk.StatusIcon();
 		}

@@ -33,10 +33,10 @@ namespace Xwt.Backends
 	{
 		internal void Initialize (ToolkitEngine toolkit)
 		{
-			ToolkitEngine = toolkit;
+			ApplicationContext = toolkit.Context;
 		}
 
-		protected ToolkitEngine ToolkitEngine { get; private set; }
+		protected ApplicationContext ApplicationContext { get; private set; }
 	}
 }
 

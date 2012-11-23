@@ -45,7 +45,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			ViewObject = new MacComboBox (EventSink);
+			ViewObject = new MacComboBox (EventSink, ApplicationContext);
 			Widget.SizeToFit ();
 		}
 		
@@ -101,9 +101,11 @@ namespace Xwt.Mac
 	{
 		IComboBoxEventSink eventSink;
 		ITextEntryEventSink entryEventSink;
+		ApplicationContext context;
 		
-		public MacComboBox (IComboBoxEventSink eventSink)
+		public MacComboBox (IComboBoxEventSink eventSink, ApplicationContext context)
 		{
+			this.context = context;
 			this.eventSink = eventSink;
 		}
 		
@@ -124,7 +126,7 @@ namespace Xwt.Mac
 		{
 			base.DidChange (notification);
 			if (entryEventSink != null) {
-				Toolkit.Invoke (delegate {
+				context.InvokeUserCode (delegate {
 					entryEventSink.OnChanged ();
 				});
 			}

@@ -78,7 +78,7 @@ namespace Xwt.GtkBackend
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.ValueChanged ();
 			});
 		}

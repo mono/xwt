@@ -122,7 +122,7 @@ namespace Xwt.WPFBackend
 
 		private void OnTextChanged (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (TextEntryEventSink.OnChanged);
+			ApplicationContext.InvokeUserCode (TextEntryEventSink.OnChanged);
 		}
 
 		private void UpdatePlaceholder (string newPlaceholder, bool focused)

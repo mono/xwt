@@ -30,6 +30,7 @@ using Xwt.Backends;
 
 using Gtk;
 using Cairo;
+using Xwt.Engine;
 
 namespace Xwt.GtkBackend
 {
@@ -199,7 +200,7 @@ namespace Xwt.GtkBackend
 			this.sink = sink;
 		}
 
-		public void InitializeBackend (object frontend, Xwt.Engine.ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			this.frontend = (Popover) frontend;
 		}

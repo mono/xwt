@@ -133,7 +133,7 @@ namespace Xwt.WPFBackend
 			var value = ToNonClientRect (new Rectangle (x, y, 1, 1));
 			window.Top = value.Top;
 			window.Left = value.Left;
-			Toolkit.Invoke (delegate
+			ApplicationContext.InvokeUserCode (delegate
 			{
 				eventSink.OnBoundsChanged (Bounds);
 			});
@@ -144,7 +144,7 @@ namespace Xwt.WPFBackend
 			var value = ToNonClientRect (new Rectangle (0, 0, width, height));
 			window.Width = value.Width;
 			window.Height = value.Height;
-			Toolkit.Invoke (delegate
+			ApplicationContext.InvokeUserCode (delegate
 			{
 				eventSink.OnBoundsChanged (Bounds);
 			});
@@ -162,7 +162,7 @@ namespace Xwt.WPFBackend
 				window.Left = value.Left;
 				window.Width = value.Width;
 				window.Height = value.Height;
-				Toolkit.Invoke (delegate {
+				ApplicationContext.InvokeUserCode (delegate {
 					eventSink.OnBoundsChanged (Bounds);
 				});
 			}
@@ -214,7 +214,7 @@ namespace Xwt.WPFBackend
 
 		void BoundsChangedHandler (object o, EventArgs args)
 		{
-			Toolkit.Invoke (delegate () {
+			ApplicationContext.InvokeUserCode (delegate () {
 				eventSink.OnBoundsChanged (Bounds);
 			});
 		}
@@ -223,7 +223,7 @@ namespace Xwt.WPFBackend
 		{
 			if((bool)e.NewValue)
 			{
-				Toolkit.Invoke (delegate ()
+				ApplicationContext.InvokeUserCode (delegate ()
 				{
 					eventSink.OnShown ();
 				});
@@ -234,7 +234,7 @@ namespace Xwt.WPFBackend
 		{
 			if((bool)e.NewValue == false)
 			{
-				Toolkit.Invoke (delegate ()
+				ApplicationContext.InvokeUserCode (delegate ()
 				{
 					eventSink.OnHidden ();
 				});
@@ -243,7 +243,7 @@ namespace Xwt.WPFBackend
 
 		private void ClosingHandler (object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			Toolkit.Invoke (delegate ()
+			ApplicationContext.InvokeUserCode (delegate ()
 			{
 				e.Cancel = eventSink.OnCloseRequested ();
 			});

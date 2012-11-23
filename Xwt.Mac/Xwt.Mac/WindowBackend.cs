@@ -57,9 +57,9 @@ namespace Xwt.Mac
 			Center ();
 		}
 
-		public virtual void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public virtual void InitializeBackend (object frontend, ApplicationContext context)
 		{
-			this.ToolkitEngine = ToolkitEngine;
+			this.ApplicationContext = context;
 			this.frontend = (Window) frontend;
 		}
 		
@@ -68,7 +68,7 @@ namespace Xwt.Mac
 			this.eventSink = eventSink;
 		}
 		
-		public ToolkitEngine ToolkitEngine {
+		public ApplicationContext ApplicationContext {
 			get;
 			private set;
 		}
@@ -181,14 +181,14 @@ namespace Xwt.Mac
 		}
 
 		void OnHidden () {
-			Toolkit.Invoke (delegate ()
+			ApplicationContext.InvokeUserCode (delegate ()
 			{
 				eventSink.OnHidden ();
 			});
 		}
 
 		void OnShown () {
-			Toolkit.Invoke (delegate ()
+			ApplicationContext.InvokeUserCode (delegate ()
 			{
 				eventSink.OnShown ();
 			});
@@ -225,7 +225,7 @@ namespace Xwt.Mac
 
 		void HandleDidResize (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				eventSink.OnBoundsChanged (((IWindowBackend)this).Bounds);
 			});
 		}

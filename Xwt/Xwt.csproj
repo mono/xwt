@@ -240,7 +240,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Xwt.Backends\IComboBoxEntryBackend.cs" />
-    <Compile Include="Xwt.Engine\Toolkit.cs" />
     <Compile Include="Xwt\TreeViewStatus.cs" />
     <Compile Include="Xwt\Clipboard.cs" />
     <Compile Include="Xwt\PointerButton.cs" />
@@ -367,6 +366,7 @@
     <Compile Include="Xwt.Backends\ImageBuilderBackendHandler.cs" />
     <Compile Include="Xwt.Backends\TextLayoutBackendHandler.cs" />
     <Compile Include="Xwt.Backends\ClipboardBackend.cs" />
+    <Compile Include="Xwt.Backends\ApplicationContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

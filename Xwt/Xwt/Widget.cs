@@ -1080,7 +1080,7 @@ namespace Xwt
 				QueueForSizeCheck (Parent);
 				if (!delayedSizeNegotiationRequested) {
 					delayedSizeNegotiationRequested = true;
-					Toolkit.QueueExitAction (DelayedResizeRequest);
+					Application.QueueExitAction (DelayedResizeRequest);
 				}
 			}
 			else if (ParentWindow is Window) {
@@ -1098,7 +1098,7 @@ namespace Xwt
 			resizeWindows.Add ((Window)window);
 			if (!delayedSizeNegotiationRequested) {
 				delayedSizeNegotiationRequested = true;
-				Toolkit.QueueExitAction (DelayedResizeRequest);
+				Application.QueueExitAction (DelayedResizeRequest);
 			}
 		}
 		

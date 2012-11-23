@@ -44,7 +44,7 @@ namespace Xwt.Backends
 		}
 
 		#region IBackend implementation
-		void IBackend.InitializeBackend (object frontend, ToolkitEngine toolkit)
+		void IBackend.InitializeBackend (object frontend, ApplicationContext toolkit)
 		{
 			Frontend = (Widget) frontend;
 		}

@@ -84,7 +84,7 @@ namespace Xwt.Mac
 
 		void HandleClicked (object sender, EventArgs e)
 		{
-			Xwt.Engine.Toolkit.Invoke (() => {
+			ApplicationContext.InvokeUserCode (() => {
 				EventSink.OnNavigateToUrl (uri);
 			});
 		}

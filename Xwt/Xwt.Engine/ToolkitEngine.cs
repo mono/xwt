@@ -27,6 +27,7 @@ using System;
 using Xwt.Backends;
 using Xwt.Drawing;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace Xwt.Engine
 {
@@ -35,9 +36,18 @@ namespace Xwt.Engine
 		static ToolkitEngine currentEngine;
 
 		ToolkitEngineBackend backend;
+		ApplicationContext context;
+
+		int inUserCode;
+		Queue<Action> exitActions = new Queue<Action> ();
+		bool exitCallbackRegistered;
 
 		public static ToolkitEngine CurrentEngine {
 			get { return currentEngine; }
+		}
+
+		internal ApplicationContext Context {
+			get { return context; }
 		}
 
 		internal ToolkitEngineBackend Backend {
@@ -46,6 +56,7 @@ namespace Xwt.Engine
 
 		private ToolkitEngine ()
 		{
+			context = new ApplicationContext (this);
 		}
 
 		public static ToolkitEngine Load (string fullTypeName)
@@ -147,17 +158,86 @@ namespace Xwt.Engine
 			}
 		}
 
-		public void Invoke (Action a)
+		public bool Invoke (Action a)
 		{
 			var oldEngine = currentEngine;
 			try {
 				currentEngine = this;
+				EnterUserCode ();
 				a ();
+				ExitUserCode (null);
+				return true;
+			} catch (Exception ex) {
+				ExitUserCode (ex);
+				return false;
 			} finally {
 				currentEngine = oldEngine;
 			}
 		}
+		
+		internal void InvokePlatformCode (Action a)
+		{
+			try {
+				ExitUserCode (null);
+				a ();
+			} finally {
+				EnterUserCode ();
+			}
+		}
+		
+		internal void EnterUserCode ()
+		{
+			inUserCode++;
+		}
+		
+		internal void ExitUserCode (Exception error)
+		{
+			if (error != null) {
+				Invoke (delegate {
+					Application.NotifyException (error);
+				});
+			}
+			if (inUserCode == 1) {
+				while (exitActions.Count > 0) {
+					try {
+						exitActions.Dequeue ()();
+					} catch (Exception ex) {
+						Invoke (delegate {
+							Application.NotifyException (ex);
+						});
+					}
+				}
+			}
+			inUserCode--;
+		}
 
+		void DispatchExitActions ()
+		{
+			// This pair of calls will flush the exit action queue
+			exitCallbackRegistered = false;
+			EnterUserCode ();
+			ExitUserCode (null);
+		}
+		
+		internal void QueueExitAction (Action a)
+		{
+			exitActions.Enqueue (a);
+
+			if (inUserCode == 0) {
+				// Not in an XWT handler. This may happen when embedding XWT in another toolkit and
+				// XWT widgets are manipulated from event handlers of the native toolkit which
+				// are not invoked using ApplicationContext.InvokeUserCode.
+				if (!exitCallbackRegistered) {
+					exitCallbackRegistered = true;
+					// Try to use a native method of queuing exit actions
+					ToolkitEngine.CurrentEngine.Backend.InvokeBeforeMainLoop (DispatchExitActions);
+				}
+			}
+		}
+		
+		public bool InUserCode {
+			get { return inUserCode > 0; }
+		}
 		public WindowFrame WrapWindow (object nativeWindow)
 		{
 			return new NativeWindowFrame (backend.GetBackendForWindow (nativeWindow));

@@ -71,7 +71,7 @@ namespace Xwt.Mac
 			Widget.Menu = new NSMenu ();
 			Widget.SizeToFit ();
 			Widget.Activated += delegate {
-				Toolkit.Invoke (delegate {
+				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnSelectionChanged ();
 				});
 				Widget.SynchronizeTitleAndSelectedItem ();
@@ -170,7 +170,7 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.SelectItem (value);
-				Toolkit.Invoke (delegate {
+				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnSelectionChanged ();
 				});
 				Widget.SynchronizeTitleAndSelectedItem ();

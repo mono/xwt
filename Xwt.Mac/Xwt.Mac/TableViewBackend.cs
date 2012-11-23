@@ -142,7 +142,7 @@ namespace Xwt.Mac
 
 		void HandleTreeSelectionDidChange (NSNotification notif)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnSelectionChanged ();
 			});
 		}

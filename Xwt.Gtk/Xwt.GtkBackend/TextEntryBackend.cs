@@ -157,7 +157,7 @@ namespace Xwt.GtkBackend
 
 		void HandleChanged (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnChanged ();
 			});
 		}

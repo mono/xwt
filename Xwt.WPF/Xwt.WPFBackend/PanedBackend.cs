@@ -165,7 +165,7 @@ namespace Xwt.WPFBackend
 		internal void NotifyPositionChanged ()
 		{
 			if (this.reportPositionChanged)
-				Toolkit.Invoke (((IPanedEventSink)EventSink).OnPositionChanged);
+				ApplicationContext.InvokeUserCode (((IPanedEventSink)EventSink).OnPositionChanged);
 		}
 
 		PanelInfo GetPanel (int panel)

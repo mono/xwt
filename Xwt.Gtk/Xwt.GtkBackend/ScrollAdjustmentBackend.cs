@@ -33,6 +33,7 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.Adjustment adjustment;
 		IScrollAdjustmentEventSink eventSink;
+		ApplicationContext context;
 		
 		public Gtk.Adjustment Adjustment {
 			get { return adjustment; }
@@ -48,8 +49,9 @@ namespace Xwt.GtkBackend
 		}
 		
 		#region IBackend implementation
-		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			this.context = context;
 			if (adjustment == null)
 				adjustment = new Gtk.Adjustment (0, 0, 0, 0, 0, 0);
 		}
@@ -77,7 +79,7 @@ namespace Xwt.GtkBackend
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnValueChanged ();
 			});
 		}

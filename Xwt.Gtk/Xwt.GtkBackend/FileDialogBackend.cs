@@ -43,7 +43,7 @@ namespace Xwt.GtkBackend
 			this.action = action;
 		}
 
-		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 		}
 		

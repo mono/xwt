@@ -47,7 +47,7 @@ namespace Xwt.Mac
 			if (ViewObject is MacComboBox) {
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else {
-				ViewObject = new CustomTextField (EventSink);
+				ViewObject = new CustomTextField (EventSink, ApplicationContext);
 				Widget.SizeToFit ();
 			}
 		}
@@ -100,9 +100,11 @@ namespace Xwt.Mac
 	class CustomTextField: NSTextField, IViewObject
 	{
 		ITextEntryEventSink eventSink;
+		ApplicationContext context;
 		
-		public CustomTextField (ITextEntryEventSink eventSink)
+		public CustomTextField (ITextEntryEventSink eventSink, ApplicationContext context)
 		{
+			this.context = context;
 			this.eventSink = eventSink;
 		}
 		
@@ -117,7 +119,7 @@ namespace Xwt.Mac
 		public override void DidChange (MonoMac.Foundation.NSNotification notification)
 		{
 			base.DidChange (notification);
-			Toolkit.Invoke (delegate {
+			context.InvokeUserCode (delegate {
 				eventSink.OnChanged ();
 			});
 		}

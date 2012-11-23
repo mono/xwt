@@ -134,7 +134,7 @@ namespace Xwt.WPFBackend
 
 		private void OnCurrentTabChanged (object sender, SelectionChangedEventArgs e)
 		{
-			Toolkit.Invoke (NotebookEventSink.OnCurrentTabChanged);
+			ApplicationContext.InvokeUserCode (NotebookEventSink.OnCurrentTabChanged);
 		}
 
 		protected TabControl TabControl {

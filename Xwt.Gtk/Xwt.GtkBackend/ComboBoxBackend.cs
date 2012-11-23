@@ -63,7 +63,7 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreePath path = model.GetPath (iter);
 			bool res = false;
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				res = EventSink.RowIsSeparator (path.Indices[0]);
 			});
 			return res;
@@ -89,7 +89,7 @@ namespace Xwt.GtkBackend
 
 		void HandleChanged (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnSelectionChanged ();
 			});
 		}

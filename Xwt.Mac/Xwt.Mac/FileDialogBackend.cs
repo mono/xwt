@@ -28,6 +28,7 @@ using Xwt.Backends;
 using MonoMac.AppKit;
 using System.IO;
 using System.Linq;
+using Xwt.Engine;
 
 namespace Xwt.Mac
 {
@@ -95,7 +96,7 @@ namespace Xwt.Mac
 
 		#region IBackend implementation
 
-		public void InitializeBackend (object frontend, Xwt.Engine.ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 
 		}

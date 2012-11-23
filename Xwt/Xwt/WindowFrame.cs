@@ -318,7 +318,7 @@ namespace Xwt
 		{
 			if (!pendingReallocation) {
 				pendingReallocation = true;
-				Toolkit.QueueExitAction (delegate {
+				BackendHost.ToolkitEngine.QueueExitAction (delegate {
 					pendingReallocation = false;
 					OnReallocate ();
 				});

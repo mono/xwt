@@ -153,7 +153,7 @@ namespace Xwt
 		public event EventHandler<ListRowEventArgs> RowChanged;
 		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
 
-		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 		}
 		

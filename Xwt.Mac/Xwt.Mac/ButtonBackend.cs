@@ -42,7 +42,7 @@ namespace Xwt.Mac
 		#region IButtonBackend implementation
 		public override void Initialize ()
 		{
-			ViewObject = new MacButton (EventSink);
+			ViewObject = new MacButton (EventSink, ApplicationContext);
 			Widget.SizeToFit ();
 		}
 
@@ -108,20 +108,20 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public MacButton (IButtonEventSink eventSink)
+		public MacButton (IButtonEventSink eventSink, ApplicationContext context)
 		{
 			BezelStyle = NSBezelStyle.Rounded;
 			Activated += delegate {
-				Toolkit.Invoke (delegate {
+				context.InvokeUserCode (delegate {
 					eventSink.OnClicked ();
 				});
 			};
 		}
 		
-		public MacButton (ICheckBoxEventSink eventSink)
+		public MacButton (ICheckBoxEventSink eventSink, ApplicationContext context)
 		{
 			Activated += delegate {
-				Toolkit.Invoke (delegate {
+				context.InvokeUserCode (delegate {
 					eventSink.OnClicked ();
 				});
 			};

@@ -68,14 +68,14 @@ namespace Xwt
 		
 		public static void Run ()
 		{
-			Toolkit.InvokePlatformCode (delegate {
+			toolkit.InvokePlatformCode (delegate {
 				engine.RunApplication ();
 			});
 		}
 		
 		public static void Exit ()
 		{
-			Toolkit.InvokePlatformCode (delegate {
+			toolkit.InvokePlatformCode (delegate {
 				engine.ExitApplication ();
 			});
 		}
@@ -89,11 +89,11 @@ namespace Xwt
 		{
 			engine.InvokeAsync (delegate {
 				try {
-					Toolkit.EnterUserCode ();
+					toolkit.EnterUserCode ();
 					action ();
-					Toolkit.ExitUserCode (null);
+					toolkit.ExitUserCode (null);
 				} catch (Exception ex) {
-					Toolkit.ExitUserCode (ex);
+					toolkit.ExitUserCode (ex);
 				}
 			});
 		}
@@ -139,11 +139,11 @@ namespace Xwt
 			t.Id = engine.TimerInvoke (delegate {
 				bool res = false;
 				try {
-					Toolkit.EnterUserCode ();
+					toolkit.EnterUserCode ();
 					res = action ();
-					Toolkit.ExitUserCode (null);
+					toolkit.ExitUserCode (null);
 				} catch (Exception ex) {
-					Toolkit.ExitUserCode (ex);
+					toolkit.ExitUserCode (ex);
 				}
 				return res;
 			}, timeSpan);
@@ -153,11 +153,16 @@ namespace Xwt
 		public static void DispatchPendingEvents ()
 		{
 			try {
-				Toolkit.ExitUserCode (null);
+				toolkit.ExitUserCode (null);
 				engine.DispatchPendingEvents ();
 			} finally {
-				Toolkit.EnterUserCode ();
+				toolkit.EnterUserCode ();
 			}
+		}
+
+		public static void QueueExitAction (Action a)
+		{
+			ToolkitEngine.CurrentEngine.QueueExitAction (a);
 		}
 		
 		public static StatusIcon CreateStatusIcon ()
@@ -199,7 +204,7 @@ namespace Xwt
 		
 		static void InitBackend (string type)
 		{
-			Toolkit.EnterUserCode ();
+			toolkit.EnterUserCode ();
 			if (type != null && LoadBackend (type))
 				return;
 			

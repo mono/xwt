@@ -96,7 +96,7 @@ namespace Xwt.Mac
 			this.sink = sink;
 		}
 
-		public void InitializeBackend (object frontend, ToolkitEngine toolkit)
+		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 		}
 

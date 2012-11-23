@@ -151,7 +151,7 @@ namespace Xwt.WPFBackend
 
 		void HandleWidgetClicked (object sender, EventArgs e)
 		{
-			Toolkit.Invoke (EventSink.OnClicked);
+			ApplicationContext.InvokeUserCode (EventSink.OnClicked);
 		}
 
 		private static ResourceDictionary buttonsDictionary;
