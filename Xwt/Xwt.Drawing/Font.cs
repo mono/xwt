@@ -65,13 +65,14 @@ namespace Xwt.Drawing
 		public static Font FromName (string name)
 		{
 			name = name.Trim ();
-			string[] parts = name.Split (new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-			if (parts.Length == 0)
+			if (name.Length == 0)
 				throw new ArgumentException ("Font family name not specified");
+			int sizeIndex = name.LastIndexOf (' ');
 			double size = 0;
 			FontSizeUnit unit = FontSizeUnit.Points;
-			if (parts.Length > 1) {
-				var s = parts[parts.Length - 1];
+			if (sizeIndex != -1) {
+				var s = name.Substring (sizeIndex + 1);
+				name = name.Substring (0, sizeIndex);
 				if (s.EndsWith ("px")) {
 					s = s.Substring (0, s.Length - 2);
 					unit = FontSizeUnit.Pixels;
@@ -79,7 +80,7 @@ namespace Xwt.Drawing
 				if (!double.TryParse (s, out size))
 					throw new ArgumentException ("Invalid font size: " + s);
 			}
-			return new Font (handler.Create (parts[0], size, unit, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal));
+			return new Font (handler.Create (name, size, unit, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal));
 		}
 		
 		public Font WithFamily (string fontFamily)
