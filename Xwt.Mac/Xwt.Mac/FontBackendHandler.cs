@@ -50,14 +50,13 @@ namespace Xwt.Mac
 		public object SetSize (object handle, double size, FontSizeUnit sizeUnit)
 		{
 			NSFont f = (NSFont) handle;
-			var matrix = f.FontDescriptor.Matrix ?? new NSAffineTransform ();
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSize ((float)size), matrix);
+			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSize ((float)size), null);
 		}
 
 		public object SetFamily (object handle, string family)
 		{
 			NSFont f = (NSFont) handle;
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithFamily (family), f.FontDescriptor.Matrix);
+			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithFamily (family), null);
 		}
 
 		public object SetStyle (object handle, FontStyle style)
@@ -69,7 +68,7 @@ namespace Xwt.Mac
 			else
 				traits &= ~NSFontSymbolicTraits.ItalicTrait;
 			
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), f.FontDescriptor.Matrix);
+			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), null);
 		}
 
 		public object SetWeight (object handle, FontWeight weight)
@@ -81,7 +80,7 @@ namespace Xwt.Mac
 			else
 				traits &= ~NSFontSymbolicTraits.BoldTrait;
 			
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), f.FontDescriptor.Matrix);
+			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), null);
 		}
 
 		public object SetStretch (object handle, FontStretch stretch)
@@ -101,13 +100,13 @@ namespace Xwt.Mac
 				traits &= ~NSFontSymbolicTraits.CondensedTrait;
 			}
 			
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), f.FontDescriptor.Matrix);
+			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), null);
 		}
 		
 		public double GetSize (object handle)
 		{
 			NSFont f = (NSFont) handle;
-			return f.FontDescriptor.PointSize;
+			return f.PointSize;
 		}
 
 		public string GetFamily (object handle)

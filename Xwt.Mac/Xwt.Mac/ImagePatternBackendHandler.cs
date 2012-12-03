@@ -24,8 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Drawing;
 using Xwt.Backends;
 using MonoMac.AppKit;
+using MonoMac.CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -34,7 +36,10 @@ namespace Xwt.Mac
 		public object Create (object img)
 		{
 			NSImage nimg = (NSImage) img;
-			return NSColor.FromPatternImage (nimg);
+			RectangleF bounds = new RectangleF (PointF.Empty, nimg.Size);
+			CGImage cgimg = nimg.AsCGImage (RectangleF.Empty, null, null);
+			return new CGPattern (bounds, CGAffineTransform.MakeScale (1f, -1f), bounds.Width, bounds.Height,
+			                      CGPatternTiling.ConstantSpacing, true, ctx => ctx.DrawImage (bounds, cgimg));
 		}
 	}
 }
