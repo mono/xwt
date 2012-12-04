@@ -47,6 +47,7 @@ namespace Samples
 			Curves1 (ctx, x, y + 80);
 			Curves2 (ctx, x + 100, y + 80);
 
+			Path (ctx, x + 210, y + 20);
 		}
 
 		/// <summary>
@@ -224,7 +225,38 @@ namespace Samples
 			ctx.Stroke ();
 			
 			ctx.Restore ();
-		}	
+		}
+
+		public void Path (Context ctx, double px, double py)
+		{
+			ctx.Save ();
+			ctx.Translate (px, py);
+
+			var path = new Path ();
+
+			path.MoveTo (0.44, 18);
+			path.LineTo (-1, 18);
+			path.LineTo (-1, 26);
+			path.LineTo (0.44, 26);
+			path.LineTo (0, 42);
+			path.LineTo (29, 21.98);
+			path.LineTo (29, 21.98);
+			path.LineTo (0, 2);
+			path.LineTo (0.44, 18);
+
+			ctx.AppendPath (path);
+			ctx.SetColor (Colors.Black);
+			ctx.SetLineWidth (2);
+			ctx.Stroke ();
+
+			ctx.Rotate (180);
+			ctx.AppendPath (path);
+			ctx.SetColor (Colors.Red);
+			ctx.SetLineDash (0, 5);
+			ctx.Stroke ();
+
+			ctx.Restore ();
+		}
 	}
 }
 

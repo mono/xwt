@@ -364,6 +364,8 @@
     <Compile Include="Xwt.Backends\IRichTextViewBackend.cs" />
     <Compile Include="Xwt.Formats\TextFormat.cs" />
     <Compile Include="Xwt.Formats\MarkdownTextFormat.cs" />
+    <Compile Include="Xwt.Drawing\Path.cs" />
+    <Compile Include="Xwt.Backends\IPathBackendHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

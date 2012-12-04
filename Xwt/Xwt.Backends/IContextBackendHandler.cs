@@ -30,43 +30,23 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IContextBackendHandler: IBackendHandler
+	public interface IContextBackendHandler: IPathBackendHandler
 	{
 		void Save (object backend);
 
 		void Restore (object backend);
 
-		void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2);
-
-		void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2);
-
 		void Clip (object backend);
 		
-		void ClipPreserve(object backend);
+		void ClipPreserve (object backend);
 		
 		void ResetClip (object backend);
-		
-		void ClosePath(object backend);
-		
-		void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3);
-		
+
 		void Fill (object backend);
 		
 		void FillPreserve (object backend);
 		
-		void LineTo (object backend, double x, double y);
-		
-		void MoveTo (object backend, double x, double y);
-		
 		void NewPath (object backend);
-		
-		void Rectangle (object backend, double x, double y, double width, double height);
-		
-		void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3);
-		
-		void RelLineTo (object backend, double dx, double dy);
-		
-		void RelMoveTo (object backend, double dx, double dy);
 		
 		void Stroke (object backend);
 		
@@ -106,13 +86,13 @@ namespace Xwt.Backends
 
 		void TransformDistances (object backend, Distance[] vectors);
 
+		bool IsPointInStroke (object backend, double x, double y);
+
 		/// <summary>
 		/// Sets a global alpha to be applied to all drawing operations.
 		/// It doesn't affect colors that have already been set.
 		/// </summary>
 		void SetGlobalAlpha (object backend, double globalAlpha);
-		
-		void Dispose (object backend);
 	}
 }
 

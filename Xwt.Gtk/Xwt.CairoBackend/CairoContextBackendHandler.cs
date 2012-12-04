@@ -343,15 +343,44 @@ namespace Xwt.CairoBackend
 			}
 		}
 
+		public object CreatePath ()
+		{
+			Cairo.Surface sf = new Cairo.ImageSurface (null, Cairo.Format.A1, 0, 0, 0);
+			return new CairoContextBackend {
+				TempSurface = sf,
+				Context = new Cairo.Context (sf)
+			};
+		}
+
+		public void AppendPath (object backend, object otherBackend)
+		{
+			Cairo.Context dest = ((CairoContextBackend)backend).Context;
+			Cairo.Context src = ((CairoContextBackend)otherBackend).Context;
+
+			using (var path = src.CopyPath ())
+				dest.AppendPath (path);
+		}
+
+		public bool IsPointInFill (object backend, double x, double y)
+		{
+			return ((CairoContextBackend)backend).Context.InFill (x, y);
+		}
+
+		public bool IsPointInStroke (object backend, double x, double y)
+		{
+			return ((CairoContextBackend)backend).Context.InStroke (x, y);
+		}
+
 		public void Dispose (object backend)
 		{
 			var ctx = (CairoContextBackend) backend;
 			IDisposable d = (IDisposable) ctx.Context;
 			d.Dispose ();
-            d = (IDisposable)ctx.TempSurface;
+			d = (IDisposable)ctx.TempSurface;
 			if (d != null)
 				d.Dispose ();
 		}
+
 		#endregion
 	}
 }
