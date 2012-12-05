@@ -57,6 +57,15 @@ namespace Xwt.GtkBackend
 			get { return (ICanvasEventSink)base.EventSink; }
 		}
 
+		public override void UpdateLayout ()
+		{
+			base.UpdateLayout ();
+
+			// This is required to make sure that subsequent QueueDraws invalidate the
+			// whole new area, not the area that covers the old size of the widget.
+			Widget.QueueResize ();
+		}
+
 		public void QueueDraw ()
 		{
 			Widget.QueueDraw ();
