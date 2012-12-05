@@ -69,7 +69,7 @@ namespace Xwt
 			{
 				Context ctx = null;
 				try {
-					ctx = new Context (context);
+					ctx = new Context (context, ToolkitEngine);
 					((Canvas)Parent).OnDraw (ctx, dirtyRect);
 				}
 				finally {

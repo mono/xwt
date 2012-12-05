@@ -25,34 +25,20 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using Xwt.Engine;
 
 namespace Xwt.Drawing
 {
 	public class Path: XwtObject, IDisposable
 	{
-		static IPathBackendHandler pathHandler;
-
-		static Path ()
-		{
-			pathHandler = WidgetRegistry.CreateSharedBackend<IPathBackendHandler> (typeof(Path));
-		}
-
-		IPathBackendHandler handler;
-
-		protected override IBackendHandler BackendHandler {
-			get {
-				return handler;
-			}
-		}
+		PathBackendHandler handler;
 
 		public Path ()
 		{
-			handler = pathHandler;
+			handler = ToolkitEngine.PathBackendHandler;
 			Backend = handler.CreatePath ();
 		}
 
-		internal Path (object backend, IPathBackendHandler h): base (backend)
+		internal Path (object backend, Toolkit toolkit, PathBackendHandler h): base (backend, toolkit)
 		{
 			handler = h;
 		}

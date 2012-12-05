@@ -30,7 +30,6 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 using MonoMac.CoreText;
 using MonoMac.CoreGraphics;
-using Xwt.Engine;
 using Xwt.Drawing;
 
 using PointF = System.Drawing.PointF;

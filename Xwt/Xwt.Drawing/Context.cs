@@ -36,12 +36,7 @@ namespace Xwt.Drawing
 		Font font;
 		double globalAlpha = 1;
 		
-		internal Context (object backend): base (backend)
-		{
-			handler = ToolkitEngine.ContextBackendHandler;
-		}
-
-		internal Context (object backend): base (backend, ToolkitEngine.ContextBackendHandler)
+		internal Context (object backend, Toolkit toolkit): base (backend, toolkit, toolkit.ContextBackendHandler)
 		{
 			handler = ToolkitEngine.ContextBackendHandler;
 		}

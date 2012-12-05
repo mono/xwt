@@ -113,7 +113,7 @@ namespace Xwt.Mac
 			CGContextBackend gc = (CGContextBackend)backend;
 			CGContext ctx = SetupContextForDrawing (gc, out needsRestore);
 			if (gc.Gradient != null)
-				GradientBackendHandler.Draw (ctx, gc.Gradient);
+				MacGradientBackendHandler.Draw (ctx, gc.Gradient);
 			else
 				ctx.DrawPath (CGPathDrawingMode.Fill);
 			if (needsRestore)
@@ -238,7 +238,7 @@ namespace Xwt.Mac
 		{
 			bool needsRestore;
 			CGContext ctx = SetupContextForDrawing ((CGContextBackend)backend, out needsRestore);
-			MacTextLayoutBackendHandler.Draw (ctx, WidgetRegistry.GetBackend (layout), x, y);
+			MacTextLayoutBackendHandler.Draw (ctx, Toolkit.GetBackend (layout), x, y);
 			if (needsRestore)
 				ctx.RestoreState ();
 		}
@@ -342,12 +342,12 @@ namespace Xwt.Mac
 			}
 		}
 
-		public object CreatePath ()
+		public override object CreatePath ()
 		{
 			return new CGPath ();
 		}
 
-		public void AppendPath (object backend, object otherBackend)
+		public override void AppendPath (object backend, object otherBackend)
 		{
 			CGContext dest = ((CGContextBackend)backend).Context;
 			CGContextBackend src = otherBackend as CGContextBackend;
@@ -360,17 +360,17 @@ namespace Xwt.Mac
 			}
 		}
 
-		public bool IsPointInFill (object backend, double x, double y)
+		public override bool IsPointInFill (object backend, double x, double y)
 		{
 			return ((CGContextBackend)backend).Context.PathContainsPoint (new PointF ((float)x, (float)y), CGPathDrawingMode.Fill);
 		}
 
-		public bool IsPointInStroke (object backend, double x, double y)
+		public override bool IsPointInStroke (object backend, double x, double y)
 		{
 			return ((CGContextBackend)backend).Context.PathContainsPoint (new PointF ((float)x, (float)y), CGPathDrawingMode.Stroke);
 		}
 
-		public void Dispose (object backend)
+		public override void Dispose (object backend)
 		{
 			((CGContextBackend)backend).Context.Dispose ();
 		}

@@ -343,7 +343,7 @@ namespace Xwt.CairoBackend
 			}
 		}
 
-		public object CreatePath ()
+		public override object CreatePath ()
 		{
 			Cairo.Surface sf = new Cairo.ImageSurface (null, Cairo.Format.A1, 0, 0, 0);
 			return new CairoContextBackend {
@@ -352,7 +352,7 @@ namespace Xwt.CairoBackend
 			};
 		}
 
-		public void AppendPath (object backend, object otherBackend)
+		public override void AppendPath (object backend, object otherBackend)
 		{
 			Cairo.Context dest = ((CairoContextBackend)backend).Context;
 			Cairo.Context src = ((CairoContextBackend)otherBackend).Context;
@@ -361,17 +361,17 @@ namespace Xwt.CairoBackend
 				dest.AppendPath (path);
 		}
 
-		public bool IsPointInFill (object backend, double x, double y)
+		public override bool IsPointInFill (object backend, double x, double y)
 		{
 			return ((CairoContextBackend)backend).Context.InFill (x, y);
 		}
 
-		public bool IsPointInStroke (object backend, double x, double y)
+		public override bool IsPointInStroke (object backend, double x, double y)
 		{
 			return ((CairoContextBackend)backend).Context.InStroke (x, y);
 		}
 
-		public void Dispose (object backend)
+		public override void Dispose (object backend)
 		{
 			var ctx = (CairoContextBackend) backend;
 			IDisposable d = (IDisposable) ctx.Context;

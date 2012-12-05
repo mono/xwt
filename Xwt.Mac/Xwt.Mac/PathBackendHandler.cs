@@ -26,7 +26,6 @@
 
 using System;
 using Xwt.Backends;
-using Xwt.Engine;
 using MonoMac.AppKit;
 using Xwt.Drawing;
 using MonoMac.Foundation;
@@ -35,76 +34,76 @@ using System.Drawing;
 
 namespace Xwt.Mac
 {
-	public class PathBackendHandler: IPathBackendHandler
+	public class MacPathBackendHandler: PathBackendHandler
 	{
 		const double degrees = System.Math.PI / 180d;
 
-		public PathBackendHandler ()
+		public MacPathBackendHandler ()
 		{
 		}
 
-		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		public override void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
 			((CGPath)backend).AddArc ((float)xc, (float)yc, (float)radius, (float)(angle1 * degrees), (float)(angle2 * degrees), false);
 		}
 
-		public void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		public override void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
 			((CGPath)backend).AddArc ((float)xc, (float)yc, (float)radius, (float)(angle1 * degrees), (float)(angle2 * degrees), true);
 		}
 
-		public void ClosePath (object backend)
+		public override void ClosePath (object backend)
 		{
 			((CGPath)backend).CloseSubpath ();
 		}
 
-		public void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
+		public override void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
 		{
 			((CGPath)backend).AddCurveToPoint ((float)x1, (float)y1, (float)x2, (float)y2, (float)x3, (float)y3);
 		}
 
-		public void LineTo (object backend, double x, double y)
+		public override void LineTo (object backend, double x, double y)
 		{
 			((CGPath)backend).AddLineToPoint ((float)x, (float)y);
 		}
 
-		public void MoveTo (object backend, double x, double y)
+		public override void MoveTo (object backend, double x, double y)
 		{
 			((CGPath)backend).MoveToPoint ((float)x, (float)y);
 		}
 
-		public void Rectangle (object backend, double x, double y, double width, double height)
+		public override void Rectangle (object backend, double x, double y, double width, double height)
 		{
 			((CGPath)backend).AddRect (new RectangleF ((float)x, (float)y, (float)width, (float)height));
 		}
 
-		public void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
+		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
 		{
 			CGPath path = (CGPath)backend;
 			PointF p = path.CurrentPoint;
 			path.AddCurveToPoint ((float)(p.X + dx1), (float)(p.Y + dy1), (float)(p.X + dx2), (float)(p.Y + dy2), (float)(p.X + dx3), (float)(p.Y + dy3));
 		}
 
-		public void RelLineTo (object backend, double dx, double dy)
+		public override void RelLineTo (object backend, double dx, double dy)
 		{
 			CGPath path = (CGPath)backend;
 			PointF p = path.CurrentPoint;
 			path.AddLineToPoint ((float)(p.X + dx), (float)(p.Y + dy));
 		}
 
-		public void RelMoveTo (object backend, double dx, double dy)
+		public override void RelMoveTo (object backend, double dx, double dy)
 		{
 			CGPath path = (CGPath)backend;
 			PointF p = path.CurrentPoint;
 			path.MoveToPoint ((float)(p.X + dx), (float)(p.Y + dy));
 		}
 
-		public object CreatePath ()
+		public override object CreatePath ()
 		{
 			return new CGPath ();
 		}
 
-		public void AppendPath (object backend, object otherBackend)
+		public override void AppendPath (object backend, object otherBackend)
 		{
 			CGPath dest = (CGPath)backend;
 			CGContextBackend src = otherBackend as CGContextBackend;
@@ -117,12 +116,12 @@ namespace Xwt.Mac
 			}
 		}
 
-		public bool IsPointInFill (object backend, double x, double y)
+		public override bool IsPointInFill (object backend, double x, double y)
 		{
 			return ((CGPath)backend).ContainsPoint (new PointF ((float)x, (float)y), false);
 		}
 
-		public void Dispose (object backend)
+		public override void Dispose (object backend)
 		{
 			((CGPath)backend).Dispose ();
 		}

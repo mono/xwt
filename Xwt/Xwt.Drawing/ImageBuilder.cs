@@ -48,7 +48,7 @@ namespace Xwt.Drawing
 			this.width = width;
 			this.height = height;
 			backend = handler.CreateImageBuilder (width, height, format);
-			ctx = new Context (handler.CreateContext (backend));
+			ctx = new Context (handler.CreateContext (backend), ToolkitEngine);
 		}
 		
 		public int Width {
