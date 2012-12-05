@@ -67,6 +67,7 @@ namespace Xwt.Mac
 			RegisterBackend (typeof(Xwt.Canvas), typeof(CanvasBackend));
 			RegisterBackend (typeof(Xwt.Drawing.Image), typeof(ImageHandler));
 			RegisterBackend (typeof(Xwt.Drawing.Context), typeof(MacContextBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Path), typeof(PathBackendHandler));
 			RegisterBackend (typeof(Xwt.Drawing.ImageBuilder), typeof(MacImageBuilderBackendHandler));
 			RegisterBackend (typeof(Xwt.Drawing.ImagePattern), typeof(MacImagePatternBackendHandler));
 			RegisterBackend (typeof(Xwt.Drawing.Gradient), typeof(MacGradientBackendHandler));

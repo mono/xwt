@@ -389,6 +389,32 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+        public object CreatePath ()
+        {
+            return new DrawingContext ();
+        }
+
+        public void AppendPath (object backend, object otherBackend)
+        {
+            var dest = (DrawingContext)backend;
+            var src = (DrawingContext)otherBackend;
+
+            dest.Path.AddPath (src.Path, false);
+            dest.CurrentX = src.CurrentX;
+            dest.CurrentY = src.CurrentY;
+        }
+
+        public bool IsPointInFill (object backend, double x, double y)
+        {
+            return ((DrawingContext)backend).Path.IsVisible ((float)x, (float)y);
+        }
+
+        public bool IsPointInStroke (object backend, double x, double y)
+        {
+            var c = (DrawingContext)backend;
+            return c.Path.IsOutlineVisible ((float)x, (float)y, c.Pen);
+        }
+
 		public void Dispose (object backend)
 		{
 			((DrawingContext)backend).Dispose();

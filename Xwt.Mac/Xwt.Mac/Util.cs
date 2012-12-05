@@ -29,11 +29,31 @@ using MonoMac.AppKit;
 using Xwt.Drawing;
 using MonoMac.CoreGraphics;
 using SizeF = System.Drawing.SizeF;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace Xwt.Mac
 {
 	public static class Util
 	{
+		public static readonly string DeviceRGBString = NSColorSpace.DeviceRGB.ToString ();
+		static CGColorSpace deviceRGB, pattern;
+
+		public static CGColorSpace DeviceRGBColorSpace {
+			get {
+				if (deviceRGB == null)
+					deviceRGB = CGColorSpace.CreateDeviceRGB ();
+				return deviceRGB;
+			}
+		}
+
+		public static CGColorSpace PatternColorSpace {
+			get {
+				if (pattern == null)
+					pattern = CGColorSpace.CreatePattern (null);
+				return pattern;
+			}
+		}
+
 		public static double WidgetX (this NSView v)
 		{
 			return (double) v.Frame.X;
@@ -77,10 +97,9 @@ namespace Xwt.Mac
 			return new CGColor ((float)col.Red, (float)col.Green, (float)col.Blue, (float)col.Alpha);
 		}
 
-		static readonly string DeviceRGB = NSColorSpace.DeviceRGB.ToString ();
 		public static Color ToXwtColor (this NSColor col)
 		{
-			col = col.UsingColorSpace (DeviceRGB);
+			col = col.UsingColorSpace (DeviceRGBString);
 			return new Color (col.RedComponent, col.GreenComponent, col.BlueComponent, col.AlphaComponent);
 		}
 		
@@ -88,6 +107,16 @@ namespace Xwt.Mac
 		{
 			var cs = col.Components;
 			return new Color (cs[0], cs[1], cs[2], col.Alpha);
+		}
+
+		public static Size ToXwtSize (this SizeF s)
+		{
+			return new Size (s.Width, s.Height);
+		}
+
+		public static RectangleF ToRectangleF (this Rectangle r)
+		{
+			return new RectangleF ((float)r.X, (float)r.Y, (float)r.Width, (float)r.Height);
 		}
 
 		// /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/IconsCore.h

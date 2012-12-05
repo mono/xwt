@@ -28,8 +28,14 @@ using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-
+using MonoMac.CoreText;
+using MonoMac.CoreGraphics;
+using Xwt.Engine;
 using Xwt.Drawing;
+
+using PointF = System.Drawing.PointF;
+using SizeF = System.Drawing.SizeF;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace Xwt.Mac
 {
@@ -37,11 +43,10 @@ namespace Xwt.Mac
 	{
 		class LayoutInfo
 		{
-			public NSAttributedString Text;
+			public CTFramesetter Framesetter;
+			public string Text;
 			public NSFont Font;
-			public string PlainText;
-			public double Width = -1;
-			public double Heigth = -1;
+			public float? Width, Height;
 			public TextTrimming TextTrimming;
 		}
 		
@@ -52,33 +57,35 @@ namespace Xwt.Mac
 		
 		public override object Create (ICanvasBackend canvas)
 		{
-			return new LayoutInfo ();
+			return new LayoutInfo {
+				Font = (NSFont)canvas.Font
+			};
 		}
 
 		public override void SetText (object backend, string text)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.PlainText = text;
-			UpdateInfo (li);
+			li.Text = text;
+			InvalidateFramesetter (li);
 		}
 
 		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
 			li.Font = (NSFont)Toolkit.GetBackend (font);
-			UpdateInfo (li);
+			InvalidateFramesetter (li);
 		}
 		
 		public override void SetWidth (object backend, double value)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Width = value;
+			li.Width = value < 0 ? null : (float?)value;
 		}
 		
 		public override void SetHeight (object backend, double value)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Heigth = value;
+			li.Height = value < 0 ? null : (float?)value;
 		}
 		
 		public override void SetTrimming (object backend, TextTrimming value)
@@ -86,34 +93,78 @@ namespace Xwt.Mac
 			LayoutInfo li = (LayoutInfo)backend;
 			li.TextTrimming = value;
 		}
-		
-		void UpdateInfo (LayoutInfo li)
-		{
-			if (li.PlainText == null)
-				return;
-			if (li.Font != null) {
-				NSDictionary dict = NSDictionary.FromObjectsAndKeys (
-					new object[] { li.Font },
-				    new object[] { NSAttributedString.FontAttributeName }
-				);
-				li.Text = new NSAttributedString (li.PlainText, dict);
-			} else {
-				li.Text = new NSAttributedString (li.PlainText);
-			}
-		}
 
 		public override Size GetSize (object backend)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			var s = li.Text.Size;
-			return new Xwt.Size (s.Width, s.Height);
+			if (li.Framesetter == null)
+				return Size.Zero;
+
+			NSRange unused;
+			SizeF constraint = new SizeF (li.Width ?? float.MaxValue, float.MaxValue);
+			return li.Framesetter.SuggestFrameSize (new NSRange (0, li.Text.Length), null, constraint, out unused).ToXwtSize ();
+		}
+
+		static void InvalidateFramesetter (LayoutInfo li)
+		{
+			if (li.Framesetter != null) {
+				li.Framesetter.Dispose ();
+				li.Framesetter = null;
+			}
+			if (!string.IsNullOrEmpty (li.Text))
+				li.Framesetter = new CTFramesetter (CreateAttributedString (li));
+		}
+
+		static NSAttributedString CreateAttributedString (LayoutInfo li, string overrideText = null)
+		{
+			NSDictionary dict;
+			if (li.Font != null) {
+				dict = NSDictionary.FromObjectsAndKeys (
+					new object[] { li.Font, new NSNumber (true) },
+					new object[] { CTStringAttributeKey.Font, CTStringAttributeKey.ForegroundColorFromContext }
+				);
+			} else {
+				dict = NSDictionary.FromObjectsAndKeys (
+					new object[] { new NSNumber (true) },
+					new object[] { CTStringAttributeKey.ForegroundColorFromContext }
+				);
+			}
+			return new NSAttributedString (overrideText ?? li.Text, dict);
 		}
 		
-		public static void Draw (object ctx, object layout, double x, double y)
+		internal static void Draw (CGContext ctx, object layout, double x, double y)
 		{
-			LayoutInfo li = (LayoutInfo) layout;
-			li.Text.DrawString (new System.Drawing.PointF ((float)x, (float)y));
+			LayoutInfo li = (LayoutInfo)layout;
+			if (li.Framesetter == null)
+				return;
+
+			CGPath path = new CGPath ();
+			path.AddRect (new RectangleF (0, 0, li.Width ?? float.MaxValue, li.Height ?? float.MaxValue));
+			CTFrame frame = li.Framesetter.GetFrame (new NSRange (0, li.Text.Length), path, null);
+
+			CTLine ellipsis = null;
+			bool ellipsize = li.Width.HasValue && li.TextTrimming == TextTrimming.WordElipsis;
+			if (ellipsize)
+				ellipsis = new CTLine (CreateAttributedString (li, "..."));
+
+			float lineHeight = layoutManager.DefaultLineHeightForFont (li.Font);
+
+			ctx.SaveState ();
+			ctx.TextMatrix = CGAffineTransform.MakeScale (1f, -1f);
+			ctx.TranslateCTM ((float)x, (float)y + li.Font.Ascender);
+			foreach (var line in frame.GetLines ()) {
+				ctx.TextPosition = PointF.Empty;
+				if (ellipsize) // we need to create a new CTLine here because the framesetter already truncated the text for the line
+					new CTLine (CreateAttributedString (li, li.Text.Substring (line.StringRange.Location)))
+						.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis).Draw (ctx);
+				else
+					line.Draw (ctx);
+				ctx.TranslateCTM (0, lineHeight);
+			}
+			ctx.RestoreState ();
 		}
+
+		static readonly NSLayoutManager layoutManager = new NSLayoutManager ();
 	}
 }
 

@@ -27,6 +27,7 @@ using System;
 using Xwt.Backends;
 using Xwt.Drawing;
 using MonoMac.AppKit;
+using MonoMac.CoreGraphics;
 using System.Drawing;
 
 namespace Xwt.Mac
@@ -40,24 +41,43 @@ namespace Xwt.Mac
 		#region IImageBuilderBackendHandler implementation
 		public override object CreateImageBuilder (int width, int height, ImageFormat format)
 		{
-			return new NSImage (new SizeF (width, height));
+			var flags = CGBitmapFlags.ByteOrderDefault;
+			int bytesPerRow;
+			switch (format) {
+
+			case ImageFormat.ARGB32:
+				bytesPerRow = width * 4;
+				flags |= CGBitmapFlags.PremultipliedFirst;
+				break;
+
+			case ImageFormat.RGB24:
+				bytesPerRow = width * 3;
+				flags |= CGBitmapFlags.None;
+				break;
+
+			default:
+				throw new NotImplementedException ("ImageFormat: " + format.ToString ());
+			}
+			return new CGContextBackend {
+				Context = new CGBitmapContext (IntPtr.Zero, width, height, 8, bytesPerRow, Util.DeviceRGBColorSpace, flags),
+				Size = new SizeF (width, height)
+			};
 		}
 
 		public override object CreateContext (object backend)
 		{
-			NSImage img = (NSImage) backend;
-			return new ContextInfo (img);
+			return backend;
 		}
 
 		public override object CreateImage (object backend)
 		{
-			return (NSImage) backend;
+			var gc = (CGContextBackend)backend;
+			return new NSImage (((CGBitmapContext)gc.Context).ToImage (), gc.Size);
 		}
 
 		public override void Dispose (object backend)
 		{
-			NSImage img = (NSImage) backend;
-			img.Dispose ();
+			((CGContextBackend)backend).Context.Dispose ();
 		}
 		#endregion
 
