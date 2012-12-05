@@ -362,8 +362,8 @@
     <Compile Include="Xwt.Backends\ClipboardBackend.cs" />
     <Compile Include="Xwt.Backends\ApplicationContext.cs" />
     <Compile Include="Xwt\Toolkit.cs" />
-    <Compile Include="Xwt.Drawing\Path.cs" />
-    <Compile Include="Xwt.Backends\PathBackendHandler.cs" />
+    <Compile Include="Xwt.Drawing\DrawingPath.cs" />
+    <Compile Include="Xwt.Backends\DrawingPathBackendHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

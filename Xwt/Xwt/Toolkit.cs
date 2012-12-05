@@ -140,7 +140,7 @@ namespace Xwt
 			ImageBuilderBackendHandler = Backend.CreateSharedBackend<ImageBuilderBackendHandler> (typeof(ImageBuilder));
 			ImagePatternBackendHandler = Backend.CreateSharedBackend<ImagePatternBackendHandler> (typeof(ImagePattern));
 			ImageBackendHandler = Backend.CreateSharedBackend<ImageBackendHandler> (typeof(Image));
-			PathBackendHandler = Backend.CreateSharedBackend<PathBackendHandler> (typeof(Path));
+			DrawingPathBackendHandler = Backend.CreateSharedBackend<DrawingPathBackendHandler> (typeof(DrawingPath));
 		}
 
 		internal void SetActive ()
@@ -294,7 +294,7 @@ namespace Xwt
 		internal ImageBuilderBackendHandler ImageBuilderBackendHandler;
 		internal ImagePatternBackendHandler ImagePatternBackendHandler;
 		internal ImageBackendHandler ImageBackendHandler;
-		internal PathBackendHandler PathBackendHandler;
+		internal DrawingPathBackendHandler DrawingPathBackendHandler;
 	}
 
 	class NativeWindowFrame: WindowFrame

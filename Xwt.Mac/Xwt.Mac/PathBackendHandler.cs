@@ -34,7 +34,7 @@ using System.Drawing;
 
 namespace Xwt.Mac
 {
-	public class MacPathBackendHandler: PathBackendHandler
+	public class MacPathBackendHandler: DrawingPathBackendHandler
 	{
 		const double degrees = System.Math.PI / 180d;
 

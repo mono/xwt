@@ -62,7 +62,7 @@ namespace Xwt.GtkBackend
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.Context), typeof(ContextBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof(Xwt.Drawing.TextLayout), typeof(CairoTextLayoutBackendHandler));
 #endif
-			RegisterBackend (typeof(Xwt.Drawing.Path), typeof(CairoContextBackendHandler));
+			RegisterBackend (typeof(Xwt.Drawing.DrawingPath), typeof(CairoContextBackendHandler));
 			RegisterBackend (typeof(Xwt.Drawing.Gradient), typeof(CairoGradientBackendHandler));
 			RegisterBackend (typeof(Xwt.Drawing.Font), typeof(GtkFontBackendHandler));
 			RegisterBackend (typeof(Xwt.Menu), typeof(MenuBackend));

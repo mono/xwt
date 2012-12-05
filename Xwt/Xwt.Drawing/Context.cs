@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public sealed class Context: Path
+	public sealed class Context: DrawingPath
 	{
 		ContextBackendHandler handler;
 		Pattern pattern;

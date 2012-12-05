@@ -232,7 +232,7 @@ namespace Samples
 			ctx.Save ();
 			ctx.Translate (px, py);
 
-			var path = new Path ();
+			var path = new DrawingPath ();
 
 			path.MoveTo (0.44, 18);
 			path.LineTo (-1, 18);

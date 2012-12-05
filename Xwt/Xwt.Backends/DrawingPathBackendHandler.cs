@@ -1,5 +1,5 @@
 // 
-// IPathBackendHandler.cs
+// DrawingPathBackendHandler.cs
 //  
 // Author:
 //       Alex Corrado <corrado@xamarin.com>
@@ -29,7 +29,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public abstract class PathBackendHandler: BackendHandler
+	public abstract class DrawingPathBackendHandler: BackendHandler
 	{
 		public abstract void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2);
 

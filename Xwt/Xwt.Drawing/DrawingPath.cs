@@ -1,5 +1,5 @@
 // 
-// Path.cs
+// DrawingPath.cs
 //  
 // Author:
 //       Alex Corrado <corrado@xamarin.com>
@@ -28,17 +28,17 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public class Path: XwtObject, IDisposable
+	public class DrawingPath: XwtObject, IDisposable
 	{
-		PathBackendHandler handler;
+		DrawingPathBackendHandler handler;
 
-		public Path ()
+		public DrawingPath ()
 		{
-			handler = ToolkitEngine.PathBackendHandler;
+			handler = ToolkitEngine.DrawingPathBackendHandler;
 			Backend = handler.CreatePath ();
 		}
 
-		internal Path (object backend, Toolkit toolkit, PathBackendHandler h): base (backend, toolkit)
+		internal DrawingPath (object backend, Toolkit toolkit, DrawingPathBackendHandler h): base (backend, toolkit)
 		{
 			handler = h;
 		}
@@ -274,7 +274,7 @@ namespace Xwt.Drawing
 		/// <param name='p'>
 		/// The path to append.
 		/// </param>
-		public void AppendPath (Path p)
+		public void AppendPath (DrawingPath p)
 		{
 			handler.AppendPath (Backend, p.Backend);
 		}

@@ -30,7 +30,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public abstract class ContextBackendHandler: PathBackendHandler
+	public abstract class ContextBackendHandler: DrawingPathBackendHandler
 	{
 		public abstract void Save (object backend);
 
