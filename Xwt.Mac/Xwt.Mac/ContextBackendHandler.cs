@@ -342,34 +342,6 @@ namespace Xwt.Mac
 			}
 		}
 
-		public object CreatePath ()
-		{
-			return new CGPath ();
-		}
-
-		public void AppendPath (object backend, object otherBackend)
-		{
-			CGContext dest = ((CGContextBackend)backend).Context;
-			CGContextBackend src = otherBackend as CGContextBackend;
-
-			if (src != null) {
-				using (var path = src.Context.CopyPath ())
-					dest.AddPath (path);
-			} else {
-				dest.AddPath ((CGPath)otherBackend);
-			}
-		}
-
-		public bool IsPointInFill (object backend, double x, double y)
-		{
-			return ((CGContextBackend)backend).Context.PathContainsPoint (new PointF ((float)x, (float)y), CGPathDrawingMode.Fill);
-		}
-
-		public bool IsPointInStroke (object backend, double x, double y)
-		{
-			return ((CGContextBackend)backend).Context.PathContainsPoint (new PointF ((float)x, (float)y), CGPathDrawingMode.Stroke);
-		}
-
 		public void Dispose (object backend)
 		{
 			((CGContextBackend)backend).Context.Dispose ();

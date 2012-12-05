@@ -59,10 +59,6 @@ namespace Xwt.WPFBackend
 			CurrentY = context.CurrentY;
 		}
 
-		internal DrawingContext()
-		{
-		}
-
 		internal readonly Graphics Graphics;
 		Font font = null;
 

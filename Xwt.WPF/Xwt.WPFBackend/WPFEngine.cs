@@ -78,7 +78,6 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (Frame), typeof (FrameBackend));
 			WidgetRegistry.RegisterBackend (typeof (Canvas), typeof (CanvasBackend));
 			WidgetRegistry.RegisterBackend (typeof (Context), typeof (ContextBackendHandler));
-			WidgetRegistry.RegisterBackend (typeof (Path), typeof (ContextBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (Gradient), typeof (GradientBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (TextLayout), typeof (TextLayoutBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (Widget), typeof (CustomWidgetBackend));
