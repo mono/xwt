@@ -218,7 +218,7 @@ namespace Xwt.Drawing
 			if (!uint.TryParse (str.Substring (1), System.Globalization.NumberStyles.HexNumber, null, out val))
 				return false;
 			
-			val = val << (9 - str.Length * 4);
+			val = val << ((9 - str.Length) * 4);
 			
 			if (str.Length <= 7)
 				val |= 0xff;
