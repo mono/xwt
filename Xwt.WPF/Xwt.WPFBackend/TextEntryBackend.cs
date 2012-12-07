@@ -114,7 +114,7 @@ namespace Xwt.WPFBackend
 
 		private void OnTextChanged (object s, TextChangedEventArgs e)
 		{
-			Xwt.Engine.ApplicationContext.InvokeUserCode (EventSink.OnChanged);
+			Context.InvokeUserCode (EventSink.OnChanged);
 		}
 	}
 }

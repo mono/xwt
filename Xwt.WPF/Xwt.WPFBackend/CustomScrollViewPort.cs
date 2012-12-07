@@ -249,7 +249,7 @@ namespace Xwt.WPFBackend
 				viewport = newViewport;
 				if (!viewportAdjustmentQueued) {
 					viewportAdjustmentQueued = true;
-					Xwt.Engine.Toolkit.QueueExitAction (delegate
+					Application.MainLoop.QueueExitAction (delegate
 					{
 						// Adjust the position, if it now falls outside the extents.
 						// Doing it in an exit action to make sure the adjustement

@@ -65,7 +65,7 @@ namespace Xwt.WPFBackend
 
 		private void OnMenuOpening (object sender, DropDownButton.MenuOpeningEventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (() =>
+			Context.InvokeUserCode (() =>
 				e.ContextMenu = ((MenuBackend) MenuButtonEventSink.OnCreateMenu ()).CreateContextMenu ());
 		}
 	}

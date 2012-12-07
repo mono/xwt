@@ -35,20 +35,20 @@ using FontFamily = System.Windows.Media.FontFamily;
 
 namespace Xwt.WPFBackend
 {
-	public class FontBackendHandler : FontBackendHandler
+	public class WpfFontBackendHandler : FontBackendHandler
 	{
-		public object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
+		public override object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			return new FontData (new FontFamily (fontName), size, sizeUnit);
 		}
 
-		public object Copy (object handle)
+		public override object Copy (object handle)
 		{
 			var font = (FontData)handle;
 			return font.Clone ();
 		}
 
-		public object SetSize (object handle, double size, FontSizeUnit sizeUnit)
+		public override object SetSize (object handle, double size, FontSizeUnit sizeUnit)
 		{
 			var font = (FontData)handle;
 			font = font.Clone ();
@@ -56,7 +56,7 @@ namespace Xwt.WPFBackend
 			return font;
 		}
 
-		public object SetFamily (object handle, string family)
+		public override object SetFamily (object handle, string family)
 		{
 			var font = (FontData)handle;
 			font = font.Clone ();
@@ -64,7 +64,7 @@ namespace Xwt.WPFBackend
 			return font;
 		}
 
-		public object SetStyle (object handle, FontStyle style)
+		public override object SetStyle (object handle, FontStyle style)
 		{
 			var font = (FontData)handle;
 			font = font.Clone ();
@@ -72,7 +72,7 @@ namespace Xwt.WPFBackend
 			return font;
 		}
 
-		public object SetWeight (object handle, FontWeight weight)
+		public override object SetWeight (object handle, FontWeight weight)
 		{
 			var font = (FontData)handle;
 			font = font.Clone ();
@@ -80,7 +80,7 @@ namespace Xwt.WPFBackend
 			return font;
 		}
 
-		public object SetStretch (object handle, FontStretch stretch)
+		public override object SetStretch (object handle, FontStretch stretch)
 		{
 			var font = (FontData)handle;
 			font = font.Clone ();
@@ -88,31 +88,31 @@ namespace Xwt.WPFBackend
 			return font;
 		}
 
-		public double GetSize (object handle)
+		public override double GetSize (object handle)
 		{
 			var font = (FontData)handle;
 			return font.Size;
 		}
 
-		public string GetFamily (object handle)
+		public override string GetFamily (object handle)
 		{
 			var font = (FontData)handle;
 			return font.Family.Source;
 		}
 
-		public FontStyle GetStyle (object handle)
+		public override FontStyle GetStyle (object handle)
 		{
 			var font = (FontData)handle;
 			return DataConverter.ToXwtFontStyle (font.Style);
 		}
 
-		public FontStretch GetStretch (object handle)
+		public override FontStretch GetStretch (object handle)
 		{
 			var font = (FontData)handle;
 			return DataConverter.ToXwtFontStretch (font.Stretch);
 		}
 
-		public FontWeight GetWeight (object handle)
+		public override FontWeight GetWeight (object handle)
 		{
 			var font = (FontData)handle;
 			return DataConverter.ToXwtFontWeight (font.Weight);
@@ -166,7 +166,7 @@ namespace Xwt.WPFBackend
 		public double GetDeviceIndependentPixelSize (SW.Controls.Control control)
 		{
 			if (Unit == FontSizeUnit.Points)
-				return FontBackendHandler.GetDeviceUnitsFromPoints (Size);
+				return WpfFontBackendHandler.GetDeviceUnitsFromPoints (Size);
 			else {
 				Size pixelRatios = control.GetPixelRatios ();
 				return Size / pixelRatios.Width;

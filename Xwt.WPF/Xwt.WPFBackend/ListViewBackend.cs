@@ -198,7 +198,7 @@ namespace Xwt.WPFBackend
 
 		private void OnSelectionChanged (object sender, SelectionChangedEventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (ListViewEventSink.OnSelectionChanged);
+			Context.InvokeUserCode (ListViewEventSink.OnSelectionChanged);
 		}
 
 		private bool headersVisible;

@@ -59,7 +59,7 @@ namespace Xwt.WPFBackend
 				message.SecondaryText = String.Empty;
 			}
 
-			var wb = (WindowFrameBackend)WidgetRegistry.GetBackend (transientFor);
+			var wb = (WindowFrameBackend)Toolkit.GetBackend (transientFor);
 			if (wb != null) {
 				this.dialogResult = MessageBox.Show (wb.Window, message.Text,message.SecondaryText,
 													this.buttons, this.icon, this.defaultResult, this.options);

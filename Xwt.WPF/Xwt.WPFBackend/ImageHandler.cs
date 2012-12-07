@@ -187,7 +187,7 @@ namespace Xwt.WPFBackend
 				throw new ArgumentException ();
 			Bitmap result = new Bitmap (bitmap.Width, bitmap.Height, bitmap.PixelFormat);
 			Graphics g = Graphics.FromImage (result);
-			ContextBackendHandler.DrawImageCore (g, bitmap, 0, 0, bitmap.Width, bitmap.Height, (float)opacity);
+			WpfContextBackendHandler.DrawImageCore (g, bitmap, 0, 0, bitmap.Width, bitmap.Height, (float)opacity);
 			g.Dispose ();
 			return result;
 		}

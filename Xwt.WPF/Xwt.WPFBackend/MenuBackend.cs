@@ -37,12 +37,13 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	public class MenuBackend : IMenuBackend
+	public class MenuBackend : Backend, IMenuBackend
 	{
 		List<MenuItemBackend> items;
 
-		public void InitializeBackend (object frontend)
+		public override void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			base.InitializeBackend (frontend, context);
 			items = new List<MenuItemBackend> ();
 		}
 
@@ -120,14 +121,6 @@ namespace Xwt.WPFBackend
 			menu.HorizontalOffset = x * hratio;
 			menu.VerticalOffset = y * vratio;
 			menu.IsOpen = true;
-		}
-
-		public void EnableEvent (object eventId)
-		{
-		}
-
-		public void DisableEvent (object eventId)
-		{
 		}
 
 		private ContextMenu menu;

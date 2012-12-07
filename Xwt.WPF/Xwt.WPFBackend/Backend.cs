@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Xwt.Backends;
 namespace Xwt.WPFBackend
 {
 	public abstract class Backend
@@ -31,9 +32,10 @@ namespace Xwt.WPFBackend
 	{
 		protected object frontend;
 
-		void IBackend.InitializeBackend (object frontend)
+		public virtual void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			this.frontend = frontend;
+			Context = context;
 		}
 
 		public virtual void EnableEvent (object eventId)
@@ -47,5 +49,7 @@ namespace Xwt.WPFBackend
 		public object Frontend {
 			get { return frontend; }
 		}
+
+		public ApplicationContext Context { get; private set; }
 	}
 }

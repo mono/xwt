@@ -30,10 +30,10 @@ using System.Drawing;
 
 namespace Xwt.WPFBackend
 {
-	public class ImagePatternBackendHandler
+	public class WpfImagePatternBackendHandler
 		: ImagePatternBackendHandler
 	{
-		public object Create (object img)
+		public override object Create (object img)
 		{
 			Bitmap bmp = DataConverter.AsBitmap (img);
 			return new TextureBrush (bmp, System.Drawing.Drawing2D.WrapMode.Tile);

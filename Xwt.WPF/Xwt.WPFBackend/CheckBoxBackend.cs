@@ -112,12 +112,12 @@ namespace Xwt.WPFBackend
 
 		private void OnChecked (object sender, RoutedEventArgs routedEventArgs)
 		{
-			ApplicationContext.InvokeUserCode (CheckBoxEventSink.OnToggled);
+			Context.InvokeUserCode (CheckBoxEventSink.OnToggled);
 		}
 
 		private void OnClicked (object sender, RoutedEventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (CheckBoxEventSink.OnClicked);
+			Context.InvokeUserCode (CheckBoxEventSink.OnClicked);
 		}
 
 		protected ICheckBoxEventSink CheckBoxEventSink

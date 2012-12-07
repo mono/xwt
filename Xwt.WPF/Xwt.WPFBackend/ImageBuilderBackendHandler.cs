@@ -30,26 +30,26 @@ using Xwt.Drawing;
 
 namespace Xwt.WPFBackend
 {
-	public class ImageBuilderBackendHandler
+	public class WpfImageBuilderBackendHandler
 		: ImageBuilderBackendHandler
 	{
-		public object CreateImageBuilder (int width, int height, ImageFormat format)
+		public override object CreateImageBuilder (int width, int height, ImageFormat format)
 		{
 			return new Bitmap (width, height, format.ToPixelFormat ());
 		}
 
-		public object CreateContext (object backend)
+		public override object CreateContext (object backend)
 		{
 			Bitmap bmp = (Bitmap) backend;
 			return new DrawingContext (Graphics.FromImage (bmp));
 		}
 
-		public object CreateImage (object backend)
+		public override object CreateImage (object backend)
 		{
 			return DataConverter.AsImageSource (backend);
 		}
 
-		public void Dispose (object backend)
+		public override void Dispose (object backend)
 		{
 			Bitmap bmp = (Bitmap) backend;
 			bmp.Dispose();

@@ -34,48 +34,48 @@ using Font = Xwt.Drawing.Font;
 
 namespace Xwt.WPFBackend
 {
-	public class TextLayoutBackendHandler
+	public class WpfTextLayoutBackendHandler
 		: TextLayoutBackendHandler
 	{
-		public object Create (Context context)
+		public override object Create (Context context)
 		{
-			var drawingContext = (DrawingContext)WidgetRegistry.GetBackend (context);
+			var drawingContext = (DrawingContext)Toolkit.GetBackend (context);
 			return new TextLayoutContext (drawingContext);
 		}
 
-		public object Create (ICanvasBackend canvas)
+		public override object Create (ICanvasBackend canvas)
 		{
 			var drawingContext = new DrawingContext (Graphics.FromImage (new Bitmap (1, 1)));
 			return new TextLayoutContext (drawingContext);
 		}
 
-		public void SetWidth (object backend, double value)
+		public override void SetWidth (object backend, double value)
 		{
 			((TextLayoutContext) backend).Width = value;
 		}
-		
-		public void SetHeight (object backend, double value)
+
+		public override void SetHeight (object backend, double value)
 		{
 			((TextLayoutContext) backend).Height = value;
 		}
-		
-		public void SetText (object backend, string text)
+
+		public override void SetText (object backend, string text)
 		{
 			((TextLayoutContext) backend).Text = text;
 		}
 
-		public void SetFont (object backend, Font font)
+		public override void SetFont (object backend, Font font)
 		{
 			((TextLayoutContext) backend).Font = font.ToDrawingFont();
 		}
-		
-		public void SetTrimming (object backend, TextTrimming textTrimming)
+
+		public override void SetTrimming (object backend, TextTrimming textTrimming)
 		{
 			((TextLayoutContext) backend).StringTrimming = textTrimming.ToDrawingStringTrimming();
 			
 		}
-		
-		public Size GetSize (object backend)
+
+		public override Size GetSize (object backend)
 		{
 			return ((TextLayoutContext) backend).GetSize ();
 		}

@@ -30,7 +30,7 @@ using System.Windows.Media;
 
 namespace Xwt.WPFBackend
 {
-	public class PopoverBackend : IPopoverBackend
+	public class PopoverBackend : Backend, IPopoverBackend
 	{
 		public Xwt.Popover.Position ActualPosition {
 			get; set;
@@ -44,8 +44,8 @@ namespace Xwt.WPFBackend
 			get; set;
 		}
 
-		Popover Frontend {
-			get; set;
+		new Popover Frontend {
+			get { return (Popover)base.frontend; }
 		}
 
 		System.Windows.Controls.Primitives.Popup NativeWidget {
@@ -87,19 +87,14 @@ namespace Xwt.WPFBackend
 			EventSink = sink;
 		}
 
-		public void InitializeBackend (object frontend)
-		{
-			Frontend = (Popover) frontend;
-		}
-
-		public void EnableEvent (object eventId)
+		public override void EnableEvent (object eventId)
 		{
 			if (eventId is PopoverEvent)
 				if ((PopoverEvent)eventId == PopoverEvent.Closed)
 					NativeWidget.Closed +=new EventHandler(NativeWidget_Closed);
 		}
 
-		public void DisableEvent (object eventId)
+		public override void DisableEvent (object eventId)
 		{
 			if (eventId is PopoverEvent)
 				if ((PopoverEvent) eventId == PopoverEvent.Closed)
@@ -109,8 +104,8 @@ namespace Xwt.WPFBackend
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget reference, Xwt.Rectangle positionRect, Widget child)
 		{
 			ActualPosition = orientation;
-			Border.Child = (System.Windows.FrameworkElement) Xwt.Engine.WidgetRegistry.GetNativeWidget (child);
-			NativeWidget.PlacementTarget =(System.Windows.FrameworkElement) Xwt.Engine.WidgetRegistry.GetNativeWidget (reference);
+			Border.Child = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (child);
+			NativeWidget.PlacementTarget = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (reference);
 			NativeWidget.IsOpen = true;
 		}
 

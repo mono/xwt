@@ -32,15 +32,15 @@ using WindowsClipboard = System.Windows.Clipboard;
 
 namespace Xwt.WPFBackend
 {
-	public class ClipboardBackend
+	public class WpfClipboardBackend
 		: ClipboardBackend
 	{
-		public void Clear ()
+		public override void Clear ()
 		{
 			WindowsClipboard.Clear();
 		}
 
-		public void SetData (TransferDataType type, Func<object> dataSource)
+		public override void SetData (TransferDataType type, Func<object> dataSource)
 		{
 			if (type == null)
 				throw new ArgumentNullException ("type");
@@ -50,7 +50,7 @@ namespace Xwt.WPFBackend
 			WindowsClipboard.SetData (type.ToWpfDataFormat (), dataSource ());
 		}
 
-		public bool IsTypeAvailable (TransferDataType type)
+		public override bool IsTypeAvailable (TransferDataType type)
 		{
 			if (type == null)
 				throw new ArgumentNullException ("type");
@@ -58,7 +58,7 @@ namespace Xwt.WPFBackend
 			return WindowsClipboard.ContainsData (type.ToWpfDataFormat ());
 		}
 
-		public object GetData (TransferDataType type)
+		public override object GetData (TransferDataType type)
 		{
 			if (type == null)
 				throw new ArgumentNullException ("type");
@@ -69,7 +69,7 @@ namespace Xwt.WPFBackend
 			return WindowsClipboard.GetData (type.ToWpfDataFormat ());
 		}
 
-		public IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state)
+		public override IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state)
 		{
 			if (type == null)
 				throw new ArgumentNullException ("type");
@@ -80,7 +80,7 @@ namespace Xwt.WPFBackend
 				.ContinueWith (t => callback (t));
 		}
 
-		public object EndGetData (IAsyncResult ares)
+		public override object EndGetData (IAsyncResult ares)
 		{
 			if (ares == null)
 				throw new ArgumentNullException ("ares");

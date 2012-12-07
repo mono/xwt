@@ -126,7 +126,7 @@ namespace Xwt.WPFBackend
 
 		private void OnButtonClicked (DialogButton button)
 		{
-			ApplicationContext.InvokeUserCode (() => DialogEventSink.OnDialogButtonClicked (button));
+			Context.InvokeUserCode (() => DialogEventSink.OnDialogButtonClicked (button));
 		}
 
 		private static readonly ItemsPanelTemplate PanelTemplate;

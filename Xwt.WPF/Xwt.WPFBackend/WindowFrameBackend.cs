@@ -45,9 +45,10 @@ namespace Xwt.WPFBackend
 		{
 		}
 
-		void IBackend.InitializeBackend (object frontend)
+		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
 		{
 			this.frontend = (WindowFrame) frontend;
+			Context = context;
 		}
 
 		void IWindowFrameBackend.Initialize (IWindowFrameEventSink eventSink)
@@ -55,6 +56,8 @@ namespace Xwt.WPFBackend
 			this.eventSink = eventSink;
 			Initialize ();
 		}
+
+		public ApplicationContext Context { get; private set; }
 
 		public virtual void Initialize ()
 		{
@@ -133,7 +136,7 @@ namespace Xwt.WPFBackend
 			var value = ToNonClientRect (new Rectangle (x, y, 1, 1));
 			window.Top = value.Top;
 			window.Left = value.Left;
-			ApplicationContext.InvokeUserCode (delegate
+			Context.InvokeUserCode (delegate
 			{
 				eventSink.OnBoundsChanged (Bounds);
 			});
@@ -144,7 +147,7 @@ namespace Xwt.WPFBackend
 			var value = ToNonClientRect (new Rectangle (0, 0, width, height));
 			window.Width = value.Width;
 			window.Height = value.Height;
-			ApplicationContext.InvokeUserCode (delegate
+			Context.InvokeUserCode (delegate
 			{
 				eventSink.OnBoundsChanged (Bounds);
 			});
@@ -162,7 +165,7 @@ namespace Xwt.WPFBackend
 				window.Left = value.Left;
 				window.Width = value.Width;
 				window.Height = value.Height;
-				ApplicationContext.InvokeUserCode (delegate {
+				Context.InvokeUserCode (delegate {
 					eventSink.OnBoundsChanged (Bounds);
 				});
 			}
@@ -214,7 +217,7 @@ namespace Xwt.WPFBackend
 
 		void BoundsChangedHandler (object o, EventArgs args)
 		{
-			ApplicationContext.InvokeUserCode (delegate () {
+			Context.InvokeUserCode (delegate () {
 				eventSink.OnBoundsChanged (Bounds);
 			});
 		}
@@ -223,7 +226,7 @@ namespace Xwt.WPFBackend
 		{
 			if((bool)e.NewValue)
 			{
-				ApplicationContext.InvokeUserCode (delegate ()
+				Context.InvokeUserCode (delegate ()
 				{
 					eventSink.OnShown ();
 				});
@@ -234,7 +237,7 @@ namespace Xwt.WPFBackend
 		{
 			if((bool)e.NewValue == false)
 			{
-				ApplicationContext.InvokeUserCode (delegate ()
+				Context.InvokeUserCode (delegate ()
 				{
 					eventSink.OnHidden ();
 				});
@@ -243,7 +246,7 @@ namespace Xwt.WPFBackend
 
 		private void ClosingHandler (object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate ()
+			Context.InvokeUserCode (delegate ()
 			{
 				e.Cancel = eventSink.OnCloseRequested ();
 			});

@@ -38,7 +38,7 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	public class MenuItemBackend : IMenuItemBackend
+	public class MenuItemBackend : Backend, IMenuItemBackend
 	{
 		object item;
 		SWC.MenuItem menuItem;
@@ -60,10 +60,6 @@ namespace Xwt.WPFBackend
 		public void Initialize (IMenuItemEventSink eventSink)
 		{
 			this.eventSink = eventSink;
-		}
-
-		public void InitializeBackend (object frontend)
-		{
 		}
 
 		public object Item {
@@ -155,7 +151,7 @@ namespace Xwt.WPFBackend
 			this.type = type;
 		}
 
-		public void EnableEvent (object eventId)
+		public override void EnableEvent (object eventId)
 		{
 			if (menuItem == null)
 				return;
@@ -169,7 +165,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void DisableEvent (object eventId)
+		public override void DisableEvent (object eventId)
 		{
 			if (menuItem == null)
 				return;
@@ -185,7 +181,7 @@ namespace Xwt.WPFBackend
 
 		void MenuItemClickHandler (object sender, EventArgs args)
 		{
-			ApplicationContext.InvokeUserCode (eventSink.OnClicked);
+			Context.InvokeUserCode (eventSink.OnClicked);
 		}
 	}
 }

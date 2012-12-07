@@ -51,7 +51,7 @@ namespace Xwt.WPFBackend
 		{
 			// The offset is relative to 0, it has to be converted to the lower/upper value range
 			scrollValue = LowerValue + offset;
-			Xwt.Engine.ApplicationContext.InvokeUserCode (EventSink.OnValueChanged);
+			Context.InvokeUserCode (EventSink.OnValueChanged);
 		}
 
 		public double Value

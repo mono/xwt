@@ -36,22 +36,22 @@ using DrawingColor = System.Drawing.Color;
 
 namespace Xwt.WPFBackend
 {
-	public class GradientBackendHandler
-		: Backend, GradientBackendHandler
+	public class WpfGradientBackendHandler
+		: GradientBackendHandler
 	{
-		public object CreateLinear (double x0, double y0, double x1, double y1)
+		public override object CreateLinear (double x0, double y0, double x1, double y1)
 		{
 			return new LinearGradient (
 				new PointF ((float) x0, (float) y0),
 				new PointF ((float) x1, (float) y1));
 		}
 
-		public object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
+		public override object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
 		{
 			return new RadialGradient (cx0, cy0, radius0, cx1, cy1, radius1);
 		}
 
-		public void AddColorStop (object backend, double position, Color color)
+		public override void AddColorStop (object backend, double position, Color color)
 		{
 			((GradientBase)backend).ColorStops.Add (new Tuple<double, Color> (position, color));
 		}
