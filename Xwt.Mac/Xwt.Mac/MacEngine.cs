@@ -162,6 +162,12 @@ namespace Xwt.Mac
 			IMacViewBackend wb = (IMacViewBackend)Toolkit.GetBackend (w);
 			return wb.View;
 		}
+
+		public override bool HasNativeParent (Widget w)
+		{
+			IMacViewBackend wb = (IMacViewBackend)WidgetRegistry.GetBackend (w);
+			return wb.View.Superview != null;
+		}
 		
 		public override Xwt.Backends.IWindowFrameBackend GetBackendForWindow (object nativeWindow)
 		{

@@ -163,6 +163,12 @@ namespace Xwt.WPFBackend
 
 			return null;
 		}
+		
+		public override bool HasNativeParent (Widget w)
+		{
+			var backend = (IWpfWidgetBackend) WidgetRegistry.GetBackend (w);
+			return backend.Widget.Parent != null;
+		}
 	}
 }
 
