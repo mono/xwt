@@ -201,6 +201,12 @@ namespace Xwt.GtkBackend
 			return wb.Widget.Toplevel as Gtk.Window;
 		}
 
+		public override bool HasNativeParent (Widget w)
+		{
+			IGtkWidgetBackend wb = (IGtkWidgetBackend)WidgetRegistry.GetBackend (w);
+			return wb.Widget.Parent != null;
+		}
+
 		public override void DispatchPendingEvents ()
 		{
 			// The loop is limited to 1000 iterations as a workaround for an issue that some users

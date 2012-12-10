@@ -166,6 +166,15 @@ namespace Xwt.Backends
 		{
 			InvokeAsync (action);
 		}
+
+		/// <summary>
+		/// Determines whether a widget has a native parent widget
+		/// </summary>
+		/// <returns><c>true</c> if the widget has native parent; otherwise, <c>false</c>.</returns>
+		/// <param name="w">The widget.</param>
+		/// <remarks>This funciton is used to determine if a widget is a child of another non-XWT widget
+		/// </remarks>
+		public abstract bool HasNativeParent (Widget w);
 	}
 }
 
