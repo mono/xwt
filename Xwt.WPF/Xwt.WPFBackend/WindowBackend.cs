@@ -47,11 +47,17 @@ namespace Xwt.WPFBackend
 
 		public WindowBackend ()
 		{
-			Window = new System.Windows.Window ();
+			Window = new WpfWindow ();
 			Window.UseLayoutRounding = true;
 			rootPanel = CreateMainGrid ();
 
 			Window.Content = rootPanel;
+		}
+
+		public override void Initialize ()
+		{
+			base.Initialize ();
+			((WpfWindow)Window).Frontend = (Window) Frontend;
 		}
 
 		// A Grid with a single column, and two rows (menu and child control).
@@ -131,6 +137,19 @@ namespace Xwt.WPFBackend
 
 		public virtual Size ImplicitMinSize {
 			get { return new Size (0,0); }
+		}
+	}
+
+	class WpfWindow : System.Windows.Window
+	{
+		public Window Frontend;
+
+		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
+		{
+			var s = base.ArrangeOverride (arrangeBounds);
+			if (Frontend.Content != null)
+				Frontend.Content.Surface.Reallocate ();
+			return s;
 		}
 	}
 }
