@@ -103,7 +103,17 @@ namespace Xwt.WPFBackend
 				return window.ResizeMode == ResizeMode.CanResize;
 			}
 			set {
-				window.ResizeMode = value ? ResizeMode.CanResize : ResizeMode.NoResize;
+				if (value != ((IWindowFrameBackend)this).Resizable) {
+					var bounds = Bounds;
+					window.ResizeMode = value ? ResizeMode.CanResize : ResizeMode.NoResize;
+					if (window.IsLoaded && bounds != Bounds) {
+						// The size of the border of resizable windows is different from fixed windows.
+						// If we change the resize mode, the border size will change, and the client
+						// area will then change. Here, we restore the client area to the size it
+						// had before the mode change.
+						Bounds = bounds;
+					}
+				}
 			}
 		}
 
@@ -249,15 +259,24 @@ namespace Xwt.WPFBackend
 			});
 		}
 
+		Size GetBorderSize ()
+		{
+			if (window.ResizeMode == ResizeMode.CanResize)
+				return new Size (SystemParameters.ResizeFrameVerticalBorderWidth, SystemParameters.ResizeFrameHorizontalBorderHeight);
+			else
+				return new Size (SystemParameters.FixedFrameVerticalBorderWidth, SystemParameters.FixedFrameHorizontalBorderHeight);
+		}
+
 		protected Rectangle ToNonClientRect (Rectangle rect)
 		{
 			var size = rect.Size;
 			var loc = rect.Location;
 
-			size.Height += SystemParameters.ResizeFrameHorizontalBorderHeight * 2;
-			size.Width += SystemParameters.ResizeFrameVerticalBorderWidth * 2;
-			loc.X -= SystemParameters.ResizeFrameVerticalBorderWidth;
-			loc.Y -= SystemParameters.ResizeFrameHorizontalBorderHeight;
+			var border = GetBorderSize ();
+			size.Height += border.Height * 2;
+			size.Width += border.Width * 2;
+			loc.X -= border.Width;
+			loc.Y -= border.Height;
 
 			if (((IWindowFrameBackend)this).Decorated) {
 				size.Height += SystemParameters.WindowCaptionHeight;
@@ -276,10 +295,11 @@ namespace Xwt.WPFBackend
 			var size = rect.Size;
 			var loc = rect.Location;
 
-			size.Height -= SystemParameters.ResizeFrameHorizontalBorderHeight * 2;
-			size.Width -= SystemParameters.ResizeFrameVerticalBorderWidth * 2;
-			loc.X += SystemParameters.ResizeFrameVerticalBorderWidth;
-			loc.Y += SystemParameters.ResizeFrameHorizontalBorderHeight;
+			var border = GetBorderSize ();
+			size.Height -= border.Height * 2;
+			size.Width -= border.Width * 2;
+			loc.X += border.Width;
+			loc.Y += border.Height;
 
 			if (((IWindowFrameBackend)this).Decorated) {
 				size.Height -= SystemParameters.CaptionHeight;
