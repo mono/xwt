@@ -90,8 +90,6 @@ namespace Xwt.Backends
 
 		void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha);
 
-		void ResetTransform (object backend);
-
 		void Rotate (object backend, double angle);
 		
 		void Scale (object backend, double scaleX, double scaleY);

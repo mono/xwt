@@ -90,6 +90,7 @@ namespace Samples
 		
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
+			ctx.Save ();
 			ctx.Translate (-hscroll.Value, -vscroll.Value);
 			ctx.Rectangle (new Rectangle (0, 0, imageSize, imageSize));
 			ctx.SetColor (Xwt.Drawing.Colors.White);
@@ -97,8 +98,8 @@ namespace Samples
 			ctx.Arc (imageSize / 2, imageSize / 2, imageSize / 2 - 20, 0, 360);
 			ctx.SetColor (new Color (0,0,1));
 			ctx.Fill ();
-			ctx.ResetTransform ();
-			
+			ctx.Restore ();
+
 			ctx.Rectangle (0, 0, Bounds.Width, 30);
 			ctx.SetColor (new Color (1, 0, 0, 0.5));
 			ctx.Fill ();

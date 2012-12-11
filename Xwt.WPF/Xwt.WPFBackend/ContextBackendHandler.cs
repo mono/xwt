@@ -315,12 +315,6 @@ namespace Xwt.WPFBackend
 			DrawImageCore (c.Graphics, bmp, srcRect, destRect, (float) alpha);
 		}
 
-		public void ResetTransform (object backend)
-		{
-			var c = (DrawingContext)backend;
-			c.Graphics.ResetTransform ();
-		}
-
 		public void Rotate (object backend, double angle)
 		{
 			var c = (DrawingContext)backend;
