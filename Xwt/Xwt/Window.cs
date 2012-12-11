@@ -48,7 +48,7 @@ namespace Xwt
 		
 		public Window ()
 		{
-			padding = 6;
+			Padding = 6;
 		}
 		
 		public Window (string title): base (title)

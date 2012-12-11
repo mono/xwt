@@ -43,15 +43,19 @@ namespace Xwt.WPFBackend
 		public System.Windows.Controls.Menu mainMenu;
 		MenuBackend mainMenuBackend;
 		FrameworkElement widget;
-		Thickness padding;
+		DockPanel contentBox;
 
 		public WindowBackend ()
 		{
 			Window = new WpfWindow ();
 			Window.UseLayoutRounding = true;
 			rootPanel = CreateMainGrid ();
+			contentBox = new DockPanel ();
 
 			Window.Content = rootPanel;
+			Grid.SetColumn (contentBox, 0);
+			Grid.SetRow (contentBox, 1);
+			rootPanel.Children.Add (contentBox);
 		}
 
 		public override void Initialize ()
@@ -83,14 +87,10 @@ namespace Xwt.WPFBackend
 		public void SetChild (IWidgetBackend child)
 		{
 			if (widget != null)
-				rootPanel.Children.Remove(widget);
+				contentBox.Children.Remove (widget);
 			widget = ((IWpfWidgetBackend)child).Widget;
 
-			widget.Margin = padding;
-			Grid.SetColumn (widget, 0);
-			Grid.SetRow (widget, 1);
-
-			rootPanel.Children.Add (widget);
+			contentBox.Children.Add (widget);
 		}
 
 		public void SetMainMenu (IMenuBackend menu)
@@ -123,9 +123,7 @@ namespace Xwt.WPFBackend
 
 		public void SetPadding (double left, double top, double right, double bottom)
 		{
-			padding = new Thickness (left, top, right, bottom);
-			if (widget != null)
-				widget.Margin = padding;
+			contentBox.Margin = new Thickness (left, top, right, bottom);
 		}
 
 		public virtual void SetMinSize (Size s)
