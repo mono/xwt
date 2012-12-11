@@ -4,6 +4,7 @@
 // Authors:
 //       Lluis Sanchez <lluis@xamarin.com>
 //       Lytico (http://limada.sourceforge.net)
+//       Hywel Thomas <hywel.w.thomas@gmail.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -54,39 +55,49 @@ namespace Samples
 		
 		public virtual void Rotate (Xwt.Drawing.Context ctx, double x, double y)
 		{
-			ctx.Save ();
-			ctx.Translate (x + 30, y + 30);
-			ctx.SetLineWidth (3);
+			// draws a line along the x-axis from (0,0) to (r,0) with a constant translation and an increasing
+			// rotational component. This composite transform is then applied to a vertical line, with inverse
+			// color, and an additional x-offset, to form a mirror image figure for easy visual comparison.
+			// These transformed points must be drawn with the identity CTM, hence the Restore() each time.
 
-			// Rotation
-			
-			double end = 270;
+			ctx.Save ();	// save caller's context (assumed to be the Identity CTM)
+			ctx.SetLineWidth (3);	// should align exactly if drawn with half-pixel coordinates
+
+			// Vector length (pixels) and rotation limit (degrees)
 			double r = 30;
+			double end = 270;
 			
 			for (double n = 0; n<=end; n += 5) {
-				ctx.Save ();
+				ctx.Save ();	// save context and identity CTM for each line
+
+				// Set up translation to centre point of first figure, ensuring pixel alignment
+				ctx.Translate (x + 30.5, y + 30.5);
 				ctx.Rotate (n);
 				ctx.MoveTo (0, 0);
 				ctx.RelLineTo (r, 0);
 				double c = n / end;
 				ctx.SetColor (new Color (c, c, c));
-				ctx.Stroke ();
+				ctx.Stroke ();	// stroke first figure with composite Translation and Rotation CTM
 
-				// Visual test for TransformPoints
+				// Generate mirror image figure as a visual test of TransformPoints
 				Point p0 = new Point (0,0);
 				Point p1 = new Point (0, -r);
 				Point[] p = new Point[] {p0, p1};
-				ctx.TransformPoints (p);
-				ctx.ResetTransform ();
-				ctx.Translate (2 * r + 1, 0);
+				ctx.TransformPoints (p);	// using composite transformation
+
+				ctx.Restore ();	// restore identity CTM 
+				ctx.Save ();	// save again (to restore after additional Translation)
+
+				ctx.Translate (2 * r + 1, 0);	// extra x-offset to clear first figure
 				ctx.MoveTo (p[0]);
 				ctx.LineTo (p[1]);
 				c = 1-c;
 				ctx.SetColor (new Color (c, c, c));
-				ctx.Stroke();
-				ctx.Restore ();
+				ctx.Stroke();		// stroke transformed points with offset in CTM
+
+				ctx.Restore ();		// restore identity CTM for next line
 			}
-			ctx.Restore ();
+			ctx.Restore ();	// restore caller's context
 		}
 		
 		public virtual void Scale (Context ctx, double ax, double ay)
