@@ -271,17 +271,7 @@ namespace Xwt.Mac
 			ctx.RestoreState ();
 		}
 		
-		public override void ResetTransform (object backend)
-		{
-			// http://stackoverflow.com/questions/469505/how-to-reset-to-identity-the-current-transformation-matrix-with-some-cgcontext
-			// "Note that inverting the current CTM with CGAffineTransformInvert does not work if your current CTM is singular."
-
-			CGContext ctx = ((CGContextBackend)backend).Context;
-			CGAffineTransform matrix = ctx.GetCTM ();
-			ctx.ConcatCTM (matrix.Invert ());
-		}
-		
-		public override void Rotate (object backend, double angle)
+		public void Rotate (object backend, double angle)
 		{
 			((CGContextBackend)backend).Context.RotateCTM ((float)(angle * degrees));
 		}

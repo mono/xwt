@@ -182,14 +182,6 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
-		/// Resets the current trasnformation matrix (CTM) to the Identity Matrix
-		/// </summary>
-		public void ResetTransform ()
-		{
-			handler.ResetTransform (Backend);
-		}
-		
-		/// <summary>
 		/// Applies a rotation transformation
 		/// </summary>
 		/// <param name='angle'>

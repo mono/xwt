@@ -279,12 +279,6 @@ namespace Xwt.CairoBackend
 			return new Size (0,0);
 		}
 		
-		public override void ResetTransform (object backend)
-		{
-			CairoContextBackend gc = (CairoContextBackend)backend;
-			gc.Context.IdentityMatrix();
-		}
-
 		public override void Rotate (object backend, double angle)
 		{
 			CairoContextBackend gc = (CairoContextBackend)backend;
