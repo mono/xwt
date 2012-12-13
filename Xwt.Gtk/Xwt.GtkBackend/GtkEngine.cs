@@ -207,7 +207,7 @@ namespace Xwt.GtkBackend
 
 		public override bool HasNativeParent (Widget w)
 		{
-			IGtkWidgetBackend wb = (IGtkWidgetBackend)WidgetRegistry.GetBackend (w);
+			IGtkWidgetBackend wb = (IGtkWidgetBackend)Toolkit.GetBackend (w);
 			return wb.Widget.Parent != null;
 		}
 

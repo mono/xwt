@@ -165,7 +165,7 @@ namespace Xwt.Mac
 
 		public override bool HasNativeParent (Widget w)
 		{
-			IMacViewBackend wb = (IMacViewBackend)WidgetRegistry.GetBackend (w);
+			IMacViewBackend wb = (IMacViewBackend)Toolkit.GetBackend (w);
 			return wb.View.Superview != null;
 		}
 		

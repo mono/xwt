@@ -271,7 +271,7 @@ namespace Xwt.Mac
 			ctx.RestoreState ();
 		}
 		
-		public void Rotate (object backend, double angle)
+		public override void Rotate (object backend, double angle)
 		{
 			((CGContextBackend)backend).Context.RotateCTM ((float)(angle * degrees));
 		}
