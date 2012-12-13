@@ -10,6 +10,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>MacTest</RootNamespace>
     <AssemblyName>MacTest</AssemblyName>
+    <SuppressXamMacMigration>True</SuppressXamMacMigration>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
