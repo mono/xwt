@@ -8,7 +8,6 @@
     <ProjectGuid>{C93D746E-1586-4D4F-B411-BF5A966E6A08}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.WPF</RootNamespace>
-    <AssemblyName>Xwt.WPF</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -19,8 +18,30 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
+    <AssemblyName>Xwt.WPF</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <AssemblyName>Xwt.WPF</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugWinXwtFramework|AnyCPU' ">
+    <AssemblyName>XwtFramework</AssemblyName>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseXwtFramework|AnyCPU' ">
+    <AssemblyName>XwtFramework</AssemblyName>
     <DebugType>none</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Release</OutputPath>
