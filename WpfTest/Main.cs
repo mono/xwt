@@ -25,6 +25,7 @@
 
 using System;
 using Samples;
+using Xwt;
 
 namespace WpfTest
 {
@@ -33,7 +34,7 @@ namespace WpfTest
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			App.Run ("Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=1.0.0.0");
+			App.Run (ToolkitType.Wpf);
 		}
 	}
 }

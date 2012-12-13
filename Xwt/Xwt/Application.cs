@@ -58,6 +58,11 @@ namespace Xwt
 			Initialize (null);
 		}
 		
+		public static void Initialize (ToolkitType type)
+		{
+			Initialize (GetBackendType (type));
+		}
+
 		public static void Initialize (string backendType)
 		{
 			InitBackend (backendType);
@@ -202,18 +207,25 @@ namespace Xwt
 			if (type != null && LoadBackend (type))
 				return;
 			
-			if (LoadBackend ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0"))
-				return;
-			
-			if (LoadBackend ("Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0"))
-				return;
-			
-			if (LoadBackend ("Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=1.0.0.0"))
-				return;
-			
 			throw new InvalidOperationException ("Xwt engine not found");
 		}
-		
+
+		internal static string GetBackendType (ToolkitType type)
+		{
+			string version = typeof(Application).Assembly.GetName ().Version.ToString ();
+			
+			switch (type) {
+			case ToolkitType.Gtk:
+				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=" + version;
+			case ToolkitType.Cocoa:
+				return "Xwt.Mac.MacEngine, Xwt.Mac, Version=" + version;
+			case ToolkitType.Wpf:
+				return "Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=" + version;
+			default:
+				throw new ArgumentException ("Invalid toolkit type");
+			}
+		}
+
 		internal static void NotifyException (Exception ex)
 		{
 			var unhandledException = UnhandledException;
@@ -226,6 +238,13 @@ namespace Xwt
 				Console.WriteLine (ex);
 			}
 		}
+	}
+
+	public enum ToolkitType
+	{
+		Gtk,
+		Cocoa,
+		Wpf
 	}
 }
 
