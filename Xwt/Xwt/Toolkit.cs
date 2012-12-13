@@ -93,13 +93,15 @@ namespace Xwt
 
 		internal static string GetBackendType (ToolkitType type)
 		{
+			string version = typeof(Application).Assembly.GetName ().Version.ToString ();
+
 			switch (type) {
 			case ToolkitType.Gtk:
-				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0";
+				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=" + version;
 			case ToolkitType.Cocoa:
-				return "Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0";
+				return "Xwt.Mac.MacEngine, Xwt.Mac, Version=" + version;
 			case ToolkitType.Wpf:
-				return "Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=1.0.0.0";
+				return "Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=" + version;
 			default:
 				throw new ArgumentException ("Invalid toolkit type");
 			}
