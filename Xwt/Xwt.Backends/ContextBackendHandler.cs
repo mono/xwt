@@ -70,8 +70,6 @@ namespace Xwt.Backends
 
 		public abstract void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha);
 
-		public abstract void ResetTransform (object backend);
-
 		public abstract void Rotate (object backend, double angle);
 		
 		public abstract void Scale (object backend, double scaleX, double scaleY);
