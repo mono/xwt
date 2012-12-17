@@ -114,13 +114,26 @@ namespace Xwt.Formats
 				}
 
 				// Code blocks
-				else if (line.StartsWith ("\t") || line.StartsWith ("    ")) {
+				else if (line.StartsWith ("\t") || line.StartsWith ("    ") || line.StartsWith ("```")) {
+					bool isFencedCodeBlock = line.StartsWith ("```");
+
+					if (isFencedCodeBlock)
+						i++;
+
 					var codeblock = new StringBuilder ();
 					for (; i < lines.Length; i++) {
 						line = lines[i];
-						if (!line.StartsWith ("\t") && !line.StartsWith ("    "))
+						if (!line.StartsWith ("\t") && !line.StartsWith ("    ") && !isFencedCodeBlock)
 							break;
-						codeblock.AppendLine (line.StartsWith ("\t") ? line.Substring (1) : line.Substring (4));
+						if (isFencedCodeBlock && line.StartsWith ("```")) {
+							i++;
+							break;
+						}
+
+						if (isFencedCodeBlock && !line.StartsWith ("```"))
+							codeblock.AppendLine (line);
+						else
+							codeblock.AppendLine (line.StartsWith ("\t") ? line.Substring (1) : line.Substring (4));
 					}
 					i--;
 					if (wasParagraph) {
