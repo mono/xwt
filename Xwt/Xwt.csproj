@@ -137,6 +137,7 @@
     <Compile Include="Xwt.Drawing\RadialGradient.cs" />
     <Compile Include="Xwt.Drawing\TextLayout.cs" />
     <Compile Include="Xwt.Drawing\Font.cs" />
+	<Compile Include="Xwt.Drawing\Matrix.cs" />
     <Compile Include="Xwt.Backends\IGradientBackendHandler.cs" />
     <Compile Include="Xwt.Backends\IFontBackendHandler.cs" />
     <Compile Include="Xwt.Backends\ITextLayoutBackendHandler.cs" />
