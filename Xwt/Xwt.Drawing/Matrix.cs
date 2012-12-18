@@ -3,7 +3,7 @@
 //  
 // Authors:
 //	Chris Toshok (toshok@ximian.com)
-// 	Lytico (http://www.limada.org)
+//	Lytico (http://www.limada.org)
 //
 // Copyright (c) 2007 Novell, Inc. (http://www.novell.com)
 // Copyright (c) 2012 http://www.limada.org
@@ -60,6 +60,11 @@ namespace Xwt.Drawing
 
 		public Matrix (Matrix m) : this(m.M11, m.M12, m.M21, m.M22, m.OffsetX, m.OffsetY)
 		{
+		}
+
+		public Matrix ()
+		{
+			SetIdentity ();
 		}
 
 		public void Append (Matrix matrix)
@@ -183,12 +188,18 @@ namespace Xwt.Drawing
 		{
 			// R_theta==[costheta -sintheta; sintheta costheta],	
 			var theta = angle * pi180;
+			var cos = Math.Cos (theta);
+			var sin = Math.Sin (theta);
+            
+			var _m11 = cos * this.m11 + sin * this.m21;
+			var _m12 = cos * this.m12 + sin * this.m22;
+			var _m21 = cos * this.m21 - sin * this.m11;
+			var _m22 = cos * this.m22 - sin * this.m12;
 
-			var r_theta = new Matrix (Math.Cos (theta), Math.Sin (theta),
-                             -Math.Sin (theta), Math.Cos (theta),
-                             0, 0);
-
-			Append (r_theta);
+			this.m11 = _m11;
+			this.m12 = _m12;
+			this.m21 = _m21;
+			this.m22 = _m22;
 		}
 
 		public void RotateAt (double angle, double centerX, double centerY)
@@ -285,8 +296,15 @@ namespace Xwt.Drawing
 
 		public void Transform (Point[] points)
 		{
-			for (int i = 0; i < points.Length; i++)
-				points [i] = Transform (points [i]);
+			double x;
+			double y;
+			var len = points.Length;
+			for (int i = 0; i < len; i++) {
+				x = points [i].X;
+				y = points [i].Y;
+				points [i].X = x * m11 + y * m21 + offsetX;
+				points [i].Y = x * m12 + y * m22 + offsetY;
+			}
 		}
 
 		public Point TransformVector (Point vector)
@@ -296,8 +314,15 @@ namespace Xwt.Drawing
 
 		public void TransformVector (Point[] vectors)
 		{
-			for (int i = 0; i < vectors.Length; i++)
-				vectors [i] = TransformVector (vectors [i]);
+			double x;
+			double y;
+			var len = vectors.Length;
+			for (int i = 0; i < len; i++) {
+				x = vectors [i].X;
+				y = vectors [i].Y;
+				vectors [i].X = x * m11 + y * m21;
+				vectors [i].Y = x * m12 + y * m22;
+			}
 		}
 
 		public void Translate (double offsetX, double offsetY)
@@ -362,6 +387,7 @@ namespace Xwt.Drawing
 			get { return offsetY; }
 			set { offsetY = value; }
 		}
+
 	}
 
 }
