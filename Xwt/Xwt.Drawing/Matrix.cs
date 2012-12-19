@@ -151,12 +151,16 @@ namespace Xwt.Drawing
 
 		public static bool operator == (Matrix matrix1, Matrix matrix2)
 		{
+			if (Matrix.ReferenceEquals (matrix1, matrix2))
+				return true;
+			if (Matrix.ReferenceEquals (matrix1, null))
+				return false; 
 			return matrix1.Equals (matrix2);
 		}
 
 		public static bool operator != (Matrix matrix1, Matrix matrix2)
 		{
-			return !matrix1.Equals (matrix2);
+			return !(matrix1 == matrix2);
 		}
 
 		public static Matrix operator * (Matrix trans1, Matrix trans2)
