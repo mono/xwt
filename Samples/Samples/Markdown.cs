@@ -70,6 +70,13 @@ MediaPicker API:
 		//Present Image here
 	});
 
+Foo API:
+
+```csharp
+Console.WriteLine (""Foo!"")
+Console.WriteLine (""Testing fenced block support!"")
+```
+
 # Documentation
 
 - Technical Docs: http://betaapi.xamarin.com/?link=root:/Xamarin.Mobile
