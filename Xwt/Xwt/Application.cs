@@ -76,8 +76,22 @@ namespace Xwt
 			mainLoop = new UILoop (toolkit);
 
 			UIThread = System.Threading.Thread.CurrentThread;
+
+			toolkit.EnterUserCode ();
 		}
 		
+		public static void InitializeAsGuest (ToolkitType type)
+		{
+			Initialize (type);
+			toolkit.ExitUserCode (null);
+		}
+		
+		public static void InitializeAsGuest (string backendType)
+		{
+			Initialize (backendType);
+			toolkit.ExitUserCode (null);
+		}
+
 		public static void Run ()
 		{
 			toolkit.InvokePlatformCode (delegate {
