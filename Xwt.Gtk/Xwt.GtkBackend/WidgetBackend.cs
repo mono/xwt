@@ -409,6 +409,17 @@ namespace Xwt.GtkBackend
 				alignment.TopPadding = (uint) frontend.Margin.Top;
 				alignment.BottomPadding = (uint) frontend.Margin.Bottom;
 			}
+			Widget.QueueResize ();
+
+			if (!Widget.IsRealized) {
+				// This is a workaround to a GTK bug. When a widget is inside a ScrolledWindow, sometimes the QueueResize call on
+				// the widget is ignored if the widget is not realized.
+				var p = Widget.Parent;
+				while (p != null && !(p is Gtk.ScrolledWindow))
+					p = p.Parent;
+				if (p != null)
+					p.QueueResize ();
+			}
 		}
 		
 		void AllocEventBox ()
