@@ -335,7 +335,7 @@ namespace Xwt.WPFBackend
 
 		public void TransformPoint (object backend, ref double x, ref double y)
 		{
-			Matrix m = ((DrawingContext)backend).Graphics.Transform;
+			var m = ((DrawingContext)backend).Graphics.Transform;
 			PointF p = new PointF ((float)x, (float)y);
 			PointF[] pts = new PointF[] { p };
 			m.TransformPoints (pts);
@@ -345,7 +345,7 @@ namespace Xwt.WPFBackend
 
 		public void TransformDistance (object backend, ref double dx, ref double dy)
 		{
-			Matrix m = ((DrawingContext)backend).Graphics.Transform;
+			var m = ((DrawingContext)backend).Graphics.Transform;
 			PointF p = new PointF ((float)dx, (float)dy);
 			PointF[] pts = new PointF[] {p};
 			m.TransformVectors (pts);
@@ -355,7 +355,7 @@ namespace Xwt.WPFBackend
 
 		public void TransformPoints (object backend, Point[] points)
 		{
-			Matrix m = ((DrawingContext)backend).Graphics.Transform;
+			var m = ((DrawingContext)backend).Graphics.Transform;
 			PointF[] pts = new PointF[points.Length];
 			for (int i = 0; i < points.Length; ++i) {
 				pts[i].X = (float)points[i].X;
@@ -370,7 +370,7 @@ namespace Xwt.WPFBackend
 
 		public void TransformDistances (object backend, Distance[] vectors)
 		{
-			Matrix m = ((DrawingContext)backend).Graphics.Transform;
+			var m = ((DrawingContext)backend).Graphics.Transform;
 			PointF[] pts = new PointF[vectors.Length];
 			for (int i = 0; i < vectors.Length; ++i) {
 				pts[i].X = (float)vectors[i].Dx;
