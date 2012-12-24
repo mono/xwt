@@ -233,9 +233,11 @@ namespace Xwt.Mac
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
 			NSImage image = (NSImage)img;
-			var rect = new RectangleF (new PointF ((float)x, (float)y), image.Size);
+			var rect = new RectangleF (PointF.Empty, image.Size);
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)alpha);
+			ctx.TranslateCTM ((float)x, (float)y + rect.Height);
+			ctx.ScaleCTM (1f, -1f);
 			ctx.DrawImage (rect, image.AsCGImage (RectangleF.Empty, null, null));
 			ctx.RestoreState ();
 		}
@@ -251,9 +253,12 @@ namespace Xwt.Mac
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
 			NSImage image = (NSImage) img;
+			var rect = new RectangleF (0, 0, (float)destRect.Width, (float)destRect.Height);
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)alpha);
-			ctx.DrawImage (destRect.ToRectangleF (), image.AsCGImage (RectangleF.Empty, null, null).WithImageInRect (srcRect.ToRectangleF ()));
+			ctx.TranslateCTM ((float)destRect.X, (float)destRect.Y + rect.Height);
+			ctx.ScaleCTM (1f, -1f);
+			ctx.DrawImage (rect, image.AsCGImage (RectangleF.Empty, null, null).WithImageInRect (srcRect.ToRectangleF ()));
 			ctx.RestoreState ();
 		}
 		
