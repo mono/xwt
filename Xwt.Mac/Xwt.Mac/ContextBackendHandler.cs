@@ -40,6 +40,7 @@ namespace Xwt.Mac
 		public CGContext Context;
 		public SizeF Size;
 		public GradientInfo Gradient;
+		public CGAffineTransform? InverseViewTransform;
 	}
 
 	public class ContextBackendHandler: IContextBackendHandler
@@ -279,7 +280,7 @@ namespace Xwt.Mac
 		
 		public void TransformPoint (object backend, ref double x, ref double y)
 		{
-			CGAffineTransform t = ((CGContextBackend)backend).Context.GetCTM();
+			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
 
 			PointF p = t.TransformPoint (new PointF ((float)x, (float)y));
 			x = p.X;
@@ -288,7 +289,7 @@ namespace Xwt.Mac
 
 		public void TransformDistance (object backend, ref double dx, ref double dy)
 		{
-			CGAffineTransform t = ((CGContextBackend)backend).Context.GetCTM();
+			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
 			// remove translational elements from CTM
 			t.x0 = 0;
 			t.y0 = 0;
@@ -300,7 +301,7 @@ namespace Xwt.Mac
 
 		public void TransformPoints (object backend, Point[] points)
 		{
-			CGAffineTransform t = ((CGContextBackend)backend).Context.GetCTM();
+			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
 
 			PointF p;
 			for (int i = 0; i < points.Length; ++i) {
@@ -312,7 +313,7 @@ namespace Xwt.Mac
 
 		public void TransformDistances (object backend, Distance[] vectors)
 		{
-			CGAffineTransform t = ((CGContextBackend)backend).Context.GetCTM();
+			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
 			t.x0 = 0;
 			t.y0 = 0;
 			PointF p;
@@ -326,6 +327,19 @@ namespace Xwt.Mac
 		public void Dispose (object backend)
 		{
 			((CGContextBackend)backend).Context.Dispose ();
+		}
+
+		static CGAffineTransform GetContextTransform (CGContextBackend gc)
+		{
+			CGAffineTransform t = gc.Context.GetCTM ();
+
+			// The CTM returned above actually includes the full view transform.
+			//  We only want the transform that is applied to the context, so concat
+			//  the inverse of the view transform to nullify that part.
+			if (gc.InverseViewTransform.HasValue)
+				t.Multiply (gc.InverseViewTransform.Value);
+
+			return t;
 		}
 
 		static void SetupContextForDrawing (CGContext ctx)
