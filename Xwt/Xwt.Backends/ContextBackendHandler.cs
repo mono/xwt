@@ -40,8 +40,6 @@ namespace Xwt.Backends
 		
 		public abstract void ClipPreserve(object backend);
 		
-		public abstract void ResetClip (object backend);
-		
 		public abstract void Fill (object backend);
 		
 		public abstract void FillPreserve (object backend);

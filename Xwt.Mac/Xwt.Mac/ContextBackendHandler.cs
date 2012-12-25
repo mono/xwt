@@ -3,7 +3,8 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-// 
+//       Alex Corrado <corrado@xamarin.com>
+//
 // Copyright (c) 2011 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,19 +37,15 @@ using System.Drawing;
 namespace Xwt.Mac
 {
 	class CGContextBackend {
-		public CGPath ClipPath;
 		public CGContext Context;
 		public SizeF Size;
 		public GradientInfo Gradient;
+		public CGAffineTransform? InverseViewTransform;
 	}
 
 	public class MacContextBackendHandler: ContextBackendHandler
 	{
 		const double degrees = System.Math.PI / 180d;
-
-		public MacContextBackendHandler ()
-		{
-		}
 
 		public override void Save (object backend)
 		{
@@ -79,24 +76,18 @@ namespace Xwt.Mac
 
 		public override void Clip (object backend)
 		{
-			ClipPreserve (backend);
-			((CGContextBackend)backend).Context.BeginPath ();
+			((CGContextBackend)backend).Context.Clip ();
 		}
 
 		public override void ClipPreserve (object backend)
 		{
-			CGContextBackend gc = (CGContextBackend)backend;
-			if (gc.ClipPath == null)
-				gc.ClipPath = gc.Context.CopyPath ();
-			//else
-				//FIXME: figure out how to intersect existing ClipPath with the current path
+			CGContext ctx = ((CGContextBackend)backend).Context;
+			using (CGPath oldPath = ctx.CopyPath ()) {
+				ctx.Clip ();
+				ctx.AddPath (oldPath);
+			}
 		}
 
-		public override void ResetClip (object backend)
-		{
-			((CGContextBackend)backend).ClipPath = null;
-		}
-		
 		public override void ClosePath (object backend)
 		{
 			((CGContextBackend)backend).Context.ClosePath ();
@@ -109,15 +100,14 @@ namespace Xwt.Mac
 
 		public override void Fill (object backend)
 		{
-			bool needsRestore;
 			CGContextBackend gc = (CGContextBackend)backend;
-			CGContext ctx = SetupContextForDrawing (gc, out needsRestore);
+			CGContext ctx = gc.Context;
+			SetupContextForDrawing (ctx);
+
 			if (gc.Gradient != null)
 				MacGradientBackendHandler.Draw (ctx, gc.Gradient);
 			else
 				ctx.DrawPath (CGPathDrawingMode.Fill);
-			if (needsRestore)
-				ctx.RestoreState ();
 		}
 
 		public override void FillPreserve (object backend)
@@ -172,18 +162,17 @@ namespace Xwt.Mac
 
 		public override void Stroke (object backend)
 		{
-			bool needsRestore;
-			CGContext ctx = SetupContextForDrawing ((CGContextBackend)backend, out needsRestore);
+			CGContext ctx = ((CGContextBackend)backend).Context;
+			SetupContextForDrawing (ctx);
 			ctx.DrawPath (CGPathDrawingMode.Stroke);
-			if (needsRestore)
-				ctx.RestoreState ();
 		}
 
 		public override void StrokePreserve (object backend)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
+			SetupContextForDrawing (ctx);
 			using (CGPath oldPath = ctx.CopyPath ()) {
-				Stroke (backend);
+				ctx.DrawPath (CGPathDrawingMode.Stroke);
 				ctx.AddPath (oldPath);
 			}
 		}
@@ -233,23 +222,23 @@ namespace Xwt.Mac
 		{
 			((CGContextBackend)backend).Context.SelectFont (font.Family, (float)font.Size, CGTextEncoding.FontSpecific);
 		}
-		
+
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			bool needsRestore;
-			CGContext ctx = SetupContextForDrawing ((CGContextBackend)backend, out needsRestore);
+			CGContext ctx = ((CGContextBackend)backend).Context;
+			SetupContextForDrawing (ctx);
 			MacTextLayoutBackendHandler.Draw (ctx, Toolkit.GetBackend (layout), x, y);
-			if (needsRestore)
-				ctx.RestoreState ();
 		}
-		
+
 		public override void DrawImage (object backend, object img, double x, double y, double alpha)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
 			NSImage image = (NSImage)img;
-			var rect = new RectangleF (new PointF ((float)x, (float)y), image.Size);
+			var rect = new RectangleF (PointF.Empty, image.Size);
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)alpha);
+			ctx.TranslateCTM ((float)x, (float)y + rect.Height);
+			ctx.ScaleCTM (1f, -1f);
 			ctx.DrawImage (rect, image.AsCGImage (RectangleF.Empty, null, null));
 			ctx.RestoreState ();
 		}
@@ -265,9 +254,12 @@ namespace Xwt.Mac
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
 			NSImage image = (NSImage) img;
+			var rect = new RectangleF (0, 0, (float)destRect.Width, (float)destRect.Height);
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)alpha);
-			ctx.DrawImage (destRect.ToRectangleF (), image.AsCGImage (RectangleF.Empty, null, null).WithImageInRect (srcRect.ToRectangleF ()));
+			ctx.TranslateCTM ((float)destRect.X, (float)destRect.Y + rect.Height);
+			ctx.ScaleCTM (1f, -1f);
+			ctx.DrawImage (rect, image.AsCGImage (RectangleF.Empty, null, null).WithImageInRect (srcRect.ToRectangleF ()));
 			ctx.RestoreState ();
 		}
 		
@@ -288,7 +280,7 @@ namespace Xwt.Mac
 		
 		public override void TransformPoint (object backend, ref double x, ref double y)
 		{
-			CGAffineTransform t = ((CGContextBackend)backend).Context.GetCTM();
+			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
 
 			PointF p = t.TransformPoint (new PointF ((float)x, (float)y));
 			x = p.X;
@@ -297,7 +289,7 @@ namespace Xwt.Mac
 
 		public override void TransformDistance (object backend, ref double dx, ref double dy)
 		{
-			CGAffineTransform t = ((CGContextBackend)backend).Context.GetCTM();
+			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
 			// remove translational elements from CTM
 			t.x0 = 0;
 			t.y0 = 0;
@@ -309,7 +301,7 @@ namespace Xwt.Mac
 
 		public override void TransformPoints (object backend, Point[] points)
 		{
-			CGAffineTransform t = ((CGContextBackend)backend).Context.GetCTM();
+			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
 
 			PointF p;
 			for (int i = 0; i < points.Length; ++i) {
@@ -321,7 +313,7 @@ namespace Xwt.Mac
 
 		public override void TransformDistances (object backend, Distance[] vectors)
 		{
-			CGAffineTransform t = ((CGContextBackend)backend).Context.GetCTM();
+			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
 			t.x0 = 0;
 			t.y0 = 0;
 			PointF p;
@@ -365,28 +357,29 @@ namespace Xwt.Mac
 			((CGContextBackend)backend).Context.Dispose ();
 		}
 
-		static CGContext SetupContextForDrawing (CGContextBackend gc, out bool needsRestore)
+		static CGAffineTransform GetContextTransform (CGContextBackend gc)
 		{
-			CGContext ctx = gc.Context;
-			if (!ctx.IsPathEmpty ()) {
-				var drawPoint = ctx.GetCTM ().TransformPoint (ctx.GetPathBoundingBox ().Location);
-				var patternPhase = new SizeF (drawPoint.X, drawPoint.Y);
-				if (patternPhase != SizeF.Empty)
-					ctx.SetPatternPhase (patternPhase);
-			}
-			if (gc.ClipPath == null) {
-				needsRestore = false;
-				return ctx;
-			}
-			ctx.SaveState ();
-			using (CGPath oldPath = ctx.CopyPath ()) {
-				ctx.BeginPath ();
-				ctx.AddPath (gc.ClipPath);
-				ctx.Clip ();
-				ctx.AddPath (oldPath);
-			}
-			needsRestore = true;
-			return ctx;
+			CGAffineTransform t = gc.Context.GetCTM ();
+
+			// The CTM returned above actually includes the full view transform.
+			//  We only want the transform that is applied to the context, so concat
+			//  the inverse of the view transform to nullify that part.
+			if (gc.InverseViewTransform.HasValue)
+				t.Multiply (gc.InverseViewTransform.Value);
+
+			return t;
+		}
+
+		static void SetupContextForDrawing (CGContext ctx)
+		{
+			if (ctx.IsPathEmpty ())
+				return;
+
+			// setup pattern drawing to better match the behavior of Cairo
+			var drawPoint = ctx.GetCTM ().TransformPoint (ctx.GetPathBoundingBox ().Location);
+			var patternPhase = new SizeF (drawPoint.X, drawPoint.Y);
+			if (patternPhase != SizeF.Empty)
+				ctx.SetPatternPhase (patternPhase);
 		}
 	}
 }

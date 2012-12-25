@@ -91,11 +91,6 @@ namespace Xwt.Drawing
 			handler.ClipPreserve (Backend);
 		}
 		
-		public void ResetClip ()
-		{
-			handler.ResetClip (Backend);
-		}
-		
 		public void Fill ()
 		{
 			handler.Fill (Backend);

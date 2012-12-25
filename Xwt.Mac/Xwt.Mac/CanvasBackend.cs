@@ -27,7 +27,7 @@
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
-
+using MonoMac.CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -113,10 +113,12 @@ namespace Xwt.Mac
 		public override void DrawRect (System.Drawing.RectangleF dirtyRect)
 		{
 			context.InvokeUserCode (delegate {
-				var ctx = new CGContextBackend {
-					Context = NSGraphicsContext.CurrentContext.GraphicsPort
+				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+				var backend = new CGContextBackend {
+					Context = ctx,
+					InverseViewTransform = ctx.GetCTM ().Invert ()
 				};
-				eventSink.OnDraw (ctx, new Rectangle (dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height));
+				eventSink.OnDraw (backend, new Rectangle (dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height));
 			});
 		}
 		
