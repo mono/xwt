@@ -53,6 +53,8 @@ namespace Xwt.Backends
 
 		public abstract object CreatePath ();
 
+		public abstract object CopyPath (object backend);
+
 		public abstract void AppendPath (object backend, object otherBackend);
 
 		public abstract bool IsPointInFill (object backend, double x, double y);

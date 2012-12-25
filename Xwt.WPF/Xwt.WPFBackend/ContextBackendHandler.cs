@@ -382,6 +382,11 @@ namespace Xwt.WPFBackend
             return new DrawingContext ();
         }
 
+		public override object CopyPath (object backend)
+		{
+			return new DrawingContext ((DrawingContext)backend);
+		}
+
 		public override void AppendPath (object backend, object otherBackend)
         {
             var dest = (DrawingContext)backend;

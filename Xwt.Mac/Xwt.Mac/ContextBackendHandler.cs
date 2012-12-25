@@ -329,6 +329,11 @@ namespace Xwt.Mac
 			return new CGPath ();
 		}
 
+		public override object CopyPath (object backend)
+		{
+			return ((CGContextBackend)backend).Context.CopyPath ();
+		}
+
 		public override void AppendPath (object backend, object otherBackend)
 		{
 			CGContext dest = ((CGContextBackend)backend).Context;

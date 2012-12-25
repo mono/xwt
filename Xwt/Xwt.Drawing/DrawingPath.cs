@@ -44,6 +44,15 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
+		/// Copies the current drawing path.
+		/// </summary>
+		/// <returns>A new DrawingPath instance that is a copy of the current drawing path.</returns>
+		public DrawingPath CopyPath ()
+		{
+			return new DrawingPath (handler.CopyPath (Backend), ToolkitEngine, ToolkitEngine.DrawingPathBackendHandler);
+		}
+
+		/// <summary>
 		/// Adds a circular arc of the given radius to the current path.
 		/// The arc is centered at (xc, yc), 
 		/// begins at angle1 and proceeds in the direction 

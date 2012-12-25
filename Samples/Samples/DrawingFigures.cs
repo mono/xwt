@@ -249,8 +249,13 @@ namespace Samples
 			ctx.SetLineWidth (2);
 			ctx.Stroke ();
 
+			var path2 = path.CopyPath ();
+
+			path2.LineTo (15, 8);
+			path2.ClosePath ();
+
 			ctx.Rotate (180);
-			ctx.AppendPath (path);
+			ctx.AppendPath (path2);
 			ctx.SetColor (Colors.Red);
 			ctx.SetLineDash (0, 5);
 			ctx.Stroke ();

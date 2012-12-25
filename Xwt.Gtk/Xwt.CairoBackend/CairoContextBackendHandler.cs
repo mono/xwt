@@ -340,6 +340,13 @@ namespace Xwt.CairoBackend
 			};
 		}
 
+		public override object CopyPath (object backend)
+		{
+			var newPath = CreatePath ();
+			AppendPath (newPath, backend);
+			return newPath;
+		}
+
 		public override void AppendPath (object backend, object otherBackend)
 		{
 			Cairo.Context dest = ((CairoContextBackend)backend).Context;

@@ -103,6 +103,11 @@ namespace Xwt.Mac
 			return new CGPath ();
 		}
 
+		public override object CopyPath (object backend)
+		{
+			return new CGPath ((CGPath)backend);
+		}
+
 		public override void AppendPath (object backend, object otherBackend)
 		{
 			CGPath dest = (CGPath)backend;
