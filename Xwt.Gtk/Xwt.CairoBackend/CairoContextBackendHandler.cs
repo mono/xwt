@@ -91,6 +91,12 @@ namespace Xwt.CairoBackend
 			ctx.ClipPreserve ();
 		}
 
+		public void ResetClip (object backend)
+		{
+			Cairo.Context ctx = ((CairoContextBackend) backend).Context;
+			ctx.ResetClip ();
+		}
+
 		public void ClosePath (object backend)
 		{
 			Cairo.Context ctx = ((CairoContextBackend) backend).Context;

@@ -44,6 +44,8 @@ namespace Xwt.Backends
 		
 		void ClipPreserve(object backend);
 		
+		void ResetClip (object backend);
+		
 		void ClosePath(object backend);
 		
 		void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3);

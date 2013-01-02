@@ -3,8 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-//       Alex Corrado <corrado@xamarin.com>
-//
+// 
 // Copyright (c) 2011 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,6 +36,7 @@ using System.Drawing;
 namespace Xwt.Mac
 {
 	class CGContextBackend {
+		public CGPath ClipPath;
 		public CGContext Context;
 		public SizeF Size;
 		public GradientInfo Gradient;
@@ -46,6 +46,10 @@ namespace Xwt.Mac
 	public class ContextBackendHandler: IContextBackendHandler
 	{
 		const double degrees = System.Math.PI / 180d;
+
+		public ContextBackendHandler ()
+		{
+		}
 
 		public void Save (object backend)
 		{
@@ -76,16 +80,22 @@ namespace Xwt.Mac
 
 		public void Clip (object backend)
 		{
-			((CGContextBackend)backend).Context.Clip ();
+			ClipPreserve (backend);
+			((CGContextBackend)backend).Context.BeginPath ();
 		}
 
 		public void ClipPreserve (object backend)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
-			using (CGPath oldPath = ctx.CopyPath ()) {
-				ctx.Clip ();
-				ctx.AddPath (oldPath);
-			}
+			CGContextBackend gc = (CGContextBackend)backend;
+			if (gc.ClipPath == null)
+				gc.ClipPath = gc.Context.CopyPath ();
+			//else
+				//FIXME: figure out how to intersect existing ClipPath with the current path
+		}
+
+		public void ResetClip (object backend)
+		{
+			((CGContextBackend)backend).ClipPath = null;
 		}
 		
 		public void ClosePath (object backend)
@@ -100,14 +110,15 @@ namespace Xwt.Mac
 
 		public void Fill (object backend)
 		{
+			bool needsRestore;
 			CGContextBackend gc = (CGContextBackend)backend;
-			CGContext ctx = gc.Context;
-			SetupContextForDrawing (ctx);
-
+			CGContext ctx = SetupContextForDrawing (gc, out needsRestore);
 			if (gc.Gradient != null)
 				GradientBackendHandler.Draw (ctx, gc.Gradient);
 			else
 				ctx.DrawPath (CGPathDrawingMode.Fill);
+			if (needsRestore)
+				ctx.RestoreState ();
 		}
 
 		public void FillPreserve (object backend)
@@ -162,17 +173,18 @@ namespace Xwt.Mac
 
 		public void Stroke (object backend)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
-			SetupContextForDrawing (ctx);
+			bool needsRestore;
+			CGContext ctx = SetupContextForDrawing ((CGContextBackend)backend, out needsRestore);
 			ctx.DrawPath (CGPathDrawingMode.Stroke);
+			if (needsRestore)
+				ctx.RestoreState ();
 		}
 
 		public void StrokePreserve (object backend)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
-			SetupContextForDrawing (ctx);
 			using (CGPath oldPath = ctx.CopyPath ()) {
-				ctx.DrawPath (CGPathDrawingMode.Stroke);
+				Stroke (backend);
 				ctx.AddPath (oldPath);
 			}
 		}
@@ -225,9 +237,11 @@ namespace Xwt.Mac
 		
 		public void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
-			SetupContextForDrawing (ctx);
+			bool needsRestore;
+			CGContext ctx = SetupContextForDrawing ((CGContextBackend)backend, out needsRestore);
 			TextLayoutBackendHandler.Draw (ctx, WidgetRegistry.GetBackend (layout), x, y);
+			if (needsRestore)
+				ctx.RestoreState ();
 		}
 		
 		public void DrawImage (object backend, object img, double x, double y, double alpha)
@@ -342,16 +356,28 @@ namespace Xwt.Mac
 			return t;
 		}
 
-		static void SetupContextForDrawing (CGContext ctx)
+		static CGContext SetupContextForDrawing (CGContextBackend gc, out bool needsRestore)
 		{
-			if (ctx.IsPathEmpty ())
-				return;
-
-			// setup pattern drawing to better match the behavior of Cairo
-			var drawPoint = ctx.GetCTM ().TransformPoint (ctx.GetPathBoundingBox ().Location);
-			var patternPhase = new SizeF (drawPoint.X, drawPoint.Y);
-			if (patternPhase != SizeF.Empty)
-				ctx.SetPatternPhase (patternPhase);
+			CGContext ctx = gc.Context;
+			if (!ctx.IsPathEmpty ()) {
+				var drawPoint = ctx.GetCTM ().TransformPoint (ctx.GetPathBoundingBox ().Location);
+				var patternPhase = new SizeF (drawPoint.X, drawPoint.Y);
+				if (patternPhase != SizeF.Empty)
+					ctx.SetPatternPhase (patternPhase);
+			}
+			if (gc.ClipPath == null) {
+				needsRestore = false;
+				return ctx;
+			}
+			ctx.SaveState ();
+			using (CGPath oldPath = ctx.CopyPath ()) {
+				ctx.BeginPath ();
+				ctx.AddPath (gc.ClipPath);
+				ctx.Clip ();
+				ctx.AddPath (oldPath);
+			}
+			needsRestore = true;
+			return ctx;
 		}
 	}
 }
