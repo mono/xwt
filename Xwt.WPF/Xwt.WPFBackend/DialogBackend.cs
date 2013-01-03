@@ -108,6 +108,7 @@ namespace Xwt.WPFBackend
 		{
 			if (parent != null)
 				Window.Owner = ((WindowFrameBackend) parent).Window;
+			Window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			Window.ShowDialog ();
 		}
 
