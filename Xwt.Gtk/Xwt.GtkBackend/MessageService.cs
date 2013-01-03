@@ -72,7 +72,6 @@ namespace Xwt.GtkBackend
 			}
 			dialog.TransientFor = parent;
 			dialog.DestroyWithParent = true;
-			PlaceDialog (dialog, parent);
 			return GtkWorkarounds.RunDialogWithNotification (dialog);
 		}
 		
@@ -95,40 +94,6 @@ namespace Xwt.GtkBackend
 				if (w.Visible && w.HasToplevelFocus && w.Modal)
 					return w;
 			return RootWindow;
-		}
-		
-		/// <summary>
-		/// Positions a dialog relative to its parent on platforms where default placement is known to be poor.
-		/// </summary>
-		public static void PlaceDialog (Gtk.Window child, Gtk.Window parent)
-		{
-			//HACK: Mac GTK automatic window placement is broken
-			if (Platform.IsMac) {
-				if (parent == null) {
-					parent = GetDefaultParent (child);
-				}
-				if (parent != null) {
-					CenterWindow (child, parent);
-				}
-			}
-		}
-		
-		/// <summary>Centers a window relative to its parent.</summary>
-		static void CenterWindow (Gtk.Window child, Gtk.Window parent)
-		{
-			child.Child.Show ();
-			int w, h, winw, winh, x, y, winx, winy;
-			if (child.Visible)
-				child.GetSize (out w, out h);
-			else {
-				w = child.DefaultSize.Width;
-				h = child.DefaultSize.Height;
-			}
-			parent.GetSize (out winw, out winh);
-			parent.GetPosition (out winx, out winy);
-			x = Math.Max (0, (winw - w) /2) + winx;
-			y = Math.Max (0, (winh - h) /2) + winy;
-			child.Move (x, y);
 		}
 	}
 }

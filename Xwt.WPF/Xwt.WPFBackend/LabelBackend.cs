@@ -91,15 +91,15 @@ namespace Xwt.WPFBackend
 
 		public WrapMode Wrap {
 			get {
-				if (Label.TextBlock.TextTrimming == TextTrimming.None)
+				if (Label.TextBlock.TextWrapping == TextWrapping.NoWrap)
 					return WrapMode.None;
 				else
 					return WrapMode.Word;
 			} set {
 				if (value == WrapMode.None)
-					Label.TextBlock.TextTrimming = TextTrimming.None;
+					Label.TextBlock.TextWrapping = TextWrapping.NoWrap;
 				else
-					Label.TextBlock.TextTrimming = TextTrimming.WordEllipsis;
+					Label.TextBlock.TextWrapping = TextWrapping.Wrap;
 			}
 		}
 	}
