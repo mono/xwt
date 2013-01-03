@@ -88,6 +88,8 @@ namespace Xwt.Engine
 		
 		public static WindowFrame WrapWindow (object nativeWindow)
 		{
+			if (nativeWindow == null)
+				return null;
 			return new NativeWindowFrame (Application.EngineBackend.GetBackendForWindow (nativeWindow));
 		}
 	}
