@@ -113,6 +113,11 @@ namespace Xwt.Mac
 		{
 			Toolkit.Invoke (delegate {
 				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+
+				//fill BackgroundColor
+				ctx.SetFillColor (Frontend.BackgroundColor.ToCGColor ());
+				ctx.FillRect (Bounds);
+
 				var backend = new CGContextBackend {
 					Context = ctx,
 					InverseViewTransform = ctx.GetCTM ().Invert ()
