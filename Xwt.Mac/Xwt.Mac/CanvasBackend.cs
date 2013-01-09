@@ -87,27 +87,13 @@ namespace Xwt.Mac
 		}
 	}
 	
-	class CanvasView: NSView, IViewObject
+	class CanvasView: WidgetView
 	{
 		ICanvasEventSink eventSink;
-		ApplicationContext context;
 		
-		public CanvasView (ICanvasEventSink eventSink, ApplicationContext context)
+		public CanvasView (ICanvasEventSink eventSink, ApplicationContext context): base (eventSink, context)
 		{
-			this.context = context;
 			this.eventSink = eventSink;
-		}
-		
-		public Widget Frontend { get; set; }
-		
-		public NSView View {
-			get { return this; }
-		}
-		
-		public override bool IsFlipped {
-			get {
-				return true;
-			}
 		}
 
 		public override void DrawRect (System.Drawing.RectangleF dirtyRect)
@@ -124,80 +110,6 @@ namespace Xwt.Mac
 					InverseViewTransform = ctx.GetCTM ().Invert ()
 				};
 				eventSink.OnDraw (backend, new Rectangle (dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height));
-			});
-		}
-		
-		public override void RightMouseDown (NSEvent theEvent)
-		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
-			ButtonEventArgs args = new ButtonEventArgs ();
-			args.X = p.X;
-			args.Y = p.Y;
-			args.Button = PointerButton.Right;
-			context.InvokeUserCode (delegate {
-				eventSink.OnButtonPressed (args);
-			});
-		}
-		
-		public override void RightMouseUp (NSEvent theEvent)
-		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
-			ButtonEventArgs args = new ButtonEventArgs ();
-			args.X = p.X;
-			args.Y = p.Y;
-			args.Button = PointerButton.Right;
-			context.InvokeUserCode (delegate {
-				eventSink.OnButtonReleased (args);
-			});
-		}
-		
-		public override void MouseDown (NSEvent theEvent)
-		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
-			ButtonEventArgs args = new ButtonEventArgs ();
-			args.X = p.X;
-			args.Y = p.Y;
-			args.Button = PointerButton.Left;
-			context.InvokeUserCode (delegate {
-				eventSink.OnButtonPressed (args);
-			});
-		}
-		
-		public override void MouseUp (NSEvent theEvent)
-		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
-			ButtonEventArgs args = new ButtonEventArgs ();
-			args.X = p.X;
-			args.Y = p.Y;
-			args.Button = (PointerButton) theEvent.ButtonNumber + 1;
-			context.InvokeUserCode (delegate {
-				eventSink.OnButtonReleased (args);
-			});
-		}
-		
-		public override void MouseMoved (NSEvent theEvent)
-		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
-			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
-			context.InvokeUserCode (delegate {
-				eventSink.OnMouseMoved (args);
-			});
-		}
-		
-		public override void MouseDragged (NSEvent theEvent)
-		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
-			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
-			context.InvokeUserCode (delegate {
-				eventSink.OnMouseMoved (args);
-			});
-		}
-		
-		public override void SetFrameSize (System.Drawing.SizeF newSize)
-		{
-			base.SetFrameSize (newSize);
-			context.InvokeUserCode (delegate {
-				eventSink.OnBoundsChanged ();
 			});
 		}
 	}

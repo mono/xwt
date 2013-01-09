@@ -56,6 +56,7 @@ namespace Xwt.Mac
 		public override void InitializeBackends ()
 		{
 			base.InitializeBackends ();
+			RegisterBackend (typeof(Xwt.Widget), typeof(CustomWidgetBackend));
 			RegisterBackend (typeof(Xwt.Window), typeof(WindowBackend));
 			RegisterBackend (typeof(Xwt.Label), typeof(LabelBackend));
 			RegisterBackend (typeof(Xwt.HBox), typeof(BoxBackend));

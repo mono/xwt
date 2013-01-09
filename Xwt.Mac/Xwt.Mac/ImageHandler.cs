@@ -96,12 +96,14 @@ namespace Xwt.Mac
 		
 		public override object Resize (object handle, double width, double height)
 		{
-			throw new NotImplementedException ();
+			NSImage newImg = (NSImage)Copy (handle);
+			newImg.Size = new SizeF ((float)width, (float)height);
+			return newImg;
 		}
 		
 		public override object Copy (object handle)
 		{
-			throw new NotImplementedException ();
+			return ((NSImage)handle).Copy ();
 		}
 		
 		public override void CopyArea (object backend, int srcX, int srcY, int width, int height, object dest, int destX, int destY)

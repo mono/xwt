@@ -35,7 +35,11 @@ namespace Xwt.Mac
 	{
 		public BoxBackend ()
 		{
-			ViewObject = new BoxView ();
+		}
+
+		public override void Initialize ()
+		{
+			ViewObject = new WidgetView (EventSink, ApplicationContext);
 		}
 
 		public void Add (IWidgetBackend widget)
@@ -59,20 +63,6 @@ namespace Xwt.Mac
 				var r = rects[n];
 				w.Frame = new System.Drawing.RectangleF ((float)r.Left, (float)r.Top, (float)r.Width, (float)r.Height);
 				w.NeedsDisplay = true;
-			}
-		}
-	}
-	
-	class BoxView: NSView, IViewObject
-	{
-		public Widget Frontend { get; set; }
-		public NSView View {
-			get { return this; }
-		}
-		
-		public override bool IsFlipped {
-			get {
-				return true;
 			}
 		}
 	}
