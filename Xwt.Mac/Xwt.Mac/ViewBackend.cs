@@ -229,16 +229,8 @@ namespace Xwt.Mac
 		}
 		
 		public virtual Xwt.Drawing.Color BackgroundColor {
-			get {
-				if (Widget.Layer != null)
-					return Widget.Layer.BackgroundColor.ToXwtColor ();
-				else
-					return Xwt.Drawing.Colors.Black;
-			}
-			set {
-				if (Widget.Layer != null)
-					Widget.Layer.BackgroundColor = value.ToCGColor ();
-			}
+			get;
+			set;
 		}
 		
 		#region IWidgetBackend implementation

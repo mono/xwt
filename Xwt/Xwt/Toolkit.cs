@@ -255,6 +255,8 @@ namespace Xwt
 		}
 		public WindowFrame WrapWindow (object nativeWindow)
 		{
+			if (nativeWindow == null)
+				return null;
 			return new NativeWindowFrame (backend.GetBackendForWindow (nativeWindow));
 		}
 
