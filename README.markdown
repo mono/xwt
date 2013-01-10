@@ -21,7 +21,7 @@ If a specific feature or widget is not available in the
 native framework of a platform, it will be emulated or implemented
 as a set of native widgets.
 
-Xwt can be used a standalone framework to power the entire application
+Xwt can be used as a standalone framework to power the entire application
 or it can be embedded into an existing host.  This allows developers
 to develop their "shell" using native components (for example a Ribbon
 on Windows, toolbars on Linux) and use Xwt for specific bits of the
