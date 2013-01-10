@@ -65,7 +65,7 @@ Hello World
 
 To write your first application, create an empty .NET project in your
 favorite language in MonoDevelop or Visual Studio and reference the
-Xwt.dll library.   This is the only library that you need to reference
+Xwt.dll library. This is the only library that you need to reference
 at compile time.
 
 This is the simplest Xwt program you can write:
@@ -77,7 +77,7 @@ This is the simplest Xwt program you can write:
 		[STAThread]
 		static void Main ()
 		{
-			Application.Initialize ();
+			Application.Initialize (ToolkitType.Gtk);
 			var mainWindow = new Window (){
 				Title = "Xwt Demo Application",
 				Width = 500,
@@ -90,13 +90,18 @@ This is the simplest Xwt program you can write:
 	}
 
 You use the Application.Initialize() method to get the backend
-initialized and the Application.Run method to get the UI events
-processing going.
+initialized. In this example we are using the Gtk backend. If you
+want to use another backend, just change the parameter provided
+to the Initialize() method. Also make sure the appropiate backend
+DLL is available in the application directory.
 
 Then we create an instance of the Window class, this class exposes two
 interesting properties, MainMenu which can be used to set the Window's
 main menu and "Content" which is of type "Widget" and allows you to
 add some content to the window.
+
+Finally, the Application.Run method is called to get the UI events
+processing going.
 
 Widget Class Hierarchy
 ======================
