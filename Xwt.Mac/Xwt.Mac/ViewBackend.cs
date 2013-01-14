@@ -195,7 +195,7 @@ namespace Xwt.Mac
 		}
 		
 		Size IWidgetBackend.Size {
-			get { return new Size (Widget.WidgetWidth (), Widget.WidgetHeight ()); }
+			get { return new Size (Widget.WidgetWidth () - Frontend.Margin.HorizontalSpacing, Widget.WidgetHeight () - Frontend.Margin.VerticalSpacing); }
 		}
 		
 		NSView IMacViewBackend.View {
