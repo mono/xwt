@@ -133,6 +133,7 @@
     <Compile Include="Xwt.WPFBackend\ScrollAdjustmentBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CustomScrollViewPort.cs" />
     <Compile Include="Xwt.WPFBackend\RichTextViewBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\WpfDesktopBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -186,7 +186,8 @@ namespace Xwt.GtkBackend
 			if (ev is WindowFrameEvent) {
 				switch ((WindowFrameEvent)ev) {
 				case WindowFrameEvent.BoundsChanged:
-					Window.SizeAllocated += HandleWidgetSizeAllocated; break;
+					Window.AddEvents ((int)Gdk.EventMask.StructureMask);
+					Window.ConfigureEvent += HandleConfigureEvent; break;
 				case WindowFrameEvent.CloseRequested:
 					Window.DeleteEvent += HandleCloseRequested; break;
 				}
@@ -198,14 +199,15 @@ namespace Xwt.GtkBackend
 			if (ev is WindowFrameEvent) {
 				switch ((WindowFrameEvent)ev) {
 				case WindowFrameEvent.BoundsChanged:
-					Window.SizeAllocated -= HandleWidgetSizeAllocated; break;
+					Window.ConfigureEvent -= HandleConfigureEvent; break;
 				case WindowFrameEvent.CloseRequested:
 					Window.DeleteEvent -= HandleCloseRequested; break;
 				}
 			}
 		}
 
-		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
+		[GLib.ConnectBefore]
+		void HandleConfigureEvent (object o, Gtk.ConfigureEventArgs args)
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnBoundsChanged (Bounds);

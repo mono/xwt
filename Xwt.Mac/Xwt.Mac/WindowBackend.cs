@@ -129,6 +129,7 @@ namespace Xwt.Mac
 				switch (@event) {
 					case WindowFrameEvent.BoundsChanged:
 						DidResize += HandleDidResize;
+						DidMoved += HandleDidResize;
 						break;
 					case WindowFrameEvent.Hidden:
 						EnableVisibilityEvent (@event);
@@ -211,6 +212,7 @@ namespace Xwt.Mac
 				switch (@event) {
 					case WindowFrameEvent.BoundsChanged:
 						DidResize -= HandleDidResize;
+						DidMoved -= HandleDidResize;
 						break;
 					case WindowFrameEvent.Hidden:
 						this.WillClose -= OnWillClose;
@@ -308,7 +310,8 @@ namespace Xwt.Mac
 		
 		Rectangle IWindowFrameBackend.Bounds {
 			get {
-				var r = ContentRectFor (Frame);
+				var b = ContentRectFor (Frame);
+				var r = MacDesktopBackend.ToDesktopRect (b);
 				return new Rectangle ((int)r.X, (int)r.Y, (int)r.Width, (int)r.Height);
 			}
 			set {

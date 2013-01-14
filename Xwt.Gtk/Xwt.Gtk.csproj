@@ -116,6 +116,7 @@
     <Compile Include="Xwt.GtkBackend\LinkLabelBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SpinnerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\RichTextViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkDesktopBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

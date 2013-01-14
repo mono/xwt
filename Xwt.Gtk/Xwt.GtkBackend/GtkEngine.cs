@@ -105,6 +105,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend (typeof(Xwt.Spinner), typeof (SpinnerBackend));
 			RegisterBackend (typeof(Xwt.RichTextView), typeof (RichTextViewBackend));
 			RegisterBackend (typeof(Xwt.Expander), typeof (ExpanderBackend));
+			RegisterBackend (typeof(Xwt.Desktop), typeof(GtkDesktopBackend));
 		}
 
 		public override void RunApplication ()

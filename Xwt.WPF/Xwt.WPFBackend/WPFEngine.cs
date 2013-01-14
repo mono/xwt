@@ -98,6 +98,7 @@ namespace Xwt.WPFBackend
 			RegisterBackend (typeof (RichTextView), typeof (RichTextViewBackend));
 			RegisterBackend (typeof (LinkLabel), typeof (LinkLabelBackend));
 			RegisterBackend (typeof (Spinner), typeof (SpinnerBackend));
+			RegisterBackend (typeof (Desktop), typeof(WpfDesktopBackend));
 		}
 
 		public override void DispatchPendingEvents()

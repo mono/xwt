@@ -365,6 +365,9 @@
     <Compile Include="Xwt\Toolkit.cs" />
     <Compile Include="Xwt.Drawing\DrawingPath.cs" />
     <Compile Include="Xwt.Backends\DrawingPathBackendHandler.cs" />
+    <Compile Include="Xwt\Desktop.cs" />
+    <Compile Include="Xwt\Screen.cs" />
+    <Compile Include="Xwt.Backends\DesktopBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

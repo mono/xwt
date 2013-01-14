@@ -105,6 +105,7 @@ namespace Xwt.Mac
 			RegisterBackend (typeof(Xwt.SelectFolderDialog), typeof(SelectFolderDialogBackend));
 			RegisterBackend (typeof(Xwt.OpenFileDialog), typeof(OpenFileDialogBackend));
 			RegisterBackend (typeof(Xwt.Clipboard), typeof(MacClipboardBackend));
+			RegisterBackend (typeof(Xwt.Desktop), typeof(MacDesktopBackend));
 		}
 
 		public override void RunApplication ()
@@ -205,6 +206,12 @@ namespace Xwt.Mac
 			launched = true;
 			foreach (var w in pendingWindows)
 				w.InternalShow ();
+		}
+
+		public override void ScreenParametersChanged (NSNotification notification)
+		{
+			if (MacDesktopBackend.Instance != null)
+				MacDesktopBackend.Instance.NotifyScreensChanged ();
 		}
 	}
 }
