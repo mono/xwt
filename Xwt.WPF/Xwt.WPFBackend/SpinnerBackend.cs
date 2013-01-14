@@ -67,7 +67,7 @@ namespace Xwt.WPFBackend
 		{
 			Width = 25;
 			Height = 25;
-			Background = new SolidColorBrush (Colors.White);
+			Background = new SolidColorBrush (Colors.Transparent);
 			Storyboard = new Storyboard { RepeatBehavior = RepeatBehavior.Forever, Duration = TimeSpan.FromMilliseconds (Duration) };
 
 			for (int i = 0; i < 360; i += 30) {
