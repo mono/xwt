@@ -74,6 +74,10 @@ namespace Samples
 				pset = true;
 			}
 
+			ctx.Rectangle (Bounds);
+			ctx.SetColor (Colors.LightGray);
+			ctx.Fill ();
+
 			var size = Size;
 			size.Width--;
 			size.Height--;
@@ -81,6 +85,11 @@ namespace Samples
 
 			if (Desktop.Bounds.Height * fx > size.Height)
 				fx = size.Height / Desktop.Bounds.Height;
+
+			if (Desktop.Bounds.X < 0)
+				ctx.Translate (-Desktop.Bounds.X * fx, 0);
+			if (Desktop.Bounds.Y < 0)
+				ctx.Translate (0, -Desktop.Bounds.Y * fx);
 
 			ctx.SetLineWidth (1);
 			foreach (var s in Desktop.Screens) {

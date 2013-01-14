@@ -167,7 +167,7 @@ namespace Xwt.WPFBackend
 		
 		public override bool HasNativeParent (Widget w)
 		{
-			var backend = (IWpfWidgetBackend) WidgetRegistry.GetBackend (w);
+			var backend = (IWpfWidgetBackend)Toolkit.GetBackend (w);
 			return backend.Widget.Parent != null;
 		}
 	}

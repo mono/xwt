@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using SWF = System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Xwt.WPFBackend
 {
@@ -32,33 +34,39 @@ namespace Xwt.WPFBackend
 	{
 		public WpfDesktopBackend ()
 		{
+			Microsoft.Win32.SystemEvents.DisplaySettingsChanged += delegate
+			{
+				System.Windows.Application.Current.Dispatcher.BeginInvoke (new Action (OnScreensChanged));
+			};
 		}
 
 		#region implemented abstract members of DesktopBackend
 
-		public override System.Collections.Generic.IEnumerable<object> GetScreens ()
+		public override IEnumerable<object> GetScreens ()
 		{
-			yield break;
+			return SWF.Screen.AllScreens;
 		}
 
 		public override bool IsPrimaryScreen (object backend)
 		{
-			throw new NotImplementedException ();
+			return ((SWF.Screen)backend) == SWF.Screen.PrimaryScreen;
 		}
 
 		public override Rectangle GetScreenBounds (object backend)
 		{
-			throw new NotImplementedException ();
+			var r = ((SWF.Screen)backend).Bounds;
+			return new Rectangle (r.X, r.Y, r.Width, r.Height);
 		}
 
 		public override Rectangle GetScreenVisibleBounds (object backend)
 		{
-			throw new NotImplementedException ();
+			var r = ((SWF.Screen)backend).WorkingArea;
+			return new Rectangle (r.X, r.Y, r.Width, r.Height);
 		}
 
 		public override string GetScreenDeviceName (object backend)
 		{
-			throw new NotImplementedException ();
+			return ((SWF.Screen)backend).DeviceName;
 		}
 
 		#endregion
