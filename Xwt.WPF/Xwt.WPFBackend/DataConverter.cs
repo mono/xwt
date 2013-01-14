@@ -332,6 +332,17 @@ namespace Xwt.WPFBackend
 			if (bmp == null) {
 				var bs = backend as SWM.Imaging.BitmapSource;
 				if (bs != null) {
+					if (bs.Format == SWM.PixelFormats.Indexed1 || bs.Format == SWM.PixelFormats.Indexed2 || bs.Format == SWM.PixelFormats.Indexed4 || bs.Format == SWM.PixelFormats.Indexed8) {
+						// The conversion method below doesn't work for indexed formats, since it only copies pixel data, not the palette.
+						// Since there is no way of creating a palette for a Bitmap, a solution is to convert the image source to a non-indexed
+						// format before converting to Bitmap
+						var fcb = new SWM.Imaging.FormatConvertedBitmap ();
+						fcb.BeginInit ();
+						fcb.Source = bs;
+						fcb.DestinationFormat = SWM.PixelFormats.Pbgra32;
+						fcb.EndInit ();
+						bs = fcb;
+					}
 					bmp = new SD.Bitmap (bs.PixelWidth, bs.PixelHeight, bs.Format.ToPixelFormat ());
 					SDI.BitmapData data = bmp.LockBits (new System.Drawing.Rectangle (0, 0, bmp.Width, bmp.Height), SDI.ImageLockMode.WriteOnly,
 					                                bmp.PixelFormat);
