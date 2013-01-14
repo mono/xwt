@@ -79,10 +79,10 @@ namespace Xwt.GtkBackend
 
 		void HandleLabelDynamicSizeAllocate (object o, Gtk.SizeAllocatedArgs args)
 		{
-			int unused;
+			int unused, oldHeight = wrapHeight;
 			Label.Layout.Width = Pango.Units.FromPixels (args.Allocation.Width);
 			Label.Layout.GetPixelSize (out unused, out wrapHeight);
-			if (wrapWidth != args.Allocation.Width) {
+			if (wrapWidth != args.Allocation.Width || oldHeight != wrapHeight) {
 				wrapWidth = args.Allocation.Width;
 				Label.QueueResize ();
 			}
