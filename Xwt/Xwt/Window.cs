@@ -124,7 +124,8 @@ namespace Xwt
 				this.child = value;
 				child.SetParentWindow (this);
 				Backend.SetChild ((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend (child));
-				Widget.QueueWindowSizeNegotiation (this);
+				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
+					Widget.QueueWindowSizeNegotiation (this);
 			}
 		}
 		
@@ -142,10 +143,10 @@ namespace Xwt
 
 		internal override void SetBackendSize (double width, double height)
 		{
-			if (shown || Application.EngineBackend.HandlesSizeNegotiation) {
+			if (shown || BackendHost.EngineBackend.HandlesSizeNegotiation) {
 				base.SetBackendSize (width, height);
 			}
-			else {
+			if (!shown) {
 				if (width != -1) {
 					initialBounds.Width = width;
 					widthSet = true;
@@ -159,9 +160,9 @@ namespace Xwt
 
 		internal override void SetBackendLocation (double x, double y)
 		{
-			if (shown || Application.EngineBackend.HandlesSizeNegotiation)
+			if (shown || BackendHost.EngineBackend.HandlesSizeNegotiation)
 				base.SetBackendLocation (x, y);
-			else {
+			if (!shown) {
 				locationSet = true;
 				initialBounds.Location = new Point (x, y);
 			}
@@ -175,9 +176,9 @@ namespace Xwt
 			}
 			set
 			{
-				if (shown || Application.EngineBackend.HandlesSizeNegotiation)
+				if (shown || BackendHost.EngineBackend.HandlesSizeNegotiation)
 					base.BackendBounds = value;
-				else {
+				if (!shown) {
 					widthSet = heightSet = locationSet = true;
 					initialBounds = value;
 				}
