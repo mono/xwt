@@ -53,6 +53,7 @@ namespace Xwt
 		double minWidth = -1, minHeight = -1;
 		double naturalWidth = -1, naturalHeight = -1;
 		CursorType cursor;
+		double referenceWidth, referenceHeight;
 		
 		EventHandler<DragOverCheckEventArgs> dragOverCheck;
 		EventHandler<DragOverEventArgs> dragOver;
@@ -916,9 +917,10 @@ namespace Xwt
 		
 		WidgetSize IWidgetSurface.GetPreferredHeightForWidth (double width)
 		{
-			if (heightCached)
+			if (referenceWidth == width && heightCached)
 				return height;
 			else {
+				referenceWidth = width;
 				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					heightCached = true;
 				if (minHeight != -1 && naturalHeight != -1)
@@ -939,9 +941,10 @@ namespace Xwt
 		
 		WidgetSize IWidgetSurface.GetPreferredWidthForHeight (double height)
 		{
-			if (widthCached)
+			if (referenceHeight == height && widthCached)
 				return width;
 			else {
+				referenceHeight = height;
 				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					widthCached = true;
 				if (minWidth != -1 && naturalWidth != -1)
