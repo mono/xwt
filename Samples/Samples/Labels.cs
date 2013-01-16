@@ -49,6 +49,12 @@ namespace Samples
 			la = new Label ("A crazy long label text with a lots of content and information in it but fortunately it should appear wrapped");
 			la.Wrap = WrapMode.Word;
 			PackStart (la);
+
+			la = new Label ("Another Label with red background") {
+				BackgroundColor = new Xwt.Drawing.Color (1, 0, 0),
+				TextColor = new Xwt.Drawing.Color (0, 0, 1)
+			};
+			PackStart (la);
 		}
 	}
 }

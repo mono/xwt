@@ -275,6 +275,7 @@ namespace Xwt.WPFBackend
 		public virtual WidgetSize GetPreferredWidth ()
 		{
 			SW.Size minSize, natSize;
+			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity, out minSize, out natSize);
 			return new WidgetSize (minSize.Width * WidthPixelRatio, natSize.Width * WidthPixelRatio);
 		}
@@ -282,6 +283,7 @@ namespace Xwt.WPFBackend
 		public virtual WidgetSize GetPreferredHeight ()
 		{
 			SW.Size minSize, natSize;
+			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity, out minSize, out natSize);
 			return new WidgetSize (minSize.Height * WidthPixelRatio, natSize.Height * HeightPixelRatio);
 		}
@@ -289,6 +291,7 @@ namespace Xwt.WPFBackend
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
 			SW.Size minSize, natSize;
+			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (Double.PositiveInfinity, height, out minSize, out natSize);
 			return new WidgetSize (minSize.Width * WidthPixelRatio, natSize.Width * WidthPixelRatio);
 		}
@@ -296,6 +299,7 @@ namespace Xwt.WPFBackend
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
 			SW.Size minSize, natSize;
+			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (width, Double.PositiveInfinity, out minSize, out natSize);
 			return new WidgetSize (minSize.Height * HeightPixelRatio, natSize.Height * HeightPixelRatio);
 		}

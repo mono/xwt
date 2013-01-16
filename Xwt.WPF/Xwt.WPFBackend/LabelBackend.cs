@@ -102,6 +102,14 @@ namespace Xwt.WPFBackend
 					Label.TextBlock.TextWrapping = TextWrapping.Wrap;
 			}
 		}
+
+		public override WidgetSize GetPreferredWidth ()
+		{
+			if (Label.TextBlock.TextWrapping == TextWrapping.Wrap)
+				return new WidgetSize (0);
+			else
+				return base.GetPreferredWidth ();
+		}
 	}
 
 	class WpfLabel : SWC.Label, IWpfWidget
