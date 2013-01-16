@@ -36,6 +36,7 @@ namespace Xwt.GtkBackend
 		IWindowFrameEventSink eventSink;
 		WindowFrame frontend;
 		Size requestedSize;
+		bool positionSet;
 
 		public WindowFrameBackend ()
 		{
@@ -92,6 +93,7 @@ namespace Xwt.GtkBackend
 
 		public void Move (double x, double y)
 		{
+			positionSet = true;
 			Window.Move ((int)x, (int)y);
 			Toolkit.Invoke (delegate {
 				EventSink.OnBoundsChanged (Bounds);
@@ -113,6 +115,7 @@ namespace Xwt.GtkBackend
 				return new Rectangle (x, y, w, h);
 			}
 			set {
+				positionSet = true;
 				requestedSize = value.Size;
 				Window.Move ((int)value.X, (int)value.Y);
 				Window.Resize ((int)value.Width, (int)value.Height);
@@ -128,7 +131,20 @@ namespace Xwt.GtkBackend
 				return window.Visible;
 			}
 			set {
+				if (value)
+					SetDefaultPosition ();
 				window.Visible = value;
+			}
+		}
+
+		protected void SetDefaultPosition ()
+		{
+			if (!positionSet) {
+				if (window.TransientFor != null)
+					window.SetPosition (Gtk.WindowPosition.CenterOnParent);
+				else
+					window.SetPosition (Gtk.WindowPosition.Center);
+				positionSet = true;
 			}
 		}
 

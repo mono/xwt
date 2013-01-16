@@ -123,6 +123,7 @@ namespace Xwt.GtkBackend
 
 		public void RunLoop (IWindowFrameBackend parent)
 		{
+			SetDefaultPosition ();
 			var p = (WindowFrameBackend) parent;
 			MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
 		}
