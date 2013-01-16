@@ -141,7 +141,6 @@ namespace Xwt
 			var bk = (IWidgetBackend)Widget.GetBackend (widget);
 			Backend.AddChild (bk, bounds);
 			RegisterChild (widget);
-			OnPreferredSizeChanged ();
 		}
 		
 		/// <summary>
@@ -159,7 +158,6 @@ namespace Xwt
 			positions.Remove (widget);
 			Backend.RemoveChild ((IWidgetBackend)Widget.GetBackend (widget));
 			UnregisterChild (widget);
-			OnPreferredSizeChanged ();
 		}
 		
 		/// <summary>
@@ -179,7 +177,6 @@ namespace Xwt
 			
 			positions [widget] = bounds;
 			Backend.SetChildBounds ((IWidgetBackend)Widget.GetBackend (widget), bounds);
-			OnPreferredSizeChanged ();
 		}
 		
 		/// <summary>
