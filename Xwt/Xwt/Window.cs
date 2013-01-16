@@ -124,7 +124,8 @@ namespace Xwt
 				this.child = value;
 				child.SetParentWindow (this);
 				Backend.SetChild ((IWidgetBackend)WidgetRegistry.GetBackend (child));
-				Widget.QueueWindowSizeNegotiation (this);
+				if (!Application.EngineBackend.HandlesSizeNegotiation)
+					Widget.QueueWindowSizeNegotiation (this);
 			}
 		}
 		
@@ -145,7 +146,7 @@ namespace Xwt
 			if (shown || Application.EngineBackend.HandlesSizeNegotiation) {
 				base.SetBackendSize (width, height);
 			}
-			else {
+			if (!shown) {
 				if (width != -1) {
 					initialBounds.Width = width;
 					widthSet = true;
@@ -161,7 +162,7 @@ namespace Xwt
 		{
 			if (shown || Application.EngineBackend.HandlesSizeNegotiation)
 				base.SetBackendLocation (x, y);
-			else {
+			if (!shown) {
 				locationSet = true;
 				initialBounds.Location = new Point (x, y);
 			}
@@ -177,7 +178,7 @@ namespace Xwt
 			{
 				if (shown || Application.EngineBackend.HandlesSizeNegotiation)
 					base.BackendBounds = value;
-				else {
+				if (!shown) {
 					widthSet = heightSet = locationSet = true;
 					initialBounds = value;
 				}
