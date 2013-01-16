@@ -142,7 +142,7 @@ namespace Xwt
 
 		internal override void SetBackendSize (double width, double height)
 		{
-			if (shown) {
+			if (shown || Application.EngineBackend.HandlesSizeNegotiation) {
 				base.SetBackendSize (width, height);
 			}
 			else {
@@ -159,7 +159,7 @@ namespace Xwt
 
 		internal override void SetBackendLocation (double x, double y)
 		{
-			if (shown)
+			if (shown || Application.EngineBackend.HandlesSizeNegotiation)
 				base.SetBackendLocation (x, y);
 			else {
 				locationSet = true;
@@ -175,7 +175,7 @@ namespace Xwt
 			}
 			set
 			{
-				if (shown)
+				if (shown || Application.EngineBackend.HandlesSizeNegotiation)
 					base.BackendBounds = value;
 				else {
 					widthSet = heightSet = locationSet = true;
