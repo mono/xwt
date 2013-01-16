@@ -99,8 +99,6 @@ namespace Xwt.WPFBackend
 		{
 			if (imageBackend == null)
 				Button.Content = label;
-			else if (String.IsNullOrEmpty (label))
-				Button.Content = new SWC.Image { Source = DataConverter.AsImageSource (imageBackend) };
 			else
 			{
 				SWC.DockPanel grid = new SWC.DockPanel ();
@@ -116,10 +114,11 @@ namespace Xwt.WPFBackend
 				SWC.DockPanel.SetDock (imageCtrl, DataConverter.ToWpfDock (position));
 				grid.Children.Add (imageCtrl);
 
-				SWC.Label labelCtrl = new SWC.Label ();
-				labelCtrl.Content = label;
-				grid.Children.Add (labelCtrl);
-
+				if (!string.IsNullOrEmpty (label)) {
+					SWC.Label labelCtrl = new SWC.Label ();
+					labelCtrl.Content = label;
+					grid.Children.Add (labelCtrl);
+				}
 				Button.Content = grid;
 			}
 			Button.InvalidateMeasure ();
