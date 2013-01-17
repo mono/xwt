@@ -211,7 +211,7 @@ namespace Xwt.WPFBackend
 		}
 
 		public Size Size {
-			get { return new Size (Widget.ActualWidth, Widget.ActualHeight); }
+			get { return new Size (Widget.ActualWidth - ((Widget)frontend).Margin.HorizontalSpacing, Widget.ActualHeight - ((Widget)frontend).Margin.VerticalSpacing); }
 		}
 
 		public virtual bool Visible {
