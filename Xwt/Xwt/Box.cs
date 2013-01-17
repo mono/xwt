@@ -178,6 +178,8 @@ namespace Xwt
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
+			if (size.Width == 0 || size.Height == 0)
+				return;
 			
 			var visibleChildren = children.Where (c => c.Child.Visible).ToArray ();
 			IWidgetBackend[] widgets = new IWidgetBackend [visibleChildren.Length];
