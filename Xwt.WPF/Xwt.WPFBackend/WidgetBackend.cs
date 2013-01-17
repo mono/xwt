@@ -104,6 +104,10 @@ namespace Xwt.WPFBackend
 			get { return Widget; }
 		}
 
+		public new Widget Frontend {
+			get { return (Widget) base.Frontend; }
+		}
+
 		public FrameworkElement Widget {
 			get { return widget; }
 			set
@@ -211,7 +215,7 @@ namespace Xwt.WPFBackend
 		}
 
 		public Size Size {
-			get { return new Size (Widget.ActualWidth - ((Widget)frontend).Margin.HorizontalSpacing, Widget.ActualHeight - ((Widget)frontend).Margin.VerticalSpacing); }
+			get { return new Size (Widget.ActualWidth, Widget.ActualHeight); }
 		}
 
 		public virtual bool Visible {
@@ -277,7 +281,7 @@ namespace Xwt.WPFBackend
 			SW.Size minSize, natSize;
 			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity, out minSize, out natSize);
-			return new WidgetSize (minSize.Width * WidthPixelRatio, natSize.Width * WidthPixelRatio);
+			return new WidgetSize (minSize.Width * WidthPixelRatio - Frontend.Margin.HorizontalSpacing, natSize.Width * WidthPixelRatio - Frontend.Margin.HorizontalSpacing);
 		}
 
 		public virtual WidgetSize GetPreferredHeight ()
@@ -285,7 +289,7 @@ namespace Xwt.WPFBackend
 			SW.Size minSize, natSize;
 			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity, out minSize, out natSize);
-			return new WidgetSize (minSize.Height * WidthPixelRatio, natSize.Height * HeightPixelRatio);
+			return new WidgetSize (minSize.Height * WidthPixelRatio - Frontend.Margin.VerticalSpacing, natSize.Height * HeightPixelRatio - Frontend.Margin.VerticalSpacing);
 		}
 
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
@@ -293,7 +297,7 @@ namespace Xwt.WPFBackend
 			SW.Size minSize, natSize;
 			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (Double.PositiveInfinity, height, out minSize, out natSize);
-			return new WidgetSize (minSize.Width * WidthPixelRatio, natSize.Width * WidthPixelRatio);
+			return new WidgetSize (minSize.Width * WidthPixelRatio - Frontend.Margin.HorizontalSpacing, natSize.Width * WidthPixelRatio - Frontend.Margin.HorizontalSpacing);
 		}
 
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
@@ -301,7 +305,7 @@ namespace Xwt.WPFBackend
 			SW.Size minSize, natSize;
 			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (width, Double.PositiveInfinity, out minSize, out natSize);
-			return new WidgetSize (minSize.Height * HeightPixelRatio, natSize.Height * HeightPixelRatio);
+			return new WidgetSize (minSize.Height * HeightPixelRatio - Frontend.Margin.VerticalSpacing, natSize.Height * HeightPixelRatio - Frontend.Margin.VerticalSpacing);
 		}
 
 		/// <summary>
