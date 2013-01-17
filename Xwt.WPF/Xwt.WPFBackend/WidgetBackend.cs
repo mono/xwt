@@ -347,28 +347,29 @@ namespace Xwt.WPFBackend
 			Context.InvokeUserCode (delegate
 			{
 				if (eventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
-					// Calculate the preferred width through the frontend, if there is an overriden OnGetPreferredWidth
-					if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
+					// Calculate the preferred width through the frontend if there is an overriden OnGetPreferredWidth, but only do it
+					// if we are not given a constraint. If there is a width constraint, we'll use that constraint value for calculating the height 
+					if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0 && constraint.Width == Double.PositiveInfinity) {
 						var ws = eventSink.OnGetPreferredWidth ();
-						wpfMeasure.Width = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
+						wpfMeasure.Width = constraint.Width = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
 					}
 
 					// Now calculate the preferred height for that width, also using the override if available
 					if ((enabledEvents & WidgetEvent.PreferredHeightForWidthCheck) != 0) {
-						var ws = eventSink.OnGetPreferredHeightForWidth (wpfMeasure.Width);
+						var ws = eventSink.OnGetPreferredHeightForWidth (constraint.Width);
 						wpfMeasure.Height = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
 					}
 				}
 				else {
 					// Calculate the preferred height through the frontend, if there is an overriden OnGetPreferredHeight
-					if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
+					if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0 && constraint.Height == Double.PositiveInfinity) {
 						var ws = eventSink.OnGetPreferredHeight ();
-						wpfMeasure.Height = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
+						wpfMeasure.Height = constraint.Height = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
 					}
 
 					// Now calculate the preferred width for that height, also using the override if available
 					if ((enabledEvents & WidgetEvent.PreferredWidthForHeightCheck) != 0) {
-						var ws = eventSink.OnGetPreferredWidthForHeight (wpfMeasure.Height);
+						var ws = eventSink.OnGetPreferredWidthForHeight (constraint.Height);
 						wpfMeasure.Width = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
 					}
 				}
