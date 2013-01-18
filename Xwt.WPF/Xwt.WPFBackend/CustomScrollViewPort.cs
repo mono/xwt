@@ -104,12 +104,12 @@ namespace Xwt.WPFBackend
 
 		public void LineLeft()
 		{
-			SetVerticalOffset (HorizontalOffset - HorizontalStepIncrement);
+			SetHorizontalOffset (HorizontalOffset - HorizontalStepIncrement);
 		}
 
 		public void LineRight()
 		{
-			SetVerticalOffset (HorizontalOffset + HorizontalStepIncrement);
+			SetHorizontalOffset (HorizontalOffset + HorizontalStepIncrement);
 		}
 
 		public void LineUp()
