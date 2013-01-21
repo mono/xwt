@@ -146,7 +146,7 @@ namespace Xwt.Mac
 		
 		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
 		{
-			NSTimer timer;
+			NSTimer timer = null;
 			timer = NSTimer.CreateRepeatingScheduledTimer (timeSpan, delegate {
 				if (!action ())
 					timer.Invalidate ();
