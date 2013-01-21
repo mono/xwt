@@ -163,7 +163,7 @@ namespace Xwt
 			return backend.GetNativeImage (image);
 		}
 
-		public object CreateObject<T> () where T:new()
+		public T CreateObject<T> () where T:new()
 		{
 			var oldEngine = currentEngine;
 			try {
@@ -262,9 +262,20 @@ namespace Xwt
 			return new NativeWindowFrame (backend.GetBackendForWindow (nativeWindow));
 		}
 
-		public Widget WrapNativeWidget (object nativeWidget)
+		public Widget WrapWidget (object nativeWidget)
 		{
+			if (nativeWidget is Widget) {
+				Widget w = (Widget)nativeWidget;
+				if (w.Surface.ToolkitEngine == this)
+					return w;
+				nativeWidget = w.Surface.ToolkitEngine.GetNativeWidget (w);
+			}
 			return new EmbeddedNativeWidget (nativeWidget);
+		}
+
+		public Image WrapImage (object backend)
+		{
+			return new Image (backend);
 		}
 
 		public object ValidateObject (object obj)

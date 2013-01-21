@@ -117,6 +117,8 @@
     <Compile Include="Xwt.GtkBackend\SpinnerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\RichTextViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\GtkDesktopBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkMacInterop.cs" />
+    <Compile Include="Xwt.GtkBackend\EmbeddedWidgetBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

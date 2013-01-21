@@ -1,10 +1,10 @@
 //
-// IEmbeddedWidgetBackend.cs
+// GtkMacInterop.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Jérémie Laval <jeremie.laval@xamarin.com>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2012 Xamarin, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,40 +23,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 
-namespace Xwt.Backends
+namespace Xwt.GtkBackend
 {
-	public interface IEmbeddedWidgetBackend: IWidgetBackend
+	public class GtkMacInterop
 	{
-		void SetContent (object nativeWidget);
-	}
-
-	[BackendType (typeof(IEmbeddedWidgetBackend))]
-	internal class EmbeddedNativeWidget: Widget
-	{
-		object nativeWidget;
-
-		class EmbeddedNativeWidgetBackendHost: WidgetBackendHost<EmbeddedNativeWidget,IEmbeddedWidgetBackend>
-		{
-			protected override void OnBackendCreated ()
-			{
-				Backend.SetContent (Parent.nativeWidget);
-				base.OnBackendCreated ();
-			}
-		}
-
-		protected override Xwt.Backends.BackendHost CreateBackendHost ()
-		{
-			return new EmbeddedNativeWidgetBackendHost ();
-		}
-
-		public EmbeddedNativeWidget (object nativeWidget)
-		{
-			this.nativeWidget = nativeWidget;
-		}
-
+		const string LibGdk = "libgdk-quartz-2.0.dylib";
+		const string LibGtk = "libgtk-quartz-2.0";
 		
+		[System.Runtime.InteropServices.DllImport (LibGtk)]
+		extern static IntPtr gtk_ns_view_new (IntPtr nsview);
+		
+		public static Gtk.Widget NSViewToGtkWidget (object view)
+		{
+			var prop = view.GetType ().GetProperty ("Handle");
+			var handle = prop.GetValue (view, null);
+			return new Gtk.Widget (gtk_ns_view_new ((IntPtr)handle));
+		}
 	}
 }
 

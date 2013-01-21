@@ -102,6 +102,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend (typeof(IRichTextViewBackend), typeof (RichTextViewBackend));
 			RegisterBackend (typeof(IExpanderBackend), typeof (ExpanderBackend));
 			RegisterBackend (typeof(DesktopBackend), typeof(GtkDesktopBackend));
+			RegisterBackend (typeof(IEmbeddedWidgetBackend), typeof(EmbeddedWidgetBackend));
 		}
 
 		public override void RunApplication ()

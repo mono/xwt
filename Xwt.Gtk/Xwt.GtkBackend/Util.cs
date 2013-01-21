@@ -70,7 +70,7 @@ namespace Xwt.GtkBackend
 			if (type == TransferDataType.Text)
 				target.AddText (data.Text);
 			else if (data.TargetsIncludeImage (false))
-				target.AddImage (context.Toolkit.CreateFrontend<Xwt.Drawing.Image> (data.Pixbuf));
+				target.AddImage (context.Toolkit.WrapImage (data.Pixbuf));
 			else if (type == TransferDataType.Uri) {
 				var uris = System.Text.Encoding.UTF8.GetString (data.Data).Split ('\n').Where (u => !string.IsNullOrEmpty(u)).Select (u => new Uri (u)).ToArray ();
 				target.AddUris (uris);

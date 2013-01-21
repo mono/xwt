@@ -84,7 +84,7 @@ namespace Xwt.GtkBackend
 		{
 			object val = store.GetValue (it, column);
 			if (val is Gdk.Pixbuf)
-				return ApplicationContext.Toolkit.CreateFrontend<Image> (val);
+				return ApplicationContext.Toolkit.WrapImage (val);
 			else if (val is DBNull)
 				return null;
 			else if (val is ObjectWrapper)

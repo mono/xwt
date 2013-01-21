@@ -1,5 +1,5 @@
 //
-// IEmbeddedWidgetBackend.cs
+// EmbeddedWidgetBackend.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,39 +24,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
 
-namespace Xwt.Backends
+namespace Xwt.GtkBackend
 {
-	public interface IEmbeddedWidgetBackend: IWidgetBackend
+	public class EmbeddedWidgetBackend: WidgetBackend, IEmbeddedWidgetBackend
 	{
-		void SetContent (object nativeWidget);
-	}
-
-	[BackendType (typeof(IEmbeddedWidgetBackend))]
-	internal class EmbeddedNativeWidget: Widget
-	{
-		object nativeWidget;
-
-		class EmbeddedNativeWidgetBackendHost: WidgetBackendHost<EmbeddedNativeWidget,IEmbeddedWidgetBackend>
+		public EmbeddedWidgetBackend ()
 		{
-			protected override void OnBackendCreated ()
-			{
-				Backend.SetContent (Parent.nativeWidget);
-				base.OnBackendCreated ();
+		}
+
+		public void SetContent (object nativeWidget)
+		{
+			if (nativeWidget is Gtk.Widget) {
+				Widget = (Gtk.Widget)nativeWidget;
+				return;
+			}
+
+			// Check if it is an NSView
+			Type nsView = Type.GetType ("MonoMac.AppKit.NSView, MonoMac", false);
+			if (nsView != null && nsView.IsInstanceOfType (nativeWidget)) {
+				Widget = GtkMacInterop.NSViewToGtkWidget (nativeWidget);
+				Widget.Show ();
+				return;
 			}
 		}
-
-		protected override Xwt.Backends.BackendHost CreateBackendHost ()
-		{
-			return new EmbeddedNativeWidgetBackendHost ();
-		}
-
-		public EmbeddedNativeWidget (object nativeWidget)
-		{
-			this.nativeWidget = nativeWidget;
-		}
-
-		
 	}
 }
 
