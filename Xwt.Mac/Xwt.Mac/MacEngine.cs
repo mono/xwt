@@ -151,12 +151,17 @@ namespace Xwt.Mac
 		
 		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
 		{
-			throw new NotImplementedException ();
+			NSTimer timer;
+			timer = NSTimer.CreateRepeatingScheduledTimer (timeSpan, delegate {
+				if (!action ())
+					timer.Invalidate ();
+			});
+			return timer;
 		}
 		
 		public override void CancelTimerInvoke (object id)
 		{
-			throw new NotImplementedException ();
+			((NSTimer)id).Invalidate ();
 		}
 		
 		public override object GetNativeWidget (Widget w)
