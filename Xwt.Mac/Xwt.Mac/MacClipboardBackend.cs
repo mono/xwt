@@ -24,36 +24,63 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.IO;
 using Xwt.Backends;
+
+using MonoMac.Foundation;
+using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
 	public class MacClipboardBackend: ClipboardBackend
 	{
+		PasteboardOwner owner;
+
 		public MacClipboardBackend ()
 		{
+			owner = new PasteboardOwner ();
 		}
 
 		#region implemented abstract members of ClipboardBackend
 
 		public override void Clear ()
 		{
-			throw new NotImplementedException ();
+			NSPasteboard.GeneralPasteboard.ClearContents ();
 		}
 
 		public override void SetData (TransferDataType type, Func<object> dataSource)
 		{
-			throw new NotImplementedException ();
+			var pboard = NSPasteboard.GeneralPasteboard;
+			pboard.ClearContents ();
+			owner.DataSource = dataSource;
+			pboard.AddTypes (new[] { type.ToUTI () }, owner);
 		}
 
 		public override bool IsTypeAvailable (TransferDataType type)
 		{
-			throw new NotImplementedException ();
+			return NSPasteboard.GeneralPasteboard.CanReadItemWithDataConformingToTypes (new[] { type.ToUTI () });
 		}
 
 		public override object GetData (TransferDataType type)
 		{
-			throw new NotImplementedException ();
+			if (type == TransferDataType.Uri)
+				return (Uri)NSUrl.FromPasteboard (NSPasteboard.GeneralPasteboard);
+
+			var data = NSPasteboard.GeneralPasteboard.GetDataForType (type.ToUTI ());
+			if (data == null)
+				return null;
+
+			if (type == TransferDataType.Text)
+				return data.ToString ();
+			if (type == TransferDataType.Image)
+				return new NSImage (data);
+
+			unsafe {
+				var bytes = new byte [data.Length];
+				using (var stream = new UnmanagedMemoryStream ((byte*)data.Bytes, bytes.Length))
+					stream.Read (bytes, 0, bytes.Length);
+				return TransferDataSource.DeserializeValue (bytes);
+			}
 		}
 
 		public override IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state)
@@ -67,6 +94,31 @@ namespace Xwt.Mac
 		}
 
 		#endregion
+	}
+
+	[Register ("XwtPasteboardOwner")]
+	class PasteboardOwner : NSObject
+	{
+		public Func<object> DataSource {
+			get;
+			set;
+		}
+
+		[Export ("pasteboard:provideDataForType:")]
+		public void ProvideData (NSPasteboard pboard, NSString type)
+		{
+			NSData data;
+			var obj = DataSource ();
+			if (obj is NSImage)
+				data = ((NSImage)obj).AsTiff ();
+			else if (obj is Uri)
+				data = NSData.FromUrl ((NSUrl)((Uri)obj));
+			else if (obj is string)
+				data = NSData.FromString ((string)obj);
+			else
+				data = NSData.FromArray (TransferDataSource.SerializeValue (obj));
+			pboard.SetDataForType (data, type);
+		}
 	}
 }
 

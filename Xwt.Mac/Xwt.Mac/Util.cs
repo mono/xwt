@@ -150,6 +150,20 @@ namespace Xwt.Mac
 			}
 			return new SizeF (32f, 32f);
 		}
+
+		public static string ToUTI (this TransferDataType dt)
+		{
+			if (dt == TransferDataType.Uri)
+				return NSPasteboard.NSUrlType;
+			if (dt == TransferDataType.Text)
+				return NSPasteboard.NSStringType;
+			if (dt == TransferDataType.Rtf)
+				return NSPasteboard.NSRtfType;
+			if (dt == TransferDataType.Image)
+				return NSPasteboard.NSTiffType;
+
+			return dt.Id;
+		}
 	}
 }
 
