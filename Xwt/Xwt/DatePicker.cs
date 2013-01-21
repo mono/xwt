@@ -35,6 +35,7 @@ namespace Xwt
 		DateTime
 	}
 	
+	[BackendType (typeof(IDatePickerBackend))]
 	public class DatePicker : Widget
 	{
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IDatePickerEventSink

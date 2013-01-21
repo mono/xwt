@@ -29,6 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(ISpinnerBackend))]
 	public class Spinner : Widget
 	{
 		ISpinnerBackend Backend {

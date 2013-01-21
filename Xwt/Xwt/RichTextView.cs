@@ -35,6 +35,7 @@ using Xwt.Formats;
 
 namespace Xwt
 {
+	[BackendType (typeof(IRichTextViewBackend))]
 	public class RichTextView : Widget
 	{
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IRichTextViewEventSink

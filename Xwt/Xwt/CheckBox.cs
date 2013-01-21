@@ -29,6 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(ICheckBoxBackend))]
 	public class CheckBox: Widget
 	{
 		Widget content;

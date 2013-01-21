@@ -29,6 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(ISelectFolderDialogBackend))]
 	public class SelectFolderDialog: XwtComponent
 	{
 		bool running;

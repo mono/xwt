@@ -32,6 +32,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
+	[BackendType (typeof(IMenuItemBackend))]
 	public class MenuItem: XwtComponent, ICellContainer
 	{
 		CellViewCollection cells;

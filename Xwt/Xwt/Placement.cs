@@ -10,6 +10,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(IBoxBackend))]
 	public class Placement : Widget
 	{
 		Widget child;

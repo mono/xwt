@@ -37,6 +37,7 @@ namespace Xwt.Backends
 	public abstract class ToolkitEngineBackend
 	{
 		Dictionary<Type,Type> backendTypes;
+		Dictionary<Type,Type> backendTypesByFrontend;
 		Dictionary<Type,BackendHandler> sharedBackends = new Dictionary<Type, BackendHandler> ();
 		Toolkit toolkit;
 		bool isGuest;
@@ -47,6 +48,7 @@ namespace Xwt.Backends
 			this.isGuest = isGuest;
 			if (backendTypes == null) {
 				backendTypes = new Dictionary<Type, Type> ();
+				backendTypesByFrontend = new Dictionary<Type, Type> ();
 				InitializeBackends ();
 			}
 			InitializeApplication ();
@@ -180,7 +182,7 @@ namespace Xwt.Backends
 		{
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Xwt.Backends.EngineBackend"/> handles size negotiation on its own
 		/// </summary>
@@ -197,37 +199,66 @@ namespace Xwt.Backends
 				throw new InvalidOperationException ("XWT toolkit not initialized");
 		}
 
-		internal T CreateBackend<T> (Type widgetType)
+		internal IBackend CreateBackendForFrontend (Type frontendType)
+		{
+			CheckInitialized ();
+
+			Type bt = null;
+			if (!backendTypesByFrontend.TryGetValue (frontendType, out bt)) {
+				var attr = (BackendTypeAttribute) Attribute.GetCustomAttribute (frontendType, typeof(BackendTypeAttribute), true);
+				if (attr == null || attr.Type == null)
+					throw new InvalidOperationException ("Backend type not specified for type: " + frontendType);
+				if (!typeof(IBackend).IsAssignableFrom (attr.Type))
+					throw new InvalidOperationException ("Backend type for frontend '" + frontendType + "' is not a IBackend implementation");
+				backendTypes.TryGetValue (attr.Type, out bt);
+				backendTypesByFrontend [frontendType] = bt;
+			}
+			if (bt == null)
+				return null;
+			return (IBackend) Activator.CreateInstance (bt);
+		}
+
+		internal object CreateBackend (Type backendType)
 		{
 			CheckInitialized ();
 			Type bt = null;
+			
+			if (!backendTypes.TryGetValue (backendType, out bt))
+				return null;
+			var res = Activator.CreateInstance (bt);
+			if (!backendType.IsInstanceOfType (res))
+				throw new InvalidOperationException ("Invalid backend type. Expected '" + backendType + "' found '" + res.GetType () + "'");
+			return res;
+		}
 
-			if (!backendTypes.TryGetValue (widgetType, out bt))
-				return default(T);
-			object res = Activator.CreateInstance (bt);
-			if (!typeof(T).IsInstanceOfType (res))
-				throw new InvalidOperationException ("Invalid backend type.");
-			return (T) res;
+		internal T CreateBackend<T> ()
+		{
+			return (T) CreateBackend (typeof(T));
 		}
 
 		internal T CreateSharedBackend<T> (Type widgetType) where T:BackendHandler
 		{
 			CheckInitialized ();
 			BackendHandler res;
-			if (!sharedBackends.TryGetValue (widgetType, out res)) {
-				res = CreateBackend<T> (widgetType);
+			if (!sharedBackends.TryGetValue (typeof(T), out res)) {
+				res = CreateBackend<T> ();
 				if (res == null)
-					throw new Exception ("Backend not available for object of type " + widgetType);
+					throw new Exception ("Backend not available for object of type " + typeof(T));
 				sharedBackends [widgetType] = res;
 				res.Initialize (toolkit);
 			}
 			return (T)res;
 		}
+
+		public void RegisterBackend<Backend, Implementation> ()
+		{
+			RegisterBackend (typeof(Backend), typeof(Implementation));
+		}
 		
-		public void RegisterBackend (Type widgetType, Type backendType)
+		public void RegisterBackend (Type backendType, Type implementationType)
 		{
 			CheckInitialized ();
-			backendTypes [widgetType] = backendType;
+			backendTypes [backendType] = implementationType;
 		}
 		
 		public T CreateFrontend<T> (object backend)

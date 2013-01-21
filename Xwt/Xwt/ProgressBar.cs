@@ -30,6 +30,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
+	[BackendType (typeof(IProgressBarBackend))]
 	public class ProgressBar : Widget
 	{
 		double fraction = 0.0;

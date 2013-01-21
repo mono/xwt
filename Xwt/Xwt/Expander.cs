@@ -5,6 +5,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
+	[BackendType (typeof(IExpanderBackend))]
 	public class Expander: Widget
 	{
 		EventHandler expandChanged;

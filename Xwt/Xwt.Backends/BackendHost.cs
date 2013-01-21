@@ -31,10 +31,6 @@ namespace Xwt.Backends
 {
 	public class BackendHost<T,B>: BackendHost where B:IBackend
 	{
-		public BackendHost ()
-		{
-		}
-		
 		public new T Parent {
 			get { return (T)base.Parent; }
 			set { base.Parent = value; }
@@ -44,7 +40,7 @@ namespace Xwt.Backends
 			get { return (B)base.Backend; }
 		}
 	}
-	
+
 	public class BackendHost
 	{
 		IBackend backend;
@@ -57,7 +53,7 @@ namespace Xwt.Backends
 		{
 			engine = Toolkit.CurrentEngine;
 		}
-		
+
 		public void SetCustomBackend (IBackend backend)
 		{
 			this.backend = backend;
@@ -100,14 +96,7 @@ namespace Xwt.Backends
 		
 		protected virtual IBackend OnCreateBackend ()
 		{
-			Type t = Parent.GetType ();
-			while (t != typeof(object)) {
-				IBackend b = EngineBackend.CreateBackend<IBackend> (t);
-				if (b != null)
-					return b;
-				t = t.BaseType;
-			}
-			return null;
+			return EngineBackend.CreateBackendForFrontend (Parent.GetType ());
 		}
 		
 		public void EnsureBackendLoaded ()

@@ -31,6 +31,7 @@ using System.Linq;
 
 namespace Xwt
 {
+	[BackendType (typeof(IRadioButtonMenuItemBackend))]
 	public class RadioButtonMenuItem: MenuItem
 	{
 		RadioButtonGroup radioGroup;

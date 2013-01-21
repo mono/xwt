@@ -29,6 +29,7 @@ using System.ComponentModel;
 
 namespace Xwt
 {
+	[BackendType (typeof(ITextEntryBackend))]
 	public class TextEntry: Widget
 	{
 		EventHandler changed;

@@ -30,6 +30,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
+	[BackendType (typeof(IButtonBackend))]
 	public class Button: Widget
 	{
 		EventHandler clicked;

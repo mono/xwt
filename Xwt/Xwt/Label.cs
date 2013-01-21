@@ -30,6 +30,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(ILabelBackend))]
 	public class Label: Widget
 	{
 		ILabelBackend Backend {

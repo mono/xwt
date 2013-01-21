@@ -29,6 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(ISpinButtonBackend))]
 	public class SpinButton : Widget
 	{
 		ButtonStyle style;

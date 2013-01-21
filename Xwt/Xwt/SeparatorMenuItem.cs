@@ -24,9 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(ISeparatorMenuItemBackend))]
 	public class SeparatorMenuItem: MenuItem
 	{
 		public SeparatorMenuItem ()

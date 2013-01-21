@@ -35,6 +35,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
+	[BackendType (typeof(IBoxBackend))]
 	public class Table: Widget
 	{
 		ChildrenCollection<TablePlacement> children;

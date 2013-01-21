@@ -28,6 +28,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(ISeparatorBackend))]
 	public abstract class Separator: Widget
 	{
 		internal abstract Orientation Orientation { get; }

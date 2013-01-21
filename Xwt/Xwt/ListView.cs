@@ -31,6 +31,7 @@ using System.ComponentModel;
 
 namespace Xwt
 {
+	[BackendType (typeof(IListViewBackend))]
 	public class ListView: Widget, IColumnContainer, IScrollableWidget
 	{
 		ListViewColumnCollection columns;

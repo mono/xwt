@@ -57,6 +57,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
+	[BackendType (typeof(IWindowFrameBackend))]
 	public class WindowFrame: XwtComponent
 	{
 		EventHandler boundsChanged;

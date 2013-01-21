@@ -38,6 +38,7 @@ using System.Linq;
 
 namespace Xwt
 {
+	[BackendType (typeof(IWidgetBackend))]
 	public abstract class Widget: XwtComponent, IWidgetSurface
 	{
 		static Widget[] emptyList = new Widget[0];
@@ -94,17 +95,19 @@ namespace Xwt
 			protected override IBackend OnCreateBackend ()
 			{
 				var backend = base.OnCreateBackend ();
-				if (backend == null || backend is XwtWidgetBackend) {
+				if (backend == null) {
 					// If this is a custom widget, not implemented in Xwt, then we provide the default
 					// backend, which allows setting a content widget
-					Type t = Parent.GetType ();
-					Type wt = typeof(Widget);
-					while (t != wt) {
-						if (t.Assembly == wt.Assembly)
-							return null; // It's a core widget
-						t = t.BaseType;
+					if (!(Parent is XwtWidgetBackend)) {
+						Type t = Parent.GetType ();
+						Type wt = typeof(Widget);
+						while (t != wt) {
+							if (t.Assembly == wt.Assembly)
+								return null; // It's a core widget
+							t = t.BaseType;
+						}
 					}
-					return ToolkitEngine.Backend.CreateBackend<IBackend> (wt);
+					return ToolkitEngine.Backend.CreateBackend<ICustomWidgetBackend> ();
 				}
 				return backend;
 			}

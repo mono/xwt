@@ -2,7 +2,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IExpanderBackend
+	public interface IExpanderBackend: IWidgetBackend
 	{
 		string Label { get; set; }
 		bool Expanded { get; set; }

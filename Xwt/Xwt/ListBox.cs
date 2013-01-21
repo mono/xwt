@@ -33,6 +33,7 @@ namespace Xwt
 	/// <summary>
 	/// A list of selectable items
 	/// </summary>
+	[BackendType (typeof(IListBoxBackend))]
 	public class ListBox: Widget
 	{
 		CellViewCollection views;

@@ -30,7 +30,7 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	public class FileDialog: Component
+	public abstract class FileDialog: XwtComponent
 	{
 		FileDialogFilterCollection filters;
 		bool running;
@@ -42,13 +42,9 @@ namespace Xwt
 		string fileName;
 		string[] fileNames = new string[0];
 		
-		BackendHost<FileDialog,IFileDialogBackend> backendHost;
-		
 		internal FileDialog ()
 		{
 			filters = new FileDialogFilterCollection (AddRemoveItem);
-			backendHost = new BackendHost<FileDialog,IFileDialogBackend> ();
-			backendHost.Parent = this;
 		}
 
 		internal FileDialog (string title): this ()
@@ -57,7 +53,7 @@ namespace Xwt
 		}
 
 		IFileDialogBackend Backend {
-			get { return backendHost.Backend; }
+			get { return (IFileDialogBackend) base.BackendHost.Backend; }
 		}
 		
 		void AddRemoveItem (FileDialogFilter filter, bool added)
@@ -186,7 +182,7 @@ namespace Xwt
 					Backend.ActiveFilter = activeFilter;
 				if (!string.IsNullOrEmpty (title))
 					Backend.Title = title;
-				return Backend.Run ((IWindowFrameBackend)backendHost.ToolkitEngine.GetSafeBackend (parentWindow));
+				return Backend.Run ((IWindowFrameBackend)BackendHost.ToolkitEngine.GetSafeBackend (parentWindow));
 			} finally {
 				currentFolder = Backend.CurrentFolder;
 				activeFilter = Backend.ActiveFilter;

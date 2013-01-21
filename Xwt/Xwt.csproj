@@ -368,6 +368,8 @@
     <Compile Include="Xwt\Desktop.cs" />
     <Compile Include="Xwt\Screen.cs" />
     <Compile Include="Xwt.Backends\DesktopBackend.cs" />
+    <Compile Include="Xwt.Backends\BackendTypeAttribute.cs" />
+    <Compile Include="Xwt.Backends\IEmbeddedWidgetBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

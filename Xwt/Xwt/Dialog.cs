@@ -30,6 +30,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
+	[BackendType (typeof(IDialogBackend))]
 	public class Dialog: Window
 	{
 		DialogButtonCollection commands;

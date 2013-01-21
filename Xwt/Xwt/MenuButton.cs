@@ -30,6 +30,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
+	[BackendType (typeof(IMenuButtonBackend))]
 	public class MenuButton: Button
 	{
 		Menu menu;

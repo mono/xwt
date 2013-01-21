@@ -28,6 +28,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(IComboBoxEntryBackend))]
 	public class ComboBoxEntry: ComboBox
 	{
 		TextEntry entry;

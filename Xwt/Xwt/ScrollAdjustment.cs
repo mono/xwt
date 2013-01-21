@@ -28,6 +28,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(IScrollAdjustmentBackend))]
 	public class ScrollAdjustment: XwtComponent
 	{
 		EventHandler valueChanged;

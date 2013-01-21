@@ -30,6 +30,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(IWindowBackend))]
 	public class Window: WindowFrame
 	{
 		Widget child;

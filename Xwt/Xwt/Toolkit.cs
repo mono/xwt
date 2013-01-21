@@ -254,11 +254,17 @@ namespace Xwt
 		public bool InUserCode {
 			get { return inUserCode > 0; }
 		}
+
 		public WindowFrame WrapWindow (object nativeWindow)
 		{
 			if (nativeWindow == null)
 				return null;
 			return new NativeWindowFrame (backend.GetBackendForWindow (nativeWindow));
+		}
+
+		public Widget WrapNativeWidget (object nativeWidget)
+		{
+			return new EmbeddedNativeWidget (nativeWidget);
 		}
 
 		public object ValidateObject (object obj)

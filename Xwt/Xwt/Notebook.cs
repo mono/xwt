@@ -30,6 +30,7 @@ using System.Windows.Markup;
 
 namespace Xwt
 {
+	[BackendType (typeof(INotebookBackend))]
 	public class Notebook: Widget
 	{
 		ChildrenCollection<NotebookTab> tabs;

@@ -34,6 +34,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(ITreeViewBackend))]
 	public class TreeView: Widget, IColumnContainer, IScrollableWidget
 	{
 		ListViewColumnCollection columns;

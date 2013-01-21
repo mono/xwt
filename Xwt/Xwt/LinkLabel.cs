@@ -50,6 +50,7 @@ namespace Xwt
 		}
 	}
 
+	[BackendType (typeof(ILinkLabelBackend))]
 	public class LinkLabel: Label
 	{
 		protected new class WidgetBackendHost : Label.WidgetBackendHost, ILinkLabelEventSink

@@ -30,6 +30,7 @@ using System.Windows.Markup;
 
 namespace Xwt
 {
+	[BackendType (typeof(IPanedBackend))]
 	public class Paned: Widget
 	{
 		Orientation direction;

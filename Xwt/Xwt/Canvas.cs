@@ -59,6 +59,7 @@ using System.ComponentModel;
 
 namespace Xwt
 {
+	[BackendType (typeof(ICanvasBackend))]
 	public class Canvas: Widget
 	{
 		Dictionary<Widget,Rectangle> positions;

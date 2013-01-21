@@ -29,6 +29,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
+	[BackendType (typeof(IToggleButtonBackend))]
 	public class ToggleButton: Button
 	{
 		EventHandler toggledEvent;

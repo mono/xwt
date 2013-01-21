@@ -85,7 +85,7 @@ namespace Xwt
 		/// </summary>
 		public bool Run (WindowFrame parentWindow)
 		{
-			var backend = Toolkit.CurrentEngine.Backend.CreateBackend<ISelectColorDialogBackend> (GetType ());
+			var backend = Toolkit.CurrentEngine.Backend.CreateBackend<ISelectColorDialogBackend> ();
 			try {
 				if (color != Colors.Transparent)
 					backend.Color = color;

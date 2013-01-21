@@ -29,6 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(IComboBoxBackend))]
 	public class ComboBox: Widget
 	{
 		CellViewCollection views;

@@ -34,6 +34,7 @@ using System.Windows.Markup;
 
 namespace Xwt
 {
+	[BackendType (typeof(IBoxBackend))]
 	public class Box: Widget
 	{
 		ChildrenCollection<BoxPlacement> children;

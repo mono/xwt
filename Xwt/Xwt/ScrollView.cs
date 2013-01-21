@@ -28,6 +28,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	[BackendType (typeof(IScrollViewBackend))]
 	public class ScrollView: Widget
 	{
 		Widget child;

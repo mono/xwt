@@ -31,6 +31,7 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
+	[BackendType (typeof(IColorSelectorBackend))]
 	public class ColorSelector: Widget
 	{
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IColorSelectorEventSink
@@ -38,7 +39,7 @@ namespace Xwt
 			protected override IBackend OnCreateBackend ()
 			{
 				var b = base.OnCreateBackend ();
-				if (b is ICustomWidgetBackend)
+				if (b == null)
 					b = new DefaultColorSelectorBackend ();
 				return b;
 			}

@@ -34,6 +34,7 @@ using System.ComponentModel;
 
 namespace Xwt
 {
+	[BackendType (typeof(ITreeStoreBackend))]
 	public class TreeStore: XwtComponent, ITreeDataSource
 	{
 		DataField[] fields;
