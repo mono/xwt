@@ -134,16 +134,16 @@ namespace Xwt
 		void Initialize (bool isGuest)
 		{
 			backend.Initialize (this, isGuest);
-			ContextBackendHandler = Backend.CreateSharedBackend<ContextBackendHandler> (typeof(Context));
-			GradientBackendHandler = Backend.CreateSharedBackend<GradientBackendHandler> (typeof(Gradient));
-			TextLayoutBackendHandler = Backend.CreateSharedBackend<TextLayoutBackendHandler> (typeof(TextLayout));
-			FontBackendHandler = Backend.CreateSharedBackend<FontBackendHandler> (typeof(Font));
-			ClipboardBackend = Backend.CreateSharedBackend<ClipboardBackend> (typeof(Clipboard));
-			ImageBuilderBackendHandler = Backend.CreateSharedBackend<ImageBuilderBackendHandler> (typeof(ImageBuilder));
-			ImagePatternBackendHandler = Backend.CreateSharedBackend<ImagePatternBackendHandler> (typeof(ImagePattern));
-			ImageBackendHandler = Backend.CreateSharedBackend<ImageBackendHandler> (typeof(Image));
-			DrawingPathBackendHandler = Backend.CreateSharedBackend<DrawingPathBackendHandler> (typeof(DrawingPath));
-			DesktopBackend = Backend.CreateSharedBackend<DesktopBackend> (typeof(Desktop));
+			ContextBackendHandler = Backend.CreateBackend<ContextBackendHandler> ();
+			GradientBackendHandler = Backend.CreateBackend<GradientBackendHandler> ();
+			TextLayoutBackendHandler = Backend.CreateBackend<TextLayoutBackendHandler> ();
+			FontBackendHandler = Backend.CreateBackend<FontBackendHandler> ();
+			ClipboardBackend = Backend.CreateBackend<ClipboardBackend> ();
+			ImageBuilderBackendHandler = Backend.CreateBackend<ImageBuilderBackendHandler> ();
+			ImagePatternBackendHandler = Backend.CreateBackend<ImagePatternBackendHandler> ();
+			ImageBackendHandler = Backend.CreateBackend<ImageBackendHandler> ();
+			DrawingPathBackendHandler = Backend.CreateBackend<DrawingPathBackendHandler> ();
+			DesktopBackend = Backend.CreateBackend<DesktopBackend> ();
 		}
 
 		internal void SetActive ()

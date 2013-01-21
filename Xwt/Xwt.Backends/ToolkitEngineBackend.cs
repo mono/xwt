@@ -228,26 +228,14 @@ namespace Xwt.Backends
 			var res = Activator.CreateInstance (bt);
 			if (!backendType.IsInstanceOfType (res))
 				throw new InvalidOperationException ("Invalid backend type. Expected '" + backendType + "' found '" + res.GetType () + "'");
+			if (res is BackendHandler)
+				((BackendHandler)res).Initialize (toolkit);
 			return res;
 		}
 
 		internal T CreateBackend<T> ()
 		{
 			return (T) CreateBackend (typeof(T));
-		}
-
-		internal T CreateSharedBackend<T> (Type widgetType) where T:BackendHandler
-		{
-			CheckInitialized ();
-			BackendHandler res;
-			if (!sharedBackends.TryGetValue (typeof(T), out res)) {
-				res = CreateBackend<T> ();
-				if (res == null)
-					throw new Exception ("Backend not available for object of type " + typeof(T));
-				sharedBackends [widgetType] = res;
-				res.Initialize (toolkit);
-			}
-			return (T)res;
 		}
 
 		public void RegisterBackend<Backend, Implementation> ()
