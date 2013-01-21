@@ -45,7 +45,7 @@ namespace Xwt.Mac
 
 		public void RemoveItem (IMenuItemBackend menuItem)
 		{
-			RemoveItem ((NSMenuItem)menuItem);
+			RemoveItem (((MenuItemBackend)menuItem).Item);
 		}
 		
 		public void SetMainMenuMode ()
@@ -67,12 +67,13 @@ namespace Xwt.Mac
 		
 		public void Popup ()
 		{
-			NSMenu.PopUpContextMenu (this, null, null, null);
+			var evt = NSApplication.SharedApplication.CurrentEvent;
+			NSMenu.PopUpContextMenu (this, evt, evt.Window.ContentView, null);
 		}
 		
 		public void Popup (IWidgetBackend widget, double x, double y)
 		{
-			NSMenu.PopUpContextMenu (this, null, ((IMacViewBackend)widget).View, null);
+			NSMenu.PopUpContextMenu (this, NSApplication.SharedApplication.CurrentEvent, ((IMacViewBackend)widget).View, null);
 		}
 	}
 }
