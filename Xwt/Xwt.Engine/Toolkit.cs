@@ -69,7 +69,7 @@ namespace Xwt.Engine
 					Application.NotifyException (error);
 				});
 			}
-			if (inUserCode == 1) {
+			if (inUserCode <= 1) {
 				while (exitActions.Count > 0) {
 					try {
 						exitActions.Dequeue ()();
@@ -95,7 +95,7 @@ namespace Xwt.Engine
 		{
 			exitActions.Enqueue (a);
 
-			if (inUserCode == 0) {
+			if (inUserCode <= 0) {
 				// Not in an XWT handler. This may happen when embedding XWT in another toolkit and
 				// XWT widgets are manipulated from event handlers of the native toolkit which
 				// are not invoked using Toolkit.Invoke.
