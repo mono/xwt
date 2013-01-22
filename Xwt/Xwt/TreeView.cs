@@ -55,6 +55,11 @@ namespace Xwt
 				((TreeView)Parent).OnSelectionChanged (EventArgs.Empty);
 			}
 			
+			public void OnRowActivated (TreePosition position)
+			{
+				((TreeView)Parent).OnRowActivated (new TreeViewRowEventArgs (position));
+			}
+
 			public override Size GetDefaultNaturalSize ()
 			{
 				return Xwt.Backends.DefaultNaturalSizes.TreeView;
@@ -64,6 +69,7 @@ namespace Xwt
 		static TreeView ()
 		{
 			MapEvent (TableViewEvent.SelectionChanged, typeof(TreeView), "OnSelectionChanged");
+			MapEvent (TreeViewEvent.RowActivated, typeof(TreeView), "OnRowActivated");
 		}
 	
 		/// <summary>
@@ -370,6 +376,32 @@ namespace Xwt
 			remove {
 				selectionChanged -= value;
 				BackendHost.OnAfterEventRemove (TableViewEvent.SelectionChanged, selectionChanged);
+			}
+		}
+
+		/// <summary>
+		/// Raises the row activated event.
+		/// </summary>
+		/// <param name="a">The alpha component.</param>
+		protected virtual void OnRowActivated (TreeViewRowEventArgs a)
+		{
+			if (rowActivated != null)
+				rowActivated (this, a);
+		}
+		
+		EventHandler<TreeViewRowEventArgs> rowActivated;
+
+		/// <summary>
+		/// Occurs when the user double-clicks on a row
+		/// </summary>
+		public event EventHandler<TreeViewRowEventArgs> RowActivated {
+			add {
+				BackendHost.OnBeforeEventAdd (TreeViewEvent.RowActivated, rowActivated);
+				rowActivated += value;
+			}
+			remove {
+				rowActivated -= value;
+				BackendHost.OnAfterEventRemove (TreeViewEvent.RowActivated, rowActivated);
 			}
 		}
 	}

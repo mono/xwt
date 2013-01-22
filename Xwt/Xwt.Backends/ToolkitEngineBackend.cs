@@ -38,7 +38,6 @@ namespace Xwt.Backends
 	{
 		Dictionary<Type,Type> backendTypes;
 		Dictionary<Type,Type> backendTypesByFrontend;
-		Dictionary<Type,BackendHandler> sharedBackends = new Dictionary<Type, BackendHandler> ();
 		Toolkit toolkit;
 		bool isGuest;
 

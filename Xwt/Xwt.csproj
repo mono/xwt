@@ -370,6 +370,8 @@
     <Compile Include="Xwt.Backends\DesktopBackend.cs" />
     <Compile Include="Xwt.Backends\BackendTypeAttribute.cs" />
     <Compile Include="Xwt.Backends\IEmbeddedWidgetBackend.cs" />
+    <Compile Include="Xwt\ListViewRowEventArgs.cs" />
+    <Compile Include="Xwt\TreeViewRowEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

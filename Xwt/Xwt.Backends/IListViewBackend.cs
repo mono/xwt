@@ -39,8 +39,14 @@ namespace Xwt.Backends
 		bool HeadersVisible { get; set; }
 	}
 	
+	public enum ListViewEvent
+	{
+		RowActivated
+	}
+
 	public interface IListViewEventSink: ITableViewEventSink
 	{
+		void OnRowActivated (int rowIndex);
 	}
 }
 

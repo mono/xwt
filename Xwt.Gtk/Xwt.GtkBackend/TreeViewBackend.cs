@@ -33,6 +33,38 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.TreePath autoExpandPath;
 		uint expandTimer;
+
+		protected new ITreeViewEventSink EventSink {
+			get { return (ITreeViewEventSink)base.EventSink; }
+		}
+		
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is TreeViewEvent) {
+				if (((TreeViewEvent)eventId) == TreeViewEvent.RowActivated)
+					Widget.RowActivated += HandleRowActivated;
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is TreeViewEvent) {
+				if (((TreeViewEvent)eventId) == TreeViewEvent.RowActivated)
+					Widget.RowActivated -= HandleRowActivated;
+			}
+		}
+
+		void HandleRowActivated (object o, Gtk.RowActivatedArgs args)
+		{
+			Gtk.TreeIter it;
+			if (Widget.Model.GetIter (out it, args.Path)) {
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnRowActivated (new IterPos (-1, it));
+				});
+			}
+		}
 		
 		protected override void OnSetDragTarget (Gtk.TargetEntry[] table, Gdk.DragAction actions)
 		{

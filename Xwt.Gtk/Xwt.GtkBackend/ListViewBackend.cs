@@ -32,6 +32,35 @@ namespace Xwt.GtkBackend
 	public class ListViewBackend: TableViewBackend, IListViewBackend
 	{
 		bool showBorder;
+		
+		protected new IListViewEventSink EventSink {
+			get { return (IListViewEventSink)base.EventSink; }
+		}
+		
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is ListViewEvent) {
+				if (((ListViewEvent)eventId) == ListViewEvent.RowActivated)
+					Widget.RowActivated += HandleRowActivated;
+			}
+		}
+		
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is ListViewEvent) {
+				if (((ListViewEvent)eventId) == ListViewEvent.RowActivated)
+					Widget.RowActivated -= HandleRowActivated;
+			}
+		}
+		
+		void HandleRowActivated (object o, Gtk.RowActivatedArgs args)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnRowActivated (args.Path.Indices[0]);
+			});
+		}
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{

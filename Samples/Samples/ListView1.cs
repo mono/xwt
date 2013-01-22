@@ -32,6 +32,10 @@ namespace Samples
 				store.SetValue (r, text, "Text " + n);
 			}
 			PackStart (list, BoxMode.FillAndExpand);
+
+			list.RowActivated += delegate(object sender, ListViewRowEventArgs e) {
+				MessageDialog.ShowMessage ("Row " + e.RowIndex + " activated");
+			};
 		}
 	}
 }

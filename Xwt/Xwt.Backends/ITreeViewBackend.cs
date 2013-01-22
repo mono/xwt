@@ -54,8 +54,14 @@ namespace Xwt.Backends
 		Cells
 	}
 	
+	public enum TreeViewEvent
+	{
+		RowActivated
+	}
+
 	public interface ITreeViewEventSink: ITableViewEventSink
 	{
+		void OnRowActivated (TreePosition position);
 	}
 }
 

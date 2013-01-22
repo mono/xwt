@@ -1,10 +1,10 @@
 //
-// MainWindow.cs
+// TreeViewRowEventArgs.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 //
-// Copyright (c) 2012 Xamarin Inc.
+// Copyright (c) 2013 Xamarin Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,47 +24,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt;
-using Samples;
 
-namespace MixedGtkMacTest
+namespace Xwt
 {
-	public class AppWindow: Window
+	public class TreeViewRowEventArgs: EventArgs
 	{
-		Toolkit nativeToolkit;
-
-		public AppWindow ()
+		public TreeViewRowEventArgs (TreePosition position)
 		{
-			nativeToolkit = Toolkit.Load (ToolkitType.Cocoa);
-
-			HBox box = new HBox ();
-			var b = new Button ("Gtk Test Window");
-			b.Clicked += HandleClicked;
-			box.PackStart (b, BoxMode.FillAndExpand);
-
-			b = nativeToolkit.CreateObject<Button> ();
-			b.Label = "Cocoa Test Window";
-			b.Clicked += HandleClickedCocoa;
-			var wped = Toolkit.CurrentEngine.WrapWidget (b);
-			var w = wped.Surface.GetPreferredWidth ();
-			box.PackStart (wped, BoxMode.FillAndExpand);
-
-			Content = box;
+			Position = position;
 		}
-
-		void HandleClickedCocoa (object sender, EventArgs e)
-		{
-			nativeToolkit.Invoke (delegate {
-				MainWindow w = new MainWindow ();
-				w.Show ();
-			});
-		}
-
-		void HandleClicked (object sender, EventArgs e)
-		{
-			MainWindow w = new MainWindow ();
-			w.Show ();
-		}
+		
+		public TreePosition Position { get; private set; }
 	}
 }
 
