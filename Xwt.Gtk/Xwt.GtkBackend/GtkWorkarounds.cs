@@ -862,6 +862,15 @@ namespace Xwt.GtkBackend
 				public string Url { get { return (string)base.Args [0]; } }
 			}
 		}
+
+		[DllImport (PangoUtil.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern void gtk_image_menu_item_set_always_show_image (IntPtr menuitem, bool alwaysShow);
+
+		public static void ForceImageOnMenuItem (Gtk.ImageMenuItem mi)
+		{
+			if (GtkMinorVersion >= 16)
+				gtk_image_menu_item_set_always_show_image (mi.Handle, true);
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>
