@@ -247,7 +247,7 @@ namespace Xwt.Formats
 
 		static readonly Regex styles = new Regex (@"(?<double>\*{2}|_{2})(?<bold>[^\s]+.*)(?<!\s)\k<double>" + // emphasis: double ** or __ for bold
 		                                          @"|(?<single>\*|_)(?<italic>[^\s]+.*)(?<!\s)\k<single>" + // emphasis: single * or _ for italic
-		                                          @"|`(?<code>.+)`" // inline code
+		                                          @"|`(?<code>[^`]+)`" // inline code
 		                                          , RegexOptions.Compiled);
 	}
 }
