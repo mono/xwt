@@ -183,6 +183,16 @@ namespace Xwt.Backends
 		}
 
 		/// <summary>
+		/// Gets the backend for a native drawing context.
+		/// </summary>
+		/// <returns>The backend for context.</returns>
+		/// <param name="nativeContext">The native context.</param>
+		public virtual object GetBackendForContext (object nativeContext)
+		{
+			return nativeContext;
+		}
+
+		/// <summary>
 		/// Gets a value indicating whether this <see cref="Xwt.Backends.EngineBackend"/> handles size negotiation on its own
 		/// </summary>
 		/// <value>

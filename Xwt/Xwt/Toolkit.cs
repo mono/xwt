@@ -278,6 +278,11 @@ namespace Xwt
 			return new Image (backend);
 		}
 
+		public Context WrapContext (object nativeContext)
+		{
+			return new Context (backend.GetBackendForContext (nativeContext), this);
+		}
+
 		public object ValidateObject (object obj)
 		{
 			if (obj is IFrontend) {
