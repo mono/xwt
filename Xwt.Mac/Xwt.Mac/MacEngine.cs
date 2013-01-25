@@ -48,6 +48,8 @@ namespace Xwt.Mac
 		{
 			NSApplication.Init ();
 			//Hijack ();
+			if (pool != null)
+				pool.Dispose ();
 			pool = new NSAutoreleasePool ();
 			appDelegate = new AppDelegate (IsGuest);
 			NSApplication.SharedApplication.Delegate = appDelegate;
