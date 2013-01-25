@@ -38,7 +38,7 @@ namespace Xwt.Drawing
 		
 		internal Context (object backend, Toolkit toolkit): base (backend, toolkit, toolkit.ContextBackendHandler)
 		{
-			handler = ToolkitEngine.ContextBackendHandler;
+			handler = toolkit.ContextBackendHandler;
 		}
 		
 		/// <summary>
