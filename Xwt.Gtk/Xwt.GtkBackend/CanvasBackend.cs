@@ -175,13 +175,15 @@ namespace Xwt.GtkBackend
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			Toolkit.Invoke (delegate {
-				var a = evnt.Area;
-				EventSink.OnDraw (CreateContext (), new Rectangle (a.X, a.Y, a.Width, a.Height));
+				using (var context = CreateContext ()) {
+					var a = evnt.Area;
+					EventSink.OnDraw (context, new Rectangle (a.X, a.Y, a.Width, a.Height));
+				}
 			});
 			return base.OnExposeEvent (evnt);
 		}
 		
-		public object CreateContext ()
+		public CairoContextBackend CreateContext ()
 		{
 			CairoContextBackend ctx = new CairoContextBackend ();
 			if (!IsRealized) {

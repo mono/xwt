@@ -32,11 +32,23 @@ using Xwt.Drawing;
 
 namespace Xwt.CairoBackend
 {
-	class CairoContextBackend
+	class CairoContextBackend : IDisposable
 	{
 		public double GlobalAlpha = 1;
 		public Cairo.Context Context;
 		public Cairo.Surface TempSurface;
+
+		public void Dispose ()
+		{
+			IDisposable d = Context;
+			if (d != null) {
+				d.Dispose ();
+			}
+			d = TempSurface;
+			if (d != null) {
+				d.Dispose ();
+			}
+		}
 	}
 	
 	public class CairoContextBackendHandler: IContextBackendHandler
@@ -334,11 +346,7 @@ namespace Xwt.CairoBackend
 		public void Dispose (object backend)
 		{
 			var ctx = (CairoContextBackend) backend;
-			IDisposable d = (IDisposable) ctx.Context;
-			d.Dispose ();
-            d = (IDisposable)ctx.TempSurface;
-			if (d != null)
-				d.Dispose ();
+			ctx.Dispose ();
 		}
 		#endregion
 	}
