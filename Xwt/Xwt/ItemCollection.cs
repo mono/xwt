@@ -75,6 +75,18 @@ namespace Xwt
 				store.SetValue (index, dataField, item);
 			}
 		}
+
+		public int IndexOf (object withItem = null, string withLabel = null)
+		{
+			for (int i = 0; i < Count; i++) {
+				if (withItem != null && withItem.Equals (store.GetValue (i, dataField)))
+					return i;
+				if (withLabel != null && withLabel.Equals (store.GetValue (i, labelField)))
+					return i;
+			}
+
+			return -1;
+		}
 		
 		protected override void RemoveItem (int index)
 		{

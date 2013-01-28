@@ -131,7 +131,7 @@ namespace Xwt
 				return Items [Backend.SelectedRow];
 			}
 			set {
-				SelectedIndex = Items.IndexOf (value);
+				SelectedIndex = Items.IndexOf (withItem: value);
 			}
 		}
 		
@@ -142,7 +142,7 @@ namespace Xwt
 				return (string)Items.DataSource.GetValue (Backend.SelectedRow, 0);
 			}
 			set {
-				SelectedIndex = Items.IndexOf (value);
+				SelectedIndex = Items.IndexOf (withLabel: value);
 			}
 		}
 		
