@@ -11,11 +11,11 @@ namespace Xwt.Mac
 {
 	public class ExpanderBackend : ViewBackend<MacExpander, IExpandEventSink>, IExpanderBackend
 	{
-		MacExpander expander;
-
 		public ExpanderBackend ()
 		{
 			ViewObject = new MacExpander ();
+			Widget.Expander.DisclosureToggled += (sender, e) => NotifyPreferredSizeChanged ();
+			SetMinSize (10, 25);
 		}
 
 		public string Label {
@@ -39,7 +39,17 @@ namespace Xwt.Mac
 
 		public void SetContent (IWidgetBackend widget)
 		{
+			Widget.Box.SetFrameSize (new SizeF ((float)widget.GetPreferredWidth ().NaturalSize,
+			                                    (float)widget.GetPreferredHeight ().NaturalSize),
+			                         false);
 			Widget.Box.SetContent (GetWidget (widget));
+			NotifyPreferredSizeChanged ();
+		}
+
+		protected override Size GetNaturalSize ()
+		{
+			return new Size (Math.Max (Widget.Expander.Frame.Width, Widget.Box.Frame.Width),
+			                 Widget.Expander.Frame.Height + Widget.Box.Frame.Height);
 		}
 	}
 
@@ -50,17 +60,13 @@ namespace Xwt.Mac
 
 		public MacExpander ()
 		{
-			SetFrameSize (new SizeF (80, 50 + CollapsibleBox.DefaultCollapsedHeight));
 			expander = new ExpanderWidget () {
 				Frame = new RectangleF (0, 0, 80, 21),
 				AutoresizingMask = NSViewResizingMask.WidthSizable
 			};
-			box = new CollapsibleBox () {
-				Frame = new RectangleF (0, 25, 80, 100),
-				AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable
-			};
+			box = new CollapsibleBox () { AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable };
+			box.SetFrameOrigin (new PointF (0, 25));
 			expander.DisclosureToggled += (sender, e) => box.Expanded = expander.On;
-			AutoresizesSubviews = true;
 			AddSubview (expander);
 			AddSubview (box);
 		}
@@ -183,6 +189,7 @@ namespace Xwt.Mac
 			TitlePosition = NSTitlePosition.NoTitle;
 			BorderType = NSBorderType.NoBorder;
 			BoxType = NSBoxType.NSBoxPrimary;
+			ContentViewMargins = new SizeF (0, 0);
 		}
 
 		public void SetContent (NSView view)
@@ -193,7 +200,7 @@ namespace Xwt.Mac
 		public bool Expanded {
 			get { return expanded; }
 			set {
-				SetExpanded (value, true);
+				SetExpanded (value, false);
 			}
 		}
 
