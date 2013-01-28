@@ -44,43 +44,41 @@ namespace Xwt.Mac
 		public override object Copy (object handle)
 		{
 			NSFont f = (NSFont) handle;
-			return NSFont.FromDescription (f.FontDescriptor, f.FontDescriptor.Matrix);
+			return (NSFont)f.Copy ();
 		}
 		
 		public override object SetSize (object handle, double size, FontSizeUnit sizeUnit)
 		{
 			NSFont f = (NSFont) handle;
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSize ((float)size), null);
+			return NSFontManager.SharedFontManager.ConvertFont (f, (float)size);
 		}
 
 		public override object SetFamily (object handle, string family)
 		{
 			NSFont f = (NSFont) handle;
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithFamily (family), null);
+			return NSFontManager.SharedFontManager.ConvertFontToFamily (f, family);
 		}
 
 		public override object SetStyle (object handle, FontStyle style)
 		{
 			NSFont f = (NSFont) handle;
-			NSFontSymbolicTraits traits = f.FontDescriptor.SymbolicTraits;
+			NSFontTraitMask mask;
 			if (style == FontStyle.Italic || style == FontStyle.Oblique)
-				traits |= NSFontSymbolicTraits.ItalicTrait;
+				mask = NSFontTraitMask.Italic;
 			else
-				traits &= ~NSFontSymbolicTraits.ItalicTrait;
-			
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), null);
+				mask = NSFontTraitMask.Unitalic;
+			return NSFontManager.SharedFontManager.ConvertFont (f, mask);
 		}
 
 		public override object SetWeight (object handle, FontWeight weight)
 		{
 			NSFont f = (NSFont) handle;
-			NSFontSymbolicTraits traits = f.FontDescriptor.SymbolicTraits;
+			NSFontTraitMask mask;
 			if (weight > FontWeight.Normal)
-				traits |= NSFontSymbolicTraits.BoldTrait;
+				mask = NSFontTraitMask.Bold;
 			else
-				traits &= ~NSFontSymbolicTraits.BoldTrait;
-			
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), null);
+				mask = NSFontTraitMask.Unbold;
+			return NSFontManager.SharedFontManager.ConvertFont (f, mask);
 		}
 
 		public override object SetStretch (object handle, FontStretch stretch)
