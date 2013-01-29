@@ -42,7 +42,6 @@ namespace Xwt.Mac
 	{
 		class LayoutInfo
 		{
-			public CTFramesetter Framesetter;
 			public string Text;
 			public NSFont Font;
 			public float? Width, Height;
@@ -64,15 +63,13 @@ namespace Xwt.Mac
 		public override void SetText (object backend, string text)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Text = text;
-			InvalidateFramesetter (li);
+			li.Text = text.Replace ("\r\n", "\n");
 		}
 
 		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
 			li.Font = (NSFont)Toolkit.GetBackend (font);
-			InvalidateFramesetter (li);
 		}
 		
 		public override void SetWidth (object backend, double value)
@@ -96,22 +93,44 @@ namespace Xwt.Mac
 		public override Size GetSize (object backend)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			if (li.Framesetter == null)
-				return Size.Zero;
+			using (CTFrame frame = CreateFrame (li)) {
+				if (frame == null)
+					return Size.Zero;
 
-			NSRange unused;
-			SizeF constraint = new SizeF (li.Width ?? float.MaxValue, float.MaxValue);
-			return li.Framesetter.SuggestFrameSize (new NSRange (0, li.Text.Length), null, constraint, out unused).ToXwtSize ();
+				Size result = Size.Zero;
+				CTLine [] lines = frame.GetLines ();
+				float lineHeight = li.Font.Ascender - li.Font.Descender + li.Font.Leading;
+
+				// try to approximate Pango's layout
+				foreach (var line in lines) {
+					result.Width = Math.Max (result.Width, line.GetTypographicBounds ());
+					result.Height += lineHeight;
+
+					// clean up after ourselves as we go
+					line.Dispose ();
+				}
+
+				// CoreText throws away trailing line breaks..
+				if (li.Text.EndsWith ("\n"))
+					result.Height += lineHeight;
+
+				result.Width = Math.Ceiling (result.Width);
+				result.Height = Math.Ceiling (result.Height);
+				return result;
+			}
 		}
 
-		static void InvalidateFramesetter (LayoutInfo li)
+		static CTFrame CreateFrame (LayoutInfo li)
 		{
-			if (li.Framesetter != null) {
-				li.Framesetter.Dispose ();
-				li.Framesetter = null;
+			if (string.IsNullOrEmpty (li.Text))
+				return null;
+
+			using (CTFramesetter framesetter = new CTFramesetter (CreateAttributedString (li))) {
+				CGPath path = new CGPath ();
+				path.AddRect (new RectangleF (0, 0, li.Width ?? float.MaxValue, li.Height ?? float.MaxValue));
+
+				return framesetter.GetFrame (new NSRange (0, li.Text.Length), path, null);
 			}
-			if (!string.IsNullOrEmpty (li.Text))
-				li.Framesetter = new CTFramesetter (CreateAttributedString (li));
 		}
 
 		static NSAttributedString CreateAttributedString (LayoutInfo li, string overrideText = null)
@@ -134,36 +153,32 @@ namespace Xwt.Mac
 		internal static void Draw (CGContext ctx, object layout, double x, double y)
 		{
 			LayoutInfo li = (LayoutInfo)layout;
-			if (li.Framesetter == null)
-				return;
+			using (CTFrame frame = CreateFrame (li)) {
+				if (frame == null)
+					return;
 
-			CGPath path = new CGPath ();
-			path.AddRect (new RectangleF (0, 0, li.Width ?? float.MaxValue, li.Height ?? float.MaxValue));
-			CTFrame frame = li.Framesetter.GetFrame (new NSRange (0, li.Text.Length), path, null);
+				CTLine ellipsis = null;
+				bool ellipsize = li.Width.HasValue && li.TextTrimming == TextTrimming.WordElipsis;
+				if (ellipsize)
+					ellipsis = new CTLine (CreateAttributedString (li, "..."));
 
-			CTLine ellipsis = null;
-			bool ellipsize = li.Width.HasValue && li.TextTrimming == TextTrimming.WordElipsis;
-			if (ellipsize)
-				ellipsis = new CTLine (CreateAttributedString (li, "..."));
+				float lineHeight = li.Font.Ascender - li.Font.Descender + li.Font.Leading;
 
-			float lineHeight = layoutManager.DefaultLineHeightForFont (li.Font);
-
-			ctx.SaveState ();
-			ctx.TextMatrix = CGAffineTransform.MakeScale (1f, -1f);
-			ctx.TranslateCTM ((float)x, (float)y + li.Font.Ascender);
-			foreach (var line in frame.GetLines ()) {
-				ctx.TextPosition = PointF.Empty;
-				if (ellipsize) // we need to create a new CTLine here because the framesetter already truncated the text for the line
-					new CTLine (CreateAttributedString (li, li.Text.Substring (line.StringRange.Location)))
-						.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis).Draw (ctx);
-				else
-					line.Draw (ctx);
-				ctx.TranslateCTM (0, lineHeight);
+				ctx.SaveState ();
+				ctx.TextMatrix = CGAffineTransform.MakeScale (1f, -1f);
+				ctx.TranslateCTM ((float)x, (float)y + li.Font.Ascender);
+				foreach (var line in frame.GetLines ()) {
+					ctx.TextPosition = PointF.Empty;
+					if (ellipsize) // we need to create a new CTLine here because the framesetter already truncated the text for the line
+						new CTLine (CreateAttributedString (li, li.Text.Substring (line.StringRange.Location)))
+							.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis).Draw (ctx);
+					else
+						line.Draw (ctx);
+					ctx.TranslateCTM (0, lineHeight);
+				}
+				ctx.RestoreState ();
 			}
-			ctx.RestoreState ();
 		}
-
-		static readonly NSLayoutManager layoutManager = new NSLayoutManager ();
 	}
 }
 
