@@ -221,7 +221,7 @@ namespace Xwt.Formats
 					else if (match.Groups["italic"].Success)
 						ParseText (buffer, match.Groups["italic"].Value, style | RichTextInlineStyle.Italic);
 					else
-						ParseText (buffer, match.Groups["code"].Value, style | RichTextInlineStyle.Monospace);
+						EmitText (buffer, match.Groups["code"].Value, style | RichTextInlineStyle.Monospace);
 
 					currentIndex = match.Index + match.Length;
 
