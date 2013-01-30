@@ -239,7 +239,7 @@ namespace Xwt.Formats
 		}
 
 		static readonly Regex escape = new Regex (@"\\(?<next>.)", RegexOptions.Singleline | RegexOptions.Compiled);
-		static readonly Regex inline = new Regex (@"\[(?<name>.+)\]\((?<url>[^\s""\)]+)(?:[ \t]*""(?<title>.*)"")?\)" + //link
+		static readonly Regex inline = new Regex (@"\[(?<name>[^\]]+)\]\((?<url>[^\s""\)]+)(?:[ \t]*""(?<title>.*)"")?\)" + //link
 		                                          // See http://daringfireball.net/2010/07/improved_regex_for_matching_urls
 		                                          @"|(?i)\b(?<url>(?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'"".,<>?«»“”‘’]))"
 		                                               //FIXME: image, etc...
