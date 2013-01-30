@@ -269,8 +269,6 @@ namespace Xwt.WPFBackend
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			var c = (DrawingContext)backend;
-			Size measure = layout.GetSize ();
-			float h = layout.Height > 0 ? (float)layout.Height : (float)measure.Height;
 			System.Drawing.StringFormat stringFormat = TextLayoutContext.StringFormat;
 			StringTrimming trimming = layout.Trimming.ToDrawingStringTrimming ();
 
@@ -279,9 +277,17 @@ namespace Xwt.WPFBackend
 				stringFormat.Trimming = trimming;
 			}
 
-			c.Graphics.DrawString (layout.Text, layout.Font.ToDrawingFont (), c.Brush,
-			                       new RectangleF ((float)x, (float)y, (float)measure.Width, h),
-			                       stringFormat);
+			var font = layout.Font.ToDrawingFont ();
+
+			if (layout.Width == -1 && layout.Height == -1) {
+				c.Graphics.DrawString (layout.Text, font, c.Brush, (float)x, (float)y, stringFormat);
+			} else {
+				Size measure = layout.GetSize ();
+				float h = layout.Height > 0 ? (float)layout.Height : (float)measure.Height;
+				c.Graphics.DrawString (layout.Text, font, c.Brush,
+									   new RectangleF ((float)x, (float)y, (float)measure.Width, h),
+									   stringFormat);
+			}
 		}
 
 		public override void DrawImage (object backend, object img, double x, double y, double alpha)
