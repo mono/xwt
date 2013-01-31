@@ -46,7 +46,7 @@ namespace Samples
 				.SetValue (text, "Sub two").SetValue (desc, "Sub second");
 			store.AddNode ().SetValue (text, "Three").SetValue (desc, "Third").AddChild ()
 				.SetValue (text, "Sub three").SetValue (desc, "Sub third");
-			PackStart (view);
+			PackStart (view, BoxMode.FillAndExpand);
 			
 			view.DataSource = store;
 			
@@ -94,6 +94,11 @@ namespace Samples
 				}
 			};
 			PackStart (removeButton);
+
+			var label = new Label ();
+			PackStart (label);
+
+			view.RowExpanded += (sender, e) => label.Text = "Row expanded: " + store.GetNavigatorAt (e.Position).GetValue (text);
 		}
 
 		void HandleDragOver (object sender, DragOverEventArgs e)

@@ -76,12 +76,22 @@ namespace Xwt.GtkBackend
 		
 		void HandleRowExpanded (object o, Gtk.RowExpandedArgs args)
 		{
-			
+			Gtk.TreeIter it;
+			if (Widget.Model.GetIter (out it, args.Path)) {
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnRowExpanded (new IterPos (-1, it));
+				});
+			}
 		}
 		
 		void HandleTestExpandRow (object o, Gtk.TestExpandRowArgs args)
 		{
-			
+			Gtk.TreeIter it;
+			if (Widget.Model.GetIter (out it, args.Path)) {
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnRowExpanding (new IterPos (-1, it));
+				});
+			}
 		}
 
 		void HandleRowActivated (object o, Gtk.RowActivatedArgs args)
