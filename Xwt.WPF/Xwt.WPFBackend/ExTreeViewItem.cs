@@ -30,6 +30,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using SWC = System.Windows.Controls;
 using WKey = System.Windows.Input.Key;
+using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
@@ -45,6 +46,20 @@ namespace Xwt.WPFBackend
 			: this()
 		{
 			this.view = view;
+		}
+
+		protected override void OnExpanded (RoutedEventArgs e)
+		{
+			var node = (TreeStoreNode)DataContext;
+			view.Backend.Context.InvokeUserCode (delegate {
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowExpanding (node);
+			});
+
+			base.OnExpanded (e);
+
+			view.Backend.Context.InvokeUserCode (delegate {
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowExpanded (node);
+			});
 		}
 
 		public int Level {
