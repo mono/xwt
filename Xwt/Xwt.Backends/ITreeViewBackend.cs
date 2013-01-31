@@ -56,12 +56,16 @@ namespace Xwt.Backends
 	
 	public enum TreeViewEvent
 	{
-		RowActivated
+		RowActivated,
+		RowExpanding,
+		RowExpanded
 	}
 
 	public interface ITreeViewEventSink: ITableViewEventSink
 	{
 		void OnRowActivated (TreePosition position);
+		void OnRowExpanding (TreePosition position);
+		void OnRowExpanded (TreePosition position);
 	}
 }
 

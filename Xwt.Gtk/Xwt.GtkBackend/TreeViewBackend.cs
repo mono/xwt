@@ -42,8 +42,17 @@ namespace Xwt.GtkBackend
 		{
 			base.EnableEvent (eventId);
 			if (eventId is TreeViewEvent) {
-				if (((TreeViewEvent)eventId) == TreeViewEvent.RowActivated)
+				switch ((TreeViewEvent)eventId) {
+				case TreeViewEvent.RowActivated:
 					Widget.RowActivated += HandleRowActivated;
+					break;
+				case TreeViewEvent.RowExpanding:
+					Widget.TestExpandRow += HandleTestExpandRow;;
+					break;
+				case TreeViewEvent.RowExpanded:
+					Widget.RowExpanded += HandleRowExpanded;;
+					break;
+				}
 			}
 		}
 
@@ -51,9 +60,28 @@ namespace Xwt.GtkBackend
 		{
 			base.DisableEvent (eventId);
 			if (eventId is TreeViewEvent) {
-				if (((TreeViewEvent)eventId) == TreeViewEvent.RowActivated)
+				switch ((TreeViewEvent)eventId) {
+				case TreeViewEvent.RowActivated:
 					Widget.RowActivated -= HandleRowActivated;
+					break;
+				case TreeViewEvent.RowExpanding:
+					Widget.TestExpandRow -= HandleTestExpandRow;;
+					break;
+				case TreeViewEvent.RowExpanded:
+					Widget.RowExpanded -= HandleRowExpanded;;
+					break;
+				}
 			}
+		}
+		
+		void HandleRowExpanded (object o, Gtk.RowExpandedArgs args)
+		{
+			
+		}
+		
+		void HandleTestExpandRow (object o, Gtk.TestExpandRowArgs args)
+		{
+			
 		}
 
 		void HandleRowActivated (object o, Gtk.RowActivatedArgs args)

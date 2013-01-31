@@ -37,6 +37,21 @@ namespace Xwt.Mac
 	{
 		ITreeDataSource source;
 		TreeSource tsource;
+
+		class TreeDelegate: NSOutlineViewDelegate
+		{
+			public TreeViewBackend Backend;
+
+			public override void ItemDidExpand (NSNotification notification)
+			{
+				Backend.EventSink.OnRowExpanded (((TreeItem)notification.UserInfo["NSObject"]).Position);
+			}
+
+			public override void ItemWillExpand (NSNotification notification)
+			{
+				Backend.EventSink.OnRowExpanding (((TreeItem)notification.UserInfo["NSObject"]).Position);
+			}
+		}
 		
 		NSOutlineView Tree {
 			get { return (NSOutlineView) Table; }
@@ -44,7 +59,9 @@ namespace Xwt.Mac
 		
 		protected override NSTableView CreateView ()
 		{
-			return new NSOutlineView ();
+			var t = new NSOutlineView ();
+			t.Delegate = new TreeDelegate () { Backend = this };
+			return t;
 		}
 		
 		protected override string SelectionChangeEventName {

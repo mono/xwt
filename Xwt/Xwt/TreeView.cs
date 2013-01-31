@@ -60,6 +60,16 @@ namespace Xwt
 				((TreeView)Parent).OnRowActivated (new TreeViewRowEventArgs (position));
 			}
 
+			public void OnRowExpanded (TreePosition position)
+			{
+				((TreeView)Parent).OnRowExpanded (new TreeViewRowEventArgs (position));
+			}
+			
+			public void OnRowExpanding (TreePosition position)
+			{
+				((TreeView)Parent).OnRowExpanding (new TreeViewRowEventArgs (position));
+			}
+			
 			public override Size GetDefaultNaturalSize ()
 			{
 				return Xwt.Backends.DefaultNaturalSizes.TreeView;
@@ -70,6 +80,8 @@ namespace Xwt
 		{
 			MapEvent (TableViewEvent.SelectionChanged, typeof(TreeView), "OnSelectionChanged");
 			MapEvent (TreeViewEvent.RowActivated, typeof(TreeView), "OnRowActivated");
+			MapEvent (TreeViewEvent.RowExpanded, typeof(TreeView), "OnRowExpanded");
+			MapEvent (TreeViewEvent.RowExpanding, typeof(TreeView), "OnRowExpanding");
 		}
 	
 		/// <summary>
@@ -402,6 +414,58 @@ namespace Xwt
 			remove {
 				rowActivated -= value;
 				BackendHost.OnAfterEventRemove (TreeViewEvent.RowActivated, rowActivated);
+			}
+		}
+		
+		/// <summary>
+		/// Raises the row expanding event.
+		/// </summary>
+		/// <param name="a">The alpha component.</param>
+		protected virtual void OnRowExpanding (TreeViewRowEventArgs a)
+		{
+			if (rowExpanding != null)
+				rowExpanding (this, a);
+		}
+		
+		EventHandler<TreeViewRowEventArgs> rowExpanding;
+		
+		/// <summary>
+		/// Occurs just before a row is expanded
+		/// </summary>
+		public event EventHandler<TreeViewRowEventArgs> RowExpanding {
+			add {
+				BackendHost.OnBeforeEventAdd (TreeViewEvent.RowExpanding, rowExpanding);
+				rowExpanding += value;
+			}
+			remove {
+				rowExpanding -= value;
+				BackendHost.OnAfterEventRemove (TreeViewEvent.RowExpanding, rowExpanding);
+			}
+		}
+		
+		/// <summary>
+		/// Raises the row expanding event.
+		/// </summary>
+		/// <param name="a">The alpha component.</param>
+		protected virtual void OnRowExpanded (TreeViewRowEventArgs a)
+		{
+			if (rowExpanded != null)
+				rowExpanded (this, a);
+		}
+		
+		EventHandler<TreeViewRowEventArgs> rowExpanded;
+		
+		/// <summary>
+		/// Occurs just before a row is expanded
+		/// </summary>
+		public event EventHandler<TreeViewRowEventArgs> RowExpanded {
+			add {
+				BackendHost.OnBeforeEventAdd (TreeViewEvent.RowExpanded, rowExpanded);
+				rowExpanded += value;
+			}
+			remove {
+				rowExpanded -= value;
+				BackendHost.OnAfterEventRemove (TreeViewEvent.RowExpanded, rowExpanded);
 			}
 		}
 	}
