@@ -1194,6 +1194,9 @@ namespace Xwt
 				children = new List<Widget> ();
 			w.Parent = this;
 			children.Add (w);
+
+			// Make sure the widget is queued for reallocation
+			w.OnPreferredSizeChanged ();
 		}
 		
 		protected void UnregisterChild (Widget w)
