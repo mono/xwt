@@ -78,12 +78,12 @@ namespace Xwt.Mac
 		{
 			switch (style) {
 			case ButtonStyle.Normal:
-				Widget.BezelStyle = NSBezelStyle.RoundRect;
+				Widget.BezelStyle = NSBezelStyle.Rounded;
 				Widget.SetButtonType (NSButtonType.MomentaryPushIn);
 				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
 				break;
 			case ButtonStyle.Flat:
-				Widget.BezelStyle = NSBezelStyle.RoundRect;
+				Widget.BezelStyle = NSBezelStyle.Rounded;
 				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
 				break;
 			}
@@ -95,7 +95,7 @@ namespace Xwt.Mac
 		{
 			switch (type) {
 			case ButtonType.Disclosure: Widget.BezelStyle = NSBezelStyle.Disclosure; break;
-			default: Widget.BezelStyle = NSBezelStyle.RoundRect; break;
+			default: Widget.BezelStyle = NSBezelStyle.Rounded; break;
 			}
 		}
 		

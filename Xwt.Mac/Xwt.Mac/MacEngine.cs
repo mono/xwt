@@ -104,6 +104,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IOpenFileDialogBackend, OpenFileDialogBackend> ();
 			RegisterBackend <Xwt.Backends.ClipboardBackend, MacClipboardBackend> ();
 			RegisterBackend <Xwt.Backends.DesktopBackend, MacDesktopBackend> ();
+			RegisterBackend <Xwt.Backends.IMenuButtonBackend, MenuButtonBackend> ();
 		}
 
 		public override void RunApplication ()
