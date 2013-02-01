@@ -46,19 +46,19 @@ namespace Xwt.Mac
 		
 		public void SetChild (IWidgetBackend child)
 		{
-			IMacViewBackend backend = (IMacViewBackend) child;
+			ViewBackend backend = (ViewBackend) child;
 			if (backend.EventSink.SupportsCustomScrolling ()) {
 				var vs = new ScrollAdjustmentBackend (Widget, true);
 				var hs = new ScrollAdjustmentBackend (Widget, false);
 				CustomClipView clipView = new CustomClipView (hs, vs);
 				Widget.ContentView = clipView;
-				clipView.DocumentView = backend.View;
+				clipView.DocumentView = backend.Widget;
 				backend.EventSink.SetScrollAdjustments (hs, vs);
-				backend.View.Frame = new System.Drawing.RectangleF (0, 0, 500,500);
+				backend.Widget.Frame = new System.Drawing.RectangleF (0, 0, 500,500);
 			}
 			else {
-				Widget.DocumentView = backend.View;
-				backend.View.Frame = Widget.ContentView.DocumentRect;
+				Widget.DocumentView = backend.Widget;
+				backend.Widget.Frame = Widget.ContentView.DocumentRect;
 			}
 		}
 		

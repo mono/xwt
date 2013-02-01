@@ -42,7 +42,7 @@ namespace Xwt.Mac
 		WindowBackendController controller;
 		IWindowFrameEventSink eventSink;
 		Window frontend;
-		IMacViewBackend child;
+		ViewBackend child;
 		
 		public WindowBackend (IntPtr ptr): base (ptr)
 		{
@@ -235,13 +235,13 @@ namespace Xwt.Mac
 		void IWindowBackend.SetChild (IWidgetBackend child)
 		{
 			if (this.child != null) {
-				this.child.View.RemoveFromSuperview ();
+				this.child.Widget.RemoveFromSuperview ();
 			}
-			this.child = (IMacViewBackend) child;
+			this.child = (ViewBackend) child;
 			if (child != null) {
-				ContentView.AddSubview (this.child.View);
+				ContentView.AddSubview (this.child.Widget);
 				SetPadding (frontend.Padding.Left, frontend.Padding.Top, frontend.Padding.Right, frontend.Padding.Bottom);
-				this.child.View.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
+				this.child.Widget.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			}
 		}
 		
@@ -291,7 +291,7 @@ namespace Xwt.Mac
 				frame.Width -= (float) (left + right);
 				frame.Y += (float) top;
 				frame.Height -= (float) (top + bottom);
-				child.View.Frame = frame;
+				child.Widget.Frame = frame;
 			}
 		}
 

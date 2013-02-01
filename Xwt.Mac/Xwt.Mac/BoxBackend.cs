@@ -44,8 +44,8 @@ namespace Xwt.Mac
 
 		public void Add (IWidgetBackend widget)
 		{
-			IMacViewBackend b = (IMacViewBackend) widget;
-			Widget.AddSubview (b.View);
+			ViewBackend b = (ViewBackend) widget;
+			Widget.AddSubview (b.Widget);
 		}
 
 		public void Remove (IWidgetBackend widget)

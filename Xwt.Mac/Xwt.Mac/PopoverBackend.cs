@@ -63,8 +63,8 @@ namespace Xwt.Mac
 			
 			public override void LoadView ()
 			{
-				var backend = (IMacViewBackend)Toolkit.GetBackend (child);
-				view = ((IWidgetBackend)backend).NativeWidget as NSView;
+				var backend = (ViewBackend)Toolkit.GetBackend (child);
+				view = ((ViewBackend)backend).NativeWidget as NSView;
 				ForceChildLayout ();
 				backend.SetAutosizeMode (true);
 				// FIXME: unset when the popover is closed
@@ -114,8 +114,8 @@ namespace Xwt.Mac
 			popover = new NSPopover ();
 			popover.Behavior = NSPopoverBehavior.Transient;
 			popover.ContentViewController = controller;
-			IMacViewBackend backend = (IMacViewBackend)Toolkit.GetBackend (referenceWidget);
-			var reference = backend.View;
+			ViewBackend backend = (ViewBackend)Toolkit.GetBackend (referenceWidget);
+			var reference = backend.Widget;
 			popover.Show (System.Drawing.RectangleF.Empty,
 			              reference,
 			              ToRectEdge (orientation));

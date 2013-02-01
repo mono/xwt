@@ -39,10 +39,21 @@ using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public abstract class ViewBackend<T,S>: IWidgetBackend,IMacViewBackend where T:NSView where S:IWidgetEventSink
+	public abstract class ViewBackend<T,S>: ViewBackend where T:NSView where S:IWidgetEventSink
+	{
+		public new S EventSink {
+			get { return (S) base.EventSink; }
+		}
+		
+		public new T Widget {
+			get { return (T) base.Widget; }
+		}
+	}
+
+	public abstract class ViewBackend: IWidgetBackend
 	{
 		Widget frontend;
-		S eventSink;
+		IWidgetEventSink eventSink;
 		IViewObject viewObject;
 		WidgetEvent currentEvents;
 		bool autosize;
@@ -57,10 +68,12 @@ namespace Xwt.Mac
 		
 		void IWidgetBackend.Initialize (IWidgetEventSink sink)
 		{
-			eventSink = (S) sink;
+			eventSink = (IWidgetEventSink) sink;
 			Initialize ();
 		}
 
+		// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
+		// In that case, the widget has to listen to the change event of the children and resize itself
 		public void SetAutosizeMode (bool autosize)
 		{
 			this.autosize = autosize;
@@ -73,14 +86,10 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public S EventSink {
+		public IWidgetEventSink EventSink {
 			get { return eventSink; }
 		}
 		
-		IWidgetEventSink IMacViewBackend.EventSink {
-			get { return EventSink; }
-		}
-
 		public Widget Frontend {
 			get {
 				return this.frontend;
@@ -98,8 +107,8 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public T Widget {
-			get { return (T) ViewObject.View; }
+		public NSView Widget {
+			get { return (NSView) ViewObject.View; }
 		}
 		
 		public IViewObject ViewObject {
@@ -198,13 +207,9 @@ namespace Xwt.Mac
 			get { return new Size (Widget.WidgetWidth () - Frontend.Margin.HorizontalSpacing, Widget.WidgetHeight () - Frontend.Margin.VerticalSpacing); }
 		}
 		
-		NSView IMacViewBackend.View {
-			get { return (NSView) Widget; }
-		}
-		
 		public static NSView GetWidget (IWidgetBackend w)
 		{
-			return ((IMacViewBackend)w).View;
+			return ((ViewBackend)w).Widget;
 		}
 
 		public static NSView GetWidget (Widget w)
@@ -380,7 +385,7 @@ namespace Xwt.Mac
 			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
 			if (ob == null)
 				return NSDragOperation.None;
-			var backend = (ViewBackend<T,S>) Toolkit.GetBackend (ob.Frontend);
+			var backend = (ViewBackend) Toolkit.GetBackend (ob.Frontend);
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
@@ -413,7 +418,7 @@ namespace Xwt.Mac
 		{
 			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
 			if (ob != null) {
-				var backend = (ViewBackend<T,S>) Toolkit.GetBackend (ob.Frontend);
+				var backend = (ViewBackend) Toolkit.GetBackend (ob.Frontend);
 				backend.ApplicationContext.InvokeUserCode (delegate {
 					backend.eventSink.OnDragLeave (EventArgs.Empty);
 				});
@@ -426,7 +431,7 @@ namespace Xwt.Mac
 			if (ob == null)
 				return false;
 			
-			var backend = (ViewBackend<T,S>) Toolkit.GetBackend (ob.Frontend);
+			var backend = (ViewBackend) Toolkit.GetBackend (ob.Frontend);
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
@@ -449,7 +454,7 @@ namespace Xwt.Mac
 			if (ob == null)
 				return false;
 			
-			var backend = (ViewBackend<T,S>) Toolkit.GetBackend (ob.Frontend);
+			var backend = (ViewBackend) Toolkit.GetBackend (ob.Frontend);
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
@@ -562,18 +567,6 @@ namespace Xwt.Mac
 		}
 		
 		#endregion
-	}
-
-	public interface IMacViewBackend
-	{
-		NSView View { get; }
-		Widget Frontend { get; }
-		void NotifyPreferredSizeChanged ();
-		IWidgetEventSink EventSink { get; }
-
-		// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
-		// In that case, the widget has to listen to the change event of the children and resize itself
-		void SetAutosizeMode (bool autosize);
 	}
 }
 
