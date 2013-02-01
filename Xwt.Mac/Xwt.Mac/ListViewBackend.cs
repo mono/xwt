@@ -112,7 +112,7 @@ namespace Xwt.Mac
 
 		public override MonoMac.Foundation.NSObject GetObjectValue (NSTableView tableView, NSTableColumn tableColumn, int row)
 		{
-			return new TableRow () { Row = row };
+			return NSObject.FromObject (row);
 		}
 
 		public override int GetRowCount (NSTableView tableView)

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gtk;
 
 namespace Xwt.GtkBackend
 {
@@ -50,6 +51,16 @@ namespace Xwt.GtkBackend
 				Gtk.CellRendererPixbuf cr = new Gtk.CellRendererPixbuf ();
 				col.PackStart (target, cr, false);
 				col.AddAttribute (target, cr, "pixbuf", ((ImageCellView)view).ImageField.Index);
+				return cr;
+			}
+			else if (view is CanvasCellView) {
+				var canvas = (CanvasCellView) view;
+				var cr = new CustomCellRenderer (canvas);
+				col.PackStart (target, cr, false);
+				col.SetCellDataFunc (target, cr, delegate (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter) {
+					cr.LoadData (cell_layout, cell, tree_model, iter);
+					((CanvasCellView) view).Initialize (cr);
+				});
 				return cr;
 			}
 			throw new NotSupportedException ("Unknown cell view type: " + view.GetType ());
@@ -85,6 +96,7 @@ namespace Xwt.GtkBackend
 		void PackStart (object target, Gtk.CellRenderer cr, bool expand);
 		void PackEnd (object target, Gtk.CellRenderer cr, bool expand);
 		void AddAttribute (object target, Gtk.CellRenderer cr, string field, int column);
+		void SetCellDataFunc (object target, Gtk.CellRenderer cr, Gtk.CellLayoutDataFunc dataFunc);
 	}
 }
 

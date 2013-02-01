@@ -112,13 +112,13 @@ namespace Xwt
 			return this;
 		}
 		
-		public TreeNavigator SetValue<T> (DataField<T> field, T data)
+		public TreeNavigator SetValue<T> (IDataField<T> field, T data)
 		{
 			backend.SetValue (pos, field.Index, data);
 			return this;
 		}
 		
-		public T GetValue<T> (DataField<T> field)
+		public T GetValue<T> (IDataField<T> field)
 		{
 			return (T) backend.GetValue (pos, field.Index);
 		}

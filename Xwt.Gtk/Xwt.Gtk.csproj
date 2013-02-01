@@ -119,6 +119,7 @@
     <Compile Include="Xwt.GtkBackend\GtkDesktopBackend.cs" />
     <Compile Include="Xwt.GtkBackend\GtkMacInterop.cs" />
     <Compile Include="Xwt.GtkBackend\EmbeddedWidgetBackend.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRenderer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

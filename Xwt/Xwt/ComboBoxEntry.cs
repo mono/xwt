@@ -32,7 +32,7 @@ namespace Xwt
 	public class ComboBoxEntry: ComboBox
 	{
 		TextEntry entry;
-		DataField textField;
+		IDataField<object> textField;
 		
 		protected new class WidgetBackendHost: ComboBox.WidgetBackendHost
 		{
@@ -69,7 +69,7 @@ namespace Xwt
 		/// <value>
 		/// The text field.
 		/// </value>
-		public DataField TextField {
+		public IDataField<object> TextField {
 			get { return textField; }
 			set {
 				textField = value;

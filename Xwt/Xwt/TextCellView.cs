@@ -31,17 +31,36 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class TextCellView: CellView
+	public sealed class TextCellView: CellView
 	{
+		string text;
+
 		public TextCellView ()
 		{
 		}
 		
-		public TextCellView (DataField textField)
+		public TextCellView (IDataField textField)
 		{
 			TextField = textField;
 		}
 		
-		public DataField TextField { get; set; }
+		public TextCellView (string text)
+		{
+			this.text = text;
+		}
+		
+		public IDataField TextField { get; set; }
+
+		public string Text {
+			get {
+				if (TextField != null && DataSource != null)
+					return Convert.ToString (DataSource.GetValue (TextField) ?? "");
+				else
+					return text;
+			}
+			set {
+				text = value;
+			}
+		}
 	}
 }

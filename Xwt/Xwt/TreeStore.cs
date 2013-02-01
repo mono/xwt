@@ -37,7 +37,7 @@ namespace Xwt
 	[BackendType (typeof(ITreeStoreBackend))]
 	public class TreeStore: XwtComponent, ITreeDataSource
 	{
-		DataField[] fields;
+		IDataField[] fields;
 		
 		class TreeStoreBackendHost: BackendHost<TreeStore,ITreeStoreBackend>
 		{
@@ -56,12 +56,12 @@ namespace Xwt
 			return new TreeStoreBackendHost ();
 		}
 		
-		public TreeStore (params DataField[] fields)
+		public TreeStore (params IDataField[] fields)
 		{
 			for (int n=0; n<fields.Length; n++) {
 				if (fields[n].Index != -1)
 					throw new InvalidOperationException ("DataField object already belongs to another data store");
-				fields[n].Index = n;
+				((IDataFieldInternal)fields[n]).SetIndex (n);
 			}
 			this.fields = fields;
 		}

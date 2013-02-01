@@ -114,5 +114,10 @@ namespace Xwt
 			private set;
 		}
 	}
+
+	public interface ICellDataSource
+	{
+		object GetValue (IDataField field);
+	}
 }
 

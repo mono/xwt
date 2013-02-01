@@ -32,7 +32,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
 namespace Xwt {
-	public class ComboBoxCellView: CellView
+	public sealed class ComboBoxCellView: CellView
 	{
 	}
 }

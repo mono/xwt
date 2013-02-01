@@ -110,7 +110,6 @@
     <Compile Include="Xwt\CellViewCollection.cs" />
     <Compile Include="Xwt\CellView.cs" />
     <Compile Include="Xwt\TextCellView.cs" />
-    <Compile Include="Xwt\IconTextCellView.cs" />
     <Compile Include="Xwt\ComboBoxCellView.cs" />
     <Compile Include="Xwt.Backends\ITreeViewBackend.cs" />
     <Compile Include="Xwt.Backends\ITreeStoreBackend.cs" />
@@ -372,6 +371,7 @@
     <Compile Include="Xwt.Backends\IEmbeddedWidgetBackend.cs" />
     <Compile Include="Xwt\ListViewRowEventArgs.cs" />
     <Compile Include="Xwt\TreeViewRowEventArgs.cs" />
+    <Compile Include="Xwt\CanvasCellView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

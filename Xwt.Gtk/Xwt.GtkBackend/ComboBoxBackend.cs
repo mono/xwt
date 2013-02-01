@@ -126,16 +126,21 @@ namespace Xwt.GtkBackend
 		public void PackStart (object target, Gtk.CellRenderer cr, bool expand)
 		{
 			Widget.PackStart (cr, expand);
-		}
+		}	
 
 		public void PackEnd (object target, Gtk.CellRenderer cr, bool expand)
 		{
 			Widget.PackEnd (cr, expand);
 		}
-
+			
 		public void AddAttribute (object target, Gtk.CellRenderer cr, string field, int column)
 		{
 			Widget.AddAttribute (cr, field, column);
+		}
+		
+		public void SetCellDataFunc (object target, Gtk.CellRenderer cr, Gtk.CellLayoutDataFunc dataFunc)
+		{
+			Widget.SetCellDataFunc (cr, dataFunc);
 		}
 		#endregion
 	}

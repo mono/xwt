@@ -169,6 +169,7 @@ namespace Xwt.Mac
 			var hc = new NSTableHeaderCell ();
 			hc.Title = col.Title;
 			tcol.HeaderCell = hc;
+			Widget.InvalidateIntrinsicContentSize ();
 			return tcol;
 		}
 		

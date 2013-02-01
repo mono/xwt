@@ -51,6 +51,8 @@ namespace Xwt.Mac
 				return new TextTableCell ((TextCellView) cell);
 			if (cell is ImageCellView)
 				return new ImageTableCell ((ImageCellView) cell);
+			if (cell is CanvasCellView)
+				return new CanvasTableCell ((CanvasCellView) cell);
 			throw new NotImplementedException ();
 		}
 	}

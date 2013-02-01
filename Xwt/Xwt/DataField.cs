@@ -31,27 +31,33 @@ namespace Xwt
 	public interface IDataField
 	{
 		int Index { get; }
+		Type FieldType { get; }
 	}
 	
-	public abstract class DataField: IDataField
+	public interface IDataField<T>: IDataField
+	{
+	}
+
+	internal interface IDataFieldInternal
+	{
+		void SetIndex (int index);
+	}
+	
+	public class DataField<T>: IDataField<T>, IDataFieldInternal
 	{
 		public DataField ()
 		{
 			Index = -1;
 		}
 		
-		public int Index { get; internal set; }
-		
-		public abstract Type FieldType { get; }
-	}
-	
-	public class DataField<T>: DataField
-	{
-		public DataField ()
+		public int Index { get; private set; }
+
+		void IDataFieldInternal.SetIndex (int index)
 		{
+			Index = index;
 		}
 		
-		public override Type FieldType {
+		public virtual Type FieldType {
 			get { return typeof(T); }
 		}
 	}

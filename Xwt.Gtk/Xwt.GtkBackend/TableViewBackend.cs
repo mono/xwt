@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using Gtk;
 
 
 namespace Xwt.GtkBackend
@@ -177,6 +178,12 @@ namespace Xwt.GtkBackend
 		{
 			((Gtk.TreeViewColumn)target).AddAttribute (cr, field, col);
 		}
+
+		public void SetCellDataFunc (object target, Gtk.CellRenderer cr, Gtk.CellLayoutDataFunc dataFunc)
+		{
+			((Gtk.TreeViewColumn)target).SetCellDataFunc (cr, dataFunc);
+		}
+
 		#endregion
 	}
 	

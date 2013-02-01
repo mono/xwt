@@ -51,11 +51,19 @@ namespace Xwt
 			}
 		}
 		
-		public void Add (string title, params DataField[] fields)
+		public void Add (string title, params IDataField[] fields)
 		{
 			ListViewColumn col = new ListViewColumn (title);
 			foreach (var f in fields)
 				col.Views.Add (CellView.GetDefaultCellView (f));
+			Add (col);
+		}
+		
+		public void Add (string title, params CellView[] cells)
+		{
+			ListViewColumn col = new ListViewColumn (title);
+			foreach (var c in cells)
+				col.Views.Add (c);
 			Add (col);
 		}
 		

@@ -49,9 +49,10 @@ namespace Xwt.Mac
 			this.cellView = cellView;
 		}
 		
-		public void Fill (ICellSource source, object pos)
+		public void Fill (ICellDataSource source)
 		{
-			Image img = (Image) source.GetValue (pos, cellView.ImageField.Index);
+			cellView.Initialize (source);
+			var img = cellView.Image;
 			if (img != null)
 				ObjectValue = (NSImage) Toolkit.GetBackend (img);
 		}

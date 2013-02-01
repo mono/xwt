@@ -32,18 +32,25 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class CheckBoxCellView: CellView
+	public sealed class CheckBoxCellView: CellView
 	{
+		bool active;
+
 		public CheckBoxCellView ()
 		{
 		}
 		
-		public CheckBoxCellView (DataField field)
+		public CheckBoxCellView (IDataField<bool> field)
 		{
 			ActiveField = field;
 		}
 		
-		public DataField ActiveField { get; set; }
+		public IDataField<bool> ActiveField { get; set; }
+
+		public bool Active {
+			get { return GetValue (ActiveField, active); }
+			set { active = value; }
+		}
 		
 		public event EventHandler ActiveChanged;
 		

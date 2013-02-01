@@ -35,7 +35,7 @@ namespace Xwt
 	[BackendType (typeof(IListStoreBackend))]
 	public class ListStore: XwtComponent, IListDataSource
 	{
-		DataField[] fields;
+		IDataField[] fields;
 		
 		class ListStoreBackendHost: BackendHost<ListStore,IListStoreBackend>
 		{
@@ -51,12 +51,12 @@ namespace Xwt
 			return new ListStoreBackendHost ();
 		}
 		
-		public ListStore (params DataField[] fields)
+		public ListStore (params IDataField[] fields)
 		{
 			for (int n=0; n<fields.Length; n++) {
 				if (fields[n].Index != -1)
 					throw new InvalidOperationException ("DataField object already belongs to another data store");
-				fields[n].Index = n;
+				((IDataFieldInternal)fields[n]).SetIndex (n);
 			}
 			this.fields = fields;
 		}
@@ -75,12 +75,12 @@ namespace Xwt
 			}
 		}
 		
-		public T GetValue<T> (int row, DataField<T> column)
+		public T GetValue<T> (int row, IDataField<T> column)
 		{
 			return (T) Backend.GetValue (row, column.Index);
 		}
 		
-		public void SetValue<T> (int row, DataField<T> column, T value)
+		public void SetValue<T> (int row, IDataField<T> column, T value)
 		{
 			Backend.SetValue (row, column.Index, value);
 		}

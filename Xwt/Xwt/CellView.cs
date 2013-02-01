@@ -31,15 +31,32 @@ namespace Xwt
 {
 	public class CellView
 	{
-		public static CellView GetDefaultCellView (DataField field)
+		public static CellView GetDefaultCellView (IDataField field)
 		{
 			if (field.Index == -1)
 				throw new InvalidOperationException ("Field must be bound to a data source");
 			if (field.FieldType == typeof(bool))
-				return new CheckBoxCellView (field);
+				return new CheckBoxCellView ((IDataField<bool>)field);
 			else if (field.FieldType == typeof(Image))
-				return new ImageCellView (field);
+				return new ImageCellView ((IDataField<Image>)field);
 			return new TextCellView (field);
+		}
+
+		protected ICellDataSource DataSource { get; private set; }
+
+		public void Initialize (ICellDataSource source)
+		{
+			DataSource = source;
+			OnDataChanged ();
+		}
+
+		protected T GetValue<T> (IDataField<T> field, T defaultValue = default(T))
+		{
+			return DataSource != null && field != null ? (T) DataSource.GetValue (field) : defaultValue;
+		}
+
+		protected virtual void OnDataChanged ()
+		{
 		}
 	}
 }
