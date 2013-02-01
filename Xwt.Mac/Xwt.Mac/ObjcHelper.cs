@@ -48,7 +48,7 @@ namespace Xwt.Mac
 		static extern bool method_exchangeImplementations (IntPtr m1, IntPtr m2);
 		
 		[System.Runtime.InteropServices.DllImport ("/usr/lib/libobjc.dylib")]
-		static extern IntPtr method_setImplementations (IntPtr m1, Delegate impl);
+		static extern IntPtr method_setImplementation (IntPtr m1, Delegate impl);
 		
 		[System.Runtime.InteropServices.DllImport ("/usr/lib/libobjc.dylib")]
 		static extern IntPtr object_getClass (IntPtr obj);
@@ -101,7 +101,7 @@ namespace Xwt.Mac
 			IntPtr m1 = class_getClassMethod (cls.Handle, method);
 			if (m1 == IntPtr.Zero)
 				throw new Exception ("Class did not have a method for the first selector");
-			return method_setImplementations (m1, impl);
+			return method_setImplementation (m1, impl);
 		}
 		
 		public static IntPtr GetMethod (this Class cls, IntPtr sel)

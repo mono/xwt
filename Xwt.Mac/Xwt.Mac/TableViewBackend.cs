@@ -49,10 +49,17 @@ namespace Xwt.Mac
 			Table = CreateView ();
 			scroll = new ScrollView ();
 			scroll.DocumentView = Table;
+			scroll.BorderType = NSBorderType.BezelBorder;
 			ViewObject = scroll;
 			Table.SizeToFit ();
 			Widget.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			Widget.AutoresizesSubviews = true;
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			Util.DrainObjectCopyPool ();
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {

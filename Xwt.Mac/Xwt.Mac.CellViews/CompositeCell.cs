@@ -31,16 +31,23 @@ using MonoMac.Foundation;
 using Xwt.Backends;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Xwt.Mac
 {
-	class CompositeCell: NSCell
+	class CompositeCell: NSCell, ICopiableObject
 	{
 		ICellSource source;
 		NSObject val;
 		List<ICellRenderer> cells = new List<ICellRenderer> ();
 		Orientation direction;
-		
+		NSCell trackingCell;
+
+		static CompositeCell ()
+		{
+			Util.MakeCopiable<CompositeCell> ();
+		}
+
 		public CompositeCell (Orientation dir, ICellSource source)
 		{
 			direction = dir;
@@ -49,6 +56,23 @@ namespace Xwt.Mac
 		
 		public CompositeCell (IntPtr p): base (p)
 		{
+		}
+
+		void ICopiableObject.CopyFrom (object other)
+		{
+			var ob = (CompositeCell)other;
+			source = ob.source;
+			val = ob.val;
+			direction = ob.direction;
+			trackingCell = ob.trackingCell;
+			cells = new List<ICellRenderer> ();
+			foreach (var c in ob.cells) {
+				var copy = Activator.CreateInstance (c.GetType ());
+				((ICopiableObject)copy).CopyFrom (c);
+				cells.Add ((ICellRenderer) copy);
+			}
+			if (val is ITablePosition)
+				Fill (((ITablePosition)val).Position);
 		}
 		
 		public override NSObject ObjectValue {
@@ -158,8 +182,6 @@ namespace Xwt.Mac
 			}
 			return NSCellHit.None;
 		}
-		
-		NSCell trackingCell;
 		
 		public override bool StartTracking (PointF startPoint, NSView inView)
 		{

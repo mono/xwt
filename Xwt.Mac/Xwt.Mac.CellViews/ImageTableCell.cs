@@ -36,6 +36,10 @@ namespace Xwt.Mac
 	{
 		ImageCellView cellView;
 		
+		public ImageTableCell ()
+		{
+		}
+		
 		public ImageTableCell (IntPtr p): base (p)
 		{
 		}
@@ -60,6 +64,12 @@ namespace Xwt.Mac
 				else
 					return base.CellSize;
 			}
+		}
+		
+		public void CopyFrom (object other)
+		{
+			var ob = (ImageTableCell)other;
+			cellView = ob.cellView;
 		}
 	}
 }

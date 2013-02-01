@@ -33,7 +33,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Mac
 {
-	interface ICellRenderer
+	interface ICellRenderer: ICopiableObject
 	{
 		void Fill (ICellSource source, object pos);
 	}
