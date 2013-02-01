@@ -30,6 +30,10 @@ namespace Xwt.Backends
 	/// <summary>
 	/// A backend for a scrollbar
 	/// </summary>
+	/// <remarks>
+	/// XWT supports creating standalone ScrollAdjustment instances, but toolkits don't need to provide
+	/// a backend for those cases, since XWT uses a default platform-agnostic implementation. 
+	/// </remarks>
 	public interface IScrollAdjustmentBackend: IBackend
 	{
 		/// <summary>

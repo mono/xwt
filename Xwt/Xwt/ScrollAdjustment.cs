@@ -35,12 +35,19 @@ namespace Xwt
 		
 		class ScrollAdjustmentBackendHost: BackendHost<ScrollAdjustment,IScrollAdjustmentBackend>, IScrollAdjustmentEventSink
 		{
+			protected override IBackend OnCreateBackend ()
+			{
+				// When creating a standalone ScrollAdjustment (not bound to any widget) we always use
+				// a default platform-agnostic implementation
+				return new DefaultScrollAdjustmentBackend ();
+			}
+
 			protected override void OnBackendCreated ()
 			{
 				base.OnBackendCreated ();
 				Backend.Initialize (this);
 			}
-			
+	
 			public void OnValueChanged ()
 			{
 				Parent.OnValueChanged (EventArgs.Empty);
@@ -111,27 +118,27 @@ namespace Xwt
 		
 		public double LowerValue {
 			get { return Backend.LowerValue; }
-			set { Backend.LowerValue = value; }
+			set { Backend.LowerValue = value; OnAdjustmentChanged (); }
 		}
 		
 		public double UpperValue {
 			get { return Backend.UpperValue; }
-			set { Backend.UpperValue = value; }
+			set { Backend.UpperValue = value; OnAdjustmentChanged (); }
 		}
 		
 		public double PageIncrement {
 			get { return Backend.PageIncrement; }
-			set { Backend.PageIncrement = value; }
+			set { Backend.PageIncrement = value; OnAdjustmentChanged (); }
 		}
 		
 		public double StepIncrement {
 			get { return Backend.StepIncrement; }
-			set { Backend.StepIncrement = value; }
+			set { Backend.StepIncrement = value; OnAdjustmentChanged (); }
 		}
 		
 		public double PageSize {
 			get { return Backend.PageSize; }
-			set { Backend.PageSize = value; }
+			set { Backend.PageSize = value; OnAdjustmentChanged (); }
 		}
 		
 		protected virtual void OnValueChanged (EventArgs e)
@@ -148,6 +155,55 @@ namespace Xwt
 			remove {
 				valueChanged -= value;
 				BackendHost.OnAfterEventRemove (ScrollAdjustmentEvent.ValueChanged, valueChanged);
+			}
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <remarks>
+		/// This method is called when one of the properties of the adjustment changes.
+		/// It is not called if the Value changes. You can override OnValueChanged for
+		/// this use case.
+		/// </remarks>
+		protected virtual void OnAdjustmentChanged ()
+		{
+		}
+
+		class DefaultScrollAdjustmentBackend: IScrollAdjustmentBackend
+		{
+			IScrollAdjustmentEventSink eventSink;
+			double currentValue;
+
+			public void Initialize (IScrollAdjustmentEventSink eventSink)
+			{
+				this.eventSink = eventSink;
+			}
+
+			public double Value {
+				get { return currentValue; }
+				set { currentValue = value; eventSink.OnValueChanged (); }
+			}
+
+			public double LowerValue { get; set; }
+
+			public double UpperValue { get; set; }
+
+			public double PageIncrement { get; set; }
+
+			public double StepIncrement { get; set; }
+
+			public double PageSize { get; set; }
+
+			public void InitializeBackend (object frontend, ApplicationContext context)
+			{
+			}
+
+			public void EnableEvent (object eventId)
+			{
+			}
+
+			public void DisableEvent (object eventId)
+			{
 			}
 		}
 	}
