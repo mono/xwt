@@ -88,7 +88,7 @@ namespace Xwt
 		// Hit Testing / Intersection / Union
 		public bool Contains (Rectangle rect)
 		{
-			return (rect == Intersect (this, rect));
+			return X <= rect.X && Right >= rect.Right && Y <= rect.Y && Bottom >= rect.Bottom;
 		}
 		
 		public bool Contains (Point pt)
