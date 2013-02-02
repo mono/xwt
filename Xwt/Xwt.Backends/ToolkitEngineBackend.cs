@@ -140,14 +140,6 @@ namespace Xwt.Backends
 			return Toolkit.GetBackend (image);
 		}
 
-		public virtual void ShowWebBrowser (NavigateToUrlEventArgs e)
-		{
-			if (!e.Handled && e.Uri != null) {
-				System.Diagnostics.Process.Start (e.Uri.ToString ());
-				e.SetHandled ();
-			}
-		}
-
 		/// <summary>
 		/// Dispatches pending events in the UI event queue
 		/// </summary>

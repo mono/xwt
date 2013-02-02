@@ -26,6 +26,9 @@
 using System;
 using System.Linq;
 using System.Collections.ObjectModel;
+using Xwt.Backends;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Xwt
 {
@@ -36,6 +39,46 @@ namespace Xwt
 	{
 		static Screen[] screens;
 		static Screen primary;
+		static SystemBackend systemBackend;
+
+		static Desktop ()
+		{
+			if (Path.DirectorySeparatorChar == '\\') {
+				DesktopType = DesktopType.Windows;
+				systemBackend = new WindowsSystemBackend ();
+			} else if (IsRunningOnMac ()) {
+				DesktopType = DesktopType.Mac;
+				systemBackend = new MacSystemBackend ();
+			} else {
+				DesktopType = DesktopType.Linux;
+				systemBackend = new GnomeSystemBackend ();
+			}
+		}
+
+		//From Managed.Windows.Forms/XplatUI
+		static bool IsRunningOnMac ()
+		{
+			IntPtr buf = IntPtr.Zero;
+			try {
+				buf = Marshal.AllocHGlobal (8192);
+				// This is a hacktastic way of getting sysname from uname ()
+				if (uname (buf) == 0) {
+					string os = System.Runtime.InteropServices.Marshal.PtrToStringAnsi (buf);
+					if (os == "Darwin")
+						return true;
+				}
+			} catch {
+			} finally {
+				if (buf != IntPtr.Zero)
+					System.Runtime.InteropServices.Marshal.FreeHGlobal (buf);
+			}
+			return false;
+		}
+		
+		[DllImport ("libc")]
+		static extern int uname (IntPtr buf);
+
+		public static DesktopType DesktopType { get; private set; }
 
 		/// <summary>
 		/// Occurs when there is some change in the geometry of the screens
@@ -119,6 +162,26 @@ namespace Xwt
 					return s;
 			}
 			return null;
+		}
+
+		public static void OpenFile (string filename)
+		{
+			systemBackend.OpenFile (filename);
+		}
+		
+		public static void OpenFolder (string folderPath)
+		{
+			systemBackend.OpenFolder (folderPath);
+		}
+		
+		public static void OpenUrl (string url)
+		{
+			systemBackend.OpenUrl (url);
+		}
+		
+		public static void OpenUrl (Uri uri)
+		{
+			systemBackend.OpenUrl (uri.ToString ());
 		}
 	}
 }
