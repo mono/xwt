@@ -372,6 +372,11 @@
     <Compile Include="Xwt\ListViewRowEventArgs.cs" />
     <Compile Include="Xwt\TreeViewRowEventArgs.cs" />
     <Compile Include="Xwt\CanvasCellView.cs" />
+    <Compile Include="Xwt.Backends\SystemBackend.cs" />
+    <Compile Include="Xwt.Backends\WindowsSystemBackend.cs" />
+    <Compile Include="Xwt.Backends\MacSystemBackend.cs" />
+    <Compile Include="Xwt.Backends\GnomeSystemBackend.cs" />
+    <Compile Include="Xwt\DesktopType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

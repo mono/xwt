@@ -99,8 +99,10 @@ namespace Xwt
 			if (navigateToUrl != null)
 				navigateToUrl (this, e);
 
-			if (!e.Handled)
-				BackendHost.EngineBackend.ShowWebBrowser (e);
+			if (!e.Handled && e.Uri != null) {
+				Desktop.OpenUrl (e.Uri);
+				e.SetHandled ();
+			}
 		}
 	}
 
