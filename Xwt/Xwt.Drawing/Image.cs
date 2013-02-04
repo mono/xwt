@@ -36,7 +36,6 @@ namespace Xwt.Drawing
 	{
 		Size requestedSize;
 		internal NativeImageRef NativeRef;
-		bool preserveAspectRatio;
 		Image sourceImage;
 		 
 		static readonly object NoBackend = new object ();
@@ -131,20 +130,25 @@ namespace Xwt.Drawing
 
 		public BitmapImage ToBitmap ()
 		{
+			var size = GetFixedSize ();
 			if (sourceImage != null)
-				return sourceImage.ToBitmap (Size);
+				return sourceImage.ToBitmap (size);
 			else
-				return ToBitmap (Size);
+				return ToBitmap (size);
 		}
 		
+		public bool HasFixedSize {
+			get { return !Size.IsZero; }
+		}
+
 		public Size Size {
 			get {
 				if (!requestedSize.IsZero)
 					return requestedSize;
-				if (Backend != NoBackend && ToolkitEngine.ImageBackendHandler.IsBitmap (Backend))
-					return ToolkitEngine.ImageBackendHandler.GetBitmapSize (Backend);
+				if (Backend != NoBackend && !ToolkitEngine.ImageBackendHandler.HasMultipleSizes (Backend))
+					return ToolkitEngine.ImageBackendHandler.GetSize (Backend);
 				else
-					return GetSize ();
+					return Size.Zero;
 			}
 		}
 		
@@ -184,27 +188,46 @@ namespace Xwt.Drawing
 				requestedSize = s
 			};
 		}
+
+		Size DefaultSize {
+			get {
+				if (!requestedSize.IsZero)
+					return requestedSize;
+				if (Backend != NoBackend)
+					return ToolkitEngine.ImageBackendHandler.GetSize (Backend);
+				else
+					return GetDefaultSize ();
+			}
+		}
+
+		Size GetFixedSize ()
+		{
+			var size = !Size.IsZero ? Size : DefaultSize;
+			if (size.IsZero)
+				throw new InvalidOperationException ("Image size has not been set and the image doesn't have a default size");
+			return size;
+		}
 		
 		public Image WithBoxSize (double maxWidth, double maxHeight)
 		{
+			var size = GetFixedSize ();
+			var ratio = Math.Min (maxWidth / size.Width, maxHeight / size.Height);
+
 			return new Image (this) {
-				requestedSize = new Size (maxWidth, maxHeight),
-				preserveAspectRatio = true
+				requestedSize = new Size (size.Width * ratio, size.Height * ratio)
 			};
 		}
 		
 		public Image WithBoxSize (double maxSize)
 		{
-			return new Image (this) {
-				requestedSize = new Size (maxSize, maxSize),
-				preserveAspectRatio = true
-			};
+			return WithBoxSize (maxSize, maxSize);
 		}
 		
-		public bool HasFixedSize {
-			get { return !Size.IsZero; }
+		public Image WithBoxSize (Size size)
+		{
+			return WithBoxSize (size.Width, size.Height);
 		}
-
+		
 		public Image Scale (double scale)
 		{
 			if (!HasFixedSize)
@@ -239,7 +262,7 @@ namespace Xwt.Drawing
 		{
 			if (Backend != NoBackend) {
 				if (ToolkitEngine.ImageBackendHandler.IsBitmap (Backend)) {
-					if (size == ToolkitEngine.ImageBackendHandler.GetBitmapSize (Backend)) {
+					if (size == ToolkitEngine.ImageBackendHandler.GetSize (Backend)) {
 						// The backend can be shared
 						return new BitmapImage (this);
 					}
@@ -250,13 +273,13 @@ namespace Xwt.Drawing
 					}
 				}
 				else
-					return new BitmapImage (ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, size.Width, size.Height, preserveAspectRatio));
+					return new BitmapImage (ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, size.Width, size.Height));
 			}
 			
 			throw new NotSupportedException ();
 		}
 
-		protected virtual Size GetSize ()
+		protected virtual Size GetDefaultSize ()
 		{
 			return Size.Zero;
 		}

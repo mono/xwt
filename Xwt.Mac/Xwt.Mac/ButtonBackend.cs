@@ -30,6 +30,7 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 
 using MonoMac.ObjCRuntime;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -56,12 +57,13 @@ namespace Xwt.Mac
 			((MacButton)Widget).DisableEvent (ev);
 		}
 		
-		public void SetContent (string label, object imageBackend, ContentPosition imagePosition)
+		public void SetContent (string label, Image image, ContentPosition imagePosition)
 		{
 			Widget.Title = label ?? "";
 			if (string.IsNullOrEmpty (label))
 				imagePosition = ContentPosition.Center;
-			if (imageBackend != null) {
+			if (image != null) {
+				var imageBackend = Toolkit.GetBackend (image.ToBitmap ());
 				Widget.Image = (NSImage)imageBackend;
 				switch (imagePosition) {
 				case ContentPosition.Bottom: Widget.ImagePosition = NSCellImagePosition.ImageBelow; break;

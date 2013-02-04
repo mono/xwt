@@ -72,11 +72,19 @@ namespace Xwt.GtkBackend
 		{
 			((Gdk.Pixbuf)backend).Dispose ();
 		}
-		
-		public override Size GetBitmapSize (object handle)
+
+		public override bool HasMultipleSizes (object handle)
 		{
-			var pix = (Gdk.Pixbuf)handle;
-			return new Size (pix.Width, pix.Height);
+			return handle is string;
+		}
+
+		public override Size GetSize (object handle)
+		{
+			var pix = handle as Gdk.Pixbuf;
+			if (pix != null)
+				return new Size (pix.Width, pix.Height);
+			else
+				return Size.Zero;
 		}
 		
 		public override object ResizeBitmap (object handle, double width, double height)
@@ -122,18 +130,13 @@ namespace Xwt.GtkBackend
 			return handle is Gdk.Pixbuf;
 		}
 
-		public override object ConvertToBitmap (object handle, double width, double height, bool preserveAspectRatio)
+		public override object ConvertToBitmap (object handle, double width, double height)
 		{
 			Gdk.Pixbuf result = CreateBitmap ((string)handle, width, height);
 
 			if (result != null) {
 				int bw = (int) width;
 				int bh = (int) height;
-				if (preserveAspectRatio) {
-					var r = CalcBoxSizeRatio (width, height, result.Width, result.Height);
-					bw = (int)((double)result.Width * r);
-					bh = (int)((double)result.Height * r);
-				}
 				if (result.Width != bw || result.Height != bh)
 					return ResizeBitmap (result, bw, bh);
 			}

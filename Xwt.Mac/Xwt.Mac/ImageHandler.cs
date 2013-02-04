@@ -57,18 +57,29 @@ namespace Xwt.Mac
 		{
 			return new NSImage (file);
 		}
-		
-		public override object LoadFromIcon (string id, IconSize size)
+
+		public override Xwt.Drawing.Image GetStockIcon (string id)
 		{
 			NSImage img;
-			if (!stockIcons.TryGetValue (id + size, out img)) {
-				img = LoadStockIcon (id, size);
-				stockIcons [id + size] = img;
+			if (!stockIcons.TryGetValue (id, out img)) {
+				img = LoadStockIcon (id);
+				stockIcons [id] = img;
 			}
-			return img;
+			return ApplicationContext.Toolkit.WrapImage (img);
+		}
+
+		public override bool IsBitmap (object handle)
+		{
+			NSImage img = handle as NSImage;
+			return img != null && img.Representations ().OfType<NSBitmapImageRep> ().Any ();
+		}
+
+		public override object ConvertToBitmap (object handle, double width, double height)
+		{
+			return handle;
 		}
 		
-		public override Xwt.Drawing.Color GetPixel (object handle, int x, int y)
+		public override Xwt.Drawing.Color GetBitmapPixel (object handle, int x, int y)
 		{
 			NSImage img = (NSImage)handle;
 			NSBitmapImageRep bitmap = img.Representations ().OfType<NSBitmapImageRep> ().FirstOrDefault ();
@@ -78,7 +89,7 @@ namespace Xwt.Mac
 				throw new InvalidOperationException ("Not a bitmnap image");
 		}
 		
-		public override void SetPixel (object handle, int x, int y, Xwt.Drawing.Color color)
+		public override void SetBitmapPixel (object handle, int x, int y, Xwt.Drawing.Color color)
 		{
 			NSImage img = (NSImage)handle;
 			NSBitmapImageRep bitmap = img.Representations ().OfType<NSBitmapImageRep> ().FirstOrDefault ();
@@ -87,36 +98,42 @@ namespace Xwt.Mac
 			else
 				throw new InvalidOperationException ("Not a bitmnap image");
 		}
+
+		public override bool HasMultipleSizes (object handle)
+		{
+			NSImage img = (NSImage)handle;
+			return img.Size.Width == 0 && img.Size.Height == 0;
+		}
 		
-		public override Size GetBitmapSize (object handle)
+		public override Size GetSize (object handle)
 		{
 			NSImage img = (NSImage)handle;
 			return new Size ((int)img.Size.Width, (int)img.Size.Height);
 		}
 		
-		public override object Resize (object handle, double width, double height)
+		public override object ResizeBitmap (object handle, double width, double height)
 		{
-			NSImage newImg = (NSImage)Copy (handle);
+			NSImage newImg = (NSImage)CopyBitmap (handle);
 			newImg.Size = new SizeF ((float)width, (float)height);
 			return newImg;
 		}
 		
-		public override object Copy (object handle)
+		public override object CopyBitmap (object handle)
 		{
 			return ((NSImage)handle).Copy ();
 		}
 		
-		public override void CopyArea (object backend, int srcX, int srcY, int width, int height, object dest, int destX, int destY)
+		public override void CopyBitmapArea (object backend, int srcX, int srcY, int width, int height, object dest, int destX, int destY)
 		{
 			throw new NotImplementedException ();
 		}
 		
-		public override object Crop (object backend, int srcX, int srcY, int width, int height)
+		public override object CropBitmap (object backend, int srcX, int srcY, int width, int height)
 		{
 			throw new NotImplementedException ();
 		}
 		
-		public override object ChangeOpacity (object backend, double opacity)
+		public override object ChangeBitmapOpacity (object backend, double opacity)
 		{
 			throw new NotImplementedException ();
 		}
@@ -130,13 +147,13 @@ namespace Xwt.Mac
 			}
 		}
 		
-		static NSImage LoadStockIcon (string id, IconSize size)
+		static NSImage LoadStockIcon (string id)
 		{
 			NSImage image = null;
 
 			switch (id) {
-			case StockIcons.ZoomIn:  image = FromResource ("magnifier-zoom-in.png"); break;
-			case StockIcons.ZoomOut: image = FromResource ("magnifier-zoom-out.png"); break;
+			case StockIconId.ZoomIn:  image = FromResource ("magnifier-zoom-in.png"); break;
+			case StockIconId.ZoomOut: image = FromResource ("magnifier-zoom-out.png"); break;
 			}
 
 			IntPtr iconRef;
@@ -151,8 +168,6 @@ namespace Xwt.Mac
 				}
 			}
 
-			if (image != null)
-				image.Size = Util.ToIconSize (size);
 			return image;
 		}
 

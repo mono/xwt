@@ -57,20 +57,17 @@ namespace Xwt.Backends
 				return LoadFromStream (s);
 		}
 		
-		public double CalcBoxSizeRatio (double boxWidth, double boxHeight, double imageWidth, double imageHeight)
-		{
-			return Math.Min (boxWidth / imageWidth, boxHeight / imageHeight);
-		}
-
 		public abstract object LoadFromStream (Stream stream);
 
 		public abstract Image GetStockIcon (string id);
 		
 		public abstract bool IsBitmap (object handle);
 
-		public abstract object ConvertToBitmap (object handle, double width, double height, bool preserveAspectRatio);
+		public abstract object ConvertToBitmap (object handle, double width, double height);
 		
-		public abstract Size GetBitmapSize (object handle);
+		public abstract bool HasMultipleSizes (object handle);
+		
+		public abstract Size GetSize (object handle);
 		
 		public abstract object ResizeBitmap (object handle, double width, double height);
 		

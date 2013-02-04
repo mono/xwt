@@ -230,27 +230,19 @@ namespace Xwt.Mac
 			MacTextLayoutBackendHandler.Draw (ctx, Toolkit.GetBackend (layout), x, y);
 		}
 
-		public override void DrawImage (object backend, object img, double x, double y, double alpha)
+		public override bool CanDrawImage (object backend, object img)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
-			NSImage image = (NSImage)img;
-			var rect = new RectangleF (PointF.Empty, image.Size);
-			ctx.SaveState ();
-			ctx.SetAlpha ((float)alpha);
-			ctx.TranslateCTM ((float)x, (float)y + rect.Height);
-			ctx.ScaleCTM (1f, -1f);
-			ctx.DrawImage (rect, image.AsCGImage (RectangleF.Empty, null, null));
-			ctx.RestoreState ();
+			return img is NSImage;
 		}
-		
+
 		public override void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
 			var srcRect = new Rectangle (Point.Zero, ((NSImage)img).Size.ToXwtSize ());
 			var destRect = new Rectangle (x, y, width, height);
-			DrawImage (backend, img, srcRect, destRect, alpha);
+			DrawImage (backend, img, srcRect, destRect, width, height, alpha);
 		}
 
-		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha)
+		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double width, double height, double alpha)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
 			NSImage image = (NSImage) img;

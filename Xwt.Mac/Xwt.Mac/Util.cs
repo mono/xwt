@@ -33,6 +33,7 @@ using RectangleF = System.Drawing.RectangleF;
 using MonoMac.ObjCRuntime;
 using MonoMac.Foundation;
 using System.Collections.Generic;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -126,11 +127,11 @@ namespace Xwt.Mac
 		public static int ToIconType (string id)
 		{
 			switch (id) {
-			case StockIcons.Error:       return 1937010544; // 'stop'
-			case StockIcons.Warning:     return 1667331444; // 'caut'
-			case StockIcons.Information: return 1852798053; // 'note'
-			case StockIcons.Question:    return 1903519091; // 'ques'
-			case StockIcons.Remove:      return 1952736620; // 'tdel'
+			case StockIconId.Error:       return 1937010544; // 'stop'
+			case StockIconId.Warning:     return 1667331444; // 'caut'
+			case StockIconId.Information: return 1852798053; // 'note'
+			case StockIconId.Question:    return 1903519091; // 'ques'
+			case StockIconId.Remove:      return 1952736620; // 'tdel'
 			}
 			return 0;
 		}

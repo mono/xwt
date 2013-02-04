@@ -40,15 +40,15 @@ namespace Samples
 				x += n;
 			}
 
-			int maxSize = 22;
-			var warn = StockIcons.Add;
+			int maxSize = 48;
+			var warn = StockIcons.Error;
 			x = 0;
 			for (int n=8; n <= maxSize; n += 2) {
 				ctx.DrawImage (warn, x, 50, n, n);
 				x += n;
 			}
 			
-			warn = StockIcons.Add.WithSize (maxSize).ToBitmap ();
+			warn = StockIcons.Error.WithSize (maxSize).ToBitmap ();
 			x = 0;
 			for (int n=8; n <= maxSize; n += 2) {
 				ctx.DrawImage (warn, x, 100, n, n);

@@ -57,9 +57,8 @@ namespace Samples
 			};
 			PackStart (b2);
 			
-			PackStart (new Button (StockIcons.ZoomIn));
-			
-			PackStart (new Button (new CustomImage ()));
+			PackStart (new Button (StockIcons.ZoomIn.WithSize (22)));
+			PackStart (new Button (new CustomImage ().WithSize (22)));
 
 			MenuButton mb = new MenuButton ("This is a Menu Button");
 			Menu men = new Menu ();
