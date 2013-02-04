@@ -92,7 +92,7 @@ namespace Xwt
 			get { return label; }
 			set {
 				label = value;
-				Backend.SetContent (label, XwtObject.GetBackend (image), imagePosition);
+				Backend.SetContent (label, image, imagePosition);
 				OnPreferredSizeChanged ();
 			}
 		}
@@ -101,7 +101,7 @@ namespace Xwt
 			get { return image; }
 			set {
 				image = value;
-				Backend.SetContent (label, XwtObject.GetBackend (value), imagePosition); 
+				Backend.SetContent (label, value, imagePosition); 
 				OnPreferredSizeChanged ();
 			}
 		}
@@ -110,7 +110,7 @@ namespace Xwt
 			get { return imagePosition; }
 			set {
 				imagePosition = value;
-				Backend.SetContent (label, XwtObject.GetBackend (image), imagePosition); 
+				Backend.SetContent (label, image, imagePosition); 
 				OnPreferredSizeChanged ();
 			}
 		}

@@ -123,8 +123,8 @@ namespace Xwt.GtkBackend
 				newButton.Label        = button.Label;
 				newButton.UseUnderline = true;
 				newButton.UseStock     = button.IsStockButton;
-				if (!String.IsNullOrEmpty (button.Icon))
-					newButton.Image = new Gtk.Image (Util.ToGtkStock (button.Icon), Gtk.IconSize.Button);
+				if (button.Icon != null)
+					newButton.Image = new Gtk.Image (button.Icon.ToPixbuf (Gtk.IconSize.Button));
 				newButton.Clicked += ButtonClicked;
 				ActionArea.Add (newButton);
 			}

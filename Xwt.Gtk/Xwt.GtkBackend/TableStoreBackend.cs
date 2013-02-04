@@ -75,7 +75,7 @@ namespace Xwt.GtkBackend
 			else if (value is string)
 				store.SetValue (it, column, (string)value);
 			else if (value is Image)
-				store.SetValue (it, column, (Gdk.Pixbuf)Toolkit.GetBackend (value));
+				store.SetValue (it, column, ((Image)value).ToPixbuf (Gtk.IconSize.Menu));
 			else
 				store.SetValue (it, column, value ?? DBNull.Value);
 		}

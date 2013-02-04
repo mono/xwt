@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
@@ -32,7 +33,7 @@ namespace Xwt.Backends
 	{
 		void SetButtonStyle (ButtonStyle style);
 		void SetButtonType (ButtonType type);
-		void SetContent (string label, object imageBackend, ContentPosition position);
+		void SetContent (string label, Image image, ContentPosition position);
 	}
 	
 	public interface IButtonEventSink: IWidgetEventSink

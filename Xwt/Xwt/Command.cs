@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -39,7 +40,7 @@ namespace Xwt
 		
 		public string Label { get; private set; }
 		
-		public string Icon { get; private set; }
+		public Image Icon { get; private set; }
 		
 		public bool IsStockButton { get; private set; }
 		

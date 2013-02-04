@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 
 namespace Xwt.GtkBackend
@@ -54,13 +55,13 @@ namespace Xwt.GtkBackend
 			get { return (IButtonEventSink)base.EventSink; }
 		}
 		
-		public void SetContent (string label, object imageBackend, ContentPosition position)
+		public void SetContent (string label, Image image, ContentPosition position)
 		{
 			if (label != null && label.Length == 0)
 				label = null;
 			
 			Button b = (Button) Frontend;
-			if (label != null && imageBackend == null && b.Type == ButtonType.Normal) {
+			if (label != null && image == null && b.Type == ButtonType.Normal) {
 				Widget.Label = label;
 				return;
 			}
@@ -75,9 +76,9 @@ namespace Xwt.GtkBackend
 			Gtk.Widget contentWidget = null;
 			
 			Gtk.Widget imageWidget = null;
-			if (imageBackend != null)
-				imageWidget = new Gtk.Image ((Gdk.Pixbuf)imageBackend);
-			
+			if (image != null)
+				imageWidget = new Gtk.Image (image.ToPixbuf (Gtk.IconSize.Button));
+
 			if (label != null && imageWidget == null) {
 				contentWidget = new Gtk.Label (label); 
 			}
@@ -137,7 +138,7 @@ namespace Xwt.GtkBackend
 		public void SetButtonType (ButtonType type)
 		{
 			Button b = (Button) Frontend;
-			SetContent (b.Label, Toolkit.GetBackend (b.Image), b.ImagePosition);
+			SetContent (b.Label, b.Image, b.ImagePosition);
 		}
 		
 		public override void EnableEvent (object eventId)

@@ -171,6 +171,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Samples\ScreensSample.cs" />
+    <Compile Include="Samples\ImageScaling.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿// 
+// 
 // ImageHandler.cs
 //  
 // Author:
@@ -123,7 +123,7 @@ namespace Xwt.WPFBackend
 			return pixels * 96 / img.DpiY;
 		}
 
-		public override Size GetSize (object handle)
+		public override Size GetBitmapSize (object handle)
 		{
 			BitmapSource source = handle as BitmapSource;
 			if (source != null)

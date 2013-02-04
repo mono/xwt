@@ -41,7 +41,7 @@ namespace Xwt.Backends
 		public virtual void Dispose (object backend)
 		{
 		}
-		
+
 		public virtual object LoadFromResource (Assembly asm, string name)
 		{
 			using (var s = asm.GetManifestResourceStream (name)) {
@@ -57,25 +57,34 @@ namespace Xwt.Backends
 				return LoadFromStream (s);
 		}
 		
+		public double CalcBoxSizeRatio (double boxWidth, double boxHeight, double imageWidth, double imageHeight)
+		{
+			return Math.Min (boxWidth / imageWidth, boxHeight / imageHeight);
+		}
+
 		public abstract object LoadFromStream (Stream stream);
-		
-		public abstract object LoadFromIcon (string id, IconSize size);
-		
-		public abstract Size GetSize (object handle);
-		
-		public abstract object Resize (object handle, double width, double height);
-		
-		public abstract object Copy (object handle);
 
-		public abstract void CopyArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY);
-
-		public abstract object Crop (object handle, int srcX, int srcY, int width, int height);
-
-		public abstract object ChangeOpacity (object backend, double opacity);
+		public abstract Image GetStockIcon (string id);
 		
-		public abstract void SetPixel (object handle, int x, int y, Color color);
+		public abstract bool IsBitmap (object handle);
+
+		public abstract object ConvertToBitmap (object handle, double width, double height, bool preserveAspectRatio);
 		
-		public abstract Color GetPixel (object handle, int x, int y);
+		public abstract Size GetBitmapSize (object handle);
+		
+		public abstract object ResizeBitmap (object handle, double width, double height);
+		
+		public abstract object CopyBitmap (object handle);
+
+		public abstract void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY);
+
+		public abstract object CropBitmap (object handle, int srcX, int srcY, int width, int height);
+
+		public abstract object ChangeBitmapOpacity (object backend, double opacity);
+		
+		public abstract void SetBitmapPixel (object handle, int x, int y, Color color);
+		
+		public abstract Color GetBitmapPixel (object handle, int x, int y);
 	}
 }
 

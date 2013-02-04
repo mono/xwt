@@ -88,7 +88,7 @@ namespace Xwt.Mac
 				throw new InvalidOperationException ("Not a bitmnap image");
 		}
 		
-		public override Size GetSize (object handle)
+		public override Size GetBitmapSize (object handle)
 		{
 			NSImage img = (NSImage)handle;
 			return new Size ((int)img.Size.Width, (int)img.Size.Height);

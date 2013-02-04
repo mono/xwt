@@ -42,6 +42,8 @@ namespace Xwt
 		Queue<Action> exitActions = new Queue<Action> ();
 		bool exitCallbackRegistered;
 
+		Dictionary<string,Image> stockIcons = new Dictionary<string, Image> ();
+
 		public static Toolkit CurrentEngine {
 			get { return currentEngine; }
 		}
@@ -311,6 +313,14 @@ namespace Xwt
 		public T CreateFrontend<T> (object ob)
 		{
 			throw new NotImplementedException ();
+		}
+
+		internal Image GetStockIcon (string id)
+		{
+			Image img;
+			if (!stockIcons.TryGetValue (id, out img))
+				stockIcons [id] = img = ImageBackendHandler.GetStockIcon (id);
+			return img;
 		}
 
 		internal ContextBackendHandler ContextBackendHandler;

@@ -108,15 +108,15 @@ namespace Samples
 			var r = store.AddRow ();
 			store.SetValue (r, textField, "Information");
 			store.SetValue (r, descField, "Icons are duplicated on purpose");
-			store.SetValue (r, imgField, Image.FromIcon (StockIcons.Information, IconSize.Small));
+			store.SetValue (r, imgField, StockIcons.Information);
 			r = store.AddRow ();
 			store.SetValue (r, textField, "Error");
 			store.SetValue (r, descField, "Another item");
-			store.SetValue (r, imgField, Image.FromIcon (StockIcons.Error, IconSize.Small));
+			store.SetValue (r, imgField, StockIcons.Error);
 			r = store.AddRow ();
 			store.SetValue (r, textField, "Warning");
 			store.SetValue (r, descField, "A third item");
-			store.SetValue (r, imgField, Image.FromIcon (StockIcons.Warning, IconSize.Small));
+			store.SetValue (r, imgField, StockIcons.Warning);
 			
 			// Four views to show three data fields
 			cbox.Views.Add (new ImageCellView (imgField));

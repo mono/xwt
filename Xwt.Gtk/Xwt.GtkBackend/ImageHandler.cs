@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -36,26 +37,13 @@ namespace Xwt.GtkBackend
 			using (Gdk.PixbufLoader loader = new Gdk.PixbufLoader (stream))
 				return loader.Pixbuf;
 		}
-		
-		public override object LoadFromIcon (string id, IconSize size)
+
+		public override Image GetStockIcon (string id)
 		{
-			string stockId = Util.ToGtkStock (id);
-			var gsize = Util.ToGtkSize (size);
-			
-			Gtk.IconSet iconset = Gtk.IconFactory.LookupDefault (stockId);
-			if (iconset != null) 
-				return iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null);
-			
-			if (Gtk.IconTheme.Default.HasIcon (stockId)) {
-				int w, h;
-				Gtk.Icon.SizeLookup (gsize, out w, out h);
-				Gdk.Pixbuf result = Gtk.IconTheme.Default.LoadIcon (stockId, h, (Gtk.IconLookupFlags)0);
-				return result;
-			}
-			return null;
+			return ApplicationContext.Toolkit.WrapImage (Util.ToGtkStock (id));
 		}
 		
-		public override void SetPixel (object handle, int x, int y, Xwt.Drawing.Color color)
+		public override void SetBitmapPixel (object handle, int x, int y, Xwt.Drawing.Color color)
 		{
 			var pix = (Gdk.Pixbuf)handle;
 			
@@ -69,7 +57,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public override Xwt.Drawing.Color GetPixel (object handle, int x, int y)
+		public override Xwt.Drawing.Color GetBitmapPixel (object handle, int x, int y)
 		{
 			var pix = (Gdk.Pixbuf)handle;
 			
@@ -85,32 +73,32 @@ namespace Xwt.GtkBackend
 			((Gdk.Pixbuf)backend).Dispose ();
 		}
 		
-		public override Size GetSize (object handle)
+		public override Size GetBitmapSize (object handle)
 		{
 			var pix = (Gdk.Pixbuf)handle;
 			return new Size (pix.Width, pix.Height);
 		}
 		
-		public override object Resize (object handle, double width, double height)
+		public override object ResizeBitmap (object handle, double width, double height)
 		{
 			var pix = (Gdk.Pixbuf)handle;
 			return pix.ScaleSimple ((int)width, (int)height, Gdk.InterpType.Bilinear);
 		}
 		
-		public override object Copy (object handle)
+		public override object CopyBitmap (object handle)
 		{
 			var pix = (Gdk.Pixbuf)handle;
 			return pix.Copy ();
 		}
 		
-		public override void CopyArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
+		public override void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
 		{
 			var pixSrc = (Gdk.Pixbuf)srcHandle;
 			var pixDst = (Gdk.Pixbuf)destHandle;
 			pixSrc.CopyArea (srcX, srcY, width, height, pixDst, destX, destY);
 		}
 		
-		public override object Crop (object handle, int srcX, int srcY, int width, int height)
+		public override object CropBitmap (object handle, int srcX, int srcY, int width, int height)
 		{
 			var pix = (Gdk.Pixbuf)handle;
 			Gdk.Pixbuf res = new Gdk.Pixbuf (pix.Colorspace, pix.HasAlpha, pix.BitsPerSample, width, height);
@@ -119,13 +107,54 @@ namespace Xwt.GtkBackend
 			return res;
 		}
 		
-		public override object ChangeOpacity (object backend, double opacity)
+		public override object ChangeBitmapOpacity (object backend, double opacity)
 		{
 			Gdk.Pixbuf image = (Gdk.Pixbuf) backend;
 			Gdk.Pixbuf result = image.Copy ();
 			result.Fill (0);
 			result = result.AddAlpha (true, 0, 0, 0);
 			image.Composite (result, 0, 0, image.Width, image.Height, 0, 0, 1, 1, Gdk.InterpType.Bilinear, (int)(255 * opacity));
+			return result;
+		}
+
+		public override bool IsBitmap (object handle)
+		{
+			return handle is Gdk.Pixbuf;
+		}
+
+		public override object ConvertToBitmap (object handle, double width, double height, bool preserveAspectRatio)
+		{
+			Gdk.Pixbuf result = CreateBitmap ((string)handle, width, height);
+
+			if (result != null) {
+				int bw = (int) width;
+				int bh = (int) height;
+				if (preserveAspectRatio) {
+					var r = CalcBoxSizeRatio (width, height, result.Width, result.Height);
+					bw = (int)((double)result.Width * r);
+					bh = (int)((double)result.Height * r);
+				}
+				if (result.Width != bw || result.Height != bh)
+					return ResizeBitmap (result, bw, bh);
+			}
+
+			return result;
+		}
+
+		internal static Gdk.Pixbuf CreateBitmap (string stockId, double width, double height)
+		{
+			Gdk.Pixbuf result = null;
+			
+			Gtk.IconSet iconset = Gtk.IconFactory.LookupDefault (stockId);
+			if (iconset != null) {
+				// Find the size that better fits the requested size
+				Gtk.IconSize gsize = Util.GetBestSizeFit (width);
+				result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null);
+			}
+			
+			if (result == null && Gtk.IconTheme.Default.HasIcon (stockId))
+				result = Gtk.IconTheme.Default.LoadIcon (stockId, (int)width, (Gtk.IconLookupFlags)0);
+
 			return result;
 		}
 	}

@@ -32,20 +32,68 @@ using System.IO;
 
 namespace Xwt.Drawing
 {
-	public sealed class Image: XwtObject, IDisposable
+	public class Image: XwtObject, IDisposable
 	{
+		Size requestedSize;
+		internal NativeImageRef NativeRef;
+		bool preserveAspectRatio;
+		Image sourceImage;
+		 
+		static readonly object NoBackend = new object ();
+
 		internal Image (object backend): base (backend)
 		{
+			Init ();
 		}
 		
 		internal Image (object backend, Toolkit toolkit): base (backend, toolkit)
 		{
+			Init ();
 		}
 		
-		public Image (Image image): base (image.ToolkitEngine.ImageBackendHandler.Copy (image.Backend), image.ToolkitEngine)
+		public Image (Image image): base (image.Backend, image.ToolkitEngine)
+		{
+			if (image.NativeRef != null) {
+				NativeRef = image.NativeRef;
+				Init ();
+			}
+			else
+				sourceImage = image;
+		}
+
+		protected Image (Toolkit toolkit): base (NoBackend, toolkit)
+		{
+		}
+
+		protected Image (): base (NoBackend)
 		{
 		}
 		
+		void Init ()
+		{
+			if (NativeRef == null) {
+				NativeRef = new NativeImageRef (Backend, ToolkitEngine);
+			} else
+				NativeRef.AddReference ();
+		}
+		
+		~Image ()
+		{
+			Dispose (false);
+		}
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (NativeRef != null)
+				NativeRef.ReleaseReference (disposing);
+		}
+
 		public static Image FromResource (Type type, string resource)
 		{
 			var toolkit = Toolkit.CurrentEngine;
@@ -76,74 +124,180 @@ namespace Xwt.Drawing
 			return new Image (toolkit.ImageBackendHandler.LoadFromStream (stream), toolkit);
 		}
 		
-		public static Image FromIcon (string id, IconSize size)
+		public static Image FromMultipleSizes (params Image[] images)
 		{
-			var toolkit = Toolkit.CurrentEngine;
-			return new Image (toolkit.ImageBackendHandler.LoadFromIcon (id, size), toolkit);
+			return new ImageSet (images);
+		}
+
+		public BitmapImage ToBitmap ()
+		{
+			if (sourceImage != null)
+				return sourceImage.ToBitmap (Size);
+			else
+				return ToBitmap (Size);
 		}
 		
 		public Size Size {
-			get { return ToolkitEngine.ImageBackendHandler.GetSize (Backend); }
+			get {
+				if (!requestedSize.IsZero)
+					return requestedSize;
+				if (Backend != NoBackend && ToolkitEngine.ImageBackendHandler.IsBitmap (Backend))
+					return ToolkitEngine.ImageBackendHandler.GetBitmapSize (Backend);
+				else
+					return GetSize ();
+			}
 		}
 		
-		public void SetPixel (int x, int y, Color color)
+		public Image WithSize (double width, double height)
 		{
-			ToolkitEngine.ImageBackendHandler.SetPixel (Backend, x, y, color);
+			return new Image (this) {
+				requestedSize = new Size (width, height)
+			};
 		}
 		
-		public Color GetPixel (int x, int y)
+		public Image WithSize (Size size)
 		{
-			return ToolkitEngine.ImageBackendHandler.GetPixel (Backend, x, y);
+			return new Image (this) {
+				requestedSize = size
+			};
 		}
 		
+		public Image WithSize (double squaredSize)
+		{
+			return new Image (this) {
+				requestedSize = new Size (squaredSize, squaredSize)
+			};
+		}
+		
+		public Image WithSize (IconSize size)
+		{
+			Size s;
+
+			switch (size) {
+			case IconSize.Small: s = new Size (16, 16); break;
+			case IconSize.Medium: s = new Size (24, 24); break;
+			case IconSize.Large: s = new Size (32, 32); break;
+			default: throw new ArgumentOutOfRangeException ("size");
+			}
+
+			return new Image (this) {
+				requestedSize = s
+			};
+		}
+		
+		public Image WithBoxSize (double maxWidth, double maxHeight)
+		{
+			return new Image (this) {
+				requestedSize = new Size (maxWidth, maxHeight),
+				preserveAspectRatio = true
+			};
+		}
+		
+		public Image WithBoxSize (double maxSize)
+		{
+			return new Image (this) {
+				requestedSize = new Size (maxSize, maxSize),
+				preserveAspectRatio = true
+			};
+		}
+		
+		public bool HasFixedSize {
+			get { return !Size.IsZero; }
+		}
+
 		public Image Scale (double scale)
 		{
+			if (!HasFixedSize)
+				throw new InvalidOperationException ("Image must have a size in order to be scaled");
+			
 			double w = Size.Width * scale;
 			double h = Size.Height * scale;
-			return new Image (ToolkitEngine.ImageBackendHandler.Resize (Backend, w, h));
+			return new Image (this) {
+				requestedSize = new Size (w, h)
+			};
 		}
 		
 		public Image Scale (double scaleX, double scaleY)
 		{
+			if (!HasFixedSize)
+				throw new InvalidOperationException ("Image must have a size in order to be scaled");
+
 			double w = Size.Width * scaleX;
 			double h = Size.Height * scaleY;
-			return new Image (ToolkitEngine.ImageBackendHandler.Resize (Backend, w, h));
+			return new Image (this) {
+				requestedSize = new Size (w, h)
+			};
+		}
+
+		BitmapImage ToBitmap (Size size)
+		{
+			// TODO: Caching
+			return GenerateBitmap (size);
 		}
 		
-		public Image Resize (double width, double height)
+		protected virtual BitmapImage GenerateBitmap (Size size)
 		{
-			return new Image (ToolkitEngine.ImageBackendHandler.Resize (Backend, width, height));
+			if (Backend != NoBackend) {
+				if (ToolkitEngine.ImageBackendHandler.IsBitmap (Backend)) {
+					if (size == ToolkitEngine.ImageBackendHandler.GetBitmapSize (Backend)) {
+						// The backend can be shared
+						return new BitmapImage (this);
+					}
+					else {
+						// Create a new backend with the new size
+						var bmp = ToolkitEngine.ImageBackendHandler.ResizeBitmap (Backend, size.Width, size.Height);
+						return new BitmapImage (bmp);
+					}
+				}
+				else
+					return new BitmapImage (ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, size.Width, size.Height, preserveAspectRatio));
+			}
+			
+			throw new NotSupportedException ();
+		}
+
+		protected virtual Size GetSize ()
+		{
+			return Size.Zero;
+		}
+
+		internal virtual bool CanDrawInContext (double width, double height)
+		{
+			return sourceImage != null ? sourceImage.CanDrawInContext (width, height) : false;
 		}
 		
-		public Image ResizeToFitBox (double width, double height)
+		internal virtual void DrawInContext (Context ctx, double x, double y, double width, double height)
 		{
-			double r = Math.Min (width / Size.Width, height / Size.Height);
-			return new Image (ToolkitEngine.ImageBackendHandler.Resize (Backend, Size.Width * r, Size.Height * r));
+			if (sourceImage != null)
+				sourceImage.DrawInContext (ctx, x, y, width, height);
 		}
-		
-		public Image ToGrayscale ()
-		{
-			throw new NotImplementedException ();
+	}
+
+	class NativeImageRef
+	{
+		object backend;
+		int referenceCount = 1;
+		Toolkit toolkit;
+
+		public int ReferenceCount {
+			get { return referenceCount; }
 		}
-		
-		public Image ChangeOpacity (double opacity)
+
+		public NativeImageRef (object backend, Toolkit toolkit)
 		{
-			return new Image (ToolkitEngine.ImageBackendHandler.ChangeOpacity (Backend, opacity));
+			this.backend = backend;
+			this.toolkit = toolkit;
 		}
-		
-		public void CopyArea (int srcX, int srcY, int width, int height, Image dest, int destX, int destY)
+
+		public void AddReference ()
 		{
-			ToolkitEngine.ImageBackendHandler.CopyArea (Backend, srcX, srcY, width, height, dest.Backend, destX, destY);
+			System.Threading.Interlocked.Increment (ref referenceCount);
 		}
-		
-		public Image Crop (int srcX, int srcY, int width, int height)
+
+		public void ReleaseReference (bool disposing)
 		{
-			return new Image (ToolkitEngine.ImageBackendHandler.Crop (Backend, srcX, srcY, width, height));
-		}
-		
-		public void Dispose ()
-		{
-			ToolkitEngine.ImageBackendHandler.Dispose (Backend);
+			if (System.Threading.Interlocked.Decrement (ref referenceCount) == 0 && disposing)
+				toolkit.ImageBackendHandler.Dispose (backend);
 		}
 	}
 }

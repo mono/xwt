@@ -49,7 +49,7 @@ namespace Xwt
 		}
 		public static void ShowError (WindowFrame parent, string primaryText, string secondaryText)
 		{
-			GenericAlert (parent, StockIcons.Error, primaryText, secondaryText, Command.Ok);
+			GenericAlert (parent, StockIconId.Error, primaryText, secondaryText, Command.Ok);
 		}
 		#endregion
 		
@@ -68,7 +68,7 @@ namespace Xwt
 		}
 		public static void ShowWarning (WindowFrame parent, string primaryText, string secondaryText)
 		{
-			GenericAlert (parent, StockIcons.Warning, primaryText, secondaryText, Command.Ok);
+			GenericAlert (parent, StockIconId.Warning, primaryText, secondaryText, Command.Ok);
 		}
 		#endregion
 		
@@ -88,7 +88,7 @@ namespace Xwt
 		}
 		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText)
 		{
-			GenericAlert (parent, StockIcons.Information, primaryText, secondaryText, Command.Ok);
+			GenericAlert (parent, StockIconId.Information, primaryText, secondaryText, Command.Ok);
 		}
 		#endregion
 		
@@ -100,7 +100,7 @@ namespace Xwt
 		
 		public static bool Confirm (string primaryText, string secondaryText, Command button)
 		{
-			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, Command.Cancel, button) == button;
+			return GenericAlert (RootWindow, StockIconId.Question, primaryText, secondaryText, Command.Cancel, button) == button;
 		}
 		public static bool Confirm (string primaryText, Command button, bool confirmIsDefault)
 		{
@@ -109,7 +109,7 @@ namespace Xwt
 		
 		public static bool Confirm (string primaryText, string secondaryText, Command button, bool confirmIsDefault)
 		{
-			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
+			return GenericAlert (RootWindow, StockIconId.Question, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
 		}
 		
 		public static bool Confirm (ConfirmationMessage message)
@@ -126,7 +126,7 @@ namespace Xwt
 		
 		public static Command AskQuestion (string primaryText, string secondaryText, params Command[] buttons)
 		{
-			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, buttons);
+			return GenericAlert (RootWindow, StockIconId.Question, primaryText, secondaryText, buttons);
 		}
 		public static Command AskQuestion (string primaryText, int defaultButton, params Command[] buttons)
 		{
@@ -135,7 +135,7 @@ namespace Xwt
 		
 		public static Command AskQuestion (string primaryText, string secondaryText, int defaultButton, params Command[] buttons)
 		{
-			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, defaultButton, buttons);
+			return GenericAlert (RootWindow, StockIconId.Question, primaryText, secondaryText, defaultButton, buttons);
 		}
 		
 		public static Command AskQuestion (QuestionMessage message)
@@ -266,7 +266,7 @@ namespace Xwt
 	{
 		public QuestionMessage ()
 		{
-			Icon = StockIcons.Question;
+			Icon = StockIconId.Question;
 		}
 		
 		public QuestionMessage (string text): this ()
@@ -290,7 +290,7 @@ namespace Xwt
 		
 		public ConfirmationMessage ()
 		{
-			Icon = StockIcons.Question;
+			Icon = StockIconId.Question;
 			Buttons.Add (Command.Cancel);
 		}
 		

@@ -61,12 +61,12 @@ namespace Xwt.Backends
 		public abstract void SetFont (object backend, Font font);
 		
 		public abstract void DrawTextLayout (object backend, TextLayout layout, double x, double y);
-		
-		public abstract void DrawImage (object backend, object img, double x, double y, double alpha);
+
+		public abstract bool CanDrawImage (object backend, object img);
 		
 		public abstract void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha);
 
-		public abstract void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha);
+		public abstract void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double width, double height, double alpha);
 
 		public abstract void Rotate (object backend, double angle);
 		

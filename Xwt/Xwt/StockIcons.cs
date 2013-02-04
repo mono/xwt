@@ -24,23 +24,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Drawing;
+using Xwt.Backends;
 
 namespace Xwt
 {
 	public static class StockIcons
 	{
-		public const string Error = "Error";
-		public const string Warning = "Warning";
-		public const string Information = "Information";
-		public const string Question = "Question";
-		public const string OrientationPortrait = "Portrait";
-		public const string OrientationLandscape = "Landscape";
-		public const string ZoomIn = "ZoomIn";
-		public const string ZoomOut = "ZoomOut";
-		public const string ZoomFit = "ZoomFit";
-		public const string Zoom100 = "Zoom100";
-		public const string Add = "Add";
-		public const string Remove = "Remove";
+		static Image GetIcon (string id)
+		{
+			return Toolkit.CurrentEngine.GetStockIcon (id);
+		}
+
+		public static Image Error { get { return GetIcon (StockIconId.Error); } }
+		public static Image Warning { get { return GetIcon (StockIconId.Warning); } }
+		public static Image Information { get { return GetIcon (StockIconId.Information); } }
+		public static Image Question { get { return GetIcon (StockIconId.Question); } }
+		public static Image OrientationPortrait { get { return GetIcon (StockIconId.OrientationPortrait); } }
+		public static Image OrientationLandscape { get { return GetIcon (StockIconId.OrientationLandscape); } }
+		public static Image ZoomIn { get { return GetIcon (StockIconId.ZoomIn); } }
+		public static Image ZoomOut { get { return GetIcon (StockIconId.ZoomOut); } }
+		public static Image ZoomFit { get { return GetIcon (StockIconId.ZoomFit); } }
+		public static Image Zoom100 { get { return GetIcon (StockIconId.Zoom100); } }
+		public static Image Add { get { return GetIcon (StockIconId.Add); } }
+		public static Image Remove { get { return GetIcon (StockIconId.Remove); } }
 	}
 }
 

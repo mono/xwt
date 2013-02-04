@@ -34,10 +34,17 @@ namespace Xwt.GtkBackend
 {
 	public class ContextBackendHandler: CairoContextBackendHandler
 	{
+		protected override object ResolveImage (object img, double width, double height)
+		{
+			if (img is String)
+				return ImageHandler.CreateBitmap ((string)img, width, height);
+			else
+				return img;
+		}
+
 		protected override void SetSourceImage (Cairo.Context ctx, object img, double x, double y)
 		{
-			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
-			Gdk.CairoHelper.SetSourcePixbuf (ctx, pb, x, y);
+			Gdk.CairoHelper.SetSourcePixbuf (ctx, (Gdk.Pixbuf)img, x, y);
 		}
 		
 		protected override Size GetImageSize (object img)

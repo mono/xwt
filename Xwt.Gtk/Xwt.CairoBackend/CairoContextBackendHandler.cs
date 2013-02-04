@@ -226,33 +226,39 @@ namespace Xwt.CairoBackend
 			var lb = Toolkit.GetBackend (layout);
 			CairoTextLayoutBackendHandler.Draw (ctx, lb, x, y);
 		}
-		
-		public override void DrawImage (object backend, object img, double x, double y, double alpha)
-		{
-			CairoContextBackend ctx = (CairoContextBackend)backend;
-			SetSourceImage (ctx.Context, img, x, y);
-			alpha = alpha * ctx.GlobalAlpha;
-			if (alpha == 1)
-				ctx.Context.Paint ();
-			else
-				ctx.Context.PaintWithAlpha (alpha);
-		}
-		
+
 		protected virtual void SetSourceImage (Cairo.Context ctx, object img, double x, double y)
 		{
+		}
+		
+		public override bool CanDrawImage (object backend, object img)
+		{
+			return true;
 		}
 		
 		public override void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
 			CairoContextBackend ctx = (CairoContextBackend)backend;
-			ctx.Context.Save ();
+			alpha = alpha * ctx.GlobalAlpha;
+
+			img = ResolveImage (img, width, height);
 			var s = GetImageSize (img);
+
+			if (s.Width == width && s.Height == height) {
+				SetSourceImage (ctx.Context, img, x, y);
+				if (alpha == 1)
+					ctx.Context.Paint ();
+				else
+					ctx.Context.PaintWithAlpha (alpha);
+				return;
+			}
+
+			ctx.Context.Save ();
 			double sx = ((double) width) / s.Width;
 			double sy = ((double) height) / s.Height;
 			ctx.Context.Translate (x, y);
 			ctx.Context.Scale (sx, sy);
 			SetSourceImage (ctx.Context, img, 0, 0);
-			alpha = alpha * ctx.GlobalAlpha;
 			if (alpha == 1)
 				ctx.Context.Paint ();
 			else
@@ -260,7 +266,7 @@ namespace Xwt.CairoBackend
 			ctx.Context.Restore ();
 		}
 		
-		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha)
+		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double width, double height, double alpha)
 		{
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.Save ();
@@ -283,6 +289,11 @@ namespace Xwt.CairoBackend
 		protected virtual Size GetImageSize (object img)
 		{
 			return new Size (0,0);
+		}
+		
+		protected virtual object ResolveImage (object img, double width, double height)
+		{
+			return img;
 		}
 		
 		public override void Rotate (object backend, double angle)

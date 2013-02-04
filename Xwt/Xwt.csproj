@@ -377,6 +377,10 @@
     <Compile Include="Xwt.Backends\MacSystemBackend.cs" />
     <Compile Include="Xwt.Backends\GnomeSystemBackend.cs" />
     <Compile Include="Xwt\DesktopType.cs" />
+    <Compile Include="Xwt.Backends\StockIconId.cs" />
+    <Compile Include="Xwt.Drawing\DrawingImage.cs" />
+    <Compile Include="Xwt.Drawing\BitmapImage.cs" />
+    <Compile Include="Xwt.Drawing\ImageSet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

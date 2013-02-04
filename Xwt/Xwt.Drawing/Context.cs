@@ -130,50 +130,97 @@ namespace Xwt.Drawing
 		{
 			handler.DrawTextLayout (Backend, layout, x, y);
 		}
-		
-		public void DrawImage (Image img, Point location)
+
+		public void DrawImage (Image img, Point location, double alpha = 1)
 		{
-			handler.DrawImage (Backend, GetBackend (img), location.X, location.Y, 1);
+			DrawImage (img, location.X, location.Y, alpha);
 		}
 		
-		public void DrawImage (Image img, double x, double y)
+		public void DrawImage (Image img, double x, double y, double alpha = 1)
 		{
-			handler.DrawImage (Backend, GetBackend (img), x, y, 1);
-		}
-		
-		public void DrawImage (Image img, Point location, double alpha)
-		{
-			handler.DrawImage (Backend, GetBackend (img), location.X, location.Y, alpha);
-		}
-		
-		public void DrawImage (Image img, double x, double y, double alpha)
-		{
-			handler.DrawImage (Backend, GetBackend (img), x, y, alpha);
-		}
-		
-		public void DrawImage (Image img, Rectangle rect)
-		{
-			handler.DrawImage (Backend, GetBackend (img), rect.X, rect.Y, rect.Width, rect.Height, 1);
-		}
-		
-		public void DrawImage (Image img, double x, double y, double width, double height)
-		{
-			handler.DrawImage (Backend, GetBackend (img), x, y, width, height, 1);
-		}
-		
-		public void DrawImage (Image img, Rectangle rect, double alpha)
-		{
-			handler.DrawImage (Backend, GetBackend (img), rect.X, rect.Y, rect.Width, rect.Height, alpha);
+			if (!img.HasFixedSize)
+				throw new InvalidOperationException ("Image doesn't have a fixed size");
+
+			if (img.CanDrawInContext (img.Size.Width, img.Size.Height)) {
+				DrawInContext (img, x, y, img.Size.Width, img.Size.Height, alpha);
+				return;
+			}
+			var bk = GetImageBackend (img);
+			handler.DrawImage (Backend, bk, x, y, img.Size.Width, img.Size.Height, alpha);
 		}
 
+		void DrawInContext (Image img, double x, double y, double width, double height, double alpha)
+		{
+			try {
+				Save ();
+				NewPath ();
+				Rectangle (x, y, width, height);
+				Clip ();
+				GlobalAlpha = alpha;
+				img.DrawInContext (this, x, y, width, height);
+			} finally {
+				Restore ();
+			}
+		}
+
+		object GetImageBackend (Image img)
+		{
+			var bk = GetBackend (img);
+			if (bk == null || !handler.CanDrawImage (Backend, bk))
+				return GetBackend (img.ToBitmap ());
+			else
+				return bk;
+		}
+		
+		public void DrawImage (Image img, Rectangle rect, double alpha = 1)
+		{
+			DrawImage (img, rect.X, rect.Y, rect.Width, rect.Height, alpha);
+		}
+		
+		public void DrawImage (Image img, double x, double y, double width, double height, double alpha = 1)
+		{
+			if (img.CanDrawInContext (width, height)) {
+				DrawInContext (img, x, y, width, height, alpha);
+				return;
+			}
+			var bk = GetImageBackend (img.WithSize (width, height));
+			handler.DrawImage (Backend, bk, x, y, width, height, alpha);
+		}
+		
 		public void DrawImage (Image img, Rectangle srcRect, Rectangle destRect)
 		{
-			handler.DrawImage (Backend, GetBackend (img), srcRect, destRect, 1);
+			DrawImage (img, srcRect, destRect, 1);
 		}
 
 		public void DrawImage (Image img, Rectangle srcRect, Rectangle destRect, double alpha)
 		{
-			handler.DrawImage (Backend, GetBackend (img), srcRect, destRect, alpha);
+			if (!img.HasFixedSize)
+				throw new InvalidOperationException ("Image doesn't have a fixed size");
+
+			if (img.CanDrawInContext (img.Size.Width, img.Size.Height)) {
+				try {
+					Save ();
+					GlobalAlpha = alpha;
+
+					NewPath ();
+					Rectangle (destRect);
+					Clip ();
+
+					var scaleX = destRect.Width / srcRect.Width;
+					var scaleY = destRect.Height / srcRect.Height;
+
+					Translate (destRect.X - srcRect.X * scaleX, destRect.Y - srcRect.Y * scaleY);
+					Scale (scaleX, scaleY);
+
+					img.DrawInContext (this, 0, 0, img.Size.Width, img.Size.Height);
+
+				} finally {
+					Restore ();
+				}
+				return;
+			}
+			var bk = GetImageBackend (img);
+			handler.DrawImage (Backend, bk, srcRect, destRect, img.Size.Width, img.Size.Height, alpha);
 		}
 
 		/// <summary>

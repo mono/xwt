@@ -38,6 +38,18 @@ namespace Xwt.GtkBackend
 		static uint targetIdCounter = 0;
 		static Dictionary<TransferDataType, Gtk.TargetEntry[]> dragTargets = new Dictionary<TransferDataType, Gtk.TargetEntry[]> ();
 		static Dictionary<string, TransferDataType> atomToType = new Dictionary<string, TransferDataType> ();
+		static Size[] iconSizes = new Size[7];
+		
+		static Util ()
+		{
+			for (int i = 0; i < iconSizes.Length; i++) {
+				int w, h;
+				if (!Gtk.Icon.SizeLookup ((Gtk.IconSize)i, out w, out h))
+					w = h = -1;
+				iconSizes[i].Width = w;
+				iconSizes[i].Height = h;
+			}
+		}
 
 		public static void SetDragData (TransferDataSource data, Gtk.DragDataGetArgs args)
 		{
@@ -155,17 +167,17 @@ namespace Xwt.GtkBackend
 		{
 			if (icons == null) {
 				icons = new Dictionary<string, string> ();
-				icons [StockIcons.ZoomIn] = Gtk.Stock.ZoomIn;
-				icons [StockIcons.ZoomOut] = Gtk.Stock.ZoomOut;
-				icons [StockIcons.Zoom100] = Gtk.Stock.Zoom100;
-				icons [StockIcons.ZoomFit] = Gtk.Stock.ZoomFit;
-				icons [StockIcons.OrientationPortrait] = Gtk.Stock.OrientationPortrait;
-				icons [StockIcons.OrientationLandscape] = Gtk.Stock.OrientationLandscape;
-				icons [StockIcons.Add] = Gtk.Stock.Add;
-				icons [StockIcons.Remove] = Gtk.Stock.Remove;
-				icons [StockIcons.Warning] = Gtk.Stock.DialogWarning;
-				icons [StockIcons.Error] = Gtk.Stock.DialogError;
-				icons [StockIcons.Information] = Gtk.Stock.DialogInfo;
+				icons [StockIconId.ZoomIn] = Gtk.Stock.ZoomIn;
+				icons [StockIconId.ZoomOut] = Gtk.Stock.ZoomOut;
+				icons [StockIconId.Zoom100] = Gtk.Stock.Zoom100;
+				icons [StockIconId.ZoomFit] = Gtk.Stock.ZoomFit;
+				icons [StockIconId.OrientationPortrait] = Gtk.Stock.OrientationPortrait;
+				icons [StockIconId.OrientationLandscape] = Gtk.Stock.OrientationLandscape;
+				icons [StockIconId.Add] = Gtk.Stock.Add;
+				icons [StockIconId.Remove] = Gtk.Stock.Remove;
+				icons [StockIconId.Warning] = Gtk.Stock.DialogWarning;
+				icons [StockIconId.Error] = Gtk.Stock.DialogError;
+				icons [StockIconId.Information] = Gtk.Stock.DialogInfo;
 			}
 			string res;
 			icons.TryGetValue (id, out res);
@@ -250,6 +262,33 @@ namespace Xwt.GtkBackend
             }
             throw new InvalidOperationException("Invalid mouse scroll direction value: " + d);
         }
+
+		public static Gtk.IconSize GetBestSizeFit (double size)
+		{
+			// Find the size that better fits the requested size
+
+			for (int n=0; n<iconSizes.Length; n++) {
+				if (size <= iconSizes [n].Width)
+					return (Gtk.IconSize)n;
+			}
+			return Gtk.IconSize.Dialog;
+		}
+
+		public static double GetBestSizeFitSize (double size)
+		{
+			var s = GetBestSizeFit (size);
+			return iconSizes [(int)s].Width;
+		}
+		
+		public static Gdk.Pixbuf ToPixbuf (this Image image, Gtk.IconSize defaultIconSize)
+		{
+			if (!image.HasFixedSize) {
+				var s = iconSizes [(int)defaultIconSize];
+				image = image.WithSize (s.Width, s.Height);
+			}
+			return (Gdk.Pixbuf)Toolkit.GetBackend (image.ToBitmap ());
+		}
+		
 	}
 }
 
