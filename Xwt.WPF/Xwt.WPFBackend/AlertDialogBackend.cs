@@ -80,13 +80,13 @@ namespace Xwt.WPFBackend
 		MessageBoxImage GetIcon (string iconText)
 		{
 			switch (iconText) {
-			case StockIcons.Error:
+			case StockIconId.Error:
 				return MessageBoxImage.Error;
-			case StockIcons.Warning:
+			case StockIconId.Warning:
 				return MessageBoxImage.Warning;
-			case StockIcons.Information:
+			case StockIconId.Information:
 				return MessageBoxImage.Information;
-			case StockIcons.Question:
+			case StockIconId.Question:
 				return MessageBoxImage.Question;
 			default:
 				return MessageBoxImage.None;

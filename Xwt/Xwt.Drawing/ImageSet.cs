@@ -39,6 +39,13 @@ namespace Xwt.Drawing
 			this.images = images.OrderBy (i => i.HasFixedSize ? i.Size.Width + i.Size.Height : int.MaxValue).ToArray ();
 		}
 
+		internal override object SelectedBackend {
+			get {
+				var s = GetFixedSize ();
+				return GetBackend (SelectImage (s.Width, s.Height));
+			}
+		}
+
 		Image SelectImage (double width, double height)
 		{
 			foreach (var img in images) {

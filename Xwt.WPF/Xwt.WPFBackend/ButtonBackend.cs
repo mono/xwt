@@ -95,12 +95,13 @@ namespace Xwt.WPFBackend
 			Button.InvalidateMeasure ();
 		}
 
-		public void SetContent (string label, object imageBackend, ContentPosition position)
+		public void SetContent (string label, Xwt.Drawing.Image image, ContentPosition position)
 		{
-			if (imageBackend == null)
+			if (image == null)
 				Button.Content = label;
 			else
 			{
+				var imageBackend = Toolkit.GetBackend (image.ToBitmap ());
 				SWC.DockPanel grid = new SWC.DockPanel ();
 
 				var img = DataConverter.AsImageSource (imageBackend);

@@ -70,7 +70,7 @@ namespace Samples
 			ctx.SetLineWidth (lineWidth);
 
 			ctx.SetColor (Colors.Black);
-			ctx.Arc (bounds.Center.X, bounds.Center.Y, 0, 0, 360);
+			ctx.Arc (bounds.Center.X, bounds.Center.Y, 1, 0, 360);
 			ctx.Stroke ();
 			
 			ctx.SetColor (Colors.Red);

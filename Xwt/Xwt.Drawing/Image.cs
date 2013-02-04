@@ -136,6 +136,12 @@ namespace Xwt.Drawing
 			else
 				return ToBitmap (size);
 		}
+
+		internal virtual object SelectedBackend {
+			get {
+				return Backend != NoBackend ? Backend : null;
+			}
+		}
 		
 		public bool HasFixedSize {
 			get { return !Size.IsZero; }
@@ -200,7 +206,7 @@ namespace Xwt.Drawing
 			}
 		}
 
-		Size GetFixedSize ()
+		internal Size GetFixedSize ()
 		{
 			var size = !Size.IsZero ? Size : DefaultSize;
 			if (size.IsZero)

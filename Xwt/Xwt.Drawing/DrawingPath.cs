@@ -81,6 +81,8 @@ namespace Xwt.Drawing
 		/// </param>
 		public void Arc (double xc, double yc, double radius, double angle1, double angle2)
 		{
+			if (radius <= 0)
+				throw new ArgumentException ("Radius must be greater than zero");
 			handler.Arc (Backend, xc, yc, radius, angle1, angle2);
 		}
 

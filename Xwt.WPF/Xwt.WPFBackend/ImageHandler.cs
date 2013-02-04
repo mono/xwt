@@ -54,63 +54,65 @@ namespace Xwt.WPFBackend
 			return img;
 		}
 
-		public override object LoadFromIcon (string id, IconSize size)
+		public override Drawing.Image GetStockIcon (string id)
+		{
+			var img1 = RenderStockIcon (id, NativeStockIconOptions.Small);
+			var img2 = RenderStockIcon (id, NativeStockIconOptions.Large);
+			var img3 = RenderStockIcon (id, NativeStockIconOptions.ShellSize);
+			var img4 = RenderStockIcon (id, default (NativeStockIconOptions));
+
+			return Xwt.Drawing.Image.FromMultipleSizes (
+				ApplicationContext.Toolkit.WrapImage (img1),
+				ApplicationContext.Toolkit.WrapImage (img2),
+				ApplicationContext.Toolkit.WrapImage (img3),
+				ApplicationContext.Toolkit.WrapImage (img4)
+			);
+		}
+
+		object RenderStockIcon (string id, NativeStockIconOptions options)
 		{
 			if (Environment.OSVersion.Version.Major <= 5)
-				throw new NotImplementedException();
-
-			var options = GetNativeStockOptionsFromSize (size);
+				throw new NotImplementedException ();
 
 			switch (id) {
-			case StockIcons.Add:
+				case StockIconId.Add:
 					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.list-add.png"))
 						return LoadFromStream (s);
-				//throw new NotImplementedException();
-			case StockIcons.Error:
-				return NativeMethods.GetImage (NativeStockIcon.Error, options);
-			case StockIcons.Information:
-				return NativeMethods.GetImage (NativeStockIcon.Info, options);
-			case StockIcons.OrientationLandscape:
-			case StockIcons.OrientationPortrait:
-				return NativeMethods.GetImage (NativeStockIcon.Help, options);
-				//throw new NotImplementedException();
-			case StockIcons.Question:
-				return NativeMethods.GetImage (NativeStockIcon.Help, options);
-			case StockIcons.Remove:
-				using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.list-remove.png"))
-					return LoadFromStream (s);
-			case StockIcons.Warning:
-				return NativeMethods.GetImage (NativeStockIcon.Warning, options);
-			case StockIcons.Zoom100:
-			case StockIcons.ZoomFit:
-			case StockIcons.ZoomIn:
-			case StockIcons.ZoomOut:
-				return NativeMethods.GetImage (NativeStockIcon.Find, options);
+				case StockIconId.Remove:
+					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.list-remove.png"))
+						return LoadFromStream (s);
 
-			default:
-				throw new ArgumentException ("Unknown icon id", "id");
+				case StockIconId.Error:
+					return NativeMethods.GetImage (NativeStockIcon.Error, options);
+				case StockIconId.Information:
+					return NativeMethods.GetImage (NativeStockIcon.Info, options);
+				case StockIconId.OrientationLandscape:
+				case StockIconId.OrientationPortrait:
+					return NativeMethods.GetImage (NativeStockIcon.Help, options);
+				//throw new NotImplementedException();
+				case StockIconId.Question:
+					return NativeMethods.GetImage (NativeStockIcon.Help, options);
+				case StockIconId.Warning:
+					return NativeMethods.GetImage (NativeStockIcon.Warning, options);
+				case StockIconId.Zoom100:
+				case StockIconId.ZoomFit:
+				case StockIconId.ZoomIn:
+				case StockIconId.ZoomOut:
+					return NativeMethods.GetImage (NativeStockIcon.Find, options);
+
+				default:
+					throw new ArgumentException ("Unknown icon id", "id");
 			}
 		}
 
-		public override Xwt.Drawing.Color GetPixel (object handle, int x, int y)
+		public override Xwt.Drawing.Color GetBitmapPixel (object handle, int x, int y)
 		{
 			throw new NotImplementedException ();
 		}
 
-		public override void SetPixel (object handle, int x, int y, Drawing.Color color)
+		public override void SetBitmapPixel (object handle, int x, int y, Drawing.Color color)
 		{
 			throw new NotImplementedException ();
-		}
-
-		private static NativeStockIconOptions GetNativeStockOptionsFromSize (IconSize size)
-		{
-			switch (size) {
-			case IconSize.Small:
-				return NativeStockIconOptions.Small;
-
-			default:
-				return NativeStockIconOptions.Large;
-			}
 		}
 
 		private static double WidthToDPI (SWMI.BitmapSource img, double pixels)
@@ -123,7 +125,22 @@ namespace Xwt.WPFBackend
 			return pixels * 96 / img.DpiY;
 		}
 
-		public override Size GetBitmapSize (object handle)
+		public override object ConvertToBitmap (object handle, double width, double height)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public override bool HasMultipleSizes (object handle)
+		{
+			return false;
+		}
+
+		public override bool IsBitmap (object handle)
+		{
+			return true;
+		}
+
+		public override Size GetSize (object handle)
 		{
 			BitmapSource source = handle as BitmapSource;
 			if (source != null)
@@ -136,7 +153,7 @@ namespace Xwt.WPFBackend
 			throw new ArgumentException();
 		}
 
-		public override object Resize (object handle, double width, double height)
+		public override object ResizeBitmap (object handle, double width, double height)
 		{
 			var oldImg = (SWMI.BitmapSource)handle;
 
@@ -155,12 +172,12 @@ namespace Xwt.WPFBackend
 			return bmp;
 		}
 
-		public override object Copy (object handle)
+		public override object CopyBitmap (object handle)
 		{
 			return ((SWMI.BitmapSource)handle).Clone ();
 		}
 
-		public override object Crop(object handle, int srcX, int srcY, int w, int h)
+		public override object CropBitmap(object handle, int srcX, int srcY, int w, int h)
 		{
 			var oldImg = (SWMI.BitmapSource)handle;
 
@@ -180,7 +197,7 @@ namespace Xwt.WPFBackend
 			return bmp;
 		}
 
-		public override object ChangeOpacity (object backend, double opacity)
+		public override object ChangeBitmapOpacity (object backend, double opacity)
 		{
 			Bitmap bitmap = DataConverter.AsBitmap (backend);
 			if (bitmap == null)
@@ -192,7 +209,7 @@ namespace Xwt.WPFBackend
 			return result;
 		}
 
-		public override void CopyArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
+		public override void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
 		{
 			throw new NotImplementedException ();
 		}

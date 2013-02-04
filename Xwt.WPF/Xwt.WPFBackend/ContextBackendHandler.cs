@@ -290,12 +290,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void DrawImage (object backend, object img, double x, double y, double alpha)
+		public override bool CanDrawImage (object backend, object img)
 		{
-			var c = (DrawingContext) backend;
-
-			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, bmp.Width, bmp.Height, (float)alpha);
+			return true;
 		}
 
 		public override void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
@@ -306,7 +303,7 @@ namespace Xwt.WPFBackend
 			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
 		}
 
-		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double alpha)
+		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double width, double height, double alpha)
 		{
 			var c = (DrawingContext) backend;
 

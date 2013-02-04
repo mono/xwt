@@ -165,7 +165,7 @@ namespace Xwt.Drawing
 
 		object GetImageBackend (Image img)
 		{
-			var bk = GetBackend (img);
+			var bk = img.SelectedBackend;
 			if (bk == null || !handler.CanDrawImage (Backend, bk))
 				return GetBackend (img.ToBitmap ());
 			else
