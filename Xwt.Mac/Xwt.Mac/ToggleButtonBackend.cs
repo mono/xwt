@@ -24,11 +24,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using MonoMac.AppKit;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public class ToggleButtonBackend: ButtonBackend
+	public class ToggleButtonBackend: ButtonBackend, IToggleButtonBackend
 	{
+		public bool Active {
+			get { return Widget.State == NSCellStateValue.On; }
+			set { Widget.State = value? NSCellStateValue.On : NSCellStateValue.Off; }
+		}
+
 		public ToggleButtonBackend ()
 		{
 		}

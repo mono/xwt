@@ -247,17 +247,12 @@ namespace Xwt.Backends
 			return (T) CreateBackend (typeof(T));
 		}
 
-		public void RegisterBackend<Backend, Implementation> ()
-		{
-			RegisterBackend (typeof(Backend), typeof(Implementation));
-		}
-		
-		public void RegisterBackend (Type backendType, Type implementationType)
+		public void RegisterBackend<Backend, Implementation> () where Implementation: Backend
 		{
 			CheckInitialized ();
-			backendTypes [backendType] = implementationType;
+			backendTypes [typeof(Backend)] = typeof(Implementation);
 		}
-		
+
 		public T CreateFrontend<T> (object backend)
 		{
 			return (T) Activator.CreateInstance (typeof(T), backend);
