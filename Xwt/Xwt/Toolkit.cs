@@ -37,6 +37,7 @@ namespace Xwt
 
 		ToolkitEngineBackend backend;
 		ApplicationContext context;
+		XwtTaskScheduler scheduler;
 
 		int inUserCode;
 		Queue<Action> exitActions = new Queue<Action> ();
@@ -54,9 +55,14 @@ namespace Xwt
 			get { return backend; }
 		}
 
+		internal XwtTaskScheduler Scheduler {
+			get { return scheduler; }
+		}
+
 		private Toolkit ()
 		{
 			context = new ApplicationContext (this);
+			scheduler = new XwtTaskScheduler (this);
 		}
 
 		public static Toolkit Load (string fullTypeName)
