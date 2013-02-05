@@ -37,7 +37,8 @@ namespace Xwt.Drawing
 		Size requestedSize;
 		internal NativeImageRef NativeRef;
 		Image sourceImage;
-		 
+		BitmapImage cachedBitmap;
+
 		static readonly object NoBackend = new object ();
 
 		internal Image (object backend): base (backend)
@@ -57,7 +58,7 @@ namespace Xwt.Drawing
 				Init ();
 			}
 			else
-				sourceImage = image;
+				sourceImage = image.sourceImage ?? image;
 		}
 
 		protected Image (Toolkit toolkit): base (NoBackend, toolkit)
@@ -126,15 +127,6 @@ namespace Xwt.Drawing
 		public static Image FromMultipleSizes (params Image[] images)
 		{
 			return new ImageSet (images);
-		}
-
-		public BitmapImage ToBitmap ()
-		{
-			var size = GetFixedSize ();
-			if (sourceImage != null)
-				return sourceImage.ToBitmap (size);
-			else
-				return ToBitmap (size);
 		}
 
 		internal virtual object SelectedBackend {
@@ -258,10 +250,30 @@ namespace Xwt.Drawing
 			};
 		}
 
+		public BitmapImage ToBitmap ()
+		{
+			var size = GetFixedSize ();
+			var bmp = GetCachedBitmap (size);
+			if (bmp != null)
+				return bmp;
+
+			if (sourceImage != null)
+				bmp = sourceImage.ToBitmap (size);
+			else
+				bmp = ToBitmap (size);
+
+			return cachedBitmap = bmp;
+		}
+		
 		BitmapImage ToBitmap (Size size)
 		{
-			// TODO: Caching
-			return GenerateBitmap (size);
+			// Don't cache the bitmap here since this method may be called by other image instances
+			return GetCachedBitmap (size) ?? GenerateBitmap (size);
+		}
+		
+		BitmapImage GetCachedBitmap (Size size)
+		{
+			return cachedBitmap != null && size == cachedBitmap.Size ? cachedBitmap : null;
 		}
 		
 		protected virtual BitmapImage GenerateBitmap (Size size)

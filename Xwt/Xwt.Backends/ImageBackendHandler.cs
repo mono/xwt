@@ -60,13 +60,34 @@ namespace Xwt.Backends
 		public abstract object LoadFromStream (Stream stream);
 
 		public abstract Image GetStockIcon (string id);
-		
+
+		/// <summary>
+		/// Determines whether this instance is a bitmap
+		/// </summary>
+		/// <param name="handle">Image handle</param>
 		public abstract bool IsBitmap (object handle);
 
+		/// <summary>
+		/// Converts an image to a bitmap of the specified size
+		/// </summary>
+		/// <returns>The bitmap.</returns>
+		/// <param name="handle">Image handle.</param>
+		/// <param name="width">Width.</param>
+		/// <param name="height">Height.</param>
 		public abstract object ConvertToBitmap (object handle, double width, double height);
-		
+
+		/// <summary>
+		/// Returns True if the image has multiple representations of different sizes.
+		/// </summary>
+		/// <param name="handle">Image handle.</param>
+		/// <remarks>For example, it would return True for a .ico file which as several representations of the image in different sizes</remarks>
 		public abstract bool HasMultipleSizes (object handle);
-		
+
+		/// <summary>
+		/// Gets the size of an image
+		/// </summary>
+		/// <returns>The size of the image, or a size of (0,0) if there is no known size for the image</returns>
+		/// <param name="handle">Image handle</param>
 		public abstract Size GetSize (object handle);
 		
 		public abstract object ResizeBitmap (object handle, double width, double height);
