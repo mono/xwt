@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class Toolkit
+	public class Toolkit: IFrontend
 	{
 		static Toolkit currentEngine;
 
@@ -57,6 +57,13 @@ namespace Xwt
 
 		internal XwtTaskScheduler Scheduler {
 			get { return scheduler; }
+		}
+
+		object IFrontend.Backend {
+			get { return backend; }
+		}
+		Toolkit IFrontend.ToolkitEngine {
+			get { return this; }
 		}
 
 		private Toolkit ()
