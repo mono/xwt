@@ -118,7 +118,15 @@ namespace Xwt.Mac
 		
 		public override object ChangeOpacity (object backend, double opacity)
 		{
-			throw new NotImplementedException ();
+			//http://stackoverflow.com/a/2868928/578190
+			NSImage img = (NSImage)backend;
+			NSImage newImg = new NSImage (img.Size);
+
+			newImg.LockFocus ();
+			img.Draw (PointF.Empty, RectangleF.Empty, NSCompositingOperation.SourceOver, (float)opacity);
+			newImg.UnlockFocus ();
+
+			return newImg;
 		}
 		
 		static NSImage FromResource (string res)
