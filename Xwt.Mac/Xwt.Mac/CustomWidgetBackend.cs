@@ -54,7 +54,7 @@ namespace Xwt.Mac
 			newView.Frame = view.Bounds;
 			newView.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
 			view.AddSubview (newView);
-			view.SetNeedsDisplayInRect (view.Bounds);
+			view.NeedsDisplay = true;
 		}
 	}
 

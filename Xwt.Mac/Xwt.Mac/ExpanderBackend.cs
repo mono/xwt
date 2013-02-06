@@ -6,133 +6,170 @@ using Xwt.Backends;
 
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 
 namespace Xwt.Mac
 {
-	public class ExpanderBackend : ViewBackend<MacExpander, IExpandEventSink>, IExpanderBackend
+	class ExpanderBackend : ViewBackend<MacExpander, IExpandEventSink>, IExpanderBackend
 	{
 		public ExpanderBackend ()
 		{
-			ViewObject = new MacExpander ();
-			Widget.Expander.DisclosureToggled += (sender, e) => NotifyPreferredSizeChanged ();
 			SetMinSize (10, 25);
+		}
+
+		public override void Initialize ()
+		{
+			ViewObject = new MacExpander (EventSink, ApplicationContext);
 		}
 
 		public string Label {
 			get {
-				return Widget.Expander.Label;
+				return Widget.Title;
 			}
 			set {
-				Widget.Expander.Label = value;
+				Widget.Title = value;
 			}
 		}
 
 		public bool Expanded {
 			get {
-				return Widget.Box.Expanded;
+				return Widget.Expanded;
 			}
 			set {
-				Widget.Box.Expanded = value;
-				Widget.Expander.On = value;
+				Widget.Expanded = value;
+			}
+		}
+
+		public override object Font {
+			get {
+				return Widget.Font;
+			}
+			set {
+				Widget.Font = (NSFont)value;
 			}
 		}
 
 		public void SetContent (IWidgetBackend widget)
 		{
-			Widget.Box.SetFrameSize (new SizeF ((float)widget.GetPreferredWidth ().NaturalSize,
-			                                    (float)widget.GetPreferredHeight ().NaturalSize),
-			                         false);
-			Widget.Box.SetContent (GetWidget (widget));
-			NotifyPreferredSizeChanged ();
-		}
-
-		protected override Size GetNaturalSize ()
-		{
-			return new Size (Math.Max (Widget.Expander.Frame.Width, Widget.Box.Frame.Width),
-			                 Widget.Expander.Frame.Height + Widget.Box.Frame.Height);
+			Widget.SetContent (GetWidget (widget));
 		}
 	}
 
-	public class MacExpander : NSView, IViewObject
+	class MacExpander: WidgetView
 	{
 		ExpanderWidget expander;
-		CollapsibleBox box;
+		NSView content;
 
-		public MacExpander ()
+		public string Title {
+			get { return expander.Title; }
+			set { expander.Title = value; }
+		}
+
+		public NSFont Font {
+			get { return expander.Font; }
+			set { expander.Font = value; }
+		}
+
+		public bool Expanded {
+			get { return expander.On; }
+			set { expander.On = value; }
+		}
+
+		public MacExpander (IExpandEventSink eventSink, ApplicationContext context): base (eventSink, context)
 		{
-			expander = new ExpanderWidget () {
+			expander = new ExpanderWidget {
 				Frame = new RectangleF (0, 0, 80, 21),
 				AutoresizingMask = NSViewResizingMask.WidthSizable
 			};
-			box = new CollapsibleBox () { AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable };
-			box.SetFrameOrigin (new PointF (0, 25));
-			expander.DisclosureToggled += (sender, e) => box.Expanded = expander.On;
+			expander.DisclosureToggled += delegate {
+				Update ();
+				context.InvokeUserCode (delegate {
+					eventSink.OnPreferredSizeChanged ();
+					eventSink.ExpandChanged ();
+				});
+			};
+
+			AutoresizesSubviews = true;
 			AddSubview (expander);
-			AddSubview (box);
+			Update ();
 		}
 
-		public override bool IsFlipped {
-			get {
-				return true;
-			}
-		}
-
-		public ExpanderWidget Expander {
-			get {
-				return expander;
-			}
-		}
-
-		public CollapsibleBox Box {
-			get {
-				return box;
-			}
-		}
-
-		public Widget Frontend { get; set; }
-		
-		public NSView View {
-			get { return this; }
-		}
-		
-		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
+		public void SetContent (NSView widget)
 		{
+			if (content == widget)
+				return;
+			if (content != null) {
+				content.RemoveFromSuperview ();
+				content.AutoresizingMask = NSViewResizingMask.NotSizable;
+				content = null;
+			}
+			if (widget == null)
+				return;
+
+			content = widget;
+			content.SetFrameOrigin (new PointF (0, expander.Frame.Height));
+			AddSubview (content);
+
+			Update ();
+			NeedsDisplay = true;
 		}
 
-		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
+		void Update ()
 		{
+			SizeF contentSize = (content != null) ? content.Frame.Size : SizeF.Empty;
+			SizeF newSize = new SizeF ((float)Math.Max (expander.Frame.Width, contentSize.Width), expander.Frame.Height);
+
+			if (content != null) {
+				if (Expanded) {
+					newSize.Height += contentSize.Height;
+					contentSize.Width = newSize.Width;
+					content.SetFrameSize (contentSize);
+
+					content.Hidden = false;
+					content.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+				} else {
+					content.Hidden = true;
+					content.AutoresizingMask = NSViewResizingMask.NotSizable;
+				}
+			}
+			SetFrameSize (newSize);
 		}
 	}
 
-	public class ExpanderWidget : NSView
+	class ExpanderWidget : NSView
 	{
 		public event EventHandler DisclosureToggled;
 
-		NSTextView label;
+		NSButton label;
 		NSButton disclosure;
 		NSGradient backgroundGradient;
 		NSColor strokeColor;
 
 		public ExpanderWidget ()
 		{
-			label = new NSTextView () {
-				AutoresizingMask = NSViewResizingMask.MaxYMargin | NSViewResizingMask.WidthSizable,
-				Alignment = NSTextAlignment.Left,
-				Editable = false,
-				Selectable = false,
-				DrawsBackground = false,
-				Frame = new RectangleF (17, 3, 60, 13)
-			};
-			disclosure = new NSButton () {
+			disclosure = new NSButton {
 				BezelStyle = NSBezelStyle.Disclosure,
 				AutoresizingMask = NSViewResizingMask.MaxYMargin,
 				ImagePosition = NSCellImagePosition.ImageOnly,
 				Frame = new RectangleF (5, 4, 13, 13),
-				State = NSCellStateValue.On
+				State = NSCellStateValue.Off
 			};
 			disclosure.SetButtonType (NSButtonType.OnOff);
+			disclosure.Activated += delegate {
+				if (DisclosureToggled != null)
+					DisclosureToggled (this, EventArgs.Empty);
+			};
 
-			disclosure.AddObserver (this, new NSString ("cell.state"), NSKeyValueObservingOptions.New, IntPtr.Zero);
+			label = new NSButton {
+				Bordered = false,
+				AutoresizingMask = NSViewResizingMask.MaxYMargin | NSViewResizingMask.WidthSizable,
+				Alignment = NSTextAlignment.Left,
+				Frame = new RectangleF (17, 3, 60, 13),
+				Target = disclosure,
+				Action = new Selector ("performClick:")
+			};
+			label.SetButtonType (NSButtonType.MomentaryChange);
+
 			AutoresizesSubviews = true;
 			backgroundGradient = new NSGradient (NSColor.FromCalibratedRgba (0.93f, 0.93f, 0.97f, 1.0f),
 			                                     NSColor.FromCalibratedRgba (0.74f, 0.76f, 0.83f, 1.0f));
@@ -142,18 +179,21 @@ namespace Xwt.Mac
 			AddSubview (disclosure);
 		}
 
-		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
-		{
-			if (DisclosureToggled != null)
-				DisclosureToggled (this, EventArgs.Empty);
-		}
-
-		public string Label {
+		public string Title {
 			get {
-				return label.Value;
+				return label.Title;
 			}
 			set {
-				label.Value = value;
+				label.Title = value;
+			}
+		}
+
+		public NSFont Font {
+			get {
+				return label.Font;
+			}
+			set {
+				label.Font = value;
 			}
 		}
 
@@ -172,79 +212,6 @@ namespace Xwt.Mac
 			if (dirtyRect == Frame) {
 				strokeColor.SetStroke ();
 				NSBezierPath.StrokeRect (dirtyRect);
-			}
-		}
-	}
-
-	public class CollapsibleBox : NSBox
-	{
-		internal const float DefaultCollapsedHeight = 1f;
-		bool expanded;
-		float otherHeight;
-
-		public CollapsibleBox ()
-		{
-			expanded = true;
-			otherHeight = DefaultCollapsedHeight;
-			TitlePosition = NSTitlePosition.NoTitle;
-			BorderType = NSBorderType.NoBorder;
-			BoxType = NSBoxType.NSBoxPrimary;
-			ContentViewMargins = new SizeF (0, 0);
-		}
-
-		public void SetContent (NSView view)
-		{
-			ContentView = view;
-		}
-
-		public bool Expanded {
-			get { return expanded; }
-			set {
-				SetExpanded (value, false);
-			}
-		}
-
-		public void SetExpanded (bool value, bool animate)
-		{
-			if (expanded != value) {
-				expanded = value;
-				var frameSize = Frame.Size;
-				SizeF newFrameSize = new SizeF (frameSize.Width, otherHeight);
-				otherHeight = frameSize.Height;
-				SetFrameSize (newFrameSize, animate);
-			}
-		}
-
-		public override bool IsFlipped {
-			get {
-				return true;
-			}
-		}
-
-		RectangleF FrameForNewSizePinnedToTopLeft (SizeF newFrameSize)
-		{
-			var frame = Frame;
-			frame.Size = newFrameSize;
-			return frame;
-		}
-
-		public void SetFrameSize (SizeF newFrameSize, bool animating)
-		{
-			RectangleF newFrame = FrameForNewSizePinnedToTopLeft (newFrameSize);
-			if (animating) {
-				NSAnimation animation = new NSViewAnimation (new [] {
-					NSDictionary.FromObjectsAndKeys (
-					    new object[] { this, NSValue.FromRectangleF (Frame), NSValue.FromRectangleF (newFrame) },
-						new object[] { NSViewAnimation.TargetKey, NSViewAnimation.StartFrameKey, NSViewAnimation.EndFrameKey }
-					)
-				});
-				animation.AnimationBlockingMode = NSAnimationBlockingMode.Nonblocking;
-				animation.Duration = 0.25;
-				animation.StartAnimation ();
-			} else {
-				Superview.SetNeedsDisplayInRect (Frame);
-				Frame = newFrame;
-				NeedsDisplay = true;
 			}
 		}
 	}

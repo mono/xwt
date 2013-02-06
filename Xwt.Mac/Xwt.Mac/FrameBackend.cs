@@ -36,9 +36,7 @@ namespace Xwt.Mac
 		
 		public override void Initialize ()
 		{
-			ViewObject = new MacFrame ();
-			Widget.ContentViewMargins = new System.Drawing.SizeF (0,0);
-			Widget.SizeToFit ();
+			ViewObject = new MacFrame (EventSink, ApplicationContext);
 		}
 
 		#region IFrameBackend implementation
@@ -52,7 +50,13 @@ namespace Xwt.Mac
 
 		public void SetContent (IWidgetBackend child)
 		{
+			Widget.ContentView = GetWidget (child);
+		}
+
+		protected override Size GetNaturalSize ()
+		{
 			Widget.SizeToFit ();
+			return base.GetNaturalSize ();
 		}
 
 		public void SetBorderSize (double left, double right, double top, double bottom)
@@ -96,6 +100,16 @@ namespace Xwt.Mac
 	
 	class MacFrame: NSBox, IViewObject
 	{
+		IWidgetEventSink eventSink;
+		ApplicationContext context;
+
+		public MacFrame (IWidgetEventSink eventSink, ApplicationContext context)
+		{
+			Title = "";
+			this.eventSink = eventSink;
+			this.context = context;
+		}
+
 		#region IViewObject implementation
 		public NSView View {
 			get {
@@ -106,6 +120,14 @@ namespace Xwt.Mac
 		public Widget Frontend { get; set; }
 		
 		#endregion
+
+		public override void SetFrameSize (System.Drawing.SizeF newSize)
+		{
+			base.SetFrameSize (newSize);
+			context.InvokeUserCode (delegate {
+				eventSink.OnBoundsChanged ();
+			});
+		}
 	}
 }
 
