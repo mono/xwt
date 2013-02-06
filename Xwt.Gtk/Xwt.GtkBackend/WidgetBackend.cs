@@ -367,7 +367,8 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				customBackgroundColor = value;
-				Widget.ModifyBg (Gtk.StateType.Normal, Util.ToGdkColor (value));
+				AllocEventBox ();
+				EventsRootWidget.ModifyBg (Gtk.StateType.Normal, Util.ToGdkColor (value));
 			}
 		}
 		
