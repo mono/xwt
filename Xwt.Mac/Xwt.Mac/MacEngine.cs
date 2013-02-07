@@ -167,6 +167,7 @@ namespace Xwt.Mac
 		public override object GetNativeWidget (Widget w)
 		{
 			ViewBackend wb = (ViewBackend)Toolkit.GetBackend (w);
+			wb.SetAutosizeMode (true);
 			return wb.Widget;
 		}
 

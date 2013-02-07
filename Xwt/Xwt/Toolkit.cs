@@ -279,13 +279,13 @@ namespace Xwt
 
 		public Widget WrapWidget (object nativeWidget)
 		{
-			if (nativeWidget is Widget) {
-				Widget w = (Widget)nativeWidget;
-				if (w.Surface.ToolkitEngine == this)
-					return w;
-				nativeWidget = w.Surface.ToolkitEngine.GetNativeWidget (w);
+			var externalWidget = nativeWidget as Widget;
+			if (externalWidget != null) {
+				if (externalWidget.Surface.ToolkitEngine == this)
+					return externalWidget;
+				nativeWidget = externalWidget.Surface.ToolkitEngine.GetNativeWidget (externalWidget);
 			}
-			return new EmbeddedNativeWidget (nativeWidget);
+			return new EmbeddedNativeWidget (nativeWidget, externalWidget);
 		}
 
 		public Image WrapImage (object backend)

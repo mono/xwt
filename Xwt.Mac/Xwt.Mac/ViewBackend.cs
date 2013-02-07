@@ -338,7 +338,7 @@ namespace Xwt.Mac
 		{
 			var ws = Frontend.Surface.GetPreferredWidth ();
 			var h = Frontend.Surface.GetPreferredHeightForWidth (ws.NaturalSize);
-			Widget.SetWidgetBounds (new Rectangle (0, 0, ws.NaturalSize, h.NaturalSize));
+			Widget.SetFrameSize (new SizeF ((float)ws.NaturalSize, (float)h.NaturalSize));
 		}
 		
 		public virtual void EnableEvent (object eventId)

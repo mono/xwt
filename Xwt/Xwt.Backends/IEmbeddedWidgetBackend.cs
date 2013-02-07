@@ -36,6 +36,7 @@ namespace Xwt.Backends
 	internal class EmbeddedNativeWidget: Widget
 	{
 		object nativeWidget;
+		Widget sourceWidget;
 
 		class EmbeddedNativeWidgetBackendHost: WidgetBackendHost<EmbeddedNativeWidget,IEmbeddedWidgetBackend>
 		{
@@ -51,11 +52,42 @@ namespace Xwt.Backends
 			return new EmbeddedNativeWidgetBackendHost ();
 		}
 
-		public EmbeddedNativeWidget (object nativeWidget)
+		public EmbeddedNativeWidget (object nativeWidget, Widget sourceWidget)
 		{
 			this.nativeWidget = nativeWidget;
 		}
 
+		protected override WidgetSize OnGetPreferredWidth ()
+		{
+			if (sourceWidget != null)
+				return sourceWidget.Surface.GetPreferredWidth ();
+			else
+				return base.OnGetPreferredWidth ();
+		}
+
+		protected override WidgetSize OnGetPreferredHeight ()
+		{
+			if (sourceWidget != null)
+				return sourceWidget.Surface.GetPreferredHeight ();
+			else
+				return base.OnGetPreferredHeight ();
+		}
+
+		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
+		{
+			if (sourceWidget != null)
+				return sourceWidget.Surface.GetPreferredHeightForWidth (width);
+			else
+				return base.OnGetPreferredHeightForWidth (width);
+		}
+
+		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
+		{
+			if (sourceWidget != null)
+				return sourceWidget.Surface.GetPreferredWidthForHeight (height);
+			else
+				return base.OnGetPreferredWidthForHeight (height);
+		}
 		
 	}
 }
