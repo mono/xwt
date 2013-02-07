@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -41,16 +42,18 @@ namespace Xwt.Mac
 			ViewObject = new CustomNSImageView ();
 		}
 
-		public void SetImage (object nativeImage)
+		public void SetImage (Image image)
 		{
-			if (nativeImage == null)
+			if (image == null)
 				throw new ArgumentNullException ("nativeImage");
 
-			NSImage image = nativeImage as NSImage;
-			if (image == null)
+			NSImage nativeImage = Toolkit.GetBackend (image) as NSImage;
+			if (nativeImage == null)
+				nativeImage = Toolkit.GetBackend (image.ToBitmap ()) as NSImage;
+			if (nativeImage == null)
 				throw new ArgumentException ("nativeImage is not of the expected type", "nativeImage");
 
-			Widget.Image = image;
+			Widget.Image = nativeImage;
 			Widget.SetFrameSize (Widget.Image.Size);
 		}
 	}
