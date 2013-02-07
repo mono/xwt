@@ -38,10 +38,8 @@ namespace Xwt
 		static ToolkitEngineBackend engine;
 		static UILoop mainLoop;
 
-		static readonly TaskScheduler taskScheduler = new XwtTaskScheduler ();
-
 		public static TaskScheduler UITaskScheduler {
-			get { return taskScheduler; }
+			get { return Toolkit.CurrentEngine.Scheduler; }
 		}
 
 		public static UILoop MainLoop {

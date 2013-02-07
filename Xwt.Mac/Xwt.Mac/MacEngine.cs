@@ -64,6 +64,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.ILabelBackend, LabelBackend> ();
 			RegisterBackend <Xwt.Backends.IBoxBackend, BoxBackend> ();
 			RegisterBackend <Xwt.Backends.IButtonBackend, ButtonBackend> ();
+			RegisterBackend <Xwt.Backends.IMenuButtonBackend, MenuButtonBackend> ();
 			RegisterBackend <Xwt.Backends.INotebookBackend, NotebookBackend> ();
 			RegisterBackend <Xwt.Backends.ITreeViewBackend, TreeViewBackend> ();
 			RegisterBackend <Xwt.Backends.IListViewBackend, ListViewBackend> ();

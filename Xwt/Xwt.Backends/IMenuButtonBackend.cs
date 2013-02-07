@@ -31,7 +31,7 @@ namespace Xwt.Backends
 	{
 	}
 	
-	public interface IMenuButtonEventSink
+	public interface IMenuButtonEventSink: IButtonEventSink
 	{
 		IMenuBackend OnCreateMenu ();
 	}

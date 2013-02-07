@@ -31,12 +31,13 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class Toolkit
+	public class Toolkit: IFrontend
 	{
 		static Toolkit currentEngine;
 
 		ToolkitEngineBackend backend;
 		ApplicationContext context;
+		XwtTaskScheduler scheduler;
 
 		int inUserCode;
 		Queue<Action> exitActions = new Queue<Action> ();
@@ -56,9 +57,21 @@ namespace Xwt
 			get { return backend; }
 		}
 
+		internal XwtTaskScheduler Scheduler {
+			get { return scheduler; }
+		}
+
+		object IFrontend.Backend {
+			get { return backend; }
+		}
+		Toolkit IFrontend.ToolkitEngine {
+			get { return this; }
+		}
+
 		private Toolkit ()
 		{
 			context = new ApplicationContext (this);
+			scheduler = new XwtTaskScheduler (this);
 		}
 
 		public static Toolkit Load (string fullTypeName)

@@ -24,11 +24,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
 using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	public class SeparatorMenuItemBackend: MenuItemBackend
+	public class SeparatorMenuItemBackend: MenuItemBackend, ISeparatorMenuItemBackend
 	{
 		public SeparatorMenuItemBackend (): base (NSMenuItem.SeparatorItem)
 		{

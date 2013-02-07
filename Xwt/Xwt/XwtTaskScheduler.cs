@@ -37,10 +37,17 @@ namespace Xwt
 	/// </summary>
 	class XwtTaskScheduler : TaskScheduler
 	{
+		Toolkit toolkit;
+
+		public XwtTaskScheduler (Toolkit toolkit)
+		{
+			this.toolkit = toolkit;
+		}
+
 		protected override void QueueTask (Task task)
 		{
 			if (Application.UIThread != null)
-				Xwt.Application.Invoke (() => TryExecuteTask (task));
+				Xwt.Application.Invoke (() => toolkit.Invoke (() => TryExecuteTask (task)));
 			else
 				TryExecuteTask (task);
 		}

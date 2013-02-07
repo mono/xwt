@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt;
+using Xwt.Drawing;
 
 namespace Samples
 {
@@ -39,6 +40,7 @@ namespace Samples
 			var content = new VBox ();
 			content.PackStart (new Label () { Text = "Label 1" });
 			content.PackStart (new Button () { Label = "Button 2" });
+			content.BackgroundColor = Colors.Gray;
 			expander.Content = content;
 			PackStart (expander);
 		}

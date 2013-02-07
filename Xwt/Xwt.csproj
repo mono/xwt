@@ -372,6 +372,8 @@
     <Compile Include="Xwt\ListViewRowEventArgs.cs" />
     <Compile Include="Xwt\TreeViewRowEventArgs.cs" />
     <Compile Include="Xwt\CanvasCellView.cs" />
+    <Compile Include="Xwt\SegmentedButton.cs" />
+    <Compile Include="Xwt.Backends\ISegmentedButtonBackend.cs" />
     <Compile Include="Xwt.Backends\SystemBackend.cs" />
     <Compile Include="Xwt.Backends\WindowsSystemBackend.cs" />
     <Compile Include="Xwt.Backends\MacSystemBackend.cs" />

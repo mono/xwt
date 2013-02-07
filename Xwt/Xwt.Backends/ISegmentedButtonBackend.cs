@@ -1,10 +1,8 @@
-// 
-// ToggleButtonBackend.cs
 //  
 // Author:
-//       Lluis Sanchez Gual <lluis@xamarin.com>
+//       Jérémie Laval <jeremie.laval@xamarin.com>
 // 
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2013 Xamarin Inc
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,28 +21,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
-using MonoMac.AppKit;
-using Xwt.Backends;
 
-namespace Xwt.Mac
+namespace Xwt.Backends
 {
-	public class ToggleButtonBackend: ButtonBackend, IToggleButtonBackend
+	public interface ISegmentedButtonBackend : IWidgetBackend
 	{
-		public bool Active {
-			get { return Widget.State == NSCellStateValue.On; }
-			set { Widget.State = value? NSCellStateValue.On : NSCellStateValue.Off; }
-		}
-
-		public ToggleButtonBackend ()
-		{
-		}
-		
-		public override void Initialize ()
-		{
-			base.Initialize ();
-			Widget.SetButtonType (MonoMac.AppKit.NSButtonType.Toggle);
-		}
+		void AddChildButton (int index, Button button);
+		void RemoveChildButton (int index);
+		void ReplaceChildButton (int index, Button button);
+		int Spacing { get; set; }
 	}
 }
 
