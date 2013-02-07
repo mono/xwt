@@ -114,7 +114,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		public Widget Frontend { get; set; }
+		public ViewBackend Backend { get; set; }
 		
 		public override void DidChange (MonoMac.Foundation.NSNotification notification)
 		{

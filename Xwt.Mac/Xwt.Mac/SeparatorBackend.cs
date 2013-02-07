@@ -49,7 +49,7 @@ namespace Xwt.Mac
 			BoxType = NSBoxType.NSBoxSeparator;
 		}
 		
-		public Widget Frontend { get; set; }
+		public ViewBackend Backend { get; set; }
 		
 		public NSView View {
 			get { return this; }

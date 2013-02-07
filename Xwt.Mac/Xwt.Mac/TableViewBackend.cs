@@ -225,7 +225,7 @@ namespace Xwt.Mac
 	
 	class ScrollView: NSScrollView, IViewObject
 	{
-		public Widget Frontend { get; set; }
+		public ViewBackend Backend { get; set; }
 		public NSView View {
 			get { return this; }
 		}

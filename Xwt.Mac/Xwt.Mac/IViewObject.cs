@@ -32,7 +32,7 @@ namespace Xwt.Mac
 	public interface IViewObject
 	{
 		NSView View { get; }
-		Widget Frontend { get; set; }
+		ViewBackend Backend { get; set; }
 	}
 }
 

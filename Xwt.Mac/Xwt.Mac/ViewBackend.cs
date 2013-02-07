@@ -62,8 +62,6 @@ namespace Xwt.Mac
 		{
 			ApplicationContext = context;
 			this.frontend = (Widget) frontend;
-			if (viewObject != null)
-				viewObject.Frontend = (Widget) frontend;
 		}
 		
 		void IWidgetBackend.Initialize (IWidgetEventSink sink)
@@ -115,7 +113,7 @@ namespace Xwt.Mac
 			get { return viewObject; }
 			set {
 				viewObject = value;
-				viewObject.Frontend = frontend;
+				viewObject.Backend = this;
 			}
 		}
 		
@@ -249,8 +247,9 @@ namespace Xwt.Mac
 		
 		protected virtual Size GetNaturalSize ()
 		{
-//			double w1 = Widget.FittingSize.Width;
-			return new Size (Widget.WidgetWidth(), Widget.WidgetHeight ());
+			var s = Widget.FittingSize;
+			return new Size (s.Width, s.Height);
+//			return new Size (Widget.WidgetWidth(), Widget.WidgetHeight ());
 		}
 
 		public WidgetSize GetPreferredWidth ()
@@ -385,7 +384,7 @@ namespace Xwt.Mac
 			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
 			if (ob == null)
 				return NSDragOperation.None;
-			var backend = (ViewBackend) Toolkit.GetBackend (ob.Frontend);
+			var backend = ob.Backend;
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
@@ -418,7 +417,7 @@ namespace Xwt.Mac
 		{
 			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
 			if (ob != null) {
-				var backend = (ViewBackend) Toolkit.GetBackend (ob.Frontend);
+				var backend = ob.Backend;
 				backend.ApplicationContext.InvokeUserCode (delegate {
 					backend.eventSink.OnDragLeave (EventArgs.Empty);
 				});
@@ -431,7 +430,7 @@ namespace Xwt.Mac
 			if (ob == null)
 				return false;
 			
-			var backend = (ViewBackend) Toolkit.GetBackend (ob.Frontend);
+			var backend = ob.Backend;
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
@@ -454,7 +453,7 @@ namespace Xwt.Mac
 			if (ob == null)
 				return false;
 			
-			var backend = (ViewBackend) Toolkit.GetBackend (ob.Frontend);
+			var backend = ob.Backend;
 			
 			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);

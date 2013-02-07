@@ -69,7 +69,7 @@ namespace Xwt.Mac
 			this.eventSink = eventSink;
 		}
 		
-		public Widget Frontend { get; set; }
+		public ViewBackend Backend { get; set; }
 		
 		public NSView View {
 			get { return this; }
@@ -80,13 +80,13 @@ namespace Xwt.Mac
 				return true;
 			}
 		}
-		
+
 		public override void DrawRect (System.Drawing.RectangleF dirtyRect)
 		{
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 
 			//fill BackgroundColor
-			ctx.SetFillColor (Frontend.BackgroundColor.ToCGColor ());
+			ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
 			ctx.FillRect (Bounds);
 		}
 		

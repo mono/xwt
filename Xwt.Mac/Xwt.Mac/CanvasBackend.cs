@@ -102,7 +102,7 @@ namespace Xwt.Mac
 				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 
 				//fill BackgroundColor
-				ctx.SetFillColor (Frontend.BackgroundColor.ToCGColor ());
+				ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
 				ctx.FillRect (Bounds);
 
 				var backend = new CGContextBackend {
