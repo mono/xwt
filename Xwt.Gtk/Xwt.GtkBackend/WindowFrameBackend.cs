@@ -114,8 +114,13 @@ namespace Xwt.GtkBackend
 		public Rectangle Bounds {
 			get {
 				int w, h, x, y;
-				Window.GetPosition (out x, out y);
-				Window.GetSize (out w, out h);
+				if (Window.GdkWindow != null) {
+					Window.GdkWindow.GetOrigin (out x, out y);
+					Window.GdkWindow.GetSize (out w, out h);
+				} else {
+					Window.GetPosition (out x, out y);
+					Window.GetSize (out w, out h);
+				}
 				return new Rectangle (x, y, w, h);
 			}
 			set {
@@ -190,6 +195,10 @@ namespace Xwt.GtkBackend
 					Window.ConfigureEvent += HandleConfigureEvent; break;
 				case WindowFrameEvent.CloseRequested:
 					Window.DeleteEvent += HandleCloseRequested; break;
+				case WindowFrameEvent.Shown:
+					Window.Shown += HandleShown; break;
+				case WindowFrameEvent.Hidden:
+					Window.Hidden += HandleHidden; break;
 				}
 			}
 		}
@@ -202,8 +211,26 @@ namespace Xwt.GtkBackend
 					Window.ConfigureEvent -= HandleConfigureEvent; break;
 				case WindowFrameEvent.CloseRequested:
 					Window.DeleteEvent -= HandleCloseRequested; break;
+				case WindowFrameEvent.Shown:
+					Window.Shown -= HandleShown; break;
+				case WindowFrameEvent.Hidden:
+					Window.Hidden -= HandleHidden; break;
 				}
 			}
+		}
+		
+		void HandleHidden (object sender, EventArgs e)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnHidden ();
+			});
+		}
+
+		void HandleShown (object sender, EventArgs e)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnShown ();
+			});
 		}
 
 		[GLib.ConnectBefore]
