@@ -78,9 +78,9 @@ namespace Xwt.Drawing
 			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, srcX, srcY, width, height));
 		}
 		
-		public BitmapImage ChangeOpacity (double opacity)
+		public new BitmapImage WithAlpha (double alpha)
 		{
-			return new BitmapImage (ToolkitEngine.ImageBackendHandler.ChangeBitmapOpacity (Backend, opacity));
+			return new BitmapImage (ToolkitEngine.ImageBackendHandler.ChangeBitmapOpacity (Backend, alpha));
 		}
 	}
 }

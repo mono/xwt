@@ -67,11 +67,13 @@ namespace Xwt.Drawing
 			img.DrawInContext (ctx, x, y, width, height);
 		}
 
-		protected override BitmapImage GenerateBitmap (Size size)
+		protected override BitmapImage GenerateBitmap (Size size, double alpha)
 		{
 			var img = SelectImage (size.Width, size.Height);
 			if (img.Size.Width != size.Width || img.Size.Height != size.Height)
 				img = img.WithSize (size);
+			if (alpha != 1)
+				img = img.WithAlpha (alpha);
 			return img.ToBitmap ();
 		}
 	}

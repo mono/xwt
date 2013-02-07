@@ -38,6 +38,7 @@ namespace Xwt.Drawing
 		internal NativeImageRef NativeRef;
 		Image sourceImage;
 		BitmapImage cachedBitmap;
+		internal double requestedAlpha = 1;
 
 		static readonly object NoBackend = new object ();
 
@@ -150,6 +151,14 @@ namespace Xwt.Drawing
 			}
 		}
 		
+		public Image WithAlpha (double alpha)
+		{
+			return new Image (this) {
+				requestedSize = requestedSize,
+				requestedAlpha = alpha
+			};
+		}
+		
 		public Image WithSize (double width, double height)
 		{
 			return new Image (this) {
@@ -253,45 +262,52 @@ namespace Xwt.Drawing
 		public BitmapImage ToBitmap ()
 		{
 			var size = GetFixedSize ();
-			var bmp = GetCachedBitmap (size);
+			var bmp = GetCachedBitmap (size, requestedAlpha);
 			if (bmp != null)
 				return bmp;
 
 			if (sourceImage != null)
-				bmp = sourceImage.ToBitmap (size);
+				bmp = sourceImage.ToBitmap (size, requestedAlpha);
 			else
-				bmp = ToBitmap (size);
+				bmp = ToBitmap (size, requestedAlpha);
 
 			return cachedBitmap = bmp;
 		}
 		
-		BitmapImage ToBitmap (Size size)
+		BitmapImage ToBitmap (Size size, double alpha)
 		{
 			// Don't cache the bitmap here since this method may be called by other image instances
-			return GetCachedBitmap (size) ?? GenerateBitmap (size);
+			return GetCachedBitmap (size, alpha) ?? GenerateBitmap (size, alpha);
 		}
 		
-		BitmapImage GetCachedBitmap (Size size)
+		BitmapImage GetCachedBitmap (Size size, double alpha)
 		{
-			return cachedBitmap != null && size == cachedBitmap.Size ? cachedBitmap : null;
+			return cachedBitmap != null && size == cachedBitmap.Size && this.requestedAlpha == alpha ? cachedBitmap : null;
 		}
 		
-		protected virtual BitmapImage GenerateBitmap (Size size)
+		protected virtual BitmapImage GenerateBitmap (Size size, double alpha)
 		{
 			if (Backend != NoBackend) {
-				if (ToolkitEngine.ImageBackendHandler.IsBitmap (Backend)) {
-					if (size == ToolkitEngine.ImageBackendHandler.GetSize (Backend)) {
-						// The backend can be shared
-						return new BitmapImage (this);
+				object bmp = Backend;
+				if (ToolkitEngine.ImageBackendHandler.IsBitmap (bmp)) {
+					if (size == ToolkitEngine.ImageBackendHandler.GetSize (bmp)) {
+						if (alpha == 1)
+							// The backend can be shared
+							return new BitmapImage (this);
 					}
-					else {
+					else
 						// Create a new backend with the new size
-						var bmp = ToolkitEngine.ImageBackendHandler.ResizeBitmap (Backend, size.Width, size.Height);
-						return new BitmapImage (bmp);
-					}
+						bmp = ToolkitEngine.ImageBackendHandler.ResizeBitmap (Backend, size.Width, size.Height);
 				}
 				else
-					return new BitmapImage (ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, size.Width, size.Height));
+					bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, size.Width, size.Height);
+
+				if (alpha != 1) {
+					var oldBmp = bmp;
+					bmp = ToolkitEngine.ImageBackendHandler.ChangeBitmapOpacity (bmp, alpha);
+					ToolkitEngine.ImageBackendHandler.Dispose (oldBmp);
+				}
+				return new BitmapImage (bmp);
 			}
 			
 			throw new NotSupportedException ();

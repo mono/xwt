@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using Xwt.Backends;
 
 
@@ -35,6 +36,7 @@ namespace Xwt.Drawing
 		Pattern pattern;
 		Font font;
 		double globalAlpha = 1;
+		Stack<double> alphaStack = new Stack<double> ();
 		
 		internal Context (object backend, Toolkit toolkit): base (backend, toolkit, toolkit.ContextBackendHandler)
 		{
@@ -50,11 +52,14 @@ namespace Xwt.Drawing
 		public void Save ()
 		{
 			handler.Save (Backend);
+			alphaStack.Push (globalAlpha);
 		}
 		
 		public void Restore ()
 		{
 			handler.Restore (Backend);
+			if (alphaStack.Count > 0)
+				globalAlpha = alphaStack.Pop ();
 		}
 		
 		public double GlobalAlpha {
@@ -156,7 +161,7 @@ namespace Xwt.Drawing
 				NewPath ();
 				Rectangle (x, y, width, height);
 				Clip ();
-				GlobalAlpha = alpha;
+				GlobalAlpha *= alpha;
 				img.DrawInContext (this, x, y, width, height);
 			} finally {
 				Restore ();
@@ -200,7 +205,7 @@ namespace Xwt.Drawing
 			if (img.CanDrawInContext (img.Size.Width, img.Size.Height)) {
 				try {
 					Save ();
-					GlobalAlpha = alpha;
+					GlobalAlpha *= alpha;
 
 					NewPath ();
 					Rectangle (destRect);

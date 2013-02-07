@@ -33,11 +33,13 @@ namespace Xwt.Drawing
 		{
 		}
 
-		protected override BitmapImage GenerateBitmap (Size size)
+		protected override BitmapImage GenerateBitmap (Size size, double alpha)
 		{
-			ImageBuilder ib = new ImageBuilder ((int)size.Width, (int)size.Height);
-			OnDraw (ib.Context, new Rectangle (0, 0, size.Width, size.Height));
-			return ib.ToImage ().ToBitmap ();
+			using (ImageBuilder ib = new ImageBuilder ((int)size.Width, (int)size.Height)) {
+				ib.Context.GlobalAlpha = alpha;
+				OnDraw (ib.Context, new Rectangle (0, 0, size.Width, size.Height));
+				return ib.ToImage ().ToBitmap ();
+			}
 		}
 
 		internal override bool CanDrawInContext (double width, double height)
@@ -47,7 +49,10 @@ namespace Xwt.Drawing
 
 		internal override void DrawInContext (Context ctx, double x, double y, double width, double height)
 		{
+			var oldAlpha = ctx.GlobalAlpha;
+			ctx.GlobalAlpha *= requestedAlpha;
 			OnDraw (ctx, new Rectangle (x, y, width, height));
+			ctx.GlobalAlpha = oldAlpha;
 		}
 
 		protected virtual void OnDraw (Context ctx, Rectangle bounds)
