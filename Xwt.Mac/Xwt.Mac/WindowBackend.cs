@@ -358,6 +358,8 @@ namespace Xwt.Mac
 		
 		public void SetMinSize (Size s)
 		{
+			var r = FrameRectFor (new RectangleF (0, 0, (float)s.Width, (float)s.Height));
+			MinSize = r.Size;
 		}
 
 		public void SetIcon (object imageBackend)

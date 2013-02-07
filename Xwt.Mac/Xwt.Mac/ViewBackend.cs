@@ -291,19 +291,17 @@ namespace Xwt.Mac
 		public virtual WidgetSize GetPreferredWidth ()
 		{
 			var w = GetNaturalSize ().Width;
-			var s = new Xwt.WidgetSize (w, w);
-			if (minWidth != -1 && s.MinSize > minWidth)
-				s.MinSize = minWidth;
-			return s;
+			if (minWidth != -1 && minWidth > w)
+				w = minWidth;
+			return new Xwt.WidgetSize (w, w);
 		}
 		
 		public virtual WidgetSize GetPreferredHeight ()
 		{
 			var h = GetNaturalSize ().Height;
-			var s = new Xwt.WidgetSize (h, h);
-			if (minHeight != -1 && s.MinSize > minHeight)
-				s.MinSize = minHeight;
-			return s;
+			if (minHeight != -1 && minHeight > h)
+				h = minHeight;
+			return new Xwt.WidgetSize (h, h);
 		}
 
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
