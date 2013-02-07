@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -41,14 +42,16 @@ namespace Xwt.GtkBackend
 			set { base.Widget = value; }
 		}
 		
-		public void SetImage (object nativeImage)
+		public void SetImage (Image image)
 		{
-			if (nativeImage == null)
+			if (image == null)
 				throw new ArgumentNullException ("nativeImage");
 
-			Gdk.Pixbuf pbuf = nativeImage as Gdk.Pixbuf;
+			Gdk.Pixbuf pbuf = Toolkit.GetBackend (image) as Gdk.Pixbuf;
 			if (pbuf == null)
-				throw new ArgumentException ("nativeImage is not of the expected type", "nativeImage");
+				pbuf = Toolkit.GetBackend (image.ToBitmap ()) as Gdk.Pixbuf;
+			if (pbuf == null)
+				throw new ArgumentException ("image is not of the expected type", "image");
 
 			Widget.Pixbuf = pbuf;
 		}
