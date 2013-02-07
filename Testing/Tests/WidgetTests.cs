@@ -172,10 +172,7 @@ namespace Xwt
 				win.Show ();
 				win.Present ();
 
-	//				for (int n=0; n < 500; n++) {
-					Application.MainLoop.DispatchPendingEvents ();
-	//					System.Threading.Thread.Sleep (10);
-	//				}
+				Application.MainLoop.DispatchPendingEvents ();
 
 				e.SetFocus ();
 
@@ -190,18 +187,24 @@ namespace Xwt
 				};
 
 				w.SetFocus ();
-				Assert.IsTrue (w.HasFocus);
-				Assert.AreEqual (1, gotFocus);
 
-				int lostFocus = 0;
-				w.LostFocus += delegate {
-					lostFocus++;
-				};
+				if (w.CanGetFocus) {
+					Assert.IsTrue (w.HasFocus);
+					Assert.AreEqual (1, gotFocus);
 
-				e.SetFocus ();
-
-				Assert.IsFalse (w.HasFocus);
-	//			Assert.AreEqual (1, lostFocus);
+					int lostFocus = 0;
+					w.LostFocus += delegate {
+						lostFocus++;
+					};
+					
+					e.SetFocus ();
+					
+					Assert.IsFalse (w.HasFocus);
+					//			Assert.AreEqual (1, lostFocus);
+				} else {
+					Assert.IsFalse (w.HasFocus);
+					Assert.AreEqual (0, gotFocus);
+				}
 			}
 		}
 

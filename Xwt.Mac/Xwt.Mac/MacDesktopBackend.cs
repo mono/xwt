@@ -76,6 +76,14 @@ namespace Xwt.Mac
 			return new Rectangle (r.X, r.Y, r.Width, r.Height);
 		}
 
+		public static System.Drawing.RectangleF FromDesktopRect (Rectangle r)
+		{
+			r.Y = (float)desktopBounds.Height - r.Y - r.Height;
+			if (desktopBounds.Y < 0)
+				r.Y += (float)desktopBounds.Y;
+			return new System.Drawing.RectangleF ((float)r.X, (float)r.Y, (float)r.Width, (float)r.Height);
+		}
+		
 		public override Rectangle GetScreenBounds (object backend)
 		{
 			var r = ((NSScreen)backend).Frame;

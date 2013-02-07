@@ -43,6 +43,7 @@ namespace Xwt.Mac
 		IWindowFrameEventSink eventSink;
 		Window frontend;
 		ViewBackend child;
+		bool sensitive = true;
 		
 		public WindowBackend (IntPtr ptr): base (ptr)
 		{
@@ -102,9 +103,12 @@ namespace Xwt.Mac
 
 		public bool Sensitive {
 			get {
-				return true;
+				return sensitive;
 			}
 			set {
+				sensitive = value;
+				if (child != null)
+					child.UpdateSensitiveStatus (child.Widget, sensitive);
 			}
 		}
 		
@@ -315,8 +319,9 @@ namespace Xwt.Mac
 				return new Rectangle ((int)r.X, (int)r.Y, (int)r.Width, (int)r.Height);
 			}
 			set {
-				var r = FrameRectFor (new System.Drawing.RectangleF ((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height));
-				SetFrame (r, true);
+				var r = MacDesktopBackend.FromDesktopRect (value);
+				var fr = FrameRectFor (r);
+				SetFrame (fr, true);
 			}
 		}
 		

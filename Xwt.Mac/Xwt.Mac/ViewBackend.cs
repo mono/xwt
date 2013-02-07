@@ -58,7 +58,9 @@ namespace Xwt.Mac
 		WidgetEvent currentEvents;
 		bool autosize;
 		Size lastFittingSize;
-		
+		bool sensitive = true;
+		bool canGetFocus = true;
+
 		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
 		{
 			ApplicationContext = context;
@@ -125,21 +127,53 @@ namespace Xwt.Mac
 		}
 		
 		public virtual bool Sensitive {
-			get { return true; }
-			set { }
+			get { return sensitive; }
+			set {
+				sensitive = value;
+				UpdateSensitiveStatus (Widget, sensitive && ParentIsSensitive ());
+			}
 		}
-		
+
+		bool ParentIsSensitive ()
+		{
+			if (Widget.Superview == null) {
+				var wb = Widget.Window as WindowBackend;
+				return wb == null || wb.Sensitive;
+			}
+			IViewObject parent = Widget.Superview as IViewObject;
+			if (!parent.Backend.Sensitive)
+				return false;
+			return parent.Backend.ParentIsSensitive ();
+		}
+
+		internal void UpdateSensitiveStatus (NSView view, bool parentIsSensitive)
+		{
+			if (view is NSControl)
+				((NSControl)view).Enabled = parentIsSensitive && sensitive;
+
+			foreach (var s in view.Subviews) {
+				if (s is IViewObject)
+					((IViewObject)s).Backend.UpdateSensitiveStatus (s, parentIsSensitive);
+				else
+					UpdateSensitiveStatus (s, sensitive && parentIsSensitive);
+			}
+		}
+
 		public virtual bool CanGetFocus {
-			get { return true; }
-			set { }
+			get { return canGetFocus && Widget.AcceptsFirstResponder (); }
+			set { canGetFocus = value; }
 		}
 		
 		public virtual bool HasFocus {
-			get { return false; }
+			get {
+				return Widget.Window != null && Widget.Window.FirstResponder == Widget;
+			}
 		}
 		
 		public void SetFocus ()
 		{
+			if (Widget.Window != null && CanGetFocus)
+				Widget.Window.MakeFirstResponder (Widget);
 		}
 		
 		public string TooltipText {
@@ -244,7 +278,7 @@ namespace Xwt.Mac
 		{
 			var lo = Widget.ConvertPointToBase (new PointF ((float)widgetCoordinates.X, (float)widgetCoordinates.Y));
 			lo = Widget.Window.ConvertBaseToScreen (lo);
-			return new Point (lo.X, lo.Y);
+			return MacDesktopBackend.ToDesktopRect (new RectangleF (lo.X, lo.Y, 0, 0)).Location;
 		}
 		
 		protected virtual Size GetNaturalSize ()
@@ -340,12 +374,20 @@ namespace Xwt.Mac
 			var h = Frontend.Surface.GetPreferredHeightForWidth (ws.NaturalSize);
 			Widget.SetFrameSize (new SizeF ((float)ws.NaturalSize, (float)h.NaturalSize));
 		}
+
+		NSObject gotFocusObserver;
 		
 		public virtual void EnableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent) {
 				WidgetEvent ev = (WidgetEvent) eventId;
 				currentEvents |= ev;
+				switch (ev) {
+				case WidgetEvent.GotFocus:
+				case WidgetEvent.LostFocus:
+					SetupFocusEvents (Widget.GetType ());
+					break;
+				}
 			}
 		}
 		
@@ -363,8 +405,12 @@ namespace Xwt.Mac
 		static Selector prepareForDragOperationSel = new Selector ("prepareForDragOperation:");
 		static Selector performDragOperationSel = new Selector ("performDragOperation:");
 		static Selector concludeDragOperationSel = new Selector ("concludeDragOperation:");
+		static Selector becomeFirstResponderSel = new Selector ("becomeFirstResponder");
+		static Selector resignFirstResponderSel = new Selector ("resignFirstResponder");
+
 		static HashSet<Type> typesConfiguredForDragDrop = new HashSet<Type> ();
-		
+		static HashSet<Type> typesConfiguredForFocusEvents = new HashSet<Type> ();
+
 		static void SetupForDragDrop (Type type)
 		{
 			lock (typesConfiguredForDragDrop) {
@@ -376,6 +422,17 @@ namespace Xwt.Mac
 					c.AddMethod (prepareForDragOperationSel.Handle, new Func<IntPtr,IntPtr,IntPtr,bool> (PrepareForDragOperation), "B@:@");
 					c.AddMethod (performDragOperationSel.Handle, new Func<IntPtr,IntPtr,IntPtr,bool> (PerformDragOperation), "B@:@");
 					c.AddMethod (concludeDragOperationSel.Handle, new Action<IntPtr,IntPtr,IntPtr> (ConcludeDragOperation), "v@:@");
+				}
+			}
+		}
+
+		static void SetupFocusEvents (Type type)
+		{
+			lock (typesConfiguredForFocusEvents) {
+				if (typesConfiguredForFocusEvents.Add (type)) {
+					Class c = new Class (type);
+					c.AddMethod (becomeFirstResponderSel.Handle, new Func<IntPtr,IntPtr,bool> (OnBecomeFirstResponder), "B@:");
+					c.AddMethod (resignFirstResponderSel.Handle, new Func<IntPtr,IntPtr,bool> (OnResignFirstResponder), "B@:");
 				}
 			}
 		}
@@ -597,7 +654,23 @@ namespace Xwt.Mac
 				return TransferDataType.Rtf;
 			return TransferDataType.FromId (type);
 		}
+
+		static bool OnBecomeFirstResponder (IntPtr sender, IntPtr sel)
+		{
+			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
+			var canGetIt = ob.Backend.canGetFocus;
+			if (canGetIt)
+				ob.Backend.ApplicationContext.InvokeUserCode (ob.Backend.EventSink.OnGotFocus);
+			return canGetIt;
+		}
 		
+		static bool OnResignFirstResponder (IntPtr sender, IntPtr sel)
+		{
+			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
+			ob.Backend.ApplicationContext.InvokeUserCode (ob.Backend.EventSink.OnLostFocus);
+			return true;
+		}
+
 		#endregion
 	}
 }

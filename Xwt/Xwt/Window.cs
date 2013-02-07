@@ -216,7 +216,7 @@ namespace Xwt
 	
 				if (size != Size) {
 					if (locationSet)
-						Backend.Bounds = initialBounds;
+						Backend.Bounds = new Rectangle (initialBounds.X, initialBounds.Y, size.Width, size.Height);
 					else
 						Size = size + Backend.ImplicitMinSize;
 				}
