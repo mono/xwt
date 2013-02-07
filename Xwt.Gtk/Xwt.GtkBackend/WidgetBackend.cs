@@ -334,10 +334,12 @@ namespace Xwt.GtkBackend
 			if (width != -1 || height != -1) {
 				EnableSizeCheckEvents ();
 				minSizeSet = true;
+				Widget.QueueResize ();
 			}
 			else {
 				minSizeSet = false;
 				DisableSizeCheckEvents ();
+				Widget.QueueResize ();
 			}
 		}
 		
@@ -461,36 +463,36 @@ namespace Xwt.GtkBackend
 					Widget.KeyReleaseEvent += HandleKeyReleaseEvent;
 					break;
 				case WidgetEvent.GotFocus:
-					EventsRootWidget.Events |= Gdk.EventMask.FocusChangeMask;
+					EventsRootWidget.AddEvents ((int)Gdk.EventMask.FocusChangeMask);
 					Widget.FocusGrabbed += HandleWidgetFocusInEvent;
 					break;
 				case WidgetEvent.LostFocus:
-					EventsRootWidget.Events |= Gdk.EventMask.FocusChangeMask;
+					EventsRootWidget.AddEvents ((int)Gdk.EventMask.FocusChangeMask);
 					Widget.FocusOutEvent += HandleWidgetFocusOutEvent;
 					break;
 				case WidgetEvent.MouseEntered:
 					AllocEventBox ();
-					EventsRootWidget.Events |= Gdk.EventMask.EnterNotifyMask;
+					EventsRootWidget.AddEvents ((int)Gdk.EventMask.EnterNotifyMask);
 					EventsRootWidget.EnterNotifyEvent += HandleEnterNotifyEvent;
 					break;
 				case WidgetEvent.MouseExited:
 					AllocEventBox ();
-					EventsRootWidget.Events |= Gdk.EventMask.LeaveNotifyMask;
+					EventsRootWidget.AddEvents ((int)Gdk.EventMask.LeaveNotifyMask);
 					EventsRootWidget.LeaveNotifyEvent += HandleLeaveNotifyEvent;
 					break;
 				case WidgetEvent.ButtonPressed:
 					AllocEventBox ();
-					EventsRootWidget.Events |= Gdk.EventMask.ButtonPressMask;
+					EventsRootWidget.AddEvents ((int)Gdk.EventMask.ButtonPressMask);
 					EventsRootWidget.ButtonPressEvent += HandleButtonPressEvent;
 					break;
 				case WidgetEvent.ButtonReleased:
 					AllocEventBox ();
-					EventsRootWidget.Events |= Gdk.EventMask.ButtonReleaseMask;
+					EventsRootWidget.AddEvents ((int)Gdk.EventMask.ButtonReleaseMask);
 					EventsRootWidget.ButtonReleaseEvent += HandleButtonReleaseEvent;
 					break;
 				case WidgetEvent.MouseMoved:
 					AllocEventBox ();
-					EventsRootWidget.Events |= Gdk.EventMask.PointerMotionMask;
+					EventsRootWidget.AddEvents ((int)Gdk.EventMask.PointerMotionMask);
 					EventsRootWidget.MotionNotifyEvent += HandleMotionNotifyEvent;
 					break;
 				case WidgetEvent.BoundsChanged:
@@ -498,7 +500,7 @@ namespace Xwt.GtkBackend
 					break;
                 case WidgetEvent.MouseScrolled:
                     AllocEventBox();
-                    EventsRootWidget.Events |= Gdk.EventMask.ScrollMask;
+					EventsRootWidget.AddEvents ((int)Gdk.EventMask.ScrollMask);
                     Widget.ScrollEvent += HandleScrollEvent;
                     break;
 				}
@@ -555,22 +557,26 @@ namespace Xwt.GtkBackend
 					EventsRootWidget.LeaveNotifyEvent -= HandleLeaveNotifyEvent;
 					break;
 				case WidgetEvent.ButtonPressed:
-					EventsRootWidget.Events &= ~Gdk.EventMask.ButtonPressMask;
+					if (!EventsRootWidget.IsRealized)
+						EventsRootWidget.Events &= ~Gdk.EventMask.ButtonPressMask;
 					EventsRootWidget.ButtonPressEvent -= HandleButtonPressEvent;
 					break;
 				case WidgetEvent.ButtonReleased:
-					EventsRootWidget.Events &= Gdk.EventMask.ButtonReleaseMask;
+					if (!EventsRootWidget.IsRealized)
+						EventsRootWidget.Events &= Gdk.EventMask.ButtonReleaseMask;
 					EventsRootWidget.ButtonReleaseEvent -= HandleButtonReleaseEvent;
 					break;
 				case WidgetEvent.MouseMoved:
-					EventsRootWidget.Events &= Gdk.EventMask.PointerMotionMask;
+					if (!EventsRootWidget.IsRealized)
+						EventsRootWidget.Events &= Gdk.EventMask.PointerMotionMask;
 					EventsRootWidget.MotionNotifyEvent -= HandleMotionNotifyEvent;
 					break;
 				case WidgetEvent.BoundsChanged:
 					Widget.SizeAllocated -= HandleWidgetBoundsChanged;
 					break;
                 case WidgetEvent.MouseScrolled:
-                    EventsRootWidget.Events &= ~Gdk.EventMask.ScrollMask;
+					if (!EventsRootWidget.IsRealized)
+						EventsRootWidget.Events &= ~Gdk.EventMask.ScrollMask;
                     Widget.ScrollEvent -= HandleScrollEvent;
                     break;
 				}
@@ -586,7 +592,7 @@ namespace Xwt.GtkBackend
 				if ((ev & sizeCheckEvents) != 0) {
 					DisableSizeCheckEvents ();
 				}
-				if ((ev & WidgetEvent.GotFocus) == 0 && (enabledEvents & WidgetEvent.LostFocus) == 0) {
+				if ((ev & WidgetEvent.GotFocus) == 0 && (enabledEvents & WidgetEvent.LostFocus) == 0 && !EventsRootWidget.IsRealized) {
 					EventsRootWidget.Events &= ~Gdk.EventMask.FocusChangeMask;
 				}
 			}
@@ -639,6 +645,7 @@ namespace Xwt.GtkBackend
 					req.Width = (int) Frontend.MinWidth;
 				if (Frontend.MinHeight != -1)
 					req.Height = (int) Frontend.MinHeight;
+				args.Requisition = req;
 				return;
 			}
 			
