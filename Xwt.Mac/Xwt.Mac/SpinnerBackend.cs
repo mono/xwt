@@ -42,7 +42,6 @@ namespace Xwt.Mac
 		{
 			var widget = new ProgressIndicatorView ();
 			ViewObject = widget;
-			Widget.SizeToFit ();
 
 			widget.Indeterminate = true;
 			widget.Style = NSProgressIndicatorStyle.Spinning;

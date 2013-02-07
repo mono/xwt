@@ -33,12 +33,12 @@ namespace Xwt.Mac
 	public class FrameBackend: ViewBackend<NSBox,IFrameEventSink>, IFrameBackend
 	{
 		Color borderColor;
+		NSView currentChild;
 		
 		public override void Initialize ()
 		{
 			ViewObject = new MacFrame ();
 			Widget.ContentViewMargins = new System.Drawing.SizeF (0,0);
-			Widget.SizeToFit ();
 		}
 
 		#region IFrameBackend implementation
@@ -51,6 +51,24 @@ namespace Xwt.Mac
 		}
 
 		public void SetContent (IWidgetBackend child)
+		{
+			if (currentChild != null) {
+				currentChild.RemoveFromSuperview ();
+				currentChild = null;
+			}
+			if (child == null)
+				return;
+
+			var childBackend = (ViewBackend) child;
+			childBackend.SizeToFit ();
+
+			currentChild = childBackend.Widget;
+
+			Widget.AddSubview (currentChild);
+			ResetFittingSize ();
+		}
+
+		public override void SizeToFit ()
 		{
 			Widget.SizeToFit ();
 		}

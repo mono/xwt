@@ -57,6 +57,7 @@ namespace Xwt.Mac
 		IViewObject viewObject;
 		WidgetEvent currentEvents;
 		bool autosize;
+		Size lastFittingSize;
 		
 		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
 		{
@@ -68,6 +69,7 @@ namespace Xwt.Mac
 		{
 			eventSink = (IWidgetEventSink) sink;
 			Initialize ();
+			ResetFittingSize ();
 		}
 
 		// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
@@ -247,12 +249,12 @@ namespace Xwt.Mac
 		
 		protected virtual Size GetNaturalSize ()
 		{
-			var s = Widget.FittingSize;
-			return new Size (s.Width, s.Height);
-//			return new Size (Widget.WidgetWidth(), Widget.WidgetHeight ());
+//			var s = Widget.FittingSize;
+//			return new Size (s.Width, s.Height);
+			return lastFittingSize;
 		}
 
-		public WidgetSize GetPreferredWidth ()
+		public virtual WidgetSize GetPreferredWidth ()
 		{
 			var w = GetNaturalSize ().Width;
 			var s = new Xwt.WidgetSize (w, w);
@@ -261,7 +263,7 @@ namespace Xwt.Mac
 			return s;
 		}
 		
-		public WidgetSize GetPreferredHeight ()
+		public virtual WidgetSize GetPreferredHeight ()
 		{
 			var h = GetNaturalSize ().Height;
 			var s = new Xwt.WidgetSize (h, h);
@@ -270,12 +272,12 @@ namespace Xwt.Mac
 			return s;
 		}
 
-		public WidgetSize GetPreferredHeightForWidth (double width)
+		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
 			return GetPreferredHeight ();
 		}
 
-		public WidgetSize GetPreferredWidthForHeight (double height)
+		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
 			return GetPreferredWidth ();
 		}
@@ -286,6 +288,37 @@ namespace Xwt.Mac
 		{
 			minWidth = width;
 			minHeight = height;
+		}
+
+		protected void ResetFittingSize ()
+		{
+			var f = Widget.Frame;
+			SizeToFit ();
+			lastFittingSize = new Size (Widget.WidgetWidth (), Widget.WidgetHeight ());
+			Widget.Frame = f;
+		}
+
+		public virtual void SizeToFit ()
+		{
+			OnSizeToFit ();
+			if (minWidth != -1 && Widget.Frame.Width < minWidth || minHeight != -1 && Widget.Frame.Height < minHeight)
+				Widget.SetFrameSize (new SizeF (Math.Max (Widget.Frame.Width, (float)minWidth), Math.Max (Widget.Frame.Height, (float)minHeight)));
+		}
+		
+		protected virtual Size CalcFittingSize ()
+		{
+			return Size.Zero;
+		}
+
+		protected virtual void OnSizeToFit ()
+		{
+			if (Widget is NSControl)
+				((NSControl)Widget).SizeToFit ();
+			else {
+				var s = CalcFittingSize ();
+				if (!s.IsZero)
+					Widget.SetFrameSize (new SizeF ((float)s.Width, (float)s.Height));
+			}
 		}
 		
 		public void SetNaturalSize (double width, double height)

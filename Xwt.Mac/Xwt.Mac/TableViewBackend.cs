@@ -51,7 +51,6 @@ namespace Xwt.Mac
 			scroll.DocumentView = Table;
 			scroll.BorderType = NSBorderType.BezelBorder;
 			ViewObject = scroll;
-			Table.SizeToFit ();
 			Widget.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			Widget.AutoresizesSubviews = true;
 		}

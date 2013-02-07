@@ -44,7 +44,14 @@ namespace Xwt.Mac
 			view = new CanvasView (EventSink, ApplicationContext);
 			ViewObject = view;
 		}
-		
+
+		protected override void OnSizeToFit ()
+		{
+			var w = EventSink.OnGetPreferredWidth ().MinSize;
+			var h = EventSink.OnGetPreferredHeightForWidth (w).MinSize;
+			Widget.SetFrameSize (new System.Drawing.SizeF ((float)w, (float)h)); 
+		}
+
 		public Rectangle Bounds {
 			get {
 				return new Rectangle (0, 0, view.Frame.Width, view.Frame.Height);

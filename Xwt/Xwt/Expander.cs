@@ -38,6 +38,7 @@ namespace Xwt
 			}
 			set {
 				Backend.Label = value;
+				OnPreferredSizeChanged ();
 			}
 		}
 
@@ -47,6 +48,7 @@ namespace Xwt
 			}
 			set {
 				Backend.Expanded = value;
+				OnPreferredSizeChanged ();
 			}
 		}
 

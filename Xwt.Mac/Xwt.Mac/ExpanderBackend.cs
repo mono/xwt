@@ -11,10 +11,15 @@ namespace Xwt.Mac
 {
 	public class ExpanderBackend : ViewBackend<MacExpander, IExpandEventSink>, IExpanderBackend
 	{
+		ViewBackend child;
+
 		public ExpanderBackend ()
 		{
 			ViewObject = new MacExpander ();
-			Widget.Expander.DisclosureToggled += (sender, e) => NotifyPreferredSizeChanged ();
+			Widget.Expander.DisclosureToggled += (sender, e) => {
+				ResetFittingSize ();
+				NotifyPreferredSizeChanged ();
+			};
 			SetMinSize (10, 25);
 		}
 
@@ -34,22 +39,27 @@ namespace Xwt.Mac
 			set {
 				Widget.Box.Expanded = value;
 				Widget.Expander.On = value;
+				ResetFittingSize ();
 			}
 		}
 
 		public void SetContent (IWidgetBackend widget)
 		{
-			Widget.Box.SetFrameSize (new SizeF ((float)widget.GetPreferredWidth ().NaturalSize,
-			                                    (float)widget.GetPreferredHeight ().NaturalSize),
-			                         false);
+			child = (ViewBackend)widget;
+
 			Widget.Box.SetContent (GetWidget (widget));
-			NotifyPreferredSizeChanged ();
+			ResetFittingSize ();
 		}
 
-		protected override Size GetNaturalSize ()
+		protected override Size CalcFittingSize ()
 		{
-			return new Size (Math.Max (Widget.Expander.Frame.Width, Widget.Box.Frame.Width),
-			                 Widget.Expander.Frame.Height + Widget.Box.Frame.Height);
+			var s = Widget.SizeOfDecorations;
+			if (Widget.Box.Expanded && child != null) {
+				var w = child.Frontend.Surface.GetPreferredWidth ().MinSize;
+				var h = child.Frontend.Surface.GetPreferredHeightForWidth (w).MinSize;
+				s += new Size (w, h);
+			}
+			return s;
 		}
 	}
 
@@ -69,6 +79,15 @@ namespace Xwt.Mac
 			expander.DisclosureToggled += (sender, e) => box.Expanded = expander.On;
 			AddSubview (expander);
 			AddSubview (box);
+		}
+
+		public Size SizeOfDecorations {
+			get {
+				if (box.Expanded)
+					return new Size (0, 21);
+				else
+					return new Size (0, 25); // Includes spacing between header and content
+			}
 		}
 
 		public override bool IsFlipped {

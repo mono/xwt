@@ -46,7 +46,6 @@ namespace Xwt.Mac
 		{
 			base.Initialize ();
 			ViewObject = new MacComboBox (EventSink, ApplicationContext);
-			Widget.SizeToFit ();
 		}
 		
 		protected override Size GetNaturalSize ()

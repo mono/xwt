@@ -43,6 +43,8 @@ namespace Samples
 			content.BackgroundColor = Colors.Gray;
 			expander.Content = content;
 			PackStart (expander);
+
+			PackStart (new Label ("This is shown below the expander"));
 		}
 	}
 }

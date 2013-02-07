@@ -45,7 +45,6 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new MacMenuButton (EventSink, ApplicationContext);
-			Widget.SizeToFit ();
 		}
 	}
 

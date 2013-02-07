@@ -38,7 +38,7 @@ namespace Xwt.Mac
 		public void Initialize (Orientation dir)
 		{
 			ViewObject = new SeparatorWidget ();
-			Widget.SizeToFit ();
+			ResetFittingSize ();
 		}
 	}
 	

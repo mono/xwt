@@ -12,7 +12,6 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new MacSpinButton (EventSink);
-			//Widget.SizeToFit ();
 		}
 		
 		protected new ISpinButtonEventSink EventSink {

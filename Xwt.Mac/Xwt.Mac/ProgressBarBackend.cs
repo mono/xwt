@@ -43,7 +43,6 @@ namespace Xwt.Mac
 		{
 			var widget = new ProgressIndicatorView ();
 			ViewObject = widget;
-			Widget.SizeToFit ();
 
 			widget.MinValue = 0.0;
 			widget.MaxValue = 1.0;

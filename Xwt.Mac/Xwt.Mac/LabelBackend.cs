@@ -43,7 +43,6 @@ namespace Xwt.Mac
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
-			Widget.SizeToFit ();
 		}
 
 		public virtual string Text {
@@ -52,7 +51,7 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.StringValue = value;
-				Widget.SizeToFit ();
+				ResetFittingSize ();
 			}
 		}
 

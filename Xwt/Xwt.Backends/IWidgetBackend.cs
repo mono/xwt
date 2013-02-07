@@ -70,7 +70,7 @@ namespace Xwt.Backends
 		WidgetSize GetPreferredHeightForWidth (double width);
 		WidgetSize GetPreferredHeight ();
 		WidgetSize GetPreferredWidthForHeight (double height);
-		
+
 		object NativeWidget { get; }
 		
 		/// <summary>

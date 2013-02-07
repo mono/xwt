@@ -69,13 +69,12 @@ namespace Xwt.Mac
 			base.Initialize ();
 			ViewObject = new PopUpButton ();
 			Widget.Menu = new NSMenu ();
-			Widget.SizeToFit ();
 			Widget.Activated += delegate {
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnSelectionChanged ();
 				});
 				Widget.SynchronizeTitleAndSelectedItem ();
-				Widget.SizeToFit ();
+				ResetFittingSize ();
 			};
 		}
 
@@ -135,14 +134,14 @@ namespace Xwt.Mac
 				UpdateItem (mi, e.Row);
 				Widget.SynchronizeTitleAndSelectedItem ();
 			}
-			Widget.SizeToFit ();
+			ResetFittingSize ();
 		}
 
 		void HandleSourceRowDeleted (object sender, ListRowEventArgs e)
 		{
 			Widget.RemoveItem (e.Row);
 			Widget.SynchronizeTitleAndSelectedItem ();
-			Widget.SizeToFit ();
+			ResetFittingSize ();
 		}
 
 		void HandleSourceRowInserted (object sender, ListRowEventArgs e)
@@ -156,7 +155,7 @@ namespace Xwt.Mac
 			}
 			Widget.Menu.InsertItematIndex (mi, e.Row);
 			Widget.SynchronizeTitleAndSelectedItem ();
-			Widget.SizeToFit ();
+			ResetFittingSize ();
 		}
 		
 		void UpdateItem (NSMenuItem mi, int index)
@@ -174,7 +173,7 @@ namespace Xwt.Mac
 					EventSink.OnSelectionChanged ();
 				});
 				Widget.SynchronizeTitleAndSelectedItem ();
-				Widget.SizeToFit ();
+				ResetFittingSize ();
 			}
 		}
 

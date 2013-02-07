@@ -48,7 +48,6 @@ namespace Xwt.Mac
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else {
 				ViewObject = new CustomTextField (EventSink, ApplicationContext);
-				Widget.SizeToFit ();
 			}
 		}
 		

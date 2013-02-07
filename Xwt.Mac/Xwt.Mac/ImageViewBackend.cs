@@ -39,7 +39,6 @@ namespace Xwt.Mac
 		{
 			base.Initialize ();
 			ViewObject = new CustomNSImageView ();
-			Widget.SizeToFit ();
 		}
 
 		public void SetImage (object nativeImage)

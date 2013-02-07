@@ -44,7 +44,6 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new MacButton (EventSink, ApplicationContext);
-			Widget.SizeToFit ();
 		}
 
 		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
@@ -73,7 +72,7 @@ namespace Xwt.Mac
 				case ContentPosition.Center: Widget.ImagePosition = NSCellImagePosition.ImageOverlaps; break;
 				}
 			}
-			Widget.SizeToFit ();
+			ResetFittingSize ();
 		}
 		
 		public void SetButtonStyle (ButtonStyle style)
