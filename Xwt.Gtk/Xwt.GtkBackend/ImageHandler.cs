@@ -83,6 +83,8 @@ namespace Xwt.GtkBackend
 			var pix = handle as Gdk.Pixbuf;
 			if (pix != null)
 				return new Size (pix.Width, pix.Height);
+			else if (handle is String)
+				return new Size (48, 48); // Return a default size
 			else
 				return Size.Zero;
 		}
