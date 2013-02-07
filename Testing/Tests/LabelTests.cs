@@ -31,7 +31,7 @@ namespace Xwt
 	{
 		public override Widget CreateWidget ()
 		{
-			return new Label ();
+			return new Label ("Hello World");
 		}
 	}
 }

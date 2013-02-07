@@ -27,9 +27,9 @@ using System;
 
 namespace Xwt
 {
-	public class HBoxTests: WidgetTests
+	public class HBoxTests: BoxTests
 	{
-		public override Widget CreateWidget ()
+		public override Box CreateBox ()
 		{
 			return new HBox ();
 		}

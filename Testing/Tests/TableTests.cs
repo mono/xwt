@@ -31,7 +31,9 @@ namespace Xwt
 	{
 		public override Widget CreateWidget ()
 		{
-			return new Table ();
+			var t = new Table ();
+			t.Attach (new Label ("Hello Worlds"), 0, 0);
+			return t;
 		}
 	}
 }

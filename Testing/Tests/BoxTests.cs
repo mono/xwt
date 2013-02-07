@@ -1,10 +1,10 @@
 //
-// VBoxTests.cs
+// BoxTests.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 //
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2013 Xamarin Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,16 @@ using System;
 
 namespace Xwt
 {
-	public class VBoxTests: BoxTests
+	public abstract class BoxTests: WidgetTests
 	{
-		public override Box CreateBox ()
+		public override Widget CreateWidget ()
 		{
-			return new VBox ();
+			var box = CreateBox ();
+			box.PackStart (new Label ("Hello Worlds"));
+			return box;
 		}
+
+		public abstract Box CreateBox ();
 	}
 }
 

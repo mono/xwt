@@ -60,6 +60,7 @@
     <Compile Include="VSeparatorTests.cs" />
     <Compile Include="WidgetTests.cs" />
     <Compile Include="ConsoleTestRunner.cs" />
+    <Compile Include="BoxTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Test.csproj" />

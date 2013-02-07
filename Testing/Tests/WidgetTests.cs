@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using NUnit.Framework;
+using System.Threading;
 
 namespace Xwt
 {
@@ -57,6 +58,28 @@ namespace Xwt
 			Application.Run ();
 			if (ex != null)
 				throw new Exception ("Exception in gui event loop", ex);
+		}
+
+		void WaitForEvents (int ms = 1)
+		{
+			DateTime t = DateTime.Now;
+			do {
+				Application.MainLoop.DispatchPendingEvents ();
+				System.Threading.Thread.Sleep (20);
+			} while ((DateTime.Now - t).TotalMilliseconds < ms);
+		}
+
+		public void ShowWindow (Window win)
+		{
+			var ev = new ManualResetEvent (false);
+			
+			win.Shown += delegate {
+				ev.Set ();
+			};
+			
+			win.Show ();
+			ev.WaitForEvent ();
+			Application.MainLoop.DispatchPendingEvents ();
 		}
 
 		[Test]
@@ -183,53 +206,79 @@ namespace Xwt
 		}
 
 		[Test]
-		[Ignore]
 		public void MinSize ()
 		{
-			var win = new Window ();
-			var w = CreateWidget ();
+			using (var win = new Window ()) {
+				var w = CreateWidget ();
 
-			win.Content = w;
-			win.Show ();
+				VBox box1 = new VBox ();
+				HBox box2 = new HBox ();
+				box1.PackStart (box2);
+				box2.PackStart (w);
+				win.Content = box1;
 
-			Application.MainLoop.DispatchPendingEvents ();
+				ShowWindow (win);
 
-			var defw = w.Size.Width;
-			var defh = w.Size.Height;
+				var defw = w.Size.Width;
+				var defh = w.Size.Height;
 
-			w.MinWidth = 300;
-			Assert.AreEqual (300, w.MinWidth);
-			Assert.AreEqual (300, w.Size.Width);
+				w.MinWidth = 300;
+				WaitForEvents ();
+				Assert.AreEqual (300d, w.MinWidth);
+				Assert.AreEqual (300d, w.Size.Width);
 
-			w.MinHeight = 400;
-			Assert.AreEqual (400, w.MinHeight);
-			Assert.AreEqual (400, w.Size.Height);
+				w.MinHeight = 400;
+				WaitForEvents ();
+				Assert.AreEqual (400d, w.MinHeight);
+				Assert.AreEqual (400d, w.Size.Height);
 
-			w.MinWidth = -1;
-			Assert.AreEqual (-1, w.MinWidth);
-			Assert.AreEqual (defw, w.Size.Width);
+				w.MinWidth = -1;
+				WaitForEvents ();
+				Assert.AreEqual (-1, w.MinWidth);
+				Assert.AreEqual (defw, w.Size.Width);
 
-			w.MinHeight = -1;
-			Assert.AreEqual (-1, w.MinHeight);
-			Assert.AreEqual (defh, w.Size.Height);
-
-			win.Dispose ();
+				w.MinHeight = -1;
+				WaitForEvents ();
+				Assert.AreEqual (-1, w.MinHeight);
+				Assert.AreEqual (defh, w.Size.Height);
+			}
 		}
 
 		[Test]
-		[Ignore]
 		public void Coordinates ()
 		{
-			var win = new Window ();
-			var w = CreateWidget ();
-			win.Content = w;
-			win.Show ();
+			double padding = 40;
+			using (var win = new Window ()) {
+				var w = CreateWidget ();
+				win.Content = w;
+				win.Padding = padding;
+				win.Location = new Point (300,300);
 
-			Application.MainLoop.DispatchPendingEvents ();
+				ShowWindow (win);
+/*				Console.WriteLine (win.ScreenBounds.Inflate (-padding,-padding) + " w: " + w.ScreenBounds);
 
-			Assert.AreEqual (w.ScreenBounds, win.ScreenBounds);
+				for (int n=0;n<100; n++) {
+					System.Threading.Thread.Sleep (100);
+					Application.MainLoop.DispatchPendingEvents ();
+				}
+*/
+				Assert.AreEqual (w.ScreenBounds, win.ScreenBounds.Inflate (-padding,-padding));
+			}
+		}
+	}
 
-			win.Dispose ();
+	static class EventHelper
+	{
+		public static void WaitForEvent (this ManualResetEvent ev)
+		{
+			DateTime t = DateTime.Now;
+			do {
+				Application.MainLoop.DispatchPendingEvents ();
+				if (ev.WaitOne (100))
+					return;
+			} while ((DateTime.Now - t).TotalMilliseconds < 1000);
+
+			Assert.Fail ("Event not fired");
 		}
 	}
 }
