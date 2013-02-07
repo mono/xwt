@@ -173,7 +173,7 @@ namespace Xwt
 		{
 			get
 			{
-				return shown ? base.BackendBounds : initialBounds;
+				return shown || BackendHost.EngineBackend.HandlesSizeNegotiation ? base.BackendBounds : initialBounds;
 			}
 			set
 			{

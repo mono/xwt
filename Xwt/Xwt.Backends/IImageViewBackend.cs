@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
@@ -32,10 +33,9 @@ namespace Xwt.Backends
 		/// <summary>
 		/// Sets the image view to use the supplied image backend.
 		/// </summary>
-		/// <param name="nativeImage">A native image widget.</param>
+		/// <param name="nativeImage">An image</param>
 		/// <exception cref="ArgumentNullException"><paramref name="nativeImage"/> is <c>null</c>.</exception>
-		/// <exception cref="ArgumentException"><paramref name="nativeImage"/> is not of the expected type.</exception>
-		void SetImage (object nativeImage);
+		void SetImage (Image nativeImage);
 	}
 }
 
