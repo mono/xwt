@@ -346,6 +346,8 @@ namespace Xwt.Mac
 		{
 			if (Widget is NSControl)
 				((NSControl)Widget).SizeToFit ();
+			else if (Widget is NSBox)
+				((NSBox)Widget).SizeToFit ();
 			else {
 				var s = CalcFittingSize ();
 				if (!s.IsZero)

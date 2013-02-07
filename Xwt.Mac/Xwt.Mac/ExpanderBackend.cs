@@ -6,21 +6,29 @@ using Xwt.Backends;
 
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 
 namespace Xwt.Mac
 {
-	public class ExpanderBackend : ViewBackend<MacExpander, IExpandEventSink>, IExpanderBackend
+	class ExpanderBackend : ViewBackend<MacExpander, IExpandEventSink>, IExpanderBackend
 	{
 		ViewBackend child;
 
 		public ExpanderBackend ()
 		{
-			ViewObject = new MacExpander ();
+			SetMinSize (10, 21);
+		}
+
+		public override void Initialize ()
+		{
+			ViewObject = new MacExpander (EventSink, ApplicationContext);
 			Widget.Expander.DisclosureToggled += (sender, e) => {
 				ResetFittingSize ();
 				NotifyPreferredSizeChanged ();
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.ExpandChanged ();
+				});
 			};
-			SetMinSize (10, 25);
 		}
 
 		public string Label {
@@ -61,21 +69,30 @@ namespace Xwt.Mac
 			}
 			return s;
 		}
+
+		public override object Font {
+			get {
+				return Widget.Expander.Font;
+			}
+			set {
+				Widget.Expander.Font = (NSFont)value;
+			}
+		}
 	}
 
-	public class MacExpander : NSView, IViewObject
+	class MacExpander: WidgetView
 	{
 		ExpanderWidget expander;
 		CollapsibleBox box;
 
-		public MacExpander ()
+		public MacExpander (IWidgetEventSink eventSink, ApplicationContext context): base (eventSink, context)
 		{
 			expander = new ExpanderWidget () {
 				Frame = new RectangleF (0, 0, 80, 21),
 				AutoresizingMask = NSViewResizingMask.WidthSizable
 			};
 			box = new CollapsibleBox () { AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable };
-			box.SetFrameOrigin (new PointF (0, 25));
+			box.SetFrameOrigin (new PointF (0, 21));
 			expander.DisclosureToggled += (sender, e) => box.Expanded = expander.On;
 			AddSubview (expander);
 			AddSubview (box);
@@ -83,10 +100,7 @@ namespace Xwt.Mac
 
 		public Size SizeOfDecorations {
 			get {
-				if (box.Expanded)
-					return new Size (0, 21);
-				else
-					return new Size (0, 25); // Includes spacing between header and content
+				return new Size (0, 21);
 			}
 		}
 
@@ -108,12 +122,6 @@ namespace Xwt.Mac
 			}
 		}
 
-		public ViewBackend Backend { get; set; }
-		
-		public NSView View {
-			get { return this; }
-		}
-		
 		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
 		{
 		}
@@ -123,35 +131,40 @@ namespace Xwt.Mac
 		}
 	}
 
-	public class ExpanderWidget : NSView
+	class ExpanderWidget : NSView
 	{
 		public event EventHandler DisclosureToggled;
 
-		NSTextView label;
+		NSButton label;
 		NSButton disclosure;
 		NSGradient backgroundGradient;
 		NSColor strokeColor;
 
 		public ExpanderWidget ()
 		{
-			label = new NSTextView () {
-				AutoresizingMask = NSViewResizingMask.MaxYMargin | NSViewResizingMask.WidthSizable,
-				Alignment = NSTextAlignment.Left,
-				Editable = false,
-				Selectable = false,
-				DrawsBackground = false,
-				Frame = new RectangleF (17, 3, 60, 13)
-			};
-			disclosure = new NSButton () {
+			disclosure = new NSButton {
 				BezelStyle = NSBezelStyle.Disclosure,
 				AutoresizingMask = NSViewResizingMask.MaxYMargin,
 				ImagePosition = NSCellImagePosition.ImageOnly,
 				Frame = new RectangleF (5, 4, 13, 13),
-				State = NSCellStateValue.On
+				State = NSCellStateValue.Off
 			};
 			disclosure.SetButtonType (NSButtonType.OnOff);
+			disclosure.Activated += delegate {
+				if (DisclosureToggled != null)
+					DisclosureToggled (this, EventArgs.Empty);
+			};
 
-			disclosure.AddObserver (this, new NSString ("cell.state"), NSKeyValueObservingOptions.New, IntPtr.Zero);
+			label = new NSButton {
+				Bordered = false,
+				AutoresizingMask = NSViewResizingMask.MaxYMargin | NSViewResizingMask.WidthSizable,
+				Alignment = NSTextAlignment.Left,
+				Frame = new RectangleF (17, 3, 60, 13),
+				Target = disclosure,
+				Action = new Selector ("performClick:")
+			};
+			label.SetButtonType (NSButtonType.MomentaryChange);
+
 			AutoresizesSubviews = true;
 			backgroundGradient = new NSGradient (NSColor.FromCalibratedRgba (0.93f, 0.93f, 0.97f, 1.0f),
 			                                     NSColor.FromCalibratedRgba (0.74f, 0.76f, 0.83f, 1.0f));
@@ -161,18 +174,21 @@ namespace Xwt.Mac
 			AddSubview (disclosure);
 		}
 
-		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
-		{
-			if (DisclosureToggled != null)
-				DisclosureToggled (this, EventArgs.Empty);
+		public NSFont Font {
+			get {
+				return label.Font;
+			}
+			set {
+				label.Font = value;
+			}
 		}
 
 		public string Label {
 			get {
-				return label.Value;
+				return label.Title;
 			}
 			set {
-				label.Value = value;
+				label.Title = value;
 			}
 		}
 
@@ -203,7 +219,7 @@ namespace Xwt.Mac
 
 		public CollapsibleBox ()
 		{
-			expanded = true;
+			expanded = false;
 			otherHeight = DefaultCollapsedHeight;
 			TitlePosition = NSTitlePosition.NoTitle;
 			BorderType = NSBorderType.NoBorder;
