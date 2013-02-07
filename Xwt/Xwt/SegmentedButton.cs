@@ -56,26 +56,32 @@ namespace Xwt
 
 			protected override void InsertItem (int index, Button item)
 			{
+				parent.RegisterChild (item);
 				Backend.AddChildButton (index, item);
 				base.InsertItem (index, item);
 			}
 
 			protected override void RemoveItem (int index)
 			{
+				parent.UnregisterChild (this [index]);
 				Backend.RemoveChildButton (index);
 				base.RemoveItem (index);
 			}
 
 			protected override void SetItem (int index, Button item)
 			{
+				parent.UnregisterChild (this [index]);
+				parent.RegisterChild (item);
 				Backend.ReplaceChildButton (index, item);
 				base.SetItem (index, item);
 			}
 
 			protected override void ClearItems ()
 			{
-				for (int i = 0; i < Count; i++)
+				for (int i = 0; i < Count; i++) {
+					parent.UnregisterChild (this [i]);
 					Backend.RemoveChildButton (i);
+				}
 				base.ClearItems ();
 			}
 		}
