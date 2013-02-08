@@ -114,6 +114,7 @@
     <Compile Include="Xwt.Mac\MacDesktopBackend.cs" />
     <Compile Include="Xwt.Mac\MenuButtonBackend.cs" />
     <Compile Include="Xwt.Mac.CellViews\CanvasTableCell.cs" />
+    <Compile Include="Xwt.Mac\ListBoxBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

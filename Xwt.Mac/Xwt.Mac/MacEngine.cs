@@ -106,6 +106,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.ClipboardBackend, MacClipboardBackend> ();
 			RegisterBackend <Xwt.Backends.DesktopBackend, MacDesktopBackend> ();
 			RegisterBackend <Xwt.Backends.IMenuButtonBackend, MenuButtonBackend> ();
+			RegisterBackend <Xwt.Backends.IListBoxBackend, ListBoxBackend> ();
 		}
 
 		public override void RunApplication ()

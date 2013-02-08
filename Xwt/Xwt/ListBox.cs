@@ -53,12 +53,23 @@ namespace Xwt
 				((ListBox)Parent).OnSelectionChanged (EventArgs.Empty);
 			}
 			
+			public void OnRowActivated (int rowIndex)
+			{
+				((ListBox)Parent).OnRowActivated (new ListViewRowEventArgs (rowIndex));
+			}
+			
 			public override Size GetDefaultNaturalSize ()
 			{
 				return Xwt.Backends.DefaultNaturalSizes.ComboBox;
 			}
 		}
 		
+		static ListBox ()
+		{
+			MapEvent (TableViewEvent.SelectionChanged, typeof(ListView), "OnSelectionChanged");
+			MapEvent (ListViewEvent.RowActivated, typeof(ListView), "OnRowActivated");
+		}
+
 		IListBoxBackend Backend {
 			get { return (IListBoxBackend) BackendHost.Backend; }
 		}
@@ -293,6 +304,32 @@ namespace Xwt
 		{
 			if (selectionChanged != null)
 				selectionChanged (this, args);
+		}
+
+		/// <summary>
+		/// Raises the row activated event.
+		/// </summary>
+		/// <param name="a">The alpha component.</param>
+		protected virtual void OnRowActivated (ListViewRowEventArgs a)
+		{
+			if (rowActivated != null)
+				rowActivated (this, a);
+		}
+		
+		EventHandler<ListViewRowEventArgs> rowActivated;
+		
+		/// <summary>
+		/// Occurs when the user double-clicks on a row
+		/// </summary>
+		public event EventHandler<ListViewRowEventArgs> RowActivated {
+			add {
+				BackendHost.OnBeforeEventAdd (ListViewEvent.RowActivated, rowActivated);
+				rowActivated += value;
+			}
+			remove {
+				rowActivated -= value;
+				BackendHost.OnAfterEventRemove (ListViewEvent.RowActivated, rowActivated);
+			}
 		}
 	}
 }
