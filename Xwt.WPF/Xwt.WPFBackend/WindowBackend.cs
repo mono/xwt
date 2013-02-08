@@ -86,11 +86,23 @@ namespace Xwt.WPFBackend
 
 		public void SetChild (IWidgetBackend child)
 		{
-			if (widget != null)
+			if (widget != null) {
 				contentBox.Children.Remove (widget);
+				widget.SizeChanged -= ChildSizeChanged;
+			}
 			widget = ((IWpfWidgetBackend)child).Widget;
-
 			contentBox.Children.Add (widget);
+
+			// This event is subscribed to ensure that the content of the
+			// widget is reallocated when the widget gets a new size. This
+			// is not a problem when setting the child before showing the
+			// window, but it may be a problem if the window is already visible.
+			widget.SizeChanged += ChildSizeChanged;
+		}
+
+		void ChildSizeChanged (object o, SizeChangedEventArgs args)
+		{
+			((Window)Frontend).Content.Surface.Reallocate ();
 		}
 
 		public void SetMainMenu (IMenuBackend menu)
