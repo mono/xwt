@@ -256,9 +256,12 @@ namespace Xwt
 			double padding = 40;
 			using (var win = new Window ()) {
 				var w = CreateWidget ();
+				w.MinWidth = 1;
+				w.MinHeight = 1;
 				win.Content = w;
 				win.Padding = padding;
 				win.Location = new Point (300,300);
+
 
 				ShowWindow (win);
 /*				Console.WriteLine (win.ScreenBounds.Inflate (-padding,-padding) + " w: " + w.ScreenBounds);

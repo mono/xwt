@@ -793,6 +793,8 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetFocusInEvent (object o, EventArgs args)
 		{
+			if (!CanGetFocus)
+				return;
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnGotFocus ();
 			});
