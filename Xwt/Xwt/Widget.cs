@@ -883,12 +883,10 @@ namespace Xwt
 			if (widthCached)
 				return width;
 			else {
-				if (minWidth != -1 && naturalWidth != -1)
-					return new WidgetSize (minWidth, naturalWidth);
 				width = OnGetPreferredWidth () + Margin.HorizontalSpacing;
 				if (naturalWidth != -1)
 					width.NaturalSize = naturalWidth;
-				if (minWidth != -1)
+				if (minWidth > width.MinSize)
 					width.MinSize = minWidth;
 				if (width.NaturalSize < width.MinSize)
 					width.NaturalSize = width.MinSize;
@@ -903,12 +901,10 @@ namespace Xwt
 			if (heightCached)
 				return height;
 			else {
-				if (minHeight != -1 && naturalHeight != -1)
-					return new WidgetSize (minHeight, naturalHeight);
 				height = OnGetPreferredHeight () + Margin.VerticalSpacing;
 				if (naturalHeight != -1)
 					height.NaturalSize = naturalHeight;
-				if (minHeight != -1)
+				if (minHeight > height.MinSize)
 					height.MinSize = minHeight;
 				if (height.NaturalSize < height.MinSize)
 					height.NaturalSize = height.MinSize;
@@ -934,7 +930,7 @@ namespace Xwt
 				height = OnGetPreferredHeightForWidth (width) + Margin.VerticalSpacing;
 				if (naturalHeight != -1)
 					height.NaturalSize = naturalHeight;
-				if (minHeight != -1)
+				if (minHeight > height.MinSize)
 					height.MinSize = minHeight;
 				if (height.NaturalSize < height.MinSize)
 					height.NaturalSize = height.MinSize;
@@ -958,7 +954,7 @@ namespace Xwt
 				width = OnGetPreferredWidthForHeight (height) + Margin.HorizontalSpacing;
 				if (naturalWidth != -1)
 					width.NaturalSize = naturalWidth;
-				if (minWidth != -1)
+				if (minWidth > width.MinSize)
 					width.MinSize = minWidth;
 				if (width.NaturalSize < width.MinSize)
 					width.NaturalSize = width.MinSize;

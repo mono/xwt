@@ -216,8 +216,12 @@ namespace Xwt
 
 				VBox box1 = new VBox ();
 				HBox box2 = new HBox ();
+				HBox f = new HBox ();
+				f.MinWidth = 10;
+				f.MinHeight = 10;
 				box1.PackStart (box2);
-				box2.PackStart (w);
+				box2.PackStart (f);
+				f.PackStart (w, BoxMode.FillAndExpand);
 				win.Content = box1;
 
 				ShowWindow (win);
@@ -226,22 +230,21 @@ namespace Xwt
 				var defh = w.Size.Height;
 
 				w.MinWidth = 300;
+				w.MinHeight = 400;
 				WaitForEvents ();
 				Assert.AreEqual (300d, w.MinWidth);
 				Assert.AreEqual (300d, w.Size.Width);
 
-				w.MinHeight = 400;
-				WaitForEvents ();
 				Assert.AreEqual (400d, w.MinHeight);
 				Assert.AreEqual (400d, w.Size.Height);
 
 				w.MinWidth = -1;
+				w.MinHeight = -1;
+
 				WaitForEvents ();
 				Assert.AreEqual (-1, w.MinWidth);
 				Assert.AreEqual (defw, w.Size.Width);
 
-				w.MinHeight = -1;
-				WaitForEvents ();
 				Assert.AreEqual (-1, w.MinHeight);
 				Assert.AreEqual (defh, w.Size.Height);
 			}

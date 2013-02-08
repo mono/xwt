@@ -31,7 +31,20 @@ namespace Xwt
 	{
 		public override Widget CreateWidget ()
 		{
-			return new Canvas ();
+			return new TestCanvas ();
+		}
+	}
+
+	class TestCanvas: Canvas
+	{
+		protected override WidgetSize OnGetPreferredWidth ()
+		{
+			return new WidgetSize (10);
+		}
+
+		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
+		{
+			return new WidgetSize (10);
 		}
 	}
 }
