@@ -251,7 +251,8 @@ namespace Xwt.Mac
 			ctx.SetAlpha ((float)alpha);
 			ctx.TranslateCTM ((float)destRect.X, (float)destRect.Y + rect.Height);
 			ctx.ScaleCTM (1f, -1f);
-			ctx.DrawImage (rect, image.AsCGImage (RectangleF.Empty, null, null).WithImageInRect (srcRect.ToRectangleF ()));
+			RectangleF rr = RectangleF.Empty;
+			ctx.DrawImage (rect, image.AsCGImage (ref rr, null, null).WithImageInRect (srcRect.ToRectangleF ()));
 			ctx.RestoreState ();
 		}
 		

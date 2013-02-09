@@ -37,7 +37,8 @@ namespace Xwt.Mac
 		{
 			NSImage nimg = (NSImage) img;
 			RectangleF bounds = new RectangleF (PointF.Empty, nimg.Size);
-			CGImage cgimg = nimg.AsCGImage (RectangleF.Empty, null, null);
+			RectangleF empty = RectangleF.Empty;
+			CGImage cgimg = nimg.AsCGImage (ref empty, null, null);
 			return new CGPattern (bounds, CGAffineTransform.MakeScale (1f, -1f), bounds.Width, bounds.Height,
 			                      CGPatternTiling.ConstantSpacing, true, ctx => ctx.DrawImage (bounds, cgimg));
 		}

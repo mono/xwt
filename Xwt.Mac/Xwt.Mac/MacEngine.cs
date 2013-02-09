@@ -192,6 +192,17 @@ namespace Xwt.Mac
 
 		public override void DispatchPendingEvents ()
 		{
+			var until = NSDate.DistantPast;
+			var app = NSApplication.SharedApplication;
+			var p = new NSAutoreleasePool ();
+			while (true) {
+				var ev = app.NextEvent (NSEventMask.AnyEvent, until, NSRunLoop.NSDefaultRunLoopMode, true);
+				if (ev != null)
+					app.SendEvent (ev);
+				else
+					break;
+			}
+			p.Dispose ();
 		}
 	}
 
