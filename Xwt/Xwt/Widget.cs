@@ -553,7 +553,7 @@ namespace Xwt
 		/// </value>
 		public Font Font {
 			get {
-				return new Font (Backend.Font);
+				return new Font (Backend.Font, BackendHost.ToolkitEngine);
 			}
 			set {
 				Backend.Font = BackendHost.ToolkitEngine.GetSafeBackend (value);
