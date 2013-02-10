@@ -136,11 +136,11 @@ namespace Xwt.Mac
 
 		bool ParentIsSensitive ()
 		{
-			if (Widget.Superview == null) {
+			IViewObject parent = Widget.Superview as IViewObject;
+			if (parent == null) {
 				var wb = Widget.Window as WindowBackend;
 				return wb == null || wb.Sensitive;
 			}
-			IViewObject parent = Widget.Superview as IViewObject;
 			if (!parent.Backend.Sensitive)
 				return false;
 			return parent.Backend.ParentIsSensitive ();
