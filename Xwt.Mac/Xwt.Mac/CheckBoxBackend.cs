@@ -39,6 +39,7 @@ namespace Xwt.Mac
 		{
 			ViewObject = new MacButton (EventSink, ApplicationContext);
 			Widget.SetButtonType (NSButtonType.Switch);
+			Widget.Title = "";
 		}
 		
 		#region ICheckBoxBackend implementation
