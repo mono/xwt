@@ -278,7 +278,7 @@ namespace Xwt.Mac
 		{
 			var lo = Widget.ConvertPointToBase (new PointF ((float)widgetCoordinates.X, (float)widgetCoordinates.Y));
 			lo = Widget.Window.ConvertBaseToScreen (lo);
-			return MacDesktopBackend.ToDesktopRect (new RectangleF (lo.X, lo.Y, 0, 0)).Location;
+			return MacDesktopBackend.ToDesktopRect (new RectangleF (lo.X, lo.Y, 0, Widget.IsFlipped ? 0 : Widget.Frame.Height)).Location;
 		}
 		
 		protected virtual Size GetNaturalSize ()

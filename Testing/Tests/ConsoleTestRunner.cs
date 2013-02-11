@@ -31,8 +31,12 @@ namespace Xwt
 	{
 		public void Run (string[] args)
 		{
-			var r = new NUnitLite.Runner.TextUI (Console.Out);
-			r.Execute (args);
+			Application.Invoke (delegate {
+				var r = new NUnitLite.Runner.TextUI (Console.Out);
+				r.Execute (args);
+				Application.Exit ();
+			});
+			Application.Run ();
 		}
 	}
 }

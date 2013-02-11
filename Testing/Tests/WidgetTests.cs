@@ -262,18 +262,8 @@ namespace Xwt
 				win.Padding = padding;
 				win.Location = new Point (300,300);
 
-
 				ShowWindow (win);
 
-/*				if (GetType ().Name.IndexOf ("FrameTests") != -1) {
-					Console.WriteLine (win.ScreenBounds.Inflate (-padding,-padding) + " w: " + w.ScreenBounds);
-
-					for (int n=0;n<100; n++) {
-						System.Threading.Thread.Sleep (100);
-						Application.MainLoop.DispatchPendingEvents ();
-					}
-				}
-*/
 				Assert.AreEqual (w.ScreenBounds, win.ScreenBounds.Inflate (-padding,-padding));
 			}
 		}
