@@ -281,22 +281,22 @@ namespace Xwt.WPFBackend
 
 		protected double VerticalPageIncrement
 		{
-			get { return (this.verticalBackend != null) ? this.verticalBackend.PageIncrement : 10; }
+			get { return (this.verticalBackend != null) ? this.verticalBackend.PageIncrement : ViewportHeight; }
 		}
 
 		protected double HorizontalPageIncrement
 		{
-			get { return (this.horizontalBackend != null) ? this.horizontalBackend.PageIncrement : 10; }
+			get { return (this.horizontalBackend != null) ? this.horizontalBackend.PageIncrement : ViewportWidth; }
 		}
 
 		protected double VerticalStepIncrement
 		{
-			get { return (this.verticalBackend != null) ? this.verticalBackend.StepIncrement : 1; }
+			get { return (this.verticalBackend != null) ? this.verticalBackend.StepIncrement : 12; }
 		}
 
 		protected double HorizontalStepIncrement
 		{
-			get { return (this.horizontalBackend != null) ? this.horizontalBackend.StepIncrement : 1; }
+			get { return (this.horizontalBackend != null) ? this.horizontalBackend.StepIncrement : 12; }
 		}
 
 		protected override WSize MeasureOverride (WSize constraint)
