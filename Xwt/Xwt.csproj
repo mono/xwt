@@ -383,6 +383,7 @@
     <Compile Include="Xwt.Drawing\DrawingImage.cs" />
     <Compile Include="Xwt.Drawing\BitmapImage.cs" />
     <Compile Include="Xwt.Drawing\ImageSet.cs" />
+    <Compile Include="Xwt.Formats\PlainTextFormat.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

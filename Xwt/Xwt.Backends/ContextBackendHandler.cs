@@ -78,10 +78,6 @@ namespace Xwt.Backends
 
 		public abstract void TransformDistance (object backend, ref double dx, ref double dy);
 
-		public abstract void TransformPoints (object backend, Point[] points);
-
-		public abstract void TransformDistances (object backend, Distance[] vectors);
-		
 		public abstract bool IsPointInStroke (object backend, double x, double y);
 
 		/// <summary>

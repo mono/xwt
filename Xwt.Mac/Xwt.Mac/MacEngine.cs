@@ -106,6 +106,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.ClipboardBackend, MacClipboardBackend> ();
 			RegisterBackend <Xwt.Backends.DesktopBackend, MacDesktopBackend> ();
 			RegisterBackend <Xwt.Backends.IMenuButtonBackend, MenuButtonBackend> ();
+			RegisterBackend <Xwt.Backends.IListBoxBackend, ListBoxBackend> ();
 		}
 
 		public override void RunApplication ()
@@ -191,6 +192,17 @@ namespace Xwt.Mac
 
 		public override void DispatchPendingEvents ()
 		{
+			var until = NSDate.DistantPast;
+			var app = NSApplication.SharedApplication;
+			var p = new NSAutoreleasePool ();
+			while (true) {
+				var ev = app.NextEvent (NSEventMask.AnyEvent, until, NSRunLoop.NSDefaultRunLoopMode, true);
+				if (ev != null)
+					app.SendEvent (ev);
+				else
+					break;
+			}
+			p.Dispose ();
 		}
 	}
 

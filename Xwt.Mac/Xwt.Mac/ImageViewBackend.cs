@@ -42,6 +42,12 @@ namespace Xwt.Mac
 			ViewObject = new CustomNSImageView ();
 		}
 
+		protected override Size GetNaturalSize ()
+		{
+			NSImage img = Widget.Image;
+			return img == null ? Size.Zero : img.Size.ToXwtSize ();
+		}
+
 		public void SetImage (Image image)
 		{
 			if (image == null)

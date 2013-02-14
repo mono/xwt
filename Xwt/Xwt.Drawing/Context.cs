@@ -269,11 +269,33 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
+		/// Transforms the point (x, y) by the current transformation matrix (CTM)
+		/// </summary>
+		public Point TransformPoint (Point p)
+		{
+			var x = p.X;
+			var y = p.Y;
+			handler.TransformPoint (Backend, ref x, ref y);
+			return new Point (x, y);
+		}
+		
+		/// <summary>
 		/// Transforms the distance (dx, dy) by the scale and rotation elements (only) of the CTM
 		/// </summary>
 		public void TransformDistance (ref double dx, ref double dy)
 		{
 			handler.TransformDistance (Backend, ref dx, ref dy);
+		}
+		
+		/// <summary>
+		/// Transforms the distance (dx, dy) by the scale and rotation elements (only) of the CTM
+		/// </summary>
+		public Distance TransformDistance (Distance distance)
+		{
+			var dx = distance.Dx;
+			var dy = distance.Dy;
+			handler.TransformDistance (Backend, ref dx, ref dy);
+			return new Distance (dx, dy);
 		}
 
 		/// <summary>
@@ -281,7 +303,14 @@ namespace Xwt.Drawing
 		/// </summary>
 		public void TransformPoints (Point[] points)
 		{
-			handler.TransformPoints (Backend, points);
+			double x, y;
+			for (int i = 0; i < points.Length; ++i) {
+				x = points[i].X;
+				y = points[i].Y;
+				TransformPoint (ref x, ref y);
+				points[i].X = x;
+				points[i].Y = y;
+			}
 		}
 
 		/// <summary>
@@ -289,7 +318,14 @@ namespace Xwt.Drawing
 		/// </summary>
 		public void TransformDistances (Distance[] vectors)
 		{
-			handler.TransformDistances (Backend, vectors);
+			double x, y;
+			for (int i = 0; i < vectors.Length; ++i) {
+				x = vectors[i].Dx;
+				y = vectors[i].Dy;
+				TransformDistance (ref x, ref y);
+				vectors[i].Dx = x;
+				vectors[i].Dy = y;
+			}
 		}
 
 		public bool IsPointInStroke (Point p)

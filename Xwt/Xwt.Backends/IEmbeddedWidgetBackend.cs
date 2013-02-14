@@ -55,6 +55,7 @@ namespace Xwt.Backends
 		public EmbeddedNativeWidget (object nativeWidget, Widget sourceWidget)
 		{
 			this.nativeWidget = nativeWidget;
+			this.sourceWidget = sourceWidget;
 		}
 
 		protected override WidgetSize OnGetPreferredWidth ()

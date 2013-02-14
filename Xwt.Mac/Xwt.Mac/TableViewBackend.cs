@@ -166,7 +166,7 @@ namespace Xwt.Mac
 			tcol.DataCell = c;
 			Table.AddColumn (tcol);
 			var hc = new NSTableHeaderCell ();
-			hc.Title = col.Title;
+			hc.Title = col.Title ?? "";
 			tcol.HeaderCell = hc;
 			Widget.InvalidateIntrinsicContentSize ();
 			return tcol;

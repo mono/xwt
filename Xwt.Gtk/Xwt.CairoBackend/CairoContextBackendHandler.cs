@@ -326,34 +326,6 @@ namespace Xwt.CairoBackend
 			ctx.TransformDistance (ref dx, ref dy);
 		}
 
-		public override void TransformPoints (object backend, Point[] points)
-		{
-			Cairo.Context ctx = ((CairoContextBackend)backend).Context;
-
-			double x, y;
-			for (int i = 0; i < points.Length; ++i) {
-				x = points[i].X;
-				y = points[i].Y;
-				ctx.TransformPoint (ref x, ref y);
-				points[i].X = x;
-				points[i].Y = y;
-			}
-		}
-
-		public override void TransformDistances (object backend, Distance[] vectors)
-		{
-			Cairo.Context ctx = ((CairoContextBackend)backend).Context;
-
-			double x, y;
-			for (int i = 0; i < vectors.Length; ++i) {
-				x = vectors[i].Dx;
-				y = vectors[i].Dy;
-				ctx.TransformDistance (ref x, ref y);
-				vectors[i].Dx = x;
-				vectors[i].Dy = y;
-			}
-		}
-
 		public override object CreatePath ()
 		{
 			Cairo.Surface sf = new Cairo.ImageSurface (null, Cairo.Format.A1, 0, 0, 0);

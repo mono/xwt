@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 
 using System;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace Xwt
 {
@@ -32,14 +34,83 @@ namespace Xwt
 	{
 		double dx, dy;
 		
-		public double Dx {
-			get { return dx; }
-			set { dx = value; }
+		public static readonly Distance Zero;
+		
+		public Distance (double dx, double dy)
+		{
+			this.dx = dx;
+			this.dy = dy;
 		}
 		
+		public bool IsZero {
+			get {
+				return ((dx == 0) && (dy == 0));
+			}
+		}
+		
+		[DefaultValue (0d)]
+		public double Dx {
+			get {
+				return dx;
+			}
+			set {
+				dx = value;
+			}
+		}
+		
+		[DefaultValue (0d)]
 		public double Dy {
-			get { return dy; }
-			set { dy = value; }
+			get {
+				return dy;
+			}
+			set {
+				dy = value;
+			}
+		}
+		
+		public static Distance operator + (Distance d1, Distance d2)
+		{
+			return new Distance (d1.dx + d2.dx, d1.dy + d2.dy);
+		}
+		
+		public static Distance operator - (Distance d1, Distance d2)
+		{
+			return new Distance (d1.dx - d2.dx, d1.dy - d2.dy);
+		}
+		
+		public static bool operator == (Distance d1, Distance d2)
+		{
+			return (d1.dx == d2.dx) && (d1.dy == d2.dy);
+		}
+		
+		public static bool operator != (Distance d1, Distance d2)
+		{
+			return (d1.dx != d2.dx) || (d1.dy != d2.dy);
+		}
+		
+		public static explicit operator Point (Distance distance) 
+		{
+			return new Point (distance.dx, distance.dx);
+		}
+		
+		public static explicit operator Size (Distance distance) 
+		{
+			return new Size (distance.dx, distance.dx);
+		}
+		
+		public override bool Equals (object ob)
+		{
+			return (ob is Distance) && this == (Distance)ob;
+		}
+		
+		public override int GetHashCode ()
+		{
+			return dx.GetHashCode () ^ dy.GetHashCode ();
+		}
+		
+		public override string ToString ()
+		{
+			return String.Format ("{{Dx={0} Dy={1}}}", dx.ToString (CultureInfo.InvariantCulture), dy.ToString (CultureInfo.InvariantCulture));
 		}
 	}
 }

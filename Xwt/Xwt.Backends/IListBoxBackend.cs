@@ -39,9 +39,8 @@ namespace Xwt.Backends
 		void UnselectRow (int pos);
 	}
 	
-	public interface IListBoxEventSink: IWidgetEventSink
+	public interface IListBoxEventSink: IListViewEventSink
 	{
-		void OnSelectionChanged ();
 	}
 	
 	public enum ListBoxEvent

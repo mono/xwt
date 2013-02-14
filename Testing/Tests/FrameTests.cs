@@ -32,7 +32,7 @@ namespace Xwt
 	{
 		public override Widget CreateWidget ()
 		{
-			return new Frame ();
+			return new Frame () { Label = "Hi there" };
 		}
 	}
 }

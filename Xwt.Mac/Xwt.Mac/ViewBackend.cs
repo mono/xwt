@@ -136,11 +136,11 @@ namespace Xwt.Mac
 
 		bool ParentIsSensitive ()
 		{
-			if (Widget.Superview == null) {
+			IViewObject parent = Widget.Superview as IViewObject;
+			if (parent == null) {
 				var wb = Widget.Window as WindowBackend;
 				return wb == null || wb.Sensitive;
 			}
-			IViewObject parent = Widget.Superview as IViewObject;
 			if (!parent.Backend.Sensitive)
 				return false;
 			return parent.Backend.ParentIsSensitive ();
@@ -278,7 +278,7 @@ namespace Xwt.Mac
 		{
 			var lo = Widget.ConvertPointToBase (new PointF ((float)widgetCoordinates.X, (float)widgetCoordinates.Y));
 			lo = Widget.Window.ConvertBaseToScreen (lo);
-			return MacDesktopBackend.ToDesktopRect (new RectangleF (lo.X, lo.Y, 0, 0)).Location;
+			return MacDesktopBackend.ToDesktopRect (new RectangleF (lo.X, lo.Y, 0, Widget.IsFlipped ? 0 : Widget.Frame.Height)).Location;
 		}
 		
 		protected virtual Size GetNaturalSize ()
@@ -346,6 +346,8 @@ namespace Xwt.Mac
 		{
 			if (Widget is NSControl)
 				((NSControl)Widget).SizeToFit ();
+			else if (Widget is NSBox)
+				((NSBox)Widget).SizeToFit ();
 			else {
 				var s = CalcFittingSize ();
 				if (!s.IsZero)

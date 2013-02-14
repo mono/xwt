@@ -114,6 +114,11 @@ namespace Xwt.Mac
 	
 	class MacFrame: NSBox, IViewObject
 	{
+		public MacFrame ()
+		{
+			Title = "";
+		}
+
 		#region IViewObject implementation
 		public NSView View {
 			get {

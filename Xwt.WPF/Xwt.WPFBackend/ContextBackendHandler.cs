@@ -352,36 +352,6 @@ namespace Xwt.WPFBackend
 			dy = pts[0].Y;
 		}
 
-		public override void TransformPoints (object backend, Point[] points)
-		{
-			var m = ((DrawingContext)backend).Graphics.Transform;
-			PointF[] pts = new PointF[points.Length];
-			for (int i = 0; i < points.Length; ++i) {
-				pts[i].X = (float)points[i].X;
-				pts[i].Y = (float)points[i].Y;
-			}
-			m.TransformPoints (pts);
-			for (int i = 0; i < points.Length; ++i) {
-				points[i].X = pts[i].X;
-				points[i].Y = pts[i].Y;
-			}
-		}
-
-		public override void TransformDistances (object backend, Distance[] vectors)
-		{
-			var m = ((DrawingContext)backend).Graphics.Transform;
-			PointF[] pts = new PointF[vectors.Length];
-			for (int i = 0; i < vectors.Length; ++i) {
-				pts[i].X = (float)vectors[i].Dx;
-				pts[i].Y = (float)vectors[i].Dy;
-			}
-			m.TransformVectors (pts);
-			for (int i = 0; i < vectors.Length; ++i) {
-				vectors[i].Dx = pts[i].X;
-				vectors[i].Dy = pts[i].Y;
-			}
-		}
-
 		public override object CreatePath ()
         {
             return new DrawingContext ();
