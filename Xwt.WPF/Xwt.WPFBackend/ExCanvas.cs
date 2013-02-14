@@ -33,13 +33,13 @@ namespace Xwt.WPFBackend
 	internal class ExCanvas
 		: WpfCanvas, IWpfWidget
 	{
-		public event EventHandler Render;
+		public Action<System.Windows.Media.DrawingContext> RenderAction;
 
 		protected override void OnRender (System.Windows.Media.DrawingContext dc)
 		{
-			var render = Render;
+			var render = RenderAction;
 			if (render != null)
-				render (this, EventArgs.Empty);
+				render (dc);
 
 			base.OnRender (dc);
 		}

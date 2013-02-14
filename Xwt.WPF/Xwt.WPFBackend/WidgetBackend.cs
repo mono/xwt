@@ -552,7 +552,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		protected double WidthPixelRatio
+		public double WidthPixelRatio
 		{
 			get
 			{
@@ -565,7 +565,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		protected double HeightPixelRatio
+		public double HeightPixelRatio
 		{
 			get
 			{

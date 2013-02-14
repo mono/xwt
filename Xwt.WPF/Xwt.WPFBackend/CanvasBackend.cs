@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#if !USE_WPF_RENDERING
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -202,3 +203,4 @@ namespace Xwt.WPFBackend
 		}
 	}
 }
+#endif

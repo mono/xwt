@@ -199,7 +199,8 @@ namespace Xwt.WPFBackend
 
 		public override object ChangeBitmapOpacity (object backend, double opacity)
 		{
-			Bitmap bitmap = DataConverter.AsBitmap (backend);
+			throw new System.NotImplementedException ();
+/*			Bitmap bitmap = DataConverter.AsBitmap (backend);
 			if (bitmap == null)
 				throw new ArgumentException ();
 			Bitmap result = new Bitmap (bitmap.Width, bitmap.Height, bitmap.PixelFormat);
@@ -207,7 +208,7 @@ namespace Xwt.WPFBackend
 			WpfContextBackendHandler.DrawImageCore (g, bitmap, 0, 0, bitmap.Width, bitmap.Height, (float)opacity);
 			g.Dispose ();
 			return result;
-		}
+*/		}
 
 		public override void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
 		{

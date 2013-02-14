@@ -173,6 +173,15 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public double GetDeviceIndependentPixelSize (double widthRatio)
+		{
+			if (Unit == FontSizeUnit.Points)
+				return WpfFontBackendHandler.GetDeviceUnitsFromPoints (Size);
+			else {
+				return Size / widthRatio;
+			}
+		}
+
 		public static FontData FromControl (SW.Controls.Control control)
 		{
 			Size pixelRatios = control.GetPixelRatios ();

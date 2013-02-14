@@ -25,6 +25,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#if !USE_WPF_RENDERING
+
 using System.Drawing;
 
 namespace Xwt.WPFBackend
@@ -54,7 +56,10 @@ namespace Xwt.WPFBackend
 			
 		public Size GetSize ()
 		{
-			return context.Graphics.MeasureString (Text, Font, (int) Width, StringFormat).ToXwtSize ();
+			throw new System.NotImplementedException ();
+//			return context.Graphics.MeasureString (Text, Font, (int)Width, StringFormat).ToXwtSize ();
 		}
 	}
 }
+
+#endif

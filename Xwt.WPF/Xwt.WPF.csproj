@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;USE_WPF_RENDERING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
@@ -63,6 +63,12 @@
     <Compile Include="Xwt.WPFBackend\ComboBoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\VisualImagePatternBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\VisualGradientBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\VisualTextLayoutBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\VisualImageBuilderBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\VisualDrawingContext.cs" />
+    <Compile Include="Xwt.WPFBackend\VisualContextBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\ExRichTextBox.cs" />
     <Compile Include="Xwt.WPFBackend\LinkLabelBackend.cs" />
     <Compile Include="Xwt.WPFBackend\PopoverBackend.cs" />
@@ -125,6 +131,7 @@
     <Compile Include="Xwt.WPFBackend\TreeViewDropAdorner.cs" />
     <Compile Include="Xwt.WPFBackend\Util.cs" />
     <Compile Include="Xwt.WPFBackend\ValuesContainer.cs" />
+    <Compile Include="Xwt.WPFBackend\VisualCanvasBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WidgetBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WindowBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WindowFrameBackend.cs" />
