@@ -27,7 +27,7 @@
 using System;
 using Xwt;
 
-namespace Tests
+namespace Xwt
 {
 	public class ReferenceImageVerifierDialog: Dialog
 	{
@@ -45,6 +45,7 @@ namespace Tests
 			Height = 300;
 
 			Table table = new Table ();
+			table.DefaultRowSpacing = table.DefaultColumnSpacing = 6;
 
 			table.Attach (new Label ("Reference Image"), 0, 0, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
 			table.Attach (new Label ("Test Image"), 1, 0, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
@@ -58,9 +59,9 @@ namespace Tests
 			var buttonBox = new HBox ();
 			table.Attach (buttonBox, 0, 2, 2, 3, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
 
-			var closeButton = new Button ("Close");
-			var validButton = new Button ("Success");
-			var failButton = new Button ("Failure");
+			closeButton = new Button ("Close");
+			validButton = new Button ("Success");
+			failButton = new Button ("Failure");
 
 			buttonBox.PackEnd (closeButton);
 			buttonBox.PackEnd (failButton);
@@ -73,13 +74,16 @@ namespace Tests
 			failButton.Clicked += delegate {
 				var info = ReferenceImageManager.ImageFailures[currentImage];
 				info.Fail ();
+				ShowNextImage ();
 			};
 			
 			validButton.Clicked += delegate {
 				var info = ReferenceImageManager.ImageFailures[currentImage];
 				info.Validate ();
+				ShowNextImage ();
 			};
 
+			Content = table;
 			ShowNextImage ();
 		}
 

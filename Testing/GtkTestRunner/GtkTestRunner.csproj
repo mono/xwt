@@ -37,15 +37,15 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Xwt.Gtk\Xwt.Gtk.csproj">
+    <ProjectReference Include="..\..\Xwt.Gtk\Xwt.Gtk.csproj">
       <Project>{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}</Project>
       <Name>Xwt.Gtk</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Xwt\Xwt.csproj">
+    <ProjectReference Include="..\..\Xwt\Xwt.csproj">
       <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
       <Name>Xwt</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tests.csproj">
+    <ProjectReference Include="..\Tests\Tests.csproj">
       <Project>{8C624AB7-8195-4AE5-98CE-5F8676821AF7}</Project>
       <Name>Tests</Name>
     </ProjectReference>

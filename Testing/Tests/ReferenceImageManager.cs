@@ -33,24 +33,44 @@ namespace Xwt
 {
 	public class ReferenceImageManager
 	{
-		internal static string ReferenceImageDir;
-		internal static string CustomReferenceImageDir;
+		internal static string ProjectReferenceImageDir;
+		internal static string ProjectCustomReferenceImageDir;
+
 		internal static string FailedImageCacheDir;
 		
 		public static List<FailedImageInfo> ImageFailures = new List<FailedImageInfo> ();
+
+		static ReferenceImageManager ()
+		{
+			var baseDir = Path.GetDirectoryName (System.Reflection.Assembly.GetEntryAssembly ().Location);
+
+			ProjectReferenceImageDir = Path.Combine (baseDir, "..", "..", "..", "Tests", "ReferenceImages");
+			ProjectCustomReferenceImageDir = Path.Combine (baseDir, "..", "..", "ReferenceImages");
+			FailedImageCacheDir = Path.Combine (baseDir, "FailedImageCache");
+		}
+
+		public static void ShowImageVerifier ()
+		{
+			if (ImageFailures.Count > 0) {
+				var dlg = new ReferenceImageVerifierDialog ();
+				dlg.Run ();
+			}
+		}
 		
 		public static void CheckImage (string refImageName, Image img)
 		{
 			Image refImage = null;
-			
-			var refImageFile = Path.Combine (CustomReferenceImageDir, refImageName);
-			if (File.Exists (refImageFile))
-				refImage = Image.FromFile (refImageFile);
-			
+
+			try {
+				refImage = Image.FromResource (System.Reflection.Assembly.GetEntryAssembly (), refImageName);
+			} catch {
+			}
+
 			if (refImage == null) {
-				refImageFile = Path.Combine (ReferenceImageDir, refImageName);
-				if (File.Exists (refImageFile))
-					refImage = Image.FromFile (refImageFile);
+				try {
+					refImage = Image.FromResource (typeof(ReferenceImageManager), refImageName);
+				} catch {
+				}
 			}
 			
 			if (refImage == null) {
@@ -58,7 +78,7 @@ namespace Xwt
 					TestImage = img,
 					ReferenceImage = img,
 					Name = refImageName,
-					TargetDir = ReferenceImageDir
+					TargetDir = ProjectReferenceImageDir
 				});
 				return;
 			}
@@ -77,7 +97,7 @@ namespace Xwt
 						TestImage = img,
 						ReferenceImage = refImage,
 						Name = refImageName,
-						TargetDir = CustomReferenceImageDir
+						TargetDir = ProjectCustomReferenceImageDir
 					});
 				}
 				Assert.Fail ("Image " + refImageName + " doesn't match");

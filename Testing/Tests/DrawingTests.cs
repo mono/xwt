@@ -39,7 +39,7 @@ namespace Xwt
 		ImageBuilder builder;
 		Context context;
 
-		void InitContext (int width = 100, int height = 100)
+		void InitBlank (int width = 50, int height = 50)
 		{
 			if (builder != null)
 				builder.Dispose ();
@@ -49,6 +49,8 @@ namespace Xwt
 			context.Rectangle (0, 0, width, height);
 			context.SetColor (Colors.White);
 			context.Fill ();
+			context.SetColor (Colors.Black);
+			context.SetLineWidth (1);
 		}
 
 		void CheckImage (string refImageName)
@@ -60,6 +62,15 @@ namespace Xwt
 			builder = null;
 
 			ReferenceImageManager.CheckImage (refImageName, img);
+		}
+
+		[Test]
+		public void Rectangle ()
+		{
+			InitBlank ();
+			context.Rectangle (1.5, 1.5, 20, 20);
+			context.Stroke ();
+			CheckImage ("Rectangle.png");
 		}
 	}
 }

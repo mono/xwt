@@ -34,6 +34,7 @@ namespace Xwt
 			Application.Invoke (delegate {
 				var r = new NUnitLite.Runner.TextUI (Console.Out);
 				r.Execute (args);
+				ReferenceImageManager.ShowImageVerifier ();
 				Application.Exit ();
 			});
 			Application.Run ();
