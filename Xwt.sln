@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt", "Xwt\Xwt.csproj", "{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}"
@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{164E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Testing\Tests\Tests.csproj", "{8C624AB7-8195-4AE5-98CE-5F8676821AF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkTestRunner", "Testing\Tests\GtkTestRunner\GtkTestRunner.csproj", "{BC764278-4141-483C-8643-2EA8C40373B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkTestRunner", "Testing\GtkTestRunner\GtkTestRunner.csproj", "{BC764278-4141-483C-8643-2EA8C40373B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacTestRunner", "Testing\Tests\MacTestRunner\MacTestRunner.csproj", "{0017C823-67F6-4DFA-8C2C-E23CD1E33D8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacTestRunner", "Testing\MacTestRunner\MacTestRunner.csproj", "{0017C823-67F6-4DFA-8C2C-E23CD1E33D8F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestApps", "TestApps", "{83D74DDF-581E-4E2A-AE02-F4047A5B96C7}"
 EndProject
