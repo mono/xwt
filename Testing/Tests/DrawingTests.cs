@@ -63,6 +63,16 @@ namespace Xwt
 
 			ReferenceImageManager.CheckImage (refImageName, img);
 		}
+		
+		[Test]
+		public void Line ()
+		{
+			InitBlank ();
+			context.MoveTo (1, 1.5);
+			context.LineTo (20, 1.5);
+			context.Stroke ();
+			CheckImage ("Line.png");
+		}
 
 		[Test]
 		public void Rectangle ()

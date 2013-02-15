@@ -130,10 +130,16 @@ namespace Xwt
 
 		public void Validate ()
 		{
+			if (!Directory.Exists (TargetDir))
+				Directory.CreateDirectory (TargetDir);
+			TestImage.Save (Path.Combine (TargetDir, Name), ImageFileType.Png);
 		}
 
 		public void Fail ()
 		{
+			if (!Directory.Exists (ReferenceImageManager.FailedImageCacheDir))
+				Directory.CreateDirectory (ReferenceImageManager.FailedImageCacheDir);
+			TestImage.Save (Path.Combine (ReferenceImageManager.FailedImageCacheDir, Name), ImageFileType.Png);
 		}
 	}
 }
