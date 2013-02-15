@@ -38,6 +38,27 @@ namespace Xwt.GtkBackend
 				return loader.Pixbuf;
 		}
 
+		public override void SaveToStream (object backend, System.IO.Stream stream, ImageFileType fileType)
+		{
+			var pix = (Gdk.Pixbuf)backend;
+			var buffer = pix.SaveToBuffer (GetFileType (fileType));
+			stream.Write (buffer, 0, buffer.Length);
+		}
+
+		string GetFileType (ImageFileType type)
+		{
+			switch (type) {
+			case ImageFileType.Bmp:
+				return "bmp";
+			case ImageFileType.Jpeg:
+				return "jpeg";
+			case ImageFileType.Png:
+				return "png";
+			default:
+				throw new NotSupportedException ();
+			}
+		}
+
 		public override Image GetStockIcon (string id)
 		{
 			return ApplicationContext.Toolkit.WrapImage (Util.ToGtkStock (id));

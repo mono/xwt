@@ -59,6 +59,8 @@ namespace Xwt.Backends
 		
 		public abstract object LoadFromStream (Stream stream);
 
+		public abstract void SaveToStream (object backend, System.IO.Stream stream, ImageFileType fileType);
+
 		public abstract Image GetStockIcon (string id);
 
 		/// <summary>

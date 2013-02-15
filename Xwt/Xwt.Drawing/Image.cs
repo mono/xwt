@@ -130,6 +130,17 @@ namespace Xwt.Drawing
 			return new ImageSet (images);
 		}
 
+		public void Save (string file, ImageFileType fileType)
+		{
+			using (var f = File.OpenWrite (file))
+				Save (f, fileType);
+		}
+
+		public void Save (Stream stream, ImageFileType fileType)
+		{
+			ToolkitEngine.ImageBackendHandler.SaveToStream (ToBitmap ().Backend, stream, fileType);
+		}
+		
 		internal virtual object SelectedBackend {
 			get {
 				return Backend != NoBackend ? Backend : null;

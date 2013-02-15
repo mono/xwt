@@ -225,6 +225,17 @@ namespace Xwt.Mac
 
 			lastCopyPoolDrain = DateTime.Now;
 		}
+
+		public static NSBitmapImageFileType ToMacFileType (this ImageFileType type)
+		{
+			switch (type) {
+			case ImageFileType.Png: return NSBitmapImageFileType.Png;
+			case ImageFileType.Jpeg: return NSBitmapImageFileType.Jpeg;
+			case ImageFileType.Bmp: return NSBitmapImageFileType.Bmp;
+			default:
+				throw new NotSupportedException ();
+			}
+		}
 	}
 
 	public interface ICopiableObject
