@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+
 using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
@@ -52,6 +53,9 @@ namespace Xwt.GtkBackend
 				pbuf = Toolkit.GetBackend (image.ToBitmap ()) as Gdk.Pixbuf;
 			if (pbuf == null)
 				throw new ArgumentException ("image is not of the expected type", "image");
+
+			if (image.HasFixedSize && (pbuf.Width != (int)image.Size.Width || pbuf.Height != (int)image.Size.Height))
+				pbuf = pbuf.ScaleSimple ((int)image.Size.Width, (int)image.Size.Height, Gdk.InterpType.Bilinear);
 
 			Widget.Pixbuf = pbuf;
 		}
