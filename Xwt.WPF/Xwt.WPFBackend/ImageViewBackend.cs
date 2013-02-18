@@ -42,14 +42,11 @@ namespace Xwt.WPFBackend
 
 		public void SetImage (Xwt.Drawing.Image image)
 		{
-			if (image == null)
-				throw new ArgumentNullException ("image");
-
 			ImageSource source = DataConverter.AsImageSource (Toolkit.GetBackend (image));
 			if (source == null)
 				source = DataConverter.AsImageSource (Toolkit.GetBackend (image.ToBitmap ()));
 			if (source == null)
-				throw new ArgumentException ("image is not of the expected type", "nativeImage");
+				throw new ArgumentException ("image is not of the expected type", "image");
 
 			Image.Source = source;
 		}

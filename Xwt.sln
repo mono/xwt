@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{164E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Testing\Tests\Tests.csproj", "{8C624AB7-8195-4AE5-98CE-5F8676821AF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkTestRunner", "Testing\Tests\GtkTestRunner\GtkTestRunner.csproj", "{BC764278-4141-483C-8643-2EA8C40373B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkTestRunner", "Testing\GtkTestRunner\GtkTestRunner.csproj", "{BC764278-4141-483C-8643-2EA8C40373B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacTestRunner", "Testing\Tests\MacTestRunner\MacTestRunner.csproj", "{0017C823-67F6-4DFA-8C2C-E23CD1E33D8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacTestRunner", "Testing\MacTestRunner\MacTestRunner.csproj", "{0017C823-67F6-4DFA-8C2C-E23CD1E33D8F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestApps", "TestApps", "{83D74DDF-581E-4E2A-AE02-F4047A5B96C7}"
 EndProject
@@ -178,7 +178,7 @@ Global
 		{14CF6E75-0D08-4BBD-B0F5-742196E5656D} = {83D74DDF-581E-4E2A-AE02-F4047A5B96C7}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = GtkTest\GtkTest.csproj
+		StartupItem = Testing\GtkTestRunner\GtkTestRunner.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

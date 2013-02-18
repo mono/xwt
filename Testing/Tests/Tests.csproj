@@ -61,6 +61,9 @@
     <Compile Include="WidgetTests.cs" />
     <Compile Include="ConsoleTestRunner.cs" />
     <Compile Include="BoxTests.cs" />
+    <Compile Include="DrawingTests.cs" />
+    <Compile Include="ReferenceImageVerifierDialog.cs" />
+    <Compile Include="ReferenceImageManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Test.csproj" />
@@ -72,4 +75,24 @@
       <Name>Xwt</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ReferenceImages\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\Rectangle.png">
+      <LogicalName>Rectangle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\Line.png">
+      <LogicalName>Line.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

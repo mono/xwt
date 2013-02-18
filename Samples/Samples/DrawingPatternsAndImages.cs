@@ -45,7 +45,8 @@ namespace Samples
 			
 			ctx.SetColor (Colors.Black);
 			// Dashed lines
-			
+
+			ctx.SetLineWidth (2);
 			ctx.SetLineDash (15, 10, 10, 5, 5);
 			ctx.Rectangle (10, 10, 100, 100);
 			ctx.Stroke ();

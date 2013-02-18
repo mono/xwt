@@ -1,5 +1,5 @@
 //
-// ConsoleTestRunner.cs
+// ImageFileType.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -25,20 +25,13 @@
 // THE SOFTWARE.
 using System;
 
-namespace Xwt
+namespace Xwt.Drawing
 {
-	public class ConsoleTestRunner
+	public enum ImageFileType
 	{
-		public void Run (string[] args)
-		{
-			Application.Invoke (delegate {
-				var r = new NUnitLite.Runner.TextUI (Console.Out);
-				r.Execute (args);
-				ReferenceImageManager.ShowImageVerifier ();
-				Application.Exit ();
-			});
-			Application.Run ();
-		}
+		Jpeg,
+		Png,
+		Bmp
 	}
 }
 

@@ -68,6 +68,19 @@ namespace Xwt.Mac
 			return ApplicationContext.Toolkit.WrapImage (img);
 		}
 
+		public override void SaveToStream (object backend, System.IO.Stream stream, ImageFileType fileType)
+		{
+			NSImage img = backend as NSImage;
+			if (img == null)
+				throw new NotSupportedException ();
+
+			var imageData = img.AsTiff ();
+			var imageRep = (NSBitmapImageRep) NSBitmapImageRep.ImageRepFromData (imageData);
+			var props = new NSDictionary ();
+			props [NSBitmapImageRep.CompressionFactor] = NSNumber.FromFloat (1f);
+			imageData = imageRep.RepresentationUsingTypeProperties (fileType.ToMacFileType (), props);
+		}
+
 		public override bool IsBitmap (object handle)
 		{
 			NSImage img = handle as NSImage;

@@ -54,6 +54,20 @@ namespace Xwt.WPFBackend
 			return img;
 		}
 
+		public override void SaveToStream (object backend, Stream stream, Drawing.ImageFileType fileType)
+		{
+			var image = DataConverter.AsImageSource(backend) as BitmapSource;
+			BitmapEncoder encoder;
+			switch (fileType) {
+				case Drawing.ImageFileType.Png: encoder = new PngBitmapEncoder (); break;
+				case Drawing.ImageFileType.Jpeg: encoder = new JpegBitmapEncoder (); break;
+				case Drawing.ImageFileType.Bmp: encoder = new BmpBitmapEncoder (); break;
+				default: throw new NotSupportedException ("Image format not supported");
+			}
+			encoder.Frames.Add (BitmapFrame.Create (image));
+			encoder.Save (stream);
+		}
+
 		public override Drawing.Image GetStockIcon (string id)
 		{
 			var img1 = RenderStockIcon (id, NativeStockIconOptions.Small);

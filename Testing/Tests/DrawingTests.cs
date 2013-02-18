@@ -1,5 +1,5 @@
 //
-// ConsoleTestRunner.cs
+// DrawingTests.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,21 +23,64 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using NUnit.Framework;
+using System.Threading;
+using Xwt.Drawing;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class ConsoleTestRunner
+	[TestFixture]
+	public class DrawingTests
 	{
-		public void Run (string[] args)
+		ImageBuilder builder;
+		Context context;
+
+		void InitBlank (int width = 50, int height = 50)
 		{
-			Application.Invoke (delegate {
-				var r = new NUnitLite.Runner.TextUI (Console.Out);
-				r.Execute (args);
-				ReferenceImageManager.ShowImageVerifier ();
-				Application.Exit ();
-			});
-			Application.Run ();
+			if (builder != null)
+				builder.Dispose ();
+
+			builder = new ImageBuilder (width, height);
+			context = builder.Context;
+			context.Rectangle (0, 0, width, height);
+			context.SetColor (Colors.White);
+			context.Fill ();
+			context.SetColor (Colors.Black);
+			context.SetLineWidth (1);
+		}
+
+		void CheckImage (string refImageName)
+		{
+			if (builder == null)
+				return;
+			var img = builder.ToImage ();
+			builder.Dispose ();
+			builder = null;
+
+			ReferenceImageManager.CheckImage (refImageName, img);
+		}
+		
+		[Test]
+		public void Line ()
+		{
+			InitBlank ();
+			context.MoveTo (1, 1.5);
+			context.LineTo (20, 1.5);
+			context.Stroke ();
+			CheckImage ("Line.png");
+		}
+
+		[Test]
+		public void Rectangle ()
+		{
+			InitBlank ();
+			context.Rectangle (1.5, 1.5, 20, 20);
+			context.Stroke ();
+			CheckImage ("Rectangle.png");
 		}
 	}
 }

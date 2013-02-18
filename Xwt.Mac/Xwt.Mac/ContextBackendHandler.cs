@@ -292,31 +292,6 @@ namespace Xwt.Mac
 			dy = p.Y;
 		}
 
-		public override void TransformPoints (object backend, Point[] points)
-		{
-			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
-
-			PointF p;
-			for (int i = 0; i < points.Length; ++i) {
-				p = t.TransformPoint (new PointF ((float)points[i].X, (float)points[i].Y));
-				points[i].X = p.X;
-				points[i].Y = p.Y;
-			}
-		}
-
-		public override void TransformDistances (object backend, Distance[] vectors)
-		{
-			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
-			t.x0 = 0;
-			t.y0 = 0;
-			PointF p;
-			for (int i = 0; i < vectors.Length; ++i) {
-				p = t.TransformPoint (new PointF ((float)vectors[i].Dx, (float)vectors[i].Dy));
-				vectors[i].Dx = p.X;
-				vectors[i].Dy = p.Y;
-			}
-		}
-
 		public override object CreatePath ()
 		{
 			return new CGPath ();
