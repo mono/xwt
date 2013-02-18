@@ -79,8 +79,6 @@ namespace Xwt
 		public Table ()
 		{
 			children = new ChildrenCollection<TablePlacement> ((WidgetBackendHost)BackendHost);
-			// For some reason the table has a black background by default in WPF. Lets work around that
-			BackgroundColor = Colors.White;
 		}
 		
 		[DefaultValue(6)]
