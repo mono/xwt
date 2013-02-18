@@ -40,15 +40,13 @@ namespace Xwt.WPFBackend
 			Widget = new Image ();
 		}
 
-		public void SetImage (object nativeImage)
+		public void SetImage (Xwt.Drawing.Image image)
 		{
-			if (nativeImage == null)
-				throw new ArgumentNullException ("nativeImage");
-
-			ImageSource source = DataConverter.AsImageSource (nativeImage);
-
+			ImageSource source = DataConverter.AsImageSource (Toolkit.GetBackend (image));
 			if (source == null)
-				throw new ArgumentException ("nativeImage is not of the expected type", "nativeImage");
+				source = DataConverter.AsImageSource (Toolkit.GetBackend (image.ToBitmap ()));
+			if (source == null)
+				throw new ArgumentException ("nativeImage is not of the expected type", "imgage");
 
 			Image.Source = source;
 		}
