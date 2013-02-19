@@ -285,7 +285,8 @@ namespace Xwt
 					// The widget only takes one cell. Store its size if it is the biggest
 					bool changed = false;
 					WidgetSize fs;
-					fixedSizesByCell.TryGetValue (start, out fs);
+					if (!fixedSizesByCell.TryGetValue (start, out fs))
+						changed = true;
 					if (s.MinSize > fs.MinSize) { 
 						fs.MinSize = s.MinSize;
 						changed = true;
@@ -547,15 +548,14 @@ namespace Xwt
 			}
 		}
 		
-		WidgetSize CalcSize (bool calcHeights)
+		WidgetSize CalcSize (SizeRequestMode mode, bool calcHeights)
 		{
 			TablePlacement[] visibleChildren;
 			Dictionary<int,WidgetSize> fixedSizesByCell;
 			HashSet<int> cellsWithExpand;
 			WidgetSize[] sizes;
 			double spacing;
-			SizeRequestMode mode = calcHeights ? SizeRequestMode.WidthForHeight : SizeRequestMode.HeightForWidth;
-			
+
 			CalcDefaultSizes (mode, calcHeights, out visibleChildren, out fixedSizesByCell, out cellsWithExpand, out sizes, out spacing);
 
 			WidgetSize size = new WidgetSize (spacing);
@@ -566,24 +566,24 @@ namespace Xwt
 		
 		protected override WidgetSize OnGetPreferredWidth ()
 		{
-			return CalcSize (false);
+			return CalcSize (SizeRequestMode.HeightForWidth, false);
 		}
 		
 		protected override WidgetSize OnGetPreferredHeight ()
 		{
-			return CalcSize (true);
+			return CalcSize (SizeRequestMode.WidthForHeight, true);
 		}
 		
 		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
 		{
 			CalcDefaultSizes (SizeRequestMode.HeightForWidth, width, false, false);
-			return CalcSize (true);
+			return CalcSize (SizeRequestMode.HeightForWidth, true);
 		}
 		
 		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
 		{
 			CalcDefaultSizes (SizeRequestMode.WidthForHeight, height, true, false);
-			return CalcSize (false);
+			return CalcSize (SizeRequestMode.HeightForWidth, false);
 		}
 		
 		int GetStartAttach (TablePlacement tp, bool calcHeight)
