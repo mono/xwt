@@ -98,7 +98,7 @@ namespace Xwt.WPFBackend
 				var p1 = new SW.Point (xc + radius * Math.Cos (angle1 * Math.PI / 180.0), yc + radius * Math.Sin (angle1 * Math.PI / 180.0));
 				var p2 = new SW.Point (xc + radius * Math.Cos (nextAngle * Math.PI / 180.0), yc + radius * Math.Sin (nextAngle * Math.PI / 180.0));
 
-				ConnectToLastFigure (c, p1, true);
+				c.ConnectToLastFigure (p1, true);
 
 				var largeArc = nextAngle - angle1 > 180;
 				c.Path.Segments.Add (new ArcSegment (p2, new SW.Size (radius, radius), 0, largeArc, dir, true));
@@ -106,17 +106,6 @@ namespace Xwt.WPFBackend
 				c.EndPoint = p2;
 			}
 			while (nextAngle < angle2);
-		}
-
-		void ConnectToLastFigure (DrawingContext c, SW.Point p, bool stroke)
-		{
-			if (c.EndPoint != p) {
-				if (c.Path.Segments.Count == 0)
-					c.LastFigureStart = p;
-				c.Path.Segments.Add (new LineSegment (p, stroke && c.Path.Segments.Count != 0));
-			}
-			if (!stroke)
-				c.LastFigureStart = p;
 		}
 
 		public override void Clip (object backend)
@@ -138,7 +127,7 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext)backend;
 			if (c.LastFigureStart != c.EndPoint)
-				ConnectToLastFigure (c, c.LastFigureStart, true);
+				c.ConnectToLastFigure (c.LastFigureStart, true);
 		}
 
 		public override void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
@@ -175,9 +164,9 @@ namespace Xwt.WPFBackend
 			// Close the current path without a stroke, this will make sure
 			// that the are that the path covers is filled if Fill is called.
 			if (c.LastFigureStart != c.EndPoint)
-				ConnectToLastFigure (c, c.LastFigureStart, false);
+				c.ConnectToLastFigure (c.LastFigureStart, false);
 
-			ConnectToLastFigure (c, new SW.Point (x, y), false);
+			c.ConnectToLastFigure (new SW.Point (x, y), false);
 			c.EndPoint = new SW.Point (x, y);
 		}
 
@@ -192,7 +181,7 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext) backend;
 			c.LastFigureStart = new SW.Point (x, y);
 			var start = new SW.Point (x, y);
-			ConnectToLastFigure (c, start, false);
+			c.ConnectToLastFigure (start, false);
 			var points = new SW.Point[] { new SW.Point (x + width, y), new SW.Point (x + width, y + height), new SW.Point (x, y + height), new SW.Point (x, y) };
 			c.Path.Segments.Add (new PolyLineSegment (points, true));
 			c.EndPoint = start;

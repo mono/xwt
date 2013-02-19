@@ -215,6 +215,17 @@ namespace Xwt.WPFBackend
 			patternBrush = brush;
 		}
 
+		public void ConnectToLastFigure (SW.Point p, bool stroke)
+		{
+			if (EndPoint != p) {
+				if (Path.Segments.Count == 0)
+					LastFigureStart = p;
+				Path.Segments.Add (new LineSegment (p, stroke && Path.Segments.Count != 0));
+			}
+			if (!stroke)
+				LastFigureStart = p;
+		}
+
 		public void ResetPath ()
 		{
 			Path = new PathFigure ();
