@@ -67,7 +67,7 @@ namespace Xwt.WPFBackend
 
 		class ContextData
 		{
-			public PathFigure Path;
+			public PathGeometry Geometry;
 			public int PushCount;
 			public Color CurrentColor;
 			public double Thickness;
@@ -97,9 +97,8 @@ namespace Xwt.WPFBackend
 
 			patternBrush = context.patternBrush;
 
-			Path = CopyPath (context.Path);
-			geometry = new PathGeometry ();
-			geometry.Figures.Add (Path);
+			geometry = (PathGeometry) context.Geometry.Clone ();
+			Path = geometry.Figures[geometry.Figures.Count - 1];
 		}
 
 		internal DrawingContext()
@@ -112,7 +111,7 @@ namespace Xwt.WPFBackend
 			var cd = new ContextData () {
 				Thickness = Pen.Thickness,
 				CurrentColor = colorBrush.Color,
-				Path = Path,
+				Geometry = geometry,
 				PushCount = pushCount,
 				Pattern = patternBrush,
 				DashStyle = Pen.DashStyle,
@@ -122,9 +121,8 @@ namespace Xwt.WPFBackend
 			};
 			pushes.Push (cd);
 			pushCount = 0;
-			Path = CopyPath (Path);
-			geometry = new PathGeometry ();
-			geometry.Figures.Add (Path);
+			geometry = (PathGeometry)geometry.Clone ();
+			Path = geometry.Figures[geometry.Figures.Count - 1];
 		}
 
 		public void Restore ()
@@ -143,16 +141,10 @@ namespace Xwt.WPFBackend
 
 			AllocatePen (cd.CurrentColor, cd.Thickness, cd.DashStyle);
 			patternBrush = cd.Pattern;
-			Path = cd.Path;
-			geometry = new PathGeometry ();
-			geometry.Figures.Add (Path);
+			geometry = cd.Geometry;
+			Path = geometry.Figures[geometry.Figures.Count - 1];
 			EndPoint = cd.EndPoint;
 			LastFigureStart = cd.LastFigureStart;
-		}
-
-		PathFigure CopyPath (PathFigure path)
-		{
-			return new PathFigure (path.StartPoint, path.Segments, path.IsClosed);
 		}
 
 		public void NotifyPush ()
@@ -215,6 +207,17 @@ namespace Xwt.WPFBackend
 			patternBrush = brush;
 		}
 
+		public void NewFigure (SW.Point p)
+		{
+			if (Path.Segments.Count > 0) {
+				Path = new PathFigure ();
+				geometry.Figures.Add (Path);
+			}
+			LastFigureStart = p;
+			EndPoint = p;
+			Path.StartPoint = p;
+		}
+
 		public void ConnectToLastFigure (SW.Point p, bool stroke)
 		{
 			if (EndPoint != p) {
@@ -234,9 +237,8 @@ namespace Xwt.WPFBackend
 			Path.StartPoint = EndPoint = new SW.Point (0, 0);
 		}
 
-		public Geometry GetPathGeometry ()
-		{
-			return geometry;
+		public PathGeometry Geometry {
+			get { return geometry; }
 		}
 
 		public SW.Point GetStartPoint ()

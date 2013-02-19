@@ -111,7 +111,7 @@ namespace Xwt.WPFBackend
 		public override void Clip (object backend)
 		{
 			var c = (DrawingContext)backend;
-			c.Context.PushClip (c.GetPathGeometry ());
+			c.Context.PushClip (c.Geometry);
 			c.ResetPath ();
 			c.NotifyPush ();
 		}
@@ -119,7 +119,7 @@ namespace Xwt.WPFBackend
 		public override void ClipPreserve (object backend)
 		{
 			var c = (DrawingContext)backend;
-			c.Context.PushClip (c.GetPathGeometry ());
+			c.Context.PushClip (c.Geometry);
 			c.NotifyPush ();
 		}
 
@@ -140,14 +140,14 @@ namespace Xwt.WPFBackend
 		public override void Fill (object backend)
 		{
 			var c = (DrawingContext)backend;
-			c.Context.DrawGeometry (c.Brush, null, c.GetPathGeometry ());
+			c.Context.DrawGeometry (c.Brush, null, c.Geometry);
 			c.ResetPath ();
 		}
 
 		public override void FillPreserve (object backend)
 		{
 			var c = (DrawingContext)backend;
-			c.Context.DrawGeometry (c.Brush, null, c.GetPathGeometry ());
+			c.Context.DrawGeometry (c.Brush, null, c.Geometry);
 		}
 
 		public override void LineTo (object backend, double x, double y)
@@ -165,9 +165,7 @@ namespace Xwt.WPFBackend
 			// that the are that the path covers is filled if Fill is called.
 			if (c.LastFigureStart != c.EndPoint)
 				c.ConnectToLastFigure (c.LastFigureStart, false);
-
-			c.ConnectToLastFigure (new SW.Point (x, y), false);
-			c.EndPoint = new SW.Point (x, y);
+			c.NewFigure (new SW.Point (x, y));
 		}
 
 		public override void NewPath (object backend)
@@ -178,13 +176,10 @@ namespace Xwt.WPFBackend
 
 		public override void Rectangle (object backend, double x, double y, double width, double height)
 		{
+			MoveTo (backend, x, y);
 			var c = (DrawingContext) backend;
-			c.LastFigureStart = new SW.Point (x, y);
-			var start = new SW.Point (x, y);
-			c.ConnectToLastFigure (start, false);
 			var points = new SW.Point[] { new SW.Point (x + width, y), new SW.Point (x + width, y + height), new SW.Point (x, y + height), new SW.Point (x, y) };
 			c.Path.Segments.Add (new PolyLineSegment (points, true));
-			c.EndPoint = start;
 		}
 
 		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
@@ -214,14 +209,14 @@ namespace Xwt.WPFBackend
 		public override void Stroke (object backend)
 		{
 			var c = (DrawingContext) backend;
-			c.Context.DrawGeometry (null, c.Pen, c.GetPathGeometry ());
+			c.Context.DrawGeometry (null, c.Pen, c.Geometry);
 			c.ResetPath ();
 		}
 
 		public override void StrokePreserve (object backend)
 		{
 			var c = (DrawingContext)backend;
-			c.Context.DrawGeometry (null, c.Pen, c.GetPathGeometry ());
+			c.Context.DrawGeometry (null, c.Pen, c.Geometry);
 		}
 
 		public override void SetColor (object backend, Color color)
@@ -339,13 +334,13 @@ namespace Xwt.WPFBackend
 		public override bool IsPointInFill (object backend, double x, double y)
         {
 			var c = (DrawingContext)backend;
-			return c.GetPathGeometry ().FillContains (new SW.Point (x, y));
+			return c.Geometry.FillContains (new SW.Point (x, y));
         }
 
 		public override bool IsPointInStroke (object backend, double x, double y)
         {
 			var c = (DrawingContext)backend;
-			return c.GetPathGeometry ().StrokeContains (c.Pen, new SW.Point (x, y));
+			return c.Geometry.StrokeContains (c.Pen, new SW.Point (x, y));
 		}
 
 		public override void Dispose (object backend)
