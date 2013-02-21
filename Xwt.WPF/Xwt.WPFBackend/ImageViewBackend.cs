@@ -46,7 +46,7 @@ namespace Xwt.WPFBackend
 			if (source == null)
 				source = DataConverter.AsImageSource (Toolkit.GetBackend (image.ToBitmap ()));
 			if (source == null)
-				throw new ArgumentException ("nativeImage is not of the expected type", "imgage");
+				throw new ArgumentException ("nativeImage is not of the expected type", "image");
 
 			Image.Source = source;
 		}
