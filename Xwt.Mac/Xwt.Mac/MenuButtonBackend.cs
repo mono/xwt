@@ -83,7 +83,7 @@ namespace Xwt.Mac
 				// FIXME: mutating the Menu feels nasty, but NSPopUpButton doesn't give us much choice.. :/
 				// see http://www.cocoabuilder.com/archive/cocoa/115220-nspopupbutton-and-actions.html
 				if (m.ItemAt (0).Title != Title)
-					m.InsertItematIndex (new NSMenuItem (Title), 0);
+					m.InsertItem (new NSMenuItem (Title), 0);
 				Menu = m;
 			}
 		}
