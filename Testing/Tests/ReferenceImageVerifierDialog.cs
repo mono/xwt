@@ -34,6 +34,7 @@ namespace Xwt
 		int currentImage = -1;
 		ImageView img1;
 		ImageView img2;
+		Label nameLabel;
 
 		Button closeButton;
 		Button validButton;
@@ -47,17 +48,19 @@ namespace Xwt
 			Table table = new Table ();
 			table.DefaultRowSpacing = table.DefaultColumnSpacing = 6;
 
-			table.Attach (new Label ("Reference Image"), 0, 0, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
-			table.Attach (new Label ("Test Image"), 1, 0, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
+			table.Attach (nameLabel = new Label (), 0, 0, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
+			table.Attach (new Label ("Reference Image"), 0, 1, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
+			table.Attach (new Label ("Test Image"), 1, 1, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
+			nameLabel.Font = nameLabel.Font.WithWeight (Xwt.Drawing.FontWeight.Bold);
 
 			img1 = new ImageView ();
-			table.Attach (img1, 0, 1, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
+			table.Attach (img1, 0, 2, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
 			
 			img2 = new ImageView ();
-			table.Attach (img2, 1, 1, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
+			table.Attach (img2, 1, 2, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
 
 			var buttonBox = new HBox ();
-			table.Attach (buttonBox, 0, 2, 2, 3, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
+			table.Attach (buttonBox, 0, 3, 2, 4, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
 
 			closeButton = new Button ("Close");
 			validButton = new Button ("Success");
@@ -96,6 +99,7 @@ namespace Xwt
 				return;
 			}
 			var info = ReferenceImageManager.ImageFailures [currentImage];
+			nameLabel.Text = info.Name;
 			img1.Image = info.ReferenceImage;
 			img2.Image = info.TestImage;
 		}

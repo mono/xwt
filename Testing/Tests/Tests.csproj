@@ -85,6 +85,15 @@
     <EmbeddedResource Include="ReferenceImages\Line.png">
       <LogicalName>Line.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\pattern-sample.png">
+      <LogicalName>pattern-sample.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePattern.png">
+      <LogicalName>ImagePattern.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithTranslateTransform.png">
+      <LogicalName>ImagePatternWithTranslateTransform.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

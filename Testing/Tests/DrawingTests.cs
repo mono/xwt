@@ -82,6 +82,29 @@ namespace Xwt
 			context.Stroke ();
 			CheckImage ("Rectangle.png");
 		}
+		
+		[Test]
+		public void ImagePattern ()
+		{
+			InitBlank (70, 70);
+			context.Rectangle (5, 5, 40, 60);
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img);
+			context.Fill ();
+			CheckImage ("ImagePattern.png");
+		}
+		
+		[Test]
+		public void ImagePatternWithTranslateTransform ()
+		{
+			InitBlank (70, 70);
+			context.Translate (5, 5);
+			context.Rectangle (0, 0, 40, 60);
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img);
+			context.Fill ();
+			CheckImage ("ImagePatternWithTranslateTransform.png");
+		}
 	}
 }
 
