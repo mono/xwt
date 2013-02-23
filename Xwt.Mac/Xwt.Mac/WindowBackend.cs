@@ -58,6 +58,10 @@ namespace Xwt.Mac
 			Center ();
 		}
 
+		public IWindowFrameEventSink EventSink {
+			get { return (IWindowFrameEventSink)eventSink; }
+		}
+
 		public virtual void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			this.ApplicationContext = context;
@@ -123,6 +127,11 @@ namespace Xwt.Mac
 		
 		public void SetFocus ()
 		{
+		}
+
+		protected virtual NSView GetContentView ()
+		{
+			return ContentView;
 		}
 		
 		#region IWindowBackend implementation
@@ -238,12 +247,17 @@ namespace Xwt.Mac
 
 		void IWindowBackend.SetChild (IWidgetBackend child)
 		{
+			SetChild (child);
+		}
+
+		protected virtual void SetChild (IWidgetBackend child)
+		{
 			if (this.child != null) {
 				this.child.Widget.RemoveFromSuperview ();
 			}
 			this.child = (ViewBackend) child;
 			if (child != null) {
-				ContentView.AddSubview (this.child.Widget);
+				GetContentView ().AddSubview (this.child.Widget);
 				SetPadding (frontend.Padding.Left, frontend.Padding.Top, frontend.Padding.Right, frontend.Padding.Bottom);
 				this.child.Widget.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			}
@@ -290,7 +304,7 @@ namespace Xwt.Mac
 		public void SetPadding (double left, double top, double right, double bottom)
 		{
 			if (child != null) {
-				var frame = ContentView.Frame;
+				var frame = GetContentView ().Frame;
 				frame.X += (float) left;
 				frame.Width -= (float) (left + right);
 				frame.Y += (float) top;
@@ -356,9 +370,9 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public void SetMinSize (Size s)
+		public virtual void SetMinSize (Size s)
 		{
-			var r = FrameRectFor (new RectangleF (0, 0, (float)s.Width, (float)s.Height));
+		    var r = FrameRectFor (new RectangleF (0, 0, (float)s.Width, (float)s.Height));
 			MinSize = r.Size;
 		}
 

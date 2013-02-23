@@ -72,7 +72,12 @@ namespace Xwt.Mac
 		public override object CreateImage (object backend)
 		{
 			var gc = (CGContextBackend)backend;
-			return new NSImage (((CGBitmapContext)gc.Context).ToImage (), gc.Size);
+			var img = new NSImage (((CGBitmapContext)gc.Context).ToImage (), gc.Size);
+			var imageData = img.AsTiff ();
+			var imageRep = (NSBitmapImageRep) NSBitmapImageRep.ImageRepFromData (imageData);
+			var im = new NSImage ();
+			im.AddRepresentation (imageRep);
+			return im;
 		}
 
 		public override void Dispose (object backend)
