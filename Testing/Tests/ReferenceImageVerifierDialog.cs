@@ -34,6 +34,7 @@ namespace Xwt
 		int currentImage = -1;
 		ImageView img1;
 		ImageView img2;
+		ImageView imgDiff;
 		Label nameLabel;
 
 		Button closeButton;
@@ -56,11 +57,14 @@ namespace Xwt
 			img1 = new ImageView ();
 			table.Attach (img1, 0, 2, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
 			
+			imgDiff = new ImageView ();
+			table.Attach (imgDiff, 1, 2, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
+
 			img2 = new ImageView ();
-			table.Attach (img2, 1, 2, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
+			table.Attach (img2, 2, 2, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
 
 			var buttonBox = new HBox ();
-			table.Attach (buttonBox, 0, 3, 2, 4, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
+			table.Attach (buttonBox, 0, 3, 3, 4, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
 
 			closeButton = new Button ("Close");
 			validButton = new Button ("Success");
@@ -102,6 +106,7 @@ namespace Xwt
 			nameLabel.Text = info.Name;
 			img1.Image = info.ReferenceImage;
 			img2.Image = info.TestImage;
+			imgDiff.Image = info.DiffImage;
 		}
 	}
 }

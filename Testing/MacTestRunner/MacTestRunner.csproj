@@ -12,6 +12,7 @@
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <AssemblyName>MacTestRunner</AssemblyName>
     <SuppressXamMacMigration>True</SuppressXamMacMigration>
+    <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
