@@ -122,6 +122,12 @@ namespace Xwt.Mac
 			realButton.Visible = b.Visible;
 		}
 
+		protected override void OnBoundsChanged ()
+		{
+			mainBox.Surface.Reallocate ();
+			base.OnBoundsChanged ();
+		}
+
 		public void RunLoop (IWindowFrameBackend parent)
 		{
 			NSApplication.SharedApplication.RunModalForWindow (this);

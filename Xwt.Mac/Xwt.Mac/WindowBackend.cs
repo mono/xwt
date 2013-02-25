@@ -240,6 +240,11 @@ namespace Xwt.Mac
 
 		void HandleDidResize (object sender, EventArgs e)
 		{
+			OnBoundsChanged ();
+		}
+
+		protected virtual void OnBoundsChanged ()
+		{
 			ApplicationContext.InvokeUserCode (delegate {
 				eventSink.OnBoundsChanged (((IWindowBackend)this).Bounds);
 			});
@@ -372,6 +377,15 @@ namespace Xwt.Mac
 		
 		public virtual void SetMinSize (Size s)
 		{
+			var b = ((IWindowBackend)this).Bounds;
+			if (b.Size.Width < s.Width)
+				b.Width = s.Width;
+			if (b.Size.Height < s.Height)
+				b.Height = s.Height;
+
+			if (b != ((IWindowBackend)this).Bounds)
+				((IWindowBackend)this).Bounds = b;
+
 		    var r = FrameRectFor (new RectangleF (0, 0, (float)s.Width, (float)s.Height));
 			MinSize = r.Size;
 		}
