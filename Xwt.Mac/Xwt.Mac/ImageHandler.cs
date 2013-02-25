@@ -77,7 +77,6 @@ namespace Xwt.Mac
 			var imageData = img.AsTiff ();
 			var imageRep = (NSBitmapImageRep) NSBitmapImageRep.ImageRepFromData (imageData);
 			var props = new NSDictionary ();
-			props [NSBitmapImageRep.CompressionFactor] = NSNumber.FromFloat (1f);
 			imageData = imageRep.RepresentationUsingTypeProperties (fileType.ToMacFileType (), props);
 		}
 
