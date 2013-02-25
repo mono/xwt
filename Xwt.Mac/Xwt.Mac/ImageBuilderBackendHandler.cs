@@ -58,9 +58,14 @@ namespace Xwt.Mac
 			default:
 				throw new NotImplementedException ("ImageFormat: " + format.ToString ());
 			}
+
+			var bmp = new CGBitmapContext (IntPtr.Zero, width, height, 8, bytesPerRow, Util.DeviceRGBColorSpace, flags);
+			bmp.TranslateCTM (0, height);
+			bmp.ScaleCTM (1, -1);
 			return new CGContextBackend {
-				Context = new CGBitmapContext (IntPtr.Zero, width, height, 8, bytesPerRow, Util.DeviceRGBColorSpace, flags),
-				Size = new SizeF (width, height)
+				Context = bmp,
+				Size = new SizeF (width, height),
+				InverseViewTransform = bmp.GetCTM ().Invert ()
 			};
 		}
 
