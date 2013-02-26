@@ -1082,7 +1082,7 @@ namespace Xwt.GtkBackend
 			EventsRootWidget.DragBegin += HandleDragBegin;
 			if (sdata.ImageBackend != null)
 				IconInitializer.Init (EventsRootWidget, (Gdk.Pixbuf) sdata.ImageBackend, sdata.HotX, sdata.HotY);
-			Gtk.Drag.Begin (EventsRootWidget, Util.BuildTargetTable (sdata.Data.DataTypes), action, 1, Gtk.Global.CurrentEvent);
+			Gtk.Drag.Begin (EventsRootWidget, Util.BuildTargetTable (sdata.Data.DataTypes), action, 1, Gtk.Global.CurrentEvent ?? new Gdk.Event (IntPtr.Zero));
 		}
 
 		void HandleDragBegin (object o, Gtk.DragBeginArgs args)
