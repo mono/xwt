@@ -41,6 +41,8 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Widget = (Gtk.Scale) CreateWidget ();
+			Widget.DrawValue = false;
+			Widget.Show ();
 		}
 		
 		protected virtual Gtk.Widget CreateWidget ()
@@ -89,12 +91,12 @@ namespace Xwt.GtkBackend
 
 		public double MaximumValue {
 			get { return Widget.Adjustment.Upper; }
-			set { Widget.SetRange (MinimumValue, value); }
+			set { Widget.SetRange (Math.Min (value - 1, MinimumValue), value); }
 		}
 
 		public double MinimumValue {
 			get { return Widget.Adjustment.Lower; }
-			set { Widget.SetRange (value, MaximumValue); }
+			set { Widget.SetRange (value, Math.Max (value + 1, MaximumValue)); }
 		}
 	}
 }

@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ISpinButtonBackend))]
+	[BackendType (typeof(ISliderBackend))]
 	public class Slider : Widget
 	{
 		public Slider ()
@@ -44,8 +44,8 @@ namespace Xwt
 			}
 		}
 
-		ISpinButtonBackend Backend {
-			get { return (ISpinButtonBackend) BackendHost.Backend; }
+		ISliderBackend Backend {
+			get { return (ISliderBackend) BackendHost.Backend; }
 		}
 		
 		protected override BackendHost CreateBackendHost ()

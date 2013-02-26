@@ -104,7 +104,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<DesktopBackend, GtkDesktopBackend> ();
 			RegisterBackend<IEmbeddedWidgetBackend, EmbeddedWidgetBackend> ();
 			RegisterBackend<ISegmentedButtonBackend, SegmentedButtonBackend> ();
-			RegisterBackend<ISpinnerBackend, SpinnerBackend> ();
+			RegisterBackend<ISliderBackend, SliderBackend> ();
 		}
 
 		public override void RunApplication ()
