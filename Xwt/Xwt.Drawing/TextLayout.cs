@@ -108,7 +108,7 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
-		/// Converts from a X any Y position within the layout to the character at this position.
+		/// Converts from a X and Y position within the layout to the character at this position.
 		/// </summary>
 		/// <returns>The index of the character.</returns>
 		/// <param name="x">The x coordinate.</param>
@@ -116,6 +116,16 @@ namespace Xwt.Drawing
 		public int GetIndexFromCoordinates (double x, double y)
 		{
 			return handler.GetIndexFromCoordinates (Backend, x, y);
+		}
+
+		/// <summary>
+		/// Converts from a Position within the layout to the character at this position.
+		/// </summary>
+		/// <returns>The index of the character.</returns>
+		/// <param name="p">The position.</param>
+		public int GetIndexFromCoordinates (Point p)
+		{
+			return handler.GetIndexFromCoordinates (Backend, p.X, p.Y);
 		}
 
 		/// <summary>
