@@ -262,7 +262,16 @@ namespace Xwt.CairoBackend
 				lastStart = n;
 			}
 		}
+
+		public override int GetIndexFromCoordinates (object backend, double x, double y)
+		{
+			throw new NotImplementedException ();
+		}
 		
+		public override Rectangle GetExtendsFromIndex (object backend, int index)
+		{
+			throw new NotImplementedException ();
+		}
 		#endregion
 	}
 }
