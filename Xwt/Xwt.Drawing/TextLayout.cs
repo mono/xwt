@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public sealed class TextLayout: XwtObject
+	public sealed class TextLayout: XwtObject, IDisposable
 	{
 		TextLayoutBackendHandler handler;
 		
@@ -147,6 +147,11 @@ namespace Xwt.Drawing
 		public Rectangle GetExtendsFromIndex (int index)
 		{
 			return handler.GetExtendsFromIndex (Backend, index);
+		}
+
+		public void Dispose ()
+		{
+			handler.DisposeBackend (Backend);
 		}
 	}
 	

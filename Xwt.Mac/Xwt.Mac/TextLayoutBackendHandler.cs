@@ -195,6 +195,11 @@ namespace Xwt.Mac
 		{
 			throw new NotImplementedException ();
 		}
+
+		public override void DisposeBackend (object backend)
+		{
+			// nothing
+		}
 	}
 }
 
