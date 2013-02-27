@@ -179,6 +179,11 @@ namespace Xwt.Mac
 				ctx.RestoreState ();
 			}
 		}
+
+		public override void DisposeBackend (object backend)
+		{
+			// nothing
+		}
 	}
 }
 

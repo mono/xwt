@@ -30,6 +30,7 @@ using Xwt.Backends;
 using Xwt.Drawing;
 
 using Xwt.CairoBackend;
+using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
@@ -38,6 +39,57 @@ namespace Xwt.GtkBackend
 		static Cairo.Context SharedContext;
 		
 		public double Heigth = -1;
+
+		class PangoBackend
+		{
+			public Pango.Layout Layout { get; set; }
+
+			int[] indexToByteIndex;
+			int[] byteIndexToIndex;
+			
+			string text;
+			public string Text {
+				get {
+					return text;
+				}
+				set {
+					text = value;
+					if (indexToByteIndex != null)
+						SetupTables();
+				}
+			}
+			
+			public int IndexToByteIndex (int i)
+			{
+				if (indexToByteIndex == null)
+					SetupTables();
+				return indexToByteIndex[i];
+			}
+			
+			public int ByteIndexToIndex (int i)
+			{
+				if (byteIndexToIndex == null)
+					SetupTables();
+				return byteIndexToIndex[i];
+			}
+			
+			public void SetupTables()
+			{
+				var arr = Text.ToCharArray ();
+				int byteIndex = 0;
+				int[] indexToByteIndex = new int[arr.Length];
+				var byteIndexToIndex = new List<int> ();
+				for (int i = 0; i < arr.Length; i++) {
+					indexToByteIndex[i] = byteIndex;
+					byteIndex += System.Text.Encoding.UTF8.GetByteCount (arr, i, 1);
+					while (byteIndexToIndex.Count < byteIndex)
+						byteIndexToIndex.Add (i);
+				}
+				this.indexToByteIndex = indexToByteIndex;
+				this.byteIndexToIndex = byteIndexToIndex.ToArray ();
+			}
+		}
+
 		
 		static GtkTextLayoutBackendHandler ()
 		{
@@ -53,19 +105,22 @@ namespace Xwt.GtkBackend
 		
 		public override object Create (ICanvasBackend canvas)
 		{
-			return Pango.CairoHelper.CreateLayout (SharedContext);
+			return new PangoBackend {
+				Layout = Pango.CairoHelper.CreateLayout (SharedContext)
+			};
 		}
 
 		public override void SetText (object backend, string text)
 		{
-			Pango.Layout tl = (Pango.Layout) backend;
-			tl.SetText (text);
+			var tl = (PangoBackend) backend;
+			tl.Layout.SetText (text);
+			tl.Text = text;
 		}
 
 		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
-			Pango.Layout tl = (Pango.Layout)backend;
-			tl.FontDescription = (Pango.FontDescription)Toolkit.GetBackend (font);
+			var tl = (PangoBackend)backend;
+			tl.Layout.FontDescription = (Pango.FontDescription)Toolkit.GetBackend (font);
 		}
 		
 		public override void SetWidth (object backend, double value)
@@ -81,21 +136,28 @@ namespace Xwt.GtkBackend
 		
 		public override void SetTrimming (object backend, TextTrimming textTrimming)
 		{
-			Pango.Layout tl = (Pango.Layout)backend;
+			var tl = (PangoBackend)backend;
 			if (textTrimming == TextTrimming.WordElipsis)
-				tl.Ellipsize = Pango.EllipsizeMode.End;
+				tl.Layout.Ellipsize = Pango.EllipsizeMode.End;
 			if (textTrimming == TextTrimming.Word)
-				tl.Ellipsize = Pango.EllipsizeMode.None;
+				tl.Layout.Ellipsize = Pango.EllipsizeMode.None;
 			
 		}
 		
 		public override Size GetSize (object backend)
 		{
-			Pango.Layout tl = (Pango.Layout) backend;
+			var tl = (PangoBackend)backend;
 			int w, h;
-			tl.GetPixelSize (out w, out h);
+			tl.Layout.GetPixelSize (out w, out h);
 			return new Size ((double)w, (double)h);
 		}
+
+		public override void DisposeBackend (object backend)
+		{
+			var tl = (PangoBackend)backend;
+			tl.Layout.Dispose ();
+		}
+
 	}
 }
 

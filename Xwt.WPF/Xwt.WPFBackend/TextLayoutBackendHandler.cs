@@ -79,5 +79,10 @@ namespace Xwt.WPFBackend
 		{
 			return ((TextLayoutContext) backend).GetSize ();
 		}
+
+		public override void DisposeBackend (object backend)
+		{
+			// nothing
+		}
 	}
 }
