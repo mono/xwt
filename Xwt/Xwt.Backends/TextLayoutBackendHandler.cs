@@ -41,6 +41,8 @@ namespace Xwt.Backends
 		public abstract void SetFont (object backend, Font font);
 		public abstract void SetTrimming (object backend, TextTrimming textTrimming);
 		public abstract Size GetSize (object backend);
+		public abstract int GetIndexFromCoordinates (object backend, double x, double y);
+		public abstract Rectangle GetExtendsFromIndex (object backend, int index);
 	}
 }
 

@@ -96,6 +96,22 @@ namespace Xwt.GtkBackend
 			tl.GetPixelSize (out w, out h);
 			return new Size ((double)w, (double)h);
 		}
+
+		public override int GetIndexFromCoordinates (object backend, double x, double y)
+		{
+			Pango.Layout tl = (Pango.Layout) backend;
+			int index, trailing;
+			tl.XyToIndex ((int)x, (int)y, out index, out trailing);
+			// TODO: UTF-8 coordinate transformation
+			return index;
+		}
+
+		public override Rectangle GetExtendsFromIndex (object backend, int index)
+		{
+			Pango.Layout tl = (Pango.Layout) backend;
+			// TODO: UTF-8 coordinate transformation
+			var pos = tl.IndexToPos (index);
+			return new Rectangle (pos.X, pos.Y, pos.Width, pos.Height);
+		}
 	}
 }
-
