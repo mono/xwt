@@ -51,20 +51,28 @@ namespace Xwt
 			}
 		}
 		
-		public void Add (string title, params IDataField[] fields)
+		public ListViewColumn Add (string title, params IDataField[] fields)
 		{
 			ListViewColumn col = new ListViewColumn (title);
 			foreach (var f in fields)
 				col.Views.Add (CellView.GetDefaultCellView (f));
-			Add (col);
+			base.Add (col);
+			return col;
 		}
 		
-		public void Add (string title, params CellView[] cells)
+		public ListViewColumn Add (string title, params CellView[] cells)
 		{
 			ListViewColumn col = new ListViewColumn (title);
 			foreach (var c in cells)
 				col.Views.Add (c);
-			Add (col);
+			base.Add (col);
+			return col;
+		}
+
+		public new ListViewColumn Add (ListViewColumn col)
+		{
+			base.Add (col);
+			return col;
 		}
 		
 		protected override void InsertItem (int index, ListViewColumn item)
