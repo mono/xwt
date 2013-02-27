@@ -262,7 +262,11 @@ namespace Xwt.CairoBackend
 				lastStart = n;
 			}
 		}
-		
+
+		public override void DisposeBackend (object backend)
+		{
+			// nothing
+		}
 		#endregion
 	}
 }

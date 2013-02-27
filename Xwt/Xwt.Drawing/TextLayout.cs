@@ -31,7 +31,7 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public sealed class TextLayout: XwtObject
+	public sealed class TextLayout: XwtObject, IDisposable
 	{
 		TextLayoutBackendHandler handler;
 		
@@ -105,6 +105,11 @@ namespace Xwt.Drawing
 		public TextTrimming Trimming {
 			get { return textTrimming; }
 			set { textTrimming = value; handler.SetTrimming (Backend, value); }
+		}
+
+		public void Dispose ()
+		{
+			handler.DisposeBackend (Backend);
 		}
 	}
 	
