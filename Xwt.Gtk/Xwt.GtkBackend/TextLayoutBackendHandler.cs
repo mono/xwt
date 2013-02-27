@@ -30,6 +30,8 @@ using Xwt.Backends;
 using Xwt.Drawing;
 
 using Xwt.CairoBackend;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Xwt.GtkBackend
 {
@@ -95,6 +97,208 @@ namespace Xwt.GtkBackend
 			int w, h;
 			tl.GetPixelSize (out w, out h);
 			return new Size ((double)w, (double)h);
+		}
+		
+		public override void SetTextAttributes(object backend, IEnumerable<TextAttribute> textAttributes)
+		{
+			Pango.Layout tl = (Pango.Layout) backend;
+			var attrList = new FastPangoAttrList ();
+			// TODO: UTF-8 coordinate transformation.
+			foreach (var textAttr in textAttributes) {
+				var fg = textAttr as TextAttributeForeground;
+				if (fg != null) {
+					attrList.AddForegroundAttribute (fg.Color.ToGdkColor (), fg.StartIndex, fg.EndIndex);
+					continue;
+				}
+				var bg = textAttr as TextAttributeBackground;
+				if (bg != null) {
+					attrList.AddBackgroundAttribute (bg.Color.ToGdkColor (), bg.StartIndex, bg.EndIndex);
+					continue;
+				}
+
+				var style = textAttr as TextAttributeStyle;
+				if (style != null) {
+					attrList.AddStyleAttribute (ConvertStyle (style.TextStyle), style.StartIndex, style.EndIndex);
+					continue;
+				}
+
+				var weight = textAttr as TextAttributeWeight;
+				if (weight != null) {
+					attrList.AddWeightAttribute (ConvertWeight (weight.TextWeight), weight.StartIndex, weight.EndIndex);
+					continue;
+				}
+
+				var decoration = textAttr as TextAttributeDecoration;
+				if (decoration != null) {
+					if (decoration.TextDecoration.HasFlag (TextDecoration.Underline))
+						attrList.AddUnderlineAttribute (Pango.Underline.Single, decoration.StartIndex, decoration.EndIndex);
+					if (decoration.TextDecoration.HasFlag (TextDecoration.Strikethrough))
+						attrList.AddStrikethroughAttribute (true, decoration.StartIndex, decoration.EndIndex);
+					continue;
+				}
+
+			}
+			attrList.AssignTo (tl);
+		}
+
+		static Pango.Style ConvertStyle (TextStyle textStyle)
+		{
+			switch (textStyle) {
+			case TextStyle.Normal:
+				return Pango.Style.Normal;
+			case TextStyle.Italic:
+				return Pango.Style.Italic;
+			case TextStyle.Oblique:
+				return Pango.Style.Oblique;
+			default:
+				throw new ArgumentOutOfRangeException ();
+			}
+		}
+
+		static Pango.Weight ConvertWeight (TextWeight textWeight)
+		{
+			switch (textWeight) {
+			case TextWeight.Normal:
+				return Pango.Weight.Normal;
+			case TextWeight.Bold:
+				return Pango.Weight.Bold;
+			case TextWeight.Heavy:
+				return Pango.Weight.Heavy;
+			case TextWeight.Light:
+				return Pango.Weight.Light;
+			default:
+				throw new ArgumentOutOfRangeException ();
+			}
+		}
+
+		/// <summary>
+		/// This creates a Pango list and applies attributes to it with *much* less overhead than the GTK# version.
+		/// </summary>
+		class FastPangoAttrList : IDisposable
+		{
+			IntPtr list;
+			
+			public FastPangoAttrList ()
+			{
+				list = pango_attr_list_new ();
+			}
+			
+			public void AddStyleAttribute (Pango.Style style, uint start, uint end)
+			{
+				Add (pango_attr_style_new (style), start, end);
+			}
+			
+			public void AddWeightAttribute (Pango.Weight weight, uint start, uint end)
+			{
+				Add (pango_attr_weight_new (weight), start, end);
+			}
+			
+			public void AddForegroundAttribute (Gdk.Color color, uint start, uint end)
+			{
+				Add (pango_attr_foreground_new (color.Red, color.Green, color.Blue), start, end);
+			}
+			
+			public void AddBackgroundAttribute (Gdk.Color color, uint start, uint end)
+			{
+				Add (pango_attr_background_new (color.Red, color.Green, color.Blue), start, end);
+			}
+			
+			public void AddUnderlineAttribute (Pango.Underline underline, uint start, uint end)
+			{
+				Add (pango_attr_underline_new (underline), start, end);
+			}
+			
+			public void AddStrikethroughAttribute (bool strikethrough, uint start, uint end)
+			{
+				Add (pango_attr_strikethrough_new (strikethrough), start, end);
+			}
+
+			void Add (IntPtr attribute, uint start, uint end)
+			{
+				unsafe {
+					PangoAttribute *attPtr = (PangoAttribute *) attribute;
+					attPtr->start_index = start;
+					attPtr->end_index = end;
+				}
+				pango_attr_list_insert (list, attribute);
+			}
+			
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern IntPtr pango_attr_style_new (Pango.Style style);
+			
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern IntPtr pango_attr_stretch_new (Pango.Stretch stretch);
+			
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern IntPtr pango_attr_weight_new (Pango.Weight weight);
+
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern IntPtr pango_attr_foreground_new (ushort red, ushort green, ushort blue);
+			
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern IntPtr pango_attr_background_new (ushort red, ushort green, ushort blue);
+			
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern IntPtr pango_attr_underline_new (Pango.Underline underline);
+
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern IntPtr pango_attr_strikethrough_new (bool strikethrough);
+
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern IntPtr pango_attr_list_new ();
+			
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern void pango_attr_list_unref (IntPtr list);
+			
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern void pango_attr_list_insert (IntPtr list, IntPtr attr);
+			
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern void pango_layout_set_attributes (IntPtr layout, IntPtr attrList);
+			
+			[DllImport (PangoUtil.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+			static extern void pango_attr_list_splice (IntPtr attr_list, IntPtr other, Int32 pos, Int32 len);
+			
+			public void Splice (Pango.AttrList attrs, int pos, int len)
+			{
+				pango_attr_list_splice (list, attrs.Handle, pos, len);
+			}
+			
+			public void AssignTo (Pango.Layout layout)
+			{
+				pango_layout_set_attributes (layout.Handle, list);
+			}
+			
+			[StructLayout (LayoutKind.Sequential)]
+			struct PangoAttribute
+			{
+				public IntPtr klass;
+				public uint start_index;
+				public uint end_index;
+			}
+			
+			public void Dispose ()
+			{
+				if (list != IntPtr.Zero) {
+					GC.SuppressFinalize (this);
+					Destroy ();
+				}
+			}
+			
+			//NOTE: the list destroys all its attributes when the ref count reaches zero
+			void Destroy ()
+			{
+				pango_attr_list_unref (list);
+				list = IntPtr.Zero;
+			}
+			
+			~FastPangoAttrList ()
+			{
+				GLib.Idle.Add (delegate {
+					Destroy ();
+					return false;
+				});
+			}
 		}
 	}
 }

@@ -27,6 +27,7 @@
 
 using System;
 using Xwt.Drawing;
+using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
@@ -41,6 +42,7 @@ namespace Xwt.Backends
 		public abstract void SetFont (object backend, Font font);
 		public abstract void SetTrimming (object backend, TextTrimming textTrimming);
 		public abstract Size GetSize (object backend);
+		public abstract void SetTextAttributes(object backend, IEnumerable<TextAttribute> textAttributes);
 	}
 }
 

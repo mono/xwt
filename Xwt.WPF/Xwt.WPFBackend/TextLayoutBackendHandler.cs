@@ -31,6 +31,7 @@ using Xwt.Backends;
 using Xwt.Drawing;
 
 using Font = Xwt.Drawing.Font;
+using System.Collections.Generic;
 
 namespace Xwt.WPFBackend
 {
@@ -78,6 +79,11 @@ namespace Xwt.WPFBackend
 		public override Size GetSize (object backend)
 		{
 			return ((TextLayoutContext) backend).GetSize ();
+		}
+		
+		public override void SetTextAttributes(object backend, IEnumerable<TextAttribute> textAttributes)
+		{
+			throw new NotImplementedException ();
 		}
 	}
 }

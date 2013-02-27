@@ -35,6 +35,7 @@ using Xwt.Drawing;
 using PointF = System.Drawing.PointF;
 using SizeF = System.Drawing.SizeF;
 using RectangleF = System.Drawing.RectangleF;
+using System.Collections.Generic;
 
 namespace Xwt.Mac
 {
@@ -178,6 +179,11 @@ namespace Xwt.Mac
 				}
 				ctx.RestoreState ();
 			}
+		}
+		
+		public override void SetTextAttributes(object backend, IEnumerable<TextAttribute> textAttributes)
+		{
+			throw new NotImplementedException ();
 		}
 	}
 }

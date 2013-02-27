@@ -28,6 +28,7 @@
 using System;
 
 using Xwt.Backends;
+using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
@@ -105,6 +106,16 @@ namespace Xwt.Drawing
 		public TextTrimming Trimming {
 			get { return textTrimming; }
 			set { textTrimming = value; handler.SetTrimming (Backend, value); }
+		}
+
+		public void SetTextAttributes(params TextAttribute[] textAttributes)
+		{
+			handler.SetTextAttributes (Backend, textAttributes);
+		}
+
+		public void SetTextAttributes(IEnumerable<TextAttribute> textAttributes)
+		{
+			handler.SetTextAttributes (Backend, textAttributes);
 		}
 	}
 	
