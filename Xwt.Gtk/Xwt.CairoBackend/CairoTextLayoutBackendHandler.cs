@@ -263,6 +263,10 @@ namespace Xwt.CairoBackend
 			}
 		}
 		
+		public override void SetTextAttributes(object backend, IEnumerable<TextAttribute> textAttributes)
+		{
+			throw new NotImplementedException ();
+		}
 		#endregion
 	}
 }
