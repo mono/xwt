@@ -51,7 +51,8 @@ namespace Xwt.Backends
 	public enum ListViewColumnChange
 	{
 		Title,
-		Cells
+		Cells,
+		IsResizeable
 	}
 	
 	public enum TreeViewEvent

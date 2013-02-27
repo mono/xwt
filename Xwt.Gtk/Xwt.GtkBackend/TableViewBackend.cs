@@ -143,6 +143,8 @@ namespace Xwt.GtkBackend
 			}
 			else if (change == ListViewColumnChange.Title)
 				MapTitle (col, tc);
+			else if (change == ListViewColumnChange.IsResizeable)
+				tc.Resizable = col.IsResizeable;
 		}
 
 		public void SelectAll ()
