@@ -106,6 +106,27 @@ namespace Xwt.Drawing
 			get { return textTrimming; }
 			set { textTrimming = value; handler.SetTrimming (Backend, value); }
 		}
+
+		/// <summary>
+		/// Converts from a X any Y position within the layout to the character at this position.
+		/// </summary>
+		/// <returns>The index of the character.</returns>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		public int GetIndexFromCoordinates (double x, double y)
+		{
+			return handler.GetIndexFromCoordinates (Backend, x, y);
+		}
+
+		/// <summary>
+		/// Obtains the graphical rectangle of an character in the layout.
+		/// </summary>
+		/// <returns>The extends from the character at index.</returns>
+		/// <param name="index">The index of the character.</param>
+		public Rectangle GetExtendsFromIndex (int index)
+		{
+			return handler.GetExtendsFromIndex (Backend, index);
+		}
 	}
 	
 	public enum TextTrimming {
