@@ -205,14 +205,14 @@ namespace Xwt.Drawing
 	public enum TextDecoration
 	{
 		/// <summary>
-		/// The default weight
+		/// Underlines text
 		/// </summary>
-		Underline,
+		Underline = 1,
 		
 		/// <summary>
-		/// The bold weight
+		/// Strike-through text
 		/// </summary>
-		Strikethrough
+		Strikethrough = 2
 	}
 	
 	/// <summary>
