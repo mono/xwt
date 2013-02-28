@@ -43,11 +43,30 @@ namespace Xwt.GtkBackend
 
 		internal class PangoBackend : IDisposable
 		{
-			public Pango.Layout Layout { get; set; }
+			Pango.Layout layout;
+			public Pango.Layout Layout {
+				get {
+					if (hasUnassignedAttributes)
+						attributes.AssignTo (layout);
+					return layout;
+				}
+				set {
+					layout = value;
+				}
+			}
 
+			FastPangoAttrList attributes;
+			bool hasUnassignedAttributes = false;
 			public FastPangoAttrList Attributes {
-				get;
-				set;
+				get {
+					if (attributes == null)
+						attributes = new FastPangoAttrList ();
+					hasUnassignedAttributes = true;
+					return attributes;
+				}
+				private set {
+					attributes = value;
+				}
 			}
 
 			int[] indexToByteIndex;
@@ -62,6 +81,10 @@ namespace Xwt.GtkBackend
 					text = value;
 					if (indexToByteIndex != null)
 						SetupTables();
+					if (attributes != null) {
+						attributes.Dispose ();
+						attributes = null;
+					}
 				}
 			}
 			
@@ -98,11 +121,10 @@ namespace Xwt.GtkBackend
 			public void Dispose ()
 			{
 				Layout.Dispose ();
-				if (Attributes != null) {
-					Attributes.Dispose ();
-					Attributes = null;
+				if (attributes != null) {
+					attributes.Dispose ();
+					attributes = null;
 				}
-
 			}
 		}
 
@@ -169,78 +191,41 @@ namespace Xwt.GtkBackend
 			tl.Layout.GetPixelSize (out w, out h);
 			return new Size ((double)w, (double)h);
 		}
-		
-		public override void SetTextAttributes(object backend, IEnumerable<TextAttribute> textAttributes)
+
+		public override void SetForeground (object backend, Color color, int startIndex, int count)
 		{
 			var tl = (PangoBackend) backend;
-			var attrList = new FastPangoAttrList ();
-			foreach (var textAttr in textAttributes) {
-				var fg = textAttr as TextAttributeForeground;
-				if (fg != null) {
-					attrList.AddForegroundAttribute (fg.Color.ToGdkColor (), (uint)tl.IndexToByteIndex (fg.StartIndex), (uint)tl.IndexToByteIndex (fg.EndIndex));
-					continue;
-				}
-				var bg = textAttr as TextAttributeBackground;
-				if (bg != null) {
-					attrList.AddBackgroundAttribute (bg.Color.ToGdkColor (), (uint)tl.IndexToByteIndex (bg.StartIndex), (uint)tl.IndexToByteIndex (bg.EndIndex));
-					continue;
-				}
-
-				var style = textAttr as TextAttributeStyle;
-				if (style != null) {
-					attrList.AddStyleAttribute (ConvertStyle (style.TextStyle), (uint)tl.IndexToByteIndex (style.StartIndex), (uint)tl.IndexToByteIndex (style.EndIndex));
-					continue;
-				}
-
-				var weight = textAttr as TextAttributeWeight;
-				if (weight != null) {
-					attrList.AddWeightAttribute (ConvertWeight (weight.TextWeight), (uint)tl.IndexToByteIndex (weight.StartIndex), (uint)tl.IndexToByteIndex (weight.EndIndex));
-					continue;
-				}
-
-				var decoration = textAttr as TextAttributeDecoration;
-				if (decoration != null) {
-					if (decoration.TextDecoration.HasFlag (TextDecoration.Underline))
-						attrList.AddUnderlineAttribute (Pango.Underline.Single, (uint)tl.IndexToByteIndex (decoration.StartIndex), (uint)tl.IndexToByteIndex (decoration.EndIndex));
-					if (decoration.TextDecoration.HasFlag (TextDecoration.Strikethrough))
-						attrList.AddStrikethroughAttribute (true, (uint)tl.IndexToByteIndex (decoration.StartIndex), (uint)tl.IndexToByteIndex (decoration.EndIndex));
-					continue;
-				}
-			}
-			if (tl.Attributes != null)
-				tl.Attributes.Dispose ();
-			tl.Attributes = attrList;
-			attrList.AssignTo (tl.Layout);
+			tl.Attributes.AddForegroundAttribute (color.ToGdkColor (), (uint)tl.IndexToByteIndex (startIndex), (uint)tl.IndexToByteIndex (startIndex + count));
 		}
-
-		static Pango.Style ConvertStyle (TextStyle textStyle)
+		
+		public override void SetBackgound (object backend, Color color, int startIndex, int count)
 		{
-			switch (textStyle) {
-			case TextStyle.Normal:
-				return Pango.Style.Normal;
-			case TextStyle.Italic:
-				return Pango.Style.Italic;
-			case TextStyle.Oblique:
-				return Pango.Style.Oblique;
-			default:
-				throw new ArgumentOutOfRangeException ();
-			}
+			var tl = (PangoBackend) backend;
+			tl.Attributes.AddBackgroundAttribute (color.ToGdkColor (), (uint)tl.IndexToByteIndex (startIndex), (uint)tl.IndexToByteIndex (startIndex + count));
 		}
-
-		static Pango.Weight ConvertWeight (TextWeight textWeight)
+		
+		public override void SetFontWeight (object backend, FontWeight weight, int startIndex, int count)
 		{
-			switch (textWeight) {
-			case TextWeight.Normal:
-				return Pango.Weight.Normal;
-			case TextWeight.Bold:
-				return Pango.Weight.Bold;
-			case TextWeight.Heavy:
-				return Pango.Weight.Heavy;
-			case TextWeight.Light:
-				return Pango.Weight.Light;
-			default:
-				throw new ArgumentOutOfRangeException ();
-			}
+			var tl = (PangoBackend) backend;
+			tl.Attributes.AddWeightAttribute ((Pango.Weight)(int)weight, (uint)tl.IndexToByteIndex (startIndex), (uint)tl.IndexToByteIndex (startIndex + count));
+		}
+		
+		public override void SetFontStyle (object backend, FontStyle style, int startIndex, int count)
+		{
+			var tl = (PangoBackend) backend;
+			tl.Attributes.AddStyleAttribute ((Pango.Style)(int)style, (uint)tl.IndexToByteIndex (startIndex), (uint)tl.IndexToByteIndex (startIndex + count));
+		}
+		
+		public override void SetUnderline (object backend, int startIndex, int count)
+		{
+			var tl = (PangoBackend) backend;
+			tl.Attributes.AddUnderlineAttribute (Pango.Underline.Single, (uint)tl.IndexToByteIndex (startIndex), (uint)tl.IndexToByteIndex (startIndex + count));
+		}
+		
+		public override void SetStrikethrough (object backend, int startIndex, int count)
+		{
+			var tl = (PangoBackend) backend;
+			tl.Attributes.AddStrikethroughAttribute (true, (uint)tl.IndexToByteIndex (startIndex), (uint)tl.IndexToByteIndex (startIndex + count));
 		}
 
 		/// <summary>

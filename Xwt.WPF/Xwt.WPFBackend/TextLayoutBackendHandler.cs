@@ -81,7 +81,32 @@ namespace Xwt.WPFBackend
 			return ((TextLayoutContext) backend).GetSize ();
 		}
 		
-		public override void SetTextAttributes(object backend, IEnumerable<TextAttribute> textAttributes)
+		public override void SetForeground (object backend, Xwt.Drawing.Color color, int startIndex, int count)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public override void SetBackgound (object backend, Xwt.Drawing.Color color, int startIndex, int count)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public override void SetFontWeight (object backend, FontWeight weight, int startIndex, int count)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public override void SetFontStyle (object backend, Xwt.Drawing.FontStyle style, int startIndex, int count)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public override void SetUnderline (object backend, int startIndex, int count)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		public override void SetStrikethrough (object backend, int startIndex, int count)
 		{
 			throw new NotImplementedException ();
 		}

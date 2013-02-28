@@ -138,14 +138,13 @@ namespace Samples
 
 			tl0.Font = this.Font.WithPointSize (10);
 			tl0.Text = "This text contains attributes.";
-			tl0.SetTextAttributes (
-				new TextAttributeDecoration (TextDecoration.Underline, 0, "This".Length),
-				new TextAttributeForeground (new Color (0, 1.0, 1.0), "This ".Length, "text".Length),
-				new TextAttributeBackground (new Color (0, 0, 0), "This ".Length, "text".Length),
-				new TextAttributeWeight (TextWeight.Bold, "This text ".Length, "contains".Length),
-				new TextAttributeStyle (TextStyle.Italic, "This text ".Length, "contains".Length),
-				new TextAttributeDecoration (TextDecoration.Strikethrough, "This text contains ".Length, "attributes".Length)
-			);
+			tl0.SetUnderline ( 0, "This".Length);
+			tl0.SetForeground (new Color (0, 1.0, 1.0), "This ".Length, "text".Length);
+			tl0.SetBackgound (new Color (0, 0, 0), "This ".Length, "text".Length);
+			tl0.SetFontWeight (FontWeight.Bold, "This text ".Length, "contains".Length);
+			tl0.SetFontStyle (FontStyle.Italic, "This text ".Length, "contains".Length);
+			tl0.SetStrikethrough ("This text contains ".Length, "attributes".Length);
+
 			ctx.DrawTextLayout (tl0, col2.Left, col2.Bottom + 100);
 
 			

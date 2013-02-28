@@ -106,27 +106,6 @@ namespace Xwt.Drawing
 			this.Color = color;
 		}
 	}
-
-	/// <summary>
-	/// An enumeration specifying different text styles.
-	/// </summary>
-	public enum TextStyle
-	{
-		/// <summary>
-		/// The font is upright.
-		/// </summary>
-		Normal,
-		
-		/// <summary>
-		/// A font slanted in an italic style.
-		/// </summary>
-		Italic,
-		
-		/// <summary>
-		/// A font slanted, but in a roman style.
-		/// </summary>
-		Oblique
-	}
 	
 	/// <summary>
 	/// A text attribute that represents a text style.
@@ -136,7 +115,7 @@ namespace Xwt.Drawing
 		/// <summary>
 		/// The text style represented by this attribute.
 		/// </summary>
-		public TextStyle TextStyle { get; set; }
+		public FontStyle TextStyle { get; set; }
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xwt.Drawing.TextAttributeStyle"/> class.
@@ -144,7 +123,7 @@ namespace Xwt.Drawing
 		/// <param name="textStyle">The text style represented by this attribute.</param>
 		/// <param name="startIndex">The start index of this attribute.</param>
 		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeStyle (TextStyle textStyle, int startIndex, int length) : base (startIndex, length)
+		public TextAttributeStyle (FontStyle textStyle, int startIndex, int length) : base (startIndex, length)
 		{
 			this.TextStyle = textStyle;
 		}
@@ -201,18 +180,17 @@ namespace Xwt.Drawing
 	/// <summary>
 	/// An enumeration specifying different text decorations.
 	/// </summary>
-	[Flags]
 	public enum TextDecoration
 	{
 		/// <summary>
 		/// Underlines text
 		/// </summary>
-		Underline = 1,
+		Underline,
 		
 		/// <summary>
 		/// Strike-through text
 		/// </summary>
-		Strikethrough = 2
+		Strikethrough
 	}
 	
 	/// <summary>

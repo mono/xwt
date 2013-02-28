@@ -108,16 +108,6 @@ namespace Xwt.Drawing
 			set { textTrimming = value; handler.SetTrimming (Backend, value); }
 		}
 
-		public void SetTextAttributes(params TextAttribute[] textAttributes)
-		{
-			handler.SetTextAttributes (Backend, textAttributes);
-		}
-
-		public void SetTextAttributes(IEnumerable<TextAttribute> textAttributes)
-		{
-			handler.SetTextAttributes (Backend, textAttributes);
-		}
-
 		/// <summary>
 		/// Converts from a X and Y position within the layout to the character at this position.
 		/// </summary>
@@ -147,6 +137,70 @@ namespace Xwt.Drawing
 		public Point GetCoordinateFromIndex (int index)
 		{
 			return handler.GetCoordinateFromIndex (Backend, index);
+		}
+
+		/// <summary>
+		/// Sets the foreground color of a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
+		/// </summary>
+		/// <param name="color">The color of the text.</param>
+		/// <param name="startIndex">Start index of the first character to apply the foreground color to.</param>
+		/// <param name="count">The number of characters to apply the foreground color to.</param>
+		public void SetForeground (Color color, int startIndex, int count)
+		{
+			handler.SetForeground (Backend, color, startIndex, count);
+		}
+		
+		/// <summary>
+		/// Sets the background color of a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
+		/// </summary>
+		/// <param name="color">The color of the text background.</param>
+		/// <param name="startIndex">Start index of the first character to apply the background color to.</param>
+		/// <param name="count">The number of characters to apply the background color to.</param>
+		public void SetBackgound (Color color, int startIndex, int count)
+		{
+			handler.SetBackgound (Backend, color, startIndex, count);
+		}
+		
+		/// <summary>
+		/// Sets the font weight of a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
+		/// </summary>
+		/// <param name="weight">The font weight of the text.</param>
+		/// <param name="startIndex">Start index of the first character to apply the font weight to.</param>
+		/// <param name="count">The number of characters to apply the font weight to.</param>
+		public void SetFontWeight (FontWeight weight, int startIndex, int count)
+		{
+			handler.SetFontWeight (Backend, weight, startIndex, count);
+		}
+
+		/// <summary>
+		/// Sets the font style of a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
+		/// </summary>
+		/// <param name="style">The font style of the text.</param>
+		/// <param name="startIndex">Start index of the first character to apply the font style to.</param>
+		/// <param name="count">The number of characters to apply the font style to.</param>
+		public void SetFontStyle (FontStyle style, int startIndex, int count)
+		{
+			handler.SetFontStyle (Backend, style, startIndex, count);
+		}
+
+		/// <summary>
+		/// Underlines a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
+		/// </summary>
+		/// <param name="startIndex">Start index of the first character to underline.</param>
+		/// <param name="count">The number of characters to underline.</param>
+		public void SetUnderline (int startIndex, int count)
+		{
+			handler.SetUnderline (Backend, startIndex, count);
+		}
+
+		/// <summary>
+		/// Adds a strike-through to a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
+		/// </summary>
+		/// <param name="startIndex">Start index of the first character to strike-through.</param>
+		/// <param name="count">The number of characters to strike-through.</param>
+		public void SetStrikethrough (int startIndex, int count)
+		{
+			handler.SetStrikethrough (Backend, startIndex, count);
 		}
 
 		public void Dispose ()
