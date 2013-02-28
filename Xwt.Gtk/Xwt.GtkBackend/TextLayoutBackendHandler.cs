@@ -41,7 +41,7 @@ namespace Xwt.GtkBackend
 		
 		public double Heigth = -1;
 
-		class PangoBackend : IDisposable
+		internal class PangoBackend : IDisposable
 		{
 			public Pango.Layout Layout { get; set; }
 
@@ -116,7 +116,9 @@ namespace Xwt.GtkBackend
 		public override object Create (Context context)
 		{
 			CairoContextBackend c = (CairoContextBackend) Toolkit.GetBackend (context);
-			return Pango.CairoHelper.CreateLayout (c.Context);
+			return new PangoBackend {
+				Layout = Pango.CairoHelper.CreateLayout (c.Context)
+			};
 		}
 		
 		public override object Create (ICanvasBackend canvas)
@@ -244,7 +246,7 @@ namespace Xwt.GtkBackend
 		/// <summary>
 		/// This creates a Pango list and applies attributes to it with *much* less overhead than the GTK# version.
 		/// </summary>
-		class FastPangoAttrList : IDisposable
+		internal class FastPangoAttrList : IDisposable
 		{
 			IntPtr list;
 			
