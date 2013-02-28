@@ -44,7 +44,7 @@ namespace Xwt.Backends
 		public abstract Size GetSize (object backend);
 		public abstract void SetTextAttributes(object backend, IEnumerable<TextAttribute> textAttributes);
 		public abstract int GetIndexFromCoordinates (object backend, double x, double y);
-		public abstract Rectangle GetExtendsFromIndex (object backend, int index);
+		public abstract Point GetCoordinateFromIndex (object backend, int index);
 		public abstract void DisposeBackend (object backend);
 	}
 }

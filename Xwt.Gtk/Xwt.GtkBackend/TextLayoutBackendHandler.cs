@@ -364,11 +364,11 @@ namespace Xwt.GtkBackend
 			return tl.ByteIndexToIndex (index);
 		}
 
-		public override Rectangle GetExtendsFromIndex (object backend, int index)
+		public override Point GetCoordinateFromIndex (object backend, int index)
 		{
 			var tl = (PangoBackend) backend;
 			var pos = tl.Layout.IndexToPos (tl.IndexToByteIndex (index));
-			return new Rectangle (pos.X, pos.Y, pos.Width, pos.Height);
+			return new Point (pos.X, pos.Y);
 		}
 
 		public override void DisposeBackend (object backend)

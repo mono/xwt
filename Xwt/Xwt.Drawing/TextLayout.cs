@@ -140,13 +140,13 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
-		/// Obtains the graphical rectangle of an character in the layout.
+		/// Obtains the graphical coordinate of an character in the layout.
 		/// </summary>
 		/// <returns>The extends from the character at index.</returns>
 		/// <param name="index">The index of the character.</param>
-		public Rectangle GetExtendsFromIndex (int index)
+		public Point GetCoordinateFromIndex (int index)
 		{
-			return handler.GetExtendsFromIndex (Backend, index);
+			return handler.GetCoordinateFromIndex (Backend, index);
 		}
 
 		public void Dispose ()

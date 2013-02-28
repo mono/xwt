@@ -273,7 +273,7 @@ namespace Xwt.CairoBackend
 			throw new NotImplementedException ();
 		}
 
-		public override Rectangle GetExtendsFromIndex (object backend, int index)
+		public override Point GetCoordinateFromIndex (object backend, int index)
 		{
 			throw new NotImplementedException ();
 		}
