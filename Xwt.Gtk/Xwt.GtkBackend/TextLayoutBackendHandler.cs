@@ -41,9 +41,14 @@ namespace Xwt.GtkBackend
 		
 		public double Heigth = -1;
 
-		class PangoBackend
+		class PangoBackend : IDisposable
 		{
 			public Pango.Layout Layout { get; set; }
+
+			public FastPangoAttrList Attributes {
+				get;
+				set;
+			}
 
 			int[] indexToByteIndex;
 			int[] byteIndexToIndex;
@@ -89,6 +94,16 @@ namespace Xwt.GtkBackend
 				this.indexToByteIndex = indexToByteIndex;
 				this.byteIndexToIndex = byteIndexToIndex.ToArray ();
 			}
+
+			public void Dispose ()
+			{
+				Layout.Dispose ();
+				if (Attributes != null) {
+					Attributes.Dispose ();
+					Attributes = null;
+				}
+
+			}
 		}
 
 		
@@ -126,8 +141,8 @@ namespace Xwt.GtkBackend
 		
 		public override void SetWidth (object backend, double value)
 		{
-			Pango.Layout tl = (Pango.Layout)backend;
-			tl.Width = (int) (value * Pango.Scale.PangoScale);
+			var tl = (PangoBackend) backend;
+			tl.Layout.Width = (int) (value * Pango.Scale.PangoScale);
 		}
 		
 		public override void SetHeight (object backend, double value)
@@ -155,44 +170,45 @@ namespace Xwt.GtkBackend
 		
 		public override void SetTextAttributes(object backend, IEnumerable<TextAttribute> textAttributes)
 		{
-			Pango.Layout tl = (Pango.Layout) backend;
+			var tl = (PangoBackend) backend;
 			var attrList = new FastPangoAttrList ();
-			// TODO: UTF-8 coordinate transformation.
 			foreach (var textAttr in textAttributes) {
 				var fg = textAttr as TextAttributeForeground;
 				if (fg != null) {
-					attrList.AddForegroundAttribute (fg.Color.ToGdkColor (), fg.StartIndex, fg.EndIndex);
+					attrList.AddForegroundAttribute (fg.Color.ToGdkColor (), (uint)tl.IndexToByteIndex (fg.StartIndex), (uint)tl.IndexToByteIndex (fg.EndIndex));
 					continue;
 				}
 				var bg = textAttr as TextAttributeBackground;
 				if (bg != null) {
-					attrList.AddBackgroundAttribute (bg.Color.ToGdkColor (), bg.StartIndex, bg.EndIndex);
+					attrList.AddBackgroundAttribute (bg.Color.ToGdkColor (), (uint)tl.IndexToByteIndex (bg.StartIndex), (uint)tl.IndexToByteIndex (bg.EndIndex));
 					continue;
 				}
 
 				var style = textAttr as TextAttributeStyle;
 				if (style != null) {
-					attrList.AddStyleAttribute (ConvertStyle (style.TextStyle), style.StartIndex, style.EndIndex);
+					attrList.AddStyleAttribute (ConvertStyle (style.TextStyle), (uint)tl.IndexToByteIndex (style.StartIndex), (uint)tl.IndexToByteIndex (style.EndIndex));
 					continue;
 				}
 
 				var weight = textAttr as TextAttributeWeight;
 				if (weight != null) {
-					attrList.AddWeightAttribute (ConvertWeight (weight.TextWeight), weight.StartIndex, weight.EndIndex);
+					attrList.AddWeightAttribute (ConvertWeight (weight.TextWeight), (uint)tl.IndexToByteIndex (weight.StartIndex), (uint)tl.IndexToByteIndex (weight.EndIndex));
 					continue;
 				}
 
 				var decoration = textAttr as TextAttributeDecoration;
 				if (decoration != null) {
 					if (decoration.TextDecoration.HasFlag (TextDecoration.Underline))
-						attrList.AddUnderlineAttribute (Pango.Underline.Single, decoration.StartIndex, decoration.EndIndex);
+						attrList.AddUnderlineAttribute (Pango.Underline.Single, (uint)tl.IndexToByteIndex (decoration.StartIndex), (uint)tl.IndexToByteIndex (decoration.EndIndex));
 					if (decoration.TextDecoration.HasFlag (TextDecoration.Strikethrough))
-						attrList.AddStrikethroughAttribute (true, decoration.StartIndex, decoration.EndIndex);
+						attrList.AddStrikethroughAttribute (true, (uint)tl.IndexToByteIndex (decoration.StartIndex), (uint)tl.IndexToByteIndex (decoration.EndIndex));
 					continue;
 				}
-
 			}
-			attrList.AssignTo (tl);
+			if (tl.Attributes != null)
+				tl.Attributes.Dispose ();
+			tl.Attributes = attrList;
+			attrList.AssignTo (tl.Layout);
 		}
 
 		static Pango.Style ConvertStyle (TextStyle textStyle)
@@ -333,49 +349,30 @@ namespace Xwt.GtkBackend
 			
 			public void Dispose ()
 			{
-				if (list != IntPtr.Zero) {
-					GC.SuppressFinalize (this);
-					Destroy ();
-				}
-			}
-			
-			//NOTE: the list destroys all its attributes when the ref count reaches zero
-			void Destroy ()
-			{
 				pango_attr_list_unref (list);
 				list = IntPtr.Zero;
-			}
-			
-			~FastPangoAttrList ()
-			{
-				GLib.Idle.Add (delegate {
-					Destroy ();
-					return false;
-				});
 			}
 		}
 
 		public override int GetIndexFromCoordinates (object backend, double x, double y)
 		{
-			Pango.Layout tl = (Pango.Layout) backend;
+			var tl = (PangoBackend) backend;
 			int index, trailing;
-			tl.XyToIndex ((int)x, (int)y, out index, out trailing);
-			// TODO: UTF-8 coordinate transformation
-			return index;
+			tl.Layout.XyToIndex ((int)x, (int)y, out index, out trailing);
+			return tl.ByteIndexToIndex (index);
 		}
 
 		public override Rectangle GetExtendsFromIndex (object backend, int index)
 		{
-			Pango.Layout tl = (Pango.Layout) backend;
-			// TODO: UTF-8 coordinate transformation
-			var pos = tl.IndexToPos (index);
+			var tl = (PangoBackend) backend;
+			var pos = tl.Layout.IndexToPos (tl.IndexToByteIndex (index));
 			return new Rectangle (pos.X, pos.Y, pos.Width, pos.Height);
 		}
 
 		public override void DisposeBackend (object backend)
 		{
-			var tl = (PangoBackend)backend;
-			tl.Layout.Dispose ();
+			var tl = (IDisposable) backend;
+			tl.Dispose ();
 		}
 	}
 }

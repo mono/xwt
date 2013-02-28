@@ -38,25 +38,25 @@ namespace Xwt.Drawing
 		/// <summary>
 		/// The start index of this attribute.
 		/// </summary>
-		public uint StartIndex { get; set; }
+		public int StartIndex { get; set; }
 
 		/// <summary>
 		/// The end index of this attribute.
 		/// Invariant: <c>EndIndex == StartIndex + Length</c>
 		/// </summary>
-		public uint EndIndex { get { return StartIndex + Length; } }
+		public int EndIndex { get { return StartIndex + Length; } }
 
 		/// <summary>
 		/// The length of this attribute.
 		/// </summary>
-		public uint Length { get; set; }
+		public int Length { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xwt.Drawing.TextAttribute"/> class.
 		/// </summary>
 		/// <param name="startIndex">The start index of this attribute.</param>
 		/// <param name="length">The length of this attribute.</param>
-		public TextAttribute (uint startIndex, uint length)
+		public TextAttribute (int startIndex, int length)
 		{
 			this.StartIndex = startIndex;
 			this.Length = length;
@@ -79,19 +79,9 @@ namespace Xwt.Drawing
 		/// <param name="color">The color represented by this attribute.</param>
 		/// <param name="startIndex">The start index of this attribute.</param>
 		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeForeground  (Color color, uint startIndex, uint endIndex) : base (startIndex, endIndex)
+		public TextAttributeForeground  (Color color, int startIndex, int endIndex) : base (startIndex, endIndex)
 		{
 			this.Color = color;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Xwt.Drawing.TextAttributeBackground"/> class.
-		/// </summary>
-		/// <param name="color">The color represented by this attribute.</param>
-		/// <param name="startIndex">The start index of this attribute.</param>
-		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeForeground  (Color color, int startIndex, int endIndex) : this (color, (uint)startIndex, (uint)endIndex)
-		{
 		}
 	}
 	
@@ -111,19 +101,9 @@ namespace Xwt.Drawing
 		/// <param name="color">The color represented by this attribute.</param>
 		/// <param name="startIndex">The start index of this attribute.</param>
 		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeBackground  (Color color, uint startIndex, uint endIndex) : base (startIndex, endIndex)
+		public TextAttributeBackground  (Color color, int startIndex, int endIndex) : base (startIndex, endIndex)
 		{
 			this.Color = color;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Xwt.Drawing.TextAttributeBackground"/> class.
-		/// </summary>
-		/// <param name="color">The color represented by this attribute.</param>
-		/// <param name="startIndex">The start index of this attribute.</param>
-		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeBackground  (Color color, int startIndex, int endIndex) : this (color, (uint)startIndex, (uint)endIndex)
-		{
 		}
 	}
 
@@ -164,19 +144,9 @@ namespace Xwt.Drawing
 		/// <param name="textStyle">The text style represented by this attribute.</param>
 		/// <param name="startIndex">The start index of this attribute.</param>
 		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeStyle (TextStyle textStyle, uint startIndex, uint length) : base (startIndex, length)
+		public TextAttributeStyle (TextStyle textStyle, int startIndex, int length) : base (startIndex, length)
 		{
 			this.TextStyle = textStyle;
-		}
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Xwt.Drawing.TextAttributeStyle"/> class.
-		/// </summary>
-		/// <param name="textStyle">The text style represented by this attribute.</param>
-		/// <param name="startIndex">The start index of this attribute.</param>
-		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeStyle (TextStyle textStyle, int startIndex, int length) : this (textStyle, (uint)startIndex, (uint)length)
-		{
 		}
 	}
 
@@ -222,19 +192,9 @@ namespace Xwt.Drawing
 		/// <param name="textWeight">The text weight represented by this attribute.</param>
 		/// <param name="startIndex">The start index of this attribute.</param>
 		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeWeight (TextWeight textWeight, uint startIndex, uint length) : base (startIndex, length)
+		public TextAttributeWeight (TextWeight textWeight, int startIndex, int length) : base (startIndex, length)
 		{
 			this.TextWeight = textWeight;
-		}
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Xwt.Drawing.TextAttributeWeight"/> class.
-		/// </summary>
-		/// <param name="textWeight">The text weight represented by this attribute.</param>
-		/// <param name="startIndex">The start index of this attribute.</param>
-		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeWeight (TextWeight textWeight, int startIndex, int length) : this (textWeight, (uint)startIndex, (uint)length)
-		{
 		}
 	}
 
@@ -271,19 +231,9 @@ namespace Xwt.Drawing
 		/// <param name="textDecoration">The text decoration represented by this attribute.</param>
 		/// <param name="startIndex">The start index of this attribute.</param>
 		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeDecoration (TextDecoration textDecoration, uint startIndex, uint length) : base (startIndex, length)
+		public TextAttributeDecoration (TextDecoration textDecoration, int startIndex, int length) : base (startIndex, length)
 		{
 			this.TextDecoration = textDecoration;
-		}
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Xwt.Drawing.TextAttributeStyle"/> class.
-		/// </summary>
-		/// <param name="textDecoration">The text decoration represented by this attribute.</param>
-		/// <param name="startIndex">The start index of this attribute.</param>
-		/// <param name="length">The length of this attribute.</param>
-		public TextAttributeDecoration (TextDecoration textDecoration, int startIndex, int length) : this (textDecoration, (uint)startIndex, (uint)length)
-		{
 		}
 	}
 }
