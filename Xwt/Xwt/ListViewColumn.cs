@@ -33,6 +33,22 @@ using System.ComponentModel;
 
 namespace Xwt
 {
+	/// <summary>
+	/// Determines the direction of a sort.
+	/// </summary>
+	public enum ColumnSortDirection
+	{
+		/// <summary>
+		/// Sorts the column in ascending order.
+		/// </summary>
+		Ascending,
+
+		/// <summary>
+		/// Sorts the column in descending order.
+		/// </summary>
+		Descending
+	}
+
 	public class ListViewColumn: ICellContainer
 	{
 		CellViewCollection views;
@@ -105,6 +121,54 @@ namespace Xwt
 				isResizeable = value;
 				if (Parent != null)
 					Parent.UpdateColumn (this, Handle, ListViewColumnChange.IsResizeable);
+			}
+		}
+
+		ColumnSortDirection sortDirection;
+
+		/// <summary>
+		/// The direction the sort indicator should show.
+		/// </summary>
+		public ColumnSortDirection SortDirection {
+			get {
+				return sortDirection;
+			}
+			set {
+				sortDirection = value;
+				if (Parent != null)
+					Parent.UpdateColumn (this, Handle, ListViewColumnChange.SortDirection);
+			}
+		}
+
+		IDataField sortDataField;
+
+		/// <summary>
+		/// The column that is used for sorting if the column is selected for sorting.
+		/// </summary>
+		public IDataField SortDataField {
+			get {
+				return sortDataField;
+			}
+			set {
+				sortDataField = value;
+				if (Parent != null)
+					Parent.UpdateColumn (this, Handle, ListViewColumnChange.SortDataField);
+			}
+		}
+
+		bool isSortIndicatorShown;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether a sort indicator is shown.
+		/// </summary>
+		public bool IsSortIndicatorShown {
+			get {
+				return isSortIndicatorShown;
+			}
+			set {
+				isSortIndicatorShown = value;
+				if (Parent != null)
+					Parent.UpdateColumn (this, Handle, ListViewColumnChange.IsSortIndicatorShown);
 			}
 		}
 	}

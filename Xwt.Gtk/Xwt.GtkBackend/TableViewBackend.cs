@@ -145,6 +145,12 @@ namespace Xwt.GtkBackend
 				MapTitle (col, tc);
 			else if (change == ListViewColumnChange.IsResizeable)
 				tc.Resizable = col.IsResizeable;
+			else if (change == ListViewColumnChange.SortDirection)
+				tc.SortOrder = (SortType)col.SortDirection;
+			else if (change == ListViewColumnChange.SortDataField)
+				tc.SortColumnId = col.SortDataField.Index;
+			else if (change == ListViewColumnChange.IsSortIndicatorShown)
+				tc.SortIndicator = col.IsSortIndicatorShown;
 		}
 
 		public void SelectAll ()
