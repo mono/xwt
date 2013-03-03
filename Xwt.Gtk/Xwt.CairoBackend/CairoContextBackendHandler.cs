@@ -314,12 +314,12 @@ namespace Xwt.CairoBackend
 			gc.Context.Translate (tx, ty);
 		}
 
-        public override Matrix GetCTM (object backend)
-        {
-            Cairo.Matrix cm = ((CairoContextBackend)backend).Context.Matrix;
-            Matrix ctm = new Matrix (cm.Xx, cm.Yx, cm.Xy, cm.Yy, cm.X0, cm.Y0);
-            return ctm;
-        }
+		public override Matrix GetCTM (object backend)
+		{
+			Cairo.Matrix t = ((CairoContextBackend)backend).Context.Matrix;
+			Matrix ctm = new Matrix (t.Xx, t.Yx, t.Xy, t.Yy, t.X0, t.Y0);
+			return ctm;
+		}
 
 		public override object CreatePath ()
 		{
