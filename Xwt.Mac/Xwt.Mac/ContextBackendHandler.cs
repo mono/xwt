@@ -271,12 +271,12 @@ namespace Xwt.Mac
 			((CGContextBackend)backend).Context.TranslateCTM ((float)tx, (float)ty);
 		}
 		
-        public override Matrix GetCTM (object backend)
-        {
-            CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
-            Matrix ctm = new Matrix (t.a, t.b, t.c, t.d, t.x0, t.y0);
-            return ctm;
-        }
+		public override Matrix GetCTM (object backend)
+		{
+			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
+			Matrix ctm = new Matrix (t.a, t.b, t.c, t.d, t.x0, t.y0);
+			return ctm;
+		}
 
 		public override object CreatePath ()
 		{
