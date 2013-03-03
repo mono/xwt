@@ -259,13 +259,24 @@ namespace Xwt.Drawing
 		{
 			handler.Translate (Backend, p.X, p.Y);
 		}
+
+        /// <summary>
+        /// Returns a copy of the current transformation matrix (CTM)
+        /// </summary>
+        public Matrix GetCTM ()
+        {
+            return handler.GetCTM (Backend);
+        }
 		
 		/// <summary>
 		/// Transforms the point (x, y) by the current transformation matrix (CTM)
 		/// </summary>
 		public void TransformPoint (ref double x, ref double y)
 		{
-			handler.TransformPoint (Backend, ref x, ref y);
+            Matrix m = GetCTM ();
+            Point p = m.Transform (new Point (x, y));
+            x = p.X;
+            y = p.Y;
 		}
 
 		/// <summary>
@@ -273,10 +284,8 @@ namespace Xwt.Drawing
 		/// </summary>
 		public Point TransformPoint (Point p)
 		{
-			var x = p.X;
-			var y = p.Y;
-			handler.TransformPoint (Backend, ref x, ref y);
-			return new Point (x, y);
+            Matrix m = GetCTM ();
+			return m.Transform (p);
 		}
 		
 		/// <summary>
@@ -284,7 +293,10 @@ namespace Xwt.Drawing
 		/// </summary>
 		public void TransformDistance (ref double dx, ref double dy)
 		{
-			handler.TransformDistance (Backend, ref dx, ref dy);
+            Matrix m = GetCTM ();
+            Point p = m.TransformVector (new Point (dx, dy));
+            dx = p.X;
+            dy = p.Y;
 		}
 		
 		/// <summary>
@@ -292,9 +304,9 @@ namespace Xwt.Drawing
 		/// </summary>
 		public Distance TransformDistance (Distance distance)
 		{
-			var dx = distance.Dx;
-			var dy = distance.Dy;
-			handler.TransformDistance (Backend, ref dx, ref dy);
+			double dx = distance.Dx;
+			double dy = distance.Dy;
+            TransformDistance (ref dx, ref dy);
 			return new Distance (dx, dy);
 		}
 
@@ -303,14 +315,8 @@ namespace Xwt.Drawing
 		/// </summary>
 		public void TransformPoints (Point[] points)
 		{
-			double x, y;
-			for (int i = 0; i < points.Length; ++i) {
-				x = points[i].X;
-				y = points[i].Y;
-				TransformPoint (ref x, ref y);
-				points[i].X = x;
-				points[i].Y = y;
-			}
+            Matrix m = GetCTM ();
+            m.Transform (points);
 		}
 
 		/// <summary>
@@ -318,13 +324,13 @@ namespace Xwt.Drawing
 		/// </summary>
 		public void TransformDistances (Distance[] vectors)
 		{
-			double x, y;
+            Point p;
+            Matrix m = GetCTM ();
 			for (int i = 0; i < vectors.Length; ++i) {
-				x = vectors[i].Dx;
-				y = vectors[i].Dy;
-				TransformDistance (ref x, ref y);
-				vectors[i].Dx = x;
-				vectors[i].Dy = y;
+                p = (Point)vectors[i];
+				m.TransformVector (p);
+				vectors[i].Dx = p.X;
+				vectors[i].Dy = p.Y;
 			}
 		}
 
