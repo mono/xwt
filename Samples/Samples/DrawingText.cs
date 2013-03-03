@@ -133,6 +133,20 @@ namespace Samples
 			// scale example here:
 			
 			ctx.Restore ();
+
+			TextLayout tl0 = new TextLayout (this);
+
+			tl0.Font = this.Font.WithPointSize (10);
+			tl0.Text = "This text contains attributes.";
+			tl0.SetUnderline ( 0, "This".Length);
+			tl0.SetForeground (new Color (0, 1.0, 1.0), "This ".Length, "text".Length);
+			tl0.SetBackgound (new Color (0, 0, 0), "This ".Length, "text".Length);
+			tl0.SetFontWeight (FontWeight.Bold, "This text ".Length, "contains".Length);
+			tl0.SetFontStyle (FontStyle.Italic, "This text ".Length, "contains".Length);
+			tl0.SetStrikethrough ("This text contains ".Length, "attributes".Length);
+
+			ctx.DrawTextLayout (tl0, col2.Left, col2.Bottom + 100);
+
 			
 			// Text boces
 			
@@ -157,6 +171,7 @@ namespace Samples
 			tl.Text = "\nEmpty line above\nLine break above\n\nEmpty line above\n\n\nTwo empty lines above\nEmpty line below\n";
 			tl.Width = 200;
 			DrawText (ctx, tl, ref y);
+
 		}	
 		
 		void DrawText (Context ctx, TextLayout tl, ref double y)
