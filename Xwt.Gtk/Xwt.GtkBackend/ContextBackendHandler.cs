@@ -58,7 +58,8 @@ namespace Xwt.GtkBackend
 	{
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			Pango.Layout pl = (Pango.Layout)Toolkit.GetBackend (layout);
+			var be = (GtkTextLayoutBackendHandler.PangoBackend)Toolkit.GetBackend (layout);
+			var pl = be.Layout;
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.MoveTo (x, y);
 			if (layout.Height <= 0) {

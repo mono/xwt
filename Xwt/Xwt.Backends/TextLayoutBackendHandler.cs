@@ -27,6 +27,7 @@
 
 using System;
 using Xwt.Drawing;
+using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
@@ -41,6 +42,17 @@ namespace Xwt.Backends
 		public abstract void SetFont (object backend, Font font);
 		public abstract void SetTrimming (object backend, TextTrimming textTrimming);
 		public abstract Size GetSize (object backend);
+		public abstract int GetIndexFromCoordinates (object backend, double x, double y);
+		public abstract Point GetCoordinateFromIndex (object backend, int index);
+		public abstract void DisposeBackend (object backend);
+
+		public abstract void SetForeground (object backend, Color color, int startIndex, int count);
+		public abstract void SetBackgound (object backend, Color color, int startIndex, int count);
+		public abstract void SetFontWeight (object backend, FontWeight weight, int startIndex, int count);
+		public abstract void SetFontStyle (object backend, FontStyle style, int startIndex, int count);
+		public abstract void SetUnderline (object backend, int startIndex, int count);
+		public abstract void SetStrikethrough (object backend, int startIndex, int count);
+
 	}
 }
 
