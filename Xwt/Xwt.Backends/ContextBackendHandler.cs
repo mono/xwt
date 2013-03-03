@@ -74,7 +74,7 @@ namespace Xwt.Backends
 		
 		public abstract void Translate (object backend, double tx, double ty);
 
-        public abstract Matrix GetCTM (object backend);
+		public abstract Matrix GetCTM (object backend);
 
 		public abstract bool IsPointInStroke (object backend, double x, double y);
 
