@@ -94,6 +94,8 @@ namespace Xwt
 
 		public SegmentedButton (IEnumerable<Button> buttons)
 		{
+			foreach (var button in buttons)
+				Items.Add (button);
 		}
 
 		ISegmentedButtonBackend Backend {
