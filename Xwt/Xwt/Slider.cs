@@ -36,7 +36,7 @@ namespace Xwt
 		{
 		}
 
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ISpinButtonEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ISliderEventSink
 		{
 			public void ValueChanged ()
 			{
