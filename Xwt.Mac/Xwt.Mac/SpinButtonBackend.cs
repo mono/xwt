@@ -65,6 +65,16 @@ namespace Xwt.Mac
 		{
 			Widget.SetButtonStyle (style);
 		}
+
+		public string IndeterminateMessage {
+			get;
+			set;
+		}
+
+		public bool IsIndeterminate {
+			get;
+			set;
+		}
 	}
 
 	public class MacSpinButton : NSView, IViewObject

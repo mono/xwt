@@ -34,6 +34,8 @@ namespace Xwt.GtkBackend
 {
 	public class SpinButtonBackend : WidgetBackend, ISpinButtonBackend
 	{
+		string indeterminateMessage;
+
 		public SpinButtonBackend ()
 		{
 		}
@@ -97,7 +99,10 @@ namespace Xwt.GtkBackend
 
 		public double Value {
 			get { return Widget.Value; }
-			set { Widget.Value = value; }
+			set {
+				Widget.Numeric = true;
+				Widget.Value = value;
+			}
 		}
 
 		public bool Wrap {
@@ -130,6 +135,28 @@ namespace Xwt.GtkBackend
 			default:
 				Widget.HasFrame = true;
 				break;
+			}
+		}
+
+		public bool IsIndeterminate {
+			get { return !Widget.Numeric; }
+			set {
+				Widget.Numeric = !value;
+				if (value)
+					Widget.Text = indeterminateMessage ?? string.Empty;
+				else
+					Widget.Value = MinimumValue;
+			}
+		}
+
+		public string IndeterminateMessage {
+			get {
+				return indeterminateMessage;
+			}
+			set {
+				indeterminateMessage = value;
+				if (IsIndeterminate)
+					Widget.Text = indeterminateMessage ?? string.Empty;
 			}
 		}
 	}
