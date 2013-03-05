@@ -45,7 +45,17 @@ namespace Xwt.GtkBackend
 			Widget = (Gtk.SpinButton) CreateWidget ();
 			Widget.Numeric = true;
 			Widget.Alignment = 1.0f;
+			Widget.ExposeEvent += HandleExposeEvent;
 			Widget.Show ();
+		}
+
+		// This is a workaround for bug https://bugzilla.xamarin.com/show_bug.cgi?id=10904
+		void HandleExposeEvent (object o, ExposeEventArgs args)
+		{
+			if (!string.IsNullOrEmpty (indeterminateMessage)) {
+				Widget.Numeric = false;
+				Widget.Text = indeterminateMessage;
+			}
 		}
 		
 		protected virtual Gtk.Widget CreateWidget ()
