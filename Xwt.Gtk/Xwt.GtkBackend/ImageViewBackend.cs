@@ -45,8 +45,10 @@ namespace Xwt.GtkBackend
 		
 		public void SetImage (Image image)
 		{
-			if (image == null)
-				throw new ArgumentNullException ("nativeImage");
+			if (image == null) {
+				Widget.Pixbuf = null;
+				return;
+			}
 
 			Gdk.Pixbuf pbuf = Toolkit.GetBackend (image) as Gdk.Pixbuf;
 			if (pbuf == null)
