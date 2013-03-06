@@ -146,5 +146,26 @@
     <EmbeddedResource Include="ReferenceImages\ArcPathConnection.png">
       <LogicalName>ArcPathConnection.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradient.png">
+      <LogicalName>LinearGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradientDiagonal.png">
+      <LogicalName>LinearGradientDiagonal.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradientInternalBox.png">
+      <LogicalName>LinearGradientInternalBox.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradientReverse.png">
+      <LogicalName>LinearGradientReverse.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RadialGradient.png">
+      <LogicalName>RadialGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RadialGradientReverse.png">
+      <LogicalName>RadialGradientReverse.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RadialGradientSmall.png">
+      <LogicalName>RadialGradientSmall.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

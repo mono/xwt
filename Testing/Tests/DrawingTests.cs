@@ -372,6 +372,104 @@ namespace Xwt
 			context.Stroke ();
 			CheckImage ("NewPath.png");
 		}
+		
+		[Test]
+		public void LinearGradient ()
+		{
+			InitBlank ();
+			var g = new LinearGradient (5, 5, 5, 45);
+			g.AddColorStop (0, Colors.Red);
+			g.AddColorStop (0.5, Colors.Green);
+			g.AddColorStop (1, Colors.Blue);
+			context.Rectangle (5, 5, 40, 40);
+			context.Pattern = g;
+			context.Fill ();
+			CheckImage ("LinearGradient.png");
+		}
+		
+		[Test]
+		public void LinearGradientDiagonal ()
+		{
+			InitBlank ();
+			var g = new LinearGradient (5, 5, 45, 45);
+			g.AddColorStop (0, Colors.Red);
+			g.AddColorStop (0.5, Colors.Green);
+			g.AddColorStop (1, Colors.Blue);
+			context.Rectangle (5, 5, 40, 40);
+			context.Pattern = g;
+			context.Fill ();
+			CheckImage ("LinearGradientDiagonal.png");
+		}
+		
+		[Test]
+		public void LinearGradientReverse ()
+		{
+			InitBlank ();
+			var g = new LinearGradient (5, 45, 5, 5);
+			g.AddColorStop (0, Colors.Red);
+			g.AddColorStop (0.5, Colors.Green);
+			g.AddColorStop (1, Colors.Blue);
+			context.Rectangle (5, 5, 40, 40);
+			context.Pattern = g;
+			context.Fill ();
+			CheckImage ("LinearGradientReverse.png");
+		}
+		
+		[Test]
+		public void LinearGradientInternalBox ()
+		{
+			InitBlank ();
+			var g = new LinearGradient (25, 15, 35, 35);
+			g.AddColorStop (0, Colors.Red);
+			g.AddColorStop (0.5, Colors.Green);
+			g.AddColorStop (1, Colors.Blue);
+			context.Rectangle (5, 5, 40, 40);
+			context.Pattern = g;
+			context.Fill ();
+			CheckImage ("LinearGradientInternalBox.png");
+		}
+		
+		[Test]
+		public void RadialGradient ()
+		{
+			InitBlank ();
+			var g = new RadialGradient (20, 20, 5, 30, 30, 30);
+			g.AddColorStop (0, Colors.Red);
+			g.AddColorStop (0.5, Colors.Green);
+			g.AddColorStop (1, Colors.Blue);
+			context.Rectangle (5, 5, 40, 40);
+			context.Pattern = g;
+			context.Fill ();
+			CheckImage ("RadialGradient.png");
+		}
+		
+		[Test]
+		public void RadialGradientReverse ()
+		{
+			InitBlank ();
+			var g = new RadialGradient (20, 20, 30, 30, 25, 5);
+			g.AddColorStop (0, Colors.Red);
+			g.AddColorStop (0.5, Colors.Green);
+			g.AddColorStop (1, Colors.Blue);
+			context.Rectangle (5, 5, 40, 40);
+			context.Pattern = g;
+			context.Fill ();
+			CheckImage ("RadialGradientReverse.png");
+		}
+		
+		[Test]
+		public void RadialGradientSmall ()
+		{
+			InitBlank ();
+			var g = new RadialGradient (5, 5, 5, 30, 30, 15);
+			g.AddColorStop (0, Colors.Red);
+			g.AddColorStop (0.5, Colors.Green);
+			g.AddColorStop (1, Colors.Blue);
+			context.Rectangle (5, 5, 40, 40);
+			context.Pattern = g;
+			context.Fill ();
+			CheckImage ("RadialGradientSmall.png");
+		}
 	}
 }
 
