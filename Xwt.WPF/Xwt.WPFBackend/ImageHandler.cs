@@ -48,7 +48,24 @@ namespace Xwt.WPFBackend
 			img.StreamSource = stream;
 			img.EndInit();
 
+			var bmp = img as BitmapSource;
+			if (bmp != null && (bmp.DpiX != 96 || bmp.DpiY != 96))
+				return new WpfImage (ConvertBitmapTo96DPI (bmp));
+
 			return new WpfImage (img);
+		}
+
+		public static BitmapSource ConvertBitmapTo96DPI (BitmapSource bitmapImage)
+		{
+			double dpi = 96;
+			int width = bitmapImage.PixelWidth;
+			int height = bitmapImage.PixelHeight;
+
+			int stride = width * (bitmapImage.Format.BitsPerPixel + 7) / 8;
+			byte[] pixelData = new byte[stride * height];
+			bitmapImage.CopyPixels (pixelData, stride, 0);
+
+			return BitmapSource.Create (width, height, dpi, dpi, bitmapImage.Format, null, pixelData, stride);
 		}
 
 		public override void SaveToStream (object backend, Stream stream, Drawing.ImageFileType fileType)
@@ -118,24 +135,22 @@ namespace Xwt.WPFBackend
 
 		public override Xwt.Drawing.Color GetBitmapPixel (object handle, int x, int y)
 		{
-			BitmapSource bitmapImage = DataConverter.AsImageSource (handle) as BitmapSource;
-			if (bitmapImage == null)
+			var wpfImage = (WpfImage)handle;
+			BitmapSource img = wpfImage.Image as BitmapSource;
+			if (img == null)
 				throw new NotSupportedException ("Invalid image format");
-			if (bitmapImage.Format.BitsPerPixel != 32)
+			if (img.Format.BitsPerPixel != 32)
 				throw new NotSupportedException ("Image format not supported");
 
-			int height = bitmapImage.PixelHeight;
-			int width = bitmapImage.PixelWidth;
-			int nStride = (bitmapImage.PixelWidth * bitmapImage.Format.BitsPerPixel + 7) / 8;
-			byte[] pixelByteArray = new byte[bitmapImage.PixelHeight * nStride];
-			bitmapImage.CopyPixels (pixelByteArray, nStride, 0);
-
-			return Xwt.Drawing.Color.FromBytes (pixelByteArray[1], pixelByteArray[2], pixelByteArray[3], pixelByteArray[0]);
+			wpfImage.AllocatePixelData ();
+			var offset = wpfImage.GetPixelOffset (x, y);
+			return Xwt.Drawing.Color.FromBytes (wpfImage.PixelData[offset + 2], wpfImage.PixelData[offset + 1], wpfImage.PixelData[offset], wpfImage.PixelData[offset + 3]);
 		}
 
 		public override void SetBitmapPixel (object handle, int x, int y, Drawing.Color color)
 		{
-			var img = (BitmapSource) DataConverter.AsImageSource (handle);
+			var wpfImage = (WpfImage)handle;
+			var img = (BitmapSource) wpfImage.Image;
 			if (img == null)
 				throw new NotSupportedException ("Invalid image format");
 			if (img.Format.BitsPerPixel != 32)
@@ -148,8 +163,16 @@ namespace Xwt.WPFBackend
 				((WpfImage)handle).Image = bitmapImage;
 			}
 
-			var colorData = new byte [] { (byte)(color.Alpha * 255), (byte)(color.Red * 255), (byte)(color.Green * 255), (byte)(color.Blue * 255) };
-			bitmapImage.WritePixels (new Int32Rect (0, 0, 1, 1), colorData, 4, x, y);
+			wpfImage.AllocatePixelData ();
+			var offset = wpfImage.GetPixelOffset (x, y);
+			wpfImage.PixelData[offset] = (byte)(color.Blue * 255);
+			wpfImage.PixelData[offset + 1] = (byte)(color.Green * 255);
+			wpfImage.PixelData[offset + 2] = (byte)(color.Red * 255);
+			wpfImage.PixelData[offset + 3] = (byte)(color.Alpha * 255);
+
+			bitmapImage.Lock ();
+			bitmapImage.WritePixels (new Int32Rect (x, y, 1, 1), wpfImage.PixelData, wpfImage.Stride, offset);
+			bitmapImage.Unlock ();
 		}
 
 		private static double WidthToDPI (SWMI.BitmapSource img, double pixels)
@@ -160,6 +183,26 @@ namespace Xwt.WPFBackend
 		private static double HeightToDPI (SWMI.BitmapSource img, double pixels)
 		{
 			return pixels * 96 / img.DpiY;
+		}
+
+		public static double WidthToPixels (ImageSource img)
+		{
+			if (img is SWMI.BitmapSource) {
+				var bs = (BitmapSource)img;
+				return (bs.DpiX * bs.Width) / 96;
+			}
+			else
+				return img.Width;
+		}
+
+		public static double HeightToPixels (ImageSource img)
+		{
+			if (img is SWMI.BitmapSource) {
+				var bs = (BitmapSource)img;
+				return (bs.DpiY * bs.Height) / 96;
+			}
+			else
+				return img.Height;
 		}
 
 		public override object ConvertToBitmap (object handle, double width, double height)
@@ -254,5 +297,26 @@ namespace Xwt.WPFBackend
 		}
 
 		public ImageSource Image;
+		public byte[] PixelData;
+		public int Stride;
+		public bool PixelWritePending;
+
+		public int GetPixelOffset (int x, int y)
+		{
+			BitmapSource img = Image as BitmapSource;
+			return y * Stride + x * ((img.Format.BitsPerPixel + 7) / 8);
+		}
+
+		public void AllocatePixelData ()
+		{
+			if (PixelData == null) {
+				BitmapSource img = Image as BitmapSource;
+				var height = (int) ImageHandler.HeightToPixels (img);
+				var width = (int) ImageHandler.WidthToPixels (img);
+				Stride = (width * img.Format.BitsPerPixel + 7) / 8;
+				PixelData = new byte[height * Stride];
+				img.CopyPixels (PixelData, Stride, 0);
+			}
+		}
 	}
 }
