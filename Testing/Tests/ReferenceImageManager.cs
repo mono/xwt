@@ -56,22 +56,28 @@ namespace Xwt
 				dlg.Run ();
 			}
 		}
+
+		static Image TryLoadImage (System.Reflection.Assembly asm, string name)
+		{
+			try {
+				return Image.FromResource (asm, name);
+			}
+			catch {
+			}
+
+			try {
+				return Image.FromResource (asm, "WpfTestRunner.ReferenceImages." + name);
+			}
+			catch {
+			}
+			return null;
+		}
 		
 		public static void CheckImage (string refImageName, Image img)
 		{
-			Image refImage = null;
-
-			try {
-				refImage = Image.FromResource (System.Reflection.Assembly.GetEntryAssembly (), refImageName);
-			} catch {
-			}
-
-			if (refImage == null) {
-				try {
-					refImage = Image.FromResource (typeof(ReferenceImageManager), refImageName);
-				} catch {
-				}
-			}
+			Image refImage = TryLoadImage (System.Reflection.Assembly.GetEntryAssembly (), refImageName);
+			if (refImage == null)
+				refImage = Image.FromResource (typeof(ReferenceImageManager).Assembly, refImageName);
 			
 			if (refImage == null) {
 				ImageFailures.Add (new FailedImageInfo () {
