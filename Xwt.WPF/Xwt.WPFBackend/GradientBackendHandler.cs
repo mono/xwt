@@ -50,10 +50,10 @@ namespace Xwt.WPFBackend
 		public override object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
 		{
 			return new RadialGradientBrush () {
-				Center = new SW.Point (cx1, cy1),
 				GradientOrigin = new SW.Point (cx0, cy0),
-				RadiusX = radius0,
-				RadiusY = radius0,
+				Center = new SW.Point (cx1, cy1),
+				RadiusX = radius1,
+				RadiusY = radius1,
 				MappingMode = BrushMappingMode.Absolute
 			};
 		}
