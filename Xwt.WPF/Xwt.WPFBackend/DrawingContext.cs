@@ -40,6 +40,7 @@ namespace Xwt.WPFBackend
 		TransformGroup transforms = new TransformGroup ();
 		int pushCount;
 		bool disposed;
+		bool positionSet;
 
 		PathGeometry geometry;
 		SWM.Brush patternBrush;
@@ -76,6 +77,7 @@ namespace Xwt.WPFBackend
 			public SW.Point EndPoint;
 			public SW.Point LastFigureStart;
 			public int TransformCount;
+			public bool PositionSet;
 		}
 
 		public System.Windows.Media.DrawingContext Context { get; private set; }
@@ -99,6 +101,7 @@ namespace Xwt.WPFBackend
 
 			geometry = (PathGeometry) context.Geometry.Clone ();
 			Path = geometry.Figures[geometry.Figures.Count - 1];
+			positionSet = context.positionSet;
 		}
 
 		internal DrawingContext()
@@ -117,7 +120,8 @@ namespace Xwt.WPFBackend
 				DashStyle = Pen.DashStyle,
 				EndPoint = EndPoint,
 				LastFigureStart = LastFigureStart,
-				TransformCount = transforms.Children.Count
+				TransformCount = transforms.Children.Count,
+				PositionSet = positionSet
 			};
 			pushes.Push (cd);
 			pushCount = 0;
@@ -145,6 +149,7 @@ namespace Xwt.WPFBackend
 			Path = geometry.Figures[geometry.Figures.Count - 1];
 			EndPoint = cd.EndPoint;
 			LastFigureStart = cd.LastFigureStart;
+			positionSet = cd.PositionSet;
 		}
 
 		public void NotifyPush ()
@@ -157,8 +162,6 @@ namespace Xwt.WPFBackend
 			Context.PushTransform (t);
 			transforms.Children.Add (t);
 			pushCount++;
-			if (patternBrush != null)
-				patternBrush.Transform = transforms;
 		}
 
 		public void SetColor (Color color)
@@ -207,7 +210,6 @@ namespace Xwt.WPFBackend
 		public void SetPattern (Brush brush)
 		{
 			patternBrush = brush;
-			patternBrush.Transform = transforms;
 		}
 
 		public void NewFigure (SW.Point p)
@@ -219,14 +221,17 @@ namespace Xwt.WPFBackend
 			LastFigureStart = p;
 			EndPoint = p;
 			Path.StartPoint = p;
+			positionSet = true;
 		}
 
 		public void ConnectToLastFigure (SW.Point p, bool stroke)
 		{
 			if (EndPoint != p) {
-				if (Path.Segments.Count == 0)
+				var initialConnection = Path.Segments.Count != 0 || geometry.Figures.Count > 1 || positionSet;
+				if (initialConnection)
 					LastFigureStart = p;
-				Path.Segments.Add (new LineSegment (p, stroke && Path.Segments.Count != 0));
+				// Don't stroke if the path is empty
+				Path.Segments.Add (new LineSegment (p, stroke && initialConnection));
 			}
 			if (!stroke)
 				LastFigureStart = p;
@@ -238,6 +243,7 @@ namespace Xwt.WPFBackend
 			geometry = new PathGeometry ();
 			geometry.Figures.Add (Path);
 			Path.StartPoint = EndPoint = new SW.Point (0, 0);
+			positionSet = false;
 		}
 
 		public PathGeometry Geometry {

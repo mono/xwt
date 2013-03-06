@@ -175,6 +175,8 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext) backend;
 			var points = new SW.Point[] { new SW.Point (x + width, y), new SW.Point (x + width, y + height), new SW.Point (x, y + height), new SW.Point (x, y) };
 			c.Path.Segments.Add (new PolyLineSegment (points, true));
+			c.Path.IsClosed = true;
+			c.NewFigure (new SW.Point (x, y));
 		}
 
 		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
