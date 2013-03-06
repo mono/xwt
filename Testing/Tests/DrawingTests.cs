@@ -192,6 +192,18 @@ namespace Xwt
 		}
 		
 		[Test]
+		public void ArcPathConnection ()
+		{
+			InitBlank ();
+			context.MoveTo (25.5, 25.5);
+			context.Arc (25.5, 25.5, 20, 0, 135);
+			context.LineTo (25.5, 25.5);
+			context.SetColor (Colors.Black);
+			context.Stroke ();
+			CheckImage ("ArcPathConnection.png");
+		}
+
+		[Test]
 		public void ArcNegative ()
 		{
 			InitBlank ();
@@ -240,6 +252,18 @@ namespace Xwt
 			context.SetColor (Colors.Black);
 			context.Fill ();
 			CheckImage ("ArcNegativeFill.png");
+		}
+		
+		[Test]
+		public void ArcNegativePathConnection ()
+		{
+			InitBlank ();
+			context.MoveTo (25.5, 25.5);
+			context.ArcNegative (25.5, 25.5, 20, 0, 135);
+			context.LineTo (25.5, 25.5);
+			context.SetColor (Colors.Black);
+			context.Stroke ();
+			CheckImage ("ArcNegativePathConnection.png");
 		}
 
 

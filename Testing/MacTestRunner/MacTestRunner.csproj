@@ -140,5 +140,11 @@
     <EmbeddedResource Include="ReferenceImages\StrokePreserve.png">
       <LogicalName>StrokePreserve.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativePathConnection.png">
+      <LogicalName>ArcNegativePathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcPathConnection.png">
+      <LogicalName>ArcPathConnection.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

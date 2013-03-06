@@ -151,6 +151,12 @@
     <EmbeddedResource Include="ReferenceImages\LineWidth.png">
       <LogicalName>LineWidth.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativePathConnection.png">
+      <LogicalName>ArcNegativePathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcPathConnection.png">
+      <LogicalName>ArcPathConnection.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
