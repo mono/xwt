@@ -25,15 +25,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#if !USE_WPF_RENDERING
-
 using System;
-using System.Drawing;
 using Xwt.Backends;
 using Xwt.Drawing;
 
 using Font = Xwt.Drawing.Font;
-using System.Collections.Generic;
+using System.Windows.Media;
+using System.Windows;
 
 namespace Xwt.WPFBackend
 {
@@ -43,90 +41,170 @@ namespace Xwt.WPFBackend
 		public override object Create (Context context)
 		{
 			var drawingContext = (DrawingContext)Toolkit.GetBackend (context);
-			return new TextLayoutContext (drawingContext);
+			return new TextLayoutBackend () {
+				Context = drawingContext,
+				PixelRatio = drawingContext.PixelRatio
+			};
 		}
 
 		public override object Create (ICanvasBackend canvas)
 		{
-			var drawingContext = new DrawingContext (Graphics.FromImage (new Bitmap (1, 1)));
-			return new TextLayoutContext (drawingContext);
+			var backend = (WidgetBackend)canvas;
+			return new TextLayoutBackend () {
+				PixelRatio = backend.WidthPixelRatio
+			};
 		}
 
 		public override void SetWidth (object backend, double value)
 		{
-			((TextLayoutContext) backend).Width = value;
+			var t = (TextLayoutBackend)backend;
+			if (value >= 0)
+				t.FormattedText.MaxTextWidth = value;
+			else
+				t.Rebuild (null, false, true);
 		}
 
 		public override void SetHeight (object backend, double value)
 		{
-			((TextLayoutContext) backend).Height = value;
+			var t = (TextLayoutBackend)backend;
+			if (value >= 0)
+				t.FormattedText.MaxTextHeight = value;
+			else
+				t.Rebuild (null, true, false);
 		}
 
 		public override void SetText (object backend, string text)
 		{
-			((TextLayoutContext) backend).Text = text;
+			var t = (TextLayoutBackend)backend;
+			t.Rebuild (text);
 		}
 
 		public override void SetFont (object backend, Font font)
 		{
-			((TextLayoutContext) backend).Font = font.ToDrawingFont();
+			var t = (TextLayoutBackend)backend;
+			t.SetFont (font);
 		}
 
-		public override void SetTrimming (object backend, TextTrimming textTrimming)
+		public override void SetTrimming (object backend, Xwt.Drawing.TextTrimming textTrimming)
 		{
-			((TextLayoutContext) backend).StringTrimming = textTrimming.ToDrawingStringTrimming();
-			
+			var t = (TextLayoutBackend)backend;
+			switch (textTrimming) {
+				case Xwt.Drawing.TextTrimming.WordElipsis:
+					t.FormattedText.Trimming = System.Windows.TextTrimming.WordEllipsis;
+					break;
+				default:
+					t.FormattedText.Trimming = System.Windows.TextTrimming.None;
+					break;
+			}
 		}
 
 		public override Size GetSize (object backend)
 		{
-			return ((TextLayoutContext) backend).GetSize ();
+			var t = (TextLayoutBackend)backend;
+			return new Size (t.FormattedText.WidthIncludingTrailingWhitespace, t.FormattedText.Height);
 		}
-		
-		public override void SetForeground (object backend, Xwt.Drawing.Color color, int startIndex, int count)
+
+		public override Point GetCoordinateFromIndex (object backend, int index)
 		{
-			throw new NotImplementedException ();
-		}
-		
-		public override void SetBackgound (object backend, Xwt.Drawing.Color color, int startIndex, int count)
-		{
-			throw new NotImplementedException ();
-		}
-		
-		public override void SetFontWeight (object backend, FontWeight weight, int startIndex, int count)
-		{
-			throw new NotImplementedException ();
-		}
-		
-		public override void SetFontStyle (object backend, Xwt.Drawing.FontStyle style, int startIndex, int count)
-		{
-			throw new NotImplementedException ();
-		}
-		
-		public override void SetUnderline (object backend, int startIndex, int count)
-		{
-			throw new NotImplementedException ();
-		}
-		
-		public override void SetStrikethrough (object backend, int startIndex, int count)
-		{
-			throw new NotImplementedException ();
+			return Point.Zero;
 		}
 
 		public override int GetIndexFromCoordinates (object backend, double x, double y)
 		{
-			throw new NotImplementedException ();
+			return 0;
 		}
-		
-		public override Point GetCoordinateFromIndex (object backend, int index)
+
+		public override void SetBackgound (object backend, Drawing.Color color, int startIndex, int count)
 		{
-			throw new NotImplementedException ();
+		}
+
+		public override void SetFontStyle (object backend, Drawing.FontStyle style, int startIndex, int count)
+		{
+			var t = (TextLayoutBackend)backend;
+			t.FormattedText.SetFontStyle (style.ToWpfFontStyle (), startIndex, count);
+		}
+
+		public override void SetFontWeight (object backend, Xwt.Drawing.FontWeight weight, int startIndex, int count)
+		{
+			var t = (TextLayoutBackend)backend;
+			t.FormattedText.SetFontWeight (weight.ToWpfFontWeight (), startIndex, count);
+		}
+
+		public override void SetForeground (object backend, Drawing.Color color, int startIndex, int count)
+		{
+			var t = (TextLayoutBackend)backend;
+			t.FormattedText.SetForegroundBrush (new SolidColorBrush (color.ToWpfColor()), startIndex, count);
+		}
+
+		public override void SetStrikethrough (object backend, int startIndex, int count)
+		{
+			var t = (TextLayoutBackend)backend;
+			var dec = new TextDecoration (TextDecorationLocation.Strikethrough, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+			TextDecorationCollection col = new TextDecorationCollection ();
+			col.Add (dec);
+			t.FormattedText.SetTextDecorations (col);
+		}
+
+		public override void SetUnderline (object backend, int startIndex, int count)
+		{
+			var t = (TextLayoutBackend)backend;
+			var dec = new TextDecoration (TextDecorationLocation.Underline, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+			TextDecorationCollection col = new TextDecorationCollection ();
+			col.Add (dec);
+			t.FormattedText.SetTextDecorations (col);
 		}
 
 		public override void DisposeBackend (object backend)
 		{
-			// nothing
 		}
 	}
+
+	class TextLayoutBackend
+	{
+		FormattedText formattedText;
+
+		public double PixelRatio { get; set; }
+
+		public FormattedText FormattedText
+		{
+			get
+			{
+				if (formattedText == null)
+					Rebuild ("");
+				return formattedText;
+			}
+		}
+
+		public void Rebuild (string newText = null, bool keepWidth = true, bool keepHeight = true)
+		{
+			var font = new Typeface ("Verdana");
+			var dir = System.Windows.FlowDirection.LeftToRight;
+			var old = formattedText;
+			if (old != null && old.Text != null && newText == null)
+				newText = old.Text;
+			formattedText = new FormattedText (newText ?? "", System.Globalization.CultureInfo.CurrentCulture, dir, font, 36, System.Windows.Media.Brushes.Black);
+			if (old != null) {
+				if (old.MaxTextWidth != 0 && keepWidth)
+					formattedText.MaxTextWidth = old.MaxTextWidth;
+				if (old.MaxTextHeight != 0 && keepHeight)
+					formattedText.MaxTextHeight = old.MaxTextHeight;
+			}
+			if (Font != null)
+				SetFont (Font);
+		}
+
+		public void SetFont (Font font)
+		{
+			this.Font = font;
+			var f = (FontData)Toolkit.GetBackend (font);
+			FormattedText.SetFontFamily (f.Family);
+			FormattedText.SetFontSize (f.GetDeviceIndependentPixelSize (PixelRatio));
+			FormattedText.SetFontStretch (f.Stretch);
+			FormattedText.SetFontStyle (f.Style);
+			FormattedText.SetFontWeight (f.Weight);
+		}
+
+		public DrawingContext Context;
+		public Font Font;
+	}
 }
-#endif

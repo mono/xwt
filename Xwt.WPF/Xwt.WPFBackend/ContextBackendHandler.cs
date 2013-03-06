@@ -27,12 +27,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#if !USE_WPF_RENDERING
-
 using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -41,6 +36,10 @@ using Xwt.Drawing;
 
 using Color = Xwt.Drawing.Color;
 using Font = Xwt.Drawing.Font;
+using System.Windows.Media;
+using SW = System.Windows;
+using SWM = System.Windows.Media;
+using System.Collections.Generic;
 
 namespace Xwt.WPFBackend
 {
@@ -50,246 +49,205 @@ namespace Xwt.WPFBackend
 		public override void Save (object backend)
 		{
 			var c = (DrawingContext) backend;
-			c.Save();
+			c.Save ();
 		}
 
 		public override void Restore (object backend)
 		{
 			var c = (DrawingContext) backend;
-			c.Restore();
+			c.Restore ();
 		}
 
 		public override void SetGlobalAlpha (object backend, double alpha)
 		{
-			// TODO
+			var c = (DrawingContext)backend;
+			c.Context.PushOpacity (alpha);
+			c.NotifyPush ();
 		}
 
 		public override void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
-			// ensure sweep angle is always positive
-			if (angle2 < angle1)
-				angle2 = 360 + angle2;
-			ArcInternal (backend, xc, yc, radius, angle1, angle2);
+			Arc (backend, xc, yc, radius, angle1, angle2, SweepDirection.Clockwise);
 		}
 
 		public override void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
-			// ensure sweep angle is always negative
-			if (angle1 < angle2)
-				angle1 = 360 + angle1;
-			ArcInternal (backend, xc, yc, radius, angle1, angle2);
+			Arc (backend, xc, yc, radius, angle1, angle2, SweepDirection.Counterclockwise);
 		}
 
-		void ArcInternal (object backend, double xc, double yc, double radius, double angle1, double angle2)
+		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2, SweepDirection dir)
 		{
 			var c = (DrawingContext)backend;
-			c.Path.AddArc ((float)(xc - radius), (float)(yc - radius), (float)radius * 2, (float)radius * 2, (float)angle1,
-			               (float)(angle2 - angle1));
 
-			var current = c.Path.GetLastPoint ();
-			c.CurrentX = current.X;
-			c.CurrentY = current.Y;
+			if (angle1 == angle2)
+				return;
+
+			if (angle1 > angle2)
+				angle2 += (Math.Truncate (angle1 / 360) + 1) * 360;
+
+			double nextAngle;
+
+			do {
+				nextAngle = angle2 - angle1 < 360 ? angle2 : angle1 + 359;
+
+				var p1 = new SW.Point (xc + radius * Math.Cos (angle1 * Math.PI / 180.0), yc + radius * Math.Sin (angle1 * Math.PI / 180.0));
+				var p2 = new SW.Point (xc + radius * Math.Cos (nextAngle * Math.PI / 180.0), yc + radius * Math.Sin (nextAngle * Math.PI / 180.0));
+
+				c.ConnectToLastFigure (p1, true);
+
+				var largeArc = nextAngle - angle1 > 180;
+				c.Path.Segments.Add (new ArcSegment (p2, new SW.Size (radius, radius), 0, largeArc, dir, true));
+				angle1 = nextAngle;
+				c.EndPoint = p2;
+			}
+			while (nextAngle < angle2);
 		}
 
 		public override void Clip (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Graphics.SetClip (c.Path);
-			c.Path.Reset ();
+			var c = (DrawingContext)backend;
+			c.Context.PushClip (c.Geometry);
+			c.ResetPath ();
+			c.NotifyPush ();
 		}
 
 		public override void ClipPreserve (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Graphics.SetClip (c.Path);
+			var c = (DrawingContext)backend;
+			c.Context.PushClip (c.Geometry);
+			c.NotifyPush ();
 		}
 
 		public override void ClosePath (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Path.CloseFigure();
+			var c = (DrawingContext)backend;
+			if (c.LastFigureStart != c.EndPoint)
+				c.ConnectToLastFigure (c.LastFigureStart, true);
 		}
 
 		public override void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
 		{
 			var c = (DrawingContext)backend;
-			c.Path.AddBezier (c.CurrentX, c.CurrentY,
-					(float)x1, (float)y1,
-					(float)x2, (float)y2,
-					(float)x3, (float)y3);
-			c.CurrentX = (float)x3;
-			c.CurrentY = (float)y3;
+			c.Path.Segments.Add (new BezierSegment (new SW.Point (x1, y1), new SW.Point (x2, y2), new SW.Point (x3, y3), true));
+			c.EndPoint = new SW.Point (x3, y3);
 		}
 
 		public override void Fill (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Graphics.FillPath (c.Brush, c.Path);
-			c.Path.Reset();
-			c.CurrentX = 0;
-			c.CurrentY = 0;
+			var c = (DrawingContext)backend;
+			c.Context.DrawGeometry (c.Brush, null, c.Geometry);
+			c.ResetPath ();
 		}
 
 		public override void FillPreserve (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Graphics.FillPath (c.Brush, c.Path);
+			var c = (DrawingContext)backend;
+			c.Context.DrawGeometry (c.Brush, null, c.Geometry);
 		}
 
 		public override void LineTo (object backend, double x, double y)
 		{
 			var c = (DrawingContext) backend;
-
-			c.Path.AddLine (c.CurrentX, c.CurrentY, (float) x, (float) y);
-			c.CurrentX = (float) x;
-			c.CurrentY = (float) y;
+			c.Path.Segments.Add (new LineSegment (new SW.Point (x, y), true));
+			c.EndPoint = new SW.Point (x, y);
 		}
 
 		public override void MoveTo (object backend, double x, double y)
 		{
 			var c = (DrawingContext) backend;
-			if (c.CurrentX != x || c.CurrentY != y) {
-				c.Path.StartFigure ();
-				c.CurrentX = (float)x;
-				c.CurrentY = (float)y;
-			}
+
+			// Close the current path without a stroke, this will make sure
+			// that the are that the path covers is filled if Fill is called.
+			if (c.LastFigureStart != c.EndPoint)
+				c.ConnectToLastFigure (c.LastFigureStart, false);
+			c.NewFigure (new SW.Point (x, y));
 		}
 
 		public override void NewPath (object backend)
 		{
 			var c = (DrawingContext) backend;
-			c.Path.Reset();
-			c.CurrentX = 0;
-			c.CurrentY = 0;
+			c.ResetPath ();
 		}
 
 		public override void Rectangle (object backend, double x, double y, double width, double height)
 		{
+			MoveTo (backend, x, y);
 			var c = (DrawingContext) backend;
-			if (c.CurrentX != x || c.CurrentY != y)
-				c.Path.StartFigure ();
-			c.Path.AddRectangle (new RectangleF ((float)x, (float)y, (float)width, (float)height));
-			c.CurrentX = (float)x;
-			c.CurrentY = (float)y;
+			var points = new SW.Point[] { new SW.Point (x + width, y), new SW.Point (x + width, y + height), new SW.Point (x, y + height), new SW.Point (x, y) };
+			c.Path.Segments.Add (new PolyLineSegment (points, true));
 		}
 
 		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
 		{
 			var c = (DrawingContext)backend;
-			c.Path.AddBezier (c.CurrentX, c.CurrentY,
-					(float)(c.CurrentX + dx1), (float)(c.CurrentY + dy1),
-					(float)(c.CurrentX + dx2), (float)(c.CurrentY + dy2),
-					(float)(c.CurrentX + dx3), (float)(c.CurrentY + dy3));
-			c.CurrentX = (float)(c.CurrentX + dx3);
-			c.CurrentY = (float)(c.CurrentX + dy3);
+			var x = c.EndPoint.X;
+			var y = c.EndPoint.Y;
+			CurveTo (c, x + dx1, y + dy1, x + dx2, y + dy2, x + dx3, y + dy3);
 		}
 
 		public override void RelLineTo (object backend, double dx, double dy)
 		{
-			var c = (DrawingContext) backend;
-			
-			float x = c.CurrentX;
-			float y = c.CurrentY;
-			c.CurrentX += (float)dx;
-			c.CurrentY += (float)dy;
-
-			c.Path.AddLine (x, y, c.CurrentX, c.CurrentY);
+			var c = (DrawingContext)backend;
+			var dest = new SW.Point (c.EndPoint.X + dx, c.EndPoint.Y + dy);
+			c.Path.Segments.Add (new LineSegment (dest, true));
+			c.EndPoint = dest;
 		}
 
 		public override void RelMoveTo (object backend, double dx, double dy)
 		{
-			var c = (DrawingContext) backend;
-			c.Path.StartFigure ();
-			c.CurrentX += (float)dx;
-			c.CurrentY += (float)dy;
+			var c = (DrawingContext)backend;
+			var dest = new SW.Point (c.EndPoint.X + dx, c.EndPoint.Y + dy);
+			c.Path.Segments.Add (new LineSegment (dest, false));
+			c.LastFigureStart = c.EndPoint = dest;
 		}
 
 		public override void Stroke (object backend)
 		{
 			var c = (DrawingContext) backend;
-			c.Graphics.DrawPath (c.Pen, c.Path);
-			c.Path.Reset();
-			c.CurrentX = 0;
-			c.CurrentY = 0;
+			c.Context.DrawGeometry (null, c.Pen, c.Geometry);
+			c.ResetPath ();
 		}
 
 		public override void StrokePreserve (object backend)
 		{
-			var c = (DrawingContext) backend;
-			c.Graphics.DrawPath (c.Pen, c.Path);
+			var c = (DrawingContext)backend;
+			c.Context.DrawGeometry (null, c.Pen, c.Geometry);
 		}
 
 		public override void SetColor (object backend, Color color)
 		{
 			var c = (DrawingContext) backend;
-
-			var dc = color.ToDrawingColor ();
-			c.SetColor (dc);
+			c.SetColor (color.ToWpfColor ());
 		}
 
 		public override void SetLineWidth (object backend, double width)
 		{
 			var c = (DrawingContext) backend;
-			c.SetWidth ((float) width);
+			c.SetThickness (width);
 		}
 
 		public override void SetLineDash (object backend, double offset, params double[] pattern)
 		{
-			var c = (DrawingContext) backend;
-
-			if (pattern.Length != 0) {
-				c.Pen.DashOffset = (float) (offset / c.Pen.Width);
-				float[] fp = new float [pattern.Length];
-				for (int i = 0; i < fp.Length; ++i)
-					fp [i] = (float) (pattern [i] / c.Pen.Width);
-
-				c.Pen.DashStyle = DashStyle.Custom;
-				c.Pen.DashPattern = fp;
-			} else
-				c.Pen.DashStyle = DashStyle.Solid;
+			var c = (DrawingContext)backend;
+			c.SetDash (offset, pattern);
 		}
 
 		public override void SetPattern (object backend, object p)
 		{
 			var c = (DrawingContext) backend;
-
-			if (p is LinearGradient) {
-				c.Brush = ((LinearGradient) p).CreateBrush ();
-			} else if (p is RadialGradient) {
-				c.Brush = ((RadialGradient) p).CreateBrush ();
-			} else if (p is Brush)
-				c.Brush = (Brush) p;
+			c.SetPattern ((System.Windows.Media.Brush)p);
 		}
 
 		public override void SetFont (object backend, Font font)
 		{
-			var c = (DrawingContext) backend;
-			c.Font.Dispose();
-			c.Font = font.ToDrawingFont ();
 		}
 
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			var c = (DrawingContext)backend;
-			System.Drawing.StringFormat stringFormat = TextLayoutContext.StringFormat;
-			StringTrimming trimming = layout.Trimming.ToDrawingStringTrimming ();
-
-			if (layout.Height > 0 && stringFormat.Trimming != trimming) {
-				stringFormat = (System.Drawing.StringFormat)stringFormat.Clone ();
-				stringFormat.Trimming = trimming;
-			}
-
-			var font = layout.Font.ToDrawingFont ();
-
-			if (layout.Width == -1 && layout.Height == -1) {
-				c.Graphics.DrawString (layout.Text, font, c.Brush, (float)x, (float)y, stringFormat);
-			} else {
-				Size measure = layout.GetSize ();
-				float h = layout.Height > 0 ? (float)layout.Height : (float)measure.Height;
-				c.Graphics.DrawString (layout.Text, font, c.Brush,
-									   new RectangleF ((float)x, (float)y, (float)measure.Width, h),
-									   stringFormat);
-			}
+			var c = (DrawingContext) backend;
+			var t = (TextLayoutBackend)Toolkit.GetBackend (layout);
+			t.FormattedText.SetForegroundBrush (c.Brush);
+			c.Context.DrawText (t.FormattedText, new SW.Point (x, y));
 		}
 
 		public override bool CanDrawImage (object backend, object img)
@@ -300,50 +258,47 @@ namespace Xwt.WPFBackend
 		public override void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
 		{
 			var c = (DrawingContext) backend;
-
-			Bitmap bmp = DataConverter.AsBitmap (img);
-			DrawImageCore (c.Graphics, bmp, (float) x, (float) y, (float) width, (float) height, (float) alpha);
+			ImageSource bmp = DataConverter.AsImageSource (img);
+			DrawImageCore (c.Context, bmp, x, y, width, height, alpha);
 		}
 
 		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double width, double height, double alpha)
 		{
 			var c = (DrawingContext) backend;
-
-			Bitmap bmp = DataConverter.AsBitmap (img);
-
-			DrawImageCore (c.Graphics, bmp, srcRect, destRect, (float) alpha);
+			ImageSource bmp = DataConverter.AsImageSource (img);
+			DrawImageCore (c.Context, bmp, srcRect, destRect, alpha);
 		}
 
 		public override void Rotate (object backend, double angle)
 		{
 			var c = (DrawingContext)backend;
-			c.Graphics.RotateTransform ((float)angle);
+			c.PushTransform (new RotateTransform (angle));
 		}
 
 		public override void Scale (object backend, double scaleX, double scaleY)
 		{
 			var c = (DrawingContext)backend;
-			c.Graphics.ScaleTransform ((float)scaleX, (float)scaleY);
+			c.PushTransform (new ScaleTransform (scaleX, scaleY));
 		}
 
 		public override void Translate (object backend, double tx, double ty)
 		{
 			var c = (DrawingContext)backend;
-			c.Graphics.TranslateTransform ((float)tx, (float)ty);
+			var t = new TranslateTransform (tx, ty);
+			c.PushTransform (t);
 		}
 
-		public override Xwt.Drawing.Matrix GetCTM (object backend)
+		public override Drawing.Matrix GetCTM (object backend)
 		{
-			var m = ((DrawingContext)backend).Graphics.Transform;
-			float [] e = m.Elements;
-			Xwt.Drawing.Matrix ctm = new Xwt.Drawing.Matrix (e[0], e[1], e[2], e[3], e[4], e[5]);
-			return ctm;
+			var c = (DrawingContext)backend;
+			var m = c.CurrentTransform.Value;
+			return new Drawing.Matrix (m.M11, m.M12, m.M21, m.M22, m.OffsetX, m.OffsetY);
 		}
 
 		public override object CreatePath ()
-		{
-			return new DrawingContext ();
-		}
+        {
+            return new DrawingContext ();
+        }
 
 		public override object CopyPath (object backend)
 		{
@@ -351,87 +306,57 @@ namespace Xwt.WPFBackend
 		}
 
 		public override void AppendPath (object backend, object otherBackend)
-		{
-			var dest = (DrawingContext)backend;
-			var src = (DrawingContext)otherBackend;
-
-			dest.Path.AddPath (src.Path, false);
-			dest.CurrentX = src.CurrentX;
-			dest.CurrentY = src.CurrentY;
+        {
+			var c = (DrawingContext)backend;
+			var other = (DrawingContext)otherBackend;
+			foreach (var s in other.Path.Segments)
+				c.Path.Segments.Add (s);
 		}
 
 		public override bool IsPointInFill (object backend, double x, double y)
         {
-            return ((DrawingContext)backend).Path.IsVisible ((float)x, (float)y);
+			var c = (DrawingContext)backend;
+			return c.Geometry.FillContains (new SW.Point (x, y));
         }
 
 		public override bool IsPointInStroke (object backend, double x, double y)
         {
-            var c = (DrawingContext)backend;
-            return c.Path.IsOutlineVisible ((float)x, (float)y, c.Pen);
-        }
+			var c = (DrawingContext)backend;
+			return c.Geometry.StrokeContains (c.Pen, new SW.Point (x, y));
+		}
 
 		public override void Dispose (object backend)
 		{
-			((DrawingContext)backend).Dispose();
 		}
 
-		internal static void DrawImageCore (Graphics g, Bitmap bmp, float x, float y, float width, float height, float alpha)
-		{
-			if (bmp == null)
-				throw new ArgumentException();
-
-			if (alpha < 1) {
-				var attr = new ImageAttributes ();
-
-				float[][] matrixItems = new[] {
-					new float[] { 1, 0, 0, 0, 0 },
-					new float[] { 0, 1, 0, 0, 0 },
-					new float[] { 0, 0, 1, 0, 0 },
-					new float[] { 0, 0, 0, alpha, 0 },
-					new float[] { 0, 0, 0, 0, 1 },
-				};
-
-				attr.SetColorMatrix (new ColorMatrix (matrixItems), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-				PointF[] points = new PointF[3];
-				points [0] = new PointF (x, y);
-				points [1] = new PointF (x + width, y);
-				points [2] = new PointF (x, y + height);
-
-				g.DrawImage (bmp, points, new RectangleF (0, 0, bmp.Width, bmp.Height), GraphicsUnit.Pixel, attr);
-			}
-			else
-				g.DrawImage (bmp, x, y, width, height);
-		}
-
-		internal void DrawImageCore (Graphics g, Bitmap bmp, Rectangle srcRect, Rectangle destRect, float alpha)
+		internal static void DrawImageCore (SWM.DrawingContext g, ImageSource bmp, double x, double y, double width, double height, double alpha)
 		{
 			if (alpha < 1)
-			{
-				var attr = new ImageAttributes ();
+				g.PushOpacity (alpha);
 
-				float[][] matrixItems = new[] {
-					new float[] { 1, 0, 0, 0, 0 },
-					new float[] { 0, 1, 0, 0, 0 },
-					new float[] { 0, 0, 1, 0, 0 },
-					new float[] { 0, 0, 0, alpha, 0 },
-					new float[] { 0, 0, 0, 0, 1 },
-				};
+			g.DrawImage (bmp, new Rect (x, y, width, height));
 
-				attr.SetColorMatrix (new ColorMatrix (matrixItems), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+			if (alpha < 1)
+				g.Pop ();
+		}
 
-				PointF[] points = new PointF[3];
-				points[0] = new PointF ((float) destRect.X, (float) destRect.Y);
-				points[1] = new PointF ((float) (destRect.X + destRect.Width), (float) destRect.Y);
-				points[2] = new PointF ((float) destRect.X, (float) (destRect.Y + destRect.Height));
+		internal void DrawImageCore (SWM.DrawingContext g, ImageSource bmp, Rectangle srcRect, Rectangle destRect, double alpha)
+		{
+			if (alpha < 1)
+				g.PushOpacity (alpha);
 
-				g.DrawImage (bmp, points, srcRect.ToSDRectF (), GraphicsUnit.Pixel, attr);
-			}
-			else
-				g.DrawImage (bmp, destRect.ToSDRectF (), srcRect.ToSDRectF (), GraphicsUnit.Pixel);
+			g.PushClip (new RectangleGeometry (destRect.ToWpfRect ()));
+
+			var size = bmp is BitmapSource ? new Size (((BitmapSource)bmp).PixelWidth, ((BitmapSource)bmp).PixelHeight) : new Size (bmp.Width, bmp.Height);
+			var sw = destRect.Width / srcRect.Width;
+			var sh = destRect.Height / srcRect.Height;
+
+			g.DrawImage (bmp, new Rect (destRect.X - srcRect.X * sw, destRect.Y - srcRect.Y * sh, size.Width * sw, size.Height * sh));
+
+			g.Pop (); // Clip
+
+			if (alpha < 1)
+				g.Pop ();
 		}
 	}
 }
-
-#endif

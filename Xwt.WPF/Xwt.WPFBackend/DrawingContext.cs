@@ -25,186 +25,245 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#if !USE_WPF_RENDERING
-
 using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+using System.Windows.Media;
+using SWM = System.Windows.Media;
+using SW = System.Windows;
 
 namespace Xwt.WPFBackend
 {
 	internal class DrawingContext:IDisposable
 	{
-		internal DrawingContext (Graphics graphics)
+		Stack<ContextData> pushes = new Stack<ContextData> ();
+		TransformGroup transforms = new TransformGroup ();
+		int pushCount;
+		bool disposed;
+
+		PathGeometry geometry;
+		SWM.Brush patternBrush;
+		SWM.SolidColorBrush colorBrush;
+
+		public SW.Point LastFigureStart { get; set; }
+		public SW.Point EndPoint { get; set; }
+
+		public double PixelRatio { get; private set; }
+
+		public PathFigure Path { get; private set; }
+		public SWM.Pen Pen { get; private set; }
+
+		public SWM.Brush Brush {
+			get {
+				return patternBrush ?? colorBrush;
+			}
+		}
+
+		public TransformGroup CurrentTransform {
+			get {
+				return transforms;
+			}
+		}
+
+		class ContextData
 		{
-			if (graphics == null)
-				throw new ArgumentNullException ("graphics");
-			
-			graphics.SmoothingMode = SmoothingMode.None;
-			graphics.PixelOffsetMode = PixelOffsetMode.Half;
-			graphics.CompositingQuality = CompositingQuality.HighSpeed;
+			public PathGeometry Geometry;
+			public int PushCount;
+			public Color CurrentColor;
+			public double Thickness;
+			public DashStyle DashStyle;
+			public Brush Pattern;
+			public SW.Point EndPoint;
+			public SW.Point LastFigureStart;
+			public int TransformCount;
+		}
 
-			// necessary for correct text rendering with System.Drawing
-			//graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-			// necessary for none-pixelated text drawing in images, revert to above line if it introduces a performance problem
-			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+		public System.Windows.Media.DrawingContext Context { get; private set; }
 
-			Graphics = graphics;
+		internal DrawingContext (Visual v, System.Windows.Media.DrawingContext dc)
+		{
+			Context = dc;
+			AllocatePen (Color.FromRgb (0, 0, 0), 1, DashStyles.Solid);
+			ResetPath ();
+			PixelRatio = v.GetPixelRatios ().Width;
 		}
 
 		internal DrawingContext (DrawingContext context)
 		{
-			
-			context.CopyTo (this, false);
-			
-			CurrentX = context.CurrentX;
-			CurrentY = context.CurrentY;
+			Context = context.Context;
+
+			if (context.Pen != null)
+				AllocatePen (context.colorBrush.Color, context.Pen.Thickness, context.Pen.DashStyle);
+
+			patternBrush = context.patternBrush;
+
+			geometry = (PathGeometry) context.Geometry.Clone ();
+			Path = geometry.Figures[geometry.Figures.Count - 1];
 		}
 
 		internal DrawingContext()
 		{
+			ResetPath ();
 		}
 
-		internal readonly Graphics Graphics;
-		Font font = null;
-
-		internal Font Font {
-			get { return font ?? (font = new Font (FontFamily.GenericSansSerif, 12));}
-			set { font = value;}
-		}
-
-		Color color = Color.Black;
-		float width = 1;
-		Pen pen = null;
-
-		internal Pen Pen {
-			get { return pen ?? (pen = new Pen (color, width));}
-			set { pen = value;}
-		}
-
-		Brush brush = null;
-
-		internal Brush Brush {
-			get { return brush ?? (brush = new SolidBrush (color));}
-			set { brush = value;}
-		}
-
-		internal GraphicsState State;
-		internal float CurrentX;
-		internal float CurrentY;
-		GraphicsPath path = null;
-
-		internal GraphicsPath Path {
-			get { return path ?? (path = new GraphicsPath ());}
-			set { path = value;}
-		}
-
-		internal void SetColor (Color color)
+		public void Save ()
 		{
-			if (this.color == color)
+			var cd = new ContextData () {
+				Thickness = Pen.Thickness,
+				CurrentColor = colorBrush.Color,
+				Geometry = geometry,
+				PushCount = pushCount,
+				Pattern = patternBrush,
+				DashStyle = Pen.DashStyle,
+				EndPoint = EndPoint,
+				LastFigureStart = LastFigureStart,
+				TransformCount = transforms.Children.Count
+			};
+			pushes.Push (cd);
+			pushCount = 0;
+			geometry = (PathGeometry)geometry.Clone ();
+			Path = geometry.Figures[geometry.Figures.Count - 1];
+		}
+
+		public void Restore ()
+		{
+			if (pushes.Count == 0)
 				return;
-			
-			if (pen != null)
-				pen.Color = color;
 
-			if (brush != null) {
-				SolidBrush solidBrush = brush as SolidBrush;
-				if (solidBrush == null) {
-					brush.Dispose ();
-					brush = null;
-				} else
-					solidBrush.Color = color;
-			}
+			for (int n = 0; n < pushCount; n++)
+				Context.Pop ();
 
-			this.color = color;
+			var cd = pushes.Pop ();
+			pushCount = cd.PushCount;
+
+			while (transforms.Children.Count > cd.TransformCount)
+				transforms.Children.RemoveAt (transforms.Children.Count - 1);
+
+			AllocatePen (cd.CurrentColor, cd.Thickness, cd.DashStyle);
+			patternBrush = cd.Pattern;
+			geometry = cd.Geometry;
+			Path = geometry.Figures[geometry.Figures.Count - 1];
+			EndPoint = cd.EndPoint;
+			LastFigureStart = cd.LastFigureStart;
 		}
-		
-		internal void SetWidth (float width)
+
+		public void NotifyPush ()
 		{
-			if (this.width != width) {
-				if (pen != null) {
-					pen.Width = width;
-				}
+			pushCount++;
+		}
+
+		public void PushTransform (Transform t)
+		{
+			Context.PushTransform (t);
+			transforms.Children.Add (t);
+			pushCount++;
+			if (patternBrush != null)
+				patternBrush.Transform = transforms;
+		}
+
+		public void SetColor (Color color)
+		{
+			patternBrush = null;
+			AllocatePen (color, Pen != null ? Pen.Thickness : 1, Pen != null ? Pen.DashStyle : DashStyles.Solid);
+		}
+
+		public void SetThickness (double t)
+		{
+			var ds = Pen.DashStyle;
+			if (ds != DashStyles.Solid) {
+				var dashes = Pen.DashStyle.Dashes.Clone ();
+				for (int n = 0; n < dashes.Count; n++)
+					dashes[n] = (dashes[n] * Pen.Thickness) / t;
+				var offset = (Pen.DashStyle.Offset * Pen.Thickness) / t;
+				ds = new DashStyle (dashes, offset);
 			}
-			this.width = width;
+			AllocatePen (colorBrush.Color, t, ds);
 		}
-		
-		internal void CopyTo (DrawingContext dc, bool toCurrent)
+
+		internal void SetDash (double offset, double[] pattern)
 		{
-			if (toCurrent)
-			{
-				if (State != null)
-					dc.Graphics.Restore(this.State);
+			DashStyle ds = new DashStyle (pattern.Select (d => d / Pen.Thickness), offset);
+			AllocatePen (colorBrush.Color, Pen.Thickness, ds);
+		}
+
+		void AllocatePen (Color color, double thickness, DashStyle dashStyle)
+		{
+			if (colorBrush != null && color == colorBrush.Color) {
+				if (Pen.Thickness != thickness || !dashStyle.Equals (Pen.DashStyle))
+					Pen = new SWM.Pen (colorBrush, thickness) {
+						DashStyle = dashStyle
+					};
 			}
 			else
 			{
-				if(Graphics != null)
-					dc.State = this.Graphics.Save();
+				colorBrush = new SolidColorBrush (color);
+				Pen = new SWM.Pen (colorBrush, thickness) {
+					DashStyle = dashStyle
+				};
 			}
-			dc.Font = this.font;
-			dc.Brush = this.brush;
-			dc.Pen = this.pen;
-			dc.SetWidth (this.width);
-			dc.SetColor (this.color);
-			dc.CurrentX = this.CurrentX;
-			dc.CurrentY = this.CurrentY;
-			if (this.path != null && this.path.PointCount > 0)
-				dc.Path = (GraphicsPath) this.path.Clone ();
-		}
-		
-		internal void Save ()
-		{
-			if (this.contexts == null)
-				this.contexts = new Stack<DrawingContext> ();
-
-			this.contexts.Push (new DrawingContext (this));
-		}
-		
-		internal void Restore ()
-		{
-			if (this.contexts == null || this.contexts.Count == 0)
-				throw new InvalidOperationException ();
-
-			var dc = this.contexts.Pop ();
-
-			dc.CopyTo (this, true);
-			dc.Dispose (true);
-
+			Pen.DashCap = PenLineCap.Flat;
 		}
 
-		private Stack<DrawingContext> contexts;
-
-		public void Dispose (bool stacked)
+		public void SetPattern (Brush brush)
 		{
-			if (!stacked) {
-				if (font != null)
-					font.Dispose ();
-				if (brush != null)
-					brush.Dispose ();
-				if (pen != null)
-					pen.Dispose ();
+			patternBrush = brush;
+			patternBrush.Transform = transforms;
+		}
+
+		public void NewFigure (SW.Point p)
+		{
+			if (Path.Segments.Count > 0) {
+				Path = new PathFigure ();
+				geometry.Figures.Add (Path);
 			}
-			
-			if (path != null)
-				path.Dispose ();
-			
-			if (contexts != null)
-				while (contexts.Count!=0) {
-					var c = contexts.Pop ();
-					c.Dispose (true);
-				}
-			font = null;
-			brush = null;
-			pen = null;
-			path = null;
+			LastFigureStart = p;
+			EndPoint = p;
+			Path.StartPoint = p;
 		}
-		
+
+		public void ConnectToLastFigure (SW.Point p, bool stroke)
+		{
+			if (EndPoint != p) {
+				if (Path.Segments.Count == 0)
+					LastFigureStart = p;
+				Path.Segments.Add (new LineSegment (p, stroke && Path.Segments.Count != 0));
+			}
+			if (!stroke)
+				LastFigureStart = p;
+		}
+
+		public void ResetPath ()
+		{
+			Path = new PathFigure ();
+			geometry = new PathGeometry ();
+			geometry.Figures.Add (Path);
+			Path.StartPoint = EndPoint = new SW.Point (0, 0);
+		}
+
+		public PathGeometry Geometry {
+			get { return geometry; }
+		}
+
+		public SW.Point GetStartPoint ()
+		{
+			if (Path.Segments.Count == 0)
+				return Path.StartPoint;
+			var last = Path.Segments[0];
+			if (last is LineSegment)
+				return ((LineSegment)last).Point;
+			if (last is PolyLineSegment) {
+				var p = ((PolyLineSegment)last).Points;
+				return p[0];
+			}
+			return Path.StartPoint;
+		}
+
 		public void Dispose ()
 		{
-			Dispose (false);
+			if (!disposed) {
+				Context.Close ();
+				disposed = true;
+			}
 		}
 	}
 }
-
-#endif

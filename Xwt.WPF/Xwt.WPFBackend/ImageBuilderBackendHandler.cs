@@ -24,38 +24,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#if !USE_WPF_RENDERING
-
-using System.Drawing;
 using Xwt.Backends;
 using Xwt.Drawing;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Xwt.WPFBackend
 {
 	public class WpfImageBuilderBackendHandler
 		: ImageBuilderBackendHandler
 	{
+		class ImageBuilder: DrawingVisual
+		{
+			public int Width;
+			public int Height;
+			public DrawingContext Context;
+		}
+
 		public override object CreateImageBuilder (int width, int height, ImageFormat format)
 		{
-			return new Bitmap (width, height, format.ToPixelFormat ());
+			return new ImageBuilder () {
+				Width = width,
+				Height = height
+			};
 		}
 
 		public override object CreateContext (object backend)
 		{
-			Bitmap bmp = (Bitmap) backend;
-			return new DrawingContext (Graphics.FromImage (bmp));
+			var visual = (ImageBuilder)backend;
+			visual.Context = new DrawingContext (visual, visual.RenderOpen ());
+			return visual.Context;
 		}
 
 		public override object CreateImage (object backend)
 		{
-			return DataConverter.AsImageSource (backend);
+			var visual = (ImageBuilder)backend;
+			var ratios = visual.GetPixelRatios ();
+			visual.Context.Dispose ();
+			var bmp = new RenderTargetBitmap (visual.Width, visual.Height, ratios.Height * 96, ratios.Width * 96, PixelFormats.Pbgra32);
+			bmp.Render(visual);
+			return new WpfImage (bmp);
 		}
 
 		public override void Dispose (object backend)
 		{
-			Bitmap bmp = (Bitmap) backend;
-			bmp.Dispose();
+			var bmp = (ImageBuilder)backend;
+			bmp.Context.Dispose ();
 		}
 	}
 }
-#endif

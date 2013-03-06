@@ -36,8 +36,6 @@ using System.Windows.Input;
 using SW = System.Windows;
 using SWC = System.Windows.Controls;
 using SWM = System.Windows.Media;
-using SD = System.Drawing;
-using SDI = System.Drawing.Imaging;
 using Xwt.Drawing;
 using Color = Xwt.Drawing.Color;
 using FontStretch = Xwt.Drawing.FontStretch;
@@ -62,11 +60,6 @@ namespace Xwt.WPFBackend
 			return new SW.Rect (rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
-		public static SD.RectangleF ToSDRectF (this Rectangle rect)
-		{
-			return new SD.RectangleF ((float) rect.X, (float) rect.Y, (float) rect.Width, (float) rect.Height);
-		}
-
 		public static Int32Rect ToInt32Rect (this Rectangle rect)
 		{
 			return new Int32Rect ((int) rect.X, (int) rect.Y, (int) rect.Width, (int) rect.Height);
@@ -80,11 +73,6 @@ namespace Xwt.WPFBackend
 		public static SW.Point ToWpfPoint (this Point point)
 		{
 			return new SW.Point (point.X, point.Y);
-		}
-
-		public static Size ToXwtSize (this SD.SizeF self)
-		{
-			return new Size (self.Width, self.Height);
 		}
 
 		//
@@ -134,35 +122,6 @@ namespace Xwt.WPFBackend
 				(byte)(color.Blue * 255.0));
 		}
 
-		public static System.Drawing.Color ToDrawingColor (this Color color)
-		{
-			return System.Drawing.Color.FromArgb (
-				(byte) (color.Alpha * 255.0),
-				(byte) (color.Red * 255.0),
-				(byte) (color.Green * 255.0),
-				(byte) (color.Blue * 255.0));
-		}
-
-		//
-		// Font
-		//
-		public static SD.Font ToDrawingFont (this Font font)
-		{
-			SD.FontStyle style = font.Style.ToDrawingFontStyle ();
-			if (font.Weight > FontWeight.Normal)
-				style |= SD.FontStyle.Bold;
-
-			return new SD.Font (font.Family, (float)font.Size, style);
-		}
-		
-		public static SD.StringTrimming ToDrawingStringTrimming (this Xwt.Drawing.TextTrimming value)
-		{
-			if (value == Xwt.Drawing.TextTrimming.Word) return SD.StringTrimming.Word;
-			if (value == Xwt.Drawing.TextTrimming.WordElipsis) return SD.StringTrimming.EllipsisWord;
-
-			return SD.StringTrimming.Word;
-		}
-		
 		public static FontStyle ToXwtFontStyle (this SW.FontStyle value)
 		{
 			// No, SW.FontStyles is not an enum
@@ -178,19 +137,6 @@ namespace Xwt.WPFBackend
 			if (value == FontStyle.Oblique) return SW.FontStyles.Oblique;
 			
 			return SW.FontStyles.Normal;
-		}
-
-		public static SD.FontStyle ToDrawingFontStyle (this FontStyle value)
-		{
-			switch (value) {
-				case FontStyle.Normal:
-					return SD.FontStyle.Regular;
-				case FontStyle.Italic:
-					return SD.FontStyle.Italic;
-				
-				default:
-					throw new NotImplementedException();
-			}
 		}
 
 		public static FontStretch ToXwtFontStretch (this SW.FontStretch value)
@@ -288,94 +234,13 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public static SDI.PixelFormat ToPixelFormat (this ImageFormat self)
-		{
-			switch (self) {
-				case ImageFormat.ARGB32:
-					return SDI.PixelFormat.Format32bppArgb;
-				case ImageFormat.RGB24:
-					return SDI.PixelFormat.Format24bppRgb;
-				default:
-					throw new ArgumentException();
-			}
-		}
-
-		public static SDI.PixelFormat ToPixelFormat (this SW.Media.PixelFormat self)
-		{
-			if (self == SWM.PixelFormats.Rgb24)
-				return SDI.PixelFormat.Format24bppRgb;
-			if (self == SWM.PixelFormats.Bgra32)
-				return SDI.PixelFormat.Format32bppArgb;
-			if (self == SWM.PixelFormats.Pbgra32)
-				return SDI.PixelFormat.Format32bppPArgb;
-			if (self == SWM.PixelFormats.Prgba64)
-				return SDI.PixelFormat.Format64bppPArgb;
-			if (self == SWM.PixelFormats.Indexed1)
-				return SDI.PixelFormat.Format1bppIndexed;
-			if (self == SWM.PixelFormats.Indexed4)
-				return SDI.PixelFormat.Format4bppIndexed;
-			if (self == SWM.PixelFormats.Indexed8)
-				return SDI.PixelFormat.Format8bppIndexed;
-			if (self == SWM.PixelFormats.Gray16)
-				return SDI.PixelFormat.Format16bppGrayScale;
-			if (self == SWM.PixelFormats.Bgr24)
-				return SDI.PixelFormat.Format24bppRgb;
-			if (self == SWM.PixelFormats.Bgr32)
-				return SDI.PixelFormat.Format32bppRgb;
-
-			throw new ArgumentException();
-		}
-
-		public static SD.Bitmap AsBitmap (object backend)
-		{
-			var bmp = backend as SD.Bitmap;
-			if (bmp == null) {
-				var bs = backend as SWM.Imaging.BitmapSource;
-				if (bs != null) {
-					if (bs.Format == SWM.PixelFormats.Indexed1 || bs.Format == SWM.PixelFormats.Indexed2 || bs.Format == SWM.PixelFormats.Indexed4 || bs.Format == SWM.PixelFormats.Indexed8) {
-						// The conversion method below doesn't work for indexed formats, since it only copies pixel data, not the palette.
-						// Since there is no way of creating a palette for a Bitmap, a solution is to convert the image source to a non-indexed
-						// format before converting to Bitmap
-						var fcb = new SWM.Imaging.FormatConvertedBitmap ();
-						fcb.BeginInit ();
-						fcb.Source = bs;
-						fcb.DestinationFormat = SWM.PixelFormats.Pbgra32;
-						fcb.EndInit ();
-						bs = fcb;
-					}
-					bmp = new SD.Bitmap (bs.PixelWidth, bs.PixelHeight, bs.Format.ToPixelFormat ());
-					SDI.BitmapData data = bmp.LockBits (new System.Drawing.Rectangle (0, 0, bmp.Width, bmp.Height), SDI.ImageLockMode.WriteOnly,
-					                                bmp.PixelFormat);
-					bs.CopyPixels (new Int32Rect (0, 0, bmp.Width, bmp.Height), data.Scan0, data.Height * data.Stride, data.Stride);
-					bmp.UnlockBits (data);
-				}
-			}
-
-			return bmp;
-		}
-
 		[DllImport ("gdi32")]
 		private static extern int DeleteObject (IntPtr o);
 
 		public static SWM.ImageSource AsImageSource (object nativeImage)
 		{
-			var source = nativeImage as SWM.ImageSource;
-			if (source == null) {
-				var bitmap = nativeImage as SD.Bitmap;
-				if (bitmap != null) {
-					IntPtr ptr = bitmap.GetHbitmap ();
-
-					try {
-						return SW.Interop.Imaging.CreateBitmapSourceFromHBitmap (ptr, IntPtr.Zero, Int32Rect.Empty,
-																	  SWM.Imaging.BitmapSizeOptions.FromEmptyOptions ());
-					}
-					finally {
-						DeleteObject (ptr);
-					}
-				}
-			}
-
-			return source;
+			var source = nativeImage as WpfImage;
+			return source.Image;
 		}
 
 		//

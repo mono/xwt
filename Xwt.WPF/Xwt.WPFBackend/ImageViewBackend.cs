@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Drawing;
 using System.Windows.Media;
 using Xwt.Backends;
 using Image = System.Windows.Controls.Image;
@@ -38,6 +37,7 @@ namespace Xwt.WPFBackend
 		public ImageViewBackend()
 		{
 			Widget = new Image ();
+			Image.Stretch = Stretch.None;
 		}
 
 		public void SetImage (Xwt.Drawing.Image image)
