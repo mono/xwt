@@ -34,7 +34,7 @@ namespace Xwt
 	public class ReferenceImageManager
 	{
 		internal static string ProjectReferenceImageDir;
-		internal static string ProjectCustomReferenceImageDir;
+		public static string ProjectCustomReferenceImageDir;
 
 		internal static string FailedImageCacheDir;
 		
@@ -118,10 +118,18 @@ namespace Xwt
 				for (int x=0; x<bmp1.Size.Width && x<bmp2.Size.Height; x++) {
 					var p1 = bmp1.GetPixel (x, y);
 					var p2 = bmp2.GetPixel (x, y);
-					if (p1 != p2)
+					var col = Colors.White;
+					if (p1 != p2) {
 						foundDifference = true;
-					var r = new Color (Math.Round (p1.Red - p2.Red), Math.Round (p1.Green - p2.Green), Math.Round (p1.Blue - p2.Blue));
-					bmpr.SetPixel (x, y, r);
+						var r = Math.Pow (p1.Red - p2.Red, 2) + Math.Pow (p1.Green - p2.Green, 2) + Math.Pow (p1.Blue - p2.Blue, 2) + Math.Pow (p1.Alpha - p2.Alpha, 2);
+						if (r < 0.01)
+							col = new Color (0.9, 0.9, 0.9);
+						else if (r < 0.1)
+							col = new Color (0.7, 0.7, 0.7);
+						else
+							col = Colors.Red;
+					}
+					bmpr.SetPixel (x, y, col);
 				}
 			}
 			if (foundDifference)
