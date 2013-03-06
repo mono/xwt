@@ -168,6 +168,11 @@ namespace Xwt.WPFBackend
 			var backend = (IWpfWidgetBackend)Toolkit.GetBackend (w);
 			return backend.Widget.Parent != null;
 		}
+
+		public override object GetNativeImage (Image image)
+		{
+			return DataConverter.AsImageSource (Toolkit.GetBackend (image));
+		}
 	}
 }
 
