@@ -131,8 +131,9 @@ namespace Xwt.GtkBackend
 		
 		static GtkTextLayoutBackendHandler ()
 		{
-			Cairo.Surface sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, 1, 1);
-			SharedContext = new Cairo.Context (sf);
+			using (Cairo.Surface sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, 1, 1)) {
+				SharedContext = new Cairo.Context (sf);
+			}
 		}
 		
 		public override object Create (Context context)
