@@ -39,8 +39,9 @@ namespace Xwt.WPFBackend
 	internal class DrawingContext:IDisposable
 	{
 		Stack<ContextData> pushes = new Stack<ContextData> ();
-		Stack<Transform> transforms = new Stack<Transform> ();
+		TransformGroup transforms = new TransformGroup ();
 		int pushCount;
+		 
 
 		PathGeometry geometry;
 		SWM.Brush patternBrush;
@@ -60,9 +61,10 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public IEnumerable<Transform> GetCurrentTransforms ()
-		{
-			return transforms;
+		public TransformGroup CurrentTransform {
+			get {
+				return transforms;
+			}
 		}
 
 		class ContextData
@@ -117,7 +119,7 @@ namespace Xwt.WPFBackend
 				DashStyle = Pen.DashStyle,
 				EndPoint = EndPoint,
 				LastFigureStart = LastFigureStart,
-				TransformCount = transforms.Count
+				TransformCount = transforms.Children.Count
 			};
 			pushes.Push (cd);
 			pushCount = 0;
@@ -136,8 +138,8 @@ namespace Xwt.WPFBackend
 			var cd = pushes.Pop ();
 			pushCount = cd.PushCount;
 
-			while (transforms.Count > cd.TransformCount)
-				transforms.Pop ();
+			while (transforms.Children.Count > cd.TransformCount)
+				transforms.Children.RemoveAt (transforms.Children.Count - 1);
 
 			AllocatePen (cd.CurrentColor, cd.Thickness, cd.DashStyle);
 			patternBrush = cd.Pattern;
@@ -155,8 +157,10 @@ namespace Xwt.WPFBackend
 		public void PushTransform (Transform t)
 		{
 			Context.PushTransform (t);
-			transforms.Push (t);
+			transforms.Children.Add (t);
 			pushCount++;
+			if (patternBrush != null)
+				patternBrush.Transform = transforms;
 		}
 
 		public void SetColor (Color color)
@@ -205,6 +209,7 @@ namespace Xwt.WPFBackend
 		public void SetPattern (Brush brush)
 		{
 			patternBrush = brush;
+			patternBrush.Transform = transforms;
 		}
 
 		public void NewFigure (SW.Point p)

@@ -41,6 +41,9 @@ namespace Xwt.WPFBackend
 			return new ImageBrush (bmp) {
 				TileMode = TileMode.Tile,
 				ViewportUnits = BrushMappingMode.Absolute,
+				AlignmentY = System.Windows.Media.AlignmentY.Top,
+				AlignmentX = System.Windows.Media.AlignmentX.Left,
+				Stretch = System.Windows.Media.Stretch.None,
 				Viewport = new System.Windows.Rect (0, 0, bmp.Width, bmp.Height)
 			};
 		}

@@ -296,9 +296,7 @@ namespace Xwt.WPFBackend
 		public override void TransformPoint (object backend, ref double x, ref double y)
 		{
 			var c = (DrawingContext)backend;
-			var p = new SW.Point (x, y);
-			foreach (var t in c.GetCurrentTransforms ())
-				p = t.Transform (p);
+			var p = c.CurrentTransform.Transform (new SW.Point (x, y));
 			x = p.X;
 			y = p.Y;
 		}
@@ -307,7 +305,7 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext)backend;
 			var p = new SW.Point (dx, dy);
-			foreach (var t in c.GetCurrentTransforms ().Where (tt => !(tt is TranslateTransform)))
+			foreach (var t in c.CurrentTransform.Children.Where (tt => !(tt is TranslateTransform)))
 				p = t.Transform (p);
 			dx = p.X;
 			dy = p.Y;
