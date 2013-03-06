@@ -40,7 +40,7 @@ namespace Xwt.Mac
 
 		public void InsertItem (int index, IMenuItemBackend menuItem)
 		{
-			InsertItematIndex (((MenuItemBackend)menuItem).Item, index);
+			base.InsertItem (((MenuItemBackend)menuItem).Item, index);
 		}
 
 		public void RemoveItem (IMenuItemBackend menuItem)

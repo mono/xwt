@@ -314,16 +314,11 @@ namespace Xwt.CairoBackend
 			gc.Context.Translate (tx, ty);
 		}
 
-		public override void TransformPoint (object backend, ref double x, ref double y)
+		public override Matrix GetCTM (object backend)
 		{
-			Cairo.Context ctx = ((CairoContextBackend)backend).Context;
-			ctx.TransformPoint (ref x, ref y);
-		}
-
-		public override void TransformDistance (object backend, ref double dx, ref double dy)
-		{
-			Cairo.Context ctx = ((CairoContextBackend)backend).Context;
-			ctx.TransformDistance (ref dx, ref dy);
+			Cairo.Matrix t = ((CairoContextBackend)backend).Context.Matrix;
+			Matrix ctm = new Matrix (t.Xx, t.Yx, t.Xy, t.Yy, t.X0, t.Y0);
+			return ctm;
 		}
 
 		public override object CreatePath ()

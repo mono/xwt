@@ -42,6 +42,10 @@ namespace Xwt.WPFBackend
 
 		public void SetImage (Xwt.Drawing.Image image)
 		{
+			if (image == null) {
+				Image.Source = null;
+				return;
+			}
 			ImageSource source = DataConverter.AsImageSource (Toolkit.GetBackend (image));
 			if (source == null)
 				source = DataConverter.AsImageSource (Toolkit.GetBackend (image.ToBitmap ()));

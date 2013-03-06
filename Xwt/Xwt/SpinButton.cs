@@ -94,6 +94,16 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
+
+		public string IndeterminateMessage {
+			get { return Backend.IndeterminateMessage; }
+			set { Backend.IndeterminateMessage = value; }
+		}
+
+		public bool IsIndeterminate {
+			get { return Backend.IsIndeterminate; }
+			set { Backend.IsIndeterminate = value; }
+		}
 		
 		protected virtual void OnValueChanged (EventArgs e)
 		{

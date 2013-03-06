@@ -271,25 +271,11 @@ namespace Xwt.Mac
 			((CGContextBackend)backend).Context.TranslateCTM ((float)tx, (float)ty);
 		}
 		
-		public override void TransformPoint (object backend, ref double x, ref double y)
+		public override Matrix GetCTM (object backend)
 		{
 			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
-
-			PointF p = t.TransformPoint (new PointF ((float)x, (float)y));
-			x = p.X;
-			y = p.Y;
-		}
-
-		public override void TransformDistance (object backend, ref double dx, ref double dy)
-		{
-			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);
-			// remove translational elements from CTM
-			t.x0 = 0;
-			t.y0 = 0;
-
-			PointF p = t.TransformPoint (new PointF ((float)dx, (float)dy));
-			dx = p.X;
-			dy = p.Y;
+			Matrix ctm = new Matrix (t.xx, t.yx, t.xy, t.yy, t.x0, t.y0);
+			return ctm;
 		}
 
 		public override object CreatePath ()

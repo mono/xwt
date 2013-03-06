@@ -38,6 +38,8 @@ namespace Xwt.Backends
 		double MaximumValue { get; set; }
 		double IncrementValue { get; set; }
 		void SetButtonStyle (ButtonStyle style);
+		string IndeterminateMessage { get; set; }
+		bool IsIndeterminate { get; set; }
 	}
 
 	public interface ISpinButtonEventSink: IWidgetEventSink

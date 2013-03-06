@@ -121,6 +121,7 @@
     <Compile Include="Xwt.GtkBackend\EmbeddedWidgetBackend.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRenderer.cs" />
     <Compile Include="Xwt.GtkBackend\SegmentedButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SliderBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

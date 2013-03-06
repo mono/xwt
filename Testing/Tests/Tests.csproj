@@ -68,6 +68,7 @@
   <ItemGroup>
     <None Include="Test.csproj" />
     <None Include="Tests.csproj" />
+    <None Include="ReferenceImages\LinearGradientInternalBox.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Xwt\Xwt.csproj">
@@ -84,6 +85,96 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\Line.png">
       <LogicalName>Line.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\pattern-sample.png">
+      <LogicalName>pattern-sample.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePattern.png">
+      <LogicalName>ImagePattern.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithTranslateTransform.png">
+      <LogicalName>ImagePatternWithTranslateTransform.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\Clip.png">
+      <LogicalName>Clip.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ClipAccumulated.png">
+      <LogicalName>ClipAccumulated.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ClipPreserve.png">
+      <LogicalName>ClipPreserve.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ClipSaveRestore.png">
+      <LogicalName>ClipSaveRestore.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcMultipleLoops.png">
+      <LogicalName>ArcMultipleLoops.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcStartingNegative.png">
+      <LogicalName>ArcStartingNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcSwappedAngles.png">
+      <LogicalName>ArcSwappedAngles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RectangleFill.png">
+      <LogicalName>RectangleFill.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcFill.png">
+      <LogicalName>ArcFill.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegative.png">
+      <LogicalName>ArcNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\Arc.png">
+      <LogicalName>Arc.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeFill.png">
+      <LogicalName>ArcNegativeFill.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeMultipleLoops.png">
+      <LogicalName>ArcNegativeMultipleLoops.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeStartingNegative.png">
+      <LogicalName>ArcNegativeStartingNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeSwappedAngles.png">
+      <LogicalName>ArcNegativeSwappedAngles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\FillPreserve.png">
+      <LogicalName>FillPreserve.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\NewPath.png">
+      <LogicalName>NewPath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\StrokePreserve.png">
+      <LogicalName>StrokePreserve.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LineWidth.png">
+      <LogicalName>LineWidth.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativePathConnection.png">
+      <LogicalName>ArcNegativePathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcPathConnection.png">
+      <LogicalName>ArcPathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradient.png">
+      <LogicalName>LinearGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradientDiagonal.png">
+      <LogicalName>LinearGradientDiagonal.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradientReverse.png">
+      <LogicalName>LinearGradientReverse.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RadialGradient.png">
+      <LogicalName>RadialGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RadialGradientReverse.png">
+      <LogicalName>RadialGradientReverse.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RadialGradientSmall.png">
+      <LogicalName>RadialGradientSmall.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>

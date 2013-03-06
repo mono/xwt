@@ -34,7 +34,7 @@ namespace Xwt
 	public class ReferenceImageManager
 	{
 		internal static string ProjectReferenceImageDir;
-		internal static string ProjectCustomReferenceImageDir;
+		public static string ProjectCustomReferenceImageDir;
 
 		internal static string FailedImageCacheDir;
 		
@@ -82,13 +82,14 @@ namespace Xwt
 				});
 				return;
 			}
-			
-			if (!CompareImages (img, refImage)) {
+
+			var diff = DiffImages (img, refImage);
+			if (diff != null) {
 				bool knownFailure = false;
 				var failedImageFile = Path.Combine (FailedImageCacheDir, refImageName);
 				if (File.Exists (failedImageFile)) {
 					var failedImage = Image.FromFile (Path.Combine (FailedImageCacheDir, refImageName));
-					if (CompareImages (img, failedImage))
+					if (DiffImages (img, failedImage) == null)
 						knownFailure = true;
 				}
 				
@@ -96,6 +97,7 @@ namespace Xwt
 					ImageFailures.Add (new FailedImageInfo () {
 						TestImage = img,
 						ReferenceImage = refImage,
+						DiffImage = diff,
 						Name = refImageName,
 						TargetDir = ProjectCustomReferenceImageDir
 					});
@@ -104,20 +106,36 @@ namespace Xwt
 			}
 		}
 		
-		public static bool CompareImages (Image img1, Image img2)
+		public static Image DiffImages (Image img1, Image img2)
 		{
+			bool foundDifference = false;
 			var bmp1 = img1.ToBitmap ();
 			var bmp2 = img2.ToBitmap ();
-			
-			if (bmp1.Size != bmp2.Size)
-				return false;
-			
-			for (int y=0; y<bmp1.Size.Height; y++) {
-				for (int x=0; x<bmp1.Size.Width; x++)
-					if (bmp1.GetPixel (x, y) != bmp2.GetPixel (x, y))
-						return false;
+			var res = new ImageBuilder ((int)Math.Min (bmp1.Size.Width, bmp2.Size.Width), (int) Math.Min (bmp1.Size.Height, bmp2.Size.Height));
+			var bmpr = res.ToImage ().ToBitmap ();
+			res.Dispose ();
+			for (int y=0; y<bmp1.Size.Height && y < bmp2.Size.Height; y++) {
+				for (int x=0; x<bmp1.Size.Width && x<bmp2.Size.Height; x++) {
+					var p1 = bmp1.GetPixel (x, y);
+					var p2 = bmp2.GetPixel (x, y);
+					var col = Colors.White;
+					if (p1 != p2) {
+						foundDifference = true;
+						var r = Math.Pow (p1.Red - p2.Red, 2) + Math.Pow (p1.Green - p2.Green, 2) + Math.Pow (p1.Blue - p2.Blue, 2) + Math.Pow (p1.Alpha - p2.Alpha, 2);
+						if (r < 0.01)
+							col = new Color (0.9, 0.9, 0.9);
+						else if (r < 0.1)
+							col = new Color (0.7, 0.7, 0.7);
+						else
+							col = Colors.Red;
+					}
+					bmpr.SetPixel (x, y, col);
+				}
 			}
-			return true;
+			if (foundDifference)
+				return bmpr;
+			else
+				return null;
 		}
 	}
 	
@@ -125,6 +143,7 @@ namespace Xwt
 	{
 		public Image TestImage { get; set; }
 		public Image ReferenceImage { get; set; }
+		public Image DiffImage { get; set; } 
 		public string Name { get; set; }
 		public string TargetDir { get; set; }
 

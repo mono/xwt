@@ -385,6 +385,8 @@
     <Compile Include="Xwt.Drawing\ImageSet.cs" />
     <Compile Include="Xwt.Formats\PlainTextFormat.cs" />
     <Compile Include="Xwt.Drawing\ImageFileType.cs" />
+    <Compile Include="Xwt\Slider.cs" />
+    <Compile Include="Xwt.Backends\ISliderBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

@@ -12,6 +12,7 @@
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <AssemblyName>MacTestRunner</AssemblyName>
     <SuppressXamMacMigration>True</SuppressXamMacMigration>
+    <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -89,5 +90,82 @@
       <Project>{8C624AB7-8195-4AE5-98CE-5F8676821AF7}</Project>
       <Name>Tests</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\Arc.png">
+      <LogicalName>Arc.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcFill.png">
+      <LogicalName>ArcFill.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcMultipleLoops.png">
+      <LogicalName>ArcMultipleLoops.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegative.png">
+      <LogicalName>ArcNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeFill.png">
+      <LogicalName>ArcNegativeFill.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeMultipleLoops.png">
+      <LogicalName>ArcNegativeMultipleLoops.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeStartingNegative.png">
+      <LogicalName>ArcNegativeStartingNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeSwappedAngles.png">
+      <LogicalName>ArcNegativeSwappedAngles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcStartingNegative.png">
+      <LogicalName>ArcStartingNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcSwappedAngles.png">
+      <LogicalName>ArcSwappedAngles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\NewPath.png">
+      <LogicalName>NewPath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\Rectangle.png">
+      <LogicalName>Rectangle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\StrokePreserve.png">
+      <LogicalName>StrokePreserve.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativePathConnection.png">
+      <LogicalName>ArcNegativePathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcPathConnection.png">
+      <LogicalName>ArcPathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradient.png">
+      <LogicalName>LinearGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradientDiagonal.png">
+      <LogicalName>LinearGradientDiagonal.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradientInternalBox.png">
+      <LogicalName>LinearGradientInternalBox.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LinearGradientReverse.png">
+      <LogicalName>LinearGradientReverse.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RadialGradient.png">
+      <LogicalName>RadialGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RadialGradientReverse.png">
+      <LogicalName>RadialGradientReverse.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RadialGradientSmall.png">
+      <LogicalName>RadialGradientSmall.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

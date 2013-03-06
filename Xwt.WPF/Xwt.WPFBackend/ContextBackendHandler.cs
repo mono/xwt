@@ -332,30 +332,18 @@ namespace Xwt.WPFBackend
 			c.Graphics.TranslateTransform ((float)tx, (float)ty);
 		}
 
-		public override void TransformPoint (object backend, ref double x, ref double y)
+		public override Xwt.Drawing.Matrix GetCTM (object backend)
 		{
 			var m = ((DrawingContext)backend).Graphics.Transform;
-			PointF p = new PointF ((float)x, (float)y);
-			PointF[] pts = new PointF[] { p };
-			m.TransformPoints (pts);
-			x = pts[0].X;
-			y = pts[0].Y;
-		}
-
-		public override void TransformDistance (object backend, ref double dx, ref double dy)
-		{
-			var m = ((DrawingContext)backend).Graphics.Transform;
-			PointF p = new PointF ((float)dx, (float)dy);
-			PointF[] pts = new PointF[] {p};
-			m.TransformVectors (pts);
-			dx = pts[0].X;
-			dy = pts[0].Y;
+			float [] e = m.Elements;
+			Xwt.Drawing.Matrix ctm = new Xwt.Drawing.Matrix (e[0], e[1], e[2], e[3], e[4], e[5]);
+			return ctm;
 		}
 
 		public override object CreatePath ()
-        {
-            return new DrawingContext ();
-        }
+		{
+			return new DrawingContext ();
+		}
 
 		public override object CopyPath (object backend)
 		{
@@ -363,14 +351,14 @@ namespace Xwt.WPFBackend
 		}
 
 		public override void AppendPath (object backend, object otherBackend)
-        {
-            var dest = (DrawingContext)backend;
-            var src = (DrawingContext)otherBackend;
+		{
+			var dest = (DrawingContext)backend;
+			var src = (DrawingContext)otherBackend;
 
-            dest.Path.AddPath (src.Path, false);
-            dest.CurrentX = src.CurrentX;
-            dest.CurrentY = src.CurrentY;
-        }
+			dest.Path.AddPath (src.Path, false);
+			dest.CurrentX = src.CurrentX;
+			dest.CurrentY = src.CurrentY;
+		}
 
 		public override bool IsPointInFill (object backend, double x, double y)
         {

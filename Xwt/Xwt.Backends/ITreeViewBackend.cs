@@ -51,7 +51,11 @@ namespace Xwt.Backends
 	public enum ListViewColumnChange
 	{
 		Title,
-		Cells
+		Cells,
+		IsResizeable,
+		SortDirection,
+		SortDataField,
+		IsSortIndicatorShown
 	}
 	
 	public enum TreeViewEvent

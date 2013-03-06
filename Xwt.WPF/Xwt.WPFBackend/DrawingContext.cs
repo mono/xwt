@@ -132,10 +132,16 @@ namespace Xwt.WPFBackend
 		
 		internal void CopyTo (DrawingContext dc, bool toCurrent)
 		{
-			if (toCurrent) 
-				dc.Graphics.Restore (this.State);
-			else 
-				dc.State = this.Graphics.Save ();
+			if (toCurrent)
+			{
+				if (State != null)
+					dc.Graphics.Restore(this.State);
+			}
+			else
+			{
+				if(Graphics != null)
+					dc.State = this.Graphics.Save();
+			}
 			dc.Font = this.font;
 			dc.Brush = this.brush;
 			dc.Pen = this.pen;

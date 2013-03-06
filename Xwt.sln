@@ -178,7 +178,7 @@ Global
 		{14CF6E75-0D08-4BBD-B0F5-742196E5656D} = {83D74DDF-581E-4E2A-AE02-F4047A5B96C7}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Testing\GtkTestRunner\GtkTestRunner.csproj
+		StartupItem = GtkTest\GtkTest.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
