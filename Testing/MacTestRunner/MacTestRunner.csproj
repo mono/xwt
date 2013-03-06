@@ -91,4 +91,54 @@
       <Name>Tests</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\Arc.png">
+      <LogicalName>Arc.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcFill.png">
+      <LogicalName>ArcFill.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcMultipleLoops.png">
+      <LogicalName>ArcMultipleLoops.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegative.png">
+      <LogicalName>ArcNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeFill.png">
+      <LogicalName>ArcNegativeFill.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeMultipleLoops.png">
+      <LogicalName>ArcNegativeMultipleLoops.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeStartingNegative.png">
+      <LogicalName>ArcNegativeStartingNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeSwappedAngles.png">
+      <LogicalName>ArcNegativeSwappedAngles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcStartingNegative.png">
+      <LogicalName>ArcStartingNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcSwappedAngles.png">
+      <LogicalName>ArcSwappedAngles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\NewPath.png">
+      <LogicalName>NewPath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\Rectangle.png">
+      <LogicalName>Rectangle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\StrokePreserve.png">
+      <LogicalName>StrokePreserve.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
