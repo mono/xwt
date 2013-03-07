@@ -46,9 +46,17 @@ namespace Xwt.WPFBackend
 				new PointF ((float) x1, (float) y1));
 		}
 
+		public override void DisposeLinear (object backend)
+		{
+		}
+
 		public override object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
 		{
 			return new RadialGradient (cx0, cy0, radius0, cx1, cy1, radius1);
+		}
+
+		public override void DisposeRadial (object backend)
+		{
 		}
 
 		public override void AddColorStop (object backend, double position, Color color)

@@ -35,6 +35,11 @@ namespace Xwt.Drawing
 		{
 			Backend = ToolkitEngine.GradientBackendHandler.CreateRadial (cx0, cy0, radius0, cx1, cy1, radius1);
 		}
+
+		public override void Dispose ()
+		{
+			ToolkitEngine.GradientBackendHandler.DisposeRadial (Backend);
+		}
 	}
 }
 

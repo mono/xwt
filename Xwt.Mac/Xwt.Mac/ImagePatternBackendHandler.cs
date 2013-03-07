@@ -42,6 +42,10 @@ namespace Xwt.Mac
 			return new CGPattern (bounds, CGAffineTransform.MakeScale (1f, -1f), bounds.Width, bounds.Height,
 			                      CGPatternTiling.ConstantSpacing, true, ctx => ctx.DrawImage (bounds, cgimg));
 		}
+
+		public override void Dispose (object img)
+		{
+		}
 	}
 }
 
