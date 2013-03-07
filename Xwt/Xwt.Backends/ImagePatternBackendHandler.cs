@@ -30,6 +30,7 @@ namespace Xwt.Backends
 	public abstract class ImagePatternBackendHandler: BackendHandler
 	{
 		public abstract object Create (object img);
+		public abstract void Dispose (object img);
 	}
 }
 

@@ -35,6 +35,12 @@ namespace Xwt.Drawing
 		{
 			Backend = ToolkitEngine.ImagePatternBackendHandler.Create (GetBackend (img));
 		}
+
+		public override void Dispose ()
+		{
+			ToolkitEngine.ImagePatternBackendHandler.Dispose (Backend);
+		}
+
 	}
 }
 

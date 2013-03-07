@@ -44,6 +44,12 @@ namespace Xwt.GtkBackend
 			p.Extend = Cairo.Extend.Repeat;
 			return p;
 		}
+
+		public override void Dispose (object img)
+		{
+			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
+			pb.Dispose ();
+		}
 		#endregion
 	}
 }

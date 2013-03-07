@@ -38,5 +38,9 @@ namespace Xwt.WPFBackend
 			Bitmap bmp = DataConverter.AsBitmap (img);
 			return new TextureBrush (bmp, System.Drawing.Drawing2D.WrapMode.Tile);
 		}
+
+		public override void Dispose (object img)
+		{
+		}
 	}
 }
