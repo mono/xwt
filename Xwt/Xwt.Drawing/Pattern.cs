@@ -28,11 +28,13 @@ using System;
 
 namespace Xwt.Drawing
 {
-	public abstract class Pattern: XwtObject
+	public abstract class Pattern: XwtObject, IDisposable
 	{
 		internal Pattern ()
 		{
 		}
+
+		public abstract void Dispose ();
 	}
 }
 
