@@ -50,8 +50,6 @@ namespace Xwt.Mac
 		public override object LoadFromStream (Stream stream)
 		{
 			using (NSData data = NSData.FromStream (stream)) {
-				if (!NSImageRep.CanInitWithData (data))
-					throw new NotSupportedException ("Image file format not supported");
 				return new NSImage (data);
 			}
 		}
