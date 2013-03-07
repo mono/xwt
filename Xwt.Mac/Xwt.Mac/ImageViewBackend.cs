@@ -50,8 +50,10 @@ namespace Xwt.Mac
 
 		public void SetImage (Image image)
 		{
-			if (image == null)
-				throw new ArgumentNullException ("nativeImage");
+			if (image == null) {
+				Widget.Image = null;
+				return;
+			}
 
 			NSImage nativeImage = Toolkit.GetBackend (image) as NSImage;
 			if (nativeImage == null)
