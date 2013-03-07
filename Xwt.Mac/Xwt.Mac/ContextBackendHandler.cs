@@ -106,8 +106,10 @@ namespace Xwt.Mac
 
 			if (gc.Gradient != null)
 				MacGradientBackendHandler.Draw (ctx, gc.Gradient);
-			else
+			else {
+				ctx.SetPatternPhase (new SizeF (0, 0));
 				ctx.DrawPath (CGPathDrawingMode.Fill);
+			}
 		}
 
 		public override void FillPreserve (object backend)

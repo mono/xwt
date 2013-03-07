@@ -151,7 +151,9 @@ namespace Xwt
 			context.RelLineTo (-6, 0);
 			context.RelMoveTo (2.5, 3);
 		}
-		
+
+		#region Arc
+
 		[Test]
 		public void Arc ()
 		{
@@ -221,6 +223,10 @@ namespace Xwt
 			CheckImage ("ArcPathConnection.png");
 		}
 
+		#endregion
+
+		#region ArcNegative
+
 		[Test]
 		public void ArcNegative ()
 		{
@@ -289,6 +295,9 @@ namespace Xwt
 			CheckImage ("ArcNegativePathConnection.png");
 		}
 
+		#endregion
+
+		#region ImagePattern
 
 		[Test]
 		public void ImagePattern ()
@@ -302,6 +311,31 @@ namespace Xwt
 		}
 		
 		[Test]
+		public void ImagePatternInCircle ()
+		{
+			InitBlank (50, 50);
+			context.Arc (25, 25, 20, 0, 360);
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img);
+			context.Fill ();
+			CheckImage ("ImagePatternInCircle.png");
+		}
+		
+		[Test]
+		public void ImagePatternInTriangle ()
+		{
+			InitBlank (50, 50);
+			context.MoveTo (25, 5);
+			context.LineTo (45, 20);
+			context.LineTo (5, 45);
+			context.ClosePath ();
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img);
+			context.Fill ();
+			CheckImage ("ImagePatternInTriangle.png");
+		}
+
+		[Test]
 		public void ImagePatternWithTranslateTransform ()
 		{
 			InitBlank (70, 70);
@@ -313,6 +347,34 @@ namespace Xwt
 			CheckImage ("ImagePatternWithTranslateTransform.png");
 		}
 		
+		[Test]
+		public void ImagePatternWithRotateTransform ()
+		{
+			InitBlank (70, 70);
+			context.Rotate (4);
+			context.Rectangle (5, 5, 40, 60);
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img);
+			context.Fill ();
+			CheckImage ("ImagePatternWithRotateTransform.png");
+		}
+		
+		[Test]
+		public void ImagePatternWithScaleTransform ()
+		{
+			InitBlank (70, 70);
+			context.Scale (2, 0.5);
+			context.Rectangle (5, 5, 20, 120);
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img);
+			context.Fill ();
+			CheckImage ("ImagePatternWithScaleTransform.png");
+		}
+
+		#endregion
+
+		#region Clipping
+
 		void DrawSimplePattern ()
 		{
 			context.Rectangle (0, 0, 20, 20);
@@ -382,6 +444,8 @@ namespace Xwt
 			DrawSimplePattern ();
 			CheckImage ("ClipSaveRestore.png");
 		}
+
+		#endregion
 		
 		[Test]
 		public void NewPath ()
@@ -395,6 +459,8 @@ namespace Xwt
 			context.Stroke ();
 			CheckImage ("NewPath.png");
 		}
+
+		#region LinearGradient
 		
 		[Test]
 		public void LinearGradient ()
@@ -451,6 +517,10 @@ namespace Xwt
 			context.Fill ();
 			CheckImage ("LinearGradientInternalBox.png");
 		}
+
+		#endregion
+
+		#region RadialGradient
 		
 		[Test]
 		public void RadialGradient ()
@@ -493,6 +563,120 @@ namespace Xwt
 			context.Fill ();
 			CheckImage ("RadialGradientSmall.png");
 		}
+
+		#endregion
+
+		#region Save/Restore
+
+		[Test]
+		public void SaveRestorePath ()
+		{
+			// Path is not saved
+			InitBlank ();
+			context.SetLineWidth (2);
+			context.MoveTo (10, 10);
+			context.LineTo (40, 10);
+			context.Save ();
+			context.LineTo (40, 40);
+			context.Restore ();
+			context.LineTo (10, 40);
+			context.SetColor (Colors.Black);
+			context.Stroke ();
+			CheckImage ("SaveRestorePath.png");
+		}
+		
+		[Test]
+		public void SaveRestoreColor ()
+		{
+			// Color is saved
+			InitBlank ();
+			context.Rectangle (10, 10, 20, 20);
+			context.SetColor (Colors.Black);
+			context.Save ();
+			context.SetColor (Colors.Red);
+			context.Restore ();
+			context.Fill ();
+			CheckImage ("SaveRestoreColor.png");
+		}
+		
+		[Test]
+		public void SaveRestoreImagePattern ()
+		{
+			// Pattern is saved
+			InitBlank (70, 70);
+			context.Save ();
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img);
+			context.Restore ();
+			context.Rectangle (5, 5, 40, 60);
+			context.Fill ();
+			CheckImage ("SaveRestoreImagePattern.png");
+		}
+
+		[Test]
+		public void SaveRestoreLinearGradient ()
+		{
+			// Pattern is saved
+			InitBlank ();
+			var g = new LinearGradient (5, 5, 5, 45);
+			g.AddColorStop (0, Colors.Red);
+			g.AddColorStop (0.5, Colors.Green);
+			g.AddColorStop (1, Colors.Blue);
+			context.Save ();
+			context.Pattern = g;
+			context.Restore ();
+			context.Rectangle (5, 5, 40, 40);
+			context.Fill ();
+			CheckImage ("SaveRestoreLinearGradient.png");
+		}
+
+		[Test]
+		public void SaveRestoreRadialGradient ()
+		{
+			// Pattern is saved
+			InitBlank ();
+			var g = new RadialGradient (20, 20, 5, 30, 30, 30);
+			g.AddColorStop (0, Colors.Red);
+			g.AddColorStop (0.5, Colors.Green);
+			g.AddColorStop (1, Colors.Blue);
+			context.Save ();
+			context.Pattern = g;
+			context.Restore ();
+			context.Rectangle (5, 5, 40, 40);
+			context.Fill ();
+			CheckImage ("SaveRestoreRadialGradient.png");
+		}
+
+		[Test]
+		public void SaveRestoreLineWidth ()
+		{
+			// Line width is saved
+			InitBlank ();
+			context.SetLineWidth (2);
+			context.Save ();
+			context.SetLineWidth (8);
+			context.Restore ();
+			context.Rectangle (10, 10, 30, 30);
+			context.Stroke ();
+			CheckImage ("SaveRestoreLineWidth.png");
+		}
+		
+		[Test]
+		public void SaveRestoreTransform ()
+		{
+			// Transform is saved
+			InitBlank ();
+			context.Save ();
+			context.Translate (10, 10);
+			context.Rotate (10);
+			context.Scale (0.5, 0.5);
+			context.Restore ();
+			context.Rectangle (10, 10, 30, 30);
+			context.Fill ();
+			CheckImage ("SaveRestoreTransform.png");
+		}
+
+		#endregion
 	}
 }
 

@@ -178,6 +178,39 @@
     <EmbeddedResource Include="ReferenceImages\LinearGradientInternalBox.png">
       <LogicalName>LinearGradientInternalBox.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternInCircle.png">
+      <LogicalName>ImagePatternInCircle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternInTriangle.png">
+      <LogicalName>ImagePatternInTriangle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithRotateTransform.png">
+      <LogicalName>ImagePatternWithRotateTransform.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithScaleTransform.png">
+      <LogicalName>ImagePatternWithScaleTransform.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\SaveRestoreColor.png">
+      <LogicalName>SaveRestoreColor.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\SaveRestoreImagePattern.png">
+      <LogicalName>SaveRestoreImagePattern.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\SaveRestoreLinearGradient.png">
+      <LogicalName>SaveRestoreLinearGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\SaveRestoreLineWidth.png">
+      <LogicalName>SaveRestoreLineWidth.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\SaveRestorePath.png">
+      <LogicalName>SaveRestorePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\SaveRestoreRadialGradient.png">
+      <LogicalName>SaveRestoreRadialGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\SaveRestoreTransform.png">
+      <LogicalName>SaveRestoreTransform.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
