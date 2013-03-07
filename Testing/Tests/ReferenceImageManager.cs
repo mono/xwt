@@ -63,13 +63,17 @@ namespace Xwt
 
 			try {
 				refImage = Image.FromResource (System.Reflection.Assembly.GetEntryAssembly (), refImageName);
+				refImage = refImage.ToBitmap ();
 			} catch {
+				refImage = null;
 			}
 
 			if (refImage == null) {
 				try {
 					refImage = Image.FromResource (typeof(ReferenceImageManager), refImageName);
+					refImage = refImage.ToBitmap ();
 				} catch {
+					refImage = null;
 				}
 			}
 			

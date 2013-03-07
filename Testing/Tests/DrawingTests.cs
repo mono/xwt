@@ -140,21 +140,36 @@ namespace Xwt
 			CheckImage ("StrokePreserve.png");
 		}
 
+		void DrawArcTerminator ()
+		{
+			context.RelMoveTo (-2.5, -3);
+			context.RelLineTo (6, 0);
+			context.RelLineTo (0, 6);
+			context.RelLineTo (-6, 0);
+			context.RelLineTo (0, -6);
+			context.RelLineTo (6, 0);
+			context.RelLineTo (-6, 0);
+			context.RelMoveTo (2.5, 3);
+		}
+		
 		[Test]
 		public void Arc ()
 		{
 			InitBlank ();
-			context.Arc (25, 25, 20, 0, 90);
+			context.Arc (25, 25, 20.5, 0, 90);
+			DrawArcTerminator ();
 			context.SetColor (Colors.Black);
 			context.Stroke ();
+
 			CheckImage ("Arc.png");
 		}
-		
+
 		[Test]
 		public void ArcStartingNegative ()
 		{
 			InitBlank ();
-			context.Arc (25, 25, 20, -45, 45);
+			context.Arc (25, 25, 20.5, -45, 45);
+			DrawArcTerminator ();
 			context.SetColor (Colors.Black);
 			context.Stroke ();
 			CheckImage ("ArcStartingNegative.png");
@@ -164,7 +179,8 @@ namespace Xwt
 		public void ArcSwappedAngles ()
 		{
 			InitBlank ();
-			context.Arc (25, 25, 20, 300, 0);
+			context.Arc (25, 25, 20.5, 300, 0);
+			DrawArcTerminator ();
 			context.SetColor (Colors.Black);
 			context.Stroke ();
 			CheckImage ("ArcSwappedAngles.png");
@@ -174,9 +190,10 @@ namespace Xwt
 		public void ArcMultipleLoops ()
 		{
 			InitBlank ();
-			context.Arc (25, 25, 20, 0, 360 + 180);
+			context.Arc (25, 25, 20.5, 0, 360 + 180);
 			context.SetColor (Colors.Black.WithAlpha (0.5));
 			context.SetLineWidth (5);
+			context.RelLineTo (10, 0);
 			context.Stroke ();
 			CheckImage ("ArcMultipleLoops.png");
 		}
@@ -197,6 +214,7 @@ namespace Xwt
 			InitBlank ();
 			context.MoveTo (25.5, 25.5);
 			context.Arc (25.5, 25.5, 20, 0, 135);
+			DrawArcTerminator ();
 			context.LineTo (25.5, 25.5);
 			context.SetColor (Colors.Black);
 			context.Stroke ();
@@ -207,7 +225,8 @@ namespace Xwt
 		public void ArcNegative ()
 		{
 			InitBlank ();
-			context.ArcNegative (25, 25, 20, 0, 90);
+			context.ArcNegative (25, 25, 20.5, 0, 90);
+			DrawArcTerminator ();
 			context.SetColor (Colors.Black);
 			context.Stroke ();
 			CheckImage ("ArcNegative.png");
@@ -217,7 +236,8 @@ namespace Xwt
 		public void ArcNegativeStartingNegative ()
 		{
 			InitBlank ();
-			context.ArcNegative (25, 25, 20, -45, 45);
+			context.ArcNegative (25, 25, 20.5, -45, 45);
+			DrawArcTerminator ();
 			context.SetColor (Colors.Black);
 			context.Stroke ();
 			CheckImage ("ArcNegativeStartingNegative.png");
@@ -227,7 +247,8 @@ namespace Xwt
 		public void ArcNegativeSwappedAngles ()
 		{
 			InitBlank ();
-			context.ArcNegative (25, 25, 20, 300, 0);
+			context.ArcNegative (25, 25, 20.5, 300, 0);
+			DrawArcTerminator ();
 			context.SetColor (Colors.Black);
 			context.Stroke ();
 			CheckImage ("ArcNegativeSwappedAngles.png");
@@ -237,9 +258,10 @@ namespace Xwt
 		public void ArcNegativeMultipleLoops ()
 		{
 			InitBlank ();
-			context.ArcNegative (25, 25, 20, 0, 360 + 180);
+			context.ArcNegative (25, 25, 20.5, 0, 360 + 180);
 			context.SetColor (Colors.Black.WithAlpha (0.5));
 			context.SetLineWidth (5);
+			context.RelLineTo (10, 0);
 			context.Stroke ();
 			CheckImage ("ArcNegativeMultipleLoops.png");
 		}
@@ -260,6 +282,7 @@ namespace Xwt
 			InitBlank ();
 			context.MoveTo (25.5, 25.5);
 			context.ArcNegative (25.5, 25.5, 20, 0, 135);
+			DrawArcTerminator ();
 			context.LineTo (25.5, 25.5);
 			context.SetColor (Colors.Black);
 			context.Stroke ();
