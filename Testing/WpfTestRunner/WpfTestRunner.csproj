@@ -76,6 +76,26 @@
   <ItemGroup>
     <EmbeddedResource Include="ReferenceImages\ArcPathConnection.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\ArcNegative.png" />
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeMultipleLoops.png" />
+    <EmbeddedResource Include="ReferenceImages\ArcNegativePathConnection.png" />
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeStartingNegative.png" />
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeSwappedAngles.png" />
+    <EmbeddedResource Include="ReferenceImages\Curve.png" />
+    <EmbeddedResource Include="ReferenceImages\CurvePathConnection.png" />
+    <EmbeddedResource Include="ReferenceImages\ImagePatternInCircle.png" />
+    <EmbeddedResource Include="ReferenceImages\ImagePatternInTriangle.png" />
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithScaleTransform.png" />
+    <EmbeddedResource Include="ReferenceImages\LinearGradientInternalBox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\SaveRestorePath.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\ArcFill.png" />
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeFill.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

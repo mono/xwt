@@ -68,16 +68,12 @@ namespace Xwt.WPFBackend
 
 		class ContextData
 		{
-			public PathGeometry Geometry;
 			public int PushCount;
 			public Color CurrentColor;
 			public double Thickness;
 			public DashStyle DashStyle;
 			public Brush Pattern;
-			public SW.Point EndPoint;
-			public SW.Point LastFigureStart;
 			public int TransformCount;
-			public bool PositionSet;
 		}
 
 		public System.Windows.Media.DrawingContext Context { get; private set; }
@@ -114,19 +110,13 @@ namespace Xwt.WPFBackend
 			var cd = new ContextData () {
 				Thickness = Pen.Thickness,
 				CurrentColor = colorBrush.Color,
-				Geometry = geometry,
 				PushCount = pushCount,
 				Pattern = patternBrush,
 				DashStyle = Pen.DashStyle,
-				EndPoint = EndPoint,
-				LastFigureStart = LastFigureStart,
 				TransformCount = transforms.Children.Count,
-				PositionSet = positionSet
 			};
 			pushes.Push (cd);
 			pushCount = 0;
-			geometry = (PathGeometry)geometry.Clone ();
-			Path = geometry.Figures[geometry.Figures.Count - 1];
 		}
 
 		public void Restore ()
@@ -145,11 +135,6 @@ namespace Xwt.WPFBackend
 
 			AllocatePen (cd.CurrentColor, cd.Thickness, cd.DashStyle);
 			patternBrush = cd.Pattern;
-			geometry = cd.Geometry;
-			Path = geometry.Figures[geometry.Figures.Count - 1];
-			EndPoint = cd.EndPoint;
-			LastFigureStart = cd.LastFigureStart;
-			positionSet = cd.PositionSet;
 		}
 
 		public void NotifyPush ()
@@ -227,11 +212,13 @@ namespace Xwt.WPFBackend
 		public void ConnectToLastFigure (SW.Point p, bool stroke)
 		{
 			if (EndPoint != p) {
-				var initialConnection = Path.Segments.Count != 0 || geometry.Figures.Count > 1 || positionSet;
-				if (initialConnection)
+				var pathIsOpen = Path.Segments.Count != 0 || geometry.Figures.Count > 1 || positionSet;
+				if (pathIsOpen) {
 					LastFigureStart = p;
-				// Don't stroke if the path is empty
-				Path.Segments.Add (new LineSegment (p, stroke && initialConnection));
+					Path.Segments.Add (new LineSegment (p, stroke));
+				}
+				else
+					NewFigure (p);
 			}
 			if (!stroke)
 				LastFigureStart = p;

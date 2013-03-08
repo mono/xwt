@@ -67,15 +67,15 @@ namespace Xwt.WPFBackend
 
 		public override void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
-			Arc (backend, xc, yc, radius, angle1, angle2, SweepDirection.Clockwise);
+			Arc (backend, xc, yc, radius, angle1, angle2, false);
 		}
 
 		public override void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
-			Arc (backend, xc, yc, radius, angle1, angle2, SweepDirection.Counterclockwise);
+			Arc (backend, xc, yc, radius, angle1, angle2, true);
 		}
 
-		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2, SweepDirection dir)
+		public void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2, bool inverse)
 		{
 			var c = (DrawingContext)backend;
 
@@ -95,8 +95,9 @@ namespace Xwt.WPFBackend
 
 				c.ConnectToLastFigure (p1, true);
 
-				var largeArc = nextAngle - angle1 > 180;
-				c.Path.Segments.Add (new ArcSegment (p2, new SW.Size (radius, radius), 0, largeArc, dir, true));
+				var largeArc = inverse ? nextAngle - angle1 < 180 : nextAngle - angle1 > 180;
+				var direction = inverse ? SweepDirection.Counterclockwise : SweepDirection.Clockwise;
+				c.Path.Segments.Add (new ArcSegment (p2, new SW.Size (radius, radius), 0, largeArc, direction, true));
 				angle1 = nextAngle;
 				c.EndPoint = p2;
 			}
@@ -148,7 +149,7 @@ namespace Xwt.WPFBackend
 		public override void LineTo (object backend, double x, double y)
 		{
 			var c = (DrawingContext) backend;
-			c.Path.Segments.Add (new LineSegment (new SW.Point (x, y), true));
+			c.Path.Segments.Add (new LineSegment (new SW.Point (x, y), true) { IsSmoothJoin = true });
 			c.EndPoint = new SW.Point (x, y);
 		}
 
@@ -191,16 +192,14 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext)backend;
 			var dest = new SW.Point (c.EndPoint.X + dx, c.EndPoint.Y + dy);
-			c.Path.Segments.Add (new LineSegment (dest, true));
+			c.Path.Segments.Add (new LineSegment (dest, true) { IsSmoothJoin = true });
 			c.EndPoint = dest;
 		}
 
 		public override void RelMoveTo (object backend, double dx, double dy)
 		{
 			var c = (DrawingContext)backend;
-			var dest = new SW.Point (c.EndPoint.X + dx, c.EndPoint.Y + dy);
-			c.Path.Segments.Add (new LineSegment (dest, false));
-			c.LastFigureStart = c.EndPoint = dest;
+			MoveTo (backend, c.EndPoint.X + dx, c.EndPoint.Y + dy);
 		}
 
 		public override void Stroke (object backend)
