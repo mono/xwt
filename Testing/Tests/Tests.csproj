@@ -220,6 +220,21 @@
     <EmbeddedResource Include="ReferenceImages\RectanglePathConnection.png">
       <LogicalName>RectanglePathConnection.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcClosePath.png">
+      <LogicalName>ArcClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeClosePath.png">
+      <LogicalName>ArcNegativeClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\CurveClosePath.png">
+      <LogicalName>CurveClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\CurveFillWithHoles.png">
+      <LogicalName>CurveFillWithHoles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LineClosePath.png">
+      <LogicalName>LineClosePath.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
