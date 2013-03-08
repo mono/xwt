@@ -33,14 +33,21 @@ using Xwt.Drawing;
 using MonoMac.Foundation;
 using MonoMac.CoreGraphics;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace Xwt.Mac
 {
 	class CGContextBackend {
 		public CGContext Context;
 		public SizeF Size;
-		public GradientInfo Gradient;
 		public CGAffineTransform? InverseViewTransform;
+		public Stack<ContextStatus> StatusStack = new Stack<ContextStatus> ();
+		public ContextStatus CurrentStatus = new ContextStatus ();
+	}
+
+	class ContextStatus
+	{
+		public object Pattern;
 	}
 
 	public class MacContextBackendHandler: ContextBackendHandler
@@ -49,12 +56,19 @@ namespace Xwt.Mac
 
 		public override void Save (object backend)
 		{
-			((CGContextBackend)backend).Context.SaveState ();
+			var ct = (CGContextBackend) backend;
+			ct.Context.SaveState ();
+			ct.StatusStack.Push (ct.CurrentStatus);
+			var newStatus = new ContextStatus ();
+			newStatus.Pattern = ct.CurrentStatus.Pattern;
+			ct.CurrentStatus = newStatus;
 		}
 		
 		public override void Restore (object backend)
 		{
-			((CGContextBackend)backend).Context.RestoreState ();
+			var ct = (CGContextBackend) backend;
+			ct.Context.RestoreState ();
+			ct.CurrentStatus = ct.StatusStack.Pop ();
 		}
 
 		public override void SetGlobalAlpha (object backend, double alpha)
@@ -104,10 +118,14 @@ namespace Xwt.Mac
 			CGContext ctx = gc.Context;
 			SetupContextForDrawing (ctx);
 
-			if (gc.Gradient != null)
-				MacGradientBackendHandler.Draw (ctx, gc.Gradient);
+			if (gc.CurrentStatus.Pattern is GradientInfo) {
+				MacGradientBackendHandler.Draw (ctx, ((GradientInfo)gc.CurrentStatus.Pattern));
+			}
+			else if (gc.CurrentStatus.Pattern is ImagePatternInfo) {
+				SetupPattern (gc);
+				ctx.DrawPath (CGPathDrawingMode.Fill);
+			}
 			else {
-				ctx.SetPatternPhase (new SizeF (0, 0));
 				ctx.DrawPath (CGPathDrawingMode.Fill);
 			}
 		}
@@ -182,7 +200,7 @@ namespace Xwt.Mac
 		public override void SetColor (object backend, Xwt.Drawing.Color color)
 		{
 			CGContextBackend gc = (CGContextBackend)backend;
-			gc.Gradient = null;
+			gc.CurrentStatus.Pattern = null;
 			CGContext ctx = gc.Context;
 			ctx.SetFillColorSpace (Util.DeviceRGBColorSpace);
 			ctx.SetStrokeColorSpace (Util.DeviceRGBColorSpace);
@@ -208,16 +226,31 @@ namespace Xwt.Mac
 		public override void SetPattern (object backend, object p)
 		{
 			CGContextBackend gc = (CGContextBackend)backend;
-			gc.Gradient = p as GradientInfo;
-			if (gc.Gradient != null || !(p is CGPattern))
+			gc.CurrentStatus.Pattern = p;
+		}
+
+		void SetupPattern (CGContextBackend gc)
+		{
+			gc.Context.SetPatternPhase (new SizeF (0, 0));
+
+			if (gc.CurrentStatus.Pattern is GradientInfo)
 				return;
-			CGContext ctx = gc.Context;
-			CGPattern pattern = (CGPattern)p;
-			float[] alpha = new[] { 1.0f };
-			ctx.SetFillColorSpace (Util.PatternColorSpace);
-			ctx.SetStrokeColorSpace (Util.PatternColorSpace);
-			ctx.SetFillPattern (pattern, alpha);
-			ctx.SetStrokePattern (pattern, alpha);
+
+			if (gc.CurrentStatus.Pattern is ImagePatternInfo) {
+
+				var pi = (ImagePatternInfo) gc.CurrentStatus.Pattern;
+				RectangleF bounds = new RectangleF (PointF.Empty, new SizeF (pi.Image.Width, pi.Image.Height));
+				var t = CGAffineTransform.Multiply (CGAffineTransform.MakeScale (1f, -1f), gc.Context.GetCTM ());
+				var pattern = new CGPattern (bounds, t, bounds.Width, bounds.Height,
+				                      CGPatternTiling.ConstantSpacing, true, c => c.DrawImage (bounds, pi.Image));
+
+				CGContext ctx = gc.Context;
+				float[] alpha = new[] { 1.0f };
+				ctx.SetFillColorSpace (Util.PatternColorSpace);
+				ctx.SetStrokeColorSpace (Util.PatternColorSpace);
+				ctx.SetFillPattern (pattern, alpha);
+				ctx.SetStrokePattern (pattern, alpha);
+			}
 		}
 		
 		public override void SetFont (object backend, Xwt.Drawing.Font font)

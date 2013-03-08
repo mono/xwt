@@ -566,6 +566,32 @@ namespace Xwt
 
 		#endregion
 
+		#region Curves
+
+		[Test]
+		public void Curve ()
+		{
+			InitBlank (70,70);
+			context.MoveTo (5, 35);
+			context.CurveTo (35, 5, 35, 65, 65, 35);
+			context.Stroke ();
+			CheckImage ("Curve.png");
+		}
+		
+		[Test]
+		public void CurvePathConnection ()
+		{
+			InitBlank (70,70);
+			context.MoveTo (0, 0);
+			context.LineTo (5, 35);
+			context.CurveTo (35, 5, 35, 65, 65, 35);
+			context.LineTo (70, 70);
+			context.Stroke ();
+			CheckImage ("CurvePathConnection.png");
+		}
+
+		#endregion
+
 		#region Save/Restore
 
 		[Test]

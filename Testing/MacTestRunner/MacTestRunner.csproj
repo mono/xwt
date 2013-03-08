@@ -167,5 +167,23 @@
     <EmbeddedResource Include="ReferenceImages\RadialGradientSmall.png">
       <LogicalName>RadialGradientSmall.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternInCircle.png">
+      <LogicalName>ImagePatternInCircle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternInTriangle.png">
+      <LogicalName>ImagePatternInTriangle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\Curve.png">
+      <LogicalName>Curve.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\CurvePathConnection.png">
+      <LogicalName>CurvePathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithRotateTransform.png">
+      <LogicalName>ImagePatternWithRotateTransform.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithScaleTransform.png">
+      <LogicalName>ImagePatternWithScaleTransform.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

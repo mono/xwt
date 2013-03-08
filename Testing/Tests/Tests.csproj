@@ -211,6 +211,12 @@
     <EmbeddedResource Include="ReferenceImages\SaveRestoreTransform.png">
       <LogicalName>SaveRestoreTransform.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\Curve.png">
+      <LogicalName>Curve.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\CurvePathConnection.png">
+      <LogicalName>CurvePathConnection.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
