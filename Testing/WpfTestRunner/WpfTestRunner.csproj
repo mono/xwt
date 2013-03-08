@@ -99,6 +99,17 @@
   <ItemGroup>
     <EmbeddedResource Include="ReferenceImages\RectanglePathConnection.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\ArcClosePath.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\CurveClosePath.png" />
+    <EmbeddedResource Include="ReferenceImages\CurveFillWithHoles.png" />
+    <EmbeddedResource Include="ReferenceImages\LineClosePath.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeClosePath.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

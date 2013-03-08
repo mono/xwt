@@ -122,8 +122,12 @@ namespace Xwt.WPFBackend
 		public override void ClosePath (object backend)
 		{
 			var c = (DrawingContext)backend;
-			if (c.LastFigureStart != c.EndPoint)
+			if (c.LastFigureStart != c.EndPoint) {
+				var p = c.LastFigureStart;
 				c.ConnectToLastFigure (c.LastFigureStart, true);
+				c.Path.IsClosed = true;
+				c.NewFigure (p);
+			}
 		}
 
 		public override void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)

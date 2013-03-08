@@ -214,7 +214,7 @@ namespace Xwt.WPFBackend
 			if (EndPoint != p) {
 				var pathIsOpen = Path.Segments.Count != 0 || geometry.Figures.Count > 1 || positionSet;
 				if (pathIsOpen) {
-					LastFigureStart = p;
+				//	LastFigureStart = p;
 					Path.Segments.Add (new LineSegment (p, stroke));
 				}
 				else
