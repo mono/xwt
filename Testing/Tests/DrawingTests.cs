@@ -73,6 +73,18 @@ namespace Xwt
 			context.Stroke ();
 			CheckImage ("Line.png");
 		}
+		
+		[Test]
+		public void LineClosePath ()
+		{
+			InitBlank ();
+			context.MoveTo (1.5, 1.5);
+			context.LineTo (20.5, 1.5);
+			context.LineTo (20.5, 20.5);
+			context.ClosePath ();
+			context.Stroke ();
+			CheckImage ("LineClosePath.png");
+		}
 
 		[Test]
 		public void LineWidth ()
@@ -232,6 +244,19 @@ namespace Xwt
 			context.Stroke ();
 			CheckImage ("ArcPathConnection.png");
 		}
+		
+		[Test]
+		public void ArcClosePath ()
+		{
+			InitBlank ();
+			context.Arc (25, 25, 20.5, 0, 90);
+			context.Arc (25, 35, 10.5, 90, 180);
+			context.ClosePath ();
+			context.SetColor (Colors.Black);
+			context.Stroke ();
+			
+			CheckImage ("ArcClosePath.png");
+		}
 
 		#endregion
 
@@ -303,6 +328,19 @@ namespace Xwt
 			context.SetColor (Colors.Black);
 			context.Stroke ();
 			CheckImage ("ArcNegativePathConnection.png");
+		}
+		
+		[Test]
+		public void ArcNegativeClosePath ()
+		{
+			InitBlank ();
+			context.ArcNegative (25, 25, 20.5, 0, 180);
+			context.ArcNegative (15, 25, 10.5, 180, 90);
+			context.ClosePath ();
+			context.SetColor (Colors.Black);
+			context.Stroke ();
+			
+			CheckImage ("ArcNegativeClosePath.png");
 		}
 
 		#endregion
@@ -599,6 +637,39 @@ namespace Xwt
 			context.Stroke ();
 			CheckImage ("CurvePathConnection.png");
 		}
+
+		[Test]
+		public void CurveFillWithHoles ()
+		{
+			InitBlank (70, 70);
+			// Curve 1
+			context.MoveTo (5, 35);
+			context.CurveTo (20, 0, 50, 0, 60, 25);
+
+			// curve2 with lineTo; curve1 is closed
+			context.LineTo (5, 5);
+			context.CurveTo (20, 30, 50, 30, 60, 5);
+
+			context.ClosePath ();
+			context.SetColor (Colors.Black);
+			context.StrokePreserve ();
+			context.SetColor (Colors.LightGray);
+			context.Fill ();
+			CheckImage ("CurveFillWithHoles.png");
+		}
+		
+		[Test]
+		public void CurveClosePath ()
+		{
+			InitBlank (100,100);
+			context.MoveTo (5, 20);
+			context.CurveTo (35, 5, 35, 65, 65, 20);
+			context.CurveTo (70, 25, 60, 40, 45, 65);
+			context.ClosePath ();
+			context.Stroke ();
+			CheckImage ("CurveClosePath.png");
+		}
+
 
 		#endregion
 
