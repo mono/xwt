@@ -35,6 +35,7 @@ namespace Xwt
 	{
 		internal static string ProjectReferenceImageDir;
 		public static string ProjectCustomReferenceImageDir;
+		public static bool RecheckAll;
 
 		internal static string FailedImageCacheDir;
 		
@@ -60,13 +61,15 @@ namespace Xwt
 		static Image TryLoadImage (System.Reflection.Assembly asm, string name)
 		{
 			try {
-				return Image.FromResource (asm, name);
+				if (asm.GetManifestResourceInfo (name) != null)
+					return Image.FromResource (asm, name);
 			}
 			catch {
 			}
 
 			try {
-				return Image.FromResource (asm, "WpfTestRunner.ReferenceImages." + name);
+				if (asm.GetManifestResourceInfo ("WpfTestRunner.ReferenceImages." + name) != null)
+					return Image.FromResource (asm, "WpfTestRunner.ReferenceImages." + name);
 			}
 			catch {
 			}
@@ -75,9 +78,11 @@ namespace Xwt
 		
 		public static void CheckImage (string refImageName, Image img)
 		{
-			Image refImage = TryLoadImage (System.Reflection.Assembly.GetEntryAssembly (), refImageName);
+			Image coreRefImage = TryLoadImage (typeof (ReferenceImageManager).Assembly, refImageName);
+
+			Image refImage = !RecheckAll ? TryLoadImage (System.Reflection.Assembly.GetEntryAssembly (), refImageName) : null;
 			if (refImage == null)
-				refImage = Image.FromResource (typeof(ReferenceImageManager).Assembly, refImageName);
+				refImage = coreRefImage;
 			
 			if (refImage == null) {
 				ImageFailures.Add (new FailedImageInfo () {
@@ -90,6 +95,12 @@ namespace Xwt
 			}
 
 			var diff = DiffImages (img, refImage);
+			if (diff != null && refImage != coreRefImage) {
+				// Maybe the original image has changed
+				refImage = coreRefImage;
+				diff = DiffImages (img, refImage);
+			}
+
 			if (diff != null) {
 				bool knownFailure = false;
 				var failedImageFile = Path.Combine (FailedImageCacheDir, refImageName);
