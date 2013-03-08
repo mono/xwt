@@ -47,6 +47,10 @@ namespace Xwt.WPFBackend
 			};
 		}
 
+		public override void DisposeLinear (object backend)
+		{
+		}
+
 		public override object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
 		{
 			return new RadialGradientBrush () {
@@ -56,6 +60,10 @@ namespace Xwt.WPFBackend
 				RadiusY = radius1,
 				MappingMode = BrushMappingMode.Absolute
 			};
+		}
+
+		public override void DisposeRadial (object backend)
+		{
 		}
 
 		public override void AddColorStop (object backend, double position, Color color)

@@ -45,5 +45,9 @@ namespace Xwt.WPFBackend
 				Viewport = new System.Windows.Rect (0, 0, bmp.Width, bmp.Height)
 			};
 		}
+
+		public override void Dispose (object img)
+		{
+		}
 	}
 }

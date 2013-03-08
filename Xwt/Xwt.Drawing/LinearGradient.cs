@@ -35,6 +35,11 @@ namespace Xwt.Drawing
 		{
 			Backend = ToolkitEngine.GradientBackendHandler.CreateLinear (xStart, yStart, xEnd, yEnd);
 		}
+
+		public override void Dispose ()
+		{
+			ToolkitEngine.GradientBackendHandler.DisposeLinear (Backend);
+		}
 	}
 }
 

@@ -36,12 +36,21 @@ namespace Xwt.Mac
 		public override object Create (object img)
 		{
 			NSImage nimg = (NSImage) img;
-			RectangleF bounds = new RectangleF (PointF.Empty, nimg.Size);
 			RectangleF empty = RectangleF.Empty;
 			CGImage cgimg = nimg.AsCGImage (ref empty, null, null);
-			return new CGPattern (bounds, CGAffineTransform.MakeScale (1f, -1f), bounds.Width, bounds.Height,
-			                      CGPatternTiling.ConstantSpacing, true, ctx => ctx.DrawImage (bounds, cgimg));
+			return new ImagePatternInfo () {
+				Image = cgimg
+			};
 		}
+
+		public override void Dispose (object img)
+		{
+		}
+	}
+
+	class ImagePatternInfo
+	{
+		public CGImage Image;
 	}
 }
 

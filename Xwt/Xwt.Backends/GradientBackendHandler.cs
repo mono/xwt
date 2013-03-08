@@ -32,7 +32,9 @@ namespace Xwt.Backends
 	public abstract class GradientBackendHandler: BackendHandler
 	{
 		public abstract object CreateLinear (double x0, double y0, double x1, double y1);
+		public abstract void DisposeLinear (object backend);
 		public abstract object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1);
+		public abstract void DisposeRadial (object backend);
 		public abstract void AddColorStop (object backend, double position, Color color);
 	}
 }
