@@ -37,11 +37,10 @@ namespace Xwt.WPFBackend
 
 		protected override void OnRender (System.Windows.Media.DrawingContext dc)
 		{
+			base.OnRender (dc);
 			var render = RenderAction;
 			if (render != null)
 				render (dc);
-
-			base.OnRender (dc);
 		}
 
 		public WidgetBackend Backend
