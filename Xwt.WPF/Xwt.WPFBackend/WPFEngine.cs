@@ -84,6 +84,7 @@ namespace Xwt.WPFBackend
 			RegisterBackend<IPanedBackend, PanedBackend> ();
 			RegisterBackend<IScrollAdjustmentBackend, ScrollAdjustmentBackend> ();
 			RegisterBackend<IOpenFileDialogBackend, OpenFileDialogBackend> ();
+			RegisterBackend<ISaveFileDialogBackend, SaveFileDialogBackend> ();
 			RegisterBackend<ISelectFolderDialogBackend, SelectFolderDialogBackend> ();
 			RegisterBackend<IAlertDialogBackend, AlertDialogBackend> ();
 			RegisterBackend<ImageBuilderBackendHandler, WpfImageBuilderBackendHandler> ();
