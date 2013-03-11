@@ -69,6 +69,7 @@
     <Compile Include="Xwt.WPFBackend\DrawingContext.cs" />
     <Compile Include="Xwt.WPFBackend\ContextBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\ExRichTextBox.cs" />
+    <Compile Include="Xwt.WPFBackend\SaveFileDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\LinkLabelBackend.cs" />
     <Compile Include="Xwt.WPFBackend\PopoverBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ProgressBarBackend.cs" />
