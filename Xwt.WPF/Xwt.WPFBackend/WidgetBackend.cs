@@ -465,7 +465,7 @@ namespace Xwt.WPFBackend
 						Widget.KeyDown += WidgetKeyDownHandler;
 						break;
 					case WidgetEvent.KeyReleased:
-						Widget.KeyDown += WidgetKeyUpHandler;
+						Widget.KeyUp += WidgetKeyUpHandler;
 						break;
 					case WidgetEvent.ButtonPressed:
 						Widget.MouseDown += WidgetMouseDownHandler;
