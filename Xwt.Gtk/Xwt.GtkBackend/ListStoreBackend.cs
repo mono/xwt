@@ -37,7 +37,20 @@ namespace Xwt.GtkBackend
 		public override Gtk.TreeModel InitializeModel (Type[] columnTypes)
 		{
 			this.columnTypes = columnTypes;
-			return new Gtk.ListStore (columnTypes);
+			var store = new Gtk.ListStore (columnTypes);
+			store.RowInserted += (o, args) => {
+				if (RowInserted != null)
+					RowInserted (this, new ListRowEventArgs (args.Path.Indices[0]));
+			};
+			store.RowDeleted += (o, args) => {
+				if (RowDeleted != null)
+					RowDeleted (this, new ListRowEventArgs (args.Path.Indices[0]));
+			};
+			store.RowChanged += (o, args) => {
+				if (RowChanged != null)
+					RowChanged (this, new ListRowEventArgs (args.Path.Indices[0]));
+			};
+			return store;
 		}
 		
 		public event EventHandler<ListRowEventArgs> RowInserted;

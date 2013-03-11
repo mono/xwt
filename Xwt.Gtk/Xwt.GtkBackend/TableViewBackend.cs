@@ -125,7 +125,7 @@ namespace Xwt.GtkBackend
 		void MapColumn (ListViewColumn col, Gtk.TreeViewColumn tc)
 		{
 			foreach (var v in col.Views) {
-				CellUtil.CreateCellRenderer (this, tc, v);
+				CellUtil.CreateCellRenderer (this, tc, v, Widget.Model);
 			}
 		}
 		

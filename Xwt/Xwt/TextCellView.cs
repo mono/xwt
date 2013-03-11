@@ -62,5 +62,10 @@ namespace Xwt
 				text = value;
 			}
 		}
+
+		public bool Editable {
+			get;
+			set;
+		}
 	}
 }

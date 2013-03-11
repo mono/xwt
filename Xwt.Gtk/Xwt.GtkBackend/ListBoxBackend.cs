@@ -58,7 +58,7 @@ namespace Xwt.GtkBackend
 		{
 			theColumn.Clear ();
 			foreach (var v in views)
-				CellUtil.CreateCellRenderer (this, theColumn, v);
+				CellUtil.CreateCellRenderer (this, theColumn, v, Widget.Model);
 		}
 		
 		public override void EnableEvent (object eventId)

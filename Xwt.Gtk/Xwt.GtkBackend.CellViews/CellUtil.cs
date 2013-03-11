@@ -33,10 +33,18 @@ namespace Xwt.GtkBackend
 {
 	public static class CellUtil
 	{
-		public static Gtk.CellRenderer CreateCellRenderer (ICellRendererTarget col, object target, CellView view)
+		public static Gtk.CellRenderer CreateCellRenderer (ICellRendererTarget col, object target, CellView view, Gtk.TreeModel model)
 		{
 			if (view is TextCellView) {
 				Gtk.CellRendererText cr = new Gtk.CellRendererText ();
+				if (((TextCellView)view).Editable) {
+					cr.Editable = true;
+					cr.Edited += (o, args) => {
+						Gtk.TreeIter iter;
+						if (model.GetIterFromString (out iter, args.Path))
+							model.SetValue (iter, ((TextCellView)view).TextField.Index, args.NewText);
+					};
+				}
 				col.PackStart (target, cr, false);
 				col.AddAttribute (target, cr, "text", ((TextCellView)view).TextField.Index);
 				return cr;
