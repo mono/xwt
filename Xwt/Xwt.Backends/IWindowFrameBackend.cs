@@ -67,6 +67,12 @@ namespace Xwt.Backends
 		/// deiconifying it, moving it to the current desktop, and/or giving it the keyboard focus
 		/// </summary>
 		void Present ();
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this window is in full screen mode
+		/// </summary>
+		/// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
+		bool FullScreen { get; set; }
 	}
 	
 	public interface IWindowFrameEventSink

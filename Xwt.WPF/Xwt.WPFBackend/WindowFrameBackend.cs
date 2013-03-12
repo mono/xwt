@@ -141,6 +141,15 @@ namespace Xwt.WPFBackend
 			window.Activate ();
 		}
 
+		
+		bool IWindowFrameBackend.FullScreen {
+			get {
+				return false;
+			}
+			set {
+			}
+		}
+
 		public void Move (double x, double y)
 		{
 			var value = ToNonClientRect (new Rectangle (x, y, 1, 1));

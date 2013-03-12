@@ -180,6 +180,22 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		bool fullScreen;
+		bool IWindowFrameBackend.FullScreen {
+			get {
+				return fullScreen;
+			}
+			set {
+				if (value != fullScreen) {
+					fullScreen = value;
+					if (fullScreen)
+						Window.Fullscreen ();
+					else
+						Window.Unfullscreen ();
+				}
+			}
+		}
+
 		public void SetIcon(object backendImage)
 		{
 			Window.Icon = backendImage as Gdk.Pixbuf;

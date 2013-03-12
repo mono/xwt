@@ -239,6 +239,15 @@ namespace Xwt
 			set { Backend.Visible = value; }
 		}
 		
+		/// <summary>
+		/// Gets or sets a value indicating whether this window is in full screen mode
+		/// </summary>
+		/// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
+		public bool FullScreen {
+			get { return Backend.FullScreen; }
+			set { Backend.FullScreen = value; }
+		}
+
 		public void Show ()
 		{
 			Visible = true;

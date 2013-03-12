@@ -129,6 +129,28 @@ namespace Xwt.Mac
 		{
 		}
 
+		public bool FullScreen {
+			get {
+				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
+					return false;
+
+				return (StyleMask & NSWindowStyle.FullScreenWindow) != 0;
+
+			}
+			set {
+				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
+					return;
+
+				if (value != ((StyleMask & NSWindowStyle.FullScreenWindow) != 0)) {
+					//HACK: workaround for MonoMac not allowing null as argument
+					MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr (
+						Handle,
+						MonoMac.ObjCRuntime.Selector.GetHandle ("toggleFullScreen:"),
+						IntPtr.Zero);
+				}			
+			}
+		}
+
 		protected virtual NSView GetContentView ()
 		{
 			return ContentView;
