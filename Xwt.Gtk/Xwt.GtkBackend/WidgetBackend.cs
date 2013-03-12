@@ -606,12 +606,16 @@ namespace Xwt.GtkBackend
 				Widget.SizeAllocated -= HandleWidgetSizeAllocated;;
 			}
 		}
-		
+
+		Gdk.Rectangle lastAllocation;
 		void HandleWidgetBoundsChanged (object o, Gtk.SizeAllocatedArgs args)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnBoundsChanged ();
-			});
+			if (Widget.Allocation != lastAllocation) {
+				lastAllocation = Widget.Allocation;
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnBoundsChanged ();
+				});
+			}
 		}
 		
 		enum SizeCheckStep
