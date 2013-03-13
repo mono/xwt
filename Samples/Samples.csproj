@@ -11,22 +11,22 @@
     <AssemblyName>Samples</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>True</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>False</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -62,12 +62,12 @@
     </Compile>
     <Compile Include="MainWindow.cs">
       <SubType>Component</SubType>
-      <DeployService-Deploy>True</DeployService-Deploy>
+      <DeployService-Deploy>true</DeployService-Deploy>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="App.cs">
-      <DeployService-Deploy>True</DeployService-Deploy>
-      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
+      <DeployService-Deploy>true</DeployService-Deploy>
+      <Gettext-ScanForTranslations>false</Gettext-ScanForTranslations>
     </Compile>
     <Compile Include="MonoDevelop.Components.Chart\Axis.cs" />
     <Compile Include="MonoDevelop.Components.Chart\AxisDimension.cs" />
@@ -172,6 +172,7 @@
     </Compile>
     <Compile Include="Samples\ScreensSample.cs" />
     <Compile Include="Samples\ImageScaling.cs" />
+    <Compile Include="Samples\PasswordEntries.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -189,7 +190,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Samples\cow.jpg">
       <LogicalName>cow.jpg</LogicalName>
-      <DeployService-Deploy>True</DeployService-Deploy>
+      <DeployService-Deploy>true</DeployService-Deploy>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>

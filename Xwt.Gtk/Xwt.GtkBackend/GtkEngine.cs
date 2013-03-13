@@ -105,6 +105,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IEmbeddedWidgetBackend, EmbeddedWidgetBackend> ();
 			RegisterBackend<ISegmentedButtonBackend, SegmentedButtonBackend> ();
 			RegisterBackend<ISliderBackend, SliderBackend> ();
+			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
 		}
 
 		public override void RunApplication ()
