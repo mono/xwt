@@ -72,6 +72,7 @@ namespace Xwt.Mac
 			eventSink = (IWidgetEventSink) sink;
 			Initialize ();
 			ResetFittingSize ();
+			canGetFocus = Widget.AcceptsFirstResponder ();
 		}
 
 		// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
@@ -160,8 +161,12 @@ namespace Xwt.Mac
 		}
 
 		public virtual bool CanGetFocus {
-			get { return canGetFocus && Widget.AcceptsFirstResponder (); }
-			set { canGetFocus = value; }
+			get { return canGetFocus; }
+			set {
+				canGetFocus = value;
+				if (!Widget.AcceptsFirstResponder ())
+					canGetFocus = false;
+			}
 		}
 		
 		public virtual bool HasFocus {

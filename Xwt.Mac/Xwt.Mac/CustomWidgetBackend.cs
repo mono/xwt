@@ -81,6 +81,11 @@ namespace Xwt.Mac
 			}
 		}
 
+		public override bool AcceptsFirstResponder ()
+		{
+			return Backend.CanGetFocus;
+		}
+
 		public override void DrawRect (System.Drawing.RectangleF dirtyRect)
 		{
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
