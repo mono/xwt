@@ -39,16 +39,19 @@ namespace Xwt.GtkBackend
 			entryBackend = new CustomComboEntryBackend ((Gtk.Entry)c.Child);
 			return c;
 		}
-		
-		public override void Initialize ()
+
+		// Setting the text column to the used cell end up with a Gtk+ warning
+		// Gtk-CRITICAL **: gtk_cell_layout_set_attributes: assertion `GTK_IS_CELL_RENDERER (cell)' failed
+		/*public override void Initialize ()
 		{
 			base.Initialize ();
 			((Gtk.ComboBoxEntry)Widget).TextColumn = 0;
-		}
+		}*/
 		
 		public void SetTextColumn (int column)
 		{
-			((Gtk.ComboBoxEntry)Widget).TextColumn = column;
+			if (column != 0 || (column == 0 && ((Gtk.ComboBoxEntry)Widget).TextColumn != -1))
+				((Gtk.ComboBoxEntry)Widget).TextColumn = column;
 		}
 		
 		public ITextEntryBackend TextEntryBackend {
