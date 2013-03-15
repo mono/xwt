@@ -175,7 +175,7 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public void SetFocus ()
+		public virtual void SetFocus ()
 		{
 			if (Widget.Window != null && CanGetFocus)
 				Widget.Window.MakeFirstResponder (Widget);

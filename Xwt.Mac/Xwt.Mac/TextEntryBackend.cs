@@ -93,6 +93,11 @@ namespace Xwt.Mac
 				((NSTextFieldCell) Widget.Cell).PlaceholderString = value;
 			}
 		}
+
+		public override void SetFocus ()
+		{
+			Widget.BecomeFirstResponder ();
+		}
 		#endregion
 	}
 	
