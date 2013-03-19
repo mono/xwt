@@ -117,6 +117,8 @@ namespace Xwt
 				return "Xwt.Mac.MacEngine, Xwt.Mac, Version=" + version;
 			case ToolkitType.Wpf:
 				return "Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=" + version;
+			case ToolkitType.XamMac:
+				return "Xwt.Mac.MacEngine, Xwt.XamMac, Version=" + version;
 			default:
 				throw new ArgumentException ("Invalid toolkit type");
 			}

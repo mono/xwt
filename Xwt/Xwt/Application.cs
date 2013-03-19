@@ -234,7 +234,8 @@ namespace Xwt
 	{
 		Gtk,
 		Cocoa,
-		Wpf
+		Wpf,
+		XamMac
 	}
 }
 
