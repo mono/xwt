@@ -434,6 +434,7 @@ namespace Xwt.GtkBackend
 				eventBox = new Gtk.EventBox ();
 				eventBox.Visible = Widget.Visible;
 				eventBox.Sensitive = Widget.Sensitive;
+				eventBox.VisibleWindow = false;
 				if (alignment != null) {
 					alignment.Remove (alignment.Child);
 					alignment.Add (eventBox);
