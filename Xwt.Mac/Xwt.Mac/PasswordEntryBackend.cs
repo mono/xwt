@@ -32,15 +32,15 @@ namespace Xwt.Mac
 {
 	public class PasswordEntryBackend: ViewBackend<NSSecureTextField,IPasswordEntryEventSink>, IPasswordEntryBackend
 	{
-        public PasswordEntryBackend ()
+		public PasswordEntryBackend ()
 		{
 		}
 
-        public override void Initialize ()
-        {
-            base.Initialize ();
-            ViewObject = new CustomSecureTextField (EventSink, ApplicationContext);
-        }
+		public override void Initialize ()
+		{
+			base.Initialize ();
+			ViewObject = new CustomSecureTextField (EventSink, ApplicationContext);
+		}
 
 		protected override Size GetNaturalSize ()
 		{
@@ -63,7 +63,7 @@ namespace Xwt.Mac
 		IPasswordEntryEventSink eventSink;
 		ApplicationContext context;
 		
-        public CustomSecureTextField (IPasswordEntryEventSink eventSink, ApplicationContext context)
+		public CustomSecureTextField (IPasswordEntryEventSink eventSink, ApplicationContext context)
 		{
 			this.context = context;
 			this.eventSink = eventSink;

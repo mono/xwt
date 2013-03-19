@@ -1,4 +1,4 @@
-﻿// 
+// 
 // PasswordEntryBackend.cs
 //  
 // Author:
@@ -37,7 +37,7 @@ namespace Xwt.WPFBackend
 	public class PasswordEntryBackend
 		: WidgetBackend, IPasswordEntryBackend
 	{
-        public PasswordEntryBackend()
+		public PasswordEntryBackend()
 		{
 			Widget = new PasswordBox();
 		}
@@ -69,16 +69,16 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-	    public override void DisableEvent (object eventId)
+		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
 
-            if (eventId is PasswordEntryEvent)
+			if (eventId is PasswordEntryEvent)
 			{
-                switch ((PasswordEntryEvent)eventId)
+				switch ((PasswordEntryEvent)eventId)
 				{
-                    case PasswordEntryEvent.Changed:
-                        PasswordBox.PasswordChanged -= OnPasswordChanged;
+					case PasswordEntryEvent.Changed:
+						PasswordBox.PasswordChanged -= OnPasswordChanged;
 						break;
 				}
 			}
@@ -86,14 +86,14 @@ namespace Xwt.WPFBackend
 
 		protected PasswordBox PasswordBox
 		{
-            get { return (PasswordBox)Widget; }
+			get { return (PasswordBox)Widget; }
 		}
 
 		protected new IPasswordEntryEventSink EventSink {
-            get { return (IPasswordEntryEventSink)base.EventSink; }
+			get { return (IPasswordEntryEventSink)base.EventSink; }
 		}
 
-        private void OnPasswordChanged(object s, RoutedEventArgs e)
+		private void OnPasswordChanged(object s, RoutedEventArgs e)
 		{
 			Context.InvokeUserCode (EventSink.OnChanged);
 		}

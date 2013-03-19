@@ -98,7 +98,7 @@ namespace Xwt.WPFBackend
 			RegisterBackend<ILinkLabelBackend, LinkLabelBackend> ();
 			RegisterBackend<ISpinnerBackend, SpinnerBackend> ();
 			RegisterBackend<DesktopBackend, WpfDesktopBackend> ();
-            RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend>();
+			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend>();
 		}
 
 		public override void DispatchPendingEvents()
