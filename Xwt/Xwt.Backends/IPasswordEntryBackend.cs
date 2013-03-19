@@ -1,10 +1,10 @@
 // 
-// ImagePatternBackendHandler.cs
+// IPasswordEntryBackend.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Henrique Esteves <henriquemotaesteves@gmail.com>
 // 
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2012 Henrique Esteves
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Drawing;
-using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.CoreGraphics;
 
-namespace Xwt.Mac
+namespace Xwt.Backends
 {
-	public class MacImagePatternBackendHandler: ImagePatternBackendHandler
+	public interface IPasswordEntryBackend: IWidgetBackend
 	{
-		public override object Create (object img)
-		{
-			NSImage nimg = (NSImage) img;
-			RectangleF empty = RectangleF.Empty;
-			CGImage cgimg = nimg.AsCGImage (empty, null, null);
-			return new ImagePatternInfo () {
-				Image = cgimg
-			};
-		}
-
-		public override void Dispose (object img)
-		{
-		}
+		string Password { get; set; }
 	}
 
-	class ImagePatternInfo
+	public interface IPasswordEntryEventSink: IWidgetEventSink
 	{
-		public CGImage Image;
+		void OnChanged ();
+	}
+	
+	public enum PasswordEntryEvent
+	{
+		Changed
 	}
 }
 

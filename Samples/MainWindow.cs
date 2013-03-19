@@ -109,6 +109,7 @@ namespace Samples
 			AddSample (null, "TreeView", typeof(TreeViews));
 			AddSample (null, "WidgetEvents", typeof(WidgetEvents));
 			AddSample (null, "Windows", typeof(Windows));
+			AddSample (null, "Password Entry", typeof(PasswordEntries));
 			
 			samplesTree.DataSource = store;
 			

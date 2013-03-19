@@ -148,6 +148,7 @@ based on the contents of the childrens on it.
             * HSeparator
         * Table (Container)
         * TextEntry
+        * PasswordEntry
         * TreeView
     * WindowFrame
         * Window

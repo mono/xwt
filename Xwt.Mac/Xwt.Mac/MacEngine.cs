@@ -108,6 +108,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IMenuButtonBackend, MenuButtonBackend> ();
 			RegisterBackend <Xwt.Backends.IListBoxBackend, ListBoxBackend> ();
 			RegisterBackend <Xwt.Backends.IDialogBackend, DialogBackend> ();
+			RegisterBackend <Xwt.Backends.IPasswordEntryBackend, PasswordEntryBackend> ();
 		}
 
 		public override void RunApplication ()

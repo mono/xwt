@@ -112,7 +112,7 @@ namespace Xwt.Mac
 		{
 			// Unfortunately, cocoa calls MouseUp even if the mouse is not still over this control so we have to check that
 			var location = ConvertPointFromView (theEvent.LocationInWindow, null);
-			if (Clicked != null && IsMouseInRect (location, Cell.DrawingRectForBounds (Bounds)))
+			if (Clicked != null && MouseinRect (location, Cell.DrawingRectForBounds (Bounds)))
 				Clicked (this, EventArgs.Empty);
 		}
 	}

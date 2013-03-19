@@ -1,10 +1,10 @@
 // 
-// ImagePatternBackendHandler.cs
+// PasswordEntries.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Henrique Esteves <henriquemotaesteves@gmail.com>
 // 
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2012 Henrique Esteves
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Drawing;
-using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.CoreGraphics;
+using Xwt;
 
-namespace Xwt.Mac
+namespace Samples
 {
-	public class MacImagePatternBackendHandler: ImagePatternBackendHandler
+	public class PasswordEntries: VBox
 	{
-		public override object Create (object img)
+		public PasswordEntries ()
 		{
-			NSImage nimg = (NSImage) img;
-			RectangleF empty = RectangleF.Empty;
-			CGImage cgimg = nimg.AsCGImage (empty, null, null);
-			return new ImagePatternInfo () {
-				Image = cgimg
+			PasswordEntry passwordEntry = new PasswordEntry ();
+			PackStart (passwordEntry);
+
+			Label label = new Label ();
+			PackStart (label);
+
+			passwordEntry.Changed += delegate {
+				label.Text = "Password: " + passwordEntry.Password;
 			};
 		}
-
-		public override void Dispose (object img)
-		{
-		}
-	}
-
-	class ImagePatternInfo
-	{
-		public CGImage Image;
 	}
 }
 
