@@ -36,7 +36,7 @@ namespace Xwt.GtkBackend
 	{
 		public BoxBackend ()
 		{
-			Widget = new CustomContainer () { Backend = this };
+			Widget = new CustomContainer (this);
 			Widget.Show ();
 		}
 		
@@ -71,7 +71,7 @@ namespace Xwt.GtkBackend
 	
 	class CustomContainer: Gtk.Container, IGtkContainer
 	{
-		public BoxBackend Backend;
+		public WidgetBackend Backend;
 		public bool IsReallocating;
 		Dictionary<Gtk.Widget, WidgetData> children = new Dictionary<Gtk.Widget, WidgetData> ();
 		
@@ -81,8 +81,9 @@ namespace Xwt.GtkBackend
 			public Widget Widget;
 		}
 		
-		public CustomContainer ()
+		public CustomContainer (WidgetBackend backend)
 		{
+			Backend = backend;
 			GtkWorkarounds.FixContainerLeak (this);
 			WidgetFlags |= Gtk.WidgetFlags.NoWindow;
 		}
