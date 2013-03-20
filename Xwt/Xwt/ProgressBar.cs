@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
+using System.ComponentModel;
 
 namespace Xwt
 {
@@ -48,7 +49,8 @@ namespace Xwt
 		IProgressBarBackend Backend {
 			get { return (IProgressBarBackend) BackendHost.Backend; }
 		}
-		
+
+		[DefaultValue (0d)]
 		public double Fraction {
 			get { return fraction; }
 			set {
@@ -62,6 +64,7 @@ namespace Xwt
 			}
 		}
 
+		[DefaultValue (false)]
 		public bool Indeterminate {
 			get { return indeterminate; }
 			set {

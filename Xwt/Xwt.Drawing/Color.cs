@@ -25,12 +25,19 @@
 // THE SOFTWARE.
 
 using System;
+using System.ComponentModel;
+using System.Windows.Markup;
 
 namespace Xwt.Drawing
 {
+	[TypeConverter (typeof(ColorValueConverter))]
+	[ValueSerializer (typeof(ColorValueSerializer))]
+	[Serializable]
 	public struct Color
 	{
 		double r, g, b, a;
+
+		[NonSerialized]
 		HslColor hsl;
 		
 		public double Red {
@@ -252,6 +259,47 @@ namespace Xwt.Drawing
 		public override string ToString ()
 		{
 			return string.Format ("[Color: Red={0}, Green={1}, Blue={2}, Alpha={3}]", Red, Green, Blue, Alpha);
+		}
+	}
+
+	class ColorValueConverter: TypeConverter
+	{
+		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+		{
+			return destinationType == typeof(string);
+		}
+		
+		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
+		{
+			return sourceType == typeof(string);
+		}
+	}
+	
+	class ColorValueSerializer: ValueSerializer
+	{
+		public override bool CanConvertFromString (string value, IValueSerializerContext context)
+		{
+			return true;
+		}
+		
+		public override bool CanConvertToString (object value, IValueSerializerContext context)
+		{
+			return true;
+		}
+		
+		public override string ConvertToString (object value, IValueSerializerContext context)
+		{
+			Color s = (Color) value;
+			return "#" + ((int)(s.Red * 255)).ToString ("x2") + ((int)(s.Green * 255)).ToString ("x2") + ((int)(s.Blue * 255)).ToString ("x2") + ((int)(s.Alpha * 255)).ToString ("x2");
+		}
+		
+		public override object ConvertFromString (string value, IValueSerializerContext context)
+		{
+			Color c;
+			if (!Color.TryParse (value, out c))
+				return c;
+			else
+				throw new InvalidOperationException ("Could not parse color value: " + value);
 		}
 	}
 }

@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using System.ComponentModel;
 
 namespace Xwt
 {
@@ -40,6 +41,7 @@ namespace Xwt
 		{
 		}
 
+		[DefaultValue (false)]
 		public bool Animate {
 			get {
 				return Backend.IsAnimating;

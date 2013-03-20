@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using System.ComponentModel;
 
 
 namespace Xwt
@@ -77,6 +78,7 @@ namespace Xwt
 			get { return views; }
 		}
 		
+		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public ItemCollection Items {
 			get {
 				if (itemCollection == null) {
@@ -90,6 +92,7 @@ namespace Xwt
 			}
 		}
 		
+		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public IListDataSource ItemsSource {
 			get { return source; }
 			set {
@@ -118,12 +121,14 @@ namespace Xwt
 		{
 			OnPreferredSizeChanged ();
 		}
-		
+
+		[DefaultValue (-1)]
 		public int SelectedIndex {
 			get { return Backend.SelectedRow; }
 			set { Backend.SelectedRow = value; }
 		}
-		
+
+		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public object SelectedItem {
 			get {
 				if (Backend.SelectedRow == -1)
@@ -135,6 +140,7 @@ namespace Xwt
 			}
 		}
 		
+		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public string SelectedText {
 			get {
 				if (Backend.SelectedRow == -1)
@@ -146,6 +152,7 @@ namespace Xwt
 			}
 		}
 		
+		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public Func<int,bool> RowSeparatorCheck {
 			get; set;
 		}

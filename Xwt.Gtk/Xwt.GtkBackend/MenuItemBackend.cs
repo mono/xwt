@@ -89,7 +89,7 @@ namespace Xwt.GtkBackend
 
 		public string Label {
 			get {
-				return label.Text;
+				return label != null ? label.Text : "";
 			}
 			set {
 				label.Text = value;

@@ -28,6 +28,7 @@ using System;
 using Xwt.Drawing;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Xwt
 {
@@ -51,6 +52,7 @@ namespace Xwt
 		
 		public IDataField TextField { get; set; }
 
+		[DefaultValue (null)]
 		public string Text {
 			get {
 				if (TextField != null && DataSource != null)
@@ -63,6 +65,7 @@ namespace Xwt
 			}
 		}
 
+		[DefaultValue (false)]
 		public bool Editable {
 			get;
 			set;

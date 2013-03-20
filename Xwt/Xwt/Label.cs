@@ -27,6 +27,7 @@
 using System;
 using Xwt.Drawing;
 using Xwt.Backends;
+using System.ComponentModel;
 
 namespace Xwt
 {
@@ -45,7 +46,8 @@ namespace Xwt
 		{
 			Backend.Text = text;
 		}
-		
+
+		[DefaultValue ("")]
 		public string Text {
 			get { return Backend.Text; }
 			set {
@@ -58,7 +60,8 @@ namespace Xwt
 			get { return Backend.TextColor; }
 			set { Backend.TextColor = value; }
 		}
-		
+
+		[DefaultValue (Alignment.Start)]
 		public Alignment TextAlignment {
 			get { return Backend.TextAlignment; }
 			set {
@@ -67,6 +70,7 @@ namespace Xwt
 			}
 		}
 		
+		[DefaultValue (EllipsizeMode.None)]
 		public EllipsizeMode Ellipsize {
 			get { return Backend.Ellipsize; }
 			set {
@@ -75,6 +79,7 @@ namespace Xwt
 			}
 		}
 
+		[DefaultValue (WrapMode.None)]
 		public WrapMode Wrap {
 			get { return Backend.Wrap; }
 			set {

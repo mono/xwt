@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Drawing;
+using System.ComponentModel;
 
 namespace Xwt
 {
@@ -49,6 +50,7 @@ namespace Xwt
 		
 		public IDataField<Image> ImageField { get; set; }
 
+		[DefaultValue (null)]
 		public Image Image {
 			get { return GetValue (ImageField, image); }
 			set { image = value; }

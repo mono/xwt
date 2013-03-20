@@ -362,6 +362,7 @@ namespace Xwt
 			}
 		}
 
+		[DefaultValue (0d)]
 		public double MarginLeft {
 			get { return margin.Left; }
 			set {
@@ -370,6 +371,7 @@ namespace Xwt
 			}
 		}
 
+		[DefaultValue (0d)]
 		public double MarginRight {
 			get { return margin.Right; }
 			set {
@@ -378,6 +380,7 @@ namespace Xwt
 			}
 		}
 
+		[DefaultValue (0d)]
 		public double MarginTop {
 			get { return margin.Top; }
 			set {
@@ -386,6 +389,7 @@ namespace Xwt
 			}
 		}
 
+		[DefaultValue (0d)]
 		public double MarginBottom {
 			get { return margin.Bottom; }
 			set {
@@ -564,9 +568,10 @@ namespace Xwt
 			get { return Backend.BackgroundColor; }
 			set { Backend.BackgroundColor = value; }
 		}
-		
+
+		[DefaultValue ("")]
 		public string TooltipText {
-			get { return Backend.TooltipText; }
+			get { return Backend.TooltipText ?? ""; }
 			set { Backend.TooltipText = value; }
 		}
 		
@@ -576,6 +581,7 @@ namespace Xwt
 		/// <value>
 		/// The cursor.
 		/// </value>
+		[DefaultValue ("")]
 		public CursorType Cursor {
 			get { return cursor ?? CursorType.Arrow; }
 			set {
@@ -583,7 +589,12 @@ namespace Xwt
 				Backend.SetCursor (value);
 			}
 		}
-		
+
+		public bool ShouldSerializeCursor ()
+		{
+			return Cursor != CursorType.Arrow;
+		}
+
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
 			return Backend.ConvertToScreenCoordinates (widgetCoordinates);

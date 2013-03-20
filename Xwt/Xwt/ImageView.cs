@@ -26,6 +26,7 @@
 using System;
 using Xwt.Drawing;
 using Xwt.Backends;
+using System.ComponentModel;
 
 namespace Xwt
 {
@@ -46,7 +47,8 @@ namespace Xwt
 		IImageViewBackend Backend {
 			get { return (IImageViewBackend) BackendHost.Backend; }
 		}
-		
+
+		[DefaultValue (null)]
 		public Image Image {
 			get { return image; }
 			set {

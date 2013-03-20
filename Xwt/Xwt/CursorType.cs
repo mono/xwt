@@ -24,26 +24,76 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.ComponentModel;
+using System.Windows.Markup;
+using System.Collections.Generic;
 
 namespace Xwt
 {
+	[TypeConverter (typeof(CursorTypeValueConverter))]
+	[ValueSerializer (typeof(CursorTypeValueSerializer))]
 	public class CursorType
 	{
-		internal CursorType ()
+		string id;
+		static Dictionary<string,CursorType> cursors = new Dictionary<string, CursorType> ();
+
+		internal CursorType (string id)
 		{
 			// Maybe some day we'll support creating custom cursors
+			this.id = id;
+			cursors [id] = this;
 		}
 		
-		public static readonly CursorType Arrow = new CursorType ();
-		public static readonly CursorType IBeam = new CursorType ();
-		public static readonly CursorType Crosshair = new CursorType ();
-		public static readonly CursorType ResizeLeft = new CursorType ();
-		public static readonly CursorType ResizeRight = new CursorType ();
-		public static readonly CursorType ResizeLeftRight = new CursorType ();
-		public static readonly CursorType ResizeUp = new CursorType ();
-		public static readonly CursorType ResizeDown = new CursorType ();
-		public static readonly CursorType ResizeUpDown = new CursorType ();
-		public static readonly CursorType Hand = new CursorType ();
+		public static readonly CursorType Arrow = new CursorType ("Arrow");
+		public static readonly CursorType IBeam = new CursorType ("IBeam");
+		public static readonly CursorType Crosshair = new CursorType ("Crosshair");
+		public static readonly CursorType ResizeLeft = new CursorType ("ResizeLeft");
+		public static readonly CursorType ResizeRight = new CursorType ("ResizeRight");
+		public static readonly CursorType ResizeLeftRight = new CursorType ("ResizeLeftRight");
+		public static readonly CursorType ResizeUp = new CursorType ("ResizeUp");
+		public static readonly CursorType ResizeDown = new CursorType ("ResizeDown");
+		public static readonly CursorType ResizeUpDown = new CursorType ("ResizeUpDown");
+		public static readonly CursorType Hand = new CursorType ("Hand");
+
+		
+		class CursorTypeValueConverter: TypeConverter
+		{
+			public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+			{
+				return destinationType == typeof(string);
+			}
+			
+			public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
+			{
+				return sourceType == typeof(string);
+			}
+		}
+		
+		class CursorTypeValueSerializer: ValueSerializer
+		{
+			public override bool CanConvertFromString (string value, IValueSerializerContext context)
+			{
+				return true;
+			}
+			
+			public override bool CanConvertToString (object value, IValueSerializerContext context)
+			{
+				return true;
+			}
+			
+			public override string ConvertToString (object value, IValueSerializerContext context)
+			{
+				CursorType s = (CursorType) value;
+				return s.id;
+			}
+			
+			public override object ConvertFromString (string value, IValueSerializerContext context)
+			{
+				CursorType ct;
+				cursors.TryGetValue (value, out ct);
+				return ct;
+			}
+		}
 	}
 }
 

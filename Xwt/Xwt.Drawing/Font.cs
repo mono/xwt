@@ -26,10 +26,16 @@
 
 using System;
 using Xwt.Backends;
+using System.Windows.Markup;
+using System.ComponentModel;
+using System.Text;
+using System.Globalization;
 
 
 namespace Xwt.Drawing
 {
+	[TypeConverter (typeof(FontValueConverter))]
+	[ValueSerializer (typeof(FontValueSerializer))]
 	public sealed class Font: XwtObject
 	{
 		FontBackendHandler handler;
@@ -62,24 +68,44 @@ namespace Xwt.Drawing
 		{
 			var toolkit = Toolkit.CurrentEngine;
 			var handler = toolkit.FontBackendHandler;
+			string[] parts = name.Split (new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+			if (parts.Length < 2)
+				throw new ArgumentException ("Font family name or size not specified");
 
-			name = name.Trim ();
-			if (name.Length == 0)
-				throw new ArgumentException ("Font family name not specified");
-			int sizeIndex = name.LastIndexOf (' ');
 			double size = 0;
 			FontSizeUnit unit = FontSizeUnit.Points;
-			if (sizeIndex != -1) {
-				var s = name.Substring (sizeIndex + 1);
-				name = name.Substring (0, sizeIndex);
-				if (s.EndsWith ("px")) {
-					s = s.Substring (0, s.Length - 2);
-					unit = FontSizeUnit.Pixels;
-				}
-				if (!double.TryParse (s, out size))
-					throw new ArgumentException ("Invalid font size: " + s);
+
+			var s = parts[parts.Length - 1];
+			if (s.EndsWith ("px")) {
+				s = s.Substring (0, s.Length - 2);
+				unit = FontSizeUnit.Pixels;
 			}
-			return new Font (handler.Create (name, size, unit, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal), toolkit);
+			if (!double.TryParse (s, out size))
+				throw new ArgumentException ("Invalid font size: " + s);
+
+			FontStyle style = FontStyle.Normal;
+			FontWeight weight = FontWeight.Normal;
+			FontStretch stretch = FontStretch.Normal;
+
+			int i = parts.Length - 2;
+			while (i > 0) {
+				FontStyle st;
+				FontWeight fw;
+				FontStretch fs;
+				if (Enum.TryParse<FontStyle> (parts [i], out st) && st != FontStyle.Normal)
+					style = st;
+				else if (Enum.TryParse<FontWeight> (parts [i], out fw) && fw != FontWeight.Normal)
+					weight = fw;
+				else if (Enum.TryParse<FontStretch> (parts [i], out fs) && fs != FontStretch.Normal)
+					stretch = fs;
+				else
+					break;
+				i--;
+			}
+
+			string fname = string.Join (" ", parts, 0, i + 1);
+
+			return new Font (handler.Create (fname, size, unit, style, weight, stretch), toolkit);
 		}
 		
 		public Font WithFamily (string fontFamily)
@@ -154,6 +180,21 @@ namespace Xwt.Drawing
 		{
 			return new Font (handler.SetStretch (Backend, stretch), ToolkitEngine);
 		}
+
+		public override string ToString ()
+		{
+			StringBuilder sb = new StringBuilder (Family);
+			if (Style != FontStyle.Normal)
+				sb.Append (' ').Append (Style);
+			if (Weight != FontWeight.Normal)
+				sb.Append (' ').Append (Weight);
+			if (Stretch != FontStretch.Normal)
+				sb.Append (' ').Append (Stretch);
+			sb.Append (' ').Append (Size.ToString (CultureInfo.InvariantCulture));
+			if (unit == FontSizeUnit.Pixels)
+				sb.Append ("px");
+			return sb.ToString ();
+		}
 	}
 
 	public enum FontSizeUnit
@@ -225,6 +266,43 @@ namespace Xwt.Drawing
 		/// 4x more expanded than Pango.Stretch.Normal
 		/// </summary>
 		UltraExpanded
+	}
+
+	
+	class FontValueConverter: TypeConverter
+	{
+		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+		{
+			return destinationType == typeof(string);
+		}
+		
+		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
+		{
+			return sourceType == typeof(string);
+		}
+	}
+	
+	class FontValueSerializer: ValueSerializer
+	{
+		public override bool CanConvertFromString (string value, IValueSerializerContext context)
+		{
+			return true;
+		}
+		
+		public override bool CanConvertToString (object value, IValueSerializerContext context)
+		{
+			return true;
+		}
+		
+		public override string ConvertToString (object value, IValueSerializerContext context)
+		{
+			return value.ToString ();
+		}
+		
+		public override object ConvertFromString (string value, IValueSerializerContext context)
+		{
+			return Font.FromName (value);
+		}
 	}
 }
 

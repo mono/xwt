@@ -33,9 +33,14 @@ using Xwt.Drawing;
 using System.Reflection;
 using System.Xaml;
 using System.Linq;
+using System.Windows.Markup;
+using System.Text;
+using System.Globalization;
 
 namespace Xwt
 {
+	[TypeConverter (typeof(WidgetSpacingValueConverter))]
+	[ValueSerializer (typeof(WidgetSpacingValueSerializer))]
 	public struct WidgetSpacing
 	{
 		static public implicit operator WidgetSpacing (double value)
@@ -66,21 +71,69 @@ namespace Xwt
 		public double VerticalSpacing {
 			get { return Top + Bottom; }
 		}
-		
-/*		public void Set (double left, double top, double right, double bottom)
+	}
+
+	
+	class WidgetSpacingValueConverter: TypeConverter
+	{
+		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
 		{
-			Left = left;
-			Top = top;
-			Bottom = bottom;
-			Right = right;
+			return destinationType == typeof(string);
 		}
 		
-		public void SetAll (double padding)
+		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
 		{
-			Left = padding;
-			Top = padding;
-			Bottom = padding;
-			Right = padding;
-		}*/
+			return sourceType == typeof(string);
+		}
+	}
+	
+	class WidgetSpacingValueSerializer: ValueSerializer
+	{
+		public override bool CanConvertFromString (string value, IValueSerializerContext context)
+		{
+			return true;
+		}
+		
+		public override bool CanConvertToString (object value, IValueSerializerContext context)
+		{
+			return true;
+		}
+		
+		public override string ConvertToString (object value, IValueSerializerContext context)
+		{
+			WidgetSpacing s = (WidgetSpacing) value;
+			if (s.Left == s.Right && s.Right == s.Top && s.Top == s.Bottom)
+				return s.Left.ToString (CultureInfo.InvariantCulture);
+			if (s.Bottom != 0)
+				return s.Left.ToString (CultureInfo.InvariantCulture) + " " + s.Top.ToString (CultureInfo.InvariantCulture) + " " + s.Right.ToString (CultureInfo.InvariantCulture) + " " + s.Bottom.ToString (CultureInfo.InvariantCulture);
+			if (s.Right != 0)
+				return s.Left.ToString (CultureInfo.InvariantCulture) + " " + s.Top.ToString (CultureInfo.InvariantCulture) + " " + s.Right.ToString (CultureInfo.InvariantCulture);
+			return s.Left.ToString (CultureInfo.InvariantCulture) + " " + s.Top.ToString (CultureInfo.InvariantCulture);
+		}
+		
+		public override object ConvertFromString (string value, IValueSerializerContext context)
+		{
+			WidgetSpacing c = new WidgetSpacing ();
+			string[] values = value.Split (new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			if (values.Length == 0)
+				return c;
+
+			double v;
+			if (double.TryParse (values [0], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
+				c.Left = v;
+
+			if (value.Length == 1) {
+				c.Top = c.Right = c.Bottom = v;
+				return c;
+			}
+
+			if (value.Length >= 2 && double.TryParse (values [1], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
+				c.Top = v;
+			if (value.Length >= 3 && double.TryParse (values [2], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
+				c.Right = v;
+			if (value.Length >= 4 && double.TryParse (values [3], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
+				c.Bottom = v;
+			return c;
+		}
 	}
 }

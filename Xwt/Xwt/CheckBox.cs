@@ -26,10 +26,12 @@
 using System;
 using System.ComponentModel;
 using Xwt.Backends;
+using System.Windows.Markup;
 
 namespace Xwt
 {
 	[BackendType (typeof(ICheckBoxBackend))]
+	[ContentProperty("Content")]
 	public class CheckBox: Widget
 	{
 		Widget content;
@@ -81,7 +83,8 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
-		
+
+		[DefaultValue (null)]
 		public new Widget Content {
 			get { return content; }
 			set {
