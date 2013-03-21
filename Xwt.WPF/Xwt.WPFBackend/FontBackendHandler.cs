@@ -118,19 +118,6 @@ namespace Xwt.WPFBackend
 			return DataConverter.ToXwtFontWeight (font.Weight);
 		}
 
-		internal static double GetPointsFromPixels (double pixels, double dpi)
-		{
-			return (pixels / dpi) * 72;
-		}
-
-		internal static double GetPointsFromPixels (SW.Controls.Control control)
-		{
-			Size pixelRatios = control.GetPixelRatios ();
-			double dpi = (pixelRatios.Width * 96); // 96 DPI is WPF's unit
-
-			return GetPointsFromPixels (control.FontSize, dpi);
-		}
-
 		internal static double GetDeviceUnitsFromPoints (double points)
 		{
 			return points * (96d / 72d);
@@ -173,12 +160,12 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public double GetDeviceIndependentPixelSize (double widthRatio)
+		public double GetDeviceIndependentPixelSize ()
 		{
 			if (Unit == FontSizeUnit.Points)
 				return WpfFontBackendHandler.GetDeviceUnitsFromPoints (Size);
 			else {
-				return Size / widthRatio;
+				return Size;
 			}
 		}
 

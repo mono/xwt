@@ -42,17 +42,14 @@ namespace Xwt.WPFBackend
 		{
 			var drawingContext = (DrawingContext)Toolkit.GetBackend (context);
 			return new TextLayoutBackend () {
-				Context = drawingContext,
-				PixelRatio = drawingContext.PixelRatio
+				Context = drawingContext
 			};
 		}
 
 		public override object Create (ICanvasBackend canvas)
 		{
 			var backend = (WidgetBackend)canvas;
-			return new TextLayoutBackend () {
-				PixelRatio = backend.WidthPixelRatio
-			};
+			return new TextLayoutBackend ();
 		}
 
 		public override void SetWidth (object backend, double value)
@@ -163,8 +160,6 @@ namespace Xwt.WPFBackend
 	{
 		FormattedText formattedText;
 
-		public double PixelRatio { get; set; }
-
 		public FormattedText FormattedText
 		{
 			get
@@ -198,7 +193,7 @@ namespace Xwt.WPFBackend
 			this.Font = font;
 			var f = (FontData)Toolkit.GetBackend (font);
 			FormattedText.SetFontFamily (f.Family);
-			FormattedText.SetFontSize (f.GetDeviceIndependentPixelSize (PixelRatio));
+			FormattedText.SetFontSize (f.GetDeviceIndependentPixelSize ());
 			FormattedText.SetFontStretch (f.Stretch);
 			FormattedText.SetFontStyle (f.Style);
 			FormattedText.SetFontWeight (f.Weight);

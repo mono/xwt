@@ -64,18 +64,15 @@ namespace Xwt.WPFBackend
 			if (element == null)
 				throw new ArgumentException ();
 
-			double hratio = HeightPixelRatio;
-			double wratio = WidthPixelRatio;
-
-			SWC.Canvas.SetTop (element, bounds.Top * hratio);
-			SWC.Canvas.SetLeft (element, bounds.Left * wratio);
+			SWC.Canvas.SetTop (element, bounds.Top);
+			SWC.Canvas.SetLeft (element, bounds.Left);
 
 			// We substract the widget margin here because the size we are assigning is the actual size, not including the WPF marings
 			var h = bounds.Height - ((WidgetBackend)widget).Frontend.Margin.VerticalSpacing;
 			var w = bounds.Width - ((WidgetBackend)widget).Frontend.Margin.HorizontalSpacing;
 
-			element.Height = (h > 0) ? h * hratio : 0;
-			element.Width = (w > 0) ? w * wratio : 0;
+			element.Height = (h > 0) ? h : 0;
+			element.Width = (w > 0) ? w : 0;
 
 			((FrameworkElement)widget.NativeWidget).UpdateLayout ();
 		}

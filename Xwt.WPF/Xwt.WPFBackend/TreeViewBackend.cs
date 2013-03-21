@@ -212,9 +212,6 @@ namespace Xwt.WPFBackend
 			nodePosition = null;
 			this.dropPosition = pos = RowDropPosition.Into;
 
-			x *= WidthPixelRatio;
-			y *= HeightPixelRatio;
-
 			var result = VisualTreeHelper.HitTest (Tree, new System.Windows.Point (x, y)) as PointHitTestResult;
 
 			var element = (result != null) ? result.VisualHit as FrameworkElement : null;

@@ -235,13 +235,10 @@ namespace Xwt.WPFBackend
 
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
-			double wratio = WidthPixelRatio;
-			double hratio = HeightPixelRatio;
-
 			var p = Widget.PointToScreen (new System.Windows.Point (
-				widgetCoordinates.X / wratio, widgetCoordinates.Y / hratio));
+				widgetCoordinates.X, widgetCoordinates.Y));
 
-			return new Point (p.X * wratio, p.Y * hratio);
+			return new Point (p.X, p.Y);
 		}
 
 		SW.Size lastNaturalSize;
@@ -281,7 +278,7 @@ namespace Xwt.WPFBackend
 			SW.Size minSize, natSize;
 			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity, out minSize, out natSize);
-			return new WidgetSize (minSize.Width * WidthPixelRatio - Frontend.Margin.HorizontalSpacing, natSize.Width * WidthPixelRatio - Frontend.Margin.HorizontalSpacing);
+			return new WidgetSize (minSize.Width - Frontend.Margin.HorizontalSpacing, natSize.Width - Frontend.Margin.HorizontalSpacing);
 		}
 
 		public virtual WidgetSize GetPreferredHeight ()
@@ -289,7 +286,7 @@ namespace Xwt.WPFBackend
 			SW.Size minSize, natSize;
 			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (Double.PositiveInfinity, Double.PositiveInfinity, out minSize, out natSize);
-			return new WidgetSize (minSize.Height * WidthPixelRatio - Frontend.Margin.VerticalSpacing, natSize.Height * HeightPixelRatio - Frontend.Margin.VerticalSpacing);
+			return new WidgetSize (minSize.Height - Frontend.Margin.VerticalSpacing, natSize.Height - Frontend.Margin.VerticalSpacing);
 		}
 
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
@@ -297,7 +294,7 @@ namespace Xwt.WPFBackend
 			SW.Size minSize, natSize;
 			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (Double.PositiveInfinity, height, out minSize, out natSize);
-			return new WidgetSize (minSize.Width * WidthPixelRatio - Frontend.Margin.HorizontalSpacing, natSize.Width * WidthPixelRatio - Frontend.Margin.HorizontalSpacing);
+			return new WidgetSize (minSize.Width - Frontend.Margin.HorizontalSpacing, natSize.Width - Frontend.Margin.HorizontalSpacing);
 		}
 
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
@@ -305,7 +302,7 @@ namespace Xwt.WPFBackend
 			SW.Size minSize, natSize;
 			Widget.InvalidateMeasure ();
 			GetWidgetDesiredSize (width, Double.PositiveInfinity, out minSize, out natSize);
-			return new WidgetSize (minSize.Height * HeightPixelRatio - Frontend.Margin.VerticalSpacing, natSize.Height * HeightPixelRatio - Frontend.Margin.VerticalSpacing);
+			return new WidgetSize (minSize.Height - Frontend.Margin.VerticalSpacing, natSize.Height - Frontend.Margin.VerticalSpacing);
 		}
 
 		/// <summary>
@@ -405,12 +402,12 @@ namespace Xwt.WPFBackend
 			if (width == -1)
 				Widget.ClearValue (FrameworkElement.MinWidthProperty);
 			else
-				Widget.MinWidth = width / WidthPixelRatio;
+				Widget.MinWidth = width;
 
 			if (height == -1)
 				Widget.ClearValue (FrameworkElement.MinHeightProperty);
 			else
-				Widget.MinHeight = height / HeightPixelRatio;
+				Widget.MinHeight = height;
 		}
 
 		public void SetNaturalSize (double width, double height)
@@ -418,12 +415,12 @@ namespace Xwt.WPFBackend
 			if (width == -1)
 				Widget.ClearValue (FrameworkElement.WidthProperty);
 			else
-				Widget.Width = width / WidthPixelRatio;
+				Widget.Width = width;
 
 			if (height == -1)
 				Widget.ClearValue (FrameworkElement.HeightProperty);
 			else
-				Widget.Height = height / HeightPixelRatio;
+				Widget.Height = height;
 		}
 
 		public void SetCursor (CursorType cursor)
@@ -552,7 +549,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public double WidthPixelRatio
+		public double aWidthPixelRatio
 		{
 			get
 			{
@@ -565,7 +562,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public double HeightPixelRatio
+		public double aHeightPixelRatio
 		{
 			get
 			{
@@ -576,11 +573,6 @@ namespace Xwt.WPFBackend
 				Matrix m = source.CompositionTarget.TransformToDevice;
 				return m.M22;
 			}
-		}
-
-		protected double DPI
-		{
-			get { return WidthPixelRatio * 96; }
 		}
 
 		void WidgetKeyDownHandler (object sender, System.Windows.Input.KeyEventArgs e)
@@ -645,8 +637,8 @@ namespace Xwt.WPFBackend
 		{
 			var pos = e.GetPosition (Widget);
 			return new ButtonEventArgs () {
-				X = pos.X * WidthPixelRatio,
-				Y = pos.Y * HeightPixelRatio,
+				X = pos.X,
+				Y = pos.Y,
 				MultiplePress = e.ClickCount,
 				Button = e.ChangedButton.ToXwtButton ()
 			};
@@ -978,7 +970,7 @@ namespace Xwt.WPFBackend
 			Context.InvokeUserCode (() => {
 				var p = e.GetPosition (Widget);
 				eventSink.OnMouseMoved (new MouseMovedEventArgs (
-					e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio));
+					e.Timestamp, p.X, p.Y));
 			});
 		}
 
@@ -993,11 +985,11 @@ namespace Xwt.WPFBackend
 			Context.InvokeUserCode (delegate {
 				for (int i = 0; i < jumps; i++) {
 					eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
-						e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, ScrollDirection.Up));
+						e.Timestamp, p.X, p.Y, ScrollDirection.Up));
 				}
 				for (int i = 0; i > jumps; i--) {
 					eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
-						e.Timestamp, p.X * WidthPixelRatio, p.Y * HeightPixelRatio, ScrollDirection.Down));
+						e.Timestamp, p.X, p.Y, ScrollDirection.Down));
 				}
 			});
 		}

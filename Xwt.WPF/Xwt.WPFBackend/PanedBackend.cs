@@ -151,10 +151,9 @@ namespace Xwt.WPFBackend
 		public double Position
 		{
 			get {
-				return position != -1 ? position * (direction == Orientation.Horizontal ? WidthPixelRatio : HeightPixelRatio) : 0;
+				return position != -1 ? position : 0;
 			}
 			set {
-				value /= direction == Orientation.Horizontal ? WidthPixelRatio : HeightPixelRatio;
 				if (position != value) {
 					position = value;
 					NotifyPositionChanged ();

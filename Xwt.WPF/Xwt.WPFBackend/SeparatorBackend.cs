@@ -56,7 +56,7 @@ namespace Xwt.WPFBackend
 		public override WidgetSize GetPreferredHeight()
 		{
 			if (this.direction == Orientation.Vertical)
-				return new WidgetSize (((FrameworkElement) Widget.Parent).ActualHeight / HeightPixelRatio);
+				return new WidgetSize (((FrameworkElement) Widget.Parent).ActualHeight);
 
 			return new WidgetSize (1);
 		}
@@ -64,7 +64,7 @@ namespace Xwt.WPFBackend
 		public override WidgetSize GetPreferredWidth()
 		{
 			if (this.direction == Orientation.Horizontal)
-				return new WidgetSize (((FrameworkElement) Widget.Parent).ActualWidth / WidthPixelRatio);
+				return new WidgetSize (((FrameworkElement) Widget.Parent).ActualWidth);
 
 			return new WidgetSize (1);
 		}

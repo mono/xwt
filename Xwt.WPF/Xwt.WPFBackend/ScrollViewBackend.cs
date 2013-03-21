@@ -120,12 +120,10 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				double wratio = WidthPixelRatio;
-				double hratio = HeightPixelRatio;
-				return new Rectangle (	ScrollViewer.HorizontalOffset * hratio,
-										ScrollViewer.VerticalOffset * hratio,
-										ScrollViewer.ViewportWidth * wratio,
-										ScrollViewer.ViewportHeight * hratio);
+				return new Rectangle (	ScrollViewer.HorizontalOffset,
+										ScrollViewer.VerticalOffset,
+										ScrollViewer.ViewportWidth,
+										ScrollViewer.ViewportHeight);
 			}
 		}
 

@@ -242,7 +242,7 @@ namespace Xwt.WPFBackend
 			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, PixelFormats.Pbgra32);
 			bmp.Render (visual);
 
-			return bmp;
+			return new WpfImage (bmp);
 		}
 
 		public override object CopyBitmap (object handle)
