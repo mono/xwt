@@ -103,7 +103,7 @@ namespace Xwt.GtkBackend
 				}
 			}
 			
-			return new Gdk.Pixbuf (data, Gdk.Colorspace.Rgb, nbytes == 4, 8, sf.Width, sf.Height, sf.Width * nbytes, null);
+			return new GtkImage (new Gdk.Pixbuf (data, Gdk.Colorspace.Rgb, nbytes == 4, 8, sf.Width, sf.Height, sf.Width * nbytes, null));
 		}
 
 		public override void Dispose (object backend)

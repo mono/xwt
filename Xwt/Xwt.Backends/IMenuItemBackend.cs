@@ -42,8 +42,8 @@ namespace Xwt.Backends
 		/// <summary>
 		/// Sets the image to display for the menu item.
 		/// </summary>
-		/// <param name="imageBackend">The image backend to set as the image for this menu item.</param>
-		void SetImage (object imageBackend);
+		/// <param name="image">The image backend to set as the image for this menu item.</param>
+		void SetImage (ImageDescription image);
 
 		/// <summary>
 		/// Gets or sets the label for the menu item.

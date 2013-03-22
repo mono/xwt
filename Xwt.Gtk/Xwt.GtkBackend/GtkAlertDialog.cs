@@ -30,6 +30,7 @@ using System;
 using System.Text;
 using Gtk;
 using System.Linq;
+using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
@@ -38,11 +39,12 @@ namespace Xwt.GtkBackend
 	/// </summary>
 	internal class GtkAlertDialog : Gtk.Dialog
 	{
+		ApplicationContext actx;
 		Command resultButton = null;
 		Command[] buttons;
 		
 		Gtk.HBox  hbox  = new Gtk.HBox ();
-		Gtk.Image image = new Gtk.Image ();
+		ImageBox image;
 		Gtk.Label label = new Gtk.Label ();
 		Gtk.VBox labelsBox = new Gtk.VBox (false, 6);
 		
@@ -56,6 +58,7 @@ namespace Xwt.GtkBackend
 		
 		void Init ()
 		{
+			image = new ImageBox (actx);
 			VBox.PackStart (hbox);
 			hbox.PackStart (image, false, false, 0);
 			hbox.PackStart (labelsBox, true, true, 0);
@@ -86,8 +89,9 @@ namespace Xwt.GtkBackend
 			this.label.Xalign    = 0.00f;
 		}
 		
-		public GtkAlertDialog (MessageDescription message)
+		public GtkAlertDialog (ApplicationContext actx, MessageDescription message)
 		{
+			this.actx = actx;
 			Init ();
 			this.buttons = message.Buttons.ToArray ();
 			
@@ -101,8 +105,9 @@ namespace Xwt.GtkBackend
 				primaryText = message.Text;
 				secondaryText = message.SecondaryText;
 			}
-			
-			image.SetFromStock (Util.ToGtkStock (message.Icon), Gtk.IconSize.Dialog);
+
+			var icon = ToolkitEngineBackend.GetImageDescription (message.Icon);
+			image.Image = icon.WithDefaultSize (Gtk.IconSize.Dialog);
 			
 			StringBuilder markup = new StringBuilder (@"<span weight=""bold"" size=""larger"">");
 			markup.Append (GLib.Markup.EscapeText (primaryText));
@@ -123,8 +128,10 @@ namespace Xwt.GtkBackend
 				newButton.Label        = button.Label;
 				newButton.UseUnderline = true;
 				newButton.UseStock     = button.IsStockButton;
-				if (button.Icon != null)
-					newButton.Image = new Gtk.Image (button.Icon.ToPixbuf (Gtk.IconSize.Button));
+				if (button.Icon != null) {
+					icon = ToolkitEngineBackend.GetImageDescription (button.Icon);
+					newButton.Image = new ImageBox (actx, icon.WithDefaultSize (Gtk.IconSize.Button));
+				}
 				newButton.Clicked += ButtonClicked;
 				ActionArea.Add (newButton);
 			}

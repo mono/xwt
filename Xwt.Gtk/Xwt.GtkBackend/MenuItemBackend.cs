@@ -72,13 +72,13 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public void SetImage (object imageBackend)
+		public void SetImage (ImageDescription image)
 		{
 			Gtk.ImageMenuItem it = item as Gtk.ImageMenuItem;
 			if (it == null)
 				return;
-			if (imageBackend != null) {
-				var img = new Gtk.Image ((Gdk.Pixbuf) imageBackend);
+			if (!image.IsNull) {
+				var img = new ImageBox (context, image);
 				img.ShowAll ();
 				it.Image = img;
 				GtkWorkarounds.ForceImageOnMenuItem (it);

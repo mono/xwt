@@ -52,7 +52,7 @@ namespace Xwt.GtkBackend
 			types = new Type[columnTypes.Length];
 			for (int n=0; n<types.Length; n++) {
 				if (columnTypes [n] == typeof(Image))
-					types [n] = typeof(Gdk.Pixbuf);
+					types [n] = typeof(ImageDescription);
 				else if (columnTypes [n] == typeof(Object))
 					types [n] = typeof(ObjectWrapper);
 				else
@@ -75,7 +75,7 @@ namespace Xwt.GtkBackend
 			else if (value is string)
 				store.SetValue (it, column, (string)value);
 			else if (value is Image)
-				store.SetValue (it, column, ((Image)value).ToPixbuf (Gtk.IconSize.Menu));
+				store.SetValue (it, column, ToolkitEngineBackend.GetImageDescription((Image)value).WithDefaultSize (Gtk.IconSize.Menu));
 			else
 				store.SetValue (it, column, value ?? DBNull.Value);
 		}

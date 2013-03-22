@@ -39,7 +39,11 @@ namespace Xwt.WPFBackend
 	{
 		public override object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			return new FontData (new FontFamily (fontName), size, sizeUnit);
+			return new FontData (new FontFamily (fontName), size, sizeUnit) {
+				Style = style,
+				Weight = weight,
+				Stretch = stretch
+			};
 		}
 
 		public override object Copy (object handle)
@@ -53,6 +57,7 @@ namespace Xwt.WPFBackend
 			var font = (FontData)handle;
 			font = font.Clone ();
 			font.Size = size;
+			font.Unit = sizeUnit;
 			return font;
 		}
 

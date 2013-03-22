@@ -412,7 +412,7 @@ namespace Xwt.Mac
 			MinSize = r.Size;
 		}
 
-		public void SetIcon (object imageBackend)
+		public void SetIcon (ImageDescription icon)
 		{
 		}
 

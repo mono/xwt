@@ -1,6 +1,7 @@
 using System;
 using Xwt;
 using Xwt.Drawing;
+using System.Xml;
 
 namespace Samples
 {
@@ -59,7 +60,7 @@ namespace Samples
 			
 			HPaned box = new HPaned ();
 			
-			icon = Image.FromResource (typeof(App), "class.png");
+			icon = Image.FromResource (typeof(App), "document-generic.png");
 			
 			store = new TreeStore (nameCol, iconCol, widgetCol);
 			samplesTree = new TreeView ();
@@ -154,8 +155,8 @@ namespace Samples
 						s.Widget = (Widget)Activator.CreateInstance (s.Type);
 					sampleBox.PackStart (s.Widget, BoxMode.FillAndExpand);
 				}
-				
-//				string txt = System.Xaml.XamlServices.Save (s);
+
+			//	Console.WriteLine (System.Xaml.XamlServices.Save (s.Widget));
 				currentSample = s.Widget;
 				Dump (currentSample, 0);
 			}

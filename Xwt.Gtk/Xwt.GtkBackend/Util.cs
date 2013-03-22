@@ -66,7 +66,7 @@ namespace Xwt.GtkBackend
 			if (val is string)
 				data.Text = (string)val;
 			else if (val is Xwt.Drawing.Image)
-				data.SetPixbuf ((Gdk.Pixbuf) Toolkit.GetBackend (val));
+				data.SetPixbuf (((GtkImage) Toolkit.GetBackend (val)).GetBestFrame ());
 			else {
 				var at = Gdk.Atom.Intern (atomType, false);
 				data.Set (at, 0, TransferDataSource.SerializeValue (val));
@@ -163,7 +163,7 @@ namespace Xwt.GtkBackend
 		
 		static Dictionary<string,string> icons;
 
-		public static string ToGtkStock (string id)
+		public static GtkImage ToGtkStock (string id)
 		{
 			if (icons == null) {
 				icons = new Dictionary<string, string> ();
@@ -180,8 +180,9 @@ namespace Xwt.GtkBackend
 				icons [StockIconId.Information] = Gtk.Stock.DialogInfo;
 			}
 			string res;
-			icons.TryGetValue (id, out res);
-			return res;
+			if (!icons.TryGetValue (id, out res))
+				throw new NotSupportedException ("Unknown image: " + id);
+			return new GtkImage (res);
 		}
 		
 		public static Gtk.IconSize ToGtkSize (Xwt.IconSize size)
@@ -280,13 +281,13 @@ namespace Xwt.GtkBackend
 			return iconSizes [(int)s].Width;
 		}
 		
-		public static Gdk.Pixbuf ToPixbuf (this Image image, Gtk.IconSize defaultIconSize)
+		public static ImageDescription WithDefaultSize (this ImageDescription image, Gtk.IconSize defaultIconSize)
 		{
-			if (!image.HasFixedSize) {
+			if (image.Size.IsZero) {
 				var s = iconSizes [(int)defaultIconSize];
-				image = image.WithSize (s.Width, s.Height);
+				image.Size = s;
 			}
-			return (Gdk.Pixbuf)Toolkit.GetBackend (image.ToBitmap ());
+			return image;
 		}
 		
 	}

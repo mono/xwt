@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Xwt.Drawing;
 using System.IO;
+using MonoMac.CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -57,6 +58,19 @@ namespace Xwt.Mac
 		public override object LoadFromFile (string file)
 		{
 			return new NSImage (file);
+		}
+
+		public override object CreateMultiSizeImage (IEnumerable<object> images)
+		{
+			NSImage res = new NSImage ();
+			foreach (NSImage img in images)
+				res.AddRepresentations (img.Representations ());
+			return res;
+		}
+
+		public override object CreateCustomDrawn (ImageDrawCallback drawCallback)
+		{
+			return new CustomImage (ApplicationContext, drawCallback);
 		}
 
 		public override Xwt.Drawing.Image GetStockIcon (string id)
@@ -170,16 +184,20 @@ namespace Xwt.Mac
 				return new NSImage (data);
 			}
 		}
+
+		static NSImage NSImageFromResource (string id)
+		{
+			return (NSImage) Toolkit.GetBackend (Xwt.Drawing.Image.FromResource (typeof(ImageHandler), id));
+		}
 		
 		static NSImage LoadStockIcon (string id)
 		{
-			NSImage image = null;
-
 			switch (id) {
-			case StockIconId.ZoomIn:  image = FromResource ("magnifier-zoom-in.png"); break;
-			case StockIconId.ZoomOut: image = FromResource ("magnifier-zoom-out.png"); break;
+			case StockIconId.ZoomIn: return NSImageFromResource ("zoom-in.png");
+			case StockIconId.ZoomOut: return NSImageFromResource ("zoom-out.png");
 			}
 
+			NSImage image = null;
 			IntPtr iconRef;
 			var type = Util.ToIconType (id);
 			if (type != 0 && GetIconRef (-32768/*kOnSystemDisk*/, 1835098995/*kSystemIconsCreator*/, type, out iconRef) == 0) {
@@ -199,6 +217,41 @@ namespace Xwt.Mac
 		static extern int GetIconRef (short vRefNum, int creator, int iconType, out IntPtr iconRef);
 		[DllImport ("/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/LaunchServices")]
 		static extern int ReleaseIconRef (IntPtr iconRef);
+	}
+
+
+	public class CustomImage: NSImage
+	{
+		ImageDrawCallback drawCallback;
+		ApplicationContext actx;
+		NSCustomImageRep imgRep;
+
+		public CustomImage (ApplicationContext actx, ImageDrawCallback drawCallback)
+		{
+			this.actx = actx;
+			this.drawCallback = drawCallback;
+			imgRep = new NSCustomImageRep (new Selector ("drawIt:"), this);
+			AddRepresentation (imgRep);
+		}
+
+		[Export ("drawIt:")]
+		public void DrawIt (NSObject ob)
+		{
+			var s = Size;
+			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+			var backend = new CGContextBackend {
+				Context = ctx,
+				InverseViewTransform = ctx.GetCTM ().Invert ()
+			};
+			actx.InvokeUserCode (delegate {
+				drawCallback (backend, new Rectangle (0, 0, s.Width, s.Height));
+			});
+		}
+
+		public CustomImage Clone ()
+		{
+			return new CustomImage (actx, drawCallback);
+		}
 	}
 }
 

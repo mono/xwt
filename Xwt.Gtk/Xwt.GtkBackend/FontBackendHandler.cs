@@ -96,6 +96,12 @@ namespace Xwt.GtkBackend
 			return (double)fd.Size / (double) Pango.Scale.PangoScale;
 		}
 
+		public override FontSizeUnit GetSizeUnit (object handle)
+		{
+			FontDescription fd = (FontDescription) handle;
+			return fd.SizeIsAbsolute ? FontSizeUnit.Pixels : FontSizeUnit.Points;
+		}
+
 		public override string GetFamily (object handle)
 		{
 			FontDescription fd = (FontDescription) handle;

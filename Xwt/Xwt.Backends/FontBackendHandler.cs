@@ -41,6 +41,7 @@ namespace Xwt.Backends
 		public abstract object SetStretch (object handle, FontStretch stretch);
 		
 		public abstract double GetSize (object handle);
+		public abstract FontSizeUnit GetSizeUnit (object handle);
 		public abstract string GetFamily (object handle);
 		public abstract FontStyle GetStyle (object handle);
 		public abstract FontWeight GetWeight (object handle);

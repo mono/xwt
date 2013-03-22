@@ -33,7 +33,7 @@ namespace Xwt.Backends
 	{
 		void SetMenu (object menuBackend);
 		
-		void SetImage (object imageBackend);
+		void SetImage (ImageDescription img);
 	}
 }
 

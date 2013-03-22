@@ -28,6 +28,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Xwt.Drawing;
+using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
@@ -55,6 +56,26 @@ namespace Xwt.Backends
 		{
 			using (var s = File.OpenRead (file))
 				return LoadFromStream (s);
+		}
+
+		/// <summary>
+		/// Creates an image that is custom drawn
+		/// </summary>
+		/// <returns>The custom drawn.</returns>
+		/// <param name="drawCallback">The callback to be used to draw the image. The arguments are: the context backend, the bounds where to draw</param>
+		public virtual object CreateCustomDrawn (ImageDrawCallback drawCallback)
+		{
+			throw new NotSupportedException ();
+		}
+
+		/// <summary>
+		/// Creates an image with multiple representations in different sizes
+		/// </summary>
+		/// <returns>The image backend</returns>
+		/// <param name="images">Backends of the different image representations</param>
+		public virtual object CreateMultiSizeImage (IEnumerable<object> images)
+		{
+			throw new NotSupportedException ();
 		}
 		
 		public abstract object LoadFromStream (Stream stream);
@@ -105,6 +126,21 @@ namespace Xwt.Backends
 		public abstract void SetBitmapPixel (object handle, int x, int y, Color color);
 		
 		public abstract Color GetBitmapPixel (object handle, int x, int y);
+	}
+
+	public delegate void ImageDrawCallback (object contextBackend, Rectangle bounds);
+
+	public struct ImageDescription
+	{
+		public static ImageDescription Null = new ImageDescription ();
+
+		public bool IsNull {
+			get { return Backend == null; }
+		}
+
+		public object Backend { get; set; }
+		public Size Size { get; set; }
+		public double Alpha { get; set; }
 	}
 }
 

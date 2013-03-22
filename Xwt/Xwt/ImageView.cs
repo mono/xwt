@@ -53,7 +53,7 @@ namespace Xwt
 			get { return image; }
 			set {
 				image = value;
-				Backend.SetImage (value); 
+				Backend.SetImage (image != null ? image.ImageDescription : ImageDescription.Null); 
 				OnPreferredSizeChanged ();
 			}
 		}

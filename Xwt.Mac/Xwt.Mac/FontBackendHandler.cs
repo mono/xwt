@@ -107,6 +107,11 @@ namespace Xwt.Mac
 			return f.PointSize;
 		}
 
+		public override FontSizeUnit GetSizeUnit (object handle)
+		{
+			return FontSizeUnit.Points;
+		}
+
 		public override string GetFamily (object handle)
 		{
 			NSFont f = (NSFont) handle;

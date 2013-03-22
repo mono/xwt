@@ -33,9 +33,8 @@ namespace Xwt.Backends
 		/// <summary>
 		/// Sets the image view to use the supplied image backend.
 		/// </summary>
-		/// <param name="nativeImage">An image</param>
-		/// <exception cref="ArgumentNullException"><paramref name="nativeImage"/> is <c>null</c>.</exception>
-		void SetImage (Image nativeImage);
+		/// <param name="image">An image</param>
+		void SetImage (ImageDescription image);
 	}
 }
 

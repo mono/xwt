@@ -31,9 +31,10 @@ namespace Xwt.GtkBackend
 	public class GtkImagePatternBackendHandler: ImagePatternBackendHandler
 	{
 		#region IImagePatternBackendHandler implementation
-		public override object Create (object img)
+		public override object Create (ImageDescription img)
 		{
-			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
+			// TODO: get best size
+			Gdk.Pixbuf pb = ((GtkImage)img.Backend).GetBestFrame ();
 			var imgs = new Cairo.ImageSurface (Cairo.Format.ARGB32, pb.Width, pb.Height);
 			var ic = new Cairo.Context (imgs);
 			Gdk.CairoHelper.SetSourcePixbuf (ic, pb, 0, 0);
@@ -47,7 +48,7 @@ namespace Xwt.GtkBackend
 
 		public override void Dispose (object img)
 		{
-			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
+			var pb = (Cairo.SurfacePattern)img;
 			pb.Dispose ();
 		}
 		#endregion

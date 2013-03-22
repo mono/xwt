@@ -236,6 +236,18 @@ namespace Xwt.Mac
 				throw new NotSupportedException ();
 			}
 		}
+
+		public static NSImage ToNSImage (this ImageDescription idesc)
+		{
+			var img = (NSImage)idesc.Backend;
+			if (img is CustomImage)
+				img = ((CustomImage)img).Clone ();
+			else {
+				img = (NSImage)img.Copy ();
+			}
+			img.Size = new System.Drawing.SizeF ((float)idesc.Size.Width, (float)idesc.Size.Height);
+			return img;
+		}
 	}
 
 	public interface ICopiableObject

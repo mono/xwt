@@ -196,9 +196,9 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public void SetIcon(object backendImage)
+		public void SetIcon(ImageDescription icon)
 		{
-			Window.Icon = backendImage as Gdk.Pixbuf;
+			// TODO
 		}
 		#endregion
 

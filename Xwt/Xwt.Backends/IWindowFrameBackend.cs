@@ -60,7 +60,7 @@ namespace Xwt.Backends
 		void SetTransientFor (IWindowFrameBackend window);
 		bool Resizable { get; set; }
 
-		void SetIcon (object imageBackend);
+		void SetIcon (ImageDescription image);
 		
 		/// <summary>
 		/// Presents a window to the user. This may mean raising the window in the stacking order,

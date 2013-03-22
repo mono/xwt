@@ -270,20 +270,20 @@ namespace Xwt.Mac
 			return img is NSImage;
 		}
 
-		public override void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
+		public override void DrawImage (object backend, ImageDescription img, double x, double y)
 		{
-			var srcRect = new Rectangle (Point.Zero, ((NSImage)img).Size.ToXwtSize ());
-			var destRect = new Rectangle (x, y, width, height);
-			DrawImage (backend, img, srcRect, destRect, width, height, alpha);
+			var srcRect = new Rectangle (Point.Zero, ((NSImage)img.Backend).Size.ToXwtSize ());
+			var destRect = new Rectangle (x, y, img.Size.Width, img.Size.Height);
+			DrawImage (backend, img, srcRect, destRect);
 		}
 
-		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double width, double height, double alpha)
+		public override void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
-			NSImage image = (NSImage) img;
+			NSImage image = (NSImage) img.Backend;
 			var rect = new RectangleF (0, 0, (float)destRect.Width, (float)destRect.Height);
 			ctx.SaveState ();
-			ctx.SetAlpha ((float)alpha);
+			ctx.SetAlpha ((float)img.Alpha);
 			ctx.TranslateCTM ((float)destRect.X, (float)destRect.Y + rect.Height);
 			ctx.ScaleCTM (1f, -1f);
 			RectangleF rr = RectangleF.Empty;

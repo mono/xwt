@@ -119,13 +119,13 @@ namespace Xwt.GtkBackend
 			if (col.HeaderView == null)
 				tc.Title = col.Title;
 			else
-				tc.Widget = CellUtil.CreateCellRenderer (col.HeaderView);
+				tc.Widget = CellUtil.CreateCellRenderer (ApplicationContext, col.HeaderView);
 		}
 		
 		void MapColumn (ListViewColumn col, Gtk.TreeViewColumn tc)
 		{
 			foreach (var v in col.Views) {
-				CellUtil.CreateCellRenderer (this, tc, v, Widget.Model);
+				CellUtil.CreateCellRenderer (ApplicationContext, this, tc, v, Widget.Model);
 			}
 		}
 		

@@ -41,17 +41,6 @@ namespace Xwt.GtkBackend
 			else
 				return img;
 		}
-
-		protected override void SetSourceImage (Cairo.Context ctx, object img, double x, double y)
-		{
-			Gdk.CairoHelper.SetSourcePixbuf (ctx, (Gdk.Pixbuf)img, x, y);
-		}
-		
-		protected override Size GetImageSize (object img)
-		{
-			Gdk.Pixbuf pb = (Gdk.Pixbuf)img;
-			return new Size (pb.Width, pb.Height);
-		}
 	}
 	
 	public class ContextBackendHandlerWithPango: ContextBackendHandler

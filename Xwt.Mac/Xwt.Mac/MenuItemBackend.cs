@@ -74,10 +74,9 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public void SetImage (object imageBackend)
+		public void SetImage (ImageDescription image)
 		{
-			var img = (NSImage) imageBackend;
-			item.Image = img;
+			item.Image = image.ToNSImage ();
 		}
 		
 		public bool Visible {

@@ -53,12 +53,9 @@ namespace Xwt.Mac
 			statusItem.Menu = (NSMenu)menuBackend;
 		}
 		
-		public void SetImage (object imageBackend) {
-			if (imageBackend == null) {
-				throw new ArgumentNullException ("imageBackend");
-			}
-			
-			statusItem.Image = (NSImage)imageBackend;
+		public void SetImage (ImageDescription image)
+		{
+			statusItem.Image = image.ToNSImage ();
 		}
 		
 		public void EnableEvent (object eventId) { throw new NotImplementedException (); }

@@ -33,9 +33,9 @@ namespace Xwt.Mac
 {
 	public class MacImagePatternBackendHandler: ImagePatternBackendHandler
 	{
-		public override object Create (object img)
+		public override object Create (ImageDescription img)
 		{
-			NSImage nimg = (NSImage) img;
+			NSImage nimg = (NSImage) img.Backend;
 			RectangleF empty = RectangleF.Empty;
 			CGImage cgimg = nimg.AsCGImage (ref empty, null, null);
 			return new ImagePatternInfo () {

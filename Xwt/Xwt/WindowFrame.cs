@@ -208,7 +208,7 @@ namespace Xwt
 
         public Image Icon {
             get { return icon; }
-            set { Backend.SetIcon((value as IFrontend).Backend); }
+			set { icon = value; Backend.SetIcon (icon != null ? icon.ImageDescription : ImageDescription.Null); }
         }
 		
 		public bool Decorated {

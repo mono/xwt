@@ -56,14 +56,14 @@ namespace Xwt.Mac
 			((MacButton)Widget).DisableEvent (ev);
 		}
 		
-		public void SetContent (string label, Image image, ContentPosition imagePosition)
+		public void SetContent (string label, ImageDescription image, ContentPosition imagePosition)
 		{
 			Widget.Title = label ?? "";
 			if (string.IsNullOrEmpty (label))
 				imagePosition = ContentPosition.Center;
-			if (image != null) {
-				var imageBackend = Toolkit.GetBackend (image.ToBitmap ());
-				Widget.Image = (NSImage)imageBackend;
+			if (!image.IsNull) {
+				var img = image.ToNSImage ();
+				Widget.Image = (NSImage)img;
 				switch (imagePosition) {
 				case ContentPosition.Bottom: Widget.ImagePosition = NSCellImagePosition.ImageBelow; break;
 				case ContentPosition.Left: Widget.ImagePosition = NSCellImagePosition.ImageLeft; break;

@@ -53,10 +53,6 @@ namespace Xwt.CairoBackend
 	
 	public class CairoContextBackendHandler: ContextBackendHandler
 	{
-		public CairoContextBackendHandler ()
-		{
-		}
-
 		#region IContextBackendHandler implementation
 		
 		public override void Save (object backend)
@@ -236,37 +232,17 @@ namespace Xwt.CairoBackend
 			return true;
 		}
 		
-		public override void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
+		public override void DrawImage (object backend, ImageDescription img, double x, double y)
 		{
 			CairoContextBackend ctx = (CairoContextBackend)backend;
-			alpha = alpha * ctx.GlobalAlpha;
 
-			img = ResolveImage (img, width, height);
-			var s = GetImageSize (img);
+			img.Alpha *= ctx.GlobalAlpha;
+			var pix = (Xwt.GtkBackend.GtkImage) img.Backend;
 
-			if (s.Width == width && s.Height == height) {
-				SetSourceImage (ctx.Context, img, x, y);
-				if (alpha == 1)
-					ctx.Context.Paint ();
-				else
-					ctx.Context.PaintWithAlpha (alpha);
-				return;
-			}
-
-			ctx.Context.Save ();
-			double sx = ((double) width) / s.Width;
-			double sy = ((double) height) / s.Height;
-			ctx.Context.Translate (x, y);
-			ctx.Context.Scale (sx, sy);
-			SetSourceImage (ctx.Context, img, 0, 0);
-			if (alpha == 1)
-				ctx.Context.Paint ();
-			else
-				ctx.Context.PaintWithAlpha (alpha);
-			ctx.Context.Restore ();
+			pix.Draw (ApplicationContext, ctx.Context, x, y, img);
 		}
 		
-		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double width, double height, double alpha)
+		public override void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect)
 		{
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.Save ();
@@ -277,12 +253,10 @@ namespace Xwt.CairoBackend
 			double sx = destRect.Width / srcRect.Width;
 			double sy = destRect.Height / srcRect.Height;
 			ctx.Context.Scale (sx, sy);
-			SetSourceImage (ctx.Context, img, 0, 0);
-			alpha = alpha * ctx.GlobalAlpha;
-			if (alpha == 1)
-				ctx.Context.Paint ();
-			else
-				ctx.Context.PaintWithAlpha (alpha);
+			img.Alpha *= ctx.GlobalAlpha;
+
+			var pix = (Xwt.GtkBackend.GtkImage) img.Backend;
+			pix.Draw (ApplicationContext, ctx.Context, 0, 0, img);
 			ctx.Context.Restore ();
 		}
 		
