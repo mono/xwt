@@ -31,17 +31,16 @@ namespace Xwt.Backends
 {
 	public abstract class FontBackendHandler: BackendHandler
 	{
-		public abstract object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch);
+		public abstract object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch);
 		public abstract object Copy (object handle);
 		
-		public abstract object SetSize (object handle, double size, FontSizeUnit unit);
+		public abstract object SetSize (object handle, double size);
 		public abstract object SetFamily (object handle, string family);
 		public abstract object SetStyle (object handle, FontStyle style);
 		public abstract object SetWeight (object handle, FontWeight weight);
 		public abstract object SetStretch (object handle, FontStretch stretch);
 		
 		public abstract double GetSize (object handle);
-		public abstract FontSizeUnit GetSizeUnit (object handle);
 		public abstract string GetFamily (object handle);
 		public abstract FontStyle GetStyle (object handle);
 		public abstract FontWeight GetWeight (object handle);

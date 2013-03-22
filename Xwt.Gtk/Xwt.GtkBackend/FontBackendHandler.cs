@@ -28,15 +28,15 @@ using System;
 using Xwt.Backends;
 using Pango;
 using Xwt.Drawing;
+using System.Globalization;
 
 namespace Xwt.GtkBackend
 {
 	public class GtkFontBackendHandler: FontBackendHandler
 	{
-		public override object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
+		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			string s = sizeUnit == FontSizeUnit.Points ? size.ToString () : size + "px";
-			return FontDescription.FromString (fontName + " " + s);
+			return FontDescription.FromString (fontName + " " + size.ToString (CultureInfo.InvariantCulture));
 		}
 
 		#region IFontBackendHandler implementation
@@ -47,14 +47,11 @@ namespace Xwt.GtkBackend
 			return d.Copy ();
 		}
 		
-		public override object SetSize (object handle, double size, FontSizeUnit sizeUnit)
+		public override object SetSize (object handle, double size)
 		{
 			FontDescription d = (FontDescription) handle;
 			d = d.Copy ();
-			if (sizeUnit == FontSizeUnit.Points)
-				d.Size = (int) (size * Pango.Scale.PangoScale);
-			else
-				d.AbsoluteSize = (int) (size * Pango.Scale.PangoScale);
+			d.Size = (int) (size * Pango.Scale.PangoScale);
 			return d;
 		}
 
@@ -94,12 +91,6 @@ namespace Xwt.GtkBackend
 		{
 			FontDescription fd = (FontDescription) handle;
 			return (double)fd.Size / (double) Pango.Scale.PangoScale;
-		}
-
-		public override FontSizeUnit GetSizeUnit (object handle)
-		{
-			FontDescription fd = (FontDescription) handle;
-			return fd.SizeIsAbsolute ? FontSizeUnit.Pixels : FontSizeUnit.Points;
 		}
 
 		public override string GetFamily (object handle)
