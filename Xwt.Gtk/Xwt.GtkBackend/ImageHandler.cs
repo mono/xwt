@@ -118,12 +118,6 @@ namespace Xwt.GtkBackend
 			return pix.DefaultSize;
 		}
 		
-		public override object ResizeBitmap (object handle, double width, double height)
-		{
-			var pix = ((GtkImage)handle).Frames[0];
-			return new GtkImage(pix.ScaleSimple ((int)width, (int)height, Gdk.InterpType.Bilinear));
-		}
-		
 		public override object CopyBitmap (object handle)
 		{
 			var pix = ((GtkImage)handle).Frames[0];
@@ -146,23 +140,13 @@ namespace Xwt.GtkBackend
 			return new GtkImage (res);
 		}
 		
-		public override object ChangeBitmapOpacity (object backend, double opacity)
-		{
-			Gdk.Pixbuf image = ((GtkImage)backend).Frames[0];
-			Gdk.Pixbuf result = image.Copy ();
-			result.Fill (0);
-			result = result.AddAlpha (true, 0, 0, 0);
-			image.Composite (result, 0, 0, image.Width, image.Height, 0, 0, 1, 1, Gdk.InterpType.Bilinear, (int)(255 * opacity));
-			return new GtkImage (result);
-		}
-
 		public override bool IsBitmap (object handle)
 		{
 			var img = (GtkImage) handle;
 			return !img.HasMultipleSizes;
 		}
 
-		public override object ConvertToBitmap (object handle, double width, double height)
+		public override object ConvertToBitmap (object handle, int pixelWidth, int pixelHeight, ImageFormat format)
 		{
 			throw new NotImplementedException ();
 		}

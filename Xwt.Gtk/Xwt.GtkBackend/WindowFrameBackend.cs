@@ -196,6 +196,12 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		object IWindowFrameBackend.Screen {
+			get {
+				return Window.Screen.GetMonitorAtWindow (Window.GdkWindow);
+			}
+		}
+
 		public void SetIcon(ImageDescription icon)
 		{
 			// TODO

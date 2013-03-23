@@ -360,7 +360,7 @@ namespace Xwt
 							ib.Context.Fill ();
 						}
 					}
-					colorBox = ib.ToImage ();
+					colorBox = ib.ToBitmap (this);
 				}
 			}
 			ctx.DrawImage (colorBox, padding, padding);

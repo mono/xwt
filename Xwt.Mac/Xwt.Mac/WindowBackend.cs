@@ -151,6 +151,12 @@ namespace Xwt.Mac
 			}
 		}
 
+		object IWindowFrameBackend.Screen {
+			get {
+				return Screen;
+			}
+		}
+
 		protected virtual NSView GetContentView ()
 		{
 			return ContentView;

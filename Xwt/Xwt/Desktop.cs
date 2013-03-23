@@ -154,7 +154,7 @@ namespace Xwt
 			return screens.FirstOrDefault (s => s.Bounds.Contains (x, y));
 		}
 
-		static Screen GetScreen (object sb)
+		internal static Screen GetScreen (object sb)
 		{
 			foreach (var s in Screens) {
 				var backend = Toolkit.GetBackend (s);

@@ -104,7 +104,7 @@ namespace Xwt.Mac
 			return img != null && img.Representations ().OfType<NSBitmapImageRep> ().Any ();
 		}
 
-		public override object ConvertToBitmap (object handle, double width, double height)
+		public override object ConvertToBitmap (object handle, int pixelWidth, int pixelHeight, ImageFormat format)
 		{
 			return handle;
 		}
@@ -141,13 +141,6 @@ namespace Xwt.Mac
 			return new Size ((int)img.Size.Width, (int)img.Size.Height);
 		}
 		
-		public override object ResizeBitmap (object handle, double width, double height)
-		{
-			NSImage newImg = (NSImage)CopyBitmap (handle);
-			newImg.Size = new SizeF ((float)width, (float)height);
-			return newImg;
-		}
-		
 		public override object CopyBitmap (object handle)
 		{
 			return ((NSImage)handle).Copy ();
@@ -161,19 +154,6 @@ namespace Xwt.Mac
 		public override object CropBitmap (object backend, int srcX, int srcY, int width, int height)
 		{
 			throw new NotImplementedException ();
-		}
-		
-		public override object ChangeBitmapOpacity (object backend, double opacity)
-		{
-			//http://stackoverflow.com/a/2868928/578190
-			NSImage img = (NSImage)backend;
-			NSImage newImg = new NSImage (img.Size);
-
-			newImg.LockFocus ();
-			img.Draw (PointF.Empty, RectangleF.Empty, NSCompositingOperation.SourceOver, (float)opacity);
-			newImg.UnlockFocus ();
-
-			return newImg;
 		}
 		
 		static NSImage FromResource (string res)

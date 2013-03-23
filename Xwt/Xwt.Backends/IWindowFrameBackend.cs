@@ -73,6 +73,12 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
 		bool FullScreen { get; set; }
+
+		/// <summary>
+		/// Gets the screen on which most of the area of this window is placed
+		/// </summary>
+		/// <value>The screen.</value>
+		object Screen { get; }
 	}
 	
 	public interface IWindowFrameEventSink

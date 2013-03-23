@@ -248,6 +248,18 @@ namespace Xwt
 			set { Backend.FullScreen = value; }
 		}
 
+		/// <summary>
+		/// Gets the screen on which most of the area of this window is placed
+		/// </summary>
+		/// <value>The screen.</value>
+		public Screen Screen {
+			get {
+				if (!Visible)
+					throw new InvalidOperationException ("The window is not visible");
+				return Desktop.GetScreen (Backend.Screen);
+			}
+		}
+
 		public void Show ()
 		{
 			Visible = true;

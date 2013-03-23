@@ -61,8 +61,19 @@ namespace Xwt.Backends
 		/// Gets the name of the screen device.
 		/// </summary>
 		/// <returns>The screen device name.</returns>
-		/// <param name="backend">Backend.</param>
+		/// <param name="backend">A screen backend</param>
 		public abstract string GetScreenDeviceName (object backend);
+
+		/// <summary>
+		/// Gets the scale factor for the screen.
+		/// </summary>
+		/// <returns>The scale factor.</returns>
+		/// <param name="backend">A screen backend</param>
+		/// <remarks>The normal value is 1. In a retina display the value is 2.</remarks>
+		public virtual double GetScaleFactor (object backend)
+		{
+			return 1d;
+		}
 
 		/// <summary>
 		/// Raises the ScreensChanged event.

@@ -97,7 +97,7 @@ namespace Xwt.Backends
 		/// <param name="handle">Image handle.</param>
 		/// <param name="width">Width.</param>
 		/// <param name="height">Height.</param>
-		public abstract object ConvertToBitmap (object handle, double width, double height);
+		public abstract object ConvertToBitmap (object handle, int pixelWidth, int pixelHeight, ImageFormat format);
 
 		/// <summary>
 		/// Returns True if the image has multiple representations of different sizes.
@@ -113,16 +113,12 @@ namespace Xwt.Backends
 		/// <param name="handle">Image handle</param>
 		public abstract Size GetSize (object handle);
 		
-		public abstract object ResizeBitmap (object handle, double width, double height);
-		
 		public abstract object CopyBitmap (object handle);
 
 		public abstract void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY);
 
 		public abstract object CropBitmap (object handle, int srcX, int srcY, int width, int height);
 
-		public abstract object ChangeBitmapOpacity (object backend, double opacity);
-		
 		public abstract void SetBitmapPixel (object handle, int x, int y, Color color);
 		
 		public abstract Color GetBitmapPixel (object handle, int x, int y);

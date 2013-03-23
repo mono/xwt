@@ -37,7 +37,6 @@ namespace Xwt.Drawing
 	{
 		Size requestedSize;
 		internal NativeImageRef NativeRef;
-		BitmapImage cachedBitmap;
 		internal double requestedAlpha = 1;
 
 		internal Image ()
@@ -287,50 +286,33 @@ namespace Xwt.Drawing
 			};
 		}
 
-		public BitmapImage ToBitmap ()
+		public BitmapImage ToBitmap (ImageFormat format = ImageFormat.ARGB32)
 		{
-			var size = GetFixedSize ();
-			var bmp = GetCachedBitmap (size, requestedAlpha);
-			if (bmp != null)
-				return bmp;
-
-			bmp = ToBitmap (size, requestedAlpha);
-
-			return cachedBitmap = bmp;
+			var s = GetFixedSize ();
+			return ToBitmap ((int)s.Width, (int)s.Height);
 		}
-		
-		BitmapImage ToBitmap (Size size, double alpha)
-		{
-			// Don't cache the bitmap here since this method may be called by other image instances
-			return GetCachedBitmap (size, alpha) ?? GenerateBitmap (size, alpha);
-		}
-		
-		BitmapImage GetCachedBitmap (Size size, double alpha)
-		{
-			return cachedBitmap != null && size == cachedBitmap.Size && this.requestedAlpha == alpha ? cachedBitmap : null;
-		}
-		
-		protected virtual BitmapImage GenerateBitmap (Size size, double alpha)
-		{
-			object bmp = Backend;
-			if (ToolkitEngine.ImageBackendHandler.IsBitmap (bmp)) {
-				if (size == ToolkitEngine.ImageBackendHandler.GetSize (bmp)) {
-					if (alpha == 1)
-						// The backend can be shared
-						return new BitmapImage (this);
-				}
-				else
-					// Create a new backend with the new size
-					bmp = ToolkitEngine.ImageBackendHandler.ResizeBitmap (Backend, size.Width, size.Height);
-			}
-			else
-				bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, size.Width, size.Height);
 
-			if (alpha != 1) {
-				var oldBmp = bmp;
-				bmp = ToolkitEngine.ImageBackendHandler.ChangeBitmapOpacity (bmp, alpha);
-				ToolkitEngine.ImageBackendHandler.Dispose (oldBmp);
-			}
+		public BitmapImage ToBitmap (Widget renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		{
+			if (renderTarget.ParentWindow == null)
+				throw new InvalidOperationException ("renderTarget is not bounds to a window");
+			return ToBitmap (renderTarget, format);
+		}
+
+		public BitmapImage ToBitmap (Window renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		{
+			return ToBitmap (renderTarget.Screen, format);
+		}
+
+		public BitmapImage ToBitmap (Screen renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		{
+			var s = GetFixedSize ();
+			return ToBitmap ((int)(s.Width * renderTarget.ScaleFactor), (int)(s.Height * renderTarget.ScaleFactor), format);
+		}
+
+		public BitmapImage ToBitmap (int pixelWidth, int pixelHeight, ImageFormat format = ImageFormat.ARGB32)
+		{
+			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, pixelWidth, pixelHeight, format);
 			return new BitmapImage (bmp);
 		}
 

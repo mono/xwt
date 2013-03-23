@@ -61,7 +61,7 @@ namespace Samples
 			ib.Context.SetColor (Colors.DarkKhaki);
 			ib.Context.Rectangle (0, 0, 5, 5);
 			ib.Context.Fill ();
-			var img = ib.ToImage ();
+			var img = ib.ToVectorImage ();
 			ctx.DrawImage (img, 0, 0);
 			ctx.DrawImage (img, 0, 50, 50, 10);
 			
