@@ -89,7 +89,7 @@ namespace Xwt.Drawing
 			get {
 				return new ImageDescription () {
 					Alpha = requestedAlpha,
-					Size = requestedSize,
+					Size = Size,
 					Backend = Backend
 				};
 			}
@@ -296,10 +296,10 @@ namespace Xwt.Drawing
 		{
 			if (renderTarget.ParentWindow == null)
 				throw new InvalidOperationException ("renderTarget is not bounds to a window");
-			return ToBitmap (renderTarget, format);
+			return ToBitmap (renderTarget.ParentWindow, format);
 		}
 
-		public BitmapImage ToBitmap (Window renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		public BitmapImage ToBitmap (WindowFrame renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
 			return ToBitmap (renderTarget.Screen, format);
 		}

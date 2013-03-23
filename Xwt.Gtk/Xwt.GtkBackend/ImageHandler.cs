@@ -148,7 +148,8 @@ namespace Xwt.GtkBackend
 
 		public override object ConvertToBitmap (object handle, int pixelWidth, int pixelHeight, ImageFormat format)
 		{
-			throw new NotImplementedException ();
+			var img = (GtkImage) handle;
+			return new GtkImage (img.GetBestFrame (ApplicationContext, 1, pixelWidth, pixelHeight, true));
 		}
 
 		internal static Gdk.Pixbuf CreateBitmap (string stockId, double width, double height)
