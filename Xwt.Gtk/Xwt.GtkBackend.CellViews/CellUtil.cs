@@ -149,7 +149,7 @@ namespace Xwt.GtkBackend
 			var ctx = Gdk.CairoHelper.Create (window);
 			using (ctx) {
 				var pix = ((GtkImage)image.Backend);
-				pix.Draw (actx, ctx, cell_area.X, cell_area.Y, image);
+				pix.Draw (actx, ctx, Util.GetScaleFactor (widget), cell_area.X, cell_area.Y, image);
 			}
 		}
 		

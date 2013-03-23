@@ -37,7 +37,6 @@ namespace Xwt.Drawing
 	{
 		Size requestedSize;
 		internal NativeImageRef NativeRef;
-		Image sourceImage;
 		BitmapImage cachedBitmap;
 		internal double requestedAlpha = 1;
 
@@ -177,6 +176,9 @@ namespace Xwt.Drawing
 				else
 					return Size.Zero;
 			}
+			internal set {
+				requestedSize = value;
+			}
 		}
 		
 		public Image WithAlpha (double alpha)
@@ -292,10 +294,7 @@ namespace Xwt.Drawing
 			if (bmp != null)
 				return bmp;
 
-			if (sourceImage != null)
-				bmp = sourceImage.ToBitmap (size, requestedAlpha);
-			else
-				bmp = ToBitmap (size, requestedAlpha);
+			bmp = ToBitmap (size, requestedAlpha);
 
 			return cachedBitmap = bmp;
 		}

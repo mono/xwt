@@ -50,14 +50,19 @@ namespace Xwt.GtkBackend
 		public override object CreateContext (object backend)
 		{
 			Cairo.Surface sf = (Cairo.Surface) backend;
-			CairoContextBackend ctx = new CairoContextBackend ();
+			CairoContextBackend ctx = new CairoContextBackend (1);
 			ctx.Context = new Cairo.Context (sf);
 			return ctx;
 		}
 
 		public override object CreateImage (object backend)
 		{
-			Cairo.ImageSurface sf = (Cairo.ImageSurface) backend;
+			var pix = CreatePixbuf ((Cairo.ImageSurface)backend);
+			return new GtkImage (pix);
+		}
+
+		public static Gdk.Pixbuf CreatePixbuf (Cairo.ImageSurface sf)
+		{
 			byte[] cdata = sf.Data;
 			int nbytes = sf.Format == Cairo.Format.ARGB32 ? 4 : 3;
 			byte[] data = new byte[(cdata.Length / 4) * nbytes];
@@ -103,7 +108,7 @@ namespace Xwt.GtkBackend
 				}
 			}
 			
-			return new GtkImage (new Gdk.Pixbuf (data, Gdk.Colorspace.Rgb, nbytes == 4, 8, sf.Width, sf.Height, sf.Width * nbytes, null));
+			return new Gdk.Pixbuf (data, Gdk.Colorspace.Rgb, nbytes == 4, 8, sf.Width, sf.Height, sf.Width * nbytes, null);
 		}
 
 		public override void Dispose (object backend)

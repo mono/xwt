@@ -1051,7 +1051,7 @@ namespace Xwt.GtkBackend
 			DragDropInfo.CurrentDragData = sdata.Data;
 			
 			if (sdata.ImageBackend != null) {
-				var img = ((GtkImage)sdata.ImageBackend).GetBestFrame (Widget, 24, 24);
+				var img = ((GtkImage)sdata.ImageBackend).GetBestFrame (ApplicationContext, Widget, 24, 24, true);
 				Gtk.Drag.SetIconPixbuf (args.Context, img, (int)sdata.HotX, (int)sdata.HotY);
 			}
 			
@@ -1088,7 +1088,7 @@ namespace Xwt.GtkBackend
 			DragDropInfo.CurrentDragData = sdata.Data;
 			EventsRootWidget.DragBegin += HandleDragBegin;
 			if (sdata.ImageBackend != null) {
-				var img = ((GtkImage)sdata.ImageBackend).GetBestFrame (Widget, 24, 24);
+				var img = ((GtkImage)sdata.ImageBackend).GetBestFrame (ApplicationContext, Widget, 24, 24, true);
 				IconInitializer.Init (EventsRootWidget, img, sdata.HotX, sdata.HotY);
 			}
 			Gtk.Drag.Begin (EventsRootWidget, Util.BuildTargetTable (sdata.Data.DataTypes), action, 1, Gtk.Global.CurrentEvent ?? new Gdk.Event (IntPtr.Zero));

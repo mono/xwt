@@ -62,8 +62,6 @@ namespace Xwt.Backends
 		
 		public abstract void DrawTextLayout (object backend, TextLayout layout, double x, double y);
 
-		public abstract bool CanDrawImage (object backend, object img);
-		
 		public abstract void DrawImage (object backend, ImageDescription img, double x, double y);
 
 		public abstract void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect);

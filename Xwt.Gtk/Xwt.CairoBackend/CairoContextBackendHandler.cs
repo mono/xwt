@@ -29,6 +29,7 @@ using System;
 using Xwt.Backends;
 
 using Xwt.Drawing;
+using Xwt.GtkBackend;
 
 namespace Xwt.CairoBackend
 {
@@ -37,6 +38,12 @@ namespace Xwt.CairoBackend
 		public double GlobalAlpha = 1;
 		public Cairo.Context Context;
 		public Cairo.Surface TempSurface;
+		public double ScaleFactor = 1;
+
+		public CairoContextBackend (double scaleFactor)
+		{
+			ScaleFactor = scaleFactor;
+		}
 
 		public void Dispose ()
 		{
@@ -54,7 +61,7 @@ namespace Xwt.CairoBackend
 	public class CairoContextBackendHandler: ContextBackendHandler
 	{
 		#region IContextBackendHandler implementation
-		
+
 		public override void Save (object backend)
 		{
 			CairoContextBackend gc = (CairoContextBackend)backend;
@@ -206,6 +213,8 @@ namespace Xwt.CairoBackend
 		public override void SetPattern (object backend, object p)
 		{
 			Cairo.Context ctx = ((CairoContextBackend)backend).Context;
+			if (p is ImagePatternBackend)
+				p = ((ImagePatternBackend)p).GetPattern (ApplicationContext, ((CairoContextBackend)backend).ScaleFactor);
 			if (p != null)
 				ctx.Pattern = (Cairo.Pattern) p;
 			else
@@ -223,15 +232,6 @@ namespace Xwt.CairoBackend
 			CairoTextLayoutBackendHandler.Draw (ctx, lb, x, y);
 		}
 
-		protected virtual void SetSourceImage (Cairo.Context ctx, object img, double x, double y)
-		{
-		}
-		
-		public override bool CanDrawImage (object backend, object img)
-		{
-			return true;
-		}
-		
 		public override void DrawImage (object backend, ImageDescription img, double x, double y)
 		{
 			CairoContextBackend ctx = (CairoContextBackend)backend;
@@ -239,7 +239,7 @@ namespace Xwt.CairoBackend
 			img.Alpha *= ctx.GlobalAlpha;
 			var pix = (Xwt.GtkBackend.GtkImage) img.Backend;
 
-			pix.Draw (ApplicationContext, ctx.Context, x, y, img);
+			pix.Draw (ApplicationContext, ctx.Context, ctx.ScaleFactor, x, y, img);
 		}
 		
 		public override void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect)
@@ -256,18 +256,13 @@ namespace Xwt.CairoBackend
 			img.Alpha *= ctx.GlobalAlpha;
 
 			var pix = (Xwt.GtkBackend.GtkImage) img.Backend;
-			pix.Draw (ApplicationContext, ctx.Context, 0, 0, img);
+			pix.Draw (ApplicationContext, ctx.Context, ctx.ScaleFactor, 0, 0, img);
 			ctx.Context.Restore ();
 		}
 		
 		protected virtual Size GetImageSize (object img)
 		{
 			return new Size (0,0);
-		}
-		
-		protected virtual object ResolveImage (object img, double width, double height)
-		{
-			return img;
 		}
 		
 		public override void Rotate (object backend, double angle)
@@ -298,7 +293,7 @@ namespace Xwt.CairoBackend
 		public override object CreatePath ()
 		{
 			Cairo.Surface sf = new Cairo.ImageSurface (null, Cairo.Format.A1, 0, 0, 0);
-			return new CairoContextBackend {
+			return new CairoContextBackend (1) { // scale doesn't matter here, we are going to use it only for creating a path
 				TempSurface = sf,
 				Context = new Cairo.Context (sf)
 			};

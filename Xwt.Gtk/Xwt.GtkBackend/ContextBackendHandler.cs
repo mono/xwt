@@ -32,18 +32,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class ContextBackendHandler: CairoContextBackendHandler
-	{
-		protected override object ResolveImage (object img, double width, double height)
-		{
-			if (img is String)
-				return ImageHandler.CreateBitmap ((string)img, width, height);
-			else
-				return img;
-		}
-	}
-	
-	public class ContextBackendHandlerWithPango: ContextBackendHandler
+	public class ContextBackendHandlerWithPango: CairoContextBackendHandler
 	{
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{

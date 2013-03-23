@@ -265,14 +265,9 @@ namespace Xwt.Mac
 			MacTextLayoutBackendHandler.Draw (ctx, Toolkit.GetBackend (layout), x, y);
 		}
 
-		public override bool CanDrawImage (object backend, object img)
-		{
-			return img is NSImage;
-		}
-
 		public override void DrawImage (object backend, ImageDescription img, double x, double y)
 		{
-			var srcRect = new Rectangle (Point.Zero, ((NSImage)img.Backend).Size.ToXwtSize ());
+			var srcRect = new Rectangle (Point.Zero, img.Size);
 			var destRect = new Rectangle (x, y, img.Size.Width, img.Size.Height);
 			DrawImage (backend, img, srcRect, destRect);
 		}
@@ -280,14 +275,14 @@ namespace Xwt.Mac
 		public override void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
-			NSImage image = (NSImage) img.Backend;
+			NSImage image = img.ToNSImage ();
 			var rect = new RectangleF (0, 0, (float)destRect.Width, (float)destRect.Height);
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)img.Alpha);
 			ctx.TranslateCTM ((float)destRect.X, (float)destRect.Y + rect.Height);
 			ctx.ScaleCTM (1f, -1f);
 			RectangleF rr = RectangleF.Empty;
-			ctx.DrawImage (rect, image.AsCGImage (ref rr, null, null).WithImageInRect (srcRect.ToRectangleF ()));
+			ctx.DrawImage (rect, image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null).WithImageInRect (srcRect.ToRectangleF ()));
 			ctx.RestoreState ();
 		}
 		

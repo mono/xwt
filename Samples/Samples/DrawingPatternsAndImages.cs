@@ -54,7 +54,7 @@ namespace Samples
 			
 			// Image
 			var arcColor = new Color (1, 0, 1);
-			ImageBuilder ib = new ImageBuilder (30, 30, ImageFormat.ARGB32);
+			ImageBuilder ib = new ImageBuilder (30, 30);
 			ib.Context.Arc (15, 15, 15, 0, 360);
 			ib.Context.SetColor (arcColor);
 			ib.Context.Fill ();

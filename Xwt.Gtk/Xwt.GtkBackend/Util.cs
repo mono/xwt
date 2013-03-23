@@ -65,8 +65,10 @@ namespace Xwt.GtkBackend
 				return;
 			if (val is string)
 				data.Text = (string)val;
-			else if (val is Xwt.Drawing.Image)
-				data.SetPixbuf (((GtkImage) Toolkit.GetBackend (val)).GetBestFrame ());
+			else if (val is Xwt.Drawing.Image) {
+				var bmp = ((Image)val).ToBitmap ();
+				data.SetPixbuf (((GtkImage)Toolkit.GetBackend (bmp)).Frames[0]);
+			}
 			else {
 				var at = Gdk.Atom.Intern (atomType, false);
 				data.Set (at, 0, TransferDataSource.SerializeValue (val));
@@ -289,7 +291,16 @@ namespace Xwt.GtkBackend
 			}
 			return image;
 		}
-		
+
+		public static double GetScaleFactor (Gtk.Widget w)
+		{
+			return 1;
+		}
+
+		public static double GetDefaultScaleFactor ()
+		{
+			return 1;
+		}
 	}
 }
 

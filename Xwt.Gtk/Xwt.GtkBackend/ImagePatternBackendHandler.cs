@@ -33,25 +33,54 @@ namespace Xwt.GtkBackend
 		#region IImagePatternBackendHandler implementation
 		public override object Create (ImageDescription img)
 		{
-			// TODO: get best size
-			Gdk.Pixbuf pb = ((GtkImage)img.Backend).GetBestFrame ();
-			var imgs = new Cairo.ImageSurface (Cairo.Format.ARGB32, pb.Width, pb.Height);
-			var ic = new Cairo.Context (imgs);
-			Gdk.CairoHelper.SetSourcePixbuf (ic, pb, 0, 0);
-			ic.Paint ();
-			imgs.Flush ();
-			((IDisposable)ic).Dispose ();
-			var p = new Cairo.SurfacePattern (imgs);
-			p.Extend = Cairo.Extend.Repeat;
-			return p;
+			return new ImagePatternBackend () {
+				Image = img
+			};
 		}
 
 		public override void Dispose (object img)
 		{
-			var pb = (Cairo.SurfacePattern)img;
+			var pb = (ImagePatternBackend)img;
 			pb.Dispose ();
 		}
 		#endregion
+	}
+
+	class ImagePatternBackend
+	{
+		public ImageDescription Image;
+
+		Cairo.SurfacePattern pattern;
+		double currentScaleFactor;
+
+		public Cairo.Pattern GetPattern (ApplicationContext actx, double scaleFactor)
+		{
+			if (pattern == null || currentScaleFactor != scaleFactor) {
+				if (pattern != null)
+					pattern.Dispose ();
+				Gdk.Pixbuf pb = ((GtkImage)Image.Backend).GetBestFrame (actx, scaleFactor, Image.Size.Width, Image.Size.Height, false);
+				var imgs = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int)(Image.Size.Width * scaleFactor), (int)(Image.Size.Height * scaleFactor));
+				var ic = new Cairo.Context (imgs);
+				ic.Scale ((double)imgs.Width / (double)pb.Width, (double)imgs.Height / (double)pb.Height);
+				Gdk.CairoHelper.SetSourcePixbuf (ic, pb, 0, 0);
+				ic.Paint ();
+				imgs.Flush ();
+				((IDisposable)ic).Dispose ();
+				pattern = new Cairo.SurfacePattern (imgs);
+				pattern.Extend = Cairo.Extend.Repeat;
+				var cm = new Cairo.Matrix ();
+				cm.Scale (scaleFactor, scaleFactor);
+				pattern.Matrix = cm;
+				currentScaleFactor = scaleFactor;
+			}
+			return pattern;
+		}
+
+		public void Dispose ()
+		{
+			if (pattern != null)
+				pattern.Dispose ();
+		}
 	}
 }
 

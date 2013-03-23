@@ -26,6 +26,7 @@
 using System;
 using Xwt;
 using Xwt.Backends;
+using System.Collections.Generic;
 
 
 namespace Xwt.Drawing
@@ -33,36 +34,31 @@ namespace Xwt.Drawing
 	public sealed class ImageBuilder: XwtObject, IDisposable
 	{
 		Context ctx;
-		ImageBuilderBackendHandler handler;
-		object backend;
-		int width;
-		int height;
+		VectorContextBackend backend;
+		double width;
+		double height;
+
+		static VectorImageRecorderContextHandler vectorImageRecorderContextHandler = new VectorImageRecorderContextHandler ();
 		
-		public ImageBuilder (int width, int height): this (width, height, ImageFormat.ARGB32)
+		public ImageBuilder (double width, double height)
 		{
-		}
-		
-		public ImageBuilder (int width, int height, ImageFormat format)
-		{
-			handler = ToolkitEngine.ImageBuilderBackendHandler;
+			backend = new VectorContextBackend ();
+			ctx = new Context (backend, ToolkitEngine, vectorImageRecorderContextHandler);
 			this.width = width;
 			this.height = height;
-			backend = handler.CreateImageBuilder (width, height, format);
-			ctx = new Context (handler.CreateContext (backend), ToolkitEngine);
 		}
 		
-		public int Width {
-			get { return width; }
+		public double Width {
+			get { return width; } 
 		}
 		
-		public int Height {
+		public double Height {
 			get { return height; }
 		}
 		
 		public void Dispose ()
 		{
 			ctx.Dispose ();
-			handler.Dispose (backend);
 		}
 
 		public Context Context {
@@ -73,8 +69,9 @@ namespace Xwt.Drawing
 		
 		public Image ToImage ()
 		{
-			return new Image (handler.CreateImage (backend), ToolkitEngine);
+			return new VectorImage (new Size (width, height), backend.ToVectorImageData ());
 		}
 	}
+
 }
 

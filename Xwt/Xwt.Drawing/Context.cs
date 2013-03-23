@@ -38,9 +38,13 @@ namespace Xwt.Drawing
 		double globalAlpha = 1;
 		Stack<double> alphaStack = new Stack<double> ();
 		
-		internal Context (object backend, Toolkit toolkit): base (backend, toolkit, toolkit.ContextBackendHandler)
+		internal Context (object backend, Toolkit toolkit): this (backend, toolkit, toolkit.ContextBackendHandler)
 		{
-			handler = toolkit.ContextBackendHandler;
+		}
+
+		internal Context (object backend, Toolkit toolkit, ContextBackendHandler handler): base (backend, toolkit, handler)
+		{
+			this.handler = handler;
 		}
 		
 		/// <summary>
