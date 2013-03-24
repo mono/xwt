@@ -239,10 +239,20 @@ namespace Xwt.Mac
 			if (gc.CurrentStatus.Pattern is ImagePatternInfo) {
 
 				var pi = (ImagePatternInfo) gc.CurrentStatus.Pattern;
-				RectangleF bounds = new RectangleF (PointF.Empty, new SizeF (pi.Image.Width, pi.Image.Height));
+				RectangleF bounds = new RectangleF (PointF.Empty, new SizeF (pi.Image.Size.Width, pi.Image.Size.Height));
 				var t = CGAffineTransform.Multiply (CGAffineTransform.MakeScale (1f, -1f), gc.Context.GetCTM ());
-				var pattern = new CGPattern (bounds, t, bounds.Width, bounds.Height,
-				                      CGPatternTiling.ConstantSpacing, true, c => c.DrawImage (bounds, pi.Image));
+
+				CGPattern pattern;
+				if (pi.Image is CustomImage) {
+					pattern = new CGPattern (bounds, t, bounds.Width, bounds.Height, CGPatternTiling.ConstantSpacing, true, c => {
+						c.TranslateCTM (0, bounds.Height);
+						c.ScaleCTM (1f, -1f);
+						((CustomImage)pi.Image).DrawInContext (c);
+					});
+				} else {
+					pattern = new CGPattern (bounds, t, bounds.Width, bounds.Height,
+				                      CGPatternTiling.ConstantSpacing, true, c => c.DrawImage (bounds, null));
+				}
 
 				CGContext ctx = gc.Context;
 				float[] alpha = new[] { 1.0f };
@@ -276,13 +286,24 @@ namespace Xwt.Mac
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
 			NSImage image = img.ToNSImage ();
-			var rect = new RectangleF (0, 0, (float)destRect.Width, (float)destRect.Height);
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)img.Alpha);
-			ctx.TranslateCTM ((float)destRect.X, (float)destRect.Y + rect.Height);
-			ctx.ScaleCTM (1f, -1f);
-			RectangleF rr = RectangleF.Empty;
-			ctx.DrawImage (rect, image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null).WithImageInRect (srcRect.ToRectangleF ()));
+
+			double rx = destRect.Width / srcRect.Width;
+			double ry = destRect.Height / srcRect.Height;
+			ctx.AddRect (new RectangleF ((float)destRect.X, (float)destRect.Y, (float)destRect.Width, (float)destRect.Height));
+			ctx.Clip ();
+			ctx.TranslateCTM ((float)(destRect.X - (srcRect.X * rx)), (float)(destRect.Y - (srcRect.Y * ry)));
+			ctx.ScaleCTM ((float)rx, (float)ry);
+
+			if (image is CustomImage) {
+				((CustomImage)image).DrawInContext ((CGContextBackend)backend);
+			} else {
+				RectangleF rr = new RectangleF (0, 0, (float)image.Size.Width, image.Size.Height);
+				ctx.ScaleCTM (1f, -1f);
+				ctx.DrawImage (new RectangleF (0, -image.Size.Height, image.Size.Width, image.Size.Height), image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
+			}
+
 			ctx.RestoreState ();
 		}
 		

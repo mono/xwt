@@ -217,15 +217,30 @@ namespace Xwt.Mac
 		[Export ("drawIt:")]
 		public void DrawIt (NSObject ob)
 		{
-			var s = Size;
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+			DrawInContext (ctx);
+		}
+
+		internal void DrawInContext (CGContext ctx)
+		{
 			var backend = new CGContextBackend {
 				Context = ctx,
 				InverseViewTransform = ctx.GetCTM ().Invert ()
 			};
+			DrawInContext (backend);
+		}
+
+		internal void DrawInContext (CGContextBackend ctx)
+		{
+			var s = Size;
 			actx.InvokeUserCode (delegate {
-				drawCallback (backend, new Rectangle (0, 0, s.Width, s.Height));
+				drawCallback (ctx, new Rectangle (0, 0, s.Width, s.Height));
 			});
+		}
+
+		public override CGImage AsCGImage (ref RectangleF proposedDestRect, NSGraphicsContext referenceContext, NSDictionary hints)
+		{
+			return base.AsCGImage (ref proposedDestRect, referenceContext, hints);
 		}
 
 		public CustomImage Clone ()
