@@ -48,6 +48,10 @@ namespace Xwt.WPFBackend
 			this.defaultResult = MessageBoxResult.Cancel;
 		}
 
+		public void Initialize (ApplicationContext actx)
+		{
+		}
+
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{
 			this.icon = GetIcon (message.Icon);
@@ -77,20 +81,17 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
-		MessageBoxImage GetIcon (string iconText)
+		MessageBoxImage GetIcon (Xwt.Drawing.Image icon)
 		{
-			switch (iconText) {
-			case StockIconId.Error:
+			if (icon == Xwt.StockIcons.Error)
 				return MessageBoxImage.Error;
-			case StockIconId.Warning:
+			if (icon == Xwt.StockIcons.Warning)
 				return MessageBoxImage.Warning;
-			case StockIconId.Information:
+			if (icon == Xwt.StockIcons.Information)
 				return MessageBoxImage.Information;
-			case StockIconId.Question:
+			if (icon == Xwt.StockIcons.Question)
 				return MessageBoxImage.Question;
-			default:
-				return MessageBoxImage.None;
-			}
+			return MessageBoxImage.None;
 		}
 
 		Command ConvertResultToCommand (MessageBoxResult dialogResult)

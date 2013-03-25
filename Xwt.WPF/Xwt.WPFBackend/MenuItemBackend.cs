@@ -98,20 +98,12 @@ namespace Xwt.WPFBackend
 			set { this.menuItem.Visibility = (value) ? Visibility.Visible : Visibility.Collapsed; }
 		}
 
-		public void SetImage (object imageBackend)
+		public void SetImage (ImageDescription imageBackend)
 		{
-			if (imageBackend == null)
+			if (imageBackend.IsNull)
 				this.menuItem.Icon = null;
 			else
-			{
-				var img = (SWMI.BitmapSource) imageBackend;
-				this.menuItem.Icon = new System.Windows.Controls.Image
-				{
-					Source = img,
-					Width = img.Width,
-					Height = img.Height
-				};
-			}
+				this.menuItem.Icon = new ImageBox (Context) { ImageSource = imageBackend };
 		}
 
 		public void SetSubmenu (IMenuBackend menu)

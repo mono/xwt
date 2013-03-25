@@ -46,10 +46,10 @@ namespace Xwt.WPFBackend
 		SWM.Brush patternBrush;
 		SWM.SolidColorBrush colorBrush;
 
+		public double ScaleFactor { get; set; }
+
 		public SW.Point LastFigureStart { get; set; }
 		public SW.Point EndPoint { get; set; }
-
-		public double PixelRatio { get; private set; }
 
 		public PathFigure Path { get; private set; }
 		public SWM.Pen Pen { get; private set; }
@@ -78,12 +78,12 @@ namespace Xwt.WPFBackend
 
 		public System.Windows.Media.DrawingContext Context { get; private set; }
 
-		internal DrawingContext (Visual v, System.Windows.Media.DrawingContext dc)
+		internal DrawingContext (System.Windows.Media.DrawingContext dc, double scaleFactor)
 		{
 			Context = dc;
+			ScaleFactor = scaleFactor;
 			AllocatePen (Color.FromRgb (0, 0, 0), 1, DashStyles.Solid);
 			ResetPath ();
-			PixelRatio = v.GetPixelRatios ().Width;
 		}
 
 		internal DrawingContext (DrawingContext context)

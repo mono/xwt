@@ -53,6 +53,15 @@ namespace Xwt.Backends
 			InitializeApplication ();
 		}
 
+		public static T GetToolkitBackend<T> () where T : ToolkitEngineBackend
+		{
+			return (T)Toolkit.GetToolkitBackend (typeof (T));
+		}
+
+		public ApplicationContext ApplicationContext {
+			get { return toolkit.Context; }
+		}
+
 		/// <summary>
 		/// Gets a value indicating whether this toolkit is running as a guest of another toolkit
 		/// </summary>

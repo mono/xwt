@@ -240,7 +240,12 @@ namespace Xwt.WPFBackend
 		public static SWM.ImageSource AsImageSource (object nativeImage)
 		{
 			var source = nativeImage as WpfImage;
-			return source.Image;
+			return source.Frames[0];
+		}
+
+		public static SWM.ImageSource ToImageSource (this Xwt.Backends.ImageDescription img)
+		{
+			return AsImageSource (img.Backend);
 		}
 
 		//

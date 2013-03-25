@@ -95,22 +95,16 @@ namespace Xwt.WPFBackend
 			Button.InvalidateMeasure ();
 		}
 
-		public void SetContent (string label, Xwt.Drawing.Image image, ContentPosition position)
+		public void SetContent (string label, ImageDescription image, ContentPosition position)
 		{
-			if (image == null)
+			if (image.IsNull)
 				Button.Content = label;
 			else
 			{
-				var imageBackend = Toolkit.GetBackend (image.ToBitmap ());
 				SWC.DockPanel grid = new SWC.DockPanel ();
 
-				var img = DataConverter.AsImageSource (imageBackend);
-				SWC.Image imageCtrl = new SWC.Image
-				{
-					Source = img,
-					Width = img.Width,
-					Height = img.Height
-				};
+				var imageCtrl = new ImageBox (Context);
+				imageCtrl.ImageSource = image;
 
 				SWC.DockPanel.SetDock (imageCtrl, DataConverter.ToWpfDock (position));
 				grid.Children.Add (imageCtrl);

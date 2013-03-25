@@ -34,6 +34,7 @@ namespace Xwt
 	public class Toolkit: IFrontend
 	{
 		static Toolkit currentEngine;
+		static Dictionary<Type, Toolkit> toolkits = new Dictionary<Type, Toolkit> ();
 
 		ToolkitEngineBackend backend;
 		ApplicationContext context;
@@ -150,6 +151,7 @@ namespace Xwt
 
 		void Initialize (bool isGuest)
 		{
+			toolkits[Backend.GetType ()] = this;
 			backend.Initialize (this, isGuest);
 			ContextBackendHandler = Backend.CreateBackend<ContextBackendHandler> ();
 			GradientBackendHandler = Backend.CreateBackend<GradientBackendHandler> ();
@@ -161,6 +163,15 @@ namespace Xwt
 			ImageBackendHandler = Backend.CreateBackend<ImageBackendHandler> ();
 			DrawingPathBackendHandler = Backend.CreateBackend<DrawingPathBackendHandler> ();
 			DesktopBackend = Backend.CreateBackend<DesktopBackend> ();
+		}
+
+		internal static ToolkitEngineBackend GetToolkitBackend (Type type)
+		{
+			Toolkit t;
+			if (toolkits.TryGetValue (type, out t))
+				return t.backend;
+			else
+				return null;
 		}
 
 		internal void SetActive ()

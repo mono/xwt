@@ -36,28 +36,22 @@ namespace Xwt.WPFBackend
 	{
 		public ImageViewBackend()
 		{
-			Widget = new Image ();
-			Image.Stretch = Stretch.None;
 		}
 
-		public void SetImage (Xwt.Drawing.Image image)
+		protected override void Initialize ()
 		{
-			if (image == null) {
-				Image.Source = null;
-				return;
-			}
-			ImageSource source = DataConverter.AsImageSource (Toolkit.GetBackend (image));
-			if (source == null)
-				source = DataConverter.AsImageSource (Toolkit.GetBackend (image.ToBitmap ()));
-			if (source == null)
-				throw new ArgumentException ("image is not of the expected type", "image");
-
-			Image.Source = source;
+			base.Initialize ();
+			Widget = new ImageBox (Context);
 		}
 
-		protected Image Image
+		public void SetImage (ImageDescription image)
 		{
-			get { return (Image) NativeWidget; }
+			Image.ImageSource = image;
+		}
+
+		protected ImageBox Image
+		{
+			get { return (ImageBox)NativeWidget; }
 		}
 	}
 }

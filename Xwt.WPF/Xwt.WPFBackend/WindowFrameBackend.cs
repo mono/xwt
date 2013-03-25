@@ -120,9 +120,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void SetIcon (object imageBackend)
+		public void SetIcon (ImageDescription imageBackend)
 		{
-			window.Icon = DataConverter.AsImageSource (imageBackend);
+			window.Icon = imageBackend.ToImageSource ();
 		}
 
 		string IWindowFrameBackend.Title {
@@ -147,6 +147,13 @@ namespace Xwt.WPFBackend
 				return false;
 			}
 			set {
+			}
+		}
+
+		object IWindowFrameBackend.Screen {
+			get {
+				var sb = Bounds;
+				return System.Windows.Forms.Screen.FromRectangle (new System.Drawing.Rectangle ((int)sb.X, (int)sb.Y, (int)sb.Width, (int)sb.Height));
 			}
 		}
 

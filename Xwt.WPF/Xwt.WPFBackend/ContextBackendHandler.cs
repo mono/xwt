@@ -240,6 +240,8 @@ namespace Xwt.WPFBackend
 		public override void SetPattern (object backend, object p)
 		{
 			var c = (DrawingContext) backend;
+			if (p is ImagePattern)
+				p = ((ImagePattern)p).GetBrush (c.ScaleFactor);
 			c.SetPattern ((System.Windows.Media.Brush)p);
 		}
 
@@ -255,23 +257,29 @@ namespace Xwt.WPFBackend
 			c.Context.DrawText (t.FormattedText, new SW.Point (x, y));
 		}
 
-		public override bool CanDrawImage (object backend, object img)
-		{
-			return true;
-		}
-
-		public override void DrawImage (object backend, object img, double x, double y, double width, double height, double alpha)
+		public override void DrawImage (object backend, ImageDescription img, double x, double y)
 		{
 			var c = (DrawingContext) backend;
-			ImageSource bmp = DataConverter.AsImageSource (img);
-			DrawImageCore (c.Context, bmp, x, y, width, height, alpha);
+			WpfImage bmp = (WpfImage) img.Backend;
+
+			bmp.Draw (ApplicationContext, c.Context, c.ScaleFactor, x, y, img);
 		}
 
-		public override void DrawImage (object backend, object img, Rectangle srcRect, Rectangle destRect, double width, double height, double alpha)
+		public override void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect)
 		{
 			var c = (DrawingContext) backend;
-			ImageSource bmp = DataConverter.AsImageSource (img);
-			DrawImageCore (c.Context, bmp, srcRect, destRect, alpha);
+			WpfImage bmp = (WpfImage)img.Backend;
+
+			c.Context.PushClip (new RectangleGeometry (destRect.ToWpfRect ()));
+			c.Context.PushTransform (new TranslateTransform (destRect.X - srcRect.X, destRect.Y - srcRect.Y));
+			var sw = destRect.Width / srcRect.Width;
+			var sh = destRect.Height / srcRect.Height;
+			c.Context.PushTransform (new ScaleTransform (sw, sh));
+			bmp.Draw (ApplicationContext, c.Context, c.ScaleFactor, 0, 0, img);
+
+			c.Context.Pop (); // Scale
+			c.Context.Pop (); // Translate
+			c.Context.Pop (); // Clip
 		}
 
 		public override void Rotate (object backend, double angle)
@@ -332,36 +340,6 @@ namespace Xwt.WPFBackend
 
 		public override void Dispose (object backend)
 		{
-		}
-
-		internal static void DrawImageCore (SWM.DrawingContext g, ImageSource bmp, double x, double y, double width, double height, double alpha)
-		{
-			if (alpha < 1)
-				g.PushOpacity (alpha);
-
-			g.DrawImage (bmp, new Rect (x, y, width, height));
-
-			if (alpha < 1)
-				g.Pop ();
-		}
-
-		internal void DrawImageCore (SWM.DrawingContext g, ImageSource bmp, Rectangle srcRect, Rectangle destRect, double alpha)
-		{
-			if (alpha < 1)
-				g.PushOpacity (alpha);
-
-			g.PushClip (new RectangleGeometry (destRect.ToWpfRect ()));
-
-			var size = bmp is BitmapSource ? new Size (((BitmapSource)bmp).PixelWidth, ((BitmapSource)bmp).PixelHeight) : new Size (bmp.Width, bmp.Height);
-			var sw = destRect.Width / srcRect.Width;
-			var sh = destRect.Height / srcRect.Height;
-
-			g.DrawImage (bmp, new Rect (destRect.X - srcRect.X * sw, destRect.Y - srcRect.Y * sh, size.Width * sw, size.Height * sh));
-
-			g.Pop (); // Clip
-
-			if (alpha < 1)
-				g.Pop ();
 		}
 	}
 }
