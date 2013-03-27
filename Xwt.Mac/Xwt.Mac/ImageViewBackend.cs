@@ -48,20 +48,14 @@ namespace Xwt.Mac
 			return img == null ? Size.Zero : img.Size.ToXwtSize ();
 		}
 
-		public void SetImage (Image image)
+		public void SetImage (ImageDescription image)
 		{
-			if (image == null) {
+			if (image.IsNull) {
 				Widget.Image = null;
 				return;
 			}
 
-			NSImage nativeImage = Toolkit.GetBackend (image) as NSImage;
-			if (nativeImage == null)
-				nativeImage = Toolkit.GetBackend (image.ToBitmap ()) as NSImage;
-			if (nativeImage == null)
-				throw new ArgumentException ("nativeImage is not of the expected type", "nativeImage");
-
-			Widget.Image = nativeImage;
+			Widget.Image = image.ToNSImage ();
 			Widget.SetFrameSize (Widget.Image.Size);
 		}
 	}

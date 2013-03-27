@@ -35,18 +35,18 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.StatusIcon statusItem;
 		MenuBackend menu;
+		ApplicationContext context;
 			
-		public void SetImage (object imageBackend) 
-		{
-			if (imageBackend == null) {
-				throw new ArgumentNullException ("imageBackend");
-			}
-			statusItem.Pixbuf = (Pixbuf)imageBackend;
-		}
-		
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			this.context = context;
 			statusItem = new Gtk.StatusIcon();
+		}
+
+		public void SetImage (ImageDescription image) 
+		{
+			image = image.WithDefaultSize (Gtk.IconSize.Menu);
+			statusItem.Pixbuf = ((GtkImage)image.Backend).GetBestFrame (context, Util.GetDefaultScaleFactor (), image.Size.Width, image.Size.Height, true);
 		}
 		
 		public void SetMenu (object menuBackend) 

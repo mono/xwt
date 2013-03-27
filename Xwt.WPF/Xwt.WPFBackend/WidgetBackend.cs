@@ -173,7 +173,7 @@ namespace Xwt.WPFBackend
 			if (!(Widget is Control)) {
 				double size = WpfFontBackendHandler.GetPointsFromDeviceUnits (SystemFonts.MessageFontSize);
 
-				return new FontData (SystemFonts.MessageFontFamily, size, Drawing.FontSizeUnit.Points) {
+				return new FontData (SystemFonts.MessageFontFamily, size) {
 					Style = SystemFonts.MessageFontStyle,
 					Weight = SystemFonts.MessageFontWeight
 				};

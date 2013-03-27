@@ -31,9 +31,9 @@ namespace Xwt.Drawing
 {
 	public sealed class ImagePattern: Pattern
 	{
-		public ImagePattern (Image img)
+		public ImagePattern (Image image)
 		{
-			Backend = ToolkitEngine.ImagePatternBackendHandler.Create (GetBackend (img));
+			Backend = ToolkitEngine.ImagePatternBackendHandler.Create (image != null ? image.ImageDescription : ImageDescription.Null);
 		}
 
 		public override void Dispose ()

@@ -52,7 +52,7 @@ namespace Xwt.WPFBackend
 		public override object CreateContext (object backend)
 		{
 			var visual = (ImageBuilder)backend;
-			visual.Context = new DrawingContext (visual, visual.RenderOpen ());
+			visual.Context = new DrawingContext (visual.RenderOpen (), visual.GetScaleFactor ());
 			return visual.Context;
 		}
 

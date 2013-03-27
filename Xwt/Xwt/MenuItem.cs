@@ -103,7 +103,7 @@ namespace Xwt
 		
 		public Image Image {
 			get { return image; }
-			set { image = value; Backend.SetImage (XwtObject.GetBackend (value)); }
+			set { image = value; Backend.SetImage (image != null ? image.ImageDescription : ImageDescription.Null); }
 		}
 		
 		public void Show ()

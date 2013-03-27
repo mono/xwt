@@ -39,7 +39,6 @@ namespace Xwt.Drawing
 	public sealed class Font: XwtObject
 	{
 		FontBackendHandler handler;
-		FontSizeUnit unit;
 
 		internal Font (object backend): this (backend, null)
 		{
@@ -73,13 +72,8 @@ namespace Xwt.Drawing
 				throw new ArgumentException ("Font family name or size not specified");
 
 			double size = 0;
-			FontSizeUnit unit = FontSizeUnit.Points;
 
 			var s = parts[parts.Length - 1];
-			if (s.EndsWith ("px")) {
-				s = s.Substring (0, s.Length - 2);
-				unit = FontSizeUnit.Pixels;
-			}
 			if (!double.TryParse (s, out size))
 				throw new ArgumentException ("Invalid font size: " + s);
 
@@ -105,7 +99,7 @@ namespace Xwt.Drawing
 
 			string fname = string.Join (" ", parts, 0, i + 1);
 
-			return new Font (handler.Create (fname, size, unit, style, weight, stretch), toolkit);
+			return new Font (handler.Create (fname, size, style, weight, stretch), toolkit);
 		}
 		
 		public Font WithFamily (string fontFamily)
@@ -128,24 +122,14 @@ namespace Xwt.Drawing
 			}
 		}
 
-		public FontSizeUnit SizeUnit {
-			get { return unit; }
-		}
-
-
-		public Font WithPointSize (double size)
+		public Font WithSize (double size)
 		{
-			return new Font (handler.SetSize (Backend, size, FontSizeUnit.Points));
-		}
-		
-		public Font WithPixelSize (double size)
-		{
-			return new Font (handler.SetSize (Backend, size, FontSizeUnit.Pixels));
+			return new Font (handler.SetSize (Backend, size));
 		}
 		
 		public Font WithScaledSize (double scale)
 		{
-			return new Font (handler.SetSize (Backend, Size * scale, unit), ToolkitEngine);
+			return new Font (handler.SetSize (Backend, Size * scale), ToolkitEngine);
 		}
 		
 		public FontStyle Style {
@@ -191,18 +175,10 @@ namespace Xwt.Drawing
 			if (Stretch != FontStretch.Normal)
 				sb.Append (' ').Append (Stretch);
 			sb.Append (' ').Append (Size.ToString (CultureInfo.InvariantCulture));
-			if (unit == FontSizeUnit.Pixels)
-				sb.Append ("px");
 			return sb.ToString ();
 		}
 	}
 
-	public enum FontSizeUnit
-	{
-		Pixels,
-		Points
-	}
-	
 	public enum FontStyle
 	{
 		Normal,

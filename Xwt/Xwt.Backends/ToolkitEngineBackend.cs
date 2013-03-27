@@ -53,6 +53,15 @@ namespace Xwt.Backends
 			InitializeApplication ();
 		}
 
+		public static T GetToolkitBackend<T> () where T : ToolkitEngineBackend
+		{
+			return (T)Toolkit.GetToolkitBackend (typeof (T));
+		}
+
+		public ApplicationContext ApplicationContext {
+			get { return toolkit.Context; }
+		}
+
 		/// <summary>
 		/// Gets a value indicating whether this toolkit is running as a guest of another toolkit
 		/// </summary>
@@ -272,6 +281,11 @@ namespace Xwt.Backends
 		/// <remarks>This funciton is used to determine if a widget is a child of another non-XWT widget
 		/// </remarks>
 		public abstract bool HasNativeParent (Widget w);
+
+		public static ImageDescription GetImageDescription (Image img)
+		{
+			return img != null ? img.ImageDescription : ImageDescription.Null;
+		}
 	}
 }
 

@@ -185,7 +185,7 @@ namespace Xwt.GtkBackend
 		
 		public CairoContextBackend CreateContext ()
 		{
-			CairoContextBackend ctx = new CairoContextBackend ();
+			CairoContextBackend ctx = new CairoContextBackend (Util.GetScaleFactor (this));
 			if (!IsRealized) {
 				Cairo.Surface sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, 1, 1);
 				Cairo.Context c = new Cairo.Context (sf);

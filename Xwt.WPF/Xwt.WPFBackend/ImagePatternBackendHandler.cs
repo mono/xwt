@@ -33,21 +33,46 @@ namespace Xwt.WPFBackend
 	public class WpfImagePatternBackendHandler
 		: ImagePatternBackendHandler
 	{
-		public override object Create (object img)
+		public override object Create (ImageDescription img)
 		{
-			var bmp = DataConverter.AsImageSource (img);
-			return new ImageBrush (bmp) {
-				TileMode = TileMode.Tile,
-				ViewportUnits = BrushMappingMode.Absolute,
-				AlignmentY = System.Windows.Media.AlignmentY.Top,
-				AlignmentX = System.Windows.Media.AlignmentX.Left,
-				Stretch = System.Windows.Media.Stretch.None,
-				Viewport = new System.Windows.Rect (0, 0, bmp.Width, bmp.Height)
-			};
+			return new ImagePattern (ApplicationContext, img);
 		}
 
 		public override void Dispose (object img)
 		{
+		}
+	}
+
+	class ImagePattern
+	{
+		ApplicationContext actx;
+		ImageDescription image;
+		double scaleFactor;
+		ImageBrush brush;
+
+		public ImagePattern (ApplicationContext actx, ImageDescription im)
+		{
+			this.actx = actx;
+			this.image = im;
+		}
+
+		public ImageBrush GetBrush (double scaleFactor)
+		{
+			if (brush == null || scaleFactor != this.scaleFactor) {
+				this.scaleFactor = scaleFactor;
+				var ib = (WpfImage)image.Backend;
+				var bmp = ib.GetBestFrame (actx, scaleFactor, image.Size.Width, image.Size.Height, true);
+				brush = new ImageBrush (bmp) {
+					TileMode = TileMode.Tile,
+					ViewportUnits = BrushMappingMode.Absolute,
+					AlignmentY = System.Windows.Media.AlignmentY.Top,
+					AlignmentX = System.Windows.Media.AlignmentX.Left,
+					Stretch = System.Windows.Media.Stretch.None,
+					Viewport = new System.Windows.Rect (0, 0, image.Size.Width * scaleFactor, image.Size.Height * scaleFactor)
+				};
+				brush.RelativeTransform = new ScaleTransform (1d/scaleFactor, 1d/scaleFactor);
+			}
+			return brush;
 		}
 	}
 }

@@ -99,7 +99,7 @@ namespace Xwt.GtkBackend
 		{
 			Widget.Clear ();
 			foreach (var v in views)
-				CellUtil.CreateCellRenderer (this, null, v, Widget.Model);
+				CellUtil.CreateCellRenderer (ApplicationContext, this, null, v, Widget.Model);
 		}
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)

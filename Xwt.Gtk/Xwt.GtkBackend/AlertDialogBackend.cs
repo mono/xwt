@@ -59,14 +59,22 @@ namespace Xwt.GtkBackend
 {
 	public class AlertDialogBackend: IAlertDialogBackend
 	{
+		ApplicationContext context;
+
 		#region IAlertDialogBackend implementation
 		
 		public void Dispose ()
 		{
 		}
-		
+
+		public void Initialize (ApplicationContext context)
+		{
+			this.context = context;
+		}
+
 		public Command Run (WindowFrame transientFor, MessageDescription message)
-		{			GtkAlertDialog alertDialog = new GtkAlertDialog (message);
+		{			
+			GtkAlertDialog alertDialog = new GtkAlertDialog (context, message);
 			alertDialog.FocusButton (message.DefaultButton);
 			var wb = (WindowFrameBackend)Toolkit.GetBackend (transientFor);
 			var win = wb != null ? wb.Window : null;

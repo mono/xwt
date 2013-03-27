@@ -29,6 +29,7 @@ using Xwt.Backends;
 
 using System.Reflection;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
@@ -36,12 +37,12 @@ namespace Xwt.Drawing
 	{
 		Size requestedSize;
 		internal NativeImageRef NativeRef;
-		Image sourceImage;
-		BitmapImage cachedBitmap;
 		internal double requestedAlpha = 1;
 
-		static readonly object NoBackend = new object ();
-
+		internal Image ()
+		{
+		}
+		
 		internal Image (object backend): base (backend)
 		{
 			Init ();
@@ -54,23 +55,11 @@ namespace Xwt.Drawing
 		
 		public Image (Image image): base (image.Backend, image.ToolkitEngine)
 		{
-			if (image.NativeRef != null) {
-				NativeRef = image.NativeRef;
-				Init ();
-			}
-			else
-				sourceImage = image.sourceImage ?? image;
+			NativeRef = image.NativeRef;
+			Init ();
 		}
 
-		protected Image (Toolkit toolkit): base (NoBackend, toolkit)
-		{
-		}
-
-		protected Image (): base (NoBackend)
-		{
-		}
-		
-		void Init ()
+		internal void Init ()
 		{
 			if (NativeRef == null) {
 				NativeRef = new NativeImageRef (Backend, ToolkitEngine);
@@ -95,21 +84,58 @@ namespace Xwt.Drawing
 				NativeRef.ReleaseReference (disposing);
 		}
 
+
+		internal ImageDescription ImageDescription {
+			get {
+				return new ImageDescription () {
+					Alpha = requestedAlpha,
+					Size = Size,
+					Backend = Backend
+				};
+			}
+		}
+
 		public static Image FromResource (Type type, string resource)
 		{
-			var toolkit = Toolkit.CurrentEngine;
-			var img = toolkit.ImageBackendHandler.LoadFromResource (type.Assembly, resource);
-			if (img == null)
-				throw new InvalidOperationException ("Resource not found: " + resource);
-			return new Image (img, toolkit);
+			if (type == null)
+				throw new ArgumentNullException ("type");
+			if (resource == null)
+				throw new ArgumentNullException ("resource");
+
+			return FromResource (type.Assembly, resource);
 		}
 		
-		public static Image FromResource (Assembly asm, string resource)
+		public static Image FromResource (Assembly assembly, string resource)
 		{
+			if (assembly == null)
+				throw new ArgumentNullException ("assembly");
+			if (resource == null)
+				throw new ArgumentNullException ("resource");
+			
 			var toolkit = Toolkit.CurrentEngine;
-			var img = toolkit.ImageBackendHandler.LoadFromResource (asm, resource);
+
+			var name = Path.GetFileNameWithoutExtension (resource);
+
+			var img = toolkit.ImageBackendHandler.LoadFromResource (assembly, resource);
 			if (img == null)
 				throw new InvalidOperationException ("Resource not found: " + resource);
+
+			List<object> altImages = new List<object> ();
+			foreach (var r in assembly.GetManifestResourceNames ()) {
+				int i = r.LastIndexOf ('@');
+				if (i != -1) {
+					string rname = r.Substring (0, i);
+					if (rname == resource || rname == name) {
+						var rim = toolkit.ImageBackendHandler.LoadFromResource (assembly, r);
+						if (rim != null)
+							altImages.Add (rim);
+					}
+				}
+			}
+			if (altImages.Count > 0) {
+				altImages.Insert (0, img);
+				img = toolkit.ImageBackendHandler.CreateMultiSizeImage (altImages);
+			}
 			return new Image (img, toolkit);
 		}
 		
@@ -125,11 +151,6 @@ namespace Xwt.Drawing
 			return new Image (toolkit.ImageBackendHandler.LoadFromStream (stream), toolkit);
 		}
 		
-		public static Image FromMultipleSizes (params Image[] images)
-		{
-			return new ImageSet (images);
-		}
-
 		public void Save (string file, ImageFileType fileType)
 		{
 			using (var f = File.OpenWrite (file))
@@ -141,12 +162,6 @@ namespace Xwt.Drawing
 			ToolkitEngine.ImageBackendHandler.SaveToStream (ToBitmap ().Backend, stream, fileType);
 		}
 		
-		internal virtual object SelectedBackend {
-			get {
-				return Backend != NoBackend ? Backend : null;
-			}
-		}
-		
 		public bool HasFixedSize {
 			get { return !Size.IsZero; }
 		}
@@ -155,10 +170,13 @@ namespace Xwt.Drawing
 			get {
 				if (!requestedSize.IsZero)
 					return requestedSize;
-				if (Backend != NoBackend && !ToolkitEngine.ImageBackendHandler.HasMultipleSizes (Backend))
+				if (!ToolkitEngine.ImageBackendHandler.HasMultipleSizes (Backend))
 					return ToolkitEngine.ImageBackendHandler.GetSize (Backend);
 				else
 					return Size.Zero;
+			}
+			internal set {
+				requestedSize = value;
 			}
 		}
 		
@@ -211,8 +229,6 @@ namespace Xwt.Drawing
 			get {
 				if (!requestedSize.IsZero)
 					return requestedSize;
-				if (Backend != NoBackend)
-					return ToolkitEngine.ImageBackendHandler.GetSize (Backend);
 				else
 					return GetDefaultSize ();
 			}
@@ -270,74 +286,39 @@ namespace Xwt.Drawing
 			};
 		}
 
-		public BitmapImage ToBitmap ()
+		public BitmapImage ToBitmap (ImageFormat format = ImageFormat.ARGB32)
 		{
-			var size = GetFixedSize ();
-			var bmp = GetCachedBitmap (size, requestedAlpha);
-			if (bmp != null)
-				return bmp;
-
-			if (sourceImage != null)
-				bmp = sourceImage.ToBitmap (size, requestedAlpha);
-			else
-				bmp = ToBitmap (size, requestedAlpha);
-
-			return cachedBitmap = bmp;
+			var s = GetFixedSize ();
+			return ToBitmap ((int)s.Width, (int)s.Height);
 		}
-		
-		BitmapImage ToBitmap (Size size, double alpha)
-		{
-			// Don't cache the bitmap here since this method may be called by other image instances
-			return GetCachedBitmap (size, alpha) ?? GenerateBitmap (size, alpha);
-		}
-		
-		BitmapImage GetCachedBitmap (Size size, double alpha)
-		{
-			return cachedBitmap != null && size == cachedBitmap.Size && this.requestedAlpha == alpha ? cachedBitmap : null;
-		}
-		
-		protected virtual BitmapImage GenerateBitmap (Size size, double alpha)
-		{
-			if (Backend != NoBackend) {
-				object bmp = Backend;
-				if (ToolkitEngine.ImageBackendHandler.IsBitmap (bmp)) {
-					if (size == ToolkitEngine.ImageBackendHandler.GetSize (bmp)) {
-						if (alpha == 1)
-							// The backend can be shared
-							return new BitmapImage (this);
-					}
-					else
-						// Create a new backend with the new size
-						bmp = ToolkitEngine.ImageBackendHandler.ResizeBitmap (Backend, size.Width, size.Height);
-				}
-				else
-					bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, size.Width, size.Height);
 
-				if (alpha != 1) {
-					var oldBmp = bmp;
-					bmp = ToolkitEngine.ImageBackendHandler.ChangeBitmapOpacity (bmp, alpha);
-					ToolkitEngine.ImageBackendHandler.Dispose (oldBmp);
-				}
-				return new BitmapImage (bmp);
-			}
-			
-			throw new NotSupportedException ();
+		public BitmapImage ToBitmap (Widget renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		{
+			if (renderTarget.ParentWindow == null)
+				throw new InvalidOperationException ("renderTarget is not bounds to a window");
+			return ToBitmap (renderTarget.ParentWindow, format);
+		}
+
+		public BitmapImage ToBitmap (WindowFrame renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		{
+			return ToBitmap (renderTarget.Screen, format);
+		}
+
+		public BitmapImage ToBitmap (Screen renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		{
+			var s = GetFixedSize ();
+			return ToBitmap ((int)(s.Width * renderTarget.ScaleFactor), (int)(s.Height * renderTarget.ScaleFactor), format);
+		}
+
+		public BitmapImage ToBitmap (int pixelWidth, int pixelHeight, ImageFormat format = ImageFormat.ARGB32)
+		{
+			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, pixelWidth, pixelHeight, format);
+			return new BitmapImage (bmp);
 		}
 
 		protected virtual Size GetDefaultSize ()
 		{
-			return Size.Zero;
-		}
-
-		internal virtual bool CanDrawInContext (double width, double height)
-		{
-			return sourceImage != null ? sourceImage.CanDrawInContext (width, height) : false;
-		}
-		
-		internal virtual void DrawInContext (Context ctx, double x, double y, double width, double height)
-		{
-			if (sourceImage != null)
-				sourceImage.DrawInContext (ctx, x, y, width, height);
+			return ToolkitEngine.ImageBackendHandler.GetSize (Backend);
 		}
 	}
 

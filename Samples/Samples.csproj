@@ -191,6 +191,12 @@
       <LogicalName>cow.jpg</LogicalName>
       <DeployService-Deploy>True</DeployService-Deploy>
     </EmbeddedResource>
+    <EmbeddedResource Include="document-generic.png">
+      <LogicalName>document-generic.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="document-generic%402x.png">
+      <LogicalName>document-generic@2x.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

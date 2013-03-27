@@ -34,32 +34,18 @@ namespace Xwt.GtkBackend
 	{
 		public override void Initialize ()
 		{
-			Widget = new Gtk.Image ();
+			Widget = new ImageBox (ApplicationContext);
 			Widget.Show ();
 		}
 		
-		protected new Gtk.Image Widget {
-			get { return (Gtk.Image)base.Widget; }
+		protected new ImageBox Widget {
+			get { return (ImageBox)base.Widget; }
 			set { base.Widget = value; }
 		}
 		
-		public void SetImage (Image image)
+		public void SetImage (ImageDescription image)
 		{
-			if (image == null) {
-				Widget.Pixbuf = null;
-				return;
-			}
-
-			Gdk.Pixbuf pbuf = Toolkit.GetBackend (image) as Gdk.Pixbuf;
-			if (pbuf == null)
-				pbuf = Toolkit.GetBackend (image.ToBitmap ()) as Gdk.Pixbuf;
-			if (pbuf == null)
-				throw new ArgumentException ("image is not of the expected type", "image");
-
-			if (image.HasFixedSize && (pbuf.Width != (int)image.Size.Width || pbuf.Height != (int)image.Size.Height))
-				pbuf = pbuf.ScaleSimple ((int)image.Size.Width, (int)image.Size.Height, Gdk.InterpType.Bilinear);
-
-			Widget.Pixbuf = pbuf;
+			Widget.Image = image;
 		}
 	}
 }

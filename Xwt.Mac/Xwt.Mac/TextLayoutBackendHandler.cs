@@ -183,42 +183,36 @@ namespace Xwt.Mac
 		
 		public override void SetForeground (object backend, Color color, int startIndex, int count)
 		{
-			throw new NotImplementedException ();
 		}
 		
 		public override void SetBackgound (object backend, Color color, int startIndex, int count)
 		{
-			throw new NotImplementedException ();
 		}
 		
 		public override void SetFontWeight (object backend, FontWeight weight, int startIndex, int count)
 		{
-			throw new NotImplementedException ();
 		}
 		
 		public override void SetFontStyle (object backend, FontStyle style, int startIndex, int count)
 		{
-			throw new NotImplementedException ();
 		}
 		
 		public override void SetUnderline (object backend, int startIndex, int count)
 		{
-			throw new NotImplementedException ();
 		}
 		
 		public override void SetStrikethrough (object backend, int startIndex, int count)
 		{
-			throw new NotImplementedException ();
 		}
 
 		public override int GetIndexFromCoordinates (object backend, double x, double y)
 		{
-			throw new NotImplementedException ();
+			return 0;
 		}
 		
 		public override Point GetCoordinateFromIndex (object backend, int index)
 		{
-			throw new NotImplementedException ();
+			return new Point (0,0);
 		}
 
 		public override void DisposeBackend (object backend)

@@ -60,7 +60,7 @@ namespace Xwt.Backends
 		void SetTransientFor (IWindowFrameBackend window);
 		bool Resizable { get; set; }
 
-		void SetIcon (object imageBackend);
+		void SetIcon (ImageDescription image);
 		
 		/// <summary>
 		/// Presents a window to the user. This may mean raising the window in the stacking order,
@@ -73,6 +73,12 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
 		bool FullScreen { get; set; }
+
+		/// <summary>
+		/// Gets the screen on which most of the area of this window is placed
+		/// </summary>
+		/// <value>The screen.</value>
+		object Screen { get; }
 	}
 	
 	public interface IWindowFrameEventSink

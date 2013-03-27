@@ -33,7 +33,7 @@ namespace Xwt.WPFBackend
 
 		private void Render (System.Windows.Media.DrawingContext dc)
 		{
-			CanvasEventSink.OnDraw (new Xwt.WPFBackend.DrawingContext (Widget, dc), new Rectangle (0, 0, Widget.ActualWidth, Widget.ActualHeight));
+			CanvasEventSink.OnDraw (new Xwt.WPFBackend.DrawingContext (dc, Widget.GetScaleFactor ()), new Rectangle (0, 0, Widget.ActualWidth, Widget.ActualHeight));
 		}
 
 		public void QueueDraw ()

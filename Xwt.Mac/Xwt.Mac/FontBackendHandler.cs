@@ -34,7 +34,7 @@ namespace Xwt.Mac
 {
 	public class MacFontBackendHandler: FontBackendHandler
 	{
-		public override object Create (string fontName, double size, FontSizeUnit sizeUnit, FontStyle style, FontWeight weight, FontStretch stretch)
+		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			object o  = NSFont.FromFontName (fontName, (float)size);
 			return o;
@@ -47,7 +47,7 @@ namespace Xwt.Mac
 			return (NSFont)f.Copy ();
 		}
 		
-		public override object SetSize (object handle, double size, FontSizeUnit sizeUnit)
+		public override object SetSize (object handle, double size)
 		{
 			NSFont f = (NSFont) handle;
 			return NSFontManager.SharedFontManager.ConvertFont (f, (float)size);

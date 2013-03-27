@@ -40,5 +40,15 @@ namespace Xwt.WPFBackend
 			Matrix m = source.CompositionTarget.TransformToDevice;
 			return new Size (m.M11, m.M22);
 		}
+
+		public static double GetScaleFactor (this Visual self)
+		{
+			PresentationSource source = PresentationSource.FromVisual (self);
+			if (source == null)
+				return 1;
+
+			Matrix m = source.CompositionTarget.TransformToDevice;
+			return m.M11;
+		}
 	}
 }

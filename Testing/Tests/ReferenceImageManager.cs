@@ -129,7 +129,7 @@ namespace Xwt
 			var bmp1 = img1.ToBitmap ();
 			var bmp2 = img2.ToBitmap ();
 			var res = new ImageBuilder ((int)Math.Min (bmp1.Size.Width, bmp2.Size.Width), (int) Math.Min (bmp1.Size.Height, bmp2.Size.Height));
-			var bmpr = res.ToImage ().ToBitmap ();
+			var bmpr = res.ToBitmap ();
 			res.Dispose ();
 			for (int y=0; y<bmp1.Size.Height && y < bmp2.Size.Height; y++) {
 				for (int x=0; x<bmp1.Size.Width && x<bmp2.Size.Height; x++) {

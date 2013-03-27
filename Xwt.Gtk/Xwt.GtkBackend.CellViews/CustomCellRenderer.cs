@@ -59,7 +59,7 @@ namespace Xwt.GtkBackend
 		{
 			ICanvasCellRenderer cell = cellView;
 			cell.ApplicationContext.InvokeUserCode (delegate {
-				CairoContextBackend ctx = new CairoContextBackend ();
+				CairoContextBackend ctx = new CairoContextBackend (Util.GetScaleFactor (widget));
 				ctx.Context = Gdk.CairoHelper.Create (window);
 				using (ctx) {
 					cell.Draw (ctx, new Rectangle (cell_area.X, cell_area.Y, cell_area.Width, cell_area.Height));

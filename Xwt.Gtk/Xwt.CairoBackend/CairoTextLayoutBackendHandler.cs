@@ -29,6 +29,7 @@ using Xwt.Backends;
 using Xwt.Drawing;
 
 using System.Collections.Generic;
+using Xwt.GtkBackend;
 
 namespace Xwt.CairoBackend
 {
@@ -71,7 +72,8 @@ namespace Xwt.CairoBackend
 		public override object Create (ICanvasBackend canvas)
 		{
 			LayoutBackend b = new LayoutBackend ();
-			CairoContextBackend ba = new CairoContextBackend ();
+			var w = ((WidgetBackend)canvas).Widget;
+			CairoContextBackend ba = new CairoContextBackend (Xwt.GtkBackend.Util.GetScaleFactor (w));
 			ba.Context = SharedContext;
 			b.Context = ba;
 			return b;

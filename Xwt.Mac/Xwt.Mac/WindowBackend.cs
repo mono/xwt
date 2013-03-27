@@ -151,6 +151,12 @@ namespace Xwt.Mac
 			}
 		}
 
+		object IWindowFrameBackend.Screen {
+			get {
+				return Screen;
+			}
+		}
+
 		protected virtual NSView GetContentView ()
 		{
 			return ContentView;
@@ -412,7 +418,7 @@ namespace Xwt.Mac
 			MinSize = r.Size;
 		}
 
-		public void SetIcon (object imageBackend)
+		public void SetIcon (ImageDescription icon)
 		{
 		}
 

@@ -41,7 +41,11 @@ namespace Xwt.Mac
 		public AlertDialogBackend (System.IntPtr intptr)
 		{
 		}
-		
+
+		public void Initialize (ApplicationContext actx)
+		{
+		}
+
 		#region IAlertDialogBackend implementation
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{

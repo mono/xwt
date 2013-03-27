@@ -31,7 +31,7 @@ namespace Xwt
 	{
 		public override Widget CreateWidget ()
 		{
-			return new ImageView (StockIcons.Warning.WithBoxSize (16));
+			return new ImageView (StockIcons.Warning.WithSize (IconSize.Small));
 		}
 	}
 }
