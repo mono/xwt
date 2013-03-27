@@ -74,7 +74,7 @@ namespace Xwt.Drawing
 			double size = 0;
 
 			var s = parts[parts.Length - 1];
-			if (!double.TryParse (s, out size))
+			if (!double.TryParse (s, NumberStyles.Any, CultureInfo.InvariantCulture, out size))
 				throw new ArgumentException ("Invalid font size: " + s);
 
 			FontStyle style = FontStyle.Normal;

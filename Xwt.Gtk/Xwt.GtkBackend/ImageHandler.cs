@@ -239,6 +239,11 @@ namespace Xwt.GtkBackend
 			return best;
 		}
 		
+		public Gdk.Pixbuf ToPixbuf (ApplicationContext actx, Gtk.Widget w)
+		{
+			return GetBestFrame (actx, Util.GetScaleFactor (w), DefaultSize.Width, DefaultSize.Height, true);
+		}
+
 		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, Gtk.Widget w, double width, double height, bool forceExactSize)
 		{
 			return GetBestFrame (actx, Util.GetScaleFactor (w), width, height, forceExactSize);

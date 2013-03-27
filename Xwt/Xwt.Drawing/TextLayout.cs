@@ -49,7 +49,7 @@ namespace Xwt.Drawing
 			Backend = handler.Create ();
 		}
 
-		public TextLayout (Context ctx)
+		public TextLayout (Context ctx): this ()
 		{
 		}
 
