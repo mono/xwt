@@ -130,8 +130,8 @@ namespace Xwt.Mac
 
 				var ctx = new CGContextBackend {
 					Context = bmp,
-					Size = new SizeF (pixelWidth, pixelHeight)/*,
-					InverseViewTransform = bmp.GetCTM ().Invert ()*/
+					Size = new SizeF (pixelWidth, pixelHeight),
+					InverseViewTransform = bmp.GetCTM ().Invert ()
 				};
 
 				var ci = (CustomImage)handle;
@@ -271,7 +271,7 @@ namespace Xwt.Mac
 
 		internal void DrawInContext (CGContextBackend ctx)
 		{
-			var s = Size;
+			var s = ctx.Size != SizeF.Empty ? ctx.Size : Size;
 			actx.InvokeUserCode (delegate {
 				drawCallback (ctx, new Rectangle (0, 0, s.Width, s.Height));
 			});

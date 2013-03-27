@@ -250,8 +250,10 @@ namespace Xwt.Mac
 						((CustomImage)pi.Image).DrawInContext (c);
 					});
 				} else {
-					pattern = new CGPattern (bounds, t, bounds.Width, bounds.Height,
-				                      CGPatternTiling.ConstantSpacing, true, c => c.DrawImage (bounds, null));
+					RectangleF empty = RectangleF.Empty;
+					CGImage cgimg = ((NSImage)pi.Image).AsCGImage (ref empty, null, null);
+					pattern = new CGPattern (bounds, CGAffineTransform.MakeScale (1f, -1f), bounds.Width, bounds.Height,
+					                         CGPatternTiling.ConstantSpacing, true, c => c.DrawImage (bounds, cgimg));
 				}
 
 				CGContext ctx = gc.Context;
