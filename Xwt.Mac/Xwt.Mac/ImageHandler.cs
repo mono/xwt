@@ -106,7 +106,46 @@ namespace Xwt.Mac
 
 		public override object ConvertToBitmap (object handle, int pixelWidth, int pixelHeight, ImageFormat format)
 		{
-			return handle;
+			if (handle is CustomImage) {
+				var flags = CGBitmapFlags.ByteOrderDefault;
+				int bytesPerRow;
+				switch (format) {
+				case ImageFormat.ARGB32:
+					bytesPerRow = pixelWidth * 4;
+					flags |= CGBitmapFlags.PremultipliedFirst;
+					break;
+
+				case ImageFormat.RGB24:
+					bytesPerRow = pixelWidth * 3;
+					flags |= CGBitmapFlags.None;
+					break;
+
+				default:
+					throw new NotImplementedException ("ImageFormat: " + format.ToString ());
+				}
+
+				var bmp = new CGBitmapContext (IntPtr.Zero, pixelWidth, pixelHeight, 8, bytesPerRow, Util.DeviceRGBColorSpace, flags);
+				bmp.TranslateCTM (0, pixelHeight);
+				bmp.ScaleCTM (1, -1);
+
+				var ctx = new CGContextBackend {
+					Context = bmp,
+					Size = new SizeF (pixelWidth, pixelHeight)/*,
+					InverseViewTransform = bmp.GetCTM ().Invert ()*/
+				};
+
+				var ci = (CustomImage)handle;
+				ci.DrawInContext (ctx);
+
+				var img = new NSImage (((CGBitmapContext)bmp).ToImage (), new SizeF (pixelWidth, pixelHeight));
+				var imageData = img.AsTiff ();
+				var imageRep = (NSBitmapImageRep) NSBitmapImageRep.ImageRepFromData (imageData);
+				var im = new NSImage ();
+				im.AddRepresentation (imageRep);
+				return im;
+			}
+			else
+				return handle;
 		}
 		
 		public override Xwt.Drawing.Color GetBitmapPixel (object handle, int x, int y)
