@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Xwt.Drawing
 {
@@ -44,7 +45,7 @@ namespace Xwt.Drawing
 			ctx.Save ();
 			ctx.Translate (bounds.Location);
 			ctx.Scale (bounds.Width / Size.Width, bounds.Height / Size.Height);
-			VectorImageRecorderContextHandler.Draw (ToolkitEngine.ContextBackendHandler, Toolkit.GetBackend (ctx), data);
+			VectorImageRecorderContextHandler.Draw (ToolkitEngine, ToolkitEngine.ContextBackendHandler, Toolkit.GetBackend (ctx), data);
 			ctx.Restore ();
 		}
 	}
@@ -58,6 +59,7 @@ namespace Xwt.Drawing
 		public Rectangle[] Rectangles;
 		public object[] Objects;
 		public ImageDescription[] Images;
+		public TextLayoutData[] TextLayouts;
 	}
 
 	enum DrawingCommand
@@ -107,6 +109,13 @@ namespace Xwt.Drawing
 		public List<Rectangle> Rectangles = new List<Rectangle> ();
 		public List<object> Objects = new List<object> ();
 		public List<ImageDescription> Images = new List<ImageDescription> ();
+		public List<TextLayoutData> TextLayouts = new List<TextLayoutData> ();
+
+		public void AddTextLayout (TextLayoutData td)
+		{
+			var found = TextLayouts.FirstOrDefault (t => t.Equals (td)) ?? td;
+			TextLayouts.Add (found);
+		}
 
 		public VectorContextBackend Clone ()
 		{
@@ -118,6 +127,7 @@ namespace Xwt.Drawing
 			c.Ints.AddRange (Ints);
 			c.Rectangles.AddRange (Rectangles);
 			c.Objects.AddRange (Objects);
+			c.TextLayouts.AddRange (TextLayouts);
 			return c;
 		}
 
@@ -130,7 +140,8 @@ namespace Xwt.Drawing
 				Images = Images.ToArray (),
 				Ints = Ints.ToArray (),
 				Rectangles = Rectangles.ToArray (),
-				Objects = Objects.ToArray ()
+				Objects = Objects.ToArray (),
+				TextLayouts = TextLayouts.ToArray (),
 			};
 		}
 	}
@@ -351,7 +362,10 @@ namespace Xwt.Drawing
 		{
 			var ctx = (VectorContextBackend)backend;
 			ctx.Commands.Add (DrawingCommand.DrawTextLayout);
-			ctx.Objects.Add (layout);
+			var la = layout.GetData ();
+			ctx.AddTextLayout (la);
+			ctx.Doubles.Add (x);
+			ctx.Doubles.Add (y);
 		}
 
 		public override void DrawImage (object backend, ImageDescription img, double x, double y)
@@ -423,7 +437,7 @@ namespace Xwt.Drawing
 
 		#endregion
 
-		internal static void Draw (ContextBackendHandler handler, object ctx, VectorImageData cm)
+		internal static void Draw (Toolkit tk, ContextBackendHandler handler, object ctx, VectorImageData cm)
 		{
 			int di = 0;
 			int ci = 0;
@@ -431,13 +445,14 @@ namespace Xwt.Drawing
 			int ri = 0;
 			int oi = 0;
 			int imi = 0;
+			int ti = 0;
 
 			for (int n=0; n<cm.Commands.Length; n++)
 			{
 				switch (cm.Commands [n]) {
 				case DrawingCommand.AppendPath:
 					var p = (VectorImageData)cm.Objects [oi++];
-					Draw (handler, ctx, p);
+					Draw (tk, handler, ctx, p);
 					break;
 				case DrawingCommand.Arc:
 					handler.Arc (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
@@ -464,7 +479,10 @@ namespace Xwt.Drawing
 					handler.DrawImage (ctx, cm.Images [imi++], cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.DrawTextLayout:
-					handler.DrawTextLayout (ctx, (TextLayout)cm.Objects [oi++], cm.Doubles [di++], cm.Doubles [di++]);
+					var lad = (TextLayoutData)cm.TextLayouts [ti++];
+					var la = new TextLayout (tk);
+					lad.InitLayout (la);
+					handler.DrawTextLayout (ctx, la, cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.Fill:
 					handler.Fill (ctx);

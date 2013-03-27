@@ -61,19 +61,11 @@ namespace Xwt.CairoBackend
 		}
 
 		#region ITextLayoutBackendHandler implementation
-		public override object Create (Context context)
-		{
-			CairoContextBackend c = (CairoContextBackend) Toolkit.GetBackend (context);
-			LayoutBackend b = new LayoutBackend ();
-			b.Context = c;
-			return b;
-		}
 
-		public override object Create (ICanvasBackend canvas)
+		public override object Create ()
 		{
 			LayoutBackend b = new LayoutBackend ();
-			var w = ((WidgetBackend)canvas).Widget;
-			CairoContextBackend ba = new CairoContextBackend (Xwt.GtkBackend.Util.GetScaleFactor (w));
+			CairoContextBackend ba = new CairoContextBackend (1);
 			ba.Context = SharedContext;
 			b.Context = ba;
 			return b;

@@ -136,15 +136,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public override object Create (Context context)
-		{
-			CairoContextBackend c = (CairoContextBackend) Toolkit.GetBackend (context);
-			return new PangoBackend {
-				Layout = Pango.CairoHelper.CreateLayout (c.Context)
-			};
-		}
-		
-		public override object Create (ICanvasBackend canvas)
+		public override object Create ()
 		{
 			return new PangoBackend {
 				Layout = Pango.CairoHelper.CreateLayout (SharedContext)

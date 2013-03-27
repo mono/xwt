@@ -33,9 +33,8 @@ namespace Xwt.Backends
 {
 	public abstract class TextLayoutBackendHandler: BackendHandler
 	{
-		public abstract object Create (Context context);
-		public abstract object Create (ICanvasBackend canvas);
-		
+		public abstract object Create ();
+
 		public abstract void SetWidth (object backend, double value);
 		public abstract void SetHeight (object backend, double value);
 		public abstract void SetText (object backend, string text);

@@ -49,18 +49,11 @@ namespace Xwt.Mac
 			public TextTrimming TextTrimming;
 		}
 		
-		public override object Create (Xwt.Drawing.Context context)
+		public override object Create ()
 		{
 			return new LayoutInfo ();
 		}
 		
-		public override object Create (ICanvasBackend canvas)
-		{
-			return new LayoutInfo {
-				Font = (NSFont)canvas.Font
-			};
-		}
-
 		public override void SetText (object backend, string text)
 		{
 			LayoutInfo li = (LayoutInfo)backend;

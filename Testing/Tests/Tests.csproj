@@ -235,6 +235,24 @@
     <EmbeddedResource Include="ReferenceImages\LineClosePath.png">
       <LogicalName>LineClosePath.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\Text.png">
+      <LogicalName>Text.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\TextLineBreak.png">
+      <LogicalName>TextLineBreak.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\TextSize.png">
+      <LogicalName>TextSize.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\TextTrimmingEllipsis.png">
+      <LogicalName>TextTrimmingEllipsis.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\TextWithBlankLines.png">
+      <LogicalName>TextWithBlankLines.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\TextWordWrap.png">
+      <LogicalName>TextWordWrap.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

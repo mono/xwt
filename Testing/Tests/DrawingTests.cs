@@ -57,7 +57,7 @@ namespace Xwt
 		{
 			if (builder == null)
 				return;
-			var img = builder.ToBitmap ();
+			var img = builder.ToBitmap ((int)builder.Width, (int)builder.Height);
 			builder.Dispose ();
 			builder = null;
 
@@ -781,6 +781,119 @@ namespace Xwt
 			context.Rectangle (10, 10, 30, 30);
 			context.Fill ();
 			CheckImage ("SaveRestoreTransform.png");
+		}
+
+		#endregion
+
+		#region Text
+		
+		[Test]
+		public void Text ()
+		{
+			// Transform is saved
+			InitBlank (100, 50);
+			var la = new TextLayout ();
+			la.Font = Font.FromName ("Arial 12");
+			la.Text = "Hello World";
+			context.DrawTextLayout (la, 5, 5);
+			CheckImage ("Text.png");
+		}
+		
+		[Test]
+		public void TextSize ()
+		{
+			// Transform is saved
+			InitBlank (100, 50);
+			var la = new TextLayout ();
+			la.Font = Font.FromName ("Arial 12");
+			la.Text = "Hello World";
+
+			var s = la.GetSize ();
+			context.Rectangle (10.5, 10.5, s.Width, s.Height);
+			context.SetColor (Colors.Blue);
+			context.Stroke ();
+
+			context.SetColor (Colors.Black);
+			context.DrawTextLayout (la, 10, 10);
+			CheckImage ("TextSize.png");
+		}
+		
+		[Test]
+		public void TextLineBreak ()
+		{
+			// Transform is saved
+			InitBlank (100, 50);
+			var la = new TextLayout ();
+			la.Font = Font.FromName ("Arial 12");
+			la.Text = "Hello\nWorld";
+
+			var s = la.GetSize ();
+			context.Rectangle (10.5, 10.5, s.Width, s.Height);
+			context.SetColor (Colors.Blue);
+			context.Stroke ();
+
+			context.SetColor (Colors.Black);
+			context.DrawTextLayout (la, 10, 10);
+			CheckImage ("TextLineBreak.png");
+		}
+		
+		[Test]
+		public void TextWithBlankLines ()
+		{
+			// Transform is saved
+			InitBlank (50, 150);
+			var la = new TextLayout ();
+			la.Font = Font.FromName ("Arial 12");
+			la.Text = "\n\nHello\n\n\nWorld\n\n";
+
+			var s = la.GetSize ();
+			context.Rectangle (10.5, 10.5, s.Width, s.Height);
+			context.SetColor (Colors.Blue);
+			context.Stroke ();
+
+			context.SetColor (Colors.Black);
+			context.DrawTextLayout (la, 10, 10);
+			CheckImage ("TextWithBlankLines.png");
+		}
+
+		[Test]
+		public void TextWordWrap ()
+		{
+			// Transform is saved
+			InitBlank (100, 100);
+			var la = new TextLayout ();
+			la.Font = Font.FromName ("Arial 12");
+			la.Text = "One Two Three Four Five Six Seven Eight Nine";
+			la.Width = 90;
+			la.Trimming = TextTrimming.Word;
+			var s = la.GetSize ();
+			context.Rectangle (5.5, 5.5, s.Width, s.Height);
+			context.SetColor (Colors.Blue);
+			context.Stroke ();
+
+			context.SetColor (Colors.Black);
+			context.DrawTextLayout (la, 5, 5);
+			CheckImage ("TextWordWrap.png");
+		}
+		
+		[Test]
+		public void TextTrimmingEllipsis ()
+		{
+			// Transform is saved
+			InitBlank (50, 100);
+			var la = new TextLayout ();
+			la.Font = Font.FromName ("Arial 12");
+			la.Text = "One Two Three Four Five Six Seven Eight Nine";
+			la.Width = 45;
+			la.Trimming = TextTrimming.WordElipsis;
+			var s = la.GetSize ();
+			context.Rectangle (5.5, 5.5, s.Width, s.Height);
+			context.SetColor (Colors.Blue);
+			context.Stroke ();
+
+			context.SetColor (Colors.Black);
+			context.DrawTextLayout (la, 5, 5);
+			CheckImage ("TextTrimmingEllipsis.png");
 		}
 
 		#endregion

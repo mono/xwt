@@ -35,39 +35,62 @@ namespace Xwt.Drawing
 	public sealed class TextLayout: XwtObject, IDisposable
 	{
 		TextLayoutBackendHandler handler;
-		
+
 		Font font;
 		string text;
 		double width = -1;
 		double height = -1;
 		TextTrimming textTrimming;
-		
+		List<TextAttribute> attributes;
+
+		public TextLayout ()
+		{
+			handler = ToolkitEngine.TextLayoutBackendHandler;
+			Backend = handler.Create ();
+		}
+
+		public TextLayout (Context ctx)
+		{
+		}
+
 		public TextLayout (Canvas canvas)
 		{
 			ToolkitEngine = canvas.Surface.ToolkitEngine;
 			handler = ToolkitEngine.TextLayoutBackendHandler;
-			Backend = handler.Create ((ICanvasBackend)Toolkit.GetBackend (canvas));
+			Backend = handler.Create ();
 			Font = canvas.Font;
 		}
-		
-		public TextLayout (Context ctx)
+
+		internal TextLayout (Toolkit tk)
 		{
-			ToolkitEngine = ctx.ToolkitEngine;
+			ToolkitEngine = tk;
 			handler = ToolkitEngine.TextLayoutBackendHandler;
-			Backend = handler.Create (ctx);
+			Backend = handler.Create ();
 		}
-		
+
+		internal TextLayoutData GetData ()
+		{
+			return new TextLayoutData () {
+				Width = width,
+				Height = height,
+				Text = text,
+				Font = font,
+				TextTrimming = textTrimming,
+				Attributes = attributes != null ? new List<TextAttribute> (attributes) : null
+			};
+		}
+
 		public Font Font {
 			get { return font; }
 			set { font = value; handler.SetFont (Backend, value); }
 		}
-		
+
 		public string Text {
 			get { return text; }
 			set { text = value;
 				handler.SetText (Backend, text); }
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the desired width.
 		/// </summary>
@@ -78,7 +101,7 @@ namespace Xwt.Drawing
 			get { return width; }
 			set { width = value; handler.SetWidth (Backend, value); }
 		}
-		
+
 		/// <summary>
 		/// Gets or sets desired Height.
 		/// </summary>
@@ -89,7 +112,7 @@ namespace Xwt.Drawing
 			get { return this.height; }
 			set { this.height = value; handler.SetHeight (Backend, value); }
 		}
-		
+
 		/// <summary>
 		/// measures the text
 		/// if Width is other than -1, it measures the height according to Width
@@ -102,7 +125,7 @@ namespace Xwt.Drawing
 		{
 			return handler.GetSize (Backend);
 		}
-		
+
 		public TextTrimming Trimming {
 			get { return textTrimming; }
 			set { textTrimming = value; handler.SetTrimming (Backend, value); }
@@ -139,6 +162,14 @@ namespace Xwt.Drawing
 			return handler.GetCoordinateFromIndex (Backend, index);
 		}
 
+		List<TextAttribute> Attributes {
+			get {
+				if (attributes == null)
+					attributes = new List<TextAttribute> ();
+				return attributes;
+			}
+		}
+
 		/// <summary>
 		/// Sets the foreground color of a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
 		/// </summary>
@@ -147,9 +178,10 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the foreground color to.</param>
 		public void SetForeground (Color color, int startIndex, int count)
 		{
+			Attributes.Add (new ForegroundTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
 			handler.SetForeground (Backend, color, startIndex, count);
 		}
-		
+
 		/// <summary>
 		/// Sets the background color of a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
 		/// </summary>
@@ -158,9 +190,10 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the background color to.</param>
 		public void SetBackgound (Color color, int startIndex, int count)
 		{
+			Attributes.Add (new BackgroundTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
 			handler.SetBackgound (Backend, color, startIndex, count);
 		}
-		
+
 		/// <summary>
 		/// Sets the font weight of a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
 		/// </summary>
@@ -169,6 +202,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the font weight to.</param>
 		public void SetFontWeight (FontWeight weight, int startIndex, int count)
 		{
+			Attributes.Add (new FontWeightTextAttribute () { StartIndex = startIndex, Count = count, Weight = weight });
 			handler.SetFontWeight (Backend, weight, startIndex, count);
 		}
 
@@ -180,6 +214,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the font style to.</param>
 		public void SetFontStyle (FontStyle style, int startIndex, int count)
 		{
+			Attributes.Add (new FontStyleTextAttribute () { StartIndex = startIndex, Count = count, Style = style });
 			handler.SetFontStyle (Backend, style, startIndex, count);
 		}
 
@@ -190,6 +225,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to underline.</param>
 		public void SetUnderline (int startIndex, int count)
 		{
+			Attributes.Add (new UnderlineTextAttribute () { StartIndex = startIndex, Count = count});
 			handler.SetUnderline (Backend, startIndex, count);
 		}
 
@@ -200,6 +236,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to strike-through.</param>
 		public void SetStrikethrough (int startIndex, int count)
 		{
+			Attributes.Add (new StrikethroughTextAttribute () { StartIndex = startIndex, Count = count});
 			handler.SetStrikethrough (Backend, startIndex, count);
 		}
 
@@ -208,10 +245,159 @@ namespace Xwt.Drawing
 			handler.DisposeBackend (Backend);
 		}
 	}
-	
+
 	public enum TextTrimming {
 		Word,
 		WordElipsis
+	}
+	
+	class TextLayoutData
+	{
+		public double Width = -1;
+		public double Height = -1;
+		public string Text;
+		public Font Font;
+		public TextTrimming TextTrimming;
+		public List<TextAttribute> Attributes;
+
+		public void InitLayout (TextLayout la)
+		{
+			if (Width != -1)
+				la.Width = Width;
+			if (Height != -1)
+				la.Height = Height;
+			if (Text != null)
+				la.Text = Text;
+			if (Font != null)
+				la.Font = Font;
+			if (TextTrimming != default(TextTrimming))
+				la.Trimming = TextTrimming;
+			if (Attributes != null) {
+				foreach (var at in Attributes)
+					at.Apply (la);
+			}
+		}
+
+		public bool Equals (TextLayoutData other)
+		{
+			if (Width != other.Width || Height != other.Height || Text != other.Text || Font != other.Font || TextTrimming != other.TextTrimming)
+				return false;
+			if (Attributes == null && other.Attributes == null)
+				return true;
+			if (Attributes != null || other.Attributes != null)
+				return false;
+			if (Attributes.Count != other.Attributes.Count)
+				return false;
+			for (int n=0; n<Attributes.Count; n++)
+				if (!Attributes [n].Equals (other.Attributes [n]))
+					return false;
+			return true;
+		}
+	}
+
+	abstract class TextAttribute
+	{
+		public int StartIndex { get; set; }
+		public int Count { get; set; }
+
+		internal abstract void Apply (TextLayout la);
+
+		public virtual bool Equals (TextAttribute t)
+		{
+			return t.StartIndex == StartIndex && t.Count == Count;
+		}
+	}
+
+	class ForegroundTextAttribute: TextAttribute
+	{
+		public Color Color { get; set; }
+		
+		internal override void Apply (TextLayout la)
+		{
+			la.SetForeground (Color, StartIndex, Count);
+		}
+
+		public override bool Equals (TextAttribute t)
+		{
+			var ot = t as ForegroundTextAttribute;
+			return ot != null && Color.Equals (ot.Color) && base.Equals (t);
+		}
+	}
+
+	class BackgroundTextAttribute: TextAttribute
+	{
+		public Color Color { get; set; }
+		
+		internal override void Apply (TextLayout la)
+		{
+			la.SetBackgound (Color, StartIndex, Count);
+		}
+		
+		public override bool Equals (TextAttribute t)
+		{
+			var ot = t as BackgroundTextAttribute;
+			return ot != null && Color.Equals (ot.Color) && base.Equals (t);
+		}
+	}
+	
+	class FontWeightTextAttribute: TextAttribute
+	{
+		public FontWeight Weight { get; set; }
+		
+		internal override void Apply (TextLayout la)
+		{
+			la.SetFontWeight (Weight, StartIndex, Count);
+		}
+		
+		public override bool Equals (TextAttribute t)
+		{
+			var ot = t as FontWeightTextAttribute;
+			return ot != null && Weight.Equals (ot.Weight) && base.Equals (t);
+		}
+	}
+	
+	class FontStyleTextAttribute: TextAttribute
+	{
+		public FontStyle Style { get; set; }
+		
+		internal override void Apply (TextLayout la)
+		{
+			la.SetFontStyle (Style, StartIndex, Count);
+		}
+		
+		public override bool Equals (TextAttribute t)
+		{
+			var ot = t as FontStyleTextAttribute;
+			return ot != null && Style.Equals (ot.Style) && base.Equals (t);
+		}
+	}
+	
+	class UnderlineTextAttribute: TextAttribute
+	{
+		internal override void Apply (TextLayout la)
+		{
+			la.SetUnderline (StartIndex, Count);
+		}
+		
+		public override bool Equals (TextAttribute t)
+		{
+			var ot = t as UnderlineTextAttribute;
+			return ot != null && base.Equals (t);
+		}
+	}
+	
+	class StrikethroughTextAttribute: TextAttribute
+	{
+		internal override void Apply (TextLayout la)
+		{
+			la.SetStrikethrough (StartIndex, Count);
+		}
+		
+		public override bool Equals (TextAttribute t)
+		{
+			var ot = t as StrikethroughTextAttribute;
+			return ot != null && base.Equals (t);
+		}
 	}
 }
 
