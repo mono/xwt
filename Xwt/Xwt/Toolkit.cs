@@ -50,6 +50,10 @@ namespace Xwt
 			get { return currentEngine; }
 		}
 
+		public static IEnumerable<Toolkit> LoadedToolkits {
+			get { return toolkits.Values; }
+		}
+
 		internal ApplicationContext Context {
 			get { return context; }
 		}
@@ -107,6 +111,23 @@ namespace Xwt
 			return t;
 		}
 
+		/// <summary>
+		/// Tries to load a toolkit
+		/// </summary>
+		/// <returns><c>true</c>, the toolkit could be loaded, <c>false</c> otherwise.</returns>
+		/// <param name="type">Toolkit type</param>
+		/// <param name="toolkit">The loaded toolkit</param>
+		public static bool TryLoad (ToolkitType type, out Toolkit toolkit)
+		{
+			Toolkit t = new Toolkit ();
+			if (t.LoadBackend (GetBackendType (type), true, false)) {
+				toolkit = t;
+				return true;
+			}
+			toolkit = null;
+			return false;
+		}
+
 		internal static string GetBackendType (ToolkitType type)
 		{
 			string version = typeof(Application).Assembly.GetName ().Version.ToString ();
@@ -146,6 +167,8 @@ namespace Xwt
 					throw new Exception ("Toolkit could not be loaded", ex);
 				Application.NotifyException (ex);
 			}
+			if (throwIfFails)
+				throw new Exception ("Toolkit could not be loaded");
 			return false;
 		}
 
