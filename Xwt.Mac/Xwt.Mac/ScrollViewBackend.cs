@@ -95,7 +95,9 @@ namespace Xwt.Mac
 		public void SetChildSize (Size s)
 		{
 			NSView view = (NSView) Widget.DocumentView;
-			view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)s.Width, (float)s.Height);
+			var w = Math.Max (s.Width, Widget.ContentView.Frame.Width);
+			var h = Math.Max (s.Height, Widget.ContentView.Frame.Height);
+			view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)w, (float)h);
 		}
 	}
 	
