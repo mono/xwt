@@ -246,10 +246,10 @@ namespace Xwt
 
 	public enum ToolkitType
 	{
-		Gtk,
-		Cocoa,
-		Wpf,
-		XamMac
+		Gtk = 1,
+		Cocoa = 2,
+		Wpf = 3,
+		XamMac = 4
 	}
 }
 
