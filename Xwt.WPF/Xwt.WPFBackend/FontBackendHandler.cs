@@ -40,7 +40,7 @@ namespace Xwt.WPFBackend
 	{
 		public override object GetSystemDefaultFont ()
 		{
-			double size = WpfFontBackendHandler.GetPointsFromDeviceUnits (SW.SystemFonts.MessageFontSize);
+			double size = GetPointsFromDeviceUnits (SW.SystemFonts.MessageFontSize);
 
 			return new FontData (SW.SystemFonts.MessageFontFamily, size) {
 				Style = SW.SystemFonts.MessageFontStyle,
@@ -55,6 +55,7 @@ namespace Xwt.WPFBackend
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
+			size = GetPointsFromDeviceUnits (size);
 			return new FontData (new FontFamily (fontName), size) {
 				Style = style.ToWpfFontStyle (),
 				Weight = weight.ToWpfFontWeight (),
@@ -72,7 +73,7 @@ namespace Xwt.WPFBackend
 		{
 			var font = (FontData)handle;
 			font = font.Clone ();
-			font.Size = size;
+			font.Size = GetPointsFromDeviceUnits (size);
 			return font;
 		}
 
@@ -111,7 +112,7 @@ namespace Xwt.WPFBackend
 		public override double GetSize (object handle)
 		{
 			var font = (FontData)handle;
-			return font.Size;
+			return GetDeviceUnitsFromPoints (font.Size);
 		}
 
 		public override string GetFamily (object handle)

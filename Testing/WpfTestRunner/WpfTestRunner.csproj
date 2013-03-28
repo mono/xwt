@@ -107,6 +107,12 @@
   <ItemGroup>
     <EmbeddedResource Include="ReferenceImages\ArcNegativeClosePath.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ReferenceImages\Text.png" />
+    <EmbeddedResource Include="ReferenceImages\TextLineBreak.png" />
+    <EmbeddedResource Include="ReferenceImages\TextSize.png" />
+    <EmbeddedResource Include="ReferenceImages\TextWordWrap.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
