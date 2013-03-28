@@ -57,9 +57,7 @@ namespace Xwt.Backends
 		public abstract void SetLineDash (object backend, double offset, params double[] pattern);
 		
 		public abstract void SetPattern (object backend, object p);
-		
-		public abstract void SetFont (object backend, Font font);
-		
+
 		public abstract void DrawTextLayout (object backend, TextLayout layout, double x, double y);
 
 		public abstract void DrawImage (object backend, ImageDescription img, double x, double y);

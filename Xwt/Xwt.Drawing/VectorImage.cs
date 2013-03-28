@@ -83,7 +83,6 @@ namespace Xwt.Drawing
 		SetLineWidth,
 		SetLineDash,
 		SetPattern,
-		SetFont,
 		DrawTextLayout,
 		CanDrawImage,
 		DrawImage,
@@ -351,13 +350,6 @@ namespace Xwt.Drawing
 			ctx.Objects.Add (p);
 		}
 
-		public override void SetFont (object backend, Font font)
-		{
-			var ctx = (VectorContextBackend)backend;
-			ctx.Commands.Add (DrawingCommand.SetFont);
-			ctx.Objects.Add (font);
-		}
-
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			var ctx = (VectorContextBackend)backend;
@@ -525,9 +517,6 @@ namespace Xwt.Drawing
 					break;
 				case DrawingCommand.SetColor:
 					handler.SetColor (ctx, cm.Colors [ci++]);
-					break;
-				case DrawingCommand.SetFont:
-					handler.SetFont (ctx, (Font)cm.Objects [oi++]);
 					break;
 				case DrawingCommand.SetGlobalAlpha:
 					handler.SetGlobalAlpha (ctx, cm.Doubles [di++]);

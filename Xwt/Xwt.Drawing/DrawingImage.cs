@@ -38,6 +38,7 @@ namespace Xwt.Drawing
 		void Draw (object ctx, Rectangle bounds)
 		{
 			var c = new Context (ctx, ToolkitEngine);
+			c.Reset (null);
 			OnDraw (c, bounds);
 		}
 

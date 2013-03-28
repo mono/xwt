@@ -44,6 +44,7 @@ namespace Xwt.Drawing
 		{
 			backend = new VectorContextBackend ();
 			ctx = new Context (backend, ToolkitEngine, vectorImageRecorderContextHandler);
+			ctx.Reset (null);
 			this.width = width;
 			this.height = height;
 		}

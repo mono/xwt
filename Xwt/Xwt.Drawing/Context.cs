@@ -46,6 +46,10 @@ namespace Xwt.Drawing
 		{
 			this.handler = handler;
 		}
+
+		internal void Reset (Widget forWidget)
+		{
+		}
 		
 		/// <summary>
 		/// Makes a copy of the current state of the Context and saves it on an internal stack of saved states.
@@ -316,14 +320,6 @@ namespace Xwt.Drawing
 			set {
 				pattern = value;
 				handler.SetPattern (Backend, GetBackend (value));
-			}
-		}
-		
-		public Font Font {
-			get { return font; }
-			set {
-				font = value;
-				handler.SetFont (Backend, value);
 			}
 		}
 		

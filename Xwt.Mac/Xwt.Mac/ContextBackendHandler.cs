@@ -265,11 +265,6 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public override void SetFont (object backend, Xwt.Drawing.Font font)
-		{
-			((CGContextBackend)backend).Context.SelectFont (font.Family, (float)font.Size, CGTextEncoding.FontSpecific);
-		}
-
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;

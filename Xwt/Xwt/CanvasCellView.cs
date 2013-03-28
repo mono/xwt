@@ -60,6 +60,7 @@ namespace Xwt
 		void ICanvasCellRenderer.Draw (object ctxBackend, Rectangle cellArea)
 		{
 			using (var ctx = new Context (ctxBackend, Toolkit.CurrentEngine)) {
+				ctx.Reset (null);
 				OnDraw (ctx, cellArea);
 			}
 		}

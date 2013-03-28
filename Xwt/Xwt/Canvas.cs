@@ -71,6 +71,7 @@ namespace Xwt
 				Context ctx = null;
 				try {
 					ctx = new Context (context, ToolkitEngine);
+					ctx.Reset (Parent);
 					((Canvas)Parent).OnDraw (ctx, dirtyRect);
 				}
 				finally {
