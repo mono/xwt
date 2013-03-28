@@ -112,7 +112,16 @@ namespace Xwt.Backends
 
 		public abstract IEnumerable<string> GetInstalledFonts ();
 
+		/// <summary>
+		/// Creates a new font. Returns null if the font family is not available in the system
+		/// </summary>
+		/// <param name="fontName">Font family name</param>
+		/// <param name="size">Size in points</param>
+		/// <param name="style">Style</param>
+		/// <param name="weight">Weight</param>
+		/// <param name="stretch">Stretch</param>
 		public abstract object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch);
+
 		public abstract object Copy (object handle);
 		
 		public abstract object SetSize (object handle, double size);

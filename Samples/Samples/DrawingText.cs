@@ -49,7 +49,7 @@ namespace Samples
 			var col1 = new Rectangle ();
 			var col2 = new Rectangle ();
 			
-			var text = new TextLayout (ctx);
+			var text = new TextLayout ();
 			text.Font = this.Font.WithSize (24);
 			Console.WriteLine (text.Font.Size);
 			

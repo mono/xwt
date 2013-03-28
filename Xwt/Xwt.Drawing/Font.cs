@@ -73,14 +73,12 @@ namespace Xwt.Drawing
 		/// decimal number (size in points). Any one of the options may be absent. If FAMILY-LIST is absent, the default
 		/// font family will be used. If STYLE-OPTIONS is missing, then all style options will be set to the default values.
 		/// If SIZE is missing, the size in the resulting font description will be set to the default font size.
+		/// If the font doesn't exist, it returns the system font.
 		/// </remarks>
 		public static Font FromName (string name)
 		{
 			var toolkit = Toolkit.CurrentEngine;
 			var handler = toolkit.FontBackendHandler;
-			string[] parts = name.Split (new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-			if (parts.Length < 2)
-				throw new ArgumentException ("Font family name or size not specified");
 
 			double size = -1;
 			FontStyle style = FontStyle.Normal;
@@ -95,39 +93,50 @@ namespace Xwt.Drawing
 				FontWeight fw;
 				FontStretch fs;
 				double siz;
-				if (Enum.TryParse<FontStyle> (token, out st) && st != FontStyle.Normal)
-					style = st;
-				else if (Enum.TryParse<FontWeight> (token, out fw) && fw != FontWeight.Normal)
-					weight = fw;
-				else if (Enum.TryParse<FontStretch> (token, out fs) && fs != FontStretch.Normal)
-					stretch = fs;
-				else if (double.TryParse (token, out siz) && size != -1)
+				if (double.TryParse (token, out siz)) // Try parsing the number first, since Enum.TryParse can also parse numbers
 					size = siz;
+				else if (Enum.TryParse<FontStyle> (token, true, out st) && st != FontStyle.Normal)
+					style = st;
+				else if (Enum.TryParse<FontWeight> (token, true, out fw) && fw != FontWeight.Normal)
+					weight = fw;
+				else if (Enum.TryParse<FontStretch> (token, true, out fs) && fs != FontStretch.Normal)
+					stretch = fs;
 				else if (token.Length > 0)
 					break;
 
+				lasti = i;
 				if (i <= 0)
 					break;
-				lasti = i;
+
 				i = name.LastIndexOf (' ', i - 1);
 			} while (true);
 
-			string fname = GetSupportedFont (name.Substring (0, lasti));
-			if (fname.Length == 0)
-				fname = SystemFont.Family;
+			string fname = lasti > 0 ? name.Substring (0, lasti) : string.Empty;
+			fname = fname.Length > 0 ? GetSupportedFont (fname) : Font.SystemFont.Family;
+
 			if (size == -1)
 				size = SystemFont.Size;
 
-			return new Font (handler.Create (fname, size, style, weight, stretch), toolkit);
+			var fb = handler.Create (fname, size, style, weight, stretch);
+			if (fb != null)
+				return new Font (fb, toolkit);
+			else
+				return Font.SystemFont;
 		}
 
 		static string GetSupportedFont (string fontNames)
 		{
-			int i = fontNames.IndexOf (',');
-			if (i == -1)
-				return fontNames.Trim ();
-
 			LoadInstalledFonts ();
+
+			int i = fontNames.IndexOf (',');
+			if (i == -1) {
+				var f = fontNames.Trim ();
+				if (installedFonts.Contains (f))
+					return f;
+				else
+					return GetDefaultFont (f);
+			}
+
 			string[] names = fontNames.Split (new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
 			if (names.Length == 0)
 				throw new ArgumentException ("Font family name not provided");
@@ -137,10 +146,16 @@ namespace Xwt.Drawing
 				if (installedFonts.Contains (n))
 					return n;
 			}
-			return names[0].Trim ();
+			return GetDefaultFont (fontNames.Trim (' ',','));
 		}
 
-		static HashSet<string> installedFonts = new HashSet<string> ();
+		static string GetDefaultFont (string unknownFont)
+		{
+			Console.WriteLine ("Font '" + unknownFont + "' not available in the system. Using '" + Font.SystemFont.Family + "' instead");
+			return Font.SystemFont.Family;
+		}
+
+		static HashSet<string> installedFonts;
 		static ReadOnlyCollection<string> installedFontsArray;
 
 
@@ -261,6 +276,20 @@ namespace Xwt.Drawing
 				sb.Append (' ').Append (Stretch);
 			sb.Append (' ').Append (Size.ToString (CultureInfo.InvariantCulture));
 			return sb.ToString ();
+		}
+
+		public override bool Equals (object obj)
+		{
+			var other = obj as Font;
+			if (other == null)
+				return false;
+
+			return Family == other.Family && Style == other.Style && Weight == other.Weight && Stretch == other.Stretch && Size == other.Size;
+		}
+
+		public override int GetHashCode ()
+		{
+			return ToString().GetHashCode ();
 		}
 	}
 
