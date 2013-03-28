@@ -26,6 +26,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Linq;
 using SW = System.Windows;
 
 using Xwt.Backends;
@@ -37,6 +38,21 @@ namespace Xwt.WPFBackend
 {
 	public class WpfFontBackendHandler : FontBackendHandler
 	{
+		public override object GetSystemDefaultFont ()
+		{
+			double size = WpfFontBackendHandler.GetPointsFromDeviceUnits (SW.SystemFonts.MessageFontSize);
+
+			return new FontData (SW.SystemFonts.MessageFontFamily, size) {
+				Style = SW.SystemFonts.MessageFontStyle,
+				Weight = SW.SystemFonts.MessageFontWeight
+			};
+		}
+
+		public override System.Collections.Generic.IEnumerable<string> GetInstalledFonts ()
+		{
+			return System.Windows.Media.Fonts.SystemFontFamilies.Select (f => f.Source);
+		}
+
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			return new FontData (new FontFamily (fontName), size) {

@@ -38,17 +38,8 @@ namespace Xwt.WPFBackend
 	public class WpfTextLayoutBackendHandler
 		: TextLayoutBackendHandler
 	{
-		public override object Create (Context context)
+		public override object Create ()
 		{
-			var drawingContext = (DrawingContext)Toolkit.GetBackend (context);
-			return new TextLayoutBackend () {
-				Context = drawingContext
-			};
-		}
-
-		public override object Create (ICanvasBackend canvas)
-		{
-			var backend = (WidgetBackend)canvas;
 			return new TextLayoutBackend ();
 		}
 

@@ -44,8 +44,8 @@ namespace Xwt
 		public void WithFamily ()
 		{
 			var f1 = Font.SystemFont;
-			var f2 = f1.WithFamily ("Courier");
-			Assert.AreEqual ("Courier", f2.Family);
+			var f2 = f1.WithFamily ("Arial");
+			Assert.AreEqual ("Arial", f2.Family);
 			Assert.AreEqual (f1.Size, f2.Size);
 			Assert.AreEqual (f1.Stretch, f2.Stretch);
 			Assert.AreEqual (f1.Style, f2.Style);

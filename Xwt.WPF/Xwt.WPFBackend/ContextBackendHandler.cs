@@ -245,10 +245,6 @@ namespace Xwt.WPFBackend
 			c.SetPattern ((System.Windows.Media.Brush)p);
 		}
 
-		public override void SetFont (object backend, Font font)
-		{
-		}
-
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			var c = (DrawingContext) backend;
