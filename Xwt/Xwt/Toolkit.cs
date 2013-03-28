@@ -28,6 +28,7 @@ using Xwt.Backends;
 using Xwt.Drawing;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Xwt
 {
@@ -39,6 +40,7 @@ namespace Xwt
 		ToolkitEngineBackend backend;
 		ApplicationContext context;
 		XwtTaskScheduler scheduler;
+		ToolkitType toolkitType;
 
 		int inUserCode;
 		Queue<Action> exitActions = new Queue<Action> ();
@@ -79,6 +81,10 @@ namespace Xwt
 			scheduler = new XwtTaskScheduler (this);
 		}
 
+		public ToolkitType Type {
+			get { return toolkitType; }
+		}
+
 		public static Toolkit Load (string fullTypeName)
 		{
 			return Load (fullTypeName, true);
@@ -106,7 +112,12 @@ namespace Xwt
 
 		public static Toolkit Load (ToolkitType type)
 		{
+			var et = toolkits.Values.FirstOrDefault (tk => tk.toolkitType == type);
+			if (et != null)
+				return et;
+
 			Toolkit t = new Toolkit ();
+			t.toolkitType = type;
 			t.LoadBackend (GetBackendType (type), true, true);
 			return t;
 		}
@@ -119,7 +130,14 @@ namespace Xwt
 		/// <param name="toolkit">The loaded toolkit</param>
 		public static bool TryLoad (ToolkitType type, out Toolkit toolkit)
 		{
+			var et = toolkits.Values.FirstOrDefault (tk => tk.toolkitType == type);
+			if (et != null) {
+				toolkit = et;
+				return true;
+			}
+
 			Toolkit t = new Toolkit ();
+			t.toolkitType = type;
 			if (t.LoadBackend (GetBackendType (type), true, false)) {
 				toolkit = t;
 				return true;
