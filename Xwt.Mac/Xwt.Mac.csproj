@@ -116,6 +116,7 @@
     <Compile Include="Xwt.Mac\ListBoxBackend.cs" />
     <Compile Include="Xwt.Mac\DialogBackend.cs" />
     <Compile Include="Xwt.Mac\MacSystemInformation.cs" />
+    <Compile Include="Xwt.Mac\RichTextViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
