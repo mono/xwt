@@ -81,7 +81,10 @@ namespace Xwt
 		
 		public double Spacing {
 			get { return spacing; }
-			set { spacing = value; OnPreferredSizeChanged (); }
+			set {
+				spacing = value > 0 ? value : 0;
+				OnPreferredSizeChanged ();
+			}
 		}
 		
 		public ChildrenCollection<BoxPlacement> Placements {
@@ -102,7 +105,7 @@ namespace Xwt
 			PackStart (widget, mode, 0);
 		}
 		
-		public void PackStart (Widget widget, BoxMode mode, int padding)
+		public void PackStart (Widget widget, BoxMode mode, double padding)
 		{
 			Pack (widget, mode, padding, PackOrigin.Start);
 		}
@@ -117,13 +120,17 @@ namespace Xwt
 			PackEnd (widget, mode, 0);
 		}
 		
-		public void PackEnd (Widget widget, BoxMode mode, int padding)
+		public void PackEnd (Widget widget, BoxMode mode, double padding)
 		{
 			Pack (widget, mode, padding, PackOrigin.End);
 		}
 		
-		void Pack (Widget widget, BoxMode mode, int padding, PackOrigin ptype)
+		void Pack (Widget widget, BoxMode mode, double padding, PackOrigin ptype)
 		{
+			if (widget == null)
+				throw new ArgumentNullException ("widget");
+			if (padding < 0)
+				throw new ArgumentException ("padding can't be negative");
 			var p = new BoxPlacement ((WidgetBackendHost)BackendHost, widget);
 			p.BoxMode = mode;
 			p.Padding = padding;
@@ -133,6 +140,8 @@ namespace Xwt
 		
 		public bool Remove (Widget widget)
 		{
+			if (widget == null)
+				throw new ArgumentNullException ("widget");
 			for (int n=0; n<children.Count; n++) {
 				if (children[n].Child == widget) {
 					children.RemoveAt (n);
@@ -390,7 +399,7 @@ namespace Xwt
 		IContainerEventSink<BoxPlacement> parent;
 		int position;
 		BoxMode boxMode = BoxMode.None;
-		int padding;
+		double padding;
 		PackOrigin packType = PackOrigin.Start;
 		Widget child;
 		
@@ -423,8 +432,8 @@ namespace Xwt
 			}
 		}
 
-		[DefaultValue (0)]
-		public int Padding {
+		[DefaultValue (0d)]
+		public double Padding {
 			get {
 				return this.padding;
 			}

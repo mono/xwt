@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 using Xwt.Backends;
 
 using System.Threading.Tasks;
@@ -111,6 +110,9 @@ namespace Xwt
 		/// </param>
 		public static void Invoke (Action action)
 		{
+			if (action == null)
+				throw new ArgumentNullException ("action");
+
 			engine.InvokeAsync (delegate {
 				try {
 					toolkit.EnterUserCode ();
@@ -139,6 +141,11 @@ namespace Xwt
 		/// </remarks>
 		public static IDisposable TimeoutInvoke (int ms, Func<bool> action)
 		{
+			if (action == null)
+				throw new ArgumentNullException ("action");
+			if (ms < 0)
+				throw new ArgumentException ("ms can't be negative");
+
 			return TimeoutInvoke (TimeSpan.FromMilliseconds (ms), action);
 		}
 		
@@ -159,6 +166,11 @@ namespace Xwt
 		/// </remarks>
 		public static IDisposable TimeoutInvoke (TimeSpan timeSpan, Func<bool> action)
 		{
+			if (action == null)
+				throw new ArgumentNullException ("action");
+			if (timeSpan.Ticks < 0)
+				throw new ArgumentException ("timeSpan can't be negative");
+
 			Timer t = new Timer ();
 			t.Id = engine.TimerInvoke (delegate {
 				bool res = false;
@@ -223,9 +235,11 @@ namespace Xwt
 			}
 		}
 
-		public void QueueExitAction (Action a)
+		public void QueueExitAction (Action action)
 		{
-			toolkit.QueueExitAction (a);
+			if (action == null)
+				throw new ArgumentNullException ("action");
+			toolkit.QueueExitAction (action);
 		}
 	}
 
