@@ -102,9 +102,7 @@
     <Compile Include="Xwt.GtkBackend\PanedBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SelectColorDialogBackend.cs" />
     <Compile Include="Xwt.CairoBackend\CairoConversion.cs" />
-    <Compile Include="Xwt.CairoBackend\CairoTextLayoutBackendHandler.cs" />
     <Compile Include="Xwt.CairoBackend\CairoContextBackendHandler.cs" />
-    <Compile Include="Xwt.GtkBackend\ContextBackendHandler.cs" />
     <Compile Include="Xwt.CairoBackend\CairoGradientBackendHandler.cs" />
     <Compile Include="Xwt.GtkBackend\ListBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\StatusIconBackend.cs" />
