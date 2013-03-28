@@ -24,8 +24,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#define USE_PANGO
-
 using System;
 
 using Xwt.Backends;
@@ -33,11 +31,31 @@ using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
-	public class GtkEngine: Xwt.Backends.ToolkitEngineBackend
+	public class GtkEngine: ToolkitEngineBackend
 	{
+		static Toolkit nativeToolkit;
+
 		public override void InitializeApplication ()
 		{
 			Gtk.Application.Init ();
+		}
+
+		public static Toolkit NativeToolkit {
+			get {
+				if (nativeToolkit == null) {
+					if (Platform.IsMac) {
+						if (!Toolkit.TryLoad (ToolkitType.XamMac, out nativeToolkit)) {
+							if (!Toolkit.TryLoad (ToolkitType.Cocoa, out nativeToolkit)) {
+								throw new InvalidOperationException ("Mac backend not found");
+							}
+						}
+					} else if (Platform.IsWindows) {
+						if (!Toolkit.TryLoad (ToolkitType.Wpf, out nativeToolkit))
+							throw new InvalidOperationException ("Windows backend not found");
+					}
+				}
+				return nativeToolkit;
+			}
 		}
 
 		public override void InitializeBackends ()
@@ -54,13 +72,8 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IListStoreBackend, ListStoreBackend> ();
 			RegisterBackend<ICanvasBackend, CanvasBackend> ();
 			RegisterBackend<ImageBackendHandler, ImageHandler> ();
-#if USE_PANGO
-			RegisterBackend<Xwt.Backends.ContextBackendHandler, ContextBackendHandlerWithPango> ();
+			RegisterBackend<Xwt.Backends.ContextBackendHandler, CairoContextBackendHandler> ();
 			RegisterBackend<TextLayoutBackendHandler, GtkTextLayoutBackendHandler> ();
-#else
-			WidgetRegistry.RegisterBackend<ContextBackendHandler, ContextBackendHandler> ();
-			WidgetRegistry.RegisterBackend<TextLayoutBackendHandler, CairoTextLayoutBackendHandler> ();
-#endif
 			RegisterBackend<DrawingPathBackendHandler, CairoContextBackendHandler> ();
 			RegisterBackend<GradientBackendHandler, CairoGradientBackendHandler> ();
 			RegisterBackend<FontBackendHandler, GtkFontBackendHandler> ();

@@ -47,10 +47,7 @@ namespace Xwt.Drawing
 		{
 			handler = ToolkitEngine.TextLayoutBackendHandler;
 			Backend = handler.Create ();
-		}
-
-		public TextLayout (Context ctx): this ()
-		{
+			Font = Font.SystemFont;
 		}
 
 		public TextLayout (Canvas canvas)

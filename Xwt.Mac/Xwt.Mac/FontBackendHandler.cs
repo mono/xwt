@@ -34,6 +34,22 @@ namespace Xwt.Mac
 {
 	public class MacFontBackendHandler: FontBackendHandler
 	{
+		public override object GetSystemDefaultFont ()
+		{
+			return NSFont.SystemFontOfSize (0);
+		}
+
+		public override object GetSystemDefaultMonospaceFont ()
+		{
+			var font = NSFont.SystemFontOfSize (0);
+			return Create ("Menlo", font.PointSize, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal);
+		}
+
+		public override System.Collections.Generic.IEnumerable<string> GetInstalledFonts ()
+		{
+			return NSFontManager.SharedFontManager.AvailableFontFamilies;
+		}
+
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			object o  = NSFont.FromFontName (fontName, (float)size);
@@ -44,7 +60,7 @@ namespace Xwt.Mac
 		public override object Copy (object handle)
 		{
 			NSFont f = (NSFont) handle;
-			return (NSFont)f.Copy ();
+			return f.Copy ();
 		}
 		
 		public override object SetSize (object handle, double size)

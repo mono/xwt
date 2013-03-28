@@ -29,11 +29,73 @@ using Xwt.Backends;
 using Pango;
 using Xwt.Drawing;
 using System.Globalization;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
 	public class GtkFontBackendHandler: FontBackendHandler
 	{
+		public override object GetSystemDefaultFont ()
+		{
+			if (Platform.IsMac || Platform.IsWindows) {
+				Xwt.Drawing.Font font = null;
+				GtkEngine.NativeToolkit.Invoke (delegate {
+					font = Xwt.Drawing.Font.SystemFont;
+				});
+				return Create (font.Family, font.Size, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal);
+			}
+			return null;
+		}
+
+		public override object GetSystemDefaultMonospaceFont ()
+		{
+			if (Platform.IsMac || Platform.IsWindows) {
+				Xwt.Drawing.Font font = null;
+				GtkEngine.NativeToolkit.Invoke (delegate {
+					font = Xwt.Drawing.Font.SystemMonospaceFont;
+				});
+				return Create (font.Family, font.Size, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal);
+			}
+			return null;
+		}
+		
+		public override object GetSystemDefaultSansSerifFont ()
+		{
+			if (Platform.IsMac || Platform.IsWindows) {
+				Xwt.Drawing.Font font = null;
+				GtkEngine.NativeToolkit.Invoke (delegate {
+					font = Xwt.Drawing.Font.SystemSansSerifFont;
+				});
+				return Create (font.Family, font.Size, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal);
+			}
+			return null;
+		}
+		
+		public override object GetSystemDefaultSerifFont ()
+		{
+			if (Platform.IsMac || Platform.IsWindows) {
+				Xwt.Drawing.Font font = null;
+				GtkEngine.NativeToolkit.Invoke (delegate {
+					font = Xwt.Drawing.Font.SystemSerifFont;
+				});
+				return Create (font.Family, font.Size, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal);
+			}
+			return null;
+		}
+
+		public override IEnumerable<string> GetInstalledFonts ()
+		{
+			if (Platform.IsMac || Platform.IsWindows) {
+				IEnumerable<string> fonts = null;
+				GtkEngine.NativeToolkit.Invoke (delegate {
+					fonts = Xwt.Drawing.Font.AvailableFontFamilies;
+				});
+				return fonts;
+			}
+			return new string[0];
+		}
+
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			return FontDescription.FromString (fontName + " " + size.ToString (CultureInfo.InvariantCulture));

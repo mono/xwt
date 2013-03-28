@@ -110,7 +110,7 @@ namespace Samples
 				ctx.SetColor (Colors.Black);
 				ctx.Stroke ();
 
-				TextLayout tl = new TextLayout (ctx);
+				TextLayout tl = new TextLayout (this);
 				tl.Text = s.DeviceName;
 				tl.Font = Font;
 				ctx.DrawTextLayout (tl, r.Center.X - tl.Width / 2, r.Center.Y - tl.Height / 2);

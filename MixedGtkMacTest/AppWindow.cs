@@ -46,7 +46,6 @@ namespace MixedGtkMacTest
 			b.Label = "Cocoa Test Window";
 			b.Clicked += HandleClickedCocoa;
 			var wped = Toolkit.CurrentEngine.WrapWidget (b);
-			var w = wped.Surface.GetPreferredWidth ();
 			box.PackStart (wped, BoxMode.FillAndExpand);
 
 			Content = box;
