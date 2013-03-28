@@ -52,7 +52,10 @@ namespace Xwt.Mac
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			object o  = NSFont.FromFontName (fontName, (float)size);
+			object o = NSFont.FromFontName (fontName, (float)size);
+			o = SetStyle (o, style);
+			o = SetWeight (o, weight);
+			o = SetStretch (o, stretch);
 			return o;
 		}
 
@@ -100,21 +103,18 @@ namespace Xwt.Mac
 		public override object SetStretch (object handle, FontStretch stretch)
 		{
 			NSFont f = (NSFont) handle;
-			NSFontSymbolicTraits traits = f.FontDescriptor.SymbolicTraits;
 			if (stretch < FontStretch.Normal) {
-				traits |= NSFontSymbolicTraits.CondensedTrait;
-				traits &= ~NSFontSymbolicTraits.ExpandedTrait;
+				f = NSFontManager.SharedFontManager.ConvertFont (f, NSFontTraitMask.Condensed);
+				f = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (f, NSFontTraitMask.Expanded);
 			}
 			else if (stretch > FontStretch.Normal) {
-				traits |= NSFontSymbolicTraits.ExpandedTrait;
-				traits &= ~NSFontSymbolicTraits.CondensedTrait;
+				f = NSFontManager.SharedFontManager.ConvertFont (f, NSFontTraitMask.Expanded);
+				f = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (f, NSFontTraitMask.Condensed);
 			}
 			else {
-				traits &= ~NSFontSymbolicTraits.ExpandedTrait;
-				traits &= ~NSFontSymbolicTraits.CondensedTrait;
+				f = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (f, NSFontTraitMask.Condensed | NSFontTraitMask.Expanded);
 			}
-			
-			return NSFont.FromDescription (f.FontDescriptor.FontDescriptorWithSymbolicTraits (traits), null);
+			return f;
 		}
 		
 		public override double GetSize (object handle)
@@ -150,9 +150,10 @@ namespace Xwt.Mac
 		public override FontStretch GetStretch (object handle)
 		{
 			NSFont f = (NSFont) handle;
-			if ((f.FontDescriptor.SymbolicTraits & NSFontSymbolicTraits.CondensedTrait) != 0)
+			var traits = NSFontManager.SharedFontManager.TraitsOfFont (f);
+			if ((traits & NSFontTraitMask.Condensed) != 0)
 				return FontStretch.Condensed;
-			else if ((f.FontDescriptor.SymbolicTraits & NSFontSymbolicTraits.ExpandedTrait) != 0)
+			else if ((traits & NSFontTraitMask.Expanded) != 0)
 				return FontStretch.Expanded;
 			else
 				return FontStretch.Normal;
