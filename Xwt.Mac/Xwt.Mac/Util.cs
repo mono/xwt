@@ -163,6 +163,8 @@ namespace Xwt.Mac
 				return NSPasteboard.NSStringType;
 			if (dt == TransferDataType.Rtf)
 				return NSPasteboard.NSRtfType;
+			if (dt == TransferDataType.Html)
+				return NSPasteboard.NSHtmlType;
 			if (dt == TransferDataType.Image)
 				return NSPasteboard.NSTiffType;
 
