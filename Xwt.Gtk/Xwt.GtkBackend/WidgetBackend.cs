@@ -369,7 +369,7 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				customBackgroundColor = value;
-				AllocEventBox ();
+				AllocEventBox (visibleWindow: true);
 				EventsRootWidget.ModifyBg (Gtk.StateType.Normal, Util.ToGdkColor (value));
 			}
 		}
@@ -425,7 +425,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		void AllocEventBox ()
+		void AllocEventBox (bool visibleWindow = false)
 		{
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
@@ -434,7 +434,7 @@ namespace Xwt.GtkBackend
 				eventBox = new Gtk.EventBox ();
 				eventBox.Visible = Widget.Visible;
 				eventBox.Sensitive = Widget.Sensitive;
-				eventBox.VisibleWindow = false;
+				eventBox.VisibleWindow = visibleWindow;
 				if (alignment != null) {
 					alignment.Remove (alignment.Child);
 					alignment.Add (eventBox);
