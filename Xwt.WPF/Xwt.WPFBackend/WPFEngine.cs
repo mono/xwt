@@ -98,6 +98,7 @@ namespace Xwt.WPFBackend
 			RegisterBackend<ILinkLabelBackend, LinkLabelBackend> ();
 			RegisterBackend<ISpinnerBackend, SpinnerBackend> ();
 			RegisterBackend<DesktopBackend, WpfDesktopBackend> ();
+			RegisterBackend<IExpanderBackend, ExpanderBackend> ();
 		}
 
 		public override void DispatchPendingEvents()
