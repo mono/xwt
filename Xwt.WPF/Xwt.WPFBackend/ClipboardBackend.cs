@@ -46,8 +46,38 @@ namespace Xwt.WPFBackend
 				throw new ArgumentNullException ("type");
 			if (dataSource == null)
 				throw new ArgumentNullException ("dataSource");
+			if (type == TransferDataType.Html) {
+				WindowsClipboard.SetData (type.ToWpfDataFormat (), GenerateCFHtml (dataSource ().ToString ()));
+			} else {
+				WindowsClipboard.SetData (type.ToWpfDataFormat (), dataSource ());
+			}
+		}
 
-			WindowsClipboard.SetData (type.ToWpfDataFormat (), dataSource ());
+		static readonly string emptyCFHtmlHeader = GenerateCFHtmlHeader (0, 0, 0, 0);
+
+		/// <summary>
+		/// Generates a CF_HTML cliboard format document
+		/// </summary>
+		string GenerateCFHtml (string htmlFragment)
+		{
+			int startHTML     = emptyCFHtmlHeader.Length;
+			int startFragment = startHTML;
+			int endFragment   = startFragment + System.Text.Encoding.UTF8.GetByteCount (htmlFragment);
+			int endHTML       = endFragment;
+			return GenerateCFHtmlHeader (startHTML, endHTML, startFragment, endFragment) + htmlStart + htmlFragment + htmlEnd;
+		}
+
+		/// <summary>
+		/// Generates a CF_HTML clipboard format header.
+		/// </summary>
+		static string GenerateCFHtmlHeader (int startHTML, int endHTML, int startFragment, int endFragment)
+		{
+			return
+				"Version:0.9" + Environment.NewLine +
+					string.Format ("StartHTML: {0:d8}", startHTML) + Environment.NewLine +
+					string.Format ("EndHTML: {0:d8}", endHTML) + Environment.NewLine +
+					string.Format ("StartFragment: {0:d8}", startFragment) + Environment.NewLine +
+					string.Format ("EndFragment: {0:d8}", endFragment) + Environment.NewLine;
 		}
 
 		public override bool IsTypeAvailable (TransferDataType type)

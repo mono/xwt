@@ -273,6 +273,7 @@ namespace Xwt.WPFBackend
 		{
 			if (type == TransferDataType.Text) return DataFormats.UnicodeText;
 			if (type == TransferDataType.Rtf) return DataFormats.Rtf;
+			if (type == TransferDataType.Html) return DataFormats.Html;
 			if (type == TransferDataType.Uri) return DataFormats.FileDrop;
 			if (type == TransferDataType.Image) return DataFormats.Bitmap;
 			return type.Id;
@@ -284,6 +285,7 @@ namespace Xwt.WPFBackend
 			if (type == DataFormats.Rtf) return TransferDataType.Rtf;
 			if (type == DataFormats.FileDrop) return TransferDataType.Uri;
 			if (type == DataFormats.Bitmap) return TransferDataType.Image;
+			if (type == DataFormats.Html) return TransferDataType.Html;
 			return TransferDataType.FromId (type);
 		}
 

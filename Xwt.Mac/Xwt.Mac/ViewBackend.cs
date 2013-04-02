@@ -644,6 +644,7 @@ namespace Xwt.Mac
 			if (type == TransferDataType.Uri) return NSPasteboard.NSFilenamesType;
 			if (type == TransferDataType.Image) return NSPasteboard.NSPictType;
 			if (type == TransferDataType.Rtf) return NSPasteboard.NSRtfType;
+			if (type == TransferDataType.Html) return NSPasteboard.NSHtmlType;
 			return type.Id;
 		}
 		
@@ -657,6 +658,8 @@ namespace Xwt.Mac
 				return TransferDataType.Image;
 			if (type == NSPasteboard.NSRtfType)
 				return TransferDataType.Rtf;
+			if (type == NSPasteboard.NSHtmlType)
+				return TransferDataType.Html;
 			return TransferDataType.FromId (type);
 		}
 
