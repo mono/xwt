@@ -144,13 +144,26 @@ namespace Xwt.GtkBackend
 						list.Remove ("STRING");
 					}
 					entries = (Gtk.TargetEntry[])list;
-				}
-				else if (type == TransferDataType.Rtf) {
+				} else if (type == TransferDataType.Rtf) {
 					Gdk.Atom atom;
-					if (Platform.IsMac)
+					if (Platform.IsMac) {
 						atom = Gdk.Atom.Intern ("NSRTFPboardType", false); //TODO: use public.rtf when dep on MacOS 10.6
-					else
+					} else if (Platform.IsWindows) {
+						atom = Gdk.Atom.Intern ("Rich Text Format", false);
+					} else {
 						atom = Gdk.Atom.Intern ("text/rtf", false);
+					}
+					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
+				}
+				else if (type == TransferDataType.Html) {
+					Gdk.Atom atom;
+					if (Platform.IsMac) {
+						atom = Gdk.Atom.Intern ("Apple HTML pasteboard type", false); //TODO: use public.rtf when dep on MacOS 10.6
+					} else if (Platform.IsWindows) {
+						atom = Gdk.Atom.Intern ("HTML Format", false);
+					} else {
+						atom = Gdk.Atom.Intern ("text/html", false);
+					}
 					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
 				}
 				else {
