@@ -34,7 +34,6 @@ namespace Xwt.Drawing
 	{
 		ContextBackendHandler handler;
 		Pattern pattern;
-		Font font;
 		double globalAlpha = 1;
 		Stack<double> alphaStack = new Stack<double> ();
 		

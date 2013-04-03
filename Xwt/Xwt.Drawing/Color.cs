@@ -205,9 +205,12 @@ namespace Xwt.Drawing
 		
 		public static bool TryParse (string name, out Color color)
 		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
 			uint val;
-			if (!TryParseColourFromHex (name, out val)) {
-				color = Colors.White;
+			if (name.Length == 0 || !TryParseColourFromHex (name, out val)) {
+				color = default (Color);
 				return false;
 			}
 			color = Color.FromBytes ((byte)(val >> 24), (byte)((val >> 16) & 0xff), (byte)((val >> 8) & 0xff), (byte)(val & 0xff));
@@ -219,7 +222,7 @@ namespace Xwt.Drawing
 		{
 			val = 0;
 			
-			if (str.Length > 9)
+			if (str[0] != '#' || str.Length > 9)
 				return false;
 			
 			if (!uint.TryParse (str.Substring (1), System.Globalization.NumberStyles.HexNumber, null, out val))
