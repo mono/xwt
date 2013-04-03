@@ -225,8 +225,7 @@ namespace Xwt.Drawing
 
 		public void Scale (double scaleX, double scaleY)
 		{
-			var scale = new Matrix (scaleX, 0, 0, scaleY, 0, 0);
-			Append (scale);
+			Append (scaleX, 0, 0, scaleY, 0, 0);
 		}
 
 		public void ScaleAt (double scaleX, double scaleY, double centerX, double centerY)
@@ -261,10 +260,9 @@ namespace Xwt.Drawing
 
 		public void Skew (double skewX, double skewY)
 		{
-			var skew_m = new Matrix (1, Math.Tan (skewY * pi180),
-                            Math.Tan (skewX * pi180), 1,
-                            0, 0);
-			Append (skew_m);
+			Append (1, Math.Tan (skewY * pi180),
+			        Math.Tan (skewX * pi180), 1,
+			        0, 0);
 		}
 
 		public void SkewPrepend (double skewX, double skewY)
