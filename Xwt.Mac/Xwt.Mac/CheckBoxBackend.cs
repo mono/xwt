@@ -50,6 +50,7 @@ namespace Xwt.Mac
 		public void SetContent (string label)
 		{
 			Widget.Title = label;
+			ResetFittingSize ();
 		}
 
 		public bool Active {
