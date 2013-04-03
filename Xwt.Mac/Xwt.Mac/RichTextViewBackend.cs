@@ -47,7 +47,10 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			ViewObject = new MacTextView (EventSink, ApplicationContext);
+			var tv = new MacTextView (EventSink, ApplicationContext);
+			ViewObject = tv;
+			tv.VerticallyResizable = false;
+			tv.HorizontallyResizable = false;
 		}
 
 		public IRichTextBuffer CreateBuffer ()
