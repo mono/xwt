@@ -65,7 +65,7 @@ namespace Xwt.Backends
 					if (f != null)
 						systemSerifFont = new Font (f, ApplicationContext.Toolkit);
 					else
-						systemSerifFont = SystemFont.WithFamily ("Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif");
+						systemSerifFont = SystemFont.WithFamily ("Times New Roman, Times, serif");
 				}
 				return systemSerifFont;
 			}
@@ -73,12 +73,12 @@ namespace Xwt.Backends
 
 		internal Font SystemSansSerifFont {
 			get {
-				if (systemSerifFont == null) {
+				if (systemSansSerifFont == null) {
 					var f = GetSystemDefaultSansSerifFont ();
 					if (f != null)
 						systemSansSerifFont = new Font (f, ApplicationContext.Toolkit);
 					else
-						systemSansSerifFont = SystemFont.WithFamily ("Times New Roman, Times, serif");
+						systemSansSerifFont = SystemFont.WithFamily ("Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif");
 				}
 				return systemSansSerifFont;
 			}

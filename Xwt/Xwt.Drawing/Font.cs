@@ -131,8 +131,9 @@ namespace Xwt.Drawing
 			int i = fontNames.IndexOf (',');
 			if (i == -1) {
 				var f = fontNames.Trim ();
-				if (installedFonts.Contains (f))
-					return f;
+				string nf;
+				if (installedFonts.TryGetValue (f, out nf))
+					return nf;
 				else
 					return GetDefaultFont (f);
 			}
@@ -143,7 +144,7 @@ namespace Xwt.Drawing
 
 			foreach (var name in names) {
 				var n = name.Trim ();
-				if (installedFonts.Contains (n))
+				if (installedFonts.ContainsKey (n))
 					return n;
 			}
 			return GetDefaultFont (fontNames.Trim (' ',','));
@@ -155,15 +156,17 @@ namespace Xwt.Drawing
 			return Font.SystemFont.Family;
 		}
 
-		static HashSet<string> installedFonts;
+		static Dictionary<string,string> installedFonts;
 		static ReadOnlyCollection<string> installedFontsArray;
 
 
 		static void LoadInstalledFonts ()
 		{
 			if (installedFonts == null) {
-				installedFonts = new HashSet<string> (Toolkit.CurrentEngine.FontBackendHandler.GetInstalledFonts ());
-				installedFontsArray = new ReadOnlyCollection<string> (installedFonts.ToArray ());
+				installedFonts = new Dictionary<string,string> (StringComparer.OrdinalIgnoreCase);
+				foreach (var f in Toolkit.CurrentEngine.FontBackendHandler.GetInstalledFonts ())
+					installedFonts [f] = f;
+				installedFontsArray = new ReadOnlyCollection<string> (installedFonts.Values.ToArray ());
 			}
 		}
 

@@ -112,6 +112,17 @@ namespace Xwt
 		}
 		
 		[Test]
+		public void FromNameOnlyFamilyIgnoreCase ()
+		{
+			var f = Font.FromName ("aRiaL");
+			Assert.AreEqual ("Arial", f.Family);
+			Assert.AreEqual (Font.SystemFont.Size, f.Size);
+			Assert.AreEqual (FontStretch.Normal, f.Stretch);
+			Assert.AreEqual (FontStyle.Normal, f.Style);
+			Assert.AreEqual (FontWeight.Normal, f.Weight);
+		}
+
+		[Test]
 		public void FromNameOnlySize ()
 		{
 			var f = Font.FromName ("33");
