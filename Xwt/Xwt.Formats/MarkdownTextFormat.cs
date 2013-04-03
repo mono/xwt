@@ -245,8 +245,8 @@ namespace Xwt.Formats
 		                                               //FIXME: image, etc...
 		                                           , RegexOptions.Singleline | RegexOptions.Compiled);
 
-		static readonly Regex styles = new Regex (@"(?<double>\*{2}|_{2})(?<bold>[^\s]+.*)(?<!\s)\k<double>" + // emphasis: double ** or __ for bold
-		                                          @"|(?<single>\*|_)(?<italic>[^\s]+.*)(?<!\s)\k<single>" + // emphasis: single * or _ for italic
+		static readonly Regex styles = new Regex (@"(?<double>\*{2}|_{2})(?<bold>[^\s]+[^\*{2}_{2}]*)(?<!\s)\k<double>" + // emphasis: double ** or __ for bold
+		                                          @"|(?<single>\*|_)(?<italic>[^\s]+[^\*_]*)(?<!\s)\k<single>" + // emphasis: single * or _ for italic
 		                                          @"|`(?<code>[^`]+)`" // inline code
 		                                          , RegexOptions.Compiled);
 	}
