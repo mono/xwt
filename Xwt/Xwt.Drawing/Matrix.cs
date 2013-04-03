@@ -69,20 +69,25 @@ namespace Xwt.Drawing
 
 		public void Append (Matrix matrix)
 		{
-			var _m11 = m11 * matrix.M11 + m12 * matrix.M21;
-			var _m12 = m11 * matrix.M12 + m12 * matrix.M22;
-			var _m21 = m21 * matrix.M11 + m22 * matrix.M21;
-			var _m22 = m21 * matrix.M12 + m22 * matrix.M22;
-
-			var _offsetX = offsetX * matrix.M11 + offsetY * matrix.M21 + matrix.OffsetX;
-			var _offsetY = offsetX * matrix.M12 + offsetY * matrix.M22 + matrix.OffsetY;
-
-			m11 = _m11;
-			m12 = _m12;
-			m21 = _m21;
-			m22 = _m22;
-			offsetX = _offsetX;
-			offsetY = _offsetY;
+			Append (matrix.M11, matrix.M12, matrix.M21, matrix.M22, matrix.OffsetX, matrix.OffsetY);
+		}
+		
+		protected void Append (double m11, double m12, double m21, double m22, double offsetX, double offsetY)
+		{
+			var _m11 = M11 * m11 + M12 * m21;
+			var _m12 = M11 * m12 + M12 * m22;
+			var _m21 = M21 * m11 + M22 * m21;
+			var _m22 = M21 * m12 + M22 * m22;
+			
+			var _offsetX = OffsetX * m11 + OffsetY * m21 + offsetX;
+			var _offsetY = OffsetX * m12 + OffsetY * m22 + offsetY;
+			
+			M11 = _m11;
+			M12 = _m12;
+			M21 = _m21;
+			M22 = _m22;
+			OffsetX = _offsetX;
+			OffsetY = _offsetY;
 		}
 
 		public bool Equals (Matrix value)
@@ -194,16 +199,7 @@ namespace Xwt.Drawing
 			var theta = angle * pi180;
 			var cos = Math.Cos (theta);
 			var sin = Math.Sin (theta);
-            
-			var _m11 = cos * this.m11 + sin * this.m21;
-			var _m12 = cos * this.m12 + sin * this.m22;
-			var _m21 = cos * this.m21 - sin * this.m11;
-			var _m22 = cos * this.m22 - sin * this.m12;
-
-			this.m11 = _m11;
-			this.m12 = _m12;
-			this.m21 = _m21;
-			this.m22 = _m22;
+			Append (cos, sin, -sin, cos, 0, 0);
 		}
 
 		public void RotateAt (double angle, double centerX, double centerY)
