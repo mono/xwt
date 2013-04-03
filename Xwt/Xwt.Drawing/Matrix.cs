@@ -41,21 +41,21 @@ namespace Xwt.Drawing
 	public class Matrix
 	{
 
-		double m11;
-		double m12;
-		double m21;
-		double m22;
-		double offsetX;
-		double offsetY;
+		public double M11 { get; set; }
+		public double M12 { get; set; }
+		public double M21 { get; set; }
+		public double M22 { get; set; }
+		public double OffsetX { get; set; }
+		public double OffsetY { get; set; }
 
 		public Matrix (double m11, double m12, double m21, double m22, double offsetX, double offsetY)
 		{
-			this.m11 = m11;
-			this.m12 = m12;
-			this.m21 = m21;
-			this.m22 = m22;
-			this.offsetX = offsetX;
-			this.offsetY = offsetY;
+			this.M11 = m11;
+			this.M12 = m12;
+			this.M21 = m21;
+			this.M22 = m22;
+			this.OffsetX = offsetX;
+			this.OffsetY = offsetY;
 		}
 
 		public Matrix (Matrix m) : this(m.M11, m.M12, m.M21, m.M22, m.OffsetX, m.OffsetY)
@@ -92,12 +92,12 @@ namespace Xwt.Drawing
 
 		public bool Equals (Matrix value)
 		{
-			return (m11 == value.M11 &&
-				m12 == value.M12 &&
-				m21 == value.M21 &&
-				m22 == value.M22 &&
-				offsetX == value.OffsetX &&
-				offsetY == value.OffsetY);
+			return (M11 == value.M11 &&
+				M12 == value.M12 &&
+				M21 == value.M21 &&
+				M22 == value.M22 &&
+				OffsetX == value.OffsetX &&
+				OffsetY == value.OffsetY);
 		}
 
 		public override bool Equals (object o)
@@ -115,12 +115,12 @@ namespace Xwt.Drawing
 
 		public override int GetHashCode ()
 		{
-			int h = m11.GetHashCode ();
-			h = (h << 5) - h + m21.GetHashCode ();
-			h = (h << 5) - h + m12.GetHashCode ();
-			h = (h << 5) - h + m22.GetHashCode ();
-			h = (h << 5) - h + offsetX.GetHashCode ();
-			h = (h << 5) - h + offsetY.GetHashCode ();
+			int h = M11.GetHashCode ();
+			h = (h << 5) - h + M21.GetHashCode ();
+			h = (h << 5) - h + M12.GetHashCode ();
+			h = (h << 5) - h + M22.GetHashCode ();
+			h = (h << 5) - h + OffsetX.GetHashCode ();
+			h = (h << 5) - h + OffsetY.GetHashCode ();
 			return h;
 		}
 
@@ -133,20 +133,20 @@ namespace Xwt.Drawing
 
 			/* 1/(ad-bc)[d -b; -c a] */
 
-			var _m11 = m22;
-			var _m12 = -m12;
-			var _m21 = -m21;
-			var _m22 = m11;
+			var _m11 = M22;
+			var _m12 = -M12;
+			var _m21 = -M21;
+			var _m22 = M11;
 
-			var _offsetX = m21 * offsetY - m22 * offsetX;
-			var _offsetY = m12 * offsetX - m11 * offsetY;
+			var _offsetX = M21 * OffsetY - M22 * OffsetX;
+			var _offsetY = M12 * OffsetX - M11 * OffsetY;
 
-			m11 = _m11 / d;
-			m12 = _m12 / d;
-			m21 = _m21 / d;
-			m22 = _m22 / d;
-			offsetX = _offsetX / d;
-			offsetY = _offsetY / d;
+			M11 = _m11 / d;
+			M12 = _m12 / d;
+			M21 = _m21 / d;
+			M22 = _m22 / d;
+			OffsetX = _offsetX / d;
+			OffsetY = _offsetY / d;
 		}
 
 		public static Matrix Multiply (Matrix trans1, Matrix trans2)
@@ -177,20 +177,20 @@ namespace Xwt.Drawing
 
 		public void Prepend (Matrix matrix)
 		{
-			var _m11 = matrix.M11 * m11 + matrix.M12 * m21;
-			var _m12 = matrix.M11 * m12 + matrix.M12 * m22;
-			var _m21 = matrix.M21 * m11 + matrix.M22 * m21;
-			var _m22 = matrix.M21 * m12 + matrix.M22 * m22;
+			var _m11 = matrix.M11 * M11 + matrix.M12 * M21;
+			var _m12 = matrix.M11 * M12 + matrix.M12 * M22;
+			var _m21 = matrix.M21 * M11 + matrix.M22 * M21;
+			var _m22 = matrix.M21 * M12 + matrix.M22 * M22;
 
-			var _offsetX = matrix.OffsetX * m11 + matrix.OffsetY * m21 + offsetX;
-			var _offsetY = matrix.OffsetX * m12 + matrix.OffsetY * m22 + offsetY;
+			var _offsetX = matrix.OffsetX * M11 + matrix.OffsetY * M21 + OffsetX;
+			var _offsetY = matrix.OffsetX * M12 + matrix.OffsetY * M22 + OffsetY;
 
-			m11 = _m11;
-			m12 = _m12;
-			m21 = _m21;
-			m22 = _m22;
-			offsetX = _offsetX;
-			offsetY = _offsetY;
+			M11 = _m11;
+			M12 = _m12;
+			M21 = _m21;
+			M22 = _m22;
+			OffsetX = _offsetX;
+			OffsetY = _offsetY;
 		}
 
 		public void Rotate (double angle)
@@ -251,9 +251,9 @@ namespace Xwt.Drawing
 
 		public void SetIdentity ()
 		{
-			m11 = m22 = 1.0;
-			m12 = m21 = 0.0;
-			offsetX = offsetY = 0.0;
+			M11 = M22 = 1.0;
+			M12 = M21 = 0.0;
+			OffsetX = OffsetY = 0.0;
 		}
 
 		const double pi180 = Math.PI / 180;
@@ -278,18 +278,18 @@ namespace Xwt.Drawing
 				return this.GetType ().Name + "=Identity";
 			else
 				return string.Format (this.GetType ().Name + "{{M11={0} M12={1} M21={2} M22={3} OffsetX={4} OffsetY={5}}}",
-                              m11.ToString (CultureInfo.InvariantCulture),
-                              m12.ToString (CultureInfo.InvariantCulture),
-                              m21.ToString (CultureInfo.InvariantCulture),
-                              m22.ToString (CultureInfo.InvariantCulture),
-                              offsetX.ToString (CultureInfo.InvariantCulture),
-                              offsetY.ToString (CultureInfo.InvariantCulture));
+                              M11.ToString (CultureInfo.InvariantCulture),
+                              M12.ToString (CultureInfo.InvariantCulture),
+                              M21.ToString (CultureInfo.InvariantCulture),
+                              M22.ToString (CultureInfo.InvariantCulture),
+                              OffsetX.ToString (CultureInfo.InvariantCulture),
+                              OffsetY.ToString (CultureInfo.InvariantCulture));
 		}
 
 		public Point Transform (Point point)
 		{
-			return new Point (point.X * m11 + point.Y * m21 + offsetX,
-                point.X * m12 + point.Y * m22 + offsetY);
+			return new Point (point.X * M11 + point.Y * M21 + OffsetX,
+                point.X * M12 + point.Y * M22 + OffsetY);
 		}
 
 		public void Transform (Point[] points)
@@ -300,14 +300,14 @@ namespace Xwt.Drawing
 			for (int i = 0; i < len; i++) {
 				x = points [i].X;
 				y = points [i].Y;
-				points [i].X = x * m11 + y * m21 + offsetX;
-				points [i].Y = x * m12 + y * m22 + offsetY;
+				points [i].X = x * M11 + y * M21 + OffsetX;
+				points [i].Y = x * M12 + y * M22 + OffsetY;
 			}
 		}
 
 		public Point TransformVector (Point vector)
 		{
-			return new Point (vector.X * m11 + vector.Y * m21, vector.X * m12 + vector.Y * m22);
+			return new Point (vector.X * M11 + vector.Y * M21, vector.X * M12 + vector.Y * M22);
 		}
 
 		public void TransformVector (Point[] vectors)
@@ -318,15 +318,15 @@ namespace Xwt.Drawing
 			for (int i = 0; i < len; i++) {
 				x = vectors [i].X;
 				y = vectors [i].Y;
-				vectors [i].X = x * m11 + y * m21;
-				vectors [i].Y = x * m12 + y * m22;
+				vectors [i].X = x * M11 + y * M21;
+				vectors [i].Y = x * M12 + y * M22;
 			}
 		}
 
 		public void Translate (double offsetX, double offsetY)
 		{
-			this.offsetX += offsetX;
-			this.offsetY += offsetY;
+			this.OffsetX += offsetX;
+			this.OffsetY += offsetY;
 		}
 
 		public void TranslatePrepend (double offsetX, double offsetY)
@@ -337,7 +337,7 @@ namespace Xwt.Drawing
 		}
 
 		public double Determinant {
-			get { return m11 * m22 - m12 * m21; }
+			get { return M11 * M22 - M12 * M21; }
 		}
 
 		public bool HasInverse {
@@ -350,40 +350,10 @@ namespace Xwt.Drawing
 
 		public bool IsIdentity {
 			get {
-				return (m11 == 1.0d && m12 == 0.0d &&
-					m21 == 0.0d && m22 == 1.0d &&
-					offsetX == 0.0d && offsetY == 0.0d);
+				return (M11 == 1.0d && M12 == 0.0d &&
+					M21 == 0.0d && M22 == 1.0d &&
+					OffsetX == 0.0d && OffsetY == 0.0d);
 			}
-		}
-
-		public double M11 {
-			get { return m11; }
-			set { m11 = value; }
-		}
-
-		public double M12 {
-			get { return m12; }
-			set { m12 = value; }
-		}
-
-		public double M21 {
-			get { return m21; }
-			set { m21 = value; }
-		}
-
-		public double M22 {
-			get { return m22; }
-			set { m22 = value; }
-		}
-
-		public double OffsetX {
-			get { return offsetX; }
-			set { offsetX = value; }
-		}
-
-		public double OffsetY {
-			get { return offsetY; }
-			set { offsetY = value; }
 		}
 
 	}
