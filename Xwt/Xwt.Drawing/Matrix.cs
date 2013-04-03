@@ -297,11 +297,18 @@ namespace Xwt.Drawing
 			double x;
 			double y;
 			var len = points.Length;
+			var m11 = this.M11;
+			var m12 = this.M12;
+			var m21 = this.M21;
+			var m22 = this.M22;
+			var offsetX = this.OffsetX;
+			var offsetY = this.OffsetY;
+			
 			for (int i = 0; i < len; i++) {
 				x = points [i].X;
 				y = points [i].Y;
-				points [i].X = x * M11 + y * M21 + OffsetX;
-				points [i].Y = x * M12 + y * M22 + OffsetY;
+				points [i].X = x * m11 + y * m21 + offsetX;
+				points [i].Y = x * m12 + y * m22 + offsetY;
 			}
 		}
 
@@ -315,11 +322,16 @@ namespace Xwt.Drawing
 			double x;
 			double y;
 			var len = vectors.Length;
+			var m11 = this.M11;
+			var m12 = this.M12;
+			var m21 = this.M21;
+			var m22 = this.M22;
+			
 			for (int i = 0; i < len; i++) {
 				x = vectors [i].X;
 				y = vectors [i].Y;
-				vectors [i].X = x * M11 + y * M21;
-				vectors [i].Y = x * M12 + y * M22;
+				vectors [i].X = x * m11 + y * m21;
+				vectors [i].Y = x * m12 + y * m22;
 			}
 		}
 
