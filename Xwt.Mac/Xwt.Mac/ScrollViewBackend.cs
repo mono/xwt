@@ -31,6 +31,10 @@ namespace Xwt.Mac
 {
 	public class ScrollViewBackend: ViewBackend<NSScrollView,IScrollViewEventSink>, IScrollViewBackend
 	{
+		IWidgetBackend child;
+		ScrollPolicy verticalScrollPolicy;
+		ScrollPolicy horizontalScrollPolicy;
+
 		public override void Initialize ()
 		{
 			ViewObject = new CustomScrollView ();
@@ -46,35 +50,40 @@ namespace Xwt.Mac
 		
 		public void SetChild (IWidgetBackend child)
 		{
+			this.child = child;
 			ViewBackend backend = (ViewBackend) child;
 			if (backend.EventSink.SupportsCustomScrolling ()) {
 				var vs = new ScrollAdjustmentBackend (Widget, true);
 				var hs = new ScrollAdjustmentBackend (Widget, false);
 				CustomClipView clipView = new CustomClipView (hs, vs);
 				Widget.ContentView = clipView;
-				clipView.DocumentView = backend.Widget;
+				var dummy = new DummyClipView ();
+				dummy.AddSubview (backend.Widget);
+				backend.Widget.Frame = new System.Drawing.RectangleF (0, 0, clipView.Frame.Width, clipView.Frame.Height);
+				clipView.DocumentView = dummy;
 				backend.EventSink.SetScrollAdjustments (hs, vs);
-				backend.Widget.Frame = new System.Drawing.RectangleF (0, 0, 500,500);
 			}
 			else {
 				Widget.DocumentView = backend.Widget;
-				backend.Widget.Frame = Widget.ContentView.DocumentRect;
+				UpdateChildSize ();
 			}
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {
 			get {
-				return ScrollPolicy.Automatic;
+				return verticalScrollPolicy;
 			}
 			set {
+				verticalScrollPolicy = value;
 			}
 		}
 
 		public ScrollPolicy HorizontalScrollPolicy {
 			get {
-				return ScrollPolicy.Automatic;
+				return horizontalScrollPolicy;
 			}
 			set {
+				horizontalScrollPolicy = value;
 			}
 		}
 		
@@ -91,13 +100,27 @@ namespace Xwt.Mac
 			set {
 			}
 		}
+
+		void UpdateChildSize ()
+		{
+			if (child == null)
+				return;
+
+			if (Widget.ContentView is CustomClipView) {
+			} else {
+				NSView view = (NSView)Widget.DocumentView;
+				ViewBackend c = (ViewBackend)child;
+				var pw = c.Frontend.Surface.GetPreferredWidth ();
+				var w = Math.Max (pw.NaturalSize, Widget.ContentView.Frame.Width);
+				var ph = c.Frontend.Surface.GetPreferredHeightForWidth (w);
+				var h = Math.Max (ph.NaturalSize, Widget.ContentView.Frame.Height);
+				view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)w, (float)h);
+			}
+		}
 		
 		public void SetChildSize (Size s)
 		{
-			NSView view = (NSView) Widget.DocumentView;
-			var w = Math.Max (s.Width, Widget.ContentView.Frame.Width);
-			var h = Math.Max (s.Height, Widget.ContentView.Frame.Height);
-			view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)w, (float)h);
+			UpdateChildSize ();
 		}
 	}
 	
@@ -117,31 +140,65 @@ namespace Xwt.Mac
 			}
 		}
 	}
+
+	class DummyClipView: NSView
+	{
+		public override bool IsFlipped {
+			get {
+				return true;
+			}
+		}
+	}
 	
 	class CustomClipView: NSClipView
 	{
 		ScrollAdjustmentBackend hScroll;
 		ScrollAdjustmentBackend vScroll;
-		System.Drawing.RectangleF visibleRect;
-		
+
+		public float CurrentX { get; set; }
+		public float CurrentY { get; set; }
+
 		public CustomClipView (ScrollAdjustmentBackend hScroll, ScrollAdjustmentBackend vScroll)
 		{
 			this.hScroll = hScroll;
 			this.vScroll = vScroll;
 			CopiesOnScroll = false;
-			
+		}
+
+		public override bool IsFlipped {
+			get {
+				return true;
+			}
+		}
+
+		public override void SetFrameSize (System.Drawing.SizeF newSize)
+		{
+			base.SetFrameSize (newSize);
+			var v = DocumentView.Subviews [0];
+			v.Frame = new System.Drawing.RectangleF (v.Frame.X, v.Frame.Y, newSize.Width, newSize.Height);
 		}
 		
 		public override void ScrollToPoint (System.Drawing.PointF newOrigin)
 		{
-			visibleRect = new System.Drawing.RectangleF (newOrigin.X, newOrigin.Y, 100, 100);
+			base.ScrollToPoint (newOrigin);
+			var v = DocumentView.Subviews [0];
+
+			CurrentX = newOrigin.X >= 0 ? newOrigin.X : 0;
+			CurrentY = newOrigin.Y >= 0 ? newOrigin.Y : 0;
+			if (CurrentX + v.Frame.Width > DocumentView.Frame.Width)
+				CurrentX = DocumentView.Frame.Width - v.Frame.Width;
+			if (CurrentY + v.Frame.Height > DocumentView.Frame.Height)
+				CurrentY = DocumentView.Frame.Height - v.Frame.Height;
+
+			v.Frame = new System.Drawing.RectangleF (CurrentX, CurrentY, v.Frame.Width, v.Frame.Height);
+
 			hScroll.NotifyValueChanged ();
 			vScroll.NotifyValueChanged ();
 		}
-		
-		public override System.Drawing.RectangleF DocumentVisibleRect ()
+
+		public void UpdateDocumentSize ()
 		{
-			return visibleRect;
+			DocumentView.Frame = new System.Drawing.RectangleF (0, 0, (float)(hScroll.UpperValue - hScroll.LowerValue), (float)(vScroll.UpperValue - vScroll.LowerValue));
 		}
 	}
 }

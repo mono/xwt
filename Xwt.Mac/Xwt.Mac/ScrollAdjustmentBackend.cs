@@ -69,12 +69,16 @@ namespace Xwt.Mac
 			this.eventSink = eventSink;
 		}
 
+		CustomClipView ClipView {
+			get { return ((CustomClipView)scrollView.ContentView); }
+		}
+
 		public double Value {
 			get {
 				if (vertical)
-					return scrollView.DocumentVisibleRect.Top;
+					return ClipView.CurrentY;
 				else
-					return scrollView.DocumentVisibleRect.Left;
+					return ClipView.CurrentX;
 			}
 			set {
 			}
@@ -86,6 +90,7 @@ namespace Xwt.Mac
 			}
 			set {
 				lower = value;
+				ClipView.UpdateDocumentSize ();
 			}
 		}
 
@@ -95,6 +100,7 @@ namespace Xwt.Mac
 			}
 			set {
 				upper = value;
+				ClipView.UpdateDocumentSize ();
 			}
 		}
 
