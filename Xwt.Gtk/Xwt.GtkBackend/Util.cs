@@ -193,6 +193,7 @@ namespace Xwt.GtkBackend
 				icons [StockIconId.Warning] = Gtk.Stock.DialogWarning;
 				icons [StockIconId.Error] = Gtk.Stock.DialogError;
 				icons [StockIconId.Information] = Gtk.Stock.DialogInfo;
+				icons [StockIconId.Question] = Gtk.Stock.DialogQuestion;
 			}
 			string res;
 			if (!icons.TryGetValue (id, out res))
