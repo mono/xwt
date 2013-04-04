@@ -65,6 +65,7 @@
     <Compile Include="ReferenceImageVerifierDialog.cs" />
     <Compile Include="ReferenceImageManager.cs" />
     <Compile Include="FontTests.cs" />
+    <Compile Include="ColorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Test.csproj" />
