@@ -147,7 +147,7 @@ namespace Xwt.Mac
 			if (action == null)
 				throw new ArgumentNullException ("action");
 
-			NSApplication.SharedApplication.BeginInvokeOnMainThread (delegate {
+			NSRunLoop.Main.BeginInvokeOnMainThread (delegate {
 				action ();
 			});
 		}
