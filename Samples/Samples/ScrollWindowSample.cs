@@ -133,6 +133,8 @@ namespace Samples
 		
 		protected override void OnBoundsChanged ()
 		{
+			if (vscroll == null)
+				return;
 			vscroll.PageSize = vscroll.PageIncrement = Bounds.Height;
 			hscroll.PageSize = hscroll.PageIncrement = Bounds.Width;
 		}
