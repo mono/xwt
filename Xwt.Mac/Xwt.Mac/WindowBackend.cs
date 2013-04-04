@@ -55,6 +55,10 @@ namespace Xwt.Mac
 			controller.Window = this;
 			StyleMask |= NSWindowStyle.Resizable | NSWindowStyle.Closable | NSWindowStyle.Miniaturizable;
 			ContentView.AutoresizesSubviews = true;
+
+			// TODO: do it only if mouse move events are enabled in a widget
+			AcceptsMouseMovedEvents = true;
+
 			Center ();
 		}
 
