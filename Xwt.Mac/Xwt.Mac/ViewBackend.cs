@@ -269,6 +269,7 @@ namespace Xwt.Mac
 					((NSControl)(object)Widget).Font = (NSFont) value;
 				if (Widget is NSText)
 					((NSText)(object)Widget).Font = (NSFont) value;
+				ResetFittingSize ();
 			}
 		}
 		
