@@ -10,5 +10,4 @@ obj
 *.usertasks
 *.mdb
 .DS_Store
-
-Testing/Test/test-results/Test.csproj-Debug-2012-07-08.xml
+test-results
