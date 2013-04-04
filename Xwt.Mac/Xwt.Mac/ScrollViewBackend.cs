@@ -154,15 +154,33 @@ namespace Xwt.Mac
 	{
 		ScrollAdjustmentBackend hScroll;
 		ScrollAdjustmentBackend vScroll;
-
-		public float CurrentX { get; set; }
-		public float CurrentY { get; set; }
+		float currentX;
+		float currentY;
+		float ratioX = 1, ratioY = 1;
 
 		public CustomClipView (ScrollAdjustmentBackend hScroll, ScrollAdjustmentBackend vScroll)
 		{
 			this.hScroll = hScroll;
 			this.vScroll = vScroll;
 			CopiesOnScroll = false;
+		}
+
+		public double CurrentX {
+			get {
+				return hScroll.LowerValue + (currentX / ratioX);
+			}
+			set {
+				ScrollToPoint (new System.Drawing.PointF ((float)(value - hScroll.LowerValue) * ratioX, currentY));
+			}
+		}
+
+		public double CurrentY {
+			get {
+				return vScroll.LowerValue + (currentY / ratioY);
+			}
+			set {
+				ScrollToPoint (new System.Drawing.PointF (currentX, (float)(value - vScroll.LowerValue) * ratioY));
+			}
 		}
 
 		public override bool IsFlipped {
@@ -183,14 +201,14 @@ namespace Xwt.Mac
 			base.ScrollToPoint (newOrigin);
 			var v = DocumentView.Subviews [0];
 
-			CurrentX = newOrigin.X >= 0 ? newOrigin.X : 0;
-			CurrentY = newOrigin.Y >= 0 ? newOrigin.Y : 0;
-			if (CurrentX + v.Frame.Width > DocumentView.Frame.Width)
-				CurrentX = DocumentView.Frame.Width - v.Frame.Width;
-			if (CurrentY + v.Frame.Height > DocumentView.Frame.Height)
-				CurrentY = DocumentView.Frame.Height - v.Frame.Height;
+			currentX = newOrigin.X >= 0 ? newOrigin.X : 0;
+			currentY = newOrigin.Y >= 0 ? newOrigin.Y : 0;
+			if (currentX + v.Frame.Width > DocumentView.Frame.Width)
+				currentX = DocumentView.Frame.Width - v.Frame.Width;
+			if (currentY + v.Frame.Height > DocumentView.Frame.Height)
+				currentY = DocumentView.Frame.Height - v.Frame.Height;
 
-			v.Frame = new System.Drawing.RectangleF (CurrentX, CurrentY, v.Frame.Width, v.Frame.Height);
+			v.Frame = new System.Drawing.RectangleF (currentX, currentY, v.Frame.Width, v.Frame.Height);
 
 			hScroll.NotifyValueChanged ();
 			vScroll.NotifyValueChanged ();
@@ -198,7 +216,10 @@ namespace Xwt.Mac
 
 		public void UpdateDocumentSize ()
 		{
-			DocumentView.Frame = new System.Drawing.RectangleF (0, 0, (float)(hScroll.UpperValue - hScroll.LowerValue), (float)(vScroll.UpperValue - vScroll.LowerValue));
+			var vr = DocumentVisibleRect ();
+			ratioX = hScroll.PageSize != 0 ? vr.Width / (float)hScroll.PageSize : 1;
+			ratioY = vScroll.PageSize != 0 ? vr.Height / (float)vScroll.PageSize : 1;
+			DocumentView.Frame = new System.Drawing.RectangleF (0, 0, (float)(hScroll.UpperValue - hScroll.LowerValue) * ratioX, (float)(vScroll.UpperValue - vScroll.LowerValue) * ratioY);
 		}
 	}
 }
