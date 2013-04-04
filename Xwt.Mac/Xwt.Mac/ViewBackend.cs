@@ -319,7 +319,7 @@ namespace Xwt.Mac
 			return GetPreferredWidth ();
 		}
 		
-		double minWidth = -1, minHeight = -1;
+		protected double minWidth = -1, minHeight = -1;
 		
 		public void SetMinSize (double width, double height)
 		{

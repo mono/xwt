@@ -53,6 +53,34 @@ namespace Xwt.Mac
 			tv.HorizontallyResizable = false;
 		}
 
+		double CalcHeight (double width)
+		{
+			var f = Widget.Frame;
+			Widget.VerticallyResizable = true;
+			Widget.Frame = new System.Drawing.RectangleF (Widget.Frame.X, Widget.Frame.Y, (float)width, 0);
+			Widget.SizeToFit ();
+			var h = Widget.Frame.Height;
+			Widget.VerticallyResizable = false;
+			Widget.Frame = f;
+			return h;
+		}
+
+		public override WidgetSize GetPreferredWidth ()
+		{
+			var w = (double) Widget.TextStorage.Size.Width;
+			if (minWidth != -1 && minWidth > w)
+				w = minWidth;
+			return new WidgetSize (w, w);
+		}
+
+		public override WidgetSize GetPreferredHeightForWidth (double width)
+		{
+			var h = CalcHeight (width);
+			if (minHeight != -1 && minHeight > h)
+				h = minHeight;
+			return new Xwt.WidgetSize (h, h);
+		}
+
 		public IRichTextBuffer CreateBuffer ()
 		{
 			return new MacRichTextBuffer ();
@@ -67,8 +95,8 @@ namespace Xwt.Mac
 			var tview = ViewObject as MacTextView;
 			if (tview == null)
 				return;
+
 			tview.TextStorage.SetString (macBuffer.ToAttributedString ());
-			ResetFittingSize ();
 		}
 
 		public override void EnableEvent (object eventId)
