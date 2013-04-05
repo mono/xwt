@@ -915,6 +915,10 @@ namespace Xwt
 			CheckImage ("DrawPathTwoTimes.png");
 		}
 
+		#endregion
+
+		#region Hit test checking
+		
 		[Test]
 		public void DrawingPathPointInFill ()
 		{
@@ -924,8 +928,42 @@ namespace Xwt
 			Assert.IsFalse (p.IsPointInFill (9, 9));
 		}
 
-		#endregion
+		[Test]
+		public void ContextPointInStroke ()
+		{
+			InitBlank (50, 50);
+			context.Rectangle (10, 10, 20, 20);
+			context.SetLineWidth (3);
+			Assert.IsTrue (context.IsPointInStroke (10, 10));
+			Assert.IsTrue (context.IsPointInStroke (11, 11));
+			Assert.IsFalse (context.IsPointInStroke (15, 15));
+			context.MoveTo (15, 15);
+			context.RelLineTo (5, 0);
+			Assert.IsTrue (context.IsPointInStroke (15, 15));
+		}
+		
+		[Test]
+		public void ContextPointInFillWithTransform ()
+		{
+			InitBlank (50, 50);
+			context.Translate (50, 50);
+			context.Rectangle (10, 10, 20, 20);
+			context.SetLineWidth (3);
+			Assert.IsTrue (context.IsPointInStroke (10, 10));
+			Assert.IsTrue (context.IsPointInStroke (11, 11));
+			Assert.IsFalse (context.IsPointInStroke (15, 15));
+			Assert.IsTrue (context.IsPointInFill (15, 15));
+			Assert.IsFalse (context.IsPointInFill (9, 9));
 
+			context.Translate (50, 50);
+			Assert.IsTrue (context.IsPointInStroke (-40, -40));
+			Assert.IsTrue (context.IsPointInStroke (-41, -41));
+			Assert.IsFalse (context.IsPointInStroke (-45, -45));
+			Assert.IsTrue (context.IsPointInFill (-35, -35));
+			Assert.IsFalse (context.IsPointInFill (15, 15));
+		}
+
+		#endregion
 	}
 }
 

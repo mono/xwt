@@ -287,8 +287,8 @@ namespace Xwt.Drawing
 		/// </param>
 		public void AppendPath (DrawingPath p)
 		{
-			if (!(handler is VectorImageRecorderContextHandler) && (p.Backend is VectorContextBackend)) {
-				var c = (VectorContextBackend)p.Backend;
+			if (!(handler is VectorImageRecorderContextHandler) && (p.Backend is VectorBackend)) {
+				var c = (VectorBackend)p.Backend;
 				ToolkitEngine.VectorImageRecorderContextHandler.Draw (handler, Backend, c.ToVectorImageData ());
 			} else {
 				handler.AppendPath (Backend, p.Backend);

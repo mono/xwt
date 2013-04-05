@@ -34,13 +34,13 @@ namespace Xwt.Drawing
 	public sealed class ImageBuilder: XwtObject, IDisposable
 	{
 		Context ctx;
-		VectorContextBackend backend;
+		VectorBackend backend;
 		double width;
 		double height;
 
 		public ImageBuilder (double width, double height)
 		{
-			backend = new VectorContextBackend (ToolkitEngine);
+			backend = new VectorContextBackend (ToolkitEngine, width, height);
 			ctx = new Context (backend, ToolkitEngine, ToolkitEngine.VectorImageRecorderContextHandler);
 			ctx.Reset (null);
 			this.width = width;

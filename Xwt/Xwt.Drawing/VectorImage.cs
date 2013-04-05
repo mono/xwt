@@ -99,7 +99,48 @@ namespace Xwt.Drawing
 		End
 	}
 
-	class VectorContextBackend
+	class VectorContextBackend: VectorBackend
+	{
+		double width;
+		double height;
+		object imageBuilder;
+
+		public VectorContextBackend (Toolkit toolkit, double width, double height): base (toolkit)
+		{
+			NativePathHandler = toolkit.ContextBackendHandler;
+			NativeContextHandler = toolkit.ContextBackendHandler;
+			this.width = width;
+			this.height = height;
+		}
+
+		public override object CreateNativeBackend ()
+		{
+			imageBuilder = toolkit.ImageBuilderBackendHandler.CreateImageBuilder ((int)width, (int)height, ImageFormat.ARGB32);
+			return toolkit.ImageBuilderBackendHandler.CreateContext (imageBuilder);
+		}
+
+		public override void Dispose ()
+		{
+			base.Dispose ();
+			if (imageBuilder != null)
+				toolkit.ImageBuilderBackendHandler.Dispose (imageBuilder);
+		}
+	}
+
+	class VectorPathBackend: VectorBackend
+	{
+		public VectorPathBackend (Toolkit toolkit): base (toolkit)
+		{
+			NativePathHandler = toolkit.DrawingPathBackendHandler;
+		}
+
+		public override object CreateNativeBackend ()
+		{
+			return toolkit.DrawingPathBackendHandler.CreatePath ();
+		}
+	}
+
+	abstract class VectorBackend
 	{
 		public List<DrawingCommand> Commands = new List<DrawingCommand> ();
 		public List<double> Doubles = new List<double> ();
@@ -112,12 +153,12 @@ namespace Xwt.Drawing
 
 		public object NativeBackend;
 		public DrawingPathBackendHandler NativePathHandler;
-		Toolkit toolkit;
+		public ContextBackendHandler NativeContextHandler;
+		protected Toolkit toolkit;
 
-		public VectorContextBackend (Toolkit toolkit)
+		public VectorBackend (Toolkit toolkit)
 		{
 			this.toolkit = toolkit;
-			NativePathHandler = toolkit.DrawingPathBackendHandler;
 		}
 
 		public void AddTextLayout (TextLayoutData td)
@@ -126,9 +167,11 @@ namespace Xwt.Drawing
 			TextLayouts.Add (found);
 		}
 
-		public VectorContextBackend Clone ()
+		public abstract object CreateNativeBackend ();
+
+		public VectorPathBackend CopyPath ()
 		{
-			var c = new VectorContextBackend (toolkit);
+			var c = new VectorPathBackend (toolkit);
 			c.Commands.AddRange (Commands);
 			c.Doubles.AddRange (Doubles);
 			c.Colors.AddRange (Colors);
@@ -155,6 +198,12 @@ namespace Xwt.Drawing
 				TextLayouts = TextLayouts.ToArray (),
 			};
 		}
+
+		public virtual void Dispose ()
+		{
+			if (NativeBackend != null)
+				NativePathHandler.Dispose (NativeBackend);
+		}
 	}
 
 	class VectorImageRecorderContextHandler: ContextBackendHandler
@@ -170,7 +219,7 @@ namespace Xwt.Drawing
 
 		public override void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Arc);
 			ctx.Doubles.Add (xc);
 			ctx.Doubles.Add (yc);
@@ -184,7 +233,7 @@ namespace Xwt.Drawing
 
 		public override void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.ArcNegative);
 			ctx.Doubles.Add (xc);
 			ctx.Doubles.Add (yc);
@@ -198,7 +247,7 @@ namespace Xwt.Drawing
 
 		public override void ClosePath (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.ClosePath);
 			
 			if (ctx.NativeBackend != null)
@@ -207,7 +256,7 @@ namespace Xwt.Drawing
 
 		public override void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.CurveTo);
 			ctx.Doubles.Add (x1);
 			ctx.Doubles.Add (y1);
@@ -222,7 +271,7 @@ namespace Xwt.Drawing
 
 		public override void LineTo (object backend, double x, double y)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.LineTo);
 			ctx.Doubles.Add (x);
 			ctx.Doubles.Add (y);
@@ -233,7 +282,7 @@ namespace Xwt.Drawing
 
 		public override void MoveTo (object backend, double x, double y)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.MoveTo);
 			ctx.Doubles.Add (x);
 			ctx.Doubles.Add (y);
@@ -244,7 +293,7 @@ namespace Xwt.Drawing
 
 		public override void Rectangle (object backend, double x, double y, double width, double height)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Rectangle);
 			ctx.Doubles.Add (x);
 			ctx.Doubles.Add (y);
@@ -257,7 +306,7 @@ namespace Xwt.Drawing
 
 		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.RelCurveTo);
 			ctx.Doubles.Add (dx1);
 			ctx.Doubles.Add (dy1);
@@ -272,7 +321,7 @@ namespace Xwt.Drawing
 
 		public override void RelLineTo (object backend, double dx, double dy)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.RelLineTo);
 			ctx.Doubles.Add (dx);
 			ctx.Doubles.Add (dy);
@@ -283,7 +332,7 @@ namespace Xwt.Drawing
 
 		public override void RelMoveTo (object backend, double dx, double dy)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.RelMoveTo);
 			ctx.Doubles.Add (dx);
 			ctx.Doubles.Add (dy);
@@ -294,22 +343,22 @@ namespace Xwt.Drawing
 
 		public override object CreatePath ()
 		{
-			return new VectorContextBackend (toolkit);
+			return new VectorPathBackend (toolkit);
 		}
 
 		public override object CopyPath (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
-			return ctx.Clone ();
+			var ctx = (VectorBackend)backend;
+			return ctx.CopyPath ();
 		}
 
 		public override void AppendPath (object backend, object otherBackend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.AppendPath);
 
-			if (otherBackend is VectorContextBackend) {
-				var data = ((VectorContextBackend)otherBackend).ToVectorImageData ();
+			if (otherBackend is VectorBackend) {
+				var data = ((VectorBackend)otherBackend).ToVectorImageData ();
 				ctx.Objects.Add (data);
 				if (ctx.NativeBackend != null)
 					toolkit.VectorImageRecorderContextHandler.Draw (ctx.NativePathHandler, ctx.NativeBackend, data);
@@ -327,75 +376,87 @@ namespace Xwt.Drawing
 
 		public override void Save (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Save);
+
+			if (ctx.NativeBackend != null && ctx.NativeContextHandler != null)
+				ctx.NativeContextHandler.Save (ctx.NativeBackend);
 		}
 
 		public override void Restore (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Restore);
+			
+			if (ctx.NativeBackend != null && ctx.NativeContextHandler != null)
+				ctx.NativeContextHandler.Restore (ctx.NativeBackend);
 		}
 
 		public override void Clip (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Clip);
 		}
 
 		public override void ClipPreserve (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.ClipPreserve);
 		}
 
 		public override void Fill (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Fill);
 		}
 
 		public override void FillPreserve (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.FillPreserve);
 		}
 
 		public override void NewPath (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.NewPath);
+			
+			if (ctx.NativeBackend != null && ctx.NativeContextHandler != null)
+				ctx.NativeContextHandler.NewPath (ctx.NativeBackend);
 		}
 
 		public override void Stroke (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Stroke);
 		}
 
 		public override void StrokePreserve (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.StrokePreserve);
 		}
 
 		public override void SetColor (object backend, Color color)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.SetColor);
 			ctx.Colors.Add (color);
 		}
 
 		public override void SetLineWidth (object backend, double width)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.SetLineWidth);
 			ctx.Doubles.Add (width);
+			
+			if (ctx.NativeBackend != null && ctx.NativeContextHandler != null)
+				ctx.NativeContextHandler.SetLineWidth (ctx.NativeBackend, width);
 		}
 
 		public override void SetLineDash (object backend, double offset, params double[] pattern)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.SetLineDash);
 			ctx.Doubles.Add (offset);
 			ctx.Ints.Add (pattern.Length);
@@ -405,14 +466,14 @@ namespace Xwt.Drawing
 
 		public override void SetPattern (object backend, object p)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.SetPattern);
 			ctx.Objects.Add (p);
 		}
 
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.DrawTextLayout);
 			var la = layout.GetData ();
 			ctx.AddTextLayout (la);
@@ -422,7 +483,7 @@ namespace Xwt.Drawing
 
 		public override void DrawImage (object backend, ImageDescription img, double x, double y)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.DrawImage);
 			ctx.Images.Add (img);
 			ctx.Doubles.Add (x);
@@ -431,7 +492,7 @@ namespace Xwt.Drawing
 
 		public override void DrawImage (object backend, ImageDescription img, Xwt.Rectangle srcRect, Xwt.Rectangle destRect)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.DrawImage2);
 			ctx.Images.Add (img);
 			ctx.Rectangles.Add (srcRect);
@@ -440,63 +501,74 @@ namespace Xwt.Drawing
 
 		public override void Rotate (object backend, double angle)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Rotate);
 			ctx.Doubles.Add (angle);
+			
+			if (ctx.NativeBackend != null && ctx.NativeContextHandler != null)
+				ctx.NativeContextHandler.Rotate (ctx.NativeBackend, angle);
 		}
 
 		public override void Scale (object backend, double scaleX, double scaleY)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Scale);
 			ctx.Doubles.Add (scaleX);
 			ctx.Doubles.Add (scaleY);
+			
+			if (ctx.NativeBackend != null && ctx.NativeContextHandler != null)
+				ctx.NativeContextHandler.Scale (ctx.NativeBackend, scaleX, scaleY);
 		}
 
 		public override void Translate (object backend, double tx, double ty)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.Translate);
 			ctx.Doubles.Add (tx);
 			ctx.Doubles.Add (ty);
+			
+			if (ctx.NativeBackend != null && ctx.NativeContextHandler != null)
+				ctx.NativeContextHandler.Translate (ctx.NativeBackend, tx, ty);
 		}
 
 		public override Matrix GetCTM (object backend)
 		{
-			throw new NotSupportedException ();
+			var ctx = (VectorBackend)backend;
+			CreateNativePathBackend (ctx);
+			return ctx.NativeContextHandler.GetCTM (ctx.NativeBackend);
 		}
 
 		public override bool IsPointInStroke (object backend, double x, double y)
 		{
-			throw new NotSupportedException ();
+			var ctx = (VectorBackend)backend;
+			CreateNativePathBackend (ctx);
+			return ctx.NativeContextHandler.IsPointInStroke (ctx.NativeBackend, x, y);
 		}
 
 		public override void SetGlobalAlpha (object backend, double globalAlpha)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.SetGlobalAlpha);
 			ctx.Doubles.Add (globalAlpha);
 		}
 
 		public override bool IsPointInFill (object backend, double x, double y)
 		{
-			var ctx = (VectorContextBackend)backend;
+			var ctx = (VectorBackend)backend;
 			CreateNativePathBackend (ctx);
 			return ctx.NativePathHandler.IsPointInFill (ctx.NativeBackend, x, y);
 		}
 
 		public override void Dispose (object backend)
 		{
-			var ctx = (VectorContextBackend)backend;
-			if (ctx.NativeBackend != null)
-				ctx.NativePathHandler.Dispose (ctx.NativeBackend);
+			var ctx = (VectorBackend)backend;
+			ctx.Dispose ();
 		}
 
-		void CreateNativePathBackend (VectorContextBackend b)
+		void CreateNativePathBackend (VectorBackend b)
 		{
 			if (b.NativeBackend == null) {
-				b.NativePathHandler = Toolkit.CurrentEngine.DrawingPathBackendHandler;
-				b.NativeBackend = b.NativePathHandler.CreatePath ();
+				b.NativeBackend = b.CreateNativeBackend ();
 				Draw (b.NativePathHandler, b.NativeBackend, b.ToVectorImageData ());
 			}
 		}
@@ -552,7 +624,7 @@ namespace Xwt.Drawing
 					break;
 				case DrawingCommand.DrawTextLayout:
 					var lad = (TextLayoutData)cm.TextLayouts [ti++];
-					var la = new TextLayout (tk);
+					var la = new TextLayout (toolkit);
 					lad.InitLayout (la);
 					handler.DrawTextLayout (ctx, la, cm.Doubles [di++], cm.Doubles [di++]);
 					break;
