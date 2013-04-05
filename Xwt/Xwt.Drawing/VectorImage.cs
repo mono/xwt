@@ -45,7 +45,7 @@ namespace Xwt.Drawing
 			ctx.Save ();
 			ctx.Translate (bounds.Location);
 			ctx.Scale (bounds.Width / Size.Width, bounds.Height / Size.Height);
-			VectorImageRecorderContextHandler.Draw (ToolkitEngine, ToolkitEngine.ContextBackendHandler, ToolkitEngine.ContextBackendHandler, Toolkit.GetBackend (ctx), data);
+			ToolkitEngine.VectorImageRecorderContextHandler.Draw (ctx.Handler, Toolkit.GetBackend (ctx), data);
 			ctx.Restore ();
 		}
 	}
@@ -112,6 +112,13 @@ namespace Xwt.Drawing
 
 		public object NativeBackend;
 		public DrawingPathBackendHandler NativePathHandler;
+		Toolkit toolkit;
+
+		public VectorContextBackend (Toolkit toolkit)
+		{
+			this.toolkit = toolkit;
+			NativePathHandler = toolkit.DrawingPathBackendHandler;
+		}
 
 		public void AddTextLayout (TextLayoutData td)
 		{
@@ -121,7 +128,7 @@ namespace Xwt.Drawing
 
 		public VectorContextBackend Clone ()
 		{
-			var c = new VectorContextBackend ();
+			var c = new VectorContextBackend (toolkit);
 			c.Commands.AddRange (Commands);
 			c.Doubles.AddRange (Doubles);
 			c.Colors.AddRange (Colors);
@@ -130,6 +137,8 @@ namespace Xwt.Drawing
 			c.Rectangles.AddRange (Rectangles);
 			c.Objects.AddRange (Objects);
 			c.TextLayouts.AddRange (TextLayouts);
+			if (NativeBackend != null)
+				c.NativeBackend = c.NativePathHandler.CopyPath (NativeBackend);
 			return c;
 		}
 
@@ -150,7 +159,12 @@ namespace Xwt.Drawing
 
 	class VectorImageRecorderContextHandler: ContextBackendHandler
 	{
-		internal static VectorImageRecorderContextHandler Instance = new VectorImageRecorderContextHandler ();
+		Toolkit toolkit;
+
+		public VectorImageRecorderContextHandler (Toolkit toolkit)
+		{
+			this.toolkit = toolkit;
+		}
 
 		#region implemented abstract members of DrawingPathBackendHandler
 
@@ -280,7 +294,7 @@ namespace Xwt.Drawing
 
 		public override object CreatePath ()
 		{
-			return new VectorContextBackend ();
+			return new VectorContextBackend (toolkit);
 		}
 
 		public override object CopyPath (object backend)
@@ -294,11 +308,17 @@ namespace Xwt.Drawing
 			var ctx = (VectorContextBackend)backend;
 			ctx.Commands.Add (DrawingCommand.AppendPath);
 
-			var data = ((VectorContextBackend)otherBackend).ToVectorImageData ();
-			ctx.Objects.Add (data);
-			
-			if (ctx.NativeBackend != null)
-				VectorImageRecorderContextHandler.Draw (Toolkit.CurrentEngine, null, ctx.NativePathHandler, ctx.NativeBackend, data);
+			if (otherBackend is VectorContextBackend) {
+				var data = ((VectorContextBackend)otherBackend).ToVectorImageData ();
+				ctx.Objects.Add (data);
+				if (ctx.NativeBackend != null)
+					toolkit.VectorImageRecorderContextHandler.Draw (ctx.NativePathHandler, ctx.NativeBackend, data);
+			} else {
+				otherBackend = ctx.NativePathHandler.CopyPath (otherBackend);
+				ctx.Objects.Add (otherBackend);
+				if (ctx.NativeBackend != null)
+					ctx.NativePathHandler.AppendPath (ctx.NativeBackend, otherBackend);
+			}
 		}
 
 		#endregion
@@ -477,13 +497,13 @@ namespace Xwt.Drawing
 			if (b.NativeBackend == null) {
 				b.NativePathHandler = Toolkit.CurrentEngine.DrawingPathBackendHandler;
 				b.NativeBackend = b.NativePathHandler.CreatePath ();
-				Draw (Toolkit.CurrentEngine, null, b.NativePathHandler, b.NativeBackend, b.ToVectorImageData ());
+				Draw (b.NativePathHandler, b.NativeBackend, b.ToVectorImageData ());
 			}
 		}
 
 		#endregion
 
-		internal static void Draw (Toolkit tk, ContextBackendHandler handler, DrawingPathBackendHandler pathHandler, object ctx, VectorImageData cm)
+		internal void Draw (DrawingPathBackendHandler targetHandler, object ctx, VectorImageData cm)
 		{
 			int di = 0;
 			int ci = 0;
@@ -493,12 +513,18 @@ namespace Xwt.Drawing
 			int imi = 0;
 			int ti = 0;
 
+			ContextBackendHandler handler = targetHandler as ContextBackendHandler;
+			DrawingPathBackendHandler pathHandler = targetHandler;
+
 			for (int n=0; n<cm.Commands.Length; n++)
 			{
 				switch (cm.Commands [n]) {
 				case DrawingCommand.AppendPath:
-					var p = (VectorImageData)cm.Objects [oi++];
-					Draw (tk, handler, pathHandler, ctx, p);
+					var p = cm.Objects [oi++];
+					if (p is VectorImageData)
+						Draw (targetHandler, ctx, (VectorImageData)p);
+					else
+						pathHandler.AppendPath (ctx, p);
 					break;
 				case DrawingCommand.Arc:
 					pathHandler.Arc (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);

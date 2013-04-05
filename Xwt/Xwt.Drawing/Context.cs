@@ -46,6 +46,10 @@ namespace Xwt.Drawing
 			this.handler = handler;
 		}
 
+		internal ContextBackendHandler Handler {
+			get { return handler; }
+		}
+
 		internal void Reset (Widget forWidget)
 		{
 		}

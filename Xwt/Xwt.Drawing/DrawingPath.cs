@@ -34,7 +34,7 @@ namespace Xwt.Drawing
 
 		public DrawingPath ()
 		{
-			handler = VectorImageRecorderContextHandler.Instance;
+			handler = Toolkit.CurrentEngine.VectorImageRecorderContextHandler;
 			Backend = handler.CreatePath ();
 		}
 
@@ -289,7 +289,7 @@ namespace Xwt.Drawing
 		{
 			if (!(handler is VectorImageRecorderContextHandler) && (p.Backend is VectorContextBackend)) {
 				var c = (VectorContextBackend)p.Backend;
-				VectorImageRecorderContextHandler.Draw (ToolkitEngine, null, (DrawingPathBackendHandler)handler, Backend, c.ToVectorImageData ());
+				ToolkitEngine.VectorImageRecorderContextHandler.Draw (handler, Backend, c.ToVectorImageData ());
 			} else {
 				handler.AppendPath (Backend, p.Backend);
 			}

@@ -38,12 +38,10 @@ namespace Xwt.Drawing
 		double width;
 		double height;
 
-		static VectorImageRecorderContextHandler vectorImageRecorderContextHandler = new VectorImageRecorderContextHandler ();
-		
 		public ImageBuilder (double width, double height)
 		{
-			backend = new VectorContextBackend ();
-			ctx = new Context (backend, ToolkitEngine, vectorImageRecorderContextHandler);
+			backend = new VectorContextBackend (ToolkitEngine);
+			ctx = new Context (backend, ToolkitEngine, ToolkitEngine.VectorImageRecorderContextHandler);
 			ctx.Reset (null);
 			this.width = width;
 			this.height = height;
