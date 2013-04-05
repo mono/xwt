@@ -255,6 +255,9 @@
     <EmbeddedResource Include="ReferenceImages\TextWordWrap.png">
       <LogicalName>TextWordWrap.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\DrawPathTwoTimes.png">
+      <LogicalName>DrawPathTwoTimes.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

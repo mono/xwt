@@ -45,7 +45,7 @@ namespace Xwt.Drawing
 			ctx.Save ();
 			ctx.Translate (bounds.Location);
 			ctx.Scale (bounds.Width / Size.Width, bounds.Height / Size.Height);
-			VectorImageRecorderContextHandler.Draw (ToolkitEngine, ToolkitEngine.ContextBackendHandler, Toolkit.GetBackend (ctx), data);
+			VectorImageRecorderContextHandler.Draw (ToolkitEngine, ToolkitEngine.ContextBackendHandler, ToolkitEngine.ContextBackendHandler, Toolkit.GetBackend (ctx), data);
 			ctx.Restore ();
 		}
 	}
@@ -110,6 +110,9 @@ namespace Xwt.Drawing
 		public List<ImageDescription> Images = new List<ImageDescription> ();
 		public List<TextLayoutData> TextLayouts = new List<TextLayoutData> ();
 
+		public object NativeBackend;
+		public DrawingPathBackendHandler NativePathHandler;
+
 		public void AddTextLayout (TextLayoutData td)
 		{
 			var found = TextLayouts.FirstOrDefault (t => t.Equals (td)) ?? td;
@@ -147,6 +150,8 @@ namespace Xwt.Drawing
 
 	class VectorImageRecorderContextHandler: ContextBackendHandler
 	{
+		internal static VectorImageRecorderContextHandler Instance = new VectorImageRecorderContextHandler ();
+
 		#region implemented abstract members of DrawingPathBackendHandler
 
 		public override void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
@@ -158,6 +163,9 @@ namespace Xwt.Drawing
 			ctx.Doubles.Add (radius);
 			ctx.Doubles.Add (angle1);
 			ctx.Doubles.Add (angle2);
+
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.Arc (ctx.NativeBackend, xc, yc, radius, angle1, angle2);
 		}
 
 		public override void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2)
@@ -169,12 +177,18 @@ namespace Xwt.Drawing
 			ctx.Doubles.Add (radius);
 			ctx.Doubles.Add (angle1);
 			ctx.Doubles.Add (angle2);
+			
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.ArcNegative (ctx.NativeBackend, xc, yc, radius, angle1, angle2);
 		}
 
 		public override void ClosePath (object backend)
 		{
 			var ctx = (VectorContextBackend)backend;
 			ctx.Commands.Add (DrawingCommand.ClosePath);
+			
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.ClosePath (ctx.NativeBackend);
 		}
 
 		public override void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3)
@@ -187,6 +201,9 @@ namespace Xwt.Drawing
 			ctx.Doubles.Add (y2);
 			ctx.Doubles.Add (x3);
 			ctx.Doubles.Add (y3);
+			
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.CurveTo (ctx.NativeBackend, x1, y1, x2, y2, x3, y3);
 		}
 
 		public override void LineTo (object backend, double x, double y)
@@ -195,6 +212,9 @@ namespace Xwt.Drawing
 			ctx.Commands.Add (DrawingCommand.LineTo);
 			ctx.Doubles.Add (x);
 			ctx.Doubles.Add (y);
+			
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.LineTo (ctx.NativeBackend, x, y);
 		}
 
 		public override void MoveTo (object backend, double x, double y)
@@ -203,6 +223,9 @@ namespace Xwt.Drawing
 			ctx.Commands.Add (DrawingCommand.MoveTo);
 			ctx.Doubles.Add (x);
 			ctx.Doubles.Add (y);
+			
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.MoveTo (ctx.NativeBackend, x, y);
 		}
 
 		public override void Rectangle (object backend, double x, double y, double width, double height)
@@ -213,6 +236,9 @@ namespace Xwt.Drawing
 			ctx.Doubles.Add (y);
 			ctx.Doubles.Add (width);
 			ctx.Doubles.Add (height);
+			
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.Rectangle (ctx.NativeBackend, x, y, width, height);
 		}
 
 		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
@@ -225,6 +251,9 @@ namespace Xwt.Drawing
 			ctx.Doubles.Add (dy2);
 			ctx.Doubles.Add (dx3);
 			ctx.Doubles.Add (dy3);
+			
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.RelCurveTo (ctx.NativeBackend, dx1, dy1, dx2, dy2, dx3, dy3);
 		}
 
 		public override void RelLineTo (object backend, double dx, double dy)
@@ -233,6 +262,9 @@ namespace Xwt.Drawing
 			ctx.Commands.Add (DrawingCommand.RelLineTo);
 			ctx.Doubles.Add (dx);
 			ctx.Doubles.Add (dy);
+			
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.RelLineTo (ctx.NativeBackend, dx, dy);
 		}
 
 		public override void RelMoveTo (object backend, double dx, double dy)
@@ -241,6 +273,9 @@ namespace Xwt.Drawing
 			ctx.Commands.Add (DrawingCommand.RelMoveTo);
 			ctx.Doubles.Add (dx);
 			ctx.Doubles.Add (dy);
+			
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.RelMoveTo (ctx.NativeBackend, dx, dy);
 		}
 
 		public override object CreatePath ()
@@ -258,7 +293,12 @@ namespace Xwt.Drawing
 		{
 			var ctx = (VectorContextBackend)backend;
 			ctx.Commands.Add (DrawingCommand.AppendPath);
-			ctx.Objects.Add (((VectorContextBackend)otherBackend).ToVectorImageData ());
+
+			var data = ((VectorContextBackend)otherBackend).ToVectorImageData ();
+			ctx.Objects.Add (data);
+			
+			if (ctx.NativeBackend != null)
+				VectorImageRecorderContextHandler.Draw (Toolkit.CurrentEngine, null, ctx.NativePathHandler, ctx.NativeBackend, data);
 		}
 
 		#endregion
@@ -408,7 +448,7 @@ namespace Xwt.Drawing
 
 		public override bool IsPointInStroke (object backend, double x, double y)
 		{
-			return false;
+			throw new NotSupportedException ();
 		}
 
 		public override void SetGlobalAlpha (object backend, double globalAlpha)
@@ -420,16 +460,30 @@ namespace Xwt.Drawing
 
 		public override bool IsPointInFill (object backend, double x, double y)
 		{
-			throw new NotSupportedException ();
+			var ctx = (VectorContextBackend)backend;
+			CreateNativePathBackend (ctx);
+			return ctx.NativePathHandler.IsPointInFill (ctx.NativeBackend, x, y);
 		}
 
 		public override void Dispose (object backend)
 		{
+			var ctx = (VectorContextBackend)backend;
+			if (ctx.NativeBackend != null)
+				ctx.NativePathHandler.Dispose (ctx.NativeBackend);
+		}
+
+		void CreateNativePathBackend (VectorContextBackend b)
+		{
+			if (b.NativeBackend == null) {
+				b.NativePathHandler = Toolkit.CurrentEngine.DrawingPathBackendHandler;
+				b.NativeBackend = b.NativePathHandler.CreatePath ();
+				Draw (Toolkit.CurrentEngine, null, b.NativePathHandler, b.NativeBackend, b.ToVectorImageData ());
+			}
 		}
 
 		#endregion
 
-		internal static void Draw (Toolkit tk, ContextBackendHandler handler, object ctx, VectorImageData cm)
+		internal static void Draw (Toolkit tk, ContextBackendHandler handler, DrawingPathBackendHandler pathHandler, object ctx, VectorImageData cm)
 		{
 			int di = 0;
 			int ci = 0;
@@ -444,13 +498,13 @@ namespace Xwt.Drawing
 				switch (cm.Commands [n]) {
 				case DrawingCommand.AppendPath:
 					var p = (VectorImageData)cm.Objects [oi++];
-					Draw (tk, handler, ctx, p);
+					Draw (tk, handler, pathHandler, ctx, p);
 					break;
 				case DrawingCommand.Arc:
-					handler.Arc (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
+					pathHandler.Arc (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.ArcNegative:
-					handler.ArcNegative (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
+					pathHandler.ArcNegative (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.Clip:
 					handler.Clip (ctx);
@@ -459,10 +513,10 @@ namespace Xwt.Drawing
 					handler.ClipPreserve (ctx);
 					break;
 				case DrawingCommand.ClosePath:
-					handler.ClosePath (ctx);
+					pathHandler.ClosePath (ctx);
 					break;
 				case DrawingCommand.CurveTo:
-					handler.CurveTo (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
+					pathHandler.CurveTo (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.DrawImage2:
 					handler.DrawImage (ctx, cm.Images [imi++], cm.Rectangles [ri++], cm.Rectangles [ri++]);
@@ -483,25 +537,25 @@ namespace Xwt.Drawing
 					handler.FillPreserve (ctx);
 					break;
 				case DrawingCommand.LineTo:
-					handler.LineTo (ctx, cm.Doubles [di++], cm.Doubles [di++]);
+					pathHandler.LineTo (ctx, cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.MoveTo:
-					handler.MoveTo (ctx, cm.Doubles [di++], cm.Doubles [di++]);
+					pathHandler.MoveTo (ctx, cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.NewPath:
 					handler.NewPath (ctx);
 					break;
 				case DrawingCommand.Rectangle:
-					handler.Rectangle (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
+					pathHandler.Rectangle (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.RelCurveTo:
-					handler.RelCurveTo (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
+					pathHandler.RelCurveTo (ctx, cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.RelLineTo:
-					handler.RelLineTo (ctx, cm.Doubles [di++], cm.Doubles [di++]);
+					pathHandler.RelLineTo (ctx, cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.RelMoveTo:
-					handler.RelMoveTo (ctx, cm.Doubles [di++], cm.Doubles [di++]);
+					pathHandler.RelMoveTo (ctx, cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.Restore:
 					handler.Restore (ctx);

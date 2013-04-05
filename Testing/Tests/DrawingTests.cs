@@ -897,6 +897,35 @@ namespace Xwt
 		}
 
 		#endregion
+
+		#region Paths
+
+		[Test]
+		public void DrawPathTwoTimes ()
+		{
+			InitBlank (50, 50);
+			var p = new DrawingPath ();
+			p.Rectangle (15, 15, 20, 20);
+			p.Rectangle (20, 20, 10, 10);
+			context.AppendPath (p);
+			context.Stroke ();
+			context.Rotate (15);
+			context.AppendPath (p);
+			context.Stroke ();
+			CheckImage ("DrawPathTwoTimes.png");
+		}
+
+		[Test]
+		public void DrawingPathPointInFill ()
+		{
+			DrawingPath p = new DrawingPath ();
+			p.Rectangle (10, 10, 20, 20);
+			Assert.IsTrue (p.IsPointInFill (15, 15));
+			Assert.IsFalse (p.IsPointInFill (9, 9));
+		}
+
+		#endregion
+
 	}
 }
 
