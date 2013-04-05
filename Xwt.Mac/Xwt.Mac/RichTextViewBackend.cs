@@ -83,7 +83,7 @@ namespace Xwt.Mac
 
 		public IRichTextBuffer CreateBuffer ()
 		{
-			return new MacRichTextBuffer ();
+			return new MacRichTextBuffer (Widget.Font);
 		}
 		
 		public void SetBuffer (IRichTextBuffer buffer)
@@ -195,8 +195,6 @@ namespace Xwt.Mac
 
 	class MacRichTextBuffer : IRichTextBuffer
 	{
-		const int FontSize = 16;
-		const string FontFamily = "sans-serif";
 		const int HeaderIncrement = 8;
 
 		static readonly string[] lineSplitChars = new string[] { Environment.NewLine };
@@ -206,7 +204,7 @@ namespace Xwt.Mac
 		XmlWriter xmlWriter;
 		Stack <int> paragraphIndent;
 
-		public MacRichTextBuffer ()
+		public MacRichTextBuffer (NSFont font)
 		{
 			text = new StringBuilder ();
 			xmlWriter = XmlWriter.Create (text, new XmlWriterSettings {
@@ -215,9 +213,21 @@ namespace Xwt.Mac
 				Indent = true,
 				IndentChars = "\t"
 			});
+
+			float fontSize;
+			string fontFamily;
+
+			if (font != null) {
+				fontSize = font.PointSize;
+				fontFamily = font.FontName;
+			} else {
+				fontSize = 16;
+				fontFamily = "sans-serif";
+			}
+
 			xmlWriter.WriteDocType ("html", "-//W3C//DTD XHTML 1.0", "Strict//EN", null);
 			xmlWriter.WriteStartElement ("html");
-			xmlWriter.WriteAttributeString ("style", String.Format ("font-family: {0}; font-size: {1}", FontFamily, FontSize));
+			xmlWriter.WriteAttributeString ("style", String.Format ("font-family: {0}; font-size: {1}pt", fontFamily, fontSize));
 			xmlWriter.WriteStartElement ("meta");
 			xmlWriter.WriteAttributeString ("http-equiv", "Content-Type");
 			xmlWriter.WriteAttributeString ("content", "text/html; charset=utf-8");
