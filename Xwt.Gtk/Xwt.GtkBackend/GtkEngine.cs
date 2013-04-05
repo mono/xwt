@@ -184,6 +184,12 @@ namespace Xwt.GtkBackend
 			IGtkWidgetBackend wb = (IGtkWidgetBackend)Toolkit.GetBackend (w);
 			return wb.Widget;
 		}
+
+		public override object GetNativeImage (Xwt.Drawing.Image image)
+		{
+			var pix = (GtkImage)Toolkit.GetBackend (image);
+			return pix.ToPixbuf (ApplicationContext);
+		}
 		
 		public override IWindowFrameBackend GetBackendForWindow (object nativeWindow)
 		{
