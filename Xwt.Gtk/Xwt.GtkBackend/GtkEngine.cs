@@ -188,7 +188,7 @@ namespace Xwt.GtkBackend
 		public override object GetNativeImage (Xwt.Drawing.Image image)
 		{
 			var pix = (GtkImage)Toolkit.GetBackend (image);
-			return pix.ToPixbuf (ApplicationContext);
+			return pix.ToPixbuf (ApplicationContext, image.Size.Width, image.Size.Height);
 		}
 		
 		public override IWindowFrameBackend GetBackendForWindow (object nativeWindow)
