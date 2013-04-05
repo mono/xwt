@@ -287,6 +287,8 @@ namespace Xwt.Drawing
 		/// </param>
 		public void AppendPath (DrawingPath p)
 		{
+			if (p is Context)
+				throw new NotSupportedException ("Can't directly append a Context object to a path");
 			if (!(handler is VectorImageRecorderContextHandler) && (p.Backend is VectorBackend)) {
 				var c = (VectorBackend)p.Backend;
 				ToolkitEngine.VectorImageRecorderContextHandler.Draw (handler, Backend, c.ToVectorImageData ());
