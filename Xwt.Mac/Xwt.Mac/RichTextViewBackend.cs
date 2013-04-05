@@ -215,8 +215,12 @@ namespace Xwt.Mac
 				Indent = true,
 				IndentChars = "\t"
 			});
+			xmlWriter.WriteDocType ("html", "-//W3C//DTD XHTML 1.0", "Strict//EN", null);
 			xmlWriter.WriteStartElement ("html");
 			xmlWriter.WriteAttributeString ("style", String.Format ("font-family: {0}; font-size: {1}", FontFamily, FontSize));
+			xmlWriter.WriteStartElement ("meta");
+			xmlWriter.WriteAttributeString ("http-equiv", "Content-Type");
+			xmlWriter.WriteAttributeString ("content", "text/html; charset=utf-8");
 		}
 
 		public NSAttributedString ToAttributedString ()
