@@ -93,7 +93,12 @@ namespace Samples
 				la4.Text = "Selected text: " + c4.TextEntry.Text;
 			};
 			PackStart (box);
-			
+
+			var c5 = new ComboBoxEntry ();
+			c5.TextEntry.TextAlignment = Alignment.Center;
+			c5.TextEntry.Text = "centered text";
+			PackStart (c5);
+
 			// A complex combobox
 			
 			// Three data fields

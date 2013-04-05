@@ -53,6 +53,12 @@ namespace Xwt.WPFBackend
 			set { this.combobox.Text = value ?? String.Empty; }
 		}
 
+		public Alignment TextAlignment
+		{
+			get { return DataConverter.ToXwtAlignment (this.combobox.HorizontalContentAlignment); }
+			set { this.combobox.HorizontalContentAlignment = DataConverter.ToWpfAlignment (value); }
+		}
+
 		public string PlaceholderText
 		{
 			get { return this.placeholderText; }

@@ -54,6 +54,12 @@ namespace Xwt.WPFBackend
 			set { TextBox.Text = value; }
 		}
 
+		public virtual Alignment TextAlignment
+		{
+			get { return DataConverter.ToXwtAlignment (TextBox.TextAlignment); }
+			set { TextBox.TextAlignment = DataConverter.ToTextAlignment (value); }
+		}
+
 		public string PlaceholderText
 		{
 			get { return TextBox.PlaceholderText; }

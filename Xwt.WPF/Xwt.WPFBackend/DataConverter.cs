@@ -87,12 +87,30 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public static Alignment ToXwtAlignment (this SW.TextAlignment alignment)
+		{
+			switch (alignment) {
+				case SW.TextAlignment.Left: return Alignment.Start;
+				case SW.TextAlignment.Center: return Alignment.Center;
+				default: return Alignment.End;
+			}
+		}
+
 		public static SW.HorizontalAlignment ToWpfAlignment (this Alignment alignment)
 		{
 			switch (alignment) {
 				case Alignment.Start: return SW.HorizontalAlignment.Left;
 				case Alignment.Center: return SW.HorizontalAlignment.Center;
 				default: return SW.HorizontalAlignment.Right;
+			}
+		}
+
+		public static SW.TextAlignment ToTextAlignment (this Alignment alignment)
+		{
+			switch (alignment) {
+				case Alignment.Start: return SW.TextAlignment.Left;
+				case Alignment.Center: return SW.TextAlignment.Center;
+				default: return SW.TextAlignment.Right;
 			}
 		}
 

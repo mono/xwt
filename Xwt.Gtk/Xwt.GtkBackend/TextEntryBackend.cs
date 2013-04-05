@@ -57,6 +57,24 @@ namespace Xwt.GtkBackend
 				Widget.Text = value;
 			}
 		}
+
+		public Alignment TextAlignment {
+			get {
+				if (Widget.Xalign == 0)
+					return Alignment.Start;
+				else if (Widget.Xalign == 1)
+					return Alignment.End;
+				else
+					return Alignment.Center;
+			}
+			set {
+				switch (value) {
+				case Alignment.Start: Widget.Xalign = 0; break;
+				case Alignment.End: Widget.Xalign = 1; break;
+				case Alignment.Center: Widget.Xalign = 0.5f; break;
+				}
+			}
+		}
 		
 		public string PlaceholderText {
 			get { return placeHolderText; }

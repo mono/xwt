@@ -90,6 +90,24 @@ namespace Xwt.Mac
 				y = v.Superview.Frame.Height - y - (float)rect.Height;
 			v.Frame = new System.Drawing.RectangleF ((float)rect.X, y, (float)rect.Width, (float)rect.Height);
 		}
+
+		public static Alignment ToAlignment (this NSTextAlignment align)
+		{
+			switch (align) {
+			case NSTextAlignment.Center: return Alignment.Center;
+			case NSTextAlignment.Right: return Alignment.End;
+			default: return Alignment.Start;
+			}
+		}
+
+		public static NSTextAlignment ToNSTextAlignment (this Alignment align)
+		{
+			switch (align) {
+			case Alignment.Center: return NSTextAlignment.Center;
+			case Alignment.End: return NSTextAlignment.Right;
+			default: return NSTextAlignment.Left;
+			}
+		}
 		
 		public static NSColor ToNSColor (this Color col)
 		{

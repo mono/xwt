@@ -62,19 +62,10 @@ namespace Xwt.Mac
 		
 		public Alignment TextAlignment {
 			get {
-				switch (Widget.Alignment) {
-				case NSTextAlignment.Left: return Alignment.Start;
-				case NSTextAlignment.Center: return Alignment.Center;
-				case NSTextAlignment.Right: return Alignment.End;
-				}
-				return Alignment.Start;
+				return Widget.Alignment.ToAlignment ();
 			}
 			set {
-				switch (value) {
-				case Alignment.Start: Widget.Alignment = NSTextAlignment.Left; break;
-				case Alignment.Center: Widget.Alignment = NSTextAlignment.Center; break;
-				case Alignment.End: Widget.Alignment = NSTextAlignment.Right; break;
-				}
+				Widget.Alignment = value.ToNSTextAlignment ();
 			}
 		}
 		

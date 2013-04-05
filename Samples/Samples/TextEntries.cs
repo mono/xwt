@@ -55,6 +55,11 @@ namespace Samples
 			TextEntry te4 = new TextEntry();
 			te4.ShowFrame = false;
 			PackStart (te4);
+
+			TextEntry te5 = new TextEntry ();
+			te5.Text = "I should be centered!";
+			te5.TextAlignment = Alignment.Center;
+			PackStart (te5);
 		}
 	}
 }

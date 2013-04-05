@@ -67,6 +67,15 @@ namespace Xwt.Mac
 			}
 		}
 
+		public Alignment TextAlignment {
+			get {
+				return Widget.Alignment.ToAlignment ();
+			}
+			set {
+				Widget.Alignment = value.ToNSTextAlignment ();
+			}
+		}
+
 		public bool ReadOnly {
 			get {
 				return !Widget.Editable;
