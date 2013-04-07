@@ -35,7 +35,9 @@ namespace Xwt
 	public sealed class TextCellView: CellView
 	{
 		string text;
-
+		Font font;
+		Alignment alignment;
+		
 		public TextCellView ()
 		{
 		}
@@ -64,7 +66,18 @@ namespace Xwt
 				text = value;
 			}
 		}
-
+		
+		[DefaultValue(null)]
+		public Font Font {
+			get { return font;}
+			set { font = value;}
+		}
+		[DefaultValue(Alignment.Start)]
+		public Alignment Alignment {
+			get { return alignment;}
+			set { alignment = Alignment;}
+		}
+		
 		[DefaultValue (false)]
 		public bool Editable {
 			get;
