@@ -34,6 +34,8 @@ namespace Xwt.GtkBackend
 		{
 		}
 		
+		int formerPosition;
+		
 		protected new Gtk.Paned Widget {
 			get { return (Gtk.Paned)base.Widget; }
 			set { base.Widget = value; }
@@ -50,6 +52,7 @@ namespace Xwt.GtkBackend
 			else
 				Widget = new Gtk.VPaned ();
 			Widget.Show ();
+			Widget.WidgetEvent += HandleWidgetEvent;
 		}
 		
 		public void SetPanel (int panel, IWidgetBackend widget, bool resize, bool shrink)
@@ -101,6 +104,14 @@ namespace Xwt.GtkBackend
 		public void GetPanelSizes (double totalSize, out double panel1Size, out double panel2Size)
 		{
 			throw new NotSupportedException ();
+		}
+		
+		void HandleWidgetEvent (object o, Gtk.WidgetEventArgs args)
+		{
+			if (formerPosition != (o as Gtk.Paned).Position) {
+				EventSink.OnPositionChanged();
+				formerPosition = (o as Gtk.Paned).Position;
+			}
 		}
 	}
 }
