@@ -72,13 +72,12 @@ namespace Xwt
 			get { return font;}
 			set { font = value;}
 		}
-		[DefaultValue(Alignment.Start)]
+		
 		public Alignment Alignment {
 			get { return alignment;}
-			set { alignment = Alignment;}
+			set { alignment = value;}
 		}
 		
-		[DefaultValue (false)]
 		public bool Editable {
 			get;
 			set;
