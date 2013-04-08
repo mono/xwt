@@ -66,6 +66,7 @@
     <Compile Include="ReferenceImageManager.cs" />
     <Compile Include="FontTests.cs" />
     <Compile Include="ColorTests.cs" />
+	<Compile Include="MatrixTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Test.csproj" />
