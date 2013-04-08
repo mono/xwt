@@ -238,6 +238,25 @@ namespace Xwt
 		}
 
 		[Test]
+		public void RotateQuadrants ()
+		{
+			var matrix = new Matrix ();
+			
+			Action<double, double, double, double, double> prove = (angle, m11, m12, m21, m22) => {
+				matrix.SetIdentity ();
+				matrix.Rotate (angle);
+				CheckMatrix (new Matrix (m11, m12, m21, m22, 0, 0), matrix);
+			};
+			prove (90, 0, 1, -1, 0);
+			prove (-90, 0, -1, 1, 0);
+			prove (180, -1, 0, 0, -1);
+			prove (-180, -1, 0, 0, -1);
+			prove (270, 0, -1, 1, 0);
+			prove (-270, 0, 1, -1, 0);
+			
+		}
+
+		[Test]
 		public void Scale ()
 		{
 			var m = Matrix.Identity;
