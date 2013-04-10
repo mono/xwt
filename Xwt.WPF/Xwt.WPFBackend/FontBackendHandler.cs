@@ -181,9 +181,9 @@ namespace Xwt.WPFBackend
 
 		public static FontData FromControl (SW.Controls.Control control)
 		{
-			var pixelSize = control.FontSize;
+			double size = WpfFontBackendHandler.GetPointsFromDeviceUnits (control.FontSize);
 
-			return new FontData (control.FontFamily, pixelSize) {
+			return new FontData (control.FontFamily, size) {
 				Style = control.FontStyle,				
 				Stretch = control.FontStretch,
 				Weight = control.FontWeight
