@@ -68,7 +68,8 @@ namespace Xwt.WPFBackend
 					AlignmentY = System.Windows.Media.AlignmentY.Top,
 					AlignmentX = System.Windows.Media.AlignmentX.Left,
 					Stretch = System.Windows.Media.Stretch.None,
-					Viewport = new System.Windows.Rect (0, 0, image.Size.Width * scaleFactor, image.Size.Height * scaleFactor)
+					Viewport = new System.Windows.Rect (0, 0, image.Size.Width * scaleFactor, image.Size.Height * scaleFactor),
+					Opacity = image.Alpha
 				};
 				brush.RelativeTransform = new ScaleTransform (1d/scaleFactor, 1d/scaleFactor);
 			}
