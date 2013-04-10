@@ -71,10 +71,18 @@ namespace Xwt.WPFBackend
 			var h = bounds.Height - ((WidgetBackend)widget).Frontend.Margin.VerticalSpacing;
 			var w = bounds.Width - ((WidgetBackend)widget).Frontend.Margin.HorizontalSpacing;
 
-			element.Height = (h > 0) ? h : 0;
-			element.Width = (w > 0) ? w : 0;
+			h = (h > 0) ? h : 0;
+			w = (w > 0) ? w : 0;
 
-			((FrameworkElement)widget.NativeWidget).UpdateLayout ();
+			// Measure the widget again using the allocation constraints. This is necessary
+			// because WPF widgets my cache some measurement information based on the
+			// constraints provided in the last Measure call (which when calculating the
+			// preferred size is normally set to infinite.
+			element.InvalidateMeasure ();
+			element.Measure (new System.Windows.Size (w, h));
+			element.Height = h;
+			element.Width = w;
+			element.UpdateLayout ();
 		}
 
 		public void RemoveChild (IWidgetBackend widget)
