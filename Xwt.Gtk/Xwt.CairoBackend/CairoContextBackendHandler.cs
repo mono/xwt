@@ -30,6 +30,7 @@ using Xwt.Backends;
 
 using Xwt.Drawing;
 using Xwt.GtkBackend;
+using System.Collections.Generic;
 
 namespace Xwt.CairoBackend
 {
@@ -39,6 +40,13 @@ namespace Xwt.CairoBackend
 		public Cairo.Context Context;
 		public Cairo.Surface TempSurface;
 		public double ScaleFactor = 1;
+		public double PatternAlpha = 1;
+
+		Stack<Data> dataStack = new Stack<Data> ();
+
+		struct Data {
+			public double PatternAlpha;
+		}
 
 		public CairoContextBackend (double scaleFactor)
 		{
@@ -56,6 +64,21 @@ namespace Xwt.CairoBackend
 				d.Dispose ();
 			}
 		}
+
+		public void Save ()
+		{
+			Context.Save ();
+			dataStack.Push (new Data () {
+				PatternAlpha = PatternAlpha
+			});
+		}
+
+		public void Restore ()
+		{
+			Context.Restore ();
+			var d = dataStack.Pop ();
+			PatternAlpha = d.PatternAlpha;
+		}
 	}
 	
 	public class CairoContextBackendHandler: ContextBackendHandler
@@ -65,13 +88,13 @@ namespace Xwt.CairoBackend
 		public override void Save (object backend)
 		{
 			CairoContextBackend gc = (CairoContextBackend)backend;
-			gc.Context.Save ();
+			gc.Save ();
 		}
 		
 		public override void Restore (object backend)
 		{
 			CairoContextBackend gc = (CairoContextBackend)backend;
-			gc.Context.Restore ();
+			gc.Restore ();
 		}
 		
 		public override void SetGlobalAlpha (object backend, double alpha)
@@ -122,13 +145,15 @@ namespace Xwt.CairoBackend
 		{
 			var gtkc = (CairoContextBackend) backend;
 			Cairo.Context ctx = gtkc.Context;
-			if (gtkc.GlobalAlpha == 1)
+			var alpha = gtkc.GlobalAlpha * gtkc.PatternAlpha;
+
+			if (alpha == 1)
 				ctx.Fill ();
 			else {
 				ctx.PushGroup ();
 				ctx.Fill ();
 				ctx.PopGroupToSource ();
-				ctx.PaintWithAlpha (gtkc.GlobalAlpha);
+				ctx.PaintWithAlpha (alpha);
 			}
 		}
 
@@ -196,6 +221,7 @@ namespace Xwt.CairoBackend
 		{
 			var gtkContext = (CairoContextBackend) backend;
 			gtkContext.Context.Color = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha * gtkContext.GlobalAlpha);
+			gtkContext.PatternAlpha = 1;
 		}
 		
 		public override void SetLineWidth (object backend, double width)
@@ -212,9 +238,15 @@ namespace Xwt.CairoBackend
 		
 		public override void SetPattern (object backend, object p)
 		{
-			Cairo.Context ctx = ((CairoContextBackend)backend).Context;
-			if (p is ImagePatternBackend)
+			var cb = (CairoContextBackend)backend;
+
+			Cairo.Context ctx = cb.Context;
+			if (p is ImagePatternBackend) {
+				cb.PatternAlpha = ((ImagePatternBackend)p).Image.Alpha;
 				p = ((ImagePatternBackend)p).GetPattern (ApplicationContext, ((CairoContextBackend)backend).ScaleFactor);
+			} else
+				cb.PatternAlpha = 1;
+
 			if (p != null)
 				ctx.Pattern = (Cairo.Pattern) p;
 			else
