@@ -27,43 +27,50 @@ using System;
 using System.ComponentModel;
 using Xwt.Backends;
 using System.Windows.Markup;
+using System.Linq;
 
 namespace Xwt
 {
-	[BackendType (typeof(ICheckBoxBackend))]
+	[BackendType (typeof(IRadioButtonBackend))]
 	[ContentProperty("Content")]
-	public class CheckBox: Widget
+	public class RadioButton: Widget
 	{
 		Widget content;
 		EventHandler clicked;
-		EventHandler toggled;
+		EventHandler activeChanged;
 		string label = "";
+		RadioButtonGroup radioGroup;
 		
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICheckBoxEventSink
 		{
 			public void OnClicked ()
 			{
-				((CheckBox)Parent).OnClicked (EventArgs.Empty);
+				((RadioButton)Parent).OnClicked (EventArgs.Empty);
 			}
 			public void OnToggled ()
 			{
-				((CheckBox)Parent).OnToggled (EventArgs.Empty);
+				((RadioButton)Parent).OnActiveChanged (EventArgs.Empty);
 			}
 		}
 		
-		static CheckBox ()
+		static RadioButton ()
 		{
-			MapEvent (CheckBoxEvent.Clicked, typeof(CheckBox), "OnClicked");
-			MapEvent (CheckBoxEvent.Toggled, typeof(CheckBox), "OnToggled");
+			MapEvent (ButtonEvent.Clicked, typeof(RadioButton), "OnClicked");
+			MapEvent (ButtonEvent.Clicked, typeof(RadioButton), "OnActiveChanged");
 		}
 		
-		public CheckBox ()
+		public RadioButton ()
 		{
 		}
 		
-		public CheckBox (string label): this ()
+		public RadioButton (string label): this ()
 		{
 			Label = label;
+		}
+		
+		public RadioButton (Widget content): this ()
+		{
+			Content = content;
 		}
 		
 		protected override BackendHost CreateBackendHost ()
@@ -71,8 +78,8 @@ namespace Xwt
 			return new WidgetBackendHost ();
 		}
 		
-		ICheckBoxBackend Backend {
-			get { return (ICheckBoxBackend) BackendHost.Backend; }
+		IRadioButtonBackend Backend {
+			get { return (IRadioButtonBackend) BackendHost.Backend; }
 		}
 		
 		[DefaultValue ("")]
@@ -84,7 +91,7 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
-
+		
 		[DefaultValue (null)]
 		public new Widget Content {
 			get { return content; }
@@ -99,22 +106,30 @@ namespace Xwt
 			}
 		}
 		
+		public RadioButtonGroup Group {
+			get {
+				if (radioGroup == null)
+					Group = new RadioButtonGroup ();
+				return radioGroup;
+			}
+			set {
+				if (radioGroup != null)
+					radioGroup.Items.Remove (this);
+				radioGroup = value;
+				if (radioGroup == null)
+					radioGroup = new RadioButtonGroup ();
+
+				if (radioGroup.GroupBackend == null)
+					radioGroup.GroupBackend = Backend.CreateRadioGroup ();
+				Backend.SetRadioGroup (radioGroup.GroupBackend);
+				radioGroup.Items.Add (this);
+			}
+		}
+		
 		[DefaultValue (false)]
 		public bool Active {
 			get { return Backend.Active; }
 			set { Backend.Active = value; }
-		}
-		
-		[DefaultValue (false)]
-		public bool Mixed {
-			get { return Backend.Mixed; }
-			set { Backend.Mixed = value; }
-		}
-		
-		[DefaultValue (false)]
-		public bool AllowMixed {
-			get { return Backend.AllowMixed; }
-			set { Backend.AllowMixed = value; }
 		}
 		
 		protected virtual void OnClicked (EventArgs e)
@@ -123,31 +138,31 @@ namespace Xwt
 				clicked (this, e);
 		}
 		
-		protected virtual void OnToggled (EventArgs e)
+		protected virtual void OnActiveChanged (EventArgs e)
 		{
-			if (toggled != null)
-				toggled (this, e);
+			if (activeChanged != null)
+				activeChanged (this, e);
 		}
 		
 		public event EventHandler Clicked {
 			add {
-				BackendHost.OnBeforeEventAdd (CheckBoxEvent.Clicked, clicked);
+				BackendHost.OnBeforeEventAdd (RadioButtonEvent.Clicked, clicked);
 				clicked += value;
 			}
 			remove {
 				clicked -= value;
-				BackendHost.OnAfterEventRemove (CheckBoxEvent.Clicked, clicked);
+				BackendHost.OnAfterEventRemove (RadioButtonEvent.Clicked, clicked);
 			}
 		}
 		
-		public event EventHandler Toggled {
+		public event EventHandler ActiveChanged {
 			add {
-				BackendHost.OnBeforeEventAdd (CheckBoxEvent.Toggled, toggled);
-				toggled += value;
+				BackendHost.OnBeforeEventAdd (RadioButtonEvent.ActiveChanged, activeChanged);
+				activeChanged += value;
 			}
 			remove {
-				toggled -= value;
-				BackendHost.OnAfterEventRemove (CheckBoxEvent.Toggled, toggled);
+				activeChanged -= value;
+				BackendHost.OnAfterEventRemove (RadioButtonEvent.ActiveChanged, activeChanged);
 			}
 		}
 	}

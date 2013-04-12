@@ -95,6 +95,7 @@ namespace Xwt
 	
 	public class RadioButtonGroup
 	{
+		internal object GroupBackend;
 		internal List<object> Items = new List<object> ();
 	}
 }
