@@ -30,6 +30,8 @@ namespace Xwt.GtkBackend
 {
 	public class RadioButtonBackend: WidgetBackend, IRadioButtonBackend
 	{
+		RadioGroup radioGroup;
+
 		public RadioButtonBackend ()
 		{
 		}
@@ -114,18 +116,25 @@ namespace Xwt.GtkBackend
 			Widget.Label = label;
 		}
 
-		public object CreateRadioGroup ()
+		class RadioGroup
 		{
-			return Widget;
+			public Gtk.RadioButton Group;
+			public Gtk.RadioButton NullRadio;
 		}
 
-		public void SetRadioGroup (object groupBackend)
-		{
-			var g = (Gtk.RadioButton)groupBackend;
-			foreach (var w in g.Group)
-				if (w == Widget)
-					return;
-			Widget.Group = g.Group;
+		public object Group {
+			get {
+				if (radioGroup == null)
+					radioGroup = new RadioGroup () { Group = Widget };
+				return radioGroup;
+			}
+			set {
+				var g = (RadioGroup)value;
+				if (g != radioGroup) {
+					Widget.Group = g.Group.Group;
+					radioGroup = g;
+				}
+			}
 		}
 
 		public bool Active {
@@ -133,7 +142,13 @@ namespace Xwt.GtkBackend
 				return Widget.Active;
 			}
 			set {
-				Widget.Active = value;
+				if (Widget.Active && !value) {
+					var g = (RadioGroup) Group;
+					if (g.NullRadio == null)
+						g.NullRadio = new Gtk.RadioButton (g.Group);
+					g.NullRadio.Active = true;
+				} else
+					Widget.Active = value;
 			}
 		}
 

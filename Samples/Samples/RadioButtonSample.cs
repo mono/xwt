@@ -39,6 +39,15 @@ namespace Samples
 			PackStart (b1);
 			PackStart (b2);
 			PackStart (b3);
+
+			var la = new Label ();
+			la.Hide ();
+			b1.Group.ActiveRadioButtonChanged += delegate {
+				la.Show ();
+				la.Text = "Active: " + b1.Group.ActiveRadioButton.Label;
+			};
+			PackStart (la);
+
 			PackStart (new HSeparator ());
 
 			var box = new VBox ();

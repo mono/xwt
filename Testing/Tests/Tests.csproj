@@ -68,6 +68,7 @@
     <Compile Include="ColorTests.cs" />
     <Compile Include="MatrixTests.cs" />
     <Compile Include="TransformTests.cs" />
+    <Compile Include="RadioButtonTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Test.csproj" />

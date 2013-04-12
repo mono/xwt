@@ -33,21 +33,22 @@ namespace Xwt.Backends
 		void SetContent (string label);
 
 		/// <summary>
-		/// Creates a new radiobutton group. This group is not initially assigned to this
-		/// radio button instance. This will be done later on by calling SetRadioGroup.
+		/// Gets or sets the group of the radio button
 		/// </summary>
-		/// <returns>The radio group backend</returns>
-		object CreateRadioGroup ();
+		/// <value>The group.</value>
+		/// <remarks>
+		/// If the radio button has not been explicitly assigned to a group the getter
+		/// should return a group which contains this radio as only member.
+		/// If a group has previously been set using the setter, the getter must return that group.
+		/// The setter will be invoked using a value obtained from the getter of this or any other
+		/// radio button. It will never be null.
+		/// </remarks>
+		object Group { get; set; }
 
 		/// <summary>
-		/// Assigns a radio group to this radio button. This group is created by calling
-		/// the CreateRadioGroup method on this or another instance.
-		/// </summary>
-		/// <param name="groupBackend">Group backend.</param>
-		void SetRadioGroup (object groupBackend);
-		
-		/// <summary>
-		/// Gets or sets whether the radiobutton is checked.
+		/// Gets or sets whether the radiobutton is checked. If set to 'true', this radio button is checked,
+		/// and any other button in the same group has to be unchecked. If set to 'false', this radio buttton
+		/// is unchecked, and no other button is checked.
 		/// </summary>
 		bool Active { get; set; }
 	}
