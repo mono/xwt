@@ -67,6 +67,11 @@ namespace Xwt {
 		{
 			return X.GetHashCode () ^ Y.GetHashCode ();
 		}
+
+		public Point Offset (Point offset)
+		{
+			return Offset (offset.X, offset.Y);
+		}
 		
 		public Point Offset (double dx, double dy)
 		{
