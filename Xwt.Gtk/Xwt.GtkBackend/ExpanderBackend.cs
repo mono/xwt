@@ -60,7 +60,7 @@ namespace Xwt.GtkBackend
 			base.DisableEvent (eventId);
 			if (eventId is ExpandEvent) {
 				if ((ExpandEvent)eventId == ExpandEvent.ExpandChanged)
-					Widget.Activated += HandleExpandedChanged;
+					Widget.Activated -= HandleExpandedChanged;
 			}
 		}
 
