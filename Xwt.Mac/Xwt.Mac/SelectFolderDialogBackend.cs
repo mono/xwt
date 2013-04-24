@@ -40,12 +40,22 @@ namespace Xwt.Mac
 			this.AllowsMultipleSelection = multiselect;
 			this.CanChooseFiles = false;
 			this.CanChooseDirectories = true;
+			this.CanCreateDirectories = false;
 			
 			this.Prompt = "Select " + (multiselect ? "Directories" : "Directory" );
 			
 		}
 
 		#region ISelectFolderDialogBackend implementation
+
+		#region ISelectFolderDialogBackend implementation
+
+		public bool CanCreateFolders {
+			get { return CanCreateDirectories; }
+			set { CanCreateDirectories = value; }
+		}
+
+		#endregion
 
 		public string Folder {
 			get {
