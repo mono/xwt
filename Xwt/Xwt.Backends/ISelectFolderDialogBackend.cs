@@ -76,6 +76,12 @@ namespace Xwt.Backends
 		string CurrentFolder { get; set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this instance can create folders.
+		/// </summary>
+		/// <value><c>true</c> if this instance can create folders; otherwise, <c>false</c>.</value>
+		bool CanCreateFolders { get; set; }
+
+		/// <summary>
 		/// Runs the dialog, allowing the user to select a folder
 		/// </summary>
 		/// <param name='parent'>
