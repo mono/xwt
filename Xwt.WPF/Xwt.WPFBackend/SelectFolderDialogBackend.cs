@@ -63,6 +63,14 @@ namespace Xwt.WPFBackend
 			get { return new[] { Folder }; }
 		}
 
+		public bool CanCreateFolders {
+			get { return dialog != null ? dialog.ShowNewFolderButton : false; }
+			set { 
+ 				if (dialog != null)
+					dialog.ShowNewFolderButton = value;
+			}
+		}
+
 		public string CurrentFolder
 		{
 			get

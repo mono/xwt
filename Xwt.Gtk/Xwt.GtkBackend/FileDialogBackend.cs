@@ -61,13 +61,14 @@ namespace Xwt.GtkBackend
 		{
 			dialog = new Gtk.FileChooserDialog ("", null, action);
 			dialog.SelectMultiple = multiselect;
-			
+
 			switch (action) {
 				case Gtk.FileChooserAction.Open:
 					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);
 					dialog.AddButton (Gtk.Stock.Open, Gtk.ResponseType.Ok);
 					break;
 				case Gtk.FileChooserAction.SelectFolder:
+				case Gtk.FileChooserAction.CreateFolder:
 					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);
 					dialog.AddButton ("Select Folder", Gtk.ResponseType.Ok);
 					break;
@@ -136,6 +137,10 @@ namespace Xwt.GtkBackend
 			dialog.Destroy ();
 		}
 
+		protected Gtk.FileChooserDialog Dialog {
+			get { return dialog; }
+		}
+
 		public string FileName {
 			get {
 				return dialog.Filename;
@@ -187,5 +192,22 @@ namespace Xwt.GtkBackend
 		public SelectFolderDialogBackend (): base (Gtk.FileChooserAction.SelectFolder)
 		{
 		}
+
+		#region ISelectFolderDialogBackend implementation
+
+		public bool CanCreateFolders {
+			get {
+				if (Dialog != null)
+					return Dialog.Action == Gtk.FileChooserAction.CreateFolder;
+				return false;
+			}
+
+			set {
+				if (Dialog != null)
+					Dialog.Action = Gtk.FileChooserAction.CreateFolder;
+			}
+		}
+
+		#endregion
 	}
 }
