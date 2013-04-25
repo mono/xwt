@@ -336,7 +336,7 @@ namespace Xwt.Mac
 			Widget.Frame = f;
 		}
 
-		public virtual void SizeToFit ()
+		public void SizeToFit ()
 		{
 			OnSizeToFit ();
 //			if (minWidth != -1 && Widget.Frame.Width < minWidth || minHeight != -1 && Widget.Frame.Height < minHeight)
@@ -348,13 +348,13 @@ namespace Xwt.Mac
 			return Size.Zero;
 		}
 
+		static readonly Selector sizeToFitSel = new Selector ("sizeToFit");
+
 		protected virtual void OnSizeToFit ()
 		{
-			if (Widget is NSControl)
-				((NSControl)Widget).SizeToFit ();
-			else if (Widget is NSBox)
-				((NSBox)Widget).SizeToFit ();
-			else {
+			if (Widget.RespondsToSelector (sizeToFitSel)) {
+				Messaging.void_objc_msgSend (Widget.Handle, sizeToFitSel.Handle);
+			} else {
 				var s = CalcFittingSize ();
 				if (!s.IsZero)
 					Widget.SetFrameSize (new SizeF ((float)s.Width, (float)s.Height));
