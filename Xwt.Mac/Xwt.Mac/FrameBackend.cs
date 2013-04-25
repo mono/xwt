@@ -68,7 +68,7 @@ namespace Xwt.Mac
 			ResetFittingSize ();
 		}
 
-		public override void SizeToFit ()
+		protected override void OnSizeToFit ()
 		{
 			Widget.SizeToFit ();
 		}
