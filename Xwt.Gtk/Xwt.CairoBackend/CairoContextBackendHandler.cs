@@ -150,17 +150,27 @@ namespace Xwt.CairoBackend
 			if (alpha == 1)
 				ctx.Fill ();
 			else {
-				ctx.PushGroup ();
-				ctx.Fill ();
-				ctx.PopGroupToSource ();
+				ctx.Save ();
+				ctx.Clip ();
 				ctx.PaintWithAlpha (alpha);
+				ctx.Restore ();
 			}
 		}
 
 		public override void FillPreserve (object backend)
 		{
-			Cairo.Context ctx = ((CairoContextBackend) backend).Context;
-			ctx.FillPreserve ();
+			var gtkc = (CairoContextBackend) backend;
+			Cairo.Context ctx = gtkc.Context;
+			var alpha = gtkc.GlobalAlpha * gtkc.PatternAlpha;
+
+			if (alpha == 1)
+				ctx.FillPreserve ();
+			else {
+				ctx.Save ();
+				ctx.ClipPreserve ();
+				ctx.PaintWithAlpha (alpha);
+				ctx.Restore ();
+			}
 		}
 
 		public override void LineTo (object backend, double x, double y)
