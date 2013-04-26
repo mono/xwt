@@ -261,6 +261,18 @@
     <EmbeddedResource Include="ReferenceImages\DrawPathTwoTimes.png">
       <LogicalName>DrawPathTwoTimes.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithAlpha.png">
+      <LogicalName>ImagePatternWithAlpha.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithRotateTransformWithAlpha.png">
+      <LogicalName>ImagePatternWithRotateTransformWithAlpha.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithScaleTransformWithAlpha.png">
+      <LogicalName>ImagePatternWithScaleTransformWithAlpha.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithTranslateTransformWithAlpha.png">
+      <LogicalName>ImagePatternWithTranslateTransformWithAlpha.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
