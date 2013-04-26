@@ -81,6 +81,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IMenuItemBackend, MenuItemBackend> ();
 			RegisterBackend <Xwt.Backends.ICheckBoxMenuItemBackend, CheckBoxMenuItemBackend> ();
 			RegisterBackend <Xwt.Backends.IRadioButtonMenuItemBackend, RadioButtonMenuItemBackend> ();
+			RegisterBackend <Xwt.Backends.IRadioButtonBackend, RadioButtonBackend> ();
 			RegisterBackend <Xwt.Backends.ISeparatorMenuItemBackend, SeparatorMenuItemBackend> ();
 			RegisterBackend <Xwt.Backends.IComboBoxBackend, ComboBoxBackend> ();
 			RegisterBackend <Xwt.Backends.IComboBoxEntryBackend, ComboBoxEntryBackend> ();
