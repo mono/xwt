@@ -45,9 +45,6 @@ namespace Xwt.WPFBackend
 
         public void SetContent(IWidgetBackend widget)
         {
-            if (widget == null)
-                throw new ArgumentNullException("widget");
-
             RadioButton.Content = widget.NativeWidget;
         }
 
@@ -60,24 +57,6 @@ namespace Xwt.WPFBackend
         {
             get { return RadioButton.IsChecked.HasValue && RadioButton.IsChecked.Value; }
             set { RadioButton.IsChecked = value; }
-        }
-
-        public bool Mixed
-        {
-            get { return !RadioButton.IsChecked.HasValue; }
-            set
-            {
-                if (value)
-                    RadioButton.IsChecked = null;
-                else
-                    RadioButton.IsChecked = false;
-            }
-        }
-
-        public bool AllowMixed
-        {
-            get { return RadioButton.IsThreeState; }
-            set { RadioButton.IsThreeState = value; }
         }
 
         public override void EnableEvent(object eventId)
