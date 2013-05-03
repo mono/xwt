@@ -967,11 +967,13 @@ namespace Xwt.WPFBackend
 
 		private void WidgetMouseMoveHandler (object sender, MouseEventArgs e)
 		{
+			var p = e.GetPosition (Widget);
+			var a = new MouseMovedEventArgs(e.Timestamp, p.X, p.Y);
 			Context.InvokeUserCode (() => {
-				var p = e.GetPosition (Widget);
-				eventSink.OnMouseMoved (new MouseMovedEventArgs (
-					e.Timestamp, p.X, p.Y));
+				eventSink.OnMouseMoved(a);
 			});
+			if (a.Handled)
+				e.Handled = true;
 		}
 
 		private int mouseScrollCumulation = 0;
@@ -984,12 +986,16 @@ namespace Xwt.WPFBackend
 			var p = e.GetPosition(Widget);
 			Context.InvokeUserCode (delegate {
 				for (int i = 0; i < jumps; i++) {
-					eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
-						e.Timestamp, p.X, p.Y, ScrollDirection.Up));
+					var a = new MouseScrolledEventArgs(e.Timestamp, p.X, p.Y, ScrollDirection.Up);
+					eventSink.OnMouseScrolled(a);
+					if (a.Handled)
+						e.Handled = true;
 				}
 				for (int i = 0; i > jumps; i--) {
-					eventSink.OnMouseScrolled(new MouseScrolledEventArgs(
-						e.Timestamp, p.X, p.Y, ScrollDirection.Down));
+					var a = new MouseScrolledEventArgs(e.Timestamp, p.X, p.Y, ScrollDirection.Down);
+					eventSink.OnMouseScrolled(a);
+					if (a.Handled)
+						e.Handled = true;
 				}
 			});
 		}
