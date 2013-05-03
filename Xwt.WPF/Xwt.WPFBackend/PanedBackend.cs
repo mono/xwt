@@ -348,7 +348,7 @@ namespace Xwt.WPFBackend
 						var oldPanel2Size = oldAvailableSize - position - SplitterSize;
 						position = availableSize - oldPanel2Size - SplitterSize;
 					}
-					else if (!IsFixed (panel1))
+					else if (!IsFixed (panel1) && lastSize != 0)
 						position = availableSize * (position / oldAvailableSize);
 				}
 
