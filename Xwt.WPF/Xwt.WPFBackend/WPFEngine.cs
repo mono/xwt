@@ -98,8 +98,9 @@ namespace Xwt.WPFBackend
 			RegisterBackend<ILinkLabelBackend, LinkLabelBackend> ();
 			RegisterBackend<ISpinnerBackend, SpinnerBackend> ();
 			RegisterBackend<DesktopBackend, WpfDesktopBackend> ();
-			RegisterBackend<IExpanderBackend, ExpanderBackend> ();
+			RegisterBackend<IExpanderBackend, ExpanderBackend>();
 			RegisterBackend<IDatePickerBackend, DatePickerBackend>();
+			RegisterBackend<ISelectColorDialogBackend, SelectColorDialogBackend>();
 		}
 
 		public override void DispatchPendingEvents()
