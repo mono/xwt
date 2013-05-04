@@ -65,6 +65,7 @@
     <Compile Include="Xwt.WPFBackend\DatePickerBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ImagePatternBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\GradientBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\SelectColorDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\TextLayoutBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\ImageBuilderBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\DrawingContext.cs" />
