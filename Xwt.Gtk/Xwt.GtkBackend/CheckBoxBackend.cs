@@ -93,7 +93,12 @@ namespace Xwt.GtkBackend
 		
 		public void SetContent (IWidgetBackend widget)
 		{
-			throw new NotImplementedException ();
+			var w = (WidgetBackend)widget;
+			if (Widget.Children.Length > 0)
+				Widget.Remove(Widget.Children[0]);
+
+			if (w != null)
+				Widget.Add(w.Widget);
 		}
 		
 		public override object Font {
