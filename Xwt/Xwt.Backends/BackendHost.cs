@@ -129,7 +129,7 @@ namespace Xwt.Backends
 		
 		public void OnAfterEventRemove (object eventId, Delegate eventDelegate)
 		{
-			if (eventDelegate != null && !DefaultEnabledEvents.Contains (eventId))
+			if (eventDelegate == null && !DefaultEnabledEvents.Contains (eventId))
 				Backend.DisableEvent (eventId);
 		}
 		
