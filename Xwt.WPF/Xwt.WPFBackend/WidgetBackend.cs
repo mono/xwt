@@ -264,6 +264,10 @@ namespace Xwt.WPFBackend
 				}
 			}
 			minSize = Widget.DesiredSize;
+			if (widget.MinWidth > 0)
+				minSize.Width = widget.MinWidth;
+			if (widget.MinHeight > 0)
+				minSize.Height = widget.MinHeight;
 			naturalSize = lastNaturalSize;
 		}
 
@@ -350,7 +354,7 @@ namespace Xwt.WPFBackend
 				if (eventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
 					// Calculate the preferred width through the frontend if there is an overriden OnGetPreferredWidth, but only do it
 					// if we are not given a constraint. If there is a width constraint, we'll use that constraint value for calculating the height 
-					if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0 && constraint.Width == Double.PositiveInfinity) {
+					if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
 						var ws = eventSink.OnGetPreferredWidth ();
 						wpfMeasure.Width = constraint.Width = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
 					}
@@ -363,7 +367,7 @@ namespace Xwt.WPFBackend
 				}
 				else {
 					// Calculate the preferred height through the frontend, if there is an overriden OnGetPreferredHeight
-					if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0 && constraint.Height == Double.PositiveInfinity) {
+					if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
 						var ws = eventSink.OnGetPreferredHeight ();
 						wpfMeasure.Height = constraint.Height = gettingNaturalSize ? ws.NaturalSize : ws.MinSize;
 					}

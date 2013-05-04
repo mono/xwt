@@ -434,12 +434,6 @@ namespace Xwt.WPFBackend
 
 		protected override SW.Size MeasureOverride (SW.Size constraint)
 		{
-			// HACK: Fixes invalid size measure
-			// This line is hack to fix a measuring issue with Grid. For some reason, the grid 'remembers' the constraint
-			// parameter, so if MeasureOverride is called with a constraining size, but ArrangeOverride is later called
-			// with a bigger size, the Grid still uses the constrained size when determining the size of the children
-			constraint = new SW.Size (double.PositiveInfinity, double.PositiveInfinity);
-
 			var s = base.MeasureOverride (constraint);
 			return Backend.MeasureOverride (constraint, s);
 		}

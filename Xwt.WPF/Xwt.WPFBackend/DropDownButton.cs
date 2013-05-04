@@ -50,12 +50,6 @@ namespace Xwt.WPFBackend
 
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
-			// HACK: This is a hack to fix a size calculation issue with buttons.
-			// For some reason, base.MeasureOverride doesn't return the correct size
-			// when using infinite,infinite as constraint, unless a previous call with
-			// concrete numbers has been made.
-			base.MeasureOverride (new System.Windows.Size (0, 0));
-
 			var s = base.MeasureOverride (constraint);
 			return Backend.MeasureOverride (constraint, s);
 		}
