@@ -264,6 +264,10 @@ namespace Xwt.WPFBackend
 				}
 			}
 			minSize = Widget.DesiredSize;
+			if (widget.MinWidth > 0)
+				minSize.Width = widget.MinWidth;
+			if (widget.MinHeight > 0)
+				minSize.Height = widget.MinHeight;
 			naturalSize = lastNaturalSize;
 		}
 
