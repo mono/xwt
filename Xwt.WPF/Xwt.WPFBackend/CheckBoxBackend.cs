@@ -44,11 +44,9 @@ namespace Xwt.WPFBackend
 		public void SetContent (IWidgetBackend widget)
 		{
 			if (widget == null)
-			{
 				CheckBox.Content = null;
-				return;
-			}
-			CheckBox.Content = widget.NativeWidget;
+			else
+				CheckBox.Content = widget.NativeWidget;
 		}
 
 		public void SetContent (string label)

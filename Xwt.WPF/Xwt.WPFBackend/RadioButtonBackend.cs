@@ -46,11 +46,9 @@ namespace Xwt.WPFBackend
 		public void SetContent(IWidgetBackend widget)
 		{
 			if (widget == null)
-			{
 				RadioButton.Content = null;
-				return;
-			}
-			RadioButton.Content = widget.NativeWidget;
+			else
+				RadioButton.Content = widget.NativeWidget;
 		}
 
 		public void SetContent(string label)
