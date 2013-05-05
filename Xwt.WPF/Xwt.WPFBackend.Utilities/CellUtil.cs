@@ -79,6 +79,17 @@ namespace Xwt.WPFBackend.Utilities
 				return factory;
 			}
 
+			CanvasCellView canvasView = view as CanvasCellView;
+			if (canvasView != null)
+			{
+				FrameworkElementFactory factory = new FrameworkElementFactory(typeof(CanvasCellViewBackend));
+				factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
+
+				factory.SetValue(CanvasCellViewBackend.CellViewProperty, view);
+
+				return factory;
+			}
+
 			throw new NotImplementedException ();
 		}
 	}
