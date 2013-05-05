@@ -106,11 +106,34 @@ namespace Xwt.GtkBackend
 			throw new NotSupportedException ();
 		}
 		
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is PanedEvent) {
+				switch ((PanedEvent)eventId) {
+				case PanedEvent.PositionChanged: Widget.WidgetEvent += HandleWidgetEvent; break;
+				}
+			}
+		}
+		
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is PanedEvent) {
+				switch ((PanedEvent)eventId) {
+				case PanedEvent.PositionChanged: Widget.WidgetEvent -= HandleWidgetEvent; break;
+				}
+			}
+		}
+		
 		void HandleWidgetEvent (object o, Gtk.WidgetEventArgs args)
 		{
 			if (formerPosition != (o as Gtk.Paned).Position) {
-				EventSink.OnPositionChanged();
-				formerPosition = (o as Gtk.Paned).Position;
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnPositionChanged();
+					formerPosition = (o as Gtk.Paned).Position;
+				}
+				);
 			}
 		}
 	}
