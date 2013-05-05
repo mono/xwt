@@ -108,6 +108,7 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeViewColumn tc = new Gtk.TreeViewColumn ();
 			tc.Title = col.Title;
+			tc.Expand = true;
 			Widget.AppendColumn (tc);
 			MapTitle (col, tc);
 			MapColumn (col, tc);

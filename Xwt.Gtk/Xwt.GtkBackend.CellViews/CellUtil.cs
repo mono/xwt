@@ -65,7 +65,7 @@ namespace Xwt.GtkBackend
 							model.SetValue (iter, ((TextCellView)view).TextField.Index, args.NewText);
 					};
 				}
-				col.PackStart (target, cr, false);
+				col.PackStart (target, cr, true);
 				col.AddAttribute (target, cr, "text", ((TextCellView)view).TextField.Index);
 				return cr;
 			}
