@@ -99,6 +99,8 @@ namespace Xwt.WPFBackend
 			RegisterBackend<ISpinnerBackend, SpinnerBackend> ();
 			RegisterBackend<DesktopBackend, WpfDesktopBackend>();
 			RegisterBackend<IExpanderBackend, ExpanderBackend>();
+			RegisterBackend<IDatePickerBackend, DatePickerBackend>();
+			RegisterBackend<ISelectColorDialogBackend, SelectColorDialogBackend>();
 			RegisterBackend<IRadioButtonBackend, RadioButtonBackend>();
 			RegisterBackend<ISpinButtonBackend, SpinButtonBackend>();
 		}

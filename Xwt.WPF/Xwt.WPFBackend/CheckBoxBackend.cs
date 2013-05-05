@@ -89,6 +89,7 @@ namespace Xwt.WPFBackend
 
 				case CheckBoxEvent.Toggled:
 					CheckBox.Checked += OnChecked;
+					CheckBox.Unchecked += OnChecked;
 					break;
 				}
 			}
@@ -105,6 +106,7 @@ namespace Xwt.WPFBackend
 
 				case CheckBoxEvent.Toggled:
 					CheckBox.Checked -= OnChecked;
+					CheckBox.Unchecked -= OnChecked;
 					break;
 				}
 			}

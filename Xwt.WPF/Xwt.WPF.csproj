@@ -62,6 +62,7 @@
     <Compile Include="Xwt.WPFBackend\ComboBoxBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\DatePickerBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WindowsSpinButton.xaml.cs">
       <DependentUpon>WindowsSpinButton.xaml</DependentUpon>
     </Compile>
@@ -69,6 +70,7 @@
     <Compile Include="Xwt.WPFBackend\RadioButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ImagePatternBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\GradientBackendHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\SelectColorDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\TextLayoutBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\ImageBuilderBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\DrawingContext.cs" />
