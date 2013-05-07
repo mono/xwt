@@ -64,6 +64,11 @@
     <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DatePickerBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\WindowsSpinButton.xaml.cs">
+      <DependentUpon>WindowsSpinButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xwt.WPFBackend\SpinButtonBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\RadioButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ImagePatternBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\GradientBackendHandler.cs" />
     <Compile Include="Xwt.WPFBackend\SelectColorDialogBackend.cs" />
@@ -161,7 +166,12 @@
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="Xwt.WPFBackend\WindowsSpinButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="icons\list-add.png" />
     <EmbeddedResource Include="icons\list-remove.png" />
