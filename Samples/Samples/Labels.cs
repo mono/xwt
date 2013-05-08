@@ -55,6 +55,9 @@ namespace Samples
 				TextColor = new Xwt.Drawing.Color (0, 0, 1)
 			};
 			PackStart (la);
+
+			la = new Label () { Markup = "Label with <b>bold</b> and <span color='#ff0000'>red</span> text" };
+			PackStart (la);
 		}
 	}
 }

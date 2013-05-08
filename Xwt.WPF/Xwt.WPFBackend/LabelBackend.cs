@@ -55,6 +55,10 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public void SetFormattedText (FormattedText text)
+		{
+		}
+
 		public Xwt.Drawing.Color TextColor {
 			get {
 				SWM.Color color = SystemColors.ControlColor;

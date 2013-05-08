@@ -56,6 +56,16 @@ namespace Xwt
 			}
 		}
 
+		string markup;
+		public string Markup {
+			get { return markup; }
+			set {
+				markup = value;
+				var t = FormattedText.FromMarkup (markup);
+				Backend.SetFormattedText (t);
+			}
+		}
+
 		public Color TextColor {
 			get { return Backend.TextColor; }
 			set { Backend.TextColor = value; }

@@ -55,6 +55,10 @@ namespace Xwt.Mac
 			}
 		}
 
+		public void SetFormattedText (FormattedText text)
+		{
+		}
+
 		public Xwt.Drawing.Color TextColor {
 			get { return Widget.TextColor.ToXwtColor (); }
 			set { Widget.TextColor = value.ToNSColor (); }

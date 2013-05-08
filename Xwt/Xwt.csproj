@@ -389,6 +389,7 @@
     <Compile Include="Xwt.Drawing\VectorImage.cs" />
     <Compile Include="Xwt\RadioButton.cs" />
     <Compile Include="Xwt.Backends\IRadioButtonBackend.cs" />
+    <Compile Include="Xwt\FormattedText.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

@@ -228,6 +228,43 @@ namespace Xwt.GtkBackend
 			tl.Attributes.AddStrikethroughAttribute (true, (uint)tl.IndexToByteIndex (startIndex), (uint)tl.IndexToByteIndex (startIndex + count));
 		}
 
+		internal static void FillList (TextIndexer indexer, FastPangoAttrList list, IEnumerable<TextAttribute> attrs)
+		{
+			foreach (var attr in attrs) {
+				var start = (uint) indexer.IndexToByteIndex (attr.StartIndex);
+				var end = (uint) indexer.IndexToByteIndex (attr.StartIndex + attr.Count);
+
+				if (attr is BackgroundTextAttribute) {
+					var xa = (BackgroundTextAttribute)attr;
+					list.AddBackgroundAttribute (xa.Color.ToGdkColor (), start, end);
+				}
+				else if (attr is ColorTextAttribute) {
+					var xa = (ColorTextAttribute)attr;
+					list.AddForegroundAttribute (xa.Color.ToGdkColor (), start, end);
+				}
+				else if (attr is FontWeightTextAttribute) {
+					var xa = (FontWeightTextAttribute)attr;
+					list.AddWeightAttribute ((Pango.Weight)(int)xa.Weight, start, end);
+				}
+				else if (attr is FontStyleTextAttribute) {
+					var xa = (FontStyleTextAttribute)attr;
+					list.AddStyleAttribute ((Pango.Style)(int)xa.Style, start, end);
+				}
+				else if (attr is UnderlineTextAttribute) {
+					var xa = (UnderlineTextAttribute)attr;
+					list.AddUnderlineAttribute (Pango.Underline.Single, start, end);
+				}
+				else if (attr is StrikethroughTextAttribute) {
+					var xa = (StrikethroughTextAttribute)attr;
+					list.AddStrikethroughAttribute (true, start, end);
+				}
+				else if (attr is FontTextAttribute) {
+				}
+				else if (attr is FontSizeTextAttribute) {
+				}
+			}
+		}
+
 		/// <summary>
 		/// This creates a Pango list and applies attributes to it with *much* less overhead than the GTK# version.
 		/// </summary>
@@ -238,6 +275,10 @@ namespace Xwt.GtkBackend
 			public FastPangoAttrList ()
 			{
 				list = pango_attr_list_new ();
+			}
+
+			public IntPtr Handle {
+				get { return list; }
 			}
 			
 			public void AddStyleAttribute (Pango.Style style, uint start, uint end)
@@ -360,6 +401,45 @@ namespace Xwt.GtkBackend
 		{
 			var tl = (IDisposable) backend;
 			tl.Dispose ();
+		}
+	}
+
+	class TextIndexer
+	{
+		int[] indexToByteIndex;
+		int[] byteIndexToIndex;
+
+		public TextIndexer (string text)
+		{
+			SetupTables (text);
+		}
+
+		public int IndexToByteIndex (int i)
+		{
+			if (i >= indexToByteIndex.Length)
+				return i;
+			return indexToByteIndex[i];
+		}
+
+		public int ByteIndexToIndex (int i)
+		{
+			return byteIndexToIndex[i];
+		}
+
+		public void SetupTables(string text)
+		{
+			var arr = text.ToCharArray ();
+			int byteIndex = 0;
+			int[] indexToByteIndex = new int[arr.Length];
+			var byteIndexToIndex = new List<int> ();
+			for (int i = 0; i < arr.Length; i++) {
+				indexToByteIndex[i] = byteIndex;
+				byteIndex += System.Text.Encoding.UTF8.GetByteCount (arr, i, 1);
+				while (byteIndexToIndex.Count < byteIndex)
+					byteIndexToIndex.Add (i);
+			}
+			this.indexToByteIndex = indexToByteIndex;
+			this.byteIndexToIndex = byteIndexToIndex.ToArray ();
 		}
 	}
 }

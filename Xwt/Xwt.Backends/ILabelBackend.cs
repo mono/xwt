@@ -36,5 +36,6 @@ namespace Xwt.Backends
 		Alignment TextAlignment { get; set; }
 		EllipsizeMode Ellipsize { get; set; }
 		WrapMode Wrap { get; set; }
+		void SetFormattedText (FormattedText text);
 	}
 }

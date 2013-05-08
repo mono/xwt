@@ -175,7 +175,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the foreground color to.</param>
 		public void SetForeground (Color color, int startIndex, int count)
 		{
-			Attributes.Add (new ForegroundTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
+			Attributes.Add (new ColorTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
 			handler.SetForeground (Backend, color, startIndex, count);
 		}
 
@@ -292,7 +292,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	abstract class TextAttribute
+	public abstract class TextAttribute
 	{
 		public int StartIndex { get; set; }
 		public int Count { get; set; }
@@ -305,23 +305,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	class ForegroundTextAttribute: TextAttribute
-	{
-		public Color Color { get; set; }
-		
-		internal override void Apply (TextLayout la)
-		{
-			la.SetForeground (Color, StartIndex, Count);
-		}
-
-		public override bool Equals (TextAttribute t)
-		{
-			var ot = t as ForegroundTextAttribute;
-			return ot != null && Color.Equals (ot.Color) && base.Equals (t);
-		}
-	}
-
-	class BackgroundTextAttribute: TextAttribute
+	public class BackgroundTextAttribute: TextAttribute
 	{
 		public Color Color { get; set; }
 		
@@ -337,7 +321,7 @@ namespace Xwt.Drawing
 		}
 	}
 	
-	class FontWeightTextAttribute: TextAttribute
+	public class FontWeightTextAttribute: TextAttribute
 	{
 		public FontWeight Weight { get; set; }
 		
@@ -353,7 +337,7 @@ namespace Xwt.Drawing
 		}
 	}
 	
-	class FontStyleTextAttribute: TextAttribute
+	public class FontStyleTextAttribute: TextAttribute
 	{
 		public FontStyle Style { get; set; }
 		
@@ -369,7 +353,7 @@ namespace Xwt.Drawing
 		}
 	}
 	
-	class UnderlineTextAttribute: TextAttribute
+	public class UnderlineTextAttribute: TextAttribute
 	{
 		internal override void Apply (TextLayout la)
 		{
@@ -383,7 +367,7 @@ namespace Xwt.Drawing
 		}
 	}
 	
-	class StrikethroughTextAttribute: TextAttribute
+	public class StrikethroughTextAttribute: TextAttribute
 	{
 		internal override void Apply (TextLayout la)
 		{
@@ -394,6 +378,54 @@ namespace Xwt.Drawing
 		{
 			var ot = t as StrikethroughTextAttribute;
 			return ot != null && base.Equals (t);
+		}
+	}
+
+	public class FontTextAttribute: TextAttribute
+	{
+		public Font Font { get; set; }
+
+		internal override void Apply (TextLayout la)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public override bool Equals (TextAttribute t)
+		{
+			var ot = t as FontTextAttribute;
+			return ot != null && Font.Equals (ot.Font) && base.Equals (t);
+		}
+	}
+	
+	public class FontSizeTextAttribute: TextAttribute
+	{
+		public double Size { get; set; }
+
+		internal override void Apply (TextLayout la)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public override bool Equals (TextAttribute t)
+		{
+			var ot = t as FontSizeTextAttribute;
+			return ot != null && Size == ot.Size && base.Equals (t);
+		}
+	}
+	
+	public class ColorTextAttribute: TextAttribute
+	{
+		public Color Color { get; set; }
+
+		internal override void Apply (TextLayout la)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public override bool Equals (TextAttribute t)
+		{
+			var ot = t as ColorTextAttribute;
+			return ot != null && Color == ot.Color && base.Equals (t);
 		}
 	}
 }
