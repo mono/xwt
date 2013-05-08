@@ -38,6 +38,25 @@ namespace Xwt.GtkBackend
 		{
 			if (view is TextCellView) {
 				Gtk.CellRendererText cr = new Gtk.CellRendererText ();
+				if ((view as TextCellView).Font != null) {
+					cr.SizePoints = (view as TextCellView).Font.Size;
+					cr.Weight = (int)(view as TextCellView).Font.Weight;
+					cr.Family = (view as TextCellView).Font.Family;
+				}
+				switch ((view as TextCellView).Alignment) {
+				case Alignment.Start:
+					cr.Alignment = Pango.Alignment.Left;
+					cr.Xalign = 0;
+					break;
+				case Alignment.End:
+					cr.Alignment = Pango.Alignment.Right;
+					cr.Xalign = 1;
+					break;
+				case Alignment.Center:
+					cr.Alignment = Pango.Alignment.Center;
+					cr.Xalign = 0.5f;
+					break;
+				}
 				if (((TextCellView)view).Editable) {
 					cr.Editable = true;
 					cr.Edited += (o, args) => {
@@ -46,7 +65,7 @@ namespace Xwt.GtkBackend
 							model.SetValue (iter, ((TextCellView)view).TextField.Index, args.NewText);
 					};
 				}
-				col.PackStart (target, cr, false);
+				col.PackStart (target, cr, true);
 				col.AddAttribute (target, cr, "text", ((TextCellView)view).TextField.Index);
 				return cr;
 			}
