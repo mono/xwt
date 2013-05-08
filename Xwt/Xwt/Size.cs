@@ -155,9 +155,9 @@ namespace Xwt {
 			if (i == -1)
 				return Size.Zero;
 			double w, h;
-			if (!double.TryParse (value.Substring (0, i), out w))
+			if (!double.TryParse (value.Substring (0, i), NumberStyles.Any, CultureInfo.InvariantCulture, out w))
 				return Size.Zero;
-			if (!double.TryParse (value.Substring (i+1), out h))
+			if (!double.TryParse (value.Substring (i+1), NumberStyles.Any, CultureInfo.InvariantCulture, out h))
 				return Size.Zero;
 			return new Size (w, h);
 		}

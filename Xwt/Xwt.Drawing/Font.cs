@@ -93,7 +93,7 @@ namespace Xwt.Drawing
 				FontWeight fw;
 				FontStretch fs;
 				double siz;
-				if (double.TryParse (token, out siz)) // Try parsing the number first, since Enum.TryParse can also parse numbers
+				if (double.TryParse (token, NumberStyles.Any, CultureInfo.InvariantCulture, out siz)) // Try parsing the number first, since Enum.TryParse can also parse numbers
 					size = siz;
 				else if (Enum.TryParse<FontStyle> (token, true, out st) && st != FontStyle.Normal)
 					style = st;
