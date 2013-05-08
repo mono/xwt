@@ -149,9 +149,9 @@ namespace Xwt.WPFBackend
 
 	class TextLayoutBackend
 	{
-		FormattedText formattedText;
+		System.Windows.Media.FormattedText formattedText;
 
-		public FormattedText FormattedText
+		public System.Windows.Media.FormattedText FormattedText
 		{
 			get
 			{
@@ -168,7 +168,7 @@ namespace Xwt.WPFBackend
 			var old = formattedText;
 			if (old != null && old.Text != null && newText == null)
 				newText = old.Text;
-			formattedText = new FormattedText (newText ?? "", System.Globalization.CultureInfo.CurrentCulture, dir, font, 36, System.Windows.Media.Brushes.Black);
+			formattedText = new System.Windows.Media.FormattedText(newText ?? "", System.Globalization.CultureInfo.CurrentCulture, dir, font, 36, System.Windows.Media.Brushes.Black);
 			if (old != null) {
 				if (old.MaxTextWidth != 0 && keepWidth)
 					formattedText.MaxTextWidth = old.MaxTextWidth;
