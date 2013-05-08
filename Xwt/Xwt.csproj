@@ -387,6 +387,8 @@
     <Compile Include="Xwt\Slider.cs" />
     <Compile Include="Xwt.Backends\ISliderBackend.cs" />
     <Compile Include="Xwt.Drawing\VectorImage.cs" />
+    <Compile Include="Xwt\RadioButton.cs" />
+    <Compile Include="Xwt.Backends\IRadioButtonBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

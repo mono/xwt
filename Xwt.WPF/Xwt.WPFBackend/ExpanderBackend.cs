@@ -75,7 +75,10 @@ namespace Xwt.WPFBackend
 
 		public void SetContent(IWidgetBackend child)
 		{
-			Widget.Content = child;
+			if (child == null)
+				Widget.Content = null;
+			else
+				Widget.Content = child.NativeWidget;
 		}
 
 		public override void EnableEvent(object eventId)

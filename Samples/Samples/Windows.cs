@@ -117,7 +117,17 @@ namespace Samples
 				if (dlg.Run ())
 					MessageDialog.ShowMessage ("Folders have been selected!", string.Join ("\n", dlg.Folders));
 			};
-			
+
+			b = new Button ("Show Select Folder dialog (Single select, allow creation)");
+			PackStart (b);
+			b.Clicked += delegate {
+				SelectFolderDialog dlg = new SelectFolderDialog ("Select or create a folder");
+				dlg.Multiselect = false;
+				dlg.CanCreateFolders = true;
+				if (dlg.Run ())
+					MessageDialog.ShowMessage ("Folders have been selected/created!", string.Join ("\n", dlg.Folders));
+			};
+
 			b = new Button ("Show Select Color dialog");
 			PackStart (b);
 			b.Clicked += delegate {

@@ -53,7 +53,8 @@ namespace Xwt
 		
 		static CheckBox ()
 		{
-			MapEvent (ButtonEvent.Clicked, typeof(CheckBox), "OnClicked");
+			MapEvent (CheckBoxEvent.Clicked, typeof(CheckBox), "OnClicked");
+			MapEvent (CheckBoxEvent.Toggled, typeof(CheckBox), "OnToggled");
 		}
 		
 		public CheckBox ()

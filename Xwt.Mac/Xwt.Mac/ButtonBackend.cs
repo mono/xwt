@@ -105,6 +105,14 @@ namespace Xwt.Mac
 	
 	class MacButton: NSButton, IViewObject
 	{
+		//
+		// This is necessary since the Activated event for NSControl in AppKit does 
+		// not take a list of handlers, instead it supports only one handler.
+		//
+		// This event is used by the RadioButton backend to implement radio groups
+		//
+		internal event Action <MacButton> ActivatedInternal;
+
 		public MacButton (IntPtr p): base (p)
 		{
 		}
@@ -116,6 +124,7 @@ namespace Xwt.Mac
 				context.InvokeUserCode (delegate {
 					eventSink.OnClicked ();
 				});
+				OnActivatedInternal ();
 			};
 		}
 		
@@ -125,9 +134,20 @@ namespace Xwt.Mac
 				context.InvokeUserCode (delegate {
 					eventSink.OnClicked ();
 				});
+				OnActivatedInternal ();
 			};
 		}
-		
+
+		public MacButton (IRadioButtonEventSink eventSink, ApplicationContext context)
+		{
+			Activated += delegate {
+				context.InvokeUserCode (delegate {
+					eventSink.OnClicked ();
+				});
+				OnActivatedInternal ();
+			};
+		}
+
 		public ViewBackend Backend { get; set; }
 		
 		public NSView View {
@@ -140,6 +160,14 @@ namespace Xwt.Mac
 
 		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
 		{
+		}
+
+		void OnActivatedInternal ()
+		{
+			if (ActivatedInternal == null)
+				return;
+
+			ActivatedInternal (this);
 		}
 	}
 }

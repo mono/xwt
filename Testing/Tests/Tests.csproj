@@ -11,22 +11,22 @@
     <AssemblyName>Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>True</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>True</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -66,6 +66,9 @@
     <Compile Include="ReferenceImageManager.cs" />
     <Compile Include="FontTests.cs" />
     <Compile Include="ColorTests.cs" />
+    <Compile Include="MatrixTests.cs" />
+    <Compile Include="TransformTests.cs" />
+    <Compile Include="RadioButtonTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Test.csproj" />
@@ -257,6 +260,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\DrawPathTwoTimes.png">
       <LogicalName>DrawPathTwoTimes.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithAlpha.png">
+      <LogicalName>ImagePatternWithAlpha.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithRotateTransformWithAlpha.png">
+      <LogicalName>ImagePatternWithRotateTransformWithAlpha.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithScaleTransformWithAlpha.png">
+      <LogicalName>ImagePatternWithScaleTransformWithAlpha.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ImagePatternWithTranslateTransformWithAlpha.png">
+      <LogicalName>ImagePatternWithTranslateTransformWithAlpha.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>

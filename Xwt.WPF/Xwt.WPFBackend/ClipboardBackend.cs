@@ -64,7 +64,7 @@ namespace Xwt.WPFBackend
 			int startFragment = startHTML;
 			int endFragment   = startFragment + System.Text.Encoding.UTF8.GetByteCount (htmlFragment);
 			int endHTML       = endFragment;
-			return GenerateCFHtmlHeader (startHTML, endHTML, startFragment, endFragment) + htmlStart + htmlFragment + htmlEnd;
+			return GenerateCFHtmlHeader (startHTML, endHTML, startFragment, endFragment) + htmlFragment;
 		}
 
 		/// <summary>

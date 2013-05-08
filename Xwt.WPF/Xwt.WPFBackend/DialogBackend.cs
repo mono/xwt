@@ -81,6 +81,7 @@ namespace Xwt.WPFBackend
 			separator.InvalidateMeasure ();
 			separator.Measure (new System.Windows.Size (double.PositiveInfinity, double.PositiveInfinity));
 			s.Height += buttonContainer.DesiredSize.Height + separator.DesiredSize.Height;
+			s.Width = System.Math.Max(buttonContainer.DesiredSize.Width, separator.DesiredSize.Width);
 			base.SetMinSize (s);
 		}
 

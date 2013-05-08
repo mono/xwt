@@ -418,6 +418,54 @@ namespace Xwt
 			context.Fill ();
 			CheckImage ("ImagePatternWithScaleTransform.png");
 		}
+		
+		[Test]
+		public void ImagePatternWithAlpha ()
+		{
+			InitBlank (70, 70);
+			context.Rectangle (5, 5, 40, 60);
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			img = img.WithAlpha (0.5);
+			context.Pattern = new Xwt.Drawing.ImagePattern (img);
+			context.Fill ();
+			CheckImage ("ImagePatternWithAlpha.png");
+		}
+		
+		[Test]
+		public void ImagePatternWithTranslateTransformWithAlpha ()
+		{
+			InitBlank (70, 70);
+			context.Translate (5, 5);
+			context.Rectangle (0, 0, 40, 60);
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img.WithAlpha (0.5));
+			context.Fill ();
+			CheckImage ("ImagePatternWithTranslateTransformWithAlpha.png");
+		}
+		
+		[Test]
+		public void ImagePatternWithRotateTransformWithAlpha ()
+		{
+			InitBlank (70, 70);
+			context.Rotate (4);
+			context.Rectangle (5, 5, 40, 60);
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img.WithAlpha (0.5));
+			context.Fill ();
+			CheckImage ("ImagePatternWithRotateTransformWithAlpha.png");
+		}
+
+		[Test]
+		public void ImagePatternWithScaleTransformWithAlpha ()
+		{
+			InitBlank (70, 70);
+			context.Scale (2, 0.5);
+			context.Rectangle (5, 5, 20, 120);
+			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			context.Pattern = new Xwt.Drawing.ImagePattern (img.WithAlpha (0.5));
+			context.Fill ();
+			CheckImage ("ImagePatternWithScaleTransformWithAlpha.png");
+		}
 
 		#endregion
 

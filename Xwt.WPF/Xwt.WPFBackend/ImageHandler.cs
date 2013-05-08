@@ -432,8 +432,11 @@ namespace Xwt.WPFBackend
 		protected override void OnRender (System.Windows.Media.DrawingContext dc)
 		{
 			var image = ImageSource;
-			if (!image.IsNull)
-				((WpfImage)image.Backend).Draw (actx, dc, this.GetScaleFactor (), 0, 0, image);
+			if (!image.IsNull) {
+				var x = (RenderSize.Width - image.Size.Width) / 2;
+				var y = (RenderSize.Height - image.Size.Height) / 2;
+				((WpfImage)image.Backend).Draw (actx, dc, this.GetScaleFactor (), x, y, image);
+			}
 		}
 
 		public ImageDescription ImageSource

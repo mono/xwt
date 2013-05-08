@@ -224,6 +224,7 @@ namespace Xwt
 		public object GetNativeWidget (Widget w)
 		{
 			ValidateObject (w);
+			w.SetExtractedAsNative ();
 			return backend.GetNativeWidget (w);
 		}
 
