@@ -68,6 +68,10 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public void SetFormattedText(FormattedText text)
+		{
+		}
+
 		public Alignment TextAlignment
 		{
 			get { return DataConverter.ToXwtAlignment (Widget.HorizontalContentAlignment); }
