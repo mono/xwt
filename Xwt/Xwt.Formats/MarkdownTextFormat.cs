@@ -146,13 +146,26 @@ namespace Xwt.Formats
 				// List
 				else if ((trimmed [0] == '+' || trimmed [0] == '-' || trimmed [0] == '*') && (trimmed [1] == ' ' || trimmed [1] == '\t')) {
 					buffer.EmitOpenList ();
-					var bullet = line[0].ToString ();
+					var bullet = trimmed[0].ToString ();
 					for (; i < lines.Length; i++) {
-						line = lines[i];
-						if (!line.StartsWith (bullet))
+						trimmed = lines[i].TrimStart ();
+						if (!trimmed.StartsWith (bullet))
 							break;
 						buffer.EmitOpenBullet ();
-						ParseInline (buffer, line.TrimStart ('+', '-', '*', ' ', '\t'));
+						var lineBreaks = new List<string> ();
+						lineBreaks.Add (trimmed.TrimStart ('+', '-', '*', ' ', '\t'));
+						while (i + 1 < lines.Length)
+						{
+							string nextTrimmed = lines[i + 1].TrimStart ();
+							if (nextTrimmed.Length > 0 && !nextTrimmed.StartsWith (bullet))
+							{
+								lineBreaks.Add (nextTrimmed);
+								i++;
+							}
+							else
+								break;
+						}
+						ParseInline (buffer, string.Join (" ", lineBreaks));
 						buffer.EmitCloseBullet ();
 					}
 					i--;
