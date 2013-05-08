@@ -88,29 +88,39 @@ namespace Xwt.GtkBackend
 		#region IScrollAdjustmentBackend implementation
 		public double Value {
 			get {
-				return adjustment.Value;
+				return lower + adjustment.Value;
 			}
 			set {
-				adjustment.Value = value;
+				adjustment.Value = value - lower;
 			}
 		}
 
+		double lower;
 		public double LowerValue {
 			get {
-				return adjustment.Lower;
+				return lower;
 			}
 			set {
-				adjustment.Lower = value;
+				lower = value;
+				UpdateRange ();
 			}
 		}
 
+		double upper;
 		public double UpperValue {
 			get {
-				return adjustment.Upper;
+				return upper;
 			}
 			set {
-				adjustment.Upper = value;
+				upper = value;
+				UpdateRange ();
 			}
+		}
+
+		void UpdateRange ()
+		{
+			var newUpper = upper - lower;
+			adjustment.Upper = newUpper >= 0 ? newUpper : 0;
 		}
 
 		public double PageIncrement {
