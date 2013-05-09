@@ -92,6 +92,8 @@ namespace Xwt.GtkBackend
 				AddStrikethroughAttribute (xa.Strikethrough, start, end);
 			}
 			else if (attr is FontTextAttribute) {
+				var xa = (FontTextAttribute)attr;
+				AddFontAttribute ((Pango.FontDescription)Toolkit.GetBackend (xa.Font), start, end);
 			}
 		}
 
@@ -129,6 +131,11 @@ namespace Xwt.GtkBackend
 			Add (pango_attr_strikethrough_new (strikethrough), start, end);
 		}
 
+		public void AddFontAttribute (Pango.FontDescription font, uint start, uint end)
+		{
+			Add (pango_attr_font_desc_new (font), start, end);
+		}
+
 		void Add (IntPtr attribute, uint start, uint end)
 		{
 			unsafe {
@@ -159,6 +166,9 @@ namespace Xwt.GtkBackend
 
 		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
 		static extern IntPtr pango_attr_strikethrough_new (bool strikethrough);
+		
+		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
+		static extern IntPtr pango_attr_font_desc_new (Pango.FontDescription desc);
 
 		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
 		static extern IntPtr pango_attr_list_new ();
