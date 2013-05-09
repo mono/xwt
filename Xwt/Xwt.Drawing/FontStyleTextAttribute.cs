@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public class FontStyleTextAttribute: TextAttribute
+	public sealed class FontStyleTextAttribute: TextAttribute
 	{
 		public FontStyle Style { get; set; }
 		

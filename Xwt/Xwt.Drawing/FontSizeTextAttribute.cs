@@ -32,7 +32,7 @@ using System.Collections.Generic;
 namespace Xwt.Drawing
 {
 	
-	public class FontSizeTextAttribute: TextAttribute
+	public sealed class FontSizeTextAttribute: TextAttribute
 	{
 		public double Size { get; set; }
 

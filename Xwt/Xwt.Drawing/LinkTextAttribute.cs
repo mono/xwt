@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public class LinkTextAttribute: TextAttribute
+	public sealed class LinkTextAttribute: TextAttribute
 	{
 		public string Target { get; set; }
 

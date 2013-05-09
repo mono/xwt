@@ -32,7 +32,7 @@ using System.Collections.Generic;
 namespace Xwt.Drawing
 {
 	
-	public class StrikethroughTextAttribute: TextAttribute
+	public sealed class StrikethroughTextAttribute: TextAttribute
 	{
 	}
 	

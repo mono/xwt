@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public class FontWeightTextAttribute: TextAttribute
+	public sealed class FontWeightTextAttribute: TextAttribute
 	{
 		public FontWeight Weight { get; set; }
 		

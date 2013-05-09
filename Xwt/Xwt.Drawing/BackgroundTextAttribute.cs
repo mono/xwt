@@ -32,7 +32,7 @@ using System.Collections.Generic;
 namespace Xwt.Drawing
 {
 
-	public class BackgroundTextAttribute: TextAttribute
+	public sealed class BackgroundTextAttribute: TextAttribute
 	{
 		public Color Color { get; set; }
 		

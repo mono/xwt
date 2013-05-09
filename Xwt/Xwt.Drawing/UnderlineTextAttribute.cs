@@ -32,7 +32,7 @@ using System.Collections.Generic;
 namespace Xwt.Drawing
 {
 	
-	public class UnderlineTextAttribute: TextAttribute
+	public sealed class UnderlineTextAttribute: TextAttribute
 	{
 	}
 	
