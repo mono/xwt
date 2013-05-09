@@ -37,8 +37,7 @@ namespace Xwt.GtkBackend
 	{
 		Color? bgColor, textColor;
 		int wrapHeight, wrapWidth;
-		TextIndexer textIndexer;
-		
+
 		public LabelBackend ()
 		{
 			Widget = new Gtk.Label ();
