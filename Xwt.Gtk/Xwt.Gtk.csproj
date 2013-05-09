@@ -81,7 +81,6 @@
     <Compile Include="Xwt.GtkBackend\GtkAlertDialog.cs" />
     <Compile Include="Xwt.GtkBackend\MessageService.cs" />
     <Compile Include="Xwt.GtkBackend\GtkWorkarounds.cs" />
-    <Compile Include="Xwt.GtkBackend\PangoUtil.cs" />
     <Compile Include="Xwt.GtkBackend\WindowFrameBackend.cs" />
     <Compile Include="Xwt.GtkBackend\CheckBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\FrameBackend.cs" />
@@ -121,6 +120,7 @@
     <Compile Include="Xwt.GtkBackend\SegmentedButtonBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SliderBackend.cs" />
     <Compile Include="Xwt.GtkBackend\RadioButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkInterop.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

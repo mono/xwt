@@ -390,6 +390,16 @@
     <Compile Include="Xwt\RadioButton.cs" />
     <Compile Include="Xwt.Backends\IRadioButtonBackend.cs" />
     <Compile Include="Xwt\FormattedText.cs" />
+    <Compile Include="Xwt.Drawing\BackgroundTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\FontWeightTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\FontStyleTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\UnderlineTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\StrikethroughTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\FontTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\FontSizeTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\ColorTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\LinkTextAttribute.cs" />
+    <Compile Include="Xwt.Drawing\TextAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

@@ -167,6 +167,12 @@ namespace Xwt.Drawing
 			}
 		}
 
+		public void SetAttribute (TextAttribute attribute)
+		{
+			Attributes.Add (attribute.Clone ());
+			handler.AddAttribute (Backend, attribute);
+		}
+
 		/// <summary>
 		/// Sets the foreground color of a part of text inside the <see cref="T:Xwt.Drawing.TextLayout"/> object.
 		/// </summary>
@@ -175,8 +181,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the foreground color to.</param>
 		public void SetForeground (Color color, int startIndex, int count)
 		{
-			Attributes.Add (new ColorTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
-			handler.SetForeground (Backend, color, startIndex, count);
+			SetAttribute (new ColorTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
 		}
 
 		/// <summary>
@@ -187,8 +192,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the background color to.</param>
 		public void SetBackgound (Color color, int startIndex, int count)
 		{
-			Attributes.Add (new BackgroundTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
-			handler.SetBackgound (Backend, color, startIndex, count);
+			SetAttribute (new BackgroundTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
 		}
 
 		/// <summary>
@@ -199,8 +203,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the font weight to.</param>
 		public void SetFontWeight (FontWeight weight, int startIndex, int count)
 		{
-			Attributes.Add (new FontWeightTextAttribute () { StartIndex = startIndex, Count = count, Weight = weight });
-			handler.SetFontWeight (Backend, weight, startIndex, count);
+			SetAttribute (new FontWeightTextAttribute () { StartIndex = startIndex, Count = count, Weight = weight });
 		}
 
 		/// <summary>
@@ -211,8 +214,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the font style to.</param>
 		public void SetFontStyle (FontStyle style, int startIndex, int count)
 		{
-			Attributes.Add (new FontStyleTextAttribute () { StartIndex = startIndex, Count = count, Style = style });
-			handler.SetFontStyle (Backend, style, startIndex, count);
+			SetAttribute (new FontStyleTextAttribute () { StartIndex = startIndex, Count = count, Style = style });
 		}
 
 		/// <summary>
@@ -222,8 +224,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to underline.</param>
 		public void SetUnderline (int startIndex, int count)
 		{
-			Attributes.Add (new UnderlineTextAttribute () { StartIndex = startIndex, Count = count});
-			handler.SetUnderline (Backend, startIndex, count);
+			SetAttribute (new UnderlineTextAttribute () { StartIndex = startIndex, Count = count});
 		}
 
 		/// <summary>
@@ -233,8 +234,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to strike-through.</param>
 		public void SetStrikethrough (int startIndex, int count)
 		{
-			Attributes.Add (new StrikethroughTextAttribute () { StartIndex = startIndex, Count = count});
-			handler.SetStrikethrough (Backend, startIndex, count);
+			SetAttribute (new StrikethroughTextAttribute () { StartIndex = startIndex, Count = count});
 		}
 
 		public void Dispose ()
@@ -271,7 +271,7 @@ namespace Xwt.Drawing
 				la.Trimming = TextTrimming;
 			if (Attributes != null) {
 				foreach (var at in Attributes)
-					at.Apply (la);
+					la.SetAttribute (at);
 			}
 		}
 
@@ -289,143 +289,6 @@ namespace Xwt.Drawing
 				if (!Attributes [n].Equals (other.Attributes [n]))
 					return false;
 			return true;
-		}
-	}
-
-	public abstract class TextAttribute
-	{
-		public int StartIndex { get; set; }
-		public int Count { get; set; }
-
-		internal abstract void Apply (TextLayout la);
-
-		public virtual bool Equals (TextAttribute t)
-		{
-			return t.StartIndex == StartIndex && t.Count == Count;
-		}
-	}
-
-	public class BackgroundTextAttribute: TextAttribute
-	{
-		public Color Color { get; set; }
-		
-		internal override void Apply (TextLayout la)
-		{
-			la.SetBackgound (Color, StartIndex, Count);
-		}
-		
-		public override bool Equals (TextAttribute t)
-		{
-			var ot = t as BackgroundTextAttribute;
-			return ot != null && Color.Equals (ot.Color) && base.Equals (t);
-		}
-	}
-	
-	public class FontWeightTextAttribute: TextAttribute
-	{
-		public FontWeight Weight { get; set; }
-		
-		internal override void Apply (TextLayout la)
-		{
-			la.SetFontWeight (Weight, StartIndex, Count);
-		}
-		
-		public override bool Equals (TextAttribute t)
-		{
-			var ot = t as FontWeightTextAttribute;
-			return ot != null && Weight.Equals (ot.Weight) && base.Equals (t);
-		}
-	}
-	
-	public class FontStyleTextAttribute: TextAttribute
-	{
-		public FontStyle Style { get; set; }
-		
-		internal override void Apply (TextLayout la)
-		{
-			la.SetFontStyle (Style, StartIndex, Count);
-		}
-		
-		public override bool Equals (TextAttribute t)
-		{
-			var ot = t as FontStyleTextAttribute;
-			return ot != null && Style.Equals (ot.Style) && base.Equals (t);
-		}
-	}
-	
-	public class UnderlineTextAttribute: TextAttribute
-	{
-		internal override void Apply (TextLayout la)
-		{
-			la.SetUnderline (StartIndex, Count);
-		}
-		
-		public override bool Equals (TextAttribute t)
-		{
-			var ot = t as UnderlineTextAttribute;
-			return ot != null && base.Equals (t);
-		}
-	}
-	
-	public class StrikethroughTextAttribute: TextAttribute
-	{
-		internal override void Apply (TextLayout la)
-		{
-			la.SetStrikethrough (StartIndex, Count);
-		}
-		
-		public override bool Equals (TextAttribute t)
-		{
-			var ot = t as StrikethroughTextAttribute;
-			return ot != null && base.Equals (t);
-		}
-	}
-
-	public class FontTextAttribute: TextAttribute
-	{
-		public Font Font { get; set; }
-
-		internal override void Apply (TextLayout la)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override bool Equals (TextAttribute t)
-		{
-			var ot = t as FontTextAttribute;
-			return ot != null && Font.Equals (ot.Font) && base.Equals (t);
-		}
-	}
-	
-	public class FontSizeTextAttribute: TextAttribute
-	{
-		public double Size { get; set; }
-
-		internal override void Apply (TextLayout la)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override bool Equals (TextAttribute t)
-		{
-			var ot = t as FontSizeTextAttribute;
-			return ot != null && Size == ot.Size && base.Equals (t);
-		}
-	}
-	
-	public class ColorTextAttribute: TextAttribute
-	{
-		public Color Color { get; set; }
-
-		internal override void Apply (TextLayout la)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override bool Equals (TextAttribute t)
-		{
-			var ot = t as ColorTextAttribute;
-			return ot != null && Color == ot.Color && base.Equals (t);
 		}
 	}
 }

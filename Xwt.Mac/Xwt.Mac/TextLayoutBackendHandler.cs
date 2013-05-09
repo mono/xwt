@@ -173,31 +173,11 @@ namespace Xwt.Mac
 				ctx.RestoreState ();
 			}
 		}
-		
-		public override void SetForeground (object backend, Color color, int startIndex, int count)
-		{
-		}
-		
-		public override void SetBackgound (object backend, Color color, int startIndex, int count)
-		{
-		}
-		
-		public override void SetFontWeight (object backend, FontWeight weight, int startIndex, int count)
-		{
-		}
-		
-		public override void SetFontStyle (object backend, FontStyle style, int startIndex, int count)
-		{
-		}
-		
-		public override void SetUnderline (object backend, int startIndex, int count)
-		{
-		}
-		
-		public override void SetStrikethrough (object backend, int startIndex, int count)
-		{
-		}
 
+		public override void AddAttribute (object backend, TextAttribute attribute)
+		{
+		}
+		
 		public override int GetIndexFromCoordinates (object backend, double x, double y)
 		{
 			return 0;

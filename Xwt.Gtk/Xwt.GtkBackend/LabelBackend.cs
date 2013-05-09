@@ -108,13 +108,13 @@ namespace Xwt.GtkBackend
 		public void SetFormattedText (FormattedText text)
 		{
 			Label.Text = text.Text;
-			var list = new Xwt.GtkBackend.GtkTextLayoutBackendHandler.FastPangoAttrList ();
+			var list = new FastPangoAttrList ();
 			TextIndexer indexer = new TextIndexer (text.Text);
-			GtkTextLayoutBackendHandler.FillList (indexer, list, text.Attributes);
+			list.AddAttributes (indexer, text.Attributes);
 			gtk_label_set_attributes (Label.Handle, list.Handle);
 		}
 
-		[DllImport (PangoUtil.LIBGTK, CallingConvention=CallingConvention.Cdecl)]
+		[DllImport (GtkInterop.LIBGTK, CallingConvention=CallingConvention.Cdecl)]
 		static extern void gtk_label_set_attributes (IntPtr label, IntPtr attrList);
 
 		public Xwt.Drawing.Color TextColor {

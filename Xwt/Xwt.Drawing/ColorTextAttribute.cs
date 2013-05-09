@@ -1,22 +1,21 @@
-// 
-// ITextLayoutBackendHandler.cs
-//  
+//
+// ColorTextAttribute.cs
+//
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-//       Lytico (http://limada.sourceforge.net)
-// 
-// Copyright (c) 2011 Xamarin Inc
-// 
+//
+// Copyright (c) 2013 Xamarin Inc.
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,27 +25,27 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Drawing;
+
+using Xwt.Backends;
 using System.Collections.Generic;
 
-namespace Xwt.Backends
+namespace Xwt.Drawing
 {
-	public abstract class TextLayoutBackendHandler: BackendHandler
+	
+	public class ColorTextAttribute: TextAttribute
 	{
-		public abstract object Create ();
+		public Color Color { get; set; }
 
-		public abstract void SetWidth (object backend, double value);
-		public abstract void SetHeight (object backend, double value);
-		public abstract void SetText (object backend, string text);
-		public abstract void SetFont (object backend, Font font);
-		public abstract void SetTrimming (object backend, TextTrimming textTrimming);
-		public abstract Size GetSize (object backend);
-		public abstract int GetIndexFromCoordinates (object backend, double x, double y);
-		public abstract Point GetCoordinateFromIndex (object backend, int index);
-		public abstract void DisposeBackend (object backend);
+		public override bool Equals (object t)
+		{
+			var ot = t as ColorTextAttribute;
+			return ot != null && Color == ot.Color && base.Equals (t);
+		}
 
-		public abstract void AddAttribute (object backend, TextAttribute attribute);
-
+		public override int GetHashCode ()
+		{
+			return base.GetHashCode () ^ Color.GetHashCode ();
+		}
 	}
+	
 }
-
