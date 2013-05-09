@@ -399,6 +399,13 @@
     <Compile Include="Xwt.Drawing\ColorTextAttribute.cs" />
     <Compile Include="Xwt.Drawing\LinkTextAttribute.cs" />
     <Compile Include="Xwt.Drawing\TextAttribute.cs" />
+    <Compile Include="Xwt\WidgetEventArgs.cs" />
+    <Compile Include="Xwt.Backends\IImageCellViewFrontend.cs" />
+    <Compile Include="Xwt.Backends\ICellViewFrontend.cs" />
+    <Compile Include="Xwt.Backends\ITextCellViewFrontend.cs" />
+    <Compile Include="Xwt.Backends\ICanvasCellViewFrontend.cs" />
+    <Compile Include="Xwt.Backends\ICheckBoxCellViewFrontend.cs" />
+    <Compile Include="Xwt.Backends\ExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

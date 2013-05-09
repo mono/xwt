@@ -1,21 +1,21 @@
-// 
-// ImageTableCell.cs
-//  
+//
+// ICanvasCellViewFrontend.cs
+//
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-// 
-// Copyright (c) 2011 Xamarin Inc
-// 
+//
+// Copyright (c) 2013 Xamarin Inc.
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,51 +25,15 @@
 // THE SOFTWARE.
 
 using System;
-using MonoMac.AppKit;
 
-using Xwt.Drawing;
-using Xwt.Backends;
-
-namespace Xwt.Mac
+namespace Xwt.Backends
 {
-	class ImageTableCell: NSImageCell, ICellRenderer
+	public interface ICanvasCellViewFrontend: ICellViewFrontend
 	{
-		IImageCellViewFrontend cellView;
-		
-		public ImageTableCell ()
-		{
-		}
-		
-		public ImageTableCell (IntPtr p): base (p)
-		{
-		}
-		
-		public ImageTableCell (IImageCellViewFrontend cellView)
-		{
-			this.cellView = cellView;
-		}
-		
-		public void Fill (ICellDataSource source)
-		{
-			cellView.Initialize (source);
-			ObjectValue = cellView.Image.ToImageDescription ().ToNSImage ();
-		}
-		
-		public override System.Drawing.SizeF CellSize {
-			get {
-				NSImage img = ObjectValue as NSImage;
-				if (img != null)
-					return img.Size;
-				else
-					return base.CellSize;
-			}
-		}
-		
-		public void CopyFrom (object other)
-		{
-			var ob = (ImageTableCell)other;
-			cellView = ob.cellView;
-		}
+		ApplicationContext ApplicationContext { get; }
+		void Draw (object ctxBackend, Rectangle cellArea);
+		Rectangle GetDrawingAreaForBounds (Rectangle cellBounds);
+		Size GetRequiredSize ();
 	}
 }
 

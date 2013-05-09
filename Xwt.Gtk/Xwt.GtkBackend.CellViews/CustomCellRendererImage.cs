@@ -1,5 +1,5 @@
 //
-// CustomCellRenderer.cs
+// CustomCellRendererImage.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,61 +23,70 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Gtk;
-using Xwt.CairoBackend;
 using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	class CustomCellRenderer: Gtk.CellRenderer, ICellDataSource
+
+	public class CustomCellRendererImage: Gtk.CellRenderer, ICellDataSource
 	{
 		TreeModel treeModel;
 		TreeIter iter;
-		ICanvasCellViewFrontend cellView;
+		ImageDescription image;
+		ApplicationContext actx;
+		IImageCellViewFrontend view;
 
-		public CustomCellRenderer (ICanvasCellViewFrontend cellView)
+		public CustomCellRendererImage (ApplicationContext actx, IImageCellViewFrontend view)
 		{
-			this.cellView = cellView;
+			this.actx = actx;
+			this.view = view;
 		}
-
-		#region ICellDataSource implementation
-
+		
 		public void LoadData (TreeModel treeModel, TreeIter iter)
 		{
 			this.treeModel = treeModel;
 			this.iter = iter;
-			cellView.Initialize (this);
+			view.Initialize (this);
+			Image = view.Image.ToImageDescription ();
 		}
-
+		
 		object ICellDataSource.GetValue (IDataField field)
 		{
 			return treeModel.GetValue (iter, field.Index);
 		}
-
-		#endregion
+		
+		[GLib.Property ("image")]
+		public ImageDescription Image {
+			get { return image; }
+			set { image = value; }
+		}
 
 		protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, Gtk.CellRendererState flags)
 		{
-			cellView.ApplicationContext.InvokeUserCode (delegate {
-				CairoContextBackend ctx = new CairoContextBackend (Util.GetScaleFactor (widget));
-				ctx.Context = Gdk.CairoHelper.Create (window);
-				using (ctx) {
-					cellView.Draw (ctx, new Rectangle (cell_area.X, cell_area.Y, cell_area.Width, cell_area.Height));
-				}
-			});
-		}
+			if (image.IsNull)
+				return;
 
+			var ctx = Gdk.CairoHelper.Create (window);
+			using (ctx) {
+				var pix = ((GtkImage)image.Backend);
+				pix.Draw (actx, ctx, Util.GetScaleFactor (widget), cell_area.X, cell_area.Y, image);
+			}
+		}
+		
 		public override void GetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
-			Size size = new Size ();
-			cellView.ApplicationContext.InvokeUserCode (delegate {
-				size = cellView.GetRequiredSize ();
-			});
-			width = (int) size.Width;
-			height = (int) size.Height;
+			if (image.IsNull) {
+				width = height = 0;
+			} else {
+				width = (int) image.Size.Width;
+				height = (int) image.Size.Height;
+			}
 			x_offset = y_offset = 0;
 		}
 	}
 }
-

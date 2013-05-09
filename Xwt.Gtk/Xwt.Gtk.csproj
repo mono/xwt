@@ -121,6 +121,9 @@
     <Compile Include="Xwt.GtkBackend\SliderBackend.cs" />
     <Compile Include="Xwt.GtkBackend\RadioButtonBackend.cs" />
     <Compile Include="Xwt.GtkBackend\GtkInterop.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererText.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererToggle.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererImage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

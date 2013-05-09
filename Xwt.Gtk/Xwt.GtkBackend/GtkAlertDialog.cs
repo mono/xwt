@@ -106,7 +106,7 @@ namespace Xwt.GtkBackend
 				secondaryText = message.SecondaryText;
 			}
 
-			var icon = ToolkitEngineBackend.GetImageDescription (message.Icon);
+			var icon = message.Icon.ToImageDescription ();
 			image.Image = icon.WithDefaultSize (Gtk.IconSize.Dialog);
 			
 			StringBuilder markup = new StringBuilder (@"<span weight=""bold"" size=""larger"">");
@@ -129,7 +129,7 @@ namespace Xwt.GtkBackend
 				newButton.UseUnderline = true;
 				newButton.UseStock     = button.IsStockButton;
 				if (button.Icon != null) {
-					icon = ToolkitEngineBackend.GetImageDescription (button.Icon);
+					icon = button.Icon.ToImageDescription ();
 					newButton.Image = new ImageBox (actx, icon.WithDefaultSize (Gtk.IconSize.Button));
 				}
 				newButton.Clicked += ButtonClicked;

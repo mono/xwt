@@ -26,10 +26,11 @@
 
 using System;
 using Xwt.Drawing;
+using Xwt.Backends;
 
 namespace Xwt
 {
-	public class CellView
+	public class CellView: ICellViewFrontend
 	{
 		public static CellView GetDefaultCellView (IDataField field)
 		{
@@ -44,7 +45,7 @@ namespace Xwt
 
 		protected ICellDataSource DataSource { get; private set; }
 
-		public void Initialize (ICellDataSource source)
+		void ICellViewFrontend.Initialize (ICellDataSource source)
 		{
 			DataSource = source;
 			OnDataChanged ();

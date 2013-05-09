@@ -1,21 +1,21 @@
-// 
-// ImageTableCell.cs
-//  
+//
+// CustomCellRendererText.cs
+//
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-// 
-// Copyright (c) 2011 Xamarin Inc
-// 
+//
+// Copyright (c) 2013 Xamarin Inc.
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,52 +23,53 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using MonoMac.AppKit;
-
-using Xwt.Drawing;
+using Gtk;
 using Xwt.Backends;
 
-namespace Xwt.Mac
+namespace Xwt.GtkBackend
 {
-	class ImageTableCell: NSImageCell, ICellRenderer
+	public class CustomCellRendererText: Gtk.CellRendererText, ICellDataSource
 	{
-		IImageCellViewFrontend cellView;
-		
-		public ImageTableCell ()
+		ITextCellViewFrontend view;
+		TreeModel treeModel;
+		TreeIter iter;
+
+		public CustomCellRendererText (ITextCellViewFrontend view)
 		{
+			this.view = view;
 		}
-		
-		public ImageTableCell (IntPtr p): base (p)
+
+		public void LoadData (TreeModel treeModel, TreeIter iter)
 		{
-		}
-		
-		public ImageTableCell (IImageCellViewFrontend cellView)
-		{
-			this.cellView = cellView;
-		}
-		
-		public void Fill (ICellDataSource source)
-		{
-			cellView.Initialize (source);
-			ObjectValue = cellView.Image.ToImageDescription ().ToNSImage ();
-		}
-		
-		public override System.Drawing.SizeF CellSize {
-			get {
-				NSImage img = ObjectValue as NSImage;
-				if (img != null)
-					return img.Size;
-				else
-					return base.CellSize;
+			this.treeModel = treeModel;
+			this.iter = iter;
+			view.Initialize (this);
+
+			if (view.Markup != null) {
+				FormattedText tx = FormattedText.FromMarkup (view.Markup);
+				Text = tx.Text;
+				var atts = new FastPangoAttrList ();
+				atts.AddAttributes (new TextIndexer (tx.Text), tx.Attributes);
+				Attributes = new Pango.AttrList (atts.Handle);
+				atts.Dispose ();
+			} else {
+				Text = view.Text;
 			}
+			Editable = view.Editable;
 		}
 		
-		public void CopyFrom (object other)
+		public object GetValue (IDataField field)
 		{
-			var ob = (ImageTableCell)other;
-			cellView = ob.cellView;
+			return treeModel.GetValue (iter, field.Index);
+		}
+
+		protected override void OnEdited (string path, string new_text)
+		{
+			Gtk.TreeIter iter;
+			if (treeModel.GetIterFromString (out iter, path))
+				treeModel.SetValue (iter, ((TextCellView)view).TextField.Index, new_text);
+			base.OnEdited (path, new_text);
 		}
 	}
 }

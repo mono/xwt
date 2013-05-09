@@ -34,42 +34,47 @@ namespace Xwt.GtkBackend
 {
 	public static class CellUtil
 	{
-		public static Gtk.CellRenderer CreateCellRenderer (ApplicationContext actx, ICellRendererTarget col, object target, CellView view, Gtk.TreeModel model)
+		class CellDataSource: ICellDataSource
 		{
-			if (view is TextCellView) {
-				Gtk.CellRendererText cr = new Gtk.CellRendererText ();
-				if (((TextCellView)view).Editable) {
-					cr.Editable = true;
-					cr.Edited += (o, args) => {
-						Gtk.TreeIter iter;
-						if (model.GetIterFromString (out iter, args.Path))
-							model.SetValue (iter, ((TextCellView)view).TextField.Index, args.NewText);
-					};
-				}
+			TreeIter iter;
+			TreeModel treeModel;
+
+			public CellDataSource (TreeIter iter, TreeModel treeModel)
+			{
+				this.iter = iter;
+				this.treeModel = treeModel;
+			}
+
+			public object GetValue (IDataField field)
+			{
+				return treeModel.GetValue (iter, field.Index);
+			}
+		}
+
+		public static Gtk.CellRenderer CreateCellRenderer (ApplicationContext actx, ICellRendererTarget col, object target, ICellViewFrontend view, Gtk.TreeModel model)
+		{
+			if (view is ICellViewFrontend) {
+				var cr = new CustomCellRendererText ((ITextCellViewFrontend)view);
 				col.PackStart (target, cr, false);
-				col.AddAttribute (target, cr, "text", ((TextCellView)view).TextField.Index);
+				col.SetCellDataFunc (target, cr, (cell_layout, cell, treeModel, iter) => cr.LoadData (treeModel, iter));
 				return cr;
 			}
-			else if (view is CheckBoxCellView) {
-				Gtk.CellRendererToggle cr = new Gtk.CellRendererToggle ();
+			else if (view is ICheckBoxCellViewFrontend) {
+				CustomCellRendererToggle cr = new CustomCellRendererToggle ((ICheckBoxCellViewFrontend)view);
 				col.PackStart (target, cr, false);
-				col.AddAttribute (target, cr, "active", ((CheckBoxCellView)view).ActiveField.Index);
+				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (treeModel, iter));
 				return cr;
 			}
-			else if (view is ImageCellView) {
-				CellRendererImage cr = new CellRendererImage (actx);
+			else if (view is IImageCellViewFrontend) {
+				CustomCellRendererImage cr = new CustomCellRendererImage (actx, (IImageCellViewFrontend)view);
 				col.PackStart (target, cr, false);
-				col.AddAttribute (target, cr, "image", ((ImageCellView)view).ImageField.Index);
+				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (treeModel, iter));
 				return cr;
 			}
-			else if (view is CanvasCellView) {
-				var canvas = (CanvasCellView) view;
-				var cr = new CustomCellRenderer (canvas);
+			else if (view is ICanvasCellViewFrontend) {
+				var cr = new CustomCellRenderer ((ICanvasCellViewFrontend) view);
 				col.PackStart (target, cr, false);
-				col.SetCellDataFunc (target, cr, delegate (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter) {
-					cr.LoadData (cell_layout, cell, tree_model, iter);
-					((CanvasCellView) view).Initialize (cr);
-				});
+				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (treeModel, iter));
 				return cr;
 			}
 			throw new NotSupportedException ("Unknown cell view type: " + view.GetType ());
@@ -108,61 +113,5 @@ namespace Xwt.GtkBackend
 		void SetCellDataFunc (object target, Gtk.CellRenderer cr, Gtk.CellLayoutDataFunc dataFunc);
 	}
 
-	public class CellRendererImage: Gtk.CellRenderer, ICellDataSource
-	{
-		TreeModel treeModel;
-		TreeIter iter;
-		ImageDescription image;
-		ApplicationContext actx;
-
-		public CellRendererImage (ApplicationContext actx)
-		{
-			this.actx = actx;
-		}
-		
-		#region ICellDataSource implementation
-		
-		public void LoadData (CellLayout cell_layout, CellRenderer cell, TreeModel treeModel, TreeIter iter)
-		{
-			this.treeModel = treeModel;
-			this.iter = iter;
-		}
-		
-		object ICellDataSource.GetValue (IDataField field)
-		{
-			return treeModel.GetValue (iter, field.Index);
-		}
-		
-		#endregion
-		
-		[GLib.Property ("image")]
-		public ImageDescription Image {
-			get { return image; }
-			set { image = value; }
-		}
-
-		protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, Gtk.CellRendererState flags)
-		{
-			if (image.IsNull)
-				return;
-
-			var ctx = Gdk.CairoHelper.Create (window);
-			using (ctx) {
-				var pix = ((GtkImage)image.Backend);
-				pix.Draw (actx, ctx, Util.GetScaleFactor (widget), cell_area.X, cell_area.Y, image);
-			}
-		}
-		
-		public override void GetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
-		{
-			if (image.IsNull) {
-				width = height = 0;
-			} else {
-				width = (int) image.Size.Width;
-				height = (int) image.Size.Height;
-			}
-			x_offset = y_offset = 0;
-		}
-	}
 }
 

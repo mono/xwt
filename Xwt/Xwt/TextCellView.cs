@@ -29,12 +29,19 @@ using Xwt.Drawing;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Xwt.Backends;
 
 namespace Xwt
 {
-	public sealed class TextCellView: CellView
+	public sealed class TextCellView: CellView, ITextCellViewFrontend
 	{
 		string text;
+		string markup;
+		bool editable;
+
+		public IDataField TextField { get; set; }
+		public IDataField<string> MarkupField { get; set; }
+		public IDataField<bool> EditableField { get; set; }
 
 		public TextCellView ()
 		{
@@ -50,13 +57,11 @@ namespace Xwt
 			this.text = text;
 		}
 		
-		public IDataField TextField { get; set; }
-
 		[DefaultValue (null)]
 		public string Text {
 			get {
 				if (TextField != null && DataSource != null)
-					return Convert.ToString (DataSource.GetValue (TextField) ?? "");
+					return Convert.ToString (DataSource.GetValue (TextField));
 				else
 					return text;
 			}
@@ -65,10 +70,24 @@ namespace Xwt
 			}
 		}
 
+		[DefaultValue (null)]
+		public string Markup {
+			get {
+				return GetValue (MarkupField, markup);
+			}
+			set {
+				markup = value;
+			}
+		}
+
 		[DefaultValue (false)]
 		public bool Editable {
-			get;
-			set;
+			get {
+				return GetValue (EditableField, editable);
+			}
+			set {
+				editable = value;
+			}
 		}
 	}
 }

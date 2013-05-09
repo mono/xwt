@@ -35,7 +35,7 @@ namespace Xwt.Mac
 {
 	class TextTableCell: NSTextFieldCell, ICellRenderer
 	{
-		TextCellView cellView;
+		ITextCellViewFrontend cellView;
 		
 		public TextTableCell ()
 		{
@@ -45,7 +45,7 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public TextTableCell (TextCellView cellView)
+		public TextTableCell (ITextCellViewFrontend cellView)
 		{
 			this.cellView = cellView;
 		}
@@ -53,7 +53,10 @@ namespace Xwt.Mac
 		public void Fill (ICellDataSource source)
 		{
 			cellView.Initialize (source);
-			StringValue = cellView.Text ?? "";
+			if (cellView.Markup != null)
+				AttributedStringValue = FormattedText.FromMarkup (cellView.Markup).ToAttributedString ();
+			else
+				StringValue = cellView.Text ?? "";
 		}
 
 		public void CopyFrom (object other)

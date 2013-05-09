@@ -74,8 +74,6 @@ namespace Xwt.GtkBackend
 				store.SetValue (it, column, new ObjectWrapper (value));
 			else if (value is string)
 				store.SetValue (it, column, (string)value);
-			else if (value is Image)
-				store.SetValue (it, column, ToolkitEngineBackend.GetImageDescription((Image)value).WithDefaultSize (Gtk.IconSize.Menu));
 			else
 				store.SetValue (it, column, value ?? DBNull.Value);
 		}

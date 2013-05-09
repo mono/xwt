@@ -260,6 +260,8 @@ namespace Xwt.Mac
 
 		public static NSImage ToNSImage (this ImageDescription idesc)
 		{
+			if (idesc.IsNull)
+				return null;
 			var img = (NSImage)idesc.Backend;
 			if (img is CustomImage)
 				img = ((CustomImage)img).Clone ();

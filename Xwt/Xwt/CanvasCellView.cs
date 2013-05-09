@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class CanvasCellView: CellView, ICanvasCellRenderer
+	public class CanvasCellView: CellView, ICanvasCellViewFrontend
 	{
 		public CanvasCellView ()
 		{
@@ -57,7 +57,7 @@ namespace Xwt
 		
 		#region ICanvasCellRenderer implementation
 
-		void ICanvasCellRenderer.Draw (object ctxBackend, Rectangle cellArea)
+		void ICanvasCellViewFrontend.Draw (object ctxBackend, Rectangle cellArea)
 		{
 			using (var ctx = new Context (ctxBackend, Toolkit.CurrentEngine)) {
 				ctx.Reset (null);
@@ -65,30 +65,21 @@ namespace Xwt
 			}
 		}
 
-		Rectangle ICanvasCellRenderer.GetDrawingAreaForBounds (Rectangle cellBounds)
+		Rectangle ICanvasCellViewFrontend.GetDrawingAreaForBounds (Rectangle cellBounds)
 		{
 			return OnGetDrawingAreaForBounds (cellBounds);
 		}
 
-		Size ICanvasCellRenderer.GetRequiredSize ()
+		Size ICanvasCellViewFrontend.GetRequiredSize ()
 		{
 			return OnGetRequiredSize ();
 		}
 
-		ApplicationContext ICanvasCellRenderer.ApplicationContext {
+		ApplicationContext ICanvasCellViewFrontend.ApplicationContext {
 			get { return new ApplicationContext (Toolkit.CurrentEngine); }
 		}
 
 		#endregion
-	}
-
-
-	public interface ICanvasCellRenderer
-	{
-		ApplicationContext ApplicationContext { get; }
-		void Draw (object ctxBackend, Rectangle cellArea);
-		Rectangle GetDrawingAreaForBounds (Rectangle cellBounds);
-		Size GetRequiredSize ();
 	}
 }
 

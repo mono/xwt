@@ -27,10 +27,11 @@
 using System;
 using Xwt.Drawing;
 using System.ComponentModel;
+using Xwt.Backends;
 
 namespace Xwt
 {
-	public sealed class ImageCellView: CellView
+	public sealed class ImageCellView: CellView, IImageCellViewFrontend
 	{
 		Image image;
 

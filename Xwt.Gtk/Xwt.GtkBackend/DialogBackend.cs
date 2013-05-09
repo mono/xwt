@@ -90,11 +90,11 @@ namespace Xwt.GtkBackend
 			if (!string.IsNullOrEmpty (btn.Label) && btn.Image == null) {
 				b.Label = btn.Label;
 			} else if (string.IsNullOrEmpty (btn.Label) && btn.Image != null) {
-				var pix = ToolkitEngineBackend.GetImageDescription (btn.Image);
+				var pix = btn.Image.ToImageDescription ();
 				b.Image = new ImageBox (ApplicationContext, pix);
 			} else if (!string.IsNullOrEmpty (btn.Label)) {
 				Gtk.Box box = new Gtk.HBox (false, 3);
-				var pix = ToolkitEngineBackend.GetImageDescription (btn.Image);
+				var pix = btn.Image.ToImageDescription ();
 				box.PackStart (new ImageBox (ApplicationContext, pix), false, false, 0);
 				box.PackStart (new Gtk.Label (btn.Label), true, true, 0);
 				b.Image = box;

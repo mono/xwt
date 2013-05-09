@@ -27,12 +27,13 @@ using System;
 using MonoMac.AppKit;
 using System.Drawing;
 using MonoMac.CoreGraphics;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
 	public class CanvasTableCell: NSCell, ICellRenderer
 	{
-		CanvasCellView cellView;
+		ICanvasCellViewFrontend cellView;
 
 		public CanvasTableCell (IntPtr p): base (p)
 		{
@@ -42,7 +43,7 @@ namespace Xwt.Mac
 		{
 		}
 
-		public CanvasTableCell (CanvasCellView cellView)
+		public CanvasTableCell (ICanvasCellViewFrontend cellView)
 		{
 			this.cellView = cellView;
 		}
@@ -60,10 +61,9 @@ namespace Xwt.Mac
 		
 		public override SizeF CellSizeForBounds (RectangleF bounds)
 		{
-			var r = (ICanvasCellRenderer)cellView;
 			var size = new SizeF ();
-			r.ApplicationContext.InvokeUserCode (delegate {
-				var s = r.GetRequiredSize ();
+			cellView.ApplicationContext.InvokeUserCode (delegate {
+				var s = cellView.GetRequiredSize ();
 				size = new SizeF ((float)s.Width, (float)s.Height);
 			});
 			if (size.Width > bounds.Width)
@@ -75,16 +75,14 @@ namespace Xwt.Mac
 
 		public override void DrawInteriorWithFrame (RectangleF cellFrame, NSView inView)
 		{
-			var r = (ICanvasCellRenderer)cellView;
-
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 			
 			var backend = new CGContextBackend {
 				Context = ctx,
 				InverseViewTransform = ctx.GetCTM ().Invert ()
 			};
-			r.ApplicationContext.InvokeUserCode (delegate {
-				r.Draw (backend, new Rectangle (cellFrame.X, cellFrame.Y, cellFrame.Width, cellFrame.Height));
+			cellView.ApplicationContext.InvokeUserCode (delegate {
+				cellView.Draw (backend, new Rectangle (cellFrame.X, cellFrame.Y, cellFrame.Width, cellFrame.Height));
 			});
 		}
 	}
