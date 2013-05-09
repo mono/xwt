@@ -64,12 +64,13 @@ namespace Xwt.Mac
 			if (!image.IsNull) {
 				var img = image.ToNSImage ();
 				Widget.Image = (NSImage)img;
+				Widget.Cell.ImageScale = NSImageScale.None;
 				switch (imagePosition) {
 				case ContentPosition.Bottom: Widget.ImagePosition = NSCellImagePosition.ImageBelow; break;
 				case ContentPosition.Left: Widget.ImagePosition = NSCellImagePosition.ImageLeft; break;
 				case ContentPosition.Right: Widget.ImagePosition = NSCellImagePosition.ImageRight; break;
 				case ContentPosition.Top: Widget.ImagePosition = NSCellImagePosition.ImageAbove; break;
-				case ContentPosition.Center: Widget.ImagePosition = NSCellImagePosition.ImageOverlaps; break;
+				case ContentPosition.Center: Widget.ImagePosition = string.IsNullOrEmpty (label) ? NSCellImagePosition.ImageOnly : NSCellImagePosition.ImageOverlaps; break;
 				}
 			}
 			ResetFittingSize ();
