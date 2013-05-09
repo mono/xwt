@@ -200,13 +200,13 @@ namespace Xwt
 			case "font_desc":
 				return new FontTextAttribute () { Font = Font.FromName (val) };
 
-			case "size":
+/*			case "size":
 			case "font_size":
 				double s;
 				if (!double.TryParse (val, NumberStyles.Any, CultureInfo.InvariantCulture, out s))
 					return null;
 				return new FontSizeTextAttribute () { Size = s };
-
+*/
 			case "font_weight":
 			case "weight":
 				FontWeight w;

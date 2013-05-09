@@ -85,15 +85,13 @@ namespace Xwt.GtkBackend
 			}
 			else if (attr is UnderlineTextAttribute) {
 				var xa = (UnderlineTextAttribute)attr;
-				AddUnderlineAttribute (Pango.Underline.Single, start, end);
+				AddUnderlineAttribute (xa.Underline ? Pango.Underline.Single : Pango.Underline.None, start, end);
 			}
 			else if (attr is StrikethroughTextAttribute) {
 				var xa = (StrikethroughTextAttribute)attr;
-				AddStrikethroughAttribute (true, start, end);
+				AddStrikethroughAttribute (xa.Strikethrough, start, end);
 			}
 			else if (attr is FontTextAttribute) {
-			}
-			else if (attr is FontSizeTextAttribute) {
 			}
 		}
 

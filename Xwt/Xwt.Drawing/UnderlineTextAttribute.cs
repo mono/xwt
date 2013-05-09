@@ -34,6 +34,23 @@ namespace Xwt.Drawing
 	
 	public sealed class UnderlineTextAttribute: TextAttribute
 	{
+		public UnderlineTextAttribute ()
+		{
+			Underline = true;
+		}
+
+		public bool Underline { get; set; }
+
+		public override bool Equals (object ob)
+		{
+			var t = ob as UnderlineTextAttribute;
+			return t != null && t.Underline == Underline && base.Equals (ob);
+		}
+
+		public override int GetHashCode ()
+		{
+			return base.GetHashCode () ^ Underline.GetHashCode ();
+		}
 	}
 	
 }

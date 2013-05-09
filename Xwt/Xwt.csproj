@@ -396,7 +396,6 @@
     <Compile Include="Xwt.Drawing\UnderlineTextAttribute.cs" />
     <Compile Include="Xwt.Drawing\StrikethroughTextAttribute.cs" />
     <Compile Include="Xwt.Drawing\FontTextAttribute.cs" />
-    <Compile Include="Xwt.Drawing\FontSizeTextAttribute.cs" />
     <Compile Include="Xwt.Drawing\ColorTextAttribute.cs" />
     <Compile Include="Xwt.Drawing\LinkTextAttribute.cs" />
     <Compile Include="Xwt.Drawing\TextAttribute.cs" />
