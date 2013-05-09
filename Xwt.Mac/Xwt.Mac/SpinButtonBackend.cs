@@ -82,13 +82,28 @@ namespace Xwt.Mac
 		NSStepper stepper;
 		NSTextField input;
 		NSNumberFormatter formater;
-		NSLayoutConstraint constraint;
+
+		class RelativeTextField : NSTextField
+		{
+			NSView reference;
+
+			public RelativeTextField (NSView reference)
+			{
+				this.reference = reference;
+			}
+
+			public override void ResizeWithOldSuperviewSize (System.Drawing.SizeF oldSize)
+			{
+				base.ResizeWithOldSuperviewSize (oldSize);
+				SetFrameSize (new System.Drawing.SizeF (reference.Frame.Left - 6, Frame.Size.Height));
+			}
+		}
 
 		public MacSpinButton (ISpinButtonEventSink eventSink)
 		{
 			formater = new NSNumberFormatter ();
 			stepper = new NSStepper ();
-			input = new NSTextField ();
+			input = new RelativeTextField (stepper);
 			input.Formatter = formater;
 			input.Alignment = NSTextAlignment.Right;
 			formater.NumberStyle = NSNumberFormatterStyle.Decimal;
@@ -100,10 +115,10 @@ namespace Xwt.Mac
 
 			AutoresizesSubviews = true;
 			stepper.AutoresizingMask = NSViewResizingMask.MinXMargin | NSViewResizingMask.MinYMargin;
-			input.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.MaxYMargin;
+			input.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.MaxXMargin | NSViewResizingMask.MaxYMargin;
 
-			AddSubview (stepper);
 			AddSubview (input);
+			AddSubview (stepper);
 		}
 
 		public double ClimbRate {
