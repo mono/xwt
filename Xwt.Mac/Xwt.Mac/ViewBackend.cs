@@ -60,6 +60,7 @@ namespace Xwt.Mac
 		Size lastFittingSize;
 		bool sensitive = true;
 		bool canGetFocus = true;
+		Xwt.Drawing.Color backgroundColor;
 
 		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
 		{
@@ -73,6 +74,7 @@ namespace Xwt.Mac
 			Initialize ();
 			ResetFittingSize ();
 			canGetFocus = Widget.AcceptsFirstResponder ();
+			Widget.WantsLayer = true;
 		}
 
 		// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
@@ -274,8 +276,13 @@ namespace Xwt.Mac
 		}
 		
 		public virtual Xwt.Drawing.Color BackgroundColor {
-			get;
-			set;
+			get {
+				return this.backgroundColor;
+			}
+			set {
+				this.backgroundColor = value;
+				Widget.Layer.BackgroundColor = value.ToCGColor ();
+			}
 		}
 		
 		#region IWidgetBackend implementation
