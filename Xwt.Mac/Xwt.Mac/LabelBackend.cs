@@ -27,6 +27,7 @@
 using System;
 using MonoMac.AppKit;
 using Xwt.Backends;
+using MonoMac.Foundation;
 
 namespace Xwt.Mac
 {
@@ -57,6 +58,7 @@ namespace Xwt.Mac
 
 		public void SetFormattedText (FormattedText text)
 		{
+			Widget.AttributedStringValue = text.ToAttributedString ();
 		}
 
 		public Xwt.Drawing.Color TextColor {

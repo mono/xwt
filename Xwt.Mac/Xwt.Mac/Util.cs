@@ -34,6 +34,7 @@ using MonoMac.ObjCRuntime;
 using MonoMac.Foundation;
 using System.Collections.Generic;
 using Xwt.Backends;
+using System.Runtime.InteropServices;
 
 namespace Xwt.Mac
 {
@@ -267,6 +268,66 @@ namespace Xwt.Mac
 			}
 			img.Size = new System.Drawing.SizeF ((float)idesc.Size.Width, (float)idesc.Size.Height);
 			return img;
+		}
+
+
+		public static int ToUnderlineStyle (FontStyle style)
+		{
+			return 1;
+		}
+
+		static Selector applyFontTraits = new Selector ("applyFontTraits:range:");
+
+		public static NSAttributedString ToAttributedString (this FormattedText ft)
+		{
+			NSMutableAttributedString ns = new NSMutableAttributedString (ft.Text);
+			foreach (var att in ft.Attributes) {
+				var r = new NSRange (att.StartIndex, att.Count);
+				if (att is BackgroundTextAttribute) {
+					var xa = (BackgroundTextAttribute)att;
+					ns.AddAttribute (NSAttributedString.BackgroundColorAttributeName, xa.Color.ToNSColor (), r);
+				}
+				else if (att is ColorTextAttribute) {
+					var xa = (ColorTextAttribute)att;
+					ns.AddAttribute (NSAttributedString.ForegroundColorAttributeName, xa.Color.ToNSColor (), r);
+				}
+				else if (att is UnderlineTextAttribute) {
+					var xa = (UnderlineTextAttribute)att;
+					int style = xa.Underline ? 0x01 /*NSUnderlineStyleSingle*/ : 0;
+					ns.AddAttribute (NSAttributedString.UnderlineStyleAttributeName, (NSNumber)style, r);
+				}
+				else if (att is FontStyleTextAttribute) {
+					var xa = (FontStyleTextAttribute)att;
+					if (xa.Style == FontStyle.Italic) {
+						Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (int)NSFontTraitMask.Italic, r);
+					} else if (xa.Style == FontStyle.Oblique) {
+						ns.AddAttribute (NSAttributedString.ObliquenessAttributeName, (NSNumber)0.2f, r);
+					} else {
+						ns.AddAttribute (NSAttributedString.ObliquenessAttributeName, (NSNumber)0.0f, r);
+						Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (int)NSFontTraitMask.Unitalic, r);
+					}
+				}
+				else if (att is FontWeightTextAttribute) {
+					var xa = (FontWeightTextAttribute)att;
+					var trait = xa.Weight >= FontWeight.Bold ? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
+					Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (int) trait, r);
+				}
+				else if (att is LinkTextAttribute) {
+					var xa = (LinkTextAttribute)att;
+					ns.AddAttribute (NSAttributedString.LinkAttributeName, (NSString)xa.Target, r);
+				}
+				else if (att is StrikethroughTextAttribute) {
+					var xa = (StrikethroughTextAttribute)att;
+					int style = xa.Strikethrough ? 0x01 /*NSUnderlineStyleSingle*/ : 0;
+					ns.AddAttribute (NSAttributedString.StrikethroughStyleAttributeName, (NSNumber)style, r);
+				}
+				else if (att is FontTextAttribute) {
+					var xa = (FontTextAttribute)att;
+					var nf = (NSFont)Toolkit.GetBackend (xa.Font);
+					ns.AddAttribute (NSAttributedString.FontAttributeName, nf, r);
+				}
+			}
+			return ns;
 		}
 	}
 
