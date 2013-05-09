@@ -102,44 +102,35 @@ namespace Xwt.WPFBackend
 			return 0;
 		}
 
-		public override void SetBackgound (object backend, Drawing.Color color, int startIndex, int count)
-		{
-		}
-
-		public override void SetFontStyle (object backend, Drawing.FontStyle style, int startIndex, int count)
+		public override void AddAttribute (object backend, TextAttribute attribute)
 		{
 			var t = (TextLayoutBackend)backend;
-			t.FormattedText.SetFontStyle (style.ToWpfFontStyle (), startIndex, count);
-		}
-
-		public override void SetFontWeight (object backend, Xwt.Drawing.FontWeight weight, int startIndex, int count)
-		{
-			var t = (TextLayoutBackend)backend;
-			t.FormattedText.SetFontWeight (weight.ToWpfFontWeight (), startIndex, count);
-		}
-
-		public override void SetForeground (object backend, Drawing.Color color, int startIndex, int count)
-		{
-			var t = (TextLayoutBackend)backend;
-			t.FormattedText.SetForegroundBrush (new SolidColorBrush (color.ToWpfColor()), startIndex, count);
-		}
-
-		public override void SetStrikethrough (object backend, int startIndex, int count)
-		{
-			var t = (TextLayoutBackend)backend;
-			var dec = new TextDecoration (TextDecorationLocation.Strikethrough, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
-			TextDecorationCollection col = new TextDecorationCollection ();
-			col.Add (dec);
-			t.FormattedText.SetTextDecorations (col);
-		}
-
-		public override void SetUnderline (object backend, int startIndex, int count)
-		{
-			var t = (TextLayoutBackend)backend;
-			var dec = new TextDecoration (TextDecorationLocation.Underline, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
-			TextDecorationCollection col = new TextDecorationCollection ();
-			col.Add (dec);
-			t.FormattedText.SetTextDecorations (col);
+			if (attribute is FontStyleTextAttribute) {
+				var xa = (FontStyleTextAttribute)attribute;
+				t.FormattedText.SetFontStyle (xa.Style.ToWpfFontStyle (), xa.StartIndex, xa.Count);
+			}
+			else if (attribute is FontWeightTextAttribute) {
+				var xa = (FontWeightTextAttribute)attribute;
+				t.FormattedText.SetFontWeight (xa.Weight.ToWpfFontWeight (), xa.StartIndex, xa.Count);
+			}
+			else if (attribute is ColorTextAttribute) {
+				var xa = (ColorTextAttribute)attribute;
+				t.FormattedText.SetForegroundBrush (new SolidColorBrush (xa.Color.ToWpfColor ()), xa.StartIndex, xa.Count);
+			}
+			else if (attribute is StrikethroughTextAttribute) {
+				var xa = (StrikethroughTextAttribute)attribute;
+				var dec = new TextDecoration (TextDecorationLocation.Strikethrough, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+				TextDecorationCollection col = new TextDecorationCollection ();
+				col.Add (dec);
+				t.FormattedText.SetTextDecorations (col, xa.StartIndex, xa.Count);
+			}
+			else if (attribute is UnderlineTextAttribute) {
+				var xa = (UnderlineTextAttribute)attribute;
+				var dec = new TextDecoration (TextDecorationLocation.Underline, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+				TextDecorationCollection col = new TextDecorationCollection ();
+				col.Add (dec);
+				t.FormattedText.SetTextDecorations (col, xa.StartIndex, xa.Count);
+			}
 		}
 
 		public override void DisposeBackend (object backend)
