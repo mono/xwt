@@ -167,10 +167,29 @@ namespace Xwt.Drawing
 			}
 		}
 
-		public void SetAttribute (TextAttribute attribute)
+		string markup;
+		public string Markup {
+			get { return markup; }
+			set {
+				markup = value;
+				var t = FormattedText.FromMarkup (markup);
+				Text = t.Text;
+				ClearAttributes ();
+				foreach (var at in attributes)
+					AddAttribute (at);
+			}
+		}
+
+		public void AddAttribute (TextAttribute attribute)
 		{
 			Attributes.Add (attribute.Clone ());
 			handler.AddAttribute (Backend, attribute);
+		}
+
+		public void ClearAttributes ()
+		{
+			Attributes.Clear ();
+			handler.ClearAttributes (Backend);
 		}
 
 		/// <summary>
@@ -181,7 +200,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the foreground color to.</param>
 		public void SetForeground (Color color, int startIndex, int count)
 		{
-			SetAttribute (new ColorTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
+			AddAttribute (new ColorTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
 		}
 
 		/// <summary>
@@ -192,7 +211,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the background color to.</param>
 		public void SetBackgound (Color color, int startIndex, int count)
 		{
-			SetAttribute (new BackgroundTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
+			AddAttribute (new BackgroundTextAttribute () { StartIndex = startIndex, Count = count, Color = color });
 		}
 
 		/// <summary>
@@ -203,7 +222,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the font weight to.</param>
 		public void SetFontWeight (FontWeight weight, int startIndex, int count)
 		{
-			SetAttribute (new FontWeightTextAttribute () { StartIndex = startIndex, Count = count, Weight = weight });
+			AddAttribute (new FontWeightTextAttribute () { StartIndex = startIndex, Count = count, Weight = weight });
 		}
 
 		/// <summary>
@@ -214,7 +233,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to apply the font style to.</param>
 		public void SetFontStyle (FontStyle style, int startIndex, int count)
 		{
-			SetAttribute (new FontStyleTextAttribute () { StartIndex = startIndex, Count = count, Style = style });
+			AddAttribute (new FontStyleTextAttribute () { StartIndex = startIndex, Count = count, Style = style });
 		}
 
 		/// <summary>
@@ -224,7 +243,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to underline.</param>
 		public void SetUnderline (int startIndex, int count)
 		{
-			SetAttribute (new UnderlineTextAttribute () { StartIndex = startIndex, Count = count});
+			AddAttribute (new UnderlineTextAttribute () { StartIndex = startIndex, Count = count});
 		}
 
 		/// <summary>
@@ -234,7 +253,7 @@ namespace Xwt.Drawing
 		/// <param name="count">The number of characters to strike-through.</param>
 		public void SetStrikethrough (int startIndex, int count)
 		{
-			SetAttribute (new StrikethroughTextAttribute () { StartIndex = startIndex, Count = count});
+			AddAttribute (new StrikethroughTextAttribute () { StartIndex = startIndex, Count = count});
 		}
 
 		public void Dispose ()
@@ -271,7 +290,7 @@ namespace Xwt.Drawing
 				la.Trimming = TextTrimming;
 			if (Attributes != null) {
 				foreach (var at in Attributes)
-					la.SetAttribute (at);
+					la.AddAttribute (at);
 			}
 		}
 

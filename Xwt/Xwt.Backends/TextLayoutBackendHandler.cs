@@ -46,7 +46,7 @@ namespace Xwt.Backends
 		public abstract void DisposeBackend (object backend);
 
 		public abstract void AddAttribute (object backend, TextAttribute attribute);
-
+		public abstract void ClearAttributes (object backend);
 	}
 }
 

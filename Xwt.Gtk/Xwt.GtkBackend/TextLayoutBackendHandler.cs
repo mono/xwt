@@ -95,6 +95,15 @@ namespace Xwt.GtkBackend
 				}
 			}
 
+			public void ClearAttributes ()
+			{
+				if (attributes != null) {
+					attributes.Dispose ();
+					attributes = new FastPangoAttrList ();
+					hasUnassignedAttributes = true;
+				}
+			}
+
 			public void Dispose ()
 			{
 				if (layout != null) {
@@ -169,6 +178,12 @@ namespace Xwt.GtkBackend
 		{
 			var tl = (PangoBackend) backend;
 			tl.Attributes.AddAttribute (tl.TextIndexer, attribute);
+		}
+
+		public override void ClearAttributes (object backend)
+		{
+			var tl = (PangoBackend) backend;
+			tl.ClearAttributes ();
 		}
 
 		public override int GetIndexFromCoordinates (object backend, double x, double y)

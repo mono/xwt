@@ -133,6 +133,10 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public override void ClearAttributes (object backend)
+		{
+		}
+
 		public override void DisposeBackend (object backend)
 		{
 		}

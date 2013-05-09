@@ -177,6 +177,10 @@ namespace Xwt.Mac
 		public override void AddAttribute (object backend, TextAttribute attribute)
 		{
 		}
+
+		public override void ClearAttributes (object backend)
+		{
+		}
 		
 		public override int GetIndexFromCoordinates (object backend, double x, double y)
 		{
