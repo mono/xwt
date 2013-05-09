@@ -244,11 +244,31 @@ namespace Xwt
 					return defaultColSpacing;
 			}
 		}
+
+		TablePlacement[] VisibleChildren ()
+		{
+			TablePlacement[] result = new TablePlacement[children.Count];
+
+			int j = 0;
+			for (int i = 0; i < children.Count; i++) {
+				var item = children[i];
+				if (item.Child.Visible) {
+					result[j] = item;
+					j++;
+				}
+			}
+
+			if (j != children.Count - 1) {
+				Array.Resize (ref result, j);
+			}
+
+			return result;
+		}
 		
 		void CalcDefaultSizes (SizeRequestMode mode, bool calcHeights, out TablePlacement[] visibleChildren, out Dictionary<int,WidgetSize> fixedSizesByCell, out HashSet<int> cellsWithExpand, out WidgetSize[] sizes, out double spacing)
 		{
 			bool useLengthConstraint = mode == SizeRequestMode.HeightForWidth && calcHeights || mode == SizeRequestMode.WidthForHeight && !calcHeights;
-			visibleChildren = children.Where (b => b.Child.Visible).ToArray ();
+			visibleChildren = VisibleChildren ();
 			int lastCell = 0;
 
 			fixedSizesByCell = new Dictionary<int, WidgetSize> ();
@@ -349,44 +369,47 @@ namespace Xwt
 			// 60px for column 2 and 60px for column 3. So the widgets are overlapping at column 2. Since A requires at least 100px in column 2, it means that B can assume
 			// that it will have 100px available in column 2, which means 40px more than it requested. Those extra 40px can then be substracted from the 60px that
 			// it required for column 3.
-			
+
 			foreach (var n in cellsWithWidget) {
-				// Get a list of all widgets that cover this cell
-				var colCells = widgetsToAdjust.Where (bp => GetStartAttach (bp, calcHeights) <= n && GetEndAttach (bp, calcHeights) > n).ToArray ();
 				WidgetSize maxv = new WidgetSize (0);
 				TablePlacement maxtMin = null;
 				TablePlacement maxtNatural = null;
-				
+
 				// Find the widget that requires the maximum size for this cell
-				foreach (var bp in colCells) {
-					WidgetSize cv = growSizes[bp][n - GetStartAttach (bp, calcHeights)];
-					if (cv.MinSize > maxv.MinSize) {
-						maxv.MinSize = cv.MinSize;
-						maxtMin = bp;
-					}
-					if (cv.NaturalSize > maxv.NaturalSize) {
-						maxv.NaturalSize = cv.NaturalSize;
-						maxtNatural = bp;
+				foreach (var bp in widgetsToAdjust) {
+					// could be expressed as where clause, but this is faster and performance matters here
+					if (GetStartAttach (bp, calcHeights) <= n && GetEndAttach (bp, calcHeights) > n) {
+						WidgetSize cv = growSizes[bp][n - GetStartAttach (bp, calcHeights)];
+						if (cv.MinSize > maxv.MinSize) {
+							maxv.MinSize = cv.MinSize;
+							maxtMin = bp;
+						}
+						if (cv.NaturalSize > maxv.NaturalSize) {
+							maxv.NaturalSize = cv.NaturalSize;
+							maxtNatural = bp;
+						}
 					}
 				}
-				
+
 				// Adjust the required size of all widgets of the cell (excluding the widget with the max size)
-				foreach (var bp in colCells) {
-					WidgetSize[] widgetGrows = growSizes[bp];
-					int cellIndex = n - GetStartAttach (bp, calcHeights);
-					if (bp != maxtMin) {
-						double cv = widgetGrows[cellIndex].MinSize;
-						// splitExtraSpace is the additional space that the widget can take from this cell (because there is a widget
-						// that is requiring more space), split among all other cells of the widget
-						double splitExtraSpace = (maxv.MinSize - cv) / (widgetGrows.Length - 1);
-						for (int i=0; i<widgetGrows.Length; i++)
-							widgetGrows[i].MinSize -= splitExtraSpace;
-					}
-					if (bp != maxtNatural) {
-						double cv = widgetGrows[cellIndex].NaturalSize;
-						double splitExtraSpace = (maxv.NaturalSize - cv) / (widgetGrows.Length - 1);
-						for (int i=0; i<widgetGrows.Length; i++)
-							widgetGrows[i].NaturalSize -= splitExtraSpace;
+				foreach (var bp in widgetsToAdjust) {
+					if (GetStartAttach (bp, calcHeights) <= n && GetEndAttach (bp, calcHeights) > n) {
+						var widgetGrows = growSizes[bp];
+						int cellIndex = n - GetStartAttach (bp, calcHeights);
+						if (bp != maxtMin) {
+							double cv = widgetGrows[cellIndex].MinSize;
+							// splitExtraSpace is the additional space that the widget can take from this cell (because there is a widget
+							// that is requiring more space), split among all other cells of the widget
+							double splitExtraSpace = (maxv.MinSize - cv) / (widgetGrows.Length - 1);
+							for (int i=0; i<widgetGrows.Length; i++)
+								widgetGrows[i].MinSize -= splitExtraSpace;
+						}
+						if (bp != maxtNatural) {
+							double cv = widgetGrows[cellIndex].NaturalSize;
+							double splitExtraSpace = (maxv.NaturalSize - cv) / (widgetGrows.Length - 1);
+							for (int i=0; i<widgetGrows.Length; i++)
+								widgetGrows[i].NaturalSize -= splitExtraSpace;
+						}
 					}
 				}
 			}
