@@ -30,6 +30,22 @@ namespace Xwt.Backends
 {
 	public static class ExtensionMethods
 	{
+		public static object GetBackend (this XwtComponent obj)
+		{
+			if (obj != null)
+				return ((IFrontend)obj).Backend;
+			else
+				return null;
+		}
+
+		public static object GetBackend (this XwtObject obj)
+		{
+			if (obj != null)
+				return ((IFrontend)obj).Backend;
+			else
+				return null;
+		}
+
 		public static ImageDescription ToImageDescription (this Image img)
 		{
 			return img != null ? img.ImageDescription : ImageDescription.Null;

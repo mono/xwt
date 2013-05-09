@@ -95,7 +95,7 @@ namespace Xwt
 		
 		internal DragStartData GetStartData ()
 		{
-			return new DragStartData (data, action, Toolkit.GetBackend (image.ToBitmap ()), hotX, hotY);
+			return new DragStartData (data, action, image.ToBitmap ().GetBackend (), hotX, hotY);
 		}
 		
 	}
