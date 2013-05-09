@@ -42,7 +42,7 @@ namespace Xwt.WPFBackend.Utilities
 			if (image == null)
 				return null;
 
-			return ToolkitEngineBackend.GetImageDescription (image);
+			return image.ToImageDescription ();
 		}
 
 		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)

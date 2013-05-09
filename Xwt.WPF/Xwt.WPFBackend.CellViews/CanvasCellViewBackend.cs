@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 using System;
 using System.Windows;
+using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
@@ -53,9 +54,9 @@ namespace Xwt.WPFBackend
 		 DependencyProperty.Register("CellView", typeof(CanvasCellView),
 		 typeof(CanvasCellViewBackend), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnCellViewChanged)));
 
-		public CanvasCellView CellView
+		public ICanvasCellViewFrontend CellView
 		{
-			get { return (CanvasCellView)GetValue(CellViewProperty); }
+			get { return (ICanvasCellViewFrontend)GetValue (CellViewProperty); }
 			set { SetValue(CellViewProperty, value); }
 		}
 
@@ -75,23 +76,21 @@ namespace Xwt.WPFBackend
 		protected override void OnRender(System.Windows.Media.DrawingContext dc)
 		{
 			base.OnRender(dc);
-			var r = (ICanvasCellRenderer)CellView;
-			((CellView)CellView).Initialize(this);
-			r.ApplicationContext.InvokeUserCode(delegate
+			CellView.Initialize(this);
+			CellView.ApplicationContext.InvokeUserCode (delegate
 			{
 				DrawingContext ctx = new DrawingContext(dc, 1);
-				r.Draw(ctx, new Rectangle(this.RenderTransform.Value.OffsetX, this.RenderTransform.Value.OffsetY, this.RenderSize.Width, this.RenderSize.Height));
+				CellView.Draw (ctx, new Rectangle (this.RenderTransform.Value.OffsetX, this.RenderTransform.Value.OffsetY, this.RenderSize.Width, this.RenderSize.Height));
 			});
 		}
 
 		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			var r = (ICanvasCellRenderer)CellView;
 			var size = new System.Windows.Size();
-			((CellView)CellView).Initialize(this);
-			r.ApplicationContext.InvokeUserCode(delegate
+			CellView.Initialize (this);
+			CellView.ApplicationContext.InvokeUserCode (delegate
 			{
-				var s = r.GetRequiredSize();
+				var s = CellView.GetRequiredSize ();
 				size = new System.Windows.Size(s.Width, s.Height);
 			});
 			if (size.Width > constraint.Width)
