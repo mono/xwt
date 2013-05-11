@@ -163,17 +163,14 @@ namespace Xwt.Drawing
 		}
 		
 		public bool HasFixedSize {
-			get { return !Size.IsZero; }
+			get { return !requestedSize.IsZero || !ToolkitEngine.ImageBackendHandler.HasMultipleSizes (Backend); }
 		}
 
 		public Size Size {
 			get {
 				if (!requestedSize.IsZero)
 					return requestedSize;
-				if (!ToolkitEngine.ImageBackendHandler.HasMultipleSizes (Backend))
-					return ToolkitEngine.ImageBackendHandler.GetSize (Backend);
-				else
-					return Size.Zero;
+				return GetDefaultSize ();
 			}
 			internal set {
 				requestedSize = value;
@@ -225,21 +222,13 @@ namespace Xwt.Drawing
 			};
 		}
 
-		Size DefaultSize {
-			get {
-				if (!requestedSize.IsZero)
-					return requestedSize;
-				else
-					return GetDefaultSize ();
-			}
-		}
-
 		internal Size GetFixedSize ()
 		{
-			var size = !Size.IsZero ? Size : DefaultSize;
-			if (size.IsZero)
-				throw new InvalidOperationException ("Image size has not been set and the image doesn't have a default size");
-			return size;
+			if (!requestedSize.IsZero)
+				return requestedSize;
+			if (!ToolkitEngine.ImageBackendHandler.HasMultipleSizes (Backend))
+				return ToolkitEngine.ImageBackendHandler.GetSize (Backend);
+			throw new InvalidOperationException ("Image size has not been set and the image doesn't have a default size");
 		}
 		
 		public Image WithBoxSize (double maxWidth, double maxHeight)
