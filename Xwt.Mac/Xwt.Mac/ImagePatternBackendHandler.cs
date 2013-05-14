@@ -37,7 +37,7 @@ namespace Xwt.Mac
 		{
 			NSImage nimg = (NSImage) img;
 			RectangleF empty = RectangleF.Empty;
-			CGImage cgimg = nimg.AsCGImage (empty, null, null);
+			CGImage cgimg = nimg.AsCGImage (ref empty, null, null);
 			return new ImagePatternInfo () {
 				Image = cgimg
 			};

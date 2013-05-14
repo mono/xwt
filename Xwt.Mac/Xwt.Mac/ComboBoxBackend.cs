@@ -121,14 +121,14 @@ namespace Xwt.Mac
 			NSMenuItem mi = Widget.ItemAtIndex (e.Row);
 			if (EventSink.RowIsSeparator (e.Row)) {
 				if (!mi.IsSeparatorItem) {
-                    Widget.Menu.InsertItematIndex(NSMenuItem.SeparatorItem, e.Row);
+					Widget.Menu.InsertItem (NSMenuItem.SeparatorItem, e.Row);
 					Widget.Menu.RemoveItemAt (e.Row + 1);
 				}
 			}
 			else {
 				if (mi.IsSeparatorItem) {
 					mi = new NSMenuItem ();
-					Widget.Menu.InsertItematIndex (mi, e.Row);
+					Widget.Menu.InsertItem (mi, e.Row);
 					Widget.Menu.RemoveItemAt (e.Row + 1);
 				}
 				UpdateItem (mi, e.Row);
@@ -153,7 +153,7 @@ namespace Xwt.Mac
 				mi = new NSMenuItem ();
 				UpdateItem (mi, e.Row);
 			}
-			Widget.Menu.InsertItematIndex (mi, e.Row);
+			Widget.Menu.InsertItem (mi, e.Row);
 			Widget.SynchronizeTitleAndSelectedItem ();
 			ResetFittingSize ();
 		}
