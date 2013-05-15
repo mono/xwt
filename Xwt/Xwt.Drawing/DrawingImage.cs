@@ -45,6 +45,11 @@ namespace Xwt.Drawing
 		protected virtual void OnDraw (Context ctx, Rectangle bounds)
 		{
 		}
+
+		protected override Size GetDefaultSize ()
+		{
+			return Size.Zero;
+		}
 	}
 }
 

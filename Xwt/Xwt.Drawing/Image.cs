@@ -52,7 +52,11 @@ namespace Xwt.Drawing
 		{
 			Init ();
 		}
-		
+
+		/// <summary>
+		/// Creates a new image that is a copy of another image
+		/// </summary>
+		/// <param name="image">Image.</param>
 		public Image (Image image): base (image.Backend, image.ToolkitEngine)
 		{
 			NativeRef = image.NativeRef;
@@ -95,6 +99,18 @@ namespace Xwt.Drawing
 			}
 		}
 
+		/// <summary>
+		/// Loads an image from a resource
+		/// </summary>
+		/// <returns>An image</returns>
+		/// <param name="type">Type which identifies the assembly from which to load the image</param>
+		/// <param name="resource">Resource name</param>
+		/// <remarks>
+		/// This method will look for alternative versions of the image with different resolutions.
+		/// For example, if a resource is named "foo.png", this method will load
+		/// other resources with the name "foo@XXX.png", where XXX can be any arbitrary string. For example "foo@2x.png".
+		/// Each of those resources will be considered different versions of the same image.
+		/// </remarks>
 		public static Image FromResource (Type type, string resource)
 		{
 			if (type == null)
@@ -104,7 +120,19 @@ namespace Xwt.Drawing
 
 			return FromResource (type.Assembly, resource);
 		}
-		
+
+		/// <summary>
+		/// Loads an image from a resource
+		/// </summary>
+		/// <returns>An image</returns>
+		/// <param name="assembly">The assembly from which to load the image</param>
+		/// <param name="resource">Resource name</param>
+		/// <remarks>
+		/// This method will look for alternative versions of the image with different resolutions.
+		/// For example, if a resource is named "foo.png", this method will load
+		/// other resources with the name "foo@XXX.png", where XXX can be any arbitrary string. For example "foo@2x.png".
+		/// Each of those resources will be considered different versions of the same image.
+		/// </remarks>
 		public static Image FromResource (Assembly assembly, string resource)
 		{
 			if (assembly == null)
@@ -119,6 +147,8 @@ namespace Xwt.Drawing
 			var img = toolkit.ImageBackendHandler.LoadFromResource (assembly, resource);
 			if (img == null)
 				throw new InvalidOperationException ("Resource not found: " + resource);
+
+			var reqSize = toolkit.ImageBackendHandler.GetSize (img);
 
 			List<object> altImages = new List<object> ();
 			foreach (var r in assembly.GetManifestResourceNames ()) {
@@ -136,7 +166,9 @@ namespace Xwt.Drawing
 				altImages.Insert (0, img);
 				img = toolkit.ImageBackendHandler.CreateMultiSizeImage (altImages);
 			}
-			return new Image (img, toolkit);
+			return new Image (img, toolkit) {
+				requestedSize = reqSize
+			};
 		}
 		
 		public static Image FromFile (string file)
@@ -168,12 +200,7 @@ namespace Xwt.Drawing
 
 		public Size Size {
 			get {
-				if (!requestedSize.IsZero)
-					return requestedSize;
-				if (!ToolkitEngine.ImageBackendHandler.HasMultipleSizes (Backend))
-					return ToolkitEngine.ImageBackendHandler.GetSize (Backend);
-				else
-					return Size.Zero;
+				return !requestedSize.IsZero ? requestedSize : GetDefaultSize ();
 			}
 			internal set {
 				requestedSize = value;
@@ -225,18 +252,9 @@ namespace Xwt.Drawing
 			};
 		}
 
-		Size DefaultSize {
-			get {
-				if (!requestedSize.IsZero)
-					return requestedSize;
-				else
-					return GetDefaultSize ();
-			}
-		}
-
 		internal Size GetFixedSize ()
 		{
-			var size = !Size.IsZero ? Size : DefaultSize;
+			var size = Size;
 			if (size.IsZero)
 				throw new InvalidOperationException ("Image size has not been set and the image doesn't have a default size");
 			return size;
