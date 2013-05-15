@@ -53,7 +53,7 @@ namespace Xwt.GtkBackend
 
 		public static Gtk.CellRenderer CreateCellRenderer (ApplicationContext actx, ICellRendererTarget col, object target, ICellViewFrontend view, Gtk.TreeModel model)
 		{
-			if (view is ICellViewFrontend) {
+			if (view is ITextCellViewFrontend) {
 				var cr = new CustomCellRendererText ((ITextCellViewFrontend)view);
 				col.PackStart (target, cr, false);
 				col.SetCellDataFunc (target, cr, (cell_layout, cell, treeModel, iter) => cr.LoadData (treeModel, iter));
