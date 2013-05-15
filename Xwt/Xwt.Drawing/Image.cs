@@ -193,11 +193,24 @@ namespace Xwt.Drawing
 		{
 			ToolkitEngine.ImageBackendHandler.SaveToStream (ToBitmap ().Backend, stream, fileType);
 		}
-		
+
+		/// <summary>
+		/// Gets a value indicating whether this image has fixed size.
+		/// </summary>
+		/// <value><c>true</c> if this image has fixed size; otherwise, <c>false</c>.</value>
+		/// <remarks>
+		/// Some kinds of images such as vector images or multiple-size icons don't have a fixed size,
+		/// and a specific size has to be chosen before they can be used. A size can be chosen by using
+		/// the WithSize method.
+		/// </remarks>
 		public bool HasFixedSize {
 			get { return !Size.IsZero; }
 		}
 
+		/// <summary>
+		/// Gets the size of the image
+		/// </summary>
+		/// <value>The size of the image, or Size.Zero if the image doesn't have an intrinsic size</value>
 		public Size Size {
 			get {
 				return !requestedSize.IsZero ? requestedSize : GetDefaultSize ();
@@ -206,7 +219,14 @@ namespace Xwt.Drawing
 				requestedSize = value;
 			}
 		}
-		
+
+		/// <summary>
+		/// Applies an alpha filter to the image
+		/// </summary>
+		/// <returns>A new image with the alpha filter applied</returns>
+		/// <param name="alpha">Alpha to apply</param>
+		/// <remarks>This is a lightweight operation. The alpha filter is applied when the image is rendered.
+		/// The method doesn't make a copy of the image data.</remarks>
 		public Image WithAlpha (double alpha)
 		{
 			return new Image (this) {
@@ -214,14 +234,33 @@ namespace Xwt.Drawing
 				requestedAlpha = alpha
 			};
 		}
-		
+
+		/// <summary>
+		/// Retuns a copy of the image with a specific size
+		/// </summary>
+		/// <returns>A new image with the new size</returns>
+		/// <param name="width">Width.</param>
+		/// <param name="height">Height.</param>
+		/// <remarks>
+		/// This is a lightweight operation. The image is scaled when it is rendered.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
 		public Image WithSize (double width, double height)
 		{
 			return new Image (this) {
 				requestedSize = new Size (width, height)
 			};
 		}
-		
+
+		/// <summary>
+		/// Retuns a copy of the image with a specific size
+		/// </summary>
+		/// <returns>A new image with the new size</returns>
+		/// <param name="size">The size.</param>
+		/// <remarks>
+		/// This is a lightweight operation. The image is scaled when it is rendered.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
 		public Image WithSize (Size size)
 		{
 			return new Image (this) {
@@ -229,6 +268,15 @@ namespace Xwt.Drawing
 			};
 		}
 		
+		/// <summary>
+		/// Retuns a copy of the image with a specific size
+		/// </summary>
+		/// <returns>A new image with the new size</returns>
+		/// <param name="squaredSize">Width and height of the image (the image is expected to be squared)</param>
+		/// <remarks>
+		/// This is a lightweight operation. The image is scaled when it is rendered.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
 		public Image WithSize (double squaredSize)
 		{
 			return new Image (this) {
@@ -236,6 +284,15 @@ namespace Xwt.Drawing
 			};
 		}
 		
+		/// <summary>
+		/// Retuns a copy of the image with a specific size
+		/// </summary>
+		/// <returns>A new image with the new size</returns>
+		/// <param name="size">New size</param>
+		/// <remarks>
+		/// This is a lightweight operation. The image is scaled when it is rendered.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
 		public Image WithSize (IconSize size)
 		{
 			Size s;
@@ -259,7 +316,17 @@ namespace Xwt.Drawing
 				throw new InvalidOperationException ("Image size has not been set and the image doesn't have a default size");
 			return size;
 		}
-		
+
+		/// <summary>
+		/// Retuns a copy of the image with a size that fits the provided size limits
+		/// </summary>
+		/// <returns>The image</returns>
+		/// <param name="maxWidth">Max width.</param>
+		/// <param name="maxHeight">Max height.</param>
+		/// <remarks>
+		/// This is a lightweight operation. The image is scaled when it is rendered.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
 		public Image WithBoxSize (double maxWidth, double maxHeight)
 		{
 			var size = GetFixedSize ();
@@ -270,16 +337,43 @@ namespace Xwt.Drawing
 			};
 		}
 		
+		/// <summary>
+		/// Retuns a copy of the image with a size that fits the provided size limits
+		/// </summary>
+		/// <returns>The image</returns>
+		/// <param name="maxSize">Max width and height (the image is expected to be squared)</param>
+		/// <remarks>
+		/// This is a lightweight operation. The image is scaled when it is rendered.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
 		public Image WithBoxSize (double maxSize)
 		{
 			return WithBoxSize (maxSize, maxSize);
 		}
 		
+		/// <summary>
+		/// Retuns a copy of the image with a size that fits the provided size limits
+		/// </summary>
+		/// <returns>The image</returns>
+		/// <param name="size">Max width and height</param>
+		/// <remarks>
+		/// This is a lightweight operation. The image is scaled when it is rendered.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
 		public Image WithBoxSize (Size size)
 		{
 			return WithBoxSize (size.Width, size.Height);
 		}
 		
+		/// <summary>
+		/// Retuns a scaled copy of the image
+		/// </summary>
+		/// <returns>The image</returns>
+		/// <param name="scale">Scale to apply to the image size</param>
+		/// <remarks>
+		/// This is a lightweight operation. The image is scaled when it is rendered.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
 		public Image Scale (double scale)
 		{
 			if (!HasFixedSize)
@@ -292,6 +386,16 @@ namespace Xwt.Drawing
 			};
 		}
 		
+		/// <summary>
+		/// Retuns a scaled copy of the image
+		/// </summary>
+		/// <returns>The image</returns>
+		/// <param name="scaleX">Scale to apply to the width of the image</param>
+		/// <param name="scaleY">Scale to apply to the height of the image</param>
+		/// <remarks>
+		/// This is a lightweight operation. The image is scaled when it is rendered.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
 		public Image Scale (double scaleX, double scaleY)
 		{
 			if (!HasFixedSize)
@@ -304,12 +408,23 @@ namespace Xwt.Drawing
 			};
 		}
 
+		/// <summary>
+		/// Converts the image to a bitmap
+		/// </summary>
+		/// <returns>The bitmap.</returns>
+		/// <param name="format">Bitmap format</param>
 		public BitmapImage ToBitmap (ImageFormat format = ImageFormat.ARGB32)
 		{
 			var s = GetFixedSize ();
 			return ToBitmap ((int)s.Width, (int)s.Height);
 		}
 
+		/// <summary>
+		/// Converts the image to a bitmap
+		/// </summary>
+		/// <returns>The bitmap.</returns>
+		/// <param name="renderTarget">Widget to be used as reference for determining the resolution of the bitmap</param>
+		/// <param name="format">Bitmap format</param>
 		public BitmapImage ToBitmap (Widget renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
 			if (renderTarget.ParentWindow == null)
@@ -317,17 +432,36 @@ namespace Xwt.Drawing
 			return ToBitmap (renderTarget.ParentWindow, format);
 		}
 
+		/// <summary>
+		/// Converts the image to a bitmap
+		/// </summary>
+		/// <returns>The bitmap.</returns>
+		/// <param name="renderTarget">Window to be used as reference for determining the resolution of the bitmap</param>
+		/// <param name="format">Bitmap format</param>
 		public BitmapImage ToBitmap (WindowFrame renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
 			return ToBitmap (renderTarget.Screen, format);
 		}
 
+		/// <summary>
+		/// Converts the image to a bitmap
+		/// </summary>
+		/// <returns>The bitmap.</returns>
+		/// <param name="renderTarget">Screen to be used as reference for determining the resolution of the bitmap</param>
+		/// <param name="format">Bitmap format</param>
 		public BitmapImage ToBitmap (Screen renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
 			var s = GetFixedSize ();
 			return ToBitmap ((int)(s.Width * renderTarget.ScaleFactor), (int)(s.Height * renderTarget.ScaleFactor), format);
 		}
 
+		/// <summary>
+		/// Converts the image to a bitmap
+		/// </summary>
+		/// <returns>The bitmap.</returns>
+		/// <param name="pixelWidth">Width of the image in real pixels</param>
+		/// <param name="pixelHeight">Height of the image in real pixels</param>
+		/// <param name="format">Bitmap format</param>
 		public BitmapImage ToBitmap (int pixelWidth, int pixelHeight, ImageFormat format = ImageFormat.ARGB32)
 		{
 			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, pixelWidth, pixelHeight, format);
