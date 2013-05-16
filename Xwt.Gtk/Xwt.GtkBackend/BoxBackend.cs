@@ -117,6 +117,7 @@ namespace Xwt.GtkBackend
 		protected override void OnAdded (Gtk.Widget widget)
 		{
 			widget.Parent = this;
+			QueueResize ();
 		}
 		
 		protected override void OnRemoved (Gtk.Widget widget)
