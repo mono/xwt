@@ -129,7 +129,8 @@ namespace Xwt.GtkBackend
 				}
 				widget = value;
 				Widget.ParentSet += HandleParentSet;
-				SubscribeAllGdkEvents ();
+				if (Frontend != null)
+					SubscribeAllGdkEvents ();
 			}
 		}
 		
@@ -393,7 +394,7 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				customBackgroundColor = value;
-				AllocEventBox (visibleWindow: true);
+				AllocEventBox ();
 				EventsRootWidget.ModifyBg (Gtk.StateType.Normal, Util.ToGdkColor (value));
 			}
 		}
@@ -449,7 +450,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public void AllocEventBox (bool visibleWindow = false)
+		public void AllocEventBox ()
 		{
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
@@ -459,7 +460,6 @@ namespace Xwt.GtkBackend
 				eventBox = new Gtk.EventBox ();
 				eventBox.Visible = Widget.Visible;
 				eventBox.Sensitive = Widget.Sensitive;
-				eventBox.VisibleWindow = visibleWindow;
 				if (alignment != null) {
 					alignment.Remove (alignment.Child);
 					alignment.Add (eventBox);
@@ -499,13 +499,12 @@ namespace Xwt.GtkBackend
 		{
 			// Retuns all widgets in this widget hierarchy that have gdk event subscriptions (including itself)
 
-			if (!EventsRootWidget.IsNoWindow)
-				yield break;
-
 			if ((subscribedGdkEvents & gdkEvents) != 0)
 				yield return this;
 
 			foreach (WidgetBackend c in Frontend.Surface.Children.Select (cw => cw.GetBackend ())) {
+				if (!c.EventsRootWidget.IsNoWindow)
+					continue;
 				foreach (var bc in c.GetAllWidgetsWithGdkEvents ())
 					yield return bc;
 			}
@@ -529,7 +528,7 @@ namespace Xwt.GtkBackend
 			var p = new Gdk.Point (x, y);
 			WidgetBackend target = null;
 			foreach (var c in eventTargets) {
-				if (c.Widget.Allocation.Contains (p) && (target == null || IsAncestor (target.Frontend, c.Frontend)))
+				if (c.Widget.Allocation.Contains (p) && (target == null || IsAncestor (target.Frontend, c.Frontend)) && c.Widget.IsRealized)
 					target = c;
 			}
 			return target;
@@ -588,14 +587,18 @@ namespace Xwt.GtkBackend
 		void SubscribeGdkEvents (WidgetBackend childBackend)
 		{
 			if (childBackend.subscribedGdkEvents == default (WidgetEvent)) {
-				if (eventTargets != null)
+				if (eventTargets != null) {
+					childBackend.eventContainer = null;
 					eventTargets.Remove (childBackend);
+				}
 			} else {
 				if (eventTargets == null) {
 					eventTargets = new List<WidgetBackend> ();
 					eventTargets.Add (childBackend);
+					childBackend.eventContainer = this;
 				} else if (!eventTargets.Contains (childBackend)) {
 					eventTargets.Add (childBackend);
+					childBackend.eventContainer = this;
 				}
 			}
 			UpdateGdkEventSubscriptions ();
