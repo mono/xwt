@@ -493,6 +493,8 @@ namespace Xwt.GtkBackend
 				foreach (var bk in GetAllWidgetsWithGdkEvents ())
 					ec.SubscribeGdkEvents (bk);
 			}
+			if (!EventsRootWidget.IsNoWindow)
+				UpdateGdkEventSubscriptions ();
 		}
 
 		IEnumerable<WidgetBackend> GetAllWidgetsWithGdkEvents ()
@@ -982,8 +984,10 @@ namespace Xwt.GtkBackend
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
 				return;
-			foreach (var bk in eventTargets)
-				bk.SetMouseOver (false);
+			if (eventTargets != null) {
+				foreach (var bk in eventTargets)
+					bk.SetMouseOver (false);
+			}
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnMouseExited ();
 			});
@@ -1031,8 +1035,13 @@ namespace Xwt.GtkBackend
 
 		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
 		{
+			HandleMotionNotifyEvent (args);
+		}
+
+		void HandleMotionNotifyEvent (Gtk.MotionNotifyEventArgs args)
+		{
 			if (currentChildCapture != null) {
-				currentChildCapture.HandleMotionNotifyEvent (o, args);
+				currentChildCapture.HandleMotionNotifyEvent (args);
 				return;
 			}
 
@@ -1053,7 +1062,7 @@ namespace Xwt.GtkBackend
 					if (oldWidgetsWithMouseOver != null)
 						oldWidgetsWithMouseOver.Remove (p);
 				}
-				target.HandleMotionNotifyEvent (o, args);
+				target.HandleMotionNotifyEvent (args);
 			}
 
 			if (oldWidgetsWithMouseOver != null) {
