@@ -28,6 +28,7 @@ using System;
 
 using Xwt.Backends;
 using Xwt.CairoBackend;
+using Gdk;
 
 namespace Xwt.GtkBackend
 {
@@ -225,6 +226,16 @@ namespace Xwt.GtkBackend
 			}
 			
 			Gdk.Threads.Leave();
+		}
+
+		public override object RenderWidget (Widget widget)
+		{
+			var w = ((WidgetBackend)widget.GetBackend ()).Widget;
+			Gdk.Window win = w.GdkWindow;
+			if (win != null && win.IsViewable)
+				return new GtkImage (Gdk.Pixbuf.FromDrawable (win, Colormap.System, w.Allocation.X, w.Allocation.Y, 0, 0, w.Allocation.Width, w.Allocation.Height));
+			else
+				throw new InvalidOperationException ();
 		}
 	}
 	

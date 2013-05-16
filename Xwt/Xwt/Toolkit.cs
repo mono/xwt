@@ -384,6 +384,11 @@ namespace Xwt
 			throw new NotImplementedException ();
 		}
 
+		public Image RenderWidget (Widget widget)
+		{
+			return new Image (backend.RenderWidget (widget));
+		}
+
 		internal Image GetStockIcon (string id)
 		{
 			Image img;

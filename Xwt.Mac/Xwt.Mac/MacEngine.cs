@@ -207,6 +207,13 @@ namespace Xwt.Mac
 			}
 			p.Dispose ();
 		}
+
+		public override object RenderWidget (Widget w)
+		{
+			var view = ((ViewBackend)w.GetBackend ()).Widget;
+			view.LockFocus ();
+			return new NSImage (view.DataWithPdfInsideRect (view.Bounds));
+		}
 	}
 
 	public class AppDelegate : NSApplicationDelegate

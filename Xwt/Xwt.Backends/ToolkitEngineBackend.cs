@@ -281,6 +281,16 @@ namespace Xwt.Backends
 		/// <remarks>This funciton is used to determine if a widget is a child of another non-XWT widget
 		/// </remarks>
 		public abstract bool HasNativeParent (Widget w);
+
+		/// <summary>
+		/// Renders a widget into a bitmap
+		/// </summary>
+		/// <param name="w">A widget</param>
+		/// <returns>An image backend</returns>
+		public virtual object RenderWidget (Widget w)
+		{
+			throw new NotSupportedException ();
+		}
 	}
 }
 

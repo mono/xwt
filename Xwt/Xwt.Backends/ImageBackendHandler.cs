@@ -111,6 +111,10 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The size of the image, or a size of (0,0) if there is no known size for the image</returns>
 		/// <param name="handle">Image handle</param>
+		/// <remarks>
+		/// This method should return a size of (0,0) if the image doesn't have an intrinsic size.
+		/// For example: if the image is a vecor image, or if is an icon composed of images of different sizes.
+		/// </remarks>
 		public abstract Size GetSize (object handle);
 		
 		public abstract object CopyBitmap (object handle);

@@ -173,6 +173,7 @@
     <Compile Include="Samples\ScreensSample.cs" />
     <Compile Include="Samples\ImageScaling.cs" />
     <Compile Include="Samples\RadioButtonSample.cs" />
+    <Compile Include="Samples\WidgetRendering.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
