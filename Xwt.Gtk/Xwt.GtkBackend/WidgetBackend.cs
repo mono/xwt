@@ -499,7 +499,7 @@ namespace Xwt.GtkBackend
 		{
 			// Retuns all widgets in this widget hierarchy that have gdk event subscriptions (including itself)
 
-			if ((subscribedGdkEvents & gdkEvents) != 0)
+			if ((subscribedGdkEvents & gdkEvents) != 0 && Widget != null && Widget.IsNoWindow)
 				yield return this;
 
 			foreach (WidgetBackend c in Frontend.Surface.Children.Select (cw => cw.GetBackend ())) {
