@@ -100,6 +100,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<ISegmentedButtonBackend, SegmentedButtonBackend> ();
 			RegisterBackend<ISliderBackend, SliderBackend> ();
 			RegisterBackend<IRadioButtonBackend, RadioButtonBackend> ();
+			RegisterBackend<IScrollbarBackend, ScrollbarBackend> ();
 		}
 
 		public override void RunApplication ()
