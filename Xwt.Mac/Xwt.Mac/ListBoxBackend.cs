@@ -31,6 +31,7 @@ namespace Xwt.Mac
 	public class ListBoxBackend: ListViewBackend, IListBoxBackend
 	{
 		ListViewColumn column = new ListViewColumn ();
+		object columnHandle;
 
 		public ListBoxBackend ()
 		{
@@ -39,7 +40,10 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			AddColumn (column);
+			HeadersVisible = false;
+			columnHandle = AddColumn (column);
+			VerticalScrollPolicy = ScrollPolicy.Automatic;
+			HorizontalScrollPolicy = ScrollPolicy.Automatic;
 		}
 
 		public void SetViews (CellViewCollection views)
@@ -47,6 +51,7 @@ namespace Xwt.Mac
 			column.Views.Clear ();
 			foreach (var v in views)
 				column.Views.Add (v);
+			UpdateColumn (column, columnHandle, ListViewColumnChange.Cells);
 		}
 	}
 }

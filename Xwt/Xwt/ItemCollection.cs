@@ -50,6 +50,14 @@ namespace Xwt
 			store = new ListStore (labelField, dataField);
 		}
 		
+		internal DataField<string> LabelField {
+			get { return labelField; }
+		}
+
+		internal DataField<object> DataField {
+			get { return dataField; }
+		}
+
 		public void Add (object item, string label)
 		{
 			Add (new ItemWithLabel () { Item = item, Label = label });
