@@ -50,19 +50,19 @@ namespace Samples
 				LowerValue = 0,
 				UpperValue = 300,
 				PageIncrement = 10,
-				PageSize = 10,
+				PageSize = 50,
 				StepIncrement = 1
 			};
-			Attach (vscroll, 1, 0, AttachOptions.Fill, AttachOptions.Fill);
+			Attach (vscroll, 1, 0, AttachOptions.Fill, AttachOptions.Expand|AttachOptions.Fill);
 			
 			hscroll = new HScrollbar () {
 				LowerValue = 0,
 				UpperValue = 300,
 				PageIncrement = 10,
-				PageSize = 10,
+				PageSize = 50,
 				StepIncrement = 1
 			};
-			Attach (hscroll, 0, 1, AttachOptions.Fill, AttachOptions.Fill);
+			Attach (hscroll, 0, 1, AttachOptions.Expand|AttachOptions.Fill, AttachOptions.Fill);
 
 			vscroll.ValueChanged += HandleValueChanged;
 			hscroll.ValueChanged += HandleValueChanged;
