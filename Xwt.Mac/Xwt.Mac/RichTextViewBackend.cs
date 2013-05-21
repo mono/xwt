@@ -40,6 +40,16 @@ namespace Xwt.Mac
 {
 	public class RichTextViewBackend : ViewBackend <NSTextView, IRichTextViewEventSink>, IRichTextViewBackend
 	{
+		NSFont font;
+
+		public override object Font {
+			get { return base.Font; }
+			set {
+ 				font = value as NSFont;
+				base.Font = value;
+			}
+		}
+
 		public RichTextViewBackend ()
 		{
 		}
@@ -83,7 +93,9 @@ namespace Xwt.Mac
 
 		public IRichTextBuffer CreateBuffer ()
 		{
-			return new MacRichTextBuffer (Widget.Font);
+			// Use cached font since Widget.Font size increases for each LoadText... It has to do
+			// with the 'style' attribute for the 'body' element - not sure why that happens
+			return new MacRichTextBuffer (font ?? Widget.Font);
 		}
 		
 		public void SetBuffer (IRichTextBuffer buffer)
@@ -227,15 +239,18 @@ namespace Xwt.Mac
 
 			xmlWriter.WriteDocType ("html", "-//W3C//DTD XHTML 1.0", "Strict//EN", null);
 			xmlWriter.WriteStartElement ("html");
-			xmlWriter.WriteAttributeString ("style", String.Format ("font-family: {0}; font-size: {1}pt", fontFamily, fontSize));
 			xmlWriter.WriteStartElement ("meta");
 			xmlWriter.WriteAttributeString ("http-equiv", "Content-Type");
 			xmlWriter.WriteAttributeString ("content", "text/html; charset=utf-8");
+			xmlWriter.WriteEndElement ();
+			xmlWriter.WriteStartElement ("body");
+			xmlWriter.WriteAttributeString ("style", String.Format ("font-family: {0}; font-size: {1}", fontFamily, fontSize));
 		}
 
 		public NSAttributedString ToAttributedString ()
 		{
-			xmlWriter.WriteEndElement ();
+			xmlWriter.WriteEndElement (); // body
+			xmlWriter.WriteEndElement (); // html
 			xmlWriter.Flush ();
 			if (text == null || text.Length == 0)
 				return new NSAttributedString (String.Empty);
