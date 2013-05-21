@@ -3,6 +3,7 @@
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
+//       David Karlaš <david.karlas@gmail.com>
 //
 // Copyright (c) 2012 Xamarin, Inc.
 //
@@ -62,6 +63,16 @@ namespace Xwt.WPFBackend
 			});
 		}
 
+		protected override void OnCollapsed(RoutedEventArgs e)
+		{
+			if (!IsExpanded)
+				UnselectChildren((object o, ExTreeViewItem i) =>
+				{
+					return i != this;
+				});
+			base.OnCollapsed(e);
+		}
+
 		public int Level {
 			get {
 				if (this.level == -1) {
@@ -75,22 +86,24 @@ namespace Xwt.WPFBackend
 
 		public void SelectChildren (Func<object, ExTreeViewItem, bool> selector)
 		{
-			TreeView.SelectedItems.Add (DataContext);
+			if (selector(this.DataContext, this))
+				TreeView.SelectedItems.Add (DataContext);
 
 			foreach (var item in Items) {
-				var treeItem = GetTreeItem (item);
-				if (selector (item, treeItem))
+				var treeItem = (ExTreeViewItem)ItemContainerGenerator.ContainerFromItem(item);
+				if (treeItem != null && selector (item, treeItem))
 					treeItem.SelectChildren (selector);
 			}
 		}
 
 		public void UnselectChildren (Func<object, ExTreeViewItem, bool> selector)
 		{
-			TreeView.SelectedItems.Remove (DataContext);
+			if (selector(this.DataContext, this))
+				TreeView.SelectedItems.Remove(DataContext);
 
 			foreach (var item in Items) {
-				var treeItem = GetTreeItem (item);
-				if (selector (item, treeItem))
+				var treeItem = (ExTreeViewItem)ItemContainerGenerator.ContainerFromItem(item);
+				if (treeItem != null && selector (item, treeItem))
 					treeItem.UnselectChildren (selector);
 			}
 		}
@@ -103,79 +116,10 @@ namespace Xwt.WPFBackend
 			return new ExTreeViewItem (this.view);
 		}
 
-		protected override void OnMouseLeftButtonDown (MouseButtonEventArgs e)
-		{
-			bool add = true;
-
-			if (TreeView.SelectedItems.Count > 0 && this.view.SelectionMode == SWC.SelectionMode.Extended) {
-				if (!(Keyboard.IsKeyDown (WKey.LeftCtrl) || Keyboard.IsKeyDown (WKey.RightCtrl))) {
-					if (Keyboard.IsKeyDown (WKey.LeftShift)) {
-						var lastSelected = TreeView.ContainerFromObject (TreeView.SelectedItems [TreeView.SelectedItems.Count - 1]);
-
-						TreeView.SelectedItems.Clear();
-
-						ExTreeViewItem top, bottom;
-						if (Level == lastSelected.Level) {
-							top = this;
-							bottom = lastSelected;
-						} else {
-							top = (Level < lastSelected.Level) ? this : lastSelected;
-							bottom = (Level > lastSelected.Level) ? this : lastSelected;
-						}
-
-						var itemControl = ItemsControlFromItemContainer (top);
-						var items = itemControl.Items;
-						var g = itemControl.ItemContainerGenerator;
-
-						ExTreeViewItem currentTop = top;
-						ExTreeViewItem currentBottom = FindSameLevelParent (bottom, top.Level);
-
-						bool adding = false;
-						for (int i = 0; i < items.Count; ++i) {
-						    object item = items [i];
-						    TreeViewItem container = (TreeViewItem)g.ContainerFromItem (item);
-
-						    bool endpoint = (container == currentTop || container == currentBottom);
-
-						    if (endpoint) {
-								if (currentTop != currentBottom)
-						    		adding = !adding;
-						    }
-						    else if (!adding)
-						        continue;
-							
-						    TreeView.SelectedItems.Add (item);
-
-						    if (endpoint && !adding) {
-								if (bottom != currentBottom) {
-									i = -1;
-
-									items = currentBottom.Items;
-									g = currentBottom.ItemContainerGenerator;
-									currentTop = (ExTreeViewItem)g.ContainerFromItem (items [0]);
-									currentBottom = FindSameLevelParent (bottom, currentBottom.Level + 1);
-								}
-								else
-						    		break;
-						    }
-						}
-					}
-					else
-						TreeView.SelectedItems.Clear ();
-				} else if (IsSelected)
-					add = false;
-			}
-
-			if (!add || !IsSelected) {
-				if (add)
-					TreeView.SelectedItems.Add (DataContext);
-				else
-					TreeView.SelectedItems.Remove (DataContext);
-
-				e.Handled = true;
-			}
-
-			base.OnMouseLeftButtonDown (e);
+		protected override void OnMouseLeftButtonDown (MouseButtonEventArgs e) {
+			view.SelectItem(this);
+			e.Handled = true;
+			base.OnMouseLeftButtonDown(e);
 		}
 
 		private ExTreeView TreeView
@@ -189,16 +133,6 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		private ExTreeViewItem FindSameLevelParent (ExTreeViewItem item, int parentLevel)
-		{
-			while (item.Level != parentLevel) {
-				item = ItemsControlFromItemContainer (item) as ExTreeViewItem;
-				if (item == null)
-					return null;
-			}
-
-			return item;
-		}
 
 		private void FindParent()
 		{
@@ -207,11 +141,6 @@ namespace Xwt.WPFBackend
 				this.view = e.Parent as ExTreeView;
 				e = (FrameworkElement)e.Parent;
 			}
-		}
-
-		private ExTreeViewItem GetTreeItem (object item)
-		{
-			return item as ExTreeViewItem ?? (ExTreeViewItem) TreeView.ItemContainerGenerator.ContainerFromItem (item);
 		}
 
 		private void OnLoaded (object sender, RoutedEventArgs routedEventArgs)
@@ -230,6 +159,17 @@ namespace Xwt.WPFBackend
 
 				column.Width = Double.NaN;
 			}
+		}
+
+		protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
+		{
+			//We can't allow TreeViewItem(our base class) to get this message(OnKeyDown) because it will mess with our ExTreeView handling
+		}
+
+		protected override void OnGotFocus(RoutedEventArgs e)
+		{
+			BringIntoView();
+			//We can't allow TreeViewItem(our base class) to get this message(OnGotFocus) because it will also select this item which we don't want
 		}
 	}
 }
