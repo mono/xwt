@@ -9,7 +9,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="l:ExTreeViewItem">
 					<StackPanel>
-						<Border Name="HBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+						<Border Name="HBorder" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" BorderThickness="1" Padding="{TemplateBinding Padding}">
 							<GridViewRowPresenter x:Name="PART_Header" Content="{TemplateBinding Header}" Columns="{Binding Path=View.Columns, RelativeSource={RelativeSource AncestorType={x:Type l:ExTreeView}}}" />
 						</Border>
 						<ItemsPresenter x:Name="ItemsHost" />
@@ -35,24 +35,32 @@
 							</MultiTrigger.Conditions>
 							<Setter Property="MinHeight" Value="19" />
 						</MultiTrigger>
-						
+
 						<Trigger Property="IsSelected" Value="True">
 							<Setter TargetName="HBorder" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
 							<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
 						</Trigger>
-						
+
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsSelected" Value="True" />
 								<Condition Property="IsSelectionActive" Value="False" />
 							</MultiTrigger.Conditions>
 							<Setter TargetName="HBorder" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+							<Setter TargetName="HBorder" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
 							<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
 						</MultiTrigger>
 						
 						<Trigger Property="IsEnabled" Value="False">
 							<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
 						</Trigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsSelected" Value="False" />
+								<Condition Property="IsFocused" Value="False" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="HBorder" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}" />
+						</MultiTrigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>

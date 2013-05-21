@@ -3,6 +3,7 @@
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
+//       David Karlaš <david.karlas@gmail.com>
 //
 // Copyright (c) 2012 Xamarin, Inc.
 //
@@ -34,6 +35,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using SWC = System.Windows.Controls;
+using WKey = System.Windows.Input.Key;
+using System.Windows.Input;
 
 namespace Xwt.WPFBackend
 {
@@ -43,6 +46,16 @@ namespace Xwt.WPFBackend
 		public ExTreeView()
 		{
 			SelectedItems = new ObservableCollection<object> ();
+			Loaded += new RoutedEventHandler(ExTreeView_Loaded);
+		}
+
+		void ExTreeView_Loaded(object sender, RoutedEventArgs e)
+		{
+			if (SelectionMode == SWC.SelectionMode.Single)
+			{
+				if (Items.Count > 0)
+					SelectItem(Items[0]);
+			}
 		}
 
 		public event EventHandler SelectedItemsChanged;
@@ -260,6 +273,170 @@ namespace Xwt.WPFBackend
 		{
 			var view = (ExTreeView) dependencyObject;
 			view.OnSelectionModeChanged (e);
+		}
+
+		public void SelectItem(object item)
+		{
+			SelectItem(ContainerFromObject(item));
+		}
+
+		ExTreeViewItem shiftStart = null;
+		ExTreeViewItem shiftEnd = null;
+
+		private bool ShiftPressed
+		{
+			get
+			{
+				return Keyboard.IsKeyDown(WKey.RightShift) || Keyboard.IsKeyDown(WKey.LeftShift);
+			}
+		}
+
+		private bool CtrlPressed
+		{
+			get
+			{
+				return Keyboard.IsKeyDown(WKey.RightCtrl) || Keyboard.IsKeyDown(WKey.LeftCtrl);
+			}
+		}
+
+		protected override void OnGotFocus(RoutedEventArgs e)
+		{
+			base.OnGotFocus(e);
+			FocusItem(focusedTreeViewItem);
+		}
+
+		public void SelectItem(ExTreeViewItem item)
+		{
+			FocusItem(item);
+			if (!CtrlPressed)
+				SelectedItems.Clear();
+			if (ShiftPressed)
+			{
+				if (shiftEnd != null)//Erase previous selection of shift
+					foreach (var forEachItem in GetItemsBetween(shiftStart, shiftEnd))
+						SelectedItems.Remove(forEachItem.DataContext);
+				shiftEnd = item;
+				foreach (var forEachItem in GetItemsBetween(shiftStart, shiftEnd))
+					SelectedItems.Add(forEachItem.DataContext);
+			}
+			else
+			{
+				shiftEnd = null;
+				shiftStart = item;
+				if (CtrlPressed && SelectedItems.Contains(item.DataContext))
+					SelectedItems.Remove(item.DataContext);
+				else
+					SelectedItems.Add(item.DataContext);
+			}
+		}
+
+		private IEnumerable<ExTreeViewItem> GetAllVisibleItems(ItemsControl itemsControl)
+		{
+			foreach (var item in itemsControl.Items)
+			{
+				ExTreeViewItem treeViewItem = (ExTreeViewItem)itemsControl.ItemContainerGenerator.ContainerFromItem(item);
+				if (treeViewItem == null)
+					continue;
+				if (treeViewItem.IsVisible && treeViewItem.Visibility == Visibility.Visible)
+				{
+					yield return treeViewItem;
+					if (treeViewItem.IsExpanded)
+						foreach (var childItem in GetAllVisibleItems(treeViewItem))
+							yield return childItem;
+				}
+			}
+		}
+
+		private IEnumerable<ExTreeViewItem> GetItemsBetween(ExTreeViewItem startItem, ExTreeViewItem endItem)
+		{
+			var allVisibleItems = GetAllVisibleItems(this).ToList();
+			var startIndex = allVisibleItems.IndexOf(startItem);
+			var endIndex = allVisibleItems.IndexOf(endItem);
+
+			if (endIndex == startIndex)
+				return new List<ExTreeViewItem> { endItem };
+			var filteredItems = new List<ExTreeViewItem>();
+			if (endIndex > startIndex)
+				for (int i = startIndex; i <= endIndex; i++)
+					filteredItems.Add(allVisibleItems[i]);
+			else
+				for (int i = startIndex; i >= endIndex; i--)
+					filteredItems.Add(allVisibleItems[i]);
+			return filteredItems;
+		}
+
+		private ExTreeViewItem focusedTreeViewItem = null;
+		protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
+		{
+			e.Handled = true;
+			if (e.Key == WKey.Down)
+			{
+				if (CtrlPressed && !ShiftPressed)
+				{
+					FocusItem(GetNextItem(focusedTreeViewItem));
+				}
+				else
+				{
+					SelectItem(GetNextItem(focusedTreeViewItem));
+				}
+			}
+			else if (e.Key == WKey.Up)
+			{
+				if (CtrlPressed && !ShiftPressed)
+				{
+					FocusItem(GetPrevItem(focusedTreeViewItem));
+				}
+				else
+				{
+					SelectItem(GetPrevItem(focusedTreeViewItem));
+				}
+			}
+			else if (e.Key == WKey.Space)
+			{
+				SelectItem(focusedTreeViewItem);
+			}
+			else if (e.Key == WKey.Right && !CtrlPressed)
+			{
+				focusedTreeViewItem.IsExpanded = true;
+			}
+			else if (e.Key == WKey.Left && !CtrlPressed)
+			{
+				focusedTreeViewItem.IsExpanded = false;
+			}
+			else
+			{
+				e.Handled = false;
+			}
+			base.OnKeyDown(e);
+		}
+
+		private void FocusItem(ExTreeViewItem exTreeViewItem)
+		{
+			if (exTreeViewItem != null)
+			{
+				focusedTreeViewItem = exTreeViewItem;
+				exTreeViewItem.Focus();
+			}
+		}
+
+		private ExTreeViewItem GetPrevItem(ExTreeViewItem p)
+		{
+			var items = GetAllVisibleItems(this).ToList();
+			int indexOfP = items.IndexOf(p);
+			if (indexOfP == 0)
+				return p;
+			else
+				return items[indexOfP - 1];
+		}
+
+		private ExTreeViewItem GetNextItem(ExTreeViewItem p)
+		{
+			var items = GetAllVisibleItems(this).ToList();
+			int indexOfP = items.IndexOf(p);
+			if (indexOfP + 1 == items.Count)
+				return p;
+			else
+				return items[indexOfP + 1];
 		}
 	}
 }
