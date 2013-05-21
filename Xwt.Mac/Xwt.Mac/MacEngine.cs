@@ -110,6 +110,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IListBoxBackend, ListBoxBackend> ();
 			RegisterBackend <Xwt.Backends.IDialogBackend, DialogBackend> ();
 			RegisterBackend <Xwt.Backends.IRichTextViewBackend, RichTextViewBackend> ();
+			RegisterBackend <Xwt.Backends.IScrollbarBackend, ScrollbarBackend> ();
 		}
 
 		public override void RunApplication ()

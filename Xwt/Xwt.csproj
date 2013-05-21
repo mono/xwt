@@ -406,6 +406,10 @@
     <Compile Include="Xwt.Backends\ICanvasCellViewFrontend.cs" />
     <Compile Include="Xwt.Backends\ICheckBoxCellViewFrontend.cs" />
     <Compile Include="Xwt.Backends\ExtensionMethods.cs" />
+    <Compile Include="Xwt\Scrollbar.cs" />
+    <Compile Include="Xwt\HScrollbar.cs" />
+    <Compile Include="Xwt\VScrollbar.cs" />
+    <Compile Include="Xwt.Backends\IScrollbarBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

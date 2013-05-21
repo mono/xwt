@@ -1,5 +1,5 @@
 //
-// ListBoxBackend.cs
+// ScrollbarBackend.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -26,32 +26,26 @@
 using System;
 using Xwt.Backends;
 
-namespace Xwt.Mac
+namespace Xwt.GtkBackend
 {
-	public class ListBoxBackend: ListViewBackend, IListBoxBackend
+	public class ScrollbarBackend: WidgetBackend, IScrollbarBackend
 	{
-		ListViewColumn column = new ListViewColumn ();
-		object columnHandle;
+		Gtk.Adjustment adjustment;
 
-		public ListBoxBackend ()
+		public void Initialize (Orientation dir)
 		{
+			adjustment = new Gtk.Adjustment (0, 0, 1, 1, 1, 1);
+
+			if (dir == Orientation.Horizontal)
+				Widget = new Gtk.HScrollbar (adjustment);
+			else
+				Widget = new Gtk.VScrollbar (adjustment);
+			Widget.Show ();
 		}
 
-		public override void Initialize ()
+		public IScrollAdjustmentBackend CreateAdjustment ()
 		{
-			base.Initialize ();
-			HeadersVisible = false;
-			columnHandle = AddColumn (column);
-			VerticalScrollPolicy = ScrollPolicy.Automatic;
-			HorizontalScrollPolicy = ScrollPolicy.Automatic;
-		}
-
-		public void SetViews (CellViewCollection views)
-		{
-			column.Views.Clear ();
-			foreach (var v in views)
-				column.Views.Add (v);
-			UpdateColumn (column, columnHandle, ListViewColumnChange.Cells);
+			return new ScrollAdjustmentBackend (adjustment);
 		}
 	}
 }

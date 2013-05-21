@@ -1,5 +1,5 @@
 //
-// ListBoxBackend.cs
+// HScrollbar.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,34 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt.Backends;
 
-namespace Xwt.Mac
+namespace Xwt
 {
-	public class ListBoxBackend: ListViewBackend, IListBoxBackend
+	public class HScrollbar: Scrollbar
 	{
-		ListViewColumn column = new ListViewColumn ();
-		object columnHandle;
-
-		public ListBoxBackend ()
+		public HScrollbar (): base (Xwt.Backends.Orientation.Horizontal)
 		{
-		}
-
-		public override void Initialize ()
-		{
-			base.Initialize ();
-			HeadersVisible = false;
-			columnHandle = AddColumn (column);
-			VerticalScrollPolicy = ScrollPolicy.Automatic;
-			HorizontalScrollPolicy = ScrollPolicy.Automatic;
-		}
-
-		public void SetViews (CellViewCollection views)
-		{
-			column.Views.Clear ();
-			foreach (var v in views)
-				column.Views.Add (v);
-			UpdateColumn (column, columnHandle, ListViewColumnChange.Cells);
 		}
 	}
 }

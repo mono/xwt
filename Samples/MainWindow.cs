@@ -105,6 +105,7 @@ namespace Samples
 			AddSample (null, "ReliefFrame", typeof (ReliefFrameSample));
 			AddSample (null, "Screens", typeof (ScreensSample));
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
+			AddSample (null, "Scrollbar", typeof(ScrollbarSample));
 			AddSample (null, "Spinners", typeof (Spinners));
 			AddSample (null, "Tables", typeof (Tables));
 			AddSample (null, "Text Entry", typeof (TextEntries));

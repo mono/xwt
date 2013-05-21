@@ -1,5 +1,5 @@
 //
-// ListBoxBackend.cs
+// IScrollbarBackend.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,35 +24,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt.Backends;
 
-namespace Xwt.Mac
+namespace Xwt.Backends
 {
-	public class ListBoxBackend: ListViewBackend, IListBoxBackend
+	public interface IScrollbarBackend: IWidgetBackend
 	{
-		ListViewColumn column = new ListViewColumn ();
-		object columnHandle;
+		/// <summary>
+		/// Initializes the paned
+		/// </summary>
+		/// <param name='dir'>
+		/// Orientation of the paned
+		/// </param>
+		void Initialize (Orientation dir);
 
-		public ListBoxBackend ()
-		{
-		}
-
-		public override void Initialize ()
-		{
-			base.Initialize ();
-			HeadersVisible = false;
-			columnHandle = AddColumn (column);
-			VerticalScrollPolicy = ScrollPolicy.Automatic;
-			HorizontalScrollPolicy = ScrollPolicy.Automatic;
-		}
-
-		public void SetViews (CellViewCollection views)
-		{
-			column.Views.Clear ();
-			foreach (var v in views)
-				column.Views.Add (v);
-			UpdateColumn (column, columnHandle, ListViewColumnChange.Cells);
-		}
+		/// <summary>
+		/// Gets the adjustment object bound to the scrollbar
+		/// </summary>
+		/// <returns>The adjustment.</returns>
+		IScrollAdjustmentBackend CreateAdjustment ();
 	}
 }
 
