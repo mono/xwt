@@ -34,12 +34,13 @@ namespace Xwt.Mac
 	public class RadioButtonBackend : ViewBackend <NSButton, IRadioButtonEventSink>, IRadioButtonBackend
 	{
 		MacRadioButtonGroup radioGroup;
+		NSCellStateValue lastState;
 
 		public object Group {
 			get {
 				if (radioGroup == null) {
 					radioGroup = new MacRadioButtonGroup ();
-					radioGroup.Add (Widget);
+					radioGroup.Add ((MacButton)Widget);
 				}
 				return radioGroup;
 			}
@@ -49,7 +50,7 @@ namespace Xwt.Mac
 				if (g == radioGroup)
 					return;
 				radioGroup = g;
-				radioGroup.Add (Widget);
+				radioGroup.Add ((MacButton)Widget);
 			}
 		}
 		
@@ -59,9 +60,10 @@ namespace Xwt.Mac
  				if (value) {
 					Widget.State = NSCellStateValue.On; 
 					var g = Group as MacRadioButtonGroup;
-					g.Activate (Widget);
+					g.Activate ((MacButton)Widget);
 				} else
 					Widget.State = NSCellStateValue.Off;
+				NotifyToggle ();
 			}
 		}
 
@@ -72,7 +74,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			var mb = new MacButton (EventSink, ApplicationContext);
-			mb.State = NSCellStateValue.On;
+			lastState = mb.State = NSCellStateValue.On;
 			mb.ActivatedInternal += HandleActivatedInternal;
 			ViewObject = mb;
 			Widget.SetButtonType (NSButtonType.Radio);
@@ -87,6 +89,17 @@ namespace Xwt.Mac
 			if (button == null || button.State != NSCellStateValue.On)
 				return;
 			radioGroup.Activate (button);
+			NotifyToggle ();
+		}
+
+		internal void NotifyToggle ()
+		{
+			if (lastState != Widget.State) {
+				lastState = Widget.State;
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnToggled ();
+				});
+			}
 		}
 
 		public void SetContent (IWidgetBackend widget)
@@ -105,26 +118,30 @@ namespace Xwt.Mac
 	// non-visual radio button group abstraction we need to emulate the job done by NSMatrix here
 	class MacRadioButtonGroup
 	{
-		NSButton lastActive;
+		MacButton lastActive;
 
-		public void Add (NSButton button)
+		public void Add (MacButton button)
 		{
 			if (button == null)
 				return;
 			if (button.State == NSCellStateValue.On) {
 				if (lastActive == null)
 					Activate (button);
-				else
+				else {
 					button.State = NSCellStateValue.Off;
+					((RadioButtonBackend)button.Backend).NotifyToggle ();
+				}
 			}
 		}
 
-		public void Activate (NSButton button)
+		public void Activate (MacButton button)
 		{
 			if (button == null || button == lastActive)
 				return;
-			if (lastActive != null)
+			if (lastActive != null) {
 				lastActive.State = NSCellStateValue.Off;
+				((RadioButtonBackend)lastActive.Backend).NotifyToggle ();
+			}
 			lastActive = button;
 		}
 	}
