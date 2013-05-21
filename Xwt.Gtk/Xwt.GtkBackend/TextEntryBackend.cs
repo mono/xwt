@@ -152,6 +152,10 @@ namespace Xwt.GtkBackend
 				Widget.HasFrame = value;
 			}
 		}
+
+		public bool MultiLine {
+			get; set;
+		}
 		
 		public override void EnableEvent (object eventId)
 		{

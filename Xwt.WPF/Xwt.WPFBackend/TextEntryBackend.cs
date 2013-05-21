@@ -78,6 +78,11 @@ namespace Xwt.WPFBackend
 			set { TextBox.ShowFrame = value; }
 		}
 
+		// TODO
+		public bool MultiLine {
+			get; set;
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

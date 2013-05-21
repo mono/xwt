@@ -49,6 +49,7 @@ namespace Xwt.Mac
 			} else {
 				ViewObject = new CustomTextField (EventSink, ApplicationContext);
 			}
+			MultiLine = false;
 		}
 		
 		protected override Size GetNaturalSize ()
@@ -100,6 +101,23 @@ namespace Xwt.Mac
 			}
 			set {
 				((NSTextFieldCell) Widget.Cell).PlaceholderString = value;
+			}
+		}
+
+		public bool MultiLine {
+			get {
+				return Widget.Cell.UsesSingleLineMode;
+			}
+			set {
+				if (value) {
+					Widget.Cell.UsesSingleLineMode = true;
+					Widget.Cell.Scrollable = true;
+					Widget.Cell.Wraps = false;
+				} else {
+					Widget.Cell.UsesSingleLineMode = false;
+					Widget.Cell.Scrollable = false;
+					Widget.Cell.Wraps = true;
+				}
 			}
 		}
 
