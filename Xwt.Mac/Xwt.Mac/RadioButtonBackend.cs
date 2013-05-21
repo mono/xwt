@@ -72,6 +72,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			var mb = new MacButton (EventSink, ApplicationContext);
+			mb.State = NSCellStateValue.On;
 			mb.ActivatedInternal += HandleActivatedInternal;
 			ViewObject = mb;
 			Widget.SetButtonType (NSButtonType.Radio);
@@ -110,8 +111,12 @@ namespace Xwt.Mac
 		{
 			if (button == null)
 				return;
-			if (button.State == NSCellStateValue.On)
-				Activate (button);
+			if (button.State == NSCellStateValue.On) {
+				if (lastActive == null)
+					Activate (button);
+				else
+					button.State = NSCellStateValue.Off;
+			}
 		}
 
 		public void Activate (NSButton button)

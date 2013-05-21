@@ -74,7 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
-    <None Include="ReferenceImages\RectanglePathConnection.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -185,6 +184,42 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternWithScaleTransform.png">
       <LogicalName>ImagePatternWithScaleTransform.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\RectanglePathConnection.png">
+      <LogicalName>RectanglePathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcClosePath.png">
+      <LogicalName>ArcClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\ArcNegativeClosePath.png">
+      <LogicalName>ArcNegativeClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\CurveClosePath.png">
+      <LogicalName>CurveClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\CurveFillWithHoles.png">
+      <LogicalName>CurveFillWithHoles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\DrawPathTwoTimes.png">
+      <LogicalName>DrawPathTwoTimes.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\LineClosePath.png">
+      <LogicalName>LineClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\Text.png">
+      <LogicalName>Text.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\TextLineBreak.png">
+      <LogicalName>TextLineBreak.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\TextSize.png">
+      <LogicalName>TextSize.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\TextWithBlankLines.png">
+      <LogicalName>TextWithBlankLines.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReferenceImages\TextWordWrap.png">
+      <LogicalName>TextWordWrap.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 </Project>
