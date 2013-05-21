@@ -936,7 +936,7 @@ namespace Xwt
 				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					heightCached = true;
 				if (minHeight != -1 && naturalHeight != -1)
-					return new WidgetSize (minHeight, naturalHeight);
+					return height = new WidgetSize (minHeight, naturalHeight);
 				// Horizontal margin is substracted here because that's space which
 				// can't really be used to render the widget
 				width = Math.Max (width - Margin.HorizontalSpacing, 0);
@@ -960,7 +960,7 @@ namespace Xwt
 				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					widthCached = true;
 				if (minWidth != -1 && naturalWidth != -1)
-					return new WidgetSize (minWidth, naturalWidth);
+					return width = new WidgetSize (minWidth, naturalWidth);
 				// Vertical margin is substracted here because that's space which
 				// can't really be used to render the widget
 				height = Math.Max (height - Margin.VerticalSpacing, 0);
