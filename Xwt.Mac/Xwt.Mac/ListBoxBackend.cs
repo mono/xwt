@@ -53,6 +53,20 @@ namespace Xwt.Mac
 				column.Views.Add (v);
 			UpdateColumn (column, columnHandle, ListViewColumnChange.Cells);
 		}
+
+		public override void EnableEvent (object eventId)
+		{
+			if ((eventId is ListBoxEvent) && ((ListBoxEvent)eventId) == ListBoxEvent.SelectionChanged)
+				eventId = TableViewEvent.SelectionChanged;
+			base.EnableEvent (eventId);
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			if ((eventId is ListBoxEvent) && ((ListBoxEvent)eventId) == ListBoxEvent.SelectionChanged)
+				eventId = TableViewEvent.SelectionChanged;
+			base.DisableEvent (eventId);
+		}
 	}
 }
 
