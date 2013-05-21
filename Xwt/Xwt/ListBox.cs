@@ -287,12 +287,12 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler SelectionChanged {
 			add {
-				BackendHost.OnBeforeEventAdd (ListBoxEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnBeforeEventAdd (TableViewEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
 			remove {
 				selectionChanged -= value;
-				BackendHost.OnAfterEventRemove (ListBoxEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnAfterEventRemove (TableViewEvent.SelectionChanged, selectionChanged);
 			}
 		}
 		
