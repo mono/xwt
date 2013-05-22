@@ -57,7 +57,7 @@ namespace Xwt
 			get { return (IScrollbarBackend) BackendHost.Backend; }
 		}
 
-		ScrollAdjustment ScrollAdjustment {
+		public ScrollAdjustment ScrollAdjustment {
 			get {
 				if (adjustment == null)
 					adjustment = new ScrollAdjustment (Backend.CreateAdjustment ());
