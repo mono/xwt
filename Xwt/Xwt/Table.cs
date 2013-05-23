@@ -199,20 +199,29 @@ namespace Xwt
 				OnRemove (oldWidget);
 			OnAdd (newWidget, placement);
 		}
+
+		const bool heightForWidth = true;
 		
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
-			var mode = Surface.SizeRequestMode;
-			if (mode == SizeRequestMode.HeightForWidth) {
-				CalcDefaultSizes (mode, size.Width, false, true);
-				CalcDefaultSizes (mode, size.Height, true, true);
+			TablePlacement[] visibleChildren = VisibleChildren ();
+			if (heightForWidth) {
+				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
+				var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
+				CalcCellSizes (w, size.Width, true);
+				childrenSizes = GetPreferredChildrenSizes (visibleChildren, true, false);
+				var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
+				CalcCellSizes (h, size.Height, true);
 			} else {
-				CalcDefaultSizes (mode, size.Height, true, true);
-				CalcDefaultSizes (mode, size.Width, false, true);
+				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
+				var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
+				CalcCellSizes (h, size.Height, true);
+				childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, true);
+				var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
+				CalcCellSizes (w, size.Width, true);
 			}
 			
-			var visibleChildren = children.Where (c => c.Child.Visible).ToArray ();
 			IWidgetBackend[] widgets = new IWidgetBackend [visibleChildren.Length];
 			Rectangle[] rects = new Rectangle [visibleChildren.Length];
 			for (int n=0; n<visibleChildren.Length; n++) {
@@ -229,10 +238,10 @@ namespace Xwt
 			}
 		}
 		
-		double GetSpacing (int cell, bool isRow)
+		double GetSpacing (int cell, Orientation orientation)
 		{
 			double sp;
-			if (isRow) {
+			if (orientation == Orientation.Vertical) {
 				if (rowSpacing != null && rowSpacing.TryGetValue (cell, out sp))
 					return sp;
 				else
@@ -264,128 +273,145 @@ namespace Xwt
 
 			return result;
 		}
-		
-		void CalcDefaultSizes (SizeRequestMode mode, bool calcHeights, out TablePlacement[] visibleChildren, out Dictionary<int,WidgetSize> fixedSizesByCell, out HashSet<int> cellsWithExpand, out WidgetSize[] sizes, out double spacing)
-		{
-			bool useLengthConstraint = mode == SizeRequestMode.HeightForWidth && calcHeights || mode == SizeRequestMode.WidthForHeight && !calcHeights;
-			visibleChildren = VisibleChildren ();
-			int lastCell = 0;
 
-			fixedSizesByCell = new Dictionary<int, WidgetSize> ();
-			cellsWithExpand = new HashSet<int> ();
-			HashSet<int> cellsWithWidget = new HashSet<int> ();
-			sizes = new WidgetSize [visibleChildren.Length];
-			
-			// Get the size of each widget and store the fixed sizes for widgets which don't span more than one cell
-			
+		Size[] GetPreferredChildrenSizes (TablePlacement[] visibleChildren, bool useWidthConstraint, bool useHeightConstraint)
+		{
+			var sizes = new Size [visibleChildren.Length];
 			for (int n=0; n<visibleChildren.Length; n++) {
 				var bp = visibleChildren[n];
-				int start = GetStartAttach (bp, calcHeights);
-				int end = GetEndAttach (bp, calcHeights);
-				
+				Size s;
+				if (useWidthConstraint)
+					s = bp.Child.Surface.GetPreferredSize (SizeContraint.RequireSize (bp.NextWidth), SizeContraint.Unconstrained);
+				else if (useHeightConstraint)
+					s = bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.RequireSize (bp.NextHeight));
+				else
+					s = bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained);
+				sizes [n] = s;
+			}
+			return sizes;
+		}
+
+		/// <summary>
+		/// Calculates the preferred size of each cell (either height or width, depending on the provided orientation) 
+		/// </summary>
+		/// <param name="mode">Mode.</param>
+		/// <param name="orientation">Wether we are calculating the vertical size or the horizontal size</param>
+		/// <param name="visibleChildren">List of children that are visible, and for which the size is being calculated.</param>
+		/// <param name="fixedSizesByCell">Cells which have a fixed size</param>
+		/// <param name="cellsWithExpand">Cells which are expandable.</param>
+		/// <param name="sizes">Calculated size of each cell</param>
+		/// <param name="spacing">Spacing to use for each cell</param>
+		CellSizeVector CalcPreferredCellSizes (TablePlacement[] visibleChildren, Size[] childrenSizes, Orientation orientation)
+		{
+			Dictionary<int,double> fixedSizesByCell;
+			HashSet<int> cellsWithExpand;
+			double[] sizes;
+			double spacing;
+
+			int lastCell = 0;
+
+			fixedSizesByCell = new Dictionary<int, double> ();
+			cellsWithExpand = new HashSet<int> ();
+			HashSet<int> cellsWithWidget = new HashSet<int> ();
+			sizes = new double [visibleChildren.Length];
+
+			// Get the size of each widget and store the fixed sizes for widgets which don't span more than one cell
+
+			for (int n=0; n<visibleChildren.Length; n++) {
+				var bp = visibleChildren[n];
+				int start = GetStartAttach (bp, orientation);
+				int end = GetEndAttach (bp, orientation);
+
 				if (end > lastCell)
 					lastCell = end;
-				
+
 				// Check if the cell is expandable and store the value
-				AttachOptions ops = calcHeights ? bp.YOptions : bp.XOptions;
+				bool expand = orientation == Orientation.Vertical ? (bp.YOptions & AttachOptions.Expand) != 0 : (bp.XOptions & AttachOptions.Expand) != 0;
 				for (int i=start; i < end; i++) {
 					cellsWithWidget.Add (i);
-					if ((ops & AttachOptions.Expand) != 0)
+					if (expand)
 						cellsWithExpand.Add (i);
 				}
-					
-				WidgetSize s;
-				if (useLengthConstraint)
-					s = GetPreferredLengthForSize (mode, bp.Child, calcHeights ? bp.NextWidth : bp.NextHeight);
-				else
-					s = GetPreferredSize (calcHeights, bp.Child);
+
+				double s = orientation == Orientation.Vertical ? childrenSizes[n].Height : childrenSizes[n].Width;
 				sizes [n] = s;
-				
+
 				if (end == start + 1) {
 					// The widget only takes one cell. Store its size if it is the biggest
 					bool changed = false;
-					WidgetSize fs;
+					double fs;
 					if (!fixedSizesByCell.TryGetValue (start, out fs))
 						changed = true;
-					if (s.MinSize > fs.MinSize) { 
-						fs.MinSize = s.MinSize;
-						changed = true;
-					}
-					if (s.NaturalSize > fs.NaturalSize) {
-						fs.NaturalSize = s.NaturalSize;
+					if (s > fs) { 
+						fs = s;
 						changed = true;
 					}
 					if (changed)
 						fixedSizesByCell [start] = fs;
 				}
 			}
-			
+
 			// For widgets that span more than one cell, calculate the floating size, that is, the size
 			// which is not taken by other fixed size widgets
-			
+
 			List<TablePlacement> widgetsToAdjust = new List<TablePlacement> ();
-			Dictionary<TablePlacement,WidgetSize[]> growSizes = new Dictionary<TablePlacement, WidgetSize[]> ();
-			
+			Dictionary<TablePlacement,double[]> growSizes = new Dictionary<TablePlacement, double[]> ();
+
 			for (int n=0; n<visibleChildren.Length; n++) {
 				var bp = visibleChildren[n];
-				int start = GetStartAttach (bp, calcHeights);
-				int end = GetEndAttach (bp, calcHeights);
+				int start = GetStartAttach (bp, orientation);
+				int end = GetEndAttach (bp, orientation);
 				if (end == start + 1)
 					continue;
 				widgetsToAdjust.Add (bp);
-				
-				WidgetSize fixedSize = new WidgetSize (0);
-				
+
+				double fixedSize = 0;
+
 				// We are going to calculate the spacing included in the widget's span of cells
 				// (there is spacing between each cell)
 				double spanSpacing = 0;
-				
+
 				for (int c = start; c < end; c++) {
-					WidgetSize fs;
+					double fs;
 					fixedSizesByCell.TryGetValue (c, out fs);
 					fixedSize += fs;
 					if (c != start && c != end)
-						spanSpacing += GetSpacing (c, calcHeights);
+						spanSpacing += GetSpacing (c, orientation);
 				}
-				
+
 				// sizeToGrow is the size that the whole cell span has to grow in order to fit
 				// this widget. We substract the spacing between cells because that space will
 				// be used by the widget, so we don't need to allocate more size for it
-				
-				WidgetSize sizeToGrow = sizes [n] - fixedSize - new WidgetSize (spanSpacing);
-				
-				WidgetSize sizeToGrowPart = new WidgetSize (sizeToGrow.MinSize / (end - start), sizeToGrow.NaturalSize / (end - start));
+
+				double sizeToGrow = sizes [n] - fixedSize - spanSpacing;
+
+				double sizeToGrowPart = sizeToGrow / (end - start);
 
 				// Split the size to grow between the cells of the widget. We need to know how much size the widget
 				// requires for each cell it covers.
-				
-				WidgetSize[] widgetGrowSizes = new WidgetSize [end - start];
+
+				double[] widgetGrowSizes = new double [end - start];
 				for (int i=0; i<widgetGrowSizes.Length; i++)
 					widgetGrowSizes [i] = sizeToGrowPart;
 				growSizes[bp] = widgetGrowSizes;
 			}
-			
+
 			// Now size-to-grow values have to be adjusted. For example, let's say widget A requires 100px for column 1 and 100px for column 2, and widget B requires
 			// 60px for column 2 and 60px for column 3. So the widgets are overlapping at column 2. Since A requires at least 100px in column 2, it means that B can assume
 			// that it will have 100px available in column 2, which means 40px more than it requested. Those extra 40px can then be substracted from the 60px that
 			// it required for column 3.
 
 			foreach (var n in cellsWithWidget) {
-				WidgetSize maxv = new WidgetSize (0);
-				TablePlacement maxtMin = null;
+				double maxv = 0;
 				TablePlacement maxtNatural = null;
 
 				// Find the widget that requires the maximum size for this cell
 				foreach (var bp in widgetsToAdjust) {
 					// could be expressed as where clause, but this is faster and performance matters here
-					if (GetStartAttach (bp, calcHeights) <= n && GetEndAttach (bp, calcHeights) > n) {
-						WidgetSize cv = growSizes[bp][n - GetStartAttach (bp, calcHeights)];
-						if (cv.MinSize > maxv.MinSize) {
-							maxv.MinSize = cv.MinSize;
-							maxtMin = bp;
-						}
-						if (cv.NaturalSize > maxv.NaturalSize) {
-							maxv.NaturalSize = cv.NaturalSize;
+					if (GetStartAttach (bp, orientation) <= n && GetEndAttach (bp, orientation) > n) {
+						double cv = growSizes[bp][n - GetStartAttach (bp, orientation)];
+						if (cv > maxv) {
+							maxv = cv;
 							maxtNatural = bp;
 						}
 					}
@@ -393,153 +419,162 @@ namespace Xwt
 
 				// Adjust the required size of all widgets of the cell (excluding the widget with the max size)
 				foreach (var bp in widgetsToAdjust) {
-					if (GetStartAttach (bp, calcHeights) <= n && GetEndAttach (bp, calcHeights) > n) {
-						var widgetGrows = growSizes[bp];
-						int cellIndex = n - GetStartAttach (bp, calcHeights);
-						if (bp != maxtMin) {
-							double cv = widgetGrows[cellIndex].MinSize;
-							// splitExtraSpace is the additional space that the widget can take from this cell (because there is a widget
-							// that is requiring more space), split among all other cells of the widget
-							double splitExtraSpace = (maxv.MinSize - cv) / (widgetGrows.Length - 1);
-							for (int i=0; i<widgetGrows.Length; i++)
-								widgetGrows[i].MinSize -= splitExtraSpace;
-						}
+					if (GetStartAttach (bp, orientation) <= n && GetEndAttach (bp, orientation) > n) {
+						double[] widgetGrows = growSizes[bp];
+						int cellIndex = n - GetStartAttach (bp, orientation);
 						if (bp != maxtNatural) {
-							double cv = widgetGrows[cellIndex].NaturalSize;
-							double splitExtraSpace = (maxv.NaturalSize - cv) / (widgetGrows.Length - 1);
+							double cv = widgetGrows[cellIndex];
+							double splitExtraSpace = (maxv - cv) / (widgetGrows.Length - 1);
 							for (int i=0; i<widgetGrows.Length; i++)
-								widgetGrows[i].NaturalSize -= splitExtraSpace;
+								widgetGrows[i] -= splitExtraSpace;
 						}
 					}
 				}
 			}
-			
+
 			// Find the maximum size-to-grow for each cell
-			
-			Dictionary<int,WidgetSize> finalGrowTable = new Dictionary<int, WidgetSize> ();
-			
+
+			Dictionary<int,double> finalGrowTable = new Dictionary<int, double> ();
+
 			foreach (var bp in widgetsToAdjust) {
-				int start = GetStartAttach (bp, calcHeights);
-				int end = GetEndAttach (bp, calcHeights);
-				WidgetSize[] widgetGrows = growSizes[bp];
+				int start = GetStartAttach (bp, orientation);
+				int end = GetEndAttach (bp, orientation);
+				double[] widgetGrows = growSizes[bp];
 				for (int n=start; n<end; n++) {
-					WidgetSize curGrow;
+					double curGrow;
 					finalGrowTable.TryGetValue (n, out curGrow);
 					var val = widgetGrows [n - start];
-					if (val.MinSize > curGrow.MinSize)
-						curGrow.MinSize = val.MinSize;
-					if (val.NaturalSize > curGrow.NaturalSize)
-						curGrow.NaturalSize = val.NaturalSize;
+					if (val > curGrow)
+						curGrow = val;
 					finalGrowTable [n] = curGrow;
 				}
 			}
-			
+
 			// Add the final size-to-grow to the fixed sizes calculated at the begining
-			
+
 			foreach (var it in finalGrowTable) {
-				WidgetSize ws;
+				double ws;
 				fixedSizesByCell.TryGetValue (it.Key, out ws);
 				fixedSizesByCell [it.Key] = it.Value + ws;
 			}
-			
+
 			spacing = 0;
 			for (int n=1; n<lastCell; n++) {
 				if (cellsWithWidget.Contains (n))
-					spacing += GetSpacing (n, calcHeights);
+					spacing += GetSpacing (n, orientation);
 			}
-			
+
+			return new CellSizeVector () {
+				visibleChildren = visibleChildren,
+				fixedSizesByCell = fixedSizesByCell,
+				cellsWithExpand = cellsWithExpand,
+				sizes = sizes,
+				spacing = spacing,
+				orientation = orientation
+			};
 		}
-		
-		void CalcDefaultSizes (SizeRequestMode mode, double totalSize, bool calcHeights, bool calcOffsets)
+
+		/// <summary>
+		/// Calculates size of each cell, taking into account their preferred size, expansion/fill requests, and the available space.
+		/// Calculation is done only for the provided orientation (either height or width).
+		/// </summary>
+		/// <param name="mode">Mode.</param>
+		/// <param name="availableSize">Total size available</param>
+		/// <param name="orientation">Orientation. Determines if the method calculates heights or widths</param>
+		/// <param name="calcOffsets"></param>
+		void CalcCellSizes (CellSizeVector cellSizes, double availableSize, bool calcOffsets)
 		{
-			TablePlacement[] visibleChildren;
-			Dictionary<int,WidgetSize> fixedSizesByCell;
-			HashSet<int> cellsWithExpand;
-			WidgetSize[] sizes;
-			double spacing;
-			
-			CalcDefaultSizes (mode, calcHeights, out visibleChildren, out fixedSizesByCell, out cellsWithExpand, out sizes, out spacing);
-			
-			double naturalSize = 0;
-			
+			TablePlacement[] visibleChildren = cellSizes.visibleChildren;
+			Dictionary<int,double> fixedSizesByCell = cellSizes.fixedSizesByCell;
+			HashSet<int> cellsWithExpand = cellSizes.cellsWithExpand;
+			double[] sizes = cellSizes.sizes;
+			double spacing = cellSizes.spacing;
+			Orientation orientation = cellSizes.orientation;
+
 			// Get the total natural size
-			foreach (var ws in fixedSizesByCell.Values)
-				naturalSize += ws.NaturalSize;
-			
-			double remaining = totalSize - naturalSize - spacing;
-			
-			if (remaining < 0) {
+			double naturalSize = fixedSizesByCell.Values.Sum ();
+
+			double remaining = availableSize - naturalSize - spacing;
+
+			if (availableSize - spacing <= 0) {
+				foreach (var i in fixedSizesByCell.Keys.ToArray ())
+					fixedSizesByCell [i] = 0;
+			}
+			else if (remaining < 0) {
 				// The box is not big enough to fit the widgets using its natural size.
-				// We have to shrink the cells
-				
+				// We have to shrink the cells. We do a proportional reduction
+
 				// List of cell indexes that we have to shrink
 				var toShrink = new List<int> (fixedSizesByCell.Keys);
-				
+
 				// The total amount we have to shrink
-				double shrinkSize = -remaining;
-				
-				while (toShrink.Count > 0 && shrinkSize > 0) {
-					SizeSplitter sizePart = new SizeSplitter (shrinkSize, toShrink.Count);
-					shrinkSize = 0;
-					for (int i=0; i < toShrink.Count; i++) {
-						int n = toShrink[i];
-						double reduction = sizePart.NextSizePart ();
-						WidgetSize size;
-						fixedSizesByCell.TryGetValue (n, out size);
-						size.NaturalSize -= reduction;
-						
-						if (size.NaturalSize < size.MinSize) {
-							// If the widget can't be shrinked anymore, we remove it from the shrink list
-							// and increment the remaining shrink size. We'll loop again and this size will be
-							// substracted from the cells which can still be reduced
-							shrinkSize += (size.MinSize - size.NaturalSize);
-							size.NaturalSize = size.MinSize;
-							toShrink.RemoveAt (i);
-							i--;
-						}
-						fixedSizesByCell [n] = size;
-					}
-				}
+				double splitSize = (availableSize - spacing) / toShrink.Count;
+
+				// We have to reduce all cells proportionally, but if a cell is much bigger that
+				// its proportionally allocated space, then we reduce this one before the others
+
+				var smallCells = fixedSizesByCell.Where (c => c.Value < splitSize);
+				var belowSplitSize = smallCells.Sum (c => splitSize - c.Value);
+
+				var bigCells = fixedSizesByCell.Where (c => c.Value > splitSize);
+				var overSplitSize = bigCells.Sum (c => c.Value - splitSize);
+
+				ReduceProportional (fixedSizesByCell, bigCells.Select (c => c.Key), overSplitSize - belowSplitSize);
+
+				var newNatural = fixedSizesByCell.Sum (c => c.Value);
+				ReduceProportional (fixedSizesByCell, fixedSizesByCell.Keys, (availableSize - spacing) - newNatural);
+
+				RoundSizes (fixedSizesByCell);
 			}
 			else {
 				int nexpands = cellsWithExpand.Count;
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
 				foreach (var c in cellsWithExpand) {
-					WidgetSize ws;
+					double ws;
 					fixedSizesByCell.TryGetValue (c, out ws);
-					ws.NaturalSize += expandRemaining.NextSizePart ();
+					ws += expandRemaining.NextSizePart ();
 					fixedSizesByCell [c] = ws;
 				}
 			}
-			
+
 			for (int n=0; n<visibleChildren.Length; n++) {
 				var bp = visibleChildren[n];
 				double allocatedSize = 0;
 				double cellOffset = 0;
-				AttachOptions ops = calcHeights ? bp.YOptions : bp.XOptions;
-				
-				int start = GetStartAttach (bp, calcHeights);
-				int end = GetEndAttach (bp, calcHeights);
+	//			var align = orientation == Orientation.Vertical? bp.Child.VerticalAlignment : bp.Child.HorizontalAlignment;
+
+				int start = GetStartAttach (bp, orientation);
+				int end = GetEndAttach (bp, orientation);
 				for (int i=start; i<end; i++) {
-					WidgetSize ws;
+					double ws;
 					fixedSizesByCell.TryGetValue (i, out ws);
-					allocatedSize += ws.NaturalSize;
+					allocatedSize += ws;
 					if (i != start)
-						allocatedSize += GetSpacing (i, calcHeights);
+						allocatedSize += GetSpacing (i, orientation);
 				}
-				
-				if ((ops & AttachOptions.Fill) == 0) {
-					double s = sizes[n].NaturalSize;
-					if (s < allocatedSize) {
+
+				double s = sizes[n];
+				if (s < allocatedSize) {
+//					switch (align) {
+//						case LayoutAlignment.Center:
 						cellOffset = (allocatedSize - s) / 2;
 						allocatedSize = s;
-					}
+//						break;
+//						case LayoutAlignment.Start:
+//						cellOffset = 0;
+//						allocatedSize = s;
+//						break;
+//						case LayoutAlignment.End:
+//						cellOffset = allocatedSize - s;
+//						allocatedSize = s;
+//						break;
+//					}
 				}
-				
+
 				// cellOffset is the offset of the widget inside the cell. We store it in NextX/Y, and
 				// will be used below to calculate the total offset of the widget
-				
-				if (calcHeights) {
+
+				if (orientation == Orientation.Vertical) {
 					bp.NextHeight = allocatedSize;
 					bp.NextY = cellOffset;
 				}	
@@ -548,97 +583,137 @@ namespace Xwt
 					bp.NextX = cellOffset;
 				}
 			}
-			
+
 			if (calcOffsets) {
-				var sortedChildren = visibleChildren.OrderBy (c => GetStartAttach (c, calcHeights)).ToArray();
+				var sortedChildren = visibleChildren.OrderBy (c => GetStartAttach (c, orientation)).ToArray();
 				var cells = fixedSizesByCell.OrderBy (c => c.Key);
 				double offset = 0;
 				int n = 0;
 				foreach (var c in cells) {
 					if (c.Key > 0)
-						offset += GetSpacing (c.Key, calcHeights);
-					while (n < sortedChildren.Length && GetStartAttach (sortedChildren[n], calcHeights) == c.Key) {
+						offset += GetSpacing (c.Key, orientation);
+					while (n < sortedChildren.Length && GetStartAttach (sortedChildren[n], orientation) == c.Key) {
 						// In the loop above we store the offset of the widget inside the cell in the NextX/Y field
 						// so now we have to add (not just assign) the offset of the cell to NextX/Y
-						if (calcHeights)
+						if (orientation == Orientation.Vertical)
 							sortedChildren[n].NextY += offset;
 						else
 							sortedChildren[n].NextX += offset;
 						n++;
 					}
-					offset += c.Value.NaturalSize;
+					offset += c.Value;
+				}
+			}
+		}
+
+		void ReduceProportional (Dictionary<int,double> sizes, IEnumerable<int> indexes, double amount)
+		{
+			var total = indexes.Sum (i => sizes[i]); 
+			foreach (var i in indexes.ToArray ()) {
+				double size = sizes [i]; 
+				var am = amount * (size / total); 
+				sizes [i] = size - am;
+			}
+		}
+
+		void RoundSizes (Dictionary<int,double> sizes)
+		{
+			double rem = 0;
+			for (int i = 0; i < sizes.Count; i++) {
+				var kvp = sizes.ElementAt (i);
+				double size = Math.Floor (kvp.Value);
+				rem += kvp.Value - size;
+				sizes[kvp.Key] = size;
+			}
+			while (rem > 0) {
+				for (int i = 0; i < sizes.Count; i++) {
+					var kvp = sizes.ElementAt (i);
+					sizes[kvp.Key] = kvp.Value - 1;
+					if (--rem <= 0)
+						break;
+				}
+			}
+		}
+
+		class CellSizeVector
+		{
+			internal TablePlacement[] visibleChildren;
+			internal Dictionary<int,double> fixedSizesByCell;
+			internal HashSet<int> cellsWithExpand;
+			internal double[] sizes;
+			internal double spacing;
+			internal Orientation orientation;
+			double totalSize = -1;
+
+			public double TotalSize {
+				get {
+					if (totalSize == -1) {
+						totalSize = spacing;
+						foreach (var s in fixedSizesByCell.Values)
+							totalSize += s;
+					}
+					return totalSize;
 				}
 			}
 		}
 		
-		WidgetSize CalcSize (SizeRequestMode mode, bool calcHeights)
+		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			TablePlacement[] visibleChildren;
-			Dictionary<int,WidgetSize> fixedSizesByCell;
-			HashSet<int> cellsWithExpand;
-			WidgetSize[] sizes;
-			double spacing;
+			TablePlacement[] visibleChildren = VisibleChildren ();
 
-			CalcDefaultSizes (mode, calcHeights, out visibleChildren, out fixedSizesByCell, out cellsWithExpand, out sizes, out spacing);
+			if (!widthConstraint.IsConstrained && !heightConstraint.IsConstrained) {
+				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
+				var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
+				var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
+				return new Size (w.TotalSize, h.TotalSize);
+			}
+			else if (!widthConstraint.IsConstrained) {
+				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
+				var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
+				CalcCellSizes (h, heightConstraint.RequiredSize, false);
 
-			WidgetSize size = new WidgetSize (spacing);
-			foreach (var s in fixedSizesByCell.Values)
-				size += s;
-			return size;
+				childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, true);
+				var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
+				return new Size (w.TotalSize, heightConstraint.RequiredSize);
+			}
+			else if (!heightConstraint.IsConstrained) {
+				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
+				var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
+				CalcCellSizes (w, widthConstraint.RequiredSize, false);
+
+				childrenSizes = GetPreferredChildrenSizes (visibleChildren, true, false);
+				var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
+				return new Size (widthConstraint.RequiredSize, h.TotalSize);
+			}
+			else {
+				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
+				var width = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
+				var height = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
+
+				if (width.TotalSize <= widthConstraint.RequiredSize)
+					return new Size (width.TotalSize, height.TotalSize);
+
+				CalcCellSizes (width, widthConstraint.RequiredSize, false);
+				childrenSizes = GetPreferredChildrenSizes (visibleChildren, true, false);
+				height = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
+				return new Size (widthConstraint.RequiredSize, Math.Min (heightConstraint.RequiredSize, height.TotalSize));
+			}
 		}
-		
-		protected override WidgetSize OnGetPreferredWidth ()
+
+		int GetStartAttach (TablePlacement tp, Orientation orientation)
 		{
-			return CalcSize (SizeRequestMode.HeightForWidth, false);
-		}
-		
-		protected override WidgetSize OnGetPreferredHeight ()
-		{
-			return CalcSize (SizeRequestMode.WidthForHeight, true);
-		}
-		
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			CalcDefaultSizes (SizeRequestMode.HeightForWidth, width, false, false);
-			return CalcSize (SizeRequestMode.HeightForWidth, true);
-		}
-		
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			CalcDefaultSizes (SizeRequestMode.WidthForHeight, height, true, false);
-			return CalcSize (SizeRequestMode.HeightForWidth, false);
-		}
-		
-		int GetStartAttach (TablePlacement tp, bool calcHeight)
-		{
-			if (calcHeight)
+			if (orientation == Orientation.Vertical)
 				return tp.Top;
 			else
 				return tp.Left;
 		}
 		
-		int GetEndAttach (TablePlacement tp, bool calcHeight)
+		int GetEndAttach (TablePlacement tp, Orientation orientation)
 		{
-			if (calcHeight)
+			if (orientation == Orientation.Vertical)
 				return tp.Bottom;
 			else
 				return tp.Right;
-		}
-		
-		WidgetSize GetPreferredSize (bool calcHeight, Widget w)
-		{
-			if (calcHeight)
-				return w.Surface.GetPreferredHeight ();
-			else
-				return w.Surface.GetPreferredWidth ();
-		}
-		
-		WidgetSize GetPreferredLengthForSize (SizeRequestMode mode, Widget w, double width)
-		{
-			if (mode == SizeRequestMode.WidthForHeight)
-				return w.Surface.GetPreferredWidthForHeight (width);
-			else
-				return w.Surface.GetPreferredHeightForWidth (width);
 		}
 	}
 	

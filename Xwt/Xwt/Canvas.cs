@@ -91,8 +91,8 @@ namespace Xwt
 		/// </remarks>
 		public void AddChild (Widget w, double x, double y)
 		{
-			var pw = w.Surface.GetPreferredWidth ().NaturalSize;
-			AddChild (w, new Rectangle (x, y, pw, w.Surface.GetPreferredHeightForWidth (pw).NaturalSize));
+			var s = w.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained);
+			AddChild (w, new Rectangle (x, y, s.Width, s.Height));
 		}
 		
 		/// <summary>

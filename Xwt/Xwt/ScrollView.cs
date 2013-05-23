@@ -83,17 +83,8 @@ namespace Xwt
 		protected override void OnReallocate ()
 		{
 			base.OnReallocate ();
-			if (child != null && !child.SupportsCustomScrolling) {
-				if (child.Surface.SizeRequestMode == SizeRequestMode.HeightForWidth) {
-					var w = child.Surface.GetPreferredWidth ();
-					var h = child.Surface.GetPreferredHeightForWidth (w.NaturalSize);
-					Backend.SetChildSize (new Size (w.NaturalSize, h.NaturalSize));
-				} else {
-					var h = child.Surface.GetPreferredHeight ();
-					var w = child.Surface.GetPreferredWidthForHeight (h.NaturalSize);
-					Backend.SetChildSize (new Size (w.NaturalSize, h.NaturalSize));
-				}
-			}
+			if (child != null && !child.SupportsCustomScrolling)
+				Backend.SetChildSize (child.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained));
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {

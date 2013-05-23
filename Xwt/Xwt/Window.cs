@@ -195,20 +195,21 @@ namespace Xwt
 
 			var size = shown ? Size : initialBounds.Size;
 
-			var w = s.GetPreferredWidth ();
+			var wc = widthSet ? SizeContraint.RequireSize (size.Width - padding.HorizontalSpacing) : SizeContraint.Unconstrained;
+			var hc = heightSet ? SizeContraint.RequireSize (size.Height - padding.VerticalSpacing) : SizeContraint.Unconstrained;
+
+			var ws = s.GetPreferredSize (wc, hc);
 
 			if (!shown && !widthSet)
-				size.Width = w.NaturalSize + padding.HorizontalSpacing;
-
-			var h = s.GetPreferredHeightForWidth (size.Width - padding.HorizontalSpacing);
+				size.Width = ws.Width + padding.HorizontalSpacing;
 
 			if (!shown && !heightSet)
-				size.Height = h.NaturalSize + padding.VerticalSpacing;
+				size.Height = ws.Height + padding.VerticalSpacing;
 
-			if (w.MinSize + padding.HorizontalSpacing > size.Width)
-				size.Width = w.MinSize + padding.HorizontalSpacing;
-			if (h.MinSize + padding.VerticalSpacing > size.Height)
-				size.Height = h.MinSize + padding.VerticalSpacing;
+			if (ws.Width + padding.HorizontalSpacing > size.Width)
+				size.Width = ws.Width + padding.HorizontalSpacing;
+			if (ws.Height + padding.VerticalSpacing > size.Height)
+				size.Height = ws.Height + padding.VerticalSpacing;
 
 			if (!BackendHost.EngineBackend.HandlesSizeNegotiation || !shown) {
 	
@@ -223,7 +224,7 @@ namespace Xwt
 				else if (locationSet)
 					Backend.Move (initialBounds.X, initialBounds.Y);
 	
-				Backend.SetMinSize (Backend.ImplicitMinSize + new Size (w.MinSize + padding.HorizontalSpacing, h.MinSize + padding.VerticalSpacing));
+				Backend.SetMinSize (Backend.ImplicitMinSize + new Size (ws.Width + padding.HorizontalSpacing, ws.Height + padding.VerticalSpacing));
 			}
 		}
 	}

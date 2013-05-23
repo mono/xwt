@@ -73,24 +73,17 @@ namespace Xwt
 			}
 		}
 
-		protected override WidgetSize OnGetPreferredHeight ()
+		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			return Content.Surface.GetPreferredHeight () + (2 * padding);
-		}
+			if (widthConstraint.IsConstrained)
+				widthConstraint.RequiredSize -= 2 * padding;
+			if (heightConstraint.IsConstrained)
+				heightConstraint.RequiredSize -= 2 * padding;
 
-		protected override WidgetSize OnGetPreferredWidth ()
-		{
-			return Content.Surface.GetPreferredWidth () + (2 * padding);
-		}
-
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			return Content.Surface.GetPreferredHeightForWidth (Math.Max (width - (2 * padding), 0)) + (2 * padding);
-		}
-
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			return Content.Surface.GetPreferredWidthForHeight (Math.Max (height - (2 * padding), 0)) + (2 * padding);
+			var s = base.OnGetPreferredSize (widthConstraint, heightConstraint);
+			s.Width += 2 * padding;
+			s.Height += 2 * padding;
+			return s;
 		}
 
 		protected override void OnReallocate ()

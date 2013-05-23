@@ -89,24 +89,9 @@ namespace Xwt.Backends
 			Surface.Reallocate ();
 		}
 
-		WidgetSize IWidgetBackend.GetPreferredWidth ()
+		Size IWidgetBackend.GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			return Surface.GetPreferredWidth ();
-		}
-
-		WidgetSize IWidgetBackend.GetPreferredHeightForWidth (double width)
-		{
-			return Surface.GetPreferredHeightForWidth (width);
-		}
-
-		WidgetSize IWidgetBackend.GetPreferredHeight ()
-		{
-			return Surface.GetPreferredHeight ();
-		}
-
-		WidgetSize IWidgetBackend.GetPreferredWidthForHeight (double height)
-		{
-			return Surface.GetPreferredWidthForHeight (height);
+			return Surface.GetPreferredSize (widthConstraint, heightConstraint);
 		}
 
 		void IWidgetBackend.SetDragSource (TransferDataType[] types, DragDropAction dragAction)

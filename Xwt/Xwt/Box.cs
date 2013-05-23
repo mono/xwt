@@ -196,7 +196,7 @@ namespace Xwt
 			Rectangle[] rects = new Rectangle [visibleChildren.Length];
 			
 			if (direction == Orientation.Horizontal) {
-				CalcDefaultSizes (Surface.SizeRequestMode, size.Width, size.Height);
+				CalcDefaultSizes (size.Width, size.Height);
 				double xs = 0;
 				double xe = size.Width + spacing;
 				for (int n=0; n<visibleChildren.Length; n++) {
@@ -210,7 +210,7 @@ namespace Xwt
 						xs += bp.NextSize + spacing;
 				}
 			} else {
-				CalcDefaultSizes (Surface.SizeRequestMode, size.Height, size.Width);
+				CalcDefaultSizes (size.Width, size.Height);
 				double ys = 0;
 				double ye = size.Height + spacing;
 				for (int n=0; n<visibleChildren.Length; n++) {
@@ -232,61 +232,41 @@ namespace Xwt
 			}
 		}
 		
-		void CalcDefaultSizes (SizeRequestMode mode, double totalSize, double lengthConstraint)
+		void CalcDefaultSizes (double width, double height)
 		{
-			bool calcHeights = direction == Orientation.Vertical;
-			bool useLengthConstraint = mode == SizeRequestMode.HeightForWidth && calcHeights || mode == SizeRequestMode.WidthForHeight && !calcHeights;
+			bool vertical = direction == Orientation.Vertical;
 			int nexpands = 0;
-			double naturalSize = 0;
-			
+			double requiredSize = 0;
+			double availableSize = vertical ? height : width;
+
+			var widthConstraint = vertical ? SizeContraint.RequireSize (width) : SizeContraint.Unconstrained;
+			var heightConstraint = vertical ? SizeContraint.Unconstrained : SizeContraint.RequireSize (height);
+
 			var visibleChildren = children.Where (b => b.Child.Visible).ToArray ();
-			var sizes = new Dictionary<BoxPlacement,WidgetSize> ();
+			var sizes = new Dictionary<BoxPlacement,double> ();
 			
 			// Get the natural size of each child
 			foreach (var bp in visibleChildren) {
-				WidgetSize s;
-				if (useLengthConstraint)
-					s = GetPreferredLengthForSize (mode, bp.Child, lengthConstraint);
-				else
-					s = GetPreferredSize (calcHeights, bp.Child);
-				sizes [bp] = s;
-				naturalSize += s.NaturalSize;
-				bp.NextSize = s.NaturalSize;
+				Size s;
+				s = bp.Child.Surface.GetPreferredSize (widthConstraint, heightConstraint);
+				bp.NextSize = vertical ? s.Height : s.Width;
+				sizes [bp] = bp.NextSize;
+				requiredSize += bp.NextSize;
 				if ((bp.BoxMode & BoxMode.Expand) != 0)
 					nexpands++;
 			}
 			
-			double remaining = totalSize - naturalSize - (spacing * (double)(visibleChildren.Length - 1));
+			double remaining = availableSize - requiredSize - (spacing * (double)(visibleChildren.Length - 1));
 			if (remaining < 0) {
 				// The box is not big enough to fit the widgets using its natural size.
 				// We have to shrink the widgets.
 				
-				// List of widgets that we have to shrink
-				var toShrink = new List<BoxPlacement> (visibleChildren);
-				
 				// The total amount we have to shrink
 				double shrinkSize = -remaining;
 				
-				while (toShrink.Count > 0 && shrinkSize > 0) {
-					SizeSplitter sizePart = new SizeSplitter (shrinkSize, toShrink.Count);
-					shrinkSize = 0;
-					for (int i=0; i < toShrink.Count; i++) {
-						var bp = toShrink[i];
-						bp.NextSize -= sizePart.NextSizePart ();
-						
-						WidgetSize size = sizes [bp];
-						
-						if (bp.NextSize < size.MinSize) {
-							// If the widget can't be shrinked anymore, we remove it from the shrink list
-							// and increment the remaining shrink size. We'll loop again and this size will be
-							// substracted from the cells which can still be reduced
-							shrinkSize += (size.MinSize - bp.NextSize);
-							bp.NextSize = size.MinSize;
-							toShrink.RemoveAt (i);
-							i--;
-						}
-					}
-				}
+				var sizePart = new SizeSplitter (shrinkSize, visibleChildren.Length);
+				foreach (var bp in visibleChildren)
+					bp.NextSize -= sizePart.NextSizePart ();
 			}
 			else {
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
@@ -297,90 +277,33 @@ namespace Xwt
 			}
 		}
 		
-		protected override WidgetSize OnGetPreferredWidth ()
+		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			WidgetSize s = new WidgetSize ();
-			
+			Size s = new Size ();
+			int count = 0;
+
 			if (direction == Orientation.Horizontal) {
-				int count = 0;
 				foreach (var cw in Children.Where (b => b.Visible)) {
-					s += cw.Surface.GetPreferredWidth ();
+					var wsize = cw.Surface.GetPreferredSize (SizeContraint.Unconstrained, heightConstraint);
+					s.Width += wsize.Width;
+					if (wsize.Height > s.Height)
+						s.Height = wsize.Height;
 					count++;
 				}
 				if (count > 0)
-					s += spacing * (double)(count - 1);
+					s.Width += spacing * (double)(count - 1);
 			} else {
-				foreach (var cw in Children.Where (b => b.Visible))
-					s = s.UnionWith (cw.Surface.GetPreferredWidth ());
-			}
-			return s;
-		}
-		
-		protected override WidgetSize OnGetPreferredHeight ()
-		{
-			WidgetSize s = new WidgetSize ();
-			
-			if (direction == Orientation.Vertical) {
-				int count = 0;
 				foreach (var cw in Children.Where (b => b.Visible)) {
-					s += cw.Surface.GetPreferredHeight ();
+					var wsize = cw.Surface.GetPreferredSize (widthConstraint, SizeContraint.Unconstrained);
+					s.Height += wsize.Height;
+					if (wsize.Width > s.Width)
+						s.Width = wsize.Width;
 					count++;
 				}
 				if (count > 0)
-					s += spacing * (double)(count - 1);
-			} else {
-				foreach (var cw in Children.Where (b => b.Visible))
-					s = s.UnionWith (cw.Surface.GetPreferredHeight ());
+					s.Height += spacing * (double)(count - 1);
 			}
 			return s;
-		}
-		
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			return GetPreferredLengthForSize (SizeRequestMode.HeightForWidth, width);
-		}
-		
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			return GetPreferredLengthForSize (SizeRequestMode.WidthForHeight, height);
-		}
-		
-		WidgetSize GetPreferredLengthForSize (SizeRequestMode mode, double width)
-		{
-			WidgetSize s = new WidgetSize ();
-			
-			if ((direction == Orientation.Horizontal && mode == SizeRequestMode.HeightForWidth) || (direction == Orientation.Vertical && mode == SizeRequestMode.WidthForHeight)) {
-				CalcDefaultSizes (mode, width, -1);
-				foreach (var bp in children.Where (b => b.Child.Visible)) {
-					s = s.UnionWith (GetPreferredLengthForSize (mode, bp.Child, bp.NextSize));
-				}
-			}
-			else {
-				int count = 0;
-				foreach (var bp in children.Where (b => b.Child.Visible)) {
-					s += GetPreferredLengthForSize (mode, bp.Child, width);
-					count++;
-				}
-				if (count > 0)
-					s += spacing * (double)(count - 1);
-			}
-			return s;
-		}
-		
-		WidgetSize GetPreferredSize (bool calcHeight, Widget w)
-		{
-			if (calcHeight)
-				return w.Surface.GetPreferredHeight ();
-			else
-				return w.Surface.GetPreferredWidth ();
-		}
-		
-		WidgetSize GetPreferredLengthForSize (SizeRequestMode mode, Widget w, double width)
-		{
-			if (mode == SizeRequestMode.WidthForHeight)
-				return w.Surface.GetPreferredWidthForHeight (width);
-			else
-				return w.Surface.GetPreferredHeightForWidth (width);
 		}
 	}
 	

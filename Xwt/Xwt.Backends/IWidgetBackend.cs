@@ -66,10 +66,8 @@ namespace Xwt.Backends
 		void SetFocus ();
 		
 		void UpdateLayout ();
-		WidgetSize GetPreferredWidth ();
-		WidgetSize GetPreferredHeightForWidth (double width);
-		WidgetSize GetPreferredHeight ();
-		WidgetSize GetPreferredWidthForHeight (double height);
+
+		Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint);
 
 		object NativeWidget { get; }
 		
@@ -144,11 +142,8 @@ namespace Xwt.Backends
         void OnMouseScrolled(MouseScrolledEventArgs args);
 
 		// Events
-		WidgetSize OnGetPreferredWidth ();
-		WidgetSize OnGetPreferredHeight ();
-		WidgetSize OnGetPreferredHeightForWidth (double width);
-		WidgetSize OnGetPreferredWidthForHeight (double height);
-		
+		Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint);
+
 		/// <summary>
 		/// Notifies the frontend that the preferred size of this widget has changed
 		/// </summary>
@@ -162,8 +157,7 @@ namespace Xwt.Backends
 		/// a result of clicking on it.
 		/// </remarks>
 		void OnPreferredSizeChanged ();
-		SizeRequestMode GetSizeRequestMode ();
-		
+
 		bool SupportsCustomScrolling ();
 		void SetScrollAdjustments (IScrollAdjustmentBackend horizontal, IScrollAdjustmentBackend vertical);
 		
@@ -191,20 +185,17 @@ namespace Xwt.Backends
 		DragLeave = 1 << 4,
 		KeyPressed = 1 << 5,
 		KeyReleased = 1 << 6,
-		PreferredWidthCheck = 1 << 7,
-		PreferredHeightCheck = 1 << 8,
-		PreferredWidthForHeightCheck = 1 << 9,
-		PreferredHeightForWidthCheck = 1 << 10,
-		GotFocus = 1 << 11,
-		LostFocus = 1 << 12,
-		MouseEntered = 1 << 13,
-		MouseExited = 1 << 14,
-		ButtonPressed = 1 << 15,
-		ButtonReleased = 1 << 16,
-		MouseMoved = 1 << 17,
-		DragStarted = 1 << 18,
-		BoundsChanged = 1 << 19,
-        MouseScrolled = 1 << 20
+		PreferredSizeCheck = 1 << 7,
+		GotFocus = 1 << 8,
+		LostFocus = 1 << 9,
+		MouseEntered = 1 << 10,
+		MouseExited = 1 << 11,
+		ButtonPressed = 1 << 12,
+		ButtonReleased = 1 << 13,
+		MouseMoved = 1 << 14,
+		DragStarted = 1 << 15,
+		BoundsChanged = 1 << 16,
+        MouseScrolled = 1 << 17
 	}
 	
 	public class DragStartData

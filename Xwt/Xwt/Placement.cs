@@ -112,27 +112,9 @@ namespace Xwt
 			double childWidth, childHeight;
 
 			if (child != null) {
-				if (child.Surface.SizeRequestMode == SizeRequestMode.HeightForWidth) {
-					childWidth = child.Surface.GetPreferredWidth ().NaturalSize;
-					if (childWidth > size.Width)
-						childWidth = size.Width;
-					childHeight = child.Surface.GetPreferredHeightForWidth (childWidth).NaturalSize;
-					if (childHeight > size.Height)
-						childHeight = size.Height;
-				}
-				else {
-					childHeight = child.Surface.GetPreferredHeight ().NaturalSize;
-					if (childHeight > size.Height)
-						childHeight = size.Height;
-					childWidth = child.Surface.GetPreferredWidthForHeight (childHeight).NaturalSize;
-					if (childWidth > size.Width)
-						childWidth = size.Width;
-				}
-
-				if (childWidth < 0)
-					childWidth = 0;
-				if (childHeight < 0)
-					childHeight = 0;
+				var s = child.Surface.GetPreferredSize (SizeContraint.RequireSize (size.Width), SizeContraint.RequireSize (size.Height));
+				childWidth = s.Width;
+				childHeight = s.Height;
 
 				var x = XAlign * (size.Width - childWidth - Padding.HorizontalSpacing) + Padding.Left - Padding.Right;
 				var y = YAlign * (size.Height - childHeight - Padding.VerticalSpacing) + Padding.Top - Padding.Bottom;
@@ -144,36 +126,12 @@ namespace Xwt
 			}
 		}
 
-		protected override WidgetSize OnGetPreferredHeight ()
+		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			WidgetSize s = new WidgetSize ();
 			if (child != null)
-				s += child.Surface.GetPreferredHeight ();
-			return s;
-		}
-
-		protected override WidgetSize OnGetPreferredWidth ()
-		{
-			WidgetSize s = new WidgetSize ();
-			if (child != null)
-				s += child.Surface.GetPreferredWidth ();
-			return s;
-		}
-
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			WidgetSize s = new WidgetSize ();
-			if (child != null)
-				s += child.Surface.GetPreferredHeightForWidth (width);
-			return s;
-		}
-
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			WidgetSize s = new WidgetSize ();
-			if (child != null)
-				s += child.Surface.GetPreferredWidthForHeight (height);
-			return s;
+				return child.Surface.GetPreferredSize (widthConstraint, heightConstraint);
+			else
+				return Size.Zero;
 		}
 	}
 }
