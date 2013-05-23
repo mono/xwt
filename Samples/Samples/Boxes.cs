@@ -58,6 +58,25 @@ namespace Samples
 				box6.PackStart (w);
 			}
 			PackStart (box6);
+
+			VBox box7 = new VBox () { Spacing = 0 };
+			box7.BackgroundColor = Colors.White;
+
+			box7.PackStart (new Label("Hi there") { Margin = new WidgetSpacing (10, 10, 0, 0) });
+			box7.PackStart (new SpecialWidget() { MarginTop = 15 });
+			box7.PackStart (new SpecialWidget() { Margin = 5 });
+			PackStart (box7);
+		}
+	}
+
+	class SpecialWidget: Widget
+	{
+		public SpecialWidget ()
+		{
+			VBox bl = new VBox () { Spacing = 0 };
+			bl.BackgroundColor = Colors.Gray;
+			bl.PackStart (new Label ("Hi there"));
+			Content = bl;
 		}
 	}
 	
