@@ -84,6 +84,7 @@ namespace Xwt.Mac
 				Widget.SetButtonType (NSButtonType.MomentaryPushIn);
 				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
 				break;
+			case ButtonStyle.Borderless:
 			case ButtonStyle.Flat:
 				Widget.BezelStyle = NSBezelStyle.Rounded;
 				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
