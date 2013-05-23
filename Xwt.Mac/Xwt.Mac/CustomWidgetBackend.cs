@@ -33,6 +33,8 @@ namespace Xwt.Mac
 {
 	public class CustomWidgetBackend: ViewBackend<NSView,IWidgetEventSink>, ICustomWidgetBackend
 	{
+		ViewBackend childBackend;
+
 		public CustomWidgetBackend ()
 		{
 		}
@@ -44,17 +46,52 @@ namespace Xwt.Mac
 
 		public void SetContent (IWidgetBackend widget)
 		{
-			var view = Widget;
-			foreach (var subview in view.Subviews) {
-				subview.RemoveFromSuperview ();
-				subview.AutoresizingMask = NSViewResizingMask.NotSizable;
+			if (childBackend != null) {
+				childBackend.Widget.RemoveFromSuperview ();
+				childBackend.Widget.AutoresizingMask = NSViewResizingMask.NotSizable;
 			}
+			if (widget == null)
+				return;
 
-			var newView = GetWidget (widget);
-			newView.Frame = view.Bounds;
-			newView.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
-			view.AddSubview (newView);
+			var view = Widget;
+			childBackend = (ViewBackend)widget;
+			var childView = childBackend.Widget;
+			childView.Frame = view.Bounds;
+			childView.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+			view.AddSubview (childView);
 			view.SetNeedsDisplayInRect (view.Bounds);
+		}
+		
+		public override WidgetSize GetPreferredWidth ()
+		{
+			if (childBackend != null)
+				return childBackend.Frontend.Surface.GetPreferredWidth ();
+			else
+				return base.GetPreferredWidth ();
+		}
+
+		public override WidgetSize GetPreferredHeight ()
+		{
+			if (childBackend != null)
+				return childBackend.Frontend.Surface.GetPreferredHeight ();
+			else
+				return base.GetPreferredHeight ();
+		}
+
+		public override WidgetSize GetPreferredHeightForWidth (double width)
+		{
+			if (childBackend != null)
+				return childBackend.Frontend.Surface.GetPreferredHeightForWidth (width);
+			else
+				return base.GetPreferredHeightForWidth (width);
+		}
+
+		public override WidgetSize GetPreferredWidthForHeight (double height)
+		{
+			if (childBackend != null)
+				return childBackend.Frontend.Surface.GetPreferredWidthForHeight (height);
+			else
+				return base.GetPreferredWidthForHeight (height);
 		}
 	}
 
