@@ -218,7 +218,7 @@ namespace Xwt
 			for (int n=0; n<visibleChildren.Length; n++) {
 				var bp = visibleChildren [n];
 				widgets [n] = (IWidgetBackend)GetBackend (bp.Child);
-				rects [n] = new Rectangle (bp.NextX, bp.NextY, bp.NextWidth, bp.NextHeight);
+				rects [n] = new Rectangle (bp.NextX, bp.NextY, bp.NextWidth, bp.NextHeight).Round ();
 			}
 			
 			Backend.SetAllocation (widgets, rects);

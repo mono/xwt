@@ -137,7 +137,7 @@ namespace Xwt
 				var x = XAlign * (size.Width - childWidth - Padding.HorizontalSpacing) + Padding.Left - Padding.Right;
 				var y = YAlign * (size.Height - childHeight - Padding.VerticalSpacing) + Padding.Top - Padding.Bottom;
 
-				Backend.SetAllocation (new[] { (IWidgetBackend)GetBackend (child) }, new[] { new Rectangle (x, y, childWidth, childHeight) });
+				Backend.SetAllocation (new[] { (IWidgetBackend)GetBackend (child) }, new[] { new Rectangle (x, y, childWidth, childHeight).Round () });
 
 				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					child.Surface.Reallocate ();
