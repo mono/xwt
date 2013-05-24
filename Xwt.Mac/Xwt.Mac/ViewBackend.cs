@@ -304,30 +304,9 @@ namespace Xwt.Mac
 			return lastFittingSize;
 		}
 
-		public virtual WidgetSize GetPreferredWidth ()
+		public virtual Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			var w = GetNaturalSize ().Width;
-			if (minWidth != -1 && minWidth > w)
-				w = minWidth;
-			return new Xwt.WidgetSize (w, w);
-		}
-		
-		public virtual WidgetSize GetPreferredHeight ()
-		{
-			var h = GetNaturalSize ().Height;
-			if (minHeight != -1 && minHeight > h)
-				h = minHeight;
-			return new Xwt.WidgetSize (h, h);
-		}
-
-		public virtual WidgetSize GetPreferredHeightForWidth (double width)
-		{
-			return GetPreferredHeight ();
-		}
-
-		public virtual WidgetSize GetPreferredWidthForHeight (double height)
-		{
-			return GetPreferredWidth ();
+			return GetNaturalSize ();
 		}
 		
 		protected double minWidth = -1, minHeight = -1;
@@ -396,10 +375,8 @@ namespace Xwt.Mac
 		}
 
 		void AutoUpdateSize ()
-		{
-			var ws = Frontend.Surface.GetPreferredWidth ();
-			var h = Frontend.Surface.GetPreferredHeightForWidth (ws.NaturalSize);
-			Widget.SetFrameSize (new SizeF ((float)ws.NaturalSize, (float)h.NaturalSize));
+		{	var s = Frontend.Surface.GetPreferredSize ();
+			Widget.SetFrameSize (new SizeF ((float)s.Width, (float)s.Height));
 		}
 
 		NSObject gotFocusObserver;

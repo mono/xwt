@@ -75,20 +75,18 @@ namespace Xwt.Mac
 			return h;
 		}
 
-		public override WidgetSize GetPreferredWidth ()
+		public override Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			var w = (double) Widget.TextStorage.Size.Width;
-			if (minWidth != -1 && minWidth > w)
-				w = minWidth;
-			return new WidgetSize (w, w);
-		}
+			var width = (double) Widget.TextStorage.Size.Width;
+			if (widthConstraint.IsConstrained)
+				width = widthConstraint.RequiredSize;
+			if (minWidth != -1 && minWidth > width)
+				width = minWidth;
 
-		public override WidgetSize GetPreferredHeightForWidth (double width)
-		{
-			var h = CalcHeight (width);
-			if (minHeight != -1 && minHeight > h)
-				h = minHeight;
-			return new Xwt.WidgetSize (h, h);
+			var height = CalcHeight (width);
+			if (minHeight != -1 && minHeight > height)
+				height = minHeight;
+			return new Size (width, height);
 		}
 
 		public IRichTextBuffer CreateBuffer ()

@@ -63,9 +63,7 @@ namespace Xwt.Mac
 		{
 			var s = Widget.SizeOfDecorations;
 			if (Widget.Box.Expanded && child != null) {
-				var w = child.Frontend.Surface.GetPreferredWidth ().MinSize;
-				var h = child.Frontend.Surface.GetPreferredHeightForWidth (w).MinSize;
-				s += new Size (w, h);
+				s += child.Frontend.Surface.GetPreferredSize ();
 			}
 			return s;
 		}

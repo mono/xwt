@@ -47,9 +47,8 @@ namespace Xwt.Mac
 
 		protected override void OnSizeToFit ()
 		{
-			var w = EventSink.OnGetPreferredWidth ().MinSize;
-			var h = EventSink.OnGetPreferredHeightForWidth (w).MinSize;
-			Widget.SetFrameSize (new System.Drawing.SizeF ((float)w, (float)h)); 
+			var s = EventSink.GetPreferredSize ();
+			Widget.SetFrameSize (new System.Drawing.SizeF ((float)s.Width, (float)s.Height)); 
 		}
 
 		public Rectangle Bounds {

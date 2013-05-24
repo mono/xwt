@@ -61,11 +61,10 @@ namespace Xwt.Mac
 		public override void SetMinSize (Size s)
 		{
 			minSize = s;
-			var w = buttonBox.Surface.GetPreferredWidth ().MinSize;
-			var h = buttonBox.Surface.GetPreferredHeightForWidth (w).MinSize;
-			if (w > s.Width)
-				s.Width = w;
-			s.Height += h;
+			var bs = buttonBox.Surface.GetPreferredSize ();
+			if (bs.Width > s.Width)
+				s.Width = bs.Width;
+			s.Height += bs.Height;
 			base.SetMinSize (s);
 		}
 

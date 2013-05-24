@@ -61,37 +61,13 @@ namespace Xwt.Mac
 			view.AddSubview (childView);
 			view.SetNeedsDisplayInRect (view.Bounds);
 		}
-		
-		public override WidgetSize GetPreferredWidth ()
-		{
-			if (childBackend != null)
-				return childBackend.Frontend.Surface.GetPreferredWidth ();
-			else
-				return base.GetPreferredWidth ();
-		}
 
-		public override WidgetSize GetPreferredHeight ()
+		protected override Size GetNaturalSize ()
 		{
 			if (childBackend != null)
-				return childBackend.Frontend.Surface.GetPreferredHeight ();
+				return childBackend.Frontend.Surface.GetPreferredSize ();
 			else
-				return base.GetPreferredHeight ();
-		}
-
-		public override WidgetSize GetPreferredHeightForWidth (double width)
-		{
-			if (childBackend != null)
-				return childBackend.Frontend.Surface.GetPreferredHeightForWidth (width);
-			else
-				return base.GetPreferredHeightForWidth (width);
-		}
-
-		public override WidgetSize GetPreferredWidthForHeight (double height)
-		{
-			if (childBackend != null)
-				return childBackend.Frontend.Surface.GetPreferredWidthForHeight (height);
-			else
-				return base.GetPreferredWidthForHeight (height);
+				return base.GetNaturalSize ();
 		}
 	}
 

@@ -110,11 +110,11 @@ namespace Xwt.Mac
 			} else {
 				NSView view = (NSView)Widget.DocumentView;
 				ViewBackend c = (ViewBackend)child;
-				var pw = c.Frontend.Surface.GetPreferredWidth ();
-				var w = Math.Max (pw.NaturalSize, Widget.ContentView.Frame.Width);
-				var ph = c.Frontend.Surface.GetPreferredHeightForWidth (w);
-				var h = Math.Max (ph.NaturalSize, Widget.ContentView.Frame.Height);
-				view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)w, (float)h);
+				var s = c.Frontend.Surface.GetPreferredSize ();
+				if (Widget.ContentView.Frame.Width > s.Width)
+					s = c.Frontend.Surface.GetPreferredSize (SizeContraint.RequireSize (Widget.ContentView.Frame.Width), SizeContraint.Unconstrained);
+				var h = Math.Max (s.Height, Widget.ContentView.Frame.Height);
+				view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)s.Width, (float)h);
 			}
 		}
 		
