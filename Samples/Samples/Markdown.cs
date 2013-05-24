@@ -159,8 +159,8 @@ Features:
 				}
 			};
 
-			PackStart (button, BoxMode.FillAndExpand);
-			PackStart (scrolled, BoxMode.FillAndExpand);
+			PackStart (button, true);
+			PackStart (scrolled, true);
 		}
 	}
 }

@@ -12,10 +12,10 @@ namespace Samples
 			HBox box = new HBox ();
 			
 			SimpleBox b1 = new SimpleBox (30);
-			box.PackStart (b1, BoxMode.None);
+			box.PackStart (b1, fill:false);
 			
 			b2 = new Button ("Drop here");
-			box.PackEnd (b2, BoxMode.None);
+			box.PackEnd (b2);
 			
 			b1.ButtonPressed += delegate {
 				var d = b1.CreateDragOperation ();

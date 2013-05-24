@@ -97,43 +97,70 @@ namespace Xwt
 		
 		public void PackStart (Widget widget)
 		{
-			PackStart (widget, BoxMode.None, 0);
+			Pack (widget, null, null, PackOrigin.Start);
 		}
 		
+		public void PackStart (Widget widget, bool? expand = false, bool? fill = true)
+		{
+			WidgetAlignment? align = fill.HasValue ? (WidgetAlignment?)(fill.Value ? WidgetAlignment.Fill : WidgetAlignment.Center) : null;
+			Pack (widget, expand, align, PackOrigin.Start);
+		}
+
+		public void PackStart (Widget widget, bool? expand = false, WidgetAlignment? align = WidgetAlignment.Fill)
+		{
+			Pack (widget, expand, align, PackOrigin.Start);
+		}
+
+		[Obsolete ("BoxMode is going away")]
 		public void PackStart (Widget widget, BoxMode mode)
 		{
-			PackStart (widget, mode, 0);
-		}
-		
-		public void PackStart (Widget widget, BoxMode mode, double padding)
-		{
-			Pack (widget, mode, padding, PackOrigin.Start);
+			bool expand = (mode & BoxMode.Expand) != 0;
+			bool fill = (mode & BoxMode.Fill) != 0;
+			PackStart (widget, expand, fill);
 		}
 		
 		public void PackEnd (Widget widget)
 		{
-			PackEnd (widget, BoxMode.None, 0);
+			Pack (widget, null, null, PackOrigin.End);
 		}
 		
+		public void PackEnd (Widget widget, bool? expand = false, bool? fill = true)
+		{
+			WidgetAlignment? align = fill.HasValue ? (WidgetAlignment?)(fill.Value ? WidgetAlignment.Fill : WidgetAlignment.Center) : null;
+			Pack (widget, expand, align, PackOrigin.End);
+		}
+
+		public void PackEnd (Widget widget, bool? expand = false, WidgetAlignment? align = WidgetAlignment.Fill)
+		{
+			Pack (widget, expand, align, PackOrigin.End);
+		}
+
+		[Obsolete ("BoxMode is going away")]
 		public void PackEnd (Widget widget, BoxMode mode)
 		{
-			PackEnd (widget, mode, 0);
+			bool expand = (mode & BoxMode.Expand) != 0;
+			bool fill = (mode & BoxMode.Fill) != 0;
+			PackEnd (widget, expand, fill);
 		}
-		
-		public void PackEnd (Widget widget, BoxMode mode, double padding)
+
+		void Pack (Widget widget, bool? expand, WidgetAlignment? align, PackOrigin ptype)
 		{
-			Pack (widget, mode, padding, PackOrigin.End);
-		}
-		
-		void Pack (Widget widget, BoxMode mode, double padding, PackOrigin ptype)
-		{
+			if (expand.HasValue) {
+				if (direction == Orientation.Vertical)
+					widget.ExpandVertical = expand.Value;
+				else
+					widget.ExpandHorizontal = expand.Value;
+			}
+			if (align.HasValue) {
+				if (direction == Orientation.Vertical)
+					widget.AlignVertical = align.Value;
+				else
+					widget.AlignHorizontal = align.Value;
+			}
+
 			if (widget == null)
 				throw new ArgumentNullException ("widget");
-			if (padding < 0)
-				throw new ArgumentException ("padding can't be negative");
 			var p = new BoxPlacement ((WidgetBackendHost)BackendHost, widget);
-			p.BoxMode = mode;
-			p.Padding = padding;
 			p.PackOrigin = ptype;
 			children.Add (p);
 		}
@@ -205,9 +232,11 @@ namespace Xwt
 						xe -= bp.NextSize + spacing;
 
 					double width = bp.NextSize >= 0 ? bp.NextSize : 0;
-					double height = Math.Min (bp.Child.Surface.GetPreferredHeightForWidth (width).NaturalSize + bp.Child.Margin.VerticalSpacing, size.Height);
+					double height =  size.Height;
+					if (bp.Child.AlignVertical != WidgetAlignment.Fill)
+						height =  Math.Min (bp.Child.Surface.GetPreferredSize (width, SizeContraint.Unconstrained).Height + bp.Child.Margin.VerticalSpacing, height);
 					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
-					double y = (size.Height - height) * bp.Child.AlignVertical.Value;
+					double y = (size.Height - height) * bp.Child.AlignVertical.GetValue ();
 
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
 					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ();
@@ -223,9 +252,11 @@ namespace Xwt
 					if (bp.PackOrigin == PackOrigin.End)
 						ye -= bp.NextSize + spacing;
 
-					double width = Math.Min (bp.Child.Surface.GetPreferredWidth ().NaturalSize + bp.Child.Margin.HorizontalSpacing, size.Width);
 					double height = bp.NextSize >= 0 ? bp.NextSize : 0;
-					double x = (size.Width - width) * bp.Child.AlignHorizontal.Value;
+					double width = size.Width;
+					if (bp.Child.AlignHorizontal != WidgetAlignment.Fill)
+						width = Math.Min (bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, height).Width + bp.Child.Margin.HorizontalSpacing, width);
+					double x = (size.Width - width) * bp.Child.AlignHorizontal.GetValue();
 					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
 
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
@@ -262,7 +293,7 @@ namespace Xwt
 				bp.NextSize = vertical ? s.Height : s.Width;
 				sizes [bp] = bp.NextSize;
 				requiredSize += bp.NextSize;
-				if ((bp.BoxMode & BoxMode.Expand) != 0)
+				if (bp.Child.ExpandsForOrientation (direction))
 					nexpands++;
 			}
 			
@@ -281,7 +312,7 @@ namespace Xwt
 			else {
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
 				foreach (var bp in visibleChildren) {
-					if ((bp.BoxMode & BoxMode.Expand) != 0)
+					if (bp.Child.ExpandsForOrientation (direction))
 						bp.NextSize += expandRemaining.NextSizePart ();
 				}
 			}
@@ -331,8 +362,6 @@ namespace Xwt
 	{
 		IContainerEventSink<BoxPlacement> parent;
 		int position;
-		BoxMode boxMode = BoxMode.None;
-		double padding;
 		PackOrigin packType = PackOrigin.Start;
 		Widget child;
 		
@@ -351,28 +380,6 @@ namespace Xwt
 			set {
 				position = value;
 				parent.ChildChanged (this, "Position");
-			}
-		}
-		
-		[DefaultValue (BoxMode.None)]
-		public BoxMode BoxMode {
-			get {
-				return this.boxMode;
-			}
-			set {
-				boxMode = value;
-				parent.ChildChanged (this, "BoxMode");
-			}
-		}
-
-		[DefaultValue (0d)]
-		public double Padding {
-			get {
-				return this.padding;
-			}
-			set {
-				padding = value;
-				parent.ChildChanged (this, "Padding");
 			}
 		}
 

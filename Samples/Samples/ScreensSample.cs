@@ -38,7 +38,7 @@ namespace Samples
 
 			var c = new ScreensCanvas ();
 			c.Margin = 30;
-			PackStart (c, BoxMode.FillAndExpand);
+			PackStart (c, true);
 		}
 	}
 

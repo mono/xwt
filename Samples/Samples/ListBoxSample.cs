@@ -43,7 +43,7 @@ namespace Samples
 			for (int n=0; n<100; n++)
 				list.Items.Add ("Value " + n);
 			
-			PackStart (list, BoxMode.FillAndExpand);
+			PackStart (list, true);
 			
 			// Custom list box
 			
@@ -60,7 +60,7 @@ namespace Samples
 				store.SetValue (r, icon, png);
 				store.SetValue (r, name, "Value " + n);
 			}
-			PackStart (customList, BoxMode.FillAndExpand);
+			PackStart (customList, true);
 		}	
 	}
 }

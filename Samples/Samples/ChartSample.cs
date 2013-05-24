@@ -31,7 +31,7 @@ namespace Samples
 			chart.SetAutoScale (AxisDimension.X, true, true);
 			chart.SetAutoScale (AxisDimension.Y, true, true);
 			
-			PackStart (chart, BoxMode.FillAndExpand);
+			PackStart (chart, true);
 		}
 	}
 }

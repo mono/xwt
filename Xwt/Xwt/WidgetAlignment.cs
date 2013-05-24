@@ -27,64 +27,12 @@ using System;
 
 namespace Xwt
 {
-	public struct WidgetAlignment
+	public enum WidgetAlignment
 	{
-		float value;
-
-		public static readonly WidgetAlignment Start = WidgetAlignment.FromValue (0f);
-		public static readonly WidgetAlignment Center = WidgetAlignment.FromValue (0.5f);
-		public static readonly WidgetAlignment End = WidgetAlignment.FromValue (1f);
-
-		public float Value {
-			get {
-				return value;
-			}
-			set {
-				if (value < 0)
-					this.value = 0;
-				else if (value > 1)
-					this.value = 1;
-				else
-					this.value = value;
-			}
-		}
-
-		public static WidgetAlignment FromValue (float value)
-		{
-			return new WidgetAlignment () { Value = value };
-		}
-
-		public static bool operator == (WidgetAlignment s1, WidgetAlignment s2)
-		{
-			return s1.value == s2.value;
-		}
-
-		public static bool operator != (WidgetAlignment s1, WidgetAlignment s2)
-		{
-			return s1.value != s2.value;
-		}
-		
-		public override bool Equals (object ob)
-		{
-			return (ob is WidgetAlignment) && value == ((WidgetAlignment)ob).value;
-		}
-
-		public override int GetHashCode ()
-		{
-			return value.GetHashCode ();
-		}
-		
-		public override string ToString ()
-		{
-			if (this == Start)
-				return "Start";
-			else if (this == Center)
-				return "Center";
-			else if (this == End)
-				return "End";
-			else
-				return value.ToString ();
-		}
+		Start,
+		Center,
+		End,
+		Fill
 	}
 }
 

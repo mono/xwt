@@ -11,14 +11,14 @@ namespace Samples
 			HBox box1 = new HBox ();
 			
 			VBox box2 = new VBox ();
-			box2.PackStart (new SimpleBox (30), BoxMode.None);
-			box2.PackStart (new SimpleBox (30), BoxMode.None);
-			box2.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box2.PackStart (new SimpleBox (30));
+			box2.PackStart (new SimpleBox (30));
+			box2.PackStart (new SimpleBox (30), true);
 			
-			box1.PackStart (box2, BoxMode.FillAndExpand);
-			box1.PackStart (new SimpleBox (30), BoxMode.None);
-			box1.PackStart (new SimpleBox (30), BoxMode.Expand);
-			PackStart (box1, BoxMode.None);
+			box1.PackStart (box2, true);
+			box1.PackStart (new SimpleBox (30));
+			box1.PackStart (new SimpleBox (30), expand:true, fill:false);
+			PackStart (box1);
 			
 			HBox box3 = new HBox ();
 			box3.PackEnd (new SimpleBox (30));
@@ -26,7 +26,7 @@ namespace Samples
 			box3.PackEnd (new SimpleBox (40));
 			box3.PackStart (new SimpleBox (10) {Color = new Color (1, 0.5, 0.5)});
 			box3.PackEnd (new SimpleBox (30));
-			box3.PackStart (new SimpleBox (10) {Color = new Color (1, 0.5, 0.5)}, BoxMode.FillAndExpand);
+			box3.PackStart (new SimpleBox (10) {Color = new Color (1, 0.5, 0.5)}, true);
 			PackStart (box3);
 			
 			HBox box4 = new HBox ();
@@ -34,18 +34,18 @@ namespace Samples
 			b.Clicked += delegate {
 				b.Label = "Button has grown";
 			};
-			box4.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box4.PackStart (new SimpleBox (30), true);
 			box4.PackStart (b);
-			box4.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box4.PackStart (new SimpleBox (30), true);
 			PackStart (box4);
 			
 			HBox box5 = new HBox ();
 			Button b2 = new Button ("Hide / Show");
-			box5.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box5.PackStart (new SimpleBox (30), true);
 			var hsb = new SimpleBox (20);
-			box5.PackStart (hsb, BoxMode.None);
+			box5.PackStart (hsb, fill:false);
 			box5.PackStart (b2);
-			box5.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box5.PackStart (new SimpleBox (30), true);
 			b2.Clicked += delegate {
 				hsb.Visible = !hsb.Visible;
 			};

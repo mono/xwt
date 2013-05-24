@@ -35,6 +35,11 @@ namespace Xwt
 
 		public static readonly SizeContraint Unconstrained; 
 
+		static public implicit operator SizeContraint (double size)
+		{
+			return new SizeContraint () { RequiredSize = size };
+		}
+
 		public static SizeContraint RequireSize (double size)
 		{
 			return new SizeContraint () { RequiredSize = size };

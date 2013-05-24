@@ -120,7 +120,7 @@ namespace Samples
 			
 			sampleBox = new VBox ();
 			title = new Label ("Sample:");
-			sampleBox.PackStart (title, BoxMode.None);
+			sampleBox.PackStart (title);
 			
 			box.Panel2.Content = sampleBox;
 			box.Panel2.Resize = true;
@@ -156,7 +156,7 @@ namespace Samples
 				if (s.Type != null) {
 					if (s.Widget == null)
 						s.Widget = (Widget)Activator.CreateInstance (s.Type);
-					sampleBox.PackStart (s.Widget, BoxMode.FillAndExpand);
+					sampleBox.PackStart (s.Widget, true);
 				}
 
 			//	Console.WriteLine (System.Xaml.XamlServices.Save (s.Widget));

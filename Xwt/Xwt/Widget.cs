@@ -52,12 +52,11 @@ namespace Xwt
 		double minWidth = -1, minHeight = -1;
 		double widthRequest = -1, heightRequest = -1;
 		CursorType cursor;
-		double referenceWidth, referenceHeight;
-		
-		WidgetAlignment alignVertical;
-		WidgetAlignment alignHorizontal;
-		WidgetExpansion expandVertical;
-		WidgetExpansion expandHorizontal;
+
+		WidgetAlignment alignVertical = WidgetAlignment.Fill;
+		WidgetAlignment alignHorizontal = WidgetAlignment.Fill;
+		bool expandVertical;
+		bool expandHorizontal;
 
 		EventHandler<DragOverCheckEventArgs> dragOverCheck;
 		EventHandler<DragOverEventArgs> dragOver;
@@ -394,7 +393,15 @@ namespace Xwt
 			}
 		}
 
-		public WidgetExpansion ExpandVertical {
+		internal WidgetAlignment AlignmentForOrientation (Orientation or)
+		{
+			if (or == Orientation.Vertical)
+				return AlignVertical;
+			else
+				return AlignHorizontal;
+		}
+
+		public bool ExpandVertical {
 			get { return expandVertical; }
 			set {
 				expandVertical = value;
@@ -402,13 +409,22 @@ namespace Xwt
 			}
 		}
 
-		public WidgetExpansion ExpandHorizontal {
+		public bool ExpandHorizontal {
 			get { return expandHorizontal; }
 			set {
 				expandHorizontal = value;
 				OnPreferredSizeChanged (); 
 			}
 		}
+
+		internal bool ExpandsForOrientation (Orientation or)
+		{
+			if (or == Orientation.Vertical)
+				return ExpandVertical;
+			else
+				return ExpandHorizontal;
+		}
+
 		public void Show ()
 		{
 			Visible = true;

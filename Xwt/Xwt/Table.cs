@@ -119,28 +119,41 @@ namespace Xwt
 		
 		public void Attach (Widget widget, int left, int top)
 		{
-			Attach (widget, left, top, AttachOptions.Fill | AttachOptions.Expand, AttachOptions.Fill | AttachOptions.Expand);
+			Attach (widget, left, top, null, null);
 		}
 		
-		public void Attach (Widget widget, int left, int top, AttachOptions xOptions, AttachOptions yOptions)
+		public void Attach (Widget widget, int left, int top, AttachOptions? xOptions, AttachOptions? yOptions)
 		{
 			Attach (widget, left, left + 1, top, top + 1, xOptions, yOptions);
 		}
 		
 		public void Attach (Widget widget, int left, int right, int top, int bottom)
 		{
-			Attach (widget, left, right, top, bottom, AttachOptions.Fill | AttachOptions.Expand, AttachOptions.Fill | AttachOptions.Expand);
+			Attach (widget, left, right, top, bottom, null, null);
 		}
 		
-		public void Attach (Widget widget, int left, int right, int top, int bottom, AttachOptions xOptions, AttachOptions yOptions)
+		public void Attach (Widget widget, int left, int right, int top, int bottom, AttachOptions? xOptions = null, AttachOptions? yOptions = null)
 		{
+			if (xOptions != null) {
+				widget.ExpandHorizontal = (xOptions.Value & AttachOptions.Expand) != 0;
+				if ((xOptions.Value & AttachOptions.Fill) != 0)
+					widget.AlignHorizontal = WidgetAlignment.Fill;
+				else
+					widget.AlignHorizontal = WidgetAlignment.Center;
+			}
+			if (yOptions != null) {
+				widget.ExpandVertical = (yOptions.Value & AttachOptions.Expand) != 0;
+				if ((yOptions.Value & AttachOptions.Fill) != 0)
+					widget.AlignVertical = WidgetAlignment.Fill;
+				else
+					widget.AlignVertical = WidgetAlignment.Center;
+			}
+
 			var p = new TablePlacement ((WidgetBackendHost)BackendHost, widget) {
 				Left = left,
 				Right = right,
 				Top = top,
-				Bottom = bottom,
-				XOptions = xOptions,
-				YOptions = yOptions
+				Bottom = bottom
 			};
 			children.Add (p);
 		}
@@ -200,28 +213,17 @@ namespace Xwt
 			OnAdd (newWidget, placement);
 		}
 
-		const bool heightForWidth = true;
-		
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
 			TablePlacement[] visibleChildren = VisibleChildren ();
-			if (heightForWidth) {
-				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
-				var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
-				CalcCellSizes (w, size.Width, true);
-				childrenSizes = GetPreferredChildrenSizes (visibleChildren, true, false);
-				var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
-				CalcCellSizes (h, size.Height, true);
-			} else {
-				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
-				var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
-				CalcCellSizes (h, size.Height, true);
-				childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, true);
-				var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
-				CalcCellSizes (w, size.Width, true);
-			}
-			
+			var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
+			var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
+			CalcCellSizes (w, size.Width, true);
+			childrenSizes = GetPreferredChildrenSizes (visibleChildren, true, false);
+			var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
+			CalcCellSizes (h, size.Height, true);
+
 			IWidgetBackend[] widgets = new IWidgetBackend [visibleChildren.Length];
 			Rectangle[] rects = new Rectangle [visibleChildren.Length];
 			for (int n=0; n<visibleChildren.Length; n++) {
@@ -326,7 +328,7 @@ namespace Xwt
 					lastCell = end;
 
 				// Check if the cell is expandable and store the value
-				bool expand = orientation == Orientation.Vertical ? (bp.YOptions & AttachOptions.Expand) != 0 : (bp.XOptions & AttachOptions.Expand) != 0;
+				bool expand = bp.Child.ExpandsForOrientation (orientation);
 				for (int i=start; i < end; i++) {
 					cellsWithWidget.Add (i);
 					if (expand)
@@ -541,7 +543,6 @@ namespace Xwt
 				var bp = visibleChildren[n];
 				double allocatedSize = 0;
 				double cellOffset = 0;
-				AttachOptions ops = orientation == Orientation.Vertical ? bp.YOptions : bp.XOptions;
 
 				int start = GetStartAttach (bp, orientation);
 				int end = GetEndAttach (bp, orientation);
@@ -553,10 +554,11 @@ namespace Xwt
 						allocatedSize += GetSpacing (i, orientation);
 				}
 
-				if ((ops & AttachOptions.Fill) == 0) {
+				var al = bp.Child.AlignmentForOrientation (orientation);
+				if (al != WidgetAlignment.Fill) {
 					double s = sizes[n];
 					if (s < allocatedSize) {
-						cellOffset = (allocatedSize - s) / 2;
+						cellOffset = (allocatedSize - s) * al.GetValue ();
 						allocatedSize = s;
 					}
 				}
@@ -712,7 +714,6 @@ namespace Xwt
 	{
 		IContainerEventSink<TablePlacement> parent;
 		int left, right, top, bottom;
-		AttachOptions xOptions, yOptions;
 		Widget child;
 		
 		internal TablePlacement (IContainerEventSink<TablePlacement> parent, Widget child)
@@ -772,22 +773,6 @@ namespace Xwt
 				var old = child;
 				child = value;
 				parent.ChildReplaced (this, old, value);
-			}
-		}
-		
-		public AttachOptions XOptions {
-			get { return xOptions; }
-			set {
-				xOptions = value; 
-				parent.ChildChanged (this, "XOptions");
-			}
-		}
-		
-		public AttachOptions YOptions {
-			get { return yOptions; }
-			set {
-				yOptions = value; 
-				parent.ChildChanged (this, "YOptions");
 			}
 		}
 	}

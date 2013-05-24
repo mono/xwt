@@ -46,7 +46,7 @@ namespace Samples
 				.SetValue (text, "Sub two").SetValue (desc, "Sub second");
 			store.AddNode ().SetValue (text, "Three").SetValue (desc, "Third").AddChild ()
 				.SetValue (text, "Sub three").SetValue (desc, "Sub third");
-			PackStart (view, BoxMode.FillAndExpand);
+			PackStart (view, true);
 			
 			view.DataSource = store;
 			

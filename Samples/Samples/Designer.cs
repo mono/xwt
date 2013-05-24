@@ -49,7 +49,7 @@ namespace Samples
 			
 			DesignerSurface ds = new DesignerSurface ();
 			ds.Load (box);
-			PackStart (ds, BoxMode.FillAndExpand);
+			PackStart (ds, true);
 		}
 	}
 }

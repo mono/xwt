@@ -96,12 +96,12 @@ namespace Samples
 
 			var button = new Xwt.Button ("Click to add a child");
 			button.Clicked += delegate {
-				child.PackStart (new Xwt.Label ("Child" + child.Children.Count ()), BoxMode.Fill);
+				child.PackStart (new Xwt.Label ("Child" + child.Children.Count ()));
 			};
 
 			var content = new Xwt.VBox ();
-			content.PackStart (button, BoxMode.Fill);
-			content.PackStart (container, BoxMode.Fill);
+			content.PackStart (button);
+			content.PackStart (container);
 
 			PackStart (content);
 		}
