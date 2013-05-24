@@ -29,27 +29,34 @@ namespace Xwt
 {
 	public struct SizeContraint
 	{
+		// The value '0' is used for Unconstrained, since that's the default value of SizeContraint
+		// Since a constraint of '0' is valid, we use NegativeInfinity as a marker for constraint=0.
 		double value;
 
-		public static readonly SizeContraint Unconstrained = new SizeContraint () { RequiredSize = double.PositiveInfinity }; 
+		public static readonly SizeContraint Unconstrained; 
 
 		public static SizeContraint RequireSize (double size)
 		{
-			return new SizeContraint () { value = size };
+			return new SizeContraint () { RequiredSize = size };
 		}
 
 		public double RequiredSize {
-			get { return value; }
+			get {
+				if (double.IsNegativeInfinity (value))
+					return 0;
+				else
+					return value;
+			}
 			set {
- 				if (value < 0)
-					this.value = 0;
+ 				if (value <= 0)
+					this.value = double.NegativeInfinity;
 				else
 					this.value = value; 
 			}
 		}
 
 		public bool IsConstrained {
-			get { return !double.IsPositiveInfinity (value); }
+			get { return value != 0; }
 		}
 	}
 }
