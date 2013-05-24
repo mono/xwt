@@ -38,6 +38,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Globalization;
 using System.ComponentModel;
+using System.Windows.Controls.Primitives;
 
 namespace Xwt.WPFBackend
 {
@@ -152,9 +153,82 @@ namespace Xwt.WPFBackend
         #endregion
 
         #region General
+        Grid mainGrid;
+        TextBox textBox;
+        RepeatButton buttonUp;
+        RepeatButton buttonDown;
         public WindowsSpinButton()
         {
-            InitializeComponent();
+            this.Loaded += UserControl_Loaded;
+            //MainGrid
+            mainGrid = new Grid();
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(16) });
+
+            //Textbox
+            textBox = new TextBox();
+            textBox.Text = "0";
+            textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+            textBox.MinWidth = 25;
+            textBox.PreviewKeyDown += textBox_PreviewKeyDown;
+            textBox.PreviewKeyUp += textBox_PreviewKeyUp;
+            textBox.MouseWheel += textBox_MouseWheel;
+            mainGrid.Children.Add(textBox);
+
+            //ButtonsGrid
+            Grid buttonsGrid = new Grid();
+            buttonsGrid.ClipToBounds = false;
+            buttonsGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            buttonsGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+
+            buttonUp = new RepeatButton();
+            buttonUp.Focusable = false;
+            buttonsGrid.Children.Add(buttonUp);
+            Grid.SetRow(buttonUp, 0);
+            buttonUp.Click += ButtonUp_Click;
+            buttonUp.Interval = 20;
+            buttonUp.Delay = 400;
+            buttonUp.MouseRightButtonUp += buttonUp_MouseRightButtonUp;
+            buttonUp.PreviewMouseLeftButtonDown += buttonUp_PreviewMouseLeftButtonDown;
+            var buttonUpPolygonPoints = new PointCollection(3);
+            buttonUpPolygonPoints.Add(new System.Windows.Point(0, 5));
+            buttonUpPolygonPoints.Add(new System.Windows.Point(3, 0));
+            buttonUpPolygonPoints.Add(new System.Windows.Point(6, 5));
+            buttonUp.Content = new Polygon()
+            {
+                Points = buttonUpPolygonPoints,
+                Fill = Brushes.Black,
+                SnapsToDevicePixels = true,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+
+            buttonDown = new RepeatButton();
+            buttonDown.Focusable = false;
+            buttonsGrid.Children.Add(buttonDown);
+            Grid.SetRow(buttonDown, 1);
+            buttonDown.Click += ButtonDown_Click;
+            buttonDown.Interval = 20;
+            buttonDown.Delay = 400;
+            buttonDown.MouseRightButtonUp += buttonDown_MouseRightButtonUp;
+            buttonDown.PreviewMouseLeftButtonDown += buttonDown_PreviewMouseLeftButtonDown;
+            var buttonDownPolygonPoints = new PointCollection(3);
+            buttonDownPolygonPoints.Add(new System.Windows.Point(0, 0));
+            buttonDownPolygonPoints.Add(new System.Windows.Point(3, 5));
+            buttonDownPolygonPoints.Add(new System.Windows.Point(6, 0));
+            buttonDown.Content = new Polygon()
+            {
+                Points = buttonDownPolygonPoints,
+                Fill = Brushes.Black,
+                SnapsToDevicePixels = true,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            mainGrid.Children.Add(buttonsGrid);
+            Grid.SetColumn(buttonsGrid, 1);
+            Content = mainGrid;
         }
         private bool valueChangedByUser = false;
         private void UpdateTextbox()
