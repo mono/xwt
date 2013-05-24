@@ -43,6 +43,8 @@ namespace Xwt.GtkBackend
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
 		bool destroyed;
+		SizeContraint currentWidthConstraint = SizeContraint.Unconstrained;
+		SizeContraint currentHeightConstraint = SizeContraint.Unconstrained;
 
 		bool minSizeSet;
 		
@@ -61,8 +63,7 @@ namespace Xwt.GtkBackend
 		DragDropData dragDropInfo;
 
 		const WidgetEvent dragDropEvents = WidgetEvent.DragDropCheck | WidgetEvent.DragDrop | WidgetEvent.DragOver | WidgetEvent.DragOverCheck;
-		const WidgetEvent sizeCheckEvents = WidgetEvent.PreferredWidthCheck | WidgetEvent.PreferredHeightCheck | WidgetEvent.PreferredHeightForWidthCheck | WidgetEvent.PreferredWidthForHeightCheck;
-		
+
 		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
 		{
 			this.frontend = (Widget) frontend;
@@ -244,6 +245,12 @@ namespace Xwt.GtkBackend
 				return new Size (Widget.Allocation.Width, Widget.Allocation.Height);
 			}
 		}
+
+		public void SetSizeConstraints (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		{
+			currentWidthConstraint = widthConstraint;
+			currentHeightConstraint = heightConstraint;
+		}
 		
 		DragDropData DragDropInfo {
 			get {
@@ -265,70 +272,18 @@ namespace Xwt.GtkBackend
 			return new Point (x + widgetCoordinates.X, y + widgetCoordinates.Y);
 		}
 		
-		public virtual WidgetSize GetPreferredWidth ()
+		public virtual Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			bool oldFlag = doubleSizeRequestCheckSupported;
 			try {
+				SetSizeConstraints (widthConstraint, heightConstraint);
 				gettingPreferredSize = true;
-				doubleSizeRequestCheckSupported = false;
-				var s = new WidgetSize (Widget.SizeRequest ().Width);
-				if (minSizeSet && Frontend.MinWidth != -1)
-					s.MinSize = Frontend.MinWidth;
-				return s;
+				var sr = Widget.SizeRequest ();
+				return new Size (sr.Width, sr.Height);
 			} finally {
 				gettingPreferredSize = false;
-				doubleSizeRequestCheckSupported = oldFlag;
 			}
 		}
-		
-		public virtual WidgetSize GetPreferredHeight ()
-		{
-			bool oldFlag = doubleSizeRequestCheckSupported;
-			try {
-				gettingPreferredSize = true;
-				doubleSizeRequestCheckSupported = false;
-				var s = new WidgetSize (Widget.SizeRequest ().Height);
-				if (minSizeSet && Frontend.MinHeight != -1)
-					s.MinSize = Frontend.MinHeight;
-				return s;
-			} finally {
-				gettingPreferredSize = false;
-				doubleSizeRequestCheckSupported = oldFlag;
-			}
-		}
-		
-		public virtual WidgetSize GetPreferredHeightForWidth (double width)
-		{
-			bool oldFlag = doubleSizeRequestCheckSupported;
-			try {
-				gettingPreferredSize = true;
-				doubleSizeRequestCheckSupported = false;
-				var s = new WidgetSize (Widget.SizeRequest ().Height);
-				if (minSizeSet && Frontend.MinHeight != -1)
-					s.MinSize = Frontend.MinHeight;
-				return s;
-			} finally {
-				gettingPreferredSize = false;
-				doubleSizeRequestCheckSupported = oldFlag;
-			}
-		}
-		
-		public virtual WidgetSize GetPreferredWidthForHeight (double height)
-		{
-			bool oldFlag = doubleSizeRequestCheckSupported;
-			try {
-				gettingPreferredSize = true;
-				doubleSizeRequestCheckSupported = false;
-				var s = new WidgetSize (Widget.SizeRequest ().Width);
-				if (minSizeSet && Frontend.MinWidth != -1)
-					s.MinSize = Frontend.MinWidth;
-				return s;
-			} finally {
-				gettingPreferredSize = false;
-				doubleSizeRequestCheckSupported = oldFlag;
-			}
-		}
-		
+
 		public void SetMinSize (double width, double height)
 		{
 			if (width != -1 || height != -1) {
@@ -343,9 +298,10 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public void SetNaturalSize (double width, double height)
+		public void SetSizeRequest (double width, double height)
 		{
-			// Nothing to do
+			Widget.WidthRequest = (int)width;
+			Widget.HeightRequest = (int)height;
 		}
 		
 		Pango.FontDescription customFont;
@@ -512,7 +468,7 @@ namespace Xwt.GtkBackend
 					EventsRootWidget.DragMotion += HandleWidgetDragMotion;
 					EventsRootWidget.DragDataReceived += HandleWidgetDragDataReceived;
 				}
-				if ((ev & sizeCheckEvents) != 0) {
+				if ((ev & WidgetEvent.PreferredSizeCheck) != 0) {
 					EnableSizeCheckEvents ();
 				}
 				enabledEvents |= ev;
@@ -521,10 +477,9 @@ namespace Xwt.GtkBackend
 
 		void EnableSizeCheckEvents ()
 		{
-			if ((enabledEvents & sizeCheckEvents) == 0 && !minSizeSet) {
+			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) == 0 && !minSizeSet) {
 				// Enabling a size request event for the first time
 				Widget.SizeRequested += HandleWidgetSizeRequested;
-				Widget.SizeAllocated += HandleWidgetSizeAllocated;;
 			}
 		}
 		
@@ -590,7 +545,7 @@ namespace Xwt.GtkBackend
 					EventsRootWidget.DragMotion -= HandleWidgetDragMotion;
 					EventsRootWidget.DragDataReceived -= HandleWidgetDragDataReceived;
 				}
-				if ((ev & sizeCheckEvents) != 0) {
+				if ((ev & WidgetEvent.PreferredSizeCheck) != 0) {
 					DisableSizeCheckEvents ();
 				}
 				if ((ev & WidgetEvent.GotFocus) == 0 && (enabledEvents & WidgetEvent.LostFocus) == 0 && !EventsRootWidget.IsRealized) {
@@ -601,10 +556,9 @@ namespace Xwt.GtkBackend
 		
 		void DisableSizeCheckEvents ()
 		{
-			if ((enabledEvents & sizeCheckEvents) == 0 && !minSizeSet) {
+			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) == 0 && !minSizeSet) {
 				// All size request events have been disabled
 				Widget.SizeRequested -= HandleWidgetSizeRequested;
-				Widget.SizeAllocated -= HandleWidgetSizeAllocated;;
 			}
 		}
 
@@ -619,23 +573,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		enum SizeCheckStep
-		{
-			SizeRequest,
-			PreAllocate,
-			AdjustSize,
-			FinalAllocate
-		}
-		
-		SizeCheckStep sizeCheckStep = SizeCheckStep.SizeRequest;
-		int realRequestedWidth;
-		int realRequestedHeight;
 		bool gettingPreferredSize;
-		static bool doubleSizeRequestCheckSupported = true;
-		
-		public bool IsPreallocating {
-			get { return sizeCheckStep == SizeCheckStep.AdjustSize || sizeCheckStep == SizeCheckStep.PreAllocate; }
-		}
 
 		void HandleWidgetSizeRequested (object o, Gtk.SizeRequestedArgs args)
 		{
@@ -644,7 +582,7 @@ namespace Xwt.GtkBackend
 			
 			var req = args.Requisition;
 			
-			if ((enabledEvents & sizeCheckEvents) == 0) {
+			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) == 0) {
 				// If no sizing event is set, it means this handler was set because there is a min size.
 				if (Frontend.MinWidth != -1)
 					req.Width = (int) Frontend.MinWidth;
@@ -654,86 +592,12 @@ namespace Xwt.GtkBackend
 				return;
 			}
 			
-			if (sizeCheckStep == SizeCheckStep.AdjustSize) {
-				req.Width = realRequestedWidth;
-				req.Height = realRequestedHeight;
-				sizeCheckStep = SizeCheckStep.FinalAllocate;
-			}
-			else {
-				ApplicationContext.InvokeUserCode (delegate {
-					if (EventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
-						if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
-						    var w = eventSink.OnGetPreferredWidth ();
-							req.Width = (int) w.MinSize;
-						}
-						if ((enabledEvents & WidgetEvent.PreferredHeightForWidthCheck) != 0) {
-							if (doubleSizeRequestCheckSupported) {
-								sizeCheckStep = SizeCheckStep.PreAllocate;
-								realRequestedWidth = req.Width; // Store the width, since it will be used in the next iteration
-							} else {
-								var h = eventSink.OnGetPreferredHeightForWidth (req.Width);
-								req.Height = (int) h.MinSize;
-								sizeCheckStep = SizeCheckStep.FinalAllocate;
-							}
-						}
-						else if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
-							var h = eventSink.OnGetPreferredHeight ();
-							req.Height = (int) h.MinSize;
-							sizeCheckStep = SizeCheckStep.FinalAllocate;
-						}
-					} else {
-						if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
-							var h = eventSink.OnGetPreferredHeight ();
-							req.Height = (int) h.MinSize;
-						}
-						if ((enabledEvents & WidgetEvent.PreferredWidthForHeightCheck) != 0) {
-							if (doubleSizeRequestCheckSupported) {
-								sizeCheckStep = SizeCheckStep.PreAllocate;
-								realRequestedHeight = req.Height; // Store the height, since it will be used in the next iteration
-							} else {
-								var w = eventSink.OnGetPreferredWidthForHeight (req.Height);
-								req.Width = (int) w.MinSize;
-								sizeCheckStep = SizeCheckStep.FinalAllocate;
-							}
-						}
-						else if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
-						    var w = eventSink.OnGetPreferredWidth ();
-							req.Width = (int) w.MinSize;
-							sizeCheckStep = SizeCheckStep.FinalAllocate;
-						}
-					}
-				});
-			}
-			args.Requisition = req;
-		}
-
-		void HandleWidgetSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
-		{
-			if ((enabledEvents & sizeCheckEvents) == 0) {
-				// If no sizing event is set, it means this handler was set because there is a min size.
-				// In that case, there isn't any thing left to do here
-				return;
-			}
-			
 			ApplicationContext.InvokeUserCode (delegate {
-				if (sizeCheckStep == SizeCheckStep.SizeRequest && (enabledEvents & sizeCheckEvents) != sizeCheckEvents) {
-					var ev = EventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth ? WidgetEvent.PreferredWidthCheck | WidgetEvent.PreferredHeightForWidthCheck : WidgetEvent.PreferredHeightCheck | WidgetEvent.PreferredWidthForHeightCheck;
-					// If all size request methods are overriden, the widget's size request won't be called, so this status is correct
-					if ((enabledEvents & ev) != ev)
-						Console.WriteLine ("SizeRequest not called. Should not happen.");
-				}
-				else if (sizeCheckStep == SizeCheckStep.PreAllocate || sizeCheckStep == SizeCheckStep.AdjustSize) {
-					if (EventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
-						realRequestedHeight = (int) eventSink.OnGetPreferredHeightForWidth (args.Allocation.Width).MinSize;
-						sizeCheckStep = SizeCheckStep.AdjustSize;
-						Widget.QueueResize ();
-					} else {
-						realRequestedWidth = (int) eventSink.OnGetPreferredWidthForHeight (args.Allocation.Height).MinSize;
-						sizeCheckStep = SizeCheckStep.AdjustSize;
-						Widget.QueueResize ();
-					}
-				}
+				var w = eventSink.GetPreferredSize (currentWidthConstraint, currentHeightConstraint);
+				req.Width = (int) w.Width;
+				req.Height = (int) w.Height;
 			});
+			args.Requisition = req;
 		}
 
 		[GLib.ConnectBefore]

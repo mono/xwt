@@ -410,7 +410,7 @@ namespace Xwt.WPFBackend
 				Widget.MinHeight = height;
 		}
 
-		public void SetNaturalSize (double width, double height)
+		public void SetSizeRequest (double width, double height)
 		{
 			if (width == -1)
 				Widget.ClearValue (FrameworkElement.WidthProperty);

@@ -35,6 +35,8 @@ using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
 using Xwt;
 using Xwt.Backends;
+using MonoMac.CoreGraphics;
+using MonoMac.CoreAnimation;
 
 
 namespace Xwt.Mac
@@ -244,7 +246,7 @@ namespace Xwt.Mac
 		}
 		
 		Size IWidgetBackend.Size {
-			get { return new Size (Widget.WidgetWidth () - Frontend.Margin.HorizontalSpacing, Widget.WidgetHeight () - Frontend.Margin.VerticalSpacing); }
+			get { return new Size (Widget.WidgetWidth (), Widget.WidgetHeight ()); }
 		}
 		
 		public static NSView GetWidget (IWidgetBackend w)
@@ -369,7 +371,7 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public void SetNaturalSize (double width, double height)
+		public void SetSizeRequest (double width, double height)
 		{
 			// Nothing to do
 		}
@@ -377,7 +379,18 @@ namespace Xwt.Mac
 		public virtual void UpdateLayout ()
 		{
 			var m = Frontend.Margin;
-			Widget.SetBoundsOrigin (new PointF (-(float)m.Left, -(float)m.Top));
+			if (m.Left != 0 || m.Top != 0) {
+				if (!Widget.WantsLayer)
+					Widget.WantsLayer = true;
+				Widget.Layer.Transform = CATransform3D.MakeTranslation (-(float)m.Left, -(float)m.Top, 0);
+			}
+			else {
+				if (Widget.WantsLayer)
+					Widget.Layer.Transform = CATransform3D.Identity;
+			}
+
+//			Widget.TranslateOriginToPoint (new PointF ((float)m.Left, (float)m.Top));
+			Widget.NeedsDisplay = true;
 			if (autosize)
 				AutoUpdateSize ();
 		}

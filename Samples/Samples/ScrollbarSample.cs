@@ -37,8 +37,8 @@ namespace Samples
 
 		public ScrollbarSample ()
 		{
-			NaturalWidth = 300;
-			NaturalHeight = 300;
+			WidthRequest = 300;
+			HeightRequest = 300;
 
 			canvas = new Canvas ();
 			label = new Label ("Use the scrollbars\nto move this label");
@@ -70,10 +70,8 @@ namespace Samples
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			double w, h;
-			w = label.Surface.GetPreferredWidth ().NaturalSize;
-			h = label.Surface.GetPreferredHeightForWidth (w).NaturalSize;
-			canvas.SetChildBounds (label, new Rectangle (hscroll.Value, vscroll.Value, w, h));
+			var s = label.Surface.GetPreferredSize ();
+			canvas.SetChildBounds (label, new Rectangle (hscroll.Value, vscroll.Value, s.Width, s.Height));
 		}
 	}
 }

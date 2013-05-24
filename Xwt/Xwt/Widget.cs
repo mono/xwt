@@ -50,7 +50,7 @@ namespace Xwt
 		Widget contentWidget;
 		WindowFrame parentWindow;
 		double minWidth = -1, minHeight = -1;
-		double naturalWidth = -1, naturalHeight = -1;
+		double widthRequest = -1, heightRequest = -1;
 		CursorType cursor;
 		double referenceWidth, referenceHeight;
 		
@@ -492,13 +492,13 @@ namespace Xwt
 		/// Natural width for the widget. If set to -1, the default natural size is used.
 		/// </remarks>
 		[DefaultValue((double)-1)]
-		public double NaturalWidth {
-			get { return minWidth; }
+		public double WidthRequest {
+			get { return widthRequest; }
 			set {
 				if (value < -1)
 					throw new ArgumentException ("NaturalWidth can't be less that -1");
-				naturalWidth = value;
-				Backend.SetNaturalSize (naturalWidth >= 0 ? naturalWidth : -1, naturalHeight >= 0 ? naturalHeight : -1);
+				widthRequest = value;
+				Backend.SetSizeRequest (widthRequest >= 0 ? widthRequest : -1, heightRequest >= 0 ? heightRequest : -1);
 				OnPreferredSizeChanged ();
 			}
 		}
@@ -513,13 +513,13 @@ namespace Xwt
 		/// Natural height for the widget. If set to -1, the default natural size is used.
 		/// </remarks>
 		[DefaultValue((double)-1)]
-		public double NaturalHeight {
-			get { return naturalHeight; }
+		public double HeightRequest {
+			get { return heightRequest; }
 			set {
 				if (value < -1)
 					throw new ArgumentException ("NaturalHeight can't be less that -1");
-				naturalHeight = value;
-				Backend.SetNaturalSize (naturalWidth >= 0 ? naturalWidth : -1, naturalHeight >= 0 ? naturalHeight : -1);
+				heightRequest = value;
+				Backend.SetSizeRequest (widthRequest >= 0 ? widthRequest : -1, heightRequest >= 0 ? heightRequest : -1);
 				OnPreferredSizeChanged ();
 			}
 		}
@@ -861,6 +861,11 @@ namespace Xwt
 			OnReallocate ();
 		}
 
+		Size IWidgetSurface.GetPreferredSize ()
+		{
+			return ((IWidgetSurface)this).GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained);
+		}
+
 		Size IWidgetSurface.GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
 			if (sizeCached)
@@ -932,8 +937,6 @@ namespace Xwt
 
 			ResetCachedSizes ();
 			
-			bool changed = true;
-
 			var s = Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained);
 			if (s != oldSize)
 				NotifySizeChangeToParent ();

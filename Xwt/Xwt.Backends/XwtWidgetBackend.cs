@@ -78,10 +78,10 @@ namespace Xwt.Backends
 			MinHeight = height;
 		}
 
-		void IWidgetBackend.SetNaturalSize (double width, double height)
+		void IWidgetBackend.SetSizeRequest (double width, double height)
 		{
-			NaturalWidth = width;
-			NaturalHeight = height;
+			WidthRequest = width;
+			HeightRequest = height;
 		}
 
 		void IWidgetBackend.UpdateLayout ()

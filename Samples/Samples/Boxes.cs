@@ -54,7 +54,7 @@ namespace Samples
 			HBox box6 = new HBox ();
 			for (int n=0; n<15; n++) {
 				var w = new Label ("TestLabel" + n);
-				w.MinWidth = 10;
+				w.WidthRequest = 10;
 				box6.PackStart (w);
 			}
 			PackStart (box6);

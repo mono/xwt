@@ -45,6 +45,17 @@ namespace Xwt
 		/// be bigger than the constraint.
 		/// </remarks>
 		Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint);
+		
+		/// <summary>
+		/// Gets the preferred size of the widget (includes the margin)
+		/// </summary>
+		/// <returns>
+		/// The preferred size.
+		/// </returns>
+		/// <remarks>
+		/// The returned size is >= 0
+		/// </remarks>
+		Size GetPreferredSize ();
 
 		object NativeWidget { get; }
 

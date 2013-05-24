@@ -169,7 +169,8 @@ namespace Samples
 		{
 			if (w == null)
 				return;
-			Console.WriteLine (new string (' ', ind * 2) + " " + w.GetType ().Name + " " + w.GetPreferredWidth () + " " + w.GetPreferredHeight ());
+			var s = w.GetPreferredSize ();
+			Console.WriteLine (new string (' ', ind * 2) + " " + w.GetType ().Name + " " + s.Width + " " + s.Height);
 			foreach (var c in w.Children)
 				Dump (c, ind + 1);
 		}
