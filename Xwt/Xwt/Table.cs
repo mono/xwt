@@ -541,7 +541,7 @@ namespace Xwt
 				var bp = visibleChildren[n];
 				double allocatedSize = 0;
 				double cellOffset = 0;
-	//			var align = orientation == Orientation.Vertical? bp.Child.VerticalAlignment : bp.Child.HorizontalAlignment;
+				AttachOptions ops = orientation == Orientation.Vertical ? bp.YOptions : bp.XOptions;
 
 				int start = GetStartAttach (bp, orientation);
 				int end = GetEndAttach (bp, orientation);
@@ -553,22 +553,12 @@ namespace Xwt
 						allocatedSize += GetSpacing (i, orientation);
 				}
 
-				double s = sizes[n];
-				if (s < allocatedSize) {
-//					switch (align) {
-//						case LayoutAlignment.Center:
+				if ((ops & AttachOptions.Fill) == 0) {
+					double s = sizes[n];
+					if (s < allocatedSize) {
 						cellOffset = (allocatedSize - s) / 2;
 						allocatedSize = s;
-//						break;
-//						case LayoutAlignment.Start:
-//						cellOffset = 0;
-//						allocatedSize = s;
-//						break;
-//						case LayoutAlignment.End:
-//						cellOffset = allocatedSize - s;
-//						allocatedSize = s;
-//						break;
-//					}
+					}
 				}
 
 				// cellOffset is the offset of the widget inside the cell. We store it in NextX/Y, and
