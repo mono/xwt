@@ -411,6 +411,8 @@
     <Compile Include="Xwt\VScrollbar.cs" />
     <Compile Include="Xwt.Backends\IScrollbarBackend.cs" />
     <Compile Include="Xwt\SizeConstraint.cs" />
+    <Compile Include="Xwt\WidgetAlignment.cs" />
+    <Compile Include="Xwt\WidgetExpansion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

@@ -54,6 +54,11 @@ namespace Xwt
 		CursorType cursor;
 		double referenceWidth, referenceHeight;
 		
+		WidgetAlignment alignVertical;
+		WidgetAlignment alignHorizontal;
+		WidgetExpansion expandVertical;
+		WidgetExpansion expandHorizontal;
+
 		EventHandler<DragOverCheckEventArgs> dragOverCheck;
 		EventHandler<DragOverEventArgs> dragOver;
 		EventHandler<DragCheckEventArgs> dragDropCheck;
@@ -373,6 +378,37 @@ namespace Xwt
 			}
 		}
 
+		public WidgetAlignment AlignVertical {
+			get { return alignVertical; }
+			set {
+				alignVertical = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
+		public WidgetAlignment AlignHorizontal {
+			get { return alignHorizontal; }
+			set {
+				alignHorizontal = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
+		public WidgetExpansion ExpandVertical {
+			get { return expandVertical; }
+			set {
+				expandVertical = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
+
+		public WidgetExpansion ExpandHorizontal {
+			get { return expandHorizontal; }
+			set {
+				expandHorizontal = value;
+				OnPreferredSizeChanged (); 
+			}
+		}
 		public void Show ()
 		{
 			Visible = true;

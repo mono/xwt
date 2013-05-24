@@ -188,7 +188,7 @@ namespace Xwt
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
-			if (size.Width == 0 || size.Height == 0)
+			if (size.Width <= 0 || size.Height <= 0)
 				return;
 			
 			var visibleChildren = children.Where (c => c.Child.Visible).ToArray ();
@@ -203,11 +203,16 @@ namespace Xwt
 					var bp = visibleChildren [n];
 					if (bp.PackOrigin == PackOrigin.End)
 						xe -= bp.NextSize + spacing;
+
+					double width = bp.NextSize >= 0 ? bp.NextSize : 0;
+					double height = Math.Min (bp.Child.Surface.GetPreferredHeightForWidth (width).NaturalSize + bp.Child.Margin.VerticalSpacing, size.Height);
 					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
+					double y = (size.Height - height) * bp.Child.AlignVertical.Value;
+
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (x, 0, bp.NextSize >= 0 ? bp.NextSize : 0, size.Height >= 0 ? size.Height : 0).Round ();
+					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ();
 					if (bp.PackOrigin == PackOrigin.Start)
-						xs += bp.NextSize + spacing;
+						xs += bp.NextSize + bp.Child.Margin.HorizontalSpacing + spacing;
 				}
 			} else {
 				CalcDefaultSizes (size.Width, size.Height);
@@ -217,11 +222,16 @@ namespace Xwt
 					var bp = visibleChildren [n];
 					if (bp.PackOrigin == PackOrigin.End)
 						ye -= bp.NextSize + spacing;
+
+					double width = Math.Min (bp.Child.Surface.GetPreferredWidth ().NaturalSize + bp.Child.Margin.HorizontalSpacing, size.Width);
+					double height = bp.NextSize >= 0 ? bp.NextSize : 0;
+					double x = (size.Width - width) * bp.Child.AlignHorizontal.Value;
 					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
+
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (0, y, size.Width >= 0 ? size.Width : 0, bp.NextSize >= 0 ? bp.NextSize : 0).Round ();
+					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ();
 					if (bp.PackOrigin == PackOrigin.Start)
-						ys += bp.NextSize + spacing;
+						ys += bp.NextSize + bp.Child.Margin.VerticalSpacing + spacing;
 				}
 			}
 			Backend.SetAllocation (widgets, rects);
