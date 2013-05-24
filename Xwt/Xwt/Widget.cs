@@ -1077,6 +1077,8 @@ namespace Xwt
 			if (children == null)
 				children = new List<Widget> ();
 			w.Parent = this;
+			if (w.Backend is XwtWidgetBackend)
+				((XwtWidgetBackend)w.Backend).Parent = this;
 			children.Add (w);
 
 			// Make sure the widget is queued for reallocation
@@ -1088,6 +1090,8 @@ namespace Xwt
 			if (children == null || !children.Remove (w))
 				throw new InvalidOperationException ("Widget is not a child of this widget");
 			w.Parent = null;
+			if (w.Backend is XwtWidgetBackend)
+				((XwtWidgetBackend)w.Backend).Parent = null;
 		}
 		
 		/// <summary>

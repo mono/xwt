@@ -142,7 +142,7 @@ namespace Xwt.Backends
         void OnMouseScrolled(MouseScrolledEventArgs args);
 
 		// Events
-		Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint);
+		Size GetPreferredSize (SizeContraint widthConstraint = default(SizeContraint), SizeContraint heightConstraint = default(SizeContraint));
 
 		/// <summary>
 		/// Notifies the frontend that the preferred size of this widget has changed

@@ -428,7 +428,7 @@ namespace Xwt.Drawing
 		public BitmapImage ToBitmap (Widget renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
 			if (renderTarget.ParentWindow == null)
-				throw new InvalidOperationException ("renderTarget is not bounds to a window");
+				throw new InvalidOperationException ("renderTarget is not bound to a window");
 			return ToBitmap (renderTarget.ParentWindow, format);
 		}
 
