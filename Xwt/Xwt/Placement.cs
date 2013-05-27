@@ -108,18 +108,15 @@ namespace Xwt
 
 		protected override void OnReallocate ()
 		{
-			var size = Backend.Size;
-			double childWidth, childHeight;
-
 			if (child != null) {
-				var s = child.Surface.GetPreferredSize (SizeContraint.RequireSize (size.Width), SizeContraint.RequireSize (size.Height));
-				childWidth = s.Width;
-				childHeight = s.Height;
+				var size = Backend.Size;
+				var availableWidth = size.Width - child.Margin.HorizontalSpacing - Padding.HorizontalSpacing;
+				var availableHeight = size.Height - child.Margin.VerticalSpacing - Padding.VerticalSpacing;
+				var childSize = child.Surface.GetPreferredSize (availableWidth, availableHeight);
+				var x = child.Margin.Left + Padding.Left + XAlign * (availableWidth - childSize.Width);
+				var y = child.Margin.Top + Padding.Top + YAlign * (availableHeight - childSize.Height);
 
-				var x = XAlign * (size.Width - childWidth - Padding.HorizontalSpacing) + Padding.Left - Padding.Right;
-				var y = YAlign * (size.Height - childHeight - Padding.VerticalSpacing) + Padding.Top - Padding.Bottom;
-
-				Backend.SetAllocation (new[] { (IWidgetBackend)GetBackend (child) }, new[] { new Rectangle (x, y, childWidth, childHeight).Round () });
+				Backend.SetAllocation (new[] { (IWidgetBackend)GetBackend (child) }, new[] { new Rectangle (x, y, childSize.Width, childSize.Height).Round () });
 
 				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					child.Surface.Reallocate ();
@@ -128,8 +125,21 @@ namespace Xwt
 
 		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			if (child != null)
-				return child.Surface.GetPreferredSize (widthConstraint, heightConstraint);
+			if (child != null) {
+				var s = new Size (child.Margin.HorizontalSpacing + Padding.HorizontalSpacing, child.Margin.VerticalSpacing + Padding.VerticalSpacing);
+
+				if (widthConstraint.IsConstrained) {
+					widthConstraint = widthConstraint.RequiredSize - s.Width;
+					if (widthConstraint.RequiredSize <= 0)
+						return s;
+				}
+				if (heightConstraint.IsConstrained) {
+					heightConstraint = heightConstraint.RequiredSize - child.Margin.VerticalSpacing - Padding.VerticalSpacing;
+					if (heightConstraint.RequiredSize <= 0)
+						return s;
+				}
+				return s + child.Surface.GetPreferredSize (widthConstraint, heightConstraint);
+			}
 			else
 				return Size.Zero;
 		}
