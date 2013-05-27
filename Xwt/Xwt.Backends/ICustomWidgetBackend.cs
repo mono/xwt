@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICustomWidgetBackend: IWidgetBackend
+	public interface ICustomWidgetBackend: IWidgetBackend, IChildPlacementHandler
 	{
 		void SetContent (IWidgetBackend widget);
 	}

@@ -71,6 +71,14 @@ namespace Xwt
 		public double VerticalSpacing {
 			get { return Top + Bottom; }
 		}
+
+		public double GetSpacingForOrientation (Orientation orientation)
+		{
+			if (orientation == Orientation.Vertical)
+				return Top + Bottom;
+			else
+				return Left + Right;
+		}
 	}
 
 	

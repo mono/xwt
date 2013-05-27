@@ -72,16 +72,18 @@ namespace Xwt.Mac
 		{
 			NSTabViewItem item = new NSTabViewItem ();
 			item.Label = tab.Label;
-			item.View = GetWidget (widget);
+			item.View = GetWidgetWithPlacement (widget);
 			Widget.Add (item);
 		}
 
 		public void Remove (IWidgetBackend widget)
 		{
-			var v = GetWidget (widget);
+			var v = GetWidgetWithPlacement (widget);
 			var t = FindTab (v);
-			if (t != null)
+			if (t != null) {
 				Widget.Remove (t);
+				RemoveChildPlacement (t.View);
+			}
 		}
 		
 		public void UpdateLabel (NotebookTab tab, string hint)

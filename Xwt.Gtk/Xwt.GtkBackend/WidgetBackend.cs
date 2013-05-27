@@ -38,7 +38,6 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.Widget widget;
 		Widget frontend;
-		Gtk.Alignment alignment;
 		Gtk.EventBox eventBox;
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
@@ -112,7 +111,7 @@ namespace Xwt.GtkBackend
 		
 		public Gtk.Widget RootWidget {
 			get {
-				return alignment ?? eventBox ?? (Gtk.Widget) Widget;
+				return eventBox ?? (Gtk.Widget) Widget;
 			}
 		}
 		
@@ -120,8 +119,6 @@ namespace Xwt.GtkBackend
 			get { return Widget.Visible; }
 			set {
 				Widget.Visible = value; 
-				if (alignment != null)
-					alignment.Visible = value;
 				if (eventBox != null)
 					eventBox.Visible = value;
 			}
@@ -346,28 +343,70 @@ namespace Xwt.GtkBackend
 		{
 			return w != null ? ((IGtkWidgetBackend)w).Widget : null;
 		}
+
+		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
+			SetChildPlacement (childBackend);
+		}
+
+		public static Gtk.Widget GetWidgetWithPlacement (IWidgetBackend childBackend)
+		{
+			var backend = (WidgetBackend)childBackend;
+			var child = backend.RootWidget;
+			var wrapper = child.Parent as WidgetPlacementWrapper;
+			if (wrapper != null)
+				return wrapper;
+
+			if (!NeedsAlignmentWrapper (backend.Frontend))
+				return child;
+
+			wrapper = new WidgetPlacementWrapper ();
+			wrapper.Show ();
+			wrapper.Add (child);
+			return wrapper;
+		}
+
+		public static void RemoveChildPlacement (Gtk.Widget w)
+		{
+			if (w == null)
+				return;
+			if (w is WidgetPlacementWrapper) {
+				var wp = (WidgetPlacementWrapper)w;
+				wp.Remove (wp.Child);
+			}
+		}
+
+		static bool NeedsAlignmentWrapper (Widget fw)
+		{
+			return fw.AlignHorizontal != WidgetAlignment.Fill || fw.AlignVertical != WidgetAlignment.Fill || fw.Margin.VerticalSpacing != 0 || fw.Margin.HorizontalSpacing != 0;
+		}
+
+		public static void SetChildPlacement (IWidgetBackend childBackend)
+		{
+			var backend = (WidgetBackend)childBackend;
+			var child = backend.RootWidget;
+			var wrapper = child.Parent as WidgetPlacementWrapper;
+			var fw = backend.Frontend;
+
+			if (!NeedsAlignmentWrapper (fw)) {
+				if (wrapper != null) {
+					wrapper.Remove (child);
+					GtkEngine.ReplaceChild (wrapper, child);
+				}
+				return;
+			}
+
+			if (wrapper == null) {
+				wrapper = new WidgetPlacementWrapper ();
+				wrapper.Show ();
+				GtkEngine.ReplaceChild (child, wrapper);
+				wrapper.Add (child);
+			}
+			wrapper.UpdatePlacement (fw);
+		}
 		
 		public virtual void UpdateLayout ()
 		{
-			if (frontend.Margin.HorizontalSpacing == 0 && frontend.Margin.VerticalSpacing == 0) {
-				if (alignment != null) {
-					alignment.Remove (alignment.Child);
-					GtkEngine.ReplaceChild (alignment, EventsRootWidget);
-					alignment.Destroy ();
-					alignment = null;
-				}
-			} else {
-				if (alignment == null) {
-					alignment = new Gtk.Alignment (0, 0, 1, 1);
-					GtkEngine.ReplaceChild (EventsRootWidget, alignment);
-					alignment.Add (EventsRootWidget);
-					alignment.Visible = Widget.Visible;
-				}
-				alignment.LeftPadding = (uint) frontend.Margin.Left;
-				alignment.RightPadding = (uint) frontend.Margin.Right;
-				alignment.TopPadding = (uint) frontend.Margin.Top;
-				alignment.BottomPadding = (uint) frontend.Margin.Bottom;
-			}
 			Widget.QueueResize ();
 
 			if (!Widget.IsRealized) {
@@ -391,11 +430,7 @@ namespace Xwt.GtkBackend
 				eventBox.Visible = Widget.Visible;
 				eventBox.Sensitive = Widget.Sensitive;
 				eventBox.VisibleWindow = visibleWindow;
-				if (alignment != null) {
-					alignment.Remove (alignment.Child);
-					alignment.Add (eventBox);
-				} else
-					GtkEngine.ReplaceChild (Widget, eventBox);
+				GtkEngine.ReplaceChild (Widget, eventBox);
 				eventBox.Add (Widget);
 			}
 		}
@@ -1067,6 +1102,25 @@ namespace Xwt.GtkBackend
 	public interface IGtkWidgetBackend
 	{
 		Gtk.Widget Widget { get; }
+	}
+
+	class WidgetPlacementWrapper: Gtk.Alignment
+	{
+		public WidgetPlacementWrapper (): base (0, 0, 1, 1)
+		{
+		}
+
+		public void UpdatePlacement (Xwt.Widget widget)
+		{
+			LeftPadding = (uint)widget.MarginLeft;
+			RightPadding = (uint)widget.MarginRight;
+			TopPadding = (uint)widget.MarginTop;
+			BottomPadding = (uint)widget.MarginBottom;
+			Xalign = (float) widget.AlignHorizontal.GetValue ();
+			Yalign = (float) widget.AlignVertical.GetValue ();
+			Xscale = (widget.AlignHorizontal == WidgetAlignment.Fill) ? 1 : 0;
+			Yscale = (widget.AlignVertical == WidgetAlignment.Fill) ? 1 : 0;
+		}
 	}
 }
 

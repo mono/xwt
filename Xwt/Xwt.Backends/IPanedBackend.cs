@@ -28,7 +28,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IPanedBackend: IWidgetBackend
+	public interface IPanedBackend: IWidgetBackend, IChildPlacementHandler
 	{
 		/// <summary>
 		/// Initializes the paned

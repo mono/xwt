@@ -54,6 +54,7 @@ namespace Xwt.Mac
 		{
 			if (currentChild != null) {
 				currentChild.RemoveFromSuperview ();
+				RemoveChildPlacement (currentChild);
 				currentChild = null;
 			}
 			if (child == null)
@@ -62,7 +63,7 @@ namespace Xwt.Mac
 			var childBackend = (ViewBackend) child;
 			childBackend.SizeToFit ();
 
-			currentChild = childBackend.Widget;
+			currentChild = GetWidgetWithPlacement (childBackend);
 
 			Widget.AddSubview (currentChild);
 			ResetFittingSize ();

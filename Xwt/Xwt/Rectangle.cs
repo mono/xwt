@@ -226,5 +226,19 @@ namespace Xwt
 				Math.Round (Height)
 			);
 		}
+
+		/// <summary>
+		/// Returns a copy of the rectangle, ensuring that the width and height are greater or equal to zero
+		/// </summary>
+		/// <returns>The new rectangle</returns>
+		public Rectangle WithPositiveSize ()
+		{
+			return new Rectangle (
+				X,
+				Y,
+				Width >= 0 ? Width : 0,
+				Height >= 0 ? Height : 0
+			);
+		}
 	}
 }

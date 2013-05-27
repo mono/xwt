@@ -211,7 +211,7 @@ namespace Xwt
 				OnRemove (oldWidget);
 			OnAdd (newWidget, placement);
 		}
-		
+
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
@@ -232,14 +232,14 @@ namespace Xwt
 						xe -= bp.NextSize + spacing;
 
 					double width = bp.NextSize >= 0 ? bp.NextSize : 0;
-					double height =  size.Height;
+					double height = size.Height - bp.Child.Margin.VerticalSpacing;
 					if (bp.Child.AlignVertical != WidgetAlignment.Fill)
-						height =  Math.Min (bp.Child.Surface.GetPreferredSize (width, SizeContraint.Unconstrained).Height + bp.Child.Margin.VerticalSpacing, height);
+						height =  Math.Min (bp.Child.Surface.GetPreferredSize (width, SizeContraint.Unconstrained).Height, height);
 					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
-					double y = (size.Height - height) * bp.Child.AlignVertical.GetValue ();
+					double y = (size.Height - bp.Child.Margin.VerticalSpacing - height) * bp.Child.AlignVertical.GetValue ();
 
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ();
+					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ().WithPositiveSize ();
 					if (bp.PackOrigin == PackOrigin.Start)
 						xs += bp.NextSize + bp.Child.Margin.HorizontalSpacing + spacing;
 				}
@@ -253,14 +253,14 @@ namespace Xwt
 						ye -= bp.NextSize + spacing;
 
 					double height = bp.NextSize >= 0 ? bp.NextSize : 0;
-					double width = size.Width;
+					double width = size.Width - bp.Child.Margin.HorizontalSpacing;
 					if (bp.Child.AlignHorizontal != WidgetAlignment.Fill)
-						width = Math.Min (bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, height).Width + bp.Child.Margin.HorizontalSpacing, width);
-					double x = (size.Width - width) * bp.Child.AlignHorizontal.GetValue();
+						width = Math.Min (bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, height).Width, width);
+					double x = (size.Width - bp.Child.Margin.HorizontalSpacing - width) * bp.Child.AlignHorizontal.GetValue();
 					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
 
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ();
+					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ().WithPositiveSize ();
 					if (bp.PackOrigin == PackOrigin.Start)
 						ys += bp.NextSize + bp.Child.Margin.VerticalSpacing + spacing;
 				}
@@ -285,14 +285,14 @@ namespace Xwt
 
 			var visibleChildren = children.Where (b => b.Child.Visible).ToArray ();
 			var sizes = new Dictionary<BoxPlacement,double> ();
-			
+
 			// Get the natural size of each child
 			foreach (var bp in visibleChildren) {
 				Size s;
 				s = bp.Child.Surface.GetPreferredSize (widthConstraint, heightConstraint);
 				bp.NextSize = vertical ? s.Height : s.Width;
 				sizes [bp] = bp.NextSize;
-				requiredSize += bp.NextSize;
+				requiredSize += bp.NextSize + bp.Child.Margin.GetSpacingForOrientation (direction);
 				if (bp.Child.ExpandsForOrientation (direction))
 					nexpands++;
 			}
@@ -326,9 +326,9 @@ namespace Xwt
 			if (direction == Orientation.Horizontal) {
 				foreach (var cw in Children.Where (b => b.Visible)) {
 					var wsize = cw.Surface.GetPreferredSize (SizeContraint.Unconstrained, heightConstraint);
-					s.Width += wsize.Width;
-					if (wsize.Height > s.Height)
-						s.Height = wsize.Height;
+					s.Width += wsize.Width + cw.Margin.HorizontalSpacing;
+					if (wsize.Height + cw.Margin.VerticalSpacing > s.Height)
+						s.Height = wsize.Height + cw.Margin.VerticalSpacing;
 					count++;
 				}
 				if (count > 0)
@@ -336,9 +336,9 @@ namespace Xwt
 			} else {
 				foreach (var cw in Children.Where (b => b.Visible)) {
 					var wsize = cw.Surface.GetPreferredSize (widthConstraint, SizeContraint.Unconstrained);
-					s.Height += wsize.Height;
-					if (wsize.Width > s.Width)
-						s.Width = wsize.Width;
+					s.Height += wsize.Height + cw.Margin.VerticalSpacing;
+					if (wsize.Width + cw.Margin.HorizontalSpacing > s.Width)
+						s.Width = wsize.Width + cw.Margin.HorizontalSpacing;
 					count++;
 				}
 				if (count > 0)

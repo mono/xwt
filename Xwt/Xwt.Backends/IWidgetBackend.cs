@@ -174,6 +174,7 @@ namespace Xwt.Backends
 		/// </remarks>
 		Size GetDefaultNaturalSize ();
 	}
+
 	
 	[Flags]
 	public enum WidgetEvent

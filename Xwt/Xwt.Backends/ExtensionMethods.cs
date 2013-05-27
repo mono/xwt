@@ -38,6 +38,14 @@ namespace Xwt.Backends
 				return null;
 		}
 
+		public static IWidgetBackend GetBackend (this Widget obj)
+		{
+			if (obj != null)
+				return (IWidgetBackend)((IFrontend)obj).Backend;
+			else
+				return null;
+		}
+
 		public static object GetBackend (this XwtObject obj)
 		{
 			if (obj != null)

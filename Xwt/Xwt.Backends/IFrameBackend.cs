@@ -28,7 +28,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IFrameBackend: IWidgetBackend
+	public interface IFrameBackend: IWidgetBackend, IChildPlacementHandler
 	{
 		string Label { get; set; }
 		Color BorderColor { get; set; }

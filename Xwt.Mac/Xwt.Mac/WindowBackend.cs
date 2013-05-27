@@ -290,11 +290,13 @@ namespace Xwt.Mac
 		protected virtual void SetChild (IWidgetBackend child)
 		{
 			if (this.child != null) {
+				ViewBackend.RemoveChildPlacement (this.child.Widget);
 				this.child.Widget.RemoveFromSuperview ();
 			}
 			this.child = (ViewBackend) child;
 			if (child != null) {
-				GetContentView ().AddSubview (this.child.Widget);
+				var w = ViewBackend.GetWidgetWithPlacement (child);
+				GetContentView ().AddSubview (w);
 				SetPadding (frontend.Padding.Left, frontend.Padding.Top, frontend.Padding.Right, frontend.Padding.Bottom);
 				this.child.Widget.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			}
@@ -420,6 +422,10 @@ namespace Xwt.Mac
 
 		    var r = FrameRectFor (new RectangleF (0, 0, (float)s.Width, (float)s.Height));
 			MinSize = r.Size;
+		}
+
+		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
 		}
 
 		public void SetIcon (ImageDescription icon)

@@ -1015,15 +1015,41 @@ namespace Xwt
 			if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 				NotifySizeChangeToParent ();
 		}
+
+		internal void OnPlacementChanged ()
+		{
+			if (Parent != null)
+				Parent.OnChildPlacementChanged (this);
+		}
+
+		protected virtual void OnChildPlacementChanged (Widget child)
+		{
+			var ph = Backend as IChildPlacementHandler;
+			if (ph != null)
+				ph.UpdateChildPlacement (child.GetBackend ());
+			else
+				QueueForReallocate ();
+		}
+
+		public void QueueForReallocate ()
+		{
+			reallocationQueue.Add (this);
+			QueueDelayedResizeRequest ();
+		}
+
+		static void QueueDelayedResizeRequest ()
+		{
+			if (!delayedSizeNegotiationRequested) {
+				delayedSizeNegotiationRequested = true;
+				Application.MainLoop.QueueExitAction (DelayedResizeRequest);
+			}
+		}
 		
 		void NotifySizeChangeToParent ()
 		{
 			if (Parent != null) {
 				QueueForSizeCheck (Parent);
-				if (!delayedSizeNegotiationRequested) {
-					delayedSizeNegotiationRequested = true;
-					Application.MainLoop.QueueExitAction (DelayedResizeRequest);
-				}
+				QueueDelayedResizeRequest ();
 			}
 			else if (parentWindow is Window) {
 				QueueWindowSizeNegotiation ((Window)parentWindow);
@@ -1039,10 +1065,7 @@ namespace Xwt
 		internal static void QueueWindowSizeNegotiation (Window window)
 		{
 			resizeWindows.Add ((Window)window);
-			if (!delayedSizeNegotiationRequested) {
-				delayedSizeNegotiationRequested = true;
-				Application.MainLoop.QueueExitAction (DelayedResizeRequest);
-			}
+			QueueDelayedResizeRequest ();
 		}
 		
 		void QueueForReallocate (Widget w)

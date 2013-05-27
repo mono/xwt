@@ -53,9 +53,12 @@ namespace Xwt.Mac
 
 		public void SetContent (IWidgetBackend widget)
 		{
+			if (child != null)
+				RemoveChildPlacement (child.Widget);
+
 			child = (ViewBackend)widget;
 
-			Widget.Box.SetContent (GetWidget (widget));
+			Widget.Box.SetContent (GetWidgetWithPlacement (widget));
 			ResetFittingSize ();
 		}
 

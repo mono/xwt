@@ -258,7 +258,37 @@ namespace Xwt.Mac
 		{
 			return GetWidget ((IWidgetBackend)Toolkit.GetBackend (w));
 		}
+
+		public static NSView GetWidgetWithPlacement (IWidgetBackend childBackend)
+		{
+			var backend = (ViewBackend)childBackend;
+			var child = backend.Widget;
+			var wrapper = child.Superview as WidgetPlacementWrapper;
+			if (wrapper != null)
+				return wrapper;
+
+			if (!NeedsAlignmentWrapper (backend.Frontend))
+				return child;
+
+			wrapper = new WidgetPlacementWrapper (child, backend.Frontend);
+			return wrapper;
+		}
+
+		public static void RemoveChildPlacement (NSView w)
+		{
+			if (w == null)
+				return;
+			if (w is WidgetPlacementWrapper) {
+				var wp = (WidgetPlacementWrapper)w;
+				wp.Subviews [0].RemoveFromSuperview ();
+			}
+		}
 		
+		static bool NeedsAlignmentWrapper (Widget fw)
+		{
+			return fw.AlignHorizontal != WidgetAlignment.Fill || fw.AlignVertical != WidgetAlignment.Fill || fw.Margin.VerticalSpacing != 0 || fw.Margin.HorizontalSpacing != 0;
+		}
+
 		public virtual object Font {
 			get {
 				if (Widget is NSControl)
@@ -377,6 +407,10 @@ namespace Xwt.Mac
 		void AutoUpdateSize ()
 		{	var s = Frontend.Surface.GetPreferredSize ();
 			Widget.SetFrameSize (new SizeF ((float)s.Width, (float)s.Height));
+		}
+
+		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
 		}
 
 		NSObject gotFocusObserver;
@@ -679,6 +713,33 @@ namespace Xwt.Mac
 		}
 
 		#endregion
+	}
+
+	sealed class WidgetPlacementWrapper: NSControl
+	{
+		NSView child;
+		Widget w;
+
+		public WidgetPlacementWrapper (NSView child, Widget w)
+		{
+			this.child = child;
+			this.w = w;
+			AddSubview (child);
+		}
+
+		public override void SetFrameSize (SizeF newSize)
+		{
+			base.SetFrameSize (newSize);
+			var s = w.Surface.GetPreferredSize (SizeContraint.RequireSize (newSize.Width - w.Margin.HorizontalSpacing), SizeContraint.RequireSize(newSize.Height - w.Margin.VerticalSpacing));
+			var avx = (newSize.Width - w.Margin.HorizontalSpacing - s.Width) * w.AlignHorizontal.GetValue ();
+			var avy = (newSize.Height - w.Margin.VerticalSpacing - s.Width) * w.AlignVertical.GetValue ();
+			child.Frame = new RectangleF ((float)(w.MarginLeft + avx), (float)(w.MarginTop + avy), (float)s.Width, (float)s.Height);
+		}
+
+		public override void SizeToFit ()
+		{
+			base.SizeToFit ();
+		}
 	}
 }
 

@@ -212,7 +212,7 @@ namespace Xwt
 				OnRemove (oldWidget);
 			OnAdd (newWidget, placement);
 		}
-
+		
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
@@ -229,7 +229,8 @@ namespace Xwt
 			for (int n=0; n<visibleChildren.Length; n++) {
 				var bp = visibleChildren [n];
 				widgets [n] = (IWidgetBackend)GetBackend (bp.Child);
-				rects [n] = new Rectangle (bp.NextX, bp.NextY, bp.NextWidth, bp.NextHeight).Round ();
+				var margin = bp.Child.Margin;
+				rects [n] = new Rectangle (bp.NextX + margin.Left, bp.NextY + margin.Top, bp.NextWidth - margin.HorizontalSpacing, bp.NextHeight - margin.VerticalSpacing).Round ().WithPositiveSize ();
 			}
 			
 			Backend.SetAllocation (widgets, rects);
@@ -276,6 +277,7 @@ namespace Xwt
 			return result;
 		}
 
+		// Get the preferred size of each child widget, including the margins
 		Size[] GetPreferredChildrenSizes (TablePlacement[] visibleChildren, bool useWidthConstraint, bool useHeightConstraint)
 		{
 			var sizes = new Size [visibleChildren.Length];
@@ -283,11 +285,13 @@ namespace Xwt
 				var bp = visibleChildren[n];
 				Size s;
 				if (useWidthConstraint)
-					s = bp.Child.Surface.GetPreferredSize (SizeContraint.RequireSize (bp.NextWidth), SizeContraint.Unconstrained);
+					s = bp.Child.Surface.GetPreferredSize (SizeContraint.RequireSize (bp.NextWidth - bp.Child.Margin.HorizontalSpacing), SizeContraint.Unconstrained);
 				else if (useHeightConstraint)
-					s = bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.RequireSize (bp.NextHeight));
+					s = bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.RequireSize (bp.NextHeight - bp.Child.Margin.VerticalSpacing));
 				else
 					s = bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained);
+				s.Width += bp.Child.Margin.HorizontalSpacing;
+				s.Height += bp.Child.Margin.VerticalSpacing;
 				sizes [n] = s;
 			}
 			return sizes;
@@ -482,13 +486,11 @@ namespace Xwt
 		/// </summary>
 		/// <param name="mode">Mode.</param>
 		/// <param name="availableSize">Total size available</param>
-		/// <param name="orientation">Orientation. Determines if the method calculates heights or widths</param>
 		/// <param name="calcOffsets"></param>
 		void CalcCellSizes (CellSizeVector cellSizes, double availableSize, bool calcOffsets)
 		{
 			TablePlacement[] visibleChildren = cellSizes.visibleChildren;
 			Dictionary<int,double> fixedSizesByCell = cellSizes.fixedSizesByCell;
-			HashSet<int> cellsWithExpand = cellSizes.cellsWithExpand;
 			double[] sizes = cellSizes.sizes;
 			double spacing = cellSizes.spacing;
 			Orientation orientation = cellSizes.orientation;
@@ -529,6 +531,8 @@ namespace Xwt
 				RoundSizes (fixedSizesByCell);
 			}
 			else {
+				// Distribute remaining space among the extensible widgets
+				HashSet<int> cellsWithExpand = cellSizes.cellsWithExpand;
 				int nexpands = cellsWithExpand.Count;
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
 				foreach (var c in cellsWithExpand) {
@@ -538,6 +542,8 @@ namespace Xwt
 					fixedSizesByCell [c] = ws;
 				}
 			}
+
+			// Calculate the offset of each widget, relative to the cell (so 0 means at the left/top of the cell).
 
 			for (int n=0; n<visibleChildren.Length; n++) {
 				var bp = visibleChildren[n];
@@ -577,6 +583,7 @@ namespace Xwt
 			}
 
 			if (calcOffsets) {
+				// Calculate the final offset of each widget, relative to the table origin
 				var sortedChildren = visibleChildren.OrderBy (c => GetStartAttach (c, orientation)).ToArray();
 				var cells = fixedSizesByCell.OrderBy (c => c.Key);
 				double offset = 0;

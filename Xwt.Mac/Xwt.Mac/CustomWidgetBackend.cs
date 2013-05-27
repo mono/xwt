@@ -48,6 +48,7 @@ namespace Xwt.Mac
 		{
 			if (childBackend != null) {
 				childBackend.Widget.RemoveFromSuperview ();
+				RemoveChildPlacement (childBackend.Widget);
 				childBackend.Widget.AutoresizingMask = NSViewResizingMask.NotSizable;
 			}
 			if (widget == null)
@@ -55,7 +56,7 @@ namespace Xwt.Mac
 
 			var view = Widget;
 			childBackend = (ViewBackend)widget;
-			var childView = childBackend.Widget;
+			var childView = GetWidgetWithPlacement (childBackend);
 			childView.Frame = view.Bounds;
 			childView.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
 			view.AddSubview (childView);

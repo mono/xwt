@@ -72,6 +72,11 @@ namespace Xwt.GtkBackend
 			alignment.Child = w.Widget;
 		}
 		
+		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
+			WidgetBackend.SetChildPlacement (childBackend);
+		}
+
 		public void SetMainMenu (IMenuBackend menu)
 		{
 			if (mainMenu != null)
