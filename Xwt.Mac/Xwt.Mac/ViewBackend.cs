@@ -730,10 +730,22 @@ namespace Xwt.Mac
 		public override void SetFrameSize (SizeF newSize)
 		{
 			base.SetFrameSize (newSize);
-			var s = w.Surface.GetPreferredSize (SizeContraint.RequireSize (newSize.Width - w.Margin.HorizontalSpacing), SizeContraint.RequireSize(newSize.Height - w.Margin.VerticalSpacing));
-			var avx = (newSize.Width - w.Margin.HorizontalSpacing - s.Width) * w.AlignHorizontal.GetValue ();
-			var avy = (newSize.Height - w.Margin.VerticalSpacing - s.Width) * w.AlignVertical.GetValue ();
-			child.Frame = new RectangleF ((float)(w.MarginLeft + avx), (float)(w.MarginTop + avy), (float)s.Width, (float)s.Height);
+
+			double cheight = newSize.Height - w.Margin.VerticalSpacing;
+			double cwidth = newSize.Width - w.Margin.HorizontalSpacing;
+			double cx = w.MarginLeft;
+			double cy = w.MarginTop;
+
+			var s = w.Surface.GetPreferredSize (cwidth, cheight);
+			if (w.AlignHorizontal != WidgetAlignment.Fill) {
+				cwidth = s.Width;
+				cx += (cwidth - s.Width) * w.AlignHorizontal.GetValue ();
+			}
+			if (w.AlignVertical != WidgetAlignment.Fill) {
+				cheight = s.Height;
+				cy += (cheight - s.Height) * w.AlignVertical.GetValue ();
+			}
+			child.Frame = new RectangleF ((float)cx, (float)cy, (float)cwidth, (float)cheight);
 		}
 
 		public override void SizeToFit ()
