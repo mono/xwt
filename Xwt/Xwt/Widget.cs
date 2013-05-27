@@ -924,7 +924,6 @@ namespace Xwt
 				return cachedSize;
 			else {
 				cachedSize = OnGetPreferredSize (widthConstraint, heightConstraint);
-				cachedSize += new Size (margin.HorizontalSpacing, margin.VerticalSpacing);
 				if (minWidth > cachedSize.Width)
 					cachedSize.Width = minWidth;
 				if (minHeight > cachedSize.Height)
