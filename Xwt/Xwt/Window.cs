@@ -221,7 +221,7 @@ namespace Xwt
 					else
 						Size = size + Backend.ImplicitMinSize;
 				}
-				else if (locationSet)
+				else if (locationSet && !shown)
 					Backend.Move (initialBounds.X, initialBounds.Y);
 	
 				Backend.SetMinSize (Backend.ImplicitMinSize + new Size (ws.Width + padding.HorizontalSpacing, ws.Height + padding.VerticalSpacing));
