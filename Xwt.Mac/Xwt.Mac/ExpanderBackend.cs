@@ -130,6 +130,12 @@ namespace Xwt.Mac
 		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
 		{
 		}
+
+		public override void SetFrameSize (SizeF newSize)
+		{
+			base.SetFrameSize (newSize);
+			box.UpdateContentSize (false);
+		}
 	}
 
 	class ExpanderWidget : NSView
@@ -231,6 +237,7 @@ namespace Xwt.Mac
 		public void SetContent (NSView view)
 		{
 			ContentView = view;
+			UpdateContentSize (false);
 		}
 
 		public bool Expanded {
@@ -244,11 +251,17 @@ namespace Xwt.Mac
 		{
 			if (expanded != value) {
 				expanded = value;
-				var frameSize = Frame.Size;
-				SizeF newFrameSize = new SizeF (frameSize.Width, otherHeight);
-				otherHeight = frameSize.Height;
-				SetFrameSize (newFrameSize, animate);
+				UpdateContentSize (animate);
 			}
+		}
+
+		public void UpdateContentSize (bool animate)
+		{
+			if (expanded) {
+				var s = ((IViewObject)ContentView).Backend.Frontend.Surface.GetPreferredSize ((float)Frame.Size.Width, SizeContraint.Unconstrained);
+				SetFrameSize (new SizeF (Frame.Width, (float)s.Height), animate);
+			} else
+				SetFrameSize (new SizeF (Frame.Width, DefaultCollapsedHeight), animate);
 		}
 
 		public override bool IsFlipped {
