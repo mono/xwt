@@ -141,7 +141,7 @@ namespace Xwt
 				return s + child.Surface.GetPreferredSize (widthConstraint, heightConstraint);
 			}
 			else
-				return Size.Zero;
+				return new Size (Padding.HorizontalSpacing, Padding.VerticalSpacing);
 		}
 	}
 }
