@@ -997,7 +997,6 @@ namespace Xwt
 		
 		static HashSet<Widget> resizeRequestQueue = new HashSet<Widget> ();
 		static HashSet<Widget> reallocationQueue = new HashSet<Widget> ();
-		static List<int> resizeDepths = new List<int> ();
 		static List<Widget> resizeWidgets = new List<Widget> ();
 		static List<Window> resizeWindows = new List<Window> ();
 		static bool delayedSizeNegotiationRequested;
@@ -1074,22 +1073,8 @@ namespace Xwt
 		
 		void QueueForSizeCheck (Widget w)
 		{
-			if (resizeRequestQueue.Add (w)) {
-				int depth = w.Depth;
-				bool inserted = false;
-				for (int n=0; n<resizeDepths.Count; n++) {
-					if (resizeDepths[n] < depth) {
-						resizeDepths.Insert (n, depth);
-						resizeWidgets.Insert (n, w);
-						inserted = true;
-						break;
-					}
-				}
-				if (!inserted) {
-					resizeDepths.Add (depth);
-					resizeWidgets.Add (w);
-				}
-			}
+			if (resizeRequestQueue.Add (w))
+				resizeWidgets.Add (w);
 		}
 		
 		static void DelayedResizeRequest ()
@@ -1098,13 +1083,33 @@ namespace Xwt
 			// widgets that were changed
 
 			try {
+				// We have to recalculate the size of each widget starting from the leafs and ending
+				// at the root of the widget hierarchy. We do it in several waves, since new widgets
+				// may be added to the list while doing the size checks
+
 				int n = 0;
+				int[] depths = null;
+				Widget[] items = null;
+
 				while (n < resizeWidgets.Count) {
-					var w = resizeWidgets[n];
-					w.OnChildPreferredSizeChanged ();
-					n++;
+					int remaining = resizeWidgets.Count - n;
+					if (items == null || items.Length < remaining) {
+						depths = new int[remaining];
+						items = new Widget[remaining];
+					}
+					resizeWidgets.CopyTo (n, items, 0, remaining);
+
+					for (int k=0; k<remaining; k++)
+						depths[k] = items[k].Depth;
+
+					Array.Sort (depths, items, 0, remaining);
+
+					for (int k=remaining - 1; k>=0; k--)
+						items[k].OnChildPreferredSizeChanged ();
+
+					n += remaining;
 				}
-				
+
 				// Now reallocate the widgets whose size has actually changed
 				
 				var toReallocate = reallocationQueue.OrderBy (w => w.Depth).ToArray ();
@@ -1120,7 +1125,6 @@ namespace Xwt
 				}
 			} finally {
 				resizeRequestQueue.Clear ();
-				resizeDepths.Clear ();
 				resizeWidgets.Clear ();
 				reallocationQueue.Clear ();
 				resizeWindows.Clear ();
