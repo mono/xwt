@@ -60,6 +60,7 @@ namespace Xwt.Mac
 		WidgetEvent currentEvents;
 		bool autosize;
 		Size lastFittingSize;
+		bool sizeCalcPending = true;
 		bool sensitive = true;
 		bool canGetFocus = true;
 		Xwt.Drawing.Color backgroundColor;
@@ -329,8 +330,13 @@ namespace Xwt.Mac
 		
 		protected virtual Size GetNaturalSize ()
 		{
-//			var s = Widget.FittingSize;
-//			return new Size (s.Width, s.Height);
+			if (sizeCalcPending) {
+				sizeCalcPending = false;
+				var f = Widget.Frame;
+				SizeToFit ();
+				lastFittingSize = new Size (Widget.WidgetWidth (), Widget.WidgetHeight ());
+				Widget.Frame = f;
+			}
 			return lastFittingSize;
 		}
 
@@ -349,10 +355,7 @@ namespace Xwt.Mac
 
 		protected void ResetFittingSize ()
 		{
-			var f = Widget.Frame;
-			SizeToFit ();
-			lastFittingSize = new Size (Widget.WidgetWidth (), Widget.WidgetHeight ());
-			Widget.Frame = f;
+			sizeCalcPending = true;
 		}
 
 		public void SizeToFit ()
@@ -387,19 +390,6 @@ namespace Xwt.Mac
 		
 		public virtual void UpdateLayout ()
 		{
-			var m = Frontend.Margin;
-			if (m.Left != 0 || m.Top != 0) {
-				if (!Widget.WantsLayer)
-					Widget.WantsLayer = true;
-				Widget.Layer.Transform = CATransform3D.MakeTranslation (-(float)m.Left, -(float)m.Top, 0);
-			}
-			else {
-				if (Widget.WantsLayer)
-					Widget.Layer.Transform = CATransform3D.Identity;
-			}
-
-//			Widget.TranslateOriginToPoint (new PointF ((float)m.Left, (float)m.Top));
-			Widget.NeedsDisplay = true;
 			if (autosize)
 				AutoUpdateSize ();
 		}
