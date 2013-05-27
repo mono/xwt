@@ -242,10 +242,6 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public virtual SizeRequestMode SizeRequestMode {
-			get { return SizeRequestMode.HeightForWidth; }
-		}
-		
 		Size IWidgetBackend.Size {
 			get { return new Size (Widget.WidgetWidth (), Widget.WidgetHeight ()); }
 		}

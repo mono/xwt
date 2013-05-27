@@ -957,13 +957,7 @@ namespace Xwt
 					w.Surface.Reallocate ();
 			}
 		}
-		
-		protected virtual SizeRequestMode OnGetSizeRequestMode ()
-		{
-			return SizeRequestMode.HeightForWidth;
-		}
-		
-		
+
 		/// <summary>
 		/// Gets the preferred size of the widget (it must not include the widget margin)
 		/// </summary>

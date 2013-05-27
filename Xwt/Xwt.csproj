@@ -94,7 +94,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Xwt\DataStore.cs" />
-    <Compile Include="Xwt\SizeRequestMode.cs" />
     <Compile Include="Xwt\Rectangle.cs" />
     <Compile Include="Xwt\Point.cs" />
     <Compile Include="Xwt\Size.cs" />
