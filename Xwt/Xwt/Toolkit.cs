@@ -224,9 +224,11 @@ namespace Xwt
 		public object GetNativeWidget (Widget w)
 		{
 			ValidateObject (w);
-			if (w.NativeContainer == null)
-				w.NativeContainer = new Frame () { Content = w, Type = FrameType.Custom };
-
+			if (w.NativeContainer == null) {
+				w.Surface.ToolkitEngine.Invoke (delegate {
+					w.NativeContainer = new Frame () { Content = w, Type = FrameType.Custom };
+				});
+			}
 			w.NativeContainer.SetExtractedAsNative ();
 			return backend.GetNativeWidget (w.NativeContainer);
 		}
