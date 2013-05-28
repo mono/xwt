@@ -910,6 +910,30 @@ namespace Xwt
 		{
 			sizeCached = false;
 		}
+
+		Rectangle IWidgetSurface.GetPlacementInRect (Rectangle rect)
+		{
+			rect.X += Margin.Left;
+			rect.Y += Margin.Top;
+			rect.Width -= Margin.HorizontalSpacing;
+			rect.Height -= Margin.VerticalSpacing;
+			if (HorizontalPlacement != WidgetPlacement.Fill || VerticalPlacement != WidgetPlacement.Fill) {
+				var s = Surface.GetPreferredSize (rect.Width, rect.Height);
+				if (HorizontalPlacement != WidgetPlacement.Fill) {
+					rect.X += (rect.Width - s.Width) * HorizontalPlacement.GetValue ();
+					rect.Width = s.Width;
+				}
+				if (VerticalPlacement != WidgetPlacement.Fill) {
+					rect.Y += (rect.Height - s.Height) * VerticalPlacement.GetValue ();
+					rect.Height = s.Height;
+				}
+			}
+			if (rect.Width < 0)
+				rect.Width = 0;
+			if (rect.Height < 0)
+				rect.Height = 0;
+			return rect;
+		}
 		
 		void IWidgetSurface.Reallocate ()
 		{
@@ -917,13 +941,17 @@ namespace Xwt
 			OnReallocate ();
 		}
 
-		Size IWidgetSurface.GetPreferredSize ()
+		Size IWidgetSurface.GetPreferredSize (bool includeMargin)
 		{
-			return ((IWidgetSurface)this).GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained);
+			return ((IWidgetSurface)this).GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained, includeMargin);
 		}
 
-		Size IWidgetSurface.GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		Size IWidgetSurface.GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint, bool includeMargin)
 		{
+			if (includeMargin) {
+				return Surface.GetPreferredSize (widthConstraint - margin.HorizontalSpacing, heightConstraint - margin.VerticalSpacing, false) + new Size (Margin.HorizontalSpacing, Margin.VerticalSpacing);
+			}
+
 			if (sizeCached && widthConstraint == cachedWidthConstraint && heightConstraint == cachedHeightConstraint)
 				return cachedSize;
 			else {

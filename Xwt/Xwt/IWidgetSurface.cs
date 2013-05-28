@@ -35,7 +35,7 @@ namespace Xwt
 		void Reallocate ();
 		
 		/// <summary>
-		/// Gets the preferred size of the widget (includes the margin)
+		/// Gets the preferred size of the widget
 		/// </summary>
 		/// <returns>
 		/// The preferred size.
@@ -44,10 +44,10 @@ namespace Xwt
 		/// The returned size is >= 0. If a constraint is specified, the returned size will not
 		/// be bigger than the constraint.
 		/// </remarks>
-		Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint);
+		Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint, bool includeMargin = false);
 		
 		/// <summary>
-		/// Gets the preferred size of the widget (includes the margin)
+		/// Gets the preferred size of the widget
 		/// </summary>
 		/// <returns>
 		/// The preferred size.
@@ -55,13 +55,21 @@ namespace Xwt
 		/// <remarks>
 		/// The returned size is >= 0
 		/// </remarks>
-		Size GetPreferredSize ();
+		Size GetPreferredSize (bool includeMargin = false);
 
 		object NativeWidget { get; }
 
 		IEnumerable<Widget> Children { get; }
 
 		Toolkit ToolkitEngine { get; }
+
+		/// <summary>
+		/// Given a rectangle that defines the available area for a widget, returns the area that the widget will fill,
+		/// taking into account the margin and alignment settings.
+		/// </summary>
+		/// <returns>The placement in rect.</returns>
+		/// <param name="rect">Rect.</param>
+		Rectangle GetPlacementInRect (Rectangle rect);
 	}
 }
 
