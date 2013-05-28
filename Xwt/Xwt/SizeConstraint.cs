@@ -74,6 +74,22 @@ namespace Xwt
 			return (s1.value != s2.value);
 		}
 		
+		public static SizeContraint operator + (SizeContraint c, double s)
+		{
+			if (!c.IsConstrained)
+				return c;
+			else
+				return SizeContraint.RequireSize (c.RequiredSize + s);
+		}
+
+		public static SizeContraint operator - (SizeContraint c, double s)
+		{
+			if (!c.IsConstrained)
+				return c;
+			else
+				return SizeContraint.RequireSize (Math.Max (c.RequiredSize - s, 0));
+		}
+
 		public override bool Equals (object ob)
 		{
 			return (ob is SizeContraint) && this == (SizeContraint)ob;
