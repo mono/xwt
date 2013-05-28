@@ -46,23 +46,23 @@ namespace Samples
 
 				var table = new Table () { DefaultColumnSpacing = 20, DefaultRowSpacing = 10 };
 //					table.Margin.SetAll (60);
-				table.Attach (new Label ("Font") { TextAlignment = Alignment.End }, 0, 0);
-				table.Attach (new ComboBox (), 1, 0, AttachOptions.Fill, AttachOptions.Fill | AttachOptions.Expand);
+				table.Add (new Label ("Font") { TextAlignment = Alignment.End }, 0, 0);
+				table.Add (new ComboBox (), 1, 0, vexpand:true);
 
-				table.Attach (new Label ("Family")  { TextAlignment = Alignment.End }, 0, 1);
-				table.Attach (new ComboBox (), 1, 1, AttachOptions.Fill, AttachOptions.Fill | AttachOptions.Expand);
+				table.Add (new Label ("Family")  { TextAlignment = Alignment.End }, 0, 1);
+				table.Add (new ComboBox (), 1, 1, vexpand:true);
 
-				table.Attach (new Label ("Style")  { TextAlignment = Alignment.End }, 0, 2);
-				table.Attach (new ComboBox (), 1, 2, AttachOptions.Fill, AttachOptions.Fill | AttachOptions.Expand);
+				table.Add (new Label ("Style")  { TextAlignment = Alignment.End }, 0, 2);
+				table.Add (new ComboBox (), 1, 2, vexpand:true);
 
-				table.Attach (new Label ("Size")  { TextAlignment = Alignment.End }, 0, 3);
-				table.Attach (new SpinButton (), 1, 3, AttachOptions.Fill, AttachOptions.Fill | AttachOptions.Expand);
+				table.Add (new Label ("Size")  { TextAlignment = Alignment.End }, 0, 3);
+				table.Add (new SpinButton (), 1, 3, vexpand:true);
 
 				var b = new Button ("Add more");
-				table.Attach (b, 0, 4);
+				table.Add (b, 0, 4);
 				int next = 5;
 				b.Clicked += delegate {
-					table.Attach (new Label ("Row " + next), 0, next++);
+					table.Add (new Label ("Row " + next), 0, next++);
 				};
 
 				table.Margin = 20;

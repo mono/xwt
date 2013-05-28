@@ -283,7 +283,7 @@ namespace Xwt.Mac
 		
 		static bool NeedsAlignmentWrapper (Widget fw)
 		{
-			return fw.AlignHorizontal != WidgetAlignment.Fill || fw.AlignVertical != WidgetAlignment.Fill || fw.Margin.VerticalSpacing != 0 || fw.Margin.HorizontalSpacing != 0;
+			return fw.HorizontalPlacement != WidgetPlacement.Fill || fw.VerticalPlacement != WidgetPlacement.Fill || fw.Margin.VerticalSpacing != 0 || fw.Margin.HorizontalSpacing != 0;
 		}
 
 		public virtual object Font {
@@ -723,13 +723,13 @@ namespace Xwt.Mac
 			double cy = w.MarginTop;
 
 			var s = w.Surface.GetPreferredSize (cwidth, cheight);
-			if (w.AlignHorizontal != WidgetAlignment.Fill) {
+			if (w.HorizontalPlacement != WidgetPlacement.Fill) {
 				cwidth = s.Width;
-				cx += (cwidth - s.Width) * w.AlignHorizontal.GetValue ();
+				cx += (cwidth - s.Width) * w.HorizontalPlacement.GetValue ();
 			}
-			if (w.AlignVertical != WidgetAlignment.Fill) {
+			if (w.VerticalPlacement != WidgetPlacement.Fill) {
 				cheight = s.Height;
-				cy += (cheight - s.Height) * w.AlignVertical.GetValue ();
+				cy += (cheight - s.Height) * w.VerticalPlacement.GetValue ();
 			}
 			child.Frame = new RectangleF ((float)cx, (float)cy, (float)cwidth, (float)cheight);
 		}

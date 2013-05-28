@@ -378,7 +378,7 @@ namespace Xwt.GtkBackend
 
 		static bool NeedsAlignmentWrapper (Widget fw)
 		{
-			return fw.AlignHorizontal != WidgetAlignment.Fill || fw.AlignVertical != WidgetAlignment.Fill || fw.Margin.VerticalSpacing != 0 || fw.Margin.HorizontalSpacing != 0;
+			return fw.HorizontalPlacement != WidgetPlacement.Fill || fw.VerticalPlacement != WidgetPlacement.Fill || fw.Margin.VerticalSpacing != 0 || fw.Margin.HorizontalSpacing != 0;
 		}
 
 		public static void SetChildPlacement (IWidgetBackend childBackend)
@@ -1116,10 +1116,10 @@ namespace Xwt.GtkBackend
 			RightPadding = (uint)widget.MarginRight;
 			TopPadding = (uint)widget.MarginTop;
 			BottomPadding = (uint)widget.MarginBottom;
-			Xalign = (float) widget.AlignHorizontal.GetValue ();
-			Yalign = (float) widget.AlignVertical.GetValue ();
-			Xscale = (widget.AlignHorizontal == WidgetAlignment.Fill) ? 1 : 0;
-			Yscale = (widget.AlignVertical == WidgetAlignment.Fill) ? 1 : 0;
+			Xalign = (float) widget.HorizontalPlacement.GetValue ();
+			Yalign = (float) widget.VerticalPlacement.GetValue ();
+			Xscale = (widget.HorizontalPlacement == WidgetPlacement.Fill) ? 1 : 0;
+			Yscale = (widget.VerticalPlacement == WidgetPlacement.Fill) ? 1 : 0;
 		}
 	}
 }

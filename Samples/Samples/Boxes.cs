@@ -43,7 +43,7 @@ namespace Samples
 			Button b2 = new Button ("Hide / Show");
 			box5.PackStart (new SimpleBox (30), true);
 			var hsb = new SimpleBox (20);
-			box5.PackStart (hsb, fill:false);
+			box5.PackStart (hsb);
 			box5.PackStart (b2);
 			box5.PackStart (new SimpleBox (30), true);
 			b2.Clicked += delegate {

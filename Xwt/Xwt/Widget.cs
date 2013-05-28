@@ -53,8 +53,8 @@ namespace Xwt
 		double widthRequest = -1, heightRequest = -1;
 		CursorType cursor;
 
-		WidgetAlignment alignVertical = WidgetAlignment.Fill;
-		WidgetAlignment alignHorizontal = WidgetAlignment.Fill;
+		WidgetPlacement alignVertical = WidgetPlacement.Fill;
+		WidgetPlacement alignHorizontal = WidgetPlacement.Fill;
 		bool expandVertical;
 		bool expandHorizontal;
 
@@ -377,7 +377,7 @@ namespace Xwt
 			}
 		}
 
-		public WidgetAlignment AlignVertical {
+		public WidgetPlacement VerticalPlacement {
 			get { return alignVertical; }
 			set {
 				alignVertical = value;
@@ -385,7 +385,7 @@ namespace Xwt
 			}
 		}
 
-		public WidgetAlignment AlignHorizontal {
+		public WidgetPlacement HorizontalPlacement {
 			get { return alignHorizontal; }
 			set {
 				alignHorizontal = value;
@@ -393,12 +393,12 @@ namespace Xwt
 			}
 		}
 
-		internal WidgetAlignment AlignmentForOrientation (Orientation or)
+		internal WidgetPlacement AlignmentForOrientation (Orientation or)
 		{
 			if (or == Orientation.Vertical)
-				return AlignVertical;
+				return VerticalPlacement;
 			else
-				return AlignHorizontal;
+				return HorizontalPlacement;
 		}
 
 		public bool ExpandVertical {

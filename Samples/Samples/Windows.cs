@@ -59,10 +59,10 @@ namespace Samples
 				Dialog d = new Dialog ();
 				d.Title = "This is a dialog";
 				Table t = new Table ();
-				t.Attach (new Label ("Some field:"), 0, 1, 0, 1);
-				t.Attach (new TextEntry (), 1, 2, 0, 1);
-				t.Attach (new Label ("Another field:"), 0, 1, 1, 2);
-				t.Attach (new TextEntry (), 1, 2, 1, 2);
+				t.Add (new Label ("Some field:"), 0, 0);
+				t.Add (new TextEntry (), 1, 0);
+				t.Add (new Label ("Another field:"), 0, 1);
+				t.Add (new TextEntry (), 1, 1);
 				d.Content = t;
 				
 				Command custom = new Command ("Custom");

@@ -27,12 +27,12 @@ using System;
 
 namespace Xwt
 {
-	public enum WidgetAlignment
+	public enum WidgetPlacement
 	{
-		Start,
-		Center,
-		End,
-		Fill
+		Start = 1,
+		Center = 2,
+		End = 3,
+		Fill = 4
 	}
 }
 

@@ -59,12 +59,12 @@ namespace Xwt.Backends
 			return img != null ? img.ImageDescription : ImageDescription.Null;
 		}
 
-		public static double GetValue (this WidgetAlignment al)
+		public static double GetValue (this WidgetPlacement al)
 		{
 			switch (al) {
-			case WidgetAlignment.Center:
+			case WidgetPlacement.Center:
 				return 0.5;
-			case WidgetAlignment.End:
+			case WidgetPlacement.End:
 				return 1;
 			default:
 				return 0;

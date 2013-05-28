@@ -117,36 +117,69 @@ namespace Xwt
 			get { return children.Select (c => c.Child); }
 		}
 		
+		[Obsolete ("Use the Add method")]
 		public void Attach (Widget widget, int left, int top)
 		{
 			Attach (widget, left, top, null, null);
 		}
 		
+		[Obsolete ("Use the Add method")]
 		public void Attach (Widget widget, int left, int top, AttachOptions? xOptions, AttachOptions? yOptions)
 		{
 			Attach (widget, left, left + 1, top, top + 1, xOptions, yOptions);
 		}
-		
+
+		[Obsolete ("Use the Add method")]
 		public void Attach (Widget widget, int left, int right, int top, int bottom)
 		{
-			Attach (widget, left, right, top, bottom, null, null);
+			Attach (widget, left, right, top, bottom, (AttachOptions?)null, (AttachOptions?)null);
 		}
 		
+		public void Add (Widget widget, int left, int top, int rowspan = 1, int colspan = 1, bool hexpand = false, bool vexpand = false, WidgetPlacement hpos = WidgetPlacement.Fill, WidgetPlacement vpos = WidgetPlacement.Fill, double marginLeft = -1, double marginTop = -1, double marginRight = -1, double marginBottom = -1, double margin = -1)
+		{
+			if (vpos != default (WidgetPlacement))
+				widget.VerticalPlacement = vpos;
+			if (hpos != default (WidgetPlacement))
+				widget.HorizontalPlacement = hpos;
+
+			widget.ExpandHorizontal = hexpand;
+			widget.ExpandVertical = vexpand;
+
+			if (margin != -1)
+				widget.Margin = margin;
+			if (marginLeft != -1)
+				widget.MarginLeft = marginLeft;
+			if (marginTop != -1)
+				widget.MarginTop = marginTop;
+			if (marginTop != -1)
+				widget.MarginRight = marginRight;
+			if (marginBottom != -1)
+				widget.MarginBottom = marginBottom;
+			
+			var p = new TablePlacement ((WidgetBackendHost)BackendHost, widget) {
+				Left = left,
+				Right = left + colspan,
+				Top = top,
+				Bottom = top + rowspan
+			};
+			children.Add (p);
+		}
+
 		public void Attach (Widget widget, int left, int right, int top, int bottom, AttachOptions? xOptions = null, AttachOptions? yOptions = null)
 		{
 			if (xOptions != null) {
 				widget.ExpandHorizontal = (xOptions.Value & AttachOptions.Expand) != 0;
 				if ((xOptions.Value & AttachOptions.Fill) != 0)
-					widget.AlignHorizontal = WidgetAlignment.Fill;
+					widget.HorizontalPlacement = WidgetPlacement.Fill;
 				else
-					widget.AlignHorizontal = WidgetAlignment.Center;
+					widget.HorizontalPlacement = WidgetPlacement.Center;
 			}
 			if (yOptions != null) {
 				widget.ExpandVertical = (yOptions.Value & AttachOptions.Expand) != 0;
 				if ((yOptions.Value & AttachOptions.Fill) != 0)
-					widget.AlignVertical = WidgetAlignment.Fill;
+					widget.VerticalPlacement = WidgetPlacement.Fill;
 				else
-					widget.AlignVertical = WidgetAlignment.Center;
+					widget.VerticalPlacement = WidgetPlacement.Center;
 			}
 
 			var p = new TablePlacement ((WidgetBackendHost)BackendHost, widget) {
@@ -561,7 +594,7 @@ namespace Xwt
 				}
 
 				var al = bp.Child.AlignmentForOrientation (orientation);
-				if (al != WidgetAlignment.Fill) {
+				if (al != WidgetPlacement.Fill) {
 					double s = sizes[n];
 					if (s < allocatedSize) {
 						cellOffset = (allocatedSize - s) * al.GetValue ();

@@ -12,7 +12,7 @@ namespace Samples
 			HBox box = new HBox ();
 			
 			SimpleBox b1 = new SimpleBox (30);
-			box.PackStart (b1, fill:false);
+			box.PackStart (b1);
 			
 			b2 = new Button ("Drop here");
 			box.PackEnd (b2);

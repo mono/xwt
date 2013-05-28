@@ -94,21 +94,26 @@ namespace Xwt
 		public IEnumerable<Widget> Children {
 			get { return children.Select (c => c.Child); }
 		}
-		
+
 		public void PackStart (Widget widget)
 		{
-			Pack (widget, null, null, PackOrigin.Start);
+			Pack (widget, false, WidgetPlacement.Fill, PackOrigin.Start);
 		}
 		
-		public void PackStart (Widget widget, bool? expand = false, bool? fill = true)
+		public void PackStart (Widget widget, bool expand)
 		{
-			WidgetAlignment? align = fill.HasValue ? (WidgetAlignment?)(fill.Value ? WidgetAlignment.Fill : WidgetAlignment.Center) : null;
+			Pack (widget, expand, WidgetPlacement.Fill, PackOrigin.Start);
+		}
+
+		public void PackStart (Widget widget, bool expand, bool fill)
+		{
+			WidgetPlacement align = fill ? WidgetPlacement.Fill : WidgetPlacement.Center;
 			Pack (widget, expand, align, PackOrigin.Start);
 		}
 
-		public void PackStart (Widget widget, bool? expand = false, WidgetAlignment? align = WidgetAlignment.Fill)
+		public void PackStart (Widget widget, bool expand = false, WidgetPlacement vpos = WidgetPlacement.Fill, WidgetPlacement hpos = WidgetPlacement.Fill, double marginLeft = -1, double marginTop = -1, double marginRight = -1, double marginBottom = -1, double margin = -1)
 		{
-			Pack (widget, expand, align, PackOrigin.Start);
+			Pack (widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.Start);
 		}
 
 		[Obsolete ("BoxMode is going away")]
@@ -121,18 +126,23 @@ namespace Xwt
 		
 		public void PackEnd (Widget widget)
 		{
-			Pack (widget, null, null, PackOrigin.End);
+			Pack (widget, false, WidgetPlacement.Fill, PackOrigin.End);
 		}
 		
-		public void PackEnd (Widget widget, bool? expand = false, bool? fill = true)
+		public void PackEnd (Widget widget, bool expand)
 		{
-			WidgetAlignment? align = fill.HasValue ? (WidgetAlignment?)(fill.Value ? WidgetAlignment.Fill : WidgetAlignment.Center) : null;
+			Pack (widget, expand, WidgetPlacement.Fill, PackOrigin.End);
+		}
+
+		public void PackEnd (Widget widget, bool expand, bool fill)
+		{
+			WidgetPlacement align = fill ? WidgetPlacement.Fill : WidgetPlacement.Center;
 			Pack (widget, expand, align, PackOrigin.End);
 		}
 
-		public void PackEnd (Widget widget, bool? expand = false, WidgetAlignment? align = WidgetAlignment.Fill)
+		public void PackEnd (Widget widget, bool expand = false, WidgetPlacement hpos = WidgetPlacement.Fill, WidgetPlacement vpos = WidgetPlacement.Fill, double marginLeft = -1, double marginTop = -1, double marginRight = -1, double marginBottom = -1, double margin = -1)
 		{
-			Pack (widget, expand, align, PackOrigin.End);
+			Pack (widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.End);
 		}
 
 		[Obsolete ("BoxMode is going away")]
@@ -143,7 +153,34 @@ namespace Xwt
 			PackEnd (widget, expand, fill);
 		}
 
-		void Pack (Widget widget, bool? expand, WidgetAlignment? align, PackOrigin ptype)
+
+		void Pack (Widget widget, bool expand, WidgetPlacement vpos, WidgetPlacement hpos, double marginLeft, double marginTop, double marginRight, double marginBottom, double margin, PackOrigin ptype)
+		{
+			WidgetPlacement align;
+
+			if (direction == Orientation.Horizontal) {
+				align = hpos;
+				if (vpos != default (WidgetPlacement))
+					widget.VerticalPlacement = vpos;
+			} else {
+				align = vpos;
+				if (hpos != default (WidgetPlacement))
+					widget.HorizontalPlacement = hpos;
+			}
+			if (margin != -1)
+				widget.Margin = margin;
+			if (marginLeft != -1)
+				widget.MarginLeft = marginLeft;
+			if (marginTop != -1)
+				widget.MarginTop = marginTop;
+			if (marginTop != -1)
+				widget.MarginRight = marginRight;
+			if (marginBottom != -1)
+				widget.MarginBottom = marginBottom;
+			Pack (widget, expand, align, PackOrigin.Start);
+		}
+
+		void Pack (Widget widget, bool? expand, WidgetPlacement align, PackOrigin ptype)
 		{
 			if (expand.HasValue) {
 				if (direction == Orientation.Vertical)
@@ -151,11 +188,11 @@ namespace Xwt
 				else
 					widget.ExpandHorizontal = expand.Value;
 			}
-			if (align.HasValue) {
+			if (align != default (WidgetPlacement)) {
 				if (direction == Orientation.Vertical)
-					widget.AlignVertical = align.Value;
+					widget.VerticalPlacement = align;
 				else
-					widget.AlignHorizontal = align.Value;
+					widget.HorizontalPlacement = align;
 			}
 
 			if (widget == null)
@@ -233,10 +270,10 @@ namespace Xwt
 
 					double width = bp.NextSize >= 0 ? bp.NextSize : 0;
 					double height = size.Height - bp.Child.Margin.VerticalSpacing;
-					if (bp.Child.AlignVertical != WidgetAlignment.Fill)
+					if (bp.Child.VerticalPlacement != WidgetPlacement.Fill)
 						height =  Math.Min (bp.Child.Surface.GetPreferredSize (width, SizeContraint.Unconstrained).Height, height);
 					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
-					double y = (size.Height - bp.Child.Margin.VerticalSpacing - height) * bp.Child.AlignVertical.GetValue ();
+					double y = (size.Height - bp.Child.Margin.VerticalSpacing - height) * bp.Child.VerticalPlacement.GetValue ();
 
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
 					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ().WithPositiveSize ();
@@ -254,9 +291,9 @@ namespace Xwt
 
 					double height = bp.NextSize >= 0 ? bp.NextSize : 0;
 					double width = size.Width - bp.Child.Margin.HorizontalSpacing;
-					if (bp.Child.AlignHorizontal != WidgetAlignment.Fill)
+					if (bp.Child.HorizontalPlacement != WidgetPlacement.Fill)
 						width = Math.Min (bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, height).Width, width);
-					double x = (size.Width - bp.Child.Margin.HorizontalSpacing - width) * bp.Child.AlignHorizontal.GetValue();
+					double x = (size.Width - bp.Child.Margin.HorizontalSpacing - width) * bp.Child.HorizontalPlacement.GetValue();
 					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
 
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
