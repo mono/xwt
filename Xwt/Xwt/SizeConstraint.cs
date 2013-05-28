@@ -63,6 +63,34 @@ namespace Xwt
 		public bool IsConstrained {
 			get { return value != 0; }
 		}
+
+		public static bool operator == (SizeContraint s1, SizeContraint s2)
+		{
+			return (s1.value == s2.value);
+		}
+
+		public static bool operator != (SizeContraint s1, SizeContraint s2)
+		{
+			return (s1.value != s2.value);
+		}
+		
+		public override bool Equals (object ob)
+		{
+			return (ob is SizeContraint) && this == (SizeContraint)ob;
+		}
+
+		public override int GetHashCode ()
+		{
+			return value.GetHashCode ();
+		}
+
+		public override string ToString ()
+		{
+			if (IsConstrained)
+				return value.ToString ();
+			else
+				return "Unconstrained";
+		}
 	}
 }
 
