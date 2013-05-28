@@ -81,7 +81,7 @@ namespace Xwt.GtkBackend
 		}
 		
 		public bool GradientBackround { get; set; }
-		public bool DrawBackground { get; set; }
+		public Color? BackgroundColor { get; set; }
 
 		protected override void OnAdded (Gtk.Widget widget)
 		{
@@ -118,17 +118,19 @@ namespace Xwt.GtkBackend
 
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
-			Gdk.Rectangle rect;
+			using (Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow)) {
+
+				Gdk.Rectangle rect = Allocation;
 			
-			if (DrawBackground) {
-				GdkWindow.DrawRectangle (Style.BackgroundGC (Gtk.StateType.Normal), true, Allocation.X, Allocation.Y, Allocation.Width - 1, Allocation.Height - 1);
-			}
+				if (BackgroundColor.HasValue) {
+					cr.Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
+					cr.Color = BackgroundColor.Value.ToCairoColor ();
+					cr.Fill ();
+				}
 			
-			if (GradientBackround) {
-				rect = new Gdk.Rectangle (Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
-				Color gcol = Util.ToXwtColor (Style.Background (Gtk.StateType.Normal));
+				if (GradientBackround) {
+					Color gcol = Util.ToXwtColor (Style.Background (Gtk.StateType.Normal));
 				
-				using (Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow)) {
 					cr.NewPath ();
 					cr.MoveTo (rect.X, rect.Y);
 					cr.RelLineTo (rect.Width, 0);
@@ -144,34 +146,15 @@ namespace Xwt.GtkBackend
 					cr.Pattern = pat;
 					cr.FillPreserve ();
 				}
-			}
 			
+				cr.Color = color.HasValue ? color.Value.ToCairoColor () : Style.Dark (Gtk.StateType.Normal).ToXwtColor ().ToCairoColor ();
+				cr.Rectangle (rect.X, rect.Y, rect.Width, topMargin);
+				cr.Rectangle (rect.X, rect.Y + rect.Height - bottomMargin, rect.Width, bottomMargin);
+				cr.Rectangle (rect.X, rect.Y, leftMargin, rect.Height);
+				cr.Rectangle (rect.X + rect.Width - rightMargin, rect.Y, rightMargin, rect.Height);
+				cr.Fill ();
+			}
 			bool res = base.OnExposeEvent (evnt);
-			
-			Gdk.GC borderColor;
-			if (color != null) {
-				borderColor = new Gdk.GC (GdkWindow);
-				borderColor.RgbFgColor = Util.ToGdkColor (color.Value);
-			}
-			else
-				borderColor = Style.DarkGC (Gtk.StateType.Normal);
-			
-			rect = Allocation;
-			for (int n=0; n<topMargin; n++)
-				GdkWindow.DrawLine (borderColor, rect.X, rect.Y + n, rect.Right, rect.Y + n);
-			
-			for (int n=0; n<bottomMargin; n++)
-				GdkWindow.DrawLine (borderColor, rect.X, rect.Bottom - n, rect.Right, rect.Bottom - n);
-			
-			for (int n=0; n<leftMargin; n++)
-				GdkWindow.DrawLine (borderColor, rect.X + n, rect.Y, rect.X + n, rect.Bottom);
-			
-			for (int n=0; n<rightMargin; n++)
-				GdkWindow.DrawLine (borderColor, rect.Right - n, rect.Y, rect.Right - n, rect.Bottom);
-
-			if (color != null)
-				borderColor.Dispose ();
-			
 			return res;
 		}
 	}

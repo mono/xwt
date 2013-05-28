@@ -77,8 +77,8 @@ namespace Xwt.GtkBackend
 				if (!(Widget is HeaderBox)) {
 					HeaderBox box = new HeaderBox ();
 					box.Show ();
-					box.DrawBackground = UsingCustomBackgroundColor;
-					box.SetMargins ((int)f.Margin.Top, (int)f.Margin.Bottom, (int)f.Margin.Left, (int)f.Margin.Right);
+					box.BackgroundColor = UsingCustomBackgroundColor ? (Color?)BackgroundColor : null;
+					box.SetMargins ((int)f.BorderWidthTop, (int)f.BorderWidthBottom, (int)f.BorderWidthLeft, (int)f.BorderWidthRight);
 					box.SetPadding ((int)f.Padding.Top, (int)f.Padding.Bottom, (int)f.Padding.Left, (int)f.Padding.Right);
 					if (borderColor != null)
 						box.SetBorderColor (borderColor.Value);
@@ -181,8 +181,9 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				base.BackgroundColor = value;
-				if (Widget is HeaderBox)
-					((HeaderBox)Widget).DrawBackground = true;
+				if (Widget is HeaderBox) {
+					((HeaderBox)Widget).BackgroundColor = value;
+				}
 			}
 		}
 
