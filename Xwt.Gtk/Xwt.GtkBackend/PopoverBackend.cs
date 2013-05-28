@@ -225,8 +225,12 @@ namespace Xwt.GtkBackend
 				sink.OnClosed ();
 				popover.Destroy ();
 			};
-			
-			var position = new Point (reference.ScreenBounds.Center.X, popover.ArrowPosition == Popover.Position.Top ? reference.ScreenBounds.Bottom : reference.ScreenBounds.Top);
+
+			var screenBounds = reference.ScreenBounds;
+			if (positionRect == Rectangle.Zero)
+				positionRect = new Rectangle (Point.Zero, screenBounds.Size);
+			positionRect = positionRect.Offset (screenBounds.Location);
+			var position = new Point (positionRect.Center.X, popover.ArrowPosition == Popover.Position.Top ? positionRect.Bottom : positionRect.Top);
 			popover.ShowAll ();
 			popover.GrabFocus ();
 			int w, h;

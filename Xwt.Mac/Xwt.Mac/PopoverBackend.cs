@@ -116,7 +116,7 @@ namespace Xwt.Mac
 			popover.ContentViewController = controller;
 			ViewBackend backend = (ViewBackend)Toolkit.GetBackend (referenceWidget);
 			var reference = backend.Widget;
-			popover.Show (System.Drawing.RectangleF.Empty,
+			popover.Show (positionRect.ToRectangleF (),
 			              reference,
 			              ToRectEdge (orientation));
 		}
