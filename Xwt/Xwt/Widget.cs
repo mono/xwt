@@ -45,6 +45,8 @@ namespace Xwt
 		List<Widget> children;
 		WidgetSpacing margin;
 		Size cachedSize;
+		SizeContraint cachedWidthConstraint;
+		SizeContraint cachedHeightConstraint;
 		bool sizeCached;
 		DragOperation currentDragOperation;
 		Widget contentWidget;
@@ -920,7 +922,7 @@ namespace Xwt
 
 		Size IWidgetSurface.GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
 		{
-			if (sizeCached)
+			if (sizeCached && widthConstraint == cachedWidthConstraint && heightConstraint == cachedHeightConstraint)
 				return cachedSize;
 			else {
 				cachedSize = OnGetPreferredSize (widthConstraint, heightConstraint);
@@ -936,8 +938,11 @@ namespace Xwt
 					cachedSize.Width = 0;
 				if (cachedSize.Height < 0)
 					cachedSize.Height = 0;
-				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
+				if (!BackendHost.EngineBackend.HandlesSizeNegotiation) {
 					sizeCached = true;
+					cachedWidthConstraint = widthConstraint;
+					cachedHeightConstraint = heightConstraint;
+				}
 				return cachedSize;
 			}
 		}
