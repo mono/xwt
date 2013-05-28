@@ -48,8 +48,12 @@ namespace Xwt.GtkBackend
 			get { return (IScrollViewEventSink)base.EventSink; }
 		}
 
+		Gtk.Widget currentChild;
+
 		public void SetChild (IWidgetBackend child)
 		{
+			RemoveChildPlacement (currentChild);
+
 			if (Widget.Child != null) {
 				if (Widget.Child is Gtk.Bin) {
 					Gtk.Bin vp = (Gtk.Bin) Widget.Child;
@@ -60,7 +64,7 @@ namespace Xwt.GtkBackend
 			
 			if (child != null) {
 				
-				var w = GetWidget (child);
+				var w = currentChild = GetWidgetWithPlacement (child);
 				
 				WidgetBackend wb = (WidgetBackend) child;
 				
