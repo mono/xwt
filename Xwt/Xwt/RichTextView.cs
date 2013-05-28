@@ -87,6 +87,7 @@ namespace Xwt
 			var buffer = Backend.CreateBuffer ();
 			format.Parse (input, buffer);
 			Backend.SetBuffer (buffer);
+			OnPreferredSizeChanged ();
 		}
 
 		protected override BackendHost CreateBackendHost ()
