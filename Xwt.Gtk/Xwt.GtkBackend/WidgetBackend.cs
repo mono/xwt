@@ -361,6 +361,7 @@ namespace Xwt.GtkBackend
 				return child;
 
 			wrapper = new WidgetPlacementWrapper ();
+			wrapper.UpdatePlacement (backend.Frontend);
 			wrapper.Show ();
 			wrapper.Add (child);
 			return wrapper;

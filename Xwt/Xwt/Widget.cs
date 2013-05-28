@@ -55,6 +55,8 @@ namespace Xwt
 		double widthRequest = -1, heightRequest = -1;
 		CursorType cursor;
 
+		internal Widget NativeContainer;
+
 		WidgetPlacement alignVertical = WidgetPlacement.Fill;
 		WidgetPlacement alignHorizontal = WidgetPlacement.Fill;
 		bool expandVertical;
