@@ -139,7 +139,7 @@ namespace Xwt
 			get { return borderWidth; }
 			set {
 				borderWidth = value;
-				UpdatePadding ();
+				UpdateBorderWidth ();
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace Xwt
 			get { return borderWidth.Left; }
 			set {
 				borderWidth.Left = value;
-				UpdatePadding (); 
+				UpdateBorderWidth (); 
 			}
 		}
 
@@ -157,7 +157,7 @@ namespace Xwt
 			get { return borderWidth.Right; }
 			set {
 				borderWidth.Right = value;
-				UpdatePadding (); 
+				UpdateBorderWidth (); 
 			}
 		}
 
@@ -166,7 +166,7 @@ namespace Xwt
 			get { return borderWidth.Top; }
 			set {
 				borderWidth.Top = value;
-				UpdatePadding (); 
+				UpdateBorderWidth (); 
 			}
 		}
 
@@ -175,7 +175,7 @@ namespace Xwt
 			get { return borderWidth.Bottom; }
 			set {
 				borderWidth.Bottom = value;
-				UpdatePadding (); 
+				UpdateBorderWidth (); 
 			}
 		}
 
