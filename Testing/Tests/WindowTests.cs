@@ -1,5 +1,5 @@
 //
-// Main.cs
+// WindowTests.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,25 +24,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt;
-using System.Collections.Generic;
-using System.Threading;
+using NUnit.Framework;
 
-namespace GtkTestRunner
+namespace Xwt
 {
-	class MainClass
+	public class WindowTests: XwtTest
 	{
-		public static void Main (string[] args)
+		[Test]
+		public void DefaultSize ()
 		{
-			Xwt.Application.Initialize (Xwt.ToolkitType.Gtk);
-			ReferenceImageManager.Init ("GtkTestRunner");
+			using (var win = new Window ()) {
+				Label test = new Label ("Testing");
+				test.MinWidth = 100;
+				test.MinHeight = 100;
+				win.Content = test;
+				ShowWindow (win);
+				Assert.AreEqual (100, win.Size.Width);
+				Assert.AreEqual (100, win.Size.Height);
+			}
+		}
 
-			var list = new List<string> (args);
-			list.Add ("-domain=None");
-			list.Add ("-noshadow");
-			list.Add ("-nothread");
-			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
-			ReferenceImageManager.ShowImageVerifier ();
+		[Test]
+		public void ContentMargin ()
+		{
+			using (var win = new Window ()) {
+				Label test = new Label ("Testing");
+				test.MinWidth = 100;
+				test.MinHeight = 100;
+				win.Content = test;
+				ShowWindow (win);
+				Assert.AreEqual (100, win.Size.Width);
+				Assert.AreEqual (100, win.Size.Height);
+			}
 		}
 	}
 }
+

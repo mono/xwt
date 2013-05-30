@@ -1,5 +1,5 @@
 //
-// Main.cs
+// XwtTest.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,25 +24,65 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt;
-using System.Collections.Generic;
 using System.Threading;
+using NUnit.Framework;
 
-namespace GtkTestRunner
+namespace Xwt
 {
-	class MainClass
+	public class XwtTest
 	{
-		public static void Main (string[] args)
+		public void Run (Action a)
 		{
-			Xwt.Application.Initialize (Xwt.ToolkitType.Gtk);
-			ReferenceImageManager.Init ("GtkTestRunner");
+			Exception ex = null;
+			Application.Invoke (delegate {
+				try {
+					a ();
+				} catch (Exception e) {
+					ex = e;
+				}
+				Application.Exit ();
+			});
+			Application.Run ();
+			if (ex != null)
+				throw new Exception ("Exception in gui event loop", ex);
+		}
+		
+		protected void WaitForEvents (int ms = 1)
+		{
+			DateTime t = DateTime.Now;
+			do {
+				Application.MainLoop.DispatchPendingEvents ();
+				System.Threading.Thread.Sleep (20);
+			} while ((DateTime.Now - t).TotalMilliseconds < ms);
+		}
 
-			var list = new List<string> (args);
-			list.Add ("-domain=None");
-			list.Add ("-noshadow");
-			list.Add ("-nothread");
-			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
-			ReferenceImageManager.ShowImageVerifier ();
+		public void ShowWindow (Window win)
+		{
+			var ev = new ManualResetEvent (false);
+
+			win.Shown += delegate {
+				ev.Set ();
+			};
+
+			win.Show ();
+			ev.WaitForEvent ();
+			Application.MainLoop.DispatchPendingEvents ();
+		}
+	}
+	
+	static class EventHelper
+	{
+		public static void WaitForEvent (this ManualResetEvent ev)
+		{
+			DateTime t = DateTime.Now;
+			do {
+				Application.MainLoop.DispatchPendingEvents ();
+				if (ev.WaitOne (100))
+					return;
+			} while ((DateTime.Now - t).TotalMilliseconds < 1000);
+
+			Assert.Fail ("Event not fired");
 		}
 	}
 }
+

@@ -43,11 +43,30 @@ namespace Xwt
 
 		static ReferenceImageManager ()
 		{
-			var baseDir = Path.GetDirectoryName (System.Reflection.Assembly.GetEntryAssembly ().Location);
+		}
 
-			ProjectReferenceImageDir = Path.Combine (baseDir, "..", "..", "..", "Tests", "ReferenceImages");
-			ProjectCustomReferenceImageDir = Path.Combine (baseDir, "..", "..", "ReferenceImages");
-			FailedImageCacheDir = Path.Combine (baseDir, "FailedImageCache");
+		public static void Init (string projectName)
+		{
+			var baseDir = Path.GetDirectoryName (typeof(ReferenceImageManager).Assembly.Location);
+			while (Path.GetFileName (baseDir) != "Testing")
+				baseDir = Path.GetDirectoryName (baseDir);
+			ProjectReferenceImageDir = Path.Combine (baseDir, "Tests", "ReferenceImages");
+			ProjectCustomReferenceImageDir = Path.Combine (baseDir, projectName, "ReferenceImages");
+			FailedImageCacheDir = Path.Combine (baseDir, "bin", projectName, "FailedImageCache");
+		}
+
+		public static Image LoadReferenceImage (string name)
+		{
+			return Image.FromFile (Path.Combine (ProjectReferenceImageDir, name));
+		}
+
+		public static Image LoadCustomReferenceImage (string name)
+		{
+			var file = Path.Combine (ProjectCustomReferenceImageDir, name);
+			if (File.Exists (file))
+				return Image.FromFile (file);
+			else
+				return null;
 		}
 
 		public static void ShowImageVerifier ()
@@ -78,9 +97,9 @@ namespace Xwt
 		
 		public static void CheckImage (string refImageName, Image img)
 		{
-			Image coreRefImage = TryLoadImage (typeof (ReferenceImageManager).Assembly, refImageName);
+			Image coreRefImage = LoadReferenceImage (refImageName);
 
-			Image refImage = !RecheckAll ? TryLoadImage (System.Reflection.Assembly.GetEntryAssembly (), refImageName) : null;
+			Image refImage = !RecheckAll ? LoadCustomReferenceImage (refImageName) : null;
 			if (refImage == null)
 				refImage = coreRefImage;
 			

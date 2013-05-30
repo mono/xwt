@@ -30,7 +30,7 @@ using System.Threading;
 namespace Xwt
 {
 	[TestFixture]
-	public abstract class WidgetTests
+	public abstract class WidgetTests: XwtTest
 	{
 		public abstract Widget CreateWidget ();
 
@@ -42,44 +42,6 @@ namespace Xwt
 		[TestFixtureTearDown]
 		public void Cleanup ()
 		{
-		}
-
-		public void Run (Action a)
-		{
-			Exception ex = null;
-			Application.Invoke (delegate {
-				try {
-					a ();
-				} catch (Exception e) {
-					ex = e;
-				}
-				Application.Exit ();
-			});
-			Application.Run ();
-			if (ex != null)
-				throw new Exception ("Exception in gui event loop", ex);
-		}
-
-		void WaitForEvents (int ms = 1)
-		{
-			DateTime t = DateTime.Now;
-			do {
-				Application.MainLoop.DispatchPendingEvents ();
-				System.Threading.Thread.Sleep (20);
-			} while ((DateTime.Now - t).TotalMilliseconds < ms);
-		}
-
-		public void ShowWindow (Window win)
-		{
-			var ev = new ManualResetEvent (false);
-			
-			win.Shown += delegate {
-				ev.Set ();
-			};
-			
-			win.Show ();
-			ev.WaitForEvent ();
-			Application.MainLoop.DispatchPendingEvents ();
 		}
 
 		[Test]
@@ -221,11 +183,12 @@ namespace Xwt
 				f.MinHeight = 10;
 				box1.PackStart (box2);
 				box2.PackStart (f);
-				f.PackStart (w, BoxMode.FillAndExpand);
+				f.PackStart (w, true);
 				win.Content = box1;
 
 				ShowWindow (win);
 
+				WaitForEvents ();
 				var defw = w.Size.Width;
 				var defh = w.Size.Height;
 
@@ -266,21 +229,6 @@ namespace Xwt
 
 				Assert.AreEqual (w.ScreenBounds, win.ScreenBounds.Inflate (-padding,-padding));
 			}
-		}
-	}
-
-	static class EventHelper
-	{
-		public static void WaitForEvent (this ManualResetEvent ev)
-		{
-			DateTime t = DateTime.Now;
-			do {
-				Application.MainLoop.DispatchPendingEvents ();
-				if (ev.WaitOne (100))
-					return;
-			} while ((DateTime.Now - t).TotalMilliseconds < 1000);
-
-			Assert.Fail ("Event not fired");
 		}
 	}
 }

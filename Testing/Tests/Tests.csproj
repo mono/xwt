@@ -69,6 +69,8 @@
     <Compile Include="MatrixTests.cs" />
     <Compile Include="TransformTests.cs" />
     <Compile Include="RadioButtonTests.cs" />
+    <Compile Include="WindowTests.cs" />
+    <Compile Include="XwtTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Test.csproj" />

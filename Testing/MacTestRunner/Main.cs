@@ -1,6 +1,7 @@
 using System;
 using Xwt;
 using System.IO;
+using System.Collections.Generic;
 
 namespace MacTest
 {
@@ -9,12 +10,14 @@ namespace MacTest
 		static void Main (string [] args)
 		{
 			Xwt.Application.Initialize (Xwt.ToolkitType.Cocoa);
+			ReferenceImageManager.Init ("MacTestRunner");
 
-			var baseDir = Path.GetDirectoryName (System.Reflection.Assembly.GetEntryAssembly ().Location);
-			ReferenceImageManager.ProjectCustomReferenceImageDir = baseDir + "/../../../../../ReferenceImages";
-
-			ConsoleTestRunner t = new ConsoleTestRunner ();
-			t.Run (new string[0]);
+			var list = new List<string> (args);
+			list.Add ("-domain=None");
+			list.Add ("-noshadow");
+			list.Add ("-nothread");
+			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
+			ReferenceImageManager.ShowImageVerifier ();
 		}
 	}
 }	
