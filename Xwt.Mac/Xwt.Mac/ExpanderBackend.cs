@@ -258,7 +258,7 @@ namespace Xwt.Mac
 		public void UpdateContentSize (bool animate)
 		{
 			if (expanded) {
-				var s = ((IViewObject)ContentView).Backend.Frontend.Surface.GetPreferredSize ((float)Frame.Size.Width, SizeContraint.Unconstrained);
+				var s = ((IViewObject)ContentView).Backend.Frontend.Surface.GetPreferredSize ((float)Frame.Size.Width, SizeConstraint.Unconstrained);
 				SetFrameSize (new SizeF (Frame.Width, (float)s.Height), animate);
 			} else
 				SetFrameSize (new SizeF (Frame.Width, DefaultCollapsedHeight), animate);

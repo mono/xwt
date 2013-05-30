@@ -45,8 +45,8 @@ namespace Xwt
 		List<Widget> children;
 		WidgetSpacing margin;
 		Size cachedSize;
-		SizeContraint cachedWidthConstraint;
-		SizeContraint cachedHeightConstraint;
+		SizeConstraint cachedWidthConstraint;
+		SizeConstraint cachedHeightConstraint;
 		bool sizeCached;
 		DragOperation currentDragOperation;
 		Widget contentWidget;
@@ -185,7 +185,7 @@ namespace Xwt
 				Parent.OnKeyReleased (args);
 			}
 			
-			Size IWidgetEventSink.GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+			Size IWidgetEventSink.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 			{
 				return Parent.OnGetPreferredSize (widthConstraint, heightConstraint);
 			}
@@ -943,10 +943,10 @@ namespace Xwt
 
 		Size IWidgetSurface.GetPreferredSize (bool includeMargin)
 		{
-			return ((IWidgetSurface)this).GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained, includeMargin);
+			return ((IWidgetSurface)this).GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.Unconstrained, includeMargin);
 		}
 
-		Size IWidgetSurface.GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint, bool includeMargin)
+		Size IWidgetSurface.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint, bool includeMargin)
 		{
 			if (includeMargin) {
 				return Surface.GetPreferredSize (widthConstraint - margin.HorizontalSpacing, heightConstraint - margin.VerticalSpacing, false) + new Size (Margin.HorizontalSpacing, Margin.VerticalSpacing);
@@ -996,7 +996,7 @@ namespace Xwt
 		/// <summary>
 		/// Gets the preferred size of the widget (it must not include the widget margin)
 		/// </summary>
-		protected virtual Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		protected virtual Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			return Backend.GetPreferredSize (widthConstraint, heightConstraint);
 		}
@@ -1017,7 +1017,7 @@ namespace Xwt
 
 			ResetCachedSizes ();
 			
-			var s = Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained);
+			var s = Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.Unconstrained);
 			if (s != oldSize)
 				NotifySizeChangeToParent ();
 			else

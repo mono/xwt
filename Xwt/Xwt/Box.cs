@@ -271,7 +271,7 @@ namespace Xwt
 					double width = bp.NextSize >= 0 ? bp.NextSize : 0;
 					double height = size.Height - bp.Child.Margin.VerticalSpacing;
 					if (bp.Child.VerticalPlacement != WidgetPlacement.Fill)
-						height =  Math.Min (bp.Child.Surface.GetPreferredSize (width, SizeContraint.Unconstrained).Height, height);
+						height =  Math.Min (bp.Child.Surface.GetPreferredSize (width, SizeConstraint.Unconstrained).Height, height);
 					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
 					double y = (size.Height - bp.Child.Margin.VerticalSpacing - height) * bp.Child.VerticalPlacement.GetValue ();
 
@@ -292,7 +292,7 @@ namespace Xwt
 					double height = bp.NextSize >= 0 ? bp.NextSize : 0;
 					double width = size.Width - bp.Child.Margin.HorizontalSpacing;
 					if (bp.Child.HorizontalPlacement != WidgetPlacement.Fill)
-						width = Math.Min (bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, height).Width, width);
+						width = Math.Min (bp.Child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, height).Width, width);
 					double x = (size.Width - bp.Child.Margin.HorizontalSpacing - width) * bp.Child.HorizontalPlacement.GetValue();
 					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
 
@@ -317,8 +317,8 @@ namespace Xwt
 			double requiredSize = 0;
 			double availableSize = vertical ? height : width;
 
-			var widthConstraint = vertical ? SizeContraint.RequireSize (width) : SizeContraint.Unconstrained;
-			var heightConstraint = vertical ? SizeContraint.Unconstrained : SizeContraint.RequireSize (height);
+			var widthConstraint = vertical ? SizeConstraint.RequireSize (width) : SizeConstraint.Unconstrained;
+			var heightConstraint = vertical ? SizeConstraint.Unconstrained : SizeConstraint.RequireSize (height);
 
 			var visibleChildren = children.Where (b => b.Child.Visible).ToArray ();
 			var sizes = new Dictionary<BoxPlacement,double> ();
@@ -355,14 +355,14 @@ namespace Xwt
 			}
 		}
 		
-		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			Size s = new Size ();
 			int count = 0;
 
 			if (direction == Orientation.Horizontal) {
 				foreach (var cw in Children.Where (b => b.Visible)) {
-					var wsize = cw.Surface.GetPreferredSize (SizeContraint.Unconstrained, heightConstraint);
+					var wsize = cw.Surface.GetPreferredSize (SizeConstraint.Unconstrained, heightConstraint);
 					s.Width += wsize.Width + cw.Margin.HorizontalSpacing;
 					if (wsize.Height + cw.Margin.VerticalSpacing > s.Height)
 						s.Height = wsize.Height + cw.Margin.VerticalSpacing;
@@ -372,7 +372,7 @@ namespace Xwt
 					s.Width += spacing * (double)(count - 1);
 			} else {
 				foreach (var cw in Children.Where (b => b.Visible)) {
-					var wsize = cw.Surface.GetPreferredSize (widthConstraint, SizeContraint.Unconstrained);
+					var wsize = cw.Surface.GetPreferredSize (widthConstraint, SizeConstraint.Unconstrained);
 					s.Height += wsize.Height + cw.Margin.VerticalSpacing;
 					if (wsize.Width + cw.Margin.HorizontalSpacing > s.Width)
 						s.Width = wsize.Width + cw.Margin.HorizontalSpacing;

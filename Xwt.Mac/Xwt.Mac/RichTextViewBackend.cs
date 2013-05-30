@@ -75,7 +75,7 @@ namespace Xwt.Mac
 			return h;
 		}
 
-		public override Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			var width = (double) Widget.TextStorage.Size.Width;
 			if (widthConstraint.IsConstrained)

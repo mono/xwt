@@ -89,7 +89,7 @@ namespace Xwt.Backends
 			Surface.Reallocate ();
 		}
 
-		Size IWidgetBackend.GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		Size IWidgetBackend.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			return Surface.GetPreferredSize (widthConstraint, heightConstraint);
 		}

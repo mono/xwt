@@ -44,7 +44,7 @@ namespace Xwt
 		/// The returned size is >= 0. If a constraint is specified, the returned size will not
 		/// be bigger than the constraint.
 		/// </remarks>
-		Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint, bool includeMargin = false);
+		Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint, bool includeMargin = false);
 		
 		/// <summary>
 		/// Gets the preferred size of the widget

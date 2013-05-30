@@ -37,7 +37,7 @@ namespace Xwt
 
 	class TestCanvas: Canvas
 	{
-		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			return new Size (10, 10);
 		}

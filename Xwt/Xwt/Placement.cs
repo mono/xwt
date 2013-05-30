@@ -123,7 +123,7 @@ namespace Xwt
 			}
 		}
 
-		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (child != null) {
 				var s = new Size (child.Margin.HorizontalSpacing + Padding.HorizontalSpacing, child.Margin.VerticalSpacing + Padding.VerticalSpacing);

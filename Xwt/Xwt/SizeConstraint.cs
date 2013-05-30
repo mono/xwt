@@ -27,22 +27,22 @@ using System;
 
 namespace Xwt
 {
-	public struct SizeContraint
+	public struct SizeConstraint
 	{
 		// The value '0' is used for Unconstrained, since that's the default value of SizeContraint
 		// Since a constraint of '0' is valid, we use NegativeInfinity as a marker for constraint=0.
 		double value;
 
-		public static readonly SizeContraint Unconstrained; 
+		public static readonly SizeConstraint Unconstrained; 
 
-		static public implicit operator SizeContraint (double size)
+		static public implicit operator SizeConstraint (double size)
 		{
-			return new SizeContraint () { RequiredSize = size };
+			return new SizeConstraint () { RequiredSize = size };
 		}
 
-		public static SizeContraint RequireSize (double size)
+		public static SizeConstraint RequireSize (double size)
 		{
-			return new SizeContraint () { RequiredSize = size };
+			return new SizeConstraint () { RequiredSize = size };
 		}
 
 		public double RequiredSize {
@@ -64,35 +64,35 @@ namespace Xwt
 			get { return value != 0; }
 		}
 
-		public static bool operator == (SizeContraint s1, SizeContraint s2)
+		public static bool operator == (SizeConstraint s1, SizeConstraint s2)
 		{
 			return (s1.value == s2.value);
 		}
 
-		public static bool operator != (SizeContraint s1, SizeContraint s2)
+		public static bool operator != (SizeConstraint s1, SizeConstraint s2)
 		{
 			return (s1.value != s2.value);
 		}
 		
-		public static SizeContraint operator + (SizeContraint c, double s)
+		public static SizeConstraint operator + (SizeConstraint c, double s)
 		{
 			if (!c.IsConstrained)
 				return c;
 			else
-				return SizeContraint.RequireSize (c.RequiredSize + s);
+				return SizeConstraint.RequireSize (c.RequiredSize + s);
 		}
 
-		public static SizeContraint operator - (SizeContraint c, double s)
+		public static SizeConstraint operator - (SizeConstraint c, double s)
 		{
 			if (!c.IsConstrained)
 				return c;
 			else
-				return SizeContraint.RequireSize (Math.Max (c.RequiredSize - s, 0));
+				return SizeConstraint.RequireSize (Math.Max (c.RequiredSize - s, 0));
 		}
 
 		public override bool Equals (object ob)
 		{
-			return (ob is SizeContraint) && this == (SizeContraint)ob;
+			return (ob is SizeConstraint) && this == (SizeConstraint)ob;
 		}
 
 		public override int GetHashCode ()

@@ -73,7 +73,7 @@ namespace Xwt
 			}
 		}
 
-		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (widthConstraint.IsConstrained)
 				widthConstraint.RequiredSize -= 2 * padding;

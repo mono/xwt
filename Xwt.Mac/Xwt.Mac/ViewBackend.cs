@@ -336,7 +336,7 @@ namespace Xwt.Mac
 			return lastFittingSize;
 		}
 
-		public virtual Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		public virtual Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			return GetNaturalSize ();
 		}

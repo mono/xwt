@@ -84,7 +84,7 @@ namespace Xwt
 		{
 			base.OnReallocate ();
 			if (child != null && !child.SupportsCustomScrolling)
-				Backend.SetChildSize (child.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained));
+				Backend.SetChildSize (child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.Unconstrained));
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {

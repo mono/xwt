@@ -67,7 +67,7 @@ namespace Xwt.Backends
 		
 		void UpdateLayout ();
 
-		Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint);
+		Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint);
 
 		object NativeWidget { get; }
 		
@@ -142,7 +142,7 @@ namespace Xwt.Backends
         void OnMouseScrolled(MouseScrolledEventArgs args);
 
 		// Events
-		Size GetPreferredSize (SizeContraint widthConstraint = default(SizeContraint), SizeContraint heightConstraint = default(SizeContraint));
+		Size GetPreferredSize (SizeConstraint widthConstraint = default(SizeConstraint), SizeConstraint heightConstraint = default(SizeConstraint));
 
 		/// <summary>
 		/// Notifies the frontend that the preferred size of this widget has changed

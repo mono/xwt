@@ -318,11 +318,11 @@ namespace Xwt
 				var bp = visibleChildren[n];
 				Size s;
 				if (useWidthConstraint)
-					s = bp.Child.Surface.GetPreferredSize (SizeContraint.RequireSize (bp.NextWidth - bp.Child.Margin.HorizontalSpacing), SizeContraint.Unconstrained);
+					s = bp.Child.Surface.GetPreferredSize (SizeConstraint.RequireSize (bp.NextWidth - bp.Child.Margin.HorizontalSpacing), SizeConstraint.Unconstrained);
 				else if (useHeightConstraint)
-					s = bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.RequireSize (bp.NextHeight - bp.Child.Margin.VerticalSpacing));
+					s = bp.Child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.RequireSize (bp.NextHeight - bp.Child.Margin.VerticalSpacing));
 				else
-					s = bp.Child.Surface.GetPreferredSize (SizeContraint.Unconstrained, SizeContraint.Unconstrained);
+					s = bp.Child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.Unconstrained);
 				s.Width += bp.Child.Margin.HorizontalSpacing;
 				s.Height += bp.Child.Margin.VerticalSpacing;
 				sizes [n] = s;
@@ -689,7 +689,7 @@ namespace Xwt
 			}
 		}
 		
-		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			TablePlacement[] visibleChildren = VisibleChildren ();
 

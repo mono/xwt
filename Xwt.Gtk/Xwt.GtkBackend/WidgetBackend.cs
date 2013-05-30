@@ -42,8 +42,8 @@ namespace Xwt.GtkBackend
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
 		bool destroyed;
-		SizeContraint currentWidthConstraint = SizeContraint.Unconstrained;
-		SizeContraint currentHeightConstraint = SizeContraint.Unconstrained;
+		SizeConstraint currentWidthConstraint = SizeConstraint.Unconstrained;
+		SizeConstraint currentHeightConstraint = SizeConstraint.Unconstrained;
 
 		bool minSizeSet;
 		
@@ -243,7 +243,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public void SetSizeConstraints (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		public void SetSizeConstraints (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			currentWidthConstraint = widthConstraint;
 			currentHeightConstraint = heightConstraint;
@@ -269,7 +269,7 @@ namespace Xwt.GtkBackend
 			return new Point (x + widgetCoordinates.X, y + widgetCoordinates.Y);
 		}
 		
-		public virtual Size GetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		public virtual Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			try {
 				SetSizeConstraints (widthConstraint, heightConstraint);

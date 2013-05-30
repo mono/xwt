@@ -58,7 +58,7 @@ namespace Xwt.Backends
 			this.sourceWidget = sourceWidget;
 		}
 		
-		protected override Size OnGetPreferredSize (SizeContraint widthConstraint, SizeContraint heightConstraint)
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (sourceWidget != null)
 				return sourceWidget.Surface.GetPreferredSize (widthConstraint, heightConstraint);
