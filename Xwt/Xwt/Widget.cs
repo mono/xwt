@@ -278,7 +278,7 @@ namespace Xwt
 		
 		internal protected static IBackend GetBackend (Widget w)
 		{
-			if (w.Backend is XwtWidgetBackend)
+			if (w != null && w.Backend is XwtWidgetBackend)
 				return GetBackend ((XwtWidgetBackend)w.Backend);
 			return w != null ? w.Backend : null;
 		}
