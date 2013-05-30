@@ -55,8 +55,6 @@ namespace Xwt
 		double widthRequest = -1, heightRequest = -1;
 		CursorType cursor;
 
-		internal Widget NativeContainer;
-
 		WidgetPlacement alignVertical = WidgetPlacement.Fill;
 		WidgetPlacement alignHorizontal = WidgetPlacement.Fill;
 		bool expandVertical;
@@ -342,6 +340,7 @@ namespace Xwt
 			set {
 				margin = value;
 				OnPreferredSizeChanged ();
+				OnPlacementChanged ();
 			}
 		}
 
@@ -351,6 +350,7 @@ namespace Xwt
 			set {
 				margin.Left = value;
 				OnPreferredSizeChanged (); 
+				OnPlacementChanged ();
 			}
 		}
 
@@ -360,6 +360,7 @@ namespace Xwt
 			set {
 				margin.Right = value;
 				OnPreferredSizeChanged (); 
+				OnPlacementChanged ();
 			}
 		}
 
@@ -369,6 +370,7 @@ namespace Xwt
 			set {
 				margin.Top = value;
 				OnPreferredSizeChanged (); 
+				OnPlacementChanged ();
 			}
 		}
 
@@ -378,6 +380,7 @@ namespace Xwt
 			set {
 				margin.Bottom = value;
 				OnPreferredSizeChanged (); 
+				OnPlacementChanged ();
 			}
 		}
 
@@ -386,6 +389,7 @@ namespace Xwt
 			set {
 				alignVertical = value;
 				OnPreferredSizeChanged (); 
+				OnPlacementChanged ();
 			}
 		}
 
@@ -394,6 +398,7 @@ namespace Xwt
 			set {
 				alignHorizontal = value;
 				OnPreferredSizeChanged (); 
+				OnPlacementChanged ();
 			}
 		}
 
@@ -410,6 +415,7 @@ namespace Xwt
 			set {
 				expandVertical = value;
 				OnPreferredSizeChanged (); 
+				OnPlacementChanged ();
 			}
 		}
 
@@ -418,6 +424,7 @@ namespace Xwt
 			set {
 				expandHorizontal = value;
 				OnPreferredSizeChanged (); 
+				OnPlacementChanged ();
 			}
 		}
 
@@ -1047,6 +1054,8 @@ namespace Xwt
 		{
 			if (Parent != null)
 				Parent.OnChildPlacementChanged (this);
+			else if (parentWindow is Window)
+				((Window)parentWindow).OnChildPlacementChanged (this);
 		}
 
 		protected virtual void OnChildPlacementChanged (Widget child)

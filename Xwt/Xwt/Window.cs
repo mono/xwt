@@ -186,6 +186,12 @@ namespace Xwt
 			}
 		}
 
+		internal void OnChildPlacementChanged (Widget child)
+		{
+			Backend.UpdateChildPlacement (child.GetBackend ());
+			Widget.QueueWindowSizeNegotiation (this);
+		}
+
 		internal void AdjustSize ()
 		{
 			if (child == null)
