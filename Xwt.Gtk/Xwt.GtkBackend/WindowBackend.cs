@@ -66,10 +66,11 @@ namespace Xwt.GtkBackend
 
 		public void SetChild (IWidgetBackend child)
 		{
-			var w = (IGtkWidgetBackend) child;
-			if (alignment.Child != null)
+			if (alignment.Child != null) {
+				WidgetBackend.RemoveChildPlacement (alignment.Child);
 				alignment.Remove (alignment.Child);
-			alignment.Child = w.Widget;
+			}
+			alignment.Child = WidgetBackend.GetWidgetWithPlacement (child);
 		}
 		
 		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
