@@ -967,10 +967,6 @@ namespace Xwt
 					cachedSize.Width = minWidth;
 				if (minHeight > cachedSize.Height)
 					cachedSize.Height = minHeight;
-				if (widthConstraint.IsConstrained && cachedSize.Width > widthConstraint.RequiredSize)
-					cachedSize.Width = widthConstraint.RequiredSize;
-				if (heightConstraint.IsConstrained && cachedSize.Height > heightConstraint.RequiredSize)
-					cachedSize.Height = heightConstraint.RequiredSize;
 				if (cachedSize.Width < 0)
 					cachedSize.Width = 0;
 				if (cachedSize.Height < 0)
