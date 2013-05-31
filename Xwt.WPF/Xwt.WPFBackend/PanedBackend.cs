@@ -213,118 +213,34 @@ namespace Xwt.WPFBackend
 			UpdateSplitterVisibility ();
 		}
 
-		public override WidgetSize GetPreferredWidth ()
+		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (panel1.HasWidget && panel2.HasWidget) {
+				double w, h;
 				if (direction == Orientation.Horizontal) {
-					var ws = panel1.WidgetSurface.GetPreferredWidth ();
-					ws += panel2.WidgetSurface.GetPreferredWidth ();
-					ws += SplitterSize;
-					return ws;
+					var s1 = panel1.WidgetSurface.GetPreferredSize (SizeConstraint.Unconstrained, heightConstraint);
+					var s2 = panel2.WidgetSurface.GetPreferredSize (SizeConstraint.Unconstrained, heightConstraint);
+					w = s1.Width + s2.Width + SplitterSize;
+					h = Math.Max (s1.Height, s2.Height);
 				}
 				else {
-					var ws = panel1.WidgetSurface.GetPreferredWidth ();
-					return ws.UnionWith (panel2.WidgetSurface.GetPreferredWidth ());
+					var s1 = panel1.WidgetSurface.GetPreferredSize (widthConstraint, SizeConstraint.Unconstrained);
+					var s2 = panel2.WidgetSurface.GetPreferredSize (widthConstraint, SizeConstraint.Unconstrained);
+					h = s1.Height + s2.Height + SplitterSize;
+					w = Math.Max (s1.Width, s2.Width);
 				}
+				if (widthConstraint.IsConstrained && w > widthConstraint.RequiredSize)
+					w = widthConstraint.RequiredSize;
+				if (heightConstraint.IsConstrained && h > heightConstraint.RequiredSize)
+					h = heightConstraint.RequiredSize;
+				return new Size (w, h);
 			}
 			else if (panel1.HasWidget)
-				return panel1.WidgetSurface.GetPreferredWidth ();
+				return panel1.WidgetSurface.GetPreferredSize (widthConstraint, heightConstraint);
 			else if (panel2.HasWidget)
-				return panel2.WidgetSurface.GetPreferredWidth ();
+				return panel2.WidgetSurface.GetPreferredSize (widthConstraint, heightConstraint);
 			else
-				return new WidgetSize (0);
-		}
-
-		public override WidgetSize GetPreferredHeightForWidth (double width)
-		{
-			if (panel1.HasWidget && panel2.HasWidget) {
-				var tempPos = position;
-				var availableWidth = width - SplitterSize;
-				if (direction == Orientation.Horizontal) {
-					if (!panel1.Shrink) {
-						var w1 = panel1.WidgetSurface.GetPreferredWidth ().MinSize;
-						if (tempPos < w1)
-							tempPos = w1;
-					}
-					if (!panel2.Shrink) {
-						var w2 = panel2.WidgetSurface.GetPreferredWidth ().MinSize;
-						if (availableWidth - tempPos < w2)
-							tempPos = availableWidth - w2;
-					}
-					var ws = panel1.WidgetSurface.GetPreferredHeightForWidth (tempPos);
-					ws = ws.UnionWith (panel2.WidgetSurface.GetPreferredHeightForWidth (availableWidth - tempPos));
-					return ws;
-				}
-				else {
-					var ws = panel1.WidgetSurface.GetPreferredHeightForWidth (width);
-					ws = ws.UnionWith (panel2.WidgetSurface.GetPreferredHeightForWidth (width));
-					ws += SplitterSize;
-					return ws;
-				}
-			}
-			else if (panel1.HasWidget)
-				return panel1.WidgetSurface.GetPreferredHeightForWidth (width);
-			else if (panel2.HasWidget)
-				return panel2.WidgetSurface.GetPreferredHeightForWidth (width);
-			else
-				return new WidgetSize (0);
-		}
-
-		public override WidgetSize GetPreferredHeight ()
-		{
-			if (panel1.HasWidget && panel2.HasWidget) {
-				if (direction == Orientation.Vertical) {
-					var ws = panel1.WidgetSurface.GetPreferredHeight ();
-					ws += panel2.WidgetSurface.GetPreferredHeight ();
-					ws += SplitterSize;
-					return ws;
-				}
-				else {
-					var ws = panel1.WidgetSurface.GetPreferredHeight ();
-					return ws.UnionWith (panel2.WidgetSurface.GetPreferredHeight ());
-				}
-			}
-			else if (panel1.HasWidget)
-				return panel1.WidgetSurface.GetPreferredHeight ();
-			else if (panel2.HasWidget)
-				return panel2.WidgetSurface.GetPreferredHeight ();
-			else
-				return new WidgetSize (0);
-		}
-
-		public override WidgetSize GetPreferredWidthForHeight (double width)
-		{
-			if (panel1.HasWidget && panel2.HasWidget) {
-				var tempPos = position;
-				var availableWidth = width - SplitterSize;
-				if (direction == Orientation.Vertical) {
-					if (!panel1.Shrink) {
-						var w1 = panel1.WidgetSurface.GetPreferredHeight ().MinSize;
-						if (tempPos < w1)
-							tempPos = w1;
-					}
-					if (!panel2.Shrink) {
-						var w2 = panel2.WidgetSurface.GetPreferredHeight ().MinSize;
-						if (availableWidth - tempPos < w2)
-							tempPos = availableWidth - w2;
-					}
-					var ws = panel1.WidgetSurface.GetPreferredWidthForHeight (tempPos);
-					ws = ws.UnionWith (panel2.WidgetSurface.GetPreferredWidthForHeight (availableWidth - tempPos));
-					return ws;
-				}
-				else {
-					var ws = panel1.WidgetSurface.GetPreferredWidthForHeight (width);
-					ws = ws.UnionWith (panel2.WidgetSurface.GetPreferredWidthForHeight (width));
-					ws += SplitterSize;
-					return ws;
-				}
-			}
-			else if (panel1.HasWidget)
-				return panel1.WidgetSurface.GetPreferredWidthForHeight (width);
-			else if (panel2.HasWidget)
-				return panel2.WidgetSurface.GetPreferredWidthForHeight (width);
-			else
-				return new WidgetSize (0);
+				return Size.Zero;
 		}
 
 		internal void ArrangeChildren (SW.Size size)
@@ -354,13 +270,13 @@ namespace Xwt.WPFBackend
 
 				if (!panel1.Shrink) {
 					var w = panel1.WidgetSurface;
-					var min = direction == Orientation.Horizontal ? w.GetPreferredWidth ().MinSize: w.GetPreferredHeight ().MinSize;
+					var min = direction == Orientation.Horizontal ? w.GetPreferredSize ().Width: w.GetPreferredSize ().Height;
 					if (position < min)
 						position = min;
 				}
 				if (!panel2.Shrink) {
 					var w = panel2.WidgetSurface;
-					var min = direction == Orientation.Horizontal ? w.GetPreferredWidth ().MinSize : w.GetPreferredHeight ().MinSize;
+					var min = direction == Orientation.Horizontal ? w.GetPreferredSize ().Width : w.GetPreferredSize ().Height;
 					if (availableSize - position < min) {
 						position = availableSize - min;
 					}
@@ -438,7 +354,7 @@ namespace Xwt.WPFBackend
 			// This line is hack to fix a measuring issue with Grid. For some reason, the grid 'remembers' the constraint
 			// parameter, so if MeasureOverride is called with a constraining size, but ArrangeOverride is later called
 			// with a bigger size, the Grid still uses the constrained size when determining the size of the children
-			constraint = new SW.Size (double.PositiveInfinity, double.PositiveInfinity);
+			//constraint = new SW.Size (double.PositiveInfinity, double.PositiveInfinity);
 
 			var s = base.MeasureOverride (constraint);
 			return Backend.MeasureOverride (constraint, s);

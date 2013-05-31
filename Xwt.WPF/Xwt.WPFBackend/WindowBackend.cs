@@ -100,6 +100,10 @@ namespace Xwt.WPFBackend
 			widget.SizeChanged += ChildSizeChanged;
 		}
 
+		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
+		}
+
 		void ChildSizeChanged (object o, SizeChangedEventArgs args)
 		{
 			((Window)Frontend).Content.Surface.Reallocate ();

@@ -53,20 +53,12 @@ namespace Xwt.WPFBackend
 			set { Widget = value; }
 		}
 
-		public override WidgetSize GetPreferredHeight()
+		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (this.direction == Orientation.Vertical)
-				return new WidgetSize (((FrameworkElement) Widget.Parent).ActualHeight);
-
-			return new WidgetSize (1);
-		}
-
-		public override WidgetSize GetPreferredWidth()
-		{
-			if (this.direction == Orientation.Horizontal)
-				return new WidgetSize (((FrameworkElement) Widget.Parent).ActualWidth);
-
-			return new WidgetSize (1);
+				return new Size (1, heightConstraint.IsConstrained ? heightConstraint.RequiredSize : 0);
+			else
+				return new Size (widthConstraint.IsConstrained ? widthConstraint.RequiredSize : 0, 1);
 		}
 	}
 }
