@@ -129,6 +129,7 @@ namespace Xwt.Mac
 
 		public void RunLoop (IWindowFrameBackend parent)
 		{
+			Visible = true;
 			NSApplication.SharedApplication.RunModalForWindow (this);
 		}
 

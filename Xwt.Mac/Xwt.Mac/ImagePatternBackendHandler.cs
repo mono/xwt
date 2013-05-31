@@ -37,7 +37,8 @@ namespace Xwt.Mac
 		{
 			NSImage nimg = img.ToNSImage ();
 			return new ImagePatternInfo () {
-				Image = nimg
+				Image = nimg,
+				Alpha = img.Alpha
 			};
 		}
 
@@ -49,6 +50,7 @@ namespace Xwt.Mac
 	class ImagePatternInfo
 	{
 		public NSImage Image;
+		public double Alpha;
 	}
 }
 

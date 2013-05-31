@@ -95,13 +95,25 @@ namespace Xwt.Mac
 				CTLine [] lines = frame.GetLines ();
 				float lineHeight = li.Font.Ascender - li.Font.Descender + li.Font.Leading;
 
+				CTLine ellipsis = null;
+				bool ellipsize = li.Width.HasValue && li.TextTrimming == TextTrimming.WordElipsis;
+				if (ellipsize)
+					ellipsis = new CTLine (CreateAttributedString (li, "..."));
+
 				// try to approximate Pango's layout
 				foreach (var line in lines) {
-					result.Width = Math.Max (result.Width, line.GetTypographicBounds ());
+					var l = line;
+					if (ellipsize) { // we need to create a new CTLine here because the framesetter already truncated the text for the line
+						l = new CTLine (CreateAttributedString (li, li.Text.Substring (line.StringRange.Location)))
+							.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis);
+						line.Dispose ();
+					}
+
+					result.Width = Math.Max (result.Width, l.GetTypographicBounds ());
 					result.Height += lineHeight;
 
 					// clean up after ourselves as we go
-					line.Dispose ();
+					l.Dispose ();
 				}
 
 				// CoreText throws away trailing line breaks..
@@ -121,7 +133,8 @@ namespace Xwt.Mac
 
 			using (CTFramesetter framesetter = new CTFramesetter (CreateAttributedString (li))) {
 				CGPath path = new CGPath ();
-				path.AddRect (new RectangleF (0, 0, li.Width ?? float.MaxValue, li.Height ?? float.MaxValue));
+				bool ellipsize = li.Width.HasValue && li.TextTrimming == TextTrimming.WordElipsis;
+				path.AddRect (new RectangleF (0, 0, li.Width.HasValue && !ellipsize ? li.Width.Value : float.MaxValue, li.Height ?? float.MaxValue));
 
 				return framesetter.GetFrame (new NSRange (0, li.Text.Length), path, null);
 			}
