@@ -57,7 +57,11 @@ namespace Xwt
 
 		public static Image LoadReferenceImage (string name)
 		{
-			return Image.FromFile (Path.Combine (ProjectReferenceImageDir, name));
+			var f = Path.Combine (ProjectReferenceImageDir, name);
+			if (File.Exists (f))
+				return Image.FromFile (f);
+			else
+				return null;
 		}
 
 		public static Image LoadCustomReferenceImage (string name)
