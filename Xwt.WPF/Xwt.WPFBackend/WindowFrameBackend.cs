@@ -168,7 +168,7 @@ namespace Xwt.WPFBackend
 			});
 		}
 
-		public void Resize (double width, double height)
+		public void SetSize (double width, double height)
 		{
 			var value = ToNonClientRect (new Rectangle (0, 0, width, height));
 			window.Width = value.Width;
