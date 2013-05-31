@@ -154,6 +154,8 @@ namespace Xwt
 				if (value.Height < 0)
 					value.Height = 0;
 				BackendBounds = value;
+				if (Visible)
+					AdjustSize ();
 			}
 		}
 
@@ -173,6 +175,8 @@ namespace Xwt
 				if (value < 0)
 					value = 0;
 				SetBackendSize (value, -1);
+				if (Visible)
+					AdjustSize ();
 			}
 		}
 		
@@ -182,6 +186,8 @@ namespace Xwt
 				if (value < 0)
 					value = 0;
 				SetBackendSize (-1, value);
+				if (Visible)
+					AdjustSize ();
 			}
 		}
 
@@ -197,6 +203,8 @@ namespace Xwt
 				if (value.Height < 0)
 					value.Height = 0;
 				SetBackendSize (value.Width, value.Height);
+				if (Visible)
+					AdjustSize ();
 			}
 		}
 		

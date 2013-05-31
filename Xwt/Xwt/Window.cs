@@ -144,11 +144,9 @@ namespace Xwt
 
 		internal override void SetBackendSize (double width, double height)
 		{
-			if (shown) {
+			if (shown)
 				base.SetBackendSize (width, height);
-				AdjustSize ();
-			}
-			if (!shown) {
+			else {
 				if (width != -1) {
 					initialBounds.Width = width;
 					widthSet = true;
@@ -220,6 +218,8 @@ namespace Xwt
 			if (ws.Height + padding.VerticalSpacing > size.Height)
 				size.Height = ws.Height + padding.VerticalSpacing;
 
+			size += Backend.ImplicitMinSize;
+
 			if (!shown) {
 				shown = true;
 	
@@ -227,14 +227,14 @@ namespace Xwt
 					if (locationSet)
 						Backend.Bounds = new Rectangle (initialBounds.X, initialBounds.Y, size.Width, size.Height);
 					else
-						Size = size + Backend.ImplicitMinSize;
+						Backend.SetSize (size.Width, size.Height);
 				} else if (locationSet && !shown)
 					Backend.Move (initialBounds.X, initialBounds.Y);
 	
 				Backend.SetMinSize (Backend.ImplicitMinSize + new Size (ws.Width + padding.HorizontalSpacing, ws.Height + padding.VerticalSpacing));
 			} else {
 				if (size != Size)
-					Size = size + Backend.ImplicitMinSize;
+					Backend.SetSize (size.Width, size.Height);
 			}
 		}
 	}
