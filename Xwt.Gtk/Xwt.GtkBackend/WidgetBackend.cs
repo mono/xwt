@@ -616,8 +616,13 @@ namespace Xwt.GtkBackend
 			var req = args.Requisition;
 
 			if (!gettingPreferredSize && (enabledEvents & WidgetEvent.PreferredSizeCheck) != 0) {
+				SizeConstraint wc = SizeConstraint.Unconstrained, hc = SizeConstraint.Unconstrained;
+				var cp = Widget.Parent as IConstraintProvider;
+				if (cp != null)
+					cp.GetConstraints (Widget, out wc, out hc);
+
 				ApplicationContext.InvokeUserCode (delegate {
-					var w = eventSink.GetPreferredSize (currentWidthConstraint, currentHeightConstraint);
+					var w = eventSink.GetPreferredSize (wc, hc);
 					req.Width = (int) w.Width;
 					req.Height = (int) w.Height;
 				});
@@ -1100,7 +1105,7 @@ namespace Xwt.GtkBackend
 		Gtk.Widget Widget { get; }
 	}
 
-	class WidgetPlacementWrapper: Gtk.Alignment
+	class WidgetPlacementWrapper: Gtk.Alignment, IConstraintProvider
 	{
 		public WidgetPlacementWrapper (): base (0, 0, 1, 1)
 		{
@@ -1117,6 +1122,18 @@ namespace Xwt.GtkBackend
 			Xscale = (widget.HorizontalPlacement == WidgetPlacement.Fill) ? 1 : 0;
 			Yscale = (widget.VerticalPlacement == WidgetPlacement.Fill) ? 1 : 0;
 		}
+
+		#region IConstraintProvider implementation
+
+		public void GetConstraints (Gtk.Widget target, out SizeConstraint width, out SizeConstraint height)
+		{
+			if (Parent is IConstraintProvider)
+				((IConstraintProvider)Parent).GetConstraints (this, out width, out height);
+			else
+				width = height = SizeConstraint.Unconstrained;
+		}
+
+		#endregion
 	}
 }
 

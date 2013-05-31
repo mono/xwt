@@ -199,5 +199,23 @@ namespace Xwt.GtkBackend
 		}
 		#endregion
 	}
+
+	class FrameWidget: Gtk.Frame, IConstraintProvider
+	{
+		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		{
+			base.OnSizeRequested (ref requisition);
+		}
+
+		public void GetConstraints (Gtk.Widget target, out SizeConstraint width, out SizeConstraint height)
+		{
+			width = height = SizeConstraint.Unconstrained;
+		}
+	}
+
+	public interface IConstraintProvider
+	{
+		void GetConstraints (Gtk.Widget target, out SizeConstraint width, out SizeConstraint height);
+	}
 }
 

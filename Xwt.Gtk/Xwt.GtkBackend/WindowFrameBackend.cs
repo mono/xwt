@@ -104,14 +104,14 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		public void SetSize (double width, double height)
+		public virtual void SetSize (double width, double height)
 		{
-			requestedSize = new Size (width, height);
 			Window.SetDefaultSize ((int)width, (int)height);
 			if (width == -1)
 				width = Bounds.Width;
 			if (height == -1)
 				height = Bounds.Height;
+			requestedSize = new Size (width, height);
 			Window.Resize ((int)width, (int)height);
 		}
 
@@ -136,6 +136,10 @@ namespace Xwt.GtkBackend
 					EventSink.OnBoundsChanged (Bounds);
 				});
 			}
+		}
+
+		public Size RequestedSize {
+			get { return requestedSize; }
 		}
 
 		bool IWindowFrameBackend.Visible {
