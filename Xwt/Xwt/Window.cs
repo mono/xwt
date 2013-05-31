@@ -144,8 +144,9 @@ namespace Xwt
 
 		internal override void SetBackendSize (double width, double height)
 		{
-			if (shown || BackendHost.EngineBackend.HandlesSizeNegotiation) {
+			if (shown) {
 				base.SetBackendSize (width, height);
+				AdjustSize ();
 			}
 			if (!shown) {
 				if (width != -1) {
@@ -189,10 +190,11 @@ namespace Xwt
 		internal void OnChildPlacementChanged (Widget child)
 		{
 			Backend.UpdateChildPlacement (child.GetBackend ());
-			Widget.QueueWindowSizeNegotiation (this);
+			if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
+				Widget.QueueWindowSizeNegotiation (this);
 		}
 
-		internal void AdjustSize ()
+		internal override void AdjustSize ()
 		{
 			if (child == null)
 				return;
@@ -201,24 +203,24 @@ namespace Xwt
 
 			var size = shown ? Size : initialBounds.Size;
 
-			var wc = widthSet ? SizeConstraint.RequireSize (size.Width - padding.HorizontalSpacing) : SizeConstraint.Unconstrained;
-			var hc = heightSet ? SizeConstraint.RequireSize (size.Height - padding.VerticalSpacing) : SizeConstraint.Unconstrained;
+			var wc = (shown || widthSet) ? SizeConstraint.RequireSize (size.Width - padding.HorizontalSpacing) : SizeConstraint.Unconstrained;
+			var hc = (shown || heightSet) ? SizeConstraint.RequireSize (size.Height - padding.VerticalSpacing) : SizeConstraint.Unconstrained;
 
-			var ws = s.GetPreferredSize (wc, hc);
+			var ws = s.GetPreferredSize (wc, hc, true);
 
-			if (!shown && !widthSet)
-				size.Width = ws.Width + padding.HorizontalSpacing;
-
-			if (!shown && !heightSet)
-				size.Height = ws.Height + padding.VerticalSpacing;
+			if (!shown) {
+				if (!widthSet)
+					size.Width = ws.Width + padding.HorizontalSpacing;
+				if (!heightSet)
+					size.Height = ws.Height + padding.VerticalSpacing;
+			}
 
 			if (ws.Width + padding.HorizontalSpacing > size.Width)
 				size.Width = ws.Width + padding.HorizontalSpacing;
 			if (ws.Height + padding.VerticalSpacing > size.Height)
 				size.Height = ws.Height + padding.VerticalSpacing;
 
-			if (!BackendHost.EngineBackend.HandlesSizeNegotiation || !shown) {
-	
+			if (!shown) {
 				shown = true;
 	
 				if (size != Size) {
@@ -226,11 +228,13 @@ namespace Xwt
 						Backend.Bounds = new Rectangle (initialBounds.X, initialBounds.Y, size.Width, size.Height);
 					else
 						Size = size + Backend.ImplicitMinSize;
-				}
-				else if (locationSet && !shown)
+				} else if (locationSet && !shown)
 					Backend.Move (initialBounds.X, initialBounds.Y);
 	
 				Backend.SetMinSize (Backend.ImplicitMinSize + new Size (ws.Width + padding.HorizontalSpacing, ws.Height + padding.VerticalSpacing));
+			} else {
+				if (size != Size)
+					Size = size + Backend.ImplicitMinSize;
 			}
 		}
 	}

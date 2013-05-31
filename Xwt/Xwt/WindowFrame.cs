@@ -184,7 +184,11 @@ namespace Xwt
 				SetBackendSize (-1, value);
 			}
 		}
-		
+
+		/// <summary>
+		/// Size of the window, not including the decorations
+		/// </summary>
+		/// <value>The size.</value>
 		public Size Size {
 			get { return BackendBounds.Size; }
 			set {
@@ -262,9 +266,16 @@ namespace Xwt
 
 		public void Show ()
 		{
-			Visible = true;
+			if (!Visible) {
+				AdjustSize ();
+				Visible = true;
+			}
 		}
 		
+		internal virtual void AdjustSize ()
+		{
+		}
+
 		/// <summary>
 		/// Presents a window to the user. This may mean raising the window in the stacking order,
 		/// deiconifying it, moving it to the current desktop, and/or giving it the keyboard focus
@@ -302,8 +313,7 @@ namespace Xwt
 
 		internal virtual void SetBackendSize (double width, double height)
 		{
-			size = new Size (width != -1 ? width : Width, height != -1 ? height : Height);
-			Backend.Resize (size.Width, size.Height);
+			Backend.SetSize (width, height);
 		}
 
 		internal virtual void SetBackendLocation (double x, double y)
