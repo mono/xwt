@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using NUnit.Framework;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -34,7 +35,93 @@ namespace Xwt
 		public void DefaultSize ()
 		{
 			using (var win = new Window ()) {
-				Label test = new Label ("Testing");
+				win.Padding = 0;
+				var test = new VariableSizeBox (100);
+				win.Content = test;
+				ShowWindow (win);
+				Assert.AreEqual (100, win.Size.Width);
+				Assert.AreEqual (50, win.Size.Height);
+			}
+		}
+
+		[Test]
+		public void FlexibleContentGrowMakesWindowNotGrow ()
+		{
+			using (var win = new Window ()) {
+				win.Padding = 0;
+				var test = new VariableSizeBox (100);
+				win.Content = test;
+				ShowWindow (win);
+				Assert.AreEqual (100, win.Size.Width);
+				Assert.AreEqual (50, win.Size.Height);
+				test.Size = 150;
+				// The preferred size grows, but the widget honors the constraint given
+				// by the window (the initial size of the window), so it doesn't make
+				// the window grow
+				WaitForEvents ();
+				Assert.AreEqual (100, win.Size.Width);
+				Assert.AreEqual (50, win.Size.Height);
+			}
+		}
+		
+		[Test]
+		public void FixedContentGrowMakesWindowGrow ()
+		{
+			using (var win = new Window ()) {
+				win.Padding = 0;
+				var test = new VariableSizeBox (100);
+				test.ForceSize = true;
+				win.Content = test;
+				ShowWindow (win);
+				Assert.AreEqual (100, win.Size.Width);
+				Assert.AreEqual (50, win.Size.Height);
+				test.Size = 150;
+				// The preferred size grows, and it is bigger that the constraint provided
+				// by the window (the initial size of the window), so the window grows to adapt
+				WaitForEvents ();
+				Assert.AreEqual (150, win.Size.Width);
+				Assert.AreEqual (75, win.Size.Height);
+			}
+		}
+
+		[Test]
+		public void ContentWidthGrows ()
+		{
+			using (var win = new Window ()) {
+				win.Padding = 0;
+				var test = new VariableSizeBox (100);
+				win.Content = test;
+				ShowWindow (win);
+				Assert.AreEqual (100, win.Size.Width);
+				Assert.AreEqual (50, win.Size.Height);
+				win.Width = 150;
+				WaitForEvents ();
+				Assert.AreEqual (150, win.Size.Width);
+				Assert.AreEqual (75, win.Size.Height);
+			}
+		}
+
+		[Test]
+		public void FixedWidth ()
+		{
+			using (var win = new Window ()) {
+				win.Padding = 0;
+				var test = new VariableSizeBox (100);
+				win.Content = test;
+				win.Width = 150;
+				ShowWindow (win);
+				WaitForEvents ();
+				Assert.AreEqual (150, win.Size.Width);
+				Assert.AreEqual (75, win.Size.Height);
+			}
+		}
+
+		[Test]
+		public void DefaultSizeWithMinContentSize ()
+		{
+			using (var win = new Window ()) {
+				win.Padding = 0;
+				SquareBox test = new SquareBox ();
 				test.MinWidth = 100;
 				test.MinHeight = 100;
 				win.Content = test;
@@ -48,14 +135,99 @@ namespace Xwt
 		public void ContentMargin ()
 		{
 			using (var win = new Window ()) {
-				Label test = new Label ("Testing");
+				win.Padding = 0;
+				SquareBox test = new SquareBox ();
 				test.MinWidth = 100;
 				test.MinHeight = 100;
+				test.Margin = 5;
 				win.Content = test;
 				ShowWindow (win);
-				Assert.AreEqual (100, win.Size.Width);
-				Assert.AreEqual (100, win.Size.Height);
+				Assert.AreEqual (110, win.Size.Width);
+				Assert.AreEqual (110, win.Size.Height);
 			}
+		}
+		
+		[Test]
+		public void ContentMarginChange ()
+		{
+			// The size of the window grows if a specific size has not been set
+			using (var win = new Window ()) {
+				win.Padding = 0;
+				SquareBox test = new SquareBox ();
+				test.MinWidth = 100;
+				test.MinHeight = 100;
+				test.Margin = 5;
+				win.Content = test;
+				ShowWindow (win);
+				Assert.AreEqual (110, win.Size.Width);
+				Assert.AreEqual (110, win.Size.Height);
+				test.Margin = 10;
+				WaitForEvents ();
+				Assert.AreEqual (120, win.Size.Width);
+				Assert.AreEqual (120, win.Size.Height);
+			}
+		}
+	}
+
+	class SquareBox: Canvas
+	{
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+		{
+			return new Size (10, 10);
+		}
+
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
+		{
+			ctx.Rectangle (dirtyRect);
+			ctx.SetColor (Colors.Red);
+			ctx.Fill ();
+		}
+	}
+	
+	class VariableSizeBox: Canvas
+	{
+		double size;
+		bool forceSize;
+
+		public VariableSizeBox (double size)
+		{
+			this.size = size;
+		}
+
+		public double Size {
+			get { return size; }
+			set {
+				size = value;
+				OnPreferredSizeChanged ();
+			}
+		}
+
+		public bool ForceSize {
+			get { return forceSize; }
+			set {
+				forceSize = value;
+				OnPreferredSizeChanged ();
+			}
+		}
+
+		// The height of this widget is always half of the width
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+		{
+			if (widthConstraint.IsConstrained) {
+				var w = forceSize ? Math.Max (size, widthConstraint.RequiredSize) : widthConstraint.RequiredSize;
+				return new Size (w, w / 2);
+			} else if (heightConstraint.IsConstrained) {
+				var h = forceSize ? Math.Max (size / 2, widthConstraint.RequiredSize) : widthConstraint.RequiredSize;
+				return new Size (h * 2, h);
+			}
+			return new Size (size, size / 2);
+		}
+
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
+		{
+			ctx.Rectangle (dirtyRect);
+			ctx.SetColor (Colors.Red);
+			ctx.Fill ();
 		}
 	}
 }
