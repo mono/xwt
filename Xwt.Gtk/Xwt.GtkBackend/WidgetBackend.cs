@@ -613,26 +613,21 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetSizeRequested (object o, Gtk.SizeRequestedArgs args)
 		{
-			if (gettingPreferredSize)
-				return;
-			
 			var req = args.Requisition;
-			
-			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) == 0) {
-				// If no sizing event is set, it means this handler was set because there is a min size.
-				if (Frontend.MinWidth != -1)
-					req.Width = (int) Frontend.MinWidth;
-				if (Frontend.MinHeight != -1)
-					req.Height = (int) Frontend.MinHeight;
-				args.Requisition = req;
-				return;
+
+			if (!gettingPreferredSize && (enabledEvents & WidgetEvent.PreferredSizeCheck) != 0) {
+				ApplicationContext.InvokeUserCode (delegate {
+					var w = eventSink.GetPreferredSize (currentWidthConstraint, currentHeightConstraint);
+					req.Width = (int) w.Width;
+					req.Height = (int) w.Height;
+				});
 			}
-			
-			ApplicationContext.InvokeUserCode (delegate {
-				var w = eventSink.GetPreferredSize (currentWidthConstraint, currentHeightConstraint);
-				req.Width = (int) w.Width;
-				req.Height = (int) w.Height;
-			});
+
+			if (Frontend.MinWidth != -1 && Frontend.MinWidth > req.Width)
+				req.Width = (int) Frontend.MinWidth;
+			if (Frontend.MinHeight != -1 && Frontend.MinHeight > req.Height)
+				req.Height = (int) Frontend.MinHeight;
+
 			args.Requisition = req;
 		}
 

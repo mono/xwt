@@ -104,11 +104,15 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		public void Resize (double width, double height)
+		public void SetSize (double width, double height)
 		{
 			requestedSize = new Size (width, height);
-			Window.Resize ((int)width, (int)height);
 			Window.SetDefaultSize ((int)width, (int)height);
+			if (width == -1)
+				width = Bounds.Width;
+			if (height == -1)
+				height = Bounds.Height;
+			Window.Resize ((int)width, (int)height);
 		}
 
 		public Rectangle Bounds {
