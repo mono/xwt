@@ -55,6 +55,7 @@ namespace Xwt.Mac
 			controller.Window = this;
 			StyleMask |= NSWindowStyle.Resizable | NSWindowStyle.Closable | NSWindowStyle.Miniaturizable;
 			ContentView.AutoresizesSubviews = true;
+			ContentView.Hidden = true;
 
 			// TODO: do it only if mouse move events are enabled in a widget
 			AcceptsMouseMovedEvents = true;
@@ -302,6 +303,11 @@ namespace Xwt.Mac
 			}
 		}
 		
+		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
+			ViewBackend.SetChildPlacement (childBackend);
+		}
+
 		bool IWindowFrameBackend.Decorated {
 			get {
 				return (StyleMask & NSWindowStyle.Titled) != 0;
@@ -358,9 +364,13 @@ namespace Xwt.Mac
 			SetFrame (r, true);
 		}
 		
-		void IWindowFrameBackend.Resize (double width, double height)
+		void IWindowFrameBackend.SetSize (double width, double height)
 		{
 			var cr = ContentRectFor (Frame);
+			if (width == -1)
+				width = cr.Width;
+			if (height == -1)
+				height = cr.Height;
 			var r = FrameRectFor (new System.Drawing.RectangleF ((float)cr.X, (float)cr.Y, (float)width, (float)height));
 			SetFrame (r, true);
 		}
@@ -422,10 +432,6 @@ namespace Xwt.Mac
 
 		    var r = FrameRectFor (new RectangleF (0, 0, (float)s.Width, (float)s.Height));
 			MinSize = r.Size;
-		}
-
-		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
-		{
 		}
 
 		public void SetIcon (ImageDescription icon)

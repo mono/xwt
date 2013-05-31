@@ -267,8 +267,33 @@ namespace Xwt.Mac
 			if (!NeedsAlignmentWrapper (backend.Frontend))
 				return child;
 
-			wrapper = new WidgetPlacementWrapper (child, backend.Frontend);
+			wrapper = new WidgetPlacementWrapper ();
+			wrapper.SetChild (child, backend.Frontend);
 			return wrapper;
+		}
+
+		public static void SetChildPlacement (IWidgetBackend childBackend)
+		{
+			var backend = (ViewBackend)childBackend;
+			var child = backend.Widget;
+			var wrapper = child.Superview as WidgetPlacementWrapper;
+			var fw = backend.Frontend;
+
+			if (!NeedsAlignmentWrapper (fw)) {
+				if (wrapper != null) {
+					var parent = wrapper.Superview;
+					child.RemoveFromSuperview ();
+					parent.ReplaceSubviewWith (wrapper, child);
+				}
+				return;
+			}
+
+			if (wrapper == null) {
+				wrapper = new WidgetPlacementWrapper ();
+				child.Superview.ReplaceSubviewWith (child, wrapper);
+				wrapper.SetChild (child, backend.Frontend);
+			} else
+				wrapper.UpdateChildPlacement ();
 		}
 
 		public static void RemoveChildPlacement (NSView w)
@@ -706,7 +731,11 @@ namespace Xwt.Mac
 		NSView child;
 		Widget w;
 
-		public WidgetPlacementWrapper (NSView child, Widget w)
+		public WidgetPlacementWrapper ()
+		{
+		}
+
+		public void SetChild (NSView child, Widget w)
 		{
 			this.child = child;
 			this.w = w;
@@ -716,9 +745,13 @@ namespace Xwt.Mac
 		public override void SetFrameSize (SizeF newSize)
 		{
 			base.SetFrameSize (newSize);
+			UpdateChildPlacement ();
+		}
 
-			double cheight = newSize.Height - w.Margin.VerticalSpacing;
-			double cwidth = newSize.Width - w.Margin.HorizontalSpacing;
+		public void UpdateChildPlacement ()
+		{
+			double cheight = Frame.Height - w.Margin.VerticalSpacing;
+			double cwidth = Frame.Width - w.Margin.HorizontalSpacing;
 			double cx = w.MarginLeft;
 			double cy = w.MarginTop;
 
