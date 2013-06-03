@@ -299,13 +299,16 @@ namespace Xwt.Mac
 				var w = ViewBackend.GetWidgetWithPlacement (child);
 				GetContentView ().AddSubview (w);
 				SetPadding (frontend.Padding.Left, frontend.Padding.Top, frontend.Padding.Right, frontend.Padding.Bottom);
-				this.child.Widget.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
+				w.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			}
 		}
 		
 		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
 		{
 			ViewBackend.SetChildPlacement (childBackend);
+			var w = GetContentView ().Subviews [0];
+			SetPadding (frontend.Padding.Left, frontend.Padding.Top, frontend.Padding.Right, frontend.Padding.Bottom);
+			w.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 		}
 
 		bool IWindowFrameBackend.Decorated {
@@ -354,7 +357,7 @@ namespace Xwt.Mac
 				frame.Width -= (float) (left + right);
 				frame.Y += (float) top;
 				frame.Height -= (float) (top + bottom);
-				child.Widget.Frame = frame;
+				GetContentView ().Subviews[0].Frame = frame;
 			}
 		}
 
