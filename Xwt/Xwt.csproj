@@ -97,7 +97,6 @@
     <Compile Include="Xwt\Rectangle.cs" />
     <Compile Include="Xwt\Point.cs" />
     <Compile Include="Xwt\Size.cs" />
-    <Compile Include="Xwt\WidgetSize.cs" />
     <Compile Include="Xwt\Alignment.cs" />
     <Compile Include="Xwt.Drawing\Image.cs" />
     <Compile Include="Xwt\TreeStore.cs">
