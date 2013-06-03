@@ -303,7 +303,7 @@ namespace Xwt
 				}
 			}
 
-			if (j != children.Count - 1) {
+			if (j != children.Count) {
 				Array.Resize (ref result, j);
 			}
 
