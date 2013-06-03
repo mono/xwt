@@ -36,11 +36,13 @@ namespace Xwt
 		{
 			using (var win = new Window ()) {
 				win.Padding = 0;
-				var test = new VariableSizeBox (100);
+				var test = new VariableSizeBox (200);
 				win.Content = test;
 				ShowWindow (win);
-				Assert.AreEqual (100, win.Size.Width);
-				Assert.AreEqual (50, win.Size.Height);
+				Assert.AreEqual (200, win.Size.Width);
+				Assert.AreEqual (100, win.Size.Height);
+				Assert.AreEqual (200, test.ScreenBounds.Width);
+				Assert.AreEqual (100, test.ScreenBounds.Height);
 			}
 		}
 
@@ -49,18 +51,20 @@ namespace Xwt
 		{
 			using (var win = new Window ()) {
 				win.Padding = 0;
-				var test = new VariableSizeBox (100);
+				var test = new VariableSizeBox (200);
 				win.Content = test;
 				ShowWindow (win);
-				Assert.AreEqual (100, win.Size.Width);
-				Assert.AreEqual (50, win.Size.Height);
-				test.Size = 150;
+				Assert.AreEqual (200, win.Size.Width);
+				Assert.AreEqual (100, win.Size.Height);
+				test.Size = 300;
 				// The preferred size grows, but the widget honors the constraint given
 				// by the window (the initial size of the window), so it doesn't make
 				// the window grow
 				WaitForEvents ();
-				Assert.AreEqual (100, win.Size.Width);
-				Assert.AreEqual (50, win.Size.Height);
+				Assert.AreEqual (200, win.Size.Width);
+				Assert.AreEqual (100, win.Size.Height);
+				Assert.AreEqual (200, test.ScreenBounds.Width);
+				Assert.AreEqual (100, test.ScreenBounds.Height);
 			}
 		}
 		
@@ -69,18 +73,20 @@ namespace Xwt
 		{
 			using (var win = new Window ()) {
 				win.Padding = 0;
-				var test = new VariableSizeBox (100);
+				var test = new VariableSizeBox (200);
 				test.ForceSize = true;
 				win.Content = test;
 				ShowWindow (win);
-				Assert.AreEqual (100, win.Size.Width);
-				Assert.AreEqual (50, win.Size.Height);
-				test.Size = 150;
+				Assert.AreEqual (200, win.Size.Width);
+				Assert.AreEqual (100, win.Size.Height);
+				test.Size = 300;
 				// The preferred size grows, and it is bigger that the constraint provided
 				// by the window (the initial size of the window), so the window grows to adapt
 				WaitForEvents ();
-				Assert.AreEqual (150, win.Size.Width);
-				Assert.AreEqual (75, win.Size.Height);
+				Assert.AreEqual (300, win.Size.Width);
+				Assert.AreEqual (150, win.Size.Height);
+				Assert.AreEqual (300, test.ScreenBounds.Width);
+				Assert.AreEqual (150, test.ScreenBounds.Height);
 			}
 		}
 
@@ -89,15 +95,17 @@ namespace Xwt
 		{
 			using (var win = new Window ()) {
 				win.Padding = 0;
-				var test = new VariableSizeBox (100);
+				var test = new VariableSizeBox (200);
 				win.Content = test;
 				ShowWindow (win);
-				Assert.AreEqual (100, win.Size.Width);
-				Assert.AreEqual (50, win.Size.Height);
-				win.Width = 150;
+				Assert.AreEqual (200, win.Size.Width);
+				Assert.AreEqual (100, win.Size.Height);
+				win.Width = 300;
 				WaitForEvents ();
-				Assert.AreEqual (150, win.Size.Width);
-				Assert.AreEqual (75, win.Size.Height);
+				Assert.AreEqual (300, win.Size.Width);
+				Assert.AreEqual (150, win.Size.Height);
+				Assert.AreEqual (300, test.ScreenBounds.Width);
+				Assert.AreEqual (150, test.ScreenBounds.Height);
 			}
 		}
 
@@ -106,13 +114,15 @@ namespace Xwt
 		{
 			using (var win = new Window ()) {
 				win.Padding = 0;
-				var test = new VariableSizeBox (100);
+				var test = new VariableSizeBox (200);
 				win.Content = test;
-				win.Width = 150;
+				win.Width = 300;
 				ShowWindow (win);
 				WaitForEvents ();
-				Assert.AreEqual (150, win.Size.Width);
-				Assert.AreEqual (75, win.Size.Height);
+				Assert.AreEqual (300, win.Size.Width);
+				Assert.AreEqual (150, win.Size.Height);
+				Assert.AreEqual (300, test.ScreenBounds.Width);
+				Assert.AreEqual (150, test.ScreenBounds.Height);
 			}
 		}
 
@@ -122,12 +132,14 @@ namespace Xwt
 			using (var win = new Window ()) {
 				win.Padding = 0;
 				SquareBox test = new SquareBox ();
-				test.MinWidth = 100;
-				test.MinHeight = 100;
+				test.MinWidth = 200;
+				test.MinHeight = 200;
 				win.Content = test;
 				ShowWindow (win);
-				Assert.AreEqual (100, win.Size.Width);
-				Assert.AreEqual (100, win.Size.Height);
+				Assert.AreEqual (200, win.Size.Width);
+				Assert.AreEqual (200, win.Size.Height);
+				Assert.AreEqual (200, test.ScreenBounds.Width);
+				Assert.AreEqual (200, test.ScreenBounds.Height);
 			}
 		}
 
@@ -137,13 +149,15 @@ namespace Xwt
 			using (var win = new Window ()) {
 				win.Padding = 0;
 				SquareBox test = new SquareBox ();
-				test.MinWidth = 100;
-				test.MinHeight = 100;
+				test.MinWidth = 200;
+				test.MinHeight = 200;
 				test.Margin = 5;
 				win.Content = test;
 				ShowWindow (win);
-				Assert.AreEqual (110, win.Size.Width);
-				Assert.AreEqual (110, win.Size.Height);
+				Assert.AreEqual (210, win.Size.Width);
+				Assert.AreEqual (210, win.Size.Height);
+				Assert.AreEqual (200, test.ScreenBounds.Width);
+				Assert.AreEqual (200, test.ScreenBounds.Height);
 			}
 		}
 		
@@ -154,17 +168,21 @@ namespace Xwt
 			using (var win = new Window ()) {
 				win.Padding = 0;
 				SquareBox test = new SquareBox ();
-				test.MinWidth = 100;
-				test.MinHeight = 100;
+				test.MinWidth = 200;
+				test.MinHeight = 200;
 				test.Margin = 5;
 				win.Content = test;
 				ShowWindow (win);
-				Assert.AreEqual (110, win.Size.Width);
-				Assert.AreEqual (110, win.Size.Height);
+				Assert.AreEqual (210, win.Size.Width);
+				Assert.AreEqual (210, win.Size.Height);
+				Assert.AreEqual (200, test.ScreenBounds.Width);
+				Assert.AreEqual (200, test.ScreenBounds.Height);
 				test.Margin = 10;
 				WaitForEvents ();
-				Assert.AreEqual (120, win.Size.Width);
-				Assert.AreEqual (120, win.Size.Height);
+				Assert.AreEqual (220, win.Size.Width);
+				Assert.AreEqual (220, win.Size.Height);
+				Assert.AreEqual (200, test.ScreenBounds.Width);
+				Assert.AreEqual (200, test.ScreenBounds.Height);
 			}
 		}
 	}
