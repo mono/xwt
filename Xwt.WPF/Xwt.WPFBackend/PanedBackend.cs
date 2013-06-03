@@ -229,10 +229,10 @@ namespace Xwt.WPFBackend
 					h = s1.Height + s2.Height + SplitterSize;
 					w = Math.Max (s1.Width, s2.Width);
 				}
-				if (widthConstraint.IsConstrained && w > widthConstraint.RequiredSize)
-					w = widthConstraint.RequiredSize;
-				if (heightConstraint.IsConstrained && h > heightConstraint.RequiredSize)
-					h = heightConstraint.RequiredSize;
+				if (widthConstraint.IsConstrained && w > widthConstraint.AvailableSize)
+					w = widthConstraint.AvailableSize;
+				if (heightConstraint.IsConstrained && h > heightConstraint.AvailableSize)
+					h = heightConstraint.AvailableSize;
 				return new Size (w, h);
 			}
 			else if (panel1.HasWidget)

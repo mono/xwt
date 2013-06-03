@@ -79,7 +79,7 @@ namespace Xwt.Mac
 		{
 			var width = (double) Widget.TextStorage.Size.Width;
 			if (widthConstraint.IsConstrained)
-				width = widthConstraint.RequiredSize;
+				width = widthConstraint.AvailableSize;
 			if (minWidth != -1 && minWidth > width)
 				width = minWidth;
 

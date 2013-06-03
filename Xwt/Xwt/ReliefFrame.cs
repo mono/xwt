@@ -76,9 +76,9 @@ namespace Xwt
 		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (widthConstraint.IsConstrained)
-				widthConstraint.RequiredSize -= 2 * padding;
+				widthConstraint.AvailableSize -= 2 * padding;
 			if (heightConstraint.IsConstrained)
-				heightConstraint.RequiredSize -= 2 * padding;
+				heightConstraint.AvailableSize -= 2 * padding;
 
 			var s = base.OnGetPreferredSize (widthConstraint, heightConstraint);
 			s.Width += 2 * padding;

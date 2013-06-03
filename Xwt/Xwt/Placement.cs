@@ -129,13 +129,13 @@ namespace Xwt
 				var s = new Size (child.Margin.HorizontalSpacing + Padding.HorizontalSpacing, child.Margin.VerticalSpacing + Padding.VerticalSpacing);
 
 				if (widthConstraint.IsConstrained) {
-					widthConstraint = widthConstraint.RequiredSize - s.Width;
-					if (widthConstraint.RequiredSize <= 0)
+					widthConstraint = widthConstraint.AvailableSize - s.Width;
+					if (widthConstraint.AvailableSize <= 0)
 						return s;
 				}
 				if (heightConstraint.IsConstrained) {
-					heightConstraint = heightConstraint.RequiredSize - child.Margin.VerticalSpacing - Padding.VerticalSpacing;
-					if (heightConstraint.RequiredSize <= 0)
+					heightConstraint = heightConstraint.AvailableSize - child.Margin.VerticalSpacing - Padding.VerticalSpacing;
+					if (heightConstraint.AvailableSize <= 0)
 						return s;
 				}
 				return s + child.Surface.GetPreferredSize (widthConstraint, heightConstraint);

@@ -37,15 +37,15 @@ namespace Xwt
 
 		static public implicit operator SizeConstraint (double size)
 		{
-			return new SizeConstraint () { RequiredSize = size };
+			return new SizeConstraint () { AvailableSize = size };
 		}
 
-		public static SizeConstraint RequireSize (double size)
+		public static SizeConstraint WithSize (double size)
 		{
-			return new SizeConstraint () { RequiredSize = size };
+			return new SizeConstraint () { AvailableSize = size };
 		}
 
-		public double RequiredSize {
+		public double AvailableSize {
 			get {
 				if (double.IsNegativeInfinity (value))
 					return 0;
@@ -79,7 +79,7 @@ namespace Xwt
 			if (!c.IsConstrained)
 				return c;
 			else
-				return SizeConstraint.RequireSize (c.RequiredSize + s);
+				return SizeConstraint.WithSize (c.AvailableSize + s);
 		}
 
 		public static SizeConstraint operator - (SizeConstraint c, double s)
@@ -87,7 +87,7 @@ namespace Xwt
 			if (!c.IsConstrained)
 				return c;
 			else
-				return SizeConstraint.RequireSize (Math.Max (c.RequiredSize - s, 0));
+				return SizeConstraint.WithSize (Math.Max (c.AvailableSize - s, 0));
 		}
 
 		public override bool Equals (object ob)

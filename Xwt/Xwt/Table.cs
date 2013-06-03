@@ -318,9 +318,9 @@ namespace Xwt
 				var bp = visibleChildren[n];
 				Size s;
 				if (useWidthConstraint)
-					s = bp.Child.Surface.GetPreferredSize (SizeConstraint.RequireSize (bp.NextWidth - bp.Child.Margin.HorizontalSpacing), SizeConstraint.Unconstrained);
+					s = bp.Child.Surface.GetPreferredSize (SizeConstraint.WithSize (bp.NextWidth - bp.Child.Margin.HorizontalSpacing), SizeConstraint.Unconstrained);
 				else if (useHeightConstraint)
-					s = bp.Child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.RequireSize (bp.NextHeight - bp.Child.Margin.VerticalSpacing));
+					s = bp.Child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.WithSize (bp.NextHeight - bp.Child.Margin.VerticalSpacing));
 				else
 					s = bp.Child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.Unconstrained);
 				s.Width += bp.Child.Margin.HorizontalSpacing;
@@ -702,33 +702,33 @@ namespace Xwt
 			else if (!widthConstraint.IsConstrained) {
 				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
 				var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
-				CalcCellSizes (h, heightConstraint.RequiredSize, false);
+				CalcCellSizes (h, heightConstraint.AvailableSize, false);
 
 				childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, true);
 				var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
-				return new Size (w.TotalSize, heightConstraint.RequiredSize);
+				return new Size (w.TotalSize, heightConstraint.AvailableSize);
 			}
 			else if (!heightConstraint.IsConstrained) {
 				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
 				var w = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
-				CalcCellSizes (w, widthConstraint.RequiredSize, false);
+				CalcCellSizes (w, widthConstraint.AvailableSize, false);
 
 				childrenSizes = GetPreferredChildrenSizes (visibleChildren, true, false);
 				var h = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
-				return new Size (widthConstraint.RequiredSize, h.TotalSize);
+				return new Size (widthConstraint.AvailableSize, h.TotalSize);
 			}
 			else {
 				var childrenSizes = GetPreferredChildrenSizes (visibleChildren, false, false);
 				var width = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Horizontal);
 				var height = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
 
-				if (width.TotalSize <= widthConstraint.RequiredSize)
+				if (width.TotalSize <= widthConstraint.AvailableSize)
 					return new Size (width.TotalSize, height.TotalSize);
 
-				CalcCellSizes (width, widthConstraint.RequiredSize, false);
+				CalcCellSizes (width, widthConstraint.AvailableSize, false);
 				childrenSizes = GetPreferredChildrenSizes (visibleChildren, true, false);
 				height = CalcPreferredCellSizes (visibleChildren, childrenSizes, Orientation.Vertical);
-				return new Size (widthConstraint.RequiredSize, Math.Min (heightConstraint.RequiredSize, height.TotalSize));
+				return new Size (widthConstraint.AvailableSize, Math.Min (heightConstraint.AvailableSize, height.TotalSize));
 			}
 		}
 

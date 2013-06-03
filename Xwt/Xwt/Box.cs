@@ -317,8 +317,8 @@ namespace Xwt
 			double requiredSize = 0;
 			double availableSize = vertical ? height : width;
 
-			var widthConstraint = vertical ? SizeConstraint.RequireSize (width) : SizeConstraint.Unconstrained;
-			var heightConstraint = vertical ? SizeConstraint.Unconstrained : SizeConstraint.RequireSize (height);
+			var widthConstraint = vertical ? SizeConstraint.WithSize (width) : SizeConstraint.Unconstrained;
+			var heightConstraint = vertical ? SizeConstraint.Unconstrained : SizeConstraint.WithSize (height);
 
 			var visibleChildren = children.Where (b => b.Child.Visible).ToArray ();
 			var sizes = new Dictionary<BoxPlacement,double> ();

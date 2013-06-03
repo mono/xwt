@@ -201,8 +201,8 @@ namespace Xwt
 
 			var size = shown ? Size : initialBounds.Size;
 
-			var wc = (shown || widthSet) ? SizeConstraint.RequireSize (size.Width - padding.HorizontalSpacing) : SizeConstraint.Unconstrained;
-			var hc = (shown || heightSet) ? SizeConstraint.RequireSize (size.Height - padding.VerticalSpacing) : SizeConstraint.Unconstrained;
+			var wc = (shown || widthSet) ? SizeConstraint.WithSize (size.Width - padding.HorizontalSpacing) : SizeConstraint.Unconstrained;
+			var hc = (shown || heightSet) ? SizeConstraint.WithSize (size.Height - padding.VerticalSpacing) : SizeConstraint.Unconstrained;
 
 			var ws = s.GetPreferredSize (wc, hc, true);
 

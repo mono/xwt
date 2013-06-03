@@ -270,7 +270,7 @@ namespace Xwt.WPFBackend
 		{
 			SW.Size size;
 			Widget.InvalidateMeasure ();
-			GetWidgetDesiredSize (widthConstraint.IsConstrained ? widthConstraint.RequiredSize : Double.PositiveInfinity, heightConstraint.IsConstrained ? heightConstraint.RequiredSize : Double.PositiveInfinity, out size);
+			GetWidgetDesiredSize (widthConstraint.IsConstrained ? widthConstraint.AvailableSize : Double.PositiveInfinity, heightConstraint.IsConstrained ? heightConstraint.AvailableSize : Double.PositiveInfinity, out size);
 			return new Size (size.Width, size.Height);
 		}
 

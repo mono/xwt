@@ -114,10 +114,10 @@ namespace Xwt.Mac
 				ViewBackend c = (ViewBackend)child;
 				Size s;
 				if (horizontalScrollPolicy == ScrollPolicy.Never) {
-					s = c.Frontend.Surface.GetPreferredSize (SizeConstraint.RequireSize (Widget.ContentView.Frame.Width), SizeConstraint.Unconstrained);
+					s = c.Frontend.Surface.GetPreferredSize (SizeConstraint.WithSize (Widget.ContentView.Frame.Width), SizeConstraint.Unconstrained);
 				}
 				else if (verticalScrollPolicy == ScrollPolicy.Never) {
-					s = c.Frontend.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.RequireSize (Widget.ContentView.Frame.Width));
+					s = c.Frontend.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.WithSize (Widget.ContentView.Frame.Width));
 				}
 				else {
 					s = c.Frontend.Surface.GetPreferredSize ();

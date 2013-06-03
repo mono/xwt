@@ -56,9 +56,9 @@ namespace Xwt.WPFBackend
 		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (this.direction == Orientation.Vertical)
-				return new Size (1, heightConstraint.IsConstrained ? heightConstraint.RequiredSize : 0);
+				return new Size (1, heightConstraint.IsConstrained ? heightConstraint.AvailableSize : 0);
 			else
-				return new Size (widthConstraint.IsConstrained ? widthConstraint.RequiredSize : 0, 1);
+				return new Size (widthConstraint.IsConstrained ? widthConstraint.AvailableSize : 0, 1);
 		}
 	}
 }

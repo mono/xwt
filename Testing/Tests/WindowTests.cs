@@ -232,10 +232,10 @@ namespace Xwt
 		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (widthConstraint.IsConstrained) {
-				var w = forceSize ? Math.Max (size, widthConstraint.RequiredSize) : widthConstraint.RequiredSize;
+				var w = forceSize ? Math.Max (size, widthConstraint.AvailableSize) : widthConstraint.AvailableSize;
 				return new Size (w, w / 2);
 			} else if (heightConstraint.IsConstrained) {
-				var h = forceSize ? Math.Max (size / 2, widthConstraint.RequiredSize) : widthConstraint.RequiredSize;
+				var h = forceSize ? Math.Max (size / 2, widthConstraint.AvailableSize) : widthConstraint.AvailableSize;
 				return new Size (h * 2, h);
 			}
 			return new Size (size, size / 2);
