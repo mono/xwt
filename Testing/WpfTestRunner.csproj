@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -33,6 +33,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit-console-runner">
+      <HintPath>libs\nunit-console-runner.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core">
+      <HintPath>libs\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>libs\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.1.12217, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libs\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util">
+      <HintPath>libs\nunit.util.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,7 +60,41 @@
   <ItemGroup>
     <Compile Include="WpfTestRunner\Program.cs" />
     <Compile Include="WpfTestRunner\Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests\**\*.cs" />
+    <Compile Include="Tests\BoxTests.cs" />
+    <Compile Include="Tests\ButtonTests.cs" />
+    <Compile Include="Tests\CanvasTests.cs" />
+    <Compile Include="Tests\CheckBoxTests.cs" />
+    <Compile Include="Tests\ColorTests.cs" />
+    <Compile Include="Tests\ComboBoxEntryTests.cs" />
+    <Compile Include="Tests\ComboBoxTests.cs" />
+    <Compile Include="Tests\ConsoleTestRunner.cs" />
+    <Compile Include="Tests\DrawingTests.cs" />
+    <Compile Include="Tests\FontTests.cs" />
+    <Compile Include="Tests\FrameTests.cs" />
+    <Compile Include="Tests\HBoxTests.cs" />
+    <Compile Include="Tests\HPanedTests.cs" />
+    <Compile Include="Tests\HSeparatorTests.cs" />
+    <Compile Include="Tests\ImageViewTests.cs" />
+    <Compile Include="Tests\LabelTests.cs" />
+    <Compile Include="Tests\ListBoxTests.cs" />
+    <Compile Include="Tests\ListViewTests.cs" />
+    <Compile Include="Tests\MatrixTests.cs" />
+    <Compile Include="Tests\NotebookTests.cs" />
+    <Compile Include="Tests\ProgressBarTests.cs" />
+    <Compile Include="Tests\RadioButtonTests.cs" />
+    <Compile Include="Tests\ReferenceImageManager.cs" />
+    <Compile Include="Tests\ReferenceImageVerifierDialog.cs" />
+    <Compile Include="Tests\ScrollViewTests.cs" />
+    <Compile Include="Tests\SpinButtonTests.cs" />
+    <Compile Include="Tests\TableTests.cs" />
+    <Compile Include="Tests\TextEntryTests.cs" />
+    <Compile Include="Tests\TransformTests.cs" />
+    <Compile Include="Tests\VBoxTests.cs" />
+    <Compile Include="Tests\VPanedTests.cs" />
+    <Compile Include="Tests\VSeparatorTests.cs" />
+    <Compile Include="Tests\WidgetTests.cs" />
+    <Compile Include="Tests\WindowTests.cs" />
+    <Compile Include="Tests\XwtTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xwt.WPF\Xwt.WPF.csproj">
@@ -55,59 +105,6 @@
       <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
       <Name>Xwt</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\Arc.png" />
-    <EmbeddedResource Include="ReferenceImages\ArcMultipleLoops.png" />
-    <EmbeddedResource Include="ReferenceImages\ArcStartingNegative.png" />
-    <EmbeddedResource Include="ReferenceImages\ArcSwappedAngles.png" />
-    <EmbeddedResource Include="ReferenceImages\LinearGradient.png" />
-    <EmbeddedResource Include="ReferenceImages\LinearGradientDiagonal.png" />
-    <EmbeddedResource Include="ReferenceImages\LinearGradientReverse.png" />
-    <EmbeddedResource Include="ReferenceImages\NewPath.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\ArcPathConnection.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\ArcNegative.png" />
-    <EmbeddedResource Include="ReferenceImages\ArcNegativeMultipleLoops.png" />
-    <EmbeddedResource Include="ReferenceImages\ArcNegativePathConnection.png" />
-    <EmbeddedResource Include="ReferenceImages\ArcNegativeStartingNegative.png" />
-    <EmbeddedResource Include="ReferenceImages\ArcNegativeSwappedAngles.png" />
-    <EmbeddedResource Include="ReferenceImages\Curve.png" />
-    <EmbeddedResource Include="ReferenceImages\CurvePathConnection.png" />
-    <EmbeddedResource Include="ReferenceImages\ImagePatternInCircle.png" />
-    <EmbeddedResource Include="ReferenceImages\ImagePatternInTriangle.png" />
-    <EmbeddedResource Include="ReferenceImages\ImagePatternWithScaleTransform.png" />
-    <EmbeddedResource Include="ReferenceImages\LinearGradientInternalBox.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\SaveRestorePath.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\ArcFill.png" />
-    <EmbeddedResource Include="ReferenceImages\ArcNegativeFill.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\RectanglePathConnection.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\ArcClosePath.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\CurveClosePath.png" />
-    <EmbeddedResource Include="ReferenceImages\CurveFillWithHoles.png" />
-    <EmbeddedResource Include="ReferenceImages\LineClosePath.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\ArcNegativeClosePath.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ReferenceImages\Text.png" />
-    <EmbeddedResource Include="ReferenceImages\TextLineBreak.png" />
-    <EmbeddedResource Include="ReferenceImages\TextSize.png" />
-    <EmbeddedResource Include="ReferenceImages\TextWordWrap.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
