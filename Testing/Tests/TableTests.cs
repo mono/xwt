@@ -32,7 +32,7 @@ namespace Xwt
 		public override Widget CreateWidget ()
 		{
 			var t = new Table ();
-			t.Attach (new Label ("Hello Worlds"), 0, 0);
+			t.Add (new Label ("Hello Worlds"), 0, 0);
 			return t;
 		}
 	}

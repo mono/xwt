@@ -212,7 +212,7 @@ namespace Xwt
 			this.size = size;
 		}
 
-		public double Size {
+		public new double Size {
 			get { return size; }
 			set {
 				size = value;
