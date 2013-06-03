@@ -49,6 +49,8 @@ namespace Xwt.WPFBackend
 			if (application == null)
 				application = new System.Windows.Application ();
 
+			application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
 			RegisterBackend<IWindowBackend, WindowBackend> ();
 			RegisterBackend<IDialogBackend, DialogBackend> ();
 			RegisterBackend<INotebookBackend, NotebookBackend> ();

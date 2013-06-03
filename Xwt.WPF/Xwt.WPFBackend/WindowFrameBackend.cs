@@ -133,7 +133,12 @@ namespace Xwt.WPFBackend
 		bool IWindowFrameBackend.Visible
 		{
 			get { return window.Visibility == Visibility.Visible; }
-			set { window.Visibility = value ? Visibility.Visible : Visibility.Hidden; }
+			set {
+				if (value)
+					window.Show ();
+				else
+					window.Hide ();
+			}
 		}
 
 		void IWindowFrameBackend.Present ()
