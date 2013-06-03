@@ -72,7 +72,13 @@ namespace Xwt
 		
 		public override int GetHashCode ()
 		{
-			return ((int)Height + (int)Width) ^ (int)X + (int)Y;
+			unchecked {
+				var hash = X.GetHashCode ();
+				hash = (hash * 397) ^ Y.GetHashCode ();
+				hash = (hash * 397) ^ Width.GetHashCode ();
+				hash = (hash * 397) ^ Height.GetHashCode ();
+				return hash;
+			}
 		}
 		
 		public static bool operator == (Rectangle r1, Rectangle r2)

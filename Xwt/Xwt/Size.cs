@@ -109,7 +109,9 @@ namespace Xwt {
 
 		public override int GetHashCode ()
 		{
-			return width.GetHashCode () ^ height.GetHashCode ();
+			unchecked {
+				return (width.GetHashCode () * 397) ^ height.GetHashCode ();
+			}
 		}
 
 		public override string ToString ()

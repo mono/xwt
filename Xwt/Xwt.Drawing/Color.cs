@@ -256,7 +256,13 @@ namespace Xwt.Drawing
 		
 		public override int GetHashCode ()
 		{
-			return r.GetHashCode () ^ g.GetHashCode () ^ b.GetHashCode () ^ a.GetHashCode ();
+			unchecked {
+				var hash = r.GetHashCode ();
+				hash = (hash * 397) ^ g.GetHashCode ();
+				hash = (hash * 397) ^ b.GetHashCode ();
+				hash = (hash * 397) ^ a.GetHashCode ();
+				return hash;
+			}
 		}
 		
 		public override string ToString ()
