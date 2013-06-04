@@ -177,10 +177,13 @@ namespace Xwt.Mac
 		
 		public override void SetFrameSize (System.Drawing.SizeF newSize)
 		{
+			bool changed = !newSize.Equals (Frame.Size);
 			base.SetFrameSize (newSize);
-			context.InvokeUserCode (delegate {
-				eventSink.OnBoundsChanged ();
-			});
+			if (changed) {
+				context.InvokeUserCode (delegate {
+					eventSink.OnBoundsChanged ();
+				});
+			}
 		}
 	}
 }

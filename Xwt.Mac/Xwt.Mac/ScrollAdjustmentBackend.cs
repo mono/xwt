@@ -99,7 +99,8 @@ namespace Xwt.Mac
 				scrollView.HorizontalLineScroll = (float)stepIncrement;
 
 			ClipView.UpdateDocumentSize ();
-			Value = value;
+			if (Value != value)
+				Value = value;
 		}
 
 		public double LowerValue { get; private set; }
