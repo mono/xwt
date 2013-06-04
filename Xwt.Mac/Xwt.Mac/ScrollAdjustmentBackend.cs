@@ -35,9 +35,6 @@ namespace Xwt.Mac
 		bool vertical;
 		NSScrollView scrollView;
 		IScrollAdjustmentEventSink eventSink;
-		double lower;
-		double upper;
-		double pageSize;
 
 		public ScrollAdjustmentBackend (NSScrollView scrollView, bool vertical)
 		{
@@ -89,58 +86,30 @@ namespace Xwt.Mac
 			}
 		}
 
-		public double LowerValue {
-			get {
-				return lower;
-			}
-			set {
-				lower = value;
-				ClipView.UpdateDocumentSize ();
-			}
+		public void SetRange (double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value)
+		{
+			LowerValue = lowerValue;
+			UpperValue = upperValue;
+			PageSize = pageSize;
+			PageIncrement = pageIncrement;
+
+			if (vertical)
+				scrollView.VerticalLineScroll = (float)stepIncrement;
+			else
+				scrollView.HorizontalLineScroll = (float)stepIncrement;
+
+			ClipView.UpdateDocumentSize ();
+			Value = value;
 		}
 
-		public double UpperValue {
-			get {
-				return upper;
-			}
-			set {
-				upper = value;
-				ClipView.UpdateDocumentSize ();
-			}
-		}
+		public double LowerValue { get; private set; }
 
-		public double PageIncrement {
-			get {
-				return 10;
-			}
-			set {
-			}
-		}
+		public double UpperValue { get; private set; }
 
-		public double StepIncrement {
-			get {
-				if (vertical)
-					return scrollView.VerticalLineScroll;
-				else
-					return scrollView.HorizontalLineScroll;
-			}
-			set {
-				if (vertical)
-					scrollView.VerticalLineScroll = (float)value;
-				else
-					scrollView.HorizontalLineScroll = (float)value;
-			}
-		}
+		public double PageIncrement { get; private set; }
 
-		public double PageSize {
-			get {
-				return pageSize;
-			}
-			set {
-				pageSize = value;
-				ClipView.UpdateDocumentSize ();
-			}
-		}
+		public double PageSize { get; private set; }
+
 		#endregion
 	}
 }

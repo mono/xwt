@@ -31,6 +31,13 @@ namespace Xwt
 	[BackendType (typeof(IScrollAdjustmentBackend))]
 	public class ScrollAdjustment: XwtComponent
 	{
+		double lowerValue;
+		double upperValue;
+		double stepIncrement;
+		double pageIncrement;
+		double pageSize;
+		double currentValue;
+
 		EventHandler valueChanged;
 		
 		class ScrollAdjustmentBackendHost: BackendHost<ScrollAdjustment,IScrollAdjustmentBackend>, IScrollAdjustmentEventSink
@@ -66,12 +73,12 @@ namespace Xwt
 
 		public ScrollAdjustment ()
 		{
-			LowerValue = 0;
-			UpperValue = 100;
-			Value = 0;
-			PageSize = 10;
-			StepIncrement = 1;
-			PageIncrement = 10;
+			lowerValue = 0;
+			upperValue = 100;
+			pageSize = 10;
+			stepIncrement = 1;
+			pageIncrement = 10;
+			UpdateRange ();
 		}
 		
 		internal ScrollAdjustment (IBackend backend)
@@ -115,30 +122,74 @@ namespace Xwt
 			get { return Backend.Value; }
 			set { Backend.Value = value; }
 		}
-		
+
+		/// <summary>
+		/// Gets or sets the lowest value of the scroll range.
+		/// </summary>
+		/// <value>
+		/// The lower value.
+		/// </value>
+		/// <remarks>It must be <= UpperValue</remarks>
 		public double LowerValue {
-			get { return Backend.LowerValue; }
-			set { Backend.LowerValue = value; OnAdjustmentChanged (); }
+			get { return lowerValue; }
+			set { lowerValue = value; UpdateRange (); }
 		}
-		
+
+		/// <summary>
+		/// Gets or sets the highest value of the scroll range
+		/// </summary>
+		/// <value>
+		/// The upper value.
+		/// </value>
+		/// <remarks>It must be >= LowerValue</remarks>
 		public double UpperValue {
-			get { return Backend.UpperValue; }
-			set { Backend.UpperValue = value; OnAdjustmentChanged (); }
+			get { return upperValue; }
+			set { upperValue = value; UpdateRange (); }
 		}
-		
+
+		/// <summary>
+		/// How much Value will be incremented when you click on the scrollbar to move
+		/// to the next page (when the scrollbar supports it)
+		/// </summary>
+		/// <value>
+		/// The page increment.
+		/// </value>
 		public double PageIncrement {
-			get { return Backend.PageIncrement; }
-			set { Backend.PageIncrement = value; OnAdjustmentChanged (); }
+			get { return pageIncrement; }
+			set { pageIncrement = value; UpdateRange (); }
 		}
-		
+
+		/// <summary>
+		/// How much the Value is incremented/decremented when you click on the down/up button in the scrollbar
+		/// </summary>
+		/// <value>
+		/// The step increment.
+		/// </value>
 		public double StepIncrement {
-			get { return Backend.StepIncrement; }
-			set { Backend.StepIncrement = value; OnAdjustmentChanged (); }
+			get { return stepIncrement; }
+			set { stepIncrement = value; UpdateRange (); }
 		}
-		
+
+		/// <summary>
+		/// Size of the visible range
+		/// </summary>
+		/// <remarks>
+		/// For example, if LowerValue=0, UpperValue=100, Value=25 and PageSize=50, the visible range will be 25 to 75
+		/// </remarks>
 		public double PageSize {
-			get { return Backend.PageSize; }
-			set { Backend.PageSize = value; OnAdjustmentChanged (); }
+			get { return pageSize; }
+			set { pageSize = value; UpdateRange (); }
+		}
+
+		void UpdateRange ()
+		{
+			var realUpper = Math.Max (lowerValue, upperValue);
+			var realPageSize = Math.Min (pageSize, realUpper - lowerValue);
+			var realValue = Math.Min (Value, realUpper - realPageSize);
+			if (realValue < lowerValue)
+				realValue = lowerValue;
+			Backend.SetRange (lowerValue, realUpper, realPageSize, pageIncrement, stepIncrement, realValue);
+			OnAdjustmentChanged ();
 		}
 		
 		protected virtual void OnValueChanged (EventArgs e)
@@ -184,15 +235,11 @@ namespace Xwt
 				set { currentValue = value; eventSink.OnValueChanged (); }
 			}
 
-			public double LowerValue { get; set; }
-
-			public double UpperValue { get; set; }
-
-			public double PageIncrement { get; set; }
-
-			public double StepIncrement { get; set; }
-
-			public double PageSize { get; set; }
+			public void SetRange (double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value)
+			{
+				if (Value != value)
+					Value = value;
+			}
 
 			public void InitializeBackend (object frontend, ApplicationContext context)
 			{

@@ -61,6 +61,13 @@ namespace Xwt.Mac
 	{
 		IScrollAdjustmentEventSink eventSink;
 
+		double value;
+		double lowerValue;
+		double upperValue;
+		double pageIncrement;
+		double stepIncrement;
+		double pageSize;
+
 		NSView IViewObject.View {
 			get {
 				return this;
@@ -114,7 +121,6 @@ namespace Xwt.Mac
 			eventSink.OnValueChanged ();
 		}
 
-		double value;
 		public double Value {
 			get {
 				return value;
@@ -125,60 +131,17 @@ namespace Xwt.Mac
 			}
 		}
 
-		double lowerValue;
-		public double LowerValue {
-			get {
-				return lowerValue;
-			}
-			set {
-				lowerValue = value;
-				UpdateValue ();
-				UpdateKnobProportion ();
-			}
-		}
+		public void SetRange (double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value)
+		{
+			this.lowerValue = lowerValue;
+			this.upperValue = upperValue;
+			this.pageSize = pageSize;
+			this.pageIncrement = pageIncrement;
+			this.stepIncrement = stepIncrement;
+			this.value = value;
 
-		double upperValue;
-		public double UpperValue {
-			get {
-				return upperValue;
-			}
-			set {
-				upperValue = value;
-				UpdateValue ();
-				UpdateKnobProportion ();
-			}
-		}
-
-		double pageIncrement;
-		public double PageIncrement {
-			get {
-				return pageIncrement;
-			}
-			set {
-				pageIncrement = value;
-			}
-		}
-
-		double stepIncrement;
-		public double StepIncrement {
-			get {
-				return stepIncrement;
-			}
-			set {
-				stepIncrement = value;
-			}
-		}
-
-		double pageSize;
-		public double PageSize {
-			get {
-				return pageSize;
-			}
-			set {
-				pageSize = value;
-				UpdateValue ();
-				UpdateKnobProportion ();
-			}
+			UpdateValue ();
+			UpdateKnobProportion ();
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
