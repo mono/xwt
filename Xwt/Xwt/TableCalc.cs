@@ -88,18 +88,18 @@ namespace Xwt
 
 		TablePlacement[] VisibleChildren ()
 		{
-			TablePlacement[] result = new TablePlacement[children.Count];
+			TablePlacement[] result = new TablePlacement[placements.Count];
 
 			int j = 0;
-			for (int i = 0; i < children.Count; i++) {
-				var item = children[i];
+			for (int i = 0; i < placements.Count; i++) {
+				var item = placements[i];
 				if (item.Child.Visible) {
 					result[j] = item;
 					j++;
 				}
 			}
 
-			if (j != children.Count) {
+			if (j != placements.Count) {
 				Array.Resize (ref result, j);
 			}
 

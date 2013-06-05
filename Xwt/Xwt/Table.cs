@@ -38,7 +38,7 @@ namespace Xwt
 	[BackendType (typeof(IBoxBackend))]
 	public partial class Table: Widget
 	{
-		ChildrenCollection<TablePlacement> children;
+		ChildrenCollection<TablePlacement> placements;
 		double defaultRowSpacing = 6;
 		double defaultColSpacing = 6;
 		Dictionary<int,double> rowSpacing;
@@ -78,7 +78,7 @@ namespace Xwt
 		
 		public Table ()
 		{
-			children = new ChildrenCollection<TablePlacement> ((WidgetBackendHost)BackendHost);
+			placements = new ChildrenCollection<TablePlacement> ((WidgetBackendHost)BackendHost);
 		}
 		
 		[DefaultValue(6)]
@@ -110,11 +110,11 @@ namespace Xwt
 		}
 		
 		public ChildrenCollection<TablePlacement> Placements {
-			get { return children; }
+			get { return placements; }
 		}
 		
 		public IEnumerable<Widget> Children {
-			get { return children.Select (c => c.Child); }
+			get { return placements.Select (c => c.Child); }
 		}
 		
 		[Obsolete ("Use the Add method")]
@@ -162,7 +162,7 @@ namespace Xwt
 				Top = top,
 				Bottom = top + rowspan
 			};
-			children.Add (p);
+			placements.Add (p);
 		}
 
 		public void Attach (Widget widget, int left, int right, int top, int bottom, AttachOptions? xOptions = null, AttachOptions? yOptions = null)
@@ -188,14 +188,14 @@ namespace Xwt
 				Top = top,
 				Bottom = bottom
 			};
-			children.Add (p);
+			placements.Add (p);
 		}
 		
 		public bool Remove (Widget widget)
 		{
-			for (int n=0; n<children.Count; n++) {
-				if (children[n].Child == widget) {
-					children.RemoveAt (n);
+			for (int n=0; n<placements.Count; n++) {
+				if (placements[n].Child == widget) {
+					placements.RemoveAt (n);
 					return true;
 				}
 			}
@@ -204,7 +204,7 @@ namespace Xwt
 
 		public void InsertRow (int top, int bottom)
 		{
-			var potentials = children.Where (c => c.Top >= top);
+			var potentials = placements.Where (c => c.Top >= top);
 			var shift = bottom - top;
 			foreach (var toShift in potentials) {
 				toShift.Top += shift;
@@ -217,7 +217,7 @@ namespace Xwt
 		/// </summary>
 		public void Clear ()
 		{
-			children.Clear ();
+			placements.Clear ();
 		}
 		
 		void OnAdd (Widget child, TablePlacement placement)
