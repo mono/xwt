@@ -36,7 +36,6 @@ namespace Xwt
 		double stepIncrement;
 		double pageIncrement;
 		double pageSize;
-		double currentValue;
 
 		EventHandler valueChanged;
 		

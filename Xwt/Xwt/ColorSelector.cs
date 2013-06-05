@@ -127,8 +127,8 @@ namespace Xwt
 			
 			colorBox = new ColorSelectionBox () { MinHeight = 20 };
 			
-			selBox.Attach (hsBox, 0, 0);
-			selBox.Attach (lightBox, 1, 0);
+			selBox.Add (hsBox, 0, 0);
+			selBox.Add (lightBox, 1, 0);
 			
 			box.PackStart (selBox);
 			
@@ -136,34 +136,34 @@ namespace Xwt
 			VBox entryBox = new VBox ();
 			Table entryTable = new Table ();
 			
-			entryTable.Attach (new Label ("Color:"), 0, 0);
-			entryTable.Attach (colorBox, 1, 5, 0, 1);
-			entryTable.Attach (new HSeparator (), 0, 5, 1, 2);
+			entryTable.Add (new Label ("Color:"), 0, 0);
+			entryTable.Add (colorBox, 1, 0, colspan:4);
+			entryTable.Add (new HSeparator (), 0, 1, colspan:5);
 			
 			int r = 2;
-			entryTable.Attach (new Label ("Hue:"), 0, r);
-			entryTable.Attach (hueEntry = new TextEntry () { MinWidth = entryWidth }, 1, r++);
+			entryTable.Add (new Label ("Hue:"), 0, r);
+			entryTable.Add (hueEntry = new TextEntry () { MinWidth = entryWidth }, 1, r++);
 			
-			entryTable.Attach (new Label ("Saturation:"), 0, r);
-			entryTable.Attach (satEntry = new TextEntry () { MinWidth = entryWidth }, 1, r++);
+			entryTable.Add (new Label ("Saturation:"), 0, r);
+			entryTable.Add (satEntry = new TextEntry () { MinWidth = entryWidth }, 1, r++);
 			
-			entryTable.Attach (new Label ("Light:"), 0, r);
-			entryTable.Attach (lightEntry = new TextEntry () { MinWidth = entryWidth }, 1, r++);
+			entryTable.Add (new Label ("Light:"), 0, r);
+			entryTable.Add (lightEntry = new TextEntry () { MinWidth = entryWidth }, 1, r++);
 			
 			r = 2;
-			entryTable.Attach (new Label ("Red:"), 3, r);
-			entryTable.Attach (redEntry = new TextEntry () { MinWidth = entryWidth }, 4, r++);
+			entryTable.Add (new Label ("Red:"), 3, r);
+			entryTable.Add (redEntry = new TextEntry () { MinWidth = entryWidth }, 4, r++);
 			
-			entryTable.Attach (new Label ("Green:"), 3, r);
-			entryTable.Attach (greenEntry = new TextEntry () { MinWidth = entryWidth }, 4, r++);
+			entryTable.Add (new Label ("Green:"), 3, r);
+			entryTable.Add (greenEntry = new TextEntry () { MinWidth = entryWidth }, 4, r++);
 			
-			entryTable.Attach (new Label ("Blue:"), 3, r);
-			entryTable.Attach (blueEntry = new TextEntry () { MinWidth = entryWidth }, 4, r++);
+			entryTable.Add (new Label ("Blue:"), 3, r);
+			entryTable.Add (blueEntry = new TextEntry () { MinWidth = entryWidth }, 4, r++);
 			
 			Label label;
-			entryTable.Attach (alphaSeparator = new HSeparator (), 0, 5, r, ++r);
-			entryTable.Attach (label = new Label ("Opacity:"), 0, r);
-			entryTable.Attach (alphaEntry = new TextEntry () { MinWidth = entryWidth }, 1, r);
+			entryTable.Add (alphaSeparator = new HSeparator (), 0, r++, colspan:5);
+			entryTable.Add (label = new Label ("Opacity:"), 0, r);
+			entryTable.Add (alphaEntry = new TextEntry () { MinWidth = entryWidth }, 1, r);
 			
 			alphaControls.Add (alphaSeparator);
 			alphaControls.Add (label);
