@@ -411,6 +411,7 @@
     <Compile Include="Xwt\SizeConstraint.cs" />
     <Compile Include="Xwt\WidgetAlignment.cs" />
     <Compile Include="Xwt.Backends\IChildPlacementHandler.cs" />
+    <Compile Include="Xwt\TableCalc.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
