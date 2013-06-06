@@ -81,6 +81,9 @@ namespace Xwt.GtkBackend
 			protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 			{
 				var children = Children;
+				if (children.Length == 0)
+					return;
+
 				int childHeight = (int)(allocation.Height - 2 * BorderWidth);
 				int childWidth = (allocation.Width - Spacing * (children.Length - 1)) / children.Length;
 				int x = (int)(allocation.X + BorderWidth);
