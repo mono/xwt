@@ -227,7 +227,7 @@ namespace Xwt
 
 				ShowWindow (win);
 
-				Assert.AreEqual (w.ScreenBounds, win.ScreenBounds.Inflate (-padding,-padding));
+				Assert.AreEqual (win.ScreenBounds.Inflate (-padding,-padding), w.ScreenBounds);
 			}
 		}
 	}
