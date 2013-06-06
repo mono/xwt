@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IScrollViewBackend: IWidgetBackend
+	public interface IScrollViewBackend: IWidgetBackend, IChildPlacementHandler
 	{
 		void SetChild (IWidgetBackend child);
 		
