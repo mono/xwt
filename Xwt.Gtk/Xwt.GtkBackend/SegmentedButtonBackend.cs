@@ -80,6 +80,8 @@ namespace Xwt.GtkBackend
 			// they request. Change that
 			protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 			{
+				base.OnSizeAllocated (allocation);
+
 				var children = Children;
 				if (children.Length == 0)
 					return;
