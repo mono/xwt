@@ -283,15 +283,17 @@ namespace Xwt.Mac
 				if (wrapper != null) {
 					var parent = wrapper.Superview;
 					child.RemoveFromSuperview ();
-					parent.ReplaceSubviewWith (wrapper, child);
+					ReplaceSubview (wrapper, child);
 				}
 				return;
 			}
 
 			if (wrapper == null) {
 				wrapper = new WidgetPlacementWrapper ();
-				child.Superview.ReplaceSubviewWith (child, wrapper);
+				var f = child.Frame;
+				ReplaceSubview (child, wrapper);
 				wrapper.SetChild (child, backend.Frontend);
+				wrapper.Frame = f;
 			} else
 				wrapper.UpdateChildPlacement ();
 		}
@@ -309,6 +311,25 @@ namespace Xwt.Mac
 		static bool NeedsAlignmentWrapper (Widget fw)
 		{
 			return fw.HorizontalPlacement != WidgetPlacement.Fill || fw.VerticalPlacement != WidgetPlacement.Fill || fw.Margin.VerticalSpacing != 0 || fw.Margin.HorizontalSpacing != 0;
+		}
+
+		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
+			SetChildPlacement (childBackend);
+		}
+
+		public static void ReplaceSubview (NSView oldChild, NSView newChild)
+		{
+			var p = oldChild.Superview as IViewObject;
+			if (p != null)
+				p.Backend.ReplaceChild (oldChild, newChild);
+			else
+				oldChild.Superview.ReplaceSubviewWith (oldChild, newChild);
+		}
+
+		public virtual void ReplaceChild (NSView oldChild, NSView newChild)
+		{
+			oldChild.Superview.ReplaceSubviewWith (oldChild, newChild);
 		}
 
 		public virtual object Font {
@@ -418,10 +439,6 @@ namespace Xwt.Mac
 		void AutoUpdateSize ()
 		{	var s = Frontend.Surface.GetPreferredSize ();
 			Widget.SetFrameSize (new SizeF ((float)s.Width, (float)s.Height));
-		}
-
-		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
-		{
 		}
 
 		NSObject gotFocusObserver;
@@ -733,6 +750,12 @@ namespace Xwt.Mac
 
 		public WidgetPlacementWrapper ()
 		{
+		}
+
+		public override bool IsFlipped {
+			get {
+				return true;
+			}
 		}
 
 		public void SetChild (NSView child, Widget w)

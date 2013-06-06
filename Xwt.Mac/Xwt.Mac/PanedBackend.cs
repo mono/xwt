@@ -67,6 +67,10 @@ namespace Xwt.Mac
 			RemovePanel (panel);
 			Widget.AddSubview (w);
 			Widget.AdjustSubviews ();
+			if (panel == 1)
+				view1 = w;
+			else
+				view2 = w;
 			view.NotifyPreferredSizeChanged ();
 		}
 		
@@ -94,6 +98,24 @@ namespace Xwt.Mac
 					view2 = null;
 				}
 			}
+		}
+
+		public override void ReplaceChild (NSView oldChild, NSView newChild)
+		{
+			if (view1 != null)
+				view1.RemoveFromSuperview ();
+			if (view2 != null)
+				view2.RemoveFromSuperview ();
+
+			if (oldChild == view1)
+				view1 = newChild;
+			else
+				view2 = newChild;
+
+			if (view1 != null)
+				Widget.AddSubview (view1);
+			if (view2 != null)
+				Widget.AddSubview (view2);
 		}
 
 		public double Position {
