@@ -13,7 +13,7 @@
     <AssemblyName>MacTestRunner</AssemblyName>
     <SuppressXamMacMigration>True</SuppressXamMacMigration>
     <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
-    <TestRunnerExe>bin\MacTestRunner.app</TestRunnerExe>
+    <TestRunnerCommand>bin\MacTestRunner.app</TestRunnerCommand>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>

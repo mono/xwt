@@ -1,10 +1,10 @@
 //
-// ScrollViewTests.cs
+// ScrollbarTests.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 //
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2013 Xamarin Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,16 +27,29 @@ using System;
 
 namespace Xwt
 {
-	public class ScrollViewTests: ContainerTests
+	public abstract class ScrollbarTests: WidgetTests
 	{
 		public override Widget CreateWidget ()
 		{
-			return new ScrollView ();
+			return CreateScrollbar ();
 		}
-		
-		protected override void AddChild (Widget parent, Widget child)
+
+		public abstract Scrollbar CreateScrollbar ();
+	}
+
+	public class HScrollbarTests: ScrollbarTests
+	{
+		public override Scrollbar CreateScrollbar ()
 		{
-			((ScrollView)parent).Content = child;
+			return new HScrollbar ();
+		}
+	}
+	
+	public class VScrollbarTests: ScrollbarTests
+	{
+		public override Scrollbar CreateScrollbar ()
+		{
+			return new VScrollbar ();
 		}
 	}
 }

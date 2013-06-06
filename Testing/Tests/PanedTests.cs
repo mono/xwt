@@ -1,10 +1,10 @@
 //
-// ScrollViewTests.cs
+// PanedTests.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 //
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2013 Xamarin Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,17 +27,19 @@ using System;
 
 namespace Xwt
 {
-	public class ScrollViewTests: ContainerTests
+	public abstract class PanedTests: ContainerTests
 	{
 		public override Widget CreateWidget ()
 		{
-			return new ScrollView ();
+			return CreatePaned ();
 		}
 		
 		protected override void AddChild (Widget parent, Widget child)
 		{
-			((ScrollView)parent).Content = child;
+			((Paned)parent).Panel1.Content = child;
 		}
+
+		public abstract Paned CreatePaned ();
 	}
 }
 

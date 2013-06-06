@@ -1,10 +1,10 @@
 //
-// ScrollViewTests.cs
+// ContainerTests.cs
 //
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 //
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2013 Xamarin Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using NUnit.Framework;
 
 namespace Xwt
 {
-	public class ScrollViewTests: ContainerTests
+	public abstract class ContainerTests: WidgetTests
 	{
-		public override Widget CreateWidget ()
+		protected abstract void AddChild (Widget parent, Widget child);
+
+		[Test]
+		public void AddChildMargin ()
 		{
-			return new ScrollView ();
-		}
-		
-		protected override void AddChild (Widget parent, Widget child)
-		{
-			((ScrollView)parent).Content = child;
+			using (var win = new Window ()) {
+				var c = CreateWidget ();
+				win.Content = c;
+				win.Size = new Size (100, 100);
+				var box = new SquareBox (10);
+				AddChild (c, box);
+				ShowWindow (win);
+				var r1 = box.ScreenBounds;
+				box.Margin = new WidgetSpacing (5, 10, 15, 20);
+				WaitForEvents ();
+				var r2 = box.ScreenBounds;
+
+				Assert.AreEqual (r1.Left + 5, r2.Left);
+				Assert.AreEqual (r1.Top + 10, r2.Top);
+				Assert.AreEqual (r1.Width - 20, r2.Width);
+				Assert.AreEqual (r1.Height - 30, r2.Height);
+			}
 		}
 	}
 }

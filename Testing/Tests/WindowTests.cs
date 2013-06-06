@@ -189,9 +189,16 @@ namespace Xwt
 
 	class SquareBox: Canvas
 	{
+		double size;
+
+		public SquareBox (double size = 10)
+		{
+			this.size = size;
+		}
+
 		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			return new Size (10, 10);
+			return new Size (size, size);
 		}
 
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)

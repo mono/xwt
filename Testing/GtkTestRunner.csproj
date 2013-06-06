@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>GtkTestRunner</RootNamespace>
     <AssemblyName>GtkTestRunner</AssemblyName>
-    <TestRunnerExe>bin\GtkTestRunner.exe</TestRunnerExe>
+    <TestRunnerCommand>bin\GtkTestRunner.exe</TestRunnerCommand>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -60,6 +60,16 @@
     <Compile Include="GtkTestRunner\Main.cs" />
     <Compile Include="GtkTestRunner\AssemblyInfo.cs" />
     <Compile Include="Tests\**\*.cs" />
+    <Compile Include="Tests\ContainerTests.cs" />
+    <Compile Include="Tests\PanedTests.cs" />
+    <Compile Include="Tests\DatePickerTests.cs" />
+    <Compile Include="Tests\ExpanderTests.cs" />
+    <Compile Include="Tests\ScrollbarTests.cs" />
+    <Compile Include="Tests\SliderTests.cs" />
+    <Compile Include="Tests\SegmentedButtonTests.cs" />
+    <Compile Include="Tests\SpinnerTests.cs" />
+    <Compile Include="Tests\ToggleButtonTests.cs" />
+    <Compile Include="Tests\TreeViewTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

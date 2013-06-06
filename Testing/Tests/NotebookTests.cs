@@ -27,11 +27,16 @@ using System;
 
 namespace Xwt
 {
-	public class NotebookTests: WidgetTests
+	public class NotebookTests: ContainerTests
 	{
 		public override Widget CreateWidget ()
 		{
 			return new Notebook ();
+		}
+		
+		protected override void AddChild (Widget parent, Widget child)
+		{
+			((Notebook)parent).Add (child, "Test");
 		}
 	}
 }

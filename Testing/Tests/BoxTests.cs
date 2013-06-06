@@ -27,13 +27,19 @@ using System;
 
 namespace Xwt
 {
-	public abstract class BoxTests: WidgetTests
+	public abstract class BoxTests: ContainerTests
 	{
 		public override Widget CreateWidget ()
 		{
 			var box = CreateBox ();
 			box.PackStart (new Label ("Hello Worlds"));
 			return box;
+		}
+		
+		protected override void AddChild (Widget parent, Widget child)
+		{
+			((Box)parent).Clear ();
+			((Box)parent).PackStart (child, true);
 		}
 
 		public abstract Box CreateBox ();
