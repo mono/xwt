@@ -31,29 +31,23 @@ namespace Xwt.Mac
 {
 	public class ScrollbarBackend: ViewBackend<NSScroller,IWidgetEventSink>, IScrollbarBackend
 	{
-		Orientation orientation;
-
 		public ScrollbarBackend ()
 		{
 		}
 
 		public void Initialize (Orientation dir)
 		{
-			orientation = dir;
-			ViewObject = new CustomScroller ();
+			System.Drawing.RectangleF r;
+			if (dir == Orientation.Horizontal)
+				r = new System.Drawing.RectangleF (0, 0, NSScroller.ScrollerWidth + 1, NSScroller.ScrollerWidth);
+			else
+				r = new System.Drawing.RectangleF (0, 0, NSScroller.ScrollerWidth, NSScroller.ScrollerWidth + 1);
+			ViewObject = new CustomScroller (r);
 		}
 
 		public IScrollAdjustmentBackend CreateAdjustment ()
 		{
 			return (CustomScroller) Widget;
-		}
-
-		protected override Size GetNaturalSize ()
-		{
-			if (orientation == Orientation.Vertical)
-				return new Size (20, 20);
-			else
-				return new Size (20, 20);
 		}
 	}
 
@@ -75,6 +69,10 @@ namespace Xwt.Mac
 		}
 
 		ViewBackend IViewObject.Backend { get; set; }
+
+		public CustomScroller (System.Drawing.RectangleF r): base (r)
+		{
+		}
 
 		public void Initialize (IScrollAdjustmentEventSink eventSink)
 		{
