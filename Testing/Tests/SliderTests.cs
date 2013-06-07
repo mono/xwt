@@ -27,11 +27,29 @@ using System;
 
 namespace Xwt
 {
-	public class SliderTests: WidgetTests
+	public abstract class SliderTests: WidgetTests
 	{
 		public override Widget CreateWidget ()
 		{
-			return new Slider ();
+			return CreateSlider ();
+		}
+
+		public abstract Slider CreateSlider ();
+	}
+
+	public class VSliderTests: SliderTests
+	{
+		public override Slider CreateSlider ()
+		{
+			return new VSlider ();
+		}
+	}
+
+	public class HSliderTests: SliderTests
+	{
+		public override Slider CreateSlider ()
+		{
+			return new HSlider ();
 		}
 	}
 }
