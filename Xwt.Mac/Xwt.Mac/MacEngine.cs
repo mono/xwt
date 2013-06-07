@@ -112,6 +112,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IRichTextViewBackend, RichTextViewBackend> ();
 			RegisterBackend <Xwt.Backends.IScrollbarBackend, ScrollbarBackend> ();
 			RegisterBackend <Xwt.Backends.IDatePickerBackend, DatePickerBackend> ();
+			RegisterBackend <Xwt.Backends.ISliderBackend, SliderBackend> ();
 		}
 
 		public override void RunApplication ()
