@@ -1,10 +1,10 @@
 //
-// ISliderBackend.cs
+// HSlider.cs
 //
 // Author:
-//       Jérémie Laval <jeremie.laval@xamarin.com>
+//       Lluis Sanchez <lluis@xamarin.com>
 //
-// Copyright (c) 2013 Xamarin, Inc.
+// Copyright (c) 2013 Xamarin Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +23,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
+using Xwt.Backends;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface ISliderBackend : IWidgetBackend
+	public class HSlider: Slider
 	{
-		/// <summary>
-		/// Initializes the slider
-		/// </summary>
-		/// <param name='dir'>
-		/// Orientation of the slider
-		/// </param>
-		void Initialize (Orientation dir);
-
-		double Value { get; set; }
-		double MinimumValue { get; set; }
-		double MaximumValue { get; set; }
-	}
-	
-	public interface ISliderEventSink: IWidgetEventSink
-	{
-		void ValueChanged ();
-	}
-	
-	public enum SliderEvent
-	{
-		ValueChanged
+		public HSlider (): base (Orientation.Horizontal)
+		{
+		}
 	}
 }
 

@@ -412,6 +412,8 @@
     <Compile Include="Xwt\WidgetAlignment.cs" />
     <Compile Include="Xwt.Backends\IChildPlacementHandler.cs" />
     <Compile Include="Xwt\TableCalc.cs" />
+    <Compile Include="Xwt\VSlider.cs" />
+    <Compile Include="Xwt\HSlider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
