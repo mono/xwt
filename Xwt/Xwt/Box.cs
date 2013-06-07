@@ -265,20 +265,16 @@ namespace Xwt
 				double xe = size.Width + spacing;
 				for (int n=0; n<visibleChildren.Length; n++) {
 					var bp = visibleChildren [n];
+					double availableWidth = bp.NextSize >= 0 ? bp.NextSize : 0;
 					if (bp.PackOrigin == PackOrigin.End)
-						xe -= bp.NextSize + spacing;
+						xe -= availableWidth + spacing;
 
-					double width = bp.NextSize >= 0 ? bp.NextSize : 0;
-					double height = size.Height - bp.Child.Margin.VerticalSpacing;
-					if (bp.Child.VerticalPlacement != WidgetPlacement.Fill)
-						height =  Math.Min (bp.Child.Surface.GetPreferredSize (width, SizeConstraint.Unconstrained).Height, height);
-					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
-					double y = (size.Height - bp.Child.Margin.VerticalSpacing - height) * bp.Child.VerticalPlacement.GetValue ();
-
+					var slot = new Rectangle (bp.PackOrigin == PackOrigin.Start ? xs : xe, 0, availableWidth, size.Height);
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ().WithPositiveSize ();
+					rects[n] = bp.Child.Surface.GetPlacementInRect (slot).Round ().WithPositiveSize ();
+
 					if (bp.PackOrigin == PackOrigin.Start)
-						xs += bp.NextSize + bp.Child.Margin.HorizontalSpacing + spacing;
+						xs += availableWidth + spacing;
 				}
 			} else {
 				CalcDefaultSizes (size.Width, size.Height);
@@ -286,20 +282,16 @@ namespace Xwt
 				double ye = size.Height + spacing;
 				for (int n=0; n<visibleChildren.Length; n++) {
 					var bp = visibleChildren [n];
+					double availableHeight = bp.NextSize >= 0 ? bp.NextSize : 0;
 					if (bp.PackOrigin == PackOrigin.End)
-						ye -= bp.NextSize + spacing;
+						ye -= availableHeight + spacing;
 
-					double height = bp.NextSize >= 0 ? bp.NextSize : 0;
-					double width = size.Width - bp.Child.Margin.HorizontalSpacing;
-					if (bp.Child.HorizontalPlacement != WidgetPlacement.Fill)
-						width = Math.Min (bp.Child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, height).Width, width);
-					double x = (size.Width - bp.Child.Margin.HorizontalSpacing - width) * bp.Child.HorizontalPlacement.GetValue();
-					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
-
+					var slot = new Rectangle (0, bp.PackOrigin == PackOrigin.Start ? ys : ye, size.Width, availableHeight);
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (x + bp.Child.MarginLeft, y + bp.Child.MarginTop, width, height).Round ().WithPositiveSize ();
+					rects[n] = bp.Child.Surface.GetPlacementInRect (slot).Round ().WithPositiveSize ();
+
 					if (bp.PackOrigin == PackOrigin.Start)
-						ys += bp.NextSize + bp.Child.Margin.VerticalSpacing + spacing;
+						ys += availableHeight + spacing;
 				}
 			}
 			Backend.SetAllocation (widgets, rects);
@@ -326,10 +318,10 @@ namespace Xwt
 			// Get the natural size of each child
 			foreach (var bp in visibleChildren) {
 				Size s;
-				s = bp.Child.Surface.GetPreferredSize (widthConstraint, heightConstraint);
+				s = bp.Child.Surface.GetPreferredSize (widthConstraint, heightConstraint, true);
 				bp.NextSize = vertical ? s.Height : s.Width;
 				sizes [bp] = bp.NextSize;
-				requiredSize += bp.NextSize + bp.Child.Margin.GetSpacingForOrientation (direction);
+				requiredSize += bp.NextSize;
 				if (bp.Child.ExpandsForOrientation (direction))
 					nexpands++;
 			}
@@ -362,20 +354,20 @@ namespace Xwt
 
 			if (direction == Orientation.Horizontal) {
 				foreach (var cw in Children.Where (b => b.Visible)) {
-					var wsize = cw.Surface.GetPreferredSize (SizeConstraint.Unconstrained, heightConstraint);
-					s.Width += wsize.Width + cw.Margin.HorizontalSpacing;
-					if (wsize.Height + cw.Margin.VerticalSpacing > s.Height)
-						s.Height = wsize.Height + cw.Margin.VerticalSpacing;
+					var wsize = cw.Surface.GetPreferredSize (SizeConstraint.Unconstrained, heightConstraint, true);
+					s.Width += wsize.Width;
+					if (wsize.Height > s.Height)
+						s.Height = wsize.Height;
 					count++;
 				}
 				if (count > 0)
 					s.Width += spacing * (double)(count - 1);
 			} else {
 				foreach (var cw in Children.Where (b => b.Visible)) {
-					var wsize = cw.Surface.GetPreferredSize (widthConstraint, SizeConstraint.Unconstrained);
-					s.Height += wsize.Height + cw.Margin.VerticalSpacing;
-					if (wsize.Width + cw.Margin.HorizontalSpacing > s.Width)
-						s.Width = wsize.Width + cw.Margin.HorizontalSpacing;
+					var wsize = cw.Surface.GetPreferredSize (widthConstraint, SizeConstraint.Unconstrained, true);
+					s.Height += wsize.Height;
+					if (wsize.Width > s.Width)
+						s.Width = wsize.Width;
 					count++;
 				}
 				if (count > 0)
@@ -409,7 +401,7 @@ namespace Xwt
 		}
 		
 		internal double NextSize;
-		
+
 		public int Position {
 			get {
 				return this.position;
