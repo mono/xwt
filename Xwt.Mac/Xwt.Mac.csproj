@@ -119,6 +119,7 @@
     <Compile Include="Xwt.Mac\RichTextViewBackend.cs" />
     <Compile Include="Xwt.Mac\RadioButtonBackend.cs" />
     <Compile Include="Xwt.Mac\ScrollbarBackend.cs" />
+    <Compile Include="Xwt.Mac\DatePickerBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
