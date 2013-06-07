@@ -926,6 +926,10 @@ namespace Xwt
 			rect.Height -= Margin.VerticalSpacing;
 			if (HorizontalPlacement != WidgetPlacement.Fill || VerticalPlacement != WidgetPlacement.Fill) {
 				var s = Surface.GetPreferredSize (rect.Width, rect.Height);
+				if (s.Width > rect.Width)
+					s.Width = rect.Width;
+				if (s.Height > rect.Height)
+					s.Height = rect.Height;
 				if (HorizontalPlacement != WidgetPlacement.Fill) {
 					rect.X += (rect.Width - s.Width) * HorizontalPlacement.GetValue ();
 					rect.Width = s.Width;
