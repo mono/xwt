@@ -33,7 +33,7 @@ namespace Xwt
 		protected abstract void AddChild (Widget parent, Widget child);
 
 		[Test]
-		public void AddChildMargin ()
+		public void ChildMargin ()
 		{
 			using (var win = new Window ()) {
 				var c = CreateWidget ();
@@ -42,15 +42,21 @@ namespace Xwt
 				var box = new SquareBox (10);
 				AddChild (c, box);
 				ShowWindow (win);
-				var r1 = box.ScreenBounds;
-				box.Margin = new WidgetSpacing (5, 10, 15, 20);
-				WaitForEvents ();
-				var r2 = box.ScreenBounds;
-
-				Assert.AreEqual (r1.Left + 5, r2.Left);
-				Assert.AreEqual (r1.Top + 10, r2.Top);
-				Assert.AreEqual (r1.Width - 20, r2.Width);
-				Assert.AreEqual (r1.Height - 30, r2.Height);
+				VerifyMargin (box);
+			}
+		}
+		
+		[Test]
+		public void ChildAlignment ()
+		{
+			using (var win = new Window ()) {
+				var c = CreateWidget ();
+				win.Content = c;
+				win.Size = new Size (100, 100);
+				var box = new SquareBox (10);
+				AddChild (c, box);
+				ShowWindow (win);
+				VerifyAlignment (box);
 			}
 		}
 	}

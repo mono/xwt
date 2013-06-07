@@ -230,6 +230,106 @@ namespace Xwt
 				Assert.AreEqual (win.ScreenBounds.Inflate (-padding,-padding), w.ScreenBounds);
 			}
 		}
+
+		public void VerifyMargin (SquareBox box)
+		{
+			var r1 = box.ScreenBounds;
+
+			box.Margin = new WidgetSpacing (5, 10, 15, 20);
+			WaitForEvents ();
+			var r2 = box.ScreenBounds;
+
+			Assert.AreEqual (r1.Left + 5, r2.Left);
+			Assert.AreEqual (r1.Top + 10, r2.Top);
+			Assert.AreEqual (r1.Width - 20, r2.Width);
+			Assert.AreEqual (r1.Height - 30, r2.Height);
+			
+			box.Margin = 0;
+			WaitForEvents ();
+			r2 = box.ScreenBounds;
+			Assert.AreEqual (r1, r2);
+		}
+		
+		public void VerifyAlignment (SquareBox box)
+		{
+			var r1 = box.ScreenBounds;
+			
+			// Horizontal Fill
+
+			box.HorizontalPlacement = WidgetPlacement.Fill;
+			box.VerticalPlacement = WidgetPlacement.Fill;
+			WaitForEvents ();
+			Assert.AreEqual (r1, box.ScreenBounds);
+
+			box.VerticalPlacement = WidgetPlacement.Start;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Left, r1.Top, r1.Width, 10), box.ScreenBounds);
+			
+			box.VerticalPlacement = WidgetPlacement.Center;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Left, Math.Truncate (r1.Center.Y - 5), r1.Width, 10), box.ScreenBounds);
+			
+			box.VerticalPlacement = WidgetPlacement.End;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Left, r1.Bottom - 10, r1.Width, 10), box.ScreenBounds);
+
+			// Horizontal Start
+
+			box.HorizontalPlacement = WidgetPlacement.Start;
+			box.VerticalPlacement = WidgetPlacement.Fill;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Left, r1.Top, 10, r1.Height), box.ScreenBounds);
+			
+			box.VerticalPlacement = WidgetPlacement.Start;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Left, r1.Top, 10, 10), box.ScreenBounds);
+
+			box.VerticalPlacement = WidgetPlacement.Center;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Left, Math.Truncate (r1.Center.Y - 5), 10, 10), box.ScreenBounds);
+
+			box.VerticalPlacement = WidgetPlacement.End;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Left, r1.Bottom - 10, 10, 10), box.ScreenBounds);
+
+			// Horizontal Center
+
+			box.HorizontalPlacement = WidgetPlacement.Center;
+			box.VerticalPlacement = WidgetPlacement.Fill;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (Math.Truncate (r1.Center.X - 5), r1.Top, 10, r1.Height), box.ScreenBounds);
+			
+			box.VerticalPlacement = WidgetPlacement.Start;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (Math.Truncate (r1.Center.X - 5), r1.Top, 10, 10), box.ScreenBounds);
+
+			box.VerticalPlacement = WidgetPlacement.Center;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (Math.Truncate (r1.Center.X - 5), Math.Truncate (r1.Center.Y - 5), 10, 10), box.ScreenBounds);
+
+			box.VerticalPlacement = WidgetPlacement.End;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (Math.Truncate (r1.Center.X - 5), r1.Bottom - 10, 10, 10), box.ScreenBounds);
+
+			// Horizontal End
+
+			box.HorizontalPlacement = WidgetPlacement.End;
+			box.VerticalPlacement = WidgetPlacement.Fill;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Right - 10, r1.Top, 10, r1.Height), box.ScreenBounds);
+			
+			box.VerticalPlacement = WidgetPlacement.Start;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Right - 10, r1.Top, 10, 10), box.ScreenBounds);
+
+			box.VerticalPlacement = WidgetPlacement.Center;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Right - 10, Math.Truncate (r1.Center.Y) - 5, 10, 10), box.ScreenBounds);
+
+			box.VerticalPlacement = WidgetPlacement.End;
+			WaitForEvents ();
+			Assert.AreEqual (new Rectangle (r1.Right - 10, r1.Bottom - 10, 10, 10), box.ScreenBounds);
+		}
 	}
 }
 

@@ -35,6 +35,11 @@ namespace Xwt
 		{
 			return new VBox ();
 		}
+
+		protected override Rectangle AdjustedRect (Rectangle r)
+		{
+			return new Rectangle (r.Y, r.X, r.Height, r.Width);
+		}
 	}
 }
 

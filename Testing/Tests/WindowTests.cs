@@ -187,7 +187,7 @@ namespace Xwt
 		}
 	}
 
-	class SquareBox: Canvas
+	public class SquareBox: Canvas
 	{
 		double size;
 
