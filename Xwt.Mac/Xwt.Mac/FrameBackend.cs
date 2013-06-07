@@ -38,15 +38,20 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new MacFrame ();
-			Widget.ContentViewMargins = new System.Drawing.SizeF (0,0);
 		}
 
 		#region IFrameBackend implementation
 		public void SetFrameType (FrameType type)
 		{
 			switch (type) {
-			case FrameType.WidgetBox: Widget.BoxType = NSBoxType.NSBoxPrimary; break;
-			case FrameType.Custom: Widget.BoxType = NSBoxType.NSBoxCustom; break;
+			case FrameType.WidgetBox:
+				Widget.BoxType = NSBoxType.NSBoxPrimary;
+				Widget.ContentViewMargins = new System.Drawing.SizeF (5,5);
+				break;
+			case FrameType.Custom:
+				Widget.BoxType = NSBoxType.NSBoxCustom;
+				Widget.ContentViewMargins = new System.Drawing.SizeF (0,0);
+				break;
 			}
 		}
 
@@ -54,24 +59,29 @@ namespace Xwt.Mac
 		{
 			if (currentChild != null) {
 				currentChild.RemoveFromSuperview ();
-				RemoveChildPlacement (currentChild);
 				currentChild = null;
 			}
 			if (child == null)
 				return;
 
 			var childBackend = (ViewBackend) child;
-			childBackend.SizeToFit ();
 
-			currentChild = GetWidgetWithPlacement (childBackend);
+			currentChild = GetWidget (childBackend);
 
-			Widget.AddSubview (currentChild);
+			var contentView = (NSView)Widget.ContentView;
+			contentView.AddSubview (currentChild);
 			ResetFittingSize ();
 		}
 
 		protected override void OnSizeToFit ()
 		{
-			Widget.SizeToFit ();
+			if (currentChild != null) {
+				var s = ((IViewObject)currentChild).Backend.Frontend.Surface.GetPreferredSize ();
+				var frame = (Frame)Frontend;
+				currentChild.Frame = new System.Drawing.RectangleF (0, 0, (float)s.Width, (float)s.Height);
+				Widget.SizeToFit ();
+				Widget.SetFrameSize (new System.Drawing.SizeF ((float)(Widget.Frame.Width + frame.Padding.HorizontalSpacing), (float)(Widget.Frame.Height + frame.Padding.VerticalSpacing)));
+			}
 		}
 
 		public void SetBorderSize (double left, double right, double top, double bottom)
@@ -80,6 +90,14 @@ namespace Xwt.Mac
 
 		public void SetPadding (double left, double right, double top, double bottom)
 		{
+			var cv = (CustomContentView)Widget.ContentView;
+			cv.UpdatePlacement ();
+		}
+
+		public override void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
+			var cv = (CustomContentView)Widget.ContentView;
+			cv.UpdatePlacement ();
 		}
 
 		public string Label {
@@ -118,6 +136,7 @@ namespace Xwt.Mac
 		public MacFrame ()
 		{
 			Title = "";
+			ContentView = new CustomContentView ();
 		}
 
 		#region IViewObject implementation
@@ -130,6 +149,31 @@ namespace Xwt.Mac
 		public ViewBackend Backend { get; set; }
 		
 		#endregion
+	}
+
+	class CustomContentView: NSView
+	{
+		public override bool IsFlipped {
+			get {
+				return true;
+			}
+		}
+		public override void SetFrameSize (System.Drawing.SizeF newSize)
+		{
+			base.SetFrameSize (newSize);
+			UpdatePlacement ();
+		}
+
+		public void UpdatePlacement ()
+		{
+			if (Subviews.Length > 0) {
+				var frame = (Frame) ((IViewObject)Superview).Backend.Frontend;
+				var v = Subviews [0];
+				var r = new Rectangle (frame.PaddingLeft, frame.PaddingTop, Frame.Width - frame.Padding.HorizontalSpacing, Frame.Height - frame.Padding.VerticalSpacing);
+				r = ((IViewObject)v).Backend.Frontend.Surface.GetPlacementInRect (r);
+				v.Frame = r.ToRectangleF ();
+			}
+		}
 	}
 }
 
