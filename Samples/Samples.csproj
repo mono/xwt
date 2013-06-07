@@ -175,6 +175,8 @@
     <Compile Include="Samples\RadioButtonSample.cs" />
     <Compile Include="Samples\WidgetRendering.cs" />
     <Compile Include="Samples\ScrollbarSample.cs" />
+    <Compile Include="Samples\DatePickerSample.cs" />
+    <Compile Include="Samples\SliderSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

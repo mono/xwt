@@ -72,6 +72,7 @@ namespace Samples
 			AddSample (null, "Clipboard", typeof(ClipboardSample));
 			AddSample (null, "ColorSelector", typeof(ColorSelectorSample));
 			AddSample (null, "ComboBox", typeof(ComboBoxes));
+			AddSample (null, "DatePicker", typeof(DatePickerSample));
 //			AddSample (null, "Designer", typeof(Designer));
 			AddSample (null, "Drag & Drop", typeof(DragDrop));
 			
@@ -106,6 +107,7 @@ namespace Samples
 			AddSample (null, "Screens", typeof (ScreensSample));
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
 			AddSample (null, "Scrollbar", typeof(ScrollbarSample));
+			AddSample (null, "Slider", typeof (SliderSample));
 			AddSample (null, "Spinners", typeof (Spinners));
 			AddSample (null, "Tables", typeof (Tables));
 			AddSample (null, "Text Entry", typeof (TextEntries));
