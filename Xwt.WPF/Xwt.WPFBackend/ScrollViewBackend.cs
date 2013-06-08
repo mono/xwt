@@ -101,14 +101,15 @@ namespace Xwt.WPFBackend
 			ScrollAdjustmentBackend vbackend = null, hbackend = null;
 			var widget = (WidgetBackend)child;
 
-
 			if (widget.EventSink.SupportsCustomScrolling ()) {
 				vbackend = new ScrollAdjustmentBackend ();
 				hbackend = new ScrollAdjustmentBackend ();
-				widget.EventSink.SetScrollAdjustments (hbackend, vbackend);
 			}
 			ScrollViewer.Content = new CustomScrollViewPort (widget.NativeWidget, vbackend, hbackend);
 			ScrollViewer.CanContentScroll = true;
+
+			if (vbackend != null)
+				widget.EventSink.SetScrollAdjustments (hbackend, vbackend);
 		}
 		
 		public void SetChildSize (Size s)
