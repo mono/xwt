@@ -284,7 +284,7 @@ namespace Xwt
 					Application.NotifyException (error);
 				});
 			}
-			if (inUserCode == 1) {
+			if (inUserCode == 1 && !exitCallbackRegistered) {
 				while (exitActions.Count > 0) {
 					try {
 						exitActions.Dequeue ()();
