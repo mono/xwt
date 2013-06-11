@@ -314,8 +314,10 @@ namespace Xwt.WPFBackend
 				Context.InvokeUserCode (delegate
 				{
 					// Calculate the preferred width through the frontend if there is an overriden OnGetPreferredWidth, but only do it
-					// if we are not given a constraint. If there is a width constraint, we'll use that constraint value for calculating the height 
-					var ws = eventSink.GetPreferredSize (constraint.Width, constraint.Height);
+					// if we are not given a constraint. If there is a width constraint, we'll use that constraint value for calculating the height
+					var cw = double.IsPositiveInfinity (constraint.Width) ? SizeConstraint.Unconstrained : constraint.Width;
+					var ch = double.IsPositiveInfinity (constraint.Height) ? SizeConstraint.Unconstrained : constraint.Height;
+					var ws = eventSink.GetPreferredSize (cw, ch);
 					wpfMeasure = new System.Windows.Size (ws.Width, ws.Height);
 				});
 			}
