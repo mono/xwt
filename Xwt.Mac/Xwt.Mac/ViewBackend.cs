@@ -320,16 +320,24 @@ namespace Xwt.Mac
 
 		public static void ReplaceSubview (NSView oldChild, NSView newChild)
 		{
-			var p = oldChild.Superview as IViewObject;
-			if (p != null)
-				p.Backend.ReplaceChild (oldChild, newChild);
-			else
-				oldChild.Superview.ReplaceSubviewWith (oldChild, newChild);
+			var vo = oldChild as IViewObject;
+			if (vo != null && vo.Backend.Frontend.Parent != null) {
+				var ba = vo.Backend.Frontend.Parent.GetBackend () as ViewBackend;
+				if (ba != null) {
+					ba.ReplaceChild (oldChild, newChild);
+					return;
+				}
+			}
+			var f = oldChild.Frame;
+			oldChild.Superview.ReplaceSubviewWith (oldChild, newChild);
+			newChild.Frame = f;
 		}
 
 		public virtual void ReplaceChild (NSView oldChild, NSView newChild)
 		{
+			var f = oldChild.Frame;
 			oldChild.Superview.ReplaceSubviewWith (oldChild, newChild);
+			newChild.Frame = f;
 		}
 
 		public virtual object Font {
@@ -743,13 +751,29 @@ namespace Xwt.Mac
 		#endregion
 	}
 
-	sealed class WidgetPlacementWrapper: NSControl
+	sealed class WidgetPlacementWrapper: NSControl, IViewObject
 	{
 		NSView child;
 		Widget w;
 
 		public WidgetPlacementWrapper ()
 		{
+		}
+
+		NSView IViewObject.View {
+			get { return this; }
+		}
+
+		ViewBackend IViewObject.Backend {
+			get {
+				var vo = child as IViewObject;
+				return vo != null ? vo.Backend : null;
+			}
+			set {
+				var vo = child as IViewObject;
+				if (vo != null)
+					vo.Backend = value;
+			}
 		}
 
 		public override bool IsFlipped {
@@ -768,7 +792,8 @@ namespace Xwt.Mac
 		public override void SetFrameSize (SizeF newSize)
 		{
 			base.SetFrameSize (newSize);
-			UpdateChildPlacement ();
+			if (w != null)
+				UpdateChildPlacement ();
 		}
 
 		public void UpdateChildPlacement ()
@@ -780,12 +805,12 @@ namespace Xwt.Mac
 
 			var s = w.Surface.GetPreferredSize (cwidth, cheight);
 			if (w.HorizontalPlacement != WidgetPlacement.Fill) {
-				cwidth = s.Width;
 				cx += (cwidth - s.Width) * w.HorizontalPlacement.GetValue ();
+				cwidth = s.Width;
 			}
 			if (w.VerticalPlacement != WidgetPlacement.Fill) {
-				cheight = s.Height;
 				cy += (cheight - s.Height) * w.VerticalPlacement.GetValue ();
+				cheight = s.Height;
 			}
 			child.Frame = new RectangleF ((float)cx, (float)cy, (float)cwidth, (float)cheight);
 		}

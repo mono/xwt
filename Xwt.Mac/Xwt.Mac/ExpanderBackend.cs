@@ -62,6 +62,11 @@ namespace Xwt.Mac
 			ResetFittingSize ();
 		}
 
+		public override void ReplaceChild (NSView oldChild, NSView newChild)
+		{
+			Widget.Box.SetContent (newChild);
+		}
+
 		protected override Size CalcFittingSize ()
 		{
 			var s = Widget.SizeOfDecorations;
@@ -258,8 +263,11 @@ namespace Xwt.Mac
 		public void UpdateContentSize (bool animate)
 		{
 			if (expanded) {
-				var s = ((IViewObject)ContentView).Backend.Frontend.Surface.GetPreferredSize ((float)Frame.Size.Width, SizeConstraint.Unconstrained);
-				SetFrameSize (new SizeF (Frame.Width, (float)s.Height), animate);
+				var vo = ContentView as IViewObject;
+				if (vo != null && vo.Backend != null) {
+					var s = vo.Backend.Frontend.Surface.GetPreferredSize ((float)Frame.Size.Width, SizeConstraint.Unconstrained, true);
+					SetFrameSize (new SizeF (Frame.Width, (float)s.Height), animate);
+				}
 			} else
 				SetFrameSize (new SizeF (Frame.Width, DefaultCollapsedHeight), animate);
 		}
