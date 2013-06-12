@@ -27,11 +27,18 @@ using System;
 
 namespace Xwt
 {
-	public class ExpanderTests: WidgetTests
+	public class ExpanderTests: ContainerTests
 	{
 		public override Widget CreateWidget ()
 		{
 			return new Expander ();
+		}
+
+		protected override void AddChild (Widget parent, Widget child)
+		{
+			var exp = (Expander)parent;
+			exp.Expanded = true;
+			exp.Content = child;
 		}
 	}
 }
