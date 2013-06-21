@@ -138,13 +138,14 @@ namespace Xwt.GtkBackend
 					cr.RelLineTo (-rect.Width, 0);
 					cr.RelLineTo (0, -rect.Height);
 					cr.ClosePath ();
-					Cairo.Gradient pat = new Cairo.LinearGradient (rect.X, rect.Y, rect.X, rect.Bottom);
-					Cairo.Color color1 = gcol.ToCairoColor ();
-					pat.AddColorStop (0, color1);
-					gcol.Light -= 0.1;
-					pat.AddColorStop (1, gcol.ToCairoColor ());
-					cr.Pattern = pat;
-					cr.FillPreserve ();
+					using (var pat = new Cairo.LinearGradient (rect.X, rect.Y, rect.X, rect.Bottom)) {
+						Cairo.Color color1 = gcol.ToCairoColor ();
+						pat.AddColorStop (0, color1);
+						gcol.Light -= 0.1;
+						pat.AddColorStop (1, gcol.ToCairoColor ());
+						cr.Pattern = pat;
+						cr.FillPreserve ();
+					}
 				}
 			
 				cr.Color = color.HasValue ? color.Value.ToCairoColor () : Style.Dark (Gtk.StateType.Normal).ToXwtColor ().ToCairoColor ();
