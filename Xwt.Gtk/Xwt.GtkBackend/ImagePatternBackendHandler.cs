@@ -59,14 +59,15 @@ namespace Xwt.GtkBackend
 				if (pattern != null)
 					pattern.Dispose ();
 				Gdk.Pixbuf pb = ((GtkImage)Image.Backend).GetBestFrame (actx, scaleFactor, Image.Size.Width, Image.Size.Height, false);
-				var imgs = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int)(Image.Size.Width * scaleFactor), (int)(Image.Size.Height * scaleFactor));
-				var ic = new Cairo.Context (imgs);
-				ic.Scale ((double)imgs.Width / (double)pb.Width, (double)imgs.Height / (double)pb.Height);
-				Gdk.CairoHelper.SetSourcePixbuf (ic, pb, 0, 0);
-				ic.Paint ();
-				imgs.Flush ();
-				((IDisposable)ic).Dispose ();
-				pattern = new Cairo.SurfacePattern (imgs);
+				using (var imgs = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int)(Image.Size.Width * scaleFactor), (int)(Image.Size.Height * scaleFactor))) {
+					var ic = new Cairo.Context (imgs);
+					ic.Scale ((double)imgs.Width / (double)pb.Width, (double)imgs.Height / (double)pb.Height);
+					Gdk.CairoHelper.SetSourcePixbuf (ic, pb, 0, 0);
+					ic.Paint ();
+					imgs.Flush ();
+					((IDisposable)ic).Dispose ();
+					pattern = new Cairo.SurfacePattern (imgs);
+				}
 				pattern.Extend = Cairo.Extend.Repeat;
 				var cm = new Cairo.Matrix ();
 				cm.Scale (scaleFactor, scaleFactor);
