@@ -12,11 +12,11 @@ namespace Xwt
 		const double ArcToBezier = 0.55228475;
 		double padding = 12.0;
 		double? radius = null;
-		Color bgcolor;
+		Color bgColor, borderColor;
 
 		public ReliefFrame ()
 		{
-			bgcolor = base.BackgroundColor;
+			bgColor = base.BackgroundColor;
 		}
 
 		public ReliefFrame (Widget content)
@@ -27,10 +27,18 @@ namespace Xwt
 
 		public new Color BackgroundColor
 		{
-			get { return bgcolor; }
+			get { return bgColor; }
 			set
 			{
-				bgcolor = value;
+				bgColor = value;
+				QueueDraw ();
+			}
+		}
+
+		public Color BorderColor {
+			get { return borderColor; }
+			set {
+				borderColor = value;
 				QueueDraw ();
 			}
 		}
@@ -75,14 +83,9 @@ namespace Xwt
 
 		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			if (widthConstraint.IsConstrained)
-				widthConstraint.AvailableSize -= 2 * padding;
-			if (heightConstraint.IsConstrained)
-				heightConstraint.AvailableSize -= 2 * padding;
-
-			var s = base.OnGetPreferredSize (widthConstraint, heightConstraint);
-			s.Width += 2 * padding;
-			s.Height += 2 * padding;
+			var s = new Size (2 * padding, 2 * padding);
+			if (Content != null)
+				s += Content.Surface.GetPreferredSize (widthConstraint - 2 * padding, heightConstraint - 2 * padding, true);
 			return s;
 		}
 
@@ -94,10 +97,11 @@ namespace Xwt
 
 		void UpdateChildBounds ()
 		{
-			SetChildBounds (Content, new Rectangle (padding, padding, Math.Max (Size.Width - (2 * padding), 0), Math.Max (Size.Height - (2 * padding), 0)));
+			var r = Content.Surface.GetPlacementInRect (new Rectangle (padding, padding, Math.Max (Size.Width - (2 * padding), 0), Math.Max (Size.Height - (2 * padding), 0)));
+			SetChildBounds (Content, r);
 		}
 
-		static void DrawBorder (Context ctx, double x, double y, double w, double h, double radius)
+		static void CreateRoundedBoxPath (Context ctx, double x, double y, double w, double h, double radius)
 		{
 			ctx.NewPath ();
 
@@ -138,52 +142,43 @@ namespace Xwt
 			ctx.CurveTo (x, y + radius - arc, x + radius - arc, y, x + radius, y);
 		}
 
-		static Color GetColor (Color color, double percent)
+		void DrawFilledBox (Context ctx, double x, double y, double w, double h)
 		{
-			return new Color (color.Red * percent, color.Green * percent, color.Blue * percent);
+			ctx.NewPath ();
+			ctx.MoveTo (x,     y);
+			ctx.LineTo (x + w, y);
+			ctx.LineTo (x + w, y + h);
+			ctx.LineTo (x,     y + h);
+			ctx.LineTo (x,     y);
+			ctx.Fill ();
 		}
 
-		RadialGradient GetCornerGradient (double x, double y, double radius, double thickness)
+		void DrawFilledQuarterCircle (Context ctx, double x, double y, double thickness, double radius,
+		                              double xDirection, double yDirection, Color outerColor, Color innerColor)
 		{
-			var gradient = new RadialGradient (x, y, radius - thickness, x, y, radius + thickness);
-			gradient.AddColorStop (0, BackgroundColor);
-			gradient.AddColorStop (1, GetColor (BackgroundColor, 0.75));
-			return gradient;
+			var w = radius * xDirection;
+			var h = radius * yDirection;
+
+			// approximate (quite close) the arc using a bezier curve
+			double arc = ArcToBezier * radius;
+
+			ctx.NewPath ();
+			ctx.MoveTo (x,     y);
+			ctx.LineTo (x + w, y);
+			ctx.CurveTo (x + w, y + (arc * yDirection), x + (arc * xDirection), y + h, x, y + h);
+			ctx.LineTo (x,     y);
+
+			using (var pattern = new RadialGradient (x, y, radius - thickness, x, y, radius - 1)) {
+				pattern.AddColorStop (0, innerColor);
+				pattern.AddColorStop (1, outerColor);
+
+				ctx.Pattern = pattern;
+				ctx.Fill ();
+			}
 		}
 
-		LinearGradient GetBottomEdgeGradient (double bottom, double thickness)
-		{
-			var gradient = new LinearGradient (0, bottom - thickness, 0, bottom + thickness);
-			gradient.AddColorStop (0, BackgroundColor);
-			gradient.AddColorStop (1, GetColor (BackgroundColor, 0.75));
-			return gradient;
-		}
-
-		LinearGradient GetTopEdgeGradient (double top, double thickness)
-		{
-			var gradient = new LinearGradient (0, top - thickness, 0, top + thickness);
-			gradient.AddColorStop (0, GetColor (BackgroundColor, 0.75));
-			gradient.AddColorStop (1, BackgroundColor);
-			return gradient;
-		}
-
-		LinearGradient GetRightEdgeGradient (double right, double thickness)
-		{
-			var gradient = new LinearGradient (right - thickness, 0, right + thickness, 0);
-			gradient.AddColorStop (0, BackgroundColor);
-			gradient.AddColorStop (1, GetColor (BackgroundColor, 0.75));
-			return gradient;
-		}
-
-		LinearGradient GetLeftEdgeGradient (double left, double thickness)
-		{
-			var gradient = new LinearGradient (left - thickness, 0, left + thickness, 0);
-			gradient.AddColorStop (0, GetColor (BackgroundColor, 0.75));
-			gradient.AddColorStop (1, BackgroundColor);
-			return gradient;
-		}
-
-		void DrawBorder (Context ctx, double x, double y, double w, double h, double radius, double thickness)
+		void DrawGradientBorder (Context ctx, double x, double y, double w, double h, double thickness, double radius,
+		                         Color outerColor, Color innerColor)
 		{
 			// test limits (without using multiplication)
 			if (radius > w - radius)
@@ -191,88 +186,69 @@ namespace Xwt
 			if (radius > h - radius)
 				radius = h / 2;
 
-			// approximate (quite close) the arc using a bezier curve
-			double arc = ArcToBezier * radius;
-
-			ctx.SetLineWidth (thickness);
+			var r = x + w;
+			var b = y + h;
+			var r2 = radius + radius;
 
 			// top-left corner
-			ctx.NewPath ();
-			ctx.MoveTo (x, y + radius);
-			ctx.CurveTo (x, y + radius - arc, x + radius - arc, y, x + radius, y);
-			ctx.Pattern = GetCornerGradient (x + radius, y + radius, radius, thickness / 2);
-			ctx.Stroke ();
+			DrawFilledQuarterCircle (ctx, x + radius, y + radius, thickness, radius, -1, -1, outerColor, innerColor);
 
 			// top edge
-			ctx.NewPath ();
-			ctx.MoveTo (x + radius - 0.5, y);
-			ctx.LineTo (x + w - radius + 0.5, y);
-			ctx.Pattern = GetTopEdgeGradient (y, thickness / 2);
-			ctx.Stroke ();
+			using (var topGrad = new LinearGradient (0, y + 1, 0, y + thickness)) {
+				topGrad.AddColorStop (0, outerColor);
+				topGrad.AddColorStop (1, innerColor);
+				ctx.Pattern = topGrad;
+				DrawFilledBox (ctx, x + radius, y, w - r2, radius);
+			}
 
 			// top-right corner
-			ctx.NewPath ();
-			ctx.MoveTo (x + w - radius, y);
-			ctx.CurveTo (x + w - radius + arc, y, x + w, y + arc, x + w, y + radius);
-			ctx.Pattern = GetCornerGradient (x + w - radius, y + radius, radius, thickness / 2);
-			ctx.Stroke ();
+			DrawFilledQuarterCircle (ctx, r - radius, y + radius, thickness, radius, 1, -1, outerColor, innerColor);
 
 			// right edge
-			ctx.NewPath ();
-			ctx.MoveTo (x + w, y + radius - 0.5);
-			ctx.LineTo (x + w, y + h - radius + 0.5);
-			ctx.Pattern = GetRightEdgeGradient (x + w, thickness / 2);
-			ctx.Stroke ();
+			using (var rightGrad = new LinearGradient (r - thickness, 0, r - 1, 0)) {
+				rightGrad.AddColorStop (0, innerColor);
+				rightGrad.AddColorStop (1, outerColor);
+				ctx.Pattern = rightGrad;
+				DrawFilledBox (ctx, r, y + radius, -radius, h - r2);
+			}
 
 			// bottom-right corner
-			ctx.NewPath ();
-			ctx.MoveTo (x + w, y + h - radius);
-			ctx.CurveTo (x + w, y + h - radius + arc, x + w + arc - radius, y + h, x + w - radius, y + h);
-			ctx.Pattern = GetCornerGradient (x + w - radius, y + h - radius, radius, thickness / 2);
-			ctx.Stroke ();
+			DrawFilledQuarterCircle (ctx, r - radius, b - radius, thickness, radius, 1, 1, outerColor, innerColor);
 
 			// bottom edge
-			ctx.NewPath ();
-			ctx.MoveTo (x + w - radius + 0.5, y + h);
-			ctx.LineTo (x + radius - 0.5, y + h);
-			ctx.Pattern = GetBottomEdgeGradient (y + h, thickness / 2);
-			ctx.Stroke ();
+			using (var bottomGrad = new LinearGradient (0, b - thickness, 0, b - 1)) {
+				bottomGrad.AddColorStop (0, innerColor);
+				bottomGrad.AddColorStop (1, outerColor);
+				ctx.Pattern = bottomGrad;
+				DrawFilledBox (ctx, x + radius, b, w - r2, -radius);
+			}
 
 			// bottom-left corner
-			ctx.NewPath ();
-			ctx.MoveTo (x + radius, y + h);
-			ctx.CurveTo (x + radius - arc, y + h, x, y + h - arc, x, y + h - radius);
-			ctx.Pattern = GetCornerGradient (x + radius, y + h - radius, radius, thickness / 2);
-			ctx.Stroke ();
+			DrawFilledQuarterCircle (ctx, x + radius, b - radius, thickness, radius, -1, 1, outerColor, innerColor);
 
 			// left edge
-			ctx.NewPath ();
-			ctx.MoveTo (x, y + h - radius + 0.5);
-			ctx.LineTo (x, y + radius - 0.5);
-			ctx.Pattern = GetLeftEdgeGradient (x, thickness / 2);
-			ctx.Stroke ();
+			using (var leftGrad = new LinearGradient (1, 0, thickness, 0)) {
+				leftGrad.AddColorStop (0, outerColor);
+				leftGrad.AddColorStop (1, innerColor);
+				ctx.Pattern = leftGrad;
+				DrawFilledBox (ctx, x, y + radius, radius, h - r2);
+			}
 		}
 
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
 			double radius = CornerRadius ?? Math.Min (Size.Width, Size.Height) / 6.4;
-			double h = Size.Height - 1.0;
-			double w = Size.Width - 1.0;
-			double x = 0.5;
-			double y = 0.5;
+			double thickness = Math.Min (4, radius);
 
 			ctx.Save ();
 
 			// Background
-			DrawBorder (ctx, x, y, w, h, radius);
-			ctx.SetColor (BackgroundColor);
+			ctx.SetColor (bgColor);
+			CreateRoundedBoxPath (ctx, 0, 0, Size.Width, Size.Height, radius);
 			ctx.Fill ();
 
 			// Border
-			h = Size.Height - 6;
-			w = Size.Width - 6;
-			x = y = 3;
-			DrawBorder (ctx, x, y, w, h, radius, 6);
+			DrawGradientBorder (ctx, 0, 0, Size.Width, Size.Height, thickness, radius, borderColor, bgColor);
 
 			ctx.Restore ();
 		}
