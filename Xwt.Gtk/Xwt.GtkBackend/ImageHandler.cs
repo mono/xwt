@@ -265,16 +265,17 @@ namespace Xwt.GtkBackend
 
 		Gdk.Pixbuf RenderFrame (ApplicationContext actx, double scaleFactor, double width, double height)
 		{
-			var sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int)(width * scaleFactor), (int)(height * scaleFactor));
-			var ctx = new Cairo.Context (sf);
-			ImageDescription idesc = new ImageDescription () {
-				Alpha = 1,
-				Size = new Size (width * scaleFactor, height * scaleFactor)
-			};
-			Draw (actx, ctx, 1, 0, 0, idesc);
-			var f = ImageBuilderBackend.CreatePixbuf (sf);
-			AddFrame (f);
-			return f;
+			using (var sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int)(width * scaleFactor), (int)(height * scaleFactor)))
+			using (var ctx = new Cairo.Context (sf)) {
+				ImageDescription idesc = new ImageDescription () {
+					Alpha = 1,
+					Size = new Size (width * scaleFactor, height * scaleFactor)
+				};
+				Draw (actx, ctx, 1, 0, 0, idesc);
+				var f = ImageBuilderBackend.CreatePixbuf (sf);
+				AddFrame (f);
+				return f;
+			}
 		}
 
 		void AddFrame (Gdk.Pixbuf pix)
