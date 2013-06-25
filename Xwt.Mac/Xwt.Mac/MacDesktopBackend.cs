@@ -58,6 +58,12 @@ namespace Xwt.Mac
 			}
 		}
 
+		public override Point GetMouseLocation ()
+		{
+			var loc = NSEvent.CurrentMouseLocation;
+			return new Point (loc.X, loc.Y);
+		}
+
 		public override IEnumerable<object> GetScreens ()
 		{
 			return NSScreen.Screens;

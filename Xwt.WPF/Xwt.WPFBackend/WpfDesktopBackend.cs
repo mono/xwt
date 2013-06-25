@@ -42,6 +42,12 @@ namespace Xwt.WPFBackend
 
 		#region implemented abstract members of DesktopBackend
 
+		public override Point GetMouseLocation()
+		{
+			var loc = SWF.Cursor.Position;
+			return new Point (loc.X, loc.Y);
+		}
+
 		public override IEnumerable<object> GetScreens ()
 		{
 			return SWF.Screen.AllScreens;

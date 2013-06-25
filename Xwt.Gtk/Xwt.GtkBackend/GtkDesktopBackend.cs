@@ -43,6 +43,13 @@ namespace Xwt.GtkBackend
 			};
 		}
 
+		public override Point GetMouseLocation ()
+		{
+			int x, y;
+			Gdk.Display.Default.GetPointer (out x, out y);
+			return new Point (x, y);
+		}
+
 		public override IEnumerable<object> GetScreens ()
 		{
 	         for (int n=0; n<Gdk.Screen.Default.NMonitors; n++)

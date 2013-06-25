@@ -93,6 +93,16 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Gets the current global mouse location.
+		/// </summary>
+		/// <returns>The mouse location.</returns>
+		public static Point MouseLocation {
+			get {
+				return Toolkit.CurrentEngine.DesktopBackend.GetMouseLocation ();
+			}
+		}
+
+		/// <summary>
 		/// List of screens that compose the desktop
 		/// </summary>
 		/// <value>The screens.</value>

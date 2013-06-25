@@ -31,6 +31,12 @@ namespace Xwt.Backends
 	public abstract class DesktopBackend: BackendHandler
 	{
 		/// <summary>
+		/// Gets the current global mouse location.
+		/// </summary>
+		/// <returns>The mouse location.</returns>
+		public abstract Point GetMouseLocation ();
+
+		/// <summary>
 		/// List of screens that compose the desktop
 		/// </summary>
 		public abstract IEnumerable<object> GetScreens ();
