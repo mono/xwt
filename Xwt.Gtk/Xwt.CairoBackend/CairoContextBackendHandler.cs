@@ -83,6 +83,12 @@ namespace Xwt.CairoBackend
 	
 	public class CairoContextBackendHandler: ContextBackendHandler
 	{
+		public override bool DisposeHandleOnUiThread {
+			get {
+				return true;
+			}
+		}
+
 		#region IContextBackendHandler implementation
 
 		public override void Save (object backend)

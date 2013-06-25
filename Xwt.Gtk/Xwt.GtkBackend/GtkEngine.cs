@@ -103,6 +103,12 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IScrollbarBackend, ScrollbarBackend> ();
 		}
 
+		public override void Dispose ()
+		{
+			base.Dispose ();
+			GtkTextLayoutBackendHandler.DisposeResources ();
+		}
+
 		public override void RunApplication ()
 		{
 			Gtk.Application.Run ();

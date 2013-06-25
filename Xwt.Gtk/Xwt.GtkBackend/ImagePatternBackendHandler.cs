@@ -30,6 +30,11 @@ namespace Xwt.GtkBackend
 {
 	public class GtkImagePatternBackendHandler: ImagePatternBackendHandler
 	{
+		public override bool DisposeHandleOnUiThread {
+			get {
+				return true;
+			}
+		}
 		#region IImagePatternBackendHandler implementation
 		public override object Create (ImageDescription img)
 		{

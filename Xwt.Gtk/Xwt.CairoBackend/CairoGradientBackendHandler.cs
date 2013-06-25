@@ -51,6 +51,12 @@ namespace Xwt.CairoBackend
 			Cairo.Gradient g = (Cairo.Gradient) backend;
 			g.AddColorStop (position, color.ToCairoColor ());
 		}
+
+		public override bool DisposeHandleOnUiThread {
+			get {
+				return true;
+			}
+		}
 	}
 }
 

@@ -37,6 +37,13 @@ namespace Xwt.GtkBackend
 		}
 
 		#region IImageBuilderBackendHandler implementation
+
+		public override bool DisposeHandleOnUiThread {
+			get {
+				return true;
+			}
+		}
+
 		public override object CreateImageBuilder (int width, int height, ImageFormat format)
 		{
 			Cairo.Format cformat;
