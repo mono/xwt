@@ -32,17 +32,13 @@ using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
-	public abstract class ImageBackendHandler: BackendHandler
+	public abstract class ImageBackendHandler: DisposableResourceBackendHandler
 	{
 		public virtual object CreateBackend ()
 		{
 			throw new NotSupportedException ();
 		}
 		
-		public virtual void Dispose (object backend)
-		{
-		}
-
 		public virtual object LoadFromResource (Assembly asm, string name)
 		{
 			using (var s = asm.GetManifestResourceStream (name)) {

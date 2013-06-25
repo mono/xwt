@@ -48,6 +48,7 @@ namespace Xwt.Drawing
 			handler = ToolkitEngine.TextLayoutBackendHandler;
 			Backend = handler.Create ();
 			Font = Font.SystemFont;
+			Setup ();
 		}
 
 		public TextLayout (Canvas canvas)
@@ -56,6 +57,7 @@ namespace Xwt.Drawing
 			handler = ToolkitEngine.TextLayoutBackendHandler;
 			Backend = handler.Create ();
 			Font = canvas.Font;
+			Setup ();
 		}
 
 		internal TextLayout (Toolkit tk)
@@ -63,6 +65,29 @@ namespace Xwt.Drawing
 			ToolkitEngine = tk;
 			handler = ToolkitEngine.TextLayoutBackendHandler;
 			Backend = handler.Create ();
+			Setup ();
+		}
+
+		void Setup ()
+		{
+			if (handler.DisposeHandleOnUiThread)
+				ResourceManager.RegisterResource (Backend, handler.Dispose);
+			else
+				GC.SuppressFinalize (this);
+		}
+		
+		public void Dispose ()
+		{
+			if (handler.DisposeHandleOnUiThread) {
+				GC.SuppressFinalize (this);
+				ResourceManager.FreeResource (Backend);
+			} else
+				handler.Dispose (Backend);
+		}
+
+		~TextLayout ()
+		{
+			ResourceManager.FreeResource (Backend);
 		}
 
 		internal TextLayoutData GetData ()
@@ -254,11 +279,6 @@ namespace Xwt.Drawing
 		public void SetStrikethrough (int startIndex, int count)
 		{
 			AddAttribute (new StrikethroughTextAttribute () { StartIndex = startIndex, Count = count});
-		}
-
-		public void Dispose ()
-		{
-			handler.DisposeBackend (Backend);
 		}
 	}
 

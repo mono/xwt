@@ -102,7 +102,18 @@ namespace Xwt
 				engine.ExitApplication ();
 			});
 		}
-			/// <summary>
+
+		/// <summary>
+		/// Releases all resource used by the application
+		/// </summary>
+		/// <remarks>This method must be called before the application process ends</remarks>
+		public static void Dispose ()
+		{
+			ResourceManager.Dispose ();
+		}
+
+
+		/// <summary>
 		/// Invokes an action in the GUI thread
 		/// </summary>
 		/// <param name='action'>

@@ -44,7 +44,7 @@ namespace Xwt.Mac
 			};
 		}
 
-		public override void DisposeLinear (object backend)
+		public override void Dispose (object backend)
 		{
 		}
 
@@ -57,10 +57,6 @@ namespace Xwt.Mac
 				StartRadius = (float)radius0,
 				EndRadius = (float)radius1
 			};
-		}
-
-		public override void DisposeRadial (object backend)
-		{
 		}
 
 		public override void AddColorStop (object backend, double position, Xwt.Drawing.Color color)

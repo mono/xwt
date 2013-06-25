@@ -116,14 +116,31 @@ namespace Xwt.Drawing
 		public override object CreateNativeBackend ()
 		{
 			imageBuilder = toolkit.ImageBuilderBackendHandler.CreateImageBuilder ((int)width, (int)height, ImageFormat.ARGB32);
+			if (toolkit.ImageBuilderBackendHandler.DisposeHandleOnUiThread)
+				ResourceManager.RegisterResource (imageBuilder);
+			else
+				GC.SuppressFinalize (this);
+
 			return toolkit.ImageBuilderBackendHandler.CreateContext (imageBuilder);
+		}
+
+		~VectorContextBackend ()
+		{
+			if (imageBuilder != null)
+				ResourceManager.FreeResource (imageBuilder);
 		}
 
 		public override void Dispose ()
 		{
 			base.Dispose ();
-			if (imageBuilder != null)
-				toolkit.ImageBuilderBackendHandler.Dispose (imageBuilder);
+			if (imageBuilder != null) {
+				if (toolkit.ImageBuilderBackendHandler.DisposeHandleOnUiThread) {
+					GC.SuppressFinalize (this);
+					ResourceManager.FreeResource (imageBuilder);
+				}
+				else
+					toolkit.ImageBuilderBackendHandler.Dispose (imageBuilder);
+			}
 		}
 	}
 

@@ -29,7 +29,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public abstract class DrawingPathBackendHandler: BackendHandler
+	public abstract class DrawingPathBackendHandler: DisposableResourceBackendHandler
 	{
 		public abstract void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2);
 
@@ -58,8 +58,6 @@ namespace Xwt.Backends
 		public abstract void AppendPath (object backend, object otherBackend);
 
 		public abstract bool IsPointInFill (object backend, double x, double y);
-
-		public abstract void Dispose (object backend);
 	}
 }
 

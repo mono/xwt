@@ -205,7 +205,7 @@ namespace Xwt.Mac
 			return new Point (0,0);
 		}
 
-		public override void DisposeBackend (object backend)
+		public override void Dispose (object backend)
 		{
 			// nothing
 		}

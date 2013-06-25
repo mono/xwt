@@ -201,7 +201,7 @@ namespace Xwt.GtkBackend
 			return new Point (pos.X, pos.Y);
 		}
 
-		public override void DisposeBackend (object backend)
+		public override void Dispose (object backend)
 		{
 			var tl = (IDisposable) backend;
 			tl.Dispose ();

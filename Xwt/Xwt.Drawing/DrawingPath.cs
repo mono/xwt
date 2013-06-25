@@ -36,11 +36,36 @@ namespace Xwt.Drawing
 		{
 			handler = Toolkit.CurrentEngine.VectorImageRecorderContextHandler;
 			Backend = handler.CreatePath ();
+			Init ();
 		}
 
 		internal DrawingPath (object backend, Toolkit toolkit, DrawingPathBackendHandler h): base (backend, toolkit)
 		{
 			handler = h;
+			Init ();
+		}
+
+		void Init ()
+		{
+			if (handler.DisposeHandleOnUiThread)
+				ResourceManager.RegisterResource (Backend, handler.Dispose);
+			else
+				GC.SuppressFinalize (this);
+		}
+		
+		public void Dispose ()
+		{
+			if (handler.DisposeHandleOnUiThread) {
+				GC.SuppressFinalize (this);
+				ResourceManager.FreeResource (Backend);
+			}
+			else
+				handler.Dispose (Backend);
+		}
+
+		~DrawingPath ()
+		{
+			ResourceManager.FreeResource (Backend);
 		}
 
 		/// <summary>
@@ -317,11 +342,6 @@ namespace Xwt.Drawing
 		public bool IsPointInFill (double x, double y)
 		{
 			return handler.IsPointInFill (Backend, x, y);
-		}
-
-		public void Dispose ()
-		{
-			handler.Dispose (Backend);
 		}
 	}
 }

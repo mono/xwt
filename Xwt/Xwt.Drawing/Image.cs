@@ -488,6 +488,9 @@ namespace Xwt.Drawing
 		{
 			this.backend = backend;
 			this.toolkit = toolkit;
+
+			if (toolkit.ImageBackendHandler.DisposeHandleOnUiThread)
+				ResourceManager.RegisterResource (backend, toolkit.ImageBackendHandler.Dispose);
 		}
 
 		public void AddReference ()
@@ -497,8 +500,15 @@ namespace Xwt.Drawing
 
 		public void ReleaseReference (bool disposing)
 		{
-			if (System.Threading.Interlocked.Decrement (ref referenceCount) == 0 && disposing)
-				toolkit.ImageBackendHandler.Dispose (backend);
+			if (System.Threading.Interlocked.Decrement (ref referenceCount) == 0) {
+				if (disposing) {
+					if (toolkit.ImageBackendHandler.DisposeHandleOnUiThread)
+						ResourceManager.FreeResource (backend);
+					else
+						toolkit.ImageBackendHandler.Dispose (backend);
+				} else
+					ResourceManager.FreeResource (backend);
+			}
 		}
 	}
 }
