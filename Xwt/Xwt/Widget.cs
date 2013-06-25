@@ -41,6 +41,9 @@ namespace Xwt
 	[BackendType (typeof(IWidgetBackend))]
 	public abstract class Widget: XwtComponent, IWidgetSurface
 	{
+		static bool DebugWidgetLayout = false;
+		static int DebugWidgetLayoutIndent = 0;
+
 		static Widget[] emptyList = new Widget[0];
 		List<Widget> children;
 		WidgetSpacing margin;
@@ -949,7 +952,15 @@ namespace Xwt
 		void IWidgetSurface.Reallocate ()
 		{
 			reallocationQueue.Remove (this);
+			if (DebugWidgetLayout) {
+				LayoutLog ("Reallocate: {0} - {1}", Size, GetWidgetDesc ());
+				DebugWidgetLayoutIndent += 3;
+			}
+
 			OnReallocate ();
+
+			if (DebugWidgetLayout)
+				DebugWidgetLayoutIndent -= 3;
 		}
 
 		Size IWidgetSurface.GetPreferredSize (bool includeMargin)
@@ -966,7 +977,16 @@ namespace Xwt
 			if (sizeCached && widthConstraint == cachedWidthConstraint && heightConstraint == cachedHeightConstraint)
 				return cachedSize;
 			else {
+				if (DebugWidgetLayout) {
+					LayoutLog ("GetPreferredSize: wc:{0} hc:{1} - {2}", widthConstraint, heightConstraint, GetWidgetDesc ());
+					DebugWidgetLayoutIndent += 3;
+				}
+
 				cachedSize = OnGetPreferredSize (widthConstraint, heightConstraint);
+
+				if (DebugWidgetLayout)
+					DebugWidgetLayoutIndent -= 3;
+
 				if (minWidth > cachedSize.Width)
 					cachedSize.Width = minWidth;
 				if (minHeight > cachedSize.Height)
@@ -1114,9 +1134,12 @@ namespace Xwt
 			if (resizeRequestQueue.Add (w))
 				resizeWidgets.Add (w);
 		}
-		
+
 		static void DelayedResizeRequest ()
 		{
+			if (DebugWidgetLayout)
+				LayoutLog (">> Begin Delayed Relayout");
+
 			// First of all, query the preferred size for those
 			// widgets that were changed
 
@@ -1167,6 +1190,8 @@ namespace Xwt
 				reallocationQueue.Clear ();
 				resizeWindows.Clear ();
 				delayedSizeNegotiationRequested = false;
+				if (DebugWidgetLayout)
+					LayoutLog (">> End Delayed Relayout");
 			}
 		}
 		
@@ -1176,6 +1201,21 @@ namespace Xwt
 					return Parent.Depth + 1;
 				return 0;
 			}
+		}
+
+		string GetWidgetDesc ()
+		{
+			if (Parent != null) {
+				int i = Parent.Surface.Children.ToList ().IndexOf (this);
+				return this + " [" + GetHashCode() + "] (" + i + ")";
+			}
+			else
+				return this.ToString ();
+		}
+
+		static void LayoutLog (string str, params object[] args)
+		{
+			Console.WriteLine (new String (' ', DebugWidgetLayoutIndent) + string.Format (str, args));
 		}
 		
 		IEnumerable<Widget> IWidgetSurface.Children {
