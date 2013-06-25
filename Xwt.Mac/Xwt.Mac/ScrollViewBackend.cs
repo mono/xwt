@@ -124,7 +124,7 @@ namespace Xwt.Mac
 				}
 				var w = Math.Max (s.Width, Widget.ContentView.Frame.Width);
 				var h = Math.Max (s.Height, Widget.ContentView.Frame.Height);
-				view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)s.Width, (float)h);
+				view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)w, (float)h);
 			}
 		}
 		

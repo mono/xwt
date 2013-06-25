@@ -82,9 +82,9 @@ namespace Xwt
 		
 		protected override void OnReallocate ()
 		{
-			base.OnReallocate ();
 			if (child != null && !child.SupportsCustomScrolling)
 				Backend.SetChildSize (child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.Unconstrained));
+			base.OnReallocate ();
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {
