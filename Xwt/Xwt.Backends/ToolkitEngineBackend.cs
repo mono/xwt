@@ -99,7 +99,14 @@ namespace Xwt.Backends
 		/// Exits the main GUI loop
 		/// </summary>
 		public abstract void ExitApplication ();
-		
+
+		/// <summary>
+		/// Releases all resource used by the <see cref="Xwt.Backends.ToolkitEngineBackend"/> object.
+		/// </summary>
+		public virtual void Dispose ()
+		{
+		}
+
 		/// <summary>
 		/// Asynchronously invokes <paramref name="action"/> on the engine UI thread.
 		/// </summary>

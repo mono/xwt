@@ -85,6 +85,12 @@ namespace Xwt
 			get { return toolkitType; }
 		}
 
+		internal static void DisposeAll ()
+		{
+			foreach (var t in toolkits.Values)
+				t.Backend.Dispose ();
+		}
+
 		public static Toolkit Load (string fullTypeName)
 		{
 			return Load (fullTypeName, true);

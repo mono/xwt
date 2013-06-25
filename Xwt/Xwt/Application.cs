@@ -110,6 +110,7 @@ namespace Xwt
 		public static void Dispose ()
 		{
 			ResourceManager.Dispose ();
+			Toolkit.DisposeAll ();
 		}
 
 
