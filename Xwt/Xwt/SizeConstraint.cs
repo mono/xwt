@@ -103,7 +103,7 @@ namespace Xwt
 		public override string ToString ()
 		{
 			if (IsConstrained)
-				return value.ToString ();
+				return AvailableSize.ToString ();
 			else
 				return "Unconstrained";
 		}
