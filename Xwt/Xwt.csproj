@@ -38,9 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Xwt\ReliefFrame.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Xwt\Widget.cs">
       <SubType>Component</SubType>
     </Compile>

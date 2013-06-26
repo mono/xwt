@@ -103,7 +103,6 @@ namespace Samples
 			AddSample (null, "Paneds", typeof(PanedViews));
 			AddSample (null, "Popover", typeof(PopoverSample));
 			AddSample (null, "RadioButton", typeof (RadioButtonSample));
-			AddSample (null, "ReliefFrame", typeof (ReliefFrameSample));
 			AddSample (null, "Screens", typeof (ScreensSample));
 			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
 			AddSample (null, "Scrollbar", typeof(ScrollbarSample));
