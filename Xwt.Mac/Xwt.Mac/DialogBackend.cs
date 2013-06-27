@@ -74,7 +74,12 @@ namespace Xwt.Mac
 				mainBox.Remove (dialogChild);
 			dialogChild = child != null ? ((ViewBackend) child).Frontend : null;
 			if (dialogChild != null)
-				mainBox.PackStart (dialogChild, BoxMode.FillAndExpand);
+				mainBox.PackStart (dialogChild, true);
+		}
+
+		public override void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
+			// Do nothing. Child placement will be applied to the main box that contains the child.
 		}
 
 		#region IDialogBackend implementation
