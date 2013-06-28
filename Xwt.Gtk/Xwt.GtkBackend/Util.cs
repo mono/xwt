@@ -308,7 +308,7 @@ namespace Xwt.GtkBackend
 
 		public static double GetScaleFactor (Gtk.Widget w)
 		{
-			return 1;
+			return GtkWorkarounds.GetScaleFactor (w);
 		}
 
 		public static double GetDefaultScaleFactor ()
