@@ -395,6 +395,11 @@ namespace Xwt
 			return new Image (backend.RenderWidget (widget));
 		}
 
+		public void RenderImage (object nativeWidget, object nativeContext, Image img, double x, double y)
+		{
+			backend.RenderImage (nativeWidget, nativeContext, img.ImageDescription, x, y);
+		}
+
 		internal Image GetStockIcon (string id)
 		{
 			Image img;

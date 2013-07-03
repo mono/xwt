@@ -259,6 +259,15 @@ namespace Xwt.GtkBackend
 			else
 				throw new InvalidOperationException ();
 		}
+
+		public override void RenderImage (object nativeWidget, object nativeContext, ImageDescription img, double x, double y)
+		{
+			GtkImage gim = (GtkImage)img.Backend;
+			Cairo.Context ctx = nativeContext as Cairo.Context;
+			Gtk.Widget w = (Gtk.Widget)nativeWidget;
+			if (ctx != null)
+				gim.Draw (ApplicationContext, ctx, Util.GetScaleFactor (w), x, y, img);
+		}
 	}
 	
 	public interface IGtkContainer
