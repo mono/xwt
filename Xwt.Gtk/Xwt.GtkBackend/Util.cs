@@ -67,7 +67,7 @@ namespace Xwt.GtkBackend
 				data.Text = (string)val;
 			else if (val is Xwt.Drawing.Image) {
 				var bmp = ((Image)val).ToBitmap ();
-				data.SetPixbuf (((GtkImage)Toolkit.GetBackend (bmp)).Frames[0]);
+				data.SetPixbuf (((GtkImage)Toolkit.GetBackend (bmp)).Frames[0].Pixbuf);
 			}
 			else {
 				var at = Gdk.Atom.Intern (atomType, false);

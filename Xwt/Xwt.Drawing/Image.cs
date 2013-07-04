@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using Xwt.Backends;
 
 using System.Reflection;
@@ -164,13 +165,72 @@ namespace Xwt.Drawing
 			}
 			if (altImages.Count > 0) {
 				altImages.Insert (0, img);
-				img = toolkit.ImageBackendHandler.CreateMultiSizeImage (altImages);
+				img = toolkit.ImageBackendHandler.CreateMultiResolutionImage (altImages);
 			}
 			return new Image (img, toolkit) {
 				requestedSize = reqSize
 			};
 		}
-		
+
+		public static Image CreateMultiSizeIcon (IEnumerable<Image> images)
+		{
+			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (images.Select (i => i.GetBackend ())));
+		}
+
+/*		static bool ParseImageName (string resourceId, string fileName, out int size, out int scale)
+		{
+			if (!fileName.StartsWith (resourceId)) {
+				size = -1;
+				scale = -1;
+				return false;
+			}
+
+			size = -1;
+			int i = fileName.LastIndexOf ('.');
+			if (i < 0)
+				i = fileName.Length - 1;
+
+			scale = ParseScale (fileName, ref i);
+			size = ParseSize (fileName, ref i);
+
+			return i == resourceId.Length - 1;
+		}
+
+		static int ParseScale (string s, ref int i)
+		{
+			if (i > 1 && s [i] >= '0' && s [i] <= '9' && s [i - 1] == '@') {
+				var scale = s [i] - '0';
+				i = i - 2;
+				return scale;
+			} else
+				return 1;
+		}
+
+		static int ParseSize (string s, ref int i)
+		{
+			int end = i;
+			int n = i;
+			while (n >= 0 && char.IsDigit (s[n]))
+				n--;
+			if (end == n || n < 0 || s [n] != 'x')
+				return -1;
+
+			var x = n;
+			var n2 = end;
+			n--;
+
+			while (n >= 0 && n2 > x && s[n] == s[n2]) {
+				n--;
+				n2--;
+			}
+			if (n2 == x && n >= 0 && s[n] == '_') {
+				i = n - 1;
+				return int.Parse (s.Substring (x + 1, end - x - 1));
+			}
+			else
+				return -1;
+		}*/
+
 		public static Image FromFile (string file)
 		{
 			var toolkit = Toolkit.CurrentEngine;
