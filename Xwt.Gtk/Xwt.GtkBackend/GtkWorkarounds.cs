@@ -887,6 +887,9 @@ namespace Xwt.GtkBackend
 		[DllImport (GtkInterop.LIBGOBJECT)]
 		static extern IntPtr g_object_get_data (IntPtr source, string name);
 
+		[DllImport (GtkInterop.LIBGTK)]
+		static extern IntPtr gtk_icon_set_render_icon_scaled (IntPtr handle, IntPtr style, int direction, int state, int size, IntPtr widget, IntPtr intPtr, ref double scale);
+
 		public static bool SetSourceScale (Gtk.IconSource source, double scale)
 		{
 			if (!supportsHiResIcons)
@@ -951,6 +954,25 @@ namespace Xwt.GtkBackend
 			}
 			supportsHiResIcons = false;
 			return 1;
+		}
+
+		
+		public static Gdk.Pixbuf RenderIcon (this Gtk.IconSet iconset, Gtk.Style style, Gtk.TextDirection direction, Gtk.StateType state, Gtk.IconSize size, Gtk.Widget widget, string detail, double scale)
+		{
+			if (!supportsHiResIcons)
+				return null;
+
+			try {
+				IntPtr intPtr = GLib.Marshaller.StringToPtrGStrdup (detail);
+				IntPtr o = gtk_icon_set_render_icon_scaled (iconset.Handle, (style != null) ? style.Handle : IntPtr.Zero, (int)direction, (int)state, (int)size, (widget != null) ? widget.Handle : IntPtr.Zero, intPtr, ref scale);
+				Gdk.Pixbuf result = new Gdk.Pixbuf (o);
+				GLib.Marshaller.Free (intPtr);
+				return result;
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+			supportsHiResIcons = false;
+			return null;
 		}
 	}
 	

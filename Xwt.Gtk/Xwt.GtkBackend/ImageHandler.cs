@@ -169,7 +169,13 @@ namespace Xwt.GtkBackend
 			if (iconset != null) {
 				// Find the size that better fits the requested size
 				Gtk.IconSize gsize = Util.GetBestSizeFit (width);
-				result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null);
+				result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null, scaleFactor);
+				if (result == null || result.Width < width * scaleFactor) {
+					if (result != null)
+						result.Dispose ();
+					gsize = Util.GetBestSizeFit (width * scaleFactor);
+					result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null);
+				}
 			}
 			
 			if (result == null && Gtk.IconTheme.Default.HasIcon (stockId))
