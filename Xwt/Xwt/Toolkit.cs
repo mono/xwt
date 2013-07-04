@@ -350,9 +350,9 @@ namespace Xwt
 			return new EmbeddedNativeWidget (nativeWidget, externalWidget);
 		}
 
-		public Image WrapImage (object backend)
+		public Image WrapImage (object nativeImage)
 		{
-			return new Image (backend);
+			return new Image (backend.GetBackendForImage (nativeImage));
 		}
 
 		public Context WrapContext (object nativeContext)

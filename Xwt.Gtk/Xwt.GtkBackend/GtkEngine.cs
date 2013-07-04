@@ -221,6 +221,18 @@ namespace Xwt.GtkBackend
 			win.Window = (Gtk.Window) nativeWindow;
 			return win;
 		}
+
+		public override object GetBackendForImage (object nativeImage)
+		{
+			if (nativeImage is Gdk.Pixbuf)
+				return new GtkImage ((Gdk.Pixbuf)nativeImage);
+			else if (nativeImage is string)
+				return new GtkImage ((string)nativeImage);
+			else if (nativeImage is GtkImage)
+				return nativeImage;
+			else
+				throw new NotSupportedException ();
+		}
 		
 		public override object GetNativeParentWindow (Widget w)
 		{

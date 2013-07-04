@@ -200,6 +200,11 @@ namespace Xwt.Backends
 			return nativeContext;
 		}
 
+		public virtual object GetBackendForImage (object nativeImage)
+		{
+			return nativeImage;
+		}
+
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Xwt.Backends.EngineBackend"/> handles size negotiation on its own
 		/// </summary>
