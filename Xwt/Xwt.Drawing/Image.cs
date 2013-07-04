@@ -281,6 +281,22 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
+		/// Gets the width of the image
+		/// </summary>
+		/// <value>The width.</value>
+		public double Width {
+			get { return Size.Width; }
+		}
+
+		/// <summary>
+		/// Gets the height of the image
+		/// </summary>
+		/// <value>The height.</value>
+		public double Height {
+			get { return Size.Height; }
+		}
+
+		/// <summary>
 		/// Applies an alpha filter to the image
 		/// </summary>
 		/// <returns>A new image with the alpha filter applied</returns>
