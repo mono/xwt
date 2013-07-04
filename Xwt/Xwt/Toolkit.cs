@@ -397,6 +397,7 @@ namespace Xwt
 
 		public void RenderImage (object nativeWidget, object nativeContext, Image img, double x, double y)
 		{
+			img.GetFixedSize (); // Ensure that it has a size
 			backend.RenderImage (nativeWidget, nativeContext, img.ImageDescription, x, y);
 		}
 

@@ -171,10 +171,12 @@ namespace Xwt.GtkBackend
 				Gtk.IconSize gsize = Util.GetBestSizeFit (width);
 				result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null, scaleFactor);
 				if (result == null || result.Width < width * scaleFactor) {
-					if (result != null)
-						result.Dispose ();
-					gsize = Util.GetBestSizeFit (width * scaleFactor);
-					result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null);
+					var gsize2x = Util.GetBestSizeFit (width * scaleFactor, iconset.Sizes);
+					if (gsize2x != Gtk.IconSize.Invalid && gsize2x != gsize) {
+						if (result != null)
+							result.Dispose ();
+						result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize2x, null, null);
+					}
 				}
 			}
 			
@@ -191,7 +193,7 @@ namespace Xwt.GtkBackend
 			public Gdk.Pixbuf Pixbuf { get; private set; }
 			public int Width { get; private set; }
 			public int Height { get; private set; }
-			public double Scale { get; private set; }
+			public double Scale { get; set; }
 			public ImageFrame (Gdk.Pixbuf pix) {
 				Pixbuf = pix;
 				Width = pix.Width;
@@ -355,9 +357,10 @@ namespace Xwt.GtkBackend
 			if (stockId != null) {
 				ImageFrame frame = null;
 				if (frames != null)
-					frame = frames.FirstOrDefault (f => f.Width == (int) idesc.Size.Width && f.Height == (int) idesc.Size.Height);
+					frame = frames.FirstOrDefault (f => f.Width == (int) idesc.Size.Width && f.Height == (int) idesc.Size.Height && f.Scale == scaleFactor);
 				if (frame == null) {
 					frame = new ImageFrame (ImageHandler.CreateBitmap (stockId, idesc.Size.Width, idesc.Size.Height, scaleFactor), (int)idesc.Size.Width, (int)idesc.Size.Height);
+					frame.Scale = scaleFactor;
 					AddFrame (frame);
 				}
 				DrawPixbuf (ctx, frame.Pixbuf, x, y, idesc);
