@@ -350,9 +350,9 @@ namespace Xwt
 			return new EmbeddedNativeWidget (nativeWidget, externalWidget);
 		}
 
-		public Image WrapImage (object backend)
+		public Image WrapImage (object nativeImage)
 		{
-			return new Image (backend);
+			return new Image (backend.GetBackendForImage (nativeImage));
 		}
 
 		public Context WrapContext (object nativeContext)
@@ -393,6 +393,12 @@ namespace Xwt
 		public Image RenderWidget (Widget widget)
 		{
 			return new Image (backend.RenderWidget (widget));
+		}
+
+		public void RenderImage (object nativeWidget, object nativeContext, Image img, double x, double y)
+		{
+			img.GetFixedSize (); // Ensure that it has a size
+			backend.RenderImage (nativeWidget, nativeContext, img.ImageDescription, x, y);
 		}
 
 		internal Image GetStockIcon (string id)

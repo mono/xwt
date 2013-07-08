@@ -75,7 +75,7 @@ namespace Xwt.WPFBackend
 			return new WpfImage (drawCallback);
 		}
 
-		public override object CreateMultiSizeImage (System.Collections.Generic.IEnumerable<object> images)
+		public override object CreateMultiResolutionImage (System.Collections.Generic.IEnumerable<object> images)
 		{
 			return new WpfImage (images.Cast<WpfImage> ().Select (i => i.Frames[0]));
 		}

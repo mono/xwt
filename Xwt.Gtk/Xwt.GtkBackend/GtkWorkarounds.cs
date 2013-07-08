@@ -871,6 +871,109 @@ namespace Xwt.GtkBackend
 			if (GtkMinorVersion >= 16)
 				gtk_image_menu_item_set_always_show_image (mi.Handle, true);
 		}
+
+		
+		static bool supportsHiResIcons = true;
+
+		[DllImport (GtkInterop.LIBGTK)]
+		static extern void gtk_icon_source_set_scale (IntPtr source, double scale);
+
+		[DllImport (GtkInterop.LIBGTK)]
+		static extern void gtk_icon_source_set_scale_wildcarded (IntPtr source, bool setting);
+
+		[DllImport (GtkInterop.LIBGTK)]
+		static extern double gtk_widget_get_scale_factor (IntPtr widget);
+
+		[DllImport (GtkInterop.LIBGOBJECT)]
+		static extern IntPtr g_object_get_data (IntPtr source, string name);
+
+		[DllImport (GtkInterop.LIBGTK)]
+		static extern IntPtr gtk_icon_set_render_icon_scaled (IntPtr handle, IntPtr style, int direction, int state, int size, IntPtr widget, IntPtr intPtr, ref double scale);
+
+		public static bool SetSourceScale (Gtk.IconSource source, double scale)
+		{
+			if (!supportsHiResIcons)
+				return false;
+
+			try {
+				gtk_icon_source_set_scale (source.Handle, scale);
+				return true;
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+			supportsHiResIcons = false;
+			return false;
+		}
+
+		public static bool SetSourceScaleWildcarded (Gtk.IconSource source, bool setting)
+		{
+			if (!supportsHiResIcons)
+				return false;
+
+			try {
+				gtk_icon_source_set_scale_wildcarded (source.Handle, setting);
+				return true;
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+			supportsHiResIcons = false;
+			return false;
+		}
+
+		public static Gdk.Pixbuf Get2xVariant (Gdk.Pixbuf px)
+		{
+			if (!supportsHiResIcons)
+				return null;
+
+			try {
+				IntPtr res = g_object_get_data (px.Handle, "gdk-pixbuf-2x-variant");
+				if (res != IntPtr.Zero && res != px.Handle)
+					return new Gdk.Pixbuf (res);
+				else
+					return null;
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+			supportsHiResIcons = false;
+			return null;
+		}
+
+		public static void Set2xVariant (Gdk.Pixbuf px, Gdk.Pixbuf variant2x)
+		{
+		}
+
+		public static double GetScaleFactor (Gtk.Widget w)
+		{
+			if (!supportsHiResIcons)
+				return 1;
+
+			try {
+				return gtk_widget_get_scale_factor (w.Handle);
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+			supportsHiResIcons = false;
+			return 1;
+		}
+
+		
+		public static Gdk.Pixbuf RenderIcon (this Gtk.IconSet iconset, Gtk.Style style, Gtk.TextDirection direction, Gtk.StateType state, Gtk.IconSize size, Gtk.Widget widget, string detail, double scale)
+		{
+			if (!supportsHiResIcons)
+				return null;
+
+			try {
+				IntPtr intPtr = GLib.Marshaller.StringToPtrGStrdup (detail);
+				IntPtr o = gtk_icon_set_render_icon_scaled (iconset.Handle, (style != null) ? style.Handle : IntPtr.Zero, (int)direction, (int)state, (int)size, (widget != null) ? widget.Handle : IntPtr.Zero, intPtr, ref scale);
+				Gdk.Pixbuf result = new Gdk.Pixbuf (o);
+				GLib.Marshaller.Free (intPtr);
+				return result;
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+			supportsHiResIcons = false;
+			return null;
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>

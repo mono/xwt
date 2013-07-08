@@ -80,9 +80,10 @@ namespace Xwt
 			UpdateRange ();
 		}
 		
-		internal ScrollAdjustment (IBackend backend)
+		internal ScrollAdjustment (IScrollAdjustmentBackend backend)
 		{
 			BackendHost.SetCustomBackend (backend);
+			backend.Initialize ((ScrollAdjustmentBackendHost)BackendHost);
 		}
 		
 		IScrollAdjustmentBackend Backend {

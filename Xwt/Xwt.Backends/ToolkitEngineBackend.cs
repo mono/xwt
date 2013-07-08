@@ -200,6 +200,11 @@ namespace Xwt.Backends
 			return nativeContext;
 		}
 
+		public virtual object GetBackendForImage (object nativeImage)
+		{
+			return nativeImage;
+		}
+
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Xwt.Backends.EngineBackend"/> handles size negotiation on its own
 		/// </summary>
@@ -297,6 +302,17 @@ namespace Xwt.Backends
 		public virtual object RenderWidget (Widget w)
 		{
 			throw new NotSupportedException ();
+		}
+
+		/// <summary>
+		/// Renders an image at the provided native context
+		/// </summary>
+		/// <param name="nativeContext">Native context.</param>
+		/// <param name="img">Image.</param>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		public virtual void RenderImage (object nativeWidget, object nativeContext, ImageDescription img, double x, double y)
+		{
 		}
 	}
 }
