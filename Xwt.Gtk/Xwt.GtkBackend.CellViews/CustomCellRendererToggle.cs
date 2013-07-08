@@ -57,12 +57,8 @@ namespace Xwt.GtkBackend
 
 		protected override void OnToggled (string path)
 		{
-/*			if (!view.RaiseToggled () && view.ActiveField != null) {
-				Gtk.TreeIter iter;
-				if (treeModel.GetIterFromString (out iter, path))
-					treeModel.SetValue (iter, view.ActiveField.Index, Active);
-			}
-*/			base.OnToggled (path);
+			treeModel.SetValue (iter, ((CheckBoxCellView)view).ActiveField.Index, !Active);
+			base.OnToggled (path);
 		}
 	}
 }
