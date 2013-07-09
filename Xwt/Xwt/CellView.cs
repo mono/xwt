@@ -53,7 +53,11 @@ namespace Xwt
 
 		protected T GetValue<T> (IDataField<T> field, T defaultValue = default(T))
 		{
-			return DataSource != null && field != null ? (T) DataSource.GetValue (field) : defaultValue;
+			if (DataSource != null && field != null) {
+				var result = DataSource.GetValue (field);
+				return result == DBNull.Value ? defaultValue : (T) result;
+			}
+			return defaultValue;
 		}
 
 		protected virtual void OnDataChanged ()
