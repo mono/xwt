@@ -64,6 +64,8 @@
     <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DatePickerBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\ScrollbarBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\SliderBackend.cs" />
     <Compile Include="Xwt.WPFBackend\SpinButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\RadioButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ImagePatternBackendHandler.cs" />
