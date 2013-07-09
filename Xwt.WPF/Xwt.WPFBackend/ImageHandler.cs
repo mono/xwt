@@ -101,7 +101,7 @@ namespace Xwt.WPFBackend
 			var img3 = RenderStockIcon (id, NativeStockIconOptions.ShellSize);
 			var img4 = RenderStockIcon (id, default (NativeStockIconOptions));
 
-			return ApplicationContext.Toolkit.WrapImage (CreateMultiSizeImage (new object[] { img1, img2, img3, img4 }));
+			return ApplicationContext.Toolkit.WrapImage (CreateMultiSizeIcon (new object[] { img1, img2, img3, img4 }));
 		}
 
 		object RenderStockIcon (string id, NativeStockIconOptions options)
