@@ -60,9 +60,14 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public TransformGroup CurrentTransform {
+		public SWM.Matrix CurrentTransform {
 			get {
-				return transforms;
+				TransformCollection children = transforms.Children;
+				Matrix ctm = Matrix.Identity;
+				foreach (Transform t in children) {
+					ctm.Prepend (t.Value);
+				};
+				return ctm;
 			}
 		}
 
