@@ -105,8 +105,7 @@ namespace Xwt.WPFBackend
 
 		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
 		{
-			var w = ((WidgetBackend)childBackend).Frontend;
-			widget.Margin = new Thickness (w.MarginLeft, w.MarginTop, w.MarginRight, w.MarginBottom);
+			WidgetBackend.SetChildPlacement (childBackend);
 		}
 
 		void ChildSizeChanged (object o, SizeChangedEventArgs args)

@@ -345,6 +345,25 @@ namespace Xwt.WPFBackend
 
 		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
 		{
+			SetChildPlacement (childBackend);
+		}
+
+		public static void SetChildPlacement (IWidgetBackend childBackend)
+		{
+			var w = ((WidgetBackend)childBackend);
+			w.Widget.Margin = new Thickness (w.Frontend.MarginLeft, w.Frontend.MarginTop, w.Frontend.MarginRight, w.Frontend.MarginBottom);
+			switch (w.Frontend.HorizontalPlacement) {
+				case WidgetPlacement.Start: w.Widget.HorizontalAlignment = HorizontalAlignment.Left; break;
+				case WidgetPlacement.Center: w.Widget.HorizontalAlignment = HorizontalAlignment.Center; break;
+				case WidgetPlacement.End: w.Widget.HorizontalAlignment = HorizontalAlignment.Right; break;
+				case WidgetPlacement.Fill: w.Widget.HorizontalAlignment = HorizontalAlignment.Stretch; break;
+			}
+			switch (w.Frontend.VerticalPlacement) {
+				case WidgetPlacement.Start: w.Widget.VerticalAlignment = VerticalAlignment.Top; break;
+				case WidgetPlacement.Center: w.Widget.VerticalAlignment = VerticalAlignment.Center; break;
+				case WidgetPlacement.End: w.Widget.VerticalAlignment = VerticalAlignment.Bottom; break;
+				case WidgetPlacement.Fill: w.Widget.VerticalAlignment = VerticalAlignment.Stretch; break;
+			}
 		}
 
 		public void SetMinSize (double width, double height)
