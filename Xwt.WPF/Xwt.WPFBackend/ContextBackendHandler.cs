@@ -300,7 +300,7 @@ namespace Xwt.WPFBackend
 		public override Drawing.Matrix GetCTM (object backend)
 		{
 			var c = (DrawingContext)backend;
-			var m = c.CurrentTransform.Value;
+			SWM.Matrix m = c.CurrentTransform;
 			return new Drawing.Matrix (m.M11, m.M12, m.M21, m.M22, m.OffsetX, m.OffsetY);
 		}
 
