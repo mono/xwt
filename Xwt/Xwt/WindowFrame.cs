@@ -251,6 +251,11 @@ namespace Xwt
 			get { return Backend.Visible; }
 			set { Backend.Visible = value; }
 		}
+
+		public double Opacity {
+			get { return Backend.Opacity; }
+			set { Backend.Opacity = value; }
+		}
 		
 		/// <summary>
 		/// Gets or sets a value indicating whether this window is in full screen mode

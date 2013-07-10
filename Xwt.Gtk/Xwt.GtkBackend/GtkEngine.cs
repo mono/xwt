@@ -280,6 +280,15 @@ namespace Xwt.GtkBackend
 			if (ctx != null)
 				gim.Draw (ApplicationContext, ctx, Util.GetScaleFactor (w), x, y, img);
 		}
+
+		public override ToolkitFeatures SupportedFeatures {
+			get {
+				var f = ToolkitFeatures.All & ~ToolkitFeatures.WidgetOpacity;
+				if (Platform.IsWindows)
+					f &= ~ToolkitFeatures.WindowOpacity;
+				return f;
+			}
+		}
 	}
 	
 	public interface IGtkContainer

@@ -314,6 +314,10 @@ namespace Xwt.Backends
 		public virtual void RenderImage (object nativeWidget, object nativeContext, ImageDescription img, double x, double y)
 		{
 		}
+
+		public virtual ToolkitFeatures SupportedFeatures {
+			get { return ToolkitFeatures.All; }
+		}
 	}
 }
 

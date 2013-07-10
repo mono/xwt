@@ -65,17 +65,39 @@ namespace Samples
 			store = new TreeStore (nameCol, iconCol, widgetCol);
 			samplesTree = new TreeView ();
 			samplesTree.Columns.Add ("Name", iconCol, nameCol);
-			
-			AddSample (null, "Boxes", typeof(Boxes));
-			AddSample (null, "Buttons", typeof(ButtonSample));
-			AddSample (null, "CheckBox", typeof(Checkboxes));
-			AddSample (null, "Clipboard", typeof(ClipboardSample));
-			AddSample (null, "ColorSelector", typeof(ColorSelectorSample));
-			AddSample (null, "ComboBox", typeof(ComboBoxes));
-			AddSample (null, "DatePicker", typeof(DatePickerSample));
+
+			var w = AddSample (null, "Widgets", null);
+			AddSample (w, "Boxes", typeof(Boxes));
+			AddSample (w, "Buttons", typeof(ButtonSample));
+			AddSample (w, "CheckBox", typeof(Checkboxes));
+			AddSample (w, "Clipboard", typeof(ClipboardSample));
+			AddSample (w, "ColorSelector", typeof(ColorSelectorSample));
+			AddSample (w, "ComboBox", typeof(ComboBoxes));
+			AddSample (w, "DatePicker", typeof(DatePickerSample));
 //			AddSample (null, "Designer", typeof(Designer));
-			AddSample (null, "Drag & Drop", typeof(DragDrop));
-			
+			AddSample (w, "Expander", typeof (ExpanderSample));
+			AddSample (w, "Progress bars", typeof(ProgressBarSample));
+			AddSample (w, "Frames", typeof(Frames));
+			AddSample (w, "Images", typeof(Images));
+			AddSample (w, "Labels", typeof(Labels));
+			AddSample (w, "ListBox", typeof(ListBoxSample));
+			AddSample (w, "LinkLabels", typeof(LinkLabels));
+			var listView = AddSample (w, "ListView", typeof(ListView1));
+			AddSample (listView, "Editable checkboxes", typeof(ListView2));
+			AddSample (w, "Markdown", typeof (MarkDownSample));
+			AddSample (w, "Menu", typeof(MenuSamples));
+			AddSample (w, "Notebook", typeof(NotebookSample));
+			AddSample (w, "Paneds", typeof(PanedViews));
+			AddSample (w, "Popover", typeof(PopoverSample));
+			AddSample (w, "RadioButton", typeof (RadioButtonSample));
+			AddSample (w, "Scroll View", typeof(ScrollWindowSample));
+			AddSample (w, "Scrollbar", typeof(ScrollbarSample));
+			AddSample (w, "Slider", typeof (SliderSample));
+			AddSample (w, "Spinners", typeof (Spinners));
+			AddSample (w, "Tables", typeof (Tables));
+			AddSample (w, "Text Entry", typeof (TextEntries));
+			AddSample (w, "TreeView", typeof(TreeViews));
+
 			var n = AddSample (null, "Drawing", null);
 			AddSample (n, "Canvas with Widget (Linear)", typeof (CanvasWithWidget_Linear));
 			AddSample (n, "Canvas with Widget (Radial)", typeof (CanvasWithWidget_Radial));
@@ -89,33 +111,16 @@ namespace Samples
 			AddSample (n, "Custom Drawn Image", typeof (ImageScaling));
 			AddSample (n, "Widget Rendering", typeof (WidgetRendering));
 
-			AddSample (null, "Expander", typeof (ExpanderSample));
-			AddSample (null, "Progress bars", typeof(ProgressBarSample));
-			AddSample (null, "Frames", typeof(Frames));
-			AddSample (null, "Images", typeof(Images));
-			AddSample (null, "Labels", typeof(Labels));
-			AddSample (null, "ListBox", typeof(ListBoxSample));
-			AddSample (null, "LinkLabels", typeof(LinkLabels));
-			var listView = AddSample (null, "ListView", typeof(ListView1));
-			AddSample (listView, "Editable checkboxes", typeof(ListView2));
-			AddSample (null, "Markdown", typeof (MarkDownSample));
-			AddSample (null, "Menu", typeof(MenuSamples));
-			AddSample (null, "Notebook", typeof(NotebookSample));
-			AddSample (null, "Paneds", typeof(PanedViews));
-			AddSample (null, "Popover", typeof(PopoverSample));
-			AddSample (null, "RadioButton", typeof (RadioButtonSample));
-			AddSample (null, "Screens", typeof (ScreensSample));
-			AddSample (null, "Scroll View", typeof(ScrollWindowSample));
-			AddSample (null, "Scrollbar", typeof(ScrollbarSample));
-			AddSample (null, "Slider", typeof (SliderSample));
-			AddSample (null, "Spinners", typeof (Spinners));
-			AddSample (null, "Tables", typeof (Tables));
-			AddSample (null, "Text Entry", typeof (TextEntries));
-			AddSample (null, "Tooltips", typeof(Tooltips));
-			AddSample (null, "TreeView", typeof(TreeViews));
-			AddSample (null, "WidgetEvents", typeof(WidgetEvents));
+			var wf = AddSample (null, "Widget Features", null);
+			AddSample (wf, "Drag & Drop", typeof(DragDrop));
+			AddSample (wf, "Widget Events", typeof(WidgetEvents));
+			AddSample (wf, "Opacity", typeof(OpacitySample));
+			AddSample (wf, "Tooltips", typeof(Tooltips));
+
 			AddSample (null, "Windows", typeof(Windows));
 			
+			AddSample (null, "Screens", typeof (ScreensSample));
+
 			samplesTree.DataSource = store;
 			
 			box.Panel1.Content = samplesTree;

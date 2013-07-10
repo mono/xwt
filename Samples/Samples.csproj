@@ -177,6 +177,7 @@
     <Compile Include="Samples\ListView2.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Samples\OpacitySample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

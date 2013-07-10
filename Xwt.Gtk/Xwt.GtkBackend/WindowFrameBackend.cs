@@ -43,7 +43,18 @@ namespace Xwt.GtkBackend
 		
 		public Gtk.Window Window {
 			get { return window; }
-			set { window = value; }
+			set {
+				if (window != null)
+					window.Realized -= HandleRealized;
+				window = value;
+				window.Realized += HandleRealized;
+			}
+		}
+
+		void HandleRealized (object sender, EventArgs e)
+		{
+			if (opacity != 1d)
+				window.GdkWindow.Opacity = opacity;
 		}
 		
 		protected WindowFrame Frontend {
@@ -148,6 +159,18 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				window.Visible = value;
+			}
+		}
+
+		double opacity = 1d;
+		double IWindowFrameBackend.Opacity {
+			get {
+				return opacity;
+			}
+			set {
+				opacity = value;
+				if (Window.GdkWindow != null)
+					Window.GdkWindow.Opacity = value;
 			}
 		}
 

@@ -123,7 +123,26 @@ namespace Xwt.GtkBackend
 					eventBox.Visible = value;
 			}
 		}
-		
+
+		double opacity = 1d;
+		public double Opacity {
+			get { return opacity; }
+			set { opacity = value; }
+		}
+
+		void RunWhenRealized (Action a)
+		{
+			if (Widget.IsRealized)
+				a ();
+			else {
+				EventHandler h = null;
+				h = delegate {
+					a ();
+				};
+				EventsRootWidget.Realized += h;
+			}
+		}
+
 		public virtual bool Sensitive {
 			get { return Widget.Sensitive; }
 			set {
@@ -168,6 +187,8 @@ namespace Xwt.GtkBackend
 		
 		static Dictionary<CursorType,Gdk.Cursor> gtkCursors = new Dictionary<CursorType, Gdk.Cursor> ();
 		
+		Gdk.Cursor gdkCursor;
+
 		public void SetCursor (CursorType cursor)
 		{
 			AllocEventBox ();
@@ -199,15 +220,28 @@ namespace Xwt.GtkBackend
 				
 				gtkCursors [cursor] = gc = new Gdk.Cursor (ctype);
 			}
-			if (EventsRootWidget.GdkWindow == null) {
-				EventHandler h = null;
-				h = delegate {
-					EventsRootWidget.GdkWindow.Cursor = gc;
-					EventsRootWidget.Realized -= h;
-				};
-				EventsRootWidget.Realized += h;
-			} else
+
+			gdkCursor = gc;
+
+			if (EventsRootWidget.GdkWindow == null)
+				SubscribeRealizedEvent ();
+			else
 				EventsRootWidget.GdkWindow.Cursor = gc;
+		}
+
+		bool realizedEventSubscribed;
+		void SubscribeRealizedEvent ()
+		{
+			if (!realizedEventSubscribed) {
+				realizedEventSubscribed = true;
+				EventsRootWidget.Realized += OnRealized;
+			}
+		}
+
+		void OnRealized (Object s, EventArgs e)
+		{
+			if (gdkCursor != null)
+				EventsRootWidget.GdkWindow.Cursor = gdkCursor;
 		}
 		
 		~WidgetBackend ()

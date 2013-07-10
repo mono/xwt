@@ -110,6 +110,11 @@ namespace Xwt.Mac
 			}
 		}
 
+		public double Opacity {
+			get { return AlphaValue; }
+			set { AlphaValue = (float)value; }
+		}
+
 		public bool Sensitive {
 			get {
 				return sensitive;

@@ -476,6 +476,12 @@ namespace Xwt
 			get { return Backend.HasFocus; }
 		}
 		
+		[DefaultValue (1d)]
+		public double Opacity {
+			get { return Backend.Opacity; }
+			set { Backend.Opacity = value; }
+		}
+
 		[DefaultValue (null)]
 		public string Name { get; set; }
 		

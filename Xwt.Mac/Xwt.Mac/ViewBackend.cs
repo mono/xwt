@@ -130,6 +130,11 @@ namespace Xwt.Mac
 			get { return !Widget.Hidden; }
 			set { Widget.Hidden = !value; }
 		}
+
+		public double Opacity {
+			get { return Widget.AlphaValue; }
+			set { Widget.AlphaValue = (float)value; }
+		}
 		
 		public virtual bool Sensitive {
 			get { return sensitive; }

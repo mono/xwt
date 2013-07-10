@@ -32,7 +32,7 @@ using System.Linq;
 
 namespace Xwt
 {
-	public class Toolkit: IFrontend
+	public sealed class Toolkit: IFrontend
 	{
 		static Toolkit currentEngine;
 		static Dictionary<Type, Toolkit> toolkits = new Dictionary<Type, Toolkit> ();
@@ -401,6 +401,10 @@ namespace Xwt
 			backend.RenderImage (nativeWidget, nativeContext, img.ImageDescription, x, y);
 		}
 
+		public ToolkitFeatures SupportedFeatures {
+			get { return backend.SupportedFeatures; }
+		}
+
 		internal Image GetStockIcon (string id)
 		{
 			Image img;
@@ -428,6 +432,14 @@ namespace Xwt
 		{
 			BackendHost.SetCustomBackend (backend);
 		}
+	}
+	
+	[Flags]
+	public enum ToolkitFeatures: int
+	{
+		WidgetOpacity = 1,
+		WindowOpacity = 2,
+		All = WidgetOpacity | WindowOpacity
 	}
 }
 

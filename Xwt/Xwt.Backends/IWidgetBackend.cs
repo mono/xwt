@@ -48,6 +48,8 @@ namespace Xwt.Backends
 		bool Sensitive { get; set; }
 		bool CanGetFocus { get; set; }
 		bool HasFocus { get; }
+		double Opacity { get; set; }
+
 		Size Size { get; }
 		Point ConvertToScreenCoordinates (Point widgetCoordinates);
 		
