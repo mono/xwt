@@ -418,6 +418,7 @@
     <Compile Include="Xwt.Motion\Easing.cs" />
     <Compile Include="Xwt.Motion\Tweener.cs" />
     <Compile Include="Xwt.Motion\IAnimatable.cs" />
+    <Compile Include="Xwt\WindowLocation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
