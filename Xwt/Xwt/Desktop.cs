@@ -108,11 +108,16 @@ namespace Xwt
 		/// <value>The screens.</value>
 		public static ReadOnlyCollection<Screen> Screens {
 			get {
-				if (screens == null) {
-					screens = Toolkit.CurrentEngine.DesktopBackend.GetScreens ().Select (s => new Screen (s)).ToArray ();
-					primary = screens.FirstOrDefault (s => s.IsPrimary);
-				}
+				SetupScreens ();
 				return new ReadOnlyCollection<Screen> (screens);
+			}
+		}
+
+		static void SetupScreens ()
+		{
+			if (screens == null) {
+				screens = Toolkit.CurrentEngine.DesktopBackend.GetScreens ().Select (s => new Screen (s)).ToArray ();
+				primary = screens.FirstOrDefault (s => s.IsPrimary);
 			}
 		}
 
@@ -124,6 +129,7 @@ namespace Xwt
 		/// </remarks>
 		public static Screen PrimaryScreen {
 			get {
+				SetupScreens ();
 				return primary;
 			}
 		}
@@ -161,7 +167,7 @@ namespace Xwt
 		/// <param name="y">The y coordinate.</param>
 		public static Screen GetScreenAtLocation (double x, double y)
 		{
-			return screens.FirstOrDefault (s => s.Bounds.Contains (x, y));
+			return Screens.FirstOrDefault (s => s.Bounds.Contains (x, y));
 		}
 
 		internal static Screen GetScreen (object sb)
