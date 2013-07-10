@@ -413,6 +413,11 @@
     <Compile Include="Xwt\HSlider.cs" />
     <Compile Include="Xwt.Backends\ResourceManager.cs" />
     <Compile Include="Xwt.Backends\DisposableResourceBackendHandler.cs" />
+    <Compile Include="Xwt.Motion\Animatable.cs" />
+    <Compile Include="Xwt.Motion\Animation.cs" />
+    <Compile Include="Xwt.Motion\AnimationExtensions.cs" />
+    <Compile Include="Xwt.Motion\Easing.cs" />
+    <Compile Include="Xwt.Motion\Tweener.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -426,4 +431,7 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Xwt.Motion\" />
+  </ItemGroup>
 </Project>
