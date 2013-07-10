@@ -52,7 +52,7 @@ namespace Xwt.GtkBackend
 
 		object ICellDataSource.GetValue (IDataField field)
 		{
-			return treeModel.GetValue (iter, field.Index);
+			return CellUtil.GetModelValue (treeModel, iter, field.Index);
 		}
 
 		#endregion

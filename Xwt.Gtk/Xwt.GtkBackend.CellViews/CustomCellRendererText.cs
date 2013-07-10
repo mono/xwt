@@ -61,14 +61,16 @@ namespace Xwt.GtkBackend
 		
 		public object GetValue (IDataField field)
 		{
-			return treeModel.GetValue (iter, field.Index);
+			return CellUtil.GetModelValue (treeModel, iter, field.Index);
 		}
 
 		protected override void OnEdited (string path, string new_text)
 		{
-			Gtk.TreeIter iter;
-			if (treeModel.GetIterFromString (out iter, path))
-				treeModel.SetValue (iter, ((TextCellView)view).TextField.Index, new_text);
+			if (!view.RaiseTextChanged () && view.TextField != null) {
+				Gtk.TreeIter iter;
+				if (treeModel.GetIterFromString (out iter, path))
+					CellUtil.SetModelValue (treeModel, iter, view.TextField.Index, view.TextField.FieldType, new_text);
+			}
 			base.OnEdited (path, new_text);
 		}
 	}

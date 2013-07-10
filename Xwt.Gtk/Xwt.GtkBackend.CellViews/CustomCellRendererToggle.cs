@@ -52,7 +52,7 @@ namespace Xwt.GtkBackend
 
 		public object GetValue (IDataField field)
 		{
-			return treeModel.GetValue (iter, field.Index);
+			return CellUtil.GetModelValue (treeModel, iter, field.Index);
 		}
 
 		protected override void OnToggled (string path)
@@ -60,7 +60,7 @@ namespace Xwt.GtkBackend
 			if (!view.RaiseToggled () && view.ActiveField != null) {
 				Gtk.TreeIter iter;
 				if (treeModel.GetIterFromString (out iter, path))
-					treeModel.SetValue (iter, view.ActiveField.Index, !Active);
+					CellUtil.SetModelValue (treeModel, iter, view.ActiveField.Index, view.ActiveField.FieldType, !Active);
 			}
 			base.OnToggled (path);
 		}

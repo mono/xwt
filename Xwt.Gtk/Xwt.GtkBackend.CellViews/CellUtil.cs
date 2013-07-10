@@ -103,6 +103,27 @@ namespace Xwt.GtkBackend
 			}
 			throw new NotImplementedException ();
 		}
+
+		public static void SetModelValue (Gtk.TreeModel store, Gtk.TreeIter it, int column, Type type, object value)
+		{
+			if (type == typeof(ObjectWrapper) && value != null)
+				store.SetValue (it, column, new ObjectWrapper (value));
+			else if (value is string)
+				store.SetValue (it, column, (string)value);
+			else
+				store.SetValue (it, column, value ?? DBNull.Value);
+		}
+
+		public static object GetModelValue (Gtk.TreeModel store, Gtk.TreeIter it, int column)
+		{
+			object val = store.GetValue (it, column);
+			if (val is DBNull)
+				return null;
+			else if (val is ObjectWrapper)
+				return ((ObjectWrapper)val).Object;
+			else
+				return val;
+		}
 	}
 	
 	public interface ICellRendererTarget
