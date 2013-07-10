@@ -168,6 +168,11 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public double Opacity {
+			get { return Widget.Opacity; }
+			set { Widget.Opacity = value; }
+		}
+
 		FontData GetWidgetFont ()
 		{
 			if (!(Widget is Control)) {
