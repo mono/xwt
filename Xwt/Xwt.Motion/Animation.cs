@@ -61,7 +61,7 @@ namespace Xwt.Motion
 			get { return children; }
 		}
 		
-		public void Commit (Animatable owner, string name, uint rate = 16, uint length = 250, 
+		public void Commit (IAnimatable owner, string name, uint rate = 16, uint length = 250, 
 		                    Easing easing = null, Action<double, bool> finished = null, Func<bool> repeat = null)
 		{
 			owner.Animate (name, this, rate, length, easing, finished, repeat);

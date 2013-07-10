@@ -37,7 +37,7 @@ namespace Xwt.Motion
 			public Easing Easing { get; set; }
 			public uint Rate { get; set; }
 			public uint Length { get; set; }
-			public Animatable Owner { get; set; }
+			public IAnimatable Owner { get; set; }
 			public Action<double> callback;
 			public Action<double, bool> finished;
 			public Func<bool> repeat;
@@ -53,7 +53,7 @@ namespace Xwt.Motion
 			kinetics = new Dictionary<string, int> ();
 		}
 
-		public static void AnimateKinetic (this Animatable self, string name, Func<double, double, bool> callback, double velocity, double drag, Action finished = null)
+		public static void AnimateKinetic (this IAnimatable self, string name, Func<double, double, bool> callback, double velocity, double drag, Action finished = null)
 		{
 			self.AbortAnimation (name);
 			name += self.GetHashCode ().ToString ();
@@ -83,7 +83,7 @@ namespace Xwt.Motion
 			kinetics [name] = tick;
 		}
 
-		public static void Animate (this Animatable self, string name, Animation animation, uint rate = 16, uint length = 250, 
+		public static void Animate (this IAnimatable self, string name, Animation animation, uint rate = 16, uint length = 250, 
 		                           Easing easing = null, Action<double, bool> finished = null, Func<bool> repeat = null)
 		{
 			self.Animate (name, animation.GetCallback (), rate, length, easing, finished, repeat);
@@ -95,19 +95,19 @@ namespace Xwt.Motion
 			return x => start + (target - start) * x;
 		}
 		
-		public static void Animate (this Animatable self, string name, Action<double> callback, double start, double end, uint rate = 16, uint length = 250, 
+		public static void Animate (this IAnimatable self, string name, Action<double> callback, double start, double end, uint rate = 16, uint length = 250, 
 		                            Easing easing = null, Action<double, bool> finished = null, Func<bool> repeat = null)
 		{
 			self.Animate<double> (name, Interpolate (start, end), callback, rate, length, easing, finished, repeat);
 		}
 		
-		public static void Animate (this Animatable self, string name, Action<double> callback, uint rate = 16, uint length = 250, 
+		public static void Animate (this IAnimatable self, string name, Action<double> callback, uint rate = 16, uint length = 250, 
 		                            Easing easing = null, Action<double, bool> finished = null, Func<bool> repeat = null)
 		{
 			self.Animate<double> (name, x => x, callback, rate, length, easing, finished, repeat);
 		}
 		
-		public static void Animate<T> (this Animatable self, string name, Func<double, T> transform, Action<T> callback, uint rate = 16, uint length = 250, 
+		public static void Animate<T> (this IAnimatable self, string name, Func<double, T> transform, Action<T> callback, uint rate = 16, uint length = 250, 
 		                               Easing easing = null, Action<T, bool> finished = null, Func<bool> repeat = null)
 		{
 			if (transform == null)
@@ -149,7 +149,7 @@ namespace Xwt.Motion
 			tweener.Start ();
 		}
 		
-		public static bool AbortAnimation (this Animatable self, string handle)
+		public static bool AbortAnimation (this IAnimatable self, string handle)
 		{
 			handle += self.GetHashCode ().ToString ();
 			if (animations.ContainsKey (handle)) {
@@ -170,7 +170,7 @@ namespace Xwt.Motion
 			return false;
 		}
 		
-		public static bool AnimationIsRunning (this Animatable self, string handle)
+		public static bool AnimationIsRunning (this IAnimatable self, string handle)
 		{
 			handle += self.GetHashCode ().ToString ();
 			return animations.ContainsKey (handle);

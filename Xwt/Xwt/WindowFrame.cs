@@ -54,11 +54,12 @@ using Xwt.Backends;
 
 using System.ComponentModel;
 using Xwt.Drawing;
+using Xwt.Motion;
 
 namespace Xwt
 {
 	[BackendType (typeof(IWindowFrameBackend))]
-	public class WindowFrame: XwtComponent
+	public class WindowFrame: XwtComponent, IAnimatable
 	{
 		EventHandler boundsChanged;
 		EventHandler shown;
@@ -369,6 +370,14 @@ namespace Xwt
 		{
 		}
 		
+		void IAnimatable.BatchBegin ()
+		{
+		}
+
+		void IAnimatable.BatchCommit ()
+		{
+		}
+
 		public event EventHandler BoundsChanged {
 			add {
 				boundsChanged += value;

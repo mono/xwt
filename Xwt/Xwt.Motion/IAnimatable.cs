@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 namespace Xwt.Motion
 {
-	public interface Animatable
+	public interface IAnimatable
 	{
 		void BatchBegin ();
 		void BatchCommit ();

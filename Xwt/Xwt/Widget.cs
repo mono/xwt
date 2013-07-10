@@ -35,11 +35,12 @@ using Xwt.Drawing;
 using System.Reflection;
 using System.Xaml;
 using System.Linq;
+using Xwt.Motion;
 
 namespace Xwt
 {
 	[BackendType (typeof(IWidgetBackend))]
-	public abstract class Widget: XwtComponent, IWidgetSurface
+	public abstract class Widget: XwtComponent, IWidgetSurface, IAnimatable
 	{
 		static bool DebugWidgetLayout = false;
 		static int DebugWidgetLayoutIndent = 0;
@@ -1250,6 +1251,14 @@ namespace Xwt
 				((XwtWidgetBackend)w.Backend).Parent = null;
 		}
 		
+		void IAnimatable.BatchBegin ()
+		{
+		}
+
+		void IAnimatable.BatchCommit ()
+		{
+		}
+
 		/// <summary>
 		/// Raised when the mouse is moved over the widget in a drag&drop operation
 		/// </summary>
