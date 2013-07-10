@@ -31,6 +31,7 @@ namespace Xwt.Backends
 	{
 		bool Active { get; }
 		bool Editable { get; }
+
 		bool RaiseToggled ();
 
 		IDataField<bool> ActiveField { get; }

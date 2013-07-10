@@ -89,5 +89,20 @@ namespace Xwt
 				editable = value;
 			}
 		}
+
+		/// <summary>
+		/// Occurs when the text of the cell is modified.
+		/// </summary>
+		public event EventHandler<WidgetEventArgs> TextChanged;
+
+		bool ITextCellViewFrontend.RaiseTextChanged ()
+		{
+			if (TextChanged != null) {
+				var args = new WidgetEventArgs ();
+				TextChanged (this, args);
+				return args.Handled;
+			}
+			return false;
+		}
 	}
 }
