@@ -32,6 +32,11 @@ namespace Xwt
 {
 	public class CellView: ICellViewFrontend
 	{
+		/// <summary>
+		/// Gets the default cell view for the provided field type
+		/// </summary>
+		/// <returns>The default cell view.</returns>
+		/// <param name="field">Field.</param>
 		public static CellView GetDefaultCellView (IDataField field)
 		{
 			if (field.Index == -1)
@@ -43,6 +48,10 @@ namespace Xwt
 			return new TextCellView (field);
 		}
 
+		/// <summary>
+		/// Data source object to be used to get the data with which to fill the cell
+		/// </summary>
+		/// <value>The data source.</value>
 		protected ICellDataSource DataSource { get; private set; }
 
 		void ICellViewFrontend.Initialize (ICellDataSource source)
@@ -51,6 +60,13 @@ namespace Xwt
 			OnDataChanged ();
 		}
 
+		/// <summary>
+		/// Gets the value of a field
+		/// </summary>
+		/// <returns>The value.</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="defaultValue">Default value to be returned if the field has no value</param>
+		/// <typeparam name="T">Type of the value</typeparam>
 		protected T GetValue<T> (IDataField<T> field, T defaultValue = default(T))
 		{
 			if (DataSource != null && field != null) {
@@ -60,6 +76,9 @@ namespace Xwt
 			return defaultValue;
 		}
 
+		/// <summary>
+		/// Invoked when the data source changes
+		/// </summary>
 		protected virtual void OnDataChanged ()
 		{
 		}

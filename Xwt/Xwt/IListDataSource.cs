@@ -115,8 +115,16 @@ namespace Xwt
 		}
 	}
 
+	/// <summary>
+	/// Data source for cell views
+	/// </summary>
 	public interface ICellDataSource
 	{
+		/// <summary>
+		/// Gets the value of a field
+		/// </summary>
+		/// <returns>The value.</returns>
+		/// <param name="field">Field.</param>
 		object GetValue (IDataField field);
 	}
 }
