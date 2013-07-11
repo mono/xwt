@@ -348,7 +348,8 @@ namespace Xwt.WPFBackend
 
 			child.Arrange (new Rect (0, 0, childSize.Width, childSize.Height));
 			child.UpdateLayout ();
-			((IWidgetSurface)(((IWpfWidget)child).Backend.Frontend)).Reallocate ();
+			if (child is IWpfWidget)
+				((IWidgetSurface)(((IWpfWidget)child).Backend.Frontend)).Reallocate ();
 
 			return finalSize;
 		}
