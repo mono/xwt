@@ -53,17 +53,47 @@ namespace Xwt.GtkBackend
 		static extern bool objc_msgSend_bool (IntPtr klass, IntPtr selector);
 		
 		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
-		static extern bool objc_msgSend_int_int (IntPtr klass, IntPtr selector, int arg);
+		static extern int objc_msgSend_NSInt32_NSInt32 (IntPtr klass, IntPtr selector, int arg);
+
+		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
+		static extern long objc_msgSend_NSInt64_NSInt64 (IntPtr klass, IntPtr selector, long arg);
 		
 		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
-		static extern int objc_msgSend_int (IntPtr klass, IntPtr selector);
+		static extern uint objc_msgSend_NSUInt32 (IntPtr klass, IntPtr selector);
+
+		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
+		static extern ulong objc_msgSend_NSUInt64 (IntPtr klass, IntPtr selector);
 		
 		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend_stret")]
-		static extern void objc_msgSend_RectangleF (out RectangleF rect, IntPtr klass, IntPtr selector);
+		static extern void objc_msgSend_CGRect32 (out CGRect32 rect, IntPtr klass, IntPtr selector);
+
+		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend_stret")]
+		static extern void objc_msgSend_CGRect64 (out CGRect64 rect, IntPtr klass, IntPtr selector);
 		
+		[DllImport (GtkInterop.LIBGTK)]
+		static extern IntPtr gdk_quartz_window_get_nswindow (IntPtr window);
+
+		struct CGRect32
+		{
+			public float X, Y, Width, Height;
+		}
+
+		struct CGRect64
+		{
+			public double X, Y, Width, Height;
+
+			public CGRect64 (CGRect32 rect32)
+			{
+				X = rect32.X;
+				Y = rect32.Y;
+				Width = rect32.Width;
+				Height = rect32.Height;
+			}
+		}
+
 		static IntPtr cls_NSScreen;
 		static IntPtr sel_screens, sel_objectEnumerator, sel_nextObject, sel_frame, sel_visibleFrame,
-		sel_requestUserAttention, sel_activateIgnoringOtherApps;
+		sel_requestUserAttention, sel_setHasShadow, sel_invalidateShadow, sel_activateIgnoringOtherApps;
 		static IntPtr sharedApp;
 		static IntPtr cls_NSEvent;
 		static IntPtr sel_modifierFlags;
@@ -127,6 +157,8 @@ namespace Xwt.GtkBackend
 			sel_requestUserAttention = sel_registerName ("requestUserAttention:");
 			sel_modifierFlags = sel_registerName ("modifierFlags");
 			sel_activateIgnoringOtherApps = sel_registerName ("activateIgnoringOtherApps:");
+			sel_setHasShadow = sel_registerName ("setHasShadow:");
+			sel_invalidateShadow = sel_registerName ("invalidateShadow");
 			sharedApp = objc_msgSend_IntPtr (objc_getClass ("NSApplication"), sel_registerName ("sharedApplication"));
 		}
 		
@@ -136,7 +168,6 @@ namespace Xwt.GtkBackend
 			IntPtr iter = objc_msgSend_IntPtr (array, sel_objectEnumerator);
 			Gdk.Rectangle ygeometry = screen.GetMonitorGeometry (monitor);
 			Gdk.Rectangle xgeometry = screen.GetMonitorGeometry (0);
-			RectangleF visible, frame;
 			IntPtr scrn;
 			int i = 0;
 			
@@ -145,9 +176,19 @@ namespace Xwt.GtkBackend
 			
 			if (scrn == IntPtr.Zero)
 				return screen.GetMonitorGeometry (monitor);
-			
-			objc_msgSend_RectangleF (out visible, scrn, sel_visibleFrame);
-			objc_msgSend_RectangleF (out frame, scrn, sel_frame);
+
+			CGRect64 visible, frame;
+
+			if (IntPtr.Size == 8) {
+				objc_msgSend_CGRect64 (out visible, scrn, sel_visibleFrame);
+				objc_msgSend_CGRect64 (out frame, scrn, sel_frame);
+			} else {
+				CGRect32 visible32, frame32;
+				objc_msgSend_CGRect32 (out visible32, scrn, sel_visibleFrame);
+				objc_msgSend_CGRect32 (out frame32, scrn, sel_frame);
+				visible = new CGRect64 (visible32);
+				frame = new CGRect64 (frame32);
+			}
 			
 			// Note: Frame and VisibleFrame rectangles are relative to monitor 0, but we need absolute
 			// coordinates.
@@ -160,11 +201,11 @@ namespace Xwt.GtkBackend
 			//
 			// We need to swap the Y offset with the menu height because our callers expect the Y offset
 			// to be from the top of the screen, not from the bottom of the screen.
-			float x, y, width, height;
+			double x, y, width, height;
 			
 			if (visible.Height < frame.Height) {
-				float dockHeight = visible.Y - frame.Y;
-				float menubarHeight = (frame.Height - visible.Height) - dockHeight;
+				double dockHeight = visible.Y - frame.Y;
+				double menubarHeight = (frame.Height - visible.Height) - dockHeight;
 				
 				height = frame.Height - menubarHeight - dockHeight;
 				y = ygeometry.Y + menubarHeight;
@@ -183,16 +224,94 @@ namespace Xwt.GtkBackend
 		static void MacRequestAttention (bool critical)
 		{
 			int kind = critical?  NSCriticalRequest : NSInformationalRequest;
-			objc_msgSend_int_int (sharedApp, sel_requestUserAttention, kind);
+			if (IntPtr.Size == 8) {
+				objc_msgSend_NSInt64_NSInt64 (sharedApp, sel_requestUserAttention, kind);
+			} else {
+				objc_msgSend_NSInt32_NSInt32 (sharedApp, sel_requestUserAttention, kind);
+			}
 		}
 		
 		public static void GrabDesktopFocus ()
 		{
 			objc_msgSend_void_bool (sharedApp, sel_activateIgnoringOtherApps, true);
 		}
+
+		// Note: we can't reuse RectangleF because the layout is different...
+		[StructLayout (LayoutKind.Sequential)]
+		struct Rect {
+			public int Left;
+			public int Top;
+			public int Right;
+			public int Bottom;
+
+			public int X { get { return Left; } }
+			public int Y { get { return Top; } }
+			public int Width { get { return Right - Left; } }
+			public int Height { get { return Bottom - Top; } }
+		}
+
+		const int MonitorInfoFlagsPrimary = 0x01;
+
+		[StructLayout (LayoutKind.Sequential)]
+		unsafe struct MonitorInfo {
+			public int Size;
+			public Rect Frame;         // Monitor
+			public Rect VisibleFrame;  // Work
+			public int Flags;
+			public fixed byte Device[32];
+		}
+
+		[UnmanagedFunctionPointer (CallingConvention.Winapi)]
+		delegate int EnumMonitorsCallback (IntPtr hmonitor, IntPtr hdc, IntPtr prect, IntPtr user_data);
+
+		[DllImport ("User32.dll")]
+		extern static int EnumDisplayMonitors (IntPtr hdc, IntPtr clip, EnumMonitorsCallback callback, IntPtr user_data);
+
+		[DllImport ("User32.dll")]
+		extern static int GetMonitorInfoA (IntPtr hmonitor, ref MonitorInfo info);
+
+		static Gdk.Rectangle WindowsGetUsableMonitorGeometry (Gdk.Screen screen, int monitor_id)
+		{
+			Gdk.Rectangle geometry = screen.GetMonitorGeometry (monitor_id);
+			List<MonitorInfo> screens = new List<MonitorInfo> ();
+
+			EnumDisplayMonitors (IntPtr.Zero, IntPtr.Zero, delegate (IntPtr hmonitor, IntPtr hdc, IntPtr prect, IntPtr user_data) {
+				var info = new MonitorInfo ();
+
+				unsafe {
+					info.Size = sizeof (MonitorInfo);
+				}
+
+				GetMonitorInfoA (hmonitor, ref info);
+
+				// In order to keep the order the same as Gtk, we need to put the primary monitor at the beginning.
+				if ((info.Flags & MonitorInfoFlagsPrimary) != 0)
+					screens.Insert (0, info);
+				else
+					screens.Add (info);
+
+				return 1;
+			}, IntPtr.Zero);
+
+			MonitorInfo monitor = screens[monitor_id];
+			Rect visible = monitor.VisibleFrame;
+			Rect frame = monitor.Frame;
+
+			// Rebase the VisibleFrame off of Gtk's idea of this monitor's geometry (since they use different coordinate systems)
+			int x = geometry.X + (visible.Left - frame.Left);
+			int width = visible.Width;
+
+			int y = geometry.Y + (visible.Top - frame.Top);
+			int height = visible.Height;
+
+			return new Gdk.Rectangle (x, y, width, height);
+		}
 		
 		public static Gdk.Rectangle GetUsableMonitorGeometry (this Gdk.Screen screen, int monitor)
 		{
+			if (Platform.IsWindows)
+				return WindowsGetUsableMonitorGeometry (screen, monitor);
+
 			if (Platform.IsMac)
 				return MacGetUsableMonitorGeometry (screen, monitor);
 			
@@ -255,7 +374,12 @@ namespace Xwt.GtkBackend
 		{
 			if (Platform.IsMac) {
 				Gdk.ModifierType mtype = Gdk.ModifierType.None;
-				int mod = objc_msgSend_int (cls_NSEvent, sel_modifierFlags);
+				ulong mod;
+				if (IntPtr.Size == 8) {
+					mod = objc_msgSend_NSUInt64 (cls_NSEvent, sel_modifierFlags);
+				} else {
+					mod = objc_msgSend_NSUInt32 (cls_NSEvent, sel_modifierFlags);
+				}
 				if ((mod & (1 << 17)) != 0)
 					mtype |= Gdk.ModifierType.ShiftMask;
 				if ((mod & (1 << 18)) != 0)
@@ -327,7 +451,8 @@ namespace Xwt.GtkBackend
 			if (parent != null) {
 				menu.AttachToWidget (parent, null);
 				menu.Hidden += (sender, e) => {
-					menu.Detach ();
+					if (menu.AttachWidget != null)
+						menu.Detach ();
 				};
 				posFunc = delegate (Gtk.Menu m, out int x, out int y, out bool pushIn) {
 					Gdk.Window window = evt != null? evt.Window : parent.GdkWindow;
@@ -533,6 +658,11 @@ namespace Xwt.GtkBackend
 					state = (state & ~ctrlAlt) | Gdk.ModifierType.Mod2Mask;
 					group = 1;
 				}
+				// Case: Caps lock on + shift + key
+				// See: Bug 8069 - [UI Refresh] If caps lock is on, holding the shift key prevents typed characters from appearing
+				if (state.HasFlag (Gdk.ModifierType.ShiftMask)) {
+					state &= ~Gdk.ModifierType.ShiftMask;
+				}
 			}
 			
 			keymap.TranslateKeyboardState (hardware_keycode, state, group, out keyval, out effective_group,
@@ -671,6 +801,26 @@ namespace Xwt.GtkBackend
 		public static int BottomInside (this Gdk.Rectangle rect)
 		{
 			return rect.Y + rect.Height - 1;
+		}
+
+		/// <summary>
+		/// Shows or hides the shadow of the window rendered by the native toolkit
+		/// </summary>
+		public static void ShowNativeShadow (Gtk.Window window, bool show)
+		{
+			if (Platform.IsMac) {
+				var ptr = gdk_quartz_window_get_nswindow (window.GdkWindow.Handle);
+				objc_msgSend_void_bool (ptr, sel_setHasShadow, show);
+			}
+		}
+
+		public static void UpdateNativeShadow (Gtk.Window window)
+		{
+			if (!Platform.IsMac)
+				return;
+
+			var ptr = gdk_quartz_window_get_nswindow (window.GdkWindow.Handle);
+			objc_msgSend_IntPtr (ptr, sel_invalidateShadow);
 		}
 
 		[DllImport ("gtksharpglue-2", CallingConvention = CallingConvention.Cdecl)]
@@ -863,6 +1013,61 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		static bool canSetOverlayScrollbarPolicy = true;
+
+		[DllImport (GtkInterop.LIBGTK)]
+		static extern void gtk_scrolled_window_set_overlay_policy (IntPtr sw, Gtk.PolicyType hpolicy, Gtk.PolicyType vpolicy);
+
+		[DllImport (GtkInterop.LIBGTK)]
+		static extern void gtk_scrolled_window_get_overlay_policy (IntPtr sw, out Gtk.PolicyType hpolicy, out Gtk.PolicyType vpolicy);
+
+		public static void SetOverlayScrollbarPolicy (Gtk.ScrolledWindow sw, Gtk.PolicyType hpolicy, Gtk.PolicyType vpolicy)
+		{
+			if (!canSetOverlayScrollbarPolicy) {
+				return;
+			}
+			try {
+				gtk_scrolled_window_set_overlay_policy (sw.Handle, hpolicy, vpolicy);
+				return;
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+		}
+
+		public static void GetOverlayScrollbarPolicy (Gtk.ScrolledWindow sw, out Gtk.PolicyType hpolicy, out Gtk.PolicyType vpolicy)
+		{
+			if (!canSetOverlayScrollbarPolicy) {
+				hpolicy = vpolicy = 0;
+				return;
+			}
+			try {
+				gtk_scrolled_window_get_overlay_policy (sw.Handle, out hpolicy, out vpolicy);
+				return;
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+			hpolicy = vpolicy = 0;
+			canSetOverlayScrollbarPolicy = false;
+		}
+
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern bool gtk_tree_view_get_tooltip_context (IntPtr raw, ref int x, ref int y, bool keyboard_tip, out IntPtr model, out IntPtr path, IntPtr iter);
+
+		//the GTK# version of this has 'out' instead of 'ref', preventing passing the x,y values in
+		public static bool GetTooltipContext (this Gtk.TreeView tree, ref int x, ref int y, bool keyboardTip,
+			 out Gtk.TreeModel model, out Gtk.TreePath path, out Gtk.TreeIter iter)
+		{
+			IntPtr intPtr = Marshal.AllocHGlobal (Marshal.SizeOf (typeof (Gtk.TreeIter)));
+			IntPtr handle;
+			IntPtr intPtr2;
+			bool result = gtk_tree_view_get_tooltip_context (tree.Handle, ref x, ref y, keyboardTip, out handle, out intPtr2, intPtr);
+			model = Gtk.TreeModelAdapter.GetObject (handle, false);
+			path = intPtr2 == IntPtr.Zero ? null : ((Gtk.TreePath) GLib.Opaque.GetOpaque (intPtr2, typeof (Gtk.TreePath), false));
+			iter = Gtk.TreeIter.New (intPtr);
+			Marshal.FreeHGlobal (intPtr);
+			return result;
+		}
+
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_image_menu_item_set_always_show_image (IntPtr menuitem, bool alwaysShow);
 
@@ -928,7 +1133,7 @@ namespace Xwt.GtkBackend
 			try {
 				IntPtr res = g_object_get_data (px.Handle, "gdk-pixbuf-2x-variant");
 				if (res != IntPtr.Zero && res != px.Handle)
-					return new Gdk.Pixbuf (res);
+					return (Gdk.Pixbuf) GLib.Object.GetObject (res);
 				else
 					return null;
 			} catch (DllNotFoundException) {
@@ -965,7 +1170,7 @@ namespace Xwt.GtkBackend
 			try {
 				IntPtr intPtr = GLib.Marshaller.StringToPtrGStrdup (detail);
 				IntPtr o = gtk_icon_set_render_icon_scaled (iconset.Handle, (style != null) ? style.Handle : IntPtr.Zero, (int)direction, (int)state, (int)size, (widget != null) ? widget.Handle : IntPtr.Zero, intPtr, ref scale);
-				Gdk.Pixbuf result = new Gdk.Pixbuf (o);
+				Gdk.Pixbuf result = (Gdk.Pixbuf) GLib.Object.GetObject (o);
 				GLib.Marshaller.Free (intPtr);
 				return result;
 			} catch (DllNotFoundException) {
