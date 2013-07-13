@@ -54,15 +54,21 @@ namespace Xwt.Mac
 		
 		protected override void OnSizeToFit ()
 		{
-			Container.SizeToFit ();
+			if (Container != null)
+				Container.SizeToFit ();
 		}
 
 		CustomAlignedContainer Container {
-			get { return (CustomAlignedContainer)base.Widget; }
+			get { return base.Widget as CustomAlignedContainer; }
 		}
 
 		public new NSTextField Widget {
-			get { return (NSTextField) Container.Child; }
+			get
+			{
+				if (Container != null)
+					return (NSTextField) Container.Child;
+				return (NSTextField) base.Widget;
+			}
 		}
 
 		protected override Size GetNaturalSize ()
@@ -131,7 +137,8 @@ namespace Xwt.Mac
 					Widget.Cell.Scrollable = true;
 					Widget.Cell.Wraps = false;
 				}
-				Container.ExpandVertically = value;
+				if (Container != null)
+					Container.ExpandVertically = value;
 			}
 		}
 
