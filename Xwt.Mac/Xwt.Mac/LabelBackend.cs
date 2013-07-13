@@ -35,13 +35,13 @@ namespace Xwt.Mac
 	public class LabelBackend: ViewBackend<NSView,IWidgetEventSink>, ILabelBackend
 	{
 		public LabelBackend ()
-			: this (new CustomAlignedContainer (new TextFieldView ()))
+			: this (new TextFieldView ())
 		{
 		}
 
 		protected LabelBackend (IViewObject viewObject)
 		{
-			ViewObject = viewObject;
+			ViewObject = new CustomAlignedContainer (viewObject);
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
@@ -154,10 +154,10 @@ namespace Xwt.Mac
 	{
 		public NSView Child;
 
-		public CustomAlignedContainer (NSView child)
+		public CustomAlignedContainer (IViewObject child)
 		{
-			Child = child;
-			AddSubview (child);
+			Child = child.View;
+			AddSubview (Child);
 			UpdateTextFieldFrame ();
 		}
 
