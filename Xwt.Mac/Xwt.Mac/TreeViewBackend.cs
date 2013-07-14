@@ -92,8 +92,10 @@ namespace Xwt.Mac
 			get {
 				TreePosition[] res = new TreePosition [Table.SelectedRowCount];
 				int n = 0;
-				foreach (var i in Table.SelectedRows) {
-					res [n] = ((TreeItem)Tree.ItemAtRow ((int)i)).Position;
+				if (Table.SelectedRowCount > 0) {
+					foreach (var i in Table.SelectedRows) {
+						res [n] = ((TreeItem)Tree.ItemAtRow ((int)i)).Position;
+					}
 				}
 				return res;
 			}
