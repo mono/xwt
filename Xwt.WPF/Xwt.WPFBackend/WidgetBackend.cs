@@ -134,6 +134,11 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool BackgroundColorSet
+		{
+			get { return customBackgroundColor.HasValue; }
+		}
+
 		SWM.Color GetWidgetColor ()
 		{
 			if (Widget is Control) {
@@ -149,7 +154,7 @@ namespace Xwt.WPFBackend
 			return SystemColors.ControlColor;
 		}
 
-		void SetWidgetColor (Color value)
+		protected virtual void SetWidgetColor (Color value)
 		{
 			if ((Widget is Control))
 				((Control)Widget).Background = ResPool.GetSolidBrush (value);
