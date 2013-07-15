@@ -77,7 +77,15 @@ namespace Xwt.WPFBackend
 
 		public override object CreateMultiResolutionImage (System.Collections.Generic.IEnumerable<object> images)
 		{
-			return new WpfImage (images.Cast<WpfImage> ().Select (i => i.Frames[0]));
+			var refImg = (WpfImage)images.First ();
+			var f = refImg.Frames[0];
+			var frames = images.Cast<WpfImage> ().Select (img => new WpfImage.ImageFrame (img.Frames[0].ImageSource, f.Width, f.Height));
+			return new WpfImage (frames);
+		}
+
+		public override object CreateMultiSizeIcon (IEnumerable<object> images)
+		{
+			return new WpfImage (images.Cast<WpfImage> ().SelectMany (i => i.Frames));
 		}
 
 		public override void SaveToStream (object backend, Stream stream, Drawing.ImageFileType fileType)
@@ -143,7 +151,7 @@ namespace Xwt.WPFBackend
 		public override Xwt.Drawing.Color GetBitmapPixel (object handle, int x, int y)
 		{
 			var wpfImage = (WpfImage)handle;
-			BitmapSource img = wpfImage.Frames[0] as BitmapSource;
+			BitmapSource img = wpfImage.MainFrame as BitmapSource;
 			if (img == null)
 				throw new NotSupportedException ("Invalid image format");
 			if (img.Format.BitsPerPixel != 32)
@@ -157,7 +165,7 @@ namespace Xwt.WPFBackend
 		public override void SetBitmapPixel (object handle, int x, int y, Drawing.Color color)
 		{
 			var wpfImage = (WpfImage)handle;
-			var img = (BitmapSource) wpfImage.Frames[0];
+			var img = (BitmapSource)wpfImage.MainFrame;
 			if (img == null)
 				throw new NotSupportedException ("Invalid image format");
 			if (img.Format.BitsPerPixel != 32)
@@ -167,7 +175,7 @@ namespace Xwt.WPFBackend
 
 			if (!(bitmapImage is WriteableBitmap)) {
 				bitmapImage = new WriteableBitmap (img);
-				((WpfImage)handle).Frames[0] = bitmapImage;
+				((WpfImage)handle).MainFrame = bitmapImage;
 			}
 
 			wpfImage.AllocatePixelData ();
@@ -267,25 +275,55 @@ namespace Xwt.WPFBackend
 
 	class WpfImage
 	{
+		public class ImageFrame
+		{
+			public ImageSource ImageSource { get; set; }
+			public double Width { get; private set; }
+			public double Height { get; private set; }
+			public double Scale { get; set; }
+			public ImageFrame (ImageSource pix)
+			{
+				ImageSource = pix;
+				Width = pix.Width;
+				Height = pix.Height;
+				Scale = 1;
+			}
+			public ImageFrame (ImageSource pix, double width, double height)
+			{
+				ImageSource = pix;
+				Width = width;
+				Height = height;
+				Scale = pix.Width / width;
+			}
+			public void Dispose ()
+			{
+			}
+		}
+
 		ImageDrawCallback drawCallback;
 
 		public byte[] PixelData;
 		public int Stride;
 		public bool PixelWritePending;
 
-		List<ImageSource> frames = new List<ImageSource> ();
+		ImageFrame[] frames;
 
 		public WpfImage (ImageSource image)
 		{
 			if (image is BitmapFrame)
-				frames.AddRange (((BitmapFrame)image).Decoder.Frames);
+				this.frames = ((BitmapFrame)image).Decoder.Frames.Select (f => new ImageFrame (f)).ToArray ();
 			else
-				frames.Add (image);
+				this.frames = new ImageFrame[] { new ImageFrame (image) };
 		}
 
 		public WpfImage (IEnumerable<ImageSource> images)
 		{
-			frames.AddRange (images);
+			this.frames = images.Select (f => new ImageFrame (f)).ToArray ();
+		}
+
+		public WpfImage (IEnumerable<ImageFrame> frames)
+		{
+			this.frames = frames.ToArray ();
 		}
 
 		public WpfImage (ImageDrawCallback drawCallback)
@@ -293,32 +331,38 @@ namespace Xwt.WPFBackend
 			this.drawCallback = drawCallback;
 		}
 
-		public List<ImageSource> Frames
+		public ImageFrame[] Frames
 		{
 			get { return frames; }
 		}
 
+		public ImageSource MainFrame
+		{
+			get { return frames[0].ImageSource; }
+			set { frames[0].ImageSource = value; }
+		}
+
 		public bool HasMultipleSizes
 		{
-			get { return frames != null && frames.Count > 1 || drawCallback != null; }
+			get { return frames != null && frames.Length> 1 || drawCallback != null; }
 		}
 
 		public Size Size {
-			get { return Frames.Count > 0 ? new Size (frames[0].Width, frames[0].Height) : Size.Zero; }
+			get { return frames.Length > 0 ? new Size (frames[0].Width, frames[0].Height) : Size.Zero; }
 		}
 
 		public int GetPixelOffset (int x, int y)
 		{
-			if (frames.Count == 0)
+			if (frames.Length == 0)
 				throw new NotSupportedException ();
-			BitmapSource img = frames[0] as BitmapSource;
+			BitmapSource img = frames[0].ImageSource as BitmapSource;
 			return y * Stride + x * ((img.Format.BitsPerPixel + 7) / 8);
 		}
 
 		public void AllocatePixelData ()
 		{
 			if (PixelData == null) {
-				BitmapSource img = frames[0] as BitmapSource;
+				BitmapSource img = frames[0].ImageSource as BitmapSource;
 				var height = (int) ImageHandler.HeightToPixels (img);
 				var width = (int) ImageHandler.WidthToPixels (img);
 				Stride = (width * img.Format.BitsPerPixel + 7) / 8;
@@ -327,32 +371,41 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		ImageSource FindFrame (int width, int height)
+		ImageSource FindFrame (double width, double height, double scaleFactor)
 		{
 			if (frames == null)
 				return null;
-			if (frames.Count == 1)
-				return frames[0];
+			if (frames.Length == 1)
+				return frames[0].ImageSource;
 
-			ImageSource bestSmall = null, bestBig = null;
-			double bestSmallSize = 0, bestBigSize = 0;
+			ImageSource best = null;
+			int bestSizeMatch = 0;
+			double bestResolutionMatch = 0;
 
-			foreach (var p in frames) {
-				var s = p.Width * p.Height;
-				if (p.Width < width || p.Height < height) {
-					if (bestSmall == null || s > bestSmallSize) {
-						bestSmall = p;
-						bestSmallSize = s;
-					}
+			foreach (var f in frames) {
+				int sizeMatch;
+				if (f.Width == width && f.Height == height) {
+					if (f.Scale == scaleFactor)
+						return f.ImageSource; // Exact match
+					sizeMatch = 2; // Exact size
 				}
-				else {
-					if (bestBig == null || s < bestBigSize) {
-						bestBig = p;
-						bestBigSize = s;
-					}
+				else if (f.Width >= width && f.Height >= height)
+					sizeMatch = 1; // Bigger size
+				else
+					sizeMatch = 0; // Smaller size
+
+				var resolutionMatch = ((double)f.ImageSource.Width * (double)f.ImageSource.Height) / ((double)width * (double)height * scaleFactor);
+
+				if (best == null ||
+					(bestResolutionMatch < 1 && resolutionMatch > bestResolutionMatch) ||
+					(bestResolutionMatch >= 1 && resolutionMatch >= 1 && resolutionMatch <= bestResolutionMatch && (sizeMatch >= bestSizeMatch))) {
+					best = f.ImageSource;
+					bestSizeMatch = sizeMatch;
+					bestResolutionMatch = resolutionMatch;
 				}
 			}
-			return bestBig ?? bestSmall;
+
+			return best;
 		}
 
 		public ImageSource GetBestFrame (ApplicationContext actx, Visual w, double width, double height, bool forceExactSize)
@@ -362,7 +415,7 @@ namespace Xwt.WPFBackend
 
 		public ImageSource GetBestFrame (ApplicationContext actx, double scaleFactor, double width, double height, bool forceExactSize)
 		{
-			var f = FindFrame ((int)(width * scaleFactor), (int)(height * scaleFactor));
+			var f = FindFrame (width, height, scaleFactor);
 			if (f == null || (forceExactSize && (f.Width != (int)width || f.Height != (int)height)))
 				return RenderFrame (actx, scaleFactor, width, height);
 			else
@@ -383,13 +436,19 @@ namespace Xwt.WPFBackend
 			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)idesc.Size.Width, (int)idesc.Size.Height, 96, 96, PixelFormats.Pbgra32);
 			bmp.Render (visual);
 
-			AddFrame (bmp);
+			var f = new ImageFrame (bmp, width, height);
+			AddFrame (f);
 			return bmp;
 		}
 
-		void AddFrame (ImageSource pix)
+		void AddFrame (ImageFrame frame)
 		{
-			frames.Add (pix);
+			if (frames == null)
+				frames = new ImageFrame[] { frame };
+			else {
+				Array.Resize (ref frames, frames.Length + 1);
+				frames[frames.Length - 1] = frame;
+			}
 		}
 
 		public void Draw (ApplicationContext actx, SWM.DrawingContext dc, double scaleFactor, double x, double y, ImageDescription idesc)
