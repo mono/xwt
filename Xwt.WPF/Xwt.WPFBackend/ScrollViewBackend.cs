@@ -98,6 +98,7 @@ namespace Xwt.WPFBackend
 			if (child == null)
 				return;
 
+			SetChildPlacement (child);
 			ScrollAdjustmentBackend vbackend = null, hbackend = null;
 			var widget = (WidgetBackend)child;
 
