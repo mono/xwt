@@ -302,6 +302,20 @@ namespace Xwt
 		{
 			Backend.CollapseRow (pos);
 		}
+
+		/// <summary>
+		/// Recursively expands all nodes of the tree
+		/// </summary>
+		public void ExpandAll ()
+		{
+			if (DataSource != null) {
+				var nc = DataSource.GetChildrenCount (null);
+				for (int n=0; n<nc; n++) {
+					var p = DataSource.GetChild (null, n);
+					Backend.ExpandRow (p, true);
+				}
+			}
+		}
 		
 		/// <summary>
 		/// Saves the status of the tree
