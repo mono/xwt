@@ -118,6 +118,7 @@ namespace Xwt
 	/// <summary>
 	/// Data source for cell views
 	/// </summary>
+	/// <remarks>Provides the data required for filling the content of a cell</remarks>
 	public interface ICellDataSource
 	{
 		/// <summary>

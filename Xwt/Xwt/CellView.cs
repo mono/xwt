@@ -27,6 +27,7 @@
 using System;
 using Xwt.Drawing;
 using Xwt.Backends;
+using System.ComponentModel;
 
 namespace Xwt
 {
@@ -53,6 +54,16 @@ namespace Xwt
 		/// </summary>
 		/// <value>The data source.</value>
 		protected ICellDataSource DataSource { get; private set; }
+
+		bool visible = true;
+
+		public IDataField<bool> VisibleField { get; set; }
+
+		[DefaultValue (true)]
+		public bool Visible {
+			get { return GetValue (VisibleField, visible); }
+			set { visible = value; }
+		}
 
 		void ICellViewFrontend.Initialize (ICellDataSource source)
 		{

@@ -30,6 +30,7 @@ namespace Xwt.Backends
 	public interface ICellViewFrontend
 	{
 		void Initialize (ICellDataSource source);
+		bool Visible { get; }
 	}
 }
 
