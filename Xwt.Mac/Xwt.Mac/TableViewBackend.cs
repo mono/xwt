@@ -161,6 +161,7 @@ namespace Xwt.Mac
 		public virtual object AddColumn (ListViewColumn col)
 		{
 			var tcol = new NSTableColumn ();
+			tcol.Editable = true;
 			cols.Add (tcol);
 			var c = CellUtil.CreateCell (this, col.Views);
 			tcol.DataCell = c;
@@ -195,6 +196,8 @@ namespace Xwt.Mac
 		
 		public abstract object GetValue (object pos, int nField);
 		
+		public abstract void SetValue (object pos, int nField, object value);
+
 		float ICellSource.RowHeight {
 			get { return Table.RowHeight; }
 			set { Table.RowHeight = value; }

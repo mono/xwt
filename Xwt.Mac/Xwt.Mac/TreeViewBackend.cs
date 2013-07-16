@@ -87,6 +87,11 @@ namespace Xwt.Mac
 		{
 			return source.GetValue ((TreePosition)pos, nField);
 		}
+
+		public override void SetValue (object pos, int nField, object value)
+		{
+			source.SetValue ((TreePosition)pos, nField, value);
+		}
 		
 		public TreePosition[] SelectedRows {
 			get {

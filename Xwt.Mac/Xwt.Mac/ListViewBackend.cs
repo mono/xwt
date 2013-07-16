@@ -77,6 +77,11 @@ namespace Xwt.Mac
 		{
 			return source.GetValue ((int)pos, nField);
 		}
+		
+		public override void SetValue (object pos, int nField, object value)
+		{
+			source.SetValue ((int)pos, nField, value);
+		}
 
 		// TODO
 		public bool BorderVisible { get; set; }

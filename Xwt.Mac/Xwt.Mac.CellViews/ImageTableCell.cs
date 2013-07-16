@@ -49,9 +49,10 @@ namespace Xwt.Mac
 			this.cellView = cellView;
 		}
 		
-		public void Fill (ICellDataSource source)
+		public CompositeCell CellContainer { get; set; }
+
+		public void Fill ()
 		{
-			cellView.Initialize (source);
 			ObjectValue = cellView.Image.ToImageDescription ().ToNSImage ();
 		}
 		
@@ -65,6 +66,10 @@ namespace Xwt.Mac
 			}
 		}
 		
+		public ICellViewFrontend Frontend {
+			get { return cellView; }
+		}
+
 		public void CopyFrom (object other)
 		{
 			var ob = (ImageTableCell)other;
