@@ -14,11 +14,13 @@ namespace Samples
 			ListView list = new ListView ();
 			editable = new DataField<bool> ();
 			nonEditable = new DataField<bool> ();
-			ListStore store = new ListStore (editable, nonEditable);
+			var textField = new DataField<string> ();
+			ListStore store = new ListStore (editable, nonEditable, textField);
 			list.DataSource = store;
 
-			list.Columns.Add (new ListViewColumn("editable", new CheckBoxCellView { Editable = true, ActiveField = editable }));
-			list.Columns.Add (new ListViewColumn("nonEditable", new CheckBoxCellView { Editable = false, ActiveField = nonEditable }));
+			list.Columns.Add (new ListViewColumn("Editable", new CheckBoxCellView { Editable = true, ActiveField = editable }));
+			list.Columns.Add (new ListViewColumn("Not Editable", new CheckBoxCellView { Editable = false, ActiveField = nonEditable }));
+			list.Columns.Add (new ListViewColumn("Editable", new TextCellView { Editable = true, TextField = textField }));
 
 			Random rand = new Random ();
 			
@@ -26,6 +28,7 @@ namespace Samples
 				var r = store.AddRow ();
 				store.SetValue (r, editable, rand.Next(0, 2) == 0);
 				store.SetValue (r, nonEditable, rand.Next(0, 2) == 0);
+				store.SetValue (r, textField, n.ToString ());
 			}
 			PackStart (list, true);
 		}
