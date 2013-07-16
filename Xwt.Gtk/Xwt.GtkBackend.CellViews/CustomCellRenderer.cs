@@ -48,6 +48,7 @@ namespace Xwt.GtkBackend
 			this.treeModel = treeModel;
 			this.iter = iter;
 			cellView.Initialize (this);
+			Visible = cellView.Visible;
 		}
 
 		object ICellDataSource.GetValue (IDataField field)

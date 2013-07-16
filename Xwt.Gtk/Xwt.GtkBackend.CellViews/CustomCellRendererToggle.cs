@@ -48,6 +48,7 @@ namespace Xwt.GtkBackend
 
 			Active = view.Active;
 			Activatable = view.Editable;
+			Visible = view.Visible;
 		}
 
 		public object GetValue (IDataField field)

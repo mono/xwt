@@ -53,6 +53,7 @@ namespace Xwt.GtkBackend
 			this.iter = iter;
 			view.Initialize (this);
 			Image = view.Image.ToImageDescription ();
+			Visible = view.Visible;
 		}
 		
 		object ICellDataSource.GetValue (IDataField field)
