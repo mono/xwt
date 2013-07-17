@@ -289,11 +289,13 @@ namespace Xwt.WPFBackend
 
 				panel1.Size = new GridLength (position, GridUnitType.Star);
 				panel2.Size = new GridLength (availableSize - position, GridUnitType.Star);
-			}
-			else if (panel1.Widget != null)
+			} else if (panel1.Widget != null) {
 				panel1.Size = new GridLength (1, GridUnitType.Star);
-			else if (panel2 != null)
-				panel2.Size = new GridLength (1, GridUnitType.Star);
+				panel2.Size = new GridLength(0);
+			} else if (panel2 != null) {
+				panel2.Size = new GridLength(1, GridUnitType.Star);
+				panel1.Size = new GridLength(0);
+			}
 
 			lastSize = newSize;
 		}
