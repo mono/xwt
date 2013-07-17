@@ -40,30 +40,27 @@ namespace Xwt.Motion
 			get { return ticker ?? (ticker = new Ticker ()); }
 		}
 
-		readonly Timer timer;
 		readonly List<Tuple<int, Func<long, bool>>> timeouts;
 		int count;
-		readonly SynchronizationContext sync;
 		bool enabled;
 		readonly Stopwatch stopwatch;
+		IDisposable timer;
 
 		internal Ticker ()
 		{
-			sync = SynchronizationContext.Current;
 			count = 0;
-			timer = new Timer (HandleElapsed, null, Timeout.Infinite, Timeout.Infinite);
 			timeouts = new List<Tuple<int, Func<long, bool>>> ();
-
 			stopwatch = new Stopwatch ();
 		}
 
-		void HandleElapsed (object state)
+		bool HandleElapsed ()
 		{	
 			if (timeouts.Count > 0) {
-				sync.Post (o => SendSignals (), null);
+				SendSignals ();
 				stopwatch.Reset ();
 				stopwatch.Start ();
 			}
+			return enabled;
 		}
 
 		protected void SendSignals (int timestep = -1)
@@ -87,6 +84,7 @@ namespace Xwt.Motion
 
 		void Enable ()
 		{
+			stopwatch.Reset ();
 			stopwatch.Start ();
 			EnableTimer ();
 		}
@@ -99,12 +97,13 @@ namespace Xwt.Motion
 
 		protected virtual void EnableTimer ()
 		{
-			timer.Change (16, 16);
+			timer = Xwt.Application.TimeoutInvoke (16, HandleElapsed);
 		}
 
 		protected virtual void DisableTimer ()
 		{
-			timer.Change (Timeout.Infinite, Timeout.Infinite);
+			timer.Dispose ();
+			timer = null;
 		}
 
 		public virtual int Insert (Func<long, bool> timeout)
