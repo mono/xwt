@@ -131,6 +131,15 @@ namespace Xwt.GtkBackend
 		{
 			Window.Respond (Gtk.ResponseType.Ok);
 		}
+
+		public override void GetMetrics (out Size minSize, out Size decorationSize)
+		{
+			base.GetMetrics (out minSize, out decorationSize);
+			var rq = Window.ActionArea.Visible ? Window.ActionArea.SizeRequest () : new Gtk.Requisition ();
+			if (rq.Width > minSize.Width)
+				minSize.Width = rq.Width;
+			decorationSize.Height += rq.Height;
+		}
 	}
 }
 

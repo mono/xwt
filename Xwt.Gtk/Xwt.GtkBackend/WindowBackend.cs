@@ -56,11 +56,15 @@ namespace Xwt.GtkBackend
 			get { return mainBox; }
 		}
 
-		public override Size ImplicitMinSize {
-			get {
-				var req = Window.Child == null ? new Gtk.Requisition () : Window.Child.SizeRequest ();
-				var creq = mainBox.SizeRequest ();
-				return new Size (req.Width - creq.Width, req.Height - creq.Height);
+		public override void GetMetrics (out Size minSize, out Size decorationSize)
+		{
+			if (mainMenu != null) {
+				var ms = mainMenu.SizeRequest ();
+				minSize = new Size (ms.Width, 0);
+				decorationSize = new Size (0, ms.Height);
+			}
+			else {
+				minSize = decorationSize = Size.Zero;
 			}
 		}
 

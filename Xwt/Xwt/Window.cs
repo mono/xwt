@@ -49,7 +49,7 @@ namespace Xwt
 		
 		public Window ()
 		{
-			Padding = 6;
+			Padding = 12;
 		}
 		
 		public Window (string title): base (title)
@@ -219,12 +219,18 @@ namespace Xwt
 					size.Height = ws.Height + padding.VerticalSpacing;
 			}
 
-			if (ws.Width + padding.HorizontalSpacing > size.Width)
-				size.Width = ws.Width + padding.HorizontalSpacing;
-			if (ws.Height + padding.VerticalSpacing > size.Height)
-				size.Height = ws.Height + padding.VerticalSpacing;
+			Size mMinSize, mDecorationsSize;
+			Backend.GetMetrics (out mMinSize, out mDecorationsSize);
 
-			size += Backend.ImplicitMinSize;
+			if (ws.Width < mMinSize.Width)
+				ws.Width = mMinSize.Width;
+			if (ws.Height < mMinSize.Height)
+				ws.Height = mMinSize.Height;
+
+			if (ws.Width > size.Width)
+				size.Width = ws.Width;
+			if (ws.Height > size.Height)
+				size.Height = ws.Height;
 
 			if (!shown) {
 				shown = true;
@@ -248,11 +254,11 @@ namespace Xwt
 				} else if (locationSet && !shown)
 					Backend.Move (initialBounds.X, initialBounds.Y);
 	
-				Backend.SetMinSize (Backend.ImplicitMinSize + new Size (ws.Width + padding.HorizontalSpacing, ws.Height + padding.VerticalSpacing));
 			} else {
 				if (size != Size)
 					Backend.SetSize (size.Width, size.Height);
 			}
+			Backend.SetMinSize (mDecorationsSize + new Size (ws.Width + padding.HorizontalSpacing, ws.Height + padding.VerticalSpacing));
 		}
 	}
 }

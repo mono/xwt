@@ -43,6 +43,7 @@ namespace Xwt.Mac
 		IWindowFrameEventSink eventSink;
 		Window frontend;
 		ViewBackend child;
+		NSView childView;
 		bool sensitive = true;
 		
 		public WindowBackend (IntPtr ptr): base (ptr)
@@ -167,11 +168,6 @@ namespace Xwt.Mac
 			}
 		}
 
-		protected virtual NSView GetContentView ()
-		{
-			return ContentView;
-		}
-		
 		#region IWindowBackend implementation
 		void IBackend.EnableEvent (object eventId)
 		{
@@ -283,6 +279,7 @@ namespace Xwt.Mac
 
 		protected virtual void OnBoundsChanged ()
 		{
+			LayoutWindow ();
 			ApplicationContext.InvokeUserCode (delegate {
 				eventSink.OnBoundsChanged (((IWindowBackend)this).Bounds);
 			});
@@ -290,29 +287,24 @@ namespace Xwt.Mac
 
 		void IWindowBackend.SetChild (IWidgetBackend child)
 		{
-			SetChild (child);
-		}
-
-		protected virtual void SetChild (IWidgetBackend child)
-		{
 			if (this.child != null) {
 				ViewBackend.RemoveChildPlacement (this.child.Widget);
 				this.child.Widget.RemoveFromSuperview ();
+				childView = null;
 			}
 			this.child = (ViewBackend) child;
 			if (child != null) {
-				var w = ViewBackend.GetWidgetWithPlacement (child);
-				GetContentView ().AddSubview (w);
-				SetPadding (frontend.Padding.Left, frontend.Padding.Top, frontend.Padding.Right, frontend.Padding.Bottom);
-				w.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
+				childView = ViewBackend.GetWidgetWithPlacement (child);
+				ContentView.AddSubview (childView);
+				LayoutWindow ();
+				childView.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			}
 		}
 		
 		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
 		{
-			ViewBackend.SetChildPlacement (childBackend);
-			var w = GetContentView ().Subviews [0];
-			SetPadding (frontend.Padding.Left, frontend.Padding.Top, frontend.Padding.Right, frontend.Padding.Bottom);
+			var w = ViewBackend.SetChildPlacement (childBackend);
+			LayoutWindow ();
 			w.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 		}
 
@@ -356,14 +348,7 @@ namespace Xwt.Mac
 		
 		public void SetPadding (double left, double top, double right, double bottom)
 		{
-			if (child != null) {
-				var frame = GetContentView ().Frame;
-				frame.X += (float) left;
-				frame.Width -= (float) (left + right);
-				frame.Y += (float) top;
-				frame.Height -= (float) (top + bottom);
-				GetContentView ().Subviews[0].Frame = frame;
-			}
+			LayoutWindow ();
 		}
 
 		void IWindowFrameBackend.Move (double x, double y)
@@ -381,6 +366,7 @@ namespace Xwt.Mac
 				height = cr.Height;
 			var r = FrameRectFor (new System.Drawing.RectangleF ((float)cr.X, (float)cr.Y, (float)width, (float)height));
 			SetFrame (r, true);
+			LayoutWindow ();
 		}
 		
 		Rectangle IWindowFrameBackend.Bounds {
@@ -445,9 +431,26 @@ namespace Xwt.Mac
 		public void SetIcon (ImageDescription icon)
 		{
 		}
+		
+		public virtual void GetMetrics (out Size minSize, out Size decorationSize)
+		{
+			minSize = decorationSize = Size.Zero;
+		}
 
-		public virtual Size ImplicitMinSize {
-			get { return new Size (0,0); }
+		public virtual void LayoutWindow ()
+		{
+			LayoutContent (ContentView.Frame);
+		}
+		
+		public void LayoutContent (RectangleF frame)
+		{
+			if (child != null) {
+				frame.X += (float) frontend.Padding.Left;
+				frame.Width -= (float) (frontend.Padding.HorizontalSpacing);
+				frame.Y += (float) frontend.Padding.Top;
+				frame.Height -= (float) (frontend.Padding.VerticalSpacing);
+				childView.Frame = frame;
+			}
 		}
 	}
 	
