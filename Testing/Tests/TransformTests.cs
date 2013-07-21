@@ -157,6 +157,34 @@ namespace Xwt
 			}
 		}
 
+
+
+		[Test]
+		public void RotateAndTranslate ()
+		{
+			// Transforms are Prepended to the CTM, so they are done in reverse order.
+			// At present, this must be stated explicitly in the Matrix calls, but may
+			// be worth changing so that Prepend is the default (to match the Backends).
+
+			Matrix m1, m2;
+			Context ctx = NewContext;
+
+			for (double theta = 30; theta <= 360; theta += 30) {
+				ctx.Save ();
+				ctx.Translate (100, 0);		// done last
+				ctx.Rotate (theta);			// done first (about the origin)
+
+				m1 = Matrix.Identity;
+				m1.TranslatePrepend (100, 0);
+				m1.RotatePrepend (theta);
+				m2 = ctx.GetCTM ();
+
+				CheckMatrix (m1, m2);
+				ctx.Restore ();
+			}
+		}
+
+
 	}
 }
 
