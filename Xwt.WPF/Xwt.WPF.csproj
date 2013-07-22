@@ -35,15 +35,9 @@
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore">
-      <Package>/Users/lluis/prog/work/libs/PresentationCore.dll</Package>
-    </Reference>
-    <Reference Include="PresentationFramework">
-      <Package>/Users/lluis/prog/work/libs/PresentationFramework.dll</Package>
-    </Reference>
-    <Reference Include="PresentationFramework.Aero">
-      <Package>/Users/lluis/prog/work/libs/PresentationFramework.Aero.dll</Package>
-    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
