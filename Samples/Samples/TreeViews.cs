@@ -30,14 +30,25 @@ namespace Samples
 {
 	public class TreeViews: VBox
 	{
+		DataField<bool> check = new DataField<bool>();
 		DataField<string> text = new DataField<string> ();
 		DataField<string> desc = new DataField<string> ();
 		
 		public TreeViews ()
 		{
 			TreeView view = new TreeView ();
-			TreeStore store = new TreeStore (text, desc);
+			TreeStore store = new TreeStore (check, text, desc);
 		
+			var checkCellView = new CheckBoxCellView (check) { Editable = true };
+			checkCellView.Toggled += (object sender, WidgetEventArgs e) => {
+				if (view.CurrentEventRow == null) {
+					MessageDialog.ShowError("CurrentEventRow is null. This is not supposed to happen");
+				}
+				else {
+					store.GetNavigatorAt(view.CurrentEventRow).SetValue(text, "Toggled");
+				}
+			};
+			view.Columns.Add ("Check", checkCellView);
 			view.Columns.Add ("Item", text);
 			view.Columns.Add ("Desc", desc);
 			
