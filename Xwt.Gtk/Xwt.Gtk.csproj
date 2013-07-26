@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Xwt.GtkBackend\LabelBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\PasswordEntryBackend.cs" />
     <Compile Include="Xwt.GtkBackend\WidgetBackend.cs" />
     <Compile Include="Xwt.GtkBackend\WindowBackend.cs" />
     <Compile Include="Xwt.GtkBackend\GtkEngine.cs" />

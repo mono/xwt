@@ -96,6 +96,7 @@ namespace Samples
 			AddSample (w, "Spinners", typeof (Spinners));
 			AddSample (w, "Tables", typeof (Tables));
 			AddSample (w, "Text Entry", typeof (TextEntries));
+			AddSample (w, "Password Entry", typeof (PasswordEntries));
 			AddSample (w, "TreeView", typeof(TreeViews));
 
 			var n = AddSample (null, "Drawing", null);
