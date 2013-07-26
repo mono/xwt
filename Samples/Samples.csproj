@@ -178,6 +178,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Samples\OpacitySample.cs" />
+    <Compile Include="Samples\PasswordEntries.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
