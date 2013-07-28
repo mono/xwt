@@ -297,6 +297,13 @@ namespace Xwt.WPFBackend
 			c.PushTransform (t);
 		}
 
+		public override void ModifyCTM (object backend, Drawing.Matrix m)
+		{
+			var c = (DrawingContext)backend;
+			MatrixTransform t = new MatrixTransform (m.M11, m.M12, m.M21, m.M22, m.OffsetX, m.OffsetY);
+			c.PushTransform (t);
+		}
+
 		public override Drawing.Matrix GetCTM (object backend)
 		{
 			var c = (DrawingContext)backend;

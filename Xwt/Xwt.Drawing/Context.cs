@@ -223,13 +223,25 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
+		/// Modifies the Current Transformation Matrix (CTM) by prepending the Matrix transform specified
+		/// </summary>
+		/// <remarks>
+		/// This enables any 'non-standard' transforms (eg skew, reflection) to be used for drawing,
+		/// and provides the link to the extra transform capabilities provided by Xwt.Drawing.Matrix
+		/// </remarks>
+		public void ModifyCTM (Matrix transform)
+		{
+			handler.ModifyCTM (Backend, transform);
+		}
+
+		/// <summary>
 		/// Returns a copy of the current transformation matrix (CTM)
 		/// </summary>
 		public Matrix GetCTM ()
 		{
 			return handler.GetCTM (Backend);
 		}
-		
+
 		/// <summary>
 		/// Transforms the point (x, y) by the current transformation matrix (CTM)
 		/// </summary>
