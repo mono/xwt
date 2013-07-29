@@ -44,6 +44,8 @@ namespace Xwt
 				throw new InvalidOperationException ("Field must be bound to a data source");
 			if (field.FieldType == typeof(bool))
 				return new CheckBoxCellView ((IDataField<bool>)field);
+			else if (field.FieldType == typeof(CheckBoxState))
+				return new CheckBoxCellView ((IDataField<CheckBoxState>)field);
 			else if (field.FieldType == typeof(Image))
 				return new ImageCellView ((IDataField<Image>)field);
 			return new TextCellView (field);
@@ -82,7 +84,7 @@ namespace Xwt
 		{
 			if (DataSource != null && field != null) {
 				var result = DataSource.GetValue (field);
-				return result == DBNull.Value ? defaultValue : (T) result;
+				return result == null || result == DBNull.Value ? defaultValue : (T) result;
 			}
 			return defaultValue;
 		}

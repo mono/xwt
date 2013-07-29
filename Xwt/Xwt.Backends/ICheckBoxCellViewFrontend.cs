@@ -29,11 +29,13 @@ namespace Xwt.Backends
 {
 	public interface ICheckBoxCellViewFrontend: ICellViewFrontend
 	{
-		bool Active { get; }
+		CheckBoxState State { get; }
 		bool Editable { get; }
+		bool AllowMixed { get; }
 
 		bool RaiseToggled ();
 
+		IDataField<CheckBoxState> StateField { get; }
 		IDataField<bool> ActiveField { get; }
 	}
 }

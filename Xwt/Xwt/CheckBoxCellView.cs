@@ -36,27 +36,48 @@ namespace Xwt
 {
 	public sealed class CheckBoxCellView: CellView, ICheckBoxCellViewFrontend
 	{
-		bool active;
+		CheckBoxState state;
 		bool editable;
-		bool mixed;
 		bool allowMixed;
 
 		public IDataField<bool> ActiveField { get; set; }
+		public IDataField<CheckBoxState> StateField { get; set; }
 		public IDataField<bool> EditableField { get; set; }
+		public IDataField<bool> AllowMixedField { get; set; }
 
 		public CheckBoxCellView ()
 		{
 		}
 		
+		public CheckBoxCellView (IDataField<CheckBoxState> field)
+		{
+			StateField = field;
+		}
+
 		public CheckBoxCellView (IDataField<bool> field)
 		{
 			ActiveField = field;
 		}
-		
+
 		[DefaultValue (false)]
 		public bool Active {
-			get { return GetValue (ActiveField, active); }
-			set { active = value; }
+			get { return State == CheckBoxState.On; }
+			set { State = value.ToCheckBoxState (); }
+		}
+
+		[DefaultValue (CheckBoxState.Off)]
+		public CheckBoxState State {
+			get {
+				if (StateField != null)
+					return GetValue (StateField, state);
+				return GetValue (ActiveField).ToCheckBoxState ();
+			}
+			set {
+				if (value.IsValid ()) {
+					throw new ArgumentOutOfRangeException ("Invalid checkbox state");
+				}
+				state = value;
+			}
 		}
 		
 		[DefaultValue (false)]
@@ -66,6 +87,16 @@ namespace Xwt
 			}
 			set {
 				editable = value;
+			}
+		}
+
+		[DefaultValue (false)]
+		public bool AllowMixed {
+			get {
+				return GetValue (AllowMixedField, allowMixed);
+			}
+			set {
+				allowMixed = value;
 			}
 		}
 

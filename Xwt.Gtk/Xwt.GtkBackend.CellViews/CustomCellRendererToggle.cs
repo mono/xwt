@@ -49,7 +49,8 @@ namespace Xwt.GtkBackend
 			this.iter = iter;
 			view.Initialize (this);
 
-			Active = view.Active;
+			Inconsistent = view.State == CheckBoxState.Mixed;
+			Active = view.State == CheckBoxState.On;
 			Activatable = view.Editable;
 			Visible = view.Visible;
 		}
@@ -63,10 +64,31 @@ namespace Xwt.GtkBackend
 		{
 			CellUtil.SetCurrentEventRow (treeBackend, path);
 
-			if (!view.RaiseToggled () && view.ActiveField != null) {
+			IDataField field = (IDataField) view.StateField ?? view.ActiveField;
+
+			if (!view.RaiseToggled () && (field != null)) {
+				Type type = field.FieldType;
+
 				Gtk.TreeIter iter;
-				if (treeModel.GetIterFromString (out iter, path))
-					CellUtil.SetModelValue (treeModel, iter, view.ActiveField.Index, view.ActiveField.FieldType, !Active);
+				if (treeModel.GetIterFromString (out iter, path)) {
+					CheckBoxState newState;
+
+					if (view.AllowMixed && type == typeof(CheckBoxState)) {
+						if (Inconsistent)
+							newState = CheckBoxState.Off;
+						else if (Active)
+							newState = CheckBoxState.Mixed;
+						else
+							newState = CheckBoxState.On;
+					} else {
+						newState = (!Active).ToCheckBoxState ();
+					}
+
+					object newValue = type == typeof(CheckBoxState) ?
+						(object) newState : (object) (newState == CheckBoxState.On);
+
+					CellUtil.SetModelValue (treeModel, iter, field.Index, type, newValue);
+				}
 			}
 			base.OnToggled (path);
 		}
