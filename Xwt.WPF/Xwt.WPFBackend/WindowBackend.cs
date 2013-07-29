@@ -153,8 +153,9 @@ namespace Xwt.WPFBackend
 			Window.MinWidth = r.Width;
 		}
 
-		public virtual Size ImplicitMinSize {
-			get { return new Size (0,0); }
+		public virtual void GetMetrics (out Size minSize, out Size decorationSize)
+		{
+			minSize = decorationSize = Size.Zero;
 		}
 	}
 
