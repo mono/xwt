@@ -42,6 +42,7 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Widget = new Gtk.CheckButton ();
+			Widget.Toggled += HandleWidgetActivated;
 			Widget.Show ();
 		}
 		
@@ -53,35 +54,25 @@ namespace Xwt.GtkBackend
 		protected new ICheckBoxEventSink EventSink {
 			get { return (ICheckBoxEventSink)base.EventSink; }
 		}
-		
-		public bool Active {
-			get {
-				return Widget.Active && !Widget.Inconsistent;
-			}
-			set {
-				Widget.Active = value;
-			}
-		}
-		
+
 		public bool AllowMixed {
 			get {
 				return allowMixed;
 			}
 			set {
-				if (value)
-					UpdateToggleEventStatus (true);
 				allowMixed = value;
-				if (!value)
-					UpdateToggleEventStatus (false);
 			}
 		}
 		
-		public bool Mixed {
-			get { return Widget.Inconsistent; }
+		public CheckBoxState State {
+			get { return Widget.Inconsistent ? CheckBoxState.Mixed : Widget.Active.ToCheckBoxState(); }
 			set {
+				if (!value.IsValid ())
+					throw new ArgumentException ("Invalid CheckBoxState value");
+
+				Widget.Inconsistent = value == CheckBoxState.Mixed;
 				internalActiveUpdate = true;
-				Widget.Inconsistent = value;
-				Widget.Active = value;
+				Widget.Active = value == CheckBoxState.On;
 				internalActiveUpdate = false;
 			}
 		}
@@ -117,7 +108,7 @@ namespace Xwt.GtkBackend
 			base.EnableEvent (eventId);
 			if (eventId is CheckBoxEvent) {
 				switch ((CheckBoxEvent)eventId) {
-				case CheckBoxEvent.Toggled: UpdateToggleEventStatus (true); toggleEventEnabled = true; break;
+				case CheckBoxEvent.Toggled: toggleEventEnabled = true; break;
 				case CheckBoxEvent.Clicked: Widget.Clicked += HandleWidgetClicked; break;
 				}
 			}
@@ -128,20 +119,12 @@ namespace Xwt.GtkBackend
 			base.DisableEvent (eventId);
 			if (eventId is CheckBoxEvent) {
 				switch ((CheckBoxEvent)eventId) {
-				case CheckBoxEvent.Toggled: toggleEventEnabled = false; UpdateToggleEventStatus (false); break;
+				case CheckBoxEvent.Toggled: toggleEventEnabled = false; break;
 				case CheckBoxEvent.Clicked: Widget.Clicked -= HandleWidgetClicked; break;
 				}
 			}
 		}
-		
-		void UpdateToggleEventStatus (bool enable)
-		{
-			if (enable && !toggleEventEnabled && !allowMixed)
-				Widget.Toggled += HandleWidgetActivated;
-			else if (!enable && !toggleEventEnabled && !allowMixed)
-				Widget.Toggled -= HandleWidgetActivated;
-		}
-		
+
 		void HandleWidgetActivated (object sender, EventArgs e)
 		{
 			if (internalActiveUpdate)
@@ -158,8 +141,11 @@ namespace Xwt.GtkBackend
 						internalActiveUpdate = false;
 					}
 				}
+			} else if (Widget.Inconsistent) {
+				Widget.Inconsistent = false;
+				Widget.Active = false;
 			}
-			
+
 			if (toggleEventEnabled) {
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnToggled ();

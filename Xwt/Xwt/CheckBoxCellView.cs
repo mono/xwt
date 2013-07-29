@@ -38,6 +38,8 @@ namespace Xwt
 	{
 		bool active;
 		bool editable;
+		bool mixed;
+		bool allowMixed;
 
 		public IDataField<bool> ActiveField { get; set; }
 		public IDataField<bool> EditableField { get; set; }

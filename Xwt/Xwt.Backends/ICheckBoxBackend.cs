@@ -33,24 +33,13 @@ namespace Xwt.Backends
 		void SetContent (string label);
 
 		/// <summary>
-		/// Gets or sets whether the checkbox is checked.
+		/// Gets or sets the state of the checkbox.
 		/// </summary>
-		bool Active { get; set; }
+		/// <exception cref="System.ArgumentOutOfRangeException">Thrown if State is not On, Off or Mixed</exception>
+		CheckBoxState State { get; set; }
 
 		/// <summary>
-		/// Gets or sets whether the checkbox is in a mixed state.
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// Mixed can be set to <c>true</c> manually in code, even when <see cref="AllowMixed"/>
-		/// is <c>false</c>. A subsequent click will clear the mixed state resulting in
-		/// <see cref="Mixed"/> and <see cref="Active"/> being <c>false</c>.
-		/// </para>
-		/// </remarks>
-		bool Mixed { get; set; }
-
-		/// <summary>
-		/// Gets or sets whether the user is allowed to reach a mixed state.
+		/// Gets or sets whether the checkbox is allowed to have a mixed state.
 		/// </summary>
 		bool AllowMixed { get; set; }
 	}

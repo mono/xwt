@@ -423,6 +423,7 @@
     <Compile Include="Xwt.Motion\IAnimatable.cs" />
     <Compile Include="Xwt\WindowLocation.cs" />
     <Compile Include="Xwt.Motion\ObjectTransforms.cs" />
+    <Compile Include="Xwt\CheckBoxState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
