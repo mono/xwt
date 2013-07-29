@@ -548,6 +548,13 @@ namespace Xwt.Drawing
 				ctx.NativeContextHandler.Translate (ctx.NativeBackend, tx, ty);
 		}
 
+		public override void ModifyCTM (object backend, Matrix t)
+		{
+			var ctx = (VectorBackend)backend;
+			CreateNativePathBackend (ctx);
+			ctx.NativeContextHandler.ModifyCTM (ctx.NativeBackend, t);
+		}
+
 		public override Matrix GetCTM (object backend)
 		{
 			var ctx = (VectorBackend)backend;
