@@ -101,6 +101,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<ISliderBackend, SliderBackend> ();
 			RegisterBackend<IRadioButtonBackend, RadioButtonBackend> ();
 			RegisterBackend<IScrollbarBackend, ScrollbarBackend> ();
+			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
 		}
 
 		public override void Dispose ()

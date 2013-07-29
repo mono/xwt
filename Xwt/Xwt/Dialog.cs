@@ -199,7 +199,9 @@ namespace Xwt
 			}
 			set {
 				label = value;
-				ParentDialog.UpdateButton (this);
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
 			}
 		}
 		
@@ -211,7 +213,9 @@ namespace Xwt
 			}
 			set {
 				image = value;
-				ParentDialog.UpdateButton (this);
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
 			}
 		}
 		
@@ -219,7 +223,9 @@ namespace Xwt
 			get { return visible; }
 			set {
 				visible = value;
-				ParentDialog.UpdateButton (this);
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
 			}
 		}
 		
@@ -227,7 +233,9 @@ namespace Xwt
 			get { return sensitive; }
 			set {
 				sensitive = value;
-				ParentDialog.UpdateButton (this);
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
 			}
 		}
 		
