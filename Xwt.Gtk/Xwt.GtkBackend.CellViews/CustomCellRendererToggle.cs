@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using Gtk;
 using Xwt.Backends;
 
@@ -31,6 +32,7 @@ namespace Xwt.GtkBackend
 {
 	public class CustomCellRendererToggle: Gtk.CellRendererToggle, ICellDataSource
 	{
+		TreeViewBackend treeBackend;
 		ICheckBoxCellViewFrontend view;
 		TreeModel treeModel;
 		TreeIter iter;
@@ -40,8 +42,9 @@ namespace Xwt.GtkBackend
 			this.view = view;
 		}
 
-		public void LoadData (TreeModel treeModel, TreeIter iter)
+		public void LoadData (TreeViewBackend treeBackend, TreeModel treeModel, TreeIter iter)
 		{
+			this.treeBackend = treeBackend;
 			this.treeModel = treeModel;
 			this.iter = iter;
 			view.Initialize (this);
@@ -58,6 +61,8 @@ namespace Xwt.GtkBackend
 
 		protected override void OnToggled (string path)
 		{
+			CellUtil.SetCurrentEventRow (treeBackend, path);
+
 			if (!view.RaiseToggled () && view.ActiveField != null) {
 				Gtk.TreeIter iter;
 				if (treeModel.GetIterFromString (out iter, path))

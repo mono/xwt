@@ -46,6 +46,8 @@ namespace Xwt.Backends
 		bool HeadersVisible { get; set; }
 		
 		bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition);
+
+		TreePosition CurrentEventRow { get; }
 	}
 	
 	public enum ListViewColumnChange
