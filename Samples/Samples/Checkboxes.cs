@@ -42,7 +42,7 @@ namespace Samples
 			Label la = new Label ();
 			PackStart (la);
 			
-			/*b.Clicked += delegate {
+			b.Clicked += delegate {
 				clicks++;
 				la.Text = string.Format ("state:{0}, clicks:{1}, toggles:{2}", b.State, clicks, toggles);
 			};
@@ -50,7 +50,7 @@ namespace Samples
 			b.Toggled += delegate {
 				toggles++;
 				la.Text = string.Format ("state:{0}, clicks:{1}, toggles:{2}", b.State, clicks, toggles);
-			};*/
+			};
 		}
 	}
 }
