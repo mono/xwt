@@ -58,6 +58,8 @@ namespace Xwt.WPFBackend
 			Tree.ItemTemplate = new HierarchicalDataTemplate { ItemsSource = new Binding ("Children") };
 			Tree.SetValue (VirtualizingStackPanel.IsVirtualizingProperty, true);
 		}
+
+		public TreePosition CurrentEventRow { get; set;  }
 		
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (Tree).ToXwtScrollPolicy (); }
