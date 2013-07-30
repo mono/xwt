@@ -112,6 +112,26 @@ namespace Xwt.Drawing
 		/// other resources with the name "foo@XXX.png", where XXX can be any arbitrary string. For example "foo@2x.png".
 		/// Each of those resources will be considered different versions of the same image.
 		/// </remarks>
+		public static Image FromResource (string resource)
+		{
+			if (resource == null)
+				throw new ArgumentNullException ("resource");
+
+			return FromResource (Assembly.GetCallingAssembly (), resource);
+		}
+
+		/// <summary>
+		/// Loads an image from a resource
+		/// </summary>
+		/// <returns>An image</returns>
+		/// <param name="type">Type which identifies the assembly from which to load the image</param>
+		/// <param name="resource">Resource name</param>
+		/// <remarks>
+		/// This method will look for alternative versions of the image with different resolutions.
+		/// For example, if a resource is named "foo.png", this method will load
+		/// other resources with the name "foo@XXX.png", where XXX can be any arbitrary string. For example "foo@2x.png".
+		/// Each of those resources will be considered different versions of the same image.
+		/// </remarks>
 		public static Image FromResource (Type type, string resource)
 		{
 			if (type == null)
