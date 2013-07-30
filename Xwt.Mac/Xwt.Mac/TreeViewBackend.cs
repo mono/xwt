@@ -67,7 +67,9 @@ namespace Xwt.Mac
 		protected override string SelectionChangeEventName {
 			get { return "NSOutlineViewSelectionDidChangeNotification"; }
 		}
-		
+
+		public TreePosition CurrentEventRow { get; set; }
+
 		public override object AddColumn (ListViewColumn col)
 		{
 			NSTableColumn tcol = (NSTableColumn) base.AddColumn (col);

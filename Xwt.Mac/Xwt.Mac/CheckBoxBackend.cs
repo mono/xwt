@@ -53,21 +53,12 @@ namespace Xwt.Mac
 			ResetFittingSize ();
 		}
 
-		public bool Active {
+		public CheckBoxState State {
 			get {
-				return Widget.State == NSCellStateValue.On;
+				return Widget.State.ToXwtState ();
 			}
 			set {
-				Widget.State = value ? NSCellStateValue.On : NSCellStateValue.Off;
-			}
-		}
-
-		public bool Mixed {
-			get {
-				return Widget.State == NSCellStateValue.Mixed;
-			}
-			set {
-				Widget.State = value ? NSCellStateValue.Mixed : NSCellStateValue.Off;
+				Widget.State = value.ToMacState ();
 			}
 		}
 

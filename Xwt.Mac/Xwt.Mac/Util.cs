@@ -335,6 +335,34 @@ namespace Xwt.Mac
 			}
 			return ns;
 		}
+
+		public static CheckBoxState ToXwtState (this NSCellStateValue state)
+		{
+			switch (state) {
+				case NSCellStateValue.Mixed:
+					return CheckBoxState.Mixed;
+				case NSCellStateValue.On:
+					return CheckBoxState.On;
+				case NSCellStateValue.Off:
+					return CheckBoxState.Off;
+				default:
+					throw new ArgumentOutOfRangeException ();
+			}
+		}
+		
+		public static NSCellStateValue ToMacState (this CheckBoxState state)
+		{
+			switch (state) {
+			case CheckBoxState.Mixed:
+				return NSCellStateValue.Mixed;
+			case CheckBoxState.On:
+				return NSCellStateValue.On;
+			case CheckBoxState.Off:
+				return NSCellStateValue.Off;
+			default:
+				throw new ArgumentOutOfRangeException ();
+			}
+		}
 	}
 
 	public interface ICopiableObject

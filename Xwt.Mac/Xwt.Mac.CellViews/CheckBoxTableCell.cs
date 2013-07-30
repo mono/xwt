@@ -64,7 +64,7 @@ namespace Xwt.Mac
 
 		public void Fill ()
 		{
-			State = cellView.Active ? NSCellStateValue.On : NSCellStateValue.Off;
+			State = cellView.State.ToMacState ();
 			Editable = cellView.Editable;
 		}
 
