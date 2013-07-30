@@ -175,6 +175,11 @@ namespace Xwt.GtkBackend
 				return sel;
 			}
 		}
+
+		public TreePosition CurrentEventRow {
+			get;
+			internal set;
+		}
 		
 		public void SelectRow (TreePosition pos)
 		{

@@ -27,6 +27,7 @@ using System;
 using Gtk;
 using Xwt.CairoBackend;
 using Xwt.Backends;
+using Xwt.GtkBackend;
 
 namespace Xwt.GtkBackend
 {
@@ -43,7 +44,7 @@ namespace Xwt.GtkBackend
 
 		#region ICellDataSource implementation
 
-		public void LoadData (TreeModel treeModel, TreeIter iter)
+		public void LoadData (TreeViewBackend treeBackend, TreeModel treeModel, TreeIter iter)
 		{
 			this.treeModel = treeModel;
 			this.iter = iter;
