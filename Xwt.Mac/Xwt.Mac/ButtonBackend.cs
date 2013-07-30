@@ -130,14 +130,12 @@ namespace Xwt.Mac
 			};
 		}
 		
-		public MacButton (ICheckBoxEventSink eventSink, ApplicationContext context)
+		public MacButton ()
 		{
 			Activated += delegate {
-				context.InvokeUserCode (delegate {
-					eventSink.OnClicked ();
-				});
 				OnActivatedInternal ();
 			};
+
 		}
 
 		public MacButton (IRadioButtonEventSink eventSink, ApplicationContext context)

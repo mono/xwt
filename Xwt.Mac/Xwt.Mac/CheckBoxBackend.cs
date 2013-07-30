@@ -31,15 +31,20 @@ namespace Xwt.Mac
 {
 	public class CheckBoxBackend: ViewBackend<NSButton,ICheckBoxEventSink>, ICheckBoxBackend
 	{
+		bool realAllowMixed;
+		NSCellStateValue currentState = NSCellStateValue.Off;
+
 		public CheckBoxBackend ()
 		{
 		}
 
 		public override void Initialize ()
 		{
-			ViewObject = new MacButton (EventSink, ApplicationContext);
-			Widget.SetButtonType (NSButtonType.Switch);
-			Widget.Title = "";
+			var button = new MacButton ();
+			ViewObject = button;
+			button.SetButtonType (NSButtonType.Switch);
+			button.Title = "";
+			button.ActivatedInternal += OnActivated;
 		}
 		
 		#region ICheckBoxBackend implementation
@@ -53,21 +58,45 @@ namespace Xwt.Mac
 			ResetFittingSize ();
 		}
 
+		void OnActivated (MacButton b)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnClicked ();
+				CheckStateChanged ();
+			});
+		}
+
 		public CheckBoxState State {
 			get {
 				return Widget.State.ToXwtState ();
 			}
 			set {
+				if (value == CheckBoxState.Mixed && !Widget.AllowsMixedState)
+					Widget.AllowsMixedState = true;
 				Widget.State = value.ToMacState ();
+				CheckStateChanged ();
 			}
 		}
 
 		public bool AllowMixed {
 			get {
-				return Widget.AllowsMixedState;
+				return realAllowMixed;
 			}
 			set {
-				Widget.AllowsMixedState = value;
+				realAllowMixed = value;
+				Widget.AllowsMixedState = value || State == CheckBoxState.Mixed;
+			}
+		}
+
+		void CheckStateChanged ()
+		{
+			if (!realAllowMixed && Widget.State != NSCellStateValue.Mixed)
+				Widget.AllowsMixedState = false;
+			if (currentState != Widget.State) {
+				currentState = Widget.State;
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnToggled ();
+				});
 			}
 		}
 		#endregion
