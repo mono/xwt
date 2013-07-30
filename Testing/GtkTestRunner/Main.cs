@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using Xwt;
 using System.Collections.Generic;
 using System.Threading;
@@ -41,7 +42,8 @@ namespace GtkTestRunner
 			list.Add ("-domain=None");
 			list.Add ("-noshadow");
 			list.Add ("-nothread");
-			list.Add (typeof (MainClass).Assembly.Location);
+			if (!list.Contains (typeof (MainClass).Assembly.Location))
+				list.Add (typeof (MainClass).Assembly.Location);
 			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
 			ReferenceImageManager.ShowImageVerifier ();
 		}

@@ -55,6 +55,7 @@
     <Reference Include="nunit.util">
       <HintPath>libs\nunit.util.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GtkTestRunner\Main.cs" />
