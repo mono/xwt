@@ -108,7 +108,11 @@ namespace Xwt
 		[DefaultValue (false)]
 		public CheckBoxState State {
 			get { return Backend.State; }
-			set { Backend.State = value; }
+			set {
+				if (!value.IsValid ())
+					throw new ArgumentOutOfRangeException ("Invalid check box state value");
+				Backend.State = value;
+			}
 		}
 		
 		[DefaultValue (false)]

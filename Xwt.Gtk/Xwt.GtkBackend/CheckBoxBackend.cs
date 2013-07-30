@@ -63,13 +63,11 @@ namespace Xwt.GtkBackend
 				allowMixed = value;
 			}
 		}
-		
-		public CheckBoxState State {
-			get { return Widget.Inconsistent ? CheckBoxState.Mixed : Widget.Active.ToCheckBoxState(); }
-			set {
-				if (!value.IsValid ())
-					throw new ArgumentException ("Invalid CheckBoxState value");
 
+		public CheckBoxState State {
+			get { return Widget.Inconsistent ?
+				CheckBoxState.Mixed : Widget.Active ? CheckBoxState.On : CheckBoxState.Off; }
+			set {
 				Widget.Inconsistent = value == CheckBoxState.Mixed;
 				internalActiveUpdate = true;
 				Widget.Active = value == CheckBoxState.On;

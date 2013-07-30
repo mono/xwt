@@ -81,7 +81,10 @@ namespace Xwt.GtkBackend
 						else
 							newState = CheckBoxState.On;
 					} else {
-						newState = (!Active).ToCheckBoxState ();
+						if (Active)
+							newState = CheckBoxState.Off;
+						else
+							newState = CheckBoxState.On;
 					}
 
 					object newValue = type == typeof(CheckBoxState) ?

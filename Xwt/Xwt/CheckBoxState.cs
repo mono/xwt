@@ -34,7 +34,7 @@ namespace Xwt
 		Mixed = 2
 	}
 
-	public static class CheckBoxStateOperations
+	internal static class CheckBoxStateOperations
 	{
 		public static bool IsValid (this CheckBoxState state) {
 			switch(state) {
