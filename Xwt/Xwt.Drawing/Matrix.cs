@@ -4,6 +4,7 @@
 // Authors:
 //	Chris Toshok (toshok@ximian.com)
 //	Lytico (http://www.limada.org)
+//  Hywel Thomas <hywel.w.thomas@gmail.com>
 //
 // Copyright (c) 2007 Novell, Inc. (http://www.novell.com)
 // Copyright (c) 2012 http://www.limada.org
@@ -27,10 +28,13 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-// Remark: this file was refactored from 
+// Remarks: this file was refactored from 
 // https://github.com/mono/mono/blob/master/mcs/class/WindowsBase/System.Windows.Media/Matrix.cs
-// by lytico to be used with 
-// https://github.com/mono/xwt
+// by lytico to be used with https://github.com/mono/xwt
+// 
+// The default order for multiple matrix operations has been changed from
+// Append to Prepend to be consistent with the Drawing.Context transform
+// order as implemented in each of the ContextBackends.
 // 
 using System;
 using System.Globalization;
@@ -177,14 +181,19 @@ namespace Xwt.Drawing
 
 		public void Prepend (Matrix matrix)
 		{
-			var _m11 = matrix.M11 * M11 + matrix.M12 * M21;
-			var _m12 = matrix.M11 * M12 + matrix.M12 * M22;
-			var _m21 = matrix.M21 * M11 + matrix.M22 * M21;
-			var _m22 = matrix.M21 * M12 + matrix.M22 * M22;
+			Prepend (matrix.M11, matrix.M12, matrix.M21, matrix.M22, matrix.OffsetX, matrix.OffsetY);
+		}
 
-			var _offsetX = matrix.OffsetX * M11 + matrix.OffsetY * M21 + OffsetX;
-			var _offsetY = matrix.OffsetX * M12 + matrix.OffsetY * M22 + OffsetY;
-
+		protected void Prepend (double m11, double m12, double m21, double m22, double offsetX, double offsetY)
+		{
+			var _m11 = m11 * M11 + m12 * M21;
+			var _m12 = m11 * M12 + m12 * M22;
+			var _m21 = m21 * M11 + m22 * M21;
+			var _m22 = m21 * M12 + m22 * M22;
+			
+			var _offsetX = offsetX * M11 + offsetY * M21 + OffsetX;
+			var _offsetY = offsetX * M12 + offsetY * M22 + OffsetY;
+			
 			M11 = _m11;
 			M12 = _m12;
 			M21 = _m21;
@@ -194,6 +203,32 @@ namespace Xwt.Drawing
 		}
 
 		public void Rotate (double angle)
+		{
+			angle = angle % 360;
+			if (angle == 0)
+				return;
+			if (angle == 90 || angle == -270)
+				Prepend (0, 1, -1, 0, 0, 0);
+			else if (angle == -90 || angle == 270)
+				Prepend (0, -1, 1, 0, 0, 0);
+			else if (angle == 180 || angle == -180)
+				Prepend (-1, 0, 0, -1, 0, 0);
+			else {
+				var theta = angle * pi180;
+				var cos = Math.Cos (theta);
+				var sin = Math.Sin (theta);
+				Prepend (cos, sin, -sin, cos, 0, 0);
+			}
+		}
+
+		public void RotateAt (double angle, double centerX, double centerY)
+		{
+			Translate (centerX, centerY);
+			Rotate (angle);
+			Translate (-centerX, -centerY);		// done first
+		}
+
+		public void RotateAppend (double angle)
 		{
 			angle = angle % 360;
 			if (angle == 90 || angle == -270)
@@ -206,58 +241,41 @@ namespace Xwt.Drawing
 				return;
 			else {
 				var theta = angle * pi180;
-				
 				var cos = Math.Cos (theta);
 				var sin = Math.Sin (theta);
 				Append (cos, sin, -sin, cos, 0, 0);
 			}
 		}
 
-		public void RotateAt (double angle, double centerX, double centerY)
+		public void RotateAtAppend (double angle, double centerX, double centerY)
 		{
-			Translate (-centerX, -centerY);
-			Rotate (angle);
-			Translate (centerX, centerY);
-		}
-
-		public void RotateAtPrepend (double angle, double centerX, double centerY)
-		{
-			var m = Matrix.Identity;
-			m.RotateAt (angle, centerX, centerY);
-			Prepend (m);
-		}
-
-		public void RotatePrepend (double angle)
-		{
-			var m = Matrix.Identity;
-			m.Rotate (angle);
-			Prepend (m);
+			TranslateAppend (-centerX, -centerY);
+			RotateAppend (angle);
+			TranslateAppend (centerX, centerY);
 		}
 
 		public void Scale (double scaleX, double scaleY)
 		{
-			Append (scaleX, 0, 0, scaleY, 0, 0);
+			Prepend (scaleX, 0, 0, scaleY, 0, 0);
 		}
 
 		public void ScaleAt (double scaleX, double scaleY, double centerX, double centerY)
 		{
-			Translate (-centerX, -centerY);
-			Scale (scaleX, scaleY);
 			Translate (centerX, centerY);
+			Scale (scaleX, scaleY);
+			Translate (-centerX, -centerY);		// done first
 		}
 
-		public void ScaleAtPrepend (double scaleX, double scaleY, double centerX, double centerY)
+		public void ScaleAppend (double scaleX, double scaleY)
 		{
-			var m = Matrix.Identity;
-			m.ScaleAt (scaleX, scaleY, centerX, centerY);
-			Prepend (m);
+			Append (scaleX, 0, 0, scaleY, 0, 0);
 		}
 
-		public void ScalePrepend (double scaleX, double scaleY)
+		public void ScaleAtAppend (double scaleX, double scaleY, double centerX, double centerY)
 		{
-			var m = Matrix.Identity;
-			m.Scale (scaleX, scaleY);
-			Prepend (m);
+			TranslateAppend (-centerX, -centerY);
+			ScaleAppend (scaleX, scaleY);
+			TranslateAppend (centerX, centerY);
 		}
 
 		public void SetIdentity ()
@@ -271,16 +289,16 @@ namespace Xwt.Drawing
 
 		public void Skew (double skewX, double skewY)
 		{
-			Append (1, Math.Tan (skewY * pi180),
+			Prepend (1, Math.Tan (skewY * pi180),
 			        Math.Tan (skewX * pi180), 1,
 			        0, 0);
 		}
 
-		public void SkewPrepend (double skewX, double skewY)
+		public void SkewAppend (double skewX, double skewY)
 		{
-			var m = Matrix.Identity;
-			m.Skew (skewX, skewY);
-			Prepend (m);
+			Append (1, Math.Tan (skewY * pi180),
+			        Math.Tan (skewX * pi180), 1,
+			        0, 0);
 		}
 
 		public override string ToString ()
@@ -348,15 +366,14 @@ namespace Xwt.Drawing
 
 		public void Translate (double offsetX, double offsetY)
 		{
-			this.OffsetX += offsetX;
-			this.OffsetY += offsetY;
+			OffsetX += M11*offsetX + M21*offsetY;
+			OffsetY += M12*offsetX + M22*offsetY;
 		}
 
-		public void TranslatePrepend (double offsetX, double offsetY)
+		public void TranslateAppend (double offsetX, double offsetY)
 		{
-			var m = Matrix.Identity;
-			m.Translate (offsetX, offsetY);
-			Prepend (m);
+			OffsetX += offsetX;
+			OffsetY += offsetY;
 		}
 
 		public double Determinant {

@@ -151,15 +151,15 @@ namespace Samples
 			// Note that transforms are prepended, so are actioned in reverse order
 			// This is the same order that Backend Context transforms are applied
 
-			Matrix m = new Matrix ();					// Identity matrix
-			Matrix s = new Matrix (1.0, 0.0,			// new skew matrix
+			Matrix m = new Matrix ();				// Identity matrix
+			Matrix s = new Matrix (1.0, 0.0,		// new skew matrix
 			                      -0.5, 1.0,
 			                       0.0, 0.0);
 
-			m.TranslatePrepend (0, size.Height);		// Shift text back to place
-			m.Prepend (s);								// Skew X-values
-			m.ScalePrepend (1, -1);						// Reflect text Y-values
-			m.TranslatePrepend (0, -size.Height);		// Shift text base to (0,0)
+			m.Translate (0, size.Height);			// Shift text back to place
+			m.Prepend (s);							// Skew X-values
+			m.Scale (1, -1);						// Reflect text Y-values
+			m.Translate (0, -size.Height);			// Shift text base to (0,0)
 
 			ctx.ModifyCTM (m);		// NB ctx.Translate (x+0.5, y+0.5) still active
 

@@ -179,8 +179,8 @@ namespace Xwt
 				ctx.Rotate (theta);			// done first (about the origin)
 
 				m1 = Matrix.Identity;
-				m1.TranslatePrepend (100, 0);
-				m1.RotatePrepend (theta);
+				m1.Translate (100, 0);
+				m1.Rotate (theta);
 				m2 = ctx.GetCTM ();
 
 				CheckMatrix (m1, m2);
@@ -205,20 +205,20 @@ namespace Xwt
 			Matrix m1 = Matrix.Identity;
 			Matrix ctm;
 
-			// Apply and compare several transforms
+			// Apply and compare several Matrix and Context transforms
 			ctx.Save ();
 			ctx.Scale (2, 3);
-			m1.ScalePrepend (2, 3);
+			m1.Scale (2, 3);
 			ctm = ctx.GetCTM ();
 			CheckMatrix (m1, ctm);
 
 			ctx.Translate (x, y);
-			m1.TranslatePrepend (x, y);
+			m1.Translate (x, y);
 			ctm = ctx.GetCTM ();
 			CheckMatrix (m1, ctm);
 
 			ctx.Rotate (theta);
-			m1.RotatePrepend (theta);
+			m1.Rotate (theta);
 			ctm = ctx.GetCTM ();
 			CheckMatrix (m1, ctm);
 

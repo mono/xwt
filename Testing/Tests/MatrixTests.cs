@@ -4,6 +4,7 @@
 // Authors:
 //	Chris Toshok (toshok@ximian.com)
 //	Lytico (http://www.limada.org)
+//	Hywel Thomas <hywel.w.thomas@gmail.com>
 //
 // Copyright (c) 2007 Novell, Inc. (http://www.novell.com)
 // Copyright (c) 2013 http://www.limada.org
@@ -69,9 +70,10 @@ namespace Xwt
 		[Test]
 		public void Append ()
 		{
+			// NB pick test matrices so that Append and Prepend results differ
 			var m = new Matrix (1, 2, 3, 4, 5, 6);
-			m.Append (m);
-			CheckMatrix (new Matrix (7, 10, 15, 22, 28, 40), m);
+			m.Append (new Matrix (6, 5, 4, 3, 2, 1));
+			CheckMatrix (new Matrix (14, 11, 34, 27, 56, 44), m);
 		}
 
 		[Test]
@@ -115,7 +117,6 @@ namespace Xwt
 		public void IsIdentity ()
 		{
 			Assert.IsTrue (Matrix.Identity.IsIdentity);
-			;
 			Assert.IsFalse ((new Matrix (1, 0, 0, 1, 5, 5)).IsIdentity);
 			Assert.IsFalse ((new Matrix (5, 5, 5, 5, 5, 5)).IsIdentity);
 		}
@@ -170,24 +171,37 @@ namespace Xwt
 		[Test]
 		public void Prepend ()
 		{
+			// NB pick matrices so that Append and Prepend give different results
 			var m = new Matrix (1, 2, 3, 4, 5, 6);
-			m.Prepend (new Matrix (2, 4, 6, 8, 10, 12));
-
-			CheckMatrix (new Matrix (14, 20, 30, 44, 51, 74), m);
+			m.Prepend (new Matrix (6, 5, 4, 3, 2, 1));
+			CheckMatrix (new Matrix (21, 32, 13, 20, 10, 14), m);
 		}
 
 		[Test]
 		public void Rotate ()
 		{
+			var m = new Matrix (1, 2, 3, 4, 5, 6);
+			m.Rotate (33);
+
+			CheckMatrix (new Matrix (2.47258767299051,
+                         3.85589727595096,
+                         1.97137266882125,
+                         2.26540420175164,
+                         5, 6), m);
+		}
+
+		[Test]
+		public void RotateAppend ()
+		{
 			var m = Matrix.Identity;
-			m.Rotate (45);
+			m.RotateAppend (45);
 			CheckMatrix (new Matrix (0.707106781186548,
                          0.707106781186547,
                          -0.707106781186547,
                          0.707106781186548, 0, 0), m);
 
 			m = new Matrix (1, 2, 3, 4, 5, 6);
-			m.Rotate (33);
+			m.RotateAppend (33);
 			CheckMatrix (new Matrix (-0.25060750208463,
                          2.22198017090588,
                          0.337455563776164,
@@ -202,20 +216,6 @@ namespace Xwt
 			var m = new Matrix (1, 2, 3, 4, 5, 6);
 			m.RotateAt (33, 5, 5);
 
-			CheckMatrix (new Matrix (-0.25060750208463,
-                         2.22198017090588,
-                         0.337455563776164,
-                         4.98859937682678,
-                         4.45536096498497,
-                         5.83867056794542), m);
-		}
-
-		[Test]
-		public void RotateAtPrepend ()
-		{
-			var m = new Matrix (1, 2, 3, 4, 5, 6);
-			m.RotateAtPrepend (33, 5, 5);
-
 			CheckMatrix (new Matrix (2.47258767299051,
                          3.85589727595096,
                          1.97137266882125,
@@ -225,16 +225,17 @@ namespace Xwt
 		}
 
 		[Test]
-		public void RotatePrepend ()
+		public void RotateAtAppend ()
 		{
 			var m = new Matrix (1, 2, 3, 4, 5, 6);
-			m.RotatePrepend (33);
+			m.RotateAtAppend (33, 5, 5);
 
-			CheckMatrix (new Matrix (2.47258767299051,
-                         3.85589727595096,
-                         1.97137266882125,
-                         2.26540420175164,
-                         5, 6), m);
+			CheckMatrix (new Matrix (-0.25060750208463,
+                         2.22198017090588,
+                         0.337455563776164,
+                         4.98859937682678,
+                         4.45536096498497,
+                         5.83867056794542), m);
 		}
 
 		[Test]
@@ -244,7 +245,7 @@ namespace Xwt
 			
 			Action<double, double, double, double, double> prove = (angle, m11, m12, m21, m22) => {
 				matrix.SetIdentity ();
-				matrix.Rotate (angle);
+				matrix.RotateAppend (angle);
 				CheckMatrix (new Matrix (m11, m12, m21, m22, 0, 0), matrix);
 			};
 			prove (90, 0, 1, -1, 0);
@@ -264,12 +265,23 @@ namespace Xwt
 		public void Scale ()
 		{
 			var m = Matrix.Identity;
-
 			m.Scale (5, 6);
 			CheckMatrix (new Matrix (5, 0, 0, 6, 0, 0), m);
 
 			m = new Matrix (1, 2, 2, 1, 3, 3);
 			m.Scale (5, 5);
+			CheckMatrix (new Matrix (5, 10, 10, 5, 3, 3), m);
+		}
+
+		[Test]
+		public void ScaleAppend ()
+		{
+			var m = Matrix.Identity;
+			m.ScaleAppend (5, 6);
+			CheckMatrix (new Matrix (5, 0, 0, 6, 0, 0), m);
+
+			m = new Matrix (1, 2, 2, 1, 3, 3);
+			m.ScaleAppend (5, 5);
 			CheckMatrix (new Matrix (5, 10, 10, 5, 15, 15), m);
 		}
 
@@ -278,44 +290,31 @@ namespace Xwt
 		{
 			var m = new Matrix (1, 0, 0, 1, 2, 2);
 			m.ScaleAt (2, 2, 0, 0);
-			CheckMatrix (new Matrix (2, 0, 0, 2, 4, 4), m);
+			CheckMatrix (new Matrix (2, 0, 0, 2, 2, 2), m);
 
 			m = new Matrix (1, 0, 0, 1, 2, 2);
 			m.ScaleAt (2, 2, 4, 4);
-			CheckMatrix (new Matrix (2, 0, 0, 2, 0, 0), m);
-
-			m = new Matrix (1, 0, 0, 1, 2, 2);
-			m.ScaleAt (2, 2, 2, 2);
-			CheckMatrix (new Matrix (2, 0, 0, 2, 2, 2), m);
-		}
-
-		[Test]
-		public void ScaleAtPrepend ()
-		{
-			var m = new Matrix (1, 0, 0, 1, 2, 2);
-			m.ScaleAtPrepend (2, 2, 0, 0);
-			CheckMatrix (new Matrix (2, 0, 0, 2, 2, 2), m);
-
-			m = new Matrix (1, 0, 0, 1, 2, 2);
-			m.ScaleAtPrepend (2, 2, 4, 4);
 			CheckMatrix (new Matrix (2, 0, 0, 2, -2, -2), m);
 
 			m = new Matrix (1, 0, 0, 1, 2, 2);
-			m.ScaleAtPrepend (2, 2, 2, 2);
+			m.ScaleAt (2, 2, 2, 2);
 			CheckMatrix (new Matrix (2, 0, 0, 2, 0, 0), m);
 		}
 
 		[Test]
-		public void ScalePrepend ()
+		public void ScaleAtAppend ()
 		{
-			var m = Matrix.Identity;
+			var m = new Matrix (1, 0, 0, 1, 2, 2);
+			m.ScaleAtAppend (2, 2, 0, 0);
+			CheckMatrix (new Matrix (2, 0, 0, 2, 4, 4), m);
 
-			m.ScalePrepend (5, 6);
-			CheckMatrix (new Matrix (5, 0, 0, 6, 0, 0), m);
+			m = new Matrix (1, 0, 0, 1, 2, 2);
+			m.ScaleAtAppend (2, 2, 4, 4);
+			CheckMatrix (new Matrix (2, 0, 0, 2, 0, 0), m);
 
-			m = new Matrix (1, 2, 2, 1, 3, 3);
-			m.ScalePrepend (5, 5);
-			CheckMatrix (new Matrix (5, 10, 10, 5, 3, 3), m);
+			m = new Matrix (1, 0, 0, 1, 2, 2);
+			m.ScaleAtAppend (2, 2, 2, 2);
+			CheckMatrix (new Matrix (2, 0, 0, 2, 2, 2), m);
 		}
 
 		[Test]
@@ -330,7 +329,6 @@ namespace Xwt
 		public void Skew ()
 		{
 			var m = Matrix.Identity;
-
 			m.Skew (10, 15);
 			CheckMatrix (new Matrix (1,
                          0.267949192431123,
@@ -339,32 +337,31 @@ namespace Xwt
 
 			m = new Matrix (1, 2, 2, 1, 3, 3);
 			m.Skew (10, 15);
+			CheckMatrix (new Matrix (1.53589838486225,
+                         2.26794919243112,
+                         2.17632698070847,
+                         1.35265396141693,
+                         3, 3), m);
+		}
+
+		[Test]
+		public void SkewAppend ()
+		{
+			var m = Matrix.Identity;
+			m.SkewAppend (10, 15);
+			CheckMatrix (new Matrix (1,
+                         0.267949192431123,
+                         0.176326980708465,
+                         1, 0, 0), m);
+
+			m = new Matrix (1, 2, 2, 1, 3, 3);
+			m.SkewAppend (10, 15);
 			CheckMatrix (new Matrix (1.35265396141693,
                          2.26794919243112,
                          2.17632698070847,
                          1.53589838486225,
                          3.52898094212539,
                          3.80384757729337), m);
-		}
-
-		[Test]
-		public void SkewPrepend ()
-		{
-			var m = Matrix.Identity;
-
-			m.SkewPrepend (10, 15);
-			CheckMatrix (new Matrix (1,
-                         0.267949192431123,
-                         0.176326980708465,
-                         1, 0, 0), m);
-
-			m = new Matrix (1, 2, 2, 1, 3, 3);
-			m.SkewPrepend (10, 15);
-			CheckMatrix (new Matrix (1.53589838486225,
-                         2.26794919243112,
-                         2.17632698070847,
-                         1.35265396141693,
-                         3, 3), m);
 		}
 
 		[Test]
@@ -415,6 +412,18 @@ namespace Xwt
 		}
 
 		[Test]
+		public void TranslateAppend ()
+		{
+			var m = new Matrix (1, 0, 0, 1, 0, 0);
+			m.TranslateAppend (5, 5);
+			CheckMatrix (new Matrix (1, 0, 0, 1, 5, 5), m);
+
+			m = new Matrix (2, 0, 0, 2, 0, 0);
+			m.TranslateAppend (5, 5);
+			CheckMatrix (new Matrix (2, 0, 0, 2, 5, 5), m);
+		}
+
+		[Test]
 		public void Translate ()
 		{
 			var m = new Matrix (1, 0, 0, 1, 0, 0);
@@ -423,18 +432,6 @@ namespace Xwt
 
 			m = new Matrix (2, 0, 0, 2, 0, 0);
 			m.Translate (5, 5);
-			CheckMatrix (new Matrix (2, 0, 0, 2, 5, 5), m);
-		}
-
-		[Test]
-		public void TranslatePrepend ()
-		{
-			var m = new Matrix (1, 0, 0, 1, 0, 0);
-			m.TranslatePrepend (5, 5);
-			CheckMatrix (new Matrix (1, 0, 0, 1, 5, 5), m);
-
-			m = new Matrix (2, 0, 0, 2, 0, 0);
-			m.TranslatePrepend (5, 5);
 			CheckMatrix (new Matrix (2, 0, 0, 2, 10, 10), m);
 		}
 
