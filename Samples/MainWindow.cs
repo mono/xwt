@@ -51,7 +51,7 @@ namespace Samples
 			var edit = new MenuItem ("_Edit");
 			edit.SubMenu = new Menu ();
 			edit.SubMenu.Items.Add (new MenuItem ("_Copy"));
-			edit.SubMenu.Items.Add (new MenuItem ("C_ut"));
+			edit.SubMenu.Items.Add (new MenuItem ("Cu_t"));
 			edit.SubMenu.Items.Add (new MenuItem ("_Paste"));
 			menu.Items.Add (edit);
 			
