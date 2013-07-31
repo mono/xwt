@@ -56,8 +56,9 @@ namespace Xwt.GtkBackend
 			get { return (IButtonEventSink)base.EventSink; }
 		}
 		
-		public void SetContent (string label, ImageDescription image, ContentPosition position)
-		{
+		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position)
+		{			
+			Widget.UseUnderline = useMnemonic;
 			this.image = image;
 
 			if (label != null && label.Length == 0)
@@ -141,7 +142,7 @@ namespace Xwt.GtkBackend
 		public void SetButtonType (ButtonType type)
 		{
 			Button b = (Button) Frontend;
-			SetContent (b.Label, image, b.ImagePosition);
+			SetContent (b.Label, b.UseMnemonic, image, b.ImagePosition);
 		}
 		
 		public override void EnableEvent (object eventId)

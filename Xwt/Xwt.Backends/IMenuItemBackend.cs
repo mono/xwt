@@ -49,7 +49,13 @@ namespace Xwt.Backends
 		/// Gets or sets the label for the menu item.
 		/// </summary>
 		string Label { get; set; }
-		
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="Xwt.Backends.IMenuItemBackend"/> use a mnemonic.
+		/// </summary>
+		/// <value><c>true</c> if it use a mnemonic; otherwise, <c>false</c>.</value>
+		bool UseMnemonic { get; set; }
+
 		/// <summary>
 		/// Gets or sets whether the menu item is enabled.
 		/// </summary>

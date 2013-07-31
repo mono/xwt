@@ -37,22 +37,22 @@ namespace Samples
 			
 			Menu menu = new Menu ();
 			
-			var file = new MenuItem ("File");
+			var file = new MenuItem ("_File");
 			file.SubMenu = new Menu ();
-			file.SubMenu.Items.Add (new MenuItem ("Open"));
-			file.SubMenu.Items.Add (new MenuItem ("New"));
-			MenuItem mi = new MenuItem ("Close");
+			file.SubMenu.Items.Add (new MenuItem ("_Open"));
+			file.SubMenu.Items.Add (new MenuItem ("_New"));
+			MenuItem mi = new MenuItem ("_Close");
 			mi.Clicked += delegate {
 				Application.Exit();
 			};
 			file.SubMenu.Items.Add (mi);
 			menu.Items.Add (file);
 			
-			var edit = new MenuItem ("Edit");
+			var edit = new MenuItem ("_Edit");
 			edit.SubMenu = new Menu ();
-			edit.SubMenu.Items.Add (new MenuItem ("Copy"));
-			edit.SubMenu.Items.Add (new MenuItem ("Cut"));
-			edit.SubMenu.Items.Add (new MenuItem ("Paste"));
+			edit.SubMenu.Items.Add (new MenuItem ("_Copy"));
+			edit.SubMenu.Items.Add (new MenuItem ("C_ut"));
+			edit.SubMenu.Items.Add (new MenuItem ("_Paste"));
 			menu.Items.Add (edit);
 			
 			MainMenu = menu;

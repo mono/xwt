@@ -336,6 +336,30 @@ namespace Xwt.Mac
 			return ns;
 		}
 
+		/// <summary>
+		/// Removes the mnemonics (underscore character) from a string.
+		/// </summary>
+		/// <returns>The string with the mnemonics unescaped.</returns>
+		/// <param name="text">The string.</param>
+		/// <remarks>
+		/// Single underscores are removed. Double underscores are replaced with single underscores (unescaped).
+		/// </remarks>
+		public static string RemoveMnemonic(this string str)
+		{
+			if (str == null)
+				return null;
+			string newText = string.Empty;
+			for (int i = 0; i < str.Length; i++) {
+				if (str [i] != '_')
+					newText += str [i];
+				else if (i < str.Length && str [i + 1] == '_') {
+					newText += '_';
+					i++;
+				}
+			}
+			return newText;
+		}
+
 		public static CheckBoxState ToXwtState (this NSCellStateValue state)
 		{
 			switch (state) {
