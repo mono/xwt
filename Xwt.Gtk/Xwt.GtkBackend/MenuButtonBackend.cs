@@ -24,9 +24,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using Xwt.Backends;
-
 
 namespace Xwt.GtkBackend
 {
@@ -41,8 +41,9 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			Widget.ButtonPressEvent += HandleClicked;
-			((Gtk.Widget)Widget).StateChanged += HandleStateChanged;
+			Widget.ButtonPressEvent += HandlePressed;
+			Widget.Clicked += HandleClicked;
+			Widget.StateChanged += HandleStateChanged;
 		}
 		
 		new IMenuButtonEventSink EventSink {
@@ -50,11 +51,22 @@ namespace Xwt.GtkBackend
 		}
 
 		[GLib.ConnectBefore]
-		void HandleClicked (object sender, Gtk.ButtonPressEventArgs e)
+		void HandlePressed (object sender, Gtk.ButtonPressEventArgs e)
 		{
 			if (e.Event.Button != 1)
 				return;
-			
+			ShowMenu ();
+		}
+
+		[GLib.ConnectBefore]
+		void HandleClicked (object sender, EventArgs e)
+		{
+			if (!isOpen)
+				ShowMenu ();
+		}
+
+		void ShowMenu ()
+		{
 			Gtk.Menu menu = CreateMenu ();
 			
 			if (menu != null) {
@@ -63,12 +75,13 @@ namespace Xwt.GtkBackend
 				//make sure the button looks depressed
 				Gtk.ReliefStyle oldRelief = Widget.Relief;
 				Widget.Relief = Gtk.ReliefStyle.Normal;
+				Widget.State = Gtk.StateType.Active;
 				
 				//clean up after the menu's done
 				menu.Hidden += delegate {
 					Widget.Relief = oldRelief ;
 					isOpen = false;
-					((Gtk.Widget)Widget).State = Gtk.StateType.Normal;
+					Widget.State = Gtk.StateType.Normal;
 					
 					//FIXME: for some reason the menu's children don't get activated if we destroy 
 					//directly here, so use a timeout to delay it
@@ -83,10 +96,9 @@ namespace Xwt.GtkBackend
 
 		void HandleStateChanged (object o, Gtk.StateChangedArgs args)
 		{
-			Gtk.Widget w = (Gtk.Widget)Widget;
 			//while the menu's open, make sure the button looks depressed
-			if (isOpen && w.State != Gtk.StateType.Active)
-				w.State = Gtk.StateType.Active;
+			if (isOpen && Widget.State != Gtk.StateType.Active)
+				Widget.State = Gtk.StateType.Active;
 		}
 
 		void PositionFunc (Gtk.Menu mn, out int x, out int y, out bool push_in)

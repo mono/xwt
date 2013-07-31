@@ -106,7 +106,7 @@ namespace Xwt
 		/// <value><c>true</c> if it uses a mnemonic; otherwise, <c>false</c>.</value>
 		/// <remarks>
 		/// When set to true, the character after the first underscore character in the Label property value is
-		/// interperted as the mnemonic for that Label.
+		/// interpreted as the mnemonic for that Label.
 		/// </remarks>
 		[DefaultValue(true)]
 		public bool UseMnemonic { 
@@ -115,7 +115,7 @@ namespace Xwt
 			{ 
 				if (useMnemonic = value)
 					return;
-				Backend.SetContent (label, value, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);				
+				Backend.SetContent (label, value, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);
 				useMnemonic = value;
 			}
 		}
@@ -125,7 +125,7 @@ namespace Xwt
 			get { return image; }
 			set {
 				image = value;
-				Backend.SetContent (label, UseMnemonic, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition); 
+				Backend.SetContent (label, UseMnemonic, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);
 				OnPreferredSizeChanged ();
 			}
 		}
@@ -135,7 +135,7 @@ namespace Xwt
 			get { return imagePosition; }
 			set {
 				imagePosition = value;
-				Backend.SetContent (label, UseMnemonic, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition); 
+				Backend.SetContent (label, UseMnemonic, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);
 				OnPreferredSizeChanged ();
 			}
 		}

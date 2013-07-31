@@ -44,16 +44,16 @@ namespace Samples
 
 		public ButtonSample ()
 		{
-			Button b1 = new Button ("_Click me");
+			Button b1 = new Button ("Click me");
 			b1.Clicked += delegate {
-				b1.Label = "_Clicked!";
+				b1.Label = "Clicked!";
 			};
 			PackStart (b1);
 			
-			Button b2 = new Button ("C_lick me");
+			Button b2 = new Button ("Click me");
 			b2.Style = ButtonStyle.Flat;
 			b2.Clicked += delegate {
-				b2.Label = "C_licked!";
+				b2.Label = "Clicked!";
 			};
 			PackStart (b2);
 			
@@ -62,13 +62,13 @@ namespace Samples
 
 			MenuButton mb = new MenuButton ("This is a Menu Button");
 			Menu men = new Menu ();
-			men.Items.Add (new MenuItem ("_First"));
-			men.Items.Add (new MenuItem ("_Second"));
-			men.Items.Add (new MenuItem ("_Third"));
+			men.Items.Add (new MenuItem ("First"));
+			men.Items.Add (new MenuItem ("Second"));
+			men.Items.Add (new MenuItem ("Third"));
 			men.Items.Add (new SeparatorMenuItem ());
-			men.Items.Add (new CheckBoxMenuItem ("C_heck") { Checked = true });
-			men.Items.Add (new RadioButtonMenuItem ("_Radio") { Checked = true });
-			men.Items.Add (new MenuItem ("With _image") { Image = Image.FromResource (typeof(App), "class.png") });
+			men.Items.Add (new CheckBoxMenuItem ("Check") { Checked = true });
+			men.Items.Add (new RadioButtonMenuItem ("Radio") { Checked = true });
+			men.Items.Add (new MenuItem ("With image") { Image = Image.FromResource (typeof(App), "class.png") });
 
 			mb.Menu = men;
 			PackStart (mb);
@@ -79,14 +79,14 @@ namespace Samples
 				};
 			}
 			
-			ToggleButton tb = new ToggleButton ("To_ggle me");
+			ToggleButton tb = new ToggleButton ("Toggle me");
 			PackStart (tb);
 			
-			var b = new Button ("_Mini button");
+			var b = new Button ("Mini button");
 			b.Style = ButtonStyle.Borderless;
 			PackStart (b);
 			
-			tb = new ToggleButton ("Mi_ni toggle");
+			tb = new ToggleButton ("Mini toggle");
 			tb.Style = ButtonStyle.Borderless;
 			PackStart (tb);
 
@@ -94,7 +94,7 @@ namespace Samples
 			var child = new VBox ();
 			var container = new MyWidget { Content = child };
 
-			var button = new Xwt.Button ("Clic_k to add a child");
+			var button = new Xwt.Button ("Click to add a child");
 			button.Clicked += delegate {
 				child.PackStart (new Xwt.Label ("Child" + child.Children.Count ()));
 			};

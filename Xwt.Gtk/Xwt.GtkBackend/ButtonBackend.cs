@@ -84,14 +84,14 @@ namespace Xwt.GtkBackend
 				imageWidget = new ImageBox (ApplicationContext, image.WithDefaultSize (Gtk.IconSize.Button));
 
 			if (label != null && imageWidget == null) {
-				contentWidget = new Gtk.Label (label); 
+				contentWidget = new Gtk.Label (label) { UseUnderline = useMnemonic }; 
 			}
 			else if (label == null && imageWidget != null) {
 				contentWidget = imageWidget;
 			}
 			else if (label != null && imageWidget != null) {
 				Gtk.Box box = position == ContentPosition.Left || position == ContentPosition.Right ? (Gtk.Box) new Gtk.HBox (false, 3) : (Gtk.Box) new Gtk.VBox (false, 3);
-				var lab = new Gtk.Label (label);
+				var lab = new Gtk.Label (label) { UseUnderline = useMnemonic };
 				
 				if (position == ContentPosition.Left || position == ContentPosition.Top) {
 					box.PackStart (imageWidget, false, false, 0);
