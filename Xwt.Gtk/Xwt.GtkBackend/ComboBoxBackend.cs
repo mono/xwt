@@ -38,9 +38,11 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Widget = (Gtk.ComboBox) CreateWidget ();
-			var cr = new Gtk.CellRendererText ();
-			Widget.PackStart (cr, false);
-			Widget.AddAttribute (cr, "text", 0);
+			if (Widget.Cells.Length == 0) {
+				var cr = new Gtk.CellRendererText ();
+				Widget.PackStart (cr, false);
+				Widget.AddAttribute (cr, "text", 0);
+			}
 			Widget.Show ();
 			Widget.RowSeparatorFunc = IsRowSeparator;
 		}
