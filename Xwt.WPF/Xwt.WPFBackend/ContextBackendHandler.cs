@@ -325,8 +325,7 @@ namespace Xwt.WPFBackend
         {
 			var c = (DrawingContext)backend;
 			var other = (DrawingContext)otherBackend;
-			foreach (var s in other.Path.Segments)
-				c.Path.Segments.Add (s);
+			c.AppendPath (other);
 		}
 
 		public override bool IsPointInFill (object backend, double x, double y)

@@ -110,6 +110,13 @@ namespace Xwt.WPFBackend
 			ResetPath ();
 		}
 
+		public void AppendPath (DrawingContext context)
+		{
+			foreach (var f in context.Geometry.Figures)
+				geometry.Figures.Add (f.Clone ());
+			Path = context.geometry.Figures[context.geometry.Figures.Count - 1];
+		}
+
 		public void Save ()
 		{
 			var cd = new ContextData () {
