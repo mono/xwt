@@ -25,16 +25,18 @@
 // THE SOFTWARE.
 
 using System;
-using MonoMac.AppKit;
-using Xwt.Drawing;
-using MonoMac.CoreGraphics;
-using SizeF = System.Drawing.SizeF;
-using RectangleF = System.Drawing.RectangleF;
-using MonoMac.ObjCRuntime;
-using MonoMac.Foundation;
 using System.Collections.Generic;
-using Xwt.Backends;
 using System.Runtime.InteropServices;
+using System.Text;
+using MonoMac.AppKit;
+using MonoMac.CoreGraphics;
+using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
+using Xwt.Backends;
+using Xwt.Drawing;
+
+using RectangleF = System.Drawing.RectangleF;
+using SizeF = System.Drawing.SizeF;
 
 namespace Xwt.Mac
 {
@@ -348,16 +350,16 @@ namespace Xwt.Mac
 		{
 			if (str == null)
 				return null;
-			string newText = string.Empty;
+			var newText = new StringBuilder ();
 			for (int i = 0; i < str.Length; i++) {
 				if (str [i] != '_')
-					newText += str [i];
+					newText.Append (str [i]);
 				else if (i < str.Length && str [i + 1] == '_') {
-					newText += '_';
+					newText.Append ('_');
 					i++;
 				}
 			}
-			return newText;
+			return newText.ToString ();
 		}
 
 		public static CheckBoxState ToXwtState (this NSCellStateValue state)
