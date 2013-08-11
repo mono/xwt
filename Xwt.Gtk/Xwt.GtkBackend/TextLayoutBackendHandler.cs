@@ -202,7 +202,7 @@ namespace Xwt.GtkBackend
 		{
 			var tl = (PangoBackend) backend;
 			var pos = tl.Layout.IndexToPos (tl.TextIndexer.IndexToByteIndex (index));
-			return new Point (pos.X, pos.Y);
+			return new Point (pos.X / Pango.Scale.PangoScale, pos.Y / Pango.Scale.PangoScale);
 		}
 
 		public override void Dispose (object backend)
