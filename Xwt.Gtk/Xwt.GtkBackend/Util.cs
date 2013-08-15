@@ -320,6 +320,30 @@ namespace Xwt.GtkBackend
 		{
 			return 1;
 		}
+
+		internal static void SetSourceColor (this Cairo.Context cr, Cairo.Color color)
+		{
+			cr.SetSourceRGBA (color.R, color.G, color.B, color.A);
+		}
+
+		//this is needed for building against old Mono.Cairo versions
+		[Obsolete]
+		internal static void SetSource (this Cairo.Context cr, Cairo.Pattern pattern)
+		{
+			cr.Pattern = pattern;
+		}
+
+		[Obsolete]
+		internal static Cairo.Surface GetTarget (this Cairo.Context cr)
+		{
+			return cr.Target;
+		}
+
+		[Obsolete]
+		internal static void Dispose (this Cairo.Context cr)
+		{
+			((IDisposable)cr).Dispose ();
+		}
 	}
 }
 

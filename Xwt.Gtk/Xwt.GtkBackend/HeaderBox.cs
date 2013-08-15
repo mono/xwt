@@ -124,7 +124,7 @@ namespace Xwt.GtkBackend
 			
 				if (BackgroundColor.HasValue) {
 					cr.Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
-					cr.Color = BackgroundColor.Value.ToCairoColor ();
+					cr.SetSourceColor (BackgroundColor.Value.ToCairoColor ());
 					cr.Fill ();
 				}
 			
@@ -143,12 +143,12 @@ namespace Xwt.GtkBackend
 						pat.AddColorStop (0, color1);
 						gcol.Light -= 0.1;
 						pat.AddColorStop (1, gcol.ToCairoColor ());
-						cr.Pattern = pat;
+						cr.SetSource (pat);
 						cr.FillPreserve ();
 					}
 				}
 			
-				cr.Color = color.HasValue ? color.Value.ToCairoColor () : Style.Dark (Gtk.StateType.Normal).ToXwtColor ().ToCairoColor ();
+				cr.SetSourceColor (color.HasValue ? color.Value.ToCairoColor () : Style.Dark (Gtk.StateType.Normal).ToXwtColor ().ToCairoColor ());
 				cr.Rectangle (rect.X, rect.Y, rect.Width, topMargin);
 				cr.Rectangle (rect.X, rect.Y + rect.Height - bottomMargin, rect.Width, bottomMargin);
 				cr.Rectangle (rect.X, rect.Y, leftMargin, rect.Height);

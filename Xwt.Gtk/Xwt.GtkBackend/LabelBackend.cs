@@ -73,7 +73,7 @@ namespace Xwt.GtkBackend
 		{
 			using (var ctx = Gdk.CairoHelper.Create (Label.GdkWindow)) {
 				ctx.Rectangle (Label.Allocation.X, Label.Allocation.Y, Label.Allocation.Width, Label.Allocation.Height);
-				ctx.Color = bgColor.Value.ToCairoColor ();
+				ctx.SetSourceColor (bgColor.Value.ToCairoColor ());
 				ctx.Fill ();
 			}
 		}

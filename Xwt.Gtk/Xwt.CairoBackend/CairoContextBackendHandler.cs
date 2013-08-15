@@ -236,7 +236,7 @@ namespace Xwt.CairoBackend
 		public override void SetColor (object backend, Xwt.Drawing.Color color)
 		{
 			var gtkContext = (CairoContextBackend) backend;
-			gtkContext.Context.Color = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha * gtkContext.GlobalAlpha);
+			gtkContext.Context.SetSourceRGBA (color.Red, color.Green, color.Blue, color.Alpha * gtkContext.GlobalAlpha);
 			gtkContext.PatternAlpha = 1;
 		}
 		
@@ -264,9 +264,9 @@ namespace Xwt.CairoBackend
 				cb.PatternAlpha = 1;
 
 			if (p != null)
-				ctx.Pattern = (Cairo.Pattern) p;
+				ctx.SetSource ((Cairo.Pattern) p);
 			else
-				ctx.Pattern = null;
+				ctx.SetSource ((Cairo.Pattern) null);
 		}
 		
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
