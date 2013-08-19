@@ -121,6 +121,7 @@
     <Compile Include="Xwt.Mac\DatePickerBackend.cs" />
     <Compile Include="Xwt.Mac\SliderBackend.cs" />
     <Compile Include="Xwt.Mac.CellViews\CheckBoxTableCell.cs" />
+    <Compile Include="Xwt.Mac\EmbedNativeWidgetBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
