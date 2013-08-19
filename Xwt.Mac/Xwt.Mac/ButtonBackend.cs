@@ -56,8 +56,10 @@ namespace Xwt.Mac
 			((MacButton)Widget).DisableEvent (ev);
 		}
 		
-		public void SetContent (string label, ImageDescription image, ContentPosition imagePosition)
+		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition imagePosition)
 		{
+			if (useMnemonic)
+				label = label.RemoveMnemonic ();
 			Widget.Title = label ?? "";
 			if (string.IsNullOrEmpty (label))
 				imagePosition = ContentPosition.Center;

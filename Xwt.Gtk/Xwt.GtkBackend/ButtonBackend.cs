@@ -56,8 +56,9 @@ namespace Xwt.GtkBackend
 			get { return (IButtonEventSink)base.EventSink; }
 		}
 		
-		public void SetContent (string label, ImageDescription image, ContentPosition position)
-		{
+		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position)
+		{			
+			Widget.UseUnderline = useMnemonic;
 			this.image = image;
 
 			if (label != null && label.Length == 0)
@@ -83,14 +84,14 @@ namespace Xwt.GtkBackend
 				imageWidget = new ImageBox (ApplicationContext, image.WithDefaultSize (Gtk.IconSize.Button));
 
 			if (label != null && imageWidget == null) {
-				contentWidget = new Gtk.Label (label); 
+				contentWidget = new Gtk.Label (label) { UseUnderline = useMnemonic }; 
 			}
 			else if (label == null && imageWidget != null) {
 				contentWidget = imageWidget;
 			}
 			else if (label != null && imageWidget != null) {
 				Gtk.Box box = position == ContentPosition.Left || position == ContentPosition.Right ? (Gtk.Box) new Gtk.HBox (false, 3) : (Gtk.Box) new Gtk.VBox (false, 3);
-				var lab = new Gtk.Label (label);
+				var lab = new Gtk.Label (label) { UseUnderline = useMnemonic };
 				
 				if (position == ContentPosition.Left || position == ContentPosition.Top) {
 					box.PackStart (imageWidget, false, false, 0);
@@ -141,7 +142,7 @@ namespace Xwt.GtkBackend
 		public void SetButtonType (ButtonType type)
 		{
 			Button b = (Button) Frontend;
-			SetContent (b.Label, image, b.ImagePosition);
+			SetContent (b.Label, b.UseMnemonic, image, b.ImagePosition);
 		}
 		
 		public override void EnableEvent (object eventId)

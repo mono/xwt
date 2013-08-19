@@ -89,11 +89,19 @@ namespace Xwt.GtkBackend
 
 		public string Label {
 			get {
-				return label != null ? label.Text : "";
+				return label != null ? (label.UseUnderline ? label.LabelProp : label.Text) : "";
 			}
 			set {
-				label.Text = value;
+				if (label.UseUnderline)
+					label.TextWithMnemonic = value;
+				else
+					label.Text = value;
 			}
+		}
+
+		public bool UseMnemonic {
+			get { return label.UseUnderline; }
+			set { label.UseUnderline = value; }
 		}
 		
 		public bool Sensitive {

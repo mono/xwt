@@ -45,6 +45,8 @@ namespace Xwt.WPFBackend
 		MenuBackend subMenu;
 		MenuItemType type;
 		IMenuItemEventSink eventSink;
+		string label;
+		bool useMnemonic;
 
 		public MenuItemBackend ()
 			: this (new SWC.MenuItem())
@@ -84,8 +86,20 @@ namespace Xwt.WPFBackend
 		}
 
 		public string Label {
-			get { return this.menuItem.Header.ToString (); }
-			set { this.menuItem.Header = value; }
+			get { return label; }
+			set {
+				label = value;
+				menuItem.Header = UseMnemonic ? value : value.Replace ("_", "__");
+			}
+		}
+
+		public bool UseMnemonic {
+			get { return useMnemonic; }
+			set
+			{
+				useMnemonic = value;
+				Label = label;
+			}
 		}
 
 		public bool Sensitive {
