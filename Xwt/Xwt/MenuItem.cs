@@ -66,6 +66,7 @@ namespace Xwt
 		
 		public MenuItem ()
 		{
+			UseMnemonic = true;
 		}
 		
 		public MenuItem (Command command): this ()
@@ -87,6 +88,20 @@ namespace Xwt
 		public string Label {
 			get { return Backend.Label; }
 			set { Backend.Label = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="Xwt.Button"/> uses a mnemonic.
+		/// </summary>
+		/// <value><c>true</c> if it uses a mnemonic; otherwise, <c>false</c>.</value>
+		/// <remarks>
+		/// When set to true, the character after the first underscore character in the Label property value is
+		/// interpreted as the mnemonic for that Label.
+		/// </remarks>
+		[DefaultValue(true)]
+		public bool UseMnemonic { 
+			get { return Backend.UseMnemonic; }
+			set { Backend.UseMnemonic = value; }
 		}
 		
 		[DefaultValue (true)]

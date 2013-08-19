@@ -33,7 +33,7 @@ namespace Xwt.Backends
 	{
 		void SetButtonStyle (ButtonStyle style);
 		void SetButtonType (ButtonType type);
-		void SetContent (string label, ImageDescription image, ContentPosition position);
+		void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position);
 	}
 	
 	public interface IButtonEventSink: IWidgetEventSink

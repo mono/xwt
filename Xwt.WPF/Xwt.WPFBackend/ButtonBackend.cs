@@ -31,6 +31,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Text.RegularExpressions;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
 
@@ -95,12 +96,18 @@ namespace Xwt.WPFBackend
 			Button.InvalidateMeasure ();
 		}
 
-		public void SetContent (string label, ImageDescription image, ContentPosition position)
+		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position)
 		{
+			var accessText = new SWC.AccessText ();
+			accessText.Text = label;
 			if (image.IsNull)
-				Button.Content = label;
-			else
-			{
+				if (useMnemonic)
+					Button.Content = accessText;
+				else
+					Button.Content = Button is DropDownButton ?
+					                 accessText.Text:
+					                 accessText.Text.Replace ("_", "__");
+			else {
 				SWC.DockPanel grid = new SWC.DockPanel ();
 
 				var imageCtrl = new ImageBox (Context);
@@ -111,7 +118,10 @@ namespace Xwt.WPFBackend
 
 				if (!string.IsNullOrEmpty (label)) {
 					SWC.Label labelCtrl = new SWC.Label ();
-					labelCtrl.Content = label;
+					if (useMnemonic)
+						labelCtrl.Content = accessText;
+					else
+						labelCtrl.Content = label;
 					grid.Children.Add (labelCtrl);
 				}
 				Button.Content = grid;

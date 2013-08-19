@@ -261,6 +261,11 @@ namespace Xwt.WPFBackend
 
 		private void ShownHandler (object sender, DependencyPropertyChangedEventArgs e)
 		{
+			// delay shown event until window is loaded
+			if (!window.IsLoaded) {
+				window.Loaded += (sender2, e2) => ShownHandler (sender, e);
+				return;
+			}
 			if((bool)e.NewValue)
 			{
 				Context.InvokeUserCode (delegate ()
