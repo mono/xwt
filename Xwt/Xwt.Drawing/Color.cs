@@ -144,7 +144,32 @@ namespace Xwt.Drawing
 			c.Light += lightIncrement;
 			return c;
 		}
-		
+
+		/// <summary>
+		/// Returns a color which looks more contrasted (or less, if amount is negative)
+		/// </summary>
+		/// <returns>The new color</returns>
+		/// <param name="referenceColor">Reference color.</param>
+		/// <param name="amount">Amount to change (can be positive or negative).</param>
+		/// <remarks>
+		/// This method adds or removes light to/from the color to make it more contrasted when
+		/// compared to a neutral grey.
+		/// The resulting effect is that light colors are made lighter, and dark colors
+		/// are made darker. If the amount is negative, the effect is inversed (colors are
+		/// made less contrasted)
+		/// </remarks>
+		public Color WithIncreasedContrast (double amount)
+		{
+			return WithIncreasedContrast (new Color (0.5, 0.5, 0.5), amount);
+		}
+
+		/// <summary>
+		/// Returns a color which looks more contrasted (or less, if amount is negative) with
+		/// respect to a provided reference color.
+		/// </summary>
+		/// <returns>The new color</returns>
+		/// <param name="referenceColor">Reference color.</param>
+		/// <param name="amount">Amount to change (can be positive or negative).</param>
 		public Color WithIncreasedContrast (Color referenceColor, double amount)
 		{
 			Color c = this;
