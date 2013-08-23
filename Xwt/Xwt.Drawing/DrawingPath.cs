@@ -225,6 +225,51 @@ namespace Xwt.Drawing
 			handler.Rectangle (Backend, x, y, width, height);
 		}
 
+		public void RoundRectangle (Rectangle rectangle, double radius)
+		{
+			RoundRectangle (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, radius);
+		}
+
+		public void RoundRectangle (Point p, double width, double height, double radius)
+		{
+			RoundRectangle (p.X, p.Y, width, height, radius);
+		}
+
+		public void RoundRectangle (double x, double y, double width, double height, double radius)
+		{
+			if (radius > width - radius)
+				radius = width / 2;
+			if (radius > height - radius)
+				radius = height / 2;
+
+			// top-left corner
+			MoveTo (x + radius, y);
+
+			// top edge
+			LineTo (x + width - radius, y);
+
+			// top-right corner
+			Arc (x + width - radius, y + radius, radius, -90, 0);
+
+			// right edge
+			LineTo (x + width, y + height - radius);
+
+			// bottom-right corner
+			Arc (x + width - radius, y + height - radius, radius, 0, 90);
+
+			// bottom edge
+			LineTo (x + radius, y + height);
+
+			// bottom-left corner
+			Arc (x + radius, y + height - radius, radius, 90, 180);
+
+			// left edge
+			LineTo (x, y + radius);
+
+			// top-left corner
+			Arc (x + radius, y + radius, radius, 180, 270);
+		}
+
 		public void RelCurveTo (Distance d1, Distance d2, Distance d3)
 		{
 			RelCurveTo (d1.Dx, d1.Dy, d2.Dx, d2.Dy, d3.Dx, d3.Dy);
