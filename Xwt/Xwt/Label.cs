@@ -44,6 +44,7 @@ namespace Xwt
 		
 		public Label (string text)
 		{
+			VerifyConstructorCall (this);
 			Backend.Text = text;
 		}
 

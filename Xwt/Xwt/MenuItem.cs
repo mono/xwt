@@ -69,15 +69,22 @@ namespace Xwt
 			UseMnemonic = true;
 		}
 		
-		public MenuItem (Command command): this ()
+		public MenuItem (Command command)
+		{
+			VerifyConstructorCall (this);
+			LoadCommandProperties (command);
+		}
+		
+		public MenuItem (string label)
+		{
+			VerifyConstructorCall (this);
+			Label = label;
+		}
+
+		protected void LoadCommandProperties (Command command)
 		{
 			Label = command.Label;
 			Image = command.Icon;
-		}
-		
-		public MenuItem (string label): this ()
-		{
-			Label = label;
 		}
 		
 		IMenuItemBackend Backend {

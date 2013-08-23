@@ -70,6 +70,7 @@ namespace Xwt
 		
 		public ListView (IListDataSource source): this ()
 		{
+			VerifyConstructorCall (this);
 			DataSource = source;
 		}
 		

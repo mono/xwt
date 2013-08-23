@@ -65,19 +65,22 @@ namespace Xwt
 		{
 		}
 		
-		public Button (string label): this ()
+		public Button (string label)
 		{
+			VerifyConstructorCall (this);
 			Label = label;
 		}
 		
-		public Button (Image img, string label): this ()
+		public Button (Image img, string label)
 		{
+			VerifyConstructorCall (this);
 			Label = label;
 			Image = img;
 		}
 		
-		public Button (Image img): this ()
+		public Button (Image img)
 		{
+			VerifyConstructorCall (this);
 			Image = img;
 		}
 		

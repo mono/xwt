@@ -57,18 +57,21 @@ namespace Xwt
 		{
 		}
 		
-		public Frame (FrameType frameType): this ()
+		public Frame (FrameType frameType)
 		{
+			VerifyConstructorCall (this);
 			Type = frameType;
 		}
 		
-		public Frame (Widget content): this ()
+		public Frame (Widget content)
 		{
+			VerifyConstructorCall (this);
 			Content = content;
 		}
 		
-		public Frame (Widget content, FrameType frameType): this ()
+		public Frame (Widget content, FrameType frameType)
 		{
+			VerifyConstructorCall (this);
 			Type = frameType;
 			Content = content;
 		}

@@ -61,8 +61,9 @@ namespace Xwt
 		{
 		}
 		
-		public CheckBox (string label): this ()
+		public CheckBox (string label)
 		{
+			VerifyConstructorCall (this);
 			Label = label;
 		}
 		

@@ -64,6 +64,7 @@ namespace Xwt
 		
 		public ScrollView (Widget child): this ()
 		{
+			VerifyConstructorCall (this);
 			Content = child;
 		}
 		

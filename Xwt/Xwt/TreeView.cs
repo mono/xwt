@@ -101,6 +101,7 @@ namespace Xwt
 		/// </param>
 		public TreeView (ITreeDataSource source): this ()
 		{
+			VerifyConstructorCall (this);
 			DataSource = source;
 		}
 		

@@ -79,8 +79,9 @@ namespace Xwt
 		{
 		}
 
-		public Popover (Widget content): this ()
+		public Popover (Widget content)
 		{
+			VerifyConstructorCall (this);
 			Content = content;
 		}
 		

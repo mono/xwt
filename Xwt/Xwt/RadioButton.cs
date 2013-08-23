@@ -67,13 +67,15 @@ namespace Xwt
 		{
 		}
 		
-		public RadioButton (string label): this ()
+		public RadioButton (string label)
 		{
+			VerifyConstructorCall (this);
 			Label = label;
 		}
 		
-		public RadioButton (Widget content): this ()
+		public RadioButton (Widget content)
 		{
+			VerifyConstructorCall (this);
 			Content = content;
 		}
 		

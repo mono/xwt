@@ -30,7 +30,7 @@ using Xwt.Backends;
 namespace Xwt
 {
 	[BackendType (typeof(ISelectFolderDialogBackend))]
-	public class SelectFolderDialog: XwtComponent
+	public sealed class SelectFolderDialog: XwtComponent
 	{
 		bool running;
 		bool multiselect;

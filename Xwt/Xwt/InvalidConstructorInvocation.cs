@@ -1,21 +1,21 @@
-// 
-// CheckBoxMenuItem.cs
-//  
+//
+// InvalidConstructorInvocation.cs
+//
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-// 
-// Copyright (c) 2012 Xamarin Inc
-// 
+//
+// Copyright (c) 2013 Xamarin Inc.
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,38 +24,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.ComponentModel;
-using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ICheckBoxMenuItemBackend))]
-	public class CheckBoxMenuItem: MenuItem
+	/// <summary>
+	/// Invalid constructor invocation.
+	/// </summary>
+	/// <remarks>
+	/// This exception is thrown when you call a constructor of a base class which takes arguments. This is in general not supported
+	/// since setting properties usually results in virtual methods being invoked, and those virtual methods may be override in
+	/// subclasses that have not been yet initialized.
+	/// </remarks>
+	public class InvalidConstructorInvocation: InvalidOperationException
 	{
-		public CheckBoxMenuItem ()
+		public InvalidConstructorInvocation (Type type): base ("Subclasses of " + type + " can only invoke the default constructor")
 		{
-		}
-		
-		public CheckBoxMenuItem (Command command): base (command)
-		{
-			VerifyConstructorCall (this);
-			LoadCommandProperties (command);
-		}
-		
-		public CheckBoxMenuItem (string label)
-		{
-			VerifyConstructorCall (this);
-			Label = label;
-		}
-		
-		ICheckBoxMenuItemBackend Backend {
-			get { return (ICheckBoxMenuItemBackend) this.BackendHost.Backend; }
-		}
-		
-		[DefaultValue (true)]
-		public bool Checked {
-			get { return Backend.Checked; }
-			set { Backend.Checked = value; }
 		}
 	}
 }

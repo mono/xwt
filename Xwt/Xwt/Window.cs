@@ -52,10 +52,6 @@ namespace Xwt
 			Padding = 12;
 		}
 		
-		public Window (string title): base (title)
-		{
-		}
-		
 		IWindowBackend Backend {
 			get { return (IWindowBackend) BackendHost.Backend; } 
 		}
