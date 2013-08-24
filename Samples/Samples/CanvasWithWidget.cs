@@ -34,7 +34,7 @@ namespace Samples
 		public CanvasWithWidget_Linear ()
 		{
 			MyCanvas c = new MyCanvas (true);
-			PackStart (c, BoxMode.FillAndExpand);
+			PackStart (c, true);
 		}
 	}
 
@@ -43,7 +43,7 @@ namespace Samples
 		public CanvasWithWidget_Radial ()
 		{
 			MyCanvas c = new MyCanvas (false);
-			PackStart (c, BoxMode.FillAndExpand);
+			PackStart (c, true);
 		}
 	}
 	
@@ -61,7 +61,7 @@ namespace Samples
 			
 			var box = new HBox ();
 			box.PackStart (new Button ("..."));
-			box.PackStart (new TextEntry (), BoxMode.FillAndExpand);
+			box.PackStart (new TextEntry (), true);
 			AddChild (box, new Rectangle (30, 70, 100, 30));
 			Linear = linear;
 		}

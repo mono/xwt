@@ -28,7 +28,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface INotebookBackend: IWidgetBackend
+	public interface INotebookBackend: IWidgetBackend, IChildPlacementHandler
 	{
 		void Add (IWidgetBackend widget, NotebookTab tab);
 		void Remove (IWidgetBackend widget);

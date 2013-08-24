@@ -60,9 +60,14 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public TransformGroup CurrentTransform {
+		public SWM.Matrix CurrentTransform {
 			get {
-				return transforms;
+				TransformCollection children = transforms.Children;
+				Matrix ctm = Matrix.Identity;
+				foreach (Transform t in children) {
+					ctm.Prepend (t.Value);
+				};
+				return ctm;
 			}
 		}
 
@@ -103,6 +108,13 @@ namespace Xwt.WPFBackend
 		internal DrawingContext()
 		{
 			ResetPath ();
+		}
+
+		public void AppendPath (DrawingContext context)
+		{
+			foreach (var f in context.Geometry.Figures)
+				geometry.Figures.Add (f.Clone ());
+			Path = context.geometry.Figures[context.geometry.Figures.Count - 1];
 		}
 
 		public void Save ()

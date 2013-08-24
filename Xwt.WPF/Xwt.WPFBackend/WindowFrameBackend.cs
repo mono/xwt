@@ -133,7 +133,18 @@ namespace Xwt.WPFBackend
 		bool IWindowFrameBackend.Visible
 		{
 			get { return window.Visibility == Visibility.Visible; }
-			set { window.Visibility = value ? Visibility.Visible : Visibility.Hidden; }
+			set {
+				if (value)
+					window.Show ();
+				else
+					window.Hide ();
+			}
+		}
+
+		public double Opacity
+		{
+			get { return window.Opacity; }
+			set { window.Opacity = value; }
 		}
 
 		void IWindowFrameBackend.Present ()
@@ -168,7 +179,7 @@ namespace Xwt.WPFBackend
 			});
 		}
 
-		public void Resize (double width, double height)
+		public void SetSize (double width, double height)
 		{
 			var value = ToNonClientRect (new Rectangle (0, 0, width, height));
 			window.Width = value.Width;
@@ -250,6 +261,11 @@ namespace Xwt.WPFBackend
 
 		private void ShownHandler (object sender, DependencyPropertyChangedEventArgs e)
 		{
+			// delay shown event until window is loaded
+			if (!window.IsLoaded) {
+				window.Loaded += (sender2, e2) => ShownHandler (sender, e);
+				return;
+			}
 			if((bool)e.NewValue)
 			{
 				Context.InvokeUserCode (delegate ()

@@ -33,6 +33,8 @@ namespace Xwt.Mac
 	public class PanedBackend: ViewBackend<NSSplitView,IPanedEventSink>, IPanedBackend
 	{
 		SplitViewDelegate viewDelegate;
+		NSView view1;
+		NSView view2;
 		
 		class SplitViewDelegate: NSSplitViewDelegate
 		{
@@ -61,8 +63,14 @@ namespace Xwt.Mac
 		public void SetPanel (int panel, IWidgetBackend widget, bool resize, bool shrink)
 		{
 			ViewBackend view = (ViewBackend) widget;
-			Widget.AddSubview (view.Widget);
+			var w = GetWidgetWithPlacement (view);
+			RemovePanel (panel);
+			Widget.AddSubview (w);
 			Widget.AdjustSubviews ();
+			if (panel == 1)
+				view1 = w;
+			else
+				view2 = w;
 			view.NotifyPreferredSizeChanged ();
 		}
 		
@@ -77,6 +85,37 @@ namespace Xwt.Mac
 
 		public void RemovePanel (int panel)
 		{
+			if (panel == 1) {
+				if (view1 != null) {
+					view1.RemoveFromSuperview ();
+					RemoveChildPlacement (view1);
+					view1 = null;
+				}
+			} else {
+				if (view2 != null) {
+					view2.RemoveFromSuperview ();
+					RemoveChildPlacement (view2);
+					view2 = null;
+				}
+			}
+		}
+
+		public override void ReplaceChild (NSView oldChild, NSView newChild)
+		{
+			if (view1 != null)
+				view1.RemoveFromSuperview ();
+			if (view2 != null)
+				view2.RemoveFromSuperview ();
+
+			if (oldChild == view1)
+				view1 = newChild;
+			else
+				view2 = newChild;
+
+			if (view1 != null)
+				Widget.AddSubview (view1);
+			if (view2 != null)
+				Widget.AddSubview (view2);
 		}
 
 		public double Position {

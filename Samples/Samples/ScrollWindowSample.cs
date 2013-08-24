@@ -36,7 +36,7 @@ namespace Samples
 			ScrollView v1 = new ScrollView ();
 			VBox b1 = new VBox ();
 			for (int n=0; n<30; n++)
-				b1.PackStart (new Label ("Line " + n), BoxMode.None);
+				b1.PackStart (new Label ("Line " + n));
 			Button u = new Button ("Click to remove");
 			u.Clicked += delegate {
 				b1.Remove (u);
@@ -46,30 +46,30 @@ namespace Samples
 			v1.Content = b1;
 			v1.VerticalScrollPolicy = ScrollPolicy.Always;
 			v1.BorderVisible = false;
-			PackStart (v1, BoxMode.FillAndExpand);
+			PackStart (v1, fill:true, expand:true);
 			
 			ScrollView v2 = new ScrollView ();
 			VBox b2 = new VBox ();
 			for (int n=0; n<10; n++)
-				b2.PackStart (new Label ("Line " + n), BoxMode.None);
+				b2.PackStart (new Label ("Line " + n));
 			v2.Content = b2;
 			v2.VerticalScrollPolicy = ScrollPolicy.Never;
-			PackStart (v2, BoxMode.FillAndExpand);
+			PackStart (v2, fill:true, expand:true);
 			
 			ScrollView v3 = new ScrollView ();
 			VBox b3 = new VBox ();
 			Button b = new Button ("Click to add items");
 			b.Clicked += delegate {
 				for (int n=0; n<10; n++)
-					b3.PackStart (new Label ("Line " + n), BoxMode.None);
+					b3.PackStart (new Label ("Line " + n));
 			};
 			b3.PackStart (b);
 			v3.Content = b3;
 			v3.VerticalScrollPolicy = ScrollPolicy.Automatic;
-			PackStart (v3, BoxMode.FillAndExpand);
+			PackStart (v3, fill:true, expand:true);
 			
 			ScrollView v4 = new ScrollView ();
-			PackStart (v4, BoxMode.FillAndExpand);
+			PackStart (v4, fill:true, expand:true);
 			var sb = new ScrollableCanvas ();
 			v4.Content = sb;
 			v4.VerticalScrollPolicy = ScrollPolicy.Always;

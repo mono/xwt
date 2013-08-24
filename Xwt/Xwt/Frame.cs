@@ -57,18 +57,21 @@ namespace Xwt
 		{
 		}
 		
-		public Frame (FrameType frameType): this ()
+		public Frame (FrameType frameType)
 		{
+			VerifyConstructorCall (this);
 			Type = frameType;
 		}
 		
-		public Frame (Widget content): this ()
+		public Frame (Widget content)
 		{
+			VerifyConstructorCall (this);
 			Content = content;
 		}
 		
-		public Frame (Widget content, FrameType frameType): this ()
+		public Frame (Widget content, FrameType frameType)
 		{
+			VerifyConstructorCall (this);
 			Type = frameType;
 			Content = content;
 		}
@@ -139,7 +142,7 @@ namespace Xwt
 			get { return borderWidth; }
 			set {
 				borderWidth = value;
-				UpdatePadding ();
+				UpdateBorderWidth ();
 			}
 		}
 
@@ -148,7 +151,7 @@ namespace Xwt
 			get { return borderWidth.Left; }
 			set {
 				borderWidth.Left = value;
-				UpdatePadding (); 
+				UpdateBorderWidth (); 
 			}
 		}
 
@@ -157,7 +160,7 @@ namespace Xwt
 			get { return borderWidth.Right; }
 			set {
 				borderWidth.Right = value;
-				UpdatePadding (); 
+				UpdateBorderWidth (); 
 			}
 		}
 
@@ -166,7 +169,7 @@ namespace Xwt
 			get { return borderWidth.Top; }
 			set {
 				borderWidth.Top = value;
-				UpdatePadding (); 
+				UpdateBorderWidth (); 
 			}
 		}
 
@@ -175,7 +178,7 @@ namespace Xwt
 			get { return borderWidth.Bottom; }
 			set {
 				borderWidth.Bottom = value;
-				UpdatePadding (); 
+				UpdateBorderWidth (); 
 			}
 		}
 

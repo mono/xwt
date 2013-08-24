@@ -36,6 +36,7 @@ namespace Xwt.Mac
 	interface ICellSource
 	{
 		object GetValue (object pos, int nField);
+		void SetValue (object pos, int nField, object value);
 		float RowHeight { get; set; }
 	}
 }

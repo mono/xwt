@@ -72,7 +72,13 @@ namespace Xwt
 		
 		public override int GetHashCode ()
 		{
-			return ((int)Height + (int)Width) ^ (int)X + (int)Y;
+			unchecked {
+				var hash = X.GetHashCode ();
+				hash = (hash * 397) ^ Y.GetHashCode ();
+				hash = (hash * 397) ^ Width.GetHashCode ();
+				hash = (hash * 397) ^ Height.GetHashCode ();
+				return hash;
+			}
 		}
 		
 		public static bool operator == (Rectangle r1, Rectangle r2)
@@ -224,6 +230,20 @@ namespace Xwt
 				Math.Round (Y),
 				Math.Round (Width),
 				Math.Round (Height)
+			);
+		}
+
+		/// <summary>
+		/// Returns a copy of the rectangle, ensuring that the width and height are greater or equal to zero
+		/// </summary>
+		/// <returns>The new rectangle</returns>
+		public Rectangle WithPositiveSize ()
+		{
+			return new Rectangle (
+				X,
+				Y,
+				Width >= 0 ? Width : 0,
+				Height >= 0 ? Height : 0
 			);
 		}
 	}

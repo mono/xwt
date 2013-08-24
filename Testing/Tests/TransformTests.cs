@@ -41,6 +41,9 @@ namespace Xwt
 	[TestFixture]
 	public class TransformTests
 	{
+		// There is only a single context used in all tests,
+		// so it MUST be Saved and Restored for each test.
+
 		const double DELTA = 0.000000001d;
 
 		ImageBuilder ib = null;
@@ -49,8 +52,11 @@ namespace Xwt
 		[TestFixtureSetUp]
 		public void Init ()
 		{
-			ib = new ImageBuilder (10, 10);
+			ib = new ImageBuilder (1, 1);
 			context = ib.Context;
+			Matrix m1 = Matrix.Identity;
+			Matrix m2 = context.GetCTM ();
+			CheckMatrix (m1, m2);
 		}
 
 		[TestFixtureTearDown]
@@ -58,12 +64,11 @@ namespace Xwt
 		{
 			if (context != null)
 				context.Dispose ();
-
 			if (ib != null)
 				ib.Dispose ();
 		}
 
-		private Context NewContext {
+		private Context Context {
 			get { return context; }
 		}
 
@@ -77,19 +82,14 @@ namespace Xwt
 			Assert.AreEqual (expected.OffsetY, actual.OffsetY, DELTA);
 		}
 
-		[Test]
-		public void NewCTM ()
-		{
-			Matrix mI = Matrix.Identity;
-			Context ctx = NewContext;
-			CheckMatrix (mI, ctx.GetCTM ());
-		}
+
 
 		[Test]
 		public void Translate ()
 		{
 			Matrix m1, m2;
-			Context ctx = NewContext;
+			Context ctx = Context;
+			ctx.Save ();
 
 			// Check with a range of -ve and +ve offsets
 			for (double tx = -1; tx <= 1; tx += 0.25) {
@@ -110,13 +110,15 @@ namespace Xwt
 				CheckMatrix (m1, m2);
 				ctx.Restore ();
 			}
+			ctx.Restore ();
 		}
 
 		[Test]
 		public void Scale ()
 		{
 			Matrix m1, m2;
-			Context ctx = NewContext;
+			Context ctx = Context;
+			ctx.Save ();
 
 			// Scaling with a zero scale-factor results in a non-invertible matrix
 			// This fails with Cairo, so avoid zero as one of the test values
@@ -138,13 +140,15 @@ namespace Xwt
 				CheckMatrix (m1, m2);
 				ctx.Restore ();
 			}
+			ctx.Restore ();
 		}
 
 		[Test]
 		public void Rotate ()
 		{
 			Matrix m1, m2;
-			Context ctx = NewContext;
+			Context ctx = Context;
+			ctx.Save ();
 
 			for (double theta = 0; theta <= 360; theta += 30) {
 				ctx.Save ();
@@ -155,6 +159,76 @@ namespace Xwt
 				CheckMatrix (m1, m2);
 				ctx.Restore ();
 			}
+			ctx.Restore ();
+		}
+
+		[Test]
+		public void RotateAndTranslate ()
+		{
+			// Transforms are Prepended to the CTM, so they are done in reverse order.
+			// At present, this must be stated explicitly in the Matrix calls, but may
+			// be worth changing so that Prepend is the default (to match the Backends).
+
+			Matrix m1, m2;
+			Context ctx = Context;
+			ctx.Save ();
+
+			for (double theta = 30; theta <= 360; theta += 30) {
+				ctx.Save ();
+				ctx.Translate (100, 0);		// done last
+				ctx.Rotate (theta);			// done first (about the origin)
+
+				m1 = Matrix.Identity;
+				m1.TranslatePrepend (100, 0);
+				m1.RotatePrepend (theta);
+				m2 = ctx.GetCTM ();
+
+				CheckMatrix (m1, m2);
+				ctx.Restore ();
+			}
+			ctx.Restore ();
+		}
+
+		[Test]
+		public void ModifyCTM ()
+		{
+			// Checks that Matrix and Context transforms match, and that applying
+			// a matrix transform to the Context CTM produces the expected result
+
+			double theta = 30;
+			double x = 50;
+			double y = 30;
+
+			Context ctx = Context;
+			ctx.Save ();
+
+			Matrix m1 = Matrix.Identity;
+			Matrix ctm;
+
+			// Apply and compare several transforms
+			ctx.Save ();
+			ctx.Scale (2, 3);
+			m1.ScalePrepend (2, 3);
+			ctm = ctx.GetCTM ();
+			CheckMatrix (m1, ctm);
+
+			ctx.Translate (x, y);
+			m1.TranslatePrepend (x, y);
+			ctm = ctx.GetCTM ();
+			CheckMatrix (m1, ctm);
+
+			ctx.Rotate (theta);
+			m1.RotatePrepend (theta);
+			ctm = ctx.GetCTM ();
+			CheckMatrix (m1, ctm);
+
+			// Check ModifyCTM matches combined Matrix Transform
+			ctx.Restore ();
+			ctx.ModifyCTM (m1);
+			ctm = ctx.GetCTM ();
+			CheckMatrix (m1, ctm);
+
+			ctx.Restore ();
 		}
 
 	}

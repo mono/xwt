@@ -37,14 +37,14 @@ namespace Samples
 
 		public ScrollbarSample ()
 		{
-			NaturalWidth = 300;
-			NaturalHeight = 300;
+			WidthRequest = 300;
+			HeightRequest = 300;
 
 			canvas = new Canvas ();
 			label = new Label ("Use the scrollbars\nto move this label");
 			canvas.AddChild (label);
 
-			Attach (canvas, 0, 0, AttachOptions.Expand|AttachOptions.Fill, AttachOptions.Expand|AttachOptions.Fill);
+			Add (canvas, 0, 0, hexpand:true, vexpand:true);
 
 			vscroll = new VScrollbar () {
 				LowerValue = 0,
@@ -53,7 +53,7 @@ namespace Samples
 				PageSize = 50,
 				StepIncrement = 1
 			};
-			Attach (vscroll, 1, 0, AttachOptions.Fill, AttachOptions.Expand|AttachOptions.Fill);
+			Add (vscroll, 1, 0, vexpand:true);
 			
 			hscroll = new HScrollbar () {
 				LowerValue = 0,
@@ -62,7 +62,7 @@ namespace Samples
 				PageSize = 50,
 				StepIncrement = 1
 			};
-			Attach (hscroll, 0, 1, AttachOptions.Expand|AttachOptions.Fill, AttachOptions.Fill);
+			Add (hscroll, 0, 1, hexpand:true);
 
 			vscroll.ValueChanged += HandleValueChanged;
 			hscroll.ValueChanged += HandleValueChanged;
@@ -70,10 +70,8 @@ namespace Samples
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			double w, h;
-			w = label.Surface.GetPreferredWidth ().NaturalSize;
-			h = label.Surface.GetPreferredHeightForWidth (w).NaturalSize;
-			canvas.SetChildBounds (label, new Rectangle (hscroll.Value, vscroll.Value, w, h));
+			var s = label.Surface.GetPreferredSize ();
+			canvas.SetChildBounds (label, new Rectangle (hscroll.Value, vscroll.Value, s.Width, s.Height));
 		}
 	}
 }

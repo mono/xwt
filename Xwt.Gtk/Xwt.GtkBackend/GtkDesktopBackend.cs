@@ -43,6 +43,13 @@ namespace Xwt.GtkBackend
 			};
 		}
 
+		public override Point GetMouseLocation ()
+		{
+			int x, y;
+			Gdk.Display.Default.GetPointer (out x, out y);
+			return new Point (x, y);
+		}
+
 		public override IEnumerable<object> GetScreens ()
 		{
 	         for (int n=0; n<Gdk.Screen.Default.NMonitors; n++)
@@ -51,7 +58,10 @@ namespace Xwt.GtkBackend
 
 		public override bool IsPrimaryScreen (object backend)
 		{
-			return (int)backend == Gdk.Screen.Default.GetMonitorAtPoint (0, 0);
+			if (Platform.IsMac)
+				return (int)backend == 0;
+			else
+				return (int)backend == Gdk.Screen.Default.GetMonitorAtPoint (0, 0);
 		}
 
 		public override Rectangle GetScreenBounds (object backend)

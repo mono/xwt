@@ -43,7 +43,18 @@ namespace Xwt.GtkBackend
 		
 		public Gtk.Window Window {
 			get { return window; }
-			set { window = value; }
+			set {
+				if (window != null)
+					window.Realized -= HandleRealized;
+				window = value;
+				window.Realized += HandleRealized;
+			}
+		}
+
+		void HandleRealized (object sender, EventArgs e)
+		{
+			if (opacity != 1d)
+				window.GdkWindow.Opacity = opacity;
 		}
 		
 		protected WindowFrame Frontend {
@@ -104,11 +115,15 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		public void Resize (double width, double height)
+		public virtual void SetSize (double width, double height)
 		{
+			Window.SetDefaultSize ((int)width, (int)height);
+			if (width == -1)
+				width = Bounds.Width;
+			if (height == -1)
+				height = Bounds.Height;
 			requestedSize = new Size (width, height);
 			Window.Resize ((int)width, (int)height);
-			Window.SetDefaultSize ((int)width, (int)height);
 		}
 
 		public Rectangle Bounds {
@@ -134,12 +149,28 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public Size RequestedSize {
+			get { return requestedSize; }
+		}
+
 		bool IWindowFrameBackend.Visible {
 			get {
 				return window.Visible;
 			}
 			set {
 				window.Visible = value;
+			}
+		}
+
+		double opacity = 1d;
+		double IWindowFrameBackend.Opacity {
+			get {
+				return opacity;
+			}
+			set {
+				opacity = value;
+				if (Window.GdkWindow != null)
+					Window.GdkWindow.Opacity = value;
 			}
 		}
 
@@ -277,8 +308,9 @@ namespace Xwt.GtkBackend
 			Window.Present ();
 		}
 
-		public virtual Size ImplicitMinSize {
-			get { return new Size (0,0); }
+		public virtual void GetMetrics (out Size minSize, out Size decorationSize)
+		{
+			minSize = decorationSize = Size.Zero;
 		}
 	}
 }

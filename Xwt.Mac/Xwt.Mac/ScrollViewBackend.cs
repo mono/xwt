@@ -75,6 +75,7 @@ namespace Xwt.Mac
 			}
 			set {
 				verticalScrollPolicy = value;
+				Widget.HasVerticalScroller = verticalScrollPolicy != ScrollPolicy.Never;
 			}
 		}
 
@@ -84,6 +85,7 @@ namespace Xwt.Mac
 			}
 			set {
 				horizontalScrollPolicy = value;
+				Widget.HasHorizontalScroller = horizontalScrollPolicy != ScrollPolicy.Never;
 			}
 		}
 		
@@ -110,10 +112,18 @@ namespace Xwt.Mac
 			} else {
 				NSView view = (NSView)Widget.DocumentView;
 				ViewBackend c = (ViewBackend)child;
-				var pw = c.Frontend.Surface.GetPreferredWidth ();
-				var w = Math.Max (pw.NaturalSize, Widget.ContentView.Frame.Width);
-				var ph = c.Frontend.Surface.GetPreferredHeightForWidth (w);
-				var h = Math.Max (ph.NaturalSize, Widget.ContentView.Frame.Height);
+				Size s;
+				if (horizontalScrollPolicy == ScrollPolicy.Never) {
+					s = c.Frontend.Surface.GetPreferredSize (SizeConstraint.WithSize (Widget.ContentView.Frame.Width), SizeConstraint.Unconstrained);
+				}
+				else if (verticalScrollPolicy == ScrollPolicy.Never) {
+					s = c.Frontend.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.WithSize (Widget.ContentView.Frame.Width));
+				}
+				else {
+					s = c.Frontend.Surface.GetPreferredSize ();
+				}
+				var w = Math.Max (s.Width, Widget.ContentView.Frame.Width);
+				var h = Math.Max (s.Height, Widget.ContentView.Frame.Height);
 				view.Frame = new System.Drawing.RectangleF (view.Frame.X, view.Frame.Y, (float)w, (float)h);
 			}
 		}

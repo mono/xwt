@@ -98,6 +98,14 @@ namespace Xwt.WPFBackend
 			// is not a problem when setting the child before showing the
 			// window, but it may be a problem if the window is already visible.
 			widget.SizeChanged += ChildSizeChanged;
+
+			if (child != null)
+				UpdateChildPlacement (child);
+		}
+
+		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		{
+			WidgetBackend.SetChildPlacement (childBackend);
 		}
 
 		void ChildSizeChanged (object o, SizeChangedEventArgs args)
@@ -145,8 +153,9 @@ namespace Xwt.WPFBackend
 			Window.MinWidth = r.Width;
 		}
 
-		public virtual Size ImplicitMinSize {
-			get { return new Size (0,0); }
+		public virtual void GetMetrics (out Size minSize, out Size decorationSize)
+		{
+			minSize = decorationSize = Size.Zero;
 		}
 	}
 

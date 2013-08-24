@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C13CB518-B840-4FE7-AF3D-8C517A2FAD1F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WpfTestRunner</RootNamespace>
+    <AssemblyName>WpfTestRunner</AssemblyName>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit-console-runner">
+      <HintPath>libs\nunit-console-runner.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core">
+      <HintPath>libs\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>libs\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util">
+      <HintPath>libs\nunit.util.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="nunit.framework">
+      <HintPath>libs\nunit.framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="WpfTestRunner\Program.cs" />
+    <Compile Include="WpfTestRunner\Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\BoxTests.cs" />
+    <Compile Include="Tests\ButtonTests.cs" />
+    <Compile Include="Tests\CanvasTests.cs" />
+    <Compile Include="Tests\CheckBoxTests.cs" />
+    <Compile Include="Tests\ColorTests.cs" />
+    <Compile Include="Tests\ComboBoxEntryTests.cs" />
+    <Compile Include="Tests\ComboBoxTests.cs" />
+    <Compile Include="Tests\ConsoleTestRunner.cs" />
+    <Compile Include="Tests\DrawingTests.cs" />
+    <Compile Include="Tests\FontTests.cs" />
+    <Compile Include="Tests\FrameTests.cs" />
+    <Compile Include="Tests\HBoxTests.cs" />
+    <Compile Include="Tests\HPanedTests.cs" />
+    <Compile Include="Tests\HSeparatorTests.cs" />
+    <Compile Include="Tests\ImageViewTests.cs" />
+    <Compile Include="Tests\LabelTests.cs" />
+    <Compile Include="Tests\ListBoxTests.cs" />
+    <Compile Include="Tests\ListViewTests.cs" />
+    <Compile Include="Tests\MatrixTests.cs" />
+    <Compile Include="Tests\NotebookTests.cs" />
+    <Compile Include="Tests\ProgressBarTests.cs" />
+    <Compile Include="Tests\RadioButtonTests.cs" />
+    <Compile Include="Tests\ReferenceImageManager.cs" />
+    <Compile Include="Tests\ReferenceImageVerifierDialog.cs" />
+    <Compile Include="Tests\ScrollViewTests.cs" />
+    <Compile Include="Tests\SpinButtonTests.cs" />
+    <Compile Include="Tests\TableTests.cs" />
+    <Compile Include="Tests\TextEntryTests.cs" />
+    <Compile Include="Tests\TransformTests.cs" />
+    <Compile Include="Tests\VBoxTests.cs" />
+    <Compile Include="Tests\VPanedTests.cs" />
+    <Compile Include="Tests\VSeparatorTests.cs" />
+    <Compile Include="Tests\WidgetTests.cs" />
+    <Compile Include="Tests\WindowTests.cs" />
+    <Compile Include="Tests\XwtTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xwt.WPF\Xwt.WPF.csproj">
+      <Project>{C93D746E-1586-4D4F-B411-BF5A966E6A08}</Project>
+      <Name>Xwt.WPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xwt\Xwt.csproj">
+      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
+      <Name>Xwt</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -36,23 +36,22 @@ namespace Xwt.Mac
 	{
 		public static NSCell CreateCell (ICellSource source, ICollection<CellView> cells)
 		{
-//			if (cells.Count > 1) {
-				CompositeCell c = new CompositeCell (Orientation.Horizontal, source);
-				foreach (var cell in cells)
-					c.AddCell ((ICellRenderer) CreateCell (source, cell));
-				return c;
-//			} else
-//				return CreateCell (source, cells.First ());
+			CompositeCell c = new CompositeCell (Orientation.Horizontal, source);
+			foreach (var cell in cells)
+				c.AddCell ((ICellRenderer) CreateCell (c, cell));
+			return c;
 		}
 		
-		public static NSCell CreateCell (ICellSource source, CellView cell)
+		static NSCell CreateCell (CompositeCell source, CellView cell)
 		{
-			if (cell is TextCellView)
-				return new TextTableCell ((TextCellView) cell);
-			if (cell is ImageCellView)
-				return new ImageTableCell ((ImageCellView) cell);
-			if (cell is CanvasCellView)
-				return new CanvasTableCell ((CanvasCellView) cell);
+			if (cell is ITextCellViewFrontend)
+				return new TextTableCell ((ITextCellViewFrontend) cell);
+			if (cell is IImageCellViewFrontend)
+				return new ImageTableCell ((IImageCellViewFrontend) cell);
+			if (cell is ICanvasCellViewFrontend)
+				return new CanvasTableCell ((ICanvasCellViewFrontend) cell);
+			if (cell is ICheckBoxCellViewFrontend)
+				return new CheckBoxTableCell ((ICheckBoxCellViewFrontend) cell);
 			throw new NotImplementedException ();
 		}
 	}

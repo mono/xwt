@@ -11,14 +11,14 @@ namespace Samples
 			HBox box1 = new HBox ();
 			
 			VBox box2 = new VBox ();
-			box2.PackStart (new SimpleBox (30), BoxMode.None);
-			box2.PackStart (new SimpleBox (30), BoxMode.None);
-			box2.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box2.PackStart (new SimpleBox (30));
+			box2.PackStart (new SimpleBox (30));
+			box2.PackStart (new SimpleBox (30), true);
 			
-			box1.PackStart (box2, BoxMode.FillAndExpand);
-			box1.PackStart (new SimpleBox (30), BoxMode.None);
-			box1.PackStart (new SimpleBox (30), BoxMode.Expand);
-			PackStart (box1, BoxMode.None);
+			box1.PackStart (box2, true);
+			box1.PackStart (new SimpleBox (30));
+			box1.PackStart (new SimpleBox (30), expand:true, fill:false);
+			PackStart (box1);
 			
 			HBox box3 = new HBox ();
 			box3.PackEnd (new SimpleBox (30));
@@ -26,7 +26,7 @@ namespace Samples
 			box3.PackEnd (new SimpleBox (40));
 			box3.PackStart (new SimpleBox (10) {Color = new Color (1, 0.5, 0.5)});
 			box3.PackEnd (new SimpleBox (30));
-			box3.PackStart (new SimpleBox (10) {Color = new Color (1, 0.5, 0.5)}, BoxMode.FillAndExpand);
+			box3.PackStart (new SimpleBox (10) {Color = new Color (1, 0.5, 0.5)}, true);
 			PackStart (box3);
 			
 			HBox box4 = new HBox ();
@@ -34,18 +34,18 @@ namespace Samples
 			b.Clicked += delegate {
 				b.Label = "Button has grown";
 			};
-			box4.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box4.PackStart (new SimpleBox (30), true);
 			box4.PackStart (b);
-			box4.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box4.PackStart (new SimpleBox (30), true);
 			PackStart (box4);
 			
 			HBox box5 = new HBox ();
 			Button b2 = new Button ("Hide / Show");
-			box5.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box5.PackStart (new SimpleBox (30), true);
 			var hsb = new SimpleBox (20);
-			box5.PackStart (hsb, BoxMode.None);
+			box5.PackStart (hsb);
 			box5.PackStart (b2);
-			box5.PackStart (new SimpleBox (30), BoxMode.FillAndExpand);
+			box5.PackStart (new SimpleBox (30), true);
 			b2.Clicked += delegate {
 				hsb.Visible = !hsb.Visible;
 			};
@@ -54,10 +54,29 @@ namespace Samples
 			HBox box6 = new HBox ();
 			for (int n=0; n<15; n++) {
 				var w = new Label ("TestLabel" + n);
-				w.MinWidth = 10;
+				w.WidthRequest = 10;
 				box6.PackStart (w);
 			}
 			PackStart (box6);
+
+			VBox box7 = new VBox () { Spacing = 0 };
+			box7.BackgroundColor = Colors.White;
+
+			box7.PackStart (new Label("Hi there") { Margin = new WidgetSpacing (10, 10, 0, 0) });
+			box7.PackStart (new SpecialWidget() { MarginTop = 15 });
+			box7.PackStart (new SpecialWidget() { Margin = 5 });
+			PackStart (box7);
+		}
+	}
+
+	class SpecialWidget: Widget
+	{
+		public SpecialWidget ()
+		{
+			VBox bl = new VBox () { Spacing = 0 };
+			bl.BackgroundColor = Colors.Gray;
+			bl.PackStart (new Label ("Hi there"));
+			Content = bl;
 		}
 	}
 	

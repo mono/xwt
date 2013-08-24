@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -37,14 +38,16 @@ namespace Xwt
 
 	class TestCanvas: Canvas
 	{
-		protected override WidgetSize OnGetPreferredWidth ()
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			return new WidgetSize (10);
+			return new Size (10, 10);
 		}
-
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
+		
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
-			return new WidgetSize (10);
+			ctx.Rectangle (dirtyRect);
+			ctx.SetColor (Colors.Red);
+			ctx.Fill ();
 		}
 	}
 }

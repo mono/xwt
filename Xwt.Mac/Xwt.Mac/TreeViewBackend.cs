@@ -67,7 +67,9 @@ namespace Xwt.Mac
 		protected override string SelectionChangeEventName {
 			get { return "NSOutlineViewSelectionDidChangeNotification"; }
 		}
-		
+
+		public TreePosition CurrentEventRow { get; set; }
+
 		public override object AddColumn (ListViewColumn col)
 		{
 			NSTableColumn tcol = (NSTableColumn) base.AddColumn (col);
@@ -87,13 +89,20 @@ namespace Xwt.Mac
 		{
 			return source.GetValue ((TreePosition)pos, nField);
 		}
+
+		public override void SetValue (object pos, int nField, object value)
+		{
+			source.SetValue ((TreePosition)pos, nField, value);
+		}
 		
 		public TreePosition[] SelectedRows {
 			get {
 				TreePosition[] res = new TreePosition [Table.SelectedRowCount];
 				int n = 0;
-				foreach (var i in Table.SelectedRows) {
-					res [n] = ((TreeItem)Tree.ItemAtRow ((int)i)).Position;
+				if (Table.SelectedRowCount > 0) {
+					foreach (var i in Table.SelectedRows) {
+						res [n] = ((TreeItem)Tree.ItemAtRow ((int)i)).Position;
+					}
 				}
 				return res;
 			}

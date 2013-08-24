@@ -33,12 +33,7 @@ namespace Xwt.Drawing
 	{
 		public LinearGradient (double xStart, double yStart, double xEnd, double yEnd)
 		{
-			Backend = ToolkitEngine.GradientBackendHandler.CreateLinear (xStart, yStart, xEnd, yEnd);
-		}
-
-		public override void Dispose ()
-		{
-			ToolkitEngine.GradientBackendHandler.DisposeLinear (Backend);
+			SetBackend (ToolkitEngine.GradientBackendHandler, ToolkitEngine.GradientBackendHandler.CreateLinear (xStart, yStart, xEnd, yEnd));
 		}
 	}
 }

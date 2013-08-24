@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0017C823-67F6-4DFA-8C2C-E23CD1E33D8F}</ProjectGuid>
+    <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MacTestRunner</RootNamespace>
+    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+    <AssemblyName>MacTestRunner</AssemblyName>
+    <SuppressXamMacMigration>True</SuppressXamMacMigration>
+    <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
+    <TestRunnerCommand>bin\MacTestRunner.app</TestRunnerCommand>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>False</IncludeMonoRuntime>
+    <UseSGen>False</UseSGen>
+    <EnablePackageSigning>False</EnablePackageSigning>
+    <ConsolePause>False</ConsolePause>
+    <EnableCodeSigning>False</EnableCodeSigning>
+    <CreatePackage>False</CreatePackage>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>True</IncludeMonoRuntime>
+    <UseSGen>False</UseSGen>
+    <LinkMode>Full</LinkMode>
+    <EnablePackageSigning>False</EnablePackageSigning>
+    <ConsolePause>False</ConsolePause>
+    <EnableCodeSigning>True</EnableCodeSigning>
+    <CreatePackage>True</CreatePackage>
+    <CodeSigningKey>Developer ID Application</CodeSigningKey>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>True</IncludeMonoRuntime>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <LinkMode>Full</LinkMode>
+    <UseSGen>False</UseSGen>
+    <EnableCodeSigning>True</EnableCodeSigning>
+    <ConsolePause>False</ConsolePause>
+    <EnablePackageSigning>True</EnablePackageSigning>
+    <CreatePackage>True</CreatePackage>
+    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="MonoMac" />
+    <Reference Include="nunit.core">
+      <HintPath>libs\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>libs\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>libs\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util">
+      <HintPath>libs\nunit.util.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit-console-runner">
+      <HintPath>libs\nunit-console-runner.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MacTestRunner\Main.cs" />
+    <Compile Include="Tests\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MacTestRunner\Info.plist" />
+    <None Include="Info.plist" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Xwt\Xwt.csproj">
+      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
+      <Name>Xwt</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xwt.Mac\Xwt.Mac.csproj">
+      <Project>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</Project>
+      <Name>Xwt.Mac</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Arc.png">
+      <LogicalName>Arc.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcClosePath.png">
+      <LogicalName>ArcClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcFill.png">
+      <LogicalName>ArcFill.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcMultipleLoops.png">
+      <LogicalName>ArcMultipleLoops.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegative.png">
+      <LogicalName>ArcNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeClosePath.png">
+      <LogicalName>ArcNegativeClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeFill.png">
+      <LogicalName>ArcNegativeFill.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeMultipleLoops.png">
+      <LogicalName>ArcNegativeMultipleLoops.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativePathConnection.png">
+      <LogicalName>ArcNegativePathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeStartingNegative.png">
+      <LogicalName>ArcNegativeStartingNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeSwappedAngles.png">
+      <LogicalName>ArcNegativeSwappedAngles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcPathConnection.png">
+      <LogicalName>ArcPathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcStartingNegative.png">
+      <LogicalName>ArcStartingNegative.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcSwappedAngles.png">
+      <LogicalName>ArcSwappedAngles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Curve.png">
+      <LogicalName>Curve.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\CurveClosePath.png">
+      <LogicalName>CurveClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\CurveFillWithHoles.png">
+      <LogicalName>CurveFillWithHoles.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\CurvePathConnection.png">
+      <LogicalName>CurvePathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\DrawPathTwoTimes.png">
+      <LogicalName>DrawPathTwoTimes.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternInCircle.png">
+      <LogicalName>ImagePatternInCircle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternInTriangle.png">
+      <LogicalName>ImagePatternInTriangle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternWithRotateTransform.png">
+      <LogicalName>ImagePatternWithRotateTransform.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternWithScaleTransform.png">
+      <LogicalName>ImagePatternWithScaleTransform.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\LinearGradient.png">
+      <LogicalName>LinearGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\LinearGradientDiagonal.png">
+      <LogicalName>LinearGradientDiagonal.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\LinearGradientInternalBox.png">
+      <LogicalName>LinearGradientInternalBox.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\LinearGradientReverse.png">
+      <LogicalName>LinearGradientReverse.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\LineClosePath.png">
+      <LogicalName>LineClosePath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NewPath.png">
+      <LogicalName>NewPath.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\RadialGradient.png">
+      <LogicalName>RadialGradient.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\RadialGradientReverse.png">
+      <LogicalName>RadialGradientReverse.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\RadialGradientSmall.png">
+      <LogicalName>RadialGradientSmall.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Rectangle.png">
+      <LogicalName>Rectangle.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\RectanglePathConnection.png">
+      <LogicalName>RectanglePathConnection.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\StrokePreserve.png">
+      <LogicalName>StrokePreserve.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Text.png">
+      <LogicalName>Text.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextLineBreak.png">
+      <LogicalName>TextLineBreak.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextSize.png">
+      <LogicalName>TextSize.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextWithBlankLines.png">
+      <LogicalName>TextWithBlankLines.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextWordWrap.png">
+      <LogicalName>TextWordWrap.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

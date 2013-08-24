@@ -96,12 +96,13 @@ namespace Xwt
 		}
 
 		public LinkLabel ()
-			: this ("")
 		{
 		}
 
-		public LinkLabel (string text) : base (text)
+		public LinkLabel (string text)
 		{
+			VerifyConstructorCall (this);
+			Text = text;
 		}
 
 		protected override BackendHost CreateBackendHost ()

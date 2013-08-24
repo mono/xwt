@@ -95,6 +95,10 @@ namespace Xwt.GtkBackend
 				var xa = (FontTextAttribute)attr;
 				AddFontAttribute ((Pango.FontDescription)Toolkit.GetBackend (xa.Font), start, end);
 			}
+			else if (attr is LinkTextAttribute) {
+				AddUnderlineAttribute (Pango.Underline.Single, start, end);
+				AddForegroundAttribute (Colors.Blue.ToGdkColor (), start, end);
+			}
 		}
 
 		public IntPtr Handle {

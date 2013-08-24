@@ -94,46 +94,110 @@ namespace Xwt
 		public IEnumerable<Widget> Children {
 			get { return children.Select (c => c.Child); }
 		}
-		
+
 		public void PackStart (Widget widget)
 		{
-			PackStart (widget, BoxMode.None, 0);
+			Pack (widget, false, WidgetPlacement.Fill, PackOrigin.Start);
 		}
 		
+		public void PackStart (Widget widget, bool expand)
+		{
+			Pack (widget, expand, WidgetPlacement.Fill, PackOrigin.Start);
+		}
+
+		public void PackStart (Widget widget, bool expand, bool fill)
+		{
+			WidgetPlacement align = fill ? WidgetPlacement.Fill : WidgetPlacement.Center;
+			Pack (widget, expand, align, PackOrigin.Start);
+		}
+
+		public void PackStart (Widget widget, bool expand = false, WidgetPlacement vpos = WidgetPlacement.Fill, WidgetPlacement hpos = WidgetPlacement.Fill, double marginLeft = -1, double marginTop = -1, double marginRight = -1, double marginBottom = -1, double margin = -1)
+		{
+			Pack (widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.Start);
+		}
+
+		[Obsolete ("BoxMode is going away")]
 		public void PackStart (Widget widget, BoxMode mode)
 		{
-			PackStart (widget, mode, 0);
-		}
-		
-		public void PackStart (Widget widget, BoxMode mode, double padding)
-		{
-			Pack (widget, mode, padding, PackOrigin.Start);
+			bool expand = (mode & BoxMode.Expand) != 0;
+			bool fill = (mode & BoxMode.Fill) != 0;
+			PackStart (widget, expand, fill);
 		}
 		
 		public void PackEnd (Widget widget)
 		{
-			PackEnd (widget, BoxMode.None, 0);
+			Pack (widget, false, WidgetPlacement.Fill, PackOrigin.End);
 		}
 		
+		public void PackEnd (Widget widget, bool expand)
+		{
+			Pack (widget, expand, WidgetPlacement.Fill, PackOrigin.End);
+		}
+
+		public void PackEnd (Widget widget, bool expand, bool fill)
+		{
+			WidgetPlacement align = fill ? WidgetPlacement.Fill : WidgetPlacement.Center;
+			Pack (widget, expand, align, PackOrigin.End);
+		}
+
+		public void PackEnd (Widget widget, bool expand = false, WidgetPlacement hpos = WidgetPlacement.Fill, WidgetPlacement vpos = WidgetPlacement.Fill, double marginLeft = -1, double marginTop = -1, double marginRight = -1, double marginBottom = -1, double margin = -1)
+		{
+			Pack (widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.End);
+		}
+
+		[Obsolete ("BoxMode is going away")]
 		public void PackEnd (Widget widget, BoxMode mode)
 		{
-			PackEnd (widget, mode, 0);
+			bool expand = (mode & BoxMode.Expand) != 0;
+			bool fill = (mode & BoxMode.Fill) != 0;
+			PackEnd (widget, expand, fill);
 		}
-		
-		public void PackEnd (Widget widget, BoxMode mode, double padding)
+
+
+		void Pack (Widget widget, bool expand, WidgetPlacement vpos, WidgetPlacement hpos, double marginLeft, double marginTop, double marginRight, double marginBottom, double margin, PackOrigin ptype)
 		{
-			Pack (widget, mode, padding, PackOrigin.End);
+			WidgetPlacement align;
+
+			if (direction == Orientation.Horizontal) {
+				align = hpos;
+				if (vpos != default (WidgetPlacement))
+					widget.VerticalPlacement = vpos;
+			} else {
+				align = vpos;
+				if (hpos != default (WidgetPlacement))
+					widget.HorizontalPlacement = hpos;
+			}
+			if (margin != -1)
+				widget.Margin = margin;
+			if (marginLeft != -1)
+				widget.MarginLeft = marginLeft;
+			if (marginTop != -1)
+				widget.MarginTop = marginTop;
+			if (marginTop != -1)
+				widget.MarginRight = marginRight;
+			if (marginBottom != -1)
+				widget.MarginBottom = marginBottom;
+			Pack (widget, expand, align, PackOrigin.Start);
 		}
-		
-		void Pack (Widget widget, BoxMode mode, double padding, PackOrigin ptype)
+
+		void Pack (Widget widget, bool? expand, WidgetPlacement align, PackOrigin ptype)
 		{
+			if (expand.HasValue) {
+				if (direction == Orientation.Vertical)
+					widget.ExpandVertical = expand.Value;
+				else
+					widget.ExpandHorizontal = expand.Value;
+			}
+			if (align != default (WidgetPlacement)) {
+				if (direction == Orientation.Vertical)
+					widget.VerticalPlacement = align;
+				else
+					widget.HorizontalPlacement = align;
+			}
+
 			if (widget == null)
 				throw new ArgumentNullException ("widget");
-			if (padding < 0)
-				throw new ArgumentException ("padding can't be negative");
 			var p = new BoxPlacement ((WidgetBackendHost)BackendHost, widget);
-			p.BoxMode = mode;
-			p.Padding = padding;
 			p.PackOrigin = ptype;
 			children.Add (p);
 		}
@@ -184,11 +248,11 @@ namespace Xwt
 				OnRemove (oldWidget);
 			OnAdd (newWidget, placement);
 		}
-		
+
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
-			if (size.Width == 0 || size.Height == 0)
+			if (size.Width <= 0 || size.Height <= 0)
 				return;
 			
 			var visibleChildren = children.Where (c => c.Child.Visible).ToArray ();
@@ -196,32 +260,38 @@ namespace Xwt
 			Rectangle[] rects = new Rectangle [visibleChildren.Length];
 			
 			if (direction == Orientation.Horizontal) {
-				CalcDefaultSizes (Surface.SizeRequestMode, size.Width, size.Height);
+				CalcDefaultSizes (size.Width, size.Height);
 				double xs = 0;
 				double xe = size.Width + spacing;
 				for (int n=0; n<visibleChildren.Length; n++) {
 					var bp = visibleChildren [n];
+					double availableWidth = bp.NextSize >= 0 ? bp.NextSize : 0;
 					if (bp.PackOrigin == PackOrigin.End)
-						xe -= bp.NextSize + spacing;
-					double x = bp.PackOrigin == PackOrigin.Start ? xs : xe;
+						xe -= availableWidth + spacing;
+
+					var slot = new Rectangle (bp.PackOrigin == PackOrigin.Start ? xs : xe, 0, availableWidth, size.Height);
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (x, 0, bp.NextSize >= 0 ? bp.NextSize : 0, size.Height >= 0 ? size.Height : 0);
+					rects[n] = bp.Child.Surface.GetPlacementInRect (slot).Round ().WithPositiveSize ();
+
 					if (bp.PackOrigin == PackOrigin.Start)
-						xs += bp.NextSize + spacing;
+						xs += availableWidth + spacing;
 				}
 			} else {
-				CalcDefaultSizes (Surface.SizeRequestMode, size.Height, size.Width);
+				CalcDefaultSizes (size.Width, size.Height);
 				double ys = 0;
 				double ye = size.Height + spacing;
 				for (int n=0; n<visibleChildren.Length; n++) {
 					var bp = visibleChildren [n];
+					double availableHeight = bp.NextSize >= 0 ? bp.NextSize : 0;
 					if (bp.PackOrigin == PackOrigin.End)
-						ye -= bp.NextSize + spacing;
-					double y = bp.PackOrigin == PackOrigin.Start ? ys : ye;
+						ye -= availableHeight + spacing;
+
+					var slot = new Rectangle (0, bp.PackOrigin == PackOrigin.Start ? ys : ye, size.Width, availableHeight);
 					widgets[n] = (IWidgetBackend)GetBackend (bp.Child);
-					rects[n] = new Rectangle (0, y, size.Width >= 0 ? size.Width : 0, bp.NextSize >= 0 ? bp.NextSize : 0);
+					rects[n] = bp.Child.Surface.GetPlacementInRect (slot).Round ().WithPositiveSize ();
+
 					if (bp.PackOrigin == PackOrigin.Start)
-						ys += bp.NextSize + spacing;
+						ys += availableHeight + spacing;
 				}
 			}
 			Backend.SetAllocation (widgets, rects);
@@ -232,155 +302,78 @@ namespace Xwt
 			}
 		}
 		
-		void CalcDefaultSizes (SizeRequestMode mode, double totalSize, double lengthConstraint)
+		void CalcDefaultSizes (double width, double height)
 		{
-			bool calcHeights = direction == Orientation.Vertical;
-			bool useLengthConstraint = mode == SizeRequestMode.HeightForWidth && calcHeights || mode == SizeRequestMode.WidthForHeight && !calcHeights;
+			bool vertical = direction == Orientation.Vertical;
 			int nexpands = 0;
-			double naturalSize = 0;
-			
+			double requiredSize = 0;
+			double availableSize = vertical ? height : width;
+
+			var widthConstraint = vertical ? SizeConstraint.WithSize (width) : SizeConstraint.Unconstrained;
+			var heightConstraint = vertical ? SizeConstraint.Unconstrained : SizeConstraint.WithSize (height);
+
 			var visibleChildren = children.Where (b => b.Child.Visible).ToArray ();
-			var sizes = new Dictionary<BoxPlacement,WidgetSize> ();
-			
+			var sizes = new Dictionary<BoxPlacement,double> ();
+
 			// Get the natural size of each child
 			foreach (var bp in visibleChildren) {
-				WidgetSize s;
-				if (useLengthConstraint)
-					s = GetPreferredLengthForSize (mode, bp.Child, lengthConstraint);
-				else
-					s = GetPreferredSize (calcHeights, bp.Child);
-				sizes [bp] = s;
-				naturalSize += s.NaturalSize;
-				bp.NextSize = s.NaturalSize;
-				if ((bp.BoxMode & BoxMode.Expand) != 0)
+				Size s;
+				s = bp.Child.Surface.GetPreferredSize (widthConstraint, heightConstraint, true);
+				bp.NextSize = vertical ? s.Height : s.Width;
+				sizes [bp] = bp.NextSize;
+				requiredSize += bp.NextSize;
+				if (bp.Child.ExpandsForOrientation (direction))
 					nexpands++;
 			}
 			
-			double remaining = totalSize - naturalSize - (spacing * (double)(visibleChildren.Length - 1));
+			double remaining = availableSize - requiredSize - (spacing * (double)(visibleChildren.Length - 1));
 			if (remaining < 0) {
 				// The box is not big enough to fit the widgets using its natural size.
 				// We have to shrink the widgets.
 				
-				// List of widgets that we have to shrink
-				var toShrink = new List<BoxPlacement> (visibleChildren);
-				
 				// The total amount we have to shrink
 				double shrinkSize = -remaining;
 				
-				while (toShrink.Count > 0 && shrinkSize > 0) {
-					SizeSplitter sizePart = new SizeSplitter (shrinkSize, toShrink.Count);
-					shrinkSize = 0;
-					for (int i=0; i < toShrink.Count; i++) {
-						var bp = toShrink[i];
-						bp.NextSize -= sizePart.NextSizePart ();
-						
-						WidgetSize size = sizes [bp];
-						
-						if (bp.NextSize < size.MinSize) {
-							// If the widget can't be shrinked anymore, we remove it from the shrink list
-							// and increment the remaining shrink size. We'll loop again and this size will be
-							// substracted from the cells which can still be reduced
-							shrinkSize += (size.MinSize - bp.NextSize);
-							bp.NextSize = size.MinSize;
-							toShrink.RemoveAt (i);
-							i--;
-						}
-					}
-				}
+				var sizePart = new SizeSplitter (shrinkSize, visibleChildren.Length);
+				foreach (var bp in visibleChildren)
+					bp.NextSize -= sizePart.NextSizePart ();
 			}
 			else {
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
 				foreach (var bp in visibleChildren) {
-					if ((bp.BoxMode & BoxMode.Expand) != 0)
+					if (bp.Child.ExpandsForOrientation (direction))
 						bp.NextSize += expandRemaining.NextSizePart ();
 				}
 			}
 		}
 		
-		protected override WidgetSize OnGetPreferredWidth ()
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			WidgetSize s = new WidgetSize ();
-			
+			Size s = new Size ();
+			int count = 0;
+
 			if (direction == Orientation.Horizontal) {
-				int count = 0;
 				foreach (var cw in Children.Where (b => b.Visible)) {
-					s += cw.Surface.GetPreferredWidth ();
+					var wsize = cw.Surface.GetPreferredSize (SizeConstraint.Unconstrained, heightConstraint, true);
+					s.Width += wsize.Width;
+					if (wsize.Height > s.Height)
+						s.Height = wsize.Height;
 					count++;
 				}
 				if (count > 0)
-					s += spacing * (double)(count - 1);
+					s.Width += spacing * (double)(count - 1);
 			} else {
-				foreach (var cw in Children.Where (b => b.Visible))
-					s = s.UnionWith (cw.Surface.GetPreferredWidth ());
-			}
-			return s;
-		}
-		
-		protected override WidgetSize OnGetPreferredHeight ()
-		{
-			WidgetSize s = new WidgetSize ();
-			
-			if (direction == Orientation.Vertical) {
-				int count = 0;
 				foreach (var cw in Children.Where (b => b.Visible)) {
-					s += cw.Surface.GetPreferredHeight ();
+					var wsize = cw.Surface.GetPreferredSize (widthConstraint, SizeConstraint.Unconstrained, true);
+					s.Height += wsize.Height;
+					if (wsize.Width > s.Width)
+						s.Width = wsize.Width;
 					count++;
 				}
 				if (count > 0)
-					s += spacing * (double)(count - 1);
-			} else {
-				foreach (var cw in Children.Where (b => b.Visible))
-					s = s.UnionWith (cw.Surface.GetPreferredHeight ());
+					s.Height += spacing * (double)(count - 1);
 			}
 			return s;
-		}
-		
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			return GetPreferredLengthForSize (SizeRequestMode.HeightForWidth, width);
-		}
-		
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			return GetPreferredLengthForSize (SizeRequestMode.WidthForHeight, height);
-		}
-		
-		WidgetSize GetPreferredLengthForSize (SizeRequestMode mode, double width)
-		{
-			WidgetSize s = new WidgetSize ();
-			
-			if ((direction == Orientation.Horizontal && mode == SizeRequestMode.HeightForWidth) || (direction == Orientation.Vertical && mode == SizeRequestMode.WidthForHeight)) {
-				CalcDefaultSizes (mode, width, -1);
-				foreach (var bp in children.Where (b => b.Child.Visible)) {
-					s = s.UnionWith (GetPreferredLengthForSize (mode, bp.Child, bp.NextSize));
-				}
-			}
-			else {
-				int count = 0;
-				foreach (var bp in children.Where (b => b.Child.Visible)) {
-					s += GetPreferredLengthForSize (mode, bp.Child, width);
-					count++;
-				}
-				if (count > 0)
-					s += spacing * (double)(count - 1);
-			}
-			return s;
-		}
-		
-		WidgetSize GetPreferredSize (bool calcHeight, Widget w)
-		{
-			if (calcHeight)
-				return w.Surface.GetPreferredHeight ();
-			else
-				return w.Surface.GetPreferredWidth ();
-		}
-		
-		WidgetSize GetPreferredLengthForSize (SizeRequestMode mode, Widget w, double width)
-		{
-			if (mode == SizeRequestMode.WidthForHeight)
-				return w.Surface.GetPreferredWidthForHeight (width);
-			else
-				return w.Surface.GetPreferredHeightForWidth (width);
 		}
 	}
 	
@@ -398,8 +391,6 @@ namespace Xwt
 	{
 		IContainerEventSink<BoxPlacement> parent;
 		int position;
-		BoxMode boxMode = BoxMode.None;
-		double padding;
 		PackOrigin packType = PackOrigin.Start;
 		Widget child;
 		
@@ -410,7 +401,7 @@ namespace Xwt
 		}
 		
 		internal double NextSize;
-		
+
 		public int Position {
 			get {
 				return this.position;
@@ -418,28 +409,6 @@ namespace Xwt
 			set {
 				position = value;
 				parent.ChildChanged (this, "Position");
-			}
-		}
-		
-		[DefaultValue (BoxMode.None)]
-		public BoxMode BoxMode {
-			get {
-				return this.boxMode;
-			}
-			set {
-				boxMode = value;
-				parent.ChildChanged (this, "BoxMode");
-			}
-		}
-
-		[DefaultValue (0d)]
-		public double Padding {
-			get {
-				return this.padding;
-			}
-			set {
-				padding = value;
-				parent.ChildChanged (this, "Padding");
 			}
 		}
 

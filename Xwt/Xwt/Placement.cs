@@ -108,72 +108,40 @@ namespace Xwt
 
 		protected override void OnReallocate ()
 		{
-			var size = Backend.Size;
-			double childWidth, childHeight;
-
 			if (child != null) {
-				if (child.Surface.SizeRequestMode == SizeRequestMode.HeightForWidth) {
-					childWidth = child.Surface.GetPreferredWidth ().NaturalSize;
-					if (childWidth > size.Width)
-						childWidth = size.Width;
-					childHeight = child.Surface.GetPreferredHeightForWidth (childWidth).NaturalSize;
-					if (childHeight > size.Height)
-						childHeight = size.Height;
-				}
-				else {
-					childHeight = child.Surface.GetPreferredHeight ().NaturalSize;
-					if (childHeight > size.Height)
-						childHeight = size.Height;
-					childWidth = child.Surface.GetPreferredWidthForHeight (childHeight).NaturalSize;
-					if (childWidth > size.Width)
-						childWidth = size.Width;
-				}
+				var size = Backend.Size;
+				var availableWidth = size.Width - child.Margin.HorizontalSpacing - Padding.HorizontalSpacing;
+				var availableHeight = size.Height - child.Margin.VerticalSpacing - Padding.VerticalSpacing;
+				var childSize = child.Surface.GetPreferredSize (availableWidth, availableHeight);
+				var x = child.Margin.Left + Padding.Left + XAlign * (availableWidth - childSize.Width);
+				var y = child.Margin.Top + Padding.Top + YAlign * (availableHeight - childSize.Height);
 
-				if (childWidth < 0)
-					childWidth = 0;
-				if (childHeight < 0)
-					childHeight = 0;
-
-				var x = XAlign * (size.Width - childWidth - Padding.HorizontalSpacing) + Padding.Left - Padding.Right;
-				var y = YAlign * (size.Height - childHeight - Padding.VerticalSpacing) + Padding.Top - Padding.Bottom;
-
-				Backend.SetAllocation (new[] { (IWidgetBackend)GetBackend (child) }, new[] { new Rectangle (x, y, childWidth, childHeight) });
+				Backend.SetAllocation (new[] { (IWidgetBackend)GetBackend (child) }, new[] { new Rectangle (x, y, childSize.Width, childSize.Height).Round () });
 
 				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
 					child.Surface.Reallocate ();
 			}
 		}
 
-		protected override WidgetSize OnGetPreferredHeight ()
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			WidgetSize s = new WidgetSize ();
-			if (child != null)
-				s += child.Surface.GetPreferredHeight ();
-			return s;
-		}
+			if (child != null) {
+				var s = new Size (child.Margin.HorizontalSpacing + Padding.HorizontalSpacing, child.Margin.VerticalSpacing + Padding.VerticalSpacing);
 
-		protected override WidgetSize OnGetPreferredWidth ()
-		{
-			WidgetSize s = new WidgetSize ();
-			if (child != null)
-				s += child.Surface.GetPreferredWidth ();
-			return s;
-		}
-
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			WidgetSize s = new WidgetSize ();
-			if (child != null)
-				s += child.Surface.GetPreferredHeightForWidth (width);
-			return s;
-		}
-
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			WidgetSize s = new WidgetSize ();
-			if (child != null)
-				s += child.Surface.GetPreferredWidthForHeight (height);
-			return s;
+				if (widthConstraint.IsConstrained) {
+					widthConstraint = widthConstraint.AvailableSize - s.Width;
+					if (widthConstraint.AvailableSize <= 0)
+						return s;
+				}
+				if (heightConstraint.IsConstrained) {
+					heightConstraint = heightConstraint.AvailableSize - child.Margin.VerticalSpacing - Padding.VerticalSpacing;
+					if (heightConstraint.AvailableSize <= 0)
+						return s;
+				}
+				return s + child.Surface.GetPreferredSize (widthConstraint, heightConstraint);
+			}
+			else
+				return new Size (Padding.HorizontalSpacing, Padding.VerticalSpacing);
 		}
 	}
 }

@@ -58,47 +58,16 @@ namespace Xwt.Backends
 		double Value { get; set; }
 		
 		/// <summary>
-		/// Gets or sets the lowest value of the scroll range.
+		/// Sets the scroll range and the inital value
 		/// </summary>
-		/// <value>
-		/// The lower value.
-		/// </value>
-		/// <remarks>It must be <= UpperValue</remarks>
-		double LowerValue { get; set; }
-		
-		/// <summary>
-		/// Gets or sets the highest value of the scroll range
-		/// </summary>
-		/// <value>
-		/// The upper value.
-		/// </value>
-		/// <remarks>It must be >= LowerValue</remarks>
-		double UpperValue { get; set; }
-		
-		/// <summary>
-		/// How much Value will be incremented when you click on the scrollbar to move
-		/// to the next page (when the scrollbar supports it)
-		/// </summary>
-		/// <value>
-		/// The page increment.
-		/// </value>
-		double PageIncrement { get; set; }
-		
-		/// <summary>
-		/// How much the Value is incremented/decremented when you click on the down/up button in the scrollbar
-		/// </summary>
-		/// <value>
-		/// The step increment.
-		/// </value>
-		double StepIncrement { get; set; }
-		
-		/// <summary>
-		/// Size of the visible range
-		/// </summary>
-		/// <remarks>
-		/// For example, if LowerValue=0, UpperValue=100, Value=25 and PageSize=50, the visible range will be 25 to 75
-		/// </remarks>
-		double PageSize { get; set; }
+		/// <param name="lowerValue">The lowest value of the scroll range</param>
+		/// <param name="upperValue">The highest value of the scroll range</param>
+		/// <param name="pageSize">Size of the visible range</param>
+		/// <param name="pageIncrement">How much Value will be incremented when you click on the scrollbar to move
+		/// to the next page (when the scrollbar supports it)</param>
+		/// <param name="stepIncrement">How much the Value is incremented/decremented when you click on the down/up button in the scrollbar</param>
+		/// <param name="value">Value.</param>
+		void SetRange (double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value);
 	}
 
 	public interface IScrollAdjustmentEventSink

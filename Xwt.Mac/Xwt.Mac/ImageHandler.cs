@@ -60,7 +60,7 @@ namespace Xwt.Mac
 			return new NSImage (file);
 		}
 
-		public override object CreateMultiSizeImage (IEnumerable<object> images)
+		public override object CreateMultiResolutionImage (IEnumerable<object> images)
 		{
 			NSImage res = new NSImage ();
 			foreach (NSImage img in images)

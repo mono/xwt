@@ -95,6 +95,8 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool MultiLine { get; set; }
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

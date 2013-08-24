@@ -34,52 +34,42 @@ namespace Xwt
 	{
 		void Reallocate ();
 		
-		SizeRequestMode SizeRequestMode { get; }
-		
 		/// <summary>
-		/// Gets the preferred width of the widget (includes the margin)
+		/// Gets the preferred size of the widget
 		/// </summary>
 		/// <returns>
-		/// The preferred width.
+		/// The preferred size.
 		/// </returns>
-		WidgetSize GetPreferredWidth ();
+		/// <remarks>
+		/// The returned size is >= 0. If a constraint is specified, the returned size will not
+		/// be bigger than the constraint.
+		/// </remarks>
+		Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint, bool includeMargin = false);
 		
 		/// <summary>
-		/// Gets the preferred height of the widget (includes the margin)
+		/// Gets the preferred size of the widget
 		/// </summary>
 		/// <returns>
-		/// The preferred height.
+		/// The preferred size.
 		/// </returns>
-		WidgetSize GetPreferredHeight ();
-		
-		/// <summary>
-		/// Gets the preferred height for a given width (includes the margin). Called only when using HeightForWidth size request mode.
-		/// </summary>
-		/// <returns>
-		/// The preferred height
-		/// </returns>
-		/// <param name='width'>
-		/// Width.
-		/// </param>
-		WidgetSize GetPreferredHeightForWidth (double width);
-		
-		/// <summary>
-		/// Gets the preferred width for a given height (includes the margin).  Called only when using WidthForHeight size request mode.
-		/// </summary>
-		/// <returns>
-		/// The preferred width
-		/// </returns>
-		/// <param name='height'>
-		/// Height.
-		/// </param>
-		/// 
-		WidgetSize GetPreferredWidthForHeight (double height);
-		
+		/// <remarks>
+		/// The returned size is >= 0
+		/// </remarks>
+		Size GetPreferredSize (bool includeMargin = false);
+
 		object NativeWidget { get; }
 
 		IEnumerable<Widget> Children { get; }
 
 		Toolkit ToolkitEngine { get; }
+
+		/// <summary>
+		/// Given a rectangle that defines the available area for a widget, returns the area that the widget will fill,
+		/// taking into account the margin and alignment settings.
+		/// </summary>
+		/// <returns>The placement in rect.</returns>
+		/// <param name="rect">Rect.</param>
+		Rectangle GetPlacementInRect (Rectangle rect);
 	}
 }
 

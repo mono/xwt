@@ -24,10 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using NUnit.Framework;
 
 namespace Xwt
 {
-	public abstract class BoxTests: WidgetTests
+	public abstract class BoxTests: ContainerTests
 	{
 		public override Widget CreateWidget ()
 		{
@@ -35,8 +36,58 @@ namespace Xwt
 			box.PackStart (new Label ("Hello Worlds"));
 			return box;
 		}
+		
+		protected override void AddChild (Widget parent, Widget child)
+		{
+			((Box)parent).Clear ();
+			((Box)parent).PackStart (child, true);
+		}
 
 		public abstract Box CreateBox ();
+
+		protected abstract Rectangle AdjustedRect (Rectangle r);
+
+		public Rectangle ToScreenBounds (Window w, Rectangle r)
+		{
+			r = AdjustedRect (r);
+			var wb = w.ScreenBounds;
+			return r.Offset (wb.Location);
+		}
+
+		Box PrepareBox (Window win)
+		{
+			win.Padding = 0;
+			win.Size = new Size (100, 100);
+			var box = CreateBox ();
+			win.Content = box;
+			return box;
+		}
+
+		[Test]
+		public void SinglePack ()
+		{
+			using (Window win = new Window ()) {
+				var box = PrepareBox (win);
+				SquareBox c = new SquareBox ();
+				box.PackStart (c);
+				ShowWindow (win);
+
+				Assert.AreEqual (ToScreenBounds (win, new Rectangle (0, 0, 10, 100)), c.ScreenBounds);
+			}
+		}
+
+		[Test]
+		public void SinglePackExpand ()
+		{
+			using (Window win = new Window ()) {
+				var box = PrepareBox (win);
+				SquareBox c = new SquareBox ();
+				box.PackStart (c, true);
+				ShowWindow (win);
+
+				Assert.AreEqual (ToScreenBounds (win, new Rectangle (0, 0, 100, 100)), c.ScreenBounds);
+			}
+		}
 	}
 }
 

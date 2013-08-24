@@ -17,6 +17,8 @@ namespace Samples
 			Application.Run ();
 			
 			w.Dispose ();
+
+			Application.Dispose ();
 		}
 	}
 }	

@@ -27,9 +27,9 @@ using System;
 
 namespace Xwt
 {
-	public class VPanedTests: WidgetTests
+	public class VPanedTests: PanedTests
 	{
-		public override Widget CreateWidget ()
+		public override Paned CreatePaned ()
 		{
 			return new VPaned ();
 		}

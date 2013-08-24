@@ -78,10 +78,10 @@ namespace Xwt.Backends
 			MinHeight = height;
 		}
 
-		void IWidgetBackend.SetNaturalSize (double width, double height)
+		void IWidgetBackend.SetSizeRequest (double width, double height)
 		{
-			NaturalWidth = width;
-			NaturalHeight = height;
+			WidthRequest = width;
+			HeightRequest = height;
 		}
 
 		void IWidgetBackend.UpdateLayout ()
@@ -89,24 +89,9 @@ namespace Xwt.Backends
 			Surface.Reallocate ();
 		}
 
-		WidgetSize IWidgetBackend.GetPreferredWidth ()
+		Size IWidgetBackend.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			return Surface.GetPreferredWidth ();
-		}
-
-		WidgetSize IWidgetBackend.GetPreferredHeightForWidth (double width)
-		{
-			return Surface.GetPreferredHeightForWidth (width);
-		}
-
-		WidgetSize IWidgetBackend.GetPreferredHeight ()
-		{
-			return Surface.GetPreferredHeight ();
-		}
-
-		WidgetSize IWidgetBackend.GetPreferredWidthForHeight (double height)
-		{
-			return Surface.GetPreferredWidthForHeight (height);
+			return Surface.GetPreferredSize (widthConstraint, heightConstraint);
 		}
 
 		void IWidgetBackend.SetDragSource (TransferDataType[] types, DragDropAction dragAction)

@@ -252,12 +252,12 @@ namespace Xwt.Mac
 				} else {
 					RectangleF empty = RectangleF.Empty;
 					CGImage cgimg = ((NSImage)pi.Image).AsCGImage (ref empty, null, null);
-					pattern = new CGPattern (bounds, CGAffineTransform.MakeScale (1f, -1f), bounds.Width, bounds.Height,
+					pattern = new CGPattern (bounds, t, bounds.Width, bounds.Height,
 					                         CGPatternTiling.ConstantSpacing, true, c => c.DrawImage (bounds, cgimg));
 				}
 
 				CGContext ctx = gc.Context;
-				float[] alpha = new[] { 1.0f };
+				float[] alpha = new[] { (float)pi.Alpha };
 				ctx.SetFillColorSpace (Util.PatternColorSpace);
 				ctx.SetStrokeColorSpace (Util.PatternColorSpace);
 				ctx.SetFillPattern (pattern, alpha);
@@ -319,6 +319,14 @@ namespace Xwt.Mac
 			((CGContextBackend)backend).Context.TranslateCTM ((float)tx, (float)ty);
 		}
 		
+		public override void ModifyCTM (object backend, Matrix m)
+		{
+			CGAffineTransform t = new CGAffineTransform ((float)m.M11, (float)m.M12,
+			                                             (float)m.M21, (float)m.M22,
+			                                             (float)m.OffsetX, (float)m.OffsetY);
+			((CGContextBackend)backend).Context.ConcatCTM (t);
+		}
+
 		public override Matrix GetCTM (object backend)
 		{
 			CGAffineTransform t = GetContextTransform ((CGContextBackend)backend);

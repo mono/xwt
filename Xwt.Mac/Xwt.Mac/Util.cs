@@ -25,16 +25,18 @@
 // THE SOFTWARE.
 
 using System;
-using MonoMac.AppKit;
-using Xwt.Drawing;
-using MonoMac.CoreGraphics;
-using SizeF = System.Drawing.SizeF;
-using RectangleF = System.Drawing.RectangleF;
-using MonoMac.ObjCRuntime;
-using MonoMac.Foundation;
 using System.Collections.Generic;
-using Xwt.Backends;
 using System.Runtime.InteropServices;
+using System.Text;
+using MonoMac.AppKit;
+using MonoMac.CoreGraphics;
+using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
+using Xwt.Backends;
+using Xwt.Drawing;
+
+using RectangleF = System.Drawing.RectangleF;
+using SizeF = System.Drawing.SizeF;
 
 namespace Xwt.Mac
 {
@@ -320,7 +322,7 @@ namespace Xwt.Mac
 				}
 				else if (att is LinkTextAttribute) {
 					var xa = (LinkTextAttribute)att;
-					ns.AddAttribute (NSAttributedString.LinkAttributeName, (NSString)xa.Target, r);
+					ns.AddAttribute (NSAttributedString.LinkAttributeName, (NSString)xa.Target.ToString (), r);
 				}
 				else if (att is StrikethroughTextAttribute) {
 					var xa = (StrikethroughTextAttribute)att;
@@ -334,6 +336,58 @@ namespace Xwt.Mac
 				}
 			}
 			return ns;
+		}
+
+		/// <summary>
+		/// Removes the mnemonics (underscore character) from a string.
+		/// </summary>
+		/// <returns>The string with the mnemonics unescaped.</returns>
+		/// <param name="text">The string.</param>
+		/// <remarks>
+		/// Single underscores are removed. Double underscores are replaced with single underscores (unescaped).
+		/// </remarks>
+		public static string RemoveMnemonic(this string str)
+		{
+			if (str == null)
+				return null;
+			var newText = new StringBuilder ();
+			for (int i = 0; i < str.Length; i++) {
+				if (str [i] != '_')
+					newText.Append (str [i]);
+				else if (i < str.Length && str [i + 1] == '_') {
+					newText.Append ('_');
+					i++;
+				}
+			}
+			return newText.ToString ();
+		}
+
+		public static CheckBoxState ToXwtState (this NSCellStateValue state)
+		{
+			switch (state) {
+				case NSCellStateValue.Mixed:
+					return CheckBoxState.Mixed;
+				case NSCellStateValue.On:
+					return CheckBoxState.On;
+				case NSCellStateValue.Off:
+					return CheckBoxState.Off;
+				default:
+					throw new ArgumentOutOfRangeException ();
+			}
+		}
+		
+		public static NSCellStateValue ToMacState (this CheckBoxState state)
+		{
+			switch (state) {
+			case CheckBoxState.Mixed:
+				return NSCellStateValue.Mixed;
+			case CheckBoxState.On:
+				return NSCellStateValue.On;
+			case CheckBoxState.Off:
+				return NSCellStateValue.Off;
+			default:
+				throw new ArgumentOutOfRangeException ();
+			}
 		}
 	}
 

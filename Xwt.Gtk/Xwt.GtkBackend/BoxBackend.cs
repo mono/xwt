@@ -135,8 +135,6 @@ namespace Xwt.GtkBackend
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
-			if (Backend.IsPreallocating)
-				return;
 			try {
 				IsReallocating = true;
 				((IWidgetSurface)Backend.Frontend).Reallocate ();

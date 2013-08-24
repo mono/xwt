@@ -34,6 +34,7 @@ namespace Xwt.Backends
 		string PlaceholderText { get; set; }
 		bool ReadOnly { get; set; }
 		bool ShowFrame { get; set; }
+		bool MultiLine { get; set; }
 	}
 	
 	public interface ITextEntryEventSink: IWidgetEventSink

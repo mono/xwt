@@ -116,14 +116,31 @@ namespace Xwt.Drawing
 		public override object CreateNativeBackend ()
 		{
 			imageBuilder = toolkit.ImageBuilderBackendHandler.CreateImageBuilder ((int)width, (int)height, ImageFormat.ARGB32);
+			if (toolkit.ImageBuilderBackendHandler.DisposeHandleOnUiThread)
+				ResourceManager.RegisterResource (imageBuilder);
+			else
+				GC.SuppressFinalize (this);
+
 			return toolkit.ImageBuilderBackendHandler.CreateContext (imageBuilder);
+		}
+
+		~VectorContextBackend ()
+		{
+			if (imageBuilder != null)
+				ResourceManager.FreeResource (imageBuilder);
 		}
 
 		public override void Dispose ()
 		{
 			base.Dispose ();
-			if (imageBuilder != null)
-				toolkit.ImageBuilderBackendHandler.Dispose (imageBuilder);
+			if (imageBuilder != null) {
+				if (toolkit.ImageBuilderBackendHandler.DisposeHandleOnUiThread) {
+					GC.SuppressFinalize (this);
+					ResourceManager.FreeResource (imageBuilder);
+				}
+				else
+					toolkit.ImageBuilderBackendHandler.Dispose (imageBuilder);
+			}
 		}
 	}
 
@@ -529,6 +546,13 @@ namespace Xwt.Drawing
 			
 			if (ctx.NativeBackend != null && ctx.NativeContextHandler != null)
 				ctx.NativeContextHandler.Translate (ctx.NativeBackend, tx, ty);
+		}
+
+		public override void ModifyCTM (object backend, Matrix t)
+		{
+			var ctx = (VectorBackend)backend;
+			CreateNativePathBackend (ctx);
+			ctx.NativeContextHandler.ModifyCTM (ctx.NativeBackend, t);
 		}
 
 		public override Matrix GetCTM (object backend)

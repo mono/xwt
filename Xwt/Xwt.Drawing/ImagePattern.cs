@@ -33,14 +33,8 @@ namespace Xwt.Drawing
 	{
 		public ImagePattern (Image image)
 		{
-			Backend = ToolkitEngine.ImagePatternBackendHandler.Create (image != null ? image.ImageDescription : ImageDescription.Null);
+			SetBackend (ToolkitEngine.ImagePatternBackendHandler, ToolkitEngine.ImagePatternBackendHandler.Create (image != null ? image.ImageDescription : ImageDescription.Null));
 		}
-
-		public override void Dispose ()
-		{
-			ToolkitEngine.ImagePatternBackendHandler.Dispose (Backend);
-		}
-
 	}
 }
 

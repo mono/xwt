@@ -94,6 +94,7 @@ namespace Xwt
 
 		public SegmentedButton (IEnumerable<Button> buttons)
 		{
+			VerifyConstructorCall (this);
 			foreach (var button in buttons)
 				Items.Add (button);
 		}

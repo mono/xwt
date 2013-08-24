@@ -33,6 +33,8 @@ namespace Xwt.Mac
 {
 	public class CustomWidgetBackend: ViewBackend<NSView,IWidgetEventSink>, ICustomWidgetBackend
 	{
+		ViewBackend childBackend;
+
 		public CustomWidgetBackend ()
 		{
 		}
@@ -44,17 +46,29 @@ namespace Xwt.Mac
 
 		public void SetContent (IWidgetBackend widget)
 		{
-			var view = Widget;
-			foreach (var subview in view.Subviews) {
-				subview.RemoveFromSuperview ();
-				subview.AutoresizingMask = NSViewResizingMask.NotSizable;
+			if (childBackend != null) {
+				childBackend.Widget.RemoveFromSuperview ();
+				RemoveChildPlacement (childBackend.Widget);
+				childBackend.Widget.AutoresizingMask = NSViewResizingMask.NotSizable;
 			}
+			if (widget == null)
+				return;
 
-			var newView = GetWidget (widget);
-			newView.Frame = view.Bounds;
-			newView.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
-			view.AddSubview (newView);
+			var view = Widget;
+			childBackend = (ViewBackend)widget;
+			var childView = GetWidgetWithPlacement (childBackend);
+			childView.Frame = view.Bounds;
+			childView.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+			view.AddSubview (childView);
 			view.SetNeedsDisplayInRect (view.Bounds);
+		}
+
+		protected override Size GetNaturalSize ()
+		{
+			if (childBackend != null)
+				return childBackend.Frontend.Surface.GetPreferredSize ();
+			else
+				return base.GetNaturalSize ();
 		}
 	}
 
@@ -163,10 +177,13 @@ namespace Xwt.Mac
 		
 		public override void SetFrameSize (System.Drawing.SizeF newSize)
 		{
+			bool changed = !newSize.Equals (Frame.Size);
 			base.SetFrameSize (newSize);
-			context.InvokeUserCode (delegate {
-				eventSink.OnBoundsChanged ();
-			});
+			if (changed) {
+				context.InvokeUserCode (delegate {
+					eventSink.OnBoundsChanged ();
+				});
+			}
 		}
 	}
 }

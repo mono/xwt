@@ -28,12 +28,11 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public abstract class ImageBuilderBackendHandler: BackendHandler
+	public abstract class ImageBuilderBackendHandler: DisposableResourceBackendHandler
 	{
 		public abstract object CreateImageBuilder (int width, int height, ImageFormat format);
 		public abstract object CreateContext (object backend);
 		public abstract object CreateImage (object backend);
-		public abstract void Dispose (object backend);
 	}
 }
 

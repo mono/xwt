@@ -28,7 +28,6 @@ using NUnit.Framework;
 
 namespace Xwt
 {
-	[Ignore]
 	public class ComboBoxEntryTests: WidgetTests
 	{
 		public override Widget CreateWidget ()

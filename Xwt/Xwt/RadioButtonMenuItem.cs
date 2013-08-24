@@ -40,12 +40,16 @@ namespace Xwt
 		{
 		}
 		
-		public RadioButtonMenuItem (Command command): base (command)
+		public RadioButtonMenuItem (Command command)
 		{
+			VerifyConstructorCall (this);
+			LoadCommandProperties (command);
 		}
 		
-		public RadioButtonMenuItem (string label): base (label)
+		public RadioButtonMenuItem (string label)
 		{
+			VerifyConstructorCall (this);
+			Label = label;
 		}
 		
 		IRadioButtonMenuItemBackend Backend {

@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using NUnit.Framework;
 
 namespace Xwt
 {
@@ -33,6 +34,15 @@ namespace Xwt
 		{
 			return new ListBox ();
 		}
+
+		[Test]
+		public void DefaultValues ()
+		{
+			var list = new ListBox ();
+			Assert.AreEqual (ScrollPolicy.Automatic, list.VerticalScrollPolicy);
+			Assert.AreEqual (ScrollPolicy.Automatic, list.HorizontalScrollPolicy);
+		}
+
 	}
 }
 

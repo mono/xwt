@@ -30,7 +30,7 @@ using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	public class TextEntryBackend: ViewBackend<NSTextField,ITextEntryEventSink>, ITextEntryBackend
+	public class TextEntryBackend: ViewBackend<NSView,ITextEntryEventSink>, ITextEntryBackend
 	{
 		public TextEntryBackend ()
 		{
@@ -47,10 +47,24 @@ namespace Xwt.Mac
 			if (ViewObject is MacComboBox) {
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else {
-				ViewObject = new CustomTextField (EventSink, ApplicationContext);
+				ViewObject = new CustomAlignedContainer (new CustomTextField (EventSink, ApplicationContext));
 			}
+			MultiLine = false;
 		}
 		
+		protected override void OnSizeToFit ()
+		{
+			Container.SizeToFit ();
+		}
+
+		CustomAlignedContainer Container {
+			get { return (CustomAlignedContainer)base.Widget; }
+		}
+
+		public new NSTextField Widget {
+			get { return (NSTextField) Container.Child; }
+		}
+
 		protected override Size GetNaturalSize ()
 		{
 			var s = base.GetNaturalSize ();
@@ -100,6 +114,24 @@ namespace Xwt.Mac
 			}
 			set {
 				((NSTextFieldCell) Widget.Cell).PlaceholderString = value;
+			}
+		}
+
+		public bool MultiLine {
+			get {
+				return Widget.Cell.UsesSingleLineMode;
+			}
+			set {
+				if (value) {
+					Widget.Cell.UsesSingleLineMode = false;
+					Widget.Cell.Scrollable = false;
+					Widget.Cell.Wraps = true;
+				} else {
+					Widget.Cell.UsesSingleLineMode = true;
+					Widget.Cell.Scrollable = true;
+					Widget.Cell.Wraps = false;
+				}
+				Container.ExpandVertically = value;
 			}
 		}
 

@@ -39,6 +39,7 @@ namespace Xwt
 		ButtonType type = ButtonType.Normal;
 		Image image;
 		string label;
+		bool useMnemonic = true;
 		ContentPosition imagePosition = ContentPosition.Left;
 		
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IButtonEventSink
@@ -64,19 +65,22 @@ namespace Xwt
 		{
 		}
 		
-		public Button (string label): this ()
+		public Button (string label)
 		{
+			VerifyConstructorCall (this);
 			Label = label;
 		}
 		
-		public Button (Image img, string label): this ()
+		public Button (Image img, string label)
 		{
+			VerifyConstructorCall (this);
 			Label = label;
 			Image = img;
 		}
 		
-		public Button (Image img): this ()
+		public Button (Image img)
 		{
+			VerifyConstructorCall (this);
 			Image = img;
 		}
 		
@@ -94,8 +98,28 @@ namespace Xwt
 			get { return label ?? ""; }
 			set {
 				label = value;
-				Backend.SetContent (label, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);
+				Backend.SetContent (label, UseMnemonic, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);
 				OnPreferredSizeChanged ();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="Xwt.Button"/> uses a mnemonic.
+		/// </summary>
+		/// <value><c>true</c> if it uses a mnemonic; otherwise, <c>false</c>.</value>
+		/// <remarks>
+		/// When set to true, the character after the first underscore character in the Label property value is
+		/// interpreted as the mnemonic for that Label.
+		/// </remarks>
+		[DefaultValue(true)]
+		public bool UseMnemonic { 
+			get { return useMnemonic; }
+			set
+			{ 
+				if (useMnemonic = value)
+					return;
+				Backend.SetContent (label, value, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);
+				useMnemonic = value;
 			}
 		}
 
@@ -104,7 +128,7 @@ namespace Xwt
 			get { return image; }
 			set {
 				image = value;
-				Backend.SetContent (label, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition); 
+				Backend.SetContent (label, UseMnemonic, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);
 				OnPreferredSizeChanged ();
 			}
 		}
@@ -114,7 +138,7 @@ namespace Xwt
 			get { return imagePosition; }
 			set {
 				imagePosition = value;
-				Backend.SetContent (label, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition); 
+				Backend.SetContent (label, UseMnemonic, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);
 				OnPreferredSizeChanged ();
 			}
 		}

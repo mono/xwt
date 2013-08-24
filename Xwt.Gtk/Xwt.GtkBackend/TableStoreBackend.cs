@@ -70,25 +70,12 @@ namespace Xwt.GtkBackend
 
 		public void SetValue (Gtk.TreeIter it, int column, object value)
 		{
-			if (types [column] == typeof(ObjectWrapper) && value != null)
-				store.SetValue (it, column, new ObjectWrapper (value));
-			else if (value is string)
-				store.SetValue (it, column, (string)value);
-			else
-				store.SetValue (it, column, value ?? DBNull.Value);
+			CellUtil.SetModelValue (store, it, column, types [column], value);
 		}
 
 		public object GetValue (Gtk.TreeIter it, int column)
 		{
-			object val = store.GetValue (it, column);
-			if (val is Gdk.Pixbuf)
-				return ApplicationContext.Toolkit.WrapImage (val);
-			else if (val is DBNull)
-				return null;
-			else if (val is ObjectWrapper)
-				return ((ObjectWrapper)val).Object;
-			else
-				return val;
+			return CellUtil.GetModelValue (store, it, column);
 		}
 	}
 	

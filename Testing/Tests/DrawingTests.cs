@@ -352,7 +352,7 @@ namespace Xwt
 		{
 			InitBlank (70, 70);
 			context.Rectangle (5, 5, 40, 60);
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img);
 			context.Fill ();
 			CheckImage ("ImagePattern.png");
@@ -363,7 +363,7 @@ namespace Xwt
 		{
 			InitBlank (50, 50);
 			context.Arc (25, 25, 20, 0, 360);
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img);
 			context.Fill ();
 			CheckImage ("ImagePatternInCircle.png");
@@ -377,7 +377,7 @@ namespace Xwt
 			context.LineTo (45, 20);
 			context.LineTo (5, 45);
 			context.ClosePath ();
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img);
 			context.Fill ();
 			CheckImage ("ImagePatternInTriangle.png");
@@ -389,7 +389,7 @@ namespace Xwt
 			InitBlank (70, 70);
 			context.Translate (5, 5);
 			context.Rectangle (0, 0, 40, 60);
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img);
 			context.Fill ();
 			CheckImage ("ImagePatternWithTranslateTransform.png");
@@ -401,7 +401,7 @@ namespace Xwt
 			InitBlank (70, 70);
 			context.Rotate (4);
 			context.Rectangle (5, 5, 40, 60);
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img);
 			context.Fill ();
 			CheckImage ("ImagePatternWithRotateTransform.png");
@@ -413,7 +413,7 @@ namespace Xwt
 			InitBlank (70, 70);
 			context.Scale (2, 0.5);
 			context.Rectangle (5, 5, 20, 120);
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img);
 			context.Fill ();
 			CheckImage ("ImagePatternWithScaleTransform.png");
@@ -424,7 +424,7 @@ namespace Xwt
 		{
 			InitBlank (70, 70);
 			context.Rectangle (5, 5, 40, 60);
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			img = img.WithAlpha (0.5);
 			context.Pattern = new Xwt.Drawing.ImagePattern (img);
 			context.Fill ();
@@ -437,7 +437,7 @@ namespace Xwt
 			InitBlank (70, 70);
 			context.Translate (5, 5);
 			context.Rectangle (0, 0, 40, 60);
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img.WithAlpha (0.5));
 			context.Fill ();
 			CheckImage ("ImagePatternWithTranslateTransformWithAlpha.png");
@@ -449,7 +449,7 @@ namespace Xwt
 			InitBlank (70, 70);
 			context.Rotate (4);
 			context.Rectangle (5, 5, 40, 60);
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img.WithAlpha (0.5));
 			context.Fill ();
 			CheckImage ("ImagePatternWithRotateTransformWithAlpha.png");
@@ -461,7 +461,7 @@ namespace Xwt
 			InitBlank (70, 70);
 			context.Scale (2, 0.5);
 			context.Rectangle (5, 5, 20, 120);
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img.WithAlpha (0.5));
 			context.Fill ();
 			CheckImage ("ImagePatternWithScaleTransformWithAlpha.png");
@@ -760,7 +760,7 @@ namespace Xwt
 			// Pattern is saved
 			InitBlank (70, 70);
 			context.Save ();
-			var img = Image.FromResource (GetType(), "pattern-sample.png");
+			var img = ReferenceImageManager.LoadReferenceImage ("pattern-sample.png");
 			context.Pattern = new Xwt.Drawing.ImagePattern (img);
 			context.Restore ();
 			context.Rectangle (5, 5, 40, 60);

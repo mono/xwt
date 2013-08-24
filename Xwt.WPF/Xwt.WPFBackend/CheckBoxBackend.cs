@@ -54,21 +54,21 @@ namespace Xwt.WPFBackend
 			CheckBox.Content = new TextBlock { Text = label };
 		}
 
-		public bool Active
+		public CheckBoxState State
 		{
-			get { return CheckBox.IsChecked.HasValue && CheckBox.IsChecked.Value; }
-			set { CheckBox.IsChecked = value; }
-		}
-
-		public bool Mixed
-		{
-			get { return !CheckBox.IsChecked.HasValue; }
-			set
-			{
-				if (value)
+			get {
+				if (!CheckBox.IsChecked.HasValue)
+					return CheckBoxState.Mixed;
+				else if (CheckBox.IsChecked.Value)
+					return CheckBoxState.On;
+				else
+					return CheckBoxState.Off;
+			}
+			set {
+				if (value == CheckBoxState.Mixed)
 					CheckBox.IsChecked = null;
 				else
-					CheckBox.IsChecked = false;
+					CheckBox.IsChecked = value == CheckBoxState.On;
 			}
 		}
 

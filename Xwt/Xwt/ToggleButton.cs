@@ -51,16 +51,23 @@ namespace Xwt
 		{
 		}
 		
-		public ToggleButton (string label): base (label)
+		public ToggleButton (string label)
 		{
+			VerifyConstructorCall (this);
+			Label = label;
 		}
 		
-		public ToggleButton (Image img, string label): base (img, label)
+		public ToggleButton (Image img, string label)
 		{
+			VerifyConstructorCall (this);
+			Label = label;
+			Image = img;
 		}
 		
-		public ToggleButton (Image img): base (img)
+		public ToggleButton (Image img)
 		{
+			VerifyConstructorCall (this);
+			Image = img;
 		}
 		
 		protected override BackendHost CreateBackendHost ()

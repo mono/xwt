@@ -30,6 +30,14 @@ namespace Xwt.Backends
 {
 	public interface ISliderBackend : IWidgetBackend
 	{
+		/// <summary>
+		/// Initializes the slider
+		/// </summary>
+		/// <param name='dir'>
+		/// Orientation of the slider
+		/// </param>
+		void Initialize (Orientation dir);
+
 		double Value { get; set; }
 		double MinimumValue { get; set; }
 		double MaximumValue { get; set; }

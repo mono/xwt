@@ -99,7 +99,14 @@ namespace Xwt.Backends
 		/// Exits the main GUI loop
 		/// </summary>
 		public abstract void ExitApplication ();
-		
+
+		/// <summary>
+		/// Releases all resource used by the <see cref="Xwt.Backends.ToolkitEngineBackend"/> object.
+		/// </summary>
+		public virtual void Dispose ()
+		{
+		}
+
 		/// <summary>
 		/// Asynchronously invokes <paramref name="action"/> on the engine UI thread.
 		/// </summary>
@@ -191,6 +198,11 @@ namespace Xwt.Backends
 		public virtual object GetBackendForContext (object nativeContext)
 		{
 			return nativeContext;
+		}
+
+		public virtual object GetBackendForImage (object nativeImage)
+		{
+			return nativeImage;
 		}
 
 		/// <summary>
@@ -290,6 +302,21 @@ namespace Xwt.Backends
 		public virtual object RenderWidget (Widget w)
 		{
 			throw new NotSupportedException ();
+		}
+
+		/// <summary>
+		/// Renders an image at the provided native context
+		/// </summary>
+		/// <param name="nativeContext">Native context.</param>
+		/// <param name="img">Image.</param>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		public virtual void RenderImage (object nativeWidget, object nativeContext, ImageDescription img, double x, double y)
+		{
+		}
+
+		public virtual ToolkitFeatures SupportedFeatures {
+			get { return ToolkitFeatures.All; }
 		}
 	}
 }

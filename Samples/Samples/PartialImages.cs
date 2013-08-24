@@ -34,7 +34,7 @@ namespace Samples
 		public PartialImages ()
 		{
 			PartialImageCanvas canvas = new PartialImageCanvas ();
-			PackStart (canvas, BoxMode.FillAndExpand);
+			PackStart (canvas, true);
 		}
 	}
 

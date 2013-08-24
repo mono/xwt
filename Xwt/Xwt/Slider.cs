@@ -30,14 +30,23 @@ using Xwt.Backends;
 namespace Xwt
 {
 	[BackendType (typeof(ISliderBackend))]
-	public class Slider : Widget
+	public abstract class Slider : Widget
 	{
-		public Slider ()
+		Orientation orientation;
+
+		internal Slider (Orientation orientation)
 		{
+			this.orientation = orientation;
 		}
 
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ISliderEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost<Slider,ISliderBackend>, ISliderEventSink
 		{
+			protected override void OnBackendCreated ()
+			{
+				Backend.Initialize (Parent.orientation);
+				base.OnBackendCreated ();
+			}
+
 			public void ValueChanged ()
 			{
 				((Slider)Parent).OnValueChanged (EventArgs.Empty);

@@ -32,7 +32,7 @@ using System.Linq;
 
 namespace Xwt
 {
-	public class Toolkit: IFrontend
+	public sealed class Toolkit: IFrontend
 	{
 		static Toolkit currentEngine;
 		static Dictionary<Type, Toolkit> toolkits = new Dictionary<Type, Toolkit> ();
@@ -83,6 +83,12 @@ namespace Xwt
 
 		public ToolkitType Type {
 			get { return toolkitType; }
+		}
+
+		internal static void DisposeAll ()
+		{
+			foreach (var t in toolkits.Values)
+				t.Backend.Dispose ();
 		}
 
 		public static Toolkit Load (string fullTypeName)
@@ -284,7 +290,7 @@ namespace Xwt
 					Application.NotifyException (error);
 				});
 			}
-			if (inUserCode == 1) {
+			if (inUserCode == 1 && !exitCallbackRegistered) {
 				while (exitActions.Count > 0) {
 					try {
 						exitActions.Dequeue ()();
@@ -344,9 +350,9 @@ namespace Xwt
 			return new EmbeddedNativeWidget (nativeWidget, externalWidget);
 		}
 
-		public Image WrapImage (object backend)
+		public Image WrapImage (object nativeImage)
 		{
-			return new Image (backend);
+			return new Image (backend.GetBackendForImage (nativeImage));
 		}
 
 		public Context WrapContext (object nativeContext)
@@ -389,6 +395,16 @@ namespace Xwt
 			return new Image (backend.RenderWidget (widget));
 		}
 
+		public void RenderImage (object nativeWidget, object nativeContext, Image img, double x, double y)
+		{
+			img.GetFixedSize (); // Ensure that it has a size
+			backend.RenderImage (nativeWidget, nativeContext, img.ImageDescription, x, y);
+		}
+
+		public ToolkitFeatures SupportedFeatures {
+			get { return backend.SupportedFeatures; }
+		}
+
 		internal Image GetStockIcon (string id)
 		{
 			Image img;
@@ -416,6 +432,14 @@ namespace Xwt
 		{
 			BackendHost.SetCustomBackend (backend);
 		}
+	}
+	
+	[Flags]
+	public enum ToolkitFeatures: int
+	{
+		WidgetOpacity = 1,
+		WindowOpacity = 2,
+		All = WidgetOpacity | WindowOpacity
 	}
 }
 

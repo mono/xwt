@@ -32,11 +32,13 @@ namespace Xwt.Mac
 {
 	public class DialogBackend: WindowBackend, IDialogBackend
 	{
-		VBox mainBox;
+		NSView mainBox;
 		HBox buttonBox;
+		NSView buttonBoxView;
 		Widget dialogChild;
 		Size minSize;
 		Dictionary<DialogButton,Button> buttons = new Dictionary<DialogButton, Button> ();
+		WidgetSpacing buttonBoxPadding = new WidgetSpacing (12, 6, 12, 12);
 
 		public DialogBackend ()
 		{
@@ -46,36 +48,29 @@ namespace Xwt.Mac
 		{
 			base.InitializeBackend (frontend, context);
 
-			mainBox = new VBox () {
-				Spacing = 0,
-				Margin = 0
-			};
 			buttonBox = new HBox () {
 				Spacing = 0,
 				Margin = 0
 			};
-			mainBox.PackEnd (buttonBox);
-			base.SetChild ((IWidgetBackend) Toolkit.GetBackend (mainBox));
+			buttonBoxView = ((ViewBackend)buttonBox.GetBackend ()).Widget;
+			ContentView.AddSubview (buttonBoxView);
 		}
 
-		public override void SetMinSize (Size s)
+		public override void LayoutWindow ()
 		{
-			minSize = s;
-			var w = buttonBox.Surface.GetPreferredWidth ().MinSize;
-			var h = buttonBox.Surface.GetPreferredHeightForWidth (w).MinSize;
-			if (w > s.Width)
-				s.Width = w;
-			s.Height += h;
-			base.SetMinSize (s);
+			var frame = ContentView.Frame;
+			var ps = buttonBox.Surface.GetPreferredSize (true);
+			buttonBoxView.Frame = new System.Drawing.RectangleF ((float)buttonBoxPadding.Left, (float)buttonBoxPadding.Bottom, frame.Width - (float)buttonBoxPadding.HorizontalSpacing, (float)ps.Height);
+			buttonBox.Surface.Reallocate ();
+			var boxHeight = (float)ps.Height + (float)buttonBoxPadding.VerticalSpacing;
+			LayoutContent (new System.Drawing.RectangleF (0, boxHeight, frame.Width, frame.Height - boxHeight));
 		}
 
-		protected override void SetChild (IWidgetBackend child)
+		public override void GetMetrics (out Size minSize, out Size decorationSize)
 		{
-			if (dialogChild != null)
-				mainBox.Remove (dialogChild);
-			dialogChild = child != null ? ((ViewBackend) child).Frontend : null;
-			if (dialogChild != null)
-				mainBox.PackStart (dialogChild, BoxMode.FillAndExpand);
+			var ps = buttonBox.Surface.GetPreferredSize (true);
+			minSize = new Size (ps.Width + buttonBoxPadding.VerticalSpacing, 0);
+			decorationSize = new Size (0, ps.Height + buttonBoxPadding.HorizontalSpacing);
 		}
 
 		#region IDialogBackend implementation
@@ -122,14 +117,9 @@ namespace Xwt.Mac
 			realButton.Visible = b.Visible;
 		}
 
-		protected override void OnBoundsChanged ()
-		{
-			mainBox.Surface.Reallocate ();
-			base.OnBoundsChanged ();
-		}
-
 		public void RunLoop (IWindowFrameBackend parent)
 		{
+			Visible = true;
 			NSApplication.SharedApplication.RunModalForWindow (this);
 		}
 

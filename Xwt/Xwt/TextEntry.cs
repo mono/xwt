@@ -94,6 +94,12 @@ namespace Xwt
 			set { Backend.ShowFrame = value; }
 		}
 		
+		[DefaultValue (true)]
+		public bool MultiLine {
+			get { return Backend.MultiLine; }
+			set { Backend.MultiLine = value; }
+		}
+
 		protected virtual void OnChanged (EventArgs e)
 		{
 			if (changed != null)

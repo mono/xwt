@@ -41,6 +41,7 @@ namespace Xwt
 		
 		public ImageView (Image image)
 		{
+			VerifyConstructorCall (this);
 			Image = image;
 		}
 		

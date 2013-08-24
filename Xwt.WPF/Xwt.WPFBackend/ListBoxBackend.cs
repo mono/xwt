@@ -116,9 +116,9 @@ namespace Xwt.WPFBackend
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
-			if (eventId is ListBoxEvent) {
-				switch ((ListBoxEvent)eventId) {
-				case ListBoxEvent.SelectionChanged:
+			if (eventId is TableViewEvent) {
+				switch ((TableViewEvent)eventId) {
+				case TableViewEvent.SelectionChanged:
 					ListBox.SelectionChanged += OnSelectionChanged;
 					break;
 				}
@@ -128,9 +128,9 @@ namespace Xwt.WPFBackend
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			if (eventId is ListBoxEvent) {
-				switch ((ListBoxEvent)eventId) {
-				case ListBoxEvent.SelectionChanged:
+			if (eventId is TableViewEvent) {
+				switch ((TableViewEvent)eventId) {
+				case TableViewEvent.SelectionChanged:
 					ListBox.SelectionChanged -= OnSelectionChanged;
 					break;
 				}

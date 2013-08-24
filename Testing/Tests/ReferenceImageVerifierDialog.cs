@@ -49,22 +49,22 @@ namespace Xwt
 			Table table = new Table ();
 			table.DefaultRowSpacing = table.DefaultColumnSpacing = 6;
 
-			table.Attach (nameLabel = new Label (), 0, 0, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
-			table.Attach (new Label ("Reference Image"), 0, 1, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
-			table.Attach (new Label ("Test Image"), 1, 1, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
+			table.Add (nameLabel = new Label (), 0, 0, hexpand:true);
+			table.Add (new Label ("Reference Image"), 0, 1, hexpand:true);
+			table.Add (new Label ("Test Image"), 1, 1, hexpand:true);
 			nameLabel.Font = nameLabel.Font.WithWeight (Xwt.Drawing.FontWeight.Bold);
 
 			img1 = new ImageView ();
-			table.Attach (img1, 0, 2, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
+			table.Add (img1, 0, 2, hexpand:true, vexpand:true);
 			
 			imgDiff = new ImageView ();
-			table.Attach (imgDiff, 1, 2, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
+			table.Add (imgDiff, 1, 2, hexpand:true, vexpand:true);
 
 			img2 = new ImageView ();
-			table.Attach (img2, 2, 2, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Expand | AttachOptions.Fill);
+			table.Add (img2, 2, 2, hexpand:true, vexpand:true);
 
 			var buttonBox = new HBox ();
-			table.Attach (buttonBox, 0, 3, 3, 4, AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Shrink);
+			table.Add (buttonBox, 0, 3, colspan:2, hexpand:true);
 
 			closeButton = new Button ("Close");
 			validButton = new Button ("Success");

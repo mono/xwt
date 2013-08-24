@@ -64,9 +64,10 @@
     <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DatePickerBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\WindowsSpinButton.xaml.cs">
-      <DependentUpon>WindowsSpinButton.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Xwt.WPFBackend\EmbedNativeWidgetBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\PasswordEntryBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\ScrollbarBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\SliderBackend.cs" />
     <Compile Include="Xwt.WPFBackend\SpinButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\RadioButtonBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ImagePatternBackendHandler.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Xwt.WPFBackend\CustomScrollViewPort.cs" />
     <Compile Include="Xwt.WPFBackend\RichTextViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WpfDesktopBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\WindowsSpinButton.xaml.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -165,12 +167,6 @@
     <Resource Include="Xwt.WPFBackend\Buttons.xaml">
       <SubType>Designer</SubType>
     </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Xwt.WPFBackend\WindowsSpinButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="icons\list-add.png" />

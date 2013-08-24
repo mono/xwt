@@ -258,7 +258,7 @@ namespace Xwt.WPFBackend
 		public static SWM.ImageSource AsImageSource (object nativeImage)
 		{
 			var source = nativeImage as WpfImage;
-			return source.Frames[0];
+			return source.MainFrame;
 		}
 
 		public static SWM.ImageSource ToImageSource (this Xwt.Backends.ImageDescription img)

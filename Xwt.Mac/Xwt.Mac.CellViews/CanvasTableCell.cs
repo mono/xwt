@@ -31,7 +31,7 @@ using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public class CanvasTableCell: NSCell, ICellRenderer
+	class CanvasTableCell: NSCell, ICellRenderer
 	{
 		ICanvasCellViewFrontend cellView;
 
@@ -48,17 +48,22 @@ namespace Xwt.Mac
 			this.cellView = cellView;
 		}
 		
+		public CompositeCell CellContainer { get; set; }
+
 		public void CopyFrom (object other)
 		{
 			var ob = (CanvasTableCell)other;
 			cellView = ob.cellView;
 		}
 
-		public void Fill (ICellDataSource source)
+		public void Fill ()
 		{
-			cellView.Initialize (source);
 		}
 		
+		public ICellViewFrontend Frontend {
+			get { return cellView; }
+		}
+
 		public override SizeF CellSizeForBounds (RectangleF bounds)
 		{
 			var size = new SizeF ();

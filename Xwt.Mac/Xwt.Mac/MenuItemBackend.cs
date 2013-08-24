@@ -38,6 +38,8 @@ namespace Xwt.Mac
 		IMenuItemEventSink eventSink;
 		List<MenuItemEvent> enabledEvents;
 		ApplicationContext context;
+		string label;
+		bool useMnemonic;
 		
 		public MenuItemBackend (): this (new NSMenuItem ())
 		{
@@ -67,10 +69,21 @@ namespace Xwt.Mac
 
 		public string Label {
 			get {
-				return item.Title;
+				return label;
 			}
 			set {
-				item.Title = value;
+				item.Title = UseMnemonic ? value.RemoveMnemonic () : value;
+				label = value;
+			}
+		}
+
+		public bool UseMnemonic {
+			get {
+				return useMnemonic;
+			}
+			set { 
+				useMnemonic = value;
+				Label = label ?? string.Empty;
 			}
 		}
 		

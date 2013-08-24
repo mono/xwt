@@ -65,7 +65,9 @@ namespace Xwt {
 		
 		public override int GetHashCode ()
 		{
-			return X.GetHashCode () ^ Y.GetHashCode ();
+			unchecked {
+				return (X.GetHashCode () * 397) ^ Y.GetHashCode ();
+			}
 		}
 
 		public Point Offset (Point offset)

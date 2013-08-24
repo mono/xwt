@@ -29,6 +29,11 @@ namespace Xwt
 {
 	public class WidgetEventArgs: EventArgs
 	{
+		/// <summary>
+		/// Gets or sets a value indicating whether the event has been handled.
+		/// </summary>
+		/// <value><c>true</c> if handled; otherwise, <c>false</c>.</value>
+		/// <remarks>This property can be set to <c>true</c> to prevent the execution of the default handler of the event</remarks>
 		public bool Handled { get; set; }
 	}
 }

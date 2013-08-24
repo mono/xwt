@@ -34,7 +34,7 @@ namespace Samples
 				store.SetValue (r, text, "Text " + n);
 				store.SetValue (r, progress, rand.Next () % 100);
 			}
-			PackStart (list, BoxMode.FillAndExpand);
+			PackStart (list, true);
 
 			list.RowActivated += delegate(object sender, ListViewRowEventArgs e) {
 				MessageDialog.ShowMessage ("Row " + e.RowIndex + " activated");

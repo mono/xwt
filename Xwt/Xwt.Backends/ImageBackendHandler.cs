@@ -32,17 +32,13 @@ using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
-	public abstract class ImageBackendHandler: BackendHandler
+	public abstract class ImageBackendHandler: DisposableResourceBackendHandler
 	{
 		public virtual object CreateBackend ()
 		{
 			throw new NotSupportedException ();
 		}
 		
-		public virtual void Dispose (object backend)
-		{
-		}
-
 		public virtual object LoadFromResource (Assembly asm, string name)
 		{
 			using (var s = asm.GetManifestResourceStream (name)) {
@@ -73,11 +69,17 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The image backend</returns>
 		/// <param name="images">Backends of the different image representations</param>
-		public virtual object CreateMultiSizeImage (IEnumerable<object> images)
+		/// <remarks>The first image of the list if the reference image, the one with scale factor = 1</remarks>
+		public virtual object CreateMultiResolutionImage (IEnumerable<object> images)
 		{
 			throw new NotSupportedException ();
 		}
 		
+		public virtual object CreateMultiSizeIcon (IEnumerable<object> images)
+		{
+			throw new NotSupportedException ();
+		}
+
 		public abstract object LoadFromStream (Stream stream);
 
 		public abstract void SaveToStream (object backend, System.IO.Stream stream, ImageFileType fileType);

@@ -57,39 +57,14 @@ namespace Xwt.Backends
 			this.nativeWidget = nativeWidget;
 			this.sourceWidget = sourceWidget;
 		}
-
-		protected override WidgetSize OnGetPreferredWidth ()
-		{
-			if (sourceWidget != null)
-				return sourceWidget.Surface.GetPreferredWidth ();
-			else
-				return base.OnGetPreferredWidth ();
-		}
-
-		protected override WidgetSize OnGetPreferredHeight ()
-		{
-			if (sourceWidget != null)
-				return sourceWidget.Surface.GetPreferredHeight ();
-			else
-				return base.OnGetPreferredHeight ();
-		}
-
-		protected override WidgetSize OnGetPreferredHeightForWidth (double width)
-		{
-			if (sourceWidget != null)
-				return sourceWidget.Surface.GetPreferredHeightForWidth (width);
-			else
-				return base.OnGetPreferredHeightForWidth (width);
-		}
-
-		protected override WidgetSize OnGetPreferredWidthForHeight (double height)
-		{
-			if (sourceWidget != null)
-				return sourceWidget.Surface.GetPreferredWidthForHeight (height);
-			else
-				return base.OnGetPreferredWidthForHeight (height);
-		}
 		
+		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+		{
+			if (sourceWidget != null)
+				return sourceWidget.Surface.GetPreferredSize (widthConstraint, heightConstraint);
+			else
+				return Size.Zero;
+		}
 	}
 }
 

@@ -24,7 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using Xwt;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace GtkTestRunner
 {
@@ -33,9 +36,16 @@ namespace GtkTestRunner
 		public static void Main (string[] args)
 		{
 			Xwt.Application.Initialize (Xwt.ToolkitType.Gtk);
+			ReferenceImageManager.Init ("GtkTestRunner");
 
-			ConsoleTestRunner t = new ConsoleTestRunner ();
-			t.Run (args);
+			var list = new List<string> (args);
+			list.Add ("-domain=None");
+			list.Add ("-noshadow");
+			list.Add ("-nothread");
+			if (!list.Contains (typeof (MainClass).Assembly.Location))
+				list.Add (typeof (MainClass).Assembly.Location);
+			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
+			ReferenceImageManager.ShowImageVerifier ();
 		}
 	}
 }

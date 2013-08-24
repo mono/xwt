@@ -30,23 +30,45 @@ namespace Samples
 {
 	public class TreeViews: VBox
 	{
+		DataField<CheckBoxState> triState = new DataField<CheckBoxState>();
+		DataField<bool> check = new DataField<bool>();
 		DataField<string> text = new DataField<string> ();
 		DataField<string> desc = new DataField<string> ();
 		
 		public TreeViews ()
 		{
 			TreeView view = new TreeView ();
-			TreeStore store = new TreeStore (text, desc);
+			TreeStore store = new TreeStore (triState, check, text, desc);
 		
+			var triStateCellView = new CheckBoxCellView (triState) { Editable = true, AllowMixed = true };
+			triStateCellView.Toggled += (object sender, WidgetEventArgs e) => {
+				if (view.CurrentEventRow == null) {
+					MessageDialog.ShowError("CurrentEventRow is null. This is not supposed to happen");
+				}
+				else {
+					store.GetNavigatorAt(view.CurrentEventRow).SetValue(text, "TriState Toggled");
+				}
+			};
+			var checkCellView = new CheckBoxCellView (check) { Editable = true };
+			checkCellView.Toggled += (object sender, WidgetEventArgs e) => {
+				if (view.CurrentEventRow == null) {
+					MessageDialog.ShowError("CurrentEventRow is null. This is not supposed to happen");
+				}
+				else {
+					store.GetNavigatorAt(view.CurrentEventRow).SetValue(text, "Toggled");
+				}
+			};
+			view.Columns.Add ("TriCheck", triStateCellView);
+			view.Columns.Add ("Check", checkCellView);
 			view.Columns.Add ("Item", text);
 			view.Columns.Add ("Desc", desc);
 			
-			store.AddNode ().SetValue (text, "One").SetValue (desc, "First");
+			store.AddNode ().SetValue (text, "One").SetValue (desc, "First").SetValue (triState, CheckBoxState.Mixed);
 			store.AddNode ().SetValue (text, "Two").SetValue (desc, "Second").AddChild ()
 				.SetValue (text, "Sub two").SetValue (desc, "Sub second");
 			store.AddNode ().SetValue (text, "Three").SetValue (desc, "Third").AddChild ()
 				.SetValue (text, "Sub three").SetValue (desc, "Sub third");
-			PackStart (view, BoxMode.FillAndExpand);
+			PackStart (view, true);
 			
 			view.DataSource = store;
 			

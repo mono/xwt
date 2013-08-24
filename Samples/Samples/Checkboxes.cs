@@ -33,7 +33,7 @@ namespace Samples
 		public Checkboxes ()
 		{
 			PackStart (new CheckBox ("Normal checkbox"));
-			PackStart (new CheckBox ("Mixed to start") { Mixed = true });
+			PackStart (new CheckBox ("Mixed to start") { State = CheckBoxState.Mixed });
 
 			var b = new CheckBox ("Allows mixed") { AllowMixed = true };
 			PackStart (b);
@@ -44,12 +44,12 @@ namespace Samples
 			
 			b.Clicked += delegate {
 				clicks++;
-				la.Text = string.Format ("active:{0}, mixed:{1}, clicks:{2}, toggles:{3}", b.Active, b.Mixed, clicks, toggles);
+				la.Text = string.Format ("state:{0}, clicks:{1}, toggles:{2}", b.State, clicks, toggles);
 			};
 			
 			b.Toggled += delegate {
 				toggles++;
-				la.Text = string.Format ("active:{0}, mixed:{1}, clicks:{2}, toggles:{3}", b.Active, b.Mixed, clicks, toggles);
+				la.Text = string.Format ("state:{0}, clicks:{1}, toggles:{2}", b.State, clicks, toggles);
 			};
 		}
 	}

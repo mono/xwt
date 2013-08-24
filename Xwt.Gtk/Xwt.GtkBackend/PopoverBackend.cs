@@ -117,9 +117,9 @@ namespace Xwt.GtkBackend
 				using (Context ctx = Gdk.CairoHelper.Create (this.GdkWindow)) {
 					// We clear the surface with a transparent color if possible
 					if (supportAlpha)
-						ctx.Color = new Color (1.0, 1.0, 1.0, 0.0);
+						ctx.SetSourceRGBA (1.0, 1.0, 1.0, 0.0);
 					else
-						ctx.Color = new Color (1.0, 1.0, 1.0);
+						ctx.SetSourceRGB (1.0, 1.0, 1.0);
 					ctx.Operator = Operator.Source;
 					ctx.Paint ();
 					
@@ -127,9 +127,9 @@ namespace Xwt.GtkBackend
 					// Fill it with one round rectangle
 					RoundRectangle (ctx, calibratedRect, radius);
 					ctx.LineWidth = 1;
-					ctx.Color = new Color (black.Red, black.Green, black.Blue, black.Alpha);
+					ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
 					ctx.StrokePreserve ();
-					ctx.Color = new Color (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
+					ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
 					ctx.Fill ();
 					
 					// Triangle
@@ -141,10 +141,10 @@ namespace Xwt.GtkBackend
 					// We draw the rectangle path
 					DrawTriangle (ctx);
 					// We use it
-					ctx.Color = new Color (black.Red, black.Green, black.Blue, black.Alpha);
+					ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
 					ctx.StrokePreserve ();
 					ctx.ClosePath ();
-					ctx.Color = new Color (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
+					ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
 					ctx.Fill ();
 				}
 				
@@ -225,8 +225,12 @@ namespace Xwt.GtkBackend
 				sink.OnClosed ();
 				popover.Destroy ();
 			};
-			
-			var position = new Point (reference.ScreenBounds.Center.X, popover.ArrowPosition == Popover.Position.Top ? reference.ScreenBounds.Bottom : reference.ScreenBounds.Top);
+
+			var screenBounds = reference.ScreenBounds;
+			if (positionRect == Rectangle.Zero)
+				positionRect = new Rectangle (Point.Zero, screenBounds.Size);
+			positionRect = positionRect.Offset (screenBounds.Location);
+			var position = new Point (positionRect.Center.X, popover.ArrowPosition == Popover.Position.Top ? positionRect.Bottom : positionRect.Top);
 			popover.ShowAll ();
 			popover.GrabFocus ();
 			int w, h;

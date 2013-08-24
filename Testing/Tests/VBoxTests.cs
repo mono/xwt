@@ -24,14 +24,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using NUnit.Framework;
 
 namespace Xwt
 {
+	[TestFixture]
 	public class VBoxTests: BoxTests
 	{
 		public override Box CreateBox ()
 		{
 			return new VBox ();
+		}
+
+		protected override Rectangle AdjustedRect (Rectangle r)
+		{
+			return new Rectangle (r.Y, r.X, r.Height, r.Width);
 		}
 	}
 }

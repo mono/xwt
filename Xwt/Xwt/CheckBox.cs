@@ -61,8 +61,9 @@ namespace Xwt
 		{
 		}
 		
-		public CheckBox (string label): this ()
+		public CheckBox (string label)
 		{
+			VerifyConstructorCall (this);
 			Label = label;
 		}
 		
@@ -101,14 +102,18 @@ namespace Xwt
 		
 		[DefaultValue (false)]
 		public bool Active {
-			get { return Backend.Active; }
-			set { Backend.Active = value; }
+			get { return State == CheckBoxState.On;}
+			set { State = value.ToCheckBoxState (); }
 		}
 		
 		[DefaultValue (false)]
-		public bool Mixed {
-			get { return Backend.Mixed; }
-			set { Backend.Mixed = value; }
+		public CheckBoxState State {
+			get { return Backend.State; }
+			set {
+				if (!value.IsValid ())
+					throw new ArgumentOutOfRangeException ("Invalid check box state value");
+				Backend.State = value;
+			}
 		}
 		
 		[DefaultValue (false)]

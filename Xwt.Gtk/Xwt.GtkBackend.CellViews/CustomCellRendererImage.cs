@@ -47,17 +47,18 @@ namespace Xwt.GtkBackend
 			this.view = view;
 		}
 		
-		public void LoadData (TreeModel treeModel, TreeIter iter)
+		public void LoadData (TreeViewBackend treeBackend, TreeModel treeModel, TreeIter iter)
 		{
 			this.treeModel = treeModel;
 			this.iter = iter;
 			view.Initialize (this);
 			Image = view.Image.ToImageDescription ();
+			Visible = view.Visible;
 		}
 		
 		object ICellDataSource.GetValue (IDataField field)
 		{
-			return treeModel.GetValue (iter, field.Index);
+			return CellUtil.GetModelValue (treeModel, iter, field.Index);
 		}
 		
 		[GLib.Property ("image")]

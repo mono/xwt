@@ -27,13 +27,19 @@ using System;
 
 namespace Xwt
 {
-	public class TableTests: WidgetTests
+	public class TableTests: ContainerTests
 	{
 		public override Widget CreateWidget ()
 		{
 			var t = new Table ();
-			t.Attach (new Label ("Hello Worlds"), 0, 0);
+			t.Add (new Label ("Hello Worlds"), 0, 0);
 			return t;
+		}
+		
+		protected override void AddChild (Widget parent, Widget child)
+		{
+			((Table)parent).Clear ();
+			((Table)parent).Add (child, 0, 0, hexpand: true, vexpand: true);
 		}
 	}
 }

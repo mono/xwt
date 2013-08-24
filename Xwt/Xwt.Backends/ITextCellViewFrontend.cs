@@ -32,6 +32,10 @@ namespace Xwt.Backends
 		string Markup { get; }
 		string Text { get; }
 		bool Editable { get; }
+		
+		bool RaiseTextChanged ();
+
+		IDataField TextField { get; set; }
 	}
 }
 

@@ -105,7 +105,9 @@ namespace Xwt
 		
 		public override int GetHashCode ()
 		{
-			return dx.GetHashCode () ^ dy.GetHashCode ();
+			unchecked {
+				return (dx.GetHashCode () * 397) ^ dy.GetHashCode ();
+			}
 		}
 		
 		public override string ToString ()

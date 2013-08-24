@@ -101,6 +101,7 @@ namespace Xwt
 		/// </param>
 		public TreeView (ITreeDataSource source): this ()
 		{
+			VerifyConstructorCall (this);
 			DataSource = source;
 		}
 		
@@ -181,6 +182,20 @@ namespace Xwt
 			set {
 				mode = value;
 				Backend.SetSelectionMode (mode);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the row the current event applies to.
+		/// The behavior of this property is undefined when used outside an
+		/// event that supports it.
+		/// </summary>
+		/// <value>
+		/// The current event row.
+		/// </value>
+		public TreePosition CurrentEventRow {
+			get {
+				return Backend.CurrentEventRow;
 			}
 		}
 		
@@ -301,6 +316,20 @@ namespace Xwt
 		public void CollapseRow (TreePosition pos)
 		{
 			Backend.CollapseRow (pos);
+		}
+
+		/// <summary>
+		/// Recursively expands all nodes of the tree
+		/// </summary>
+		public void ExpandAll ()
+		{
+			if (DataSource != null) {
+				var nc = DataSource.GetChildrenCount (null);
+				for (int n=0; n<nc; n++) {
+					var p = DataSource.GetChild (null, n);
+					Backend.ExpandRow (p, true);
+				}
+			}
 		}
 		
 		/// <summary>

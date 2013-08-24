@@ -43,14 +43,14 @@ namespace Xwt.Backends
 		/// Sets the size of the window
 		/// </summary>
 		/// <param name='width'>
-		/// New width.
+		/// New width, or -1 if the width doesn't have to be changed
 		/// </param>
 		/// <param name='height'>
-		/// New height.
+		/// New height, or -1 if the height doesn't have to be changed
 		/// </param>
 		/// <remarks>
 		/// </remarks>
-		void Resize (double width, double height);
+		void SetSize (double width, double height);
 
 		bool Visible { get; set; }
 		string Title { get; set; }
@@ -59,6 +59,7 @@ namespace Xwt.Backends
 		bool ShowInTaskbar { get; set; }
 		void SetTransientFor (IWindowFrameBackend window);
 		bool Resizable { get; set; }
+		double Opacity { get; set; }
 
 		void SetIcon (ImageDescription image);
 		

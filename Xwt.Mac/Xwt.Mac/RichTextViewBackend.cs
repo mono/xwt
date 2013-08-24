@@ -40,6 +40,16 @@ namespace Xwt.Mac
 {
 	public class RichTextViewBackend : ViewBackend <NSTextView, IRichTextViewEventSink>, IRichTextViewBackend
 	{
+		NSFont font;
+
+		public override object Font {
+			get { return base.Font; }
+			set {
+ 				font = value as NSFont;
+				base.Font = value;
+			}
+		}
+
 		public RichTextViewBackend ()
 		{
 		}
@@ -65,25 +75,25 @@ namespace Xwt.Mac
 			return h;
 		}
 
-		public override WidgetSize GetPreferredWidth ()
+		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			var w = (double) Widget.TextStorage.Size.Width;
-			if (minWidth != -1 && minWidth > w)
-				w = minWidth;
-			return new WidgetSize (w, w);
-		}
+			var width = (double) Widget.TextStorage.Size.Width;
+			if (widthConstraint.IsConstrained)
+				width = widthConstraint.AvailableSize;
+			if (minWidth != -1 && minWidth > width)
+				width = minWidth;
 
-		public override WidgetSize GetPreferredHeightForWidth (double width)
-		{
-			var h = CalcHeight (width);
-			if (minHeight != -1 && minHeight > h)
-				h = minHeight;
-			return new Xwt.WidgetSize (h, h);
+			var height = CalcHeight (width);
+			if (minHeight != -1 && minHeight > height)
+				height = minHeight;
+			return new Size (width, height);
 		}
 
 		public IRichTextBuffer CreateBuffer ()
 		{
-			return new MacRichTextBuffer (Widget.Font);
+			// Use cached font since Widget.Font size increases for each LoadText... It has to do
+			// with the 'style' attribute for the 'body' element - not sure why that happens
+			return new MacRichTextBuffer (font ?? Widget.Font);
 		}
 		
 		public void SetBuffer (IRichTextBuffer buffer)
@@ -227,15 +237,18 @@ namespace Xwt.Mac
 
 			xmlWriter.WriteDocType ("html", "-//W3C//DTD XHTML 1.0", "Strict//EN", null);
 			xmlWriter.WriteStartElement ("html");
-			xmlWriter.WriteAttributeString ("style", String.Format ("font-family: {0}; font-size: {1}pt", fontFamily, fontSize));
 			xmlWriter.WriteStartElement ("meta");
 			xmlWriter.WriteAttributeString ("http-equiv", "Content-Type");
 			xmlWriter.WriteAttributeString ("content", "text/html; charset=utf-8");
+			xmlWriter.WriteEndElement ();
+			xmlWriter.WriteStartElement ("body");
+			xmlWriter.WriteAttributeString ("style", String.Format ("font-family: {0}; font-size: {1}", fontFamily, fontSize));
 		}
 
 		public NSAttributedString ToAttributedString ()
 		{
-			xmlWriter.WriteEndElement ();
+			xmlWriter.WriteEndElement (); // body
+			xmlWriter.WriteEndElement (); // html
 			xmlWriter.Flush ();
 			if (text == null || text.Length == 0)
 				return new NSAttributedString (String.Empty);

@@ -38,4 +38,14 @@ namespace Xwt.Backends
 		WrapMode Wrap { get; set; }
 		void SetFormattedText (FormattedText text);
 	}
+	
+	public interface ILabelEventSink : IWidgetEventSink
+	{
+		void OnLinkClicked (Uri target);
+	}
+
+	public enum LabelEvent
+	{
+		LinkClicked = 1
+	}
 }

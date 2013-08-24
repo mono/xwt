@@ -297,10 +297,17 @@ namespace Xwt.WPFBackend
 			c.PushTransform (t);
 		}
 
+		public override void ModifyCTM (object backend, Drawing.Matrix m)
+		{
+			var c = (DrawingContext)backend;
+			MatrixTransform t = new MatrixTransform (m.M11, m.M12, m.M21, m.M22, m.OffsetX, m.OffsetY);
+			c.PushTransform (t);
+		}
+
 		public override Drawing.Matrix GetCTM (object backend)
 		{
 			var c = (DrawingContext)backend;
-			var m = c.CurrentTransform.Value;
+			SWM.Matrix m = c.CurrentTransform;
 			return new Drawing.Matrix (m.M11, m.M12, m.M21, m.M22, m.OffsetX, m.OffsetY);
 		}
 
@@ -318,8 +325,7 @@ namespace Xwt.WPFBackend
         {
 			var c = (DrawingContext)backend;
 			var other = (DrawingContext)otherBackend;
-			foreach (var s in other.Path.Segments)
-				c.Path.Segments.Add (s);
+			c.AppendPath (other);
 		}
 
 		public override bool IsPointInFill (object backend, double x, double y)

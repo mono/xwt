@@ -54,18 +54,24 @@ namespace Xwt.GtkBackend
 		
 		public void SetPanel (int panel, IWidgetBackend widget, bool resize, bool shrink)
 		{
-			if (panel == 1)
-				Widget.Pack1 (((WidgetBackend)widget).RootWidget, resize, shrink);
-			else
-				Widget.Pack2 (((WidgetBackend)widget).RootWidget, resize, shrink);
+			if (panel == 1) {
+				RemoveChildPlacement (Widget.Child1);
+				Widget.Pack1 (GetWidgetWithPlacement (widget), resize, shrink);
+			} else {
+				RemoveChildPlacement (Widget.Child2);
+				Widget.Pack2 (GetWidgetWithPlacement (widget), resize, shrink);
+			}
 		}
 		
 		public void RemovePanel (int panel)
 		{
-			if (panel == 1)
+			if (panel == 1) {
+				RemoveChildPlacement (Widget.Child1);
 				Widget.Remove (Widget.Child1);
-			else
+			} else {
+				RemoveChildPlacement (Widget.Child2);
 				Widget.Remove (Widget.Child2);
+			}
 		}
 		
 		public void UpdatePanel (int panel, bool resize, bool shrink)

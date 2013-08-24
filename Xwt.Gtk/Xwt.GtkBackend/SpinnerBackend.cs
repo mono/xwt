@@ -42,7 +42,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	public class Spinner : Gtk.DrawingArea
+	public class Spinner : Gtk.Widget
 	{
 		[Obsolete]
 		protected Spinner(GLib.GType gtype) : base(gtype) {}
@@ -52,7 +52,7 @@ namespace Xwt.GtkBackend
 
 		public Spinner () : base(IntPtr.Zero)
 		{
-			if (base.GetType () != typeof(Spinner))
+			if (GetType () != typeof(Spinner))
 			{
 				this.CreateNativeObject (new string[0], new GLib.Value[0]);
 				return;
@@ -89,6 +89,17 @@ namespace Xwt.GtkBackend
 		public void Stop ()
 		{
 			gtk_spinner_stop(Handle);
+		}
+		
+		[DllImport("libgtk-win32-2.0-0.dll")]
+		static extern IntPtr gtk_spinner_get_type();
+
+		public static new GLib.GType GType { 
+			get {
+				IntPtr raw_ret = gtk_spinner_get_type();
+				GLib.GType ret = new GLib.GType(raw_ret);
+				return ret;
+			}
 		}
 	}
 }

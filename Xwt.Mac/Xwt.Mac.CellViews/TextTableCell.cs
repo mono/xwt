@@ -50,13 +50,18 @@ namespace Xwt.Mac
 			this.cellView = cellView;
 		}
 		
-		public void Fill (ICellDataSource source)
+		public CompositeCell CellContainer { get; set; }
+
+		public void Fill ()
 		{
-			cellView.Initialize (source);
 			if (cellView.Markup != null)
 				AttributedStringValue = FormattedText.FromMarkup (cellView.Markup).ToAttributedString ();
 			else
 				StringValue = cellView.Text ?? "";
+		}
+		
+		public ICellViewFrontend Frontend {
+			get { return cellView; }
 		}
 
 		public void CopyFrom (object other)

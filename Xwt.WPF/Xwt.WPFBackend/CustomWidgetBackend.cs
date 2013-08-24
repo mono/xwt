@@ -60,24 +60,9 @@ namespace Xwt.WPFBackend
 		// The size of the container is the size of the child,
 		// so we redirect size calculations to the child.
 
-		public override WidgetSize GetPreferredWidth ()
+		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			return child != null ? child.Surface.GetPreferredWidth () : new WidgetSize (0);
-		}
-
-		public override WidgetSize GetPreferredHeightForWidth (double width)
-		{
-			return child != null ? child.Surface.GetPreferredHeightForWidth (width) : new WidgetSize (0);
-		}
-
-		public override WidgetSize GetPreferredHeight ()
-		{
-			return child != null ? child.Surface.GetPreferredHeight () : new WidgetSize (0);
-		}
-
-		public override WidgetSize GetPreferredWidthForHeight (double width)
-		{
-			return child != null ? child.Surface.GetPreferredWidthForHeight (width) : new WidgetSize (0);
+			return child != null ? child.Surface.GetPreferredSize (widthConstraint, heightConstraint) : Size.Zero;
 		}
 	}
 

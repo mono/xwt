@@ -39,7 +39,7 @@
     <Compile Include="Samples\ChartSample.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Samples\ReliefFrameSample.cs">
+    <Compile Include="Samples\Mnemonics.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Samples\Spinners.cs">
@@ -175,6 +175,13 @@
     <Compile Include="Samples\RadioButtonSample.cs" />
     <Compile Include="Samples\WidgetRendering.cs" />
     <Compile Include="Samples\ScrollbarSample.cs" />
+    <Compile Include="Samples\DatePickerSample.cs" />
+    <Compile Include="Samples\SliderSample.cs" />
+    <Compile Include="Samples\ListView2.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Samples\OpacitySample.cs" />
+    <Compile Include="Samples\PasswordEntries.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

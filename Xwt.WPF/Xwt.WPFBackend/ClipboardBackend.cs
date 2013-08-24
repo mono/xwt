@@ -93,8 +93,8 @@ namespace Xwt.WPFBackend
 			if (type == null)
 				throw new ArgumentNullException ("type");
 
-			while (!IsTypeAvailable (type))
-				Thread.Sleep (1);
+			if (!IsTypeAvailable (type))
+				return null;
 
 			return WindowsClipboard.GetData (type.ToWpfDataFormat ());
 		}

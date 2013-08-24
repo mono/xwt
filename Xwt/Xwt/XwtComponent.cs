@@ -64,6 +64,12 @@ namespace Xwt
 		{
 			EventUtil.MapEvent (eventId, type, methodName);
 		}
+		
+		internal void VerifyConstructorCall<T> (T t)
+		{
+			if (GetType () != typeof(T))
+				throw new InvalidConstructorInvocation (typeof(T));
+		}
 	}
 	
 	class EventUtil

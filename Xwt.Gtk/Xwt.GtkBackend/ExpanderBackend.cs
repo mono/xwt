@@ -43,7 +43,8 @@ namespace Xwt.GtkBackend
 
 		public void SetContent (IWidgetBackend child)
 		{
-			Widget.Child = GetWidget (child);
+			RemoveChildPlacement (Widget.Child);
+			Widget.Child = GetWidgetWithPlacement (child);
 		}
 
 		public override void EnableEvent (object eventId)

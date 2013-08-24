@@ -68,6 +68,11 @@ namespace Xwt.Mac
 
 		#endregion
 
+		public void SetValue (IDataField field, object value)
+		{
+			source.SetValue (tablePosition.Position, field.Index, value);
+		}
+
 		void ICopiableObject.CopyFrom (object other)
 		{
 			var ob = (CompositeCell)other;
@@ -78,9 +83,9 @@ namespace Xwt.Mac
 			trackingCell = ob.trackingCell;
 			cells = new List<ICellRenderer> ();
 			foreach (var c in ob.cells) {
-				var copy = Activator.CreateInstance (c.GetType ());
-				((ICopiableObject)copy).CopyFrom (c);
-				cells.Add ((ICellRenderer) copy);
+				var copy = (ICellRenderer) Activator.CreateInstance (c.GetType ());
+				copy.CopyFrom (c);
+				AddCell (copy);
 			}
 			if (tablePosition != null)
 				Fill ();
@@ -115,13 +120,16 @@ namespace Xwt.Mac
 		
 		public void AddCell (ICellRenderer cell)
 		{
+			cell.CellContainer = this;
 			cells.Add (cell);
 		}
 		
 		public void Fill ()
 		{
-			foreach (var c in cells)
-				c.Fill (this);
+			foreach (var c in cells) {
+				c.Frontend.Initialize (this);
+				c.Fill ();
+			}
 
 			var s = CellSize;
 			if (s.Height > source.RowHeight)
@@ -133,11 +141,15 @@ namespace Xwt.Mac
 			base.CalcDrawInfo (aRect);
 		}
 
+		IEnumerable<ICellRenderer> VisibleCells {
+			get { return cells.Where (c => c.Frontend.Visible); }
+		}
+
 		SizeF CalcSize ()
 		{
 			float w = 0;
 			float h = 0;
-			foreach (NSCell c in cells) {
+			foreach (NSCell c in VisibleCells) {
 				var s = c.CellSize;
 				if (direction == Orientation.Horizontal) {
 					w += s.Width;
@@ -201,41 +213,30 @@ namespace Xwt.Mac
 			}
 			return NSCellHit.None;
 		}
-		
-		public override bool StartTracking (PointF startPoint, NSView inView)
+
+		public override bool TrackMouse (NSEvent theEvent, RectangleF cellFrame, NSView controlView, bool untilMouseUp)
 		{
-			foreach (NSCell c in cells) {
-				if (c.StartTracking (startPoint, inView)) {
-					trackingCell = c;
-					return true;
-				}
-			}
-			return false;
-		}
-		
-		public override void StopTracking (PointF lastPoint, PointF stopPoint, NSView inView, bool mouseIsUp)
-		{
-			if (trackingCell != null) {
-				try {
-					trackingCell.StopTracking (lastPoint, stopPoint, inView, mouseIsUp);
-				} finally {
-					trackingCell = null;
-				}
-			}
-		}
-		
-		public override bool ContinueTracking (PointF lastPoint, PointF currentPoint, NSView inView)
-		{
-			if (trackingCell != null)
-				return trackingCell.ContinueTracking (lastPoint, currentPoint, inView);
+			var c = GetHitCell (theEvent, cellFrame, controlView);
+			if (c != null)
+				return c.Cell.TrackMouse (theEvent, c.Frame, controlView, untilMouseUp);
 			else
-				return false;
+				return base.TrackMouse (theEvent, cellFrame, controlView, untilMouseUp);
+		}
+
+		CellPos GetHitCell (NSEvent theEvent, RectangleF cellFrame, NSView controlView)
+		{
+			foreach (CellPos cp in GetCells(cellFrame)) {
+				var h = cp.Cell.HitTest (theEvent, cp.Frame, controlView);
+				if (h != NSCellHit.None)
+					return cp;
+			}
+			return null;
 		}
 		
 		IEnumerable<CellPos> GetCells (RectangleF cellFrame)
 		{
 			if (direction == Orientation.Horizontal) {
-				foreach (NSCell c in cells) {
+				foreach (NSCell c in VisibleCells) {
 					var s = c.CellSize;
 					var w = Math.Min (cellFrame.Width, s.Width);
 					RectangleF f = new RectangleF (cellFrame.X, cellFrame.Y, w, cellFrame.Height);
@@ -245,7 +246,7 @@ namespace Xwt.Mac
 				}
 			} else {
 				float y = cellFrame.Y;
-				foreach (NSCell c in cells) {
+				foreach (NSCell c in VisibleCells) {
 					var s = c.CellSize;
 					RectangleF f = new RectangleF (cellFrame.X, y, s.Width, cellFrame.Height);
 					y += s.Height;
@@ -254,7 +255,7 @@ namespace Xwt.Mac
 			}
 		}
 		
-		struct CellPos
+		class CellPos
 		{
 			public NSCell Cell;
 			public RectangleF Frame;

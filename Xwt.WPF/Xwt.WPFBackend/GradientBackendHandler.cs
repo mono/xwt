@@ -47,7 +47,7 @@ namespace Xwt.WPFBackend
 			};
 		}
 
-		public override void DisposeLinear (object backend)
+		public override void Dispose (object backend)
 		{
 		}
 
@@ -60,10 +60,6 @@ namespace Xwt.WPFBackend
 				RadiusY = radius1,
 				MappingMode = BrushMappingMode.Absolute
 			};
-		}
-
-		public override void DisposeRadial (object backend)
-		{
 		}
 
 		public override void AddColorStop (object backend, double position, Color color)

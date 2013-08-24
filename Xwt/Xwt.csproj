@@ -38,8 +38,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Xwt\ReliefFrame.cs">
-      <SubType>Component</SubType>
+    <Compile Include="Xwt.Backends\IPasswordEntryBackend.cs" />
+    <Compile Include="Xwt\PasswordEntry.cs">
     </Compile>
     <Compile Include="Xwt\Widget.cs">
       <SubType>Component</SubType>
@@ -94,11 +94,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Xwt\DataStore.cs" />
-    <Compile Include="Xwt\SizeRequestMode.cs" />
     <Compile Include="Xwt\Rectangle.cs" />
     <Compile Include="Xwt\Point.cs" />
     <Compile Include="Xwt\Size.cs" />
-    <Compile Include="Xwt\WidgetSize.cs" />
     <Compile Include="Xwt\Alignment.cs" />
     <Compile Include="Xwt.Drawing\Image.cs" />
     <Compile Include="Xwt\TreeStore.cs">
@@ -410,6 +408,23 @@
     <Compile Include="Xwt\HScrollbar.cs" />
     <Compile Include="Xwt\VScrollbar.cs" />
     <Compile Include="Xwt.Backends\IScrollbarBackend.cs" />
+    <Compile Include="Xwt\SizeConstraint.cs" />
+    <Compile Include="Xwt\WidgetAlignment.cs" />
+    <Compile Include="Xwt.Backends\IChildPlacementHandler.cs" />
+    <Compile Include="Xwt\TableCalc.cs" />
+    <Compile Include="Xwt\VSlider.cs" />
+    <Compile Include="Xwt\HSlider.cs" />
+    <Compile Include="Xwt.Backends\ResourceManager.cs" />
+    <Compile Include="Xwt.Backends\DisposableResourceBackendHandler.cs" />
+    <Compile Include="Xwt.Motion\Animation.cs" />
+    <Compile Include="Xwt.Motion\AnimationExtensions.cs" />
+    <Compile Include="Xwt.Motion\Easing.cs" />
+    <Compile Include="Xwt.Motion\Tweener.cs" />
+    <Compile Include="Xwt.Motion\IAnimatable.cs" />
+    <Compile Include="Xwt\WindowLocation.cs" />
+    <Compile Include="Xwt.Motion\ObjectTransforms.cs" />
+    <Compile Include="Xwt\CheckBoxState.cs" />
+    <Compile Include="Xwt\InvalidConstructorInvocation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -423,4 +438,7 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Xwt.Motion\" />
+  </ItemGroup>
 </Project>

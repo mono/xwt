@@ -57,7 +57,7 @@ namespace Xwt
 			get { return (IScrollbarBackend) BackendHost.Backend; }
 		}
 
-		ScrollAdjustment Adjustment {
+		public ScrollAdjustment ScrollAdjustment {
 			get {
 				if (adjustment == null)
 					adjustment = new ScrollAdjustment (Backend.CreateAdjustment ());
@@ -94,33 +94,33 @@ namespace Xwt
 		}
 
 		public double Value {
-			get { return Adjustment.Value; }
-			set { Adjustment.Value = value; }
+			get { return ScrollAdjustment.Value; }
+			set { ScrollAdjustment.Value = value; }
 		}
 
 		public double LowerValue {
-			get { return Adjustment.LowerValue; }
-			set { Adjustment.LowerValue = value; OnAdjustmentChanged (); }
+			get { return ScrollAdjustment.LowerValue; }
+			set { ScrollAdjustment.LowerValue = value; OnAdjustmentChanged (); }
 		}
 
 		public double UpperValue {
-			get { return Adjustment.UpperValue; }
-			set { Adjustment.UpperValue = value; OnAdjustmentChanged (); }
+			get { return ScrollAdjustment.UpperValue; }
+			set { ScrollAdjustment.UpperValue = value; OnAdjustmentChanged (); }
 		}
 
 		public double PageIncrement {
-			get { return Adjustment.PageIncrement; }
-			set { Adjustment.PageIncrement = value; OnAdjustmentChanged (); }
+			get { return ScrollAdjustment.PageIncrement; }
+			set { ScrollAdjustment.PageIncrement = value; OnAdjustmentChanged (); }
 		}
 
 		public double StepIncrement {
-			get { return Adjustment.StepIncrement; }
-			set { Adjustment.StepIncrement = value; OnAdjustmentChanged (); }
+			get { return ScrollAdjustment.StepIncrement; }
+			set { ScrollAdjustment.StepIncrement = value; OnAdjustmentChanged (); }
 		}
 
 		public double PageSize {
-			get { return Adjustment.PageSize; }
-			set { Adjustment.PageSize = value; OnAdjustmentChanged (); }
+			get { return ScrollAdjustment.PageSize; }
+			set { ScrollAdjustment.PageSize = value; OnAdjustmentChanged (); }
 		}
 		
 		EventHandler valueChanged;
@@ -128,13 +128,13 @@ namespace Xwt
 		public event EventHandler ValueChanged {
 			add {
 				if (valueChanged == null)
-					Adjustment.ValueChanged += HandleValueChanged;
+					ScrollAdjustment.ValueChanged += HandleValueChanged;
 				valueChanged += value;
 			}
 			remove {
 				valueChanged -= value;
 				if (valueChanged == null)
-					Adjustment.ValueChanged -= HandleValueChanged;
+					ScrollAdjustment.ValueChanged -= HandleValueChanged;
 			}
 		}
 

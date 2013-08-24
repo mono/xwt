@@ -44,7 +44,7 @@ namespace Xwt.GtkBackend
 		public override void SaveToStream (object backend, System.IO.Stream stream, ImageFileType fileType)
 		{
 			var pix = (GtkImage)backend;
-			var buffer = pix.Frames[0].SaveToBuffer (GetFileType (fileType));
+			var buffer = pix.Frames[0].Pixbuf.SaveToBuffer (GetFileType (fileType));
 			stream.Write (buffer, 0, buffer.Length);
 		}
 
@@ -53,9 +53,18 @@ namespace Xwt.GtkBackend
 			return new GtkImage (drawCallback);
 		}
 
-		public override object CreateMultiSizeImage (IEnumerable<object> images)
+		public override object CreateMultiResolutionImage (IEnumerable<object> images)
 		{
-			return new GtkImage (images.Cast<GtkImage> ().Select (img => img.Frames [0]));
+			var refImg = (GtkImage) images.First ();
+			var f = refImg.Frames [0];
+			var frames = images.Cast<GtkImage> ().Select (img => new GtkImage.ImageFrame (img.Frames[0].Pixbuf, f.Width, f.Height));
+			return new GtkImage (frames);
+		}
+
+		public override object CreateMultiSizeIcon (IEnumerable<object> images)
+		{
+			var frames = images.Cast<GtkImage> ().SelectMany (img => img.Frames);
+			return new GtkImage (frames);
 		}
 
 		string GetFileType (ImageFileType type)
@@ -79,7 +88,7 @@ namespace Xwt.GtkBackend
 		
 		public override void SetBitmapPixel (object handle, int x, int y, Xwt.Drawing.Color color)
 		{
-			var pix = ((GtkImage)handle).Frames[0];
+			var pix = ((GtkImage)handle).Frames[0].Pixbuf;
 			
 			unsafe {
 				byte* p = (byte*) pix.Pixels;
@@ -93,7 +102,7 @@ namespace Xwt.GtkBackend
 		
 		public override Xwt.Drawing.Color GetBitmapPixel (object handle, int x, int y)
 		{
-			var pix = ((GtkImage)handle).Frames[0];
+			var pix = ((GtkImage)handle).Frames[0].Pixbuf;
 			
 			unsafe {
 				byte* p = (byte*) pix.Pixels;
@@ -120,20 +129,20 @@ namespace Xwt.GtkBackend
 		
 		public override object CopyBitmap (object handle)
 		{
-			var pix = ((GtkImage)handle).Frames[0];
+			var pix = ((GtkImage)handle).Frames[0].Pixbuf;
 			return new GtkImage (pix.Copy ());
 		}
 		
 		public override void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
 		{
-			var pixSrc = ((GtkImage)srcHandle).Frames[0];
-			var pixDst = ((GtkImage)destHandle).Frames[0];
+			var pixSrc = ((GtkImage)srcHandle).Frames[0].Pixbuf;
+			var pixDst = ((GtkImage)destHandle).Frames[0].Pixbuf;
 			pixSrc.CopyArea (srcX, srcY, width, height, pixDst, destX, destY);
 		}
 		
 		public override object CropBitmap (object handle, int srcX, int srcY, int width, int height)
 		{
-			var pix = ((GtkImage)handle).Frames[0];
+			var pix = ((GtkImage)handle).Frames[0].Pixbuf;
 			Gdk.Pixbuf res = new Gdk.Pixbuf (pix.Colorspace, pix.HasAlpha, pix.BitsPerSample, width, height);
 			res.Fill (0);
 			pix.CopyArea (srcX, srcY, width, height, res, 0, 0);
@@ -152,7 +161,7 @@ namespace Xwt.GtkBackend
 			return new GtkImage (img.GetBestFrame (ApplicationContext, 1, pixelWidth, pixelHeight, true));
 		}
 
-		internal static Gdk.Pixbuf CreateBitmap (string stockId, double width, double height)
+		internal static Gdk.Pixbuf CreateBitmap (string stockId, double width, double height, double scaleFactor)
 		{
 			Gdk.Pixbuf result = null;
 			
@@ -160,7 +169,15 @@ namespace Xwt.GtkBackend
 			if (iconset != null) {
 				// Find the size that better fits the requested size
 				Gtk.IconSize gsize = Util.GetBestSizeFit (width);
-				result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null);
+				result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null, scaleFactor);
+				if (result == null || result.Width < width * scaleFactor) {
+					var gsize2x = Util.GetBestSizeFit (width * scaleFactor, iconset.Sizes);
+					if (gsize2x != Gtk.IconSize.Invalid && gsize2x != gsize) {
+						if (result != null)
+							result.Dispose ();
+						result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize2x, null, null);
+					}
+				}
 			}
 			
 			if (result == null && Gtk.IconTheme.Default.HasIcon (stockId))
@@ -172,17 +189,39 @@ namespace Xwt.GtkBackend
 
 	public class GtkImage: IDisposable
 	{
-		Gdk.Pixbuf[] frames;
+		public class ImageFrame {
+			public Gdk.Pixbuf Pixbuf { get; private set; }
+			public int Width { get; private set; }
+			public int Height { get; private set; }
+			public double Scale { get; set; }
+			public ImageFrame (Gdk.Pixbuf pix) {
+				Pixbuf = pix;
+				Width = pix.Width;
+				Height = pix.Height;
+				Scale = 1;
+			}
+			public ImageFrame (Gdk.Pixbuf pix, int width, int height) {
+				Pixbuf = pix;
+				Width = width;
+				Height = height;
+				Scale = (double)pix.Width / (double) width;
+			}
+			public void Dispose () {
+				Pixbuf.Dispose ();
+			}
+		}
+
+		ImageFrame[] frames;
 		ImageDrawCallback drawCallback;
 		string stockId;
 
-		public Gdk.Pixbuf[] Frames {
+		public ImageFrame[] Frames {
 			get { return frames; }
 		}
 
 		public GtkImage (Gdk.Pixbuf img)
 		{
-			this.frames = new Gdk.Pixbuf [] { img };
+			this.frames = new ImageFrame [] { new ImageFrame (img) };
 		}
 		
 		public GtkImage (string stockId)
@@ -191,6 +230,11 @@ namespace Xwt.GtkBackend
 		}
 		
 		public GtkImage (IEnumerable<Gdk.Pixbuf> frames)
+		{
+			this.frames = frames.Select (p => new ImageFrame (p)).ToArray ();
+		}
+
+		public GtkImage (IEnumerable<ImageFrame> frames)
 		{
 			this.frames = frames.ToArray ();
 		}
@@ -211,7 +255,7 @@ namespace Xwt.GtkBackend
 		public Size DefaultSize {
 			get {
 				if (frames != null)
-					return new Size (frames[0].Width, frames[0].Height);
+					return new Size (frames[0].Pixbuf.Width, frames[0].Pixbuf.Height);
 				else
 					return Size.Zero;
 			}
@@ -221,24 +265,44 @@ namespace Xwt.GtkBackend
 			get { return frames != null && frames.Length > 1 || drawCallback != null || stockId != null; }
 		}
 
-		Gdk.Pixbuf FindFrame (int width, int height)
+		Gdk.Pixbuf FindFrame (int width, int height, double scaleFactor)
 		{
 			if (frames == null)
 				return null;
 			if (frames.Length == 1)
-				return frames [0];
+				return frames [0].Pixbuf;
+
 			Gdk.Pixbuf best = null;
-			int bestSize = 0;
-			foreach (var p in frames) {
-				var s = p.Width * p.Height;
-				if (best == null || (p.Width <= width && p.Height <= height && s > bestSize)) {
-					best = p;
-					bestSize = s;
+			int bestSizeMatch = 0;
+			double bestResolutionMatch = 0;
+
+			foreach (var f in frames) {
+				int sizeMatch;
+				if (f.Width == width && f.Height == height) {
+					if (f.Scale == scaleFactor)
+						return f.Pixbuf; // Exact match
+					sizeMatch = 2; // Exact size
+				}
+				else if (f.Width >= width && f.Height >= height)
+					sizeMatch = 1; // Bigger size
+				else
+					sizeMatch = 0; // Smaller size
+
+				var resolutionMatch = ((double)f.Pixbuf.Width * (double)f.Pixbuf.Height) / ((double)width * (double)height * scaleFactor);
+
+				if ( best == null ||
+				    (bestResolutionMatch < 1 && resolutionMatch > bestResolutionMatch) ||
+				    (bestResolutionMatch >= 1 && resolutionMatch >= 1 && resolutionMatch <= bestResolutionMatch && (sizeMatch >= bestSizeMatch))) 
+				{
+					best = f.Pixbuf;
+					bestSizeMatch = sizeMatch;
+					bestResolutionMatch = resolutionMatch;
 				}
 			}
+			
 			return best;
 		}
-		
+
 		public Gdk.Pixbuf ToPixbuf (ApplicationContext actx, double width, double height)
 		{
 			return GetBestFrame (actx, 1, width, height, true);
@@ -256,7 +320,7 @@ namespace Xwt.GtkBackend
 
 		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, double scaleFactor, double width, double height, bool forceExactSize)
 		{
-			var f = FindFrame ((int)(width * scaleFactor), (int)(height * scaleFactor));
+			var f = FindFrame ((int)width, (int)height, scaleFactor);
 			if (f == null || (forceExactSize && (f.Width != (int)width || f.Height != (int)height)))
 				return RenderFrame (actx, scaleFactor, width, height);
 			else
@@ -265,47 +329,52 @@ namespace Xwt.GtkBackend
 
 		Gdk.Pixbuf RenderFrame (ApplicationContext actx, double scaleFactor, double width, double height)
 		{
-			var sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int)(width * scaleFactor), (int)(height * scaleFactor));
-			var ctx = new Cairo.Context (sf);
-			ImageDescription idesc = new ImageDescription () {
-				Alpha = 1,
-				Size = new Size (width * scaleFactor, height * scaleFactor)
-			};
-			Draw (actx, ctx, 1, 0, 0, idesc);
-			var f = ImageBuilderBackend.CreatePixbuf (sf);
-			AddFrame (f);
-			return f;
+			using (var sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int)(width * scaleFactor), (int)(height * scaleFactor)))
+			using (var ctx = new Cairo.Context (sf)) {
+				ImageDescription idesc = new ImageDescription () {
+					Alpha = 1,
+					Size = new Size (width * scaleFactor, height * scaleFactor)
+				};
+				Draw (actx, ctx, 1, 0, 0, idesc);
+				var f = new ImageFrame (ImageBuilderBackend.CreatePixbuf (sf), (int)width, (int)height);
+				AddFrame (f);
+				return f.Pixbuf;
+			}
 		}
 
-		void AddFrame (Gdk.Pixbuf pix)
+		void AddFrame (ImageFrame frame)
 		{
 			if (frames == null)
-				frames = new Gdk.Pixbuf[] { pix };
-			else if (!frames.Contains (pix)) {
+				frames = new ImageFrame[] { frame };
+			else {
 				Array.Resize (ref frames, frames.Length + 1);
-				frames [frames.Length - 1] = pix;
+				frames [frames.Length - 1] = frame;
 			}
 		}
 		
 		public void Draw (ApplicationContext actx, Cairo.Context ctx, double scaleFactor, double x, double y, ImageDescription idesc)
 		{
 			if (stockId != null) {
-				Gdk.Pixbuf img = null;
+				ImageFrame frame = null;
 				if (frames != null)
-					img = frames.FirstOrDefault (p => p.Width == (int) idesc.Size.Width && p.Height == (int) idesc.Size.Height);
-				if (img == null) {
-					img = ImageHandler.CreateBitmap (stockId, idesc.Size.Width, idesc.Size.Height);
-					AddFrame (img);
+					frame = frames.FirstOrDefault (f => f.Width == (int) idesc.Size.Width && f.Height == (int) idesc.Size.Height && f.Scale == scaleFactor);
+				if (frame == null) {
+					frame = new ImageFrame (ImageHandler.CreateBitmap (stockId, idesc.Size.Width, idesc.Size.Height, scaleFactor), (int)idesc.Size.Width, (int)idesc.Size.Height);
+					frame.Scale = scaleFactor;
+					AddFrame (frame);
 				}
-				DrawPixbuf (ctx, img, x, y, idesc);
+				DrawPixbuf (ctx, frame.Pixbuf, x, y, idesc);
 			}
 			else if (drawCallback != null) {
 				CairoContextBackend c = new CairoContextBackend (scaleFactor) {
 					Context = ctx
 				};
-				actx.InvokeUserCode (delegate {
+				if (actx != null) {
+					actx.InvokeUserCode (delegate {
+						drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height));
+					});
+				} else
 					drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height));
-				});
 			}
 			else {
 				DrawPixbuf (ctx, GetBestFrame (actx, scaleFactor, idesc.Size.Width, idesc.Size.Height, false), x, y, idesc);

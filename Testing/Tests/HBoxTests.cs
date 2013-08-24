@@ -33,6 +33,11 @@ namespace Xwt
 		{
 			return new HBox ();
 		}
+
+		protected override Rectangle AdjustedRect (Rectangle r)
+		{
+			return r;
+		}
 	}
 }
 

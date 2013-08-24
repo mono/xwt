@@ -56,25 +56,25 @@ namespace Xwt.GtkBackend
 			if (view is ITextCellViewFrontend) {
 				var cr = new CustomCellRendererText ((ITextCellViewFrontend)view);
 				col.PackStart (target, cr, false);
-				col.SetCellDataFunc (target, cr, (cell_layout, cell, treeModel, iter) => cr.LoadData (treeModel, iter));
+				col.SetCellDataFunc (target, cr, (cell_layout, cell, treeModel, iter) => cr.LoadData (col as TreeViewBackend, treeModel, iter));
 				return cr;
 			}
 			else if (view is ICheckBoxCellViewFrontend) {
 				CustomCellRendererToggle cr = new CustomCellRendererToggle ((ICheckBoxCellViewFrontend)view);
 				col.PackStart (target, cr, false);
-				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (treeModel, iter));
+				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (col as TreeViewBackend, treeModel, iter));
 				return cr;
 			}
 			else if (view is IImageCellViewFrontend) {
 				CustomCellRendererImage cr = new CustomCellRendererImage (actx, (IImageCellViewFrontend)view);
 				col.PackStart (target, cr, false);
-				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (treeModel, iter));
+				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (col as TreeViewBackend, treeModel, iter));
 				return cr;
 			}
 			else if (view is ICanvasCellViewFrontend) {
 				var cr = new CustomCellRenderer ((ICanvasCellViewFrontend) view);
 				col.PackStart (target, cr, false);
-				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (treeModel, iter));
+				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (col as TreeViewBackend, treeModel, iter));
 				return cr;
 			}
 			throw new NotSupportedException ("Unknown cell view type: " + view.GetType ());
@@ -103,6 +103,45 @@ namespace Xwt.GtkBackend
 			}
 			throw new NotImplementedException ();
 		}
+
+		public static void SetModelValue (Gtk.TreeModel store, Gtk.TreeIter it, int column, Type type, object value)
+		{
+			if (type == typeof(ObjectWrapper) && value != null)
+				store.SetValue (it, column, new ObjectWrapper (value));
+			else if (value is string)
+				store.SetValue (it, column, (string)value);
+			else
+				store.SetValue (it, column, value ?? DBNull.Value);
+		}
+
+		public static object GetModelValue (Gtk.TreeModel store, Gtk.TreeIter it, int column)
+		{
+			object val = store.GetValue (it, column);
+			if (val is DBNull)
+				return null;
+			else if (val is ObjectWrapper)
+				return ((ObjectWrapper)val).Object;
+			else
+				return val;
+		}
+
+		public static void SetCurrentEventRow (TreeViewBackend treeBackend, string path)
+		{
+			if (treeBackend != null) {
+				var treeFrontend = (TreeView)treeBackend.Frontend;
+
+				TreePosition toggledItem = null;
+
+				var pathParts = path.Split (':').Select (part => int.Parse (part));
+
+				foreach (int pathPart in pathParts) {
+					toggledItem = treeFrontend.DataSource.GetChild (toggledItem, pathPart);
+				}
+
+				treeBackend.CurrentEventRow = toggledItem;
+			}
+		}
+
 	}
 	
 	public interface ICellRendererTarget

@@ -38,6 +38,14 @@ namespace Xwt.Backends
 				return null;
 		}
 
+		public static IWidgetBackend GetBackend (this Widget obj)
+		{
+			if (obj != null)
+				return (IWidgetBackend)((IFrontend)obj).Backend;
+			else
+				return null;
+		}
+
 		public static object GetBackend (this XwtObject obj)
 		{
 			if (obj != null)
@@ -49,6 +57,18 @@ namespace Xwt.Backends
 		public static ImageDescription ToImageDescription (this Image img)
 		{
 			return img != null ? img.ImageDescription : ImageDescription.Null;
+		}
+
+		public static double GetValue (this WidgetPlacement al)
+		{
+			switch (al) {
+			case WidgetPlacement.Center:
+				return 0.5;
+			case WidgetPlacement.End:
+				return 1;
+			default:
+				return 0;
+			}
 		}
 	}
 }

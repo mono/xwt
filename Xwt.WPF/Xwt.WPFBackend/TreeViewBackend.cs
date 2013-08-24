@@ -58,6 +58,8 @@ namespace Xwt.WPFBackend
 			Tree.ItemTemplate = new HierarchicalDataTemplate { ItemsSource = new Binding ("Children") };
 			Tree.SetValue (VirtualizingStackPanel.IsVirtualizingProperty, true);
 		}
+
+		public TreePosition CurrentEventRow { get; set;  }
 		
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (Tree).ToXwtScrollPolicy (); }
@@ -282,24 +284,9 @@ namespace Xwt.WPFBackend
 			get { return -1; }
 		}
 
-		public override WidgetSize GetPreferredHeight()
+		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			return new WidgetSize (0);
-		}
-
-		public override WidgetSize GetPreferredHeightForWidth(double width)
-		{
-			return GetPreferredHeight ();
-		}
-
-		public override WidgetSize GetPreferredWidth()
-		{
-			return new WidgetSize (0);
-		}
-
-		public override WidgetSize GetPreferredWidthForHeight(double height)
-		{
-			return GetPreferredWidth ();
+			return Size.Zero;
 		}
 
 		private void OnSelectedItemsChanged (object sender, EventArgs e)

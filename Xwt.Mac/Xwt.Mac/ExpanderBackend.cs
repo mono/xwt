@@ -53,19 +53,25 @@ namespace Xwt.Mac
 
 		public void SetContent (IWidgetBackend widget)
 		{
+			if (child != null)
+				RemoveChildPlacement (child.Widget);
+
 			child = (ViewBackend)widget;
 
-			Widget.Box.SetContent (GetWidget (widget));
+			Widget.Box.SetContent (GetWidgetWithPlacement (widget));
 			ResetFittingSize ();
+		}
+
+		public override void ReplaceChild (NSView oldChild, NSView newChild)
+		{
+			Widget.Box.SetContent (newChild);
 		}
 
 		protected override Size CalcFittingSize ()
 		{
 			var s = Widget.SizeOfDecorations;
 			if (Widget.Box.Expanded && child != null) {
-				var w = child.Frontend.Surface.GetPreferredWidth ().MinSize;
-				var h = child.Frontend.Surface.GetPreferredHeightForWidth (w).MinSize;
-				s += new Size (w, h);
+				s += child.Frontend.Surface.GetPreferredSize ();
 			}
 			return s;
 		}
@@ -128,6 +134,12 @@ namespace Xwt.Mac
 
 		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
 		{
+		}
+
+		public override void SetFrameSize (SizeF newSize)
+		{
+			base.SetFrameSize (newSize);
+			box.UpdateContentSize (false);
 		}
 	}
 
@@ -230,6 +242,7 @@ namespace Xwt.Mac
 		public void SetContent (NSView view)
 		{
 			ContentView = view;
+			UpdateContentSize (false);
 		}
 
 		public bool Expanded {
@@ -243,11 +256,20 @@ namespace Xwt.Mac
 		{
 			if (expanded != value) {
 				expanded = value;
-				var frameSize = Frame.Size;
-				SizeF newFrameSize = new SizeF (frameSize.Width, otherHeight);
-				otherHeight = frameSize.Height;
-				SetFrameSize (newFrameSize, animate);
+				UpdateContentSize (animate);
 			}
+		}
+
+		public void UpdateContentSize (bool animate)
+		{
+			if (expanded) {
+				var vo = ContentView as IViewObject;
+				if (vo != null && vo.Backend != null) {
+					var s = vo.Backend.Frontend.Surface.GetPreferredSize ((float)Frame.Size.Width, SizeConstraint.Unconstrained, true);
+					SetFrameSize (new SizeF (Frame.Width, (float)s.Height), animate);
+				}
+			} else
+				SetFrameSize (new SizeF (Frame.Width, DefaultCollapsedHeight), animate);
 		}
 
 		public override bool IsFlipped {

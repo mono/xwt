@@ -83,6 +83,12 @@ namespace Xwt.CairoBackend
 	
 	public class CairoContextBackendHandler: ContextBackendHandler
 	{
+		public override bool DisposeHandleOnUiThread {
+			get {
+				return true;
+			}
+		}
+
 		#region IContextBackendHandler implementation
 
 		public override void Save (object backend)
@@ -230,7 +236,7 @@ namespace Xwt.CairoBackend
 		public override void SetColor (object backend, Xwt.Drawing.Color color)
 		{
 			var gtkContext = (CairoContextBackend) backend;
-			gtkContext.Context.Color = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha * gtkContext.GlobalAlpha);
+			gtkContext.Context.SetSourceRGBA (color.Red, color.Green, color.Blue, color.Alpha * gtkContext.GlobalAlpha);
 			gtkContext.PatternAlpha = 1;
 		}
 		
@@ -258,9 +264,9 @@ namespace Xwt.CairoBackend
 				cb.PatternAlpha = 1;
 
 			if (p != null)
-				ctx.Pattern = (Cairo.Pattern) p;
+				ctx.SetSource ((Cairo.Pattern) p);
 			else
-				ctx.Pattern = null;
+				ctx.SetSource ((Cairo.Pattern) null);
 		}
 		
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
@@ -333,11 +339,18 @@ namespace Xwt.CairoBackend
 			CairoContextBackend gc = (CairoContextBackend)backend;
 			gc.Context.Scale (scaleX, scaleY);
 		}
-		
+
 		public override void Translate (object backend, double tx, double ty)
 		{
 			CairoContextBackend gc = (CairoContextBackend)backend;
 			gc.Context.Translate (tx, ty);
+		}
+
+		public override void ModifyCTM (object backend, Matrix m)
+		{
+			CairoContextBackend gc = (CairoContextBackend)backend;
+			Cairo.Matrix t = new Cairo.Matrix (m.M11, m.M12, m.M21, m.M22, m.OffsetX, m.OffsetY);
+			gc.Context.Transform (t);
 		}
 
 		public override Matrix GetCTM (object backend)

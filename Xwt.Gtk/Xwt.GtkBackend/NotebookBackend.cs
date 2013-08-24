@@ -72,12 +72,12 @@ namespace Xwt.GtkBackend
 		
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
-			Widget.AppendPage (GetWidget (widget), CreateLabel (tab));
+			Widget.AppendPage (GetWidgetWithPlacement (widget), CreateLabel (tab));
 		}
 
 		public void Remove (IWidgetBackend widget)
 		{
-			Widget.Remove (GetWidget (widget));
+			Widget.Remove (GetWidgetWithPlacement (widget));
 		}
 		
 		public void UpdateLabel (NotebookTab tab, string hint)

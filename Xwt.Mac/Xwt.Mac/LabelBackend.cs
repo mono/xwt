@@ -28,13 +28,14 @@ using System;
 using MonoMac.AppKit;
 using Xwt.Backends;
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 
 namespace Xwt.Mac
 {
-	public class LabelBackend: ViewBackend<NSTextField,IWidgetEventSink>, ILabelBackend
+	public class LabelBackend: ViewBackend<NSView,IWidgetEventSink>, ILabelBackend
 	{
 		public LabelBackend ()
-			: this (new TextFieldView ())
+			: this (new CustomAlignedContainer (new TextFieldView ()))
 		{
 		}
 
@@ -44,6 +45,19 @@ namespace Xwt.Mac
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
+		}
+
+		protected override void OnSizeToFit ()
+		{
+			Container.SizeToFit ();
+		}
+
+		CustomAlignedContainer Container {
+			get { return (CustomAlignedContainer)base.Widget; }
+		}
+
+		public new NSTextField Widget {
+			get { return (NSTextField) Container.Child; }
 		}
 
 		public virtual string Text {
@@ -133,6 +147,60 @@ namespace Xwt.Mac
 					}
 				}
 			}
+		}
+	}
+
+	sealed class CustomAlignedContainer: NSView, IViewObject
+	{
+		public NSView Child;
+
+		public CustomAlignedContainer (NSView child)
+		{
+			Child = child;
+			AddSubview (child);
+			UpdateTextFieldFrame ();
+		}
+
+		public ViewBackend Backend { get; set; }
+
+		public NSView View {
+			get { return this; }
+		}
+
+		static readonly Selector sizeToFitSel = new Selector ("sizeToFit");
+
+		public void SizeToFit ()
+		{
+			if (Child.RespondsToSelector (sizeToFitSel))
+				Messaging.void_objc_msgSend (Child.Handle, sizeToFitSel.Handle);
+			else
+				throw new NotSupportedException ();
+			Frame = new System.Drawing.RectangleF (Frame.X, Frame.Y, Child.Frame.Width, Child.Frame.Height);
+		}
+
+		bool expandVertically;
+		public bool ExpandVertically {
+			get {
+				return expandVertically;
+			}
+			set {
+				expandVertically = value;
+				UpdateTextFieldFrame ();
+			}
+		}
+
+		public override void SetFrameSize (System.Drawing.SizeF newSize)
+		{
+			base.SetFrameSize (newSize);
+			UpdateTextFieldFrame ();
+		}
+
+		void UpdateTextFieldFrame ()
+		{
+			if (expandVertically)
+				Child.Frame = Frame;
+			else
+				Child.Frame = new System.Drawing.RectangleF (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
 		}
 	}
 	

@@ -57,12 +57,21 @@ namespace Xwt
 		{
 			Backend.RemoveItem ((IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend (item));
 		}
-		
+
+		/// <summary>
+		/// Shows the menu at the current position of the cursor
+		/// </summary>
 		public void Popup ()
 		{
 			Backend.Popup ();
 		}
-		
+
+		/// <summary>
+		/// Shows the menu at the specified location
+		/// </summary>
+		/// <param name="parentWidget">Widget upon which to show the menu</param>
+		/// <param name="x">The x coordinate, relative to the widget origin</param>
+		/// <param name="y">The y coordinate, relative to the widget origin</param>
 		public void Popup (Widget parentWidget, double x, double y)
 		{
 			Backend.Popup ((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend (parentWidget), x, y);

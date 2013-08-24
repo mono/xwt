@@ -96,6 +96,7 @@ namespace Xwt
 		public Command Run (WindowFrame parent)
 		{
 			BackendHost.ToolkitEngine.ValidateObject (parent);
+			AdjustSize ();
 
 			BackendHost.ToolkitEngine.InvokePlatformCode (delegate {
 				Backend.RunLoop ((IWindowFrameBackend) Toolkit.GetBackend (parent));
@@ -198,7 +199,9 @@ namespace Xwt
 			}
 			set {
 				label = value;
-				ParentDialog.UpdateButton (this);
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
 			}
 		}
 		
@@ -210,7 +213,9 @@ namespace Xwt
 			}
 			set {
 				image = value;
-				ParentDialog.UpdateButton (this);
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
 			}
 		}
 		
@@ -218,7 +223,9 @@ namespace Xwt
 			get { return visible; }
 			set {
 				visible = value;
-				ParentDialog.UpdateButton (this);
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
 			}
 		}
 		
@@ -226,7 +233,9 @@ namespace Xwt
 			get { return sensitive; }
 			set {
 				sensitive = value;
-				ParentDialog.UpdateButton (this);
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
 			}
 		}
 		

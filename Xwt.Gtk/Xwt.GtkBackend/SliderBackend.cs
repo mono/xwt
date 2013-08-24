@@ -38,16 +38,15 @@ namespace Xwt.GtkBackend
 		{
 		}
 		
-		public override void Initialize ()
+		public void Initialize (Xwt.Backends.Orientation dir)
 		{
-			Widget = (Gtk.Scale) CreateWidget ();
+			if (dir == Xwt.Backends.Orientation.Horizontal)
+				Widget = new Gtk.HScale (0, 1.0, 0.1);
+			else
+				Widget = new Gtk.VScale (0, 1.0, 0.1);
+
 			Widget.DrawValue = false;
 			Widget.Show ();
-		}
-		
-		protected virtual Gtk.Widget CreateWidget ()
-		{
-			return new Gtk.HScale (0, 1.0, 0.1);
 		}
 		
 		protected new Gtk.Scale Widget {

@@ -31,35 +31,36 @@ namespace Xwt.Mac
 {
 	public class ScrollbarBackend: ViewBackend<NSScroller,IWidgetEventSink>, IScrollbarBackend
 	{
-		Orientation orientation;
-
 		public ScrollbarBackend ()
 		{
 		}
 
 		public void Initialize (Orientation dir)
 		{
-			orientation = dir;
-			ViewObject = new CustomScroller ();
+			System.Drawing.RectangleF r;
+			if (dir == Orientation.Horizontal)
+				r = new System.Drawing.RectangleF (0, 0, NSScroller.ScrollerWidth + 1, NSScroller.ScrollerWidth);
+			else
+				r = new System.Drawing.RectangleF (0, 0, NSScroller.ScrollerWidth, NSScroller.ScrollerWidth + 1);
+			ViewObject = new CustomScroller (r);
 		}
 
 		public IScrollAdjustmentBackend CreateAdjustment ()
 		{
 			return (CustomScroller) Widget;
 		}
-
-		protected override Size GetNaturalSize ()
-		{
-			if (orientation == Orientation.Vertical)
-				return new Size (20, 20);
-			else
-				return new Size (20, 20);
-		}
 	}
 
 	class CustomScroller: NSScroller, IScrollAdjustmentBackend, IViewObject
 	{
 		IScrollAdjustmentEventSink eventSink;
+
+		double value;
+		double lowerValue;
+		double upperValue;
+		double pageIncrement;
+		double stepIncrement;
+		double pageSize;
 
 		NSView IViewObject.View {
 			get {
@@ -68,6 +69,10 @@ namespace Xwt.Mac
 		}
 
 		ViewBackend IViewObject.Backend { get; set; }
+
+		public CustomScroller (System.Drawing.RectangleF r): base (r)
+		{
+		}
 
 		public void Initialize (IScrollAdjustmentEventSink eventSink)
 		{
@@ -114,7 +119,6 @@ namespace Xwt.Mac
 			eventSink.OnValueChanged ();
 		}
 
-		double value;
 		public double Value {
 			get {
 				return value;
@@ -125,60 +129,17 @@ namespace Xwt.Mac
 			}
 		}
 
-		double lowerValue;
-		public double LowerValue {
-			get {
-				return lowerValue;
-			}
-			set {
-				lowerValue = value;
-				UpdateValue ();
-				UpdateKnobProportion ();
-			}
-		}
+		public void SetRange (double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value)
+		{
+			this.lowerValue = lowerValue;
+			this.upperValue = upperValue;
+			this.pageSize = pageSize;
+			this.pageIncrement = pageIncrement;
+			this.stepIncrement = stepIncrement;
+			this.value = value;
 
-		double upperValue;
-		public double UpperValue {
-			get {
-				return upperValue;
-			}
-			set {
-				upperValue = value;
-				UpdateValue ();
-				UpdateKnobProportion ();
-			}
-		}
-
-		double pageIncrement;
-		public double PageIncrement {
-			get {
-				return pageIncrement;
-			}
-			set {
-				pageIncrement = value;
-			}
-		}
-
-		double stepIncrement;
-		public double StepIncrement {
-			get {
-				return stepIncrement;
-			}
-			set {
-				stepIncrement = value;
-			}
-		}
-
-		double pageSize;
-		public double PageSize {
-			get {
-				return pageSize;
-			}
-			set {
-				pageSize = value;
-				UpdateValue ();
-				UpdateKnobProportion ();
-			}
+			UpdateValue ();
+			UpdateKnobProportion ();
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
