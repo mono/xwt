@@ -29,6 +29,8 @@ using Xwt.Backends;
 using Xwt.Drawing;
 using Xwt.CairoBackend;
 using System.Runtime.InteropServices;
+using System.Linq;
+using System.Collections.Generic;
 
 
 namespace Xwt.GtkBackend
@@ -37,6 +39,7 @@ namespace Xwt.GtkBackend
 	{
 		Color? bgColor, textColor;
 		int wrapHeight, wrapWidth;
+		List<LabelLink> links;
 
 		public LabelBackend ()
 		{
@@ -46,6 +49,10 @@ namespace Xwt.GtkBackend
 			Label.Yalign = 0.5f;
 		}
 		
+		new ILabelEventSink EventSink {
+			get { return (ILabelEventSink)base.EventSink; }
+		}
+
 		protected Gtk.Label Label {
 			get {
 				if (Widget is Gtk.Label)
@@ -67,7 +74,81 @@ namespace Xwt.GtkBackend
 				Label.QueueDraw ();
 			}
 		}
+
+		bool linkEventEnabled;
+
+		void EnableLinkEvents ()
+		{
+			if (!linkEventEnabled) {
+				linkEventEnabled = true;
+				AllocEventBox ();
+				EventsRootWidget.AddEvents ((int)Gdk.EventMask.PointerMotionMask);
+				EventsRootWidget.MotionNotifyEvent += HandleMotionNotifyEvent;
+				EventsRootWidget.AddEvents ((int)Gdk.EventMask.ButtonReleaseMask);
+				EventsRootWidget.ButtonReleaseEvent += HandleButtonReleaseEvent;
+				EventsRootWidget.AddEvents ((int)Gdk.EventMask.LeaveNotifyMask);
+				EventsRootWidget.LeaveNotifyEvent += HandleLeaveNotifyEvent;
+			}
+		}
+
+		bool mouseInLink;
+		CursorType normalCursor;
+
+		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
+		{
+			var li = FindLink (args.Event.X, args.Event.Y);
+			if (li != null) {
+				if (!mouseInLink) {
+					mouseInLink = true;
+					normalCursor = CurrentCursor;
+					SetCursor (CursorType.Hand);
+				}
+			} else {
+				if (mouseInLink) {
+					mouseInLink = false;
+					SetCursor (normalCursor ?? CursorType.Arrow);
+				}
+			}
+		}
 		
+		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
+		{
+			var li = FindLink (args.Event.X, args.Event.Y);
+
+			if (li != null) {
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnLinkClicked (li.Target);
+				});
+				args.RetVal = true;
+			};
+		}
+		
+		void HandleLeaveNotifyEvent (object o, Gtk.LeaveNotifyEventArgs args)
+		{
+			if (mouseInLink) {
+				mouseInLink = false;
+				SetCursor (normalCursor ?? CursorType.Arrow);
+			}
+		}
+
+		LabelLink FindLink (double px, double py)
+		{
+			var x = px * Pango.Scale.PangoScale;
+			var y = py * Pango.Scale.PangoScale;
+
+			int index, trailing;
+			if (!Label.Layout.XyToIndex ((int)x, (int)y, out index, out trailing))
+				return null;
+
+			if (links != null) {
+				foreach (var li in links) {
+					if (index >= li.StartIndex && index <= li.EndIndex)
+						return li;
+				}
+			}
+			return null;
+		}
+
 		[GLib.ConnectBefore]
 		void HandleLabelExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
@@ -111,6 +192,22 @@ namespace Xwt.GtkBackend
 			TextIndexer indexer = new TextIndexer (text.Text);
 			list.AddAttributes (indexer, text.Attributes);
 			gtk_label_set_attributes (Label.Handle, list.Handle);
+
+			if (links != null)
+				links.Clear ();
+
+			foreach (var attr in text.Attributes.OfType<LinkTextAttribute> ()) {
+				LabelLink ll = new LabelLink () {
+					StartIndex = indexer.IndexToByteIndex (attr.StartIndex),
+					EndIndex = indexer.IndexToByteIndex (attr.StartIndex + attr.Count),
+					Target = attr.Target
+				};
+				if (links == null) {
+					links = new List<LabelLink> ();
+					EnableLinkEvents ();
+				}
+				links.Add (ll);
+			}
 		}
 
 		[DllImport (GtkInterop.LIBGTK, CallingConvention=CallingConvention.Cdecl)]
@@ -216,6 +313,13 @@ namespace Xwt.GtkBackend
 				}
 			}
 		}
+	}
+
+	class LabelLink
+	{
+		public int StartIndex;
+		public int EndIndex;
+		public string Target;
 	}
 }
 

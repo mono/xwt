@@ -188,10 +188,12 @@ namespace Xwt.GtkBackend
 		static Dictionary<CursorType,Gdk.Cursor> gtkCursors = new Dictionary<CursorType, Gdk.Cursor> ();
 		
 		Gdk.Cursor gdkCursor;
+		internal CursorType CurrentCursor { get; private set; }
 
 		public void SetCursor (CursorType cursor)
 		{
 			AllocEventBox ();
+			CurrentCursor = cursor;
 			Gdk.Cursor gc;
 			if (!gtkCursors.TryGetValue (cursor, out gc)) {
 				Gdk.CursorType ctype;
@@ -455,7 +457,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		void AllocEventBox (bool visibleWindow = false)
+		protected void AllocEventBox (bool visibleWindow = false)
 		{
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
