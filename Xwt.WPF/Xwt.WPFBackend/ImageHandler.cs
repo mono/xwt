@@ -50,6 +50,11 @@ namespace Xwt.WPFBackend
 			img.StreamSource = stream;
 			img.EndInit();
 
+			return LoadFromImageSource (img);
+		}
+
+		public static object LoadFromImageSource (ImageSource img)
+		{
 			var bmp = img as BitmapSource;
 			if (bmp != null && (bmp.DpiX != 96 || bmp.DpiY != 96))
 				return new WpfImage (ConvertBitmapTo96DPI (bmp));

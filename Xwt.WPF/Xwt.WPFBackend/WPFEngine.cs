@@ -157,6 +157,13 @@ namespace Xwt.WPFBackend
 			};
 		}
 
+		public override object GetBackendForImage (object nativeImage)
+		{
+			if (nativeImage is WpfImage)
+				return nativeImage;
+			return ImageHandler.LoadFromImageSource ((System.Windows.Media.ImageSource) nativeImage);
+		}
+
 		public override object GetNativeWidget (Widget w)
 		{
 			var backend = (IWpfWidgetBackend) Toolkit.GetBackend (w);
