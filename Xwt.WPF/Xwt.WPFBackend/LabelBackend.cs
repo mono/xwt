@@ -121,7 +121,7 @@ namespace Xwt.WPFBackend
 				}
 				else if (at is Drawing.LinkTextAttribute) {
 					var link = new SWD.Hyperlink () {
-						NavigateUri = new Uri (((Drawing.LinkTextAttribute)at).Target)
+						NavigateUri = ((Drawing.LinkTextAttribute)at).Target
 					};
 					link.RequestNavigate += new System.Windows.Navigation.RequestNavigateEventHandler (link_RequestNavigate);
 					s = link;
@@ -142,7 +142,7 @@ namespace Xwt.WPFBackend
 		void link_RequestNavigate (object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
 		{
 			Context.InvokeUserCode (delegate {
-				EventSink.OnLinkClicked (e.Uri.ToString ());
+				EventSink.OnLinkClicked (e.Uri);
 			});
 		}
 
