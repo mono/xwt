@@ -34,8 +34,26 @@ namespace Xwt
 	[BackendType (typeof(ILabelBackend))]
 	public class Label: Widget
 	{
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, ILabelEventSink
+		{
+			public void OnLinkClicked (string target)
+			{
+				((Label) Parent).OnLinkClicked (new LinkEventArgs (target));
+			}
+		}
+		
+		protected override BackendHost CreateBackendHost ()
+		{
+			return new WidgetBackendHost ();
+		}
+
 		ILabelBackend Backend {
 			get { return (ILabelBackend) BackendHost.Backend; }
+		}
+
+		static Label ()
+		{
+			MapEvent (LabelEvent.LinkClicked, typeof (Label), "OnLinkClicked");
 		}
 		
 		public Label ()
@@ -97,6 +115,50 @@ namespace Xwt
 				Backend.Wrap = value;
 				OnPreferredSizeChanged ();
 			}
+		}
+		
+		protected virtual void OnLinkClicked (LinkEventArgs e)
+		{
+			if (linkClicked != null)
+				linkClicked (this, e);
+
+			if (!e.Handled && e.Target != null) {
+				Desktop.OpenUrl (e.Target);
+				e.SetHandled ();
+			}
+		}
+		
+		EventHandler<LinkEventArgs> linkClicked;
+		public event EventHandler<LinkEventArgs> LinkClicked {
+			add {
+				BackendHost.OnBeforeEventAdd (LabelEvent.LinkClicked, linkClicked);
+				linkClicked += value;
+			}
+			remove {
+				linkClicked -= value;
+				BackendHost.OnAfterEventRemove (LabelEvent.LinkClicked, linkClicked);
+			}
+		}
+	}
+
+	public sealed class LinkEventArgs : EventArgs
+	{
+		public LinkEventArgs (string target)
+		{
+			Target = target;
+		}
+
+		public bool Handled {
+			get; private set;
+		}
+
+		public string Target {
+			get; private set;
+		}
+
+		public void SetHandled ()
+		{
+			Handled = true;
 		}
 	}
 }

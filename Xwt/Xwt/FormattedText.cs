@@ -105,6 +105,18 @@ namespace Xwt
 			case "u":
 				span.Add (new UnderlineTextAttribute ());
 				break;
+			case "a":
+				string href = null;
+				ReadXmlAttributes (markup, ref k, (name, val) => {
+					if (name == "href") {
+						href = val;
+						return true;
+					}
+					return false;
+				});
+				span.Add (new LinkTextAttribute () { Target = href });
+				break;
+
 			case "span":
 				ParseAttributes (span, markup, ref k);
 				break;
@@ -160,6 +172,18 @@ namespace Xwt
 
 		bool ParseAttributes (SpanInfo span, string markup, ref int i)
 		{
+			return ReadXmlAttributes (markup, ref i, (name, val) => {
+				var attr = CreateAttribute (name, val);
+				if (attr != null) {
+					span.Add (attr);
+					return true;
+				}
+				return false;
+			});
+		}
+
+		bool ReadXmlAttributes (string markup, ref int i, Func<string,string,bool> callback)
+		{
 			int k = i;
 
 			while (true) {
@@ -183,11 +207,8 @@ namespace Xwt
 					return false;
 
 				string val = markup.Substring (k, n - k);
-				var attr = CreateAttribute (name, val);
-				if (attr != null) {
+				if (callback (name, val))
 					i = n + 1;
-					span.Add (attr);
-				}
 				else
 					return false;
 			}
