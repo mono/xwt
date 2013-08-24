@@ -106,10 +106,10 @@ namespace Xwt
 				span.Add (new UnderlineTextAttribute ());
 				break;
 			case "a":
-				string href = null;
+				Uri href = null;
 				ReadXmlAttributes (markup, ref k, (name, val) => {
 					if (name == "href") {
-						href = val;
+						href = new Uri (val);
 						return true;
 					}
 					return false;

@@ -322,7 +322,7 @@ namespace Xwt.Mac
 				}
 				else if (att is LinkTextAttribute) {
 					var xa = (LinkTextAttribute)att;
-					ns.AddAttribute (NSAttributedString.LinkAttributeName, (NSString)xa.Target, r);
+					ns.AddAttribute (NSAttributedString.LinkAttributeName, (NSString)xa.Target.ToString (), r);
 				}
 				else if (att is StrikethroughTextAttribute) {
 					var xa = (StrikethroughTextAttribute)att;

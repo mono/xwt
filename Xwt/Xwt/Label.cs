@@ -36,7 +36,7 @@ namespace Xwt
 	{
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, ILabelEventSink
 		{
-			public void OnLinkClicked (string target)
+			public void OnLinkClicked (Uri target)
 			{
 				((Label) Parent).OnLinkClicked (new LinkEventArgs (target));
 			}
@@ -143,7 +143,7 @@ namespace Xwt
 
 	public sealed class LinkEventArgs : EventArgs
 	{
-		public LinkEventArgs (string target)
+		public LinkEventArgs (Uri target)
 		{
 			Target = target;
 		}
@@ -152,7 +152,7 @@ namespace Xwt
 			get; private set;
 		}
 
-		public string Target {
+		public Uri Target {
 			get; private set;
 		}
 

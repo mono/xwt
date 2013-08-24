@@ -33,7 +33,7 @@ namespace Xwt.Drawing
 {
 	public sealed class LinkTextAttribute: TextAttribute
 	{
-		public string Target { get; set; }
+		public Uri Target { get; set; }
 
 		public override bool Equals (object t)
 		{

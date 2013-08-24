@@ -41,7 +41,7 @@ namespace Xwt.Backends
 	
 	public interface ILabelEventSink : IWidgetEventSink
 	{
-		void OnLinkClicked (string target);
+		void OnLinkClicked (Uri target);
 	}
 
 	public enum LabelEvent

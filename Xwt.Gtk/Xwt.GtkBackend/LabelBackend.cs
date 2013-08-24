@@ -319,7 +319,7 @@ namespace Xwt.GtkBackend
 	{
 		public int StartIndex;
 		public int EndIndex;
-		public string Target;
+		public Uri Target;
 	}
 }
 
