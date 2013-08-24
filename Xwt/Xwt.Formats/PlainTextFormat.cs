@@ -9,8 +9,11 @@ namespace Xwt.Formats
 	{
 		public override void Parse (Stream input, IRichTextBuffer buffer)
 		{
-			using (var reader = new StreamReader (input))
+			using (var reader = new StreamReader (input)) {
+				buffer.EmitStartParagraph (0);
 				buffer.EmitText (reader.ReadToEnd (), RichTextInlineStyle.Normal);
+				buffer.EmitEndParagraph ();
+			}
 		}
 	}
 }
