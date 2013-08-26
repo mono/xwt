@@ -166,6 +166,13 @@ namespace Xwt.GtkBackend
 			Label.Layout.GetPixelSize (out unused, out wrapHeight);
 			if (wrapWidth != args.Allocation.Width || oldHeight != wrapHeight) {
 				wrapWidth = args.Allocation.Width;
+				// GTK renders the text using the calculated pixel width, not the allocated width.
+				// If the calculated width is smaller and text is not left aligned, then a gap is
+				// shown at the right of the label. We then have the adjust the allocation.
+				if (Label.Justify == Gtk.Justification.Right)
+					Label.Xpad = wrapWidth - unused;
+				else if (Label.Justify == Gtk.Justification.Center)
+					Label.Xpad = (wrapWidth - unused) / 2;
 				Label.QueueResize ();
 			}
 		}
@@ -174,7 +181,7 @@ namespace Xwt.GtkBackend
 		{
 			if (wrapHeight > 0) {
 				var req = args.Requisition;
-				req.Width = 0;
+				req.Width = Label.WidthRequest != -1 ? Label.WidthRequest : 0;
 				req.Height = wrapHeight;
 				args.Requisition = req;
 			}
@@ -232,18 +239,27 @@ namespace Xwt.GtkBackend
 
 		public Alignment TextAlignment {
 			get {
-				if (Label.Xalign == 0)
+				if (Label.Justify == Gtk.Justification.Left)
 					return Alignment.Start;
-				else if (Label.Xalign == 1)
+				else if (Label.Justify == Gtk.Justification.Right)
 					return Alignment.End;
 				else
 					return Alignment.Center;
 			}
 			set {
 				switch (value) {
-				case Alignment.Start: Label.Xalign = 0; break;
-				case Alignment.End: Label.Xalign = 1; break;
-				case Alignment.Center: Label.Xalign = 0.5f; break;
+				case Alignment.Start:
+					Label.Justify = Gtk.Justification.Left;
+					Label.Xalign = 0;
+					break;
+				case Alignment.End:
+					Label.Justify = Gtk.Justification.Right;
+					Label.Xalign = 1; 
+					break;
+				case Alignment.Center:
+					Label.Justify = Gtk.Justification.Center;
+					Label.Xalign = 0.5f;
+					break;
 				}
 			}
 		}
