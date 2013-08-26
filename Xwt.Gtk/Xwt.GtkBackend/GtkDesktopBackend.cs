@@ -81,6 +81,11 @@ namespace Xwt.GtkBackend
 			return backend.ToString ();
 		}
 
+		public override double GetScaleFactor (object backend)
+		{
+			return Gdk.Screen.Default.GetScaleFactor ((int)backend);
+		}
+
 		#endregion
 	}
 }

@@ -1089,6 +1089,9 @@ namespace Xwt.GtkBackend
 		[DllImport (GtkInterop.LIBGTK)]
 		static extern double gtk_widget_get_scale_factor (IntPtr widget);
 
+		[DllImport (GtkInterop.LIBGDK)]
+		static extern double gdk_screen_get_monitor_scale_factor (IntPtr widget, int monitor);
+
 		[DllImport (GtkInterop.LIBGOBJECT)]
 		static extern IntPtr g_object_get_data (IntPtr source, string name);
 
@@ -1154,6 +1157,20 @@ namespace Xwt.GtkBackend
 
 			try {
 				return gtk_widget_get_scale_factor (w.Handle);
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+			supportsHiResIcons = false;
+			return 1;
+		}
+		
+		public static double GetScaleFactor (this Gdk.Screen screen, int monitor)
+		{
+			if (!supportsHiResIcons)
+				return 1;
+
+			try {
+				return gdk_screen_get_monitor_scale_factor (screen.Handle, monitor);
 			} catch (DllNotFoundException) {
 			} catch (EntryPointNotFoundException) {
 			}
