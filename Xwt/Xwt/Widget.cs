@@ -989,15 +989,28 @@ namespace Xwt
 					DebugWidgetLayoutIndent += 3;
 				}
 
-				cachedSize = OnGetPreferredSize (widthConstraint, heightConstraint);
+				if (widthRequest != -1 && !widthConstraint.IsConstrained)
+					widthConstraint = SizeConstraint.WithSize (widthRequest);
+
+				if (heightRequest != -1 && !heightConstraint.IsConstrained)
+					heightConstraint = SizeConstraint.WithSize (heightRequest);
+
+				if (widthRequest == -1 || heightRequest == -1)
+					cachedSize = OnGetPreferredSize (widthConstraint, heightConstraint);
 
 				if (DebugWidgetLayout)
 					DebugWidgetLayoutIndent -= 3;
 
-				if (minWidth > cachedSize.Width)
+				if (widthRequest != -1)
+					cachedSize.Width = widthRequest;
+				else if (minWidth > cachedSize.Width)
 					cachedSize.Width = minWidth;
-				if (minHeight > cachedSize.Height)
+
+				if (heightRequest != -1)
+					cachedSize.Height = heightRequest;
+				else if (minHeight > cachedSize.Height)
 					cachedSize.Height = minHeight;
+
 				if (cachedSize.Width < 0)
 					cachedSize.Width = 0;
 				if (cachedSize.Height < 0)
