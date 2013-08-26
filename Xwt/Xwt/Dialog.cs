@@ -96,6 +96,8 @@ namespace Xwt
 		public Command Run (WindowFrame parent)
 		{
 			BackendHost.ToolkitEngine.ValidateObject (parent);
+			if (parent != null)
+				TransientFor = parent;
 			AdjustSize ();
 
 			BackendHost.ToolkitEngine.InvokePlatformCode (delegate {
