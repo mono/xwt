@@ -66,7 +66,8 @@ namespace Xwt
 		
 		public MenuItem ()
 		{
-			UseMnemonic = true;
+			if (!IsSeparator)
+				UseMnemonic = true;
 		}
 		
 		public MenuItem (Command command)
@@ -90,11 +91,19 @@ namespace Xwt
 		IMenuItemBackend Backend {
 			get { return (IMenuItemBackend) base.BackendHost.Backend; }
 		}
+
+		bool IsSeparator {
+			get { return this is SeparatorMenuItem; }
+		}
 		
 		[DefaultValue ("")]
 		public string Label {
 			get { return Backend.Label; }
-			set { Backend.Label = value; }
+			set {
+				if (IsSeparator)
+					throw new NotSupportedException ();
+				Backend.Label = value;
+			}
 		}
 
 		/// <summary>
@@ -108,7 +117,11 @@ namespace Xwt
 		[DefaultValue(true)]
 		public bool UseMnemonic { 
 			get { return Backend.UseMnemonic; }
-			set { Backend.UseMnemonic = value; }
+			set {
+				if (IsSeparator)
+					throw new NotSupportedException ();
+				Backend.UseMnemonic = value;
+			}
 		}
 		
 		[DefaultValue (true)]
@@ -125,7 +138,13 @@ namespace Xwt
 		
 		public Image Image {
 			get { return image; }
-			set { image = value; Backend.SetImage (image != null ? image.ImageDescription : ImageDescription.Null); }
+			set {
+				if (IsSeparator)
+					throw new NotSupportedException ();
+				image = value; 
+				if (!IsSeparator)
+					Backend.SetImage (image != null ? image.ImageDescription : ImageDescription.Null);
+			}
 		}
 		
 		public void Show ()
@@ -149,6 +168,8 @@ namespace Xwt
 		public Menu SubMenu {
 			get { return subMenu; }
 			set {
+				if (IsSeparator)
+					throw new NotSupportedException ();
 				Backend.SetSubmenu ((IMenuBackend)BackendHost.ToolkitEngine.GetSafeBackend (value));
 				subMenu = value;
 			}

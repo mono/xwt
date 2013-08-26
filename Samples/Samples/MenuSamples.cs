@@ -39,7 +39,9 @@ namespace Samples
 			menu.Items.Add (new MenuItem ("One"));
 			menu.Items.Add (new MenuItem ("Two"));
 			menu.Items.Add (new MenuItem ("Three"));
-			
+			menu.Items.Add (new SeparatorMenuItem ());
+			menu.Items.Add (new MenuItem ("End"));
+
 			la.ButtonPressed += HandleButtonPressed;
 			PackStart (la);
 		}
