@@ -249,25 +249,29 @@ namespace Xwt.Drawing
 			LineTo (x + width - radius, y);
 
 			// top-right corner
-			Arc (x + width - radius, y + radius, radius, -90, 0);
+			if (radius > 0)
+				Arc (x + width - radius, y + radius, radius, -90, 0);
 
 			// right edge
 			LineTo (x + width, y + height - radius);
 
 			// bottom-right corner
-			Arc (x + width - radius, y + height - radius, radius, 0, 90);
+			if (radius > 0)
+				Arc (x + width - radius, y + height - radius, radius, 0, 90);
 
 			// bottom edge
 			LineTo (x + radius, y + height);
 
 			// bottom-left corner
-			Arc (x + radius, y + height - radius, radius, 90, 180);
+			if (radius > 0)
+				Arc (x + radius, y + height - radius, radius, 90, 180);
 
 			// left edge
 			LineTo (x, y + radius);
 
 			// top-left corner
-			Arc (x + radius, y + radius, radius, 180, 270);
+			if (radius > 0)
+				Arc (x + radius, y + radius, radius, 180, 270);
 		}
 
 		public void RelCurveTo (Distance d1, Distance d2, Distance d3)
