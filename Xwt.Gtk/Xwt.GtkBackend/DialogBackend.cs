@@ -123,6 +123,8 @@ namespace Xwt.GtkBackend
 
 		public void RunLoop (IWindowFrameBackend parent)
 		{
+			// GTK adds a border to the root widget, for some unknown reason
+			((Gtk.Container)Window.Child).BorderWidth = 0;
 			var p = (WindowFrameBackend) parent;
 			MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
 		}
