@@ -120,7 +120,8 @@ namespace Xwt
 		
 		public T GetValue<T> (IDataField<T> field)
 		{
-			return (T) backend.GetValue (pos, field.Index);
+			var value = backend.GetValue (pos, field.Index);
+			return value == null ? default(T) : (T)value;
 		}
 		
 		public void Remove ()
