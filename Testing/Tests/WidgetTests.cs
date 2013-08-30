@@ -192,6 +192,8 @@ namespace Xwt
 				var defw = w.Size.Width;
 				var defh = w.Size.Height;
 
+				// Min size has priority over the preferred size
+
 				w.MinWidth = 300;
 				w.MinHeight = 400;
 				WaitForEvents ();
@@ -200,6 +202,19 @@ namespace Xwt
 
 				Assert.AreEqual (400d, w.MinHeight);
 				Assert.AreEqual (400d, w.Size.Height);
+
+				if (defw > 1) {
+					w.MinWidth = defw - 1;
+					WaitForEvents ();
+					Assert.AreEqual (defw - 1, w.MinWidth);
+					Assert.AreEqual (defw, w.Size.Width);
+				}
+				if (defh > 1) {
+					w.MinHeight = defh - 1;
+					WaitForEvents ();
+					Assert.AreEqual (defh - 1, w.MinHeight);
+					Assert.AreEqual (defh, w.Size.Height);
+				}
 
 				w.MinWidth = -1;
 				w.MinHeight = -1;
@@ -212,7 +227,79 @@ namespace Xwt
 				Assert.AreEqual (defh, w.Size.Height);
 			}
 		}
+		
+		[Test]
+		public void RequestedSize ()
+		{
+			using (var win = new Window ()) {
+				var w = CreateWidget ();
 
+				VBox box1 = new VBox ();
+				HBox box2 = new HBox ();
+				HBox f = new HBox ();
+				box1.PackStart (box2);
+				box2.PackStart (f);
+				f.PackStart (w, true);
+				win.Content = box1;
+
+				ShowWindow (win);
+
+				WaitForEvents ();
+				var defw = w.Size.Width;
+				var defh = w.Size.Height;
+
+				w.WidthRequest = 300;
+				w.HeightRequest = 400;
+				WaitForEvents ();
+				Assert.AreEqual (300d, w.WidthRequest);
+				Assert.AreEqual (300d, w.Size.Width);
+
+				Assert.AreEqual (400d, w.HeightRequest);
+				Assert.AreEqual (400d, w.Size.Height);
+
+				// Size request has priority over min size
+
+				w.MinWidth = 310;
+				w.MinHeight = 410;
+				WaitForEvents ();
+				Assert.AreEqual (300d, w.Size.Width);
+				Assert.AreEqual (400d, w.Size.Height);
+
+				w.MinWidth = 290;
+				w.MinHeight = 390;
+				WaitForEvents ();
+				Assert.AreEqual (300d, w.Size.Width);
+				Assert.AreEqual (400d, w.Size.Height);
+
+				// Size request has priority over preferred size, so it can make a widget smaller than the default size
+
+				w.MinWidth = -1;
+				w.MinHeight = -1;
+
+				if (defw > 1) {
+					w.WidthRequest = defw - 1;
+					WaitForEvents ();
+					Assert.AreEqual (defw - 1, w.WidthRequest);
+					Assert.AreEqual (defw - 1, w.Size.Width);
+				}
+				if (defh > 1) {
+					w.HeightRequest = defh - 1;
+					WaitForEvents ();
+					Assert.AreEqual (defh - 1, w.HeightRequest);
+					Assert.AreEqual (defh - 1, w.Size.Height);
+				}
+
+				w.WidthRequest = -1;
+				w.HeightRequest = -1;
+
+				WaitForEvents ();
+				Assert.AreEqual (-1, w.WidthRequest);
+				Assert.AreEqual (defw, w.Size.Width);
+
+				Assert.AreEqual (-1, w.HeightRequest);
+				Assert.AreEqual (defh, w.Size.Height);
+			}
+		}
 		[Test]
 		public void Coordinates ()
 		{
