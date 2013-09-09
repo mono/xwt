@@ -29,12 +29,17 @@ namespace Xwt.Drawing
 {
 	public class BitmapImage: Image
 	{
+		Size pixelSize;
+
 		public BitmapImage (BitmapImage image): base (image.ToolkitEngine.ImageBackendHandler.CopyBitmap (image.Backend), image.ToolkitEngine)
 		{
+			pixelSize = image.pixelSize;
 		}
 		
-		internal BitmapImage (object backend): base (backend)
+		internal BitmapImage (object backend, Size size): base (backend)
 		{
+			Size = size;
+			pixelSize = ToolkitEngine.ImageBackendHandler.GetSize (backend);
 		}
 		
 		internal BitmapImage (Image origImage): base (origImage)
@@ -72,10 +77,31 @@ namespace Xwt.Drawing
 			dest.MakeWrittable ();
 			ToolkitEngine.ImageBackendHandler.CopyBitmapArea (Backend, srcX, srcY, width, height, dest.Backend, destX, destY);
 		}
-		
-		public BitmapImage Crop (int srcX, int srcY, int width, int height)
+
+		/// <summary>
+		/// Creates a crop of the image
+		/// </summary>
+		/// <param name="x">X coordinate, in physical pixels</param>
+		/// <param name="srcY">Y coordinate, in physical pixels</param>
+		/// <param name="pixelWidth">Width, in physical pixels</param>
+		/// <param name="pixelHeight">Height, in physical pixels</param>
+		public BitmapImage Crop (int x, int y, int pixelWidth, int pixelHeight)
 		{
-			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, srcX, srcY, width, height));
+			var scaleX = Math.Truncate (PixelWidth / Width);
+			var scaleY = Math.Truncate (PixelHeight / Height);
+			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, x, y, pixelWidth, pixelHeight), new Size (pixelWidth / scaleX, pixelHeight / scaleY));
+		}
+
+		public Size PixelSize {
+			get { return pixelSize; }
+		}
+
+		public double PixelWidth {
+			get { return pixelSize.Width; }
+		}
+		
+		public double PixelHeight {
+			get { return pixelSize.Height; }
 		}
 	}
 }
