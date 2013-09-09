@@ -338,7 +338,7 @@ namespace Xwt.GtkBackend
 					Alpha = 1,
 					Size = new Size (width * scaleFactor, height * scaleFactor)
 				};
-				Draw (actx, ctx, 1, 0, 0, idesc);
+				Draw (actx, ctx, scaleFactor, 0, 0, idesc);
 				var f = new ImageFrame (ImageBuilderBackend.CreatePixbuf (sf), (int)width, (int)height, true);
 				AddFrame (f);
 				return f.Pixbuf;
