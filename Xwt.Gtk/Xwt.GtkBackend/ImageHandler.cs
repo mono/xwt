@@ -155,10 +155,11 @@ namespace Xwt.GtkBackend
 			return !img.HasMultipleSizes;
 		}
 
-		public override object ConvertToBitmap (object handle, int pixelWidth, int pixelHeight, ImageFormat format)
+		public override object ConvertToBitmap (object handle, double width, double height, double scaleFactor, ImageFormat format)
 		{
 			var img = (GtkImage) handle;
-			return new GtkImage (img.GetBestFrame (ApplicationContext, 1, pixelWidth, pixelHeight, true));
+			var f = new GtkImage.ImageFrame (img.GetBestFrame (ApplicationContext, scaleFactor, width, height, true), (int)width, (int)height, true);
+			return new GtkImage (new GtkImage.ImageFrame [] { f });
 		}
 
 		internal static Gdk.Pixbuf CreateBitmap (string stockId, double width, double height, double scaleFactor)

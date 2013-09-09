@@ -91,11 +91,6 @@ namespace Xwt.Drawing
 			return ToVectorImage ().ToBitmap (renderTarget, format);
 		}
 
-		public BitmapImage ToBitmap (int pixelWidth, int pixelHeight, ImageFormat format = ImageFormat.ARGB32)
-		{
-			return ToVectorImage ().ToBitmap (pixelWidth, pixelHeight, format);
-		}
-		
 		public BitmapImage ToBitmap (double scaleFactor, ImageFormat format = ImageFormat.ARGB32)
 		{
 			return ToVectorImage ().ToBitmap (scaleFactor, format);

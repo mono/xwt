@@ -511,8 +511,7 @@ namespace Xwt.Drawing
 		/// <param name="format">Bitmap format</param>
 		public BitmapImage ToBitmap (ImageFormat format = ImageFormat.ARGB32)
 		{
-			var s = GetFixedSize ();
-			return ToBitmap ((int)s.Width, (int)s.Height);
+			return ToBitmap (1d);
 		}
 
 		/// <summary>
@@ -554,25 +553,12 @@ namespace Xwt.Drawing
 		/// Converts the image to a bitmap
 		/// </summary>
 		/// <returns>The bitmap.</returns>
-		/// <param name="pixelWidth">Width of the image in real pixels</param>
-		/// <param name="pixelHeight">Height of the image in real pixels</param>
-		/// <param name="format">Bitmap format</param>
-		public BitmapImage ToBitmap (int pixelWidth, int pixelHeight, ImageFormat format = ImageFormat.ARGB32)
-		{
-			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, pixelWidth, pixelHeight, format);
-			return new BitmapImage (bmp, Size);
-		}
-		
-		/// <summary>
-		/// Converts the image to a bitmap
-		/// </summary>
-		/// <returns>The bitmap.</returns>
 		/// <param name="scaleFactor">Scale factor of the bitmap</param>
 		/// <param name="format">Bitmap format</param>
 		public BitmapImage ToBitmap (double scaleFactor, ImageFormat format = ImageFormat.ARGB32)
 		{
 			var s = GetFixedSize ();
-			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, (int)(s.Width * scaleFactor), (int)(s.Height * scaleFactor), format);
+			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, s.Width, s.Height, scaleFactor, format);
 			return new BitmapImage (bmp, s);
 		}
 

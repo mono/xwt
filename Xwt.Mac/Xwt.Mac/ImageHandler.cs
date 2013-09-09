@@ -104,8 +104,11 @@ namespace Xwt.Mac
 			return img != null && img.Representations ().OfType<NSBitmapImageRep> ().Any ();
 		}
 
-		public override object ConvertToBitmap (object handle, int pixelWidth, int pixelHeight, ImageFormat format)
+		public override object ConvertToBitmap (object handle, double width, double height, double scaleFactor, ImageFormat format)
 		{
+			int pixelWidth = (int)(width * scaleFactor);
+			int pixelHeight = (int)(height * scaleFactor);
+
 			if (handle is CustomImage) {
 				var flags = CGBitmapFlags.ByteOrderDefault;
 				int bytesPerRow;
@@ -142,6 +145,7 @@ namespace Xwt.Mac
 				var imageRep = (NSBitmapImageRep) NSBitmapImageRep.ImageRepFromData (imageData);
 				var im = new NSImage ();
 				im.AddRepresentation (imageRep);
+				im.Size = new SizeF ((float)width, (float)height);
 				return im;
 			}
 			else
