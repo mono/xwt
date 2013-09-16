@@ -44,6 +44,7 @@ namespace Xwt.Backends
 		TreePosition GetNext (TreePosition pos);
 		TreePosition GetPrevious (TreePosition pos);
 		void Clear ();
+		void SetSortField (IDataField field, ColumnSortDirection order);
 	}
 }
 

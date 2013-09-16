@@ -86,6 +86,11 @@ namespace Xwt.GtkBackend
 			Tree.Clear ();
 		}
 
+		public void SetSortField(IDataField field, ColumnSortDirection direction)
+		{
+			Tree.SetSortColumnId (field.Index, direction == ColumnSortDirection.Ascending ? Gtk.SortType.Ascending : Gtk.SortType.Descending);
+		}
+
 		public TreePosition GetChild (TreePosition pos, int index)
 		{
 			IterPos tpos = GetIterPos (pos);
