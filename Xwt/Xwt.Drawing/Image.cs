@@ -525,7 +525,7 @@ namespace Xwt.Drawing
 		{
 			if (renderTarget.ParentWindow == null)
 				throw new InvalidOperationException ("renderTarget is not bound to a window");
-			return ToBitmap (renderTarget.ParentWindow, format);
+			return ToBitmap (renderTarget.ParentWindow.Screen.ScaleFactor, format);
 		}
 
 		/// <summary>
@@ -536,7 +536,7 @@ namespace Xwt.Drawing
 		/// <param name="format">Bitmap format</param>
 		public BitmapImage ToBitmap (WindowFrame renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToBitmap (renderTarget.Screen, format);
+			return ToBitmap (renderTarget.Screen.ScaleFactor, format);
 		}
 
 		/// <summary>
@@ -547,8 +547,7 @@ namespace Xwt.Drawing
 		/// <param name="format">Bitmap format</param>
 		public BitmapImage ToBitmap (Screen renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
-			var s = GetFixedSize ();
-			return ToBitmap ((int)(s.Width * renderTarget.ScaleFactor), (int)(s.Height * renderTarget.ScaleFactor), format);
+			return ToBitmap (renderTarget.ScaleFactor, format);
 		}
 
 		/// <summary>
@@ -561,7 +560,20 @@ namespace Xwt.Drawing
 		public BitmapImage ToBitmap (int pixelWidth, int pixelHeight, ImageFormat format = ImageFormat.ARGB32)
 		{
 			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, pixelWidth, pixelHeight, format);
-			return new BitmapImage (bmp);
+			return new BitmapImage (bmp, Size);
+		}
+		
+		/// <summary>
+		/// Converts the image to a bitmap
+		/// </summary>
+		/// <returns>The bitmap.</returns>
+		/// <param name="scaleFactor">Scale factor of the bitmap</param>
+		/// <param name="format">Bitmap format</param>
+		public BitmapImage ToBitmap (double scaleFactor, ImageFormat format = ImageFormat.ARGB32)
+		{
+			var s = GetFixedSize ();
+			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, (int)(s.Width * scaleFactor), (int)(s.Height * scaleFactor), format);
+			return new BitmapImage (bmp, s);
 		}
 
 		protected virtual Size GetDefaultSize ()

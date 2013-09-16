@@ -60,7 +60,7 @@ namespace Xwt.Motion
 
 		static double Interpolate (double ratio, double beginValue, double endValue)
 		{
-			return beginValue - (endValue - beginValue) * ratio;
+			return beginValue + (endValue - beginValue) * ratio;
 		}
 	}
 }
