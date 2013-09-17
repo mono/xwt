@@ -984,16 +984,16 @@ namespace Xwt
 			if (sizeCached && widthConstraint == cachedWidthConstraint && heightConstraint == cachedHeightConstraint)
 				return cachedSize;
 			else {
-				if (DebugWidgetLayout) {
-					LayoutLog ("GetPreferredSize: wc:{0} hc:{1} - {2}", widthConstraint, heightConstraint, GetWidgetDesc ());
-					DebugWidgetLayoutIndent += 3;
-				}
-
 				if (widthRequest != -1 && !widthConstraint.IsConstrained)
 					widthConstraint = SizeConstraint.WithSize (widthRequest);
 
 				if (heightRequest != -1 && !heightConstraint.IsConstrained)
 					heightConstraint = SizeConstraint.WithSize (heightRequest);
+
+				if (DebugWidgetLayout) {
+					LayoutLog ("GetPreferredSize: wc:{0} hc:{1} - {2}", widthConstraint, heightConstraint, GetWidgetDesc ());
+					DebugWidgetLayoutIndent += 3;
+				}
 
 				if (widthRequest == -1 || heightRequest == -1)
 					cachedSize = OnGetPreferredSize (widthConstraint, heightConstraint);
@@ -1020,6 +1020,11 @@ namespace Xwt
 					cachedWidthConstraint = widthConstraint;
 					cachedHeightConstraint = heightConstraint;
 				}
+
+				if (DebugWidgetLayout) {
+					LayoutLog ("-> {0}", cachedSize);
+				}
+
 				return cachedSize;
 			}
 		}
@@ -1047,9 +1052,15 @@ namespace Xwt
 		{
 			return Backend.GetPreferredSize (widthConstraint, heightConstraint);
 		}
-		
-		void OnChildPreferredSizeChanged ()
+
+		protected virtual void OnChildPreferredSizeChanged ()
 		{
+		}
+
+		void NotifyChildPreferredSizeChanged ()
+		{
+			OnChildPreferredSizeChanged ();
+
 			if (Parent != null && resizeRequestQueue.Contains (Parent)) {
 				// Size for this widget will be checked when checking the parent
 				ResetCachedSizes ();
@@ -1083,7 +1094,7 @@ namespace Xwt
 			// The parent also has to be notified of the size change, since it
 			// may imply a change of the size of the parent. However, we don't do
 			// it immediately, but we queue the resizing request
-			
+
 			ResetCachedSizes ();
 			Backend.UpdateLayout ();
 			if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
@@ -1186,7 +1197,7 @@ namespace Xwt
 					Array.Sort (depths, items, 0, remaining);
 
 					for (int k=remaining - 1; k>=0; k--)
-						items[k].OnChildPreferredSizeChanged ();
+						items[k].NotifyChildPreferredSizeChanged ();
 
 					n += remaining;
 				}
