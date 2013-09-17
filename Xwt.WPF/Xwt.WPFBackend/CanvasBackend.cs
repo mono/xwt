@@ -93,8 +93,7 @@ namespace Xwt.WPFBackend
 			// preferred size is normally set to infinite.
 			element.InvalidateMeasure ();
 			element.Measure (new System.Windows.Size (w, h));
-			element.Height = h;
-			element.Width = w;
+			element.RenderSize = new System.Windows.Size (w, h);
 			element.UpdateLayout ();
 		}
 

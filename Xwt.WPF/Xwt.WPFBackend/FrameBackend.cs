@@ -45,9 +45,11 @@ namespace Xwt.WPFBackend
 			ExGrid grid = new ExGrid();
 			grid.Children.Add (this.groupBox = new SWC.GroupBox ());
 			grid.Children.Add (this.flippedGroupBox = new SWC.GroupBox ());
+			groupBox.SizeChanged += delegate (object sender, SizeChangedEventArgs e)
+			{
+				flippedGroupBox.RenderSize = groupBox.RenderSize;
+			};
 
-			this.flippedGroupBox.SetBinding (FrameworkElement.WidthProperty, new Binding ("ActualWidth") { Source = this.groupBox });
-			this.flippedGroupBox.SetBinding (FrameworkElement.HeightProperty, new Binding ("ActualHeight") { Source = this.groupBox });
 			this.flippedGroupBox.SetBinding (UIElement.IsEnabledProperty, new Binding ("IsEnabled") { Source = this.groupBox });
 			this.flippedGroupBox.SetBinding (Control.BorderBrushProperty, new Binding ("BorderBrush") { Source = this.groupBox });
 			this.flippedGroupBox.SetBinding (Control.BorderThicknessProperty,
