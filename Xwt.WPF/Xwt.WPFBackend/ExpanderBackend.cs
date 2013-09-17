@@ -35,10 +35,16 @@ namespace Xwt.WPFBackend
 			Widget = new SWC.Expander();
 
 			Widget.Expanded += delegate {
-				EventSink.OnPreferredSizeChanged();
+				System.Windows.Application.Current.Dispatcher.BeginInvoke ((System.Action)delegate ()
+				{
+					EventSink.OnPreferredSizeChanged ();
+				});
 			};
 			Widget.Collapsed += delegate {
-				EventSink.OnPreferredSizeChanged();
+				System.Windows.Application.Current.Dispatcher.BeginInvoke ((System.Action)delegate ()
+				{
+					EventSink.OnPreferredSizeChanged ();
+				});
 			};
 		}
 
