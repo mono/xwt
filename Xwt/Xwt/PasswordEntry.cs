@@ -26,7 +26,7 @@ namespace Xwt
 
 			public override Size GetDefaultNaturalSize ()
 			{
-				return Xwt.Backends.DefaultNaturalSizes.PasswordEntry;
+				return DefaultNaturalSizes.PasswordEntry;
 			}
 		}
 

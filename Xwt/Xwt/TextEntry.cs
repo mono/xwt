@@ -48,7 +48,7 @@ namespace Xwt
 			
 			public override Size GetDefaultNaturalSize ()
 			{
-				return Xwt.Backends.DefaultNaturalSizes.TextEntry;
+				return DefaultNaturalSizes.TextEntry;
 			}
 		}
 		
