@@ -223,7 +223,29 @@ namespace Xwt.GtkBackend
 		{
 			return new Color ((double)color.Red / (double)ushort.MaxValue, (double)color.Green / (double)ushort.MaxValue, (double)color.Blue / (double)ushort.MaxValue);
 		}
+
+		public static Pango.EllipsizeMode ToGtkValue (this EllipsizeMode value)
+		{
+			switch (value) {
+			case Xwt.EllipsizeMode.None: return Pango.EllipsizeMode.None;
+			case Xwt.EllipsizeMode.Start: return Pango.EllipsizeMode.Start;
+			case Xwt.EllipsizeMode.Middle: return Pango.EllipsizeMode.Middle;
+			case Xwt.EllipsizeMode.End: return Pango.EllipsizeMode.End;
+			}
+			throw new NotSupportedException ();
+		}
 		
+		public static EllipsizeMode ToXwtValue (this Pango.EllipsizeMode value)
+		{
+			switch (value) {
+			case Pango.EllipsizeMode.None: return Xwt.EllipsizeMode.None;
+			case Pango.EllipsizeMode.Start: return Xwt.EllipsizeMode.Start;
+			case Pango.EllipsizeMode.Middle: return Xwt.EllipsizeMode.Middle;
+			case Pango.EllipsizeMode.End: return Xwt.EllipsizeMode.End;
+			}
+			throw new NotSupportedException ();
+		}
+
 		public static ScrollPolicy ConvertScrollPolicy (Gtk.PolicyType p)
 		{
 			switch (p) {

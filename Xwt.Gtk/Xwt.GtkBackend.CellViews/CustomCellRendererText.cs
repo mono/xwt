@@ -60,6 +60,7 @@ namespace Xwt.GtkBackend
 			}
 			Editable = view.Editable;
 			Visible = view.Visible;
+			Ellipsize = view.Ellipsize.ToGtkValue ();
 		}
 		
 		public object GetValue (IDataField field)

@@ -38,10 +38,12 @@ namespace Xwt
 		string text;
 		string markup;
 		bool editable;
+		EllipsizeMode ellipsize;
 
 		public IDataField TextField { get; set; }
 		public IDataField<string> MarkupField { get; set; }
 		public IDataField<bool> EditableField { get; set; }
+		public IDataField<EllipsizeMode> EllipsizeField { get; set; }
 
 		public TextCellView ()
 		{
@@ -87,6 +89,16 @@ namespace Xwt
 			}
 			set {
 				editable = value;
+			}
+		}
+
+		[DefaultValue (EllipsizeMode.None)]
+		public EllipsizeMode Ellipsize {
+			get {
+				return GetValue (EllipsizeField, ellipsize);
+			}
+			set {
+				ellipsize = value;
 			}
 		}
 

@@ -266,22 +266,10 @@ namespace Xwt.GtkBackend
 		
 		public EllipsizeMode Ellipsize {
 			get {
-				var em = Label.Ellipsize;
-				switch (em) {
-				case Pango.EllipsizeMode.None: return Xwt.EllipsizeMode.None;
-				case Pango.EllipsizeMode.Start: return Xwt.EllipsizeMode.Start;
-				case Pango.EllipsizeMode.Middle: return Xwt.EllipsizeMode.Middle;
-				case Pango.EllipsizeMode.End: return Xwt.EllipsizeMode.End;
-				}
-				throw new NotSupportedException ();
+				return Label.Ellipsize.ToXwtValue ();
 			}
 			set {
-				switch (value) {
-				case Xwt.EllipsizeMode.None: Label.Ellipsize = Pango.EllipsizeMode.None; break;
-				case Xwt.EllipsizeMode.Start: Label.Ellipsize = Pango.EllipsizeMode.Start; break;
-				case Xwt.EllipsizeMode.Middle: Label.Ellipsize = Pango.EllipsizeMode.Middle; break;
-				case Xwt.EllipsizeMode.End: Label.Ellipsize = Pango.EllipsizeMode.End; break;
-				}
+				Label.Ellipsize = value.ToGtkValue ();
 			}
 		}
 

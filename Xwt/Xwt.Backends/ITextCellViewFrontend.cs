@@ -32,6 +32,7 @@ namespace Xwt.Backends
 		string Markup { get; }
 		string Text { get; }
 		bool Editable { get; }
+		EllipsizeMode Ellipsize { get; }
 		
 		bool RaiseTextChanged ();
 
