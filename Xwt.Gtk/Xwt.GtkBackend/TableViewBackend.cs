@@ -150,7 +150,7 @@ namespace Xwt.GtkBackend
 			else if (change == ListViewColumnChange.SortDataField)
 				tc.SortColumnId = col.SortDataField.Index;
 			else if (change == ListViewColumnChange.IsSortIndicatorShown)
-				tc.SortIndicator = col.IsSortIndicatorShown;
+				tc.SortIndicator = col.SortIndicatorVisible;
 		}
 
 		public void SelectAll ()

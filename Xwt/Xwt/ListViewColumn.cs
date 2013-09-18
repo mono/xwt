@@ -161,7 +161,7 @@ namespace Xwt
 		/// <summary>
 		/// Gets or sets a value indicating whether a sort indicator is shown.
 		/// </summary>
-		public bool IsSortIndicatorShown {
+		public bool SortIndicatorVisible {
 			get {
 				return isSortIndicatorShown;
 			}
