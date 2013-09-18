@@ -1,10 +1,13 @@
 ﻿using Xwt.Backends;
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
 	public class PasswordEntryBackend : WidgetBackend, IPasswordEntryBackend
 	{
+		string placeHolderText;
+
 		public override void Initialize ()
 		{
 			Widget = new Gtk.Entry ();
@@ -22,20 +25,57 @@ namespace Xwt.GtkBackend
 		}
 
 		public string Password {
+			get { return Widget.Text; }
+			set { Widget.Text = value ?? ""; } // null value causes GTK error
+		}
+
+		public System.Security.SecureString SecurePassword {
 			get {
-				return Widget.Text;
+				var text = Widget.Text;
+				unsafe {
+					fixed (char *ptr = text) {
+						return new System.Security.SecureString (ptr, text.Length);
+					}
+				}
+			}
+		}
+
+		public string PlaceholderText {
+			get { return placeHolderText; }
+			set {
+				if (placeHolderText != value) {
+					if (placeHolderText == null)
+						Widget.ExposeEvent += HandleWidgetExposeEvent;
+					else if (value == null)
+						Widget.ExposeEvent -= HandleWidgetExposeEvent;
+				}
+				placeHolderText = value;
+			}
+		}
+
+		public override Color BackgroundColor {
+			get {
+				return base.BackgroundColor;
 			}
 			set {
-				Widget.Text = value;
+				base.BackgroundColor = value;
+				Widget.ModifyBase (Gtk.StateType.Normal, value.ToGdkColor ());
 			}
+		}
+
+		Pango.Layout layout;
+
+		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
+		{
+			TextEntryBackend.RenderPlaceholderText (Widget, args, placeHolderText, ref layout);
 		}
 
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
-			if (eventId is TextEntryEvent) {
-				switch ((TextEntryEvent)eventId) {
-					case TextEntryEvent.Changed: Widget.Changed += HandleChanged; break;
+			if (eventId is PasswordEntryEvent) {
+				switch ((PasswordEntryEvent)eventId) {
+				case PasswordEntryEvent.Changed: Widget.Changed += HandleChanged; break;
 				}
 			}
 		}
@@ -43,9 +83,9 @@ namespace Xwt.GtkBackend
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			if (eventId is TextEntryEvent) {
-				switch ((TextEntryEvent)eventId) {
-					case TextEntryEvent.Changed: Widget.Changed -= HandleChanged; break;
+			if (eventId is PasswordEntryEvent) {
+				switch ((PasswordEntryEvent)eventId) {
+				case PasswordEntryEvent.Changed: Widget.Changed -= HandleChanged; break;
 				}
 			}
 		}
@@ -55,6 +95,18 @@ namespace Xwt.GtkBackend
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnChanged ();
 			});
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (disposing) {
+				var l = layout;
+				if (l != null) {
+					l.Dispose ();
+					layout = null;
+				}
+			}
+			base.Dispose (disposing);
 		}
 	}
 }

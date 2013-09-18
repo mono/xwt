@@ -50,6 +50,16 @@ namespace Xwt
 			set { Backend.Password = value; }
 		}
 
+		public System.Security.SecureString SecurePassword {
+			get { return Backend.SecurePassword; }
+		}
+
+		[DefaultValue ("")]
+		public string PlaceholderText {
+			get { return Backend.PlaceholderText; }
+			set { Backend.PlaceholderText = value; }
+		}
+
 		protected virtual void OnChanged (EventArgs e)
 		{
 			if (changed != null)

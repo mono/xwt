@@ -24,6 +24,20 @@ namespace Xwt.WPFBackend
 			set { PasswordBox.Password = value; }
 		}
 
+		public System.Security.SecureString SecurePassword
+		{
+			get { return PasswordBox.SecurePassword; }
+		}
+
+		public string PlaceholderText {
+			get {
+				throw new System.NotImplementedException ();
+			}
+			set {
+				throw new System.NotImplementedException ();
+			}
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
