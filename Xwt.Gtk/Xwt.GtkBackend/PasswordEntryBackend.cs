@@ -20,8 +20,8 @@ namespace Xwt.GtkBackend
 			set { base.Widget = value; }
 		}
 
-		protected new ITextEntryEventSink EventSink {
-			get { return (ITextEntryEventSink)base.EventSink; }
+		protected new IPasswordEntryEventSink EventSink {
+			get { return (IPasswordEntryEventSink)base.EventSink; }
 		}
 
 		public string Password {
