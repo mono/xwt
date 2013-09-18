@@ -36,32 +36,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Samples\ChartSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Mnemonics.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Spinners.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\LinkLabels.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\NotebookSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Boxes.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\ListView1.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\DragDrop.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Samples\ChartSample.cs" />
+    <Compile Include="Samples\Mnemonics.cs" />
+    <Compile Include="Samples\Spinners.cs" />
+    <Compile Include="Samples\LinkLabels.cs" />
+    <Compile Include="Samples\NotebookSample.cs" />
+    <Compile Include="Samples\Boxes.cs" />
+    <Compile Include="Samples\ListView1.cs" />
+    <Compile Include="Samples\DragDrop.cs" />
     <Compile Include="MainWindow.cs">
-      <SubType>Component</SubType>
       <DeployService-Deploy>True</DeployService-Deploy>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
@@ -72,104 +55,42 @@
     <Compile Include="MonoDevelop.Components.Chart\Axis.cs" />
     <Compile Include="MonoDevelop.Components.Chart\AxisDimension.cs" />
     <Compile Include="MonoDevelop.Components.Chart\AxisPosition.cs" />
-    <Compile Include="MonoDevelop.Components.Chart\BasicChart.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="MonoDevelop.Components.Chart\BasicChart.cs" />
     <Compile Include="MonoDevelop.Components.Chart\ChartCursor.cs" />
     <Compile Include="MonoDevelop.Components.Chart\DateTimeAxis.cs" />
     <Compile Include="MonoDevelop.Components.Chart\IntegerAxis.cs" />
     <Compile Include="MonoDevelop.Components.Chart\Serie.cs" />
     <Compile Include="MonoDevelop.Components.Chart\TickEnumerator.cs" />
-    <Compile Include="Samples\PartialImages.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\ScrollWindowSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\ButtonSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\DrawingTransforms.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\ComboBoxes.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Designer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Windows.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\TextEntries.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Images.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\CanvasWithWidget.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Tables.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Labels.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Colors.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Frames.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Checkboxes.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\WidgetEvents.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\ClipboardSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\MenuSamples.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Tooltips.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\TreeViews.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\PanedViews.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\DrawingText.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\DrawingFigures.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\DrawingPatternsAndImages.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\ListBoxSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\ColorSelectorSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\ProgressBarSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\ExpanderSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\Markdown.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\PopoverSample.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Samples\PartialImages.cs" />
+    <Compile Include="Samples\ScrollWindowSample.cs" />
+    <Compile Include="Samples\ButtonSample.cs" />
+    <Compile Include="Samples\DrawingTransforms.cs" />
+    <Compile Include="Samples\ComboBoxes.cs" />
+    <Compile Include="Samples\Designer.cs" />
+    <Compile Include="Samples\Windows.cs" />
+    <Compile Include="Samples\TextEntries.cs" />
+    <Compile Include="Samples\Images.cs" />
+    <Compile Include="Samples\CanvasWithWidget.cs" />
+    <Compile Include="Samples\Tables.cs" />
+    <Compile Include="Samples\Labels.cs" />
+    <Compile Include="Samples\Colors.cs" />
+    <Compile Include="Samples\Frames.cs" />
+    <Compile Include="Samples\Checkboxes.cs" />
+    <Compile Include="Samples\WidgetEvents.cs" />
+    <Compile Include="Samples\ClipboardSample.cs" />
+    <Compile Include="Samples\MenuSamples.cs" />
+    <Compile Include="Samples\Tooltips.cs" />
+    <Compile Include="Samples\TreeViews.cs" />
+    <Compile Include="Samples\PanedViews.cs" />
+    <Compile Include="Samples\DrawingText.cs" />
+    <Compile Include="Samples\DrawingFigures.cs" />
+    <Compile Include="Samples\DrawingPatternsAndImages.cs" />
+    <Compile Include="Samples\ListBoxSample.cs" />
+    <Compile Include="Samples\ColorSelectorSample.cs" />
+    <Compile Include="Samples\ProgressBarSample.cs" />
+    <Compile Include="Samples\ExpanderSample.cs" />
+    <Compile Include="Samples\Markdown.cs" />
+    <Compile Include="Samples\PopoverSample.cs" />
     <Compile Include="Samples\ScreensSample.cs" />
     <Compile Include="Samples\ImageScaling.cs" />
     <Compile Include="Samples\RadioButtonSample.cs" />
@@ -177,9 +98,7 @@
     <Compile Include="Samples\ScrollbarSample.cs" />
     <Compile Include="Samples\DatePickerSample.cs" />
     <Compile Include="Samples\SliderSample.cs" />
-    <Compile Include="Samples\ListView2.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Samples\ListView2.cs" />
     <Compile Include="Samples\OpacitySample.cs" />
     <Compile Include="Samples\PasswordEntries.cs" />
   </ItemGroup>

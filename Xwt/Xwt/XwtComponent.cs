@@ -33,7 +33,8 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public abstract class XwtComponent: Component, IFrontend
+	[System.ComponentModel.DesignerCategory ("Code")]
+	public abstract class XwtComponent : Component, IFrontend
 	{
 		BackendHost backendHost;
 		
