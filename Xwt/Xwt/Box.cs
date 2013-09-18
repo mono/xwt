@@ -295,11 +295,6 @@ namespace Xwt
 				}
 			}
 			Backend.SetAllocation (widgets, rects);
-			
-			if (!BackendHost.EngineBackend.HandlesSizeNegotiation) {
-				foreach (var bp in visibleChildren)
-					bp.Child.Surface.Reallocate ();
-			}
 		}
 		
 		void CalcDefaultSizes (double width, double height)

@@ -117,9 +117,6 @@ namespace Xwt
 				var y = child.Margin.Top + Padding.Top + YAlign * (availableHeight - childSize.Height);
 
 				Backend.SetAllocation (new[] { (IWidgetBackend)GetBackend (child) }, new[] { new Rectangle (x, y, childSize.Width, childSize.Height).Round () });
-
-				if (!BackendHost.EngineBackend.HandlesSizeNegotiation)
-					child.Surface.Reallocate ();
 			}
 		}
 

@@ -907,7 +907,7 @@ namespace Xwt
 			// itself when its size changes
 			if (boundsChanged == null) {
 				BoundsChanged += delegate {
-					OnReallocate ();
+					Reallocate ();
 				};
 			}
 		}
@@ -958,16 +958,7 @@ namespace Xwt
 		
 		void IWidgetSurface.Reallocate ()
 		{
-			reallocationQueue.Remove (this);
-			if (DebugWidgetLayout) {
-				LayoutLog ("Reallocate: {0} - {1}", Size, GetWidgetDesc ());
-				DebugWidgetLayoutIndent += 3;
-			}
-
-			OnReallocate ();
-
-			if (DebugWidgetLayout)
-				DebugWidgetLayoutIndent -= 3;
+			Reallocate ();
 		}
 
 		Size IWidgetSurface.GetPreferredSize (bool includeMargin)
@@ -1036,13 +1027,34 @@ namespace Xwt
 		Toolkit IWidgetSurface.ToolkitEngine {
 			get { return BackendHost.ToolkitEngine; }
 		}
-		
+
+		void Reallocate ()
+		{
+			reallocationQueue.Remove (this);
+			if (DebugWidgetLayout) {
+				LayoutLog ("Reallocate: {0} - {1}", Size, GetWidgetDesc ());
+				DebugWidgetLayoutIndent += 3;
+			}
+
+			OnReallocate ();
+
+			if (children != null && !BackendHost.EngineBackend.HandlesSizeNegotiation) {
+				foreach (Widget w in children) {
+					if (w.Visible)
+						w.Surface.Reallocate ();
+				}
+			}
+
+			if (DebugWidgetLayout)
+				DebugWidgetLayoutIndent -= 3;
+		}
+
+		/// <summary>
+		/// Called when the size of this widget has changed and its children have to be relocated
+		/// </summary>
+		/// <remarks>It is not necessary to call Reallocate on the children. The Widget class will do it after invoking this method.</remarks>
 		protected virtual void OnReallocate ()
 		{
-			if (children != null) {
-				foreach (Widget w in children)
-					w.Surface.Reallocate ();
-			}
 		}
 
 		/// <summary>
