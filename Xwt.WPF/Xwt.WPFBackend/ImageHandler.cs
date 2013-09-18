@@ -225,10 +225,10 @@ namespace Xwt.WPFBackend
 				return img.Height;
 		}
 
-		public override object ConvertToBitmap (object img, int width, int height, Xwt.Drawing.ImageFormat format)
+		public override object ConvertToBitmap (object img, double width, double height, double scaleFactor, Xwt.Drawing.ImageFormat format)
 		{
 			var wpfImage = (WpfImage)img;
-			return new WpfImage (wpfImage.GetBestFrame (ApplicationContext, 1, width, height, true));
+			return new WpfImage (wpfImage.GetBestFrame (ApplicationContext, scaleFactor, width, height, true));
 		}
 
 		public override bool HasMultipleSizes (object handle)

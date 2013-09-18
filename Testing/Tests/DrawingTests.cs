@@ -57,7 +57,7 @@ namespace Xwt
 		{
 			if (builder == null)
 				return;
-			var img = builder.ToBitmap ((int)builder.Width, (int)builder.Height);
+			var img = builder.ToBitmap ();
 			builder.Dispose ();
 			builder = null;
 
