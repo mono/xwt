@@ -54,10 +54,10 @@ namespace Xwt.Backends
 	{
 		Title,
 		Cells,
-		IsResizeable,
+		CanResize,
 		SortDirection,
 		SortDataField,
-		IsSortIndicatorShown
+		SortIndicatorVisible
 	}
 	
 	public enum TreeViewEvent

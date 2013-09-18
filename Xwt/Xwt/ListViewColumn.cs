@@ -113,14 +113,14 @@ namespace Xwt
 		/// Gets or sets a value indicating whether this column is user resizeable.
 		/// </summary>
 		/// <value><c>true</c> if this column is user resizeable; otherwise, <c>false</c>.</value>
-		public bool IsResizeable {
+		public bool CanResize {
 			get {
 				return isResizeable;
 			}
 			set {
 				isResizeable = value;
 				if (Parent != null)
-					Parent.UpdateColumn (this, Handle, ListViewColumnChange.IsResizeable);
+					Parent.UpdateColumn (this, Handle, ListViewColumnChange.CanResize);
 			}
 		}
 
@@ -168,7 +168,7 @@ namespace Xwt
 			set {
 				isSortIndicatorShown = value;
 				if (Parent != null)
-					Parent.UpdateColumn (this, Handle, ListViewColumnChange.IsSortIndicatorShown);
+					Parent.UpdateColumn (this, Handle, ListViewColumnChange.SortIndicatorVisible);
 			}
 		}
 	}
