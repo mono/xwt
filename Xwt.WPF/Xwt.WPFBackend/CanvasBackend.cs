@@ -17,13 +17,13 @@ namespace Xwt.WPFBackend
 
 		public CanvasBackend ()
 		{
-			Canvas = new ExCanvas ();
+			Canvas = new CustomPanel ();
 			Canvas.RenderAction = Render;
 		}
 
-		private ExCanvas Canvas
+		private CustomPanel Canvas
 		{
-			get { return (ExCanvas) Widget; }
+			get { return (CustomPanel)Widget; }
 			set { Widget = value; }
 		}
 
@@ -72,29 +72,20 @@ namespace Xwt.WPFBackend
 			SetChildBounds (widget, bounds);
 		}
 
+		List<IWidgetBackend> children = new List<IWidgetBackend> ();
+		List<Rectangle> childrenBounds = new List<Rectangle> ();
+
 		public void SetChildBounds (IWidgetBackend widget, Rectangle bounds)
 		{
-			FrameworkElement element = widget.NativeWidget as FrameworkElement;
-			if (element == null)
-				throw new ArgumentException ();
-
-			SWC.Canvas.SetTop (element, bounds.Top);
-			SWC.Canvas.SetLeft (element, bounds.Left);
-
-			var h = bounds.Height;
-			var w = bounds.Width;
-
-			h = (h > 0) ? h : 0;
-			w = (w > 0) ? w : 0;
-
-			// Measure the widget again using the allocation constraints. This is necessary
-			// because WPF widgets my cache some measurement information based on the
-			// constraints provided in the last Measure call (which when calculating the
-			// preferred size is normally set to infinite.
-			element.InvalidateMeasure ();
-			element.Measure (new System.Windows.Size (w, h));
-			element.RenderSize = new System.Windows.Size (w, h);
-			element.UpdateLayout ();
+			int i = children.IndexOf (widget);
+			if (i == -1) {
+				children.Add (widget);
+				childrenBounds.Add (bounds);
+			}
+			else {
+				childrenBounds[i] = bounds;
+			}
+			Canvas.SetAllocation (children.ToArray (), childrenBounds.ToArray ());
 		}
 
 		public void RemoveChild (IWidgetBackend widget)
@@ -104,6 +95,11 @@ namespace Xwt.WPFBackend
 				throw new ArgumentException ();
 
 			Canvas.Children.Remove (element);
+			int i = children.IndexOf (widget);
+			if (i != -1) {
+				children.RemoveAt (i);
+				childrenBounds.RemoveAt (i);
+			}
 		}
 
 		#endregion

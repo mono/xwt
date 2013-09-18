@@ -28,7 +28,7 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	class CanvasCellViewBackend : ExCanvas, ICellDataSource
+	class CanvasCellViewBackend : CustomPanel, ICellDataSource
 	{
 		public CanvasCellViewBackend()
 		{

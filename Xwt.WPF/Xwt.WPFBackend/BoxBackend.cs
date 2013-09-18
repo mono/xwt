@@ -73,6 +73,16 @@ namespace Xwt.WPFBackend
 
 		public WidgetBackend Backend { get; set; }
 
+		public Action<System.Windows.Media.DrawingContext> RenderAction;
+
+		protected override void OnRender (System.Windows.Media.DrawingContext dc)
+		{
+			var render = RenderAction;
+			if (render != null)
+				render (dc);
+			base.OnRender (dc);
+		}
+
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
 			var s = base.MeasureOverride (constraint);
@@ -113,7 +123,7 @@ namespace Xwt.WPFBackend
 					element.InvalidateMeasure ();
 					element.Measure (new SW.Size (rects[i].Width, rects[i].Height));
 
-					element.Arrange (DataConverter.ToWpfRect (rects[i]));
+					element.Arrange (rects[i].ToWpfRect ());
 					element.UpdateLayout ();
 				}
 			}

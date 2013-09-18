@@ -86,7 +86,6 @@
     <Compile Include="Xwt.WPFBackend\DelegatedCommand.cs" />
     <Compile Include="Xwt.WPFBackend\DialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\DropDownButton.cs" />
-    <Compile Include="Xwt.WPFBackend\ExCanvas.cs" />
     <Compile Include="Xwt.WPFBackend\ExComboBox.cs" />
     <Compile Include="Xwt.WPFBackend\ExGrid.cs" />
     <Compile Include="Xwt.WPFBackend\ExListBox.cs" />
