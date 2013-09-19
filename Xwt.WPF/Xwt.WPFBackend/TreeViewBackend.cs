@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -158,9 +159,24 @@ namespace Xwt.WPFBackend
 			Tree.UnselectAll();
 		}
 
-		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
+		public void SetSource(ITreeDataSource source, IBackend sourceBackend)
 		{
-			Tree.ItemsSource = (TreeStoreBackend) sourceBackend;
+			var oldBackend = Tree.ItemsSource as TreeStoreBackend;
+			if (oldBackend != null)
+				oldBackend.SortOptionsChanged -= TreeStoreBackend_SortOptionsChanged;
+
+			var treeStoreBackend = (TreeStoreBackend)sourceBackend;
+			treeStoreBackend.SortOptionsChanged += TreeStoreBackend_SortOptionsChanged;
+
+			Tree.ItemsSource = treeStoreBackend;
+			if (treeStoreBackend.SortField != null)
+				Tree.Items.SortDescriptions.Add(new SortDescription(".[" + treeStoreBackend.SortField.Index + "]", treeStoreBackend.SortOrder == ColumnSortDirection.Ascending ? ListSortDirection.Ascending : ListSortDirection.Descending));
+		}
+
+		void TreeStoreBackend_SortOptionsChanged(object sender, SortingOptionsEventArgs e)
+		{
+			Tree.Items.SortDescriptions.Clear();
+			Tree.Items.SortDescriptions.Add(new SortDescription(".[" + e.SortField.Index + "]", e.SortOrder == ColumnSortDirection.Ascending ? ListSortDirection.Ascending : ListSortDirection.Descending));
 		}
 
 		public object AddColumn (ListViewColumn column)
