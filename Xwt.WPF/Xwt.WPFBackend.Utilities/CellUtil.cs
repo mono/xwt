@@ -89,6 +89,19 @@ namespace Xwt.WPFBackend.Utilities
 
 				return factory;
 			}
+			
+			CheckBoxCellView cellView = view as CheckBoxCellView;
+            		if (cellView != null)
+            		{
+                		FrameworkElementFactory factory = new FrameworkElementFactory(typeof(SWC.CheckBox));
+                		factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
+                		if (cellView.ActiveField != null)
+                		{
+                    			factory.SetBinding(SWC.CheckBox.IsCheckedProperty, new Binding(dataPath + "[" + cellView.ActiveField.Index + "]"));
+                		}
+
+                		return factory;
+            		}
 
 			throw new NotImplementedException ();
 		}
