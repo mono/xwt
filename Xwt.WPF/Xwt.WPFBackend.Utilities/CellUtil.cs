@@ -55,11 +55,28 @@ namespace Xwt.WPFBackend.Utilities
 		{
 			TextCellView textView = view as TextCellView;
 			if (textView != null) {
-				FrameworkElementFactory factory = new FrameworkElementFactory (typeof (SWC.TextBlock));
-				factory.SetValue (FrameworkElement.MarginProperty, CellMargins);
-
-				if (textView.TextField != null)
-					factory.SetBinding (SWC.TextBlock.TextProperty, new Binding (dataPath + "[" + textView.TextField.Index + "]"));
+                // if it's an editable textcontrol, use a TextBox, if not use a TextBlock. Reason for this is that 
+                // a user usually expects to be able to edit a text if a text cursor is appearing above a field.
+                FrameworkElementFactory factory;
+                if (textView.Editable)
+                {
+                    factory = new FrameworkElementFactory(typeof(SWC.TextBox));
+                    factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
+                    factory.SetValue(SWC.TextBox.IsReadOnlyProperty, false);
+                    if (textView.TextField != null)
+                    {
+                        factory.SetBinding(SWC.TextBox.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
+                    }
+                }
+                else
+                {
+                    factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
+                    factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
+                    if (textView.TextField != null)
+                    {
+                        factory.SetBinding(SWC.TextBlock.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
+                    }
+                }
 
 				return factory;
 			}
@@ -94,6 +111,8 @@ namespace Xwt.WPFBackend.Utilities
             		if (cellView != null)
             		{
                 		FrameworkElementFactory factory = new FrameworkElementFactory(typeof(SWC.CheckBox));
+                        factory.SetValue(FrameworkElement.IsEnabledProperty, cellView.Editable);
+                        factory.SetValue(SWC.CheckBox.IsThreeStateProperty, cellView.AllowMixed);
                 		factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
                 		if (cellView.ActiveField != null)
                 		{
