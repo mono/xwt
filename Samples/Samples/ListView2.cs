@@ -14,13 +14,15 @@ namespace Samples
 			var textField = new DataField<string> ();
 			var textField2 = new DataField<string> ();
 			var editableField = new DataField<bool> ();
+            var somewhatEditableData = new DataField<bool>();
 
-			ListStore store = new ListStore (editableActiveField, nonEditableActiveField, textField, textField2, editableField);
+            ListStore store = new ListStore(editableActiveField, nonEditableActiveField, textField, textField2, editableField, somewhatEditableData);
 			list.DataSource = store;
 
 			list.Columns.Add (new ListViewColumn("Editable", new CheckBoxCellView { Editable = true, ActiveField = editableActiveField }));
 			list.Columns.Add (new ListViewColumn("Not Editable", new CheckBoxCellView { Editable = false, ActiveField = nonEditableActiveField }));
 			list.Columns.Add (new ListViewColumn("Editable", new TextCellView { Editable = true, TextField = textField }));
+            list.Columns.Add(new ListViewColumn("Somewhat Editable", new CheckBoxCellView { EditableField = editableField, ActiveField = somewhatEditableData }));
 			list.Columns.Add (new ListViewColumn("Somewhat Editable", new TextCellView { EditableField = editableField, TextField = textField2 }));
 
 			Random rand = new Random ();
@@ -29,6 +31,7 @@ namespace Samples
 				var r = store.AddRow ();
 				store.SetValue (r, editableActiveField, rand.Next(0, 2) == 0);
 				store.SetValue (r, nonEditableActiveField, rand.Next(0, 2) == 0);
+                store.SetValue(r, somewhatEditableData, rand.Next(0, 2) == 0);
 				store.SetValue (r, textField, n.ToString ());
 				var edit = (n % 2) == 0;
 				store.SetValue (r, editableField, edit);
