@@ -76,6 +76,7 @@ namespace Xwt.GtkBackend
 			if (eventId is PasswordEntryEvent) {
 				switch ((PasswordEntryEvent)eventId) {
 				case PasswordEntryEvent.Changed: Widget.Changed += HandleChanged; break;
+				case PasswordEntryEvent.Activated: Widget.Activated += HandleActivated; break;
 				}
 			}
 		}
@@ -86,6 +87,7 @@ namespace Xwt.GtkBackend
 			if (eventId is PasswordEntryEvent) {
 				switch ((PasswordEntryEvent)eventId) {
 				case PasswordEntryEvent.Changed: Widget.Changed -= HandleChanged; break;
+				case PasswordEntryEvent.Activated: Widget.Activated -= HandleActivated; break;
 				}
 			}
 		}
@@ -94,6 +96,13 @@ namespace Xwt.GtkBackend
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnChanged ();
+			});
+		}
+
+		void HandleActivated (object sender, EventArgs e)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnActivated ();
 			});
 		}
 

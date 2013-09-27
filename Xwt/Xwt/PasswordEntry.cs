@@ -10,11 +10,12 @@ namespace Xwt
 	[BackendType (typeof (IPasswordEntryBackend))]
 	public class PasswordEntry : Widget
 	{
-		EventHandler changed;
+		EventHandler changed, activated;
 
 		static PasswordEntry ()
 		{
 			MapEvent (PasswordEntryEvent.Changed, typeof (PasswordEntry), "OnChanged");
+			MapEvent (PasswordEntryEvent.Activated, typeof (PasswordEntry), "OnActivated");
 		}
 
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IPasswordEntryEventSink
@@ -22,6 +23,11 @@ namespace Xwt
 			public void OnChanged ()
 			{
 				((PasswordEntry) Parent).OnChanged (EventArgs.Empty);
+			}
+
+			public void OnActivated ()
+			{
+				((PasswordEntry) Parent).OnActivated (EventArgs.Empty);
 			}
 
 			public override Size GetDefaultNaturalSize ()
@@ -75,6 +81,24 @@ namespace Xwt
 			remove {
 				changed -= value;
 				BackendHost.OnAfterEventRemove (PasswordEntryEvent.Changed, changed);
+			}
+		}
+
+		protected virtual void OnActivated (EventArgs e)
+		{
+			if (activated != null)
+				activated (this, e);
+		}
+
+		public event EventHandler Activated
+		{
+			add {
+				BackendHost.OnBeforeEventAdd (PasswordEntryEvent.Activated, changed);
+				activated += value;
+			}
+			remove {
+				activated -= value;
+				BackendHost.OnAfterEventRemove (PasswordEntryEvent.Activated, changed);
 			}
 		}
 	}

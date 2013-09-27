@@ -164,6 +164,7 @@ namespace Xwt.GtkBackend
 			if (eventId is TextEntryEvent) {
 				switch ((TextEntryEvent)eventId) {
 				case TextEntryEvent.Changed: Widget.Changed += HandleChanged; break;
+				case TextEntryEvent.Activated: Widget.Activated += HandleActivated; break;
 				}
 			}
 		}
@@ -174,6 +175,7 @@ namespace Xwt.GtkBackend
 			if (eventId is TextEntryEvent) {
 				switch ((TextEntryEvent)eventId) {
 				case TextEntryEvent.Changed: Widget.Changed -= HandleChanged; break;
+				case TextEntryEvent.Activated: Widget.Activated -= HandleActivated; break;
 				}
 			}
 		}
@@ -182,6 +184,13 @@ namespace Xwt.GtkBackend
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnChanged ();
+			});
+		}
+
+		void HandleActivated (object sender, EventArgs e)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnActivated ();
 			});
 		}
 

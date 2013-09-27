@@ -32,11 +32,12 @@ namespace Xwt
 	[BackendType (typeof(ITextEntryBackend))]
 	public class TextEntry: Widget
 	{
-		EventHandler changed;
+		EventHandler changed, activated;
 		
 		static TextEntry ()
 		{
 			MapEvent (TextEntryEvent.Changed, typeof(TextEntry), "OnChanged");
+			MapEvent (TextEntryEvent.Activated, typeof(TextEntry), "OnActivated");
 		}
 		
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ITextEntryEventSink
@@ -44,6 +45,11 @@ namespace Xwt
 			public void OnChanged ()
 			{
 				((TextEntry)Parent).OnChanged (EventArgs.Empty);
+			}
+
+			public void OnActivated ()
+			{
+				((TextEntry)Parent).OnActivated (EventArgs.Empty);
 			}
 			
 			public override Size GetDefaultNaturalSize ()
@@ -114,6 +120,23 @@ namespace Xwt
 			remove {
 				changed -= value;
 				BackendHost.OnAfterEventRemove (TextEntryEvent.Changed, changed);
+			}
+		}
+
+		protected virtual void OnActivated (EventArgs e)
+		{
+			if (activated != null)
+				activated (this, e);
+		}
+
+		public event EventHandler Activated {
+			add {
+				BackendHost.OnBeforeEventAdd (TextEntryEvent.Activated, activated);
+				activated += value;
+			}
+			remove {
+				activated -= value;
+				BackendHost.OnAfterEventRemove (TextEntryEvent.Activated, activated);
 			}
 		}
 	}
