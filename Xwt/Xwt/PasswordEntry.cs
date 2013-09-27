@@ -93,12 +93,12 @@ namespace Xwt
 		public event EventHandler Activated
 		{
 			add {
-				BackendHost.OnBeforeEventAdd (PasswordEntryEvent.Activated, changed);
+				BackendHost.OnBeforeEventAdd (PasswordEntryEvent.Activated, activated);
 				activated += value;
 			}
 			remove {
 				activated -= value;
-				BackendHost.OnAfterEventRemove (PasswordEntryEvent.Activated, changed);
+				BackendHost.OnAfterEventRemove (PasswordEntryEvent.Activated, activated);
 			}
 		}
 	}
