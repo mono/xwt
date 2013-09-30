@@ -37,9 +37,13 @@ namespace Xwt.WPFBackend
 
 		void OnDataChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			if (e.OldValue != null)
+			if (e.OldValue != null && e.OldValue is ValuesContainer)
 				((ValuesContainer)e.OldValue).PropertyChanged -= CanvasCellRenderer_PropertyChanged;
-			((ValuesContainer)DataContext).PropertyChanged += CanvasCellRenderer_PropertyChanged;
+
+			if (e.NewValue is ValuesContainer)
+			{
+				((ValuesContainer)DataContext).PropertyChanged += CanvasCellRenderer_PropertyChanged;
+			}
 		}
 
 		void CanvasCellRenderer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
