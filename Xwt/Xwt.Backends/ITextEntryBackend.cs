@@ -40,11 +40,13 @@ namespace Xwt.Backends
 	public interface ITextEntryEventSink: IWidgetEventSink
 	{
 		void OnChanged ();
+		void OnActivated ();
 	}
 	
 	public enum TextEntryEvent
 	{
-		Changed
+		Changed,
+		Activated
 	}
 }
 

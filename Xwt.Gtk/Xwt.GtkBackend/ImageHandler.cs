@@ -35,6 +35,11 @@ namespace Xwt.GtkBackend
 {
 	public class ImageHandler: ImageBackendHandler
 	{
+		public override object LoadFromFile (string file)
+		{
+			return new GtkImage (new Gdk.Pixbuf (file));
+		}
+
 		public override object LoadFromStream (System.IO.Stream stream)
 		{
 			using (Gdk.PixbufLoader loader = new Gdk.PixbufLoader (stream))
