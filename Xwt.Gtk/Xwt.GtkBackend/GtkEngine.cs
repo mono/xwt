@@ -234,6 +234,11 @@ namespace Xwt.GtkBackend
 			else
 				throw new NotSupportedException ();
 		}
+
+		public override object GetBackendForContext (object nativeContext)
+		{
+			return new CairoContextBackend (1) { Context = (Cairo.Context)nativeContext };
+		}
 		
 		public override object GetNativeParentWindow (Widget w)
 		{
