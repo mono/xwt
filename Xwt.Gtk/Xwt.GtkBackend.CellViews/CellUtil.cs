@@ -55,7 +55,7 @@ namespace Xwt.GtkBackend
 		{
 			if (view is ITextCellViewFrontend) {
 				var cr = new CustomCellRendererText ((ITextCellViewFrontend)view);
-				col.PackStart (target, cr, false);
+				col.PackStart (target, cr, true);
 				col.SetCellDataFunc (target, cr, (cell_layout, cell, treeModel, iter) => cr.LoadData (col as TreeViewBackend, treeModel, iter));
 				return cr;
 			}
