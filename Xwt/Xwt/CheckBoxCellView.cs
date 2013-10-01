@@ -73,7 +73,7 @@ namespace Xwt
 				return GetValue (ActiveField).ToCheckBoxState ();
 			}
 			set {
-				if (value.IsValid ()) {
+				if (!value.IsValid ()) {
 					throw new ArgumentOutOfRangeException ("Invalid checkbox state");
 				}
 				state = value;
