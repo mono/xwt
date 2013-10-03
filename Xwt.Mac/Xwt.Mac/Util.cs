@@ -389,6 +389,20 @@ namespace Xwt.Mac
 				throw new ArgumentOutOfRangeException ();
 			}
 		}
+
+		public static ModifierKeys ToXwtValue (this NSEventModifierMask e)
+		{
+			ModifierKeys m = ModifierKeys.None;
+			if (e.HasFlag (NSEventModifierMask.ControlKeyMask))
+				m |= ModifierKeys.Control;
+			if (e.HasFlag (NSEventModifierMask.AlternateKeyMask))
+				m |= ModifierKeys.Alt;
+			if (e.HasFlag (NSEventModifierMask.CommandKeyMask))
+				m |= ModifierKeys.Command;
+			if (e.HasFlag (NSEventModifierMask.ShiftKeyMask))
+				m |= ModifierKeys.Shift;
+			return m;
+		}
 	}
 
 	public interface ICopiableObject

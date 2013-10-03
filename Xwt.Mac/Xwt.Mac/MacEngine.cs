@@ -120,6 +120,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IDatePickerBackend, DatePickerBackend> ();
 			RegisterBackend <Xwt.Backends.ISliderBackend, SliderBackend> ();
 			RegisterBackend <Xwt.Backends.IEmbeddedWidgetBackend, EmbedNativeWidgetBackend> ();
+			RegisterBackend <Xwt.Backends.KeyboardHandler, MacKeyboardHandler> ();
 		}
 
 		public override void RunApplication ()
