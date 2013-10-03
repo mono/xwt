@@ -173,7 +173,7 @@ namespace Xwt.Drawing
 		public Color WithIncreasedContrast (Color referenceColor, double amount)
 		{
 			Color c = this;
-			if (referenceColor.Brightness > Brightness)
+			if (referenceColor.Light > Light)
 				c.Light -= amount;
 			else
 				c.Light += amount;
