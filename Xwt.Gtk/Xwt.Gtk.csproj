@@ -126,6 +126,8 @@
     <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererToggle.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererImage.cs" />
     <Compile Include="Xwt.GtkBackend\ScrollbarBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkKeyboardHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\Conversion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

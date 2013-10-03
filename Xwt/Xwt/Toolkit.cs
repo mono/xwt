@@ -211,6 +211,7 @@ namespace Xwt
 			DrawingPathBackendHandler = Backend.CreateBackend<DrawingPathBackendHandler> ();
 			DesktopBackend = Backend.CreateBackend<DesktopBackend> ();
 			VectorImageRecorderContextHandler = new VectorImageRecorderContextHandler (this);
+			KeyboardHandler = Backend.CreateBackend<KeyboardHandler> ();
 		}
 
 		internal static ToolkitEngineBackend GetToolkitBackend (Type type)
@@ -424,6 +425,7 @@ namespace Xwt
 		internal DrawingPathBackendHandler DrawingPathBackendHandler;
 		internal DesktopBackend DesktopBackend;
 		internal VectorImageRecorderContextHandler VectorImageRecorderContextHandler;
+		internal KeyboardHandler KeyboardHandler;
 	}
 
 	class NativeWindowFrame: WindowFrame

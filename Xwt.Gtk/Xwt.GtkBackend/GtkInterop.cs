@@ -69,11 +69,11 @@ namespace Xwt.GtkBackend
 
 			if (attr is BackgroundTextAttribute) {
 				var xa = (BackgroundTextAttribute)attr;
-				AddBackgroundAttribute (xa.Color.ToGdkColor (), start, end);
+				AddBackgroundAttribute (xa.Color.ToGtkValue (), start, end);
 			}
 			else if (attr is ColorTextAttribute) {
 				var xa = (ColorTextAttribute)attr;
-				AddForegroundAttribute (xa.Color.ToGdkColor (), start, end);
+				AddForegroundAttribute (xa.Color.ToGtkValue (), start, end);
 			}
 			else if (attr is FontWeightTextAttribute) {
 				var xa = (FontWeightTextAttribute)attr;
@@ -97,7 +97,7 @@ namespace Xwt.GtkBackend
 			}
 			else if (attr is LinkTextAttribute) {
 				AddUnderlineAttribute (Pango.Underline.Single, start, end);
-				AddForegroundAttribute (Colors.Blue.ToGdkColor (), start, end);
+				AddForegroundAttribute (Colors.Blue.ToGtkValue (), start, end);
 			}
 		}
 

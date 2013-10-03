@@ -63,19 +63,19 @@ namespace Xwt.GtkBackend
 
 		public ScrollPolicy VerticalScrollPolicy {
 			get {
-				return Util.ConvertScrollPolicy (ScrolledWindow.VscrollbarPolicy);
+				return ScrolledWindow.VscrollbarPolicy.ToXwtValue ();
 			}
 			set {
-				ScrolledWindow.VscrollbarPolicy = Util.ConvertScrollPolicy (value);
+				ScrolledWindow.VscrollbarPolicy = value.ToGtkValue ();
 			}
 		}
 		
 		public ScrollPolicy HorizontalScrollPolicy {
 			get {
-				return Util.ConvertScrollPolicy (ScrolledWindow.HscrollbarPolicy);
+				return ScrolledWindow.HscrollbarPolicy.ToXwtValue ();
 			}
 			set {
-				ScrolledWindow.HscrollbarPolicy = Util.ConvertScrollPolicy (value);
+				ScrolledWindow.HscrollbarPolicy = value.ToGtkValue ();
 			}
 		}
 		

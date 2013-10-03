@@ -354,12 +354,12 @@ namespace Xwt.GtkBackend
 		
 		public virtual Color BackgroundColor {
 			get {
-				return customBackgroundColor.HasValue ? customBackgroundColor.Value : Util.ToXwtColor (Widget.Style.Background (Gtk.StateType.Normal));
+				return customBackgroundColor.HasValue ? customBackgroundColor.Value : Widget.Style.Background (Gtk.StateType.Normal).ToXwtValue ();
 			}
 			set {
 				customBackgroundColor = value;
 				AllocEventBox (visibleWindow: true);
-				EventsRootWidget.ModifyBg (Gtk.StateType.Normal, Util.ToGdkColor (value));
+				EventsRootWidget.ModifyBg (Gtk.StateType.Normal, value.ToGtkValue ());
 			}
 		}
 		
@@ -695,13 +695,7 @@ namespace Xwt.GtkBackend
 		void HandleKeyPressEvent (object o, Gtk.KeyPressEventArgs args)
 		{
 			Key k = (Key)args.Event.KeyValue;
-			ModifierKeys m = ModifierKeys.None;
-			if ((args.Event.State & Gdk.ModifierType.ShiftMask) != 0)
-				m |= ModifierKeys.Shift;
-			if ((args.Event.State & Gdk.ModifierType.ControlMask) != 0)
-				m |= ModifierKeys.Control;
-			if ((args.Event.State & Gdk.ModifierType.Mod1Mask) != 0)
-				m |= ModifierKeys.Alt;
+			ModifierKeys m = args.Event.State.ToXwtValue ();
 			KeyEventArgs kargs = new KeyEventArgs (k, m, false, (long)args.Event.Time);
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnKeyPressed (kargs);
@@ -714,7 +708,7 @@ namespace Xwt.GtkBackend
         void HandleScrollEvent(object o, Gtk.ScrollEventArgs args)
         {
             var sc = ConvertToScreenCoordinates (new Point (0, 0));
-            var direction = Util.ConvertScrollDirection(args.Event.Direction);
+			var direction = args.Event.Direction.ToXwtValue ();
 
             var a = new MouseScrolledEventArgs ((long) args.Event.Time, args.Event.XRoot - sc.X, args.Event.YRoot - sc.Y, direction);
             ApplicationContext.InvokeUserCode (delegate {

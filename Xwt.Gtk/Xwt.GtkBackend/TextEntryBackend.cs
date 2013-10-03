@@ -91,7 +91,7 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				base.BackgroundColor = value;
-				Widget.ModifyBase (Gtk.StateType.Normal, value.ToGdkColor ());
+				Widget.ModifyBase (Gtk.StateType.Normal, value.ToGtkValue ());
 			}
 		}
 
@@ -128,9 +128,9 @@ namespace Xwt.GtkBackend
 			layout.GetPixelSize (out width, out height);
 			using (var gc = new Gdk.GC (args.Event.Window)) {
 				gc.Copy (entry.Style.TextGC (Gtk.StateType.Normal));
-				Color color_a = entry.Style.Base (Gtk.StateType.Normal).ToXwtColor ();
-				Color color_b = entry.Style.Text (Gtk.StateType.Normal).ToXwtColor ();
-				gc.RgbFgColor = color_b.BlendWith (color_a, 0.5).ToGdkColor ();
+				Color color_a = entry.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
+				Color color_b = entry.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
+				gc.RgbFgColor = color_b.BlendWith (color_a, 0.5).ToGtkValue ();
 
 				args.Event.Window.DrawLayout (gc, 2, (wh - height) / 2 + 1, layout);
 			}

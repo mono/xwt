@@ -45,7 +45,7 @@ namespace Xwt.GtkBackend
 			dlg.Title = title;
 			dlg.ColorSelection.HasOpacityControl = supportsAlpha;
 			
-			dlg.ColorSelection.CurrentColor = color.ToGdkColor ();
+			dlg.ColorSelection.CurrentColor = color.ToGtkValue ();
 			if (supportsAlpha)
 				dlg.ColorSelection.CurrentAlpha = (ushort) (((double)ushort.MaxValue) * color.Alpha);
 		
@@ -53,7 +53,7 @@ namespace Xwt.GtkBackend
 			int result = MessageService.RunCustomDialog (dlg, p != null ? p.Window : null);
 			
 			if (result == (int) Gtk.ResponseType.Ok) {
-				color = dlg.ColorSelection.CurrentColor.ToXwtColor ();
+				color = dlg.ColorSelection.CurrentColor.ToXwtValue ();
 				if (supportsAlpha)
 					color = color.WithAlpha ((double)dlg.ColorSelection.CurrentAlpha / (double)ushort.MaxValue);
 				return true;

@@ -222,10 +222,10 @@ namespace Xwt.GtkBackend
 
 		public Xwt.Drawing.Color TextColor {
 			get {
-				return textColor.HasValue ? textColor.Value : Util.ToXwtColor (Widget.Style.Foreground (Gtk.StateType.Normal));
+				return textColor.HasValue ? textColor.Value : Widget.Style.Foreground (Gtk.StateType.Normal).ToXwtValue ();
 			}
 			set {
-				var color = value.ToGdkColor ();
+				var color = value.ToGtkValue ();
 				var attr = new Pango.AttrForeground (color.Red, color.Green, color.Blue);
 				var attrs = new Pango.AttrList ();
 				attrs.Insert (attr);
