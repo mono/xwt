@@ -40,6 +40,8 @@ using System.Windows.Input;
 
 namespace Xwt.WPFBackend
 {
+	using Keyboard = System.Windows.Input.Keyboard;
+
 	public class ExTreeView
 		: SWC.TreeView, IWpfWidget
 	{

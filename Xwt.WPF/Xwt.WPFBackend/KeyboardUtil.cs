@@ -35,6 +35,8 @@ using WpfKey = System.Windows.Input.Key;
 
 namespace Xwt.WPFBackend
 {
+	using Keyboard = System.Windows.Input.Keyboard;
+
 	public static class KeyboardUtil
 	{
 		public static ModifierKeys GetModifiers ()
