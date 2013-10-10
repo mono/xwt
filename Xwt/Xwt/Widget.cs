@@ -39,7 +39,7 @@ using Xwt.Motion;
 
 namespace Xwt
 {
-	[BackendType (typeof(IWidgetBackend))]
+	[BackendType (typeof(ICustomWidgetBackend))]
 	public abstract class Widget: XwtComponent, IWidgetSurface, IAnimatable
 	{
 		static bool DebugWidgetLayout = false;
@@ -98,26 +98,6 @@ namespace Xwt
 		{
 			public WidgetBackendHost ()
 			{
-			}
-			
-			protected override IBackend OnCreateBackend ()
-			{
-				var backend = base.OnCreateBackend ();
-				if (backend == null) {
-					// If this is a custom widget, not implemented in Xwt, then we provide the default
-					// backend, which allows setting a content widget
-					if (!(Parent is XwtWidgetBackend)) {
-						Type t = Parent.GetType ();
-						Type wt = typeof(Widget);
-						while (t != wt) {
-							if (t.Assembly == wt.Assembly)
-								return null; // It's a core widget
-							t = t.BaseType;
-						}
-					}
-					return ToolkitEngine.Backend.CreateBackend<ICustomWidgetBackend> ();
-				}
-				return backend;
 			}
 
 			protected override void OnBackendCreated ()
