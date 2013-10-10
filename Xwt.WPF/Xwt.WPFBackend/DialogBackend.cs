@@ -32,6 +32,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using Xwt.Backends;
+using System.Linq;
 
 using SWC = System.Windows.Controls;
 
@@ -64,6 +65,7 @@ namespace Xwt.WPFBackend
 
 			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
 			separator = new SWC.Separator ();
+			separator.Visibility = Visibility.Collapsed;
 			Grid.SetRow (separator, 2);
 			this.rootPanel.Children.Add (separator);
 
@@ -91,6 +93,7 @@ namespace Xwt.WPFBackend
 			foreach (var button in newButtons) {
 				this.buttons.Add (button);
 			}
+			UpdateSeparatorVisibility ();
 		}
 
 		public void UpdateButton (DialogButton updatedButton)
@@ -103,6 +106,12 @@ namespace Xwt.WPFBackend
 					break;
 				}
 			}
+			UpdateSeparatorVisibility ();
+		}
+
+		void UpdateSeparatorVisibility ()
+		{
+			separator.Visibility = buttons.Any (b => b.Visible) ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		public void RunLoop (IWindowFrameBackend parent)
