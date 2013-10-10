@@ -314,6 +314,7 @@
     <Compile Include="Xwt\InvalidConstructorInvocation.cs" />
     <Compile Include="Xwt\Keyboard.cs" />
     <Compile Include="Xwt.Backends\KeyboardHandler.cs" />
+    <Compile Include="Xwt\FrameBox.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

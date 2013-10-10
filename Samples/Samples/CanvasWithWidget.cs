@@ -62,10 +62,10 @@ namespace Samples
 			var box = new HBox ();
 			box.PackStart (new Button ("..."));
 			box.PackStart (new TextEntry (), true);
-			AddChild (box, new Rectangle (30, 70, 100, 30));
+			AddChild (box, new Rectangle (30, 70, box.Surface.GetPreferredSize().Width, 30));
 			Linear = linear;
 		}
-		
+
 		protected override void OnDraw (Xwt.Drawing.Context ctx, Rectangle dirtyRect)
 		{
 			if (Bounds.IsEmpty)
