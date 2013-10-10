@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -52,17 +53,43 @@ namespace Xwt.WPFBackend
 
 		protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
 		{
-			Typeface typeFace = null;
-			double fontSize = -1;
+			double fontSize;
+			Typeface typeFace;
+			TextAlignment alignment;
+			FlowDirection flowDirection;
 			if (AdornedPasswordBox != null) {
-				typeFace = AdornedPasswordBox.FontFamily.GetTypefaces ().FirstOrDefault ();
+				alignment = ConvertAlignment (AdornedPasswordBox.HorizontalContentAlignment);
+				flowDirection = AdornedPasswordBox.FlowDirection;
 				fontSize = AdornedPasswordBox.FontSize;
+				typeFace = AdornedPasswordBox.FontFamily.GetTypefaces ().FirstOrDefault ();
 			} else {
-				typeFace = AdornedTextBox.FontFamily.GetTypefaces ().FirstOrDefault ();
+				alignment = AdornedTextBox.ReadLocalValue (TextBox.TextAlignmentProperty) !=DependencyProperty.UnsetValue ? AdornedTextBox.TextAlignment : ConvertAlignment (AdornedTextBox.HorizontalContentAlignment);
+				flowDirection = AdornedTextBox.FlowDirection;
 				fontSize = AdornedTextBox.FontSize;
+				typeFace = AdornedTextBox.FontFamily.GetTypefaces ().FirstOrDefault ();
 			}
-			var text = new System.Windows.Media.FormattedText (PlaceholderText ?? "", System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, typeFace, fontSize, System.Windows.Media.Brushes.LightGray);
+			var text = new System.Windows.Media.FormattedText (PlaceholderText ?? "", CultureInfo.CurrentCulture, flowDirection, typeFace, fontSize, System.Windows.Media.Brushes.LightGray) {
+				TextAlignment = alignment
+			};
 			drawingContext.DrawText(text, new System.Windows.Point (4, 0));
+		}
+
+		private TextAlignment ConvertAlignment(System.Windows.HorizontalAlignment horizontalAlignment)
+		{
+			switch (horizontalAlignment) {
+				case System.Windows.HorizontalAlignment.Center:
+					return TextAlignment.Center;
+
+				case System.Windows.HorizontalAlignment.Right:
+					return TextAlignment.Right;
+
+				case System.Windows.HorizontalAlignment.Stretch:
+					return TextAlignment.Justify;
+
+				case System.Windows.HorizontalAlignment.Left:
+				default:
+					return TextAlignment.Left;
+			}
 		}
 	}
 }

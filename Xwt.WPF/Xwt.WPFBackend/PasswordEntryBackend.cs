@@ -14,6 +14,7 @@ namespace Xwt.WPFBackend
 		PlaceholderTextAdorner Adorner {
 			get; set;
 		}
+
 		public PasswordEntryBackend ()
 		{
 			Widget = new PasswordBox ();
@@ -40,12 +41,8 @@ namespace Xwt.WPFBackend
 		}
 
 		public string PlaceholderText {
-			get {
-				return Adorner.PlaceholderText;
-			}
-			set {
-				Adorner.PlaceholderText = value;
-			}
+			get { return Adorner.PlaceholderText; }
+			set { Adorner.PlaceholderText = value; }
 		}
 
 		public override void EnableEvent (object eventId)
@@ -58,6 +55,9 @@ namespace Xwt.WPFBackend
 				{
 					case PasswordEntryEvent.Changed:
 						PasswordBox.PasswordChanged += OnPasswordChanged;
+						break;
+					case PasswordEntryEvent.Activated:
+						PasswordBox.KeyDown += OnActivated;
 						break;
 				}
 			}
@@ -74,12 +74,21 @@ namespace Xwt.WPFBackend
 					case PasswordEntryEvent.Changed:
 						PasswordBox.PasswordChanged -= OnPasswordChanged;
 						break;
+					case PasswordEntryEvent.Activated:
+						PasswordBox.KeyDown -= OnActivated;
+						break;
 				}
 			}
 		}
 
 		protected new IPasswordEntryEventSink EventSink {
 			get { return (IPasswordEntryEventSink) base.EventSink; }
+		}
+
+		private void OnActivated(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == System.Windows.Input.Key.Enter || e.Key == System.Windows.Input.Key.Return)
+				Context.InvokeUserCode (EventSink.OnActivated);
 		}
 
 		void OnPasswordChanged (object s, RoutedEventArgs e)

@@ -46,8 +46,7 @@ namespace Xwt.WPFBackend
 			Widget = new ExTextBox { IsReadOnlyCaretVisible = true };
 			Adorner = new PlaceholderTextAdorner (TextBox);
 			TextBox.Loaded += delegate {
-				var layer = AdornerLayer.GetAdornerLayer (TextBox);
-				layer.Add (Adorner);
+				AdornerLayer.GetAdornerLayer (TextBox).Add (Adorner);
 			};
 		}
 
@@ -103,6 +102,9 @@ namespace Xwt.WPFBackend
 					case TextEntryEvent.Changed:
 						TextBox.TextChanged += OnTextChanged;
 						break;
+					case TextEntryEvent.Activated:
+						TextBox.KeyDown += OnActivated;
+						break;
 				}
 			}
 		}
@@ -118,6 +120,9 @@ namespace Xwt.WPFBackend
 					case TextEntryEvent.Changed:
 						TextBox.TextChanged -= OnTextChanged;
 						break;
+					case TextEntryEvent.Activated:
+						TextBox.KeyDown -= OnActivated;
+						break;
 				}
 			}
 		}
@@ -129,6 +134,12 @@ namespace Xwt.WPFBackend
 
 		protected new ITextEntryEventSink EventSink {
 			get { return (ITextEntryEventSink)base.EventSink; }
+		}
+		
+		private void OnActivated(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == System.Windows.Input.Key.Enter || e.Key == System.Windows.Input.Key.Return)
+				Context.InvokeUserCode (EventSink.OnActivated);
 		}
 
 		private void OnTextChanged (object s, TextChangedEventArgs e)
