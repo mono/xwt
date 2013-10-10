@@ -481,7 +481,8 @@ namespace Xwt.WPFBackend
 	{
 		ApplicationContext actx;
 
-		public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register ("ImageSource", typeof (ImageDescription), typeof (ImageBox), new FrameworkPropertyMetadata (ImageDescription.Null) { AffectsMeasure = true, AffectsRender = true });
+		public static readonly DependencyProperty ImageSourceProperty =
+			DependencyProperty.Register ("ImageSource", typeof (ImageDescription), typeof (ImageBox), new FrameworkPropertyMetadata (ImageDescription.Null) { AffectsMeasure = true, AffectsRender = true });
 
 		public ImageBox ()
 		{
