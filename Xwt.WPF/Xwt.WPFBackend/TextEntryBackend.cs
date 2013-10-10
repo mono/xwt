@@ -27,6 +27,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Xwt.Backends;
@@ -37,10 +38,17 @@ namespace Xwt.WPFBackend
 	public class TextEntryBackend
 		: WidgetBackend, ITextEntryBackend
 	{
+		PlaceholderTextAdorner Adorner {
+			get; set;
+		}
 		public TextEntryBackend()
 		{
-			Widget = new ExTextBox();
-			TextBox.IsReadOnlyCaretVisible = true;
+			Widget = new ExTextBox { IsReadOnlyCaretVisible = true };
+			Adorner = new PlaceholderTextAdorner (TextBox);
+			TextBox.Loaded += delegate {
+				var layer = AdornerLayer.GetAdornerLayer (TextBox);
+				layer.Add (Adorner);
+			};
 		}
 
 		protected override double DefaultNaturalWidth
@@ -62,8 +70,8 @@ namespace Xwt.WPFBackend
 
 		public string PlaceholderText
 		{
-			get { return TextBox.PlaceholderText; }
-			set { TextBox.PlaceholderText = value; }
+			get { return Adorner.PlaceholderText; }
+			set { Adorner.PlaceholderText = value; }
 		}
 
 		public bool ReadOnly

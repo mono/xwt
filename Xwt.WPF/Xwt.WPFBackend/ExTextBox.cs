@@ -42,18 +42,6 @@ namespace Xwt.WPFBackend.Utilities
 			return Backend.MeasureOverride (constraint, s);
 		}
 
-		public string PlaceholderText
-		{
-			get { return this.placeholderText; }
-			set
-			{
-				if (this.placeholderText == value)
-					return;
-
-				UpdatePlaceholder (value);
-			}
-		}
-
 		private bool showFrame = true;
 		public bool ShowFrame
 		{
@@ -70,39 +58,6 @@ namespace Xwt.WPFBackend.Utilities
 
 				this.showFrame = value;
 			}
-		}
-
-		private string placeholderText;
-
-		private void UpdatePlaceholder (string newPlaceholder)
-		{
-			if (Text == this.placeholderText)
-				Text = newPlaceholder;
-
-			this.placeholderText = newPlaceholder;
-
-			if (IsFocused && Text == (PlaceholderText ?? String.Empty))
-			{
-				Text = null;
-				ClearValue (Control.ForegroundProperty);
-			}
-			else if (!IsFocused && String.IsNullOrEmpty (Text))
-			{
-				Text = PlaceholderText;
-				Foreground = Brushes.LightGray;
-			}
-		}
-
-		protected override void OnGotFocus (RoutedEventArgs e)
-		{
-			base.OnGotFocus (e);
-			UpdatePlaceholder (this.placeholderText);
-		}
-
-		protected override void OnLostFocus (RoutedEventArgs e)
-		{
-			base.OnLostFocus (e);
-			UpdatePlaceholder (this.placeholderText);
 		}
 	}
 }

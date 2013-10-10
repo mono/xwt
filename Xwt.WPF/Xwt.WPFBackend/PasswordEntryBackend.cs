@@ -1,16 +1,26 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 using Xwt.WPFBackend;
 using Xwt.Backends;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace Xwt.WPFBackend
 {
 	class PasswordEntryBackend : WidgetBackend, IPasswordEntryBackend
 	{
+		PlaceholderTextAdorner Adorner {
+			get; set;
+		}
 		public PasswordEntryBackend ()
 		{
 			Widget = new PasswordBox ();
+			Adorner = new PlaceholderTextAdorner (PasswordBox);
+			PasswordBox.Loaded += delegate {
+				AdornerLayer.GetAdornerLayer (PasswordBox).Add (Adorner);
+			};
 		}
 
 		protected PasswordBox PasswordBox
@@ -31,10 +41,10 @@ namespace Xwt.WPFBackend
 
 		public string PlaceholderText {
 			get {
-				throw new System.NotImplementedException ();
+				return Adorner.PlaceholderText;
 			}
 			set {
-				throw new System.NotImplementedException ();
+				Adorner.PlaceholderText = value;
 			}
 		}
 
