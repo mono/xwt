@@ -463,6 +463,10 @@ namespace Xwt.GtkBackend
 			// widgets such as Label which doesn't have its own gdk window
 
 			if (eventBox == null && EventsRootWidget.IsNoWindow) {
+				if (EventsRootWidget is Gtk.EventBox) {
+					((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
+					return;
+				}
 				eventBox = new Gtk.EventBox ();
 				eventBox.Visible = Widget.Visible;
 				eventBox.Sensitive = Widget.Sensitive;

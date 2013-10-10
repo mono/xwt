@@ -104,6 +104,7 @@ namespace Xwt.GtkBackend
 			GtkWorkarounds.FixContainerLeak (this);
 
 			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
+			VisibleWindow = false;
 		}
 		
 		public void SetAllocation (Gtk.Widget w, Rectangle rect)
@@ -146,9 +147,11 @@ namespace Xwt.GtkBackend
 			if (!lastAllocation.Equals (allocation))
 				((IWidgetSurface)Backend.Frontend).Reallocate ();
 			lastAllocation = allocation;
+			var dx = VisibleWindow ? 0 : allocation.X;
+			var dy = VisibleWindow ? 0 : allocation.Y;
 			foreach (var cr in children) {
 				var r = cr.Value;
-				cr.Key.SizeAllocate (new Gdk.Rectangle ((int)r.X, (int)r.Y, (int)r.Width, (int)r.Height));
+				cr.Key.SizeAllocate (new Gdk.Rectangle (dx + (int)r.X, dy + (int)r.Y, (int)r.Width, (int)r.Height));
 			}
 		}
 		
@@ -181,6 +184,8 @@ namespace Xwt.GtkBackend
 			} else {
 				ctx.Context = Gdk.CairoHelper.Create (GdkWindow);
 			}
+			if (!VisibleWindow)
+				ctx.Context.Translate (Allocation.X, Allocation.Y);
 			return ctx;
 		}
 	}
