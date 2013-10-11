@@ -109,6 +109,7 @@ namespace Xwt.WPFBackend
 			RegisterBackend<IScrollbarBackend, ScrollbarBackend> ();
 			RegisterBackend<IEmbeddedWidgetBackend, EmbedNativeWidgetBackend>();
 			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
+			RegisterBackend<KeyboardHandler, WpfKeyboardHandler> ();
 		}
 
 		public override void DispatchPendingEvents()
