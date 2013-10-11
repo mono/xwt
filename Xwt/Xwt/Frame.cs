@@ -201,6 +201,14 @@ namespace Xwt
 			set { Backend.BorderColor = value; }
 		}
 
+		/// <summary>
+		/// Removes all children of the Frame
+		/// </summary>
+		public void Clear ()
+		{
+			Content = null;
+		}
+
 		[DefaultValue (null)]
 		public new Widget Content {
 			get { return child; }

@@ -229,11 +229,21 @@ namespace Xwt
 			set { borderColor = value; canvas.QueueDraw (); }
 		}
 
+		/// <summary>
+		/// Removes all children of the Frame
+		/// </summary>
+		public void Clear ()
+		{
+			Content = null;
+		}
+
 		[DefaultValue (null)]
 		public new Widget Content {
 			get { return canvas.Child; }
 			set {
- 				UnregisterChild (canvas.Child);
+ 				var current = canvas.Child;
+ 				canvas.Clear ();
+				UnregisterChild (current);
  				RegisterChild (value);
 				canvas.Child = value; 
 			}

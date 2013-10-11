@@ -30,6 +30,7 @@ using Xwt.Backends;
 using Xwt.Drawing;
 using System.Windows.Markup;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Xwt
 {
@@ -178,6 +179,15 @@ namespace Xwt
 			if (positions != null && positions.TryGetValue (widget, out rect))
 				return rect;
 			throw new ArgumentException ("Widget is not a child of the canvas");
+		}
+
+		/// <summary>
+		/// Removes all children of the Canvas
+		/// </summary>
+		public void Clear ()
+		{
+			foreach (var c in Children.ToArray ())
+				RemoveChild (c);
 		}
 		
 		protected override BackendHost CreateBackendHost ()
