@@ -242,7 +242,7 @@ namespace Xwt
 			get { return canvas.Child; }
 			set {
  				var current = canvas.Child;
- 				canvas.Clear ();
+				canvas.Child = null;
 				UnregisterChild (current);
  				RegisterChild (value);
 				canvas.Child = value; 
