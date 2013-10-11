@@ -70,6 +70,11 @@ namespace Xwt.Backends
 				return 0;
 			}
 		}
+
+		public static Widget GetInternalParent (this Widget widget)
+		{
+			return widget.InternalParent;
+		}
 	}
 }
 

@@ -99,7 +99,7 @@ namespace Xwt.Backends
 			return EngineBackend.CreateBackendForFrontend (Parent.GetType ());
 		}
 		
-		public void EnsureBackendLoaded ()
+		internal void EnsureBackendLoaded ()
 		{
 			if (backend == null)
 				LoadBackend ();

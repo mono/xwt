@@ -126,7 +126,8 @@ namespace Xwt
 
 		public FrameBox ()
 		{
-			base.Content = canvas = new FrameCanvas ();
+			canvas = SetInternalChild (new FrameCanvas ());
+			base.Content = canvas;
 		}
 
 		public FrameBox (Widget content): this ()
@@ -231,7 +232,11 @@ namespace Xwt
 		[DefaultValue (null)]
 		public new Widget Content {
 			get { return canvas.Child; }
-			set { canvas.Child = value; }
+			set {
+ 				UnregisterChild (canvas.Child);
+ 				RegisterChild (value);
+				canvas.Child = value; 
+			}
 		}
 	}
 }

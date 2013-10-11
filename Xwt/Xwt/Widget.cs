@@ -283,8 +283,10 @@ namespace Xwt
 			if (disposing) {
 				if (BackendHost.BackendCreated)
 					Backend.Dispose ();
-				if (children != null)
-					children.ForEach (c => c.Dispose ());
+				if (children != null) {
+					foreach (var c in DirectChildren)
+						c.Dispose ();
+				}
 			}
 		}
 		
@@ -467,7 +469,15 @@ namespace Xwt
 		
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public Widget Parent { get; private set; }
-		
+
+		internal Widget InternalParent { get; private set; }
+
+		bool IsInternalChild {
+			get { return ExternalParent != null; }
+		}
+
+		Widget ExternalParent { get; set; }
+
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public IWidgetSurface Surface {
 			get { return this; }
@@ -1019,7 +1029,7 @@ namespace Xwt
 			OnReallocate ();
 
 			if (children != null && !BackendHost.EngineBackend.HandlesSizeNegotiation) {
-				foreach (Widget w in children) {
+				foreach (Widget w in DirectChildren) {
 					if (w.Visible)
 						w.Surface.Reallocate ();
 				}
@@ -1053,7 +1063,7 @@ namespace Xwt
 		{
 			OnChildPreferredSizeChanged ();
 
-			if (Parent != null && resizeRequestQueue.Contains (Parent)) {
+			if (InternalParent != null && resizeRequestQueue.Contains (InternalParent)) {
 				// Size for this widget will be checked when checking the parent
 				ResetCachedSizes ();
 				return;
@@ -1095,8 +1105,8 @@ namespace Xwt
 
 		internal void OnPlacementChanged ()
 		{
-			if (Parent != null)
-				Parent.OnChildPlacementChanged (this);
+			if (InternalParent != null)
+				InternalParent.OnChildPlacementChanged (this);
 			else if (parentWindow is Window)
 				((Window)parentWindow).OnChildPlacementChanged (this);
 		}
@@ -1126,8 +1136,8 @@ namespace Xwt
 		
 		void NotifySizeChangeToParent ()
 		{
-			if (Parent != null) {
-				QueueForSizeCheck (Parent);
+			if (InternalParent != null) {
+				QueueForSizeCheck (InternalParent);
 				QueueDelayedResizeRequest ();
 			}
 			else if (parentWindow is Window) {
@@ -1220,16 +1230,16 @@ namespace Xwt
 		
 		int Depth {
 			get {
-				if (Parent != null)
-					return Parent.Depth + 1;
+				if (InternalParent != null)
+					return InternalParent.Depth + 1;
 				return 0;
 			}
 		}
 
 		string GetWidgetDesc ()
 		{
-			if (Parent != null) {
-				int i = Parent.Surface.Children.ToList ().IndexOf (this);
+			if (InternalParent != null) {
+				int i = InternalParent.Surface.Children.ToList ().IndexOf (this);
 				return this + " [" + GetHashCode() + "] (" + i + ")";
 			}
 			else
@@ -1243,21 +1253,57 @@ namespace Xwt
 		
 		IEnumerable<Widget> IWidgetSurface.Children {
 			get {
-				return (IEnumerable<Widget>)children ?? (IEnumerable<Widget>) emptyList; 
+				return ExternalChildren; 
 			}
+		}
+
+		IEnumerable<Widget> DirectChildren {
+			get { return children != null ? children.Where (c => c.InternalParent == this) : emptyList; }
+		}
+
+		IEnumerable<Widget> ExternalChildren {
+			get { return children != null ? children.Where (c => !c.IsInternalChild) : emptyList; }
+		}
+
+		Widget FindExternalParent ()
+		{
+			if (IsInternalChild && Parent != null)
+				return Parent.FindExternalParent ();
+			else
+				return this;
 		}
 
 		protected void RegisterChild (Widget w)
 		{
-			if (w.Parent != null)
-				throw new InvalidOperationException ("Widget is already a child of another widget");
+			if (w == null)
+				return;
+
 			if (w.Surface.ToolkitEngine != Surface.ToolkitEngine)
 				throw new InvalidOperationException ("Widget belongs to a different toolkit");
+
+			var wback = w.Backend as XwtWidgetBackend;
+
+			if (IsInternalChild && !w.IsInternalChild) {
+				if (w.Parent == null)
+					throw new InvalidOperationException ("Widget must be registered as a child widget of " + FindExternalParent ());
+				if (w.Parent != ExternalParent)
+					throw new InvalidOperationException ("Widget is already a child of a widget of type " + w.Parent.GetType ());
+				w.InternalParent = this;
+				if (wback != null)
+					wback.InternalParent = this;
+			} else {
+				if (w.Parent != null)
+					throw new InvalidOperationException ("Widget is already a child of a widget of type " + w.Parent.GetType ());
+				w.Parent = this;
+				w.InternalParent = this;
+				if (wback != null) {
+					wback.Parent = this;
+					wback.InternalParent = this;
+				}
+			}
+
 			if (children == null)
 				children = new List<Widget> ();
-			w.Parent = this;
-			if (w.Backend is XwtWidgetBackend)
-				((XwtWidgetBackend)w.Backend).Parent = this;
 			children.Add (w);
 
 			// Make sure the widget is queued for reallocation
@@ -1266,11 +1312,51 @@ namespace Xwt
 		
 		protected void UnregisterChild (Widget w)
 		{
-			if (children == null || !children.Remove (w))
+			if (w == null)
+				return;
+
+			int i;
+			if (children == null || (i = children.IndexOf (w)) == -1)
 				throw new InvalidOperationException ("Widget is not a child of this widget");
-			w.Parent = null;
-			if (w.Backend is XwtWidgetBackend)
-				((XwtWidgetBackend)w.Backend).Parent = null;
+
+			var wback = w.Backend as XwtWidgetBackend;
+
+			if (w.Parent == this) {
+				if (w.InternalParent != this)
+					throw new InvalidOperationException ("Child widget must be removed from internal container before unregistering it");
+				w.Parent = null;
+				w.InternalParent = null;
+			} else {
+				w.InternalParent = w.Parent;
+			}
+
+			children.RemoveAt (i);
+
+			if (wback != null) {
+				wback.Parent = w.Parent;
+				wback.InternalParent = w.InternalParent;
+			}
+		}
+
+		/// <summary>
+		/// Flags a widget as an internal child of a container
+		/// </summary>
+		/// <param name="child">A widget</param>
+		/// <remarks>
+		/// This method must must be called before the child widget is added to any container.
+		/// Internal children of a widget are not returned in the Children list of the widget, and they
+		/// are not included in the Parent hierarchy chain.
+		/// </remarks>
+		protected T SetInternalChild<T> (T child) where T:Widget
+		{
+			if (child.ExternalParent == this)
+				return child;
+			if (child.ExternalParent != null)
+				throw new InvalidOperationException ("Widget is already an internal child of widget " + child.ExternalParent);
+			if (child.Parent != null)
+				throw new InvalidOperationException ("Widget must be flagged as internal child before being added to a container");
+			child.ExternalParent = this;
+			return child;
 		}
 		
 		void IAnimatable.BatchBegin ()

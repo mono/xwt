@@ -327,8 +327,8 @@ namespace Xwt.Mac
 		public static void ReplaceSubview (NSView oldChild, NSView newChild)
 		{
 			var vo = oldChild as IViewObject;
-			if (vo != null && vo.Backend.Frontend.Parent != null) {
-				var ba = vo.Backend.Frontend.Parent.GetBackend () as ViewBackend;
+			if (vo != null && vo.Backend.Frontend.GetInternalParent () != null) {
+				var ba = vo.Backend.Frontend.GetInternalParent ().GetBackend () as ViewBackend;
 				if (ba != null) {
 					ba.ReplaceChild (oldChild, newChild);
 					return;
