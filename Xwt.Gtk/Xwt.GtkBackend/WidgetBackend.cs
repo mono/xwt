@@ -785,10 +785,11 @@ namespace Xwt.GtkBackend
 		[GLib.ConnectBeforeAttribute]
 		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
-			var sc = ConvertToScreenCoordinates (new Point (0, 0));
+			var alloc = Widget.Allocation;
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.XRoot - sc.X;
-			a.Y = args.Event.YRoot - sc.Y;
+			a.X = args.Event.X;// - alloc.X;
+			a.Y = args.Event.Y;// - alloc.Y;
+
 			a.Button = (PointerButton) args.Event.Button;
 			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
 				a.MultiplePress = 2;

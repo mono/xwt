@@ -151,7 +151,9 @@ namespace Xwt.GtkBackend
 			var dy = VisibleWindow ? 0 : allocation.Y;
 			foreach (var cr in children) {
 				var r = cr.Value;
-				cr.Key.SizeAllocate (new Gdk.Rectangle (dx + (int)r.X, dy + (int)r.Y, (int)r.Width, (int)r.Height));
+				var w = (int) Math.Max (r.Width, 0);
+				var h = (int) Math.Max (r.Height, 0);
+				cr.Key.SizeAllocate (new Gdk.Rectangle (dx + (int)r.X, dy + (int)r.Y, w, h));
 			}
 		}
 		
