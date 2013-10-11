@@ -711,10 +711,9 @@ namespace Xwt.GtkBackend
         [GLib.ConnectBefore]
         void HandleScrollEvent(object o, Gtk.ScrollEventArgs args)
         {
-            var sc = ConvertToScreenCoordinates (new Point (0, 0));
 			var direction = args.Event.Direction.ToXwtValue ();
 
-            var a = new MouseScrolledEventArgs ((long) args.Event.Time, args.Event.XRoot - sc.X, args.Event.YRoot - sc.Y, direction);
+            var a = new MouseScrolledEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y, direction);
             ApplicationContext.InvokeUserCode (delegate {
                 EventSink.OnMouseScrolled(a);
             });
@@ -759,8 +758,7 @@ namespace Xwt.GtkBackend
 
 		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
 		{
-			var sc = ConvertToScreenCoordinates (new Point (0, 0));
-			var a = new MouseMovedEventArgs ((long) args.Event.Time, args.Event.XRoot - sc.X, args.Event.YRoot - sc.Y);
+			var a = new MouseMovedEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y);
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnMouseMoved (a);
 			});
@@ -770,10 +768,9 @@ namespace Xwt.GtkBackend
 
 		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
 		{
-			var sc = ConvertToScreenCoordinates (new Point (0, 0));
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.XRoot - sc.X;
-			a.Y = args.Event.YRoot - sc.Y;
+			a.X = args.Event.X;
+			a.Y = args.Event.Y;
 			a.Button = (PointerButton) args.Event.Button;
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnButtonReleased (a);
@@ -785,10 +782,9 @@ namespace Xwt.GtkBackend
 		[GLib.ConnectBeforeAttribute]
 		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
-			var alloc = Widget.Allocation;
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;// - alloc.X;
-			a.Y = args.Event.Y;// - alloc.Y;
+			a.X = args.Event.X;
+			a.Y = args.Event.Y;
 
 			a.Button = (PointerButton) args.Event.Button;
 			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
