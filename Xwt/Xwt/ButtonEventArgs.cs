@@ -33,14 +33,39 @@ namespace Xwt
 		public ButtonEventArgs ()
 		{
 		}
-		
+
+		public PointerButton Button { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this event has been handled
+		/// </summary>
+		/// <value><c>true</c> if handled; otherwise, <c>false</c>.</value>
+		/// <remarks>Setting this property to <c>true</c> will prevent the event from bubbling up in the widget hierarchy</remarks>
 		public bool Handled { get; set; }
 		
-		public PointerButton Button { get; set; }
-		
+		/// <summary>
+		/// Gets or sets the X coordinate of the mouse cursor
+		/// </summary>
+		/// <value>The x.</value>
 		public double X { get; set; }
+
+		/// <summary>
+		/// Gets or sets the Y coordinate of the mouse cursor
+		/// </summary>
+		/// <value>The x.</value>
 		public double Y { get; set; }
-		
+
+		/// <summary>
+		/// Location of the mouse cursor
+		/// </summary>
+		public Point Position {
+			get { return new Point (X, Y); }
+		}
+
+		/// <summary>
+		/// Gets the number of clicks (e.g. 2 for double-click)
+		/// </summary>
+		/// <value>The multiple press.</value>
 		public int MultiplePress { get; set; }
 	}
 }

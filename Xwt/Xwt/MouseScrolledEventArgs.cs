@@ -44,13 +44,38 @@ namespace Xwt
 			Timestamp  = timestamp;
 			Direction = direction;
 		}
-		
-		public bool Handled { get; set; }
 
-		public double X { get; private set; }
-		public double Y { get; private set; }
 		public ScrollDirection Direction { get; private set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this event has been handled
+		/// </summary>
+		/// <value><c>true</c> if handled; otherwise, <c>false</c>.</value>
+		/// <remarks>Setting this property to <c>true</c> will prevent the event from bubbling up in the widget hierarchy</remarks>
+		public bool Handled { get; set; }
+
+		/// <summary>
+		/// Gets or sets the X coordinate of the mouse cursor
+		/// </summary>
+		/// <value>The x.</value>
+		public double X { get; private set; }
+
+		/// <summary>
+		/// Gets or sets the Y coordinate of the mouse cursor
+		/// </summary>
+		/// <value>The x.</value>
+		public double Y { get; private set; }
+
+		/// <summary>
+		/// Location of the mouse cursor
+		/// </summary>
+		public Point Position {
+			get { return new Point (X, Y); }
+		}
+
+		/// <summary>
+		/// When the event occurred
+		/// </summary>
 		public long Timestamp { get; private set; }
 	}
 }
