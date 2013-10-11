@@ -116,7 +116,7 @@ namespace Xwt
 			get { return useMnemonic; }
 			set
 			{ 
-				if (useMnemonic = value)
+				if (useMnemonic == value)
 					return;
 				Backend.SetContent (label, value, image != null ? image.ImageDescription : ImageDescription.Null, imagePosition);
 				useMnemonic = value;

@@ -57,6 +57,7 @@ namespace Xwt.WPFBackend
 		{
 			this.item = item;
 			this.menuItem = item as SWC.MenuItem;
+			useMnemonic = true;
 		}
 
 		public void Initialize (IMenuItemEventSink eventSink)

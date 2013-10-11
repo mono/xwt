@@ -104,9 +104,7 @@ namespace Xwt.WPFBackend
 				if (useMnemonic)
 					Button.Content = accessText;
 				else
-					Button.Content = Button is DropDownButton ?
-					                 accessText.Text:
-					                 accessText.Text.Replace ("_", "__");
+					Button.Content = accessText.Text.Replace ("_", "__");
 			else {
 				SWC.DockPanel grid = new SWC.DockPanel ();
 
