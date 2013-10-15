@@ -97,9 +97,29 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeSize)
+		{
+			double dx = 0, dy = 0;
+			double width = arrangeSize.Width, height = arrangeSize.Height;
+			if (width > height) {
+				dx = (width - height) / 2;
+				width = height;
+			}
+			else if (height > width) {
+				dy = (height - width) / 2;
+				height = width;
+			}
+			TransformGroup tg = new TransformGroup ();
+			tg.Children.Add (new ScaleTransform (width / 25d, height / 25d));
+			tg.Children.Add (new TranslateTransform (dx, dy));
+			RenderTransform = tg;
+			return base.ArrangeOverride (arrangeSize);
+		}
+
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
+			base.MeasureOverride (constraint);
+			var s = new System.Windows.Size (25, 25);
 			return Backend.MeasureOverride (constraint, s);
 		}
 	}
