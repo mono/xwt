@@ -10,7 +10,7 @@ using System.Windows.Media;
 
 namespace Xwt.WPFBackend
 {
-	class PlaceholderTextAdorner :Adorner
+	class PlaceholderTextAdorner: Adorner
 	{
 		public static readonly DependencyProperty PlaceholderTextProperty = DependencyProperty.Register ("PlaceholderText", typeof (string), typeof (PlaceholderTextAdorner), new PropertyMetadata (OnPlaceHolderTextChanged));
 		
@@ -57,21 +57,26 @@ namespace Xwt.WPFBackend
 			Typeface typeFace;
 			TextAlignment alignment;
 			FlowDirection flowDirection;
+			double padding;
 			if (AdornedPasswordBox != null) {
 				alignment = ConvertAlignment (AdornedPasswordBox.HorizontalContentAlignment);
 				flowDirection = AdornedPasswordBox.FlowDirection;
 				fontSize = AdornedPasswordBox.FontSize;
 				typeFace = AdornedPasswordBox.FontFamily.GetTypefaces ().FirstOrDefault ();
-			} else {
+				padding = 6;
+			}
+			else {
 				alignment = AdornedTextBox.ReadLocalValue (TextBox.TextAlignmentProperty) !=DependencyProperty.UnsetValue ? AdornedTextBox.TextAlignment : ConvertAlignment (AdornedTextBox.HorizontalContentAlignment);
 				flowDirection = AdornedTextBox.FlowDirection;
 				fontSize = AdornedTextBox.FontSize;
 				typeFace = AdornedTextBox.FontFamily.GetTypefaces ().FirstOrDefault ();
+				padding = 6;
 			}
 			var text = new System.Windows.Media.FormattedText (PlaceholderText ?? "", CultureInfo.CurrentCulture, flowDirection, typeFace, fontSize, System.Windows.Media.Brushes.LightGray) {
 				TextAlignment = alignment
 			};
-			drawingContext.DrawText(text, new System.Windows.Point (4, 0));
+
+			drawingContext.DrawText (text, new System.Windows.Point (padding, (RenderSize.Height - text.Height) / 2));
 		}
 
 		private TextAlignment ConvertAlignment(System.Windows.HorizontalAlignment horizontalAlignment)

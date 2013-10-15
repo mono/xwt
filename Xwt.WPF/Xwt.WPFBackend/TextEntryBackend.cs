@@ -38,6 +38,8 @@ namespace Xwt.WPFBackend
 	public class TextEntryBackend
 		: WidgetBackend, ITextEntryBackend
 	{
+		bool multiline;
+
 		PlaceholderTextAdorner Adorner {
 			get; set;
 		}
@@ -48,6 +50,7 @@ namespace Xwt.WPFBackend
 			TextBox.Loaded += delegate {
 				AdornerLayer.GetAdornerLayer (TextBox).Add (Adorner);
 			};
+			TextBox.VerticalContentAlignment = VerticalAlignment.Center;
 		}
 
 		protected override double DefaultNaturalWidth
@@ -87,7 +90,15 @@ namespace Xwt.WPFBackend
 
 		// TODO
 		public bool MultiLine {
-			get; set;
+			get { return multiline; }
+			set
+			{
+				multiline = value;
+				if (multiline)
+					TextBox.VerticalContentAlignment = VerticalAlignment.Top;
+				else
+					TextBox.VerticalContentAlignment = VerticalAlignment.Center;
+			}
 		}
 
 		public override void EnableEvent (object eventId)
