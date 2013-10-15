@@ -22,6 +22,7 @@ namespace Xwt.WPFBackend
 			PasswordBox.Loaded += delegate {
 				AdornerLayer.GetAdornerLayer (PasswordBox).Add (Adorner);
 			};
+			PasswordBox.VerticalContentAlignment = VerticalAlignment.Center;
 		}
 
 		protected PasswordBox PasswordBox
