@@ -200,7 +200,7 @@ namespace Xwt.Drawing
 				var t = FormattedText.FromMarkup (markup);
 				Text = t.Text;
 				ClearAttributes ();
-				foreach (var at in attributes)
+				foreach (var at in t.Attributes)
 					AddAttribute (at);
 			}
 		}
