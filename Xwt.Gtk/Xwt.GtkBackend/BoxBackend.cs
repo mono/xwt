@@ -61,6 +61,7 @@ namespace Xwt.GtkBackend
 			bool changed = false;
 			for (int n=0; n<widgets.Length; n++) {
 				var w = GetWidget (widgets[n]);
+				((WidgetBackend)widgets [n]).StoreConstraints ();
 				if (Widget.SetAllocation (w, rects[n]))
 					changed = true;
 			}

@@ -297,15 +297,15 @@ namespace Xwt
 			Backend.SetAllocation (widgets, rects);
 		}
 		
-		void CalcDefaultSizes (double width, double height)
+		void CalcDefaultSizes (SizeConstraint width, SizeConstraint height)
 		{
 			bool vertical = direction == Orientation.Vertical;
 			int nexpands = 0;
 			double requiredSize = 0;
-			double availableSize = vertical ? height : width;
+			double availableSize = vertical ? height.AvailableSize : width.AvailableSize;
 
-			var widthConstraint = vertical ? SizeConstraint.WithSize (width) : SizeConstraint.Unconstrained;
-			var heightConstraint = vertical ? SizeConstraint.Unconstrained : SizeConstraint.WithSize (height);
+			var widthConstraint = vertical ? width : SizeConstraint.Unconstrained;
+			var heightConstraint = vertical ? SizeConstraint.Unconstrained : height;
 
 			var visibleChildren = children.Where (b => b.Child.Visible).ToArray ();
 			var sizes = new Dictionary<BoxPlacement,double> ();
@@ -347,9 +347,18 @@ namespace Xwt
 			Size s = new Size ();
 			int count = 0;
 
+			var visibleChildren = children.Where (b => b.Child.Visible).ToArray ();
+
 			if (direction == Orientation.Horizontal) {
-				foreach (var cw in Children.Where (b => b.Visible)) {
-					var wsize = cw.Surface.GetPreferredSize (SizeConstraint.Unconstrained, heightConstraint, true);
+				// If the width is constrained then we have a total width, and we can calculate the exact width assigned to each child.
+				// We can then use that width as a width constraint for the child.
+
+				if (widthConstraint.IsConstrained)
+					CalcDefaultSizes (widthConstraint, heightConstraint); // Calculates the width assigned to each child
+
+				foreach (var cw in visibleChildren) {
+					// Use the calculated width if available
+					var wsize = cw.Child.Surface.GetPreferredSize (widthConstraint.IsConstrained ? cw.NextSize : SizeConstraint.Unconstrained, heightConstraint, true);
 					s.Width += wsize.Width;
 					if (wsize.Height > s.Height)
 						s.Height = wsize.Height;
@@ -358,8 +367,10 @@ namespace Xwt
 				if (count > 0)
 					s.Width += spacing * (double)(count - 1);
 			} else {
-				foreach (var cw in Children.Where (b => b.Visible)) {
-					var wsize = cw.Surface.GetPreferredSize (widthConstraint, SizeConstraint.Unconstrained, true);
+				if (heightConstraint.IsConstrained)
+					CalcDefaultSizes (widthConstraint, heightConstraint);
+				foreach (var cw in visibleChildren) {
+					var wsize = cw.Child.Surface.GetPreferredSize (widthConstraint, heightConstraint.IsConstrained ? cw.NextSize : SizeConstraint.Unconstrained, true);
 					s.Height += wsize.Height;
 					if (wsize.Width > s.Width)
 						s.Width = wsize.Width;

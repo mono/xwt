@@ -42,6 +42,8 @@ namespace Xwt.GtkBackend
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
 		bool destroyed;
+		SizeConstraint lastWidthConstraint = SizeConstraint.Unconstrained;
+		SizeConstraint lastHeightConstraint = SizeConstraint.Unconstrained;
 		SizeConstraint currentWidthConstraint = SizeConstraint.Unconstrained;
 		SizeConstraint currentHeightConstraint = SizeConstraint.Unconstrained;
 
@@ -281,8 +283,14 @@ namespace Xwt.GtkBackend
 
 		public void SetSizeConstraints (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			currentWidthConstraint = widthConstraint;
-			currentHeightConstraint = heightConstraint;
+			lastWidthConstraint = widthConstraint;
+			lastHeightConstraint = heightConstraint;
+		}
+
+		public void StoreConstraints ()
+		{
+			currentWidthConstraint = lastWidthConstraint;
+			currentHeightConstraint = lastHeightConstraint;
 		}
 		
 		DragDropData DragDropInfo {
@@ -656,7 +664,7 @@ namespace Xwt.GtkBackend
 			var req = args.Requisition;
 
 			if (!gettingPreferredSize && (enabledEvents & WidgetEvent.PreferredSizeCheck) != 0) {
-				SizeConstraint wc = SizeConstraint.Unconstrained, hc = SizeConstraint.Unconstrained;
+				SizeConstraint wc = currentWidthConstraint, hc = currentHeightConstraint;
 				var cp = Widget.Parent as IConstraintProvider;
 				if (cp != null)
 					cp.GetConstraints (Widget, out wc, out hc);
