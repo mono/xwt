@@ -65,7 +65,7 @@ namespace Xwt.Mac
 				return Widget.StringValue;
 			}
 			set {
-				Widget.StringValue = value;
+				Widget.StringValue = value ?? string.Empty;
 				ResetFittingSize ();
 			}
 		}
