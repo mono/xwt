@@ -121,6 +121,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.ISliderBackend, SliderBackend> ();
 			RegisterBackend <Xwt.Backends.IEmbeddedWidgetBackend, EmbedNativeWidgetBackend> ();
 			RegisterBackend <Xwt.Backends.KeyboardHandler, MacKeyboardHandler> ();
+			RegisterBackend <Xwt.Backends.IPasswordEntryBackend, PasswordEntryBackend> ();
 		}
 
 		public override void RunApplication ()

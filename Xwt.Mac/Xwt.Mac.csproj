@@ -124,6 +124,7 @@
     <Compile Include="Xwt.Mac.CellViews\CheckBoxTableCell.cs" />
     <Compile Include="Xwt.Mac\EmbedNativeWidgetBackend.cs" />
     <Compile Include="Xwt.Mac\MacKeyboardHandler.cs" />
+    <Compile Include="Xwt.Mac\PasswordEntryBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
