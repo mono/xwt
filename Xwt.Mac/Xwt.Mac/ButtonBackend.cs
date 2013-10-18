@@ -88,7 +88,7 @@ namespace Xwt.Mac
 				break;
 			case ButtonStyle.Borderless:
 			case ButtonStyle.Flat:
-				Widget.BezelStyle = NSBezelStyle.Rounded;
+				Widget.BezelStyle = NSBezelStyle.ShadowlessSquare;
 				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
 				break;
 			}
