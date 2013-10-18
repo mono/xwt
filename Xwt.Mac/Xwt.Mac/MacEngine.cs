@@ -168,10 +168,13 @@ namespace Xwt.Mac
 		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
 		{
 			NSTimer timer = null;
-			timer = NSTimer.CreateRepeatingScheduledTimer (timeSpan, delegate {
+			var runLoop = NSRunLoop.Current;
+			timer = NSTimer.CreateRepeatingTimer (timeSpan, delegate {
 				if (!action ())
 					timer.Invalidate ();
 			});
+			runLoop.AddTimer (timer, NSRunLoop.NSDefaultRunLoopMode);
+			runLoop.AddTimer (timer, NSRunLoop.NSRunLoopModalPanelMode);
 			return timer;
 		}
 		
