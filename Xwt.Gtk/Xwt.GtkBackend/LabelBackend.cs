@@ -40,6 +40,7 @@ namespace Xwt.GtkBackend
 		Color? bgColor, textColor;
 		int wrapHeight, wrapWidth;
 		List<LabelLink> links;
+		TextIndexer indexer;
 
 		public LabelBackend ()
 		{
@@ -133,19 +134,27 @@ namespace Xwt.GtkBackend
 
 		LabelLink FindLink (double px, double py)
 		{
-			var x = px * Pango.Scale.PangoScale;
-			var y = py * Pango.Scale.PangoScale;
-
-			int index, trailing;
-			if (!Label.Layout.XyToIndex ((int)x, (int)y, out index, out trailing))
+			if (links == null)
 				return null;
 
-			if (links != null) {
-				foreach (var li in links) {
-					if (index >= li.StartIndex && index <= li.EndIndex)
-						return li;
-				}
-			}
+			var alloc = Label.Allocation;
+
+			int offsetX, offsetY;
+			Label.GetLayoutOffsets (out offsetX, out offsetY);
+
+			var x = (px - offsetX + alloc.X) * Pango.Scale.PangoScale;
+			var y = (py - offsetY + alloc.Y) * Pango.Scale.PangoScale;
+
+			int byteIndex, trailing;
+			if (!Label.Layout.XyToIndex ((int)x, (int)y, out byteIndex, out trailing))
+				return null;
+
+			int index = indexer.ByteIndexToIndex (byteIndex);
+
+			foreach (var li in links)
+				if (byteIndex >= li.StartIndex && byteIndex <= li.EndIndex)
+					return li;
+
 			return null;
 		}
 
@@ -189,14 +198,18 @@ namespace Xwt.GtkBackend
 		
 		public virtual string Text {
 			get { return Label.Text; }
-			set { Label.Text = value; }
+			set {
+				links = null;
+				indexer = null;
+				Label.Text = value;
+			}
 		}
 
 		public void SetFormattedText (FormattedText text)
 		{
 			Label.Text = text.Text;
 			var list = new FastPangoAttrList ();
-			TextIndexer indexer = new TextIndexer (text.Text);
+			indexer = new TextIndexer (text.Text);
 			list.AddAttributes (indexer, text.Attributes);
 			gtk_label_set_attributes (Label.Handle, list.Handle);
 
@@ -214,6 +227,11 @@ namespace Xwt.GtkBackend
 					EnableLinkEvents ();
 				}
 				links.Add (ll);
+			}
+
+			if (links == null || links.Count == 0) {
+				links = null;
+				indexer = null;
 			}
 		}
 
