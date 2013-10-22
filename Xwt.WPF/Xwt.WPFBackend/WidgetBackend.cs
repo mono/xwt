@@ -391,15 +391,7 @@ namespace Xwt.WPFBackend
 
 		public void SetSizeRequest (double width, double height)
 		{
-			if (width == -1)
-				Widget.ClearValue (FrameworkElement.WidthProperty);
-			else
-				Widget.Width = width;
-
-			if (height == -1)
-				Widget.ClearValue (FrameworkElement.HeightProperty);
-			else
-				Widget.Height = height;
+			// Nothing needs to be done here
 		}
 
 		public void SetCursor (CursorType cursor)
