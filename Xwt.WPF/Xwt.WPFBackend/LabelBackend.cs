@@ -222,6 +222,7 @@ namespace Xwt.WPFBackend
 			TextBlock = new SWC.TextBlock ();
 			Content = TextBlock;
 			Padding = new Thickness (0);
+			VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
 		}
 
 		public WidgetBackend Backend { get; set; }
