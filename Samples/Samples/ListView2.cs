@@ -1,6 +1,7 @@
 using System;
 using Xwt;
 using Xwt.Drawing;
+using System.Collections.Generic;
 
 namespace Samples
 {
@@ -15,15 +16,22 @@ namespace Samples
 			var textField2 = new DataField<string> ();
 			var editableField = new DataField<bool> ();
 			var somewhatEditableData = new DataField<bool>();
+            var comboSelectedIndexField = new DataField<int>();
+            var editableCombo = new Dictionary<string, object>();
 
-			ListStore store = new ListStore(editableActiveField, nonEditableActiveField, textField, textField2, editableField, somewhatEditableData);
+			ListStore store = new ListStore(editableActiveField, nonEditableActiveField, textField, textField2, editableField, somewhatEditableData, comboSelectedIndexField);
 			list.DataSource = store;
+            for (int n = 0; n < 7; n++ )
+            {
+                editableCombo.Add(n.ToString() + "_text", n);
+            }
 
 			list.Columns.Add (new ListViewColumn("Editable", new CheckBoxCellView { Editable = true, ActiveField = editableActiveField }));
 			list.Columns.Add (new ListViewColumn("Not Editable", new CheckBoxCellView { Editable = false, ActiveField = nonEditableActiveField }));
 			list.Columns.Add (new ListViewColumn("Editable", new TextCellView { Editable = true, TextField = textField }));
 			list.Columns.Add(new ListViewColumn("Somewhat Editable", new CheckBoxCellView { EditableField = editableField, ActiveField = somewhatEditableData }));
 			list.Columns.Add (new ListViewColumn("Somewhat Editable", new TextCellView { EditableField = editableField, TextField = textField2 }));
+            list.Columns.Add(new ListViewColumn("Editable", new ComboBoxCellView { Editable = true, Source = editableCombo, DisplayMemberPath = "Key", SelectedIndexField = comboSelectedIndexField }));
 
 			Random rand = new Random ();
 			
@@ -33,6 +41,8 @@ namespace Samples
 				store.SetValue (r, nonEditableActiveField, rand.Next(0, 2) == 0);
 				store.SetValue(r, somewhatEditableData, rand.Next(0, 2) == 0);
 				store.SetValue (r, textField, n.ToString ());
+                store.SetValue(r, comboSelectedIndexField, rand.Next(0, 5));
+                
 				var edit = (n % 2) == 0;
 				store.SetValue (r, editableField, edit);
 				store.SetValue (r, textField2, edit ? "editable" : "not editable");

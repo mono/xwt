@@ -30,9 +30,85 @@ using System;
 using Xwt.Drawing;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.ComponentModel;
+using Xwt.Backends;
+using System.Collections;
 
 namespace Xwt {
 	public sealed class ComboBoxCellView: CellView
 	{
+		bool editable;
+		int selectedIndex;
+        IEnumerable source;
+        string displayMemberPath;
+        string valueMemberPath;
+
+        // Datentyp prüfen, muss IENumerable sein, außerdem wird noch eine Property benötigt
+		public IDataField<IEnumerable> SourceField{ get; set; }
+
+		public IDataField<bool> EditableField { get; set; }
+        public IDataField<string> DisplayMemberPathField {get; set;}
+        public IDataField<string> ValueMemberPathField { get; set; }
+        public IDataField<int> SelectedIndexField { get; set; }
+
+		public ComboBoxCellView ()
+		{
+		}
+
+		public ComboBoxCellView (IDataField<IEnumerable> field)
+		{
+			SourceField = field;
+		}
+
+        public int SelectedIndex
+        {
+            get { return GetValue(SelectedIndexField, SelectedIndex); }
+            set { SelectedIndex = value; }
+        }
+
+        public IEnumerable Source
+        {
+            get { return GetValue(SourceField, source); }
+            set { source = value; }
+        }
+
+        public string DisplayMemberPath
+        {
+            get { return GetValue(DisplayMemberPathField, displayMemberPath); }
+            set { displayMemberPath = value; }
+        }
+
+        public string ValueMemberPath
+        {
+            get { return GetValue(ValueMemberPathField, valueMemberPath); }
+            set { valueMemberPath = value; }
+        }
+
+		[DefaultValue (false)]
+		public bool Editable {
+			get {
+				return GetValue (EditableField, editable);
+			}
+			set {
+				editable = value;
+			}
+		}
+
+        public event EventHandler<WidgetEventArgs> SelectedIndexChanged;
+
+        /// <summary>
+        /// Raises the toggled event
+        /// </summary>
+        /// <returns><c>true</c>, if the event was handled, <c>false</c> otherwise.</returns>
+        public bool RaiseToggled()
+        {
+            if (SelectedIndexChanged != null)
+            {
+                var args = new WidgetEventArgs();
+                SelectedIndexChanged(this, args);
+                return args.Handled;
+            }
+            return false;
+        }
 	}
 }

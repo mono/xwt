@@ -30,19 +30,6 @@ namespace Xwt.Backends
 	public interface IComboBoxCellViewFrontend: ICellViewFrontend
 	{
 		bool Editable { get; }
-		bool AllowMixed { get; }
-		bool RaiseIndexChanged ();
-		CellViewCollection View { get; }
-		int VisibleColumn{ get; }
-		int SelectedRow{ get; }
-		IListDataSource Source { get; }
-		IBackend SourceBackend { get; }
-		IDataField<CellViewCollection> ViewField { get; }
-		IDataField<int> SelectedRowField{get;}
-		IDataField<IListDataSource> SourceField { get; }
-		IDataField<IBackend> SourceBackendField { get; }
-		IDataField<int> VisibleColumnField{ get; }
-		IDataField<bool> ActiveField{ get; }
 	}
 }
 
