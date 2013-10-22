@@ -45,10 +45,11 @@ namespace Xwt.WPFBackend
 		{
 			var panelFactory = new FrameworkElementFactory (typeof (StackPanel));
 			panelFactory.SetValue (StackPanel.OrientationProperty, SWC.Orientation.Horizontal);
+			panelFactory.SetValue (StackPanel.MarginProperty, new Thickness (0, 7, 7, 7));
 
 			PanelTemplate = new ItemsPanelTemplate (panelFactory);
 
-			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MarginProperty, new Thickness (5)));
+			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MarginProperty, new Thickness (7, 0, 0, 0)));
 			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MinWidthProperty, 80d));
 		}
 
