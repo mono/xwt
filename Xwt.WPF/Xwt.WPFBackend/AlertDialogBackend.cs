@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
-
+using System.Linq;
 using Xwt.Backends;
 
 
@@ -55,24 +55,61 @@ namespace Xwt.WPFBackend
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{
 			this.icon = GetIcon (message.Icon);
-			this.buttons = ConvertButtons (message.Buttons);
-			if (message.SecondaryText == null)
-				message.SecondaryText = String.Empty;
+			if (ConvertButtons (message.Buttons, out buttons)) {
+				// Use a system message box
+				if (message.SecondaryText == null)
+					message.SecondaryText = String.Empty;
+				else {
+					message.Text = message.Text + "\r\n\r\n" + message.SecondaryText;
+					message.SecondaryText = String.Empty;
+				}
+				var wb = (WindowFrameBackend)Toolkit.GetBackend (transientFor);
+				if (wb != null) {
+					this.dialogResult = MessageBox.Show (wb.Window, message.Text, message.SecondaryText,
+														this.buttons, this.icon, this.defaultResult, this.options);
+				}
+				else {
+					this.dialogResult = MessageBox.Show (message.Text, message.SecondaryText, this.buttons,
+														this.icon, this.defaultResult, this.options);
+				}
+				return ConvertResultToCommand (this.dialogResult);
+			}
 			else {
-				message.Text = message.Text + "\r\n\r\n" + message.SecondaryText;
-				message.SecondaryText = String.Empty;
-			}
+				// Custom message box required
+				Dialog dlg = new Dialog ();
+				dlg.Resizable = false;
+				dlg.Padding = 0;
+				HBox mainBox = new HBox { Margin = 25 };
 
-			var wb = (WindowFrameBackend)Toolkit.GetBackend (transientFor);
-			if (wb != null) {
-				this.dialogResult = MessageBox.Show (wb.Window, message.Text,message.SecondaryText,
-													this.buttons, this.icon, this.defaultResult, this.options);
-			} else {
-				this.dialogResult = MessageBox.Show (message.Text, message.SecondaryText, this.buttons, 
-													this.icon, this.defaultResult, this.options);
-			}
+				if (message.Icon != null) {
+					var image = new ImageView (message.Icon.WithSize (32,32));
+					mainBox.PackStart (image, vpos: WidgetPlacement.Start);
+				}
+				VBox box = new VBox () { Margin = 3, MarginLeft = 8, Spacing = 15 };
+				mainBox.PackStart (box, true);
+				var text = new Label {
+					Text = message.Text ?? ""
+				};
+				Label stext = null;
+				box.PackStart (text);
+				if (!string.IsNullOrEmpty (message.SecondaryText)) {
+					stext = new Label {
+						Text = message.SecondaryText
+					};
+					box.PackStart (stext);
+				}
+				dlg.Buttons.Add (message.Buttons.ToArray ());
+				if (mainBox.Surface.GetPreferredSize (true).Width > 480) {
+					text.Wrap = WrapMode.Word;
+					if (stext != null)
+						stext.Wrap = WrapMode.Word;
+					mainBox.WidthRequest = 480;
+				}
+				var s = mainBox.Surface.GetPreferredSize (true);
 
-			return ConvertResultToCommand (this.dialogResult);
+				dlg.Content = mainBox;
+				return dlg.Run ();
+			}
 		}
 
 		public bool ApplyToAll
@@ -112,39 +149,33 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		MessageBoxButton ConvertButtons (IList<Command> buttons)
+		bool ConvertButtons (IList<Command> buttons, out MessageBoxButton result)
 		{
-			MessageBoxButton result;
-
 			switch (buttons.Count){
 			case 1:
-				if (buttons.Contains(Command.Ok)) {
-					result = MessageBoxButton.OK;
-				} else {
-					throw new NotImplementedException ();
-				}
-				break;
+					if (buttons.Contains (Command.Ok)) {
+						result = MessageBoxButton.OK;
+						return true;
+					}
+					break;
 			case 2:
 				if (buttons.Contains (Command.Ok) && buttons.Contains (Command.Cancel)) {
 					result = MessageBoxButton.OKCancel;
+					return true;
 				} else if (buttons.Contains (Command.Yes) && buttons.Contains (Command.No)) {
 					result = MessageBoxButton.YesNo;
-				} else {
-					throw new NotImplementedException ();
+					return true;
 				}
 				break;
 			case 3:
 				if (buttons.Contains (Command.Yes) && buttons.Contains (Command.No) && buttons.Contains (Command.Cancel)) {
 					result = MessageBoxButton.YesNoCancel;
-				} else {
-					throw new NotImplementedException ();
+					return true;
 				}
 				break;
-			default:
-				throw new NotImplementedException ();
 			}
-
-			return result;
+			result = MessageBoxButton.OK;
+			return false;
 		}
 
 		public void Dispose ()
