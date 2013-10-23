@@ -90,6 +90,10 @@ namespace Samples
 			tb.Style = ButtonStyle.Borderless;
 			PackStart (tb);
 
+			b = new Button (" ? ");
+			b.Type = ButtonType.Help;
+			PackStart (b);
+
 
 			var child = new VBox ();
 			var container = new MyWidget { Content = child };

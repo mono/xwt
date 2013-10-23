@@ -38,7 +38,8 @@ namespace Xwt
 	{
 		Normal,
 		DropDown,
-		Disclosure
+		Disclosure,
+		Help
 	}
 }
 

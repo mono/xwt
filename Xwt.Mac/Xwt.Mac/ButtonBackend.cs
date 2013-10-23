@@ -60,6 +60,8 @@ namespace Xwt.Mac
 		{
 			if (useMnemonic)
 				label = label.RemoveMnemonic ();
+			if (((Button)Frontend).Type == ButtonType.Help)
+				return;
 			Widget.Title = label ?? "";
 			if (string.IsNullOrEmpty (label))
 				imagePosition = ContentPosition.Center;
@@ -99,8 +101,16 @@ namespace Xwt.Mac
 		public void SetButtonType (ButtonType type)
 		{
 			switch (type) {
-			case ButtonType.Disclosure: Widget.BezelStyle = NSBezelStyle.Disclosure; break;
-			default: Widget.BezelStyle = NSBezelStyle.Rounded; break;
+			case ButtonType.Disclosure:
+				Widget.BezelStyle = NSBezelStyle.Disclosure;
+				break;
+			case ButtonType.Help:
+				Widget.BezelStyle = NSBezelStyle.HelpButton;
+				Widget.Title = "";
+				break;
+			default:
+				Widget.BezelStyle = NSBezelStyle.Rounded;
+				break;
 			}
 		}
 		
