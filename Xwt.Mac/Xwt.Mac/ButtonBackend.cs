@@ -58,10 +58,13 @@ namespace Xwt.Mac
 		
 		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition imagePosition)
 		{
+			switch (((Button)Frontend).Type) {
+			case ButtonType.Help:
+			case ButtonType.Disclosure:
+				return;
+			}
 			if (useMnemonic)
 				label = label.RemoveMnemonic ();
-			if (((Button)Frontend).Type == ButtonType.Help)
-				return;
 			Widget.Title = label ?? "";
 			if (string.IsNullOrEmpty (label))
 				imagePosition = ContentPosition.Center;
@@ -103,6 +106,7 @@ namespace Xwt.Mac
 			switch (type) {
 			case ButtonType.Disclosure:
 				Widget.BezelStyle = NSBezelStyle.Disclosure;
+				Widget.Title = "";
 				break;
 			case ButtonType.Help:
 				Widget.BezelStyle = NSBezelStyle.HelpButton;
