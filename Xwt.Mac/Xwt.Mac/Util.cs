@@ -289,6 +289,7 @@ namespace Xwt.Mac
 		public static NSAttributedString ToAttributedString (this FormattedText ft)
 		{
 			NSMutableAttributedString ns = new NSMutableAttributedString (ft.Text);
+			ns.BeginEditing ();
 			foreach (var att in ft.Attributes) {
 				var r = new NSRange (att.StartIndex, att.Count);
 				if (att is BackgroundTextAttribute) {
@@ -322,7 +323,9 @@ namespace Xwt.Mac
 				}
 				else if (att is LinkTextAttribute) {
 					var xa = (LinkTextAttribute)att;
-					ns.AddAttribute (NSAttributedString.LinkAttributeName, (NSString)xa.Target.ToString (), r);
+					ns.AddAttribute (NSAttributedString.LinkAttributeName, new NSUrl (xa.Target.ToString ()), r);
+					ns.AddAttribute (NSAttributedString.ForegroundColorAttributeName, NSColor.Blue, r);
+					ns.AddAttribute (NSAttributedString.UnderlineStyleAttributeName, NSNumber.FromInt32 ((int)NSUnderlineStyle.Single), r);
 				}
 				else if (att is StrikethroughTextAttribute) {
 					var xa = (StrikethroughTextAttribute)att;
@@ -335,6 +338,7 @@ namespace Xwt.Mac
 					ns.AddAttribute (NSAttributedString.FontAttributeName, nf, r);
 				}
 			}
+			ns.EndEditing ();
 			return ns;
 		}
 

@@ -72,6 +72,8 @@ namespace Xwt.Mac
 
 		public void SetFormattedText (FormattedText text)
 		{
+			Widget.AllowsEditingTextAttributes = true;
+			Widget.Selectable = true;
 			Widget.AttributedStringValue = text.ToAttributedString ();
 		}
 
