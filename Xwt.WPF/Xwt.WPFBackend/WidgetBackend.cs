@@ -56,7 +56,7 @@ namespace Xwt.WPFBackend
 		{
 			// Source
 			public bool AutodetectDrag;
-			public Rect DragRect;
+			public Rect DragRect = Rect.Empty;
 			// Target
 			public TransferDataType [] TargetTypes = new TransferDataType [0];
 		}
@@ -821,12 +821,6 @@ namespace Xwt.WPFBackend
 
 		void WidgetDragOverHandler (object sender, System.Windows.DragEventArgs e)
 		{
-			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
-			var pos = e.GetPosition (Widget).ToXwtPoint ();
-			var proposedAction = DetectDragAction (e.KeyStates);
-
-			e.Handled = true; // Prevent default handlers from being used.
-
 			if (Adorner != null) {
 				var w = GetParentWindow ();
 				var v = (UIElement)w.Content;
@@ -847,6 +841,16 @@ namespace Xwt.WPFBackend
 
 				Adorner.Offset = e.GetPosition (v);
 			}
+			CheckDrop (sender, e);
+		}
+
+		void CheckDrop (object sender, System.Windows.DragEventArgs e)
+		{
+			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
+			var pos = e.GetPosition (Widget).ToXwtPoint ();
+			var proposedAction = DetectDragAction (e.KeyStates);
+
+			e.Handled = true; // Prevent default handlers from being used.
 
 			if ((enabledEvents & WidgetEvent.DragOverCheck) > 0) {
 				var checkArgs = new DragOverCheckEventArgs (pos, types, proposedAction);
@@ -884,6 +888,12 @@ namespace Xwt.WPFBackend
 
 		void WidgetDropHandler (object sender, System.Windows.DragEventArgs e)
 		{
+			// Do a DragOverCheck before proceeding to the drop. This is required since in some cases the DragOver
+			// handler may not be called.
+			CheckDrop (sender, e);
+			if (e.Effects == DragDropEffects.None)
+				return;
+
 			WidgetDragLeaveHandler (sender, e);
 
 			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
