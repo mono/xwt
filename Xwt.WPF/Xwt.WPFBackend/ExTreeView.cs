@@ -51,12 +51,38 @@ namespace Xwt.WPFBackend
 			Loaded += new RoutedEventHandler(ExTreeView_Loaded);
 		}
 
+		void ItemContainerGenerator_StatusChanged(object sender, EventArgs e)
+		{
+			if (ItemContainerGenerator.Status == SWC.Primitives.GeneratorStatus.ContainersGenerated)
+			{
+				if (SelectedItems.Count > 0)
+				{
+					if (ContainerFromObject(SelectedItems[0]) != null)
+					{
+						ItemContainerGenerator.StatusChanged -= new EventHandler(ItemContainerGenerator_StatusChanged);
+						SelectItem(SelectedItems[0]);
+					}
+				}
+				else
+				{
+					ItemContainerGenerator.StatusChanged -= new EventHandler(ItemContainerGenerator_StatusChanged);
+				}
+			}
+		}
+
 		void ExTreeView_Loaded(object sender, RoutedEventArgs e)
 		{
 			if (SelectionMode == SWC.SelectionMode.Single)
 			{
-				if (Items.Count > 0)
-					SelectItem(Items[0]);
+				if (SelectedItems.Count == 0)
+				{
+					if (Items.Count > 0)
+						SelectItem(Items[0]);
+				}
+				else
+				{
+					ItemContainerGenerator.StatusChanged += new EventHandler(ItemContainerGenerator_StatusChanged);
+				}
 			}
 		}
 
