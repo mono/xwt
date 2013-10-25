@@ -42,6 +42,13 @@ namespace Xwt.WPFBackend
 	{
 		System.Windows.Application application;
 
+		public static WPFEngine Instance { get; private set; }
+
+		public WPFEngine ()
+		{
+			Instance = this;
+		}
+
 		public override void InitializeApplication ()
 		{
 			application = System.Windows.Application.Current;
