@@ -28,6 +28,7 @@ using System.Linq;
 using Xwt.Backends;
 using System.Collections.Generic;
 using MonoMac.AppKit;
+using MonoMac.Foundation;
 
 namespace Xwt.Mac
 {
@@ -40,6 +41,8 @@ namespace Xwt.Mac
 		Size minSize;
 		Dictionary<DialogButton,Button> buttons = new Dictionary<DialogButton, Button> ();
 		WidgetSpacing buttonBoxPadding = new WidgetSpacing (12, 6, 12, 12);
+
+		bool modalSessionRunning;
 
 		public DialogBackend ()
 		{
@@ -55,6 +58,14 @@ namespace Xwt.Mac
 			};
 			buttonBoxView = ((ViewBackend)buttonBox.GetBackend ()).Widget;
 			ContentView.AddSubview (buttonBoxView);
+
+			WillClose += HandleWillClose;
+		}
+
+		void HandleWillClose (object sender, EventArgs e)
+		{
+			if (modalSessionRunning)
+				EndLoop ();
 		}
 
 		public override void LayoutWindow ()
@@ -124,11 +135,13 @@ namespace Xwt.Mac
 		public void RunLoop (IWindowFrameBackend parent)
 		{
 			Visible = true;
+			modalSessionRunning = true;
 			NSApplication.SharedApplication.RunModalForWindow (this);
 		}
 
 		public void EndLoop ()
 		{
+			modalSessionRunning = false;
 			NSApplication.SharedApplication.StopModal ();
 		}
 
