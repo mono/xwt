@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using Xwt.Backends;
 using System.Collections.Generic;
 using MonoMac.AppKit;
@@ -59,10 +60,13 @@ namespace Xwt.Mac
 		public override void LayoutWindow ()
 		{
 			var frame = ContentView.Frame;
-			var ps = buttonBox.Surface.GetPreferredSize (true);
-			buttonBoxView.Frame = new System.Drawing.RectangleF ((float)buttonBoxPadding.Left, (float)buttonBoxPadding.Bottom, frame.Width - (float)buttonBoxPadding.HorizontalSpacing, (float)ps.Height);
-			buttonBox.Surface.Reallocate ();
-			var boxHeight = (float)ps.Height + (float)buttonBoxPadding.VerticalSpacing;
+			var boxHeight = 0f;
+			if (buttonBox.Children.Any ()) {
+				var ps = buttonBox.Surface.GetPreferredSize (true);
+				buttonBoxView.Frame = new System.Drawing.RectangleF ((float)buttonBoxPadding.Left, (float)buttonBoxPadding.Bottom, frame.Width - (float)buttonBoxPadding.HorizontalSpacing, (float)ps.Height);
+				buttonBox.Surface.Reallocate ();
+				boxHeight = (float)ps.Height + (float)buttonBoxPadding.VerticalSpacing;
+			}
 			LayoutContent (new System.Drawing.RectangleF (0, boxHeight, frame.Width, frame.Height - boxHeight));
 		}
 
