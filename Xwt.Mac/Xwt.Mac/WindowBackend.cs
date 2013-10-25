@@ -55,6 +55,8 @@ namespace Xwt.Mac
 			this.controller = new WindowBackendController ();
 			controller.Window = this;
 			StyleMask |= NSWindowStyle.Resizable | NSWindowStyle.Closable | NSWindowStyle.Miniaturizable;
+			AutorecalculatesKeyViewLoop = true;
+
 			ContentView.AutoresizesSubviews = true;
 			ContentView.Hidden = true;
 

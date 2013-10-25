@@ -212,6 +212,11 @@ namespace Xwt.Mac
 		public NSView View {
 			get { return this; }
 		}
+
+		public override bool AcceptsFirstResponder ()
+		{
+			return false;
+		}
 	}
 }
 
