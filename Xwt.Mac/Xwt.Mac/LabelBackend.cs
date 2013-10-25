@@ -35,13 +35,13 @@ namespace Xwt.Mac
 	public class LabelBackend: ViewBackend<NSView,IWidgetEventSink>, ILabelBackend
 	{
 		public LabelBackend ()
-			: this (new CustomAlignedContainer (new TextFieldView ()))
+			: this (new TextFieldView ())
 		{
 		}
 
 		protected LabelBackend (IViewObject viewObject)
 		{
-			ViewObject = viewObject;
+			ViewObject = new CustomAlignedContainer ((NSView)viewObject);
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
