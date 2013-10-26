@@ -348,17 +348,23 @@ namespace Xwt.Mac
 
 		public virtual object Font {
 			get {
-				if (Widget is NSControl)
-					return ((NSControl)(object)Widget).Font;
-				if (Widget is NSText)
-					return ((NSText)(object)Widget).Font;
+				var widget = Widget;
+				if (widget is CustomAlignedContainer)
+					widget = ((CustomAlignedContainer)widget).Child;
+				if (widget is NSControl)
+					return ((NSControl)(object)widget).Font;
+				if (widget is NSText)
+					return ((NSText)(object)widget).Font;
 				return NSFont.ControlContentFontOfSize (NSFont.SystemFontSize);
 			}
 			set {
-				if (Widget is NSControl)
-					((NSControl)(object)Widget).Font = (NSFont) value;
-				if (Widget is NSText)
-					((NSText)(object)Widget).Font = (NSFont) value;
+				var widget = Widget;
+				if (widget is CustomAlignedContainer)
+					widget = ((CustomAlignedContainer)widget).Child;
+				if (widget is NSControl)
+					((NSControl)(object)widget).Font = (NSFont) value;
+				if (widget is NSText)
+					((NSText)(object)widget).Font = (NSFont) value;
 				ResetFittingSize ();
 			}
 		}
