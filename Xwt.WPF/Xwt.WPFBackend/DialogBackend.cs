@@ -73,6 +73,7 @@ namespace Xwt.WPFBackend
 			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
 			Grid.SetRow (this.buttonContainer, 3);
 			this.rootPanel.Children.Add (this.buttonContainer);
+			this.buttonContainer.Visibility = Visibility.Collapsed;
 		}
 
 		public override void SetMinSize (Size s)
@@ -112,7 +113,7 @@ namespace Xwt.WPFBackend
 
 		void UpdateSeparatorVisibility ()
 		{
-			separator.Visibility = buttons.Any (b => b.Visible) ? Visibility.Visible : Visibility.Collapsed;
+			buttonContainer.Visibility = separator.Visibility = buttons.Any (b => b.Visible) ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		public void RunLoop (IWindowFrameBackend parent)
