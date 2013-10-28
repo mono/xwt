@@ -40,6 +40,7 @@ namespace Xwt.WPFBackend
 		System.Windows.Window window;
 		IWindowFrameEventSink eventSink;
 		WindowFrame frontend;
+		bool resizable = true;
 
 		public WindowFrameBackend ()
 		{
@@ -88,7 +89,10 @@ namespace Xwt.WPFBackend
 
 		bool IWindowFrameBackend.Decorated {
 			get { return window.WindowStyle != WindowStyle.None; }
-			set { window.WindowStyle = value ? WindowStyle.SingleBorderWindow : WindowStyle.None; }
+			set {
+				window.WindowStyle = value ? WindowStyle.SingleBorderWindow : WindowStyle.None;
+				UpdateResizeMode ();
+			}
 		}
 
 		bool IWindowFrameBackend.ShowInTaskbar {
@@ -103,10 +107,12 @@ namespace Xwt.WPFBackend
 
 		bool IWindowFrameBackend.Resizable {
 			get {
-				return window.ResizeMode == ResizeMode.CanResize;
+				return resizable;
 			}
 			set {
-				if (value != ((IWindowFrameBackend)this).Resizable) {
+				if (value != resizable) {
+					resizable = value;
+					UpdateResizeMode ();
 					var bounds = Bounds;
 					window.ResizeMode = value ? ResizeMode.CanResize : ResizeMode.NoResize;
 					if (window.IsLoaded && bounds != Bounds) {
@@ -118,6 +124,19 @@ namespace Xwt.WPFBackend
 					}
 				}
 			}
+		}
+
+		void UpdateResizeMode ()
+		{
+			var m = resizable && window.WindowStyle == WindowStyle.SingleBorderWindow ? ResizeMode.CanResize : ResizeMode.NoResize;
+			if (m != window.ResizeMode) {
+				window.ResizeMode = m;
+				OnResizeModeChanged ();
+			}
+		}
+
+		protected virtual void OnResizeModeChanged ()
+		{
 		}
 
 		public void SetIcon (ImageDescription imageBackend)
@@ -181,16 +200,13 @@ namespace Xwt.WPFBackend
 
 		public void SetSize (double width, double height)
 		{
-			var value = ToNonClientRect (new Rectangle (0, 0, width, height));
-			window.Width = value.Width;
-			window.Height = value.Height;
-			Context.InvokeUserCode (delegate
-			{
-				eventSink.OnBoundsChanged (Bounds);
-			});
+			var r = Bounds;
+			r.Width = width;
+			r.Height = height;
+			Bounds = r;
 		}
 
-		public Rectangle Bounds {
+		public virtual Rectangle Bounds {
 			get {
 				double width = Double.IsNaN (window.Width) ? window.ActualWidth : window.Width;
 				double height = Double.IsNaN (window.Height) ? window.ActualHeight : window.Height;
@@ -304,6 +320,11 @@ namespace Xwt.WPFBackend
 
 		protected Rectangle ToNonClientRect (Rectangle rect)
 		{
+			// WARNING: SystemParameters.ResizeFrameHorizontalBorderHeight is known to return invalid values in some cases, due to
+			// a workaround in the Windows API to support legacy applications running on Aero.
+			// We can't rely then on ToNonClientRect and ToClientRect to return 100% correct values, so they are not used for calculating
+			// the required client area. However, the result of those methods is good enough for calculating the position of the window.
+
 			var size = rect.Size;
 			var loc = rect.Location;
 

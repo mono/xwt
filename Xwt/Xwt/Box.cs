@@ -260,7 +260,7 @@ namespace Xwt
 			Rectangle[] rects = new Rectangle [visibleChildren.Length];
 			
 			if (direction == Orientation.Horizontal) {
-				CalcDefaultSizes (size.Width, size.Height);
+				CalcDefaultSizes (size.Width, size.Height, true);
 				double xs = 0;
 				double xe = size.Width + spacing;
 				for (int n=0; n<visibleChildren.Length; n++) {
@@ -277,7 +277,7 @@ namespace Xwt
 						xs += availableWidth + spacing;
 				}
 			} else {
-				CalcDefaultSizes (size.Width, size.Height);
+				CalcDefaultSizes (size.Width, size.Height, true);
 				double ys = 0;
 				double ye = size.Height + spacing;
 				for (int n=0; n<visibleChildren.Length; n++) {
@@ -297,7 +297,7 @@ namespace Xwt
 			Backend.SetAllocation (widgets, rects);
 		}
 		
-		void CalcDefaultSizes (SizeConstraint width, SizeConstraint height)
+		void CalcDefaultSizes (SizeConstraint width, SizeConstraint height, bool allowShrink)
 		{
 			bool vertical = direction == Orientation.Vertical;
 			int nexpands = 0;
@@ -322,23 +322,23 @@ namespace Xwt
 			}
 			
 			double remaining = availableSize - requiredSize - (spacing * (double)(visibleChildren.Length - 1));
-			if (remaining < 0) {
-				// The box is not big enough to fit the widgets using its natural size.
-				// We have to shrink the widgets.
-				
-				// The total amount we have to shrink
-				double shrinkSize = -remaining;
-				
-				var sizePart = new SizeSplitter (shrinkSize, visibleChildren.Length);
-				foreach (var bp in visibleChildren)
-					bp.NextSize -= sizePart.NextSizePart ();
-			}
-			else {
+			if (remaining > 0) {
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
 				foreach (var bp in visibleChildren) {
 					if (bp.Child.ExpandsForOrientation (direction))
 						bp.NextSize += expandRemaining.NextSizePart ();
 				}
+			}
+			else if (allowShrink && remaining < 0) {
+				// The box is not big enough to fit the widgets using its natural size.
+				// We have to shrink the widgets.
+
+				// The total amount we have to shrink
+				double shrinkSize = -remaining;
+
+				var sizePart = new SizeSplitter (shrinkSize, visibleChildren.Length);
+				foreach (var bp in visibleChildren)
+					bp.NextSize -= sizePart.NextSizePart ();
 			}
 		}
 		
@@ -354,7 +354,7 @@ namespace Xwt
 				// We can then use that width as a width constraint for the child.
 
 				if (widthConstraint.IsConstrained)
-					CalcDefaultSizes (widthConstraint, heightConstraint); // Calculates the width assigned to each child
+					CalcDefaultSizes (widthConstraint, heightConstraint, false); // Calculates the width assigned to each child
 
 				foreach (var cw in visibleChildren) {
 					// Use the calculated width if available
@@ -368,7 +368,7 @@ namespace Xwt
 					s.Width += spacing * (double)(count - 1);
 			} else {
 				if (heightConstraint.IsConstrained)
-					CalcDefaultSizes (widthConstraint, heightConstraint);
+					CalcDefaultSizes (widthConstraint, heightConstraint, false);
 				foreach (var cw in visibleChildren) {
 					var wsize = cw.Child.Surface.GetPreferredSize (widthConstraint, heightConstraint.IsConstrained ? cw.NextSize : SizeConstraint.Unconstrained, true);
 					s.Height += wsize.Height;

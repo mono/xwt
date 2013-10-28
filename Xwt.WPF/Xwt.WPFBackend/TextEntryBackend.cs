@@ -48,7 +48,9 @@ namespace Xwt.WPFBackend
 			Widget = new ExTextBox { IsReadOnlyCaretVisible = true };
 			Adorner = new PlaceholderTextAdorner (TextBox);
 			TextBox.Loaded += delegate {
-				AdornerLayer.GetAdornerLayer (TextBox).Add (Adorner);
+				var layer = AdornerLayer.GetAdornerLayer (TextBox);
+				if (layer != null)
+					layer.Add (Adorner);
 			};
 			TextBox.VerticalContentAlignment = VerticalAlignment.Center;
 		}

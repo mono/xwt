@@ -32,6 +32,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using SW = System.Windows;
 
 using Xwt.Backends;
 
@@ -47,7 +48,7 @@ namespace Xwt.WPFBackend
 
 		public WindowBackend ()
 		{
-			Window = new WpfWindow ();
+			base.Window = new WpfWindow ();
 			Window.UseLayoutRounding = true;
 			rootPanel = CreateMainGrid ();
 			contentBox = new DockPanel ();
@@ -58,10 +59,15 @@ namespace Xwt.WPFBackend
 			rootPanel.Children.Add (contentBox);
 		}
 
+		new WpfWindow Window
+		{
+			get { return (WpfWindow)base.Window; }
+		}
+
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			((WpfWindow)Window).Frontend = (Window) Frontend;
+			Window.Frontend = (Window) Frontend;
 		}
 
 		// A Grid with a single column, and two rows (menu and child control).
@@ -82,6 +88,22 @@ namespace Xwt.WPFBackend
 
 		public override bool HasMenu {
 			get { return mainMenu != null; }
+		}
+
+		public override Rectangle Bounds
+		{
+			get
+			{
+				return Window.ClientBounds;
+			}
+			set
+			{
+				Window.ClientBounds = value;
+				Context.InvokeUserCode (delegate
+				{
+					EventSink.OnBoundsChanged (Bounds);
+				});
+			}
 		}
 
 		public void SetChild (IWidgetBackend child)
@@ -148,14 +170,23 @@ namespace Xwt.WPFBackend
 
 		public virtual void SetMinSize (Size s)
 		{
-			var r = ToNonClientRect (new Rectangle (0, 0, s.Width, s.Height));
-			Window.MinHeight = r.Height;
-			Window.MinWidth = r.Width;
+			Window.SetMinSize (s);
 		}
 
 		public virtual void GetMetrics (out Size minSize, out Size decorationSize)
 		{
 			minSize = decorationSize = Size.Zero;
+			if (mainMenu != null) {
+				mainMenu.InvalidateMeasure ();
+				mainMenu.Measure (new System.Windows.Size (double.PositiveInfinity, double.PositiveInfinity));
+				var h = mainMenu.DesiredSize.Height;
+				decorationSize.Height = h;
+			}
+		}
+
+		protected override void OnResizeModeChanged ()
+		{
+			Window.ResetBorderSize ();
 		}
 	}
 
@@ -163,12 +194,121 @@ namespace Xwt.WPFBackend
 	{
 		public Window Frontend;
 
+		bool borderCalculated;
+		WidgetSpacing frameBorder;
+		Size minSizeRequested;
+		double initialX, initialY;
+
+		public WpfWindow ()
+		{
+			// We initially use WidthAndHeight mode since we need to calculate the size
+			// of the window borders
+			SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
+		}
+
+		public void ResetBorderSize ()
+		{
+			// Called when the size of the border may have changed
+			if (borderCalculated) {
+				var r = ClientBounds;
+				initialX = Left + frameBorder.Left;
+				initialY = Top + frameBorder.Top;
+				borderCalculated = false;
+				ClientBounds = r;
+			}
+		}
+
+		public void SetMinSize (Size size)
+		{
+			if (borderCalculated) {
+				if (size.Width != -1)
+					MinWidth = size.Width + frameBorder.HorizontalSpacing;
+				if (size.Height != -1)
+					MinHeight = size.Height + frameBorder.VerticalSpacing;
+			}
+			else
+				minSizeRequested = size;
+		}
+
+		public Rectangle ClientBounds
+		{
+			get
+			{
+				var c = (FrameworkElement)Content;
+				var w = double.IsNaN (c.Width) ? c.ActualWidth : c.Width;
+				var h = double.IsNaN (c.Height) ? c.ActualHeight : c.Height;
+				if (PresentationSource.FromVisual (c) == null)
+					return new Rectangle (initialX, initialY, w, h);
+				else {
+					var p = c.PointToScreen (new SW.Point (0, 0));
+					return new Rectangle (p.X, p.Y, w, h);
+				}
+			}
+			set
+			{
+				// Don't use WindowFrameBackend.ToNonClientRect to calculate the client area because that method is not reliable (see comment in ToNonClientRect).
+				// Instead, we use our own border size calculation method, which is:
+				// 1) Set the Width and Height of the widget to the desired client rect, and set SizeToContent property to WidthAndHeight
+				// 2) The window will resize itself to fit the content
+				// 3) When the size of the window is set (OnRenderSizeChanged event), calculate the border by comparing the screen position of
+				//    the root content with the screen position of the window.
+
+				if (borderCalculated) {
+					// Border size already calculated. Just do the math.
+					Left = value.Left - frameBorder.Left;
+					Top = value.Top - frameBorder.Top;
+					Width = value.Width + frameBorder.HorizontalSpacing;
+					Height = value.Height + frameBorder.VerticalSpacing;
+				}
+				else {
+					// store the required size and position and enable SizeToContent mode. When the window size is set, we'll calculate the border size.
+					var c = (FrameworkElement)Content;
+					initialX = value.Left;
+					initialY = value.Top;
+					c.Width = value.Width;
+					c.Height = value.Height;
+					SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
+				}
+			}
+		}
+
 		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
 		{
 			var s = base.ArrangeOverride (arrangeBounds);
 			if (Frontend.Content != null)
 				Frontend.Content.Surface.Reallocate ();
 			return s;
+		}
+
+		protected override void OnRenderSizeChanged (SizeChangedInfo sizeInfo)
+		{
+			// Once the physical size of the window has been set we can calculate
+			// the size of the borders, which will be used for further client/non client
+			// area coordinate conversions
+			CalcBorderSize (sizeInfo.NewSize.Width, sizeInfo.NewSize.Height);
+			base.OnRenderSizeChanged (sizeInfo);
+		}
+
+		void CalcBorderSize (double windowWidth, double windowHeight)
+		{
+			if (borderCalculated)
+				return;
+
+			var c = (FrameworkElement)Content;
+			var p = c.PointToScreen (new SW.Point (0, 0));
+			var left = p.X - Left;
+			var top = p.Y - Top;
+			frameBorder = new WidgetSpacing (left, top, windowWidth - c.ActualWidth - left, windowHeight - c.ActualHeight - top);
+			borderCalculated = true;
+			Left = initialX - left;
+			Top = initialY - top;
+			SetMinSize (minSizeRequested);
+
+			// Border size calculation done and we can go back to Manual resize mode.
+			// From now on, the content has to adapt to the size of the window.
+			SizeToContent = System.Windows.SizeToContent.Manual;
+			c.Width = double.NaN;
+			c.Height = double.NaN;
 		}
 	}
 }
