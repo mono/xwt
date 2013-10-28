@@ -128,7 +128,15 @@ namespace Xwt.WPFBackend
 
 		void UpdateResizeMode ()
 		{
-			window.ResizeMode = resizable && window.WindowStyle == WindowStyle.SingleBorderWindow ? ResizeMode.CanResize : ResizeMode.NoResize;
+			var m = resizable && window.WindowStyle == WindowStyle.SingleBorderWindow ? ResizeMode.CanResize : ResizeMode.NoResize;
+			if (m != window.ResizeMode) {
+				window.ResizeMode = m;
+				OnResizeModeChanged ();
+			}
+		}
+
+		protected virtual void OnResizeModeChanged ()
+		{
 		}
 
 		public void SetIcon (ImageDescription imageBackend)

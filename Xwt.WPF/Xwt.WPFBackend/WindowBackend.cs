@@ -32,6 +32,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using SW = System.Windows;
 
 using Xwt.Backends;
 
@@ -47,7 +48,7 @@ namespace Xwt.WPFBackend
 
 		public WindowBackend ()
 		{
-			Window = new WpfWindow ();
+			base.Window = new WpfWindow ();
 			Window.UseLayoutRounding = true;
 			rootPanel = CreateMainGrid ();
 			contentBox = new DockPanel ();
@@ -56,13 +57,17 @@ namespace Xwt.WPFBackend
 			Grid.SetColumn (contentBox, 0);
 			Grid.SetRow (contentBox, 1);
 			rootPanel.Children.Add (contentBox);
-			Window.SizeChanged += new SizeChangedEventHandler (CheckSizeChange);
+		}
+
+		new WpfWindow Window
+		{
+			get { return (WpfWindow)base.Window; }
 		}
 
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			((WpfWindow)Window).Frontend = (Window) Frontend;
+			Window.Frontend = (Window) Frontend;
 		}
 
 		// A Grid with a single column, and two rows (menu and child control).
@@ -89,39 +94,16 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				var w = double.IsNaN (rootPanel.Width) ? rootPanel.ActualWidth : rootPanel.Width;
-				var h = double.IsNaN (rootPanel.Height) ? rootPanel.ActualHeight : rootPanel.Height;
-				return new Rectangle (Window.Left, Window.Top, w, h);
+				return Window.ClientBounds;
 			}
 			set
 			{
-				SetBounds (value, false);
+				Window.ClientBounds = value;
+				Context.InvokeUserCode (delegate
+				{
+					EventSink.OnBoundsChanged (Bounds);
+				});
 			}
-		}
-
-		void SetBounds (Rectangle value, bool setMinSize)
-		{
-			if (setMinSize) {
-				// We are changing in min size of the window. We know the min size of the content,
-				// but not the min size of the frame. This will be calculated later on.
-				// For now just reset any existing min size, so that the window can get the new min size.
-				((WpfWindow)Window).SettingMinSize = true;
-				Window.MinHeight = Window.MinHeight = 0;
-			}
-			var r = ToNonClientRect (new Rectangle (value.X, value.Y, 1, 1));
-			Window.Top = r.Top;
-			Window.Left = r.Left;
-
-			// We don't use the size returned by ToNonClientRect because those values are not reliable (see comment in ToNonClientRect)
-			// Instead we set the size of the content and we ask the window to adapt to it
-			rootPanel.Width = value.Width;
-			rootPanel.Height = value.Height;
-			Window.SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
-
-			Context.InvokeUserCode (delegate
-			{
-				EventSink.OnBoundsChanged (Bounds);
-			});
 		}
 
 		public void SetChild (IWidgetBackend child)
@@ -188,34 +170,7 @@ namespace Xwt.WPFBackend
 
 		public virtual void SetMinSize (Size s)
 		{
-			// The provided size is the min size of the content, not the size of the frame, so we set that value to the root container
-			rootPanel.MinWidth = s.Width;
-			rootPanel.MinHeight = s.Height;
-			var r = Bounds;
-			if (r.Width < s.Width)
-				r.Width = s.Width;
-			if (r.Height < s.Height)
-				r.Height = s.Height;
-			if (r != Bounds)
-				SetBounds (r, true);
-		}
-
-		void CheckSizeChange (object sender, SizeChangedEventArgs e)
-		{
-			// The window doesn't respect the min size of the content, so we have to check
-			// that the window is big enough every time the window size changes
-
-			var r = Bounds;
-			if (r.Width < rootPanel.MinWidth)
-				r.Width = rootPanel.MinWidth;
-			if (r.Height < rootPanel.MinHeight)
-				r.Height = rootPanel.MinHeight;
-
-			// We reset the min size of the window if the content is too small. We also do it if the content has exactly the min size
-			// because the window won't reduce the widget beyond that value (but it will still reduce the window frame, that's why we
-			// have to set a min size to the frame)
-			if (r != Bounds || r.Width == rootPanel.MinWidth || r.Height == rootPanel.MinHeight)
-				SetBounds (r, true);
+			Window.SetMinSize (s);
 		}
 
 		public virtual void GetMetrics (out Size minSize, out Size decorationSize)
@@ -228,16 +183,93 @@ namespace Xwt.WPFBackend
 				decorationSize.Height = h;
 			}
 		}
+
+		protected override void OnResizeModeChanged ()
+		{
+			Window.ResetBorderSize ();
+		}
 	}
 
 	class WpfWindow : System.Windows.Window
 	{
 		public Window Frontend;
-		public bool SettingMinSize { get; set; }
+
+		bool borderCalculated;
+		WidgetSpacing frameBorder;
+		Size minSizeRequested;
+		double initialX, initialY;
 
 		public WpfWindow ()
 		{
+			// We initially use WidthAndHeight mode since we need to calculate the size
+			// of the window borders
 			SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
+		}
+
+		public void ResetBorderSize ()
+		{
+			// Called when the size of the border may have changed
+			if (borderCalculated) {
+				var r = ClientBounds;
+				initialX = Left + frameBorder.Left;
+				initialY = Top + frameBorder.Top;
+				borderCalculated = false;
+				ClientBounds = r;
+			}
+		}
+
+		public void SetMinSize (Size size)
+		{
+			if (borderCalculated) {
+				if (size.Width != -1)
+					MinWidth = size.Width + frameBorder.HorizontalSpacing;
+				if (size.Height != -1)
+					MinHeight = size.Height + frameBorder.VerticalSpacing;
+			}
+			else
+				minSizeRequested = size;
+		}
+
+		public Rectangle ClientBounds
+		{
+			get
+			{
+				var c = (FrameworkElement)Content;
+				var w = double.IsNaN (c.Width) ? c.ActualWidth : c.Width;
+				var h = double.IsNaN (c.Height) ? c.ActualHeight : c.Height;
+				if (PresentationSource.FromVisual (c) == null)
+					return new Rectangle (initialX, initialY, w, h);
+				else {
+					var p = c.PointToScreen (new SW.Point (0, 0));
+					return new Rectangle (p.X, p.Y, w, h);
+				}
+			}
+			set
+			{
+				// Don't use WindowFrameBackend.ToNonClientRect to calculate the client area because that method is not reliable (see comment in ToNonClientRect).
+				// Instead, we use our own border size calculation method, which is:
+				// 1) Set the Width and Height of the widget to the desired client rect, and set SizeToContent property to WidthAndHeight
+				// 2) The window will resize itself to fit the content
+				// 3) When the size of the window is set (OnRenderSizeChanged event), calculate the border by comparing the screen position of
+				//    the root content with the screen position of the window.
+
+				if (borderCalculated) {
+					// Border size already calculated. Just do the math.
+					Left = value.Left - frameBorder.Left;
+					Top = value.Top - frameBorder.Top;
+					Width = value.Width + frameBorder.HorizontalSpacing;
+					Height = value.Height + frameBorder.VerticalSpacing;
+				}
+				else {
+					// store the required size and position and enable SizeToContent mode. When the window size is set, we'll calculate the border size.
+					var c = (FrameworkElement)Content;
+					initialX = value.Left;
+					initialY = value.Top;
+					c.Width = value.Width;
+					c.Height = value.Height;
+					SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
+				}
+			}
 		}
 
 		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
@@ -245,28 +277,38 @@ namespace Xwt.WPFBackend
 			var s = base.ArrangeOverride (arrangeBounds);
 			if (Frontend.Content != null)
 				Frontend.Content.Surface.Reallocate ();
-			if (SizeToContent == System.Windows.SizeToContent.WidthAndHeight) {
-				WPFEngine.Instance.InvokeAsync (delegate
-				{
-					// We were resizing the window to fit the size of the content.
-					// That's now done and we can go back to Manual resize mode.
-					// From now on, the content has to adapt to the size of the window.
-					SizeToContent = System.Windows.SizeToContent.Manual;
-					var c = (FrameworkElement)Content;
-					c.Width = double.NaN;
-					c.Height = double.NaN;
-					if (SettingMinSize) {
-						// We were setting the min size of the window. We now have a valid frame size
-						// for the min size of the content, so we can set the min size of the window.
-						SettingMinSize = false;
-						if (c.ActualWidth <= c.MinWidth)
-							MinWidth = Width;
-						if (c.ActualHeight <= c.MinHeight)
-							MinHeight = Height;
-					}
-				});
-			}
 			return s;
+		}
+
+		protected override void OnRenderSizeChanged (SizeChangedInfo sizeInfo)
+		{
+			// Once the physical size of the window has been set we can calculate
+			// the size of the borders, which will be used for further client/non client
+			// area coordinate conversions
+			CalcBorderSize (sizeInfo.NewSize.Width, sizeInfo.NewSize.Height);
+			base.OnRenderSizeChanged (sizeInfo);
+		}
+
+		void CalcBorderSize (double windowWidth, double windowHeight)
+		{
+			if (borderCalculated)
+				return;
+
+			var c = (FrameworkElement)Content;
+			var p = c.PointToScreen (new SW.Point (0, 0));
+			var left = p.X - Left;
+			var top = p.Y - Top;
+			frameBorder = new WidgetSpacing (left, top, windowWidth - c.ActualWidth - left, windowHeight - c.ActualHeight - top);
+			borderCalculated = true;
+			Left = initialX - left;
+			Top = initialY - top;
+			SetMinSize (minSizeRequested);
+
+			// Border size calculation done and we can go back to Manual resize mode.
+			// From now on, the content has to adapt to the size of the window.
+			SizeToContent = System.Windows.SizeToContent.Manual;
+			c.Width = double.NaN;
+			c.Height = double.NaN;
 		}
 	}
 }
