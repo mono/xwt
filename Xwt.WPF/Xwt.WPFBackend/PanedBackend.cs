@@ -229,9 +229,9 @@ namespace Xwt.WPFBackend
 					h = s1.Height + s2.Height + SplitterSize;
 					w = Math.Max (s1.Width, s2.Width);
 				}
-				if (widthConstraint.IsConstrained && w > widthConstraint.AvailableSize)
+				if (direction == Orientation.Horizontal && widthConstraint.IsConstrained && w > widthConstraint.AvailableSize)
 					w = widthConstraint.AvailableSize;
-				if (heightConstraint.IsConstrained && h > heightConstraint.AvailableSize)
+				if (direction == Orientation.Vertical && heightConstraint.IsConstrained && h > heightConstraint.AvailableSize)
 					h = heightConstraint.AvailableSize;
 				return new Size (w, h);
 			}
