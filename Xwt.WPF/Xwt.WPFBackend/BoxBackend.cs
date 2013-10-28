@@ -129,7 +129,7 @@ namespace Xwt.WPFBackend
 					}
           
 					element.Arrange (r.ToWpfRect ());
-					//  element.UpdateLayout ();
+					element.UpdateLayout ();
 				}
 			}
 		}
