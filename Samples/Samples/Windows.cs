@@ -64,6 +64,9 @@ namespace Samples
 				t.Add (new Label ("Another field:"), 0, 1);
 				t.Add (new TextEntry (), 1, 1);
 				d.Content = t;
+				d.CloseRequested += delegate(object sender, CloseRequestedEventArgs args) {
+					args.Handled = !MessageDialog.Confirm ("Really close?", Command.Close);
+				};
 				
 				Command custom = new Command ("Custom");
 				d.Buttons.Add (new DialogButton (custom));
@@ -72,7 +75,7 @@ namespace Samples
 				d.Buttons.Add (new DialogButton (Command.Ok));
 				
 				var r = d.Run (this.ParentWindow);
-				db.Label = "Result: " + r.Label;
+				db.Label = "Result: " + (r != null ? r.Label : "(Closed)");
 				d.Dispose ();
 			};
 			

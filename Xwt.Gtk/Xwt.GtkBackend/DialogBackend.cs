@@ -126,7 +126,16 @@ namespace Xwt.GtkBackend
 			// GTK adds a border to the root widget, for some unknown reason
 			((Gtk.Container)Window.Child).BorderWidth = 0;
 			var p = (WindowFrameBackend) parent;
-			MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
+
+			bool keepRunning = false;
+			do {
+				var res = MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
+				if (res == (int) Gtk.ResponseType.DeleteEvent) {
+					ApplicationContext.InvokeUserCode(delegate {
+						keepRunning = EventSink.OnCloseRequested ();
+					});
+				}
+			} while (keepRunning);
 		}
 
 		public void EndLoop ()
