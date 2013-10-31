@@ -53,13 +53,19 @@ namespace Xwt.WPFBackend
 
 		void ItemContainerGenerator_StatusChanged(object sender, EventArgs e)
 		{
+			//Check only when new ExTreeViewItem is generated
 			if (ItemContainerGenerator.Status == SWC.Primitives.GeneratorStatus.ContainersGenerated)
 			{
+				//This shouldn't happen since we register only if SelectedItems.Count != 0
 				if (SelectedItems.Count > 0)
 				{
+					//Check if ExTreeViewItem is generated for SelectedItem[0](this event could be fired for any other ExTreeViewItem generated not just one we want)
 					if (ContainerFromObject(SelectedItems[0]) != null)
 					{
+						//Unregister because ExTreeViewItem for SelectedItem[0] was finnaly generated
 						ItemContainerGenerator.StatusChanged -= new EventHandler(ItemContainerGenerator_StatusChanged);
+						//Reselect item so correct visual effects appear on selected item otherwise it displays as unselected(no highligthing) because
+						//when it was selected first time ExTreeViewItem was not generated yet since WPF is LazyLoading them and no visual effect could be set
 						SelectItem(SelectedItems[0]);
 					}
 				}
@@ -81,6 +87,7 @@ namespace Xwt.WPFBackend
 				}
 				else
 				{
+					//Register to event which fires when WPF generates visual elements(ExTreeViewItem) for selected Items
 					ItemContainerGenerator.StatusChanged += new EventHandler(ItemContainerGenerator_StatusChanged);
 				}
 			}
