@@ -178,7 +178,7 @@ namespace Xwt.WPFBackend
 
 			var bitmapImage = img as WriteableBitmap;
 
-			if (!(bitmapImage is WriteableBitmap)) {
+			if (bitmapImage == null) {
 				bitmapImage = new WriteableBitmap (img);
 				((WpfImage)handle).MainFrame = bitmapImage;
 			}
