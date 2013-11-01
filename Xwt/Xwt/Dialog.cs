@@ -100,6 +100,7 @@ namespace Xwt
 				TransientFor = parent;
 			AdjustSize ();
 
+			loopEnded = false;
 			BackendHost.ToolkitEngine.InvokePlatformCode (delegate {
 				Backend.RunLoop ((IWindowFrameBackend) Toolkit.GetBackend (parent));
 			});
