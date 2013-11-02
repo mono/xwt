@@ -34,7 +34,7 @@ namespace Xwt
 	{
 		double dx, dy;
 		
-		public static readonly Distance Zero;
+		public static readonly Distance Zero = new Distance (0d, 0d);
 		
 		public Distance (double dx, double dy)
 		{

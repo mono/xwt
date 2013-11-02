@@ -38,7 +38,7 @@ namespace Xwt {
 	{		
 		double width, height;
 
-		public static readonly Size Zero;
+		public static readonly Size Zero = new Size (0d, 0d);
 
 		public Size (double width, double height)
 		{

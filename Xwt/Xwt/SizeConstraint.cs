@@ -33,7 +33,7 @@ namespace Xwt
 		// Since a constraint of '0' is valid, we use NegativeInfinity as a marker for constraint=0.
 		double value;
 
-		public static readonly SizeConstraint Unconstrained; 
+		public static readonly SizeConstraint Unconstrained = new SizeConstraint (); 
 
 		static public implicit operator SizeConstraint (double size)
 		{
