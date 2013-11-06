@@ -58,6 +58,7 @@ namespace Xwt
 					if (child != null)
 						AddChild (child);
 					Resize ();
+					QueueForReallocate ();
 				}
 			}
 
