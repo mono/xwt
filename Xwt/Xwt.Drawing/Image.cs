@@ -162,6 +162,8 @@ namespace Xwt.Drawing
 				throw new ArgumentNullException ("resource");
 			
 			var toolkit = Toolkit.CurrentEngine;
+			if (toolkit == null)
+				throw new ToolkitNotInitializedException ();
 
 			var name = Path.GetFileNameWithoutExtension (resource);
 
@@ -194,6 +196,8 @@ namespace Xwt.Drawing
 
 		public static Image CreateMultiSizeIcon (IEnumerable<Image> images)
 		{
+			if (Toolkit.CurrentEngine == null)
+				throw new ToolkitNotInitializedException ();
 			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (images.Select (i => i.GetBackend ())));
 		}
 
@@ -254,12 +258,16 @@ namespace Xwt.Drawing
 		public static Image FromFile (string file)
 		{
 			var toolkit = Toolkit.CurrentEngine;
+			if (toolkit == null)
+				throw new ToolkitNotInitializedException ();
 			return new Image (toolkit.ImageBackendHandler.LoadFromFile (file), toolkit);
 		}
 		
 		public static Image FromStream (Stream stream)
 		{
 			var toolkit = Toolkit.CurrentEngine;
+			if (toolkit == null)
+				throw new ToolkitNotInitializedException ();
 			return new Image (toolkit.ImageBackendHandler.LoadFromStream (stream), toolkit);
 		}
 		
