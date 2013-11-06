@@ -306,7 +306,7 @@ namespace Xwt.WPFBackend
 		{
 			Context.InvokeUserCode (delegate ()
 			{
-				e.Cancel = eventSink.OnCloseRequested ();
+				e.Cancel = !eventSink.OnCloseRequested ();
 			});
 		}
 

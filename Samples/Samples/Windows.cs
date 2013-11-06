@@ -65,7 +65,7 @@ namespace Samples
 				t.Add (new TextEntry (), 1, 1);
 				d.Content = t;
 				d.CloseRequested += delegate(object sender, CloseRequestedEventArgs args) {
-					args.Handled = !MessageDialog.Confirm ("Really close?", Command.Close);
+					args.AllowClose = MessageDialog.Confirm ("Really close?", Command.Close);
 				};
 				
 				Command custom = new Command ("Custom");

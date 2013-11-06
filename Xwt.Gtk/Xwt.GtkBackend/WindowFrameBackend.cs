@@ -297,7 +297,7 @@ namespace Xwt.GtkBackend
 		void HandleCloseRequested (object o, Gtk.DeleteEventArgs args)
 		{
 			ApplicationContext.InvokeUserCode(delegate {
-				args.RetVal = EventSink.OnCloseRequested ();
+				args.RetVal = !EventSink.OnCloseRequested ();
 			});
 		}
 

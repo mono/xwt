@@ -30,7 +30,12 @@ namespace Xwt
 {
 	public sealed class CloseRequestedEventArgs : EventArgs
 	{
-		public bool Handled { get; set; }
+		public CloseRequestedEventArgs ()
+		{
+			AllowClose = true;
+		}
+
+		public bool AllowClose { get; set; }
 	}
 }
 

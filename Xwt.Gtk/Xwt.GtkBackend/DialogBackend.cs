@@ -132,7 +132,7 @@ namespace Xwt.GtkBackend
 				var res = MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
 				if (res == (int) Gtk.ResponseType.DeleteEvent) {
 					ApplicationContext.InvokeUserCode(delegate {
-						keepRunning = EventSink.OnCloseRequested ();
+						keepRunning = !EventSink.OnCloseRequested ();
 					});
 				}
 			} while (keepRunning);

@@ -316,13 +316,17 @@ namespace Xwt
 				hidden (this, EventArgs.Empty);
 		}
 
+		/// <summary>
+		/// Called to check if the window can be closed
+		/// </summary>
+		/// <returns><c>true<c> if the window can be closed, <c>false</c> otherwise</returns>
 		protected virtual bool OnCloseRequested ()
 		{
 			if (closeRequested == null)
 				return false;
 			var eventArgs = new CloseRequestedEventArgs();
 			closeRequested (this, eventArgs);
-			return eventArgs.Handled;
+			return eventArgs.AllowClose;
 		}
 
 		internal virtual void SetBackendSize (double width, double height)

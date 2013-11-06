@@ -176,23 +176,33 @@ namespace Xwt.Mac
 			if (eventId is WindowFrameEvent) {
 				var @event = (WindowFrameEvent)eventId;
 				switch (@event) {
-					case WindowFrameEvent.BoundsChanged:
-						DidResize += HandleDidResize;
-						DidMoved += HandleDidResize;
-						break;
-					case WindowFrameEvent.Hidden:
-						EnableVisibilityEvent (@event);
-						this.WillClose += OnWillClose;
-						break;
-					case WindowFrameEvent.Shown:
-						EnableVisibilityEvent (@event);
-						break;
+				case WindowFrameEvent.BoundsChanged:
+					DidResize += HandleDidResize;
+					DidMoved += HandleDidResize;
+					break;
+				case WindowFrameEvent.Hidden:
+					EnableVisibilityEvent (@event);
+					this.WillClose += OnWillClose;
+					break;
+				case WindowFrameEvent.Shown:
+					EnableVisibilityEvent (@event);
+					break;
+				case WindowFrameEvent.CloseRequested:
+					WindowShouldClose = OnShouldClose;
+					break;
 				}
 			}
 		}
 		
 		void OnWillClose (object sender, EventArgs args) {
 			OnHidden ();
+		}
+
+		bool OnShouldClose (NSObject ob)
+		{
+			bool res = true;
+			ApplicationContext.InvokeUserCode (() => res = eventSink.OnCloseRequested ());
+			return res;
 		}
 		
 		bool VisibilityEventsEnabled ()
