@@ -129,7 +129,7 @@ namespace Xwt.GtkBackend
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			base.OnSizeRequested (ref requisition);
-			foreach (var cr in children)
+			foreach (var cr in children.ToArray ())
 				cr.Key.SizeRequest ();
 		}
 		
