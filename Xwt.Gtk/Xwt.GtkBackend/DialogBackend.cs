@@ -121,25 +121,30 @@ namespace Xwt.GtkBackend
 			UpdateButton (btn, buttons[i]);
 		}
 
+		bool endLoopRequested;
+
 		public void RunLoop (IWindowFrameBackend parent)
 		{
 			// GTK adds a border to the root widget, for some unknown reason
 			((Gtk.Container)Window.Child).BorderWidth = 0;
 			var p = (WindowFrameBackend) parent;
 
-			bool keepRunning = false;
+			bool keepRunning;
 			do {
 				var res = MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
+				keepRunning = false;
+				endLoopRequested = false;
 				if (res == (int) Gtk.ResponseType.DeleteEvent) {
 					ApplicationContext.InvokeUserCode(delegate {
 						keepRunning = !EventSink.OnCloseRequested ();
 					});
 				}
-			} while (keepRunning);
+			} while (keepRunning && !endLoopRequested);
 		}
 
 		public void EndLoop ()
 		{
+			endLoopRequested = true;
 			Window.Respond (Gtk.ResponseType.Ok);
 		}
 
