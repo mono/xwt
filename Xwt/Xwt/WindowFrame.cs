@@ -323,7 +323,7 @@ namespace Xwt
 		protected virtual bool OnCloseRequested ()
 		{
 			if (closeRequested == null)
-				return false;
+				return true;
 			var eventArgs = new CloseRequestedEventArgs();
 			closeRequested (this, eventArgs);
 			return eventArgs.AllowClose;
