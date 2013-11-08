@@ -126,7 +126,9 @@ namespace Xwt.WPFBackend
 
 		public void EndLoop ()
 		{
+			InhibitCloseRequested = true;
 			Window.Close();
+			InhibitCloseRequested = false;
 		}
 
 		private readonly ItemsControl buttonContainer = new ItemsControl();

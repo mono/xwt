@@ -302,8 +302,12 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		protected bool InhibitCloseRequested { get; set; }
+
 		private void ClosingHandler (object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			if (InhibitCloseRequested)
+				return;
 			Context.InvokeUserCode (delegate ()
 			{
 				e.Cancel = !eventSink.OnCloseRequested ();
