@@ -261,6 +261,11 @@ namespace Xwt.Mac
 		public void DrawIt (NSObject ob)
 		{
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+			if (!NSGraphicsContext.CurrentContext.IsFlipped) {
+				// Custom drawing is done using flipped order, so if the target surface is not flipped, we need to flip it
+				ctx.TranslateCTM (0, Size.Height);
+				ctx.ScaleCTM (1, -1);
+			}
 			DrawInContext (ctx);
 		}
 
