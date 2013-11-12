@@ -51,7 +51,7 @@ namespace Xwt
 			var la = new Label ("Some text here");
 			la.TextAlignment = Alignment.Center;
 			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
-			CheckWidgetRender ("Label.AlignCenter", la);
+			CheckWidgetRender ("Label.AlignCenter.png", la);
 		}
 
 		[Test]
@@ -62,7 +62,25 @@ namespace Xwt
 			la.Wrap = WrapMode.Word;
 			la.WidthRequest = 200;
 			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
-			CheckWidgetRender ("Label.AlignCenterWrapped", la);
+			CheckWidgetRender ("Label.AlignCenterWrapped.png", la);
+		}
+
+		[Test]
+		public void AlignCenterWrappedChangeText ()
+		{
+			var la = new Label ("Some text here");
+			la.TextAlignment = Alignment.Center;
+			la.Wrap = WrapMode.Word;
+			la.WidthRequest = 200;
+
+			using (var win = new Window { Width = 200, Height = 100 }) {
+				win.Content = la;
+				ShowWindow (win);
+				la.Text = "Some text here Some text here";
+				WaitForEvents ();
+				var img = Toolkit.CurrentEngine.RenderWidget (la);
+				ReferenceImageManager.CheckImage ("Label.AlignCenterWrappedChangeText.png", img);
+			}
 		}
 
 		[Test]
@@ -71,7 +89,7 @@ namespace Xwt
 			var la = new Label ("Some text here");
 			la.TextAlignment = Alignment.Start;
 			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
-			CheckWidgetRender ("Label.AlignLeft", la);
+			CheckWidgetRender ("Label.AlignLeft.png", la);
 		}
 
 		[Test]
@@ -82,7 +100,7 @@ namespace Xwt
 			la.Wrap = WrapMode.Word;
 			la.WidthRequest = 200;
 			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
-			CheckWidgetRender ("Label.AlignLeftWrapped", la);
+			CheckWidgetRender ("Label.AlignLeftWrapped.png", la);
 		}
 
 		[Test]
@@ -91,7 +109,7 @@ namespace Xwt
 			var la = new Label ("Some text here");
 			la.TextAlignment = Alignment.End;
 			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
-			CheckWidgetRender ("Label.AlignRight", la);
+			CheckWidgetRender ("Label.AlignRight.png", la);
 		}
 
 		[Test]
@@ -102,7 +120,7 @@ namespace Xwt
 			la.Wrap = WrapMode.Word;
 			la.WidthRequest = 200;
 			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
-			CheckWidgetRender ("Label.AlignRightWrapped", la);
+			CheckWidgetRender ("Label.AlignRightWrapped.png", la);
 		}
 	}
 }

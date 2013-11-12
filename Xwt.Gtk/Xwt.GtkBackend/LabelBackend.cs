@@ -175,14 +175,19 @@ namespace Xwt.GtkBackend
 			Label.Layout.GetPixelSize (out unused, out wrapHeight);
 			if (wrapWidth != args.Allocation.Width || oldHeight != wrapHeight) {
 				wrapWidth = args.Allocation.Width;
-				// GTK renders the text using the calculated pixel width, not the allocated width.
-				// If the calculated width is smaller and text is not left aligned, then a gap is
-				// shown at the right of the label. We then have the adjust the allocation.
-				if (Label.Justify == Gtk.Justification.Right)
-					Label.Xpad = wrapWidth - unused;
-				else if (Label.Justify == Gtk.Justification.Center)
-					Label.Xpad = (wrapWidth - unused) / 2;
 				Label.QueueResize ();
+			}
+			// GTK renders the text using the calculated pixel width, not the allocated width.
+			// If the calculated width is smaller and text is not left aligned, then a gap is
+			// shown at the right of the label. We then have the adjust the allocation.
+			if (Label.Justify == Gtk.Justification.Right) {
+				var w = wrapWidth - unused;
+				if (w != Label.Xpad)
+					Label.Xpad = w;
+			} else if (Label.Justify == Gtk.Justification.Center) {
+				var w = (wrapWidth - unused) / 2;
+				if (w != Label.Xpad)
+					Label.Xpad = w;
 			}
 		}
 

@@ -55,13 +55,28 @@ namespace Xwt
 			nameLabel.Font = nameLabel.Font.WithWeight (Xwt.Drawing.FontWeight.Bold);
 
 			img1 = new ImageView ();
-			table.Add (img1, 0, 2, hexpand:true, vexpand:true);
+			var frame = new FrameBox {
+				Content = img1,
+				BorderColor = Xwt.Drawing.Colors.Gray,
+				BorderWidth = 1
+			};
+			table.Add (frame, 0, 2, hexpand:true, vexpand:true, hpos:WidgetPlacement.Center, vpos:WidgetPlacement.Center);
 			
 			imgDiff = new ImageView ();
-			table.Add (imgDiff, 1, 2, hexpand:true, vexpand:true);
+			frame = new FrameBox {
+				Content = imgDiff,
+				BorderColor = Xwt.Drawing.Colors.Gray,
+				BorderWidth = 1
+			};
+			table.Add (frame, 1, 2, hexpand:true, vexpand:true, hpos:WidgetPlacement.Center, vpos:WidgetPlacement.Center);
 
 			img2 = new ImageView ();
-			table.Add (img2, 2, 2, hexpand:true, vexpand:true);
+			frame = new FrameBox {
+				Content = img2,
+				BorderColor = Xwt.Drawing.Colors.Gray,
+				BorderWidth = 1
+			};
+			table.Add (frame, 2, 2, hexpand:true, vexpand:true, hpos:WidgetPlacement.Center, vpos:WidgetPlacement.Center);
 
 			var buttonBox = new HBox ();
 			table.Add (buttonBox, 0, 3, colspan:2, hexpand:true);
