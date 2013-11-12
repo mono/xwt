@@ -255,30 +255,34 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+
+		Alignment alignment;
+
 		public Alignment TextAlignment {
 			get {
-				if (Label.Justify == Gtk.Justification.Left)
-					return Alignment.Start;
-				else if (Label.Justify == Gtk.Justification.Right)
-					return Alignment.End;
-				else
-					return Alignment.Center;
+				return alignment;
 			}
 			set {
-				switch (value) {
-				case Alignment.Start:
-					Label.Justify = Gtk.Justification.Left;
-					Label.Xalign = 0;
-					break;
-				case Alignment.End:
-					Label.Justify = Gtk.Justification.Right;
-					Label.Xalign = 1; 
-					break;
-				case Alignment.Center:
-					Label.Justify = Gtk.Justification.Center;
-					Label.Xalign = 0.5f;
-					break;
-				}
+				alignment = value;
+				SetAlignment ();
+			}
+		}
+
+		void SetAlignment ()
+		{
+			switch (alignment) {
+			case Alignment.Start:
+				Label.Justify = Gtk.Justification.Left;
+				Label.Xalign = 0f;
+				break;
+			case Alignment.End:
+				Label.Justify = Gtk.Justification.Right;
+				Label.Xalign = Label.LineWrap ? 0 : 1;
+				break;
+			case Alignment.Center:
+				Label.Justify = Gtk.Justification.Center;
+				Label.Xalign = Label.LineWrap ? 0 : 0.5f;
+				break;
 			}
 		}
 		
@@ -333,6 +337,7 @@ namespace Xwt.GtkBackend
 						break;
 					}
 				}
+				SetAlignment ();
 			}
 		}
 	}

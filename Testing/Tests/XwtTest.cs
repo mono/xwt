@@ -68,6 +68,16 @@ namespace Xwt
 			ev.WaitForEvent ();
 			Application.MainLoop.DispatchPendingEvents ();
 		}
+
+		public void CheckWidgetRender (string refImageName, Xwt.Widget widget, int winWidth = 300, int winHeight = 100)
+		{
+			using (var win = new Window { Width = winWidth, Height = winHeight }) {
+				win.Content = widget;
+				ShowWindow (win);
+				var img = Toolkit.CurrentEngine.RenderWidget (widget);
+				ReferenceImageManager.CheckImage (refImageName, img);
+			}
+		}
 	}
 	
 	static class EventHelper

@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using NUnit.Framework;
 
 namespace Xwt
 {
@@ -32,6 +33,76 @@ namespace Xwt
 		public override Widget CreateWidget ()
 		{
 			return new Label ("Hello World");
+		}
+
+		[Test]
+		public void DefaultValues ()
+		{
+			var la = new Label ();
+			Assert.AreEqual ("", la.Text);
+			Assert.AreEqual (Alignment.Start, la.TextAlignment);
+			Assert.AreEqual (EllipsizeMode.None, la.Ellipsize);
+			Assert.AreEqual (WrapMode.None, la.Wrap);
+		}
+
+		[Test]
+		public void AlignCenter ()
+		{
+			var la = new Label ("Some text here");
+			la.TextAlignment = Alignment.Center;
+			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
+			CheckWidgetRender ("Label.AlignCenter", la);
+		}
+
+		[Test]
+		public void AlignCenterWrapped ()
+		{
+			var la = new Label ("Some text here Some text here Some text here Some text here");
+			la.TextAlignment = Alignment.Center;
+			la.Wrap = WrapMode.Word;
+			la.WidthRequest = 200;
+			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
+			CheckWidgetRender ("Label.AlignCenterWrapped", la);
+		}
+
+		[Test]
+		public void AlignLeft ()
+		{
+			var la = new Label ("Some text here");
+			la.TextAlignment = Alignment.Start;
+			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
+			CheckWidgetRender ("Label.AlignLeft", la);
+		}
+
+		[Test]
+		public void AlignLeftWrapped ()
+		{
+			var la = new Label ("Some text here Some text here Some text here Some text here");
+			la.TextAlignment = Alignment.Start;
+			la.Wrap = WrapMode.Word;
+			la.WidthRequest = 200;
+			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
+			CheckWidgetRender ("Label.AlignLeftWrapped", la);
+		}
+
+		[Test]
+		public void AlignRight ()
+		{
+			var la = new Label ("Some text here");
+			la.TextAlignment = Alignment.End;
+			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
+			CheckWidgetRender ("Label.AlignRight", la);
+		}
+
+		[Test]
+		public void AlignRightWrapped ()
+		{
+			var la = new Label ("Some text here Some text here Some text here Some text here");
+			la.TextAlignment = Alignment.End;
+			la.Wrap = WrapMode.Word;
+			la.WidthRequest = 200;
+			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
+			CheckWidgetRender ("Label.AlignRightWrapped", la);
 		}
 	}
 }
