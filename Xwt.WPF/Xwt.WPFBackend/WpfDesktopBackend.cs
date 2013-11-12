@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Runtime.InteropServices;
 using Xwt.Backends;
 using SWF = System.Windows.Forms;
 using System.Collections.Generic;
@@ -32,12 +33,32 @@ namespace Xwt.WPFBackend
 {
 	public class WpfDesktopBackend: DesktopBackend
 	{
+		// http://msdn.microsoft.com/en-us/library/windows/desktop/dd464660(v=vs.85).aspx#determining_the_dpi_scale_factor
+		const double BASELINE_DPI = 96d;
+
 		public WpfDesktopBackend ()
 		{
 			Microsoft.Win32.SystemEvents.DisplaySettingsChanged += delegate
 			{
 				System.Windows.Application.Current.Dispatcher.BeginInvoke (new Action (OnScreensChanged));
 			};
+		}
+
+		public override double GetScaleFactor (object backend)
+		{
+			var hdc = GetDC (IntPtr.Zero);
+			if (hdc == IntPtr.Zero) {
+				// GetDC failed for some reason
+				return base.GetScaleFactor (backend);
+			}
+			try {
+				//FIXME: Is it possible for the Y dpi to differ from the X dpi,
+				//  and if so, what should we do about it?
+				var dpiX = GetDeviceCaps (hdc, LOGPIXELSX);
+				return dpiX / BASELINE_DPI;
+			} finally {
+				ReleaseDC (IntPtr.Zero, hdc);
+			}
 		}
 
 		#region implemented abstract members of DesktopBackend
@@ -75,6 +96,16 @@ namespace Xwt.WPFBackend
 			return ((SWF.Screen)backend).DeviceName;
 		}
 
+		#endregion
+
+		#region P/Invoke
+
+		const int LOGPIXELSX = 88;
+		const int LOGPIXELSY = 90;
+
+		[DllImport ("user32")] static extern IntPtr GetDC (IntPtr hWnd);
+		[DllImport ("user32")] static extern int ReleaseDC (IntPtr hWnd, IntPtr hdc);
+		[DllImport ("gdi32")]  static extern int GetDeviceCaps (IntPtr hdc, int nIndex);
 		#endregion
 	}
 }
