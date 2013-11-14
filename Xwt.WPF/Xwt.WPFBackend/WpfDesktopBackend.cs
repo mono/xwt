@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Xwt.Backends;
 using SWF = System.Windows.Forms;
@@ -44,21 +45,40 @@ namespace Xwt.WPFBackend
 			};
 		}
 
+		static bool cannotCallGetDpiForMonitor;
 		public override double GetScaleFactor (object backend)
 		{
-			var hdc = GetDC (IntPtr.Zero);
-			if (hdc == IntPtr.Zero) {
-				// GetDC failed for some reason
-				return base.GetScaleFactor (backend);
+			//FIXME: Is it possible for the Y dpi to differ from the X dpi,
+			//  and if so, what should we do about it?
+			int dpi = (int)BASELINE_DPI;
+
+			// In Windows 8.1, there can be a different dpi per monitor
+			if (!cannotCallGetDpiForMonitor) {
+				// .. I wish there was a less hacky way of getting the HMONITOR from the SWF.Screen :/
+				var hmonitorField = typeof (SWF.Screen).GetField ("hmonitor", BindingFlags.Instance | BindingFlags.NonPublic);
+				if (hmonitorField == null) {
+					cannotCallGetDpiForMonitor = true;
+				} else {
+					try {
+						int dpiY;
+						GetDpiForMonitor ((IntPtr)hmonitorField.GetValue (backend), MDT_Effective_DPI, out dpi, out dpiY);
+					} catch {
+						cannotCallGetDpiForMonitor = true;
+					}
+				}
 			}
-			try {
-				//FIXME: Is it possible for the Y dpi to differ from the X dpi,
-				//  and if so, what should we do about it?
-				var dpiX = GetDeviceCaps (hdc, LOGPIXELSX);
-				return dpiX / BASELINE_DPI;
-			} finally {
-				ReleaseDC (IntPtr.Zero, hdc);
+			if (cannotCallGetDpiForMonitor) {
+				// Get system-wide dpi
+				var hdc = GetDC (IntPtr.Zero);
+				if (hdc != IntPtr.Zero) {
+					try {
+						dpi = GetDeviceCaps (hdc, LOGPIXELSX);
+					} finally {
+						ReleaseDC (IntPtr.Zero, hdc);
+					}
+				}
 			}
+			return dpi / BASELINE_DPI;
 		}
 
 		#region implemented abstract members of DesktopBackend
@@ -66,7 +86,11 @@ namespace Xwt.WPFBackend
 		public override Point GetMouseLocation()
 		{
 			var loc = SWF.Cursor.Position;
-			return new Point (loc.X, loc.Y);
+			var screen = SWF.Screen.FromPoint (loc);
+			var scale = GetScaleFactor (screen);
+
+			// We need to convert the device pixels into WPF's device-independent pixels..
+			return new Point (loc.X / scale, loc.Y / scale);
 		}
 
 		public override IEnumerable<object> GetScreens ()
@@ -102,10 +126,12 @@ namespace Xwt.WPFBackend
 
 		const int LOGPIXELSX = 88;
 		const int LOGPIXELSY = 90;
+		const int MDT_Effective_DPI = 0;
 
 		[DllImport ("user32")] static extern IntPtr GetDC (IntPtr hWnd);
 		[DllImport ("user32")] static extern int ReleaseDC (IntPtr hWnd, IntPtr hdc);
 		[DllImport ("gdi32")]  static extern int GetDeviceCaps (IntPtr hdc, int nIndex);
+		[DllImport ("Shcore")] static extern int GetDpiForMonitor (IntPtr hmonitor, int dpiType, out int dpiX, out int dpiY);
 		#endregion
 	}
 }
