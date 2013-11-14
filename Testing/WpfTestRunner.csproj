@@ -57,6 +57,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tests\ContainerTests.cs" />
+    <Compile Include="Tests\DatePickerTests.cs" />
+    <Compile Include="Tests\DialogTests.cs" />
+    <Compile Include="Tests\ExpanderTests.cs" />
+    <Compile Include="Tests\FormattedTextTests.cs" />
+    <Compile Include="Tests\InternalChildrenTests.cs" />
+    <Compile Include="Tests\LinkLabelTests.cs" />
+    <Compile Include="Tests\PanedTests.cs" />
+    <Compile Include="Tests\ScrollbarTests.cs" />
+    <Compile Include="Tests\SegmentedButtonTests.cs" />
+    <Compile Include="Tests\SliderTests.cs" />
+    <Compile Include="Tests\SpinnerTests.cs" />
+    <Compile Include="Tests\ToggleButtonTests.cs" />
+    <Compile Include="Tests\TreeViewTests.cs" />
+    <Compile Include="Tests\VScrollbar.cs" />
     <Compile Include="WpfTestRunner\Program.cs" />
     <Compile Include="WpfTestRunner\Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\BoxTests.cs" />

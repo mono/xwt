@@ -69,6 +69,11 @@ namespace Xwt.WPFBackend
 			Window.Close ();
 		}
 
+		public void Close ()
+		{
+			Window.Close ();
+		}
+
 		public System.Windows.Window Window {
 			get { return window; }
 			set { window = value; }
@@ -241,11 +246,12 @@ namespace Xwt.WPFBackend
 					case WindowFrameEvent.CloseRequested:
 						window.Closing += ClosingHandler;
 						break;
+					case WindowFrameEvent.Closed:
+						window.Closed += ClosedHandler;
+						break;
 				}
 			}
 		}
-
-	
 
 		public virtual void DisableEvent (object eventId)
 		{
@@ -264,8 +270,17 @@ namespace Xwt.WPFBackend
 					case WindowFrameEvent.CloseRequested:
 						window.Closing -= ClosingHandler;
 						break;
+					case WindowFrameEvent.Closed:
+						window.Closing -= ClosedHandler;
+						break;
 				}
 			}
+		}
+
+		private void ClosedHandler (object sender, EventArgs e)
+		{
+			if (!InhibitCloseRequested)
+				Context.InvokeUserCode (eventSink.OnClosed);
 		}
 
 		void BoundsChangedHandler (object o, EventArgs args)

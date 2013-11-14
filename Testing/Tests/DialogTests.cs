@@ -49,47 +49,22 @@ namespace Xwt
 		[Test]
 		public void RespondFiresClose ()
 		{
-			// The close event is always fired after running a dialog
+			// The close event is not fired after running a dialog
 
-			bool closed = false;
+			bool closed = false, closing = false;
 			using (var win = new Dialog ()) {
 				win.Buttons.Add (new DialogButton (Command.Ok));
+				win.CloseRequested += (sender, e) => closing = true;
 				win.Closed += (sender, e) => closed = true;
 				Application.TimeoutInvoke (10, delegate {
 					win.Respond (Command.Apply);
 					return false;
 				});
 				var cmd = win.Run ();
-				Assert.IsTrue (closed, "Close event not fired");
+				Assert.IsFalse (closing, "CloseRequested event should not be fired");
+				Assert.IsFalse (closed, "Close event should not be fired");
 				Assert.AreEqual (Command.Apply, cmd);
 			}
-		}
-
-		[Test]
-		public void RespondCanBeCanceled ()
-		{
-			// Is it possible to cancel a Response call
-
-			using (var win = new Dialog ()) {
-				win.Buttons.Add (new DialogButton (Command.Ok));
-				win.CloseRequested += HandleCloseRequested1;
-				Application.TimeoutInvoke (10, delegate {
-					win.Respond (Command.Ok);
-					Application.TimeoutInvoke (10, delegate {
-						win.CloseRequested -= HandleCloseRequested1;
-						win.Respond (Command.Apply);
-						return false;
-					});
-					return false;
-				});
-				var cmd = win.Run ();
-				Assert.AreEqual (Command.Apply, cmd, "Close not canceled");
-			}
-		}
-
-		void HandleCloseRequested1 (object sender, CloseRequestedEventArgs args)
-		{
-			args.AllowClose = false;
 		}
 
 		[Test]
