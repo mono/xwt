@@ -38,12 +38,12 @@ namespace Samples
 			img.Image = Image.FromResource (GetType (), "cow.jpg");
 			PackStart (img);
 
-			var stockIcons = typeof (StockIcons).GetFields (BindingFlags.Public | BindingFlags.Static);
+			var stockIcons = typeof (StockIcons).GetProperties (BindingFlags.Public | BindingFlags.Static);
 			var perRow = 6;
 
 			HBox row = null;
 			for (var i = 0; i < stockIcons.Length; i++) {
-				if (stockIcons [i].FieldType != typeof (string))
+				if (stockIcons [i].PropertyType != typeof (Image))
 					continue;
 
 				if ((i % perRow) == 0) {
@@ -54,7 +54,7 @@ namespace Samples
 
 				var vbox = new VBox ();
 
-				var stockImage = (Image)stockIcons [i].GetValue (null);
+				var stockImage = (Image)stockIcons [i].GetValue (typeof(StockIcons), null);
 				var imageView = new ImageView ();
 				var label = new Label (stockIcons [i].Name);
 
