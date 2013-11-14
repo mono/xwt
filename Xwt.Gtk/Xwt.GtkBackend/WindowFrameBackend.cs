@@ -246,6 +246,7 @@ namespace Xwt.GtkBackend
 				case WindowFrameEvent.BoundsChanged:
 					Window.AddEvents ((int)Gdk.EventMask.StructureMask);
 					Window.ConfigureEvent += HandleConfigureEvent; break;
+				case WindowFrameEvent.Closed:
 				case WindowFrameEvent.CloseRequested:
 					Window.DeleteEvent += HandleCloseRequested; break;
 				case WindowFrameEvent.Shown:
@@ -262,8 +263,6 @@ namespace Xwt.GtkBackend
 				switch ((WindowFrameEvent)ev) {
 				case WindowFrameEvent.BoundsChanged:
 					Window.ConfigureEvent -= HandleConfigureEvent; break;
-				case WindowFrameEvent.CloseRequested:
-					Window.DeleteEvent -= HandleCloseRequested; break;
 				case WindowFrameEvent.Shown:
 					Window.Shown -= HandleShown; break;
 				case WindowFrameEvent.Hidden:
@@ -296,9 +295,23 @@ namespace Xwt.GtkBackend
 
 		void HandleCloseRequested (object o, Gtk.DeleteEventArgs args)
 		{
+			args.RetVal = PerformClose (true);
+		}
+
+		internal bool PerformClose (bool userClose)
+		{
+			bool close = false;
 			ApplicationContext.InvokeUserCode(delegate {
-				args.RetVal = !EventSink.OnCloseRequested ();
+				close = EventSink.OnCloseRequested ();
 			});
+			if (close) {
+				if (!userClose)
+					Window.Hide ();
+				ApplicationContext.InvokeUserCode(delegate {
+					EventSink.OnClosed ();
+				});
+			}
+			return close;
 		}
 
 		public void Present ()
@@ -306,6 +319,11 @@ namespace Xwt.GtkBackend
 			if (Platform.IsMac)
 				GtkWorkarounds.GrabDesktopFocus ();
 			Window.Present ();
+		}
+
+		public virtual void Close ()
+		{
+			PerformClose (false);
 		}
 
 		public virtual void GetMetrics (out Size minSize, out Size decorationSize)

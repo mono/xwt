@@ -109,6 +109,7 @@
     <Compile Include="Tests\InternalChildrenTests.cs" />
     <Compile Include="Tests\LinkLabelTests.cs" />
     <Compile Include="Tests\FormattedTextTests.cs" />
+    <Compile Include="Tests\DialogTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

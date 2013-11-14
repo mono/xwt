@@ -92,7 +92,7 @@ namespace Xwt
 			events.Add (emap);
 		}
 		
-		public static HashSet<object> GetDefaultEnabledEvents (Type type)
+		public static HashSet<object> GetDefaultEnabledEvents (Type type, Func<IEnumerable<object>> customEnabledEvents)
 		{
 			HashSet<object> defaultEnabledEvents;
 			if (!overridenEvents.TryGetValue (type, out defaultEnabledEvents)) {
@@ -108,6 +108,7 @@ namespace Xwt
 					}
 					t = t.BaseType;
 				}
+				defaultEnabledEvents.UnionWith (customEnabledEvents ());
 				overridenEvents [type] = defaultEnabledEvents;
 			}
 			return defaultEnabledEvents;
