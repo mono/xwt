@@ -129,16 +129,19 @@ namespace Xwt.GtkBackend
 
 			bool keepRunning;
 			do {
-				MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
+				var res = MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
 				keepRunning = false;
-				ApplicationContext.InvokeUserCode(delegate {
-					keepRunning = !EventSink.OnCloseRequested ();
-				});
+				if (res == (int) Gtk.ResponseType.DeleteEvent) {
+					ApplicationContext.InvokeUserCode(delegate {
+						keepRunning = !EventSink.OnCloseRequested ();
+					});
+					if (!keepRunning) {
+						ApplicationContext.InvokeUserCode(delegate {
+							EventSink.OnClosed ();
+						});
+					}
+				}
 			} while (keepRunning);
-
-			ApplicationContext.InvokeUserCode(delegate {
-				EventSink.OnClosed ();
-			});
 		}
 
 		public void EndLoop ()

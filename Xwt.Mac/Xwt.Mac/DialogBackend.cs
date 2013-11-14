@@ -64,7 +64,7 @@ namespace Xwt.Mac
 		{
 			base.OnClosed ();
 			if (modalSessionRunning)
-				InternalEndLoop ();
+				EndLoop ();
 		}
 
 		public override void LayoutWindow ()
@@ -139,14 +139,6 @@ namespace Xwt.Mac
 		}
 
 		public void EndLoop ()
-		{
-			if (RequestClose ()) {
-				InternalEndLoop ();
-				ApplicationContext.InvokeUserCode (EventSink.OnClosed);
-			}
-		}
-
-		public void InternalEndLoop ()
 		{
 			modalSessionRunning = false;
 			NSApplication.SharedApplication.StopModal ();

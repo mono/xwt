@@ -47,7 +47,7 @@ namespace Xwt
 		}
 
 		[Test]
-		public void RespondFiresClose ()
+		public void RespondDoesNotFireClose ()
 		{
 			// The close event is not fired after running a dialog
 
@@ -65,6 +65,8 @@ namespace Xwt
 				Assert.IsFalse (closed, "Close event should not be fired");
 				Assert.AreEqual (Command.Apply, cmd);
 			}
+			Assert.IsFalse (closing, "CloseRequested event should not be fired when disposing");
+			Assert.IsFalse (closed, "Close event should not be fired when disposing");
 		}
 
 		[Test]
