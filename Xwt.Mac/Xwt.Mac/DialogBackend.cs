@@ -58,14 +58,13 @@ namespace Xwt.Mac
 			};
 			buttonBoxView = ((ViewBackend)buttonBox.GetBackend ()).Widget;
 			ContentView.AddSubview (buttonBoxView);
-
-			WillClose += HandleWillClose;
 		}
 
-		void HandleWillClose (object sender, EventArgs e)
+		protected override void OnClosed ()
 		{
+			base.OnClosed ();
 			if (modalSessionRunning)
-				EndLoop ();
+				InternalEndLoop ();
 		}
 
 		public override void LayoutWindow ()
@@ -140,6 +139,14 @@ namespace Xwt.Mac
 		}
 
 		public void EndLoop ()
+		{
+			if (RequestClose ()) {
+				InternalEndLoop ();
+				ApplicationContext.InvokeUserCode (EventSink.OnClosed);
+			}
+		}
+
+		public void InternalEndLoop ()
 		{
 			modalSessionRunning = false;
 			NSApplication.SharedApplication.StopModal ();

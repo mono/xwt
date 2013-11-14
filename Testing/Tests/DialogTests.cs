@@ -60,8 +60,8 @@ namespace Xwt
 					return false;
 				});
 				var cmd = win.Run ();
-				Assert.AreEqual (Command.Apply, cmd);
 				Assert.IsTrue (closed, "Close event not fired");
+				Assert.AreEqual (Command.Apply, cmd);
 			}
 		}
 

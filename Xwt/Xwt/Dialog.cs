@@ -71,9 +71,7 @@ namespace Xwt
 
 			public override bool OnCloseRequested ()
 			{
-				var close = base.OnCloseRequested ();
-				Parent.InternalCloseRequest (close);
-				return close;
+				return Parent.RequestClose ();
 			}
 
 			protected override System.Collections.Generic.IEnumerable<object> GetDefaultEnabledEvents ()
@@ -124,24 +122,32 @@ namespace Xwt
 		}
 
 		bool responding;
+		bool requestingClose;
 		
 		public void Respond (Command cmd)
 		{
 			resultCommand = cmd;
-			if (!loopEnded) {
-				responding = true;
+			responding = true;
+			if (!loopEnded && !requestingClose) {
 				Backend.EndLoop ();
 			}
 		}
 
-		void InternalCloseRequest (bool closed)
+		bool RequestClose ()
 		{
-			if (closed) {
-				if (!responding)
-					resultCommand = null;
-				loopEnded = true;
+			requestingClose = true;
+			try {
+				if (OnCloseRequested ()) {
+					if (!responding)
+						resultCommand = null;
+					loopEnded = true;
+					return true;
+				} else
+					return false;
+			} finally {
+				responding = false;
+				requestingClose = false;
 			}
-			responding = false;
 		}
 		
 		public void EnableCommand (Command cmd)
