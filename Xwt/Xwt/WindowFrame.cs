@@ -332,9 +332,9 @@ namespace Xwt
 		/// so there is no guarantee that the window will actually close.
 		/// This method doesn't dispose the window. The Dispose method has to be called.
 		/// </remarks>
-		public void Close ()
+		public bool Close ()
 		{
-			Backend.Close ();
+			return Backend.Close ();
 		}
 
 		/// <summary>

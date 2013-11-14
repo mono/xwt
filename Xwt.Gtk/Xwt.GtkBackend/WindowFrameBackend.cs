@@ -295,7 +295,7 @@ namespace Xwt.GtkBackend
 
 		void HandleCloseRequested (object o, Gtk.DeleteEventArgs args)
 		{
-			args.RetVal = PerformClose (true);
+			args.RetVal = !PerformClose (true);
 		}
 
 		internal bool PerformClose (bool userClose)
@@ -307,9 +307,7 @@ namespace Xwt.GtkBackend
 			if (close) {
 				if (!userClose)
 					Window.Hide ();
-				ApplicationContext.InvokeUserCode(delegate {
-					EventSink.OnClosed ();
-				});
+				ApplicationContext.InvokeUserCode(EventSink.OnClosed);
 			}
 			return close;
 		}
@@ -321,9 +319,9 @@ namespace Xwt.GtkBackend
 			Window.Present ();
 		}
 
-		public virtual void Close ()
+		public virtual bool Close ()
 		{
-			PerformClose (false);
+			return PerformClose (false);
 		}
 
 		public virtual void GetMetrics (out Size minSize, out Size decorationSize)

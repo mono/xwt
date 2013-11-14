@@ -204,7 +204,7 @@ namespace Xwt.Mac
 
 		bool OnShouldClose (NSObject ob)
 		{
-			return RequestClose ();
+			return closePerformed = RequestClose ();
 		}
 
 		internal bool RequestClose ()
@@ -220,9 +220,13 @@ namespace Xwt.Mac
 				ApplicationContext.InvokeUserCode (eventSink.OnClosed);
 		}
 
-		void IWindowFrameBackend.Close ()
+		bool closePerformed;
+
+		bool IWindowFrameBackend.Close ()
 		{
+			closePerformed = true;
 			PerformClose (this);
+			return closePerformed;
 		}
 		
 		bool VisibilityEventsEnabled ()

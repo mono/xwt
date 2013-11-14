@@ -72,13 +72,14 @@ namespace Xwt.Backends
 		/// <summary>
 		/// Closes the window
 		/// </summary>
+		/// <returns><c>true</c> if the window could be closed</returns>
 		/// <remarks>
 		/// Closes the window like if the user clicked on the close window button.
 		/// The CloseRequested event is fired and subscribers can cancel the closing,
 		/// so there is no guarantee that the window will actually close.
 		/// This method doesn't dispose the window. The Dispose method has to be called.
 		/// </remarks>
-		void Close ();
+		bool Close ();
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this window is in full screen mode

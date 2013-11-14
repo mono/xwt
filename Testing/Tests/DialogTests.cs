@@ -74,7 +74,7 @@ namespace Xwt
 		{
 			// The Close method can be used to stop running a dialog
 
-			bool closing = false, closed = false;
+			bool closing = false, closed = false, closeResult = false;
 			using (var win = new Dialog ()) {
 				win.Buttons.Add (new DialogButton (Command.Ok));
 				win.CloseRequested += delegate(object sender, CloseRequestedEventArgs args) {
@@ -83,13 +83,14 @@ namespace Xwt
 				};
 				win.Closed += (sender, e) => closed = true;
 				Application.TimeoutInvoke (10, delegate {
-					win.Close ();
+					closeResult = win.Close ();
 					return false;
 				});
 				var cmd = win.Run ();
 				Assert.IsNull (cmd);
 				Assert.IsTrue (closing, "CloseRequested event not fired");
 				Assert.IsTrue (closed, "Window not closed");
+				Assert.IsTrue (closeResult, "Window not closed");
 			}
 		}
 
@@ -99,16 +100,18 @@ namespace Xwt
 			// Respond can be used in a CloseRequest handler to provide a result for the Run method
 
 			using (var win = new Dialog ()) {
+				bool closeResult = false;
 				win.Buttons.Add (new DialogButton (Command.Ok));
 				win.CloseRequested += delegate(object sender, CloseRequestedEventArgs args) {
 					win.Respond (Command.Apply);
 				};
 				Application.TimeoutInvoke (10, delegate {
-					win.Close ();
+					closeResult = win.Close ();
 					return false;
 				});
 				var cmd = win.Run ();
 				Assert.AreEqual (Command.Apply, cmd);
+				Assert.IsTrue (closeResult);
 			}
 		}
 
@@ -118,21 +121,23 @@ namespace Xwt
 			// If Respond if called on a CloseRequest, but the close is canceled, the respose call is ignored
 
 			using (var win = new Dialog ()) {
-				bool closeCanceled = false;
+				bool closeCanceled = false, closeResult1 = false, closeResult2 = false;
 				win.Buttons.Add (new DialogButton (Command.Ok));
 				win.CloseRequested += HandleCloseRequested;
 				Application.TimeoutInvoke (10, delegate {
-					win.Close ();
+					closeResult1 = win.Close ();
 					Application.TimeoutInvoke (10, delegate {
 						win.CloseRequested -= HandleCloseRequested;
 						closeCanceled = true;
-						win.Close ();
+						closeResult2 = win.Close ();
 						return false;
 					});
 					return false;
 				});
 				var cmd = win.Run ();
 				Assert.IsTrue (closeCanceled, "Close not canceled");
+				Assert.IsFalse (closeResult1, "First close should return false");
+				Assert.IsTrue (closeResult2, "Second close should return true");
 				Assert.IsNull (cmd);
 			}
 		}

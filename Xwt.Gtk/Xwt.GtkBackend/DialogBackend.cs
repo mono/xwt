@@ -132,14 +132,7 @@ namespace Xwt.GtkBackend
 				var res = MessageService.RunCustomDialog (Window, p != null ? p.Window : null);
 				keepRunning = false;
 				if (res == (int) Gtk.ResponseType.DeleteEvent) {
-					ApplicationContext.InvokeUserCode(delegate {
-						keepRunning = !EventSink.OnCloseRequested ();
-					});
-					if (!keepRunning) {
-						ApplicationContext.InvokeUserCode(delegate {
-							EventSink.OnClosed ();
-						});
-					}
+					keepRunning = !PerformClose (false);
 				}
 			} while (keepRunning);
 		}
@@ -149,9 +142,13 @@ namespace Xwt.GtkBackend
 			Window.Respond (Gtk.ResponseType.Ok);
 		}
 
-		public override void Close ()
+		public override bool Close ()
 		{
-			Window.Respond (Gtk.ResponseType.DeleteEvent);
+			if (PerformClose (false)) {
+				Window.Respond (Gtk.ResponseType.Ok);
+				return true;
+			} else
+				return false;
 		}
 
 		public override void GetMetrics (out Size minSize, out Size decorationSize)
