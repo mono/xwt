@@ -70,7 +70,7 @@ namespace Xwt.GtkBackend
 			set {
 				Widget.Inconsistent = value == CheckBoxState.Mixed;
 				internalActiveUpdate = true;
-				Widget.Active = value == CheckBoxState.On;
+				Widget.Active = value != CheckBoxState.Off;
 				internalActiveUpdate = false;
 			}
 		}
