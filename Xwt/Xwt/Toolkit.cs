@@ -271,11 +271,13 @@ namespace Xwt
 		
 		internal void InvokePlatformCode (Action a)
 		{
+			int prevCount = inUserCode;
 			try {
+				inUserCode = 1;
 				ExitUserCode (null);
 				a ();
 			} finally {
-				EnterUserCode ();
+				inUserCode = prevCount;
 			}
 		}
 		
