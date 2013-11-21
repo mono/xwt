@@ -58,6 +58,7 @@ namespace Xwt.Backends
 		{
 			this.backend = backend;
 			usingCustomBackend = true;
+			OnBackendCreated ();
 		}
 		
 		public object Parent { get; internal set; }
