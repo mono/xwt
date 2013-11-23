@@ -279,14 +279,14 @@ namespace Xwt
 				if (defw > 1) {
 					w.WidthRequest = defw - 1;
 					WaitForEvents ();
-					Assert.AreEqual (defw - 1, w.WidthRequest);
-					Assert.AreEqual (defw - 1, w.Size.Width);
+					Assert.AreEqual (defw - 1, w.WidthRequest, "w1");
+					Assert.AreEqual (defw - 1, w.Size.Width, "w2");
 				}
 				if (defh > 1) {
 					w.HeightRequest = defh - 1;
 					WaitForEvents ();
-					Assert.AreEqual (defh - 1, w.HeightRequest);
-					Assert.AreEqual (defh - 1, w.Size.Height);
+					Assert.AreEqual (defh - 1, w.HeightRequest, "h1");
+					Assert.AreEqual (defh - 1, w.Size.Height, "h2");
 				}
 
 				w.WidthRequest = -1;
@@ -294,10 +294,10 @@ namespace Xwt
 
 				WaitForEvents ();
 				Assert.AreEqual (-1, w.WidthRequest);
-				Assert.AreEqual (defw, w.Size.Width);
+				Assert.AreEqual (defw, w.Size.Width, "fw1");
 
 				Assert.AreEqual (-1, w.HeightRequest);
-				Assert.AreEqual (defh, w.Size.Height);
+				Assert.AreEqual (defh, w.Size.Height, "fw2");
 			}
 		}
 		[Test]

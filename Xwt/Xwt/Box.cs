@@ -252,13 +252,18 @@ namespace Xwt
 		protected override void OnReallocate ()
 		{
 			var size = Backend.Size;
-			if (size.Width <= 0 || size.Height <= 0)
-				return;
-			
+
 			var visibleChildren = children.Where (c => c.Child.Visible).ToArray ();
+
 			IWidgetBackend[] widgets = new IWidgetBackend [visibleChildren.Length];
 			Rectangle[] rects = new Rectangle [visibleChildren.Length];
-			
+
+			if (size.Width <= 0 || size.Height <= 0) {
+				var ws = visibleChildren.Select (bp => bp.Child.GetBackend ()).ToArray ();
+				Backend.SetAllocation (ws, new Rectangle[visibleChildren.Length]);
+				return;
+			}
+
 			if (direction == Orientation.Horizontal) {
 				CalcDefaultSizes (size.Width, size.Height, true);
 				double xs = 0;

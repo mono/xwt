@@ -162,7 +162,7 @@ namespace Xwt.Mac
 				((NSControl)view).Enabled = parentIsSensitive && sensitive;
 
 			foreach (var s in view.Subviews) {
-				if (s is IViewObject)
+				if ((s is IViewObject) && (((IViewObject)s).Backend != null))
 					((IViewObject)s).Backend.UpdateSensitiveStatus (s, parentIsSensitive);
 				else
 					UpdateSensitiveStatus (s, sensitive && parentIsSensitive);
