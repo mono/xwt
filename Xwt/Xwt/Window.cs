@@ -239,8 +239,8 @@ namespace Xwt
 						center = Desktop.PrimaryScreen.VisibleBounds.Center;
 					else
 						center = TransientFor.ScreenBounds.Center;
-					initialBounds.X = center.X - size.Width / 2;
-					initialBounds.Y = center.Y - size.Height / 2;
+					initialBounds.X = Math.Round (center.X - size.Width / 2);
+					initialBounds.Y = Math.Round (center.Y - size.Height / 2);
 					locationSet = true;
 				}
 	
