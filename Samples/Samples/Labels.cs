@@ -51,7 +51,8 @@ namespace Samples
 			PackStart (la);
 
 			la = new Label ("Label with red background") {
-				BackgroundColor = new Xwt.Drawing.Color (1, 0, 0)
+				BackgroundColor = new Xwt.Drawing.Color (1, 0, 0),
+				HeightRequest = 40
 			};
 			PackStart (la);
 

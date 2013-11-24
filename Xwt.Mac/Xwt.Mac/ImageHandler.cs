@@ -142,14 +142,25 @@ namespace Xwt.Mac
 
 				var img = new NSImage (((CGBitmapContext)bmp).ToImage (), new SizeF (pixelWidth, pixelHeight));
 				var imageData = img.AsTiff ();
-				var imageRep = (NSBitmapImageRep) NSBitmapImageRep.ImageRepFromData (imageData);
+				var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData (imageData);
 				var im = new NSImage ();
 				im.AddRepresentation (imageRep);
 				im.Size = new SizeF ((float)width, (float)height);
 				return im;
 			}
-			else
+			else {
+				NSImage img = (NSImage)handle;
+				NSBitmapImageRep bitmap = img.Representations ().OfType<NSBitmapImageRep> ().FirstOrDefault ();
+				if (bitmap == null) {
+					var imageData = img.AsTiff ();
+					var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData (imageData);
+					var im = new NSImage ();
+					im.AddRepresentation (imageRep);
+					im.Size = new SizeF ((float)width, (float)height);
+					return im;
+				}
 				return handle;
+			}
 		}
 		
 		public override Xwt.Drawing.Color GetBitmapPixel (object handle, int x, int y)

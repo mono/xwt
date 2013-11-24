@@ -29,6 +29,7 @@ using MonoMac.AppKit;
 using Xwt.Backends;
 using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
+using MonoMac.CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -45,11 +46,16 @@ namespace Xwt.Mac
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
+			Wrap = WrapMode.None;
+			Container.ExpandVertically = true;
+			Widget.Cell.Scrollable = false;
 		}
 
-		protected override void OnSizeToFit ()
+		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			Container.SizeToFit ();
+			var r = new System.Drawing.RectangleF (0, 0, widthConstraint.IsConstrained ? (float)widthConstraint.AvailableSize : float.MaxValue, heightConstraint.IsConstrained ? (float)heightConstraint.AvailableSize : float.MaxValue);
+			var s = Widget.Cell.CellSizeForBounds (r);
+			return new Size (s.Width, s.Height);
 		}
 
 		CustomAlignedContainer Container {
@@ -114,7 +120,7 @@ namespace Xwt.Mac
 			get { return Widget.BackgroundColor.ToXwtColor (); }
 			set {
 				Widget.BackgroundColor = value.ToNSColor ();
-				Widget.DrawsBackground = true;
+				((TextFieldView)Widget).SetBackgroundColor (value.ToCGColor ());
 			}
 		}
 
@@ -136,8 +142,10 @@ namespace Xwt.Mac
 			set {
 				if (value == WrapMode.None) {
 					Widget.Cell.Wraps = false;
+					Widget.Cell.UsesSingleLineMode = true;
 				} else {
 					Widget.Cell.Wraps = true;
+					Widget.Cell.UsesSingleLineMode = false;
 					switch (value) {
 					case WrapMode.Word:
 					case WrapMode.WordAndCharacter:
@@ -200,7 +208,7 @@ namespace Xwt.Mac
 		void UpdateTextFieldFrame ()
 		{
 			if (expandVertically)
-				Child.Frame = Frame;
+				Child.Frame = new System.Drawing.RectangleF (0, 0, Frame.Width, Frame.Height);
 			else
 				Child.Frame = new System.Drawing.RectangleF (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
 		}
@@ -208,14 +216,62 @@ namespace Xwt.Mac
 	
 	class TextFieldView: NSTextField, IViewObject
 	{
+		CustomTextFieldCell cell;
+
 		public ViewBackend Backend { get; set; }
 		public NSView View {
 			get { return this; }
 		}
 
+		public TextFieldView ()
+		{
+			Cell = cell = new CustomTextFieldCell ();
+		}
+
+		public void SetBackgroundColor (CGColor c)
+		{
+			cell.SetBackgroundColor (c);
+		}
+
 		public override bool AcceptsFirstResponder ()
 		{
 			return false;
+		}
+	}
+
+	class CustomTextFieldCell: NSTextFieldCell
+	{
+		CGColor bgColor;
+
+		public void SetBackgroundColor (CGColor c)
+		{
+			bgColor = c;
+			DrawsBackground = true;
+		}
+
+		public override System.Drawing.RectangleF TitleRectForBounds (System.Drawing.RectangleF theRect)
+		{
+			var rect = base.TitleRectForBounds (theRect);
+			var textSize = CellSizeForBounds (theRect);
+			float dif = rect.Height - textSize.Height;	
+			if (dif > 0) {
+				rect.Height -= dif;
+				rect.Y += (dif / 2);
+			}
+			return rect;
+		}
+
+		public override void DrawInteriorWithFrame (System.Drawing.RectangleF cellFrame, NSView inView)
+		{
+			if (DrawsBackground) {
+				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+				ctx.AddRect (cellFrame);
+				ctx.SetFillColorSpace (Util.DeviceRGBColorSpace);
+				ctx.SetStrokeColorSpace (Util.DeviceRGBColorSpace);
+				ctx.SetFillColor (bgColor);
+				ctx.DrawPath (CGPathDrawingMode.Fill);
+			}
+			base.DrawInteriorWithFrame (TitleRectForBounds (cellFrame), inView);
 		}
 	}
 }

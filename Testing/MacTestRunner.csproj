@@ -235,5 +235,26 @@
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextWordWrap.png">
       <LogicalName>TextWordWrap.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignCenter.png">
+      <LogicalName>Label.AlignCenter.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignCenterWrapped.png">
+      <LogicalName>Label.AlignCenterWrapped.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignCenterWrappedChangeText.png">
+      <LogicalName>Label.AlignCenterWrappedChangeText.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignLeft.png">
+      <LogicalName>Label.AlignLeft.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignLeftWrapped.png">
+      <LogicalName>Label.AlignLeftWrapped.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignRight.png">
+      <LogicalName>Label.AlignRight.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignRightWrapped.png">
+      <LogicalName>Label.AlignRightWrapped.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

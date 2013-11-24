@@ -227,7 +227,13 @@ namespace Xwt.Mac
 		{
 			var view = ((ViewBackend)w.GetBackend ()).Widget;
 			view.LockFocus ();
-			return new NSImage (view.DataWithPdfInsideRect (view.Bounds));
+			var img = new NSImage (view.DataWithPdfInsideRect (view.Bounds));
+			var imageData = img.AsTiff ();
+			var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData (imageData);
+			var im = new NSImage ();
+			im.AddRepresentation (imageRep);
+			im.Size = new System.Drawing.SizeF ((float)view.Bounds.Width, (float)view.Bounds.Height);
+			return im;
 		}
 	}
 
