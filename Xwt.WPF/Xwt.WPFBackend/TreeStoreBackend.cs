@@ -155,7 +155,7 @@ namespace Xwt.WPFBackend
 			int index = list.IndexOf (node);
 			list.RemoveAt (index);
 
-			OnNodeDeleted (new TreeNodeChildEventArgs (node.Parent, index));
+			OnNodeDeleted (new TreeNodeChildEventArgs (node.Parent, index, pos));
 		}
 
 		public TreePosition GetNext (TreePosition pos)
