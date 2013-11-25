@@ -340,7 +340,7 @@ namespace Xwt.WPFBackend
 
 			if (((IWindowFrameBackend)this).Decorated) {
 				size.Height += SystemParameters.WindowCaptionHeight;
-				loc.Y -= SystemParameters.CaptionHeight;
+				loc.Y -= SystemParameters.WindowCaptionHeight;
 			}
 			if (HasMenu) {
 				size.Height += SystemParameters.MenuBarHeight;
