@@ -583,6 +583,13 @@ namespace Xwt.Drawing
 			return ctx.NativePathHandler.IsPointInFill (ctx.NativeBackend, x, y);
 		}
 
+		public override double GetScaleFactor (object backend)
+		{
+			var ctx = (VectorBackend)backend;
+			CreateNativePathBackend (ctx);
+			return ctx.NativeContextHandler.GetScaleFactor (ctx.NativeBackend);
+		}
+
 		public override void Dispose (object backend)
 		{
 			var ctx = (VectorBackend)backend;

@@ -92,6 +92,20 @@ namespace Xwt.Drawing
 			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, x, y, pixelWidth, pixelHeight), new Size (pixelWidth / scaleX, pixelHeight / scaleY));
 		}
 
+		/// <summary>
+		/// Creates a crop of the image
+		/// </summary>
+		/// <param name="x">X coordinate, in physical pixels</param>
+		/// <param name="srcY">Y coordinate, in physical pixels</param>
+		/// <param name="pixelWidth">Width, in physical pixels</param>
+		/// <param name="pixelHeight">Height, in physical pixels</param>
+		public BitmapImage Crop (Rectangle pixelRect)
+		{
+			var scaleX = Math.Truncate (PixelWidth / Width);
+			var scaleY = Math.Truncate (PixelHeight / Height);
+			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, (int)pixelRect.X, (int)pixelRect.Y, (int)pixelRect.Width, (int)pixelRect.Height), new Size (pixelRect.Width / scaleX, pixelRect.Height / scaleY));
+		}
+
 		public Size PixelSize {
 			get { return pixelSize; }
 		}

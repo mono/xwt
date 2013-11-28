@@ -207,7 +207,17 @@ namespace Xwt.Mac
 		
 		public override object CropBitmap (object backend, int srcX, int srcY, int width, int height)
 		{
-			throw new NotImplementedException ();
+			NSImage img = (NSImage)backend;
+			NSBitmapImageRep bitmap = img.Representations ().OfType<NSBitmapImageRep> ().FirstOrDefault ();
+			if (bitmap != null) {
+				RectangleF empty = RectangleF.Empty;
+				var cgi = bitmap.AsCGImage (ref empty, null, null).WithImageInRect (new RectangleF (srcX, srcY, width, height));
+				NSImage res = new NSImage (cgi, new SizeF (width, height));
+				cgi.Dispose ();
+				return res;
+			}
+			else
+				throw new InvalidOperationException ("Not a bitmnap image");
 		}
 		
 		static NSImage FromResource (string res)

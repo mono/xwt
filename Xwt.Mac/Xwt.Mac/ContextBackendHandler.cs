@@ -54,6 +54,11 @@ namespace Xwt.Mac
 	{
 		const double degrees = System.Math.PI / 180d;
 
+		public override double GetScaleFactor (object backend)
+		{
+			return 1;
+		}
+
 		public override void Save (object backend)
 		{
 			var ct = (CGContextBackend) backend;

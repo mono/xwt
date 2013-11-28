@@ -81,6 +81,8 @@ namespace Xwt.Backends
 		/// It doesn't affect colors that have already been set.
 		/// </summary>
 		public abstract void SetGlobalAlpha (object backend, double globalAlpha);
+
+		public abstract double GetScaleFactor (object backend);
 	}
 }
 
