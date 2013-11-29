@@ -46,6 +46,11 @@ namespace Xwt.WPFBackend
 	public class WpfContextBackendHandler
 		: ContextBackendHandler
 	{
+		public override double GetScaleFactor (object backend)
+		{
+			var c = (DrawingContext)backend;
+			return c.ScaleFactor;
+		}
 		public override void Save (object backend)
 		{
 			var c = (DrawingContext) backend;

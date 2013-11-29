@@ -255,21 +255,8 @@ namespace Xwt.WPFBackend
 		public override object CropBitmap(object handle, int srcX, int srcY, int w, int h)
 		{
 			var oldImg = (SWMI.BitmapSource)DataConverter.AsImageSource (handle);
-
-			double width = WidthToDPI (oldImg, w);
-			double height = HeightToDPI (oldImg, h);
-
-			SWM.DrawingVisual visual = new SWM.DrawingVisual ();
-			using (SWM.DrawingContext ctx = visual.RenderOpen ())
-			{
-				//Not sure whether this actually works, untested
-				ctx.DrawImage(oldImg, new System.Windows.Rect (-srcX, -srcY, srcX+width, srcY+height));
-			}
-
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, PixelFormats.Pbgra32);
-			bmp.Render (visual);
-
-			return bmp;
+			var bmp = new CroppedBitmap (oldImg, new Int32Rect (srcX, srcY, w, h));
+			return new WpfImage (bmp);
 		}
 
 		public override void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
