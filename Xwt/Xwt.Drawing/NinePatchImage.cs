@@ -105,9 +105,11 @@ namespace Xwt.Drawing
 
 			foreach (var p in pixels) {
 				RenderMode mode;
-				if (p == Colors.Red)
+				// Don't compare exact colors. This is a workaround to make sure regions are properly detected when
+				// there are small variations in colors.
+				if (p.Red > 0.9 && p.Blue < 0.2 && p.Green < 0.2 && p.Alpha == 1) // Red-ish
 					mode = RenderMode.Tile;
-				else if (p == Colors.Black)
+				else if (p.Red < 0.2 && p.Blue < 0.2 && p.Green < 0.2 && p.Alpha == 1) // Black-ish
 					mode = RenderMode.Stretch;
 				else
 					mode = RenderMode.Fixed;
