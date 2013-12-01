@@ -398,7 +398,11 @@ namespace Xwt.GtkBackend
 			ctx.Translate (x, y);
 			ctx.Scale (idesc.Size.Width / (double)img.Width, idesc.Size.Height / (double)img.Height);
 			Gdk.CairoHelper.SetSourcePixbuf (ctx, img, 0, 0);
-			if (idesc.Alpha == 1)
+
+			// Fixes blur issue when rendering on an image surface
+			((Cairo.SurfacePattern)ctx.GetSource ()).Filter = Cairo.Filter.Fast;
+
+			if (idesc.Alpha >= 1)
 				ctx.Paint ();
 			else
 				ctx.PaintWithAlpha (idesc.Alpha);

@@ -136,8 +136,8 @@ namespace Xwt.Drawing
 		protected sealed override void OnDraw (Context ctx, Rectangle bounds)
 		{
 			var frame = GetFrame (ctx.ScaleFactor);
-			var fixedWidth = frame.Bitmap.Width - frame.StretchableWidth;
-			var fixedHeight = frame.Bitmap.Height - frame.StretchableHeight;
+			var fixedWidth = frame.Bitmap.Width - 2 - frame.StretchableWidth;
+			var fixedHeight = frame.Bitmap.Height - 2 - frame.StretchableHeight;
 			double totalVariableWidth = bounds.Width - fixedWidth;
 			double totalVariableHeight = bounds.Height - fixedHeight;
 			double remainingVariableHeight = totalVariableHeight;

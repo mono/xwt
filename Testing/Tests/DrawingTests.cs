@@ -34,36 +34,8 @@ using System.Collections.Generic;
 namespace Xwt
 {
 	[TestFixture]
-	public class DrawingTests
+	public class DrawingTests: DrawingTestsBase
 	{
-		ImageBuilder builder;
-		Context context;
-
-		void InitBlank (int width = 50, int height = 50)
-		{
-			if (builder != null)
-				builder.Dispose ();
-
-			builder = new ImageBuilder (width, height);
-			context = builder.Context;
-			context.Rectangle (0, 0, width, height);
-			context.SetColor (Colors.White);
-			context.Fill ();
-			context.SetColor (Colors.Black);
-			context.SetLineWidth (1);
-		}
-
-		void CheckImage (string refImageName)
-		{
-			if (builder == null)
-				return;
-			var img = builder.ToBitmap ();
-			builder.Dispose ();
-			builder = null;
-
-			ReferenceImageManager.CheckImage (refImageName, img);
-		}
-		
 		[Test]
 		public void Line ()
 		{
