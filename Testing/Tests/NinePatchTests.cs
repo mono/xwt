@@ -189,6 +189,167 @@ namespace Xwt
 			context.DrawImage (np, 0, 0);
 			CheckImage ("NinePatchTileTileHigher.png");
 		}
+
+		// 2x scale factor
+
+		[Test]
+		public void NinePatchStretchStretchDefaultSize2x ()
+		{
+			var np = Image.FromResource ("ninep-ss.9.png");
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchStretchStretchDefaultSize2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchStretchStretchWiderHigher2x ()
+		{
+			var np = Image.FromResource ("ninep-ss.9.png");
+			np = np.WithSize (np.Width * 3, np.Height * 3);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchStretchStretchWiderHigher2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchStretchStretchWider2x ()
+		{
+			var np = Image.FromResource ("ninep-ss.9.png");
+			np = np.WithSize (np.Width * 3, np.Height);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchStretchStretchWider2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchStretchStretchHigher2x ()
+		{
+			var np = Image.FromResource ("ninep-ss.9.png");
+			np = np.WithSize (np.Width, np.Height * 3);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchStretchStretchHigher2x.png", 2);
+		}
+
+
+		[Test]
+		public void NinePatchStretchTileDefaultSize2x ()
+		{
+			var np = Image.FromResource ("ninep-st.9.png");
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchStretchTileDefaultSize2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchStretchTileWiderHigher2x ()
+		{
+			var np = Image.FromResource ("ninep-st.9.png");
+			np = np.WithSize (np.Width * 3, np.Height * 3);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchStretchTileWiderHigher2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchStretchTileWider2x ()
+		{
+			var np = Image.FromResource ("ninep-st.9.png");
+			np = np.WithSize (np.Width * 3, np.Height);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchStretchTileWider2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchStretchTileHigher2x ()
+		{
+			var np = Image.FromResource ("ninep-st.9.png");
+			np = np.WithSize (np.Width, np.Height * 3);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchStretchTileHigher2x.png", 2);
+		}
+
+
+		[Test]
+		public void NinePatchTileStretchDefaultSize2x ()
+		{
+			var np = Image.FromResource ("ninep-ts.9.png");
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchTileStretchDefaultSize2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchTileStretchWiderHigher2x ()
+		{
+			var np = Image.FromResource ("ninep-ts.9.png");
+			np = np.WithSize (np.Width * 3, np.Height * 3);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchTileStretchWiderHigher2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchTileStretchWider2x ()
+		{
+			var np = Image.FromResource ("ninep-ts.9.png");
+			np = np.WithSize (np.Width * 3, np.Height);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchTileStretchWider2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchTileStretchHigher2x ()
+		{
+			var np = Image.FromResource ("ninep-ts.9.png");
+			np = np.WithSize (np.Width, np.Height * 3);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchTileStretchHigher2x.png", 2);
+		}	
+
+
+		[Test]
+		public void NinePatchTileTileDefaultSize2x ()
+		{
+			var np = Image.FromResource ("ninep-tt.9.png");
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchTileTileDefaultSize2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchTileTileWiderHigher2x ()
+		{
+			var np = Image.FromResource ("ninep-tt.9.png");
+			np = np.WithSize (np.Width * 3, np.Height * 3);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchTileTileWiderHigher2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchTileTileWider2x ()
+		{
+			var np = Image.FromResource ("ninep-tt.9.png");
+			np = np.WithSize (np.Width * 3, np.Height);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchTileTileWider2x.png", 2);
+		}
+
+		[Test]
+		public void NinePatchTileTileHigher2x ()
+		{
+			var np = Image.FromResource ("ninep-tt.9.png");
+			np = np.WithSize (np.Width, np.Height * 3);
+			InitBlank ((int)np.Width, (int)np.Height);
+			context.DrawImage (np, 0, 0);
+			CheckImage ("NinePatchTileTileHigher2x.png", 2);
+		}
 	}
 }
 

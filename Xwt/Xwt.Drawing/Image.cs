@@ -252,8 +252,8 @@ namespace Xwt.Drawing
 				if (i == -1)
 					scaleFactor = 1;
 				else {
-					int j = fi.Item1.IndexOf ('.', ++i);
-					if (!double.TryParse (fi.Item1.Substring (i + 1, j - i), out scaleFactor)) {
+					int j = fi.Item1.IndexOf ('x', ++i);
+					if (!double.TryParse (fi.Item1.Substring (i, j - i), out scaleFactor)) {
 						toolkit.ImageBackendHandler.Dispose (fi.Item2);
 						continue;
 					}

@@ -52,11 +52,11 @@ namespace Xwt
 			context.SetLineWidth (1);
 		}
 
-		protected void CheckImage (string refImageName)
+		protected void CheckImage (string refImageName, double scaleFactor = 1)
 		{
 			if (builder == null)
 				return;
-			var img = builder.ToBitmap ();
+			var img = builder.ToBitmap (scaleFactor);
 			builder.Dispose ();
 			builder = null;
 

@@ -344,8 +344,9 @@ namespace Xwt.GtkBackend
 			using (var ctx = new Cairo.Context (sf)) {
 				ImageDescription idesc = new ImageDescription () {
 					Alpha = 1,
-					Size = new Size (width * scaleFactor, height * scaleFactor)
+					Size = new Size (width, height)
 				};
+				ctx.Scale (scaleFactor, scaleFactor);
 				Draw (actx, ctx, scaleFactor, 0, 0, idesc);
 				var f = new ImageFrame (ImageBuilderBackend.CreatePixbuf (sf), Math.Max((int)width,1), Math.Max((int)height,1), true);
 				AddFrame (f);

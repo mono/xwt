@@ -138,8 +138,8 @@ namespace Xwt.Drawing
 			var frame = GetFrame (ctx.ScaleFactor);
 			var fixedWidth = frame.Bitmap.Width - 2 - frame.StretchableWidth;
 			var fixedHeight = frame.Bitmap.Height - 2 - frame.StretchableHeight;
-			double totalVariableWidth = bounds.Width - fixedWidth;
-			double totalVariableHeight = bounds.Height - fixedHeight;
+			double totalVariableWidth = bounds.Width - fixedWidth / frame.ScaleFactor;
+			double totalVariableHeight = bounds.Height - fixedHeight / frame.ScaleFactor;
 			double remainingVariableHeight = totalVariableHeight;
 
 			double y = bounds.Y, yb = 1;
@@ -173,34 +173,30 @@ namespace Xwt.Drawing
 						var t = GetTile (frame, tileIndex, sourceRegion);
 						ctx.DrawImage (t, targetRegion);
 					} else {
-						double scaleX = 1;
-						double scaleY = 1;
+						double pw = hs.Size / frame.ScaleFactor;
+						double ph = vs.Size / frame.ScaleFactor;
 						if (hs.Mode == RenderMode.Stretch) {
-							scaleX = sw / hs.Size;
-							targetRegion.Width = hs.Size;
+							pw = targetRegion.Width;
 						}
 						if (vs.Mode == RenderMode.Stretch) {
-							scaleY = sh / vs.Size;
-							targetRegion.Height = vs.Size;
+							ph = targetRegion.Height;
 						}
 
 						ctx.Save ();
 						ctx.Translate (targetRegion.Location);
-						if (scaleX != 1 || scaleY != 1)
-							ctx.Scale (scaleX, scaleY);
 						targetRegion.Location = Point.Zero;
-						ctx.Pattern = new ImagePattern (GetTile (frame, tileIndex, sourceRegion));
+						ctx.Pattern = new ImagePattern (GetTile (frame, tileIndex, sourceRegion).WithSize (pw, ph));
 						ctx.NewPath ();
 						ctx.Rectangle (targetRegion);
 						ctx.Fill ();
 						ctx.Restore ();
 					}
-					x += sw / frame.ScaleFactor;
+					x += sw;
 					xb += hs.Size;
 					tileIndex++;
 				}
 				yb += vs.Size;
-				y += sh / frame.ScaleFactor;
+				y += sh;
 			}
 			ctx.Restore ();
 		}
@@ -215,7 +211,7 @@ namespace Xwt.Drawing
 				return sw;
 			}
 			else {
-				return sec.Size;
+				return sec.Size / frame.ScaleFactor;
 			}
 		}
 
@@ -234,8 +230,10 @@ namespace Xwt.Drawing
 
 		protected sealed override Size GetDefaultSize ()
 		{
-			var frame = frames [0];
-			return new Size (frame.Bitmap.Width - 2, frame.Bitmap.Height - 2);
+			var frame = GetFrame (1);
+			if (frame == null)
+				frame = frames [0];
+			return new Size ((frame.Bitmap.Width - 2) / frame.ScaleFactor, (frame.Bitmap.Height - 2) / frame.ScaleFactor);
 		}
 
 		public WidgetSpacing Padding { get; private set; }

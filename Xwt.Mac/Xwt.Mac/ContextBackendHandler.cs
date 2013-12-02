@@ -43,6 +43,7 @@ namespace Xwt.Mac
 		public CGAffineTransform? InverseViewTransform;
 		public Stack<ContextStatus> StatusStack = new Stack<ContextStatus> ();
 		public ContextStatus CurrentStatus = new ContextStatus ();
+		public double ScaleFactor = 1;
 	}
 
 	class ContextStatus
@@ -56,7 +57,8 @@ namespace Xwt.Mac
 
 		public override double GetScaleFactor (object backend)
 		{
-			return 1;
+			var ct = (CGContextBackend) backend;
+			return ct.ScaleFactor;
 		}
 
 		public override void Save (object backend)

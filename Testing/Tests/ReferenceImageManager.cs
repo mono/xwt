@@ -99,8 +99,9 @@ namespace Xwt
 			return null;
 		}
 		
-		public static void CheckImage (string refImageName, Image img)
+		public static void CheckImage (string refImageName, Image im)
 		{
+			BitmapImage img = im as BitmapImage ?? im.ToBitmap ();
 			Image coreRefImage = LoadReferenceImage (refImageName);
 
 			Image refImage = !RecheckAll ? LoadCustomReferenceImage (refImageName) : null;
@@ -109,8 +110,8 @@ namespace Xwt
 			
 			if (refImage == null) {
 				ImageFailures.Add (new FailedImageInfo () {
-					TestImage = img,
-					ReferenceImage = img,
+					TestImage = img.WithSize (img.PixelWidth, img.PixelHeight),
+					ReferenceImage = img.WithSize (img.PixelWidth, img.PixelHeight),
 					Name = refImageName,
 					TargetDir = ProjectReferenceImageDir
 				});
@@ -135,8 +136,8 @@ namespace Xwt
 				
 				if (!knownFailure) {
 					ImageFailures.Add (new FailedImageInfo () {
-						TestImage = img,
-						ReferenceImage = refImage,
+						TestImage = img.WithSize (img.PixelWidth, img.PixelHeight),
+						ReferenceImage = refImage.WithSize (img.PixelWidth, img.PixelHeight),
 						DiffImage = diff,
 						Name = refImageName,
 						TargetDir = ProjectCustomReferenceImageDir
@@ -149,13 +150,13 @@ namespace Xwt
 		public static Image DiffImages (Image img1, Image img2)
 		{
 			bool foundDifference = false;
-			var bmp1 = img1.ToBitmap ();
-			var bmp2 = img2.ToBitmap ();
-			var res = new ImageBuilder ((int)Math.Min (bmp1.Size.Width, bmp2.Size.Width), (int) Math.Min (bmp1.Size.Height, bmp2.Size.Height));
+			var bmp1 = (img1 as BitmapImage) ?? img1.ToBitmap ();
+			var bmp2 = (img2 as BitmapImage) ?? img2.ToBitmap ();
+			var res = new ImageBuilder ((int)Math.Min (bmp1.PixelWidth, bmp2.PixelWidth), (int) Math.Min (bmp1.PixelHeight, bmp2.PixelHeight));
 			var bmpr = res.ToBitmap ();
 			res.Dispose ();
-			for (int y=0; y<bmp1.Size.Height && y < bmp2.Size.Height; y++) {
-				for (int x=0; x<bmp1.Size.Width && x<bmp2.Size.Width; x++) {
+			for (int y=0; y<bmp1.PixelHeight && y < bmp2.PixelHeight; y++) {
+				for (int x=0; x<bmp1.PixelWidth && x<bmp2.PixelWidth; x++) {
 					var p1 = bmp1.GetPixel (x, y);
 					var p2 = bmp2.GetPixel (x, y);
 					var col = Colors.White;
