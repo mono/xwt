@@ -86,7 +86,7 @@ namespace Samples
 			AddSample (listView, "Editable checkboxes", typeof(ListView2));
 			AddSample (w, "Markdown", typeof (MarkDownSample));
 			AddSample (w, "Menu", typeof(MenuSamples));
-			var mn = AddSample (w, "Mnemonics", typeof (Mnemonics));
+			AddSample (w, "Mnemonics", typeof (Mnemonics));
 			AddSample (w, "Notebook", typeof(NotebookSample));
 			AddSample (w, "Paneds", typeof(PanedViews));
 			AddSample (w, "Popover", typeof(PopoverSample));
@@ -111,6 +111,7 @@ namespace Samples
 			AddSample (n, "Text", typeof(DrawingText));
 			AddSample (n, "Partial Images", typeof (PartialImages));
 			AddSample (n, "Custom Drawn Image", typeof (ImageScaling));
+			AddSample (n, "9-patch Image", typeof (Image9Patch));
 			AddSample (n, "Widget Rendering", typeof (WidgetRendering));
 
 			var wf = AddSample (null, "Widget Features", null);

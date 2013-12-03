@@ -91,6 +91,12 @@ namespace Xwt.CairoBackend
 
 		#region IContextBackendHandler implementation
 
+		public override double GetScaleFactor (object backend)
+		{
+			CairoContextBackend gc = (CairoContextBackend)backend;
+			return gc.ScaleFactor;
+		}
+
 		public override void Save (object backend)
 		{
 			CairoContextBackend gc = (CairoContextBackend)backend;
@@ -312,9 +318,9 @@ namespace Xwt.CairoBackend
 			ctx.Context.NewPath();
 			ctx.Context.Rectangle (destRect.X, destRect.Y, destRect.Width, destRect.Height);
 			ctx.Context.Clip ();
-			ctx.Context.Translate (destRect.X-srcRect.X, destRect.Y-srcRect.Y);
 			double sx = destRect.Width / srcRect.Width;
 			double sy = destRect.Height / srcRect.Height;
+			ctx.Context.Translate (destRect.X-srcRect.X*sx, destRect.Y-srcRect.Y*sy);
 			ctx.Context.Scale (sx, sy);
 			img.Alpha *= ctx.GlobalAlpha;
 

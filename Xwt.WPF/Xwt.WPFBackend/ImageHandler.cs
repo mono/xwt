@@ -255,21 +255,8 @@ namespace Xwt.WPFBackend
 		public override object CropBitmap(object handle, int srcX, int srcY, int w, int h)
 		{
 			var oldImg = (SWMI.BitmapSource)DataConverter.AsImageSource (handle);
-
-			double width = WidthToDPI (oldImg, w);
-			double height = HeightToDPI (oldImg, h);
-
-			SWM.DrawingVisual visual = new SWM.DrawingVisual ();
-			using (SWM.DrawingContext ctx = visual.RenderOpen ())
-			{
-				//Not sure whether this actually works, untested
-				ctx.DrawImage(oldImg, new System.Windows.Rect (-srcX, -srcY, srcX+width, srcY+height));
-			}
-
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)width, (int)height, oldImg.DpiX, oldImg.DpiY, PixelFormats.Pbgra32);
-			bmp.Render (visual);
-
-			return bmp;
+			var bmp = new CroppedBitmap (oldImg, new Int32Rect (srcX, srcY, w, h));
+			return new WpfImage (bmp);
 		}
 
 		public override void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)
@@ -431,14 +418,16 @@ namespace Xwt.WPFBackend
 		{
 			ImageDescription idesc = new ImageDescription () {
 				Alpha = 1,
-				Size = new Size (width * scaleFactor, height * scaleFactor)
+				Size = new Size (width, height)
 			};
 			SWM.DrawingVisual visual = new SWM.DrawingVisual ();
 			using (SWM.DrawingContext ctx = visual.RenderOpen ()) {
-				Draw (actx, ctx, 1, 0, 0, idesc);
+				ctx.PushTransform (new ScaleTransform (scaleFactor, scaleFactor));
+				Draw (actx, ctx, scaleFactor, 0, 0, idesc);
+				ctx.Pop ();
 			}
 
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)idesc.Size.Width, (int)idesc.Size.Height, 96, 96, PixelFormats.Pbgra32);
+			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)(width * scaleFactor), (int)(height * scaleFactor), 96, 96, PixelFormats.Pbgra32);
 			bmp.Render (visual);
 
 			var f = new ImageFrame (bmp, width, height);

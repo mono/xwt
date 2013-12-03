@@ -358,6 +358,10 @@ namespace Xwt.Drawing
 		{
 			handler.SetLineDash (Backend, offset, pattern);
 		}
+
+		internal double ScaleFactor {
+			get { return handler.GetScaleFactor (Backend); }
+		}
 	}
 }
 
