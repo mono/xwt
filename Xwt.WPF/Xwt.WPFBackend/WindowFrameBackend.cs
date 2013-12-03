@@ -69,9 +69,11 @@ namespace Xwt.WPFBackend
 			Window.Close ();
 		}
 
-		public void Close ()
+		public bool Close ()
 		{
+			closePerformed = true;
 			Window.Close ();
+			return closePerformed;
 		}
 
 		public System.Windows.Window Window {
@@ -319,6 +321,8 @@ namespace Xwt.WPFBackend
 
 		protected bool InhibitCloseRequested { get; set; }
 
+		bool closePerformed;
+
 		private void ClosingHandler (object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			if (InhibitCloseRequested)
@@ -326,6 +330,7 @@ namespace Xwt.WPFBackend
 			Context.InvokeUserCode (delegate ()
 			{
 				e.Cancel = !eventSink.OnCloseRequested ();
+				closePerformed = !e.Cancel;
 			});
 		}
 
