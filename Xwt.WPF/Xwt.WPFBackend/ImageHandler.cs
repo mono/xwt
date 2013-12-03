@@ -418,14 +418,16 @@ namespace Xwt.WPFBackend
 		{
 			ImageDescription idesc = new ImageDescription () {
 				Alpha = 1,
-				Size = new Size (width * scaleFactor, height * scaleFactor)
+				Size = new Size (width, height)
 			};
 			SWM.DrawingVisual visual = new SWM.DrawingVisual ();
 			using (SWM.DrawingContext ctx = visual.RenderOpen ()) {
-				Draw (actx, ctx, 1, 0, 0, idesc);
+				ctx.PushTransform (new ScaleTransform (scaleFactor, scaleFactor));
+				Draw (actx, ctx, scaleFactor, 0, 0, idesc);
+				ctx.Pop ();
 			}
 
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)idesc.Size.Width, (int)idesc.Size.Height, 96, 96, PixelFormats.Pbgra32);
+			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)(width * scaleFactor), (int)(height * scaleFactor), 96, 96, PixelFormats.Pbgra32);
 			bmp.Render (visual);
 
 			var f = new ImageFrame (bmp, width, height);
