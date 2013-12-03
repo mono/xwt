@@ -185,6 +185,39 @@ namespace Xwt
 				Assert.AreEqual (200, test.ScreenBounds.Height);
 			}
 		}
+
+		[Test]
+		public void Close ()
+		{
+			using (var win = new Window ()) {
+				ShowWindow (win);
+				bool closing = false, closed = false;
+				win.CloseRequested += delegate(object sender, CloseRequestedEventArgs args) {
+					Assert.IsTrue (args.AllowClose);
+					closing = true;
+				};
+				win.Closed += (sender, e) => closed = true;
+				win.Close ();
+				Assert.IsTrue (closing, "CloseRequested event not fired");
+				Assert.IsTrue (closed, "Window not closed");
+			}
+		}
+
+		[Test]
+		public void CloseCancel ()
+		{
+			bool closed = false;
+			using (var win = new Window ()) {
+				ShowWindow (win);
+				win.CloseRequested += delegate(object sender, CloseRequestedEventArgs args) {
+					args.AllowClose = false;
+				};
+				win.Closed += (sender, e) => closed = true;
+				win.Close ();
+				Assert.IsFalse (closed, "Window should not be closed");
+			}
+			Assert.IsFalse (closed, "Window should not be closed");
+		}
 	}
 
 	public class SquareBox: Canvas

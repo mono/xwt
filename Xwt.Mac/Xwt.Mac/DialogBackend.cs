@@ -58,12 +58,11 @@ namespace Xwt.Mac
 			};
 			buttonBoxView = ((ViewBackend)buttonBox.GetBackend ()).Widget;
 			ContentView.AddSubview (buttonBoxView);
-
-			WillClose += HandleWillClose;
 		}
 
-		void HandleWillClose (object sender, EventArgs e)
+		protected override void OnClosed ()
 		{
+			base.OnClosed ();
 			if (modalSessionRunning)
 				EndLoop ();
 		}

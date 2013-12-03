@@ -60,6 +60,11 @@ namespace Xwt
 		public static Command SaveAs = new Command ("SaveAs");
 		public static Command Stop = new Command ("Stop");
 		public static Command Apply = new Command ("Apply");
+
+		public override string ToString ()
+		{
+			return Id;
+		}
 	}
 }
 

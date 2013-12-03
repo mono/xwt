@@ -70,6 +70,18 @@ namespace Xwt.Backends
 		void Present ();
 
 		/// <summary>
+		/// Closes the window
+		/// </summary>
+		/// <returns><c>true</c> if the window could be closed</returns>
+		/// <remarks>
+		/// Closes the window like if the user clicked on the close window button.
+		/// The CloseRequested event is fired and subscribers can cancel the closing,
+		/// so there is no guarantee that the window will actually close.
+		/// This method doesn't dispose the window. The Dispose method has to be called.
+		/// </remarks>
+		bool Close ();
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this window is in full screen mode
 		/// </summary>
 		/// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
@@ -88,6 +100,7 @@ namespace Xwt.Backends
 		void OnShown ();
 		void OnHidden ();
 		bool OnCloseRequested ();
+		void OnClosed ();
 	}
 
 	[Flags]
@@ -96,7 +109,8 @@ namespace Xwt.Backends
 		BoundsChanged = 1,
 		Shown = 2,
 		Hidden = 4,
-		CloseRequested = 8
+		CloseRequested = 8,
+		Closed = 16
 	}
 }
 
