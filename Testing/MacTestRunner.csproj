@@ -282,5 +282,107 @@
     <EmbeddedResource Include="Tests\ninep-tt.9%402x.png">
       <LogicalName>ninep-tt.9@2x.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchDefaultSize.png">
+      <LogicalName>NinePatchStretchStretchDefaultSize.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchDefaultSize2x.png">
+      <LogicalName>NinePatchStretchStretchDefaultSize2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchHigher.png">
+      <LogicalName>NinePatchStretchStretchHigher.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchHigher2x.png">
+      <LogicalName>NinePatchStretchStretchHigher2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchWider.png">
+      <LogicalName>NinePatchStretchStretchWider.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchWider2x.png">
+      <LogicalName>NinePatchStretchStretchWider2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchWiderHigher2x.png">
+      <LogicalName>NinePatchStretchStretchWiderHigher2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileDefaultSize.png">
+      <LogicalName>NinePatchStretchTileDefaultSize.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileDefaultSize2x.png">
+      <LogicalName>NinePatchStretchTileDefaultSize2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileHigher.png">
+      <LogicalName>NinePatchStretchTileHigher.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileHigher2x.png">
+      <LogicalName>NinePatchStretchTileHigher2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileWider.png">
+      <LogicalName>NinePatchStretchTileWider.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileWider2x.png">
+      <LogicalName>NinePatchStretchTileWider2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileWiderHigher.png">
+      <LogicalName>NinePatchStretchTileWiderHigher.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileWiderHigher2x.png">
+      <LogicalName>NinePatchStretchTileWiderHigher2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchDefaultSize.png">
+      <LogicalName>NinePatchTileStretchDefaultSize.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchDefaultSize2x.png">
+      <LogicalName>NinePatchTileStretchDefaultSize2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchHigher.png">
+      <LogicalName>NinePatchTileStretchHigher.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchHigher2x.png">
+      <LogicalName>NinePatchTileStretchHigher2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchWider.png">
+      <LogicalName>NinePatchTileStretchWider.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchWider2x.png">
+      <LogicalName>NinePatchTileStretchWider2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchWiderHigher.png">
+      <LogicalName>NinePatchTileStretchWiderHigher.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchWiderHigher2x.png">
+      <LogicalName>NinePatchTileStretchWiderHigher2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileDefaultSize.png">
+      <LogicalName>NinePatchTileTileDefaultSize.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileDefaultSize2x.png">
+      <LogicalName>NinePatchTileTileDefaultSize2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileHigher.png">
+      <LogicalName>NinePatchTileTileHigher.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileHigher2x.png">
+      <LogicalName>NinePatchTileTileHigher2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileWider.png">
+      <LogicalName>NinePatchTileTileWider.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileWider2x.png">
+      <LogicalName>NinePatchTileTileWider2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileWiderHigher.png">
+      <LogicalName>NinePatchTileTileWiderHigher.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileWiderHigher2x.png">
+      <LogicalName>NinePatchTileTileWiderHigher2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternWithRotateTransformWithAlpha.png">
+      <LogicalName>ImagePatternWithRotateTransformWithAlpha.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternWithScaleTransformWithAlpha.png">
+      <LogicalName>ImagePatternWithScaleTransformWithAlpha.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextTrimmingEllipsis.png">
+      <LogicalName>TextTrimmingEllipsis.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

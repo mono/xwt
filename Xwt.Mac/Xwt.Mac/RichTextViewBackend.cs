@@ -45,7 +45,11 @@ namespace Xwt.Mac
 		public override object Font {
 			get { return base.Font; }
 			set {
- 				font = value as NSFont;
+				var fd = value as FontData;
+				if (fd != null)
+					font = fd.Font;
+				else
+					font = null;
 				base.Font = value;
 			}
 		}

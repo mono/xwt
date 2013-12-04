@@ -81,7 +81,7 @@ namespace Xwt.Mac
 				return Widget.Expander.Font;
 			}
 			set {
-				Widget.Expander.Font = (NSFont)value;
+				Widget.Expander.Font = ((FontData)value).Font;
 			}
 		}
 	}

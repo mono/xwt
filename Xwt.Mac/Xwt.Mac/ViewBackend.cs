@@ -122,7 +122,8 @@ namespace Xwt.Mac
 			get { return viewObject; }
 			set {
 				viewObject = value;
-				viewObject.Backend = this;
+				if (viewObject.Backend == null)
+					viewObject.Backend = this;
 			}
 		}
 		
@@ -346,25 +347,34 @@ namespace Xwt.Mac
 			newChild.Frame = f;
 		}
 
+		FontData customFont;
+
 		public virtual object Font {
 			get {
+				if (customFont != null)
+					return customFont;
+
+				NSFont font = null;
 				var widget = Widget;
 				if (widget is CustomAlignedContainer)
 					widget = ((CustomAlignedContainer)widget).Child;
 				if (widget is NSControl)
-					return ((NSControl)(object)widget).Font;
-				if (widget is NSText)
-					return ((NSText)(object)widget).Font;
-				return NSFont.ControlContentFontOfSize (NSFont.SystemFontSize);
+					font = ((NSControl)(object)widget).Font;
+				else if (widget is NSText)
+					font = ((NSText)(object)widget).Font;
+				else
+					font = NSFont.ControlContentFontOfSize (NSFont.SystemFontSize);
+				return customFont = FontData.FromFont (font);
 			}
 			set {
+				customFont = (FontData) value;
 				var widget = Widget;
 				if (widget is CustomAlignedContainer)
 					widget = ((CustomAlignedContainer)widget).Child;
 				if (widget is NSControl)
-					((NSControl)(object)widget).Font = (NSFont) value;
+					((NSControl)(object)widget).Font = customFont.Font;
 				if (widget is NSText)
-					((NSText)(object)widget).Font = (NSFont) value;
+					((NSText)(object)widget).Font = customFont.Font;
 				ResetFittingSize ();
 			}
 		}

@@ -36,7 +36,7 @@ namespace Xwt.Mac
 	{
 		public override object GetSystemDefaultFont ()
 		{
-			return NSFont.SystemFontOfSize (0);
+			return FontData.FromFont (NSFont.SystemFontOfSize (0));
 		}
 
 		public override object GetSystemDefaultMonospaceFont ()
@@ -52,115 +52,236 @@ namespace Xwt.Mac
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			object o = NSFont.FromFontName (fontName, (float)size);
-			o = SetStyle (o, style);
-			o = SetWeight (o, weight);
-			o = SetStretch (o, stretch);
-			return o;
+			var t = GetStretchTrait (stretch) | GetStyleTrait (style);
+			var f = NSFontManager.SharedFontManager.FontWithFamily (fontName, t, GetWeightValue (weight), (float)size);
+			var fd = FontData.FromFont (NSFontManager.SharedFontManager.ConvertFont (f, t));
+			fd.Style = style;
+			fd.Weight = weight;
+			fd.Stretch = stretch;
+			return fd;
 		}
 
 		#region IFontBackendHandler implementation
 		public override object Copy (object handle)
 		{
-			NSFont f = (NSFont) handle;
-			return f.Copy ();
+			FontData f = (FontData) handle;
+			f = f.Copy ();
+			f.Font = (NSFont) f.Font.Copy ();
+			return f;
 		}
 		
 		public override object SetSize (object handle, double size)
 		{
-			NSFont f = (NSFont) handle;
-			return NSFontManager.SharedFontManager.ConvertFont (f, (float)size);
+			FontData f = (FontData) handle;
+			f = f.Copy ();
+			f.Font = NSFontManager.SharedFontManager.ConvertFont (f.Font, (float)size);
+			return f;
 		}
 
 		public override object SetFamily (object handle, string family)
 		{
-			NSFont f = (NSFont) handle;
-			return NSFontManager.SharedFontManager.ConvertFontToFamily (f, family);
+			FontData f = (FontData) handle;
+			f = f.Copy ();
+			f.Font = NSFontManager.SharedFontManager.ConvertFontToFamily (f.Font, family);
+			return f;
 		}
 
 		public override object SetStyle (object handle, FontStyle style)
 		{
-			NSFont f = (NSFont) handle;
+			FontData f = (FontData) handle;
+			f = f.Copy ();
 			NSFontTraitMask mask;
 			if (style == FontStyle.Italic || style == FontStyle.Oblique)
 				mask = NSFontTraitMask.Italic;
 			else
 				mask = NSFontTraitMask.Unitalic;
-			return NSFontManager.SharedFontManager.ConvertFont (f, mask);
+			f.Font = NSFontManager.SharedFontManager.ConvertFont (f.Font, mask);
+			f.Style = style;
+			return f;
+		}
+
+		static int GetWeightValue (FontWeight weight)
+		{
+			switch (weight) {
+			case FontWeight.Ultralight:
+				return 2;
+			case FontWeight.Light:
+				return 4;
+			case FontWeight.Normal:
+				return 5;
+			case FontWeight.Semibold:
+				return 7;
+			case FontWeight.Bold:
+				return 9;
+			case FontWeight.Ultrabold:
+				return 11;
+			default:
+				return 13;
+			}
+		}
+
+		internal static FontWeight GetWeightFromValue (int w)
+		{
+			if (w <= 2)
+				return FontWeight.Ultralight;
+			if (w <= 4)
+				return FontWeight.Light;
+			if (w <= 6)
+				return FontWeight.Normal;
+			if (w <= 8)
+				return FontWeight.Semibold;
+			if (w == 9)
+				return FontWeight.Bold;
+			if (w <= 12)
+				return FontWeight.Ultrabold;
+			return FontWeight.Heavy;
+		}
+
+		NSFontTraitMask GetStretchTrait (FontStretch stretch)
+		{
+			switch (stretch) {
+			case FontStretch.Condensed:
+			case FontStretch.ExtraCondensed:
+			case FontStretch.SemiCondensed:
+				return NSFontTraitMask.Condensed;
+			case FontStretch.Normal:
+				return default (NSFontTraitMask);
+			default:
+				return NSFontTraitMask.Expanded;
+			}
+		}
+
+		NSFontTraitMask GetStyleTrait (FontStyle style)
+		{
+			switch (style) {
+			case FontStyle.Italic:
+			case FontStyle.Oblique:
+				return NSFontTraitMask.Italic;
+			default:
+				return default (NSFontTraitMask);
+			}
 		}
 
 		public override object SetWeight (object handle, FontWeight weight)
 		{
-			NSFont f = (NSFont) handle;
-			NSFontTraitMask mask;
-			if (weight > FontWeight.Normal)
-				mask = NSFontTraitMask.Bold;
-			else
-				mask = NSFontTraitMask.Unbold;
-			return NSFontManager.SharedFontManager.ConvertFont (f, mask);
+			FontData f = (FontData) handle;
+			f = f.Copy ();
+			int w = GetWeightValue (weight);
+			f.Font = NSFontManager.SharedFontManager.FontWithFamily (f.Font.FamilyName, NSFontManager.SharedFontManager.TraitsOfFont (f.Font), w, f.Font.PointSize);
+			f.Weight = weight;
+			return f;
 		}
 
 		public override object SetStretch (object handle, FontStretch stretch)
 		{
-			NSFont f = (NSFont) handle;
-			if (stretch < FontStretch.Normal) {
-				f = NSFontManager.SharedFontManager.ConvertFont (f, NSFontTraitMask.Condensed);
-				f = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (f, NSFontTraitMask.Expanded);
+			FontData f = (FontData) handle;
+			f = f.Copy ();
+
+			NSFont font = f.Font;
+			if (stretch < FontStretch.SemiCondensed) {
+				font = NSFontManager.SharedFontManager.ConvertFont (font, NSFontTraitMask.Condensed);
+				font = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (font, NSFontTraitMask.Compressed | NSFontTraitMask.Expanded | NSFontTraitMask.Narrow);
+			}
+			if (stretch == FontStretch.SemiCondensed) {
+				font = NSFontManager.SharedFontManager.ConvertFont (font, NSFontTraitMask.Narrow);
+				font = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (font, NSFontTraitMask.Compressed | NSFontTraitMask.Expanded | NSFontTraitMask.Condensed);
 			}
 			else if (stretch > FontStretch.Normal) {
-				f = NSFontManager.SharedFontManager.ConvertFont (f, NSFontTraitMask.Expanded);
-				f = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (f, NSFontTraitMask.Condensed);
+				font = NSFontManager.SharedFontManager.ConvertFont (font, NSFontTraitMask.Expanded);
+				font = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (font, NSFontTraitMask.Compressed | NSFontTraitMask.Narrow | NSFontTraitMask.Condensed);
 			}
 			else {
-				f = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (f, NSFontTraitMask.Condensed | NSFontTraitMask.Expanded);
+				font = NSFontManager.SharedFontManager.ConvertFontToNotHaveTrait (font, NSFontTraitMask.Condensed | NSFontTraitMask.Expanded | NSFontTraitMask.Narrow | NSFontTraitMask.Compressed);
 			}
+			f.Font = font;
+			f.Stretch = stretch;
 			return f;
 		}
 		
 		public override double GetSize (object handle)
 		{
-			NSFont f = (NSFont) handle;
-			return f.PointSize;
+			FontData f = (FontData) handle;
+			return f.Font.PointSize;
 		}
 
 		public override string GetFamily (object handle)
 		{
-			NSFont f = (NSFont) handle;
-			return f.FamilyName;
+			FontData f = (FontData) handle;
+			return f.Font.FamilyName;
 		}
 
 		public override FontStyle GetStyle (object handle)
 		{
-			NSFont f = (NSFont) handle;
-			if ((f.FontDescriptor.SymbolicTraits & NSFontSymbolicTraits.ItalicTrait) != 0)
-				return FontStyle.Italic;
-			else
-				return FontStyle.Normal;
+			FontData f = (FontData) handle;
+			return f.Style;
 		}
 
 		public override FontWeight GetWeight (object handle)
 		{
-			NSFont f = (NSFont) handle;
-			if ((f.FontDescriptor.SymbolicTraits & NSFontSymbolicTraits.BoldTrait) != 0)
-				return FontWeight.Bold;
-			else
-				return FontWeight.Normal;
+			FontData f = (FontData) handle;
+			return f.Weight;
 		}
 
 		public override FontStretch GetStretch (object handle)
 		{
-			NSFont f = (NSFont) handle;
-			var traits = NSFontManager.SharedFontManager.TraitsOfFont (f);
-			if ((traits & NSFontTraitMask.Condensed) != 0)
-				return FontStretch.Condensed;
-			else if ((traits & NSFontTraitMask.Expanded) != 0)
-				return FontStretch.Expanded;
-			else
-				return FontStretch.Normal;
+			FontData f = (FontData) handle;
+			return f.Stretch;
 		}
 		#endregion
-
-
 	}
+
+	public class FontData
+	{
+		public NSFont Font;
+		public FontStyle Style;
+		public FontWeight Weight;
+		public FontStretch Stretch;
+
+		public FontData ()
+		{
+		}
+
+		public static FontData FromFont (NSFont font)
+		{
+			var traits = NSFontManager.SharedFontManager.TraitsOfFont (font);
+
+			FontStretch stretch;
+			if ((traits & NSFontTraitMask.Condensed) != 0)
+				stretch = FontStretch.Condensed;
+			else if ((traits & NSFontTraitMask.Narrow) != 0)
+				stretch = FontStretch.SemiCondensed;
+			else if ((traits & NSFontTraitMask.Compressed) != 0)
+				stretch = FontStretch.ExtraCondensed;
+			else if ((traits & NSFontTraitMask.Expanded) != 0)
+				stretch = FontStretch.Expanded;
+			else
+				stretch = FontStretch.Normal;
+
+			FontStyle style;
+			if ((traits & NSFontTraitMask.Italic) != 0)
+				style = FontStyle.Italic;
+			else
+				style = FontStyle.Normal;
+
+			return new FontData {
+				Font = font,
+				Style = style,
+				Weight = MacFontBackendHandler.GetWeightFromValue (NSFontManager.SharedFontManager.WeightOfFont (font)),
+				Stretch = stretch
+			};
+		}
+
+		public FontData Copy ()
+		{
+			return new FontData {
+				Font = Font,
+				Style = Style,
+				Weight = Weight,
+				Stretch = Stretch
+			};
+		}
+	}
+
 }
+
 
