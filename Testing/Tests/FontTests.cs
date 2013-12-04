@@ -31,7 +31,7 @@ using Xwt.Drawing;
 namespace Xwt
 {
 	[TestFixture]
-	public class FontTests
+	public class FontTests: DrawingTestsBase
 	{
 		[Test]
 		public void FromNameEmpty ()
@@ -227,6 +227,25 @@ namespace Xwt
 			var f1 = Font.FromName ("Arial expanded Oblique Light 33");
 			var f2 = Font.FromName ("Arial expanded Oblique Light 33");
 			Assert.IsTrue (f1.Equals (f2));
+		}
+
+		[Test]
+		public void RenderWeight ()
+		{
+			var font = "Avenir Next";
+
+			InitBlank (150, 200);
+			TextLayout la = new TextLayout ();
+			double y = 0;
+
+			foreach (FontWeight w in Enum.GetValues (typeof(FontWeight))) {
+				la.Font = Font.FromName (font).WithSize (20).WithWeight (w);
+				la.Text = "Test " + w.ToString ();
+				context.DrawTextLayout (la, 0, y + 3);
+				y += la.GetSize ().Height;
+			}
+
+			CheckImage ("FontTests.RenderWeight.png");
 		}
 	}
 }

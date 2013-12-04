@@ -72,6 +72,7 @@ namespace Xwt
 			la.TextAlignment = Alignment.Center;
 			la.Wrap = WrapMode.Word;
 			la.WidthRequest = 200;
+			la.BackgroundColor = Xwt.Drawing.Colors.LightGray;
 
 			using (var win = new Window { Width = 200, Height = 100 }) {
 				win.Content = la;

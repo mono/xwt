@@ -44,7 +44,7 @@ namespace Xwt
 		// There is only a single context used in all tests,
 		// so it MUST be Saved and Restored for each test.
 
-		const double DELTA = 0.000000001d;
+		const double DELTA = 0.000001d;
 
 		ImageBuilder ib = null;
 		Context context = null;
