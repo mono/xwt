@@ -43,6 +43,7 @@ namespace Xwt.Mac
 		protected LabelBackend (IViewObject viewObject)
 		{
 			ViewObject = new CustomAlignedContainer ((NSView)viewObject);
+			Widget.StringValue = string.Empty;
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
