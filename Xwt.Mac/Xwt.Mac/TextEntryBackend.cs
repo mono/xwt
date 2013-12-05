@@ -48,8 +48,8 @@ namespace Xwt.Mac
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else {
 				ViewObject = new CustomAlignedContainer (new CustomTextField (EventSink, ApplicationContext));
+				MultiLine = false;
 			}
-			MultiLine = false;
 		}
 		
 		protected override void OnSizeToFit ()
@@ -58,11 +58,11 @@ namespace Xwt.Mac
 		}
 
 		CustomAlignedContainer Container {
-			get { return (CustomAlignedContainer)base.Widget; }
+			get { return base.Widget as CustomAlignedContainer; }
 		}
 
 		public new NSTextField Widget {
-			get { return (NSTextField) Container.Child; }
+			get { return (ViewObject is MacComboBox) ? (NSTextField)ViewObject : (NSTextField) Container.Child; }
 		}
 
 		protected override Size GetNaturalSize ()
@@ -119,9 +119,13 @@ namespace Xwt.Mac
 
 		public bool MultiLine {
 			get {
+				if (Widget is MacComboBox)
+					return false;
 				return Widget.Cell.UsesSingleLineMode;
 			}
 			set {
+				if (Widget is MacComboBox)
+					return;
 				if (value) {
 					Widget.Cell.UsesSingleLineMode = false;
 					Widget.Cell.Scrollable = false;
