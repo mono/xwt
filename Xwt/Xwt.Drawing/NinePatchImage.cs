@@ -29,6 +29,12 @@ using System.Linq;
 
 namespace Xwt.Drawing
 {
+	/// <summary>
+	/// A NinePatchImage is a stretchable bitmap image, 
+	/// which will automatically resize to accommodate the contents 
+	/// of the BitmapImage placed within.
+	/// For more information see: http://developer.android.com/guide/topics/graphics/2d-graphics.html#nine-patch
+	/// </summary>
 	public class NinePatchImage: DrawingImage
 	{
 		List<ImageFrame> frames = new List<ImageFrame> ();
