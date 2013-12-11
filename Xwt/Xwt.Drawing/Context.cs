@@ -169,6 +169,8 @@ namespace Xwt.Drawing
 		
 		public void DrawImage (Image img, double x, double y, double width, double height, double alpha = 1)
 		{
+			if (width <= 0 || height <= 0)
+				return;
 			var idesc = img.ImageDescription;
 			idesc.Alpha *= alpha;
 			idesc.Size = new Size (width, height);

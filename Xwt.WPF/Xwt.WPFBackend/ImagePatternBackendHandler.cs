@@ -58,21 +58,23 @@ namespace Xwt.WPFBackend
 
 		public ImageBrush GetBrush (double scaleFactor)
 		{
-			if (brush == null || scaleFactor != this.scaleFactor) {
-				this.scaleFactor = scaleFactor;
-				var ib = (WpfImage)image.Backend;
-				var bmp = ib.GetBestFrame (actx, scaleFactor, image.Size.Width, image.Size.Height, true);
-				brush = new ImageBrush (bmp) {
-					TileMode = TileMode.Tile,
-					ViewportUnits = BrushMappingMode.Absolute,
-					AlignmentY = System.Windows.Media.AlignmentY.Top,
-					AlignmentX = System.Windows.Media.AlignmentX.Left,
-					Stretch = System.Windows.Media.Stretch.None,
-					Viewport = new System.Windows.Rect (0, 0, image.Size.Width * scaleFactor, image.Size.Height * scaleFactor),
-					Opacity = image.Alpha
-				};
-				brush.RelativeTransform = new ScaleTransform (1d/scaleFactor, 1d/scaleFactor);
-			}
+            if (brush == null || scaleFactor != this.scaleFactor)
+            {
+                this.scaleFactor = scaleFactor;
+                var ib = (WpfImage)image.Backend;
+                var bmp = ib.GetBestFrame(actx, scaleFactor, image.Size.Width, image.Size.Height, false);
+                brush = new ImageBrush(bmp)
+                {
+                    TileMode = TileMode.Tile,
+                    ViewportUnits = BrushMappingMode.Absolute,
+                    AlignmentY = System.Windows.Media.AlignmentY.Top,
+                    AlignmentX = System.Windows.Media.AlignmentX.Left,
+                    Stretch = System.Windows.Media.Stretch.None,
+                    Viewport = new System.Windows.Rect(0, 0, image.Size.Width, image.Size.Height),
+                    Opacity = image.Alpha
+                };
+                brush.RelativeTransform = new ScaleTransform(image.Size.Width / bmp.Width, image.Size.Height / bmp.Height);
+            }
 			return brush;
 		}
 	}

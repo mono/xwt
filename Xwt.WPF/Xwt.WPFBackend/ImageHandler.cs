@@ -408,7 +408,7 @@ namespace Xwt.WPFBackend
 		public ImageSource GetBestFrame (ApplicationContext actx, double scaleFactor, double width, double height, bool forceExactSize)
 		{
 			var f = FindFrame (width, height, scaleFactor);
-			if (f == null || (forceExactSize && (f.Width != (int)width || f.Height != (int)height)))
+			if (f == null || (forceExactSize && (Math.Abs (f.Width - width * scaleFactor) > 0.01 || Math.Abs (f.Height - height * scaleFactor) > 0.01)))
 				return RenderFrame (actx, scaleFactor, width, height);
 			else
 				return f;

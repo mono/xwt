@@ -141,6 +141,9 @@ namespace Xwt.Drawing
 
 		protected sealed override void OnDraw (Context ctx, Rectangle bounds)
 		{
+			if (bounds.Width <= 0 || bounds.Height <= 0)
+				return;
+
 			var frame = GetFrame (ctx.ScaleFactor);
 			var fixedWidth = frame.Bitmap.Width - 2 - frame.StretchableWidth;
 			var fixedHeight = frame.Bitmap.Height - 2 - frame.StretchableHeight;
@@ -187,6 +190,9 @@ namespace Xwt.Drawing
 						if (vs.Mode == RenderMode.Stretch) {
 							ph = targetRegion.Height;
 						}
+
+						if (pw <= 0 || ph <= 0)
+							continue;
 
 						ctx.Save ();
 						ctx.Translate (targetRegion.Location);
