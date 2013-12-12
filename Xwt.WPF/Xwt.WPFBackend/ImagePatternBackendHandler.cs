@@ -70,10 +70,10 @@ namespace Xwt.WPFBackend
                     AlignmentY = System.Windows.Media.AlignmentY.Top,
                     AlignmentX = System.Windows.Media.AlignmentX.Left,
                     Stretch = System.Windows.Media.Stretch.None,
-                    Viewport = new System.Windows.Rect(0, 0, image.Size.Width, image.Size.Height),
+					Viewport = new System.Windows.Rect(0, 0, bmp.Width, bmp.Height),
                     Opacity = image.Alpha
                 };
-                brush.RelativeTransform = new ScaleTransform(image.Size.Width / bmp.Width, image.Size.Height / bmp.Height);
+				brush.RelativeTransform = new ScaleTransform(image.Size.Width / bmp.Width, image.Size.Height / bmp.Height);
             }
 			return brush;
 		}
