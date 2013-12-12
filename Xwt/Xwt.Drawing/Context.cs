@@ -147,6 +147,16 @@ namespace Xwt.Drawing
 			handler.DrawTextLayout (Backend, layout, x, y);
 		}
 
+		public void DrawSurface (Surface surface, Point location, double alpha = 1)
+		{
+			handler.DrawSurface (Backend, surface.GetBackend (), location.X, location.Y, alpha);
+		}
+
+		public void DrawSurface (Surface surface, double x, double y, double alpha = 1)
+		{
+			handler.DrawSurface (Backend, surface.GetBackend (), x, y, alpha);
+		}
+
 		public void DrawImage (Image img, Point location, double alpha = 1)
 		{
 			DrawImage (img, location.X, location.Y, alpha);

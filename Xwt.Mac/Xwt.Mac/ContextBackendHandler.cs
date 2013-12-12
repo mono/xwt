@@ -44,6 +44,7 @@ namespace Xwt.Mac
 		public Stack<ContextStatus> StatusStack = new Stack<ContextStatus> ();
 		public ContextStatus CurrentStatus = new ContextStatus ();
 		public double ScaleFactor = 1;
+		public bool Damaged; // New stuff has been drawn using this context
 	}
 
 	class ContextStatus
@@ -135,11 +136,14 @@ namespace Xwt.Mac
 			else {
 				ctx.DrawPath (CGPathDrawingMode.Fill);
 			}
+			gc.Damaged = true;
 		}
 
 		public override void FillPreserve (object backend)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
+			CGContextBackend gc = (CGContextBackend)backend;
+			gc.Damaged = true;
+			CGContext ctx = gc.Context;
 			using (CGPath oldPath = ctx.CopyPath ()) {
 				Fill (backend);
 				ctx.AddPath (oldPath);
@@ -189,14 +193,18 @@ namespace Xwt.Mac
 
 		public override void Stroke (object backend)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
+			CGContextBackend gc = (CGContextBackend)backend;
+			gc.Damaged = true;
+			CGContext ctx = gc.Context;
 			SetupContextForDrawing (ctx);
 			ctx.DrawPath (CGPathDrawingMode.Stroke);
 		}
 
 		public override void StrokePreserve (object backend)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
+			CGContextBackend gc = (CGContextBackend)backend;
+			gc.Damaged = true;
+			CGContext ctx = gc.Context;
 			SetupContextForDrawing (ctx);
 			using (CGPath oldPath = ctx.CopyPath ()) {
 				ctx.DrawPath (CGPathDrawingMode.Stroke);
@@ -274,9 +282,20 @@ namespace Xwt.Mac
 		
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
+			CGContextBackend gc = (CGContextBackend)backend;
+			gc.Damaged = true;
+			CGContext ctx = gc.Context;
 			SetupContextForDrawing (ctx);
 			MacTextLayoutBackendHandler.Draw (ctx, Toolkit.GetBackend (layout), x, y);
+		}
+
+		public override void DrawSurface (object backend, object surface, double x, double y, double alpha)
+		{
+			CGContextBackend gc = (CGContextBackend)backend;
+			gc.Damaged = true;
+			CGContext ctx = gc.Context;
+			var ms = (MacSurface)surface;
+			ctx.DrawImage (new RectangleF ((float)x, (float)y, ms.Image.Width, ms.Image.Height), ms.Image);
 		}
 
 		public override void DrawImage (object backend, ImageDescription img, double x, double y)
@@ -288,7 +307,10 @@ namespace Xwt.Mac
 
 		public override void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
+			CGContextBackend gc = (CGContextBackend)backend;
+			gc.Damaged = true;
+			CGContext ctx = gc.Context;
+
 			NSImage image = img.ToNSImage ();
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)img.Alpha);

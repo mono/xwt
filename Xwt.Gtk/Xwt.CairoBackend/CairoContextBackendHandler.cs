@@ -301,6 +301,17 @@ namespace Xwt.CairoBackend
 			}
 		}
 
+		public override void DrawSurface (object backend, object surface, double x, double y, double alpha)
+		{
+			CairoContextBackend ctx = (CairoContextBackend)backend;
+
+			ctx.Context.SetSourceSurface ((Cairo.Surface)surface, (int)x, (int)y);
+			if (alpha == 1d)
+				ctx.Context.Paint ();
+			else
+				ctx.Context.PaintWithAlpha (alpha);
+		}
+
 		public override void DrawImage (object backend, ImageDescription img, double x, double y)
 		{
 			CairoContextBackend ctx = (CairoContextBackend)backend;

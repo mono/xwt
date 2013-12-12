@@ -87,6 +87,7 @@ namespace Xwt.Drawing
 		CanDrawImage,
 		DrawImage,
 		DrawImage2,
+		DrawSurface,
 		Rotate,
 		Scale,
 		Translate,
@@ -498,6 +499,16 @@ namespace Xwt.Drawing
 			ctx.Doubles.Add (y);
 		}
 
+		public override void DrawSurface (object backend, object surface, double x, double y, double alpha)
+		{
+			var ctx = (VectorBackend)backend;
+			ctx.Commands.Add (DrawingCommand.DrawSurface);
+			ctx.Objects.Add (surface);
+			ctx.Doubles.Add (x);
+			ctx.Doubles.Add (y);
+			ctx.Doubles.Add (alpha);
+		}
+
 		public override void DrawImage (object backend, ImageDescription img, double x, double y)
 		{
 			var ctx = (VectorBackend)backend;
@@ -652,6 +663,9 @@ namespace Xwt.Drawing
 					break;
 				case DrawingCommand.DrawImage:
 					handler.DrawImage (ctx, cm.Images [imi++], cm.Doubles [di++], cm.Doubles [di++]);
+					break;
+				case DrawingCommand.DrawSurface:
+					handler.DrawSurface (ctx, cm.Objects [imi++], cm.Doubles [di++], cm.Doubles [di++], cm.Doubles [di++]);
 					break;
 				case DrawingCommand.DrawTextLayout:
 					var lad = (TextLayoutData)cm.TextLayouts [ti++];

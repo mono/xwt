@@ -110,6 +110,7 @@ namespace Samples
 			AddSample (n, "Images and Patterns", typeof(DrawingPatternsAndImages));
 			AddSample (n, "Text", typeof(DrawingText));
 			AddSample (n, "Partial Images", typeof (PartialImages));
+			AddSample (n, "Rendering Performance", typeof(DrawingSurface));
 			AddSample (n, "Custom Drawn Image", typeof (ImageScaling));
 			AddSample (n, "9-patch Image", typeof (Image9Patch));
 			AddSample (n, "Widget Rendering", typeof (WidgetRendering));

@@ -407,6 +407,11 @@ namespace Xwt.Mac
 				m |= ModifierKeys.Shift;
 			return m;
 		}
+
+		public static double GetScaleFactor (NSView view)
+		{
+			return 1d;
+		}
 	}
 
 	public interface ICopiableObject

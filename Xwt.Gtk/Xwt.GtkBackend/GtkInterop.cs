@@ -41,6 +41,7 @@ namespace Xwt.GtkBackend
 		internal const string LIBGOBJECT      = "libgobject-2.0-0.dll";
 		internal const string LIBPANGO        = "libpango-1.0-0.dll";
 		internal const string LIBPANGOCAIRO   = "libpangocairo-1.0-0.dll";
+		internal const string LIBCAIRO        = "libcairo-2.dll";
 
 	}
 
