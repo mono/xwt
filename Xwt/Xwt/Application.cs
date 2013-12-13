@@ -64,6 +64,8 @@ namespace Xwt
 
 		public static void Initialize (string backendType)
 		{
+			if (backendType == null)
+				throw new ArgumentNullException ("backendType");
 			if (engine != null)
 				return;
 
@@ -85,6 +87,8 @@ namespace Xwt
 		
 		public static void InitializeAsGuest (string backendType)
 		{
+			if (backendType == null)
+				throw new ArgumentNullException ("backendType");
 			Initialize (backendType);
 			toolkit.ExitUserCode (null);
 		}
