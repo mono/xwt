@@ -41,6 +41,7 @@ namespace Xwt.CairoBackend
 		public Cairo.Surface TempSurface;
 		public double ScaleFactor = 1;
 		public double PatternAlpha = 1;
+		internal Point Origin = Point.Zero;
 
 		Stack<Data> dataStack = new Stack<Data> ();
 
@@ -361,8 +362,13 @@ namespace Xwt.CairoBackend
 
 		public override Matrix GetCTM (object backend)
 		{
-			Cairo.Matrix t = ((CairoContextBackend)backend).Context.Matrix;
-			Matrix ctm = new Matrix (t.Xx, t.Yx, t.Xy, t.Yy, t.X0, t.Y0);
+			var cb = (CairoContextBackend)backend;
+
+			Cairo.Matrix t = cb.Context.Matrix;
+
+			// Adjust CTM OffsetX, OffsetY for ContextBackend Origin
+			Matrix ctm = new Matrix (t.Xx, t.Yx, t.Xy, t.Yy, t.X0-cb.Origin.X, t.Y0-cb.Origin.Y);
+
 			return ctm;
 		}
 

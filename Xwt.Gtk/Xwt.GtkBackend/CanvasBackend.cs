@@ -188,6 +188,10 @@ namespace Xwt.GtkBackend
 			}
 			if (!VisibleWindow)
 				ctx.Context.Translate (Allocation.X, Allocation.Y);
+
+			// Set ContextBackend Origin
+			ctx.Origin.X = Allocation.X;
+			ctx.Origin.Y = Allocation.Y;
 			return ctx;
 		}
 	}
