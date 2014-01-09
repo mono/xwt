@@ -47,7 +47,8 @@ namespace Xwt.WPFBackend
 			}
 			
 			var ctx = new Xwt.WPFBackend.DrawingContext (dc, Widget.GetScaleFactor ());
-			CanvasEventSink.OnDraw (ctx, new Rectangle (0, 0, Widget.ActualWidth, Widget.ActualHeight));
+            ctx.Context.PushClip(new RectangleGeometry(new Rect(0, 0, Widget.ActualWidth, Widget.ActualHeight)));
+            CanvasEventSink.OnDraw(ctx, new Rectangle(0, 0, Widget.ActualWidth, Widget.ActualHeight));
 		}
 
 		public void QueueDraw ()
