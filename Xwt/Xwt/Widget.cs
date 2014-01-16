@@ -72,6 +72,7 @@ namespace Xwt
 		EventHandler dragLeave;
 		EventHandler<KeyEventArgs> keyPressed;
 		EventHandler<KeyEventArgs> keyReleased;
+		EventHandler<PreviewTextInputEventArgs> previewTextInput;
 		EventHandler mouseEntered;
 		EventHandler mouseExited;
 		EventHandler<ButtonEventArgs> buttonPressed;
@@ -166,6 +167,11 @@ namespace Xwt
 			{
 				Parent.OnKeyReleased (args);
 			}
+
+			void IWidgetEventSink.OnPreviewTextInput (PreviewTextInputEventArgs args)
+			{
+				Parent.OnPreviewTextInput (args);
+			}
 			
 			Size IWidgetEventSink.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 			{
@@ -245,6 +251,7 @@ namespace Xwt
 			MapEvent (WidgetEvent.DragLeave, typeof(Widget), "OnDragLeave");
 			MapEvent (WidgetEvent.KeyPressed, typeof(Widget), "OnKeyPressed");
 			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyReleased");
+			MapEvent (WidgetEvent.PreviewTextInput, typeof(Widget), "OnPreviewTextInput");
 			MapEvent (WidgetEvent.GotFocus, typeof(Widget), "OnGotFocus");
 			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
 			MapEvent (WidgetEvent.MouseEntered, typeof(Widget), "OnMouseEntered");
@@ -817,6 +824,12 @@ namespace Xwt
 		{
 			if (keyReleased != null)
 				keyReleased (this, args);
+		}
+
+		internal protected virtual void OnPreviewTextInput (PreviewTextInputEventArgs args)
+		{
+			if (previewTextInput != null)
+				previewTextInput (this, args);
 		}
 		
 		internal protected virtual void OnGotFocus (EventArgs args)
@@ -1488,6 +1501,17 @@ namespace Xwt
 			remove {
 				keyReleased -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.KeyReleased, keyReleased);
+			}
+		}
+
+		public event EventHandler<PreviewTextInputEventArgs> PreviewTextInput {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.PreviewTextInput, previewTextInput);
+				previewTextInput += value;
+			}
+			remove {
+				previewTextInput -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.PreviewTextInput, previewTextInput);
 			}
 		}
 		

@@ -433,6 +433,9 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.KeyReleased:
 						Widget.KeyUp += WidgetKeyUpHandler;
 						break;
+					case WidgetEvent.PreviewTextInput:
+						TextCompositionManager.AddPreviewTextInputHandler(Widget, WidgetPreviewTextInputHandler);
+						break;
 					case WidgetEvent.ButtonPressed:
 						Widget.MouseDown += WidgetMouseDownHandler;
 						break;
@@ -483,6 +486,9 @@ namespace Xwt.WPFBackend
 						break;
 					case WidgetEvent.KeyReleased:
 						Widget.KeyUp -= WidgetKeyUpHandler;
+						break;
+					case WidgetEvent.PreviewTextInput:
+						TextCompositionManager.RemovePreviewTextInputHandler(Widget, WidgetPreviewTextInputHandler);
 						break;
 					case WidgetEvent.ButtonPressed:
 						Widget.MouseDown -= WidgetMouseDownHandler;
@@ -579,6 +585,17 @@ namespace Xwt.WPFBackend
 
 			result = new KeyEventArgs (key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
 			return true;
+		}
+
+		void WidgetPreviewTextInputHandler (object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			PreviewTextInputEventArgs args = new PreviewTextInputEventArgs(e.Text);
+			Context.InvokeUserCode(delegate
+			{
+				eventSink.OnPreviewTextInput(args);
+			});
+			if (args.Handled)
+				e.Handled = true;
 		}
 
 		void WidgetMouseDownHandler (object o, MouseButtonEventArgs e)
