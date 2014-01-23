@@ -191,6 +191,9 @@ namespace Xwt.GtkBackend
 				// Set ContextBackend Origin
 				ctx.Origin.X = Allocation.X;
 				ctx.Origin.Y = Allocation.Y;
+				// clip ContextBackend to Allocation to avoid drawing outside of canvas
+				ctx.Context.Rectangle (0, 0, Allocation.Width, Allocation.Height);
+				ctx.Context.Clip ();
 			}
 			return ctx;
 		}
