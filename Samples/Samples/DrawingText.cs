@@ -166,7 +166,7 @@ namespace Samples
 			// draw with textlayout.Height = lotSize.Height
 			ctx.SetColor (Colors.Black);
 			tl0.Height = lotSize.Height;
-			ctx.DrawTextLayout (tl0, lotPos.X, lotPos.Y);
+			ctx.DrawTextLayout (tl0, lotPos);
 
 			ctx.SetColor (Colors.Black.WithAlpha (.5));
 			ctx.SetLineWidth (1);
