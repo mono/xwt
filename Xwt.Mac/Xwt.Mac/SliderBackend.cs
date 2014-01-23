@@ -32,18 +32,15 @@ namespace Xwt.Mac
 {
 	public class SliderBackend: ViewBackend<NSSlider,ISliderEventSink>, ISliderBackend
 	{
-		Orientation dir;
-
 		public SliderBackend ()
 		{
 		}
 
 		public void Initialize (Orientation dir)
 		{
-			this.dir = dir;
 			ViewObject = new MacSlider ();
 			//((NSSliderCell)Widget.Cell).SetValueForKey (NSObject.FromObject (false), (NSString)"NSVertical");
-			if (dir == Orientation.Horizontal)
+			if (dir == Orientation.Vertical)
 				Widget.SetFrameSize (new System.Drawing.SizeF (10, 5));
 			else
 				Widget.SetFrameSize (new System.Drawing.SizeF (5, 10));
@@ -52,10 +49,6 @@ namespace Xwt.Mac
 		protected override void OnSizeToFit ()
 		{
 			Widget.SizeToFit ();
-			if (dir == Orientation.Vertical)
-				Widget.SetFrameSize (new System.Drawing.SizeF (Widget.Frame.Width, Widget.Frame.Width * 2));
-			else
-				Widget.SetFrameSize (new System.Drawing.SizeF (Widget.Frame.Width * 2, Widget.Frame.Width));
 		}
 		
 		public override void EnableEvent (object eventId)
