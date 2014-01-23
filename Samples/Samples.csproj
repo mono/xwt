@@ -102,6 +102,7 @@
     <Compile Include="Samples\OpacitySample.cs" />
     <Compile Include="Samples\PasswordEntries.cs" />
     <Compile Include="Samples\Image9Patch.cs" />
+    <Compile Include="Samples\WebViewSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

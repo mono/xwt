@@ -99,6 +99,7 @@ namespace Samples
 			AddSample (w, "Text Entry", typeof (TextEntries));
 			AddSample (w, "Password Entry", typeof (PasswordEntries));
 			AddSample (w, "TreeView", typeof(TreeViews));
+			AddSample (w, "WebView", typeof(WebViewSample));
 
 			var n = AddSample (null, "Drawing", null);
 			AddSample (n, "Canvas with Widget (Linear)", typeof (CanvasWithWidget_Linear));

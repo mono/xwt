@@ -317,6 +317,8 @@
     <Compile Include="Xwt\FrameBox.cs" />
     <Compile Include="Xwt\ToolkitNotInitializedException.cs" />
     <Compile Include="Xwt.Drawing\NinePatchImage.cs" />
+    <Compile Include="Xwt\WebView.cs" />
+    <Compile Include="Xwt.Backends\IWebViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
