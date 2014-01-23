@@ -18,7 +18,35 @@ namespace Xwt.WPFBackend
 			Widget = new System.Windows.Controls.Primitives.ScrollBar () {
 				Orientation = dir == Orientation.Horizontal ? SWC.Orientation.Horizontal : SWC.Orientation.Vertical
 			};
-		}
+        }
+
+        public override void EnableEvent(object eventId)
+        {
+            base.EnableEvent(eventId);
+            if (eventId is ScrollAdjustmentEvent)
+            {
+                if (((ScrollAdjustmentEvent)eventId) == ScrollAdjustmentEvent.ValueChanged)
+                    Scrollbar.Scroll += Scrollbar_Scroll;
+            }
+        }
+
+        public override void DisableEvent(object eventId)
+        {
+            base.DisableEvent(eventId);
+            if (eventId is ScrollAdjustmentEvent)
+            {
+                if (((ScrollAdjustmentEvent)eventId) == ScrollAdjustmentEvent.ValueChanged)
+                    Scrollbar.Scroll -= Scrollbar_Scroll;
+            }
+        }
+
+        void Scrollbar_Scroll(object sender, SWC.Primitives.ScrollEventArgs e)
+        {
+            this.Context.InvokeUserCode(delegate
+            {
+                eventSink.OnValueChanged();
+            });
+        }
 
 		public IScrollAdjustmentBackend CreateAdjustment ()
 		{
@@ -36,6 +64,7 @@ namespace Xwt.WPFBackend
 
 		public void Initialize (IScrollAdjustmentEventSink eventSink)
 		{
+            this.eventSink = eventSink;
 		}
 
 		public double Value
