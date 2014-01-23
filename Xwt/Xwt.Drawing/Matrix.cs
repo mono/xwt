@@ -96,6 +96,8 @@ namespace Xwt.Drawing
 
 		public bool Equals (Matrix value)
 		{
+			if (value == null)
+				return false;
 			return (M11 == value.M11 &&
 				M12 == value.M12 &&
 				M21 == value.M21 &&

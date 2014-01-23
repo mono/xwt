@@ -90,6 +90,9 @@ namespace Xwt
 
 			Assert.IsFalse (m.Equals (0));
 			Assert.IsTrue (m.Equals ((object)m));
+			Assert.IsFalse (m.Equals (null));
+			Assert.IsFalse (m == null);
+			Assert.IsFalse (null == m);
 		}
 
 		[Test]
