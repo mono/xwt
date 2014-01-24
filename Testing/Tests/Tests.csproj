@@ -87,193 +87,193 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ReferenceImages\Rectangle.png">
-      <LogicalName>Rectangle.png</LogicalName>
+      <LogicalName>Rectangle.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\Line.png">
-      <LogicalName>Line.png</LogicalName>
+      <LogicalName>Line.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\pattern-sample.png">
-      <LogicalName>pattern-sample.png</LogicalName>
+      <LogicalName>pattern-sample.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePattern.png">
-      <LogicalName>ImagePattern.png</LogicalName>
+      <LogicalName>ImagePattern.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternWithTranslateTransform.png">
-      <LogicalName>ImagePatternWithTranslateTransform.png</LogicalName>
+      <LogicalName>ImagePatternWithTranslateTransform.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\Clip.png">
-      <LogicalName>Clip.png</LogicalName>
+      <LogicalName>Clip.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ClipAccumulated.png">
-      <LogicalName>ClipAccumulated.png</LogicalName>
+      <LogicalName>ClipAccumulated.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ClipPreserve.png">
-      <LogicalName>ClipPreserve.png</LogicalName>
+      <LogicalName>ClipPreserve.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ClipSaveRestore.png">
-      <LogicalName>ClipSaveRestore.png</LogicalName>
+      <LogicalName>ClipSaveRestore.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\RectangleFill.png">
-      <LogicalName>RectangleFill.png</LogicalName>
+      <LogicalName>RectangleFill.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\FillPreserve.png">
-      <LogicalName>FillPreserve.png</LogicalName>
+      <LogicalName>FillPreserve.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\NewPath.png">
-      <LogicalName>NewPath.png</LogicalName>
+      <LogicalName>NewPath.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\StrokePreserve.png">
-      <LogicalName>StrokePreserve.png</LogicalName>
+      <LogicalName>StrokePreserve.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\LineWidth.png">
-      <LogicalName>LineWidth.png</LogicalName>
+      <LogicalName>LineWidth.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\LinearGradient.png">
-      <LogicalName>LinearGradient.png</LogicalName>
+      <LogicalName>LinearGradient.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\LinearGradientDiagonal.png">
-      <LogicalName>LinearGradientDiagonal.png</LogicalName>
+      <LogicalName>LinearGradientDiagonal.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\LinearGradientReverse.png">
-      <LogicalName>LinearGradientReverse.png</LogicalName>
+      <LogicalName>LinearGradientReverse.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\RadialGradient.png">
-      <LogicalName>RadialGradient.png</LogicalName>
+      <LogicalName>RadialGradient.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\RadialGradientReverse.png">
-      <LogicalName>RadialGradientReverse.png</LogicalName>
+      <LogicalName>RadialGradientReverse.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\RadialGradientSmall.png">
-      <LogicalName>RadialGradientSmall.png</LogicalName>
+      <LogicalName>RadialGradientSmall.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\Arc.png">
-      <LogicalName>Arc.png</LogicalName>
+      <LogicalName>Arc.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcFill.png">
-      <LogicalName>ArcFill.png</LogicalName>
+      <LogicalName>ArcFill.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcMultipleLoops.png">
-      <LogicalName>ArcMultipleLoops.png</LogicalName>
+      <LogicalName>ArcMultipleLoops.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcNegative.png">
-      <LogicalName>ArcNegative.png</LogicalName>
+      <LogicalName>ArcNegative.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcNegativeFill.png">
-      <LogicalName>ArcNegativeFill.png</LogicalName>
+      <LogicalName>ArcNegativeFill.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcNegativeMultipleLoops.png">
-      <LogicalName>ArcNegativeMultipleLoops.png</LogicalName>
+      <LogicalName>ArcNegativeMultipleLoops.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcNegativePathConnection.png">
-      <LogicalName>ArcNegativePathConnection.png</LogicalName>
+      <LogicalName>ArcNegativePathConnection.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcNegativeStartingNegative.png">
-      <LogicalName>ArcNegativeStartingNegative.png</LogicalName>
+      <LogicalName>ArcNegativeStartingNegative.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcNegativeSwappedAngles.png">
-      <LogicalName>ArcNegativeSwappedAngles.png</LogicalName>
+      <LogicalName>ArcNegativeSwappedAngles.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcPathConnection.png">
-      <LogicalName>ArcPathConnection.png</LogicalName>
+      <LogicalName>ArcPathConnection.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcStartingNegative.png">
-      <LogicalName>ArcStartingNegative.png</LogicalName>
+      <LogicalName>ArcStartingNegative.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcSwappedAngles.png">
-      <LogicalName>ArcSwappedAngles.png</LogicalName>
+      <LogicalName>ArcSwappedAngles.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\LinearGradientInternalBox.png">
-      <LogicalName>LinearGradientInternalBox.png</LogicalName>
+      <LogicalName>LinearGradientInternalBox.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternInCircle.png">
-      <LogicalName>ImagePatternInCircle.png</LogicalName>
+      <LogicalName>ImagePatternInCircle.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternInTriangle.png">
-      <LogicalName>ImagePatternInTriangle.png</LogicalName>
+      <LogicalName>ImagePatternInTriangle.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternWithRotateTransform.png">
-      <LogicalName>ImagePatternWithRotateTransform.png</LogicalName>
+      <LogicalName>ImagePatternWithRotateTransform.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternWithScaleTransform.png">
-      <LogicalName>ImagePatternWithScaleTransform.png</LogicalName>
+      <LogicalName>ImagePatternWithScaleTransform.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\SaveRestoreColor.png">
-      <LogicalName>SaveRestoreColor.png</LogicalName>
+      <LogicalName>SaveRestoreColor.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\SaveRestoreImagePattern.png">
-      <LogicalName>SaveRestoreImagePattern.png</LogicalName>
+      <LogicalName>SaveRestoreImagePattern.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\SaveRestoreLinearGradient.png">
-      <LogicalName>SaveRestoreLinearGradient.png</LogicalName>
+      <LogicalName>SaveRestoreLinearGradient.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\SaveRestoreLineWidth.png">
-      <LogicalName>SaveRestoreLineWidth.png</LogicalName>
+      <LogicalName>SaveRestoreLineWidth.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\SaveRestorePath.png">
-      <LogicalName>SaveRestorePath.png</LogicalName>
+      <LogicalName>SaveRestorePath.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\SaveRestoreRadialGradient.png">
-      <LogicalName>SaveRestoreRadialGradient.png</LogicalName>
+      <LogicalName>SaveRestoreRadialGradient.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\SaveRestoreTransform.png">
-      <LogicalName>SaveRestoreTransform.png</LogicalName>
+      <LogicalName>SaveRestoreTransform.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\Curve.png">
-      <LogicalName>Curve.png</LogicalName>
+      <LogicalName>Curve.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\CurvePathConnection.png">
-      <LogicalName>CurvePathConnection.png</LogicalName>
+      <LogicalName>CurvePathConnection.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\RectanglePathConnection.png">
-      <LogicalName>RectanglePathConnection.png</LogicalName>
+      <LogicalName>RectanglePathConnection.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcClosePath.png">
-      <LogicalName>ArcClosePath.png</LogicalName>
+      <LogicalName>ArcClosePath.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ArcNegativeClosePath.png">
-      <LogicalName>ArcNegativeClosePath.png</LogicalName>
+      <LogicalName>ArcNegativeClosePath.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\CurveClosePath.png">
-      <LogicalName>CurveClosePath.png</LogicalName>
+      <LogicalName>CurveClosePath.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\CurveFillWithHoles.png">
-      <LogicalName>CurveFillWithHoles.png</LogicalName>
+      <LogicalName>CurveFillWithHoles.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\LineClosePath.png">
-      <LogicalName>LineClosePath.png</LogicalName>
+      <LogicalName>LineClosePath.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\Text.png">
-      <LogicalName>Text.png</LogicalName>
+      <LogicalName>Text.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\TextLineBreak.png">
-      <LogicalName>TextLineBreak.png</LogicalName>
+      <LogicalName>TextLineBreak.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\TextSize.png">
-      <LogicalName>TextSize.png</LogicalName>
+      <LogicalName>TextSize.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\TextTrimmingEllipsis.png">
-      <LogicalName>TextTrimmingEllipsis.png</LogicalName>
+      <LogicalName>TextTrimmingEllipsis.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\TextWithBlankLines.png">
-      <LogicalName>TextWithBlankLines.png</LogicalName>
+      <LogicalName>TextWithBlankLines.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\TextWordWrap.png">
-      <LogicalName>TextWordWrap.png</LogicalName>
+      <LogicalName>TextWordWrap.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\DrawPathTwoTimes.png">
-      <LogicalName>DrawPathTwoTimes.png</LogicalName>
+      <LogicalName>DrawPathTwoTimes.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternWithAlpha.png">
-      <LogicalName>ImagePatternWithAlpha.png</LogicalName>
+      <LogicalName>ImagePatternWithAlpha.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternWithRotateTransformWithAlpha.png">
-      <LogicalName>ImagePatternWithRotateTransformWithAlpha.png</LogicalName>
+      <LogicalName>ImagePatternWithRotateTransformWithAlpha.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternWithScaleTransformWithAlpha.png">
-      <LogicalName>ImagePatternWithScaleTransformWithAlpha.png</LogicalName>
+      <LogicalName>ImagePatternWithScaleTransformWithAlpha.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
     <EmbeddedResource Include="ReferenceImages\ImagePatternWithTranslateTransformWithAlpha.png">
-      <LogicalName>ImagePatternWithTranslateTransformWithAlpha.png</LogicalName>
+      <LogicalName>ImagePatternWithTranslateTransformWithAlpha.png</LogicalName><!-- TODO: VV: New icon -->
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
