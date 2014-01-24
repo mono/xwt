@@ -147,7 +147,35 @@ namespace Samples
 
 			ctx.DrawTextLayout (tl0, col2.Left, col2.Bottom + 100);
 
-			
+			// Text line
+
+			col2.Bottom += 100 + tl0.GetSize ().Height * 2;
+
+			ctx.Save ();
+			var lotPos = new Point (col2.Left, col2.Bottom + tl0.Height * 2);
+
+			tl0 = new TextLayout (this);
+			tl0.Font = this.Font.WithSize (10);
+			tl0.Text = "Text at " + lotPos.ToString ();
+			var lotSize = tl0.GetSize (); 
+
+			// draw with textlayout.Height = -1
+			ctx.SetColor (Colors.Red);
+			ctx.DrawTextLayout (tl0, lotPos);
+
+			// draw with textlayout.Height = lotSize.Height
+			ctx.SetColor (Colors.Black);
+			tl0.Height = lotSize.Height;
+			ctx.DrawTextLayout (tl0, lotPos);
+
+			ctx.SetColor (Colors.Black.WithAlpha (.5));
+			ctx.SetLineWidth (1);
+			ctx.MoveTo (lotPos);
+			ctx.LineTo (lotPos.X + lotSize.Width, lotPos.Y);
+			ctx.Stroke ();
+
+			ctx.Restore ();
+
 			// Text boces
 			
 			y = 180;

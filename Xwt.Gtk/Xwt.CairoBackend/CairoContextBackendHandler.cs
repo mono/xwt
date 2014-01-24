@@ -293,7 +293,7 @@ namespace Xwt.CairoBackend
 					var ext = new Pango.Rectangle ();
 					var extl = new Pango.Rectangle ();
 					line.GetExtents (ref ext, ref extl);
-					h += (extl.Height / scale);
+					h += h == 0 ? (extl.Height / scale) * .75 : (extl.Height / scale);
 					if (h > layout.Height)
 						break;
 					ctx.Context.MoveTo (x, y + h);
