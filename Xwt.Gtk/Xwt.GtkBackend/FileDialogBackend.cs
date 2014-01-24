@@ -64,17 +64,17 @@ namespace Xwt.GtkBackend
 
 			switch (action) {
 				case Gtk.FileChooserAction.Open:
-					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);
-					dialog.AddButton (Gtk.Stock.Open, Gtk.ResponseType.Ok);
+					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel); // TODO: VV: Replace stock icon
+					dialog.AddButton (Gtk.Stock.Open, Gtk.ResponseType.Ok); // TODO: VV: Replace stock icon
 					break;
 				case Gtk.FileChooserAction.SelectFolder:
 				case Gtk.FileChooserAction.CreateFolder:
-					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);
+					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel); // TODO: VV: Replace stock icon
 					dialog.AddButton ("Select Folder", Gtk.ResponseType.Ok);
 					break;
 				case Gtk.FileChooserAction.Save:
-					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);
-					dialog.AddButton (Gtk.Stock.Save, Gtk.ResponseType.Ok);
+					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel); // TODO: VV: Replace stock icon
+					dialog.AddButton (Gtk.Stock.Save, Gtk.ResponseType.Ok); // TODO: VV: Replace stock icon
 					break;
 				default:
 					break;
