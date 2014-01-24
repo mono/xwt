@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IWebViewBackend
+	public interface IWebViewBackend : IWidgetBackend
 	{
 		string Url { get; set; }
 	}
@@ -42,4 +42,3 @@ namespace Xwt.Backends
 		Loaded = 1
 	}
 }
-
