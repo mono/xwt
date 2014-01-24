@@ -56,6 +56,7 @@ namespace Xwt
 
 		public WebView (string url)
 		{
+			Url = url;
 		}
 
 		protected override Xwt.Backends.BackendHost CreateBackendHost ()
