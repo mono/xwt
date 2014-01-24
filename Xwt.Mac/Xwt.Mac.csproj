@@ -125,6 +125,7 @@
     <Compile Include="Xwt.Mac\EmbedNativeWidgetBackend.cs" />
     <Compile Include="Xwt.Mac\MacKeyboardHandler.cs" />
     <Compile Include="Xwt.Mac\PasswordEntryBackend.cs" />
+    <Compile Include="Xwt.Mac\WebViewBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
