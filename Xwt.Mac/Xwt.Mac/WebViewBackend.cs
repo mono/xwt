@@ -53,14 +53,6 @@ namespace Xwt.Mac
 			ViewObject = new MacWebView ();
 		}
 
-		public void EnableEvent (Xwt.Backends.WebViewEvent ev)
-		{
-		}
-
-		public void DisableEvent (Xwt.Backends.WebViewEvent ev)
-		{
-		}
-
 		public string Url {
 			get { return Widget.MainFrameUrl; }
 			set {
@@ -76,14 +68,6 @@ namespace Xwt.Mac
 
 		public NSView View {
 			get { return this; }
-		}
-
-		public void EnableEvent (Xwt.Backends.WebViewEvent ev)
-		{
-		}
-
-		public void DisableEvent (Xwt.Backends.WebViewEvent ev)
-		{
 		}
 	}
 }
