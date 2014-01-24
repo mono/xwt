@@ -133,28 +133,28 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tests\ninep-ss.9.png">
-      <LogicalName>ninep-ss.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ss.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-st.9.png">
-      <LogicalName>ninep-st.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-st.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-ts.9.png">
-      <LogicalName>ninep-ts.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ts.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-tt.9.png">
-      <LogicalName>ninep-tt.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-tt.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-ss.9%402x.png">
-      <LogicalName>ninep-ss.9@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ss.9@2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-st.9%402x.png">
-      <LogicalName>ninep-st.9@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-st.9@2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-ts.9%402x.png">
-      <LogicalName>ninep-ts.9@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ts.9@2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-tt.9%402x.png">
-      <LogicalName>ninep-tt.9@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-tt.9@2x.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

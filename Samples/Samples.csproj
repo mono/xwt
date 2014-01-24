@@ -112,42 +112,42 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="class.png">
-      <LogicalName>class.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>class.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="package.png">
-      <LogicalName>package.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>package.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Samples\cow.jpg">
       <LogicalName>cow.jpg</LogicalName>
       <DeployService-Deploy>True</DeployService-Deploy>
     </EmbeddedResource>
     <EmbeddedResource Include="document-generic.png">
-      <LogicalName>document-generic.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>document-generic.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="document-generic%402x.png">
-      <LogicalName>document-generic@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>document-generic@2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="zoom-panel-dark.9.png">
-      <LogicalName>zoom-panel-dark.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>zoom-panel-dark.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="zoom-panel-dark%402x.9.png">
-      <LogicalName>zoom-panel-dark@2x.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>zoom-panel-dark@2x.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Testing\Tests\ninep-ss.9.png">
       <Link>Samples\ninep-ss.9.png</Link>
-      <LogicalName>ninep-ss.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ss.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Testing\Tests\ninep-st.9.png">
       <Link>Samples\ninep-st.9.png</Link>
-      <LogicalName>ninep-st.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-st.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Testing\Tests\ninep-ts.9.png">
       <Link>Samples\ninep-ts.9.png</Link>
-      <LogicalName>ninep-ts.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ts.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Testing\Tests\ninep-tt.9.png">
       <Link>Samples\ninep-tt.9.png</Link>
-      <LogicalName>ninep-tt.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-tt.9.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>

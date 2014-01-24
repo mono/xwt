@@ -150,16 +150,16 @@
   </ProjectExtensions>
   <ItemGroup>
     <EmbeddedResource Include="icons\zoom-in.png">
-      <LogicalName>zoom-in.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>zoom-in.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="icons\zoom-in%402x.png">
-      <LogicalName>zoom-in@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>zoom-in@2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="icons\zoom-out.png">
-      <LogicalName>zoom-out.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>zoom-out.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="icons\zoom-out%402x.png">
-      <LogicalName>zoom-out@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>zoom-out@2x.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

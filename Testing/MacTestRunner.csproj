@@ -118,271 +118,271 @@
   </ProjectExtensions>
   <ItemGroup>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Arc.png">
-      <LogicalName>Arc.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Arc.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcClosePath.png">
-      <LogicalName>ArcClosePath.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcClosePath.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcFill.png">
-      <LogicalName>ArcFill.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcFill.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcMultipleLoops.png">
-      <LogicalName>ArcMultipleLoops.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcMultipleLoops.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegative.png">
-      <LogicalName>ArcNegative.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcNegative.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeClosePath.png">
-      <LogicalName>ArcNegativeClosePath.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcNegativeClosePath.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeFill.png">
-      <LogicalName>ArcNegativeFill.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcNegativeFill.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeMultipleLoops.png">
-      <LogicalName>ArcNegativeMultipleLoops.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcNegativeMultipleLoops.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativePathConnection.png">
-      <LogicalName>ArcNegativePathConnection.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcNegativePathConnection.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeStartingNegative.png">
-      <LogicalName>ArcNegativeStartingNegative.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcNegativeStartingNegative.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcNegativeSwappedAngles.png">
-      <LogicalName>ArcNegativeSwappedAngles.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcNegativeSwappedAngles.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcPathConnection.png">
-      <LogicalName>ArcPathConnection.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcPathConnection.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcStartingNegative.png">
-      <LogicalName>ArcStartingNegative.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcStartingNegative.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ArcSwappedAngles.png">
-      <LogicalName>ArcSwappedAngles.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ArcSwappedAngles.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Curve.png">
-      <LogicalName>Curve.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Curve.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\CurveClosePath.png">
-      <LogicalName>CurveClosePath.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>CurveClosePath.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\CurveFillWithHoles.png">
-      <LogicalName>CurveFillWithHoles.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>CurveFillWithHoles.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\CurvePathConnection.png">
-      <LogicalName>CurvePathConnection.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>CurvePathConnection.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\DrawPathTwoTimes.png">
-      <LogicalName>DrawPathTwoTimes.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>DrawPathTwoTimes.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternInCircle.png">
-      <LogicalName>ImagePatternInCircle.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ImagePatternInCircle.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternInTriangle.png">
-      <LogicalName>ImagePatternInTriangle.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ImagePatternInTriangle.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternWithRotateTransform.png">
-      <LogicalName>ImagePatternWithRotateTransform.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ImagePatternWithRotateTransform.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternWithScaleTransform.png">
-      <LogicalName>ImagePatternWithScaleTransform.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ImagePatternWithScaleTransform.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\LinearGradient.png">
-      <LogicalName>LinearGradient.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>LinearGradient.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\LinearGradientDiagonal.png">
-      <LogicalName>LinearGradientDiagonal.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>LinearGradientDiagonal.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\LinearGradientInternalBox.png">
-      <LogicalName>LinearGradientInternalBox.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>LinearGradientInternalBox.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\LinearGradientReverse.png">
-      <LogicalName>LinearGradientReverse.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>LinearGradientReverse.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\LineClosePath.png">
-      <LogicalName>LineClosePath.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>LineClosePath.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NewPath.png">
-      <LogicalName>NewPath.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NewPath.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\RadialGradient.png">
-      <LogicalName>RadialGradient.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>RadialGradient.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\RadialGradientReverse.png">
-      <LogicalName>RadialGradientReverse.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>RadialGradientReverse.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\RadialGradientSmall.png">
-      <LogicalName>RadialGradientSmall.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>RadialGradientSmall.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Rectangle.png">
-      <LogicalName>Rectangle.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Rectangle.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\RectanglePathConnection.png">
-      <LogicalName>RectanglePathConnection.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>RectanglePathConnection.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\StrokePreserve.png">
-      <LogicalName>StrokePreserve.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>StrokePreserve.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Text.png">
-      <LogicalName>Text.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Text.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextLineBreak.png">
-      <LogicalName>TextLineBreak.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>TextLineBreak.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextSize.png">
-      <LogicalName>TextSize.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>TextSize.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextWithBlankLines.png">
-      <LogicalName>TextWithBlankLines.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>TextWithBlankLines.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextWordWrap.png">
-      <LogicalName>TextWordWrap.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>TextWordWrap.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignCenter.png">
-      <LogicalName>Label.AlignCenter.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Label.AlignCenter.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignCenterWrapped.png">
-      <LogicalName>Label.AlignCenterWrapped.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Label.AlignCenterWrapped.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignCenterWrappedChangeText.png">
-      <LogicalName>Label.AlignCenterWrappedChangeText.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Label.AlignCenterWrappedChangeText.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignLeft.png">
-      <LogicalName>Label.AlignLeft.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Label.AlignLeft.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignLeftWrapped.png">
-      <LogicalName>Label.AlignLeftWrapped.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Label.AlignLeftWrapped.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignRight.png">
-      <LogicalName>Label.AlignRight.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Label.AlignRight.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\Label.AlignRightWrapped.png">
-      <LogicalName>Label.AlignRightWrapped.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>Label.AlignRightWrapped.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-ss.9.png">
-      <LogicalName>ninep-ss.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ss.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-st.9.png">
-      <LogicalName>ninep-st.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-st.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-ts.9.png">
-      <LogicalName>ninep-ts.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ts.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-tt.9.png">
-      <LogicalName>ninep-tt.9.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-tt.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-ss.9%402x.png">
-      <LogicalName>ninep-ss.9@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ss.9@2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-st.9%402x.png">
-      <LogicalName>ninep-st.9@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-st.9@2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-ts.9%402x.png">
-      <LogicalName>ninep-ts.9@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-ts.9@2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\ninep-tt.9%402x.png">
-      <LogicalName>ninep-tt.9@2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ninep-tt.9@2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchDefaultSize.png">
-      <LogicalName>NinePatchStretchStretchDefaultSize.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchStretchDefaultSize.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchDefaultSize2x.png">
-      <LogicalName>NinePatchStretchStretchDefaultSize2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchStretchDefaultSize2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchHigher.png">
-      <LogicalName>NinePatchStretchStretchHigher.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchStretchHigher.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchHigher2x.png">
-      <LogicalName>NinePatchStretchStretchHigher2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchStretchHigher2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchWider.png">
-      <LogicalName>NinePatchStretchStretchWider.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchStretchWider.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchWider2x.png">
-      <LogicalName>NinePatchStretchStretchWider2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchStretchWider2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchWiderHigher2x.png">
-      <LogicalName>NinePatchStretchStretchWiderHigher2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchStretchWiderHigher2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileDefaultSize.png">
-      <LogicalName>NinePatchStretchTileDefaultSize.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchTileDefaultSize.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileDefaultSize2x.png">
-      <LogicalName>NinePatchStretchTileDefaultSize2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchTileDefaultSize2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileHigher.png">
-      <LogicalName>NinePatchStretchTileHigher.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchTileHigher.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileHigher2x.png">
-      <LogicalName>NinePatchStretchTileHigher2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchTileHigher2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileWider.png">
-      <LogicalName>NinePatchStretchTileWider.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchTileWider.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileWider2x.png">
-      <LogicalName>NinePatchStretchTileWider2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchTileWider2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileWiderHigher.png">
-      <LogicalName>NinePatchStretchTileWiderHigher.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchTileWiderHigher.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchTileWiderHigher2x.png">
-      <LogicalName>NinePatchStretchTileWiderHigher2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchStretchTileWiderHigher2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchDefaultSize.png">
-      <LogicalName>NinePatchTileStretchDefaultSize.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileStretchDefaultSize.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchDefaultSize2x.png">
-      <LogicalName>NinePatchTileStretchDefaultSize2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileStretchDefaultSize2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchHigher.png">
-      <LogicalName>NinePatchTileStretchHigher.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileStretchHigher.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchHigher2x.png">
-      <LogicalName>NinePatchTileStretchHigher2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileStretchHigher2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchWider.png">
-      <LogicalName>NinePatchTileStretchWider.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileStretchWider.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchWider2x.png">
-      <LogicalName>NinePatchTileStretchWider2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileStretchWider2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchWiderHigher.png">
-      <LogicalName>NinePatchTileStretchWiderHigher.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileStretchWiderHigher.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileStretchWiderHigher2x.png">
-      <LogicalName>NinePatchTileStretchWiderHigher2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileStretchWiderHigher2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileDefaultSize.png">
-      <LogicalName>NinePatchTileTileDefaultSize.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileTileDefaultSize.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileDefaultSize2x.png">
-      <LogicalName>NinePatchTileTileDefaultSize2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileTileDefaultSize2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileHigher.png">
-      <LogicalName>NinePatchTileTileHigher.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileTileHigher.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileHigher2x.png">
-      <LogicalName>NinePatchTileTileHigher2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileTileHigher2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileWider.png">
-      <LogicalName>NinePatchTileTileWider.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileTileWider.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileWider2x.png">
-      <LogicalName>NinePatchTileTileWider2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileTileWider2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileWiderHigher.png">
-      <LogicalName>NinePatchTileTileWiderHigher.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileTileWiderHigher.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchTileTileWiderHigher2x.png">
-      <LogicalName>NinePatchTileTileWiderHigher2x.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>NinePatchTileTileWiderHigher2x.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternWithRotateTransformWithAlpha.png">
-      <LogicalName>ImagePatternWithRotateTransformWithAlpha.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ImagePatternWithRotateTransformWithAlpha.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\ImagePatternWithScaleTransformWithAlpha.png">
-      <LogicalName>ImagePatternWithScaleTransformWithAlpha.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>ImagePatternWithScaleTransformWithAlpha.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\TextTrimmingEllipsis.png">
-      <LogicalName>TextTrimmingEllipsis.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>TextTrimmingEllipsis.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -182,18 +182,18 @@ namespace Xwt.GtkBackend
 		{
 			if (icons == null) {
 				icons = new Dictionary<string, string> ();
-				icons [StockIconId.ZoomIn] = Gtk.Stock.ZoomIn; // TODO: VV: Replace stock icon
-				icons [StockIconId.ZoomOut] = Gtk.Stock.ZoomOut; // TODO: VV: Replace stock icon
-				icons [StockIconId.Zoom100] = Gtk.Stock.Zoom100; // TODO: VV: Replace stock icon
-				icons [StockIconId.ZoomFit] = Gtk.Stock.ZoomFit; // TODO: VV: Replace stock icon
-				icons [StockIconId.OrientationPortrait] = Gtk.Stock.OrientationPortrait; // TODO: VV: Replace stock icon
-				icons [StockIconId.OrientationLandscape] = Gtk.Stock.OrientationLandscape; // TODO: VV: Replace stock icon
-				icons [StockIconId.Add] = Gtk.Stock.Add; // TODO: VV: Replace stock icon
-				icons [StockIconId.Remove] = Gtk.Stock.Remove; // TODO: VV: Replace stock icon
-				icons [StockIconId.Warning] = Gtk.Stock.DialogWarning; // TODO: VV: Replace stock icon
-				icons [StockIconId.Error] = Gtk.Stock.DialogError; // TODO: VV: Replace stock icon
-				icons [StockIconId.Information] = Gtk.Stock.DialogInfo; // TODO: VV: Replace stock icon
-				icons [StockIconId.Question] = Gtk.Stock.DialogQuestion; // TODO: VV: Replace stock icon
+				icons [StockIconId.ZoomIn] = Gtk.Stock.ZoomIn;
+				icons [StockIconId.ZoomOut] = Gtk.Stock.ZoomOut;
+				icons [StockIconId.Zoom100] = Gtk.Stock.Zoom100;
+				icons [StockIconId.ZoomFit] = Gtk.Stock.ZoomFit;
+				icons [StockIconId.OrientationPortrait] = Gtk.Stock.OrientationPortrait;
+				icons [StockIconId.OrientationLandscape] = Gtk.Stock.OrientationLandscape;
+				icons [StockIconId.Add] = Gtk.Stock.Add;
+				icons [StockIconId.Remove] = Gtk.Stock.Remove;
+				icons [StockIconId.Warning] = Gtk.Stock.DialogWarning;
+				icons [StockIconId.Error] = Gtk.Stock.DialogError;
+				icons [StockIconId.Information] = Gtk.Stock.DialogInfo;
+				icons [StockIconId.Question] = Gtk.Stock.DialogQuestion;
 			}
 			string res;
 			if (!icons.TryGetValue (id, out res))
