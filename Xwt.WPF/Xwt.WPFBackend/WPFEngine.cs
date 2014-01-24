@@ -116,6 +116,7 @@ namespace Xwt.WPFBackend
 			RegisterBackend<IScrollbarBackend, ScrollbarBackend> ();
 			RegisterBackend<IEmbeddedWidgetBackend, EmbedNativeWidgetBackend>();
 			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
+			RegisterBackend<IWebViewBackend, WebViewBackend> ();
 			RegisterBackend<KeyboardHandler, WpfKeyboardHandler> ();
 		}
 

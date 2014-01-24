@@ -146,6 +146,7 @@
     <Compile Include="Xwt.WPFBackend\WpfDesktopBackend.cs" />
     <Compile Include="Xwt.WPFBackend\WindowsSpinButton.xaml.cs" />
     <Compile Include="Xwt.WPFBackend\WpfKeyboardHandler.cs" />
+    <Compile Include="Xwt.WPFBackend\WebViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
