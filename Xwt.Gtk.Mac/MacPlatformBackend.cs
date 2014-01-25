@@ -25,12 +25,13 @@
 // THE SOFTWARE.
 using System;
 using Xwt.GtkBackend;
+using Xwt.Backends;
 
 namespace Xwt.Gtk.Mac
 {
 	public class MacPlatformBackend: GtkPlatformBackend
 	{
-		public override void Initialize ()
+		public override void Initialize (ToolkitEngineBackend toolit)
 		{
 		}
 	}

@@ -24,12 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
 	public class GtkPlatformBackend
 	{
-		public virtual void Initialize ()
+		public virtual void Initialize (ToolkitEngineBackend toolit)
 		{
 		}
 	}

@@ -132,8 +132,10 @@ namespace Xwt.GtkBackend
 
 				Type platformType = asm != null ? asm.GetType (typeName) : null;
 
-				if (platformType != null)
-					platformBackend = (GtkPlatformBackend) Activator.CreateInstance (platformType);
+				if (platformType != null) {
+					platformBackend = (GtkPlatformBackend)Activator.CreateInstance (platformType);
+					platformBackend.Initialize (this);
+				}
 			}
 		}
 
