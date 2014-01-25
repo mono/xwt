@@ -29,11 +29,15 @@ using System;
 using Xwt.Backends;
 using Xwt.CairoBackend;
 using Gdk;
+using System.Reflection;
+using System.IO;
 
 namespace Xwt.GtkBackend
 {
 	public class GtkEngine: ToolkitEngineBackend
 	{
+		GtkPlatformBackend platformBackend;
+
 		public override void InitializeApplication ()
 		{
 			Gtk.Application.Init ();
@@ -103,6 +107,34 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IScrollbarBackend, ScrollbarBackend> ();
 			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
 			RegisterBackend<KeyboardHandler, GtkKeyboardHandler> ();
+
+			string typeName = null;
+			string asmName = null;
+			if (Platform.IsMac) {
+				typeName = "Xwt.Gtk.Mac.MacPlatformBackend";
+				asmName = "Xwt.Gtk.Mac";
+			}
+
+			if (typeName != null) {
+				var loc = Path.GetDirectoryName (GetType ().Assembly.Location);
+				loc = Path.Combine (loc, asmName + ".dll");
+
+				Assembly asm = null;
+				try {
+					if (File.Exists (loc)) {
+						asm = Assembly.LoadFrom (loc);
+					} else {
+						asm = Assembly.Load (asmName);
+					}
+				} catch {
+					// Not found
+				}
+
+				Type platformType = asm != null ? asm.GetType (typeName) : null;
+
+				if (platformType != null)
+					platformBackend = (GtkPlatformBackend) Activator.CreateInstance (platformType);
+			}
 		}
 
 		public override void Dispose ()

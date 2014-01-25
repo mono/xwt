@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt", "Xwt\Xwt.csproj", "{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}"
@@ -28,6 +28,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfTest", "WpfTest\WpfTest.csproj", "{E41F4448-15C3-4E95-B310-FD333FDF5D2F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MixedGtkMacTest", "MixedGtkMacTest\MixedGtkMacTest.csproj", "{14CF6E75-0D08-4BBD-B0F5-742196E5656D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk.Mac", "Xwt.Gtk.Mac\Xwt.Gtk.Mac.csproj", "{E95833C9-90AA-4366-9262-0A1BED148249}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk.Windows", "Xwt.Gtk.Windows\Xwt.Gtk.Windows.csproj", "{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -150,6 +154,39 @@ Global
 		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Win-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Win-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{14CF6E75-0D08-4BBD-B0F5-742196E5656D}.Win-Debug|x86.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.AppStore|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.AppStore|Mixed Platforms.Build.0 = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.AppStore|x86.ActiveCfg = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.AppStore|x86.Build.0 = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Debug|x86.Build.0 = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Linux-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Linux-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Linux-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Linux-Debug|x86.Build.0 = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Mac-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Mac-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Mac-Debug|x86.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Mac-Debug|x86.Build.0 = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Release|x86.ActiveCfg = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Release|x86.Build.0 = Release|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Win-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Win-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Win-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Win-Debug|x86.ActiveCfg = Debug|Any CPU
+		{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}.Win-Debug|x86.Build.0 = Debug|Any CPU
 		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 		{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}.AppStore|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -404,6 +441,39 @@ Global
 		{E41F4448-15C3-4E95-B310-FD333FDF5D2F}.Win-Debug|Mixed Platforms.Build.0 = Debug|x86
 		{E41F4448-15C3-4E95-B310-FD333FDF5D2F}.Win-Debug|x86.ActiveCfg = Debug|x86
 		{E41F4448-15C3-4E95-B310-FD333FDF5D2F}.Win-Debug|x86.Build.0 = Debug|x86
+		{E95833C9-90AA-4366-9262-0A1BED148249}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.AppStore|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.AppStore|Mixed Platforms.Build.0 = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.AppStore|x86.ActiveCfg = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.AppStore|x86.Build.0 = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Debug|x86.Build.0 = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Linux-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Linux-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Linux-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Linux-Debug|x86.Build.0 = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Mac-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Mac-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Mac-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Mac-Debug|x86.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Mac-Debug|x86.Build.0 = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Release|x86.ActiveCfg = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Release|x86.Build.0 = Release|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Win-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Win-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Win-Debug|x86.ActiveCfg = Debug|Any CPU
+		{E95833C9-90AA-4366-9262-0A1BED148249}.Win-Debug|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BC764278-4141-483C-8643-2EA8C40373B2} = {164E1FED-7688-4AE9-B19B-012F8784F9DD}
