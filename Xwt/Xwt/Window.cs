@@ -196,9 +196,11 @@ namespace Xwt
 
 		internal override void AdjustSize ()
 		{
-			if (child == null)
+			if (child == null) {
+				if (!shown)
+					Show (initialBounds.Size);
 				return;
-
+			}
 			Size mMinSize, mDecorationsSize;
 			Backend.GetMetrics (out mMinSize, out mDecorationsSize);
 
@@ -230,6 +232,12 @@ namespace Xwt
 			if (ws.Height > size.Height)
 				size.Height = ws.Height;
 
+			Show (size);
+			Backend.SetMinSize (new Size (ws.Width, ws.Height));
+		}
+
+		void Show (Size size)
+		{
 			if (!shown) {
 				shown = true;
 
@@ -249,14 +257,13 @@ namespace Xwt
 						Backend.Bounds = new Rectangle (initialBounds.X, initialBounds.Y, size.Width, size.Height);
 					else
 						Backend.SetSize (size.Width, size.Height);
-				} else if (locationSet && !shown)
+				} else if (locationSet)
 					Backend.Move (initialBounds.X, initialBounds.Y);
 	
 			} else {
 				if (size != Size)
 					Backend.SetSize (size.Width, size.Height);
 			}
-			Backend.SetMinSize (new Size (ws.Width, ws.Height));
 		}
 	}
 }
