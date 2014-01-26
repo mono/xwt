@@ -1,5 +1,5 @@
 ﻿//
-// GtkMacEngine.cs
+// MacWebView.cs
 //
 // Author:
 //       Lluis Sanchez Gual <lluis@xamarin.com>
@@ -29,12 +29,31 @@ using Xwt.Backends;
 
 namespace Xwt.Gtk.Mac
 {
-	public class MacPlatformBackend: GtkPlatformBackend
+	public class WebViewBackend : WidgetBackend, IWebViewBackend
 	{
-		public override void Initialize (ToolkitEngineBackend toolit)
+		MonoMac.WebKit.WebView view;
+
+		public WebViewBackend ()
 		{
-			toolit.RegisterBackend <IWebViewBackend,WebViewBackend> ();
 		}
+
+		#region IWebViewBackend implementation
+		public override void Initialize()
+		{
+			base.Initialize ();
+
+			view = new MonoMac.WebKit.WebView ();
+			Widget = GtkMacInterop.NSViewToGtkWidget (view);
+			Widget.Show ();
+		}
+
+		public string Url {
+			get { return view.MainFrameUrl; }
+			set {
+				view.MainFrameUrl = value;
+			}
+		}
+		#endregion
 	}
 }
 

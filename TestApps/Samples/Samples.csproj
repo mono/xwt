@@ -106,7 +106,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Xwt\Xwt.csproj">
+    <ProjectReference Include="..\..\Xwt\Xwt.csproj">
       <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
       <Name>Xwt</Name>
     </ProjectReference>
@@ -134,19 +134,19 @@
     <EmbeddedResource Include="zoom-panel-dark%402x.9.png">
       <LogicalName>zoom-panel-dark@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Testing\Tests\ninep-ss.9.png">
+    <EmbeddedResource Include="..\..\Testing\Tests\ninep-ss.9.png">
       <Link>Samples\ninep-ss.9.png</Link>
       <LogicalName>ninep-ss.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Testing\Tests\ninep-st.9.png">
+    <EmbeddedResource Include="..\..\Testing\Tests\ninep-st.9.png">
       <Link>Samples\ninep-st.9.png</Link>
       <LogicalName>ninep-st.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Testing\Tests\ninep-ts.9.png">
+    <EmbeddedResource Include="..\..\Testing\Tests\ninep-ts.9.png">
       <Link>Samples\ninep-ts.9.png</Link>
       <LogicalName>ninep-ts.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Testing\Tests\ninep-tt.9.png">
+    <EmbeddedResource Include="..\..\Testing\Tests\ninep-tt.9.png">
       <Link>Samples\ninep-tt.9.png</Link>
       <LogicalName>ninep-tt.9.png</LogicalName>
     </EmbeddedResource>

@@ -62,17 +62,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Samples\Samples.csproj">
-      <Project>{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}</Project>
-      <Name>Samples</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Xwt.WPF\Xwt.WPF.csproj">
+    <ProjectReference Include="..\..\Xwt.WPF\Xwt.WPF.csproj">
       <Project>{C93D746E-1586-4D4F-B411-BF5A966E6A08}</Project>
       <Name>Xwt.WPF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Xwt\Xwt.csproj">
+    <ProjectReference Include="..\..\Xwt\Xwt.csproj">
       <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
       <Name>Xwt</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Samples\Samples.csproj">
+      <Project>{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}</Project>
+      <Name>Samples</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
