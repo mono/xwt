@@ -18,9 +18,8 @@ namespace WpfTestRunner
 			list.Add ("-domain=None");
 			list.Add ("-noshadow");
 			list.Add ("-nothread");
-			list.Add ("-xml=result.xml");
-//			list.Add ("/run=Xwt.NinePatchTests");
-			list.Add (typeof (Program).Assembly.Location);
+			if (!list.Contains (typeof (Program).Assembly.Location))
+				list.Add (typeof (Program).Assembly.Location);
 			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
 			ReferenceImageManager.ShowImageVerifier ();
 		}
