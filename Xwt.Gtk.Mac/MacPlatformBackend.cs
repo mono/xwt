@@ -34,6 +34,7 @@ namespace Xwt.Gtk.Mac
 		public override void Initialize (ToolkitEngineBackend toolit)
 		{
 			toolit.RegisterBackend <IWebViewBackend,WebViewBackend> ();
+			toolit.RegisterBackend <DesktopBackend,GtkMacDesktopBackend> ();
 		}
 	}
 }
