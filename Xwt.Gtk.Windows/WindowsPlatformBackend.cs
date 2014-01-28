@@ -25,11 +25,17 @@
 // THE SOFTWARE.
 using System;
 using Xwt.GtkBackend;
+using Xwt.Backends;
 
 namespace Xwt.Gtk.Windows
 {
 	public class WindowsPlatformBackend: GtkPlatformBackend
 	{
+		public override void Initialize (Backends.ToolkitEngineBackend toolit)
+		{
+			base.Initialize (toolit);
+			toolit.RegisterBackend<DesktopBackend, GtkWindowsDesktopBackend> ();
+		}
 	}
 }
 

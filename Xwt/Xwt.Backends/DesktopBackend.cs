@@ -110,11 +110,9 @@ namespace Xwt.Backends
 			Process.Start (url);
 		}
 
-		public virtual Xwt.Drawing.Image GetFileIcon (string fileName)
+		public virtual object GetFileIcon (string fileName)
 		{
-			if (blankImage == null)
-				blankImage = new Xwt.Drawing.ImageBuilder (16, 16).ToVectorImage ();
-			return blankImage;
+			return null;
 		}
 	}
 }

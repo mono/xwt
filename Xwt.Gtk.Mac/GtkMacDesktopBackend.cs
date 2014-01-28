@@ -99,7 +99,7 @@ namespace Xwt.Gtk.Mac
 			return scaled;
 		}
 
-		public override Xwt.Drawing.Image GetFileIcon (string filename)
+		public override object GetFileIcon (string filename)
 		{
 			//this only works on MacOS 10.6.0 and greater
 			if (systemVersion < 0x1060)
@@ -125,7 +125,7 @@ namespace Xwt.Gtk.Mac
 			}
 
 			var res = GetPixbufFromNSImage (icon, w, h);
-			return res != null ? Xwt.Toolkit.CurrentEngine.WrapImage (res) : base.GetFileIcon (filename);
+			return res != null ? new GtkImage (res) : base.GetFileIcon (filename);
 		}
 	}
 }

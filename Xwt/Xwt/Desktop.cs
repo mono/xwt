@@ -212,6 +212,8 @@ namespace Xwt
 			Toolkit.CurrentEngine.DesktopBackend.OpenUrl (uri.ToString ());
 		}
 
+		static Xwt.Drawing.Image blankImage;
+
 		/// <summary>
 		/// Gets an icon that represents the file
 		/// </summary>
@@ -219,7 +221,14 @@ namespace Xwt
 		/// <param name="fileName">File name. The file doesn't need to exist.</param>
 		public static Xwt.Drawing.Image GetFileIcon (string fileName)
 		{
-			return Toolkit.CurrentEngine.DesktopBackend.GetFileIcon (fileName);
+			var img = Toolkit.CurrentEngine.DesktopBackend.GetFileIcon (fileName);
+			if (img != null) 
+				return new Drawing.Image (img, Toolkit.CurrentEngine);
+			else {
+				if (blankImage == null)
+					blankImage = new Xwt.Drawing.ImageBuilder (16, 16).ToVectorImage ();
+				return blankImage;
+			}
 		}
 	}
 }

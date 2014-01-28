@@ -114,6 +114,10 @@ namespace Xwt.GtkBackend
 				typeName = "Xwt.Gtk.Mac.MacPlatformBackend";
 				asmName = "Xwt.Gtk.Mac";
 			}
+			else if (Platform.IsWindows) {
+				typeName = "Xwt.Gtk.Windows.WindowsPlatformBackend";
+				asmName = "Xwt.Gtk.Windows";
+			}
 
 			if (typeName != null) {
 				var loc = Path.GetDirectoryName (GetType ().Assembly.Location);
