@@ -242,7 +242,6 @@ Global
 		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Release|x86.ActiveCfg = Release|Any CPU
 		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Release|x86.Build.0 = Release|Any CPU
 		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Win-Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Win-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Win-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Win-Debug|x86.ActiveCfg = Debug|Any CPU
