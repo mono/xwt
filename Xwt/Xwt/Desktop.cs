@@ -39,19 +39,15 @@ namespace Xwt
 	{
 		static Screen[] screens;
 		static Screen primary;
-		static SystemBackend systemBackend;
 
 		static Desktop ()
 		{
 			if (Path.DirectorySeparatorChar == '\\') {
 				DesktopType = DesktopType.Windows;
-				systemBackend = new WindowsSystemBackend ();
 			} else if (IsRunningOnMac ()) {
 				DesktopType = DesktopType.Mac;
-				systemBackend = new MacSystemBackend ();
 			} else {
 				DesktopType = DesktopType.Linux;
-				systemBackend = new GnomeSystemBackend ();
 			}
 		}
 
@@ -180,24 +176,50 @@ namespace Xwt
 			return null;
 		}
 
+		/// <summary>
+		/// Opens the file using the application set to handle this file type by default
+		/// </summary>
+		/// <param name="filename">File path</param>
 		public static void OpenFile (string filename)
 		{
-			systemBackend.OpenFile (filename);
+			Toolkit.CurrentEngine.DesktopBackend.OpenFile (filename);
 		}
 		
+		/// <summary>
+		/// Opens the folder using the desktop file browser
+		/// </summary>
+		/// <param name="folderPath">Folder path</param>
 		public static void OpenFolder (string folderPath)
 		{
-			systemBackend.OpenFolder (folderPath);
+			Toolkit.CurrentEngine.DesktopBackend.OpenFolder (folderPath);
 		}
 		
+		/// <summary>
+		/// Opens url using the default web browser
+		/// </summary>
+		/// <param name="url">The url</param>
 		public static void OpenUrl (string url)
 		{
-			systemBackend.OpenUrl (url);
+			Toolkit.CurrentEngine.DesktopBackend.OpenUrl (url);
 		}
 		
+		/// <summary>
+		/// Opens url using the default web browser
+		/// </summary>
+		/// <param name="uri">The url</param>
 		public static void OpenUrl (Uri uri)
 		{
-			systemBackend.OpenUrl (uri.ToString ());
+			Toolkit.CurrentEngine.DesktopBackend.OpenUrl (uri.ToString ());
+		}
+
+		/// <summary>
+		/// Gets an icon that represents the file
+		/// </summary>
+		/// <returns>The file icon.</returns>
+		/// <param name="fileName">File name. The file doesn't need to exist.</param>
+		public static Xwt.Drawing.Image GetFileIcon (string fileName)
+		{
+			return Toolkit.CurrentEngine.DesktopBackend.GetFileIcon (fileName);
 		}
 	}
 }
