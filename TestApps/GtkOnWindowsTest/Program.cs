@@ -2,9 +2,9 @@
 // Main.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Cody Russell <cody@xamarin.com>
 // 
-// Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2011 Xamarin Inc.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
