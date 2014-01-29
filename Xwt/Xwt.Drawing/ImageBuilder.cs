@@ -73,27 +73,32 @@ namespace Xwt.Drawing
 
 		public BitmapImage ToBitmap (ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (format);
+			using (var vector = ToVectorImage ())
+				return vector.ToBitmap (format);
 		}
 
 		public BitmapImage ToBitmap (Widget renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (renderTarget, format);
+			using (var vector = ToVectorImage ())
+				return vector.ToBitmap (renderTarget, format);
 		}
 
 		public BitmapImage ToBitmap (Window renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (renderTarget, format);
+			using (var vector = ToVectorImage ())
+				return vector.ToBitmap (renderTarget, format);
 		}
 
 		public BitmapImage ToBitmap (Screen renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (renderTarget, format);
+			using (var vector = ToVectorImage ())
+				return vector.ToBitmap (renderTarget, format);
 		}
 
 		public BitmapImage ToBitmap (double scaleFactor, ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (scaleFactor, format);
+			using (var vector = ToVectorImage ())
+				return vector.ToBitmap (scaleFactor, format);
 		}
 	}
 }

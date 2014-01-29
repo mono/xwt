@@ -48,9 +48,15 @@ namespace Xwt.Drawing
 			ToolkitEngine.VectorImageRecorderContextHandler.Draw (ctx.Handler, Toolkit.GetBackend (ctx), data);
 			ctx.Restore ();
 		}
+
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			data.Dispose ();
+		}
 	}
 
-	class VectorImageData
+	class VectorImageData : IDisposable
 	{
 		public DrawingCommand[] Commands;
 		public double[] Doubles;
@@ -60,6 +66,12 @@ namespace Xwt.Drawing
 		public object[] Objects;
 		public ImageDescription[] Images;
 		public TextLayoutData[] TextLayouts;
+
+		public void Dispose ()
+		{
+			foreach (var obj in Objects)
+				ResourceManager.FreeResource (obj);
+		}
 	}
 
 	enum DrawingCommand
@@ -204,22 +216,32 @@ namespace Xwt.Drawing
 
 		public VectorImageData ToVectorImageData ()
 		{
-			return new VectorImageData () {
+			var data = new VectorImageData () {
 				Commands = Commands.ToArray (),
 				Doubles = Doubles.ToArray (),
 				Colors = Colors.ToArray (),
 				Images = Images.ToArray (),
 				Ints = Ints.ToArray (),
 				Rectangles = Rectangles.ToArray (),
-				Objects = Objects.ToArray (),
 				TextLayouts = TextLayouts.ToArray (),
 			};
+			data.Objects = new object [Objects.Count];
+			for (var i = 0; i < Objects.Count; i++) {
+				var obj = Objects [i];
+				data.Objects [i] = obj;
+				ResourceManager.RegisterResource (obj);
+			}
+			return data;
 		}
 
 		public virtual void Dispose ()
 		{
-			if (NativeBackend != null)
+			if (NativeBackend != null) {
 				NativePathHandler.Dispose (NativeBackend);
+				NativeBackend = null;
+			}
+			foreach (var obj in Objects)
+				ResourceManager.FreeResource (obj);
 		}
 	}
 
@@ -486,6 +508,7 @@ namespace Xwt.Drawing
 			var ctx = (VectorBackend)backend;
 			ctx.Commands.Add (DrawingCommand.SetPattern);
 			ctx.Objects.Add (p);
+			ResourceManager.RegisterResource (p);
 		}
 
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)

@@ -30,16 +30,33 @@ namespace Xwt.Backends
 {
 	static class ResourceManager
 	{
+		class Ref {
+			public int RefCount;
+			public Action<object> Disposer;
+
+			public Ref (Action<object> disposer)
+			{
+				RefCount = 1;
+				Disposer = disposer;
+			}
+		}
+
 		static bool finalized;
-		static Dictionary<object,Action<object>> resources = new Dictionary<object,Action<object>> ();
+		static Dictionary<object,Ref> resources = new Dictionary<object,Ref> ();
 		static Dictionary<object,Action<object>> freedResources = new Dictionary<object,Action<object>> ();
 
 		public static void RegisterResource (object res, Action<object> disposeCallback = null)
 		{
 			if (finalized)
 				return;
-			lock (resources)
-				resources [res] = disposeCallback;
+
+			Ref reference;
+			lock (resources) {
+				if (resources.TryGetValue (res, out reference))
+					reference.RefCount++;
+				else
+					resources.Add (res, new Ref (disposeCallback));
+			}
 		}
 
 		public static bool FreeResource (object res)
@@ -48,19 +65,19 @@ namespace Xwt.Backends
 				return true;
 
 			lock (resources) {
-				Action<object> disposer;
-				if (!resources.TryGetValue (res, out disposer))
+				Ref reference;
+				if (!resources.TryGetValue (res, out reference) || --reference.RefCount > 0)
 					return false;
 
 				resources.Remove (res);
 
 				if (System.Threading.Thread.CurrentThread == Application.UIThread) {
-					DisposeResource (res, disposer);
+					DisposeResource (res, reference.Disposer);
 				} else {
 					lock (freedResources) {
 						if (freedResources.Count == 0)
 							Application.Invoke (DisposeResources);
-						freedResources [res] = disposer;
+						freedResources [res] = reference.Disposer;
 					}
 				}
 				return true;

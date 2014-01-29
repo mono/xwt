@@ -87,8 +87,10 @@ namespace Xwt.Drawing
 
 		protected virtual void Dispose (bool disposing)
 		{
-			if (NativeRef != null)
+			if (NativeRef != null) {
 				NativeRef.ReleaseReference (disposing);
+				NativeRef = null;
+			}
 		}
 
 

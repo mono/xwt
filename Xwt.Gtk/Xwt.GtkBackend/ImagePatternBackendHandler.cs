@@ -51,7 +51,7 @@ namespace Xwt.GtkBackend
 		#endregion
 	}
 
-	class ImagePatternBackend
+	class ImagePatternBackend : IDisposable
 	{
 		public ImageDescription Image;
 
@@ -84,8 +84,10 @@ namespace Xwt.GtkBackend
 
 		public void Dispose ()
 		{
-			if (pattern != null)
+			if (pattern != null) {
 				pattern.Dispose ();
+				pattern = null;
+			}
 		}
 	}
 }
