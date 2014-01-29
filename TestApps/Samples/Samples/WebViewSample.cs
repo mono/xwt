@@ -35,6 +35,8 @@ namespace Samples
 		public WebViewSample ()
 		{
 			var wb = new WebView ("http://www.xamarin.com");
+			wb.WidthRequest = 600;
+			wb.HeightRequest = 900;
 			PackStart (wb, true);
 		}
 	}

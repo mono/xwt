@@ -32,6 +32,7 @@ namespace GtkTest
 {
 	class MainClass
 	{
+		[STAThread]
 		public static void Main (string[] args)
 		{
 			App.Run (ToolkitType.Gtk);
