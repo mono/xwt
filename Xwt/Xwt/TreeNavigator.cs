@@ -118,6 +118,162 @@ namespace Xwt
 			return this;
 		}
 		
+
+		public TreeNavigator SetValues<T1,T2> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2)
+		{
+			SetValue (column1, value1);
+			SetValue (column2, value2);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1,T2,T3> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2, IDataField<T3> column3, T3 value3)
+		{
+			SetValue (column1, value1);
+			SetValue (column2, value2);
+			SetValue (column3, value3);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1,T2,T3,T4> (
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4
+		)
+		{
+			SetValue (column1, value1);
+			SetValue (column2, value2);
+			SetValue (column3, value3);
+			SetValue (column4, value4);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1,T2,T3,T4,T5> (
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5
+		)
+		{
+			SetValue (column1, value1);
+			SetValue (column2, value2);
+			SetValue (column3, value3);
+			SetValue (column4, value4);
+			SetValue (column5, value5);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6> (
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6
+		)
+		{
+			SetValue (column1, value1);
+			SetValue (column2, value2);
+			SetValue (column3, value3);
+			SetValue (column4, value4);
+			SetValue (column5, value5);
+			SetValue (column6, value6);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6,T7> (
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6,
+			IDataField<T7> column7, T7 value7
+		)
+		{
+			SetValue (column1, value1);
+			SetValue (column2, value2);
+			SetValue (column3, value3);
+			SetValue (column4, value4);
+			SetValue (column5, value5);
+			SetValue (column6, value6);
+			SetValue (column7, value7);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6,T7,T8> (
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6,
+			IDataField<T7> column7, T7 value7,
+			IDataField<T8> column8, T8 value8
+		)
+		{
+			SetValue (column1, value1);
+			SetValue (column2, value2);
+			SetValue (column3, value3);
+			SetValue (column4, value4);
+			SetValue (column5, value5);
+			SetValue (column6, value6);
+			SetValue (column7, value7);
+			SetValue (column8, value8);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6,T7,T8,T9> (
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6,
+			IDataField<T7> column7, T7 value7,
+			IDataField<T8> column8, T8 value8,
+			IDataField<T9> column9, T9 value9
+		)
+		{
+			SetValue (column1, value1);
+			SetValue (column2, value2);
+			SetValue (column3, value3);
+			SetValue (column4, value4);
+			SetValue (column5, value5);
+			SetValue (column6, value6);
+			SetValue (column7, value7);
+			SetValue (column8, value8);
+			SetValue (column9, value9);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6,T7,T8,T9,T10> (
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6,
+			IDataField<T7> column7, T7 value7,
+			IDataField<T8> column8, T8 value8,
+			IDataField<T9> column9, T9 value9,
+			IDataField<T10> column10, T10 value10
+		)
+		{
+			SetValue (column1, value1);
+			SetValue (column2, value2);
+			SetValue (column3, value3);
+			SetValue (column4, value4);
+			SetValue (column5, value5);
+			SetValue (column6, value6);
+			SetValue (column7, value7);
+			SetValue (column8, value8);
+			SetValue (column9, value9);
+			SetValue (column10, value10);
+			return this;
+		}
+
 		public T GetValue<T> (IDataField<T> field)
 		{
 			var value = backend.GetValue (pos, field.Index);

@@ -123,6 +123,159 @@ namespace Xwt
 			return Backend.AddRow ();
 		}
 		
+		public void SetValues<T1,T2> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2)
+		{
+			SetValue (row, column1, value1);
+			SetValue (row, column2, value2);
+		}
+
+		public void SetValues<T1,T2,T3> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2, IDataField<T3> column3, T3 value3)
+		{
+			SetValue (row, column1, value1);
+			SetValue (row, column2, value2);
+			SetValue (row, column3, value3);
+		}
+
+		public void SetValues<T1,T2,T3,T4> (
+			int row, 
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4
+		)
+		{
+			SetValue (row, column1, value1);
+			SetValue (row, column2, value2);
+			SetValue (row, column3, value3);
+			SetValue (row, column4, value4);
+		}
+
+		public void SetValues<T1,T2,T3,T4,T5> (
+			int row, 
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5
+		)
+		{
+			SetValue (row, column1, value1);
+			SetValue (row, column2, value2);
+			SetValue (row, column3, value3);
+			SetValue (row, column4, value4);
+			SetValue (row, column5, value5);
+		}
+
+		public void SetValues<T1,T2,T3,T4,T5,T6> (
+			int row, 
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6
+		)
+		{
+			SetValue (row, column1, value1);
+			SetValue (row, column2, value2);
+			SetValue (row, column3, value3);
+			SetValue (row, column4, value4);
+			SetValue (row, column5, value5);
+			SetValue (row, column6, value6);
+		}
+
+		public void SetValues<T1,T2,T3,T4,T5,T6,T7> (
+			int row, 
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6,
+			IDataField<T7> column7, T7 value7
+		)
+		{
+			SetValue (row, column1, value1);
+			SetValue (row, column2, value2);
+			SetValue (row, column3, value3);
+			SetValue (row, column4, value4);
+			SetValue (row, column5, value5);
+			SetValue (row, column6, value6);
+			SetValue (row, column7, value7);
+		}
+
+		public void SetValues<T1,T2,T3,T4,T5,T6,T7,T8> (
+			int row, 
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6,
+			IDataField<T7> column7, T7 value7,
+			IDataField<T8> column8, T8 value8
+		)
+		{
+			SetValue (row, column1, value1);
+			SetValue (row, column2, value2);
+			SetValue (row, column3, value3);
+			SetValue (row, column4, value4);
+			SetValue (row, column5, value5);
+			SetValue (row, column6, value6);
+			SetValue (row, column7, value7);
+			SetValue (row, column8, value8);
+		}
+
+		public void SetValues<T1,T2,T3,T4,T5,T6,T7,T8,T9> (
+			int row, 
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6,
+			IDataField<T7> column7, T7 value7,
+			IDataField<T8> column8, T8 value8,
+			IDataField<T9> column9, T9 value9
+		)
+		{
+			SetValue (row, column1, value1);
+			SetValue (row, column2, value2);
+			SetValue (row, column3, value3);
+			SetValue (row, column4, value4);
+			SetValue (row, column5, value5);
+			SetValue (row, column6, value6);
+			SetValue (row, column7, value7);
+			SetValue (row, column8, value8);
+			SetValue (row, column9, value9);
+		}
+
+		public void SetValues<T1,T2,T3,T4,T5,T6,T7,T8,T9,T10> (
+			int row, 
+			IDataField<T1> column1, T1 value1, 
+			IDataField<T2> column2, T2 value2, 
+			IDataField<T3> column3, T3 value3,
+			IDataField<T4> column4, T4 value4,
+			IDataField<T5> column5, T5 value5,
+			IDataField<T6> column6, T6 value6,
+			IDataField<T7> column7, T7 value7,
+			IDataField<T8> column8, T8 value8,
+			IDataField<T9> column9, T9 value9,
+			IDataField<T10> column10, T10 value10
+		)
+		{
+			SetValue (row, column1, value1);
+			SetValue (row, column2, value2);
+			SetValue (row, column3, value3);
+			SetValue (row, column4, value4);
+			SetValue (row, column5, value5);
+			SetValue (row, column6, value6);
+			SetValue (row, column7, value7);
+			SetValue (row, column8, value8);
+			SetValue (row, column9, value9);
+			SetValue (row, column10, value10);
+		}
+
 		public int InsertRowAfter (int row)
 		{
 			return Backend.InsertRowAfter (row);
