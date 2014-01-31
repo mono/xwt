@@ -78,6 +78,7 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeIter it;
 			if (Widget.Model.GetIter (out it, args.Path)) {
+				CurrentEventRow = new IterPos (-1, it);
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnRowExpanded (new IterPos (-1, it));
 				});
@@ -88,6 +89,7 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeIter it;
 			if (Widget.Model.GetIter (out it, args.Path)) {
+				CurrentEventRow = new IterPos (-1, it);
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnRowExpanding (new IterPos (-1, it));
 				});
@@ -98,6 +100,7 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeIter it;
 			if (Widget.Model.GetIter (out it, args.Path)) {
+				CurrentEventRow = new IterPos (-1, it);
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnRowActivated (new IterPos (-1, it));
 				});
