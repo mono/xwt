@@ -57,9 +57,9 @@ namespace Xwt
 			Initialize (null);
 		}
 		
-    public static void Initialize (ToolkitType type, bool isGuest = false)
+		public static void Initialize (ToolkitType type, bool isGuest = false)
 		{
-      Initialize (Toolkit.GetBackendType (type), isGuest);
+			Initialize (Toolkit.GetBackendType (type), isGuest);
 		}
 
 		public static void Initialize (string backendType, bool isGuest = false)
