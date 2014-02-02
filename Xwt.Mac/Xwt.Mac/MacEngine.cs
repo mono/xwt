@@ -47,9 +47,8 @@ namespace Xwt.Mac
 		
 		public override void InitializeApplication ()
 		{
-			if(!IsGuest) {
-  			NSApplication.Init ();
-			}
+			if(!IsGuest)
+				NSApplication.Init ();
 			//Hijack ();
 			if (pool != null)
 				pool.Dispose ();
