@@ -358,9 +358,9 @@ namespace Xwt
 			return new Image (backend.GetBackendForImage (nativeImage));
 		}
 
-		public Context WrapContext (object nativeContext)
+		public Context WrapContext (object nativeWidget, object nativeContext)
 		{
-			return new Context (backend.GetBackendForContext (nativeContext), this);
+			return new Context (backend.GetBackendForContext (nativeWidget, nativeContext), this);
 		}
 
 		public object ValidateObject (object obj)

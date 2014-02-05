@@ -195,7 +195,7 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The backend for context.</returns>
 		/// <param name="nativeContext">The native context.</param>
-		public virtual object GetBackendForContext (object nativeContext)
+		public virtual object GetBackendForContext (object nativeWidget, object nativeContext)
 		{
 			return nativeContext;
 		}
