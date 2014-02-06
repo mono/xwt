@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.ComponentModel;
 using Xwt.Drawing;
 using NUnit.Framework;
 
@@ -155,6 +156,22 @@ namespace Xwt
 			Assert.IsFalse (c1 == c2);
 			Assert.IsFalse (c1.Equals (c2));
 			Assert.IsTrue (c1 != c2);
+		}
+
+		[Test]
+		public void ColorConverterTest ()
+		{
+			var converter = TypeDescriptor.GetConverter (typeof(Color));
+			var color = Color.FromBytes (30, 60, 90);
+			Assert.AreEqual (color, converter.ConvertFromInvariantString (converter.ConvertToInvariantString (color)));
+		}
+
+		[Test]
+		public void ColorConverterTest_WithAlpha ()
+		{
+			var converter = TypeDescriptor.GetConverter (typeof(Color));
+			var color = Color.FromBytes (34, 56, 67, 20);
+			Assert.AreEqual (color, converter.ConvertFromInvariantString (converter.ConvertToInvariantString (color)));
 		}
 	}
 }

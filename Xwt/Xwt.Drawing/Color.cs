@@ -298,6 +298,8 @@ namespace Xwt.Drawing
 
 	class ColorValueConverter: TypeConverter
 	{
+		static readonly ColorValueSerializer serializer = new ColorValueSerializer ();
+
 		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
 		{
 			return destinationType == typeof(string);
@@ -306,6 +308,16 @@ namespace Xwt.Drawing
 		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
 		{
 			return sourceType == typeof(string);
+		}
+
+		public override object ConvertTo (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+		{
+			return serializer.ConvertToString (value, null);
+		}
+
+		public override object ConvertFrom (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+		{
+			return serializer.ConvertFromString ((string)value, null);
 		}
 	}
 	
@@ -330,7 +342,7 @@ namespace Xwt.Drawing
 		public override object ConvertFromString (string value, IValueSerializerContext context)
 		{
 			Color c;
-			if (!Color.TryParse (value, out c))
+			if (Color.TryParse (value, out c))
 				return c;
 			else
 				throw new InvalidOperationException ("Could not parse color value: " + value);
