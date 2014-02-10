@@ -107,6 +107,11 @@ namespace Xwt.Mac
 			return ((NSScreen)backend).DeviceDescription ["NSScreenNumber"].ToString ();
 		}
 
+		public override double GetScaleFactor (object backend)
+		{
+			return ((NSScreen)backend).BackingScaleFactor;
+		}
+		
 		#endregion
 	}
 }
