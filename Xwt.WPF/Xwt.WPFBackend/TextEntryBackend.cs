@@ -98,7 +98,7 @@ namespace Xwt.WPFBackend
 					if (multiline) {
 						TextBox.VerticalContentAlignment = VerticalAlignment.Top;
 						TextBox.AcceptsReturn = true;
-						TextBox.TextWrapping = TextWrapping.NoWrap;
+						TextBox.TextWrapping = TextWrapping.Wrap;
 					} else {
 						TextBox.VerticalContentAlignment = VerticalAlignment.Center;
 						TextBox.AcceptsReturn = false;
