@@ -90,16 +90,21 @@ namespace Xwt.WPFBackend
 			set { TextBox.ShowFrame = value; }
 		}
 
-		// TODO
 		public bool MultiLine {
 			get { return multiline; }
-			set
-			{
-				multiline = value;
-				if (multiline)
-					TextBox.VerticalContentAlignment = VerticalAlignment.Top;
-				else
-					TextBox.VerticalContentAlignment = VerticalAlignment.Center;
+			set {
+				if (multiline != value) {
+					multiline = value;
+					if (multiline) {
+						TextBox.VerticalContentAlignment = VerticalAlignment.Top;
+						TextBox.AcceptsReturn = true;
+						TextBox.TextWrapping = TextWrapping.NoWrap;
+					} else {
+						TextBox.VerticalContentAlignment = VerticalAlignment.Center;
+						TextBox.AcceptsReturn = false;
+						TextBox.TextWrapping = TextWrapping.NoWrap;
+					}
+				}
 			}
 		}
 
