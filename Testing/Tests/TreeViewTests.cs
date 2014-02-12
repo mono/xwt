@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using NUnit.Framework;
 
 namespace Xwt
 {
@@ -32,6 +33,24 @@ namespace Xwt
 		public override Widget CreateWidget ()
 		{
 			return new TreeView ();
+		}
+
+		[Test]
+		public void HiddenTree ()
+		{
+			var f = new DataField<string> ();
+			TreeStore ts = new TreeStore (f);
+			var node = ts.AddNode ().SetValue (f, "1").AddChild ().SetValue (f, "2").AddChild ().SetValue (f, "3");
+			var tree = new TreeView (ts);
+
+			Window w = new Window ();
+			Notebook nb = new Notebook ();
+			nb.Add (new Label ("Hi"), "One");
+			nb.Add (tree, "Two");
+			w.Content = nb;
+			ShowWindow (w);
+
+			tree.ScrollToRow (node.CurrentPosition);
 		}
 	}
 }
