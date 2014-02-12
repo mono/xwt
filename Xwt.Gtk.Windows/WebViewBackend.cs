@@ -50,11 +50,8 @@ namespace Xwt.Gtk.Windows
 			socket = new GTK.Socket ();
 			Widget = socket;
 
-			GLib.Timeout.Add (50, delegate {
-				// We need to wait until after this widget has been parented.
-				Widget.Realize ();
-				Widget.Show ();
-
+            this.Widget.Realized += delegate
+            {
 				var size = new System.Drawing.Size (Widget.WidthRequest, Widget.HeightRequest);
 
 				view = new SWF.WebBrowser ();
@@ -65,9 +62,10 @@ namespace Xwt.Gtk.Windows
 				if (url != null)
 					view.Navigate (url);
 
-				return false;
-			});
-		}
+				//return false;
+			};
+            Widget.Show();
+        }
 
 		public string Url {
 			get { return url; }
