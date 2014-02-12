@@ -408,6 +408,11 @@ namespace Xwt
 			get { return backend.SupportedFeatures; }
 		}
 
+		public void RegisterBackend<TBackend, TImplementation> () where TImplementation: TBackend
+		{
+			backend.RegisterBackend<TBackend, TImplementation> ();
+		}
+
 		internal Image GetStockIcon (string id)
 		{
 			Image img;
