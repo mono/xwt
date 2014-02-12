@@ -35,6 +35,7 @@ namespace Xwt.Gtk.Windows
 		{
 			base.Initialize (toolit);
 			toolit.RegisterBackend<DesktopBackend, GtkWindowsDesktopBackend> ();
+			toolit.RegisterBackend<IWebViewBackend, WebViewBackend> ();
 		}
 	}
 }
