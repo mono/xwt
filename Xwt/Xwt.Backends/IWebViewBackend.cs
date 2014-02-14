@@ -30,6 +30,7 @@ namespace Xwt.Backends
 	public interface IWebViewBackend : IWidgetBackend
 	{
 		string Url { get; set; }
+		void LoadHtmlString (string html);
 	}
 
 	public interface IWebViewEventSink : IWidgetEventSink

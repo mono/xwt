@@ -51,6 +51,11 @@ namespace Xwt.Mac
 		}
 
 		#region IWebViewBackend implementation
+		public void LoadHtmlString (string html)
+		{
+			((MacWebView)ViewObject).MainFrame.LoadHtmlString (html, null);
+		}
+
 		public override void Initialize()
 		{
 			base.Initialize ();

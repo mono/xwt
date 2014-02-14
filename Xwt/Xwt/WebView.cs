@@ -71,6 +71,11 @@ namespace Xwt
 			Url = url;
 		}
 
+		public void LoadHtmlString (string html)
+		{
+			Backend.LoadHtmlString (html);
+		}
+
 		protected override Xwt.Backends.BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();

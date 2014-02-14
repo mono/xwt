@@ -67,6 +67,11 @@ namespace Xwt.Gtk.Windows
             Widget.Show();
         }
 
+		public void LoadHtmlString (string html)
+		{
+			view.DocumentText = html;
+		}
+
 		public string Url {
 			get { return url; }
 			set {
