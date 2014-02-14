@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.Gtk.Mac</RootNamespace>
     <AssemblyName>Xwt.Gtk.Mac</AssemblyName>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
