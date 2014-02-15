@@ -52,6 +52,11 @@ namespace Xwt.WPFBackend
 				((SWC.WebBrowser)Widget).Navigate (url);
 			}
 		}
+
+		public void LoadHtmlString (string html)
+		{
+			((SWC.WebBrowser)Widget).NavigateToString (html);
+		}
 	}
 }
 
