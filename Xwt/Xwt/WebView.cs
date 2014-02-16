@@ -60,6 +60,8 @@ namespace Xwt
 		static WebView ()
 		{
 			MapEvent (WebViewEvent.Loaded, typeof(WebView), "OnLoaded");
+			MapEvent (WebViewEvent.NavigatingToUrl, typeof(WebView), "OnNavigatingToUrl");
+			MapEvent (WebViewEvent.NavigatedToUrl, typeof(WebView), "OnNavigatedToUrl");
 		}
 
 		public WebView ()

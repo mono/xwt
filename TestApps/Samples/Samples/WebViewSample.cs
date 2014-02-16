@@ -39,7 +39,7 @@ namespace Samples
 			wb.HeightRequest = 900;
 			PackStart (wb, true);
 
-			wb.LoadHtmlString ("<h1>Testing</h1>");
+			wb.Url = "http://www.xamarin.com";
 
 			wb.NavigatingToUrl += (sender, e) => { Console.WriteLine ("Navigating..."); };
 			wb.NavigatedToUrl += (sender, e) => {
