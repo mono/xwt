@@ -72,10 +72,10 @@ namespace Xwt.GtkBackend
 		{
 			CellUtil.SetCurrentEventRow (treeBackend, path);
 
-			if (!view.RaiseTextChanged () && view.TextField != null) {
+			if (!view.RaiseTextChanged () && view.TextBinding != null) {
 				Gtk.TreeIter iter;
 				if (treeModel.GetIterFromString (out iter, path))
-					CellUtil.SetModelValue (treeModel, iter, view.TextField.Index, view.TextField.FieldType, new_text);
+					CellUtil.SetModelValue (treeModel, iter, view.TextBinding.Index, view.TextBinding.FieldType, new_text);
 			}
 			base.OnEdited (path, new_text);
 		}

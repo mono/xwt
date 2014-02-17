@@ -1,10 +1,10 @@
-//
-// ITextCellViewFrontend.cs
+﻿//
+// TreeDataSource.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Lluis Sanchez Gual <lluis@xamarin.com>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections;
 
 namespace Xwt.Backends
 {
-	public interface ITextCellViewFrontend: ICellViewFrontend
+	public class TreeDataSource: ITreeDataSource
 	{
-		string Markup { get; }
-		string Text { get; }
-		bool Editable { get; }
-		EllipsizeMode Ellipsize { get; }
-		
-		bool RaiseTextChanged ();
+		IEnumerable collection;
 
-		Binding TextBinding { get; set; }
+		public TreeDataSource (IEnumerable collection)
+		{
+			this.collection = collection;
+		}
+
+		#region ITreeDataSource implementation
+
+		public event EventHandler<TreeNodeEventArgs> NodeInserted;
+
+		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
+
+		public event EventHandler<TreeNodeEventArgs> NodeChanged;
+
+		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
+
+		public TreePosition GetChild (TreePosition pos, int index)
+		{
+			return null;
+		}
+
+		public int GetChildrenCount (TreePosition pos)
+		{
+			return 0;
+		}
+
+		#endregion
 	}
 }
 

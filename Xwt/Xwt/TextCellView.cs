@@ -40,18 +40,19 @@ namespace Xwt
 		bool editable;
 		EllipsizeMode ellipsize;
 
-		public IDataField TextField { get; set; }
-		public IDataField<string> MarkupField { get; set; }
-		public IDataField<bool> EditableField { get; set; }
-		public IDataField<EllipsizeMode> EllipsizeField { get; set; }
+		public Binding TextBinding { get; set; }
+		public Binding MarkupBinding { get; set; }
+		public Binding EditableBinding { get; set; }
+		public Binding EllipsizeBinding { get; set; }
+		public Binding TextColorBinding { get; set; }
 
 		public TextCellView ()
 		{
 		}
 		
-		public TextCellView (IDataField textField)
+		public TextCellView (Binding textField)
 		{
-			TextField = textField;
+			TextBinding = textField;
 		}
 		
 		public TextCellView (string text)
@@ -62,8 +63,8 @@ namespace Xwt
 		[DefaultValue (null)]
 		public string Text {
 			get {
-				if (TextField != null && DataSource != null)
-					return Convert.ToString (DataSource.GetValue (TextField));
+				if (TextBinding != null && DataSource != null)
+					return TextBinding.GetValue<string> (DataSource);
 				else
 					return text;
 			}
@@ -75,7 +76,7 @@ namespace Xwt
 		[DefaultValue (null)]
 		public string Markup {
 			get {
-				return GetValue (MarkupField, markup);
+				return GetValue (MarkupBinding, markup);
 			}
 			set {
 				markup = value;
@@ -85,7 +86,7 @@ namespace Xwt
 		[DefaultValue (false)]
 		public bool Editable {
 			get {
-				return GetValue (EditableField, editable);
+				return GetValue (EditableBinding, editable);
 			}
 			set {
 				editable = value;
@@ -95,7 +96,7 @@ namespace Xwt
 		[DefaultValue (EllipsizeMode.None)]
 		public EllipsizeMode Ellipsize {
 			get {
-				return GetValue (EllipsizeField, ellipsize);
+				return GetValue (EllipsizeBinding, ellipsize);
 			}
 			set {
 				ellipsize = value;

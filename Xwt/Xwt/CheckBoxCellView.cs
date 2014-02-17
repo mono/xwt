@@ -40,25 +40,15 @@ namespace Xwt
 		bool editable;
 		bool allowMixed;
 
-		public IDataField<bool> ActiveField { get; set; }
-		public IDataField<CheckBoxState> StateField { get; set; }
-		public IDataField<bool> EditableField { get; set; }
-		public IDataField<bool> AllowMixedField { get; set; }
+		public Binding ActiveBinding { get; set; }
+		public Binding StateBinding { get; set; }
+		public Binding EditableBinding { get; set; }
+		public Binding AllowMixedBinding { get; set; }
 
 		public CheckBoxCellView ()
 		{
 		}
 		
-		public CheckBoxCellView (IDataField<CheckBoxState> field)
-		{
-			StateField = field;
-		}
-
-		public CheckBoxCellView (IDataField<bool> field)
-		{
-			ActiveField = field;
-		}
-
 		[DefaultValue (false)]
 		public bool Active {
 			get { return State == CheckBoxState.On; }
@@ -68,9 +58,9 @@ namespace Xwt
 		[DefaultValue (CheckBoxState.Off)]
 		public CheckBoxState State {
 			get {
-				if (StateField != null)
-					return GetValue (StateField, state);
-				return GetValue (ActiveField).ToCheckBoxState ();
+				if (StateBinding != null)
+					return GetValue (StateBinding, state);
+				return GetValue (ActiveBinding, false).ToCheckBoxState ();
 			}
 			set {
 				if (!value.IsValid ()) {
@@ -83,7 +73,7 @@ namespace Xwt
 		[DefaultValue (false)]
 		public bool Editable {
 			get {
-				return GetValue (EditableField, editable);
+				return GetValue (EditableBinding, editable);
 			}
 			set {
 				editable = value;
@@ -93,7 +83,7 @@ namespace Xwt
 		[DefaultValue (false)]
 		public bool AllowMixed {
 			get {
-				return GetValue (AllowMixedField, allowMixed);
+				return GetValue (AllowMixedBinding, allowMixed);
 			}
 			set {
 				allowMixed = value;

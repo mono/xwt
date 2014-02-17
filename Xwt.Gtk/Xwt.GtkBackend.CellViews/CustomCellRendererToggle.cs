@@ -64,7 +64,7 @@ namespace Xwt.GtkBackend
 		{
 			CellUtil.SetCurrentEventRow (treeBackend, path);
 
-			IDataField field = (IDataField) view.StateField ?? view.ActiveField;
+			IDataField field = (IDataField) view.StateBinding ?? view.ActiveBinding;
 
 			if (!view.RaiseToggled () && (field != null)) {
 				Type type = field.FieldType;

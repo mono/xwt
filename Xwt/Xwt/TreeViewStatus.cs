@@ -32,7 +32,7 @@ namespace Xwt
 	public class TreeViewStatus
 	{
 		TreeView tree;
-		int idColumn;
+		Binding keyBinding;
 		List<NodeInfo> state;
 		
 		class NodeInfo {
@@ -42,10 +42,10 @@ namespace Xwt
 			public List<NodeInfo> ChildInfo;
 		}
 		
-		internal TreeViewStatus (TreeView tree, int idColumn)
+		internal TreeViewStatus (TreeView tree, Binding keyBinding)
 		{
 			this.tree = tree;
-			this.idColumn = idColumn;
+			this.keyBinding = keyBinding;
 			Save ();
 		}
 		
@@ -60,7 +60,7 @@ namespace Xwt
 			int num = tree.DataSource.GetChildrenCount (it);
 			for (int n=0; n<num; n++) {
 				var child = tree.DataSource.GetChild (it, n);
-				object id = tree.DataSource.GetValue (child, idColumn);
+				object id = keyBinding.GetValue<object> (child);
 				NodeInfo ni = new NodeInfo ();
 				ni.Id = id;
 				ni.Expanded = tree.IsRowExpanded (child);
@@ -89,7 +89,7 @@ namespace Xwt
 			int num = tree.DataSource.GetChildrenCount (it);
 			for (int n=0; n<num; n++) {
 				var child = tree.DataSource.GetChild (it, n);
-				object id = tree.DataSource.GetValue (child, idColumn);
+				object id = keyBinding.GetValue<object> (child);
 				NodeInfo ni = ExtractNodeInfo (info, id);
 				if (ni != null) {
 					nodes [ni] = child;

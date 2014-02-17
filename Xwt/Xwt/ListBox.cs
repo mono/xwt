@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using System.ComponentModel;
+using System.Collections.Specialized;
 
 
 namespace Xwt
@@ -37,7 +38,7 @@ namespace Xwt
 	public class ListBox: Widget
 	{
 		CellViewCollection views;
-		IListDataSource source;
+		object source;
 		ItemCollection itemCollection;
 		SelectionMode mode;
 		
@@ -121,26 +122,20 @@ namespace Xwt
 		/// <remarks>
 		/// Then a DataSource is set, the Items collection can't be used.
 		/// </remarks>
-		public IListDataSource DataSource {
+		public object DataSource {
 			get { return source; }
 			set {
 				BackendHost.ToolkitEngine.ValidateObject (value);
-				if (source != null) {
-					source.RowChanged -= HandleModelChanged;
-					source.RowDeleted -= HandleModelChanged;
-					source.RowInserted -= HandleModelChanged;
-					source.RowsReordered -= HandleModelChanged;
-				}
+				var col = source as INotifyCollectionChanged;
+				if (col != null)
+					col.CollectionChanged -= HandleModelChanged;
 				
 				source = value;
 				Backend.SetSource (source, source is IFrontend ? (IBackend) Toolkit.GetBackend (source) : null);
 
-				if (source != null) {
-					source.RowChanged += HandleModelChanged;
-					source.RowDeleted += HandleModelChanged;
-					source.RowInserted += HandleModelChanged;
-					source.RowsReordered += HandleModelChanged;
-				}
+				col = source as INotifyCollectionChanged;
+				if (col != null)
+					col.CollectionChanged += HandleModelChanged;
 			}
 		}
 		
@@ -270,7 +265,7 @@ namespace Xwt
 			Backend.UnselectAll ();
 		}
 		
-		void HandleModelChanged (object sender, ListRowEventArgs e)
+		void HandleModelChanged (object sender, EventArgs e)
 		{
 			OnPreferredSizeChanged ();
 		}

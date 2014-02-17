@@ -35,8 +35,8 @@ namespace Xwt.Backends
 
 		bool RaiseToggled ();
 
-		IDataField<CheckBoxState> StateField { get; }
-		IDataField<bool> ActiveField { get; }
+		Binding StateBinding { get; }
+		Binding ActiveBinding { get; }
 	}
 }
 

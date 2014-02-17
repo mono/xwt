@@ -35,7 +35,7 @@ namespace Xwt
 	public class ListView: Widget, IColumnContainer, IScrollableWidget
 	{
 		ListViewColumnCollection columns;
-		IListDataSource dataSource;
+		object dataSource;
 		SelectionMode mode;
 		
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost<ListView,IListViewBackend>, IListViewEventSink
@@ -68,7 +68,7 @@ namespace Xwt
 			MapEvent (ListViewEvent.RowActivated, typeof(ListView), "OnRowActivated");
 		}
 		
-		public ListView (IListDataSource source): this ()
+		public ListView (object source): this ()
 		{
 			VerifyConstructorCall (this);
 			DataSource = source;
@@ -111,7 +111,7 @@ namespace Xwt
 			}
 		}
 		
-		public IListDataSource DataSource {
+		public object DataSource {
 			get {
 				return dataSource;
 			}

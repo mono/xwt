@@ -30,7 +30,7 @@ namespace Xwt.Backends
 {
 	public interface IListViewBackend: ITableViewBackend
 	{
-		void SetSource (IListDataSource source, IBackend sourceBackend);
+		void SetSource (object source, IBackend sourceBackend);
 		int[] SelectedRows { get; }
 		void SelectRow (int pos);
 		void UnselectRow (int pos);

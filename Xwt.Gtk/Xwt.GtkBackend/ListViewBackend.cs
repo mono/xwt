@@ -62,7 +62,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		public void SetSource (IListDataSource source, IBackend sourceBackend)
+		public void SetSource (object source, IBackend sourceBackend)
 		{
 			ListStoreBackend b = sourceBackend as ListStoreBackend;
 			if (b == null) {

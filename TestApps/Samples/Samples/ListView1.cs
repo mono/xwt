@@ -44,7 +44,7 @@ namespace Samples
 
 	class CustomCell: CanvasCellView
 	{
-		public IDataField<int> ValueField { get; set; }
+		public Binding ValueField { get; set; }
 
 		protected override Size OnGetRequiredSize ()
 		{
@@ -53,7 +53,7 @@ namespace Samples
 
 		protected override void OnDraw (Context ctx, Rectangle cellArea)
 		{
-			var pct = GetValue (ValueField);
+			var pct = GetValue<int> (ValueField);
 			var size = (cellArea.Width * pct) / 100f;
 			cellArea.Width = (int) size;
 

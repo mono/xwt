@@ -331,6 +331,9 @@ namespace Xwt
 				}
 			}
 		}
+
+		public List<TreeItemTemplate> ItemTemplates;
+
 		
 		/// <summary>
 		/// Saves the status of the tree
@@ -347,9 +350,9 @@ namespace Xwt
 		/// The provided field is used to generate an identifier for each row. When restoring the
 		/// status, those ids are used to find matching rows.
 		/// </remarks>
-		public TreeViewStatus SaveStatus (IDataField idField)
+		public TreeViewStatus SaveStatus (Binding keyBinding)
 		{
-			return new TreeViewStatus (this, idField.Index);
+			return new TreeViewStatus (this, keyBinding);
 		}
 		
 		/// <summary>

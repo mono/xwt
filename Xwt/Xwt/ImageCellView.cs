@@ -39,7 +39,7 @@ namespace Xwt
 		{
 		}
 		
-		public ImageCellView (IDataField<Image> imageField)
+		public ImageCellView (Binding imageField)
 		{
 			ImageField = imageField;
 		}
@@ -49,7 +49,7 @@ namespace Xwt
 			this.image = image;
 		}
 		
-		public IDataField<Image> ImageField { get; set; }
+		public Binding ImageField { get; set; }
 
 		[DefaultValue (null)]
 		public Image Image {

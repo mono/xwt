@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt;
+using System.Collections.Generic;
 
 namespace Samples
 {
@@ -40,7 +41,11 @@ namespace Samples
 			TreeView view = new TreeView ();
 			TreeStore store = new TreeStore (triState, check, text, desc);
 		
-			var triStateCellView = new CheckBoxCellView (triState) { Editable = true, AllowMixed = true };
+			var triStateCellView = new CheckBoxCellView {
+				StateBinding = triState,
+				Editable = true, 
+				AllowMixed = true 
+			};
 			triStateCellView.Toggled += (object sender, WidgetEventArgs e) => {
 				if (view.CurrentEventRow == null) {
 					MessageDialog.ShowError("CurrentEventRow is null. This is not supposed to happen");
@@ -49,7 +54,10 @@ namespace Samples
 					store.GetNavigatorAt(view.CurrentEventRow).SetValue(text, "TriState Toggled");
 				}
 			};
-			var checkCellView = new CheckBoxCellView (check) { Editable = true };
+			var checkCellView = new CheckBoxCellView {
+				ActiveBinding = check,
+				Editable = true 
+			};
 			checkCellView.Toggled += (object sender, WidgetEventArgs e) => {
 				if (view.CurrentEventRow == null) {
 					MessageDialog.ShowError("CurrentEventRow is null. This is not supposed to happen");
@@ -121,12 +129,147 @@ namespace Samples
 			PackStart (label);
 
 			view.RowExpanded += (sender, e) => label.Text = "Row expanded: " + store.GetNavigatorAt (e.Position).GetValue (text);
+
+			TreeView tree = new TreeView ();
+
+			var template = new TreeItemTemplate {
+				Views = {
+					new TextCellView {
+						TextBinding = new PropertyBinding<Country> ((c) => c.Name)
+					}
+				}
+			};
+			template.ItemsSource = new PropertyBinding<Country> (c => c.Cities);
+			tree.ItemTemplates.Add (template);
+
+
+			var col1 = new ListViewColumn ("Some column");
+			var col2 = new ListViewColumn ("Some other column");
+			Xwt.Drawing.Image img = null;
+
+			tree.ItemTemplates.Add (
+				new TreeItemTemplate {
+					ItemType = typeof(Country),
+					ItemsSource = new PropertyBinding<Country> (c => c.Cities),
+					Views = {
+						new ImageCellView { Image = img },
+						new TextCellView {
+							TextBinding = new PropertyBinding<Country> (c => c.Name),
+							Column = col2
+						}
+					}
+				}
+			);
+			tree.ItemTemplates.Add (
+				new TreeItemTemplate {
+					ItemType = typeof(Country),
+					ItemsSource = new PropertyBinding<City> (c => c.Quarters),
+					Views = {
+						new ImageCellView { Image = img },
+						new TextCellView {
+							TextBinding = new PropertyBinding<City> (c => c.Name),
+							Column = col2
+						}
+					}
+				}
+			);
+
+			var selField = new DataField<bool> ();
+			var dataField = new DataField<Country> ();
+			var st = new TreeStore (selField, dataField);
+
+			tree.ItemTemplates.Add (
+				new TreeItemTemplate {
+					Views = {
+						new CheckBoxCellView {
+							ActiveBinding = selField
+						},
+						new TextCellView {
+							TextBinding = dataField.Select (c => c.Name)
+						}
+					}
+				}
+			);
+
+			/*******************/
+
+			PropertyExtension<City,bool> selProp = new PropertyExtension<City, bool> ();
+			selProp.SetDefaultValue (true);
+
+			tree.ItemTemplates.Add (
+				new TreeItemTemplate {
+					Views = {
+						new CheckBoxCellView {
+							ActiveBinding = selProp
+						},
+						new TextCellView {
+							TextBinding = dataField.Select (c => c.Name),
+							TextColorBinding = new CustomBinding<City> {
+								Getter = c => c.Population >= 10000 ? Xwt.Drawing.Colors.Red : Xwt.Drawing.Colors.Black
+							}
+						}
+					},
+					ItemsSource = new CustomBinding<City> {
+						Getter = c => c.Population >= 100000 ? c.Quarters : null
+					}
+				}
+			);
+			City cc = null;
+			selProp.GetValue (cc);
 		}
 
 		void HandleDragOver (object sender, DragOverEventArgs e)
 		{
 			e.AllowedAction = e.Action;
 		}
+	}
+
+	class DataStore
+	{
+		public DataStore (params IDataField[] fields)
+		{
+		}
+
+		public T GetValue<T> (object instance, IDataField<T> field)
+		{
+			return default(T);
+		}
+	}
+
+	class PropertyExtension<TO,T>: Binding
+	{
+
+		public T GetValue (TO instance)
+		{
+			return default(T);
+		}
+
+		public void SetValue (TO instance, T value)
+		{
+		}
+
+		public void SetDefaultValue (T value)
+		{
+		}
+	}
+
+	class Country
+	{
+		public string Name;
+		public IEnumerable<City> Cities;
+		public int Population;
+	}
+
+	class City
+	{
+		public string Name;
+		public IEnumerable<City> Quarters;
+		public int Population;
+	}
+
+	class Quarter
+	{
+		public string Name;
 	}
 }
 

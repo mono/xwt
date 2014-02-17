@@ -26,20 +26,41 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Specialized;
 
 namespace Xwt.Backends
 {
 	/// <summary>
 	/// A ListStore backend.
 	/// </summary>
-	public interface IListStoreBackend: IListDataSource, IBackend
+	public interface IListStoreBackend: IBackend, INotifyCollectionChanged
 	{
 		// WARNING: You don't need to implement this backend.
 		// Xwt provides a default implementation.
 		// You only need to implement it if the underlying widget
 		// toolkit has its own list store implementation which
 		// can be plugged into a ListView or ComboBox
-		
+
+		/// <summary>
+		/// Gets the number of rows in the data source.
+		/// </summary>
+		int RowCount { get; }
+
+		/// <summary>
+		/// Sets the value at the specified <paramref name="row"/> and <paramref name="column"/>.
+		/// </summary>
+		/// <param name="row">The row to set the value at.</param>
+		/// <param name="column">The column to set the value at.</param>
+		/// <param name="value">The value to set at the given <paramref name="row"/> and <paramref name="column"/>.</param>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// <para><paramref name="row"/> is &gt;= <see cref="RowCount"/></para>
+		/// <para>-- or --</para>
+		/// <para><paramref name="column"/> is &gt;= the number of columns (<see cref="ColumnTypes"/>).</para>
+		/// </exception>
+		void SetValue (int row, int column, object value);
+
+		object GetValue (int row, int column);
+
 		/// <summary>
 		/// Initializes the backend with the given <paramref name="columnTypes"/>.
 		/// </summary>

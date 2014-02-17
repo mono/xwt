@@ -28,18 +28,20 @@ using System;
 using Xwt.Drawing;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Xwt
 {
+	public interface ITreeNode
+	{
+		IEnumerable Children { get; }
+	}
+
 	public interface ITreeDataSource
 	{
-		TreePosition GetParent (TreePosition pos);
 		TreePosition GetChild (TreePosition pos, int index);
 		int GetChildrenCount (TreePosition pos);
-		object GetValue (TreePosition pos, int column);
-		void SetValue (TreePosition pos, int column, object value);
-		Type[] ColumnTypes { get; }
-		
+
 		event EventHandler<TreeNodeEventArgs> NodeInserted;
 		event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		event EventHandler<TreeNodeEventArgs> NodeChanged;

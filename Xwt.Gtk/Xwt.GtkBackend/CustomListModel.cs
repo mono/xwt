@@ -26,156 +26,378 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Collections.Specialized;
+using System.Collections;
+using System.Linq;
 
 namespace Xwt.GtkBackend
 {
 	public class CustomListModel: GLib.Object, Gtk.TreeModelImplementor
 	{
-		IListDataSource source;
-		Dictionary<int,int> nodeHash = new Dictionary<int,int> ();
-		Dictionary<int,int> handleHash = new Dictionary<int,int> ();
-		Type[] colTypes;
-		int counter = 1;
+		object source;
 		Gtk.TreeModelAdapter adapter;
-		Gtk.Widget parent;
-		
+		Gtk.Widget parentWidget;
+		int count = -1;
+		RowNode root;
+
+		static CollectionData emptyCollection = new CollectionData ();
+		static object doneMarker = new object ();
+
+		internal class RowNode {
+			public object Item;
+			public int Row;
+			public IntPtr Handle;
+			public RowNode Next;
+			public RowNode Previous;
+			public RowNode Parent;
+			public CollectionData Children;
+
+			public void IncRow (int amount)
+			{
+				var r = this;
+				while (r != null) {
+					r.Row += amount;
+					r = r.Next;
+				}
+			}
+		}
+
+		internal class CollectionData {
+			public object Enumerator;
+			public IEnumerable Collection;
+			public int Count;
+			public RowNode FirstChild;
+			public RowNode LastChild;
+		}
+
 		public CustomListModel (IntPtr p): base (p)
 		{
 		}
 		
-		public CustomListModel (IListDataSource source, Gtk.Widget w)
+		public CustomListModel (object source, Gtk.Widget w)
 		{
-			parent = w;
+			root = new RowNode ();
+			parentWidget = w;
 			this.source = source;
 			adapter = new Gtk.TreeModelAdapter (this);
-			colTypes = source.ColumnTypes;
-			source.RowChanged += HandleRowChanged;
-			source.RowDeleted += HandleRowDeleted;
-			source.RowInserted += HandleRowInserted;
-			source.RowsReordered += HandleRowsReordered;
 		}
 
-		void HandleRowsReordered (object sender, ListRowOrderEventArgs e)
+		void HandleCollectionChanged (CollectionData data, NotifyCollectionChangedEventArgs e)
 		{
-			var p = new Gtk.TreePath (new int[] { e.Row });
-			var it = IterFromNode (e.Row);
-			adapter.EmitRowsReordered (p, it, e.ChildrenOrder);
-			parent.QueueResize ();
+			bool reset = true;
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Add:
+				if (e.NewStartingIndex != -1) {
+					reset = false;
+					var index = e.NewStartingIndex;
+					int count = e.NewItems.Count;
+					var node = GetNodeAtRow (data.Parent, index);
+					var last = node.Previous;
+					foreach (var it in e.NewItems) {
+						var newNode = CreateNode (index, it);
+						if (last != null)
+							last.Next = newNode;
+						newNode.Previous = last;
+						newNode.Parent = node.Parent;
+						last = newNode;
+					}
+					node.Previous = last;
+					if (last != null)
+						last.Next = node;
+					node.IncRow (e.NewItems.Count);
+				}
+				break;
+			case NotifyCollectionChangedAction.Remove:
+				if (e.OldStartingIndex != -1) {
+					reset = false;
+				}
+				for (int n = e.OldStartingIndex; n < e.OldStartingIndex + e.OldItems.Count; n++) {
+					var p = new Gtk.TreePath (new int[] { n });
+					adapter.EmitRowDeleted (p);
+				}
+				break;
+			case NotifyCollectionChangedAction.Move:
+				{
+					var p = new Gtk.TreePath ("");
+					var it = Gtk.TreeIter.Zero;
+					var count = IterNChildren (it);
+					int[] newOrder = new int[count];
+					for (int n = 0; n < count; n++)
+						newOrder [n] = n;
+					for (int n = 0; n < e.NewItems.Count; n++) {
+						newOrder [e.OldStartingIndex + n] = e.NewStartingIndex + n;
+						newOrder [e.NewStartingIndex + n] = e.OldStartingIndex + n;
+					}
+					adapter.EmitRowsReordered (p, it, newOrder);
+					break;
+				}
+			case NotifyCollectionChangedAction.Replace:
+				for (int n = e.NewStartingIndex; n < e.NewStartingIndex + e.NewItems.Count; n++) {
+					var p = new Gtk.TreePath (new int[] { n });
+					var it = IterFromNode (n);
+					adapter.EmitRowChanged (p, it);
+				}
+			}
+			parentWidget.QueueResize ();
 		}
 
-		void HandleRowInserted (object sender, ListRowEventArgs e)
-		{
-			var p = new Gtk.TreePath (new int[] { e.Row });
-			var it = IterFromNode (e.Row);
-			adapter.EmitRowInserted (p, it);
-			parent.QueueResize ();
-		}
-
-		void HandleRowDeleted (object sender, ListRowEventArgs e)
-		{
-			var p = new Gtk.TreePath (new int[] { e.Row });
-			adapter.EmitRowDeleted (p);
-			parent.QueueResize ();
-		}
-
-		void HandleRowChanged (object sender, ListRowEventArgs e)
-		{
-			var p = new Gtk.TreePath (new int[] { e.Row });
-			var it = IterFromNode (e.Row);
-			adapter.EmitRowChanged (p, it);
-			parent.QueueResize ();
-		}
-		
 		public Gtk.TreeModelAdapter Store {
 			get { return adapter; }
 		}
-		
-		Gtk.TreeIter IterFromNode (int node)
+
+		internal virtual IEnumerable GetChildrenCollection (RowNode node)
 		{
-			int gch;
-			if (!handleHash.TryGetValue (node, out gch)) {
-				gch = counter++;
-				handleHash [node] = gch;
-				nodeHash [gch] = node;
+			if (node == root)
+				return source as IEnumerable;
+			else
+				return null;
+		}
+
+		void InitChildrenData (RowNode node)
+		{
+			if (node.Children != null)
+				return;
+			var col = GetChildrenCollection (node);
+			if (col == null) {
+				node.Children = emptyCollection;
+				return;
 			}
-			Gtk.TreeIter result = Gtk.TreeIter.Zero;
-			result.UserData = (IntPtr)gch;
-			return result;
+			node.Children = new CollectionData {
+				Collection = col
+			};
+
+			INotifyCollectionChanged ccol = source as INotifyCollectionChanged;
+			if (ccol != null) {
+				ccol.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e) {
+					HandleCollectionChanged (node.Children, e);
+				};
+			}
+		}
+
+		int GetChildCount (RowNode parent)
+		{
+			InitChildrenData (parent);
+
+			if (parent.Children == emptyCollection)
+				return 0;
+
+			ICollection col = parent.Children.Collection as ICollection;
+			if (col != null)
+				return col.Count;
+
+			var c = GetFirstChild (parent);
+			if (c == null)
+				return 0;
+			c = parent.Children.LastChild;
+			while (c != null)
+				c = GetNext (c);
+
+			return parent.Children.LastChild.Row + 1;
+		}
+
+		RowNode GetFirstChild (RowNode parent)
+		{
+			InitChildrenData (parent);
+
+			if (parent.Children == emptyCollection)
+				return null;
+
+			if (parent.Children.FirstChild != null)
+				return parent.Children.FirstChild;
+
+			var col = parent.Children.Collection;
+
+			IList list = col as IList;
+			if (list != null) {
+				if (list.Count > 0) {
+					parent.Children.FirstChild = parent.Children.LastChild = CreateNode (0, list [0]);
+					parent.Children.Enumerator = 0;
+					return parent.Children.FirstChild;
+				} else {
+					parent.Children = emptyCollection;
+					return null;
+				}
+			} else if (col is ICollection) {
+				if (((ICollection)col).Count == 0) {
+					parent.Children = emptyCollection;
+					return null;
+				}
+			}
+			var en = col.GetEnumerator ();
+			parent.Children.Enumerator = en;
+			if (en.MoveNext ())
+				parent.Children.FirstChild = parent.Children.LastChild = CreateNode (0, en.Current);
+			else {
+				parent.Children = emptyCollection;
+				return null;
+			}
+		}
+
+		RowNode CreateNode (int row, object item)
+		{
+			var node = new RowNode {
+				Item = item,
+				Row = row
+			};
+			GCHandle gch = GCHandle.Alloc (node);
+			node.Handle = (IntPtr)gch;
+			return node;
+		}
+
+		RowNode GetNext (RowNode node)
+		{
+			if (node.Next == null) {
+				var parent = node.Parent;
+				if (parent.Children.Enumerator == doneMarker)
+					return null;
+				int nextRow = node.Row + 1;
+				object nextItem;
+				if (parent.Children.Collection is IList) {
+					var list = (IList)parent.Children.Collection;
+					if (nextRow >= list.Count) {
+						parent.Children.Enumerator = doneMarker;
+						return null;
+					}
+					nextItem = list [nextRow];
+				}
+				else if (((IEnumerator)parent.Children.Enumerator).MoveNext ()) {
+					nextItem = ((IEnumerator)parent.Children.Enumerator).Current;
+				} else {
+					parent.Children.Enumerator = doneMarker;
+					return null;
+				}
+				var next = CreateNode (nextRow, nextItem);
+				node.Next = next;
+				next.Previous = node;
+				next.Parent = node.Parent;
+				parent.Children.LastChild = next;
+			}
+			return node.Next;
 		}
 		
-		int NodeFromIter (Gtk.TreeIter iter)
+		RowNode GetNodeAtRow (RowNode parent, int row)
 		{
-			int node;
-			int gch = (int)iter.UserData;
-			nodeHash.TryGetValue (gch, out node);
+			var node = GetFirstChild (parent);
+			if (node == null)
+				return null;
+
+			for (int n=0; n<row; n++) {
+				node = GetNext (node);
+				if (node == null)
+					return null;
+			}
 			return node;
+		}
+
+		Gtk.TreeIter IterFromNode (RowNode node)
+		{
+			Gtk.TreeIter result = Gtk.TreeIter.Zero;
+			result.UserData = node.Handle;
+			return result;
+		}
+
+		RowNode NodeFromIter (Gtk.TreeIter iter)
+		{
+			GCHandle gch = (GCHandle)iter.UserData;
+			return (RowNode)gch.Target;
 		}
 		
 		#region TreeModelImplementor implementation
 		public GLib.GType GetColumnType (int index)
 		{
-			return (GLib.GType)colTypes [index];
+			return (GLib.GType)typeof(object);
 		}
 
 		public bool GetIter (out Gtk.TreeIter iter, Gtk.TreePath path)
         {
-            iter = Gtk.TreeIter.Zero;
+			iter = Gtk.TreeIter.Zero;
 			if (path.Indices.Length == 0)
 				return false;
-			int row = path.Indices [0];
-			if (row >= source.RowCount) {
-				return false;
+
+			var indices = path.Indices;
+			var node = root;
+			for (int n=0; n<indices.Length && node != null; n++) {
+				node = GetNodeAtRow (node, indices [n]);
 			}
-			iter = IterFromNode (row);
+			if (node == null)
+				return false;
+
+			iter = IterFromNode (node);
 			return true;
 		}
 
 		public Gtk.TreePath GetPath (Gtk.TreeIter iter)
 		{
-			int row = NodeFromIter (iter);
-			return new Gtk.TreePath (new int[] { row });
+			var node = NodeFromIter (iter);
+			List<int> path = new List<int> ();
+			while (node != null) {
+				path.Insert (0, node.Row);
+				node = node.Parent;
+			}
+			return new Gtk.TreePath (path.ToArray ());
 		}
 		
 		public void GetValue (Gtk.TreeIter iter, int column, ref GLib.Value value)
 		{
-			int row = NodeFromIter (iter);
-			var v = source.GetValue (row, column);
-			value = v != null ? new GLib.Value (v) : GLib.Value.Empty;
+			var row = NodeFromIter (iter);
+			value = row.Item != null ? new GLib.Value (row.Item) : GLib.Value.Empty;
 		}
 
 		public bool IterNext (ref Gtk.TreeIter iter)
 		{
-			int row = NodeFromIter (iter);
-			if (++row < source.RowCount) {
-				iter = IterFromNode (row);
-				return true;
-			} else
+			var node = NodeFromIter (iter);
+			if (node == null) {
+				iter = Gtk.TreeIter.Zero;
 				return false;
+			}
+			var next = GetNext (node);
+			if (next == null) {
+				iter = Gtk.TreeIter.Zero;
+				return false;
+			}
+			iter = IterFromNode (node);
+			return true;
 		}
 
 		public bool IterChildren (out Gtk.TreeIter iter, Gtk.TreeIter parent)
         {
-            iter = Gtk.TreeIter.Zero;
-			return false;
+			var node = NodeFromIter (parent);
+			if (node == null) {
+				iter = Gtk.TreeIter.Zero;
+				return false;
+			}
+			node = GetFirstChild (node);
+			if (node == null) {
+				iter = Gtk.TreeIter.Zero;
+				return false;
+			}
+			iter = IterFromNode (node);
+			return true;
 		}
 
-		public bool IterHasChild (Gtk.TreeIter iter)
+		public bool IterHasChild (Gtk.TreeIter parent)
 		{
-			return false;
+			var node = NodeFromIter (parent);
+			return node != null && GetFirstChild (node) != null;
 		}
 
 		public int IterNChildren (Gtk.TreeIter iter)
 		{
-			if (iter.Equals (Gtk.TreeIter.Zero))
-				return source.RowCount;
-			else
-				return 0;
+			var node = NodeFromIter (iter);
+			return GetChildCount (node);
 		}
 
 		public bool IterNthChild (out Gtk.TreeIter iter, Gtk.TreeIter parent, int n)
 		{
-			if (parent.Equals (Gtk.TreeIter.Zero)) {
-				iter = IterFromNode (n);
+			RowNode parentNode;
+			if (parent.Equals (Gtk.TreeIter.Zero))
+				parentNode = root;
+			else
+				parentNode = NodeFromIter (parent);
+
+			var node = GetNodeAtRow (parentNode, n);
+			if (node != null) {
+				iter = IterFromNode (node);
 				return true;
 			} else {
 				iter = Gtk.TreeIter.Zero;
@@ -185,8 +407,13 @@ namespace Xwt.GtkBackend
 
 		public bool IterParent (out Gtk.TreeIter iter, Gtk.TreeIter child)
 		{
-			iter = Gtk.TreeIter.Zero;
-			return false;
+			var node = NodeFromIter (child);
+			if (node == root) {
+				iter = Gtk.TreeIter.Zero;
+				return false;
+			}
+			iter = IterFromNode (node.Parent);
+			return true;
 		}
 
 		public void RefNode (Gtk.TreeIter iter)
@@ -199,13 +426,13 @@ namespace Xwt.GtkBackend
 
 		public Gtk.TreeModelFlags Flags {
 			get {
-				return Gtk.TreeModelFlags.ItersPersist | Gtk.TreeModelFlags.ListOnly;
+				return Gtk.TreeModelFlags.ItersPersist;
 			}
 		}
 
 		public int NColumns {
 			get {
-				return colTypes.Length;
+				return 1;
 			}
 		}
 		#endregion

@@ -26,6 +26,7 @@
 
 using System;
 using Xwt;
+using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
@@ -48,6 +49,8 @@ namespace Xwt.Backends
 		bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition);
 
 		TreePosition CurrentEventRow { get; }
+
+		void SetTemplates (IEnumerable<TreeItemTemplate> templates);
 	}
 	
 	public enum ListViewColumnChange

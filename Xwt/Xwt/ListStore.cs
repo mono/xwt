@@ -28,35 +28,67 @@ using System;
 using Xwt.Backends;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 
 namespace Xwt
 {
 	[BackendType (typeof(IListStoreBackend))]
-	public class ListStore: XwtComponent, IListDataSource
+	public class ListStore: XwtComponent, INotifyCollectionChanged
 	{
 		IDataField[] fields;
-		
-		class ListStoreBackendHost: BackendHost<ListStore,IListStoreBackend>
+
+		class ListStoreBackendHost: BackendHost<ListStore,IListStoreBackend>, IDataStore
 		{
 			protected override void OnBackendCreated ()
 			{
 				Backend.Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
 				base.OnBackendCreated ();
 			}
+
+			#region ITableStore implementation
+
+			public object GetValue (object pos, int column)
+			{
+				return Parent.Backend.GetValue ((int)pos, column);
+			}
+
+			public void SetValue (object pos, int column, object value)
+			{
+				Parent.Backend.SetValue ((int)pos, column, value);
+			}
+
+			#endregion
 		}
 		
 		protected override Xwt.Backends.BackendHost CreateBackendHost ()
 		{
 			return new ListStoreBackendHost ();
 		}
+
+		#region INotifyCollectionChanged implementation
+
+		event NotifyCollectionChangedEventHandler INotifyCollectionChanged.CollectionChanged {
+			add {
+				Backend.CollectionChanged += value;
+			}
+			remove {
+				Backend.CollectionChanged -= value;
+			}
+		}
+
+		void OnCollectionChanged (NotifyCollectionChangedEventArgs args)
+		{
+		}
+
+		#endregion
 		
 		public ListStore (params IDataField[] fields)
 		{
 			for (int n=0; n<fields.Length; n++) {
 				if (fields[n].Index != -1)
 					throw new InvalidOperationException ("DataField object already belongs to another data store");
-				((IDataFieldInternal)fields[n]).SetIndex (n);
+				((IDataFieldInternal)fields[n]).SetIndex ((ListStoreBackendHost)BackendHost, n);
 			}
 			this.fields = fields;
 		}
@@ -83,39 +115,6 @@ namespace Xwt
 		public void SetValue<T> (int row, IDataField<T> column, T value)
 		{
 			Backend.SetValue (row, column.Index, value);
-		}
-		
-		object IListDataSource.GetValue (int row, int column)
-		{
-			return Backend.GetValue (row, column);
-		}
-		
-		void IListDataSource.SetValue (int row, int column, object value)
-		{
-			Backend.SetValue (row, column, value);
-		}
-		
-		Type[] IListDataSource.ColumnTypes {
-			get {
-				return Backend.ColumnTypes;
-			}
-		}
-		
-		event EventHandler<ListRowEventArgs> IListDataSource.RowInserted {
-			add { Backend.RowInserted += value; }
-			remove { Backend.RowInserted -= value; }
-		}
-		event EventHandler<ListRowEventArgs> IListDataSource.RowDeleted {
-			add { Backend.RowDeleted += value; }
-			remove { Backend.RowDeleted -= value; }
-		}
-		event EventHandler<ListRowEventArgs> IListDataSource.RowChanged {
-			add { Backend.RowChanged += value; }
-			remove { Backend.RowChanged -= value; }
-		}
-		event EventHandler<ListRowOrderEventArgs> IListDataSource.RowsReordered {
-			add { Backend.RowsReordered += value; }
-			remove { Backend.RowsReordered -= value; }
 		}
 		
 		public int AddRow ()
@@ -297,15 +296,10 @@ namespace Xwt
 		}
 	}
 	
-	public class DefaultListStoreBackend: IListStoreBackend
+	class DefaultListStoreBackend: IListStoreBackend
 	{
 		List<object[]> list = new List<object[]> ();
 		Type[] columnTypes;
-		
-		public event EventHandler<ListRowEventArgs> RowInserted;
-		public event EventHandler<ListRowEventArgs> RowDeleted;
-		public event EventHandler<ListRowEventArgs> RowChanged;
-		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
@@ -314,6 +308,14 @@ namespace Xwt
 		public void Initialize (Type[] columnTypes)
 		{
 			this.columnTypes = columnTypes;
+		}
+
+		public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+		void NotifyChanged (NotifyCollectionChangedEventArgs args)
+		{
+			if (CollectionChanged != null)
+				CollectionChanged (this, args);
 		}
 		
 		public object GetValue (int row, int column)
@@ -324,8 +326,7 @@ namespace Xwt
 		public void SetValue (int row, int column, object value)
 		{
 			list [row] [column] = value;
-			if (RowChanged != null)
-				RowChanged (this, new ListRowEventArgs (row));
+			NotifyChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Replace, row));
 		}
 		
 		public Type[] ColumnTypes {
@@ -345,8 +346,7 @@ namespace Xwt
 			object[] data = new object [columnTypes.Length];
 			list.Add (data);
 			int row = list.Count - 1;
-			if (RowInserted != null)
-				RowInserted (this, new ListRowEventArgs (row));
+			NotifyChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, row, row));
 			return row;
 		}
 		
@@ -354,8 +354,7 @@ namespace Xwt
 		{
 			object[] data = new object [columnTypes.Length];
 			list.Insert (row + 1, data);
-			if (RowInserted != null)
-				RowInserted (this, new ListRowEventArgs (row + 1));
+			NotifyChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, row + 1, row + 1));
 			return row + 1;
 		}
 		
@@ -363,16 +362,14 @@ namespace Xwt
 		{
 			object[] data = new object [columnTypes.Length];
 			list.Insert (row, data);
-			if (RowInserted != null)
-				RowInserted (this, new ListRowEventArgs (row));
+			NotifyChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, row, row));
 			return row;
 		}
 		
 		public void RemoveRow (int row)
 		{
 			list.RemoveAt (row);
-			if (RowDeleted != null)
-				RowDeleted (this, new ListRowEventArgs (row));
+			NotifyChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, row, row));
 		}
 		
 		public void EnableEvent (object eventId)
@@ -388,8 +385,7 @@ namespace Xwt
 			int count = list.Count;
 			list.Clear ();
 			for (int n=0; n<count; n++) {
-				if (RowDeleted != null)
-					RowDeleted (this, new ListRowEventArgs (n));
+				NotifyChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, n, n));
 			}
 		}
 	}

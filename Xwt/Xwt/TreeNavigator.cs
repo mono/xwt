@@ -91,7 +91,8 @@ namespace Xwt
 
 		public bool MoveToParent ()
 		{
-			return CommitPos (backend.GetParent (pos));
+			//			return CommitPos (backend.GetParent (pos));
+			return false;
 		}
 
 		public TreeNavigator InsertBefore ()

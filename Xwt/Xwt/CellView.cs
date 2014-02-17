@@ -43,12 +43,12 @@ namespace Xwt
 			if (field.Index == -1)
 				throw new InvalidOperationException ("Field must be bound to a data source");
 			if (field.FieldType == typeof(bool))
-				return new CheckBoxCellView ((IDataField<bool>)field);
+				return new CheckBoxCellView () { ActiveBinding = (Binding)field };
 			else if (field.FieldType == typeof(CheckBoxState))
-				return new CheckBoxCellView ((IDataField<CheckBoxState>)field);
+				return new CheckBoxCellView () { StateBinding = (Binding)field };
 			else if (field.FieldType == typeof(Image))
-				return new ImageCellView ((IDataField<Image>)field);
-			return new TextCellView (field);
+				return new ImageCellView ((Binding)field);
+			return new TextCellView ((Binding)field);
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@ namespace Xwt
 
 		bool visible = true;
 
-		public IDataField<bool> VisibleField { get; set; }
+		public Binding VisibleField { get; set; }
 
 		[DefaultValue (true)]
 		public bool Visible {
@@ -80,10 +80,10 @@ namespace Xwt
 		/// <param name="field">Field.</param>
 		/// <param name="defaultValue">Default value to be returned if the field has no value</param>
 		/// <typeparam name="T">Type of the value</typeparam>
-		protected T GetValue<T> (IDataField<T> field, T defaultValue = default(T))
+		protected T GetValue<T> (Binding binding, T defaultValue = default(T))
 		{
-			if (DataSource != null && field != null) {
-				var result = DataSource.GetValue (field);
+			if (DataSource != null && binding != null) {
+				var result = ((IBinding)binding).GetValue (DataSource, typeof(T));
 				return result == null || result == DBNull.Value ? defaultValue : (T) result;
 			}
 			return defaultValue;
@@ -95,5 +95,9 @@ namespace Xwt
 		protected virtual void OnDataChanged ()
 		{
 		}
+
+		public ListViewColumn Column { get; set; }
+
+		public bool Expand { get; set; }
 	}
 }

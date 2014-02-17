@@ -61,7 +61,7 @@ namespace Xwt
 			for (int n=0; n<fields.Length; n++) {
 				if (fields[n].Index != -1)
 					throw new InvalidOperationException ("DataField object already belongs to another data store");
-				((IDataFieldInternal)fields[n]).SetIndex (n);
+				((IDataFieldInternal)fields[n]).SetIndex (Backend, n);
 			}
 			this.fields = fields;
 		}
@@ -120,30 +120,9 @@ namespace Xwt
 			return Backend.GetChild (pos, index);
 		}
 
-		TreePosition ITreeDataSource.GetParent (TreePosition pos)
-		{
-			return Backend.GetParent (pos);
-		}
-
 		int ITreeDataSource.GetChildrenCount (TreePosition pos)
 		{
 			return Backend.GetChildrenCount (pos);
-		}
-
-		object ITreeDataSource.GetValue (TreePosition pos, int column)
-		{
-			return Backend.GetValue (pos, column);
-		}
-
-		void ITreeDataSource.SetValue (TreePosition pos, int column, object val)
-		{
-			Backend.SetValue (pos, column, val);
-		}
-		
-		Type[] ITreeDataSource.ColumnTypes {
-			get {
-				return fields.Select (f => f.FieldType).ToArray ();
-			}
 		}
 	}
 	
@@ -225,6 +204,11 @@ namespace Xwt
 			return np;
 		}
 		
+		public void SetValue (object pos, int column, object value)
+		{
+			SetValue ((TreePosition)pos, column, value);
+		}
+
 		public void SetValue (TreePosition pos, int column, object value)
 		{
 			NodePosition n = GetPosition (pos);
@@ -236,6 +220,11 @@ namespace Xwt
 			node.Data [column] = value;
 			if (NodeChanged != null)
 				NodeChanged (this, new TreeNodeEventArgs (pos));
+		}
+
+		public object GetValue (object pos, int column)
+		{
+			return GetValue ((TreePosition)pos, column);
 		}
 
 		public object GetValue (TreePosition pos, int column)

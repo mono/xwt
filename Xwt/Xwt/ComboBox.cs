@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using System.ComponentModel;
+using System.Collections.Specialized;
 
 
 namespace Xwt
@@ -34,7 +35,7 @@ namespace Xwt
 	public class ComboBox: Widget
 	{
 		CellViewCollection views;
-		IListDataSource source;
+		object source;
 		ItemCollection itemCollection;
 		
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IComboBoxEventSink, ICellContainer
@@ -93,31 +94,27 @@ namespace Xwt
 		}
 		
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-		public IListDataSource ItemsSource {
+		public object ItemsSource {
 			get { return source; }
 			set {
 				BackendHost.ToolkitEngine.ValidateObject (value);
+				var col = source as INotifyCollectionChanged;
 
-				if (source != null) {
-					source.RowChanged -= HandleModelChanged;
-					source.RowDeleted -= HandleModelChanged;
-					source.RowInserted -= HandleModelChanged;
-					source.RowsReordered -= HandleModelChanged;
+				if (col != null) {
+					col.CollectionChanged -= HandleCollectionChanged;
 				}
 				
 				source = value;
 				Backend.SetSource (source, source is IFrontend ? (IBackend) Toolkit.GetBackend (source) : null);
 
-				if (source != null) {
-					source.RowChanged += HandleModelChanged;
-					source.RowDeleted += HandleModelChanged;
-					source.RowInserted += HandleModelChanged;
-					source.RowsReordered += HandleModelChanged;
+				col = source as INotifyCollectionChanged;
+				if (col != null) {
+					col.CollectionChanged += HandleCollectionChanged;
 				}
 			}
 		}
 
-		void HandleModelChanged (object sender, ListRowEventArgs e)
+		void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			OnPreferredSizeChanged ();
 		}
@@ -143,9 +140,8 @@ namespace Xwt
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public string SelectedText {
 			get {
-				if (Backend.SelectedRow == -1)
-					return null;
-				return (string)Items.DataSource.GetValue (Backend.SelectedRow, 0);
+				var sel = SelectedItem;
+				return sel != null ? sel.ToString () : null;
 			}
 			set {
 				SelectedIndex = Items.IndexOf (withLabel: value);

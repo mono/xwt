@@ -61,7 +61,7 @@ namespace Xwt
 		public TextEntry ()
 		{
 		}
-		
+
 		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();

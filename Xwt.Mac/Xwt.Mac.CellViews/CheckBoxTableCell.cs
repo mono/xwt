@@ -42,11 +42,11 @@ namespace Xwt.Mac
 
 		void HandleActivated (object sender, EventArgs e)
 		{
-			if (cellView.Editable && !cellView.RaiseToggled () && (cellView.StateField != null || cellView.ActiveField != null)) {
-				if (cellView.StateField != null)
-					CellContainer.SetValue (cellView.StateField, State.ToXwtState ());
-				else if (cellView.ActiveField != null)
-					CellContainer.SetValue (cellView.ActiveField, State != NSCellStateValue.Off);
+			if (cellView.Editable && !cellView.RaiseToggled () && (cellView.StateBinding != null || cellView.ActiveBinding != null)) {
+				if (cellView.StateBinding != null)
+					CellContainer.SetValue (cellView.StateBinding, State.ToXwtState ());
+				else if (cellView.ActiveBinding != null)
+					CellContainer.SetValue (cellView.ActiveBinding, State != NSCellStateValue.Off);
 			}
 		}
 

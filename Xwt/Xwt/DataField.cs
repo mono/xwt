@@ -40,11 +40,13 @@ namespace Xwt
 
 	internal interface IDataFieldInternal
 	{
-		void SetIndex (int index);
+		void SetIndex (IDataStore store, int index);
 	}
 	
-	public class DataField<T>: IDataField<T>, IDataFieldInternal
+	public class DataField<T>: Binding, IDataField<T>, IDataFieldInternal
 	{
+		IDataStore store;
+
 		public DataField ()
 		{
 			Index = -1;
@@ -52,13 +54,29 @@ namespace Xwt
 		
 		public int Index { get; private set; }
 
-		void IDataFieldInternal.SetIndex (int index)
+		void IDataFieldInternal.SetIndex (IDataStore store, int index)
 		{
+			this.store = store;
 			Index = index;
 		}
 		
 		public virtual Type FieldType {
 			get { return typeof(T); }
+		}
+
+		protected override object OnGetValue (Type type, object instance)
+		{
+			return store.GetValue (instance, Index);
+		}
+
+		protected override void OnSetValue (object instance, object value)
+		{
+			store.SetValue (instance, Index, value);
+		}
+
+		public DataField<R> Select<R> (System.Linq.Expressions.Expression<Func<T,R>> exp)
+		{
+			return null;
 		}
 	}
 }

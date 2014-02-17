@@ -19,11 +19,11 @@ namespace Samples
 			ListStore store = new ListStore(editableActiveField, nonEditableActiveField, textField, textField2, editableField, somewhatEditableData);
 			list.DataSource = store;
 
-			list.Columns.Add (new ListViewColumn("Editable", new CheckBoxCellView { Editable = true, ActiveField = editableActiveField }));
-			list.Columns.Add (new ListViewColumn("Not Editable", new CheckBoxCellView { Editable = false, ActiveField = nonEditableActiveField }));
-			list.Columns.Add (new ListViewColumn("Editable", new TextCellView { Editable = true, TextField = textField }));
-			list.Columns.Add(new ListViewColumn("Somewhat Editable", new CheckBoxCellView { EditableField = editableField, ActiveField = somewhatEditableData }));
-			list.Columns.Add (new ListViewColumn("Somewhat Editable", new TextCellView { EditableField = editableField, TextField = textField2 }));
+			list.Columns.Add (new ListViewColumn("Editable", new CheckBoxCellView { Editable = true, ActiveBinding = editableActiveField }));
+			list.Columns.Add (new ListViewColumn("Not Editable", new CheckBoxCellView { Editable = false, ActiveBinding = nonEditableActiveField }));
+			list.Columns.Add (new ListViewColumn("Editable", new TextCellView { Editable = true, TextBinding = textField }));
+			list.Columns.Add(new ListViewColumn("Somewhat Editable", new CheckBoxCellView { EditableBinding = editableField, ActiveBinding = somewhatEditableData }));
+			list.Columns.Add (new ListViewColumn("Somewhat Editable", new TextCellView { EditableBinding = editableField, TextBinding = textField2 }));
 
 			Random rand = new Random ();
 			

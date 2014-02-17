@@ -28,7 +28,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ITreeStoreBackend: ITreeDataSource, IBackend
+	public interface ITreeStoreBackend: ITreeDataSource, IBackend, IDataStore
 	{
 		// WARNING: You don't need to implement this backend.
 		// Xwt provides a default implementation.

@@ -115,7 +115,7 @@ namespace Xwt
 				store.RemoveRow (0);
 		}
 
-		internal IListDataSource DataSource {
+		internal object DataSource {
 			get { return store; }
 		}
 	}

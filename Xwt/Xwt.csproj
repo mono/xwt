@@ -315,6 +315,11 @@
     <Compile Include="Xwt.Drawing\NinePatchImage.cs" />
     <Compile Include="Xwt\WebView.cs" />
     <Compile Include="Xwt.Backends\IWebViewBackend.cs" />
+    <Compile Include="Xwt\ViewNode.cs" />
+    <Compile Include="Xwt\Binding.cs" />
+    <Compile Include="Xwt\IDataStore.cs" />
+    <Compile Include="Xwt.Backends\TreeDataSource.cs" />
+    <Compile Include="Xwt\TreeItemTemplate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

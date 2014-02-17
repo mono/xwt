@@ -33,7 +33,7 @@ namespace Xwt.Backends
 	public interface IListBoxBackend: IWidgetBackend, IScrollableWidgetBackend
 	{
 		void SetViews (CellViewCollection views);
-		void SetSource (IListDataSource source, IBackend sourceBackend);
+		void SetSource (object source, IBackend sourceBackend);
 		void SetSelectionMode (SelectionMode mode);
 		void SelectAll ();
 		void UnselectAll ();

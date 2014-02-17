@@ -29,66 +29,6 @@ using System;
 
 namespace Xwt
 {
-	public interface IListDataSource
-	{
-		/// <summary>
-		/// Gets the number of rows in the data source.
-		/// </summary>
-		int RowCount { get; }
-
-		/// <summary>
-		/// Gets the value at the specified <paramref name="row"/> and <paramref name="column"/>.
-		/// </summary>
-		/// <param name="row">The row to retrieve the value from.</param>
-		/// <param name="column">The column to retrieve the value from.</param>
-		/// <returns>A reference to the value.</returns>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// <para><paramref name="row"/> is &gt;= <see cref="RowCount"/></para>
-		/// <para>-- or --</para>
-		/// <para><paramref name="column"/> is &gt;= the number of columns (<see cref="ColumnTypes"/>).</para>
-		/// </exception>
-		/// <seealso cref="SetValue"/>
-		object GetValue (int row, int column);
-
-		/// <summary>
-		/// Sets the value at the specified <paramref name="row"/> and <paramref name="column"/>.
-		/// </summary>
-		/// <param name="row">The row to set the value at.</param>
-		/// <param name="column">The column to set the value at.</param>
-		/// <param name="value">The value to set at the given <paramref name="row"/> and <paramref name="column"/>.</param>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// <para><paramref name="row"/> is &gt;= <see cref="RowCount"/></para>
-		/// <para>-- or --</para>
-		/// <para><paramref name="column"/> is &gt;= the number of columns (<see cref="ColumnTypes"/>).</para>
-		/// </exception>
-		void SetValue (int row, int column, object value);
-
-		/// <summary>
-		/// Gets the column types of this data source.
-		/// </summary>
-		Type[] ColumnTypes { get; }
-		
-		/// <summary>
-		/// Raised when a row is inserted into the data source.
-		/// </summary>
-		event EventHandler<ListRowEventArgs> RowInserted;
-
-		/// <summary>
-		/// Raised when a row is deleted from the data source.
-		/// </summary>
-		event EventHandler<ListRowEventArgs> RowDeleted;
-
-		/// <summary>
-		/// Raised when a column value of a row is changed in the data source.
-		/// </summary>
-		event EventHandler<ListRowEventArgs> RowChanged;
-
-		/// <summary>
-		/// Raised when rows in the data source is reordered.
-		/// </summary>
-		event EventHandler<ListRowOrderEventArgs> RowsReordered;
-	}
-	
 	public class ListRowEventArgs: EventArgs
 	{
 		public ListRowEventArgs (int row)

@@ -104,7 +104,7 @@ namespace Xwt.GtkBackend
 				CellUtil.CreateCellRenderer (ApplicationContext, this, null, v, Widget.Model);
 		}
 
-		public void SetSource (IListDataSource source, IBackend sourceBackend)
+		public void SetSource (object source, IBackend sourceBackend)
 		{
 			ListStoreBackend b = sourceBackend as ListStoreBackend;
 			if (b == null) {

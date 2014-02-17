@@ -1,10 +1,10 @@
-//
-// ITextCellViewFrontend.cs
+﻿//
+// ITableStore.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Lluis Sanchez Gual <lluis@xamarin.com>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,18 +25,12 @@
 // THE SOFTWARE.
 using System;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface ITextCellViewFrontend: ICellViewFrontend
+	public interface IDataStore
 	{
-		string Markup { get; }
-		string Text { get; }
-		bool Editable { get; }
-		EllipsizeMode Ellipsize { get; }
-		
-		bool RaiseTextChanged ();
-
-		Binding TextBinding { get; set; }
+		object GetValue (object pos, int column);
+		void SetValue (object pos, int column, object value);
 	}
 }
 
