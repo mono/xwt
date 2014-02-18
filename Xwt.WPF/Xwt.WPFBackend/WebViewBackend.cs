@@ -61,13 +61,17 @@ namespace Xwt.WPFBackend
 		internal void OnLoadCompleted (object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
 			var url = e.Uri.AbsoluteUri;
-			EventSink.OnNavigatedToUrl (url);
+			Context.InvokeUserCode (delegate {
+				EventSink.OnNavigatedToUrl (url);
+			});
 		}
 
 		internal void OnNavigating (object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
 		{
 			var url = e.Uri.AbsoluteUri;
-			EventSink.OnNavigatingToUrl (url);
+			Context.InvokeUserCode (delegate {
+				EventSink.OnNavigatingToUrl (url);
+			});
 		}
 
 		protected new IWebViewEventSink EventSink {
