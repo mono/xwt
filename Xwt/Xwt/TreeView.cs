@@ -123,7 +123,25 @@ namespace Xwt
 			get { return Backend.HorizontalScrollPolicy; }
 			set { Backend.HorizontalScrollPolicy = value; }
 		}
-		
+
+		ScrollAdjustment verticalScrollAdjustment;
+		public ScrollAdjustment VerticalScrollAdjustment {
+			get {
+				if (verticalScrollAdjustment == null)
+					verticalScrollAdjustment = new ScrollAdjustment (Backend.CreateVerticalScrollAdjustment ());
+				return verticalScrollAdjustment;
+			}
+		}
+
+		ScrollAdjustment horizontalScrollAdjustment;
+		public ScrollAdjustment HorizontalScrollAdjustment {
+			get {
+				if (horizontalScrollAdjustment == null)
+					horizontalScrollAdjustment = new ScrollAdjustment (Backend.CreateHorizontalScrollAdjustment ());
+				return horizontalScrollAdjustment;
+			}
+		}
+
 		/// <summary>
 		/// Gets the tree columns.
 		/// </summary>

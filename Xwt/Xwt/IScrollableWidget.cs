@@ -31,6 +31,9 @@ namespace Xwt
 	{
 		ScrollPolicy VerticalScrollPolicy { get; set; }
 		ScrollPolicy HorizontalScrollPolicy { get; set; }
+
+		ScrollAdjustment VerticalScrollAdjustment { get; }
+		ScrollAdjustment HorizontalScrollAdjustment { get; }
 	}
 }
 

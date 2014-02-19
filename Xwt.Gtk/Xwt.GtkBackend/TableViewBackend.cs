@@ -78,7 +78,17 @@ namespace Xwt.GtkBackend
 				ScrolledWindow.HscrollbarPolicy = value.ToGtkValue ();
 			}
 		}
-		
+
+		public IScrollAdjustmentBackend CreateVerticalScrollAdjustment ()
+		{
+			return new ScrollAdjustmentBackend (ScrolledWindow.Vadjustment);
+		}
+
+		public IScrollAdjustmentBackend CreateHorizontalScrollAdjustment ()
+		{
+			return new ScrollAdjustmentBackend (ScrolledWindow.Hadjustment);
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

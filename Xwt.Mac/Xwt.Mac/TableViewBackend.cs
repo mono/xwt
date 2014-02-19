@@ -112,7 +112,17 @@ namespace Xwt.Mac
 				}
 			}
 		}
-		
+
+		public IScrollAdjustmentBackend CreateVerticalScrollAdjustment ()
+		{
+			return new ScrollAdjustmentBackend (scroll, true);
+		}
+
+		public IScrollAdjustmentBackend CreateHorizontalScrollAdjustment ()
+		{
+			return new ScrollAdjustmentBackend (scroll, false);
+		}
+
 		protected override Size GetNaturalSize ()
 		{
 			return EventSink.GetDefaultNaturalSize ();
