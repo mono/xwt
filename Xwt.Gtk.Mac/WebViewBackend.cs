@@ -47,6 +47,11 @@ namespace Xwt.Gtk.Mac
 			Widget.Show ();
 		}
 
+		public void LoadHtmlString (string html)
+		{
+			view.MainFrame.LoadHtmlString (html, null);
+		}
+
 		public string Url {
 			get { return view.MainFrameUrl; }
 			set {

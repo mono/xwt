@@ -30,15 +30,20 @@ namespace Xwt.Backends
 	public interface IWebViewBackend : IWidgetBackend
 	{
 		string Url { get; set; }
+		void LoadHtmlString (string html);
 	}
 
 	public interface IWebViewEventSink : IWidgetEventSink
 	{
 		void OnLoaded ();
+		void OnNavigatingToUrl (string url);
+		void OnNavigatedToUrl (string url);
 	}
 
 	public enum WebViewEvent
 	{
-		Loaded = 1
+		Loaded          = 1,
+		NavigatingToUrl = 2,
+		NavigatedToUrl  = 3
 	}
 }

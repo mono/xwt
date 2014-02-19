@@ -52,6 +52,67 @@ namespace Xwt.WPFBackend
 				((SWC.WebBrowser)Widget).Navigate (url);
 			}
 		}
+
+		public void LoadHtmlString (string html)
+		{
+			((SWC.WebBrowser)Widget).NavigateToString (html);
+		}
+
+		internal void OnLoadCompleted (object sender, System.Windows.Navigation.NavigationEventArgs e)
+		{
+			var url = e.Uri.AbsoluteUri;
+			Context.InvokeUserCode (delegate {
+				EventSink.OnNavigatedToUrl (url);
+			});
+		}
+
+		internal void OnNavigating (object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+		{
+			var url = e.Uri.AbsoluteUri;
+			Context.InvokeUserCode (delegate {
+				EventSink.OnNavigatingToUrl (url);
+			});
+		}
+
+		protected new IWebViewEventSink EventSink {
+			get { return (IWebViewEventSink)base.EventSink; }
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+
+			if (eventId is WebViewEvent)
+			{
+				switch ((WebViewEvent)eventId)
+				{
+				case WebViewEvent.NavigatedToUrl:
+					((SWC.WebBrowser)Widget).LoadCompleted -= OnLoadCompleted;
+					break;
+				case WebViewEvent.NavigatingToUrl:
+					((SWC.WebBrowser)Widget).Navigating -= OnNavigating;
+					break;
+				}
+			}
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+
+			if (eventId is WebViewEvent)
+			{
+				switch ((WebViewEvent)eventId)
+				{
+				case WebViewEvent.NavigatedToUrl:
+					((SWC.WebBrowser)Widget).LoadCompleted += OnLoadCompleted;
+					break;
+				case WebViewEvent.NavigatingToUrl:
+					((SWC.WebBrowser)Widget).Navigating += OnNavigating;
+					break;
+				}
+			}
+		}
 	}
 }
 

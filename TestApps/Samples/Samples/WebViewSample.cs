@@ -34,10 +34,17 @@ namespace Samples
 	{
 		public WebViewSample ()
 		{
-			var wb = new WebView ("http://www.xamarin.com");
+			var wb = new WebView ();
 			wb.WidthRequest = 600;
 			wb.HeightRequest = 900;
 			PackStart (wb, true);
+
+			wb.Url = "http://www.xamarin.com";
+
+			wb.NavigatingToUrl += (sender, e) => { Console.WriteLine ("Navigating..."); };
+			wb.NavigatedToUrl += (sender, e) => {
+				Console.WriteLine ("Navigated!");
+			};
 		}
 	}
 }

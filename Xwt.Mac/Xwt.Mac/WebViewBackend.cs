@@ -35,6 +35,10 @@ using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
+	class XwtWebFrameDelegate : WebFrameLoadDelegate
+	{
+	}
+
 	public class WebViewBackend : ViewBackend<MonoMac.WebKit.WebView, IWebViewEventSink>, IWebViewBackend
 	{
 		public WebViewBackend ()
@@ -47,10 +51,15 @@ namespace Xwt.Mac
 		}
 
 		#region IWebViewBackend implementation
+		public void LoadHtmlString (string html)
+		{
+			((MacWebView)ViewObject).MainFrame.LoadHtmlString (html, null);
+		}
+
 		public override void Initialize()
 		{
 			base.Initialize ();
-			ViewObject = new MacWebView ();
+			ViewObject = new MacWebView (EventSink, ApplicationContext);
 		}
 
 		public string Url {
@@ -64,10 +73,38 @@ namespace Xwt.Mac
 
 	class MacWebView : MonoMac.WebKit.WebView, IViewObject
 	{
+		IWebViewEventSink eventSink;
+		ApplicationContext context;
+		internal EventHandler navigatingToUrl;
+		internal EventHandler navigatedToUrl;
+
 		public ViewBackend Backend { get; set; }
 
 		public NSView View {
 			get { return this; }
+		}
+
+		public MacWebView (IWebViewEventSink eventSink, ApplicationContext context) {
+			this.context = context;
+			this.eventSink = eventSink;
+
+			this.StartedProvisionalLoad += (sender, e) => {
+				var nsurl = e.ForFrame.DataSource.Request.MainDocumentURL;
+				var url = nsurl != null ? nsurl.ToString () : null;
+
+				context.InvokeUserCode (delegate {
+					eventSink.OnNavigatingToUrl (url);
+				});
+			};
+
+			this.FinishedLoad += (sender, e) => {
+				var nsurl = e.ForFrame.DataSource.Request.MainDocumentURL;
+				var url = nsurl != null ? nsurl.ToString () : null;
+
+				context.InvokeUserCode (delegate {
+					eventSink.OnNavigatedToUrl (url);
+				});
+			};
 		}
 	}
 }

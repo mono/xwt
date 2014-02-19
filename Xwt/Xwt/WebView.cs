@@ -35,6 +35,8 @@ namespace Xwt
 	public class WebView : Widget
 	{
 		EventHandler loaded;
+		EventHandler navigatingToUrl;
+		EventHandler navigatedToUrl;
 		string url;
 
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IWebViewEventSink
@@ -43,11 +45,23 @@ namespace Xwt
 			{
 				((WebView)Parent).OnLoaded (EventArgs.Empty);
 			}
+
+			public void OnNavigatingToUrl (string url)
+			{
+				((WebView)Parent).OnNavigatingToUrl (EventArgs.Empty);
+			}
+
+			public void OnNavigatedToUrl (string url)
+			{
+				((WebView)Parent).OnNavigatedToUrl (EventArgs.Empty);
+			}
 		}
 
 		static WebView ()
 		{
 			MapEvent (WebViewEvent.Loaded, typeof(WebView), "OnLoaded");
+			MapEvent (WebViewEvent.NavigatingToUrl, typeof(WebView), "OnNavigatingToUrl");
+			MapEvent (WebViewEvent.NavigatedToUrl, typeof(WebView), "OnNavigatedToUrl");
 		}
 
 		public WebView ()
@@ -57,6 +71,11 @@ namespace Xwt
 		public WebView (string url)
 		{
 			Url = url;
+		}
+
+		public void LoadHtmlString (string html)
+		{
+			Backend.LoadHtmlString (html);
 		}
 
 		protected override Xwt.Backends.BackendHost CreateBackendHost ()
@@ -81,6 +100,18 @@ namespace Xwt
 		{
 		}
 
+		protected virtual void OnNavigatingToUrl (EventArgs e)
+		{
+			if (navigatingToUrl != null)
+				navigatingToUrl (this, e);
+		}
+
+		protected virtual void OnNavigatedToUrl (EventArgs e)
+		{
+			if (navigatedToUrl != null)
+				navigatedToUrl (this, e);
+		}
+
 		public event EventHandler Loaded {
 			add {
 				BackendHost.OnBeforeEventAdd (WebViewEvent.Loaded, loaded);
@@ -90,6 +121,28 @@ namespace Xwt
 			remove {
 				loaded -= value;
 				BackendHost.OnAfterEventRemove (WebViewEvent.Loaded, loaded);
+			}
+		}
+
+		public event EventHandler NavigatingToUrl {
+			add {
+				BackendHost.OnBeforeEventAdd (WebViewEvent.NavigatingToUrl, navigatingToUrl);
+				navigatingToUrl += value;
+			}
+			remove {
+				navigatingToUrl -= value;
+				BackendHost.OnAfterEventRemove (WebViewEvent.NavigatingToUrl, navigatingToUrl);
+			}
+		}
+
+		public event EventHandler NavigatedToUrl {
+			add {
+				BackendHost.OnBeforeEventAdd (WebViewEvent.NavigatedToUrl, navigatedToUrl);
+				navigatedToUrl += value;
+			}
+			remove {
+				navigatedToUrl -= value;
+				BackendHost.OnAfterEventRemove (WebViewEvent.NavigatedToUrl, navigatedToUrl);
 			}
 		}
 	}
