@@ -43,7 +43,17 @@ namespace Xwt.WPFBackend
 		{
 			ListView = new ExListView();
 			ListView.View = this.view;
-		}
+        }
+
+		public ScrollViewer ScrollViewer {
+			get {
+	            Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(ListView, 0) as Decorator;
+	            if (border != null)
+	                return border.Child as ScrollViewer;
+	            else
+	                return null;
+	        }
+        }
 		
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (this.ListView).ToXwtScrollPolicy (); }
@@ -55,7 +65,17 @@ namespace Xwt.WPFBackend
 			set { ScrollViewer.SetHorizontalScrollBarVisibility (ListView, value.ToWpfScrollBarVisibility ()); }
 		}
 
-		private bool borderVisible = true;
+		public IScrollControlBackend CreateVerticalScrollControl()
+		{
+			return new ScrollControlBackend(ScrollViewer, true);
+		}
+
+		public IScrollControlBackend CreateHorizontalScrollControl()
+		{
+			return new ScrollControlBackend(ScrollViewer, false);
+		}
+       
+        private bool borderVisible = true;
 		public bool BorderVisible
 		{
 			get { return this.borderVisible; }
