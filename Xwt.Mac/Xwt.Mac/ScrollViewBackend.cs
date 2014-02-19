@@ -34,6 +34,7 @@ namespace Xwt.Mac
 		IWidgetBackend child;
 		ScrollPolicy verticalScrollPolicy;
 		ScrollPolicy horizontalScrollPolicy;
+		NormalClipView clipView;
 
 		public override void Initialize ()
 		{
@@ -62,8 +63,13 @@ namespace Xwt.Mac
 				backend.Widget.Frame = new System.Drawing.RectangleF (0, 0, clipView.Frame.Width, clipView.Frame.Height);
 				clipView.DocumentView = dummy;
 				backend.EventSink.SetScrollAdjustments (hs, vs);
+				vertScroll = vs;
+				horScroll = hs;
 			}
 			else {
+				clipView = new NormalClipView ();
+				clipView.Scrolled += OnScrolled;
+				Widget.ContentView = clipView;
 				Widget.DocumentView = backend.Widget;
 				UpdateChildSize ();
 			}
@@ -88,7 +94,31 @@ namespace Xwt.Mac
 				Widget.HasHorizontalScroller = horizontalScrollPolicy != ScrollPolicy.Never;
 			}
 		}
-		
+
+		IScrollControlBackend vertScroll;
+		public IScrollControlBackend CreateVerticalScrollControl ()
+		{
+			if (vertScroll == null)
+				vertScroll = new ScrollControlBackend (ApplicationContext, Widget, true);
+			return vertScroll;
+		}
+
+		IScrollControlBackend horScroll;
+		public IScrollControlBackend CreateHorizontalScrollControl ()
+		{
+			if (horScroll == null)
+				horScroll = new ScrollControlBackend (ApplicationContext, Widget, false);
+			return horScroll;
+		}
+
+		void OnScrolled (object o, EventArgs e)
+		{
+			if (vertScroll is ScrollControlBackend)
+				((ScrollControlBackend)vertScroll).NotifyValueChanged ();
+			if (horScroll is ScrollControlBackend)
+				((ScrollControlBackend)horScroll).NotifyValueChanged ();
+		}
+
 		public Rectangle VisibleRect {
 			get {
 				return Rectangle.Zero;
@@ -230,6 +260,18 @@ namespace Xwt.Mac
 			ratioX = hScroll.PageSize != 0 ? vr.Width / (float)hScroll.PageSize : 1;
 			ratioY = vScroll.PageSize != 0 ? vr.Height / (float)vScroll.PageSize : 1;
 			DocumentView.Frame = new System.Drawing.RectangleF (0, 0, (float)(hScroll.UpperValue - hScroll.LowerValue) * ratioX, (float)(vScroll.UpperValue - vScroll.LowerValue) * ratioY);
+		}
+	}
+
+	class NormalClipView: NSClipView
+	{
+		public event EventHandler Scrolled;
+
+		public override void ScrollToPoint (System.Drawing.PointF newOrigin)
+		{
+			base.ScrollToPoint (newOrigin);
+			if (Scrolled != null)
+				Scrolled (this, EventArgs.Empty);
 		}
 	}
 }

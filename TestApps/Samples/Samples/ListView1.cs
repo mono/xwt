@@ -39,6 +39,12 @@ namespace Samples
 			list.RowActivated += delegate(object sender, ListViewRowEventArgs e) {
 				MessageDialog.ShowMessage ("Row " + e.RowIndex + " activated");
 			};
+
+			var but = new Button ("Scroll one line");
+			but.Clicked += delegate {
+				list.VerticalScrollControl.Value += list.VerticalScrollControl.StepIncrement;
+			};
+			PackStart (but);
 		}
 	}
 

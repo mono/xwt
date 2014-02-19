@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
+using MonoMac.Foundation;
 
 
 namespace Xwt.Mac
@@ -35,11 +36,25 @@ namespace Xwt.Mac
 		bool vertical;
 		NSScrollView scrollView;
 		IScrollControlEventSink eventSink;
+		ApplicationContext appContext;
+		double lastValue;
 
-		public ScrollControlBackend (NSScrollView scrollView, bool vertical)
+		public ScrollControlBackend (ApplicationContext appContext, NSScrollView scrollView, bool vertical)
 		{
 			this.vertical = vertical;
 			this.scrollView = scrollView;
+			this.appContext = appContext;
+			lastValue = Value;
+		}
+
+		public void NotifyValueChanged ()
+		{
+			if (lastValue != Value) {
+				lastValue = Value;
+				appContext.InvokeUserCode (delegate {
+					eventSink.OnValueChanged ();
+				});
+			}
 		}
 
 		#region IBackend implementation
@@ -56,11 +71,6 @@ namespace Xwt.Mac
 		}
 		#endregion
 
-		public void NotifyValueChanged ()
-		{
-			eventSink.OnValueChanged ();
-		}
-
 		#region IScrollAdjustmentBackend implementation
 		public void Initialize (IScrollControlEventSink eventSink)
 		{
@@ -76,9 +86,9 @@ namespace Xwt.Mac
 			}
 			set {
 				if (vertical)
-					scrollView.ScrollPoint (new System.Drawing.PointF (scrollView.DocumentVisibleRect.X, (float)value));
+					scrollView.ContentView.ScrollToPoint (new System.Drawing.PointF (scrollView.DocumentVisibleRect.X, (float)value));
 				else
-					scrollView.ScrollPoint (new System.Drawing.PointF ((float)value, scrollView.DocumentVisibleRect.Y));
+					scrollView.ContentView.ScrollToPoint (new System.Drawing.PointF ((float)value, scrollView.DocumentVisibleRect.Y));
 				scrollView.ReflectScrolledClipView (scrollView.ContentView);
 			}
 		}
