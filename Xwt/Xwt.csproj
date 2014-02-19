@@ -176,8 +176,6 @@
     <Compile Include="Xwt.Backends\ISeparatorMenuItemBackend.cs" />
     <Compile Include="Xwt\EllipsizeMode.cs" />
     <Compile Include="Xwt\RowDropPosition.cs" />
-    <Compile Include="Xwt\ScrollAdjustment.cs" />
-    <Compile Include="Xwt.Backends\IScrollAdjustmentBackend.cs" />
     <Compile Include="Xwt\OpenFileDialog.cs" />
     <Compile Include="Xwt\SaveFileDialog.cs" />
     <Compile Include="Xwt\FileDialog.cs" />
@@ -313,6 +311,10 @@
     <Compile Include="Xwt.Drawing\NinePatchImage.cs" />
     <Compile Include="Xwt\WebView.cs" />
     <Compile Include="Xwt.Backends\IWebViewBackend.cs" />
+    <Compile Include="Xwt.Backends\IScrollAdjustmentBackend.cs" />
+    <Compile Include="Xwt\ScrollAdjustment.cs" />
+    <Compile Include="Xwt\ScrollControl.cs" />
+    <Compile Include="Xwt.Backends\IScrollControlBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

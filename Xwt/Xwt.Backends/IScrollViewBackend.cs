@@ -27,19 +27,9 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IScrollViewBackend: IWidgetBackend, IChildPlacementHandler
+	public interface IScrollViewBackend: IWidgetBackend, IChildPlacementHandler, IScrollableWidgetBackend
 	{
 		void SetChild (IWidgetBackend child);
-		
-		ScrollPolicy VerticalScrollPolicy {
-			get;
-			set; 
-		}
-
-		ScrollPolicy HorizontalScrollPolicy {
-			get;
-			set;
-		}
 		
 		bool BorderVisible {
 			get;

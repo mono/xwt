@@ -31,6 +31,18 @@ namespace Xwt.Backends
 	{
 		ScrollPolicy VerticalScrollPolicy { get; set; }
 		ScrollPolicy HorizontalScrollPolicy { get; set; }
+
+		/// <summary>
+		/// Returns the vertical adjustment for the widget. Called only once.
+		/// </summary>
+		/// <returns>The vertical scroll adjustment.</returns>
+		IScrollControlBackend CreateVerticalScrollControl ();
+
+		/// <summary>
+		/// Returns the horizontal adjustment for the widget. Called only once.
+		/// </summary>
+		/// <returns>The horizontal scroll adjustment.</returns>
+		IScrollControlBackend CreateHorizontalScrollControl ();
 	}
 }
 

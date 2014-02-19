@@ -28,11 +28,25 @@ using NUnit.Framework;
 
 namespace Xwt
 {
-	public class TreeViewTests: WidgetTests
+	public class TreeViewTests: ScrollableWidgetTests
 	{
 		public override Widget CreateWidget ()
 		{
 			return new TreeView ();
+		}
+
+		public override IScrollableWidget CreateScrollableWidget ()
+		{
+			DataField<string> text = new DataField<string> ();
+			TreeStore s = new TreeStore (text);
+			var list = new TreeView (s);
+			list.Columns.Add ("Hi", text);
+
+			for (int n = 0; n < 100; n++) {
+				var r = s.AddNode ();
+				r.SetValue (text, n + new string ('.',100));
+			}
+			return list;
 		}
 
 		[Test]
@@ -49,6 +63,10 @@ namespace Xwt
 			nb.Add (tree, "Two");
 			w.Content = nb;
 			ShowWindow (w);
+
+			tree.ScrollToRow (node.CurrentPosition);
+
+			tree.Columns.Add ("Hi", f);
 
 			tree.ScrollToRow (node.CurrentPosition);
 		}

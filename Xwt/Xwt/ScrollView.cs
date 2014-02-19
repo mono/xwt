@@ -29,7 +29,7 @@ using Xwt.Backends;
 namespace Xwt
 {
 	[BackendType (typeof(IScrollViewBackend))]
-	public class ScrollView: Widget
+	public class ScrollView: Widget, IScrollableWidget
 	{
 		Widget child;
 		EventHandler visibleRectChanged;
@@ -97,7 +97,25 @@ namespace Xwt
 			get { return Backend.HorizontalScrollPolicy; }
 			set { Backend.HorizontalScrollPolicy = value; OnPreferredSizeChanged (); }
 		}
-		
+
+		ScrollControl verticalScrollAdjustment;
+		public ScrollControl VerticalScrollControl {
+			get {
+				if (verticalScrollAdjustment == null)
+					verticalScrollAdjustment = new ScrollControl (Backend.CreateVerticalScrollControl ());
+				return verticalScrollAdjustment;
+			}
+		}
+
+		ScrollControl horizontalScrollAdjustment;
+		public ScrollControl HorizontalScrollControl {
+			get {
+				if (horizontalScrollAdjustment == null)
+					horizontalScrollAdjustment = new ScrollControl (Backend.CreateHorizontalScrollControl ());
+				return horizontalScrollAdjustment;
+			}
+		}
+
 		public Rectangle VisibleRect {
 			get { return Backend.VisibleRect; }
 		}

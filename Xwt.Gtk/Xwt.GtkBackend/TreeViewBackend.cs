@@ -216,7 +216,8 @@ namespace Xwt.GtkBackend
 		
 		public void ScrollToRow (TreePosition pos)
 		{
-			Widget.ScrollToCell (Widget.Model.GetPath (((IterPos)pos).Iter), Widget.Columns[0], false, 0, 0);
+			if (Widget.Columns.Length > 0)
+				Widget.ScrollToCell (Widget.Model.GetPath (((IterPos)pos).Iter), Widget.Columns[0], false, 0, 0);
 		}
 		
 		public void ExpandToRow (TreePosition pos)

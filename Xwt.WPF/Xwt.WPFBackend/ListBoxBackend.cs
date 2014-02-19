@@ -42,6 +42,16 @@ namespace Xwt.WPFBackend
 			ListBox.DisplayMemberPath = ".[0]";
 		}
 
+		public ScrollViewer ScrollViewer {
+			get {
+				Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(ListBox, 0) as Decorator;
+				if (border != null)
+					return border.Child as ScrollViewer;
+				else
+					return null;
+			}
+		}
+
 		public ScrollPolicy VerticalScrollPolicy
 		{
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (ListBox).ToXwtScrollPolicy(); }
@@ -52,6 +62,16 @@ namespace Xwt.WPFBackend
 		{
 			get { return ScrollViewer.GetHorizontalScrollBarVisibility (ListBox).ToXwtScrollPolicy (); }
 			set { ScrollViewer.SetVerticalScrollBarVisibility (ListBox, value.ToWpfScrollBarVisibility ()); }
+		}
+
+		public IScrollControlBackend CreateVerticalScrollControl()
+		{
+			return new ScrollControlBackend(ScrollViewer, true);
+		}
+
+		public IScrollControlBackend CreateHorizontalScrollControl()
+		{
+			return new ScrollControlBackend(ScrollViewer, false);
 		}
 
 		public void SetViews (CellViewCollection views)

@@ -23,15 +23,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using NUnit.Framework;
 
 namespace Xwt
 {
-	public class ListViewTests: WidgetTests
+	public class ListViewTests: ScrollableWidgetTests
 	{
 		public override Widget CreateWidget ()
 		{
 			return new ListView ();
+		}
+
+		public override IScrollableWidget CreateScrollableWidget ()
+		{
+			DataField<string> text = new DataField<string> ();
+			ListStore s = new ListStore (text);
+			var list = new ListView (s);
+			list.Columns.Add ("Hi", text);
+
+			for (int n = 0; n < 100; n++) {
+				var r = s.AddRow ();
+				s.SetValue (r, text, n + new string ('.',100));
+			}
+			return list;
 		}
 	}
 }

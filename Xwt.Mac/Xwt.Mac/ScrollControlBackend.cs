@@ -1,5 +1,5 @@
-// 
-// ScrollAdjustmentBackend.cs
+﻿// 
+// ScrollControlBackend.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -26,28 +26,40 @@
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
+using MonoMac.Foundation;
 
 
 namespace Xwt.Mac
 {
-	class ScrollAdjustmentBackend: IScrollAdjustmentBackend, IScrollControlBackend
+	class ScrollControlBackend: IScrollControlBackend
 	{
 		bool vertical;
 		NSScrollView scrollView;
-		IScrollAdjustmentEventSink eventSink;
-		IScrollControlEventSink controlEventSink;
-		ApplicationContext context;
+		IScrollControlEventSink eventSink;
+		ApplicationContext appContext;
+		double lastValue;
 
-		public ScrollAdjustmentBackend (NSScrollView scrollView, bool vertical)
+		public ScrollControlBackend (ApplicationContext appContext, NSScrollView scrollView, bool vertical)
 		{
 			this.vertical = vertical;
 			this.scrollView = scrollView;
+			this.appContext = appContext;
+			lastValue = Value;
+		}
+
+		public void NotifyValueChanged ()
+		{
+			if (lastValue != Value) {
+				lastValue = Value;
+				appContext.InvokeUserCode (delegate {
+					eventSink.OnValueChanged ();
+				});
+			}
 		}
 
 		#region IBackend implementation
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
-			this.context = context;
 		}
 
 		public void EnableEvent (object eventId)
@@ -58,75 +70,56 @@ namespace Xwt.Mac
 		{
 		}
 		#endregion
-		
-		public void NotifyValueChanged ()
-		{
-			context.InvokeUserCode (delegate {
-				if (eventSink != null)
-					eventSink.OnValueChanged ();
-				if (controlEventSink != null)
-					controlEventSink.OnValueChanged ();
-			});
-		}
 
 		#region IScrollAdjustmentBackend implementation
-		public void Initialize (IScrollAdjustmentEventSink eventSink)
-		{
-			this.eventSink = eventSink;
-		}
-
 		public void Initialize (IScrollControlEventSink eventSink)
 		{
-			this.controlEventSink = eventSink;
-		}
-
-		CustomClipView ClipView {
-			get { return ((CustomClipView)scrollView.ContentView); }
+			this.eventSink = eventSink;
 		}
 
 		public double Value {
 			get {
 				if (vertical)
-					return ClipView.CurrentY;
+					return scrollView.DocumentVisibleRect.Y;
 				else
-					return ClipView.CurrentX;
+					return scrollView.DocumentVisibleRect.X;
 			}
 			set {
 				if (vertical)
-					ClipView.CurrentY = (float)value;
+					scrollView.ContentView.ScrollToPoint (new System.Drawing.PointF (scrollView.DocumentVisibleRect.X, (float)value));
 				else
-					ClipView.CurrentX = (float)value;
+					scrollView.ContentView.ScrollToPoint (new System.Drawing.PointF ((float)value, scrollView.DocumentVisibleRect.Y));
+				scrollView.ReflectScrolledClipView (scrollView.ContentView);
 			}
 		}
 
-		public void SetRange (double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value)
-		{
-			LowerValue = lowerValue;
-			UpperValue = upperValue;
-			PageSize = pageSize;
-			PageIncrement = pageIncrement;
-			StepIncrement = stepIncrement;
-
-			if (vertical)
-				scrollView.VerticalLineScroll = (float)stepIncrement;
-			else
-				scrollView.HorizontalLineScroll = (float)stepIncrement;
-
-			ClipView.UpdateDocumentSize ();
-			if (Value != value)
-				Value = value;
+		public double LowerValue {
+			get {
+				return 0;
+			}
 		}
 
-		public double LowerValue { get; private set; }
+		public double UpperValue {
+			get { return vertical ? scrollView.ContentSize.Height : scrollView.ContentSize.Width; }
+		}
 
-		public double UpperValue { get; private set; }
+		public double PageIncrement {
+			get {
+				return vertical ? scrollView.VerticalPageScroll : scrollView.HorizontalPageScroll;
+			}
+		}
 
-		public double PageIncrement { get; private set; }
+		public double PageSize {
+			get {
+				return vertical ? scrollView.DocumentVisibleRect.Height : scrollView.DocumentVisibleRect.Width;
+			}
+		}
 
-		public double PageSize { get; private set; }
-
-		public double StepIncrement { get; private set; }
-
+		public double StepIncrement {
+			get {
+				return vertical ? scrollView.VerticalLineScroll : scrollView.HorizontalLineScroll;
+			}
+		}
 		#endregion
 	}
 }

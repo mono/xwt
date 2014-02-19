@@ -39,6 +39,7 @@ namespace Xwt.Mac
 		protected NSTableView Table;
 		ScrollView scroll;
 		NSObject selChangeObserver;
+		NormalClipView clipView;
 		
 		public TableViewBackend ()
 		{
@@ -48,6 +49,9 @@ namespace Xwt.Mac
 		{
 			Table = CreateView ();
 			scroll = new ScrollView ();
+			clipView = new NormalClipView ();
+			clipView.Scrolled += OnScrolled;
+			scroll.ContentView = clipView;
 			scroll.DocumentView = Table;
 			scroll.BorderType = NSBorderType.BezelBorder;
 			ViewObject = scroll;
@@ -112,7 +116,31 @@ namespace Xwt.Mac
 				}
 			}
 		}
-		
+
+		ScrollControlBackend vertScroll;
+		public IScrollControlBackend CreateVerticalScrollControl ()
+		{
+			if (vertScroll == null)
+				vertScroll = new ScrollControlBackend (ApplicationContext, scroll, true);
+			return vertScroll;
+		}
+
+		ScrollControlBackend horScroll;
+		public IScrollControlBackend CreateHorizontalScrollControl ()
+		{
+			if (horScroll == null)
+				horScroll = new ScrollControlBackend (ApplicationContext, scroll, false);
+			return horScroll;
+		}
+
+		void OnScrolled (object o, EventArgs e)
+		{
+			if (vertScroll != null)
+				vertScroll.NotifyValueChanged ();
+			if (horScroll != null)
+				horScroll.NotifyValueChanged ();
+		}
+
 		protected override Size GetNaturalSize ()
 		{
 			return EventSink.GetDefaultNaturalSize ();
