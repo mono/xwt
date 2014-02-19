@@ -129,6 +129,9 @@
     <Compile Include="Xwt.GtkBackend\GtkKeyboardHandler.cs" />
     <Compile Include="Xwt.GtkBackend\Conversion.cs" />
     <Compile Include="Xwt.GtkBackend\GtkPlatformBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ScrollControlBackend.cs">
+      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

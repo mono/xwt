@@ -113,14 +113,14 @@ namespace Xwt.Mac
 			}
 		}
 
-		public IScrollAdjustmentBackend CreateVerticalScrollAdjustment ()
+		public IScrollControlBackend CreateVerticalScrollControl ()
 		{
-			return new ScrollAdjustmentBackend (scroll, true);
+			return new ScrollControlBackend (scroll, true);
 		}
 
-		public IScrollAdjustmentBackend CreateHorizontalScrollAdjustment ()
+		public IScrollControlBackend CreateHorizontalScrollControl ()
 		{
-			return new ScrollAdjustmentBackend (scroll, false);
+			return new ScrollControlBackend (scroll, false);
 		}
 
 		protected override Size GetNaturalSize ()

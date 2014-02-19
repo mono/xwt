@@ -79,14 +79,14 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public IScrollAdjustmentBackend CreateVerticalScrollAdjustment ()
+		public IScrollControlBackend CreateVerticalScrollControl ()
 		{
-			return new ScrollAdjustmentBackend (ScrolledWindow.Vadjustment);
+			return new ScrollControltBackend (ScrolledWindow.Vadjustment);
 		}
 
-		public IScrollAdjustmentBackend CreateHorizontalScrollAdjustment ()
+		public IScrollControlBackend CreateHorizontalScrollControl ()
 		{
-			return new ScrollAdjustmentBackend (ScrolledWindow.Hadjustment);
+			return new ScrollControltBackend (ScrolledWindow.Hadjustment);
 		}
 
 		public override void EnableEvent (object eventId)

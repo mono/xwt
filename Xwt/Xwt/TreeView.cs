@@ -124,20 +124,20 @@ namespace Xwt
 			set { Backend.HorizontalScrollPolicy = value; }
 		}
 
-		ScrollAdjustment verticalScrollAdjustment;
-		public ScrollAdjustment VerticalScrollAdjustment {
+		ScrollControl verticalScrollAdjustment;
+		public ScrollControl VerticalScrollControl {
 			get {
 				if (verticalScrollAdjustment == null)
-					verticalScrollAdjustment = new ScrollAdjustment (Backend.CreateVerticalScrollAdjustment ());
+					verticalScrollAdjustment = new ScrollControl (Backend.CreateVerticalScrollControl ());
 				return verticalScrollAdjustment;
 			}
 		}
 
-		ScrollAdjustment horizontalScrollAdjustment;
-		public ScrollAdjustment HorizontalScrollAdjustment {
+		ScrollControl horizontalScrollAdjustment;
+		public ScrollControl HorizontalScrollControl {
 			get {
 				if (horizontalScrollAdjustment == null)
-					horizontalScrollAdjustment = new ScrollAdjustment (Backend.CreateHorizontalScrollAdjustment ());
+					horizontalScrollAdjustment = new ScrollControl (Backend.CreateHorizontalScrollControl ());
 				return horizontalScrollAdjustment;
 			}
 		}
