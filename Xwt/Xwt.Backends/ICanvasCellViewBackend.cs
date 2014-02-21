@@ -1,10 +1,10 @@
-//
-// ICellViewFrontend.cs
+﻿//
+// ICanvasCellViewBackend.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Lluis Sanchez Gual <lluis@xamarin.com>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,29 +27,9 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICellViewFrontend
+	public interface ICanvasCellViewBackend: ICellViewBackend
 	{
-		void AttachBackend (Widget container, ICellViewBackend backend);
-		void DetachBackend ();
-		ICellViewEventSink Load (ICellDataSource dataSource);
-		void Unload ();
-		bool Visible { get; }
-	}
-
-	public interface ICellViewProvider
-	{
-		ICellViewBackend CreateBackend (CellView cellView);
-	}
-
-	public interface ICellViewEventSink
-	{
-		void OnKeyPressed (KeyEventArgs args);
-		void OnKeyReleased (KeyEventArgs args);
-		void OnMouseEntered ();
-		void OnMouseExited ();
-		void OnMouseMoved (MouseMovedEventArgs args);
-		void OnButtonPressed (ButtonEventArgs args);
-		void OnButtonReleased (ButtonEventArgs args);
+		void QueueDraw ();
 	}
 }
 

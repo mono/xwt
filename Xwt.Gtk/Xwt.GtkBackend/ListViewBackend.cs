@@ -125,6 +125,36 @@ namespace Xwt.GtkBackend
 				Widget.HeadersVisible = value;
 			}
 		}
+
+		public int GetRowAtPosition (Point p)
+		{
+			Gtk.TreePath path;
+			if (Widget.GetPathAtPos ((int)p.X, (int)p.Y, out path))
+				return path.Indices [0];
+			else
+				return -1;
+		}
+
+		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
+		{
+			var col = GetCellColumn (cell);
+			var cr = GetCellRenderer (cell);
+			Gtk.TreePath path = new Gtk.TreePath (new [] { row });
+
+			Gtk.TreeIter iter;
+			if (!Widget.Model.GetIterFromString (out iter, path.ToString ()))
+				return Rectangle.Zero;
+
+			col.CellSetCellData (Widget.Model, iter, false, false);
+
+			Gdk.Rectangle rect = includeMargin ? Widget.GetBackgroundArea (path, col) : Widget.GetCellArea (path, col);
+
+			int x, y, w, h;
+			col.CellGetPosition (cr, out x, out w);
+			col.CellGetSize (rect, out x, out y, out w, out h);
+
+			return new Rectangle (x, y, w, h);
+		}
 	}
 }
 

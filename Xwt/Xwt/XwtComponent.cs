@@ -63,61 +63,13 @@ namespace Xwt
 
 		protected static void MapEvent (object eventId, Type type, string methodName)
 		{
-			EventUtil.MapEvent (eventId, type, methodName);
+			EventHost.MapEvent (eventId, type, methodName);
 		}
 		
 		internal void VerifyConstructorCall<T> (T t)
 		{
 			if (GetType () != typeof(T))
 				throw new InvalidConstructorInvocation (typeof(T));
-		}
-	}
-	
-	class EventUtil
-	{
-		static Dictionary<Type, List<EventMap>> overridenEventMap = new Dictionary<Type, List<EventMap>> ();
-		static Dictionary<Type, HashSet<object>> overridenEvents = new Dictionary<Type, HashSet<object>> ();
-		
-		public static void MapEvent (object eventId, Type type, string methodName)
-		{
-			List<EventMap> events;
-			if (!overridenEventMap.TryGetValue (type, out events)) {
-				events = new List<EventMap> ();
-				overridenEventMap [type] = events;
-			}
-			EventMap emap = new EventMap () {
-				MethodName = methodName,
-				EventId = eventId
-			};
-			events.Add (emap);
-		}
-		
-		public static HashSet<object> GetDefaultEnabledEvents (Type type, Func<IEnumerable<object>> customEnabledEvents)
-		{
-			HashSet<object> defaultEnabledEvents;
-			if (!overridenEvents.TryGetValue (type, out defaultEnabledEvents)) {
-				defaultEnabledEvents = new HashSet<object> ();
-				Type t = type;
-				while (t != typeof(Component)) {
-					List<EventMap> emaps;
-					if (overridenEventMap.TryGetValue (t, out emaps)) {
-						foreach (var emap in emaps) {
-							if (IsOverriden (emap, type, t))
-								defaultEnabledEvents.Add (emap.EventId);
-						}
-					}
-					t = t.BaseType;
-				}
-				defaultEnabledEvents.UnionWith (customEnabledEvents ());
-				overridenEvents [type] = defaultEnabledEvents;
-			}
-			return defaultEnabledEvents;
-		}
-		
-		static bool IsOverriden (EventMap emap, Type thisType, Type t)
-		{
-			var method = thisType.GetMethod (emap.MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			return method.DeclaringType != t;
 		}
 	}
 }

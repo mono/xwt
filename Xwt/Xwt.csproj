@@ -9,6 +9,8 @@
     <AssemblyName>Xwt</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -315,6 +317,9 @@
     <Compile Include="Xwt\ScrollAdjustment.cs" />
     <Compile Include="Xwt\ScrollControl.cs" />
     <Compile Include="Xwt.Backends\IScrollControlBackend.cs" />
+    <Compile Include="Xwt.Backends\ICellViewBackend.cs" />
+    <Compile Include="Xwt.Backends\EventHost.cs" />
+    <Compile Include="Xwt.Backends\ICanvasCellViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

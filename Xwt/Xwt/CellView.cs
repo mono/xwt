@@ -28,11 +28,25 @@ using System;
 using Xwt.Drawing;
 using Xwt.Backends;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class CellView: ICellViewFrontend
+	public class CellView: XwtComponent, ICellViewFrontend
 	{
+		Widget container;
+
+		static CellView ()
+		{
+			EventHost.MapEvent (WidgetEvent.KeyPressed, typeof(CellView), "OnKeyPressed");
+			EventHost.MapEvent (WidgetEvent.KeyReleased, typeof(CellView), "OnKeyReleased");
+			EventHost.MapEvent (WidgetEvent.MouseEntered, typeof(CellView), "OnMouseEntered");
+			EventHost.MapEvent (WidgetEvent.MouseExited, typeof(CellView), "OnMouseExited");
+			EventHost.MapEvent (WidgetEvent.ButtonPressed, typeof(CellView), "OnButtonPressed");
+			EventHost.MapEvent (WidgetEvent.ButtonReleased, typeof(CellView), "OnButtonReleased");
+			EventHost.MapEvent (WidgetEvent.MouseMoved, typeof(CellView), "OnMouseMoved");
+		}
+
 		/// <summary>
 		/// Gets the default cell view for the provided field type
 		/// </summary>
@@ -51,6 +65,87 @@ namespace Xwt
 			return new TextCellView (field);
 		}
 
+		protected override BackendHost CreateBackendHost ()
+		{
+			return new CellViewBackendHost ();
+		}
+
+		protected new CellViewBackendHost BackendHost {
+			get { return (CellViewBackendHost) base.BackendHost; }
+		}
+
+		ICellViewBackend Backend {
+			get { return (ICellViewBackend) base.BackendHost.Backend; }
+		}
+
+		protected class CellViewBackendHost: BackendHost<CellView,ICellViewBackend>, ICellViewEventSink
+		{
+			HashSet<object> enabledEvents;
+
+			protected override void OnEnableEvent (object eventId)
+			{
+				if (enabledEvents == null)
+					enabledEvents = new HashSet<object> ();
+				enabledEvents.Add (eventId);
+				base.OnEnableEvent (eventId);
+			}
+
+			protected override void OnDisableEvent (object eventId)
+			{
+				if (enabledEvents != null)
+					enabledEvents.Remove (eventId);
+				base.OnDisableEvent (eventId);
+			}
+
+			public void AttachBackend (ICellViewBackend backend)
+			{
+				SetCustomBackend (backend);
+				if (enabledEvents != null) {
+					foreach (var e in enabledEvents)
+						Backend.EnableEvent (e);
+				}
+			}
+
+			#region ICellViewEventSink implementation
+
+			public void OnKeyPressed (KeyEventArgs args)
+			{
+				Parent.OnKeyPressed (args);
+			}
+
+			public void OnKeyReleased (KeyEventArgs args)
+			{
+				Parent.OnKeyReleased (args);
+			}
+
+			public void OnMouseEntered ()
+			{
+				Parent.OnMouseEntered ();
+			}
+
+			public void OnMouseExited ()
+			{
+				Parent.OnMouseExited ();
+			}
+
+			public void OnMouseMoved (MouseMovedEventArgs args)
+			{
+				Parent.OnMouseMoved (args);
+			}
+
+			public void OnButtonPressed (ButtonEventArgs args)
+			{
+				Parent.OnButtonPressed (args);
+			}
+
+			public void OnButtonReleased (ButtonEventArgs args)
+			{
+				Parent.OnButtonReleased (args);
+			}
+
+			#endregion
+		}
+
 		/// <summary>
 		/// Data source object to be used to get the data with which to fill the cell
 		/// </summary>
@@ -67,10 +162,45 @@ namespace Xwt
 			set { visible = value; }
 		}
 
-		void ICellViewFrontend.Initialize (ICellDataSource source)
+		ICellViewEventSink ICellViewFrontend.Load (ICellDataSource dataSource)
 		{
-			DataSource = source;
+			DataSource = dataSource;
 			OnDataChanged ();
+			return BackendHost;
+		}
+
+		void ICellViewFrontend.Unload ()
+		{
+		}
+
+		void ICellViewFrontend.AttachBackend (Widget container, ICellViewBackend backend)
+		{
+			this.container = container;
+			BackendHost.AttachBackend (backend);
+		}
+
+		void ICellViewFrontend.DetachBackend ()
+		{
+		}
+
+		public Widget ParentWidget {
+			get { return container; }
+		}
+
+		protected Rectangle Bounds {
+			get { return Backend.CellBounds; }
+		}
+
+		protected Rectangle BackgroundBounds {
+			get { return Backend.BackgroundBounds; }
+		}
+
+		protected bool Selected {
+			get { return Backend.Selected; }
+		}
+
+		protected bool HasFocus {
+			get { return Backend.HasFocus; }
 		}
 
 		/// <summary>
@@ -94,6 +224,56 @@ namespace Xwt
 		/// </summary>
 		protected virtual void OnDataChanged ()
 		{
+		}
+
+		public event EventHandler<KeyEventArgs> KeyPressed;
+		public event EventHandler<KeyEventArgs> KeyReleased;
+		public event EventHandler MouseEntered;
+		public event EventHandler MouseExited;
+		public event EventHandler<MouseMovedEventArgs> MouseMoved;
+		public event EventHandler<ButtonEventArgs> ButtonPressed;
+		public event EventHandler<ButtonEventArgs> ButtonReleased;
+
+		internal protected virtual void OnKeyPressed (KeyEventArgs args)
+		{
+			if (KeyPressed != null)
+				KeyPressed (this, args);
+		}
+
+		internal protected virtual void OnKeyReleased (KeyEventArgs args)
+		{
+			if (KeyReleased != null)
+				KeyReleased (this, args);
+		}
+
+		internal protected virtual void OnMouseEntered ()
+		{
+			if (MouseEntered != null)
+				MouseEntered (this, EventArgs.Empty);
+		}
+
+		internal protected virtual void OnMouseExited ()
+		{
+			if (MouseExited != null)
+				MouseExited (this, EventArgs.Empty);
+		}
+
+		internal protected virtual void OnMouseMoved (MouseMovedEventArgs args)
+		{
+			if (MouseMoved != null)
+				MouseMoved (this, args);
+		}
+
+		internal protected virtual void OnButtonPressed (ButtonEventArgs args)
+		{
+			if (ButtonPressed != null)
+				ButtonPressed (this, args);
+		}
+
+		internal protected virtual void OnButtonReleased (ButtonEventArgs args)
+		{
+			if (ButtonReleased != null)
+				ButtonReleased (this, args);
 		}
 	}
 }

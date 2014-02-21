@@ -30,58 +30,48 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class CustomCellRendererToggle: Gtk.CellRendererToggle, ICellDataSource
+	public class CustomCellRendererToggle: CellViewBackend
 	{
-		TreeViewBackend treeBackend;
-		ICheckBoxCellViewFrontend view;
-		TreeModel treeModel;
-		TreeIter iter;
+		Gtk.CellRendererToggle renderer;
 
-		public CustomCellRendererToggle (ICheckBoxCellViewFrontend view)
+		public CustomCellRendererToggle ()
 		{
-			this.view = view;
+			CellRenderer = renderer = new Gtk.CellRendererToggle ();
+			renderer.Toggled += HandleToggled;
 		}
 
-		public void LoadData (TreeViewBackend treeBackend, TreeModel treeModel, TreeIter iter)
+		protected virtual void OnLoad ()
 		{
-			this.treeBackend = treeBackend;
-			this.treeModel = treeModel;
-			this.iter = iter;
-			view.Initialize (this);
-
-			Inconsistent = view.State == CheckBoxState.Mixed;
-			Active = view.State == CheckBoxState.On;
-			Activatable = view.Editable;
-			Visible = view.Visible;
+			var view = (ICheckBoxCellViewFrontend) Frontend;
+			renderer.Inconsistent = view.State == CheckBoxState.Mixed;
+			renderer.Active = view.State == CheckBoxState.On;
+			renderer.Activatable = view.Editable;
+			renderer.Visible = view.Visible;
 		}
 
-		public object GetValue (IDataField field)
+		void HandleToggled (object o, ToggledArgs args)
 		{
-			return CellUtil.GetModelValue (treeModel, iter, field.Index);
-		}
+			SetCurrentEventRow ();
 
-		protected override void OnToggled (string path)
-		{
-			CellUtil.SetCurrentEventRow (treeBackend, path);
-
+			var view = (ICheckBoxCellViewFrontend) Frontend;
 			IDataField field = (IDataField) view.StateField ?? view.ActiveField;
 
 			if (!view.RaiseToggled () && (field != null)) {
 				Type type = field.FieldType;
 
 				Gtk.TreeIter iter;
-				if (treeModel.GetIterFromString (out iter, path)) {
+				if (TreeModel.GetIterFromString (out iter, args.Path)) {
 					CheckBoxState newState;
 
 					if (view.AllowMixed && type == typeof(CheckBoxState)) {
-						if (Inconsistent)
+						if (renderer.Inconsistent)
 							newState = CheckBoxState.Off;
-						else if (Active)
+						else if (renderer.Active)
 							newState = CheckBoxState.Mixed;
 						else
 							newState = CheckBoxState.On;
 					} else {
-						if (Active)
+						if (renderer.Active)
 							newState = CheckBoxState.Off;
 						else
 							newState = CheckBoxState.On;
@@ -90,10 +80,9 @@ namespace Xwt.GtkBackend
 					object newValue = type == typeof(CheckBoxState) ?
 						(object) newState : (object) (newState == CheckBoxState.On);
 
-					CellUtil.SetModelValue (treeModel, iter, field.Index, type, newValue);
+					CellUtil.SetModelValue (TreeModel, iter, field.Index, type, newValue);
 				}
 			}
-			base.OnToggled (path);
 		}
 	}
 }

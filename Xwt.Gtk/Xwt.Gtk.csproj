@@ -9,6 +9,8 @@
     <AssemblyName>Xwt.Gtk</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -130,6 +132,7 @@
     <Compile Include="Xwt.GtkBackend\ScrollControlBackend.cs">
       <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
     </Compile>
+    <Compile Include="Xwt.GtkBackend.CellViews\CellViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
