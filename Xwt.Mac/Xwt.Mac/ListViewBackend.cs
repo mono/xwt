@@ -85,6 +85,17 @@ namespace Xwt.Mac
 
 		// TODO
 		public bool BorderVisible { get; set; }
+
+
+		public int GetRowAtPosition (Point p)
+		{
+			return 0;
+		}
+
+		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
+		{
+			return Rectangle.Zero;
+		}
 	}
 	
 	class TableRow: NSObject, ITablePosition

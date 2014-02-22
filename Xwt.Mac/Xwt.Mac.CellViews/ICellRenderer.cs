@@ -35,7 +35,7 @@ namespace Xwt.Mac
 {
 	interface ICellRenderer: ICopiableObject
 	{
-		ICellViewFrontend Frontend { get; }
+		CellViewBackend Backend { get; set; }
 		CompositeCell CellContainer { get; set; }
 		void Fill ();
 	}

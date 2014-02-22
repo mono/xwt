@@ -191,7 +191,7 @@ namespace Xwt.Mac
 			var tcol = new NSTableColumn ();
 			tcol.Editable = true;
 			cols.Add (tcol);
-			var c = CellUtil.CreateCell (this, col.Views);
+			var c = CellUtil.CreateCell (Table, this, col.Views, cols.Count - 1);
 			tcol.DataCell = c;
 			Table.AddColumn (tcol);
 			var hc = new NSTableHeaderCell ();
@@ -209,7 +209,7 @@ namespace Xwt.Mac
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			NSTableColumn tcol = (NSTableColumn) handle;
-			tcol.DataCell = CellUtil.CreateCell (this, col.Views);
+			tcol.DataCell = CellUtil.CreateCell (Table, this, col.Views, cols.IndexOf (tcol));
 		}
 
 		public void SelectAll ()
