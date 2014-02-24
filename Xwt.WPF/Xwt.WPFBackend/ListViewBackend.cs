@@ -116,9 +116,9 @@ namespace Xwt.WPFBackend
 		public object AddColumn (ListViewColumn col)
 		{
 			var column = new GridViewColumn ();
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (col.Views) };
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Frontend, col.Views) };
 			if (col.HeaderView != null)
-				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (col.HeaderView) };
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
 
@@ -135,9 +135,9 @@ namespace Xwt.WPFBackend
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			var column = (GridViewColumn) handle;
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (col.Views) };
+            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Frontend, col.Views) };
 			if (col.HeaderView != null)
-				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (col.HeaderView) };
+                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
 		}
@@ -234,5 +234,16 @@ namespace Xwt.WPFBackend
 		}
 
 		private static readonly Setter HideHeadersSetter = new Setter (UIElement.VisibilityProperty, Visibility.Collapsed);
-	}
+
+
+        public int GetRowAtPosition(Point p)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

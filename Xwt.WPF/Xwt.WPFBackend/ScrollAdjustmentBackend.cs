@@ -61,7 +61,7 @@ namespace Xwt.WPFBackend
 
         public void Initialize(IScrollAdjustmentEventSink eventSink)
 		{
-			eventSink = eventSink;
+			this.eventSink = eventSink;
 		}
 
 		public void Initialize (IScrollControlEventSink eventSink)
