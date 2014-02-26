@@ -39,9 +39,13 @@ namespace Xwt.GtkBackend
 			Widget = new Gtk.Entry ();
 			Widget.Show ();
 		}
+
+		protected virtual Gtk.Entry TextEntry {
+			get { return (Gtk.Entry)base.Widget; }
+		}
 		
 		protected new Gtk.Entry Widget {
-			get { return (Gtk.Entry)base.Widget; }
+			get { return TextEntry; }
 			set { base.Widget = value; }
 		}
 		
