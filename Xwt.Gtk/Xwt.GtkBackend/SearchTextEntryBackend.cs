@@ -50,6 +50,12 @@ namespace Xwt.GtkBackend
 			((WidgetBackend)this).Widget = searchEntry;
 			searchEntry.Show ();
 		}
+
+		public override void SetFocus ()
+		{
+			base.SetFocus ();
+			TextEntry.GrabFocus ();
+		}
 	}
 
 	class SearchEntry : Gtk.EventBox
