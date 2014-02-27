@@ -395,9 +395,11 @@ namespace Xwt.GtkBackend
 		{
 			if (evnt.Key == Gdk.Key.Escape) {
 				active_filter_id = 0;
-				entry.Text = String.Empty;
-				NotifyActivated ();
-				return true;
+				if (!String.IsNullOrEmpty (entry.Text)) {
+					entry.Text = String.Empty;
+					NotifyActivated ();
+					return true;
+				}
 			}
 			return base.OnKeyPressEvent (evnt);
 		}
