@@ -161,7 +161,7 @@ namespace Xwt.GtkBackend
 			get { return Widget.IsFocus; }
 		}
 		
-		public void SetFocus ()
+		public virtual void SetFocus ()
 		{
 			Widget.IsFocus = true;
 //			SetFocus (Widget);

@@ -50,6 +50,12 @@ namespace Xwt.GtkBackend
 			((WidgetBackend)this).Widget = searchEntry;
 			searchEntry.Show ();
 		}
+
+		public override void SetFocus ()
+		{
+			base.SetFocus ();
+			TextEntry.GrabFocus ();
+		}
 	}
 
 	class SearchEntry : Gtk.EventBox
@@ -395,9 +401,11 @@ namespace Xwt.GtkBackend
 		{
 			if (evnt.Key == Gdk.Key.Escape) {
 				active_filter_id = 0;
-				entry.Text = String.Empty;
-				NotifyActivated ();
-				return true;
+				if (!String.IsNullOrEmpty (entry.Text)) {
+					entry.Text = String.Empty;
+					NotifyActivated ();
+					return true;
+				}
 			}
 			return base.OnKeyPressEvent (evnt);
 		}
