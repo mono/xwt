@@ -64,7 +64,7 @@ namespace Xwt.Mac
 		
 		public void QueueDraw (Rectangle rect)
 		{
-			view.NeedsToDraw (new System.Drawing.RectangleF ((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height));
+			view.SetNeedsDisplayInRect (new System.Drawing.RectangleF ((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height));
 		}
 		
 		public void AddChild (IWidgetBackend widget, Rectangle rect)
