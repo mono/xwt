@@ -97,10 +97,12 @@ namespace Xwt.WPFBackend
 
                 var off = (value - lowerValue) / (upperValue - lowerValue);
 
-                if (isVertical)
-                    TargetScrollViewer.ScrollToVerticalOffset(TargetScrollViewer.ExtentHeight * off);
-                else
-                    TargetScrollViewer.ScrollToVerticalOffset(TargetScrollViewer.ExtentWidth * off);
+				if (TargetScrollViewer != null)	{
+					if (isVertical)
+						TargetScrollViewer.ScrollToVerticalOffset(TargetScrollViewer.ExtentHeight * off);
+					else
+						TargetScrollViewer.ScrollToVerticalOffset(TargetScrollViewer.ExtentWidth * off);
+				}
 			}
 		}
 
