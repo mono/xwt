@@ -40,6 +40,7 @@ namespace Xwt.GtkBackend
 		List<MenuItemEvent> enabledEvents;
 		bool changingCheck;
 		ApplicationContext context;
+        object tag;
 		
 		public MenuItemBackend ()
 			: this (new Gtk.ImageMenuItem (""))
@@ -119,6 +120,15 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				item.Visible = value;
+			}
+		}
+		
+		public object Tag {
+			get {
+				return tag;
+			}
+			set {
+				tag = value;
 			}
 		}
 		
