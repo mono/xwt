@@ -44,6 +44,7 @@ namespace Xwt.GtkBackend
 		bool destroyed;
 		SizeConstraint currentWidthConstraint = SizeConstraint.Unconstrained;
 		SizeConstraint currentHeightConstraint = SizeConstraint.Unconstrained;
+        object tag;
 
 		bool minSizeSet;
 		
@@ -184,6 +185,12 @@ namespace Xwt.GtkBackend
 				Widget.TooltipText = value;
 			}
 		}
+
+        public object Tag
+        {
+            get { return tag; }
+            set { tag = value; }
+        }
 		
 		static Dictionary<CursorType,Gdk.Cursor> gtkCursors = new Dictionary<CursorType, Gdk.Cursor> ();
 		

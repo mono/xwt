@@ -51,6 +51,7 @@ namespace Xwt.WPFBackend
 		WidgetEvent enabledEvents;
 		DragDropEffects currentDragEffect;
 		FrameworkElement widget;
+        object tag;
 
 		class DragDropData
 		{
@@ -237,6 +238,11 @@ namespace Xwt.WPFBackend
 			get { return Widget.ToolTip.ToString (); }
 			set { Widget.ToolTip = value; }
 		}
+
+        public object Tag{
+            get { return tag; }
+            set { tag = value; }
+        }
 
 		public static FrameworkElement GetFrameworkElement (IWidgetBackend backend)
 		{

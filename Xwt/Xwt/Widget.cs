@@ -628,6 +628,15 @@ namespace Xwt
 			}
 		}
 
+        /// <summary>
+        /// Gets or sets an arbitrary object value that can be used to store custom information about this widget.
+        /// </summary>
+        public object Tag
+        {
+            get { return Backend.Tag; }
+            set { Backend.Tag = value; }
+        }
+
 		public bool ShouldSerializeCursor ()
 		{
 			return Cursor != CursorType.Arrow;
