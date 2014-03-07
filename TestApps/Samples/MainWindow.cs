@@ -114,7 +114,7 @@ namespace Samples
 			AddSample (n, "Custom Drawn Image", typeof (ImageScaling));
 			AddSample (n, "9-patch Image", typeof (Image9Patch));
 			AddSample (n, "Widget Rendering", typeof (WidgetRendering));
-
+			AddSample (n, "Text Input", typeof (TextInput));
 			var wf = AddSample (null, "Widget Features", null);
 			AddSample (wf, "Drag & Drop", typeof(DragDrop));
 			AddSample (wf, "Widget Events", typeof(WidgetEvents));
