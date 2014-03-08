@@ -37,12 +37,22 @@ namespace Xwt
 	public abstract class XwtComponent : Component, IFrontend
 	{
 		BackendHost backendHost;
+        object tag;
 		
 		public XwtComponent ()
 		{
 			backendHost = CreateBackendHost ();
 			backendHost.Parent = this;
 		}
+
+        /// <summary>
+        /// Gets or sets an arbitrary object value that can be used to store custom information about this component.
+        /// </summary>
+        public object Tag
+        {
+            get { return tag; }
+            set { tag = value; }
+        }
 		
 		protected virtual BackendHost CreateBackendHost ()
 		{

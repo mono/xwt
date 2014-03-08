@@ -117,8 +117,6 @@ namespace Xwt.Backends
 		/// The cursor type.
 		/// </param>
 		void SetCursor (CursorType cursorType);
-
-        object Tag { get; set; }
 	}
 	
 	public interface IWidgetEventSink
