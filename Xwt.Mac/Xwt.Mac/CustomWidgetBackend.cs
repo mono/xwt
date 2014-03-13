@@ -76,7 +76,9 @@ namespace Xwt.Mac
 	{
 		IWidgetEventSink eventSink;
 		protected ApplicationContext context;
-		
+
+		NSTrackingArea trackingArea;	// Captures Mouse Entered, Exited, and Moved events
+
 		public WidgetView (IWidgetEventSink eventSink, ApplicationContext context)
 		{
 			this.context = context;
@@ -109,6 +111,18 @@ namespace Xwt.Mac
 			ctx.FillRect (Bounds);
 		}
 		
+		public override void UpdateTrackingAreas ()
+		{
+			if (trackingArea != null) {
+				RemoveTrackingArea (trackingArea);
+				trackingArea.Dispose ();
+			}
+			System.Drawing.RectangleF viewBounds = this.Bounds;
+			var options = NSTrackingAreaOptions.MouseMoved | NSTrackingAreaOptions.ActiveInKeyWindow | NSTrackingAreaOptions.MouseEnteredAndExited;
+			trackingArea = new NSTrackingArea (viewBounds, options, this, null);
+			AddTrackingArea (trackingArea);
+		}
+
 		public override void RightMouseDown (NSEvent theEvent)
 		{
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
@@ -157,6 +171,20 @@ namespace Xwt.Mac
 			});
 		}
 		
+		public override void MouseEntered (NSEvent theEvent)
+		{
+			context.InvokeUserCode (delegate {
+				eventSink.OnMouseEntered ();
+			});
+		}
+
+		public override void MouseExited (NSEvent theEvent)
+		{
+			context.InvokeUserCode (delegate {
+				eventSink.OnMouseExited ();
+			});
+		}
+
 		public override void MouseMoved (NSEvent theEvent)
 		{
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
