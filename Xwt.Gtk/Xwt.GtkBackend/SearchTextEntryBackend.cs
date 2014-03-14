@@ -103,7 +103,7 @@ namespace Xwt.GtkBackend
 		bool forceFilterButtonVisible = true;
 		public bool ForceFilterButtonVisible {
 			get {
-				return forceFilterButtonVisible; 
+				return forceFilterButtonVisible;
 			}
 			set {
 				forceFilterButtonVisible = value;
@@ -140,8 +140,8 @@ namespace Xwt.GtkBackend
 
 		static SearchEntry ()
 		{
-			clearImage = Xwt.Drawing.Image.FromResource ("searchbox-clear-16.png");
-			searchImage = Xwt.Drawing.Image.FromResource ("searchbox-search-16.png");
+			clearImage = Xwt.Drawing.Image.FromResource ("searchbox-clear-light-16.png");
+			searchImage = Xwt.Drawing.Image.FromResource ("searchbox-search-light-16.png");
 		}
 
 		public SearchEntry ()
@@ -883,9 +883,9 @@ namespace Xwt.GtkBackend
 
 		public Xwt.Drawing.Image Pixbuf {
 			get { return this.normal_pixbuf; }
-			set { 
-				this.normal_pixbuf = value; 
-				active_pixbuf = normal_pixbuf; 
+			set {
+				this.normal_pixbuf = value;
+				active_pixbuf = normal_pixbuf;
 				UpdateImage();
 			}
 		}
