@@ -113,18 +113,6 @@ namespace Xwt.WPFBackend
 			set { this.menuItem.Visibility = (value) ? Visibility.Visible : Visibility.Collapsed; }
 		}
 
-        public object Tag
-        {
-            get
-            {
-                return this.menuItem.Tag;
-            }
-            set
-            {
-                this.menuItem.Tag = value;
-            }
-        }
-
 		public void SetImage (ImageDescription imageBackend)
 		{
 			if (imageBackend.IsNull)

@@ -184,8 +184,8 @@ namespace Xwt.GtkBackend
 				Widget.TooltipText = value;
 			}
 		}
-
-        static Dictionary<CursorType,Gdk.Cursor> gtkCursors = new Dictionary<CursorType, Gdk.Cursor> ();
+		
+		static Dictionary<CursorType,Gdk.Cursor> gtkCursors = new Dictionary<CursorType, Gdk.Cursor> ();
 		
 		Gdk.Cursor gdkCursor;
 		internal CursorType CurrentCursor { get; private set; }
