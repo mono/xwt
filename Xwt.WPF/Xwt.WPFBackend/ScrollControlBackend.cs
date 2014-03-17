@@ -67,7 +67,7 @@ namespace Xwt.WPFBackend
 				if (isVertical)
 					targetScrollViewer.ScrollToVerticalOffset(value);
 				else
-					targetScrollViewer.ScrollToVerticalOffset(value);
+					targetScrollViewer.ScrollToHorizontalOffset(value);
 			}
 		}
 
