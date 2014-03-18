@@ -416,6 +416,14 @@ namespace Xwt.WPFBackend
 				Widget.Cursor = Cursors.SizeWE;
 			else if (cursor == CursorType.ResizeLeftRight)
 				widget.Cursor = Cursors.SizeWE;
+			else if (cursor == CursorType.Move)
+				widget.Cursor = Cursors.SizeAll;
+			else if (cursor == CursorType.Wait)
+				widget.Cursor = Cursors.Wait;
+			else if (cursor == CursorType.Help)
+				widget.Cursor = Cursors.Help;
+			else
+				Widget.Cursor = Cursors.Arrow;
 		}
 		
 		public virtual void UpdateLayout ()
