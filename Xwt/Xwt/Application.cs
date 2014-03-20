@@ -63,9 +63,7 @@ namespace Xwt
 		}
 
 		public static void Initialize (string backendType)
-		{
-			if (backendType == null)
-				throw new ArgumentNullException ("backendType");
+		{			
 			if (engine != null)
 				return;
 
