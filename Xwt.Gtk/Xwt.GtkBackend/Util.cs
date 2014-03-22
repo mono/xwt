@@ -49,6 +49,11 @@ namespace Xwt.GtkBackend
 				iconSizes[i].Width = w;
 				iconSizes[i].Height = h;
 			}
+			if (Platform.IsWindows) {
+				// Workaround for an issue in GTK for Windows. In windows Menu-sized icons are not 16x16, but 14x14
+				iconSizes[(int)Gtk.IconSize.Menu].Width = 16;
+				iconSizes[(int)Gtk.IconSize.Menu].Height = 16;
+			}
 		}
 
 		public static void SetDragData (TransferDataSource data, Gtk.DragDataGetArgs args)

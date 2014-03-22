@@ -135,11 +135,6 @@ namespace Xwt
 			get { return Backend.Visible; }
 			set { Backend.Visible = value; }
 		}
-
-		public object Tag {
-			get { return Backend.Tag; }
-			set { Backend.Tag = value; }
-		}
 		
 		public Image Image {
 			get { return image; }
