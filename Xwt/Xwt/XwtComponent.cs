@@ -37,7 +37,6 @@ namespace Xwt
 	public abstract class XwtComponent : Component, IFrontend
 	{
 		BackendHost backendHost;
-        object tag;
 		
 		public XwtComponent ()
 		{
@@ -62,14 +61,10 @@ namespace Xwt
 			get { return backendHost.Backend; }
 		}
 
-        /// <summary>
-        /// A value, that can be used to identify this component
-        /// </summary>
-        public object Tag
-        {
-            get { return tag; }
-            set { tag = value; }
-        }
+		/// <summary>
+		/// A value, that can be used to identify this component
+		/// </summary>
+		public object Tag { get; set; }
 
 		protected static void MapEvent (object eventId, Type type, string methodName)
 		{
