@@ -52,9 +52,13 @@ namespace Xwt.Mac
 			}
 		}
 
-		public LinkLabelBackend ()
-			: base (new LinkLabelView ())
+		public LinkLabelBackend () : base (new LinkLabelView ())
 		{
+		}
+
+		public override void Initialize ()
+		{
+			base.Initialize ();
 			Widget.AllowsEditingTextAttributes = true;
 		}
 
