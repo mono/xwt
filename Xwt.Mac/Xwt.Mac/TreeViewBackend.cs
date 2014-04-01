@@ -3,6 +3,8 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//		 Jan Strnadek <jan.strnadek@gmail.com>
+//       	- add delegates for refreshing NSOutlineView DataSource after source was changed!
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -83,6 +85,12 @@ namespace Xwt.Mac
 			this.source = source;
 			tsource = new TreeSource (source);
 			Tree.DataSource = tsource;
+
+			// You have to call Reload data for Cocoa
+			source.NodeChanged += delegate(object sender, TreeNodeEventArgs e) {
+				Table.ReloadData();
+			};
+
 		}
 		
 		public override object GetValue (object pos, int nField)
