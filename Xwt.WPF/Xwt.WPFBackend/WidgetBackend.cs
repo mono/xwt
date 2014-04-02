@@ -216,6 +216,15 @@ namespace Xwt.WPFBackend
 
 		public void SetFocus ()
 		{
+			if (Widget.IsLoaded)
+				Widget.Focus ();
+			else
+				Widget.Loaded += DeferredFocus;
+		}
+
+		void DeferredFocus (object sender, RoutedEventArgs e)
+		{
+			Widget.Loaded -= DeferredFocus;
 			Widget.Focus ();
 		}
 
