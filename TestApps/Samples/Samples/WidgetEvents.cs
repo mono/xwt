@@ -30,19 +30,34 @@ namespace Samples
 {
 	public class WidgetEvents: VBox
 	{
+		Label res;
+
 		public WidgetEvents ()
 		{
 			Label la = new Label ("Move the mouse here");
+			res =  new Label ();
 			PackStart (la);
-			Label res = new Label ();
 			PackStart (res);
+
 			la.MouseEntered += delegate {
-				res.Text = "Mouse is inside the label";
+				la.Text = "Mouse has Entered label";
 			};
 			la.MouseExited += delegate {
-				res.Text = "";
+				la.Text = "Mouse has Exited label";
+				res.Text = "Mouse has moved out of label";
+			};
+			la.MouseMoved += delegate {
+				res.Text = "Mouse is moving in label";
+				Application.TimeoutInvoke (800, MouseStopped);
 			};
 		}
+
+		bool MouseStopped ()
+		{
+			res.Text = "Mouse has stopped in label";
+			return false;
+		}
+
 	}
 }
 

@@ -13,7 +13,8 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			ViewObject = new CustomAlignedContainer (new CustomSecureTextField (EventSink, ApplicationContext));
+			var view = new CustomSecureTextField (EventSink, ApplicationContext);
+			ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view);
 		}
 
 		protected override void OnSizeToFit ()

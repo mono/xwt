@@ -35,14 +35,21 @@ namespace Xwt.Mac
 {
 	public class LabelBackend: ViewBackend<NSView,IWidgetEventSink>, ILabelBackend
 	{
-		public LabelBackend ()
-			: this (new TextFieldView ())
+
+		public LabelBackend () : this (new TextFieldView ())
 		{
 		}
 
-		protected LabelBackend (IViewObject viewObject)
+		protected LabelBackend (IViewObject view)
 		{
-			ViewObject = new CustomAlignedContainer ((NSView)viewObject);
+			View = view;
+		}
+
+		IViewObject View;
+
+		public override void Initialize ()
+		{
+			ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)View);
 			Widget.StringValue = string.Empty;
 			Widget.Editable = false;
 			Widget.Bezeled = false;
@@ -161,21 +168,15 @@ namespace Xwt.Mac
 		}
 	}
 
-	sealed class CustomAlignedContainer: NSView, IViewObject
+	sealed class CustomAlignedContainer: WidgetView
 	{
 		public NSView Child;
 
-		public CustomAlignedContainer (NSView child)
+		public CustomAlignedContainer (IWidgetEventSink eventSink, ApplicationContext context, NSView child) : base (eventSink, context)
 		{
 			Child = child;
 			AddSubview (child);
 			UpdateTextFieldFrame ();
-		}
-
-		public ViewBackend Backend { get; set; }
-
-		public NSView View {
-			get { return this; }
 		}
 
 		static readonly Selector sizeToFitSel = new Selector ("sizeToFit");
