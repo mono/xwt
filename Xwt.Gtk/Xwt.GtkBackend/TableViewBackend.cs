@@ -175,6 +175,8 @@ namespace Xwt.GtkBackend
 				tc.SortColumnId = col.SortDataField.Index;
 			else if (change == ListViewColumnChange.SortIndicatorVisible)
 				tc.SortIndicator = col.SortIndicatorVisible;
+			else if (change == ListViewColumnChange.Alignment)
+				tc.Alignment = Util.ToGtkAlignment(col.Alignment);
 		}
 
 		public void ScrollToRow (TreeIter pos)
