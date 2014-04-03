@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{14CF6E75-0D08-4BBD-B0F5-742196E5656D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>MixedGtkMacTest</RootNamespace>
