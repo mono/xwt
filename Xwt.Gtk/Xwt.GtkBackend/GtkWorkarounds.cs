@@ -726,7 +726,7 @@ namespace Xwt.GtkBackend
 			mod = accels[0].Modifier;
 		}
 
-		[System.Runtime.InteropServices.DllImport ("libgdk-win32-2.0-0.dll", CallingConvention = CallingConvention.Cdecl)]
+		[System.Runtime.InteropServices.DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gdk_win32_drawable_get_handle (IntPtr drawable);
 		
 		enum DwmWindowAttribute
@@ -823,7 +823,7 @@ namespace Xwt.GtkBackend
 			objc_msgSend_IntPtr (ptr, sel_invalidateShadow);
 		}
 
-		[DllImport ("gtksharpglue-2", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport (GtkInterop.LIBGTKGLUE, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtksharp_container_leak_fixed_marker ();
 
 		static HashSet<Type> fixedContainerTypes;
@@ -975,7 +975,7 @@ namespace Xwt.GtkBackend
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
 		delegate void ForallDelegate (IntPtr container, bool include_internals, IntPtr cb, IntPtr data);
 		
-		[DllImport("gtksharpglue-2", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport(GtkInterop.LIBGTKGLUE, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtksharp_container_override_forall (IntPtr gtype, ForallDelegate cb);
 
 		public static void SetLinkHandler (this Gtk.Label label, Action<string> urlHandler)
