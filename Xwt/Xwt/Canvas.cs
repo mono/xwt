@@ -62,7 +62,7 @@ namespace Xwt
 		/// <summary>
 		/// Adds a child widget.
 		/// </summary>
-		/// <param name='widget'>
+		/// <param name='w'>
 		/// The widget
 		/// </param>
 		/// <remarks>
