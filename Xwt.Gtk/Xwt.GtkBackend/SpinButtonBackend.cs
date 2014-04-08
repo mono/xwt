@@ -45,10 +45,13 @@ namespace Xwt.GtkBackend
 			Widget = (Gtk.SpinButton) CreateWidget ();
 			Widget.Numeric = true;
 			Widget.Alignment = 1.0f;
+			#if !XWT_GTK3
 			Widget.ExposeEvent += HandleExposeEvent;
+			#endif
 			Widget.Show ();
 		}
 
+		#if !XWT_GTK3
 		// This is a workaround for bug https://bugzilla.xamarin.com/show_bug.cgi?id=10904
 		void HandleExposeEvent (object o, ExposeEventArgs args)
 		{
@@ -56,6 +59,7 @@ namespace Xwt.GtkBackend
 				Widget.Text = indeterminateMessage;
 			Widget.ExposeEvent -= HandleExposeEvent;
 		}
+		#endif
 		
 		protected virtual Gtk.Widget CreateWidget ()
 		{

@@ -853,7 +853,9 @@ namespace Xwt.GtkBackend
 
 			if (fixedContainerTypes == null) {
 				try {
+					#if !XWT_GTK3
 					gtksharp_container_leak_fixed_marker ();
+					#endif
 					containerLeakFixed = true;
 					return;
 				} catch (EntryPointNotFoundException) {
@@ -876,6 +878,11 @@ namespace Xwt.GtkBackend
 				t = t.BaseType;
 			} while (fixedContainerTypes.Add (t) && t.Assembly != typeof (Gtk.Container).Assembly);
 		}
+
+		#if XWT_GTK3
+		[DllImport(GtkInterop.LIBGLIBGLUE, CallingConvention=CallingConvention.Cdecl)]
+		static extern IntPtr gtksharp_get_type_id (IntPtr raw);
+		#endif
 
 		static ForallDelegate CreateForallCallback (IntPtr gtype)
 		{
@@ -903,7 +910,11 @@ namespace Xwt.GtkBackend
 			//check that the type is an exact match
 			// prevent stack overflow, because the callback on a more derived type will handle everything
 			il.Emit (OpCodes.Ldarg_0);
+			#if XWT_GTK3
+			il.Emit (OpCodes.Call, typeof(GLib.GType).GetMethod ("ValFromInstancePtr", BindingFlags.Static | BindingFlags.NonPublic));
+			#else
 			il.Emit (OpCodes.Call, typeof(GLib.ObjectManager).GetMethod ("gtksharp_get_type_id", BindingFlags.Static | BindingFlags.NonPublic));
+			#endif
 
 			il.Emit (OpCodes.Ldc_I8, gtype.ToInt64 ());
 			il.Emit (OpCodes.Newobj, typeof (IntPtr).GetConstructor (new Type[] { typeof (Int64) }));
@@ -1003,8 +1014,12 @@ namespace Xwt.GtkBackend
 
 			public void ConnectTo (Gtk.Label label)
 			{
+				#if XWT_GTK3
+				label.AddSignalHandler ("activate-link", new EventHandler<ActivateLinkEventArgs> (HandleLink), typeof(ActivateLinkEventArgs));
+				#else
 				var signal = GLib.Signal.Lookup (label, "activate-link", typeof(ActivateLinkEventArgs));
 				signal.AddDelegate (new EventHandler<ActivateLinkEventArgs> (HandleLink));
+				#endif
 			}
 
 			class ActivateLinkEventArgs : GLib.SignalArgs
@@ -1053,6 +1068,7 @@ namespace Xwt.GtkBackend
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern bool gtk_tree_view_get_tooltip_context (IntPtr raw, ref int x, ref int y, bool keyboard_tip, out IntPtr model, out IntPtr path, IntPtr iter);
 
+		#if !XWT_GTK3
 		//the GTK# version of this has 'out' instead of 'ref', preventing passing the x,y values in
 		public static bool GetTooltipContext (this Gtk.TreeView tree, ref int x, ref int y, bool keyboardTip,
 			 out Gtk.TreeModel model, out Gtk.TreePath path, out Gtk.TreeIter iter)
@@ -1067,6 +1083,7 @@ namespace Xwt.GtkBackend
 			Marshal.FreeHGlobal (intPtr);
 			return result;
 		}
+		#endif
 
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_image_menu_item_set_always_show_image (IntPtr menuitem, bool alwaysShow);
@@ -1077,8 +1094,12 @@ namespace Xwt.GtkBackend
 				gtk_image_menu_item_set_always_show_image (mi.Handle, true);
 		}
 
-		
+		#if XWT_GTK3
+		// GTK3: Temp workaround, since GTK 3 has gtk_widget_get_scale_factor, but no gtk_icon_set_render_icon_scaled
+		static bool supportsHiResIcons = false;
+		#else
 		static bool supportsHiResIcons = true;
+		#endif
 
 		[DllImport (GtkInterop.LIBGTK)]
 		static extern void gtk_icon_source_set_scale (IntPtr source, double scale);
@@ -1199,6 +1220,21 @@ namespace Xwt.GtkBackend
 			supportsHiResIcons = false;
 			return null;
 		}
+
+		#if XWT_GTK3
+		[DllImport (GtkInterop.LIBGDK)]
+		static extern IntPtr gdk_pixbuf_get_from_window(IntPtr win, int src_x, int src_y, int width, int height);
+
+		public static Gdk.Pixbuf ToPixbuf (this Gdk.Window window, int src_x, int src_y, int width, int height)
+		{
+			IntPtr raw_ret = gdk_pixbuf_get_from_window(window.Handle, src_x, src_y, width, height);Gdk.Pixbuf ret;
+			if (raw_ret == IntPtr.Zero)
+				ret = null;
+			else
+				ret = (Gdk.Pixbuf) GLib.Object.GetObject(raw_ret);
+			return ret;
+		}
+		#endif
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>

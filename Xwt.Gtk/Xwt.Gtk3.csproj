@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3B25FD1F-CEBA-4450-8893-DC330FDB56A7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Xwt.GtkBackend</RootNamespace>
+    <AssemblyName>Xwt.Gtk3</AssemblyName>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG XWT_GTK3</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <DefineConstants>XWT_GTK3</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>glib-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="pango-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Private>False</Private>
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+      <Package>gio-sharp-3.0</Package>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Xwt.GtkBackend\LabelBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\PasswordEntryBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\WidgetBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\WindowBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkEngine.cs" />
+    <Compile Include="Xwt.GtkBackend\BoxBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\NotebookBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ImageHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\CanvasBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\Util.cs" />
+    <Compile Include="Xwt.GtkBackend\TextLayoutBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\FontBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\MenuBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\MenuItemBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\Platform.cs" />
+    <Compile Include="Xwt.GtkBackend\ScrollViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\DesignerSurfaceBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\CustomWidgetBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\MenuButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TextEntryBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ToggleButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ImageViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\AlertDialogBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkAlertDialog.cs" />
+    <Compile Include="Xwt.GtkBackend\MessageService.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkWorkarounds.cs" />
+    <Compile Include="Xwt.GtkBackend\WindowFrameBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\CheckBoxBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\FrameBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\HeaderBox.cs" />
+    <Compile Include="Xwt.GtkBackend\SeparatorBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\DialogBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ClipboardBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ImageBuilderBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ImagePatternBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\CheckBoxMenuItemBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\RadioButtonMenuItemBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SeparatorMenuItemBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ScrollAdjustmentBackend.cs">
+      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
+    </Compile>
+    <Compile Include="Xwt.GtkBackend\FileDialogBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\PanedBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SelectColorDialogBackend.cs" />
+    <Compile Include="Xwt.CairoBackend\CairoConversion.cs" />
+    <Compile Include="Xwt.CairoBackend\CairoContextBackendHandler.cs" />
+    <Compile Include="Xwt.CairoBackend\CairoGradientBackendHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\StatusIconBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ProgressBarBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SpinButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\DatePickerBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ExpanderBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\LinkLabelBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SpinnerBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\RichTextViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkDesktopBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkMacInterop.cs" />
+    <Compile Include="Xwt.GtkBackend\EmbeddedWidgetBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SegmentedButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SliderBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\RadioButtonBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkInterop.cs" />
+    <Compile Include="Xwt.GtkBackend\ScrollbarBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkKeyboardHandler.cs" />
+    <Compile Include="Xwt.GtkBackend\Conversion.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkPlatformBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ScrollControlBackend.cs">
+      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
+    </Compile>
+    <Compile Include="Xwt.GtkBackend\TreeViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TableViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CellUtil.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CellViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TreeStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TableStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\CustomTreeModel.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRenderer.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererImage.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererText.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererToggle.cs" />
+    <Compile Include="Xwt.GtkBackend\CustomListModel.cs" />
+    <Compile Include="Xwt.GtkBackend\ListBoxBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ListStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ListViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ComboBoxBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ComboBoxEntryBackend.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Xwt\Xwt.csproj">
+      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
+      <Name>Xwt</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Xwt.Gtk3.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="icons\" />
+    <Folder Include="Xwt.GtkBackend.CellViews\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icons\light\searchbox-clear-16.png">
+      <LogicalName>searchbox-clear-light-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\light\searchbox-clear-16%402x.png">
+      <LogicalName>searchbox-clear-light-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\light\searchbox-search-16%402x.png">
+      <LogicalName>searchbox-search-light-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\light\searchbox-search-16.png">
+      <LogicalName>searchbox-search-light-16.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

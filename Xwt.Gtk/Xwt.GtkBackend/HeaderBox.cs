@@ -89,6 +89,7 @@ namespace Xwt.GtkBackend
 			child = widget;
 		}
 
+		#if !XWT_GTK3
 		protected override void OnSizeRequested (ref Requisition requisition)
 		{
 			if (child != null) {
@@ -100,6 +101,7 @@ namespace Xwt.GtkBackend
 				requisition.Height = 0;
 			}
 		}
+		#endif
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
@@ -116,12 +118,20 @@ namespace Xwt.GtkBackend
 				child.SizeAllocate (allocation);
 		}
 
+		#if XWT_GTK3
+		protected override bool OnDrawn (Cairo.Context cr)
+		#else
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		#endif
 		{
+			#if !XWT_GTK3
 			using (Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow)) {
+			#endif
 
 				Gdk.Rectangle rect = Allocation;
-			
+				#if XWT_GTK3
+				rect.X = rect.Y = 0;
+				#endif
 				if (BackgroundColor.HasValue) {
 					cr.Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
 					cr.SetSourceColor (BackgroundColor.Value.ToCairoColor ());
@@ -154,9 +164,13 @@ namespace Xwt.GtkBackend
 				cr.Rectangle (rect.X, rect.Y, leftMargin, rect.Height);
 				cr.Rectangle (rect.X + rect.Width - rightMargin, rect.Y, rightMargin, rect.Height);
 				cr.Fill ();
+			#if !XWT_GTK3
 			}
 			bool res = base.OnExposeEvent (evnt);
 			return res;
+			#else
+			return base.OnDrawn (cr);
+			#endif
 		}
 	}
 }

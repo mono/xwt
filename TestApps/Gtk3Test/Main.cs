@@ -1,5 +1,5 @@
 // 
-// ComboBoxEntryBackend.cs
+// Main.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,55 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt.Backends;
+using Samples;
+using Xwt;
 
-namespace Xwt.GtkBackend
+namespace GtkTest
 {
-	public class ComboBoxEntryBackend: ComboBoxBackend, IComboBoxEntryBackend
+	class MainClass
 	{
-		TextEntryBackend entryBackend;
-		
-		protected override Gtk.Widget CreateWidget ()
+		public static void Main (string[] args)
 		{
-			#if XWT_GTK3
-			var c = Gtk.ComboBoxText.NewWithEntry ();
-			#else
-			var c = new Gtk.ComboBoxEntry ();
-			#endif
-			entryBackend = new CustomComboEntryBackend ((Gtk.Entry)c.Child);
-			return c;
-		}
-
-		public void SetTextColumn (int column)
-		{
-			#if XWT_GTK3
-			((Gtk.ComboBoxText)Widget).EntryTextColumn = column;
-			#else
-			((Gtk.ComboBoxEntry)Widget).TextColumn = column;
-			#endif
-		}
-		
-		public ITextEntryBackend TextEntryBackend {
-			get {
-				return entryBackend;
-			}
-		}
-	}
-	
-	class CustomComboEntryBackend: TextEntryBackend
-	{
-		Gtk.Entry entry;
-		
-		public CustomComboEntryBackend (Gtk.Entry entry)
-		{
-			this.entry = entry;
-		}
-		
-		public override void Initialize ()
-		{
-			Widget = entry;
-			entry.Show ();
+			App.Run (ToolkitType.Gtk3);
 		}
 	}
 }
-

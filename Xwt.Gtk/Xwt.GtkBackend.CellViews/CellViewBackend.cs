@@ -54,7 +54,11 @@ namespace Xwt.GtkBackend
 			protected set;
 		}
 
+		#if XWT_GTK3
+		public Gtk.ITreeModel TreeModel { get; private set; }
+		#else
 		public Gtk.TreeModel TreeModel { get; private set; }
+		#endif
 
 		public Gtk.TreeIter CurrentIter { get; private set; }
 
@@ -197,7 +201,11 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		#if XWT_GTK3
+		public void LoadData (Gtk.ITreeModel model, Gtk.TreeIter iter)
+		#else
 		public void LoadData (Gtk.TreeModel model, Gtk.TreeIter iter)
+		#endif
 		{
 			TreeModel = model;
 			CurrentIter = iter;

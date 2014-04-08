@@ -33,10 +33,18 @@ namespace Xwt.GtkBackend
 {
 	public abstract class TableStoreBackend
 	{
+		#if XWT_GTK3
+		Gtk.ITreeModel store;
+		#else
 		Gtk.TreeModel store;
+		#endif
 		Type[] types;
 
+		#if XWT_GTK3
+		public Gtk.ITreeModel Store {
+		#else
 		public Gtk.TreeModel Store {
+		#endif
 			get {
 				return store;
 			}
@@ -60,8 +68,12 @@ namespace Xwt.GtkBackend
 			}
 			store = InitializeModel (types);
 		}
-		
+
+		#if XWT_GTK3
+		public abstract Gtk.ITreeModel InitializeModel (Type[] columnTypes);
+		#else
 		public abstract Gtk.TreeModel InitializeModel (Type[] columnTypes);
+		#endif
 		
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{

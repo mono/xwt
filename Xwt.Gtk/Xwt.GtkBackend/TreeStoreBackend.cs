@@ -58,8 +58,13 @@ namespace Xwt.GtkBackend
 		public Gtk.TreeStore Tree {
 			get { return (Gtk.TreeStore) Store; }
 		}
-		
+
+		#if XWT_GTK3
+		public override Gtk.ITreeModel InitializeModel (Type[] columnTypes)
+		#else
 		public override Gtk.TreeModel InitializeModel (Type[] columnTypes)
+		#endif
+
 		{
 			this.columnTypes = columnTypes;
 			return new Gtk.TreeStore (columnTypes);
