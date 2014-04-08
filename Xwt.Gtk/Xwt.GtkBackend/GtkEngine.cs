@@ -109,9 +109,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IScrollbarBackend, ScrollbarBackend> ();
 			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
 			RegisterBackend<KeyboardHandler, GtkKeyboardHandler> ();
-			#if !XWT_GTK3
 			RegisterBackend<ISearchTextEntryBackend, SearchTextEntryBackend> ();
-			#endif
 
 			string typeName = null;
 			string asmName = null;

@@ -5,6 +5,7 @@
 //       Lluis Sanchez Gual <lluis@xamarin.com>
 //       Aaron Bockover <abockover@novell.com>
 //       Gabriel Burt <gburt@novell.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
 //
@@ -33,6 +34,36 @@ namespace Xwt.GtkBackend
 {
 	public class SearchTextEntryBackend: TextEntryBackend, ISearchTextEntryBackend
 	{
+		#if XWT_GTK3
+		public override void Initialize ()
+		{
+			base.Initialize ();
+			TextEntry.PrimaryIconName = "edit-find-symbolic";
+			TextEntry.PrimaryIconActivatable = false;
+			TextEntry.PrimaryIconSensitive = false;
+			TextEntry.Changed += ShowHideClearButton;
+			TextEntry.IconRelease += ResetSearch;
+		}
+
+		void ResetSearch (object o, Gtk.IconReleaseArgs args)
+		{
+			if (args.P0 == Gtk.EntryIconPosition.Secondary)
+				Text = String.Empty;
+		}
+
+		void ShowHideClearButton (object sender, EventArgs e)
+		{
+			if (String.IsNullOrEmpty (this.Text)) {
+				TextEntry.SecondaryIconName = null;
+				TextEntry.SecondaryIconActivatable = false;
+				TextEntry.SecondaryIconSensitive = false;
+			} else {
+				TextEntry.SecondaryIconName = "edit-clear-symbolic";
+				TextEntry.SecondaryIconActivatable = true;
+				TextEntry.SecondaryIconSensitive = true;
+			}
+		}
+		#else
 		SearchEntry searchEntry;
 
 		protected override Gtk.Entry TextEntry {
@@ -56,8 +87,10 @@ namespace Xwt.GtkBackend
 			base.SetFocus ();
 			TextEntry.GrabFocus ();
 		}
+		#endif
 	}
 
+	#if !XWT_GTK3
 	class SearchEntry : Gtk.EventBox
 	{
 		Gtk.Alignment alignment;
@@ -902,5 +935,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 	}
+	#endif
 }
 

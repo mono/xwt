@@ -155,6 +155,7 @@
     <Compile Include="Xwt.GtkBackend\ListViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ComboBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ComboBoxEntryBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SearchTextEntryBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

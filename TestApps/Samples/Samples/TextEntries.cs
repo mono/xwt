@@ -60,6 +60,19 @@ namespace Samples
 			te5.Text = "I should be centered!";
 			te5.TextAlignment = Alignment.Center;
 			PackStart (te5);
+
+			try {
+				SearchTextEntry te6 = new SearchTextEntry ();
+				te6.PlaceholderText = "Type to search ...";
+				PackStart (te6);
+
+				SearchTextEntry te7 = new SearchTextEntry ();
+				te6.PlaceholderText = "I should have no frame";
+				te6.ShowFrame = false;
+				PackStart (te7);
+			} catch (InvalidOperationException ex) {
+				Console.WriteLine (ex);
+			}
 		}
 	}
 }
