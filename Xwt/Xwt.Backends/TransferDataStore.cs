@@ -36,7 +36,7 @@ using Xwt.Backends;
 namespace Xwt.Backends
 {
 	/// <summary>
-	/// A collection of data that has been transferred through drag & drop or the clipboard
+	/// A collection of data that has been transferred through drag &amp; drop or the clipboard
 	/// </summary>
 	public class TransferDataStore: ITransferData
 	{

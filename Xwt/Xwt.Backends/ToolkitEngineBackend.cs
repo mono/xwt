@@ -206,7 +206,7 @@ namespace Xwt.Backends
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="Xwt.Backends.EngineBackend"/> handles size negotiation on its own
+		/// Gets a value indicating whether this <see cref="ToolkitEngineBackend" /> handles size negotiation on its own
 		/// </summary>
 		/// <value>
 		/// <c>true</c> if the engine backend handles size negotiation; otherwise, <c>false</c>.
