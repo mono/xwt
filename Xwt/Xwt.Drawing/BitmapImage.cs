@@ -82,7 +82,7 @@ namespace Xwt.Drawing
 		/// Creates a crop of the image
 		/// </summary>
 		/// <param name="x">X coordinate, in physical pixels</param>
-		/// <param name="srcY">Y coordinate, in physical pixels</param>
+		/// <param name="y">Y coordinate, in physical pixels</param>
 		/// <param name="pixelWidth">Width, in physical pixels</param>
 		/// <param name="pixelHeight">Height, in physical pixels</param>
 		public BitmapImage Crop (int x, int y, int pixelWidth, int pixelHeight)
@@ -95,10 +95,6 @@ namespace Xwt.Drawing
 		/// <summary>
 		/// Creates a crop of the image
 		/// </summary>
-		/// <param name="x">X coordinate, in physical pixels</param>
-		/// <param name="srcY">Y coordinate, in physical pixels</param>
-		/// <param name="pixelWidth">Width, in physical pixels</param>
-		/// <param name="pixelHeight">Height, in physical pixels</param>
 		public BitmapImage Crop (Rectangle pixelRect)
 		{
 			var scaleX = Math.Truncate (PixelWidth / Width);

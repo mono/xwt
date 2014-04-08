@@ -53,7 +53,7 @@ namespace Xwt.Backends
 		/// <remarks>
 		/// Value is the position of top coordinate of the visible rect (or left for horizontal scrollbars).
 		/// So for example, if you set Value=35 and PageSize=100, the visible range will be 35 to 135.
-		/// Value must be >= LowerValue and <= (UpperValue - PageSize).
+		/// Value must be >= LowerValue and &lt;= (UpperValue - PageSize).
 		/// </remarks>
 		double Value { get; set; }
 		

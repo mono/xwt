@@ -129,7 +129,7 @@ namespace Xwt
 		/// <value>
 		/// The lower value.
 		/// </value>
-		/// <remarks>It must be <= UpperValue</remarks>
+		/// <remarks>It must be &lt;= UpperValue</remarks>
 		public double LowerValue {
 			get { return lowerValue; }
 			set { lowerValue = value; UpdateRange (); }

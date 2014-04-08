@@ -106,7 +106,6 @@ namespace Xwt.Drawing
 		/// Loads an image from a resource
 		/// </summary>
 		/// <returns>An image</returns>
-		/// <param name="type">Type which identifies the assembly from which to load the image</param>
 		/// <param name="resource">Resource name</param>
 		/// <remarks>
 		/// This method will look for alternative versions of the image with different resolutions.

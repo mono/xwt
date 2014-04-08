@@ -145,13 +145,9 @@ namespace Xwt
 		/// <summary>
 		/// Calculates the preferred size of each cell (either height or width, depending on the provided orientation) 
 		/// </summary>
-		/// <param name="mode">Mode.</param>
-		/// <param name="orientation">Wether we are calculating the vertical size or the horizontal size</param>
 		/// <param name="visibleChildren">List of children that are visible, and for which the size is being calculated.</param>
-		/// <param name="fixedSizesByCell">Cells which have a fixed size</param>
-		/// <param name="cellsWithExpand">Cells which are expandable.</param>
-		/// <param name="sizes">Calculated size of each cell</param>
-		/// <param name="spacing">Spacing to use for each cell</param>
+		/// <param name="childrenSizes">Calculated size of each cell</param>
+		/// <param name="orientation">Wether we are calculating the vertical size or the horizontal size</param>
 		CellSizeVector CalcPreferredCellSizes (TablePlacement[] visibleChildren, Size[] childrenSizes, Orientation orientation)
 		{
 			Dictionary<int,double> fixedSizesByCell;
@@ -329,7 +325,6 @@ namespace Xwt
 		/// Calculates size of each cell, taking into account their preferred size, expansion/fill requests, and the available space.
 		/// Calculation is done only for the provided orientation (either height or width).
 		/// </summary>
-		/// <param name="mode">Mode.</param>
 		/// <param name="availableSize">Total size available</param>
 		/// <param name="calcOffsets"></param>
 		void CalcCellSizes (CellSizeVector cellSizes, double availableSize, bool calcOffsets)
