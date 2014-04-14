@@ -445,10 +445,10 @@ namespace Xwt.WPFBackend
 				var ev = (WidgetEvent)eventId;
 				switch (ev) {
 					case WidgetEvent.KeyPressed:
-						Widget.KeyDown += WidgetKeyDownHandler;
+						Widget.PreviewKeyDown += WidgetKeyDownHandler;
 						break;
 					case WidgetEvent.KeyReleased:
-						Widget.KeyUp += WidgetKeyUpHandler;
+						Widget.PreviewKeyUp += WidgetKeyUpHandler;
 						break;
 					case WidgetEvent.PreviewTextInput:
 						TextCompositionManager.AddPreviewTextInputHandler(Widget, WidgetPreviewTextInputHandler);
@@ -499,10 +499,10 @@ namespace Xwt.WPFBackend
 				var ev = (WidgetEvent)eventId;
 				switch (ev) {
 					case WidgetEvent.KeyPressed:
-						Widget.KeyDown -= WidgetKeyDownHandler;
+						Widget.PreviewKeyDown -= WidgetKeyDownHandler;
 						break;
 					case WidgetEvent.KeyReleased:
-						Widget.KeyUp -= WidgetKeyUpHandler;
+						Widget.PreviewKeyUp -= WidgetKeyUpHandler;
 						break;
 					case WidgetEvent.PreviewTextInput:
 						TextCompositionManager.RemovePreviewTextInputHandler(Widget, WidgetPreviewTextInputHandler);
