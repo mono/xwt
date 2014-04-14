@@ -47,7 +47,8 @@ namespace Xwt.Mac
 			if (ViewObject is MacComboBox) {
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else {
-				ViewObject = new CustomAlignedContainer (new CustomTextField (EventSink, ApplicationContext));
+				var view = new CustomTextField (EventSink, ApplicationContext);
+				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view);
 				MultiLine = false;
 			}
 		}

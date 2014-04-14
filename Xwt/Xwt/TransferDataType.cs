@@ -36,7 +36,7 @@ using Xwt.Backends;
 namespace Xwt
 {
 	/// <summary>
-	/// Data type to be used in drag & drop and copy & paste operations
+	/// Data type to be used in drag &amp; drop and copy &amp; paste operations
 	/// </summary>
 	public class TransferDataType
 	{
@@ -88,7 +88,7 @@ namespace Xwt
 		/// <returns>
 		/// The data type
 		/// </returns>
-		/// <param name='name'>
+		/// <param name='id'>
 		/// The identifier.
 		/// </param>
 		public static TransferDataType FromId (string id)
@@ -107,7 +107,7 @@ namespace Xwt
 		/// </param>
 		/// <remarks>
 		/// This is the data type to be used when transferring
-		/// whole objects through drag & drop or copy & paste
+		/// whole objects through drag &amp; drop or copy &amp; paste
 		/// </remarks>
 		public static TransferDataType FromType (Type type)
 		{

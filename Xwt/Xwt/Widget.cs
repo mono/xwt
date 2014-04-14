@@ -79,7 +79,7 @@ namespace Xwt
 		EventHandler<ButtonEventArgs> buttonReleased;
 		EventHandler<MouseMovedEventArgs> mouseMoved;
 		EventHandler boundsChanged;
-        EventHandler<MouseScrolledEventArgs> mouseScrolled;
+		EventHandler<MouseScrolledEventArgs> mouseScrolled;
 		
 		EventHandler gotFocus;
 		EventHandler lostFocus;
@@ -230,10 +230,10 @@ namespace Xwt
 				Parent.OnBoundsChanged ();
 			}
 
-            void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
-            {
-                Parent.OnMouseScrolled(args);
-            }
+			void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
+			{
+				Parent.OnMouseScrolled(args);
+			}
 		}
 		
 		public Widget ()
@@ -1381,7 +1381,7 @@ namespace Xwt
 		}
 
 		/// <summary>
-		/// Raised when the mouse is moved over the widget in a drag&drop operation
+		/// Raised when the mouse is moved over the widget in a drag&amp;drop operation
 		/// </summary>
 		/// <remarks>
 		/// The subscriber of the event should set the value of AllowedAction in the
@@ -1405,7 +1405,7 @@ namespace Xwt
 		}
 		
 		/// <summary>
-		/// Raised when the mouse is moved over the widget in a drag&drop operation
+		/// Raised when the mouse is moved over the widget in a drag&amp;drop operation
 		/// </summary>
 		/// <remarks>
 		/// The subscriber of the event should set the value of AllowedAction in the
@@ -1413,7 +1413,7 @@ namespace Xwt
 		/// the action will be determined by the result of the DragDropCheck event.
 		/// 
 		/// This event provides information about the actual data that is going
-		/// to be dropped. Getting the data may be inneficient in some cross-process drag&drop scenarios,
+		/// to be dropped. Getting the data may be inefficient in some cross-process drag&amp;drop scenarios,
 		/// so if you don't need the actual data to decide the allowed drop operation, 
 		/// and knowing the type of the data is enough, then the DragOverCheck event is a better option.
 		/// </remarks>

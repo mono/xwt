@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C1DF0C90-0C4C-4AB5-A45C-A1805587A844}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>GtkOnWindowsTest</RootNamespace>

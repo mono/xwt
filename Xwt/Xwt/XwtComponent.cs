@@ -61,6 +61,11 @@ namespace Xwt
 			get { return backendHost.Backend; }
 		}
 
+		/// <summary>
+		/// A value, that can be used to identify this component
+		/// </summary>
+		public object Tag { get; set; }
+
 		protected static void MapEvent (object eventId, Type type, string methodName)
 		{
 			EventHost.MapEvent (eventId, type, methodName);

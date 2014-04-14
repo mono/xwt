@@ -150,11 +150,17 @@
     <Folder Include="icons\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="icons\searchbox-clear-16.png">
-      <LogicalName>searchbox-clear-16.png</LogicalName>
+    <EmbeddedResource Include="icons\light\searchbox-clear-16.png">
+      <LogicalName>searchbox-clear-light-16.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="icons\searchbox-search-16.png">
-      <LogicalName>searchbox-search-16.png</LogicalName>
+    <EmbeddedResource Include="icons\light\searchbox-clear-16%402x.png">
+      <LogicalName>searchbox-clear-light-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\light\searchbox-search-16%402x.png">
+      <LogicalName>searchbox-search-light-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\light\searchbox-search-16.png">
+      <LogicalName>searchbox-search-light-16.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

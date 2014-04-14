@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E95833C9-90AA-4366-9262-0A1BED148249}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.Gtk.Mac</RootNamespace>

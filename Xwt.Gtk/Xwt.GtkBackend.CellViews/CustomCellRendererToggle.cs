@@ -40,7 +40,7 @@ namespace Xwt.GtkBackend
 			renderer.Toggled += HandleToggled;
 		}
 
-		protected virtual void OnLoad ()
+		protected override void OnLoadData ()
 		{
 			var view = (ICheckBoxCellViewFrontend) Frontend;
 			renderer.Inconsistent = view.State == CheckBoxState.Mixed;

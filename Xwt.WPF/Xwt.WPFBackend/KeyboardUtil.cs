@@ -53,6 +53,12 @@ namespace Xwt.WPFBackend
 			return modifiers;
 		}
 
+		const int D_Pos = (int)Key.K0 - (int)WpfKey.D0;
+		const int U_Pos = (int)Key.A - (int)WpfKey.A;
+		const int L_Pos = (int)Key.a - (int)WpfKey.A;
+		const int N_Pos = (int)Key.NumPad0 - (int)WpfKey.NumPad0;
+		const int F_Pos = (int)Key.F1 - (int)WpfKey.F1;
+
 		// Missing key translations:
 		// * NumPad keys other than 1-9
 		// * SysReq, Undo, Redo, Menu, Find, Break, Equal
@@ -66,19 +72,19 @@ namespace Xwt.WPFBackend
 				bool upperCase = Keyboard.IsKeyToggled (WpfKey.CapsLock);
 				if ((Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Shift) > 0)
 					upperCase = !upperCase;
-				return upperCase ? (Key)(key + 20) : (Key)(key + 53);
+				return upperCase ? (Key)(key + U_Pos) : (Key)(key + L_Pos);
 			}
 
 			if (key >= WpfKey.D0 && key <= WpfKey.D9)
-				return (Key)(key + 12);
+				return (Key)(key + D_Pos);
 
 			// Numpad- keys
 			if (key >= WpfKey.NumPad0 && key <= WpfKey.NumPad9)
-				return (Key)(key + 65396);
+				return (Key)(key + N_Pos);
 
 			// F- keys
 			if (key >= WpfKey.F1 && key <= WpfKey.F10)
-				return (Key)(key + 65380);
+				return (Key)(key + F_Pos);
 
 			bool isShiftToggled = Keyboard.IsKeyToggled (WpfKey.LeftShift) || Keyboard.IsKeyToggled (WpfKey.RightShift);
 			switch (key) {

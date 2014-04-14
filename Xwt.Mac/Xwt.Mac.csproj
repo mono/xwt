@@ -9,8 +9,6 @@
     <AssemblyName>Xwt.Mac</AssemblyName>
     <SuppressXamMacMigration>True</SuppressXamMacMigration>
     <UseMSBuildEngine>False</UseMSBuildEngine>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -128,6 +126,7 @@
     <Compile Include="Xwt.Mac\WebViewBackend.cs" />
     <Compile Include="Xwt.Mac\ScrollControlBackend.cs" />
     <Compile Include="Xwt.Mac.CellViews\CellViewBackend.cs" />
+    <Compile Include="Xwt.Mac\WidgetView.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

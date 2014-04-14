@@ -51,7 +51,7 @@ namespace Xwt
 		/// <remarks>
 		/// This callback can be used in combination with the AddType method to
 		/// generate the data on demand. In some scenarios, the drop/paste
-		/// side of a drag&drop or clipboard operation can decide if a drop/paste
+		/// side of a drag&amp;drop or clipboard operation can decide if a drop/paste
 		/// is allowed or not by checking the available data type in this
 		/// data source. Once the operation is accepted, the DataRequestCallback
 		/// callback will be invoked to get the data for the type.
@@ -80,7 +80,7 @@ namespace Xwt
 		/// <remarks>
 		/// This method can be used in combination with DataRequestCallback to
 		/// generate the data on demand. In some scenarios, the drop/paste
-		/// side of a drag&drop or clipboard operation can decide if a drop/paste
+		/// side of a drag&amp;drop or clipboard operation can decide if a drop/paste
 		/// is allowed or not by checking the available data type in this
 		/// data source. Once the operation is accepted, the DataRequestCallback
 		/// callback will be invoked to get the data for the type.
@@ -99,7 +99,7 @@ namespace Xwt
 		/// <remarks>
 		/// This method can be used in combination with DataRequestCallback to
 		/// generate the data on demand. In some scenarios, the drop/paste
-		/// side of a drag&drop or clipboard operation can decide if a drop/paste
+		/// side of a drag&amp;drop or clipboard operation can decide if a drop/paste
 		/// is allowed or not by checking the available data type in this
 		/// data source. Once the operation is accepted, the DataRequestCallback
 		/// callback will be invoked to get the data for the type.
