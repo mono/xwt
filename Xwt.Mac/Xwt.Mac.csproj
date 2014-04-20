@@ -128,6 +128,7 @@
     <Compile Include="Xwt.Mac.CellViews\CellViewBackend.cs" />
     <Compile Include="Xwt.Mac\WidgetView.cs" />
     <Compile Include="Xwt.Mac\NSTableViewBackend.cs" />
+    <Compile Include="Xwt.Mac\SaveFileDialogBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
