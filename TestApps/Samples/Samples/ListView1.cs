@@ -40,6 +40,17 @@ namespace Samples
 				MessageDialog.ShowMessage ("Row " + e.RowIndex + " activated");
 			};
 
+			Menu contextMenu = new Menu ();
+			contextMenu.Items.Add (new MenuItem ("Test menu"));
+			list.ButtonPressed += delegate(object sender, ButtonEventArgs e) {
+				int row = list.GetRowAtPosition(new Point(e.X, e.Y));
+				if (e.Button == PointerButton.Right && row >= 0) {
+					// Set actual row to selected
+					list.SelectRow(row);
+					contextMenu.Popup(list, e.X, e.Y);
+				}
+			};
+
 			var but = new Button ("Scroll one line");
 			but.Clicked += delegate {
 				list.VerticalScrollControl.Value += list.VerticalScrollControl.StepIncrement;
