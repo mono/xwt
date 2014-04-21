@@ -11,10 +11,40 @@ namespace Samples
 			Notebook nb = new Notebook ();
 			nb.Add (new Label ("First tab content"), "First Tab");
 			nb.Add (new MyWidget (), "Second Tab");
+            nb.Add (new MyTestWidget(), "Third Tab");
 			nb.TabOrientation = NotebookTabOrientation.Bottom;
 			PackStart (nb, true);
 		}
 	}
+
+    class MyTestWidget : VBox
+    {
+        public MyTestWidget()
+        {
+            PackStart(new Label("Test"));
+
+            VBox ContentData = new VBox()
+            {
+                ExpandHorizontal = true,
+                ExpandVertical = true
+            };
+
+            ScrollView ContentScroll = new ScrollView()
+            {
+                Content = ContentData,
+                ExpandHorizontal = true,
+                ExpandVertical = true
+            };
+            PackStart(ContentScroll, true, true);
+
+            ContentData.PackStart(new TextEntry() { PlaceholderText = "Test" }, true, true);
+            ContentData.PackStart(new TextEntry(), true, true);
+            ContentData.PackStart(new TextEntry(), true, true);
+            ContentData.PackStart(new TextEntry(), true, true);
+            ContentData.PackStart(new TextEntry(), true, true);
+            ContentData.PackStart(new TextEntry(), true, true);
+        }
+    }
 	
 	class MyWidget: Canvas
 	{
