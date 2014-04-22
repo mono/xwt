@@ -170,7 +170,10 @@ namespace Xwt.GtkBackend
 			if (IsReallocating)
 				force_width = SizeConstraint.WithSize (Allocation.Width);
 			var size = Backend.Frontend.Surface.GetPreferredSize (force_width, SizeConstraint.Unconstrained, true);
-			minimum_height = natural_height = (int)size.Height;
+			if (size.Height < this.HeightRequest)
+				minimum_height = natural_height = this.HeightRequest;
+			else
+				minimum_height = natural_height = (int)size.Height;
 		}
 
 		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
@@ -181,7 +184,10 @@ namespace Xwt.GtkBackend
 			if (IsReallocating)
 				force_height = SizeConstraint.WithSize (Allocation.Width);
 			var size = Backend.Frontend.Surface.GetPreferredSize (SizeConstraint.Unconstrained, force_height, true);
-			minimum_width = natural_width = (int)size.Height;
+			if (size.Height < this.WidthRequest)
+				minimum_width = natural_width = this.WidthRequest;
+			else
+				minimum_width = natural_width = (int)size.Width;
 		}
 
 		protected override void OnGetPreferredHeightForWidth (int width, out int minimum_height, out int natural_height)
@@ -189,7 +195,10 @@ namespace Xwt.GtkBackend
 			var size = Backend.Frontend.Surface.GetPreferredSize (SizeConstraint.WithSize (width),
 			                                                      SizeConstraint.Unconstrained,
 			                                                      true);
-			minimum_height = natural_height = (int)size.Height;
+			if (size.Height < this.HeightRequest)
+				minimum_height = natural_height = this.HeightRequest;
+			else
+				minimum_height = natural_height = (int)size.Height;
 		}
 
 		protected override void OnGetPreferredWidthForHeight (int height, out int minimum_width, out int natural_width)
@@ -197,7 +206,10 @@ namespace Xwt.GtkBackend
 			var size = Backend.Frontend.Surface.GetPreferredSize (SizeConstraint.Unconstrained,
 			                                                      SizeConstraint.WithSize (height),
 			                                                      true);
-			minimum_width = natural_width = (int)size.Width;
+			if (size.Height < this.WidthRequest)
+				minimum_width = natural_width = this.WidthRequest;
+			else
+				minimum_width = natural_width = (int)size.Width;
 		}
 		#endif
 

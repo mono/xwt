@@ -139,7 +139,7 @@ namespace Xwt.GtkBackend
 		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
 		{
 			minimum_height = natural_height = (this.HeightRequest > 0 ? this.HeightRequest : 0);
-			minimum_height = natural_height = (int)(Backend.Frontend.MinHeight > 0 ? Backend.Frontend.MinHeight : 0);
+			minimum_height = natural_height = (int)Math.Max(minimum_height, Backend.Frontend.MinHeight);
 			foreach (var cr in children.Where (c => c.Key.Visible)) {
 				minimum_height = (int)Math.Max(minimum_height, cr.Value.Y + cr.Value.Height);
 				natural_height = (int)Math.Max(natural_height, cr.Value.Y + cr.Value.Height);
@@ -149,7 +149,7 @@ namespace Xwt.GtkBackend
 		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
 		{
 			minimum_width = natural_width = (this.WidthRequest > 0 ? this.WidthRequest : 0);
-			minimum_width = natural_width = (int)(Backend.Frontend.MinWidth > 0 ? Backend.Frontend.MinWidth : 0);
+			minimum_width = natural_width = (int)Math.Max(minimum_width, Backend.Frontend.MinWidth);
 			foreach (var cr in children.Where (c => c.Key.Visible)) {
 				minimum_width = (int)Math.Max(minimum_width, cr.Value.X + cr.Value.Height);
 				natural_width = (int)Math.Max(natural_width, cr.Value.X + cr.Value.Height);

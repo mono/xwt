@@ -352,6 +352,11 @@ namespace Xwt.GtkBackend
 					});
 				}
 
+				if (Widget.WidthRequest > min_width)
+					min_width = Widget.WidthRequest;
+				if (Widget.HeightRequest > min_height)
+					min_height = Widget.HeightRequest;
+
 				if (Frontend.MinWidth > 0 && Frontend.MinWidth > min_width)
 					min_width = (int) Frontend.MinWidth;
 
