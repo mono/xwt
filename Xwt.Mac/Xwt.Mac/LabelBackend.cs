@@ -54,6 +54,7 @@ namespace Xwt.Mac
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
+			Widget.BackgroundColor = NSColor.Clear;
 			Wrap = WrapMode.None;
 			Container.ExpandVertically = true;
 			Widget.Cell.Scrollable = false;
