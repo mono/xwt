@@ -1080,22 +1080,22 @@ namespace Xwt.GtkBackend
 		
 		static bool supportsHiResIcons = true;
 
-		[DllImport (GtkInterop.LIBGTK)]
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_icon_source_set_scale (IntPtr source, double scale);
 
-		[DllImport (GtkInterop.LIBGTK)]
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_icon_source_set_scale_wildcarded (IntPtr source, bool setting);
 
-		[DllImport (GtkInterop.LIBGTK)]
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern double gtk_widget_get_scale_factor (IntPtr widget);
 
-		[DllImport (GtkInterop.LIBGDK)]
+		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
 		static extern double gdk_screen_get_monitor_scale_factor (IntPtr widget, int monitor);
 
-		[DllImport (GtkInterop.LIBGOBJECT)]
+		[DllImport (GtkInterop.LIBGOBJECT, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr g_object_get_data (IntPtr source, string name);
 
-		[DllImport (GtkInterop.LIBGTK)]
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_icon_set_render_icon_scaled (IntPtr handle, IntPtr style, int direction, int state, int size, IntPtr widget, IntPtr intPtr, ref double scale);
 
 		public static bool SetSourceScale (Gtk.IconSource source, double scale)
