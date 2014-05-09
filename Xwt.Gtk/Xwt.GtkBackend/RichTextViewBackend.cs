@@ -298,10 +298,15 @@ namespace Xwt.GtkBackend
 				//FIXME: it would be nice to support title
 				var iter = EndIter;
 				var anchor = CreateChildAnchor (ref iter);
+
+				Uri uri;
+				if (!Uri.TryCreate (href, UriKind.RelativeOrAbsolute, out uri))
+					uri = null;
+
 				openLinks.Push (new Link ()
 				{
 					Text = string.Empty,
-					Href = new Uri (href, UriKind.RelativeOrAbsolute),
+					Href = uri,
 					Anchor = anchor
 				});
 			}
