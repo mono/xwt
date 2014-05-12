@@ -33,8 +33,13 @@ namespace Xwt.GtkBackend
 	public class ListStoreBackend: TableStoreBackend, IListStoreBackend
 	{
 		Type[] columnTypes;
-		
+
+
+		#if XWT_GTK3
+		public override Gtk.ITreeModel InitializeModel (Type[] columnTypes)
+		#else
 		public override Gtk.TreeModel InitializeModel (Type[] columnTypes)
+		#endif
 		{
 			this.columnTypes = columnTypes;
 			var store = new Gtk.ListStore (columnTypes);

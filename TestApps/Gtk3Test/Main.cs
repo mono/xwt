@@ -1,5 +1,5 @@
 // 
-// TextEntries.cs
+// Main.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -24,56 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Samples;
 using Xwt;
 
-namespace Samples
+namespace GtkTest
 {
-	public class TextEntries: VBox
+	class MainClass
 	{
-		public TextEntries ()
+		public static void Main (string[] args)
 		{
-			TextEntry te1 = new TextEntry ();
-			PackStart (te1);
-			
-			Label la = new Label ();
-			PackStart (la);
-			te1.Changed += delegate {
-				la.Text = "Text: " + te1.Text;
-			};
-			
-			PackStart (new Label ("Entry with small font"));
-			TextEntry te2 = new TextEntry ();
-			te2.Font = te2.Font.WithScaledSize (0.5);
-			PackStart (te2);
-			
-			PackStart (new Label ("Entry with placeholder text"));
-			TextEntry te3 = new TextEntry ();
-			te3.PlaceholderText = "Placeholder text";
-			PackStart (te3);
-
-			PackStart (new Label ("Entry with no frame"));
-			TextEntry te4 = new TextEntry();
-			te4.ShowFrame = false;
-			PackStart (te4);
-
-			TextEntry te5 = new TextEntry ();
-			te5.Text = "I should be centered!";
-			te5.TextAlignment = Alignment.Center;
-			PackStart (te5);
-
-			try {
-				SearchTextEntry te6 = new SearchTextEntry ();
-				te6.PlaceholderText = "Type to search ...";
-				PackStart (te6);
-
-				SearchTextEntry te7 = new SearchTextEntry ();
-				te6.PlaceholderText = "I should have no frame";
-				te6.ShowFrame = false;
-				PackStart (te7);
-			} catch (InvalidOperationException ex) {
-				Console.WriteLine (ex);
-			}
+			App.Run (ToolkitType.Gtk3);
 		}
 	}
 }
-

@@ -263,7 +263,8 @@ namespace Xwt
 		Gtk = 1,
 		Cocoa = 2,
 		Wpf = 3,
-		XamMac = 4
+		XamMac = 4,
+		Gtk3 = 5,
 	}
 }
 

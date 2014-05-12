@@ -29,7 +29,11 @@ using System.Runtime.InteropServices;
 
 namespace Xwt.GtkBackend
 {
+	#if XWT_GTK3
+	public class CustomListModel: GLib.Object, Gtk.ITreeModelImplementor
+	#else
 	public class CustomListModel: GLib.Object, Gtk.TreeModelImplementor
+	#endif
 	{
 		IListDataSource source;
 		Dictionary<int,int> nodeHash = new Dictionary<int,int> ();
@@ -152,6 +156,18 @@ namespace Xwt.GtkBackend
 			} else
 				return false;
 		}
+
+		#if XWT_GTK3
+		public bool IterPrevious (ref Gtk.TreeIter iter)
+		{
+			int row = NodeFromIter (iter);
+			if (--row >= 0) {
+				iter = IterFromNode (row);
+				return true;
+			} else
+				return false;
+		}
+		#endif
 
 		public bool IterChildren (out Gtk.TreeIter iter, Gtk.TreeIter parent)
         {

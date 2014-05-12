@@ -32,7 +32,9 @@ namespace Xwt.GtkBackend
 {
 	public class TextEntryBackend: WidgetBackend, ITextEntryBackend
 	{
+		#if !XWT_GTK3
 		string placeHolderText;
+		#endif
 		
 		public override void Initialize ()
 		{
@@ -75,7 +77,22 @@ namespace Xwt.GtkBackend
 				}
 			}
 		}
-		
+
+		#if XWT_GTK3
+		public string PlaceholderText {
+			get {
+				using (GLib.Value property = Widget.GetProperty ("placeholder-text")) {
+					string result = (string)property;
+					return result;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					Widget.SetProperty ("placeholder-text", val);
+				}
+			}
+		}
+		#else
 		public string PlaceholderText {
 			get { return placeHolderText; }
 			set {
@@ -88,6 +105,7 @@ namespace Xwt.GtkBackend
 				placeHolderText = value;
 			}
 		}
+		#endif
 		
 		public override Color BackgroundColor {
 			get {
@@ -100,7 +118,8 @@ namespace Xwt.GtkBackend
 		}
 
 		Pango.Layout layout;
-		
+
+		#if !XWT_GTK3
 		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
 			RenderPlaceholderText (Widget, args, placeHolderText, ref layout);
@@ -139,6 +158,7 @@ namespace Xwt.GtkBackend
 				args.Event.Window.DrawLayout (gc, 2, (wh - height) / 2 + 1, layout);
 			}
 		}
+		#endif
 		
 		public bool ReadOnly {
 			get {

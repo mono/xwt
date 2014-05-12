@@ -27,6 +27,7 @@ using System;
 using Xwt.Backends;
 
 using Xwt.Drawing;
+using System.Linq;
 
 namespace Xwt.GtkBackend
 {
@@ -82,6 +83,8 @@ namespace Xwt.GtkBackend
 		{
 			this.eventSink = eventSink;
 			Initialize ();
+
+			#if !XWT_GTK3
 			Window.SizeRequested += delegate(object o, Gtk.SizeRequestedArgs args) {
 				if (!Window.Resizable) {
 					int w = args.Requisition.Width, h = args.Requisition.Height;
@@ -92,6 +95,7 @@ namespace Xwt.GtkBackend
 					args.Requisition = new Gtk.Requisition () { Width = w, Height = h };
 				}
 			};
+			#endif
 		}
 		
 		public virtual void Initialize ()
@@ -131,7 +135,12 @@ namespace Xwt.GtkBackend
 				int w, h, x, y;
 				if (Window.GdkWindow != null) {
 					Window.GdkWindow.GetOrigin (out x, out y);
+					#if XWT_GTK3
+					w = Window.GdkWindow.Width;
+					h = Window.GdkWindow.Height;
+					#else
 					Window.GdkWindow.GetSize (out w, out h);
+					#endif
 				} else {
 					Window.GetPosition (out x, out y);
 					Window.GetSize (out w, out h);
@@ -235,7 +244,7 @@ namespace Xwt.GtkBackend
 
 		public void SetIcon(ImageDescription icon)
 		{
-			// TODO
+			Window.IconList = ((GtkImage)icon.Backend).Frames.Select (f => f.Pixbuf).ToArray ();
 		}
 		#endregion
 

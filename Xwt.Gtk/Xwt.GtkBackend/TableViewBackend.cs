@@ -235,13 +235,19 @@ namespace Xwt.GtkBackend
 
 			int x = 0;
 			int th = 0;
+			#if XWT_GTK3
+			CellRenderer[] renderers = col.Cells;
+			#else
 			CellRenderer[] renderers = col.CellRenderers;
+			#endif
 			foreach (CellRenderer cr in renderers) {
 				int sp, wi, he, xo, yo;
 				col.CellGetSize (rect, out xo, out yo, out wi, out he);
 				col.CellGetPosition (cr, out sp, out wi);
 				Gdk.Rectangle crect = new Gdk.Rectangle (x, rect.Y, wi, rect.Height);
+				#if !XWT_GTK3
 				cr.GetSize (Widget, ref crect, out xo, out yo, out wi, out he);
+				#endif
 				if (cr == cra) {
 					Widget.ConvertBinWindowToWidgetCoords (rect.X + x, rect.Y, out xo, out yo);
 					// There seems to be a 1px vertical padding
@@ -275,7 +281,11 @@ namespace Xwt.GtkBackend
 			get { return Widget; }
 		}
 
-		Gtk.TreeModel ICellRendererTarget.Model {
+		#if XWT_GTK3
+		ITreeModel ICellRendererTarget.Model {
+		#else
+		TreeModel ICellRendererTarget.Model {
+		#endif
 			get { return Widget.Model; }
 		}
 

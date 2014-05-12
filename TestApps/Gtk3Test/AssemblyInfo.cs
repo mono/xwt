@@ -1,5 +1,5 @@
 // 
-// ComboBoxEntryBackend.cs
+// AssemblyInfo.cs
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
@@ -23,56 +23,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using Xwt.Backends;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
-namespace Xwt.GtkBackend
-{
-	public class ComboBoxEntryBackend: ComboBoxBackend, IComboBoxEntryBackend
-	{
-		TextEntryBackend entryBackend;
-		
-		protected override Gtk.Widget CreateWidget ()
-		{
-			#if XWT_GTK3
-			var c = Gtk.ComboBoxText.NewWithEntry ();
-			#else
-			var c = new Gtk.ComboBoxEntry ();
-			#endif
-			entryBackend = new CustomComboEntryBackend ((Gtk.Entry)c.Child);
-			return c;
-		}
+// Information about this assembly is defined by the following attributes. 
+// Change them to the values specific to your project.
 
-		public void SetTextColumn (int column)
-		{
-			#if XWT_GTK3
-			((Gtk.ComboBoxText)Widget).EntryTextColumn = column;
-			#else
-			((Gtk.ComboBoxEntry)Widget).TextColumn = column;
-			#endif
-		}
-		
-		public ITextEntryBackend TextEntryBackend {
-			get {
-				return entryBackend;
-			}
-		}
-	}
-	
-	class CustomComboEntryBackend: TextEntryBackend
-	{
-		Gtk.Entry entry;
-		
-		public CustomComboEntryBackend (Gtk.Entry entry)
-		{
-			this.entry = entry;
-		}
-		
-		public override void Initialize ()
-		{
-			Widget = entry;
-			entry.Show ();
-		}
-	}
-}
+[assembly: AssemblyTitle("Gtk3Test")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("")]
+[assembly: AssemblyCopyright("Xamarin Inc")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+// The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
+// The form "{Major}.{Minor}.*" will automatically update the build and revision,
+// and "{Major}.{Minor}.{Build}.*" will update just the revision.
+
+[assembly: AssemblyVersion("1.0.*")]
+
+// The following attributes are used to specify the signing key for the assembly, 
+// if desired. See the Mono documentation for more information about signing.
+
+//[assembly: AssemblyDelaySign(false)]
+//[assembly: AssemblyKeyFile("")]
 

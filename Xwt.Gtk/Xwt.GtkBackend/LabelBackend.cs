@@ -38,7 +38,9 @@ namespace Xwt.GtkBackend
 	class LabelBackend: WidgetBackend, ILabelBackend
 	{
 		Color? bgColor, textColor;
+		#if !XWT_GTK3
 		int wrapHeight, wrapWidth;
+		#endif
 		List<LabelLink> links;
 		TextIndexer indexer;
 
@@ -63,6 +65,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
+		#if !XWT_GTK3
 		public override Xwt.Drawing.Color BackgroundColor {
 			get {
 				return bgColor.HasValue ? bgColor.Value : base.BackgroundColor;
@@ -75,6 +78,7 @@ namespace Xwt.GtkBackend
 				Label.QueueDraw ();
 			}
 		}
+		#endif
 
 		bool linkEventEnabled;
 
@@ -158,6 +162,7 @@ namespace Xwt.GtkBackend
 			return null;
 		}
 
+		#if !XWT_GTK3
 		[GLib.ConnectBefore]
 		void HandleLabelExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
@@ -200,6 +205,7 @@ namespace Xwt.GtkBackend
 				args.Requisition = req;
 			}
 		}
+		#endif
 		
 		public virtual string Text {
 			get { return Label.Text; }
@@ -282,11 +288,19 @@ namespace Xwt.GtkBackend
 				break;
 			case Alignment.End:
 				Label.Justify = Gtk.Justification.Right;
+				#if XWT_GTK3
+				Label.Xalign = 1;
+				#else
 				Label.Xalign = Label.LineWrap ? 0 : 1;
+				#endif
 				break;
 			case Alignment.Center:
 				Label.Justify = Gtk.Justification.Center;
+				#if XWT_GTK3
+				Label.Xalign = 0.5f;
+				#else
 				Label.Xalign = Label.LineWrap ? 0 : 0.5f;
+				#endif
 				break;
 			}
 		}
@@ -321,14 +335,18 @@ namespace Xwt.GtkBackend
 				if (value == WrapMode.None){
 					if (Label.LineWrap) {
 						Label.LineWrap = false;
+						#if !XWT_GTK3
 						Label.SizeAllocated -= HandleLabelDynamicSizeAllocate;
 						Label.SizeRequested -= HandleLabelDynamicSizeRequest;
+						#endif
 					}
 				} else {
 					if (!Label.LineWrap) {
 						Label.LineWrap = true;
+						#if !XWT_GTK3
 						Label.SizeAllocated += HandleLabelDynamicSizeAllocate;
 						Label.SizeRequested += HandleLabelDynamicSizeRequest;
+						#endif
 					}
 					switch (value) {
 					case WrapMode.Character:

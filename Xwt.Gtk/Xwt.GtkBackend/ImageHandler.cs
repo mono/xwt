@@ -436,14 +436,26 @@ namespace Xwt.GtkBackend
 
 		public ImageBox (ApplicationContext actx)
 		{
+			#if XWT_GTK3
+			HasWindow = false;
+			AppPaintable = true;
+			#else
 			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
 			WidgetFlags |= Gtk.WidgetFlags.NoWindow;
+			#endif
 			this.actx = actx;
 		}
 
 		public ImageDescription Image {
 			get { return image; }
-			set { image = value; QueueResize (); }
+			set { 
+				image = value; 
+				#if XWT_GTK3
+				if (!image.IsNull)
+					SetSizeRequest ((int)image.Size.Width, (int)image.Size.Height);
+				#endif
+				QueueResize ();
+			}
 		}
 
 		public float Yalign {
@@ -455,7 +467,8 @@ namespace Xwt.GtkBackend
 			get { return xalign; }
 			set { xalign = value; QueueDraw (); }
 		}
-		
+
+		#if !XWT_GTK3
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			base.OnSizeRequested (ref requisition);
@@ -464,7 +477,22 @@ namespace Xwt.GtkBackend
 				requisition.Height = (int) image.Size.Height;
 			}
 		}
+		#endif
 
+		#if XWT_GTK3
+		protected override bool OnDrawn (Cairo.Context cr)
+		{
+			if (image.IsNull)
+				return true;
+
+			int x = (int)(((float)Allocation.Width - (float)image.Size.Width) * xalign);
+			int y = (int)(((float)Allocation.Height - (float)image.Size.Height) * yalign);
+			if (x < 0) x = 0;
+			if (y < 0) y = 0;
+			((GtkImage)image.Backend).Draw (actx, cr, Util.GetScaleFactor (this), x, y, image);
+			return true;
+		}
+		#else
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			if (image.IsNull)
@@ -479,6 +507,7 @@ namespace Xwt.GtkBackend
 				return true;
 			}
 		}
+		#endif
 	}
 }
 

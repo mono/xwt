@@ -64,14 +64,20 @@ namespace Xwt.GtkBackend
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
+			#if XWT_GTK3
+			surface.SizeAllocate (new Gdk.Rectangle (0,0, allocation.Width, allocation.Height));
+			#else
 			surface.Allocation = new Gdk.Rectangle (0,0, allocation.Width, allocation.Height);
+			#endif
 		}
-		
+
+		#if !XWT_GTK3
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			base.OnSizeRequested (ref requisition);
 			surface.SizeRequest ();
 		}
+		#endif
 		
 		protected override void ForAll (bool include_internals, Gtk.Callback callback)
 		{

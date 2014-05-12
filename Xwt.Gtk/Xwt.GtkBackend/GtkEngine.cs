@@ -92,7 +92,9 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IListBoxBackend, ListBoxBackend> ();
 			RegisterBackend<IStatusIconBackend, StatusIconBackend> ();
 			RegisterBackend<IProgressBarBackend, ProgressBarBackend> ();
+			#if !XWT_GTK3
 			RegisterBackend<IPopoverBackend, PopoverBackend> ();
+			#endif
 			RegisterBackend<ISpinButtonBackend, SpinButtonBackend> ();
 			RegisterBackend<IDatePickerBackend, DatePickerBackend> ();
 			RegisterBackend<ILinkLabelBackend, LinkLabelBackend> ();
@@ -314,7 +316,11 @@ namespace Xwt.GtkBackend
 			var w = ((WidgetBackend)widget.GetBackend ()).Widget;
 			Gdk.Window win = w.GdkWindow;
 			if (win != null && win.IsViewable)
+				#if XWT_GTK3
+				return new GtkImage (win.ToPixbuf (w.Allocation.X, w.Allocation.Y, w.Allocation.Width, w.Allocation.Height));
+				#else
 				return new GtkImage (Gdk.Pixbuf.FromDrawable (win, Colormap.System, w.Allocation.X, w.Allocation.Y, 0, 0, w.Allocation.Width, w.Allocation.Height));
+				#endif
 			else
 				throw new InvalidOperationException ();
 		}

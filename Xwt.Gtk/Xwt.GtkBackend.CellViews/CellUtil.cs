@@ -37,9 +37,17 @@ namespace Xwt.GtkBackend
 		class CellDataSource: ICellDataSource
 		{
 			TreeIter iter;
+			#if XWT_GTK3
+			ITreeModel treeModel;
+			#else
 			TreeModel treeModel;
+			#endif
 
+			#if XWT_GTK3
+			public CellDataSource (TreeIter iter, ITreeModel treeModel)
+			#else
 			public CellDataSource (TreeIter iter, TreeModel treeModel)
+			#endif
 			{
 				this.iter = iter;
 				this.treeModel = treeModel;
@@ -101,7 +109,11 @@ namespace Xwt.GtkBackend
 			throw new NotImplementedException ();
 		}
 
-		public static void SetModelValue (Gtk.TreeModel store, Gtk.TreeIter it, int column, Type type, object value)
+		#if XWT_GTK3
+		public static void SetModelValue (ITreeModel store, Gtk.TreeIter it, int column, Type type, object value)
+		#else
+		public static void SetModelValue (TreeModel store, Gtk.TreeIter it, int column, Type type, object value)
+		#endif
 		{
 			if (type == typeof(ObjectWrapper) && value != null)
 				store.SetValue (it, column, new ObjectWrapper (value));
@@ -111,7 +123,11 @@ namespace Xwt.GtkBackend
 				store.SetValue (it, column, value ?? DBNull.Value);
 		}
 
-		public static object GetModelValue (Gtk.TreeModel store, Gtk.TreeIter it, int column)
+		#if XWT_GTK3
+		public static object GetModelValue (ITreeModel store, Gtk.TreeIter it, int column)
+		#else
+		public static object GetModelValue (TreeModel store, Gtk.TreeIter it, int column)
+		#endif
 		{
 			object val = store.GetValue (it, column);
 			if (val is DBNull)
@@ -153,7 +169,11 @@ namespace Xwt.GtkBackend
 		Gtk.Widget EventRootWidget { get; }
 		bool GetCellPosition (Gtk.CellRenderer r, int ex, int ey, out int cx, out int cy, out Gtk.TreeIter iter);
 		void QueueDraw (object target, Gtk.TreeIter iter);
+		#if XWT_GTK3
+		Gtk.ITreeModel Model { get; }
+		#else
 		Gtk.TreeModel Model { get; }
+		#endif
 		Gtk.TreeIter PressedIter { get; set; }
 		CellViewBackend PressedCell { get; set; }
 	}

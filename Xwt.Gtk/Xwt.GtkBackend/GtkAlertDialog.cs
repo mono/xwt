@@ -59,7 +59,11 @@ namespace Xwt.GtkBackend
 		void Init ()
 		{
 			image = new ImageBox (actx);
+			#if XWT_GTK3
+			ContentArea.Add (hbox);
+			#else
 			VBox.PackStart (hbox);
+			#endif
 			hbox.PackStart (image, false, false, 0);
 			hbox.PackStart (labelsBox, true, true, 0);
 			labelsBox.PackStart (label, true, true, 0);
@@ -69,10 +73,16 @@ namespace Xwt.GtkBackend
 			this.BorderWidth  = 6;
 			//this.Type         = WindowType.Toplevel;
 			this.Resizable    = false;
+			#if !XWT_GTK3
 			this.HasSeparator = false;
+			#endif
 			
 			// Table 3.2
+			#if XWT_GTK3
+			this.ContentArea.Spacing = 12;
+			#else
 			this.VBox.Spacing = 12;
+			#endif
 			
 			// Table 3.3
 			this.hbox.Spacing     = 12;

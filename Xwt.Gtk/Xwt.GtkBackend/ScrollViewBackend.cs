@@ -176,9 +176,47 @@ namespace Xwt.GtkBackend
 			return new ScrollControltBackend (Widget.Hadjustment);
 		}
 	}
-	
+
+	#if XWT_GTK3
+	class CustomViewPort: Gtk.Viewport
+	#else
 	class CustomViewPort: Gtk.Bin
+	#endif
 	{
+		#if XWT_GTK3
+		Gtk.Adjustment hadjustment;
+		[GLib.Property ("hadjustment")]
+		public new Gtk.Adjustment Hadjustment {
+			get {
+				return hadjustment;
+			}
+			set {
+				hadjustment = value;
+				if (vadjustment != null) {
+					var hsa = new ScrollAdjustmentBackend (value);
+					var vsa = new ScrollAdjustmentBackend (vadjustment);
+					eventSink.SetScrollAdjustments (hsa, vsa);
+				}
+			}
+		}
+
+		Gtk.Adjustment vadjustment;
+		[GLib.Property ("vadjustment")]
+		public new Gtk.Adjustment Vadjustment {
+			get {
+				return vadjustment;
+			}
+			set {
+				vadjustment = value;
+				if (hadjustment != null) {
+					var vsa = new ScrollAdjustmentBackend (value);
+					var hsa = new ScrollAdjustmentBackend (hadjustment);
+					eventSink.SetScrollAdjustments (hsa, vsa);
+				}
+			}
+		}
+		#endif
+
 		Gtk.Widget child;
 		IWidgetEventSink eventSink;
 		
@@ -191,8 +229,14 @@ namespace Xwt.GtkBackend
 		{
 			base.OnAdded (widget);
 			child = widget;
+			#if XWT_GTK3
+			int width, height;
+			child.GetSizeRequest (out width, out height);
+			SetSizeRequest (width, height);
+			#endif
 		}
 
+		#if !XWT_GTK3
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			if (child != null) {
@@ -202,6 +246,7 @@ namespace Xwt.GtkBackend
 				requisition.Height = 0;
 			}
 		}
+		#endif
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
@@ -210,6 +255,7 @@ namespace Xwt.GtkBackend
 				child.SizeAllocate (allocation);
 		}
 
+		#if !XWT_GTK3
 		protected override void OnSetScrollAdjustments (Gtk.Adjustment hadj, Gtk.Adjustment vadj)
 		{
 			var hsa = new ScrollAdjustmentBackend (hadj);
@@ -217,6 +263,7 @@ namespace Xwt.GtkBackend
 			
 			eventSink.SetScrollAdjustments (hsa, vsa);
 		}
+		#endif
 	}
 }
 
