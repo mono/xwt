@@ -13,7 +13,9 @@ namespace Samples
 		VBox sampleBox;
 		Label title;
 		Widget currentSample;
-		
+		Menu contextMenu;
+		Label treeViewLabel;
+
 		DataField<string> nameCol = new DataField<string> ();
 		DataField<Sample> widgetCol = new DataField<Sample> ();
 		DataField<Image> iconCol = new DataField<Image> ();
@@ -126,8 +128,15 @@ namespace Samples
 			AddSample (null, "Screens", typeof (ScreensSample));
 
 			samplesTree.DataSource = store;
-			
-			box.Panel1.Content = samplesTree;
+
+
+			VBox leftPanel = new VBox ();
+
+			treeViewLabel = new Label ("");
+
+			leftPanel.PackStart (samplesTree, true, true);
+			leftPanel.PackStart (treeViewLabel);
+			box.Panel1.Content = leftPanel;
 			
 			sampleBox = new VBox ();
 			title = new Label ("Sample:");
@@ -142,6 +151,31 @@ namespace Samples
 			samplesTree.SelectionChanged += HandleSamplesTreeSelectionChanged;
 
 			CloseRequested += HandleCloseRequested;
+
+			// Create context menu
+			contextMenu = new Menu ();
+			contextMenu.Items.Add (new MenuItem ("Context menu #1"));
+			contextMenu.Items.Add (new MenuItem ("Context menu #2"));
+			contextMenu.Items.Add (new MenuItem ("Context menu #3"));
+			samplesTree.ButtonPressed += HandleContextMenu;
+
+			samplesTree.MouseEntered += delegate(object sender, EventArgs e) {
+				treeViewLabel.Text = "Try right-button context menu";
+			};
+			samplesTree.MouseExited += delegate(object sender, EventArgs e) {
+				treeViewLabel.Text = "";
+			};
+		}
+
+		void HandleContextMenu(object sender, ButtonEventArgs e) {
+			if (e.Button == PointerButton.Right) {
+				TreePosition tmpTreePos;
+				RowDropPosition tmpRowDrop;
+				if (samplesTree.GetDropTargetRow (e.X, e.Y, out tmpRowDrop, out tmpTreePos)) {
+					samplesTree.SelectRow (tmpTreePos);
+					contextMenu.Popup (samplesTree, e.X, e.Y);
+				}
+			}
 		}
 
 		void HandleCloseRequested (object sender, CloseRequestedEventArgs args)
