@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//		 Jan Strnadek <jan.strnadek@gmail.com> - Add "ADD item" button for example of Cocoa List Referesh data Source!
 // 
 // Copyright (c) 2012 Xamarin Inc
 // 
@@ -61,6 +62,29 @@ namespace Samples
 				store.SetValue (r, name, "Value " + n);
 			}
 			PackStart (customList, true);
+
+			HBox ButtonBox = new HBox ();
+
+			Button AddNewItem = new Button ("Add new item");
+			AddNewItem.Clicked += delegate {
+				var r = store.InsertRowBefore(0);
+				store.SetValue(r, icon, png);
+				store.SetValue(r, name, "New item");
+			};
+			ButtonBox.PackStart (AddNewItem, true, false);
+
+			Button RemoveItem = new Button ("Remove item");
+			RemoveItem.Clicked += delegate {
+				try {
+					store.RemoveRow(customList.SelectedRow);
+				}
+				catch (Exception e) {
+					Console.WriteLine("Error: "+e.Message);
+				}
+			};
+			ButtonBox.PackStart (RemoveItem, true, false);
+
+			PackStart (ButtonBox);
 		}	
 	}
 }

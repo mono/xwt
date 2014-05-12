@@ -3,6 +3,8 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//		 Jan Strnadek <jan.strnadek@gmail.com>
+//       	- add delegates for refreshing NSTableView DataSource after source was changed!
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -51,6 +53,9 @@ namespace Xwt.Mac
 			this.source = source;
 			tsource = new ListSource (source);
 			Table.DataSource = tsource;
+			source.RowChanged += delegate(object sender, ListRowEventArgs e) {
+				Table.ReloadData();
+			};
 		}
 		
 		public int[] SelectedRows {
