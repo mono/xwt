@@ -147,6 +147,8 @@ namespace Samples
 		void HandleCloseRequested (object sender, CloseRequestedEventArgs args)
 		{
 			args.AllowClose = MessageDialog.Confirm ("Samples will be closed", Command.Ok);
+			if (args.AllowClose)
+				Application.Exit ();
 		}
 		
 		protected override void Dispose (bool disposing)
