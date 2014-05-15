@@ -40,6 +40,37 @@ namespace Samples
 			te1.Changed += delegate {
 				la.Text = "Text: " + te1.Text;
 			};
+
+			HBox selBox = new HBox ();
+
+			Label las = new Label ("Selection:");
+			selBox.PackStart (las);
+			Button selReplace = new Button ("Replace");
+			selReplace.Clicked += delegate {
+				te1.SelectedText = "[TEST]";
+			};
+			selBox.PackEnd (selReplace);
+			Button selAll = new Button ("Select all");
+			selAll.Clicked += delegate {
+				te1.SelectionStart = 0;
+				te1.SelectionLength = te1.Text.Length;
+			};
+			selBox.PackEnd (selAll);
+			Button selPlus = new Button ("+");
+			selPlus.Clicked += delegate {
+				te1.SelectionLength++;
+			};
+			selBox.PackEnd (selPlus);
+			Button selRight = new Button (">");
+			selRight.Clicked += delegate {
+				te1.SelectionStart++;
+			};
+			selBox.PackEnd (selRight);
+			PackStart (selBox);
+
+			te1.SelectionChanged += delegate {
+				las.Text = "Selection: (" + te1.CursorPosition + " <-> " + te1.SelectionStart + " + " + te1.SelectionLength + ") " + te1.SelectedText;
+			};
 			
 			PackStart (new Label ("Entry with small font"));
 			TextEntry te2 = new TextEntry ();
