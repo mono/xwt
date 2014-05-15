@@ -268,7 +268,7 @@ namespace Xwt.GtkBackend
 				if (frames != null)
 					return new Size (frames[0].Pixbuf.Width, frames[0].Pixbuf.Height);
 				else
-					return Size.Zero;
+					return new Size (16, 16);
 			}
 		}
 
