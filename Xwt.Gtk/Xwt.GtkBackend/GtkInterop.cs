@@ -35,10 +35,10 @@ namespace Xwt.GtkBackend
 	public static class GtkInterop
 	{
 		#if XWT_GTK3
-		internal const string LIBGTK          = "libgtk-3.0-0.dll";
+		internal const string LIBGTK          = "libgtk-3-0.dll";
 		internal const string LIBATK          = "libatk-1.0-0.dll";
 		internal const string LIBGLIB         = "libglib-2.0-0.dll";
-		internal const string LIBGDK          = "libgdk-3.0-0.dll";
+		internal const string LIBGDK          = "libgdk-3-0.dll";
 		internal const string LIBGOBJECT      = "libgobject-2.0-0.dll";
 		internal const string LIBPANGO        = "libpango-1.0-0.dll";
 		internal const string LIBPANGOCAIRO   = "libpangocairo-1.0-0.dll";
