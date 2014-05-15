@@ -35,18 +35,24 @@ namespace Xwt.Backends
 		bool ReadOnly { get; set; }
 		bool ShowFrame { get; set; }
 		bool MultiLine { get; set; }
+		int CursorPosition { get; set; }
+		int SelectionStart { get; set; }
+		int SelectionLength { get; set; }
+		string SelectedText { get; set; }
 	}
 	
 	public interface ITextEntryEventSink: IWidgetEventSink
 	{
 		void OnChanged ();
 		void OnActivated ();
+		void OnSelectionChanged ();
 	}
 	
 	public enum TextEntryEvent
 	{
 		Changed,
-		Activated
+		Activated,
+		SelectionChanged
 	}
 }
 
