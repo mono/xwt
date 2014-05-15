@@ -181,7 +181,10 @@ namespace Xwt.WPFBackend
 
 		public Alignment TextAlignment {
 			get { return DataConverter.ToXwtAlignment (Label.HorizontalContentAlignment); }
-			set { Label.HorizontalContentAlignment = DataConverter.ToWpfAlignment (value); }
+			set { 
+				Label.HorizontalContentAlignment = DataConverter.ToWpfAlignment (value); 
+				Label.TextBlock.TextAlignment = DataConverter.ToTextAlignment (value);
+			}
 		}
 
 		public EllipsizeMode Ellipsize {
