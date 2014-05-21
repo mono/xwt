@@ -92,13 +92,22 @@ namespace Xwt.Drawing
 		}
 
 
-		internal ImageDescription ImageDescription {
-			get {
-				return new ImageDescription () {
-					Alpha = requestedAlpha,
-					Size = Size,
-					Backend = Backend
-				};
+		internal ImageDescription GetImageDescription (Toolkit toolkit)
+		{
+			InitForToolkit (toolkit);
+			return new ImageDescription () {
+				Alpha = requestedAlpha,
+				Size = Size,
+				Backend = Backend
+			};
+		}
+
+		internal void InitForToolkit (Toolkit t)
+		{
+			if (ToolkitEngine != t) {
+				var nr = NativeRef.LoadForToolkit (t);
+				ToolkitEngine = t;
+				Backend = nr.Backend;
 			}
 		}
 
@@ -197,6 +206,7 @@ namespace Xwt.Drawing
 			var res = new Image (img, toolkit) {
 				requestedSize = reqSize
 			};
+			res.NativeRef.SetResourceSource (assembly, resource);
 			if (ext == ".9.png")
 				res = new NinePatchImage (res.ToBitmap ());
 			return res;
@@ -589,6 +599,32 @@ namespace Xwt.Drawing
 		int referenceCount = 1;
 		Toolkit toolkit;
 
+		// Source file or resource name
+		string source;
+
+		// Assembly that contains the resource
+		Assembly resourceAssembly;
+
+		public object Backend {
+			get { return backend; }
+		}
+
+		public Toolkit Toolkit {
+			get { return toolkit; }
+		}
+
+		public void SetFileSource (string file)
+		{
+			source = file;
+			resourceAssembly = null;
+		}
+
+		public void SetResourceSource (Assembly asm, string name)
+		{
+			source = name;
+			resourceAssembly = asm;
+		}
+
 		public int ReferenceCount {
 			get { return referenceCount; }
 		}
@@ -597,9 +633,41 @@ namespace Xwt.Drawing
 		{
 			this.backend = backend;
 			this.toolkit = toolkit;
+			NextRef = this;
 
 			if (toolkit.ImageBackendHandler.DisposeHandleOnUiThread)
 				ResourceManager.RegisterResource (backend, toolkit.ImageBackendHandler.Dispose);
+		}
+
+		public NativeImageRef LoadForToolkit (Toolkit targetToolkit)
+		{
+			NativeImageRef newRef = null;
+			var r = NextRef;
+			while (r != this) {
+				if (r.toolkit == targetToolkit) {
+					newRef = r;
+					break;
+				}
+			}
+			if (newRef != null)
+				return newRef;
+
+			object newBackend;
+			if (resourceAssembly != null)
+				newBackend = targetToolkit.ImageBackendHandler.LoadFromResource (resourceAssembly, source);
+			else if (source != null)
+				newBackend = targetToolkit.ImageBackendHandler.LoadFromFile (source);
+			else {
+				using (var s = new MemoryStream ()) {
+					toolkit.ImageBackendHandler.SaveToStream (backend, s, ImageFileType.Png);
+					s.Position = 0;
+					newBackend = targetToolkit.ImageBackendHandler.LoadFromStream (s);
+				}
+			}
+			newRef = new NativeImageRef (newBackend, targetToolkit);
+			newRef.NextRef = NextRef;
+			NextRef = newRef;
+			return newRef;
 		}
 
 		public void AddReference ()
@@ -619,6 +687,11 @@ namespace Xwt.Drawing
 					ResourceManager.FreeResource (backend);
 			}
 		}
+
+		/// <summary>
+		/// Reference to the next native image, for a different toolkit
+		/// </summary>
+		public NativeImageRef NextRef { get; set; }
 	}
 }
 

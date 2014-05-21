@@ -54,9 +54,9 @@ namespace Xwt.Backends
 				return null;
 		}
 
-		public static ImageDescription ToImageDescription (this Image img)
+		public static ImageDescription ToImageDescription (this Image img, ApplicationContext ctx)
 		{
-			return img != null ? img.ImageDescription : ImageDescription.Null;
+			return img != null ? img.GetImageDescription (ctx.Toolkit) : ImageDescription.Null;
 		}
 
 		public static double GetValue (this WidgetPlacement al)

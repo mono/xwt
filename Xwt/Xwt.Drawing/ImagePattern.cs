@@ -33,7 +33,7 @@ namespace Xwt.Drawing
 	{
 		public ImagePattern (Image image)
 		{
-			SetBackend (ToolkitEngine.ImagePatternBackendHandler, ToolkitEngine.ImagePatternBackendHandler.Create (image != null ? image.ImageDescription : ImageDescription.Null));
+			SetBackend (ToolkitEngine.ImagePatternBackendHandler, ToolkitEngine.ImagePatternBackendHandler.Create (image != null ? image.GetImageDescription (ToolkitEngine) : ImageDescription.Null));
 		}
 	}
 }
