@@ -219,6 +219,13 @@ namespace Xwt.Drawing
 			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (images.Select (i => i.GetBackend ())));
 		}
 
+		public static Image CreateMultiResolutionImage (IEnumerable<Image> images)
+		{
+			if (Toolkit.CurrentEngine == null)
+				throw new ToolkitNotInitializedException ();
+			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiResolutionImage (images.Select (i => i.GetBackend ())));
+		}
+
 		public static Image FromFile (string file)
 		{
 			var toolkit = Toolkit.CurrentEngine;
