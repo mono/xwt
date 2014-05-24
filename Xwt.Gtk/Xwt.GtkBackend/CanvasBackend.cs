@@ -169,7 +169,9 @@ namespace Xwt.GtkBackend
 			Backend.ApplicationContext.InvokeUserCode (delegate {
 				using (var context = CreateContext ()) {
 					var a = evnt.Area;
+					evnt.Window.BeginPaintRect (new Gdk.Rectangle (a.X, a.Y, a.Width, a.Height));
 					EventSink.OnDraw (context, new Rectangle (a.X, a.Y, a.Width, a.Height));
+					evnt.Window.EndPaint ();
 				}
 			});
 			return base.OnExposeEvent (evnt);
