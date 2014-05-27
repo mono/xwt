@@ -216,7 +216,16 @@ namespace Xwt.Drawing
 		{
 			if (Toolkit.CurrentEngine == null)
 				throw new ToolkitNotInitializedException ();
-			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (images.Select (i => i.GetBackend ())));
+
+			var allImages = images.ToArray ();
+
+			var img = new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (allImages.Select (i => i.GetBackend ())));
+
+			if (allImages.All (i => i.NativeRef.HasNativeSource)) {
+				var sources = allImages.Select (i => i.NativeRef.NativeSource).ToArray ();
+				img.NativeRef.SetSources (sources);
+			}
+			return img;
 		}
 
 		public static Image CreateMultiResolutionImage (IEnumerable<Image> images)
@@ -606,11 +615,17 @@ namespace Xwt.Drawing
 		int referenceCount = 1;
 		Toolkit toolkit;
 
-		// Source file or resource name
-		string source;
+		NativeImageSource[] sources;
 
-		// Assembly that contains the resource
-		Assembly resourceAssembly;
+		public struct NativeImageSource {
+			// Source file or resource name
+			public string Source;
+
+			// Assembly that contains the resource
+			public Assembly ResourceAssembly;
+
+			public Func<Stream[]> ImageLoader;
+		}
 
 		public object Backend {
 			get { return backend; }
@@ -620,16 +635,45 @@ namespace Xwt.Drawing
 			get { return toolkit; }
 		}
 
+		public NativeImageSource NativeSource {
+			get { return sources[0]; }
+		}
+
+		public bool HasNativeSource {
+			get { return sources != null; }
+		}
+
+		public void SetSources (NativeImageSource[] sources)
+		{
+			this.sources = sources;
+		}
+
 		public void SetFileSource (string file)
 		{
-			source = file;
-			resourceAssembly = null;
+			sources = new [] { 
+				new NativeImageSource {
+					Source = file,
+				}
+			};
 		}
 
 		public void SetResourceSource (Assembly asm, string name)
 		{
-			source = name;
-			resourceAssembly = asm;
+			sources = new [] { 
+				new NativeImageSource {
+					Source = name,
+					ResourceAssembly = asm
+				}
+			};
+		}
+
+		public void SetStreamSource (Func<Stream[]> imageLoader)
+		{
+			sources = new [] { 
+				new NativeImageSource {
+					ImageLoader = imageLoader
+				}
+			};
 		}
 
 		public int ReferenceCount {
@@ -660,11 +704,37 @@ namespace Xwt.Drawing
 				return newRef;
 
 			object newBackend;
-			if (resourceAssembly != null)
-				newBackend = targetToolkit.ImageBackendHandler.LoadFromResource (resourceAssembly, source);
-			else if (source != null)
-				newBackend = targetToolkit.ImageBackendHandler.LoadFromFile (source);
-			else {
+
+			if (sources != null) {
+				var frames = new List<object> ();
+				foreach (var s in sources) {
+					if (s.ImageLoader != null) {
+						var streams = s.ImageLoader ();
+						try {
+							if (streams.Length == 1) {
+								newBackend = targetToolkit.ImageBackendHandler.LoadFromStream (streams [0]);
+							} else {
+								var backends = new object[streams.Length];
+								for (int n = 0; n < backends.Length; n++) {
+									backends [n] = targetToolkit.ImageBackendHandler.LoadFromStream (streams [n]);
+								}
+								newBackend = targetToolkit.ImageBackendHandler.CreateMultiResolutionImage (backends);
+							}
+						} finally {
+							foreach (var st in streams)
+								st.Dispose ();
+						}
+					}
+					else if (s.ResourceAssembly != null)
+						newBackend = targetToolkit.ImageBackendHandler.LoadFromResource (s.ResourceAssembly, s.Source);
+					else if (s.Source != null)
+						newBackend = targetToolkit.ImageBackendHandler.LoadFromFile (s.Source);
+					else
+						throw new NotSupportedException ();
+					frames.Add (newBackend);
+				}
+				newBackend = targetToolkit.ImageBackendHandler.CreateMultiSizeIcon (frames);
+			} else {
 				using (var s = new MemoryStream ()) {
 					toolkit.ImageBackendHandler.SaveToStream (backend, s, ImageFileType.Png);
 					s.Position = 0;
