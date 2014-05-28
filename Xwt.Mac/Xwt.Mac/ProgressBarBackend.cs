@@ -26,10 +26,10 @@
 
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
+using AppKit;
+using Foundation;
 
-using MonoMac.ObjCRuntime;
+using ObjCRuntime;
 
 namespace Xwt.Mac
 {

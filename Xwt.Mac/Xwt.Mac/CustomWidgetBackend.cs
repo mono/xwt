@@ -25,9 +25,9 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.CoreGraphics;
+using AppKit;
+using Foundation;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {

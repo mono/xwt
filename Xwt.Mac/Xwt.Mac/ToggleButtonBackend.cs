@@ -24,7 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Backends;
 
 namespace Xwt.Mac
@@ -43,7 +43,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			Widget.SetButtonType (MonoMac.AppKit.NSButtonType.Toggle);
+			Widget.SetButtonType (NSButtonType.Toggle);
 		}
 	}
 }

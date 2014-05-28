@@ -25,8 +25,9 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
+using AppKit;
+using Foundation;
+using CoreGraphics;
 
 
 namespace Xwt.Mac
@@ -86,9 +87,9 @@ namespace Xwt.Mac
 			}
 			set {
 				if (vertical)
-					scrollView.ContentView.ScrollToPoint (new System.Drawing.PointF (scrollView.DocumentVisibleRect.X, (float)value));
+					scrollView.ContentView.ScrollToPoint (new CGPoint (scrollView.DocumentVisibleRect.X, (nfloat)value));
 				else
-					scrollView.ContentView.ScrollToPoint (new System.Drawing.PointF ((float)value, scrollView.DocumentVisibleRect.Y));
+					scrollView.ContentView.ScrollToPoint (new CGPoint ((nfloat)value, scrollView.DocumentVisibleRect.Y));
 				scrollView.ReflectScrolledClipView (scrollView.ContentView);
 			}
 		}

@@ -29,10 +29,11 @@
 using System;
 using System.Collections.Generic;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
+using AppKit;
+using Foundation;
 using System.Drawing;
-using MonoMac.ObjCRuntime;
+using ObjCRuntime;
+using CoreGraphics;
 
 
 namespace Xwt.Mac
@@ -158,13 +159,8 @@ namespace Xwt.Mac
 				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
 					return;
 
-				if (value != ((StyleMask & NSWindowStyle.FullScreenWindow) != 0)) {
-					//HACK: workaround for MonoMac not allowing null as argument
-					MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr (
-						Handle,
-						MonoMac.ObjCRuntime.Selector.GetHandle ("toggleFullScreen:"),
-						IntPtr.Zero);
-				}			
+				if (value != ((StyleMask & NSWindowStyle.FullScreenWindow) != 0))
+					ToggleFullScreen (null);
 			}
 		}
 
@@ -389,7 +385,7 @@ namespace Xwt.Mac
 
 		void IWindowFrameBackend.Move (double x, double y)
 		{
-			var r = FrameRectFor (new System.Drawing.RectangleF ((float)x, (float)y, Frame.Width, Frame.Height));
+			var r = FrameRectFor (new CGRect ((nfloat)x, (nfloat)y, Frame.Width, Frame.Height));
 			SetFrame (r, true);
 		}
 		
@@ -485,19 +481,19 @@ namespace Xwt.Mac
 			LayoutContent (ContentView.Frame);
 		}
 		
-		public void LayoutContent (RectangleF frame)
+		public void LayoutContent (CGRect frame)
 		{
 			if (child != null) {
-				frame.X += (float) frontend.Padding.Left;
-				frame.Width -= (float) (frontend.Padding.HorizontalSpacing);
-				frame.Y += (float) frontend.Padding.Top;
-				frame.Height -= (float) (frontend.Padding.VerticalSpacing);
+				frame.X += (nfloat) frontend.Padding.Left;
+				frame.Width -= (nfloat) (frontend.Padding.HorizontalSpacing);
+				frame.Y += (nfloat) frontend.Padding.Top;
+				frame.Height -= (nfloat) (frontend.Padding.VerticalSpacing);
 				childView.Frame = frame;
 			}
 		}
 	}
 	
-	public partial class WindowBackendController : MonoMac.AppKit.NSWindowController
+	public partial class WindowBackendController : AppKit.NSWindowController
 	{
 		public WindowBackendController ()
 		{

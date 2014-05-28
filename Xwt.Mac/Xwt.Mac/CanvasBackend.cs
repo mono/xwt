@@ -27,8 +27,8 @@
 
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.CoreGraphics;
+using AppKit;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -103,7 +103,7 @@ namespace Xwt.Mac
 			this.eventSink = eventSink;
 		}
 
-		public override void DrawRect (System.Drawing.RectangleF dirtyRect)
+		public override void DrawRect (CGRect dirtyRect)
 		{
 			context.InvokeUserCode (delegate {
 				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;

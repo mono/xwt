@@ -27,8 +27,8 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
+using AppKit;
+using Foundation;
 
 namespace Xwt.Mac
 {
@@ -120,7 +120,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		internal static FontWeight GetWeightFromValue (int w)
+		internal static FontWeight GetWeightFromValue (nint w)
 		{
 			if (w <= 2)
 				return FontWeight.Ultralight;

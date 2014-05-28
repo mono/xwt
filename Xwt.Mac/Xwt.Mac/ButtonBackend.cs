@@ -26,11 +26,8 @@
 
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-
-using MonoMac.ObjCRuntime;
-using Xwt.Drawing;
+using AppKit;
+using ObjCRuntime;
 
 namespace Xwt.Mac
 {
@@ -89,18 +86,16 @@ namespace Xwt.Mac
 			case ButtonStyle.Normal:
 				Widget.BezelStyle = NSBezelStyle.Rounded;
 				Widget.SetButtonType (NSButtonType.MomentaryPushIn);
-				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
+				Widget.ShowsBorderOnlyWhileMouseInside = false;
 				break;
 			case ButtonStyle.Borderless:
 			case ButtonStyle.Flat:
 				Widget.BezelStyle = NSBezelStyle.ShadowlessSquare;
-				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
+				Widget.ShowsBorderOnlyWhileMouseInside = true;
 				break;
 			}
 		}
-		
-		static Selector selSetShowsBorderOnlyWhileMouseInside = new Selector ("setShowsBorderOnlyWhileMouseInside:");
-		
+
 		public void SetButtonType (ButtonType type)
 		{
 			switch (type) {
@@ -170,11 +165,11 @@ namespace Xwt.Mac
 			get { return this; }
 		}
 		
-		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
+		public void EnableEvent (ButtonEvent ev)
 		{
 		}
 
-		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
+		public void DisableEvent (ButtonEvent ev)
 		{
 		}
 

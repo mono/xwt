@@ -51,7 +51,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
+using AppKit;
 
 
 namespace Xwt.Mac
@@ -165,7 +165,7 @@ namespace Xwt.Mac
 
 		public int SelectedRow {
 			get {
-				return Widget.IndexOfSelectedItem;
+				return (int) Widget.IndexOfSelectedItem;
 			}
 			set {
 				Widget.SelectItem (value);

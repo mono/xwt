@@ -27,8 +27,9 @@ using System;
 using System.Linq;
 using Xwt.Backends;
 using System.Collections.Generic;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
+using AppKit;
+using Foundation;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -73,11 +74,11 @@ namespace Xwt.Mac
 			var boxHeight = 0f;
 			if (buttonBox.Children.Any ()) {
 				var ps = buttonBox.Surface.GetPreferredSize (true);
-				buttonBoxView.Frame = new System.Drawing.RectangleF ((float)buttonBoxPadding.Left, (float)buttonBoxPadding.Bottom, frame.Width - (float)buttonBoxPadding.HorizontalSpacing, (float)ps.Height);
+				buttonBoxView.Frame = new CGRect ((nfloat)buttonBoxPadding.Left, (nfloat)buttonBoxPadding.Bottom, frame.Width - (nfloat)buttonBoxPadding.HorizontalSpacing, (float)ps.Height);
 				buttonBox.Surface.Reallocate ();
 				boxHeight = (float)ps.Height + (float)buttonBoxPadding.VerticalSpacing;
 			}
-			LayoutContent (new System.Drawing.RectangleF (0, boxHeight, frame.Width, frame.Height - boxHeight));
+			LayoutContent (new CGRect (0, boxHeight, frame.Width, frame.Height - boxHeight));
 		}
 
 		public override void GetMetrics (out Size minSize, out Size decorationSize)

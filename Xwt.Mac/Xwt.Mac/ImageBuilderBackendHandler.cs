@@ -26,8 +26,8 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
-using MonoMac.AppKit;
-using MonoMac.CoreGraphics;
+using AppKit;
+using CoreGraphics;
 using System.Drawing;
 
 namespace Xwt.Mac

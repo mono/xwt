@@ -25,10 +25,11 @@
 // THE SOFTWARE.
 
 using System;
-using MonoMac.AppKit;
+using AppKit;
 
 using Xwt.Drawing;
 using Xwt.Backends;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -55,7 +56,7 @@ namespace Xwt.Mac
 			ObjectValue = Frontend.Image.ToImageDescription ().ToNSImage ();
 		}
 		
-		public override System.Drawing.SizeF CellSize {
+		public override CGSize CellSize {
 			get {
 				NSImage img = ObjectValue as NSImage;
 				if (img != null)

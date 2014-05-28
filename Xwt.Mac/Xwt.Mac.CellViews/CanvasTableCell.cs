@@ -24,9 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoMac.AppKit;
+using AppKit;
 using System.Drawing;
-using MonoMac.CoreGraphics;
+using CoreGraphics;
 using Xwt.Backends;
 
 namespace Xwt.Mac
@@ -60,9 +60,9 @@ namespace Xwt.Mac
 		public CellViewBackend Backend { get; set; }
 
 
-		public override SizeF CellSizeForBounds (RectangleF bounds)
+		public override CGSize CellSizeForBounds (CGRect bounds)
 		{
-			var size = new SizeF ();
+			var size = new CGSize ();
 			Frontend.ApplicationContext.InvokeUserCode (delegate {
 				var s = Frontend.GetRequiredSize ();
 				size = new SizeF ((float)s.Width, (float)s.Height);
@@ -74,7 +74,7 @@ namespace Xwt.Mac
 			return size;
 		}
 
-		public override void DrawInteriorWithFrame (RectangleF cellFrame, NSView inView)
+		public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
 		{
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 			

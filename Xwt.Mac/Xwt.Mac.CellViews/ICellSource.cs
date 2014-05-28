@@ -26,8 +26,8 @@
 
 
 using System;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
+using AppKit;
+using Foundation;
 using Xwt.Backends;
 using System.Collections.Generic;
 
@@ -37,6 +37,6 @@ namespace Xwt.Mac
 	{
 		object GetValue (object pos, int nField);
 		void SetValue (object pos, int nField, object value);
-		float RowHeight { get; set; }
+		nfloat RowHeight { get; set; }
 	}
 }

@@ -28,9 +28,9 @@ using System;
 using Xwt.Backends;
 
 
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
+using AppKit;
+using Foundation;
+using ObjCRuntime;
 
 namespace Xwt.Mac
 {

@@ -23,9 +23,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
+using AppKit;
+using Foundation;
 
 
 namespace Xwt.Mac
@@ -166,7 +166,7 @@ namespace Xwt.Mac
 
 		public ViewBackend Backend { get; set; }
 		
-		public override void DidChange (MonoMac.Foundation.NSNotification notification)
+		public override void DidChange (NSNotification notification)
 		{
 			base.DidChange (notification);
 			context.InvokeUserCode (delegate {

@@ -31,7 +31,7 @@ namespace Xwt.Gtk.Mac
 {
 	public class WebViewBackend : WidgetBackend, IWebViewBackend
 	{
-		MonoMac.WebKit.WebView view;
+		WebKit.WebView view;
 
 		public WebViewBackend ()
 		{
@@ -42,7 +42,7 @@ namespace Xwt.Gtk.Mac
 		{
 			base.Initialize ();
 
-			view = new MonoMac.WebKit.WebView ();
+			view = new WebKit.WebView ();
 			Widget = GtkMacInterop.NSViewToGtkWidget (view);
 			Widget.Show ();
 		}

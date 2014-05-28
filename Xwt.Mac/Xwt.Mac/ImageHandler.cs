@@ -27,15 +27,15 @@
 using System;
 using System.Linq;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
+using AppKit;
+using Foundation;
+using ObjCRuntime;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Xwt.Drawing;
 using System.IO;
-using MonoMac.CoreGraphics;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -216,14 +216,14 @@ namespace Xwt.Mac
 			NSImage img = (NSImage)backend;
 			NSBitmapImageRep bitmap = img.Representations ().OfType<NSBitmapImageRep> ().FirstOrDefault ();
 			if (bitmap != null) {
-				RectangleF empty = RectangleF.Empty;
-				var cgi = bitmap.AsCGImage (ref empty, null, null).WithImageInRect (new RectangleF (srcX, srcY, width, height));
-				NSImage res = new NSImage (cgi, new SizeF (width, height));
+				var empty = CGRect.Empty;
+				var cgi = bitmap.AsCGImage (ref empty, null, null).WithImageInRect (new CGRect (srcX, srcY, width, height));
+				NSImage res = new NSImage (cgi, new CGSize (width, height));
 				cgi.Dispose ();
 				return res;
 			}
 			else
-				throw new InvalidOperationException ("Not a bitmnap image");
+				throw new InvalidOperationException ("Not a bitmap image");
 		}
 		
 		static NSImage FromResource (string res)
@@ -252,7 +252,8 @@ namespace Xwt.Mac
 			var type = Util.ToIconType (id);
 			if (type != 0 && GetIconRef (-32768/*kOnSystemDisk*/, 1835098995/*kSystemIconsCreator*/, type, out iconRef) == 0) {
 				try {
-					image = new NSImage (Messaging.IntPtr_objc_msgSend_IntPtr (Messaging.IntPtr_objc_msgSend (cls_NSImage, sel_alloc), sel_initWithIconRef, iconRef));
+					var alloced = Messaging.IntPtr_objc_msgSend (cls_NSImage, sel_alloc);
+					image = new NSImage (Messaging.IntPtr_objc_msgSend_IntPtr (alloced, sel_initWithIconRef, iconRef));
 					// NSImage (IntPtr) ctor retains, but since it is the sole owner, we don't want that
 					Messaging.void_objc_msgSend (image.Handle, sel_release);
 				} finally {
@@ -311,11 +312,6 @@ namespace Xwt.Mac
 			actx.InvokeUserCode (delegate {
 				drawCallback (ctx, new Rectangle (0, 0, s.Width, s.Height));
 			});
-		}
-
-		public override CGImage AsCGImage (ref RectangleF proposedDestRect, NSGraphicsContext referenceContext, NSDictionary hints)
-		{
-			return base.AsCGImage (ref proposedDestRect, referenceContext, hints);
 		}
 
 		public CustomImage Clone ()

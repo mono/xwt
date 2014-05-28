@@ -24,9 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Backends;
 using Xwt.Drawing;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -158,7 +159,7 @@ namespace Xwt.Mac
 				return true;
 			}
 		}
-		public override void SetFrameSize (System.Drawing.SizeF newSize)
+		public override void SetFrameSize (CGSize newSize)
 		{
 			base.SetFrameSize (newSize);
 			UpdatePlacement ();
@@ -171,7 +172,7 @@ namespace Xwt.Mac
 				var v = Subviews [0];
 				var r = new Rectangle (frame.PaddingLeft, frame.PaddingTop, Frame.Width - frame.Padding.HorizontalSpacing, Frame.Height - frame.Padding.VerticalSpacing);
 				r = ((IViewObject)v).Backend.Frontend.Surface.GetPlacementInRect (r);
-				v.Frame = r.ToRectangleF ();
+				v.Frame = r.ToCGRect ();
 			}
 		}
 	}

@@ -1,12 +1,12 @@
 using System;
-using System.Drawing;
 
 using Xwt;
 using Xwt.Backends;
 
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
+using AppKit;
+using Foundation;
+using ObjCRuntime;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -94,11 +94,11 @@ namespace Xwt.Mac
 		public MacExpander (IWidgetEventSink eventSink, ApplicationContext context): base (eventSink, context)
 		{
 			expander = new ExpanderWidget () {
-				Frame = new RectangleF (0, 0, 80, 21),
+				Frame = new CGRect (0, 0, 80, 21),
 				AutoresizingMask = NSViewResizingMask.WidthSizable
 			};
 			box = new CollapsibleBox () { AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable };
-			box.SetFrameOrigin (new PointF (0, 21));
+			box.SetFrameOrigin (new CGPoint (0, 21));
 			expander.DisclosureToggled += (sender, e) => box.Expanded = expander.On;
 			AddSubview (expander);
 			AddSubview (box);
@@ -136,7 +136,7 @@ namespace Xwt.Mac
 		{
 		}
 
-		public override void SetFrameSize (SizeF newSize)
+		public override void SetFrameSize (CGSize newSize)
 		{
 			base.SetFrameSize (newSize);
 			box.UpdateContentSize (false);
@@ -158,7 +158,7 @@ namespace Xwt.Mac
 				BezelStyle = NSBezelStyle.Disclosure,
 				AutoresizingMask = NSViewResizingMask.MaxYMargin,
 				ImagePosition = NSCellImagePosition.ImageOnly,
-				Frame = new RectangleF (5, 4, 13, 13),
+				Frame = new CGRect (5, 4, 13, 13),
 				State = NSCellStateValue.Off
 			};
 			disclosure.SetButtonType (NSButtonType.OnOff);
@@ -171,7 +171,7 @@ namespace Xwt.Mac
 				Bordered = false,
 				AutoresizingMask = NSViewResizingMask.MaxYMargin | NSViewResizingMask.WidthSizable,
 				Alignment = NSTextAlignment.Left,
-				Frame = new RectangleF (17, 3, 60, 13),
+				Frame = new CGRect (17, 3, 60, 13),
 				Target = disclosure,
 				Action = new Selector ("performClick:")
 			};
@@ -213,7 +213,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		public override void DrawRect (RectangleF dirtyRect)
+		public override void DrawRect (CGRect dirtyRect)
 		{
 			backgroundGradient.DrawInRect (Frame, -90);
 			if (dirtyRect == Frame) {
@@ -236,7 +236,7 @@ namespace Xwt.Mac
 			TitlePosition = NSTitlePosition.NoTitle;
 			BorderType = NSBorderType.NoBorder;
 			BoxType = NSBoxType.NSBoxPrimary;
-			ContentViewMargins = new SizeF (0, 0);
+			ContentViewMargins = new CGSize (0, 0);
 		}
 
 		public void SetContent (NSView view)
@@ -266,10 +266,10 @@ namespace Xwt.Mac
 				var vo = ContentView as IViewObject;
 				if (vo != null && vo.Backend != null) {
 					var s = vo.Backend.Frontend.Surface.GetPreferredSize ((float)Frame.Size.Width, SizeConstraint.Unconstrained, true);
-					SetFrameSize (new SizeF (Frame.Width, (float)s.Height), animate);
+					SetFrameSize (new CGSize (Frame.Width, (float)s.Height), animate);
 				}
 			} else
-				SetFrameSize (new SizeF (Frame.Width, DefaultCollapsedHeight), animate);
+				SetFrameSize (new CGSize (Frame.Width, DefaultCollapsedHeight), animate);
 		}
 
 		public override bool IsFlipped {
@@ -278,20 +278,20 @@ namespace Xwt.Mac
 			}
 		}
 
-		RectangleF FrameForNewSizePinnedToTopLeft (SizeF newFrameSize)
+		CGRect FrameForNewSizePinnedToTopLeft (CGSize newFrameSize)
 		{
 			var frame = Frame;
 			frame.Size = newFrameSize;
 			return frame;
 		}
 
-		public void SetFrameSize (SizeF newFrameSize, bool animating)
+		public void SetFrameSize (CGSize newFrameSize, bool animating)
 		{
-			RectangleF newFrame = FrameForNewSizePinnedToTopLeft (newFrameSize);
+			CGRect newFrame = FrameForNewSizePinnedToTopLeft (newFrameSize);
 			if (animating) {
 				NSAnimation animation = new NSViewAnimation (new [] {
 					NSDictionary.FromObjectsAndKeys (
-					    new object[] { this, NSValue.FromRectangleF (Frame), NSValue.FromRectangleF (newFrame) },
+						new object[] { this, NSValue.FromCGRect (Frame), NSValue.FromCGRect (newFrame) },
 						new object[] { NSViewAnimation.TargetKey, NSViewAnimation.StartFrameKey, NSViewAnimation.EndFrameKey }
 					)
 				});

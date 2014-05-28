@@ -26,10 +26,10 @@
 
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Drawing;
-using MonoMac.Foundation;
-using MonoMac.CoreGraphics;
+using Foundation;
+using CoreGraphics;
 using System.Drawing;
 
 namespace Xwt.Mac
@@ -80,21 +80,21 @@ namespace Xwt.Mac
 		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
 		{
 			CGPath path = (CGPath)backend;
-			PointF p = path.CurrentPoint;
+			CGPoint p = path.CurrentPoint;
 			path.AddCurveToPoint ((float)(p.X + dx1), (float)(p.Y + dy1), (float)(p.X + dx2), (float)(p.Y + dy2), (float)(p.X + dx3), (float)(p.Y + dy3));
 		}
 
 		public override void RelLineTo (object backend, double dx, double dy)
 		{
 			CGPath path = (CGPath)backend;
-			PointF p = path.CurrentPoint;
+			CGPoint p = path.CurrentPoint;
 			path.AddLineToPoint ((float)(p.X + dx), (float)(p.Y + dy));
 		}
 
 		public override void RelMoveTo (object backend, double dx, double dy)
 		{
 			CGPath path = (CGPath)backend;
-			PointF p = path.CurrentPoint;
+			CGPoint p = path.CurrentPoint;
 			path.MoveToPoint ((float)(p.X + dx), (float)(p.Y + dy));
 		}
 

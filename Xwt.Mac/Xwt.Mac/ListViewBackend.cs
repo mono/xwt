@@ -28,10 +28,11 @@
 // THE SOFTWARE.
 
 using System;
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Backends;
 using System.Collections.Generic;
-using MonoMac.Foundation;
+using Foundation;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -92,7 +93,7 @@ namespace Xwt.Mac
 
 		public int GetRowAtPosition (Point p)
 		{
-			return Table.GetRow (new System.Drawing.PointF ((float)p.X, (float)p.Y));
+			return (int) Table.GetRow (new CGPoint ((nfloat)p.X, (nfloat)p.Y));
 		}
 
 		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
@@ -119,40 +120,40 @@ namespace Xwt.Mac
 			this.source = source;
 		}
 
-		public override bool AcceptDrop (NSTableView tableView, NSDraggingInfo info, int row, NSTableViewDropOperation dropOperation)
+		public override bool AcceptDrop (NSTableView tableView, NSDraggingInfo info, nint row, NSTableViewDropOperation dropOperation)
 		{
 			return false;
 		}
 
-		public override string[] FilesDropped (NSTableView tableView, MonoMac.Foundation.NSUrl dropDestination, MonoMac.Foundation.NSIndexSet indexSet)
+		public override string[] FilesDropped (NSTableView tableView, NSUrl dropDestination, NSIndexSet indexSet)
 		{
 			return new string [0];
 		}
 
-		public override MonoMac.Foundation.NSObject GetObjectValue (NSTableView tableView, NSTableColumn tableColumn, int row)
+		public override NSObject GetObjectValue (NSTableView tableView, NSTableColumn tableColumn, nint row)
 		{
 			return NSObject.FromObject (row);
 		}
 
-		public override int GetRowCount (NSTableView tableView)
+		public override nint GetRowCount (NSTableView tableView)
 		{
 			return source.RowCount;
 		}
 
-		public override void SetObjectValue (NSTableView tableView, MonoMac.Foundation.NSObject theObject, NSTableColumn tableColumn, int row)
+		public override void SetObjectValue (NSTableView tableView, NSObject theObject, NSTableColumn tableColumn, nint row)
 		{
 		}
 
-		public override void SortDescriptorsChanged (NSTableView tableView, MonoMac.Foundation.NSSortDescriptor[] oldDescriptors)
+		public override void SortDescriptorsChanged (NSTableView tableView, NSSortDescriptor[] oldDescriptors)
 		{
 		}
 
-		public override NSDragOperation ValidateDrop (NSTableView tableView, NSDraggingInfo info, int row, NSTableViewDropOperation dropOperation)
+		public override NSDragOperation ValidateDrop (NSTableView tableView, NSDraggingInfo info, nint row, NSTableViewDropOperation dropOperation)
 		{
 			return NSDragOperation.None;
 		}
 
-		public override bool WriteRows (NSTableView tableView, MonoMac.Foundation.NSIndexSet rowIndexes, NSPasteboard pboard)
+		public override bool WriteRows (NSTableView tableView, NSIndexSet rowIndexes, NSPasteboard pboard)
 		{
 			return false;
 		}

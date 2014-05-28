@@ -28,10 +28,10 @@
 using System;
 using Xwt.Backends;
 
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Drawing;
-using MonoMac.Foundation;
-using MonoMac.CoreGraphics;
+using Foundation;
+using CoreGraphics;
 using System.Drawing;
 using System.Collections.Generic;
 
@@ -169,21 +169,21 @@ namespace Xwt.Mac
 		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
-			PointF p = ctx.GetPathCurrentPoint ();
+			CGPoint p = ctx.GetPathCurrentPoint ();
 			ctx.AddCurveToPoint ((float)(p.X + dx1), (float)(p.Y + dy1), (float)(p.X + dx2), (float)(p.Y + dy2), (float)(p.X + dx3), (float)(p.Y + dy3));
 		}
 
 		public override void RelLineTo (object backend, double dx, double dy)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
-			PointF p = ctx.GetPathCurrentPoint ();
+			CGPoint p = ctx.GetPathCurrentPoint ();
 			ctx.AddLineToPoint ((float)(p.X + dx), (float)(p.Y + dy));
 		}
 
 		public override void RelMoveTo (object backend, double dx, double dy)
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
-			PointF p = ctx.GetPathCurrentPoint ();
+			CGPoint p = ctx.GetPathCurrentPoint ();
 			ctx.MoveTo ((float)(p.X + dx), (float)(p.Y + dy));
 		}
 
@@ -222,12 +222,12 @@ namespace Xwt.Mac
 		
 		public override void SetLineDash (object backend, double offset, params double[] pattern)
 		{
-			float[] array = new float[pattern.Length];
+			var array = new nfloat[pattern.Length];
 			for (int n=0; n<pattern.Length; n++)
 				array [n] = (float) pattern[n];
 			if (array.Length == 0)
-				array = new float [] { 1 };
-			((CGContextBackend)backend).Context.SetLineDash ((float)offset, array);
+				array = new nfloat [] { 1 };
+			((CGContextBackend)backend).Context.SetLineDash ((nfloat)offset, array);
 		}
 		
 		public override void SetPattern (object backend, object p)
@@ -246,7 +246,7 @@ namespace Xwt.Mac
 			if (gc.CurrentStatus.Pattern is ImagePatternInfo) {
 
 				var pi = (ImagePatternInfo) gc.CurrentStatus.Pattern;
-				RectangleF bounds = new RectangleF (PointF.Empty, new SizeF (pi.Image.Size.Width, pi.Image.Size.Height));
+				var bounds = new CGRect (CGPoint.Empty, new CGSize (pi.Image.Size.Width, pi.Image.Size.Height));
 				var t = CGAffineTransform.Multiply (CGAffineTransform.MakeScale (1f, -1f), gc.Context.GetCTM ());
 
 				CGPattern pattern;
@@ -257,14 +257,14 @@ namespace Xwt.Mac
 						((CustomImage)pi.Image).DrawInContext (c);
 					});
 				} else {
-					RectangleF empty = RectangleF.Empty;
-					CGImage cgimg = ((NSImage)pi.Image).AsCGImage (ref empty, null, null);
+					var empty = CGRect.Empty;
+					CGImage cgimg = pi.Image.AsCGImage (ref empty, null, null);
 					pattern = new CGPattern (bounds, t, bounds.Width, bounds.Height,
 					                         CGPatternTiling.ConstantSpacing, true, c => c.DrawImage (bounds, cgimg));
 				}
 
 				CGContext ctx = gc.Context;
-				float[] alpha = new[] { (float)pi.Alpha };
+				var alpha = new[] { (nfloat)pi.Alpha };
 				ctx.SetFillColorSpace (Util.PatternColorSpace);
 				ctx.SetStrokeColorSpace (Util.PatternColorSpace);
 				ctx.SetFillPattern (pattern, alpha);
@@ -303,9 +303,9 @@ namespace Xwt.Mac
 			if (image is CustomImage) {
 				((CustomImage)image).DrawInContext ((CGContextBackend)backend);
 			} else {
-				RectangleF rr = new RectangleF (0, 0, (float)image.Size.Width, image.Size.Height);
+				var rr = new CGRect (0, 0, image.Size.Width, image.Size.Height);
 				ctx.ScaleCTM (1f, -1f);
-				ctx.DrawImage (new RectangleF (0, -image.Size.Height, image.Size.Width, image.Size.Height), image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
+				ctx.DrawImage (new CGRect (0, -image.Size.Height, image.Size.Width, image.Size.Height), image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
 			}
 
 			ctx.RestoreState ();
@@ -399,7 +399,7 @@ namespace Xwt.Mac
 
 			// setup pattern drawing to better match the behavior of Cairo
 			var drawPoint = ctx.GetCTM ().TransformPoint (ctx.GetPathBoundingBox ().Location);
-			var patternPhase = new SizeF (drawPoint.X, drawPoint.Y);
+			var patternPhase = new CGSize (drawPoint.X, drawPoint.Y);
 			if (patternPhase != SizeF.Empty)
 				ctx.SetPatternPhase (patternPhase);
 		}

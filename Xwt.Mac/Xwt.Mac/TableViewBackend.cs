@@ -25,10 +25,10 @@
 // THE SOFTWARE.
 
 using System;
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Backends;
 using System.Collections.Generic;
-using MonoMac.Foundation;
+using Foundation;
 
 
 namespace Xwt.Mac
@@ -226,7 +226,7 @@ namespace Xwt.Mac
 		
 		public abstract void SetValue (object pos, int nField, object value);
 
-		float ICellSource.RowHeight {
+		nfloat ICellSource.RowHeight {
 			get { return Table.RowHeight; }
 			set { Table.RowHeight = value; }
 		}

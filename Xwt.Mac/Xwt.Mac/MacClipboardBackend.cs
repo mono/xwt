@@ -27,8 +27,8 @@ using System;
 using System.IO;
 using Xwt.Backends;
 
-using MonoMac.Foundation;
-using MonoMac.AppKit;
+using Foundation;
+using AppKit;
 
 namespace Xwt.Mac
 {

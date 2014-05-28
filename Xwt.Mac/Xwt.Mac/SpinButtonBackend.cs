@@ -2,8 +2,9 @@ using System;
 
 using Xwt.Backends;
 
-using MonoMac.Foundation;
-using MonoMac.AppKit;
+using Foundation;
+using AppKit;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -92,10 +93,10 @@ namespace Xwt.Mac
 				this.reference = reference;
 			}
 
-			public override void ResizeWithOldSuperviewSize (System.Drawing.SizeF oldSize)
+			public override void ResizeWithOldSuperviewSize (CGSize oldSize)
 			{
 				base.ResizeWithOldSuperviewSize (oldSize);
-				SetFrameSize (new System.Drawing.SizeF (reference.Frame.Left - 6, Frame.Size.Height));
+				SetFrameSize (new CGSize (reference.Frame.Left - 6, Frame.Size.Height));
 			}
 		}
 
@@ -109,7 +110,7 @@ namespace Xwt.Mac
 			formater.NumberStyle = NSNumberFormatterStyle.Decimal;
 			stepper.Activated += (sender, e) => input.DoubleValue = stepper.DoubleValue;
 
-			SetFrameSize (new System.Drawing.SizeF (55, 22));
+			SetFrameSize (new CGSize (55, 22));
 			stepper.Frame = new System.Drawing.RectangleF (new System.Drawing.PointF (36, 0), new System.Drawing.SizeF (19, 22));
 			input.Frame = new System.Drawing.RectangleF (new System.Drawing.PointF (4, 0), new System.Drawing.SizeF (26, 22));
 

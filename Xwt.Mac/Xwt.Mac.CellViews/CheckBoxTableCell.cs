@@ -24,7 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Backends;
 
 namespace Xwt.Mac
@@ -73,36 +73,6 @@ namespace Xwt.Mac
 		{
 			var ob = (CheckBoxTableCell)other;
 			Backend = ob.Backend;
-		}
-
-		public override void EditWithFrame (System.Drawing.RectangleF aRect, NSView inView, NSText editor, MonoMac.Foundation.NSObject delegateObject, NSEvent theEvent)
-		{
-			base.EditWithFrame (aRect, inView, editor, delegateObject, theEvent);
-		}
-
-		public override void DidChangeValue (string forKey)
-		{
-			base.DidChangeValue (forKey);
-		}
-
-		public override void WillChange (MonoMac.Foundation.NSString forKey, MonoMac.Foundation.NSKeyValueSetMutationKind mutationKind, MonoMac.Foundation.NSSet objects)
-		{
-			base.WillChange (forKey, mutationKind, objects);
-		}
-
-		public override void WillChangeValue (string forKey)
-		{
-			base.WillChangeValue (forKey);
-		}
-
-		public override void EndEditing (NSText textObj)
-		{
-			base.EndEditing (textObj);
-		}
-
-		public override bool CommitEditing ()
-		{
-			return base.CommitEditing ();
 		}
 	}
 }

@@ -1,6 +1,6 @@
-using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
+using AppKit;
+using Foundation;
 
 namespace Xwt.Mac
 {
@@ -83,7 +83,7 @@ namespace Xwt.Mac
 
 		public ViewBackend Backend { get; set; }
 
-		public override void DidChange (MonoMac.Foundation.NSNotification notification)
+		public override void DidChange (NSNotification notification)
 		{
 			base.DidChange (notification);
 			context.InvokeUserCode (delegate {

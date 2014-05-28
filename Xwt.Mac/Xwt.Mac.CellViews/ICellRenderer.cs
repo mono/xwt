@@ -26,8 +26,8 @@
 
 
 using System;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
+using AppKit;
+using Foundation;
 using Xwt.Backends;
 using System.Collections.Generic;
 

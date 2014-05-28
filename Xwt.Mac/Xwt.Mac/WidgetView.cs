@@ -27,8 +27,8 @@
 
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.CoreGraphics;
+using AppKit;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -66,7 +66,7 @@ namespace Xwt.Mac
 			return Backend.CanGetFocus;
 		}
 
-		public override void DrawRect (System.Drawing.RectangleF dirtyRect)
+		public override void DrawRect (CGRect dirtyRect)
 		{
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 
@@ -81,7 +81,7 @@ namespace Xwt.Mac
 				RemoveTrackingArea (trackingArea);
 				trackingArea.Dispose ();
 			}
-			System.Drawing.RectangleF viewBounds = this.Bounds;
+			CGRect viewBounds = this.Bounds;
 			var options = NSTrackingAreaOptions.MouseMoved | NSTrackingAreaOptions.ActiveInKeyWindow | NSTrackingAreaOptions.MouseEnteredAndExited;
 			trackingArea = new NSTrackingArea (viewBounds, options, this, null);
 			AddTrackingArea (trackingArea);
@@ -129,7 +129,7 @@ namespace Xwt.Mac
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
-			args.Button = (PointerButton) theEvent.ButtonNumber + 1;
+			args.Button = (PointerButton) (int)theEvent.ButtonNumber + 1;
 			context.InvokeUserCode (delegate {
 				eventSink.OnButtonReleased (args);
 			});
@@ -167,7 +167,7 @@ namespace Xwt.Mac
 			});
 		}
 
-		public override void SetFrameSize (System.Drawing.SizeF newSize)
+		public override void SetFrameSize (CGSize newSize)
 		{
 			bool changed = !newSize.Equals (Frame.Size);
 			base.SetFrameSize (newSize);

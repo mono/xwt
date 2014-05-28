@@ -26,7 +26,8 @@
 using System;
 using Xwt.Backends;
 using System.Collections.Generic;
-using MonoMac.AppKit;
+using AppKit;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -74,11 +75,11 @@ namespace Xwt.Mac
 			return NSScreen.Screens[0] == (NSScreen) backend;
 		}
 
-		public static Rectangle ToDesktopRect (System.Drawing.RectangleF r)
+		public static Rectangle ToDesktopRect (CGRect r)
 		{
-			r.Y = (float)desktopBounds.Height - r.Y - r.Height;
+			r.Y = (nfloat)desktopBounds.Height - r.Y - r.Height;
 			if (desktopBounds.Y < 0)
-				r.Y += (float)desktopBounds.Y;
+				r.Y += (nfloat)desktopBounds.Y;
 			return new Rectangle (r.X, r.Y, r.Width, r.Height);
 		}
 

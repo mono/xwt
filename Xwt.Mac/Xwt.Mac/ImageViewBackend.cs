@@ -25,9 +25,9 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Drawing;
-using MonoMac.ObjCRuntime;
+using ObjCRuntime;
 
 namespace Xwt.Mac
 {
@@ -49,13 +49,10 @@ namespace Xwt.Mac
 			return img == null ? Size.Zero : img.Size.ToXwtSize ();
 		}
 
-		static readonly Selector setImage = new Selector ("setImage:");
-
 		public void SetImage (ImageDescription image)
 		{
 			if (image.IsNull) {
-				// NSImage.Image incorrectly checks for null
-				Messaging.void_objc_msgSend_IntPtr (Widget.Handle, setImage.Handle, IntPtr.Zero);
+				Widget.Image = null;
 				return;
 			}
 

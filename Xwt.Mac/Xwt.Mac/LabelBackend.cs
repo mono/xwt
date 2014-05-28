@@ -25,11 +25,11 @@
 // THE SOFTWARE.
 
 using System;
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Backends;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
-using MonoMac.CoreGraphics;
+using Foundation;
+using ObjCRuntime;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -62,7 +62,7 @@ namespace Xwt.Mac
 
 		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			var r = new System.Drawing.RectangleF (0, 0, widthConstraint.IsConstrained ? (float)widthConstraint.AvailableSize : float.MaxValue, heightConstraint.IsConstrained ? (float)heightConstraint.AvailableSize : float.MaxValue);
+			var r = new CGRect (0, 0, widthConstraint.IsConstrained ? (float)widthConstraint.AvailableSize : float.MaxValue, heightConstraint.IsConstrained ? (float)heightConstraint.AvailableSize : float.MaxValue);
 			var s = Widget.Cell.CellSizeForBounds (r);
 			return new Size (s.Width, s.Height);
 		}
@@ -188,7 +188,7 @@ namespace Xwt.Mac
 				Messaging.void_objc_msgSend (Child.Handle, sizeToFitSel.Handle);
 			else
 				throw new NotSupportedException ();
-			Frame = new System.Drawing.RectangleF (Frame.X, Frame.Y, Child.Frame.Width, Child.Frame.Height);
+			Frame = new CGRect (Frame.X, Frame.Y, Child.Frame.Width, Child.Frame.Height);
 		}
 
 		bool expandVertically;
@@ -202,7 +202,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		public override void SetFrameSize (System.Drawing.SizeF newSize)
+		public override void SetFrameSize (CGSize newSize)
 		{
 			base.SetFrameSize (newSize);
 			UpdateTextFieldFrame ();
@@ -211,9 +211,9 @@ namespace Xwt.Mac
 		void UpdateTextFieldFrame ()
 		{
 			if (expandVertically)
-				Child.Frame = new System.Drawing.RectangleF (0, 0, Frame.Width, Frame.Height);
+				Child.Frame = new CGRect (0, 0, Frame.Width, Frame.Height);
 			else
-				Child.Frame = new System.Drawing.RectangleF (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
+				Child.Frame = new CGRect (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
 		}
 	}
 	
@@ -252,11 +252,11 @@ namespace Xwt.Mac
 			DrawsBackground = true;
 		}
 
-		public override System.Drawing.RectangleF TitleRectForBounds (System.Drawing.RectangleF theRect)
+		public override CGRect TitleRectForBounds (CGRect theRect)
 		{
 			var rect = base.TitleRectForBounds (theRect);
 			var textSize = CellSizeForBounds (theRect);
-			float dif = rect.Height - textSize.Height;	
+			nfloat dif = rect.Height - textSize.Height;	
 			if (dif > 0) {
 				rect.Height -= dif;
 				rect.Y += (dif / 2);
@@ -264,7 +264,7 @@ namespace Xwt.Mac
 			return rect;
 		}
 
-		public override void DrawInteriorWithFrame (System.Drawing.RectangleF cellFrame, NSView inView)
+		public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
 		{
 			if (DrawsBackground) {
 				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;

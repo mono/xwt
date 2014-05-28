@@ -29,12 +29,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
 
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
+using Foundation;
+using AppKit;
+using ObjCRuntime;
 
 using Xwt;
 using Xwt.Backends;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -71,7 +72,7 @@ namespace Xwt.Mac
 		{
 			var f = Widget.Frame;
 			Widget.VerticallyResizable = true;
-			Widget.Frame = new System.Drawing.RectangleF (Widget.Frame.X, Widget.Frame.Y, (float)width, 0);
+			Widget.Frame = new CGRect (Widget.Frame.X, Widget.Frame.Y, (float)width, 0);
 			Widget.SizeToFit ();
 			var h = Widget.Frame.Height;
 			Widget.VerticallyResizable = false;
@@ -176,7 +177,7 @@ namespace Xwt.Mac
 			LinkClicked = null;
 		}
 
-		bool TextLinkClicked (NSTextView textView, NSObject link, uint charIndex)
+		bool TextLinkClicked (NSTextView textView, NSObject link, nuint charIndex)
 		{
 			if (eventSink == null || context == null)
 				return false;
@@ -232,7 +233,7 @@ namespace Xwt.Mac
 			string fontFamily;
 
 			if (font != null) {
-				fontSize = font.PointSize;
+				fontSize = (float) font.PointSize;
 				fontFamily = font.FontName;
 			} else {
 				fontSize = 16;

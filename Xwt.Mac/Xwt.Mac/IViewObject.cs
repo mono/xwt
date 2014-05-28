@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 
 using System;
-using MonoMac.AppKit;
+using AppKit;
 
 namespace Xwt.Mac
 {

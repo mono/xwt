@@ -25,7 +25,8 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
+using AppKit;
+using Foundation;
 
 
 namespace Xwt.Mac
@@ -40,7 +41,7 @@ namespace Xwt.Mac
 		{
 			public PanedBackend PanedBackend;
 			
-			public override void DidResizeSubviews (MonoMac.Foundation.NSNotification notification)
+			public override void DidResizeSubviews (NSNotification notification)
 			{
 				PanedBackend.DidResizeSubviews ();
 			}

@@ -25,8 +25,8 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
+using AppKit;
+using Foundation;
 
 
 namespace Xwt.Mac
@@ -80,7 +80,7 @@ namespace Xwt.Mac
 
 		public int SelectedRow {
 			get {
-				return Widget.SelectedIndex;
+				return (int) Widget.SelectedIndex;
 			}
 			set {
 				Widget.SelectItem (value);
@@ -121,7 +121,7 @@ namespace Xwt.Mac
 
 		public ViewBackend Backend { get; set; }
 		
-		public override void DidChange (MonoMac.Foundation.NSNotification notification)
+		public override void DidChange (NSNotification notification)
 		{
 			base.DidChange (notification);
 			if (entryEventSink != null) {

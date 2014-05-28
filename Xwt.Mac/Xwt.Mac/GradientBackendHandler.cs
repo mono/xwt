@@ -27,7 +27,7 @@
 using System;
 using System.Drawing;
 using Xwt.Backends;
-using MonoMac.CoreGraphics;
+using CoreGraphics;
 using Xwt.Drawing;
 using System.Collections.Generic;
 
@@ -86,7 +86,7 @@ namespace Xwt.Mac
 		public PointF Start, End;
 		public float StartRadius, EndRadius;
 		public List<CGColor> Colors = new List<CGColor> ();
-		public List<float> Stops = new List<float> ();
+		public List<nfloat> Stops = new List<nfloat> ();
 	}
 }
 

@@ -25,9 +25,9 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using System.IO;
+using AppKit;
 using System.Linq;
+using Foundation;
 
 
 namespace Xwt.Mac
@@ -46,7 +46,7 @@ namespace Xwt.Mac
 			this.CanChooseFiles = true;
 			this.CanChooseDirectories = false;
 			if (!string.IsNullOrEmpty (initialFileName))
-				this.DirectoryUrl = new MonoMac.Foundation.NSUrl (initialFileName,true);
+				this.DirectoryUrl = new NSUrl (initialFileName,true);
 			
 			this.Prompt = "Select File" + (multiselect ? "s" : "");
 		}
@@ -79,7 +79,7 @@ namespace Xwt.Mac
 				return DirectoryUrl.AbsoluteString;
 			}
 			set {
-				this.DirectoryUrl = new MonoMac.Foundation.NSUrl (value,true);
+				this.DirectoryUrl = new NSUrl (value,true);
 			}
 		}
 

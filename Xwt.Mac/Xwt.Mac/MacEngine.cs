@@ -26,10 +26,10 @@
 
 using System;
 
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-using MonoMac.CoreGraphics;
+using Foundation;
+using AppKit;
+using ObjCRuntime;
+using CoreGraphics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Xwt.Backends;

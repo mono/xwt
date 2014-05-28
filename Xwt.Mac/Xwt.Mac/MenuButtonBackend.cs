@@ -25,8 +25,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
+using Foundation;
+using AppKit;
 using Xwt.Backends;
 
 
@@ -69,7 +69,7 @@ namespace Xwt.Mac
 				});
 			};
 
-			NSNotificationCenter.DefaultCenter.AddObserver ("NSPopUpButtonWillPopUpNotification", CreateMenu, this);
+			NSNotificationCenter.DefaultCenter.AddObserver ((NSString)"NSPopUpButtonWillPopUpNotification", CreateMenu, this);
 			AddItem ("");
 		}
 

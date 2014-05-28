@@ -24,18 +24,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.WebKit;
-
-using MonoMac.ObjCRuntime;
-using Xwt.Drawing;
+using AppKit;
 
 namespace Xwt.Mac
 {
-	public class WebViewBackend : ViewBackend<MonoMac.WebKit.WebView, IWebViewEventSink>, IWebViewBackend
+	public class WebViewBackend : ViewBackend<WebKit.WebView, IWebViewEventSink>, IWebViewBackend
 	{
 		public WebViewBackend ()
 		{
@@ -62,7 +56,7 @@ namespace Xwt.Mac
 		#endregion
 	}
 
-	class MacWebView : MonoMac.WebKit.WebView, IViewObject
+	class MacWebView : WebKit.WebView, IViewObject
 	{
 		public ViewBackend Backend { get; set; }
 

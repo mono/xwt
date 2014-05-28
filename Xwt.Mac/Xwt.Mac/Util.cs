@@ -26,12 +26,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
-using MonoMac.AppKit;
-using MonoMac.CoreGraphics;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
+using AppKit;
+using CoreGraphics;
+using Foundation;
+using ObjCRuntime;
 using Xwt.Backends;
 using Xwt.Drawing;
 
@@ -88,10 +87,10 @@ namespace Xwt.Mac
 		
 		public static void SetWidgetBounds (this NSView v, Rectangle rect)
 		{
-			float y = (float)rect.Y;
+			nfloat y = (nfloat)rect.Y;
 			if (v.Superview != null)
 				y = v.Superview.Frame.Height - y - (float)rect.Height;
-			v.Frame = new System.Drawing.RectangleF ((float)rect.X, y, (float)rect.Width, (float)rect.Height);
+			v.Frame = new CGRect ((nfloat)rect.X, y, (nfloat)rect.Width, (nfloat)rect.Height);
 		}
 
 		public static Alignment ToAlignment (this NSTextAlignment align)
@@ -121,8 +120,8 @@ namespace Xwt.Mac
 		
 		public static CGColor ToCGColor (this Color col)
 		{
-			return new CGColor (DeviceRgbColorSpace, new float[] {
-				(float)col.Red, (float)col.Green, (float)col.Blue, (float)col.Alpha
+			return new CGColor (DeviceRgbColorSpace, new nfloat[] {
+				(nfloat)col.Red, (nfloat)col.Green, (nfloat)col.Blue, (nfloat)col.Alpha
 			});
 		}
 
@@ -138,14 +137,14 @@ namespace Xwt.Mac
 			return new Color (cs[0], cs[1], cs[2], col.Alpha);
 		}
 
-		public static Size ToXwtSize (this SizeF s)
+		public static Size ToXwtSize (this CGSize s)
 		{
 			return new Size (s.Width, s.Height);
 		}
 
-		public static RectangleF ToRectangleF (this Rectangle r)
+		public static CGRect ToCGRect (this Rectangle r)
 		{
-			return new RectangleF ((float)r.X, (float)r.Y, (float)r.Width, (float)r.Height);
+			return new CGRect ((nfloat)r.X, (nfloat)r.Y, (nfloat)r.Width, (nfloat)r.Height);
 		}
 
 		// /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/IconsCore.h
@@ -197,7 +196,6 @@ namespace Xwt.Mac
 		}
 
 		static Selector selCopyWithZone = new Selector ("copyWithZone:");
-		static Selector selRetainCount = new Selector ("retainCount");
 		static DateTime lastCopyPoolDrain = DateTime.Now;
 		static List<object> copyPool = new List<object> ();
 
@@ -243,7 +241,7 @@ namespace Xwt.Mac
 			List<NSObject> markedForDelete = new List<NSObject> ();
 			
 			foreach (NSObject ob in copyPool) {
-				uint count = Messaging.UInt32_objc_msgSend (ob.Handle, selRetainCount.Handle);
+				nint count = ob.RetainCount;
 				if (count == 1)
 					markedForDelete.Add (ob);
 			}
@@ -308,18 +306,18 @@ namespace Xwt.Mac
 				else if (att is FontStyleTextAttribute) {
 					var xa = (FontStyleTextAttribute)att;
 					if (xa.Style == FontStyle.Italic) {
-						Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (int)NSFontTraitMask.Italic, r);
+						Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (IntPtr)(long)NSFontTraitMask.Italic, r);
 					} else if (xa.Style == FontStyle.Oblique) {
 						ns.AddAttribute (NSAttributedString.ObliquenessAttributeName, (NSNumber)0.2f, r);
 					} else {
 						ns.AddAttribute (NSAttributedString.ObliquenessAttributeName, (NSNumber)0.0f, r);
-						Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (int)NSFontTraitMask.Unitalic, r);
+						Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (IntPtr)(long)NSFontTraitMask.Unitalic, r);
 					}
 				}
 				else if (att is FontWeightTextAttribute) {
 					var xa = (FontWeightTextAttribute)att;
 					var trait = xa.Weight >= FontWeight.Bold ? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
-					Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (int) trait, r);
+					Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (IntPtr)(long) trait, r);
 				}
 				else if (att is LinkTextAttribute) {
 					var xa = (LinkTextAttribute)att;

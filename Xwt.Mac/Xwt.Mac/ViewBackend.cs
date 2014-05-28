@@ -30,13 +30,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
+using AppKit;
+using Foundation;
+using ObjCRuntime;
 using Xwt;
 using Xwt.Backends;
-using MonoMac.CoreGraphics;
-using MonoMac.CoreAnimation;
+using CoreGraphics;
+using CoreAnimation;
 
 
 namespace Xwt.Mac
@@ -397,7 +397,7 @@ namespace Xwt.Mac
 		{
 			var lo = Widget.ConvertPointToBase (new PointF ((float)widgetCoordinates.X, (float)widgetCoordinates.Y));
 			lo = Widget.Window.ConvertBaseToScreen (lo);
-			return MacDesktopBackend.ToDesktopRect (new RectangleF (lo.X, lo.Y, 0, Widget.IsFlipped ? 0 : Widget.Frame.Height)).Location;
+			return MacDesktopBackend.ToDesktopRect (new CGRect (lo.X, lo.Y, 0, Widget.IsFlipped ? 0 : Widget.Frame.Height)).Location;
 		}
 		
 		protected virtual Size GetNaturalSize ()
@@ -535,7 +535,7 @@ namespace Xwt.Mac
 		
 		public void DragStart (DragStartData sdata)
 		{
-			var lo = Widget.ConvertPointToBase (new PointF (Widget.Bounds.X, Widget.Bounds.Y));
+			var lo = Widget.ConvertPointToBase (new CGPoint (Widget.Bounds.X, Widget.Bounds.Y));
 			lo = Widget.Window.ConvertBaseToScreen (lo);
 			var ml = NSEvent.CurrentMouseLocation;
 			var pb = NSPasteboard.FromName (NSPasteboard.NSDragPasteboardName);
@@ -545,7 +545,7 @@ namespace Xwt.Mac
 				throw new ArgumentNullException ("data");
 			InitPasteboard (pb, sdata.Data);
 			var img = (NSImage)sdata.ImageBackend;
-			var pos = new PointF (ml.X - lo.X - (float)sdata.HotX, lo.Y - ml.Y - (float)sdata.HotY + img.Size.Height);
+			var pos = new CGPoint (ml.X - lo.X - (float)sdata.HotX, lo.Y - ml.Y - (float)sdata.HotY + img.Size.Height);
 			Widget.DragImage (img, pos, new SizeF (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
 		}
 		
@@ -811,7 +811,7 @@ namespace Xwt.Mac
 			AddSubview (child);
 		}
 
-		public override void SetFrameSize (SizeF newSize)
+		public override void SetFrameSize (CGSize newSize)
 		{
 			base.SetFrameSize (newSize);
 			if (w != null)

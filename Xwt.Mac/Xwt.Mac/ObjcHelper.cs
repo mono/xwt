@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 
 using System;
-using MonoMac.ObjCRuntime;
+using ObjCRuntime;
 using System.Runtime.InteropServices;
 
 namespace Xwt.Mac

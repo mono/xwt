@@ -26,10 +26,10 @@
 
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.CoreText;
-using MonoMac.CoreGraphics;
+using AppKit;
+using Foundation;
+using CoreText;
+using CoreGraphics;
 using Xwt.Drawing;
 
 using PointF = System.Drawing.PointF;
@@ -93,7 +93,7 @@ namespace Xwt.Mac
 
 				Size result = Size.Zero;
 				CTLine [] lines = frame.GetLines ();
-				float lineHeight = li.Font.Ascender - li.Font.Descender + li.Font.Leading;
+				nfloat lineHeight = li.Font.Ascender - li.Font.Descender + li.Font.Leading;
 
 				CTLine ellipsis = null;
 				bool ellipsize = li.Width.HasValue && li.TextTrimming == TextTrimming.WordElipsis;
@@ -104,7 +104,7 @@ namespace Xwt.Mac
 				foreach (var line in lines) {
 					var l = line;
 					if (ellipsize) { // we need to create a new CTLine here because the framesetter already truncated the text for the line
-						l = new CTLine (CreateAttributedString (li, li.Text.Substring (line.StringRange.Location)))
+						l = new CTLine (CreateAttributedString (li, li.Text.Substring ((int)line.StringRange.Location)))
 							.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis);
 						line.Dispose ();
 					}
@@ -169,7 +169,7 @@ namespace Xwt.Mac
 				if (ellipsize)
 					ellipsis = new CTLine (CreateAttributedString (li, "..."));
 
-				float lineHeight = li.Font.Ascender - li.Font.Descender + li.Font.Leading;
+				nfloat lineHeight = li.Font.Ascender - li.Font.Descender + li.Font.Leading;
 
 				ctx.SaveState ();
 				ctx.TextMatrix = CGAffineTransform.MakeScale (1f, -1f);
@@ -177,7 +177,7 @@ namespace Xwt.Mac
 				foreach (var line in frame.GetLines ()) {
 					ctx.TextPosition = PointF.Empty;
 					if (ellipsize) // we need to create a new CTLine here because the framesetter already truncated the text for the line
-						new CTLine (CreateAttributedString (li, li.Text.Substring (line.StringRange.Location)))
+						new CTLine (CreateAttributedString (li, li.Text.Substring ((int)line.StringRange.Location)))
 							.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis).Draw (ctx);
 					else
 						line.Draw (ctx);

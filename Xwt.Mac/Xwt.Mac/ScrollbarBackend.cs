@@ -24,8 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoMac.AppKit;
+using AppKit;
 using Xwt.Backends;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -37,11 +38,11 @@ namespace Xwt.Mac
 
 		public void Initialize (Orientation dir)
 		{
-			System.Drawing.RectangleF r;
+			CGRect r;
 			if (dir == Orientation.Horizontal)
-				r = new System.Drawing.RectangleF (0, 0, NSScroller.ScrollerWidth + 1, NSScroller.ScrollerWidth);
+				r = new CGRect (0, 0, NSScroller.ScrollerWidth + 1, NSScroller.ScrollerWidth);
 			else
-				r = new System.Drawing.RectangleF (0, 0, NSScroller.ScrollerWidth, NSScroller.ScrollerWidth + 1);
+				r = new CGRect (0, 0, NSScroller.ScrollerWidth, NSScroller.ScrollerWidth + 1);
 			ViewObject = new CustomScroller (r);
 		}
 
@@ -70,7 +71,7 @@ namespace Xwt.Mac
 
 		ViewBackend IViewObject.Backend { get; set; }
 
-		public CustomScroller (System.Drawing.RectangleF r): base (r)
+		public CustomScroller (CGRect r): base (r)
 		{
 		}
 

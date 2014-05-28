@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
+using AppKit;
 
 
 namespace Xwt.Mac
@@ -93,9 +93,9 @@ namespace Xwt.Mac
 			}
 			set {
 				if (vertical)
-					ClipView.CurrentY = (float)value;
+					ClipView.CurrentY = value;
 				else
-					ClipView.CurrentX = (float)value;
+					ClipView.CurrentX = value;
 			}
 		}
 
