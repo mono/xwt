@@ -26,14 +26,14 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Gtk;
+#if XWT_GTK3
+using TreeModelImplementor = Gtk.ITreeModelImplementor;
+#endif
 
 namespace Xwt.GtkBackend
 {
-	#if XWT_GTK3
-	public class CustomListModel: GLib.Object, Gtk.ITreeModelImplementor
-	#else
-	public class CustomListModel: GLib.Object, Gtk.TreeModelImplementor
-	#endif
+	public class CustomListModel: GLib.Object, TreeModelImplementor
 	{
 		IListDataSource source;
 		Dictionary<int,int> nodeHash = new Dictionary<int,int> ();

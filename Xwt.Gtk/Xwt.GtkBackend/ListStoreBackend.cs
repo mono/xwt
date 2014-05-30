@@ -27,6 +27,10 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
+using Gtk;
+#if XWT_GTK3
+using TreeModel = Gtk.ITreeModel;
+#endif
 
 namespace Xwt.GtkBackend
 {
@@ -35,11 +39,7 @@ namespace Xwt.GtkBackend
 		Type[] columnTypes;
 
 
-		#if XWT_GTK3
-		public override Gtk.ITreeModel InitializeModel (Type[] columnTypes)
-		#else
-		public override Gtk.TreeModel InitializeModel (Type[] columnTypes)
-		#endif
+		public override TreeModel InitializeModel (Type[] columnTypes)
 		{
 			this.columnTypes = columnTypes;
 			var store = new Gtk.ListStore (columnTypes);

@@ -29,6 +29,10 @@ using Xwt.Backends;
 using Gtk;
 using System.Collections.Generic;
 using System.Linq;
+using Gtk;
+#if XWT_GTK3
+using TreeModel = Gtk.ITreeModel;
+#endif
 
 namespace Xwt.GtkBackend
 {
@@ -281,11 +285,7 @@ namespace Xwt.GtkBackend
 			get { return Widget; }
 		}
 
-		#if XWT_GTK3
-		ITreeModel ICellRendererTarget.Model {
-		#else
 		TreeModel ICellRendererTarget.Model {
-		#endif
 			get { return Widget.Model; }
 		}
 

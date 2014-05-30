@@ -25,6 +25,10 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Gtk;
+#if XWT_GTK3
+using TreeModel = Gtk.ITreeModel;
+#endif
 
 namespace Xwt.GtkBackend
 {
@@ -54,11 +58,7 @@ namespace Xwt.GtkBackend
 			protected set;
 		}
 
-		#if XWT_GTK3
-		public Gtk.ITreeModel TreeModel { get; private set; }
-		#else
-		public Gtk.TreeModel TreeModel { get; private set; }
-		#endif
+		public TreeModel TreeModel { get; private set; }
 
 		public Gtk.TreeIter CurrentIter { get; private set; }
 
@@ -201,11 +201,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		#if XWT_GTK3
-		public void LoadData (Gtk.ITreeModel model, Gtk.TreeIter iter)
-		#else
-		public void LoadData (Gtk.TreeModel model, Gtk.TreeIter iter)
-		#endif
+		public void LoadData (TreeModel model, Gtk.TreeIter iter)
 		{
 			TreeModel = model;
 			CurrentIter = iter;
