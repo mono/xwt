@@ -158,6 +158,7 @@
     <Compile Include="Xwt.GtkBackend\ComboBoxEntryBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SearchTextEntryBackendGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk3Extensions.cs" />
+    <Compile Include="Xwt.GtkBackend\Gtk3ViewPort.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

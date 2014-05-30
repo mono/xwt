@@ -177,13 +177,39 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	#if XWT_GTK3
-	class CustomViewPort: Gtk.Viewport
-	#else
-	class CustomViewPort: Gtk.Bin
-	#endif
+	sealed class CustomViewPort: GtkViewPort
 	{
-		#if XWT_GTK3
+		Gtk.Widget child;
+		IWidgetEventSink eventSink;
+		
+		public CustomViewPort (IWidgetEventSink eventSink)
+		{
+			this.eventSink = eventSink;
+		}
+		
+		protected override void OnAdded (Gtk.Widget widget)
+		{
+			base.OnAdded (widget);
+			child = widget;
+		}
+
+		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
+		{
+			base.OnSizeAllocated (allocation);
+			if (child != null)
+				child.SizeAllocate (allocation);
+		}
+
+		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		{
+			if (Child != null) {
+				requisition = Child.SizeRequest ();
+			} else {
+				requisition.Width = 0;
+				requisition.Height = 0;
+			}
+		}
+
 		Gtk.Adjustment hadjustment;
 		[GLib.Property ("hadjustment")]
 		public new Gtk.Adjustment Hadjustment {
@@ -193,9 +219,7 @@ namespace Xwt.GtkBackend
 			set {
 				hadjustment = value;
 				if (vadjustment != null) {
-					var hsa = new ScrollAdjustmentBackend (value);
-					var vsa = new ScrollAdjustmentBackend (vadjustment);
-					eventSink.SetScrollAdjustments (hsa, vsa);
+					OnSetScrollAdjustments (value, vadjustment);
 				}
 			}
 		}
@@ -209,53 +233,11 @@ namespace Xwt.GtkBackend
 			set {
 				vadjustment = value;
 				if (hadjustment != null) {
-					var vsa = new ScrollAdjustmentBackend (value);
-					var hsa = new ScrollAdjustmentBackend (hadjustment);
-					eventSink.SetScrollAdjustments (hsa, vsa);
+					OnSetScrollAdjustments (hadjustment, value);
 				}
 			}
 		}
-		#endif
 
-		Gtk.Widget child;
-		IWidgetEventSink eventSink;
-		
-		public CustomViewPort (IWidgetEventSink eventSink)
-		{
-			this.eventSink = eventSink;
-		}
-		
-		protected override void OnAdded (Gtk.Widget widget)
-		{
-			base.OnAdded (widget);
-			child = widget;
-			#if XWT_GTK3
-			int width, height;
-			child.GetSizeRequest (out width, out height);
-			SetSizeRequest (width, height);
-			#endif
-		}
-
-		#if !XWT_GTK3
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
-		{
-			if (child != null) {
-				requisition = child.SizeRequest ();
-			} else {
-				requisition.Width = 0;
-				requisition.Height = 0;
-			}
-		}
-		#endif
-
-		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
-		{
-			base.OnSizeAllocated (allocation);
-			if (child != null)
-				child.SizeAllocate (allocation);
-		}
-
-		#if !XWT_GTK3
 		protected override void OnSetScrollAdjustments (Gtk.Adjustment hadj, Gtk.Adjustment vadj)
 		{
 			var hsa = new ScrollAdjustmentBackend (hadj);
@@ -263,7 +245,6 @@ namespace Xwt.GtkBackend
 			
 			eventSink.SetScrollAdjustments (hsa, vsa);
 		}
-		#endif
 	}
 }
 
