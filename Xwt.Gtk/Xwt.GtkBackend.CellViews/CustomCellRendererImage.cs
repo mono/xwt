@@ -51,7 +51,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	class ImageRenderer: Gtk.CellRenderer
+	class ImageRenderer: GtkCellRendererCustom
 	{
 		ImageDescription image;
 
@@ -63,31 +63,16 @@ namespace Xwt.GtkBackend
 			set { image = value; }
 		}
 
-		#if XWT_GTK3
-		protected override void OnRender (Cairo.Context ctx, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, CellRendererState flags)
-		#else
-		protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, Gtk.CellRendererState flags)
-		#endif
+		protected override void OnRender (Cairo.Context cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, CellRendererState flags)
 		{
 			if (image.IsNull)
 				return;
-			#if !XWT_GTK3
-			var ctx = Gdk.CairoHelper.Create (window);
-			using (ctx) {
-			#endif
-				var pix = ((GtkImage)image.Backend);
-				pix.Draw (Context, ctx, Util.GetScaleFactor (widget), cell_area.X, cell_area.Y, image);
-			#if !XWT_GTK3
-			}
-			#endif
+			var pix = ((GtkImage)image.Backend);
+			pix.Draw (Context, cr, Util.GetScaleFactor (widget), cell_area.X, cell_area.Y, image);
 
 		}
 
-		#if XWT_GTK3
 		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
-		#else
-		public override void GetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
-		#endif
 		{
 			if (image.IsNull) {
 				width = height = 0;

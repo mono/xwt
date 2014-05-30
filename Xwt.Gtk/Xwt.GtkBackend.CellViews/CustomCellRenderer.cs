@@ -95,25 +95,17 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	class CanvasRenderer: Gtk.CellRenderer
+	class CanvasRenderer: GtkCellRendererCustom
 	{
 		public ICanvasCellViewFrontend CellView;
 		public CustomCellRenderer Parent;
 
-		#if XWT_GTK3
 		protected override void OnRender (Cairo.Context cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, CellRendererState flags)
-		#else
-		protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, Gtk.CellRendererState flags)
-		#endif
 		{
 			Parent.StartDrawing (new Rectangle (background_area.X, background_area.Y, background_area.Width, background_area.Height), new Rectangle (cell_area.X, cell_area.Y, cell_area.Width, cell_area.Height), flags);
 			CellView.ApplicationContext.InvokeUserCode (delegate {
 				CairoContextBackend ctx = new CairoContextBackend (Util.GetScaleFactor (widget));
-				#if XWT_GTK3
 				ctx.Context = cr;
-				#else
-				ctx.Context = Gdk.CairoHelper.Create (window);
-				#endif
 				using (ctx) {
 					CellView.Draw (ctx, new Rectangle (cell_area.X, cell_area.Y, cell_area.Width, cell_area.Height));
 				}
@@ -121,11 +113,7 @@ namespace Xwt.GtkBackend
 			Parent.EndDrawing ();
 		}
 
-		#if XWT_GTK3
 		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
-		#else
-		public override void GetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
-		#endif
 		{
 			Size size = new Size ();
 			CellView.ApplicationContext.InvokeUserCode (delegate {
