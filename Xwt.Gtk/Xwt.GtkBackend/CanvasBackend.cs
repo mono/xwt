@@ -101,12 +101,8 @@ namespace Xwt.GtkBackend
 		
 		public CustomCanvas ()
 		{
-			GtkWorkarounds.FixContainerLeak (this);
-			#if XWT_GTK3
-			base.AppPaintable = true;
-			#else
-			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
-			#endif
+			this.FixContainerLeak ();
+			this.SetAppPaintable(true);
 			VisibleWindow = false;
 		}
 		

@@ -135,12 +135,7 @@ namespace Xwt.GtkBackend
 				int w, h, x, y;
 				if (Window.GdkWindow != null) {
 					Window.GdkWindow.GetOrigin (out x, out y);
-					#if XWT_GTK3
-					w = Window.GdkWindow.Width;
-					h = Window.GdkWindow.Height;
-					#else
 					Window.GdkWindow.GetSize (out w, out h);
-					#endif
 				} else {
 					Window.GetPosition (out x, out y);
 					Window.GetSize (out w, out h);

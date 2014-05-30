@@ -519,11 +519,7 @@ namespace Xwt.GtkBackend
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
 
-			#if XWT_GTK3
-			if (eventBox == null && !EventsRootWidget.HasWindow) {
-			#else
-			if (eventBox == null && EventsRootWidget.IsNoWindow) {
-			#endif
+			if (eventBox == null && !EventsRootWidget.GetHasWindow()) {
 				if (EventsRootWidget is Gtk.EventBox) {
 					((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
 					return;
@@ -927,11 +923,7 @@ namespace Xwt.GtkBackend
 		internal bool DoDragDrop (Gdk.DragContext context, int x, int y, uint time)
 		{
 			DragDropInfo.LastDragPosition = new Point (x, y);
-			#if XWT_GTK3
-			var cda = ConvertDragAction (context.SelectedAction);
-			#else
-			var cda = ConvertDragAction (context.Action);
-			#endif
+			var cda = ConvertDragAction (context.GetSelectedAction());
 
 			DragDropResult res;
 			if ((enabledEvents & WidgetEvent.DragDropCheck) == 0) {
@@ -941,11 +933,7 @@ namespace Xwt.GtkBackend
 					res = DragDropResult.Canceled;
 			}
 			else {
-				#if XWT_GTK3
 				DragCheckEventArgs da = new DragCheckEventArgs (new Point (x, y), Util.GetDragTypes (context.ListTargets ()), cda);
-				#else
-				DragCheckEventArgs da = new DragCheckEventArgs (new Point (x, y), Util.GetDragTypes (context.Targets), cda);
-				#endif
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnDragDropCheck (da);
 				});
@@ -1031,11 +1019,7 @@ namespace Xwt.GtkBackend
 				}
 				else {
 					// Use Context.Action here since that's the action selected in DragOver
-					#if XWT_GTK3
-					var cda = ConvertDragAction (context.SelectedAction);
-					#else
-					var cda = ConvertDragAction (context.Action);
-					#endif
+					var cda = ConvertDragAction (context.GetSelectedAction());
 					DragEventArgs da = new DragEventArgs (DragDropInfo.LastDragPosition, DragDropInfo.DragData, cda);
 					ApplicationContext.InvokeUserCode (delegate {
 						EventSink.OnDragDrop (da);

@@ -132,6 +132,7 @@
     </Compile>
     <Compile Include="Xwt.GtkBackend.CellViews\CellViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SearchTextEntryBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\Gtk2Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

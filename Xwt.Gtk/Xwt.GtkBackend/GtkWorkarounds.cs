@@ -853,9 +853,7 @@ namespace Xwt.GtkBackend
 
 			if (fixedContainerTypes == null) {
 				try {
-					#if !XWT_GTK3
 					gtksharp_container_leak_fixed_marker ();
-					#endif
 					containerLeakFixed = true;
 					return;
 				} catch (EntryPointNotFoundException) {
@@ -878,11 +876,6 @@ namespace Xwt.GtkBackend
 				t = t.BaseType;
 			} while (fixedContainerTypes.Add (t) && t.Assembly != typeof (Gtk.Container).Assembly);
 		}
-
-		#if XWT_GTK3
-		[DllImport(GtkInterop.LIBGLIBGLUE, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr gtksharp_get_type_id (IntPtr raw);
-		#endif
 
 		static ForallDelegate CreateForallCallback (IntPtr gtype)
 		{
@@ -910,11 +903,7 @@ namespace Xwt.GtkBackend
 			//check that the type is an exact match
 			// prevent stack overflow, because the callback on a more derived type will handle everything
 			il.Emit (OpCodes.Ldarg_0);
-			#if XWT_GTK3
-			il.Emit (OpCodes.Call, typeof(GLib.GType).GetMethod ("ValFromInstancePtr", BindingFlags.Static | BindingFlags.NonPublic));
-			#else
 			il.Emit (OpCodes.Call, typeof(GLib.ObjectManager).GetMethod ("gtksharp_get_type_id", BindingFlags.Static | BindingFlags.NonPublic));
-			#endif
 
 			il.Emit (OpCodes.Ldc_I8, gtype.ToInt64 ());
 			il.Emit (OpCodes.Newobj, typeof (IntPtr).GetConstructor (new Type[] { typeof (Int64) }));
@@ -1014,12 +1003,7 @@ namespace Xwt.GtkBackend
 
 			public void ConnectTo (Gtk.Label label)
 			{
-				#if XWT_GTK3
 				label.AddSignalHandler ("activate-link", new EventHandler<ActivateLinkEventArgs> (HandleLink), typeof(ActivateLinkEventArgs));
-				#else
-				var signal = GLib.Signal.Lookup (label, "activate-link", typeof(ActivateLinkEventArgs));
-				signal.AddDelegate (new EventHandler<ActivateLinkEventArgs> (HandleLink));
-				#endif
 			}
 
 			class ActivateLinkEventArgs : GLib.SignalArgs
@@ -1221,20 +1205,15 @@ namespace Xwt.GtkBackend
 			return null;
 		}
 
-		#if XWT_GTK3
-		[DllImport (GtkInterop.LIBGDK)]
-		static extern IntPtr gdk_pixbuf_get_from_window(IntPtr win, int src_x, int src_y, int width, int height);
 
-		public static Gdk.Pixbuf ToPixbuf (this Gdk.Window window, int src_x, int src_y, int width, int height)
+		public static Gtk.Bin CreateComboBoxEntry()
 		{
-			IntPtr raw_ret = gdk_pixbuf_get_from_window(window.Handle, src_x, src_y, width, height);Gdk.Pixbuf ret;
-			if (raw_ret == IntPtr.Zero)
-				ret = null;
-			else
-				ret = (Gdk.Pixbuf) GLib.Object.GetObject(raw_ret);
-			return ret;
+			#if XWT_GTK3
+			return Gtk.ComboBoxText.NewWithEntry ();
+			#else
+			return new Gtk.ComboBoxEntry ();
+			#endif
 		}
-		#endif
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>

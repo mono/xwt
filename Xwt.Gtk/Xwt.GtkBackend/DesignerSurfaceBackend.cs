@@ -53,7 +53,7 @@ namespace Xwt.GtkBackend
 		
 		public DesignerBox ()
 		{
-			GtkWorkarounds.FixContainerLeak (this);
+			this.FixContainerLeak ();
 
 			surface = new Gtk.EventBox ();
 			surface.ShowAll ();
@@ -64,11 +64,8 @@ namespace Xwt.GtkBackend
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
-			#if XWT_GTK3
+			// Gtk2 Allocation setter simply calls SizeAllocate, so use this directly like with Gtk3
 			surface.SizeAllocate (new Gdk.Rectangle (0,0, allocation.Width, allocation.Height));
-			#else
-			surface.Allocation = new Gdk.Rectangle (0,0, allocation.Width, allocation.Height);
-			#endif
 		}
 
 		#if !XWT_GTK3

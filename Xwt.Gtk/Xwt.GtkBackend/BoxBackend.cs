@@ -88,12 +88,8 @@ namespace Xwt.GtkBackend
 		
 		public CustomContainer ()
 		{
-			GtkWorkarounds.FixContainerLeak (this);
-			#if XWT_GTK3
-			HasWindow = false;
-			#else
-			WidgetFlags |= Gtk.WidgetFlags.NoWindow;
-			#endif
+			this.FixContainerLeak ();
+			this.SetHasWindow (false);
 		}
 		
 		public void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)

@@ -75,21 +75,13 @@ namespace Xwt.GtkBackend
 				//make sure the button looks depressed
 				Gtk.ReliefStyle oldRelief = Widget.Relief;
 				Widget.Relief = Gtk.ReliefStyle.Normal;
-				#if XWT_GTK3
-				Widget.SetStateFlags(Gtk.StateFlags.Active, true);
-				#else
-				Widget.State = Gtk.StateType.Active;
-				#endif
+				Widget.SetStateActive();
 				
 				//clean up after the menu's done
 				menu.Hidden += delegate {
 					Widget.Relief = oldRelief ;
 					isOpen = false;
-					#if XWT_GTK3
-					Widget.SetStateFlags(Gtk.StateFlags.Normal, true);
-					#else
-					Widget.State = Gtk.StateType.Normal;
-					#endif
+					Widget.SetStateNormal ();
 					
 					//FIXME: for some reason the menu's children don't get activated if we destroy 
 					//directly here, so use a timeout to delay it
@@ -106,11 +98,7 @@ namespace Xwt.GtkBackend
 		{
 			//while the menu's open, make sure the button looks depressed
 			if (isOpen && Widget.State != Gtk.StateType.Active)
-				#if XWT_GTK3
-				Widget.SetStateFlags(Gtk.StateFlags.Active, true);
-				#else
-				Widget.State = Gtk.StateType.Active;
-				#endif
+				Widget.SetStateActive ();
 		}
 
 		void PositionFunc (Gtk.Menu mn, out int x, out int y, out bool push_in)

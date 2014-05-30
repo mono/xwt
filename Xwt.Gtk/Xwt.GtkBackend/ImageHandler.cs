@@ -436,13 +436,8 @@ namespace Xwt.GtkBackend
 
 		public ImageBox (ApplicationContext actx)
 		{
-			#if XWT_GTK3
-			HasWindow = false;
-			AppPaintable = true;
-			#else
-			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
-			WidgetFlags |= Gtk.WidgetFlags.NoWindow;
-			#endif
+			this.SetHasWindow (false);
+			this.SetAppPaintable (true);
 			this.actx = actx;
 		}
 

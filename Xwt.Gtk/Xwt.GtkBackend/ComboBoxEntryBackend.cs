@@ -34,22 +34,14 @@ namespace Xwt.GtkBackend
 		
 		protected override Gtk.Widget CreateWidget ()
 		{
-			#if XWT_GTK3
-			var c = Gtk.ComboBoxText.NewWithEntry ();
-			#else
-			var c = new Gtk.ComboBoxEntry ();
-			#endif
+			var c = GtkWorkarounds.CreateComboBoxEntry ();
 			entryBackend = new CustomComboEntryBackend ((Gtk.Entry)c.Child);
 			return c;
 		}
 
 		public void SetTextColumn (int column)
 		{
-			#if XWT_GTK3
-			((Gtk.ComboBoxText)Widget).EntryTextColumn = column;
-			#else
-			((Gtk.ComboBoxEntry)Widget).TextColumn = column;
-			#endif
+			Widget.SetTextColumn (column);
 		}
 		
 		public ITextEntryBackend TextEntryBackend {

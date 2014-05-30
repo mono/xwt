@@ -239,11 +239,8 @@ namespace Xwt.GtkBackend
 
 			int x = 0;
 			int th = 0;
-			#if XWT_GTK3
-			CellRenderer[] renderers = col.Cells;
-			#else
-			CellRenderer[] renderers = col.CellRenderers;
-			#endif
+			CellRenderer[] renderers = col.GetCellRenderers();
+
 			foreach (CellRenderer cr in renderers) {
 				int sp, wi, he, xo, yo;
 				col.CellGetSize (rect, out xo, out yo, out wi, out he);
