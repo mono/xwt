@@ -80,13 +80,9 @@ namespace Xwt.GtkBackend
 		TreePosition NodeFromIter (Gtk.TreeIter iter)
 		{
 			TreePosition node;
-			try {
-				GCHandle gch = (GCHandle)iter.UserData;
-				nodeHash.TryGetValue (gch, out node);
-				return node;
-			} catch {
-				return null;
-			}
+			GCHandle gch = (GCHandle)iter.UserData;
+			nodeHash.TryGetValue (gch, out node);
+			return node;
 		}
 		
 		#region TreeModelImplementor implementation
