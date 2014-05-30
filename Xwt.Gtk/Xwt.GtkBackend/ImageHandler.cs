@@ -423,7 +423,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	public class ImageBox: Gtk.DrawingArea
+	public class ImageBox: GtkDrawingArea
 	{
 		ImageDescription image;
 		ApplicationContext actx;
@@ -444,11 +444,8 @@ namespace Xwt.GtkBackend
 		public ImageDescription Image {
 			get { return image; }
 			set { 
-				image = value; 
-				#if XWT_GTK3
-				if (!image.IsNull)
-					SetSizeRequest ((int)image.Size.Width, (int)image.Size.Height);
-				#endif
+				image = value;
+				SetSizeRequest ((int)image.Size.Width, (int)image.Size.Height);
 				QueueResize ();
 			}
 		}
@@ -463,7 +460,6 @@ namespace Xwt.GtkBackend
 			set { xalign = value; QueueDraw (); }
 		}
 
-		#if !XWT_GTK3
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			base.OnSizeRequested (ref requisition);
@@ -472,9 +468,7 @@ namespace Xwt.GtkBackend
 				requisition.Height = (int) image.Size.Height;
 			}
 		}
-		#endif
 
-		#if XWT_GTK3
 		protected override bool OnDrawn (Cairo.Context cr)
 		{
 			if (image.IsNull)
@@ -485,24 +479,8 @@ namespace Xwt.GtkBackend
 			if (x < 0) x = 0;
 			if (y < 0) y = 0;
 			((GtkImage)image.Backend).Draw (actx, cr, Util.GetScaleFactor (this), x, y, image);
-			return true;
+			return base.OnDrawn (cr);
 		}
-		#else
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
-		{
-			if (image.IsNull)
-				return true;
-
-			int x = Allocation.X + (int)(((float)Allocation.Width - (float)image.Size.Width) * xalign);
-			int y = Allocation.Y + (int)(((float)Allocation.Height - (float)image.Size.Height) * yalign);
-			if (x < 0) x = 0;
-			if (y < 0) y = 0;
-			using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
-				((GtkImage)image.Backend).Draw (actx, ctx, Util.GetScaleFactor (this), x, y, image);
-				return true;
-			}
-		}
-		#endif
 	}
 }
 

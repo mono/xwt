@@ -135,6 +135,7 @@
     <Compile Include="Xwt.GtkBackend\SearchTextEntryBackend.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk2Extensions.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk2ViewPort.cs" />
+    <Compile Include="Xwt.GtkBackend\Gtk2DrawingArea.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
