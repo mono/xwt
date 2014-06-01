@@ -178,6 +178,75 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public int CursorPosition {
+			get {
+				return Widget.Position;
+			}
+			set {
+				Widget.Position = value;
+			}
+		}
+
+		public int SelectionStart {
+			get {
+				int start, end;
+				Widget.GetSelectionBounds (out start, out end);
+				return start;
+			}
+			set {
+				int cacheStart = SelectionStart;
+				int cacheLength = SelectionLength;
+				Widget.GrabFocus ();
+				if (String.IsNullOrEmpty (Text))
+					return;
+				Widget.SelectRegion (value, value + cacheLength);
+				if (cacheStart != value)
+					HandleSelectionChanged ();
+			}
+		}
+
+		public int SelectionLength {
+			get {
+				int start, end;
+				Widget.GetSelectionBounds (out start, out end);
+				return end - start;
+			}
+			set {
+				int cacheStart = SelectionStart;
+				int cacheLength = SelectionLength;
+				Widget.GrabFocus ();
+				if (String.IsNullOrEmpty (Text))
+					return;
+				Widget.SelectRegion (cacheStart, cacheStart + value);
+				if (cacheLength != value)
+					HandleSelectionChanged ();
+			}
+		}
+
+		public string SelectedText {
+			get {
+				int start = SelectionStart;
+				int end = start + SelectionLength;
+				if (start == end) return String.Empty;
+				try {
+					return Text.Substring (start, end - start);
+				} catch {
+					return String.Empty;
+				}
+			}
+			set {
+				int cacheSelStart = SelectionStart;
+				int pos = cacheSelStart;
+				if (SelectionLength > 0) {
+					Widget.DeleteSelection ();
+				}
+				Widget.InsertText (value, ref pos);
+				Widget.GrabFocus ();
+				Widget.SelectRegion (cacheSelStart, pos);
+				HandleSelectionChanged ();
+			}
+		}
+
 		public bool MultiLine {
 			get; set;
 		}
@@ -189,6 +258,13 @@ namespace Xwt.GtkBackend
 				switch ((TextEntryEvent)eventId) {
 				case TextEntryEvent.Changed: Widget.Changed += HandleChanged; break;
 				case TextEntryEvent.Activated: Widget.Activated += HandleActivated; break;
+				case TextEntryEvent.SelectionChanged:
+					enableSelectionChangedEvent = true;
+					Widget.MoveCursor += HandleMoveCursor;
+					Widget.ButtonPressEvent += HandleButtonPressEvent;
+					Widget.ButtonReleaseEvent += HandleButtonReleaseEvent;
+					Widget.MotionNotifyEvent += HandleMotionNotifyEvent;
+					break;
 				}
 			}
 		}
@@ -200,6 +276,13 @@ namespace Xwt.GtkBackend
 				switch ((TextEntryEvent)eventId) {
 				case TextEntryEvent.Changed: Widget.Changed -= HandleChanged; break;
 				case TextEntryEvent.Activated: Widget.Activated -= HandleActivated; break;
+				case TextEntryEvent.SelectionChanged:
+					enableSelectionChangedEvent = false;
+					Widget.MoveCursor -= HandleMoveCursor;
+					Widget.ButtonPressEvent -= HandleButtonPressEvent;
+					Widget.ButtonReleaseEvent -= HandleButtonReleaseEvent;
+					Widget.MotionNotifyEvent -= HandleMotionNotifyEvent;
+					break;
 				}
 			}
 		}
@@ -208,6 +291,7 @@ namespace Xwt.GtkBackend
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnChanged ();
+				EventSink.OnSelectionChanged ();
 			});
 		}
 
@@ -216,6 +300,53 @@ namespace Xwt.GtkBackend
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnActivated ();
 			});
+		}
+
+		bool enableSelectionChangedEvent;
+		void HandleSelectionChanged ()
+		{
+			if (enableSelectionChangedEvent)
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnSelectionChanged ();
+				});
+		}
+
+		void HandleMoveCursor (object sender, EventArgs e)
+		{
+			HandleSelectionChanged ();
+		}
+
+		int cacheSelectionStart, cacheSelectionLength;
+		bool isMouseSelection;
+
+		[GLib.ConnectBefore]
+		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
+		{
+			if (args.Event.Button == 1) {
+				HandleSelectionChanged ();
+				cacheSelectionStart = SelectionStart;
+				cacheSelectionLength = SelectionLength;
+				isMouseSelection = true;
+			}
+		}
+
+		[GLib.ConnectBefore]
+		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
+		{
+			if (isMouseSelection)
+			if (cacheSelectionStart != SelectionStart || cacheSelectionLength != SelectionLength)
+				HandleSelectionChanged ();
+			cacheSelectionStart = SelectionStart;
+			cacheSelectionLength = SelectionLength;
+		}
+
+		[GLib.ConnectBefore]
+		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
+		{
+			if (args.Event.Button == 1) {
+				isMouseSelection = false;
+				HandleSelectionChanged ();
+			}
 		}
 
 		protected override void Dispose (bool disposing)

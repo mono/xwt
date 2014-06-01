@@ -94,6 +94,37 @@ namespace Samples
 			};
 			PackStart (box);
 
+			HBox selBox = new HBox ();
+			Label las = new Label ("Selection:");
+			selBox.PackStart (las);
+			Button selReplace = new Button ("Replace");
+			selReplace.Clicked += delegate {
+				c4.TextEntry.SelectedText = "[TEST]";
+			};
+			selBox.PackEnd (selReplace);
+			Button selAll = new Button ("Select all");
+			selAll.Clicked += delegate {
+				c4.TextEntry.SelectionStart = 0;
+				c4.TextEntry.SelectionLength = c4.TextEntry.Text.Length;
+			};
+			selBox.PackEnd (selAll);
+			Button selPlus = new Button ("+");
+			selPlus.Clicked += delegate {
+				c4.TextEntry.SelectionLength++;
+			};
+			selBox.PackEnd (selPlus);
+			Button selRight = new Button (">");
+			selRight.Clicked += delegate {
+				c4.TextEntry.SelectionStart++;
+			};
+			selBox.PackEnd (selRight);
+			PackStart (selBox);
+
+			c4.TextEntry.SelectionChanged += delegate {
+				las.Text = "Selection: (" + c4.TextEntry.CursorPosition + " <-> " + c4.TextEntry.SelectionStart + " + " + c4.TextEntry.SelectionLength + ") " + c4.TextEntry.SelectedText;
+			};
+
+
 			var c5 = new ComboBoxEntry ();
 			c5.TextEntry.TextAlignment = Alignment.Center;
 			c5.TextEntry.Text = "centered text";

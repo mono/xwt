@@ -140,6 +140,14 @@ namespace Xwt.Mac
 			}
 		}
 
+		public int CursorPosition { get; set; }
+
+		public int SelectionStart { get; set; }
+
+		public int SelectionLength { get; set; }
+
+		public string SelectedText { get; set; }
+
 		public override void SetFocus ()
 		{
 			Widget.BecomeFirstResponder ();
