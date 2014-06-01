@@ -60,6 +60,11 @@ namespace Samples
 			te5.Text = "I should be centered!";
 			te5.TextAlignment = Alignment.Center;
 			PackStart (te5);
+
+			TextEntry te6 = new TextEntry ();
+			te6.Text = "I should have" + Environment.NewLine + "multiple lines!";
+			te6.MultiLine = true;
+			PackStart (te6);
 		}
 	}
 }
