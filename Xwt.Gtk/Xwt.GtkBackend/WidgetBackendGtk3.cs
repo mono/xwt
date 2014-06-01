@@ -90,6 +90,20 @@ namespace Xwt.GtkBackend
 		void DisableSizeCheckEvents ()
 		{
 		}
+
+		public double Opacity {
+			get {
+				using (GLib.Value property = Widget.GetProperty ("opacity")) {
+					double result = (double)property;
+					return result;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					Widget.SetProperty ("opacity", val);
+				}
+			}
+		}
 	}
 }
 

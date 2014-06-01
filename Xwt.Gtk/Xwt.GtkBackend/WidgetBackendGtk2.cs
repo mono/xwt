@@ -88,6 +88,12 @@ namespace Xwt.GtkBackend
 
 			args.Requisition = req;
 		}
+
+		double opacity = 1d;
+		public double Opacity {
+			get { return opacity; }
+			set { opacity = value; }
+		}
 	}
 }
 

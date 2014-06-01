@@ -124,12 +124,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		double opacity = 1d;
-		public double Opacity {
-			get { return opacity; }
-			set { opacity = value; }
-		}
-
 		void RunWhenRealized (Action a)
 		{
 			if (Widget.IsRealized)
