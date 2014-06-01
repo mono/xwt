@@ -136,6 +136,15 @@
     <Compile Include="Xwt.GtkBackend\Gtk2Extensions.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk2ViewPort.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk2DrawingArea.cs" />
+    <Compile Include="Xwt.GtkBackend\WidgetBackendGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\TextEntryBackendGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\PasswordEntryBackendGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\LabelBackendGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\ButtonBackendGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\SpinButtonBackendGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\BoxBackendGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\CanvasBackendGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\HeaderBoxGtk2.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

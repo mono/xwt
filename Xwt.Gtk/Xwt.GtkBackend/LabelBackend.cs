@@ -35,12 +35,9 @@ using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
-	class LabelBackend: WidgetBackend, ILabelBackend
+	public partial class LabelBackend: WidgetBackend, ILabelBackend
 	{
-		Color? bgColor, textColor;
-		#if !XWT_GTK3
-		int wrapHeight, wrapWidth;
-		#endif
+		Color? textColor;
 		List<LabelLink> links;
 		TextIndexer indexer;
 
@@ -64,21 +61,6 @@ namespace Xwt.GtkBackend
 					return (Gtk.Label) ((Gtk.EventBox)base.Widget).Child;
 			}
 		}
-		
-		#if !XWT_GTK3
-		public override Xwt.Drawing.Color BackgroundColor {
-			get {
-				return bgColor.HasValue ? bgColor.Value : base.BackgroundColor;
-			}
-			set {
-				if (!bgColor.HasValue)
-					Label.ExposeEvent += HandleLabelExposeEvent;
-
-				bgColor = value;
-				Label.QueueDraw ();
-			}
-		}
-		#endif
 
 		bool linkEventEnabled;
 
@@ -162,51 +144,6 @@ namespace Xwt.GtkBackend
 			return null;
 		}
 
-		#if !XWT_GTK3
-		[GLib.ConnectBefore]
-		void HandleLabelExposeEvent (object o, Gtk.ExposeEventArgs args)
-		{
-			using (var ctx = Gdk.CairoHelper.Create (Label.GdkWindow)) {
-				ctx.Rectangle (Label.Allocation.X, Label.Allocation.Y, Label.Allocation.Width, Label.Allocation.Height);
-				ctx.SetSourceColor (bgColor.Value.ToCairoColor ());
-				ctx.Fill ();
-			}
-		}
-
-		void HandleLabelDynamicSizeAllocate (object o, Gtk.SizeAllocatedArgs args)
-		{
-			int unused, oldHeight = wrapHeight;
-			Label.Layout.Width = Pango.Units.FromPixels (args.Allocation.Width);
-			Label.Layout.GetPixelSize (out unused, out wrapHeight);
-			if (wrapWidth != args.Allocation.Width || oldHeight != wrapHeight) {
-				wrapWidth = args.Allocation.Width;
-				Label.QueueResize ();
-			}
-			// GTK renders the text using the calculated pixel width, not the allocated width.
-			// If the calculated width is smaller and text is not left aligned, then a gap is
-			// shown at the right of the label. We then have the adjust the allocation.
-			if (Label.Justify == Gtk.Justification.Right) {
-				var w = wrapWidth - unused;
-				if (w != Label.Xpad)
-					Label.Xpad = w;
-			} else if (Label.Justify == Gtk.Justification.Center) {
-				var w = (wrapWidth - unused) / 2;
-				if (w != Label.Xpad)
-					Label.Xpad = w;
-			}
-		}
-
-		void HandleLabelDynamicSizeRequest (object o, Gtk.SizeRequestedArgs args)
-		{
-			if (wrapHeight > 0) {
-				var req = args.Requisition;
-				req.Width = Label.WidthRequest != -1 ? Label.WidthRequest : 0;
-				req.Height = wrapHeight;
-				args.Requisition = req;
-			}
-		}
-		#endif
-		
 		public virtual string Text {
 			get { return Label.Text; }
 			set {
@@ -279,30 +216,20 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		void SetAlignment ()
+		protected void SetAlignment ()
 		{
 			switch (alignment) {
-			case Alignment.Start:
-				Label.Justify = Gtk.Justification.Left;
-				Label.Xalign = 0f;
-				break;
-			case Alignment.End:
-				Label.Justify = Gtk.Justification.Right;
-				#if XWT_GTK3
-				Label.Xalign = 1;
-				#else
-				Label.Xalign = Label.LineWrap ? 0 : 1;
-				#endif
-				break;
-			case Alignment.Center:
-				Label.Justify = Gtk.Justification.Center;
-				#if XWT_GTK3
-				Label.Xalign = 0.5f;
-				#else
-				Label.Xalign = Label.LineWrap ? 0 : 0.5f;
-				#endif
-				break;
+				case Alignment.Start:
+					Label.Justify = Gtk.Justification.Left;
+					break;
+				case Alignment.End:
+					Label.Justify = Gtk.Justification.Right;
+					break;
+				case Alignment.Center:
+					Label.Justify = Gtk.Justification.Center;
+					break;
 			}
+			SetAlignmentGtk ();
 		}
 		
 		public EllipsizeMode Ellipsize {
@@ -332,21 +259,14 @@ namespace Xwt.GtkBackend
 				}
 			}
 			set {
+				ToggleSizeCheckEventsForWrap (value);
 				if (value == WrapMode.None){
 					if (Label.LineWrap) {
 						Label.LineWrap = false;
-						#if !XWT_GTK3
-						Label.SizeAllocated -= HandleLabelDynamicSizeAllocate;
-						Label.SizeRequested -= HandleLabelDynamicSizeRequest;
-						#endif
 					}
 				} else {
 					if (!Label.LineWrap) {
 						Label.LineWrap = true;
-						#if !XWT_GTK3
-						Label.SizeAllocated += HandleLabelDynamicSizeAllocate;
-						Label.SizeRequested += HandleLabelDynamicSizeRequest;
-						#endif
 					}
 					switch (value) {
 					case WrapMode.Character:

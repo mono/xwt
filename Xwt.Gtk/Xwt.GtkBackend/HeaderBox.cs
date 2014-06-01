@@ -30,7 +30,7 @@ using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
-	class HeaderBox: Bin
+	class HeaderBox: HeaderBoxGtk
 	{
 		Gtk.Widget child;
 		int topMargin;
@@ -89,7 +89,6 @@ namespace Xwt.GtkBackend
 			child = widget;
 		}
 
-		#if !XWT_GTK3
 		protected override void OnSizeRequested (ref Requisition requisition)
 		{
 			if (child != null) {
@@ -101,7 +100,6 @@ namespace Xwt.GtkBackend
 				requisition.Height = 0;
 			}
 		}
-		#endif
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
@@ -118,59 +116,40 @@ namespace Xwt.GtkBackend
 				child.SizeAllocate (allocation);
 		}
 
-		#if XWT_GTK3
-		protected override bool OnDrawn (Cairo.Context cr)
-		#else
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
-		#endif
+		protected override void OnDrawn (Cairo.Context cr, Gdk.Rectangle rect)
 		{
-			#if !XWT_GTK3
-			using (Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow)) {
-			#endif
-
-				Gdk.Rectangle rect = Allocation;
-				#if XWT_GTK3
-				rect.X = rect.Y = 0;
-				#endif
-				if (BackgroundColor.HasValue) {
-					cr.Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
-					cr.SetSourceColor (BackgroundColor.Value.ToCairoColor ());
-					cr.Fill ();
-				}
-			
-				if (GradientBackround) {
-					Color gcol = Style.Background (Gtk.StateType.Normal).ToXwtValue ();
-				
-					cr.NewPath ();
-					cr.MoveTo (rect.X, rect.Y);
-					cr.RelLineTo (rect.Width, 0);
-					cr.RelLineTo (0, rect.Height);
-					cr.RelLineTo (-rect.Width, 0);
-					cr.RelLineTo (0, -rect.Height);
-					cr.ClosePath ();
-					using (var pat = new Cairo.LinearGradient (rect.X, rect.Y, rect.X, rect.Bottom)) {
-						Cairo.Color color1 = gcol.ToCairoColor ();
-						pat.AddColorStop (0, color1);
-						gcol.Light -= 0.1;
-						pat.AddColorStop (1, gcol.ToCairoColor ());
-						cr.SetSource (pat);
-						cr.FillPreserve ();
-					}
-				}
-			
-				cr.SetSourceColor (color.HasValue ? color.Value.ToCairoColor () : Style.Dark (Gtk.StateType.Normal).ToXwtValue ().ToCairoColor ());
-				cr.Rectangle (rect.X, rect.Y, rect.Width, topMargin);
-				cr.Rectangle (rect.X, rect.Y + rect.Height - bottomMargin, rect.Width, bottomMargin);
-				cr.Rectangle (rect.X, rect.Y, leftMargin, rect.Height);
-				cr.Rectangle (rect.X + rect.Width - rightMargin, rect.Y, rightMargin, rect.Height);
+			if (BackgroundColor.HasValue) {
+				cr.Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
+				cr.SetSourceColor (BackgroundColor.Value.ToCairoColor ());
 				cr.Fill ();
-			#if !XWT_GTK3
 			}
-			bool res = base.OnExposeEvent (evnt);
-			return res;
-			#else
-			return base.OnDrawn (cr);
-			#endif
+		
+			if (GradientBackround) {
+				Color gcol = Style.Background (Gtk.StateType.Normal).ToXwtValue ();
+			
+				cr.NewPath ();
+				cr.MoveTo (rect.X, rect.Y);
+				cr.RelLineTo (rect.Width, 0);
+				cr.RelLineTo (0, rect.Height);
+				cr.RelLineTo (-rect.Width, 0);
+				cr.RelLineTo (0, -rect.Height);
+				cr.ClosePath ();
+				using (var pat = new Cairo.LinearGradient (rect.X, rect.Y, rect.X, rect.Bottom)) {
+					Cairo.Color color1 = gcol.ToCairoColor ();
+					pat.AddColorStop (0, color1);
+					gcol.Light -= 0.1;
+					pat.AddColorStop (1, gcol.ToCairoColor ());
+					cr.SetSource (pat);
+					cr.FillPreserve ();
+				}
+			}
+		
+			cr.SetSourceColor (color.HasValue ? color.Value.ToCairoColor () : Style.Dark (Gtk.StateType.Normal).ToXwtValue ().ToCairoColor ());
+			cr.Rectangle (rect.X, rect.Y, rect.Width, topMargin);
+			cr.Rectangle (rect.X, rect.Y + rect.Height - bottomMargin, rect.Width, bottomMargin);
+			cr.Rectangle (rect.X, rect.Y, leftMargin, rect.Height);
+			cr.Rectangle (rect.X + rect.Width - rightMargin, rect.Y, rightMargin, rect.Height);
+			cr.Fill ();
 		}
 	}
 }

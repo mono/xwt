@@ -30,12 +30,8 @@ using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
-	public class TextEntryBackend: WidgetBackend, ITextEntryBackend
+	public partial class TextEntryBackend : WidgetBackend, ITextEntryBackend
 	{
-		#if !XWT_GTK3
-		string placeHolderText;
-		#endif
-		
 		public override void Initialize ()
 		{
 			Widget = new Gtk.Entry ();
@@ -78,35 +74,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		#if XWT_GTK3
-		public string PlaceholderText {
-			get {
-				using (GLib.Value property = Widget.GetProperty ("placeholder-text")) {
-					string result = (string)property;
-					return result;
-				}
-			}
-			set {
-				using (GLib.Value val = new GLib.Value (value)) {
-					Widget.SetProperty ("placeholder-text", val);
-				}
-			}
-		}
-		#else
-		public string PlaceholderText {
-			get { return placeHolderText; }
-			set {
-				if (placeHolderText != value) {
-					if (placeHolderText == null)
-						Widget.ExposeEvent += HandleWidgetExposeEvent;
-					else if (value == null)
-						Widget.ExposeEvent -= HandleWidgetExposeEvent;
-				}
-				placeHolderText = value;
-			}
-		}
-		#endif
-		
 		public override Color BackgroundColor {
 			get {
 				return base.BackgroundColor;
@@ -117,49 +84,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		Pango.Layout layout;
-
-		#if !XWT_GTK3
-		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
-		{
-			RenderPlaceholderText (Widget, args, placeHolderText, ref layout);
-		}
-
-		internal static void RenderPlaceholderText (Gtk.Entry entry, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
-		{
-			// The Entry's GdkWindow is the top level window onto which
-			// the frame is drawn; the actual text entry is drawn into a
-			// separate window, so we can ensure that for themes that don't
-			// respect HasFrame, we never ever allow the base frame drawing
-			// to happen
-			if (args.Event.Window == entry.GdkWindow)
-				return;
-			
-			if (entry.Text.Length > 0)
-				return;
-			
-			if (layout == null) {
-				layout = new Pango.Layout (entry.PangoContext);
-				layout.FontDescription = entry.PangoContext.FontDescription.Copy ();
-			}
-			
-			int wh, ww;
-			args.Event.Window.GetSize (out ww, out wh);
-			
-			int width, height;
-			layout.SetText (placeHolderText);
-			layout.GetPixelSize (out width, out height);
-			using (var gc = new Gdk.GC (args.Event.Window)) {
-				gc.Copy (entry.Style.TextGC (Gtk.StateType.Normal));
-				Color color_a = entry.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
-				Color color_b = entry.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
-				gc.RgbFgColor = color_b.BlendWith (color_a, 0.5).ToGtkValue ();
-
-				args.Event.Window.DrawLayout (gc, 2, (wh - height) / 2 + 1, layout);
-			}
-		}
-		#endif
-		
 		public bool ReadOnly {
 			get {
 				return !Widget.IsEditable;
@@ -347,18 +271,6 @@ namespace Xwt.GtkBackend
 				isMouseSelection = false;
 				HandleSelectionChanged ();
 			}
-		}
-
-		protected override void Dispose (bool disposing)
-		{
-			if (disposing) {
-				var l = layout;
-				if (l != null) {
-					l.Dispose ();
-					layout = null;
-				}
-			}
-			base.Dispose (disposing);
 		}
 	}
 }

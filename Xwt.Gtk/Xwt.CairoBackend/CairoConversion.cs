@@ -43,6 +43,13 @@ namespace Xwt.CairoBackend
 				(double)(color.Blue >> 8) / 255.0);
 		}
 
+		#if XWT_GTK3
+		public static Cairo.Color ToCairoColor (this Gdk.RGBA color)
+		{
+			return new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha);
+		}
+		#endif
+
 		public static void SelectFont (this Cairo.Context ctx, Font font)
 		{
 			Cairo.FontSlant slant;

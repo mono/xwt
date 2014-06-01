@@ -9,8 +9,6 @@
     <AssemblyName>Xwt.Gtk3</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -38,31 +36,24 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Private>False</Private>
       <Package>gtk-sharp-3.0</Package>
     </Reference>
     <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Private>False</Private>
       <Package>gtk-sharp-3.0</Package>
     </Reference>
     <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Private>False</Private>
       <Package>glib-sharp-3.0</Package>
     </Reference>
     <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Private>False</Private>
       <Package>gtk-sharp-3.0</Package>
     </Reference>
     <Reference Include="pango-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Private>False</Private>
       <Package>gtk-sharp-3.0</Package>
     </Reference>
     <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Private>False</Private>
       <Package>gtk-sharp-3.0</Package>
     </Reference>
     <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Private>False</Private>
       <Package>gio-sharp-3.0</Package>
     </Reference>
   </ItemGroup>
@@ -160,6 +151,15 @@
     <Compile Include="Xwt.GtkBackend\Gtk3Extensions.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk3ViewPort.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk3DrawingArea.cs" />
+    <Compile Include="Xwt.GtkBackend\WidgetBackendGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\TextEntryBackendGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\PasswordEntryBackendGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\LabelBackendGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\ButtonBackendGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\SpinButtonBackendGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\BoxBackendGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\CanvasBackendGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\HeaderBoxGtk3.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

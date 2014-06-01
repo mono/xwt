@@ -64,17 +64,12 @@ namespace Xwt.GtkBackend
 				if (Widget.SetAllocation (w, rects[n]))
 					changed = true;
 			}
-			#if XWT_GTK3
-			// since we have no SizeRequest event, we must always queue up for resize
 			if (changed)
-			#else
-			if (changed && !Widget.IsReallocating)
-			#endif
-				Widget.QueueResize ();
+				Widget.QueueResizeIfRequired ();
 		}
 	}
 	
-	class CustomContainer: Gtk.Container, IGtkContainer
+	partial class CustomContainer: Gtk.Container, IGtkContainer
 	{
 		public BoxBackend Backend;
 		public bool IsReallocating;
@@ -130,91 +125,23 @@ namespace Xwt.GtkBackend
 			QueueResize ();
 		}
 
-		#if XWT_GTK3
-		protected override void OnUnrealized ()
+		protected void OnReallocate ()
 		{
-			// force reallocation on next realization, since allocation may be lost
-			IsReallocating = false;
-			base.OnUnrealized ();
+			((IWidgetSurface)Backend.Frontend).Reallocate ();
 		}
 
-		protected override void OnRealized ()
+		protected Gtk.Requisition OnGetRequisition (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			// force reallocation, if unrealized previously
-			if (!IsReallocating) {
-				try {
-					((IWidgetSurface)Backend.Frontend).Reallocate ();
-				} catch {
-					IsReallocating = false;
-				}
-			}
-			base.OnRealized ();
+			var size = Backend.Frontend.Surface.GetPreferredSize (widthConstraint, heightConstraint, true);
+			return size.ToGtkRequisition ();
 		}
-
-		protected override Gtk.SizeRequestMode OnGetRequestMode ()
-		{
-			// dirty fix: unwrapped labels report fixed sizes, forcing parents to fixed mode
-			//            -> report always width_for_height, since we don't support angles
-			return Gtk.SizeRequestMode.WidthForHeight;
-		}
-
-		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
-		{
-			// containers need initial width in heigt_for_width mode
-			// dirty fix: do not constrain width on first allocation 
-			var force_width = SizeConstraint.Unconstrained;
-			if (IsReallocating)
-				force_width = SizeConstraint.WithSize (Allocation.Width);
-			var size = Backend.Frontend.Surface.GetPreferredSize (force_width, SizeConstraint.Unconstrained, true);
-			if (size.Height < this.HeightRequest)
-				minimum_height = natural_height = this.HeightRequest;
-			else
-				minimum_height = natural_height = (int)size.Height;
-		}
-
-		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
-		{
-			// containers need initial height in width_for_height mode
-			// dirty fix: do not constrain height on first allocation
-			var force_height = SizeConstraint.Unconstrained;
-			if (IsReallocating)
-				force_height = SizeConstraint.WithSize (Allocation.Width);
-			var size = Backend.Frontend.Surface.GetPreferredSize (SizeConstraint.Unconstrained, force_height, true);
-			if (size.Height < this.WidthRequest)
-				minimum_width = natural_width = this.WidthRequest;
-			else
-				minimum_width = natural_width = (int)size.Width;
-		}
-
-		protected override void OnGetPreferredHeightForWidth (int width, out int minimum_height, out int natural_height)
-		{
-			var size = Backend.Frontend.Surface.GetPreferredSize (SizeConstraint.WithSize (width),
-			                                                      SizeConstraint.Unconstrained,
-			                                                      true);
-			if (size.Height < this.HeightRequest)
-				minimum_height = natural_height = this.HeightRequest;
-			else
-				minimum_height = natural_height = (int)size.Height;
-		}
-
-		protected override void OnGetPreferredWidthForHeight (int height, out int minimum_width, out int natural_width)
-		{
-			var size = Backend.Frontend.Surface.GetPreferredSize (SizeConstraint.Unconstrained,
-			                                                      SizeConstraint.WithSize (height),
-			                                                      true);
-			if (size.Height < this.WidthRequest)
-				minimum_width = natural_width = this.WidthRequest;
-			else
-				minimum_width = natural_width = (int)size.Width;
-		}
-		#endif
 
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
 			try {
 				IsReallocating = true;
-				((IWidgetSurface)Backend.Frontend).Reallocate ();
+				OnReallocate ();
 			} catch {
 				IsReallocating = false;
 			}

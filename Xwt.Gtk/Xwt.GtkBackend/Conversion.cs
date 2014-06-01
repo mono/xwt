@@ -119,6 +119,14 @@ namespace Xwt.GtkBackend
 				m |= ModifierKeys.Command;
 			return m;
 		}
+
+		public static Gtk.Requisition ToGtkRequisition (this Size size)
+		{
+			var req = new Gtk.Requisition ();
+			req.Height = (int)size.Height;
+			req.Width = (int)size.Width;
+			return req;
+		}
 	}
 }
 

@@ -32,7 +32,7 @@ using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
-	public class ButtonBackend: WidgetBackend, IButtonBackend
+	public partial class ButtonBackend: WidgetBackend, IButtonBackend
 	{
 		protected bool ignoreClickEvents;
 		ImageDescription image;
@@ -187,25 +187,11 @@ namespace Xwt.GtkBackend
 				return;
 			this.miniMode = miniMode;
 			if (miniMode) {
-				#if !XWT_GTK3
-				Widget.ExposeEvent += HandleExposeEvent;
-				#else
-				Widget.Drawn += HandleDrawn;
-				#endif
 				Widget.SizeAllocated += HandleSizeAllocated;
-				#if !XWT_GTK3
-				Widget.SizeRequested += HandleSizeRequested;
-				#endif
 			}
+			SetMiniModeGtk(miniMode);
 			Widget.QueueResize ();
 		}
-
-		#if !XWT_GTK3
-		void HandleSizeRequested (object o, Gtk.SizeRequestedArgs args)
-		{
-			args.Requisition = Widget.Child.SizeRequest ();
-		}
-		#endif
 
 		[GLib.ConnectBefore]
 		void HandleSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
@@ -213,26 +199,6 @@ namespace Xwt.GtkBackend
 			Widget.Child.SizeAllocate (args.Allocation);
 			args.RetVal = true;
 		}
-
-		#if XWT_GTK3
-		[GLib.ConnectBefore]
-		void HandleDrawn (object o, Gtk.DrawnArgs args)
-		{
-			var gc = Widget.Style.Background (Widget.State);
-			args.Cr.Rectangle (0, 0, Widget.Allocation.Width, Widget.Allocation.Height);
-			args.Cr.SetSourceColor (gc.ToCairoColor ());
-			args.Cr.Fill ();
-		}
-		#else
-		[GLib.ConnectBefore]
-		void HandleExposeEvent (object o, Gtk.ExposeEventArgs args)
-		{
-			var gc = Widget.Style.BackgroundGC (Widget.State);
-			Widget.GdkWindow.DrawRectangle (gc, true, Widget.Allocation);
-			Widget.PropagateExpose (Widget.Child, args.Event);
-			args.RetVal = true;
-		}
-		#endif
 	}
 }
 

@@ -4,12 +4,8 @@ using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
-	public class PasswordEntryBackend : WidgetBackend, IPasswordEntryBackend
+	public partial class PasswordEntryBackend : WidgetBackend, IPasswordEntryBackend
 	{
-		#if !XWT_GTK3
-		string placeHolderText;
-		#endif
-
 		public override void Initialize ()
 		{
 			Widget = new Gtk.Entry ();
@@ -42,35 +38,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		#if XWT_GTK3
-		public string PlaceholderText {
-			get {
-				using (GLib.Value property = Widget.GetProperty ("placeholder-text")) {
-					string result = (string)property;
-					return result;
-				}
-			}
-			set {
-				using (GLib.Value val = new GLib.Value (value)) {
-					Widget.SetProperty ("placeholder-text", val);
-				}
-			}
-		}
-		#else
-		public string PlaceholderText {
-			get { return placeHolderText; }
-			set {
-				if (placeHolderText != value) {
-					if (placeHolderText == null)
-						Widget.ExposeEvent += HandleWidgetExposeEvent;
-					else if (value == null)
-						Widget.ExposeEvent -= HandleWidgetExposeEvent;
-				}
-				placeHolderText = value;
-			}
-		}
-		#endif
-
 		public override Color BackgroundColor {
 			get {
 				return base.BackgroundColor;
@@ -80,15 +47,6 @@ namespace Xwt.GtkBackend
 				Widget.ModifyBase (Gtk.StateType.Normal, value.ToGtkValue ());
 			}
 		}
-
-		Pango.Layout layout;
-
-		#if !XWT_GTK3
-		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
-		{
-			TextEntryBackend.RenderPlaceholderText (Widget, args, placeHolderText, ref layout);
-		}
-		#endif
 
 		public override void EnableEvent (object eventId)
 		{
@@ -124,18 +82,6 @@ namespace Xwt.GtkBackend
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnActivated ();
 			});
-		}
-
-		protected override void Dispose (bool disposing)
-		{
-			if (disposing) {
-				var l = layout;
-				if (l != null) {
-					l.Dispose ();
-					layout = null;
-				}
-			}
-			base.Dispose (disposing);
 		}
 	}
 }

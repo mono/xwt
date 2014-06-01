@@ -93,7 +93,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 	
-	class CustomCanvas: Gtk.EventBox
+	partial class CustomCanvas: Gtk.EventBox
 	{
 		public CanvasBackend Backend;
 		public ICanvasEventSink EventSink;
@@ -124,47 +124,6 @@ namespace Xwt.GtkBackend
 			children.Remove (widget);
 			widget.Unparent ();
 		}
-
-		#if XWT_GTK3
-		protected override Gtk.SizeRequestMode OnGetRequestMode ()
-		{
-			// always in fixed mode, since we have fixed width-height relation
-			return (Gtk.SizeRequestMode)2;
-		}
-
-		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
-		{
-			if (HeightRequest > 0)
-				minimum_height = natural_height = HeightRequest;
-			else {
-				minimum_height = natural_height = (Backend.Frontend.MinHeight > 0 ? (int) Backend.Frontend.MinHeight : 0);
-				foreach (var cr in children.Where (c => c.Key.Visible)) {
-					minimum_height = (int) Math.Max (minimum_height, cr.Value.Y + cr.Value.Height);
-					natural_height = (int) Math.Max (natural_height, cr.Value.Y + cr.Value.Height);
-				}
-			}
-		}
-
-		protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
-		{
-			if (WidthRequest > 0)
-				minimum_width = natural_width = WidthRequest;
-			else {
-				minimum_width = natural_width = (Backend.Frontend.MinWidth > 0 ? (int)Backend.Frontend.MinWidth : 0);
-				foreach (var cr in children.Where (c => c.Key.Visible)) {
-					minimum_width = (int) Math.Max (minimum_width, cr.Value.X + cr.Value.Height);
-					natural_width = (int) Math.Max (natural_width, cr.Value.X + cr.Value.Height);
-				}
-			}
-		}
-		#else
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
-		{
-			base.OnSizeRequested (ref requisition);
-			foreach (var cr in children.ToArray ())
-				cr.Key.SizeRequest ();
-		}
-		#endif
 		
 		protected override void OnUnrealized ()
 		{
@@ -197,27 +156,13 @@ namespace Xwt.GtkBackend
 				callback (c);
 		}
 
-		#if XWT_GTK3
-		protected override bool OnDrawn (Cairo.Context cr)
-		#else
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
-		#endif
+		protected void OnDraw (Rectangle dirtyRect)
 		{
 			Backend.ApplicationContext.InvokeUserCode (delegate {
 				using (var context = CreateContext ()) {
-					#if XWT_GTK3
-					var a = Allocation;
-					#else
-					var a = evnt.Area;
-					#endif
-					EventSink.OnDraw (context, new Rectangle (a.X, a.Y, a.Width, a.Height));
+					EventSink.OnDraw (context, dirtyRect);
 				}
 			});
-			#if XWT_GTK3
-			return base.OnDrawn (cr);
-			#else
-			return base.OnExposeEvent (evnt);
-			#endif
 		}
 		
 		public CairoContextBackend CreateContext ()
