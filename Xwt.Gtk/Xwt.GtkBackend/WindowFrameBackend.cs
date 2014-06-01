@@ -27,6 +27,7 @@ using System;
 using Xwt.Backends;
 
 using Xwt.Drawing;
+using System.Linq;
 
 namespace Xwt.GtkBackend
 {
@@ -235,7 +236,7 @@ namespace Xwt.GtkBackend
 
 		public void SetIcon(ImageDescription icon)
 		{
-			// TODO
+			Window.IconList = ((GtkImage)icon.Backend).Frames.Select (f => f.Pixbuf).ToArray ();
 		}
 		#endregion
 
