@@ -29,8 +29,27 @@ namespace Xwt.Backends
 {
 	public interface ICellViewFrontend
 	{
-		void Initialize (ICellDataSource source);
+		void AttachBackend (Widget container, ICellViewBackend backend);
+		void DetachBackend ();
+		ICellViewEventSink Load (ICellDataSource dataSource);
+		void Unload ();
 		bool Visible { get; }
+	}
+
+	public interface ICellViewProvider
+	{
+		ICellViewBackend CreateBackend (CellView cellView);
+	}
+
+	public interface ICellViewEventSink
+	{
+		void OnKeyPressed (KeyEventArgs args);
+		void OnKeyReleased (KeyEventArgs args);
+		void OnMouseEntered ();
+		void OnMouseExited ();
+		void OnMouseMoved (MouseMovedEventArgs args);
+		void OnButtonPressed (ButtonEventArgs args);
+		void OnButtonReleased (ButtonEventArgs args);
 	}
 }
 

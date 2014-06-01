@@ -203,7 +203,6 @@ namespace Xwt.Drawing
 		/// The rotation of the axes takes places after any existing transformation of user space.
 		/// The rotation direction for positive angles is from the positive X axis toward the positive Y axis.
 		/// </remarks>
-		/// </summary>
 		public void Rotate (double angle)
 		{
 			handler.Rotate (Backend, angle);

@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt</RootNamespace>
@@ -40,6 +38,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Xwt.Backends\IPasswordEntryBackend.cs" />
     <Compile Include="Xwt\PasswordEntry.cs" />
+    <Compile Include="Xwt\PreviewTextEventArgs.cs" />
     <Compile Include="Xwt\Widget.cs" />
     <Compile Include="Xwt\Window.cs" />
     <Compile Include="Xwt\Button.cs" />
@@ -178,8 +177,6 @@
     <Compile Include="Xwt.Backends\ISeparatorMenuItemBackend.cs" />
     <Compile Include="Xwt\EllipsizeMode.cs" />
     <Compile Include="Xwt\RowDropPosition.cs" />
-    <Compile Include="Xwt\ScrollAdjustment.cs" />
-    <Compile Include="Xwt.Backends\IScrollAdjustmentBackend.cs" />
     <Compile Include="Xwt\OpenFileDialog.cs" />
     <Compile Include="Xwt\SaveFileDialog.cs" />
     <Compile Include="Xwt\FileDialog.cs" />
@@ -320,6 +317,15 @@
     <Compile Include="Xwt\IDataStore.cs" />
     <Compile Include="Xwt.Backends\TreeDataSource.cs" />
     <Compile Include="Xwt\TreeItemTemplate.cs" />
+    <Compile Include="Xwt.Backends\IScrollAdjustmentBackend.cs" />
+    <Compile Include="Xwt\ScrollAdjustment.cs" />
+    <Compile Include="Xwt\ScrollControl.cs" />
+    <Compile Include="Xwt.Backends\IScrollControlBackend.cs" />
+    <Compile Include="Xwt.Backends\ICellViewBackend.cs" />
+    <Compile Include="Xwt.Backends\EventHost.cs" />
+    <Compile Include="Xwt.Backends\ICanvasCellViewBackend.cs" />
+    <Compile Include="Xwt\SearchTextEntry.cs" />
+    <Compile Include="Xwt.Backends\ISearchTextEntryBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

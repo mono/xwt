@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.GtkBackend</RootNamespace>
@@ -129,6 +127,11 @@
     <Compile Include="Xwt.GtkBackend\GtkKeyboardHandler.cs" />
     <Compile Include="Xwt.GtkBackend\Conversion.cs" />
     <Compile Include="Xwt.GtkBackend\GtkPlatformBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ScrollControlBackend.cs">
+      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
+    </Compile>
+    <Compile Include="Xwt.GtkBackend.CellViews\CellViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SearchTextEntryBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -142,5 +145,22 @@
     <None Include="Xwt.Gtk.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="icons\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icons\light\searchbox-clear-16.png">
+      <LogicalName>searchbox-clear-light-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\light\searchbox-clear-16%402x.png">
+      <LogicalName>searchbox-clear-light-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\light\searchbox-search-16%402x.png">
+      <LogicalName>searchbox-search-light-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\light\searchbox-search-16.png">
+      <LogicalName>searchbox-search-light-16.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

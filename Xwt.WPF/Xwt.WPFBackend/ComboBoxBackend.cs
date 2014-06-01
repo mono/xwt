@@ -144,12 +144,12 @@ namespace Xwt.WPFBackend
 				spFactory.SetValue (StackPanel.OrientationProperty, WindowsOrientation.Horizontal);
 
 				foreach (var view in views) {
-					spFactory.AppendChild (CellUtil.CreateBoundCellRenderer (view));
+                    spFactory.AppendChild(CellUtil.CreateBoundCellRenderer(Frontend, view));
 				}
 
 				root = spFactory;
 			} else {
-				root = CellUtil.CreateBoundCellRenderer (views [0]);
+                root = CellUtil.CreateBoundCellRenderer(Frontend, views[0]);
 			}
 
 			template.VisualTree = root;

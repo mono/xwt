@@ -27,12 +27,20 @@
 using System;
 using Xwt.Backends;
 using Gtk;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Xwt.GtkBackend
 {
 	public class TableViewBackend: WidgetBackend, ICellRendererTarget
 	{
+		Dictionary<CellView,CellInfo> cellViews = new Dictionary<CellView, CellInfo> ();
+
+		class CellInfo {
+			public CellViewBackend Renderer;
+			public Gtk.TreeViewColumn Column;
+		}
+
 		public TableViewBackend ()
 		{
 			var sw = new Gtk.ScrolledWindow ();
@@ -78,7 +86,17 @@ namespace Xwt.GtkBackend
 				ScrolledWindow.HscrollbarPolicy = value.ToGtkValue ();
 			}
 		}
-		
+
+		public IScrollControlBackend CreateVerticalScrollControl ()
+		{
+			return new ScrollControltBackend (ScrolledWindow.Vadjustment);
+		}
+
+		public IScrollControlBackend CreateHorizontalScrollControl ()
+		{
+			return new ScrollControltBackend (ScrolledWindow.Hadjustment);
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
@@ -124,8 +142,14 @@ namespace Xwt.GtkBackend
 		
 		void MapColumn (ListViewColumn col, Gtk.TreeViewColumn tc)
 		{
+			foreach (var k in cellViews.Where (e => e.Value.Column == tc).Select (e => e.Key).ToArray ())
+				cellViews.Remove (k);
 			foreach (var v in col.Views) {
-				CellUtil.CreateCellRenderer (ApplicationContext, this, tc, v, Widget.Model);
+				var r = CellUtil.CreateCellRenderer (ApplicationContext, Frontend, this, tc, v);
+				cellViews [v] = new CellInfo {
+					Column = tc,
+					Renderer = r
+				};
 			}
 		}
 		
@@ -171,6 +195,16 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		protected Gtk.CellRenderer GetCellRenderer (CellView cell)
+		{
+			return cellViews [cell].Renderer.CellRenderer;
+		}
+
+		protected Gtk.TreeViewColumn GetCellColumn (CellView cell)
+		{
+			return cellViews [cell].Column;
+		}
+
 		#region ICellRendererTarget implementation
 		public void PackStart (object target, Gtk.CellRenderer cr, bool expand)
 		{
@@ -190,6 +224,97 @@ namespace Xwt.GtkBackend
 		public void SetCellDataFunc (object target, Gtk.CellRenderer cr, Gtk.CellLayoutDataFunc dataFunc)
 		{
 			((Gtk.TreeViewColumn)target).SetCellDataFunc (cr, dataFunc);
+		}
+
+		Rectangle ICellRendererTarget.GetCellBounds (object target, Gtk.CellRenderer cra, Gtk.TreeIter iter)
+		{
+			var col = (TreeViewColumn)target;
+			var path = Widget.Model.GetPath (iter);
+
+			Gdk.Rectangle rect = Widget.GetCellArea (path, col);
+
+			int x = 0;
+			int th = 0;
+			CellRenderer[] renderers = col.CellRenderers;
+			foreach (CellRenderer cr in renderers) {
+				int sp, wi, he, xo, yo;
+				col.CellGetSize (rect, out xo, out yo, out wi, out he);
+				col.CellGetPosition (cr, out sp, out wi);
+				Gdk.Rectangle crect = new Gdk.Rectangle (x, rect.Y, wi, rect.Height);
+				cr.GetSize (Widget, ref crect, out xo, out yo, out wi, out he);
+				if (cr == cra) {
+					Widget.ConvertBinWindowToWidgetCoords (rect.X + x, rect.Y, out xo, out yo);
+					// There seems to be a 1px vertical padding
+					yo++; rect.Height -= 2;
+					return new Rectangle (xo, yo + 1, wi, rect.Height - 2);
+				}
+				if (cr != renderers [renderers.Length - 1])
+					x += crect.Width + col.Spacing + 1;
+				else
+					x += wi + 1;
+				if (he > th) th = he;
+			}
+			return Rectangle.Zero;
+		}
+
+		Rectangle ICellRendererTarget.GetCellBackgroundBounds (object target, Gtk.CellRenderer cr, Gtk.TreeIter iter)
+		{
+			var col = (TreeViewColumn)target;
+			var path = Widget.Model.GetPath (iter);
+			var a = Widget.GetBackgroundArea (path, (TreeViewColumn)target);
+			int x, y, w, h;
+			col.CellGetSize (a, out x, out y, out w, out h);
+			return new Rectangle (a.X + x, a.Y + y, w, h);
+		}
+
+		public virtual void SetCurrentEventRow (string path)
+		{
+		}
+
+		Gtk.Widget ICellRendererTarget.EventRootWidget {
+			get { return Widget; }
+		}
+
+		Gtk.TreeModel ICellRendererTarget.Model {
+			get { return Widget.Model; }
+		}
+
+		Gtk.TreeIter ICellRendererTarget.PressedIter { get; set; }
+
+		CellViewBackend ICellRendererTarget.PressedCell { get; set; }
+
+
+		public bool GetCellPosition (Gtk.CellRenderer r, int ex, int ey, out int cx, out int cy, out Gtk.TreeIter it)
+		{
+			Gtk.TreeViewColumn col;
+			Gtk.TreePath path;
+			int cellx, celly;
+			cx = cy = 0;
+			it = Gtk.TreeIter.Zero;
+
+			if (!Widget.GetPathAtPos (ex, ey, out path, out col, out cellx, out celly))
+				return false;
+
+			if (!Widget.Model.GetIterFromString (out it, path.ToString ()))
+				return false;
+
+			int sp, w;
+			if (col.CellGetPosition (r, out sp, out w)) {
+				if (cellx >= sp && cellx < sp + w) {
+					Widget.ConvertBinWindowToWidgetCoords (ex, ey, out cx, out cy);
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void QueueDraw (object target, Gtk.TreeIter iter)
+		{
+			var p = Widget.Model.GetPath (iter);
+			var r = Widget.GetBackgroundArea (p, (Gtk.TreeViewColumn)target);
+			int x, y;
+			Widget.ConvertBinWindowToWidgetCoords (r.X, r.Y, out x, out y);
+			Widget.QueueDrawArea (x, y, r.Width, r.Height);
 		}
 
 		#endregion

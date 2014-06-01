@@ -70,7 +70,7 @@ namespace Xwt
 		Point location;
 		Size size;
 		bool pendingReallocation;
-        Image icon;
+		Image icon;
 		WindowFrame transientFor;
 		
 		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
@@ -226,10 +226,10 @@ namespace Xwt
 			set { Backend.Title = value; }
 		}
 
-        public Image Icon {
-            get { return icon; }
+		public Image Icon {
+			get { return icon; }
 			set { icon = value; Backend.SetIcon (icon != null ? icon.ImageDescription : ImageDescription.Null); }
-        }
+		}
 		
 		public bool Decorated {
 			get { return Backend.Decorated; }
@@ -340,7 +340,7 @@ namespace Xwt
 		/// <summary>
 		/// Called to check if the window can be closed
 		/// </summary>
-		/// <returns><c>true<c> if the window can be closed, <c>false</c> otherwise</returns>
+		/// <returns><c>true</c> if the window can be closed, <c>false</c> otherwise</returns>
 		protected virtual bool OnCloseRequested ()
 		{
 			if (closeRequested == null)

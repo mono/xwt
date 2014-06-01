@@ -10,6 +10,6 @@
 		in all three situations.
 	-->
         <PropertyGroup>
-		<ReferencePath>..\..\monomac\src;..\..\..\..\..\monodevelop\main\external\monomac\src;..\..\..\..\..\monomac\src</ReferencePath>
+		<ReferencePath>..\..\monomac\src;..\..\..\..\..\monodevelop\main\external\monomac\src;..\..\..\..\..\monomac\src;..\..\..\..\..\..\..\monomac\src</ReferencePath>
 	</PropertyGroup>
 </Project>

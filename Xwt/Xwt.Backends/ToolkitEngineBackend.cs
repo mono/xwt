@@ -195,7 +195,7 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The backend for context.</returns>
 		/// <param name="nativeContext">The native context.</param>
-		public virtual object GetBackendForContext (object nativeContext)
+		public virtual object GetBackendForContext (object nativeWidget, object nativeContext)
 		{
 			return nativeContext;
 		}
@@ -206,7 +206,7 @@ namespace Xwt.Backends
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="Xwt.Backends.EngineBackend"/> handles size negotiation on its own
+		/// Gets a value indicating whether this <see cref="ToolkitEngineBackend" /> handles size negotiation on its own
 		/// </summary>
 		/// <value>
 		/// <c>true</c> if the engine backend handles size negotiation; otherwise, <c>false</c>.

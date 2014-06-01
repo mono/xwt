@@ -90,16 +90,59 @@ namespace Xwt.WPFBackend
 			set { TextBox.ShowFrame = value; }
 		}
 
-		// TODO
+		public int CursorPosition {
+			get {
+				return TextBox.SelectionStart;
+			}
+			set {
+				TextBox.SelectionStart = value;
+			}
+		}
+
+		public int SelectionStart {
+			get {
+				return TextBox.SelectionStart;
+			}
+			set {
+				TextBox.Focus();
+				TextBox.Select(value, SelectionLength);
+			}
+		}
+
+		public int SelectionLength {
+			get {
+				return TextBox.SelectionLength;
+			}
+			set {
+				TextBox.Focus();
+				TextBox.Select(SelectionStart, value);
+			}
+		}
+
+		public string SelectedText {
+			get {
+				return TextBox.SelectedText;
+			}
+			set {
+				TextBox.SelectedText = value;
+			}
+		}
+
 		public bool MultiLine {
 			get { return multiline; }
-			set
-			{
-				multiline = value;
-				if (multiline)
-					TextBox.VerticalContentAlignment = VerticalAlignment.Top;
-				else
-					TextBox.VerticalContentAlignment = VerticalAlignment.Center;
+			set {
+				if (multiline != value) {
+					multiline = value;
+					if (multiline) {
+						TextBox.VerticalContentAlignment = VerticalAlignment.Top;
+						TextBox.AcceptsReturn = true;
+						TextBox.TextWrapping = TextWrapping.Wrap;
+					} else {
+						TextBox.VerticalContentAlignment = VerticalAlignment.Center;
+						TextBox.AcceptsReturn = false;
+						TextBox.TextWrapping = TextWrapping.NoWrap;
+					}
+				}
 			}
 		}
 
@@ -118,6 +161,9 @@ namespace Xwt.WPFBackend
 					case TextEntryEvent.Activated:
 						TextBox.KeyDown += OnActivated;
 						break;
+					case TextEntryEvent.SelectionChanged:
+						TextBox.SelectionChanged += OnSelectionChanged;
+						break;
 				}
 			}
 		}
@@ -135,6 +181,9 @@ namespace Xwt.WPFBackend
 						break;
 					case TextEntryEvent.Activated:
 						TextBox.KeyDown -= OnActivated;
+						break;
+					case TextEntryEvent.SelectionChanged:
+						TextBox.SelectionChanged -= OnSelectionChanged;
 						break;
 				}
 			}
@@ -158,6 +207,11 @@ namespace Xwt.WPFBackend
 		private void OnTextChanged (object s, TextChangedEventArgs e)
 		{
 			Context.InvokeUserCode (EventSink.OnChanged);
+		}
+
+		private void OnSelectionChanged (object s, EventArgs e)
+		{
+			Context.InvokeUserCode (EventSink.OnSelectionChanged);
 		}
 	}
 }

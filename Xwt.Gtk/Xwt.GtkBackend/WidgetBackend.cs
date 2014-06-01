@@ -161,7 +161,7 @@ namespace Xwt.GtkBackend
 			get { return Widget.IsFocus; }
 		}
 		
-		public void SetFocus ()
+		public virtual void SetFocus ()
 		{
 			Widget.IsFocus = true;
 //			SetFocus (Widget);
@@ -217,6 +217,12 @@ namespace Xwt.GtkBackend
 					ctype = Gdk.CursorType.SbHDoubleArrow;
 				else if (cursor == CursorType.ResizeUpDown)
 					ctype = Gdk.CursorType.SbVDoubleArrow;
+				else if (cursor == CursorType.Move)
+					ctype = Gdk.CursorType.Fleur;
+				else if (cursor == CursorType.Wait)
+					ctype = Gdk.CursorType.Watch;
+				else if (cursor == CursorType.Help)
+					ctype = Gdk.CursorType.QuestionArrow;
 				else
 					ctype = Gdk.CursorType.Arrow;
 				

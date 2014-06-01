@@ -25,24 +25,56 @@
 // THE SOFTWARE.
 using System;
 using Xwt;
+using Xwt.Drawing;
 
 namespace Samples
 {
 	public class WidgetEvents: VBox
 	{
+		Label la = new Label ("Move the mouse here");
+		Label res = new Label ("");
+		bool inside = false;
+		bool moved = false;
+
 		public WidgetEvents ()
 		{
-			Label la = new Label ("Move the mouse here");
 			PackStart (la);
-			Label res = new Label ();
 			PackStart (res);
+
 			la.MouseEntered += delegate {
-				res.Text = "Mouse is inside the label";
+				inside = true;
+				Application.TimeoutInvoke (100, CheckMouse);
 			};
 			la.MouseExited += delegate {
-				res.Text = "";
+				inside = false;
+			};
+			la.MouseMoved += delegate {
+				moved = true;
 			};
 		}
+
+		bool CheckMouse ()
+		{
+			if (!inside) {
+				res.Text = "Mouse has Exited label";
+				la.TextColor = Colors.Black;
+				la.BackgroundColor = Colors.LightGray;
+				la.Text = "Move the mouse here";
+			} else {
+				res.Text = "Mouse has Entered label";
+				la.TextColor = Colors.White;
+				if (moved) {
+					la.BackgroundColor = Colors.Green;
+					la.Text = "Mouse is moving";
+					moved = false;	// reset and check next time
+				} else {
+					la.BackgroundColor = Colors.Red;
+					la.Text = "Mouse has stopped";
+				}
+			}
+			return inside;
+		}
+
 	}
 }
 

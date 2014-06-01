@@ -34,8 +34,6 @@ namespace Xwt.Mac
 {
 	class ImageTableCell: NSImageCell, ICellRenderer
 	{
-		IImageCellViewFrontend cellView;
-		
 		public ImageTableCell ()
 		{
 		}
@@ -44,16 +42,17 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public ImageTableCell (IImageCellViewFrontend cellView)
-		{
-			this.cellView = cellView;
+		IImageCellViewFrontend Frontend {
+			get { return (IImageCellViewFrontend) Backend.Frontend; }
 		}
-		
+
+		public CellViewBackend Backend { get; set; }
+
 		public CompositeCell CellContainer { get; set; }
 
 		public void Fill ()
 		{
-			ObjectValue = cellView.Image.ToImageDescription ().ToNSImage ();
+			ObjectValue = Frontend.Image.ToImageDescription ().ToNSImage ();
 		}
 		
 		public override System.Drawing.SizeF CellSize {
@@ -66,14 +65,10 @@ namespace Xwt.Mac
 			}
 		}
 		
-		public ICellViewFrontend Frontend {
-			get { return cellView; }
-		}
-
 		public void CopyFrom (object other)
 		{
 			var ob = (ImageTableCell)other;
-			cellView = ob.cellView;
+			Backend = ob.Backend;
 		}
 	}
 }

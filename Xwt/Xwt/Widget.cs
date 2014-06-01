@@ -72,13 +72,14 @@ namespace Xwt
 		EventHandler dragLeave;
 		EventHandler<KeyEventArgs> keyPressed;
 		EventHandler<KeyEventArgs> keyReleased;
+		EventHandler<PreviewTextInputEventArgs> previewTextInput;
 		EventHandler mouseEntered;
 		EventHandler mouseExited;
 		EventHandler<ButtonEventArgs> buttonPressed;
 		EventHandler<ButtonEventArgs> buttonReleased;
 		EventHandler<MouseMovedEventArgs> mouseMoved;
 		EventHandler boundsChanged;
-        EventHandler<MouseScrolledEventArgs> mouseScrolled;
+		EventHandler<MouseScrolledEventArgs> mouseScrolled;
 		
 		EventHandler gotFocus;
 		EventHandler lostFocus;
@@ -166,6 +167,11 @@ namespace Xwt
 			{
 				Parent.OnKeyReleased (args);
 			}
+
+			void IWidgetEventSink.OnPreviewTextInput (PreviewTextInputEventArgs args)
+			{
+				Parent.OnPreviewTextInput (args);
+			}
 			
 			Size IWidgetEventSink.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 			{
@@ -224,10 +230,10 @@ namespace Xwt
 				Parent.OnBoundsChanged ();
 			}
 
-            void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
-            {
-                Parent.OnMouseScrolled(args);
-            }
+			void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
+			{
+				Parent.OnMouseScrolled(args);
+			}
 		}
 		
 		public Widget ()
@@ -245,6 +251,7 @@ namespace Xwt
 			MapEvent (WidgetEvent.DragLeave, typeof(Widget), "OnDragLeave");
 			MapEvent (WidgetEvent.KeyPressed, typeof(Widget), "OnKeyPressed");
 			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyReleased");
+			MapEvent (WidgetEvent.PreviewTextInput, typeof(Widget), "OnPreviewTextInput");
 			MapEvent (WidgetEvent.GotFocus, typeof(Widget), "OnGotFocus");
 			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
 			MapEvent (WidgetEvent.MouseEntered, typeof(Widget), "OnMouseEntered");
@@ -818,6 +825,12 @@ namespace Xwt
 			if (keyReleased != null)
 				keyReleased (this, args);
 		}
+
+		internal protected virtual void OnPreviewTextInput (PreviewTextInputEventArgs args)
+		{
+			if (previewTextInput != null)
+				previewTextInput (this, args);
+		}
 		
 		internal protected virtual void OnGotFocus (EventArgs args)
 		{
@@ -1368,7 +1381,7 @@ namespace Xwt
 		}
 
 		/// <summary>
-		/// Raised when the mouse is moved over the widget in a drag&drop operation
+		/// Raised when the mouse is moved over the widget in a drag&amp;drop operation
 		/// </summary>
 		/// <remarks>
 		/// The subscriber of the event should set the value of AllowedAction in the
@@ -1392,7 +1405,7 @@ namespace Xwt
 		}
 		
 		/// <summary>
-		/// Raised when the mouse is moved over the widget in a drag&drop operation
+		/// Raised when the mouse is moved over the widget in a drag&amp;drop operation
 		/// </summary>
 		/// <remarks>
 		/// The subscriber of the event should set the value of AllowedAction in the
@@ -1400,7 +1413,7 @@ namespace Xwt
 		/// the action will be determined by the result of the DragDropCheck event.
 		/// 
 		/// This event provides information about the actual data that is going
-		/// to be dropped. Getting the data may be inneficient in some cross-process drag&drop scenarios,
+		/// to be dropped. Getting the data may be inefficient in some cross-process drag&amp;drop scenarios,
 		/// so if you don't need the actual data to decide the allowed drop operation, 
 		/// and knowing the type of the data is enough, then the DragOverCheck event is a better option.
 		/// </remarks>
@@ -1488,6 +1501,17 @@ namespace Xwt
 			remove {
 				keyReleased -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.KeyReleased, keyReleased);
+			}
+		}
+
+		public event EventHandler<PreviewTextInputEventArgs> PreviewTextInput {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.PreviewTextInput, previewTextInput);
+				previewTextInput += value;
+			}
+			remove {
+				previewTextInput -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.PreviewTextInput, previewTextInput);
 			}
 		}
 		

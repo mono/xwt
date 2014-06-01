@@ -3,6 +3,9 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Jan Strnadek <jan.strnadek@gmail.com>
+//              - GetAtRowPosition
+//              - NSTableView for mouse events
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -39,7 +42,7 @@ namespace Xwt.Mac
 
 		protected override NSTableView CreateView ()
 		{
-			return new NSTableView ();
+			return new NSTableViewBackend (EventSink, ApplicationContext);
 		}
 
 		protected override string SelectionChangeEventName {
@@ -85,6 +88,17 @@ namespace Xwt.Mac
 
 		// TODO
 		public bool BorderVisible { get; set; }
+
+
+		public int GetRowAtPosition (Point p)
+		{
+			return Table.GetRow (new System.Drawing.PointF ((float)p.X, (float)p.Y));
+		}
+
+		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
+		{
+			return Rectangle.Zero;
+		}
 	}
 	
 	class TableRow: NSObject, ITablePosition

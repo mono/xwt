@@ -554,10 +554,10 @@ namespace Xwt.GtkBackend
 		/// <summary>Map raw GTK key input to work around platform bugs and decompose accelerator keys</summary>
 		/// <param name='evt'>The raw key event</param>
 		/// <param name='key'>The composed key</param>
-		/// <param name='mod'>The composed modifiers</param>
+		/// <param name='state'>The composed modifiers</param>
 		/// <param name='shortcuts'>All the key/modifier decompositions that can be used as accelerators</param>
 		public static void MapKeys (Gdk.EventKey evt, out Gdk.Key key, out Gdk.ModifierType state,
-		                            out KeyboardShortcut[] shortcuts)
+									out KeyboardShortcut[] shortcuts)
 		{
 			//this uniquely identifies the raw key
 			ulong id;
@@ -726,7 +726,7 @@ namespace Xwt.GtkBackend
 			mod = accels[0].Modifier;
 		}
 
-		[System.Runtime.InteropServices.DllImport ("libgdk-win32-2.0-0.dll", CallingConvention = CallingConvention.Cdecl)]
+		[System.Runtime.InteropServices.DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gdk_win32_drawable_get_handle (IntPtr drawable);
 		
 		enum DwmWindowAttribute
@@ -823,7 +823,7 @@ namespace Xwt.GtkBackend
 			objc_msgSend_IntPtr (ptr, sel_invalidateShadow);
 		}
 
-		[DllImport ("gtksharpglue-2", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport (GtkInterop.LIBGTKGLUE, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtksharp_container_leak_fixed_marker ();
 
 		static HashSet<Type> fixedContainerTypes;
@@ -975,7 +975,7 @@ namespace Xwt.GtkBackend
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
 		delegate void ForallDelegate (IntPtr container, bool include_internals, IntPtr cb, IntPtr data);
 		
-		[DllImport("gtksharpglue-2", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport(GtkInterop.LIBGTKGLUE, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtksharp_container_override_forall (IntPtr gtype, ForallDelegate cb);
 
 		public static void SetLinkHandler (this Gtk.Label label, Action<string> urlHandler)
@@ -1080,22 +1080,22 @@ namespace Xwt.GtkBackend
 		
 		static bool supportsHiResIcons = true;
 
-		[DllImport (GtkInterop.LIBGTK)]
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_icon_source_set_scale (IntPtr source, double scale);
 
-		[DllImport (GtkInterop.LIBGTK)]
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_icon_source_set_scale_wildcarded (IntPtr source, bool setting);
 
-		[DllImport (GtkInterop.LIBGTK)]
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern double gtk_widget_get_scale_factor (IntPtr widget);
 
-		[DllImport (GtkInterop.LIBGDK)]
+		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
 		static extern double gdk_screen_get_monitor_scale_factor (IntPtr widget, int monitor);
 
-		[DllImport (GtkInterop.LIBGOBJECT)]
+		[DllImport (GtkInterop.LIBGOBJECT, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr g_object_get_data (IntPtr source, string name);
 
-		[DllImport (GtkInterop.LIBGTK)]
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_icon_set_render_icon_scaled (IntPtr handle, IntPtr style, int direction, int state, int size, IntPtr widget, IntPtr intPtr, ref double scale);
 
 		public static bool SetSourceScale (Gtk.IconSource source, double scale)

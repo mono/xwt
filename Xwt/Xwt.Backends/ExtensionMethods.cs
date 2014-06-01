@@ -75,6 +75,41 @@ namespace Xwt.Backends
 		{
 			return widget.InternalParent;
 		}
+
+		public static void RaiseKeyPressed (this CellView cellView, KeyEventArgs args)
+		{
+			cellView.OnKeyPressed (args);
+		}
+
+		public static void RaiseKeyReleased (this CellView cellView, KeyEventArgs args)
+		{
+			cellView.OnKeyReleased (args);
+		}
+
+		public static void RaiseMouseEntered (this CellView cellView)
+		{
+			cellView.OnMouseEntered ();
+		}
+
+		public static void RaiseMouseExited (this CellView cellView)
+		{
+			cellView.OnMouseExited ();
+		}
+
+		public static void RaiseMouseMoved (this CellView cellView, MouseMovedEventArgs args)
+		{
+			cellView.OnMouseMoved (args);
+		}
+
+		public static void RaiseButtonPressed (this CellView cellView, ButtonEventArgs args)
+		{
+			cellView.OnButtonPressed (args);
+		}
+
+		public static void RaiseButtonReleased (this CellView cellView, ButtonEventArgs args)
+		{
+			cellView.OnButtonReleased (args);
+		}
 	}
 }
 

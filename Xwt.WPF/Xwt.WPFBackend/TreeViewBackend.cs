@@ -59,6 +59,16 @@ namespace Xwt.WPFBackend
 			Tree.SetValue (VirtualizingStackPanel.IsVirtualizingProperty, true);
 		}
 
+		public ScrollViewer ScrollViewer {
+			get {
+				Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(Tree, 0) as Decorator;
+				if (border != null)
+					return border.Child as ScrollViewer;
+				else
+					return null;
+			}
+		}
+
 		public TreePosition CurrentEventRow { get; set;  }
 		
 		public ScrollPolicy VerticalScrollPolicy {
@@ -69,6 +79,16 @@ namespace Xwt.WPFBackend
 		public ScrollPolicy HorizontalScrollPolicy {
 			get { return ScrollViewer.GetHorizontalScrollBarVisibility (Tree).ToXwtScrollPolicy (); }
 			set { ScrollViewer.SetHorizontalScrollBarVisibility (Tree, value.ToWpfScrollBarVisibility ()); }
+		}
+
+		public IScrollControlBackend CreateVerticalScrollControl()
+		{
+			return new ScrollControlBackend(ScrollViewer, true);
+		}
+
+		public IScrollControlBackend CreateHorizontalScrollControl()
+		{
+			return new ScrollControlBackend(ScrollViewer, false);
 		}
 
 		public TreePosition[] SelectedRows {
@@ -185,7 +205,7 @@ namespace Xwt.WPFBackend
 				break;
 
 			case ListViewColumnChange.Cells:
-				var cellTemplate = CellUtil.CreateBoundColumnTemplate (column.Views);
+                var cellTemplate = CellUtil.CreateBoundColumnTemplate(Frontend, column.Views);
 
 				col.CellTemplate = new DataTemplate { VisualTree = cellTemplate };
 

@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Hywel Thomas <hywel.w.thomas@gmail.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -64,7 +65,7 @@ namespace Xwt.Mac
 		
 		public void QueueDraw (Rectangle rect)
 		{
-			view.NeedsToDraw (new System.Drawing.RectangleF ((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height));
+			view.SetNeedsDisplayInRect (new System.Drawing.RectangleF ((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height));
 		}
 		
 		public void AddChild (IWidgetBackend widget, Rectangle rect)

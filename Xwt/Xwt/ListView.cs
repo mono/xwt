@@ -104,7 +104,25 @@ namespace Xwt
 			get { return Backend.HorizontalScrollPolicy; }
 			set { Backend.HorizontalScrollPolicy = value; }
 		}
-		
+
+		ScrollControl verticalScrollAdjustment;
+		public ScrollControl VerticalScrollControl {
+			get {
+				if (verticalScrollAdjustment == null)
+					verticalScrollAdjustment = new ScrollControl (Backend.CreateVerticalScrollControl ());
+				return verticalScrollAdjustment;
+			}
+		}
+
+		ScrollControl horizontalScrollAdjustment;
+		public ScrollControl HorizontalScrollControl {
+			get {
+				if (horizontalScrollAdjustment == null)
+					horizontalScrollAdjustment = new ScrollControl (Backend.CreateHorizontalScrollControl ());
+				return horizontalScrollAdjustment;
+			}
+		}
+
 		public ListViewColumnCollection Columns {
 			get {
 				return columns;
@@ -178,7 +196,33 @@ namespace Xwt
 		{
 			Backend.UnselectAll ();
 		}
-		
+
+		/// <summary>
+		/// Returns the row at the given widget coordinates
+		/// </summary>
+		/// <returns>The row index</returns>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		public int GetRowAtPosition (double x, double y)
+		{
+			return GetRowAtPosition (new Point (x, y));
+		}
+
+		/// <summary>
+		/// Returns the row at the given widget coordinates
+		/// </summary>
+		/// <returns>The row index</returns>
+		/// <param name="p">A position, in widget coordinates</param>
+		public int GetRowAtPosition (Point p)
+		{
+			return Backend.GetRowAtPosition (p);
+		}
+
+		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
+		{
+			return Backend.GetCellBounds (row, cell, includeMargin);
+		}
+
 		void IColumnContainer.NotifyColumnsChanged ()
 		{
 		}

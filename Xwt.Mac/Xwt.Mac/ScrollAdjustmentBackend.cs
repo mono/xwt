@@ -30,11 +30,13 @@ using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
-	class ScrollAdjustmentBackend: IScrollAdjustmentBackend
+	class ScrollAdjustmentBackend: IScrollAdjustmentBackend, IScrollControlBackend
 	{
 		bool vertical;
 		NSScrollView scrollView;
 		IScrollAdjustmentEventSink eventSink;
+		IScrollControlEventSink controlEventSink;
+		ApplicationContext context;
 
 		public ScrollAdjustmentBackend (NSScrollView scrollView, bool vertical)
 		{
@@ -45,6 +47,7 @@ namespace Xwt.Mac
 		#region IBackend implementation
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			this.context = context;
 		}
 
 		public void EnableEvent (object eventId)
@@ -58,13 +61,23 @@ namespace Xwt.Mac
 		
 		public void NotifyValueChanged ()
 		{
-			eventSink.OnValueChanged ();
+			context.InvokeUserCode (delegate {
+				if (eventSink != null)
+					eventSink.OnValueChanged ();
+				if (controlEventSink != null)
+					controlEventSink.OnValueChanged ();
+			});
 		}
 
 		#region IScrollAdjustmentBackend implementation
 		public void Initialize (IScrollAdjustmentEventSink eventSink)
 		{
 			this.eventSink = eventSink;
+		}
+
+		public void Initialize (IScrollControlEventSink eventSink)
+		{
+			this.controlEventSink = eventSink;
 		}
 
 		CustomClipView ClipView {
@@ -92,6 +105,7 @@ namespace Xwt.Mac
 			UpperValue = upperValue;
 			PageSize = pageSize;
 			PageIncrement = pageIncrement;
+			StepIncrement = stepIncrement;
 
 			if (vertical)
 				scrollView.VerticalLineScroll = (float)stepIncrement;
@@ -110,6 +124,8 @@ namespace Xwt.Mac
 		public double PageIncrement { get; private set; }
 
 		public double PageSize { get; private set; }
+
+		public double StepIncrement { get; private set; }
 
 		#endregion
 	}

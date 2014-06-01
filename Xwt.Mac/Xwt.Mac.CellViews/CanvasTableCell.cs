@@ -33,8 +33,6 @@ namespace Xwt.Mac
 {
 	class CanvasTableCell: NSCell, ICellRenderer
 	{
-		ICanvasCellViewFrontend cellView;
-
 		public CanvasTableCell (IntPtr p): base (p)
 		{
 		}
@@ -43,32 +41,30 @@ namespace Xwt.Mac
 		{
 		}
 
-		public CanvasTableCell (ICanvasCellViewFrontend cellView)
-		{
-			this.cellView = cellView;
-		}
-		
 		public CompositeCell CellContainer { get; set; }
 
 		public void CopyFrom (object other)
 		{
 			var ob = (CanvasTableCell)other;
-			cellView = ob.cellView;
+			Backend = ob.Backend;
 		}
 
 		public void Fill ()
 		{
 		}
 		
-		public ICellViewFrontend Frontend {
-			get { return cellView; }
+		ICanvasCellViewFrontend Frontend {
+			get { return (ICanvasCellViewFrontend) Backend.Frontend; }
 		}
+
+		public CellViewBackend Backend { get; set; }
+
 
 		public override SizeF CellSizeForBounds (RectangleF bounds)
 		{
 			var size = new SizeF ();
-			cellView.ApplicationContext.InvokeUserCode (delegate {
-				var s = cellView.GetRequiredSize ();
+			Frontend.ApplicationContext.InvokeUserCode (delegate {
+				var s = Frontend.GetRequiredSize ();
 				size = new SizeF ((float)s.Width, (float)s.Height);
 			});
 			if (size.Width > bounds.Width)
@@ -86,8 +82,8 @@ namespace Xwt.Mac
 				Context = ctx,
 				InverseViewTransform = ctx.GetCTM ().Invert ()
 			};
-			cellView.ApplicationContext.InvokeUserCode (delegate {
-				cellView.Draw (backend, new Rectangle (cellFrame.X, cellFrame.Y, cellFrame.Width, cellFrame.Height));
+			Frontend.ApplicationContext.InvokeUserCode (delegate {
+				Frontend.Draw (backend, new Rectangle (cellFrame.X, cellFrame.Y, cellFrame.Width, cellFrame.Height));
 			});
 		}
 	}

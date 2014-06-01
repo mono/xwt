@@ -202,7 +202,7 @@ namespace Xwt.Mac
 			throw new NotImplementedException ();
 		}
 
-		public override object GetBackendForContext (object nativeContext)
+		public override object GetBackendForContext (object nativeWidget, object nativeContext)
 		{
 			return new CGContextBackend {
 				Context = (CGContext)nativeContext

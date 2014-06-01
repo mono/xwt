@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BC764278-4141-483C-8643-2EA8C40373B2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>GtkTestRunner</RootNamespace>
@@ -108,6 +106,7 @@
     <Compile Include="Tests\DrawingTestsBase.cs" />
     <Compile Include="Tests\NinePatchTests.cs" />
     <Compile Include="Tests\DialogTests.cs" />
+    <Compile Include="Tests\ScrollableWidgetTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -28,6 +28,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Xwt.Backends;
 using SWC = System.Windows.Controls;
 using SWM = System.Windows.Media;
 
@@ -35,24 +36,25 @@ namespace Xwt.WPFBackend.Utilities
 {
 	public static class CellUtil
 	{
-		internal static FrameworkElementFactory CreateBoundColumnTemplate (CellViewCollection views, string dataPath = ".")
+		internal static FrameworkElementFactory CreateBoundColumnTemplate (Widget parent, CellViewCollection views, string dataPath = ".")
 		{
 			if (views.Count == 1)
-				return CreateBoundCellRenderer (views [0], dataPath);
+                return CreateBoundCellRenderer(parent, views[0], dataPath);
 			
 			FrameworkElementFactory container = new FrameworkElementFactory (typeof (StackPanel));
-			container.SetValue (StackPanel.OrientationProperty, Orientation.Horizontal);
+			container.SetValue (StackPanel.OrientationProperty, System.Windows.Controls.Orientation.Horizontal);
 
 			foreach (CellView view in views) {
-				container.AppendChild (CreateBoundCellRenderer (view, dataPath));
+                container.AppendChild(CreateBoundCellRenderer(parent, view, dataPath));
 			}
 
 			return container;
 		}
 
 		private static readonly Thickness CellMargins = new Thickness (2);
-		internal static FrameworkElementFactory CreateBoundCellRenderer (CellView view, string dataPath = ".")
+		internal static FrameworkElementFactory CreateBoundCellRenderer (Widget parent, CellView view, string dataPath = ".")
 		{
+            ICellViewFrontend fr = view;
 			TextCellView textView = view as TextCellView;
 			if (textView != null) {
 				// if it's an editable textcontrol, use a TextBox, if not use a TextBlock. Reason for this is that 
@@ -91,6 +93,9 @@ namespace Xwt.WPFBackend.Utilities
 					}
 				}
 
+                var cb = new CellViewBackend();
+                cb.Initialize(view, factory);
+                fr.AttachBackend(parent, cb);
 				return factory;
 			}
 
@@ -106,18 +111,23 @@ namespace Xwt.WPFBackend.Utilities
 					factory.SetBinding (ImageBox.ImageSourceProperty, binding);
 				}
 
-				return factory;
+                var cb = new CellViewBackend();
+                cb.Initialize(view, factory);
+                fr.AttachBackend(parent, cb);
+                return factory;
 			}
 
 			CanvasCellView canvasView = view as CanvasCellView;
 			if (canvasView != null)
 			{
-				FrameworkElementFactory factory = new FrameworkElementFactory(typeof(CanvasCellViewBackend));
+                var cb = new CanvasCellViewBackend();
+                FrameworkElementFactory factory = new FrameworkElementFactory(typeof(CanvasCellViewPanel));
 				factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
+				factory.SetValue(CanvasCellViewPanel.CellViewBackendProperty, cb);
 
-				factory.SetValue(CanvasCellViewBackend.CellViewProperty, view);
-
-				return factory;
+                cb.Initialize(view, factory);
+                fr.AttachBackend(parent, cb);
+                return factory;
 			}
 			
 			CheckBoxCellView cellView = view as CheckBoxCellView;
@@ -140,7 +150,10 @@ namespace Xwt.WPFBackend.Utilities
 								factory.SetBinding(SWC.CheckBox.IsCheckedProperty, new Binding(dataPath + "[" + cellView.ActiveBinding.Index + "]"));
 						}
 
-						return factory;
+                        var cb = new CellViewBackend();
+                        cb.Initialize(view, factory);
+                        fr.AttachBackend(parent, cb);
+                        return factory;
 					}
 
 			throw new NotImplementedException ();

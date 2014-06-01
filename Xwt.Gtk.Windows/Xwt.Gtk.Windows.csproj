@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.Gtk.Windows</RootNamespace>
@@ -36,6 +34,8 @@
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums.cs" />
@@ -44,6 +44,7 @@
     <Compile Include="Structs.cs" />
     <Compile Include="Win32.cs" />
     <Compile Include="WindowsPlatformBackend.cs" />
+    <Compile Include="WebViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

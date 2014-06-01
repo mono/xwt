@@ -47,7 +47,8 @@ namespace Xwt.Mac
 			if (ViewObject is MacComboBox) {
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else {
-				ViewObject = new CustomAlignedContainer (new CustomTextField (EventSink, ApplicationContext));
+				var view = new CustomTextField (EventSink, ApplicationContext);
+				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view);
 				MultiLine = false;
 			}
 		}
@@ -138,6 +139,14 @@ namespace Xwt.Mac
 				Container.ExpandVertically = value;
 			}
 		}
+
+		public int CursorPosition { get; set; }
+
+		public int SelectionStart { get; set; }
+
+		public int SelectionLength { get; set; }
+
+		public string SelectedText { get; set; }
 
 		public override void SetFocus ()
 		{

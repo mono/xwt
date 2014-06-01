@@ -358,9 +358,9 @@ namespace Xwt
 			return new Image (backend.GetBackendForImage (nativeImage));
 		}
 
-		public Context WrapContext (object nativeContext)
+		public Context WrapContext (object nativeWidget, object nativeContext)
 		{
-			return new Context (backend.GetBackendForContext (nativeContext), this);
+			return new Context (backend.GetBackendForContext (nativeWidget, nativeContext), this);
 		}
 
 		public object ValidateObject (object obj)
@@ -406,6 +406,11 @@ namespace Xwt
 
 		public ToolkitFeatures SupportedFeatures {
 			get { return backend.SupportedFeatures; }
+		}
+
+		public void RegisterBackend<TBackend, TImplementation> () where TImplementation: TBackend
+		{
+			backend.RegisterBackend<TBackend, TImplementation> ();
 		}
 
 		internal Image GetStockIcon (string id)

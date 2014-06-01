@@ -165,6 +165,16 @@ namespace Xwt.GtkBackend
 				Widget.HscrollbarPolicy = value.ToGtkValue ();
 			}
 		}
+
+		public IScrollControlBackend CreateVerticalScrollControl ()
+		{
+			return new ScrollControltBackend (Widget.Vadjustment);
+		}
+
+		public IScrollControlBackend CreateHorizontalScrollControl ()
+		{
+			return new ScrollControltBackend (Widget.Hadjustment);
+		}
 	}
 	
 	class CustomViewPort: Gtk.Bin

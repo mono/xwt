@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C93D746E-1586-4D4F-B411-BF5A966E6A08}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.WPF</RootNamespace>
@@ -49,6 +47,8 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Xwt.WPFBackend.CellViews\CanvasCellViewBackend.cs" />
+    <Compile Include="Xwt.WPFBackend.CellViews\CanvasCellViewPanel.cs" />
+    <Compile Include="Xwt.WPFBackend.CellViews\CellViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\NativeStockIcon.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\CellUtil.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\ImageToImageSourceConverter.cs" />
@@ -147,6 +147,7 @@
     <Compile Include="Xwt.WPFBackend\WindowsSpinButton.xaml.cs" />
     <Compile Include="Xwt.WPFBackend\WpfKeyboardHandler.cs" />
     <Compile Include="Xwt.WPFBackend\WebViewBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\ScrollControlBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

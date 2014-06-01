@@ -47,6 +47,7 @@ namespace Xwt.CairoBackend
 
 		struct Data {
 			public double PatternAlpha;
+			public double GlobalAlpha;
 		}
 
 		public CairoContextBackend (double scaleFactor)
@@ -70,7 +71,8 @@ namespace Xwt.CairoBackend
 		{
 			Context.Save ();
 			dataStack.Push (new Data () {
-				PatternAlpha = PatternAlpha
+				PatternAlpha = PatternAlpha,
+				GlobalAlpha = GlobalAlpha
 			});
 		}
 
@@ -79,6 +81,7 @@ namespace Xwt.CairoBackend
 			Context.Restore ();
 			var d = dataStack.Pop ();
 			PatternAlpha = d.PatternAlpha;
+			GlobalAlpha = d.GlobalAlpha;
 		}
 	}
 	

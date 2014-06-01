@@ -34,25 +34,32 @@ namespace Xwt.Mac
 {
 	static class CellUtil
 	{
-		public static NSCell CreateCell (ICellSource source, ICollection<CellView> cells)
+		public static NSCell CreateCell (NSTableView table, ICellSource source, ICollection<CellView> cells, int column)
 		{
 			CompositeCell c = new CompositeCell (Orientation.Horizontal, source);
 			foreach (var cell in cells)
-				c.AddCell ((ICellRenderer) CreateCell (c, cell));
+				c.AddCell ((ICellRenderer) CreateCell (table, c, cell, column));
 			return c;
 		}
 		
-		static NSCell CreateCell (CompositeCell source, CellView cell)
+		static NSCell CreateCell (NSTableView table, CompositeCell source, CellView cell, int column)
 		{
+			ICellRenderer cr = null;
+
 			if (cell is ITextCellViewFrontend)
-				return new TextTableCell ((ITextCellViewFrontend) cell);
-			if (cell is IImageCellViewFrontend)
-				return new ImageTableCell ((IImageCellViewFrontend) cell);
-			if (cell is ICanvasCellViewFrontend)
-				return new CanvasTableCell ((ICanvasCellViewFrontend) cell);
-			if (cell is ICheckBoxCellViewFrontend)
-				return new CheckBoxTableCell ((ICheckBoxCellViewFrontend) cell);
-			throw new NotImplementedException ();
+				cr = new TextTableCell ();
+			else if (cell is IImageCellViewFrontend)
+				cr = new ImageTableCell ();
+			else if (cell is ICanvasCellViewFrontend)
+				cr = new CanvasTableCell ();
+			else if (cell is ICheckBoxCellViewFrontend)
+				cr = new CheckBoxTableCell ();
+			else
+				throw new NotImplementedException ();
+			cr.Backend = new CellViewBackend (table, column);
+			ICellViewFrontend fr = cell;
+			fr.AttachBackend (null, cr.Backend);
+			return (NSCell)cr;
 		}
 	}
 }
