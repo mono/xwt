@@ -204,14 +204,10 @@ namespace Samples
 						},
 						new TextCellView {
 							TextBinding = dataField.Select (c => c.Name),
-							TextColorBinding = new CustomBinding<City> {
-								Getter = c => c.Population >= 10000 ? Xwt.Drawing.Colors.Red : Xwt.Drawing.Colors.Black
-							}
+							TextColorBinding = new CustomBinding<City> (c => c.Population >= 10000 ? Xwt.Drawing.Colors.Red : Xwt.Drawing.Colors.Black)
 						}
 					},
-					ItemsSource = new CustomBinding<City> {
-						Getter = c => c.Population >= 100000 ? c.Quarters : null
-					}
+					ItemsSource = new CustomBinding<City>  (c => c.Population >= 100000 ? c.Quarters : null)
 				}
 			);
 			City cc = null;

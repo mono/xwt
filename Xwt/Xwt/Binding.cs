@@ -65,13 +65,44 @@ namespace Xwt
 		}
 	}
 
-	public class CustomBinding: Binding {
+	public sealed class CustomBinding: Binding 
+	{
+		public CustomBinding ()
+		{
+		}
+
+		public CustomBinding (Func<object,object> getter)
+		{
+			Getter = getter;
+		}
+
+		public CustomBinding (Func<object,object> getter, Action<object,object> setter)
+		{
+			Getter = getter;
+			Setter = setter;
+		}
+
 		public Func<object,object> Getter { get; set; }
 		public Action<object,object> Setter { get; set; }
 	}
 
-	public class CustomBinding<T>: Binding
+	public sealed class CustomBinding<T>: Binding
 	{
+		public CustomBinding ()
+		{
+		}
+
+		public CustomBinding (Func<T,object> getter)
+		{
+			Getter = getter;
+		}
+
+		public CustomBinding (Func<T,object> getter, Action<T,object> setter)
+		{
+			Getter = getter;
+			Setter = setter;
+		}
+
 		public Func<T,object> Getter { get; set; }
 		public Action<T,object> Setter { get; set; }
 	}
