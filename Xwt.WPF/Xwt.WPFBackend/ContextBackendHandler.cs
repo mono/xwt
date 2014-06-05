@@ -254,6 +254,7 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext) backend;
 			var t = (TextLayoutBackend)Toolkit.GetBackend (layout);
+			t.FormattedText.SetForegroundBrush (c.Brush);
 			c.Context.DrawText (t.FormattedText, new SW.Point (x, y));
 		}
 
