@@ -186,6 +186,12 @@ namespace Xwt
 				Backend.HeadersVisible = value;
 			}
 		}
+
+		public GridLines GridLines
+		{
+			get { return Backend.GridLines; }
+			set { Backend.GridLines = value; }
+		}
 		
 		/// <summary>
 		/// Gets or sets the selection mode.

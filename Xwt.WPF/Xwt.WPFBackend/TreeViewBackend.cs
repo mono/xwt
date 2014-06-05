@@ -113,6 +113,17 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		GridLines gridLines;
+
+		public GridLines GridLines {
+			get {
+				return gridLines;
+			}
+			set {
+				gridLines = value;
+			}
+		}
+
 		public void SelectRow (TreePosition pos)
 		{
 			Tree.SelectedItems.Add (pos);

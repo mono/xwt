@@ -109,6 +109,30 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		GridLines gridLines;
+		public GridLines GridLines {
+			get {
+				return gridLines;
+			}
+			set {
+				gridLines = value;
+				// we support only horizontal grid lines for now
+				// vertical lines are tricky and have to be drawn manually...
+				if (value == GridLines.None) {
+					if (this.ListView.ItemContainerStyle != null) {
+						this.ListView.ItemContainerStyle.Setters.Remove (GridHorizontalSetter);
+						this.ListView.ItemContainerStyle.Setters.Remove (BorderBrushSetter);
+					}
+				} else {
+					if (this.ListView.ItemContainerStyle == null)
+						this.ListView.ItemContainerStyle = new Style ();
+
+					this.ListView.ItemContainerStyle.Setters.Add (GridHorizontalSetter);
+					this.ListView.ItemContainerStyle.Setters.Add (BorderBrushSetter);
+				}
+			}
+		}
+
 		public int[] SelectedRows {
 			get { return ListView.SelectedItems.Cast<object>().Select (ListView.Items.IndexOf).ToArray (); }
 		}
@@ -234,6 +258,8 @@ namespace Xwt.WPFBackend
 		}
 
 		private static readonly Setter HideHeadersSetter = new Setter (UIElement.VisibilityProperty, Visibility.Collapsed);
+		private static readonly Setter GridHorizontalSetter = new Setter (ListViewItem.BorderThicknessProperty, new Thickness (0, 0, 0, 1));
+		private static readonly Setter BorderBrushSetter = new Setter (ListViewItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
 
 
         public int GetRowAtPosition(Point p)

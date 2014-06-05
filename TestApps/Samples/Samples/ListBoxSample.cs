@@ -48,6 +48,7 @@ namespace Samples
 			// Custom list box
 			
 			ListBox customList = new ListBox ();
+			customList.GridLines = GridLines.Horizontal;
 			ListStore store = new ListStore (name, icon);
 			customList.DataSource = store;
 			customList.Views.Add (new ImageCellView (icon));

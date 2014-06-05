@@ -143,6 +143,12 @@ namespace Xwt
 				}
 			}
 		}
+
+		public GridLines GridLines
+		{
+			get { return Backend.GridLines; }
+			set { Backend.GridLines = value; }
+		}
 		
 		/// <summary>
 		/// Gets or sets the vertical scroll policy.

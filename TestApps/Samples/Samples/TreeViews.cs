@@ -39,7 +39,8 @@ namespace Samples
 		{
 			TreeView view = new TreeView ();
 			TreeStore store = new TreeStore (triState, check, text, desc);
-		
+			view.GridLines = GridLines.Both;
+			
 			var triStateCellView = new CheckBoxCellView (triState) { Editable = true, AllowMixed = true };
 			triStateCellView.Toggled += (object sender, WidgetEventArgs e) => {
 				if (view.CurrentEventRow == null) {

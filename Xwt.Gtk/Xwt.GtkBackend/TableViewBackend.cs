@@ -87,6 +87,12 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public GridLines GridLines
+		{
+			get { return Widget.EnableGridLines.ToXwtValue (); }
+			set { Widget.EnableGridLines = value.ToGtkValue (); }
+		}
+
 		public IScrollControlBackend CreateVerticalScrollControl ()
 		{
 			return new ScrollControltBackend (ScrolledWindow.Vadjustment);

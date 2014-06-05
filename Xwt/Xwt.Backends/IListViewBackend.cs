@@ -36,6 +36,7 @@ namespace Xwt.Backends
 		void UnselectRow (int pos);
 
 		bool BorderVisible { get; set; }
+		GridLines GridLines { get; set; }
 		bool HeadersVisible { get; set; }
 
 		int GetRowAtPosition (Point p);

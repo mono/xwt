@@ -16,6 +16,7 @@ namespace Samples
 		{
 			PackStart (new Label ("The listview should have a red background"));
 			ListView list = new ListView ();
+			list.GridLines = GridLines.Both;
 			ListStore store = new ListStore (name, icon, text, icon2, progress);
 			list.DataSource = store;
 			list.Columns.Add ("Name", icon, name);

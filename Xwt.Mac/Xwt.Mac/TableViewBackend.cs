@@ -251,6 +251,12 @@ namespace Xwt.Mac
 				}
 			}
 		}
+
+		public GridLines GridLines
+		{
+			get { return Table.GridStyleMask.ToXwtValue (); }
+			set { Table.GridStyleMask = value.ToMacValue (); }
+		}
 	}
 	
 	class ScrollView: NSScrollView, IViewObject
