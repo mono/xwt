@@ -197,6 +197,11 @@ namespace Xwt
 			Backend.UnselectAll ();
 		}
 
+		public void ScrollToRow (int row)
+		{
+			Backend.ScrollToRow (row);
+		}
+
 		/// <summary>
 		/// Returns the row at the given widget coordinates
 		/// </summary>

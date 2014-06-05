@@ -88,6 +88,14 @@ namespace Xwt.GtkBackend
 			Widget.Selection.UnselectIter (it);
 		}
 
+		public void ScrollToRow (int row)
+		{
+			Gtk.TreeIter it;
+			if (!Widget.Model.IterNthChild (out it, row))
+				return;
+			ScrollToRow (it);
+		}
+
 		public int[] SelectedRows {
 			get {
 				var sel = Widget.Selection.GetSelectedRows ();
