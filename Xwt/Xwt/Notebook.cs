@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using System.Windows.Markup;
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -90,7 +91,15 @@ namespace Xwt
 			t.Label = label;
 			tabs.Add (t);
 		}
-		
+
+		public void Add (Widget w, string label, Image image)
+		{
+			NotebookTab t = new NotebookTab ((WidgetBackendHost)BackendHost, w);
+			t.Label = label;
+			t.Image = image.ImageDescription;
+			tabs.Add (t);
+		}
+
 		void OnRemove (Widget child)
 		{
 			UnregisterChild (child);
@@ -164,6 +173,7 @@ namespace Xwt
 	{
 		IContainerEventSink<NotebookTab> parent;
 		string label;
+		ImageDescription image;
 		Widget child;
 		
 		internal NotebookTab (IContainerEventSink<NotebookTab> parent, Widget child)
@@ -181,7 +191,15 @@ namespace Xwt
 				parent.ChildChanged (this, "Label");
 			}
 		}
-		
+
+		public ImageDescription Image {
+			get { return image; }
+			set {
+				image = value;
+				parent.ChildChanged (this, "Image");
+			}
+		}
+
 		public Widget Child {
 			get {
 				return child;

@@ -9,7 +9,7 @@ namespace Samples
 		public NotebookSample ()
 		{
 			Notebook nb = new Notebook ();
-			nb.Add (new Label ("First tab content"), "First Tab");
+			nb.Add (new Label ("First tab content"), "First Tab", StockIcons.Information);
 			nb.Add (new MyWidget (), "Second Tab");
 			nb.Add (new MyTestWidget(), "Third Tab");
 			nb.TabOrientation = NotebookTabOrientation.Bottom;

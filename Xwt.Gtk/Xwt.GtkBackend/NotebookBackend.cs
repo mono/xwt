@@ -112,8 +112,20 @@ namespace Xwt.GtkBackend
 		Gtk.Widget CreateLabel (NotebookTab tab)
 		{
 			Gtk.Label label = new Gtk.Label (tab.Label);
-			label.Show ();
-			return label;
+			if (tab.Image.IsNull)
+				return label;
+			label.Xalign = 0;
+			label.Yalign = 0.5f;
+			label.Justify = Gtk.Justification.Left;
+			var image = new ImageBox (ApplicationContext, tab.Image.WithDefaultSize (Gtk.IconSize.SmallToolbar));
+			var image_align = new Gtk.Alignment (1, 0.5f, 0, 1);
+			image_align.RightPadding = 6;
+			image_align.Add (image);
+			var box = new Gtk.HBox ();
+			box.Add (image_align);
+			box.Add (label);
+			box.ShowAll ();
+			return box;
 		}
 	}
 }

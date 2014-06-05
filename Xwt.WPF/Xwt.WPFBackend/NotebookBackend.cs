@@ -64,9 +64,18 @@ namespace Xwt.WPFBackend
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
 			UIElement element = (UIElement)widget.NativeWidget;
+
+			var header = new SWC.StackPanel { Orientation = SWC.Orientation.Horizontal };
+			var headerImage = new ImageBox (Context);
+			headerImage.ImageSource = tab.Image;
+			if (!tab.Image.IsNull)
+				headerImage.Margin = new Thickness (0, 0, 5, 0);
+			header.Children.Add (headerImage);
+			header.Children.Add (new SWC.TextBlock () { Text = tab.Label, VerticalAlignment = VerticalAlignment.Center });
+
 			TabItem ti = new TabItem {
 				Content = element,
-				Header = tab.Label,
+				Header = header,
 				Tag = tab
 			};
 
@@ -104,8 +113,21 @@ namespace Xwt.WPFBackend
 		public void UpdateLabel (NotebookTab tab, string hint)
 		{
 			TabItem item = TabControl.Items.Cast<TabItem> ().FirstOrDefault (t => t.Tag == tab);
-			if (item != null)
-				item.Header = tab.Label;
+			if (item != null) {
+				if (hint == "Label") {
+					var headerText = ((SWC.StackPanel)item.Header).Children [1] as SWC.TextBlock;
+					if (headerText != null)
+						headerText.Text = tab.Label;
+				}
+				if (hint == "Image") {
+					var headerImage = ((SWC.StackPanel)item.Header).Children [0] as ImageBox;
+					if (headerImage != null) {
+						headerImage.ImageSource = tab.Image;
+						if (!tab.Image.IsNull)
+							headerImage.Margin = new Thickness (0, 0, 5, 0);
+					}
+				}
+			}
 		}
 
 		public override void EnableEvent (object eventId)
