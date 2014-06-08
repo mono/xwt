@@ -114,7 +114,7 @@ namespace Samples
 			AddSample (n, "Custom Drawn Image", typeof (ImageScaling));
 			AddSample (n, "9-patch Image", typeof (Image9Patch));
 			AddSample (n, "Widget Rendering", typeof (WidgetRendering));
-
+			AddSample (n, "Text Input", typeof (TextInput));
 			var wf = AddSample (null, "Widget Features", null);
 			AddSample (wf, "Drag & Drop", typeof(DragDrop));
 			AddSample (wf, "Widget Events", typeof(WidgetEvents));
@@ -147,6 +147,8 @@ namespace Samples
 		void HandleCloseRequested (object sender, CloseRequestedEventArgs args)
 		{
 			args.AllowClose = MessageDialog.Confirm ("Samples will be closed", Command.Ok);
+			if (args.AllowClose)
+				Application.Exit ();
 		}
 		
 		protected override void Dispose (bool disposing)

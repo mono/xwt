@@ -92,15 +92,20 @@ namespace Samples
 			te5.TextAlignment = Alignment.Center;
 			PackStart (te5);
 
-			try {
-				SearchTextEntry te6 = new SearchTextEntry ();
-				te6.PlaceholderText = "Type to search ...";
-				PackStart (te6);
+			TextEntry te6 = new TextEntry ();
+			te6.Text = "I should have" + Environment.NewLine + "multiple lines!";
+			te6.MultiLine = true;
+			PackStart (te6);
 
+			try {
 				SearchTextEntry te7 = new SearchTextEntry ();
-				te6.PlaceholderText = "I should have no frame";
-				te6.ShowFrame = false;
+				te7.PlaceholderText = "Type to search ...";
 				PackStart (te7);
+
+				SearchTextEntry te8 = new SearchTextEntry ();
+				te8.PlaceholderText = "I should have no frame";
+				te8.ShowFrame = false;
+				PackStart (te8);
 			} catch (InvalidOperationException ex) {
 				Console.WriteLine (ex);
 			}

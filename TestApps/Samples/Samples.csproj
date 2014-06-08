@@ -65,6 +65,7 @@
     <Compile Include="Samples\DrawingTransforms.cs" />
     <Compile Include="Samples\ComboBoxes.cs" />
     <Compile Include="Samples\Designer.cs" />
+    <Compile Include="Samples\TextInput.cs" />
     <Compile Include="Samples\Windows.cs" />
     <Compile Include="Samples\TextEntries.cs" />
     <Compile Include="Samples\Images.cs" />

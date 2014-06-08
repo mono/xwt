@@ -160,7 +160,8 @@ namespace Xwt.GtkBackend
 		{
 			Backend.ApplicationContext.InvokeUserCode (delegate {
 				using (var context = CreateContext ()) {
-					EventSink.OnDraw (context, dirtyRect);
+					var r = new Rectangle (dirtyRect.X - context.Origin.X, dirtyRect.Y - context.Origin.Y, dirtyRect.Width, dirtyRect.Height);
+					EventSink.OnDraw (context, r);
 				}
 			});
 		}
