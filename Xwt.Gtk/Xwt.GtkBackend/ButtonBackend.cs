@@ -56,6 +56,11 @@ namespace Xwt.GtkBackend
 		protected new IButtonEventSink EventSink {
 			get { return (IButtonEventSink)base.EventSink; }
 		}
+
+		protected override void OnSetBackgroundColor (Color color)
+		{
+			Widget.SetBackgroundColor (color);
+		}
 		
 		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position)
 		{			

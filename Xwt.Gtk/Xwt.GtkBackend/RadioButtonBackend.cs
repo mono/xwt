@@ -62,6 +62,14 @@ namespace Xwt.GtkBackend
 					c.ModifyFont (fd);
 			}
 		}
+
+		protected override void OnSetBackgroundColor (Xwt.Drawing.Color color)
+		{
+			base.OnSetBackgroundColor (color);
+			Widget.SetBackgroundColor (color);
+			Widget.SetChildBackgroundColor (color);
+			EventsRootWidget.SetBackgroundColor (color);
+		}
 		
 		public override void EnableEvent (object eventId)
 		{

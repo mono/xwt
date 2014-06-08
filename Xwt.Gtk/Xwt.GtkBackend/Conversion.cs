@@ -28,6 +28,18 @@ namespace Xwt.GtkBackend
 			return new Color ((double)color.Red / (double)ushort.MaxValue, (double)color.Green / (double)ushort.MaxValue, (double)color.Blue / (double)ushort.MaxValue);
 		}
 
+		#if XWT_GTK3
+		public static Gdk.RGBA ToGdkValue (this Xwt.Drawing.Color color)
+		{
+			var rgba = new Gdk.RGBA ();
+			rgba.Red = color.Red;
+			rgba.Green = color.Green;
+			rgba.Blue = color.Blue;
+			rgba.Alpha = color.Alpha;
+			return rgba;
+		}
+		#endif
+
 		public static Pango.EllipsizeMode ToGtkValue (this EllipsizeMode value)
 		{
 			switch (value) {

@@ -38,11 +38,12 @@ namespace Samples
 			HPaned centralPaned = new HPaned ();
 			centralPaned.Panel1.Content = CreateFrame ("Should expand\nhorizontally and vertically", true);
 			centralPaned.Panel1.Resize = true;
-			
+
 			VPaned verticalPaned = new VPaned ();
 			verticalPaned.Panel1.Content = CreateFrame ("Fixed panel\nat the top", false);
 			
-			verticalPaned.Panel2.Content = CreateFrame ("Should expand vertically", true);
+			verticalPaned.Panel2.Content = CreateFrame ("Should expand vertically\n(with green background)", true);
+			verticalPaned.Panel2.Content.BackgroundColor = Colors.LightGreen;
 			verticalPaned.Panel2.Resize = true;
 
 			centralPaned.Panel2.Content = verticalPaned;

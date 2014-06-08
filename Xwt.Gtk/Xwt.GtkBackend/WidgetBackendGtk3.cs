@@ -25,11 +25,17 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
 	public partial class WidgetBackend
 	{
+		protected virtual void OnSetBackgroundColor (Color color)
+		{
+			Widget.SetBackgroundColor (color);
+		}
+
 		public virtual Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			SetSizeConstraints (widthConstraint, heightConstraint);

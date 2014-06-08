@@ -106,6 +106,17 @@ namespace Xwt.GtkBackend
 		{
 			GtkWorkarounds.FixContainerLeak (c);
 		}
+
+		public static void SetBackgroundColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
+		{
+			widget.ModifyBg (Gtk.StateType.Normal, color.ToGtkValue ());
+		}
+
+		public static void SetChildBackgroundColor (this Gtk.Container container, Xwt.Drawing.Color color)
+		{
+			foreach (var widget in container.Children)
+				widget.ModifyBg (Gtk.StateType.Normal, color.ToGtkValue ());
+		}
 	}
 }
 

@@ -30,7 +30,6 @@ namespace Xwt.GtkBackend
 {
 	partial class CustomCanvas
 	{
-
 		protected override bool OnDrawn (Cairo.Context cr)
 		{
 			var a = Allocation;

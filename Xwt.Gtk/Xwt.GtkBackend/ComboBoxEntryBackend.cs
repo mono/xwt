@@ -49,6 +49,12 @@ namespace Xwt.GtkBackend
 				return entryBackend;
 			}
 		}
+
+		protected override void OnSetBackgroundColor (Xwt.Drawing.Color color)
+		{
+			Widget.SetBackgroundColor (color);
+			Widget.SetChildBackgroundColor (color);
+		}
 	}
 	
 	class CustomComboEntryBackend: TextEntryBackend

@@ -347,11 +347,11 @@ namespace Xwt.GtkBackend
 			set {
 				customBackgroundColor = value;
 				AllocEventBox (visibleWindow: true);
-				EventsRootWidget.ModifyBg (Gtk.StateType.Normal, value.ToGtkValue ());
+				OnSetBackgroundColor (value);
 			}
 		}
 		
-		public bool UsingCustomBackgroundColor {
+		public virtual bool UsingCustomBackgroundColor {
 			get { return customBackgroundColor.HasValue; }
 		}
 		

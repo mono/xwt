@@ -34,6 +34,7 @@ namespace Samples
 		{
 			TextEntry te1 = new TextEntry ();
 			PackStart (te1);
+			te1.BackgroundColor = Xwt.Drawing.Colors.Red;
 			
 			Label la = new Label ();
 			PackStart (la);
@@ -86,6 +87,13 @@ namespace Samples
 			TextEntry te4 = new TextEntry();
 			te4.ShowFrame = false;
 			PackStart (te4);
+
+			PackStart (new Label ("Entry with custom frame"));
+			FrameBox teFrame = new FrameBox ();
+			teFrame.BorderColor = Xwt.Drawing.Colors.Red;
+			teFrame.BorderWidth = 1;
+			teFrame.Content = new TextEntry () { ShowFrame = false };
+			PackStart (teFrame);
 
 			TextEntry te5 = new TextEntry ();
 			te5.Text = "I should be centered!";

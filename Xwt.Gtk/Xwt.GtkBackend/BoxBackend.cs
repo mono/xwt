@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
-	class BoxBackend: WidgetBackend, IBoxBackend
+	partial class BoxBackend: WidgetBackend, IBoxBackend
 	{
 		public BoxBackend ()
 		{

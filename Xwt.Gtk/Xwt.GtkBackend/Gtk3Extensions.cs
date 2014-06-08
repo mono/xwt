@@ -27,6 +27,7 @@
 using Xwt.Backends;
 using System;
 using System.Runtime.InteropServices;
+using Gtk;
 
 namespace Xwt.GtkBackend
 {
@@ -107,6 +108,47 @@ namespace Xwt.GtkBackend
 			// gtk3 is not affected by the container leak bug and there is no marker
 			// method, so nothing to do.
 			return;
+		}
+
+		public static void SetBackgroundColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
+		{
+			widget.SetBackgroundColor (Gtk.StateFlags.Normal, color);
+		}
+
+		public static void SetChildBackgroundColor (this Gtk.Container container, Xwt.Drawing.Color color)
+		{
+			foreach (var widget in container.Children)
+				widget.SetBackgroundColor (Gtk.StateFlags.Normal, color);
+		}
+
+		public static void SetBackgroundColor (this Gtk.Widget widget, Gtk.StateType state, Xwt.Drawing.Color color)
+		{
+			widget.SetBackgroundColor (state.ToGtk3StateFlags (), color);
+		}
+
+		public static void SetBackgroundColor (this Gtk.Widget widget, Gtk.StateFlags state, Xwt.Drawing.Color color)
+		{
+			widget.OverrideBackgroundColor (state, color.ToGdkValue ());
+		}
+
+		public static Gtk.StateFlags ToGtk3StateFlags (this Gtk.StateType state)
+		{
+			switch (state)
+			{
+				case Gtk.StateType.Active:
+					return Gtk.StateFlags.Active;
+				case Gtk.StateType.Prelight:
+					return Gtk.StateFlags.Prelight;
+				case Gtk.StateType.Insensitive:
+					return Gtk.StateFlags.Insensitive;
+				case Gtk.StateType.Focused:
+					return Gtk.StateFlags.Active;
+				case Gtk.StateType.Inconsistent:
+					return Gtk.StateFlags.Normal;
+				case Gtk.StateType.Selected:
+					return Gtk.StateFlags.Selected;
+			}
+			return Gtk.StateFlags.Normal;
 		}
 	}
 }
