@@ -3,6 +3,7 @@
 //
 // Author:
 //       Cody Russell <cody@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Xamarin Inc.
 //
@@ -34,20 +35,43 @@ namespace Xwt
 	[BackendType (typeof(IWebViewBackend))]
 	public class WebView : Widget
 	{
+		EventHandler loading;
 		EventHandler loaded;
-		string url;
+		EventHandler<NavigateToUrlEventArgs> navigateToUrl;
+		EventHandler titleChanged;
+		string url = String.Empty;
 
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IWebViewEventSink
 		{
+			public bool OnNavigateToUrl (string url)
+			{
+				var args = new NavigateToUrlEventArgs (new Uri(url));
+				((WebView)Parent).OnNavigateToUrl (args);
+				return args.Handled;
+			}
+
+			public void OnLoading ()
+			{
+				((WebView)Parent).OnLoading (EventArgs.Empty);
+			}
+
 			public void OnLoaded ()
 			{
 				((WebView)Parent).OnLoaded (EventArgs.Empty);
+			}
+
+			public void OnTitleChanged ()
+			{
+				((WebView)Parent).OnTitleChanged (EventArgs.Empty);
 			}
 		}
 
 		static WebView ()
 		{
+			MapEvent (WebViewEvent.Loading, typeof(WebView), "OnLoading");
 			MapEvent (WebViewEvent.Loaded, typeof(WebView), "OnLoaded");
+			MapEvent (WebViewEvent.NavigateToUrl, typeof(WebView), "OnNavigateToUrl");
+			MapEvent (WebViewEvent.TitleChanged, typeof(WebView), "OnTitleChanged");
 		}
 
 		public WebView ()
@@ -70,15 +94,84 @@ namespace Xwt
 
 		[DefaultValue("")]
 		public string Url {
-			get { return url ?? ""; }
+			get { 
+				if (!String.IsNullOrEmpty (Backend.Url))
+					url = Backend.Url;
+				return url;
+			}
 			set {
 		 		url = value;
 				Backend.Url = url;
 			}
 		}
 
+		[DefaultValue("")]
+		public string Title {
+			get { return Backend.Title ?? ""; }
+		}
+
+		[DefaultValue(0.0)]
+		public double LoadProgress {
+			get { return Backend.LoadProgress; }
+		}
+
+		[DefaultValue(false)]
+		public bool CanGoBack {
+			get { return Backend.CanGoBack; }
+		}
+
+		[DefaultValue(false)]
+		public bool CanGoForward {
+			get { return Backend.CanGoForward; }
+		}
+
+		public void GoBack ()
+		{
+			Backend.GoBack ();
+		}
+
+		public void GoForward ()
+		{
+			Backend.GoForward ();
+		}
+
+		public void Reload ()
+		{
+			Backend.Reload ();
+		}
+
+		public void StopLoading ()
+		{
+			Backend.StopLoading ();
+		}
+
+		public void LoadHtml (string content, string base_uri)
+		{
+			Backend.LoadHtml (content, base_uri);
+		}
+
+		protected virtual void OnLoading (EventArgs e)
+		{
+			if (loading != null)
+				loading (this, e);
+		}
+
+		public event EventHandler Loading {
+			add {
+				BackendHost.OnBeforeEventAdd (WebViewEvent.Loading, loading);
+				loading += value;
+			}
+
+			remove {
+				loading -= value;
+				BackendHost.OnAfterEventRemove (WebViewEvent.Loading, loading);
+			}
+		}
+
 		protected virtual void OnLoaded (EventArgs e)
 		{
+			if (loaded != null)
+				loaded (this, e);
 		}
 
 		public event EventHandler Loaded {
@@ -90,6 +183,42 @@ namespace Xwt
 			remove {
 				loaded -= value;
 				BackendHost.OnAfterEventRemove (WebViewEvent.Loaded, loaded);
+			}
+		}
+
+		protected virtual void OnNavigateToUrl (NavigateToUrlEventArgs e)
+		{
+			if (navigateToUrl != null)
+				navigateToUrl (this, e);
+		}
+
+		public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl {
+			add {
+				BackendHost.OnBeforeEventAdd (WebViewEvent.NavigateToUrl, navigateToUrl);
+				navigateToUrl += value;
+			}
+
+			remove {
+				navigateToUrl -= value;
+				BackendHost.OnAfterEventRemove (WebViewEvent.NavigateToUrl, navigateToUrl);
+			}
+		}
+
+		protected virtual void OnTitleChanged (EventArgs e)
+		{
+			if (titleChanged != null)
+				titleChanged (this, e);
+		}
+
+		public event EventHandler TitleChanged {
+			add {
+				BackendHost.OnBeforeEventAdd (WebViewEvent.TitleChanged, titleChanged);
+				titleChanged += value;
+			}
+
+			remove {
+				titleChanged -= value;
+				BackendHost.OnAfterEventRemove (WebViewEvent.TitleChanged, titleChanged);
 			}
 		}
 	}

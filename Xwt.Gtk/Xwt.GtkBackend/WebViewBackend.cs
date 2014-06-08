@@ -1,11 +1,10 @@
-//
+﻿//
 // WebViewBackend.cs
 //
 // Author:
-//       Cody Russell <cody@xamarin.com>
 //       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2014 Xamarin Inc.
+// Copyright (c) 2014 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,87 +23,84 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.WebKit;
+using System.Runtime.InteropServices;
+using Xwt.GtkBackend.WebKit;
 
-namespace Xwt.Mac
+namespace Xwt.GtkBackend
 {
-	public class WebViewBackend : ViewBackend<MonoMac.WebKit.WebView, IWebViewEventSink>, IWebViewBackend
+	public class WebViewBackend : WidgetBackend, IWebViewBackend
 	{
+		WebKit.WebView view;
+
 		public WebViewBackend ()
 		{
 		}
 
-		internal WebViewBackend (MacWebView macweb)
-		{
-			ViewObject = macweb;
-		}
-
-		#region IWebViewBackend implementation
 		public override void Initialize()
 		{
 			base.Initialize ();
-			ViewObject = new MacWebView ();
+
+			view = new WebKit.WebView ();
+			Widget = view;
+			Widget.Show ();
 		}
 
 		public string Url {
-			get { return Widget.MainFrameUrl; }
+			get { return view.Uri; }
 			set {
-				Widget.MainFrameUrl = value;
+				view.LoadUri (value);
 			}
 		}
 
 		public string Title {
 			get {
-				return Widget.MainFrameTitle;
+				return view.Title;
 			}
 		}
 
-		public double LoadProgress { 
+		public double LoadProgress {
 			get {
-				return Widget.EstimatedProgress;
+				return view.LoadProgress;
 			}
 		}
 
 		public bool CanGoBack {
 			get {
-				return Widget.CanGoBack ();
+				return view.CanGoBack ();
 			}
 		}
 
 		public bool CanGoForward {
 			get {
-				return Widget.CanGoForward ();
+				return view.CanGoForward ();
 			}
 		}
 
 		public void GoBack ()
 		{
-			Widget.GoBack ();
+			view.GoBack ();
 		}
 
 		public void GoForward ()
 		{
-			Widget.GoForward ();
+			view.GoForward ();
 		}
 
 		public void Reload ()
 		{
-			Widget.MainFrame.Reload ();
+			view.Reload ();
 		}
 
 		public void StopLoading ()
 		{
-			Widget.MainFrame.StopLoading ();
+			view.StopLoading ();
 		}
 
 		public void LoadHtml (string content, string base_uri)
 		{
-			Widget.MainFrame.LoadHtmlString (content, new NSUrl(base_uri));
+			view.LoadHtmlString (content, base_uri);
 		}
 
 		protected new IWebViewEventSink EventSink {
@@ -116,10 +112,10 @@ namespace Xwt.Mac
 			base.EnableEvent (eventId);
 			if (eventId is WebViewEvent) {
 				switch ((WebViewEvent)eventId) {
-					case WebViewEvent.NavigateToUrl: Widget.StartedProvisionalLoad += HandleStartedProvisionalLoad; break;
-					case WebViewEvent.Loading: Widget.CommitedLoad += HandleLoadStarted; break;
-					case WebViewEvent.Loaded: Widget.FinishedLoad += HandleLoadFinished; break;
-					case WebViewEvent.TitleChanged: Widget.ReceivedTitle += HandleTitleChanged; break;
+					case WebViewEvent.NavigateToUrl: view.NavigationRequested += HandleNavigationRequested; break;
+					case WebViewEvent.Loading: view.LoadStarted += HandleLoadStarted; break;
+					case WebViewEvent.Loaded: view.LoadFinished += HandleLoadFinished; break;
+					case WebViewEvent.TitleChanged: view.TitleChanged += HandleTitleChanged; break;
 				}
 			}
 		}
@@ -129,26 +125,20 @@ namespace Xwt.Mac
 			base.DisableEvent (eventId);
 			if (eventId is WebViewEvent) {
 				switch ((WebViewEvent)eventId) {
-					case WebViewEvent.NavigateToUrl: Widget.StartedProvisionalLoad -= HandleStartedProvisionalLoad; break;
-					case WebViewEvent.Loading: Widget.CommitedLoad += HandleLoadStarted; break;
-					case WebViewEvent.Loaded: Widget.FinishedLoad -= HandleLoadFinished; break;
-					case WebViewEvent.TitleChanged: Widget.ReceivedTitle -= HandleTitleChanged; break;
+					case WebViewEvent.NavigateToUrl: view.NavigationRequested -= HandleNavigationRequested; break;
+					case WebViewEvent.Loading: view.LoadStarted -= HandleLoadStarted; break;
+					case WebViewEvent.Loaded: view.LoadFinished -= HandleLoadFinished; break;
+					case WebViewEvent.TitleChanged: view.TitleChanged -= HandleTitleChanged; break;
 				}
 			}
 		}
 
-		void HandleStartedProvisionalLoad (object sender, WebFrameEventArgs e)
+		void HandleNavigationRequested (object sender, WebKit.NavigationRequestedArgs e)
 		{
-			var url = String.Empty;
-			if (e.ForFrame.DataSource.Request.MainDocumentURL != null)
-				e.ForFrame.DataSource.Request.MainDocumentURL.ToString ();
-
-			bool cancel = false;
 			ApplicationContext.InvokeUserCode (delegate {
-				cancel = EventSink.OnNavigateToUrl(url);
+				if (EventSink.OnNavigateToUrl (e.Request.Uri))
+					e.RetVal = NavigationResponse.Ignore;
 			});
-			if (cancel)
-				e.ForFrame.StopLoading ();
 		}
 
 		void HandleLoadStarted (object o, EventArgs args)
@@ -165,21 +155,12 @@ namespace Xwt.Mac
 			});
 		}
 
-		void HandleTitleChanged (object sender, WebFrameTitleEventArgs e)
+		void HandleTitleChanged (object sender, WebKit.TitleChangedArgs e)
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnTitleChanged ();
 			});
 		}
-		#endregion
-	}
-
-	class MacWebView : MonoMac.WebKit.WebView, IViewObject
-	{
-		public ViewBackend Backend { get; set; }
-
-		public NSView View {
-			get { return this; }
-		}
 	}
 }
+
