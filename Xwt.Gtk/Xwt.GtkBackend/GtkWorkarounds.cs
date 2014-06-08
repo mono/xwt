@@ -1209,7 +1209,7 @@ namespace Xwt.GtkBackend
 		public static void RemoveSignalHandler (this Gtk.Widget widget, string name, Delegate handler)
 		{
 			var signal = GLib.Signal.Lookup (widget, name);
-			signal.AddDelegate (handler);
+			signal.RemoveDelegate (handler);
 		}
 	}
 	
