@@ -100,12 +100,7 @@ namespace Xwt.WPFBackend
 
 		string prevTitle = String.Empty;
 
-		public string Title {
-			get {
-				//TODO: how to get the title?
-				return String.Empty;
-			}
-		}
+		public string Title { get; private set; }
 
 		protected new IWebViewEventSink EventSink {
 			get { return (IWebViewEventSink)base.EventSink; }
@@ -168,14 +163,15 @@ namespace Xwt.WPFBackend
 			LoadProgress = 1;
 			if (enableLoadedEvent)
 				Context.InvokeUserCode (EventSink.OnLoaded);
+			Title = (string)view.InvokeScript("eval", "document.title.toString()");
 			if (enableTitleChangedEvent && (prevTitle != Title))
 				Context.InvokeUserCode (EventSink.OnTitleChanged);
+			prevTitle = Title;
 		}
 
 		void HandleNavigated (object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
 			LoadProgress = 0;
-			prevTitle = Title;
 			url = e.Uri.AbsoluteUri;
 			if (enableLoadingEvent)
 				Context.InvokeUserCode (delegate {
