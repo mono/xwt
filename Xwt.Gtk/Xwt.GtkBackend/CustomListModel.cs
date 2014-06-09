@@ -68,6 +68,7 @@ namespace Xwt.GtkBackend
 			public int Count;
 			public RowNode FirstChild;
 			public RowNode LastChild;
+			public RowNode Parent;
 		}
 
 		public CustomListModel (IntPtr p): base (p)
@@ -132,10 +133,17 @@ namespace Xwt.GtkBackend
 					break;
 				}
 			case NotifyCollectionChangedAction.Replace:
-				for (int n = e.NewStartingIndex; n < e.NewStartingIndex + e.NewItems.Count; n++) {
-					var p = new Gtk.TreePath (new int[] { n });
-					var it = IterFromNode (n);
-					adapter.EmitRowChanged (p, it);
+				{
+					var nod = GetNodeAtRow (data.Parent, e.NewStartingIndex);
+					var index = e.NewStartingIndex;
+					var count = e.NewItems.Count;
+					while (count-- > 0 && nod != null) {
+						var p = new Gtk.TreePath (new int[] { index });
+						var it = IterFromNode (nod);
+						adapter.EmitRowChanged (p, it);
+						nod = nod.Next;
+					}
+					break;
 				}
 			}
 			parentWidget.QueueResize ();
@@ -226,7 +234,7 @@ namespace Xwt.GtkBackend
 			var en = col.GetEnumerator ();
 			parent.Children.Enumerator = en;
 			if (en.MoveNext ())
-				parent.Children.FirstChild = parent.Children.LastChild = CreateNode (0, en.Current);
+				return parent.Children.FirstChild = parent.Children.LastChild = CreateNode (0, en.Current);
 			else {
 				parent.Children = emptyCollection;
 				return null;
@@ -361,7 +369,7 @@ namespace Xwt.GtkBackend
 
 		public bool IterChildren (out Gtk.TreeIter iter, Gtk.TreeIter parent)
         {
-			var node = NodeFromIter (parent);
+			var node = !parent.Equals (Gtk.TreeIter.Zero) ? NodeFromIter (parent) : root;
 			if (node == null) {
 				iter = Gtk.TreeIter.Zero;
 				return false;

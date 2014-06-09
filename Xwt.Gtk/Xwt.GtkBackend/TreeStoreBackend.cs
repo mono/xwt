@@ -156,10 +156,20 @@ namespace Xwt.GtkBackend
 			SetValue (tpos.Iter, column, value);
 		}
 
+		public void SetValue (object pos, int column, object value)
+		{
+			SetValue ((TreePosition)pos, column, value);
+		}
+
 		public object GetValue (TreePosition pos, int column)
 		{
 			IterPos tpos = GetIterPos (pos);
 			return GetValue (tpos.Iter, column);
+		}
+
+		public object GetValue (object pos, int column)
+		{
+			return GetValue ((TreePosition)pos, column);
 		}
 
 		public TreePosition InsertBefore (TreePosition pos)

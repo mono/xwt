@@ -64,12 +64,8 @@ namespace Xwt.GtkBackend
 
 		public void SetSource (object source, IBackend sourceBackend)
 		{
-			ListStoreBackend b = sourceBackend as ListStoreBackend;
-			if (b == null) {
-				CustomListModel model = new CustomListModel (source, Widget);
-				Widget.Model = model.Store;
-			} else
-				Widget.Model = b.Store;
+			CustomListModel model = new CustomListModel (source, Widget);
+			Widget.Model = model.Store;
 		}
 
 		public void SelectRow (int row)

@@ -64,8 +64,8 @@ namespace Xwt.GtkBackend
 
 			if (!view.RaiseTextChanged () && view.TextBinding != null) {
 				Gtk.TreeIter iter;
-				if (TreeModel.GetIterFromString (out iter, path))
-					CellUtil.SetModelValue (TreeModel, iter, view.TextBinding.Index, view.TextBinding.FieldType, args.NewText);
+				if (TreeModel.GetIterFromString (out iter, args.Path))
+					view.TextBinding.SetValue (null, args.NewText);
 			}
 		}
 	}

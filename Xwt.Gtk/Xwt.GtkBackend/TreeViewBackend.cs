@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
@@ -38,7 +39,11 @@ namespace Xwt.GtkBackend
 		protected new ITreeViewEventSink EventSink {
 			get { return (ITreeViewEventSink)base.EventSink; }
 		}
-		
+
+		public void SetTemplates (IEnumerable<TreeItemTemplate> templates)
+		{
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
@@ -159,12 +164,12 @@ namespace Xwt.GtkBackend
 		
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
-			TreeStoreBackend b = sourceBackend as TreeStoreBackend;
-			if (b == null) {
-				CustomTreeModel model = new CustomTreeModel (source);
+			//			TreeStoreBackend b = sourceBackend as TreeStoreBackend;
+			//if (b == null) {
+			CustomListModel model = new CustomListModel (source, Widget);
 				Widget.Model = model.Store;
-			} else
-				Widget.Model = b.Store;
+			//} else
+			//	Widget.Model = b.Store;
 		}
 
 		public TreePosition[] SelectedRows {

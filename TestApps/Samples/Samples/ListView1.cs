@@ -20,7 +20,7 @@ namespace Samples
 			list.DataSource = store;
 			list.Columns.Add ("Name", icon, name);
 			list.Columns.Add ("Text", icon2, text);
-			list.Columns.Add ("Progress", new TextCellView () { TextField = text }, new CustomCell () { ValueField = progress });
+			list.Columns.Add ("Progress", new TextCellView () { TextBinding = text }, new CustomCell () { ValueField = progress });
 
 			var png = Image.FromResource (typeof(App), "class.png");
 
@@ -105,7 +105,7 @@ namespace Samples
 
 		protected override void OnMouseMoved (MouseMovedEventArgs args)
 		{
-			var data = GetValue (ValueField);
+			var data = GetValue<CellData> (ValueField);
 			data.Value = (int) (100 * ((args.X - Bounds.X) / Bounds.Width));
 			data.YPos = args.Y - Bounds.Y;
 			QueueDraw ();

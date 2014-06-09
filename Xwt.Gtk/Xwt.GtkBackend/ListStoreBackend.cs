@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
+using System.Collections.Specialized;
 
 namespace Xwt.GtkBackend
 {
@@ -128,6 +129,8 @@ namespace Xwt.GtkBackend
 		{
 			List.Clear ();
 		}
+
+		public event NotifyCollectionChangedEventHandler CollectionChanged;
 	}
 }
 

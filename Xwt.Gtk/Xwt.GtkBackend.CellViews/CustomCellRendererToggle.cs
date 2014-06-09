@@ -54,16 +54,15 @@ namespace Xwt.GtkBackend
 			SetCurrentEventRow ();
 
 			var view = (ICheckBoxCellViewFrontend) Frontend;
-			IDataField field = (IDataField) view.StateBinding ?? view.ActiveBinding;
+			var field = view.StateBinding ?? view.ActiveBinding;
 
 			if (!view.RaiseToggled () && (field != null)) {
-				Type type = field.FieldType;
 
 				Gtk.TreeIter iter;
 				if (TreeModel.GetIterFromString (out iter, args.Path)) {
 					CheckBoxState newState;
 
-					if (view.AllowMixed && type == typeof(CheckBoxState)) {
+					if (view.AllowMixed && view.StateBinding != null) {
 						if (renderer.Inconsistent)
 							newState = CheckBoxState.Off;
 						else if (renderer.Active)
@@ -77,10 +76,10 @@ namespace Xwt.GtkBackend
 							newState = CheckBoxState.On;
 					}
 
-					object newValue = type == typeof(CheckBoxState) ?
+					object newValue = view.StateBinding != null ?
 						(object) newState : (object) (newState == CheckBoxState.On);
 
-					CellUtil.SetModelValue (TreeModel, iter, field.Index, type, newValue);
+					field.SetValue (null, newValue);
 				}
 			}
 		}
