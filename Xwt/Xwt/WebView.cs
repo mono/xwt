@@ -45,7 +45,7 @@ namespace Xwt
 		{
 			public bool OnNavigateToUrl (string url)
 			{
-				var args = new NavigateToUrlEventArgs (new Uri(url));
+				var args = new NavigateToUrlEventArgs (new Uri(url, UriKind.RelativeOrAbsolute));
 				((WebView)Parent).OnNavigateToUrl (args);
 				return args.Handled;
 			}

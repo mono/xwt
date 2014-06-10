@@ -140,8 +140,10 @@ namespace Xwt.Mac
 		void HandleStartedProvisionalLoad (object sender, WebFrameEventArgs e)
 		{
 			var url = String.Empty;
-			if (e.ForFrame.DataSource.Request.MainDocumentURL != null)
-				e.ForFrame.DataSource.Request.MainDocumentURL.ToString ();
+			if (e.ForFrame.ProvisionalDataSource.Request.MainDocumentURL != null)
+				url = e.ForFrame.ProvisionalDataSource.Request.MainDocumentURL.ToString ();
+			if (String.IsNullOrEmpty (url))
+				return;
 
 			bool cancel = false;
 			ApplicationContext.InvokeUserCode (delegate {

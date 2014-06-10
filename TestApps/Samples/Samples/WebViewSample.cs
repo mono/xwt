@@ -94,9 +94,9 @@ namespace Samples
 				forward.Sensitive = wb.CanGoForward;
 			};
 			wb.NavigateToUrl += delegate(object sender, NavigateToUrlEventArgs e) {
-				if (e.Uri.Host == "www.facebook.com") {
+				if (e.Uri.Host.EndsWith("facebook.com")) {
 					e.SetHandled ();
-					MessageDialog.ShowMessage ("Loading www.facebook.com overriden");
+					MessageDialog.ShowMessage ("Loading *.facebook.com overriden");
 				}
 				else {
 				}
