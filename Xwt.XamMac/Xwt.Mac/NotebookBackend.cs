@@ -25,12 +25,15 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using Xwt.Backends;
 using System.Collections.Generic;
 
 #if MONOMAC
 using nint = System.Int32;
 using nfloat = System.Single;
+using CGRect = System.Drawing.RectangleF;
+using CGSize = System.Drawing.SizeF;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
 #else
@@ -78,8 +81,10 @@ namespace Xwt.Mac
 		#region INotebookBackend implementation
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
-			NSTabViewItem item = new NSTabViewItem ();
+			TabViewItem item = new TabViewItem ();
 			item.Label = tab.Label;
+			if (!tab.Image.IsNull)
+				item.Image = tab.Image.ToNSImage ();
 			item.View = GetWidgetWithPlacement (widget);
 			Widget.Add (item);
 		}
@@ -99,8 +104,13 @@ namespace Xwt.Mac
 			IWidgetBackend widget = (IWidgetBackend) Toolkit.GetBackend (tab.Child);
 			var v = GetWidget (widget);
 			var t = FindTab (v);
-			if (t != null)
+			if (t != null) {
+				if (!tab.Image.IsNull)
+					t.Image = tab.Image.ToNSImage ();
+				else
+					t.Image = null;
 				t.Label = tab.Label;
+			}
 		}
 		
 		public int CurrentTab {
@@ -149,10 +159,10 @@ namespace Xwt.Mac
 
 		#endregion
 		
-		NSTabViewItem FindTab (NSView v)
+		TabViewItem FindTab (NSView v)
 		{
-			foreach (var t in Widget.Items) {
-				if (t.View == v)
+			foreach (var t in Widget.Items.Cast<TabViewItem>().DefaultIfEmpty()) {
+				if (t != null && t.View == v)
 					return t;
 			}
 			return null;
@@ -164,6 +174,30 @@ namespace Xwt.Mac
 		public ViewBackend Backend { get; set; }
 		public NSView View {
 			get { return this; }
+		}
+	}
+
+	class TabViewItem : NSTabViewItem
+	{
+		public NSImage Image { get; set; } 
+
+		public override void DrawLabel (bool shouldTruncateLabel, CGRect labelRect)
+		{
+			if (Image != null) {
+				Image.Draw (new CGRect (labelRect.X, labelRect.Y, labelRect.Height, labelRect.Height), 
+					new CGRect (0, 0, Image.Size.Width, Image.Size.Height), NSCompositingOperation.SourceOver, 1, true, null);
+				labelRect.X += labelRect.Height + 3;
+				labelRect.Width -= labelRect.Height + 3;
+			}
+			base.DrawLabel (shouldTruncateLabel, labelRect);
+		}
+
+		public override CGSize SizeOfLabel (bool computeMin)
+		{
+			var labelSize = base.SizeOfLabel (computeMin);
+			if (Image != null)
+				labelSize.Width += labelSize.Height + 3;
+			return labelSize;
 		}
 	}
 }
