@@ -73,7 +73,6 @@ namespace Xwt
 		{
 			if (started)
 				throw new InvalidOperationException ("The drag image must be set before starting the drag operation");
-			source.Surface.ToolkitEngine.ValidateObject (image);
 			this.image = image;
 			this.hotX = hotX;
 			this.hotY = hotY;
@@ -97,6 +96,7 @@ namespace Xwt
 		{
 			if (image == null)
 				throw new InvalidOperationException ("The drag image must be set before starting the drag operation");
+			image.InitForToolkit (source.Surface.ToolkitEngine);
 			return new DragStartData (data, action, image.ToBitmap ().GetBackend (), hotX, hotY);
 		}
 		

@@ -68,6 +68,14 @@ namespace Xwt.Mac
 			return res;
 		}
 
+		public override object CreateMultiSizeIcon (IEnumerable<object> images)
+		{
+			NSImage res = new NSImage ();
+			foreach (NSImage img in images)
+				res.AddRepresentations (img.Representations ());
+			return res;
+		}
+
 		public override object CreateCustomDrawn (ImageDrawCallback drawCallback)
 		{
 			return new CustomImage (ApplicationContext, drawCallback);

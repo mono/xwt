@@ -49,7 +49,7 @@ namespace Xwt
 
 		public Image Image {
 			get { return image; }
-			set { image = value; Backend.SetImage (image != null ? image.ImageDescription : ImageDescription.Null); }
+			set { image = value; Backend.SetImage (image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null); }
 		}
 
 		IStatusIconBackend Backend {
