@@ -145,6 +145,7 @@ namespace Samples
 			tl0.SetFontStyle (FontStyle.Italic, "This text ".Length, "contains".Length);
 			tl0.SetStrikethrough ("This text contains ".Length, "attributes".Length);
 
+			ctx.SetColor(Colors.DarkGreen);
 			ctx.DrawTextLayout (tl0, col2.Left, col2.Bottom + 100);
 
 			
