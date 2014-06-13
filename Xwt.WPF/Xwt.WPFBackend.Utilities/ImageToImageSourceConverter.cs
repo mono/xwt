@@ -36,13 +36,20 @@ namespace Xwt.WPFBackend.Utilities
 	public class ImageToImageSourceConverter
 		: IValueConverter
 	{
+		ApplicationContext context;
+
+		public ImageToImageSourceConverter(ApplicationContext context)
+		{
+			this.context = context;
+		}
+
 		public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			Image image = value as Image;
 			if (image == null)
 				return null;
 
-			return image.ToImageDescription ();
+			return image.ToImageDescription(context);
 		}
 
 		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)

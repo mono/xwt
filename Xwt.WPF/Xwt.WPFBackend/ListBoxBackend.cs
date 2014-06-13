@@ -77,7 +77,7 @@ namespace Xwt.WPFBackend
 		public void SetViews (CellViewCollection views)
 		{
 			ListBox.DisplayMemberPath = null;
-            ListBox.ItemTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Frontend, views) };
+            ListBox.ItemTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, views) };
 		}
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
