@@ -165,6 +165,11 @@ namespace Xwt.WPFBackend
 			ListView.UnselectAll();
 		}
 
+		public void ScrollToRow (int row)
+		{
+			ListView.ScrollIntoView (ListView.Items [row]);
+		}
+
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
 			var dataSource = sourceBackend as ListDataSource;

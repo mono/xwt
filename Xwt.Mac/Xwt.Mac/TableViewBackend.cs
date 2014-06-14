@@ -221,6 +221,11 @@ namespace Xwt.Mac
 		{
 			Table.DeselectAll (null);
 		}
+
+		public void ScrollToRow (int row)
+		{
+			Table.ScrollRowToVisible (row);
+		}
 		
 		public abstract object GetValue (object pos, int nField);
 		
