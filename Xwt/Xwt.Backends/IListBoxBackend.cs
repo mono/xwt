@@ -40,7 +40,7 @@ namespace Xwt.Backends
 		int[] SelectedRows { get; }
 		void SelectRow (int pos);
 		void UnselectRow (int pos);
-		GridLines GridLines { get; set; }
+		bool GridLines { get; set; }
 	}
 
 	/// <summary>

@@ -37,6 +37,15 @@ namespace Xwt.Mac
 		{
 		}
 
+		public new bool GridLines {
+			get {
+				return (base.GridLines == Xwt.GridLines.Horizontal || base.GridLines == Xwt.GridLines.Both);
+			}
+			set {
+				base.GridLines = value ? Xwt.GridLines.Horizontal : Xwt.GridLines.None;
+			}
+		}
+
 		public override void Initialize ()
 		{
 			base.Initialize ();

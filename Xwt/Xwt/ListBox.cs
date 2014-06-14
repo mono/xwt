@@ -144,7 +144,7 @@ namespace Xwt
 			}
 		}
 
-		public GridLines GridLines
+		public bool GridLines
 		{
 			get { return Backend.GridLines; }
 			set { Backend.GridLines = value; }

@@ -36,6 +36,15 @@ namespace Xwt.GtkBackend
 		public ListBoxBackend ()
 		{
 		}
+
+		public new bool GridLines {
+			get {
+				return (base.GridLines == Xwt.GridLines.Horizontal || base.GridLines == Xwt.GridLines.Both);
+			}
+			set {
+				base.GridLines = value ?  Xwt.GridLines.Horizontal : Xwt.GridLines.None;
+			}
+		}
 		
 		protected new IListBoxEventSink EventSink {
 			get { return (IListBoxEventSink)((WidgetBackend)this).EventSink; }

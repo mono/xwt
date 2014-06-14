@@ -52,16 +52,14 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		GridLines gridLines;
-		public GridLines GridLines {
+		bool gridLines;
+		public bool GridLines {
 			get {
 				return gridLines;
 			}
 			set {
 				gridLines = value;
-				// we support only horizontal grid lines for now
-				// vertical lines are tricky and have to be drawn manually...
-				if (value == GridLines.None) {
+				if (!value) {
 					if (this.ListBox.ItemContainerStyle != null) {
 						this.ListBox.ItemContainerStyle.Setters.Remove (GridHorizontalSetter);
 						this.ListBox.ItemContainerStyle.Setters.Remove (BorderBrushSetter);
