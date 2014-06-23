@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Linq;
+using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
@@ -33,7 +34,10 @@ namespace Xwt.GtkBackend
 		protected override bool OnDrawn (Cairo.Context cr)
 		{
 			var a = Allocation;
-			OnDraw (new Rectangle (a.X, a.Y, a.Width, a.Height));
+			// ensure cr does not get disposed before it is passed back to Gtk
+			var context = new TempCairoContextBackend (Util.GetScaleFactor (this));
+			context.Context = cr;
+			OnDraw (new Rectangle (a.X, a.Y, a.Width, a.Height), context);
 			return base.OnDrawn (cr);
 		}
 
@@ -66,6 +70,22 @@ namespace Xwt.GtkBackend
 					minimum_width = (int) Math.Max (minimum_width, cr.Value.X + cr.Value.Height);
 					natural_width = (int) Math.Max (natural_width, cr.Value.X + cr.Value.Height);
 				}
+			}
+		}
+	}
+
+	class TempCairoContextBackend : CairoContextBackend
+	{
+		public TempCairoContextBackend (double scaleFactor) : base (scaleFactor)
+		{
+		}
+
+		public override void Dispose ()
+		{
+			// dispose only TempSurface and don't touch the Context itself
+			IDisposable d = TempSurface;
+			if (d != null) {
+				d.Dispose ();
 			}
 		}
 	}

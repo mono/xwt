@@ -156,10 +156,10 @@ namespace Xwt.GtkBackend
 				callback (c);
 		}
 
-		protected void OnDraw (Rectangle dirtyRect)
+		protected void OnDraw (Rectangle dirtyRect, CairoContextBackend context)
 		{
 			Backend.ApplicationContext.InvokeUserCode (delegate {
-				using (var context = CreateContext ()) {
+				using (context) {
 					var r = new Rectangle (dirtyRect.X - context.Origin.X, dirtyRect.Y - context.Origin.Y, dirtyRect.Width, dirtyRect.Height);
 					EventSink.OnDraw (context, r);
 				}

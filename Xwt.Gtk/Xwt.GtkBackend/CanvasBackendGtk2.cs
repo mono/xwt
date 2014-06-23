@@ -40,7 +40,7 @@ namespace Xwt.GtkBackend
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			var a = evnt.Area;
-			OnDraw (new Rectangle (a.X, a.Y, a.Width, a.Height));
+			OnDraw (new Rectangle (a.X, a.Y, a.Width, a.Height), CreateContext ());
 			return base.OnExposeEvent (evnt);
 		}
 	}
