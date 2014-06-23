@@ -43,7 +43,7 @@ namespace Xwt
 		protected XwtObject (object backend, Toolkit toolkit)
 		{
 			this.backend = backend;
-			ToolkitEngine = Toolkit.CurrentEngine;
+			ToolkitEngine = toolkit ?? Toolkit.CurrentEngine;
 		}
 
 		protected XwtObject ()

@@ -40,6 +40,11 @@ namespace Samples
 			la.TextAlignment = Alignment.Center;
 			PackStart (la);
 
+			la = new Label ("Centered Ellipsized Text, Centered Ellipsized Text, Centered Ellipsized Text, Centered Ellipsized Text, Centered Ellipsized Text");
+			la.TextAlignment = Alignment.Center;
+			la.Ellipsize = EllipsizeMode.End;
+			PackStart (la);
+
 			la = new Label ("Left Aligned, Left Aligned, Left Aligned, Left Aligned, Left Aligned, Left Aligned, Left Aligned, Left Aligned");
 			la.Wrap = WrapMode.Word;
 			la.TextAlignment = Alignment.Start;

@@ -36,23 +36,23 @@ namespace Xwt.WPFBackend.Utilities
 {
 	public static class CellUtil
 	{
-		internal static FrameworkElementFactory CreateBoundColumnTemplate (Widget parent, CellViewCollection views, string dataPath = ".")
+		internal static FrameworkElementFactory CreateBoundColumnTemplate (ApplicationContext ctx, Widget parent, CellViewCollection views, string dataPath = ".")
 		{
 			if (views.Count == 1)
-                return CreateBoundCellRenderer(parent, views[0], dataPath);
+                return CreateBoundCellRenderer(ctx, parent, views[0], dataPath);
 			
 			FrameworkElementFactory container = new FrameworkElementFactory (typeof (StackPanel));
 			container.SetValue (StackPanel.OrientationProperty, System.Windows.Controls.Orientation.Horizontal);
 
 			foreach (CellView view in views) {
-                container.AppendChild(CreateBoundCellRenderer(parent, view, dataPath));
+                container.AppendChild(CreateBoundCellRenderer(ctx, parent, view, dataPath));
 			}
 
 			return container;
 		}
 
 		private static readonly Thickness CellMargins = new Thickness (2);
-		internal static FrameworkElementFactory CreateBoundCellRenderer (Widget parent, CellView view, string dataPath = ".")
+		internal static FrameworkElementFactory CreateBoundCellRenderer (ApplicationContext ctx, Widget parent, CellView view, string dataPath = ".")
 		{
             ICellViewFrontend fr = view;
 			TextCellView textView = view as TextCellView;
@@ -106,7 +106,7 @@ namespace Xwt.WPFBackend.Utilities
 
 				if (imageView.ImageField != null) {
 					var binding = new Binding (dataPath + "[" + imageView.ImageField.Index + "]")
-					{ Converter = new ImageToImageSourceConverter () };
+					{ Converter = new ImageToImageSourceConverter (ctx) };
 
 					factory.SetBinding (ImageBox.ImageSourceProperty, binding);
 				}

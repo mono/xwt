@@ -269,6 +269,11 @@ namespace Xwt
 		{
 			Backend.UnselectAll ();
 		}
+
+		public void ScrollToRow (int row)
+		{
+			Backend.ScrollToRow (row);
+		}
 		
 		void HandleModelChanged (object sender, ListRowEventArgs e)
 		{

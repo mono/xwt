@@ -34,9 +34,9 @@ namespace Xwt.Mac
 {
 	static class CellUtil
 	{
-		public static NSCell CreateCell (NSTableView table, ICellSource source, ICollection<CellView> cells, int column)
+		public static NSCell CreateCell (ApplicationContext context, NSTableView table, ICellSource source, ICollection<CellView> cells, int column)
 		{
-			CompositeCell c = new CompositeCell (Orientation.Horizontal, source);
+			CompositeCell c = new CompositeCell (context, Orientation.Horizontal, source);
 			foreach (var cell in cells)
 				c.AddCell ((ICellRenderer) CreateCell (table, c, cell, column));
 			return c;

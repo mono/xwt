@@ -133,6 +133,7 @@ namespace Xwt.Backends
 		DragStartData OnDragStarted ();
 		void OnKeyPressed (KeyEventArgs args);
 		void OnKeyReleased (KeyEventArgs args);
+		void OnPreviewTextInput (PreviewTextInputEventArgs args);
 		void OnGotFocus ();
 		void OnLostFocus ();
 		void OnMouseEntered ();
@@ -198,7 +199,8 @@ namespace Xwt.Backends
 		MouseMoved = 1 << 14,
 		DragStarted = 1 << 15,
 		BoundsChanged = 1 << 16,
-        MouseScrolled = 1 << 17
+        MouseScrolled = 1 << 17,
+		PreviewTextInput = 1 << 18
 	}
 	
 	public class DragStartData

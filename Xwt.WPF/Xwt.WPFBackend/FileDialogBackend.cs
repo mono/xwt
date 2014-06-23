@@ -63,7 +63,7 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				if (this.filters.Count == 0)
+				if (this.filters.Count == 0 || this.dialog.FilterIndex < 1)
 					return null;
 
 				return this.filters [this.dialog.FilterIndex - 1];

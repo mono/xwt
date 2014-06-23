@@ -53,7 +53,7 @@ namespace Xwt.Mac
 
 		public void Fill ()
 		{
-			ObjectValue = Frontend.Image.ToImageDescription ().ToNSImage ();
+			ObjectValue = Frontend.Image.ToImageDescription (CellContainer.Context).ToNSImage ();
 		}
 		
 		public override CGSize CellSize {
