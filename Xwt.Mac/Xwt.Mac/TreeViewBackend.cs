@@ -152,7 +152,7 @@ namespace Xwt.Mac
 		{
 			var it = tsource.GetItem (pos);
 			if (it != null)
-				ScrollToRow (Tree.RowForItem (it));
+				ScrollToRow ((int)Tree.RowForItem (it));
 		}
 		
 		public void ExpandToRow (TreePosition pos)
