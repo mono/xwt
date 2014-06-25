@@ -163,6 +163,15 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		bool IWindowFrameBackend.Sensitive {
+			get {
+				return window.Sensitive;
+			}
+			set {
+				window.Sensitive = value;
+			}
+		}
+
 		double opacity = 1d;
 		double IWindowFrameBackend.Opacity {
 			get {
