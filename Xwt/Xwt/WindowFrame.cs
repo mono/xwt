@@ -259,6 +259,12 @@ namespace Xwt
 			set { Backend.Visible = value; }
 		}
 
+		[DefaultValue (true)]
+		public bool Sensitive {
+			get { return Backend.Sensitive; }
+			set { Backend.Sensitive = value; }
+		}
+
 		public double Opacity {
 			get { return Backend.Opacity; }
 			set { Backend.Opacity = value; }

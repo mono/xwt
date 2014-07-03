@@ -172,6 +172,17 @@ namespace Samples
 				});
 				dialog.Run ();
 			};
+
+			b = new Button("Show dialog and make this window not sensitive");
+			PackStart(b);
+			b.Clicked += delegate
+			{
+				var dialog = new Dialog ();
+				dialog.Content = new Label ("Hello World");
+				dialog.Run ();
+				dialog.Shown += (sender, args) => this.ParentWindow.Sensitive = false;
+				dialog.Closed += (sender, args) => this.ParentWindow.Sensitive = true;
+			};
 		}
 	}
 }

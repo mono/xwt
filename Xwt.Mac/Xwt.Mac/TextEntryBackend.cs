@@ -32,6 +32,9 @@ namespace Xwt.Mac
 {
 	public class TextEntryBackend: ViewBackend<NSView,ITextEntryEventSink>, ITextEntryBackend
 	{
+		int cacheSelectionStart, cacheSelectionLength;
+		bool checkMouseSelection;
+
 		public TextEntryBackend ()
 		{
 		}
@@ -51,6 +54,18 @@ namespace Xwt.Mac
 				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view);
 				MultiLine = false;
 			}
+
+			Frontend.MouseEntered += delegate {
+				checkMouseSelection = true;
+			};
+			Frontend.MouseExited += delegate {
+				checkMouseSelection = false;
+				HandleSelectionChanged ();
+			};
+			Frontend.MouseMoved += delegate {
+				if (checkMouseSelection)
+					HandleSelectionChanged ();
+			};
 		}
 		
 		protected override void OnSizeToFit ()
@@ -140,13 +155,78 @@ namespace Xwt.Mac
 			}
 		}
 
-		public int CursorPosition { get; set; }
+		public int CursorPosition { 
+			get {
+				if (Widget.CurrentEditor == null)
+					return 0;
+				return Widget.CurrentEditor.SelectedRange.Location;
+			}
+			set {
+				Widget.CurrentEditor.SelectedRange = new MonoMac.Foundation.NSRange (value, SelectionLength);
+				HandleSelectionChanged ();
+			}
+		}
 
-		public int SelectionStart { get; set; }
+		public int SelectionStart { 
+			get {
+				if (Widget.CurrentEditor == null)
+					return 0;
+				return Widget.CurrentEditor.SelectedRange.Location;
+			}
+			set {
+				Widget.CurrentEditor.SelectedRange = new MonoMac.Foundation.NSRange (value, SelectionLength);
+				HandleSelectionChanged ();
+			}
+		}
 
-		public int SelectionLength { get; set; }
+		public int SelectionLength { 
+			get {
+				if (Widget.CurrentEditor == null)
+					return 0;
+				return Widget.CurrentEditor.SelectedRange.Length;
+			}
+			set {
+				Widget.CurrentEditor.SelectedRange = new MonoMac.Foundation.NSRange (SelectionStart, value);
+				HandleSelectionChanged ();
+			}
+		}
 
-		public string SelectedText { get; set; }
+		public string SelectedText { 
+			get {
+				if (Widget.CurrentEditor == null)
+					return String.Empty;
+				int start = SelectionStart;
+				int end = start + SelectionLength;
+				if (start == end) return String.Empty;
+				try {
+					return Text.Substring (start, end - start);
+				} catch {
+					return String.Empty;
+				}
+			}
+			set {
+				int cacheSelStart = SelectionStart;
+				int pos = cacheSelStart;
+				if (SelectionLength > 0) {
+					Text = Text.Remove (pos, SelectionLength).Insert (pos, value);
+				}
+				SelectionStart = pos;
+				SelectionLength = value.Length;
+				HandleSelectionChanged ();
+			}
+		}
+
+		void HandleSelectionChanged ()
+		{
+			if (cacheSelectionStart != SelectionStart ||
+			    cacheSelectionLength != SelectionLength) {
+				cacheSelectionStart = SelectionStart;
+				cacheSelectionLength = SelectionLength;
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnSelectionChanged ();
+				});
+			}
+		}
 
 		public override void SetFocus ()
 		{
@@ -179,7 +259,19 @@ namespace Xwt.Mac
 			base.DidChange (notification);
 			context.InvokeUserCode (delegate {
 				eventSink.OnChanged ();
+				eventSink.OnSelectionChanged ();
 			});
+		}
+
+		int cachedCursorPosition;
+		public override void KeyUp (NSEvent theEvent)
+		{
+			base.KeyUp (theEvent);
+			if (cachedCursorPosition != CurrentEditor.SelectedRange.Location)
+				context.InvokeUserCode (delegate {
+				eventSink.OnSelectionChanged ();
+			});
+			cachedCursorPosition = CurrentEditor.SelectedRange.Location;
 		}
 	}
 }
