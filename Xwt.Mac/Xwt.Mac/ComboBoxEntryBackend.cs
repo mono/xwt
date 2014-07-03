@@ -148,7 +148,7 @@ namespace Xwt.Mac
 				RemoveTrackingArea (trackingArea);
 				trackingArea.Dispose ();
 			}
-			System.Drawing.RectangleF viewBounds = this.Bounds;
+			var viewBounds = this.Bounds;
 			var options = NSTrackingAreaOptions.MouseMoved | NSTrackingAreaOptions.ActiveInKeyWindow | NSTrackingAreaOptions.MouseEnteredAndExited;
 			trackingArea = new NSTrackingArea (viewBounds, options, this, null);
 			AddTrackingArea (trackingArea);
@@ -200,7 +200,7 @@ namespace Xwt.Mac
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
-			args.Button = (PointerButton) theEvent.ButtonNumber + 1;
+			args.Button = (PointerButton) (int)theEvent.ButtonNumber + 1;
 			context.InvokeUserCode (delegate {
 				eventSink.OnButtonReleased (args);
 			});
@@ -245,8 +245,8 @@ namespace Xwt.Mac
 				return;
 			if (cacheSelectionStart != CurrentEditor.SelectedRange.Location ||
 			    cacheSelectionLength != CurrentEditor.SelectedRange.Length) {
-				cacheSelectionStart = CurrentEditor.SelectedRange.Location;
-				cacheSelectionLength = CurrentEditor.SelectedRange.Length;
+				cacheSelectionStart = (int)CurrentEditor.SelectedRange.Location;
+				cacheSelectionLength = (int)CurrentEditor.SelectedRange.Length;
 				context.InvokeUserCode (delegate {
 					entryEventSink.OnSelectionChanged ();
 				});

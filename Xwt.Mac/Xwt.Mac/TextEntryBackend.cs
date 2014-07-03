@@ -23,10 +23,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using Xwt.Backends;
 using AppKit;
 using Foundation;
-
+using System;
 
 namespace Xwt.Mac
 {
@@ -159,10 +160,10 @@ namespace Xwt.Mac
 			get {
 				if (Widget.CurrentEditor == null)
 					return 0;
-				return Widget.CurrentEditor.SelectedRange.Location;
+				return (int)Widget.CurrentEditor.SelectedRange.Location;
 			}
 			set {
-				Widget.CurrentEditor.SelectedRange = new MonoMac.Foundation.NSRange (value, SelectionLength);
+				Widget.CurrentEditor.SelectedRange = new Foundation.NSRange (value, SelectionLength);
 				HandleSelectionChanged ();
 			}
 		}
@@ -171,10 +172,10 @@ namespace Xwt.Mac
 			get {
 				if (Widget.CurrentEditor == null)
 					return 0;
-				return Widget.CurrentEditor.SelectedRange.Location;
+				return (int)Widget.CurrentEditor.SelectedRange.Location;
 			}
 			set {
-				Widget.CurrentEditor.SelectedRange = new MonoMac.Foundation.NSRange (value, SelectionLength);
+				Widget.CurrentEditor.SelectedRange = new Foundation.NSRange (value, SelectionLength);
 				HandleSelectionChanged ();
 			}
 		}
@@ -183,10 +184,10 @@ namespace Xwt.Mac
 			get {
 				if (Widget.CurrentEditor == null)
 					return 0;
-				return Widget.CurrentEditor.SelectedRange.Length;
+				return (int)Widget.CurrentEditor.SelectedRange.Length;
 			}
 			set {
-				Widget.CurrentEditor.SelectedRange = new MonoMac.Foundation.NSRange (SelectionStart, value);
+				Widget.CurrentEditor.SelectedRange = new Foundation.NSRange (SelectionStart, value);
 				HandleSelectionChanged ();
 			}
 		}
@@ -271,7 +272,7 @@ namespace Xwt.Mac
 				context.InvokeUserCode (delegate {
 				eventSink.OnSelectionChanged ();
 			});
-			cachedCursorPosition = CurrentEditor.SelectedRange.Location;
+			cachedCursorPosition = (int)CurrentEditor.SelectedRange.Location;
 		}
 	}
 }
