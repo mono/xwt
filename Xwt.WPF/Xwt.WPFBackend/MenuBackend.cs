@@ -73,6 +73,12 @@ namespace Xwt.WPFBackend
 				ParentWindow.mainMenu.Items.Insert (index, itemBackend.Item);
 			else if (this.menu != null)
 				this.menu.Items.Insert (index, itemBackend.Item);
+
+            if (item.GetType() == typeof(SeparatorMenuItemBackend))
+            {
+                var separatorItem = item as SeparatorMenuItemBackend;
+                separatorItem.Parent = this;
+            }
 		}
 
 		public void RemoveItem (IMenuItemBackend item)
