@@ -74,8 +74,8 @@ namespace Xwt.Backends
 		void OnRowActivated (TreePosition position);
 		void OnRowExpanding (TreePosition position);
 		void OnRowExpanded (TreePosition position);
-		void OnRowCollapsing(TreePosition position);
-		void OnRowCollapsed(TreePosition position);
+		void OnRowCollapsing (TreePosition position);
+		void OnRowCollapsed (TreePosition position);
 	}
 }
 
