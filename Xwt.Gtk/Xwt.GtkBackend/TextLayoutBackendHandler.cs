@@ -3,7 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-//       Lytico (http://limada.sourceforge.net)
+//       Lytico (http://www.limada.org)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -174,7 +174,15 @@ namespace Xwt.GtkBackend
 		{
 			var tl = (PangoBackend)backend;
 			int w, h;
+			// disable ellipsize, otherwise GetPixelSize returns the heigth of one line only
+			var ellipsize = tl.Layout.Ellipsize;
+			tl.Layout.Ellipsize = Pango.EllipsizeMode.None;
 			tl.Layout.GetPixelSize (out w, out h);
+			tl.Layout.Ellipsize = ellipsize;
+			if (ellipsize != Pango.EllipsizeMode.None && tl.Layout.Width > 0)
+				// an ellipsized text doesn't exceed layout's width
+				w = Math.Min (w, (int)(tl.Layout.Width / Pango.Scale.PangoScale));
+
 			return new Size ((double)w, (double)h);
 		}
 

@@ -70,6 +70,15 @@ namespace Xwt.CairoBackend
 			cr.Arc(x + r, y + h - r, r, Math.PI * 0.5, Math.PI);
 			cr.Arc(x + r, y + r, r, Math.PI, Math.PI * 1.5);
 		}
+
+		public static Size GetSize (this Pango.LayoutLine line)
+		{
+			var ext = new Pango.Rectangle ();
+			var extl = new Pango.Rectangle ();
+			var scale = Pango.Scale.PangoScale;
+			line.GetExtents (ref ext, ref extl);
+			return new Size (extl.Width / scale, extl.Height / scale);
+		}
 	}
 }
 
