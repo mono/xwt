@@ -210,21 +210,16 @@ namespace Xwt.GtkBackend
 		public TreePosition GetPrevious (TreePosition pos)
 		{
 			IterPos tpos = GetIterPos (pos);
-			Gtk.TreeIter parent;
-			if (!Tree.IterParent (out parent, tpos.Iter))
+			Gtk.TreePath path = Tree.GetPath (tpos.Iter);
+			int [] indices = path.Indices;
+			if (indices.Length < 1 || indices [indices.Length - 1] == 0)
 				return null;
-			if (Tree.IterNChildren (parent) == 1)
-				return null;
+			indices [indices.Length - 1] --;
+			Gtk.TreePath previousPath = new Gtk.TreePath (indices);
 			Gtk.TreeIter previous;
-			Gtk.TreeIter next;
-			Tree.IterChildren (out next, parent);
-			previous = next;
-			while (Tree.IterNext (ref next)) {
-				if (next.Equals(tpos.Iter))
-					return new IterPos (version, previous);
-				previous = next;
-			}
-			return null;
+			if (!Tree.GetIter (out previous, previousPath))
+				return null;
+			return new IterPos (version, previous);
 		}
 
 		public TreePosition GetParent (TreePosition pos)
