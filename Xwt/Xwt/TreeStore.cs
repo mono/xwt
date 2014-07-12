@@ -381,7 +381,7 @@ namespace Xwt
 			var index = np.NodeIndex;
 			version++;
 			if (NodeDeleted != null)
-				NodeDeleted (this, new TreeNodeChildEventArgs (parent, index));
+				NodeDeleted (this, new TreeNodeChildEventArgs (parent, index, pos));
 		}
 		
 		public TreePosition GetParent (TreePosition pos)

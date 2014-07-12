@@ -180,7 +180,18 @@ namespace Xwt.WPFBackend
 
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
+			var currentItemsSource = Tree.ItemsSource as TreeStoreBackend;
+			if (currentItemsSource != null)
+				currentItemsSource.NodeDeleted -= TreeViewBackend_NodeDeleted;
 			Tree.ItemsSource = (TreeStoreBackend) sourceBackend;
+			var newItemsSource = sourceBackend as TreeStoreBackend;
+			if (newItemsSource != null)
+				newItemsSource.NodeDeleted += TreeViewBackend_NodeDeleted;
+		}
+
+		void TreeViewBackend_NodeDeleted(object sender, TreeNodeChildEventArgs e)
+		{
+			UnselectRow(e.Child);
 		}
 
 		public object AddColumn (ListViewColumn column)

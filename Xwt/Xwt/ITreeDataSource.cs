@@ -61,12 +61,18 @@ namespace Xwt
 	
 	public class TreeNodeChildEventArgs: TreeNodeEventArgs
 	{
-		public TreeNodeChildEventArgs (TreePosition parent, int childIndex): base (parent)
+		public TreeNodeChildEventArgs (TreePosition parent, int childIndex, TreePosition child): base (parent)
 		{
+			Child = child;
 			ChildIndex = childIndex;
 		}
-		
+
 		public int ChildIndex {
+			get;
+			private set;
+		}
+
+		public TreePosition Child {
 			get;
 			private set;
 		}
