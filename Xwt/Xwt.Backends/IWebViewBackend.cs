@@ -3,6 +3,7 @@
 //
 // Author:
 //       Cody Russell <cody@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Xamarin Inc.
 //
@@ -30,15 +31,30 @@ namespace Xwt.Backends
 	public interface IWebViewBackend : IWidgetBackend
 	{
 		string Url { get; set; }
+		string Title { get; }
+		double LoadProgress { get; }
+		bool CanGoBack { get; }
+		void GoBack ();
+		bool CanGoForward { get; }
+		void GoForward ();
+		void Reload ();
+		void StopLoading ();
+		void LoadHtml (string content, string base_uri);
 	}
 
 	public interface IWebViewEventSink : IWidgetEventSink
 	{
 		void OnLoaded ();
+		void OnLoading ();
+		bool OnNavigateToUrl (string url);
+		void OnTitleChanged ();
 	}
 
 	public enum WebViewEvent
 	{
-		Loaded = 1
+		Loaded = 1,
+		Loading = 2,
+		NavigateToUrl = 3,
+		TitleChanged = 4,
 	}
 }
