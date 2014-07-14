@@ -161,10 +161,6 @@ namespace Xwt.GtkBackend.WebKit
 		{
 			Initialize ();
 		}
-//		static WebView ()
-//		{
-//			ObjectManager.Initialize ();
-//		}
 
 		static bool initialized = false;
 		internal static void Initialize ()
@@ -268,7 +264,6 @@ namespace Xwt.GtkBackend.WebKit
 		static NetworkRequest ()
 		{
 			WebView.Initialize ();
-			//GtkSharp.WebkitSharp.ObjectManager.Initialize ();
 		}
 
 		[DllImport (GtkInterop.LIBWEBKIT)]
@@ -303,11 +298,6 @@ namespace Xwt.GtkBackend.WebKit
 
 	public class NavigationRequestedArgs : GLib.SignalArgs
 	{
-//		public WebKit.WebFrame Frame{
-//			get {
-//				return (WebKit.WebFrame) Args [0];
-//			}
-//		}
 		public IntPtr Frame
 		{
 			get {
@@ -332,35 +322,5 @@ namespace Xwt.GtkBackend.WebKit
 			}
 		}
 	}
-
-
-//	public class ObjectManager {
-//
-//		static bool initialized = false;
-//		// Call this method from the appropriate module init function.
-//		public static void Initialize ()
-//		{
-//			if (initialized)
-//				return;
-//
-//			initialized = true;
-//			GLib.GType.Register (WebKit.Download.GType, typeof (WebKit.Download));
-//			GLib.GType.Register (WebKit.WebFrame.GType, typeof (WebKit.WebFrame));
-//			GLib.GType.Register (NetworkRequest.GType, typeof (NetworkRequest));
-//			GLib.GType.Register (WebKit.SecurityOrigin.GType, typeof (WebKit.SecurityOrigin));
-//			GLib.GType.Register (WebKit.WebHistoryItem.GType, typeof (WebKit.WebHistoryItem));
-//			GLib.GType.Register (WebKit.WebDatabase.GType, typeof (WebKit.WebDatabase));
-//			GLib.GType.Register (WebKit.WebPolicyDecision.GType, typeof (WebKit.WebPolicyDecision));
-//			GLib.GType.Register (WebKit.SoupAuthDialog.GType, typeof (WebKit.SoupAuthDialog));
-//			GLib.GType.Register (WebKit.WebWindowFeatures.GType, typeof (WebKit.WebWindowFeatures));
-//			GLib.GType.Register (WebKit.WebDataSource.GType, typeof (WebKit.WebDataSource));
-//			GLib.GType.Register (WebKit.WebSettings.GType, typeof (WebKit.WebSettings));
-//			GLib.GType.Register (WebKit.NetworkResponse.GType, typeof (WebKit.NetworkResponse));
-//			GLib.GType.Register (WebKit.WebResource.GType, typeof (WebKit.WebResource));
-//			GLib.GType.Register (WebView.GType, typeof (WebView));
-//			GLib.GType.Register (WebKit.WebInspector.GType, typeof (WebKit.WebInspector));
-//			GLib.GType.Register (WebKit.WebNavigationAction.GType, typeof (WebKit.WebNavigationAction));
-//		}
-//	}
 }
 
