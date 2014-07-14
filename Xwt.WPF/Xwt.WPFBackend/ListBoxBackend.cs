@@ -52,13 +52,13 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		bool gridLines;
-		public bool GridLines {
+		bool gridLinesVisible;
+		public bool GridLinesVisible {
 			get {
-				return gridLines;
+				return gridLinesVisible;
 			}
 			set {
-				gridLines = value;
+				gridLinesVisible = value;
 				if (!value) {
 					if (this.ListBox.ItemContainerStyle != null) {
 						this.ListBox.ItemContainerStyle.Setters.Remove (GridHorizontalSetter);

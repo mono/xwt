@@ -144,10 +144,10 @@ namespace Xwt
 			}
 		}
 
-		public bool GridLines
+		public bool GridLinesVisible
 		{
-			get { return Backend.GridLines; }
-			set { Backend.GridLines = value; }
+			get { return Backend.GridLinesVisible; }
+			set { Backend.GridLinesVisible = value; }
 		}
 		
 		/// <summary>

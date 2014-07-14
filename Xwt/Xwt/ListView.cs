@@ -95,10 +95,10 @@ namespace Xwt
 			set { Backend.BorderVisible = value; }
 		}
 
-		public GridLines GridLines
+		public GridLines GridLinesVisible
 		{
-			get { return Backend.GridLines; }
-			set { Backend.GridLines = value; }
+			get { return Backend.GridLinesVisible; }
+			set { Backend.GridLinesVisible = value; }
 		}
 
 		public ScrollPolicy VerticalScrollPolicy {

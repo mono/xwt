@@ -113,14 +113,13 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		GridLines gridLines;
-
-		public GridLines GridLines {
+		GridLines gridLinesVisible;
+		public GridLines GridLinesVisible {
 			get {
-				return gridLines;
+				return gridLinesVisible;
 			}
 			set {
-				gridLines = value;
+				gridLinesVisible = value;
 			}
 		}
 

@@ -109,13 +109,13 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		GridLines gridLines;
-		public GridLines GridLines {
+		GridLines gridLinesVisible;
+		public GridLines GridLinesVisible {
 			get {
-				return gridLines;
+				return gridLinesVisible;
 			}
 			set {
-				gridLines = value;
+				gridLinesVisible = value;
 				// we support only horizontal grid lines for now
 				// vertical lines are tricky and have to be drawn manually...
 				if (value == GridLines.None) {
