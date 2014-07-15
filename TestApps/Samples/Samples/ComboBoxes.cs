@@ -78,12 +78,11 @@ namespace Samples
 				                          c3.SelectedText);
 			};
 			PackStart (box);
-			
-			box = new HBox ();
+
 			var c4 = new ComboBoxEntry ();
-			var la4 = new Label ();
-			box.PackStart (c4);
-			box.PackStart (la4);
+			var la4 = new Label ("Selected text: ");
+			PackStart (c4);
+			PackStart (la4);
 			
 			c4.Items.Add (1, "One");
 			c4.Items.Add (2, "Two");
@@ -92,7 +91,6 @@ namespace Samples
 			c4.TextEntry.Changed += delegate {
 				la4.Text = "Selected text: " + c4.TextEntry.Text;
 			};
-			PackStart (box);
 
 			HBox selBox = new HBox ();
 			Label las = new Label ("Selection:");

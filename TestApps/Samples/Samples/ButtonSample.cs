@@ -48,7 +48,7 @@ namespace Samples
 			b1.Clicked += delegate {
 				b1.Label = "Clicked!";
 			};
-			PackStart (b1);
+			PackStart (b1, false, false);
 			
 			Button b2 = new Button ("Click me");
 			b2.Style = ButtonStyle.Flat;
@@ -56,8 +56,18 @@ namespace Samples
 				b2.Label = "Clicked!";
 			};
 			PackStart (b2);
-			
+
 			PackStart (new Button (StockIcons.ZoomIn.WithSize (22)));
+			PackStart (new Button (StockIcons.ZoomIn.WithSize (32), "Custom Size") { WidthRequest = 110, MinHeight = 50 });
+
+			var hbox = new HBox();
+			hbox.PackStart (new Button (StockIcons.ZoomIn.WithSize (22), "Zoom In") { ImagePosition = ContentPosition.Top });
+			hbox.PackStart (new Button (StockIcons.ZoomOut.WithSize (22), "Zoom Out") { ImagePosition = ContentPosition.Bottom });
+			hbox.PackStart (new Button (StockIcons.Information.WithSize (48), "Info") { ImagePosition = ContentPosition.Top }, true);
+			hbox.PackEnd (new Button ("Custom" + Environment.NewLine + "Width") { MinWidth = 110 });
+			PackStart (hbox);
+
+			
 			PackStart (new Button (new CustomImage ().WithSize (22), "with red background") { BackgroundColor = Colors.Red });
 
 			MenuButton mb = new MenuButton ("This is a Menu Button");
