@@ -217,7 +217,7 @@ namespace Xwt
 			if (!int.TryParse (lightEntry.Text, out l))
 				return;
 			
-			currentColor = Color.FromHsl ((double)h / 255d, (double)s / 255d, (double)l / 255d, currentColor.Alpha);
+			currentColor = Color.FromHsl ((double)h / 360d, (double)s / 100d, (double)l / 100d, currentColor.Alpha);
 			LoadColorBoxSelection ();
 			LoadRgbEntries ();
 		}
@@ -261,9 +261,9 @@ namespace Xwt
 		void LoadHslEntries ()
 		{
 			loadingEntries = true;
-			hueEntry.Text = ((int)(currentColor.Hue * 255)).ToString ();
-			satEntry.Text = ((int)(currentColor.Saturation * 255)).ToString ();
-			lightEntry.Text = ((int)(currentColor.Light * 255)).ToString ();
+			hueEntry.Text = ((int)(currentColor.Hue * 360)).ToString ();
+			satEntry.Text = ((int)(currentColor.Saturation * 100)).ToString ();
+			lightEntry.Text = ((int)(currentColor.Light * 100)).ToString ();
 			loadingEntries = false;
 		}
 
