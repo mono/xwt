@@ -175,7 +175,7 @@ namespace Xwt.WPFBackend
 			var list = GetContainingList (node);
 			int index = list.IndexOf (node) - 1;
 
-			return (index > 0) ? list [index] : null;
+			return (index >= 0) ? list [index] : null;
 		}
 
 		public void Clear ()
