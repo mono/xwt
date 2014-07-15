@@ -91,6 +91,7 @@ namespace Samples
 			AddSample (w, "Paneds", typeof(PanedViews));
 			AddSample (w, "Popover", typeof(PopoverSample));
 			AddSample (w, "RadioButton", typeof (RadioButtonSample));
+			AddSample (w, "SpinButton", typeof (SpinButtonSample));
 			AddSample (w, "Scroll View", typeof(ScrollWindowSample));
 			AddSample (w, "Scrollbar", typeof(ScrollbarSample));
 			AddSample (w, "Slider", typeof (SliderSample));
