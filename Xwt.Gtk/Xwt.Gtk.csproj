@@ -134,6 +134,7 @@
     <Compile Include="Xwt.GtkBackend\SearchTextEntryBackend.cs" />
     <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
+    <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
