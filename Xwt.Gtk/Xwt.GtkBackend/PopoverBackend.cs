@@ -232,11 +232,21 @@ namespace Xwt.GtkBackend
 			positionRect = positionRect.Offset (screenBounds.Location);
 			var position = new Point (positionRect.Center.X, popover.ArrowPosition == Popover.Position.Top ? positionRect.Bottom : positionRect.Top);
 			popover.ShowAll ();
+			popover.Present ();
 			popover.GrabFocus ();
 			int w, h;
 			popover.GetSize (out w, out h);
-			popover.Move ((int)position.X - w / 2, (int)position.Y);
-			popover.SizeAllocated += (o, args) => { popover.Move ((int)position.X - args.Allocation.Width / 2, (int)position.Y); popover.GrabFocus (); };
+			if (popover.ArrowPosition == Popover.Position.Top)
+				popover.Move ((int)position.X - w / 2, (int)position.Y);
+			else
+				popover.Move ((int)position.X - w / 2, (int)position.Y - h);
+			popover.SizeAllocated += (o, args) => {
+				if (popover.ArrowPosition == Popover.Position.Top)
+					popover.Move ((int)position.X - args.Allocation.Width / 2, (int)position.Y);
+				else
+					popover.Move ((int)position.X - args.Allocation.Width / 2, (int)position.Y - args.Allocation.Height);
+				popover.GrabFocus ();
+			};
 		}
 
 		public void Hide ()
