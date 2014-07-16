@@ -109,6 +109,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<KeyboardHandler, GtkKeyboardHandler> ();
 			RegisterBackend<ISearchTextEntryBackend, SearchTextEntryBackend> ();
 			RegisterBackend<IWebViewBackend, WebViewBackend> ();
+			RegisterBackend<IColorPickerBackend, ColorPickerBackend> ();
 
 			string typeName = null;
 			string asmName = null;
