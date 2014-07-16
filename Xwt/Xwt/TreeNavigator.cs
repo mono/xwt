@@ -94,6 +94,16 @@ namespace Xwt
 			return CommitPos (backend.GetParent (pos));
 		}
 
+		public bool MoveToFirstSibling ()
+		{
+			return CommitPos (backend.GetChild (backend.GetParent (pos), 0));
+		}
+
+		public bool MoveToLastSibling ()
+		{
+			return CommitPos (backend.GetChild (backend.GetParent (pos), backend.GetChildrenCount (backend.GetParent (pos)) - 1));
+		}
+
 		public TreeNavigator InsertBefore ()
 		{
 			pos = backend.InsertBefore (pos);
