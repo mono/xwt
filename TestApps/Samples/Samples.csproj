@@ -102,6 +102,7 @@
     <Compile Include="Samples\PasswordEntries.cs" />
     <Compile Include="Samples\Image9Patch.cs" />
     <Compile Include="Samples\WebViewSample.cs" />
+    <Compile Include="Samples\MultithreadingSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
