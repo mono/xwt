@@ -128,6 +128,8 @@ namespace Samples
 			
 			AddSample (null, "Screens", typeof (ScreensSample));
 
+			AddSample (null, "Multithreading", typeof (MultithreadingSample));
+
 			samplesTree.DataSource = store;
 			
 			box.Panel1.Content = samplesTree;
