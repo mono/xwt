@@ -1,5 +1,4 @@
-﻿//
-// Util.cs
+﻿// Util.cs
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
