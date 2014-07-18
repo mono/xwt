@@ -181,6 +181,12 @@ namespace Xwt.GtkBackend
 				tc.SortIndicator = col.SortIndicatorVisible;
 		}
 
+		public void ScrollToRow (TreeIter pos)
+		{
+			if (Widget.Columns.Length > 0)
+				Widget.ScrollToCell (Widget.Model.GetPath (pos), Widget.Columns[0], false, 0, 0);
+		}
+
 		public void SelectAll ()
 		{
 			Widget.Selection.SelectAll ();

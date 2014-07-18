@@ -1,11 +1,10 @@
 ﻿//
-// MacWebView.cs
+// WebViewBackend.cs
 //
 // Author:
-//       Lluis Sanchez Gual <lluis@xamarin.com>
 //       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
+// Copyright (c) 2014 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,46 +24,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt.GtkBackend;
 using Xwt.Backends;
-using MonoMac.Foundation;
+using System.Runtime.InteropServices;
+using Xwt.GtkBackend.WebKit;
 
-namespace Xwt.Gtk.Mac
+namespace Xwt.GtkBackend
 {
 	public class WebViewBackend : WidgetBackend, IWebViewBackend
 	{
-		MonoMac.WebKit.WebView view;
+		WebKit.WebView view;
 
 		public WebViewBackend ()
 		{
 		}
 
-		#region IWebViewBackend implementation
 		public override void Initialize()
 		{
 			base.Initialize ();
 
-			view = new MonoMac.WebKit.WebView ();
-			Widget = GtkMacInterop.NSViewToGtkWidget (view);
+			view = new WebKit.WebView ();
+			Widget = view;
 			Widget.Show ();
 		}
 
 		public string Url {
-			get { return view.MainFrameUrl; }
+			get { return view.Uri; }
 			set {
-				view.MainFrameUrl = value;
+				view.LoadUri (value);
 			}
 		}
 
 		public string Title {
 			get {
-				return view.MainFrameTitle;
+				return view.Title;
 			}
 		}
 
-		public double LoadProgress { 
+		public double LoadProgress {
 			get {
-				return view.EstimatedProgress;
+				return view.LoadProgress;
 			}
 		}
 
@@ -92,17 +90,17 @@ namespace Xwt.Gtk.Mac
 
 		public void Reload ()
 		{
-			view.MainFrame.Reload ();
+			view.Reload ();
 		}
 
 		public void StopLoading ()
 		{
-			view.MainFrame.StopLoading ();
+			view.StopLoading ();
 		}
 
 		public void LoadHtml (string content, string base_uri)
 		{
-			view.MainFrame.LoadHtmlString (content, new NSUrl(base_uri));
+			view.LoadHtmlString (content, base_uri);
 		}
 
 		protected new IWebViewEventSink EventSink {
@@ -114,10 +112,10 @@ namespace Xwt.Gtk.Mac
 			base.EnableEvent (eventId);
 			if (eventId is WebViewEvent) {
 				switch ((WebViewEvent)eventId) {
-					case WebViewEvent.NavigateToUrl: view.StartedProvisionalLoad += HandleStartedProvisionalLoad; break;
-					case WebViewEvent.Loading: view.CommitedLoad += HandleLoadStarted; break;
-					case WebViewEvent.Loaded: view.FinishedLoad += HandleLoadFinished; break;
-					case WebViewEvent.TitleChanged: view.ReceivedTitle += HandleTitleChanged; break;
+					case WebViewEvent.NavigateToUrl: view.NavigationRequested += HandleNavigationRequested; break;
+					case WebViewEvent.Loading: view.LoadStarted += HandleLoadStarted; break;
+					case WebViewEvent.Loaded: view.LoadFinished += HandleLoadFinished; break;
+					case WebViewEvent.TitleChanged: view.TitleChanged += HandleTitleChanged; break;
 				}
 			}
 		}
@@ -127,28 +125,20 @@ namespace Xwt.Gtk.Mac
 			base.DisableEvent (eventId);
 			if (eventId is WebViewEvent) {
 				switch ((WebViewEvent)eventId) {
-					case WebViewEvent.NavigateToUrl: view.StartedProvisionalLoad -= HandleStartedProvisionalLoad; break;
-					case WebViewEvent.Loading: view.CommitedLoad += HandleLoadStarted; break;
-					case WebViewEvent.Loaded: view.FinishedLoad -= HandleLoadFinished; break;
-					case WebViewEvent.TitleChanged: view.ReceivedTitle -= HandleTitleChanged; break;
+					case WebViewEvent.NavigateToUrl: view.NavigationRequested -= HandleNavigationRequested; break;
+					case WebViewEvent.Loading: view.LoadStarted -= HandleLoadStarted; break;
+					case WebViewEvent.Loaded: view.LoadFinished -= HandleLoadFinished; break;
+					case WebViewEvent.TitleChanged: view.TitleChanged -= HandleTitleChanged; break;
 				}
 			}
 		}
 
-		void HandleStartedProvisionalLoad (object sender, MonoMac.WebKit.WebFrameEventArgs e)
+		void HandleNavigationRequested (object sender, WebKit.NavigationRequestedArgs e)
 		{
-			var url = String.Empty;
-			if (e.ForFrame.ProvisionalDataSource.Request.MainDocumentURL != null)
-				url = e.ForFrame.ProvisionalDataSource.Request.MainDocumentURL.ToString ();
-			if (String.IsNullOrEmpty (url))
-				return;
-
-			bool cancel = false;
 			ApplicationContext.InvokeUserCode (delegate {
-				cancel = EventSink.OnNavigateToUrl(url);
+				if (EventSink.OnNavigateToUrl (e.Request.Uri))
+					e.RetVal = NavigationResponse.Ignore;
 			});
-			if (cancel)
-				e.ForFrame.StopLoading ();
 		}
 
 		void HandleLoadStarted (object o, EventArgs args)
@@ -165,13 +155,12 @@ namespace Xwt.Gtk.Mac
 			});
 		}
 
-		void HandleTitleChanged (object sender, MonoMac.WebKit.WebFrameTitleEventArgs e)
+		void HandleTitleChanged (object sender, WebKit.TitleChangedArgs e)
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnTitleChanged ();
 			});
 		}
-		#endregion
 	}
 }
 

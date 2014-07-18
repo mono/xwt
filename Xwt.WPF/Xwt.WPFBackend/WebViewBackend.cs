@@ -3,6 +3,7 @@
 //
 // Author:
 //       Cody Russell <cody@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Xamarin Inc.
 //
@@ -34,23 +35,148 @@ namespace Xwt.WPFBackend
 	public class WebViewBackend : WidgetBackend, IWebViewBackend
 	{
 		string url;
+		SWC.WebBrowser view;
+		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
 
-		public WebViewBackend ()
+		public WebViewBackend () : this (new SWC.WebBrowser ())
 		{
-			Widget = new SWC.WebBrowser ();
 		}
 
 		internal WebViewBackend (SWC.WebBrowser browser)
 		{
-			Widget = browser;
+			view = browser;
+			view.Navigating += HandleNavigating;
+			view.Navigated += HandleNavigated;
+			view.LoadCompleted += HandleLoadCompleted;
+			Widget = view;
 		}
 
 		public string Url {
 			get { return url; }
 			set {
 				url = value;
-				((SWC.WebBrowser)Widget).Navigate (url);
+				view.Navigate (url);
 			}
+		}
+
+		public double LoadProgress { get; protected set; }
+
+		public bool CanGoBack {
+			get {
+				return view.CanGoBack;
+			}
+		}
+
+		public bool CanGoForward {
+			get {
+				return view.CanGoForward;
+			}
+		}
+
+		public void GoBack ()
+		{
+			view.GoBack ();
+		}
+
+		public void GoForward ()
+		{
+			view.GoForward ();
+		}
+
+		public void Reload ()
+		{
+			view.Refresh ();
+		}
+
+		public void StopLoading ()
+		{
+			view.InvokeScript ("eval", "document.execCommand('Stop');");
+		}
+
+		public void LoadHtml (string content, string base_uri)
+		{
+			view.NavigateToString (content);
+		}
+
+		string prevTitle = String.Empty;
+
+		public string Title { get; private set; }
+
+		protected new IWebViewEventSink EventSink {
+			get { return (IWebViewEventSink)base.EventSink; }
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is WebViewEvent) {
+				switch ((WebViewEvent)eventId) {
+				case WebViewEvent.NavigateToUrl:
+					enableNavigatingEvent = true;
+					break;
+				case WebViewEvent.Loading:
+					enableLoadingEvent = true;
+					break;
+				case WebViewEvent.Loaded:
+					enableLoadedEvent = true;
+					break;
+				case WebViewEvent.TitleChanged:
+					enableTitleChangedEvent = true;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is WebViewEvent) {
+				switch ((WebViewEvent)eventId) {
+				case WebViewEvent.NavigateToUrl:
+					enableNavigatingEvent = false;
+					break;
+				case WebViewEvent.Loading:
+					enableLoadingEvent = false;
+					break;
+				case WebViewEvent.Loaded:
+					enableLoadedEvent = false;
+					break;
+				case WebViewEvent.TitleChanged:
+					enableTitleChangedEvent = false;
+					break;
+				}
+			}
+		}
+
+		void HandleNavigating (object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+		{
+			if (enableNavigatingEvent) {
+				var url = e.Uri.AbsoluteUri;
+				Context.InvokeUserCode (delegate {
+					e.Cancel = EventSink.OnNavigateToUrl (url);
+				});
+			}
+		}
+
+		void HandleLoadCompleted (object sender, System.Windows.Navigation.NavigationEventArgs e)
+		{
+			LoadProgress = 1;
+			if (enableLoadedEvent)
+				Context.InvokeUserCode (EventSink.OnLoaded);
+			Title = (string)view.InvokeScript("eval", "document.title.toString()");
+			if (enableTitleChangedEvent && (prevTitle != Title))
+				Context.InvokeUserCode (EventSink.OnTitleChanged);
+			prevTitle = Title;
+		}
+
+		void HandleNavigated (object sender, System.Windows.Navigation.NavigationEventArgs e)
+		{
+			LoadProgress = 0;
+			url = e.Uri.AbsoluteUri;
+			if (enableLoadingEvent)
+				Context.InvokeUserCode (delegate {
+					EventSink.OnLoading ();
+				});
 		}
 	}
 }

@@ -92,13 +92,22 @@ namespace Xwt.Drawing
 		}
 
 
-		internal ImageDescription ImageDescription {
-			get {
-				return new ImageDescription () {
-					Alpha = requestedAlpha,
-					Size = Size,
-					Backend = Backend
-				};
+		internal ImageDescription GetImageDescription (Toolkit toolkit)
+		{
+			InitForToolkit (toolkit);
+			return new ImageDescription () {
+				Alpha = requestedAlpha,
+				Size = Size,
+				Backend = Backend
+			};
+		}
+
+		internal void InitForToolkit (Toolkit t)
+		{
+			if (ToolkitEngine != t) {
+				var nr = NativeRef.LoadForToolkit (t);
+				ToolkitEngine = t;
+				Backend = nr.Backend;
 			}
 		}
 
@@ -197,6 +206,7 @@ namespace Xwt.Drawing
 			var res = new Image (img, toolkit) {
 				requestedSize = reqSize
 			};
+			res.NativeRef.SetResourceSource (assembly, resource);
 			if (ext == ".9.png")
 				res = new NinePatchImage (res.ToBitmap ());
 			return res;
@@ -206,7 +216,23 @@ namespace Xwt.Drawing
 		{
 			if (Toolkit.CurrentEngine == null)
 				throw new ToolkitNotInitializedException ();
-			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (images.Select (i => i.GetBackend ())));
+
+			var allImages = images.ToArray ();
+
+			var img = new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (allImages.Select (i => i.GetBackend ())));
+
+			if (allImages.All (i => i.NativeRef.HasNativeSource)) {
+				var sources = allImages.Select (i => i.NativeRef.NativeSource).ToArray ();
+				img.NativeRef.SetSources (sources);
+			}
+			return img;
+		}
+
+		public static Image CreateMultiResolutionImage (IEnumerable<Image> images)
+		{
+			if (Toolkit.CurrentEngine == null)
+				throw new ToolkitNotInitializedException ();
+			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiResolutionImage (images.Select (i => i.GetBackend ())));
 		}
 
 		public static Image FromFile (string file)
@@ -589,6 +615,67 @@ namespace Xwt.Drawing
 		int referenceCount = 1;
 		Toolkit toolkit;
 
+		NativeImageSource[] sources;
+
+		public struct NativeImageSource {
+			// Source file or resource name
+			public string Source;
+
+			// Assembly that contains the resource
+			public Assembly ResourceAssembly;
+
+			public Func<Stream[]> ImageLoader;
+		}
+
+		public object Backend {
+			get { return backend; }
+		}
+
+		public Toolkit Toolkit {
+			get { return toolkit; }
+		}
+
+		public NativeImageSource NativeSource {
+			get { return sources[0]; }
+		}
+
+		public bool HasNativeSource {
+			get { return sources != null; }
+		}
+
+		public void SetSources (NativeImageSource[] sources)
+		{
+			this.sources = sources;
+		}
+
+		public void SetFileSource (string file)
+		{
+			sources = new [] { 
+				new NativeImageSource {
+					Source = file,
+				}
+			};
+		}
+
+		public void SetResourceSource (Assembly asm, string name)
+		{
+			sources = new [] { 
+				new NativeImageSource {
+					Source = name,
+					ResourceAssembly = asm
+				}
+			};
+		}
+
+		public void SetStreamSource (Func<Stream[]> imageLoader)
+		{
+			sources = new [] { 
+				new NativeImageSource {
+					ImageLoader = imageLoader
+				}
+			};
+		}
+
 		public int ReferenceCount {
 			get { return referenceCount; }
 		}
@@ -597,9 +684,67 @@ namespace Xwt.Drawing
 		{
 			this.backend = backend;
 			this.toolkit = toolkit;
+			NextRef = this;
 
 			if (toolkit.ImageBackendHandler.DisposeHandleOnUiThread)
 				ResourceManager.RegisterResource (backend, toolkit.ImageBackendHandler.Dispose);
+		}
+
+		public NativeImageRef LoadForToolkit (Toolkit targetToolkit)
+		{
+			NativeImageRef newRef = null;
+			var r = NextRef;
+			while (r != this) {
+				if (r.toolkit == targetToolkit) {
+					newRef = r;
+					break;
+				}
+			}
+			if (newRef != null)
+				return newRef;
+
+			object newBackend;
+
+			if (sources != null) {
+				var frames = new List<object> ();
+				foreach (var s in sources) {
+					if (s.ImageLoader != null) {
+						var streams = s.ImageLoader ();
+						try {
+							if (streams.Length == 1) {
+								newBackend = targetToolkit.ImageBackendHandler.LoadFromStream (streams [0]);
+							} else {
+								var backends = new object[streams.Length];
+								for (int n = 0; n < backends.Length; n++) {
+									backends [n] = targetToolkit.ImageBackendHandler.LoadFromStream (streams [n]);
+								}
+								newBackend = targetToolkit.ImageBackendHandler.CreateMultiResolutionImage (backends);
+							}
+						} finally {
+							foreach (var st in streams)
+								st.Dispose ();
+						}
+					}
+					else if (s.ResourceAssembly != null)
+						newBackend = targetToolkit.ImageBackendHandler.LoadFromResource (s.ResourceAssembly, s.Source);
+					else if (s.Source != null)
+						newBackend = targetToolkit.ImageBackendHandler.LoadFromFile (s.Source);
+					else
+						throw new NotSupportedException ();
+					frames.Add (newBackend);
+				}
+				newBackend = targetToolkit.ImageBackendHandler.CreateMultiSizeIcon (frames);
+			} else {
+				using (var s = new MemoryStream ()) {
+					toolkit.ImageBackendHandler.SaveToStream (backend, s, ImageFileType.Png);
+					s.Position = 0;
+					newBackend = targetToolkit.ImageBackendHandler.LoadFromStream (s);
+				}
+			}
+			newRef = new NativeImageRef (newBackend, targetToolkit);
+			newRef.NextRef = NextRef;
+			NextRef = newRef;
+			return newRef;
 		}
 
 		public void AddReference ()
@@ -619,6 +764,11 @@ namespace Xwt.Drawing
 					ResourceManager.FreeResource (backend);
 			}
 		}
+
+		/// <summary>
+		/// Reference to the next native image, for a different toolkit
+		/// </summary>
+		public NativeImageRef NextRef { get; set; }
 	}
 }
 

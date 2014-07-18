@@ -145,6 +145,8 @@
     <Compile Include="Xwt.GtkBackend\BoxBackendGtk2.cs" />
     <Compile Include="Xwt.GtkBackend\CanvasBackendGtk2.cs" />
     <Compile Include="Xwt.GtkBackend\HeaderBoxGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

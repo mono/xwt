@@ -44,6 +44,7 @@ namespace Xwt.GtkBackend
 		internal const string LIBPANGOCAIRO   = "libpangocairo-1.0-0.dll";
 		internal const string LIBGTKGLUE      = "gtksharpglue-3";
 		internal const string LIBGLIBGLUE     = "glibsharpglue-3";
+		internal const string LIBWEBKIT       = "libwebkitgtk-3.0";
 		#else
 		internal const string LIBGTK          = "libgtk-win32-2.0-0.dll";
 		internal const string LIBATK          = "libatk-1.0-0.dll";
@@ -54,6 +55,7 @@ namespace Xwt.GtkBackend
 		internal const string LIBPANGOCAIRO   = "libpangocairo-1.0-0.dll";
 		internal const string LIBGTKGLUE      = "gtksharpglue-2";
 		internal const string LIBGLIBGLUE     = "glibsharpglue-2";
+		internal const string LIBWEBKIT       = "libwebkitgtk-1.0";
 		#endif
 	}
 

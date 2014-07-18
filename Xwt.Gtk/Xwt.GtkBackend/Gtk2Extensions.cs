@@ -67,6 +67,12 @@ namespace Xwt.GtkBackend
 			signal.AddDelegate (handler);
 		}
 
+		public static void RemoveSignalHandler (this Gtk.Widget widget, string name, Delegate handler)
+		{
+			var signal = GLib.Signal.Lookup (widget, name);
+			signal.RemoveDelegate (handler);
+		}
+
 		public static Gdk.Pixbuf ToPixbuf (this Gdk.Window window, int src_x, int src_y, int width, int height)
 		{
 			return Gdk.Pixbuf.FromDrawable (window, Gdk.Colormap.System, src_x, src_y, 0, 0, width, height);

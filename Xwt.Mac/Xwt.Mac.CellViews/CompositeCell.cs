@@ -43,20 +43,26 @@ namespace Xwt.Mac
 		Orientation direction;
 		NSCell trackingCell;
 		ITablePosition tablePosition;
+		ApplicationContext context;
 
 		static CompositeCell ()
 		{
 			Util.MakeCopiable<CompositeCell> ();
 		}
 
-		public CompositeCell (Orientation dir, ICellSource source)
+		public CompositeCell (ApplicationContext context, Orientation dir, ICellSource source)
 		{
 			direction = dir;
+			this.context = context;
 			this.source = source;
 		}
 		
 		public CompositeCell (IntPtr p): base (p)
 		{
+		}
+
+		public ApplicationContext Context {
+			get { return context; }
 		}
 
 		#region ICellDataSource implementation
@@ -76,6 +82,7 @@ namespace Xwt.Mac
 		void ICopiableObject.CopyFrom (object other)
 		{
 			var ob = (CompositeCell)other;
+			context = ob.context;
 			source = ob.source;
 			val = ob.val;
 			tablePosition = ob.tablePosition;

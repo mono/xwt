@@ -160,6 +160,8 @@
     <Compile Include="Xwt.GtkBackend\BoxBackendGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\CanvasBackendGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\HeaderBoxGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

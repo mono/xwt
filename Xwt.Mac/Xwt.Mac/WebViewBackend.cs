@@ -3,6 +3,7 @@
 //
 // Author:
 //       Cody Russell <cody@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Xamarin Inc.
 //
@@ -30,9 +31,6 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 using MonoMac.WebKit;
 
-using MonoMac.ObjCRuntime;
-using Xwt.Drawing;
-
 namespace Xwt.Mac
 {
 	public class WebViewBackend : ViewBackend<MonoMac.WebKit.WebView, IWebViewEventSink>, IWebViewBackend
@@ -58,6 +56,122 @@ namespace Xwt.Mac
 			set {
 				Widget.MainFrameUrl = value;
 			}
+		}
+
+		public string Title {
+			get {
+				return Widget.MainFrameTitle;
+			}
+		}
+
+		public double LoadProgress { 
+			get {
+				return Widget.EstimatedProgress;
+			}
+		}
+
+		public bool CanGoBack {
+			get {
+				return Widget.CanGoBack ();
+			}
+		}
+
+		public bool CanGoForward {
+			get {
+				return Widget.CanGoForward ();
+			}
+		}
+
+		public void GoBack ()
+		{
+			Widget.GoBack ();
+		}
+
+		public void GoForward ()
+		{
+			Widget.GoForward ();
+		}
+
+		public void Reload ()
+		{
+			Widget.MainFrame.Reload ();
+		}
+
+		public void StopLoading ()
+		{
+			Widget.MainFrame.StopLoading ();
+		}
+
+		public void LoadHtml (string content, string base_uri)
+		{
+			Widget.MainFrame.LoadHtmlString (content, new NSUrl(base_uri));
+		}
+
+		protected new IWebViewEventSink EventSink {
+			get { return (IWebViewEventSink)base.EventSink; }
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is WebViewEvent) {
+				switch ((WebViewEvent)eventId) {
+					case WebViewEvent.NavigateToUrl: Widget.StartedProvisionalLoad += HandleStartedProvisionalLoad; break;
+					case WebViewEvent.Loading: Widget.CommitedLoad += HandleLoadStarted; break;
+					case WebViewEvent.Loaded: Widget.FinishedLoad += HandleLoadFinished; break;
+					case WebViewEvent.TitleChanged: Widget.ReceivedTitle += HandleTitleChanged; break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is WebViewEvent) {
+				switch ((WebViewEvent)eventId) {
+					case WebViewEvent.NavigateToUrl: Widget.StartedProvisionalLoad -= HandleStartedProvisionalLoad; break;
+					case WebViewEvent.Loading: Widget.CommitedLoad += HandleLoadStarted; break;
+					case WebViewEvent.Loaded: Widget.FinishedLoad -= HandleLoadFinished; break;
+					case WebViewEvent.TitleChanged: Widget.ReceivedTitle -= HandleTitleChanged; break;
+				}
+			}
+		}
+
+		void HandleStartedProvisionalLoad (object sender, WebFrameEventArgs e)
+		{
+			var url = String.Empty;
+			if (e.ForFrame.ProvisionalDataSource.Request.MainDocumentURL != null)
+				url = e.ForFrame.ProvisionalDataSource.Request.MainDocumentURL.ToString ();
+			if (String.IsNullOrEmpty (url))
+				return;
+
+			bool cancel = false;
+			ApplicationContext.InvokeUserCode (delegate {
+				cancel = EventSink.OnNavigateToUrl(url);
+			});
+			if (cancel)
+				e.ForFrame.StopLoading ();
+		}
+
+		void HandleLoadStarted (object o, EventArgs args)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnLoading ();
+			});
+		}
+
+		void HandleLoadFinished (object o, EventArgs args)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnLoaded ();
+			});
+		}
+
+		void HandleTitleChanged (object sender, WebFrameTitleEventArgs e)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnTitleChanged ();
+			});
 		}
 		#endregion
 	}
