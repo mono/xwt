@@ -102,7 +102,7 @@ namespace Xwt.WPFBackend
 		public void SetViews (CellViewCollection views)
 		{
 			ListBox.DisplayMemberPath = null;
-            ListBox.ItemTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Frontend, views) };
+            ListBox.ItemTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, views) };
 		}
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
@@ -134,6 +134,11 @@ namespace Xwt.WPFBackend
 		public void UnselectAll ()
 		{
 			ListBox.UnselectAll();
+		}
+
+		public void ScrollToRow (int row)
+		{
+			ListBox.ScrollIntoView (ListBox.Items [row]);
 		}
 
 		public int[] SelectedRows {

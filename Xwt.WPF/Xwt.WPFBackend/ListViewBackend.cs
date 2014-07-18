@@ -140,9 +140,9 @@ namespace Xwt.WPFBackend
 		public object AddColumn (ListViewColumn col)
 		{
 			var column = new GridViewColumn ();
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Frontend, col.Views) };
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Context, Frontend, col.Views) };
 			if (col.HeaderView != null)
-				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Frontend, col.HeaderView) };
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Context, Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
 
@@ -159,9 +159,9 @@ namespace Xwt.WPFBackend
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			var column = (GridViewColumn) handle;
-            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Frontend, col.Views) };
+            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
 			if (col.HeaderView != null)
-                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Frontend, col.HeaderView) };
+                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
 		}
@@ -187,6 +187,11 @@ namespace Xwt.WPFBackend
 		public void UnselectAll ()
 		{
 			ListView.UnselectAll();
+		}
+
+		public void ScrollToRow (int row)
+		{
+			ListView.ScrollIntoView (ListView.Items [row]);
 		}
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)

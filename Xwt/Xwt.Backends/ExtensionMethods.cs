@@ -54,9 +54,9 @@ namespace Xwt.Backends
 				return null;
 		}
 
-		public static ImageDescription ToImageDescription (this Image img)
+		public static ImageDescription ToImageDescription (this Image img, ApplicationContext ctx)
 		{
-			return img != null ? img.ImageDescription : ImageDescription.Null;
+			return img != null ? img.GetImageDescription (ctx.Toolkit) : ImageDescription.Null;
 		}
 
 		public static double GetValue (this WidgetPlacement al)
@@ -109,6 +109,21 @@ namespace Xwt.Backends
 		public static void RaiseButtonReleased (this CellView cellView, ButtonEventArgs args)
 		{
 			cellView.OnButtonReleased (args);
+		}
+
+		public static void SetFileSource (this Image image, string file)
+		{
+			image.NativeRef.SetFileSource (file);
+		}
+
+		public static void SetResourceSource (this Image image, System.Reflection.Assembly asm, string name)
+		{
+			image.NativeRef.SetResourceSource (asm, name);
+		}
+
+		public static void SetStreamSource (this Image image, Func<System.IO.Stream[]> imageLoader)
+		{
+			image.NativeRef.SetStreamSource (imageLoader);
 		}
 	}
 }

@@ -106,7 +106,8 @@ namespace Samples
 			
 			Button addButton = new Button ("Add");
 			addButton.Clicked += delegate(object sender, EventArgs e) {
-				store.AddNode ().SetValue (text, "Added").SetValue (desc, "Desc");
+				var n = store.AddNode ().SetValue (text, "Added").SetValue (desc, "Desc");
+				view.ScrollToRow (n.CurrentPosition);
 			};
 			PackStart (addButton);
 			

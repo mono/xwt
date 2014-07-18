@@ -191,7 +191,7 @@ namespace Xwt.Mac
 			var tcol = new NSTableColumn ();
 			tcol.Editable = true;
 			cols.Add (tcol);
-			var c = CellUtil.CreateCell (Table, this, col.Views, cols.Count - 1);
+			var c = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.Count - 1);
 			tcol.DataCell = c;
 			Table.AddColumn (tcol);
 			var hc = new NSTableHeaderCell ();
@@ -209,7 +209,7 @@ namespace Xwt.Mac
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			NSTableColumn tcol = (NSTableColumn) handle;
-			tcol.DataCell = CellUtil.CreateCell (Table, this, col.Views, cols.IndexOf (tcol));
+			tcol.DataCell = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.IndexOf (tcol));
 		}
 
 		public void SelectAll ()
@@ -220,6 +220,11 @@ namespace Xwt.Mac
 		public void UnselectAll ()
 		{
 			Table.DeselectAll (null);
+		}
+
+		public void ScrollToRow (int row)
+		{
+			Table.ScrollRowToVisible (row);
 		}
 		
 		public abstract object GetValue (object pos, int nField);

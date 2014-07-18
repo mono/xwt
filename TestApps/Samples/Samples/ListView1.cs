@@ -57,6 +57,20 @@ namespace Samples
 				list.VerticalScrollControl.Value += list.VerticalScrollControl.StepIncrement;
 			};
 			PackStart (but);
+
+			var spnValue = new SpinButton ();
+			spnValue.MinimumValue = 0;
+			spnValue.MaximumValue = 99;
+			spnValue.IncrementValue = 1;
+			spnValue.Digits = 0;
+			var btnScroll = new Button ("Go!");
+			btnScroll.Clicked += (sender, e) => list.ScrollToRow((int)spnValue.Value);
+
+			HBox scrollActBox = new HBox ();
+			scrollActBox.PackStart (new Label("Scroll to Value: "));
+			scrollActBox.PackStart (spnValue);
+			scrollActBox.PackStart (btnScroll);
+			PackStart (scrollActBox);
 		}
 	}
 

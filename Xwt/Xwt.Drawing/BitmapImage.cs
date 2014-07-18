@@ -64,7 +64,11 @@ namespace Xwt.Drawing
 		public void SetPixel (int x, int y, Color color)
 		{
 			MakeWrittable ();
-			ToolkitEngine.ImageBackendHandler.SetBitmapPixel (Backend, x, y, color);
+			var nr = NativeRef;
+			do {
+				nr.Toolkit.ImageBackendHandler.SetBitmapPixel (nr.Backend, x, y, color);
+				nr = nr.NextRef;
+			} while (nr != NativeRef);
 		}
 		
 		public Color GetPixel (int x, int y)
@@ -75,7 +79,11 @@ namespace Xwt.Drawing
 		public void CopyArea (int srcX, int srcY, int width, int height, BitmapImage dest, int destX, int destY)
 		{
 			dest.MakeWrittable ();
-			ToolkitEngine.ImageBackendHandler.CopyBitmapArea (Backend, srcX, srcY, width, height, dest.Backend, destX, destY);
+			var nr = dest.NativeRef;
+			do {
+				InitForToolkit (nr.Toolkit);
+				nr.Toolkit.ImageBackendHandler.CopyBitmapArea (Backend, srcX, srcY, width, height, nr.Backend, destX, destY);
+			} while (nr != dest.NativeRef);
 		}
 
 		/// <summary>

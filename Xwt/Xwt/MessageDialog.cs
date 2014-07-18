@@ -170,6 +170,8 @@ namespace Xwt
 
 			IAlertDialogBackend backend = Toolkit.CurrentEngine.Backend.CreateBackend<IAlertDialogBackend> ();
 			backend.Initialize (Toolkit.CurrentEngine.Context);
+			if (message.Icon != null)
+				message.Icon.InitForToolkit (Toolkit.CurrentEngine);
 
 			using (backend) {
 				var res = backend.Run (parent ?? RootWindow, message);

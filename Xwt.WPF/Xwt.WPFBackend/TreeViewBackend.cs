@@ -168,7 +168,9 @@ namespace Xwt.WPFBackend
 
 		public void ScrollToRow (TreePosition pos)
 		{
-			GetVisibleTreeItem (pos).BringIntoView();
+			ExTreeViewItem item = GetVisibleTreeItem (pos);
+			if (item != null)
+				item.BringIntoView ();
 		}
 
 		public void SetSelectionMode (SelectionMode mode)
@@ -215,7 +217,7 @@ namespace Xwt.WPFBackend
 				break;
 
 			case ListViewColumnChange.Cells:
-                var cellTemplate = CellUtil.CreateBoundColumnTemplate(Frontend, column.Views);
+                var cellTemplate = CellUtil.CreateBoundColumnTemplate(Context, Frontend, column.Views);
 
 				col.CellTemplate = new DataTemplate { VisualTree = cellTemplate };
 
@@ -368,6 +370,9 @@ namespace Xwt.WPFBackend
 			while (nodes.Count > 0) {
 				node = nodes.Pop ();
 				treeItem = (ExTreeViewItem) g.ContainerFromItem (node);
+				if (treeItem == null)
+					continue;
+
 				treeItem.UpdateLayout ();
 				g = treeItem.ItemContainerGenerator;
 

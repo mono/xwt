@@ -53,8 +53,8 @@ namespace Xwt.Backends
 		void SetSize (double width, double height);
 
 		bool Visible { get; set; }
-		string Title { get; set; }
-		
+		bool Sensitive { get; set; }
+		string Title { get; set; }		
 		bool Decorated { get; set; }
 		bool ShowInTaskbar { get; set; }
 		void SetTransientFor (IWindowFrameBackend window);
