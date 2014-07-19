@@ -37,6 +37,7 @@ namespace Xwt.Backends
 		void ScrollToRow (int row);
 
 		bool BorderVisible { get; set; }
+		GridLines GridLinesVisible { get; set; }
 		bool HeadersVisible { get; set; }
 
 		int GetRowAtPosition (Point p);
