@@ -80,14 +80,14 @@ namespace Xwt
 
 		#region ISynchronizeInvoke implementation
 
-		public IAsyncResult BeginInvoke (Delegate method, object[] args)
+		IAsyncResult ISynchronizeInvoke.BeginInvoke (Delegate method, object[] args)
 		{
 			var asyncResult = new AsyncInvokeResult ();
 			asyncResult.Invoke (method, args);
 			return asyncResult;
 		}
 
-		public object EndInvoke (IAsyncResult result)
+		object ISynchronizeInvoke.EndInvoke (IAsyncResult result)
 		{
 			var xwtResult = result as AsyncInvokeResult;
 			if (xwtResult != null) {
@@ -101,12 +101,12 @@ namespace Xwt
 			return result.AsyncState;
 		}
 
-		public object Invoke (Delegate method, object[] args)
+		object ISynchronizeInvoke.Invoke (Delegate method, object[] args)
 		{
-			return EndInvoke(BeginInvoke (method, args));
+			return ((ISynchronizeInvoke)this).EndInvoke (((ISynchronizeInvoke)this).BeginInvoke (method, args));
 		}
 
-		public bool InvokeRequired {
+		bool ISynchronizeInvoke.InvokeRequired {
 			get {
 				return Application.UIThread != Thread.CurrentThread;
 			}
