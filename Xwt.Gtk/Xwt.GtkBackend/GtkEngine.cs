@@ -92,9 +92,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IListBoxBackend, ListBoxBackend> ();
 			RegisterBackend<IStatusIconBackend, StatusIconBackend> ();
 			RegisterBackend<IProgressBarBackend, ProgressBarBackend> ();
-			#if !XWT_GTK3
 			RegisterBackend<IPopoverBackend, PopoverBackend> ();
-			#endif
 			RegisterBackend<ISpinButtonBackend, SpinButtonBackend> ();
 			RegisterBackend<IDatePickerBackend, DatePickerBackend> ();
 			RegisterBackend<ILinkLabelBackend, LinkLabelBackend> ();

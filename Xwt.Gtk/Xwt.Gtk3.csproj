@@ -162,6 +162,8 @@
     <Compile Include="Xwt.GtkBackend\HeaderBoxGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
+    <Compile Include="Xwt.GtkBackend\PopoverBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\Gtk3PopoverWindow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
