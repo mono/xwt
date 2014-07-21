@@ -59,7 +59,6 @@ namespace Xwt.GtkBackend
 				this.alignment = new Gtk.Alignment (0, 0, 1, 1);
 				this.Add (alignment);
 				this.alignment.Add (child);
-				this.FocusOutEvent += HandleFocusOutEvent;
 				OnScreenChanged (null);
 			}
 			
@@ -72,11 +71,6 @@ namespace Xwt.GtkBackend
 			public void ReleaseInnerWidget ()
 			{
 				alignment.Remove (alignment.Child);
-			}
-			
-			void HandleFocusOutEvent (object o, FocusOutEventArgs args)
-			{
-				this.HideAll ();
 			}
 			
 			public void SetPadding (WidgetSpacing spacing)
@@ -219,6 +213,7 @@ namespace Xwt.GtkBackend
 			popover = new PopoverWindow ((Gtk.Widget)((WidgetBackend)Toolkit.GetBackend (child)).NativeWidget, orientation);
 			popover.SetPadding (frontend.Padding);
 			popover.TransientFor = ((WindowFrameBackend)Toolkit.GetBackend (parent)).Window;
+			popover.TransientFor.FocusInEvent += HandleParentFocusInEvent;
 			popover.DestroyWithParent = true;
 			popover.Hidden += (o, args) => {
 				popover.ReleaseInnerWidget ();
@@ -247,6 +242,11 @@ namespace Xwt.GtkBackend
 					popover.Move ((int)position.X - args.Allocation.Width / 2, (int)position.Y - args.Allocation.Height);
 				popover.GrabFocus ();
 			};
+		}
+
+		void HandleParentFocusInEvent (object o, FocusInEventArgs args)
+		{
+			Hide ();
 		}
 
 		public void Hide ()

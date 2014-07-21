@@ -57,8 +57,13 @@ namespace Samples
 				table.Add (new Label ("Family")  { TextAlignment = Alignment.End }, 0, 1);
 				table.Add (new ComboBox (), 1, 1, vexpand:true);
 
+				var cmbStyle = new ComboBox ();
+				cmbStyle.Items.Add ("Normal");
+				cmbStyle.Items.Add ("Bold");
+				cmbStyle.Items.Add ("Italic");
+
 				table.Add (new Label ("Style")  { TextAlignment = Alignment.End }, 0, 2);
-				table.Add (new ComboBox (), 1, 2, vexpand:true);
+				table.Add (cmbStyle, 1, 2, vexpand:true);
 
 				table.Add (new Label ("Size")  { TextAlignment = Alignment.End }, 0, 3);
 				table.Add (new SpinButton (), 1, 3, vexpand:true);
