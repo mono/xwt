@@ -83,7 +83,7 @@ namespace Xwt.Mac
 			ResetFittingSize ();
 		}
 		
-		public void SetButtonStyle (ButtonStyle style)
+		public virtual void SetButtonStyle (ButtonStyle style)
 		{
 			switch (style) {
 			case ButtonStyle.Normal:
