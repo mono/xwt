@@ -78,17 +78,31 @@ namespace Samples
 					mb.Label = cmi.Label + " Clicked";
 				};
 			}
-			
-			ToggleButton tb = new ToggleButton ("Toggle me");
-			PackStart (tb);
-			
+
+			ToggleButton tb1 = new ToggleButton ("Toggle me");
+			ToggleButton tb2 = new ToggleButton ("Mini toggle");
+			tb1.Toggled += delegate(object sender, EventArgs e) {
+				if (tb1.Active)
+					tb1.Label = "Toggled";
+				else
+					tb1.Label = "Unoggled";
+				tb2.Active = tb1.Active;
+			};
+			PackStart (tb1);
+
 			var b = new Button ("Mini button");
 			b.Style = ButtonStyle.Borderless;
 			PackStart (b);
-			
-			tb = new ToggleButton ("Mini toggle");
-			tb.Style = ButtonStyle.Borderless;
-			PackStart (tb);
+
+			tb2.Style = ButtonStyle.Borderless;
+			tb2.Toggled += delegate(object sender, EventArgs e) {
+				if (tb2.Active)
+					tb2.Label = "Toggled";
+				else
+					tb2.Label = "Unoggled";
+				tb1.Active = tb2.Active;
+			};
+			PackStart (tb2);
 
 			b = new Button (" ? ");
 			b.Type = ButtonType.Help;
