@@ -85,7 +85,7 @@ namespace Samples
 				if (tb1.Active)
 					tb1.Label = "Toggled";
 				else
-					tb1.Label = "Unoggled";
+					tb1.Label = "Untoggled";
 				tb2.Active = tb1.Active;
 			};
 			PackStart (tb1);
@@ -99,7 +99,7 @@ namespace Samples
 				if (tb2.Active)
 					tb2.Label = "Toggled";
 				else
-					tb2.Label = "Unoggled";
+					tb2.Label = "Untoggled";
 				tb1.Active = tb2.Active;
 			};
 			PackStart (tb2);
