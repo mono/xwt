@@ -123,6 +123,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.KeyboardHandler, MacKeyboardHandler> ();
 			RegisterBackend <Xwt.Backends.IPasswordEntryBackend, PasswordEntryBackend> ();
 			RegisterBackend <Xwt.Backends.IWebViewBackend, WebViewBackend> ();
+			RegisterBackend <Xwt.Backends.ISaveFileDialogBackend, SaveFileDialogBackend> ();
 		}
 
 		public override void RunApplication ()
