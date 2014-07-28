@@ -91,6 +91,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IComboBoxBackend, ComboBoxBackend> ();
 			RegisterBackend <Xwt.Backends.IComboBoxEntryBackend, ComboBoxEntryBackend> ();
 			RegisterBackend <Xwt.Backends.ITextEntryBackend, TextEntryBackend> ();
+			RegisterBackend <Xwt.Backends.ITextAreaBackend, TextEntryBackend> ();
 			RegisterBackend <Xwt.Backends.IImageViewBackend, ImageViewBackend> ();
 			RegisterBackend <Xwt.Backends.ICheckBoxBackend, CheckBoxBackend> ();
 			RegisterBackend <Xwt.Backends.IFrameBackend, FrameBackend> ();

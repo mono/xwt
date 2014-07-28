@@ -96,7 +96,7 @@ namespace Xwt.Mac
 	class MacComboBox : NSComboBox, IViewObject, INSComboBoxDelegate
 	{
 		IComboBoxEventSink eventSink;
-		ITextEntryEventSink entryEventSink;
+		ITextBoxEventSink entryEventSink;
 		ApplicationContext context;
 
 		int cacheSelectionStart, cacheSelectionLength;
@@ -109,7 +109,7 @@ namespace Xwt.Mac
 			Delegate = this;
 		}
 		
-		public void SetEntryEventSink (ITextEntryEventSink entryEventSink)
+		public void SetEntryEventSink (ITextBoxEventSink entryEventSink)
 		{
 			this.entryEventSink = entryEventSink;
 		}
