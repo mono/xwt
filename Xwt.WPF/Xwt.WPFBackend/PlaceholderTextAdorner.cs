@@ -30,8 +30,8 @@ namespace Xwt.WPFBackend
 			get { return AdornedElement as PasswordBox; }
 		}
 		
-		TextBox AdornedTextBox {
-			get { return AdornedElement as TextBox; }
+		System.Windows.Controls.TextBox AdornedTextBox {
+			get { return AdornedElement as System.Windows.Controls.TextBox; }
 		}
 
 		System.Windows.Controls.ComboBox AdornedComboBox {

@@ -154,7 +154,7 @@ namespace Xwt.WPFBackend
 
         #region General
         Grid mainGrid;
-        TextBox textBox;
+        System.Windows.Controls.TextBox textBox;
         RepeatButton buttonUp;
         RepeatButton buttonDown;
         public WindowsSpinButton()
@@ -166,7 +166,7 @@ namespace Xwt.WPFBackend
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(16) });
 
             //Textbox
-            textBox = new TextBox();
+            textBox = new System.Windows.Controls.TextBox();
             textBox.Text = "0";
             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
             textBox.MinWidth = 25;
