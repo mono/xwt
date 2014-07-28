@@ -363,6 +363,8 @@
     <Compile Include="Xwt.Drawing\FontSizeTextAttribute.cs" />
     <Compile Include="Xwt.Accessibility\AccessibleFields.cs" />
     <Compile Include="Xwt.Accessibility\XwtAccessibleBackend.cs" />
+    <Compile Include="Xwt.Backends\ITextAreaBackend.cs" />
+    <Compile Include="Xwt\TextArea.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
