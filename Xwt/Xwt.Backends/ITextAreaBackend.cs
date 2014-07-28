@@ -31,9 +31,5 @@ namespace Xwt.Backends
 	{
 		WrapMode Wrap { get; set; }
 	}
-
-	public interface ITextAreaEventSink: ITextBoxEventSink
-	{
-	}
 }
 

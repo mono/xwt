@@ -33,6 +33,10 @@ namespace Xwt.Backends
 		bool MultiLine { get; set; }
 	}
 
+	public interface ITextEntryEventSink: ITextBoxEventSink
+	{
+	}
+
 	public interface ITextBoxBackend: IWidgetBackend
 	{
 		string Text { get; set; }
@@ -57,6 +61,16 @@ namespace Xwt.Backends
 	{
 		Changed,
 		Activated,
+		SelectionChanged
+	}
+
+	public enum TextEntryEvent
+	{
+		[Obsolete("Use Xwt.Backends.TextBoxEvent.Changed instead")]
+		Changed,
+		[Obsolete("Use Xwt.Backends.TextBoxEvent.Activated instead")]
+		Activated,
+		[Obsolete("Use Xwt.Backends.TextBoxEvent.SelectionChanged instead")]
 		SelectionChanged
 	}
 }
