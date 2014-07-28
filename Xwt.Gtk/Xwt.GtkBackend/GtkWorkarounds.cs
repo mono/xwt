@@ -1225,10 +1225,10 @@ namespace Xwt.GtkBackend
 			if (entry.Text.Length > 0)
 				return;
 
-			RenderPlaceholderText_internal (entry, args, placeHolderText, ref layout);
+			RenderPlaceholderText_internal (entry, args, placeHolderText, ref layout, entry.Xalign, 0.5f, 1, 0);
 		}
 
-		static void RenderPlaceholderText_internal (Gtk.Widget widget, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
+		static void RenderPlaceholderText_internal (Gtk.Widget widget, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout, float xalign, float yalign, int xpad, int ypad)
 		{
 			if (layout == null) {
 				layout = new Pango.Layout (widget.PangoContext);
@@ -1241,13 +1241,17 @@ namespace Xwt.GtkBackend
 			int width, height;
 			layout.SetText (placeHolderText);
 			layout.GetPixelSize (out width, out height);
+
+			int x = xpad + (int)((ww - width) * xalign);
+			int y = ypad + (int)((wh - height) * yalign);
+
 			using (var gc = new Gdk.GC (args.Event.Window)) {
 				gc.Copy (widget.Style.TextGC (Gtk.StateType.Normal));
 				Xwt.Drawing.Color color_a = widget.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
 				Xwt.Drawing.Color color_b = widget.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
 				gc.RgbFgColor = color_b.BlendWith (color_a, 0.5).ToGtkValue ();
 
-				args.Event.Window.DrawLayout (gc, 2, (wh - height) / 2 + 1, layout);
+				args.Event.Window.DrawLayout (gc, x, y, layout);
 			}
 		}
 	}
