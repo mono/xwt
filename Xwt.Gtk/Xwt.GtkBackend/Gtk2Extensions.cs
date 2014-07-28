@@ -137,9 +137,14 @@ namespace Xwt.GtkBackend
 			if (entry.Text.Length > 0)
 				return;
 
+			RenderPlaceholderText_internal (entry, args, placeHolderText, ref layout);
+		}
+
+		static void RenderPlaceholderText_internal (Gtk.Widget widget, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
+		{
 			if (layout == null) {
-				layout = new Pango.Layout (entry.PangoContext);
-				layout.FontDescription = entry.PangoContext.FontDescription.Copy ();
+				layout = new Pango.Layout (widget.PangoContext);
+				layout.FontDescription = widget.PangoContext.FontDescription.Copy ();
 			}
 
 			int wh, ww;
@@ -149,9 +154,9 @@ namespace Xwt.GtkBackend
 			layout.SetText (placeHolderText);
 			layout.GetPixelSize (out width, out height);
 			using (var gc = new Gdk.GC (args.Event.Window)) {
-				gc.Copy (entry.Style.TextGC (Gtk.StateType.Normal));
-				Xwt.Drawing.Color color_a = entry.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
-				Xwt.Drawing.Color color_b = entry.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
+				gc.Copy (widget.Style.TextGC (Gtk.StateType.Normal));
+				Xwt.Drawing.Color color_a = widget.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
+				Xwt.Drawing.Color color_b = widget.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
 				gc.RgbFgColor = color_b.BlendWith (color_a, 0.5).ToGtkValue ();
 
 				args.Event.Window.DrawLayout (gc, 2, (wh - height) / 2 + 1, layout);
