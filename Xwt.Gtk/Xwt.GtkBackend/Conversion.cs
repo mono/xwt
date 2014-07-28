@@ -139,6 +139,38 @@ namespace Xwt.GtkBackend
 			req.Width = (int)size.Width;
 			return req;
 		}
+
+		public static Gtk.TreeViewGridLines ToGtkValue (this GridLines value)
+		{
+			switch (value)
+			{
+				case GridLines.Both:
+					return Gtk.TreeViewGridLines.Both;
+				case GridLines.Horizontal:
+					return Gtk.TreeViewGridLines.Horizontal;
+				case GridLines.Vertical:
+					return Gtk.TreeViewGridLines.Vertical;
+				case GridLines.None:
+					return Gtk.TreeViewGridLines.None;
+			}
+			throw new InvalidOperationException("Invalid GridLines value: " + value);
+		}
+
+		public static GridLines ToXwtValue (this Gtk.TreeViewGridLines value)
+		{
+			switch (value)
+			{
+				case Gtk.TreeViewGridLines.Both:
+					return GridLines.Both;
+				case Gtk.TreeViewGridLines.Horizontal:
+					return GridLines.Horizontal;
+				case Gtk.TreeViewGridLines.Vertical:
+					return GridLines.Vertical;
+				case Gtk.TreeViewGridLines.None:
+					return GridLines.None;
+			}
+			throw new InvalidOperationException("Invalid TreeViewGridLines value: " + value);
+		}
 	}
 }
 
