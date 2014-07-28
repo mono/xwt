@@ -76,6 +76,7 @@ namespace Samples
 			PackStart (new Label ("Entry with small font"));
 			TextEntry te2 = new TextEntry ();
 			te2.Font = te2.Font.WithScaledSize (0.5);
+			te2.PlaceholderText = "Placeholder text";
 			PackStart (te2);
 			
 			PackStart (new Label ("Entry with placeholder text"));
@@ -98,11 +99,14 @@ namespace Samples
 			TextEntry te5 = new TextEntry ();
 			te5.Text = "I should be centered!";
 			te5.TextAlignment = Alignment.Center;
+			te5.PlaceholderText = "Placeholder text";
 			PackStart (te5);
 
 			TextEntry te6 = new TextEntry ();
 			te6.Text = "I should have" + Environment.NewLine + "multiple lines!";
+			te6.PlaceholderText = "Placeholder text";
 			te6.MultiLine = true;
+			te6.MinHeight = 40;
 			PackStart (te6);
 
 			try {
