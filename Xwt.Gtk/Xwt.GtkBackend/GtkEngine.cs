@@ -72,6 +72,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IDesignerSurfaceBackend, DesignerSurfaceBackend> ();
 			RegisterBackend<IMenuButtonBackend, MenuButtonBackend> ();
 			RegisterBackend<ITextEntryBackend, TextEntryBackend> ();
+			RegisterBackend<ITextAreaBackend, TextAreaBackend> ();
 			RegisterBackend<IToggleButtonBackend, ToggleButtonBackend> ();
 			RegisterBackend<IImageViewBackend, ImageViewBackend> ();
 			RegisterBackend<IAlertDialogBackend, AlertDialogBackend> ();
