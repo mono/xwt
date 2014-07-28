@@ -47,8 +47,8 @@ namespace Xwt.GtkBackend
 			set { base.Widget = value; }
 		}
 		
-		protected new ITextEntryEventSink EventSink {
-			get { return (ITextEntryEventSink)base.EventSink; }
+		protected new ITextBoxEventSink EventSink {
+			get { return (ITextBoxEventSink)base.EventSink; }
 		}
 
 		public string Text {
@@ -234,11 +234,11 @@ namespace Xwt.GtkBackend
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
-			if (eventId is TextEntryEvent) {
-				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed: Widget.Changed += HandleChanged; break;
-				case TextEntryEvent.Activated: Widget.Activated += HandleActivated; break;
-				case TextEntryEvent.SelectionChanged:
+			if (eventId is TextBoxEvent) {
+				switch ((TextBoxEvent)eventId) {
+				case TextBoxEvent.Changed: Widget.Changed += HandleChanged; break;
+				case TextBoxEvent.Activated: Widget.Activated += HandleActivated; break;
+				case TextBoxEvent.SelectionChanged:
 					enableSelectionChangedEvent = true;
 					Widget.MoveCursor += HandleMoveCursor;
 					Widget.ButtonPressEvent += HandleButtonPressEvent;
@@ -252,11 +252,11 @@ namespace Xwt.GtkBackend
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			if (eventId is TextEntryEvent) {
-				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed: Widget.Changed -= HandleChanged; break;
-				case TextEntryEvent.Activated: Widget.Activated -= HandleActivated; break;
-				case TextEntryEvent.SelectionChanged:
+			if (eventId is TextBoxEvent) {
+				switch ((TextBoxEvent)eventId) {
+				case TextBoxEvent.Changed: Widget.Changed -= HandleChanged; break;
+				case TextBoxEvent.Activated: Widget.Activated -= HandleActivated; break;
+				case TextBoxEvent.SelectionChanged:
 					enableSelectionChangedEvent = false;
 					Widget.MoveCursor -= HandleMoveCursor;
 					Widget.ButtonPressEvent -= HandleButtonPressEvent;
