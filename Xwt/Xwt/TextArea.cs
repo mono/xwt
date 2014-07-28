@@ -1,21 +1,21 @@
-// 
-// ITextEntryBackend.cs
-//  
+﻿//
+// TextBox.cs
+//
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
-// 
-// Copyright (c) 2011 Xamarin Inc
-// 
+//       Vsevolod Kukol <sevo@sevo.org>
+//
+// Copyright (c) 2014 Vsevolod Kukol
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,40 +24,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
+using System.ComponentModel;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface ITextEntryBackend: ITextBoxBackend
+	[BackendType (typeof(ITextAreaBackend))]
+	public class TextArea: TextBox
 	{
-		[Obsolete("Use ITextAreaBackend instead")]
-		bool MultiLine { get; set; }
-	}
+		public TextArea ()
+		{
+		}
 
-	public interface ITextBoxBackend: IWidgetBackend
-	{
-		string Text { get; set; }
-		Alignment TextAlignment { get; set; }
-		string PlaceholderText { get; set; }
-		bool ReadOnly { get; set; }
-		bool ShowFrame { get; set; }
-		int CursorPosition { get; set; }
-		int SelectionStart { get; set; }
-		int SelectionLength { get; set; }
-		string SelectedText { get; set; }
-	}
-	
-	public interface ITextBoxEventSink: IWidgetEventSink
-	{
-		void OnChanged ();
-		void OnActivated ();
-		void OnSelectionChanged ();
-	}
-	
-	public enum TextBoxEvent
-	{
-		Changed,
-		Activated,
-		SelectionChanged
+		ITextAreaBackend Backend {
+			get { return (ITextAreaBackend) BackendHost.Backend; }
+		}
+
+		[DefaultValue (WrapMode.None)]
+		public WrapMode Wrap {
+			get { return Backend.Wrap; }
+			set { Backend.Wrap = value; }
+		}
 	}
 }
 

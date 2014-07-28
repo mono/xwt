@@ -30,32 +30,50 @@ using System.ComponentModel;
 namespace Xwt
 {
 	[BackendType (typeof(ITextEntryBackend))]
-	public class TextEntry: Widget
+	public class TextEntry: TextBox
+	{
+		public TextEntry ()
+		{
+		}
+
+		ITextEntryBackend Backend {
+			get { return (ITextEntryBackend) BackendHost.Backend; }
+		}
+
+		[Obsolete("Use TextArea widget instead")]
+		[DefaultValue (false)]
+		public bool MultiLine {
+			get { return Backend.MultiLine; }
+			set { Backend.MultiLine = value; }
+		}
+	}
+
+	public abstract class TextBox: Widget
 	{
 		EventHandler changed, activated, selectionChanged;
 		
-		static TextEntry ()
+		static TextBox ()
 		{
-			MapEvent (TextEntryEvent.Changed, typeof(TextEntry), "OnChanged");
-			MapEvent (TextEntryEvent.Activated, typeof(TextEntry), "OnActivated");
-			MapEvent (TextEntryEvent.SelectionChanged, typeof(TextEntry), "OnSelectionChanged");
+			MapEvent (TextBoxEvent.Changed, typeof(TextBox), "OnChanged");
+			MapEvent (TextBoxEvent.Activated, typeof(TextBox), "OnActivated");
+			MapEvent (TextBoxEvent.SelectionChanged, typeof(TextBox), "OnSelectionChanged");
 		}
 		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ITextEntryEventSink
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ITextBoxEventSink
 		{
 			public void OnChanged ()
 			{
-				((TextEntry)Parent).OnChanged (EventArgs.Empty);
+				((TextBox)Parent).OnChanged (EventArgs.Empty);
 			}
 
 			public void OnActivated ()
 			{
-				((TextEntry)Parent).OnActivated (EventArgs.Empty);
+				((TextBox)Parent).OnActivated (EventArgs.Empty);
 			}
 
 			public void OnSelectionChanged ()
 			{
-				((TextEntry)Parent).OnSelectionChanged (EventArgs.Empty);
+				((TextBox)Parent).OnSelectionChanged (EventArgs.Empty);
 			}
 			
 			public override Size GetDefaultNaturalSize ()
@@ -64,7 +82,7 @@ namespace Xwt
 			}
 		}
 		
-		public TextEntry ()
+		public TextBox ()
 		{
 		}
 		
@@ -73,8 +91,8 @@ namespace Xwt
 			return new WidgetBackendHost ();
 		}
 		
-		ITextEntryBackend Backend {
-			get { return (ITextEntryBackend) BackendHost.Backend; }
+		ITextBoxBackend Backend {
+			get { return (ITextBoxBackend) BackendHost.Backend; }
 		}
 		
 		[DefaultValue ("")]
@@ -129,12 +147,6 @@ namespace Xwt
 			get { return Backend.SelectedText; }
 			set { Backend.SelectedText = value; }
 		}
-		
-		[DefaultValue (true)]
-		public bool MultiLine {
-			get { return Backend.MultiLine; }
-			set { Backend.MultiLine = value; }
-		}
 
 		protected virtual void OnChanged (EventArgs e)
 		{
@@ -144,12 +156,12 @@ namespace Xwt
 		
 		public event EventHandler Changed {
 			add {
-				BackendHost.OnBeforeEventAdd (TextEntryEvent.Changed, changed);
+				BackendHost.OnBeforeEventAdd (TextBoxEvent.Changed, changed);
 				changed += value;
 			}
 			remove {
 				changed -= value;
-				BackendHost.OnAfterEventRemove (TextEntryEvent.Changed, changed);
+				BackendHost.OnAfterEventRemove (TextBoxEvent.Changed, changed);
 			}
 		}
 
@@ -161,12 +173,12 @@ namespace Xwt
 
 		public event EventHandler SelectionChanged {
 			add {
-				BackendHost.OnBeforeEventAdd (TextEntryEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnBeforeEventAdd (TextBoxEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
 			remove {
 				selectionChanged -= value;
-				BackendHost.OnAfterEventRemove (TextEntryEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnAfterEventRemove (TextBoxEvent.SelectionChanged, selectionChanged);
 			}
 		}
 
@@ -178,12 +190,12 @@ namespace Xwt
 
 		public event EventHandler Activated {
 			add {
-				BackendHost.OnBeforeEventAdd (TextEntryEvent.Activated, activated);
+				BackendHost.OnBeforeEventAdd (TextBoxEvent.Activated, activated);
 				activated += value;
 			}
 			remove {
 				activated -= value;
-				BackendHost.OnAfterEventRemove (TextEntryEvent.Activated, activated);
+				BackendHost.OnAfterEventRemove (TextBoxEvent.Activated, activated);
 			}
 		}
 	}
