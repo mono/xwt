@@ -121,6 +121,10 @@ namespace Xwt
 		
 		public static Rectangle Union (Rectangle r1, Rectangle r2)
 		{
+			if (r1.IsEmpty)
+				return r2;
+			if (r2.IsEmpty)
+				return r1;
 			return FromLTRB (Math.Min (r1.Left, r2.Left),
 					 Math.Min (r1.Top, r2.Top),
 					 Math.Max (r1.Right, r2.Right),
