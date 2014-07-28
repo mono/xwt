@@ -1228,6 +1228,23 @@ namespace Xwt.GtkBackend
 			RenderPlaceholderText_internal (entry, args, placeHolderText, ref layout, entry.Xalign, 0.5f, 1, 0);
 		}
 
+		public static void RenderPlaceholderText (this Gtk.TextView textView, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
+		{
+			if (args.Event.Window != textView.GetWindow (Gtk.TextWindowType.Text))
+				return;
+
+			if (textView.Buffer.Text.Length > 0)
+				return;
+
+			float xalign = 0;
+			switch (textView.Justification) {
+				case Gtk.Justification.Center: xalign = 0.5f; break;
+				case Gtk.Justification.Right: xalign = 1; break;
+			}
+
+			RenderPlaceholderText_internal (textView, args, placeHolderText, ref layout, xalign, 0.0f, 3, 0);
+		}
+
 		static void RenderPlaceholderText_internal (Gtk.Widget widget, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout, float xalign, float yalign, int xpad, int ypad)
 		{
 			if (layout == null) {
