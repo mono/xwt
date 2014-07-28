@@ -23,8 +23,8 @@ namespace Xwt.WPFBackend
 			get { return AdornedElement as PasswordBox; }
 		}
 		
-		TextBox AdornedTextBox {
-			get { return AdornedElement as TextBox; }
+		System.Windows.Controls.TextBox AdornedTextBox {
+			get { return AdornedElement as System.Windows.Controls.TextBox; }
 		}
 
 		public string PlaceholderText {
@@ -71,7 +71,7 @@ namespace Xwt.WPFBackend
 			}
 			else {
 				multiline = AdornedTextBox.AcceptsReturn;
-				alignment = AdornedTextBox.ReadLocalValue (TextBox.TextAlignmentProperty) !=DependencyProperty.UnsetValue ? AdornedTextBox.TextAlignment : ConvertAlignment (AdornedTextBox.HorizontalContentAlignment);
+				alignment = AdornedTextBox.ReadLocalValue (System.Windows.Controls.TextBox.TextAlignmentProperty) !=DependencyProperty.UnsetValue ? AdornedTextBox.TextAlignment : ConvertAlignment (AdornedTextBox.HorizontalContentAlignment);
 				flowDirection = AdornedTextBox.FlowDirection;
 				fontSize = AdornedTextBox.FontSize;
 				typeFace = AdornedTextBox.FontFamily.GetTypefaces ().FirstOrDefault ();

@@ -95,8 +95,8 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		protected TextBox TextBox {
-			get { return combobox.Template.FindName ("PART_EditableTextBox", combobox) as TextBox; }
+		protected System.Windows.Controls.TextBox TextBox {
+			get { return combobox.Template.FindName ("PART_EditableTextBox", combobox) as System.Windows.Controls.TextBox; }
 		}
 
 		public int CursorPosition {
@@ -172,12 +172,12 @@ namespace Xwt.WPFBackend
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
-			if (eventId is TextEntryEvent) {
-				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed:
+			if (eventId is TextBoxEvent) {
+				switch ((TextBoxEvent)eventId) {
+				case TextBoxEvent.Changed:
 					this.combobox.TextChanged += OnTextChanged;
 					break;
-				case TextEntryEvent.SelectionChanged:
+				case TextBoxEvent.SelectionChanged:
 					combobox.Loaded += HandleLoaded;
 					break;
 				}
@@ -193,12 +193,12 @@ namespace Xwt.WPFBackend
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			if (eventId is TextEntryEvent) {
-				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed:
+			if (eventId is TextBoxEvent) {
+				switch ((TextBoxEvent)eventId) {
+				case TextBoxEvent.Changed:
 					this.combobox.TextChanged -= OnTextChanged;
 					break;
-				case TextEntryEvent.SelectionChanged:
+				case TextBoxEvent.SelectionChanged:
 					if (TextBox != null)
 						TextBox.SelectionChanged -= OnSelectionChanged;
 					break;
@@ -209,18 +209,18 @@ namespace Xwt.WPFBackend
 		private readonly ExComboBox combobox;
 		private string placeholderText;
 
-		protected ITextEntryEventSink TextEntryEventSink {
-			get { return (ITextEntryEventSink) EventSink; }
+		protected ITextBoxEventSink TextBoxEventSink {
+			get { return (ITextBoxEventSink) EventSink; }
 		}
 
 		private void OnTextChanged (object sender, EventArgs e)
 		{
-			Context.InvokeUserCode (TextEntryEventSink.OnChanged);
+			Context.InvokeUserCode (TextBoxEventSink.OnChanged);
 		}
 
 		private void OnSelectionChanged (object s, EventArgs e)
 		{
-			Context.InvokeUserCode (TextEntryEventSink.OnSelectionChanged);
+			Context.InvokeUserCode (TextBoxEventSink.OnSelectionChanged);
 		}
 
 		private void UpdatePlaceholder (string newPlaceholder, bool focused)
