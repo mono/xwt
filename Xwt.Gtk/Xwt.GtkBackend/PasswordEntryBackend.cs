@@ -67,7 +67,7 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
-			TextEntryBackend.RenderPlaceholderText (Widget, args, placeHolderText, ref layout);
+			Widget.RenderPlaceholderText (args, placeHolderText, ref layout);
 		}
 
 		public override void EnableEvent (object eventId)
