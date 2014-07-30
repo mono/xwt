@@ -46,6 +46,9 @@ namespace Xwt
 		static int DebugWidgetLayoutIndent = 0;
 
 		static Widget[] emptyList = new Widget[0];
+		bool isDisposed;
+		Widget parent;
+		string name;
 		List<Widget> children;
 		WidgetSpacing margin;
 		Size cachedSize;
@@ -78,11 +81,11 @@ namespace Xwt
 		EventHandler<ButtonEventArgs> buttonReleased;
 		EventHandler<MouseMovedEventArgs> mouseMoved;
 		EventHandler boundsChanged;
-        EventHandler<MouseScrolledEventArgs> mouseScrolled;
-		
+		EventHandler<MouseScrolledEventArgs> mouseScrolled;
+
 		EventHandler gotFocus;
 		EventHandler lostFocus;
-		
+
 		protected class WidgetBackendHost<T,B>: WidgetBackendHost where T:Widget where B:IWidgetBackend
 		{
 			public new T Parent {
@@ -105,7 +108,7 @@ namespace Xwt
 				((IWidgetBackend)Backend).Initialize (this);
 				base.OnBackendCreated ();
 			}
-		
+
 			/// <summary>
 			/// Gets the default natural size for this type of widget
 			/// </summary>
@@ -116,7 +119,7 @@ namespace Xwt
 			{
 				return new Size (0, 0);
 			}
-			
+
 			void IWidgetEventSink.OnDragOverCheck (DragOverCheckEventArgs args)
 			{
 				Parent.OnDragOverCheck (args);
@@ -141,32 +144,32 @@ namespace Xwt
 			{
 				Parent.OnDragLeave (args);
 			}
-			
+
 			void IWidgetEventSink.OnPreferredSizeChanged ()
 			{
 				Parent.OnPreferredSizeChanged ();
 			}
-			
+
 			void IWidgetEventSink.OnDragFinished (DragFinishedEventArgs args)
 			{
 				Parent.OnDragFinished (args);
 			}
-			
+
 			DragStartData IWidgetEventSink.OnDragStarted ()
 			{
 				return Parent.InternalDragStarted ();
 			}
-			
+
 			void IWidgetEventSink.OnKeyPressed (KeyEventArgs args)
 			{
 				Parent.OnKeyPressed (args);
 			}
-			
+
 			void IWidgetEventSink.OnKeyReleased (KeyEventArgs args)
 			{
 				Parent.OnKeyReleased (args);
 			}
-			
+
 			Size IWidgetEventSink.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 			{
 				return Parent.OnGetPreferredSize (widthConstraint, heightConstraint);
@@ -176,42 +179,42 @@ namespace Xwt
 			{
 				Parent.OnGotFocus (EventArgs.Empty);
 			}
-			
+
 			void IWidgetEventSink.OnLostFocus ()
 			{
 				Parent.OnLostFocus (EventArgs.Empty);
 			}
-			
+
 			void IWidgetEventSink.OnMouseEntered ()
 			{
 				Parent.OnMouseEntered (EventArgs.Empty);
 			}
-			
+
 			void IWidgetEventSink.OnMouseExited ()
 			{
 				Parent.OnMouseExited (EventArgs.Empty);
 			}
-			
+
 			void IWidgetEventSink.OnButtonPressed (ButtonEventArgs args)
 			{
 				Parent.OnButtonPressed (args);
 			}
-			
+
 			void IWidgetEventSink.OnButtonReleased (ButtonEventArgs args)
 			{
 				Parent.OnButtonReleased (args);
 			}
-			
+
 			void IWidgetEventSink.OnMouseMoved (MouseMovedEventArgs args)
 			{
 				Parent.OnMouseMoved (args);
 			}
-			
+
 			bool IWidgetEventSink.SupportsCustomScrolling ()
 			{
 				return Parent.SupportsCustomScrolling;
 			}
-			
+
 			void IWidgetEventSink.SetScrollAdjustments (IScrollAdjustmentBackend horizontal, IScrollAdjustmentBackend vertical)
 			{
 				var h = new ScrollAdjustment (horizontal);
@@ -224,18 +227,18 @@ namespace Xwt
 				Parent.OnBoundsChanged ();
 			}
 
-            void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
-            {
-                Parent.OnMouseScrolled(args);
-            }
+			void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
+			{
+				Parent.OnMouseScrolled(args);
+			}
 		}
-		
+
 		public Widget ()
 		{
 			if (!(base.BackendHost is WidgetBackendHost))
 				throw new InvalidOperationException ("CreateBackendHost for Widget did not return a WidgetBackendHost instance");
 		}
-		
+
 		static Widget ()
 		{
 			MapEvent (WidgetEvent.DragOverCheck, typeof(Widget), "OnDragOverCheck");
@@ -257,27 +260,27 @@ namespace Xwt
 			MapEvent (WidgetEvent.PreferredSizeCheck, typeof (Widget), "OnGetPreferredSize");
 			MapEvent (WidgetEvent.MouseScrolled, typeof(Widget), "OnMouseScrolled");
 		}
-		
+
 		internal protected static IBackend GetBackend (Widget w)
 		{
 			if (w != null && w.Backend is XwtWidgetBackend)
 				return GetBackend ((XwtWidgetBackend)w.Backend);
 			return w != null ? w.Backend : null;
 		}
-		
+
 		protected new WidgetBackendHost BackendHost {
 			get { return (WidgetBackendHost) base.BackendHost; }
 		}
-		
+
 		protected override Xwt.Backends.BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}
-		
+
 		protected override void Dispose (bool disposing)
 		{
 			base.Dispose (disposing);
-			
+
 			// Don't dispose the backend if this object is being finalized
 			// The backend has to handle the finalizing on its own
 			if (disposing) {
@@ -288,10 +291,12 @@ namespace Xwt
 						c.Dispose ();
 				}
 			}
+			isDisposed = true;
 		}
-		
+
 		public WindowFrame ParentWindow {
 			get {
+				ThrowIfObjectIsDisposed();
 				if (Parent != null)
 					return Parent.ParentWindow;
 				else if (parentWindow == null) {
@@ -302,28 +307,32 @@ namespace Xwt
 				return parentWindow;
 			}
 		}
-		
+
 		internal void SetParentWindow (WindowFrame win)
 		{
 			parentWindow = win;
 		}
-		
+
 /*		protected virtual WidgetBackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
 		}
-		
+
 		protected WidgetBackendHost BackendHost {
 			get { return backendHost; }
 		}*/
-		
+
 		IWidgetBackend Backend {
 			get { return (IWidgetBackend) BackendHost.Backend; }
 		}
-		
+
 		public WidgetSpacing Margin {
-			get { return margin; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return margin;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				margin = value;
 				OnPreferredSizeChanged ();
 				OnPlacementChanged ();
@@ -332,8 +341,12 @@ namespace Xwt
 
 		[DefaultValue (0d)]
 		public double MarginLeft {
-			get { return margin.Left; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return margin.Left;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				margin.Left = value;
 				OnPreferredSizeChanged (); 
 				OnPlacementChanged ();
@@ -342,8 +355,12 @@ namespace Xwt
 
 		[DefaultValue (0d)]
 		public double MarginRight {
-			get { return margin.Right; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return margin.Right;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				margin.Right = value;
 				OnPreferredSizeChanged (); 
 				OnPlacementChanged ();
@@ -352,8 +369,12 @@ namespace Xwt
 
 		[DefaultValue (0d)]
 		public double MarginTop {
-			get { return margin.Top; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return margin.Top;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				margin.Top = value;
 				OnPreferredSizeChanged (); 
 				OnPlacementChanged ();
@@ -362,8 +383,12 @@ namespace Xwt
 
 		[DefaultValue (0d)]
 		public double MarginBottom {
-			get { return margin.Bottom; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return margin.Bottom;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				margin.Bottom = value;
 				OnPreferredSizeChanged (); 
 				OnPlacementChanged ();
@@ -371,8 +396,12 @@ namespace Xwt
 		}
 
 		public WidgetPlacement VerticalPlacement {
-			get { return alignVertical; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return alignVertical;
+				}
 			set {
+				ThrowIfObjectIsDisposed();
 				alignVertical = value;
 				OnPreferredSizeChanged (); 
 				OnPlacementChanged ();
@@ -380,8 +409,12 @@ namespace Xwt
 		}
 
 		public WidgetPlacement HorizontalPlacement {
-			get { return alignHorizontal; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return alignHorizontal;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				alignHorizontal = value;
 				OnPreferredSizeChanged (); 
 				OnPlacementChanged ();
@@ -397,8 +430,12 @@ namespace Xwt
 		}
 
 		public bool ExpandVertical {
-			get { return expandVertical; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return expandVertical;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				expandVertical = value;
 				OnPreferredSizeChanged (); 
 				OnPlacementChanged ();
@@ -406,8 +443,12 @@ namespace Xwt
 		}
 
 		public bool ExpandHorizontal {
-			get { return expandHorizontal; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return expandHorizontal;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				expandHorizontal = value;
 				OnPreferredSizeChanged (); 
 				OnPlacementChanged ();
@@ -424,51 +465,95 @@ namespace Xwt
 
 		public void Show ()
 		{
+			ThrowIfObjectIsDisposed();
 			Visible = true;
 		}
-		
+
 		public void Hide ()
 		{
+			ThrowIfObjectIsDisposed();
 			Visible = false;
 		}
-		
+
 		[DefaultValue (true)]
 		public bool Visible {
-			get { return Backend.Visible; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return Backend.Visible;
+				}
 			set {
+				ThrowIfObjectIsDisposed();
 				Backend.Visible = value; 
 				OnPreferredSizeChanged ();
 			}
 		}
-		
+
 		[DefaultValue (true)]
 		public bool Sensitive {
-			get { return Backend.Sensitive; }
-			set { Backend.Sensitive = value; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return Backend.Sensitive;
+			}
+			set {
+				ThrowIfObjectIsDisposed();
+				Backend.Sensitive = value;
+			}
 		}
-		
+
 		[DefaultValue (true)]
 		public bool CanGetFocus {
-			get { return Backend.CanGetFocus; }
-			set { Backend.CanGetFocus = value; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return Backend.CanGetFocus;
+			}
+			set {
+				ThrowIfObjectIsDisposed();
+				Backend.CanGetFocus = value;
+			}
 		}
-		
+
 		[DefaultValue (true)]
 		public bool HasFocus {
-			get { return Backend.HasFocus; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return Backend.HasFocus;
+			}
 		}
-		
+
 		[DefaultValue (1d)]
 		public double Opacity {
-			get { return Backend.Opacity; }
-			set { Backend.Opacity = value; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return Backend.Opacity;
+			}
+			set {
+				ThrowIfObjectIsDisposed();
+				Backend.Opacity = value;
+			}
 		}
 
 		[DefaultValue (null)]
-		public string Name { get; set; }
-		
+		public string Name {
+			get {
+				ThrowIfObjectIsDisposed();
+				return name;
+			}
+			set {
+				ThrowIfObjectIsDisposed();
+				name = value;
+			}
+		}
+
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-		public Widget Parent { get; private set; }
+		public Widget Parent {
+			get {
+				ThrowIfObjectIsDisposed();
+				return parent;
+			}
+			private set {
+				parent = value;
+			}
+		}
 
 		internal Widget InternalParent { get; private set; }
 
@@ -480,9 +565,12 @@ namespace Xwt
 
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public IWidgetSurface Surface {
-			get { return this; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return this;
+			}
 		}
-		
+
 		protected Widget Content {
 			get { return contentWidget; }
 			set {
@@ -498,11 +586,14 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
-		
+
 		public Size Size {
-			get { return Backend.Size; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return Backend.Size;
+			}
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the minimum width.
 		/// </summary>
@@ -514,8 +605,12 @@ namespace Xwt
 		/// </remarks>
 		[DefaultValue((double)-1)]
 		public double MinWidth {
-			get { return minWidth; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return minWidth;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				if (value < -1)
 					throw new ArgumentException ("MinWidth can't be less that -1");
 				minWidth = value;
@@ -523,7 +618,7 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the minimum height.
 		/// </summary>
@@ -535,8 +630,12 @@ namespace Xwt
 		/// </remarks>
 		[DefaultValue((double)-1)]
 		public double MinHeight {
-			get { return minHeight; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return minHeight;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				if (value < -1)
 					throw new ArgumentException ("MinHeight can't be less that -1");
 				minHeight = value;
@@ -544,7 +643,7 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the natural width.
 		/// </summary>
@@ -556,8 +655,12 @@ namespace Xwt
 		/// </remarks>
 		[DefaultValue((double)-1)]
 		public double WidthRequest {
-			get { return widthRequest; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return widthRequest;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				if (value < -1)
 					throw new ArgumentException ("NaturalWidth can't be less that -1");
 				widthRequest = value;
@@ -565,7 +668,7 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the natural height.
 		/// </summary>
@@ -577,8 +680,12 @@ namespace Xwt
 		/// </remarks>
 		[DefaultValue((double)-1)]
 		public double HeightRequest {
-			get { return heightRequest; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return heightRequest;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				if (value < -1)
 					throw new ArgumentException ("NaturalHeight can't be less that -1");
 				heightRequest = value;
@@ -586,7 +693,7 @@ namespace Xwt
 				OnPreferredSizeChanged ();
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the font of the widget.
 		/// </summary>
@@ -595,24 +702,38 @@ namespace Xwt
 		/// </value>
 		public Font Font {
 			get {
+				ThrowIfObjectIsDisposed();
 				return new Font (Backend.Font, BackendHost.ToolkitEngine);
 			}
 			set {
+				ThrowIfObjectIsDisposed();
 				Backend.Font = BackendHost.ToolkitEngine.GetSafeBackend (value);
 			}
 		}
-		
+
 		public Color BackgroundColor {
-			get { return Backend.BackgroundColor; }
-			set { Backend.BackgroundColor = value; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return Backend.BackgroundColor;
+			}
+			set {
+				ThrowIfObjectIsDisposed();
+				Backend.BackgroundColor = value;
+			}
 		}
 
 		[DefaultValue ("")]
 		public string TooltipText {
-			get { return Backend.TooltipText ?? ""; }
-			set { Backend.TooltipText = value; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return Backend.TooltipText ?? "";
+			}
+			set {
+				ThrowIfObjectIsDisposed();
+				Backend.TooltipText = value;
+			}
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the cursor shape to be used when the mouse is over the widget
 		/// </summary>
@@ -621,8 +742,12 @@ namespace Xwt
 		/// </value>
 		[DefaultValue ("")]
 		public CursorType Cursor {
-			get { return cursor ?? CursorType.Arrow; }
+			get {
+				ThrowIfObjectIsDisposed();
+				return cursor ?? CursorType.Arrow;
+			}
 			set {
+				ThrowIfObjectIsDisposed();
 				cursor = value;
 				Backend.SetCursor (value);
 			}
@@ -630,11 +755,13 @@ namespace Xwt
 
 		public bool ShouldSerializeCursor ()
 		{
+			ThrowIfObjectIsDisposed();
 			return Cursor != CursorType.Arrow;
 		}
 
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
+			ThrowIfObjectIsDisposed();
 			return Backend.ConvertToScreenCoordinates (widgetCoordinates);
 		}
 
@@ -645,78 +772,92 @@ namespace Xwt
 		/// The widget bounds
 		/// </value>
 		public Rectangle ScreenBounds {
-			get { return new Rectangle (ConvertToScreenCoordinates (new Point (0,0)), Size); }
+			get {
+				ThrowIfObjectIsDisposed();
+				return new Rectangle (ConvertToScreenCoordinates (new Point (0,0)), Size);
+			}
 		}
-		
+
 		public bool ShouldSerializeParent ()
 		{
+			ThrowIfObjectIsDisposed();
 			return false;
 		}
-		
+
 		public void SetFocus ()
 		{
+			ThrowIfObjectIsDisposed();
 			Backend.SetFocus ();
 		}
-		
+
 		public DragOperation CreateDragOperation ()
 		{
+			ThrowIfObjectIsDisposed();
 			currentDragOperation = new DragOperation (this);
 			return currentDragOperation;
 		}
-		
+
 		internal void DragStart (DragStartData sdata)
 		{
 			Backend.DragStart (sdata);
 		}
-		
+
 		public void SetDragDropTarget (params TransferDataType[] types)
 		{
+			ThrowIfObjectIsDisposed();
 			Backend.SetDragTarget (types, DragDropAction.All);
 		}
-		
+
 		public void SetDragDropTarget (params Type[] types)
 		{
+			ThrowIfObjectIsDisposed();
 			Backend.SetDragTarget (types.Select (t => TransferDataType.FromType (t)).ToArray (), DragDropAction.All);
 		}
-		
+
 		public void SetDragDropTarget (DragDropAction dragAction, params TransferDataType[] types)
 		{
+			ThrowIfObjectIsDisposed();
 			Backend.SetDragTarget (types, dragAction);
 		}
-		
+
 		public void SetDragDropTarget (DragDropAction dragAction, params Type[] types)
 		{
+			ThrowIfObjectIsDisposed();
 			Backend.SetDragTarget (types.Select (t => TransferDataType.FromType (t)).ToArray(), dragAction);
 		}
-		
+
 		public void SetDragSource (params TransferDataType[] types)
 		{
+			ThrowIfObjectIsDisposed();
 			Backend.SetDragSource (types, DragDropAction.All);
 		}
-		
+
 		public void SetDragSource (params Type[] types)
 		{
+			ThrowIfObjectIsDisposed();
 			Backend.SetDragSource (types.Select (t => TransferDataType.FromType (t)).ToArray(), DragDropAction.All);
 		}
-		
+
 		public void SetDragSource (DragDropAction dragAction, params TransferDataType[] types)
 		{
+			ThrowIfObjectIsDisposed();
 			Backend.SetDragSource (types, dragAction);
 		}
-		
+
 		public void SetDragSource (DragDropAction dragAction, params Type[] types)
 		{
+			ThrowIfObjectIsDisposed();
 			Backend.SetDragSource (types.Select (t => TransferDataType.FromType (t)).ToArray(), dragAction);
 		}
-		
+
 		internal protected virtual bool SupportsCustomScrolling {
 			get { return false; }
 		}
-		
+
 		protected virtual void SetScrollAdjustments (ScrollAdjustment horizontal, ScrollAdjustment vertical)
 		{
 		}
-		
+
 		/// <summary>
 		/// Raises the DragOverCheck event.
 		/// </summary>
@@ -728,7 +869,7 @@ namespace Xwt
 			if (dragOverCheck != null)
 				dragOverCheck (this, args);
 		}
-		
+
 		/// <summary>
 		/// Raises the DragOver event.
 		/// </summary>
@@ -740,7 +881,7 @@ namespace Xwt
 			if (dragOver != null)
 				dragOver (this, args);
 		}
-		
+
 		/// <summary>
 		/// Raises the DragDropCheck event.
 		/// </summary>
@@ -752,7 +893,7 @@ namespace Xwt
 			if (dragDropCheck != null)
 				dragDropCheck (this, args);
 		}
-		
+
 		/// <summary>
 		/// Raises the DragDrop event.
 		/// </summary>
@@ -764,7 +905,7 @@ namespace Xwt
 			if (dragDrop != null)
 				dragDrop (this, args);
 		}
-		
+
 		/// <summary>
 		/// Raises the DragLeave event.
 		/// </summary>
@@ -776,7 +917,7 @@ namespace Xwt
 			if (dragLeave != null)
 				dragLeave (this, args);
 		}
-		
+
 		protected DragStartData InternalDragStarted ()
 		{
 			DragStartedEventArgs args = new DragStartedEventArgs ();
@@ -797,7 +938,7 @@ namespace Xwt
 			if (dragStarted != null)
 				dragStarted (this, args);
 		}
-		
+
 		internal void OnDragFinished (DragFinishedEventArgs args)
 		{
 			if (currentDragOperation != null) {
@@ -806,31 +947,31 @@ namespace Xwt
 				dop.NotifyFinished (args);
 			}
 		}
-		
+
 		internal protected virtual void OnKeyPressed (KeyEventArgs args)
 		{
 			if (keyPressed != null)
 				keyPressed (this, args);
 		}
-		
+
 		internal protected virtual void OnKeyReleased (KeyEventArgs args)
 		{
 			if (keyReleased != null)
 				keyReleased (this, args);
 		}
-		
+
 		internal protected virtual void OnGotFocus (EventArgs args)
 		{
 			if (gotFocus != null)
 				gotFocus (this, args);
 		}
-		
+
 		internal protected virtual void OnLostFocus (EventArgs args)
 		{
 			if (lostFocus != null)
 				lostFocus (this, args);
 		}
-		
+
 		/// <summary>
 		/// Called when the mouse enters the widget
 		/// </summary>
@@ -842,7 +983,7 @@ namespace Xwt
 			if (mouseEntered != null)
 				mouseEntered (this, args);
 		}
-		
+
 		/// <summary>
 		/// Called when the mouse leaves the widget
 		/// </summary>
@@ -854,25 +995,25 @@ namespace Xwt
 			if (mouseExited != null)
 				mouseExited (this, args);
 		}
-		
+
 		protected virtual void OnButtonPressed (ButtonEventArgs args)
 		{
 			if (buttonPressed != null)
 				buttonPressed (this, args);
 		}
-		
+
 		protected virtual void OnButtonReleased (ButtonEventArgs args)
 		{
 			if (buttonReleased != null)
 				buttonReleased (this, args);
 		}
-		
+
 		protected virtual void OnMouseMoved (MouseMovedEventArgs args)
 		{
 			if (mouseMoved != null)
 				mouseMoved (this, args);
 		}
-		
+
 		void HandleBoundsChanged ()
 		{
 			// If bounds have changed and the widget has not a parent, chances are that
@@ -880,7 +1021,7 @@ namespace Xwt
 			// have to call Reallocate here (which is normally called by the root XWT window)
 			if (!BackendHost.EngineBackend.HandlesSizeNegotiation && Parent == null)
 				Surface.Reallocate ();
-			
+
 			OnBoundsChanged ();
 		}
 
@@ -901,18 +1042,18 @@ namespace Xwt
 				};
 			}
 		}
-		
+
 		protected virtual void OnBoundsChanged ()
 		{
 			if (boundsChanged != null)
 				boundsChanged (this, EventArgs.Empty);
 		}
-		
+
 		protected static IWidgetBackend GetWidgetBackend (Widget w)
 		{
 			return (IWidgetBackend) GetBackend (w);
 		}
-		
+
 		void ResetCachedSizes ()
 		{
 			sizeCached = false;
@@ -945,7 +1086,7 @@ namespace Xwt
 				rect.Height = 0;
 			return rect;
 		}
-		
+
 		void IWidgetSurface.Reallocate ()
 		{
 			Reallocate ();
@@ -1013,7 +1154,7 @@ namespace Xwt
 		object IWidgetSurface.NativeWidget {
 			get { return Backend.NativeWidget; }
 		}
-		
+
 		Toolkit IWidgetSurface.ToolkitEngine {
 			get { return BackendHost.ToolkitEngine; }
 		}
@@ -1122,6 +1263,7 @@ namespace Xwt
 
 		public void QueueForReallocate ()
 		{
+			ThrowIfObjectIsDisposed();
 			reallocationQueue.Add (this);
 			QueueDelayedResizeRequest ();
 		}
@@ -1382,10 +1524,12 @@ namespace Xwt
 		/// </remarks>
 		public event EventHandler<DragOverCheckEventArgs> DragOverCheck {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.DragOverCheck, dragOverCheck);
 				dragOverCheck += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				dragOverCheck -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.DragOverCheck, dragOverCheck);
 			}
@@ -1406,10 +1550,12 @@ namespace Xwt
 		/// </remarks>
 		public event EventHandler<DragOverEventArgs> DragOver {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.DragOver, dragOver);
 				dragOver += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				dragOver -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.DragOver, dragOver);
 			}
@@ -1420,10 +1566,12 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler<DragCheckEventArgs> DragDropCheck {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.DragDropCheck, dragDropCheck);
 				dragDropCheck += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				dragDropCheck -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.DragDropCheck, dragDropCheck);
 			}
@@ -1438,10 +1586,12 @@ namespace Xwt
 		/// </remarks>
 		public event EventHandler<DragEventArgs> DragDrop {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.DragDrop, dragDrop);
 				dragDrop += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				dragDrop -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.DragDrop, dragDrop);
 			}
@@ -1449,10 +1599,12 @@ namespace Xwt
 		
 		public event EventHandler DragLeave {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.DragLeave, dragLeave);
 				dragLeave += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				dragLeave -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.DragLeave, dragLeave);
 			}
@@ -1460,10 +1612,12 @@ namespace Xwt
 		
 		public event EventHandler<DragStartedEventArgs> DragStarted {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.DragStarted, dragStarted);
 				dragStarted += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				dragStarted -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.DragStarted, dragStarted);
 			}
@@ -1471,10 +1625,12 @@ namespace Xwt
 		
 		public event EventHandler<KeyEventArgs> KeyPressed {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.KeyPressed, keyPressed);
 				keyPressed += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				keyPressed -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.KeyPressed, keyPressed);
 			}
@@ -1482,10 +1638,12 @@ namespace Xwt
 		
 		public event EventHandler<KeyEventArgs> KeyReleased {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.KeyReleased, keyReleased);
 				keyReleased += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				keyReleased -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.KeyReleased, keyReleased);
 			}
@@ -1496,10 +1654,12 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler GotFocus {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.GotFocus, gotFocus);
 				gotFocus += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				gotFocus -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.GotFocus, gotFocus);
 			}
@@ -1510,10 +1670,12 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler LostFocus {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.LostFocus, lostFocus);
 				lostFocus += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				lostFocus -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.LostFocus, lostFocus);
 			}
@@ -1524,10 +1686,12 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler MouseEntered {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.MouseEntered, mouseEntered);
 				mouseEntered += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				mouseEntered -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.MouseEntered, mouseEntered);
 			}
@@ -1538,10 +1702,12 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler MouseExited {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.MouseExited, mouseExited);
 				mouseExited += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				mouseExited -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.MouseExited, mouseExited);
 			}
@@ -1549,10 +1715,12 @@ namespace Xwt
 		
 		public event EventHandler<ButtonEventArgs> ButtonPressed {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.ButtonPressed, buttonPressed);
 				buttonPressed += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				buttonPressed -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.ButtonPressed, buttonPressed);
 			}
@@ -1560,10 +1728,12 @@ namespace Xwt
 		
 		public event EventHandler<ButtonEventArgs> ButtonReleased {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.ButtonReleased, buttonReleased);
 				buttonReleased += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				buttonReleased -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.ButtonReleased, buttonReleased);
 			}
@@ -1571,10 +1741,12 @@ namespace Xwt
 		
 		public event EventHandler<MouseMovedEventArgs> MouseMoved {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.MouseMoved, mouseMoved);
 				mouseMoved += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				mouseMoved -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.MouseMoved, mouseMoved);
 			}
@@ -1582,10 +1754,12 @@ namespace Xwt
 		
 		public event EventHandler BoundsChanged {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd (WidgetEvent.BoundsChanged, boundsChanged);
 				boundsChanged += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				boundsChanged -= value;
 				BackendHost.OnAfterEventRemove (WidgetEvent.BoundsChanged, boundsChanged);
 			}
@@ -1593,20 +1767,33 @@ namespace Xwt
 
 		public event EventHandler<MouseScrolledEventArgs> MouseScrolled {
 			add {
+				ThrowIfObjectIsDisposed();
 				BackendHost.OnBeforeEventAdd(WidgetEvent.MouseScrolled, mouseScrolled);
 					mouseScrolled += value;
 			}
 			remove {
+				ThrowIfObjectIsDisposed();
 				mouseScrolled -= value;
 				BackendHost.OnAfterEventRemove(WidgetEvent.MouseScrolled, mouseScrolled);
 			}
 		}
+
+		public bool IsDisposed {
+			get { return isDisposed; }
+		}
+
+		/// <summary>
+		/// Throws a <see cref="ObjectDisposedException" /> if instance is disposed.
+		/// </summary>
+		protected void ThrowIfObjectIsDisposed() {
+			if (isDisposed)
+				throw new ObjectDisposedException(string.IsNullOrEmpty(name) ? this.GetType().FullName : string.Format("{0} ({1})", name, this.GetType().FullName));
+		}
 	}
-	
+
 	class EventMap
 	{
 		public string MethodName;
 		public object EventId;
 	}
 }
-
