@@ -900,13 +900,15 @@ namespace Xwt
 		public void TextTrimmingEllipsis ()
 		{
 			// Transform is saved
-			InitBlank (50, 100);
 			var la = new TextLayout ();
 			la.Font = Font.FromName ("Arial 12");
 			la.Text = "One Two Three Four Five Six Seven Eight Nine";
 			la.Width = 45;
 			la.Trimming = TextTrimming.WordElipsis;
+			la.WrapMode = WrapMode.None;
 			var s = la.GetSize ();
+			InitBlank ((int)(s.Width + 11), (int)(s.Height + 11));
+
 			context.Rectangle (5.5, 5.5, s.Width, s.Height);
 			context.SetColor (Colors.Blue);
 			context.Stroke ();

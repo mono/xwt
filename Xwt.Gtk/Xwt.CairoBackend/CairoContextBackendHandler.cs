@@ -286,7 +286,7 @@ namespace Xwt.CairoBackend
 			var pl = be.Layout;
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 
-			if (layout.Height <= 0 && layout.Trimming == TextTrimming.Word) {
+			if (layout.Height <= 0 && layout.Trimming == TextTrimming.Word && layout.WrapMode == WrapMode.None) {
 				ctx.Context.MoveTo (x, y);
 				Pango.CairoHelper.ShowLayout (ctx.Context, pl);
 			} else {
@@ -333,17 +333,18 @@ namespace Xwt.CairoBackend
 					// if the next line is not visible, or the line not fully visible,
 					// then the line has to be ellipsize and/or trimmed:
 					if (nextDelta.Height > layoutHeight ||
-					    (delta.Width > layout.Width && layout.Width > 0)) {
+					    (delta.Width > layout.Width && layout.Width > 0) ||
+					    (layout.WrapMode == WrapMode.None && lc > 1)) {
 						if (sll == null) {
 							sll = new Pango.Layout (pl.Context) {
 								FontDescription = pl.FontDescription,
 								Width = pl.Width,
 								Ellipsize = ellipsize,
-								Wrap = Pango.WrapMode.Char
+								Wrap = pl.Wrap
 							};
 						}
 
-						var lineLen = line.Length - (nextDelta.Height > layoutHeight ? 1 : 0);
+						var lineLen = line.Length - (nextDelta.Height > layoutHeight || layout.WrapMode == WrapMode.None ? 1 : 0);
 						Action setLine = () => {
 							sll.SetText (line.Layout.Text.Substring (line.StartIndex, Math.Max (lineLen, 0)) +
 							(ellipsize != Pango.EllipsizeMode.None ? // Gtk on Linux forgets to ellipsize
@@ -360,6 +361,9 @@ namespace Xwt.CairoBackend
 					}
 					ctx.Context.MoveTo (x, y + delta.Height);
 					Pango.CairoHelper.ShowLayoutLine (ctx.Context, line);
+
+					if (layout.WrapMode == WrapMode.None)
+						break;
 				}
 
 				pl.Ellipsize = ellipsize;

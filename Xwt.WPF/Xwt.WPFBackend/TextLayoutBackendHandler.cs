@@ -3,7 +3,7 @@
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
-//       Lytico (http://limada.sourceforge.net)
+//       Lytico (http://www.limada.org)
 //
 // Copyright (c) 2012 Xamarin, Inc.
 //
@@ -86,6 +86,19 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public override void SetWrapMode (object backend, Xwt.WrapMode wrapMode)
+		{
+			var t = (TextLayoutBackend)backend;
+			switch (wrapMode) {
+			case Xwt.WrapMode.None:
+				t.FormattedText.MaxLineCount = 1;
+				break;
+			default:
+				t.FormattedText.MaxLineCount = int.MaxValue;
+				break;
+			}
+		}
+
 		public override Size GetSize (object backend)
 		{
 			var t = (TextLayoutBackend)backend;
@@ -165,6 +178,8 @@ namespace Xwt.WPFBackend
 					formattedText.MaxTextWidth = old.MaxTextWidth;
 				if (old.MaxTextHeight != 0 && keepHeight)
 					formattedText.MaxTextHeight = old.MaxTextHeight;
+				formattedText.Trimming = old.Trimming;
+				formattedText.MaxLineCount = old.MaxLineCount;
 			}
 			if (Font != null)
 				SetFont (Font);

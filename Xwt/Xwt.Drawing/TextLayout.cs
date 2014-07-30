@@ -3,7 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-//       Lytico (http://limada.sourceforge.net)
+//       Lytico (http://www.limada.org)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -40,7 +40,8 @@ namespace Xwt.Drawing
 		string text;
 		double width = -1;
 		double height = -1;
-		TextTrimming textTrimming;
+		TextTrimming textTrimming = TextTrimming.Word;
+		WrapMode wrapMode = WrapMode.Word;
 		List<TextAttribute> attributes;
 
 		public TextLayout ()
@@ -98,6 +99,7 @@ namespace Xwt.Drawing
 				Text = text,
 				Font = font,
 				TextTrimming = textTrimming,
+				WrapMode = wrapMode,
 				Attributes = attributes != null ? new List<TextAttribute> (attributes) : null
 			};
 		}
@@ -151,6 +153,11 @@ namespace Xwt.Drawing
 		public TextTrimming Trimming {
 			get { return textTrimming; }
 			set { textTrimming = value; handler.SetTrimming (Backend, value); }
+		}
+
+		public WrapMode WrapMode {
+			get { return wrapMode; }
+			set { wrapMode = value; handler.SetWrapMode (Backend, value); }
 		}
 
 		/// <summary>
@@ -293,7 +300,8 @@ namespace Xwt.Drawing
 		public double Height = -1;
 		public string Text;
 		public Font Font;
-		public TextTrimming TextTrimming;
+		public TextTrimming TextTrimming = TextTrimming.Word;
+		public WrapMode WrapMode = WrapMode.Word;
 		public List<TextAttribute> Attributes;
 
 		public void InitLayout (TextLayout la)
@@ -306,8 +314,8 @@ namespace Xwt.Drawing
 				la.Text = Text;
 			if (Font != null)
 				la.Font = Font;
-			if (TextTrimming != default(TextTrimming))
-				la.Trimming = TextTrimming;
+			la.Trimming = TextTrimming;
+			la.WrapMode = WrapMode;
 			if (Attributes != null) {
 				foreach (var at in Attributes)
 					la.AddAttribute (at);
@@ -316,7 +324,8 @@ namespace Xwt.Drawing
 
 		public bool Equals (TextLayoutData other)
 		{
-			if (Width != other.Width || Height != other.Height || Text != other.Text || Font != other.Font || TextTrimming != other.TextTrimming)
+			if (Width != other.Width || Height != other.Height || Text != other.Text || Font != other.Font || 
+				TextTrimming != other.TextTrimming || WrapMode != other.WrapMode)
 				return false;
 			if (Attributes == null && other.Attributes == null)
 				return true;
