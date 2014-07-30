@@ -4,6 +4,7 @@
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 //       Hywel Thomas <hywel.w.thomas@gmail.com>
+//       Lytico (http://www.limada.org)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -284,26 +285,90 @@ namespace Xwt.CairoBackend
 			var be = (GtkTextLayoutBackendHandler.PangoBackend)Toolkit.GetBackend (layout);
 			var pl = be.Layout;
 			CairoContextBackend ctx = (CairoContextBackend)backend;
-			ctx.Context.MoveTo (x, y);
-			if (layout.Height <= 0) {
+
+			if (layout.Height <= 0 && layout.Trimming == TextTrimming.Word && layout.WrapMode == WrapMode.None) {
+				ctx.Context.MoveTo (x, y);
 				Pango.CairoHelper.ShowLayout (ctx.Context, pl);
 			} else {
+				// disable ellipsize, otherwise pl.LineCount returns always 1
+				var ellipsize = pl.Ellipsize;
+				pl.Ellipsize = Pango.EllipsizeMode.None;
+
 				var lc = pl.LineCount;
 				var scale = Pango.Scale.PangoScale;
-				double h = 0;
+				var wrap = pl.Wrap;
+
+				var layoutHeight = layout.Height;
+				if (layoutHeight <= 0) {
+					var plw = 0;
+					var plh = 0;
+					pl.GetSize (out plw, out plh);
+					layoutHeight = plh / scale;
+				}
+				var next = default (Pango.LayoutLine);
+				var nextDelta = Size.Zero;
 				var fe = ctx.Context.FontExtents;
 				var baseline = fe.Ascent / (fe.Ascent + fe.Descent);
-				for (int i=0; i<lc; i++) {
-					var line = pl.Lines [i];
-					var ext = new Pango.Rectangle ();
-					var extl = new Pango.Rectangle ();
-					line.GetExtents (ref ext, ref extl);
-					h += h == 0 ? (extl.Height / scale * baseline) : (extl.Height / scale);
-					if (h > layout.Height)
-						break;
-					ctx.Context.MoveTo (x, y + h);
+				var sll = default (Pango.Layout); // single line layout; created on demand
+
+				var i = 0;
+
+				Action nextLine = () => {
+					next = pl.Lines [i];
+					var ls = next.GetSize ();
+					nextDelta = new Size (
+						ls.Width,
+						nextDelta.Height + (i == 0 ? ls.Height * baseline : ls.Height)
+					);
+				};
+
+				nextLine ();
+
+				while (i < lc && nextDelta.Height <= layoutHeight) {
+					var delta = nextDelta;
+					var line = next;
+					if (++i < lc)
+						nextLine ();
+
+					// if the next line is not visible, or the line not fully visible,
+					// then the line has to be ellipsize and/or trimmed:
+					if (nextDelta.Height > layoutHeight ||
+					    (delta.Width > layout.Width && layout.Width > 0) ||
+					    (layout.WrapMode == WrapMode.None && lc > 1)) {
+						if (sll == null) {
+							sll = new Pango.Layout (pl.Context) {
+								FontDescription = pl.FontDescription,
+								Width = pl.Width,
+								Ellipsize = ellipsize,
+								Wrap = pl.Wrap
+							};
+						}
+
+						var lineLen = line.Length - (nextDelta.Height > layoutHeight || layout.WrapMode == WrapMode.None ? 1 : 0);
+						Action setLine = () => {
+							sll.SetText (line.Layout.Text.Substring (line.StartIndex, Math.Max (lineLen, 0)) +
+							(ellipsize != Pango.EllipsizeMode.None ? // Gtk on Linux forgets to ellipsize
+									((char)0x2026).ToString () : ""));
+							line = sll.Lines [0];
+						};
+
+						setLine ();
+						// fallback, if line's text don't fit into one line:
+						while ((sll.Lines.Length > 1 || line.GetSize ().Width > layout.Width) && lineLen > 1) {
+							lineLen = lineLen - 1;
+							setLine ();
+						}
+					}
+					ctx.Context.MoveTo (x, y + delta.Height);
 					Pango.CairoHelper.ShowLayoutLine (ctx.Context, line);
+
+					if (layout.WrapMode == WrapMode.None)
+						break;
 				}
+
+				pl.Ellipsize = ellipsize;
+				if (sll != null)
+					sll.Dispose ();
 			}
 		}
 

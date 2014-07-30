@@ -3,7 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-//       Lytico (http://limada.sourceforge.net)
+//       Lytico (http://www.limada.org)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -131,9 +131,12 @@ namespace Xwt.GtkBackend
 		
 		public override object Create ()
 		{
-			return new PangoBackend {
+			var layout = new PangoBackend {
 				Layout = Pango.CairoHelper.CreateLayout (SharedContext)
 			};
+			SetTrimming (layout, TextTrimming.Word);
+			SetWrapMode (layout, WrapMode.Word);
+			return layout;
 		}
 
 		public override void SetText (object backend, string text)
@@ -169,12 +172,38 @@ namespace Xwt.GtkBackend
 				tl.Layout.Ellipsize = Pango.EllipsizeMode.None;
 			
 		}
-		
+
+		WrapMode wrapMode;
+
+		public override void SetWrapMode (object backend, WrapMode value)
+		{
+			var tl = (PangoBackend)backend;
+			if (value == WrapMode.Word || value == WrapMode.None)
+				tl.Layout.Wrap = Pango.WrapMode.Word;
+			else if (value == WrapMode.Character)
+				tl.Layout.Wrap = Pango.WrapMode.Char;
+			else if (value == WrapMode.WordAndCharacter)
+				tl.Layout.Wrap = Pango.WrapMode.WordChar;
+			wrapMode = value;
+		}
+
 		public override Size GetSize (object backend)
 		{
 			var tl = (PangoBackend)backend;
 			int w, h;
+			// disable ellipsize, otherwise GetPixelSize returns the heigth of one line only
+			var ellipsize = tl.Layout.Ellipsize;
+			tl.Layout.Ellipsize = Pango.EllipsizeMode.None;
 			tl.Layout.GetPixelSize (out w, out h);
+			tl.Layout.Ellipsize = ellipsize;
+			if (wrapMode == WrapMode.None && tl.Layout.LineCount > 0) {
+				var line = tl.Layout.Lines [0];
+				h = (int)(line.GetSize ().Height);
+			}
+			if (ellipsize != Pango.EllipsizeMode.None && tl.Layout.Width > 0)
+				// an ellipsized text doesn't exceed layout's width
+				w = Math.Min (w, (int)(tl.Layout.Width / Pango.Scale.PangoScale));
+
 			return new Size ((double)w, (double)h);
 		}
 

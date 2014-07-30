@@ -47,6 +47,7 @@ namespace Xwt.Mac
 			public NSFont Font;
 			public float? Width, Height;
 			public TextTrimming TextTrimming;
+			public WrapMode WrapMode;
 		}
 		
 		public override object Create ()
@@ -84,6 +85,12 @@ namespace Xwt.Mac
 			li.TextTrimming = value;
 		}
 
+		public override void SetSetWrapMode (object backend, WrapMode value)
+		{
+			LayoutInfo li = (LayoutInfo)backend;
+			li.WrapMode = value;
+		}
+		
 		public override Size GetSize (object backend)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
