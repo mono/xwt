@@ -1,10 +1,10 @@
-//
-// PasswordEntry.cs
+﻿//
+// ITextBoxBackend.cs
 //
 // Author:
-//       Bojan Rajkovic <brajkovic@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2014 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,25 +24,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt;
 
-namespace Samples
+namespace Xwt.Backends
 {
-	public class PasswordEntries : VBox
+	public interface ITextAreaBackend: ITextBoxBackend
 	{
-		public PasswordEntries ()
-		{
-			PasswordEntry te1 = new PasswordEntry ();
-			te1.PlaceholderText = "Enter Password ...";
-			PackStart (te1);
-			Button b = new Button ("Show password");
-			Label l = new Label ();
-			b.Clicked += (sender, e) => {
-				l.Text = ("Password is: " + te1.Password);
-			};
-			PackStart (b);
-			PackStart (l);
-		}
+		WrapMode Wrap { get; set; }
 	}
 }
 
