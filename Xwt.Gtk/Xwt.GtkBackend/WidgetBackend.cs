@@ -932,10 +932,11 @@ namespace Xwt.GtkBackend
 			}
 			
 			DragDropInfo.DragDataRequests--;
-			
-			if (!Util.GetSelectionData (ApplicationContext, selectionData, DragDropInfo.DragData)) {
-				return false;
-			}
+
+			// If multiple drag/drop data types are supported, we need to iterate through them all and
+			// append the data. If one of the supported data types is not found, there's no need to
+			// bail out. We must raise the event
+			Util.GetSelectionData (ApplicationContext, selectionData, DragDropInfo.DragData);
 
 			if (DragDropInfo.DragDataRequests == 0) {
 				if (DragDropInfo.DragDataForMotion) {
