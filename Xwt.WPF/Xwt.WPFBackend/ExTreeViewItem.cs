@@ -65,12 +65,19 @@ namespace Xwt.WPFBackend
 
 		protected override void OnCollapsed(RoutedEventArgs e)
 		{
+			var node = (TreeStoreNode)DataContext;
 			if (!IsExpanded)
 				UnselectChildren((object o, ExTreeViewItem i) =>
 				{
 					return i != this;
 				});
+			view.Backend.Context.InvokeUserCode (delegate {
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowCollapsing (node);
+			});
 			base.OnCollapsed(e);
+			view.Backend.Context.InvokeUserCode (delegate {
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowCollapsed (node);
+			});
 		}
 
 		public int Level {

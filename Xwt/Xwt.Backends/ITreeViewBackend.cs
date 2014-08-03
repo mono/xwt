@@ -65,7 +65,9 @@ namespace Xwt.Backends
 	{
 		RowActivated,
 		RowExpanding,
-		RowExpanded
+		RowExpanded,
+		RowCollapsing,
+		RowCollapsed
 	}
 
 	public interface ITreeViewEventSink: ITableViewEventSink
@@ -73,6 +75,8 @@ namespace Xwt.Backends
 		void OnRowActivated (TreePosition position);
 		void OnRowExpanding (TreePosition position);
 		void OnRowExpanded (TreePosition position);
+		void OnRowCollapsing (TreePosition position);
+		void OnRowCollapsed (TreePosition position);
 	}
 }
 

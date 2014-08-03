@@ -103,6 +103,22 @@ namespace Samples
 					Console.WriteLine ("D:" + args.DeleteSource);
 				};
 			};
+			view.RowExpanding += delegate(object sender, TreeViewRowEventArgs e) {
+				var val = store.GetNavigatorAt (e.Position).GetValue (text);
+				Console.WriteLine("Expanding: " + val);
+			};
+			view.RowExpanded += delegate(object sender, TreeViewRowEventArgs e) {
+				var val = store.GetNavigatorAt (e.Position).GetValue (text);
+				Console.WriteLine("Expanded: " + val);
+			};
+			view.RowCollapsing += delegate(object sender, TreeViewRowEventArgs e) {
+				var val = store.GetNavigatorAt (e.Position).GetValue (text);
+				Console.WriteLine("Collapsing: " + val);
+			};
+			view.RowCollapsed += delegate(object sender, TreeViewRowEventArgs e) {
+				var val = store.GetNavigatorAt (e.Position).GetValue (text);
+				Console.WriteLine("Collapsed: " + val);
+			};
 			
 			Button addButton = new Button ("Add");
 			addButton.Clicked += delegate(object sender, EventArgs e) {
