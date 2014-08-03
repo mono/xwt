@@ -43,7 +43,7 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Window = new Gtk.Dialog ();
-			Window.VBox.PackStart (CreateMainLayout ());
+			Window.AddContent (CreateMainLayout ());
 			Window.ActionArea.Hide ();
 		}
 		

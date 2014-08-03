@@ -29,6 +29,10 @@ using Xwt.Backends;
 using Gtk;
 using System.Collections.Generic;
 using System.Linq;
+using Gtk;
+#if XWT_GTK3
+using TreeModel = Gtk.ITreeModel;
+#endif
 
 namespace Xwt.GtkBackend
 {
@@ -247,13 +251,16 @@ namespace Xwt.GtkBackend
 
 			int x = 0;
 			int th = 0;
-			CellRenderer[] renderers = col.CellRenderers;
+			CellRenderer[] renderers = col.GetCellRenderers();
+
 			foreach (CellRenderer cr in renderers) {
 				int sp, wi, he, xo, yo;
 				col.CellGetSize (rect, out xo, out yo, out wi, out he);
 				col.CellGetPosition (cr, out sp, out wi);
 				Gdk.Rectangle crect = new Gdk.Rectangle (x, rect.Y, wi, rect.Height);
+				#if !XWT_GTK3
 				cr.GetSize (Widget, ref crect, out xo, out yo, out wi, out he);
+				#endif
 				if (cr == cra) {
 					Widget.ConvertBinWindowToWidgetCoords (rect.X + x, rect.Y, out xo, out yo);
 					// There seems to be a 1px vertical padding
@@ -287,7 +294,7 @@ namespace Xwt.GtkBackend
 			get { return Widget; }
 		}
 
-		Gtk.TreeModel ICellRendererTarget.Model {
+		TreeModel ICellRendererTarget.Model {
 			get { return Widget.Model; }
 		}
 

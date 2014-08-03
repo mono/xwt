@@ -34,20 +34,26 @@ namespace Xwt.GtkBackend
 		
 		protected override Gtk.Widget CreateWidget ()
 		{
-			var c = new Gtk.ComboBoxEntry ();
+			var c = GtkWorkarounds.CreateComboBoxEntry ();
 			entryBackend = new CustomComboEntryBackend ((Gtk.Entry)c.Child);
 			return c;
 		}
 
 		public void SetTextColumn (int column)
 		{
-			((Gtk.ComboBoxEntry)Widget).TextColumn = column;
+			Widget.SetTextColumn (column);
 		}
 		
 		public ITextEntryBackend TextEntryBackend {
 			get {
 				return entryBackend;
 			}
+		}
+
+		protected override void OnSetBackgroundColor (Xwt.Drawing.Color color)
+		{
+			Widget.SetBackgroundColor (color);
+			Widget.SetChildBackgroundColor (color);
 		}
 	}
 	

@@ -1003,8 +1003,7 @@ namespace Xwt.GtkBackend
 
 			public void ConnectTo (Gtk.Label label)
 			{
-				var signal = GLib.Signal.Lookup (label, "activate-link", typeof(ActivateLinkEventArgs));
-				signal.AddDelegate (new EventHandler<ActivateLinkEventArgs> (HandleLink));
+				label.AddSignalHandler ("activate-link", new EventHandler<ActivateLinkEventArgs> (HandleLink), typeof(ActivateLinkEventArgs));
 			}
 
 			class ActivateLinkEventArgs : GLib.SignalArgs
@@ -1053,6 +1052,7 @@ namespace Xwt.GtkBackend
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern bool gtk_tree_view_get_tooltip_context (IntPtr raw, ref int x, ref int y, bool keyboard_tip, out IntPtr model, out IntPtr path, IntPtr iter);
 
+		#if !XWT_GTK3
 		//the GTK# version of this has 'out' instead of 'ref', preventing passing the x,y values in
 		public static bool GetTooltipContext (this Gtk.TreeView tree, ref int x, ref int y, bool keyboardTip,
 			 out Gtk.TreeModel model, out Gtk.TreePath path, out Gtk.TreeIter iter)
@@ -1067,6 +1067,7 @@ namespace Xwt.GtkBackend
 			Marshal.FreeHGlobal (intPtr);
 			return result;
 		}
+		#endif
 
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_image_menu_item_set_always_show_image (IntPtr menuitem, bool alwaysShow);
@@ -1077,8 +1078,12 @@ namespace Xwt.GtkBackend
 				gtk_image_menu_item_set_always_show_image (mi.Handle, true);
 		}
 
-		
+		#if XWT_GTK3
+		// GTK3: Temp workaround, since GTK 3 has gtk_widget_get_scale_factor, but no gtk_icon_set_render_icon_scaled
+		static bool supportsHiResIcons = false;
+		#else
 		static bool supportsHiResIcons = true;
+		#endif
 
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_icon_source_set_scale (IntPtr source, double scale);
@@ -1200,16 +1205,14 @@ namespace Xwt.GtkBackend
 			return null;
 		}
 
-		public static void AddSignalHandler (this Gtk.Widget widget, string name, Delegate handler, Type args_type)
-		{
-			var signal = GLib.Signal.Lookup (widget, name, args_type);
-			signal.AddDelegate (handler);
-		}
 
-		public static void RemoveSignalHandler (this Gtk.Widget widget, string name, Delegate handler)
+		public static Gtk.Bin CreateComboBoxEntry()
 		{
-			var signal = GLib.Signal.Lookup (widget, name);
-			signal.RemoveDelegate (handler);
+			#if XWT_GTK3
+			return Gtk.ComboBoxText.NewWithEntry ();
+			#else
+			return new Gtk.ComboBoxEntry ();
+			#endif
 		}
 	}
 	

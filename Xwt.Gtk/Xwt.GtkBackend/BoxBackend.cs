@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
-	class BoxBackend: WidgetBackend, IBoxBackend
+	partial class BoxBackend: WidgetBackend, IBoxBackend
 	{
 		public BoxBackend ()
 		{
@@ -64,12 +64,12 @@ namespace Xwt.GtkBackend
 				if (Widget.SetAllocation (w, rects[n]))
 					changed = true;
 			}
-			if (changed && !Widget.IsReallocating)
-				Widget.QueueResize ();
+			if (changed)
+				Widget.QueueResizeIfRequired ();
 		}
 	}
 	
-	class CustomContainer: Gtk.Container, IGtkContainer
+	partial class CustomContainer: Gtk.Container, IGtkContainer
 	{
 		public BoxBackend Backend;
 		public bool IsReallocating;
@@ -83,8 +83,8 @@ namespace Xwt.GtkBackend
 		
 		public CustomContainer ()
 		{
-			GtkWorkarounds.FixContainerLeak (this);
-			WidgetFlags |= Gtk.WidgetFlags.NoWindow;
+			this.FixContainerLeak ();
+			this.SetHasWindow (false);
 		}
 		
 		public void ReplaceChild (Gtk.Widget oldWidget, Gtk.Widget newWidget)
@@ -124,18 +124,24 @@ namespace Xwt.GtkBackend
 			widget.Unparent ();
 			QueueResize ();
 		}
-		
-		protected override void OnUnrealized ()
+
+		protected void OnReallocate ()
 		{
-			base.OnUnrealized ();
+			((IWidgetSurface)Backend.Frontend).Reallocate ();
 		}
-		
+
+		protected Gtk.Requisition OnGetRequisition (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+		{
+			var size = Backend.Frontend.Surface.GetPreferredSize (widthConstraint, heightConstraint, true);
+			return size.ToGtkRequisition ();
+		}
+
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
 		{
 			base.OnSizeAllocated (allocation);
 			try {
 				IsReallocating = true;
-				((IWidgetSurface)Backend.Frontend).Reallocate ();
+				OnReallocate ();
 			} catch {
 				IsReallocating = false;
 			}
