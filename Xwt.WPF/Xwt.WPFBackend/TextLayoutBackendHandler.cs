@@ -32,6 +32,7 @@ using Xwt.Drawing;
 using Font = Xwt.Drawing.Font;
 using System.Windows.Media;
 using System.Windows;
+using System.Collections.Generic;
 
 namespace Xwt.WPFBackend
 {
@@ -46,25 +47,19 @@ namespace Xwt.WPFBackend
 		public override void SetWidth (object backend, double value)
 		{
 			var t = (TextLayoutBackend)backend;
-			if (value >= 0)
-				t.FormattedText.MaxTextWidth = value;
-			else
-				t.Rebuild (null, false, true);
+			t.SetWidth(value);
 		}
 
 		public override void SetHeight (object backend, double value)
 		{
 			var t = (TextLayoutBackend)backend;
-			if (value >= 0)
-				t.FormattedText.MaxTextHeight = value;
-			else
-				t.Rebuild (null, true, false);
+			t.SetHeight(value);
 		}
 
 		public override void SetText (object backend, string text)
 		{
 			var t = (TextLayoutBackend)backend;
-			t.Rebuild (text);
+			t.SetText(text);
 		}
 
 		public override void SetFont (object backend, Font font)
@@ -76,14 +71,7 @@ namespace Xwt.WPFBackend
 		public override void SetTrimming (object backend, Xwt.Drawing.TextTrimming textTrimming)
 		{
 			var t = (TextLayoutBackend)backend;
-			switch (textTrimming) {
-				case Xwt.Drawing.TextTrimming.WordElipsis:
-					t.FormattedText.Trimming = System.Windows.TextTrimming.WordEllipsis;
-					break;
-				default:
-					t.FormattedText.Trimming = System.Windows.TextTrimming.None;
-					break;
-			}
+			t.SetTrimming(textTrimming);
 		}
 
 		public override Size GetSize (object backend)
@@ -105,83 +93,199 @@ namespace Xwt.WPFBackend
 		public override void AddAttribute (object backend, TextAttribute attribute)
 		{
 			var t = (TextLayoutBackend)backend;
-			if (attribute is FontStyleTextAttribute) {
-				var xa = (FontStyleTextAttribute)attribute;
-				t.FormattedText.SetFontStyle (xa.Style.ToWpfFontStyle (), xa.StartIndex, xa.Count);
-			}
-			else if (attribute is FontWeightTextAttribute) {
-				var xa = (FontWeightTextAttribute)attribute;
-				t.FormattedText.SetFontWeight (xa.Weight.ToWpfFontWeight (), xa.StartIndex, xa.Count);
-			}
-			else if (attribute is ColorTextAttribute) {
-				var xa = (ColorTextAttribute)attribute;
-				t.FormattedText.SetForegroundBrush (new SolidColorBrush (xa.Color.ToWpfColor ()), xa.StartIndex, xa.Count);
-			}
-			else if (attribute is StrikethroughTextAttribute) {
-				var xa = (StrikethroughTextAttribute)attribute;
-				var dec = new TextDecoration (TextDecorationLocation.Strikethrough, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
-				TextDecorationCollection col = new TextDecorationCollection ();
-				col.Add (dec);
-				t.FormattedText.SetTextDecorations (col, xa.StartIndex, xa.Count);
-			}
-			else if (attribute is UnderlineTextAttribute) {
-				var xa = (UnderlineTextAttribute)attribute;
-				var dec = new TextDecoration (TextDecorationLocation.Underline, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
-				TextDecorationCollection col = new TextDecorationCollection ();
-				col.Add (dec);
-				t.FormattedText.SetTextDecorations (col, xa.StartIndex, xa.Count);
-			}
+			t.AddAttribute(attribute);
 		}
 
 		public override void ClearAttributes (object backend)
 		{
+			var t = (TextLayoutBackend)backend;
+			t.ClearAttributes();
 		}
 	}
 
 	class TextLayoutBackend
 	{
+		static Typeface defaultFont = new Typeface("Verdana");
+
 		System.Windows.Media.FormattedText formattedText;
+		List<TextAttribute> attributes;
+		SolidColorBrush brush = System.Windows.Media.Brushes.Black;
+		double width;
+		double height;
+		string text = null;
+		Xwt.Drawing.TextTrimming? textTrimming;
+		bool needsRebuild;
 
 		public System.Windows.Media.FormattedText FormattedText
 		{
 			get
 			{
-				if (formattedText == null)
-					Rebuild ("");
+				if (formattedText == null || needsRebuild)
+					Rebuild ();
 				return formattedText;
 			}
 		}
 
-		public void Rebuild (string newText = null, bool keepWidth = true, bool keepHeight = true)
+		public void SetWidth(double value)
 		{
-			var font = new Typeface ("Verdana");
-			var dir = System.Windows.FlowDirection.LeftToRight;
-			var old = formattedText;
-			if (old != null && old.Text != null && newText == null)
-				newText = old.Text;
-			formattedText = new System.Windows.Media.FormattedText(newText ?? "", System.Globalization.CultureInfo.CurrentCulture, dir, font, 36, System.Windows.Media.Brushes.Black);
-			if (old != null) {
-				if (old.MaxTextWidth != 0 && keepWidth)
-					formattedText.MaxTextWidth = old.MaxTextWidth;
-				if (old.MaxTextHeight != 0 && keepHeight)
-					formattedText.MaxTextHeight = old.MaxTextHeight;
+			if (width != value)
+			{
+				width = value;
+				if (formattedText != null)
+				{
+					if (value >= 0)
+						FormattedText.MaxTextWidth = value;
+					else
+						needsRebuild = true;
+				}
 			}
-			if (Font != null)
-				SetFont (Font);
 		}
 
-		public void SetFont (Font font)
+		public void SetHeight(double value)
 		{
-			this.Font = font;
-			var f = (FontData)Toolkit.GetBackend (font);
-			FormattedText.SetFontFamily (f.Family);
-			FormattedText.SetFontSize (f.GetDeviceIndependentPixelSize ());
-			FormattedText.SetFontStretch (f.Stretch);
-			FormattedText.SetFontStyle (f.Style);
-			FormattedText.SetFontWeight (f.Weight);
+			if (height != value)
+			{
+				height = value;
+				if (formattedText != null)
+				{
+					if (value >= 0)
+						FormattedText.MaxTextHeight = value;
+					else
+						needsRebuild = true;
+				}
+			}
+		}
+
+		public void SetText(string text)
+		{
+			if (this.text != text)
+			{
+				this.text = text;
+				needsRebuild = true;
+			}
+		}
+
+		public void SetFont(Font font)
+		{
+			if (!font.Equals(this.Font))
+			{
+				this.Font = font;
+				if (formattedText != null)
+					ApplyFont();
+			}
+		}
+
+		void ApplyFont ()
+		{
+			var f = (FontData)Toolkit.GetBackend(Font);
+			FormattedText.SetFontFamily(f.Family);
+			FormattedText.SetFontSize(f.GetDeviceIndependentPixelSize());
+			FormattedText.SetFontStretch(f.Stretch);
+			FormattedText.SetFontStyle(f.Style);
+			FormattedText.SetFontWeight(f.Weight);
+		}
+
+		public void SetTrimming(Xwt.Drawing.TextTrimming textTrimming)
+		{
+			if (this.textTrimming != textTrimming)
+			{
+				this.textTrimming = textTrimming;
+				if (formattedText != null)
+					ApplyTrimming();
+			}
+		}
+
+		void ApplyTrimming ()
+		{
+			switch (textTrimming)
+			{
+				case Xwt.Drawing.TextTrimming.WordElipsis:
+					FormattedText.Trimming = System.Windows.TextTrimming.WordEllipsis;
+					break;
+				default:
+					FormattedText.Trimming = System.Windows.TextTrimming.None;
+					break;
+			}
+		}
+
+		public void SetDefaultForeground(SolidColorBrush fg)
+		{
+			if (fg.Color != brush.Color) {
+				brush = fg;
+				needsRebuild = true;
+			}
+		}
+
+		public void AddAttribute(TextAttribute attribute)
+		{
+			if (attributes == null)
+				attributes = new List<TextAttribute>();
+			attributes.Add(attribute);
+			if (formattedText != null)
+				ApplyAttribute(attribute);
+		}
+
+		public void ClearAttributes ()
+		{
+			attributes = null;
+			needsRebuild = true;
+		}
+
+		void ApplyAttribute(TextAttribute attribute)
+		{
+			if (attribute is FontStyleTextAttribute)
+			{
+				var xa = (FontStyleTextAttribute)attribute;
+				FormattedText.SetFontStyle(xa.Style.ToWpfFontStyle(), xa.StartIndex, xa.Count);
+			}
+			else if (attribute is FontWeightTextAttribute)
+			{
+				var xa = (FontWeightTextAttribute)attribute;
+				FormattedText.SetFontWeight(xa.Weight.ToWpfFontWeight(), xa.StartIndex, xa.Count);
+			}
+			else if (attribute is ColorTextAttribute)
+			{
+				var xa = (ColorTextAttribute)attribute;
+				FormattedText.SetForegroundBrush(new SolidColorBrush(xa.Color.ToWpfColor()), xa.StartIndex, xa.Count);
+			}
+			else if (attribute is StrikethroughTextAttribute)
+			{
+				var xa = (StrikethroughTextAttribute)attribute;
+				var dec = new TextDecoration(TextDecorationLocation.Strikethrough, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+				TextDecorationCollection col = new TextDecorationCollection();
+				col.Add(dec);
+				FormattedText.SetTextDecorations(col, xa.StartIndex, xa.Count);
+			}
+			else if (attribute is UnderlineTextAttribute)
+			{
+				var xa = (UnderlineTextAttribute)attribute;
+				var dec = new TextDecoration(TextDecorationLocation.Underline, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+				TextDecorationCollection col = new TextDecorationCollection();
+				col.Add(dec);
+				FormattedText.SetTextDecorations(col, xa.StartIndex, xa.Count);
+			}
+		}
+
+		public void Rebuild ()
+		{
+			needsRebuild = false;
+			var dir = System.Windows.FlowDirection.LeftToRight;
+			formattedText = new System.Windows.Media.FormattedText(text, System.Globalization.CultureInfo.CurrentCulture, dir, defaultFont, 36, brush);
+			if (width > 0)
+				formattedText.MaxTextWidth = width;
+			if (height > 0)
+				formattedText.MaxTextHeight = height;
+			if (Font != null)
+				ApplyFont();
+			if (textTrimming != null)
+				ApplyTrimming();
+
+			if (attributes != null)
+				foreach (var at in attributes)
+					ApplyAttribute(at);
 		}
 
 		public DrawingContext Context;
-		public Font Font;
+		public Font Font { get; private set; }
 	}
 }
