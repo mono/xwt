@@ -28,15 +28,19 @@ using System;
 using Xwt.Drawing;
 
 using Xwt.Backends;
+using Gtk;
+#if XWT_GTK3
+using TreeModel = Gtk.ITreeModel;
+#endif
 
 namespace Xwt.GtkBackend
 {
 	public abstract class TableStoreBackend
 	{
-		Gtk.TreeModel store;
+		TreeModel store;
 		Type[] types;
 
-		public Gtk.TreeModel Store {
+		public TreeModel Store {
 			get {
 				return store;
 			}
@@ -51,17 +55,17 @@ namespace Xwt.GtkBackend
 		{
 			types = new Type[columnTypes.Length];
 			for (int n=0; n<types.Length; n++) {
-				if (columnTypes [n] == typeof(Image))
+				if (columnTypes [n] == typeof(Gtk.Image))
 					types [n] = typeof(ImageDescription);
-				else if (columnTypes [n] == typeof(Object))
+				else if (columnTypes [n] == typeof(object))
 					types [n] = typeof(ObjectWrapper);
 				else
 					types [n] = columnTypes [n];
 			}
 			store = InitializeModel (types);
 		}
-		
-		public abstract Gtk.TreeModel InitializeModel (Type[] columnTypes);
+
+		public abstract TreeModel InitializeModel (Type[] columnTypes);
 		
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{

@@ -93,7 +93,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 	
-	class CustomCanvas: Gtk.EventBox
+	partial class CustomCanvas: Gtk.EventBox
 	{
 		public CanvasBackend Backend;
 		public ICanvasEventSink EventSink;
@@ -101,9 +101,8 @@ namespace Xwt.GtkBackend
 		
 		public CustomCanvas ()
 		{
-			GtkWorkarounds.FixContainerLeak (this);
-
-			WidgetFlags |= Gtk.WidgetFlags.AppPaintable;
+			this.FixContainerLeak ();
+			this.SetAppPaintable(true);
 			VisibleWindow = false;
 		}
 		
@@ -124,13 +123,6 @@ namespace Xwt.GtkBackend
 		{
 			children.Remove (widget);
 			widget.Unparent ();
-		}
-		
-		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
-		{
-			base.OnSizeRequested (ref requisition);
-			foreach (var cr in children.ToArray ())
-				cr.Key.SizeRequest ();
 		}
 		
 		protected override void OnUnrealized ()
@@ -163,18 +155,15 @@ namespace Xwt.GtkBackend
 			foreach (var c in children.Keys.ToArray ())
 				callback (c);
 		}
-		
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+
+		protected void OnDraw (Rectangle dirtyRect, CairoContextBackend context)
 		{
 			Backend.ApplicationContext.InvokeUserCode (delegate {
-				using (var context = CreateContext ()) {
-					var a = evnt.Area;
-					// offset exposed area by CanvasBackend origin
-					var r = new Rectangle (a.X - context.Origin.X, a.Y - context.Origin.Y, a.Width, a.Height);
+				using (context) {
+					var r = new Rectangle (dirtyRect.X - context.Origin.X, dirtyRect.Y - context.Origin.Y, dirtyRect.Width, dirtyRect.Height);
 					EventSink.OnDraw (context, r);
 				}
 			});
-			return base.OnExposeEvent (evnt);
 		}
 		
 		public CairoContextBackend CreateContext ()

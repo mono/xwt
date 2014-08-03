@@ -18,6 +18,7 @@ namespace Samples
 
 			ListStore store = new ListStore(editableActiveField, nonEditableActiveField, textField, textField2, editableField, somewhatEditableData);
 			list.DataSource = store;
+			list.GridLinesVisible = GridLines.Horizontal;
 
 			list.Columns.Add (new ListViewColumn("Editable", new CheckBoxCellView { Editable = true, ActiveField = editableActiveField }));
 			list.Columns.Add (new ListViewColumn("Not Editable", new CheckBoxCellView { Editable = false, ActiveField = nonEditableActiveField }));

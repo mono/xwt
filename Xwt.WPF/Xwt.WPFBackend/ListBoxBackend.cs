@@ -52,6 +52,31 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		bool gridLinesVisible;
+		public bool GridLinesVisible {
+			get {
+				return gridLinesVisible;
+			}
+			set {
+				gridLinesVisible = value;
+				if (!value) {
+					if (this.ListBox.ItemContainerStyle != null) {
+						this.ListBox.ItemContainerStyle.Setters.Remove (GridHorizontalSetter);
+						this.ListBox.ItemContainerStyle.Setters.Remove (BorderBrushSetter);
+					}
+				} else {
+					if (this.ListBox.ItemContainerStyle == null)
+						this.ListBox.ItemContainerStyle = new Style ();
+
+					this.ListBox.ItemContainerStyle.Setters.Add (GridHorizontalSetter);
+					this.ListBox.ItemContainerStyle.Setters.Add (BorderBrushSetter);
+				}
+			}
+		}
+
+		private static readonly Setter GridHorizontalSetter = new Setter (ListBoxItem.BorderThicknessProperty, new Thickness (0, 0, 0, 1));
+		private static readonly Setter BorderBrushSetter = new Setter (ListBoxItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
+
 		public ScrollPolicy VerticalScrollPolicy
 		{
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (ListBox).ToXwtScrollPolicy(); }
