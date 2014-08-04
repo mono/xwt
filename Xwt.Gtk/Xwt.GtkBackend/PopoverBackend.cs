@@ -36,12 +36,11 @@ namespace Xwt.GtkBackend
 {
 	public class PopoverBackend : IPopoverBackend
 	{
-		class PopoverWindow : Gtk.Window
+		class PopoverWindow : GtkPopoverWindow
 		{
 			const int arrowPadding = 10;
 			const int radius = 6;
-			
-			bool supportAlpha;
+
 			Xwt.Popover.Position arrowPosition;
 			Gtk.Alignment alignment;
 			
@@ -85,22 +84,8 @@ namespace Xwt.GtkBackend
 					alignment.TopPadding = radius + (uint) spacing.Top;
 				}
 			}
-			
-			protected override void OnScreenChanged (Gdk.Screen previous_screen)
-			{
-				// To check if the display supports alpha channels, get the colormap
-				var colormap = this.Screen.RgbaColormap;
-				if (colormap == null) {
-					colormap = this.Screen.RgbColormap;
-					supportAlpha = false;
-				} else {
-					supportAlpha = true;
-				}
-				this.Colormap = colormap;
-				base.OnScreenChanged (previous_screen);
-			}
-			
-			protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+
+			protected override bool OnDrawn (Context ctx)
 			{
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
@@ -108,42 +93,39 @@ namespace Xwt.GtkBackend
 				var backgroundColor = Xwt.Drawing.Color.FromBytes (230, 230, 230, 230);
 				var black = Xwt.Drawing.Color.FromBytes (60, 60, 60);
 				
-				using (Context ctx = Gdk.CairoHelper.Create (this.GdkWindow)) {
-					// We clear the surface with a transparent color if possible
-					if (supportAlpha)
-						ctx.SetSourceRGBA (1.0, 1.0, 1.0, 0.0);
-					else
-						ctx.SetSourceRGB (1.0, 1.0, 1.0);
-					ctx.Operator = Operator.Source;
-					ctx.Paint ();
-					
-					var calibratedRect = RecalibrateChildRectangle (bounds);
-					// Fill it with one round rectangle
-					RoundRectangle (ctx, calibratedRect, radius);
-					ctx.LineWidth = 1;
-					ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
-					ctx.StrokePreserve ();
-					ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
-					ctx.Fill ();
-					
-					// Triangle
-					// We first begin by positionning ourselves at the top-center or bottom center of the previous rectangle
-					var arrowX = bounds.Center.X;
-					var arrowY = arrowPosition == Xwt.Popover.Position.Top ? calibratedRect.Top + ctx.LineWidth : calibratedRect.Bottom - ctx.LineWidth;
-					ctx.NewPath ();
-					ctx.MoveTo (arrowX, arrowY);
-					// We draw the rectangle path
-					DrawTriangle (ctx);
-					// We use it
-					ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
-					ctx.StrokePreserve ();
-					ctx.ClosePath ();
-					ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
-					ctx.Fill ();
-				}
+				// We clear the surface with a transparent color if possible
+				if (supportAlpha)
+					ctx.SetSourceRGBA (1.0, 1.0, 1.0, 0.0);
+				else
+					ctx.SetSourceRGB (1.0, 1.0, 1.0);
+				ctx.Operator = Operator.Source;
+				ctx.Paint ();
 				
-				base.OnExposeEvent (evnt);
-				return false;
+				var calibratedRect = RecalibrateChildRectangle (bounds);
+				// Fill it with one round rectangle
+				RoundRectangle (ctx, calibratedRect, radius);
+				ctx.LineWidth = 1;
+				ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
+				ctx.StrokePreserve ();
+				ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
+				ctx.Fill ();
+				
+				// Triangle
+				// We first begin by positionning ourselves at the top-center or bottom center of the previous rectangle
+				var arrowX = bounds.Center.X;
+				var arrowY = arrowPosition == Xwt.Popover.Position.Top ? calibratedRect.Top + ctx.LineWidth : calibratedRect.Bottom - ctx.LineWidth;
+				ctx.NewPath ();
+				ctx.MoveTo (arrowX, arrowY);
+				// We draw the rectangle path
+				DrawTriangle (ctx);
+				// We use it
+				ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
+				ctx.StrokePreserve ();
+				ctx.ClosePath ();
+				ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
+				ctx.Fill ();
+
+				return base.OnDrawn (ctx);
 			}
 			
 			void DrawTriangle (Context ctx)

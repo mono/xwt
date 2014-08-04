@@ -26,11 +26,16 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Gtk;
+#if XWT_GTK3
+using TreeModelImplementor = Gtk.ITreeModelImplementor;
+#endif
 
 namespace Xwt.GtkBackend
 {
-	public class CustomTreeModel: Gtk.TreeModelImplementor
+	public class CustomTreeModel: TreeModelImplementor
 	{
+
 		ITreeDataSource source;
         Dictionary<GCHandle,TreePosition> nodeHash = new Dictionary<GCHandle,TreePosition> ();
         Dictionary<TreePosition,GCHandle> handleHash = new Dictionary<TreePosition,GCHandle> ();
@@ -173,6 +178,8 @@ namespace Xwt.GtkBackend
 			TreePosition pos = NodeFromIter (iter);
 			TreePosition parent = source.GetParent (pos);
 			int i = GetIndex (parent, pos);
+			if (source.GetChildrenCount (parent) >= i)
+				return false;
 			pos = source.GetChild (parent, i + 1);
 			if (pos != null) {
 				iter = IterFromNode (pos);
@@ -180,6 +187,21 @@ namespace Xwt.GtkBackend
 			} else
 				return false;
 		}
+
+		#if XWT_GTK3
+		public bool IterPrevious (ref Gtk.TreeIter iter)
+		{
+			TreePosition pos = NodeFromIter (iter);
+			TreePosition parent = source.GetParent (pos);
+			int i = GetIndex (parent, pos);
+			pos = source.GetChild (parent, i - 1);
+			if (pos != null) {
+				iter = IterFromNode (pos);
+				return true;
+			} else
+				return false;
+		}
+		#endif
 
 		public bool IterChildren (out Gtk.TreeIter iter, Gtk.TreeIter parent)
         {

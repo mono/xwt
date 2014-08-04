@@ -35,7 +35,8 @@ namespace Samples
 			PackStart (new CheckBox ("Normal checkbox"));
 			PackStart (new CheckBox ("Mixed to start") { State = CheckBoxState.Mixed });
 
-			var b = new CheckBox ("Allows mixed") { AllowMixed = true };
+			var b = new CheckBox ("Allows mixed (with red background)") { AllowMixed = true };
+			b.BackgroundColor = Xwt.Drawing.Colors.Red;
 			PackStart (b);
 			
 			int clicks = 0, toggles = 0;

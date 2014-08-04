@@ -113,6 +113,16 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		GridLines gridLinesVisible;
+		public GridLines GridLinesVisible {
+			get {
+				return gridLinesVisible;
+			}
+			set {
+				gridLinesVisible = value;
+			}
+		}
+
 		public void SelectRow (TreePosition pos)
 		{
 			Tree.SelectedItems.Add (pos);
@@ -158,7 +168,9 @@ namespace Xwt.WPFBackend
 
 		public void ScrollToRow (TreePosition pos)
 		{
-			GetVisibleTreeItem (pos).BringIntoView();
+			ExTreeViewItem item = GetVisibleTreeItem (pos);
+			if (item != null)
+				item.BringIntoView ();
 		}
 
 		public void SetSelectionMode (SelectionMode mode)
@@ -358,6 +370,9 @@ namespace Xwt.WPFBackend
 			while (nodes.Count > 0) {
 				node = nodes.Pop ();
 				treeItem = (ExTreeViewItem) g.ContainerFromItem (node);
+				if (treeItem == null)
+					continue;
+
 				treeItem.UpdateLayout ();
 				g = treeItem.ItemContainerGenerator;
 

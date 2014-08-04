@@ -32,7 +32,7 @@ using Gtk;
 
 namespace Xwt.GtkBackend
 {
-	public class SpinButtonBackend : WidgetBackend, ISpinButtonBackend
+	public partial class SpinButtonBackend : WidgetBackend, ISpinButtonBackend
 	{
 		string indeterminateMessage;
 
@@ -45,16 +45,8 @@ namespace Xwt.GtkBackend
 			Widget = (Gtk.SpinButton) CreateWidget ();
 			Widget.Numeric = true;
 			Widget.Alignment = 1.0f;
-			Widget.ExposeEvent += HandleExposeEvent;
+			InitializeGtk ();
 			Widget.Show ();
-		}
-
-		// This is a workaround for bug https://bugzilla.xamarin.com/show_bug.cgi?id=10904
-		void HandleExposeEvent (object o, ExposeEventArgs args)
-		{
-			if (indeterminateMessage != null && !Widget.Numeric)
-				Widget.Text = indeterminateMessage;
-			Widget.ExposeEvent -= HandleExposeEvent;
 		}
 		
 		protected virtual Gtk.Widget CreateWidget ()

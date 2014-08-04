@@ -55,7 +55,7 @@ namespace Xwt.CairoBackend
 			ScaleFactor = scaleFactor;
 		}
 
-		public void Dispose ()
+		public virtual void Dispose ()
 		{
 			IDisposable d = Context;
 			if (d != null) {

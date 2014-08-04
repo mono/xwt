@@ -33,7 +33,8 @@ namespace Samples
 		public RadioButtonSample ()
 		{
 			var b1 = new RadioButton ("Item 1");
-			var b2 = new RadioButton ("Item 2");
+			var b2 = new RadioButton ("Item 2 (red background)");
+			b2.BackgroundColor = Xwt.Drawing.Colors.Red;
 			var b3 = new RadioButton ("Item 3");
 			b2.Group = b3.Group = b1.Group;
 			PackStart (b1);
