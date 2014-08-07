@@ -44,8 +44,10 @@ namespace Xwt.GtkBackend
 
 	public class Spinner : Gtk.Widget
 	{
+		#if !XWT_GTK3
 		[Obsolete]
 		protected Spinner(GLib.GType gtype) : base(gtype) {}
+		#endif
 
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_spinner_new();

@@ -104,7 +104,7 @@ namespace Xwt.GtkBackend.WebKit
 		public void LoadHtmlString(string content, string base_uri) {
 			IntPtr native_content = GLib.Marshaller.StringToPtrGStrdup (content);
 			IntPtr native_base_uri = GLib.Marshaller.StringToPtrGStrdup (base_uri);
-			webkit_web_view_load_html_string(Handle, native_content, native_base_uri);
+			webkit_web_view_load_string (Handle, native_content, IntPtr.Zero, IntPtr.Zero, native_base_uri);
 			GLib.Marshaller.Free (native_content);
 			GLib.Marshaller.Free (native_base_uri);
 		}
@@ -161,10 +161,6 @@ namespace Xwt.GtkBackend.WebKit
 		{
 			Initialize ();
 		}
-//		static WebView ()
-//		{
-//			ObjectManager.Initialize ();
-//		}
 
 		static bool initialized = false;
 		internal static void Initialize ()
@@ -222,7 +218,7 @@ namespace Xwt.GtkBackend.WebKit
 		static extern void webkit_web_view_go_forward(IntPtr raw);
 
 		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern void webkit_web_view_load_html_string(IntPtr raw, IntPtr content, IntPtr base_uri);
+		static extern void webkit_web_view_load_string (IntPtr raw, IntPtr content, IntPtr mime_type, IntPtr encoding, IntPtr base_uri);
 
 		[DllImport (GtkInterop.LIBWEBKIT)]
 		static extern IntPtr webkit_web_view_get_title(IntPtr raw);
@@ -268,7 +264,6 @@ namespace Xwt.GtkBackend.WebKit
 		static NetworkRequest ()
 		{
 			WebView.Initialize ();
-			//GtkSharp.WebkitSharp.ObjectManager.Initialize ();
 		}
 
 		[DllImport (GtkInterop.LIBWEBKIT)]
@@ -303,11 +298,6 @@ namespace Xwt.GtkBackend.WebKit
 
 	public class NavigationRequestedArgs : GLib.SignalArgs
 	{
-//		public WebKit.WebFrame Frame{
-//			get {
-//				return (WebKit.WebFrame) Args [0];
-//			}
-//		}
 		public IntPtr Frame
 		{
 			get {
@@ -332,35 +322,5 @@ namespace Xwt.GtkBackend.WebKit
 			}
 		}
 	}
-
-
-//	public class ObjectManager {
-//
-//		static bool initialized = false;
-//		// Call this method from the appropriate module init function.
-//		public static void Initialize ()
-//		{
-//			if (initialized)
-//				return;
-//
-//			initialized = true;
-//			GLib.GType.Register (WebKit.Download.GType, typeof (WebKit.Download));
-//			GLib.GType.Register (WebKit.WebFrame.GType, typeof (WebKit.WebFrame));
-//			GLib.GType.Register (NetworkRequest.GType, typeof (NetworkRequest));
-//			GLib.GType.Register (WebKit.SecurityOrigin.GType, typeof (WebKit.SecurityOrigin));
-//			GLib.GType.Register (WebKit.WebHistoryItem.GType, typeof (WebKit.WebHistoryItem));
-//			GLib.GType.Register (WebKit.WebDatabase.GType, typeof (WebKit.WebDatabase));
-//			GLib.GType.Register (WebKit.WebPolicyDecision.GType, typeof (WebKit.WebPolicyDecision));
-//			GLib.GType.Register (WebKit.SoupAuthDialog.GType, typeof (WebKit.SoupAuthDialog));
-//			GLib.GType.Register (WebKit.WebWindowFeatures.GType, typeof (WebKit.WebWindowFeatures));
-//			GLib.GType.Register (WebKit.WebDataSource.GType, typeof (WebKit.WebDataSource));
-//			GLib.GType.Register (WebKit.WebSettings.GType, typeof (WebKit.WebSettings));
-//			GLib.GType.Register (WebKit.NetworkResponse.GType, typeof (WebKit.NetworkResponse));
-//			GLib.GType.Register (WebKit.WebResource.GType, typeof (WebKit.WebResource));
-//			GLib.GType.Register (WebView.GType, typeof (WebView));
-//			GLib.GType.Register (WebKit.WebInspector.GType, typeof (WebKit.WebInspector));
-//			GLib.GType.Register (WebKit.WebNavigationAction.GType, typeof (WebKit.WebNavigationAction));
-//		}
-//	}
 }
 

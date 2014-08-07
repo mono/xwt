@@ -176,8 +176,8 @@ namespace Xwt.GtkBackend
 			return new ScrollControltBackend (Widget.Hadjustment);
 		}
 	}
-	
-	class CustomViewPort: Gtk.Bin
+
+	sealed class CustomViewPort: GtkViewPort
 	{
 		Gtk.Widget child;
 		IWidgetEventSink eventSink;
@@ -193,21 +193,49 @@ namespace Xwt.GtkBackend
 			child = widget;
 		}
 
+		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
+		{
+			base.OnSizeAllocated (allocation);
+			if (child != null)
+				child.SizeAllocate (allocation);
+		}
+
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
-			if (child != null) {
-				requisition = child.SizeRequest ();
+			if (Child != null) {
+				requisition = Child.SizeRequest ();
 			} else {
 				requisition.Width = 0;
 				requisition.Height = 0;
 			}
 		}
 
-		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
-		{
-			base.OnSizeAllocated (allocation);
-			if (child != null)
-				child.SizeAllocate (allocation);
+		Gtk.Adjustment hadjustment;
+		[GLib.Property ("hadjustment")]
+		public new Gtk.Adjustment Hadjustment {
+			get {
+				return hadjustment;
+			}
+			set {
+				hadjustment = value;
+				if (vadjustment != null) {
+					OnSetScrollAdjustments (value, vadjustment);
+				}
+			}
+		}
+
+		Gtk.Adjustment vadjustment;
+		[GLib.Property ("vadjustment")]
+		public new Gtk.Adjustment Vadjustment {
+			get {
+				return vadjustment;
+			}
+			set {
+				vadjustment = value;
+				if (hadjustment != null) {
+					OnSetScrollAdjustments (hadjustment, value);
+				}
+			}
 		}
 
 		protected override void OnSetScrollAdjustments (Gtk.Adjustment hadj, Gtk.Adjustment vadj)

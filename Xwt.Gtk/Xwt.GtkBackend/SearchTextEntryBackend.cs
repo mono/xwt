@@ -5,6 +5,7 @@
 //       Lluis Sanchez Gual <lluis@xamarin.com>
 //       Aaron Bockover <abockover@novell.com>
 //       Gabriel Burt <gburt@novell.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
 //

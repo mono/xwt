@@ -321,6 +321,7 @@
     <Compile Include="Xwt.Backends\ICanvasCellViewBackend.cs" />
     <Compile Include="Xwt\SearchTextEntry.cs" />
     <Compile Include="Xwt.Backends\ISearchTextEntryBackend.cs" />
+    <Compile Include="Xwt\GridLines.cs" />
     <Compile Include="Xwt\ColorPicker.cs" />
     <Compile Include="Xwt.Backends\IColorPickerBackend.cs" />
   </ItemGroup>

@@ -39,14 +39,27 @@ namespace Xwt.GtkBackend
 			Widget = new Gtk.EventBox ();
 			Widget.Show ();
 		}
+
+		WidgetBackend childBackend;
 		
 		protected new Gtk.EventBox Widget {
 			get { return (Gtk.EventBox)base.Widget; }
 			set { base.Widget = value; }
 		}
 
+		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+		{
+			if (childBackend == null)
+				return base.GetPreferredSize (widthConstraint, heightConstraint);
+			var size = childBackend.Frontend.Surface.GetPreferredSize (widthConstraint, heightConstraint, true);
+			return size;
+		}
+
+
 		public void SetContent (IWidgetBackend widget)
 		{
+			childBackend = (WidgetBackend)widget;
+
 			var newWidget = GetWidgetWithPlacement (widget);
 			var oldWidget = Widget.Child;
 

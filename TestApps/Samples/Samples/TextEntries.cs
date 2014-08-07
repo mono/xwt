@@ -34,6 +34,7 @@ namespace Samples
 		{
 			TextEntry te1 = new TextEntry ();
 			PackStart (te1);
+			te1.BackgroundColor = Xwt.Drawing.Colors.Red;
 			
 			Label la = new Label ();
 			PackStart (la);
@@ -87,6 +88,13 @@ namespace Samples
 			te4.ShowFrame = false;
 			PackStart (te4);
 
+			PackStart (new Label ("Entry with custom frame"));
+			FrameBox teFrame = new FrameBox ();
+			teFrame.BorderColor = Xwt.Drawing.Colors.Red;
+			teFrame.BorderWidth = 1;
+			teFrame.Content = new TextEntry () { ShowFrame = false };
+			PackStart (teFrame);
+
 			TextEntry te5 = new TextEntry ();
 			te5.Text = "I should be centered!";
 			te5.TextAlignment = Alignment.Center;
@@ -96,6 +104,19 @@ namespace Samples
 			te6.Text = "I should have" + Environment.NewLine + "multiple lines!";
 			te6.MultiLine = true;
 			PackStart (te6);
+
+			try {
+				SearchTextEntry te7 = new SearchTextEntry ();
+				te7.PlaceholderText = "Type to search ...";
+				PackStart (te7);
+
+				SearchTextEntry te8 = new SearchTextEntry ();
+				te8.PlaceholderText = "I should have no frame";
+				te8.ShowFrame = false;
+				PackStart (te8);
+			} catch (InvalidOperationException ex) {
+				Console.WriteLine (ex);
+			}
 		}
 	}
 }

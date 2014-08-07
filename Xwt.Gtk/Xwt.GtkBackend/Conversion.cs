@@ -28,6 +28,18 @@ namespace Xwt.GtkBackend
 			return new Color ((double)color.Red / (double)ushort.MaxValue, (double)color.Green / (double)ushort.MaxValue, (double)color.Blue / (double)ushort.MaxValue);
 		}
 
+		#if XWT_GTK3
+		public static Gdk.RGBA ToGdkValue (this Xwt.Drawing.Color color)
+		{
+			var rgba = new Gdk.RGBA ();
+			rgba.Red = color.Red;
+			rgba.Green = color.Green;
+			rgba.Blue = color.Blue;
+			rgba.Alpha = color.Alpha;
+			return rgba;
+		}
+		#endif
+
 		public static Pango.EllipsizeMode ToGtkValue (this EllipsizeMode value)
 		{
 			switch (value) {
@@ -118,6 +130,46 @@ namespace Xwt.GtkBackend
 			if ((s & Gdk.ModifierType.Mod2Mask) != 0)
 				m |= ModifierKeys.Command;
 			return m;
+		}
+
+		public static Gtk.Requisition ToGtkRequisition (this Size size)
+		{
+			var req = new Gtk.Requisition ();
+			req.Height = (int)size.Height;
+			req.Width = (int)size.Width;
+			return req;
+		}
+
+		public static Gtk.TreeViewGridLines ToGtkValue (this GridLines value)
+		{
+			switch (value)
+			{
+				case GridLines.Both:
+					return Gtk.TreeViewGridLines.Both;
+				case GridLines.Horizontal:
+					return Gtk.TreeViewGridLines.Horizontal;
+				case GridLines.Vertical:
+					return Gtk.TreeViewGridLines.Vertical;
+				case GridLines.None:
+					return Gtk.TreeViewGridLines.None;
+			}
+			throw new InvalidOperationException("Invalid GridLines value: " + value);
+		}
+
+		public static GridLines ToXwtValue (this Gtk.TreeViewGridLines value)
+		{
+			switch (value)
+			{
+				case Gtk.TreeViewGridLines.Both:
+					return GridLines.Both;
+				case Gtk.TreeViewGridLines.Horizontal:
+					return GridLines.Horizontal;
+				case Gtk.TreeViewGridLines.Vertical:
+					return GridLines.Vertical;
+				case Gtk.TreeViewGridLines.None:
+					return GridLines.None;
+			}
+			throw new InvalidOperationException("Invalid TreeViewGridLines value: " + value);
 		}
 	}
 }
