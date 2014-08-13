@@ -121,6 +121,7 @@ namespace Samples
 			AddSample (wf, "Widget Events", typeof(WidgetEvents));
 			AddSample (wf, "Opacity", typeof(OpacitySample));
 			AddSample (wf, "Tooltips", typeof(Tooltips));
+			AddSample (wf, "Cursors", typeof(MouseCursors));
 
 			AddSample (null, "Windows", typeof(Windows));
 			
