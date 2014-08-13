@@ -225,25 +225,29 @@ namespace Xwt.GtkBackend
 
 			gdkCursor = gc;
 
-			if (EventsRootWidget.GdkWindow == null)
-				SubscribeRealizedEvent ();
-			else
-				EventsRootWidget.GdkWindow.Cursor = gc;
-		}
+			// subscribe mouse entered/leaved events, when widget gets/is realized
+			RunWhenRealized(SubscribeCursorEnterLeaveEvent);
 
-		bool realizedEventSubscribed;
-		void SubscribeRealizedEvent ()
-		{
-			if (!realizedEventSubscribed) {
-				realizedEventSubscribed = true;
-				EventsRootWidget.Realized += OnRealized;
-			}
-		}
-
-		void OnRealized (Object s, EventArgs e)
-		{
-			if (gdkCursor != null)
+			if (immediateCursorChange) // if realized and mouse inside set immediatly
 				EventsRootWidget.GdkWindow.Cursor = gdkCursor;
+		}
+
+		bool cursorEnterLeaveSubscribed, immediateCursorChange;
+		void SubscribeCursorEnterLeaveEvent ()
+		{
+			if (!cursorEnterLeaveSubscribed) {
+				cursorEnterLeaveSubscribed = true; // subscribe only once
+				EventsRootWidget.AddEvents ((int)Gdk.EventMask.EnterNotifyMask);
+				EventsRootWidget.AddEvents ((int)Gdk.EventMask.LeaveNotifyMask);
+				EventsRootWidget.EnterNotifyEvent += (o, args) => {
+					immediateCursorChange = true;
+					if (gdkCursor != null) ((Gtk.Widget)o).GdkWindow.Cursor = gdkCursor;
+				};
+				EventsRootWidget.LeaveNotifyEvent += (o, args) => {
+					immediateCursorChange = false;
+					((Gtk.Widget)o).GdkWindow.Cursor = null;
+				};
+			}
 		}
 		
 		~WidgetBackend ()
