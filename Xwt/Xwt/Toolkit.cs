@@ -352,7 +352,9 @@ namespace Xwt
 					return externalWidget;
 				nativeWidget = externalWidget.Surface.ToolkitEngine.GetNativeWidget (externalWidget);
 			}
-			return new EmbeddedNativeWidget (nativeWidget, externalWidget);
+			var embedded = CreateObject<EmbeddedNativeWidget> ();
+			embedded.Initialize (nativeWidget, externalWidget);
+			return embedded;
 		}
 
 		public Image WrapImage (object nativeImage)
