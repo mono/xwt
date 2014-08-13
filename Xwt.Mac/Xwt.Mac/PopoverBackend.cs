@@ -65,8 +65,8 @@ namespace Xwt.Mac
 			{
 				var backend = (ViewBackend)Toolkit.GetBackend (child);
 				view = ((ViewBackend)backend).NativeWidget as NSView;
-				ForceChildLayout ();
 				backend.SetAutosizeMode (true);
+				ForceChildLayout ();
 				// FIXME: unset when the popover is closed
 			}
 			
