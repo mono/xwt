@@ -431,6 +431,8 @@ namespace Xwt.WPFBackend
 				widget.Cursor = Cursors.Wait;
 			else if (cursor == CursorType.Help)
 				widget.Cursor = Cursors.Help;
+			else if (cursor == CursorType.Invisible)
+				widget.Cursor = Cursors.None;
 			else
 				Widget.Cursor = Cursors.Arrow;
 		}
