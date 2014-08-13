@@ -185,6 +185,13 @@ namespace Xwt.Mac
 
 			ActivatedInternal (this);
 		}
+
+		public override void ResetCursorRects ()
+		{
+			base.ResetCursorRects ();
+			if (Backend.Cursor != null)
+				AddCursorRect (Bounds, Backend.Cursor);
+		}
 	}
 }
 
