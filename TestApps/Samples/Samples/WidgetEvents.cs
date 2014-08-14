@@ -36,18 +36,39 @@ namespace Samples
 		Label laRight = new Label ("Right");
 
 		Label la = new Label ("Move the mouse here");
-		Label res1 = new Label ("");
+		Label resLa = new Label ("");
 
 		bool insideLabel;
 		bool movingOverLabel;
 		bool movedOverLabel;
 
+		SpinButton spn = new SpinButton ();
+		Label resSpn = new Label ("");
+
+		bool insideSpn;
+		bool movedOverSpn;
+		bool movingOverSpn;
+
+		TextEntry te = new TextEntry ();
+		Label resTe = new Label ("");
+
+		bool insideTe;
+		bool movedOverTe;
+		bool movingOverTe;
+
 		Button btn = new Button ("Move the mouse here");
-		Label res2 = new Label ("");
+		Label resBtn = new Label ("");
 
 		bool insideButton;
 		bool movedOverButton;
 		bool movingOverButton;
+
+		SimpleBox canvas = new SimpleBox (10, 50);
+		Label resCanvas = new Label ("");
+
+		bool insideCanvas;
+		bool movedOverCanvas;
+		bool movingOverCanvas;
 
 		public WidgetEvents ()
 		{
@@ -63,7 +84,7 @@ namespace Samples
 			PackStart (mouseBtnBox);
 
 			PackStart (la);
-			PackStart (res1);
+			PackStart (resLa);
 
 			la.MouseEntered += (sender, e) => {
 				insideLabel = true;
@@ -79,8 +100,44 @@ namespace Samples
 			la.ButtonReleased += HandleButtonReleased;
 			la.MouseScrolled += HandleMouseScrolled;
 
+			PackStart (te);
+			PackStart (resTe);
+
+			te.MouseEntered += (sender, e) => {
+				insideTe = true;
+				Application.TimeoutInvoke (100, CheckMouseOverTe);
+				Console.WriteLine ("[" + sender + "] Mouse Entered");
+				resTe.Text = "Mouse has Entered Text Entry";
+			};
+			te.MouseExited += (sender, e) => {
+				insideTe = false;
+				Console.WriteLine ("[" + sender + "] Mouse Exited");
+				resTe.Text = "Mouse has Exited Text Entry";
+			};
+			te.MouseMoved += (sender, e) => movedOverTe = true;
+			te.ButtonPressed += HandleButtonPressed;
+			te.ButtonReleased += HandleButtonReleased;
+			te.MouseScrolled += HandleMouseScrolled;
+
+			PackStart (spn);
+			PackStart (resSpn);
+
+			spn.MouseEntered += (sender, e) => {
+				insideSpn = true;
+				Application.TimeoutInvoke (100, CheckMouseOverSpn);
+				Console.WriteLine ("[" + sender + "] Mouse Entered");
+			};
+			spn.MouseExited += (sender, e) => {
+				insideSpn = false;
+				Console.WriteLine ("[" + sender + "] Mouse Exited");
+			};
+			spn.MouseMoved += (sender, e) => movedOverSpn = true;
+			spn.ButtonPressed += HandleButtonPressed;
+			spn.ButtonReleased += HandleButtonReleased;
+			spn.MouseScrolled += HandleMouseScrolled;
+
 			PackStart (btn);
-			PackStart (res2);
+			PackStart (resBtn);
 
 			btn.MouseEntered += (sender, e) =>  {
 				insideButton = true;
@@ -95,19 +152,58 @@ namespace Samples
 			btn.ButtonPressed += HandleButtonPressed;
 			btn.ButtonReleased += HandleButtonReleased;
 			btn.Clicked += (sender, e) => {
-				res2.Text = "Button Clicked";
+				resBtn.Text = "Button Clicked";
 				Console.WriteLine ("[" + sender + "] Clicked");
 			};
+
+			PackStart (canvas);
+			PackStart (resCanvas);
+
+			canvas.MouseEntered += (sender, e) =>  {
+				insideCanvas = true;
+				Application.TimeoutInvoke (100, CheckMouseOverCanvas);
+				Console.WriteLine ("[" + sender + "] Mouse Entered");
+			};
+			canvas.MouseExited += (sender, e) => {
+				insideCanvas = false;
+				Console.WriteLine ("[" + sender + "] Mouse Exited");
+			};
+			canvas.MouseMoved += (sender, e) => movedOverCanvas = true;
+			canvas.MouseScrolled += HandleMouseScrolled;
+			canvas.ButtonPressed += HandleButtonPressed;
+			canvas.ButtonReleased += HandleButtonReleased;
 		}
 
+		int laScrollCnt, spnScrollCnt, btnScrollCnt, canvasScrollCnt;
 		void HandleMouseScrolled (object sender, MouseScrolledEventArgs e)
 		{
-			var msg = "Scrolled " + e.Direction + ": " + e.Position + " " + e.X + "x" + e.Y + " " + e.Timestamp;
-			if (sender == la)
-				res1.Text = msg;
-			if (sender == btn)
-				res2.Text = msg;
-			Console.WriteLine (msg);
+			var msg = "Scrolled " + e.Direction;
+			int incrUpDown = 0;
+			if (e.Direction == ScrollDirection.Up)
+				incrUpDown++;
+			else if (e.Direction == ScrollDirection.Down)
+				incrUpDown--;
+
+			if (sender == la) {
+				msg += " " + (laScrollCnt += incrUpDown);
+				resLa.Text = msg;
+			}
+			if (sender == te) {
+				resTe.Text = msg;
+			}
+			if (sender == spn) {
+				msg += " " + (spnScrollCnt += incrUpDown);
+				resSpn.Text = msg;
+			}
+			if (sender == btn) {
+				msg += " " + (btnScrollCnt += incrUpDown);
+				resBtn.Text = msg;
+			}
+			if (sender == canvas) {
+				msg += " " + (canvasScrollCnt += incrUpDown);
+				resCanvas.Text = msg;
+			}
+			Console.WriteLine ("[" + sender + "] " + msg);
 		}
 
 		void HandleButtonPressed (object sender, ButtonEventArgs e)
@@ -130,13 +226,77 @@ namespace Samples
 			Console.WriteLine ("[" + sender + "] ButtonReleased : " + e.MultiplePress + "x " + e.Button + " ");
 		}
 
+		bool CheckMouseOverLabel ()
+		{
+			if (!insideLabel) {
+				resLa.Text = "Mouse has Exited label";
+				la.TextColor = Colors.Black;
+				la.BackgroundColor = Colors.LightGray;
+				la.Text = "Move the mouse here";
+			} else {
+				resLa.Text = "Mouse has Entered label";
+				la.TextColor = Colors.White;
+				if (movedOverLabel) {
+					la.BackgroundColor = Colors.Green;
+					la.Text = "Mouse is moving";
+					Console.WriteLine ("[" + la.GetType () + "] Mouse Moving");
+					movedOverLabel = false;	// reset and check next time
+					movingOverLabel = true;
+				} else if (movingOverLabel) {
+					la.BackgroundColor = Colors.Red;
+					la.Text = "Mouse has stopped";
+					Console.WriteLine ("[" + la.GetType () + "] Mouse Stopped");
+					movingOverLabel = false;
+				}
+			}
+			return insideLabel;
+		}
+
+		bool CheckMouseOverTe ()
+		{
+			if (!insideTe) {
+				te.Text = "Move the mouse here";
+			} else {
+				if (movedOverTe) {
+					te.Text = "Mouse is moving";
+					Console.WriteLine ("[" + te.GetType () + "] Mouse Moving");
+					movedOverTe = false;	// reset and check next time
+					movingOverTe = true;
+				} else if (movingOverTe) {
+					te.Text = "Mouse has stopped";
+					Console.WriteLine ("[" + te.GetType () + "] Mouse Stopped");
+					movingOverTe = false;
+				}
+			}
+			return insideTe;
+		}
+
+		bool CheckMouseOverSpn ()
+		{
+			if (!insideSpn) {
+				resSpn.Text = "Mouse has Exited Spin Button";
+			} else {
+				if (movedOverSpn) {
+					resSpn.Text = "Mouse Moving over Spin Button";
+					Console.WriteLine ("[" + spn.GetType () + "] Mouse Moving");
+					movedOverSpn = false;	// reset and check next time
+					movingOverSpn = true;
+				} else if (movingOverSpn) {
+					resSpn.Text = "Mouse Stopped Moving over Canvas";
+					Console.WriteLine ("[" + spn.GetType () + "] Mouse Stopped");
+					movingOverSpn = false;
+				}
+			}
+			return insideSpn;
+		}
+
 		bool CheckMouseOverButton ()
 		{
 			if (!insideButton) {
-				res2.Text = "Mouse has Exited Button";
+				resBtn.Text = "Mouse has Exited Button";
 				btn.Label = "Move the mouse here";
 			} else {
-				res2.Text = "Mouse has Entered Button";
+				resBtn.Text = "Mouse has Entered Button";
 				if (movedOverButton) {
 					btn.Label = "Mouse is moving";
 					Console.WriteLine ("[" + btn.GetType () + "] Mouse Moving");
@@ -151,30 +311,23 @@ namespace Samples
 			return insideButton;
 		}
 
-		bool CheckMouseOverLabel ()
+		bool CheckMouseOverCanvas ()
 		{
-			if (!insideLabel) {
-				res1.Text = "Mouse has Exited label";
-				la.TextColor = Colors.Black;
-				la.BackgroundColor = Colors.LightGray;
-				la.Text = "Move the mouse here";
+			if (!insideCanvas) {
+				resCanvas.Text = "Mouse has Exited Canvas";
 			} else {
-				res1.Text = "Mouse has Entered label";
-				la.TextColor = Colors.White;
-				if (movedOverLabel) {
-					la.BackgroundColor = Colors.Green;
-					la.Text = "Mouse is moving";
-					Console.WriteLine ("[" + btn.GetType () + "] Mouse Moving");
-					movedOverLabel = false;	// reset and check next time
-					movingOverLabel = true;
-				} else if (movingOverLabel) {
-					la.BackgroundColor = Colors.Red;
-					la.Text = "Mouse has stopped";
-					Console.WriteLine ("[" + btn.GetType () + "] Mouse Stopped");
-					movingOverLabel = false;
+				if (movedOverCanvas) {
+					resCanvas.Text = "Mouse Moving over Canvas";
+					Console.WriteLine ("[" + canvas.GetType () + "] Mouse Moving");
+					movedOverCanvas = false;	// reset and check next time
+					movingOverCanvas = true;
+				} else if (movingOverCanvas) {
+					resCanvas.Text = "Mouse Stopped Moving over Canvas";
+					Console.WriteLine ("[" + canvas.GetType () + "] Mouse Stopped");
+					movingOverCanvas = false;
 				}
 			}
-			return insideLabel;
+			return insideCanvas;
 		}
 	}
 }
