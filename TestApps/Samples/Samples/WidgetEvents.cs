@@ -31,50 +31,151 @@ namespace Samples
 {
 	public class WidgetEvents: VBox
 	{
+		Label laLeft = new Label ("Left");
+		Label laMiddle = new Label ("Middle");
+		Label laRight = new Label ("Right");
+
 		Label la = new Label ("Move the mouse here");
-		Label res = new Label ("");
-		bool inside = false;
-		bool moved = false;
+		Label res1 = new Label ("");
+
+		bool insideLabel;
+		bool movingOverLabel;
+		bool movedOverLabel;
+
+		Button btn = new Button ("Move the mouse here");
+		Label res2 = new Label ("");
+
+		bool insideButton;
+		bool movedOverButton;
+		bool movingOverButton;
 
 		public WidgetEvents ()
 		{
-			PackStart (la);
-			PackStart (res);
+			laLeft.BackgroundColor = Colors.White;
+			laMiddle.BackgroundColor = Colors.White;
+			laRight.BackgroundColor = Colors.White;
 
-			la.MouseEntered += delegate {
-				inside = true;
-				Application.TimeoutInvoke (100, CheckMouse);
+			var mouseBtnBox = new HBox ();
+			mouseBtnBox.PackStart (new Label("Mouse butons:"));
+			mouseBtnBox.PackStart (laLeft);
+			mouseBtnBox.PackStart (laMiddle);
+			mouseBtnBox.PackStart (laRight);
+			PackStart (mouseBtnBox);
+
+			PackStart (la);
+			PackStart (res1);
+
+			la.MouseEntered += (sender, e) => {
+				insideLabel = true;
+				Application.TimeoutInvoke (100, CheckMouseOverLabel);
+				Console.WriteLine ("[" + sender + "] Mouse Entered");
 			};
-			la.MouseExited += delegate {
-				inside = false;
+			la.MouseExited += (sender, e) => {
+				insideLabel = false;
+				Console.WriteLine ("[" + sender + "] Mouse Exited");
 			};
-			la.MouseMoved += delegate {
-				moved = true;
+			la.MouseMoved += (sender, e) => movedOverLabel = true;
+			la.ButtonPressed += HandleButtonPressed;
+			la.ButtonReleased += HandleButtonReleased;
+			la.MouseScrolled += HandleMouseScrolled;
+
+			PackStart (btn);
+			PackStart (res2);
+
+			btn.MouseEntered += (sender, e) =>  {
+				insideButton = true;
+				Application.TimeoutInvoke (100, CheckMouseOverButton);
+				Console.WriteLine ("[" + sender + "] Mouse Entered");
+			};
+			btn.MouseExited += (sender, e) => {
+				insideButton = false;
+				Console.WriteLine ("[" + sender + "] Mouse Exited");
+			};
+			btn.MouseMoved += (sender, e) => movedOverButton = true;
+			btn.ButtonPressed += HandleButtonPressed;
+			btn.ButtonReleased += HandleButtonReleased;
+			btn.Clicked += (sender, e) => {
+				res2.Text = "Button Clicked";
+				Console.WriteLine ("[" + sender + "] Clicked");
 			};
 		}
 
-		bool CheckMouse ()
+		void HandleMouseScrolled (object sender, MouseScrolledEventArgs e)
 		{
-			if (!inside) {
-				res.Text = "Mouse has Exited label";
+			var msg = "Scrolled " + e.Direction + ": " + e.Position + " " + e.X + "x" + e.Y + " " + e.Timestamp;
+			if (sender == la)
+				res1.Text = msg;
+			if (sender == btn)
+				res2.Text = msg;
+			Console.WriteLine (msg);
+		}
+
+		void HandleButtonPressed (object sender, ButtonEventArgs e)
+		{
+			switch (e.Button) {
+				case PointerButton.Left: laLeft.BackgroundColor = Colors.Green; break;
+				case PointerButton.Middle: laMiddle.BackgroundColor = Colors.Green; break;
+				case PointerButton.Right: laRight.BackgroundColor = Colors.Green; break;
+			}
+			Console.WriteLine ("[" + sender + "] ButtonPressed : " + e.MultiplePress + "x " + e.Button + " ");
+		}
+
+		void HandleButtonReleased (object sender, ButtonEventArgs e)
+		{
+			switch (e.Button) {
+				case PointerButton.Left: laLeft.BackgroundColor = Colors.White; break;
+				case PointerButton.Middle: laMiddle.BackgroundColor = Colors.White; break;
+				case PointerButton.Right: laRight.BackgroundColor = Colors.White; break;
+			}
+			Console.WriteLine ("[" + sender + "] ButtonReleased : " + e.MultiplePress + "x " + e.Button + " ");
+		}
+
+		bool CheckMouseOverButton ()
+		{
+			if (!insideButton) {
+				res2.Text = "Mouse has Exited Button";
+				btn.Label = "Move the mouse here";
+			} else {
+				res2.Text = "Mouse has Entered Button";
+				if (movedOverButton) {
+					btn.Label = "Mouse is moving";
+					Console.WriteLine ("[" + btn.GetType () + "] Mouse Moving");
+					movedOverButton = false;	// reset and check next time
+					movingOverButton = true;
+				} else if (movingOverButton) {
+					btn.Label = "Mouse has stopped";
+					Console.WriteLine ("[" + btn.GetType () + "] Mouse Stopped");
+					movingOverButton = false;	// reset and check next time
+				}
+			}
+			return insideButton;
+		}
+
+		bool CheckMouseOverLabel ()
+		{
+			if (!insideLabel) {
+				res1.Text = "Mouse has Exited label";
 				la.TextColor = Colors.Black;
 				la.BackgroundColor = Colors.LightGray;
 				la.Text = "Move the mouse here";
 			} else {
-				res.Text = "Mouse has Entered label";
+				res1.Text = "Mouse has Entered label";
 				la.TextColor = Colors.White;
-				if (moved) {
+				if (movedOverLabel) {
 					la.BackgroundColor = Colors.Green;
 					la.Text = "Mouse is moving";
-					moved = false;	// reset and check next time
-				} else {
+					Console.WriteLine ("[" + btn.GetType () + "] Mouse Moving");
+					movedOverLabel = false;	// reset and check next time
+					movingOverLabel = true;
+				} else if (movingOverLabel) {
 					la.BackgroundColor = Colors.Red;
 					la.Text = "Mouse has stopped";
+					Console.WriteLine ("[" + btn.GetType () + "] Mouse Stopped");
+					movingOverLabel = false;
 				}
 			}
-			return inside;
+			return insideLabel;
 		}
-
 	}
 }
 
