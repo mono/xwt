@@ -344,6 +344,12 @@ namespace Xwt.GtkBackend
 		protected virtual Gtk.Widget EventsRootWidget {
 			get { return eventBox ?? Widget; }
 		}
+
+		bool needsEventBox = true; // require event box by default
+		protected virtual bool NeedsEventBox {
+			get { return needsEventBox; }
+			set { needsEventBox = value; }
+		}
 		
 		public static Gtk.Widget GetWidget (IWidgetBackend w)
 		{
@@ -431,6 +437,8 @@ namespace Xwt.GtkBackend
 		{
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
+
+			if (!NeedsEventBox) return;
 
 			if (eventBox == null && !EventsRootWidget.GetHasWindow()) {
 				if (EventsRootWidget is Gtk.EventBox) {
