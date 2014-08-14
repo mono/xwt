@@ -88,8 +88,8 @@ namespace Samples
 			c4.Items.Add (2, "Two");
 			c4.Items.Add (3, "Three");
 			c4.TextEntry.PlaceholderText = "This is an entry";
-			c4.TextEntry.Changed += delegate {
-				la4.Text = "Selected text: " + c4.TextEntry.Text;
+			c4.TextEntry.SelectionChanged += delegate {
+				la4.Text = "Selected text: " + c4.TextEntry.SelectedText;
 			};
 
 			HBox selBox = new HBox ();
@@ -119,7 +119,7 @@ namespace Samples
 			PackStart (selBox);
 
 			c4.TextEntry.SelectionChanged += delegate {
-				las.Text = "Selection: (" + c4.TextEntry.CursorPosition + " <-> " + c4.TextEntry.SelectionStart + " + " + c4.TextEntry.SelectionLength + ") " + c4.TextEntry.SelectedText;
+				las.Text = "Selection: " + c4.TextEntry.CursorPosition + " - " + c4.TextEntry.SelectionStart + " Length: " + c4.TextEntry.SelectionLength;
 			};
 
 
