@@ -60,6 +60,7 @@ namespace Xwt
 		public static void Initialize (ToolkitType type)
 		{
 			Initialize (Toolkit.GetBackendType (type));
+			toolkit.Type = type;
 		}
 
 		public static void Initialize (string backendType)

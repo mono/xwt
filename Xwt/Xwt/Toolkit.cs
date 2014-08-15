@@ -83,6 +83,7 @@ namespace Xwt
 
 		public ToolkitType Type {
 			get { return toolkitType; }
+			internal set { toolkitType = value; }
 		}
 
 		internal static void DisposeAll ()
