@@ -699,6 +699,7 @@ namespace Xwt.Drawing
 					newRef = r;
 					break;
 				}
+				r = r.NextRef;
 			}
 			if (newRef != null)
 				return newRef;
