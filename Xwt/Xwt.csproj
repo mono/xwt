@@ -38,7 +38,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Xwt.Backends\IPasswordEntryBackend.cs" />
     <Compile Include="Xwt\PasswordEntry.cs" />
-    <Compile Include="Xwt\PreviewTextEventArgs.cs" />
+    <Compile Include="Xwt\TextInputEventArgs.cs" />
     <Compile Include="Xwt\Widget.cs" />
     <Compile Include="Xwt\Window.cs" />
     <Compile Include="Xwt\Button.cs" />

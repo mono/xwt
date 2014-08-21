@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Xwt
 {
-	public class PreviewTextInputEventArgs : EventArgs
+	public class TextInputEventArgs : EventArgs
 	{
 		public bool Handled { get; set; }
 		public string Text { get; private set; }
 
-		public PreviewTextInputEventArgs(string text)
+		public TextInputEventArgs(string text)
 		{
 			Text = text;
 		}
