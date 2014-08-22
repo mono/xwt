@@ -628,7 +628,7 @@ namespace Xwt.GtkBackend
 			if ((args.Event.State & Gdk.ModifierType.Mod1Mask) != 0)
 				m |= ModifierKeys.Alt;
 
-			return new KeyEventArgs (k, m, false, (long)args.Event.Time);
+			return new KeyEventArgs (k, (int)args.Event.KeyValue, m, false, (long)args.Event.Time);
 		}
 
 		[GLib.ConnectBefore]
@@ -649,7 +649,7 @@ namespace Xwt.GtkBackend
 			Key k = (Key)args.Event.KeyValue;
 			ModifierKeys m = args.Event.State.ToXwtValue ();
 
-			return new KeyEventArgs (k, m, false, (long)args.Event.Time);
+			return new KeyEventArgs (k, (int)args.Event.KeyValue, m, false, (long)args.Event.Time);
 		}
 
         [GLib.ConnectBefore]
