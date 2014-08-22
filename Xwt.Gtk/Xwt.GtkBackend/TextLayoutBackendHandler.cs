@@ -71,13 +71,13 @@ namespace Xwt.GtkBackend
 				}
 			}
 
-			string text;
+			string text = String.Empty;
 			public string Text {
 				get {
 					return text;
 				}
 				set {
-					text = value;
+					text = value ?? String.Empty;;
 					indexer = null;
 					if (attributes != null) {
 						attributes.Dispose ();
@@ -139,6 +139,7 @@ namespace Xwt.GtkBackend
 		public override void SetText (object backend, string text)
 		{
 			var tl = (PangoBackend) backend;
+			text = text ?? String.Empty;
 			tl.Layout.SetText (text);
 			tl.Text = text;
 		}
