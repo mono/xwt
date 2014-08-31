@@ -333,11 +333,13 @@ namespace Xwt.GtkBackend
 			get {
 				#if XWT_GTK3
 				var f = ToolkitFeatures.All;
+				if (Platform.IsWindows)
+					f &= ~ToolkitFeatures.WidgetOpacity;
 				#else
 				var f = ToolkitFeatures.All & ~ToolkitFeatures.WidgetOpacity;
-				#endif
 				if (Platform.IsWindows)
 					f &= ~ToolkitFeatures.WindowOpacity;
+				#endif
 				return f;
 			}
 		}
