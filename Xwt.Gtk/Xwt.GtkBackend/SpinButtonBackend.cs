@@ -25,10 +25,10 @@
 // THE SOFTWARE.
 
 using System;
+using Xwt;
 using Xwt.Backends;
 
 
-using Gtk;
 
 namespace Xwt.GtkBackend
 {
@@ -42,8 +42,7 @@ namespace Xwt.GtkBackend
 
 		public override void Initialize ()
 		{
-			Widget = (Gtk.SpinButton) CreateWidget ();
-			Widget.Numeric = true;
+			Widget = (GtkSpinButton) CreateWidget ();
 			Widget.Alignment = 1.0f;
 			InitializeGtk ();
 			Widget.Show ();
@@ -51,11 +50,11 @@ namespace Xwt.GtkBackend
 		
 		protected virtual Gtk.Widget CreateWidget ()
 		{
-			return new Gtk.SpinButton (0, 1, .1);
+			return new GtkSpinButton (0, 1, .1);
 		}
 		
-		protected new Gtk.SpinButton Widget {
-			get { return (Gtk.SpinButton)base.Widget; }
+		protected new GtkSpinButton Widget {
+			get { return (GtkSpinButton)base.Widget; }
 			set { base.Widget = value; }
 		}
 		
@@ -69,6 +68,10 @@ namespace Xwt.GtkBackend
 			if (eventId is SpinButtonEvent) {
 				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueChanged)
 					Widget.ValueChanged += HandleValueChanged;
+				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueInput)
+					Widget.ValueInput += HandleValueInput;
+				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueOutput)
+					Widget.ValueOutput += HandleValueOutput;
 			}
 		}
 		
@@ -78,6 +81,10 @@ namespace Xwt.GtkBackend
 			if (eventId is SpinButtonEvent) {
 				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueChanged)
 					Widget.ValueChanged -= HandleValueChanged;
+				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueInput)
+					Widget.ValueInput -= HandleValueInput;
+				if ((SpinButtonEvent)eventId == SpinButtonEvent.ValueOutput)
+					Widget.ValueOutput -= HandleValueOutput;
 			}
 		}
 
@@ -85,6 +92,20 @@ namespace Xwt.GtkBackend
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.ValueChanged ();
+			});
+		}
+
+		void HandleValueInput (object sender, SpinButtonInputEventArgs e)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.ValueInput (e);
+			});
+		}
+
+		void HandleValueOutput (object sender, WidgetEventArgs e)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.ValueOutput (e);
 			});
 		}
 
@@ -100,10 +121,12 @@ namespace Xwt.GtkBackend
 
 		public double Value {
 			get { return Widget.Value; }
-			set {
-				Widget.Numeric = true;
-				Widget.Value = value;
-			}
+			set { Widget.Value = value; }
+		}
+
+		public string Text {
+			get { return Widget.Text; }
+			set { Widget.Text = value; }
 		}
 
 		public bool Wrap {
@@ -140,13 +163,19 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool IsIndeterminate {
-			get { return !Widget.Numeric; }
+			get { return Widget.IsIndeterminate; }
 			set {
-				Widget.Numeric = !value;
+				Widget.IsIndeterminate = value;
 				if (value)
 					Widget.Text = indeterminateMessage ?? string.Empty;
-				else
-					Widget.Value = MinimumValue;
+				else {
+					if (Widget.Value < MinimumValue)
+						Widget.Value = MinimumValue;
+					else if (Widget.Value > MaximumValue)
+						Widget.Value = MaximumValue;
+					else
+						Widget.Value = Widget.Value; // force new input
+				}
 			}
 		}
 
@@ -160,6 +189,75 @@ namespace Xwt.GtkBackend
 					Widget.Text = indeterminateMessage ?? string.Empty;
 			}
 		}
+	}
+
+	public class GtkSpinButton : Gtk.SpinButton
+	{
+		public GtkSpinButton (double min, double max, double step) : base (min, max, step)
+		{
+			Numeric = true;
+		}
+
+		bool isIndeterminate;
+		public bool IsIndeterminate {
+			get {
+				return isIndeterminate;
+			}
+			set {
+				isIndeterminate = value;
+				if (isIndeterminate)
+					Numeric = false;
+			}
+		}
+
+		protected override int OnInput (out double new_value)
+		{
+			if (ValueInput == null) {
+				if (!Numeric) Numeric = true;
+			}
+			else {
+				if (Numeric) Numeric = false;
+				var inputArgs = new SpinButtonInputEventArgs ();
+				ValueInput (this, inputArgs);
+				if (inputArgs.Handled) {
+					new_value = inputArgs.NewValue;
+					if (Double.IsNaN (inputArgs.NewValue)) {
+						isIndeterminate = true;
+						return -1;
+					}
+					isIndeterminate = false;
+					return 1;
+				}
+			}
+			isIndeterminate = false;
+			new_value = 0;
+			return 0;
+		}
+
+		protected override void OnRealized ()
+		{
+			base.OnRealized ();
+			if (ValueOutput != null)
+				OnOutput ();
+		}
+
+		protected override int OnOutput ()
+		{
+			if (ValueOutput == null) {
+				if (!Numeric && !isIndeterminate) Numeric = true;
+				return 0;
+			}
+
+			if (Numeric) Numeric = false;
+			var outputArgs = new WidgetEventArgs ();
+			ValueOutput (this, outputArgs);
+			if (outputArgs.Handled)
+				return 1;
+			return 0;
+		}
+
+		public event EventHandler<SpinButtonInputEventArgs> ValueInput;
+		public event EventHandler<WidgetEventArgs> ValueOutput;
 	}
 }
 

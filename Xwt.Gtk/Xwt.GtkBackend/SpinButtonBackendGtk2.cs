@@ -37,7 +37,7 @@ namespace Xwt.GtkBackend
 		// This is a workaround for bug https://bugzilla.xamarin.com/show_bug.cgi?id=10904
 		void HandleExposeEvent (object o, EventArgs args)
 		{
-			if (indeterminateMessage != null && !Widget.Numeric)
+			if (indeterminateMessage != null && Widget.IsIndeterminate)
 				Widget.Text = indeterminateMessage;
 			Widget.ExposeEvent -= HandleExposeEvent;
 		}
