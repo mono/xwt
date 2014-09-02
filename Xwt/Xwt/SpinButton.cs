@@ -40,6 +40,16 @@ namespace Xwt
 			{
 				((SpinButton)Parent).OnValueChanged (EventArgs.Empty);
 			}
+
+			public void ValueInput (SpinButtonInputEventArgs inputArgs)
+			{
+				((SpinButton)Parent).OnValueInput (inputArgs);
+			}
+
+			public void ValueOutput (WidgetEventArgs args)
+			{
+				((SpinButton)Parent).OnValueOutput (args);
+			}
 		}
 		
 		ISpinButtonBackend Backend {
@@ -64,6 +74,11 @@ namespace Xwt
 		public double Value {
 			get { return Backend.Value; }
 			set { Backend.Value = value; }
+		}
+
+		public string Text {
+			get { return Backend.Text; }
+			set { Backend.Text = value; }
 		}
 
 		public bool Wrap {
@@ -121,6 +136,44 @@ namespace Xwt
 			remove {
 				valueChanged -= value;
 				BackendHost.OnAfterEventRemove (SpinButtonEvent.ValueChanged, valueChanged);
+			}
+		}
+
+		protected virtual void OnValueInput (SpinButtonInputEventArgs e)
+		{
+			if (valueInput != null)
+				valueInput (this, e);
+		}
+
+		EventHandler<SpinButtonInputEventArgs> valueInput;
+
+		public event EventHandler<SpinButtonInputEventArgs> ValueInput {
+			add {
+				BackendHost.OnBeforeEventAdd (SpinButtonEvent.ValueInput, valueInput);
+				valueInput += value;
+			}
+			remove {
+				valueInput -= value;
+				BackendHost.OnAfterEventRemove (SpinButtonEvent.ValueInput, valueInput);
+			}
+		}
+
+		protected virtual void OnValueOutput (WidgetEventArgs e)
+		{
+			if (valueOutput != null)
+				valueOutput (this, e);
+		}
+
+		EventHandler<WidgetEventArgs> valueOutput;
+
+		public event EventHandler<WidgetEventArgs> ValueOutput {
+			add {
+				BackendHost.OnBeforeEventAdd (SpinButtonEvent.ValueOutput, valueOutput);
+				valueOutput += value;
+			}
+			remove {
+				valueOutput -= value;
+				BackendHost.OnAfterEventRemove (SpinButtonEvent.ValueOutput, valueOutput);
 			}
 		}
 	}

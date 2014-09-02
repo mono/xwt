@@ -1,10 +1,10 @@
-//
-// ISpinButtonBackend.cs
+﻿//
+// SpinButtonInputEventArgs.cs
 //
 // Author:
-//       Jérémie Laval <jeremie.laval@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2012 Xamarin, Inc.
+// Copyright (c) 2014 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,38 +23,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface ISpinButtonBackend : IWidgetBackend
+	public class SpinButtonInputEventArgs : WidgetEventArgs
 	{
-		double ClimbRate { get; set; }
-		int Digits { get; set; }
-		double Value { get; set; }
-		string Text { get; set; }
-		bool Wrap { get; set; }
-		double MinimumValue { get; set; }
-		double MaximumValue { get; set; }
-		double IncrementValue { get; set; }
-		void SetButtonStyle (ButtonStyle style);
-		string IndeterminateMessage { get; set; }
-		bool IsIndeterminate { get; set; }
-	}
+		public SpinButtonInputEventArgs ()
+		{
+			NewValue = double.NaN;
+		}
 
-	public interface ISpinButtonEventSink: IWidgetEventSink
-	{
-		void ValueChanged ();
-		void ValueInput (SpinButtonInputEventArgs intputArgs);
-		void ValueOutput (WidgetEventArgs args);
-	}
-	
-	public enum SpinButtonEvent
-	{
-		ValueChanged,
-		ValueInput,
-		ValueOutput
+		public double NewValue { get; set; }
 	}
 }
 
