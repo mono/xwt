@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 using Xwt.Backends;
 
@@ -53,6 +54,11 @@ namespace Xwt.Mac
 			set { Widget.Value = value; }
 		}
 
+		public string Text {
+			get { return Widget.Text; }
+			set { Widget.Text = value; }
+		}
+
 		public bool Wrap {
 			get { return Widget.Wrap; }
 			set { Widget.Wrap = value; }
@@ -78,14 +84,24 @@ namespace Xwt.Mac
 			Widget.SetButtonStyle (style);
 		}
 
+		string indeterminateMessage = String.Empty;
 		public string IndeterminateMessage {
-			get;
-			set;
+			get { return indeterminateMessage; }
+			set {
+				indeterminateMessage = value;
+				if (IsIndeterminate)
+					Text = indeterminateMessage;
+			}
 		}
 
+		bool isIndeterminate = false;
 		public bool IsIndeterminate {
-			get;
-			set;
+			get { return isIndeterminate; }
+			set {
+				isIndeterminate = value;
+				if (value)
+					Text = indeterminateMessage;
+			}
 		}
 	}
 
@@ -93,7 +109,6 @@ namespace Xwt.Mac
 	{
 		NSStepper stepper;
 		NSTextField input;
-		NSNumberFormatter formater;
 
 		class RelativeTextField : NSTextField
 		{
@@ -113,13 +128,13 @@ namespace Xwt.Mac
 
 		public MacSpinButton (ISpinButtonEventSink eventSink)
 		{
-			formater = new NSNumberFormatter ();
 			stepper = new NSStepper ();
 			input = new RelativeTextField (stepper);
-			input.Formatter = formater;
+			input.StringValue = stepper.DoubleValue.ToString("N");
 			input.Alignment = NSTextAlignment.Right;
-			formater.NumberStyle = NSNumberFormatterStyle.Decimal;
-			stepper.Activated += (sender, e) => input.DoubleValue = stepper.DoubleValue;
+			stepper.Activated += HandleValueOutput;
+			input.Changed += HandleValueInput;
+
 
 			SetFrameSize (new CGSize (55, 22));
 			stepper.Frame = new System.Drawing.RectangleF (new System.Drawing.PointF (36, 0), new System.Drawing.SizeF (19, 22));
@@ -133,22 +148,84 @@ namespace Xwt.Mac
 			AddSubview (stepper);
 		}
 
+		void HandleValueOutput (object sender, EventArgs e)
+		{
+			HandleValueOutput ();
+			Backend.ApplicationContext.InvokeUserCode (delegate {
+				((SpinButtonBackend)Backend).EventSink.ValueChanged();
+			});
+		}
+
+		void HandleValueOutput ()
+		{
+			var outputArgs = new WidgetEventArgs ();
+			Backend.ApplicationContext.InvokeUserCode (delegate {
+				((SpinButtonBackend)Backend).EventSink.ValueOutput(outputArgs);
+			});
+			if (!outputArgs.Handled)
+				input.StringValue = stepper.DoubleValue.ToString("N" + Digits);
+		}
+
+		void HandleValueInput (object sender, EventArgs e)
+		{
+			var argsInput = new SpinButtonInputEventArgs ();
+			Backend.ApplicationContext.InvokeUserCode (delegate {
+				((SpinButtonBackend)Backend).EventSink.ValueInput(argsInput);
+			});
+
+			double new_val = double.NaN;
+			if (argsInput.Handled)
+				new_val = argsInput.NewValue;
+			else {
+				var numberStyle = NumberStyles.Float;
+				if (Digits == 0)
+					numberStyle = NumberStyles.Integer;
+				if (!double.TryParse (input.StringValue, numberStyle, CultureInfo.CurrentCulture, out new_val))
+					new_val = double.NaN;
+			}
+
+			if (stepper.DoubleValue == new_val)
+				return;
+
+			if (double.IsNaN (new_val)) { // reset to previous input
+				HandleValueOutput ();
+				return;
+			}
+
+			stepper.DoubleValue = new_val;
+			if (!argsInput.Handled)
+				input.StringValue = stepper.DoubleValue.ToString ("N" + Digits);
+
+			Backend.ApplicationContext.InvokeUserCode (delegate {
+				((SpinButtonBackend)Backend).EventSink.ValueChanged ();
+			});
+		}
+
 		public double ClimbRate {
 			get { return stepper.Increment; }
 			set { stepper.Increment = value; }
 		}
 
+		int digits;
 		public int Digits {
-			get { return (int)formater.MaximumSignificantDigits; }
-			set { formater.MaximumSignificantDigits = (uint)value; }
+			get { return digits; }
+			set {
+				digits = value;
+				HandleValueOutput ();
+			}
 		}
 
 		public double Value {
-			get { return input.DoubleValue; }
+			get { return stepper.DoubleValue; }
 			set {
 				stepper.DoubleValue = value;
-				input.DoubleValue = value;
+				HandleValueOutput ();
 			}
+		}
+
+		public string Text {
+			get { return input.StringValue; }
+			set { input.StringValue = value; }
 		}
 
 		public bool Wrap {
@@ -160,7 +237,7 @@ namespace Xwt.Mac
 			get { return stepper.MinValue; }
 			set {
 				stepper.MinValue = value;
-				formater.Minimum = new NSNumber (value);
+				HandleValueOutput ();
 			}
 		}
 
@@ -168,7 +245,7 @@ namespace Xwt.Mac
 			get { return stepper.MaxValue; }
 			set {
 				stepper.MaxValue = value;
-				formater.Maximum = new NSNumber (value);
+				HandleValueOutput ();
 			}
 		}
 
