@@ -109,7 +109,7 @@ namespace Xwt.GtkBackend
 		
 		static System.Reflection.MethodInfo glibObjectGetProp, glibObjectSetProp;
 		
-		public static int GtkMinorVersion = 12, GtkMicroVersion = 0;
+		public static int GtkMajorVersion = 2, GtkMinorVersion = 12, GtkMicroVersion = 0;
 		static bool oldMacKeyHacks = false;
 		
 		static GtkWorkarounds ()
@@ -121,13 +121,19 @@ namespace Xwt.GtkBackend
 			var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
 			glibObjectSetProp = typeof (GLib.Object).GetMethod ("SetProperty", flags);
 			glibObjectGetProp = typeof (GLib.Object).GetMethod ("GetProperty", flags);
-			
+
+			#if XWT_GTK3
+			GtkMajorVersion = (int)Gtk.Global.MajorVersion;
+			GtkMinorVersion = (int)Gtk.Global.MinorVersion;
+			GtkMicroVersion = (int)Gtk.Global.MicroVersion;
+			#else
 			foreach (int i in new [] { 24, 22, 20, 18, 16, 14 }) {
 				if (Gtk.Global.CheckVersion (2, (uint)i, 0) == null) {
 					GtkMinorVersion = i;
 					break;
 				}
 			}
+			#endif
 			
 			for (int i = 1; i < 20; i++) {
 				if (Gtk.Global.CheckVersion (2, (uint)GtkMinorVersion, (uint)i) == null) {
@@ -587,7 +593,7 @@ namespace Xwt.GtkBackend
 			Gdk.ModifierType modifier = evt.State;
 			byte grp = evt.Group;
 			
-			if (GtkMinorVersion >= 20) {
+			if (GtkMajorVersion > 2 || GtkMajorVersion <= 2 && GtkMinorVersion >= 20) {
 				gdk_keymap_add_virtual_modifiers (keymap.Handle, ref modifier);
 			}
 			
@@ -986,7 +992,7 @@ namespace Xwt.GtkBackend
 
 		public static void SetLinkHandler (this Gtk.Label label, Action<string> urlHandler)
 		{
-			if (GtkMinorVersion >= 18)
+			if (GtkMajorVersion > 2 || GtkMajorVersion <= 2 && GtkMinorVersion >= 18)
 				new UrlHandlerClosure (urlHandler).ConnectTo (label);
 		}
 
@@ -1078,7 +1084,7 @@ namespace Xwt.GtkBackend
 
 		public static void ForceImageOnMenuItem (Gtk.ImageMenuItem mi)
 		{
-			if (GtkMinorVersion >= 16)
+			if (GtkMajorVersion > 2 || GtkMajorVersion <= 2 && GtkMinorVersion >= 16)
 				gtk_image_menu_item_set_always_show_image (mi.Handle, true);
 		}
 
