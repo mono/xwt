@@ -31,6 +31,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
+#if XWT_GTK3
+using GtkTreeModel = Gtk.ITreeModel;
+#else
+using GtkTreeModel = Gtk.TreeModel;
+#endif
+
 namespace Xwt.GtkBackend
 {
 	public static class GtkWorkarounds
@@ -1052,10 +1058,9 @@ namespace Xwt.GtkBackend
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern bool gtk_tree_view_get_tooltip_context (IntPtr raw, ref int x, ref int y, bool keyboard_tip, out IntPtr model, out IntPtr path, IntPtr iter);
 
-		#if !XWT_GTK3
 		//the GTK# version of this has 'out' instead of 'ref', preventing passing the x,y values in
 		public static bool GetTooltipContext (this Gtk.TreeView tree, ref int x, ref int y, bool keyboardTip,
-			 out Gtk.TreeModel model, out Gtk.TreePath path, out Gtk.TreeIter iter)
+			 out GtkTreeModel model, out Gtk.TreePath path, out Gtk.TreeIter iter)
 		{
 			IntPtr intPtr = Marshal.AllocHGlobal (Marshal.SizeOf (typeof (Gtk.TreeIter)));
 			IntPtr handle;
@@ -1067,7 +1072,6 @@ namespace Xwt.GtkBackend
 			Marshal.FreeHGlobal (intPtr);
 			return result;
 		}
-		#endif
 
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_image_menu_item_set_always_show_image (IntPtr menuitem, bool alwaysShow);
