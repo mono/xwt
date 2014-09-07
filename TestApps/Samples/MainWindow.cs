@@ -123,7 +123,8 @@ namespace Samples
 			AddSample (wf, "Tooltips", typeof(Tooltips));
 			AddSample (wf, "Cursors", typeof(MouseCursors));
 
-			AddSample (null, "Windows", typeof(Windows));
+			var windows = AddSample (null, "Windows", typeof(Windows));
+			AddSample (windows, "Message Dialogs", typeof(MessageDialogs));
 			
 			AddSample (null, "Screens", typeof (ScreensSample));
 
