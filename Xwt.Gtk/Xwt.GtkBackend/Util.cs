@@ -231,10 +231,9 @@ namespace Xwt.GtkBackend
 		
 		public static ImageDescription WithDefaultSize (this ImageDescription image, Gtk.IconSize defaultIconSize)
 		{
-			if (image.Size.IsZero) {
-				var s = iconSizes [(int)defaultIconSize];
+			var s = iconSizes [(int)defaultIconSize];
+			if (!s.IsZero)
 				image.Size = s;
-			}
 			return image;
 		}
 
