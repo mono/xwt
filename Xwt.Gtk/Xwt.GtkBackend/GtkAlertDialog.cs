@@ -37,16 +37,13 @@ namespace Xwt.GtkBackend
 	/// <summary>
 	/// A Gnome HIG compliant alert dialog.
 	/// </summary>
-	internal class GtkAlertDialog : Gtk.Dialog
+	internal class GtkAlertDialog : Gtk.MessageDialog
 	{
 		ApplicationContext actx;
 		Command resultButton = null;
 		Command[] buttons;
 		
-		Gtk.HBox  hbox  = new Gtk.HBox ();
 		ImageBox image;
-		Gtk.Label label = new Gtk.Label ();
-		Gtk.VBox labelsBox = new Gtk.VBox (false, 6);
 		
 		public Command ResultButton {
 			get {
@@ -59,36 +56,12 @@ namespace Xwt.GtkBackend
 		void Init ()
 		{
 			image = new ImageBox (actx);
-			this.AddContent (hbox);
-			hbox.PackStart (image, false, false, 0);
-			hbox.PackStart (labelsBox, true, true, 0);
-			labelsBox.PackStart (label, true, true, 0);
-				
-			// Table 3.1
+
 			this.Title        = "";
-			this.BorderWidth  = 6;
-			//this.Type         = WindowType.Toplevel;
 			this.Resizable    = false;
 			#if !XWT_GTK3
 			this.HasSeparator = false;
 			#endif
-			
-			// Table 3.2
-			this.SetContentSpacing (12);
-			
-			// Table 3.3
-			this.hbox.Spacing     = 12;
-			this.hbox.BorderWidth = 6;
-			
-			// Table 3.4
-			this.image.Yalign   = 0.00f;
-			//this.image.IconSize = Gtk.IconSize.Dialog;
-			
-			// Table 3.5
-			this.label.UseMarkup = true;
-			this.label.Wrap      = true;
-			this.label.Yalign    = 0.00f;
-			this.label.Xalign    = 0.00f;
 		}
 		
 		public GtkAlertDialog (ApplicationContext actx, MessageDescription message)
@@ -96,60 +69,63 @@ namespace Xwt.GtkBackend
 			this.actx = actx;
 			Init ();
 			this.buttons = message.Buttons.ToArray ();
-			
-			string primaryText;
-			string secondaryText;
-			
-			if (string.IsNullOrEmpty (message.SecondaryText)) {
-				secondaryText = message.Text;
-				primaryText = null;
+
+			string primaryText = String.Empty;
+			string secondaryText = String.Empty;
+
+			if (string.IsNullOrEmpty (message.Text)) {
+				if (!string.IsNullOrEmpty (message.SecondaryText))
+					primaryText = message.SecondaryText;
 			} else {
 				primaryText = message.Text;
 				secondaryText = message.SecondaryText;
 			}
 
-			var icon = message.Icon.ToImageDescription (actx);
-			image.Image = icon.WithDefaultSize (Gtk.IconSize.Dialog);
-			
+			if (message.Icon == StockIcons.Information)
+				base.MessageType = MessageType.Info;
+			else if (message.Icon == StockIcons.Question)
+				base.MessageType = MessageType.Question;
+			else if (message.Icon == StockIcons.Warning)
+				base.MessageType = MessageType.Warning;
+			else if (message.Icon == StockIcons.Error)
+				base.MessageType = MessageType.Error;
+			else {
+				var icon = message.Icon.ToImageDescription (actx);
+				image.Image = icon.WithDefaultSize (Gtk.IconSize.Dialog);
+				base.Image = image;
+			}
+
 			StringBuilder markup = new StringBuilder (@"<span weight=""bold"" size=""larger"">");
 			markup.Append (GLib.Markup.EscapeText (primaryText));
 			markup.Append ("</span>");
-			if (!String.IsNullOrEmpty (secondaryText)) {
-				if (!String.IsNullOrEmpty (primaryText)) {
-					markup.AppendLine ();
-					markup.AppendLine ();
-				}
-				markup.Append (GLib.Markup.EscapeText (secondaryText));
-			}
-			label.Markup = markup.ToString ();
-			label.Selectable = true;
-			label.CanFocus = false;
+
+			base.Markup = markup.ToString ();
+			if (!String.IsNullOrEmpty (secondaryText))
+				base.SecondaryText = GLib.Markup.EscapeText (secondaryText);
 			
 			foreach (Command button in message.Buttons) {
-				Gtk.Button newButton = new Gtk.Button ();
-				newButton.Label        = button.Label;
+				Gtk.Button newButton = (Gtk.Button)base.AddButton (button.Label, button.ToResponseType());
 				newButton.UseUnderline = true;
 				newButton.UseStock     = button.IsStockButton;
 				if (button.Icon != null) {
-					icon = button.Icon.ToImageDescription (actx);
+					var icon = button.Icon.ToImageDescription (actx);
 					newButton.Image = new ImageBox (actx, icon.WithDefaultSize (Gtk.IconSize.Button));
 				}
 				newButton.Clicked += ButtonClicked;
-				ActionArea.Add (newButton);
 			}
 			
 			foreach (var op in message.Options) {
-				CheckButton check = new CheckButton (op.Text);
+				Gtk.CheckButton check = new Gtk.CheckButton (op.Text);
 				check.Active = op.Value;
-				labelsBox.PackStart (check, false, false, 0);
+				this.AddContent (check, false, false, 0);
 				check.Toggled += delegate {
 					message.SetOptionValue (op.Id, check.Active);
 				};
 			}
 			
 			if (message.AllowApplyToAll) {
-				CheckButton check = new CheckButton ("Apply to all");
-				labelsBox.PackStart (check, false, false, 0);
+				Gtk.CheckButton check = new Gtk.CheckButton ("Apply to all");
+				this.AddContent (check, false, false, 0);
 				check.Toggled += delegate {
 					ApplyToAll = check.Active;
 				};

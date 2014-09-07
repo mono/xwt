@@ -186,6 +186,27 @@ namespace Xwt.GtkBackend
 			}
 			throw new InvalidOperationException("Invalid alignment value: " + alignment);
 		}
+
+		public static Gtk.ResponseType ToResponseType (this Xwt.Command command)
+		{
+			if (command.Id == Command.Ok.Id)
+				return Gtk.ResponseType.Ok;
+			if (command.Id == Command.Cancel.Id)
+				return Gtk.ResponseType.Cancel;
+			if (command.Id == Command.Yes.Id)
+				return Gtk.ResponseType.Yes;
+			if (command.Id == Command.No.Id)
+				return Gtk.ResponseType.No;
+			if (command.Id == Command.Close.Id)
+				return Gtk.ResponseType.Close;
+			if (command.Id == Command.Delete.Id)
+				return Gtk.ResponseType.DeleteEvent;
+			if (command.Id == Command.Apply.Id)
+				return Gtk.ResponseType.Accept;
+			if (command.Id == Command.Stop.Id)
+				return Gtk.ResponseType.Reject;
+			return Gtk.ResponseType.None;
+		}
 	}
 }
 
