@@ -87,7 +87,7 @@ namespace Xwt.GtkBackend
 			
 			Gtk.Widget imageWidget = null;
 			if (image.Backend != null)
-				imageWidget = new ImageBox (ApplicationContext, image.WithDefaultSize (Gtk.IconSize.Button));
+				imageWidget = new ImageBox (ApplicationContext, image.Size.IsZero ? image.WithDefaultSize (Gtk.IconSize.Button) : image);
 
 			if (label != null && imageWidget == null) {
 				contentWidget = new Gtk.Label (label) { UseUnderline = useMnemonic }; 
