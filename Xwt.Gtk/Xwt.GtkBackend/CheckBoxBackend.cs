@@ -74,6 +74,14 @@ namespace Xwt.GtkBackend
 				internalActiveUpdate = false;
 			}
 		}
+
+		protected override void OnSetBackgroundColor (Xwt.Drawing.Color color)
+		{
+			base.OnSetBackgroundColor (color);
+			Widget.SetBackgroundColor (color);
+			Widget.SetChildBackgroundColor (color);
+			EventsRootWidget.SetBackgroundColor (color);
+		}
 		
 		public void SetContent (string label)
 		{

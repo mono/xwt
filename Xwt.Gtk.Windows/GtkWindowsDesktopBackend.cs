@@ -60,10 +60,11 @@ namespace Xwt.Gtk.Windows
 
 		public Gdk.Pixbuf CreateFromResource (Bitmap bitmap)
 		{
-			MemoryStream ms = new MemoryStream ();
-			bitmap.Save (ms, ImageFormat.Png);
-			ms.Position = 0;
-			return new Gdk.Pixbuf (ms);
+			using (var ms = new MemoryStream ()) {
+				bitmap.Save (ms, ImageFormat.Png);
+				ms.Position = 0;
+				return new Gdk.Pixbuf (ms);
+			}
 		}
 	}
 }

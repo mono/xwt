@@ -405,6 +405,38 @@ namespace Xwt.Mac
 				m |= ModifierKeys.Shift;
 			return m;
 		}
+
+
+
+		public static MonoMac.AppKit.NSTableViewGridStyle ToMacValue (this GridLines value)
+		{
+			switch (value)
+			{
+				case GridLines.Both:
+					return (NSTableViewGridStyle.SolidHorizontalLine | NSTableViewGridStyle.SolidVerticalLine);
+				case GridLines.Horizontal:
+					return NSTableViewGridStyle.SolidHorizontalLine;
+				case GridLines.Vertical:
+					return NSTableViewGridStyle.SolidVerticalLine;
+				case GridLines.None:
+					return NSTableViewGridStyle.None;
+			}
+			throw new InvalidOperationException("Invalid GridLines value: " + value);
+		}
+
+		public static GridLines ToXwtValue (this NSTableViewGridStyle value)
+		{
+			if (value.HasFlag (NSTableViewGridStyle.SolidHorizontalLine)) {
+				if (value.HasFlag (NSTableViewGridStyle.SolidVerticalLine))
+					return GridLines.Both;
+				else
+					return GridLines.Horizontal;
+			}
+			if (value.HasFlag (NSTableViewGridStyle.SolidVerticalLine))
+				return GridLines.Vertical;
+
+			return GridLines.None;
+		}
 	}
 
 	public interface ICopiableObject

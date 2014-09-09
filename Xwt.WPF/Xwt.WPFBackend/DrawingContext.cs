@@ -60,7 +60,16 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public SWM.Matrix CurrentTransform {
+		public SWM.SolidColorBrush ColorBrush
+		{
+			get
+			{
+				return colorBrush;
+			}
+		}
+
+		public SWM.Matrix CurrentTransform
+		{
 			get {
 				TransformCollection children = transforms.Children;
 				Matrix ctm = Matrix.Identity;

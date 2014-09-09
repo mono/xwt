@@ -83,6 +83,7 @@ namespace Xwt
 
 		public ToolkitType Type {
 			get { return toolkitType; }
+			internal set { toolkitType = value; }
 		}
 
 		internal static void DisposeAll ()
@@ -159,6 +160,8 @@ namespace Xwt
 			switch (type) {
 			case ToolkitType.Gtk:
 				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=" + version;
+			case ToolkitType.Gtk3:
+				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk3, Version=" + version;
 			case ToolkitType.Cocoa:
 				return "Xwt.Mac.MacEngine, Xwt.Mac, Version=" + version;
 			case ToolkitType.Wpf:
@@ -350,7 +353,9 @@ namespace Xwt
 					return externalWidget;
 				nativeWidget = externalWidget.Surface.ToolkitEngine.GetNativeWidget (externalWidget);
 			}
-			return new EmbeddedNativeWidget (nativeWidget, externalWidget);
+			var embedded = CreateObject<EmbeddedNativeWidget> ();
+			embedded.Initialize (nativeWidget, externalWidget);
+			return embedded;
 		}
 
 		public Image WrapImage (object nativeImage)

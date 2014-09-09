@@ -65,8 +65,8 @@ namespace Xwt.Mac
 			{
 				var backend = (ViewBackend)Toolkit.GetBackend (child);
 				view = ((ViewBackend)backend).NativeWidget as NSView;
-				ForceChildLayout ();
 				backend.SetAutosizeMode (true);
+				ForceChildLayout ();
 				// FIXME: unset when the popover is closed
 			}
 			
@@ -110,10 +110,7 @@ namespace Xwt.Mac
 
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget referenceWidget, Xwt.Rectangle positionRect, Xwt.Widget child)
 		{
-			var controller = new FactoryViewController (child);
-			popover = new NSPopover ();
-			popover.Behavior = NSPopoverBehavior.Transient;
-			popover.ContentViewController = controller;
+			popover = MakePopover (child);
 			ViewBackend backend = (ViewBackend)Toolkit.GetBackend (referenceWidget);
 			var reference = backend.Widget;
 			popover.Show (positionRect.ToCGRect (),
@@ -125,8 +122,21 @@ namespace Xwt.Mac
 		{
 			popover.Close ();
 		}
+
+		public void Dispose ()
+		{
+			popover.Close ();
+		}
+
+		public static NSPopover MakePopover (Xwt.Widget child)
+		{
+			return new NSPopover {
+				Behavior = NSPopoverBehavior.Transient,
+				ContentViewController = new FactoryViewController (child)
+			};
+		}
 		
-		NSRectEdge ToRectEdge (Xwt.Popover.Position pos)
+		public static NSRectEdge ToRectEdge (Xwt.Popover.Position pos)
 		{
 			switch (pos) {
 			case Popover.Position.Top:
@@ -135,11 +145,6 @@ namespace Xwt.Mac
 			default:
 				return NSRectEdge.MinYEdge;
 			}
-		}
-		
-		public void Dispose ()
-		{
-			popover.Close ();
 		}
 	}
 }

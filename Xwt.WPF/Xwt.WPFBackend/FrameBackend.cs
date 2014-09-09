@@ -107,9 +107,14 @@ namespace Xwt.WPFBackend
 		public void SetContent (IWidgetBackend child)
 		{
 			if (child == null)
+			{
 				GroupBox.Content = null;
+			}
 			else
+			{
 				GroupBox.Content = child.NativeWidget;
+				SetChildPlacement(child);
+			}
 		}
 
 		public void SetBorderSize (double left, double right, double top, double bottom)

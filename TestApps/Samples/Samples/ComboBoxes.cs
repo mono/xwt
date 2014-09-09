@@ -127,7 +127,11 @@ namespace Samples
 
 			var c5 = new ComboBoxEntry ();
 			c5.TextEntry.TextAlignment = Alignment.Center;
-			c5.TextEntry.Text = "centered text";
+			c5.TextEntry.Text = "centered text with red background";
+			c5.BackgroundColor = Colors.Red;
+			c5.Items.Add (1, "One");
+			c5.Items.Add (2, "Two");
+			c5.Items.Add (3, "Three");
 			PackStart (c5);
 
 			// A complex combobox

@@ -58,7 +58,7 @@ namespace Samples
 			PackStart (b2);
 			
 			PackStart (new Button (StockIcons.ZoomIn.WithSize (22)));
-			PackStart (new Button (new CustomImage ().WithSize (22)));
+			PackStart (new Button (new CustomImage ().WithSize (22), "with red background") { BackgroundColor = Colors.Red });
 
 			MenuButton mb = new MenuButton ("This is a Menu Button");
 			Menu men = new Menu ();

@@ -39,7 +39,8 @@ namespace Samples
 		{
 			TreeView view = new TreeView ();
 			TreeStore store = new TreeStore (triState, check, text, desc);
-		
+			view.GridLinesVisible = GridLines.Both;
+			
 			var triStateCellView = new CheckBoxCellView (triState) { Editable = true, AllowMixed = true };
 			triStateCellView.Toggled += (object sender, WidgetEventArgs e) => {
 				if (view.CurrentEventRow == null) {
@@ -101,6 +102,22 @@ namespace Samples
 				e.DragOperation.Finished += delegate(object s, DragFinishedEventArgs args) {
 					Console.WriteLine ("D:" + args.DeleteSource);
 				};
+			};
+			view.RowExpanding += delegate(object sender, TreeViewRowEventArgs e) {
+				var val = store.GetNavigatorAt (e.Position).GetValue (text);
+				Console.WriteLine("Expanding: " + val);
+			};
+			view.RowExpanded += delegate(object sender, TreeViewRowEventArgs e) {
+				var val = store.GetNavigatorAt (e.Position).GetValue (text);
+				Console.WriteLine("Expanded: " + val);
+			};
+			view.RowCollapsing += delegate(object sender, TreeViewRowEventArgs e) {
+				var val = store.GetNavigatorAt (e.Position).GetValue (text);
+				Console.WriteLine("Collapsing: " + val);
+			};
+			view.RowCollapsed += delegate(object sender, TreeViewRowEventArgs e) {
+				var val = store.GetNavigatorAt (e.Position).GetValue (text);
+				Console.WriteLine("Collapsed: " + val);
 			};
 			
 			Button addButton = new Button ("Add");

@@ -52,12 +52,19 @@ namespace Xwt.Mac
 			this.MessageText = (message.Text != null) ? message.Text : String.Empty;
 			this.InformativeText = (message.SecondaryText != null) ? message.SecondaryText : String.Empty;
 			//TODO Set Icon
-			//TODO Sort Buttons to have the default button first
-			foreach (Command cmd in message.Buttons) {
-				this.AddButton (cmd.Label);
+
+			var sortedButtons = new Command [message.Buttons.Count];
+			sortedButtons [0] = message.Buttons [message.DefaultButton];
+			this.AddButton (message.Buttons [message.DefaultButton].Label);
+			var j = 1;
+			for (var i = 0; i < message.Buttons.Count; i++) {
+				if (i == message.DefaultButton)
+					continue;
+				sortedButtons [j++] = message.Buttons [i];
+				this.AddButton (message.Buttons [i].Label);
 			}
 
-			return message.Buttons [(int)this.RunModal () - 1000];
+			return sortedButtons [(int)this.RunModal () - 1000];
 		}
 
 		public bool ApplyToAll { get; set; }

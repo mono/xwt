@@ -315,7 +315,7 @@ namespace Xwt.GtkBackend
 			var w = ((WidgetBackend)widget.GetBackend ()).Widget;
 			Gdk.Window win = w.GdkWindow;
 			if (win != null && win.IsViewable)
-				return new GtkImage (Gdk.Pixbuf.FromDrawable (win, Colormap.System, w.Allocation.X, w.Allocation.Y, 0, 0, w.Allocation.Width, w.Allocation.Height));
+				return new GtkImage (win.ToPixbuf (w.Allocation.X, w.Allocation.Y, w.Allocation.Width, w.Allocation.Height));
 			else
 				throw new InvalidOperationException ();
 		}
@@ -331,7 +331,11 @@ namespace Xwt.GtkBackend
 
 		public override ToolkitFeatures SupportedFeatures {
 			get {
+				#if XWT_GTK3
+				var f = ToolkitFeatures.All;
+				#else
 				var f = ToolkitFeatures.All & ~ToolkitFeatures.WidgetOpacity;
+				#endif
 				if (Platform.IsWindows)
 					f &= ~ToolkitFeatures.WindowOpacity;
 				return f;
