@@ -212,7 +212,7 @@ namespace Xwt.GtkBackend
 
 		Gtk.Adjustment hadjustment;
 		[GLib.Property ("hadjustment")]
-		public new Gtk.Adjustment Hadjustment {
+		public Gtk.Adjustment Hadjustment {
 			get {
 				return hadjustment;
 			}
@@ -226,7 +226,7 @@ namespace Xwt.GtkBackend
 
 		Gtk.Adjustment vadjustment;
 		[GLib.Property ("vadjustment")]
-		public new Gtk.Adjustment Vadjustment {
+		public Gtk.Adjustment Vadjustment {
 			get {
 				return vadjustment;
 			}
