@@ -703,7 +703,7 @@ namespace Xwt.GtkBackend
 			});
 
 			if (pargs.Handled)
-				args.RetVal = true;
+				((GLib.Object)o).StopSignal ("insert-text");
 		}
 
 		[GLib.ConnectBefore]
