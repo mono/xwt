@@ -408,7 +408,7 @@ namespace Xwt.Mac
 
 
 
-		public static MonoMac.AppKit.NSTableViewGridStyle ToMacValue (this GridLines value)
+		public static AppKit.NSTableViewGridStyle ToMacValue (this GridLines value)
 		{
 			switch (value)
 			{
