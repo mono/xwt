@@ -34,6 +34,13 @@ namespace Xwt
 	{
 		ButtonStyle style;
 
+		static SpinButton()
+		{
+			MapEvent (SpinButtonEvent.ValueChanged, typeof(SpinButton), "OnValueChanged");
+			MapEvent (SpinButtonEvent.ValueInput, typeof(SpinButton), "OnValueInput");
+			MapEvent (SpinButtonEvent.ValueOutput, typeof(SpinButton), "OnValueOutput");
+		}
+
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ISpinButtonEventSink
 		{
 			public void ValueChanged ()
