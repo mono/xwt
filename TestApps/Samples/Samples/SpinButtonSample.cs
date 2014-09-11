@@ -77,9 +77,9 @@ namespace Samples
 	public class ExtendedSpinButtonSample : VBox
 	{
 		SpinButton extspn1 = new SpinButton ();
-		SpinButton extspn1hex = new SpinButton();
+		HexSpinButton extspn1hex = new HexSpinButton();
 		SpinButton extspn2 = new SpinButton ();
-		SpinButton extspn2hex = new SpinButton();
+		HexSpinButton extspn2hex = new HexSpinButton();
 
 		public ExtendedSpinButtonSample()
 		{
@@ -93,34 +93,6 @@ namespace Samples
 			extspn1.Digits = 6;
 			extspn1hex.Digits = 10;
 			extspn1.IncrementValue = extspn1hex.IncrementValue = 0.000001;
-
-			extspn1hex.ValueInput += (sender, e) => {
-				try {
-					string temp = extspn1hex.Text.StartsWith ("0x") ? extspn1hex.Text.Substring (2) : extspn1hex.Text;
-					if (temp.Length % 2 != 0)
-						temp = "0" + temp;
-
-					byte[] bytes = new byte[temp.Length / 2];
-					for (int index = 0; index < bytes.Length; index++) {
-						string byteValue = temp.Substring (index * 2, 2);
-						bytes [index] = byte.Parse (byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					}
-					e.NewValue = BitConverter.ToSingle (bytes, 0);
-				} catch {
-					e.NewValue = double.NaN;
-				} finally {
-					e.Handled = true;
-				}
-			};
-
-			extspn1hex.ValueOutput += (sender, e) => {
-				string res = "0x";
-				byte[] data = BitConverter.GetBytes ((float)extspn1hex.Value);
-				foreach (byte x in data)
-					res += x.ToString ("X2");
-				extspn1hex.Text = res;
-				e.Handled = true;
-			};
 
 			extspn1.Value = extspn1hex.Value = 0;
 
@@ -179,6 +151,45 @@ namespace Samples
 			};
 
 			PackStart (extspn3);
+		}
+	}
+
+	class HexSpinButton : SpinButton
+	{
+		protected override void OnValueInput (SpinButtonInputEventArgs e)
+		{
+			base.OnValueInput (e);
+			if (e.Handled) return;
+
+			try {
+				string temp = Text.StartsWith ("0x") ? Text.Substring (2) : Text;
+				if (temp.Length % 2 != 0)
+					temp = "0" + temp;
+
+				byte[] bytes = new byte[temp.Length / 2];
+				for (int index = 0; index < bytes.Length; index++) {
+					string byteValue = temp.Substring (index * 2, 2);
+					bytes [index] = byte.Parse (byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+				}
+				e.NewValue = BitConverter.ToSingle (bytes, 0);
+			} catch {
+				e.NewValue = double.NaN;
+			} finally {
+				e.Handled = true;
+			}
+		}
+
+		protected override void OnValueOutput (WidgetEventArgs e)
+		{
+			base.OnValueOutput (e);
+			if (e.Handled) return;
+
+			string res = "0x";
+			byte[] data = BitConverter.GetBytes ((float)Value);
+			foreach (byte x in data)
+				res += x.ToString ("X2");
+			Text = res;
+			e.Handled = true;
 		}
 	}
 }
