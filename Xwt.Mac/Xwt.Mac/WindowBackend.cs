@@ -178,7 +178,7 @@ namespace Xwt.Mac
 				switch (@event) {
 				case WindowFrameEvent.BoundsChanged:
 					DidResize += HandleDidResize;
-					DidMoved += HandleDidResize;
+					DidMove += HandleDidResize;
 					break;
 				case WindowFrameEvent.Hidden:
 					EnableVisibilityEvent (@event);
@@ -291,7 +291,7 @@ namespace Xwt.Mac
 				switch (@event) {
 					case WindowFrameEvent.BoundsChanged:
 						DidResize -= HandleDidResize;
-						DidMoved -= HandleDidResize;
+						DidMove -= HandleDidResize;
 						break;
 					case WindowFrameEvent.Hidden:
 						this.WillClose -= OnWillClose;
