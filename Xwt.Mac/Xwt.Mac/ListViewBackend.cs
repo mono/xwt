@@ -76,9 +76,12 @@ namespace Xwt.Mac
 
 		void HandleDoubleClick (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				((IListViewEventSink)EventSink).OnRowActivated (Table.SelectedRow);
-			});
+			var cr = Table.ClickedRow;
+			if (cr >= 0) {
+				ApplicationContext.InvokeUserCode (delegate {
+					((IListViewEventSink)EventSink).OnRowActivated (cr);
+				});
+			}
 		}
 		
 		public virtual void SetSource (IListDataSource source, IBackend sourceBackend)
