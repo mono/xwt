@@ -48,6 +48,38 @@ namespace Xwt.Mac
 		protected override string SelectionChangeEventName {
 			get { return "NSTableViewSelectionDidChangeNotification"; }
 		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is ListViewEvent) {
+				switch ((ListViewEvent)eventId) {
+				case ListViewEvent.RowActivated:
+					Table.DoubleClick += HandleDoubleClick;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is ListViewEvent) {
+				switch ((ListViewEvent)eventId) {
+				case ListViewEvent.RowActivated:
+					Table.DoubleClick -= HandleDoubleClick;
+					Table.DoubleAction = null;
+					break;
+				}
+			}
+		}
+
+		void HandleDoubleClick (object sender, EventArgs e)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				((IListViewEventSink)EventSink).OnRowActivated (Table.SelectedRow);
+			});
+		}
 		
 		public virtual void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
