@@ -37,6 +37,7 @@ namespace Xwt.Mac
 	{
 		public TextTableCell (): base ("")
 		{
+			Wraps = false;
 		}
 		
 		public TextTableCell (IntPtr p): base (p)

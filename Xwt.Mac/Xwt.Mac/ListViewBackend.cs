@@ -49,7 +49,7 @@ namespace Xwt.Mac
 			get { return "NSTableViewSelectionDidChangeNotification"; }
 		}
 		
-		public void SetSource (IListDataSource source, IBackend sourceBackend)
+		public virtual void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
 			this.source = source;
 			tsource = new ListSource (source);
