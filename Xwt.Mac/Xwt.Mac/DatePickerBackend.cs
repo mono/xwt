@@ -68,7 +68,7 @@ namespace Xwt.Mac
 				return (DateTime)Widget.DateValue;
 			}
 			set {
-				Widget.DateValue = value;
+				Widget.DateValue = (NSDate) value;
 			}
 		}
 
