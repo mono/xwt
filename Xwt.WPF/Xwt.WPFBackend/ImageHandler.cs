@@ -72,7 +72,7 @@ namespace Xwt.WPFBackend
 			byte[] pixelData = new byte[stride * height];
 			bitmapImage.CopyPixels (pixelData, stride, 0);
 
-			return BitmapSource.Create (width, height, dpi, dpi, bitmapImage.Format, null, pixelData, stride);
+			return BitmapSource.Create (width, height, dpi, dpi, bitmapImage.Format, bitmapImage.Palette, pixelData, stride);
 		}
 
 		public override object CreateCustomDrawn (ImageDrawCallback drawCallback)
