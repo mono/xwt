@@ -167,7 +167,7 @@ namespace Xwt.Mac
 
 		public override NSObject GetObjectValue (NSTableView tableView, NSTableColumn tableColumn, nint row)
 		{
-			return NSObject.FromObject (row);
+			return NSNumber.FromInt32 ((int)row);
 		}
 
 		public override nint GetRowCount (NSTableView tableView)
