@@ -25,13 +25,14 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using MonoMac.AppKit;
 
 namespace Xwt.Mac
 {
 	public class ListBoxBackend: ListViewBackend, IListBoxBackend
 	{
 		ListViewColumn column = new ListViewColumn ();
-		object columnHandle;
+		NSTableColumn columnHandle;
 
 		public ListBoxBackend ()
 		{
@@ -61,6 +62,38 @@ namespace Xwt.Mac
 			foreach (var v in views)
 				column.Views.Add (v);
 			UpdateColumn (column, columnHandle, ListViewColumnChange.Cells);
+		}
+
+		public override void SetSource (IListDataSource source, IBackend sourceBackend)
+		{
+			base.SetSource (source, sourceBackend);
+
+			source.RowInserted += HandleColumnSizeChanged;
+			source.RowDeleted += HandleColumnSizeChanged;
+			source.RowChanged += HandleColumnSizeChanged;
+			ResetColumnSize (source);
+		}
+
+		void HandleColumnSizeChanged (object sender, ListRowEventArgs e)
+		{
+			var source = (IListDataSource)sender;
+			ResetColumnSize (source);
+		}
+
+		void ResetColumnSize (IListDataSource source)
+		{
+			// Calculate size of column
+			// This is how Apple implements it; unfortunately, they don't expose this functionality in the API.
+			// https://developer.apple.com/library/mac/documentation/Cocoa/Reference/NSTableViewDelegate_Protocol/index.html#//apple_ref/occ/intfm/NSTableViewDelegate/tableView:sizeToFitWidthOfColumn:
+			float w = 0;
+			for (var row = 0; row < source.RowCount; row++) {
+				using (var cell = Table.GetCell (0, row)) {
+					var size = cell.CellSize;
+					w = Math.Max (w, size.Width);
+				}
+			}
+			columnHandle.MinWidth = w;
+			columnHandle.Width = w;
 		}
 	}
 }

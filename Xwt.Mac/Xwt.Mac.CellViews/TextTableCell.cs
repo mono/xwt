@@ -31,10 +31,11 @@ using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	class TextTableCell: NSTextFieldCell, ICellRenderer
+	class TextTableCell: NSCell, ICellRenderer
 	{
-		public TextTableCell ()
+		public TextTableCell (): base ("")
 		{
+			Wraps = false;
 		}
 		
 		public TextTableCell (IntPtr p): base (p)
