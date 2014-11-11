@@ -80,7 +80,7 @@ namespace Xwt.Mac
 			var cr = Table.ClickedRow;
 			if (cr >= 0) {
 				ApplicationContext.InvokeUserCode (delegate {
-					((IListViewEventSink)EventSink).OnRowActivated (cr);
+					((IListViewEventSink)EventSink).OnRowActivated ((int)cr);
 				});
 			}
 		}

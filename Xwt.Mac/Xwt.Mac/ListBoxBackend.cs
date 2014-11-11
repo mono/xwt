@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
+using AppKit;
 
 namespace Xwt.Mac
 {
@@ -85,11 +85,11 @@ namespace Xwt.Mac
 			// Calculate size of column
 			// This is how Apple implements it; unfortunately, they don't expose this functionality in the API.
 			// https://developer.apple.com/library/mac/documentation/Cocoa/Reference/NSTableViewDelegate_Protocol/index.html#//apple_ref/occ/intfm/NSTableViewDelegate/tableView:sizeToFitWidthOfColumn:
-			float w = 0;
+			nfloat w = 0;
 			for (var row = 0; row < source.RowCount; row++) {
 				using (var cell = Table.GetCell (0, row)) {
 					var size = cell.CellSize;
-					w = Math.Max (w, size.Width);
+					w = (nfloat)Math.Max (w, size.Width);
 				}
 			}
 			columnHandle.MinWidth = w;
