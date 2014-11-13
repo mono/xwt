@@ -246,7 +246,7 @@ namespace Xwt.Drawing
 
 			List<Tuple<string,object>> altImages = null;
 			foreach (var s in supportedScales) {
-				var fn = file.Substring (0, file.Length - ext.Length) + "@" + s + ext;
+				var fn = file.Substring (0, file.Length - ext.Length) + "@" + s + "x" + ext;
 				if (File.Exists (fn)) {
 					if (altImages == null) {
 						altImages = new List<Tuple<string, object>> ();
