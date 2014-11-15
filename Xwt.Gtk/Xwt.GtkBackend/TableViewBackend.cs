@@ -29,7 +29,6 @@ using Xwt.Backends;
 using Gtk;
 using System.Collections.Generic;
 using System.Linq;
-using Gtk;
 #if XWT_GTK3
 using TreeModel = Gtk.ITreeModel;
 #endif
