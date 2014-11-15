@@ -112,7 +112,7 @@ namespace Xwt.WPFBackend
 		SolidColorBrush brush = System.Windows.Media.Brushes.Black;
 		double width;
 		double height;
-		string text = null;
+		string text = String.Empty;
 		Xwt.Drawing.TextTrimming? textTrimming;
 		bool needsRebuild;
 
@@ -160,7 +160,7 @@ namespace Xwt.WPFBackend
 		{
 			if (this.text != text)
 			{
-				this.text = text;
+				this.text = text ?? String.Empty;
 				needsRebuild = true;
 			}
 		}

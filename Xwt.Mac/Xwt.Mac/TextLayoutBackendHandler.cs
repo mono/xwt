@@ -43,7 +43,7 @@ namespace Xwt.Mac
 	{
 		class LayoutInfo
 		{
-			public string Text;
+			public string Text = String.Empty;
 			public NSFont Font;
 			public float? Width, Height;
 			public TextTrimming TextTrimming;
@@ -57,7 +57,7 @@ namespace Xwt.Mac
 		public override void SetText (object backend, string text)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Text = text.Replace ("\r\n", "\n");
+			li.Text = text == null ? String.Empty : text.Replace ("\r\n", "\n");
 		}
 
 		public override void SetFont (object backend, Xwt.Drawing.Font font)
