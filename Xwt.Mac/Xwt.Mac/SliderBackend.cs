@@ -40,7 +40,7 @@ namespace Xwt.Mac
 		{
 			ViewObject = new MacSlider ();
 			//((NSSliderCell)Widget.Cell).SetValueForKey (NSObject.FromObject (false), (NSString)"NSVertical");
-			if (dir == Orientation.Vertical)
+			if (dir == Orientation.Horizontal)
 				Widget.SetFrameSize (new System.Drawing.SizeF (10, 5));
 			else
 				Widget.SetFrameSize (new System.Drawing.SizeF (5, 10));
