@@ -230,6 +230,11 @@ namespace Xwt.WPFBackend
 				}
 
 				break;
+			case ListViewColumnChange.Alignment:
+				var style = new Style(typeof(GridViewColumnHeader));
+				style.Setters.Add(new Setter(Control.HorizontalContentAlignmentProperty, Util.ToWpfHorizontalAlignment(column.Alignment)));
+				col.HeaderContainerStyle = style;
+				break;
 			}
 		}
 
