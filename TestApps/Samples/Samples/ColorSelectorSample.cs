@@ -35,7 +35,20 @@ namespace Samples
 		{
 			ColorSelector sel = new ColorSelector ();
 			sel.Color = Xwt.Drawing.Colors.AliceBlue;
+
+			Label l1 = new Label (sel.Color.ToString ());
+
+			Label l2 = new Label ();
+			l2.BackgroundColor = sel.Color;
+
+			sel.ColorChanged += (sender, e) => {
+				l2.BackgroundColor = sel.Color;
+				l1.Text = sel.Color.ToString ();
+			};
+
 			PackStart (sel);
+			PackStart (l1);
+			PackStart (l2);
 		}
 	}
 }
