@@ -217,6 +217,8 @@ namespace Xwt.GtkBackend
 					ctype = Gdk.CursorType.Watch;
 				else if (cursor == CursorType.Help)
 					ctype = Gdk.CursorType.QuestionArrow;
+				else if (cursor == CursorType.Invisible)
+					ctype = (Gdk.CursorType)(-2); // Gdk.CursorType.None, since Gtk 2.16
 				else
 					ctype = Gdk.CursorType.Arrow;
 				
