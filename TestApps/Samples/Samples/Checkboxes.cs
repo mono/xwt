@@ -32,25 +32,31 @@ namespace Samples
 	{
 		public Checkboxes ()
 		{
-			PackStart (new CheckBox ("Normal checkbox"));
-			PackStart (new CheckBox ("Mixed to start") { State = CheckBoxState.Mixed });
+			var a = new CheckBox ("Normal checkbox");
+			var b = new CheckBox ("Disabled") { Sensitive = false };
+			var c = new CheckBox ("Allows mixed (with red background)") { AllowMixed = true };
+			c.BackgroundColor = Xwt.Drawing.Colors.Red;
 
-			var b = new CheckBox ("Allows mixed (with red background)") { AllowMixed = true };
-			b.BackgroundColor = Xwt.Drawing.Colors.Red;
+			a.Toggled += (sender, e) => b.Sensitive = a.Active;
+
+			PackStart (a);
 			PackStart (b);
+
+			PackStart (new CheckBox ("Mixed to start") { AllowMixed = true, State = CheckBoxState.Mixed });
+			PackStart (c);
 			
 			int clicks = 0, toggles = 0;
 			Label la = new Label ();
 			PackStart (la);
 			
-			b.Clicked += delegate {
+			c.Clicked += delegate {
 				clicks++;
-				la.Text = string.Format ("state:{0}, clicks:{1}, toggles:{2}", b.State, clicks, toggles);
+				la.Text = string.Format ("state:{0}, clicks:{1}, toggles:{2}", c.State, clicks, toggles);
 			};
 			
-			b.Toggled += delegate {
+			c.Toggled += delegate {
 				toggles++;
-				la.Text = string.Format ("state:{0}, clicks:{1}, toggles:{2}", b.State, clicks, toggles);
+				la.Text = string.Format ("state:{0}, clicks:{1}, toggles:{2}", c.State, clicks, toggles);
 			};
 		}
 	}

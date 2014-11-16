@@ -77,6 +77,10 @@ namespace Samples
 			TextEntry te2 = new TextEntry ();
 			te2.Font = te2.Font.WithScaledSize (0.5);
 			PackStart (te2);
+
+			PackStart (new TextEntry { Text = "Entry with custom height", MinHeight = 50 });
+
+			PackStart (new TextEntry { Text = "Readonly text", ReadOnly = true });
 			
 			PackStart (new Label ("Entry with placeholder text"));
 			TextEntry te3 = new TextEntry ();
