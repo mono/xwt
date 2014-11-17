@@ -79,8 +79,10 @@ namespace Xwt.Mac
 			canGetFocus = Widget.AcceptsFirstResponder ();
 		}
 
-		// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
-		// In that case, the widget has to listen to the change event of the children and resize itself
+		/// <summary>
+		/// To be called when the widget is a root and is not inside a Xwt window. For example, when it is in a popover or a tooltip
+		/// In that case, the widget has to listen to the change event of the children and resize itself
+		/// </summary>
 		public void SetAutosizeMode (bool autosize)
 		{
 			this.autosize = autosize;

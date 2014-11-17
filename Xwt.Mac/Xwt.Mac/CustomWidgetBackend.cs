@@ -42,6 +42,8 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new WidgetView (EventSink, ApplicationContext);
+			if (Frontend is XwtWidgetBackend)
+				SetAutosizeMode (true);
 		}
 
 		public void SetContent (IWidgetBackend widget)
