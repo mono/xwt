@@ -160,11 +160,15 @@ namespace Xwt
 			
 			void IWidgetEventSink.OnKeyPressed (KeyEventArgs args)
 			{
+				if (!Parent.HasFocus)
+					args.Handled = true;
 				Parent.OnKeyPressed (args);
 			}
 			
 			void IWidgetEventSink.OnKeyReleased (KeyEventArgs args)
 			{
+				if (!Parent.HasFocus)
+					args.Handled = true;
 				Parent.OnKeyReleased (args);
 			}
 
