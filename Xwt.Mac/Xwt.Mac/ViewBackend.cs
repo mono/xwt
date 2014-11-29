@@ -230,7 +230,7 @@ namespace Xwt.Mac
 				ctype = NSCursor.ResizeUpDownCursor;
 			else if (cursor == CursorType.Invisible)
 				// TODO: load transparent cursor
-				Cursor = NSCursor.ArrowCursor;
+				ctype = NSCursor.ArrowCursor;
 			else
 				ctype = NSCursor.ArrowCursor;
 			// TODO: assign the cursor
