@@ -204,10 +204,10 @@ namespace Xwt
 			var wc = (shown || widthSet) ? SizeConstraint.WithSize (Math.Max (size.Width - padding.HorizontalSpacing - mDecorationsSize.Width, mMinSize.Width)) : SizeConstraint.Unconstrained;
 			var hc = (shown || heightSet) ? SizeConstraint.WithSize (Math.Max (size.Height - padding.VerticalSpacing - mDecorationsSize.Height, mMinSize.Height)) : SizeConstraint.Unconstrained;
 
-			var ws = Size.Zero;
+			var ws = mDecorationsSize;
 			if (child != null) {
 				IWidgetSurface s = child.Surface;
-				ws = s.GetPreferredSize (wc, hc, true) + mDecorationsSize;
+				ws += s.GetPreferredSize (wc, hc, true);
 			}
 			ws.Width += padding.HorizontalSpacing;
 			ws.Height += padding.VerticalSpacing;
