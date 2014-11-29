@@ -51,6 +51,11 @@ namespace Xwt
 
 		ButtonStyle style = ButtonStyle.Normal;
 
+		static ColorPicker ()
+		{
+			MapEvent (ColorPickerEvent.ColorChanged, typeof(ColorPicker), "OnColorChanged");
+		}
+
 		public ColorPicker ()
 		{
 		}
@@ -75,6 +80,10 @@ namespace Xwt
 			set { Backend.SupportsAlpha = value; }
 		}
 
+		/// <summary>
+		/// Gets or sets the title of the color picker popup.
+		/// </summary>
+		/// <value>The popup title.</value>
 		[DefaultValue ("")]
 		public string Title {
 			get { return Backend.Title; }
