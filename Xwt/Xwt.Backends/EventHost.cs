@@ -76,6 +76,8 @@ namespace Xwt.Backends
 		static bool IsOverriden (EventMap emap, Type thisType, Type t)
 		{
 			var method = thisType.GetMethod (emap.MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			if (method == null)
+				throw new InvalidOperationException ("Invalid event mapping: method '" + emap.MethodName + "' not found in type '" + t + "'");
 			return method.DeclaringType != t;
 		}
 
