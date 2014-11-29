@@ -204,36 +204,38 @@ namespace Xwt.Mac
 		{
 			EventSink.OnPreferredSizeChanged ();
 		}
-		
+
+		internal NSCursor Cursor { get; private set; }
+
 		public void SetCursor (CursorType cursor)
 		{
-			NSCursor ctype;
 			if (cursor == CursorType.Arrow)
-				ctype = NSCursor.ArrowCursor;
+				Cursor = NSCursor.ArrowCursor;
 			else if (cursor == CursorType.Crosshair)
-				ctype = NSCursor.CrosshairCursor;
+				Cursor = NSCursor.CrosshairCursor;
 			else if (cursor == CursorType.Hand)
-				ctype = NSCursor.ClosedHandCursor;
+				Cursor = NSCursor.OpenHandCursor;
 			else if (cursor == CursorType.IBeam)
-				ctype = NSCursor.IBeamCursor;
+				Cursor = NSCursor.IBeamCursor;
 			else if (cursor == CursorType.ResizeDown)
-				ctype = NSCursor.ResizeDownCursor;
+				Cursor = NSCursor.ResizeDownCursor;
 			else if (cursor == CursorType.ResizeUp)
-				ctype = NSCursor.ResizeUpCursor;
+				Cursor = NSCursor.ResizeUpCursor;
 			else if (cursor == CursorType.ResizeLeft)
-				ctype = NSCursor.ResizeLeftCursor;
+				Cursor = NSCursor.ResizeLeftCursor;
 			else if (cursor == CursorType.ResizeRight)
-				ctype = NSCursor.ResizeRightCursor;
+				Cursor = NSCursor.ResizeRightCursor;
 			else if (cursor == CursorType.ResizeLeftRight)
-				ctype = NSCursor.ResizeLeftRightCursor;
+				Cursor = NSCursor.ResizeLeftRightCursor;
 			else if (cursor == CursorType.ResizeUpDown)
-				ctype = NSCursor.ResizeUpDownCursor;
+				Cursor = NSCursor.ResizeUpDownCursor;
 			else if (cursor == CursorType.Invisible)
 				// TODO: load transparent cursor
-				ctype = NSCursor.ArrowCursor;
+				Cursor = NSCursor.ArrowCursor;
+			else if (cursor == CursorType.Move)
+				Cursor = NSCursor.ClosedHandCursor;
 			else
-				ctype = NSCursor.ArrowCursor;
-			// TODO: assign the cursor
+				Cursor = NSCursor.ArrowCursor;
 		}
 		
 		~ViewBackend ()
