@@ -572,7 +572,7 @@ namespace Xwt.Mac
 				return NSDragOperation.None;
 			var backend = ob.Backend;
 			
-			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
+			NSDraggingInfo di = Runtime.GetNSObject<NSDraggingInfo> (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
@@ -618,7 +618,7 @@ namespace Xwt.Mac
 			
 			var backend = ob.Backend;
 			
-			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
+			NSDraggingInfo di = Runtime.GetNSObject<NSDraggingInfo> (dragInfo);
 			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
@@ -641,7 +641,7 @@ namespace Xwt.Mac
 			
 			var backend = ob.Backend;
 			
-			NSDraggingInfo di = new NSDraggingInfo (dragInfo);
+			NSDraggingInfo di = Runtime.GetNSObject<NSDraggingInfo> (dragInfo);
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
 			if ((backend.currentEvents & WidgetEvent.DragDrop) != 0) {

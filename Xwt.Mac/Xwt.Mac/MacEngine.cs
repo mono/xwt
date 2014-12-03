@@ -150,7 +150,7 @@ namespace Xwt.Mac
 		
 		static bool HijackedLoadNibNamed (IntPtr self, IntPtr sel, IntPtr filePath, IntPtr owner)
 		{
-			var str = new NSString (filePath);
+			var str = Runtime.GetNSObject<NSString> (filePath);
 			if (str.Length == 0)
 				return true;
 			return Messaging.bool_objc_msgSend_IntPtr_IntPtr (self, hijackedSel.Handle, filePath, owner);
@@ -258,7 +258,7 @@ namespace Xwt.Mac
 				w.InternalShow ();
 		}
 
-		public override void FinishedLaunching (NSObject notification)
+		public override void DidFinishLaunching (NSNotification notification)
 		{
 			launched = true;
 			foreach (var w in pendingWindows)

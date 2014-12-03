@@ -241,7 +241,7 @@ namespace Xwt.Mac
 			List<NSObject> markedForDelete = new List<NSObject> ();
 			
 			foreach (NSObject ob in copyPool) {
-				nint count = ob.RetainCount;
+				var count = ob.RetainCount;
 				if (count == 1)
 					markedForDelete.Add (ob);
 			}

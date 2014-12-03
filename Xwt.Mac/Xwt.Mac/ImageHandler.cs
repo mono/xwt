@@ -261,7 +261,7 @@ namespace Xwt.Mac
 			if (type != 0 && GetIconRef (-32768/*kOnSystemDisk*/, 1835098995/*kSystemIconsCreator*/, type, out iconRef) == 0) {
 				try {
 					var alloced = Messaging.IntPtr_objc_msgSend (cls_NSImage, sel_alloc);
-					image = new NSImage (Messaging.IntPtr_objc_msgSend_IntPtr (alloced, sel_initWithIconRef, iconRef));
+					image = Runtime.GetNSObject<NSImage> (Messaging.IntPtr_objc_msgSend_IntPtr (alloced, sel_initWithIconRef, iconRef));
 					// NSImage (IntPtr) ctor retains, but since it is the sole owner, we don't want that
 					Messaging.void_objc_msgSend (image.Handle, sel_release);
 				} finally {
