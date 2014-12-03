@@ -265,12 +265,12 @@ namespace Xwt.Mac
 			this.source = source;
 		}
 		
-		public override NSObject ObjectValueForItem (NSComboBox comboBox, int index)
+		public override NSObject ObjectValueForItem (NSComboBox comboBox, nint index)
 		{
-			return NSObject.FromObject (source.GetValue (index, TextColumn));
+			return NSObject.FromObject (source.GetValue ((int) index, TextColumn));
 		}
 		
-		public override int ItemCount (NSComboBox comboBox)
+		public override nint ItemCount (NSComboBox comboBox)
 		{
 			return source.RowCount;
 		}
