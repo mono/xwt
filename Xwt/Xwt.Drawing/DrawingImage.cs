@@ -33,6 +33,7 @@ namespace Xwt.Drawing
 		{
 			Backend = Toolkit.CurrentEngine.ImageBackendHandler.CreateCustomDrawn (Draw);
 			Init ();
+			NativeRef.SetCustomDrawSource (Draw);
 		}
 
 		void Draw (object ctx, Rectangle bounds)
