@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
+using AppKit;
 
 namespace Xwt.Mac
 {
@@ -39,7 +39,7 @@ namespace Xwt.Mac
 		public void Initialize (System.Collections.Generic.IEnumerable<FileDialogFilter> filters, bool multiselect, string initialFileName)
 		{
 			if (!string.IsNullOrEmpty (initialFileName))
-				this.DirectoryUrl = new MonoMac.Foundation.NSUrl (initialFileName,true);
+				this.DirectoryUrl = new Foundation.NSUrl (initialFileName,true);
 
 			this.Prompt = "Select File";
 		}
@@ -72,7 +72,7 @@ namespace Xwt.Mac
 				return DirectoryUrl.AbsoluteString;
 			}
 			set {
-				this.DirectoryUrl = new MonoMac.Foundation.NSUrl (value,true);
+				this.DirectoryUrl = new Foundation.NSUrl (value,true);
 			}
 		}
 

@@ -26,6 +26,7 @@
 using System;
 using AppKit;
 using Xwt.Backends;
+using ObjCRuntime;
 
 namespace Xwt.Mac
 {

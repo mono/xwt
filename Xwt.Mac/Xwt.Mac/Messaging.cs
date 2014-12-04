@@ -53,5 +53,8 @@ namespace Xwt.Mac
 
 		[DllImport (LIBOBJC_DYLIB, EntryPoint="objc_msgSend")]
 		public static extern IntPtr IntPtr_objc_msgSend_IntPtr_IntPtr (IntPtr handle, IntPtr sel, IntPtr a1, IntPtr a2);
+
+		[DllImport (LIBOBJC_DYLIB, EntryPoint="objc_msgSend")]
+		public static extern void void_objc_msgSend_bool (IntPtr handle, IntPtr sel, bool a1);
 	}
 }

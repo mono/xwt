@@ -25,8 +25,8 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
+using AppKit;
+using ObjCRuntime;
 
 namespace Xwt.Mac
 {
