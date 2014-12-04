@@ -1,10 +1,10 @@
-//
-// DrawingImage.cs
+﻿//
+// IColorPickerBackend.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2014 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +23,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+using Xwt.Drawing;
 
-namespace Xwt.Drawing
+namespace Xwt.Backends
 {
-	public class DrawingImage: Image
+	public interface IColorPickerBackend: IWidgetBackend
 	{
-		public DrawingImage ()
-		{
-			Backend = Toolkit.CurrentEngine.ImageBackendHandler.CreateCustomDrawn (Draw);
-			Init ();
-			NativeRef.SetCustomDrawSource (Draw);
-		}
+		Color Color { get; set; }
+		bool SupportsAlpha { get; set; }
+		string Title { get; set; }
+		void SetButtonStyle (ButtonStyle style);
+	}
 
-		void Draw (object ctx, Rectangle bounds)
-		{
-			var c = new Context (ctx, ToolkitEngine);
-			c.Reset (null);
-			OnDraw (c, bounds);
-		}
+	public interface IColorPickerEventSink: IColorSelectorEventSink
+	{
+	}
 
-		protected virtual void OnDraw (Context ctx, Rectangle bounds)
-		{
-		}
-
-		protected override Size GetDefaultSize ()
-		{
-			return Size.Zero;
-		}
+	public enum ColorPickerEvent
+	{
+		ColorChanged
 	}
 }
 

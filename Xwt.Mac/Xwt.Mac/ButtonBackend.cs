@@ -80,7 +80,7 @@ namespace Xwt.Mac
 			ResetFittingSize ();
 		}
 		
-		public void SetButtonStyle (ButtonStyle style)
+		public virtual void SetButtonStyle (ButtonStyle style)
 		{
 			switch (style) {
 			case ButtonStyle.Normal:
@@ -179,6 +179,13 @@ namespace Xwt.Mac
 				return;
 
 			ActivatedInternal (this);
+		}
+
+		public override void ResetCursorRects ()
+		{
+			base.ResetCursorRects ();
+			if (Backend.Cursor != null)
+				AddCursorRect (Bounds, Backend.Cursor);
 		}
 	}
 }

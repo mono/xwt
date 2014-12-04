@@ -128,7 +128,7 @@ namespace Xwt.GtkBackend
 
 		public static void SetBackgroundColor (this Gtk.Widget widget, Gtk.StateFlags state, Xwt.Drawing.Color color)
 		{
-			widget.OverrideBackgroundColor (state, color.ToGdkValue ());
+			widget.OverrideBackgroundColor (state, color.ToGtkRgbaValue ());
 		}
 
 		public static Gtk.StateFlags ToGtk3StateFlags (this Gtk.StateType state)

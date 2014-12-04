@@ -31,9 +31,18 @@ namespace Xwt.Mac
 {
 	public class ToggleButtonBackend: ButtonBackend, IToggleButtonBackend
 	{
+		NSCellStateValue lastState;
+
 		public bool Active {
 			get { return Widget.State == NSCellStateValue.On; }
-			set { Widget.State = value? NSCellStateValue.On : NSCellStateValue.Off; }
+			set {
+				Widget.State = value? NSCellStateValue.On : NSCellStateValue.Off;
+				NotifyToggle ();
+			}
+		}
+
+		public new IToggleButtonEventSink EventSink {
+			get { return (IToggleButtonEventSink) base.EventSink; }
 		}
 
 		public ToggleButtonBackend ()
@@ -43,8 +52,43 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			Widget.SetButtonType (NSButtonType.Toggle);
+			Widget.SetButtonType (NSButtonType.PushOnPushOff);
+			lastState = Widget.State = NSCellStateValue.Off;
+			((MacButton)Widget).ActivatedInternal += (obj) => NotifyToggle();
 		}
+
+		internal void NotifyToggle ()
+		{
+			if (lastState != Widget.State) {
+				switch (((Button)Frontend).Style) {
+					case ButtonStyle.Borderless:
+					case ButtonStyle.Flat:
+						Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, !Active);
+						break;
+				}
+				lastState = Widget.State;
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnToggled ();
+				});
+			}
+		}
+
+		public override void SetButtonStyle (ButtonStyle style)
+		{
+			switch (style) {
+				case ButtonStyle.Normal:
+					Widget.BezelStyle = NSBezelStyle.Rounded;
+					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
+					break;
+				case ButtonStyle.Borderless:
+				case ButtonStyle.Flat:
+					Widget.BezelStyle = NSBezelStyle.ShadowlessSquare;
+					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
+					break;
+			}
+		}
+
+		static Selector selSetShowsBorderOnlyWhileMouseInside = new Selector ("setShowsBorderOnlyWhileMouseInside:");
 	}
 }
 

@@ -70,6 +70,9 @@ namespace Xwt.Mac
 
 		public override object CreateMultiSizeIcon (IEnumerable<object> images)
 		{
+			if (images.Count () == 1)
+				return images.First ();
+
 			NSImage res = new NSImage ();
 			foreach (NSImage img in images)
 				res.AddRepresentations (img.Representations ());

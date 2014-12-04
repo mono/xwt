@@ -117,6 +117,10 @@ namespace Xwt.Backends
 				Font = new Xwt.Drawing.Font (value);
 			}
 		}
+
+		public IWidgetBackend NativeBackend {
+			get { return BackendHost.Backend; }
+		}
 		
 		object IWidgetBackend.NativeWidget {
 			get { return BackendHost.Backend.NativeWidget; }

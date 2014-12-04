@@ -101,17 +101,19 @@ namespace Xwt
 		HueBox hsBox;
 		LightBox lightBox;
 		ColorSelectionBox colorBox;
-		TextEntry hueEntry;
-		TextEntry satEntry;
-		TextEntry lightEntry;
-		TextEntry redEntry;
-		TextEntry greenEntry;
-		TextEntry blueEntry;
-		TextEntry alphaEntry;
+		SpinButton hueEntry;
+		SpinButton satEntry;
+		SpinButton lightEntry;
+		SpinButton redEntry;
+		SpinButton greenEntry;
+		SpinButton blueEntry;
+		SpinButton alphaEntry;
+		HSlider alphaSlider;
 		HSeparator alphaSeparator;
 		Color currentColor;
 		bool loadingEntries;
 		List<Widget> alphaControls = new List<Widget> ();
+		bool enableColorChangedEvent;
 		
 		public DefaultColorSelectorBackend ()
 		{
@@ -132,7 +134,7 @@ namespace Xwt
 			
 			box.PackStart (selBox);
 			
-			int entryWidth = 40;
+			const int entryWidth = 40;
 			VBox entryBox = new VBox ();
 			Table entryTable = new Table ();
 			
@@ -142,28 +144,37 @@ namespace Xwt
 			
 			int r = 2;
 			entryTable.Add (new Label ("Hue:"), 0, r);
-			entryTable.Add (hueEntry = new TextEntry () { MinWidth = entryWidth }, 1, r++);
+			entryTable.Add (hueEntry = new SpinButton () { 
+				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 360, Digits = 0, IncrementValue = 1 }, 1, r++);
 			
 			entryTable.Add (new Label ("Saturation:"), 0, r);
-			entryTable.Add (satEntry = new TextEntry () { MinWidth = entryWidth }, 1, r++);
+			entryTable.Add (satEntry = new SpinButton () { 
+				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 100, Digits = 0, IncrementValue = 1 }, 1, r++);
 			
 			entryTable.Add (new Label ("Light:"), 0, r);
-			entryTable.Add (lightEntry = new TextEntry () { MinWidth = entryWidth }, 1, r++);
+			entryTable.Add (lightEntry = new SpinButton () { 
+				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 100, Digits = 0, IncrementValue = 1 }, 1, r++);
 			
 			r = 2;
 			entryTable.Add (new Label ("Red:"), 3, r);
-			entryTable.Add (redEntry = new TextEntry () { MinWidth = entryWidth }, 4, r++);
+			entryTable.Add (redEntry = new SpinButton () { 
+				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
 			
 			entryTable.Add (new Label ("Green:"), 3, r);
-			entryTable.Add (greenEntry = new TextEntry () { MinWidth = entryWidth }, 4, r++);
+			entryTable.Add (greenEntry = new SpinButton () { 
+				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
 			
 			entryTable.Add (new Label ("Blue:"), 3, r);
-			entryTable.Add (blueEntry = new TextEntry () { MinWidth = entryWidth }, 4, r++);
+			entryTable.Add (blueEntry = new SpinButton () { 
+				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
 			
 			Label label;
 			entryTable.Add (alphaSeparator = new HSeparator (), 0, r++, colspan:5);
 			entryTable.Add (label = new Label ("Opacity:"), 0, r);
-			entryTable.Add (alphaEntry = new TextEntry () { MinWidth = entryWidth }, 1, r);
+			entryTable.Add (alphaSlider = new HSlider () {
+				MinimumValue = 0, MaximumValue = 255,  }, 1, r, colspan: 3);
+			entryTable.Add (alphaEntry = new SpinButton () { 
+				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r);
 			
 			alphaControls.Add (alphaSeparator);
 			alphaControls.Add (label);
@@ -180,13 +191,14 @@ namespace Xwt
 				HandleColorBoxSelectionChanged ();
 			};
 			
-			hueEntry.Changed += HandleHslChanged;
-			satEntry.Changed += HandleHslChanged;
-			lightEntry.Changed += HandleHslChanged;
-			redEntry.Changed += HandleRgbChanged;
-			greenEntry.Changed += HandleRgbChanged;
-			blueEntry.Changed += HandleRgbChanged;
-			alphaEntry.Changed += HandleAlphaChanged;
+			hueEntry.ValueChanged += HandleHslChanged;
+			satEntry.ValueChanged += HandleHslChanged;
+			lightEntry.ValueChanged += HandleHslChanged;
+			redEntry.ValueChanged += HandleRgbChanged;
+			greenEntry.ValueChanged += HandleRgbChanged;
+			blueEntry.ValueChanged += HandleRgbChanged;
+			alphaEntry.ValueChanged += HandleAlphaChanged;
+			alphaSlider.ValueChanged += HandleAlphaChanged;
 			
 			Color = Colors.White;
 		}
@@ -195,49 +207,47 @@ namespace Xwt
 		{
 			if (loadingEntries)
 				return;
+
+			if (sender == alphaSlider)
+				alphaEntry.Value = alphaSlider.Value;
+			if (sender == alphaEntry)
+				alphaSlider.Value = alphaEntry.Value;
 			
-			int a;
-			if (!int.TryParse (alphaEntry.Text, out a))
-				return;
+			int a = Convert.ToInt32 (alphaEntry.Value);
 			
 			currentColor = currentColor.WithAlpha ((double)a / 255d);
 			LoadColorBoxSelection ();
+			HandleColorChanged ();
 		}
 
 		void HandleHslChanged (object sender, EventArgs e)
 		{
 			if (loadingEntries)
 				return;
-			
-			int h, s, l;
-			if (!int.TryParse (hueEntry.Text, out h))
-				return;
-			if (!int.TryParse (satEntry.Text, out s))
-				return;
-			if (!int.TryParse (lightEntry.Text, out l))
-				return;
-			
-			currentColor = Color.FromHsl ((double)h / 255d, (double)s / 255d, (double)l / 255d, currentColor.Alpha);
+
+			int h = Convert.ToInt32 (hueEntry.Value);
+			int s = Convert.ToInt32 (satEntry.Value);
+			int l = Convert.ToInt32 (lightEntry.Value);
+						
+			currentColor = Color.FromHsl ((double)h / 360d, (double)s / 100d, (double)l / 100d, currentColor.Alpha);
 			LoadColorBoxSelection ();
 			LoadRgbEntries ();
+			HandleColorChanged ();
 		}
 
 		void HandleRgbChanged (object sender, EventArgs e)
 		{
 			if (loadingEntries)
 				return;
-			
-			int r, g, b;
-			if (!int.TryParse (redEntry.Text, out r))
-				return;
-			if (!int.TryParse (greenEntry.Text, out g))
-				return;
-			if (!int.TryParse (blueEntry.Text, out b))
-				return;
-			
+
+			int r = Convert.ToInt32 (redEntry.Value);
+			int g = Convert.ToInt32 (greenEntry.Value);
+			int b = Convert.ToInt32 (blueEntry.Value);
+
 			currentColor = new Color ((double)r / 255d, (double)g / 255d, (double)b / 255d, currentColor.Alpha);
 			LoadColorBoxSelection ();
 			LoadHslEntries ();
+			HandleColorChanged ();
 		}
 
 		void HandleColorBoxSelectionChanged ()
@@ -251,28 +261,30 @@ namespace Xwt
 			colorBox.Color = currentColor;
 			LoadHslEntries ();
 			LoadRgbEntries ();
+			HandleColorChanged ();
 		}
 		
 		void LoadAlphaEntry ()
 		{
-			alphaEntry.Text = ((int)(currentColor.Alpha * 255)).ToString ();
+			alphaEntry.Value = ((int)(currentColor.Alpha * 255));
+			alphaSlider.Value = ((int)(currentColor.Alpha * 255));
 		}
 		
 		void LoadHslEntries ()
 		{
 			loadingEntries = true;
-			hueEntry.Text = ((int)(currentColor.Hue * 255)).ToString ();
-			satEntry.Text = ((int)(currentColor.Saturation * 255)).ToString ();
-			lightEntry.Text = ((int)(currentColor.Light * 255)).ToString ();
+			hueEntry.Value = ((int)(currentColor.Hue * 360));
+			satEntry.Value = ((int)(currentColor.Saturation * 100));
+			lightEntry.Value = ((int)(currentColor.Light * 100));
 			loadingEntries = false;
 		}
 
 		void LoadRgbEntries ()
 		{
 			loadingEntries = true;
-			redEntry.Text = ((int)(currentColor.Red * 255)).ToString ();
-			greenEntry.Text = ((int)(currentColor.Green * 255)).ToString ();
-			blueEntry.Text = ((int)(currentColor.Blue * 255)).ToString ();
+			redEntry.Value = ((int)(currentColor.Red * 255));
+			greenEntry.Value = ((int)(currentColor.Green * 255));
+			blueEntry.Value = ((int)(currentColor.Blue * 255));
 			loadingEntries = false;
 		}
 		
@@ -309,6 +321,39 @@ namespace Xwt
 			}
 		}
 		#endregion
+
+
+		protected new IColorSelectorEventSink EventSink {
+			get { return (IColorSelectorEventSink)base.EventSink; }
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is ColorSelectorEvent) {
+				switch ((ColorSelectorEvent)eventId) {
+					case ColorSelectorEvent.ColorChanged: enableColorChangedEvent = true; break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is ColorSelectorEvent) {
+				switch ((ColorSelectorEvent)eventId) {
+					case ColorSelectorEvent.ColorChanged: enableColorChangedEvent = false; break;
+				}
+			}
+		}
+
+		void HandleColorChanged ()
+		{
+			if (enableColorChangedEvent)
+			Application.Invoke (delegate {
+				EventSink.OnColorChanged ();
+			});
+		}
 	}
 	
 	class HueBox: Canvas

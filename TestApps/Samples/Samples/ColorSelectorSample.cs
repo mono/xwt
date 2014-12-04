@@ -34,8 +34,26 @@ namespace Samples
 		public ColorSelectorSample ()
 		{
 			ColorSelector sel = new ColorSelector ();
+			ColorPicker picker = new ColorPicker ();
 			sel.Color = Xwt.Drawing.Colors.AliceBlue;
+			picker.Color = Xwt.Drawing.Colors.AliceBlue;
+			picker.Title = "Select a color";
+
+			sel.SupportsAlpha = true;
+			picker.SupportsAlpha = true;
+
 			PackStart (sel);
+			PackStart (new HSeparator());
+
+			var pickerBox = new HBox ();
+			pickerBox.PackStart (new Label("Or use a color picker:"));
+			pickerBox.PackStart (picker);
+			pickerBox.PackStart (new ColorPicker () { Style = ButtonStyle.Flat });
+			pickerBox.PackStart (new ColorPicker () { Style = ButtonStyle.Borderless });
+			PackStart (pickerBox);
+
+			sel.ColorChanged += (sender, e) => picker.Color = sel.Color;
+			picker.ColorChanged += (sender, e) => sel.Color = picker.Color;
 		}
 	}
 }
