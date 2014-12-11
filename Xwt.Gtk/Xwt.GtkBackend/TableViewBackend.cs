@@ -49,22 +49,9 @@ namespace Xwt.GtkBackend
 			var sw = new Gtk.ScrolledWindow ();
 			sw.ShadowType = Gtk.ShadowType.In;
 			sw.Child = new CustomTreeView (this);
-			// *** Begin of fix ***
-			// On GTK3, the background of the ListView is not set.
-			// This is probably not the right place, it should be set in a (event ?) method that is invoked
-			// when the BackgroundColor property is set on the ListView class.
-			//
-			// I use GTK3; When I set the background color to "base.BackgroundColor", the following exception is thrown.
-			// In fact, it is thrown even if I just reference "base.BackgroundColor" in a Console.WriteLine.
-			// Gtk-ERROR **: GTK+ 2.x symbols detected. Using GTK+ 2.x and GTK+ 3 in the same process is not supported
-			//
-			// When I set the background color with "StateFlags.Normal", somehow the selected background color is changed
-			// aswell. I think this is an error, so I fix this by getting the selected background color, and setting it
-			// after.
 			Gdk.RGBA selectedColor = sw.Child.StyleContext.GetBackgroundColor(StateFlags.Selected);
 			sw.Child.SetBackgroundColor(StateFlags.Normal, Xwt.Drawing.Colors.Transparent);
 			sw.Child.SetBackgroundColor(StateFlags.Selected, new Xwt.Drawing.Color(selectedColor.Red, selectedColor.Green, selectedColor.Blue, selectedColor.Alpha));
-			// *** End of fix ***
 			sw.Child.Show ();
 			sw.Show ();
 			base.Widget = sw;
