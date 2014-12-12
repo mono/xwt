@@ -122,6 +122,14 @@ namespace Xwt.Mac
 			popover = MakePopover (child, BackgroundColor);
 			ViewBackend backend = (ViewBackend)Toolkit.GetBackend (referenceWidget);
 			var reference = backend.Widget;
+
+			// If the position rect is empty, the coordinates of the rect will be ignored.
+			// Width and Height of the rect must be > Epsilon, for the positioning to function correctly.
+			if (Math.Abs (positionRect.Width) < double.Epsilon)
+				positionRect.Width = 1;
+			if (Math.Abs (positionRect.Height) < double.Epsilon)
+				positionRect.Height = 1;
+
 			popover.Show (positionRect.ToRectangleF (),
 			              reference,
 			              ToRectEdge (orientation));
