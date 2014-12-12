@@ -40,6 +40,15 @@ namespace Xwt.WPFBackend
 			get; set;
 		}
 
+		public Xwt.Drawing.Color BackgroundColor {
+			get {
+				return Border.Background.ToXwtColor ();
+			}
+			set {
+				Border.Background = new SolidColorBrush (value.ToWpfColor ());
+			}
+		}
+
 		IPopoverEventSink EventSink {
 			get; set;
 		}
@@ -58,9 +67,9 @@ namespace Xwt.WPFBackend
 				BorderBrush = Brushes.Black,
 				CornerRadius = new System.Windows.CornerRadius (15),
 				Padding = new System.Windows.Thickness (15),
-				BorderThickness = new System.Windows.Thickness (1),
-				Background = new SolidColorBrush (Color.FromArgb (230, 230, 230, 230))
+				BorderThickness = new System.Windows.Thickness (1)
 			};
+			BackgroundColor = Xwt.Drawing.Color.FromBytes (230, 230, 230, 230);
 
 			NativeWidget = new System.Windows.Controls.Primitives.Popup {
 				AllowsTransparency = true,

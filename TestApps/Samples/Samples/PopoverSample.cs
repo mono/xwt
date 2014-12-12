@@ -79,6 +79,7 @@ namespace Samples
 				popover.Content = table;
 			}
 //			popover.Padding.SetAll (20);
+			popover.BackgroundColor = Xwt.Drawing.Colors.Yellow.WithAlpha(0.9);
 			popover.Show (Popover.Position.Top, (Button)sender, new Rectangle (50, 10, 5, 5));
 		}
 

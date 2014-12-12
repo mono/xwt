@@ -27,9 +27,11 @@ using System;
 
 using Xwt;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 using MonoMac.Foundation;
 using MonoMac.AppKit;
+using MonoMac.CoreGraphics;
 using MonoMac.ObjCRuntime;
 
 
@@ -44,6 +46,7 @@ namespace Xwt.Mac
 		{
 			Xwt.Widget child;
 			NSView view;
+			public CGColor BackgroundColor { get; set; }
 
 			public FactoryViewController (Xwt.Widget child) : base (null, null)
 			{
@@ -65,6 +68,10 @@ namespace Xwt.Mac
 			{
 				var backend = (ViewBackend)Toolkit.GetBackend (child);
 				view = ((ViewBackend)backend).NativeWidget as NSView;
+
+				if (view.Layer == null)
+					view.WantsLayer = true;
+				view.Layer.BackgroundColor = BackgroundColor;
 				backend.SetAutosizeMode (true);
 				ForceChildLayout ();
 				// FIXME: unset when the popover is closed
@@ -89,6 +96,8 @@ namespace Xwt.Mac
 			}
 		}
 
+		public Color BackgroundColor { get; set; }
+
 		IPopoverEventSink sink;
 		
 		public void Initialize (IPopoverEventSink sink)
@@ -110,7 +119,7 @@ namespace Xwt.Mac
 
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget referenceWidget, Xwt.Rectangle positionRect, Xwt.Widget child)
 		{
-			popover = MakePopover (child);
+			popover = MakePopover (child, BackgroundColor);
 			ViewBackend backend = (ViewBackend)Toolkit.GetBackend (referenceWidget);
 			var reference = backend.Widget;
 			popover.Show (positionRect.ToRectangleF (),
@@ -133,6 +142,14 @@ namespace Xwt.Mac
 			return new NSPopover {
 				Behavior = NSPopoverBehavior.Transient,
 				ContentViewController = new FactoryViewController (child)
+			};
+		}
+
+		public static NSPopover MakePopover (Xwt.Widget child, Color backgroundColor)
+		{
+			return new NSPopover {
+				Behavior = NSPopoverBehavior.Transient,
+				ContentViewController = new FactoryViewController (child) { BackgroundColor = backgroundColor.ToCGColor () }
 			};
 		}
 		

@@ -27,6 +27,7 @@
 using System;
 
 using Xwt.Backends;
+using Xwt.CairoBackend;
 
 using Gtk;
 using Cairo;
@@ -43,6 +44,8 @@ namespace Xwt.GtkBackend
 
 			Xwt.Popover.Position arrowPosition;
 			Gtk.Alignment alignment;
+
+			public Color BackgroundColor { get; set; }
 			
 			public PopoverWindow (Gtk.Widget child, Xwt.Popover.Position orientation) : base (WindowType.Toplevel)
 			{
@@ -90,7 +93,6 @@ namespace Xwt.GtkBackend
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
 				var bounds = new Xwt.Rectangle (0.5, 0.5, w - 1, h - 1);
-				var backgroundColor = Xwt.Drawing.Color.FromBytes (230, 230, 230, 230);
 				var black = Xwt.Drawing.Color.FromBytes (60, 60, 60);
 				
 				// We clear the surface with a transparent color if possible
@@ -107,7 +109,7 @@ namespace Xwt.GtkBackend
 				ctx.LineWidth = 1;
 				ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
 				ctx.StrokePreserve ();
-				ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
+				ctx.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
 				ctx.Fill ();
 				
 				// Triangle
@@ -122,7 +124,7 @@ namespace Xwt.GtkBackend
 				ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
 				ctx.StrokePreserve ();
 				ctx.ClosePath ();
-				ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
+				ctx.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
 				ctx.Fill ();
 
 				return base.OnDrawn (ctx);
@@ -171,9 +173,12 @@ namespace Xwt.GtkBackend
 		IPopoverEventSink sink;
 		Popover frontend;
 
+		public Xwt.Drawing.Color BackgroundColor { get; set; }
+
 		public void Initialize (IPopoverEventSink sink)
 		{
 			this.sink = sink;
+			this.BackgroundColor = Xwt.Drawing.Color.FromBytes (230, 230, 230, 230);
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
@@ -193,6 +198,7 @@ namespace Xwt.GtkBackend
 		{
 			var parent = reference.ParentWindow;
 			popover = new PopoverWindow ((Gtk.Widget)((WidgetBackend)Toolkit.GetBackend (child)).NativeWidget, orientation);
+			popover.BackgroundColor = BackgroundColor.ToCairoColor ();
 			popover.SetPadding (frontend.Padding);
 			popover.TransientFor = ((WindowFrameBackend)Toolkit.GetBackend (parent)).Window;
 			popover.TransientFor.FocusInEvent += HandleParentFocusInEvent;
