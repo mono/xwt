@@ -44,6 +44,15 @@ namespace Xwt.GtkBackend
 			public Gtk.TreeViewColumn Column;
 		}
 
+		protected override void OnSetBackgroundColor (Xwt.Drawing.Color color)
+		{
+			// Gtk3 workaround (by rpc-scandinavia, see https://github.com/mono/xwt/pull/411)
+			var selectedColor = Widget.GetBackgroundColor(StateType.Selected);
+			Widget.SetBackgroundColor (StateType.Normal, Xwt.Drawing.Colors.Transparent);
+			Widget.SetBackgroundColor (StateType.Selected, selectedColor);
+			base.OnSetBackgroundColor (color);
+		}
+
 		public TableViewBackend ()
 		{
 			var sw = new Gtk.ScrolledWindow ();
@@ -225,6 +234,11 @@ namespace Xwt.GtkBackend
 		#region ICellRendererTarget implementation
 		public void PackStart (object target, Gtk.CellRenderer cr, bool expand)
 		{
+			#if !XWT_GTK3
+			// Gtk2 tree background color workaround
+			if (UsingCustomBackgroundColor)
+				cr.CellBackgroundGdk = BackgroundColor.ToGtkValue ();
+			#endif
 			((Gtk.TreeViewColumn)target).PackStart (cr, expand);
 		}
 

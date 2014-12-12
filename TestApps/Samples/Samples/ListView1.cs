@@ -16,6 +16,7 @@ namespace Samples
 		{
 			PackStart (new Label ("The listview should have a red background"));
 			ListView list = new ListView ();
+			list.BackgroundColor = Colors.Red;
 			list.GridLinesVisible = GridLines.Both;
 			ListStore store = new ListStore (name, icon, text, icon2, progress);
 			list.DataSource = store;
@@ -91,9 +92,9 @@ namespace Samples
 
 		protected override void OnDraw (Context ctx, Rectangle cellArea)
 		{
-			ctx.Rectangle (BackgroundBounds);
-			ctx.SetColor (new Color (0.9, 0.9, 0.9));
-			ctx.Fill ();
+			//ctx.Rectangle (BackgroundBounds);
+			//ctx.SetColor (new Color (0.9, 0.9, 0.9));
+			//ctx.Fill ();
 
 			ctx.Rectangle (Bounds);
 			ctx.SetColor (new Color (0.7, 0.7, 0.7));
