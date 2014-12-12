@@ -84,6 +84,13 @@ namespace Xwt.Mac
 		public NSView View {
 			get { return this; }
 		}
+
+		public override void ResetCursorRects ()
+		{
+			base.ResetCursorRects ();
+			if (Backend.Cursor != null)
+				AddCursorRect (Bounds, Backend.Cursor);
+		}
 	}
 }
 

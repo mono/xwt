@@ -44,7 +44,7 @@ namespace Xwt.GtkBackend
 		internal const string LIBPANGOCAIRO   = "libpangocairo-1.0-0.dll";
 		internal const string LIBGTKGLUE      = "gtksharpglue-3";
 		internal const string LIBGLIBGLUE     = "glibsharpglue-3";
-		internal const string LIBWEBKIT       = "libwebkitgtk-3.0";
+		internal const string LIBWEBKIT       = "libwebkitgtk-3.0-0.dll";
 		#else
 		internal const string LIBGTK          = "libgtk-win32-2.0-0.dll";
 		internal const string LIBATK          = "libatk-1.0-0.dll";
@@ -152,7 +152,7 @@ namespace Xwt.GtkBackend
 
 		public void AddFontAttribute (Pango.FontDescription font, uint start, uint end)
 		{
-			Add (pango_attr_font_desc_new (font), start, end);
+			Add (pango_attr_font_desc_new (font.Handle), start, end);
 		}
 
 		void Add (IntPtr attribute, uint start, uint end)
@@ -187,7 +187,7 @@ namespace Xwt.GtkBackend
 		static extern IntPtr pango_attr_strikethrough_new (bool strikethrough);
 
 		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_font_desc_new (Pango.FontDescription desc);
+		static extern IntPtr pango_attr_font_desc_new (IntPtr desc);
 
 		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
 		static extern IntPtr pango_attr_list_new ();

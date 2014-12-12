@@ -57,9 +57,11 @@ namespace Samples
 
 			var b4 = new RadioButton (box);
 			var b5 = new RadioButton ("Second Option");
+			var b6 = new RadioButton ("Disabled Option") { Sensitive = false };
 			PackStart (b4);
 			PackStart (b5);
-			b4.Group = b5.Group;
+			PackStart (b6);
+			b4.Group = b5.Group = b6.Group;
 		}
 	}
 }

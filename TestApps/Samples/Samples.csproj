@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -102,6 +102,10 @@
     <Compile Include="Samples\PasswordEntries.cs" />
     <Compile Include="Samples\Image9Patch.cs" />
     <Compile Include="Samples\WebViewSample.cs" />
+    <Compile Include="Samples\SpinButtonSample.cs" />
+    <Compile Include="Samples\MouseCursors.cs" />
+    <Compile Include="Samples\MessageDialogs.cs" />
+    <Compile Include="Samples\MultithreadingSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

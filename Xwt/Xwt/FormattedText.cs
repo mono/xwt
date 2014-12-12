@@ -211,6 +211,7 @@ namespace Xwt
 					i = n + 1;
 				else
 					return false;
+				k = i;
 			}
 		}
 

@@ -135,8 +135,6 @@ namespace Xwt.GtkBackend
 			if (!Label.Layout.XyToIndex ((int)x, (int)y, out byteIndex, out trailing))
 				return null;
 
-			int index = indexer.ByteIndexToIndex (byteIndex);
-
 			foreach (var li in links)
 				if (byteIndex >= li.StartIndex && byteIndex <= li.EndIndex)
 					return li;

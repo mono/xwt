@@ -26,6 +26,7 @@
 using System;
 using System.Linq;
 using Xwt.Backends;
+using Xwt.Drawing;
 using System.Collections.Generic;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
@@ -94,7 +95,7 @@ namespace Xwt.Mac
 			buttonBox.Clear ();
 
 			foreach (var b in buttonList) {
-				var button = new Button ();
+				var button = new Button { Font = Font.SystemFont };
 				var tb = b;
 				button.Clicked += delegate {
 					OnClicked (tb);

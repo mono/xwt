@@ -78,21 +78,19 @@ namespace Samples
 				                          c3.SelectedText);
 			};
 			PackStart (box);
-			
-			box = new HBox ();
+
 			var c4 = new ComboBoxEntry ();
-			var la4 = new Label ();
-			box.PackStart (c4);
-			box.PackStart (la4);
+			var la4 = new Label ("Selected text: ");
+			PackStart (c4);
+			PackStart (la4);
 			
 			c4.Items.Add (1, "One");
 			c4.Items.Add (2, "Two");
 			c4.Items.Add (3, "Three");
 			c4.TextEntry.PlaceholderText = "This is an entry";
-			c4.TextEntry.Changed += delegate {
-				la4.Text = "Selected text: " + c4.TextEntry.Text;
+			c4.TextEntry.SelectionChanged += delegate {
+				la4.Text = "Selected text: " + c4.TextEntry.SelectedText;
 			};
-			PackStart (box);
 
 			HBox selBox = new HBox ();
 			Label las = new Label ("Selection:");
@@ -121,7 +119,7 @@ namespace Samples
 			PackStart (selBox);
 
 			c4.TextEntry.SelectionChanged += delegate {
-				las.Text = "Selection: (" + c4.TextEntry.CursorPosition + " <-> " + c4.TextEntry.SelectionStart + " + " + c4.TextEntry.SelectionLength + ") " + c4.TextEntry.SelectedText;
+				las.Text = "Selection: " + c4.TextEntry.CursorPosition + " - " + c4.TextEntry.SelectionStart + " Length: " + c4.TextEntry.SelectionLength;
 			};
 
 

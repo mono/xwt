@@ -33,6 +33,7 @@ namespace Samples
 		public PasswordEntries ()
 		{
 			PasswordEntry te1 = new PasswordEntry ();
+			te1.PlaceholderText = "Enter Password ...";
 			PackStart (te1);
 			Button b = new Button ("Show password");
 			Label l = new Label ();

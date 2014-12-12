@@ -1,10 +1,10 @@
-//
-// DrawingImage.cs
+﻿//
+// MouseCursors.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2014 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,32 +24,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Reflection;
+using Xwt;
+using Xwt.Drawing;
 
-namespace Xwt.Drawing
+namespace Samples
 {
-	public class DrawingImage: Image
+	public class MouseCursors: VBox
 	{
-		public DrawingImage ()
+		public MouseCursors ()
 		{
-			Backend = Toolkit.CurrentEngine.ImageBackendHandler.CreateCustomDrawn (Draw);
-			Init ();
-			NativeRef.SetCustomDrawSource (Draw);
-		}
+			PackStart (new Label ("Move the mouse over the labels \nto see the cursors:"));
+			var cursorTypes = typeof (CursorType).GetFields (BindingFlags.Public | BindingFlags.Static);
+			var perRow = 6;
 
-		void Draw (object ctx, Rectangle bounds)
-		{
-			var c = new Context (ctx, ToolkitEngine);
-			c.Reset (null);
-			OnDraw (c, bounds);
-		}
+			HBox row = null;
+			for (var i = 0; i < cursorTypes.Length; i++) {
+				if (cursorTypes [i].FieldType != typeof (CursorType))
+					continue;
 
-		protected virtual void OnDraw (Context ctx, Rectangle bounds)
-		{
-		}
+				if ((i % perRow) == 0) {
+					if (row != null)
+						PackStart (row);
+					row = new HBox ();
+				}
 
-		protected override Size GetDefaultSize ()
-		{
-			return Size.Zero;
+				var cursor = (CursorType)cursorTypes [i].GetValue (typeof(CursorType));
+				var label = new Label (cursorTypes [i].Name);
+				label.BackgroundColor = Colors.White;
+				label.Cursor = cursor;
+
+				row.PackStart (label);
+			}
+			if (row != null)
+				PackStart (row);
 		}
 	}
 }

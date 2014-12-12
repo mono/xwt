@@ -36,7 +36,7 @@ namespace Xwt.Drawing
 			pixelSize = image.pixelSize;
 		}
 		
-		internal BitmapImage (object backend, Size size): base (backend)
+		internal BitmapImage (object backend, Size size, Toolkit toolkit): base (backend, toolkit)
 		{
 			Size = size;
 			pixelSize = ToolkitEngine.ImageBackendHandler.GetSize (backend);
@@ -97,7 +97,7 @@ namespace Xwt.Drawing
 		{
 			var scaleX = Math.Truncate (PixelWidth / Width);
 			var scaleY = Math.Truncate (PixelHeight / Height);
-			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, x, y, pixelWidth, pixelHeight), new Size (pixelWidth / scaleX, pixelHeight / scaleY));
+			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, x, y, pixelWidth, pixelHeight), new Size (pixelWidth / scaleX, pixelHeight / scaleY), ToolkitEngine);
 		}
 
 		/// <summary>
@@ -107,7 +107,7 @@ namespace Xwt.Drawing
 		{
 			var scaleX = Math.Truncate (PixelWidth / Width);
 			var scaleY = Math.Truncate (PixelHeight / Height);
-			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, (int)pixelRect.X, (int)pixelRect.Y, (int)pixelRect.Width, (int)pixelRect.Height), new Size (pixelRect.Width / scaleX, pixelRect.Height / scaleY));
+			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, (int)pixelRect.X, (int)pixelRect.Y, (int)pixelRect.Width, (int)pixelRect.Height), new Size (pixelRect.Width / scaleX, pixelRect.Height / scaleY), ToolkitEngine);
 		}
 
 		public Size PixelSize {
