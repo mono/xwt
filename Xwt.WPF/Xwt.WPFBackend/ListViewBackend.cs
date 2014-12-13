@@ -206,16 +206,10 @@ namespace Xwt.WPFBackend
 		public void SelectRow (int pos)
 		{
 			object item = ListView.Items [pos];
-			switch (ListView.SelectionMode) {
-			case SelectionMode.None:
-				break;
-			case SelectionMode.Single:
+			if (ListView.SelectionMode == System.Windows.Controls.SelectionMode.Single)
 				ListView.SelectedItem = item;
-				break;
-			case SelectionMode.Multiple:
+			else
 				ListView.SelectedItems.Add (item);
-				break;
-			}
 		}
 
 		public void UnselectRow (int pos)
