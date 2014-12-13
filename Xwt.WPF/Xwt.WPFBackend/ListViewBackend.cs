@@ -169,10 +169,10 @@ namespace Xwt.WPFBackend
 		public void SetSelectionMode (SelectionMode mode)
 		{
 			switch (mode) {
+			case SelectionMode.None:
 			case SelectionMode.Single:
 				ListView.SelectionMode = SWC.SelectionMode.Single;
 				break;
-
 			case SelectionMode.Multiple:
 				ListView.SelectionMode = SWC.SelectionMode.Extended;
 				break;
@@ -206,10 +206,16 @@ namespace Xwt.WPFBackend
 		public void SelectRow (int pos)
 		{
 			object item = ListView.Items [pos];
-			if (ListView.SelectionMode == System.Windows.Controls.SelectionMode.Single)
+			switch (ListView.SelectionMode) {
+			case SelectionMode.None:
+				break;
+			case SelectionMode.Single:
 				ListView.SelectedItem = item;
-			else
+				break;
+			case SelectionMode.Multiple:
 				ListView.SelectedItems.Add (item);
+				break;
+			}
 		}
 
 		public void UnselectRow (int pos)
