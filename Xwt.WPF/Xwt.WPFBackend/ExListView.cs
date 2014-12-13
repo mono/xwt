@@ -56,5 +56,14 @@ namespace Xwt.WPFBackend
 			s = Backend.MeasureOverride (constraint, s);
 			return s;
 		}
+		
+		protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
+			// Don't allow to select anything if the SelectionMode is None.
+			if (((Xwt.ListView)((ListViewBackend)Backend).Frontend).SelectionMode == Xwt.SelectionMode.None) {
+				base.SelectedIndex = -1;
+			} else {
+				base.OnSelectionChanged(e);
+			}
+		}
 	}
 }
