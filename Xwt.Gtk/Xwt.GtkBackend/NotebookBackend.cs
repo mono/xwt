@@ -35,6 +35,7 @@ namespace Xwt.GtkBackend
 		public NotebookBackend ()
 		{
 			Widget = new Gtk.Notebook ();
+			Widget.Scrollable = true;
 			Widget.Show ();
 		}
 		
