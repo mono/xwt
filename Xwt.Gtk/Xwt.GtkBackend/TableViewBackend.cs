@@ -207,6 +207,7 @@ namespace Xwt.GtkBackend
 		public void SetSelectionMode (SelectionMode mode)
 		{
 			switch (mode) {
+			case SelectionMode.None: Widget.Selection.Mode = Gtk.SelectionMode.None; break;
 			case SelectionMode.Single: Widget.Selection.Mode = Gtk.SelectionMode.Single; break;
 			case SelectionMode.Multiple: Widget.Selection.Mode = Gtk.SelectionMode.Multiple; break;
 			}

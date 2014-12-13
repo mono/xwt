@@ -169,10 +169,10 @@ namespace Xwt.WPFBackend
 		public void SetSelectionMode (SelectionMode mode)
 		{
 			switch (mode) {
+			case SelectionMode.None:
 			case SelectionMode.Single:
 				ListView.SelectionMode = SWC.SelectionMode.Single;
 				break;
-
 			case SelectionMode.Multiple:
 				ListView.SelectionMode = SWC.SelectionMode.Extended;
 				break;

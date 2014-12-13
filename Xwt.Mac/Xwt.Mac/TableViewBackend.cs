@@ -184,6 +184,17 @@ namespace Xwt.Mac
 		
 		public void SetSelectionMode (SelectionMode mode)
 		{
+			// Don't allow to select anything if the SelectionMode is None.
+			// Perhaps it would be better to create a "ExTableView" class and override some event method.
+			// I don't have a Mac, so I have not testet this code.
+			Table.SelectionShouldChange = new NSTableViewPredicate(delegate {
+				if (mode == SelectionMode.None) {
+					return false;
+				} else {
+					return true;
+				}
+			});
+		
 			Table.AllowsMultipleSelection = mode == SelectionMode.Multiple;
 		}
 

@@ -211,13 +211,13 @@ namespace Xwt
 				return Items [SelectedRow];
 			}
 			set {
-				if (SelectionMode == Xwt.SelectionMode.Multiple)
-					UnselectAll ();
-				var i = Items.IndexOf (value);
-				if (i != -1)
-					SelectRow (i);
-				else
-					UnselectAll ();
+				UnselectAll ();
+				if (SelectionMode == Xwt.SelectionMode.Single) {
+					var i = Items.IndexOf (value);
+					if (i != -1) {
+						SelectRow (i);
+					}
+				}
 			}
 		}
 		
