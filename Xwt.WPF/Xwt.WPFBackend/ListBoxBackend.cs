@@ -117,6 +117,7 @@ namespace Xwt.WPFBackend
 		public void SetSelectionMode (SelectionMode mode)
 		{
 			switch (mode) {
+			case SelectionMode.None:
 			case SelectionMode.Single:
 				ListBox.SelectionMode = System.Windows.Controls.SelectionMode.Single;
 				break;
