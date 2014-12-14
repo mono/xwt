@@ -24,7 +24,7 @@ namespace Xwt.Gtk.Windows
 {
 	public static class Win32
 	{
-		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		public struct SHFILEINFO
 		{
 			public IntPtr hIcon;
@@ -50,8 +50,8 @@ namespace Xwt.Gtk.Windows
 		#region USER32
 		[DllImport (Win32.USER32)]
 		public static extern bool DestroyIcon ([In] IntPtr hIcon);
-		[DllImport (Win32.SHELL32, CharSet = CharSet.Unicode)]
-		public static extern IntPtr SHGetFileInfoW ([In] string pszPath, uint dwFileAttributes, [In, Out] ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
+		[DllImport (Win32.SHELL32, CharSet = CharSet.Auto)]
+		public static extern IntPtr SHGetFileInfo ([In] string pszPath, uint dwFileAttributes, [In, Out] ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
 		#endregion
 	}
 }

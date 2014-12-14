@@ -41,7 +41,7 @@ namespace Xwt.Gtk.Windows
 		Gdk.Pixbuf GetIcon (string filename, uint size)
 		{
 			var shinfo = new Win32.SHFILEINFO ();
-			Win32.SHGetFileInfoW (filename, Win32.FILE_ATTRIBUTES_NORMAL, ref shinfo, (uint)Marshal.SizeOf (shinfo), Win32.SHGFI_USEFILEATTRIBUTES | Win32.SHGFI_ICON | Win32.SHGFI_ICONLOCATION | Win32.SHGFI_TYPENAME | size);
+			Win32.SHGetFileInfo (filename, Win32.FILE_ATTRIBUTES_NORMAL, ref shinfo, (uint)Marshal.SizeOf (shinfo), Win32.SHGFI_USEFILEATTRIBUTES | Win32.SHGFI_ICON | Win32.SHGFI_ICONLOCATION | Win32.SHGFI_TYPENAME | size);
 			if (shinfo.iIcon == 0) {
 				Win32.DestroyIcon (shinfo.hIcon);
 				return null;
