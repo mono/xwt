@@ -104,10 +104,13 @@ namespace Xwt
 				t.LoadBackend (fullTypeName, isGuest, true);
 				return t;
 			}
+
+			if (t.LoadBackend (GetBackendType (ToolkitType.Gtk3), isGuest, false))
+				return t;
 			
 			if (t.LoadBackend (GetBackendType (ToolkitType.Gtk), isGuest, false))
 				return t;
-			
+
 			if (t.LoadBackend (GetBackendType (ToolkitType.Cocoa), isGuest, false))
 				return t;
 			
