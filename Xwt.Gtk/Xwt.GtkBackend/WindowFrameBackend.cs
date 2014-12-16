@@ -224,18 +224,61 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		bool fullScreen;
-		bool IWindowFrameBackend.FullScreen {
+		bool IWindowFrameBackend.Iconify {
 			get {
-				return fullScreen;
+				return (WindowState == Xwt.WindowState.Icon);
 			}
 			set {
-				if (value != fullScreen) {
-					fullScreen = value;
-					if (fullScreen)
-						Window.Fullscreen ();
-					else
-						Window.Unfullscreen ();
+				if (value == true) {
+					WindowState = Xwt.WindowState.Icon;
+				} else {
+					WindowState = Xwt.WindowState.Normal;
+				}
+			}
+		}
+		
+		bool IWindowFrameBackend.FullScreen {
+			get {
+				return (WindowState == Xwt.WindowState.FullScreen);
+			}
+			set {
+				if (value == true) {
+					WindowState = Xwt.WindowState.FullScreen;
+				} else {
+					WindowState = Xwt.WindowState.Normal;
+				}
+			}
+		}
+		
+		Xwt.WindowState currentWindowState = Xwt.WindowState.Normal;
+		public Xwt.WindowState WindowState {
+			get {
+				return this.currentWindowState;
+			}
+			set {
+				switch (value) {
+					case Xwt.WindowState.Icon:
+						if (this.currentWindowState != Xwt.WindowState.Icon) {
+							this.Window.Iconify();
+							this.currentWindowState = Xwt.WindowState.Icon;
+						}
+						break;
+					case Xwt.WindowState.FullScreen:
+						if (this.currentWindowState != Xwt.WindowState.FullScreen) {
+							this.Window.Fullscreen();
+							this.currentWindowState = Xwt.WindowState.FullScreen;
+						}
+						break;
+					default:
+						if (this.currentWindowState == Xwt.WindowState.Icon) {
+							this.Window.Deiconify();
+							this.currentWindowState = Xwt.WindowState.Normal;
+						}
+						if (this.currentWindowState == Xwt.WindowState.FullScreen) {
+							this.Window.Unfullscreen();
+							this.currentWindowState = Xwt.WindowState.Normal;
+						}
+						break;
 				}
 			}
 		}
