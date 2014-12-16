@@ -271,12 +271,30 @@ namespace Xwt
 		}
 		
 		/// <summary>
+		/// Gets or sets a value indicating whether this window is iconified (true) or normal (false).
+		/// </summary>
+		/// <value><c>true</c> if the window is iconified; otherwise, <c>false</c>.</value>
+		public bool Iconify {
+			get { return Backend.Iconify; }
+			set { Backend.Iconify = value; }
+		}
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this window is in full screen mode
 		/// </summary>
 		/// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
 		public bool FullScreen {
 			get { return Backend.FullScreen; }
 			set { Backend.FullScreen = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the state of the window (icon, normal, fullscreen).
+		/// </summary>
+		/// <value>The state of the window.</value>
+		public WindowState WindowState {
+			get { return Backend.WindowState; }
+			set { Backend.WindowState = value; }
 		}
 
 		/// <summary>
