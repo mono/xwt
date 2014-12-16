@@ -417,6 +417,10 @@ namespace Xwt
 		{
 			return Backend.GetDropTargetRow (x, y, out pos, out nodePosition);
 		}
+
+		public bool GetCellHeight (out double cellHeight){
+			return Backend.GetCellHeight (out cellHeight);
+		}
 		
 		internal protected sealed override bool SupportsCustomScrolling {
 			get {

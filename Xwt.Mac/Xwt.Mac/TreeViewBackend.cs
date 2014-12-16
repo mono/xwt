@@ -184,6 +184,12 @@ namespace Xwt.Mac
 			nodePosition = null;
 			return false;
 		}
+
+		public bool GetCellHeight(out double cellHeight) 
+		{
+			cellHeight = 0;
+			return false;
+		}
 		
 /*		protected override void OnDragOverCheck (NSDraggingInfo di, DragOverCheckEventArgs args)
 		{

@@ -289,6 +289,29 @@ namespace Xwt.GtkBackend
 			return true;
 		}
 
+		public bool GetCellHeight(out double cellHeight) {
+			cellHeight = 0;
+			int offsetX;
+			int offsetY;
+			int cellWidth;
+			int y;
+			Gdk.Rectangle rectangle = new Gdk.Rectangle ();
+			Gtk.TreeViewColumn column = Widget.GetColumn (0);
+
+			// Getting dimensions from TreeViewColumn
+			column.CellGetSize(rectangle, out offsetX, out offsetY, 
+			                   out cellWidth, out y);
+			if (y == 0){
+				return false;
+			}
+			cellHeight = y;
+
+			// And now get padding from CellRenderer
+			Gtk.CellRenderer renderer = column.Cells[0];
+			cellHeight += (double)renderer.Ypad;
+			return true;
+		}
+
 		public override void SetCurrentEventRow (string path)
 		{
 			var treeFrontend = (TreeView)Frontend;

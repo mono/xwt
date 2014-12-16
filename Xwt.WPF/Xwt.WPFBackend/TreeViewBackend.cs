@@ -280,6 +280,12 @@ namespace Xwt.WPFBackend
 			return true;
 		}
 
+		public bool GetCellHeight(out double cellHeight) 
+		{
+			cellHeight = 0;
+			return false;
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
