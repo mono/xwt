@@ -146,25 +146,86 @@ namespace Xwt.Mac
 		{
 		}
 
-		public bool FullScreen {
+		bool IWindowFrameBackend.Iconify {
 			get {
 				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
 					return false;
 
-				return (StyleMask & NSWindowStyle.FullScreenWindow) != 0;
+				return (WindowState == Xwt.WindowState.Icon);
+			}
+			set {
+				if (value == true) {
+					WindowState = Xwt.WindowState.Icon;
+				} else {
+					WindowState = Xwt.WindowState.Normal;
+				}
+			}
+		}
+		
+		bool IWindowFrameBackend.FullScreen {
+			get {
+				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
+					return false;
 
+				return (WindowState == Xwt.WindowState.FullScreen);
 			}
 			set {
 				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
 					return;
 
-				if (value != ((StyleMask & NSWindowStyle.FullScreenWindow) != 0)) {
-					//HACK: workaround for MonoMac not allowing null as argument
+				if (value == true) {
+					WindowState = Xwt.WindowState.FullScreen;
+				} else {
+					WindowState = Xwt.WindowState.Normal;
+				}
+			}
+		}
+		
+		public Xwt.WindowState WindowState {
+			get {
+				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
+					return Xwt.WindowState.Normal;
+
+				if ((StyleMask & NSWindowStyle.Miniaturizable) != 0) {
+					return Xwt.WindowState.Icon;
+				} else if ((StyleMask & NSWindowStyle.FullScreenWindow) != 0) {
+					return Xwt.WindowState.FullScreen;
+				} else {
+					return Xwt.WindowState.Normal;
+				}
+			}
+			set {
+				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
+					return;
+
+				if ((value == Xwt.WindowState.Icon) && ((StyleMask & NSWindowStyle.Miniaturizable) == 0)) {
+					// Currently not iconified.
+					MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr (
+						Handle,
+						MonoMac.ObjCRuntime.Selector.GetHandle ("toggleMiniaturize:"),
+						IntPtr.Zero);
+				} else if ((value == Xwt.WindowState.FullScreen) && ((StyleMask & NSWindowStyle.FullScreenWindow) == 0)) {
+					// Currently not full screen.
+					// Does this not work ? "ToggleFullScreen"
 					MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr (
 						Handle,
 						MonoMac.ObjCRuntime.Selector.GetHandle ("toggleFullScreen:"),
 						IntPtr.Zero);
-				}			
+				} else {
+					if ((StyleMask & NSWindowStyle.Miniaturizable) != 0) {
+						// Currently iconified.
+						MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr (
+							Handle,
+							MonoMac.ObjCRuntime.Selector.GetHandle ("toggleMiniaturize:"),
+							IntPtr.Zero);
+					} else if ((StyleMask & NSWindowStyle.FullScreenWindow) != 0) {
+						// Currently full screen.
+						MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr (
+							Handle,
+							MonoMac.ObjCRuntime.Selector.GetHandle ("toggleFullScreen:"),
+							IntPtr.Zero);
+					}
+				}
 			}
 		}
 
