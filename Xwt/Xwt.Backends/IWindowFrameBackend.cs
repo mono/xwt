@@ -82,10 +82,22 @@ namespace Xwt.Backends
 		bool Close ();
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this window is in full screen mode
+		/// Gets or sets a value indicating whether this window is iconified (true) or normal (false).
+		/// </summary>
+		/// <value><c>true</c> if the window is iconified; otherwise, <c>false</c>.</value>
+		bool Iconify { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this window is in full screen mode (true) and normal (false).
 		/// </summary>
 		/// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
 		bool FullScreen { get; set; }
+		
+		/// <summary>
+		/// Gets or sets the state of the window (iconified, normal or full screen).
+		/// </summary>
+		/// <value>The state of the window.</value>
+		WindowState WindowState { get; set; }
 
 		/// <summary>
 		/// Gets the screen on which most of the area of this window is placed
