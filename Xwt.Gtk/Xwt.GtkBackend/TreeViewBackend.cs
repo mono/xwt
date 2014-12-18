@@ -301,6 +301,9 @@ namespace Xwt.GtkBackend
 				Gdk.Rectangle rectangle = new Gdk.Rectangle ();
 				column.CellGetSize(rectangle, out offsetX, out offsetY, 
 				                   out cellWidth, out y);
+				// And now get padding from CellRenderer
+				Gtk.CellRenderer renderer = column.Cells[0];
+				y += (int) renderer.Ypad;
 				if (y > rowHeight){
 					rowHeight = y;
 				}
@@ -309,9 +312,6 @@ namespace Xwt.GtkBackend
 			if (rowHeight == 0){
 				return false;
 			}
-			// And now get padding from CellRenderer
-			Gtk.CellRenderer renderer = column.Cells[0];
-			rowHeight += (double)renderer.Ypad;
 			return true;
 		}
 
