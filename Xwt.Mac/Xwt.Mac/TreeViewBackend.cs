@@ -185,9 +185,9 @@ namespace Xwt.Mac
 			return false;
 		}
 
-		public bool GetCellHeight(out double cellHeight) 
+		public bool TryGetRowHeight(out double rowHeight) 
 		{
-			cellHeight = 0;
+			rowHeight = 0;
 			return false;
 		}
 		
