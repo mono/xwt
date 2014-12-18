@@ -280,6 +280,29 @@ namespace Xwt.WPFBackend
 			return true;
 		}
 
+		public bool TryGetRowHeight (out double rowHeight)
+		{
+			DependencyObject subitem = Tree;
+			// The layout of the treeview is actually two nested grids.
+			Grid grid = null;
+			while (grid == null) {
+				grid = subitem as Grid;
+				subitem = VisualTreeHelper.GetChild (subitem, 0);
+			}
+			grid = null;
+			while (grid == null) {
+				grid = subitem as Grid;
+				subitem = VisualTreeHelper.GetChild (subitem, 0);
+			}
+			var firstRow = grid.RowDefinitions.FirstOrDefault ();
+			if (firstRow == null) {
+				rowHeight = 0;
+				return false;
+			}
+			rowHeight = firstRow.ActualHeight;
+			return rowHeight > 0;
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
