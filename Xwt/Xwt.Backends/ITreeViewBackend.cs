@@ -48,6 +48,8 @@ namespace Xwt.Backends
 		
 		bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition);
 
+		bool TryGetRowHeight (out double rowHeight);
+
 		TreePosition CurrentEventRow { get; }
 	}
 	

@@ -222,6 +222,32 @@ namespace Xwt.GtkBackend
 			return cellViews [cell].Column;
 		}
 
+		public bool TryGetRowHeight (out double rowHeight)
+		{
+			rowHeight = 0;
+			Gtk.TreeViewColumn column;
+			int i = 0;
+			while ((column = Widget.GetColumn(i)) != null) {
+				int offsetX;
+				int offsetY;
+				int cellWidth;
+				int y;
+				Gdk.Rectangle rectangle = new Gdk.Rectangle ();
+				column.CellGetSize (rectangle, out offsetX, out offsetY, out cellWidth, out y);
+				// And now get padding from CellRenderer
+				Gtk.CellRenderer renderer = column.Cells [0];
+				y += (int)renderer.Ypad;
+				if (y > rowHeight) {
+					rowHeight = y;
+				}
+				i++;
+			}
+			if (rowHeight == 0) {
+				return false;
+			}
+			return true;
+		}
+
 		#region ICellRendererTarget implementation
 		public void PackStart (object target, Gtk.CellRenderer cr, bool expand)
 		{

@@ -126,7 +126,7 @@ namespace Samples
 				view.ScrollToRow (n.CurrentPosition);
 			};
 			PackStart (addButton);
-			
+
 			Button removeButton = new Button ("Remove Selection");
 			removeButton.Clicked += delegate(object sender, EventArgs e) {
 				foreach (TreePosition row in view.SelectedRows) {
@@ -134,6 +134,17 @@ namespace Samples
 				}
 			};
 			PackStart (removeButton);
+
+			Button heightButton = new Button ("Get RowHeight");
+			heightButton.Clicked += delegate(object sender, EventArgs e) {
+				double rowHeight;
+				if (view.TryGetRowHeight(out rowHeight)) {
+					Console.WriteLine("Row height: " + rowHeight);
+				} else {
+					Console.WriteLine("Could not get row height.");
+				}
+			};
+			PackStart (heightButton);
 
 			var label = new Label ();
 			PackStart (label);

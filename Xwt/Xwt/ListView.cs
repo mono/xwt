@@ -234,6 +234,10 @@ namespace Xwt
 			return Backend.GetCellBounds (row, cell, includeMargin);
 		}
 
+		public bool TryGetRowHeight (out double rowHeight){
+			 return Backend.TryGetRowHeight (out rowHeight);
+		}
+
 		void IColumnContainer.NotifyColumnsChanged ()
 		{
 		}

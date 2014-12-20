@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -158,5 +159,28 @@ namespace Xwt.WPFBackend.Utilities
 
 			throw new NotImplementedException ();
 		}
+
+	    internal static bool TryGetRowHeight (this DependencyObject widget, out double rowHeight)
+	    {
+            DependencyObject subitem = widget;
+            // The layout of the listview is actually two nested grids.
+            Grid grid = null;
+            while (grid == null) {
+                grid = subitem as Grid;
+                subitem = SWM.VisualTreeHelper.GetChild (subitem, 0);
+            }
+            grid = null;
+            while (grid == null) {
+                grid = subitem as Grid;
+                subitem = SWM.VisualTreeHelper.GetChild (subitem, 0);
+            }
+            var firstRow = grid.RowDefinitions.FirstOrDefault ();
+            if (firstRow == null) {
+                rowHeight = 0;
+                return false;
+            }
+            rowHeight = firstRow.ActualHeight;
+            return rowHeight > 0;
+	    }
 	}
 }

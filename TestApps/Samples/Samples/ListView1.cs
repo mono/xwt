@@ -50,13 +50,24 @@ namespace Samples
 					list.SelectRow(row);
 					contextMenu.Popup(list, e.X, e.Y);
 				}
-			};
+            };
 
 			var but = new Button ("Scroll one line");
 			but.Clicked += delegate {
 				list.VerticalScrollControl.Value += list.VerticalScrollControl.StepIncrement;
 			};
 			PackStart (but);
+
+			var rowHeightBut = new Button ("Get row height");
+			rowHeightBut.Clicked += delegate {
+				double rowHeight;
+				if (list.TryGetRowHeight (out rowHeight)) {
+					Console.WriteLine ("Row height: " + rowHeight);
+				} else {
+					Console.WriteLine ("Could not get row height");
+				}
+			};
+			PackStart (rowHeightBut);
 
 			var spnValue = new SpinButton ();
 			spnValue.MinimumValue = 0;

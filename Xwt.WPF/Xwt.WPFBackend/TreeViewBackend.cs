@@ -280,6 +280,11 @@ namespace Xwt.WPFBackend
 			return true;
 		}
 
+		public bool TryGetRowHeight (out double rowHeight)
+        {
+            return Tree.TryGetRowHeight (out rowHeight);
+        }
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

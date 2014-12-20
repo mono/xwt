@@ -42,6 +42,8 @@ namespace Xwt.Backends
 
 		int GetRowAtPosition (Point p);
 		Rectangle GetCellBounds (int row, CellView cell, bool includeMargin);
+
+		bool TryGetRowHeight (out double rowHeight);
 	}
 	
 	public enum ListViewEvent
