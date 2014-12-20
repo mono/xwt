@@ -48,6 +48,9 @@ namespace Xwt.Mac
 		{
 			base.Initialize ();
 			ViewObject = new MacDatePicker ();
+			Widget.DatePickerMode = NSDatePickerMode.Single;
+			Widget.DatePickerStyle = NSDatePickerStyle.TextFieldAndStepper;
+			Widget.DatePickerElements = DatePickerStyle.DateTime.ToMacValue();
 		}
 
 		public override void EnableEvent (object eventId)
@@ -81,8 +84,12 @@ namespace Xwt.Mac
 		}
 
 		public DatePickerStyle Style {
-			get;
-			set;
+			get {
+				return Widget.DatePickerElements.ToXwtValue();
+			}
+			set {
+				Widget.DatePickerElements = value.ToMacValue ();
+			}
 		}
 
 		#endregion
