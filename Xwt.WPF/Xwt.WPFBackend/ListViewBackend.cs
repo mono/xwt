@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-
+using System.Windows.Media;
 using Xwt.WPFBackend.Utilities;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
@@ -276,5 +276,28 @@ namespace Xwt.WPFBackend
         {
             throw new NotImplementedException();
         }
+
+		public bool TryGetRowHeight (out double rowHeight)
+		{
+			DependencyObject subitem = ListView;
+			// The layout of the listview is actually two nested grids.
+			Grid grid = null;
+			while (grid == null) {
+				grid = subitem as Grid;
+				subitem = VisualTreeHelper.GetChild (subitem, 0);
+			}
+			grid = null;
+			while (grid == null) {
+				grid = subitem as Grid;
+				subitem = VisualTreeHelper.GetChild (subitem, 0);
+			}
+			var firstRow = grid.RowDefinitions.FirstOrDefault ();
+			if (firstRow == null) {
+				rowHeight = 0;
+				return false;
+			}
+			rowHeight = firstRow.ActualHeight;
+			return rowHeight > 0;
+		}
     }
 }

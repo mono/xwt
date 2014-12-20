@@ -134,6 +134,12 @@ namespace Xwt.Mac
 		{
 			return Rectangle.Zero;
 		}
+
+		public bool TryGetRowHeight (out double rowHeight)
+		{
+			rowHeight = 0;
+			return false;
+		}
 	}
 	
 	class TableRow: NSObject, ITablePosition
