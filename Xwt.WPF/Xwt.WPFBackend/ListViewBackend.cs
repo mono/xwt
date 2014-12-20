@@ -279,25 +279,7 @@ namespace Xwt.WPFBackend
 
 		public bool TryGetRowHeight (out double rowHeight)
 		{
-			DependencyObject subitem = ListView;
-			// The layout of the listview is actually two nested grids.
-			Grid grid = null;
-			while (grid == null) {
-				grid = subitem as Grid;
-				subitem = VisualTreeHelper.GetChild (subitem, 0);
-			}
-			grid = null;
-			while (grid == null) {
-				grid = subitem as Grid;
-				subitem = VisualTreeHelper.GetChild (subitem, 0);
-			}
-			var firstRow = grid.RowDefinitions.FirstOrDefault ();
-			if (firstRow == null) {
-				rowHeight = 0;
-				return false;
-			}
-			rowHeight = firstRow.ActualHeight;
-			return rowHeight > 0;
+		    return ListView.TryGetRowHeight(out rowHeight);
 		}
     }
 }
