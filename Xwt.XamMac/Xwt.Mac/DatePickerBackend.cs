@@ -74,12 +74,29 @@ namespace Xwt.Mac
 
 		#region IDatePickerBackend implementation
 
+		// NSDate timezone workaround: cache and restore the DateTimeKind of the
+		// users DateTime object, since all conversions between DateTime and NSDate
+		// are in UTC (see https://github.com/mono/maccore/blob/master/src/Foundation/NSDate.cs).
+		bool userTimeIsUTC;
+
 		public DateTime DateTime {
 			get {
-				return (DateTime)Widget.DateValue;
+				if (userTimeIsUTC)
+					return ((DateTime)Widget.DateValue).ToUniversalTime();
+				else
+					return ((DateTime)Widget.DateValue).ToLocalTime();
 			}
 			set {
-				Widget.DateValue = (NSDate) value;
+
+				if (value.Kind == DateTimeKind.Local) {
+					userTimeIsUTC = false;
+					Widget.TimeZone = NSTimeZone.LocalTimeZone;
+				} else {
+					userTimeIsUTC = true;
+					Widget.TimeZone = NSTimeZone.FromName("UTC");
+				}
+
+				Widget.DateValue = value.ToUniversalTime();
 			}
 		}
 
