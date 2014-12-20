@@ -49,6 +49,8 @@ namespace Xwt.WPFBackend
 		{
 			get { return (IDatePickerEventSink)base.EventSink; }
 		}
+
+		public DatePickerStyle Style { get; set; }
 		
 		public DateTime DateTime
 		{

@@ -80,6 +80,11 @@ namespace Xwt.Mac
 			}
 		}
 
+		public DatePickerStyle Style {
+			get;
+			set;
+		}
+
 		#endregion
 	}
 
