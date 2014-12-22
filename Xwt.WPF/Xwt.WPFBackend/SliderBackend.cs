@@ -83,6 +83,12 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public double StepIncrement { get; set; }
+
+		public bool SnapToTicks { get; set; }
+
+		public double SliderPosition { get { return 0; } }
+
 		#endregion
 	}
 }

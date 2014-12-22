@@ -97,6 +97,12 @@ namespace Xwt.GtkBackend
 			get { return Widget.Adjustment.Lower; }
 			set { Widget.SetRange (value, Math.Max (value + 1, MaximumValue)); }
 		}
+
+		public double StepIncrement { get; set; }
+
+		public bool SnapToTicks { get; set; }
+
+		public double SliderPosition { get { return 0; } }
 	}
 }
 
