@@ -89,6 +89,12 @@ namespace Xwt.Mac
 			this.source = source;
 			tsource = new ListSource (source);
 			Table.DataSource = tsource;
+
+			//TODO: reloading single rows would be more efficient
+			source.RowInserted += (sender, e) => Table.ReloadData();
+			source.RowDeleted += (sender, e) => Table.ReloadData();
+			source.RowChanged += (sender, e) => Table.ReloadData();
+			source.RowsReordered += (sender, e) => Table.ReloadData();
 		}
 		
 		public int[] SelectedRows {

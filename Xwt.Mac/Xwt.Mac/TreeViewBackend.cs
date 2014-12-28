@@ -93,6 +93,12 @@ namespace Xwt.Mac
 			this.source = source;
 			tsource = new TreeSource (source);
 			Tree.DataSource = tsource;
+
+			//TODO: reloading single rows would be more efficient
+			source.NodeInserted += (sender, e) => Tree.ReloadData();
+			source.NodeDeleted += (sender, e) => Tree.ReloadData();
+			source.NodeChanged += (sender, e) => Tree.ReloadData();
+			source.NodesReordered += (sender, e) => Tree.ReloadData();
 		}
 		
 		public override object GetValue (object pos, int nField)
@@ -236,6 +242,10 @@ namespace Xwt.Mac
 		public TreeSource (ITreeDataSource source)
 		{
 			this.source = source;
+			source.NodeInserted += (sender, e) => items.Clear();
+			source.NodeDeleted += (sender, e) => items.Clear();
+			source.NodeChanged += (sender, e) => items.Clear();
+			source.NodeInserted += (sender, e) => items.Clear();
 		}
 		
 		public TreeItem GetItem (TreePosition pos)
