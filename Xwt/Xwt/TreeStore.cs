@@ -132,6 +132,16 @@ namespace Xwt
 			return Backend.GetChild (pos, index);
 		}
 
+		TreePosition ITreeDataSource.GetNext (TreePosition pos)
+		{
+			return Backend.GetNext (pos);
+		}
+
+		TreePosition ITreeDataSource.GetPrevious (TreePosition pos)
+		{
+			return Backend.GetPrevious (pos);
+		}
+
 		TreePosition ITreeDataSource.GetParent (TreePosition pos)
 		{
 			return Backend.GetParent (pos);
