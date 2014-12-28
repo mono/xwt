@@ -106,6 +106,11 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public int CurrentEventRow {
+			get;
+			internal set;
+		}
+
 		public bool BorderVisible {
 			get {
 				return ScrolledWindow.ShadowType == Gtk.ShadowType.In;
@@ -162,6 +167,14 @@ namespace Xwt.GtkBackend
 			col.CellGetSize (rect, out x, out y, out w, out h);
 
 			return new Rectangle (x, y, w, h);
+		}
+
+		public override void SetCurrentEventRow (string path)
+		{
+			if (path.Contains (":")) {
+				path = path.Split (':') [0];
+			}
+			CurrentEventRow = int.Parse (path);
 		}
 	}
 }

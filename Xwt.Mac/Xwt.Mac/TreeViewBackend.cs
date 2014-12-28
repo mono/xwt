@@ -78,7 +78,7 @@ namespace Xwt.Mac
 			get { return "NSOutlineViewSelectionDidChangeNotification"; }
 		}
 
-		public TreePosition CurrentEventRow { get; set; }
+		public TreePosition CurrentEventRow { get; internal set; }
 
 		public override NSTableColumn AddColumn (ListViewColumn col)
 		{
@@ -116,6 +116,11 @@ namespace Xwt.Mac
 				}
 				return res;
 			}
+		}
+
+		public override void SetCurrentEventRow (object pos)
+		{
+			CurrentEventRow = (TreePosition)pos;
 		}
 
 		public void SelectRow (TreePosition pos)

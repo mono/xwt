@@ -121,6 +121,13 @@ namespace Xwt.Mac
 			source.SetValue ((int)pos, nField, value);
 		}
 
+		public int CurrentEventRow { get; internal set; }
+
+		public override void SetCurrentEventRow (object pos)
+		{
+			CurrentEventRow = (int)pos;
+		}
+
 		// TODO
 		public bool BorderVisible { get; set; }
 

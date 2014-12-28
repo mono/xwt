@@ -236,6 +236,8 @@ namespace Xwt.Mac
 		
 		public abstract void SetValue (object pos, int nField, object value);
 
+		public abstract void SetCurrentEventRow (object pos);
+
 		float ICellSource.RowHeight {
 			get { return Table.RowHeight; }
 			set { Table.RowHeight = value; }

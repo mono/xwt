@@ -37,6 +37,7 @@ namespace Xwt.Mac
 	{
 		object GetValue (object pos, int nField);
 		void SetValue (object pos, int nField, object value);
+		void SetCurrentEventRow (object pos);
 		float RowHeight { get; set; }
 	}
 }
