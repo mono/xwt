@@ -131,6 +131,7 @@
     <Compile Include="Xwt.GtkBackend\CustomListModel.cs" />
     <Compile Include="Xwt.GtkBackend\ListBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ListStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ListStoreFilterBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ListViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ComboBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ComboBoxEntryBackend.cs" />

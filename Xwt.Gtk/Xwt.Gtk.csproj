@@ -63,6 +63,7 @@
     <Compile Include="Xwt.GtkBackend\ListViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TableViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ListStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ListStoreFilterBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TableStoreBackend.cs" />
     <Compile Include="Xwt.GtkBackend\MenuBackend.cs" />
     <Compile Include="Xwt.GtkBackend\MenuItemBackend.cs" />

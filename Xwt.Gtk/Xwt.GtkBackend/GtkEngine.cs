@@ -56,6 +56,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<ITreeStoreFilterBackend, TreeStoreFilterBackend> ();
 			RegisterBackend<IListViewBackend, ListViewBackend> ();
 			RegisterBackend<IListStoreBackend, ListStoreBackend> ();
+			RegisterBackend<IListStoreFilterBackend, ListStoreFilterBackend> ();
 			RegisterBackend<ICanvasBackend, CanvasBackend> ();
 			RegisterBackend<ImageBackendHandler, ImageHandler> ();
 			RegisterBackend<Xwt.Backends.ContextBackendHandler, CairoContextBackendHandler> ();
