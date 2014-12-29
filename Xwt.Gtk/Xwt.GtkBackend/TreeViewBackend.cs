@@ -193,7 +193,7 @@ namespace Xwt.GtkBackend
 		
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
-			TreeStoreBackend b = sourceBackend as TreeStoreBackend;
+			TreeStoreBackendBase b = sourceBackend as TreeStoreBackendBase;
 			if (b == null) {
 				CustomTreeModel model = new CustomTreeModel (source);
 				Widget.Model = model.Store;
