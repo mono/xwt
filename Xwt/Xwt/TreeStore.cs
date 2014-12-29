@@ -72,37 +72,43 @@ namespace Xwt
 		
 		public TreeNavigator GetFirstNode ()
 		{
-			var p = Backend.GetChild (null, 0);
-			return new TreeNavigator (Backend, p);
+			var pos = Backend.GetChild (null, 0);
+			var i = Backend.GetParentChildIndex (null);
+			return new TreeNavigator (Backend, pos, i);
 		}
 		
 		public TreeNavigator GetNavigatorAt (TreePosition pos)
 		{
-			return new TreeNavigator (Backend, pos);
+			var i = Backend.GetParentChildIndex (pos);
+			return new TreeNavigator (Backend, pos, i);
 		}
 		
 		public TreeNavigator AddNode ()
 		{
 			var pos = Backend.AddChild (null);
-			return new TreeNavigator (Backend, pos);
+			var i = Backend.GetParentChildIndex (null);
+			return new TreeNavigator (Backend, pos, i);
 		}
 
 		public TreeNavigator AddNode (TreePosition position)
 		{
 			var pos = Backend.AddChild (position);
-			return new TreeNavigator (Backend, pos);
+			var i = Backend.GetParentChildIndex (position);
+			return new TreeNavigator (Backend, pos, i);
 		}
 
-		public TreeNavigator InsertNodeAfter (TreePosition positon)
+		public TreeNavigator InsertNodeAfter (TreePosition position)
 		{
-			var pos = Backend.InsertAfter (positon);
-			return new TreeNavigator (Backend, pos);
+			var pos = Backend.InsertAfter (position);
+			var i = Backend.GetParentChildIndex (position);
+			return new TreeNavigator (Backend, pos, i);
 		}
 
-		public TreeNavigator InsertNodeBefore (TreePosition positon)
+		public TreeNavigator InsertNodeBefore (TreePosition position)
 		{
-			var pos = Backend.InsertBefore (positon);
-			return new TreeNavigator (Backend, pos);
+			var pos = Backend.InsertBefore (position);
+			var i = Backend.GetParentChildIndex (position);
+			return new TreeNavigator (Backend, pos, i);
 		}
 		
 		public void Clear ()

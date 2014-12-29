@@ -30,7 +30,6 @@ namespace Xwt
 {
 	public class TreeViewNavigator
 	{
-
 		readonly ITreeDataSource backend;
 		protected ITreeDataSource Backend {
 			get {
@@ -38,26 +37,41 @@ namespace Xwt
 			}
 		}
 
+		[Obsolete]
 		internal TreeViewNavigator (ITreeDataSource backend, TreePosition pos)
 		{
 			this.backend = backend;
 			this.CurrentPosition = pos;
+			CurrentIndex = backend.GetParentChildIndex (pos);
+		}
+
+		internal TreeViewNavigator (ITreeDataSource backend, TreePosition pos, int index)
+		{
+			this.backend = backend;
+			this.CurrentPosition = pos;
+			this.CurrentIndex = index;
 		}
 
 		public TreePosition CurrentPosition {
+			get;
+			private set;
+		}
+
+		public int CurrentIndex {
 			get;
 			protected set;
 		}
 
 		public TreeViewNavigator Clone ()
 		{
-			return new TreeViewNavigator (backend, CurrentPosition);
+			return new TreeViewNavigator (backend, CurrentPosition, CurrentIndex);
 		}
 
-		bool CommitPos (TreePosition newPosition)
+		protected bool CommitPos (TreePosition newPosition)
 		{
 			if (newPosition != null) {
 				CurrentPosition = newPosition;
+				CurrentIndex = Backend.GetParentChildIndex (CurrentPosition);
 				return true;
 			}
 			else

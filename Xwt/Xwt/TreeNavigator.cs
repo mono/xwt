@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 
+using System;
 using Xwt.Backends;
 
 namespace Xwt
@@ -42,31 +43,36 @@ namespace Xwt
 				return (ITreeStoreBackend)base.Backend;
 			}
 		}
-		
+
+		[Obsolete]
 		internal TreeNavigator (ITreeStoreBackend backend, TreePosition pos) : base (backend, pos)
+		{
+		}
+
+		internal TreeNavigator (ITreeDataSource backend, TreePosition pos, int index) : base (backend, pos, index)
 		{
 		}
 
 		public new TreeNavigator Clone ()
 		{
-			return new TreeNavigator (Backend, CurrentPosition);
+			return new TreeNavigator (Backend, CurrentPosition, CurrentIndex);
 		}
 
 		public TreeNavigator InsertBefore ()
 		{
-			CurrentPosition = Backend.InsertBefore (CurrentPosition);
+			CommitPos (Backend.InsertBefore (CurrentPosition));
 			return this;
 		}
 		
 		public TreeNavigator InsertAfter ()
 		{
-			CurrentPosition = Backend.InsertAfter (CurrentPosition);
+			CommitPos (Backend.InsertAfter (CurrentPosition));
 			return this;
 		}
 		
 		public TreeNavigator AddChild ()
 		{
-			CurrentPosition = Backend.AddChild (CurrentPosition);
+			CommitPos (Backend.AddChild (CurrentPosition));
 			return this;
 		}
 		
