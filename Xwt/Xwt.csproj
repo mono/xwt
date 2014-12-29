@@ -328,6 +328,7 @@
     <Compile Include="Xwt\TreeViewNavigator.cs" />
     <Compile Include="Xwt\ListStoreBase.cs" />
     <Compile Include="Xwt\TreeStoreBase.cs" />
+    <Compile Include="Xwt\ListStoreFilter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
