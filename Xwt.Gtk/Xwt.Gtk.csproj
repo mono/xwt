@@ -52,6 +52,7 @@
     <Compile Include="Xwt.GtkBackend\ButtonBackend.cs" />
     <Compile Include="Xwt.GtkBackend\NotebookBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TreeStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TreeStoreFilterBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TreeViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CellUtil.cs" />
     <Compile Include="Xwt.GtkBackend\ImageHandler.cs" />

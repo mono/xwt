@@ -53,6 +53,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<INotebookBackend, NotebookBackend> ();
 			RegisterBackend<ITreeViewBackend, TreeViewBackend> ();
 			RegisterBackend<ITreeStoreBackend, TreeStoreBackend> ();
+			RegisterBackend<ITreeStoreFilterBackend, TreeStoreFilterBackend> ();
 			RegisterBackend<IListViewBackend, ListViewBackend> ();
 			RegisterBackend<IListStoreBackend, ListStoreBackend> ();
 			RegisterBackend<ICanvasBackend, CanvasBackend> ();
