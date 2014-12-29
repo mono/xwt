@@ -56,7 +56,6 @@ namespace Xwt.GtkBackend
 	
 	public class TreeStoreBackend: TableStoreBackend, ITreeStoreBackend
 	{
-		Type[] columnTypes;
 		int version;
 		
 		public Gtk.TreeStore Tree {
@@ -64,9 +63,7 @@ namespace Xwt.GtkBackend
 		}
 
 		public override TreeModel InitializeModel (Type[] columnTypes)
-
 		{
-			this.columnTypes = columnTypes;
 			return new Gtk.TreeStore (columnTypes);
 		}
 		
@@ -234,12 +231,6 @@ namespace Xwt.GtkBackend
 			if (!Tree.IterParent (out it, tpos.Iter))
 				return null;
 			return new IterPos (version, it);
-		}
-		
-		public Type[] ColumnTypes {
-			get {
-				return columnTypes;
-			}
 		}
 		
 		public void EnableEvent (object eventId)
