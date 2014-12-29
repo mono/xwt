@@ -40,14 +40,10 @@ namespace Xwt.GtkBackend
 		public event EventHandler<ListRowEventArgs> RowChanged;
 		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
 
-		public Gtk.ListStore List {
-			get { return (Gtk.ListStore) Store; }
-		}
-
 		public object GetValue (int row, int column)
 		{
 			Gtk.TreeIter it;
-			if (!List.IterNthChild (out it, row))
+			if (!Store.IterNthChild (out it, row))
 				return null;
 			return GetValue (it, column);
 		}
@@ -55,14 +51,14 @@ namespace Xwt.GtkBackend
 		public void SetValue (int row, int column, object value)
 		{
 			Gtk.TreeIter it;
-			if (!List.IterNthChild (out it, row))
+			if (!Store.IterNthChild (out it, row))
 				return;
 			SetValue (it, column, value);
 		}
 
 		public int RowCount {
 			get {
-				return List.IterNChildren ();
+				return Store.IterNChildren ();
 			}
 		}
 
@@ -101,6 +97,10 @@ namespace Xwt.GtkBackend
 
 	public class ListStoreBackend: ListStoreBackendBase, IListStoreBackend
 	{
+		public Gtk.ListStore List {
+			get { return (Gtk.ListStore) Store; }
+		}
+
 		public override TreeModel InitializeModel (Type[] columnTypes)
 		{
 			var store = new Gtk.ListStore (columnTypes);

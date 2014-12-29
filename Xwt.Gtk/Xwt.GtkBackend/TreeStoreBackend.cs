@@ -64,10 +64,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public Gtk.TreeStore Tree {
-			get { return (Gtk.TreeStore) Store; }
-		}
-
 		public event EventHandler<TreeNodeEventArgs> NodeInserted;
 		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
@@ -96,14 +92,14 @@ namespace Xwt.GtkBackend
 			if (index == 0) {
 				if (tpos != null) {
 					Gtk.TreeIter it;
-					if (Tree.IterChildren (out it, tpos.Iter)) {
+					if (Store.IterChildren (out it, tpos.Iter)) {
 						tpos.LastChildIter = it;
 						tpos.LastChildIndex = 0;
 						return new IterPos (version, it);
 					}
 				} else {
 					Gtk.TreeIter it;
-					if (Tree.GetIterFirst (out it))
+					if (Store.GetIterFirst (out it))
 						return new IterPos (version, it);
 				}
 				return null;
@@ -111,7 +107,7 @@ namespace Xwt.GtkBackend
 			
 			if (tpos == null) {
 				Gtk.TreeIter it;
-				if (Tree.IterNthChild (out it, index))
+				if (Store.IterNthChild (out it, index))
 					return new IterPos (version, it);
 				else
 					return null;
@@ -119,7 +115,7 @@ namespace Xwt.GtkBackend
 			
 			if (tpos.LastChildIndex == -1 || tpos.LastChildIndex > index) {
 				Gtk.TreeIter it;
-				if (Tree.IterNthChild (out it, tpos.Iter, index)) {
+				if (Store.IterNthChild (out it, tpos.Iter, index)) {
 					tpos.LastChildIter = it;
 					tpos.LastChildIndex = index;
 					return new IterPos (version, it);
@@ -131,7 +127,7 @@ namespace Xwt.GtkBackend
 			
 			Gtk.TreeIter iter = tpos.LastChildIter;
 			for (int n = tpos.LastChildIndex; n < index; n++) {
-				if (!Tree.IterNext (ref iter))
+				if (!Store.IterNext (ref iter))
 					return null;
 			}
 			tpos.LastChildIter = iter;
@@ -142,14 +138,14 @@ namespace Xwt.GtkBackend
 		public int GetChildrenCount (TreePosition pos)
 		{
 			if (pos == null)
-				return Tree.IterNChildren ();
+				return Store.IterNChildren ();
 			
 			IterPos tpos = GetIterPos (pos);
 			
 			if (tpos.ChildrenCount != -1)
 				return tpos.ChildrenCount;
 			
-			return tpos.ChildrenCount = Tree.IterNChildren (tpos.Iter);
+			return tpos.ChildrenCount = Store.IterNChildren (tpos.Iter);
 		}
 
 		public int GetParentChildIndex (TreePosition pos)
@@ -158,7 +154,7 @@ namespace Xwt.GtkBackend
 				return -1;
 
 			IterPos tpos = GetIterPos (pos);
-			var path = Tree.GetPath (tpos.Iter);
+			var path = Store.GetPath (tpos.Iter);
 			if (path != null)
 				return path.Indices [path.Depth - 1];
 			return -1;
@@ -182,7 +178,7 @@ namespace Xwt.GtkBackend
 		{
 			IterPos tpos = GetIterPos (pos);
 			Gtk.TreeIter it = tpos.Iter;
-			if (!Tree.IterNext (ref it))
+			if (!Store.IterNext (ref it))
 				return null;
 			return new IterPos (version, it);
 		}
@@ -190,14 +186,14 @@ namespace Xwt.GtkBackend
 		public TreePosition GetPrevious (TreePosition pos)
 		{
 			IterPos tpos = GetIterPos (pos);
-			Gtk.TreePath path = Tree.GetPath (tpos.Iter);
+			Gtk.TreePath path = Store.GetPath (tpos.Iter);
 			int [] indices = path.Indices;
 			if (indices.Length < 1 || indices [indices.Length - 1] == 0)
 				return null;
 			indices [indices.Length - 1] --;
 			Gtk.TreePath previousPath = new Gtk.TreePath (indices);
 			Gtk.TreeIter previous;
-			if (!Tree.GetIter (out previous, previousPath))
+			if (!Store.GetIter (out previous, previousPath))
 				return null;
 			return new IterPos (version, previous);
 		}
@@ -206,7 +202,7 @@ namespace Xwt.GtkBackend
 		{
 			IterPos tpos = GetIterPos (pos);
 			Gtk.TreeIter it;
-			if (!Tree.IterParent (out it, tpos.Iter))
+			if (!Store.IterParent (out it, tpos.Iter))
 				return null;
 			return new IterPos (version, it);
 		}
@@ -246,6 +242,9 @@ namespace Xwt.GtkBackend
 	
 	public class TreeStoreBackend: TreeStoreBackendBase, ITreeStoreBackend
 	{
+		public Gtk.TreeStore Tree {
+			get { return (Gtk.TreeStore) Store; }
+		}
 
 		public override TreeModel InitializeModel (Type[] columnTypes)
 		{
