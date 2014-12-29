@@ -53,26 +53,32 @@ namespace Xwt.GtkBackend
 		public int ChildrenCount = -1;
 		public int Version;
 	}
-	
-	public class TreeStoreBackend: TableStoreBackend, ITreeStoreBackend
+
+	public abstract class TreeStoreBackendBase: TableStoreBackend, ITreeDataSource
 	{
 		int version;
-		
+
+		protected int Version {
+			get {
+				return version;
+			}
+		}
+
 		public Gtk.TreeStore Tree {
 			get { return (Gtk.TreeStore) Store; }
 		}
 
-		public override TreeModel InitializeModel (Type[] columnTypes)
-		{
-			return new Gtk.TreeStore (columnTypes);
-		}
-		
 		public event EventHandler<TreeNodeEventArgs> NodeInserted;
 		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
 		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
-		
-		IterPos GetIterPos (TreePosition pos)
+
+		protected virtual void InvalidateTree ()
+		{
+			version++;
+		}
+
+		internal IterPos GetIterPos (TreePosition pos)
 		{
 			IterPos tpos = (IterPos) pos;
 			if (tpos != null && tpos.Version != version) {
@@ -80,12 +86,6 @@ namespace Xwt.GtkBackend
 				tpos.ChildrenCount = -1;
 			}
 			return tpos;
-		}
-		
-		public void Clear ()
-		{
-			version++;
-			Tree.Clear ();
 		}
 
 		public TreePosition GetChild (TreePosition pos, int index)
@@ -158,7 +158,7 @@ namespace Xwt.GtkBackend
 				return -1;
 
 			IterPos tpos = GetIterPos (pos);
-			var path = Store.GetPath (tpos.Iter);
+			var path = Tree.GetPath (tpos.Iter);
 			if (path != null)
 				return path.Indices [path.Depth - 1];
 			return -1;
@@ -176,57 +176,6 @@ namespace Xwt.GtkBackend
 		{
 			IterPos tpos = GetIterPos (pos);
 			return GetValue (tpos.Iter, column);
-		}
-
-		public TreePosition InsertBefore (TreePosition pos)
-		{
-			version++;
-			IterPos tpos = GetIterPos (pos);
-			var p = Tree.InsertNodeBefore (tpos.Iter);
-
-			var node = new IterPos (version, p);
-			if (NodeInserted != null)
-				NodeInserted (this, new TreeNodeEventArgs (node));
-			return node;
-		}
-
-		public TreePosition InsertAfter (TreePosition pos)
-		{
-			version++;
-			IterPos tpos = GetIterPos (pos);
-			var p = Tree.InsertNodeAfter (tpos.Iter);
-
-			var node = new IterPos (version, p);
-			if (NodeInserted != null)
-				NodeInserted (this, new TreeNodeEventArgs (node));
-			return node;
-		}
-
-		public TreePosition AddChild (TreePosition pos)
-		{
-			version++;
-			IterPos tpos = GetIterPos (pos);
-			Gtk.TreeIter it;
-			if (pos == null)
-				it = Tree.AppendNode ();
-			else
-				it = Tree.AppendNode (tpos.Iter);
-
-			var node = new IterPos (version, it);
-			if (NodeInserted != null)
-				NodeInserted (this, new TreeNodeEventArgs (node));
-			return node;
-		}
-		
-		public void Remove (TreePosition pos)
-		{
-			version++;
-			IterPos tpos = GetIterPos (pos);
-			Gtk.TreeIter it = tpos.Iter;
-			var eventArgs = new TreeNodeChildEventArgs (GetParent (tpos), -1);
-			Tree.Remove (ref it);
-			if (NodeDeleted != null)
-				NodeDeleted (this, eventArgs);
 		}
 
 		public TreePosition GetNext (TreePosition pos)
@@ -261,13 +210,101 @@ namespace Xwt.GtkBackend
 				return null;
 			return new IterPos (version, it);
 		}
-		
+
+		protected void RaiseNodeInserted (TreePosition node)
+		{
+			if (NodeInserted != null)
+				NodeInserted (this, new TreeNodeEventArgs (node));
+		}
+
+		protected void RaiseNodeDeleted (TreePosition parentNode, int index)
+		{
+			if (NodeDeleted != null)
+				NodeDeleted (this, new TreeNodeChildEventArgs (parentNode, index));
+		}
+
+		protected void RaiseNodeChanged (TreePosition parentNode)
+		{
+			if (NodeChanged != null)
+				NodeChanged (this, new TreeNodeEventArgs (parentNode));
+		}
+
+		protected void RaiseNodesReordered (TreePosition parentNode, int[] childrenOrder)
+		{
+			if (NodesReordered != null)
+				NodesReordered (this, new TreeNodeOrderEventArgs (parentNode, childrenOrder));
+		}
+
 		public void EnableEvent (object eventId)
 		{
 		}
-		
+
 		public void DisableEvent (object eventId)
 		{
+		}
+	}
+	
+	public class TreeStoreBackend: TreeStoreBackendBase, ITreeStoreBackend
+	{
+
+		public override TreeModel InitializeModel (Type[] columnTypes)
+		{
+			return new Gtk.TreeStore (columnTypes);
+		}
+		
+		public void Clear ()
+		{
+			InvalidateTree ();
+			Tree.Clear ();
+		}
+
+		public TreePosition InsertBefore (TreePosition pos)
+		{
+			InvalidateTree ();
+			IterPos tpos = GetIterPos (pos);
+			var p = Tree.InsertNodeBefore (tpos.Iter);
+
+			var node = new IterPos (Version, p);
+			RaiseNodeInserted (node);
+			return node;
+		}
+
+		public TreePosition InsertAfter (TreePosition pos)
+		{
+			InvalidateTree ();
+			IterPos tpos = GetIterPos (pos);
+			var p = Tree.InsertNodeAfter (tpos.Iter);
+
+			var node = new IterPos (Version, p);
+			RaiseNodeInserted (node);
+			return node;
+		}
+
+		public TreePosition AddChild (TreePosition pos)
+		{
+			InvalidateTree ();
+			IterPos tpos = GetIterPos (pos);
+			Gtk.TreeIter it;
+			if (pos == null)
+				it = Tree.AppendNode ();
+			else
+				it = Tree.AppendNode (tpos.Iter);
+
+			var node = new IterPos (Version, it);
+			RaiseNodeInserted (node);
+			return node;
+		}
+		
+		public void Remove (TreePosition pos)
+		{
+			InvalidateTree ();
+			IterPos tpos = GetIterPos (pos);
+			IterPos parent = (IterPos)GetParent (tpos);
+			int index = GetParentChildIndex (tpos);
+
+			Gtk.TreeIter it = tpos.Iter;
+			Tree.Remove (ref it);
+			RaiseNodeDeleted (parent, index);
 		}
 	}
 }
