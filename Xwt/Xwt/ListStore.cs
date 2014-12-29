@@ -39,6 +39,14 @@ namespace Xwt
 		
 		class ListStoreBackendHost: BackendHost<ListStore,IListStoreBackend>
 		{
+			protected override IBackend OnCreateBackend ()
+			{
+				var b = base.OnCreateBackend ();
+				if (b == null)
+					b = new DefaultListStoreBackend ();
+				return b;
+			}
+
 			protected override void OnBackendCreated ()
 			{
 				Backend.Initialize (Parent.fields.Select (f => f.FieldType).ToArray ());
