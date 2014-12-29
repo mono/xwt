@@ -41,8 +41,6 @@ namespace Xwt.Backends
 		TreePosition InsertAfter (TreePosition pos);
 		TreePosition AddChild (TreePosition pos);
 		void Remove (TreePosition pos);
-		TreePosition GetNext (TreePosition pos);
-		TreePosition GetPrevious (TreePosition pos);
 		void Clear ();
 	}
 }
