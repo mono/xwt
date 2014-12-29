@@ -56,7 +56,6 @@ namespace Xwt.GtkBackend
 	
 	public class TreeStoreBackend: TableStoreBackend, ITreeStoreBackend
 	{
-		Type[] columnTypes;
 		int version;
 		
 		public Gtk.TreeStore Tree {
@@ -64,9 +63,7 @@ namespace Xwt.GtkBackend
 		}
 
 		public override TreeModel InitializeModel (Type[] columnTypes)
-
 		{
-			this.columnTypes = columnTypes;
 			return new Gtk.TreeStore (columnTypes);
 		}
 		
@@ -171,6 +168,8 @@ namespace Xwt.GtkBackend
 		{
 			IterPos tpos = GetIterPos (pos);
 			SetValue (tpos.Iter, column, value);
+			if (NodeChanged != null)
+				NodeChanged (this, new TreeNodeEventArgs (pos));
 		}
 
 		public object GetValue (TreePosition pos, int column)
@@ -184,7 +183,11 @@ namespace Xwt.GtkBackend
 			version++;
 			IterPos tpos = GetIterPos (pos);
 			var p = Tree.InsertNodeBefore (tpos.Iter);
-			return new IterPos (version, p);
+
+			var node = new IterPos (version, p);
+			if (NodeInserted != null)
+				NodeInserted (this, new TreeNodeEventArgs (node));
+			return node;
 		}
 
 		public TreePosition InsertAfter (TreePosition pos)
@@ -192,7 +195,11 @@ namespace Xwt.GtkBackend
 			version++;
 			IterPos tpos = GetIterPos (pos);
 			var p = Tree.InsertNodeAfter (tpos.Iter);
-			return new IterPos (version, p);
+
+			var node = new IterPos (version, p);
+			if (NodeInserted != null)
+				NodeInserted (this, new TreeNodeEventArgs (node));
+			return node;
 		}
 
 		public TreePosition AddChild (TreePosition pos)
@@ -204,7 +211,11 @@ namespace Xwt.GtkBackend
 				it = Tree.AppendNode ();
 			else
 				it = Tree.AppendNode (tpos.Iter);
-			return new IterPos (version, it);
+
+			var node = new IterPos (version, it);
+			if (NodeInserted != null)
+				NodeInserted (this, new TreeNodeEventArgs (node));
+			return node;
 		}
 		
 		public void Remove (TreePosition pos)
@@ -212,7 +223,10 @@ namespace Xwt.GtkBackend
 			version++;
 			IterPos tpos = GetIterPos (pos);
 			Gtk.TreeIter it = tpos.Iter;
+			var eventArgs = new TreeNodeChildEventArgs (GetParent (tpos), -1);
 			Tree.Remove (ref it);
+			if (NodeDeleted != null)
+				NodeDeleted (this, eventArgs);
 		}
 
 		public TreePosition GetNext (TreePosition pos)
@@ -246,12 +260,6 @@ namespace Xwt.GtkBackend
 			if (!Tree.IterParent (out it, tpos.Iter))
 				return null;
 			return new IterPos (version, it);
-		}
-		
-		public Type[] ColumnTypes {
-			get {
-				return columnTypes;
-			}
 		}
 		
 		public void EnableEvent (object eventId)
