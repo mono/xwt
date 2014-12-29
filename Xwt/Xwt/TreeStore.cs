@@ -26,19 +26,18 @@
 
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Xwt.Backends;
-using System.ComponentModel;
 
 
 namespace Xwt
 {
 	[BackendType (typeof(ITreeStoreBackend))]
-	public class TreeStore: XwtComponent, ITreeDataSource
+	public class TreeStore: TreeStoreBase
 	{
 		IDataField[] fields;
-		
+
 		class TreeStoreBackendHost: BackendHost<TreeStore,ITreeStoreBackend>
 		{
 			protected override IBackend OnCreateBackend ()
@@ -51,7 +50,7 @@ namespace Xwt
 			}
 		}
 		
-		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new TreeStoreBackendHost ();
 		}
@@ -110,73 +109,15 @@ namespace Xwt
 			var i = Backend.GetParentChildIndex (position);
 			return new TreeNavigator (Backend, pos, i);
 		}
+
+		protected override Type[] GetColumnTypes ()
+		{
+			return fields.Select (f => f.FieldType).ToArray ();
+		}
 		
 		public void Clear ()
 		{
 			Backend.Clear ();
-		}
-
-		event EventHandler<TreeNodeEventArgs> ITreeDataSource.NodeInserted {
-			add { Backend.NodeInserted += value; }
-			remove { Backend.NodeInserted -= value; }
-		}
-		event EventHandler<TreeNodeChildEventArgs> ITreeDataSource.NodeDeleted {
-			add { Backend.NodeDeleted += value; }
-			remove { Backend.NodeDeleted -= value; }
-		}
-		event EventHandler<TreeNodeEventArgs> ITreeDataSource.NodeChanged {
-			add { Backend.NodeChanged += value; }
-			remove { Backend.NodeChanged -= value; }
-		}
-		event EventHandler<TreeNodeOrderEventArgs> ITreeDataSource.NodesReordered {
-			add { Backend.NodesReordered += value; }
-			remove { Backend.NodesReordered -= value; }
-		}
-		
-		TreePosition ITreeDataSource.GetChild (TreePosition pos, int index)
-		{
-			return Backend.GetChild (pos, index);
-		}
-
-		TreePosition ITreeDataSource.GetNext (TreePosition pos)
-		{
-			return Backend.GetNext (pos);
-		}
-
-		TreePosition ITreeDataSource.GetPrevious (TreePosition pos)
-		{
-			return Backend.GetPrevious (pos);
-		}
-
-		TreePosition ITreeDataSource.GetParent (TreePosition pos)
-		{
-			return Backend.GetParent (pos);
-		}
-
-		int ITreeDataSource.GetChildrenCount (TreePosition pos)
-		{
-			return Backend.GetChildrenCount (pos);
-		}
-
-		int ITreeDataSource.GetParentChildIndex (TreePosition pos)
-		{
-			return Backend.GetParentChildIndex (pos);
-		}
-
-		object ITreeDataSource.GetValue (TreePosition pos, int column)
-		{
-			return Backend.GetValue (pos, column);
-		}
-
-		void ITreeDataSource.SetValue (TreePosition pos, int column, object val)
-		{
-			Backend.SetValue (pos, column, val);
-		}
-		
-		Type[] ITreeDataSource.ColumnTypes {
-			get {
-				return fields.Select (f => f.FieldType).ToArray ();
-			}
 		}
 	}
 	

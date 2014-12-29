@@ -327,6 +327,7 @@
     <Compile Include="Xwt\XwtSynchronizationContext.cs" />
     <Compile Include="Xwt\TreeViewNavigator.cs" />
     <Compile Include="Xwt\ListStoreBase.cs" />
+    <Compile Include="Xwt\TreeStoreBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
