@@ -25,18 +25,18 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using Xwt.Backends;
 
 
 namespace Xwt
 {
 	[BackendType (typeof(IListStoreBackend))]
-	public class ListStore: XwtComponent, IListDataSource
+	public class ListStore: ListStoreBase
 	{
 		IDataField[] fields;
-		
+
 		class ListStoreBackendHost: BackendHost<ListStore,IListStoreBackend>
 		{
 			protected override IBackend OnCreateBackend ()
@@ -54,7 +54,7 @@ namespace Xwt
 			}
 		}
 		
-		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost ()
 		{
 			return new ListStoreBackendHost ();
 		}
@@ -76,212 +76,15 @@ namespace Xwt
 		public ListStore ()
 		{
 		}
-		
-		public int RowCount {
-			get {
-				return Backend.RowCount;
-			}
-		}
-		
-		public T GetValue<T> (int row, IDataField<T> column)
+
+		protected override Type[] GetColumnTypes ()
 		{
-			return (T) Backend.GetValue (row, column.Index);
-		}
-		
-		public void SetValue<T> (int row, IDataField<T> column, T value)
-		{
-			Backend.SetValue (row, column.Index, value);
-		}
-		
-		object IListDataSource.GetValue (int row, int column)
-		{
-			return Backend.GetValue (row, column);
-		}
-		
-		void IListDataSource.SetValue (int row, int column, object value)
-		{
-			Backend.SetValue (row, column, value);
-		}
-		
-		Type[] IListDataSource.ColumnTypes {
-			get {
-				return Backend.ColumnTypes;
-			}
-		}
-		
-		event EventHandler<ListRowEventArgs> IListDataSource.RowInserted {
-			add { Backend.RowInserted += value; }
-			remove { Backend.RowInserted -= value; }
-		}
-		event EventHandler<ListRowEventArgs> IListDataSource.RowDeleted {
-			add { Backend.RowDeleted += value; }
-			remove { Backend.RowDeleted -= value; }
-		}
-		event EventHandler<ListRowEventArgs> IListDataSource.RowChanged {
-			add { Backend.RowChanged += value; }
-			remove { Backend.RowChanged -= value; }
-		}
-		event EventHandler<ListRowOrderEventArgs> IListDataSource.RowsReordered {
-			add { Backend.RowsReordered += value; }
-			remove { Backend.RowsReordered -= value; }
+			return fields.Select (f => f.FieldType).ToArray ();
 		}
 		
 		public int AddRow ()
 		{
 			return Backend.AddRow ();
-		}
-		
-		public void SetValues<T1,T2> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2)
-		{
-			SetValue (row, column1, value1);
-			SetValue (row, column2, value2);
-		}
-
-		public void SetValues<T1,T2,T3> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2, IDataField<T3> column3, T3 value3)
-		{
-			SetValue (row, column1, value1);
-			SetValue (row, column2, value2);
-			SetValue (row, column3, value3);
-		}
-
-		public void SetValues<T1,T2,T3,T4> (
-			int row, 
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
-			IDataField<T3> column3, T3 value3,
-			IDataField<T4> column4, T4 value4
-		)
-		{
-			SetValue (row, column1, value1);
-			SetValue (row, column2, value2);
-			SetValue (row, column3, value3);
-			SetValue (row, column4, value4);
-		}
-
-		public void SetValues<T1,T2,T3,T4,T5> (
-			int row, 
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
-			IDataField<T3> column3, T3 value3,
-			IDataField<T4> column4, T4 value4,
-			IDataField<T5> column5, T5 value5
-		)
-		{
-			SetValue (row, column1, value1);
-			SetValue (row, column2, value2);
-			SetValue (row, column3, value3);
-			SetValue (row, column4, value4);
-			SetValue (row, column5, value5);
-		}
-
-		public void SetValues<T1,T2,T3,T4,T5,T6> (
-			int row, 
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
-			IDataField<T3> column3, T3 value3,
-			IDataField<T4> column4, T4 value4,
-			IDataField<T5> column5, T5 value5,
-			IDataField<T6> column6, T6 value6
-		)
-		{
-			SetValue (row, column1, value1);
-			SetValue (row, column2, value2);
-			SetValue (row, column3, value3);
-			SetValue (row, column4, value4);
-			SetValue (row, column5, value5);
-			SetValue (row, column6, value6);
-		}
-
-		public void SetValues<T1,T2,T3,T4,T5,T6,T7> (
-			int row, 
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
-			IDataField<T3> column3, T3 value3,
-			IDataField<T4> column4, T4 value4,
-			IDataField<T5> column5, T5 value5,
-			IDataField<T6> column6, T6 value6,
-			IDataField<T7> column7, T7 value7
-		)
-		{
-			SetValue (row, column1, value1);
-			SetValue (row, column2, value2);
-			SetValue (row, column3, value3);
-			SetValue (row, column4, value4);
-			SetValue (row, column5, value5);
-			SetValue (row, column6, value6);
-			SetValue (row, column7, value7);
-		}
-
-		public void SetValues<T1,T2,T3,T4,T5,T6,T7,T8> (
-			int row, 
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
-			IDataField<T3> column3, T3 value3,
-			IDataField<T4> column4, T4 value4,
-			IDataField<T5> column5, T5 value5,
-			IDataField<T6> column6, T6 value6,
-			IDataField<T7> column7, T7 value7,
-			IDataField<T8> column8, T8 value8
-		)
-		{
-			SetValue (row, column1, value1);
-			SetValue (row, column2, value2);
-			SetValue (row, column3, value3);
-			SetValue (row, column4, value4);
-			SetValue (row, column5, value5);
-			SetValue (row, column6, value6);
-			SetValue (row, column7, value7);
-			SetValue (row, column8, value8);
-		}
-
-		public void SetValues<T1,T2,T3,T4,T5,T6,T7,T8,T9> (
-			int row, 
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
-			IDataField<T3> column3, T3 value3,
-			IDataField<T4> column4, T4 value4,
-			IDataField<T5> column5, T5 value5,
-			IDataField<T6> column6, T6 value6,
-			IDataField<T7> column7, T7 value7,
-			IDataField<T8> column8, T8 value8,
-			IDataField<T9> column9, T9 value9
-		)
-		{
-			SetValue (row, column1, value1);
-			SetValue (row, column2, value2);
-			SetValue (row, column3, value3);
-			SetValue (row, column4, value4);
-			SetValue (row, column5, value5);
-			SetValue (row, column6, value6);
-			SetValue (row, column7, value7);
-			SetValue (row, column8, value8);
-			SetValue (row, column9, value9);
-		}
-
-		public void SetValues<T1,T2,T3,T4,T5,T6,T7,T8,T9,T10> (
-			int row, 
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
-			IDataField<T3> column3, T3 value3,
-			IDataField<T4> column4, T4 value4,
-			IDataField<T5> column5, T5 value5,
-			IDataField<T6> column6, T6 value6,
-			IDataField<T7> column7, T7 value7,
-			IDataField<T8> column8, T8 value8,
-			IDataField<T9> column9, T9 value9,
-			IDataField<T10> column10, T10 value10
-		)
-		{
-			SetValue (row, column1, value1);
-			SetValue (row, column2, value2);
-			SetValue (row, column3, value3);
-			SetValue (row, column4, value4);
-			SetValue (row, column5, value5);
-			SetValue (row, column6, value6);
-			SetValue (row, column7, value7);
-			SetValue (row, column8, value8);
-			SetValue (row, column9, value9);
-			SetValue (row, column10, value10);
 		}
 
 		public int InsertRowAfter (int row)
