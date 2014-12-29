@@ -83,6 +83,7 @@ namespace Samples
 			AddSample (w, "ListBox", typeof(ListBoxSample));
 			AddSample (w, "LinkLabels", typeof(LinkLabels));
 			var listView = AddSample (w, "ListView", typeof(ListView1));
+			AddSample (listView, "Filter", typeof(ListViewFilter));
 			AddSample (listView, "Editable checkboxes", typeof(ListView2));
 			AddSample (w, "Markdown", typeof (MarkDownSample));
 			AddSample (w, "Menu", typeof(MenuSamples));
@@ -99,7 +100,8 @@ namespace Samples
 			AddSample (w, "Tables", typeof (Tables));
 			AddSample (w, "Text Entry", typeof (TextEntries));
 			AddSample (w, "Password Entry", typeof (PasswordEntries));
-			AddSample (w, "TreeView", typeof(TreeViews));
+			var t = AddSample (w, "TreeView", typeof(TreeViews));
+			AddSample (t, "TreeView Filter", typeof(TreeViewFilter));
 			AddSample (w, "WebView", typeof(WebViewSample));
 
 			var n = AddSample (null, "Drawing", null);
