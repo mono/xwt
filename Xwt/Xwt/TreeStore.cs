@@ -152,6 +152,11 @@ namespace Xwt
 			return Backend.GetChildrenCount (pos);
 		}
 
+		int ITreeDataSource.GetParentChildIndex (TreePosition pos)
+		{
+			return Backend.GetParentChildIndex (pos);
+		}
+
 		object ITreeDataSource.GetValue (TreePosition pos, int column)
 		{
 			return Backend.GetValue (pos, column);
@@ -311,6 +316,12 @@ namespace Xwt
 			NodePosition np = GetPosition (pos);
 			Node n = np.ParentList[np.NodeIndex];
 			return n.Children != null ? n.Children.Count : 0;
+		}
+
+		public int GetParentChildIndex (TreePosition pos)
+		{
+			NodePosition np = GetPosition (pos);
+			return np.NodeIndex;
 		}
 
 		public TreePosition InsertBefore (TreePosition pos)

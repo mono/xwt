@@ -85,6 +85,16 @@ namespace Xwt.WPFBackend
 			return GetListForNode ((TreeStoreNode) pos).Count;
 		}
 
+		public int GetParentChildIndex (TreePosition pos)
+		{
+			var node = (TreeStoreNode) pos;
+
+			var list = GetContainingList (node);
+			int index = list.IndexOf (node);
+
+			return index;
+		}
+
 		public object GetValue (TreePosition pos, int column)
 		{
 			return ((TreeStoreNode) pos)[column];

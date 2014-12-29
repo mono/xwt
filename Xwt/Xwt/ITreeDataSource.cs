@@ -38,6 +38,7 @@ namespace Xwt
 		TreePosition GetNext (TreePosition pos);
 		TreePosition GetPrevious (TreePosition pos);
 		int GetChildrenCount (TreePosition pos);
+		int GetParentChildIndex (TreePosition pos);
 		object GetValue (TreePosition pos, int column);
 		void SetValue (TreePosition pos, int column, object value);
 		Type[] ColumnTypes { get; }
