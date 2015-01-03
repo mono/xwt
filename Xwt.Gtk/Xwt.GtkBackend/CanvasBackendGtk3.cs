@@ -33,10 +33,14 @@ namespace Xwt.GtkBackend
 	{
 		protected override bool OnDrawn (Cairo.Context cr)
 		{
-			var a = Allocation;
 			// ensure cr does not get disposed before it is passed back to Gtk
 			var context = new TempCairoContextBackend (Util.GetScaleFactor (this));
 			context.Context = cr;
+			// Set context Origin from initial Cairo CTM (to ensure new Xwt CTM is Identity Matrix)
+			context.Origin.X = cr.Matrix.X0;
+			context.Origin.Y = cr.Matrix.Y0;
+			// Gtk3 Cairo Context does not supply area to be redrawn, so use Canvas Allocation 
+			var a = Allocation;
 			OnDraw (new Rectangle (a.X, a.Y, a.Width, a.Height), context);
 			return base.OnDrawn (cr);
 		}
