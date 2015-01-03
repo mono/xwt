@@ -39,9 +39,9 @@ namespace Xwt.GtkBackend
 			// Set context Origin from initial Cairo CTM (to ensure new Xwt CTM is Identity Matrix)
 			context.Origin.X = cr.Matrix.X0;
 			context.Origin.Y = cr.Matrix.Y0;
-			// Gtk3 Cairo Context does not supply area to be redrawn, so use Canvas Allocation 
-			var a = Allocation;
-			OnDraw (new Rectangle (a.X, a.Y, a.Width, a.Height), context);
+			// Gtk3 Cairo Context cannot access area to be redrawn, so use full Canvas area.
+			// QueueDraw (rect) sets Clip (rect) internally, so drawing is limited correctly
+			OnDraw (new Rectangle (0, 0, Allocation.Width, Allocation.Height), context);
 			return base.OnDrawn (cr);
 		}
 
