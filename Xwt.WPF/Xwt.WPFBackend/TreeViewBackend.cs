@@ -478,5 +478,20 @@ namespace Xwt.WPFBackend
 			new BooleanToValueConverter { TrueValue = Minus, FalseValue = Plus };
 
 		private static readonly Setter HideHeaderSetter = new Setter (UIElement.VisibilityProperty, Visibility.Collapsed);
+
+		public TreePosition GetRowAtPosition (Point p)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Rectangle GetCellBounds (TreePosition pos, CellView cell, bool includeMargin)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Rectangle GetRowBounds (TreePosition pos, bool includeMargin)
+		{
+			throw new NotImplementedException ();
+		}
 	}
 }

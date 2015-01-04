@@ -283,7 +283,6 @@ namespace Xwt.WPFBackend
 		private static readonly Setter GridHorizontalSetter = new Setter (ListViewItem.BorderThicknessProperty, new Thickness (0, 0, 0, 1));
 		private static readonly Setter BorderBrushSetter = new Setter (ListViewItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
 
-
         public int GetRowAtPosition(Point p)
         {
             throw new NotImplementedException();
@@ -292,6 +291,11 @@ namespace Xwt.WPFBackend
         public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
         {
             throw new NotImplementedException();
-        }
+		}
+
+		public Rectangle GetRowBounds (int row, bool includeMargin)
+		{
+			throw new NotImplementedException ();
+		}
     }
 }

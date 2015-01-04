@@ -43,6 +43,7 @@ namespace Xwt.Backends
 
 		int GetRowAtPosition (Point p);
 		Rectangle GetCellBounds (int row, CellView cell, bool includeMargin);
+		Rectangle GetRowBounds (int row, bool includeMargin);
 		int CurrentEventRow { get; }
 	}
 	

@@ -184,6 +184,11 @@ namespace Xwt.GtkBackend
 			return new Rectangle (x, y, w, h);
 		}
 
+		public Rectangle GetRowBounds (int row, bool includeMargin)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public override void SetCurrentEventRow (string path)
 		{
 			if (path.Contains (":")) {

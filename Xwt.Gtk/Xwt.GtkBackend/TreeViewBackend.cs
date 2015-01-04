@@ -308,6 +308,21 @@ namespace Xwt.GtkBackend
 			return true;
 		}
 
+		public TreePosition GetRowAtPosition (Point p)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Rectangle GetCellBounds (TreePosition pos, CellView cell, bool includeMargin)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Rectangle GetRowBounds (TreePosition pos, bool includeMargin)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public override void SetCurrentEventRow (string path)
 		{
 			var treeFrontend = (TreeView)Frontend;

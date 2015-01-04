@@ -49,6 +49,9 @@ namespace Xwt.Backends
 		
 		bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition);
 
+		TreePosition GetRowAtPosition (Point p);
+		Rectangle GetCellBounds (TreePosition pos, CellView cell, bool includeMargin);
+		Rectangle GetRowBounds (TreePosition pos, bool includeMargin);
 		TreePosition CurrentEventRow { get; }
 	}
 	

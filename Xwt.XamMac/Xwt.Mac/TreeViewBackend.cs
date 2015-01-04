@@ -205,6 +205,21 @@ namespace Xwt.Mac
 				p = source.GetParent (p);
 			}
 		}
+
+		public TreePosition GetRowAtPosition (Point p)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Rectangle GetCellBounds (TreePosition pos, CellView cell, bool includeMargin)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Rectangle GetRowBounds (TreePosition pos, bool includeMargin)
+		{
+			throw new NotImplementedException ();
+		}
 		
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
