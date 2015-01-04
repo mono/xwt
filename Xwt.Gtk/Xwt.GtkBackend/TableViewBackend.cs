@@ -135,6 +135,12 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeViewColumn tc = new Gtk.TreeViewColumn ();
 			tc.Title = col.Title;
+			tc.Resizable = col.CanResize;
+			tc.Alignment = col.Alignment.ToGtkAlignment ();
+			tc.SortIndicator = col.SortIndicatorVisible;
+			tc.SortOrder = (SortType)col.SortDirection;
+			if (col.SortDataField != null)
+				tc.SortColumnId = col.SortDataField.Index;
 			Widget.AppendColumn (tc);
 			MapTitle (col, tc);
 			MapColumn (col, tc);
@@ -170,22 +176,32 @@ namespace Xwt.GtkBackend
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			Gtk.TreeViewColumn tc = (Gtk.TreeViewColumn) handle;
-			if (change == ListViewColumnChange.Cells) {
-				tc.Clear ();
-				MapColumn (col, tc);
+
+			switch (change) {
+				case ListViewColumnChange.Cells:
+					tc.Clear ();
+					MapColumn (col, tc);
+					break;
+				case ListViewColumnChange.Title:
+					MapTitle (col, tc);
+					break;
+				case ListViewColumnChange.CanResize:
+					tc.Resizable = col.CanResize;
+					break;
+				case ListViewColumnChange.SortIndicatorVisible:
+					tc.SortIndicator = col.SortIndicatorVisible;
+					break;
+				case ListViewColumnChange.SortDirection:
+					tc.SortOrder = (SortType)col.SortDirection;
+					break;
+				case ListViewColumnChange.SortDataField:
+					if (col.SortDataField != null)
+						tc.SortColumnId = col.SortDataField.Index;
+					break;
+				case ListViewColumnChange.Alignment:
+					tc.Alignment = col.Alignment.ToGtkAlignment ();
+					break;
 			}
-			else if (change == ListViewColumnChange.Title)
-				MapTitle (col, tc);
-			else if (change == ListViewColumnChange.CanResize)
-				tc.Resizable = col.CanResize;
-			else if (change == ListViewColumnChange.SortDirection)
-				tc.SortOrder = (SortType)col.SortDirection;
-			else if (change == ListViewColumnChange.SortDataField)
-				tc.SortColumnId = col.SortDataField.Index;
-			else if (change == ListViewColumnChange.SortIndicatorVisible)
-				tc.SortIndicator = col.SortIndicatorVisible;
-			else if (change == ListViewColumnChange.Alignment)
-				tc.Alignment = Util.ToGtkAlignment(col.Alignment);
 		}
 
 		public void ScrollToRow (TreeIter pos)
