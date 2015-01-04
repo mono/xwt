@@ -171,6 +171,19 @@ namespace Xwt.GtkBackend
 			return Gtk.StateFlags.Normal;
 		}
 
+		public static void GetSize (this Gtk.CellRenderer cr, Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		{
+			cr.GetPadding(out x_offset, out y_offset);
+			var minimum_size = Gtk.Requisition.Zero;
+			var natural_size = Gtk.Requisition.Zero;
+			cr.GetPreferredHeightForWidth (widget, cell_area.Width, out minimum_size.Height, out natural_size.Height);
+			cr.GetPreferredWidthForHeight (widget, cell_area.Height, out minimum_size.Width, out natural_size.Width);
+			width = Math.Max (minimum_size.Width, natural_size.Width);
+			height = Math.Max (minimum_size.Height, natural_size.Height);
+			x_offset += (int)(cr.Xalign * (cell_area.Width - width));
+			y_offset += (int)(cr.Yalign * (cell_area.Height - height));
+		}
+
 		public static string GetText (this Gtk.TextInsertedArgs args)
 		{
 			return args.NewText;
