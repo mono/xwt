@@ -169,16 +169,6 @@ namespace Xwt.Mac
 		{
 			return (int) Table.GetRow (new CGPoint ((nfloat)p.X, (nfloat)p.Y));
 		}
-
-		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
-		{
-			return Rectangle.Zero;
-		}
-
-		public Rectangle GetRowBounds (int row, bool includeMargin)
-		{
-			throw new NotImplementedException ();
-		}
 	}
 	
 	class TableRow: NSObject, ITablePosition

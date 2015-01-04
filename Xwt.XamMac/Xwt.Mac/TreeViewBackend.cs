@@ -208,17 +208,26 @@ namespace Xwt.Mac
 
 		public TreePosition GetRowAtPosition (Point p)
 		{
-			throw new NotImplementedException ();
+			var row = Table.GetRow (new System.Drawing.PointF ((float)p.X, (float)p.Y));
+			return ((TreeItem)Tree.ItemAtRow (row)).Position;
 		}
 
 		public Rectangle GetCellBounds (TreePosition pos, CellView cell, bool includeMargin)
 		{
-			throw new NotImplementedException ();
+			var it = tsource.GetItem (pos);
+			if (it == null)
+				return Rectangle.Zero;
+			var row = Tree.RowForItem (it);
+			return GetCellBounds (row, cell, includeMargin);
 		}
 
 		public Rectangle GetRowBounds (TreePosition pos, bool includeMargin)
 		{
-			throw new NotImplementedException ();
+			var it = tsource.GetItem (pos);
+			if (it == null)
+				return Rectangle.Zero;
+			var row = Tree.RowForItem (it);
+			return GetRowBounds (row, includeMargin);
 		}
 		
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
