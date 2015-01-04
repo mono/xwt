@@ -107,6 +107,8 @@
     <Compile Include="Samples\MessageDialogs.cs" />
     <Compile Include="Samples\MultithreadingSample.cs" />
     <Compile Include="Samples\WidgetFocus.cs" />
+    <Compile Include="Samples\ListViewCellBounds.cs" />
+    <Compile Include="Samples\TreeViewCellBounds.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

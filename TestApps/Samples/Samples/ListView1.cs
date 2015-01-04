@@ -120,9 +120,19 @@ namespace Samples
 	{
 		public IDataField<CellData> ValueField { get; set; }
 
+		public Size Size {
+			get;
+			set;
+		}
+
+		public CustomCell ()
+		{
+			Size = new Size (200, 10);
+		}
+
 		protected override Size OnGetRequiredSize ()
 		{
-			return new Size (200, 10);
+			return Size;
 		}
 
 		protected override void OnDraw (Context ctx, Rectangle cellArea)
