@@ -408,6 +408,33 @@ namespace Xwt.GtkBackend
 			return null;
 		}
 
+		protected override ButtonEventArgs GetButtonPressEventArgs (ButtonPressEventArgs args)
+		{
+			int x, y;
+			Widget.ConvertBinWindowToWidgetCoords ((int)args.Event.X, (int)args.Event.Y, out x, out y);
+			var xwt_args = base.GetButtonPressEventArgs (args);
+			xwt_args.X = x;
+			xwt_args.Y = y;
+			return xwt_args;
+		}
+
+		protected override ButtonEventArgs GetButtonReleaseEventArgs (ButtonReleaseEventArgs args)
+		{
+			int x, y;
+			Widget.ConvertBinWindowToWidgetCoords ((int)args.Event.X, (int)args.Event.Y, out x, out y);
+			var xwt_args = base.GetButtonReleaseEventArgs (args);
+			xwt_args.X = x;
+			xwt_args.Y = y;
+			return xwt_args;
+		}
+
+		protected override MouseMovedEventArgs GetMouseMovedEventArgs (MotionNotifyEventArgs args)
+		{
+			int x, y;
+			Widget.ConvertBinWindowToWidgetCoords ((int)args.Event.X, (int)args.Event.Y, out x, out y);
+			return new MouseMovedEventArgs ((long) args.Event.Time, x, y);
+		}
+
 		public virtual void SetCurrentEventRow (string path)
 		{
 		}
