@@ -156,11 +156,10 @@ namespace Xwt.GtkBackend
 
 		public int GetRowAtPosition (Point p)
 		{
-			Gtk.TreePath path;
-			if (Widget.GetPathAtPos ((int)p.X, (int)p.Y, out path))
+			Gtk.TreePath path = GetPathAtPosition (p);
+			if (path != null)
 				return path.Indices [0];
-			else
-				return -1;
+			return -1;
 		}
 
 		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
@@ -186,7 +185,15 @@ namespace Xwt.GtkBackend
 
 		public Rectangle GetRowBounds (int row, bool includeMargin)
 		{
-			throw new NotImplementedException ();
+			Gtk.TreePath path = new Gtk.TreePath (new [] { row });
+			Gtk.TreeIter iter;
+			if (!Widget.Model.GetIterFromString (out iter, path.ToString ()))
+				return Rectangle.Zero;
+
+			if (includeMargin)
+				return GetRowBackgroundBounds (iter);
+			else
+				return GetRowBounds (iter);
 		}
 
 		public override void SetCurrentEventRow (string path)

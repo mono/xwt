@@ -319,6 +319,50 @@ namespace Xwt.GtkBackend
 			return new Rectangle (a.X + x, a.Y + y, w, h);
 		}
 
+		protected Rectangle GetRowBounds (Gtk.TreeIter iter)
+		{
+			var rect = Rectangle.Zero;
+
+			foreach (var col in Widget.Columns) {
+				foreach (var cr in col.GetCellRenderers()) {
+					Rectangle cell_rect = ((ICellRendererTarget)this).GetCellBounds (col, cr, iter);
+					if (rect == Rectangle.Zero)
+						rect = new Rectangle (cell_rect.X, cell_rect.Y, cell_rect.Width, cell_rect.Height);
+					else
+						rect = rect.Union (new Rectangle (cell_rect.X, cell_rect.Y, cell_rect.Width, cell_rect.Height));
+				}
+			}
+			return rect;
+		}
+
+		protected Rectangle GetRowBackgroundBounds (Gtk.TreeIter iter)
+		{
+			var path = Widget.Model.GetPath (iter);
+			var rect = Rectangle.Zero;
+
+			foreach (var col in Widget.Columns) {
+				Gdk.Rectangle cell_rect = Widget.GetBackgroundArea (path, col);
+				Widget.ConvertBinWindowToWidgetCoords (cell_rect.X, cell_rect.Y, out cell_rect.X, out cell_rect.Y);
+
+				if (rect == Rectangle.Zero)
+					rect = new Rectangle (cell_rect.X, cell_rect.Y, cell_rect.Width, cell_rect.Height);
+				else
+					rect = rect.Union (new Rectangle (cell_rect.X, cell_rect.Y, cell_rect.Width, cell_rect.Height));
+			}
+			return rect;
+		}
+
+		protected Gtk.TreePath GetPathAtPosition (Point p)
+		{
+			Gtk.TreePath path;
+			int x, y;
+			Widget.ConvertWidgetToBinWindowCoords ((int)p.X, (int)p.Y, out x, out y);
+
+			if (Widget.GetPathAtPos (x, y, out path))
+				return path;
+			return null;
+		}
+
 		public virtual void SetCurrentEventRow (string path)
 		{
 		}
