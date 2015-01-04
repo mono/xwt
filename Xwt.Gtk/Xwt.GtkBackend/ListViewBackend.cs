@@ -172,15 +172,10 @@ namespace Xwt.GtkBackend
 			if (!Widget.Model.GetIterFromString (out iter, path.ToString ()))
 				return Rectangle.Zero;
 
-			col.CellSetCellData (Widget.Model, iter, false, false);
-
-			Gdk.Rectangle rect = includeMargin ? Widget.GetBackgroundArea (path, col) : Widget.GetCellArea (path, col);
-
-			int x, y, w, h;
-			col.CellGetPosition (cr, out x, out w);
-			col.CellGetSize (rect, out x, out y, out w, out h);
-
-			return new Rectangle (x, y, w, h);
+			if (includeMargin)
+				return ((ICellRendererTarget)this).GetCellBackgroundBounds (col, cr, iter);
+			else
+				return ((ICellRendererTarget)this).GetCellBounds (col, cr, iter);
 		}
 
 		public Rectangle GetRowBounds (int row, bool includeMargin)

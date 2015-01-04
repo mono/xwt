@@ -280,43 +280,88 @@ namespace Xwt.GtkBackend
 			var col = (TreeViewColumn)target;
 			var path = Widget.Model.GetPath (iter);
 
-			Gdk.Rectangle rect = Widget.GetCellArea (path, col);
+			col.CellSetCellData (Widget.Model, iter, false, false);
 
-			int x = 0;
-			int th = 0;
+			Gdk.Rectangle column_cell_area = Widget.GetCellArea (path, col);
 			CellRenderer[] renderers = col.GetCellRenderers();
 
-			foreach (CellRenderer cr in renderers) {
-				int sp, wi, he, xo, yo;
-				col.CellGetSize (rect, out xo, out yo, out wi, out he);
-				col.CellGetPosition (cr, out sp, out wi);
-				Gdk.Rectangle crect = new Gdk.Rectangle (x, rect.Y, wi, rect.Height);
-				#if !XWT_GTK3
-				cr.GetSize (Widget, ref crect, out xo, out yo, out wi, out he);
-				#endif
+			for (int i = 0; i < renderers.Length; i++)
+			{
+				var cr = renderers [i];
 				if (cr == cra) {
-					Widget.ConvertBinWindowToWidgetCoords (rect.X + x, rect.Y, out xo, out yo);
-					// There seems to be a 1px vertical padding
-					yo++; rect.Height -= 2;
-					return new Rectangle (xo, yo + 1, wi, rect.Height - 2);
+					int position_x, width, height;
+					int position_y = column_cell_area.Y;
+
+					col.CellGetPosition (cr, out position_x, out width);
+
+					if (i == renderers.Length - 1) {
+						#if XWT_GTK3
+						// Gtk3 allocates all available space to the last cell in the column
+						width = column_cell_area.Width - position_x;
+						#else
+						// Gtk2 sets the cell_area size to fit the largest cell in the inner column (row-wise)
+						// since we would have to scan the tree for the largest cell at this (horizontal) cell position
+						// we return the width of the current cell.
+						int padding_x, padding_y;
+						var cell_area = new Gdk.Rectangle(column_cell_area.X + position_x, position_y, width, column_cell_area.Height);
+						cr.GetSize (col.TreeView, ref cell_area, out padding_x, out padding_y, out width, out height);
+						position_x += padding_x;
+						// and add some padding at the end if it would not exceed column bounds
+						if (position_x + width + 2 <= column_cell_area.Width)
+							width += 2;
+						#endif
+					} else {
+						int position_x_next, width_next;
+						col.CellGetPosition (renderers [i + 1], out position_x_next, out width_next);
+						width = position_x_next - position_x;
+					}
+
+					position_x += column_cell_area.X;
+					height = column_cell_area.Height;
+					Widget.ConvertBinWindowToWidgetCoords (position_x, position_y, out position_x, out position_y);
+					return new Rectangle (position_x, position_y, width, height);
 				}
-				if (cr != renderers [renderers.Length - 1])
-					x += crect.Width + col.Spacing + 1;
-				else
-					x += wi + 1;
-				if (he > th) th = he;
 			}
 			return Rectangle.Zero;
 		}
 
-		Rectangle ICellRendererTarget.GetCellBackgroundBounds (object target, Gtk.CellRenderer cr, Gtk.TreeIter iter)
+		Rectangle ICellRendererTarget.GetCellBackgroundBounds (object target, Gtk.CellRenderer cra, Gtk.TreeIter iter)
 		{
 			var col = (TreeViewColumn)target;
 			var path = Widget.Model.GetPath (iter);
-			var a = Widget.GetBackgroundArea (path, (TreeViewColumn)target);
-			int x, y, w, h;
-			col.CellGetSize (a, out x, out y, out w, out h);
-			return new Rectangle (a.X + x, a.Y + y, w, h);
+
+			col.CellSetCellData (Widget.Model, iter, false, false);
+
+			Gdk.Rectangle column_cell_area = Widget.GetCellArea (path, col);
+			Gdk.Rectangle column_cell_bg_area = Widget.GetBackgroundArea (path, col);
+
+			CellRenderer[] renderers = col.Cells;
+
+			foreach (var cr in renderers) {
+				if (cr == cra) {
+					int position_x, width;
+
+					col.CellGetPosition (cr, out position_x, out width);
+
+					// Gtk aligns the bg area of a renderer to the cell area and not the bg area
+					// so we add the cell area offset to the position here
+					position_x += column_cell_bg_area.X + (column_cell_area.X - column_cell_bg_area.X);
+
+					// last widget gets the rest
+					if (cr == renderers[renderers.Length - 1])
+						width = column_cell_bg_area.Width - (position_x - column_cell_bg_area.X);
+
+					var cell_bg_bounds = new Gdk.Rectangle (position_x,
+					                                        column_cell_bg_area.Y,
+					                                        width,
+					                                        column_cell_bg_area.Height);
+
+					Widget.ConvertBinWindowToWidgetCoords (cell_bg_bounds.X, cell_bg_bounds.Y, out cell_bg_bounds.X, out cell_bg_bounds.Y);
+					return new Rectangle (cell_bg_bounds.X, cell_bg_bounds.Y, cell_bg_bounds.Width, cell_bg_bounds.Height);
+				}
+			}
+
+			return Rectangle.Zero;
 		}
 
 		protected Rectangle GetRowBounds (Gtk.TreeIter iter)
