@@ -10,7 +10,8 @@ namespace Xwt.WPFBackend
     class CanvasCellViewBackend: CellViewBackend, ICanvasCellViewBackend
     {
         public void QueueDraw()
-        {
+		{
+			CurrentElement.InvalidateVisual ();
         }
     }
 }
