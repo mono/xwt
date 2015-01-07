@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Xwt.Backends;
 using Xwt.WPFBackend.Utilities;
 
@@ -218,12 +219,54 @@ namespace Xwt.WPFBackend
 
 		public int GetRowAtPosition(Point p)
 		{
-			throw new NotImplementedException();
+			var result = VisualTreeHelper.HitTest (ListBox, new System.Windows.Point (p.X, p.Y)) as PointHitTestResult;
+
+			var element = (result != null) ? result.VisualHit as FrameworkElement : null;
+			while (element != null) {
+				if (element is ListBoxItem)
+					break;
+				if (element is ExListBox) // We can't succeed past this point
+					return -1;
+
+				element = VisualTreeHelper.GetParent (element) as FrameworkElement;
+			}
+
+			if (element == null)
+				return -1;
+
+			int index = ListBox.ItemContainerGenerator.IndexFromContainer(element);
+			return index;
 		}
 
 		public Rectangle GetRowBounds (int row, bool includeMargin)
 		{
-			throw new NotImplementedException ();
+			ListBoxItem item = ListBox.ItemContainerGenerator.ContainerFromIndex (row) as ListBoxItem;
+			if (item == null)
+				return Rectangle.Zero;
+
+			// this works only if the wpf layout remains the same
+			try {
+				var border = VisualTreeHelper.GetChild (item, 0) as FrameworkElement;
+
+				var rect = Rectangle.Zero;
+				if (includeMargin) {
+					var position = border.TransformToAncestor (ListBox).Transform (new System.Windows.Point (0, 0));
+					rect = new Rect (position, border.RenderSize).ToXwtRect();
+					rect.X -= ListBox.Padding.Left + ListBox.BorderThickness.Left;
+				} else {
+					var contentpresenter = VisualTreeHelper.GetChild (border, 0) as FrameworkElement;
+					var child = VisualTreeHelper.GetChild (contentpresenter, 0) as FrameworkElement;
+					var position = child.TransformToAncestor (ListBox).Transform(new System.Windows.Point(0,0));
+					rect = new Rect (position, child.RenderSize).ToXwtRect();
+					rect.X -= ListBox.Padding.Left + ListBox.BorderThickness.Left;
+				}
+
+				return rect;
+			} catch (ArgumentOutOfRangeException) {
+				return Rectangle.Zero;
+			} catch (ArgumentNullException) {
+				return Rectangle.Zero;
+			}
 		}
 	}
 }
