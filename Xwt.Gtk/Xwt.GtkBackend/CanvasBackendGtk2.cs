@@ -46,6 +46,8 @@ namespace Xwt.GtkBackend
 			// Gdk Expose event supplies the area to be redrawn - but need to adjust X,Y for context Origin 
 			var a = evnt.Area;
 			Rectangle dirtyRect = new Rectangle (a.X-ctx.Origin.X, a.Y-ctx.Origin.Y, a.Width, a.Height);
+			ctx.Context.Rectangle (dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height);
+			ctx.Context.Clip ();
 			OnDraw (dirtyRect, ctx);
 			return base.OnExposeEvent (evnt);
 		}
