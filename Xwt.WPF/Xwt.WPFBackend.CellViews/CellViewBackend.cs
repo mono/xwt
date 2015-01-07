@@ -9,7 +9,22 @@ namespace Xwt.WPFBackend
 {
     class CellViewBackend : ICellViewBackend, ICellDataSource
     {
-        FrameworkElement currentElement;
+		FrameworkElement currentElement;
+		WidgetEvent enabledEvents;
+
+		public WidgetEvent EnabledEvents {
+			get {
+				return enabledEvents;
+			}
+		}
+
+		public FrameworkElement CurrentElement {
+			get {
+				return currentElement;
+			}
+		}
+
+		public ICellViewEventSink EventSink { get; private set; }
 
         public CellViewBackend()
         {
@@ -23,7 +38,7 @@ namespace Xwt.WPFBackend
         public void Load (FrameworkElement elem)
         {
             currentElement = elem;
-            CellFrontend.Load(this);
+            EventSink = CellFrontend.Load (this);
         }
 
         public CellView CellView { get; set; }
@@ -67,10 +82,14 @@ namespace Xwt.WPFBackend
 
         public void EnableEvent(object eventId)
         {
+            if (eventId is WidgetEvent)
+                enabledEvents |= (WidgetEvent)eventId;
         }
 
         public void DisableEvent(object eventId)
         {
+            if (eventId is WidgetEvent)
+                enabledEvents &= ~ (WidgetEvent)eventId;
         }
 
         public object GetValue(IDataField field)

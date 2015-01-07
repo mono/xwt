@@ -103,6 +103,111 @@ namespace Xwt.WPFBackend
 				size.Height = constraint.Height;
 			return size;
 		}
+
+		protected override void OnMouseEnter (System.Windows.Input.MouseEventArgs e)
+		{
+			if (CellViewBackend.EnabledEvents.HasFlag (WidgetEvent.MouseEntered)) {
+				CellViewBackend.Load(this);
+				CellViewBackend.ApplicationContext.InvokeUserCode (CellViewBackend.EventSink.OnMouseEntered);
+			}
+			base.OnMouseEnter (e);
+		}
+
+		protected override void OnMouseLeave (System.Windows.Input.MouseEventArgs e)
+		{
+			if (CellViewBackend.EnabledEvents.HasFlag(WidgetEvent.MouseEntered)) {
+				CellViewBackend.Load(this);
+				CellViewBackend.ApplicationContext.InvokeUserCode (CellViewBackend.EventSink.OnMouseExited);
+			}
+			base.OnMouseLeave (e);
+		}
+
+		protected override void OnMouseMove (System.Windows.Input.MouseEventArgs e)
+		{
+			if (CellViewBackend.EnabledEvents.HasFlag(WidgetEvent.MouseMoved))
+			{
+				var p = e.GetPosition (this);
+				CellViewBackend.Load(this);
+				if (!CellViewBackend.CellBounds.Contains (p.X, p.Y))
+					return;
+				var a = new MouseMovedEventArgs(e.Timestamp, p.X, p.Y);
+
+				CellViewBackend.ApplicationContext.InvokeUserCode (delegate {
+					CellViewBackend.EventSink.OnMouseMoved (a);
+				});
+				if (a.Handled)
+					e.Handled = true;
+			}
+			base.OnMouseMove (e);
+		}
+
+		protected override void OnMouseDown (System.Windows.Input.MouseButtonEventArgs e)
+		{
+			if (CellViewBackend.EnabledEvents.HasFlag(WidgetEvent.ButtonPressed))
+			{
+				var a = e.ToXwtButtonArgs (this);
+				CellViewBackend.Load(this);
+				if (!CellViewBackend.CellBounds.Contains (a.X, a.Y))
+					return;
+
+				CellViewBackend.ApplicationContext.InvokeUserCode (delegate {
+					CellViewBackend.EventSink.OnButtonPressed (a);
+				});
+				if (a.Handled)
+					e.Handled = true;
+			}
+			base.OnMouseDown (e);
+		}
+
+		protected override void OnMouseUp (System.Windows.Input.MouseButtonEventArgs e)
+		{
+			if (CellViewBackend.EnabledEvents.HasFlag(WidgetEvent.ButtonReleased))
+			{
+				var a = e.ToXwtButtonArgs (this);
+				CellViewBackend.Load(this);
+				if (!CellViewBackend.CellBounds.Contains (a.X, a.Y))
+					return;
+
+				CellViewBackend.ApplicationContext.InvokeUserCode (delegate {
+					CellViewBackend.EventSink.OnButtonReleased (a);
+				});
+				if (a.Handled)
+					e.Handled = true;
+			}
+			base.OnMouseUp (e);
+		}
+
+		protected override void OnPreviewKeyDown (System.Windows.Input.KeyEventArgs e)
+		{
+			if (CellViewBackend.EnabledEvents.HasFlag(WidgetEvent.KeyPressed)) {
+				CellViewBackend.Load(this);
+				KeyEventArgs args;
+				if (e.MapToXwtKeyArgs (out args)) {
+					CellViewBackend.ApplicationContext.InvokeUserCode (delegate {
+						CellViewBackend.EventSink.OnKeyPressed(args);
+					});
+					if (args.Handled)
+						e.Handled = true;
+				}
+			}
+			base.OnKeyDown (e);
+		}
+
+		protected override void OnPreviewKeyUp (System.Windows.Input.KeyEventArgs e)
+		{
+			if (CellViewBackend.EnabledEvents.HasFlag(WidgetEvent.KeyReleased)) {
+				CellViewBackend.Load(this);
+				KeyEventArgs args;
+				if (e.MapToXwtKeyArgs (out args)) {
+					CellViewBackend.ApplicationContext.InvokeUserCode (delegate {
+						CellViewBackend.EventSink.OnKeyReleased(args);
+					});
+					if (args.Handled)
+						e.Handled = true;
+				}
+			}
+			base.OnKeyUp (e);
+		}
 	}
 }
 
