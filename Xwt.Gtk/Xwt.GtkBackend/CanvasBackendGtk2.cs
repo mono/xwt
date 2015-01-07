@@ -39,14 +39,17 @@ namespace Xwt.GtkBackend
 
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
-			var ctx = CreateContext ();
-			// Set context Origin from initial Cairo CTM (to ensure new Xwt CTM is Identity Matrix)
-			ctx.Origin.X = ctx.Context.Matrix.X0;
-			ctx.Origin.Y = ctx.Context.Matrix.Y0;
-			// Gdk Expose event supplies the area to be redrawn - but need to adjust X,Y for context Origin 
 			var a = evnt.Area;
-			Rectangle dirtyRect = new Rectangle (a.X-ctx.Origin.X, a.Y-ctx.Origin.Y, a.Width, a.Height);
-			OnDraw (dirtyRect, ctx);
+			using (var ctx = CreateContext ()) {
+				// Set context Origin from initial Cairo CTM (to ensure new Xwt CTM is Identity Matrix)
+				ctx.Origin.X = ctx.Context.Matrix.X0;
+				ctx.Origin.Y = ctx.Context.Matrix.Y0;
+				// Gdk Expose event supplies the area to be redrawn - but need to adjust X,Y for context Origin 
+				Rectangle dirtyRect = new Rectangle (a.X-ctx.Origin.X, a.Y-ctx.Origin.Y, a.Width, a.Height);
+				ctx.Context.Rectangle (dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height);
+				ctx.Context.Clip ();
+				OnDraw (dirtyRect, ctx);
+			}
 			return base.OnExposeEvent (evnt);
 		}
 	}
