@@ -55,10 +55,13 @@ namespace Samples
 				return currentRow;
 			}
 			private set {
-				if (currentRow != value)
-					DrawerBg =  Toolkit.CurrentEngine.RenderWidget (ListView);
-				currentRow = value;
-				QueueForReallocate ();
+				if (currentRow != value) {
+					try {
+						DrawerBg = Toolkit.CurrentEngine.RenderWidget (ListView);
+					} catch {}
+					currentRow = value;
+					QueueForReallocate ();
+				}
 			}
 		}
 
@@ -139,8 +142,10 @@ namespace Samples
 			SetChildBounds (container, Bounds);
 			container.Remove (drawer);
 			container.PackStart (drawer);
-			if (tracker != null)
+			if (tracker != null) {
 				SetChildBounds (tracker, rowBounds);
+				tracker.QueueDraw ();
+			}
 		}
 	}
 
@@ -200,6 +205,10 @@ namespace Samples
 
 			ctx.SetColor (Colors.Red);
 			ctx.Rectangle (row_bg_bounds);
+			ctx.Stroke ();
+
+			ctx.SetColor (Colors.Blue);
+			ctx.Rectangle (row_bounds);
 			ctx.Stroke ();
 			ctx.Restore ();
 		}

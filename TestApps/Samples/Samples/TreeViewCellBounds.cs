@@ -55,10 +55,14 @@ namespace Samples
 				return currentRow;
 			}
 			private set {
-				if (currentRow != value)
-					DrawerBg =  Toolkit.CurrentEngine.RenderWidget (TreeView);
-				currentRow = value;
-				QueueForReallocate ();
+				if (currentRow != value) {
+					try {
+						DrawerBg = Toolkit.CurrentEngine.RenderWidget (TreeView);
+					} catch {
+					}
+					currentRow = value;
+					QueueForReallocate ();
+				}
 			}
 		}
 		public TreeView TreeView { get; private set; }
@@ -136,8 +140,11 @@ namespace Samples
 			SetChildBounds (container, Bounds);
 			container.Remove (drawer);
 			container.PackStart (drawer);
-			if (tracker != null)
+			container.QueueForReallocate ();
+			if (tracker != null) {
 				SetChildBounds (tracker, rowBounds);
+				tracker.QueueDraw ();
+			}
 		}
 	}
 
@@ -155,8 +162,10 @@ namespace Samples
 		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (parent.CurrentRow == null)
-				return new Size (0, 0);
+				return new Size (20, 100);
 			var row_bg_bounds = parent.TreeView.GetRowBounds (parent.CurrentRow.CurrentPosition, true);
+			if (row_bg_bounds == Rectangle.Zero)
+				return new Size (20, 100);
 			return new Size (row_bg_bounds.Width, row_bg_bounds.Height);
 		}
 
@@ -197,6 +206,10 @@ namespace Samples
 
 			ctx.SetColor (Colors.Red);
 			ctx.Rectangle (row_bg_bounds);
+			ctx.Stroke ();
+
+			ctx.SetColor (Colors.Blue);
+			ctx.Rectangle (row_bounds);
 			ctx.Stroke ();
 			ctx.Restore ();
 		}
