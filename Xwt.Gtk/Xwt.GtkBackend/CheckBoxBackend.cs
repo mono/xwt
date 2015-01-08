@@ -70,7 +70,7 @@ namespace Xwt.GtkBackend
 			set {
 				Widget.Inconsistent = value == CheckBoxState.Mixed;
 				internalActiveUpdate = true;
-				Widget.Active = value != CheckBoxState.Off;
+				Widget.Active = value == CheckBoxState.On;
 				internalActiveUpdate = false;
 			}
 		}
@@ -137,19 +137,19 @@ namespace Xwt.GtkBackend
 				return;
 			
 			if (allowMixed) {
-				if (!Widget.Active) {
+				if (Widget.Active) {
 					if (Widget.Inconsistent)
 						Widget.Inconsistent = false;
 					else {
 						Widget.Inconsistent = true;
 						internalActiveUpdate = true;
-						Widget.Active = true;
+						Widget.Active = false;
 						internalActiveUpdate = false;
 					}
 				}
 			} else if (Widget.Inconsistent) {
 				Widget.Inconsistent = false;
-				Widget.Active = false;
+				Widget.Active = true;
 			}
 
 			if (toggleEventEnabled) {
