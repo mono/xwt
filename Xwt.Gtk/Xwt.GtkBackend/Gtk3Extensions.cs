@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using Xwt.Backends;
+using Xwt.CairoBackend;
 using System;
 using System.Runtime.InteropServices;
 using Gtk;
@@ -238,6 +239,36 @@ namespace Xwt.GtkBackend
 			int start, end;
 			scale.GetSliderRange (out start, out end);
 			return start + ((end - start) / 2);
+		}
+
+		public static void RenderPlaceholderText (this Gtk.TextView textView, Cairo.Context cr, string placeHolderText, ref Pango.Layout layout)
+		{
+			if (textView.Buffer.Text.Length > 0)
+				return;
+			float xalign = 0;
+			switch (textView.Justification) {
+				case Gtk.Justification.Center: xalign = 0.5f; break;
+				case Gtk.Justification.Right: xalign = 1; break;
+			}
+			RenderPlaceholderText_internal (textView, cr, placeHolderText, ref layout, xalign, 0.0f, 3, 0);
+		}
+
+		static void RenderPlaceholderText_internal (Gtk.Widget widget, Cairo.Context cr, string placeHolderText, ref Pango.Layout layout, float xalign, float yalign, int xpad, int ypad)
+		{
+			if (layout == null) {
+				layout = new Pango.Layout (widget.PangoContext);
+				layout.FontDescription = widget.PangoContext.FontDescription.Copy ();
+			}
+			int width, height;
+			layout.SetText (placeHolderText);
+			layout.GetPixelSize (out width, out height);
+			int x = xpad + (int)((widget.AllocatedWidth - width) * xalign);
+			int y = ypad + (int)((widget.AllocatedHeight - height) * yalign);
+			Xwt.Drawing.Color color_a = widget.StyleContext.GetBackgroundColor (Gtk.StateFlags.Normal).ToXwtValue ();
+			Xwt.Drawing.Color color_b = widget.StyleContext.GetColor (Gtk.StateFlags.Normal).ToXwtValue ();
+			cr.SetSourceColor (color_b.BlendWith (color_a, 0.5).ToCairoColor ());
+			cr.MoveTo (x, y);
+			Pango.CairoHelper.ShowLayout (cr, layout);
 		}
 	}
 }

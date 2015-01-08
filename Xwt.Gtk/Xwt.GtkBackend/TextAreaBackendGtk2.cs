@@ -45,50 +45,7 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
-			RenderPlaceholderText (TextView, args, placeHolderText, ref layout);
-		}
-
-		public static void RenderPlaceholderText (Gtk.TextView widget, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
-		{
-			if (args.Event.Window != widget.GetWindow (Gtk.TextWindowType.Text))
-				return;
-
-			if (widget.Buffer.Text.Length > 0)
-				return;
-
-			float xalign = 0;
-			float yalign = 0;
-
-			switch (widget.Justification) {
-				case Gtk.Justification.Center: xalign = 0.5f; break;
-				case Gtk.Justification.Right: xalign = 1; break;
-			}
-
-			if (layout == null) {
-				layout = new Pango.Layout (widget.PangoContext);
-				layout.FontDescription = widget.PangoContext.FontDescription.Copy ();
-			}
-
-			int wh, ww;
-			int xpad = 3;
-			int ypad = 0;
-			args.Event.Window.GetSize (out ww, out wh);
-
-			int width, height;
-			layout.SetText (placeHolderText);
-			layout.GetPixelSize (out width, out height);
-
-			int x = xpad + (int)((ww - width) * xalign);
-			int y = ypad + (int)((wh - height) * yalign);
-
-			using (var gc = new Gdk.GC (args.Event.Window)) {
-				gc.Copy (widget.Style.TextGC (Gtk.StateType.Normal));
-				Xwt.Drawing.Color color_a = widget.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
-				Xwt.Drawing.Color color_b = widget.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
-				gc.RgbFgColor = color_b.BlendWith (color_a, 0.5).ToGtkValue ();
-
-				args.Event.Window.DrawLayout (gc, x, y, layout);
-			}
+			TextView.RenderPlaceholderText (args, placeHolderText, ref layout);
 		}
 	}
 }

@@ -48,41 +48,7 @@ namespace Xwt.GtkBackend
 
 		void HandleDrawn (object o, Gtk.DrawnArgs args)
 		{
-			if (TextView.HasFocus)
-				return;
-
-			if (TextView.Buffer.Text.Length > 0)
-				return;
-
-			float xalign = 0;
-			float yalign = 0;
-
-			switch (TextView.Justification) {
-				case Gtk.Justification.Center: xalign = 0.5f; break;
-				case Gtk.Justification.Right: xalign = 1; break;
-			}
-
-			if (layout == null) {
-				layout = new Pango.Layout (TextView.PangoContext);
-				layout.FontDescription = TextView.PangoContext.FontDescription.Copy ();
-			}
-
-			int xpad = 3;
-			int ypad = 0;
-
-			int width, height;
-			layout.SetText (placeHolderText);
-			layout.GetPixelSize (out width, out height);
-
-			int x = xpad + (int)((TextView.AllocatedWidth - width) * xalign);
-			int y = ypad + (int)((TextView.AllocatedHeight - height) * yalign);
-			args.Cr.MoveTo (x, y);
-
-			Xwt.Drawing.Color color_a = TextView.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
-			Xwt.Drawing.Color color_b = TextView.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
-			args.Cr.SetSourceColor (color_b.BlendWith (color_a, 0.5).ToCairoColor());
-
-			Pango.CairoHelper.ShowLayout (args.Cr, layout);
+			TextView.RenderPlaceholderText (args.Cr, placeHolderText, ref layout);
 		}
 	}
 }
