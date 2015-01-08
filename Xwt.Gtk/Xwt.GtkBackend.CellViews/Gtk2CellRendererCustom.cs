@@ -31,8 +31,11 @@ namespace Xwt.GtkBackend
 	{
 		protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
 		{
-			using (var cr = Gdk.CairoHelper.Create (window))
+			using (var cr = Gdk.CairoHelper.Create (window)) {
+				cr.Rectangle (background_area.X, background_area.Y, background_area.Width, background_area.Height);
+				cr.Clip ();
 				OnRender (cr, widget, background_area, cell_area, flags);
+			}
 		}
 
 		protected abstract void OnRender (Cairo.Context cr, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, CellRendererState flags);
