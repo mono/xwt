@@ -54,7 +54,8 @@ namespace Xwt
 		CellViewCollection views;
 		string title;
 		CellView headerView;
-		
+		Alignment alignment;
+
 		internal IColumnContainerBackend Parent { get; set; }
 		internal object Handle { get; set; }
 		
@@ -96,7 +97,18 @@ namespace Xwt
 					Parent.UpdateColumn (this, Handle, ListViewColumnChange.Title);
 			}
 		}
-		
+
+		public Alignment Alignment {
+			get {
+				return alignment;
+			}
+			set {
+				alignment = value;
+				if (Parent != null)
+					Parent.UpdateColumn (this, Handle, ListViewColumnChange.Alignment);
+			}
+		}
+
 		public CellViewCollection Views {
 			get { return views; }
 		}

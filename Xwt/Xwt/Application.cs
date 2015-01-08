@@ -28,6 +28,7 @@ using System;
 using Xwt.Backends;
 
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Xwt
 {
@@ -60,6 +61,7 @@ namespace Xwt
 		public static void Initialize (ToolkitType type)
 		{
 			Initialize (Toolkit.GetBackendType (type));
+			toolkit.Type = type;
 		}
 
 		public static void Initialize (string backendType)
@@ -93,6 +95,11 @@ namespace Xwt
 
 		public static void Run ()
 		{
+			if (XwtSynchronizationContext.AutoInstall)
+			if (SynchronizationContext.Current == null || 
+			    (!((engine.IsGuest) || (SynchronizationContext.Current is XwtSynchronizationContext))))
+				SynchronizationContext.SetSynchronizationContext (new XwtSynchronizationContext ());
+
 			toolkit.InvokePlatformCode (delegate {
 				engine.RunApplication ();
 			});
@@ -103,6 +110,9 @@ namespace Xwt
 			toolkit.InvokePlatformCode (delegate {
 				engine.ExitApplication ();
 			});
+
+			if (SynchronizationContext.Current is XwtSynchronizationContext)
+				XwtSynchronizationContext.Uninstall ();
 		}
 
 		/// <summary>

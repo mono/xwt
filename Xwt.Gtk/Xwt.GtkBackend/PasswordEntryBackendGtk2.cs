@@ -47,7 +47,7 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
-			TextEntryBackend.RenderPlaceholderText (Widget, args, placeHolderText, ref layout);
+			Widget.RenderPlaceholderText (args, placeHolderText, ref layout);
 		}
 
 		protected override void Dispose (bool disposing)

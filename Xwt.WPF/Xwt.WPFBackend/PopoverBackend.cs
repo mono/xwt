@@ -58,7 +58,8 @@ namespace Xwt.WPFBackend
 				BorderBrush = Brushes.Black,
 				CornerRadius = new System.Windows.CornerRadius (15),
 				Padding = new System.Windows.Thickness (15),
-				BorderThickness = new System.Windows.Thickness (1)
+				BorderThickness = new System.Windows.Thickness (1),
+				Background = new SolidColorBrush (Color.FromArgb (230, 230, 230, 230))
 			};
 
 			NativeWidget = new System.Windows.Controls.Primitives.Popup {
@@ -80,25 +81,13 @@ namespace Xwt.WPFBackend
 					new System.Windows.Controls.Primitives.CustomPopupPlacement (location, System.Windows.Controls.Primitives.PopupPrimaryAxis.Horizontal)
 				};
 			};
+
+			NativeWidget.Closed += NativeWidget_Closed;
 		}
 
 		public void Initialize (IPopoverEventSink sink)
 		{
 			EventSink = sink;
-		}
-
-		public override void EnableEvent (object eventId)
-		{
-			if (eventId is PopoverEvent)
-				if ((PopoverEvent)eventId == PopoverEvent.Closed)
-					NativeWidget.Closed +=new EventHandler(NativeWidget_Closed);
-		}
-
-		public override void DisableEvent (object eventId)
-		{
-			if (eventId is PopoverEvent)
-				if ((PopoverEvent) eventId == PopoverEvent.Closed)
-					NativeWidget.Closed += new EventHandler (NativeWidget_Closed);
 		}
 
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget reference, Xwt.Rectangle positionRect, Widget child)
@@ -111,12 +100,14 @@ namespace Xwt.WPFBackend
 
 		void NativeWidget_Closed (object sender, EventArgs e)
 		{
+			Border.Child = null;
 			EventSink.OnClosed ();
 		}
 
 		public void Hide ()
 		{
 			NativeWidget.IsOpen = false;
+			Border.Child = null;
 		}
 
 		public void Dispose ()

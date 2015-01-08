@@ -83,6 +83,7 @@ namespace Xwt
 
 		public ToolkitType Type {
 			get { return toolkitType; }
+			internal set { toolkitType = value; }
 		}
 
 		internal static void DisposeAll ()
@@ -352,7 +353,9 @@ namespace Xwt
 					return externalWidget;
 				nativeWidget = externalWidget.Surface.ToolkitEngine.GetNativeWidget (externalWidget);
 			}
-			return new EmbeddedNativeWidget (nativeWidget, externalWidget);
+			var embedded = CreateObject<EmbeddedNativeWidget> ();
+			embedded.Initialize (nativeWidget, externalWidget);
+			return embedded;
 		}
 
 		public Image WrapImage (object nativeImage)

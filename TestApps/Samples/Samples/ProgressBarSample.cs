@@ -39,6 +39,9 @@ namespace Samples
 
 		public ProgressBarSample ()
 		{
+			PackStart (new ProgressBar { Fraction = 0 });
+			PackStart (new ProgressBar { Fraction = 0.5d, MinHeight = 20 });
+			PackStart (new ProgressBar { Fraction = 1 });
 			indeterminateProgressBar = new ProgressBar ();
 			PackStart (indeterminateProgressBar, true);
 			indeterminateProgressBar.Indeterminate = true;

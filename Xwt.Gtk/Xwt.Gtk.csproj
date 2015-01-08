@@ -148,6 +148,8 @@
     <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk2PopoverWindow.cs" />
+    <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TextAreaBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TextAreaBackendGtk2.cs" />
   </ItemGroup>

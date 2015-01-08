@@ -80,9 +80,9 @@ namespace Xwt.Mac
 
 		public TreePosition CurrentEventRow { get; set; }
 
-		public override object AddColumn (ListViewColumn col)
+		public override NSTableColumn AddColumn (ListViewColumn col)
 		{
-			NSTableColumn tcol = (NSTableColumn) base.AddColumn (col);
+			NSTableColumn tcol = base.AddColumn (col);
 			if (Tree.OutlineTableColumn == null)
 				Tree.OutlineTableColumn = tcol;
 			return tcol;

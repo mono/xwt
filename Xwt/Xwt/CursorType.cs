@@ -57,6 +57,7 @@ namespace Xwt
 		public static readonly CursorType Move = new CursorType ("Move");
 		public static readonly CursorType Wait = new CursorType ("Watch");
 		public static readonly CursorType Help = new CursorType ("Help");
+		public static readonly CursorType Invisible = new CursorType ("Invisible");
 
 		
 		class CursorTypeValueConverter: TypeConverter

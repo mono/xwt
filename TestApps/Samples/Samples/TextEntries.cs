@@ -76,7 +76,12 @@ namespace Samples
 			PackStart (new Label ("Entry with small font"));
 			TextEntry te2 = new TextEntry ();
 			te2.Font = te2.Font.WithScaledSize (0.5);
+			te2.PlaceholderText = "Placeholder text";
 			PackStart (te2);
+
+			PackStart (new TextEntry { Text = "Entry with custom height", MinHeight = 50 });
+
+			PackStart (new TextEntry { Text = "Readonly text", ReadOnly = true });
 			
 			PackStart (new Label ("Entry with placeholder text"));
 			TextEntry te3 = new TextEntry ();
@@ -98,6 +103,7 @@ namespace Samples
 			TextEntry te5 = new TextEntry ();
 			te5.Text = "I should be centered!";
 			te5.TextAlignment = Alignment.Center;
+			te5.PlaceholderText = "Placeholder text";
 			PackStart (te5);
 
 			HBox hbox1 = new HBox ();

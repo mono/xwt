@@ -1,5 +1,4 @@
-﻿//
-// Util.cs
+﻿// Util.cs
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
@@ -26,6 +25,7 @@
 
 using System.Windows;
 using System.Windows.Media;
+using System;
 
 namespace Xwt.WPFBackend
 {
@@ -50,5 +50,19 @@ namespace Xwt.WPFBackend
 			Matrix m = source.CompositionTarget.TransformToDevice;
 			return m.M11;
 		}
-	}
+
+		public static HorizontalAlignment ToWpfHorizontalAlignment(Alignment alignment)
+		{
+			switch (alignment) {
+			case Alignment.Start:
+				return HorizontalAlignment.Left;
+			case Alignment.Center:
+				return HorizontalAlignment.Center;
+			case Alignment.End:
+				return HorizontalAlignment.Right;
+			}
+
+			throw new InvalidOperationException("Invalid alignment value: " + alignment);
+        }
+    }
 }

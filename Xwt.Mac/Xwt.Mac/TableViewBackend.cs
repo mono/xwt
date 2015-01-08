@@ -33,7 +33,8 @@ using MonoMac.Foundation;
 
 namespace Xwt.Mac
 {
-	public abstract class TableViewBackend<T,S>: ViewBackend<NSScrollView,S>, ICellSource where T:NSTableView where S:ITableViewEventSink
+	public abstract class TableViewBackend<T,S>: ViewBackend<NSScrollView,S>, ITableViewBackend, ICellSource
+		where T:NSTableView where S:ITableViewEventSink
 	{
 		List<NSTableColumn> cols = new List<NSTableColumn> ();
 		protected NSTableView Table;
@@ -186,7 +187,7 @@ namespace Xwt.Mac
 			Table.AllowsMultipleSelection = mode == SelectionMode.Multiple;
 		}
 
-		public virtual object AddColumn (ListViewColumn col)
+		public virtual NSTableColumn AddColumn (ListViewColumn col)
 		{
 			var tcol = new NSTableColumn ();
 			tcol.Editable = true;
@@ -199,6 +200,10 @@ namespace Xwt.Mac
 			tcol.HeaderCell = hc;
 			Widget.InvalidateIntrinsicContentSize ();
 			return tcol;
+		}
+		object IColumnContainerBackend.AddColumn (ListViewColumn col)
+		{
+			return AddColumn (col);
 		}
 		
 		public void RemoveColumn (ListViewColumn col, object handle)

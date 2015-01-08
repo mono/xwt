@@ -33,16 +33,22 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.ColorSelectionDialog dlg;
 		Color color;
+		string defaultTitle;
 		
 		public SelectColorDialogBackend ()
 		{
-			dlg = new Gtk.ColorSelectionDialog ("");
+			dlg = new Gtk.ColorSelectionDialog (null);
+			defaultTitle = dlg.Title;
 		}
 
 		#region ISelectColorDialogBackend implementation
 		public bool Run (IWindowFrameBackend parent, string title, bool supportsAlpha)
 		{
-			dlg.Title = title;
+			if (!String.IsNullOrEmpty (title))
+				dlg.Title = title;
+			else
+				dlg.Title = defaultTitle;
+
 			dlg.ColorSelection.HasOpacityControl = supportsAlpha;
 			
 			dlg.ColorSelection.CurrentColor = color.ToGtkValue ();

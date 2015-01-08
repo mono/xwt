@@ -124,6 +124,8 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.KeyboardHandler, MacKeyboardHandler> ();
 			RegisterBackend <Xwt.Backends.IPasswordEntryBackend, PasswordEntryBackend> ();
 			RegisterBackend <Xwt.Backends.IWebViewBackend, WebViewBackend> ();
+			RegisterBackend <Xwt.Backends.ISaveFileDialogBackend, SaveFileDialogBackend> ();
+			RegisterBackend <Xwt.Backends.IColorPickerBackend, ColorPickerBackend> ();
 		}
 
 		public override void RunApplication ()
@@ -194,7 +196,10 @@ namespace Xwt.Mac
 
 		public override bool HasNativeParent (Widget w)
 		{
-			ViewBackend wb = (ViewBackend)Toolkit.GetBackend (w);
+			var b = (IWidgetBackend) Toolkit.GetBackend (w);
+			if (b is XwtWidgetBackend)
+				b = ((XwtWidgetBackend)b).NativeBackend;
+			ViewBackend wb = (ViewBackend)b;
 			return wb.Widget.Superview != null;
 		}
 		

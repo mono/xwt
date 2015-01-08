@@ -40,7 +40,10 @@ namespace Xwt.WPFBackend
 
 		public string PlaceholderText {
 			get { return (string) GetValue (PlaceholderTextProperty); }
-			set { SetValue (PlaceholderTextProperty, value); }
+			set {
+				SetValue (PlaceholderTextProperty, value);
+				AdornedWidgetChanged (this, null);
+			}
 		}
 
 		public PlaceholderTextAdorner (System.Windows.Controls.ComboBox adornedElement)
@@ -89,33 +92,43 @@ namespace Xwt.WPFBackend
 			Typeface typeFace;
 			TextAlignment alignment;
 			FlowDirection flowDirection;
-			double padding;
+			bool multiline = false;
+			double ypos = 3, xpos = 6;
+
 			if (AdornedPasswordBox != null) {
 				alignment = ConvertAlignment (AdornedPasswordBox.HorizontalContentAlignment);
 				flowDirection = AdornedPasswordBox.FlowDirection;
 				fontSize = AdornedPasswordBox.FontSize;
 				typeFace = AdornedPasswordBox.FontFamily.GetTypefaces ().FirstOrDefault ();
-				padding = 6;
 			}
 			else if (AdornedTextBox != null) {
+				multiline = AdornedTextBox.AcceptsReturn;
 				alignment = AdornedTextBox.ReadLocalValue (TextBox.TextAlignmentProperty) !=DependencyProperty.UnsetValue ? AdornedTextBox.TextAlignment : ConvertAlignment (AdornedTextBox.HorizontalContentAlignment);
 				flowDirection = AdornedTextBox.FlowDirection;
 				fontSize = AdornedTextBox.FontSize;
 				typeFace = AdornedTextBox.FontFamily.GetTypefaces ().FirstOrDefault ();
-				padding = 6;
 			} else {
 				alignment = ConvertAlignment (AdornedComboBox.HorizontalContentAlignment);
 				flowDirection = AdornedComboBox.FlowDirection;
 				fontSize = AdornedComboBox.FontSize;
 				typeFace = AdornedComboBox.FontFamily.GetTypefaces ().FirstOrDefault ();
-				padding = 6;
-
 			}
-			var text = new System.Windows.Media.FormattedText (PlaceholderText ?? "", CultureInfo.CurrentCulture, flowDirection, typeFace, fontSize, System.Windows.Media.Brushes.LightGray) {
-				TextAlignment = alignment
-			};
+			var text = new System.Windows.Media.FormattedText (PlaceholderText ?? "", CultureInfo.CurrentCulture, flowDirection, typeFace, fontSize, System.Windows.Media.Brushes.LightGray);
 
-			drawingContext.DrawText (text, new System.Windows.Point (padding, (RenderSize.Height - text.Height) / 2));
+
+			if (!multiline)
+				ypos = (RenderSize.Height - text.Height) / 2;
+
+			switch (alignment) {
+			case TextAlignment.Center:
+				xpos = (RenderSize.Width - text.Width) * 0.5;
+				break;
+			case TextAlignment.Right:
+				xpos = (RenderSize.Width - text.Width) - 6;
+				break;
+			}
+
+			drawingContext.DrawText (text, new System.Windows.Point (xpos, ypos));
 		}
 
 		private TextAlignment ConvertAlignment(System.Windows.HorizontalAlignment horizontalAlignment)

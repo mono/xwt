@@ -30,11 +30,12 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Reflection;
 using Xwt.Backends;
+using System.Threading;
 
 namespace Xwt
 {
 	[System.ComponentModel.DesignerCategory ("Code")]
-	public abstract class XwtComponent : Component, IFrontend
+	public abstract class XwtComponent : Component, IFrontend, ISynchronizeInvoke
 	{
 		BackendHost backendHost;
 		
@@ -76,6 +77,108 @@ namespace Xwt
 			if (GetType () != typeof(T))
 				throw new InvalidConstructorInvocation (typeof(T));
 		}
+
+		#region ISynchronizeInvoke implementation
+
+		IAsyncResult ISynchronizeInvoke.BeginInvoke (Delegate method, object[] args)
+		{
+			var asyncResult = new AsyncInvokeResult ();
+			asyncResult.Invoke (method, args);
+			return asyncResult;
+		}
+
+		object ISynchronizeInvoke.EndInvoke (IAsyncResult result)
+		{
+			var xwtResult = result as AsyncInvokeResult;
+			if (xwtResult != null) {
+				xwtResult.AsyncResetEvent.Wait ();
+				if (xwtResult.Exception != null)
+					throw xwtResult.Exception;
+			} else {
+				result.AsyncWaitHandle.WaitOne ();
+			}
+
+			return result.AsyncState;
+		}
+
+		object ISynchronizeInvoke.Invoke (Delegate method, object[] args)
+		{
+			return ((ISynchronizeInvoke)this).EndInvoke (((ISynchronizeInvoke)this).BeginInvoke (method, args));
+		}
+
+		bool ISynchronizeInvoke.InvokeRequired {
+			get {
+				return Application.UIThread != Thread.CurrentThread;
+			}
+		}
+
+		#endregion
+	}
+
+	class AsyncInvokeResult : IAsyncResult
+	{
+		ManualResetEventSlim asyncResetEvent = new ManualResetEventSlim (false);
+
+		public AsyncInvokeResult ()
+		{
+			this.asyncResetEvent = new ManualResetEventSlim ();
+		}
+
+		internal void Invoke (Delegate method, object[] args)
+		{
+			Application.Invoke (delegate {
+				try {
+					AsyncState = method.DynamicInvoke(args);
+				} catch (Exception ex){
+					Exception = ex;
+				} finally {
+					IsCompleted = true;
+					asyncResetEvent.Set ();
+				}
+			});
+		}
+
+		#region IAsyncResult implementation
+
+		public object AsyncState {
+			get;
+			private set;
+		}
+
+		public Exception Exception {
+			get;
+			private set;
+		}
+
+		internal ManualResetEventSlim AsyncResetEvent {
+			get {
+				return asyncResetEvent;
+			}
+		}
+
+		public WaitHandle AsyncWaitHandle {
+			get {
+				if (asyncResetEvent == null) {
+					asyncResetEvent = new ManualResetEventSlim(false);
+
+					if (IsCompleted)
+						asyncResetEvent.Set();
+				}
+				return asyncResetEvent.WaitHandle;
+			}
+		}
+
+		public bool CompletedSynchronously { get { return false; } }
+
+
+		public bool IsCompleted {
+			get;
+			private set;
+		}
+
+		#endregion
+
+
 	}
 }
 

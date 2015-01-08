@@ -177,6 +177,17 @@ namespace Xwt.Mac
 		{
 			return CalcSize ();
 		}
+
+		public override NSBackgroundStyle BackgroundStyle {
+			get {
+				return base.BackgroundStyle;
+			}
+			set {
+				base.BackgroundStyle = value;
+				foreach (NSCell c in cells)
+					c.BackgroundStyle = value;
+			}
+		}
 		
 		public override NSCellStateValue State {
 			get {

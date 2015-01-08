@@ -271,6 +271,20 @@ namespace Xwt.GtkBackend
 		{
 			((IDisposable)cr).Dispose ();
 		}
+
+		public static float ToGtkAlignment(Alignment alignment)
+		{
+			switch(alignment) {
+			case Alignment.Start:
+				return 0.0f;
+			case Alignment.Center:
+				return 0.5f;
+			case Alignment.End:
+				return 1.0f;
+			}
+
+			throw new InvalidOperationException("Invalid alignment value: " + alignment);
+		}
 	}
 }
 

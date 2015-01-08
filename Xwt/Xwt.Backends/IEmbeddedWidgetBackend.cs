@@ -52,7 +52,7 @@ namespace Xwt.Backends
 			return new EmbeddedNativeWidgetBackendHost ();
 		}
 
-		public EmbeddedNativeWidget (object nativeWidget, Widget sourceWidget)
+		public void Initialize (object nativeWidget, Widget sourceWidget)
 		{
 			this.nativeWidget = nativeWidget;
 			this.sourceWidget = sourceWidget;

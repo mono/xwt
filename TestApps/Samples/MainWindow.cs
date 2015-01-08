@@ -91,6 +91,7 @@ namespace Samples
 			AddSample (w, "Paneds", typeof(PanedViews));
 			AddSample (w, "Popover", typeof(PopoverSample));
 			AddSample (w, "RadioButton", typeof (RadioButtonSample));
+			AddSample (w, "SpinButton", typeof (SpinButtonSample));
 			AddSample (w, "Scroll View", typeof(ScrollWindowSample));
 			AddSample (w, "Scrollbar", typeof(ScrollbarSample));
 			AddSample (w, "Slider", typeof (SliderSample));
@@ -120,10 +121,14 @@ namespace Samples
 			AddSample (wf, "Widget Events", typeof(WidgetEvents));
 			AddSample (wf, "Opacity", typeof(OpacitySample));
 			AddSample (wf, "Tooltips", typeof(Tooltips));
+			AddSample (wf, "Cursors", typeof(MouseCursors));
 
-			AddSample (null, "Windows", typeof(Windows));
+			var windows = AddSample (null, "Windows", typeof(Windows));
+			AddSample (windows, "Message Dialogs", typeof(MessageDialogs));
 			
 			AddSample (null, "Screens", typeof (ScreensSample));
+
+			AddSample (null, "Multithreading", typeof (MultithreadingSample));
 
 			samplesTree.DataSource = store;
 			
