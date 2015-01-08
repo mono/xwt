@@ -176,6 +176,16 @@ namespace Xwt.GtkBackend
 			}
 			throw new InvalidOperationException("Invalid TreeViewGridLines value: " + value);
 		}
+
+		public static float ToGtkAlignment(this Alignment alignment)
+		{
+			switch(alignment) {
+				case Alignment.Start: return 0.0f;
+				case Alignment.Center: return 0.5f;
+				case Alignment.End: return 1.0f;
+			}
+			throw new InvalidOperationException("Invalid alignment value: " + alignment);
+		}
 	}
 }
 
