@@ -243,7 +243,7 @@ namespace Xwt.GtkBackend
 
 		public static void RenderPlaceholderText (this Gtk.TextView textView, Cairo.Context cr, string placeHolderText, ref Pango.Layout layout)
 		{
-			if (textView.Buffer.Text.Length > 0)
+			if (textView.Buffer.Text.Length > 0 || textView.HasFocus)
 				return;
 			float xalign = 0;
 			switch (textView.Justification) {
