@@ -193,8 +193,12 @@ namespace Xwt.WPFBackend
 		
 		public override bool HasNativeParent (Widget w)
 		{
-			var backend = (IWpfWidgetBackend)Toolkit.GetBackend (w);
-			return backend.Widget.Parent != null;
+
+			var b = (IWidgetBackend) Toolkit.GetBackend (w);
+			if (b is XwtWidgetBackend)
+				b = ((XwtWidgetBackend)b).NativeBackend;
+			IWpfWidgetBackend wb = (IWpfWidgetBackend)b;
+			return wb.Widget.Parent != null;
 		}
 
 		public override object GetNativeImage (Image image)
