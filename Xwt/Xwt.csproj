@@ -329,6 +329,8 @@
     <Compile Include="Xwt.Backends\ICalendarBackend.cs" />
     <Compile Include="Xwt\FontSelector.cs" />
     <Compile Include="Xwt.Backends\IFontSelectorBackend.cs" />
+    <Compile Include="Xwt\SelectFontDialog.cs" />
+    <Compile Include="Xwt.Backends\ISelectFontDialogBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
