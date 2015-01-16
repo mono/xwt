@@ -36,6 +36,9 @@ namespace Xwt.Mac
 {
 	public class ButtonBackend: ViewBackend<NSButton,IButtonEventSink>, IButtonBackend
 	{
+		ButtonType currentType;
+		ButtonStyle currentStyle;
+
 		public ButtonBackend ()
 		{
 		}
@@ -44,6 +47,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new MacButton (EventSink, ApplicationContext);
+			Widget.SetButtonType (NSButtonType.MomentaryPushIn);
 		}
 
 		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
@@ -80,29 +84,40 @@ namespace Xwt.Mac
 				case ContentPosition.Center: Widget.ImagePosition = string.IsNullOrEmpty (label) ? NSCellImagePosition.ImageOnly : NSCellImagePosition.ImageOverlaps; break;
 				}
 			}
+			SetButtonStyle (currentStyle);
 			ResetFittingSize ();
 		}
 		
 		public virtual void SetButtonStyle (ButtonStyle style)
 		{
-			switch (style) {
-			case ButtonStyle.Normal:
-				Widget.BezelStyle = NSBezelStyle.Rounded;
-				Widget.SetButtonType (NSButtonType.MomentaryPushIn);
-				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
-				break;
-			case ButtonStyle.Borderless:
-			case ButtonStyle.Flat:
-				Widget.BezelStyle = NSBezelStyle.ShadowlessSquare;
-				Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
-				break;
+			currentStyle = style;
+			if (currentType == ButtonType.Normal)
+			{
+				switch (style) {
+				case ButtonStyle.Normal:
+					if (Widget.Image != null
+						|| Frontend.MinHeight > 0
+						|| Frontend.HeightRequest > 0
+						|| Widget.Title.Contains (Environment.NewLine))
+						Widget.BezelStyle = NSBezelStyle.RegularSquare;
+					else
+						Widget.BezelStyle = NSBezelStyle.Rounded;
+					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
+					break;
+				case ButtonStyle.Borderless:
+				case ButtonStyle.Flat:
+					Widget.BezelStyle = NSBezelStyle.ShadowlessSquare;
+					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
+					break;
+				}
 			}
 		}
 		
-		static Selector selSetShowsBorderOnlyWhileMouseInside = new Selector ("setShowsBorderOnlyWhileMouseInside:");
+		protected static Selector selSetShowsBorderOnlyWhileMouseInside = new Selector ("setShowsBorderOnlyWhileMouseInside:");
 		
 		public void SetButtonType (ButtonType type)
 		{
+			currentType = type;
 			switch (type) {
 			case ButtonType.Disclosure:
 				Widget.BezelStyle = NSBezelStyle.Disclosure;
@@ -113,12 +128,19 @@ namespace Xwt.Mac
 				Widget.Title = "";
 				break;
 			default:
-				Widget.BezelStyle = NSBezelStyle.Rounded;
+					SetButtonStyle (currentStyle);
 				break;
 			}
 		}
 		
 		#endregion
+
+		// Disable ugly bg color support. The default behavior applies the color around the button.
+		// TODO: bg color needs to be drawn above the bezel.
+		public override Color BackgroundColor {
+			get;
+			set;
+		}
 	}
 	
 	class MacButton: NSButton, IViewObject
