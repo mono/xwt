@@ -334,7 +334,7 @@ namespace Xwt.Mac
 				}
 				else if (att is FontTextAttribute) {
 					var xa = (FontTextAttribute)att;
-					var nf = (NSFont)Toolkit.GetBackend (xa.Font);
+					var nf = ((FontData)Toolkit.GetBackend (xa.Font)).Font;
 					ns.AddAttribute (NSAttributedString.FontAttributeName, nf, r);
 				}
 			}
