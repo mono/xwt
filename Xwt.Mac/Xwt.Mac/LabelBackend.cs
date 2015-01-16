@@ -214,6 +214,7 @@ namespace Xwt.Mac
 				Child.Frame = new System.Drawing.RectangleF (0, 0, Frame.Width, Frame.Height);
 			else
 				Child.Frame = new System.Drawing.RectangleF (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
+			Child.NeedsDisplay = true;
 		}
 	}
 	
