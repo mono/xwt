@@ -94,9 +94,11 @@ namespace Xwt.Mac
 		public int[] SelectedRows {
 			get {
 				int[] sel = new int [Table.SelectedRowCount];
-				int i = 0;
-				foreach (int r in Table.SelectedRows)
-					sel [i++] = r;
+				if (sel.Length > 0) {
+					int i = 0;
+					foreach (int r in Table.SelectedRows)
+						sel [i++] = r;
+				}
 				return sel;
 			}
 		}
