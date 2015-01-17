@@ -103,18 +103,28 @@ namespace Xwt.Mac
 		static int GetWeightValue (FontWeight weight)
 		{
 			switch (weight) {
+			case FontWeight.Thin:
+				return 1;
 			case FontWeight.Ultralight:
 				return 2;
 			case FontWeight.Light:
+				return 3;
+			case FontWeight.Book:
 				return 4;
 			case FontWeight.Normal:
 				return 5;
+			case FontWeight.Medium:
+				return 6;
 			case FontWeight.Semibold:
-				return 7;
+				return 8;
 			case FontWeight.Bold:
 				return 9;
 			case FontWeight.Ultrabold:
+				return 10;
+			case FontWeight.Heavy:
 				return 11;
+			case FontWeight.Ultraheavy:
+				return 12;
 			default:
 				return 13;
 			}
@@ -122,19 +132,27 @@ namespace Xwt.Mac
 
 		internal static FontWeight GetWeightFromValue (int w)
 		{
-			if (w <= 2)
+			if (w <= 1)
+				return FontWeight.Thin;
+			if (w == 2)
 				return FontWeight.Ultralight;
-			if (w <= 4)
+			if (w == 3)
 				return FontWeight.Light;
-			if (w <= 6)
+			if (w == 4)
+				return FontWeight.Book;
+			if (w == 5)
 				return FontWeight.Normal;
+			if (w == 6)
+				return FontWeight.Medium;
 			if (w <= 8)
 				return FontWeight.Semibold;
 			if (w == 9)
 				return FontWeight.Bold;
-			if (w <= 12)
+			if (w == 10)
 				return FontWeight.Ultrabold;
-			return FontWeight.Heavy;
+			if (w == 11)
+				return FontWeight.Heavy;
+			return FontWeight.Ultraheavy;
 		}
 
 		NSFontTraitMask GetStretchTrait (FontStretch stretch)

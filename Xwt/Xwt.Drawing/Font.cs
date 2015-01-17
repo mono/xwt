@@ -305,12 +305,20 @@ namespace Xwt.Drawing
 	
 	public enum FontWeight
 	{
-		/// The ultralight weight (200)
+		/// The thin weight (100)
+		Thin = 100,
+		/// The ultra light weight (200)
 		Ultralight = 200,
 		/// The light weight (300)
 		Light = 300,
+		/// The semi light weight (350)
+		Semilight = 350,
+		/// The book weight (380)
+		Book = 350,
 		/// The default weight (400)
 		Normal = 400,
+		/// The medium weight (500)
+		Medium = 500,
 		/// The semi bold weight (600)
 		Semibold = 600,
 		/// The bold weight (700)
@@ -318,7 +326,9 @@ namespace Xwt.Drawing
 		/// The ultrabold weight (800)
 		Ultrabold = 800,
 		/// The heavy weight (900)
-		Heavy = 900
+		Heavy = 900,
+		/// The ultra heavy weight (1000)
+		Ultraheavy = 1000
 	}
 	
 	public enum FontStretch
