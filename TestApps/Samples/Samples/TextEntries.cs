@@ -106,22 +106,42 @@ namespace Samples
 			te5.PlaceholderText = "Placeholder text";
 			PackStart (te5);
 
-			TextEntry te6 = new TextEntry ();
-			te6.Text = "I should have" + Environment.NewLine + "multiple lines!";
-			te6.PlaceholderText = "Placeholder text";
-			te6.MultiLine = true;
-			te6.MinHeight = 40;
-			PackStart (te6);
+			HBox hbox1 = new HBox ();
+
+			TextArea ta1 = new TextArea ();
+			ta1.Text = "I should have" + Environment.NewLine + "multiple lines and be centered!";
+			ta1.PlaceholderText = "Placeholder text";
+			ta1.TextAlignment = Alignment.Center;
+			ta1.MinHeight = 40;
+			ta1.Activated += (sender, e) => MessageDialog.ShowMessage ("Activated");
+			hbox1.PackStart (ta1, true);
+
+			TextArea ta2 = new TextArea ();
+			ta2.Text = "I should have multiple lines," + Environment.NewLine + "no frame and should wrap on words!";
+			ta2.PlaceholderText = "Placeholder text";
+			ta2.ShowFrame = false;
+			ta2.Wrap = WrapMode.Word;
+			hbox1.PackStart (ta2, true);
+
+			PackStart (hbox1);
+
+			TextArea ta3 = new TextArea ();
+			ta3.Text = "I should have\nmultiple lines,\nwrap on words,\n and scroll\nvertically ";
+			ta3.PlaceholderText = "Placeholder text";
+			ta3.Wrap = WrapMode.Word;
+			var scrollTa3 = new ScrollView (ta3);
+			scrollTa3.HorizontalScrollPolicy = ScrollPolicy.Never;
+			PackStart (scrollTa3);
 
 			try {
-				SearchTextEntry te7 = new SearchTextEntry ();
-				te7.PlaceholderText = "Type to search ...";
-				PackStart (te7);
+				SearchTextEntry ts1 = new SearchTextEntry ();
+				ts1.PlaceholderText = "Type to search ...";
+				PackStart (ts1);
 
-				SearchTextEntry te8 = new SearchTextEntry ();
-				te8.PlaceholderText = "I should have no frame";
-				te8.ShowFrame = false;
-				PackStart (te8);
+				SearchTextEntry ts2 = new SearchTextEntry ();
+				ts2.PlaceholderText = "I should have no frame";
+				ts2.ShowFrame = false;
+				PackStart (ts2);
 			} catch (InvalidOperationException ex) {
 				Console.WriteLine (ex);
 			}

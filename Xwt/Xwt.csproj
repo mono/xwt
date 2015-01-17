@@ -325,6 +325,8 @@
     <Compile Include="Xwt\ColorPicker.cs" />
     <Compile Include="Xwt.Backends\IColorPickerBackend.cs" />
     <Compile Include="Xwt\XwtSynchronizationContext.cs" />
+    <Compile Include="Xwt.Backends\ITextAreaBackend.cs" />
+    <Compile Include="Xwt\TextArea.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

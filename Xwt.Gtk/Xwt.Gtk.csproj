@@ -150,6 +150,8 @@
     <Compile Include="Xwt.GtkBackend\Gtk2PopoverWindow.cs" />
     <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TextAreaBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TextAreaBackendGtk2.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

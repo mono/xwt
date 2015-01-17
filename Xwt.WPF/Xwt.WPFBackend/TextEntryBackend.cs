@@ -36,7 +36,7 @@ using Xwt.WPFBackend.Utilities;
 namespace Xwt.WPFBackend
 {
 	public class TextEntryBackend
-		: WidgetBackend, ITextEntryBackend
+		: WidgetBackend, ITextAreaBackend, ITextEntryBackend
 	{
 		bool multiline;
 		string placeholderText;
@@ -56,8 +56,16 @@ namespace Xwt.WPFBackend
 				if (!String.IsNullOrEmpty(placeholderText))
 					Adorner.PlaceholderText = placeholderText;
 			};
-			TextBox.VerticalContentAlignment = VerticalAlignment.Center;
-		}        
+		}
+
+		public override void InitializeBackend (object frontend, ApplicationContext context)
+		{
+			base.InitializeBackend (frontend, context);
+			if (Frontend is TextArea)
+				MultiLine = true;
+			else
+				MultiLine = false;
+		}
 
 		protected override double DefaultNaturalWidth
 		{
@@ -91,6 +99,20 @@ namespace Xwt.WPFBackend
 		{
 			get { return TextBox.IsReadOnly; }
 			set { TextBox.IsReadOnly = true; }
+		}
+
+		public WrapMode Wrap {
+			get {
+				if (TextBox.TextWrapping == TextWrapping.NoWrap)
+					return WrapMode.None;
+				else
+					return WrapMode.Word;
+			} set {
+				if (value == WrapMode.None)
+					TextBox.TextWrapping = TextWrapping.NoWrap;
+				else
+					TextBox.TextWrapping = TextWrapping.Wrap;
+			}
 		}
 
 		public bool ShowFrame
@@ -140,17 +162,15 @@ namespace Xwt.WPFBackend
 		public bool MultiLine {
 			get { return multiline; }
 			set {
-				if (multiline != value) {
-					multiline = value;
-					if (multiline) {
-						TextBox.VerticalContentAlignment = VerticalAlignment.Top;
-						TextBox.AcceptsReturn = true;
-						TextBox.TextWrapping = TextWrapping.Wrap;
-					} else {
-						TextBox.VerticalContentAlignment = VerticalAlignment.Center;
-						TextBox.AcceptsReturn = false;
-						TextBox.TextWrapping = TextWrapping.NoWrap;
-					}
+				multiline = value;
+				if (multiline) {
+					TextBox.VerticalContentAlignment = VerticalAlignment.Top;
+					TextBox.AcceptsReturn = true;
+					TextBox.TextWrapping = TextWrapping.Wrap;
+				} else {
+					TextBox.VerticalContentAlignment = VerticalAlignment.Center;
+					TextBox.AcceptsReturn = false;
+					TextBox.TextWrapping = TextWrapping.NoWrap;
 				}
 			}
 		}
@@ -159,18 +179,18 @@ namespace Xwt.WPFBackend
 		{
 			base.EnableEvent (eventId);
 
-			if (eventId is TextEntryEvent)
+			if (eventId is TextBoxEvent)
 			{
-				switch ((TextEntryEvent)eventId)
+				switch ((TextBoxEvent)eventId)
 				{
 					// TODO: Should we ignore this for placeholder changes?
-					case TextEntryEvent.Changed:
+					case TextBoxEvent.Changed:
 						TextBox.TextChanged += OnTextChanged;
 						break;
-					case TextEntryEvent.Activated:
+					case TextBoxEvent.Activated:
 						TextBox.KeyDown += OnActivated;
 						break;
-					case TextEntryEvent.SelectionChanged:
+					case TextBoxEvent.SelectionChanged:
 						TextBox.SelectionChanged += OnSelectionChanged;
 						break;
 				}
@@ -181,17 +201,17 @@ namespace Xwt.WPFBackend
 		{
 			base.DisableEvent (eventId);
 
-			if (eventId is TextEntryEvent)
+			if (eventId is TextBoxEvent)
 			{
-				switch ((TextEntryEvent)eventId)
+				switch ((TextBoxEvent)eventId)
 				{
-					case TextEntryEvent.Changed:
+					case TextBoxEvent.Changed:
 						TextBox.TextChanged -= OnTextChanged;
 						break;
-					case TextEntryEvent.Activated:
+					case TextBoxEvent.Activated:
 						TextBox.KeyDown -= OnActivated;
 						break;
-					case TextEntryEvent.SelectionChanged:
+					case TextBoxEvent.SelectionChanged:
 						TextBox.SelectionChanged -= OnSelectionChanged;
 						break;
 				}
@@ -203,8 +223,8 @@ namespace Xwt.WPFBackend
 			get { return (ExTextBox) Widget; }
 		}
 
-		protected new ITextEntryEventSink EventSink {
-			get { return (ITextEntryEventSink)base.EventSink; }
+		protected new ITextBoxEventSink EventSink {
+			get { return (ITextBoxEventSink)base.EventSink; }
 		}
 		
 		private void OnActivated(object sender, System.Windows.Input.KeyEventArgs e)
