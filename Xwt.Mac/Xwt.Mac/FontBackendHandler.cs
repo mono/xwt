@@ -185,7 +185,10 @@ namespace Xwt.Mac
 			FontData f = (FontData) handle;
 			f = f.Copy ();
 			int w = GetWeightValue (weight);
-			f.Font = NSFontManager.SharedFontManager.FontWithFamily (f.Font.FamilyName, NSFontManager.SharedFontManager.TraitsOfFont (f.Font), w, f.Font.PointSize);
+			var traits = NSFontManager.SharedFontManager.TraitsOfFont (f.Font);
+			traits |= weight >= FontWeight.Bold ? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
+			traits &= weight >= FontWeight.Bold ? ~NSFontTraitMask.Unbold : ~NSFontTraitMask.Bold;
+			f.Font = NSFontManager.SharedFontManager.FontWithFamily (f.Font.FamilyName, traits, w, f.Font.PointSize);
 			f.Weight = weight;
 			return f;
 		}
