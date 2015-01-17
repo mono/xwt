@@ -110,6 +110,21 @@ namespace Xwt.GtkBackend
 			return;
 		}
 
+		public static Xwt.Drawing.Color GetBackgroundColor (this Gtk.Widget widget)
+		{
+			return widget.GetBackgroundColor (Gtk.StateFlags.Normal);
+		}
+
+		public static Xwt.Drawing.Color GetBackgroundColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			return widget.GetBackgroundColor (state.ToGtk3StateFlags ());
+		}
+
+		public static Xwt.Drawing.Color GetBackgroundColor (this Gtk.Widget widget, Gtk.StateFlags state)
+		{
+			return widget.StyleContext.GetBackgroundColor (state).ToXwtValue ();
+		}
+
 		public static void SetBackgroundColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
 		{
 			widget.SetBackgroundColor (Gtk.StateFlags.Normal, color);
