@@ -183,13 +183,21 @@ namespace Xwt.WPFBackend
 		{
 			window.Activate ();
 		}
-
 		
 		bool IWindowFrameBackend.FullScreen {
 			get {
-				return false;
+				return window.WindowState == WindowState.Maximized 
+					&& window.ResizeMode == ResizeMode.NoResize;
 			}
 			set {
+				if (value) {
+					window.WindowState = WindowState.Maximized;
+					window.ResizeMode = ResizeMode.NoResize;
+				}
+				else {
+					window.WindowState = WindowState.Normal;
+					window.ResizeMode = ResizeMode.CanResize;
+				}
 			}
 		}
 
