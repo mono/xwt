@@ -29,6 +29,7 @@ using Xwt.Backends;
 using Xwt.Drawing;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+using System.Collections.Generic;
 
 namespace Xwt.Mac
 {
@@ -45,9 +46,20 @@ namespace Xwt.Mac
 			return Create ("Menlo", font.PointSize, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal);
 		}
 
-		public override System.Collections.Generic.IEnumerable<string> GetInstalledFonts ()
+		public override IEnumerable<string> GetInstalledFonts ()
 		{
 			return NSFontManager.SharedFontManager.AvailableFontFamilies;
+		}
+
+		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
+		{
+			foreach (var nsFace in NSFontManager.SharedFontManager.AvailableMembersOfFontFamily(family)) {
+				var name = (string)new NSString(nsFace.ValueAt(1));
+				var weight = new NSNumber (nsFace.ValueAt (2)).Int32Value;
+				var traits = (NSFontTraitMask)new NSNumber (nsFace.ValueAt (3)).Int32Value;
+				yield return new KeyValuePair<string, object>(name, FontData.FromFamily(family, traits, weight, 0));
+			}
+			yield break;
 		}
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
@@ -260,6 +272,16 @@ namespace Xwt.Mac
 
 		public FontData ()
 		{
+		}
+
+		public static FontData FromFamily (string family, NSFontTraitMask traits, int weight, float size)
+		{
+			var font = NSFontManager.SharedFontManager.FontWithFamily (family, traits, weight, size);
+			var gentraits = NSFontManager.SharedFontManager.TraitsOfFont (font);
+			// NSFontManager may loose the traits, restore them here
+			if (traits > 0 && gentraits == 0)
+				font = NSFontManager.SharedFontManager.ConvertFont (font, traits);
+			return FromFont (font);
 		}
 
 		public static FontData FromFont (NSFont font)

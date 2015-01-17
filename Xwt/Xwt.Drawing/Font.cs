@@ -200,6 +200,38 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
+		/// Gets the available family/font variants with varying weight, style and stretch.
+		/// </summary>
+		/// <returns>All available font variants for a specific family/font.</returns>
+		/// <param name="fontFamily">A comma separated list of families</param>
+		/// <remarks>
+		/// Not all weights, styles or strech variants and combinations are available
+		/// for every font or family. In case of an invalid combination, most toolkits
+		/// fallback to a system default variant. GetAvailableFontFaces helps to retrieve
+		/// only valid combinations for a specific font family.
+		/// </remarks>
+		public static ReadOnlyCollection<FontFace> GetAvailableFontFaces (string fontFamily)
+		{
+			fontFamily = GetSupportedFont (fontFamily);
+			return new ReadOnlyCollection<FontFace>(Toolkit.CurrentEngine.FontBackendHandler.GetAvailableFamilyFaces(fontFamily).Select (f => new FontFace(f.Key, f.Value)).ToList ());
+		}
+
+		/// <summary>
+		/// Gets the available variants of the font with varying weight, style and stretch.
+		/// </summary>
+		/// <returns>All available font variants for a specific family/font.</returns>
+		/// <remarks>
+		/// Not all weights, styles or strech variants and combinations are available
+		/// for every font or family. In case of an invalid combination, most toolkits
+		/// fallback to a system default variant. GetAvailableFontFaces helps to retrieve
+		/// only valid combinations for a specific font family.
+		/// </remarks>
+		public ReadOnlyCollection<FontFace> GetAvailableFontFaces ()
+		{
+			return GetAvailableFontFaces (Family);
+		}
+
+		/// <summary>
 		/// Returns a copy of the font using the provided font family
 		/// </summary>
 		/// <returns>The new font</returns>
@@ -293,6 +325,42 @@ namespace Xwt.Drawing
 		public override int GetHashCode ()
 		{
 			return ToString().GetHashCode ();
+		}
+	}
+
+	/// <summary>
+	/// The FontFace class describes a variant of a specific font family with a name and its Xwt representation.
+	/// </summary>
+	public class FontFace
+	{
+		/// <summary>
+		/// The specific font variant/face name, unique for the font family on the local system.
+		/// </summary>
+		/// <value>The variant/face name.</value>
+		/// <remarks>
+		/// On most systems the name is a combination of the written weight, style and stretch
+		/// of the font variant without the default values.
+		/// The name is only valid for the specific font, backend and system. On some systems
+		/// the names can be (partially) localized.
+		/// Examples: "Regular", "Bold", "Bold Italic", "Condensed"</remarks>
+		public string Name { get; private set; }
+
+		/// <summary>
+		/// The font with the family face/variant specific settings (weight, style, stretch).
+		/// </summary>
+		/// <value>The <see cref="Xwt.Drawing.Font"/> representation of the font variant/face .</value>
+		public Font Font { get; private set; }
+
+		internal FontFace (string name, Font font)
+		{
+			Name = name;
+			Font = font;
+		}
+
+		internal FontFace (string name, object backend)
+		{
+			Name = name;
+			Font = new Font (backend);
 		}
 	}
 
