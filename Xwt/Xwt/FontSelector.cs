@@ -119,15 +119,13 @@ namespace Xwt
 
 	class DefaultFontSelectorBackend: XwtWidgetBackend, IFontSelectorBackend
 	{
-		Font font = Font.SystemFont;
+		Font selectedFont = Font.SystemFont;
 		TextEntry previewText = new TextEntry ();
 
 		ListView listFonts = new ListView ();
 		ListStore storeFonts;
-		ListView listWeight = new ListView ();
-		ListStore storeWeight;
-		ListView listStyle = new ListView ();
-		ListStore storeStyle;
+		ListView listFace = new ListView ();
+		ListStore storeFace;
 		ListBox listSize = new ListBox ();
 		SpinButton spnSize = new SpinButton();
 
@@ -137,8 +135,8 @@ namespace Xwt
 			72.0,   80.0,  88.0,  96.0,  104.0,  112.0, 120.0, 128.0, 136.0, 144.0
 		};
 
-		DataField<FontWeight> dweight = new DataField<FontWeight> ();
-		DataField<FontStyle> dstyle = new DataField<FontStyle> ();
+		DataField<Font> dfaceFont = new DataField<Font> ();
+		DataField<string> dfaceName = new DataField<string> ();
 		DataField<string> dfamily = new DataField<string> ();
 		DataField<string> dfamilymarkup = new DataField<string> ();
 
@@ -155,32 +153,19 @@ namespace Xwt
 			listFonts.DataSource = storeFonts;
 			listFonts.HeadersVisible = false;
 			listFonts.Columns.Add ("Font", new TextCellView () { TextField = dfamily, MarkupField = dfamilymarkup });
+			listFonts.MinWidth = 150;
 
 			foreach (var family in families) {
 				var row = storeFonts.AddRow ();
 				storeFonts.SetValues (row, dfamily, family, dfamilymarkup, "<span font=\"" + family + " " + (listFonts.Font.Size) + "\">" + family + "</span>");
 			}
 
-			storeWeight = new ListStore (dweight);
-			listWeight.DataSource = storeWeight;
-			listWeight.HeadersVisible = false;
-			listWeight.Columns.Add ("Weight", dweight);
-
-			foreach (var weight in Enum.GetValues(typeof(FontWeight))) {
-				var row = storeWeight.AddRow ();
-				storeWeight.SetValue(row, dweight, (FontWeight)weight);
-			}
-
-			storeStyle = new ListStore (dstyle);
-			listStyle.DataSource = storeStyle;
-			listStyle.HeadersVisible = false;
-			listStyle.Columns.Add ("Style", dstyle);
-
-
-			foreach (var style in Enum.GetValues(typeof(FontStyle))) {
-				var row = storeStyle.AddRow ();
-				storeStyle.SetValue(row, dstyle, (FontStyle)style);
-			}
+			storeFace = new ListStore (dfaceName, dfaceFont);
+			listFace.DataSource = storeFace;
+			listFace.HeadersVisible = false;
+			listFace.Columns.Add ("Style", dfaceName);
+			listFace.MinWidth = 60;
+			//listFace.HorizontalScrollPolicy = ScrollPolicy.Never;
 
 			foreach (var size in DefaultFontSizes)
 				listSize.Items.Add (size);
@@ -189,6 +174,7 @@ namespace Xwt
 			spnSize.MinimumValue = 1;
 			spnSize.MaximumValue = 800;
 			spnSize.IncrementValue = 1;
+			PreviewText = "The quick brown fox jumps over the lazy dog.";
 
 			spnSize.ValueChanged += (sender, e) => {
 				if (DefaultFontSizes.Contains (spnSize.Value)) {
@@ -198,20 +184,28 @@ namespace Xwt
 				}
 				else
 					listSize.UnselectAll ();
-				UpdateFont();
+				SetFont(selectedFont.WithSize (spnSize.Value));
 			};
 
-			listWeight.HorizontalScrollPolicy = ScrollPolicy.Never;
-			listStyle.HorizontalScrollPolicy = ScrollPolicy.Never;
-
 			SelectedFont = Font.SystemFont;
-			PreviewText = "The quick brown fox jumps over the lazy dog.";
+			UpdateFaceList (selectedFont); // family change not connected at this point, update manually
 
-			listFonts.SelectionChanged += (sender, e) => UpdateFont();
-			listWeight.SelectionChanged += (sender, e) => UpdateFont();
-			listStyle.SelectionChanged += (sender, e) => UpdateFont();
+
+			listFonts.SelectionChanged += (sender, e) => {
+				if (listFonts.SelectedRow >= 0) {
+					var newFont = selectedFont.WithFamily (storeFonts.GetValue (listFonts.SelectedRow, dfamily));
+					UpdateFaceList (newFont);
+					SetFont(newFont);
+				}
+			};
+
+			listFace.SelectionChanged += (sender, e) => {
+				if (listFace.SelectedRow >= 0)
+					SetFont (storeFace.GetValue (listFace.SelectedRow, dfaceFont).WithSize (selectedFont.Size));
+			};
+
 			listSize.SelectionChanged += (sender, e) => {
-				if (listSize.SelectedRow >= 0 && DefaultFontSizes[listSize.SelectedRow] != spnSize.Value)
+				if (listSize.SelectedRow >= 0 && Math.Abs (DefaultFontSizes [listSize.SelectedRow] - spnSize.Value) > double.Epsilon)
 					spnSize.Value = DefaultFontSizes[listSize.SelectedRow];
 			};
 
@@ -219,11 +213,9 @@ namespace Xwt
 			familyBox.PackStart (new Label ("Font:"));
 			familyBox.PackStart (listFonts, true);
 
-			VBox propBox = new VBox ();
-			propBox.PackStart (new Label ("Weight:"));
-			propBox.PackStart (listWeight, true);
-			propBox.PackStart (new Label ("Style:"));
-			propBox.PackStart (listStyle, true);
+			VBox styleBox = new VBox ();
+			styleBox.PackStart (new Label ("Style:"));
+			styleBox.PackStart (listFace, true);
 
 			VBox sizeBox = new VBox ();
 			sizeBox.PackStart (new Label ("Size:"));
@@ -232,7 +224,7 @@ namespace Xwt
 
 			HBox fontBox = new HBox ();
 			fontBox.PackStart (familyBox, true);
-			fontBox.PackStart (propBox);
+			fontBox.PackStart (styleBox, true);
 			fontBox.PackStart (sizeBox);
 
 			VBox mainBox = new VBox ();
@@ -245,43 +237,50 @@ namespace Xwt
 			Content = mainBox;
 		}
 
-		void UpdateFont()
+		void SetFont(Font newFont)
 		{
-			SelectedFont = Font.FromName (storeFonts.GetValue(listFonts.SelectedRow, dfamily))
-				.WithWeight (storeWeight.GetValue (listWeight.SelectedRow, dweight))
-				.WithStyle (storeStyle.GetValue (listStyle.SelectedRow, dstyle))
-				.WithSize (spnSize.Value);
+			selectedFont = newFont;
+			previewText.Font = selectedFont;
+
+			if (Math.Abs (spnSize.Value - selectedFont.Size) > double.Epsilon)
+				spnSize.Value = selectedFont.Size;
 
 			if (enableFontChangedEvent)
 				Application.Invoke (delegate {
-					EventSink.OnFontChanged ();
-				});
+				EventSink.OnFontChanged ();
+			});
+		}
+
+		void UpdateFaceList (Font font)
+		{
+			storeFace.Clear ();
+			int row = -1;
+			foreach (var face in font.GetAvailableFontFaces ()) {
+				row = storeFace.AddRow ();
+				storeFace.SetValues (row, dfaceName, face.Name, dfaceFont, face.Font);
+			}
+			if (row >= 0) {
+				listFace.SelectRow (0);
+			}
+			listFace.QueueForReallocate ();
 		}
 
 		public Font SelectedFont {
 			get {
-				return font;
+				return selectedFont;
 			}
 			set {
-				font = value;
-				previewText.Font = font;
+				selectedFont = value;
+				previewText.Font = selectedFont;
 
-				int rowFamily = families.IndexOf (font.Family);
+				if (Math.Abs (spnSize.Value - selectedFont.Size) > double.Epsilon)
+					spnSize.Value = selectedFont.Size;
+
+				int rowFamily = families.IndexOf (selectedFont.Family);
 				if (listFonts.SelectedRow != rowFamily) {
 					listFonts.ScrollToRow (rowFamily);
 					listFonts.SelectRow (rowFamily);
 				}
-				int rowWeight = Array.IndexOf (Enum.GetValues(typeof(FontWeight)), font.Weight);
-				if (listWeight.SelectedRow != rowWeight) {
-					listWeight.ScrollToRow (rowWeight);
-					listWeight.SelectRow (rowWeight);
-				}
-				int rowStyle = Array.IndexOf (Enum.GetValues(typeof(FontStyle)), font.Style);
-				if (listStyle.SelectedRow != rowStyle) {
-					listStyle.ScrollToRow (rowStyle);
-					listStyle.SelectRow (rowStyle);
-				}
-				spnSize.Value = font.Size;
 			}
 		}
 
