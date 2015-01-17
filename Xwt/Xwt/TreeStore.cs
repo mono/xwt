@@ -104,6 +104,47 @@ namespace Xwt
 			var pos = Backend.InsertBefore (positon);
 			return new TreeNavigator (Backend, pos);
 		}
+
+		public IEnumerable<TreeNavigator> FindNavigators<T> (T fieldValue, IDataField<T> field)
+		{
+			if (fieldValue == null) {
+				return Enumerable.Empty<TreeNavigator> ();
+			}
+			TreeNavigator navigator = GetFirstNode ();
+			if (navigator.CurrentPosition == null) {
+				return Enumerable.Empty<TreeNavigator> ();
+			}
+			return FindNavigators (fieldValue, field, navigator);
+		}
+
+		static IEnumerable<TreeNavigator> FindNavigators<T> (T fieldValue, IDataField<T> field, TreeNavigator navigator)
+		{
+			do {
+				if (IsNavigator (navigator, fieldValue, field)) {
+					yield return navigator.Clone ();
+				}
+				foreach (TreeNavigator foundChild in FindChildNavigators (navigator, fieldValue, field)) {
+					yield return foundChild.Clone ();
+				}
+			} while (navigator.MoveNext());
+		}
+
+		static IEnumerable<TreeNavigator> FindChildNavigators<T> (TreeNavigator navigator, T fieldValue, IDataField<T> field)
+		{
+			if (!navigator.MoveToChild ()) {
+				yield break;
+			}
+			foreach (var treeNavigator in FindNavigators (fieldValue, field, navigator)) {
+				yield return treeNavigator;
+			}
+			navigator.MoveToParent ();
+		}
+
+		static bool IsNavigator<T> (TreeNavigator navigator, T fieldValue, IDataField<T> field)
+		{
+			T value = navigator.GetValue (field);
+			return fieldValue.Equals (value);
+		}
 		
 		public void Clear ()
 		{
