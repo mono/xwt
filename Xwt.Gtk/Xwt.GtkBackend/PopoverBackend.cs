@@ -27,6 +27,7 @@
 using System;
 
 using Xwt.Backends;
+using Xwt.CairoBackend;
 
 using Gtk;
 using Cairo;
@@ -43,6 +44,8 @@ namespace Xwt.GtkBackend
 
 			Xwt.Popover.Position arrowPosition;
 			Gtk.Alignment alignment;
+
+			public Color BackgroundColor { get; set; }
 			
 			public PopoverWindow (Gtk.Widget child, Xwt.Popover.Position orientation) : base (WindowType.Toplevel)
 			{
@@ -58,7 +61,6 @@ namespace Xwt.GtkBackend
 				this.alignment = new Gtk.Alignment (0, 0, 1, 1);
 				this.Add (alignment);
 				this.alignment.Add (child);
-				this.FocusOutEvent += HandleFocusOutEvent;
 				OnScreenChanged (null);
 			}
 			
@@ -71,11 +73,6 @@ namespace Xwt.GtkBackend
 			public void ReleaseInnerWidget ()
 			{
 				alignment.Remove (alignment.Child);
-			}
-			
-			void HandleFocusOutEvent (object o, FocusOutEventArgs args)
-			{
-				this.Hide ();
 			}
 			
 			public void SetPadding (WidgetSpacing spacing)
@@ -96,9 +93,8 @@ namespace Xwt.GtkBackend
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
 				var bounds = new Xwt.Rectangle (0.5, 0.5, w - 1, h - 1);
-				var backgroundColor = Xwt.Drawing.Color.FromBytes (230, 230, 230, 230);
 				var black = Xwt.Drawing.Color.FromBytes (60, 60, 60);
-
+				
 				// We clear the surface with a transparent color if possible
 				if (supportAlpha)
 					ctx.SetSourceRGBA (1.0, 1.0, 1.0, 0.0);
@@ -113,7 +109,7 @@ namespace Xwt.GtkBackend
 				ctx.LineWidth = 1;
 				ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
 				ctx.StrokePreserve ();
-				ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
+				ctx.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
 				ctx.Fill ();
 				
 				// Triangle
@@ -128,7 +124,7 @@ namespace Xwt.GtkBackend
 				ctx.SetSourceRGBA (black.Red, black.Green, black.Blue, black.Alpha);
 				ctx.StrokePreserve ();
 				ctx.ClosePath ();
-				ctx.SetSourceRGBA (backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, backgroundColor.Alpha);
+				ctx.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
 				ctx.Fill ();
 
 				return base.OnDrawn (ctx);
@@ -177,9 +173,12 @@ namespace Xwt.GtkBackend
 		IPopoverEventSink sink;
 		Popover frontend;
 
+		public Xwt.Drawing.Color BackgroundColor { get; set; }
+
 		public void Initialize (IPopoverEventSink sink)
 		{
 			this.sink = sink;
+			this.BackgroundColor = Xwt.Drawing.Color.FromBytes (230, 230, 230, 230);
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
@@ -199,8 +198,10 @@ namespace Xwt.GtkBackend
 		{
 			var parent = reference.ParentWindow;
 			popover = new PopoverWindow ((Gtk.Widget)((WidgetBackend)Toolkit.GetBackend (child)).NativeWidget, orientation);
+			popover.BackgroundColor = BackgroundColor.ToCairoColor ();
 			popover.SetPadding (frontend.Padding);
 			popover.TransientFor = ((WindowFrameBackend)Toolkit.GetBackend (parent)).Window;
+			popover.TransientFor.FocusInEvent += HandleParentFocusInEvent;
 			popover.DestroyWithParent = true;
 			popover.Hidden += (o, args) => {
 				popover.ReleaseInnerWidget ();
@@ -214,11 +215,26 @@ namespace Xwt.GtkBackend
 			positionRect = positionRect.Offset (screenBounds.Location);
 			var position = new Point (positionRect.Center.X, popover.ArrowPosition == Popover.Position.Top ? positionRect.Bottom : positionRect.Top);
 			popover.ShowAll ();
+			popover.Present ();
 			popover.GrabFocus ();
 			int w, h;
 			popover.GetSize (out w, out h);
-			popover.Move ((int)position.X - w / 2, (int)position.Y);
-			popover.SizeAllocated += (o, args) => { popover.Move ((int)position.X - args.Allocation.Width / 2, (int)position.Y); popover.GrabFocus (); };
+			if (popover.ArrowPosition == Popover.Position.Top)
+				popover.Move ((int)position.X - w / 2, (int)position.Y);
+			else
+				popover.Move ((int)position.X - w / 2, (int)position.Y - h);
+			popover.SizeAllocated += (o, args) => {
+				if (popover.ArrowPosition == Popover.Position.Top)
+					popover.Move ((int)position.X - args.Allocation.Width / 2, (int)position.Y);
+				else
+					popover.Move ((int)position.X - args.Allocation.Width / 2, (int)position.Y - args.Allocation.Height);
+				popover.GrabFocus ();
+			};
+		}
+
+		void HandleParentFocusInEvent (object o, FocusInEventArgs args)
+		{
+			Hide ();
 		}
 
 		public void Hide ()
