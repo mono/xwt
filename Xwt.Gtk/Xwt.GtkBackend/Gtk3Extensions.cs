@@ -165,6 +165,13 @@ namespace Xwt.GtkBackend
 			}
 			return Gtk.StateFlags.Normal;
 		}
+
+		public static double GetSliderPosition (this Gtk.Scale scale)
+		{
+			int start, end;
+			scale.GetSliderRange (out start, out end);
+			return start + ((end - start) / 2);
+		}
 	}
 }
 

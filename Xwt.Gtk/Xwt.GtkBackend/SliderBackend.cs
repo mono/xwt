@@ -3,6 +3,7 @@
 //
 // Author:
 //       Jérémie Laval <jeremie.laval@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2013 Xamarin, Inc.
 //
@@ -27,25 +28,21 @@
 using System;
 using Xwt.Backends;
 
-
-using Gtk;
-
 namespace Xwt.GtkBackend
 {
 	public class SliderBackend : WidgetBackend, ISliderBackend
 	{
-		public SliderBackend ()
-		{
-		}
+		bool onValueChangedEnabled;
 		
-		public void Initialize (Xwt.Backends.Orientation dir)
+		public void Initialize (Orientation dir)
 		{
-			if (dir == Xwt.Backends.Orientation.Horizontal)
-				Widget = new Gtk.HScale (0, 1.0, 0.1);
+			if (dir == Orientation.Horizontal)
+				Widget = new Gtk.HScale (0, 1.0, 1);
 			else
-				Widget = new Gtk.VScale (0, 1.0, 0.1);
+				Widget = new Gtk.VScale (0, 1.0, 1) { Inverted = true };
 
 			Widget.DrawValue = false;
+			Widget.ValueChanged += HandleValueChanged;
 			Widget.Show ();
 		}
 		
@@ -63,7 +60,7 @@ namespace Xwt.GtkBackend
 			base.EnableEvent (eventId);
 			if (eventId is SliderEvent) {
 				if ((SliderEvent)eventId == SliderEvent.ValueChanged)
-					Widget.ValueChanged += HandleValueChanged;
+					onValueChangedEnabled = true;
 			}
 		}
 		
@@ -72,15 +69,34 @@ namespace Xwt.GtkBackend
 			base.DisableEvent (eventId);
 			if (eventId is SliderEvent) {
 				if ((SliderEvent)eventId == SliderEvent.ValueChanged)
-					Widget.ValueChanged -= HandleValueChanged;
+					onValueChangedEnabled = false;
 			}
 		}
 		
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.ValueChanged ();
-			});
+			if (SnapToTicks && Math.Abs (StepIncrement) > double.Epsilon)
+			{
+				var offset = Math.Abs (Value) % StepIncrement;
+				if (Math.Abs (offset) > double.Epsilon) {
+					if (offset > StepIncrement / 2) {
+						if (Value >= 0)
+							Value += -offset + StepIncrement;
+						else
+							Value += offset - StepIncrement;
+					}
+					else
+						if (Value >= 0)
+							Value -= offset;
+						else
+							Value += offset;
+				}
+			}
+
+			if (onValueChangedEnabled)
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.ValueChanged ();
+				});
 		}
 
 		public double Value {
@@ -90,12 +106,81 @@ namespace Xwt.GtkBackend
 
 		public double MaximumValue {
 			get { return Widget.Adjustment.Upper; }
-			set { Widget.SetRange (Math.Min (value - 1, MinimumValue), value); }
+			set {
+				Widget.SetRange (Math.Min (value - 1, MinimumValue), value);
+				UpdateMarks ();
+			}
 		}
 
 		public double MinimumValue {
 			get { return Widget.Adjustment.Lower; }
-			set { Widget.SetRange (value, Math.Max (value + 1, MaximumValue)); }
+			set {
+				Widget.SetRange (value, Math.Max (value + 1, MaximumValue));
+				UpdateMarks ();
+			}
+		}
+
+		public double StepIncrement {
+			get { return Widget.Adjustment.StepIncrement; }
+			set { 
+				Widget.Adjustment.StepIncrement = Widget.Adjustment.PageIncrement = value;
+
+				if (Math.Abs (value) >= 1.0 || Math.Abs (value) < double.Epsilon)
+					Widget.Digits = 0;
+				else
+				{
+					Widget.Digits = Math.Abs ((int) Math.Floor (Math.Log10 (Math.Abs (value))));
+					if (Widget.Digits > 5)
+						Widget.Digits = 5;
+				}
+				UpdateMarks ();
+			}
+		}
+
+		bool snapToTicks;
+		public bool SnapToTicks {
+			get {
+				return snapToTicks;
+			}
+			set {
+				snapToTicks = value;
+				UpdateMarks ();
+			}
+		}
+
+		public double SliderPosition {
+			get {
+				return Widget.GetSliderPosition ();
+			}
+		}
+
+		void UpdateMarks ()
+		{
+			#if XWT_GTK3
+			Widget.ClearMarks ();
+			if (SnapToTicks) {
+				if (MinimumValue >= 0) {
+					var ticksCount = (int)((MaximumValue - MinimumValue) / StepIncrement) + 1;
+					for (int i = 0; i < ticksCount; i++) {
+						Widget.AddMark (MinimumValue + (i * StepIncrement), Gtk.PositionType.Bottom, null);
+					}
+				} else if (MaximumValue <= 0) {
+					var ticksCount = (int)((MaximumValue - MinimumValue) / StepIncrement) + 1;
+					for (int i = 0; i < ticksCount; i++) {
+						Widget.AddMark (-(i * StepIncrement), Gtk.PositionType.Bottom, null);
+					}
+				} else if (MinimumValue < 0) {
+					var ticksCount = (int)(MaximumValue / StepIncrement) + 1;
+					for (int i = 0; i < ticksCount; i++) {
+						Widget.AddMark (i * StepIncrement, Gtk.PositionType.Bottom, null);
+					}
+					var ticksCountN = (int)(Math.Abs(MinimumValue) / StepIncrement) + 1;
+					for (int i = 1; i < ticksCountN; i++) {
+						Widget.AddMark (-(i * StepIncrement), Gtk.PositionType.Bottom, null);
+					}
+				}
+			}
+			#endif
 		}
 	}
 }

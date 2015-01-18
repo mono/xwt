@@ -181,6 +181,43 @@ namespace Xwt.GtkBackend
 				args.Event.Window.DrawLayout (gc, x, y, layout);
 			}
 		}
+
+		public static double GetSliderPosition (this Gtk.Scale scale)
+		{
+			Gtk.Orientation orientation;
+			if (scale is Gtk.HScale)
+				orientation = Gtk.Orientation.Horizontal;
+			else if (scale is Gtk.VScale)
+				orientation = Gtk.Orientation.Vertical;
+			else
+				throw new InvalidOperationException ("Can not obtain slider position from " + scale.GetType ());
+
+			var padding = (int)scale.StyleGetProperty ("focus-padding");
+			var slwidth = Convert.ToDouble (scale.StyleGetProperty ("slider-width"));
+
+			int orientationSize;
+			if (orientation == Gtk.Orientation.Horizontal)
+				orientationSize = scale.Allocation.Width - (2 * padding);
+			else
+				orientationSize = scale.Allocation.Height - (2 * padding);
+
+			double prct = 0;
+			if (scale.Adjustment.Lower >= 0) {
+				prct = (scale.Value / (scale.Adjustment.Upper - scale.Adjustment.Lower));
+			} else if (scale.Adjustment.Upper <= 0) {
+				prct = (Math.Abs (scale.Value) / Math.Abs (scale.Adjustment.Lower - scale.Adjustment.Upper));
+			} else if (scale.Adjustment.Lower < 0) {
+				if (scale.Value >= 0)
+					prct = 0.5 + ((scale.Value / 2) / scale.Adjustment.Upper);
+				else
+					prct = 0.5 - Math.Abs ((scale.Value / 2) / scale.Adjustment.Lower);
+			}
+
+			if (orientation == Gtk.Orientation.Vertical || scale.Inverted)
+				prct = 1 - prct;
+
+			return (int)(((orientationSize - (slwidth)) * prct) + (slwidth / 2));
+		}
 	}
 }
 
