@@ -91,6 +91,26 @@ namespace Xwt.GtkBackend
 			args.Requisition = req;
 		}
 
+		public void SetMinSize (double width, double height)
+		{
+			if (width != -1 || height != -1) {
+				EnableSizeCheckEvents ();
+				minSizeSet = true;
+				Widget.QueueResize ();
+			}
+			else {
+				minSizeSet = false;
+				DisableSizeCheckEvents ();
+				Widget.QueueResize ();
+			}
+		}
+
+		public void SetSizeRequest (double width, double height)
+		{
+			Widget.WidthRequest = (int)width;
+			Widget.HeightRequest = (int)height;
+		}
+
 		double opacity = 1d;
 		public double Opacity {
 			get { return opacity; }
