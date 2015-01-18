@@ -73,7 +73,9 @@ namespace Xwt.GtkBackend
 		
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
-			Widget.AppendPage (GetWidgetWithPlacement (widget), CreateLabel (tab));
+			var childW = GetWidgetWithPlacement (widget);
+			Widget.AppendPage (childW, CreateLabel (tab));
+			((Gtk.Notebook.NotebookChild)(Widget [childW])).TabExpand = ExpandTabLabels;
 		}
 
 		public void Remove (IWidgetBackend widget)
@@ -106,6 +108,23 @@ namespace Xwt.GtkBackend
 				Gtk.PositionType tabPos = Gtk.PositionType.Top;
 				Enum.TryParse (value.ToString (), out tabPos);
 				Widget.TabPos = tabPos;
+			}
+		}
+
+		bool expandTabLabels;
+		public bool ExpandTabLabels {
+			get {
+				return expandTabLabels;
+			}
+			set {
+				expandTabLabels = value;
+				foreach (Gtk.Widget child in Widget.AllChildren) {
+					Gtk.Notebook.NotebookChild notebook_child = Widget [child] as Gtk.Notebook.NotebookChild;
+					if (notebook_child != null) {
+						notebook_child.TabExpand = value;
+						notebook_child.TabFill = value;
+					}
+				}
 			}
 		}
 		

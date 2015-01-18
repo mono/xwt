@@ -96,7 +96,7 @@ namespace Xwt
 		{
 			NotebookTab t = new NotebookTab ((WidgetBackendHost)BackendHost, w);
 			t.Label = label;
-			t.Image = image.ImageDescription;
+			t.Image = image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null;
 			tabs.Add (t);
 		}
 
@@ -149,7 +149,12 @@ namespace Xwt
 			get { return Backend.TabOrientation; }
 			set { Backend.TabOrientation = value; }
 		}
-		
+
+		public bool ExpandTabLabels {
+			get { return Backend.ExpandTabLabels; }
+			set { Backend.ExpandTabLabels = value; }
+		}
+
 		protected virtual void OnCurrentTabChanged (EventArgs e)
 		{
 			if (currentTabChanged != null)

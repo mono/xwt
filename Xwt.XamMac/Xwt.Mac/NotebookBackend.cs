@@ -144,6 +144,9 @@ namespace Xwt.Mac
 				Widget.TabViewType = type;
 			}
 		}
+
+		public virtual bool ExpandTabLabels { get; set; }
+
 		#endregion
 		
 		NSTabViewItem FindTab (NSView v)

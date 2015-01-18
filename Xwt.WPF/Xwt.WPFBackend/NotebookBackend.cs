@@ -61,6 +61,15 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool ExpandTabLabels {
+			get {
+				return ((WpfNotebook)TabControl).ExpandTabLabels;
+			}
+			set {
+				((WpfNotebook)TabControl).ExpandTabLabels = value;
+			}
+		}
+
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
 			UIElement element = (UIElement)widget.NativeWidget;
@@ -73,7 +82,7 @@ namespace Xwt.WPFBackend
 			header.Children.Add (headerImage);
 			header.Children.Add (new SWC.TextBlock () { Text = tab.Label, VerticalAlignment = VerticalAlignment.Center });
 
-			TabItem ti = new TabItem {
+			WpfTabItem ti = new WpfTabItem {
 				Content = element,
 				Header = header,
 				Tag = tab
@@ -184,10 +193,44 @@ namespace Xwt.WPFBackend
 	{
 		public WidgetBackend Backend { get; set; }
 
+		public bool ExpandTabLabels { get; set; }
+
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
 			var s = base.MeasureOverride (constraint);
 			return Backend.MeasureOverride (constraint, s);
 		}
+	}
+
+
+	class WpfTabItem: SWC.TabItem
+	{
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+
+			var parentNB = Parent as WpfNotebook;
+
+			if (parentNB != null && parentNB.ExpandTabLabels) {
+				if (parentNB.TabStripPlacement == Dock.Top ||
+				    parentNB.TabStripPlacement == Dock.Bottom) {
+					if (double.IsInfinity (constraint.Width))
+						return s;
+					var countBorders = (parentNB.BorderThickness.Left + parentNB.BorderThickness.Right) * (parentNB.Items.Count);
+					var expandedSize = (constraint.Width - countBorders) / parentNB.Items.Count;
+					if (s.Width < expandedSize)
+						s.Width = expandedSize;
+				} else {
+					if (double.IsInfinity (constraint.Height))
+						return s;
+					var countBorders = (parentNB.BorderThickness.Top + parentNB.BorderThickness.Bottom) * (parentNB.Items.Count + 1);
+					var expandedSize = (constraint.Height - countBorders) / parentNB.Items.Count;
+					if (s.Height < expandedSize)
+						s.Height = expandedSize;
+				}
+			}
+			return s;
+		}
+
 	}
 }
