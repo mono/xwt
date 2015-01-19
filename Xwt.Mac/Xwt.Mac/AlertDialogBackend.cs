@@ -34,6 +34,8 @@ namespace Xwt.Mac
 {
 	public class AlertDialogBackend : NSAlert, IAlertDialogBackend
 	{
+		ApplicationContext Context;
+
 		public AlertDialogBackend ()
 		{
 		}
@@ -44,6 +46,7 @@ namespace Xwt.Mac
 
 		public void Initialize (ApplicationContext actx)
 		{
+			Context = actx;
 		}
 
 		#region IAlertDialogBackend implementation
@@ -51,7 +54,9 @@ namespace Xwt.Mac
 		{
 			this.MessageText = (message.Text != null) ? message.Text : String.Empty;
 			this.InformativeText = (message.SecondaryText != null) ? message.SecondaryText : String.Empty;
-			//TODO Set Icon
+
+			if (message.Icon != null)
+				Icon = message.Icon.ToImageDescription (Context).ToNSImage ();
 
 			var sortedButtons = new Command [message.Buttons.Count];
 			var j = 0;
