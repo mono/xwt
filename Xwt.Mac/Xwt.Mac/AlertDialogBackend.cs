@@ -70,6 +70,12 @@ namespace Xwt.Mac
 				sortedButtons [j++] = message.Buttons [i];
 				this.AddButton (message.Buttons [i].Label);
 			}
+			for (var i = 0; i < sortedButtons.Length; i++) {
+				if (sortedButtons [i].Icon != null) {
+					Buttons [i].Image = sortedButtons [i].Icon.WithSize (IconSize.Small).ToImageDescription (Context).ToNSImage ();
+					Buttons [i].ImagePosition = NSCellImagePosition.ImageLeft;
+				}
+			}
 
 			if (message.AllowApplyToAll) {
 				ShowsSuppressionButton = true;
