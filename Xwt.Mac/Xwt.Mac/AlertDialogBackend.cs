@@ -54,9 +54,12 @@ namespace Xwt.Mac
 			//TODO Set Icon
 
 			var sortedButtons = new Command [message.Buttons.Count];
-			sortedButtons [0] = message.Buttons [message.DefaultButton];
-			this.AddButton (message.Buttons [message.DefaultButton].Label);
-			var j = 1;
+			var j = 0;
+			if (message.DefaultButton >= 0) {
+				sortedButtons [0] = message.Buttons [message.DefaultButton];
+				this.AddButton (message.Buttons [message.DefaultButton].Label);
+				j = 1;
+			}
 			for (var i = 0; i < message.Buttons.Count; i++) {
 				if (i == message.DefaultButton)
 					continue;
