@@ -139,7 +139,9 @@ namespace Xwt.WPFBackend
 						writer.WriteStartElement ("LineBreak");
 						writer.WriteEndElement ();
 					}
-					writer.WriteElementString ("Run", line);
+					if (!string.IsNullOrEmpty (line)) {
+						writer.WriteElementString ("Run", line);
+					}
 					first = false;
 				}
 			}
