@@ -72,6 +72,9 @@ namespace Xwt.Mac
 				this.AddButton (message.Buttons [i].Label);
 			}
 
+			var win = (WindowBackend)Toolkit.GetBackend (transientFor);
+			if (win != null)
+				return sortedButtons [this.RunSheetModal (win) - 1000];
 			return sortedButtons [this.RunModal () - 1000];
 		}
 
