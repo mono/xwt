@@ -72,6 +72,12 @@ namespace Xwt.Mac
 				this.AddButton (message.Buttons [i].Label);
 			}
 
+			if (message.AllowApplyToAll) {
+				ShowsSuppressionButton = true;
+				SuppressionButton.State = NSCellStateValue.Off;
+				SuppressionButton.Activated += (sender, e) => ApplyToAll = SuppressionButton.State == NSCellStateValue.On;
+			}
+
 			var win = (WindowBackend)Toolkit.GetBackend (transientFor);
 			if (win != null)
 				return sortedButtons [this.RunSheetModal (win) - 1000];
