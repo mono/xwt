@@ -25,10 +25,9 @@
 // THE SOFTWARE.
 
 using System;
+using System.Drawing;
 using MonoMac.AppKit;
-using MonoMac.Foundation;
 using Xwt.Backends;
-using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -40,7 +39,7 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public AlertDialogBackend (System.IntPtr intptr)
+		public AlertDialogBackend (IntPtr intptr)
 		{
 		}
 
@@ -52,8 +51,8 @@ namespace Xwt.Mac
 		#region IAlertDialogBackend implementation
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{
-			this.MessageText = (message.Text != null) ? message.Text : String.Empty;
-			this.InformativeText = (message.SecondaryText != null) ? message.SecondaryText : String.Empty;
+			this.MessageText = message.Text ?? String.Empty;
+			this.InformativeText = message.SecondaryText ?? String.Empty;
 
 			if (message.Icon != null)
 				Icon = message.Icon.ToImageDescription (Context).ToNSImage ();
@@ -80,7 +79,7 @@ namespace Xwt.Mac
 
 			if (message.Options.Count > 0) {
 				AccessoryView = new NSView ();
-				var optionsSize = new System.Drawing.SizeF (0, 3);
+				var optionsSize = new SizeF (0, 3);
 
 				foreach (var op in message.Options) {
 					var chk = new NSButton ();
@@ -90,14 +89,14 @@ namespace Xwt.Mac
 					chk.Activated += (sender, e) => message.SetOptionValue (op.Id, chk.State == NSCellStateValue.On);
 
 					chk.SizeToFit ();
-					chk.Frame = new System.Drawing.RectangleF (new System.Drawing.PointF (0, optionsSize.Height), chk.FittingSize);
+					chk.Frame = new RectangleF (new PointF (0, optionsSize.Height), chk.FittingSize);
 
 					optionsSize.Height += chk.FittingSize.Height + 6;
 					optionsSize.Width = Math.Max (optionsSize.Width, chk.FittingSize.Width);
 
 					AccessoryView.AddSubview (chk);
 					chk.NeedsDisplay = true;
-				} ;
+				}
 
 				AccessoryView.SetFrameSize (optionsSize);
 			}
