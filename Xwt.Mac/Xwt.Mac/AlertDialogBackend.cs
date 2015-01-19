@@ -78,6 +78,30 @@ namespace Xwt.Mac
 				SuppressionButton.Activated += (sender, e) => ApplyToAll = SuppressionButton.State == NSCellStateValue.On;
 			}
 
+			if (message.Options.Count > 0) {
+				AccessoryView = new NSView ();
+				var optionsSize = new System.Drawing.SizeF (0, 3);
+
+				foreach (var op in message.Options) {
+					var chk = new NSButton ();
+					chk.SetButtonType (NSButtonType.Switch);
+					chk.Title = op.Text;
+					chk.State = op.Value ? NSCellStateValue.On : NSCellStateValue.Off;
+					chk.Activated += (sender, e) => message.SetOptionValue (op.Id, chk.State == NSCellStateValue.On);
+
+					chk.SizeToFit ();
+					chk.Frame = new System.Drawing.RectangleF (new System.Drawing.PointF (0, optionsSize.Height), chk.FittingSize);
+
+					optionsSize.Height += chk.FittingSize.Height + 6;
+					optionsSize.Width = Math.Max (optionsSize.Width, chk.FittingSize.Width);
+
+					AccessoryView.AddSubview (chk);
+					chk.NeedsDisplay = true;
+				} ;
+
+				AccessoryView.SetFrameSize (optionsSize);
+			}
+
 			var win = (WindowBackend)Toolkit.GetBackend (transientFor);
 			if (win != null)
 				return sortedButtons [this.RunSheetModal (win) - 1000];
