@@ -36,16 +36,16 @@ namespace Xwt.GtkBackend
 	public class GtkFontBackendHandler: FontBackendHandler
 	{
 		static Pango.Context systemContext;
-		static Dictionary<string, Dictionary<string, Pango.FontFace>> familyFontFaces;
+		static Dictionary<string, Dictionary<string, object>> familyFontFaces;
 
 		static GtkFontBackendHandler ()
 		{
 			systemContext = Gdk.PangoHelper.ContextGet ();
-			familyFontFaces = new Dictionary<string, Dictionary<string, Pango.FontFace>> ();
+			familyFontFaces = new Dictionary<string, Dictionary<string, object>> ();
 			foreach (var family in systemContext.Families) {
-				familyFontFaces [family.Name] = new Dictionary<string, Pango.FontFace> ();
+				familyFontFaces [family.Name] = new Dictionary<string, object> ();
 				foreach (var face in family.Faces)
-					familyFontFaces [family.Name] [face.FaceName] = face;
+					familyFontFaces [family.Name] [face.FaceName] = face.Describe ();
 			}
 		}
 
@@ -62,9 +62,10 @@ namespace Xwt.GtkBackend
 
 		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
 		{
-			if (familyFontFaces.ContainsKey (family))
-				foreach (var fd in familyFontFaces [family].Values)
-					yield return new KeyValuePair<string, object>(fd.FaceName, fd.Describe ());
+			Dictionary<string, object> fontFaces;
+			if (familyFontFaces.TryGetValue (family, out fontFaces))
+				foreach (var fd in fontFaces)
+					yield return fd;
 			yield break;
 		}
 
