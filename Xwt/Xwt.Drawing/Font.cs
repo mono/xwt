@@ -78,6 +78,11 @@ namespace Xwt.Drawing
 		public static Font FromName (string name)
 		{
 			var toolkit = Toolkit.CurrentEngine;
+			return FromName (name, toolkit);
+		}
+
+		internal static Font FromName (string name, Toolkit toolkit)
+		{
 			var handler = toolkit.FontBackendHandler;
 
 			double size = -1;

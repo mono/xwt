@@ -62,10 +62,7 @@ namespace Xwt.Drawing
 
 		internal TextLayout (Toolkit tk)
 		{
-			ToolkitEngine = tk;
-			handler = ToolkitEngine.TextLayoutBackendHandler;
-			Backend = handler.Create ();
-			Setup ();
+			InitForToolkit (tk);
 		}
 
 		void Setup ()
@@ -88,6 +85,33 @@ namespace Xwt.Drawing
 		~TextLayout ()
 		{
 			ResourceManager.FreeResource (Backend);
+		}
+
+		internal void InitForToolkit (Toolkit tk)
+		{
+			if (ToolkitEngine == null || ToolkitEngine != tk) {
+				// If this is a re-initialization we dispose the previous state
+				if (handler != null) {
+					Dispose ();
+					GC.ReRegisterForFinalize (this);
+				}
+				ToolkitEngine = tk;
+				handler = ToolkitEngine.TextLayoutBackendHandler;
+				Backend = handler.Create ();
+				Setup ();
+				font = Font.FromName (font.ToString (), tk);
+				if (font != null)
+					handler.SetFont (Backend, font);
+				if (text != null)
+					handler.SetText (Backend, text);
+				if (width != -1)
+					handler.SetWidth (Backend, width);
+				if (height != -1)
+					handler.SetHeight (Backend, height);
+				if (attributes != null && attributes.Count > 0)
+					foreach (var attr in attributes)
+						handler.AddAttribute (Backend, attr);
+			}
 		}
 
 		internal TextLayoutData GetData ()
