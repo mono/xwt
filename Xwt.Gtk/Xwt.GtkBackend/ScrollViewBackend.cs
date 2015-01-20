@@ -181,6 +181,10 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.Widget child;
 		IWidgetEventSink eventSink;
+
+		public CustomViewPort (IntPtr raw) : base (raw)
+		{
+		}
 		
 		public CustomViewPort (IWidgetEventSink eventSink)
 		{
@@ -207,34 +211,6 @@ namespace Xwt.GtkBackend
 			} else {
 				requisition.Width = 0;
 				requisition.Height = 0;
-			}
-		}
-
-		Gtk.Adjustment hadjustment;
-		[GLib.Property ("hadjustment")]
-		public new Gtk.Adjustment Hadjustment {
-			get {
-				return hadjustment;
-			}
-			set {
-				hadjustment = value;
-				if (vadjustment != null) {
-					OnSetScrollAdjustments (value, vadjustment);
-				}
-			}
-		}
-
-		Gtk.Adjustment vadjustment;
-		[GLib.Property ("vadjustment")]
-		public new Gtk.Adjustment Vadjustment {
-			get {
-				return vadjustment;
-			}
-			set {
-				vadjustment = value;
-				if (hadjustment != null) {
-					OnSetScrollAdjustments (hadjustment, value);
-				}
 			}
 		}
 

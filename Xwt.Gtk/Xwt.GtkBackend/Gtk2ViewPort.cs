@@ -29,6 +29,13 @@ namespace Xwt.GtkBackend
 {
 	public class GtkViewPort: Gtk.Bin
 	{
+		public GtkViewPort ()
+		{
+		}
+
+		public GtkViewPort (IntPtr raw) : base (raw)
+		{
+		}
 	}
 }
 
