@@ -130,6 +130,7 @@
     <Compile Include="Xwt.Mac\NSTableViewBackend.cs" />
     <Compile Include="Xwt.Mac\SaveFileDialogBackend.cs" />
     <Compile Include="Xwt.Mac\ColorPickerBackend.cs" />
+    <Compile Include="Xwt.Mac\OutlineViewBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
