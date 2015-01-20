@@ -99,7 +99,7 @@ namespace Xwt.Drawing
 				handler = ToolkitEngine.TextLayoutBackendHandler;
 				Backend = handler.Create ();
 				Setup ();
-				font = Font.FromName (font.ToString (), tk);
+				font = (Font)tk.ValidateObject (font);
 				if (font != null)
 					handler.SetFont (Backend, font);
 				if (text != null)

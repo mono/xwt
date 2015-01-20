@@ -377,6 +377,8 @@ namespace Xwt
 				((Image)obj).InitForToolkit (this);
 			else if (obj is TextLayout)
 				((TextLayout)obj).InitForToolkit (this);
+			else if (obj is Font)
+				return ((IFrontend)obj).ToolkitEngine != this ? Font.FromName (obj.ToString (), this) : obj;
 			else if (obj is IFrontend) {
 				if (((IFrontend)obj).ToolkitEngine != this)
 					throw new InvalidOperationException ("Object belongs to a different toolkit");
