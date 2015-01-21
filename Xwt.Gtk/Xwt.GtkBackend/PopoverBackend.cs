@@ -105,6 +105,13 @@ namespace Xwt.GtkBackend
 				OnScreenChanged (null);
 			}
 
+			protected override void OnSizeAllocated (Gdk.Rectangle allocation)
+			{
+				base.OnSizeAllocated (allocation);
+				QueueDraw ();
+			}
+
+
 			protected override bool OnDrawn (Context cr)
 			{
 				int w, h;
