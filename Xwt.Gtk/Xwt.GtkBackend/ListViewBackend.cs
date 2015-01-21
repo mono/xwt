@@ -163,6 +163,12 @@ namespace Xwt.GtkBackend
 
 			return new Rectangle (x, y, w, h);
 		}
+
+		public override void SetFocus ()
+		{
+			base.SetFocus ();
+			Widget.GrabFocus ();
+		}
 	}
 }
 
