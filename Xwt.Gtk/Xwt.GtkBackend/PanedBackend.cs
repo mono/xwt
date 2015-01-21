@@ -30,10 +30,6 @@ namespace Xwt.GtkBackend
 {
 	public class PanedBackend: WidgetBackend, IPanedBackend
 	{
-		public PanedBackend ()
-		{
-		}
-		
 		protected new Gtk.Paned Widget {
 			get { return (Gtk.Paned)base.Widget; }
 			set { base.Widget = value; }
@@ -91,16 +87,6 @@ namespace Xwt.GtkBackend
 		public double Position {
 			get { return Widget.Position; }
 			set { Widget.Position = (int) value; }
-		}
-
-		public Size GetDecorationSize ()
-		{
-			throw new NotSupportedException ();
-		}
-
-		public void GetPanelSizes (double totalSize, out double panel1Size, out double panel2Size)
-		{
-			throw new NotSupportedException ();
 		}
 		
 		public override void EnableEvent (object eventId)
