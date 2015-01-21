@@ -34,8 +34,6 @@ namespace Xwt.GtkBackend
 		{
 		}
 		
-		int formerPosition;
-		
 		protected new Gtk.Paned Widget {
 			get { return (Gtk.Paned)base.Widget; }
 			set { base.Widget = value; }
@@ -52,7 +50,6 @@ namespace Xwt.GtkBackend
 			else
 				Widget = new Gtk.VPaned ();
 			Widget.Show ();
-			Widget.WidgetEvent += HandleWidgetEvent;
 		}
 		
 		public void SetPanel (int panel, IWidgetBackend widget, bool resize, bool shrink)
@@ -111,7 +108,8 @@ namespace Xwt.GtkBackend
 			base.EnableEvent (eventId);
 			if (eventId is PanedEvent) {
 				switch ((PanedEvent)eventId) {
-				case PanedEvent.PositionChanged: Widget.WidgetEvent += HandleWidgetEvent; break;
+					case PanedEvent.PositionChanged:
+						Widget.AddNotification ("position", HandleMove);break;
 				}
 			}
 		}
@@ -121,20 +119,17 @@ namespace Xwt.GtkBackend
 			base.DisableEvent (eventId);
 			if (eventId is PanedEvent) {
 				switch ((PanedEvent)eventId) {
-				case PanedEvent.PositionChanged: Widget.WidgetEvent -= HandleWidgetEvent; break;
+					case PanedEvent.PositionChanged:
+						Widget.RemoveNotification ("position", HandleMove);break;
 				}
 			}
 		}
-		
-		void HandleWidgetEvent (object o, Gtk.WidgetEventArgs args)
+
+		void HandleMove (object o, GLib.NotifyArgs args)
 		{
-			if (formerPosition != (o as Gtk.Paned).Position) {
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnPositionChanged();
-					formerPosition = (o as Gtk.Paned).Position;
-				}
-				);
-			}
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnPositionChanged ();
+			});
 		}
 	}
 }
