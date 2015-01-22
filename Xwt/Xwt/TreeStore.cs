@@ -86,14 +86,14 @@ namespace Xwt
 		public TreeNavigator AddNode ()
 		{
 			var pos = Backend.AddChild (null);
-			var i = Backend.GetParentChildIndex (null);
+			var i = Backend.GetParentChildIndex (pos);
 			return new TreeNavigator (Backend, pos, i);
 		}
 
 		public TreeNavigator AddNode (TreePosition position)
 		{
 			var pos = Backend.AddChild (position);
-			var i = Backend.GetParentChildIndex (position);
+			var i = Backend.GetParentChildIndex (pos);
 			return new TreeNavigator (Backend, pos, i);
 		}
 
