@@ -87,5 +87,40 @@ namespace Xwt.Backends
 		/// </summary>
 		void Clear ();
 	}
+
+	public interface IListStoreFilterBackend: IListDataSource, IBackend
+	{
+		/// <summary>
+		/// Initializes the backend with the given <paramref name="store"/>.
+		/// </summary>
+		/// <param name="store">The list data store to pass through the filter.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="store"/> is <c>null</c>.</exception>
+		void Initialize (IListDataSource store);
+
+		/// <summary>
+		/// Sets the filter function to filter displayed rows.
+		/// </summary>
+		/// <value>The filter function.</value>
+		Func<int, bool> FilterFunction { set; }
+
+		/// <summary>
+		/// Refilter this instance.
+		/// </summary>
+		void Refilter();
+
+		/// <summary>
+		/// Converts the row index from the child store to its index inside the filter store.
+		/// </summary>
+		/// <returns>The index of the row inside the filtered store, or -1 if the row has been filtered.</returns>
+		/// <param name="row">The child store index to convert</param>
+		int ConvertChildPositionToPosition (int row);
+
+		/// <summary>
+		/// Converts the row index from the filter store to its index inside the child store.
+		/// </summary>
+		/// <returns>The index of the row inside the child store.</returns>
+		/// <param name="row">The filter store index to convert.</param>
+		int ConvertPositionToChildPosition (int row);
+	}
 }
 

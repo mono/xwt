@@ -41,9 +41,45 @@ namespace Xwt.Backends
 		TreePosition InsertAfter (TreePosition pos);
 		TreePosition AddChild (TreePosition pos);
 		void Remove (TreePosition pos);
-		TreePosition GetNext (TreePosition pos);
-		TreePosition GetPrevious (TreePosition pos);
 		void Clear ();
+	}
+
+	public interface ITreeStoreFilterBackend: ITreeDataSource, IBackend
+	{
+		/// <summary>
+		/// Initializes the backend with the given <paramref name="store"/>.
+		/// </summary>
+		/// <param name="store">The tree data store to pass through the filter.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="store"/> is <c>null</c>.</exception>
+		void Initialize (ITreeDataSource store);
+
+		/// <summary>
+		/// Sets the filter function, which should be used to filter single nodes.
+		/// </summary>
+		/// <value>The filter function.</value>
+		/// <remarks>
+		/// The function must return <c>true</c> for nodes to be filtered (hidden).
+		/// The position of the node to apply the filter function on is passed as the parameter to the function.
+		Func<TreePosition, bool> FilterFunction { set; }
+
+		/// <summary>
+		/// Forces the filter store to re-evaluate all nodes in the child store.
+		/// </summary>
+		void Refilter();
+
+		/// <summary>
+		/// Converts the node position from the child store to its position inside the filter store.
+		/// </summary>
+		/// <returns>The position of the node inside the filtered store, or null if the row has been filtered.</returns>
+		/// <param name="pos">The child store position to convert</param>
+		TreePosition ConvertChildPositionToPosition (TreePosition pos);
+
+		/// <summary>
+		/// Converts the node position from the filter store to its position inside the child store.
+		/// </summary>
+		/// <returns>The position of the node inside the child store.</returns>
+		/// <param name="pos">The filter store position to convert.</param>
+		TreePosition ConvertPositionToChildPosition (TreePosition pos);
 	}
 }
 

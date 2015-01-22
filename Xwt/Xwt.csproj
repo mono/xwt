@@ -325,6 +325,11 @@
     <Compile Include="Xwt\ColorPicker.cs" />
     <Compile Include="Xwt.Backends\IColorPickerBackend.cs" />
     <Compile Include="Xwt\XwtSynchronizationContext.cs" />
+    <Compile Include="Xwt\TreeViewNavigator.cs" />
+    <Compile Include="Xwt\ListStoreBase.cs" />
+    <Compile Include="Xwt\TreeStoreBase.cs" />
+    <Compile Include="Xwt\ListStoreFilter.cs" />
+    <Compile Include="Xwt\TreeStoreFilter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

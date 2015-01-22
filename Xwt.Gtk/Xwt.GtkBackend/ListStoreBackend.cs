@@ -26,7 +26,6 @@
 
 using System;
 using Xwt.Backends;
-using Xwt.Drawing;
 using Gtk;
 #if XWT_GTK3
 using TreeModel = Gtk.ITreeModel;
@@ -34,43 +33,17 @@ using TreeModel = Gtk.ITreeModel;
 
 namespace Xwt.GtkBackend
 {
-	public class ListStoreBackend: TableStoreBackend, IListStoreBackend
+	public abstract class ListStoreBackendBase: TableStoreBackend, IListDataSource
 	{
-		Type[] columnTypes;
-
-
-		public override TreeModel InitializeModel (Type[] columnTypes)
-		{
-			this.columnTypes = columnTypes;
-			var store = new Gtk.ListStore (columnTypes);
-			store.RowInserted += (o, args) => {
-				if (RowInserted != null)
-					RowInserted (this, new ListRowEventArgs (args.Path.Indices[0]));
-			};
-			store.RowDeleted += (o, args) => {
-				if (RowDeleted != null)
-					RowDeleted (this, new ListRowEventArgs (args.Path.Indices[0]));
-			};
-			store.RowChanged += (o, args) => {
-				if (RowChanged != null)
-					RowChanged (this, new ListRowEventArgs (args.Path.Indices[0]));
-			};
-			return store;
-		}
-		
 		public event EventHandler<ListRowEventArgs> RowInserted;
 		public event EventHandler<ListRowEventArgs> RowDeleted;
 		public event EventHandler<ListRowEventArgs> RowChanged;
 		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
 
-		public Gtk.ListStore List {
-			get { return (Gtk.ListStore) Store; }
-		}
-		
 		public object GetValue (int row, int column)
 		{
 			Gtk.TreeIter it;
-			if (!List.IterNthChild (out it, row))
+			if (!Store.IterNthChild (out it, row))
 				return null;
 			return GetValue (it, column);
 		}
@@ -78,21 +51,63 @@ namespace Xwt.GtkBackend
 		public void SetValue (int row, int column, object value)
 		{
 			Gtk.TreeIter it;
-			if (!List.IterNthChild (out it, row))
+			if (!Store.IterNthChild (out it, row))
 				return;
 			SetValue (it, column, value);
 		}
 
 		public int RowCount {
 			get {
-				return List.IterNChildren ();
+				return Store.IterNChildren ();
 			}
 		}
-		
-		public Type[] ColumnTypes {
-			get {
-				return columnTypes;
-			}
+
+		protected void RaiseRowInserted (int row)
+		{
+			if (RowInserted != null)
+				RowInserted (this, new ListRowEventArgs (row));
+		}
+
+		protected void RaiseRowDeleted (int row)
+		{
+			if (RowDeleted != null)
+				RowDeleted (this, new ListRowEventArgs (row));
+		}
+
+		protected void RaiseRowChanged (int row)
+		{
+			if (RowChanged != null)
+				RowChanged (this, new ListRowEventArgs (row));
+		}
+
+		protected void RaiseRowsReordered (int partentRow, int[] childrenOrder)
+		{
+			if (RowsReordered != null)
+				RowsReordered (this, new ListRowOrderEventArgs (partentRow, childrenOrder));
+		}
+
+		public void EnableEvent (object eventId)
+		{
+		}
+
+		public void DisableEvent (object eventId)
+		{
+		}
+	}
+
+	public class ListStoreBackend: ListStoreBackendBase, IListStoreBackend
+	{
+		public Gtk.ListStore List {
+			get { return (Gtk.ListStore) Store; }
+		}
+
+		public override TreeModel InitializeModel (Type[] columnTypes)
+		{
+			var store = new Gtk.ListStore (columnTypes);
+			store.RowInserted += (o, args) => RaiseRowInserted (args.Path.Indices [0]);
+			store.RowDeleted += (o, args) => RaiseRowDeleted (args.Path.Indices [0]);
+			store.RowChanged += (o, args) => RaiseRowChanged (args.Path.Indices [0]);
+			return store;
 		}
 		
 		public int AddRow ()
@@ -119,14 +134,6 @@ namespace Xwt.GtkBackend
 			if (!List.IterNthChild (out it, row))
 				return;
 			List.Remove (ref it);
-		}
-		
-		public void EnableEvent (object eventId)
-		{
-		}
-		
-		public void DisableEvent (object eventId)
-		{
 		}
 		
 		public void Clear ()

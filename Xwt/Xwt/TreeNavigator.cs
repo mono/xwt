@@ -26,9 +26,6 @@
 
 
 using System;
-using Xwt.Drawing;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using Xwt.Backends;
 
 namespace Xwt
@@ -39,92 +36,49 @@ namespace Xwt
 		internal int Index;
 	}
 	
-	public class TreeNavigator
+	public class TreeNavigator: TreeViewNavigator
 	{
-		ITreeStoreBackend backend;
-		TreePosition pos;
-		
-		internal TreeNavigator (ITreeStoreBackend backend, TreePosition pos)
-		{
-			this.backend = backend;
-			this.pos = pos;
-		}
-		
-		public TreePosition CurrentPosition {
-			get { return pos; }
-		}
-		
-		public TreeNavigator Clone ()
-		{
-			return new TreeNavigator (backend, pos);
-		}
-		
-		bool CommitPos (TreePosition newPosition)
-		{
-			if (newPosition != null) {
-				pos = newPosition;
-				return true;
+		protected new ITreeStoreBackend Backend {
+			get {
+				return (ITreeStoreBackend)base.Backend;
 			}
-			else
-				return false;
-		}
-		
-		public bool MoveToFirst ()
-		{
-			return CommitPos (backend.GetChild (null, 0));
 		}
 
-		public bool MoveNext ()
+		[Obsolete]
+		internal TreeNavigator (ITreeStoreBackend backend, TreePosition pos) : base (backend, pos)
 		{
-			return CommitPos (backend.GetNext (pos));
 		}
 
-		public bool MovePrevious ()
+		internal TreeNavigator (ITreeDataSource backend, TreePosition pos, int index) : base (backend, pos, index)
 		{
-			return CommitPos (backend.GetPrevious (pos));
 		}
 
-		public bool MoveToChild ()
+		public new TreeNavigator Clone ()
 		{
-			return CommitPos (backend.GetChild (pos, 0));
-		}
-
-		public bool MoveToParent ()
-		{
-			return CommitPos (backend.GetParent (pos));
-		}
-
-		public bool MoveToFirstSibling ()
-		{
-			return CommitPos (backend.GetChild (backend.GetParent (pos), 0));
-		}
-
-		public bool MoveToLastSibling ()
-		{
-			return CommitPos (backend.GetChild (backend.GetParent (pos), backend.GetChildrenCount (backend.GetParent (pos)) - 1));
+			return new TreeNavigator (Backend, CurrentPosition, CurrentIndex);
 		}
 
 		public TreeNavigator InsertBefore ()
 		{
-			pos = backend.InsertBefore (pos);
+			CommitPos (Backend.InsertBefore (CurrentPosition));
 			return this;
 		}
 		
 		public TreeNavigator InsertAfter ()
 		{
-			pos = backend.InsertAfter (pos);
+			CommitPos (Backend.InsertAfter (CurrentPosition));
 			return this;
 		}
 		
 		public TreeNavigator AddChild ()
 		{
-			pos = backend.AddChild (pos);
+			CommitPos (Backend.AddChild (CurrentPosition));
 			return this;
 		}
 		
 		public TreeNavigator SetValue<T> (IDataField<T> field, T data)
 		{
-			backend.SetValue (pos, field.Index, data);
+			Backend.SetValue (CurrentPosition, field.Index, data);
 			return this;
 		}
 		
@@ -283,24 +237,18 @@ namespace Xwt
 			SetValue (column10, value10);
 			return this;
 		}
-
-		public T GetValue<T> (IDataField<T> field)
-		{
-			var value = backend.GetValue (pos, field.Index);
-			return value == null ? default(T) : (T)value;
-		}
 		
 		public void Remove ()
 		{
-			backend.Remove (pos);
+			Backend.Remove (CurrentPosition);
 		}
 		
 		public void RemoveChildren ()
 		{
-			TreePosition child = backend.GetChild (pos, 0);
+			TreePosition child = Backend.GetChild (CurrentPosition, 0);
 			while (child != null) {
-				backend.Remove (child);
-				child = backend.GetChild (pos, 0);
+				Backend.Remove (child);
+				child = Backend.GetChild (CurrentPosition, 0);
 			}
 		}
 	}

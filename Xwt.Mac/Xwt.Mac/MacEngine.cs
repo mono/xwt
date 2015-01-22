@@ -102,7 +102,10 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IAlertDialogBackend, AlertDialogBackend> ();
 			RegisterBackend <Xwt.Backends.IStatusIconBackend, StatusIconBackend> ();
 			RegisterBackend <Xwt.Backends.IProgressBarBackend, ProgressBarBackend> ();
+			RegisterBackend <Xwt.Backends.ITreeStoreBackend, Xwt.DefaultTreeStoreBackend> ();
+			RegisterBackend <Xwt.Backends.ITreeStoreFilterBackend, Xwt.DefaultTreeStoreFilterBackend> ();
 			RegisterBackend <Xwt.Backends.IListStoreBackend, Xwt.DefaultListStoreBackend> ();
+			RegisterBackend <Xwt.Backends.IListStoreFilterBackend, Xwt.DefaultListStoreFilterBackend> ();
 			RegisterBackend <Xwt.Backends.ILinkLabelBackend, LinkLabelBackend> ();
 			RegisterBackend <Xwt.Backends.ISpinnerBackend, SpinnerBackend> ();
 			RegisterBackend <Xwt.Backends.ISpinButtonBackend, SpinButtonBackend> ();

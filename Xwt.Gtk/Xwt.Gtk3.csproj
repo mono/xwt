@@ -120,6 +120,7 @@
     <Compile Include="Xwt.GtkBackend.CellViews\CellUtil.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CellViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TreeStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\TreeStoreFilterBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TableStoreBackend.cs" />
     <Compile Include="Xwt.GtkBackend\CustomTreeModel.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRenderer.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Xwt.GtkBackend\CustomListModel.cs" />
     <Compile Include="Xwt.GtkBackend\ListBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ListStoreBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ListStoreFilterBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ListViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ComboBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ComboBoxEntryBackend.cs" />
