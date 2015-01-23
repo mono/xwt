@@ -239,7 +239,11 @@ namespace Xwt.Mac
 		public TreeSource (ITreeDataSource source)
 		{
 			this.source = source;
-			source.NodeInserted += (sender, e) => items.Add (e.Node, new TreeItem { Position = e.Node });
+
+			source.NodeInserted += (sender, e) => {
+				if (!items.ContainsKey (e.Node))
+					items.Add (e.Node, new TreeItem { Position = e.Node });
+			};
 		}
 		
 		public TreeItem GetItem (TreePosition pos)
