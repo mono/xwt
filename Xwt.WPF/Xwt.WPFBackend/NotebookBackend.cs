@@ -193,7 +193,17 @@ namespace Xwt.WPFBackend
 	{
 		public WidgetBackend Backend { get; set; }
 
-		public bool ExpandTabLabels { get; set; }
+		bool expandTabLabels;
+		public bool ExpandTabLabels {
+			get {
+				return expandTabLabels;
+			}
+			set {
+				expandTabLabels = value;
+				foreach (var tab in Items.Cast<TabItem> ())
+					tab.InvalidateMeasure ();
+			}
+		}
 
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
