@@ -171,14 +171,13 @@ namespace Xwt.Mac
 		
 		public void ExpandToRow (TreePosition pos)
 		{
-			NSObject it = tsource.GetItem (pos);
-			if (it == null)
-				return;
-			
-			it = Tree.GetParent (it);
-			while (it != null) {
+			var p = source.GetParent (pos);
+			while (p != null) {
+				var it = tsource.GetItem (p);
+				if (it == null)
+					break;
 				Tree.ExpandItem (it, false);
-				it = Tree.GetParent (it);
+				p = source.GetParent (p);
 			}
 		}
 		
