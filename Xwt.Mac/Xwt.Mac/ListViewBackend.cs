@@ -30,7 +30,6 @@
 using System;
 using MonoMac.AppKit;
 using Xwt.Backends;
-using System.Collections.Generic;
 using MonoMac.Foundation;
 
 namespace Xwt.Mac
@@ -90,7 +89,9 @@ namespace Xwt.Mac
 			tsource = new ListSource (source);
 			Table.DataSource = tsource;
 
-			//TODO: reloading single rows would be more efficient
+			//TODO: Reloading single rows would be slightly more efficient.
+			//      According to NSTableView.ReloadData() documentation,
+			//      only the visible rows are reloaded.
 			source.RowInserted += (sender, e) => Table.ReloadData();
 			source.RowDeleted += (sender, e) => Table.ReloadData();
 			source.RowChanged += (sender, e) => Table.ReloadData();
