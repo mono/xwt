@@ -87,6 +87,11 @@ namespace Xwt.Mac
 			get;
 			set;
 		}
+
+		protected override void OnSizeToFit ()
+		{
+			Widget.SizeToFit ();
+		}
 	}
 
 	public class MacSpinButton : NSView, IViewObject
@@ -107,7 +112,7 @@ namespace Xwt.Mac
 			public override void ResizeWithOldSuperviewSize (CGSize oldSize)
 			{
 				base.ResizeWithOldSuperviewSize (oldSize);
-				SetFrameSize (new CGSize (reference.Frame.Left - 6, Frame.Size.Height));
+				SetFrameSize (new CGSize (reference.Frame.Left, Frame.Size.Height));
 			}
 		}
 
@@ -121,16 +126,30 @@ namespace Xwt.Mac
 			formater.NumberStyle = NSNumberFormatterStyle.Decimal;
 			stepper.Activated += (sender, e) => input.DoubleValue = stepper.DoubleValue;
 
-			SetFrameSize (new CGSize (55, 22));
-			stepper.Frame = new System.Drawing.RectangleF (new System.Drawing.PointF (36, 0), new System.Drawing.SizeF (19, 22));
-			input.Frame = new System.Drawing.RectangleF (new System.Drawing.PointF (4, 0), new System.Drawing.SizeF (26, 22));
-
 			AutoresizesSubviews = true;
-			stepper.AutoresizingMask = NSViewResizingMask.MinXMargin | NSViewResizingMask.MinYMargin;
-			input.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.MaxXMargin | NSViewResizingMask.MaxYMargin;
+			stepper.AutoresizingMask = NSViewResizingMask.MinXMargin;
+			input.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.MaxXMargin;
 
 			AddSubview (input);
 			AddSubview (stepper);
+		}
+
+		public void SizeToFit()
+		{
+			stepper.SizeToFit ();
+			input.SizeToFit ();
+
+			var minHeight = (nfloat)Math.Max (stepper.Frame.Height, input.Frame.Height);
+			var minWidth = input.Frame.Width + stepper.Frame.Width;
+			minWidth = (nfloat)Math.Max (minWidth, 55);
+			var stepperX = minWidth - (stepper.Frame.Width);
+			var stepperY = (minHeight - stepper.Frame.Height) / 2;
+			var inputX = 0;
+			var inputY = (minHeight - input.Frame.Height) / 2;
+
+			SetFrameSize (new CGSize (minWidth, minHeight));
+			stepper.Frame = new CGRect (stepperX, stepperY, stepper.Frame.Width, stepper.Frame.Height);
+			input.Frame = new CGRect (inputX, inputY, minWidth - (stepper.Frame.Width), input.Frame.Height);
 		}
 
 		public double ClimbRate {
