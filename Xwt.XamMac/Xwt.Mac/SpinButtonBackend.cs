@@ -11,10 +11,12 @@ using CGPoint = System.Drawing.PointF;
 using CGSize = System.Drawing.SizeF;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
+using MonoMac.ObjCRuntime;
 #else
 using Foundation;
 using AppKit;
 using CoreGraphics;
+using ObjCRuntime;
 #endif
 
 namespace Xwt.Mac
@@ -23,19 +25,17 @@ namespace Xwt.Mac
 	{
 		public override void Initialize ()
 		{
-			ViewObject = new MacSpinButton (EventSink);
-		}
-		
-		protected new ISpinButtonEventSink EventSink {
-			get { return (ISpinButtonEventSink)base.EventSink; }
+			ViewObject = new MacSpinButton (EventSink, ApplicationContext);
 		}
 		
 		public override void EnableEvent (object eventId)
 		{
+			Widget.EnableEvent (eventId);
 		}
 		
 		public override void DisableEvent (object eventId)
 		{
+			Widget.DisableEvent (eventId);
 		}
 
 		public double ClimbRate {
@@ -94,11 +94,14 @@ namespace Xwt.Mac
 		}
 	}
 
-	public class MacSpinButton : NSView, IViewObject
+	public sealed class MacSpinButton : WidgetView
 	{
 		NSStepper stepper;
 		NSTextField input;
 		NSNumberFormatter formater;
+
+		ISpinButtonEventSink eventSink;
+
 
 		class RelativeTextField : NSTextField
 		{
@@ -116,15 +119,18 @@ namespace Xwt.Mac
 			}
 		}
 
-		public MacSpinButton (ISpinButtonEventSink eventSink)
+		public MacSpinButton (ISpinButtonEventSink eventSink, ApplicationContext context) : base (eventSink, context)
 		{
+			this.eventSink = eventSink;
 			formater = new NSNumberFormatter ();
 			stepper = new NSStepper ();
 			input = new RelativeTextField (stepper);
 			input.Formatter = formater;
 			input.Alignment = NSTextAlignment.Right;
 			formater.NumberStyle = NSNumberFormatterStyle.Decimal;
-			stepper.Activated += (sender, e) => input.DoubleValue = stepper.DoubleValue;
+			stepper.Activated += HandleStepperChanged;;
+			input.Changed += HandleTextChanged;
+			input.DoCommandBySelector = DoCommandBySelector;
 
 			AutoresizesSubviews = true;
 			stepper.AutoresizingMask = NSViewResizingMask.MinXMargin;
@@ -152,6 +158,58 @@ namespace Xwt.Mac
 			input.Frame = new CGRect (inputX, inputY, minWidth - (stepper.Frame.Width), input.Frame.Height);
 		}
 
+		public override void ScrollWheel (NSEvent theEvent)
+		{
+			Value += IncrementValue * (Math.Abs (theEvent.DeltaY) < 1 ? 1 : Math.Round(theEvent.DeltaY));
+			base.ScrollWheel (theEvent);
+		}
+
+		void HandleStepperChanged (object sender, EventArgs e)
+		{
+			var alignedStepperValue = Math.Round (stepper.DoubleValue, Digits);
+			if (Math.Abs (stepper.DoubleValue - alignedStepperValue) > double.Epsilon)
+				stepper.DoubleValue = alignedStepperValue;
+			
+			input.DoubleValue = stepper.DoubleValue;
+			if (enableValueChangedEvent) {
+				Backend.ApplicationContext.InvokeUserCode (delegate {
+					eventSink.ValueChanged ();
+				});
+			}
+		}
+
+		void HandleTextChanged (object sender, EventArgs e)
+		{
+			stepper.DoubleValue = input.DoubleValue;
+			if (enableValueChangedEvent) {
+				Backend.ApplicationContext.InvokeUserCode (delegate {
+					eventSink.ValueChanged ();
+				});
+			}
+		}
+
+		bool DoCommandBySelector (
+			NSControl control, 
+			NSTextView textView, 
+			Selector commandSelector)
+		{
+			switch (commandSelector.Name) {
+			case "moveUp:":
+				Value += IncrementValue;
+				return true;
+			case "moveDown:":
+				Value -= IncrementValue;
+				return true;
+			case "scrollPageUp:":
+				Value += IncrementValue;
+				return true;
+			case "scrollPageDown:":
+				Value -= IncrementValue;
+				return true;
+			}
+			return false;
+		}
+
 		public double ClimbRate {
 			get { return stepper.Increment; }
 			set { stepper.Increment = value; }
@@ -165,8 +223,18 @@ namespace Xwt.Mac
 		public double Value {
 			get { return input.DoubleValue; }
 			set {
+				if (value < MinimumValue)
+					value = MinimumValue;
+				if (value > MaximumValue)
+					value = MaximumValue;
+
 				stepper.DoubleValue = value;
 				input.DoubleValue = value;
+				if (enableValueChangedEvent) {
+					Backend.ApplicationContext.InvokeUserCode (delegate {
+						eventSink.ValueChanged ();
+					});
+				}
 			}
 		}
 
@@ -209,18 +277,24 @@ namespace Xwt.Mac
 			}
 		}
 
-		public ViewBackend Backend { get; set; }
-		
-		public NSView View {
-			get { return this; }
-		}
-		
-		public void EnableEvent (Xwt.Backends.ButtonEvent ev)
+		bool enableValueChangedEvent;
+
+		public void EnableEvent (object eventId)
 		{
+			if (eventId is SpinButtonEvent) {
+				switch ((SpinButtonEvent)eventId) {
+				case SpinButtonEvent.ValueChanged: enableValueChangedEvent = true; break;
+				}
+			}
 		}
 
-		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
+		public void DisableEvent (object eventId)
 		{
+			if (eventId is SpinButtonEvent) {
+				switch ((SpinButtonEvent)eventId) {
+				case SpinButtonEvent.ValueChanged: enableValueChangedEvent = false; break;
+				}
+			}
 		}
 	}
 }
