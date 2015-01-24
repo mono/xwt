@@ -89,10 +89,21 @@ namespace Xwt.WPFBackend
         {
             get { return (double)GetValue(ValueProperty); }
             set {
-                SetValue(ValueProperty, Math.Round(value, DecimalPlaces));
+				SetValue(ValueProperty, SnapToTick(value));
                 UpdateTextbox ();
             }
         }
+
+		double SnapToTick (double value)
+		{
+			if (Math.Abs (Increment) < double.Epsilon)
+				return value;
+
+			var tmp = (value - MinimumValue) / Increment;
+			if (tmp - Math.Floor (tmp) < Math.Ceiling (tmp) - tmp)
+				return MinimumValue + Math.Floor (tmp) * Increment;
+			return MinimumValue + Math.Ceiling (tmp) * Increment;
+		}
 
         public string Text
         {
