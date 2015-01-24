@@ -30,6 +30,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using MonoMac.AppKit;
 using MonoMac.CoreGraphics;
+using MonoMac.CoreImage;
 using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
 using Xwt.Backends;
@@ -438,6 +439,37 @@ namespace Xwt.Mac
 				return GridLines.Vertical;
 
 			return GridLines.None;
+		}
+
+		public static void DrawWithColorTransform (this NSView view, Color? color, Action drawDelegate)
+		{
+			if (color.HasValue) {
+				if (view.Frame.Size.Width <= 0 || view.Frame.Size.Height <= 0)
+					return;
+
+				// render view to image
+				var image = new NSImage(view.Frame.Size);
+				image.LockFocusFlipped(!view.IsFlipped);
+				drawDelegate ();
+				image.UnlockFocus();
+
+				// create Core image for transformation
+				var rr = new RectangleF(0, 0, view.Frame.Size.Width, view.Frame.Size.Height);
+				var ciImage = CIImage.FromCGImage(image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
+
+				// apply color matrix
+				var transformColor = new CIColorMatrix();
+				transformColor.SetDefaults();
+				transformColor.Image = ciImage;
+				transformColor.RVector = new CIVector(0, (float)color.Value.Red, 0);
+				transformColor.GVector = new CIVector((float)color.Value.Green, 0, 0);
+				transformColor.BVector = new CIVector(0, 0, (float)color.Value.Blue);
+				ciImage = (CIImage)transformColor.ValueForKey(new NSString("outputImage"));
+
+				var ciCtx = CIContext.FromContext(NSGraphicsContext.CurrentContext.GraphicsPort, null);
+				ciCtx.DrawImage (ciImage, rr, rr);
+			} else
+				drawDelegate();
 		}
 	}
 

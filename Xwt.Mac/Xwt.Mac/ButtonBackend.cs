@@ -135,11 +135,9 @@ namespace Xwt.Mac
 		
 		#endregion
 
-		// Disable ugly bg color support. The default behavior applies the color around the button.
-		// TODO: bg color needs to be drawn above the bezel.
 		public override Color BackgroundColor {
-			get;
-			set;
+			get { return ((MacButton)Widget).BackgroundColor; }
+			set { ((MacButton)Widget).BackgroundColor = value; }
 		}
 	}
 	
@@ -159,6 +157,7 @@ namespace Xwt.Mac
 		
 		public MacButton (IButtonEventSink eventSink, ApplicationContext context)
 		{
+			Cell = new ColoredButtonCell ();
 			BezelStyle = NSBezelStyle.Rounded;
 			Activated += delegate {
 				context.InvokeUserCode (delegate {
@@ -213,6 +212,25 @@ namespace Xwt.Mac
 			base.ResetCursorRects ();
 			if (Backend.Cursor != null)
 				AddCursorRect (Bounds, Backend.Cursor);
+		}
+
+		public Color BackgroundColor {
+			get {
+				return ((ColoredButtonCell)Cell).Color.GetValueOrDefault ();
+			}
+			set {
+				((ColoredButtonCell)Cell).Color = value;
+			}
+		}
+
+		class ColoredButtonCell : NSButtonCell
+		{
+			public Color? Color { get; set; }
+
+			public override void DrawBezelWithFrame (System.Drawing.RectangleF frame, NSView controlView)
+			{
+				controlView.DrawWithColorTransform(Color, delegate { base.DrawBezelWithFrame (frame, controlView); });
+			}
 		}
 	}
 }
