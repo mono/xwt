@@ -210,10 +210,8 @@ namespace Xwt.Mac
 			return false;
 		}
 
-		public double ClimbRate {
-			get { return stepper.Increment; }
-			set { stepper.Increment = value; }
-		}
+		//TODO: implement key climb rate
+		public double ClimbRate { get; set; }
 
 		public int Digits {
 			get { return (int)formater.MaximumSignificantDigits; }
