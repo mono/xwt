@@ -37,7 +37,15 @@ namespace Xwt
 			this.Timestamp = timestamp;
 		}
 		
+		public KeyEventArgs (Key key, int nativeKeyCode, ModifierKeys modifiers, bool isRepeat, long timestamp)
+			: this (key, modifiers, isRepeat, timestamp)
+		{
+			this.NativeKeyCode = nativeKeyCode;
+		}
+		
 		public Key Key { get; private set; }
+
+		public int NativeKeyCode { get; private set; }
 		
 		public ModifierKeys Modifiers { get; private set; }
 		
