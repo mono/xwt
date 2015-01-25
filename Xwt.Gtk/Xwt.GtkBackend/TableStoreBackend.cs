@@ -37,13 +37,14 @@ namespace Xwt.GtkBackend
 {
 	public abstract class TableStoreBackend
 	{
-		TreeModel store;
-		Type[] types;
+		public Type[] ColumnTypes {
+			get;
+			private set;
+		}
 
 		public TreeModel Store {
-			get {
-				return store;
-			}
+			get;
+			protected set;
 		}
 
 		public ApplicationContext ApplicationContext {
@@ -53,16 +54,16 @@ namespace Xwt.GtkBackend
 
 		public void Initialize (Type[] columnTypes)
 		{
-			types = new Type[columnTypes.Length];
-			for (int n=0; n<types.Length; n++) {
+			ColumnTypes = new Type[columnTypes.Length];
+			for (int n=0; n<ColumnTypes.Length; n++) {
 				if (columnTypes [n] == typeof(Gtk.Image))
-					types [n] = typeof(ImageDescription);
+					ColumnTypes [n] = typeof(ImageDescription);
 				else if (columnTypes [n] == typeof(object))
-					types [n] = typeof(ObjectWrapper);
+					ColumnTypes [n] = typeof(ObjectWrapper);
 				else
-					types [n] = columnTypes [n];
+					ColumnTypes [n] = columnTypes [n];
 			}
-			store = InitializeModel (types);
+			Store = InitializeModel (ColumnTypes);
 		}
 
 		public abstract TreeModel InitializeModel (Type[] columnTypes);
@@ -74,12 +75,12 @@ namespace Xwt.GtkBackend
 
 		public void SetValue (Gtk.TreeIter it, int column, object value)
 		{
-			CellUtil.SetModelValue (store, it, column, types [column], value);
+			CellUtil.SetModelValue (Store, it, column, ColumnTypes [column], value);
 		}
 
 		public object GetValue (Gtk.TreeIter it, int column)
 		{
-			return CellUtil.GetModelValue (store, it, column);
+			return CellUtil.GetModelValue (Store, it, column);
 		}
 	}
 	
