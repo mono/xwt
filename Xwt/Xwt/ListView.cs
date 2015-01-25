@@ -165,6 +165,20 @@ namespace Xwt
 				Backend.SetSelectionMode (mode);
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the row the current event applies to.
+		/// The behavior of this property is undefined when used outside an
+		/// event that supports it.
+		/// </summary>
+		/// <value>
+		/// The current event row.
+		/// </value>
+		public int CurrentEventRow {
+			get {
+				return Backend.CurrentEventRow;
+			}
+		}
 		
 		public int SelectedRow {
 			get {
