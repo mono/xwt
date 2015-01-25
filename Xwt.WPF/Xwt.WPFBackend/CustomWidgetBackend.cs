@@ -43,6 +43,7 @@ namespace Xwt.WPFBackend
 		public void SetContent (IWidgetBackend widget)
 		{
 			if (widget != null) {
+				SetChildPlacement (widget);
 				child = (Widget)((WidgetBackend)widget).Frontend;
 				UserControl.Content = widget.NativeWidget;
 			}
@@ -72,6 +73,13 @@ namespace Xwt.WPFBackend
 		{
 			get;
 			set;
+		}
+
+		protected override SW.Size ArrangeOverride (SW.Size arrangeBounds)
+		{
+			var s = base.ArrangeOverride (arrangeBounds);
+			Backend.Frontend.Surface.Reallocate ();
+			return s;
 		}
 
 		protected override SW.Size MeasureOverride (SW.Size constraint)
