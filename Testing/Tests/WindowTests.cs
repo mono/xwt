@@ -218,6 +218,44 @@ namespace Xwt
 			}
 			Assert.IsFalse (closed, "Window should not be closed");
 		}
+
+		[Test]
+		public void InitialLocationManualWithoutContent ()
+		{
+			using (var win = new Window ()) {
+				win.InitialLocation = WindowLocation.Manual;
+				win.Location = new Point (210, 230);
+				win.Size = new Size (100, 100);
+				ShowWindow (win);
+				Assert.AreEqual (210, win.X);
+				Assert.AreEqual (230, win.Y);
+			}
+		}
+
+		[Test]
+		public void InitialLocationManualWithoutContentAndSize ()
+		{
+			using (var win = new Window ()) {
+				win.InitialLocation = WindowLocation.Manual;
+				win.Location = new Point (210, 230);
+				ShowWindow (win);
+				Assert.AreEqual (210, win.X);
+				Assert.AreEqual (230, win.Y);
+			}
+		}
+
+		[Test]
+		public void InitialLocationManual ()
+		{
+			using (var win = new Window ()) {
+				win.InitialLocation = WindowLocation.Manual;
+				win.Content = new Label ("Hi there!");
+				win.Location = new Point (210, 230);
+				ShowWindow (win);
+				Assert.AreEqual (210, win.X);
+				Assert.AreEqual (230, win.Y);
+			}
+		}
 	}
 
 	public class SquareBox: Canvas
