@@ -211,7 +211,8 @@ namespace Xwt.GtkBackend
 			version++;
 			IterPos tpos = GetIterPos (pos);
 			Gtk.TreeIter it = tpos.Iter;
-			var eventArgs = new TreeNodeChildEventArgs (GetParent (tpos), -1);
+			var delPath = Tree.GetPath (it);
+			var eventArgs = new TreeNodeChildEventArgs (GetParent (tpos), delPath.Indices[delPath.Indices.Length - 1]);
 			Tree.Remove (ref it);
 			if (NodeDeleted != null)
 				NodeDeleted (this, eventArgs);
