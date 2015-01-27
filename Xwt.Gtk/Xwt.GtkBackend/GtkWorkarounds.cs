@@ -1283,6 +1283,20 @@ namespace Xwt.GtkBackend
 		{
 			g_signal_stop_emission_by_name (gobject.Handle, signalid);
 		}
+
+
+		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr gtk_entry_get_text_window(IntPtr raw);
+
+		public static Gdk.Window GetTextWindow (this Gtk.Entry entry)
+		{
+			if (GtkMajorVersion != 2 || GtkMinorVersion < 20)
+				return null;
+
+			IntPtr raw_ret = gtk_entry_get_text_window (entry.Handle);
+			Gdk.Window ret = GLib.Object.GetObject(raw_ret) as Gdk.Window;
+			return ret;
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>
