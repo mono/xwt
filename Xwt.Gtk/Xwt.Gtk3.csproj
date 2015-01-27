@@ -133,7 +133,7 @@
     <Compile Include="Xwt.GtkBackend\ListViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ComboBoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ComboBoxEntryBackend.cs" />
-    <Compile Include="Xwt.GtkBackend\SearchTextEntryBackendGtk3.cs" />
+    <Compile Include="Xwt.GtkBackend\SearchTextEntryBackend.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk3Extensions.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk3ViewPort.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk3DrawingArea.cs" />
