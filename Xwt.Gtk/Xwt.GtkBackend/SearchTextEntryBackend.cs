@@ -44,6 +44,14 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		static SearchTextEntryBackend ()
+		{
+			if (!Gtk.IconTheme.Default.HasIcon("edit-find-symbolic"))
+				Gtk.IconTheme.AddBuiltinIcon("edit-find-symbolic", 16, Gdk.Pixbuf.LoadFromResource("searchbox-search-light-16.png"));
+			if (!Gtk.IconTheme.Default.HasIcon("edit-clear-symbolic"))
+				Gtk.IconTheme.AddBuiltinIcon("edit-clear-symbolic", 16, Gdk.Pixbuf.LoadFromResource("searchbox-clear-light-16.png"));
+		}
+
 		public override void Initialize ()
 		{
 			searchEntry = new GtkEntry ();
