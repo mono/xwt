@@ -138,6 +138,7 @@
     <Compile Include="Xwt.GtkBackend\Gtk2DrawingArea.cs" />
     <Compile Include="Xwt.GtkBackend\WidgetBackendGtk2.cs" />
     <Compile Include="Xwt.GtkBackend\TextEntryBackendGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\Gtk2IconEntry.cs" />
     <Compile Include="Xwt.GtkBackend\PasswordEntryBackendGtk2.cs" />
     <Compile Include="Xwt.GtkBackend\LabelBackendGtk2.cs" />
     <Compile Include="Xwt.GtkBackend\ButtonBackendGtk2.cs" />
