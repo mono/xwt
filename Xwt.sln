@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk.Windows", "Xwt.Gtk.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk3", "Xwt.Gtk\Xwt.Gtk3.csproj", "{3B25FD1F-CEBA-4450-8893-DC330FDB56A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Iconeria", "Xwt.Iconeria\Xwt.Iconeria.csproj", "{7406EFA3-DC40-4E89-B495-FE944D25BB98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AppStore|Any CPU = AppStore|Any CPU
