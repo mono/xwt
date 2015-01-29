@@ -113,7 +113,10 @@ namespace Xwt.GtkBackend
 
 		public void Move (double x, double y)
 		{
-			Window.Move ((int)x, (int)y);
+			if (Window.Decorated && Window.GdkWindow != null)
+				Window.GdkWindow.Move ((int)x, (int)y);
+			else
+				Window.Move ((int)x, (int)y);
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnBoundsChanged (Bounds);
 			});
@@ -127,14 +130,18 @@ namespace Xwt.GtkBackend
 			if (height == -1)
 				height = Bounds.Height;
 			requestedSize = new Size (width, height);
-			Window.Resize ((int)width, (int)height);
+			if (Window.Decorated && Window.GdkWindow != null)
+				Window.GdkWindow.Resize ((int)width, (int)height);
+			else
+				Window.Resize ((int)width, (int)height);
 		}
 
 		public Rectangle Bounds {
 			get {
 				int w, h, x, y;
-				if (Window.GdkWindow != null) {
-					Window.GdkWindow.GetOrigin (out x, out y);
+
+				if (Window.Decorated && Window.GdkWindow != null) {
+					Window.GdkWindow.GetRootOrigin (out x, out y);
 					Window.GdkWindow.GetSize (out w, out h);
 				} else {
 					Window.GetPosition (out x, out y);
@@ -144,8 +151,12 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				requestedSize = value.Size;
-				Window.Move ((int)value.X, (int)value.Y);
-				Window.Resize ((int)value.Width, (int)value.Height);
+				if (Window.Decorated && Window.GdkWindow != null) {
+					Window.GdkWindow.MoveResize ((int)value.X, (int)value.Y, (int)value.Width, (int)value.Height);
+				} else {
+					Window.Move ((int)value.X, (int)value.Y);
+					Window.Resize ((int)value.Width, (int)value.Height);
+				}
 				Window.SetDefaultSize ((int)value.Width, (int)value.Height);
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnBoundsChanged (Bounds);
