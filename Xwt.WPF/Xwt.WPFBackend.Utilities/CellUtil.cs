@@ -60,6 +60,7 @@ namespace Xwt.WPFBackend.Utilities
 				// if it's an editable textcontrol, use a TextBox, if not use a TextBlock. Reason for this is that 
 				// a user usually expects to be able to edit a text if a text cursor is appearing above a field.
 				FrameworkElementFactory factory;
+				var cb = new TextCellViewBackend();
 				if (textView.EditableField == null)
 				{
 					if (textView.Editable)
@@ -74,8 +75,9 @@ namespace Xwt.WPFBackend.Utilities
 					}
 					else
 					{
-						factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
+						factory = new FrameworkElementFactory(typeof(TextCellViewBlock));
 						factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
+						factory.SetValue(TextCellViewBlock.CellViewBackendProperty, cb);
 						if (textView.TextField != null)
 						{
 							factory.SetBinding(SWC.TextBlock.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
@@ -93,7 +95,6 @@ namespace Xwt.WPFBackend.Utilities
 					}
 				}
 
-                var cb = new CellViewBackend();
                 cb.Initialize(view, factory);
                 fr.AttachBackend(parent, cb);
 				return factory;

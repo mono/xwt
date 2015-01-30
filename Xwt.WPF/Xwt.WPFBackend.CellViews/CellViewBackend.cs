@@ -11,6 +11,14 @@ namespace Xwt.WPFBackend
     {
         FrameworkElement currentElement;
 
+        public FrameworkElement CurrentElement
+        {
+            get
+            {
+                return currentElement;
+            }
+        }
+
         public CellViewBackend()
         {
         }
@@ -24,6 +32,11 @@ namespace Xwt.WPFBackend
         {
             currentElement = elem;
             CellFrontend.Load(this);
+            OnLoadData();
+        }
+
+        protected virtual void OnLoadData()
+        {
         }
 
         public CellView CellView { get; set; }
