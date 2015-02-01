@@ -41,6 +41,11 @@ namespace Xwt.Backends
 		Toolkit toolkit;
 		bool isGuest;
 
+		public virtual ToolkitType GetToolkitType ()
+		{
+			return ToolkitType.Custom;
+		}
+
 		internal void Initialize (Toolkit toolkit, bool isGuest)
 		{
 			this.toolkit = toolkit;

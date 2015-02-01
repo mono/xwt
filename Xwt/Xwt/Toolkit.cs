@@ -40,7 +40,6 @@ namespace Xwt
 		ToolkitEngineBackend backend;
 		ApplicationContext context;
 		XwtTaskScheduler scheduler;
-		ToolkitType toolkitType;
 
 		int inUserCode;
 		Queue<Action> exitActions = new Queue<Action> ();
@@ -82,8 +81,7 @@ namespace Xwt
 		}
 
 		public ToolkitType Type {
-			get { return toolkitType; }
-			internal set { toolkitType = value; }
+			get { return Backend.GetToolkitType (); }
 		}
 
 		internal static void DisposeAll ()
@@ -122,12 +120,11 @@ namespace Xwt
 
 		public static Toolkit Load (ToolkitType type)
 		{
-			var et = toolkits.Values.FirstOrDefault (tk => tk.toolkitType == type);
+			var et = toolkits.Values.FirstOrDefault (tk => tk.Type == type);
 			if (et != null)
 				return et;
 
 			Toolkit t = new Toolkit ();
-			t.toolkitType = type;
 			t.LoadBackend (GetBackendType (type), true, true);
 			return t;
 		}
@@ -140,14 +137,13 @@ namespace Xwt
 		/// <param name="toolkit">The loaded toolkit</param>
 		public static bool TryLoad (ToolkitType type, out Toolkit toolkit)
 		{
-			var et = toolkits.Values.FirstOrDefault (tk => tk.toolkitType == type);
+			var et = toolkits.Values.FirstOrDefault (tk => tk.Type == type);
 			if (et != null) {
 				toolkit = et;
 				return true;
 			}
 
 			Toolkit t = new Toolkit ();
-			t.toolkitType = type;
 			if (t.LoadBackend (GetBackendType (type), true, false)) {
 				toolkit = t;
 				return true;

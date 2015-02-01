@@ -61,7 +61,6 @@ namespace Xwt
 		public static void Initialize (ToolkitType type)
 		{
 			Initialize (Toolkit.GetBackendType (type));
-			toolkit.Type = type;
 		}
 
 		public static void Initialize (string backendType)
@@ -270,6 +269,7 @@ namespace Xwt
 
 	public enum ToolkitType
 	{
+		Custom = 0,
 		Gtk = 1,
 		Cocoa = 2,
 		Wpf = 3,

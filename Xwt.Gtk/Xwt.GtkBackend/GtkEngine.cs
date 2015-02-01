@@ -38,6 +38,15 @@ namespace Xwt.GtkBackend
 	{
 		GtkPlatformBackend platformBackend;
 
+		public override ToolkitType GetToolkitType ()
+		{
+			#if XWT_GTK3
+			return ToolkitType.Gtk3;
+			#else
+			return ToolkitType.Gtk;
+			#endif
+		}
+
 		public override void InitializeApplication ()
 		{
 			Gtk.Application.Init ();
