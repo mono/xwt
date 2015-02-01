@@ -37,6 +37,7 @@ using System.Collections.Generic;
 using SWC = System.Windows.Controls;
 using WKey = System.Windows.Input.Key;
 using System.Windows.Input;
+using System.Windows.Controls.Primitives;
 
 namespace Xwt.WPFBackend
 {
@@ -193,9 +194,16 @@ namespace Xwt.WPFBackend
 			}
 
 			foreach (object item in items) {
-				var treeItem = (ExTreeViewItem) g.ContainerFromItem (item);
-				if (treeItem == null)
-					continue;
+				var treeItem = (ExTreeViewItem)g.ContainerFromItem (item);
+				if (treeItem == null) {
+					var ig = (IItemContainerGenerator)g;
+					using (ig.StartAt (new GeneratorPosition (-1, 1), GeneratorDirection.Forward)) {
+						ig.GenerateNext ();
+					}
+					treeItem = (ExTreeViewItem)g.ContainerFromItem (item);
+					if (treeItem == null)
+						continue;
+				}
 
 				if (!action (item, treeItem))
 					return false;
