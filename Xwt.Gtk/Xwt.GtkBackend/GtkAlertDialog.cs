@@ -59,9 +59,6 @@ namespace Xwt.GtkBackend
 
 			this.Title        = "";
 			this.Resizable    = false;
-			#if !XWT_GTK3
-			this.HasSeparator = false;
-			#endif
 		}
 		
 		public GtkAlertDialog (ApplicationContext actx, MessageDescription message)
