@@ -76,6 +76,12 @@ namespace Xwt.WPFBackend.Utilities
 					{
 						factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
 						factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
+						if (!view.Visible)
+						{
+							factory.SetValue(FrameworkElement.VisibilityProperty, Visibility.Hidden);
+							factory.SetValue(FrameworkElement.MaxWidthProperty, 0.0);
+						}
+
 						if (textView.TextField != null)
 						{
 							factory.SetBinding(SWC.TextBlock.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
