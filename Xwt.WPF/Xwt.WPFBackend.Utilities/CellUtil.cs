@@ -106,8 +106,8 @@ namespace Xwt.WPFBackend.Utilities
 				FrameworkElementFactory factory = new FrameworkElementFactory (typeof (ImageBox));
 
 				if (imageView.ImageField != null) {
-					var binding = new Binding (dataPath + "[" + imageView.ImageField.Index + "]")
-					{ Converter = new ImageToImageSourceConverter (ctx) };
+					var binding = new Binding (dataPath + "[" + imageView.ImageField.Index + "]");
+					binding.Converter = new ImageToImageSourceConverter (ctx);
 
 					factory.SetBinding (ImageBox.ImageSourceProperty, binding);
 				}
@@ -131,29 +131,22 @@ namespace Xwt.WPFBackend.Utilities
 			}
 			
 			CheckBoxCellView cellView = view as CheckBoxCellView;
-					if (cellView != null)
-					{
-						FrameworkElementFactory factory = new FrameworkElementFactory(typeof(SWC.CheckBox));
-						if (cellView.EditableField == null)
-						{
-							factory.SetValue(FrameworkElement.IsEnabledProperty, cellView.Editable);
-						}
-						else
-						{
-							factory.SetBinding(SWC.CheckBox.IsEnabledProperty, new Binding(dataPath + "[" + cellView.EditableField.Index + "]"));
-						}
+			if (cellView != null) {
+				FrameworkElementFactory factory = new FrameworkElementFactory (typeof(SWC.CheckBox));
+				if (cellView.EditableField == null)
+					factory.SetValue (FrameworkElement.IsEnabledProperty, cellView.Editable);
+				else
+					factory.SetBinding (SWC.CheckBox.IsEnabledProperty, new Binding (dataPath + "[" + cellView.EditableField.Index + "]"));
 
-						factory.SetValue(SWC.CheckBox.IsThreeStateProperty, cellView.AllowMixed);
-						if (cellView.ActiveField != null)
-						{
-								factory.SetBinding(SWC.CheckBox.IsCheckedProperty, new Binding(dataPath + "[" + cellView.ActiveField.Index + "]"));
-						}
+				factory.SetValue (SWC.CheckBox.IsThreeStateProperty, cellView.AllowMixed);
+				if (cellView.ActiveField != null)
+					factory.SetBinding (SWC.CheckBox.IsCheckedProperty, new Binding (dataPath + "[" + cellView.ActiveField.Index + "]"));
 
-                        var cb = new CellViewBackend();
-                        cb.Initialize(view, factory);
-                        fr.AttachBackend(parent, cb);
-                        return factory;
-					}
+				var cb = new CellViewBackend ();
+				cb.Initialize (view, factory);
+				fr.AttachBackend (parent, cb);
+				return factory;
+			}
 
 			throw new NotImplementedException ();
 		}
