@@ -45,7 +45,18 @@ namespace Xwt.WPFBackend.Utilities
 			container.SetValue (StackPanel.OrientationProperty, System.Windows.Controls.Orientation.Horizontal);
 
 			foreach (CellView view in views) {
-                container.AppendChild(CreateBoundCellRenderer(ctx, parent, view, dataPath));
+				var factory = CreateBoundCellRenderer(ctx, parent, view, dataPath);
+
+				if (view.VisibleField != null)
+				{
+					var binding = new Binding(dataPath + "[" + view.VisibleField.Index + "]");
+					binding.Converter = new BooleanToVisibilityConverter();
+					factory.SetBinding(UIElement.VisibilityProperty, binding);
+				}
+				else if (!view.Visible)
+					factory.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
+
+				container.AppendChild(factory);
 			}
 
 			return container;
@@ -76,14 +87,6 @@ namespace Xwt.WPFBackend.Utilities
 					{
 						factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
 						factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
-						if (textView.VisibleField != null)
-						{
-							var binding = new Binding(dataPath + "[" + textView.VisibleField.Index + "]");
-							binding.Converter = new BooleanToVisibilityConverter();
-							factory.SetBinding(SWC.TextBlock.VisibilityProperty, binding);
-						}
-						else if (!textView.Visible)
-							factory.SetValue(SWC.TextBlock.VisibilityProperty, Visibility.Collapsed);
 
 						if (textView.TextField != null)
 						{
