@@ -73,35 +73,22 @@ namespace Xwt.WPFBackend.Utilities
 				// if it's an editable textcontrol, use a TextBox, if not use a TextBlock. Reason for this is that 
 				// a user usually expects to be able to edit a text if a text cursor is appearing above a field.
 				FrameworkElementFactory factory;
-				if (textView.EditableField == null)
+				if (textView.Editable || textView.EditableField != null)
 				{
+					factory = new FrameworkElementFactory(typeof(SWC.TextBox));
 					if (textView.Editable)
-					{
-						factory = new FrameworkElementFactory(typeof(SWC.TextBox));
 						factory.SetValue(SWC.TextBox.IsReadOnlyProperty, false);
-						if (textView.TextField != null)
-						{
-							factory.SetBinding(SWC.TextBox.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
-						}
-					}
 					else
-					{
-						factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
+						factory.SetBinding(SWC.TextBox.IsEnabledProperty, new Binding(dataPath + "[" + textView.EditableField.Index + "]"));
 
-						if (textView.TextField != null)
-						{
-							factory.SetBinding(SWC.TextBlock.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
-						}
-					}
+					if (textView.TextField != null)
+						factory.SetBinding(SWC.TextBox.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
 				}
 				else
 				{
-					factory = new FrameworkElementFactory(typeof(SWC.TextBox));
-					factory.SetBinding(SWC.TextBox.IsEnabledProperty, new Binding(dataPath + "[" + textView.EditableField.Index + "]"));
+					factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
 					if (textView.TextField != null)
-					{
-						factory.SetBinding(SWC.TextBox.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
-					}
+						factory.SetBinding(SWC.TextBlock.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
 				}
 
                 var cb = new CellViewBackend();
