@@ -76,6 +76,15 @@ namespace Xwt.WPFBackend.Utilities
 					{
 						factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
 						factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
+						if (textView.VisibleField != null)
+						{
+							var binding = new Binding(dataPath + "[" + textView.VisibleField.Index + "]");
+							binding.Converter = new BooleanToVisibilityConverter();
+							factory.SetBinding(SWC.TextBlock.VisibilityProperty, binding);
+						}
+						else if (!textView.Visible)
+							factory.SetValue(SWC.TextBlock.VisibilityProperty, Visibility.Collapsed);
+
 						if (textView.TextField != null)
 						{
 							factory.SetBinding(SWC.TextBlock.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
