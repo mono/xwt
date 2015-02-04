@@ -36,6 +36,8 @@ namespace Xwt.WPFBackend.Utilities
 {
 	public static class CellUtil
 	{
+		static readonly Thickness CellMargins = new Thickness (2);
+
 		internal static FrameworkElementFactory CreateBoundColumnTemplate (ApplicationContext ctx, Widget parent, CellViewCollection views, string dataPath = ".")
 		{
 			if (views.Count == 1)
@@ -46,6 +48,8 @@ namespace Xwt.WPFBackend.Utilities
 
 			foreach (CellView view in views) {
 				var factory = CreateBoundCellRenderer(ctx, parent, view, dataPath);
+
+				factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
 
 				if (view.VisibleField != null)
 				{
@@ -61,8 +65,6 @@ namespace Xwt.WPFBackend.Utilities
 
 			return container;
 		}
-
-		private static readonly Thickness CellMargins = new Thickness (2);
 		internal static FrameworkElementFactory CreateBoundCellRenderer (ApplicationContext ctx, Widget parent, CellView view, string dataPath = ".")
 		{
             ICellViewFrontend fr = view;
@@ -76,7 +78,6 @@ namespace Xwt.WPFBackend.Utilities
 					if (textView.Editable)
 					{
 						factory = new FrameworkElementFactory(typeof(SWC.TextBox));
-						factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
 						factory.SetValue(SWC.TextBox.IsReadOnlyProperty, false);
 						if (textView.TextField != null)
 						{
@@ -86,7 +87,6 @@ namespace Xwt.WPFBackend.Utilities
 					else
 					{
 						factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
-						factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
 
 						if (textView.TextField != null)
 						{
@@ -97,7 +97,6 @@ namespace Xwt.WPFBackend.Utilities
 				else
 				{
 					factory = new FrameworkElementFactory(typeof(SWC.TextBox));
-					factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
 					factory.SetBinding(SWC.TextBox.IsEnabledProperty, new Binding(dataPath + "[" + textView.EditableField.Index + "]"));
 					if (textView.TextField != null)
 					{
@@ -114,7 +113,6 @@ namespace Xwt.WPFBackend.Utilities
 			ImageCellView imageView = view as ImageCellView;
 			if (imageView != null) {
 				FrameworkElementFactory factory = new FrameworkElementFactory (typeof (ImageBox));
-				factory.SetValue (FrameworkElement.MarginProperty, CellMargins);
 
 				if (imageView.ImageField != null) {
 					var binding = new Binding (dataPath + "[" + imageView.ImageField.Index + "]")
@@ -134,7 +132,6 @@ namespace Xwt.WPFBackend.Utilities
 			{
                 var cb = new CanvasCellViewBackend();
                 FrameworkElementFactory factory = new FrameworkElementFactory(typeof(CanvasCellViewPanel));
-				factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
 				factory.SetValue(CanvasCellViewPanel.CellViewBackendProperty, cb);
 
                 cb.Initialize(view, factory);
@@ -156,7 +153,6 @@ namespace Xwt.WPFBackend.Utilities
 						}
 
 						factory.SetValue(SWC.CheckBox.IsThreeStateProperty, cellView.AllowMixed);
-						factory.SetValue(FrameworkElement.MarginProperty, CellMargins);
 						if (cellView.ActiveField != null)
 						{
 								factory.SetBinding(SWC.CheckBox.IsCheckedProperty, new Binding(dataPath + "[" + cellView.ActiveField.Index + "]"));
