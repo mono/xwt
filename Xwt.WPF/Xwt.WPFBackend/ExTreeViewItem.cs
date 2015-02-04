@@ -65,7 +65,10 @@ namespace Xwt.WPFBackend
 
 		protected override void OnCollapsed(RoutedEventArgs e)
 		{
-			var node = (TreeStoreNode)DataContext;
+			var node = DataContext as TreeStoreNode;
+			if (node == null) {
+				return;
+			}
 			if (!IsExpanded)
 				UnselectChildren((object o, ExTreeViewItem i) =>
 				{
