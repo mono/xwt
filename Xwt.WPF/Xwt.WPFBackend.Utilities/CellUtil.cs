@@ -83,12 +83,16 @@ namespace Xwt.WPFBackend.Utilities
 
 					if (textView.TextField != null)
 						factory.SetBinding(SWC.TextBox.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
+					else
+						factory.SetValue(SWC.TextBox.TextProperty, textView.Text);
 				}
 				else
 				{
 					factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
 					if (textView.TextField != null)
 						factory.SetBinding(SWC.TextBlock.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
+					else
+						factory.SetValue(SWC.TextBlock.TextProperty, textView.Text);
 				}
 
                 var cb = new CellViewBackend();
