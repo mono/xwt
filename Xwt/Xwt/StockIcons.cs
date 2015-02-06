@@ -23,7 +23,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 using Xwt.Drawing;
 using Xwt.Backends;
 
@@ -32,6 +31,14 @@ namespace Xwt
 	public static class StockIcons
 	{
 		static Image GetIcon (string id)
+		{
+	 		if (IconSet == null) {
+				return GetStockIcon (id);
+			}
+			return IconSet.GetStockIcon (id) ?? GetStockIcon (id);
+		}
+
+		static Image GetStockIcon(string id)
 		{
 			var img = Toolkit.CurrentEngine.GetStockIcon (id);
 			img.SetStockSource (id);
@@ -50,6 +57,7 @@ namespace Xwt
 		public static Image Zoom100 { get { return GetIcon (StockIconId.Zoom100); } }
 		public static Image Add { get { return GetIcon (StockIconId.Add); } }
 		public static Image Remove { get { return GetIcon (StockIconId.Remove); } }
+
+		public static IIconSet IconSet { private get; set; }
 	}
 }
-
