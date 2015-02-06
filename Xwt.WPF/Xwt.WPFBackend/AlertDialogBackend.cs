@@ -54,8 +54,9 @@ namespace Xwt.WPFBackend
 
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{
-			this.icon = GetIcon (message.Icon);
-			if (ConvertButtons (message.Buttons, out buttons)) {
+			this.icon = GetIcon(message.Icon);
+			bool isCustomIcon = message.Icon != null && this.icon == MessageBoxImage.None;
+			if (ConvertButtons (message.Buttons, out buttons) && !isCustomIcon) {
 				// Use a system message box
 				if (message.SecondaryText == null)
 					message.SecondaryText = String.Empty;
