@@ -46,6 +46,26 @@ namespace Xwt
 		Queue<Action> exitActions = new Queue<Action> ();
 		bool exitCallbackRegistered;
 
+		static KnownBackend[] knownBackends = new [] {
+			new KnownBackend { Type = ToolkitType.Gtk3, TypeName = "Xwt.GtkBackend.GtkEngine, Xwt.Gtk3" },
+			new KnownBackend { Type = ToolkitType.Gtk, TypeName = "Xwt.GtkBackend.GtkEngine, Xwt.Gtk" },
+			new KnownBackend { Type = ToolkitType.XamMac, TypeName = "Xwt.Mac.MacEngine, Xwt.XamMac" },
+			new KnownBackend { Type = ToolkitType.Cocoa, TypeName = "Xwt.Mac.MacEngine, Xwt.Mac" },
+			new KnownBackend { Type = ToolkitType.Wpf, TypeName = "Xwt.WPFBackend.WPFEngine, Xwt.WPF" },
+		};
+
+		class KnownBackend
+		{
+			public ToolkitType Type { get; set; }
+			public string TypeName { get; set; }
+
+			public string FullTypeName {
+				get {
+					return TypeName + ", Version=" + typeof(Application).Assembly.GetName ().Version;
+				}
+			}
+		}
+
 		Dictionary<string,Image> stockIcons = new Dictionary<string, Image> ();
 
 		public static Toolkit CurrentEngine {
@@ -100,23 +120,22 @@ namespace Xwt
 		internal static Toolkit Load (string fullTypeName, bool isGuest)
 		{
 			Toolkit t = new Toolkit ();
+
 			if (!string.IsNullOrEmpty (fullTypeName)) {
 				t.LoadBackend (fullTypeName, isGuest, true);
+				var bk = knownBackends.FirstOrDefault (tk => fullTypeName.StartsWith (tk.TypeName));
+				if (bk != null)
+					t.Type = bk.Type;
 				return t;
 			}
 
-			if (t.LoadBackend (GetBackendType (ToolkitType.Gtk3), isGuest, false))
-				return t;
-			
-			if (t.LoadBackend (GetBackendType (ToolkitType.Gtk), isGuest, false))
-				return t;
+			foreach (var bk in knownBackends) {
+				if (t.LoadBackend (bk.FullTypeName, isGuest, false)) {
+					t.Type = bk.Type;
+					return t;
+				}
+			}
 
-			if (t.LoadBackend (GetBackendType (ToolkitType.Cocoa), isGuest, false))
-				return t;
-			
-			if (t.LoadBackend (GetBackendType (ToolkitType.Wpf), isGuest, false))
-				return t;
-			
 			throw new InvalidOperationException ("Xwt engine not found");
 		}
 
@@ -158,22 +177,11 @@ namespace Xwt
 
 		internal static string GetBackendType (ToolkitType type)
 		{
-			string version = typeof(Application).Assembly.GetName ().Version.ToString ();
+			var t = knownBackends.FirstOrDefault (tk => tk.Type == type);
+			if (t != null)
+				return t.FullTypeName;
 
-			switch (type) {
-			case ToolkitType.Gtk:
-				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=" + version;
-			case ToolkitType.Gtk3:
-				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk3, Version=" + version;
-			case ToolkitType.Cocoa:
-				return "Xwt.Mac.MacEngine, Xwt.Mac, Version=" + version;
-			case ToolkitType.Wpf:
-				return "Xwt.WPFBackend.WPFEngine, Xwt.WPF, Version=" + version;
-			case ToolkitType.XamMac:
-				return "Xwt.Mac.MacEngine, Xwt.XamMac, Version=" + version;
-			default:
-				throw new ArgumentException ("Invalid toolkit type");
-			}
+			throw new ArgumentException ("Invalid toolkit type");
 		}
 
 		bool LoadBackend (string type, bool isGuest, bool throwIfFails)
