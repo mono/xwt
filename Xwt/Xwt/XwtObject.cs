@@ -30,16 +30,32 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	/// <summary>
+	/// The base class for all Xwt objects (not widgets or components).
+	/// </summary>
 	public abstract class XwtObject: IFrontend
 	{
 		object backend;
 
+		/// <summary>
+		/// Gets the current toolkit engine.
+		/// </summary>
+		/// <value>The toolkit engine.</value>
 		internal Toolkit ToolkitEngine { get; set; }
 		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.XwtObject"/> class.
+		/// </summary>
+		/// <param name="backend">The object backend.</param>
 		protected XwtObject (object backend): this (backend, Toolkit.CurrentEngine)
 		{
 		}
 		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.XwtObject"/> class.
+		/// </summary>
+		/// <param name="backend">The object backend.</param>
+		/// <param name="toolkit">The toolkit, to which the object backend belongs to.</param>
 		protected XwtObject (object backend, Toolkit toolkit)
 		{
 			this.backend = backend;
@@ -55,6 +71,10 @@ namespace Xwt
 			get { return ToolkitEngine; }
 		}
 
+		/// <summary>
+		/// Gets or sets the backend used for this <see cref="Xwt.XwtObject"/>.
+		/// </summary>
+		/// <value>The backend.</value>
 		protected object Backend {
 			get {
 				LoadBackend ();
@@ -69,6 +89,9 @@ namespace Xwt
 			get { return Backend; }
 		}
 
+		/// <summary>
+		/// Loads the backend for this <see cref="Xwt.XwtObject"/>.
+		/// </summary>
 		protected void LoadBackend ()
 		{
 			if (backend == null) {
@@ -79,15 +102,26 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Called when the backend for this <see cref="Xwt.XwtObject"/> has been created.
+		/// </summary>
 		protected virtual void OnBackendCreated ()
 		{
 		}
 		
+		/// <summary>
+		/// Creates the backend for this <see cref="Xwt.XwtObject"/>.
+		/// </summary>
 		protected virtual object OnCreateBackend ()
 		{
 			throw new NotImplementedException ();
 		}
 		
+		/// <summary>
+		/// Gets the backend used for a specific <see cref="Xwt.XwtObject"/>.
+		/// </summary>
+		/// <returns>The toolkit backend from the specified XwtObject.</returns>
+		/// <param name="w">The XwtObject.</param>
 		internal static object GetBackend (XwtObject w)
 		{
 			return w != null ? w.Backend : null;
