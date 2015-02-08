@@ -44,6 +44,11 @@ namespace Xwt.WPFBackend
 	{
 		System.Windows.Application application;
 
+		public override ToolkitType GetToolkitType ()
+		{
+			return ToolkitType.Wpf;
+		}
+
 		public static WPFEngine Instance { get; private set; }
 
 		public WPFEngine ()

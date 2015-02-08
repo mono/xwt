@@ -40,6 +40,11 @@ namespace Xwt.Mac
 	{
 		static AppDelegate appDelegate;
 		static NSAutoreleasePool pool;
+
+		public override ToolkitType GetToolkitType ()
+		{
+			return ToolkitType.Cocoa;
+		}
 		
 		public static AppDelegate App {
 			get { return appDelegate; }
