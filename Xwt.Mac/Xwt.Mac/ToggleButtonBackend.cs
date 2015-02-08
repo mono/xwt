@@ -73,23 +73,6 @@ namespace Xwt.Mac
 				});
 			}
 		}
-
-		public override void SetButtonStyle (ButtonStyle style)
-		{
-			switch (style) {
-				case ButtonStyle.Normal:
-					Widget.BezelStyle = NSBezelStyle.Rounded;
-					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
-					break;
-				case ButtonStyle.Borderless:
-				case ButtonStyle.Flat:
-					Widget.BezelStyle = NSBezelStyle.ShadowlessSquare;
-					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
-					break;
-			}
-		}
-
-		static Selector selSetShowsBorderOnlyWhileMouseInside = new Selector ("setShowsBorderOnlyWhileMouseInside:");
 	}
 }
 
