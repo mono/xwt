@@ -30,10 +30,23 @@ namespace Xwt
 {
 	public class Command
 	{
-		public Command (string id)
+		public Command (string id) : this (id, id)
+		{
+		}
+
+		public Command (string label, Image icon) : this (label, label, icon)
+		{
+		}
+
+		public Command (string id, string label, Image icon) : this (id, label)
+		{
+			Icon = icon;
+		}
+
+		public Command (string id, string label)
 		{
 			Id = id;
-			Label = Id;
+			Label = label;
 		}
 		
 		public string Id { get; private set; }
