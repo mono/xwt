@@ -36,17 +36,10 @@ namespace Xwt.GtkBackend
 	public class GtkFontBackendHandler: FontBackendHandler
 	{
 		static Pango.Context systemContext;
-		static Dictionary<string, Dictionary<string, object>> familyFontFaces;
 
 		static GtkFontBackendHandler ()
 		{
 			systemContext = Gdk.PangoHelper.ContextGet ();
-			familyFontFaces = new Dictionary<string, Dictionary<string, object>> ();
-			foreach (var family in systemContext.Families) {
-				familyFontFaces [family.Name] = new Dictionary<string, object> ();
-				foreach (var face in family.Faces)
-					familyFontFaces [family.Name] [face.FaceName] = face.Describe ();
-			}
 		}
 
 		public override object GetSystemDefaultFont ()
@@ -62,10 +55,11 @@ namespace Xwt.GtkBackend
 
 		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
 		{
-			Dictionary<string, object> fontFaces;
-			if (familyFontFaces.TryGetValue (family, out fontFaces))
-				foreach (var fd in fontFaces)
-					yield return fd;
+			FontFamily pangoFamily = systemContext.FontMap.Families.FirstOrDefault (f => f.Name == family);
+			if (pangoFamily != null) {
+				foreach (var face in pangoFamily.Faces)
+					yield return new KeyValuePair<string, object>(face.FaceName, face.Describe ());
+			}
 			yield break;
 		}
 
