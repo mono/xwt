@@ -25,45 +25,91 @@
 // THE SOFTWARE.
 
 using System;
+using System.Drawing;
 using MonoMac.AppKit;
-using MonoMac.Foundation;
 using Xwt.Backends;
-using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
 	public class AlertDialogBackend : NSAlert, IAlertDialogBackend
 	{
+		ApplicationContext Context;
+
 		public AlertDialogBackend ()
 		{
 		}
 		
-		public AlertDialogBackend (System.IntPtr intptr)
+		public AlertDialogBackend (IntPtr intptr)
 		{
 		}
 
 		public void Initialize (ApplicationContext actx)
 		{
+			Context = actx;
 		}
 
 		#region IAlertDialogBackend implementation
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{
-			this.MessageText = (message.Text != null) ? message.Text : String.Empty;
-			this.InformativeText = (message.SecondaryText != null) ? message.SecondaryText : String.Empty;
-			//TODO Set Icon
+			this.MessageText = message.Text ?? String.Empty;
+			this.InformativeText = message.SecondaryText ?? String.Empty;
+
+			if (message.Icon != null)
+				Icon = message.Icon.ToImageDescription (Context).ToNSImage ();
 
 			var sortedButtons = new Command [message.Buttons.Count];
-			sortedButtons [0] = message.Buttons [message.DefaultButton];
-			this.AddButton (message.Buttons [message.DefaultButton].Label);
-			var j = 1;
+			var j = 0;
+			if (message.DefaultButton >= 0) {
+				sortedButtons [0] = message.Buttons [message.DefaultButton];
+				this.AddButton (message.Buttons [message.DefaultButton].Label);
+				j = 1;
+			}
 			for (var i = 0; i < message.Buttons.Count; i++) {
 				if (i == message.DefaultButton)
 					continue;
 				sortedButtons [j++] = message.Buttons [i];
 				this.AddButton (message.Buttons [i].Label);
 			}
+			for (var i = 0; i < sortedButtons.Length; i++) {
+				if (sortedButtons [i].Icon != null) {
+					Buttons [i].Image = sortedButtons [i].Icon.WithSize (IconSize.Small).ToImageDescription (Context).ToNSImage ();
+					Buttons [i].ImagePosition = NSCellImagePosition.ImageLeft;
+				}
+			}
 
+			if (message.AllowApplyToAll) {
+				ShowsSuppressionButton = true;
+				SuppressionButton.State = NSCellStateValue.Off;
+				SuppressionButton.Activated += (sender, e) => ApplyToAll = SuppressionButton.State == NSCellStateValue.On;
+			}
+
+			if (message.Options.Count > 0) {
+				AccessoryView = new NSView ();
+				var optionsSize = new SizeF (0, 3);
+
+				foreach (var op in message.Options) {
+					var chk = new NSButton ();
+					chk.SetButtonType (NSButtonType.Switch);
+					chk.Title = op.Text;
+					chk.State = op.Value ? NSCellStateValue.On : NSCellStateValue.Off;
+					chk.Activated += (sender, e) => message.SetOptionValue (op.Id, chk.State == NSCellStateValue.On);
+
+					chk.SizeToFit ();
+					chk.Frame = new RectangleF (new PointF (0, optionsSize.Height), chk.FittingSize);
+
+					optionsSize.Height += chk.FittingSize.Height + 6;
+					optionsSize.Width = Math.Max (optionsSize.Width, chk.FittingSize.Width);
+
+					AccessoryView.AddSubview (chk);
+					chk.NeedsDisplay = true;
+				}
+
+				AccessoryView.SetFrameSize (optionsSize);
+			}
+
+			var win = (WindowBackend)Toolkit.GetBackend (transientFor);
+			if (win != null)
+				return sortedButtons [this.RunSheetModal (win) - 1000];
 			return sortedButtons [this.RunModal () - 1000];
 		}
 
