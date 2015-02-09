@@ -34,6 +34,9 @@ using System.Threading;
 
 namespace Xwt
 {
+	/// <summary>
+	/// The base class for all Xwt components.
+	/// </summary>
 	[System.ComponentModel.DesignerCategory ("Code")]
 	public abstract class XwtComponent : Component, IFrontend, ISynchronizeInvoke
 	{
@@ -45,11 +48,19 @@ namespace Xwt
 			backendHost.Parent = this;
 		}
 		
+		/// <summary>
+		/// Creates the backend host.
+		/// </summary>
+		/// <returns>The backend host.</returns>
 		protected virtual BackendHost CreateBackendHost ()
 		{
 			return new BackendHost ();
 		}
 
+		/// <summary>
+		/// Gets the backend host.
+		/// </summary>
+		/// <value>The backend host.</value>
 		protected BackendHost BackendHost {
 			get { return backendHost; }
 		}
@@ -67,11 +78,23 @@ namespace Xwt
 		/// </summary>
 		public object Tag { get; set; }
 
+		/// <summary>
+		/// Maps an event handler of an Xwt component to an event identifier.
+		/// </summary>
+		/// <param name="eventId">The event identifier (must be valid event enum value
+		/// like <see cref="Xwt.Backends.WidgetEvent"/>, identifying component specific events).</param>
+		/// <param name="type">The Xwt component type.</param>
+		/// <param name="methodName">The <see cref="System.Reflection.MethodInfo.Name"/> of the event handler.</param>
 		protected static void MapEvent (object eventId, Type type, string methodName)
 		{
 			EventHost.MapEvent (eventId, type, methodName);
 		}
 		
+		/// <summary>
+		/// Verifies that the constructor is not called from a sublass.
+		/// </summary>
+		/// <param name="t">This constructed base instance.</param>
+		/// <typeparam name="T">The base type to verify the constructor for.</typeparam>
 		internal void VerifyConstructorCall<T> (T t)
 		{
 			if (GetType () != typeof(T))

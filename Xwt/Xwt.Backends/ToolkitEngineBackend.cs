@@ -41,6 +41,11 @@ namespace Xwt.Backends
 		Toolkit toolkit;
 		bool isGuest;
 
+		/// <summary>
+		/// Initialize the specified toolkit.
+		/// </summary>
+		/// <param name="toolkit">Toolkit to initialize.</param>
+		/// <param name="isGuest">If set to <c>true</c> the toolkit will be initialized as guest of another toolkit.</param>
 		internal void Initialize (Toolkit toolkit, bool isGuest)
 		{
 			this.toolkit = toolkit;
@@ -53,11 +58,20 @@ namespace Xwt.Backends
 			InitializeApplication ();
 		}
 
+		/// <summary>
+		/// Gets the toolkit engine backend.
+		/// </summary>
+		/// <returns>The toolkit backend.</returns>
+		/// <typeparam name="T">The Type of the toolkit backend.</typeparam>
 		public static T GetToolkitBackend<T> () where T : ToolkitEngineBackend
 		{
 			return (T)Toolkit.GetToolkitBackend (typeof (T));
 		}
 
+		/// <summary>
+		/// Gets the application context.
+		/// </summary>
+		/// <value>The application context.</value>
 		public ApplicationContext ApplicationContext {
 			get { return toolkit.Context; }
 		}
@@ -200,6 +214,11 @@ namespace Xwt.Backends
 			return nativeContext;
 		}
 
+		/// <summary>
+		/// Gets the backend for a native image.
+		/// </summary>
+		/// <returns>The image backend .</returns>
+		/// <param name="nativeImage">The native image.</param>
 		public virtual object GetBackendForImage (object nativeImage)
 		{
 			return nativeImage;
@@ -221,6 +240,11 @@ namespace Xwt.Backends
 				throw new InvalidOperationException ("XWT toolkit not initialized");
 		}
 
+		/// <summary>
+		/// Creates a backend for a frontend.
+		/// </summary>
+		/// <returns>The backend for the specified frontend.</returns>
+		/// <param name="frontendType">The Frontend type.</param>
 		internal IBackend CreateBackendForFrontend (Type frontendType)
 		{
 			CheckInitialized ();
@@ -240,6 +264,11 @@ namespace Xwt.Backends
 			return (IBackend) Activator.CreateInstance (bt);
 		}
 
+		/// <summary>
+		/// Creates the backend.
+		/// </summary>
+		/// <returns>The backend.</returns>
+		/// <param name="backendType">The Backend type.</param>
 		internal object CreateBackend (Type backendType)
 		{
 			CheckInitialized ();
@@ -255,17 +284,33 @@ namespace Xwt.Backends
 			return res;
 		}
 
+		/// <summary>
+		/// Creates the backend.
+		/// </summary>
+		/// <returns>The backend.</returns>
+		/// <typeparam name="T">The Backend type.</typeparam>
 		internal T CreateBackend<T> ()
 		{
 			return (T) CreateBackend (typeof(T));
 		}
 
+		/// <summary>
+		/// Registers a backend for an Xwt backend interface.
+		/// </summary>
+		/// <typeparam name="Backend">The backend Type</typeparam>
+		/// <typeparam name="Implementation">The Xwt interface implemented by the backend</typeparam>
 		public void RegisterBackend<Backend, Implementation> () where Implementation: Backend
 		{
 			CheckInitialized ();
 			backendTypes [typeof(Backend)] = typeof(Implementation);
 		}
 
+		/// <summary>
+		/// Creates the Xwt frontend for a backend.
+		/// </summary>
+		/// <returns>The Xwt frontend.</returns>
+		/// <param name="backend">The backend.</param>
+		/// <typeparam name="T">The frontend type.</typeparam>
 		public T CreateFrontend<T> (object backend)
 		{
 			return (T) Activator.CreateInstance (typeof(T), backend);
@@ -315,6 +360,10 @@ namespace Xwt.Backends
 		{
 		}
 
+		/// <summary>
+		/// Gets the information about Xwt features supported by the toolkit.
+		/// </summary>
+		/// <value>The supported features.</value>
 		public virtual ToolkitFeatures SupportedFeatures {
 			get { return ToolkitFeatures.All; }
 		}

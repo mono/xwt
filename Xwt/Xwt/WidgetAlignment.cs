@@ -27,11 +27,18 @@ using System;
 
 namespace Xwt
 {
+	/// <summary>
+	/// Widget placement/alignment inside a parent container.
+	/// </summary>
 	public enum WidgetPlacement
 	{
+		/// <summary>The widget is placed in the left/top corner of its allocated area.</summary>
 		Start = 1,
+		/// <summary>The widget is placed in the center of its allocated area.</summary>
 		Center = 2,
+		/// <summary>The widget is placed in the right/bottom corner of its allocated area.</summary>
 		End = 3,
+		/// <summary>The widget grows to fill its allocated area.</summary>
 		Fill = 4
 	}
 }

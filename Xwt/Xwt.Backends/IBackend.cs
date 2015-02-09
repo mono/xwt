@@ -29,10 +29,28 @@ using System;
 
 namespace Xwt.Backends
 {
+	/// <summary>
+	/// The Xwt backend base interface. All Xwt backends implement it.
+	/// </summary>
 	public interface IBackend
 	{
+		/// <summary>
+		/// Initializes the backend.
+		/// </summary>
+		/// <param name="frontend">The Xwt frontend.</param>
+		/// <param name="context">The application context to initialize the backend for.</param>
 		void InitializeBackend (object frontend, ApplicationContext context);
+
+		/// <summary>
+		/// Enables the event.
+		/// </summary>
+		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
 		void EnableEvent (object eventId);
+
+		/// <summary>
+		/// Disables the event.
+		/// </summary>
+		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
 		void DisableEvent (object eventId);
 	}
 }
