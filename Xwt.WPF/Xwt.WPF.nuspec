@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<package>
+	<metadata>
+		<id>$id$</id>
+		<title>$title$</title>
+		<version>$version$</version>
+		<authors>Lluis Sanchez</authors>
+		<summary>$description$</summary>
+		<description>
+Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
+		
+This package contains the WPF toolkit backend for Xwt based applications targeting WPF (Windows Presentation Foundation).
+		</description>
+		<releaseNotes></releaseNotes>
+		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/master/LICENSE.txt</licenseUrl>
+		<projectUrl>https://github.com/mono/xwt/</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<copyright>$copyright$</copyright>
+		<tags>xwt cross platform gui ui toolkit framework desktop wpf</tags>
+		<dependencies>
+			<dependency id="Xwt" version="[$version$]"/>
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="..\LICENSE.txt" />
+		<file src="..\README.markdown" />
+	</files>
+</package>
