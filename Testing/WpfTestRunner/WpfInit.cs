@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 using NUnit.Framework;
 
+[assembly:RequiresSTA]
+
 namespace Xwt
 {
 	[SetUpFixture]
