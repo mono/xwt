@@ -69,7 +69,7 @@ namespace Xwt.Mac
 		
 		protected override NSTableView CreateView ()
 		{
-			var t = new NSOutlineView ();
+			var t = new OutlineViewBackend (EventSink, ApplicationContext);
 			t.Delegate = new TreeDelegate () { Backend = this };
 			return t;
 		}
@@ -78,7 +78,7 @@ namespace Xwt.Mac
 			get { return "NSOutlineViewSelectionDidChangeNotification"; }
 		}
 
-		public TreePosition CurrentEventRow { get; set; }
+		public TreePosition CurrentEventRow { get; internal set; }
 
 		public override NSTableColumn AddColumn (ListViewColumn col)
 		{
@@ -116,6 +116,11 @@ namespace Xwt.Mac
 				}
 				return res;
 			}
+		}
+
+		public override void SetCurrentEventRow (object pos)
+		{
+			CurrentEventRow = (TreePosition)pos;
 		}
 
 		public void SelectRow (TreePosition pos)
@@ -180,9 +185,14 @@ namespace Xwt.Mac
 		
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
+			// Get row
+			int row = Tree.GetRow(new System.Drawing.PointF ((float)x, (float)y));
 			pos = RowDropPosition.Into;
 			nodePosition = null;
-			return false;
+			if (row >= 0) {
+				nodePosition = ((TreeItem)Tree.ItemAtRow (row)).Position;
+			}
+			return nodePosition != null;
 		}
 		
 /*		protected override void OnDragOverCheck (NSDraggingInfo di, DragOverCheckEventArgs args)

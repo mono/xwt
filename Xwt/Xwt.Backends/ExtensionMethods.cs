@@ -125,6 +125,11 @@ namespace Xwt.Backends
 		{
 			image.NativeRef.SetStreamSource (imageLoader);
 		}
+
+		public static void SetStockSource (this Image image, string stockID)
+		{
+			image.NativeRef.SetStockSource (stockID);
+		}
 	}
 }
 

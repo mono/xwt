@@ -160,8 +160,7 @@ namespace Xwt.GtkBackend
 		{
 			Backend.ApplicationContext.InvokeUserCode (delegate {
 				using (context) {
-					var r = new Rectangle (dirtyRect.X - context.Origin.X, dirtyRect.Y - context.Origin.Y, dirtyRect.Width, dirtyRect.Height);
-					EventSink.OnDraw (context, r);
+					EventSink.OnDraw (context, dirtyRect);
 				}
 			});
 		}
@@ -171,17 +170,13 @@ namespace Xwt.GtkBackend
 			CairoContextBackend ctx = new CairoContextBackend (Util.GetScaleFactor (this));
 			if (!IsRealized) {
 				Cairo.Surface sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, 1, 1);
-				Cairo.Context c = new Cairo.Context (sf);
-				ctx.Context = c;
+				ctx.Context = new Cairo.Context (sf);
 				ctx.TempSurface = sf;
 			} else {
 				ctx.Context = Gdk.CairoHelper.Create (GdkWindow);
 			}
 			if (!VisibleWindow) {
 				ctx.Context.Translate (Allocation.X, Allocation.Y);
-				// Set ContextBackend Origin
-				ctx.Origin.X = Allocation.X;
-				ctx.Origin.Y = Allocation.Y;
 			}
 			return ctx;
 		}

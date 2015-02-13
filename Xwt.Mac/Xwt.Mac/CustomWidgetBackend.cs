@@ -41,7 +41,7 @@ namespace Xwt.Mac
 
 		public override void Initialize ()
 		{
-			ViewObject = new WidgetView (EventSink, ApplicationContext);
+			ViewObject = new CustomWidgetView (EventSink, ApplicationContext);
 		}
 
 		public void SetContent (IWidgetBackend widget)
@@ -72,5 +72,20 @@ namespace Xwt.Mac
 		}
 	}
 
+	class CustomWidgetView: WidgetView
+	{
+		public CustomWidgetView (IWidgetEventSink eventSink, ApplicationContext context) : base (eventSink, context)
+		{
+		}
+
+		public override void SetFrameSize (System.Drawing.SizeF newSize)
+		{
+			base.SetFrameSize (newSize);
+			if (Subviews.Length == 0)
+				return;
+			Subviews [0].SetFrameSize (newSize);
+			Backend.Frontend.Surface.Reallocate ();
+		}
+	}
 }
 

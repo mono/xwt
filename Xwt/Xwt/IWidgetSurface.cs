@@ -30,8 +30,15 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
+	/// <summary>
+	/// A widget surface handles the sizing and allocation of a widget.
+	/// </summary>
 	public interface IWidgetSurface
 	{
+		/// <summary>
+		/// Relocates the children of the widget, to fit a new size.
+		/// </summary>
+		/// <remarks>Must be called after changing the size of the widget, to relocate its children.</remarks>
 		void Reallocate ();
 		
 		/// <summary>
@@ -57,10 +64,22 @@ namespace Xwt
 		/// </remarks>
 		Size GetPreferredSize (bool includeMargin = false);
 
+		/// <summary>
+		/// Gets the native toolkit widget.
+		/// </summary>
+		/// <value>The native widget.</value>
 		object NativeWidget { get; }
 
+		/// <summary>
+		/// Gets the children of the widget.
+		/// </summary>
+		/// <value>The children widgets.</value>
 		IEnumerable<Widget> Children { get; }
 
+		/// <summary>
+		/// Gets the current toolkit engine.
+		/// </summary>
+		/// <value>The toolkit engine.</value>
 		Toolkit ToolkitEngine { get; }
 
 		/// <summary>

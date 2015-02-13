@@ -73,6 +73,11 @@ namespace Xwt.WPFBackend
 
 		public WidgetBackend Backend { get; set; }
 
+		public CustomPanel()
+		{
+			Background = System.Windows.Media.Brushes.Transparent;
+		}
+
 		public Action<System.Windows.Media.DrawingContext> RenderAction;
 
 		protected override void OnRender (System.Windows.Media.DrawingContext dc)

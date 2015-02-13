@@ -126,6 +126,7 @@ namespace Xwt.WPFBackend
 				case WpfKey.Subtract: return Key.Minus;
 				case WpfKey.Divide: return Key.Slash;
 				case WpfKey.OemPeriod: return isShiftToggled ? Key.Colon : Key.Period;
+				case WpfKey.Oem5: return Key.Caret;
 			}
 
 			return (Key)0;

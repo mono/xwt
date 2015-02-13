@@ -31,6 +31,8 @@
 // THE SOFTWARE.
 using System;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Xwt.Backends;
 using Xwt.Drawing;
@@ -173,6 +175,14 @@ namespace Xwt.WPFBackend
 			return ImageHandler.LoadFromImageSource ((System.Windows.Media.ImageSource) nativeImage);
 		}
 
+		public override object GetBackendForContext (object nativeWidget, object nativeContext)
+		{
+			return new DrawingContext (
+				(System.Windows.Media.DrawingContext)nativeContext,
+				((System.Windows.Media.Visual)nativeWidget).GetScaleFactor ()
+			);
+		}
+
 		public override object GetNativeWidget (Widget w)
 		{
 			var backend = (IWpfWidgetBackend) Toolkit.GetBackend (w);
@@ -193,13 +203,29 @@ namespace Xwt.WPFBackend
 		
 		public override bool HasNativeParent (Widget w)
 		{
-			var backend = (IWpfWidgetBackend)Toolkit.GetBackend (w);
-			return backend.Widget.Parent != null;
+
+			var b = (IWidgetBackend) Toolkit.GetBackend (w);
+			if (b is XwtWidgetBackend)
+				b = ((XwtWidgetBackend)b).NativeBackend;
+			IWpfWidgetBackend wb = (IWpfWidgetBackend)b;
+			return wb.Widget.Parent != null;
 		}
 
 		public override object GetNativeImage (Image image)
 		{
 			return DataConverter.AsImageSource (Toolkit.GetBackend (image));
+		}
+
+		public override object RenderWidget (Widget widget)
+		{
+			try {
+				var w = ((WidgetBackend)widget.GetBackend ()).Widget;
+				RenderTargetBitmap rtb = new RenderTargetBitmap ((int)w.ActualWidth, (int)w.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+				rtb.Render(w);
+				return new WpfImage(rtb);
+			} catch (Exception ex) {
+				throw new InvalidOperationException ("Rendering element not supported", ex);
+			}
 		}
 	}
 }
