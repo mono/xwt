@@ -57,6 +57,22 @@ namespace Xwt.Drawing
 			Backend = backend;
 		}
 
+		internal void InitForToolkit (Toolkit tk)
+		{
+			if (ToolkitEngine != tk) {
+				// Gather existing font property before switching handler
+				var fname = Family;
+				var size = Size;
+				var style = Style;
+				var weight = Weight;
+				var stretch = Stretch;
+				ToolkitEngine = tk;
+				handler = tk.FontBackendHandler;
+				var fb = handler.Create (fname, size, style, weight, stretch);
+				Backend = fb ?? handler.GetSystemDefaultFont ();
+			}
+		}
+
 		/// <summary>
 		/// Creates a new font description from a string representation in the form "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]"
 		/// </summary>
