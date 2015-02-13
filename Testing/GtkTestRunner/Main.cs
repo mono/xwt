@@ -35,8 +35,6 @@ namespace GtkTestRunner
 	{
 		public static void Main (string[] args)
 		{
-			ReferenceImageManager.Init ("GtkTestRunner");
-
 			var list = new List<string> (args);
 			list.Add ("-domain=None");
 			list.Add ("-noshadow");

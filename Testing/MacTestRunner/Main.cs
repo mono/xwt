@@ -10,8 +10,6 @@ namespace MacTest
 	{
 		static void Main (string [] args)
 		{
-			ReferenceImageManager.Init ("MacTestRunner");
-
 			var list = new List<string> (args);
 			list.Add ("-domain=None");
 			list.Add ("-noshadow");

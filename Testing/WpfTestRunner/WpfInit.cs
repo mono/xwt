@@ -36,6 +36,7 @@ namespace Xwt
 		public void Init ()
 		{
 			Application.Initialize (Xwt.ToolkitType.Wpf);
+			ReferenceImageManager.Init ("WpfTestRunner");
 		}
 
 		[TearDown]
