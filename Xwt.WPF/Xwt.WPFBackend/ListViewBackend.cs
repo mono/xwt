@@ -33,6 +33,7 @@ using System.Windows.Controls;
 using Xwt.WPFBackend.Utilities;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
+using System.Windows.Input;
 
 namespace Xwt.WPFBackend
 {
@@ -233,6 +234,14 @@ namespace Xwt.WPFBackend
 					break;
 				}
 			}
+
+			if (eventId is ListViewEvent) {
+				switch ((ListViewEvent)eventId) {
+				case ListViewEvent.RowActivated:
+					ListView.MouseDoubleClick += OnMouseDoubleClick;
+					break;
+				}
+			}
 		}
 
 		public override void DisableEvent (object eventId)
@@ -245,11 +254,25 @@ namespace Xwt.WPFBackend
 					break;
 				}
 			}
+
+			if (eventId is ListViewEvent) {
+				switch ((ListViewEvent)eventId) {
+				case ListViewEvent.RowActivated:
+					ListView.MouseDoubleClick -= OnMouseDoubleClick;
+					break;
+				}
+			}
 		}
 
 		private void OnSelectionChanged (object sender, SelectionChangedEventArgs e)
 		{
 			Context.InvokeUserCode (ListViewEventSink.OnSelectionChanged);
+		}
+
+		private void OnMouseDoubleClick (object sender, MouseButtonEventArgs e)
+		{
+			if (e.ChangedButton == MouseButton.Left)
+				ListViewEventSink.OnRowActivated (ListView.SelectedIndex);
 		}
 
 		private bool headersVisible;

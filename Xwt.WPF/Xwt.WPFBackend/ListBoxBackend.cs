@@ -30,6 +30,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Xwt.Backends;
 using Xwt.WPFBackend.Utilities;
+using System.Windows.Input;
 
 namespace Xwt.WPFBackend
 {
@@ -173,6 +174,14 @@ namespace Xwt.WPFBackend
 					break;
 				}
 			}
+
+			if (eventId is ListViewEvent) {
+				switch ((ListViewEvent)eventId) {
+				case ListViewEvent.RowActivated:
+					ListBox.MouseDoubleClick += OnMouseDoubleClick;
+					break;
+				}
+			}
 		}
 
 		public override void DisableEvent (object eventId)
@@ -185,11 +194,25 @@ namespace Xwt.WPFBackend
 					break;
 				}
 			}
+
+			if (eventId is ListViewEvent) {
+				switch ((ListViewEvent)eventId) {
+				case ListViewEvent.RowActivated:
+					ListBox.MouseDoubleClick -= OnMouseDoubleClick;
+					break;
+				}
+			}
 		}
 
 		private void OnSelectionChanged (object sender, SelectionChangedEventArgs e)
 		{
 			ListBoxEventSink.OnSelectionChanged();
+		}
+
+		private void OnMouseDoubleClick (object sender, MouseButtonEventArgs e)
+		{
+			if (e.ChangedButton == MouseButton.Left)
+				ListBoxEventSink.OnRowActivated (ListBox.SelectedIndex);
 		}
 
 		protected ExListBox ListBox {
