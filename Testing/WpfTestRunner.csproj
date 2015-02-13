@@ -110,6 +110,7 @@
     <Compile Include="Tests\WidgetTests.cs" />
     <Compile Include="Tests\WindowTests.cs" />
     <Compile Include="Tests\XwtTest.cs" />
+    <Compile Include="WpfTestRunner\WpfInit.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xwt.WPF\Xwt.WPF.csproj">

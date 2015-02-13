@@ -89,6 +89,7 @@
     <Compile Include="Tests\DrawingTestsBase.cs" />
     <Compile Include="Tests\NinePatchTests.cs" />
     <Compile Include="Tests\ScrollableWidgetTests.cs" />
+    <Compile Include="MacTestRunner\MacInit.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MacTestRunner\Info.plist" />

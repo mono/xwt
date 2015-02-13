@@ -11,7 +11,6 @@ namespace WpfTestRunner
 		[STAThread]
 		static void Main (string[] args)
 		{
-			Xwt.Application.Initialize (Xwt.ToolkitType.Wpf);
 			ReferenceImageManager.Init ("WpfTestRunner");
 
 			var list = new List<string> (args);

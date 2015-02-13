@@ -1,10 +1,10 @@
-//
-// Main.cs
+﻿//
+// GtkInit.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2015 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,29 +22,25 @@
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-using System;
-using System.Linq;
-using Xwt;
-using System.Collections.Generic;
-using System.Threading;
+                // THE SOFTWARE.
+using NUnit.Framework;
 
-namespace GtkTestRunner
+namespace Xwt
 {
-	class MainClass
+	[SetUpFixture]
+	public class GtkInit
 	{
-		public static void Main (string[] args)
+		[SetUp]
+		public void Init ()
 		{
-			ReferenceImageManager.Init ("GtkTestRunner");
+			Application.Initialize (Xwt.ToolkitType.Gtk);
+		}
 
-			var list = new List<string> (args);
-			list.Add ("-domain=None");
-			list.Add ("-noshadow");
-			list.Add ("-nothread");
-			if (!list.Contains (typeof (MainClass).Assembly.Location))
-				list.Add (typeof (MainClass).Assembly.Location);
-			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
-			ReferenceImageManager.ShowImageVerifier ();
+		[TearDown]
+		public void Exit ()
+		{
+			Application.Dispose ();
 		}
 	}
 }
+
