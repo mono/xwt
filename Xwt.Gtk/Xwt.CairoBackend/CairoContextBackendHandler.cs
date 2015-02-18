@@ -281,7 +281,7 @@ namespace Xwt.CairoBackend
 		
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			var be = (GtkTextLayoutBackendHandler.PangoBackend)Toolkit.GetBackend (layout);
+			var be = (GtkTextLayoutBackendHandler.PangoBackend)ApplicationContext.Toolkit.GetSafeBackend (layout);
 			var pl = be.Layout;
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.MoveTo (x, y);

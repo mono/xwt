@@ -276,7 +276,8 @@ namespace Xwt.Mac
 		{
 			CGContext ctx = ((CGContextBackend)backend).Context;
 			SetupContextForDrawing (ctx);
-			MacTextLayoutBackendHandler.Draw (ctx, Toolkit.GetBackend (layout), x, y);
+			var li = ApplicationContext.Toolkit.GetSafeBackend (layout);
+			MacTextLayoutBackendHandler.Draw (ctx, li, x, y);
 		}
 
 		public override void DrawImage (object backend, ImageDescription img, double x, double y)

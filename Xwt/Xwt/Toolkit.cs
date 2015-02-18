@@ -505,7 +505,27 @@ namespace Xwt
 		{
 			if (obj is Image)
 				((Image)obj).InitForToolkit (this);
-			else if (obj is IFrontend) {
+			else if (obj is TextLayout)
+				((TextLayout)obj).InitForToolkit (this);
+			else if (obj is Font) {
+				var font = (Font)obj;
+
+				// If the font instance is a system font, we swap instances
+				// to not corrupt the backend of the singletons
+				if (font.ToolkitEngine != null) {
+					var fbh = font.ToolkitEngine.FontBackendHandler;
+					if (font == fbh.SystemFont)
+						return FontBackendHandler.SystemFont;
+					if (font == fbh.SystemMonospaceFont)
+						return FontBackendHandler.SystemMonospaceFont;
+					if (font == fbh.SystemSansSerifFont)
+						return FontBackendHandler.SystemSansSerifFont;
+					if (font == fbh.SystemSerifFont)
+						return FontBackendHandler.SystemSerifFont;
+				}
+
+				font.InitForToolkit (this);
+			} else if (obj is IFrontend) {
 				if (((IFrontend)obj).ToolkitEngine != this)
 					throw new InvalidOperationException ("Object belongs to a different toolkit");
 			}
