@@ -1,11 +1,11 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt", "Xwt\Xwt.csproj", "{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk", "Xwt.Gtk\Xwt.Gtk.csproj", "{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Mac", "Xwt.Mac\Xwt.Mac.csproj", "{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.XamMac", "Xwt.XamMac\Xwt.XamMac.csproj", "{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.WPF", "Xwt.WPF\Xwt.WPF.csproj", "{C93D746E-1586-4D4F-B411-BF5A966E6A08}"
 EndProject
@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestApps", "TestApps", "{83
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkTest", "TestApps\GtkTest\GtkTest.csproj", "{0AF50CE4-E455-4A9D-92AD-711CBD068A55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacTest", "TestApps\MacTest\MacTest.csproj", "{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamMacTest", "TestApps\XamMacTest\XamMacTest.csproj", "{2B7FF081-FE53-42F7-9D5D-D4B38E548F94}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfTest", "TestApps\WpfTest\WpfTest.csproj", "{E41F4448-15C3-4E95-B310-FD333FDF5D2F}"
 EndProject
@@ -35,11 +35,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkOnWindowsTest", "TestApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gtk3Test", "TestApps\Gtk3Test\Gtk3Test.csproj", "{22524E1F-A94D-4204-AD90-A5FFE73970EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacTest", "TestApps\MacTest\MacTest.csproj", "{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk.Mac", "Xwt.Gtk.Mac\Xwt.Gtk.Mac.csproj", "{E95833C9-90AA-4366-9262-0A1BED148249}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk.Windows", "Xwt.Gtk.Windows\Xwt.Gtk.Windows.csproj", "{252117CA-0ABB-4F36-BFC8-DE23A8089BB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk3", "Xwt.Gtk\Xwt.Gtk3.csproj", "{3B25FD1F-CEBA-4450-8893-DC330FDB56A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Mac", "Xwt.Mac\Xwt.Mac.csproj", "{5F8E0511-7210-487F-90A1-EC3E74467617}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +51,20 @@ Global
 		Mac-Debug|Any CPU = Mac-Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 		Win-Debug|Any CPU = Win-Debug|Any CPU
+		Win-Debug|Mixed Platforms = Win-Debug|Mixed Platforms
+		Win-Debug|x86 = Win-Debug|x86
+		AppStore|Any CPU = AppStore|Any CPU
+		AppStore|Mixed Platforms = AppStore|Mixed Platforms
+		AppStore|x86 = AppStore|x86
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Linux-Debug|Any CPU = Linux-Debug|Any CPU
+		Linux-Debug|Mixed Platforms = Linux-Debug|Mixed Platforms
+		Linux-Debug|x86 = Linux-Debug|x86
+		Mac-Debug|Mixed Platforms = Mac-Debug|Mixed Platforms
+		Mac-Debug|x86 = Mac-Debug|x86
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0017C823-67F6-4DFA-8C2C-E23CD1E33D8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -174,6 +192,42 @@ Global
 		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5CFB1ABA-0CD0-45B9-ABC5-8A32096C0687}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.AppStore|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.AppStore|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.AppStore|x86.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.AppStore|x86.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Debug|x86.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Linux-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Linux-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Linux-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Linux-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Linux-Debug|x86.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Mac-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Mac-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Mac-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Mac-Debug|x86.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Mac-Debug|x86.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Release|x86.ActiveCfg = Release|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Release|x86.Build.0 = Release|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Win-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Win-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Win-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Win-Debug|x86.ActiveCfg = Debug|Any CPU
+		{5F8E0511-7210-487F-90A1-EC3E74467617}.Win-Debug|x86.Build.0 = Debug|Any CPU
 		{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -275,6 +329,42 @@ Global
 		{E95833C9-90AA-4366-9262-0A1BED148249}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E95833C9-90AA-4366-9262-0A1BED148249}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E95833C9-90AA-4366-9262-0A1BED148249}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.AppStore|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.AppStore|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.AppStore|x86.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.AppStore|x86.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Debug|x86.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Linux-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Linux-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Linux-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Linux-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Linux-Debug|x86.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Mac-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Mac-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Mac-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Mac-Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Mac-Debug|x86.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Release|x86.ActiveCfg = Release|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Release|x86.Build.0 = Release|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Win-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Win-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Win-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Win-Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A}.Win-Debug|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BC764278-4141-483C-8643-2EA8C40373B2} = {164E1FED-7688-4AE9-B19B-012F8784F9DD}
@@ -288,6 +378,7 @@ Global
 		{88C04B85-B69B-47B4-AB9F-64F6DD4E0897} = {83D74DDF-581E-4E2A-AE02-F4047A5B96C7}
 		{C1DF0C90-0C4C-4AB5-A45C-A1805587A844} = {83D74DDF-581E-4E2A-AE02-F4047A5B96C7}
 		{22524E1F-A94D-4204-AD90-A5FFE73970EC} = {83D74DDF-581E-4E2A-AE02-F4047A5B96C7}
+		{F4E4C87B-5E0A-4AEF-B4DF-888948C41E4A} = {83D74DDF-581E-4E2A-AE02-F4047A5B96C7}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

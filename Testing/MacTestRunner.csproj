@@ -27,7 +27,7 @@
     <ConsolePause>False</ConsolePause>
     <EnableCodeSigning>False</EnableCodeSigning>
     <CreatePackage>False</CreatePackage>
-    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <UseRefCounting>false</UseRefCounting>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -43,6 +43,7 @@
     <EnableCodeSigning>True</EnableCodeSigning>
     <CreatePackage>True</CreatePackage>
     <CodeSigningKey>Developer ID Application</CodeSigningKey>
+    <UseRefCounting>false</UseRefCounting>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -87,9 +88,9 @@
       <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
       <Name>Xwt</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Xwt.Mac\Xwt.Mac.csproj">
+    <ProjectReference Include="..\Xwt.XamMac\Xwt.XamMac.csproj">
       <Project>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</Project>
-      <Name>Xwt.Mac</Name>
+      <Name>Xwt.XamMac</Name>
     </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
