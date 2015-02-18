@@ -70,7 +70,19 @@ namespace Samples
 			store.AddNode ().SetValue (text, "Three").SetValue (desc, "Third").AddChild ()
 				.SetValue (text, "Sub three").SetValue (desc, "Sub third");
 			PackStart (view, true);
-			
+
+			Menu contextMenu = new Menu ();
+			contextMenu.Items.Add (new MenuItem ("Test menu"));
+			view.ButtonPressed += delegate(object sender, ButtonEventArgs e) {
+				TreePosition tmpTreePos;
+				RowDropPosition tmpRowDrop;
+				if ((e.Button == PointerButton.Right) && view.GetDropTargetRow (e.X, e.Y, out tmpRowDrop, out tmpTreePos)) {
+					// Set actual row to selected
+					view.SelectRow (tmpTreePos);
+					contextMenu.Popup(view, e.X, e.Y);
+				}
+			};
+				
 			view.DataSource = store;
 			
 			Label la = new Label ();

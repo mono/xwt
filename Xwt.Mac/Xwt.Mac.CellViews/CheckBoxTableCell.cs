@@ -41,6 +41,7 @@ namespace Xwt.Mac
 		void HandleActivated (object sender, EventArgs e)
 		{
 			var cellView = Frontend;
+			CellContainer.SetCurrentEventRow ();
 			if (cellView.Editable && !cellView.RaiseToggled () && (cellView.StateField != null || cellView.ActiveField != null)) {
 				if (cellView.StateField != null)
 					CellContainer.SetValue (cellView.StateField, State.ToXwtState ());

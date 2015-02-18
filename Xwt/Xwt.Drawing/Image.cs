@@ -627,6 +627,8 @@ namespace Xwt.Drawing
 			public Func<Stream[]> ImageLoader;
 
 			public ImageDrawCallback DrawCallback;
+
+			public string StockId;
 		}
 
 		public object Backend {
@@ -687,6 +689,15 @@ namespace Xwt.Drawing
 			};
 		}
 
+		public void SetStockSource (string stockID)
+		{
+			sources = new [] {
+				new NativeImageSource {
+					StockId = stockID
+				}
+			};
+		}
+
 		public int ReferenceCount {
 			get { return referenceCount; }
 		}
@@ -743,6 +754,8 @@ namespace Xwt.Drawing
 						targetToolkit.Invoke (() => newBackend = Image.FromFile (s.Source).GetBackend());
 					else if (s.DrawCallback != null)
 						newBackend = targetToolkit.ImageBackendHandler.CreateCustomDrawn (s.DrawCallback);
+					else if (s.StockId != null)
+						newBackend = targetToolkit.GetStockIcon (s.StockId).GetBackend ();
 					else
 						throw new NotSupportedException ();
 					frames.Add (newBackend);

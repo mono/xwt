@@ -212,8 +212,14 @@ namespace Xwt.Mac
 		{
 			if (expandVertically)
 				Child.Frame = new CGRect (0, 0, Frame.Width, Frame.Height);
-			else
+			else {
+#if MONOMAC
+				Child.Frame = new System.Drawing.RectangleF (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
+#else
 				Child.Frame = new CGRect (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
+#endif
+			}
+			Child.NeedsDisplay = true;
 		}
 	}
 	

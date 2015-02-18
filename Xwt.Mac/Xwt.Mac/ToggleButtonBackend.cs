@@ -62,10 +62,14 @@ namespace Xwt.Mac
 		{
 			if (lastState != Widget.State) {
 				switch (((Button)Frontend).Style) {
-					case ButtonStyle.Borderless:
-					case ButtonStyle.Flat:
-						Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, !Active);
-						break;
+				case ButtonStyle.Borderless:
+				case ButtonStyle.Flat:
+#if MONOMAC
+					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, !Active);
+#else
+					Widget.ShowsBorderOnlyWhileMouseInside = !Active;
+#endif
+					break;
 				}
 				lastState = Widget.State;
 				ApplicationContext.InvokeUserCode (delegate {
@@ -73,23 +77,6 @@ namespace Xwt.Mac
 				});
 			}
 		}
-
-		public override void SetButtonStyle (ButtonStyle style)
-		{
-			switch (style) {
-				case ButtonStyle.Normal:
-					Widget.BezelStyle = NSBezelStyle.Rounded;
-					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
-					break;
-				case ButtonStyle.Borderless:
-				case ButtonStyle.Flat:
-					Widget.BezelStyle = NSBezelStyle.ShadowlessSquare;
-					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
-					break;
-			}
-		}
-
-		static Selector selSetShowsBorderOnlyWhileMouseInside = new Selector ("setShowsBorderOnlyWhileMouseInside:");
 	}
 }
 

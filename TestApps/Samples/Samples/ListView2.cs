@@ -20,7 +20,18 @@ namespace Samples
 			list.DataSource = store;
 			list.GridLinesVisible = GridLines.Horizontal;
 
-			list.Columns.Add (new ListViewColumn("Editable", new CheckBoxCellView { Editable = true, ActiveField = editableActiveField }));
+			var checkCellView = new CheckBoxCellView { Editable = true, ActiveField = editableActiveField };
+			checkCellView.Toggled += (sender, e) => {
+
+				if (list.CurrentEventRow == null) {
+					MessageDialog.ShowError("CurrentEventRow is null. This is not supposed to happen");
+				}
+				else {
+					store.SetValue(list.CurrentEventRow, textField, "Toggled");
+				}
+			};
+
+			list.Columns.Add (new ListViewColumn("Editable", checkCellView));
 			list.Columns.Add (new ListViewColumn("Not Editable", new CheckBoxCellView { Editable = false, ActiveField = nonEditableActiveField }));
 			list.Columns.Add (new ListViewColumn("Editable", new TextCellView { Editable = true, TextField = textField }));
 			list.Columns.Add(new ListViewColumn("Somewhat Editable", new CheckBoxCellView { EditableField = editableField, ActiveField = somewhatEditableData }));

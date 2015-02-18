@@ -93,9 +93,15 @@ namespace Xwt.GtkBackend
 			return context.Targets;
 		}
 
-		public static void AddContent (this Gtk.Dialog dialog, Gtk.Widget widget)
+		public static void AddContent (this Gtk.Dialog dialog, Gtk.Widget widget, bool expand = true, bool fill = true, uint padding = 0)
 		{
-			dialog.VBox.PackStart (widget);
+			dialog.VBox.PackStart (widget, expand, fill, padding);
+		}
+
+		public static void AddContent (this Gtk.MessageDialog dialog, Gtk.Widget widget, bool expand = true, bool fill = true, uint padding = 0)
+		{
+			var messageArea = dialog.GetMessageArea () ?? dialog.VBox;
+			messageArea.PackStart (widget, expand, fill, padding);
 		}
 
 		public static void SetContentSpacing (this Gtk.Dialog dialog, int spacing)
@@ -113,9 +119,24 @@ namespace Xwt.GtkBackend
 			GtkWorkarounds.FixContainerLeak (c);
 		}
 
+		public static Xwt.Drawing.Color GetBackgroundColor (this Gtk.Widget widget)
+		{
+			return widget.GetBackgroundColor (Gtk.StateType.Normal);
+		}
+
+		public static Xwt.Drawing.Color GetBackgroundColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			return widget.Style.Background (state).ToXwtValue ();
+		}
+
 		public static void SetBackgroundColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
 		{
-			widget.ModifyBg (Gtk.StateType.Normal, color.ToGtkValue ());
+			widget.SetBackgroundColor (Gtk.StateType.Normal, color);
+		}
+
+		public static void SetBackgroundColor (this Gtk.Widget widget, Gtk.StateType state, Xwt.Drawing.Color color)
+		{
+			widget.ModifyBg (state, color.ToGtkValue ());
 		}
 
 		public static void SetChildBackgroundColor (this Gtk.Container container, Xwt.Drawing.Color color)
@@ -165,6 +186,43 @@ namespace Xwt.GtkBackend
 
 				args.Event.Window.DrawLayout (gc, x, y, layout);
 			}
+		}
+
+		public static double GetSliderPosition (this Gtk.Scale scale)
+		{
+			Gtk.Orientation orientation;
+			if (scale is Gtk.HScale)
+				orientation = Gtk.Orientation.Horizontal;
+			else if (scale is Gtk.VScale)
+				orientation = Gtk.Orientation.Vertical;
+			else
+				throw new InvalidOperationException ("Can not obtain slider position from " + scale.GetType ());
+
+			var padding = (int)scale.StyleGetProperty ("focus-padding");
+			var slwidth = Convert.ToDouble (scale.StyleGetProperty ("slider-width"));
+
+			int orientationSize;
+			if (orientation == Gtk.Orientation.Horizontal)
+				orientationSize = scale.Allocation.Width - (2 * padding);
+			else
+				orientationSize = scale.Allocation.Height - (2 * padding);
+
+			double prct = 0;
+			if (scale.Adjustment.Lower >= 0) {
+				prct = (scale.Value / (scale.Adjustment.Upper - scale.Adjustment.Lower));
+			} else if (scale.Adjustment.Upper <= 0) {
+				prct = (Math.Abs (scale.Value) / Math.Abs (scale.Adjustment.Lower - scale.Adjustment.Upper));
+			} else if (scale.Adjustment.Lower < 0) {
+				if (scale.Value >= 0)
+					prct = 0.5 + ((scale.Value / 2) / scale.Adjustment.Upper);
+				else
+					prct = 0.5 - Math.Abs ((scale.Value / 2) / scale.Adjustment.Lower);
+			}
+
+			if (orientation == Gtk.Orientation.Vertical || scale.Inverted)
+				prct = 1 - prct;
+
+			return (int)(((orientationSize - (slwidth)) * prct) + (slwidth / 2));
 		}
 	}
 }

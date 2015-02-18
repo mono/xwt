@@ -19,7 +19,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -116,8 +116,10 @@
     <Compile Include="Xwt.Mac\WidgetView.cs" />
     <Compile Include="Xwt.Mac\NSTableViewBackend.cs" />
     <Compile Include="Xwt.Mac\Messaging.cs" />
+    <Compile Include="Xwt.Mac\KeyboardUtil.cs" />
     <Compile Include="Xwt.Mac\SaveFileDialogBackend.cs" />
     <Compile Include="Xwt.Mac\ColorPickerBackend.cs" />
+    <Compile Include="Xwt.Mac\OutlineViewBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -30,10 +30,6 @@ namespace Xwt.GtkBackend
 {
 	public class PanedBackend: WidgetBackend, IPanedBackend
 	{
-		public PanedBackend ()
-		{
-		}
-		
 		protected new Gtk.Paned Widget {
 			get { return (Gtk.Paned)base.Widget; }
 			set { base.Widget = value; }
@@ -92,15 +88,34 @@ namespace Xwt.GtkBackend
 			get { return Widget.Position; }
 			set { Widget.Position = (int) value; }
 		}
-
-		public Size GetDecorationSize ()
+		
+		public override void EnableEvent (object eventId)
 		{
-			throw new NotSupportedException ();
+			base.EnableEvent (eventId);
+			if (eventId is PanedEvent) {
+				switch ((PanedEvent)eventId) {
+					case PanedEvent.PositionChanged:
+						Widget.AddNotification ("position", HandleMove);break;
+				}
+			}
+		}
+		
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is PanedEvent) {
+				switch ((PanedEvent)eventId) {
+					case PanedEvent.PositionChanged:
+						Widget.RemoveNotification ("position", HandleMove);break;
+				}
+			}
 		}
 
-		public void GetPanelSizes (double totalSize, out double panel1Size, out double panel2Size)
+		void HandleMove (object o, GLib.NotifyArgs args)
 		{
-			throw new NotSupportedException ();
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnPositionChanged ();
+			});
 		}
 	}
 }

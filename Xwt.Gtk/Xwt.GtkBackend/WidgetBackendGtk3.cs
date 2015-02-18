@@ -50,15 +50,30 @@ namespace Xwt.GtkBackend
 				min_height = (int)size.Height;
 			} else {
 				int nat_width, nat_height;
-				if (widthConstraint.IsConstrained) {
-					Widget.GetPreferredHeightForWidth((int)widthConstraint.AvailableSize, out min_height, out nat_height);
-				}
-				else if (heightConstraint.IsConstrained) {
-					Widget.GetPreferredWidthForHeight ((int)heightConstraint.AvailableSize, out min_width, out nat_width);
-				} else if ((heightConstraint.IsConstrained) && (widthConstraint.IsConstrained)) {
+
+				if (Widget.RequestMode == Gtk.SizeRequestMode.WidthForHeight) {
+					if (widthConstraint.IsConstrained) {
+						Widget.GetPreferredHeightForWidth ((int)widthConstraint.AvailableSize, out min_height, out nat_height);
+					} else if (heightConstraint.IsConstrained) {
+						Widget.GetPreferredWidthForHeight ((int)heightConstraint.AvailableSize, out min_width, out nat_width);
+					} else if ((heightConstraint.IsConstrained) && (widthConstraint.IsConstrained)) {
+					} else {
+						Widget.GetPreferredHeight (out min_height, out nat_height);
+						Widget.GetPreferredWidthForHeight (min_height, out min_width, out nat_width);
+					}
+				} else if (Widget.RequestMode == Gtk.SizeRequestMode.HeightForWidth) {
+					if (heightConstraint.IsConstrained) {
+						Widget.GetPreferredWidthForHeight ((int)heightConstraint.AvailableSize, out min_width, out nat_width);
+					} else if (widthConstraint.IsConstrained) {
+						Widget.GetPreferredHeightForWidth ((int)widthConstraint.AvailableSize, out min_height, out nat_height);
+					} else if ((heightConstraint.IsConstrained) && (widthConstraint.IsConstrained)) {
+					} else {
+						Widget.GetPreferredWidth (out min_width, out nat_width);
+						Widget.GetPreferredHeightForWidth (min_width, out min_height, out nat_height);
+					}
 				} else {
-					Widget.GetPreferredHeight (out min_height, out nat_height);
 					Widget.GetPreferredWidth (out min_width, out nat_width);
+					Widget.GetPreferredHeightForWidth (min_width, out min_height, out nat_height);
 				}
 			}
 
@@ -87,6 +102,36 @@ namespace Xwt.GtkBackend
 				min_height = (int) Frontend.MinHeight;
 
 			return new Size(min_width, min_height);
+		}
+
+		void UpdateSizeRequests ()
+		{
+			if (minSizeSet) {
+				Widget.WidthRequest = (int)Math.Max (Frontend.MinWidth, Frontend.WidthRequest);
+				Widget.HeightRequest = (int)Math.Max (Frontend.MinHeight, Frontend.HeightRequest);
+			} else {
+				Widget.WidthRequest = (int)Frontend.WidthRequest;
+				Widget.HeightRequest = (int)Frontend.HeightRequest;
+			}
+		}
+
+		public void SetMinSize (double width, double height)
+		{
+			if (width != -1 || height != -1) {
+				minSizeSet = true;
+				UpdateSizeRequests ();
+				Widget.QueueResize ();
+			}
+			else {
+				minSizeSet = false;
+				UpdateSizeRequests ();
+				Widget.QueueResize ();
+			}
+		}
+
+		public void SetSizeRequest (double width, double height)
+		{
+			UpdateSizeRequests ();
 		}
 
 		void EnableSizeCheckEvents ()

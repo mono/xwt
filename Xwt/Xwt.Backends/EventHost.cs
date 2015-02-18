@@ -31,12 +31,22 @@ using System.ComponentModel;
 
 namespace Xwt.Backends
 {
-
+	/// <summary>
+	/// The EventHost is the base for every <see cref="Xwt.Backends.BackendHost"/> and takes care
+	/// of event subscriptions, handlers and their activations.
+	/// </summary>
 	public class EventHost
 	{
 		static Dictionary<Type, List<EventMap>> overridenEventMap = new Dictionary<Type, List<EventMap>> ();
 		static Dictionary<Type, HashSet<object>> overridenEvents = new Dictionary<Type, HashSet<object>> ();
 
+		/// <summary>
+		/// Maps an event handler of an Xwt component to an event identifier.
+		/// </summary>
+		/// <param name="eventId">The event identifier (must be valid event enum value
+		/// like <see cref="Xwt.Backends.WidgetEvent"/>, identifying component specific events).</param>
+		/// <param name="type">The Xwt component type.</param>
+		/// <param name="methodName">The <see cref="System.Reflection.MethodInfo.Name"/> of the event handler.</param>
 		public static void MapEvent (object eventId, Type type, string methodName)
 		{
 			List<EventMap> events;
@@ -51,6 +61,12 @@ namespace Xwt.Backends
 			events.Add (emap);
 		}
 
+		/// <summary>
+		/// Gets the default enabled events.
+		/// </summary>
+		/// <returns>The default enabled events for a Xwt widget type.</returns>
+		/// <param name="type">The Xwt widgets type.</param>
+		/// <param name="customEnabledEvents">Function that gets the custom enabled events.</param>
 		public static HashSet<object> GetDefaultEnabledEvents (Type type, Func<IEnumerable<object>> customEnabledEvents)
 		{
 			HashSet<object> defaultEnabledEvents;
@@ -83,24 +99,46 @@ namespace Xwt.Backends
 
 		HashSet<object> defaultEnabledEvents;
 
+		/// <summary>
+		/// Gets or sets the parent Xwt widget.
+		/// </summary>
+		/// <value>The parent Xwt widget.</value>
 		public object Parent { get; internal set; }
 
+		/// <summary>
+		/// Handles an event subscription.
+		/// </summary>
+		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
+		/// <param name="eventDelegate">The subscribing handler delegate.</param>
 		public void OnBeforeEventAdd (object eventId, Delegate eventDelegate)
 		{
 			if (eventDelegate == null && !DefaultEnabledEvents.Contains (eventId))
 				OnEnableEvent (eventId);
 		}
 
+		/// <summary>
+		/// Handles an event unsubscription.
+		/// </summary>
+		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
+		/// <param name="eventDelegate">The handler delegate to remove from the event.</param>
 		public void OnAfterEventRemove (object eventId, Delegate eventDelegate)
 		{
 			if (eventDelegate == null && !DefaultEnabledEvents.Contains (eventId))
 				OnDisableEvent (eventId);
 		}
 
+		/// <summary>
+		/// Enables an event with the specified identifier.
+		/// </summary>
+		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
 		protected virtual void OnEnableEvent (object eventId)
 		{
 		}
 
+		/// <summary>
+		/// Disables an event with the specified identifier.
+		/// </summary>
+		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
 		protected virtual void OnDisableEvent (object eventId)
 		{
 		}
@@ -114,6 +152,10 @@ namespace Xwt.Backends
 			yield break;
 		}
 
+		/// <summary>
+		/// Gets the default enabled events.
+		/// </summary>
+		/// <value>The default enabled events.</value>
 		internal HashSet<object> DefaultEnabledEvents {
 			get {
 				if (defaultEnabledEvents == null) {

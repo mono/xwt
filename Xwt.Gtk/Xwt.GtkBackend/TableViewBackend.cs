@@ -44,6 +44,15 @@ namespace Xwt.GtkBackend
 			public Gtk.TreeViewColumn Column;
 		}
 
+		protected override void OnSetBackgroundColor (Xwt.Drawing.Color color)
+		{
+			// Gtk3 workaround (by rpc-scandinavia, see https://github.com/mono/xwt/pull/411)
+			var selectedColor = Widget.GetBackgroundColor(StateType.Selected);
+			Widget.SetBackgroundColor (StateType.Normal, Xwt.Drawing.Colors.Transparent);
+			Widget.SetBackgroundColor (StateType.Selected, selectedColor);
+			base.OnSetBackgroundColor (color);
+		}
+
 		public TableViewBackend ()
 		{
 			var sw = new Gtk.ScrolledWindow ();
@@ -135,6 +144,12 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeViewColumn tc = new Gtk.TreeViewColumn ();
 			tc.Title = col.Title;
+			tc.Resizable = col.CanResize;
+			tc.Alignment = col.Alignment.ToGtkAlignment ();
+			tc.SortIndicator = col.SortIndicatorVisible;
+			tc.SortOrder = (SortType)col.SortDirection;
+			if (col.SortDataField != null)
+				tc.SortColumnId = col.SortDataField.Index;
 			Widget.AppendColumn (tc);
 			MapTitle (col, tc);
 			MapColumn (col, tc);
@@ -170,22 +185,32 @@ namespace Xwt.GtkBackend
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			Gtk.TreeViewColumn tc = (Gtk.TreeViewColumn) handle;
-			if (change == ListViewColumnChange.Cells) {
-				tc.Clear ();
-				MapColumn (col, tc);
+
+			switch (change) {
+				case ListViewColumnChange.Cells:
+					tc.Clear ();
+					MapColumn (col, tc);
+					break;
+				case ListViewColumnChange.Title:
+					MapTitle (col, tc);
+					break;
+				case ListViewColumnChange.CanResize:
+					tc.Resizable = col.CanResize;
+					break;
+				case ListViewColumnChange.SortIndicatorVisible:
+					tc.SortIndicator = col.SortIndicatorVisible;
+					break;
+				case ListViewColumnChange.SortDirection:
+					tc.SortOrder = (SortType)col.SortDirection;
+					break;
+				case ListViewColumnChange.SortDataField:
+					if (col.SortDataField != null)
+						tc.SortColumnId = col.SortDataField.Index;
+					break;
+				case ListViewColumnChange.Alignment:
+					tc.Alignment = col.Alignment.ToGtkAlignment ();
+					break;
 			}
-			else if (change == ListViewColumnChange.Title)
-				MapTitle (col, tc);
-			else if (change == ListViewColumnChange.CanResize)
-				tc.Resizable = col.CanResize;
-			else if (change == ListViewColumnChange.SortDirection)
-				tc.SortOrder = (SortType)col.SortDirection;
-			else if (change == ListViewColumnChange.SortDataField)
-				tc.SortColumnId = col.SortDataField.Index;
-			else if (change == ListViewColumnChange.SortIndicatorVisible)
-				tc.SortIndicator = col.SortIndicatorVisible;
-			else if (change == ListViewColumnChange.Alignment)
-				tc.Alignment = Util.ToGtkAlignment(col.Alignment);
 		}
 
 		public void ScrollToRow (TreeIter pos)
@@ -225,6 +250,11 @@ namespace Xwt.GtkBackend
 		#region ICellRendererTarget implementation
 		public void PackStart (object target, Gtk.CellRenderer cr, bool expand)
 		{
+			#if !XWT_GTK3
+			// Gtk2 tree background color workaround
+			if (UsingCustomBackgroundColor)
+				cr.CellBackgroundGdk = BackgroundColor.ToGtkValue ();
+			#endif
 			((Gtk.TreeViewColumn)target).PackStart (cr, expand);
 		}
 

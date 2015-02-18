@@ -253,7 +253,7 @@ namespace Xwt.WPFBackend
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			var c = (DrawingContext) backend;
-			var t = (TextLayoutBackend)Toolkit.GetBackend (layout);
+			var t = (TextLayoutBackend)ApplicationContext.Toolkit.GetSafeBackend (layout);
 			t.SetDefaultForeground (c.ColorBrush);
 			c.Context.DrawText (t.FormattedText, new SW.Point (x, y));
 		}

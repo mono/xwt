@@ -28,8 +28,17 @@ using System;
 
 namespace Xwt
 {
+	/// <summary>
+	/// Mouse moved event arguments, containing information about mouse movements.
+	/// </summary>
 	public class MouseMovedEventArgs: EventArgs
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.MouseMovedEventArgs"/> class.
+		/// </summary>
+		/// <param name="timestamp">The timestamp of the event.</param>
+		/// <param name="x">The X coordinate of the cursor.</param>
+		/// <param name="y">The Y coordinate of the cursor.</param>
 		public MouseMovedEventArgs (long timestamp, double x, double y)
 		{
 			X = x;
@@ -41,31 +50,36 @@ namespace Xwt
 		/// Gets or sets a value indicating whether this event has been handled
 		/// </summary>
 		/// <value><c>true</c> if handled; otherwise, <c>false</c>.</value>
-		/// <remarks>Setting this property to <c>true</c> will prevent the event from bubbling up in the widget hierarchy</remarks>
+		/// <remarks>
+		/// Setting <see cref="Xwt.MouseMovedEventArgs.Handled"/> to <c>true</c> will mark the event
+		/// as handled and prevent the event from bubbling up in the widget hierarchy.
+		/// Handled events will be ignored by a backend in most cases.
+		/// </remarks>
 		public bool Handled { get; set; }
 
 		/// <summary>
-		/// Gets or sets the X coordinate of the mouse cursor
+		/// Gets or sets the X coordinate of the mouse cursor (relative to the widget receiving the event).
 		/// </summary>
-		/// <value>The x.</value>
+		/// <value>The X coordinate of the cursor.</value>
 		public double X { get; private set; }
 
 		/// <summary>
-		/// Gets or sets the Y coordinate of the mouse cursor
+		/// Gets or sets the Y coordinate of the mouse cursor (relative to the widget receiving the event).
 		/// </summary>
-		/// <value>The x.</value>
+		/// <value>The Y coordinate of the cursor.</value>
 		public double Y { get; private set; }
 
 		/// <summary>
-		/// Location of the mouse cursor
+		/// Location of the mouse cursor (in widget coordinates).
 		/// </summary>
 		public Point Position {
 			get { return new Point (X, Y); }
 		}
 
 		/// <summary>
-		/// When the event occurred
+		/// Gets the time when this event occurred.
 		/// </summary>
+		/// <value>The timestamp of the event.</value>
 		public long Timestamp { get; private set; }
 	}
 }

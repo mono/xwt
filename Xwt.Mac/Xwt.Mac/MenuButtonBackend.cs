@@ -28,6 +28,8 @@ using System;
 using Foundation;
 using AppKit;
 using Xwt.Backends;
+using Xwt.Drawing;
+using CoreGraphics;
 
 
 namespace Xwt.Mac
@@ -46,6 +48,11 @@ namespace Xwt.Mac
 		{
 			ViewObject = new MacMenuButton (EventSink, ApplicationContext);
 		}
+
+		public override Color BackgroundColor {
+			get { return ((MacMenuButton)Widget).BackgroundColor; }
+			set { ((MacMenuButton)Widget).BackgroundColor = value; }
+		}
 	}
 
 	class MacMenuButton: NSPopUpButton, IViewObject
@@ -61,6 +68,8 @@ namespace Xwt.Mac
 		{
 			this.eventSink = eventSink;
 			this.context = context;
+
+			Cell = new ColoredPopUpButtonCell ();
 
 			PullsDown = true;
 			Activated += delegate {
@@ -101,6 +110,26 @@ namespace Xwt.Mac
 		public void DisableEvent (Xwt.Backends.ButtonEvent ev)
 		{
 		}
+
+		public Color BackgroundColor {
+			get {
+				return ((ColoredPopUpButtonCell)Cell).Color.GetValueOrDefault();
+			}
+			set {
+				((ColoredPopUpButtonCell)Cell).Color = value;
+			}
+		}
+
+		class ColoredPopUpButtonCell : NSPopUpButtonCell
+		{
+			public Color? Color { get; set; }
+
+			public override void DrawBezelWithFrame (CGRect frame, NSView controlView)
+			{
+				controlView.DrawWithColorTransform(Color, delegate { base.DrawBezelWithFrame (frame, controlView); });
+			}
+		}
+
 
 		protected override void Dispose (bool disposing)
 		{

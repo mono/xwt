@@ -41,6 +41,9 @@ namespace Xwt.Backends
 		double Value { get; set; }
 		double MinimumValue { get; set; }
 		double MaximumValue { get; set; }
+		double StepIncrement { get; set; }
+		bool SnapToTicks { get; set; }
+		double SliderPosition { get; }
 	}
 	
 	public interface ISliderEventSink: IWidgetEventSink

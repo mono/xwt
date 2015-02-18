@@ -36,27 +36,44 @@ using Xwt.Backends;
 namespace Xwt.Backends
 {
 	/// <summary>
-	/// A collection of data that has been transferred through drag &amp; drop or the clipboard
+	/// A collection of data that is being transferred through drag &amp; drop or the clipboard
 	/// </summary>
 	public class TransferDataStore: ITransferData
 	{
 		Dictionary<TransferDataType,object> data = new Dictionary<TransferDataType,object> ();
 		
+		/// <summary>
+		/// Adds a text to transfer.
+		/// </summary>
+		/// <param name="text">A Text.</param>
 		public void AddText (string text)
 		{
 			data [TransferDataType.Text] = text;
 		}
 		
+		/// <summary>
+		/// Adds an image to transfer.
+		/// </summary>
+		/// <param name="image">An Image.</param>
 		public void AddImage (Xwt.Drawing.Image image)
 		{
 			data [TransferDataType.Image] = image;
 		}
 		
+		/// <summary>
+		/// Adds uris to transfer.
+		/// </summary>
+		/// <param name="uris">Uris.</param>
 		public void AddUris (Uri[] uris)
 		{
 			data [TransferDataType.Uri] = uris;
 		}
 		
+		/// <summary>
+		/// Adds a byte array or a serialized value with a specific transfer data type.
+		/// </summary>
+		/// <param name="type">The specific transfer data type.</param>
+		/// <param name="value">The byte array or serialized value to transfer.</param>
 		public void AddValue (TransferDataType type, byte[] value)
 		{
 			Type t = Type.GetType (type.Id);
@@ -66,11 +83,21 @@ namespace Xwt.Backends
 				data [type] = value;
 		}
 
+		/// <summary>
+		/// Adds an object with a specific transfer data type.
+		/// </summary>
+		/// <param name="type">The specific transfer data type.</param>
+		/// <param name="value">The object to transfer.</param>
 		public void AddValue (TransferDataType type, object value)
 		{
 			data[type] = value;
 		}
 
+		/// <summary>
+		/// Gets the value identified by a specific transfer data type.
+		/// </summary>
+		/// <returns>The transferred value, or <c>null</c> if the store contains no value with the specific type.</returns>
+		/// <param name="type">The specific transfer data type.</param>
 		object GetValue (TransferDataType type)
 		{
 			object val;

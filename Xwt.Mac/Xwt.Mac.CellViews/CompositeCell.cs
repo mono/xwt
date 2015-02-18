@@ -80,6 +80,11 @@ namespace Xwt.Mac
 			source.SetValue (tablePosition.Position, field.Index, value);
 		}
 
+		public void SetCurrentEventRow ()
+		{
+			source.SetCurrentEventRow (tablePosition.Position);
+		}
+
 		void ICopiableObject.CopyFrom (object other)
 		{
 			var ob = (CompositeCell)other;

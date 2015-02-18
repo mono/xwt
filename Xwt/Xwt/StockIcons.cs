@@ -33,7 +33,9 @@ namespace Xwt
 	{
 		static Image GetIcon (string id)
 		{
-			return Toolkit.CurrentEngine.GetStockIcon (id);
+			var img = Toolkit.CurrentEngine.GetStockIcon (id);
+			img.SetStockSource (id);
+			return img;
 		}
 
 		public static Image Error { get { return GetIcon (StockIconId.Error); } }

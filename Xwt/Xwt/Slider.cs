@@ -77,6 +77,20 @@ namespace Xwt
 			set { Backend.MaximumValue = value; }
 		}
 
+		public double StepIncrement {
+			get { return Backend.StepIncrement; }
+			set { Backend.StepIncrement = value; }
+		}
+
+		public bool SnapToTicks {
+			get { return Backend.SnapToTicks; }
+			set { Backend.SnapToTicks = value; }
+		}
+
+		public double SliderPosition {
+			get { return Backend.SliderPosition; }
+		}
+
 		protected virtual void OnValueChanged (EventArgs e)
 		{
 			if (valueChanged != null)

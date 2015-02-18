@@ -27,8 +27,46 @@ using System;
 
 namespace Xwt.GtkBackend
 {
-	public class GtkViewPort: Gtk.Viewport
+	public class GtkViewPort: Gtk.Bin, Gtk.IScrollableImplementor
 	{
+		public GtkViewPort ()
+		{
+		}
+
+		public GtkViewPort (IntPtr raw) : base (raw)
+		{
+		}
+
+		Gtk.Adjustment hadjustment;
+		public Gtk.Adjustment Hadjustment {
+			get {
+				return hadjustment;
+			}
+			set {
+				hadjustment = value;
+				if (vadjustment != null) {
+					OnSetScrollAdjustments (value, vadjustment);
+				}
+			}
+		}
+
+		Gtk.Adjustment vadjustment;
+		public Gtk.Adjustment Vadjustment {
+			get {
+				return vadjustment;
+			}
+			set {
+				vadjustment = value;
+				if (hadjustment != null) {
+					OnSetScrollAdjustments (hadjustment, value);
+				}
+			}
+		}
+
+		public Gtk.ScrollablePolicy HscrollPolicy { get; set; }
+
+		public Gtk.ScrollablePolicy VscrollPolicy { get; set; }
+
 		protected override void OnAdded (Gtk.Widget widget)
 		{
 			base.OnAdded (widget);

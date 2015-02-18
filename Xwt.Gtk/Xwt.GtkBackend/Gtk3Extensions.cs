@@ -82,9 +82,14 @@ namespace Xwt.GtkBackend
 			return context.SelectedAction;
 		}
 
-		public static void AddContent (this Gtk.Dialog dialog, Gtk.Widget widget)
+		public static void AddContent (this Gtk.Dialog dialog, Gtk.Widget widget, bool expand = true, bool fill = true, uint padding = 0)
 		{
-			dialog.ContentArea.Add (widget);
+			dialog.ContentArea.PackStart (widget, expand, fill, padding);
+		}
+
+		public static void AddContent (this Gtk.MessageDialog dialog, Gtk.Widget widget, bool expand = true, bool fill = true, uint padding = 0)
+		{
+			dialog.GetMessageArea().PackStart (widget, expand, fill, padding);
 		}
 
 		public static void SetContentSpacing (this Gtk.Dialog dialog, int spacing)
@@ -108,6 +113,21 @@ namespace Xwt.GtkBackend
 			// gtk3 is not affected by the container leak bug and there is no marker
 			// method, so nothing to do.
 			return;
+		}
+
+		public static Xwt.Drawing.Color GetBackgroundColor (this Gtk.Widget widget)
+		{
+			return widget.GetBackgroundColor (Gtk.StateFlags.Normal);
+		}
+
+		public static Xwt.Drawing.Color GetBackgroundColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			return widget.GetBackgroundColor (state.ToGtk3StateFlags ());
+		}
+
+		public static Xwt.Drawing.Color GetBackgroundColor (this Gtk.Widget widget, Gtk.StateFlags state)
+		{
+			return widget.StyleContext.GetBackgroundColor (state).ToXwtValue ();
 		}
 
 		public static void SetBackgroundColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
@@ -149,6 +169,13 @@ namespace Xwt.GtkBackend
 					return Gtk.StateFlags.Selected;
 			}
 			return Gtk.StateFlags.Normal;
+		}
+
+		public static double GetSliderPosition (this Gtk.Scale scale)
+		{
+			int start, end;
+			scale.GetSliderRange (out start, out end);
+			return start + ((end - start) / 2);
 		}
 	}
 }

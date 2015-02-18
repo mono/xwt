@@ -54,6 +54,8 @@ namespace Xwt.WPFBackend
 	                return null;
 	        }
         }
+
+        public int CurrentEventRow { get; set;  }
 		
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (this.ListView).ToXwtScrollPolicy (); }
