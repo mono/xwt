@@ -112,6 +112,8 @@ namespace Xwt.Backends
 
 		public abstract IEnumerable<string> GetInstalledFonts ();
 
+		public abstract IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family);
+
 		/// <summary>
 		/// Creates a new font. Returns null if the font family is not available in the system
 		/// </summary>
