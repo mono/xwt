@@ -24,7 +24,8 @@ Xwt.Gtk3 requires gtk-sharp3 (https://github.com/mono/gtk-sharp/). The Windows i
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="Xwt.Gtk3.dll.config" target="content" />
+		<file src="Xwt.Gtk3.dll.config" target="build" />
+		<file src="Xwt.Gtk3.nuget.props" target="build\Xwt.Gtk3.props" />
 		<file src="..\LICENSE.txt" />
 		<file src="..\README.markdown" />
 	</files>

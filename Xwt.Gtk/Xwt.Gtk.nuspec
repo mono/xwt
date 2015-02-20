@@ -24,7 +24,8 @@ Xwt.Gtk requires gtk-sharp (https://github.com/mono/gtk-sharp/). The Windows ins
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="Xwt.Gtk.dll.config" target="lib\net40" />
+		<file src="Xwt.Gtk.dll.config" target="build" />
+		<file src="Xwt.Gtk.nuget.props" target="build\Xwt.Gtk.props" />
 		<file src="..\LICENSE.txt" />
 		<file src="..\README.markdown" />
 	</files>
