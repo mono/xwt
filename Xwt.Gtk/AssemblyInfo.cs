@@ -5,10 +5,10 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle("Xwt.Gtk")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Gtk Toolkit for the Xwt UI Framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
+[assembly: AssemblyProduct("Xwt UI Framework")]
 [assembly: AssemblyCopyright("Xamarin, Inc (http://www.xamarin.com)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
