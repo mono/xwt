@@ -41,6 +41,7 @@ namespace Xwt.GtkBackend
 
 		public override void Initialize ()
 		{
+			//NeedsEventBox = false;  // TODO: needs fix: no events with or without event box
 			Widget = (Gtk.ComboBox) CreateWidget ();
 			if (Widget.Cells.Length == 0) {
 				var cr = new Gtk.CellRendererText ();

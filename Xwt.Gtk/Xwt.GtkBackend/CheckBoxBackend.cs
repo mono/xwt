@@ -41,6 +41,7 @@ namespace Xwt.GtkBackend
 
 		public override void Initialize ()
 		{
+			NeedsEventBox = false;
 			Widget = new Gtk.CheckButton ();
 			Widget.Toggled += HandleWidgetActivated;
 			Widget.Show ();

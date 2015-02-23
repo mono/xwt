@@ -43,6 +43,7 @@ namespace Xwt.GtkBackend
 
 		public override void Initialize ()
 		{
+			NeedsEventBox = false;
 			Widget = new Gtk.Button ();
 			base.Widget.Show ();
 			
