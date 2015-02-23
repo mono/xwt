@@ -189,24 +189,39 @@ namespace Xwt.WPFBackend
 		public static FontWeight ToXwtFontWeight (this SW.FontWeight value)
 		{
 			// No, SW.FontWeights is not an enum
+			// Extra/Ultra and Demi/Semi are equal
+			// see: http://msdn.microsoft.com/en-us/library/system.windows.fontweights
+			if (value == SW.FontWeights.Thin) return FontWeight.Thin;
+			if (value == SW.FontWeights.ExtraLight) return FontWeight.Ultralight;
 			if (value == SW.FontWeights.UltraLight) return FontWeight.Ultralight;
 			if (value == SW.FontWeights.Light) return FontWeight.Light;
+			if (value == SW.FontWeights.Medium) return FontWeight.Medium;
+			if (value == SW.FontWeights.DemiBold) return FontWeight.Semibold;
 			if (value == SW.FontWeights.SemiBold) return FontWeight.Semibold;
 			if (value == SW.FontWeights.Bold) return FontWeight.Bold;
+			if (value == SW.FontWeights.ExtraBold) return FontWeight.Ultrabold;
 			if (value == SW.FontWeights.UltraBold) return FontWeight.Ultrabold;
 			if (value == SW.FontWeights.Black) return FontWeight.Heavy;
+			if (value == SW.FontWeights.Heavy) return FontWeight.Heavy;
+			if (value == SW.FontWeights.ExtraBlack) return FontWeight.Ultraheavy;
+			if (value == SW.FontWeights.UltraBlack) return FontWeight.Ultraheavy;
 
 			return FontWeight.Normal;
 		}
 
 		public static SW.FontWeight ToWpfFontWeight (this FontWeight value)
 		{
+			if (value == FontWeight.Thin) return SW.FontWeights.Thin;
 			if (value == FontWeight.Ultralight) return SW.FontWeights.UltraLight;
 			if (value == FontWeight.Light) return SW.FontWeights.Light;
+			if (value == FontWeight.Semilight) return SW.FontWeights.Light;
+			if (value == FontWeight.Book) return SW.FontWeights.Normal;
+			if (value == FontWeight.Medium) return SW.FontWeights.Medium;
 			if (value == FontWeight.Semibold) return SW.FontWeights.SemiBold;
 			if (value == FontWeight.Bold) return SW.FontWeights.Bold;
 			if (value == FontWeight.Ultrabold) return SW.FontWeights.UltraBold;
 			if (value == FontWeight.Heavy) return SW.FontWeights.Black;
+			if (value == FontWeight.Ultraheavy) return SW.FontWeights.UltraBlack;
 			
 			return SW.FontWeights.Normal;
 		}

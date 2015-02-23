@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
+using System.Collections.Generic;
 
 #if MONOMAC
 using nint = System.Int32;
@@ -53,9 +54,20 @@ namespace Xwt.Mac
 			return Create ("Menlo", font.PointSize, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal);
 		}
 
-		public override System.Collections.Generic.IEnumerable<string> GetInstalledFonts ()
+		public override IEnumerable<string> GetInstalledFonts ()
 		{
 			return NSFontManager.SharedFontManager.AvailableFontFamilies;
+		}
+
+		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
+		{
+			foreach (var nsFace in NSFontManager.SharedFontManager.AvailableMembersOfFontFamily(family)) {
+				var name = NSString.FromHandle(nsFace.ValueAt(1));
+				var weight = ((NSNumber) NSValue.ValueFromPointer (nsFace.ValueAt (2)).NonretainedObjectValue).Int32Value;
+				var traits = (NSFontTraitMask) ((NSNumber)NSValue.ValueFromPointer (nsFace.ValueAt (3)).NonretainedObjectValue).Int32Value;
+				yield return new KeyValuePair<string, object>(name, FontData.FromFamily(family, traits, weight, 0));
+			}
+			yield break;
 		}
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
@@ -111,18 +123,28 @@ namespace Xwt.Mac
 		static int GetWeightValue (FontWeight weight)
 		{
 			switch (weight) {
+			case FontWeight.Thin:
+				return 1;
 			case FontWeight.Ultralight:
 				return 2;
 			case FontWeight.Light:
+				return 3;
+			case FontWeight.Book:
 				return 4;
 			case FontWeight.Normal:
 				return 5;
+			case FontWeight.Medium:
+				return 6;
 			case FontWeight.Semibold:
-				return 7;
+				return 8;
 			case FontWeight.Bold:
 				return 9;
 			case FontWeight.Ultrabold:
+				return 10;
+			case FontWeight.Heavy:
 				return 11;
+			case FontWeight.Ultraheavy:
+				return 12;
 			default:
 				return 13;
 			}
@@ -130,19 +152,27 @@ namespace Xwt.Mac
 
 		internal static FontWeight GetWeightFromValue (nint w)
 		{
-			if (w <= 2)
+			if (w <= 1)
+				return FontWeight.Thin;
+			if (w == 2)
 				return FontWeight.Ultralight;
-			if (w <= 4)
+			if (w == 3)
 				return FontWeight.Light;
-			if (w <= 6)
+			if (w == 4)
+				return FontWeight.Book;
+			if (w == 5)
 				return FontWeight.Normal;
+			if (w == 6)
+				return FontWeight.Medium;
 			if (w <= 8)
 				return FontWeight.Semibold;
 			if (w == 9)
 				return FontWeight.Bold;
-			if (w <= 12)
+			if (w == 10)
 				return FontWeight.Ultrabold;
-			return FontWeight.Heavy;
+			if (w == 11)
+				return FontWeight.Heavy;
+			return FontWeight.Ultraheavy;
 		}
 
 		NSFontTraitMask GetStretchTrait (FontStretch stretch)
@@ -175,7 +205,10 @@ namespace Xwt.Mac
 			FontData f = (FontData) handle;
 			f = f.Copy ();
 			int w = GetWeightValue (weight);
-			f.Font = NSFontManager.SharedFontManager.FontWithFamily (f.Font.FamilyName, NSFontManager.SharedFontManager.TraitsOfFont (f.Font), w, f.Font.PointSize);
+			var traits = NSFontManager.SharedFontManager.TraitsOfFont (f.Font);
+			traits |= weight >= FontWeight.Bold ? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
+			traits &= weight >= FontWeight.Bold ? ~NSFontTraitMask.Unbold : ~NSFontTraitMask.Bold;
+			f.Font = NSFontManager.SharedFontManager.FontWithFamily (f.Font.FamilyName, traits, w, f.Font.PointSize);
 			f.Weight = weight;
 			return f;
 		}
@@ -247,6 +280,16 @@ namespace Xwt.Mac
 
 		public FontData ()
 		{
+		}
+
+		public static FontData FromFamily (string family, NSFontTraitMask traits, int weight, float size)
+		{
+			var font = NSFontManager.SharedFontManager.FontWithFamily (family, traits, weight, size);
+			var gentraits = NSFontManager.SharedFontManager.TraitsOfFont (font);
+			// NSFontManager may loose the traits, restore them here
+			if (traits > 0 && gentraits == 0)
+				font = NSFontManager.SharedFontManager.ConvertFont (font, traits);
+			return FromFont (font);
 		}
 
 		public static FontData FromFont (NSFont font)

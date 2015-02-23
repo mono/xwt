@@ -24,12 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using Xwt.Backends;
 using Pango;
 using Xwt.Drawing;
 using System.Globalization;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -37,6 +35,13 @@ namespace Xwt.GtkBackend
 {
 	public class GtkFontBackendHandler: FontBackendHandler
 	{
+		static Pango.Context systemContext;
+
+		static GtkFontBackendHandler ()
+		{
+			systemContext = Gdk.PangoHelper.ContextGet ();
+		}
+
 		public override object GetSystemDefaultFont ()
 		{
 			var la = new Gtk.Label ("");
@@ -45,7 +50,17 @@ namespace Xwt.GtkBackend
 
 		public override IEnumerable<string> GetInstalledFonts ()
 		{
-			return Gdk.PangoHelper.ContextGet ().FontMap.Families.Select (f => f.Name);
+			return systemContext.FontMap.Families.Select (f => f.Name);
+		}
+
+		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
+		{
+			FontFamily pangoFamily = systemContext.FontMap.Families.FirstOrDefault (f => f.Name == family);
+			if (pangoFamily != null) {
+				foreach (var face in pangoFamily.Faces)
+					yield return new KeyValuePair<string, object>(face.FaceName, face.Describe ());
+			}
+			yield break;
 		}
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
