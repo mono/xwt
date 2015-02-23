@@ -119,12 +119,19 @@ namespace Xwt.WPFBackend
 			if (!multiline)
 				ypos = (RenderSize.Height - text.Height) / 2;
 
+			var iconentry = AdornedTextBox as ExIconTextBox;
 			switch (alignment) {
 			case TextAlignment.Center:
 				xpos = (RenderSize.Width - text.Width) * 0.5;
 				break;
 			case TextAlignment.Right:
 				xpos = (RenderSize.Width - text.Width) - 6;
+				if (iconentry != null && iconentry.HasRightIcon)
+					xpos -= iconentry.RightIcon.Size.Width;
+				break;
+			case TextAlignment.Left:
+				if (iconentry != null && iconentry.HasLeftIcon)
+					xpos += iconentry.LeftIcon.Size.Width;
 				break;
 			}
 

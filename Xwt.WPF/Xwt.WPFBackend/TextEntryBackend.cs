@@ -45,9 +45,14 @@ namespace Xwt.WPFBackend
 			get; set;
 		}
 
-		public TextEntryBackend()
+		public TextEntryBackend() : this (new ExTextBox())
 		{
-			Widget = new ExTextBox { IsReadOnlyCaretVisible = true };
+		}
+
+		protected TextEntryBackend(TextBox textBox)
+		{
+			Widget = textBox;
+			TextBox.IsReadOnlyCaretVisible = true;
 			TextBox.Loaded += delegate {
 				Adorner = new PlaceholderTextAdorner (TextBox);
 				var layer = AdornerLayer.GetAdornerLayer (TextBox);
