@@ -53,6 +53,27 @@ namespace Samples
 				}
 			};
 
+			HBox btnBox = new HBox ();
+			Button btnAddItem = new Button ("Add item");
+			btnAddItem.Clicked += delegate {
+				var r = store.InsertRowAfter(list.SelectedRow < 0 ? 0 : list.SelectedRow);
+				store.SetValue (r, icon, png);
+				store.SetValue (r, name, "Value " + (store.RowCount + 1));
+				store.SetValue (r, icon2, png);
+				store.SetValue (r, text, "New Text " + (store.RowCount + 1));
+				store.SetValue (r, progress, new CellData { Value = rand.Next () % 100 });
+				list.ScrollToRow (r);
+				list.SelectRow (r);
+			};
+			btnBox.PackStart (btnAddItem, true);
+			Button btnRemoveItem = new Button ("Remove item");
+			btnRemoveItem.Clicked += delegate {
+				if (list.SelectedRow >= 0)
+					store.RemoveRow(list.SelectedRow);
+			};
+			btnBox.PackStart (btnRemoveItem, true);
+			PackStart (btnBox);
+
 			var but = new Button ("Scroll one line");
 			but.Clicked += delegate {
 				list.VerticalScrollControl.Value += list.VerticalScrollControl.StepIncrement;

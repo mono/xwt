@@ -29,7 +29,6 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 using Xwt.Backends;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace Xwt.Mac
 {
@@ -93,6 +92,11 @@ namespace Xwt.Mac
 			this.source = source;
 			tsource = new TreeSource (source);
 			Tree.DataSource = tsource;
+
+			source.NodeInserted += (sender, e) => Tree.ReloadItem (tsource.GetItem (source.GetParent(e.Node)), true);
+			source.NodeDeleted += (sender, e) => Tree.ReloadItem (tsource.GetItem (e.Node), true);
+			source.NodeChanged += (sender, e) => Tree.ReloadItem (tsource.GetItem (e.Node), false);
+			source.NodesReordered += (sender, e) => Tree.ReloadItem (tsource.GetItem (e.Node), true);
 		}
 		
 		public override object GetValue (object pos, int nField)
@@ -172,14 +176,13 @@ namespace Xwt.Mac
 		
 		public void ExpandToRow (TreePosition pos)
 		{
-			NSObject it = tsource.GetItem (pos);
-			if (it == null)
-				return;
-			
-			it = Tree.GetParent (it);
-			while (it != null) {
+			var p = source.GetParent (pos);
+			while (p != null) {
+				var it = tsource.GetItem (p);
+				if (it == null)
+					break;
 				Tree.ExpandItem (it, false);
-				it = Tree.GetParent (it);
+				p = source.GetParent (p);
 			}
 		}
 		
@@ -246,10 +249,17 @@ namespace Xwt.Mac
 		public TreeSource (ITreeDataSource source)
 		{
 			this.source = source;
+
+			source.NodeInserted += (sender, e) => {
+				if (!items.ContainsKey (e.Node))
+					items.Add (e.Node, new TreeItem { Position = e.Node });
+			};
 		}
 		
 		public TreeItem GetItem (TreePosition pos)
 		{
+			if (pos == null)
+				return null;
 			TreeItem it;
 			items.TryGetValue (pos, out it);
 			return it;
