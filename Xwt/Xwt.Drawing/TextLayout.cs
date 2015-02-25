@@ -62,6 +62,7 @@ namespace Xwt.Drawing
 
 		internal TextLayout (Toolkit tk)
 		{
+			ToolkitEngine = null;
 			InitForToolkit (tk);
 		}
 

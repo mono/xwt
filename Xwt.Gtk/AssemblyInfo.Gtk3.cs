@@ -1,10 +1,10 @@
-//
-// Main.cs
+﻿//
+// AssemblyInfo.Gtk3.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2015 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,26 +23,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using System.Linq;
-using Xwt;
-using System.Collections.Generic;
-using System.Threading;
+using System.Reflection;
 
-namespace GtkTestRunner
-{
-	class MainClass
-	{
-		public static void Main (string[] args)
-		{
-			var list = new List<string> (args);
-			list.Add ("-domain=None");
-			list.Add ("-noshadow");
-			list.Add ("-nothread");
-			if (!list.Contains (typeof (MainClass).Assembly.Location))
-				list.Add (typeof (MainClass).Assembly.Location);
-			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
-			ReferenceImageManager.ShowImageVerifier ();
-		}
-	}
-}
+// Information about this assembly is defined by the following attributes. 
+// Change them to the values specific to your project.
+
+[assembly: AssemblyTitle("Xwt.Gtk3")]
+[assembly: AssemblyDescription("Gtk3 Toolkit for the Xwt UI Framework")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Xwt UI Framework")]
+[assembly: AssemblyCopyright("Xamarin, Inc (http://www.xamarin.com)")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+// The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
+// The form "{Major}.{Minor}.*" will automatically update the build and revision,
+// and "{Major}.{Minor}.{Build}.*" will update just the revision.
+
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyInformationalVersion("0.1.0.0-prerelease")]

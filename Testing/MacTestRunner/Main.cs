@@ -10,9 +10,6 @@ namespace MacTest
 			//FIXME: remove this once mmp summorts xammac
 			ObjCRuntime.Dlfcn.dlopen ("/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/libxammac.dylib", 0);
 
-			Application.Initialize (ToolkitType.Cocoa);
-			ReferenceImageManager.Init ("MacTestRunner");
-
 			var list = new List<string> (args);
 			list.Add ("-domain=None");
 			list.Add ("-noshadow");

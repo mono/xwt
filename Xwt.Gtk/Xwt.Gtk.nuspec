@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<package>
+	<metadata>
+		<id>$id$</id>
+		<title>Xwt.Gtk2</title>
+		<version>$version$</version>
+		<authors>Lluis Sanchez</authors>
+		<summary>$description$</summary>
+		<description>
+Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
+
+This package contains the GTK toolkit backend for Xwt based applications targeting GTK2.
+
+Xwt.Gtk requires gtk-sharp (https://github.com/mono/gtk-sharp/). The Windows installation package can be obtained from http://www.monodevelop.com/download/#win.
+		</description>
+		<releaseNotes></releaseNotes>
+		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/master/LICENSE.txt</licenseUrl>
+		<projectUrl>https://github.com/mono/xwt/</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<copyright>$copyright$</copyright>
+		<tags>xwt cross platform gui ui toolkit framework desktop gtk gtk2</tags>
+		<dependencies>
+			<dependency id="Xwt" version="[$version$]"/>
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="Xwt.Gtk.dll.config" target="build" />
+		<file src="Xwt.Gtk.nuget.props" target="build\Xwt.Gtk.props" />
+		<file src="..\LICENSE.txt" />
+		<file src="..\README.markdown" />
+	</files>
+</package>
