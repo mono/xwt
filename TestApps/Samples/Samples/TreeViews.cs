@@ -133,6 +133,20 @@ namespace Samples
 			};
 
 			int addCounter = 0;
+			view.KeyPressed += (sender, e) => {
+				if (e.Key == Key.Insert) {
+					TreeNavigator n;
+					if (view.SelectedRow != null)
+						n = store.InsertNodeAfter (view.SelectedRow).SetValue (text, "Inserted").SetValue (desc, "Desc");
+					else
+						n = store.AddNode ().SetValue (text, "Inserted").SetValue (desc, "Desc");
+					view.ExpandToRow (n.CurrentPosition);
+					view.ScrollToRow (n.CurrentPosition);
+					view.UnselectAll ();
+					view.SelectRow (n.CurrentPosition);
+					view.FocusRow = n.CurrentPosition;
+				}
+			};
 			Button addButton = new Button ("Add");
 			addButton.Clicked += delegate(object sender, EventArgs e) {
 				addCounter++;

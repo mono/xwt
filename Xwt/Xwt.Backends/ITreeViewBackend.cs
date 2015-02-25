@@ -35,6 +35,7 @@ namespace Xwt.Backends
 		TreePosition[] SelectedRows { get; }
 		void SelectRow (TreePosition pos);
 		void UnselectRow (TreePosition pos);
+		TreePosition FocusRow { get; set; }
 		
 		bool IsRowSelected (TreePosition pos);
 		bool IsRowExpanded (TreePosition pos);
