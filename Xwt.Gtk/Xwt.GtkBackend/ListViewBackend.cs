@@ -106,6 +106,21 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public int FocusRow {
+			get {
+				Gtk.TreePath path;
+				Gtk.TreeViewColumn column;
+				Widget.GetCursor (out path, out column);
+				if (path == null)
+					return -1;
+				return path.Indices [0];
+			}
+			set {
+				Gtk.TreePath path = new Gtk.TreePath (new [] { value >= 0 ? value : int.MaxValue });
+				Widget.SetCursor (path, null, false);
+			}
+		}
+
 		public int CurrentEventRow {
 			get;
 			internal set;
