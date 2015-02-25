@@ -6,7 +6,7 @@
     <ProjectGuid>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.Mac</RootNamespace>
-    <AssemblyName>Xwt.Mac</AssemblyName>
+    <AssemblyName>Xwt.XamMac</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
