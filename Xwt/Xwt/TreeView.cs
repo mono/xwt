@@ -267,12 +267,12 @@ namespace Xwt
 		/// Gets or sets the focused row.
 		/// </summary>
 		/// <value>The row with the keyboard focus.</value>
-		public TreePosition FocusRow {
+		public TreePosition FocusedRow {
 			get {
-				return Backend.FocusRow;
+				return Backend.FocusedRow;
 			}
 			set {
-				Backend.FocusRow = value;
+				Backend.FocusedRow = value;
 			}
 		}
 		

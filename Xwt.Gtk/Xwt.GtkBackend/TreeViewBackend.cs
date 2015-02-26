@@ -214,7 +214,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public TreePosition FocusRow {
+		public TreePosition FocusedRow {
 			get {
 				Gtk.TreePath path;
 				Gtk.TreeViewColumn column;

@@ -63,7 +63,7 @@ namespace Samples
 					store.SetValue (r, progress, new CellData { Value = rand.Next () % 100 });
 					list.ScrollToRow (r);
 					list.SelectRow (r);
-					list.FocusRow = r;
+					list.FocusedRow = r;
 				}
 			};
 

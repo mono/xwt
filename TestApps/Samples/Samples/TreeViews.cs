@@ -144,7 +144,7 @@ namespace Samples
 					view.ScrollToRow (n.CurrentPosition);
 					view.UnselectAll ();
 					view.SelectRow (n.CurrentPosition);
-					view.FocusRow = n.CurrentPosition;
+					view.FocusedRow = n.CurrentPosition;
 				}
 			};
 			Button addButton = new Button ("Add");

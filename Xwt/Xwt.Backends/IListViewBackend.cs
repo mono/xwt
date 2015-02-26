@@ -32,7 +32,7 @@ namespace Xwt.Backends
 	{
 		void SetSource (IListDataSource source, IBackend sourceBackend);
 		int[] SelectedRows { get; }
-		int FocusRow { get; set; }
+		int FocusedRow { get; set; }
 		void SelectRow (int pos);
 		void UnselectRow (int pos);
 		void ScrollToRow (int row);
