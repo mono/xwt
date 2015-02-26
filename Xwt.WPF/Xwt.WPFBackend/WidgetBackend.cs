@@ -674,15 +674,7 @@ namespace Xwt.WPFBackend
 
 		private SW.Window GetParentWindow()
 		{
-			FrameworkElement current = Widget;
-			while (current != null) {
-				if (current is SW.Window)
-					return (SW.Window)current;
-
-				current = VisualTreeHelper.GetParent (current) as FrameworkElement;
-			}
-
-			return null;
+			return Widget.GetParentWindow ();
 		}
 
 		public void DragStart (DragStartData data)

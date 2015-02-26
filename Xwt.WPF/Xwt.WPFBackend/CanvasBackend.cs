@@ -39,13 +39,6 @@ namespace Xwt.WPFBackend
 
 		private void Render (System.Windows.Media.DrawingContext dc)
 		{
-			// delay drawing until all parents are registered and we can
-			// get a window which is required for many drawing operations
-			if (Frontend.ParentWindow == null) {
-				QueueDraw ();
-				return;
-			}
-
 			if (BackgroundColorSet) {
 				SolidColorBrush mySolidColorBrush = new SolidColorBrush ();
 				mySolidColorBrush.Color = BackgroundColor.ToWpfColor ();
