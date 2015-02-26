@@ -42,6 +42,16 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
+		protected override bool IsItemItsOwnContainerOverride(object item)
+		{
+			return item is ExListBoxItem;
+		}
+
+		protected override DependencyObject GetContainerForItemOverride()
+		{
+			return new ExListBoxItem();
+		}
+
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
 			var s = base.MeasureOverride (constraint);
@@ -52,6 +62,25 @@ namespace Xwt.WPFBackend
 				s.Height = SystemParameters.CaptionHeight;
 
 			return Backend.MeasureOverride (constraint, s);
+		}
+
+		private ListBoxItem focusedItem = null;
+		public ListBoxItem FocusedItem {
+			get {
+				return focusedItem;
+			}
+			set {
+				FocusItem (value);
+			}
+		}
+
+		internal void FocusItem(ListBoxItem item)
+		{
+			if (item != null) {
+				focusedItem = item;
+				if (!item.IsFocused)
+					item.Focus ();
+			}
 		}
 	}
 }

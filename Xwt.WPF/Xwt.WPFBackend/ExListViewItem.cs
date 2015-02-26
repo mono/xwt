@@ -69,5 +69,11 @@ namespace Xwt.WPFBackend
 
 			return FindListView (element.TemplatedParent as FrameworkElement);
 		}
+
+		protected override void OnGotFocus (RoutedEventArgs e)
+		{
+			base.OnGotFocus (e);
+			ListView.FocusItem (this);
+		}
 	}
 }

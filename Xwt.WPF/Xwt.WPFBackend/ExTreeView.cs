@@ -379,6 +379,15 @@ namespace Xwt.WPFBackend
 		}
 
 		private ExTreeViewItem focusedTreeViewItem = null;
+		public ExTreeViewItem FocusedItem {
+			get {
+				return focusedTreeViewItem;
+			}
+			set {
+				FocusItem (value);
+			}
+		}
+
 		protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
 		{
 			e.Handled = true;

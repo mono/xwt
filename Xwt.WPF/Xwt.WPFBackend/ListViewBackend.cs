@@ -139,6 +139,21 @@ namespace Xwt.WPFBackend
 			get { return ListView.SelectedItems.Cast<object>().Select (ListView.Items.IndexOf).ToArray (); }
 		}
 
+		public int FocusedRow {
+			get {
+				if (ListView.FocusedItem != null)
+					return ListView.ItemContainerGenerator.IndexFromContainer(ListView.FocusedItem);
+				return -1;
+			}
+			set {
+				ListViewItem item = null;
+				if (value >= 0) {
+					item = ListView.ItemContainerGenerator.ContainerFromIndex(value) as ListViewItem;
+				}
+				ListView.FocusItem(item);
+			}
+		}
+
 		public object AddColumn (ListViewColumn col)
 		{
 			var column = new GridViewColumn ();

@@ -90,6 +90,7 @@
     <Compile Include="Xwt.WPFBackend\ExComboBox.cs" />
     <Compile Include="Xwt.WPFBackend\ExGrid.cs" />
     <Compile Include="Xwt.WPFBackend\ExListBox.cs" />
+    <Compile Include="Xwt.WPFBackend\ExListBoxItem.cs" />
     <Compile Include="Xwt.WPFBackend\ExListView.cs" />
     <Compile Include="Xwt.WPFBackend\ExListViewItem.cs" />
     <Compile Include="Xwt.WPFBackend\ExpanderBackend.cs" />

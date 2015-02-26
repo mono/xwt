@@ -95,6 +95,19 @@ namespace Xwt.WPFBackend
 			get { return Tree.SelectedItems.Cast<TreePosition> ().ToArray (); }
 		}
 
+
+		public TreePosition FocusedRow {
+			get {
+				if (Tree.FocusedItem != null)
+					return Tree.FocusedItem.DataContext as TreePosition;
+				return null;
+			}
+			set {
+				ExTreeViewItem item = GetVisibleTreeItem (value);
+				Tree.FocusedItem = item;
+			}
+		}
+
 		private bool headersVisible = true;
 		public bool HeadersVisible {
 			get { return this.headersVisible; }
