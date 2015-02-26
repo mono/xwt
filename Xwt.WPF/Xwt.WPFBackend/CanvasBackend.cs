@@ -14,7 +14,6 @@ namespace Xwt.WPFBackend
 		: WidgetBackend, ICanvasBackend
 	{
 		#region ICanvasBackend Members
-		bool hasInitialParent;
 
 		public CanvasBackend ()
 		{
@@ -40,14 +39,6 @@ namespace Xwt.WPFBackend
 
 		private void Render (System.Windows.Media.DrawingContext dc)
 		{
-			// delay drawing until all parents are registered and we can
-			// get a window which is required for many drawing operations
-			if (!hasInitialParent && Widget.GetParentWindow () == null) {
-				QueueDraw ();
-				return;
-			}
-			hasInitialParent = true;
-
 			if (BackgroundColorSet) {
 				SolidColorBrush mySolidColorBrush = new SolidColorBrush ();
 				mySolidColorBrush.Color = BackgroundColor.ToWpfColor ();
