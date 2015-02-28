@@ -138,7 +138,7 @@ namespace Xwt.Mac
 		{
 			var it = tsource.GetItem (pos);
 			if (it != null)
-				Table.SelectRow ((int)Tree.RowForItem (it), false);
+				Table.SelectRow ((int)Tree.RowForItem (it), Table.AllowsMultipleSelection);
 		}
 
 		public void UnselectRow (TreePosition pos)
