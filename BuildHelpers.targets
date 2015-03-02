@@ -1,15 +1,3 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<!-- This file contains all the build helpers we require to build our projects in different contexts -->
-
-	<!-- We build Xwt in three contexts.
-		1) With a sibling checkout of monomac
-		2) Inside md-addins with a sibling checkout of monodevelop
-		3) Inside md-addins with a sibling checkout of monomac
-
-		We add a 'ReferencePath' for each of these context so that Xwt.Mac can find monomac.dll
-		in all three situations.
-	-->
-        <PropertyGroup>
-		<ReferencePath>..\..\monomac\src;..\..\..\..\..\monodevelop\main\external\monomac\src;..\..\..\..\..\monomac\src;..\..\..\..\..\..\..\monomac\src</ReferencePath>
-	</PropertyGroup>
 </Project>

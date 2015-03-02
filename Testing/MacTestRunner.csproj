@@ -27,7 +27,7 @@
     <ConsolePause>False</ConsolePause>
     <EnableCodeSigning>False</EnableCodeSigning>
     <CreatePackage>False</CreatePackage>
-    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <UseRefCounting>false</UseRefCounting>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -43,22 +43,7 @@
     <EnableCodeSigning>True</EnableCodeSigning>
     <CreatePackage>True</CreatePackage>
     <CodeSigningKey>Developer ID Application</CodeSigningKey>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>True</Optimize>
-    <OutputPath>bin</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <IncludeMonoRuntime>True</IncludeMonoRuntime>
-    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
-    <LinkMode>Full</LinkMode>
-    <UseSGen>False</UseSGen>
-    <EnableCodeSigning>True</EnableCodeSigning>
-    <ConsolePause>False</ConsolePause>
-    <EnablePackageSigning>True</EnablePackageSigning>
-    <CreatePackage>True</CreatePackage>
-    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+    <UseRefCounting>false</UseRefCounting>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -66,7 +51,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
-    <Reference Include="MonoMac" />
     <Reference Include="nunit.core">
       <HintPath>..\packages\NUnit.Runners.2.6.4\tools\lib\nunit.core.dll</HintPath>
     </Reference>
@@ -81,6 +65,9 @@
     </Reference>
     <Reference Include="nunit-console-runner">
       <HintPath>..\packages\NUnit.Runners.2.6.4\tools\lib\nunit-console-runner.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Mac">
+      <HintPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\i386\full\Xamarin.Mac.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -103,9 +90,9 @@
       <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
       <Name>Xwt</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Xwt.Mac\Xwt.Mac.csproj">
+    <ProjectReference Include="..\Xwt.XamMac\Xwt.XamMac.csproj">
       <Project>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</Project>
-      <Name>Xwt.Mac</Name>
+      <Name>Xwt.XamMac</Name>
     </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>

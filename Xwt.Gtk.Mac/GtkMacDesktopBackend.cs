@@ -25,10 +25,11 @@
 // THE SOFTWARE.
 using System;
 using Xwt.GtkBackend;
-using MonoMac.AppKit;
+using AppKit;
 using System.Drawing;
 using System.IO;
 using GTK = global::Gtk;
+using CoreGraphics;
 
 namespace Xwt.Gtk.Mac
 {
@@ -45,7 +46,7 @@ namespace Xwt.Gtk.Mac
 
 		public static Gdk.Pixbuf GetPixbufFromNSImage (NSImage icon, int width, int height)
 		{
-			var rect = new RectangleF (0, 0, width, height);
+			var rect = new CGRect (0, 0, width, height);
 
 			var rep = icon.BestRepresentation (rect, null, null);
 			var bitmap = rep as NSBitmapImageRep;
@@ -74,7 +75,7 @@ namespace Xwt.Gtk.Mac
 				System.Runtime.InteropServices.Marshal.Copy (tiff.Bytes, data, 0, data.Length);
 			}
 
-			int pw = bitmap.PixelsWide, ph = bitmap.PixelsHigh;
+			int pw = (int)bitmap.PixelsWide, ph = (int)bitmap.PixelsHigh;
 			var pixbuf = new Gdk.Pixbuf (data, pw, ph);
 
 			// if one dimension matches, and the other is same or smaller, use as-is

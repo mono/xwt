@@ -44,13 +44,13 @@
       <Project>{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}</Project>
       <Name>Xwt.Gtk</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Xwt.Mac\Xwt.Mac.csproj">
-      <Project>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</Project>
-      <Name>Xwt.Mac</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Samples\Samples.csproj">
       <Project>{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}</Project>
       <Name>Samples</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xwt.XamMac\Xwt.XamMac.csproj">
+      <Project>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</Project>
+      <Name>Xwt.XamMac</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

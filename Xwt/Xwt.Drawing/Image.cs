@@ -104,7 +104,7 @@ namespace Xwt.Drawing
 
 		internal void InitForToolkit (Toolkit t)
 		{
-			if (ToolkitEngine != t) {
+			if (ToolkitEngine != t && NativeRef != null) {
 				var nr = NativeRef.LoadForToolkit (t);
 				ToolkitEngine = t;
 				Backend = nr.Backend;
@@ -726,7 +726,7 @@ namespace Xwt.Drawing
 			if (newRef != null)
 				return newRef;
 
-			object newBackend;
+			object newBackend = null;
 
 			if (sources != null) {
 				var frames = new List<object> ();
@@ -747,11 +747,11 @@ namespace Xwt.Drawing
 							foreach (var st in streams)
 								st.Dispose ();
 						}
+					} else if (s.ResourceAssembly != null) {
+						targetToolkit.Invoke (() => newBackend = Image.FromResource (s.ResourceAssembly, s.Source).GetBackend());
 					}
-					else if (s.ResourceAssembly != null)
-						newBackend = targetToolkit.ImageBackendHandler.LoadFromResource (s.ResourceAssembly, s.Source);
 					else if (s.Source != null)
-						newBackend = targetToolkit.ImageBackendHandler.LoadFromFile (s.Source);
+						targetToolkit.Invoke (() => newBackend = Image.FromFile (s.Source).GetBackend());
 					else if (s.DrawCallback != null)
 						newBackend = targetToolkit.ImageBackendHandler.CreateCustomDrawn (s.DrawCallback);
 					else if (s.StockId != null)
