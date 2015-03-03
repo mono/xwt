@@ -4,8 +4,8 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("Xwt.Mac")]
-[assembly: AssemblyDescription("Mac Toolkit for the Xwt UI Framework")]
+[assembly: AssemblyTitle("Xwt.XamMac")]
+[assembly: AssemblyDescription("Xamarin Mac Toolkit for the Xwt UI Framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Xwt UI Framework")]
