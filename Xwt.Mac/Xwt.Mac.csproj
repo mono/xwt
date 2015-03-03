@@ -297,4 +297,22 @@
       <Name>Xwt</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Xwt.XamMac\icons\zoom-in.png">
+      <LogicalName>zoom-in.png</LogicalName>
+      <Link>icons\zoom-in.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Xwt.XamMac\icons\zoom-in%402x.png">
+      <LogicalName>zoom-in@2x.png</LogicalName>
+      <Link>icons\zoom-in%402x.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Xwt.XamMac\icons\zoom-out.png">
+      <LogicalName>zoom-out.png</LogicalName>
+      <Link>icons\zoom-out.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Xwt.XamMac\icons\zoom-out%402x.png">
+      <LogicalName>zoom-out@2x.png</LogicalName>
+      <Link>icons\zoom-out%402x.png</Link>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
