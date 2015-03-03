@@ -37,8 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyClass.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="..\Xwt.XamMac\Xwt.Mac\AlertDialogBackend.cs">
       <Link>Xwt.Mac\AlertDialogBackend.cs</Link>
     </Compile>
