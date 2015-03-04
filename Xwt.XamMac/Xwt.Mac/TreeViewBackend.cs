@@ -209,7 +209,7 @@ namespace Xwt.Mac
 		public TreePosition GetRowAtPosition (Point p)
 		{
 			var row = Table.GetRow (new System.Drawing.PointF ((float)p.X, (float)p.Y));
-			return ((TreeItem)Tree.ItemAtRow (row)).Position;
+			return row >= 0 ? ((TreeItem)Tree.ItemAtRow (row)).Position : null;
 		}
 
 		public Rectangle GetCellBounds (TreePosition pos, CellView cell, bool includeMargin)
