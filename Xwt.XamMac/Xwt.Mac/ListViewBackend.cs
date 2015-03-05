@@ -125,7 +125,7 @@ namespace Xwt.Mac
 		
 		public void SelectRow (int pos)
 		{
-			Table.SelectRow (pos, false);
+			Table.SelectRow (pos, Table.AllowsMultipleSelection);
 		}
 		
 		public void UnselectRow (int pos)
