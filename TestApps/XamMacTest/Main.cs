@@ -10,7 +10,7 @@ namespace MacTest
 			//FIXME: remove this once mmp summorts xammac
 			ObjCRuntime.Dlfcn.dlopen ("/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/libxammac.dylib", 0);
 
-			App.Run (ToolkitType.Cocoa);
+			App.Run (ToolkitType.XamMac);
 		}
 	}
 }	
