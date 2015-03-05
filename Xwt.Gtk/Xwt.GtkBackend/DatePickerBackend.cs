@@ -96,12 +96,20 @@ namespace Xwt.GtkBackend
 		
 		public class GtkDatePickerEntry : Gtk.SpinButton
 		{
-			Dictionary<DatePickerStyle, string> styleFormats = new Dictionary<DatePickerStyle, string>();
+			static Dictionary<DatePickerStyle, string> styleFormats = new Dictionary<DatePickerStyle, string>();
+
+			static GtkDatePickerEntry ()
+			{
+				styleFormats[DatePickerStyle.Date] = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
+				// we use a custom static long time pattern, since we do not support 12/24 formats
+				string timeSeparator = CultureInfo.CurrentCulture.DateTimeFormat.TimeSeparator;
+				styleFormats[DatePickerStyle.Time] = "HH" + timeSeparator + "mm" + timeSeparator + "ss";
+				styleFormats[DatePickerStyle.DateTime] = styleFormats[DatePickerStyle.Date] + " " + styleFormats[DatePickerStyle.Time];
+			}
+
 			Dictionary<DateTimeComponent, int> componentPosition = new Dictionary<DateTimeComponent, int>();
 			Dictionary<DateTimeComponent, int> componentLength = new Dictionary<DateTimeComponent, int>();
 			List<DateTimeComponent> componentsSorted = new List<DateTimeComponent>();
-			string dateSeparator = CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator;
-			string timeSeparator = CultureInfo.CurrentCulture.DateTimeFormat.TimeSeparator;
 			
 			public new EventHandler ValueChanged;
 
@@ -129,12 +137,8 @@ namespace Xwt.GtkBackend
 				}
 				set {
 					style = value;
-
-					string format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern +
-						" " + "HH" + timeSeparator + "mm" + timeSeparator + "ss";
-
-					if (styleFormats.ContainsKey (value))
-						format = styleFormats [value];
+					string format = String.Empty;
+					styleFormats.TryGetValue (value, out format);
 
 					componentPosition.Clear ();
 					componentLength.Clear ();
@@ -172,10 +176,6 @@ namespace Xwt.GtkBackend
 			                                                          DateTime.MaxValue.Ticks,
 			                                                          TimeSpan.TicksPerSecond)
 			{
-				styleFormats[DatePickerStyle.Date] = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
-				styleFormats[DatePickerStyle.Time] = "HH" + timeSeparator + "mm" + timeSeparator + "ss";
-				styleFormats[DatePickerStyle.DateTime] = styleFormats[DatePickerStyle.Date] + " " + styleFormats[DatePickerStyle.Time];
-
 				Style = style;
 
 				Adjustment.PageIncrement = TimeSpan.TicksPerDay;
@@ -202,11 +202,10 @@ namespace Xwt.GtkBackend
 			protected override int OnOutput ()
 			{
 				DateTime dateTime = new DateTime ((long)Adjustment.Value);
-				if (styleFormats.ContainsKey (Style))
-					Text = dateTime.ToString (styleFormats [Style]);
-				else
-					Text = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern
-					+ " " + "HH" + timeSeparator + "mm" + timeSeparator + "ss";
+				string format = String.Empty;
+				styleFormats.TryGetValue (Style, out format);
+
+				Text = dateTime.ToString (format);
 				return 1;
 			}
 			
