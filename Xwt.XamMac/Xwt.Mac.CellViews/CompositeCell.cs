@@ -96,6 +96,15 @@ namespace Xwt.Mac
 			source.SetCurrentEventRow (tablePosition.Position);
 		}
 
+#if !MONOMAC
+		public override NSObject Copy (NSZone zone)
+		{
+			var ob = (ICopiableObject) base.Copy (zone);
+			ob.CopyFrom (this);
+			return (NSObject) ob;
+		}
+#endif
+
 		void ICopiableObject.CopyFrom (object other)
 		{
 			var ob = (CompositeCell)other;

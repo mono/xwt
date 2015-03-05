@@ -209,6 +209,7 @@ namespace Xwt.Mac
 			return dt.Id;
 		}
 
+#if MONOMAC
 		static Selector selCopyWithZone = new Selector ("copyWithZone:");
 		static DateTime lastCopyPoolDrain = DateTime.Now;
 		static List<object> copyPool = new List<object> ();
@@ -264,6 +265,16 @@ namespace Xwt.Mac
 
 			lastCopyPoolDrain = DateTime.Now;
 		}
+#else
+		public static void MakeCopiable<T> () where T:ICopiableObject
+		{
+			// Nothing to do for XamMac
+		}
+		public static void DrainObjectCopyPool ()
+		{
+			// Nothing to do for XamMac
+		}
+#endif
 
 		public static NSBitmapImageFileType ToMacFileType (this ImageFileType type)
 		{
