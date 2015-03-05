@@ -42,6 +42,17 @@ namespace Samples
 			
 			for (int n=0; n<100; n++)
 				list.Items.Add ("Value " + n);
+
+
+			list.KeyPressed += (sender, e) => {
+				if (e.Key == Key.Insert) {
+					int r = list.SelectedRow + 1;
+					list.Items.Insert(r, "Value " + list.Items.Count + 1);
+					list.ScrollToRow (r);
+					list.SelectRow (r);
+					list.FocusedRow = r;
+				}
+			};
 			
 			PackStart (list, true);
 			
@@ -61,6 +72,18 @@ namespace Samples
 				store.SetValue (r, icon, png);
 				store.SetValue (r, name, "Value " + n);
 			}
+
+			customList.KeyPressed += (sender, e) => {
+				if (e.Key == Key.Insert) {
+					var r = store.InsertRowAfter(customList.SelectedRow < 0 ? 0 : customList.SelectedRow);
+					store.SetValue (r, icon, png);
+					store.SetValue (r, name, "Value " + (store.RowCount + 1));
+					customList.ScrollToRow (r);
+					customList.SelectRow (r);
+					customList.FocusedRow = r;
+				}
+			};
+
 			PackStart (customList, true);
 
 			var spnValue = new SpinButton ();

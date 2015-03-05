@@ -129,6 +129,17 @@ namespace Xwt.Mac
 			}
 		}
 
+		public TreePosition FocusedRow {
+			get {
+				if (Table.SelectedRowCount > 0)
+					return ((TreeItem)Tree.ItemAtRow ((int)Table.SelectedRows.FirstIndex)).Position;
+				return null;
+			}
+			set {
+				SelectRow (value);
+			}
+		}
+
 		public override void SetCurrentEventRow (object pos)
 		{
 			CurrentEventRow = (TreePosition)pos;

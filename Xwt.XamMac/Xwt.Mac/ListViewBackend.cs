@@ -122,6 +122,17 @@ namespace Xwt.Mac
 				return sel;
 			}
 		}
+
+		public int FocusedRow {
+			get {
+				if (Table.SelectedRowCount > 0)
+					return (int)Table.SelectedRows.FirstIndex;
+				return -1;
+			}
+			set {
+				SelectRow (value);
+			}
+		}
 		
 		public void SelectRow (int pos)
 		{

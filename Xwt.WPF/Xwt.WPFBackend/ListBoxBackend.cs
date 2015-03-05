@@ -145,6 +145,21 @@ namespace Xwt.WPFBackend
 			get { return ListBox.SelectedItems.Cast<object>().Select (ListBox.Items.IndexOf).ToArray(); }
 		}
 
+		public int FocusedRow {
+			get {
+				if (ListBox.FocusedItem != null)
+					return ListBox.ItemContainerGenerator.IndexFromContainer(ListBox.FocusedItem);
+				return -1;
+			}
+			set {
+				ListBoxItem item = null;
+				if (value >= 0) {
+					item = ListBox.ItemContainerGenerator.ContainerFromIndex(value) as ListBoxItem;
+				}
+				ListBox.FocusItem(item);
+			}
+		}
+
 		public void SelectRow (int pos)
 		{
 			object item = ListBox.Items [pos];
