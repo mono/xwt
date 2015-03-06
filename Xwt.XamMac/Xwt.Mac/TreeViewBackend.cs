@@ -217,7 +217,7 @@ namespace Xwt.Mac
 			var it = tsource.GetItem (pos);
 			if (it == null)
 				return Rectangle.Zero;
-			var row = Tree.RowForItem (it);
+			var row = (int)Tree.RowForItem (it);
 			return GetCellBounds (row, cell, includeMargin);
 		}
 
@@ -226,7 +226,7 @@ namespace Xwt.Mac
 			var it = tsource.GetItem (pos);
 			if (it == null)
 				return Rectangle.Zero;
-			var row = Tree.RowForItem (it);
+			var row = (int)Tree.RowForItem (it);
 			return GetRowBounds (row, includeMargin);
 		}
 		
