@@ -78,7 +78,8 @@ namespace Xwt.Mac
 
 				if (view.Layer == null)
 					view.WantsLayer = true;
-				view.Layer.BackgroundColor = BackgroundColor;
+				if (BackgroundColor != null)
+					view.Layer.BackgroundColor = BackgroundColor;
 				backend.SetAutosizeMode (true);
 				ForceChildLayout ();
 				// FIXME: unset when the popover is closed
