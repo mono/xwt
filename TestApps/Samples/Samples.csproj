@@ -109,6 +109,7 @@
     <Compile Include="Samples\WidgetFocus.cs" />
     <Compile Include="Samples\ListViewCellBounds.cs" />
     <Compile Include="Samples\TreeViewCellBounds.cs" />
+    <Compile Include="Samples\CalendarSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
