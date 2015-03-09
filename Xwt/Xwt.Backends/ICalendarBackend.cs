@@ -31,13 +31,11 @@ namespace Xwt.Backends
 	{
 		DateTime Date { get; set; }
 
+		DateTime MinDate { get; set; }
+
+		DateTime MaxDate { get; set; }
+
 		bool NoMonthChange { get; set; }
-
-		bool ShowDayNames { get; set; }
-
-		bool ShowHeading { get; set; }
-
-		bool ShowWeekNumbers { get; set; }
 	}
 
 	public interface ICalendarEventSink: IWidgetEventSink

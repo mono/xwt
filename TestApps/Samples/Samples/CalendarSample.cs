@@ -35,58 +35,55 @@ namespace Samples
 			var label = new Label ();
 			var calendar = new Calendar () {
 				NoMonthChange = false,
-				ShowDayNames = true,
-				ShowHeading = true,
-				ShowWeekNumbers = false,
 				ExpandHorizontal = false,
 			};
 			var entry = new TextEntry () {
 				PlaceholderText = "Enter a date to change calendar",
 			};
-			calendar.ValueChanged += delegate {
-				label.Text = string.Format ("Selected date: {0}", calendar.Date.ToShortDateString ());
-				entry.Text = calendar.Date.ToShortDateString ();
+			var minDate = new TextEntry () {
+				PlaceholderText = "Enter the min date of calendar",
+				Text = calendar.MinDate.ToShortDateString (),
 			};
-			label.Text = string.Format ("Selected date: {0} (Event not working, help to fix it)", calendar.Date.ToShortDateString ());
-
-			entry.Activated += delegate {
-				var date = DateTime.Parse (entry.Text);
-				calendar.Date = date;
-			};
-			var showDayNames = new CheckBox () {
-				Label = "Show day names",
-				Active = calendar.ShowDayNames,
-			};
-			showDayNames.Clicked += delegate {
-				calendar.ShowDayNames = showDayNames.Active;
-			};
-			var showHeading = new CheckBox () {
-				Label = "Show heading",
-				Active = calendar.ShowHeading,
-			};
-			showHeading.Clicked += delegate {
-				calendar.ShowHeading = showHeading.Active;
-			};
-			var showWeekNumbers = new CheckBox () {
-				Label = "Show Week Numbers",
-				Active = calendar.ShowWeekNumbers,
-			};
-			showWeekNumbers.Clicked += delegate {
-				calendar.ShowWeekNumbers = showWeekNumbers.Active;
+			var maxDate = new TextEntry () {
+				PlaceholderText = "Enter the max date of calendar",
+				Text = calendar.MaxDate.ToShortDateString (),
 			};
 			var noMonthChange = new CheckBox () {
 				Label = "Disable month change",
 				Active = calendar.NoMonthChange,
 			};
+
+			calendar.ValueChanged += delegate {
+				label.Text = string.Format ("Selected date: {0}", calendar.Date.ToShortDateString ());
+				entry.Text = calendar.Date.ToShortDateString ();
+				minDate.Text = calendar.MinDate.ToShortDateString ();
+				maxDate.Text = calendar.MaxDate.ToShortDateString ();
+			};
+			label.Text = string.Format ("Selected date: {0}", calendar.Date.ToShortDateString ());
+
+			entry.Activated += delegate {
+				var date = DateTime.Parse (entry.Text);
+				calendar.Date = date;
+			};
+
+			minDate.Activated += delegate {
+				var date = DateTime.Parse (minDate.Text);
+				calendar.MinDate = date;
+			};
+
+			maxDate.Activated += delegate {
+				var date = DateTime.Parse (maxDate.Text);
+				calendar.MaxDate = date;
+			};
+
 			noMonthChange.Clicked += delegate {
 				calendar.NoMonthChange = noMonthChange.Active;
 			};
 			PackStart (calendar);
 			PackStart (noMonthChange);
-			PackStart (showDayNames);
-			PackStart (showWeekNumbers);
-			PackStart (showHeading);
 			PackStart (entry);
+			PackStart (minDate);
+			PackStart (maxDate);		
 			PackStart (label);
 		}
 	}

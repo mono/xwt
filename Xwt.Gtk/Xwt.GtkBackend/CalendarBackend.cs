@@ -35,15 +35,12 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Widget = new Gtk.Calendar ();
+			Widget.DaySelected += HandleValueChanged;
 			Widget.Show ();
 		}
 
-		protected virtual Gtk.Calendar Calendar {
-			get { return (Gtk.Calendar)base.Widget; }
-		}
-
 		protected new Gtk.Calendar Widget {
-			get { return Calendar; }
+			get { return (Gtk.Calendar)base.Widget; }
 			set { base.Widget = value; }
 		}
 
@@ -60,6 +57,28 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		DateTime minDate;
+
+		public DateTime MinDate {
+			get {
+				return minDate;
+			}
+			set {
+				minDate = value;
+			}
+		}
+
+		DateTime maxDate;
+
+		public DateTime MaxDate {
+			get {
+				return maxDate;
+			}
+			set {
+				maxDate = value;
+			}
+		}
+
 		public bool NoMonthChange {
 			get {
 				return Widget.NoMonthChange;
@@ -69,63 +88,16 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public bool ShowDayNames {
-			get {
-				return Widget.ShowDayNames;
-			}
-			set {
-				Widget.ShowDayNames = value;
-			}
-		}
-
-		public bool ShowHeading {
-			get {
-				return Widget.ShowHeading;
-			}
-			set {
-				Widget.ShowHeading = value;
-			}
-		}
-
-		public bool ShowWeekNumbers {
-			get {
-				return Widget.ShowWeekNumbers;
-			}
-			set {
-				Widget.ShowWeekNumbers = value;
-			}
-		}
-
-		public override void EnableEvent (object eventId)
-		{
-			base.EnableEvent (eventId);
-			if (eventId is CalendarEvent) {
-				switch ((CalendarEvent)eventId) {
-				case CalendarEvent.ValueChanged:
-					Widget.DaySelected += HandleValueChanged;
-					Widget.DaySelectedDoubleClick += HandleValueChanged;
-					Widget.MonthChanged += HandleValueChanged;
-					break;
-				}
-			}
-		}
-
-		public override void DisableEvent (object eventId)
-		{
-			base.DisableEvent (eventId);
-			if (eventId is CalendarEvent) {
-				switch ((CalendarEvent)eventId) {
-				case CalendarEvent.ValueChanged:
-					Widget.DaySelected -= HandleValueChanged;
-					Widget.DaySelectedDoubleClick -= HandleValueChanged;
-					Widget.MonthChanged -= HandleValueChanged;
-					break;
-				}
-			}
-		}
-
 		void HandleValueChanged (object sender, EventArgs e)
 		{
+			if (Date < MinDate) {
+				Date = MinDate;
+				return;
+			}
+			if (Date > MaxDate) {
+				Date = MaxDate;
+				return;
+			}
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnValueChanged ();
 			});

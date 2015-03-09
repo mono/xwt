@@ -40,7 +40,7 @@ namespace Xwt
 			MapEvent (CalendarEvent.ValueChanged, typeof(Calendar), "OnValueChanged");
 		}
 
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICalendarEventSink
 		{
 			public void OnValueChanged ()
 			{
@@ -50,6 +50,8 @@ namespace Xwt
 
 		public Calendar ()
 		{
+			MinDate = DateTime.MinValue;
+			MaxDate = DateTime.MaxValue;
 			Date = DateTime.Now;
 		}
 
@@ -71,6 +73,32 @@ namespace Xwt
 			}
 		}
 
+		public DateTime MinDate {
+			get {
+				return Backend.MinDate;
+			}
+			set {
+				Backend.MinDate = value;
+				if (MinDate > MaxDate)
+					MaxDate = MinDate;
+				if (Date < MinDate)
+					Date = MinDate;
+			}
+		}
+
+		public DateTime MaxDate {
+			get {
+				return Backend.MaxDate;
+			}
+			set {
+				Backend.MaxDate = value;
+				if (MaxDate < MinDate)
+					MinDate = MaxDate;
+				if (Date > MaxDate)
+					Date = MaxDate;
+			}
+		}
+
 		[DefaultValue (false)]
 		public bool NoMonthChange {
 			get {
@@ -78,36 +106,6 @@ namespace Xwt
 			}
 			set {
 				Backend.NoMonthChange = value;
-			}
-		}
-
-		[DefaultValue (false)]
-		public bool ShowDayNames {
-			get {
-				return Backend.ShowDayNames;
-			}
-			set {
-				Backend.ShowDayNames = value;
-			}
-		}
-
-		[DefaultValue (true)]
-		public bool ShowHeading {
-			get {
-				return Backend.ShowHeading;
-			}
-			set {
-				Backend.ShowHeading = value;
-			}
-		}
-
-		[DefaultValue (false)]
-		public bool ShowWeekNumbers {
-			get {
-				return Backend.ShowWeekNumbers;
-			}
-			set {
-				Backend.ShowWeekNumbers = value;
 			}
 		}
 
