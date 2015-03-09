@@ -50,6 +50,7 @@ namespace Xwt
 
 		public Calendar ()
 		{
+			Date = DateTime.Now;
 		}
 
 		ICalendarBackend Backend {
