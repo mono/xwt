@@ -60,6 +60,24 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public DateTime MinDateTime {
+			get {
+				return Widget.MinDateTime;
+			}
+			set {
+				Widget.MinDateTime = value;
+			}
+		}
+
+		public DateTime MaxDateTime {
+			get {
+				return Widget.MaxDateTime;
+			}
+			set {
+				Widget.MaxDateTime = value;
+			}
+		}
+
 		public DatePickerStyle Style {
 			get {
 				return Widget.Style;
@@ -127,6 +145,28 @@ namespace Xwt.GtkBackend
 					currentValue = value;
 					Adjustment.Value = value.Ticks;
 					RaiseChangedEvent ();
+				}
+			}
+
+			public DateTime MinDateTime {
+				get {
+					return new DateTime ((long)Adjustment.Lower);
+				}
+				set {
+					Adjustment.Lower = value.Ticks;
+					if (DateTime < value)
+						DateTime = value;
+				}
+			}
+
+			public DateTime MaxDateTime {
+				get {
+					return new DateTime ((long)Adjustment.Upper);
+				}
+				set {
+					Adjustment.Upper = value.Ticks;
+					if (DateTime > value)
+						DateTime = value;
 				}
 			}
 

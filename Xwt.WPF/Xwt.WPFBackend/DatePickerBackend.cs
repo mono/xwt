@@ -64,6 +64,28 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public DateTime MinDateTime {
+			get {
+				return DatePicker.DisplayDateStart ?? DateTime.MinValue;
+			}
+			set {
+				DatePicker.DisplayDateStart = value;
+				if (DateTime < value)
+					DateTime = value;
+			}
+		}
+
+		public DateTime MaxDateTime {
+			get {
+				return DatePicker.DisplayDateEnd ?? DateTime.MaxValue;
+			}
+			set {
+				DatePicker.DisplayDateEnd = value;
+				if (DateTime > value)
+					DateTime = value;
+			}
+		}
+
 		public override void EnableEvent(object eventId)
 		{
 			base.EnableEvent(eventId);

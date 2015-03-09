@@ -87,6 +87,24 @@ namespace Xwt
 				Backend.DateTime = value;
 			}
 		}
+
+		public DateTime MinDateTime {
+			get {
+				return Backend.MinDateTime;
+			}
+			set {
+				Backend.MinDateTime = value;
+			}
+		}
+
+		public DateTime MaxDateTime {
+			get {
+				return Backend.MaxDateTime;
+			}
+			set {
+				Backend.MaxDateTime = value;
+			}
+		}
 		
 		public DatePickerStyle Style {
 			get {

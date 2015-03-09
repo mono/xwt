@@ -100,6 +100,30 @@ namespace Xwt.Mac
 			}
 		}
 
+		public DateTime MinDateTime {
+			get {
+				if (userTimeIsUTC)
+					return ((DateTime)Widget.MinDate).ToUniversalTime();
+				else
+					return ((DateTime)Widget.MinDate).ToLocalTime();
+			}
+			set {
+				Widget.MinDate = value.ToUniversalTime();
+			}
+		}
+
+		public DateTime MaxDateTime {
+			get {
+				if (userTimeIsUTC)
+					return ((DateTime)Widget.MaxDate).ToUniversalTime();
+				else
+					return ((DateTime)Widget.MaxDate).ToLocalTime();
+			}
+			set {
+				Widget.MaxDate = value.ToUniversalTime();
+			}
+		}
+
 		public DatePickerStyle Style {
 			get {
 				return Widget.DatePickerElements.ToXwtValue();
