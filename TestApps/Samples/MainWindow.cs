@@ -69,6 +69,7 @@ namespace Samples
 			var w = AddSample (null, "Widgets", null);
 			AddSample (w, "Boxes", typeof(Boxes));
 			AddSample (w, "Buttons", typeof(ButtonSample));
+			AddSample (w, "Calendar", typeof(CalendarSample));
 			AddSample (w, "CheckBox", typeof(Checkboxes));
 			AddSample (w, "Clipboard", typeof(ClipboardSample));
 			AddSample (w, "ColorSelector", typeof(ColorSelectorSample));
