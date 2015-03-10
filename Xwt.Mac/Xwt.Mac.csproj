@@ -284,6 +284,7 @@
     <Compile Include="..\Xwt.XamMac\Xwt.Mac.CellViews\TextTableCell.cs">
       <Link>Xwt.Mac.CellViews\TextTableCell.cs</Link>
     </Compile>
+    <Compile Include="Xwt.Mac\CalendarBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
