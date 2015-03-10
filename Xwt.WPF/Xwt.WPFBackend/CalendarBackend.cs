@@ -36,7 +36,6 @@ namespace Xwt.WPFBackend
 		public CalendarBackend ()
 		{
 			Widget = new WindowsCalendar ();
-			Widget.SelectedDatesChanged += (object sender, SelectionChangedEventArgs e) =>  HandleValueChanged(sender, e);
 			Widget.DisplayMode = CalendarMode.Month;
 			Widget.IsTodayHighlighted = true;
 			Widget.SelectionMode = CalendarSelectionMode.SingleDate;
@@ -56,6 +55,20 @@ namespace Xwt.WPFBackend
 			get { return (ICalendarEventSink)base.EventSink; }
 		}
 
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is CalendarEvent)
+				Widget.SelectedDatesChanged += HandleValueChanged;
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is CalendarEvent)
+				Widget.SelectedDatesChanged -= HandleValueChanged;
+		}
+
 		public DateTime Date {
 			get {
 				return Calendar.SelectedDate ?? Calendar.DisplayDate;
@@ -66,67 +79,26 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		DateTime minDate;
 		public DateTime MinDate {
 			get {
-				return minDate;
+				return Widget.DisplayDateStart;
 			}
 			set {
-				minDate = value;
-				if (!NoMonthChange)
-					Widget.DisplayDateStart = minDate;
+				Widget.DisplayDateStart = value;
 			}
 		}
 
-		DateTime maxDate;
 		public DateTime MaxDate {
 			get {
-				return maxDate;
+				return Widget.DisplayDateEnd;
 			}
 			set {
-				maxDate = value;
-				if (!NoMonthChange)
-					Widget.DisplayDateEnd = maxDate;
-			}
-		}
-
-		bool noMonthChange;
-		public bool NoMonthChange {
-			get {
-				return noMonthChange;
-			}
-			set {
-				noMonthChange = value;
-				if (noMonthChange) {
-					var dateStart = new DateTime (Calendar.DisplayDate.Year, Calendar.DisplayDate.Month, 1);
-					var dateEnd = new DateTime (Calendar.DisplayDate.Year, Calendar.DisplayDate.Month, 1).AddMonths (1).AddDays (-1);
-					if (dateStart < MinDate)
-						dateStart = MinDate;
-					if (dateEnd > MaxDate)
-						dateEnd = MaxDate;
-					if (Calendar.SelectedDate < dateStart)
-						Calendar.SelectedDate = dateStart;
-					if (Calendar.SelectedDate > dateEnd)
-						Calendar.SelectedDate = dateEnd;
-					Calendar.DisplayDateStart = dateStart;
-					Calendar.DisplayDateEnd = dateEnd ;
-				} else {
-					Calendar.DisplayDateStart = MinDate;
-					Calendar.DisplayDateEnd = MaxDate;
-				}
+				Widget.DisplayDateEnd = value;
 			}
 		}
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			if (Date < MinDate) {
-				Date = MinDate;
-				return;
-			}
-			if (Date > MaxDate) {
-				Date = MaxDate;
-				return;
-			}
 			Context.InvokeUserCode (delegate {
 				EventSink.OnValueChanged ();
 			});

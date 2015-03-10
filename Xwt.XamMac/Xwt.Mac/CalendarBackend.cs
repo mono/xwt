@@ -3,7 +3,7 @@
 //
 // Author:
 //       Ezequiel Taranto <ezequiel89@gmail.com>
-//		 Claudio Rodrigo Pereyra Diaz <claudiorodrigo@pereyeradiaz.com.ar> 
+//		 Claudio Rodrigo Pereyra Diaz <claudiorodrigo@pereyeradiaz.com.ar>
 //
 // Copyright (c) 2015 Hamekoz
 //
@@ -33,6 +33,8 @@ using nint = System.Int32;
 using nfloat = System.Single;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
+
+
 #else
 using Foundation;
 using AppKit;
@@ -71,7 +73,6 @@ namespace Xwt.Mac
 			ApplicationContext.InvokeUserCode (((ICalendarEventSink)EventSink).OnValueChanged);
 		}
 
-
 		public DateTime Date {
 			get {
 				return (DateTime)Widget.DateValue;
@@ -81,68 +82,39 @@ namespace Xwt.Mac
 				Widget.DateValue = currentDate;
 			}
 		}
+
 		DateTime minDate;
+
 		public DateTime MinDate {
 			get {
 				return minDate;
 			}
 			set {
 				minDate = value;
-				if (!NoMonthChange) {
-					var date = (NSDate)minDate;
-					Widget.MinDate = date;
-				}
+				var date = (NSDate)minDate;
+				Widget.MinDate = date;
 			}
 		}
+
 		DateTime maxDate;
+
 		public DateTime MaxDate {
 			get {
 				return maxDate;
 			}
 			set {
 				maxDate = value;
-				if (!NoMonthChange) {
-					var date = (NSDate)maxDate;
-					Widget.MaxDate = date;
-				}
-			}
-		}
-		bool noMonthChange;
-		public bool NoMonthChange {
-			get {
-				return noMonthChange;
-			}
-			set {
-				noMonthChange = value;
-				if (noMonthChange) {
-					var dateStart = new DateTime (Date.Year, Date.Month, 1);
-					var dateEnd = new DateTime (Date.Year, Date.Month, 1).AddMonths (1).AddDays (-1);
-					if (dateStart < MinDate)
-						dateStart = MinDate;
-					if (dateEnd > MaxDate)
-						dateEnd = MaxDate;
-					Widget.MinDate = (NSDate)dateStart;
-					Widget.MaxDate = (NSDate)dateEnd ;
-				} else {
-					Widget.MinDate = (NSDate)MinDate;
-					Widget.MaxDate = (NSDate)MaxDate;
-				}
+				var date = (NSDate)maxDate;
+				Widget.MaxDate = date;
 			}
 		}
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			if (Date < MinDate) {
-				Date = MinDate;
-			}
-			if (Date > MaxDate) {
-				Date = MaxDate;
-			}
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnValueChanged ();
 			});
 		}
-
 	}
 
 	class MacCalendar: NSDatePicker, IViewObject
@@ -152,16 +124,14 @@ namespace Xwt.Mac
 
 		public NSView View { get { return this; } }
 
-		public MacCalendar()
+		public MacCalendar ()
 		{
 			DatePickerStyle = NSDatePickerStyle.ClockAndCalendar;
 			DatePickerMode = NSDatePickerMode.Single;
 			Bordered = true;
 			DatePickerElements = NSDatePickerElementFlags.YearMonthDateDay;
 			DrawsBackground = true;
-
 		}
 	}
-
 }
 

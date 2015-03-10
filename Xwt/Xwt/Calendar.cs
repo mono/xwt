@@ -38,7 +38,6 @@ namespace Xwt
 		static Calendar ()
 		{
 			MapEvent (CalendarEvent.ValueChanged, typeof(Calendar), "OnValueChanged");
-			MapEvent (CalendarEvent.DoubleClick, typeof(Calendar), "OnDoubleClick");
 		}
 
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICalendarEventSink
@@ -46,11 +45,6 @@ namespace Xwt
 			public void OnValueChanged ()
 			{
 				((Calendar)Parent).OnValueChanged (EventArgs.Empty);
-			}
-
-			public void OnDoubleClick ()
-			{
-				((Calendar)Parent).OnDoubleClick (EventArgs.Empty);
 			}
 		}
 
@@ -105,16 +99,6 @@ namespace Xwt
 			}
 		}
 
-		[DefaultValue (false)]
-		public bool NoMonthChange {
-			get {
-				return Backend.NoMonthChange;
-			}
-			set {
-				Backend.NoMonthChange = value;
-			}
-		}
-
 		protected virtual void OnValueChanged (EventArgs e)
 		{
 			if (valueChanged != null)
@@ -129,23 +113,6 @@ namespace Xwt
 			remove {
 				valueChanged -= value;
 				BackendHost.OnAfterEventRemove (CalendarEvent.ValueChanged, valueChanged);
-			}
-		}
-
-		protected virtual void OnDoubleClick (EventArgs e)
-		{
-			if (doubleClick != null)
-				doubleClick (this, e);
-		}
-
-		public event EventHandler DoubleClick {
-			add {
-				BackendHost.OnBeforeEventAdd (CalendarEvent.DoubleClick, doubleClick);
-				doubleClick += value;
-			}
-			remove {
-				doubleClick -= value;
-				BackendHost.OnAfterEventRemove (CalendarEvent.DoubleClick, doubleClick);
 			}
 		}
 	}

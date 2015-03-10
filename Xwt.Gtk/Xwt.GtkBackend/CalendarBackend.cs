@@ -35,9 +35,16 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Widget = new Gtk.Calendar ();
-			Widget.DaySelected += HandleValueChanged;
-			Widget.DaySelectedDoubleClick += HandleDoubleClick;
+			Widget.DaySelected += CheckBetweenMinMax;
 			Widget.Show ();
+		}
+
+		void CheckBetweenMinMax (object sender, EventArgs e)
+		{
+			if (Date < MinDate)
+				Date = MinDate;
+			if (Date > MaxDate)
+				Date = MaxDate;
 		}
 
 		protected new Gtk.Calendar Widget {
@@ -47,6 +54,20 @@ namespace Xwt.GtkBackend
 
 		protected new ICalendarEventSink EventSink {
 			get { return (ICalendarEventSink)base.EventSink; }
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is CalendarEvent)
+				Widget.DaySelected += HandleValueChanged;
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is CalendarEvent)
+				Widget.DaySelected -= HandleValueChanged;
 		}
 
 		public DateTime Date {
@@ -80,32 +101,10 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public bool NoMonthChange {
-			get {
-				return Widget.NoMonthChange;
-			}
-			set {
-				Widget.NoMonthChange = value;
-			}
-		}
-
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			if (Date < MinDate) {
-				Date = MinDate;
-			}
-			if (Date > MaxDate) {
-				Date = MaxDate;
-			}
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnValueChanged ();
-			});
-		}
-
-		void HandleDoubleClick (object sender, EventArgs e)
-		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnDoubleClick ();
 			});
 		}
 	}
