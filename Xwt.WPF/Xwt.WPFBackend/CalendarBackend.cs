@@ -81,18 +81,24 @@ namespace Xwt.WPFBackend
 
 		public DateTime MinDate {
 			get {
-				return Widget.DisplayDateStart;
+				return Widget.DisplayDateStart ?? DateTime.MinValue;
 			}
 			set {
+				if (Widget.SelectedDate < value) {
+					Widget.SelectedDate = value;
+				}
 				Widget.DisplayDateStart = value;
 			}
 		}
 
 		public DateTime MaxDate {
 			get {
-				return Widget.DisplayDateEnd;
+				return Widget.DisplayDateEnd ?? DateTime.MaxValue;
 			}
 			set {
+				if (Widget.SelectedDate > value) {
+					Widget.SelectedDate = value;
+				}
 				Widget.DisplayDateEnd = value;
 			}
 		}
