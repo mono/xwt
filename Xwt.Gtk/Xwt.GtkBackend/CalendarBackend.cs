@@ -36,6 +36,7 @@ namespace Xwt.GtkBackend
 		{
 			Widget = new Gtk.Calendar ();
 			Widget.DaySelected += HandleValueChanged;
+			Widget.DaySelectedDoubleClick += HandleDoubleClick;
 			Widget.Show ();
 		}
 
@@ -92,14 +93,19 @@ namespace Xwt.GtkBackend
 		{
 			if (Date < MinDate) {
 				Date = MinDate;
-				return;
 			}
 			if (Date > MaxDate) {
 				Date = MaxDate;
-				return;
 			}
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnValueChanged ();
+			});
+		}
+
+		void HandleDoubleClick (object sender, EventArgs e)
+		{
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnDoubleClick ();
 			});
 		}
 	}

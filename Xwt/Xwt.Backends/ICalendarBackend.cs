@@ -41,10 +41,13 @@ namespace Xwt.Backends
 	public interface ICalendarEventSink: IWidgetEventSink
 	{
 		void OnValueChanged ();
+
+		void OnDoubleClick ();
 	}
 
 	public enum CalendarEvent
 	{
 		ValueChanged,
+		DoubleClick,
 	}
 }
