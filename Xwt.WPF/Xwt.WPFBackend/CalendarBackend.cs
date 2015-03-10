@@ -73,7 +73,8 @@ namespace Xwt.WPFBackend
 			}
 			set {
 				minDate = value;
-				NoMonthChange = noMonthChange;
+				if (!NoMonthChange)
+					Widget.DisplayDateStart = minDate;
 			}
 		}
 
@@ -84,7 +85,8 @@ namespace Xwt.WPFBackend
 			}
 			set {
 				maxDate = value;
-				NoMonthChange = noMonthChange;
+				if (!NoMonthChange)
+					Widget.DisplayDateEnd = maxDate;
 			}
 		}
 
