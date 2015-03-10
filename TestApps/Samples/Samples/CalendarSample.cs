@@ -61,22 +61,27 @@ namespace Samples
 			};
 			label.Text = string.Format ("Selected date: {0}", calendar.Date.ToShortDateString ());
 
-			entry.Activated += delegate {
-				var date = DateTime.Parse (entry.Text);
-				calendar.Date = date;
+			var button = new Button () {
+				Label = "Change value",
 			};
 
-			minDate.Activated += delegate {
-				var date = DateTime.Parse (minDate.Text);
-				calendar.MinDate = date;
+			button.Clicked += delegate {
+				DateTime date;
+				if 	(DateTime.TryParse (entry.Text, out date))
+					calendar.Date = date;
+
+				DateTime dateMin;
+				if 	(DateTime.TryParse(minDate.Text, out dateMin))
+					calendar.MinDate = dateMin.Date;
+
+				DateTime dateMax;
+				if 	(DateTime.TryParse (maxDate.Text, out dateMax))
+					calendar.MaxDate = dateMax.Date;
 			};
 
-			maxDate.Activated += delegate {
-				var date = DateTime.Parse (maxDate.Text);
-				calendar.MaxDate = date;
-			};
+			
 
-			noMonthChange.Clicked += delegate {
+				noMonthChange.Clicked += delegate {
 				calendar.NoMonthChange = noMonthChange.Active;
 			};
 			PackStart (calendar);
@@ -84,7 +89,9 @@ namespace Samples
 			PackStart (entry);
 			PackStart (minDate);
 			PackStart (maxDate);		
+			PackStart (button);
 			PackStart (label);
+
 		}
 	}
 }
