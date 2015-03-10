@@ -34,7 +34,6 @@ namespace Samples
 		{
 			var label = new Label ();
 			var calendar = new Calendar () {
-				NoMonthChange = false,
 				ExpandHorizontal = false,
 			};
 			var entry = new TextEntry () {
@@ -42,56 +41,42 @@ namespace Samples
 			};
 			var minDate = new TextEntry () {
 				PlaceholderText = "Enter the min date of calendar",
-				Text = calendar.MinDate.ToShortDateString (),
 			};
 			var maxDate = new TextEntry () {
 				PlaceholderText = "Enter the max date of calendar",
-				Text = calendar.MaxDate.ToShortDateString (),
-			};
-			var noMonthChange = new CheckBox () {
-				Label = "Disable month change",
-				Active = calendar.NoMonthChange,
 			};
 
 			calendar.ValueChanged += delegate {
 				label.Text = string.Format ("Selected date: {0}", calendar.Date.ToShortDateString ());
-				entry.Text = calendar.Date.ToShortDateString ();
-				minDate.Text = calendar.MinDate.ToShortDateString ();
-				maxDate.Text = calendar.MaxDate.ToShortDateString ();
+				if (entry.Text != string.Empty) {
+					entry.Text = calendar.Date.ToShortDateString ();
+				}
+
 			};
 			label.Text = string.Format ("Selected date: {0}", calendar.Date.ToShortDateString ());
 
 			var button = new Button () {
-				Label = "Change value",
+				Label = "Change values",
 			};
 
 			button.Clicked += delegate {
-				DateTime date;
-				if 	(DateTime.TryParse (entry.Text, out date))
-					calendar.Date = date;
-
 				DateTime dateMin;
-				if 	(DateTime.TryParse(minDate.Text, out dateMin))
+				if (DateTime.TryParse (minDate.Text, out dateMin))
 					calendar.MinDate = dateMin.Date;
-
 				DateTime dateMax;
-				if 	(DateTime.TryParse (maxDate.Text, out dateMax))
+				if (DateTime.TryParse (maxDate.Text, out dateMax))
 					calendar.MaxDate = dateMax.Date;
+				DateTime date;
+				if (DateTime.TryParse (entry.Text, out date))
+					calendar.Date = date;
 			};
 
-			
-
-				noMonthChange.Clicked += delegate {
-				calendar.NoMonthChange = noMonthChange.Active;
-			};
 			PackStart (calendar);
-			PackStart (noMonthChange);
 			PackStart (entry);
 			PackStart (minDate);
-			PackStart (maxDate);		
+			PackStart (maxDate);
 			PackStart (button);
 			PackStart (label);
-
 		}
 	}
 }

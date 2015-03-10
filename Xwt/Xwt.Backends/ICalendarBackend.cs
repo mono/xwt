@@ -34,20 +34,15 @@ namespace Xwt.Backends
 		DateTime MinDate { get; set; }
 
 		DateTime MaxDate { get; set; }
-
-		bool NoMonthChange { get; set; }
 	}
 
 	public interface ICalendarEventSink: IWidgetEventSink
 	{
 		void OnValueChanged ();
-
-		void OnDoubleClick ();
 	}
 
 	public enum CalendarEvent
 	{
 		ValueChanged,
-		DoubleClick,
 	}
 }
