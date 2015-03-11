@@ -29,11 +29,8 @@ using System;
 using Xwt.Backends;
 
 #if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
-
 
 #else
 using Foundation;
