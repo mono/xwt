@@ -30,7 +30,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public partial class CalendarBackend: WidgetBackend, ICalendarBackend
+	public class CalendarBackend: WidgetBackend, ICalendarBackend
 	{
 		public override void Initialize ()
 		{
@@ -59,15 +59,19 @@ namespace Xwt.GtkBackend
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
-			if (eventId is CalendarEvent)
-				Widget.DaySelected += HandleValueChanged;
+			if (eventId is CalendarEvent) {
+				if ((CalendarEvent)eventId == CalendarEvent.ValueChanged)
+					Widget.DaySelected += HandleValueChanged;
+			}
 		}
 
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			if (eventId is CalendarEvent)
-				Widget.DaySelected -= HandleValueChanged;
+			if (eventId is CalendarEvent) {
+				if ((CalendarEvent)eventId == CalendarEvent.ValueChanged)
+					Widget.DaySelected -= HandleValueChanged;
+			}
 		}
 
 		public DateTime Date {
@@ -86,6 +90,9 @@ namespace Xwt.GtkBackend
 				return minDate;
 			}
 			set {
+				if (Widget.Date < value) {
+					Widget.Date = value;
+				}
 				minDate = value;
 			}
 		}
@@ -97,6 +104,9 @@ namespace Xwt.GtkBackend
 				return maxDate;
 			}
 			set {
+				if (Widget.Date > value) {
+					Widget.Date = value;
+				}
 				maxDate = value;
 			}
 		}

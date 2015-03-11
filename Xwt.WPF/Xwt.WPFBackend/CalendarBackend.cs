@@ -31,7 +31,7 @@ using WindowsCalendar = System.Windows.Controls.Calendar;
 
 namespace Xwt.WPFBackend
 {
-	public partial class CalendarBackend: WidgetBackend, ICalendarBackend
+	public class CalendarBackend: WidgetBackend, ICalendarBackend
 	{
 		public CalendarBackend ()
 		{
@@ -41,8 +41,7 @@ namespace Xwt.WPFBackend
 			Widget.SelectionMode = CalendarSelectionMode.SingleDate;
 		}
 
-		protected virtual WindowsCalendar Calendar
-		{
+		protected virtual WindowsCalendar Calendar {
 			get { return (WindowsCalendar)base.Widget; }
 		}
 
@@ -58,15 +57,19 @@ namespace Xwt.WPFBackend
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
-			if (eventId is CalendarEvent)
-				Widget.SelectedDatesChanged += HandleValueChanged;
+			if (eventId is CalendarEvent) {
+				if ((CalendarEvent)eventId == CalendarEvent.ValueChanged)
+					Widget.SelectedDatesChanged += HandleValueChanged;
+			}
 		}
 
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			if (eventId is CalendarEvent)
-				Widget.SelectedDatesChanged -= HandleValueChanged;
+			if (eventId is CalendarEvent) {
+				if ((CalendarEvent)eventId == CalendarEvent.ValueChanged)
+					Widget.SelectedDatesChanged -= HandleValueChanged;
+			}
 		}
 
 		public DateTime Date {
