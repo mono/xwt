@@ -96,7 +96,7 @@ namespace Xwt.Mac
 					Widget.TimeZone = NSTimeZone.FromName("UTC");
 				}
 
-				Widget.DateValue = value.ToUniversalTime();
+				Widget.DateValue = (NSDate)value.ToUniversalTime ();
 			}
 		}
 
@@ -108,7 +108,7 @@ namespace Xwt.Mac
 					return ((DateTime)Widget.MinDate).ToLocalTime();
 			}
 			set {
-				Widget.MinDate = value.ToUniversalTime();
+				Widget.MinDate = (NSDate)value.ToUniversalTime ();
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace Xwt.Mac
 					return ((DateTime)Widget.MaxDate).ToLocalTime();
 			}
 			set {
-				Widget.MaxDate = value.ToUniversalTime();
+				Widget.MaxDate = (NSDate)value.ToUniversalTime ();
 			}
 		}
 
