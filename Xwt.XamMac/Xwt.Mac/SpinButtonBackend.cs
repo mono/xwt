@@ -79,13 +79,13 @@ namespace Xwt.Mac
 		}
 
 		public string IndeterminateMessage {
-			get;
-			set;
+			get { return Widget.IndeterminateMessage; }
+			set { Widget.IndeterminateMessage = value; }
 		}
 
 		public bool IsIndeterminate {
-			get;
-			set;
+			get { return Widget.IsIndeterminate; }
+			set { Widget.IsIndeterminate = value; }
 		}
 
 		protected override void OnSizeToFit ()
@@ -166,6 +166,7 @@ namespace Xwt.Mac
 
 		void HandleStepperChanged (object sender, EventArgs e)
 		{
+			isIndeterminate = false;
 			var alignedStepperValue = Math.Round (stepper.DoubleValue, Digits);
 			if (Math.Abs (stepper.DoubleValue - alignedStepperValue) > double.Epsilon)
 				stepper.DoubleValue = alignedStepperValue;
@@ -180,6 +181,7 @@ namespace Xwt.Mac
 
 		void HandleTextChanged (object sender, EventArgs e)
 		{
+			isIndeterminate = false;
 			stepper.DoubleValue = input.DoubleValue;
 			if (enableValueChangedEvent) {
 				Backend.ApplicationContext.InvokeUserCode (delegate {
@@ -219,8 +221,9 @@ namespace Xwt.Mac
 		}
 
 		public double Value {
-			get { return input.DoubleValue; }
+			get { return stepper.DoubleValue; }
 			set {
+				isIndeterminate = false;
 				if (value < MinimumValue)
 					value = MinimumValue;
 				if (value > MaximumValue)
@@ -260,6 +263,34 @@ namespace Xwt.Mac
 		public double IncrementValue {
 			get { return stepper.Increment; }
 			set { stepper.Increment = value; }
+		}
+
+		string indeterminateMessage;
+		public string IndeterminateMessage {
+			get {
+				return indeterminateMessage;
+			}
+			set {
+				indeterminateMessage = value;
+				if (IsIndeterminate)
+					input.StringValue = value ?? String.Empty;
+			}
+		}
+
+		bool isIndeterminate;
+
+		public bool IsIndeterminate {
+			get {
+				return isIndeterminate;
+			}
+			set {
+				isIndeterminate = value;
+				if (value) {
+					input.StringValue = IndeterminateMessage ?? String.Empty;
+				} else {
+					input.DoubleValue = stepper.DoubleValue;
+				}
+			}
 		}
 
 		public void SetButtonStyle (ButtonStyle style)
