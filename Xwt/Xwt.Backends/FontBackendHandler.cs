@@ -124,6 +124,14 @@ namespace Xwt.Backends
 		/// <param name="stretch">Stretch</param>
 		public abstract object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch);
 
+		/// <summary>
+		/// Register a font file with the system font manager that is then accessible through Create. The font is only
+		/// available during the lifetime of the process.
+		/// </summary>
+		/// <returns><c>true</c>, if font from file was registered, <c>false</c> otherwise.</returns>
+		/// <param name="fontPath">Font path.</param>
+		public abstract bool RegisterFontFromFile (string fontPath);
+
 		public abstract object Copy (object handle);
 		
 		public abstract object SetSize (object handle, double size);

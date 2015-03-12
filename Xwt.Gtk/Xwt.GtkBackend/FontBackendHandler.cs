@@ -68,6 +68,28 @@ namespace Xwt.GtkBackend
 			return FontDescription.FromString (fontName + ", " + style + " " + weight + " " + stretch + " " + size.ToString (CultureInfo.InvariantCulture));
 		}
 
+		[System.Runtime.InteropServices.DllImport ("fontconfig")]
+		static extern bool FcConfigAppFontAddFile (System.IntPtr config, string fontPath);
+
+		[System.Runtime.InteropServices.DllImport ("pangocairo-1.0")]
+		static extern void pango_cairo_font_map_set_default (System.IntPtr fontmap);
+
+		public override bool RegisterFontFromFile (string fontPath)
+		{
+			var result = AddFontFile (fontPath);
+			if (result) {
+				pango_cairo_font_map_set_default (System.IntPtr.Zero);
+				systemContext = Gdk.PangoHelper.ContextGet ();
+			}
+			return result;
+		}
+
+		protected virtual bool AddFontFile (string fontPath)
+		{
+			// Try to add font file to the current fontconfig configuration
+			return FcConfigAppFontAddFile (System.IntPtr.Zero, fontPath);
+		}
+
 		#region IFontBackendHandler implementation
 		
 		public override object Copy (object handle)

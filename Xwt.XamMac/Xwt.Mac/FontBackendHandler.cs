@@ -34,9 +34,11 @@ using nint = System.Int32;
 using nfloat = System.Single;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
+using MonoMac.CoreText;
 #else
 using Foundation;
 using AppKit;
+using CoreText;
 #endif
 
 namespace Xwt.Mac
@@ -79,6 +81,11 @@ namespace Xwt.Mac
 			fd.Weight = weight;
 			fd.Stretch = stretch;
 			return fd;
+		}
+
+		public override bool RegisterFontFromFile (string fontPath)
+		{
+			return CTFontManager.RegisterFontsForUrl (NSUrl.FromFilename (fontPath), CTFontManagerScope.Process) == null;
 		}
 
 		#region IFontBackendHandler implementation
