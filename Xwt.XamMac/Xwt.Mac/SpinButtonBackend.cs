@@ -214,8 +214,8 @@ namespace Xwt.Mac
 		public double ClimbRate { get; set; }
 
 		public int Digits {
-			get { return (int)formater.MaximumSignificantDigits; }
-			set { formater.MaximumSignificantDigits = (uint)value; }
+			get { return (int)formater.MaximumFractionDigits; }
+			set { formater.MaximumFractionDigits = formater.MinimumFractionDigits = value; }
 		}
 
 		public double Value {
