@@ -161,7 +161,13 @@ namespace Xwt.Mac
 
 		public override void ScrollWheel (NSEvent theEvent)
 		{
-			Value += IncrementValue * (Math.Abs (theEvent.DeltaY) < 1 ? 1 : Math.Round(theEvent.DeltaY));
+			double minDelta = 0;
+			if (theEvent.DeltaY > 0)
+				minDelta = 1;
+			if (theEvent.DeltaY < 0)
+				minDelta = -1;
+
+			Value += IncrementValue * (Math.Abs (theEvent.DeltaY) < 1 ? minDelta : Math.Round(theEvent.DeltaY));
 			base.ScrollWheel (theEvent);
 		}
 
