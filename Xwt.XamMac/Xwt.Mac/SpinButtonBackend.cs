@@ -126,6 +126,7 @@ namespace Xwt.Mac
 			stepper = new NSStepper ();
 			input = new RelativeTextField (stepper);
 			input.Formatter = formater;
+			input.DoubleValue = 0;
 			input.Alignment = NSTextAlignment.Right;
 			formater.NumberStyle = NSNumberFormatterStyle.Decimal;
 			stepper.Activated += HandleStepperChanged;;
@@ -249,6 +250,7 @@ namespace Xwt.Mac
 			set {
 				stepper.MinValue = value;
 				formater.Minimum = new NSNumber (value);
+				input.DoubleValue = Value; // update text field
 			}
 		}
 
@@ -257,6 +259,7 @@ namespace Xwt.Mac
 			set {
 				stepper.MaxValue = value;
 				formater.Maximum = new NSNumber (value);
+				input.DoubleValue = Value; // update text field
 			}
 		}
 
