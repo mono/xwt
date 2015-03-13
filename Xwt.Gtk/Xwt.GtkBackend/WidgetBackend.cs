@@ -157,17 +157,8 @@ namespace Xwt.GtkBackend
 		
 		public virtual void SetFocus ()
 		{
-			Widget.IsFocus = true;
-//			SetFocus (Widget);
-		}
-
-		void SetFocus (Gtk.Widget w)
-		{
-			if (w.Parent != null)
-				SetFocus (w.Parent);
-			w.GrabFocus ();
-			w.IsFocus = true;
-			w.HasFocus = true;
+			if (CanGetFocus)
+				Widget.GrabFocus ();
 		}
 
 		public string TooltipText {

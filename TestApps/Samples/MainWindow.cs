@@ -118,6 +118,7 @@ namespace Samples
 			AddSample (n, "Text Input", typeof (TextInput));
 			var wf = AddSample (null, "Widget Features", null);
 			AddSample (wf, "Drag & Drop", typeof(DragDrop));
+			AddSample (wf, "Focus", typeof(WidgetFocus));
 			AddSample (wf, "Widget Events", typeof(WidgetEvents));
 			AddSample (wf, "Opacity", typeof(OpacitySample));
 			AddSample (wf, "Tooltips", typeof(Tooltips));
