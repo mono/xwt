@@ -33,6 +33,7 @@ namespace Xwt.Backends
 		double ClimbRate { get; set; }
 		int Digits { get; set; }
 		double Value { get; set; }
+		string Text { get; set; }
 		bool Wrap { get; set; }
 		double MinimumValue { get; set; }
 		double MaximumValue { get; set; }
@@ -45,11 +46,15 @@ namespace Xwt.Backends
 	public interface ISpinButtonEventSink: IWidgetEventSink
 	{
 		void ValueChanged ();
+		void ValueInput (SpinButtonInputEventArgs intputArgs);
+		void ValueOutput (WidgetEventArgs args);
 	}
 	
 	public enum SpinButtonEvent
 	{
-		ValueChanged
+		ValueChanged,
+		ValueInput,
+		ValueOutput
 	}
 }
 

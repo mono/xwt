@@ -88,7 +88,27 @@ namespace Xwt.WPFBackend
         public double Value
         {
             get { return (double)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, Math.Round(value, DecimalPlaces)); }
+            set {
+				SetValue(ValueProperty, SnapToTick(value));
+                UpdateTextbox ();
+            }
+        }
+
+		double SnapToTick (double value)
+		{
+			if (Math.Abs (Increment) < double.Epsilon)
+				return value;
+
+			var tmp = (value - MinimumValue) / Increment;
+			if (tmp - Math.Floor (tmp) < Math.Ceiling (tmp) - tmp)
+				return MinimumValue + Math.Floor (tmp) * Increment;
+			return MinimumValue + Math.Ceiling (tmp) * Increment;
+		}
+
+        public string Text
+        {
+            get { return textBox.Text; }
+            set { textBox.Text = value; }
         }
 
         public static readonly DependencyProperty WrapProperty =
@@ -230,17 +250,28 @@ namespace Xwt.WPFBackend
             Grid.SetColumn(buttonsGrid, 1);
             Content = mainGrid;
         }
+        
+        public event EventHandler<WidgetEventArgs> OnValueOutput;
+        public event EventHandler<SpinButtonInputEventArgs> OnValueInput;
+        
         private bool valueChangedByUser = false;
         private void UpdateTextbox()
         {
-            if (IsIndeterminate && !valueChangedByUser)
-                textBox.Text = IndeterminateMessage;
-            else
-                textBox.Text = string.Format("{0:N" + DecimalPlaces + "}", Value);
             if (!Wrap)
             {
                 buttonUp.IsEnabled = Value != MaximumValue && IsEnabled;
                 buttonDown.IsEnabled = Value != MinimumValue && IsEnabled;
+            }
+            if (IsIndeterminate && !valueChangedByUser)
+                textBox.Text = IndeterminateMessage;
+            else {
+                if (OnValueOutput != null) {
+                    var argsOutput = new WidgetEventArgs ();
+                    OnValueOutput (this, argsOutput);
+                    if (argsOutput.Handled)
+                        return;
+                }
+                textBox.Text = string.Format ("{0:N" + DecimalPlaces + "}", Value);
             }
         }
 
@@ -252,15 +283,24 @@ namespace Xwt.WPFBackend
 
         private void parseTextBox()
         {
-            //Simulating GTK behavior by ignoring Culture and GroupSeperator
-            string stringValue = textBox.Text;
-            string[] stringSplitedValue = stringValue.Split('.', ',');
-            if (stringSplitedValue.Length > 1)
-                stringValue = stringSplitedValue[0] + "." + stringSplitedValue[1];
-            else
-                stringValue = stringSplitedValue[0];
-            double newValue = 0;
-            if (double.TryParse(stringValue, System.Globalization.NumberStyles.Number, CultureInfo.InvariantCulture, out newValue))
+            double newValue = double.NaN;
+            if (OnValueInput != null) {
+                var argsInput = new SpinButtonInputEventArgs ();
+                OnValueInput (this, argsInput);
+                if (argsInput.Handled)
+                    newValue = argsInput.NewValue;
+            }
+            if (newValue == double.NaN) {
+                //Simulating GTK behavior by ignoring Culture and GroupSeperator
+                string stringValue = textBox.Text;
+                string[] stringSplitedValue = stringValue.Split ('.', ',');
+                if (stringSplitedValue.Length > 1)
+                    stringValue = stringSplitedValue [0] + "." + stringSplitedValue [1];
+                else
+                    stringValue = stringSplitedValue [0];
+                double.TryParse (stringValue, System.Globalization.NumberStyles.Number, CultureInfo.InvariantCulture, out newValue);
+            }
+            if (newValue != double.NaN)
             {
                 if (newValue > MaximumValue)
                     newValue = MaximumValue;

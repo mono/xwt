@@ -62,7 +62,19 @@ namespace Xwt.WPFBackend
             {
                 SpinButton.Value = value;
             }
-        }
+		}
+
+		public string Text
+		{
+			get
+			{
+				return SpinButton.Text;
+			}
+			set
+			{
+				SpinButton.Text = value;
+			}
+		}
 
         public void SetButtonStyle(Xwt.ButtonStyle buttonStyle)
         {
@@ -164,6 +176,12 @@ namespace Xwt.WPFBackend
                     case SpinButtonEvent.ValueChanged:
                         SpinButton.OnValueChanged += SpinButton_OnValueChanged;
                         break;
+                    case SpinButtonEvent.ValueInput:
+                        SpinButton.OnValueInput += SpinButton_OnValueInput;
+                        break;
+                    case SpinButtonEvent.ValueOutput:
+                        SpinButton.OnValueOutput += SpinButton_OnValueOutput;
+                        break;
                 }
             }
         }
@@ -179,6 +197,12 @@ namespace Xwt.WPFBackend
                     case SpinButtonEvent.ValueChanged:
                         SpinButton.OnValueChanged -= SpinButton_OnValueChanged;
                         break;
+                    case SpinButtonEvent.ValueInput:
+                        SpinButton.OnValueInput -= SpinButton_OnValueInput;
+                        break;
+                    case SpinButtonEvent.ValueOutput:
+                        SpinButton.OnValueOutput -= SpinButton_OnValueOutput;
+                        break;
                 }
             }
         }
@@ -186,6 +210,20 @@ namespace Xwt.WPFBackend
         void SpinButton_OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             Context.InvokeUserCode(SpinButtonEventSink.ValueChanged);
+        }
+
+        void SpinButton_OnValueOutput (object sender, WidgetEventArgs e)
+        {
+            Context.InvokeUserCode (delegate {
+                SpinButtonEventSink.ValueOutput (e);
+            });
+        }
+
+        void SpinButton_OnValueInput (object sender, SpinButtonInputEventArgs e)
+        {
+            Context.InvokeUserCode (delegate {
+                SpinButtonEventSink.ValueInput (e);
+            });
         }
 
         protected ISpinButtonEventSink SpinButtonEventSink

@@ -1,8 +1,8 @@
 ﻿//
-// SpinButtonBackendGtk2.cs
+// SpinButtonInputEventArgs.cs
 //
 // Author:
-//       Vsevolod Kukol <v.kukol@rubologic.de>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Vsevolod Kukol
 //
@@ -25,22 +25,16 @@
 // THE SOFTWARE.
 using System;
 
-namespace Xwt.GtkBackend
+namespace Xwt
 {
-	public partial class SpinButtonBackend
+	public class SpinButtonInputEventArgs : WidgetEventArgs
 	{
-		void InitializeGtk ()
+		public SpinButtonInputEventArgs ()
 		{
-			Widget.ExposeEvent += HandleExposeEvent;
+			NewValue = double.NaN;
 		}
 
-		// This is a workaround for bug https://bugzilla.xamarin.com/show_bug.cgi?id=10904
-		void HandleExposeEvent (object o, EventArgs args)
-		{
-			if (indeterminateMessage != null && Widget.IsIndeterminate)
-				Widget.Text = indeterminateMessage;
-			Widget.ExposeEvent -= HandleExposeEvent;
-		}
+		public double NewValue { get; set; }
 	}
 }
 
