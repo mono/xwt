@@ -35,6 +35,7 @@ namespace Xwt.Gtk.Mac
 		{
 			toolit.RegisterBackend <IWebViewBackend,WebViewBackend> ();
 			toolit.RegisterBackend <DesktopBackend,GtkMacDesktopBackend> ();
+			toolit.RegisterBackend <FontBackendHandler,GtkMacFontBackendHandler> ();
 		}
 	}
 }

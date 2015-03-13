@@ -74,6 +74,28 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
+		/// Register a font file with the system font manager that is then accessible through FromName.
+		/// The font is only available during the lifetime of the process.
+		/// </summary>
+		/// <returns><c>true</c>, if font from file was registered, <c>false</c> otherwise.</returns>
+		/// <param name="fontPath">Font path.</param>
+		public static bool RegisterFontFromFile (string fontPath)
+		{
+			return RegisterFontFromFile (fontPath, Toolkit.CurrentEngine);
+		}
+
+		static bool RegisterFontFromFile (string fontPath, Toolkit toolkit)
+		{
+			var handler = toolkit.FontBackendHandler;
+			var result = handler.RegisterFontFromFile (fontPath);
+			if (result) {
+				installedFonts = null;
+				installedFontsArray = null;
+			}
+			return result;
+		}
+
+		/// <summary>
 		/// Creates a new font description from a string representation in the form "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]"
 		/// </summary>
 		/// <returns>

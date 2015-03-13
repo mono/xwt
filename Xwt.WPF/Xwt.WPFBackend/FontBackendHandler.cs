@@ -84,6 +84,14 @@ namespace Xwt.WPFBackend
 			};
 		}
 
+		[System.Runtime.InteropServices.DllImport ("gdi32.dll")]
+		static extern int AddFontResourceEx (string lpszFilename, uint fl, System.IntPtr pdv);
+
+		public override bool RegisterFontFromFile (string fontPath)
+		{
+			return AddFontResourceEx (fontPath, 0x10 /* FR_PRIVATE */, System.IntPtr.Zero) > 0;
+		}
+
 		public override object Copy (object handle)
 		{
 			var font = (FontData)handle;
