@@ -405,7 +405,11 @@ namespace Xwt
 							ib.Context.Fill ();
 						}
 					}
-					colorBox = ib.ToBitmap (this);
+
+					if (ParentWindow != null)
+						colorBox = ib.ToBitmap (this); // take screen scale factor into account
+					else
+						colorBox = ib.ToBitmap ();
 				}
 			}
 			ctx.DrawImage (colorBox, padding, padding);
