@@ -671,7 +671,8 @@ namespace Xwt.GtkBackend
 		protected virtual MouseScrolledEventArgs GetScrollEventArgs (Gtk.ScrollEventArgs args)
 		{
 			var direction = args.Event.Direction.ToXwtValue ();
-			return new MouseScrolledEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y, direction);
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			return new MouseScrolledEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y, direction);
 		}
         
 
@@ -725,7 +726,8 @@ namespace Xwt.GtkBackend
 
 		protected virtual MouseMovedEventArgs GetMouseMovedEventArgs (Gtk.MotionNotifyEventArgs args)
 		{
-			return new MouseMovedEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y);
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			return new MouseMovedEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y);
 		}
 
 		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
@@ -743,8 +745,11 @@ namespace Xwt.GtkBackend
 		protected virtual ButtonEventArgs GetButtonReleaseEventArgs (Gtk.ButtonReleaseEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			a.X = pointer_coords.X;
+			a.Y = pointer_coords.Y;
+
 			a.Button = (PointerButton) args.Event.Button;
 			return a;
 		}
@@ -765,8 +770,10 @@ namespace Xwt.GtkBackend
 		protected virtual ButtonEventArgs GetButtonPressEventArgs (Gtk.ButtonPressEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			a.X = pointer_coords.X;
+			a.Y = pointer_coords.Y;
 
 			a.Button = (PointerButton) args.Event.Button;
 			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
