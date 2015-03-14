@@ -82,7 +82,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public DateTime MinDate {
+		public DateTime MinimumDate {
 			get {
 				return Widget.DisplayDateStart ?? DateTime.MinValue;
 			}

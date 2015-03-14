@@ -23,10 +23,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Xwt.Backends;
-
 
 namespace Xwt.GtkBackend
 {
@@ -41,10 +39,10 @@ namespace Xwt.GtkBackend
 
 		void CheckBetweenMinMax (object sender, EventArgs e)
 		{
-			if (Date < MinDate)
-				Date = MinDate;
-			if (Date > MaxDate)
-				Date = MaxDate;
+			if (Date < MinimumDate)
+				Date = MinimumDate;
+			if (Date > MaximumDate)
+				Date = MaximumDate;
 		}
 
 		protected new Gtk.Calendar Widget {
@@ -83,31 +81,31 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		DateTime minDate;
+		DateTime minimumDate;
 
-		public DateTime MinDate {
+		public DateTime MinimumDate {
 			get {
-				return minDate;
+				return minimumDate;
 			}
 			set {
 				if (Widget.Date < value) {
 					Widget.Date = value;
 				}
-				minDate = value;
+				minimumDate = value;
 			}
 		}
 
-		DateTime maxDate;
+		DateTime maximumDate;
 
-		public DateTime MaxDate {
+		public DateTime MaximumDate {
 			get {
-				return maxDate;
+				return maximumDate;
 			}
 			set {
 				if (Widget.Date > value) {
 					Widget.Date = value;
 				}
-				maxDate = value;
+				maximumDate = value;
 			}
 		}
 
