@@ -33,6 +33,7 @@ using MonoMac.AppKit;
 
 
 
+
 #else
 using Foundation;
 using AppKit;
@@ -99,9 +100,6 @@ namespace Xwt.Mac
 
 		public DateTime MinimumDate {
 			get {
-				if (Widget.MinDate == null) {
-					Widget.MinDate = DateTime.MinValue;
-				}
 				if (userTimeIsUTC)
 					return ((DateTime)Widget.MinDate).ToUniversalTime ();
 				else
@@ -115,9 +113,6 @@ namespace Xwt.Mac
 
 		public DateTime MaximumDate {
 			get {
-				if (Widget.MaxDate == null) {
-					Widget.MaxDate = DateTime.MaxValue;
-				}
 				if (userTimeIsUTC)
 					return ((DateTime)Widget.MaxDate).ToUniversalTime ();
 				else
@@ -150,6 +145,8 @@ namespace Xwt.Mac
 			Bordered = true;
 			DatePickerElements = NSDatePickerElementFlags.YearMonthDateDay;
 			DrawsBackground = true;
+			MinDate = DateTime.MinValue;
+			MaxDate = DateTime.MaxValue;
 		}
 	}
 }
