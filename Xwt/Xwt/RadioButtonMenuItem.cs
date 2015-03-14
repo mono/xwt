@@ -35,6 +35,20 @@ namespace Xwt
 	public class RadioButtonMenuItem: MenuItem
 	{
 		RadioButtonMenuItemGroup radioGroup;
+
+		protected class RadioButtonMenuItemBackendHost: MenuItemBackendHost
+		{
+			protected override IEnumerable<object> GetDefaultEnabledEvents ()
+			{
+				// always enable clicked event for group logic
+				yield return MenuItemEvent.Clicked;
+			}
+		}
+
+		protected override BackendHost CreateBackendHost ()
+		{
+			return new RadioButtonMenuItemBackendHost ();
+		}
 		
 		public RadioButtonMenuItem ()
 		{
