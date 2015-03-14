@@ -70,39 +70,53 @@ namespace Xwt.Mac
 			ApplicationContext.InvokeUserCode (((ICalendarEventSink)EventSink).OnValueChanged);
 		}
 
+		// NSDate timezone workaround: cache and restore the DateTimeKind of the
+		// users DateTime object, since all conversions between DateTime and NSDate
+		// are in UTC (see https://github.com/mono/maccore/blob/master/src/Foundation/NSDate.cs).
+		bool userTimeIsUTC;
+
 		public DateTime Date {
 			get {
-				return (DateTime)Widget.DateValue;
+				if (userTimeIsUTC)
+					return ((DateTime)Widget.DateValue).ToUniversalTime ();
+				else
+					return ((DateTime)Widget.DateValue).ToLocalTime ();
 			}
 			set {
-				var currentDate = (NSDate)value;
-				Widget.DateValue = currentDate;
+
+				if (value.Kind == DateTimeKind.Local) {
+					userTimeIsUTC = false;
+					Widget.TimeZone = NSTimeZone.LocalTimeZone;
+				} else {
+					userTimeIsUTC = true;
+					Widget.TimeZone = NSTimeZone.FromName ("UTC");
+				}
+
+				Widget.DateValue = (NSDate)value.ToUniversalTime ();
 			}
 		}
-
-		DateTime minimumDate;
 
 		public DateTime MinimumDate {
 			get {
-				return minimumDate;
+				if (userTimeIsUTC)
+					return ((DateTime)Widget.MinDate).ToUniversalTime ();
+				else
+					return ((DateTime)Widget.MinDate).ToLocalTime ();
 			}
 			set {
-				minimumDate = value;
-				var date = (NSDate)minimumDate;
-				Widget.MinDate = date;
+				Widget.MinDate = (NSDate)value.ToUniversalTime ();
 			}
 		}
 
-		DateTime maximumDate;
-
 		public DateTime MaximumDate {
 			get {
-				return maximumDate;
+				if (userTimeIsUTC)
+					return ((DateTime)Widget.MaxDate).ToUniversalTime ();
+				else
+					return ((DateTime)Widget.MaxDate).ToLocalTime ();
 			}
 			set {
-				maximumDate = value;
-				var date = (NSDate)maximumDate;
-				Widget.MaxDate = date;
+				Widget.MaxDate = (NSDate)value.ToUniversalTime ();
 			}
 		}
 
