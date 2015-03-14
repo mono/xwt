@@ -40,7 +40,29 @@ namespace Samples
 			menu.Items.Add (new MenuItem ("Two"));
 			menu.Items.Add (new MenuItem ("Three"));
 			menu.Items.Add (new SeparatorMenuItem ());
-			menu.Items.Add (new MenuItem ("End"));
+
+			var rgroup = new RadioButtonMenuItemGroup ();
+			menu.Items.Add (new RadioButtonMenuItem ("Opt 1") { Group = rgroup, Sensitive = false });
+			menu.Items.Add (new RadioButtonMenuItem ("Opt 2") { Group = rgroup, Checked = true });
+			menu.Items.Add (new RadioButtonMenuItem ("Opt 3") { Group = rgroup });
+
+			menu.Items.Add (new SeparatorMenuItem ());
+
+			menu.Items.Add (new CheckBoxMenuItem ("Check 1"));
+			menu.Items.Add (new CheckBoxMenuItem ("Check 2") { Checked = true });
+
+			menu.Items.Add (new SeparatorMenuItem ());
+
+			var subMenu = new MenuItem ("Submenu");
+			subMenu.SubMenu = new Menu ();
+			var subZoomIn = new MenuItem (new Command ("Zoom+", StockIcons.ZoomIn));
+			var subZoomOut = new MenuItem (new Command ("Zoom-", StockIcons.ZoomOut));
+			subMenu.SubMenu.Items.Add (subZoomIn);
+			subMenu.SubMenu.Items.Add (subZoomOut);
+			menu.Items.Add (subMenu);
+
+			subZoomIn.Clicked += (sender, e) => MessageDialog.ShowMessage ("'Zoom+' item clicked.");
+			subZoomOut.Clicked += (sender, e) => MessageDialog.ShowMessage ("'Zoom-' item clicked.");
 
 			la.ButtonPressed += HandleButtonPressed;
 			PackStart (la);
