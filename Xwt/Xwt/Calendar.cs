@@ -23,10 +23,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Xwt.Backends;
-using System.ComponentModel;
 
 namespace Xwt
 {
@@ -50,8 +48,8 @@ namespace Xwt
 
 		public Calendar ()
 		{
-			MinDate = DateTime.MinValue;
-			MaxDate = DateTime.MaxValue;
+			MinimumDate = DateTime.MinValue;
+			MaximumDate = DateTime.MaxValue;
 			Date = DateTime.Now;
 		}
 
@@ -73,29 +71,29 @@ namespace Xwt
 			}
 		}
 
-		public DateTime MinDate {
+		public DateTime MinimumDate {
 			get {
-				return Backend.MinDate;
+				return Backend.MinimumDate;
 			}
 			set {
-				Backend.MinDate = value;
-				if (MinDate > MaxDate)
-					MaxDate = MinDate;
-				if (Date < MinDate)
-					Date = MinDate;
+				Backend.MinimumDate = value;
+				if (MinimumDate > MaximumDate)
+					MaximumDate = MinimumDate;
+				if (Date < MinimumDate)
+					Date = MinimumDate;
 			}
 		}
 
-		public DateTime MaxDate {
+		public DateTime MaximumDate {
 			get {
-				return Backend.MaxDate;
+				return Backend.MaximumDate;
 			}
 			set {
-				Backend.MaxDate = value;
-				if (MaxDate < MinDate)
-					MinDate = MaxDate;
-				if (Date > MaxDate)
-					Date = MaxDate;
+				Backend.MaximumDate = value;
+				if (MaximumDate < MinimumDate)
+					MinimumDate = MaximumDate;
+				if (Date > MaximumDate)
+					Date = MaximumDate;
 			}
 		}
 

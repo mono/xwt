@@ -31,9 +31,9 @@ namespace Xwt.Backends
 	{
 		DateTime Date { get; set; }
 
-		DateTime MinDate { get; set; }
+		DateTime MinimumDate { get; set; }
 
-		DateTime MaxDate { get; set; }
+		DateTime MaximumDate { get; set; }
 	}
 
 	public interface ICalendarEventSink: IWidgetEventSink

@@ -24,13 +24,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Xwt.Backends;
 
 #if MONOMAC
 using MonoMac.Foundation;
 using MonoMac.AppKit;
+
 
 #else
 using Foundation;
@@ -80,28 +80,28 @@ namespace Xwt.Mac
 			}
 		}
 
-		DateTime minDate;
+		DateTime minimumDate;
 
-		public DateTime MinDate {
+		public DateTime MinimumDate {
 			get {
-				return minDate;
+				return minimumDate;
 			}
 			set {
-				minDate = value;
-				var date = (NSDate)minDate;
+				minimumDate = value;
+				var date = (NSDate)minimumDate;
 				Widget.MinDate = date;
 			}
 		}
 
-		DateTime maxDate;
+		DateTime maximumDate;
 
-		public DateTime MaxDate {
+		public DateTime MaximumDate {
 			get {
-				return maxDate;
+				return maximumDate;
 			}
 			set {
-				maxDate = value;
-				var date = (NSDate)maxDate;
+				maximumDate = value;
+				var date = (NSDate)maximumDate;
 				Widget.MaxDate = date;
 			}
 		}
@@ -116,7 +116,6 @@ namespace Xwt.Mac
 
 	class MacCalendar: NSDatePicker, IViewObject
 	{
-
 		public ViewBackend Backend { get; set; }
 
 		public NSView View { get { return this; } }

@@ -39,19 +39,17 @@ namespace Samples
 			var entry = new TextEntry () {
 				PlaceholderText = "Enter a date to change calendar",
 			};
-			var minDate = new TextEntry () {
-				PlaceholderText = "Enter the min date of calendar",
+			var minimumDate = new TextEntry () {
+				PlaceholderText = "Enter the minimum date of calendar",
 			};
-			var maxDate = new TextEntry () {
-				PlaceholderText = "Enter the max date of calendar",
+			var maximumDate = new TextEntry () {
+				PlaceholderText = "Enter the maximum date of calendar",
 			};
 
 			calendar.ValueChanged += delegate {
 				label.Text = string.Format ("Selected date: {0}", calendar.Date.ToShortDateString ());
-				if (entry.Text != string.Empty) {
+				if (entry.Text != string.Empty)
 					entry.Text = calendar.Date.ToShortDateString ();
-				}
-
 			};
 			label.Text = string.Format ("Selected date: {0}", calendar.Date.ToShortDateString ());
 
@@ -61,11 +59,11 @@ namespace Samples
 
 			button.Clicked += delegate {
 				DateTime dateMin;
-				if (DateTime.TryParse (minDate.Text, out dateMin))
-					calendar.MinDate = dateMin.Date;
+				if (DateTime.TryParse (minimumDate.Text, out dateMin))
+					calendar.MinimumDate = dateMin.Date;
 				DateTime dateMax;
-				if (DateTime.TryParse (maxDate.Text, out dateMax))
-					calendar.MaxDate = dateMax.Date;
+				if (DateTime.TryParse (maximumDate.Text, out dateMax))
+					calendar.MaximumDate = dateMax.Date;
 				DateTime date;
 				if (DateTime.TryParse (entry.Text, out date))
 					calendar.Date = date;
@@ -73,8 +71,8 @@ namespace Samples
 
 			PackStart (calendar);
 			PackStart (entry);
-			PackStart (minDate);
-			PackStart (maxDate);
+			PackStart (minimumDate);
+			PackStart (maximumDate);
 			PackStart (button);
 			PackStart (label);
 		}
