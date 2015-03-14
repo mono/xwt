@@ -99,6 +99,9 @@ namespace Xwt.Mac
 
 		public DateTime MinimumDate {
 			get {
+				if (Widget.MinDate == null) {
+					Widget.MinDate = DateTime.MinValue;
+				}
 				if (userTimeIsUTC)
 					return ((DateTime)Widget.MinDate).ToUniversalTime ();
 				else
@@ -112,6 +115,9 @@ namespace Xwt.Mac
 
 		public DateTime MaximumDate {
 			get {
+				if (Widget.MaxDate == null) {
+					Widget.MaxDate = DateTime.MaxValue;
+				}
 				if (userTimeIsUTC)
 					return ((DateTime)Widget.MaxDate).ToUniversalTime ();
 				else
