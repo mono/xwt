@@ -100,6 +100,7 @@ namespace Xwt.GtkBackend
 				this.DestroyWithParent = true;
 				this.AddEvents ((int)Gdk.EventMask.FocusChangeMask);
 				this.alignment = new Gtk.Alignment (0, 0, 1, 1);
+				this.alignment.Show ();
 				this.Add (alignment);
 
 				OnScreenChanged (null);
@@ -235,7 +236,7 @@ namespace Xwt.GtkBackend
 				positionRect = new Rectangle (Point.Zero, screenBounds.Size);
 			positionRect = positionRect.Offset (screenBounds.Location);
 			var position = new Point (positionRect.Center.X, popover.ArrowPosition == Popover.Position.Top ? positionRect.Bottom : positionRect.Top);
-			popover.ShowAll ();
+			popover.Show ();
 			popover.Present ();
 			popover.GrabFocus ();
 			int w, h;
