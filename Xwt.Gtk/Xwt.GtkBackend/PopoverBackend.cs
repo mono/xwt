@@ -135,7 +135,7 @@ namespace Xwt.GtkBackend
 				// Triangle
 				// We first begin by positionning ourselves at the top-center or bottom center of the previous rectangle
 				var arrowX = bounds.Center.X;
-				var arrowY = arrowPosition == Xwt.Popover.Position.Top ? calibratedRect.Top + cr.LineWidth : calibratedRect.Bottom - cr.LineWidth;
+				var arrowY = arrowPosition == Xwt.Popover.Position.Top ? calibratedRect.Top + cr.LineWidth : calibratedRect.Bottom;
 				cr.MoveTo (arrowX, arrowY);
 				// We draw the rectangle path
 				DrawTriangle (cr);
