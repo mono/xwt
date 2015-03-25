@@ -50,20 +50,20 @@ namespace Xwt
 			Type = ButtonType.DropDown;
 		}
 		
-		public MenuButton (string label)
+		public MenuButton (string label) : this ()
 		{
 			VerifyConstructorCall (this);
 			Label = label;
 		}
 		
-		public MenuButton (Image img, string label)
+		public MenuButton (Image img, string label) : this ()
 		{
 			VerifyConstructorCall (this);
 			Label = label;
 			Image = img;
 		}
 		
-		public MenuButton (Image img)
+		public MenuButton (Image img) : this ()
 		{
 			VerifyConstructorCall (this);
 			Image = img;
