@@ -32,6 +32,7 @@ using Xwt.Backends;
 #if MONOMAC
 using nint = System.Int32;
 using nfloat = System.Single;
+using CGSize = System.Drawing.SizeF;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
 using MonoMac.ObjCRuntime;
@@ -254,7 +255,7 @@ namespace Xwt.Mac
 			var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData (imageData);
 			var im = new NSImage ();
 			im.AddRepresentation (imageRep);
-			im.Size = new System.Drawing.SizeF ((float)view.Bounds.Width, (float)view.Bounds.Height);
+			im.Size = new CGSize ((nfloat)view.Bounds.Width, (nfloat)view.Bounds.Height);
 			return im;
 		}
 	}

@@ -416,7 +416,7 @@ namespace Xwt.Mac
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
-			var lo = Widget.ConvertPointToBase (new PointF ((float)widgetCoordinates.X, (float)widgetCoordinates.Y));
+			var lo = Widget.ConvertPointToBase (new CGPoint ((nfloat)widgetCoordinates.X, (nfloat)widgetCoordinates.Y));
 			lo = Widget.Window.ConvertBaseToScreen (lo);
 			return MacDesktopBackend.ToDesktopRect (new CGRect (lo.X, lo.Y, 0, Widget.IsFlipped ? 0 : Widget.Frame.Height)).Location;
 		}
@@ -472,7 +472,7 @@ namespace Xwt.Mac
 			} else {
 				var s = CalcFittingSize ();
 				if (!s.IsZero)
-					Widget.SetFrameSize (new SizeF ((float)s.Width, (float)s.Height));
+					Widget.SetFrameSize (new CGSize ((nfloat)s.Width, (nfloat)s.Height));
 			}
 		}
 		
@@ -489,7 +489,7 @@ namespace Xwt.Mac
 
 		void AutoUpdateSize ()
 		{	var s = Frontend.Surface.GetPreferredSize ();
-			Widget.SetFrameSize (new SizeF ((float)s.Width, (float)s.Height));
+			Widget.SetFrameSize (new CGSize ((nfloat)s.Width, (nfloat)s.Height));
 		}
 
 		NSObject gotFocusObserver;
@@ -567,7 +567,7 @@ namespace Xwt.Mac
 			InitPasteboard (pb, sdata.Data);
 			var img = (NSImage)sdata.ImageBackend;
 			var pos = new CGPoint (ml.X - lo.X - (float)sdata.HotX, lo.Y - ml.Y - (float)sdata.HotY + img.Size.Height);
-			Widget.DragImage (img, pos, new SizeF (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
+			Widget.DragImage (img, pos, new CGSize (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
 		}
 		
 		public void SetDragSource (TransferDataType[] types, DragDropAction dragAction)
@@ -855,7 +855,7 @@ namespace Xwt.Mac
 				cy += (cheight - s.Height) * w.VerticalPlacement.GetValue ();
 				cheight = s.Height;
 			}
-			child.Frame = new RectangleF ((float)cx, (float)cy, (float)cwidth, (float)cheight);
+			child.Frame = new CGRect ((nfloat)cx, (nfloat)cy, (nfloat)cwidth, (nfloat)cheight);
 		}
 
 		public override void SizeToFit ()

@@ -271,7 +271,7 @@ namespace Xwt.Mac
 			var vr = DocumentVisibleRect ();
 			ratioX = hScroll.PageSize != 0 ? (float)vr.Width / (float)hScroll.PageSize : 1;
 			ratioY = vScroll.PageSize != 0 ? (float)vr.Height / (float)vScroll.PageSize : 1;
-			DocumentView.Frame = new System.Drawing.RectangleF (0, 0, (float)(hScroll.UpperValue - hScroll.LowerValue) * ratioX, (float)(vScroll.UpperValue - vScroll.LowerValue) * ratioY);
+			DocumentView.Frame = new CGRect (0, 0, (nfloat)(hScroll.UpperValue - hScroll.LowerValue) * ratioX, (nfloat)(vScroll.UpperValue - vScroll.LowerValue) * ratioY);
 		}
 	}
 

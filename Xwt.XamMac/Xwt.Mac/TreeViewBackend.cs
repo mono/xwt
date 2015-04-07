@@ -32,9 +32,11 @@ using System.Collections.Generic;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using nint = System.Int32;
+using CGPoint = System.Drawing.PointF;
 #else
 using AppKit;
 using Foundation;
+using CoreGraphics;
 #endif
 
 namespace Xwt.Mac
@@ -207,7 +209,7 @@ namespace Xwt.Mac
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
 			// Get row
-			nint row = Tree.GetRow(new System.Drawing.PointF ((float)x, (float)y));
+			nint row = Tree.GetRow(new CGPoint ((nfloat)x, (nfloat)y));
 			pos = RowDropPosition.Into;
 			nodePosition = null;
 			if (row >= 0) {
@@ -219,7 +221,7 @@ namespace Xwt.Mac
 /*		protected override void OnDragOverCheck (NSDraggingInfo di, DragOverCheckEventArgs args)
 		{
 			base.OnDragOverCheck (di, args);
-			var row = Tree.GetRow (new System.Drawing.PointF (di.DraggingLocation.X, di.DraggingLocation.Y));
+			var row = Tree.GetRow (new CGPoint (di.DraggingLocation.X, di.DraggingLocation.Y));
 			if (row != -1) {
 				var item = Tree.ItemAtRow (row);
 				Tree.SetDropItem (item, row);

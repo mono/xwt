@@ -86,7 +86,7 @@ namespace Xwt.Mac
 
 		public override void Rectangle (object backend, double x, double y, double width, double height)
 		{
-			((CGPath)backend).AddRect (new RectangleF ((float)x, (float)y, (float)width, (float)height));
+			((CGPath)backend).AddRect (new CGRect ((nfloat)x, (nfloat)y, (nfloat)width, (nfloat)height));
 		}
 
 		public override void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
@@ -135,7 +135,7 @@ namespace Xwt.Mac
 
 		public override bool IsPointInFill (object backend, double x, double y)
 		{
-			return ((CGPath)backend).ContainsPoint (new PointF ((float)x, (float)y), false);
+			return ((CGPath)backend).ContainsPoint (new CGPoint ((nfloat)x, (nfloat)y), false);
 		}
 
 		public override void Dispose (object backend)

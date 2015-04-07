@@ -33,6 +33,7 @@ using System.Collections.Generic;
 #if MONOMAC
 using nint = System.Int32;
 using nfloat = System.Single;
+using CGPoint = System.Drawing.PointF;
 using MonoMac.CoreGraphics;
 #else
 using CoreGraphics;
@@ -46,8 +47,8 @@ namespace Xwt.Mac
 		{
 			return new GradientInfo () {
 				Linear = true,
-				Start = new PointF ((float)x0, (float)y0),
-				End = new PointF ((float)x1, (float)y1)
+				Start = new CGPoint ((nfloat)x0, (nfloat)y0),
+				End = new CGPoint ((nfloat)x1, (nfloat)y1)
 			};
 		}
 
@@ -59,10 +60,10 @@ namespace Xwt.Mac
 		{
 			return new GradientInfo () {
 				Linear = false,
-				Start = new PointF ((float)cx0, (float)cy0),
-				End = new PointF ((float)cx1, (float)cy1),
-				StartRadius = (float)radius0,
-				EndRadius = (float)radius1
+				Start = new CGPoint ((nfloat)cx0, (nfloat)cy0),
+				End = new CGPoint ((nfloat)cx1, (nfloat)cy1),
+				StartRadius = (nfloat)radius0,
+				EndRadius = (nfloat)radius1
 			};
 		}
 
@@ -90,8 +91,8 @@ namespace Xwt.Mac
 	class GradientInfo
 	{
 		public bool Linear;
-		public PointF Start, End;
-		public float StartRadius, EndRadius;
+		public CGPoint Start, End;
+		public nfloat StartRadius, EndRadius;
 		public List<CGColor> Colors = new List<CGColor> ();
 		public List<nfloat> Stops = new List<nfloat> ();
 	}
