@@ -235,8 +235,6 @@ namespace Xwt.Mac
 			var array = new nfloat[pattern.Length];
 			for (int n=0; n<pattern.Length; n++)
 				array [n] = (float) pattern[n];
-			if (array.Length == 0)
-				array = new nfloat [] { 1 };
 			((CGContextBackend)backend).Context.SetLineDash ((nfloat)offset, array);
 		}
 		
