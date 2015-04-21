@@ -275,11 +275,12 @@ namespace Xwt.Mac
 		int cachedCursorPosition;
 		public override void KeyUp (NSEvent theEvent)
 		{
-			if (CurrentEditor!= null && cachedCursorPosition != CurrentEditor.SelectedRange.Location)
+			if (CurrentEditor!= null && cachedCursorPosition != CurrentEditor.SelectedRange.Location) {
 				cachedCursorPosition = (int)CurrentEditor.SelectedRange.Location;
 				context.InvokeUserCode (delegate {
-				eventSink.OnSelectionChanged ();
-			});
+					eventSink.OnSelectionChanged ();
+				});
+			}
 			base.KeyUp (theEvent);
 		}
 	}
