@@ -64,6 +64,7 @@ namespace Xwt.Mac
 				MultiLine = false;
 			}
 
+			canGetFocus = Widget.AcceptsFirstResponder ();
 			Frontend.MouseEntered += delegate {
 				checkMouseSelection = true;
 			};
@@ -236,6 +237,34 @@ namespace Xwt.Mac
 				});
 			}
 		}
+
+		#endregion
+	
+
+		#region Gross Hack
+		// The 'Widget' property is not virtual and the one on the base class holds
+		// the 'CustomAlignedContainer' object and *not* the NSTextField object. As
+		// such everything that uses the 'Widget' property in the base class might be
+		// working on the wrong object. The focus methods definitely need to work on
+		// the NSTextField directly, so i've overridden those and made them interact
+		// with the NSTextField instead of the CustomAlignedContainer.
+		bool canGetFocus = true;
+		public override bool CanGetFocus {
+			get { return canGetFocus; }
+			set { canGetFocus = value && Widget.AcceptsFirstResponder (); }
+		}
+
+		public override void SetFocus ()
+		{
+			if (Widget.Window != null && CanGetFocus)
+				Widget.Window.MakeFirstResponder (Widget);
+		}
+
+		public override bool HasFocus {
+			get {
+				return Widget.Window != null && Widget.Window.FirstResponder == Widget;
+			}
+		}
 		#endregion
 	}
 	
@@ -288,6 +317,11 @@ namespace Xwt.Mac
 				get; set;
 			}
 
+			public CustomCell ()
+			{
+
+			}
+
 			public override NSTextView FieldEditorForView (NSView aControlView)
 			{
 				if (editor == null) {
@@ -312,6 +346,11 @@ namespace Xwt.Mac
 
 			public ITextEntryEventSink EventSink {
 				get; set;
+			}
+
+			public CustomEditor ()
+			{
+
 			}
 
 			public override void KeyDown (NSEvent theEvent)
