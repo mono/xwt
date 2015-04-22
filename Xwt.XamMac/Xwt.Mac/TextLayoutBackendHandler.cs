@@ -136,6 +136,16 @@ namespace Xwt.Mac
 			}
 		}
 
+		public override double GetBaseline (object backend)
+		{
+			LayoutInfo li = (LayoutInfo)backend;
+			using (var line = new CTLine (CreateAttributedString (li))) {
+				nfloat ascent, descent, leading;
+				line.GetTypographicBounds (out ascent, out descent, out leading);
+				return (double)ascent;
+			}
+		}
+
 		static CTFrame CreateFrame (LayoutInfo li)
 		{
 			if (string.IsNullOrEmpty (li.Text))

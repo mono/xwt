@@ -206,6 +206,14 @@ namespace Xwt.GtkBackend
 			return new Point (pos.X / Pango.Scale.PangoScale, pos.Y / Pango.Scale.PangoScale);
 		}
 
+		public override double GetBaseline (object backend)
+		{
+			var tl = (PangoBackend) backend;
+			// Just get the first line
+			using (var iter = tl.Layout.Iter)
+				return Pango.Units.ToPixels (iter.Baseline);
+		}
+
 		public override void Dispose (object backend)
 		{
 			var tl = (IDisposable) backend;

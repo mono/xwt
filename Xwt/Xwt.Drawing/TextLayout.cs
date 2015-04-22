@@ -173,6 +173,15 @@ namespace Xwt.Drawing
 			return handler.GetSize (Backend);
 		}
 
+		/// <summary>
+		/// Get the distance in pixels between the top of the layout bounds and the first line's baseline
+		/// </summary>
+		public double Baseline {
+			get {
+				return handler.GetBaseline (Backend);
+			}
+		}
+
 		public TextTrimming Trimming {
 			get { return textTrimming; }
 			set { textTrimming = value; handler.SetTrimming (Backend, value); }

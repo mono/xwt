@@ -90,6 +90,12 @@ namespace Xwt.WPFBackend
 			return 0;
 		}
 
+		public override double GetBaseline (object backend)
+		{
+			var t = (TextLayoutBackend)backend;
+			return t.FormattedText.Baseline;
+		}
+
 		public override void AddAttribute (object backend, TextAttribute attribute)
 		{
 			var t = (TextLayoutBackend)backend;

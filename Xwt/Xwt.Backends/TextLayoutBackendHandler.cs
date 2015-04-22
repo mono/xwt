@@ -43,6 +43,7 @@ namespace Xwt.Backends
 		public abstract Size GetSize (object backend);
 		public abstract int GetIndexFromCoordinates (object backend, double x, double y);
 		public abstract Point GetCoordinateFromIndex (object backend, int index);
+		public abstract double GetBaseline (object backend);
 
 		public abstract void AddAttribute (object backend, TextAttribute attribute);
 		public abstract void ClearAttributes (object backend);
