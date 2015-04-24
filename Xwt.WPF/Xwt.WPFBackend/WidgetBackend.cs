@@ -732,6 +732,7 @@ namespace Xwt.WPFBackend
 				return; // Drag auto detect has been already activated.
 
 			DragDropInfo.AutodetectDrag = true;
+			DragDropInfo.TargetTypes = types == null ? new TransferDataType [0] : types;
 			Widget.MouseUp += WidgetMouseUpForDragHandler;
 			Widget.MouseMove += WidgetMouseMoveForDragHandler;
 		}
