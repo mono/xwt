@@ -55,6 +55,24 @@ namespace Xwt.Mac
 	public class RichTextViewBackend : ViewBackend <NSTextView, IRichTextViewEventSink>, IRichTextViewBackend
 	{
 		NSFont font;
+		public int CursorPosition {
+			get { return (int) Widget.SelectedRange.Location; }
+			set { Widget.SelectedRange = new NSRange (value, SelectionLength); }
+		}
+
+		public int SelectionStart {
+			get { return CursorPosition; }
+			set { CursorPosition = value; }
+		}
+
+		public int SelectionLength {
+			get { return (int) Widget.SelectedRange.Length; }
+			set { Widget.SelectedRange = new NSRange (SelectionStart, value); }
+		}
+
+		public string SelectedText {
+			get { return Widget.Value.Substring (SelectionStart, SelectionLength); }
+		}
 
 		public override object Font {
 			get { return base.Font; }

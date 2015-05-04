@@ -32,17 +32,57 @@ using System.Text;
 
 using Xwt.Backends;
 using Xwt.Formats;
+using System.ComponentModel;
 
 namespace Xwt
 {
 	[BackendType (typeof(IRichTextViewBackend))]
 	public class RichTextView : Widget
 	{
+		[DefaultValue (0)]
+		public int CursorPosition {
+			get { return Backend.CursorPosition; }
+			set { Backend.CursorPosition = value; }
+		}
+
+		[DefaultValue (0)]
+		public int SelectionStart {
+			get { return Backend.SelectionStart; }
+			set { Backend.SelectionStart = value; }
+		}
+
+		[DefaultValue (0)]
+		public int SelectionLength {
+			get { return Backend.SelectionLength; }
+			set { Backend.SelectionLength = value; }
+		}
+
+		[DefaultValue ("")]
+		public string SelectedText {
+			get { return Backend.SelectedText; }
+		}
+		EventHandler selectionChanged;
+		public event EventHandler SelectionChanged {
+			add {
+				BackendHost.OnBeforeEventAdd (RichTextViewEvent.SelectionChanged, selectionChanged);
+				selectionChanged += value;
+			}
+			remove {
+				selectionChanged -= value;
+				BackendHost.OnAfterEventRemove (RichTextViewEvent.SelectionChanged, selectionChanged);
+			}
+		}
+
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IRichTextViewEventSink
 		{
 			public void OnNavigateToUrl (Uri uri)
 			{
 				((RichTextView) Parent).OnNavigateToUrl (new NavigateToUrlEventArgs (uri));
+			}
+
+			public void OnSelectionChanged ()
+			{
+				((RichTextView)Parent).OnSelectionChanged (EventArgs.Empty);
 			}
 		}
 
@@ -68,6 +108,7 @@ namespace Xwt
 		public RichTextView ()
 		{
 			NavigateToUrl += delegate { }; // ensure the virtual method is always called
+			MapEvent (RichTextViewEvent.SelectionChanged, typeof(RichTextView), "OnSelectionChanged");		
 		}
 
 		public void LoadFile (string fileName, TextFormat format)
@@ -93,6 +134,12 @@ namespace Xwt
 		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
+		}
+
+		protected virtual void OnSelectionChanged (EventArgs e)
+		{
+			if (selectionChanged != null)
+				selectionChanged (this, e);
 		}
 
 		protected virtual void OnNavigateToUrl (NavigateToUrlEventArgs e)

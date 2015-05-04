@@ -34,6 +34,67 @@ namespace Xwt.GtkBackend
 {
 	public class RichTextViewBackend : WidgetBackend, IRichTextViewBackend
 	{
+		protected new IRichTextViewEventSink EventSink {
+			get { return (IRichTextViewEventSink)base.EventSink; }
+		}
+
+		public int CursorPosition {
+			get { return Widget.Buffer.CursorPosition; }
+			set {
+				if (CursorPosition != value) {
+					Widget.Buffer.GetIterAtOffset (0).ForwardChars (value);
+					HandleSelectionChanged ();
+				}
+			}
+		}
+
+		public int SelectionStart {
+			get { 
+				Gtk.TextIter start, end;
+				Widget.Buffer.GetSelectionBounds (out start, out end);
+				return end.Buffer.CursorPosition;
+			}
+			set {
+				Widget.GrabFocus ();
+				if (SelectionStart != value) {
+					var start = Widget.Buffer.GetIterAtOffset (value);
+					var end = Widget.Buffer.GetIterAtOffset (SelectionLength);
+					Widget.Buffer.SelectRange (start, end);
+					HandleSelectionChanged ();
+				}
+			}
+		}
+
+		public int SelectionLength {
+			get {
+				Gtk.TextIter start, end;
+				Widget.Buffer.GetSelectionBounds (out start, out end);
+				return end.Buffer.CursorPosition - start.Buffer.CursorPosition;
+			}
+			set {
+				Widget.GrabFocus ();
+				if (SelectionLength != value) {
+					var start = Widget.Buffer.GetIterAtOffset (SelectionStart);
+					var end = Widget.Buffer.GetIterAtOffset (value);
+					Widget.Buffer.SelectRange (start, end);
+					HandleSelectionChanged ();
+				}
+			}
+		}
+
+		public string SelectedText {
+			get {
+				int start = SelectionStart;
+				int end = start + SelectionLength;
+				if (start == end) return String.Empty;
+				try {
+					return Widget.Buffer.Text.Substring (start, end - start);
+				} catch {
+					return String.Empty;
+				}
+			}
+		}
+
 		Gtk.TextTagTable table;
 		LinkLabel [] links;
 
@@ -104,7 +165,60 @@ namespace Xwt.GtkBackend
 				case RichTextViewEvent.NavigateToUrl:
 					NavigateToUrlEnabled = true;
 					break;
+				case RichTextViewEvent.SelectionChanged:
+					enableSelectionChangedEvent = true;
+					Widget.MoveCursor += HandleMoveCursor;
+					Widget.ButtonPressEvent += HandleButtonPressEvent;
+					Widget.ButtonReleaseEvent += HandleButtonReleaseEvent;
+					Widget.MotionNotifyEvent += HandleMotionNotifyEvent;
+					break;
 				}
+			}
+		}
+
+		bool enableSelectionChangedEvent;
+		void HandleSelectionChanged ()
+		{
+			if (enableSelectionChangedEvent)
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnSelectionChanged ();
+				});
+		}
+
+		void HandleMoveCursor (object sender, EventArgs e)
+		{
+			HandleSelectionChanged ();
+		}
+
+		int cacheSelectionStart, cacheSelectionLength;
+		bool isMouseSelection;
+		[GLib.ConnectBefore]
+		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
+		{
+			if (args.Event.Button == 1) {
+				HandleSelectionChanged ();
+				cacheSelectionStart = SelectionStart;
+				cacheSelectionLength = SelectionLength;
+				isMouseSelection = true;
+			}
+		}
+
+		[GLib.ConnectBefore]
+		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
+		{
+			if (isMouseSelection)
+			if (cacheSelectionStart != SelectionStart || cacheSelectionLength != SelectionLength)
+				HandleSelectionChanged ();
+			cacheSelectionStart = SelectionStart;
+			cacheSelectionLength = SelectionLength;
+		}
+
+		[GLib.ConnectBefore]
+		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
+		{
+			if (args.Event.Button == 1) {
+				isMouseSelection = false;
+				HandleSelectionChanged ();
 			}
 		}
 

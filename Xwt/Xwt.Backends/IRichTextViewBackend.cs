@@ -20,8 +20,12 @@ namespace Xwt.Backends
 
 	public interface IRichTextViewBackend : IWidgetBackend
 	{
-		IRichTextBuffer CreateBuffer ();
+		int CursorPosition { get; set; }
+		int SelectionStart { get; set; }
+		int SelectionLength { get; set; }
+		string SelectedText { get; }
 
+		IRichTextBuffer CreateBuffer ();
 		// Display the passed buffer
 		void SetBuffer (IRichTextBuffer buffer);
 	}
@@ -60,11 +64,13 @@ namespace Xwt.Backends
 
 	public interface IRichTextViewEventSink : IWidgetEventSink
 	{
+		void OnSelectionChanged ();
 		void OnNavigateToUrl (Uri uri);
 	}
 
 	public enum RichTextViewEvent
 	{
-		NavigateToUrl = 1
+		NavigateToUrl = 1,
+		SelectionChanged = 2
 	}
 }
