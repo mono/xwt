@@ -31,9 +31,21 @@ namespace Xwt.Drawing
 {
 	public sealed class RadialGradient: Gradient
 	{
+		double cx0, cy0, radius0, cx1, cy1, radius1;
+
 		public RadialGradient (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
 		{
-			SetBackend (ToolkitEngine.GradientBackendHandler, ToolkitEngine.GradientBackendHandler.CreateRadial (cx0, cy0, radius0, cx1, cy1, radius1));
+			this.cx0 = cx0;
+			this.cy0 = cy0;
+			this.radius0 = radius0;
+			this.cx1 = cx1;
+			this.cy1 = cy1;
+			this.radius1 = radius1;
+		}
+
+		protected override object CreateGradientBackend (GradientBackendHandler handler)
+		{
+			return handler.CreateRadial (cx0, cy0, radius0, cx1, cy1, radius1);
 		}
 	}
 }

@@ -245,6 +245,8 @@ namespace Xwt.WPFBackend
 		public override void SetPattern (object backend, object p)
 		{
 			var c = (DrawingContext) backend;
+			var toolkit = ApplicationContext.Toolkit;
+			p = toolkit.GetSafeBackend (p);
 			if (p is ImagePattern)
 				p = ((ImagePattern)p).GetBrush (c.ScaleFactor);
 			c.SetPattern ((System.Windows.Media.Brush)p);

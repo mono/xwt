@@ -525,6 +525,8 @@ namespace Xwt
 				}
 
 				font.InitForToolkit (this);
+			} else if (obj is Gradient) {
+				((Gradient)obj).InitForToolkit (this);
 			} else if (obj is IFrontend) {
 				if (((IFrontend)obj).ToolkitEngine != this)
 					throw new InvalidOperationException ("Object belongs to a different toolkit");

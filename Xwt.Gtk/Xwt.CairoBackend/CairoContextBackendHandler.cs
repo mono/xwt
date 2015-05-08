@@ -265,8 +265,10 @@ namespace Xwt.CairoBackend
 		public override void SetPattern (object backend, object p)
 		{
 			var cb = (CairoContextBackend)backend;
+			var toolkit = ApplicationContext.Toolkit;
 
 			Cairo.Context ctx = cb.Context;
+			p = toolkit.GetSafeBackend (p);
 			if (p is ImagePatternBackend) {
 				cb.PatternAlpha = ((ImagePatternBackend)p).Image.Alpha;
 				p = ((ImagePatternBackend)p).GetPattern (ApplicationContext, ((CairoContextBackend)backend).ScaleFactor);

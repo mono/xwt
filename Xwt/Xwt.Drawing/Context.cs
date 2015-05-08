@@ -335,7 +335,7 @@ namespace Xwt.Drawing
 			get { return pattern; }
 			set {
 				pattern = value;
-				handler.SetPattern (Backend, GetBackend (value));
+				handler.SetPattern (Backend, value);
 			}
 		}
 		

@@ -241,7 +241,8 @@ namespace Xwt.Mac
 		public override void SetPattern (object backend, object p)
 		{
 			CGContextBackend gc = (CGContextBackend)backend;
-			gc.CurrentStatus.Pattern = p;
+			var toolkit = ApplicationContext.Toolkit;
+			gc.CurrentStatus.Pattern = toolkit.GetSafeBackend (p);
 		}
 
 		void SetupPattern (CGContextBackend gc)
