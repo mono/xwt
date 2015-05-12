@@ -76,7 +76,7 @@ namespace Xwt.Mac
 			var size = new CGSize ();
 			Frontend.ApplicationContext.InvokeUserCode (delegate {
 				var s = Frontend.GetRequiredSize ();
-				size = new SizeF ((float)s.Width, (float)s.Height);
+				size = new CGSize ((nfloat)s.Width, (nfloat)s.Height);
 			});
 			if (size.Width > bounds.Width)
 				size.Width = bounds.Width;

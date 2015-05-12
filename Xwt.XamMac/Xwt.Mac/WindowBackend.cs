@@ -413,7 +413,7 @@ namespace Xwt.Mac
 				width = cr.Width;
 			if (height == -1)
 				height = cr.Height;
-			var r = FrameRectFor (new System.Drawing.RectangleF ((float)cr.X, (float)cr.Y, (float)width, (float)height));
+			var r = FrameRectFor (new CGRect ((nfloat)cr.X, (nfloat)cr.Y, (nfloat)width, (nfloat)height));
 			SetFrame (r, true);
 			LayoutWindow ();
 		}
@@ -480,7 +480,7 @@ namespace Xwt.Mac
 			if (b != ((IWindowBackend)this).Bounds)
 				((IWindowBackend)this).Bounds = b;
 
-		    var r = FrameRectFor (new RectangleF (0, 0, (float)s.Width, (float)s.Height));
+			var r = FrameRectFor (new CGRect (0, 0, (nfloat)s.Width, (nfloat)s.Height));
 			MinSize = r.Size;
 		}
 

@@ -33,9 +33,11 @@ using System.Collections.Generic;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using nint = System.Int32;
+using CGSize = System.Drawing.SizeF;
 #else
 using AppKit;
 using Foundation;
+using CoreGraphics;
 #endif
 
 namespace Xwt.Mac
@@ -54,9 +56,9 @@ namespace Xwt.Mac
 			//((NSSliderCell)Widget.Cell).SetValueForKey (NSObject.FromObject (false), (NSString)"NSVertical");
 			orientation = dir;
 			if (dir == Orientation.Horizontal)
-				Widget.SetFrameSize (new System.Drawing.SizeF (80, 30));
+				Widget.SetFrameSize (new CGSize (80, 30));
 			else
-				Widget.SetFrameSize (new System.Drawing.SizeF (30, 80));
+				Widget.SetFrameSize (new CGSize (30, 80));
 		}
 
 		MacSlider Slider {

@@ -272,7 +272,7 @@ namespace Xwt.Mac
 						return c.Frame;
 				}
 			}
-			return RectangleF.Empty;
+			return CGRect.Empty;
 		}
 
 		CellPos GetHitCell (NSEvent theEvent, CGRect cellFrame, NSView controlView)
