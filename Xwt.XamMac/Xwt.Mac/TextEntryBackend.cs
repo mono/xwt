@@ -238,6 +238,10 @@ namespace Xwt.Mac
 			}
 		}
 
+		public void SetCompletions (string[] completions)
+		{
+		}
+
 		#endregion
 	
 

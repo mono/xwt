@@ -155,6 +155,10 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public void SetCompletions (string[] completions)
+		{
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

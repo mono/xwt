@@ -174,6 +174,23 @@ namespace Xwt.GtkBackend
 		public bool MultiLine {
 			get; set;
 		}
+
+		public void SetCompletions (string[] completions)
+		{
+			if (completions == null || completions.Length = 0) {
+				Widget.Completion = null;
+				return;
+			}
+
+			var model = new Gtk.ListStore (typeof(string));
+			foreach (var c in completions)
+				model.SetValue (model.Append (), 0, c);
+			Widget.Completion = new Gtk.EntryCompletion () {
+				Model = model,
+				PopupCompletion = true,
+				TextColumn = 0
+			};
+		}
 		
 		public override void EnableEvent (object eventId)
 		{

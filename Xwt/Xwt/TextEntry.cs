@@ -136,6 +136,11 @@ namespace Xwt
 			set { Backend.MultiLine = value; }
 		}
 
+		public void SetCompletions (string[] completions)
+		{
+			Backend.SetCompletions (completions);
+		}
+
 		protected virtual void OnChanged (EventArgs e)
 		{
 			if (changed != null)
