@@ -41,6 +41,7 @@ namespace Xwt.Mac
 	{
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			AutoEnablesItems = false;
 		}
 
 		public void InsertItem (int index, IMenuItemBackend menuItem)
