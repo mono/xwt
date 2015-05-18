@@ -177,7 +177,7 @@ namespace Xwt.GtkBackend
 
 		public void SetCompletions (string[] completions)
 		{
-			if (completions == null || completions.Length = 0) {
+			if (completions == null || completions.Length == 0) {
 				Widget.Completion = null;
 				return;
 			}
