@@ -73,7 +73,7 @@ namespace Xwt.Mac
 		protected override Size GetNaturalSize ()
 		{
 			if (childBackend != null)
-				return childBackend.Frontend.Surface.GetPreferredSize ();
+				return childBackend.Frontend.Surface.GetPreferredSize (includeMargin: true);
 			else
 				return base.GetNaturalSize ();
 		}
