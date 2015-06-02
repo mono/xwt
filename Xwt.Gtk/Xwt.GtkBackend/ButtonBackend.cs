@@ -146,6 +146,8 @@ namespace Xwt.GtkBackend
 						if (box != null) {
 							alignment.Xscale = 1;
 							box.SetChildPacking (box.Children [0], true, true, 0, Gtk.PackType.Start);
+							if (labelWidget != null)
+								labelWidget.Xalign = 0;
 						}
 					}
 				}
