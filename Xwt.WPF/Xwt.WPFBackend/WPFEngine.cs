@@ -175,6 +175,14 @@ namespace Xwt.WPFBackend
 			return ImageHandler.LoadFromImageSource ((System.Windows.Media.ImageSource) nativeImage);
 		}
 
+		public override object GetBackendForContext (object nativeWidget, object nativeContext)
+		{
+			return new DrawingContext (
+				(System.Windows.Media.DrawingContext)nativeContext,
+				((System.Windows.Media.Visual)nativeWidget).GetScaleFactor ()
+			);
+		}
+
 		public override object GetNativeWidget (Widget w)
 		{
 			var backend = (IWpfWidgetBackend) Toolkit.GetBackend (w);

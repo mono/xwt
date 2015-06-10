@@ -28,8 +28,17 @@ using System;
 
 namespace Xwt
 {
+	/// <summary>
+	/// Arguments for a drag&amp;drop operation type validation event.
+	/// </summary>
 	public class DragCheckEventArgs: EventArgs
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.DragCheckEventArgs"/> class.
+		/// </summary>
+		/// <param name="position">The drop coordinates (in widget coordinates).</param>
+		/// <param name="types">The types of the transferred data.</param>
+		/// <param name="action">The proposed drag&amp;drop action type.</param>
 		public DragCheckEventArgs (Point position, TransferDataType[] types, DragDropAction action)
 		{
 			DataTypes = types;
@@ -38,17 +47,49 @@ namespace Xwt
 			Result = DragDropResult.None;
 		}
 		
+		/// <summary>
+		/// Gets the types of data transferred by the drag&amp;drop operation.
+		/// </summary>
+		/// <value>The types of the transferred data.</value>
 		public TransferDataType[] DataTypes { get; private set; }
 		
+		/// <summary>
+		/// Gets the potential drop coordinates (in widget coordinates)
+		/// </summary>
+		/// <value>The drop position.</value>
 		public Point Position { get; private set; }
 		
+		/// <summary>
+		/// Gets the type of the proposed drag&amp;drop action.
+		/// </summary>
+		/// <value>The action proposed by the drag&amp;drop operation.</value>
+		/// <remarks>The action depends on the control keys being pressed.</remarks>
 		public DragDropAction Action { get; private set; }
 		
+		/// <summary>
+		/// Gets or sets the result, indicating whether the widget allows this drop operation.
+		/// </summary>
+		/// <value>The validation result.</value>
+		/// <remarks>
+		/// To be set by the handler of the event. Specifies whether the drop action is allowed.
+		/// If not specified (<see cref="Xwt.DragDropResult.None"/> , the action will be
+		/// validated by the handler of the <see cref="Xwt.Widget.DragDrop"/> event. If set to
+		/// <see cref="Xwt.DragDropResult.Canceled"/> the operation will be aborted.
+		/// </remarks>
 		public DragDropResult Result { get; set; }
 	}
 
+	/// <summary>
+	/// Arguments for a drop operation event.
+	/// </summary>
 	public class DragEventArgs: EventArgs
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.DragEventArgs"/> class.
+		/// </summary>
+		/// <param name="position">The drop coordinates (in widget coordinates).</param>
+		/// <param name="dataStore">The collection of transferred data.</param>
+		/// <param name="action">The drag&amp;drop action type.</param>
 		public DragEventArgs (Point position, Xwt.Backends.TransferDataStore dataStore, DragDropAction action)
 		{
 			Data = dataStore;
@@ -57,19 +98,48 @@ namespace Xwt
 			Success = false;
 		}
 		
+		/// <summary>
+		/// Gets the data being dropped.
+		/// </summary>
+		/// <value>The dropped data.</value>
 		public ITransferData Data { get; private set; }
 		
+		/// <summary>
+		/// Gets the drop coordinates (in widget coordinates)
+		/// </summary>
+		/// <value>The widget relative drop position.</value>
 		public Point Position { get; private set; }
 		
+		/// <summary>
+		/// Gets the type of the drag&amp;drop action.
+		/// </summary>
+		/// <value>The drag&amp;drop action.</value>
+		/// <remarks>The action depends on the control keys being pressed.</remarks>
 		public DragDropAction Action { get; private set; }
 		
+		/// <summary>
+		/// Gets or sets a value indicating whether a <see cref="Xwt.DragEventArgs"/> drop was successful.
+		/// </summary>
+		/// <value><c>true</c> if drop was successful; otherwise, <c>false</c>.</value>
+		/// <remarks>
+		/// To be set by the handler of the event.
+		/// </remarks>
 		public bool Success { get; set; }
 	}
 	
+	/// <summary>
+	/// Arguments for a drag over operation type validation event.
+	/// </summary>
 	public class DragOverCheckEventArgs: EventArgs
 	{
 		DragDropAction allowedAction;
 		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.DragOverCheckEventArgs"/> class.
+		/// </summary>
+		/// <param name="position">The potential drop coordinates (in widget coordinates).</param>
+		/// <param name="types">The transferred data types.</param>
+		/// <param name="action">The proposed drag&amp;drop action type.</param>
 		public DragOverCheckEventArgs (Point position, TransferDataType[] types, DragDropAction action)
 		{
 			DataTypes = types;
@@ -79,26 +149,33 @@ namespace Xwt
 		}
 		
 		/// <summary>
-		/// Type of the data being dropped
+		/// Gets the types of data transferred by the drag operation.
 		/// </summary>
+		/// <value>The types of the transferred data.</value>
 		public TransferDataType[] DataTypes { get; private set; }
 		
 		/// <summary>
-		/// Drop coordinates (in widget coordinates)
+		/// Gets the potential drop coordinates (in widget coordinates)
 		/// </summary>
+		/// <value>The widget relative drop position.</value>
 		public Point Position { get; private set; }
 		
 		/// <summary>
-		/// Proposed drop action, which depends on the control keys being pressed
+		/// Gets the proposed drop action.
 		/// </summary>
+		/// <value>The proposed drop action</value>
+		/// <remarks>The action depends on the control keys being pressed.</remarks>
 		public DragDropAction Action { get; private set; }
 
 		/// <summary>
-		/// Allowed action
+		/// Gets or sets the actions allowed for this widget.
 		/// </summary>
+		/// <value>The allowed drop actions</value>
 		/// <remarks>
 		/// To be set by the handler of the event. Specifies the action that will be performed if the item is dropped.
-		/// If not specified or set to Default, the action will be determined by the handler of DragOver.
+		/// If not specified or set to <see cref="Xwt.DragDropAction.Default"/>, the action will be validated
+		/// by the handler of the <see cref="Xwt.Widget.DragOver"/> event. If set to <see cref="Xwt.DragDropAction.None"/>
+		/// the drop action is not allowed.
 		/// </remarks>
 		public DragDropAction AllowedAction {
 			get { return allowedAction; }
@@ -118,8 +195,17 @@ namespace Xwt
 		}
 	}
 
+	/// <summary>
+	/// Arguments for a drag over data type validation event.
+	/// </summary>
 	public class DragOverEventArgs: EventArgs
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.DragOverEventArgs"/> class.
+		/// </summary>
+		/// <param name="position">The potential drop coordinates (in widget coordinates).</param>
+		/// <param name="dataStore">The collection of transferred data.</param>
+		/// <param name="action">The proposed drag&amp;drop action type.</param>
 		public DragOverEventArgs (Point position, ITransferData dataStore, DragDropAction action)
 		{
 			Position = position;
@@ -128,47 +214,87 @@ namespace Xwt
 			AllowedAction = DragDropAction.Default;
 		}
 		
+		/// <summary>
+		/// Gets the data transferred by the drag action.
+		/// </summary>
+		/// <value>The transferred data.</value>
 		public ITransferData Data { get; private set; }
 		
 		/// <summary>
-		/// Drop coordinates (in widget coordinates)
+		/// Gets the potential drop coordinates (in widget coordinates)
 		/// </summary>
+		/// <value>The widget relative drop position.</value>
 		public Point Position { get; private set; }
 		
 		/// <summary>
-		/// Proposed drop action, which depends on the control keys being pressed
+		/// Gets the proposed drop action.
 		/// </summary>
+		/// <value>The proposed drop action</value>
+		/// <remarks>The action depends on the control keys being pressed.</remarks>
 		public DragDropAction Action { get; private set; }
 		
 		/// <summary>
-		/// Allowed action
+		/// Gets or sets the allowed action.
 		/// </summary>
+		/// <value>The allowed drop actions</value>
 		/// <remarks>
 		/// To be set by the handler of the event. Specifies the action that will be performed if the item is dropped.
-		/// If not specified or set to Default, the action will be determined by the handler of DragDropCheck.
+		/// If not specified or set to <see cref="Xwt.DragDropAction.Default"/>, the action will be validated
+		/// by the handler of the <see cref="Xwt.Widget.DragDropCheck"/> event. If set to <see cref="Xwt.DragDropAction.None"/>
+		/// the drop action is not allowed.
 		/// </remarks>
 		public DragDropAction AllowedAction { get; set; }
 	}
 	
+	/// <summary>
+	/// Drag finished event arguments.
+	/// </summary>
 	public class DragFinishedEventArgs: EventArgs
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.DragFinishedEventArgs"/> class.
+		/// </summary>
+		/// <param name="deleteSource">If set to <c>true</c> delete the data source.</param>
 		public DragFinishedEventArgs (bool deleteSource)
 		{
 			DeleteSource = deleteSource;
 		}
 		
+		/// <summary>
+		/// Gets a value indicating whether the data source should be deleted.
+		/// </summary>
+		/// <value><c>true</c> to delete the data source; otherwise, <c>false</c>.</value>
 		public bool DeleteSource { get; private set; }
 	}
 	
+	/// <summary>
+	/// Drag started event arguments.
+	/// </summary>
 	public class DragStartedEventArgs: EventArgs
 	{
+		/// <summary>
+		/// Gets or sets the started drag operation.
+		/// </summary>
+		/// <value>The started drag operation.</value>
 		public DragOperation DragOperation { get; internal set; }
 	}
 	
+	/// <summary>
+	/// Drag&amp;drop result, indicating whether a drag&amp;drop operation will be/was successful.
+	/// </summary>
 	public enum DragDropResult
 	{
+		/// <summary>
+		/// drag&amp;drop can be performed, or was successful.
+		/// </summary>
 		Success,
+		/// <summary>
+		/// drag&amp;drop denied.
+		/// </summary>
 		Canceled,
+		/// <summary>
+		/// drag&amp;drop event is unhandled.
+		/// </summary>
 		None
 	}
 }

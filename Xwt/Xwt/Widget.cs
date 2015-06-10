@@ -84,6 +84,11 @@ namespace Xwt
 		EventHandler gotFocus;
 		EventHandler lostFocus;
 		
+		/// <summary>
+		/// The WidgetBackendHost is the link between an Xwt widget and a toolkit specific widget backend.
+		/// </summary>
+		/// <typeparam name="T">The Xwt widget type.</typeparam>
+		/// <typeparam name="B">The Xwt widget backend interface.</typeparam>
 		protected class WidgetBackendHost<T,B>: WidgetBackendHost where T:Widget where B:IWidgetBackend
 		{
 			public new T Parent {
@@ -95,12 +100,18 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// The WidgetBackendHost is the link between an Xwt widget and a toolkit specific widget backend.
+		/// </summary>
 		protected class WidgetBackendHost: BackendHost<Widget, IWidgetBackend>, IWidgetEventSink
 		{
 			public WidgetBackendHost ()
 			{
 			}
 
+			/// <summary>
+			/// Called when the backend has been created.
+			/// </summary>
 			protected override void OnBackendCreated ()
 			{
 				((IWidgetBackend)Backend).Initialize (this);
@@ -108,11 +119,12 @@ namespace Xwt
 			}
 		
 			/// <summary>
-			/// Gets the default natural size for this type of widget
+			/// Gets the default natural size of the widget
 			/// </summary>
-			/// <returns>
-			/// The default natural size.
-			/// </returns>
+			/// <returns>The default natural size.</returns>
+			/// <remarks>This method should only be used if there isn't a platform-specific natural
+			/// size for the widget. There may be widgets for which XWT can't provide
+			/// a default natural width or height, in which case it return 0.</remarks>
 			public virtual Size GetDefaultNaturalSize ()
 			{
 				return new Size (0, 0);
@@ -265,6 +277,11 @@ namespace Xwt
 			MapEvent (WidgetEvent.MouseScrolled, typeof(Widget), "OnMouseScrolled");
 		}
 		
+		/// <summary>
+		/// Gets the current widget backend.
+		/// </summary>
+		/// <returns>The widget backend.</returns>
+		/// <param name="w">The Xwt widget.</param>
 		internal protected static IBackend GetBackend (Widget w)
 		{
 			if (w != null && w.Backend is XwtWidgetBackend)
@@ -272,10 +289,18 @@ namespace Xwt
 			return w != null ? w.Backend : null;
 		}
 		
+		/// <summary>
+		/// Gets the backend host.
+		/// </summary>
+		/// <value>The backend host.</value>
 		protected new WidgetBackendHost BackendHost {
 			get { return (WidgetBackendHost) base.BackendHost; }
 		}
 		
+		/// <summary>
+		/// Creates the backend host.
+		/// </summary>
+		/// <returns>The backend host.</returns>
 		protected override Xwt.Backends.BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
@@ -297,6 +322,10 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Gets the parent window of the widget.
+		/// </summary>
+		/// <value>The parent window.</value>
 		public WindowFrame ParentWindow {
 			get {
 				if (Parent != null)
@@ -310,6 +339,10 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Sets the parent window.
+		/// </summary>
+		/// <param name="win">An Xwt window containing the widget.</param>
 		internal void SetParentWindow (WindowFrame win)
 		{
 			parentWindow = win;
@@ -324,10 +357,18 @@ namespace Xwt
 			get { return backendHost; }
 		}*/
 		
+		/// <summary>
+		/// Gets the backend.
+		/// </summary>
+		/// <value>The backend.</value>
 		IWidgetBackend Backend {
 			get { return (IWidgetBackend) BackendHost.Backend; }
 		}
 		
+		/// <summary>
+		/// Gets or sets the <see cref="Xwt.Widget"/> margin.
+		/// </summary>
+		/// <value>The widget margin.</value>
 		public WidgetSpacing Margin {
 			get { return margin; }
 			set {
@@ -337,6 +378,10 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the margin on the left side of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The left margin.</value>
 		[DefaultValue (0d)]
 		public double MarginLeft {
 			get { return margin.Left; }
@@ -347,6 +392,10 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the margin on the right side of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The right margin.</value>
 		[DefaultValue (0d)]
 		public double MarginRight {
 			get { return margin.Right; }
@@ -357,6 +406,10 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the margin on the top side of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The top margin.</value>
 		[DefaultValue (0d)]
 		public double MarginTop {
 			get { return margin.Top; }
@@ -367,6 +420,10 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the margin on the bottom side of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The bottom margin.</value>
 		[DefaultValue (0d)]
 		public double MarginBottom {
 			get { return margin.Bottom; }
@@ -377,6 +434,10 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the vertical placement/alignment of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The vertical placement.</value>
 		public WidgetPlacement VerticalPlacement {
 			get { return alignVertical; }
 			set {
@@ -386,6 +447,10 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the horizontal placement/alignment of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The horizontal placement.</value>
 		public WidgetPlacement HorizontalPlacement {
 			get { return alignHorizontal; }
 			set {
@@ -395,6 +460,11 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Get the placement/alignment of the <see cref="Xwt.Widget"/> for the specified orientation.
+		/// </summary>
+		/// <returns>The alignment for an orientation.</returns>
+		/// <param name="or">The orientation of the container.</param>
 		internal WidgetPlacement AlignmentForOrientation (Orientation or)
 		{
 			if (or == Orientation.Vertical)
@@ -403,6 +473,10 @@ namespace Xwt
 				return HorizontalPlacement;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="Xwt.Widget"/> expands to fill all available vertical space.
+		/// </summary>
+		/// <value><c>true</c> if the widget expands vertically; otherwise, <c>false</c>.</value>
 		public bool ExpandVertical {
 			get { return expandVertical; }
 			set {
@@ -412,6 +486,10 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="Xwt.Widget"/> expands to fill all available horizontal space.
+		/// </summary>
+		/// <value><c>true</c> if the widget expands horizontally; otherwise, <c>false</c>.</value>
 		public bool ExpandHorizontal {
 			get { return expandHorizontal; }
 			set {
@@ -421,6 +499,11 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Determines whether this <see cref="Xwt.Widget"/> expands in a specific orientation.
+		/// </summary>
+		/// <returns><c>true</c>, if the widget expands in the specified orientation, <c>false</c> otherwise.</returns>
+		/// <param name="or">Or.</param>
 		internal bool ExpandsForOrientation (Orientation or)
 		{
 			if (or == Orientation.Vertical)
@@ -429,16 +512,26 @@ namespace Xwt
 				return ExpandHorizontal;
 		}
 
+		/// <summary>
+		/// Shows this widget.
+		/// </summary>
 		public void Show ()
 		{
 			Visible = true;
 		}
 		
+		/// <summary>
+		/// Hides this widget.
+		/// </summary>
 		public void Hide ()
 		{
 			Visible = false;
 		}
 		
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="Xwt.Widget"/> is visible.
+		/// </summary>
+		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
 		[DefaultValue (true)]
 		public bool Visible {
 			get { return Backend.Visible; }
@@ -448,32 +541,61 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="Xwt.Widget"/> is sensitive.
+		/// </summary>
+		/// <value><c>true</c> if sensitive; otherwise, <c>false</c>.</value>
 		[DefaultValue (true)]
 		public bool Sensitive {
 			get { return Backend.Sensitive; }
 			set { Backend.Sensitive = value; }
 		}
 		
+		/// <summary>
+		/// Gets or sets a value indicating whether this this <see cref="Xwt.Widget"/> can get focus.
+		/// </summary>
+		/// <value><c>true</c> if this widget can get focus; otherwise, <c>false</c>.</value>
 		[DefaultValue (true)]
 		public bool CanGetFocus {
 			get { return Backend.CanGetFocus; }
 			set { Backend.CanGetFocus = value; }
 		}
 		
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="Xwt.Widget"/> has the focus.
+		/// </summary>
+		/// <value><c>true</c> if this widget has focus; otherwise, <c>false</c>.</value>
 		[DefaultValue (true)]
 		public bool HasFocus {
 			get { return Backend.HasFocus; }
 		}
 		
+		/// <summary>
+		/// Gets or sets the opacity of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The opacity of this widget.</value>
+		/// <remarks>Not all toolkits support widget opacity. For toolkits that do not support it,
+		/// setting the opacity has no effect. Examine the <see cref="Xwt.Toolkit.SupportedFeatures"/>
+		/// property of the current <see cref="Xwt.IWidgetSurface.ToolkitEngine"/> (member of <see cref="Xwt.Widget.Surface"/>)
+		/// to determine if the current toolkit supports this feature.</remarks>
 		[DefaultValue (1d)]
 		public double Opacity {
 			get { return Backend.Opacity; }
 			set { Backend.Opacity = value; }
 		}
 
+		/// <summary>
+		/// Gets or sets the name of this widget.
+		/// </summary>
+		/// <value>The widgets name.</value>
+		/// <remarks>The name can be used to identify this widget by e.g. designers.</remarks>
 		[DefaultValue (null)]
 		public string Name { get; set; }
 		
+		/// <summary>
+		/// Gets the parent widget of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The parent.</value>
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public Widget Parent { get; private set; }
 
@@ -485,11 +607,19 @@ namespace Xwt
 
 		Widget ExternalParent { get; set; }
 
+		/// <summary>
+		/// Gets the widgets surface.
+		/// </summary>
+		/// <value>The surface of this widget.</value>
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public IWidgetSurface Surface {
 			get { return this; }
 		}
 		
+		/// <summary>
+		/// Gets or sets the content of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The content of the widget.</value>
 		protected Widget Content {
 			get { return contentWidget; }
 			set {
@@ -506,6 +636,10 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Gets the size of this <see cref="Xwt.Widget"/>.
+		/// </summary>
+		/// <value>The size of the widget.</value>
 		public Size Size {
 			get { return Backend.Size; }
 		}
@@ -517,7 +651,7 @@ namespace Xwt
 		/// The minimum width.
 		/// </value>
 		/// <remarks>
-		/// Minimum width for the widget. If set to -1, the widget's default minimun size will be used.
+		/// Minimum width for the widget. If set to -1, the widget's default minimum size will be used.
 		/// </remarks>
 		[DefaultValue((double)-1)]
 		public double MinWidth {
@@ -538,7 +672,7 @@ namespace Xwt
 		/// The minimum height.
 		/// </value>
 		/// <remarks>
-		/// Minimum height for the widget. If set to -1, the widget's default minimun size will be used.
+		/// Minimum height for the widget. If set to -1, the widget's default minimum size will be used.
 		/// </remarks>
 		[DefaultValue((double)-1)]
 		public double MinHeight {
@@ -609,11 +743,19 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Gets or sets the background color.
+		/// </summary>
+		/// <value>The background color of the widget.</value>
 		public Color BackgroundColor {
 			get { return Backend.BackgroundColor; }
 			set { Backend.BackgroundColor = value; }
 		}
 
+		/// <summary>
+		/// Gets or sets the tooltip text.
+		/// </summary>
+		/// <value>The tooltip text.</value>
 		[DefaultValue ("")]
 		public string TooltipText {
 			get { return Backend.TooltipText ?? ""; }
@@ -635,11 +777,20 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Determines the value whether the cursor is set and should be serialized.
+		/// </summary>
+		/// <returns><c>true</c>, if the cursor should be serialized , <c>false</c> otherwise.</returns>
 		public bool ShouldSerializeCursor ()
 		{
 			return Cursor != CursorType.Arrow;
 		}
 
+		/// <summary>
+		/// Converts widget relative coordinates to screen coordinates.
+		/// </summary>
+		/// <returns>The screen coordinates.</returns>
+		/// <param name="widgetCoordinates">The relative widget coordinates.</param>
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
 			return Backend.ConvertToScreenCoordinates (widgetCoordinates);
@@ -655,81 +806,151 @@ namespace Xwt
 			get { return new Rectangle (ConvertToScreenCoordinates (new Point (0,0)), Size); }
 		}
 		
+		/// <summary>
+		/// Determines a value whether the widgets parent should be serialized
+		/// </summary>
+		/// <returns><c>true</c>, if parent should be serialized, <c>false</c> otherwise.</returns>
 		public bool ShouldSerializeParent ()
 		{
 			return false;
 		}
 		
+		/// <summary>
+		/// Sets the focus on this widget.
+		/// </summary>
 		public void SetFocus ()
 		{
 			Backend.SetFocus ();
 		}
 		
+		/// <summary>
+		/// Creates a new drag operation originating from this widget.
+		/// </summary>
+		/// <returns>The new drag operation.</returns>
 		public DragOperation CreateDragOperation ()
 		{
 			currentDragOperation = new DragOperation (this);
 			return currentDragOperation;
 		}
 		
+		/// <summary>
+		/// Starts a drag operation with the specified drag start arguments.
+		/// </summary>
+		/// <param name="sdata">The drag start arguments to start the drag with.</param>
 		internal void DragStart (DragStartData sdata)
 		{
 			Backend.DragStart (sdata);
 		}
 		
+		/// <summary>
+		/// Sets this widget as a potential drop destination.
+		/// </summary>
+		/// <param name='types'>Types of data that can be dropped on this widget.</param>
 		public void SetDragDropTarget (params TransferDataType[] types)
 		{
 			Backend.SetDragTarget (types, DragDropAction.All);
 		}
 		
+		/// <summary>
+		/// Sets this widget as a potential drop destination.
+		/// </summary>
+		/// <param name='types'>Types of data that can be dropped on this widget.</param>
 		public void SetDragDropTarget (params Type[] types)
 		{
 			Backend.SetDragTarget (types.Select (t => TransferDataType.FromType (t)).ToArray (), DragDropAction.All);
 		}
 		
+		/// <summary>
+		/// Sets this widget as a potential drop destination.
+		/// </summary>
+		/// <param name='types'>Types of data that can be dropped on this widget.</param>
+		/// <param name='dragAction'>Bitmask of possible actions for a drop on this widget</param>
 		public void SetDragDropTarget (DragDropAction dragAction, params TransferDataType[] types)
 		{
 			Backend.SetDragTarget (types, dragAction);
 		}
 		
+		/// <summary>
+		/// Sets this widget as a potential drop destination.
+		/// </summary>
+		/// <param name='types'>Types of data that can be dropped on this widget.</param>
+		/// <param name='dragAction'>Bitmask of possible actions for a drop on this widget</param>
 		public void SetDragDropTarget (DragDropAction dragAction, params Type[] types)
 		{
 			Backend.SetDragTarget (types.Select (t => TransferDataType.FromType (t)).ToArray(), dragAction);
 		}
 		
+		/// <summary>
+		/// Sets up this widget so that XWT will start a drag operation when the user clicks and drags on this widget.
+		/// </summary>
+		/// <param name='types'>Types of data that can be dragged from this widget</param>
 		public void SetDragSource (params TransferDataType[] types)
 		{
 			Backend.SetDragSource (types, DragDropAction.All);
 		}
 		
+		/// <summary>
+		/// Sets up this widget so that XWT will start a drag operation when the user clicks and drags on this widget.
+		/// </summary>
+		/// <param name='types'>Types of data that can be dragged from this widget</param>
 		public void SetDragSource (params Type[] types)
 		{
 			Backend.SetDragSource (types.Select (t => TransferDataType.FromType (t)).ToArray(), DragDropAction.All);
 		}
 		
+		/// <summary>
+		/// Sets up this widget so that XWT will start a drag operation when the user clicks and drags on this widget.
+		/// </summary>
+		/// <param name='types'>Types of data that can be dragged from this widget</param>
+		/// <param name='dragAction'>Bitmask of possible actions for a drag from this widget</param>
 		public void SetDragSource (DragDropAction dragAction, params TransferDataType[] types)
 		{
 			Backend.SetDragSource (types, dragAction);
 		}
 		
+		/// <summary>
+		/// Sets up this widget so that XWT will start a drag operation when the user clicks and drags on this widget.
+		/// </summary>
+		/// <param name='types'>Types of data that can be dragged from this widget</param>
+		/// <param name='dragAction'>Bitmask of possible actions for a drag from this widget</param>
 		public void SetDragSource (DragDropAction dragAction, params Type[] types)
 		{
 			Backend.SetDragSource (types.Select (t => TransferDataType.FromType (t)).ToArray(), dragAction);
 		}
 		
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="Xwt.Widget"/> supports custom scrolling.
+		/// </summary>
+		/// <value><c>true</c> if this widget supports custom scrolling; otherwise, <c>false</c>.</value>
 		internal protected virtual bool SupportsCustomScrolling {
 			get { return false; }
 		}
 		
+		/// <summary>
+		/// Sets the scroll adjustments for custom scrolling.
+		/// </summary>
+		/// <param name="horizontal">The horizontal adjustment backend.</param>
+		/// <param name="vertical">The vertical adjustment backend.</param>
 		protected virtual void SetScrollAdjustments (ScrollAdjustment horizontal, ScrollAdjustment vertical)
 		{
 		}
 		
 		/// <summary>
-		/// Raises the DragOverCheck event.
+		/// Raises the DragOverCheck event, when the mouse is moved over the widget in a drag&amp;drop operation.
 		/// </summary>
-		/// <param name='args'>
-		/// Arguments.
-		/// </param>
+		/// <param name="args">The drag over check event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnDragOverCheck"/> to handle the event internally and call
+		/// <see cref="Xwt.Widget.OnDragOverCheck"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnDragOverCheck"/>
+		/// is overriden.
+		/// This event arguments provide information about the type of the data that is going
+		/// to be dropped, but not the actual data. Set <see cref="Xwt.DragOverCheckEventArgs.AllowedAction"/>
+		/// to the allowed action for this widget, or to <see cref="Xwt.DragDropAction.None"/> if no
+		/// dropping is allowed.
+		/// Do not set the value or set it to <see cref="Xwt.DragDropAction.Default"/> and override <see cref="OnDragOver"/>
+		/// to analyse the actual data transferred by the drag operation.
+		/// </remarks>
 		internal protected virtual void OnDragOverCheck (DragOverCheckEventArgs args)
 		{
 			if (dragOverCheck != null)
@@ -737,11 +958,19 @@ namespace Xwt
 		}
 		
 		/// <summary>
-		/// Raises the DragOver event.
+		/// Raises the DragOver event, when the mouse is moved over the widget in a drag&amp;drop operation.
 		/// </summary>
-		/// <param name='args'>
-		/// Arguments.
-		/// </param>
+		/// <param name="args">The drag over event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnDragOver"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnDragOver"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnDragOver"/>
+		/// is overridden.
+		/// This event arguments provide information about the actual data that is going
+		/// to be dropped. Set <see cref="Xwt.DragOverEventArgs.AllowedAction"/> to the
+		/// allowed action for this widget, or to <see cref="Xwt.DragDropAction.None"/> if no
+		/// dropping is allowed.
+		/// </remarks>
 		internal protected virtual void OnDragOver (DragOverEventArgs args)
 		{
 			if (dragOver != null)
@@ -749,11 +978,21 @@ namespace Xwt
 		}
 		
 		/// <summary>
-		/// Raises the DragDropCheck event.
+		/// Raises the DragDropCheck event to check if a drop operation is allowed on the widget.
 		/// </summary>
-		/// <param name='args'>
-		/// Arguments.
-		/// </param>
+		/// <param name="args">The drag check event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnDragDropCheck"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnDragDropCheck"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnDragDropCheck"/>
+		/// is overridden.
+		/// This event arguments provide information about the type of the data that is going
+		/// to be dropped, but not the actual data. Set <see cref="Xwt.DragCheckEventArgs.Result"/> to
+		/// <see cref="DragDropResult.Success"/> to finish the drop action, or <see cref="DragDropResult.Canceled"/>
+		/// to abort it.
+		/// To request the transferred data do not set the result value or set it to <see cref="Xwt.DragDropAction.None"/>
+		/// and override <see cref="Xwt.Widget.OnDragDrop"/> to handle the dropped data.
+		/// </remarks>
 		internal protected virtual void OnDragDropCheck (DragCheckEventArgs args)
 		{
 			if (dragDropCheck != null)
@@ -761,11 +1000,18 @@ namespace Xwt
 		}
 		
 		/// <summary>
-		/// Raises the DragDrop event.
+		/// Raises the DragDrop event when a drop has been performed.
 		/// </summary>
-		/// <param name='args'>
-		/// Arguments.
-		/// </param>
+		/// <param name="args">The drop event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnDragDrop"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnDragDrop"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnDragDrop"/>
+		/// is overridden.
+		/// This event arguments provide information about the dropped data and the actual data.
+		/// Set <see cref="Xwt.DragEventArgs.Success"/> to <c>true</c> when the drop
+		/// was successful, <c>false</c> otherwise.
+		/// </remarks>
 		internal protected virtual void OnDragDrop (DragEventArgs args)
 		{
 			if (dragDrop != null)
@@ -775,15 +1021,26 @@ namespace Xwt
 		/// <summary>
 		/// Raises the DragLeave event.
 		/// </summary>
-		/// <param name='args'>
-		/// Arguments.
-		/// </param>
+		/// <remarks>
+		/// Override <see cref="OnDragLeave"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnDragLeave"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnDragLeave"/>
+		/// is overridden.
+		/// </remarks>
 		internal protected virtual void OnDragLeave (EventArgs args)
 		{
 			if (dragLeave != null)
 				dragLeave (this, args);
 		}
 		
+		/// <summary>
+		/// Creates a new drag operation.
+		/// </summary>
+		/// <returns>
+		/// The information about the starting drag operation and the data to be transferred,
+		/// or <c>null</c> to abort dragging.
+		/// </returns>
+		/// <remarks>Override to provide custom <see cref="Xwt.Backends.DragStartData"/> for the drag action.</remarks>
 		protected DragStartData InternalDragStarted ()
 		{
 			DragStartedEventArgs args = new DragStartedEventArgs ();
@@ -796,15 +1053,29 @@ namespace Xwt
 		/// <summary>
 		/// Raises the DragStarted event.
 		/// </summary>
-		/// <param name='args'>
-		/// Arguments.
-		/// </param>
+		/// <param name="args">The drag started event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnDragStarted"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnDragStarted"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnDragStarted"/>
+		/// is overridden.
+		/// </remarks>
 		protected virtual void OnDragStarted (DragStartedEventArgs args)
 		{
 			if (dragStarted != null)
 				dragStarted (this, args);
 		}
 		
+		/// <summary>
+		/// Raises the drag finished event.
+		/// </summary>
+		/// <param name="args">The drag finished event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnDragFinished"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnDragFinished"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnDragFinished"/>
+		/// is overridden.
+		/// </remarks>
 		internal void OnDragFinished (DragFinishedEventArgs args)
 		{
 			if (currentDragOperation != null) {
@@ -813,31 +1084,79 @@ namespace Xwt
 				dop.NotifyFinished (args);
 			}
 		}
-		
+
+		/// <summary>
+		/// Raises the key pressed event.
+		/// </summary>
+		/// <param name="args">The key pressed event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnKeyPressed"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnKeyPressed"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnKeyPressed"/>
+		/// is overridden.
+		/// </remarks>
 		internal protected virtual void OnKeyPressed (KeyEventArgs args)
 		{
 			if (keyPressed != null)
 				keyPressed (this, args);
 		}
-		
+
+		/// <summary>
+		/// Raises the key released event.
+		/// </summary>
+		/// <param name="args">The key released event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnKeyReleased"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnKeyReleased"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnKeyReleased"/>
+		/// is overridden.
+		/// </remarks>
 		internal protected virtual void OnKeyReleased (KeyEventArgs args)
 		{
 			if (keyReleased != null)
 				keyReleased (this, args);
 		}
 
+		/// <summary>
+		/// Raises the preview text input event.
+		/// </summary>
+		/// <param name="args">The preview text input event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnPreviewTextInput"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnPreviewTextInput"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnPreviewTextInput"/>
+		/// is overridden.
+		/// </remarks>
 		internal protected virtual void OnPreviewTextInput (PreviewTextInputEventArgs args)
 		{
 			if (previewTextInput != null)
 				previewTextInput (this, args);
 		}
-		
+
+		/// <summary>
+		/// Raises the got focus event.
+		/// </summary>
+		/// <remarks>
+		/// Override <see cref="OnGotFocus"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnGotFocus"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnGotFocus"/>
+		/// is overridden.
+		/// </remarks>
 		internal protected virtual void OnGotFocus (EventArgs args)
 		{
 			if (gotFocus != null)
 				gotFocus (this, args);
 		}
-		
+
+		/// <summary>
+		/// Raises the lost focus event.
+		/// </summary>
+		/// <remarks>
+		/// Override <see cref="OnLostFocus"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnLostFocus"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnLostFocus"/>
+		/// is overridden.
+		/// </remarks>
 		internal protected virtual void OnLostFocus (EventArgs args)
 		{
 			if (lostFocus != null)
@@ -847,9 +1166,13 @@ namespace Xwt
 		/// <summary>
 		/// Called when the mouse enters the widget
 		/// </summary>
-		/// <param name='args'>
-		/// Arguments.
-		/// </param>
+		/// <param name="args">The mouse entered event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnMouseEntered"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnMouseEntered"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnMouseEntered"/>
+		/// is overridden.
+		/// </remarks>
 		protected virtual void OnMouseEntered (EventArgs args)
 		{
 			if (mouseEntered != null)
@@ -859,27 +1182,61 @@ namespace Xwt
 		/// <summary>
 		/// Called when the mouse leaves the widget
 		/// </summary>
-		/// <param name='args'>
-		/// Arguments.
-		/// </param>
+		/// <param name="args">The mouse exited event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnMouseExited"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnMouseExited"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnMouseExited"/>
+		/// is overridden.
+		/// </remarks>
 		protected virtual void OnMouseExited (EventArgs args)
 		{
 			if (mouseExited != null)
 				mouseExited (this, args);
 		}
-		
+
+		/// <summary>
+		/// Raises the button pressed event.
+		/// </summary>
+		/// <param name="args">The button pressed event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnButtonPressed"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnButtonPressed"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnButtonPressed"/>
+		/// is overridden.
+		/// </remarks>
 		protected virtual void OnButtonPressed (ButtonEventArgs args)
 		{
 			if (buttonPressed != null)
 				buttonPressed (this, args);
 		}
-		
+
+		/// <summary>
+		/// Raises the button released event.
+		/// </summary>
+		/// <param name="args">The button released event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnButtonReleased"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnButtonReleased"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnButtonReleased"/>
+		/// is overridden.
+		/// </remarks>
 		protected virtual void OnButtonReleased (ButtonEventArgs args)
 		{
 			if (buttonReleased != null)
 				buttonReleased (this, args);
 		}
-		
+
+		/// <summary>
+		/// Raises the mouse moved event.
+		/// </summary>
+		/// <param name="args">The mouse moved event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnMouseMoved"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnMouseMoved"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnMouseMoved"/>
+		/// is overridden.
+		/// </remarks>
 		protected virtual void OnMouseMoved (MouseMovedEventArgs args)
 		{
 			if (mouseMoved != null)
@@ -897,12 +1254,25 @@ namespace Xwt
 			OnBoundsChanged ();
 		}
 
+		/// <summary>
+		/// Raises the mouse scrolled event.
+		/// </summary>
+		/// <param name="args">The mouse scrolled event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnMouseScrolled"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnMouseScrolled"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnMouseScrolled"/>
+		/// is overridden.
+		/// </remarks>
 		protected virtual void OnMouseScrolled (MouseScrolledEventArgs args)
 		{
 			if (mouseScrolled != null)
 				mouseScrolled(this, args);
 		}
 
+		/// <summary>
+		/// Sets the widget to be a native widget in an other toolkit and to reallocate itself on size changes.
+		/// </summary>
 		internal void SetExtractedAsNative ()
 		{
 			// If the widget is going to be embedded in another toolkit it is not going
@@ -914,13 +1284,27 @@ namespace Xwt
 				};
 			}
 		}
-		
+
+		/// <summary>
+		/// Raises the bounds changed event.
+		/// </summary>
+		/// <remarks>
+		/// Override <see cref="OnBoundsChanged"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnBoundsChanged"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnBoundsChanged"/>
+		/// is overridden.
+		/// </remarks>
 		protected virtual void OnBoundsChanged ()
 		{
 			if (boundsChanged != null)
 				boundsChanged (this, EventArgs.Empty);
 		}
 		
+		/// <summary>
+		/// Gets the current widget backend.
+		/// </summary>
+		/// <returns>The widget backend.</returns>
+		/// <param name="w">The Xwt widget.</param>
 		protected static IWidgetBackend GetWidgetBackend (Widget w)
 		{
 			return (IWidgetBackend) GetBackend (w);
@@ -1068,6 +1452,9 @@ namespace Xwt
 			return Backend.GetPreferredSize (widthConstraint, heightConstraint);
 		}
 
+		/// <summary>
+		/// Called when the preferred size of a child widget has changed.
+		/// </summary>
 		protected virtual void OnChildPreferredSizeChanged ()
 		{
 		}
@@ -1103,6 +1490,9 @@ namespace Xwt
 		static List<Window> resizeWindows = new List<Window> ();
 		static bool delayedSizeNegotiationRequested;
 		
+		/// <summary>
+		/// Called when the preferred size of the widget has changed.
+		/// </summary>
 		protected virtual void OnPreferredSizeChanged ()
 		{
 			// When the preferred size changes, we reset the sizes we have cached
@@ -1116,6 +1506,9 @@ namespace Xwt
 				NotifySizeChangeToParent ();
 		}
 
+		/// <summary>
+		/// Propagate a placement/alignment change to the parent
+		/// </summary>
 		internal void OnPlacementChanged ()
 		{
 			if (InternalParent != null)
@@ -1124,6 +1517,10 @@ namespace Xwt
 				((Window)parentWindow).OnChildPlacementChanged (this);
 		}
 
+		/// <summary>
+		/// Called when the placement/alignment of a child widget has changed.
+		/// </summary>
+		/// <param name="child">The child widget with the changed placement.</param>
 		protected virtual void OnChildPlacementChanged (Widget child)
 		{
 			var ph = Backend as IChildPlacementHandler;
@@ -1133,6 +1530,9 @@ namespace Xwt
 				QueueForReallocate ();
 		}
 
+		/// <summary>
+		/// Queues a reallocation of this widget.
+		/// </summary>
 		public void QueueForReallocate ()
 		{
 			reallocationQueue.Add (this);
@@ -1164,6 +1564,10 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Queues a window size negotiation, if the toolkit backend handles size negotiation on its own.
+		/// </summary>
+		/// <param name="window">The window to queue the size negotiation.</param>
 		internal static void QueueWindowSizeNegotiation (Window window)
 		{
 			resizeWindows.Add ((Window)window);
@@ -1286,6 +1690,10 @@ namespace Xwt
 				return this;
 		}
 
+		/// <summary>
+		/// Registers a widget as a child of this widget.
+		/// </summary>
+		/// <param name="w">The new child widget.</param>
 		protected void RegisterChild (Widget w)
 		{
 			if (w == null)
@@ -1323,6 +1731,10 @@ namespace Xwt
 			w.OnPreferredSizeChanged ();
 		}
 		
+		/// <summary>
+		/// Unregisters a child widget.
+		/// </summary>
+		/// <param name="w">The width.</param>
 		protected void UnregisterChild (Widget w)
 		{
 			if (w == null)
@@ -1384,13 +1796,15 @@ namespace Xwt
 		/// Raised when the mouse is moved over the widget in a drag&amp;drop operation
 		/// </summary>
 		/// <remarks>
-		/// The subscriber of the event should set the value of AllowedAction in the
-		/// provided event args object. If the value is not set or it is set to Default,
-		/// the action will be determined by the result of the DragOver event.
+		/// The subscriber of the event should set the value of <see cref="Xwt.DragOverCheckEventArgs.AllowedAction"/>
+		/// in the provided event args object. If the value is not set or it is set to
+		/// <see cref="Xwt.DragDropAction.Default"/>, the action will be determined by the
+		/// result of the DragOver event. To deny dropping on this widget the allowed action must
+		/// be set to <see cref="Xwt.DragDropAction.None"/>.
 		/// 
 		/// This event provides information about the type of the data that is going
 		/// to be dropped, but not the actual data. If you need the actual data
-		/// to decide if the drop is allowed or not, you have to subscribe the DragOver
+		/// to decide if the drop is allowed or not, you have to subscribe the <see cref="DragOver"/>
 		/// event.
 		/// </remarks>
 		public event EventHandler<DragOverCheckEventArgs> DragOverCheck {
@@ -1408,14 +1822,17 @@ namespace Xwt
 		/// Raised when the mouse is moved over the widget in a drag&amp;drop operation
 		/// </summary>
 		/// <remarks>
-		/// The subscriber of the event should set the value of AllowedAction in the
-		/// provided event args object. If the value is not set or it is set to Default,
-		/// the action will be determined by the result of the DragDropCheck event.
+		/// The subscriber of the event should set the value of <see cref="Xwt.DragOverEventArgs.AllowedAction"/>
+		/// in the provided event args object. If the value is not set or it is set to
+		/// <see cref="Xwt.DragDropAction.Default"/>, the action will be determined by the
+		/// result of the DragDropCheck event. To deny dropping on this widget the allowed action must
+		/// be set to <see cref="Xwt.DragDropAction.None"/>.
 		/// 
 		/// This event provides information about the actual data that is going
 		/// to be dropped. Getting the data may be inefficient in some cross-process drag&amp;drop scenarios,
 		/// so if you don't need the actual data to decide the allowed drop operation, 
-		/// and knowing the type of the data is enough, then the DragOverCheck event is a better option.
+		/// and knowing the type of the data is enough, then the <see cref="DragOverCheck"/>
+		/// event is a better option.
 		/// </remarks>
 		public event EventHandler<DragOverEventArgs> DragOver {
 			add {
@@ -1431,6 +1848,16 @@ namespace Xwt
 		/// <summary>
 		/// Raised to check if a drop operation is allowed on the widget
 		/// </summary>
+		/// <remarks>
+		/// The subscriber of the event can set the value of <see cref="Xwt.DragCheckEventArgs.Result"/>
+		/// in the provided event args object. Set it to <see cref="Xwt.DragDropResult.Success"/> to
+		/// finish the drop without requesting the actual data, or to <see cref="Xwt.DragDropResult.Canceled"/>
+		/// to abort/deny the drop action.
+		/// 
+		/// This event provides information about the type of the data that is being dropped,
+		/// but not the actual data. If you need the actual data to decide if the drop is allowed
+		/// or not, you have to subscribe the <see cref="DragDrop"/> event.
+		/// </remarks>
 		public event EventHandler<DragCheckEventArgs> DragDropCheck {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.DragDropCheck, dragDropCheck);
@@ -1460,6 +1887,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raised when the mouse is leaving the widget in a drag operation.
+		/// </summary>
 		public event EventHandler DragLeave {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.DragLeave, dragLeave);
@@ -1471,6 +1901,14 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raised when a new drag operation has been started.
+		/// </summary>
+		/// <remarks>
+		/// This event provides access to the started drag operation.
+		/// Use <see cref="Xwt.DragStartedEventArgs.DragOperation"/> to configure the
+		/// drag opration and to add data to transfer.
+		/// </remarks>
 		public event EventHandler<DragStartedEventArgs> DragStarted {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.DragStarted, dragStarted);
@@ -1482,6 +1920,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raised when a key has been pressed.
+		/// </summary>
 		public event EventHandler<KeyEventArgs> KeyPressed {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.KeyPressed, keyPressed);
@@ -1493,6 +1934,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Raised when a key has been released.
+		/// </summary>
 		public event EventHandler<KeyEventArgs> KeyReleased {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.KeyReleased, keyReleased);
@@ -1504,6 +1948,9 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Raised when a text has been entered.
+		/// </summary>
 		public event EventHandler<PreviewTextInputEventArgs> PreviewTextInput {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.PreviewTextInput, previewTextInput);
@@ -1530,7 +1977,7 @@ namespace Xwt
 		}
 		
 		/// <summary>
-		/// Raised when the widget loses the focus
+		/// Raised when the widget looses the focus
 		/// </summary>
 		public event EventHandler LostFocus {
 			add {
@@ -1571,6 +2018,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Occurs when a mouse button has been pressed.
+		/// </summary>
 		public event EventHandler<ButtonEventArgs> ButtonPressed {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.ButtonPressed, buttonPressed);
@@ -1582,6 +2032,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Occurs when a mouse button has been released.
+		/// </summary>
 		public event EventHandler<ButtonEventArgs> ButtonReleased {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.ButtonReleased, buttonReleased);
@@ -1593,6 +2046,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Occurs when the mouse has moved.
+		/// </summary>
 		public event EventHandler<MouseMovedEventArgs> MouseMoved {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.MouseMoved, mouseMoved);
@@ -1604,6 +2060,9 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Occurs when the bounds of this widget have changed.
+		/// </summary>
 		public event EventHandler BoundsChanged {
 			add {
 				BackendHost.OnBeforeEventAdd (WidgetEvent.BoundsChanged, boundsChanged);
@@ -1615,6 +2074,9 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Occurs when scroll action has been performed.
+		/// </summary>
 		public event EventHandler<MouseScrolledEventArgs> MouseScrolled {
 			add {
 				BackendHost.OnBeforeEventAdd(WidgetEvent.MouseScrolled, mouseScrolled);

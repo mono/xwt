@@ -28,6 +28,9 @@ using System;
 
 namespace Xwt
 {
+	/// <summary>
+	/// Mouse scroll directions.
+	/// </summary>
 	public enum ScrollDirection {
 		Up,
 		Down,
@@ -45,37 +48,48 @@ namespace Xwt
 			Direction = direction;
 		}
 
+		/// <summary>
+		/// Gets the scroll direction.
+		/// </summary>
+		/// <value>The scroll direction.</value>
 		public ScrollDirection Direction { get; private set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this event has been handled
 		/// </summary>
 		/// <value><c>true</c> if handled; otherwise, <c>false</c>.</value>
-		/// <remarks>Setting this property to <c>true</c> will prevent the event from bubbling up in the widget hierarchy</remarks>
+		/// <remarks>
+		/// Setting <see cref="Xwt.MouseScrolledEventArgs.Handled"/> to <c>true</c> will mark the event
+		/// as handled and prevent the event from bubbling up in the widget hierarchy.
+		/// Handled events will be ignored by a backend in most cases.
+		/// For example marking a scroll event of a <see cref="Xwt.ScrollView"/> as handled will prevent
+		/// the backend from scrolling.
+		/// </remarks>
 		public bool Handled { get; set; }
 
 		/// <summary>
-		/// Gets or sets the X coordinate of the mouse cursor
+		/// Gets or sets the X coordinate of the mouse cursor (relative to the widget receiving the event).
 		/// </summary>
-		/// <value>The x.</value>
+		/// <value>The X coordinate of the cursor.</value>
 		public double X { get; private set; }
 
 		/// <summary>
-		/// Gets or sets the Y coordinate of the mouse cursor
+		/// Gets or sets the Y coordinate of the mouse cursor (relative to the widget receiving the event).
 		/// </summary>
-		/// <value>The x.</value>
+		/// <value>The Y coordinate of the cursor.</value>
 		public double Y { get; private set; }
 
 		/// <summary>
-		/// Location of the mouse cursor
+		/// Location of the mouse cursor (in widget coordinates).
 		/// </summary>
 		public Point Position {
 			get { return new Point (X, Y); }
 		}
 
 		/// <summary>
-		/// When the event occurred
+		/// Gets the time when this event occurred.
 		/// </summary>
+		/// <value>The timestamp of the event.</value>
 		public long Timestamp { get; private set; }
 	}
 }

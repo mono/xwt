@@ -35,6 +35,9 @@ using Xwt.Backends;
 
 namespace Xwt
 {
+	/// <summary>
+	/// Drag operation, used to initialize a new drag operation.
+	/// </summary>
 	public class DragOperation
 	{
 		TransferDataSource data = new TransferDataSource ();
@@ -45,8 +48,15 @@ namespace Xwt
 		double hotX;
 		double hotY;
 		
+		/// <summary>
+		/// Occurs when the drag operation has finished.
+		/// </summary>
 		public event EventHandler<DragFinishedEventArgs> Finished;
 		
+		/// <summary>
+		/// Initializes a new <see cref="Xwt.DragOperation"/> from a specified widget.
+		/// </summary>
+		/// <param name="w">The widget to start the drag operation from.</param>
 		internal DragOperation (Widget w)
 		{
 			source = w;
@@ -65,10 +75,20 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Gets the data collection of data transferred by this drag.
+		/// </summary>
+		/// <value>The data.</value>
 		public TransferDataSource Data {
 			get { return data; }
 		}
 		
+		/// <summary>
+		/// Sets the drag image.
+		/// </summary>
+		/// <param name="image">The drag Image.</param>
+		/// <param name="hotX">The image hotspot X coordinate.</param>
+		/// <param name="hotY">The image hotspot Y coordinate.</param>
 		public void SetDragImage (Image image, double hotX, double hotY)
 		{
 			if (started)
@@ -78,6 +98,9 @@ namespace Xwt
 			this.hotY = hotY;
 		}
 		
+		/// <summary>
+		/// Start this drag operation.
+		/// </summary>
 		public void Start ()
 		{
 			if (!started) {
@@ -86,12 +109,21 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Notifies subscriptors that the drag operation is finished.
+		/// </summary>
+		/// <param name="args">The drag finished arguments.</param>
 		internal void NotifyFinished (DragFinishedEventArgs args)
 		{
 			if (Finished != null)
 				Finished (this, args);
 		}
 		
+		/// <summary>
+		/// Gets the arguments for the starting drag operation.
+		/// </summary>
+		/// <returns>The drag start arguments.</returns>
+		/// <exception cref="System.InvalidOperationException">The drag image is not set.</exception>
 		internal DragStartData GetStartData ()
 		{
 			if (image == null)
@@ -102,14 +134,49 @@ namespace Xwt
 		
 	}
 	
+	/// <summary>
+	/// Interface implemented by data stores containing data for drag &amp; drop and copy &amp; paste operations
+	/// </summary>
 	public interface ITransferData
 	{
+		/// <summary>
+		/// Gets the transferred text.
+		/// </summary>
+		/// <value>The transferred text.</value>
 		string Text { get; }
+
+		/// <summary>
+		/// Gets the transferred uris.
+		/// </summary>
+		/// <value>The transferred uris.</value>
+		/// <remarks>This is used for e.g. file and url copy and drag operations.</remarks>
 		Uri[] Uris { get; }
+
+		/// <summary>
+		/// Gets the transferred image.
+		/// </summary>
+		/// <value>The transferred image.</value>
 		Xwt.Drawing.Image Image { get; }
 		
+		/// <summary>
+		/// Gets the value identified by a specific transfer data type.
+		/// </summary>
+		/// <returns>The transferred value, or <c>null</c> if the store contains no value with the specific type.</returns>
+		/// <param name="type">The specific transfer data type.</param>
 		object GetValue (TransferDataType type);
+
+		/// <summary>
+		/// Gets the value identified by a specific <see cref="System.Type"/>.
+		/// </summary>
+		/// <returns>The transferred value.</returns>
+		/// <typeparam name="T">The Type of the transferred value.</typeparam>
 		T GetValue<T> () where T:class;
+
+		/// <summary>
+		/// Determines whether a value of the specified type is transferred.
+		/// </summary>
+		/// <returns><c>true</c> if this store contains a value of the specified type; otherwise, <c>false</c>.</returns>
+		/// <param name="type">The specific transfer data type.</param>
 		bool HasType (TransferDataType type);
 	}
 }

@@ -68,22 +68,45 @@ namespace Xwt
 
 		Dictionary<string,Image> stockIcons = new Dictionary<string, Image> ();
 
+		/// <summary>
+		/// Gets the current toolkit engine.
+		/// </summary>
+		/// <value>The engine currently used by Xwt.</value>
 		public static Toolkit CurrentEngine {
 			get { return currentEngine; }
 		}
 
+		/// <summary>
+		/// Gets all loaded toolkits.
+		/// </summary>
+		/// <value>The loaded toolkits.</value>
 		public static IEnumerable<Toolkit> LoadedToolkits {
 			get { return toolkits.Values; }
 		}
 
+		/// <summary>
+		/// Gets the application context.
+		/// </summary>
+		/// <value>The application context.</value>
 		internal ApplicationContext Context {
 			get { return context; }
 		}
 
+		/// <summary>
+		/// Gets the toolkit backend.
+		/// </summary>
+		/// <value>The toolkit backend.</value>
 		internal ToolkitEngineBackend Backend {
 			get { return backend; }
 		}
 
+		/// <summary>
+		/// Gets the toolkit task scheduler.
+		/// </summary>
+		/// <value>The toolkit specific task scheduler.</value>
+		/// <remarks>
+		/// The Xwt task scheduler marshals every Task to the Xwt GUI thread without concurrency.
+		/// </remarks>
 		internal XwtTaskScheduler Scheduler {
 			get { return scheduler; }
 		}
@@ -101,22 +124,38 @@ namespace Xwt
 			scheduler = new XwtTaskScheduler (this);
 		}
 
+		/// <summary>
+		/// Gets or sets the type of the toolkit.
+		/// </summary>
+		/// <value>The toolkit type.</value>
 		public ToolkitType Type {
 			get { return toolkitType; }
 			internal set { toolkitType = value; }
 		}
 
+		/// <summary>
+		/// Disposes all loaded toolkits.
+		/// </summary>
 		internal static void DisposeAll ()
 		{
 			foreach (var t in toolkits.Values)
 				t.Backend.Dispose ();
 		}
 
+		/// <summary>
+		/// Load toolkit identified by its full type name.
+		/// </summary>
+		/// <param name="fullTypeName">The <see cref="Type.FullName"/> of the toolkit type.</param>
 		public static Toolkit Load (string fullTypeName)
 		{
 			return Load (fullTypeName, true);
 		}
 
+		/// <summary>
+		/// Load toolkit identified by its full type name.
+		/// </summary>
+		/// <param name="fullTypeName">The <see cref="Type.FullName"/> of the toolkit type.</param>
+		/// <param name="isGuest">If set to <c>true</c> the toolkit is loaded as guest of another toolkit.</param>
 		internal static Toolkit Load (string fullTypeName, bool isGuest)
 		{
 			Toolkit t = new Toolkit ();
@@ -139,6 +178,10 @@ namespace Xwt
 			throw new InvalidOperationException ("Xwt engine not found");
 		}
 
+		/// <summary>
+		/// Load a toolkit of a specified type.
+		/// </summary>
+		/// <param name="type">The toolkit type.</param>
 		public static Toolkit Load (ToolkitType type)
 		{
 			var et = toolkits.Values.FirstOrDefault (tk => tk.toolkitType == type);
@@ -154,7 +197,7 @@ namespace Xwt
 		/// <summary>
 		/// Tries to load a toolkit
 		/// </summary>
-		/// <returns><c>true</c>, the toolkit could be loaded, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, the toolkit has been loaded, <c>false</c> otherwise.</returns>
 		/// <param name="type">Toolkit type</param>
 		/// <param name="toolkit">The loaded toolkit</param>
 		public static bool TryLoad (ToolkitType type, out Toolkit toolkit)
@@ -175,6 +218,11 @@ namespace Xwt
 			return false;
 		}
 
+		/// <summary>
+		/// Gets the <see cref="Type.FullName"/> of the toolkit identified by toolkit type.
+		/// </summary>
+		/// <returns>The toolkit type name.</returns>
+		/// <param name="type">The toolkit type.</param>
 		internal static string GetBackendType (ToolkitType type)
 		{
 			var t = knownBackends.FirstOrDefault (tk => tk.Type == type);
@@ -228,6 +276,11 @@ namespace Xwt
 			KeyboardHandler = Backend.CreateBackend<KeyboardHandler> ();
 		}
 
+		/// <summary>
+		/// Gets the toolkit backend from a loaded toolkit.
+		/// </summary>
+		/// <returns>The toolkit backend, or <c>null</c> if the toolkit is not loaded.</returns>
+		/// <param name="type">The Type of the loaded toolkit.</param>
 		internal static ToolkitEngineBackend GetToolkitBackend (Type type)
 		{
 			Toolkit t;
@@ -237,11 +290,19 @@ namespace Xwt
 				return null;
 		}
 
+		/// <summary>
+		/// Set the toolkit as the active toolkit used by Xwt.
+		/// </summary>
 		internal void SetActive ()
 		{
 			currentEngine = this;
 		}
 
+		/// <summary>
+		/// Gets a reference to the native widget wrapped by an Xwt widget
+		/// </summary>
+		/// <returns>The native widget currently used by Xwt for the specific widget.</returns>
+		/// <param name="w">The Xwt widget.</param>
 		public object GetNativeWidget (Widget w)
 		{
 			ValidateObject (w);
@@ -249,12 +310,22 @@ namespace Xwt
 			return backend.GetNativeWidget (w);
 		}
 
+		/// <summary>
+		/// Gets a reference to the image object wrapped by an XWT Image
+		/// </summary>
+		/// <returns>The native image object used by Xwt for the specific image.</returns>
+		/// <param name="image">The native Image object.</param>
 		public object GetNativeImage (Image image)
 		{
 			ValidateObject (image);
 			return backend.GetNativeImage (image);
 		}
 
+		/// <summary>
+		/// Creates a native toolkit object.
+		/// </summary>
+		/// <returns>A new native toolkit object.</returns>
+		/// <typeparam name="T">The type of the object to create.</typeparam>
 		public T CreateObject<T> () where T:new()
 		{
 			var oldEngine = currentEngine;
@@ -266,6 +337,10 @@ namespace Xwt
 			}
 		}
 
+		/// <summary>
+		/// Invokes the specified action on the GUI Thread.
+		/// </summary>
+		/// <param name="a">The action to invoke on the main GUI thread.</param>
 		public bool Invoke (Action a)
 		{
 			var oldEngine = currentEngine;
@@ -283,6 +358,10 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Invokes an action after the user code has been processed.
+		/// </summary>
+		/// <param name="a">The action to invoke after processing user code.</param>
 		internal void InvokePlatformCode (Action a)
 		{
 			int prevCount = inUserCode;
@@ -295,11 +374,19 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Enters the user code.
+		/// </summary>
+		/// <remarks>EnterUserCode must be called before executing any user code.</remarks>
 		internal void EnterUserCode ()
 		{
 			inUserCode++;
 		}
 		
+		/// <summary>
+		/// Exits the user code.
+		/// </summary>
+		/// <param name="error">Exception thrown during user code execution, or <c>null</c></param>
 		internal void ExitUserCode (Exception error)
 		{
 			if (error != null) {
@@ -329,6 +416,10 @@ namespace Xwt
 			ExitUserCode (null);
 		}
 		
+		/// <summary>
+		/// Adds the action to the exit action queue.
+		/// </summary>
+		/// <param name="a">The action to invoke after processing user code.</param>
 		internal void QueueExitAction (Action a)
 		{
 			exitActions.Enqueue (a);
@@ -345,10 +436,19 @@ namespace Xwt
 			}
 		}
 		
+		/// <summary>
+		/// Gets a value indicating whether the GUI Thread is currently executing user code.
+		/// </summary>
+		/// <value><c>true</c> if in user code; otherwise, <c>false</c>.</value>
 		public bool InUserCode {
 			get { return inUserCode > 0; }
 		}
 
+		/// <summary>
+		/// Wraps a native window into an Xwt window object.
+		/// </summary>
+		/// <returns>An Xwt window with the specified native window backend.</returns>
+		/// <param name="nativeWindow">The native window.</param>
 		public WindowFrame WrapWindow (object nativeWindow)
 		{
 			if (nativeWindow == null)
@@ -356,6 +456,11 @@ namespace Xwt
 			return new NativeWindowFrame (backend.GetBackendForWindow (nativeWindow));
 		}
 
+		/// <summary>
+		/// Wraps a native widget into an Xwt widget object.
+		/// </summary>
+		/// <returns>An Xwt widget with the specified native widget backend.</returns>
+		/// <param name="nativeWidget">The native widget.</param>
 		public Widget WrapWidget (object nativeWidget)
 		{
 			var externalWidget = nativeWidget as Widget;
@@ -369,16 +474,33 @@ namespace Xwt
 			return embedded;
 		}
 
+		/// <summary>
+		/// Wraps a native image object into an Xwt image instance.
+		/// </summary>
+		/// <returns>The Xwt image containing the native image.</returns>
+		/// <param name="nativeImage">The native image.</param>
 		public Image WrapImage (object nativeImage)
 		{
 			return new Image (backend.GetBackendForImage (nativeImage), this);
 		}
 
+		/// <summary>
+		/// Wraps a native drawing context into an Xwt context object.
+		/// </summary>
+		/// <returns>The Xwt drawing context.</returns>
+		/// <param name="nativeWidget">The native widget to use for drawing.</param>
+		/// <param name="nativeContext">The native drawing context.</param>
 		public Context WrapContext (object nativeWidget, object nativeContext)
 		{
 			return new Context (backend.GetBackendForContext (nativeWidget, nativeContext), this);
 		}
 
+		/// <summary>
+		/// Validates that the backend of an Xwt component belongs to the currently loaded toolkit.
+		/// </summary>
+		/// <returns>The validated Xwt object.</returns>
+		/// <param name="obj">The Xwt object.</param>
+		/// <exception cref="InvalidOperationException">The component belongs to a different toolkit</exception>
 		public object ValidateObject (object obj)
 		{
 			if (obj is Image)
@@ -390,12 +512,25 @@ namespace Xwt
 			return obj;
 		}
 
+		/// <summary>
+		/// Gets a toolkit backend of an Xwt component and validates
+		/// that it belongs to the currently loaded toolkit.
+		/// </summary>
+		/// <returns>The toolkit backend of the Xwt component.</returns>
+		/// <param name="obj">The Xwt component.</param>
+		/// <exception cref="InvalidOperationException">The component belongs to a different toolkit</exception>
 		public object GetSafeBackend (object obj)
 		{
 			ValidateObject (obj);
 			return GetBackend (obj);
 		}
 
+		/// <summary>
+		/// Gets a toolkit backend currently used by an Xwt component.
+		/// </summary>
+		/// <returns>The toolkit backend of the Xwt component.</returns>
+		/// <param name="obj">The Xwt component.</param>
+		/// <exception cref="InvalidOperationException">The component does not have a backend</exception>
 		public static object GetBackend (object obj)
 		{
 			if (obj is IFrontend)
@@ -406,16 +541,35 @@ namespace Xwt
 				throw new InvalidOperationException ("Object doesn't have a backend");
 		}
 
+		/// <summary>
+		/// Creates an Xwt frontend for a backend.
+		/// </summary>
+		/// <returns>The Xwt frontend.</returns>
+		/// <param name="ob">The toolkit backend.</param>
+		/// <typeparam name="T">The frontend Type.</typeparam>
 		public T CreateFrontend<T> (object ob)
 		{
 			throw new NotImplementedException ();
 		}
 
+		/// <summary>
+		/// Renders the widget into an Xwt Image.
+		/// </summary>
+		/// <returns>An Xwt Image containing the rendered bitmap.</returns>
+		/// <param name="widget">The Widget to render.</param>
 		public Image RenderWidget (Widget widget)
 		{
 			return new Image (backend.RenderWidget (widget), this);
 		}
 
+		/// <summary>
+		/// Renders an image to the provided native drawing context
+		/// </summary>
+		/// <param name="nativeWidget">The native widget.</param>
+		/// <param name="nativeContext">The native context.</param>
+		/// <param name="img">The Image to render.</param>
+		/// <param name="x">The destinate x coordinate.</param>
+		/// <param name="y">The destinate y coordinate.</param>
 		public void RenderImage (object nativeWidget, object nativeContext, Image img, double x, double y)
 		{
 			ValidateObject (img);
@@ -423,15 +577,29 @@ namespace Xwt
 			backend.RenderImage (nativeWidget, nativeContext, img.GetImageDescription (this), x, y);
 		}
 
+		/// <summary>
+		/// Gets the information about Xwt features supported by the toolkit.
+		/// </summary>
+		/// <value>The supported features.</value>
 		public ToolkitFeatures SupportedFeatures {
 			get { return backend.SupportedFeatures; }
 		}
 
+		/// <summary>
+		/// Registers a backend for an Xwt backend interface.
+		/// </summary>
+		/// <typeparam name="TBackend">The backend Type</typeparam>
+		/// <typeparam name="TImplementation">The Xwt interface implemented by the backend.</typeparam>
 		public void RegisterBackend<TBackend, TImplementation> () where TImplementation: TBackend
 		{
 			backend.RegisterBackend<TBackend, TImplementation> ();
 		}
 
+		/// <summary>
+		/// Gets the stock icon identified by the stock id.
+		/// </summary>
+		/// <returns>The stock icon.</returns>
+		/// <param name="id">The stock identifier.</param>
 		internal Image GetStockIcon (string id)
 		{
 			Image img;
@@ -465,8 +633,17 @@ namespace Xwt
 	[Flags]
 	public enum ToolkitFeatures: int
 	{
+		/// <summary>
+		/// Widget opacity/transparancy.
+		/// </summary>
 		WidgetOpacity = 1,
+		/// <summary>
+		/// Window opacity/transparancy.
+		/// </summary>
 		WindowOpacity = 2,
+		/// <summary>
+		/// All available features
+		/// </summary>
 		All = WidgetOpacity | WindowOpacity
 	}
 }

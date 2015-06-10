@@ -28,35 +28,48 @@ using System;
 
 namespace Xwt
 {
+	/// <summary>
+	/// Button event arguments, containing information about pressed/released mouse buttons.
+	/// </summary>
 	public class ButtonEventArgs: EventArgs
 	{
 		public ButtonEventArgs ()
 		{
 		}
 
+		/// <summary>
+		/// Gets or sets the button.
+		/// </summary>
+		/// <value>The button.</value>
 		public PointerButton Button { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this event has been handled
 		/// </summary>
-		/// <value><c>true</c> if handled; otherwise, <c>false</c>.</value>
-		/// <remarks>Setting this property to <c>true</c> will prevent the event from bubbling up in the widget hierarchy</remarks>
+		/// <value><c>true</c> if this event has been handled; otherwise, <c>false</c>.</value>
+		/// <remarks>
+		/// Setting <see cref="Xwt.ButtonEventArgs.Handled"/> to <c>true</c> will mark the event
+		/// as handled and prevent the event from bubbling up in the widget hierarchy.
+		/// Handled events will be ignored by a backend in most cases.
+		/// For example marking a left button press of a <see cref="Xwt.Button"/> as handled will prevent
+		/// the backend from activating the button.
+		/// </remarks>
 		public bool Handled { get; set; }
 		
 		/// <summary>
-		/// Gets or sets the X coordinate of the mouse cursor
+		/// Gets or sets the X coordinate of the mouse cursor (relative to the widget receiving the event).
 		/// </summary>
-		/// <value>The x.</value>
+		/// <value>The X coordinate of the cursor.</value>
 		public double X { get; set; }
 
 		/// <summary>
-		/// Gets or sets the Y coordinate of the mouse cursor
+		/// Gets or sets the Y coordinate of the mouse cursor (relative to the widget receiving the event).
 		/// </summary>
-		/// <value>The x.</value>
+		/// <value>The Y coordinate of the cursor.</value>
 		public double Y { get; set; }
 
 		/// <summary>
-		/// Location of the mouse cursor
+		/// Location of the mouse cursor (in widget coordinates).
 		/// </summary>
 		public Point Position {
 			get { return new Point (X, Y); }
@@ -65,7 +78,7 @@ namespace Xwt
 		/// <summary>
 		/// Gets the number of clicks (e.g. 2 for double-click)
 		/// </summary>
-		/// <value>The multiple press.</value>
+		/// <value>The number of the presses of the same button.</value>
 		public int MultiplePress { get; set; }
 	}
 }
