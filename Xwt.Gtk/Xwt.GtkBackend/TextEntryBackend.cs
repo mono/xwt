@@ -175,20 +175,53 @@ namespace Xwt.GtkBackend
 			get; set;
 		}
 
+		/// <summary>
+		/// Set the list of completions that will be shown by the entry
+		/// </summary>
+		/// <param name="completions">The list of completion or null if no completions should be shown</param>
 		public void SetCompletions (string[] completions)
 		{
+			var widgetCompletion = Widget.Completion;
+
 			if (completions == null || completions.Length == 0) {
-				Widget.Completion = null;
+				if (widgetCompletion != null)
+					widgetCompletion.Model = null;
 				return;
 			}
+
+			if (widgetCompletion == null)
+				Widget.Completion = widgetCompletion = CreateCompletion ();
 
 			var model = new Gtk.ListStore (typeof(string));
 			foreach (var c in completions)
 				model.SetValue (model.Append (), 0, c);
-			Widget.Completion = new Gtk.EntryCompletion () {
-				Model = model,
+			widgetCompletion.Model = model;
+		}
+
+		/// <summary>
+		/// Set a custom matching function used to decide which completion from SetCompletions list are shown
+		/// for the given input
+		/// </summary>
+		/// <param name="matchFunc">A function which parameter are, in order, the current text entered by the user and a completion candidate.
+		/// Returns true if the candidate should be included in the completion list.</param>
+		public void SetCompletionMatchFunc (Func<string, string, bool> matchFunc)
+		{
+			var widgetCompletion = Widget.Completion;
+			if (widgetCompletion == null)
+				Widget.Completion = widgetCompletion = CreateCompletion ();
+			widgetCompletion.MatchFunc = delegate (Gtk.EntryCompletion completion, string key, Gtk.TreeIter iter) {
+				var completionText = (string)completion.Model.GetValue (iter, 0);
+				return matchFunc (key, completionText);
+			};
+		}
+
+		Gtk.EntryCompletion CreateCompletion ()
+		{
+			return new Gtk.EntryCompletion () {
 				PopupCompletion = true,
-				TextColumn = 0
+				TextColumn = 0,
+				InlineCompletion = true,
+				InlineSelection = true
 			};
 		}
 		
