@@ -157,17 +157,8 @@ namespace Xwt.GtkBackend
 		
 		public virtual void SetFocus ()
 		{
-			Widget.IsFocus = true;
-//			SetFocus (Widget);
-		}
-
-		void SetFocus (Gtk.Widget w)
-		{
-			if (w.Parent != null)
-				SetFocus (w.Parent);
-			w.GrabFocus ();
-			w.IsFocus = true;
-			w.HasFocus = true;
+			if (CanGetFocus)
+				Widget.GrabFocus ();
 		}
 
 		public string TooltipText {
@@ -348,6 +339,12 @@ namespace Xwt.GtkBackend
 		protected virtual Gtk.Widget EventsRootWidget {
 			get { return eventBox ?? Widget; }
 		}
+
+		bool needsEventBox = true; // require event box by default
+		protected virtual bool NeedsEventBox {
+			get { return needsEventBox; }
+			set { needsEventBox = value; }
+		}
 		
 		public static Gtk.Widget GetWidget (IWidgetBackend w)
 		{
@@ -436,9 +433,18 @@ namespace Xwt.GtkBackend
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
 
+			if (visibleWindow) {
+				if (eventBox != null)
+					eventBox.VisibleWindow = true;
+				else if (EventsRootWidget is Gtk.EventBox)
+					((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
+			}
+
+			if (!NeedsEventBox) return;
+
 			if (eventBox == null && !EventsRootWidget.GetHasWindow()) {
 				if (EventsRootWidget is Gtk.EventBox) {
-					((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
+					((Gtk.EventBox)EventsRootWidget).VisibleWindow = visibleWindow;
 					return;
 				}
 				eventBox = new Gtk.EventBox ();
@@ -672,7 +678,8 @@ namespace Xwt.GtkBackend
 		protected virtual MouseScrolledEventArgs GetScrollEventArgs (Gtk.ScrollEventArgs args)
 		{
 			var direction = args.Event.Direction.ToXwtValue ();
-			return new MouseScrolledEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y, direction);
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			return new MouseScrolledEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y, direction);
 		}
         
 
@@ -726,7 +733,8 @@ namespace Xwt.GtkBackend
 
 		protected virtual MouseMovedEventArgs GetMouseMovedEventArgs (Gtk.MotionNotifyEventArgs args)
 		{
-			return new MouseMovedEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y);
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			return new MouseMovedEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y);
 		}
 
 		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
@@ -744,8 +752,11 @@ namespace Xwt.GtkBackend
 		protected virtual ButtonEventArgs GetButtonReleaseEventArgs (Gtk.ButtonReleaseEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			a.X = pointer_coords.X;
+			a.Y = pointer_coords.Y;
+
 			a.Button = (PointerButton) args.Event.Button;
 			return a;
 		}
@@ -766,8 +777,10 @@ namespace Xwt.GtkBackend
 		protected virtual ButtonEventArgs GetButtonPressEventArgs (Gtk.ButtonPressEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			a.X = pointer_coords.X;
+			a.Y = pointer_coords.Y;
 
 			a.Button = (PointerButton) args.Event.Button;
 			if (args.Event.Type == Gdk.EventType.TwoButtonPress)

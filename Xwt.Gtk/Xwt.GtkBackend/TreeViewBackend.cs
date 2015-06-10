@@ -214,6 +214,25 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public TreePosition FocusedRow {
+			get {
+				Gtk.TreePath path;
+				Gtk.TreeViewColumn column;
+				Widget.GetCursor (out path, out column);
+
+				Gtk.TreeIter it;
+				if (path != null && Widget.Model.GetIter (out it, path))
+					return new IterPos (-1, it);
+				return null;
+			}
+			set {
+				Gtk.TreePath path = new Gtk.TreePath(new [] { int.MaxValue }); // set invalid path to unfocus
+				if (value != null)
+					path = Widget.Model.GetPath (((IterPos)value).Iter);
+				Widget.SetCursor (path, null, false);
+			}
+		}
+
 		public TreePosition CurrentEventRow {
 			get;
 			internal set;

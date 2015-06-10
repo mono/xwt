@@ -36,6 +36,7 @@ namespace Xwt.GtkBackend
 	{
 		protected bool ignoreClickEvents;
 		ImageDescription image;
+		Pango.FontDescription customFont;
 		
 		public ButtonBackend ()
 		{
@@ -43,6 +44,7 @@ namespace Xwt.GtkBackend
 
 		public override void Initialize ()
 		{
+			NeedsEventBox = false;
 			Widget = new Gtk.Button ();
 			base.Widget.Show ();
 			
@@ -60,6 +62,17 @@ namespace Xwt.GtkBackend
 		protected override void OnSetBackgroundColor (Color color)
 		{
 			Widget.SetBackgroundColor (color);
+		}
+
+		public override object Font {
+			get {
+				return base.Font;
+			}
+			set {
+				base.Font = value;
+				customFont = value as Pango.FontDescription;
+				SetButtonType (ButtonType.Normal);
+			}
 		}
 		
 		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position)
@@ -89,33 +102,36 @@ namespace Xwt.GtkBackend
 			if (image.Backend != null)
 				imageWidget = new ImageBox (ApplicationContext, image.WithDefaultSize (Gtk.IconSize.Button));
 
+			Gtk.Label labelWidget = null;
+
 			if (label != null && imageWidget == null) {
-				contentWidget = new Gtk.Label (label) { UseUnderline = useMnemonic }; 
+				contentWidget = labelWidget = new Gtk.Label (label);
 			}
 			else if (label == null && imageWidget != null) {
 				contentWidget = imageWidget;
 			}
 			else if (label != null && imageWidget != null) {
 				Gtk.Box box = position == ContentPosition.Left || position == ContentPosition.Right ? (Gtk.Box) new Gtk.HBox (false, 3) : (Gtk.Box) new Gtk.VBox (false, 3);
-				var lab = new Gtk.Label (label) { UseUnderline = useMnemonic };
+				labelWidget = new Gtk.Label (label) { UseUnderline = useMnemonic };
 				
 				if (position == ContentPosition.Left || position == ContentPosition.Top) {
 					box.PackStart (imageWidget, false, false, 0);
-					box.PackStart (lab, false, false, 0);
+					box.PackStart (labelWidget, false, false, 0);
 				} else {
-					box.PackStart (lab, false, false, 0);
+					box.PackStart (labelWidget, false, false, 0);
 					box.PackStart (imageWidget, false, false, 0);
 				}
 				
 				contentWidget = box;
 			}
+			var expandButtonContent = false;
 			if (b.Type == ButtonType.DropDown) {
 				if (contentWidget != null) {
 					Gtk.HBox box = new Gtk.HBox (false, 3);
 					box.PackStart (contentWidget, true, true, 3);
-					box.PackStart (new Gtk.VSeparator (), true, true, 0);
 					box.PackStart (new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out), false, false, 0);
 					contentWidget = box;
+					expandButtonContent = true;
 				} else
 					contentWidget = new Gtk.Arrow (Gtk.ArrowType.Down, Gtk.ShadowType.Out);
 			}
@@ -123,6 +139,23 @@ namespace Xwt.GtkBackend
 				contentWidget.ShowAll ();
 				Widget.Label = null;
 				Widget.Image = contentWidget;
+				if (expandButtonContent) {
+					var alignment = Widget.Child as Gtk.Alignment;
+					if (alignment != null) {
+						var box = alignment.Child as Gtk.Box;
+						if (box != null) {
+							alignment.Xscale = 1;
+							box.SetChildPacking (box.Children [0], true, true, 0, Gtk.PackType.Start);
+							if (labelWidget != null)
+								labelWidget.Xalign = 0;
+						}
+					}
+				}
+				if (labelWidget != null) {
+					labelWidget.UseUnderline = useMnemonic;
+					if (customFont != null)
+						labelWidget.ModifyFont (customFont);
+				}
 			} else
 				Widget.Label = null;
 		}

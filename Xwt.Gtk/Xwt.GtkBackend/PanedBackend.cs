@@ -28,7 +28,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class PanedBackend: WidgetBackend, IPanedBackend
+	public partial class PanedBackend: WidgetBackend, IPanedBackend
 	{
 		protected new Gtk.Paned Widget {
 			get { return (Gtk.Paned)base.Widget; }

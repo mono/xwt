@@ -57,6 +57,44 @@ namespace Xwt.Drawing
 			Backend = backend;
 		}
 
+		internal void InitForToolkit (Toolkit tk)
+		{
+			if (ToolkitEngine != tk) {
+				// Gather existing font property before switching handler
+				var fname = Family;
+				var size = Size;
+				var style = Style;
+				var weight = Weight;
+				var stretch = Stretch;
+				ToolkitEngine = tk;
+				handler = tk.FontBackendHandler;
+				var fb = handler.Create (fname, size, style, weight, stretch);
+				Backend = fb ?? handler.GetSystemDefaultFont ();
+			}
+		}
+
+		/// <summary>
+		/// Register a font file with the system font manager that is then accessible through FromName.
+		/// The font is only available during the lifetime of the process.
+		/// </summary>
+		/// <returns><c>true</c>, if font from file was registered, <c>false</c> otherwise.</returns>
+		/// <param name="fontPath">Font path.</param>
+		public static bool RegisterFontFromFile (string fontPath)
+		{
+			return RegisterFontFromFile (fontPath, Toolkit.CurrentEngine);
+		}
+
+		static bool RegisterFontFromFile (string fontPath, Toolkit toolkit)
+		{
+			var handler = toolkit.FontBackendHandler;
+			var result = handler.RegisterFontFromFile (fontPath);
+			if (result) {
+				installedFonts = null;
+				installedFontsArray = null;
+			}
+			return result;
+		}
+
 		/// <summary>
 		/// Creates a new font description from a string representation in the form "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]"
 		/// </summary>
@@ -78,6 +116,11 @@ namespace Xwt.Drawing
 		public static Font FromName (string name)
 		{
 			var toolkit = Toolkit.CurrentEngine;
+			return FromName (name, toolkit);
+		}
+
+		internal static Font FromName (string name, Toolkit toolkit)
+		{
 			var handler = toolkit.FontBackendHandler;
 
 			double size = -1;
@@ -200,6 +243,38 @@ namespace Xwt.Drawing
 		}
 
 		/// <summary>
+		/// Gets the available family/font variants with varying weight, style and stretch.
+		/// </summary>
+		/// <returns>All available font variants for a specific family/font.</returns>
+		/// <param name="fontFamily">A comma separated list of families</param>
+		/// <remarks>
+		/// Not all weights, styles or strech variants and combinations are available
+		/// for every font or family. In case of an invalid combination, most toolkits
+		/// fallback to a system default variant. GetAvailableFontFaces helps to retrieve
+		/// only valid combinations for a specific font family.
+		/// </remarks>
+		public static ReadOnlyCollection<FontFace> GetAvailableFontFaces (string fontFamily)
+		{
+			fontFamily = GetSupportedFont (fontFamily);
+			return new ReadOnlyCollection<FontFace>(Toolkit.CurrentEngine.FontBackendHandler.GetAvailableFamilyFaces(fontFamily).Select (f => new FontFace(f.Key, f.Value)).ToList ());
+		}
+
+		/// <summary>
+		/// Gets the available variants of the font with varying weight, style and stretch.
+		/// </summary>
+		/// <returns>All available font variants for a specific family/font.</returns>
+		/// <remarks>
+		/// Not all weights, styles or strech variants and combinations are available
+		/// for every font or family. In case of an invalid combination, most toolkits
+		/// fallback to a system default variant. GetAvailableFontFaces helps to retrieve
+		/// only valid combinations for a specific font family.
+		/// </remarks>
+		public ReadOnlyCollection<FontFace> GetAvailableFontFaces ()
+		{
+			return GetAvailableFontFaces (Family);
+		}
+
+		/// <summary>
 		/// Returns a copy of the font using the provided font family
 		/// </summary>
 		/// <returns>The new font</returns>
@@ -296,6 +371,42 @@ namespace Xwt.Drawing
 		}
 	}
 
+	/// <summary>
+	/// The FontFace class describes a variant of a specific font family with a name and its Xwt representation.
+	/// </summary>
+	public class FontFace
+	{
+		/// <summary>
+		/// The specific font variant/face name, unique for the font family on the local system.
+		/// </summary>
+		/// <value>The variant/face name.</value>
+		/// <remarks>
+		/// On most systems the name is a combination of the written weight, style and stretch
+		/// of the font variant without the default values.
+		/// The name is only valid for the specific font, backend and system. On some systems
+		/// the names can be (partially) localized.
+		/// Examples: "Regular", "Bold", "Bold Italic", "Condensed"</remarks>
+		public string Name { get; private set; }
+
+		/// <summary>
+		/// The font with the family face/variant specific settings (weight, style, stretch).
+		/// </summary>
+		/// <value>The <see cref="Xwt.Drawing.Font"/> representation of the font variant/face .</value>
+		public Font Font { get; private set; }
+
+		internal FontFace (string name, Font font)
+		{
+			Name = name;
+			Font = font;
+		}
+
+		internal FontFace (string name, object backend)
+		{
+			Name = name;
+			Font = new Font (backend);
+		}
+	}
+
 	public enum FontStyle
 	{
 		Normal,
@@ -305,12 +416,20 @@ namespace Xwt.Drawing
 	
 	public enum FontWeight
 	{
-		/// The ultralight weight (200)
+		/// The thin weight (100)
+		Thin = 100,
+		/// The ultra light weight (200)
 		Ultralight = 200,
 		/// The light weight (300)
 		Light = 300,
+		/// The semi light weight (350)
+		Semilight = 350,
+		/// The book weight (380)
+		Book = 350,
 		/// The default weight (400)
 		Normal = 400,
+		/// The medium weight (500)
+		Medium = 500,
 		/// The semi bold weight (600)
 		Semibold = 600,
 		/// The bold weight (700)
@@ -318,7 +437,9 @@ namespace Xwt.Drawing
 		/// The ultrabold weight (800)
 		Ultrabold = 800,
 		/// The heavy weight (900)
-		Heavy = 900
+		Heavy = 900,
+		/// The ultra heavy weight (1000)
+		Ultraheavy = 1000
 	}
 	
 	public enum FontStretch

@@ -56,5 +56,24 @@ namespace Xwt.WPFBackend
 			s = Backend.MeasureOverride (constraint, s);
 			return s;
 		}
+
+		private ListViewItem focusedItem = null;
+		public ListViewItem FocusedItem {
+			get {
+				return focusedItem;
+			}
+			set {
+				FocusItem (value);
+			}
+		}
+
+		internal void FocusItem(ListViewItem item)
+		{
+			if (item != null) {
+				focusedItem = item;
+				if (!item.IsFocused)
+					item.Focus ();
+			}
+		}
 	}
 }

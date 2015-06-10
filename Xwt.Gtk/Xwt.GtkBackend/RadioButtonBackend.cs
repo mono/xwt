@@ -38,6 +38,7 @@ namespace Xwt.GtkBackend
 
 		public override void Initialize ()
 		{
+			NeedsEventBox = false;
 			Widget = new Gtk.RadioButton ("");
 			Widget.Show ();
 		}

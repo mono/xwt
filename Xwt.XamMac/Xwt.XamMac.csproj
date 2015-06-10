@@ -3,61 +3,158 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B570A438-DCCB-494A-B87C-5CB0113978DB}</ProjectGuid>
-    <ProjectTypeGuids>{42C0BBD9-55CE-4FC1-8D90-A7348ABAFB23};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
-    <RootNamespace>Xwt.XamMac</RootNamespace>
+    <RootNamespace>Xwt.Mac</RootNamespace>
     <AssemblyName>Xwt.XamMac</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <EnableCodeSigning>false</EnableCodeSigning>
-    <CreatePackage>false</CreatePackage>
-    <EnablePackageSigning>false</EnablePackageSigning>
-    <IncludeMonoRuntime>false</IncludeMonoRuntime>
-    <UseSGen>false</UseSGen>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>pdbonly</DebugType>
-    <EnableCodeSigning>false</EnableCodeSigning>
-    <CreatePackage>false</CreatePackage>
-    <EnablePackageSigning>false</EnablePackageSigning>
-    <IncludeMonoRuntime>false</IncludeMonoRuntime>
-    <UseSGen>false</UseSGen>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="XamMac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="Xamarin.Mac">
+      <HintPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\i386\full\Xamarin.Mac.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Xwt.Mac\**\*.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Xwt.Mac\BoxBackend.cs" />
+    <Compile Include="Xwt.Mac\ButtonBackend.cs" />
+    <Compile Include="Xwt.Mac\LabelBackend.cs" />
+    <Compile Include="Xwt.Mac\MacEngine.cs" />
+    <Compile Include="Xwt.Mac\NotebookBackend.cs" />
+    <Compile Include="Xwt.Mac\TreeViewBackend.cs" />
+    <Compile Include="Xwt.Mac\Util.cs" />
+    <Compile Include="Xwt.Mac\ViewBackend.cs" />
+    <Compile Include="Xwt.Mac\WindowBackend.cs" />
+    <Compile Include="Xwt.Mac.CellViews\CompositeCell.cs" />
+    <Compile Include="Xwt.Mac.CellViews\ICellRenderer.cs" />
+    <Compile Include="Xwt.Mac.CellViews\ICellSource.cs" />
+    <Compile Include="Xwt.Mac.CellViews\TextTableCell.cs" />
+    <Compile Include="Xwt.Mac.CellViews\CellUtil.cs" />
+    <Compile Include="Xwt.Mac\ImageHandler.cs" />
+    <Compile Include="Xwt.Mac.CellViews\ImageTableCell.cs" />
+    <Compile Include="Xwt.Mac\ContextBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\CanvasBackend.cs" />
+    <Compile Include="Xwt.Mac\GradientBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\TextLayoutBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\FontBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\ListViewBackend.cs" />
+    <Compile Include="Xwt.Mac\TableViewBackend.cs" />
+    <Compile Include="Xwt.Mac\MenuBackend.cs" />
+    <Compile Include="Xwt.Mac\MenuItemBackend.cs" />
+    <Compile Include="Xwt.Mac\ObjcHelper.cs" />
+    <Compile Include="Xwt.Mac\IViewObject.cs" />
+    <Compile Include="Xwt.Mac\ComboBoxBackend.cs" />
+    <Compile Include="Xwt.Mac\TextEntryBackend.cs" />
+    <Compile Include="Xwt.Mac\ImageViewBackend.cs" />
+    <Compile Include="Xwt.Mac\CheckBoxMenuItemBackend.cs" />
+    <Compile Include="Xwt.Mac\RadioButtonMenuItemBackend.cs" />
+    <Compile Include="Xwt.Mac\SeparatorMenuItemBackend.cs" />
+    <Compile Include="Xwt.Mac\CheckBoxBackend.cs" />
+    <Compile Include="Xwt.Mac\ComboBoxEntryBackend.cs" />
+    <Compile Include="Xwt.Mac\ImageBuilderBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\ImagePatternBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\FrameBackend.cs" />
+    <Compile Include="Xwt.Mac\ToggleButtonBackend.cs" />
+    <Compile Include="Xwt.Mac\ScrollViewBackend.cs" />
+    <Compile Include="Xwt.Mac\SeparatorBackend.cs" />
+    <Compile Include="Xwt.Mac\PanedBackend.cs" />
+    <Compile Include="Xwt.Mac\ScrollAdjustmentBackend.cs" />
+    <Compile Include="Xwt.Mac\AlertDialogBackend.cs" />
+    <Compile Include="Xwt.Mac\StatusIconBackend.cs" />
+    <Compile Include="Xwt.Mac\ProgressBarBackend.cs" />
+    <Compile Include="Xwt.Mac\SpinButtonBackend.cs" />
+    <Compile Include="Xwt.Mac\ExpanderBackend.cs" />
+    <Compile Include="Xwt.Mac\SpinnerBackend.cs" />
+    <Compile Include="Xwt.Mac\PopoverBackend.cs" />
+    <Compile Include="Xwt.Mac\LinkLabelBackend.cs" />
+    <Compile Include="Xwt.Mac\FileDialogBackend.cs" />
+    <Compile Include="Xwt.Mac\SelectFolderDialogBackend.cs" />
+    <Compile Include="Xwt.Mac\OpenFileDialogBackend.cs" />
+    <Compile Include="Xwt.Mac\MacClipboardBackend.cs" />
+    <Compile Include="Xwt.Mac\PathBackendHandler.cs" />
+    <Compile Include="Xwt.Mac\CustomWidgetBackend.cs" />
+    <Compile Include="Xwt.Mac\MacDesktopBackend.cs" />
+    <Compile Include="Xwt.Mac\MenuButtonBackend.cs" />
+    <Compile Include="Xwt.Mac.CellViews\CanvasTableCell.cs" />
+    <Compile Include="Xwt.Mac\ListBoxBackend.cs" />
+    <Compile Include="Xwt.Mac\DialogBackend.cs" />
+    <Compile Include="Xwt.Mac\MacSystemInformation.cs" />
+    <Compile Include="Xwt.Mac\RichTextViewBackend.cs" />
+    <Compile Include="Xwt.Mac\RadioButtonBackend.cs" />
+    <Compile Include="Xwt.Mac\ScrollbarBackend.cs" />
+    <Compile Include="Xwt.Mac\DatePickerBackend.cs" />
+    <Compile Include="Xwt.Mac\SliderBackend.cs" />
+    <Compile Include="Xwt.Mac.CellViews\CheckBoxTableCell.cs" />
+    <Compile Include="Xwt.Mac\EmbedNativeWidgetBackend.cs" />
+    <Compile Include="Xwt.Mac\MacKeyboardHandler.cs" />
+    <Compile Include="Xwt.Mac\PasswordEntryBackend.cs" />
+    <Compile Include="Xwt.Mac\WebViewBackend.cs" />
+    <Compile Include="Xwt.Mac\ScrollControlBackend.cs" />
+    <Compile Include="Xwt.Mac.CellViews\CellViewBackend.cs" />
+    <Compile Include="Xwt.Mac\WidgetView.cs" />
+    <Compile Include="Xwt.Mac\NSTableViewBackend.cs" />
+    <Compile Include="Xwt.Mac\Messaging.cs" />
+    <Compile Include="Xwt.Mac\KeyboardUtil.cs" />
+    <Compile Include="Xwt.Mac\SaveFileDialogBackend.cs" />
+    <Compile Include="Xwt.Mac\ColorPickerBackend.cs" />
+    <Compile Include="Xwt.Mac\OutlineViewBackend.cs" />
   </ItemGroup>
+  <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\Xwt\Xwt.csproj">
       <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
       <Name>Xwt</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Xwt.Mac\" />
+    <Folder Include="Xwt.Mac.CellViews\" />
+    <Folder Include="icons\" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <EmbeddedResource Include="icons\zoom-in.png">
+      <LogicalName>zoom-in.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-in%402x.png">
+      <LogicalName>zoom-in@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out.png">
+      <LogicalName>zoom-out.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out%402x.png">
+      <LogicalName>zoom-out@2x.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

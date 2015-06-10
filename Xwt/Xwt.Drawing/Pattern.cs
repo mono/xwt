@@ -39,6 +39,10 @@ namespace Xwt.Drawing
 
 		internal void SetBackend (DisposableResourceBackendHandler handler, object backend)
 		{
+			if (this.handler != null) {
+				Dispose ();
+				GC.ReRegisterForFinalize (this);
+			}
 			Backend = backend;
 			this.handler = handler;
 			if (handler.DisposeHandleOnUiThread)

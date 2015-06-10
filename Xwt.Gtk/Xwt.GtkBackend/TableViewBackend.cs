@@ -61,6 +61,8 @@ namespace Xwt.GtkBackend
 			sw.Child.Show ();
 			sw.Show ();
 			base.Widget = sw;
+
+			Widget.EnableSearch = false;
 		}
 		
 		protected new Gtk.TreeView Widget {

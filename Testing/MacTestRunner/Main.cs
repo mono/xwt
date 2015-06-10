@@ -1,8 +1,5 @@
-using System;
 using Xwt;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace MacTest
 {
@@ -10,8 +7,8 @@ namespace MacTest
 	{
 		static void Main (string [] args)
 		{
-			Xwt.Application.Initialize (Xwt.ToolkitType.Cocoa);
-			ReferenceImageManager.Init ("MacTestRunner");
+			//FIXME: remove this once mmp summorts xammac
+			ObjCRuntime.Dlfcn.dlopen ("/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/libxammac.dylib", 0);
 
 			var list = new List<string> (args);
 			list.Add ("-domain=None");

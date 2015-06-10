@@ -262,6 +262,19 @@ namespace Xwt
 				return Backend.SelectedRows;
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the focused row.
+		/// </summary>
+		/// <value>The row with the keyboard focus.</value>
+		public TreePosition FocusedRow {
+			get {
+				return Backend.FocusedRow;
+			}
+			set {
+				Backend.FocusedRow = value;
+			}
+		}
 		
 		/// <summary>
 		/// Selects a row.

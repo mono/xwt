@@ -42,7 +42,7 @@ namespace Xwt.GtkBackend
 			}
 
 			// Check if it is an NSView
-			Type nsView = Type.GetType ("MonoMac.AppKit.NSView, MonoMac", false);
+			Type nsView = Type.GetType ("AppKit.NSView, Xamarin.Mac", false);
 			if (nsView != null && nsView.IsInstanceOfType (nativeWidget)) {
 				Widget = GtkMacInterop.NSViewToGtkWidget (nativeWidget);
 				Widget.Show ();

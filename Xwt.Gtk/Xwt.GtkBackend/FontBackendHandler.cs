@@ -24,12 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using Xwt.Backends;
 using Pango;
 using Xwt.Drawing;
 using System.Globalization;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -37,6 +35,13 @@ namespace Xwt.GtkBackend
 {
 	public class GtkFontBackendHandler: FontBackendHandler
 	{
+		static Pango.Context systemContext;
+
+		static GtkFontBackendHandler ()
+		{
+			systemContext = Gdk.PangoHelper.ContextGet ();
+		}
+
 		public override object GetSystemDefaultFont ()
 		{
 			var la = new Gtk.Label ("");
@@ -45,12 +50,44 @@ namespace Xwt.GtkBackend
 
 		public override IEnumerable<string> GetInstalledFonts ()
 		{
-			return Gdk.PangoHelper.ContextGet ().FontMap.Families.Select (f => f.Name);
+			return systemContext.FontMap.Families.Select (f => f.Name);
+		}
+
+		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
+		{
+			FontFamily pangoFamily = systemContext.FontMap.Families.FirstOrDefault (f => f.Name == family);
+			if (pangoFamily != null) {
+				foreach (var face in pangoFamily.Faces)
+					yield return new KeyValuePair<string, object>(face.FaceName, face.Describe ());
+			}
+			yield break;
 		}
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			return FontDescription.FromString (fontName + ", " + style + " " + weight + " " + stretch + " " + size.ToString (CultureInfo.InvariantCulture));
+		}
+
+		[System.Runtime.InteropServices.DllImport ("fontconfig")]
+		static extern bool FcConfigAppFontAddFile (System.IntPtr config, string fontPath);
+
+		[System.Runtime.InteropServices.DllImport ("pangocairo-1.0")]
+		static extern void pango_cairo_font_map_set_default (System.IntPtr fontmap);
+
+		public override bool RegisterFontFromFile (string fontPath)
+		{
+			var result = AddFontFile (fontPath);
+			if (result) {
+				pango_cairo_font_map_set_default (System.IntPtr.Zero);
+				systemContext = Gdk.PangoHelper.ContextGet ();
+			}
+			return result;
+		}
+
+		protected virtual bool AddFontFile (string fontPath)
+		{
+			// Try to add font file to the current fontconfig configuration
+			return FcConfigAppFontAddFile (System.IntPtr.Zero, fontPath);
 		}
 
 		#region IFontBackendHandler implementation

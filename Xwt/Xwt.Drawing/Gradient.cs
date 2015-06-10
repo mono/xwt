@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Xwt.Backends;
 
 
@@ -32,11 +33,36 @@ namespace Xwt.Drawing
 {
 	public abstract class Gradient: Pattern
 	{
+		List<KeyValuePair<double, Color>> stops;
+
 		public Gradient AddColorStop (double pos, Color color)
 		{
 			ToolkitEngine.GradientBackendHandler.AddColorStop (Backend, pos, color);
+			(stops ?? (stops = new List<KeyValuePair<double, Color>> ())).Add (new KeyValuePair<double, Color> (pos, color));
 			return this;
 		}
+
+		public void InitForToolkit (Toolkit t)
+		{
+			if (ToolkitEngine != t) {
+				var handler = t.GradientBackendHandler;
+				var backend = CreateGradientBackend (handler);
+				SetBackend (handler, backend);
+				if (stops != null)
+					foreach (var stop in stops)
+						handler.AddColorStop (backend, stop.Key, stop.Value);
+			}
+		}
+
+		protected override object OnCreateBackend ()
+		{
+			var handler = ToolkitEngine.GradientBackendHandler;
+			var backend = CreateGradientBackend (handler);
+			SetBackend (handler, backend);
+			return backend;
+		}
+
+		protected abstract object CreateGradientBackend (GradientBackendHandler handler);
 	}
 }
 

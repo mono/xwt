@@ -44,7 +44,7 @@
     <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="AssemblyInfo.Gtk3.cs" />
     <Compile Include="Xwt.GtkBackend\LabelBackend.cs" />
     <Compile Include="Xwt.GtkBackend\PasswordEntryBackend.cs" />
     <Compile Include="Xwt.GtkBackend\WidgetBackend.cs" />
@@ -150,6 +150,7 @@
     <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
     <Compile Include="Xwt.GtkBackend\PopoverBackend.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk3PopoverWindow.cs" />
+    <Compile Include="Xwt.GtkBackend\PanedBackendGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
   </ItemGroup>

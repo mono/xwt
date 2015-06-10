@@ -26,13 +26,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using SW = System.Windows;
 
 using Xwt.Backends;
 using Xwt.Drawing;
 
 using FontFamily = System.Windows.Media.FontFamily;
+using SW = System.Windows;
 
 namespace Xwt.WPFBackend
 {
@@ -48,9 +50,28 @@ namespace Xwt.WPFBackend
 			};
 		}
 
-		public override System.Collections.Generic.IEnumerable<string> GetInstalledFonts ()
+		public override IEnumerable<string> GetInstalledFonts ()
 		{
 			return System.Windows.Media.Fonts.SystemFontFamilies.Select (f => f.Source);
+		}
+
+		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
+		{
+			var wpfFamily = new FontFamily (family);
+			foreach (var face in wpfFamily.GetTypefaces ()) {
+				var langCurrent = SW.Markup.XmlLanguage.GetLanguage (CultureInfo.CurrentCulture.IetfLanguageTag);
+				var langInvariant = SW.Markup.XmlLanguage.GetLanguage ("en-us");;
+				string name;
+				if (face.FaceNames.TryGetValue (langCurrent, out name) || face.FaceNames.TryGetValue (langInvariant, out name)) {
+					var fontData = new FontData (wpfFamily, 0) {
+						Style = face.Style,
+						Weight = face.Weight,
+						Stretch = face.Stretch
+					};
+					yield return new KeyValuePair<string, object> (name, fontData);
+				}
+			}
+			yield break;
 		}
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
@@ -61,6 +82,14 @@ namespace Xwt.WPFBackend
 				Weight = weight.ToWpfFontWeight (),
 				Stretch = stretch.ToWpfFontStretch ()
 			};
+		}
+
+		[System.Runtime.InteropServices.DllImport ("gdi32.dll")]
+		static extern int AddFontResourceEx (string lpszFilename, uint fl, System.IntPtr pdv);
+
+		public override bool RegisterFontFromFile (string fontPath)
+		{
+			return AddFontResourceEx (fontPath, 0x10 /* FR_PRIVATE */, System.IntPtr.Zero) > 0;
 		}
 
 		public override object Copy (object handle)

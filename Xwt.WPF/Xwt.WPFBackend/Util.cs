@@ -64,5 +64,18 @@ namespace Xwt.WPFBackend
 
 			throw new InvalidOperationException("Invalid alignment value: " + alignment);
         }
+
+		public static System.Windows.Window GetParentWindow (this FrameworkElement element)
+		{
+			FrameworkElement current = element;
+			while (current != null) {
+				if (current is System.Windows.Window)
+					return (System.Windows.Window)current;
+
+				current = VisualTreeHelper.GetParent (current) as FrameworkElement;
+			}
+
+			return null;
+		}
     }
 }

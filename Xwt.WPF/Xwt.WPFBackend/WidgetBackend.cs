@@ -674,15 +674,7 @@ namespace Xwt.WPFBackend
 
 		private SW.Window GetParentWindow()
 		{
-			FrameworkElement current = Widget;
-			while (current != null) {
-				if (current is SW.Window)
-					return (SW.Window)current;
-
-				current = VisualTreeHelper.GetParent (current) as FrameworkElement;
-			}
-
-			return null;
+			return Widget.GetParentWindow ();
 		}
 
 		public void DragStart (DragStartData data)
@@ -740,6 +732,7 @@ namespace Xwt.WPFBackend
 				return; // Drag auto detect has been already activated.
 
 			DragDropInfo.AutodetectDrag = true;
+			DragDropInfo.TargetTypes = types == null ? new TransferDataType [0] : types;
 			Widget.MouseUp += WidgetMouseUpForDragHandler;
 			Widget.MouseMove += WidgetMouseMoveForDragHandler;
 		}

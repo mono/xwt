@@ -265,8 +265,10 @@ namespace Xwt.CairoBackend
 		public override void SetPattern (object backend, object p)
 		{
 			var cb = (CairoContextBackend)backend;
+			var toolkit = ApplicationContext.Toolkit;
 
 			Cairo.Context ctx = cb.Context;
+			p = toolkit.GetSafeBackend (p);
 			if (p is ImagePatternBackend) {
 				cb.PatternAlpha = ((ImagePatternBackend)p).Image.Alpha;
 				p = ((ImagePatternBackend)p).GetPattern (ApplicationContext, ((CairoContextBackend)backend).ScaleFactor);
@@ -281,7 +283,7 @@ namespace Xwt.CairoBackend
 		
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
-			var be = (GtkTextLayoutBackendHandler.PangoBackend)Toolkit.GetBackend (layout);
+			var be = (GtkTextLayoutBackendHandler.PangoBackend)ApplicationContext.Toolkit.GetSafeBackend (layout);
 			var pl = be.Layout;
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.MoveTo (x, y);

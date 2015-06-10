@@ -27,13 +27,13 @@
 using System;
 using Xwt.GtkBackend;
 using Xwt.Backends;
-using MonoMac.Foundation;
+using Foundation;
 
 namespace Xwt.Gtk.Mac
 {
 	public class WebViewBackend : WidgetBackend, IWebViewBackend
 	{
-		MonoMac.WebKit.WebView view;
+		WebKit.WebView view;
 
 		public WebViewBackend ()
 		{
@@ -44,7 +44,7 @@ namespace Xwt.Gtk.Mac
 		{
 			base.Initialize ();
 
-			view = new MonoMac.WebKit.WebView ();
+			view = new WebKit.WebView ();
 			Widget = GtkMacInterop.NSViewToGtkWidget (view);
 			Widget.Show ();
 		}
@@ -135,7 +135,7 @@ namespace Xwt.Gtk.Mac
 			}
 		}
 
-		void HandleStartedProvisionalLoad (object sender, MonoMac.WebKit.WebFrameEventArgs e)
+		void HandleStartedProvisionalLoad (object sender, WebKit.WebFrameEventArgs e)
 		{
 			var url = String.Empty;
 			if (e.ForFrame.ProvisionalDataSource.Request.MainDocumentURL != null)
@@ -165,7 +165,7 @@ namespace Xwt.Gtk.Mac
 			});
 		}
 
-		void HandleTitleChanged (object sender, MonoMac.WebKit.WebFrameTitleEventArgs e)
+		void HandleTitleChanged (object sender, WebKit.WebFrameTitleEventArgs e)
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnTitleChanged ();

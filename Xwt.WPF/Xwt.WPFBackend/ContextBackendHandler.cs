@@ -245,6 +245,8 @@ namespace Xwt.WPFBackend
 		public override void SetPattern (object backend, object p)
 		{
 			var c = (DrawingContext) backend;
+			var toolkit = ApplicationContext.Toolkit;
+			p = toolkit.GetSafeBackend (p);
 			if (p is ImagePattern)
 				p = ((ImagePattern)p).GetBrush (c.ScaleFactor);
 			c.SetPattern ((System.Windows.Media.Brush)p);
@@ -253,7 +255,7 @@ namespace Xwt.WPFBackend
 		public override void DrawTextLayout (object backend, TextLayout layout, double x, double y)
 		{
 			var c = (DrawingContext) backend;
-			var t = (TextLayoutBackend)Toolkit.GetBackend (layout);
+			var t = (TextLayoutBackend)ApplicationContext.Toolkit.GetSafeBackend (layout);
 			t.SetDefaultForeground (c.ColorBrush);
 			c.Context.DrawText (t.FormattedText, new SW.Point (x, y));
 		}
