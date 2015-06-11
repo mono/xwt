@@ -174,6 +174,10 @@ namespace Xwt.WPFBackend
 			// TODO
 		}
 
+		public void SetCompletionMatchFunc (Func<string, string, bool> matchFunc)
+		{
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
