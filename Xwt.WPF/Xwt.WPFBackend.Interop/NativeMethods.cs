@@ -29,6 +29,8 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using System.Windows.Input;
+using System.Text;
 
 namespace Xwt.WPFBackend.Interop
 {
@@ -51,6 +53,62 @@ namespace Xwt.WPFBackend.Interop
 
 		[DllImport ("User32.dll", SetLastError = true)]
 		static extern bool DestroyIcon (IntPtr handle);
+
+		enum MapType : uint
+		{
+			MAPVK_VK_TO_VSC = 0x0,
+			MAPVK_VSC_TO_VK = 0x1,
+			MAPVK_VK_TO_CHAR = 0x2,
+			MAPVK_VSC_TO_VK_EX = 0x3,
+		}
+
+		[DllImport("user32.dll")]
+		static extern int ToUnicode(
+			uint wVirtKey,
+			uint wScanCode,
+			byte[] lpKeyState,
+			[Out, MarshalAs(UnmanagedType.LPWStr, SizeParamIndex = 4)] 
+			StringBuilder pwszBuff,
+			int cchBuff,
+			uint wFlags);
+
+		[DllImport("user32.dll")]
+		static extern bool GetKeyboardState(byte[] lpKeyState);
+
+		[DllImport("user32.dll")]
+		static extern uint MapVirtualKey(uint uCode, MapType uMapType);
+
+		internal static char GetCharFromKey(System.Windows.Input.Key key)
+		{
+			char ch = new char();
+
+			int virtualKey = KeyInterop.VirtualKeyFromKey(key);
+			byte[] keyboardState = new byte[256];
+			GetKeyboardState(keyboardState);
+
+			uint scanCode = MapVirtualKey((uint)virtualKey, MapType.MAPVK_VK_TO_VSC);
+			StringBuilder stringBuilder = new StringBuilder(2);
+
+			int result = ToUnicode((uint)virtualKey, scanCode, keyboardState, stringBuilder, stringBuilder.Capacity, 0);
+			switch (result)
+			{
+			case -1: 
+				break;
+			case 0: 
+				break;
+			case 1:
+				{
+					ch = stringBuilder[0];
+					break;
+				}
+			default:
+				{
+					ch = stringBuilder[0];
+					break;
+				}
+			}
+			return ch;
+		}
 
 		internal static BitmapSource GetImage (NativeStockIcon icon, NativeStockIconOptions options)
 		{
