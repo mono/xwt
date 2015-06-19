@@ -302,6 +302,10 @@ namespace Xwt.WPFBackend
 		public System.Windows.Size MeasureOverride (System.Windows.Size constraint, System.Windows.Size wpfMeasure)
 		{
 			var defNaturalSize = eventSink.GetDefaultNaturalSize ();
+			if (!double.IsPositiveInfinity (constraint.Width))
+				defNaturalSize.Width = Math.Min (defNaturalSize.Width, constraint.Width);
+			if (!double.IsPositiveInfinity (constraint.Height))
+				defNaturalSize.Height = Math.Min (defNaturalSize.Height, constraint.Height);
 
 			// -2 means use the WPF default, -1 use the XWT default, any other other value is used as custom natural size
 			var nw = DefaultNaturalWidth;
