@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using System.Windows.Media;
+using System.Windows;
 
 namespace Xwt.WPFBackend
 {
@@ -64,11 +65,19 @@ namespace Xwt.WPFBackend
 		public PopoverBackend ()
 		{
 			Border = new System.Windows.Controls.Border {
-				BorderBrush = Brushes.Black,
-				CornerRadius = new System.Windows.CornerRadius (15),
-				Padding = new System.Windows.Thickness (15),
-				BorderThickness = new System.Windows.Thickness (1)
+				Padding = new Thickness (15, 10, 15, 15),
+				BorderThickness = new Thickness (1),
+				Margin = new System.Windows.Thickness (10),
+				Effect = new System.Windows.Media.Effects.DropShadowEffect () {
+					Color = Colors.Black,
+					Direction = 270,
+					BlurRadius = 15,
+					Opacity = .15,
+					ShadowDepth = 1,
+				}
 			};
+			Border.SetResourceReference (System.Windows.Controls.Border.BorderBrushProperty,
+			                             SystemColors.ActiveBorderBrushKey);
 			BackgroundColor = Xwt.Drawing.Color.FromBytes (230, 230, 230, 230);
 
 			NativeWidget = new System.Windows.Controls.Primitives.Popup {
@@ -76,7 +85,6 @@ namespace Xwt.WPFBackend
 				Child = Border,
 				Placement = System.Windows.Controls.Primitives.PlacementMode.Custom,
 				StaysOpen = false,
-				Margin = new System.Windows.Thickness (10),
 			};
 			NativeWidget.Closed += NativeWidget_Closed;
 		}
@@ -93,9 +101,11 @@ namespace Xwt.WPFBackend
 			NativeWidget.CustomPopupPlacementCallback = (popupSize, targetSize, offset) => {
 				System.Windows.Point location;
 				if (ActualPosition == Popover.Position.Top)
-					location = new System.Windows.Point (positionRect.Left, positionRect.Bottom + targetSize.Height);
+					location = new System.Windows.Point (positionRect.Left - popupSize.Width / 2,
+					                                     positionRect.Height > 0 ? positionRect.Bottom : targetSize.Height);
 				else
-					location = new System.Windows.Point (positionRect.Left, positionRect.Top - popupSize.Height);
+					location = new System.Windows.Point (positionRect.Left - popupSize.Width / 2,
+					                                     positionRect.Top - popupSize.Height);
 
 				return new[] {
 					new System.Windows.Controls.Primitives.CustomPopupPlacement (location, System.Windows.Controls.Primitives.PopupPrimaryAxis.Horizontal)
