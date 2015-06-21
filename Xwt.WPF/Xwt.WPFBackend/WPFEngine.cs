@@ -120,6 +120,7 @@ namespace Xwt.WPFBackend
 			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
 			RegisterBackend<IWebViewBackend, WebViewBackend> ();
 			RegisterBackend<KeyboardHandler, WpfKeyboardHandler> ();
+			RegisterBackend<ICalendarBackend, CalendarBackend> ();
 		}
 
 		public override void DispatchPendingEvents()

@@ -153,6 +153,7 @@
     <Compile Include="Xwt.GtkBackend\PanedBackendGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\CalendarBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

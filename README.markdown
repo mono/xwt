@@ -130,6 +130,7 @@ based on the contents of the childrens on it.
         * Button
             * MenuButton
             * ToggleButton
+        * Calendar
         * Canvas (Container)
         * Checkbox
         * ComboBox
