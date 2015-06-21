@@ -97,8 +97,10 @@ namespace Xwt.GtkBackend
 			markup.Append ("</span>");
 
 			base.Markup = markup.ToString ();
-			if (!String.IsNullOrEmpty (secondaryText))
+			if (!String.IsNullOrEmpty (secondaryText)) {
 				base.SecondaryText = GLib.Markup.EscapeText (secondaryText);
+				base.SecondaryUseMarkup = true;
+			}
 			
 			foreach (Command button in message.Buttons) {
 				Gtk.Button newButton = (Gtk.Button)base.AddButton (button.Label, button.ToResponseType());
