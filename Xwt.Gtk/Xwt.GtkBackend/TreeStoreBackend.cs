@@ -152,6 +152,18 @@ namespace Xwt.GtkBackend
 			return tpos.ChildrenCount = Tree.IterNChildren (tpos.Iter);
 		}
 
+		public int GetParentChildIndex (TreePosition pos)
+		{
+			if (pos == null)
+				return -1;
+
+			IterPos tpos = GetIterPos (pos);
+			var path = Store.GetPath (tpos.Iter);
+			if (path != null)
+				return path.Indices [path.Depth - 1];
+			return -1;
+		}
+
 		public void SetValue (TreePosition pos, int column, object value)
 		{
 			IterPos tpos = GetIterPos (pos);
