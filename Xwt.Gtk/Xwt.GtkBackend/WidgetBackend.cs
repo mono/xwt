@@ -627,6 +627,18 @@ namespace Xwt.GtkBackend
 				args.RetVal = true;
 		}
 
+		private string GetTextInput(int keyvalue)
+		{
+			if (keyvalue >= 32 && keyvalue < 65288)
+				return ((char)keyvalue).ToString();
+
+			//resolve numlock keys when possible
+			if (keyvalue >= 65450 && keyvalue <= 65465 && keyvalue != 65452)
+				return ((char)(keyvalue - 65408)).ToString();
+
+			return "";
+		}
+
 		protected virtual KeyEventArgs GetKeyReleaseEventArgs (Gtk.KeyReleaseEventArgs args)
 		{
 			Key k = (Key)args.Event.KeyValue;
@@ -638,7 +650,7 @@ namespace Xwt.GtkBackend
 			if ((args.Event.State & Gdk.ModifierType.Mod1Mask) != 0)
 				m |= ModifierKeys.Alt;
 
-			return new KeyEventArgs (k, (int)args.Event.KeyValue, ((char)args.Event.KeyValue).ToString(), m, false, (long)args.Event.Time);
+			return new KeyEventArgs (k, (int)args.Event.KeyValue, GetTextInput((int)args.Event.KeyValue), m, false, (long)args.Event.Time);
 		}
 
 		[GLib.ConnectBefore]
@@ -659,7 +671,7 @@ namespace Xwt.GtkBackend
 			Key k = (Key)args.Event.KeyValue;
 			ModifierKeys m = args.Event.State.ToXwtValue ();
 
-			return new KeyEventArgs (k, (int)args.Event.KeyValue, ((char)args.Event.KeyValue).ToString(), m, false, (long)args.Event.Time);
+			return new KeyEventArgs (k, (int)args.Event.KeyValue, GetTextInput((int)args.Event.KeyValue), m, false, (long)args.Event.Time);
 		}
 
         [GLib.ConnectBefore]
