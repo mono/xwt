@@ -34,25 +34,22 @@ namespace Xwt.GtkBackend
 {
 	public static class GtkInterop
 	{
-		#if XWT_GTK3
-		internal const string LIBGTK          = "libgtk-3-0.dll";
 		internal const string LIBATK          = "libatk-1.0-0.dll";
 		internal const string LIBGLIB         = "libglib-2.0-0.dll";
-		internal const string LIBGDK          = "libgdk-3-0.dll";
 		internal const string LIBGOBJECT      = "libgobject-2.0-0.dll";
 		internal const string LIBPANGO        = "libpango-1.0-0.dll";
 		internal const string LIBPANGOCAIRO   = "libpangocairo-1.0-0.dll";
+		internal const string LIBFONTCONFIG   = "fontconfig";
+
+		#if XWT_GTK3
+		internal const string LIBGTK          = "libgtk-3-0.dll";
+		internal const string LIBGDK          = "libgdk-3-0.dll";
 		internal const string LIBGTKGLUE      = "gtksharpglue-3";
 		internal const string LIBGLIBGLUE     = "glibsharpglue-3";
 		internal const string LIBWEBKIT       = "libwebkitgtk-3.0-0.dll";
 		#else
 		internal const string LIBGTK          = "libgtk-win32-2.0-0.dll";
-		internal const string LIBATK          = "libatk-1.0-0.dll";
-		internal const string LIBGLIB         = "libglib-2.0-0.dll";
 		internal const string LIBGDK          = "libgdk-win32-2.0-0.dll";
-		internal const string LIBGOBJECT      = "libgobject-2.0-0.dll";
-		internal const string LIBPANGO        = "libpango-1.0-0.dll";
-		internal const string LIBPANGOCAIRO   = "libpangocairo-1.0-0.dll";
 		internal const string LIBGTKGLUE      = "gtksharpglue-2";
 		internal const string LIBGLIBGLUE     = "glibsharpglue-2";
 		internal const string LIBWEBKIT       = "libwebkitgtk-1.0-0.dll";
