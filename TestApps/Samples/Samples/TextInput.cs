@@ -15,7 +15,7 @@ namespace Samples
 
 			public TextEditor ()
 			{
-				this.PreviewTextInput += HandleTextInput;
+				this.TextInput += HandleTextInput;
 				this.ButtonPressed += HandleButtonPressed;
 
 				CanGetFocus = true;
@@ -28,7 +28,7 @@ namespace Samples
 				SetFocus();
 			}
 
-			void HandleTextInput (object sender, PreviewTextInputEventArgs e)
+			void HandleTextInput (object sender, TextInputEventArgs e)
 			{
 				text += e.Text;
 				e.Handled = true;

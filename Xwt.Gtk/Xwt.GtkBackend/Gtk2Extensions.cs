@@ -145,6 +145,11 @@ namespace Xwt.GtkBackend
 				widget.ModifyBg (Gtk.StateType.Normal, color.ToGtkValue ());
 		}
 
+		public static string GetText (this Gtk.TextInsertedArgs args)
+		{
+			return args.Text;
+		}
+
 		public static void RenderPlaceholderText (this Gtk.Entry entry, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
 		{
 			// The Entry's GdkWindow is the top level window onto which

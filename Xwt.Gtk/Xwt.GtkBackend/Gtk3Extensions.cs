@@ -171,6 +171,11 @@ namespace Xwt.GtkBackend
 			return Gtk.StateFlags.Normal;
 		}
 
+		public static string GetText (this Gtk.TextInsertedArgs args)
+		{
+			return args.NewText;
+		}
+
 		public static double GetSliderPosition (this Gtk.Scale scale)
 		{
 			int start, end;

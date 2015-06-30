@@ -1274,6 +1274,15 @@ namespace Xwt.GtkBackend
 			return ret;
 			#endif
 		}
+
+
+		[DllImport(GtkInterop.LIBGOBJECT, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr g_signal_stop_emission_by_name(IntPtr raw, string name);
+
+		public static void StopSignal (this GLib.Object gobject, string signalid)
+		{
+			g_signal_stop_emission_by_name (gobject.Handle, signalid);
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>

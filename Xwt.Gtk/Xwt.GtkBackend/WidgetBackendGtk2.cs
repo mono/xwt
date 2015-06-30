@@ -33,6 +33,11 @@ namespace Xwt.GtkBackend
 	{
 		bool gettingPreferredSize;
 
+		protected Gtk.Editable EditableWidget 
+		{
+			get { return Widget as Gtk.Editable; }
+		}
+
 		protected virtual void OnSetBackgroundColor (Color color)
 		{
 			EventsRootWidget.SetBackgroundColor (color);

@@ -290,7 +290,7 @@ namespace Xwt.Backends
 		/// Notifies the frontend that a text has been entered.
 		/// </summary>
 		/// <param name="args">The text input arguments.</param>
-		void OnPreviewTextInput (PreviewTextInputEventArgs args);
+		void OnTextInput (TextInputEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that the widget has received the focus.
@@ -444,7 +444,7 @@ namespace Xwt.Backends
 		/// <summary>  The widget can/wants to be notified of scroll events. </summary>
 		MouseScrolled = 1 << 17,
 		/// <summary>  The widget can/wants to be notified of text input events. </summary>
-		PreviewTextInput = 1 << 18
+		TextInput = 1 << 18
 	}
 	
 	/// <summary>
