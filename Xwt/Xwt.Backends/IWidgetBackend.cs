@@ -341,6 +341,16 @@ namespace Xwt.Backends
 		/// <param name="args">The mouse scrolled arguments.</param>
 		void OnMouseScrolled(MouseScrolledEventArgs args);
 
+		void OnPointerEntered ();
+
+		void OnPointerExited ();
+
+		void OnPointerDown (PointerEventArgs args);
+
+		void OnPointerUp (PointerEventArgs args);
+
+		void OnPointerMoved (PointerEventArgs args);
+
 		/// <summary>
 		/// Gets the preferred size from the frontend (it will not include the widget margin).
 		/// </summary>
@@ -444,7 +454,17 @@ namespace Xwt.Backends
 		/// <summary>  The widget can/wants to be notified of scroll events. </summary>
 		MouseScrolled = 1 << 17,
 		/// <summary>  The widget can/wants to be notified of text input events. </summary>
-		PreviewTextInput = 1 << 18
+		PreviewTextInput = 1 << 18,
+		/// <summary>  The widget can/wants to be notified when the pointer enters it. </summary>
+		PointerEntered = 1 << 19,
+		/// <summary>  The widget can/wants to be notified when the pointer leaves it. </summary>
+		PointerExited = 1 << 20,
+		/// <summary>  The widget can/wants to be notified of pointer down. </summary>
+		PointerDown = 1 << 21,
+		/// <summary>  The widget can/wants to be notified of pointer up. </summary>
+		PointerUp = 1 << 22,
+		/// <summary>  The widget can/wants to be notified of pointer movements. </summary>
+		PointerMoved = 1 << 23,
 	}
 	
 	/// <summary>

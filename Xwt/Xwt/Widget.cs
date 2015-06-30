@@ -80,7 +80,13 @@ namespace Xwt
 		EventHandler<MouseMovedEventArgs> mouseMoved;
 		EventHandler boundsChanged;
 		EventHandler<MouseScrolledEventArgs> mouseScrolled;
-		
+
+		EventHandler pointerEntered;
+		EventHandler pointerExited;
+		EventHandler<PointerEventArgs> pointerDown;
+		EventHandler<PointerEventArgs> pointerUp;
+		EventHandler<PointerEventArgs> pointerMoved;
+
 		EventHandler gotFocus;
 		EventHandler lostFocus;
 		
@@ -245,6 +251,31 @@ namespace Xwt
 			void IWidgetEventSink.OnMouseScrolled(MouseScrolledEventArgs args)
 			{
 				Parent.OnMouseScrolled(args);
+			}
+
+			void IWidgetEventSink.OnPointerEntered ()
+			{
+				Parent.OnPointerEntered (EventArgs.Empty);
+			}
+
+			void IWidgetEventSink.OnPointerExited ()
+			{
+				Parent.OnPointerExited (EventArgs.Empty);
+			}
+
+			void IWidgetEventSink.OnPointerDown (PointerEventArgs args)
+			{
+				Parent.OnPointerDown (args);
+			}
+
+			void IWidgetEventSink.OnPointerUp (PointerEventArgs args)
+			{
+				Parent.OnPointerUp (args);
+			}
+
+			void IWidgetEventSink.OnPointerMoved (PointerEventArgs args)
+			{
+				Parent.OnPointerMoved (args);
 			}
 		}
 		
@@ -1271,6 +1302,86 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Called when the pointer enters the widget
+		/// </summary>
+		/// <param name="args">The pointer entered event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnPointerEntered"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnPointerEntered"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnPointerEntered"/>
+		/// is overridden.
+		/// </remarks>
+		protected virtual void OnPointerEntered (EventArgs args)
+		{
+			if (pointerEntered != null)
+				pointerEntered (this, args);
+		}
+
+		/// <summary>
+		/// Called when the pointer leaves the widget
+		/// </summary>
+		/// <param name="args">The pointer exited event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnPointerExited"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnPointerExited"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnPointerExited"/>
+		/// is overridden.
+		/// </remarks>
+		protected virtual void OnPointerExited (EventArgs args)
+		{
+			if (pointerExited != null)
+				pointerExited (this, args);
+		}
+
+		/// <summary>
+		/// Raises the pointer down event.
+		/// </summary>
+		/// <param name="args">The pointer down event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnPointerDown"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnPointerDown"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnPointerDown"/>
+		/// is overridden.
+		/// </remarks>
+		protected virtual void OnPointerDown (PointerEventArgs args)
+		{
+			if (pointerDown != null)
+				pointerDown (this, args);
+		}
+
+		/// <summary>
+		/// Raises the pointer up event.
+		/// </summary>
+		/// <param name="args">The pointer up event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnPointerUp"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnPointerUp"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnPointerUp"/>
+		/// is overridden.
+		/// </remarks>
+		protected virtual void OnPointerUp (PointerEventArgs args)
+		{
+			if (pointerUp != null)
+				pointerUp (this, args);
+		}
+
+		/// <summary>
+		/// Raises the pointer moved event.
+		/// </summary>
+		/// <param name="args">The pointer moved event arguments.</param>
+		/// <remarks>
+		/// Override <see cref="OnPointerMoved"/> to handle the event internally and call the base
+		/// <see cref="Xwt.Widget.OnPointerMoved"/> to finally raise the event.
+		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnPointerMoved"/>
+		/// is overridden.
+		/// </remarks>
+		protected virtual void OnPointerMoved (PointerEventArgs args)
+		{
+			if (pointerMoved != null)
+				pointerMoved (this, args);
+		}
+
+		/// <summary>
 		/// Sets the widget to be a native widget in an other toolkit and to reallocate itself on size changes.
 		/// </summary>
 		internal void SetExtractedAsNative ()
@@ -2085,6 +2196,76 @@ namespace Xwt
 			remove {
 				mouseScrolled -= value;
 				BackendHost.OnAfterEventRemove(WidgetEvent.MouseScrolled, mouseScrolled);
+			}
+		}
+
+		/// <summary>
+		/// Occurs when the Pointer enters the widget
+		/// </summary>
+		public event EventHandler PointerEntered {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.PointerEntered, pointerEntered);
+				PointerEntered += value;
+			}
+			remove {
+				PointerEntered -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.PointerEntered, pointerEntered);
+			}
+		}
+
+		/// <summary>
+		/// Occurs when the Pointer exits the widget
+		/// </summary>
+		public event EventHandler PointerExited {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.PointerExited, pointerExited);
+				PointerExited += value;
+			}
+			remove {
+				PointerExited -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.PointerExited, pointerExited);
+			}
+		}
+
+		/// <summary>
+		/// Occurs when a pointer is set down
+		/// </summary>
+		public event EventHandler<PointerEventArgs> PointerDown {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.PointerDown, pointerDown);
+				PointerDown += value;
+			}
+			remove {
+				PointerDown -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.PointerDown, pointerDown);
+			}
+		}
+
+		/// <summary>
+		/// Occurs when a pointer is released
+		/// </summary>
+		public event EventHandler<PointerEventArgs> PointerUp {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.PointerUp, pointerUp);
+				PointerUp += value;
+			}
+			remove {
+				PointerUp -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.PointerUp, pointerUp);
+			}
+		}
+
+		/// <summary>
+		/// Occurs when the pointer has moved.
+		/// </summary>
+		public event EventHandler<PointerEventArgs> PointerMoved {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.PointerMoved, pointerMoved);
+				PointerMoved += value;
+			}
+			remove {
+				PointerMoved -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.PointerMoved, pointerMoved);
 			}
 		}
 	}
