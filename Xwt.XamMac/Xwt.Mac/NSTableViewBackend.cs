@@ -166,10 +166,10 @@ namespace Xwt.Mac
 			if (keyArgs.Handled)
 				return;
 
-			var textArgs = new PreviewTextInputEventArgs (theEvent.Characters);
+			var textArgs = new TextInputEventArgs (theEvent.Characters);
 			if (!String.IsNullOrEmpty(theEvent.Characters))
 				context.InvokeUserCode (delegate {
-					eventSink.OnPreviewTextInput (textArgs);
+					eventSink.OnTextInput (textArgs);
 				});
 			if (textArgs.Handled)
 				return;
