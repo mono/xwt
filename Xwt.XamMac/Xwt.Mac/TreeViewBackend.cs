@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using nint = System.Int32;
+using nfloat = System.Single;
 using CGPoint = System.Drawing.PointF;
 #else
 using AppKit;
@@ -208,7 +209,7 @@ namespace Xwt.Mac
 
 		public TreePosition GetRowAtPosition (Point p)
 		{
-			var row = Table.GetRow (new System.Drawing.PointF ((float)p.X, (float)p.Y));
+			var row = Table.GetRow (new CGPoint ((float)p.X, (float)p.Y));
 			return row >= 0 ? ((TreeItem)Tree.ItemAtRow (row)).Position : null;
 		}
 
