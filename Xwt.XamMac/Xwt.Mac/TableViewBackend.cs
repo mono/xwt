@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using System.Collections.Generic;
+using System.Linq;
 
 #if MONOMAC
 using nint = System.Int32;
@@ -221,7 +222,41 @@ namespace Xwt.Mac
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			NSTableColumn tcol = (NSTableColumn) handle;
-			tcol.DataCell = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.IndexOf (tcol));
+			var c = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.IndexOf (tcol));
+			tcol.DataCell = c;
+		}
+
+		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
+		{
+			var cellBackend = cell.GetBackend () as CellViewBackend;
+			var r = Table.GetCellFrame (cellBackend.Column, row);
+			var container = Table.GetCell (cellBackend.Column, row) as CompositeCell;
+			r = container.GetCellRect (r, (NSCell)cellBackend.CurrentCell);
+			r.Y -= scroll.DocumentVisibleRect.Y;
+			r.X -= scroll.DocumentVisibleRect.X;
+			if (HeadersVisible)
+				r.Y += Table.HeaderView.Frame.Height;
+			return new Rectangle (r.X, r.Y, r.Width, r.Height);
+		}
+
+		public Rectangle GetRowBounds (int row, bool includeMargin)
+		{
+			var rect = Rectangle.Zero;
+			var columns = Table.TableColumns ();
+
+			for (int i = 0; i < columns.Length; i++)
+			{
+				var r = Table.GetCellFrame (i, row);
+				if (rect == Rectangle.Zero)
+					rect = new Rectangle (r.X, r.Y, r.Width, r.Height);
+				else
+					rect = rect.Union (new Rectangle (r.X, r.Y, r.Width, r.Height));
+			}
+			rect.Y -= scroll.DocumentVisibleRect.Y;
+			rect.X -= scroll.DocumentVisibleRect.X;
+			if (HeadersVisible)
+				rect.Y += Table.HeaderView.Frame.Height;
+			return rect;
 		}
 
 		public void SelectAll ()

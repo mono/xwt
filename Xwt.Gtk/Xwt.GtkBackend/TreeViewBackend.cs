@@ -308,6 +308,34 @@ namespace Xwt.GtkBackend
 			return true;
 		}
 
+		public TreePosition GetRowAtPosition (Point p)
+		{
+			Gtk.TreePath path = GetPathAtPosition (p);
+			if (path != null) {
+				Gtk.TreeIter iter;
+				Widget.Model.GetIter (out iter, path);
+				return new IterPos (-1, iter);
+			}
+			return null;
+		}
+
+		public Rectangle GetCellBounds (TreePosition pos, CellView cell, bool includeMargin)
+		{
+			var col = GetCellColumn (cell);
+			var cr = GetCellRenderer (cell);
+			Gtk.TreeIter iter = ((IterPos)pos).Iter;
+
+			var rect = includeMargin ? ((ICellRendererTarget)this).GetCellBackgroundBounds (col, cr, iter) : ((ICellRendererTarget)this).GetCellBounds (col, cr, iter);
+			return rect;
+		}
+
+		public Rectangle GetRowBounds (TreePosition pos, bool includeMargin)
+		{
+			Gtk.TreeIter iter = ((IterPos)pos).Iter;
+			Rectangle rect = includeMargin ? GetRowBackgroundBounds (iter) : GetRowBounds (iter);
+			return rect;
+		}
+
 		public override void SetCurrentEventRow (string path)
 		{
 			var treeFrontend = (TreeView)Frontend;

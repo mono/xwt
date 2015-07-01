@@ -42,6 +42,8 @@ namespace Xwt.Backends
 		void SelectRow (int pos);
 		void UnselectRow (int pos);
 		void ScrollToRow (int row);
+		int GetRowAtPosition (Point p);
+		Rectangle GetRowBounds (int row, bool includeMargin);
 		bool GridLinesVisible { get; set; }
 	}
 

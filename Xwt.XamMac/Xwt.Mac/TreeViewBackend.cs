@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using nint = System.Int32;
+using nfloat = System.Single;
 using CGPoint = System.Drawing.PointF;
 #else
 using AppKit;
@@ -204,6 +205,30 @@ namespace Xwt.Mac
 				Tree.ExpandItem (it, false);
 				p = source.GetParent (p);
 			}
+		}
+
+		public TreePosition GetRowAtPosition (Point p)
+		{
+			var row = Table.GetRow (new CGPoint ((float)p.X, (float)p.Y));
+			return row >= 0 ? ((TreeItem)Tree.ItemAtRow (row)).Position : null;
+		}
+
+		public Rectangle GetCellBounds (TreePosition pos, CellView cell, bool includeMargin)
+		{
+			var it = tsource.GetItem (pos);
+			if (it == null)
+				return Rectangle.Zero;
+			var row = (int)Tree.RowForItem (it);
+			return GetCellBounds (row, cell, includeMargin);
+		}
+
+		public Rectangle GetRowBounds (TreePosition pos, bool includeMargin)
+		{
+			var it = tsource.GetItem (pos);
+			if (it == null)
+				return Rectangle.Zero;
+			var row = (int)Tree.RowForItem (it);
+			return GetRowBounds (row, includeMargin);
 		}
 		
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)

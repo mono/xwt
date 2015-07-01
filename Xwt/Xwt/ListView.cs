@@ -256,9 +256,27 @@ namespace Xwt
 			return Backend.GetRowAtPosition (p);
 		}
 
+		/// <summary>
+		/// Gets the bounds of a cell inside the given row.
+		/// </summary>
+		/// <returns>The cell bounds inside the widget, relative to the widget bounds.</returns>
+		/// <param name="row">The row index.</param>
+		/// <param name="cell">The cell view.</param>
+		/// <param name="includeMargin">If set to <c>true</c> include margin (the background of the row).</param>
 		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
 		{
 			return Backend.GetCellBounds (row, cell, includeMargin);
+		}
+
+		/// <summary>
+		/// Gets the bounds of the given row.
+		/// </summary>
+		/// <returns>The row bounds inside the widget, relative to the widget bounds.</returns>
+		/// <param name="row">The row index.</param>
+		/// <param name="includeMargin">If set to <c>true</c> include margin (the background of the row).</param>
+		public Rectangle GetRowBounds (int row, bool includeMargin)
+		{
+			return Backend.GetRowBounds (row, includeMargin);
 		}
 
 		void IColumnContainer.NotifyColumnsChanged ()

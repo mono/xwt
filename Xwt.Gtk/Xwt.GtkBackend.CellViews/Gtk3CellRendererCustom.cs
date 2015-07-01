@@ -27,8 +27,17 @@ using System;
 
 namespace Xwt.GtkBackend
 {
-	public class GtkCellRendererCustom : Gtk.CellRenderer
+	public abstract class GtkCellRendererCustom : Gtk.CellRenderer
 	{
+		public GtkCellRendererCustom()
+		{
+			// set default padding used by native renderers like Gtk.CellRendererText
+			// which is used by Gtk3 to determine the cell area position. This is required, because
+			// the background area is always 2-3px larger then the cell area. This is not the same
+			// offset used in OnGetSize which has to be 0 (!).
+			SetPadding (1, 0);
+			SetAlignment (0.0f, 0.0f);
+		}
 	}
 }
 

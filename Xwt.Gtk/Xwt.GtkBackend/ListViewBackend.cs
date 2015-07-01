@@ -156,11 +156,10 @@ namespace Xwt.GtkBackend
 
 		public int GetRowAtPosition (Point p)
 		{
-			Gtk.TreePath path;
-			if (Widget.GetPathAtPos ((int)p.X, (int)p.Y, out path))
+			Gtk.TreePath path = GetPathAtPosition (p);
+			if (path != null)
 				return path.Indices [0];
-			else
-				return -1;
+			return -1;
 		}
 
 		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
@@ -173,15 +172,23 @@ namespace Xwt.GtkBackend
 			if (!Widget.Model.GetIterFromString (out iter, path.ToString ()))
 				return Rectangle.Zero;
 
-			col.CellSetCellData (Widget.Model, iter, false, false);
+			if (includeMargin)
+				return ((ICellRendererTarget)this).GetCellBackgroundBounds (col, cr, iter);
+			else
+				return ((ICellRendererTarget)this).GetCellBounds (col, cr, iter);
+		}
 
-			Gdk.Rectangle rect = includeMargin ? Widget.GetBackgroundArea (path, col) : Widget.GetCellArea (path, col);
+		public Rectangle GetRowBounds (int row, bool includeMargin)
+		{
+			Gtk.TreePath path = new Gtk.TreePath (new [] { row });
+			Gtk.TreeIter iter;
+			if (!Widget.Model.GetIterFromString (out iter, path.ToString ()))
+				return Rectangle.Zero;
 
-			int x, y, w, h;
-			col.CellGetPosition (cr, out x, out w);
-			col.CellGetSize (rect, out x, out y, out w, out h);
-
-			return new Rectangle (x, y, w, h);
+			if (includeMargin)
+				return GetRowBackgroundBounds (iter);
+			else
+				return GetRowBounds (iter);
 		}
 
 		public override void SetCurrentEventRow (string path)

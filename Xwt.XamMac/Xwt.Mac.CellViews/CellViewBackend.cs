@@ -56,6 +56,12 @@ namespace Xwt.Mac
 
 		public NSCell CurrentCell { get; set; }
 
+		public int Column {
+			get {
+				return column;
+			}
+		}
+
 		public int CurrentRow { get; set; }
 
 		internal ITablePosition CurrentPosition { get; set; }

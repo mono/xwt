@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 using Xwt.WPFBackend.Utilities;
 using SWC = System.Windows.Controls;
@@ -39,6 +40,14 @@ namespace Xwt.WPFBackend
 	public class ListViewBackend
 		: WidgetBackend, IListViewBackend
 	{
+		Dictionary<CellView,CellInfo> cellViews = new Dictionary<CellView, CellInfo> ();
+
+		class CellInfo {
+			public ListViewColumn Column;
+			public int CellIndex;
+			public int ColumnIndex;
+		}
+
 		public ListViewBackend()
 		{
 			ListView = new ExListView();
@@ -165,6 +174,8 @@ namespace Xwt.WPFBackend
 
 			this.view.Columns.Add (column);
 
+			MapColumn (col, column);
+
 			return column;
 		}
 
@@ -181,6 +192,25 @@ namespace Xwt.WPFBackend
                 column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
+
+			MapColumn (col, column);
+		}
+
+		void MapColumn (ListViewColumn col, GridViewColumn handle)
+		{
+			foreach (var k in cellViews.Where (e => e.Value.Column == col).Select (e => e.Key).ToArray ())
+				cellViews.Remove (k);
+
+			var colindex = view.Columns.IndexOf (handle);
+			for (int i = 0; i < col.Views.Count; i++) {
+				var v = col.Views [i];
+				var cellindex = col.Views.IndexOf (v);
+				cellViews [v] = new CellInfo {
+					Column = col,
+					CellIndex = cellindex,
+					ColumnIndex = colindex
+				};
+			}
 		}
 
 		public void SetSelectionMode (SelectionMode mode)
@@ -283,15 +313,117 @@ namespace Xwt.WPFBackend
 		private static readonly Setter GridHorizontalSetter = new Setter (ListViewItem.BorderThicknessProperty, new Thickness (0, 0, 0, 1));
 		private static readonly Setter BorderBrushSetter = new Setter (ListViewItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
 
-
         public int GetRowAtPosition(Point p)
-        {
-            throw new NotImplementedException();
+		{
+			var result = VisualTreeHelper.HitTest (ListView, new System.Windows.Point (p.X, p.Y)) as PointHitTestResult;
+
+			var element = (result != null) ? result.VisualHit as FrameworkElement : null;
+			while (element != null) {
+				if (element is ExListViewItem)
+					break;
+				if (element is ExListView) // We can't succeed past this point
+					return -1;
+
+				element = VisualTreeHelper.GetParent (element) as FrameworkElement;
+			}
+
+			if (element == null)
+				return -1;
+
+			int index = ListView.ItemContainerGenerator.IndexFromContainer(element);
+			return index;
         }
 
         public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
         {
-            throw new NotImplementedException();
-        }
+			ExListViewItem item = ListView.ItemContainerGenerator.ContainerFromIndex (row) as ExListViewItem;
+			if (item == null)
+				return Rectangle.Zero;
+
+			// this works only if the wpf layout remains the same
+			try {
+				var stackpanel = VisualTreeHelper.GetChild (item, 0);
+				var border = VisualTreeHelper.GetChild (stackpanel, 0);
+				var grid = VisualTreeHelper.GetChild (border, 0);
+				var rowpresenter = VisualTreeHelper.GetChild (grid, 1) as FrameworkElement;
+
+				if (VisualTreeHelper.GetChildrenCount (rowpresenter) != view.Columns.Count)
+					return Rectangle.Zero;
+
+				var colpresenter =  VisualTreeHelper.GetChild (rowpresenter, cellViews [cell].ColumnIndex) as FrameworkElement;
+				var colchild =  VisualTreeHelper.GetChild (colpresenter, 0) as FrameworkElement;
+
+				if (cellViews [cell].Column.Views.Count > 1 && colchild is System.Windows.Controls.StackPanel) {
+					var childStack = colchild as System.Windows.Controls.StackPanel;
+					if (childStack == null || VisualTreeHelper.GetChildrenCount (childStack) < cellViews [cell].CellIndex)
+						return Rectangle.Zero;
+					var cellpresenter = VisualTreeHelper.GetChild (childStack, cellViews [cell].CellIndex) as FrameworkElement;
+					var position = cellpresenter.TransformToAncestor (ListView).Transform(new System.Windows.Point(-ListView.Padding.Left, 0));
+					var rect = new Rect (position, cellpresenter.RenderSize);
+					return rect.ToXwtRect ();
+				} else {
+					var position = colchild.TransformToAncestor (ListView).Transform(new System.Windows.Point(-ListView.Padding.Left, 0));
+					var rect = new Rect (position, colchild.RenderSize);
+					return rect.ToXwtRect ();
+				}
+			} catch (ArgumentOutOfRangeException) {
+				return Rectangle.Zero;
+			} catch (ArgumentNullException) {
+				return Rectangle.Zero;
+			}
+		}
+
+		public Rectangle GetRowBounds (int row, bool includeMargin)
+		{
+			ExListViewItem item = ListView.ItemContainerGenerator.ContainerFromIndex (row) as ExListViewItem;
+			if (item == null)
+				return Rectangle.Zero;
+
+			// this works only if the wpf layout remains the same
+			try {
+				var stackpanel = VisualTreeHelper.GetChild (item, 0);
+				var border = VisualTreeHelper.GetChild (stackpanel, 0) as FrameworkElement;
+
+				var rect = Rectangle.Zero;
+				if (includeMargin) {
+					var position = border.TransformToAncestor (ListView).Transform (new System.Windows.Point (0, 0));
+					rect = new Rect (position, border.RenderSize).ToXwtRect();
+					rect.X -= ListView.Padding.Left + ListView.BorderThickness.Left;
+				} else {
+					var grid = VisualTreeHelper.GetChild (border, 0);
+					var rowpresenter = VisualTreeHelper.GetChild (grid, 1) as FrameworkElement;
+					for (int i = 0; i < VisualTreeHelper.GetChildrenCount (rowpresenter); i++)
+					{
+						var colpresenter =  VisualTreeHelper.GetChild (rowpresenter, i) as FrameworkElement;
+						var colchild =  VisualTreeHelper.GetChild (colpresenter, 0) as FrameworkElement;
+						var cellcount = VisualTreeHelper.GetChildrenCount (colchild);
+						if (cellcount > 1)
+							for (int j = 0; j < cellcount; j++) {
+								var cell =  VisualTreeHelper.GetChild (colchild, j) as FrameworkElement;
+								var position = cell.TransformToAncestor (ListView).Transform(new System.Windows.Point(-ListView.Padding.Left, 0));
+								var cell_rect = new Rect (position, cell.RenderSize).ToXwtRect();
+								if (rect == Rectangle.Zero)
+									rect = cell_rect;
+								else
+									rect = rect.Union(cell_rect);
+							}
+						else {
+							var position = colchild.TransformToAncestor (ListView).Transform(new System.Windows.Point(-ListView.Padding.Left, 0));
+							var cell_rect = new Rect (position, colchild.RenderSize).ToXwtRect();
+							if (rect == Rectangle.Zero)
+								rect = cell_rect;
+							else
+								rect = rect.Union(cell_rect);
+						}
+					}
+				}
+
+				return rect;
+			} catch (ArgumentOutOfRangeException) {
+				return Rectangle.Zero;
+			} catch (ArgumentNullException) {
+				return Rectangle.Zero;
+			}
+		}
     }
 }
