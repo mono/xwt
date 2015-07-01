@@ -149,6 +149,8 @@
     <Compile Include="Xwt.WPFBackend\WpfKeyboardHandler.cs" />
     <Compile Include="Xwt.WPFBackend\WebViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ScrollControlBackend.cs" />
+    <Compile Include="Xwt.WPFBackend\ExIconTextBox.xaml.cs" />
+    <Compile Include="Xwt.WPFBackend\SearchTextEntryBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -166,6 +168,9 @@
     <Resource Include="Xwt.WPFBackend\TreeView.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Xwt.WPFBackend\ExIconTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Xwt.WPFBackend\Buttons.xaml">
@@ -175,5 +180,6 @@
   <ItemGroup>
     <EmbeddedResource Include="icons\list-add.png" />
     <EmbeddedResource Include="icons\list-remove.png" />
+    <EmbeddedResource Include="icons\search.png" />
   </ItemGroup>
 </Project>

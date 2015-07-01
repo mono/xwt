@@ -71,6 +71,7 @@ namespace Xwt.WPFBackend
 			RegisterBackend<IBoxBackend, BoxBackend> ();
 			RegisterBackend<ILabelBackend, LabelBackend> ();
 			RegisterBackend<ITextEntryBackend, TextEntryBackend> ();
+			RegisterBackend<ISearchTextEntryBackend, SearchTextEntryBackend> ();
 			RegisterBackend<IButtonBackend, ButtonBackend> ();
 			RegisterBackend<IToggleButtonBackend, ToggleButtonBackend> ();
 			RegisterBackend<IMenuButtonBackend, MenuButtonBackend> ();
