@@ -94,7 +94,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public DateTime MaxDate {
+		public DateTime MaximumDate {
 			get {
 				return Widget.DisplayDateEnd ?? DateTime.MaxValue;
 			}
