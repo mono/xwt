@@ -60,21 +60,21 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public DateTime MinDateTime {
+		public DateTime MinimumDateTime {
 			get {
-				return Widget.MinDateTime;
+				return Widget.MinimumDateTime;
 			}
 			set {
-				Widget.MinDateTime = value;
+				Widget.MinimumDateTime = value;
 			}
 		}
 
-		public DateTime MaxDateTime {
+		public DateTime MaximumDateTime {
 			get {
-				return Widget.MaxDateTime;
+				return Widget.MaximumDateTime;
 			}
 			set {
-				Widget.MaxDateTime = value;
+				Widget.MaximumDateTime = value;
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace Xwt.GtkBackend
 				}
 			}
 
-			public DateTime MinDateTime {
+			public DateTime MinimumDateTime {
 				get {
 					return new DateTime ((long)Adjustment.Lower);
 				}
@@ -159,7 +159,7 @@ namespace Xwt.GtkBackend
 				}
 			}
 
-			public DateTime MaxDateTime {
+			public DateTime MaximumDateTime {
 				get {
 					return new DateTime ((long)Adjustment.Upper);
 				}

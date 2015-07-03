@@ -31,8 +31,8 @@ namespace Xwt.Backends
 	public interface IDatePickerBackend : IWidgetBackend
 	{
 		DateTime DateTime { get; set; }
-		DateTime MinDateTime { get; set; }
-		DateTime MaxDateTime { get; set; }
+		DateTime MinimumDateTime { get; set; }
+		DateTime MaximumDateTime { get; set; }
 		DatePickerStyle Style { get; set; }
 	}
 

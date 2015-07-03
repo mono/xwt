@@ -64,7 +64,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public DateTime MinDateTime {
+		public DateTime MinimumDateTime {
 			get {
 				return DatePicker.DisplayDateStart ?? DateTime.MinValue;
 			}
@@ -75,7 +75,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public DateTime MaxDateTime {
+		public DateTime MaximumDateTime {
 			get {
 				return DatePicker.DisplayDateEnd ?? DateTime.MaxValue;
 			}

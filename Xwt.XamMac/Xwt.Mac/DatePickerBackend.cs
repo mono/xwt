@@ -96,7 +96,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		public DateTime MinDateTime {
+		public DateTime MinimumDateTime {
 			get {
 				if (userMinDateKind == DateTimeKind.Utc)
 					return ((DateTime)Widget.MinDate).ToUniversalTime ();
@@ -108,7 +108,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		public DateTime MaxDateTime {
+		public DateTime MaximumDateTime {
 			get {
 				if (userMaxDateKind == DateTimeKind.Utc)
 					return ((DateTime)Widget.MaxDate).ToUniversalTime ();

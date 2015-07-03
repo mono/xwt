@@ -88,21 +88,21 @@ namespace Xwt
 			}
 		}
 
-		public DateTime MinDateTime {
+		public DateTime MinimumDateTime {
 			get {
-				return Backend.MinDateTime;
+				return Backend.MinimumDateTime;
 			}
 			set {
-				Backend.MinDateTime = value;
+				Backend.MinimumDateTime = value;
 			}
 		}
 
-		public DateTime MaxDateTime {
+		public DateTime MaximumDateTime {
 			get {
-				return Backend.MaxDateTime;
+				return Backend.MaximumDateTime;
 			}
 			set {
-				Backend.MaxDateTime = value;
+				Backend.MaximumDateTime = value;
 			}
 		}
 		
