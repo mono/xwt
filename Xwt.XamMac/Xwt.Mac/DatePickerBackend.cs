@@ -51,6 +51,7 @@ namespace Xwt.Mac
 			Widget.DatePickerMode = NSDatePickerMode.Single;
 			Widget.DatePickerStyle = NSDatePickerStyle.TextFieldAndStepper;
 			Widget.DatePickerElements = DatePickerStyle.DateTime.ToMacValue();
+			Widget.TimeZone = NSTimeZone.LocalTimeZone;
 		}
 
 		public override void EnableEvent (object eventId)
@@ -75,51 +76,46 @@ namespace Xwt.Mac
 		#region IDatePickerBackend implementation
 
 		// NSDate timezone workaround: cache and restore the DateTimeKind of the
-		// users DateTime object, since all conversions between DateTime and NSDate
+		// users DateTime objects, since all conversions between DateTime and NSDate
 		// are in UTC (see https://github.com/mono/maccore/blob/master/src/Foundation/NSDate.cs).
-		bool userTimeIsUTC;
+		DateTimeKind userDateKind = DateTimeKind.Unspecified;
+		DateTimeKind userMinDateKind = DateTimeKind.Unspecified;
+		DateTimeKind userMaxDateKind = DateTimeKind.Unspecified;
 
 		public DateTime DateTime {
 			get {
-				if (userTimeIsUTC)
-					return ((DateTime)Widget.DateValue).ToUniversalTime();
-				else
-					return ((DateTime)Widget.DateValue).ToLocalTime();
+				if (userDateKind == DateTimeKind.Utc)
+					return ((DateTime)Widget.DateValue).ToUniversalTime ();
+				// handle DateTimeKind.Unspecified and DateTimeKind.Local the same way
+				// like its done by System.TimeZone.ToUniversalTime when setting the Date.
+				return new DateTime(((DateTime)Widget.DateValue).ToLocalTime ().Ticks, userDateKind);
 			}
 			set {
-
-				if (value.Kind == DateTimeKind.Local) {
-					userTimeIsUTC = false;
-					Widget.TimeZone = NSTimeZone.LocalTimeZone;
-				} else {
-					userTimeIsUTC = true;
-					Widget.TimeZone = NSTimeZone.FromName("UTC");
-				}
-
+				userDateKind = value.Kind;
 				Widget.DateValue = (NSDate)value.ToUniversalTime ();
 			}
 		}
 
 		public DateTime MinDateTime {
 			get {
-				if (userTimeIsUTC)
-					return ((DateTime)Widget.MinDate).ToUniversalTime();
-				else
-					return ((DateTime)Widget.MinDate).ToLocalTime();
+				if (userMinDateKind == DateTimeKind.Utc)
+					return ((DateTime)Widget.MinDate).ToUniversalTime ();
+				return new DateTime(((DateTime)Widget.MinDate).ToLocalTime ().Ticks, userMinDateKind);
 			}
 			set {
+				userMinDateKind = value.Kind;
 				Widget.MinDate = (NSDate)value.ToUniversalTime ();
 			}
 		}
 
 		public DateTime MaxDateTime {
 			get {
-				if (userTimeIsUTC)
-					return ((DateTime)Widget.MaxDate).ToUniversalTime();
-				else
-					return ((DateTime)Widget.MaxDate).ToLocalTime();
+				if (userMaxDateKind == DateTimeKind.Utc)
+					return ((DateTime)Widget.MaxDate).ToUniversalTime ();
+				return new DateTime(((DateTime)Widget.MaxDate).ToLocalTime ().Ticks, userMaxDateKind);
 			}
 			set {
+				userMaxDateKind = value.Kind;
 				Widget.MaxDate = (NSDate)value.ToUniversalTime ();
 			}
 		}
