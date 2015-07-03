@@ -49,6 +49,8 @@ namespace Xwt.WPFBackend
 		{
 			get { return (IDatePickerEventSink)base.EventSink; }
 		}
+
+		public DatePickerStyle Style { get; set; }
 		
 		public DateTime DateTime
 		{
@@ -59,6 +61,28 @@ namespace Xwt.WPFBackend
 			set
 			{
 				DatePicker.SelectedDate = value;
+			}
+		}
+
+		public DateTime MinimumDateTime {
+			get {
+				return DatePicker.DisplayDateStart ?? DateTime.MinValue;
+			}
+			set {
+				DatePicker.DisplayDateStart = value;
+				if (DateTime < value)
+					DateTime = value;
+			}
+		}
+
+		public DateTime MaximumDateTime {
+			get {
+				return DatePicker.DisplayDateEnd ?? DateTime.MaxValue;
+			}
+			set {
+				DatePicker.DisplayDateEnd = value;
+				if (DateTime > value)
+					DateTime = value;
 			}
 		}
 

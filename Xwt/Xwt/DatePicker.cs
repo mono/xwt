@@ -38,6 +38,30 @@ namespace Xwt
 	[BackendType (typeof(IDatePickerBackend))]
 	public class DatePicker : Widget
 	{
+		public DatePicker () : this (DatePickerStyle.DateTime, DateTime.Now)
+		{
+		}
+
+		public DatePicker (DateTime initialDateTime) : this (DatePickerStyle.DateTime, initialDateTime)
+		{
+		}
+
+		public DatePicker (DatePickerStyle style) : this (style, DateTime.Now)
+		{
+		}
+
+		public DatePicker (DatePickerStyle style, DateTime initialDateTime)
+		{
+			VerifyConstructorCall (this);
+			Style = style;
+			DateTime = initialDateTime;
+		}
+
+		static DatePicker ()
+		{
+			MapEvent (DatePickerEvent.ValueChanged, typeof (Label), "OnValueChanged");
+		}
+
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IDatePickerEventSink
 		{
 			public void ValueChanged ()
@@ -63,10 +87,32 @@ namespace Xwt
 				Backend.DateTime = value;
 			}
 		}
+
+		public DateTime MinimumDateTime {
+			get {
+				return Backend.MinimumDateTime;
+			}
+			set {
+				Backend.MinimumDateTime = value;
+			}
+		}
+
+		public DateTime MaximumDateTime {
+			get {
+				return Backend.MaximumDateTime;
+			}
+			set {
+				Backend.MaximumDateTime = value;
+			}
+		}
 		
 		public DatePickerStyle Style {
-			get;
-			set;
+			get {
+				return Backend.Style;
+			}
+			set {
+				Backend.Style = value;
+			}
 		}
 		
 		protected virtual void OnValueChanged (EventArgs e)

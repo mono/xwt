@@ -32,13 +32,31 @@ namespace Samples
 	{
 		public DatePickerSample ()
 		{
-			var dp = new DatePicker ();
+			var dtp = new DatePicker (DateTime.Now);
+			PackStart (dtp);
+
+			Label la1 = new Label ("Initial Value: " + dtp.DateTime);
+			PackStart (la1);
+			dtp.ValueChanged += delegate {
+				la1.Text = "Value changed: " + dtp.DateTime;
+			};
+
+			var dp = new DatePicker (DatePickerStyle.Date);
 			PackStart (dp);
 
-			Label la = new Label ();
-			PackStart (la);
+			Label la2 = new Label ("Initial Value: " + dp.DateTime);
+			PackStart (la2);
 			dp.ValueChanged += delegate {
-				la.Text = "Value changed: " + dp.DateTime;
+				la2.Text = "Value changed: " + dp.DateTime;
+			};
+
+			var tp = new DatePicker (DatePickerStyle.Time, DateTime.MinValue);
+			PackStart (tp);
+
+			Label la3 = new Label ("Initial Value: " + tp.DateTime);
+			PackStart (la3);
+			tp.ValueChanged += delegate {
+				la3.Text = "Value changed: " + tp.DateTime;
 			};
 		}
 	}

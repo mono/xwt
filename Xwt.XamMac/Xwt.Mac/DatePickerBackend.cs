@@ -48,6 +48,10 @@ namespace Xwt.Mac
 		{
 			base.Initialize ();
 			ViewObject = new MacDatePicker ();
+			Widget.DatePickerMode = NSDatePickerMode.Single;
+			Widget.DatePickerStyle = NSDatePickerStyle.TextFieldAndStepper;
+			Widget.DatePickerElements = DatePickerStyle.DateTime.ToMacValue();
+			Widget.TimeZone = NSTimeZone.LocalTimeZone;
 		}
 
 		public override void EnableEvent (object eventId)
@@ -71,12 +75,57 @@ namespace Xwt.Mac
 
 		#region IDatePickerBackend implementation
 
+		// NSDate timezone workaround: cache and restore the DateTimeKind of the
+		// users DateTime objects, since all conversions between DateTime and NSDate
+		// are in UTC (see https://github.com/mono/maccore/blob/master/src/Foundation/NSDate.cs).
+		DateTimeKind userDateKind = DateTimeKind.Unspecified;
+		DateTimeKind userMinDateKind = DateTimeKind.Unspecified;
+		DateTimeKind userMaxDateKind = DateTimeKind.Unspecified;
+
 		public DateTime DateTime {
 			get {
-				return (DateTime)Widget.DateValue;
+				if (userDateKind == DateTimeKind.Utc)
+					return ((DateTime)Widget.DateValue).ToUniversalTime ();
+				// handle DateTimeKind.Unspecified and DateTimeKind.Local the same way
+				// like its done by System.TimeZone.ToUniversalTime when setting the Date.
+				return new DateTime(((DateTime)Widget.DateValue).ToLocalTime ().Ticks, userDateKind);
 			}
 			set {
-				Widget.DateValue = (NSDate) value;
+				userDateKind = value.Kind;
+				Widget.DateValue = (NSDate)value.ToUniversalTime ();
+			}
+		}
+
+		public DateTime MinimumDateTime {
+			get {
+				if (userMinDateKind == DateTimeKind.Utc)
+					return ((DateTime)Widget.MinDate).ToUniversalTime ();
+				return new DateTime(((DateTime)Widget.MinDate).ToLocalTime ().Ticks, userMinDateKind);
+			}
+			set {
+				userMinDateKind = value.Kind;
+				Widget.MinDate = (NSDate)value.ToUniversalTime ();
+			}
+		}
+
+		public DateTime MaximumDateTime {
+			get {
+				if (userMaxDateKind == DateTimeKind.Utc)
+					return ((DateTime)Widget.MaxDate).ToUniversalTime ();
+				return new DateTime(((DateTime)Widget.MaxDate).ToLocalTime ().Ticks, userMaxDateKind);
+			}
+			set {
+				userMaxDateKind = value.Kind;
+				Widget.MaxDate = (NSDate)value.ToUniversalTime ();
+			}
+		}
+
+		public DatePickerStyle Style {
+			get {
+				return Widget.DatePickerElements.ToXwtValue();
+			}
+			set {
+				Widget.DatePickerElements = value.ToMacValue ();
 			}
 		}
 
