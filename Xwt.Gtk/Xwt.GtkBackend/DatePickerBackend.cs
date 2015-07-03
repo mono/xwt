@@ -114,15 +114,15 @@ namespace Xwt.GtkBackend
 		
 		public class GtkDatePickerEntry : Gtk.SpinButton
 		{
-			static Dictionary<DatePickerStyle, string> styleFormats = new Dictionary<DatePickerStyle, string>();
+			static string[] styleFormats = new string[3];
 
 			static GtkDatePickerEntry ()
 			{
-				styleFormats[DatePickerStyle.Date] = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
+				styleFormats[(int)DatePickerStyle.Date] = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
 				// we use a custom static long time pattern, since we do not support 12/24 formats
 				string timeSeparator = CultureInfo.CurrentCulture.DateTimeFormat.TimeSeparator;
-				styleFormats[DatePickerStyle.Time] = "HH" + timeSeparator + "mm" + timeSeparator + "ss";
-				styleFormats[DatePickerStyle.DateTime] = styleFormats[DatePickerStyle.Date] + " " + styleFormats[DatePickerStyle.Time];
+				styleFormats[(int)DatePickerStyle.Time] = "HH" + timeSeparator + "mm" + timeSeparator + "ss";
+				styleFormats[(int)DatePickerStyle.DateTime] = styleFormats[(int)DatePickerStyle.Date] + " " + styleFormats[(int)DatePickerStyle.Time];
 			}
 
 			Dictionary<DateTimeComponent, int> componentPosition = new Dictionary<DateTimeComponent, int>();
@@ -177,8 +177,7 @@ namespace Xwt.GtkBackend
 				}
 				set {
 					style = value;
-					string format = String.Empty;
-					styleFormats.TryGetValue (value, out format);
+					string format = styleFormats [(int)value];
 
 					componentPosition.Clear ();
 					componentLength.Clear ();
@@ -242,8 +241,7 @@ namespace Xwt.GtkBackend
 			protected override int OnOutput ()
 			{
 				DateTime dateTime = new DateTime ((long)Adjustment.Value);
-				string format = String.Empty;
-				styleFormats.TryGetValue (Style, out format);
+				string format = styleFormats [(int)Style];
 
 				Text = dateTime.ToString (format);
 				return 1;
