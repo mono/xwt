@@ -63,7 +63,7 @@ namespace Xwt.Backends
 			if (sourceWidget != null)
 				return sourceWidget.Surface.GetPreferredSize (widthConstraint, heightConstraint);
 			else
-				return base.OnGetPreferredSize (widthConstraint, heightConstraint);
+				return Size.Zero;
 		}
 	}
 }
