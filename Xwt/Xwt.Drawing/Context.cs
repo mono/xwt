@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Xwt.Backends;
 
@@ -362,6 +363,46 @@ namespace Xwt.Drawing
 
 		internal double ScaleFactor {
 			get { return handler.GetScaleFactor (Backend); }
+		}
+
+		static HashSet<string> registeredThemeTags = new HashSet<string> ();
+		static HashSet<string> activeThemeTags = new HashSet<string> ();
+
+		public static void RegisterThemeTag (string tag)
+		{
+			registeredThemeTags.Add (tag);
+		}
+
+		public static void UnregisterThemeTag (string tag)
+		{
+			registeredThemeTags.Remove (tag);
+		}
+
+		public static void ThemeTagIsActive (string tag)
+		{
+			activeThemeTags.Contains (tag);
+		}
+
+		public static void SetThemeTag (string tag)
+		{
+			activeThemeTags.Add (tag);
+		}
+
+		public static void ClearThemeTag (string tag)
+		{
+			activeThemeTags.Remove (tag);
+		}
+
+		public static string [] RegisteredThemeTags {
+			get {
+				return registeredThemeTags.ToArray ();
+			}
+		}
+
+		public static string [] CurrentThemeTags {
+			get {
+				return activeThemeTags.ToArray ();
+			}
 		}
 	}
 }

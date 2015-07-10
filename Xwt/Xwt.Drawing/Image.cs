@@ -36,11 +36,11 @@ namespace Xwt.Drawing
 {
 	public class Image: XwtObject, IDisposable
 	{
-		Size requestedSize;
+		internal Size requestedSize;
 		internal NativeImageRef NativeRef;
 		internal double requestedAlpha = 1;
 
-		static int[] supportedScales = { 2 };
+		internal static int[] SupportedScales = { 2 };
 
 		internal Image ()
 		{
@@ -175,41 +175,83 @@ namespace Xwt.Drawing
 			if (toolkit == null)
 				throw new ToolkitNotInitializedException ();
 
-			var name = Path.GetFileNameWithoutExtension (resource);
+			var loader = new FileImageLoader (toolkit);
+			return LoadImage (loader, resource, null);
+		}
 
-			var img = toolkit.ImageBackendHandler.LoadFromResource (assembly, resource);
-			if (img == null)
-				throw new InvalidOperationException ("Resource not found: " + resource);
+		static Image LoadImage (ImageLoader loader, string fileName, ImageTagSet tagFilter)
+		{
+			var toolkit = Toolkit.CurrentEngine;
+			if (toolkit == null)
+				throw new ToolkitNotInitializedException ();
 
+			var img = loader.LoadImage (fileName);
 			var reqSize = toolkit.ImageBackendHandler.GetSize (img);
 
-			var ext = GetExtension (resource);
-			var altImages = new List<Tuple<string,object>> ();
+			var ext = GetExtension (fileName);
+			var name = fileName.Substring (0, fileName.Length - ext.Length);
+			var altImages = new List<Tuple<string,ImageTagSet,bool,object>> ();
+			var tags = Context.RegisteredThemeTags;
 
-			foreach (var r in assembly.GetManifestResourceNames ()) {
-				int i = r.LastIndexOf ('@');
-				if (i != -1) {
-					string rname = r.Substring (0, i);
-					if (rname == resource || rname == name) {
-						var rim = toolkit.ImageBackendHandler.LoadFromResource (assembly, r);
-						if (rim != null)
-							altImages.Add (new Tuple<string, object> (r, rim));
-					}
+			foreach (var r in loader.GetAlternativeFiles (fileName, name, ext)) {
+				int scale;
+				ImageTagSet fileTags;
+				if (ParseImageHints (name, r, out scale, out fileTags) && (tagFilter == null || tagFilter.Equals (fileTags))) {
+					var rim = loader.LoadImage (r);
+					if (rim != null)
+						altImages.Add (new Tuple<string, ImageTagSet, bool, object> (r, fileTags, scale > 1, rim));
 				}
 			}
+
 			if (altImages.Count > 0) {
-				altImages.Insert (0, new Tuple<string, object> (resource, img));
+				altImages.Insert (0, new Tuple<string, ImageTagSet, bool, object> (fileName, ImageTagSet.Empty, false, img));
+				var list = new List<Tuple<Image,string[]>> ();
+				foreach (var imageGroup in altImages.GroupBy (t => t.Item2)) {
+					Image altImg;
+					if (ext == ".9.png")
+						altImg = CreateComposedNinePatch (toolkit, imageGroup);
+					else {
+						var ib = toolkit.ImageBackendHandler.CreateMultiResolutionImage (altImages.Select (i => i.Item4));
+						altImg = loader.WrapImage (fileName, imageGroup.Key, ib, reqSize);
+					}
+					list.Add (new Tuple<Image,string[]> (altImg, imageGroup.Key.AsArray));
+				}
+				if (list.Count == 1)
+					return list [0].Item1;
+				else {
+					return new ThemedImage (list);
+				}
+			} else {
+				var res = loader.WrapImage (fileName, ImageTagSet.Empty, img, reqSize);
 				if (ext == ".9.png")
-					return CreateComposedNinePatch (toolkit, altImages);
-				img = toolkit.ImageBackendHandler.CreateMultiResolutionImage (altImages.Select (i => i.Item2));
+					res = new NinePatchImage (res.ToBitmap ());
+				return res;
 			}
-			var res = new Image (img, toolkit) {
-				requestedSize = reqSize
-			};
-			res.NativeRef.SetResourceSource (assembly, resource);
-			if (ext == ".9.png")
-				res = new NinePatchImage (res.ToBitmap ());
-			return res;
+		}
+
+		static bool ParseImageHints (string baseName, string fileName, out int scale, out ImageTagSet tags)
+		{
+			scale = 1;
+			tags = null;
+
+			if (!fileName.StartsWith (baseName, StringComparison.Ordinal) || fileName.Length <= baseName.Length + 1 || (fileName [baseName.Length] != '@' || fileName [baseName.Length] != '~'))
+				return false;
+
+			int i = baseName.Length;
+			if (fileName [i] == '@') {
+				var i2 = fileName.IndexOf ('~', i + 1);
+				if (i2 != -1) {
+					var s = fileName.Substring (i + 1, i2 - i - 1);
+					if (!int.TryParse (s, out scale)) {
+						tags = null;
+						return false;
+					}
+				}
+				i = i2;
+			}
+			if (i != -1)
+				tags = new ImageTagSet (fileName.Substring (i + 1));
+			return true;
 		}
 
 		public static Image CreateMultiSizeIcon (IEnumerable<Image> images)
@@ -241,34 +283,11 @@ namespace Xwt.Drawing
 			if (toolkit == null)
 				throw new ToolkitNotInitializedException ();
 
-			var ext = GetExtension (file);
-			var img = toolkit.ImageBackendHandler.LoadFromFile (file);
-
-			List<Tuple<string,object>> altImages = null;
-			foreach (var s in supportedScales) {
-				var fn = file.Substring (0, file.Length - ext.Length) + "@" + s + "x" + ext;
-				if (File.Exists (fn)) {
-					if (altImages == null) {
-						altImages = new List<Tuple<string, object>> ();
-						altImages.Add (new Tuple<string, object> (file, img));
-					}
-					altImages.Add (new Tuple<string, object> (fn, toolkit.ImageBackendHandler.LoadFromFile (fn)));
-				}
-			}
-
-			if (altImages != null) {
-				if (ext == ".9.png")
-					return CreateComposedNinePatch (toolkit, altImages);
-				img = toolkit.ImageBackendHandler.CreateMultiResolutionImage (altImages.Select (i => i.Item2));
-			}
-
-			var res = new Image (img, toolkit);
-			if (ext == ".9.png")
-				res = new NinePatchImage (res.ToBitmap ());
-			return res;
+			var loader = new FileImageLoader (toolkit);
+			return LoadImage (loader, file, null);
 		}
 
-		static Image CreateComposedNinePatch (Toolkit toolkit, List<Tuple<string,object>> altImages)
+		static Image CreateComposedNinePatch (Toolkit toolkit, IEnumerable<Tuple<string,ImageTagSet,bool,object>> altImages)
 		{
 			var npImage = new NinePatchImage ();
 			foreach (var fi in altImages) {
@@ -279,11 +298,11 @@ namespace Xwt.Drawing
 				else {
 					int j = fi.Item1.IndexOf ('x', ++i);
 					if (!double.TryParse (fi.Item1.Substring (i, j - i), out scaleFactor)) {
-						toolkit.ImageBackendHandler.Dispose (fi.Item2);
+						toolkit.ImageBackendHandler.Dispose (fi.Item4);
 						continue;
 					}
 				}
-				npImage.AddFrame (new Image (fi.Item2, toolkit).ToBitmap (), scaleFactor);
+				npImage.AddFrame (new Image (fi.Item4, toolkit).ToBitmap (), scaleFactor);
 			}
 			return npImage;
 		}
@@ -294,6 +313,21 @@ namespace Xwt.Drawing
 			if (toolkit == null)
 				throw new ToolkitNotInitializedException ();
 			return new Image (toolkit.ImageBackendHandler.LoadFromStream (stream), toolkit);
+		}
+
+		public static Image FromCustomLoader (IImageLoader loader, string fileName)
+		{
+			return FromCustomLoader (loader, fileName, null);
+		}
+
+		internal static Image FromCustomLoader (IImageLoader loader, string fileName, ImageTagSet tags)
+		{
+			var toolkit = Toolkit.CurrentEngine;
+			if (toolkit == null)
+				throw new ToolkitNotInitializedException ();
+			
+			var ld = new StreamImageLoader (toolkit, loader);
+			return LoadImage (ld, fileName, tags);
 		}
 
 		static string GetExtension (string fileName)
@@ -626,9 +660,13 @@ namespace Xwt.Drawing
 
 			public Func<Stream[]> ImageLoader;
 
+			public IImageLoader CustomImageLoader;
+
 			public ImageDrawCallback DrawCallback;
 
 			public string StockId;
+
+			public ImageTagSet Tags;
 		}
 
 		public object Backend {
@@ -652,21 +690,23 @@ namespace Xwt.Drawing
 			this.sources = sources;
 		}
 
-		public void SetFileSource (string file)
+		public void SetFileSource (string file, ImageTagSet tags)
 		{
 			sources = new [] { 
 				new NativeImageSource {
 					Source = file,
+					Tags = tags
 				}
 			};
 		}
 
-		public void SetResourceSource (Assembly asm, string name)
+		public void SetResourceSource (Assembly asm, string name, ImageTagSet tags)
 		{
 			sources = new [] { 
 				new NativeImageSource {
 					Source = name,
-					ResourceAssembly = asm
+					ResourceAssembly = asm,
+					Tags = tags
 				}
 			};
 		}
@@ -676,6 +716,17 @@ namespace Xwt.Drawing
 			sources = new [] { 
 				new NativeImageSource {
 					ImageLoader = imageLoader
+				}
+			};
+		}
+
+		public void SetCustomLoaderSource (IImageLoader imageLoader, string fileName, ImageTagSet tags)
+		{
+			sources = new [] { 
+				new NativeImageSource {
+					CustomImageLoader = imageLoader,
+					Source = fileName,
+					Tags = tags
 				}
 			};
 		}
@@ -737,7 +788,7 @@ namespace Xwt.Drawing
 							if (streams.Length == 1) {
 								newBackend = targetToolkit.ImageBackendHandler.LoadFromStream (streams [0]);
 							} else {
-								var backends = new object[streams.Length];
+								var backends = new object [streams.Length];
 								for (int n = 0; n < backends.Length; n++) {
 									backends [n] = targetToolkit.ImageBackendHandler.LoadFromStream (streams [n]);
 								}
@@ -747,6 +798,8 @@ namespace Xwt.Drawing
 							foreach (var st in streams)
 								st.Dispose ();
 						}
+					} else if (s.CustomImageLoader != null) {
+						targetToolkit.Invoke (() => newBackend = Image.FromCustomLoader (s.CustomImageLoader, s.Source, s.Tags).GetBackend());
 					} else if (s.ResourceAssembly != null) {
 						targetToolkit.Invoke (() => newBackend = Image.FromResource (s.ResourceAssembly, s.Source).GetBackend());
 					}
@@ -797,5 +850,185 @@ namespace Xwt.Drawing
 		/// </summary>
 		public NativeImageRef NextRef { get; set; }
 	}
+
+	class ImageTagSet
+	{
+		string tags;
+		string[] tagsArray;
+
+		public static readonly ImageTagSet Empty = new ImageTagSet (new string[0]);
+
+		public ImageTagSet (string [] tagsArray)
+		{
+			this.tagsArray = tagsArray;
+			Array.Sort (tagsArray);
+		}
+
+		public bool IsEmpty {
+			get {
+				return tagsArray.Length == 0;
+			}
+		}
+
+		public ImageTagSet (string tags)
+		{
+			tagsArray = tags.Split (new [] { '~' }, StringSplitOptions.RemoveEmptyEntries);
+			Array.Sort (AsArray);
+		}
+
+		public string AsString {
+			get {
+				if (tags == null)
+					tags = string.Join ("~", tagsArray);
+				return tags;
+			}
+		}
+
+		public string [] AsArray {
+			get {
+				return tagsArray;
+			}
+		}
+
+		public override bool Equals (object obj)
+		{
+			var other = obj as ImageTagSet;
+			if (other == null || tagsArray.Length != other.tagsArray.Length)
+				return false;
+			for (int n = 0; n < tagsArray.Length; n++)
+				if (tagsArray [n] != other.tagsArray [n])
+					return false;
+			return true;
+		}
+
+		public override int GetHashCode ()
+		{
+			unchecked {
+				int c = 0;
+				foreach (var s in tagsArray)
+					c %= s.GetHashCode ();
+				return c;
+			}
+		}
+	}
+
+	abstract class ImageLoader
+	{
+		public abstract object LoadImage (string fileName);
+		public abstract IEnumerable<string> GetAlternativeFiles (string fileName, string baseName, string ext);
+		public abstract Image WrapImage (string fileName, ImageTagSet tags, object img, Size reqSize);
+	}
+
+	class ResourceImageLoader : ImageLoader
+	{
+		Assembly assembly;
+		Toolkit toolkit;
+
+		public ResourceImageLoader (Toolkit toolkit, Assembly assembly)
+		{
+			this.assembly = assembly;
+			this.toolkit = toolkit;
+		}
+
+		public override object LoadImage (string fileName)
+		{
+			var img = toolkit.ImageBackendHandler.LoadFromResource (assembly, fileName);
+			if (img == null)
+				throw new InvalidOperationException ("Resource not found: " + fileName);
+			return img;
+		}
+
+		public override IEnumerable<string> GetAlternativeFiles (string fileName, string baseName, string ext)
+		{
+			foreach (var r in assembly.GetManifestResourceNames ())
+				yield return r;
+		}
+
+		public override Image WrapImage (string fileName, ImageTagSet tags, object img, Size reqSize)
+		{
+			var res = new Image (img, toolkit) {
+				requestedSize = reqSize
+			};
+			res.NativeRef.SetResourceSource (assembly, fileName, tags);
+			return res;
+		}
+	}
+
+	class FileImageLoader : ImageLoader
+	{
+		Toolkit toolkit;
+
+		public FileImageLoader (Toolkit toolkit)
+		{
+			this.toolkit = toolkit;
+		}
+
+		public override object LoadImage (string fileName)
+		{
+			var img = toolkit.ImageBackendHandler.LoadFromFile (fileName);
+			if (img == null)
+				throw new InvalidOperationException ("File not found: " + fileName);
+			return img;
+		}
+
+		public override IEnumerable<string> GetAlternativeFiles (string fileName, string baseName, string ext)
+		{
+			if (Context.RegisteredThemeTags.Length == 0) {
+				foreach (var s in Image.SupportedScales) {
+					var fn = baseName + "@" + s + "x" + ext;
+					if (File.Exists (fn))
+						yield return fn;
+				}
+			} else {
+				var files = Directory.GetFiles (Path.GetDirectoryName (fileName), baseName + "*" + ext);
+				foreach (var f in files)
+					yield return f;
+			}
+		}
+
+		public override Image WrapImage (string fileName, ImageTagSet tags, object img, Size reqSize)
+		{
+			var res = new Image (img, toolkit) {
+				requestedSize = reqSize
+			};
+			res.NativeRef.SetFileSource (fileName, tags);
+			return res;
+		}
+	}
+
+	class StreamImageLoader : ImageLoader
+	{
+		IImageLoader loader;
+		Toolkit toolkit;
+
+		public StreamImageLoader (Toolkit toolkit, IImageLoader loader)
+		{
+			this.toolkit = toolkit;
+			this.loader = loader;
+		}
+
+		public override IEnumerable<string> GetAlternativeFiles (string fileName, string baseName, string ext)
+		{
+			return loader.GetAlternativeFiles (fileName, baseName, ext);
+		}
+
+		public override object LoadImage (string fileName)
+		{
+			using (var s = loader.LoadImage (fileName))
+				return toolkit.ImageBackendHandler.LoadFromStream (s);
+		}
+
+		public override Image WrapImage (string fileName, ImageTagSet tags, object img, Size reqSize)
+		{
+			var res = new Image (img, toolkit) {
+				requestedSize = reqSize
+			};
+			var ld = loader;
+			res.NativeRef.SetCustomLoaderSource (loader, fileName, tags);
+			return res;
+		}
+	}
+
+	
 }
 

@@ -113,12 +113,12 @@ namespace Xwt.Backends
 
 		public static void SetFileSource (this Image image, string file)
 		{
-			image.NativeRef.SetFileSource (file);
+			image.NativeRef.SetFileSource (file, null);
 		}
 
 		public static void SetResourceSource (this Image image, System.Reflection.Assembly asm, string name)
 		{
-			image.NativeRef.SetResourceSource (asm, name);
+			image.NativeRef.SetResourceSource (asm, name, null);
 		}
 
 		public static void SetStreamSource (this Image image, Func<System.IO.Stream[]> imageLoader)
