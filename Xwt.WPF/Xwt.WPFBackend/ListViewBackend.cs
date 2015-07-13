@@ -39,7 +39,7 @@ using System.Windows.Input;
 namespace Xwt.WPFBackend
 {
 	public class ListViewBackend
-		: WidgetBackend, IListViewBackend
+		: WidgetBackend, IListViewBackend, ICellRendererTarget
 	{
 		Dictionary<CellView,CellInfo> cellViews = new Dictionary<CellView, CellInfo> ();
 
@@ -346,6 +346,13 @@ namespace Xwt.WPFBackend
 			var result = VisualTreeHelper.HitTest (ListView, new System.Windows.Point (p.X, p.Y)) as PointHitTestResult;
 
 			var element = (result != null) ? result.VisualHit as FrameworkElement : null;
+
+			return GetRowForElement (element);
+        }
+
+		int GetRowForElement (FrameworkElement sender)
+		{
+			var element = sender;
 			while (element != null) {
 				if (element is ExListViewItem)
 					break;
@@ -360,7 +367,12 @@ namespace Xwt.WPFBackend
 
 			int index = ListView.ItemContainerGenerator.IndexFromContainer(element);
 			return index;
-        }
+		}
+
+		void ICellRendererTarget.SetCurrentEventRowForElement (FrameworkElement sender)
+		{
+			CurrentEventRow = GetRowForElement (sender);
+		}
 
         public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
         {

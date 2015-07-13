@@ -5,13 +5,15 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using Xwt.Backends;
+using Xwt.WPFBackend.Utilities;
 
 namespace Xwt.WPFBackend
 {
     class CellViewBackend : ICellViewBackend, ICellDataSource
     {
         FrameworkElement currentElement;
-		WidgetEvent enabledEvents;
+        WidgetEvent enabledEvents;
+        ICellRendererTarget rendererTarget;
 
         public WidgetEvent EnabledEvents {
             get {
@@ -31,9 +33,10 @@ namespace Xwt.WPFBackend
         {
         }
 
-        public void Initialize(CellView cellView, FrameworkElementFactory factory)
+        public void Initialize(CellView cellView, FrameworkElementFactory factory, ICellRendererTarget rendererTarget)
         {
             CellView = cellView;
+            this.rendererTarget = rendererTarget;
 
 			factory.AddHandler (UIElement.MouseEnterEvent, new MouseEventHandler (HandleMouseEnter));
 			factory.AddHandler (UIElement.MouseLeaveEvent, new MouseEventHandler (HandleMouseLeave));
@@ -54,6 +57,12 @@ namespace Xwt.WPFBackend
         {
             currentElement = elem;
             EventSink = CellFrontend.Load(this);
+        }
+
+        public void SetCurrentEventRow ()
+        {
+            if (rendererTarget != null)
+                rendererTarget.SetCurrentEventRowForElement (CurrentElement);
         }
 
         public CellView CellView { get; set; }
@@ -112,6 +121,7 @@ namespace Xwt.WPFBackend
             if (enabledEvents.HasFlag(WidgetEvent.MouseEntered))
             {
                 Load(sender as FrameworkElement);
+                SetCurrentEventRow ();
                 ApplicationContext.InvokeUserCode(EventSink.OnMouseEntered);
             }
         }
@@ -121,6 +131,7 @@ namespace Xwt.WPFBackend
             if (enabledEvents.HasFlag(WidgetEvent.MouseExited))
             {
                 Load(sender as FrameworkElement);
+                SetCurrentEventRow ();
                 ApplicationContext.InvokeUserCode(EventSink.OnMouseExited);
             }
         }
@@ -135,6 +146,7 @@ namespace Xwt.WPFBackend
                     return;
                 var a = new MouseMovedEventArgs(e.Timestamp, p.X, p.Y);
 
+                SetCurrentEventRow ();
                 ApplicationContext.InvokeUserCode(delegate
                     {
                         EventSink.OnMouseMoved(a);
@@ -153,6 +165,7 @@ namespace Xwt.WPFBackend
                 if (!CellBounds.Contains(a.X, a.Y))
                     return;
 
+                SetCurrentEventRow ();
                 ApplicationContext.InvokeUserCode(delegate
                     {
                         EventSink.OnButtonPressed(a);
@@ -171,6 +184,7 @@ namespace Xwt.WPFBackend
                 if (!CellBounds.Contains(a.X, a.Y))
                     return;
 
+                SetCurrentEventRow ();
                 ApplicationContext.InvokeUserCode(delegate
                     {
                         EventSink.OnButtonReleased(a);
@@ -188,6 +202,7 @@ namespace Xwt.WPFBackend
                 KeyEventArgs args;
                 if (e.MapToXwtKeyArgs(out args))
                 {
+                    SetCurrentEventRow ();
                     ApplicationContext.InvokeUserCode(delegate
                         {
                             EventSink.OnKeyPressed(args);
@@ -206,6 +221,7 @@ namespace Xwt.WPFBackend
                 KeyEventArgs args;
                 if (e.MapToXwtKeyArgs(out args))
                 {
+                    SetCurrentEventRow ();
                     ApplicationContext.InvokeUserCode(delegate
                         {
                             EventSink.OnKeyReleased(args);

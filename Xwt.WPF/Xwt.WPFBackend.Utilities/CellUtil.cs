@@ -99,7 +99,7 @@ namespace Xwt.WPFBackend.Utilities
 				}
 
                 var cb = new CellViewBackend();
-                cb.Initialize(view, factory);
+                cb.Initialize(view, factory, Toolkit.GetBackend(parent) as ICellRendererTarget);
                 fr.AttachBackend(parent, cb);
 				return factory;
 			}
@@ -116,7 +116,7 @@ namespace Xwt.WPFBackend.Utilities
 				}
 
                 var cb = new CellViewBackend();
-                cb.Initialize(view, factory);
+                cb.Initialize(view, factory, Toolkit.GetBackend(parent) as ICellRendererTarget);
                 fr.AttachBackend(parent, cb);
                 return factory;
 			}
@@ -128,7 +128,7 @@ namespace Xwt.WPFBackend.Utilities
                 FrameworkElementFactory factory = new FrameworkElementFactory(typeof(CanvasCellViewPanel));
 				factory.SetValue(CanvasCellViewPanel.CellViewBackendProperty, cb);
 
-                cb.Initialize(view, factory);
+                cb.Initialize(view, factory, Toolkit.GetBackend(parent) as ICellRendererTarget);
                 fr.AttachBackend(parent, cb);
                 return factory;
 			}
@@ -146,12 +146,17 @@ namespace Xwt.WPFBackend.Utilities
 					factory.SetBinding (SWC.CheckBox.IsCheckedProperty, new Binding (dataPath + "[" + cellView.ActiveField.Index + "]"));
 
 				var cb = new CheckBoxCellViewBackend ();
-				cb.Initialize (view, factory);
+				cb.Initialize (view, factory, Toolkit.GetBackend(parent) as ICellRendererTarget);
 				fr.AttachBackend (parent, cb);
 				return factory;
 			}
 
 			throw new NotImplementedException ();
 		}
+	}
+
+	public interface ICellRendererTarget
+	{
+		void SetCurrentEventRowForElement (FrameworkElement sender);
 	}
 }

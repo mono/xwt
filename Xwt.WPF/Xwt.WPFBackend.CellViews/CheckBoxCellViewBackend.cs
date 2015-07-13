@@ -43,6 +43,7 @@ namespace Xwt.WPFBackend
 		{
 			var view = (ICheckBoxCellViewFrontend) CellView;
 			Load(sender as FrameworkElement);
+			SetCurrentEventRow ();
 			view.RaiseToggled ();
 		}
 	}
