@@ -145,7 +145,7 @@ namespace Xwt.WPFBackend.Utilities
 				if (cellView.ActiveField != null)
 					factory.SetBinding (SWC.CheckBox.IsCheckedProperty, new Binding (dataPath + "[" + cellView.ActiveField.Index + "]"));
 
-				var cb = new CellViewBackend ();
+				var cb = new CheckBoxCellViewBackend ();
 				cb.Initialize (view, factory);
 				fr.AttachBackend (parent, cb);
 				return factory;

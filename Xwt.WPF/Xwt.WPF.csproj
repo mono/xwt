@@ -51,6 +51,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Xwt.WPFBackend.CellViews\CanvasCellViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend.CellViews\CanvasCellViewPanel.cs" />
+    <Compile Include="Xwt.WPFBackend.CellViews\CheckBoxCellViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend.CellViews\CellViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\NativeStockIcon.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\CellUtil.cs" />
