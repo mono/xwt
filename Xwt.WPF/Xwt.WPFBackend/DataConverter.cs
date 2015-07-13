@@ -372,5 +372,28 @@ namespace Xwt.WPFBackend
 
 			return retval;
 		}
+
+		public static ButtonEventArgs ToXwtButtonArgs (this MouseButtonEventArgs e, FrameworkElement target)
+		{
+			var pos = e.GetPosition (target);
+			return new ButtonEventArgs () {
+				X = pos.X,
+				Y = pos.Y,
+				MultiplePress = e.ClickCount,
+				Button = e.ChangedButton.ToXwtButton ()
+			};
+		}
+
+		public static bool MapToXwtKeyArgs (this System.Windows.Input.KeyEventArgs e, out KeyEventArgs result)
+		{
+			result = null;
+
+			var key = KeyboardUtil.TranslateToXwtKey (e.Key);
+			if ((int)key == 0)
+				return false;
+
+			result = new KeyEventArgs (key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
+			return true;
+		}
 	}
 }
