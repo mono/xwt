@@ -36,7 +36,20 @@ namespace Xwt.Drawing
 		ContextBackendHandler handler;
 		Pattern pattern;
 		double globalAlpha = 1;
-		Stack<double> alphaStack = new Stack<double> ();
+		HashSet<string> styles;
+		bool stylesSetIsShared;
+
+		static HashSet<string> registeredStyles = new HashSet<string> ();
+		static HashSet<string> globalStyles = new HashSet<string> ();
+
+		Stack<SavedContext> contextStack = new Stack<SavedContext> ();
+
+		class SavedContext
+		{
+			public double Alpha;
+			public HashSet<string> Styles;
+			public bool StylesSetIsShared;
+		}
 		
 		internal Context (object backend, Toolkit toolkit): this (backend, toolkit, toolkit.ContextBackendHandler)
 		{
@@ -45,6 +58,8 @@ namespace Xwt.Drawing
 		internal Context (object backend, Toolkit toolkit, ContextBackendHandler handler): base (backend, toolkit, handler)
 		{
 			this.handler = handler;
+			styles = globalStyles;
+			stylesSetIsShared = true;
 		}
 
 		internal ContextBackendHandler Handler {
@@ -64,14 +79,25 @@ namespace Xwt.Drawing
 		public void Save ()
 		{
 			handler.Save (Backend);
-			alphaStack.Push (globalAlpha);
+			contextStack.Push (new SavedContext {
+				Alpha = globalAlpha,
+				Styles = styles,
+				StylesSetIsShared = stylesSetIsShared
+			});
+
+			// The styles hash set is now shared with the previous context
+			stylesSetIsShared = true;
 		}
 		
 		public void Restore ()
 		{
 			handler.Restore (Backend);
-			if (alphaStack.Count > 0)
-				globalAlpha = alphaStack.Pop ();
+			if (contextStack.Count > 0) {
+				var info = contextStack.Pop ();
+				globalAlpha = info.Alpha;
+				styles = info.Styles;
+				stylesSetIsShared = info.StylesSetIsShared;
+			}
 		}
 		
 		public double GlobalAlpha {
@@ -81,7 +107,43 @@ namespace Xwt.Drawing
 				handler.SetGlobalAlpha (Backend, globalAlpha);
 			}
 		}
+
+		public void SetStyle (string style)
+		{
+			if (style != null) {
+				MakeStylesCollectionModifiable ();
+				styles.Add (style);
+			}
+		}
 		
+		public void ClearStyle (string style)
+		{
+			if (style != null) {
+				MakeStylesCollectionModifiable ();
+				styles.Remove (style);
+			}
+		}
+
+		public bool HasStyle (string name)
+		{
+			return styles.Contains (name);
+		}
+
+		public IEnumerable<string> Styles {
+			get {
+				return styles;
+			}
+		}
+
+		void MakeStylesCollectionModifiable ()
+		{
+			if (stylesSetIsShared) {
+				// Make a copy of the styles collection
+				stylesSetIsShared = false;
+				styles = new HashSet<string> (styles);
+			}
+		}
+
 		public void SetColor (Color color)
 		{
 			handler.SetColor (Backend, color);
@@ -365,43 +427,46 @@ namespace Xwt.Drawing
 			get { return handler.GetScaleFactor (Backend); }
 		}
 
-		static HashSet<string> registeredThemeTags = new HashSet<string> ();
-		static HashSet<string> activeThemeTags = new HashSet<string> ();
-
-		public static void RegisterThemeTag (string tag)
+		public static void RegisterStyles (params string[] styleNames)
 		{
-			registeredThemeTags.Add (tag);
+			registeredStyles.UnionWith (styleNames);
 		}
 
-		public static void UnregisterThemeTag (string tag)
+		public static void UnregisterStyles (params string[] styleNames)
 		{
-			registeredThemeTags.Remove (tag);
+			registeredStyles.ExceptWith (styleNames);
 		}
 
-		public static void ThemeTagIsActive (string tag)
+		public static bool HasGlobalStyle (string style)
 		{
-			activeThemeTags.Contains (tag);
+			return globalStyles.Contains (style);
 		}
 
-		public static void SetThemeTag (string tag)
+		public static void SetGlobalStyle (string style)
 		{
-			activeThemeTags.Add (tag);
+			// Make a copy of the collection since it may be referenced from context instances,
+			// which don't expect the collection to change
+			globalStyles = new HashSet<string> (globalStyles);
+			globalStyles.Add (style);
 		}
 
-		public static void ClearThemeTag (string tag)
+		public static void ClearGlobalStyle (string style)
 		{
-			activeThemeTags.Remove (tag);
+			// Make a copy of the collection since it may be referenced from context instances,
+			// which don't expect the collection to change
+			globalStyles = new HashSet<string> (globalStyles);
+			globalStyles.Remove (style);
 		}
 
-		public static string [] RegisteredThemeTags {
+		public static IEnumerable<string> RegisteredStyles {
 			get {
-				return registeredThemeTags.ToArray ();
+				return registeredStyles;
 			}
 		}
 
-		public static string [] CurrentThemeTags {
+		public static IEnumerable<string> GlobalStyles {
 			get {
-				return activeThemeTags.ToArray ();
+				return globalStyles;
 			}
 		}
 	}

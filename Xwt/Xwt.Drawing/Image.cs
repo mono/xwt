@@ -39,6 +39,7 @@ namespace Xwt.Drawing
 		internal Size requestedSize;
 		internal NativeImageRef NativeRef;
 		internal double requestedAlpha = 1;
+		internal string [] styles;
 
 		internal static int[] SupportedScales = { 2 };
 
@@ -98,7 +99,8 @@ namespace Xwt.Drawing
 			return new ImageDescription () {
 				Alpha = requestedAlpha,
 				Size = Size,
-				Backend = Backend
+				Backend = Backend,
+				Styles = styles
 			};
 		}
 
@@ -175,7 +177,7 @@ namespace Xwt.Drawing
 			if (toolkit == null)
 				throw new ToolkitNotInitializedException ();
 
-			var loader = new FileImageLoader (toolkit);
+			var loader = new ResourceImageLoader (toolkit, assembly);
 			return LoadImage (loader, resource, null);
 		}
 
@@ -191,12 +193,12 @@ namespace Xwt.Drawing
 			var ext = GetExtension (fileName);
 			var name = fileName.Substring (0, fileName.Length - ext.Length);
 			var altImages = new List<Tuple<string,ImageTagSet,bool,object>> ();
-			var tags = Context.RegisteredThemeTags;
+			var tags = Context.RegisteredStyles;
 
 			foreach (var r in loader.GetAlternativeFiles (fileName, name, ext)) {
 				int scale;
 				ImageTagSet fileTags;
-				if (ParseImageHints (name, r, out scale, out fileTags) && (tagFilter == null || tagFilter.Equals (fileTags))) {
+				if (ParseImageHints (name, r, ext, out scale, out fileTags) && (tagFilter == null || tagFilter.Equals (fileTags))) {
 					var rim = loader.LoadImage (r);
 					if (rim != null)
 						altImages.Add (new Tuple<string, ImageTagSet, bool, object> (r, fileTags, scale > 1, rim));
@@ -211,7 +213,7 @@ namespace Xwt.Drawing
 					if (ext == ".9.png")
 						altImg = CreateComposedNinePatch (toolkit, imageGroup);
 					else {
-						var ib = toolkit.ImageBackendHandler.CreateMultiResolutionImage (altImages.Select (i => i.Item4));
+						var ib = toolkit.ImageBackendHandler.CreateMultiResolutionImage (imageGroup.Select (i => i.Item4));
 						altImg = loader.WrapImage (fileName, imageGroup.Key, ib, reqSize);
 					}
 					list.Add (new Tuple<Image,string[]> (altImg, imageGroup.Key.AsArray));
@@ -229,13 +231,15 @@ namespace Xwt.Drawing
 			}
 		}
 
-		static bool ParseImageHints (string baseName, string fileName, out int scale, out ImageTagSet tags)
+		static bool ParseImageHints (string baseName, string fileName, string ext, out int scale, out ImageTagSet tags)
 		{
 			scale = 1;
-			tags = null;
+			tags = ImageTagSet.Empty;
 
-			if (!fileName.StartsWith (baseName, StringComparison.Ordinal) || fileName.Length <= baseName.Length + 1 || (fileName [baseName.Length] != '@' || fileName [baseName.Length] != '~'))
+			if (!fileName.StartsWith (baseName, StringComparison.Ordinal) || fileName.Length <= baseName.Length + 1 || (fileName [baseName.Length] != '@' && fileName [baseName.Length] != '~'))
 				return false;
+
+			fileName = fileName.Substring (0, fileName.Length - ext.Length);
 
 			int i = baseName.Length;
 			if (fileName [i] == '@') {
@@ -261,13 +265,33 @@ namespace Xwt.Drawing
 
 			var allImages = images.ToArray ();
 
-			var img = new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (allImages.Select (i => i.GetBackend ())));
+			if (allImages.Any (i => i is ThemedImage)) {
+				// If one of the images is themed, then the whole resulting image will be themed.
+				// To create the new image, we group images with the same theme but different size, and we create a multi-size icon for those.
+				// The resulting image is the combination of those multi-size icons.
+				var allThemes = allImages.OfType<ThemedImage> ().SelectMany (i => i.Images).Select (i => new ImageTagSet (i.Item2)).Distinct ().ToArray ();
+				List<Tuple<Image, string []>> newImages = new List<Tuple<Image, string []>> ();
+				foreach (var ts in allThemes) {
+					List<Image> multiSizeImages = new List<Image> ();
+					foreach (var i in allImages) {
+						if (i is ThemedImage)
+							multiSizeImages.Add (((ThemedImage)i).GetImage (ts.AsArray));
+						else
+							multiSizeImages.Add (i);
+					}
+					var img = CreateMultiSizeIcon (multiSizeImages);
+					newImages.Add (new Tuple<Image, string []> (img, ts.AsArray));
+				}
+				return new ThemedImage (newImages);
+			} else {
+				var img = new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (allImages.Select (i => i.GetBackend ())));
 
-			if (allImages.All (i => i.NativeRef.HasNativeSource)) {
-				var sources = allImages.Select (i => i.NativeRef.NativeSource).ToArray ();
-				img.NativeRef.SetSources (sources);
+				if (allImages.All (i => i.NativeRef.HasNativeSource)) {
+					var sources = allImages.Select (i => i.NativeRef.NativeSource).ToArray ();
+					img.NativeRef.SetSources (sources);
+				}
+				return img;
 			}
-			return img;
 		}
 
 		public static Image CreateMultiResolutionImage (IEnumerable<Image> images)
@@ -486,6 +510,22 @@ namespace Xwt.Drawing
 			if (size.IsZero)
 				throw new InvalidOperationException ("Image size has not been set and the image doesn't have a default size");
 			return size;
+		}
+
+		/// <summary>
+		/// Retuns a copy of the image with a set of specific styles
+		/// </summary>
+		/// <returns>A new image with the new styles</returns>
+		/// <param name="styles">Styles to apply</param>
+		/// <remarks>
+		/// This is a lightweight operation.
+		/// The method doesn't make a copy of the image data.
+		/// </remarks>
+		public Image WithStyles (params string[] styles)
+		{
+			return new Image (this) {
+				styles = styles
+			};
 		}
 
 		/// <summary>
@@ -973,7 +1013,7 @@ namespace Xwt.Drawing
 
 		public override IEnumerable<string> GetAlternativeFiles (string fileName, string baseName, string ext)
 		{
-			if (Context.RegisteredThemeTags.Length == 0) {
+			if (!Context.RegisteredStyles.Any ()) {
 				foreach (var s in Image.SupportedScales) {
 					var fn = baseName + "@" + s + "x" + ext;
 					if (File.Exists (fn))

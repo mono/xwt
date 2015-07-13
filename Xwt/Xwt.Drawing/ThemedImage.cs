@@ -38,13 +38,24 @@ namespace Xwt.Drawing
 			this.images = images;
 		}
 
+		public IEnumerable<Tuple<Image, string []>> Images {
+			get {
+				return images;
+			}
+		}
+
 		protected override void OnDraw (Context ctx, Rectangle bounds)
+		{
+			var best = GetImage (ctx.Styles);
+			if (best != null)
+				ctx.DrawImage (best, bounds);
+		}
+
+		public Image GetImage (IEnumerable<string> tags)
 		{
 			Image best = null;
 			int bestMatches = -1;
 			int bestNoMatches = int.MaxValue;
-
-			var tags = Context.CurrentThemeTags;
 
 			foreach (var img in images) {
 				int matches = 0;
@@ -59,9 +70,7 @@ namespace Xwt.Drawing
 					bestNoMatches = noMatches;
 				}
 			}
-
-			if (best != null)
-				ctx.DrawImage (best, bounds);
+			return best;
 		}
 	}
 }

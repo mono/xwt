@@ -386,10 +386,10 @@ namespace Xwt.GtkBackend
 				};
 				if (actx != null) {
 					actx.InvokeUserCode (delegate {
-						drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height));
+						drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height), idesc);
 					});
 				} else
-					drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height));
+					drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height), idesc);
 			}
 			else {
 				DrawPixbuf (ctx, GetBestFrame (actx, scaleFactor, idesc.Size.Width, idesc.Size.Height, false), x, y, idesc);

@@ -450,7 +450,7 @@ namespace Xwt.WPFBackend
 			if (drawCallback != null) {
 				DrawingContext c = new DrawingContext (dc, scaleFactor);
 				actx.InvokeUserCode (delegate {
-					drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height));
+					drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height), idesc);
 				});
 			}
 			else {

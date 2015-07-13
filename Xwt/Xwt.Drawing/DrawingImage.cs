@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
@@ -36,9 +37,13 @@ namespace Xwt.Drawing
 			NativeRef.SetCustomDrawSource (Draw);
 		}
 
-		void Draw (object ctx, Rectangle bounds)
+		void Draw (object ctx, Rectangle bounds, ImageDescription idesc)
 		{
 			var c = new Context (ctx, ToolkitEngine);
+			if (idesc.Styles != null) {
+				foreach (var s in idesc.Styles)
+					c.SetStyle (s);
+			}
 			c.Reset (null);
 			OnDraw (c, bounds);
 		}
