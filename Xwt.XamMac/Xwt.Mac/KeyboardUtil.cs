@@ -177,8 +177,8 @@ namespace Xwt.Mac
 				case '2': return Key.K2;
 				case '3': return Key.K3;
 				case '4': return Key.K4;
-				case '5': return Key.K6;
-				case '6': return Key.K5;
+				case '5': return Key.K5;
+				case '6': return Key.K6;
 				case '7': return Key.K7;
 				case '8': return Key.K8;
 				case '9': return Key.K9;
