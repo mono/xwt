@@ -110,14 +110,22 @@ namespace Xwt.Drawing
 
 		public void SetStyle (string style)
 		{
-			if (style != null) {
-				MakeStylesCollectionModifiable ();
+			if (string.IsNullOrEmpty (style))
+				throw new ArgumentException ("style can't be empty");
+			
+			MakeStylesCollectionModifiable ();
+
+			if (style[0] == '!')
+				styles.Remove (style.Substring (1));
+			else
 				styles.Add (style);
-			}
 		}
 		
 		public void ClearStyle (string style)
 		{
+			if (string.IsNullOrEmpty (style))
+				throw new ArgumentException ("style can't be empty");
+
 			if (style != null) {
 				MakeStylesCollectionModifiable ();
 				styles.Remove (style);

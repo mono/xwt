@@ -265,6 +265,9 @@ namespace Xwt.Drawing
 
 			var allImages = images.ToArray ();
 
+			if (allImages.Length == 1)
+				return allImages [0];
+
 			if (allImages.Any (i => i is ThemedImage)) {
 				// If one of the images is themed, then the whole resulting image will be themed.
 				// To create the new image, we group images with the same theme but different size, and we create a multi-size icon for those.
