@@ -242,20 +242,37 @@ namespace Xwt.Drawing
 			fileName = fileName.Substring (0, fileName.Length - ext.Length);
 
 			int i = baseName.Length;
-			if (fileName [i] == '@') {
-				var i2 = fileName.IndexOf ('~', i + 1);
+			if (fileName [i] == '~') {
+				// For example: foo~dark@2x
+				i++;
+				var i2 = fileName.IndexOf ('@', i);
 				if (i2 != -1) {
-					var s = fileName.Substring (i + 1, i2 - i - 1);
+					var s = fileName.Substring (i2 + 1);
 					if (!int.TryParse (s, out scale)) {
 						tags = null;
 						return false;
 					}
-				}
-				i = i2;
+				} else
+					i2 = fileName.Length;
+				tags = new ImageTagSet (fileName.Substring (i, i2 - i));
+				return true;
 			}
-			if (i != -1)
-				tags = new ImageTagSet (fileName.Substring (i + 1));
-			return true;
+			else {
+				// For example: foo@2x~dark
+				i++;
+				var i2 = fileName.IndexOf ('~', i);
+				if (i2 == -1)
+					i2 = fileName.Length;
+				
+				var s = fileName.Substring (i, i2 - i);
+				if (!int.TryParse (s, out scale)) {
+					tags = null;
+					return false;
+				}
+				if (i2 + 1 < fileName.Length)
+					tags = new ImageTagSet (fileName.Substring (i2 + 1));
+				return true;
+			}
 		}
 
 		public static Image CreateMultiSizeIcon (IEnumerable<Image> images)
