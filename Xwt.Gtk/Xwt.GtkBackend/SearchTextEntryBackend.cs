@@ -64,9 +64,10 @@ namespace Xwt.GtkBackend
 			searchEntry.Show ();
 		}
 
-		void ResetSearch (object o, Gtk.IconReleaseArgs args)
+		void ResetSearch (object o, GLib.SignalArgs args)
 		{
-			if (args.P0 == Gtk.EntryIconPosition.Secondary)
+			// the first argument holds the icon position (0 = left, 1 = right)
+			if ((int)args.Args [0] == 1)
 				Text = String.Empty;
 		}
 

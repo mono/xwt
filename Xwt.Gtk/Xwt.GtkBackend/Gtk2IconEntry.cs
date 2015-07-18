@@ -31,6 +31,17 @@ namespace Xwt.GtkBackend
 {
 	public class GtkEntry : Gtk.Entry
 	{
+		enum EntryIconPosition {
+			Primary,
+			Secondary,
+		}
+
+		static GtkEntry ()
+		{
+			var tIconPosition = new GLib.GType (gtk_entry_icon_position_get_type ());
+			if (GLib.GType.LookupType (tIconPosition.Val) == null)
+				GLib.GType.Register(tIconPosition, typeof(EntryIconPosition));
+		}
 
 		public string PrimaryIconName {
 			get {
@@ -189,9 +200,9 @@ namespace Xwt.GtkBackend
 		}
 
 		[GLib.Signal("icon-press")]
-		public event Gtk.IconPressHandler IconPress {
+		public event EventHandler<GLib.SignalArgs> IconPress {
 			add {
-				this.AddSignalHandler ("icon-press", value, typeof (Gtk.IconPressArgs));
+				this.AddSignalHandler ("icon-press", value, typeof (GLib.SignalArgs));
 			}
 			remove {
 				this.RemoveSignalHandler ("icon-press", value);
@@ -199,66 +210,16 @@ namespace Xwt.GtkBackend
 		}
 
 		[GLib.Signal ("icon-release")]
-		public event Gtk.IconReleaseHandler IconRelease {
+		public event EventHandler<GLib.SignalArgs> IconRelease {
 			add {
-				this.AddSignalHandler ("icon-release", value, typeof (Gtk.IconReleaseArgs));
+				this.AddSignalHandler ("icon-release", value, typeof (GLib.SignalArgs));
 			}
 			remove {
 				this.RemoveSignalHandler ("icon-release", value);
 			}
 		}
-	}
-}
 
-namespace Gtk
-{
-	public delegate void IconPressHandler(object o, IconPressArgs args);
-
-	public delegate void IconReleaseHandler (object o, IconReleaseArgs args);
-
-	public class IconPressArgs : GLib.SignalArgs {
-		public Gtk.EntryIconPosition P0{
-			get {
-				return (Gtk.EntryIconPosition) Args [0];
-			}
-		}
-
-		public Gdk.Event P1{
-			get {
-				return (Gdk.Event) Args [1];
-			}
-		}
-
-	}
-
-	public class IconReleaseArgs : GLib.SignalArgs {
-		public Gtk.EntryIconPosition P0{
-			get {
-				return (Gtk.EntryIconPosition) Args [0];
-			}
-		}
-
-		public Gdk.Event P1{
-			get {
-				return (Gdk.Event) Args [1];
-			}
-		}
-	}
-
-	[GLib.GType (typeof (Gtk.EntryIconPositionGType))]
-	public enum EntryIconPosition {
-		Primary,
-		Secondary,
-	}
-
-	internal static class EntryIconPositionGType {
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_entry_icon_position_get_type ();
-
-		public static GLib.GType GType {
-			get {
-				return new GLib.GType (gtk_entry_icon_position_get_type ());
-			}
-		}
 	}
 }
