@@ -42,7 +42,7 @@ namespace Xwt.WPFBackend
 {
 	public class WpfFontBackendHandler : FontBackendHandler
 	{
-        readonly ConcurrentDictionary<string, FontFamily> registeredFonts = new ConcurrentDictionary<string, FontFamily>(); 
+		readonly ConcurrentDictionary<string, FontFamily> registeredFonts = new ConcurrentDictionary<string, FontFamily>();
 
 		public override object GetSystemDefaultFont ()
 		{
@@ -56,13 +56,13 @@ namespace Xwt.WPFBackend
 
 		public override IEnumerable<string> GetInstalledFonts ()
 		{
-		    foreach (var fontName in Fonts.SystemFontFamilies.Select(f => f.Source)) {
-		        yield return fontName;
-		    }
+			foreach (var fontName in Fonts.SystemFontFamilies.Select(f => f.Source)) {
+				yield return fontName;
+			}
 
-		    foreach (var fontName in registeredFonts.Keys) {
-		        yield return fontName;
-		    }
+			foreach (var fontName in registeredFonts.Keys) {
+				yield return fontName;
+			}
 		}
 
 		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
@@ -86,13 +86,13 @@ namespace Xwt.WPFBackend
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-		    FontFamily fontFamily;
-		    if (!registeredFonts.TryGetValue (fontName, out fontFamily)) {
-		        fontFamily = new FontFamily (fontName);
-		    }
+			FontFamily fontFamily;
+			if (!registeredFonts.TryGetValue (fontName, out fontFamily)) {
+				fontFamily = new FontFamily (fontName);
+			}
 
 			size = GetPointsFromDeviceUnits (size);
-            return new FontData (fontFamily, size) {
+			return new FontData (fontFamily, size) {
 				Style = style.ToWpfFontStyle (),
 				Weight = weight.ToWpfFontWeight (),
 				Stretch = stretch.ToWpfFontStretch ()
@@ -101,24 +101,24 @@ namespace Xwt.WPFBackend
 
 		public override bool RegisterFontFromFile (string fontPath)
 		{
-		    string absoluteFontPath = Path.GetFullPath (fontPath);
-		    
-            // Get font name from font file.
-            ICollection<FontFamily> fontInfo = Fonts.GetFontFamilies (absoluteFontPath);
+			string absoluteFontPath = Path.GetFullPath (fontPath);
 
-		    var fontFamily = fontInfo.SingleOrDefault ();
-		    if (fontFamily == null) {
-		        return false;
-		    }
+			// Get font name from font file.
+			ICollection<FontFamily> fontInfo = Fonts.GetFontFamilies (absoluteFontPath);
 
-		    if (fontFamily.FamilyNames.Count == 0) {
-		        return false;
-		    }
+			var fontFamily = fontInfo.SingleOrDefault ();
+			if (fontFamily == null) {
+				return false;
+			}
 
-		    string fontName = fontFamily.FamilyNames.First ().Value;
-		    registeredFonts[fontName] = fontFamily;
+			if (fontFamily.FamilyNames.Count == 0) {
+				return false;
+			}
 
-		    return true;
+			string fontName = fontFamily.FamilyNames.First ().Value;
+			registeredFonts[fontName] = fontFamily;
+
+			return true;
 		}
 
 		public override object Copy (object handle)
@@ -242,7 +242,7 @@ namespace Xwt.WPFBackend
 			double size = WpfFontBackendHandler.GetPointsFromDeviceUnits (control.FontSize);
 
 			return new FontData (control.FontFamily, size) {
-				Style = control.FontStyle,				
+				Style = control.FontStyle,
 				Stretch = control.FontStretch,
 				Weight = control.FontWeight
 			};
