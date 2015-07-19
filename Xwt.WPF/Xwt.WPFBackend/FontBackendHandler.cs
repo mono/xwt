@@ -26,10 +26,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-
+using System.Windows.Media;
 using Xwt.Backends;
 using Xwt.Drawing;
 
@@ -40,6 +42,8 @@ namespace Xwt.WPFBackend
 {
 	public class WpfFontBackendHandler : FontBackendHandler
 	{
+        readonly ConcurrentDictionary<string, FontFamily> registeredFonts = new ConcurrentDictionary<string, FontFamily>(); 
+
 		public override object GetSystemDefaultFont ()
 		{
 			double size = GetPointsFromDeviceUnits (SW.SystemFonts.MessageFontSize);
@@ -52,7 +56,13 @@ namespace Xwt.WPFBackend
 
 		public override IEnumerable<string> GetInstalledFonts ()
 		{
-			return System.Windows.Media.Fonts.SystemFontFamilies.Select (f => f.Source);
+		    foreach (var fontName in Fonts.SystemFontFamilies.Select(f => f.Source)) {
+		        yield return fontName;
+		    }
+
+		    foreach (var fontName in registeredFonts.Keys) {
+		        yield return fontName;
+		    }
 		}
 
 		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
@@ -76,20 +86,39 @@ namespace Xwt.WPFBackend
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
+		    FontFamily fontFamily;
+		    if (!registeredFonts.TryGetValue (fontName, out fontFamily)) {
+		        fontFamily = new FontFamily (fontName);
+		    }
+
 			size = GetPointsFromDeviceUnits (size);
-			return new FontData (new FontFamily (fontName), size) {
+            return new FontData (fontFamily, size) {
 				Style = style.ToWpfFontStyle (),
 				Weight = weight.ToWpfFontWeight (),
 				Stretch = stretch.ToWpfFontStretch ()
 			};
 		}
 
-		[System.Runtime.InteropServices.DllImport ("gdi32.dll")]
-		static extern int AddFontResourceEx (string lpszFilename, uint fl, System.IntPtr pdv);
-
 		public override bool RegisterFontFromFile (string fontPath)
 		{
-			return AddFontResourceEx (fontPath, 0x10 /* FR_PRIVATE */, System.IntPtr.Zero) > 0;
+		    string absoluteFontPath = Path.GetFullPath (fontPath);
+		    
+            // Get font name from font file.
+            ICollection<FontFamily> fontInfo = Fonts.GetFontFamilies (absoluteFontPath);
+
+		    var fontFamily = fontInfo.SingleOrDefault ();
+		    if (fontFamily == null) {
+		        return false;
+		    }
+
+		    if (fontFamily.FamilyNames.Count == 0) {
+		        return false;
+		    }
+
+		    string fontName = fontFamily.FamilyNames.First ().Value;
+		    registeredFonts[fontName] = fontFamily;
+
+		    return true;
 		}
 
 		public override object Copy (object handle)
