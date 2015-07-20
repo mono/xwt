@@ -100,7 +100,7 @@ namespace Xwt.WPFBackend
 
 		public override bool IsPrimaryScreen (object backend)
 		{
-			return ((SWF.Screen)backend) == SWF.Screen.PrimaryScreen;
+			return ((SWF.Screen)backend).Primary;
 		}
 
 		public override Rectangle GetScreenBounds (object backend)
