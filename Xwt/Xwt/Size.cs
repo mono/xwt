@@ -91,6 +91,16 @@ namespace Xwt {
 		{
 			return (s1.width != s2.width) || (s1.height != s2.height);
 		}
+
+		public static Size operator * (Size size, double factor)
+		{
+			return new Size (size.width * factor, size.height * factor);
+		}
+
+		public static Size operator / (Size size, double factor)
+		{
+			return new Size (size.width / factor, size.height / factor);
+		}
 		
 		public static explicit operator Point (Size size) 
 		{
