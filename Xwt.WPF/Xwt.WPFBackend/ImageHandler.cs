@@ -124,10 +124,10 @@ namespace Xwt.WPFBackend
 
 			switch (id) {
 				case StockIconId.Add:
-					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.list-add.png"))
+					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.add-16.png"))
 						return LoadFromStream (s);
 				case StockIconId.Remove:
-					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.list-remove.png"))
+					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.remove-16.png"))
 						return LoadFromStream (s);
 
 				case StockIconId.Error:

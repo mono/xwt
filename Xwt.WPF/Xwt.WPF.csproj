@@ -174,7 +174,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="icons\list-add.png" />
-    <EmbeddedResource Include="icons\list-remove.png" />
+    <EmbeddedResource Include="icons\add-16.png" />
+    <EmbeddedResource Include="icons\remove-16.png" />
   </ItemGroup>
 </Project>
