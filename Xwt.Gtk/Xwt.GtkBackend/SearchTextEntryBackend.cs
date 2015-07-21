@@ -141,8 +141,8 @@ namespace Xwt.GtkBackend
 
 		static SearchEntry ()
 		{
-			clearImage = Xwt.Drawing.Image.FromResource ("searchbox-clear-light-16.png");
-			searchImage = Xwt.Drawing.Image.FromResource ("searchbox-search-light-16.png");
+			clearImage = Xwt.Drawing.Image.FromResource ("searchbox-clear-16.png");
+			searchImage = Xwt.Drawing.Image.FromResource ("searchbox-search-16.png");
 		}
 
 		public SearchEntry ()
