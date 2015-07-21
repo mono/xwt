@@ -267,8 +267,8 @@ namespace Xwt.Mac
 		static NSImage LoadStockIcon (string id)
 		{
 			switch (id) {
-			case StockIconId.ZoomIn: return NSImageFromResource ("zoom-in.png");
-			case StockIconId.ZoomOut: return NSImageFromResource ("zoom-out.png");
+			case StockIconId.ZoomIn: return NSImageFromResource ("zoom-in-16.png");
+			case StockIconId.ZoomOut: return NSImageFromResource ("zoom-out-16.png");
 			}
 
 			NSImage image = null;
