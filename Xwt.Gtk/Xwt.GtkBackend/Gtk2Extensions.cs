@@ -154,19 +154,29 @@ namespace Xwt.GtkBackend
 		{
 			// The Entry's GdkWindow is the top level window onto which
 			// the frame is drawn; the actual text entry is drawn into a
-			// separate window, so we can ensure that for themes that don't
+			// separate window. The expose event is raised once for every
+			// window. Gtk2 allows us to get the correct window
+			// since 2.20 (otherwise GetTextWindow() returns null).
+			// For Gtk < 2.20 we ensure that for themes that don't
 			// respect HasFrame, we never ever allow the base frame drawing
 			// to happen
-			if (args.Event.Window == entry.GdkWindow)
+			Gdk.Window window = entry.GetTextWindow ();
+			if ((window != null && window != args.Event.Window) || args.Event.Window == entry.GdkWindow)
 				return;
 
 			if (entry.Text.Length > 0)
 				return;
 
-			RenderPlaceholderText_internal (entry, args, placeHolderText, ref layout, entry.Xalign, 0.5f, 1, 0);
+			int xalign = entry.FocusLineWidth + 1;
+
+			// for Gtk versions < 2.20
+			if (window == null)
+				window = args.Event.Window;
+
+			RenderPlaceholderText_internal (entry, window, placeHolderText, ref layout, entry.Xalign, 0.5f, xalign, 0);
 		}
 
-		static void RenderPlaceholderText_internal (Gtk.Widget widget, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout, float xalign, float yalign, int xpad, int ypad)
+		static void RenderPlaceholderText_internal (Gtk.Widget widget, Gdk.Window window, string placeHolderText, ref Pango.Layout layout, float xalign, float yalign, int xpad, int ypad)
 		{
 			if (layout == null) {
 				layout = new Pango.Layout (widget.PangoContext);
@@ -174,7 +184,7 @@ namespace Xwt.GtkBackend
 			}
 
 			int wh, ww;
-			args.Event.Window.GetSize (out ww, out wh);
+			window.GetSize (out ww, out wh);
 
 			int width, height;
 			layout.SetText (placeHolderText);
@@ -183,13 +193,13 @@ namespace Xwt.GtkBackend
 			int x = xpad + (int)((ww - width) * xalign);
 			int y = ypad + (int)((wh - height) * yalign);
 
-			using (var gc = new Gdk.GC (args.Event.Window)) {
+			using (var gc = new Gdk.GC (window)) {
 				gc.Copy (widget.Style.TextGC (Gtk.StateType.Normal));
 				Xwt.Drawing.Color color_a = widget.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
 				Xwt.Drawing.Color color_b = widget.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
 				gc.RgbFgColor = color_b.BlendWith (color_a, 0.5).ToGtkValue ();
 
-				args.Event.Window.DrawLayout (gc, x, y, layout);
+				window.DrawLayout (gc, x, y, layout);
 			}
 		}
 
