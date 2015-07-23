@@ -456,6 +456,7 @@ namespace Xwt.Drawing
 			// which don't expect the collection to change
 			globalStyles = new HashSet<string> (globalStyles);
 			globalStyles.Add (style);
+			NotifyGlobalStylesChanged ();
 		}
 
 		public static void ClearGlobalStyle (string style)
@@ -464,6 +465,7 @@ namespace Xwt.Drawing
 			// which don't expect the collection to change
 			globalStyles = new HashSet<string> (globalStyles);
 			globalStyles.Remove (style);
+			NotifyGlobalStylesChanged ();
 		}
 
 		public static IEnumerable<string> RegisteredStyles {
@@ -477,6 +479,14 @@ namespace Xwt.Drawing
 				return globalStyles;
 			}
 		}
+
+		static void NotifyGlobalStylesChanged ()
+		{
+			if (GlobalStylesChanged != null)
+				GlobalStylesChanged (null, EventArgs.Empty);
+		}
+
+		public static event EventHandler GlobalStylesChanged;
 	}
 }
 
