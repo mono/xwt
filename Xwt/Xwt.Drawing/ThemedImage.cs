@@ -33,9 +33,10 @@ namespace Xwt.Drawing
 	{
 		List<Tuple<Image, string []>> images;
 
-		public ThemedImage (List<Tuple<Image, string []>> images)
+		public ThemedImage (List<Tuple<Image, string []>> images, Size size = default (Size))
 		{
 			this.images = images;
+			Size = size;
 		}
 
 		public IEnumerable<Tuple<Image, string []>> Images {

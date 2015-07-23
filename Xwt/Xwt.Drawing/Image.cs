@@ -221,7 +221,7 @@ namespace Xwt.Drawing
 				if (list.Count == 1)
 					return list [0].Item1;
 				else {
-					return new ThemedImage (list);
+					return new ThemedImage (list, reqSize);
 				}
 			} else {
 				var res = loader.WrapImage (fileName, ImageTagSet.Empty, img, reqSize);
