@@ -188,7 +188,20 @@ namespace Xwt.GtkBackend
 				result = Gtk.IconTheme.Default.LoadIcon (stockId, (int)width, (Gtk.IconLookupFlags)0);
 
 			if (result == null) {
-				return CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
+//				return CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
+				int w = (int) width;
+				int h = (int) height;
+				Gdk.Pixmap pmap = new Gdk.Pixmap (Gdk.Screen.Default.RootWindow, w, h);
+				Gdk.GC gc = new Gdk.GC (pmap);
+				gc.RgbFgColor = new Gdk.Color (255, 255, 255);
+				pmap.DrawRectangle (gc, true, 0, 0, w, h);
+				gc.RgbFgColor = new Gdk.Color (0, 0, 0);
+				pmap.DrawRectangle (gc, false, 0, 0, (w - 1), (h - 1));
+				gc.SetLineAttributes (3, Gdk.LineStyle.Solid, Gdk.CapStyle.Round, Gdk.JoinStyle.Round);
+				gc.RgbFgColor = new Gdk.Color (255, 0, 0);
+				pmap.DrawLine (gc, (w / 4), (h / 4), ((w - 1) - (w / 4)), ((h - 1) - (h / 4)));
+				pmap.DrawLine (gc, ((w - 1) - (w / 4)), (h / 4), (w / 4), ((h - 1) - (h / 4)));
+				return Gdk.Pixbuf.FromDrawable (pmap, pmap.Colormap, 0, 0, 0, 0, w, h);
 			}
 			return result;
 		}
