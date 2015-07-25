@@ -106,13 +106,31 @@ namespace Xwt.WPFBackend
 		public override Rectangle GetScreenBounds (object backend)
 		{
 			var r = ((SWF.Screen)backend).Bounds;
-			return new Rectangle (r.X, r.Y, r.Width, r.Height);
+			var scaleFactor = GetScaleFactor(backend);
+
+			if (scaleFactor == 1.0)
+			{
+				return new Rectangle(r.X, r.Y, r.Width, r.Height);
+			}
+			else
+			{
+				return new Rectangle(r.X / scaleFactor, r.Y / scaleFactor, r.Width / scaleFactor, r.Height / scaleFactor);
+			}
 		}
 
 		public override Rectangle GetScreenVisibleBounds (object backend)
 		{
 			var r = ((SWF.Screen)backend).WorkingArea;
-			return new Rectangle (r.X, r.Y, r.Width, r.Height);
+			var scaleFactor = GetScaleFactor(backend);
+
+			if (scaleFactor == 1.0)
+			{
+				return new Rectangle(r.X, r.Y, r.Width, r.Height);
+			}
+			else
+			{
+				return new Rectangle(r.X / scaleFactor, r.Y / scaleFactor, r.Width / scaleFactor, r.Height / scaleFactor);
+			}
 		}
 
 		public override string GetScreenDeviceName (object backend)
