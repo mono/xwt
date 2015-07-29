@@ -247,11 +247,9 @@ namespace Xwt.Drawing
 				i++;
 				var i2 = fileName.IndexOf ('@', i);
 				if (i2 != -1) {
-					var s = fileName.Substring (i2 + 1);
-					if (!int.TryParse (s, out scale)) {
-						tags = null;
+					int i3 = fileName.IndexOf ('x', i2 + 2);
+					if (i3 == -1 || !int.TryParse (fileName.Substring (i2 + 1, i3 - i2 - 1), out scale))
 						return false;
-					}
 				} else
 					i2 = fileName.Length;
 				tags = new ImageTagSet (fileName.Substring (i, i2 - i));
@@ -260,17 +258,21 @@ namespace Xwt.Drawing
 			else {
 				// For example: foo@2x~dark
 				i++;
-				var i2 = fileName.IndexOf ('~', i);
+				var i2 = fileName.IndexOf ('~', i + 1);
 				if (i2 == -1)
 					i2 = fileName.Length;
+
+				i2--;
+				if (i2 < 0 || fileName [i2] != 'x')
+					return false;
 				
 				var s = fileName.Substring (i, i2 - i);
 				if (!int.TryParse (s, out scale)) {
 					tags = null;
 					return false;
 				}
-				if (i2 + 1 < fileName.Length)
-					tags = new ImageTagSet (fileName.Substring (i2 + 1));
+				if (i2 + 2 < fileName.Length)
+					tags = new ImageTagSet (fileName.Substring (i2 + 2));
 				return true;
 			}
 		}
