@@ -28,6 +28,8 @@ using System;
 using Xwt.Backends;
 using Xwt.Drawing;
 using System.Collections.Generic;
+using System.Text;
+using System.Globalization;
 
 #if MONOMAC
 using nint = System.Int32;
@@ -337,6 +339,19 @@ namespace Xwt.Mac
 				Weight = Weight,
 				Stretch = Stretch
 			};
+		}
+
+		public override string ToString ()
+		{
+			StringBuilder sb = new StringBuilder (Font.FamilyName);
+			if (Style != FontStyle.Normal)
+				sb.Append (' ').Append (Style);
+			if (Weight != FontWeight.Normal)
+				sb.Append (' ').Append (Weight);
+			if (Stretch != FontStretch.Normal)
+				sb.Append (' ').Append (Stretch);
+			sb.Append (' ').Append (Font.PointSize.ToString (CultureInfo.InvariantCulture));
+			return sb.ToString ();
 		}
 	}
 
