@@ -287,6 +287,9 @@
     <Compile Include="..\Xwt.XamMac\Xwt.Mac\CalendarBackend.cs">
       <Link>Xwt.Mac\CalendarBackend.cs</Link>
     </Compile>
+    <Compile Include="..\Xwt.XamMac\Xwt.Mac\SelectFontDialogBackend.cs">
+      <Link>Xwt.Mac\SelectFontDialogBackend.cs</Link>
+    </Compile>
     <Compile Include="Xwt.Mac\NSStringAttributeKey.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

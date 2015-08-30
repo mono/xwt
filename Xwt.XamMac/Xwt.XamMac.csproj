@@ -121,6 +121,7 @@
     <Compile Include="Xwt.Mac\ColorPickerBackend.cs" />
     <Compile Include="Xwt.Mac\OutlineViewBackend.cs" />
     <Compile Include="Xwt.Mac\CalendarBackend.cs" />
+    <Compile Include="Xwt.Mac\SelectFontDialogBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
