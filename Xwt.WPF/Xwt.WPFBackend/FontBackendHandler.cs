@@ -109,7 +109,7 @@ namespace Xwt.WPFBackend
 		{
 			string absoluteFontPath = Path.GetFullPath (fontPath);
 
-			AddFontResourceEx (absoluteFontPath, 0x10 /* FR_PRIVATE */, System.IntPtr.Zero) > 0;
+			AddFontResourceEx (absoluteFontPath, 0x10 /* FR_PRIVATE */, System.IntPtr.Zero);
 
 			// Get font name from font file.
 			ICollection<FontFamily> fontInfo = Fonts.GetFontFamilies (absoluteFontPath);
