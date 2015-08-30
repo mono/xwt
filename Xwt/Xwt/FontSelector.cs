@@ -137,6 +137,7 @@ namespace Xwt
 
 		DataField<Font> dfaceFont = new DataField<Font> ();
 		DataField<string> dfaceName = new DataField<string> ();
+		DataField<string> dfaceMarkup = new DataField<string> ();
 		DataField<string> dfamily = new DataField<string> ();
 		DataField<string> dfamilymarkup = new DataField<string> ();
 
@@ -160,10 +161,10 @@ namespace Xwt
 				storeFonts.SetValues (row, dfamily, family, dfamilymarkup, "<span font=\"" + family + " " + (listFonts.Font.Size) + "\">" + family + "</span>");
 			}
 
-			storeFace = new ListStore (dfaceName, dfaceFont);
+			storeFace = new ListStore (dfaceName, dfaceMarkup, dfaceFont);
 			listFace.DataSource = storeFace;
 			listFace.HeadersVisible = false;
-			listFace.Columns.Add ("Style", dfaceName);
+			listFace.Columns.Add ("Style", new TextCellView () { TextField = dfaceName, MarkupField = dfaceMarkup });
 			listFace.MinWidth = 60;
 			//listFace.HorizontalScrollPolicy = ScrollPolicy.Never;
 
@@ -257,7 +258,7 @@ namespace Xwt
 			int row = -1;
 			foreach (var face in font.GetAvailableFontFaces ()) {
 				row = storeFace.AddRow ();
-				storeFace.SetValues (row, dfaceName, face.Name, dfaceFont, face.Font);
+				storeFace.SetValues (row, dfaceName, face.Name, dfaceFont, face.Font, dfaceMarkup, "<span font=\"" + face.Font.WithSize (listFace.Font.Size) + "\">" + face.Name + "</span>");
 			}
 			if (row >= 0) {
 				listFace.SelectRow (0);
