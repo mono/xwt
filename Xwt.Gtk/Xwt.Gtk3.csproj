@@ -154,6 +154,9 @@
     <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\CalendarBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SelectFontDialogBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\Gtk3FontChooserDialog.cs" />
+    <Compile Include="Xwt.GtkBackend\FontSelectorBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
