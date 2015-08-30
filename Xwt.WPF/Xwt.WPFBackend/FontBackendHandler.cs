@@ -42,7 +42,7 @@ namespace Xwt.WPFBackend
 {
 	public class WpfFontBackendHandler : FontBackendHandler
 	{
-		readonly ConcurrentDictionary<string, FontFamily> registeredFonts = new ConcurrentDictionary<string, FontFamily>();
+		static ConcurrentDictionary<string, FontFamily> registeredFonts = new ConcurrentDictionary<string, FontFamily>();
 
 		public override object GetSystemDefaultFont ()
 		{
@@ -67,7 +67,10 @@ namespace Xwt.WPFBackend
 
 		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
 		{
-			var wpfFamily = new FontFamily (family);
+			FontFamily wpfFamily;
+			if (!registeredFonts.TryGetValue (family, out wpfFamily)) // check for custom fonts
+				wpfFamily = new FontFamily (family);
+
 			foreach (var face in wpfFamily.GetTypefaces ()) {
 				var langCurrent = SW.Markup.XmlLanguage.GetLanguage (CultureInfo.CurrentCulture.IetfLanguageTag);
 				var langInvariant = SW.Markup.XmlLanguage.GetLanguage ("en-us");;
@@ -99,9 +102,14 @@ namespace Xwt.WPFBackend
 			};
 		}
 
+		[System.Runtime.InteropServices.DllImport ("gdi32.dll")]
+		static extern int AddFontResourceEx (string lpszFilename, uint fl, System.IntPtr pdv);
+
 		public override bool RegisterFontFromFile (string fontPath)
 		{
 			string absoluteFontPath = Path.GetFullPath (fontPath);
+
+			AddFontResourceEx (absoluteFontPath, 0x10 /* FR_PRIVATE */, System.IntPtr.Zero) > 0;
 
 			// Get font name from font file.
 			ICollection<FontFamily> fontInfo = Fonts.GetFontFamilies (absoluteFontPath);
