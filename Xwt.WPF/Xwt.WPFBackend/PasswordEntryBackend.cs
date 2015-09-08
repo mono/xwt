@@ -11,23 +11,25 @@ namespace Xwt.WPFBackend
 {
 	class PasswordEntryBackend : WidgetBackend, IPasswordEntryBackend
 	{
-		PlaceholderTextAdorner Adorner {
+		PlaceholderTextAdorner Adorner
+		{
 			get; set;
 		}
 
-		public PasswordEntryBackend ()
+		public PasswordEntryBackend()
 		{
-			Widget = new PasswordBox ();
-			Adorner = new PlaceholderTextAdorner (PasswordBox);
-			PasswordBox.Loaded += delegate {
-				AdornerLayer.GetAdornerLayer (PasswordBox).Add (Adorner);
+			Widget = new PasswordBox();
+			Adorner = new PlaceholderTextAdorner(PasswordBox);
+			PasswordBox.Loaded += delegate
+			{
+				AdornerLayer.GetAdornerLayer(PasswordBox).Add(Adorner);
 			};
 			PasswordBox.VerticalContentAlignment = VerticalAlignment.Center;
 		}
 
 		protected PasswordBox PasswordBox
 		{
-			get { return (PasswordBox) Widget; }
+			get { return (PasswordBox)Widget; }
 		}
 
 		public string Password
@@ -41,18 +43,19 @@ namespace Xwt.WPFBackend
 			get { return PasswordBox.SecurePassword; }
 		}
 
-		public string PlaceholderText {
+		public string PlaceholderText
+		{
 			get { return Adorner.PlaceholderText; }
 			set { Adorner.PlaceholderText = value; }
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
+			base.EnableEvent(eventId);
 
-			if (eventId is PasswordEntryEvent) 
+			if (eventId is PasswordEntryEvent)
 			{
-				switch ((PasswordEntryEvent) eventId) 
+				switch ((PasswordEntryEvent)eventId)
 				{
 					case PasswordEntryEvent.Changed:
 						PasswordBox.PasswordChanged += OnPasswordChanged;
@@ -64,9 +67,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
+			base.DisableEvent(eventId);
 
 			if (eventId is PasswordEntryEvent)
 			{
@@ -82,19 +85,20 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		protected new IPasswordEntryEventSink EventSink {
-			get { return (IPasswordEntryEventSink) base.EventSink; }
+		protected new IPasswordEntryEventSink EventSink
+		{
+			get { return (IPasswordEntryEventSink)base.EventSink; }
 		}
 
 		private void OnActivated(object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			if (e.Key == System.Windows.Input.Key.Enter || e.Key == System.Windows.Input.Key.Return)
-				Context.InvokeUserCode (EventSink.OnActivated);
+				Context.InvokeUserCode(EventSink.OnActivated);
 		}
 
-		void OnPasswordChanged (object s, RoutedEventArgs e)
+		void OnPasswordChanged(object s, RoutedEventArgs e)
 		{
-			Context.InvokeUserCode (EventSink.OnChanged);
+			Context.InvokeUserCode(EventSink.OnChanged);
 		}
 	}
 }

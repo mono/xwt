@@ -31,62 +31,63 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	[BackendType (typeof(IListViewBackend))]
-	public class ListView: Widget, IColumnContainer, IScrollableWidget
+	[BackendType(typeof(IListViewBackend))]
+	public class ListView : Widget, IColumnContainer, IScrollableWidget
 	{
 		ListViewColumnCollection columns;
 		IListDataSource dataSource;
 		SelectionMode mode;
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost<ListView,IListViewBackend>, IListViewEventSink
+
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost<ListView, IListViewBackend>, IListViewEventSink
 		{
-			protected override void OnBackendCreated ()
+			protected override void OnBackendCreated()
 			{
-				base.OnBackendCreated ();
-				Parent.columns.Attach (Backend);
-			}
-			
-			public void OnSelectionChanged ()
-			{
-				Parent.OnSelectionChanged (EventArgs.Empty);
-			}
-			
-			public void OnRowActivated (int rowIndex)
-			{
-				Parent.OnRowActivated (new ListViewRowEventArgs (rowIndex));
+				base.OnBackendCreated();
+				Parent.columns.Attach(Backend);
 			}
 
-			public override Size GetDefaultNaturalSize ()
+			public void OnSelectionChanged()
+			{
+				Parent.OnSelectionChanged(EventArgs.Empty);
+			}
+
+			public void OnRowActivated(int rowIndex)
+			{
+				Parent.OnRowActivated(new ListViewRowEventArgs(rowIndex));
+			}
+
+			public override Size GetDefaultNaturalSize()
 			{
 				return Xwt.Backends.DefaultNaturalSizes.ListView;
 			}
 		}
-		
-		static ListView ()
+
+		static ListView()
 		{
-			MapEvent (TableViewEvent.SelectionChanged, typeof(ListView), "OnSelectionChanged");
-			MapEvent (ListViewEvent.RowActivated, typeof(ListView), "OnRowActivated");
+			MapEvent(TableViewEvent.SelectionChanged, typeof(ListView), "OnSelectionChanged");
+			MapEvent(ListViewEvent.RowActivated, typeof(ListView), "OnRowActivated");
 		}
-		
-		public ListView (IListDataSource source): this ()
+
+		public ListView(IListDataSource source) : this()
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			DataSource = source;
 		}
-		
-		public ListView ()
+
+		public ListView()
 		{
-			columns = new ListViewColumnCollection (this);
+			columns = new ListViewColumnCollection(this);
 			VerticalScrollPolicy = HorizontalScrollPolicy = ScrollPolicy.Automatic;
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		IListViewBackend Backend {
-			get { return (IListViewBackend) BackendHost.Backend; }
+
+		IListViewBackend Backend
+		{
+			get { return (IListViewBackend)BackendHost.Backend; }
 		}
 
 		public bool BorderVisible
@@ -101,68 +102,86 @@ namespace Xwt
 			set { Backend.GridLinesVisible = value; }
 		}
 
-		public ScrollPolicy VerticalScrollPolicy {
+		public ScrollPolicy VerticalScrollPolicy
+		{
 			get { return Backend.VerticalScrollPolicy; }
 			set { Backend.VerticalScrollPolicy = value; }
 		}
-		
-		public ScrollPolicy HorizontalScrollPolicy {
+
+		public ScrollPolicy HorizontalScrollPolicy
+		{
 			get { return Backend.HorizontalScrollPolicy; }
 			set { Backend.HorizontalScrollPolicy = value; }
 		}
 
 		ScrollControl verticalScrollAdjustment;
-		public ScrollControl VerticalScrollControl {
-			get {
+		public ScrollControl VerticalScrollControl
+		{
+			get
+			{
 				if (verticalScrollAdjustment == null)
-					verticalScrollAdjustment = new ScrollControl (Backend.CreateVerticalScrollControl ());
+					verticalScrollAdjustment = new ScrollControl(Backend.CreateVerticalScrollControl());
 				return verticalScrollAdjustment;
 			}
 		}
 
 		ScrollControl horizontalScrollAdjustment;
-		public ScrollControl HorizontalScrollControl {
-			get {
+		public ScrollControl HorizontalScrollControl
+		{
+			get
+			{
 				if (horizontalScrollAdjustment == null)
-					horizontalScrollAdjustment = new ScrollControl (Backend.CreateHorizontalScrollControl ());
+					horizontalScrollAdjustment = new ScrollControl(Backend.CreateHorizontalScrollControl());
 				return horizontalScrollAdjustment;
 			}
 		}
 
-		public ListViewColumnCollection Columns {
-			get {
+		public ListViewColumnCollection Columns
+		{
+			get
+			{
 				return columns;
 			}
 		}
-		
-		public IListDataSource DataSource {
-			get {
+
+		public IListDataSource DataSource
+		{
+			get
+			{
 				return dataSource;
 			}
-			set {
-				if (dataSource != value) {
-					Backend.SetSource (value, value is IFrontend ? (IBackend)BackendHost.ToolkitEngine.GetSafeBackend (value) : null);
+			set
+			{
+				if (dataSource != value)
+				{
+					Backend.SetSource(value, value is IFrontend ? (IBackend)BackendHost.ToolkitEngine.GetSafeBackend(value) : null);
 					dataSource = value;
 				}
 			}
 		}
-		
-		public bool HeadersVisible {
-			get {
+
+		public bool HeadersVisible
+		{
+			get
+			{
 				return Backend.HeadersVisible;
 			}
-			set {
+			set
+			{
 				Backend.HeadersVisible = value;
 			}
 		}
-		
-		public SelectionMode SelectionMode {
-			get {
+
+		public SelectionMode SelectionMode
+		{
+			get
+			{
 				return mode;
 			}
-			set {
+			set
+			{
 				mode = value;
-				Backend.SetSelectionMode (mode);
+				Backend.SetSelectionMode(mode);
 			}
 		}
 
@@ -174,25 +193,31 @@ namespace Xwt
 		/// <value>
 		/// The current event row.
 		/// </value>
-		public int CurrentEventRow {
-			get {
+		public int CurrentEventRow
+		{
+			get
+			{
 				return Backend.CurrentEventRow;
 			}
 		}
-		
-		public int SelectedRow {
-			get {
+
+		public int SelectedRow
+		{
+			get
+			{
 				var items = SelectedRows;
 				if (items.Length == 0)
 					return -1;
 				else
-					return items [0];
+					return items[0];
 			}
 		}
-		
-		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-		public int[] SelectedRows {
-			get {
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public int[] SelectedRows
+		{
+			get
+			{
 				return Backend.SelectedRows;
 			}
 		}
@@ -201,38 +226,41 @@ namespace Xwt
 		/// Gets or sets the focused row.
 		/// </summary>
 		/// <value>The row with the keyboard focus.</value>
-		public int FocusedRow {
-			get {
+		public int FocusedRow
+		{
+			get
+			{
 				return Backend.FocusedRow;
 			}
-			set {
+			set
+			{
 				Backend.FocusedRow = value;
 			}
 		}
-		
-		public void SelectRow (int row)
+
+		public void SelectRow(int row)
 		{
-			Backend.SelectRow (row);
-		}
-		
-		public void UnselectRow (int row)
-		{
-			Backend.UnselectRow (row);
-		}
-		
-		public void SelectAll ()
-		{
-			Backend.SelectAll ();
-		}
-		
-		public void UnselectAll ()
-		{
-			Backend.UnselectAll ();
+			Backend.SelectRow(row);
 		}
 
-		public void ScrollToRow (int row)
+		public void UnselectRow(int row)
 		{
-			Backend.ScrollToRow (row);
+			Backend.UnselectRow(row);
+		}
+
+		public void SelectAll()
+		{
+			Backend.SelectAll();
+		}
+
+		public void UnselectAll()
+		{
+			Backend.UnselectAll();
+		}
+
+		public void ScrollToRow(int row)
+		{
+			Backend.ScrollToRow(row);
 		}
 
 		/// <summary>
@@ -241,9 +269,9 @@ namespace Xwt
 		/// <returns>The row index</returns>
 		/// <param name="x">The x coordinate.</param>
 		/// <param name="y">The y coordinate.</param>
-		public int GetRowAtPosition (double x, double y)
+		public int GetRowAtPosition(double x, double y)
 		{
-			return GetRowAtPosition (new Point (x, y));
+			return GetRowAtPosition(new Point(x, y));
 		}
 
 		/// <summary>
@@ -251,62 +279,68 @@ namespace Xwt
 		/// </summary>
 		/// <returns>The row index</returns>
 		/// <param name="p">A position, in widget coordinates</param>
-		public int GetRowAtPosition (Point p)
+		public int GetRowAtPosition(Point p)
 		{
-			return Backend.GetRowAtPosition (p);
+			return Backend.GetRowAtPosition(p);
 		}
 
-		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
+		public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
 		{
-			return Backend.GetCellBounds (row, cell, includeMargin);
+			return Backend.GetCellBounds(row, cell, includeMargin);
 		}
 
-		void IColumnContainer.NotifyColumnsChanged ()
+		void IColumnContainer.NotifyColumnsChanged()
 		{
 		}
-		
-		protected virtual void OnSelectionChanged (EventArgs a)
+
+		protected virtual void OnSelectionChanged(EventArgs a)
 		{
 			if (selectionChanged != null)
-				selectionChanged (this, a);
+				selectionChanged(this, a);
 		}
-		
+
 		EventHandler selectionChanged;
-		
-		public event EventHandler SelectionChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (TableViewEvent.SelectionChanged, selectionChanged);
+
+		public event EventHandler SelectionChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TableViewEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
-			remove {
+			remove
+			{
 				selectionChanged -= value;
-				BackendHost.OnAfterEventRemove (TableViewEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnAfterEventRemove(TableViewEvent.SelectionChanged, selectionChanged);
 			}
 		}
-		
+
 		/// <summary>
 		/// Raises the row activated event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		protected virtual void OnRowActivated (ListViewRowEventArgs a)
+		protected virtual void OnRowActivated(ListViewRowEventArgs a)
 		{
 			if (rowActivated != null)
-				rowActivated (this, a);
+				rowActivated(this, a);
 		}
-		
+
 		EventHandler<ListViewRowEventArgs> rowActivated;
-		
+
 		/// <summary>
 		/// Occurs when the user double-clicks on a row
 		/// </summary>
-		public event EventHandler<ListViewRowEventArgs> RowActivated {
-			add {
-				BackendHost.OnBeforeEventAdd (ListViewEvent.RowActivated, rowActivated);
+		public event EventHandler<ListViewRowEventArgs> RowActivated
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(ListViewEvent.RowActivated, rowActivated);
 				rowActivated += value;
 			}
-			remove {
+			remove
+			{
 				rowActivated -= value;
-				BackendHost.OnAfterEventRemove (ListViewEvent.RowActivated, rowActivated);
+				BackendHost.OnAfterEventRemove(ListViewEvent.RowActivated, rowActivated);
 			}
 		}
 	}

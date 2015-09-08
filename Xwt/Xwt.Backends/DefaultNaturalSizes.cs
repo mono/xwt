@@ -29,12 +29,12 @@ namespace Xwt.Backends
 {
 	static class DefaultNaturalSizes
 	{
-		public static Size ComboBox = new Size (100, 0);
-		public static Size ListView = new Size (100, 100);
-		public static Size ScrollView = new Size (50, 50);
-		public static Size TextEntry = new Size (100, 0);
-		public static Size PasswordEntry = new Size (100, 0);
-		public static Size TreeView = new Size (100, 100);
+		public static Size ComboBox = new Size(100, 0);
+		public static Size ListView = new Size(100, 100);
+		public static Size ScrollView = new Size(50, 50);
+		public static Size TextEntry = new Size(100, 0);
+		public static Size PasswordEntry = new Size(100, 0);
+		public static Size TreeView = new Size(100, 100);
 	}
 }
 

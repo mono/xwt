@@ -7,12 +7,13 @@ namespace Xwt.Formats
 {
 	public class PlainTextFormat : TextFormat
 	{
-		public override void Parse (Stream input, IRichTextBuffer buffer)
+		public override void Parse(Stream input, IRichTextBuffer buffer)
 		{
-			using (var reader = new StreamReader (input)) {
-				buffer.EmitStartParagraph (0);
-				buffer.EmitText (reader.ReadToEnd (), RichTextInlineStyle.Normal);
-				buffer.EmitEndParagraph ();
+			using (var reader = new StreamReader(input))
+			{
+				buffer.EmitStartParagraph(0);
+				buffer.EmitText(reader.ReadToEnd(), RichTextInlineStyle.Normal);
+				buffer.EmitEndParagraph();
 			}
 		}
 	}

@@ -32,7 +32,7 @@ namespace Xwt.Backends
 
 	public interface IChildPlacementHandler
 	{
-		void UpdateChildPlacement (IWidgetBackend childBackend);
+		void UpdateChildPlacement(IWidgetBackend childBackend);
 	}
-	
+
 }

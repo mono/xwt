@@ -30,7 +30,7 @@ namespace Xwt
 {
 	public class DataStore
 	{
-		public DataStore ()
+		public DataStore()
 		{
 		}
 	}

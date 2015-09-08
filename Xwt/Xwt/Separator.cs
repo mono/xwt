@@ -28,27 +28,27 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ISeparatorBackend))]
-	public abstract class Separator: Widget
+	[BackendType(typeof(ISeparatorBackend))]
+	public abstract class Separator : Widget
 	{
 		internal abstract Orientation Orientation { get; }
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost<Separator,ISeparatorBackend>
+
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost<Separator, ISeparatorBackend>
 		{
-			protected override IBackend OnCreateBackend ()
+			protected override IBackend OnCreateBackend()
 			{
-				ISeparatorBackend b = (ISeparatorBackend) base.OnCreateBackend ();
-				b.Initialize (Parent.Orientation);
+				ISeparatorBackend b = (ISeparatorBackend)base.OnCreateBackend();
+				b.Initialize(Parent.Orientation);
 				return b;
 			}
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		internal Separator ()
+
+		internal Separator()
 		{
 		}
 	}

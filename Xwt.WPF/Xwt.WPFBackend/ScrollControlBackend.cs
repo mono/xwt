@@ -29,7 +29,7 @@ using System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
-	public class ScrollControlBackend: Backend, IScrollControlBackend
+	public class ScrollControlBackend : Backend, IScrollControlBackend
 	{
 		double scrollValue;
 		bool isVertical;
@@ -39,7 +39,7 @@ namespace Xwt.WPFBackend
 		{
 		}
 
-		public ScrollControlBackend (ScrollViewer s, bool isVertical)
+		public ScrollControlBackend(ScrollViewer s, bool isVertical)
 		{
 			targetScrollViewer = s;
 			this.isVertical = isVertical;
@@ -47,11 +47,12 @@ namespace Xwt.WPFBackend
 			targetScrollViewer.ScrollChanged += HandleScrollChanged;
 		}
 
-		void HandleScrollChanged (object sender, ScrollChangedEventArgs e)
+		void HandleScrollChanged(object sender, ScrollChangedEventArgs e)
 		{
-			if (Value != scrollValue) {
+			if (Value != scrollValue)
+			{
 				scrollValue = Value;
-				Context.InvokeUserCode (EventSink.OnValueChanged);
+				Context.InvokeUserCode(EventSink.OnValueChanged);
 			}
 		}
 
@@ -63,7 +64,8 @@ namespace Xwt.WPFBackend
 		public double Value
 		{
 			get { return isVertical ? targetScrollViewer.VerticalOffset : targetScrollViewer.HorizontalOffset; }
-			set {
+			set
+			{
 				if (isVertical)
 					targetScrollViewer.ScrollToVerticalOffset(value);
 				else

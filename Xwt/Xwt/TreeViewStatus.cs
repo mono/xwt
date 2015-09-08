@@ -34,116 +34,129 @@ namespace Xwt
 		TreeView tree;
 		int idColumn;
 		List<NodeInfo> state;
-		
-		class NodeInfo {
+
+		class NodeInfo
+		{
 			public object Id;
 			public bool Expanded;
 			public bool Selected;
 			public List<NodeInfo> ChildInfo;
 		}
-		
-		internal TreeViewStatus (TreeView tree, int idColumn)
+
+		internal TreeViewStatus(TreeView tree, int idColumn)
 		{
 			this.tree = tree;
 			this.idColumn = idColumn;
-			Save ();
+			Save();
 		}
-		
-		void Save ()
+
+		void Save()
 		{
-			state = new List<NodeInfo> ();
-			SaveChildren (state, null);
+			state = new List<NodeInfo>();
+			SaveChildren(state, null);
 		}
-		
-		void SaveChildren (List<NodeInfo> info, TreePosition it)
+
+		void SaveChildren(List<NodeInfo> info, TreePosition it)
 		{
-			int num = tree.DataSource.GetChildrenCount (it);
-			for (int n=0; n<num; n++) {
-				var child = tree.DataSource.GetChild (it, n);
-				object id = tree.DataSource.GetValue (child, idColumn);
-				NodeInfo ni = new NodeInfo ();
+			int num = tree.DataSource.GetChildrenCount(it);
+			for (int n = 0; n < num; n++)
+			{
+				var child = tree.DataSource.GetChild(it, n);
+				object id = tree.DataSource.GetValue(child, idColumn);
+				NodeInfo ni = new NodeInfo();
 				ni.Id = id;
-				ni.Expanded = tree.IsRowExpanded (child);
-				ni.Selected = tree.IsRowSelected (child);
-				info.Add (ni);
-				if (tree.DataSource.GetChildrenCount (child) > 0) {
-					ni.ChildInfo = new List<NodeInfo> ();
-					SaveChildren (ni.ChildInfo, child);
+				ni.Expanded = tree.IsRowExpanded(child);
+				ni.Selected = tree.IsRowSelected(child);
+				info.Add(ni);
+				if (tree.DataSource.GetChildrenCount(child) > 0)
+				{
+					ni.ChildInfo = new List<NodeInfo>();
+					SaveChildren(ni.ChildInfo, child);
 				}
 			}
 		}
-		
-		internal void Load (TreeView tree)
+
+		internal void Load(TreeView tree)
 		{
 			if (this.tree != tree)
-				throw new InvalidOperationException ("Invalid tree instance. The status can only be restored on the tree that generated the status object.");
-			Load (state, null);
+				throw new InvalidOperationException("Invalid tree instance. The status can only be restored on the tree that generated the status object.");
+			Load(state, null);
 		}
-		
-		void Load (List<NodeInfo> info, TreePosition it)
+
+		void Load(List<NodeInfo> info, TreePosition it)
 		{
 			bool oneSelected = false;
-			var infoCopy = new List<NodeInfo> (info);
-			Dictionary<NodeInfo,TreePosition> nodes = new Dictionary<NodeInfo, TreePosition> ();
-			
-			int num = tree.DataSource.GetChildrenCount (it);
-			for (int n=0; n<num; n++) {
-				var child = tree.DataSource.GetChild (it, n);
-				object id = tree.DataSource.GetValue (child, idColumn);
-				NodeInfo ni = ExtractNodeInfo (info, id);
-				if (ni != null) {
-					nodes [ni] = child;
+			var infoCopy = new List<NodeInfo>(info);
+			Dictionary<NodeInfo, TreePosition> nodes = new Dictionary<NodeInfo, TreePosition>();
+
+			int num = tree.DataSource.GetChildrenCount(it);
+			for (int n = 0; n < num; n++)
+			{
+				var child = tree.DataSource.GetChild(it, n);
+				object id = tree.DataSource.GetValue(child, idColumn);
+				NodeInfo ni = ExtractNodeInfo(info, id);
+				if (ni != null)
+				{
+					nodes[ni] = child;
 					if (ni.Expanded)
-						tree.ExpandRow (child, false);
+						tree.ExpandRow(child, false);
 					else
-						tree.CollapseRow (child);
-					
-					if (ni.Selected) {
+						tree.CollapseRow(child);
+
+					if (ni.Selected)
+					{
 						oneSelected = true;
-						tree.SelectRow (child);
+						tree.SelectRow(child);
 					}
 					else
-						tree.UnselectRow (child);
-					
+						tree.UnselectRow(child);
+
 					if (ni.ChildInfo != null)
-						Load (ni.ChildInfo, child);
+						Load(ni.ChildInfo, child);
 				}
 			}
-			
+
 			// If this tree level had a selected node and this node has been deleted, then
 			// try to select and adjacent node
-			if (!oneSelected) {
+			if (!oneSelected)
+			{
 				// 'info' contains the nodes that have not been inserted
-				if (info.Any (n => n.Selected)) {
-					NodeInfo an = FindAdjacentNode (infoCopy, nodes, info[0]);
-					if (an != null) {
-						it = nodes [an];
-						tree.SelectRow (it);
+				if (info.Any(n => n.Selected))
+				{
+					NodeInfo an = FindAdjacentNode(infoCopy, nodes, info[0]);
+					if (an != null)
+					{
+						it = nodes[an];
+						tree.SelectRow(it);
 					}
 				}
 			}
 		}
-		
-		NodeInfo FindAdjacentNode (List<NodeInfo> infos, Dictionary<NodeInfo,TreePosition> nodes, NodeInfo referenceNode)
+
+		NodeInfo FindAdjacentNode(List<NodeInfo> infos, Dictionary<NodeInfo, TreePosition> nodes, NodeInfo referenceNode)
 		{
-			int i = infos.IndexOf (referenceNode);
-			for (int n=i; n<infos.Count; n++) {
-				if (nodes.ContainsKey (infos[n]))
+			int i = infos.IndexOf(referenceNode);
+			for (int n = i; n < infos.Count; n++)
+			{
+				if (nodes.ContainsKey(infos[n]))
 					return infos[n];
 			}
-			for (int n=i-1; n>=0; n--) {
-				if (nodes.ContainsKey (infos[n]))
+			for (int n = i - 1; n >= 0; n--)
+			{
+				if (nodes.ContainsKey(infos[n]))
 					return infos[n];
 			}
 			return null;
 		}
-		
-		NodeInfo ExtractNodeInfo (List<NodeInfo> info, object id)
+
+		NodeInfo ExtractNodeInfo(List<NodeInfo> info, object id)
 		{
-			for (int n=0; n<info.Count; n++) {
-				NodeInfo ni = (NodeInfo) info [n];
-				if (object.Equals (ni.Id, id)) {
-					info.RemoveAt (n);
+			for (int n = 0; n < info.Count; n++)
+			{
+				NodeInfo ni = (NodeInfo)info[n];
+				if (object.Equals(ni.Id, id))
+				{
+					info.RemoveAt(n);
 					return ni;
 				}
 			}

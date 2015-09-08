@@ -33,10 +33,10 @@ namespace Xwt
 {
 	public class FileDialogFilter
 	{
-		public FileDialogFilter (string name, params string[] patterns)
+		public FileDialogFilter(string name, params string[] patterns)
 		{
 			this.Name = name;
-			this.Patterns = patterns.ToArray ();
+			this.Patterns = patterns.ToArray();
 		}
 
 		/// <summary>Label for the filter</summary>
@@ -46,9 +46,9 @@ namespace Xwt
 		public IEnumerable<string> Patterns { get; private set; }
 	}
 
-	public class FileDialogFilterCollection: ObjectCollection<FileDialogFilter>
+	public class FileDialogFilterCollection : ObjectCollection<FileDialogFilter>
 	{
-		internal FileDialogFilterCollection (Action<FileDialogFilter,bool> changeHandler): base (changeHandler)
+		internal FileDialogFilterCollection(Action<FileDialogFilter, bool> changeHandler) : base(changeHandler)
 		{
 		}
 	}

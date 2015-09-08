@@ -29,35 +29,35 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public abstract class DrawingPathBackendHandler: DisposableResourceBackendHandler
+	public abstract class DrawingPathBackendHandler : DisposableResourceBackendHandler
 	{
-		public abstract void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2);
+		public abstract void Arc(object backend, double xc, double yc, double radius, double angle1, double angle2);
 
-		public abstract void ArcNegative (object backend, double xc, double yc, double radius, double angle1, double angle2);
+		public abstract void ArcNegative(object backend, double xc, double yc, double radius, double angle1, double angle2);
 
-		public abstract void ClosePath (object backend);
+		public abstract void ClosePath(object backend);
 
-		public abstract void CurveTo (object backend, double x1, double y1, double x2, double y2, double x3, double y3);
+		public abstract void CurveTo(object backend, double x1, double y1, double x2, double y2, double x3, double y3);
 
-		public abstract void LineTo (object backend, double x, double y);
+		public abstract void LineTo(object backend, double x, double y);
 
-		public abstract void MoveTo (object backend, double x, double y);
+		public abstract void MoveTo(object backend, double x, double y);
 
-		public abstract void Rectangle (object backend, double x, double y, double width, double height);
+		public abstract void Rectangle(object backend, double x, double y, double width, double height);
 
-		public abstract void RelCurveTo (object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3);
+		public abstract void RelCurveTo(object backend, double dx1, double dy1, double dx2, double dy2, double dx3, double dy3);
 
-		public abstract void RelLineTo (object backend, double dx, double dy);
+		public abstract void RelLineTo(object backend, double dx, double dy);
 
-		public abstract void RelMoveTo (object backend, double dx, double dy);
+		public abstract void RelMoveTo(object backend, double dx, double dy);
 
-		public abstract object CreatePath ();
+		public abstract object CreatePath();
 
-		public abstract object CopyPath (object backend);
+		public abstract object CopyPath(object backend);
 
-		public abstract void AppendPath (object backend, object otherBackend);
+		public abstract void AppendPath(object backend, object otherBackend);
 
-		public abstract bool IsPointInFill (object backend, double x, double y);
+		public abstract bool IsPointInFill(object backend, double x, double y);
 	}
 }
 

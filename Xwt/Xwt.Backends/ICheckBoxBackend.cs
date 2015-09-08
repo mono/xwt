@@ -27,10 +27,10 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICheckBoxBackend: IWidgetBackend
+	public interface ICheckBoxBackend : IWidgetBackend
 	{
-		void SetContent (IWidgetBackend widget);
-		void SetContent (string label);
+		void SetContent(IWidgetBackend widget);
+		void SetContent(string label);
 
 		/// <summary>
 		/// Gets or sets the state of the checkbox.
@@ -43,13 +43,13 @@ namespace Xwt.Backends
 		/// </summary>
 		bool AllowMixed { get; set; }
 	}
-	
-	public interface ICheckBoxEventSink: IWidgetEventSink
+
+	public interface ICheckBoxEventSink : IWidgetEventSink
 	{
-		void OnClicked ();
-		void OnToggled ();
+		void OnClicked();
+		void OnToggled();
 	}
-	
+
 	public enum CheckBoxEvent
 	{
 		Clicked = 1,

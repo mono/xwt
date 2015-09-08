@@ -29,19 +29,19 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface ILabelBackend: IWidgetBackend
+	public interface ILabelBackend : IWidgetBackend
 	{
 		string Text { get; set; }
 		Color TextColor { get; set; }
 		Alignment TextAlignment { get; set; }
 		EllipsizeMode Ellipsize { get; set; }
 		WrapMode Wrap { get; set; }
-		void SetFormattedText (FormattedText text);
+		void SetFormattedText(FormattedText text);
 	}
-	
+
 	public interface ILabelEventSink : IWidgetEventSink
 	{
-		void OnLinkClicked (Uri target);
+		void OnLinkClicked(Uri target);
 	}
 
 	public enum LabelEvent

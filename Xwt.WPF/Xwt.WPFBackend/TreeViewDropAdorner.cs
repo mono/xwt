@@ -34,33 +34,34 @@ namespace Xwt.WPFBackend
 	public class TreeViewDropAdorner
 		: Adorner
 	{
-		public TreeViewDropAdorner (ExTreeViewItem item, RowDropPosition position)
-			: base (item)
+		public TreeViewDropAdorner(ExTreeViewItem item, RowDropPosition position)
+			: base(item)
 		{
 			IsHitTestVisible = false;
-			
+
 			double indent = ((item.Level + 1) * LevelToIndentConverter.IndentSize) + 5;
 
 			this.shape = new System.Windows.Shapes.Rectangle();
 			this.shape.Stroke = Brushes.DimGray;
 			this.shape.Width = item.ActualWidth - indent;
 
-			switch (position) {
+			switch (position)
+			{
 				case RowDropPosition.Into:
 					this.shape.Height = item.ActualHeight;
-					this.shape.Margin = new Thickness (indent, 0, 0, 0);
+					this.shape.Margin = new Thickness(indent, 0, 0, 0);
 					this.shape.StrokeDashArray = new DoubleCollection { 1, 0, 1 };
-				break;
+					break;
 
 				case RowDropPosition.Before:
 					this.shape.Height = 1;
-					this.shape.Margin = new Thickness (indent, 0, 0, 0);
-				break;
+					this.shape.Margin = new Thickness(indent, 0, 0, 0);
+					break;
 
 				case RowDropPosition.After:
 					this.shape.Height = 1;
-					this.shape.Margin = new Thickness (indent, item.ActualHeight, 0, 0);
-				break;
+					this.shape.Margin = new Thickness(indent, item.ActualHeight, 0, 0);
+					break;
 			}
 		}
 
@@ -68,24 +69,24 @@ namespace Xwt.WPFBackend
 
 		protected override int VisualChildrenCount
 		{
-		    get { return 1; }
+			get { return 1; }
 		}
 
-		protected override Visual GetVisualChild (int index)
+		protected override Visual GetVisualChild(int index)
 		{
-		    return this.shape;
+			return this.shape;
 		}
 
 		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-		    this.shape.Measure (constraint);
-		    return this.shape.DesiredSize;
+			this.shape.Measure(constraint);
+			return this.shape.DesiredSize;
 		}
 
 		protected override System.Windows.Size ArrangeOverride(System.Windows.Size finalSize)
 		{
-		    this.shape.Arrange (new Rect (this.shape.DesiredSize));
-		    return finalSize;
+			this.shape.Arrange(new Rect(this.shape.DesiredSize));
+			return finalSize;
 		}
 	}
 }

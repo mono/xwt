@@ -39,19 +39,19 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <param name="frontend">The Xwt frontend.</param>
 		/// <param name="context">The application context to initialize the backend for.</param>
-		void InitializeBackend (object frontend, ApplicationContext context);
+		void InitializeBackend(object frontend, ApplicationContext context);
 
 		/// <summary>
 		/// Enables the event.
 		/// </summary>
 		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
-		void EnableEvent (object eventId);
+		void EnableEvent(object eventId);
 
 		/// <summary>
 		/// Disables the event.
 		/// </summary>
 		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
-		void DisableEvent (object eventId);
+		void DisableEvent(object eventId);
 	}
 }
 

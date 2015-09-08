@@ -28,22 +28,22 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ITableViewBackend: IWidgetBackend, IColumnContainerBackend, IScrollableWidgetBackend
+	public interface ITableViewBackend : IWidgetBackend, IColumnContainerBackend, IScrollableWidgetBackend
 	{
-		void SetSelectionMode (SelectionMode mode);
-		void SelectAll ();
-		void UnselectAll ();
+		void SetSelectionMode(SelectionMode mode);
+		void SelectAll();
+		void UnselectAll();
 	}
-	
-	public interface ITableViewEventSink: IWidgetEventSink
+
+	public interface ITableViewEventSink : IWidgetEventSink
 	{
-		void OnSelectionChanged ();
+		void OnSelectionChanged();
 	}
-	
+
 	public enum TableViewEvent
 	{
 		SelectionChanged
 	}
-	
+
 }
 

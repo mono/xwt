@@ -55,185 +55,185 @@ namespace Xwt.WPFBackend
 			get { return this.columnTypes; }
 		}
 
-		public void Initialize (Type[] columnTypes)
+		public void Initialize(Type[] columnTypes)
 		{
-			this.columnTypes = columnTypes.ToArray ();
-			OnPropertyChanged ("ColumnTypes");
+			this.columnTypes = columnTypes.ToArray();
+			OnPropertyChanged("ColumnTypes");
 		}
 
-		public TreePosition GetParent (TreePosition pos)
+		public TreePosition GetParent(TreePosition pos)
 		{
-			var node = (TreeStoreNode) pos;
+			var node = (TreeStoreNode)pos;
 			if (node.Parent == null)
 				return null;
 
 			return node.Parent;
 		}
 
-		public TreePosition GetChild (TreePosition pos, int index)
+		public TreePosition GetChild(TreePosition pos, int index)
 		{
-			var node = (TreeStoreNode) pos;
-			var list = GetListForNode (node);
+			var node = (TreeStoreNode)pos;
+			var list = GetListForNode(node);
 			if (list.Count == 0 || index >= list.Count)
 				return null;
 
-			return list [index];
+			return list[index];
 		}
 
-		public int GetChildrenCount (TreePosition pos)
+		public int GetChildrenCount(TreePosition pos)
 		{
-			return GetListForNode ((TreeStoreNode) pos).Count;
+			return GetListForNode((TreeStoreNode)pos).Count;
 		}
 
-		public object GetValue (TreePosition pos, int column)
+		public object GetValue(TreePosition pos, int column)
 		{
-			return ((TreeStoreNode) pos)[column];
+			return ((TreeStoreNode)pos)[column];
 		}
 
-		public void SetValue (TreePosition pos, int column, object value)
+		public void SetValue(TreePosition pos, int column, object value)
 		{
-			var node = (TreeStoreNode) pos;
+			var node = (TreeStoreNode)pos;
 			node[column] = value;
 
-			OnNodeChanged (new TreeNodeEventArgs (pos));
+			OnNodeChanged(new TreeNodeEventArgs(pos));
 		}
 
-		public TreePosition InsertBefore (TreePosition pos)
+		public TreePosition InsertBefore(TreePosition pos)
 		{
-			var node = (TreeStoreNode) pos;
+			var node = (TreeStoreNode)pos;
 
-			var newNode = new TreeStoreNode (
+			var newNode = new TreeStoreNode(
 				new object[this.columnTypes.Length],
 				node.Parent);
 
-			var list = GetContainingList (node);
-			int index = list.IndexOf (node);
-			list.Insert (index, newNode);
-			
-			OnNodeInserted (new TreeNodeEventArgs (newNode));
+			var list = GetContainingList(node);
+			int index = list.IndexOf(node);
+			list.Insert(index, newNode);
+
+			OnNodeInserted(new TreeNodeEventArgs(newNode));
 
 			return newNode;
 		}
 
-		public TreePosition InsertAfter (TreePosition pos)
+		public TreePosition InsertAfter(TreePosition pos)
 		{
-			var node = (TreeStoreNode) pos;
+			var node = (TreeStoreNode)pos;
 
-			var newNode = new TreeStoreNode (
+			var newNode = new TreeStoreNode(
 				new object[this.columnTypes.Length],
 				node.Parent);
 
-			var list = GetContainingList (node);
-			int index = list.IndexOf (node);
-			list.Insert (index + 1, newNode);
-			
-			OnNodeInserted (new TreeNodeEventArgs (newNode));
+			var list = GetContainingList(node);
+			int index = list.IndexOf(node);
+			list.Insert(index + 1, newNode);
+
+			OnNodeInserted(new TreeNodeEventArgs(newNode));
 
 			return newNode;
 		}
 
-		public TreePosition AddChild (TreePosition pos)
+		public TreePosition AddChild(TreePosition pos)
 		{
-			var parent = (TreeStoreNode) pos;
+			var parent = (TreeStoreNode)pos;
 
-			var childNode = new TreeStoreNode (
+			var childNode = new TreeStoreNode(
 				new object[this.columnTypes.Length],
 				parent);
 
-			GetListForNode (parent).Add (childNode);
+			GetListForNode(parent).Add(childNode);
 
-			OnNodeInserted (new TreeNodeEventArgs (childNode));
+			OnNodeInserted(new TreeNodeEventArgs(childNode));
 
 			return childNode;
 		}
 
-		public void Remove (TreePosition pos)
+		public void Remove(TreePosition pos)
 		{
-			var node = (TreeStoreNode) pos;
+			var node = (TreeStoreNode)pos;
 
-			var list = GetContainingList (node);
-			int index = list.IndexOf (node);
-			list.RemoveAt (index);
+			var list = GetContainingList(node);
+			int index = list.IndexOf(node);
+			list.RemoveAt(index);
 
-			OnNodeDeleted (new TreeNodeChildEventArgs (node.Parent, index));
+			OnNodeDeleted(new TreeNodeChildEventArgs(node.Parent, index));
 		}
 
-		public TreePosition GetNext (TreePosition pos)
+		public TreePosition GetNext(TreePosition pos)
 		{
-			var node = (TreeStoreNode) pos;
+			var node = (TreeStoreNode)pos;
 
-			var list = GetContainingList (node);
-			int index = list.IndexOf (node) + 1;
+			var list = GetContainingList(node);
+			int index = list.IndexOf(node) + 1;
 
-			return (index < list.Count) ? list [index] : null;
+			return (index < list.Count) ? list[index] : null;
 		}
 
-		public TreePosition GetPrevious (TreePosition pos)
+		public TreePosition GetPrevious(TreePosition pos)
 		{
-			var node = (TreeStoreNode) pos;
+			var node = (TreeStoreNode)pos;
 
-			var list = GetContainingList (node);
-			int index = list.IndexOf (node) - 1;
+			var list = GetContainingList(node);
+			int index = list.IndexOf(node) - 1;
 
-			return (index >= 0) ? list [index] : null;
+			return (index >= 0) ? list[index] : null;
 		}
 
-		public void Clear ()
+		public void Clear()
 		{
 			this.topNodes.Clear();
 		}
 
-		public IEnumerator GetEnumerator ()
+		public IEnumerator GetEnumerator()
 		{
-			return this.topNodes.GetEnumerator ();
+			return this.topNodes.GetEnumerator();
 		}
 
 		private Type[] columnTypes;
-		private readonly ObservableCollection<TreeStoreNode> topNodes = new ObservableCollection<TreeStoreNode> ();
+		private readonly ObservableCollection<TreeStoreNode> topNodes = new ObservableCollection<TreeStoreNode>();
 
-		private ObservableCollection<TreeStoreNode> GetContainingList (TreeStoreNode node)
+		private ObservableCollection<TreeStoreNode> GetContainingList(TreeStoreNode node)
 		{
 			return (node.Parent == null) ? this.topNodes : node.Parent.Children;
 		}
 
-		private ObservableCollection<TreeStoreNode> GetListForNode (TreeStoreNode node)
+		private ObservableCollection<TreeStoreNode> GetListForNode(TreeStoreNode node)
 		{
 			return (node == null) ? this.topNodes : node.Children;
 		}
 
-		private void OnPropertyChanged (string name)
+		private void OnPropertyChanged(string name)
 		{
 			var changed = PropertyChanged;
 			if (changed != null)
-				changed (this, new PropertyChangedEventArgs (name));
+				changed(this, new PropertyChangedEventArgs(name));
 		}
 
-		private void OnNodeInserted (TreeNodeEventArgs e)
+		private void OnNodeInserted(TreeNodeEventArgs e)
 		{
 			var handler = NodeInserted;
 			if (handler != null)
-				handler (this, e);
+				handler(this, e);
 		}
 
-		private void OnNodeDeleted (TreeNodeChildEventArgs e)
+		private void OnNodeDeleted(TreeNodeChildEventArgs e)
 		{
 			var handler = NodeDeleted;
 			if (handler != null)
-				handler (this, e);
+				handler(this, e);
 		}
 
-		private void OnNodeChanged (TreeNodeEventArgs e)
+		private void OnNodeChanged(TreeNodeEventArgs e)
 		{
 			var handler = NodeChanged;
 			if (handler != null)
-				handler (this, e);
+				handler(this, e);
 		}
 
-		private void OnNodesReordered (TreeNodeOrderEventArgs e)
+		private void OnNodesReordered(TreeNodeOrderEventArgs e)
 		{
 			var handler = NodesReordered;
 			if (handler != null)
-				handler (this, e);
+				handler(this, e);
 		}
 	}
 }

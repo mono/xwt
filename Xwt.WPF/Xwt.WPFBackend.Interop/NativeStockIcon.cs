@@ -29,17 +29,19 @@ using System;
 namespace Xwt.WPFBackend.Interop
 {
 	[Flags]
-	internal enum NativeStockIconOptions : uint {
-		Large =			0x000000000,
-		Small =			0x000000001,
-		ShellSize =		0x000000004,
-		Handle =		0x000000100,
-		SystemIndex =	0x000004000,
-		LinkOverlay =	0x000008000,
-		Selected =		0x000010000
+	internal enum NativeStockIconOptions : uint
+	{
+		Large = 0x000000000,
+		Small = 0x000000001,
+		ShellSize = 0x000000004,
+		Handle = 0x000000100,
+		SystemIndex = 0x000004000,
+		LinkOverlay = 0x000008000,
+		Selected = 0x000010000
 	}
 
-	internal enum NativeStockIcon : uint {
+	internal enum NativeStockIcon : uint
+	{
 		DocumentNotAssociated = 0,
 		DocumentAssociated = 1,
 		Application = 2,

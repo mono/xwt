@@ -27,9 +27,9 @@ using System;
 
 namespace Xwt
 {
-	public class ListViewRowEventArgs: EventArgs
+	public class ListViewRowEventArgs : EventArgs
 	{
-		public ListViewRowEventArgs (int rowIndex)
+		public ListViewRowEventArgs(int rowIndex)
 		{
 			RowIndex = rowIndex;
 		}

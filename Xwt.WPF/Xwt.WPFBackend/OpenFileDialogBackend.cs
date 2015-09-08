@@ -33,10 +33,10 @@ namespace Xwt.WPFBackend
 	public class OpenFileDialogBackend
 		: FileDialogBackend<WindowsOpenFileDialog>, IOpenFileDialogBackend
 	{
-		public override void Initialize (IEnumerable<FileDialogFilter> newFilters, bool multiselect, string initialFileName)
+		public override void Initialize(IEnumerable<FileDialogFilter> newFilters, bool multiselect, string initialFileName)
 		{
 			this.dialog = new WindowsOpenFileDialog();
-			base.Initialize (newFilters, multiselect, initialFileName);
+			base.Initialize(newFilters, multiselect, initialFileName);
 			this.dialog.Multiselect = multiselect;
 		}
 	}

@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICellViewBackend: IBackend
+	public interface ICellViewBackend : IBackend
 	{
 		Rectangle CellBounds { get; }
 		Rectangle BackgroundBounds { get; }

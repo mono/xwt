@@ -30,8 +30,8 @@ namespace Xwt.Backends
 {
 	public interface ISpinnerBackend : IWidgetBackend
 	{
-		void StartAnimation ();
-		void StopAnimation ();
+		void StartAnimation();
+		void StopAnimation();
 		bool IsAnimating { get; }
 	}
 }

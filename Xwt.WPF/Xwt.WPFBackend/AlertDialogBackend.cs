@@ -48,67 +48,77 @@ namespace Xwt.WPFBackend
 			this.defaultResult = MessageBoxResult.Cancel;
 		}
 
-		public void Initialize (ApplicationContext actx)
+		public void Initialize(ApplicationContext actx)
 		{
 		}
 
-		public Command Run (WindowFrame transientFor, MessageDescription message)
+		public Command Run(WindowFrame transientFor, MessageDescription message)
 		{
-			this.icon = GetIcon (message.Icon);
-			if (ConvertButtons (message.Buttons, out buttons)) {
+			this.icon = GetIcon(message.Icon);
+			if (ConvertButtons(message.Buttons, out buttons))
+			{
 				// Use a system message box
 				if (message.SecondaryText == null)
 					message.SecondaryText = String.Empty;
-				else {
+				else
+				{
 					message.Text = message.Text + "\r\n\r\n" + message.SecondaryText;
 					message.SecondaryText = String.Empty;
 				}
-				var wb = (WindowFrameBackend)Toolkit.GetBackend (transientFor);
-				if (wb != null) {
-					this.dialogResult = MessageBox.Show (wb.Window, message.Text, message.SecondaryText,
+				var wb = (WindowFrameBackend)Toolkit.GetBackend(transientFor);
+				if (wb != null)
+				{
+					this.dialogResult = MessageBox.Show(wb.Window, message.Text, message.SecondaryText,
 														this.buttons, this.icon, this.defaultResult, this.options);
 				}
-				else {
-					this.dialogResult = MessageBox.Show (message.Text, message.SecondaryText, this.buttons,
+				else
+				{
+					this.dialogResult = MessageBox.Show(message.Text, message.SecondaryText, this.buttons,
 														this.icon, this.defaultResult, this.options);
 				}
-				return ConvertResultToCommand (this.dialogResult);
+				return ConvertResultToCommand(this.dialogResult);
 			}
-			else {
+			else
+			{
 				// Custom message box required
-				Dialog dlg = new Dialog ();
+				Dialog dlg = new Dialog();
 				dlg.Resizable = false;
 				dlg.Padding = 0;
 				HBox mainBox = new HBox { Margin = 25 };
 
-				if (message.Icon != null) {
-					var image = new ImageView (message.Icon.WithSize (32,32));
-					mainBox.PackStart (image, vpos: WidgetPlacement.Start);
+				if (message.Icon != null)
+				{
+					var image = new ImageView(message.Icon.WithSize(32, 32));
+					mainBox.PackStart(image, vpos: WidgetPlacement.Start);
 				}
-				VBox box = new VBox () { Margin = 3, MarginLeft = 8, Spacing = 15 };
-				mainBox.PackStart (box, true);
-				var text = new Label {
+				VBox box = new VBox() { Margin = 3, MarginLeft = 8, Spacing = 15 };
+				mainBox.PackStart(box, true);
+				var text = new Label
+				{
 					Text = message.Text ?? ""
 				};
 				Label stext = null;
-				box.PackStart (text);
-				if (!string.IsNullOrEmpty (message.SecondaryText)) {
-					stext = new Label {
+				box.PackStart(text);
+				if (!string.IsNullOrEmpty(message.SecondaryText))
+				{
+					stext = new Label
+					{
 						Text = message.SecondaryText
 					};
-					box.PackStart (stext);
+					box.PackStart(stext);
 				}
-				dlg.Buttons.Add (message.Buttons.ToArray ());
-				if (mainBox.Surface.GetPreferredSize (true).Width > 480) {
+				dlg.Buttons.Add(message.Buttons.ToArray());
+				if (mainBox.Surface.GetPreferredSize(true).Width > 480)
+				{
 					text.Wrap = WrapMode.Word;
 					if (stext != null)
 						stext.Wrap = WrapMode.Word;
 					mainBox.WidthRequest = 480;
 				}
-				var s = mainBox.Surface.GetPreferredSize (true);
+				var s = mainBox.Surface.GetPreferredSize(true);
 
 				dlg.Content = mainBox;
-				return dlg.Run ();
+				return dlg.Run();
 			}
 		}
 
@@ -118,7 +128,7 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
-		MessageBoxImage GetIcon (Xwt.Drawing.Image icon)
+		MessageBoxImage GetIcon(Xwt.Drawing.Image icon)
 		{
 			if (icon == Xwt.StockIcons.Error)
 				return MessageBoxImage.Error;
@@ -131,54 +141,61 @@ namespace Xwt.WPFBackend
 			return MessageBoxImage.None;
 		}
 
-		Command ConvertResultToCommand (MessageBoxResult dialogResult)
+		Command ConvertResultToCommand(MessageBoxResult dialogResult)
 		{
-			switch (dialogResult) {
-			case MessageBoxResult.None:
-				return Command.No;
-			case MessageBoxResult.Cancel:
-				return Command.Cancel;
-			case MessageBoxResult.No:
-				return Command.No;
-			case MessageBoxResult.Yes:
-				return Command.Yes;
-			case MessageBoxResult.OK:
-				return Command.Ok;
-			default:
-				return Command.Cancel;
+			switch (dialogResult)
+			{
+				case MessageBoxResult.None:
+					return Command.No;
+				case MessageBoxResult.Cancel:
+					return Command.Cancel;
+				case MessageBoxResult.No:
+					return Command.No;
+				case MessageBoxResult.Yes:
+					return Command.Yes;
+				case MessageBoxResult.OK:
+					return Command.Ok;
+				default:
+					return Command.Cancel;
 			}
 		}
 
-		bool ConvertButtons (IList<Command> buttons, out MessageBoxButton result)
+		bool ConvertButtons(IList<Command> buttons, out MessageBoxButton result)
 		{
-			switch (buttons.Count){
-			case 1:
-					if (buttons.Contains (Command.Ok)) {
+			switch (buttons.Count)
+			{
+				case 1:
+					if (buttons.Contains(Command.Ok))
+					{
 						result = MessageBoxButton.OK;
 						return true;
 					}
 					break;
-			case 2:
-				if (buttons.Contains (Command.Ok) && buttons.Contains (Command.Cancel)) {
-					result = MessageBoxButton.OKCancel;
-					return true;
-				} else if (buttons.Contains (Command.Yes) && buttons.Contains (Command.No)) {
-					result = MessageBoxButton.YesNo;
-					return true;
-				}
-				break;
-			case 3:
-				if (buttons.Contains (Command.Yes) && buttons.Contains (Command.No) && buttons.Contains (Command.Cancel)) {
-					result = MessageBoxButton.YesNoCancel;
-					return true;
-				}
-				break;
+				case 2:
+					if (buttons.Contains(Command.Ok) && buttons.Contains(Command.Cancel))
+					{
+						result = MessageBoxButton.OKCancel;
+						return true;
+					}
+					else if (buttons.Contains(Command.Yes) && buttons.Contains(Command.No))
+					{
+						result = MessageBoxButton.YesNo;
+						return true;
+					}
+					break;
+				case 3:
+					if (buttons.Contains(Command.Yes) && buttons.Contains(Command.No) && buttons.Contains(Command.Cancel))
+					{
+						result = MessageBoxButton.YesNoCancel;
+						return true;
+					}
+					break;
 			}
 			result = MessageBoxButton.OK;
 			return false;
 		}
 
-		public void Dispose ()
+		public void Dispose()
 		{
 		}
 	}

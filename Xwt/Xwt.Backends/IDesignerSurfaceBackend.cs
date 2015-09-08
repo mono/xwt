@@ -28,9 +28,9 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IDesignerSurfaceBackend: IWidgetBackend
+	public interface IDesignerSurfaceBackend : IWidgetBackend
 	{
-		void Load (Widget w);
+		void Load(Widget w);
 	}
 }
 

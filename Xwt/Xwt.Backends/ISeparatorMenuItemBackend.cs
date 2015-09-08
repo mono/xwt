@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ISeparatorMenuItemBackend: IMenuItemBackend
+	public interface ISeparatorMenuItemBackend : IMenuItemBackend
 	{
 	}
 }

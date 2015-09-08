@@ -31,19 +31,19 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public sealed class LinkTextAttribute: TextAttribute
+	public sealed class LinkTextAttribute : TextAttribute
 	{
 		public Uri Target { get; set; }
 
-		public override bool Equals (object t)
+		public override bool Equals(object t)
 		{
 			var ot = t as LinkTextAttribute;
-			return ot != null && Target == ot.Target && base.Equals (t);
+			return ot != null && Target == ot.Target && base.Equals(t);
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			return base.GetHashCode () ^ (Target != null ? Target.GetHashCode () : 0);
+			return base.GetHashCode() ^ (Target != null ? Target.GetHashCode() : 0);
 		}
 	}
 }

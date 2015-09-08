@@ -28,39 +28,42 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(IScrollbarBackend))]
-	public class Scrollbar: Widget
+	[BackendType(typeof(IScrollbarBackend))]
+	public class Scrollbar : Widget
 	{
 		Orientation orientation;
 		ScrollAdjustment adjustment;
 
-		internal Scrollbar (Orientation orientation)
+		internal Scrollbar(Orientation orientation)
 		{
 			this.orientation = orientation;
 		}
 
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost<Scrollbar,IScrollbarBackend>
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost<Scrollbar, IScrollbarBackend>
 		{
-			protected override void OnBackendCreated ()
+			protected override void OnBackendCreated()
 			{
-				Backend.Initialize (Parent.orientation);
-				base.OnBackendCreated ();
+				Backend.Initialize(Parent.orientation);
+				base.OnBackendCreated();
 			}
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
 
-		IScrollbarBackend Backend {
-			get { return (IScrollbarBackend) BackendHost.Backend; }
+		IScrollbarBackend Backend
+		{
+			get { return (IScrollbarBackend)BackendHost.Backend; }
 		}
 
-		public ScrollAdjustment ScrollAdjustment {
-			get {
+		public ScrollAdjustment ScrollAdjustment
+		{
+			get
+			{
 				if (adjustment == null)
-					adjustment = new ScrollAdjustment (Backend.CreateAdjustment ());
+					adjustment = new ScrollAdjustment(Backend.CreateAdjustment());
 				return adjustment;
 			}
 		}
@@ -79,9 +82,10 @@ namespace Xwt
 		/// (i.e. between Value and Value + PageSize). If the range is larger than the page size, then only the
 		/// start of it will be in the current page. A "Changed" event will be raised if the value is changed.
 		/// </remarks>
-		public void ClampPage (double lower, double upper)
+		public void ClampPage(double lower, double upper)
 		{
-			if (upper - lower >= PageSize || upper <= lower) {
+			if (upper - lower >= PageSize || upper <= lower)
+			{
 				Value = lower;
 				return;
 			}
@@ -93,60 +97,69 @@ namespace Xwt
 				Value = upper - PageSize;
 		}
 
-		public double Value {
+		public double Value
+		{
 			get { return ScrollAdjustment.Value; }
 			set { ScrollAdjustment.Value = value; }
 		}
 
-		public double LowerValue {
+		public double LowerValue
+		{
 			get { return ScrollAdjustment.LowerValue; }
-			set { ScrollAdjustment.LowerValue = value; OnAdjustmentChanged (); }
+			set { ScrollAdjustment.LowerValue = value; OnAdjustmentChanged(); }
 		}
 
-		public double UpperValue {
+		public double UpperValue
+		{
 			get { return ScrollAdjustment.UpperValue; }
-			set { ScrollAdjustment.UpperValue = value; OnAdjustmentChanged (); }
+			set { ScrollAdjustment.UpperValue = value; OnAdjustmentChanged(); }
 		}
 
-		public double PageIncrement {
+		public double PageIncrement
+		{
 			get { return ScrollAdjustment.PageIncrement; }
-			set { ScrollAdjustment.PageIncrement = value; OnAdjustmentChanged (); }
+			set { ScrollAdjustment.PageIncrement = value; OnAdjustmentChanged(); }
 		}
 
-		public double StepIncrement {
+		public double StepIncrement
+		{
 			get { return ScrollAdjustment.StepIncrement; }
-			set { ScrollAdjustment.StepIncrement = value; OnAdjustmentChanged (); }
+			set { ScrollAdjustment.StepIncrement = value; OnAdjustmentChanged(); }
 		}
 
-		public double PageSize {
+		public double PageSize
+		{
 			get { return ScrollAdjustment.PageSize; }
-			set { ScrollAdjustment.PageSize = value; OnAdjustmentChanged (); }
+			set { ScrollAdjustment.PageSize = value; OnAdjustmentChanged(); }
 		}
-		
+
 		EventHandler valueChanged;
 
-		public event EventHandler ValueChanged {
-			add {
+		public event EventHandler ValueChanged
+		{
+			add
+			{
 				if (valueChanged == null)
 					ScrollAdjustment.ValueChanged += HandleValueChanged;
 				valueChanged += value;
 			}
-			remove {
+			remove
+			{
 				valueChanged -= value;
 				if (valueChanged == null)
 					ScrollAdjustment.ValueChanged -= HandleValueChanged;
 			}
 		}
 
-		void HandleValueChanged (object sender, EventArgs e)
+		void HandleValueChanged(object sender, EventArgs e)
 		{
-			OnValueChanged (e);
+			OnValueChanged(e);
 		}
 
-		protected virtual void OnValueChanged (EventArgs e)
+		protected virtual void OnValueChanged(EventArgs e)
 		{
 			if (valueChanged != null)
-				valueChanged (this, e);
+				valueChanged(this, e);
 		}
 
 		/// <summary>
@@ -156,7 +169,7 @@ namespace Xwt
 		/// It is not called if the Value changes. You can override OnValueChanged for
 		/// this use case.
 		/// </remarks>
-		protected virtual void OnAdjustmentChanged ()
+		protected virtual void OnAdjustmentChanged()
 		{
 		}
 	}

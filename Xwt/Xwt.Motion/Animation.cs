@@ -39,96 +39,100 @@ namespace Xwt.Motion
 		List<Animation> children;
 		Action finished;
 		bool finishedTriggered;
-		
-		public Animation ()
+
+		public Animation()
 		{
-			children = new List<Animation> ();
+			children = new List<Animation>();
 			easing = Easing.Linear;
-			step = f => {};
+			step = f => { };
 		}
-		
-		public Animation (Action<double> callback, double start = 0.0f, double end = 1.0f, Easing easing = null, Action finished = null)
+
+		public Animation(Action<double> callback, double start = 0.0f, double end = 1.0f, Easing easing = null, Action finished = null)
 		{
-			children = new List<Animation> ();
+			children = new List<Animation>();
 			this.easing = easing ?? Easing.Linear;
 			this.finished = finished;
-			
-			var transform = AnimationExtensions.Interpolate (start, end);
-			step = f => callback (transform (f));
+
+			var transform = AnimationExtensions.Interpolate(start, end);
+			step = f => callback(transform(f));
 		}
 
-		public IEnumerable<Animation> ConcurrentAnimations {
+		public IEnumerable<Animation> ConcurrentAnimations
+		{
 			get { return children; }
 		}
-		
-		public void Commit (IAnimatable owner, string name, uint rate = 16, uint length = 250, 
-		                    Easing easing = null, Action<double, bool> finished = null, Func<bool> repeat = null)
+
+		public void Commit(IAnimatable owner, string name, uint rate = 16, uint length = 250,
+							Easing easing = null, Action<double, bool> finished = null, Func<bool> repeat = null)
 		{
-			owner.Animate (name, this, rate, length, easing, finished, repeat);
+			owner.Animate(name, this, rate, length, easing, finished, repeat);
 		}
-		
-		public Animation AddConcurrent (Animation animation, double beginAt = 0.0f, double finishAt = 1.0f)
+
+		public Animation AddConcurrent(Animation animation, double beginAt = 0.0f, double finishAt = 1.0f)
 		{
 			if (beginAt < 0 || beginAt > 1)
-				throw new ArgumentOutOfRangeException ("beginAt");
+				throw new ArgumentOutOfRangeException("beginAt");
 
 			if (finishAt < 0 || finishAt > 1)
-				throw new ArgumentOutOfRangeException ("finishAt");
+				throw new ArgumentOutOfRangeException("finishAt");
 
 			if (finishAt <= beginAt)
-				throw new ArgumentException ("finishAt must be greater than beginAt");
+				throw new ArgumentException("finishAt must be greater than beginAt");
 
 			animation.beginAt = beginAt;
 			animation.finishAt = finishAt;
-			children.Add (animation);
+			children.Add(animation);
 			return this;
 		}
-		
-		public Animation AddConcurrent (Action<double> callback, double start = 0.0f, double end = 1.0f, Easing easing = null, double beginAt = 0.0f, double finishAt = 1.0f)
+
+		public Animation AddConcurrent(Action<double> callback, double start = 0.0f, double end = 1.0f, Easing easing = null, double beginAt = 0.0f, double finishAt = 1.0f)
 		{
 			if (beginAt < 0 || beginAt > 1)
-				throw new ArgumentOutOfRangeException ("beginAt");
+				throw new ArgumentOutOfRangeException("beginAt");
 
 			if (finishAt < 0 || finishAt > 1)
-				throw new ArgumentOutOfRangeException ("finishAt");
+				throw new ArgumentOutOfRangeException("finishAt");
 
 			if (finishAt <= beginAt)
-				throw new ArgumentException ("finishAt must be greater than beginAt");
+				throw new ArgumentException("finishAt must be greater than beginAt");
 
-			Animation child = new Animation (callback, start, end, easing);
+			Animation child = new Animation(callback, start, end, easing);
 			child.beginAt = beginAt;
 			child.finishAt = finishAt;
-			children.Add (child);
+			children.Add(child);
 			return this;
 		}
-		
-		public Action<double> GetCallback ()
+
+		public Action<double> GetCallback()
 		{
-			Action<double> result = f => {
-				step (easing.Func (f));
-				foreach (var animation in children) {
+			Action<double> result = f =>
+			{
+				step(easing.Func(f));
+				foreach (var animation in children)
+				{
 					if (animation.finishedTriggered)
 						continue;
-					
-					double val = Math.Max (0.0f, Math.Min (1.0f, (f - animation.beginAt) / (animation.finishAt - animation.beginAt)));
-					
+
+					double val = Math.Max(0.0f, Math.Min(1.0f, (f - animation.beginAt) / (animation.finishAt - animation.beginAt)));
+
 					if (val <= 0.0f) // not ready to process yet
 						continue;
-					
-					var callback = animation.GetCallback ();
-					callback (val);
-					
-					if (val >= 1.0f) {
+
+					var callback = animation.GetCallback();
+					callback(val);
+
+					if (val >= 1.0f)
+					{
 						animation.finishedTriggered = true;
 						if (animation.finished != null)
-							animation.finished ();
+							animation.finished();
 					}
 				}
 			};
 			return result;
 		}
 	}
-	
-	
+
+
 }
 

@@ -38,33 +38,35 @@ namespace Xwt.WPFBackend
 	public class WpfGradientBackendHandler
 		: GradientBackendHandler
 	{
-		public override object CreateLinear (double x0, double y0, double x1, double y1)
+		public override object CreateLinear(double x0, double y0, double x1, double y1)
 		{
-			return new LinearGradientBrush () {
-				StartPoint = new SW.Point (x0, y0),
-				EndPoint = new SW.Point (x1, y1),
+			return new LinearGradientBrush()
+			{
+				StartPoint = new SW.Point(x0, y0),
+				EndPoint = new SW.Point(x1, y1),
 				MappingMode = BrushMappingMode.Absolute
 			};
 		}
 
-		public override void Dispose (object backend)
+		public override void Dispose(object backend)
 		{
 		}
 
-		public override object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
+		public override object CreateRadial(double cx0, double cy0, double radius0, double cx1, double cy1, double radius1)
 		{
-			return new RadialGradientBrush () {
-				GradientOrigin = new SW.Point (cx0, cy0),
-				Center = new SW.Point (cx1, cy1),
+			return new RadialGradientBrush()
+			{
+				GradientOrigin = new SW.Point(cx0, cy0),
+				Center = new SW.Point(cx1, cy1),
 				RadiusX = radius1,
 				RadiusY = radius1,
 				MappingMode = BrushMappingMode.Absolute
 			};
 		}
 
-		public override void AddColorStop (object backend, double position, Color color)
+		public override void AddColorStop(object backend, double position, Color color)
 		{
-			((GradientBrush)backend).GradientStops.Add (new GradientStop (color.ToWpfColor (), position));
+			((GradientBrush)backend).GradientStops.Add(new GradientStop(color.ToWpfColor(), position));
 		}
 	}
 }

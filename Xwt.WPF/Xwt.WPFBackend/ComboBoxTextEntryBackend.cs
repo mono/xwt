@@ -37,10 +37,10 @@ namespace Xwt.WPFBackend
 	public class ComboBoxTextEntryBackend
 		: WidgetBackend, ITextEntryBackend
 	{
-		public ComboBoxTextEntryBackend (ExComboBox combobox)
+		public ComboBoxTextEntryBackend(ExComboBox combobox)
 		{
 			if (combobox == null)
-				throw new ArgumentNullException ("combobox");
+				throw new ArgumentNullException("combobox");
 
 			this.combobox = combobox;
 			this.combobox.GotFocus += OnGotFocus;
@@ -55,8 +55,8 @@ namespace Xwt.WPFBackend
 
 		public Alignment TextAlignment
 		{
-			get { return DataConverter.ToXwtAlignment (this.combobox.HorizontalContentAlignment); }
-			set { this.combobox.HorizontalContentAlignment = DataConverter.ToWpfAlignment (value); }
+			get { return DataConverter.ToXwtAlignment(this.combobox.HorizontalContentAlignment); }
+			set { this.combobox.HorizontalContentAlignment = DataConverter.ToWpfAlignment(value); }
 		}
 
 		public string PlaceholderText
@@ -67,7 +67,7 @@ namespace Xwt.WPFBackend
 				if (this.placeholderText == value)
 					return;
 
-				UpdatePlaceholder (value, focused: this.combobox.IsFocused);
+				UpdatePlaceholder(value, focused: this.combobox.IsFocused);
 			}
 		}
 
@@ -87,7 +87,7 @@ namespace Xwt.WPFBackend
 					return;
 
 				if (value)
-					this.combobox.ClearValue (Control.BorderBrushProperty);
+					this.combobox.ClearValue(Control.BorderBrushProperty);
 				else
 					this.combobox.BorderBrush = null;
 
@@ -95,71 +95,88 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		protected TextBox TextBox {
-			get { return combobox.Template.FindName ("PART_EditableTextBox", combobox) as TextBox; }
+		protected TextBox TextBox
+		{
+			get { return combobox.Template.FindName("PART_EditableTextBox", combobox) as TextBox; }
 		}
 
-		public int CursorPosition {
-			get {
+		public int CursorPosition
+		{
+			get
+			{
 				if (ReadOnly)
 					return 0;
-				else 
+				else
 					return TextBox.SelectionStart;
 			}
-			set {
-				if (!ReadOnly) {
+			set
+			{
+				if (!ReadOnly)
+				{
 					TextBox.Focus();
 					TextBox.SelectionStart = value;
 				}
 			}
 		}
 
-		public int SelectionStart {
-			get {
+		public int SelectionStart
+		{
+			get
+			{
 				if (ReadOnly)
 					return 0;
-				else 
+				else
 					return TextBox.SelectionStart;
 			}
-			set {
-				if (!ReadOnly) {
+			set
+			{
+				if (!ReadOnly)
+				{
 					int cacheLength = SelectionLength;
-					TextBox.Focus ();
+					TextBox.Focus();
 					TextBox.SelectionStart = value;
 					TextBox.SelectionLength = cacheLength;
 				}
 			}
 		}
 
-		public int SelectionLength {
-			get {
+		public int SelectionLength
+		{
+			get
+			{
 				if (ReadOnly)
 					return this.SelectedText.Length;
 				else
 					return TextBox.SelectionLength;
 			}
-			set {
-				if (!ReadOnly) {
+			set
+			{
+				if (!ReadOnly)
+				{
 					int cacheStart = SelectionStart;
-					TextBox.Focus ();
+					TextBox.Focus();
 					TextBox.SelectionLength = value;
 					TextBox.SelectionStart = cacheStart;
 				}
 			}
 		}
 
-		public string SelectedText {
-			get {
+		public string SelectedText
+		{
+			get
+			{
 				if (ReadOnly)
 					return this.SelectedText;
 				else
 					return TextBox.SelectedText;
 			}
-			set {
-				if (!ReadOnly) {
+			set
+			{
+				if (!ReadOnly)
+				{
 					int cacheStart = SelectionStart;
 					int cacheLength = SelectionLength;
-					TextBox.Focus ();
+					TextBox.Focus();
 					TextBox.SelectionStart = cacheStart;
 					TextBox.SelectionLength = cacheLength;
 					TextBox.SelectedText = value;
@@ -174,39 +191,43 @@ namespace Xwt.WPFBackend
 			// TODO
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
-			if (eventId is TextEntryEvent) {
-				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed:
-					this.combobox.TextChanged += OnTextChanged;
-					break;
-				case TextEntryEvent.SelectionChanged:
-					combobox.Loaded += HandleLoaded;
-					break;
+			base.EnableEvent(eventId);
+			if (eventId is TextEntryEvent)
+			{
+				switch ((TextEntryEvent)eventId)
+				{
+					case TextEntryEvent.Changed:
+						this.combobox.TextChanged += OnTextChanged;
+						break;
+					case TextEntryEvent.SelectionChanged:
+						combobox.Loaded += HandleLoaded;
+						break;
 				}
 			}
 		}
 
-		void HandleLoaded (object sender, RoutedEventArgs e)
+		void HandleLoaded(object sender, RoutedEventArgs e)
 		{
 			if (TextBox != null)
 				TextBox.SelectionChanged += OnSelectionChanged;
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
-			if (eventId is TextEntryEvent) {
-				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed:
-					this.combobox.TextChanged -= OnTextChanged;
-					break;
-				case TextEntryEvent.SelectionChanged:
-					if (TextBox != null)
-						TextBox.SelectionChanged -= OnSelectionChanged;
-					break;
+			base.DisableEvent(eventId);
+			if (eventId is TextEntryEvent)
+			{
+				switch ((TextEntryEvent)eventId)
+				{
+					case TextEntryEvent.Changed:
+						this.combobox.TextChanged -= OnTextChanged;
+						break;
+					case TextEntryEvent.SelectionChanged:
+						if (TextBox != null)
+							TextBox.SelectionChanged -= OnSelectionChanged;
+						break;
 				}
 			}
 		}
@@ -214,44 +235,45 @@ namespace Xwt.WPFBackend
 		private readonly ExComboBox combobox;
 		private string placeholderText;
 
-		protected ITextEntryEventSink TextEntryEventSink {
-			get { return (ITextEntryEventSink) EventSink; }
-		}
-
-		private void OnTextChanged (object sender, EventArgs e)
+		protected ITextEntryEventSink TextEntryEventSink
 		{
-			Context.InvokeUserCode (TextEntryEventSink.OnChanged);
+			get { return (ITextEntryEventSink)EventSink; }
 		}
 
-		private void OnSelectionChanged (object s, EventArgs e)
+		private void OnTextChanged(object sender, EventArgs e)
 		{
-			Context.InvokeUserCode (TextEntryEventSink.OnSelectionChanged);
+			Context.InvokeUserCode(TextEntryEventSink.OnChanged);
 		}
 
-		private void UpdatePlaceholder (string newPlaceholder, bool focused)
+		private void OnSelectionChanged(object s, EventArgs e)
+		{
+			Context.InvokeUserCode(TextEntryEventSink.OnSelectionChanged);
+		}
+
+		private void UpdatePlaceholder(string newPlaceholder, bool focused)
 		{
 			if (Text == this.placeholderText)
 				Text = newPlaceholder;
 
 			this.placeholderText = newPlaceholder;
 
-			if (focused && (Text == PlaceholderText || String.IsNullOrEmpty (Text)))
-				this.combobox.ClearValue (Control.ForegroundProperty);
-			else if (!focused && String.IsNullOrEmpty (Text))
+			if (focused && (Text == PlaceholderText || String.IsNullOrEmpty(Text)))
+				this.combobox.ClearValue(Control.ForegroundProperty);
+			else if (!focused && String.IsNullOrEmpty(Text))
 			{
 				Text = PlaceholderText;
 				this.combobox.Foreground = Brushes.LightGray;
 			}
 		}
 
-		protected void OnGotFocus (object sender, RoutedEventArgs e)
+		protected void OnGotFocus(object sender, RoutedEventArgs e)
 		{
-			UpdatePlaceholder (this.placeholderText, focused: true);
+			UpdatePlaceholder(this.placeholderText, focused: true);
 		}
 
-		protected void OnLostFocus (object sender, RoutedEventArgs e)
+		protected void OnLostFocus(object sender, RoutedEventArgs e)
 		{
-			UpdatePlaceholder (this.placeholderText, focused: false);
+			UpdatePlaceholder(this.placeholderText, focused: false);
 		}
 	}
 }

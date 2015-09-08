@@ -32,36 +32,37 @@ using Xwt.Drawing;
 
 namespace Xwt.Design
 {
-	public class DesignerSurface: Widget
+	public class DesignerSurface : Widget
 	{
 		Widget widget;
-		
-		public DesignerSurface ()
+
+		public DesignerSurface()
 		{
 		}
-		
-		IDesignerSurfaceBackend Backend {
-			get { return (IDesignerSurfaceBackend) BackendHost.Backend; }
-		}
-		
-		public void Load (XmlReader r)
+
+		IDesignerSurfaceBackend Backend
 		{
-			object o = XamlServices.Load (r);
+			get { return (IDesignerSurfaceBackend)BackendHost.Backend; }
+		}
+
+		public void Load(XmlReader r)
+		{
+			object o = XamlServices.Load(r);
 			if (!(o is Widget))
-				throw new InvalidOperationException ("Invalid object type. Expected Xwt.Widget, found: " + o.GetType ());
+				throw new InvalidOperationException("Invalid object type. Expected Xwt.Widget, found: " + o.GetType());
 			widget = (Widget)o;
-			Backend.Load (widget);
+			Backend.Load(widget);
 		}
-		
-		public void Load (Widget widget)
+
+		public void Load(Widget widget)
 		{
 			this.widget = widget;
-			Backend.Load (widget);
+			Backend.Load(widget);
 		}
-		
-		public void Save (XmlWriter w)
+
+		public void Save(XmlWriter w)
 		{
-			XamlServices.Save (w, widget);
+			XamlServices.Save(w, widget);
 		}
 	}
 }

@@ -29,18 +29,18 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IButtonBackend: IWidgetBackend
+	public interface IButtonBackend : IWidgetBackend
 	{
-		void SetButtonStyle (ButtonStyle style);
-		void SetButtonType (ButtonType type);
-		void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position);
+		void SetButtonStyle(ButtonStyle style);
+		void SetButtonType(ButtonType type);
+		void SetContent(string label, bool useMnemonic, ImageDescription image, ContentPosition position);
 	}
-	
-	public interface IButtonEventSink: IWidgetEventSink
+
+	public interface IButtonEventSink : IWidgetEventSink
 	{
-		void OnClicked ();
+		void OnClicked();
 	}
-	
+
 	public enum ButtonEvent
 	{
 		Clicked = 1

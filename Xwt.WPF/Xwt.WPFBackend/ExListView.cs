@@ -45,34 +45,38 @@ namespace Xwt.WPFBackend
 			return new ExListViewItem();
 		}
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
+			var s = base.MeasureOverride(constraint);
 
-			if (ScrollViewer.GetHorizontalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
+			if (ScrollViewer.GetHorizontalScrollBarVisibility(this) != ScrollBarVisibility.Hidden)
 				s.Width = 0;
-			if (ScrollViewer.GetVerticalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
+			if (ScrollViewer.GetVerticalScrollBarVisibility(this) != ScrollBarVisibility.Hidden)
 				s.Height = SystemParameters.CaptionHeight;
-			s = Backend.MeasureOverride (constraint, s);
+			s = Backend.MeasureOverride(constraint, s);
 			return s;
 		}
 
 		private ListViewItem focusedItem = null;
-		public ListViewItem FocusedItem {
-			get {
+		public ListViewItem FocusedItem
+		{
+			get
+			{
 				return focusedItem;
 			}
-			set {
-				FocusItem (value);
+			set
+			{
+				FocusItem(value);
 			}
 		}
 
 		internal void FocusItem(ListViewItem item)
 		{
-			if (item != null) {
+			if (item != null)
+			{
 				focusedItem = item;
 				if (!item.IsFocused)
-					item.Focus ();
+					item.Focus();
 			}
 		}
 	}

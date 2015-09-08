@@ -28,10 +28,10 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IProgressBarBackend: IWidgetBackend
+	public interface IProgressBarBackend : IWidgetBackend
 	{
-		void SetFraction (double fraction);
-		void SetIndeterminate (bool indeterminate);
+		void SetFraction(double fraction);
+		void SetIndeterminate(bool indeterminate);
 	}
 }
 

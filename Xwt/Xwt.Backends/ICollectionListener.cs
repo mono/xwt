@@ -29,8 +29,8 @@ namespace Xwt.Backends
 {
 	public interface ICollectionListener
 	{
-		void ItemAdded (object collection, object item);
-		void ItemRemoved (object collection, object item);
+		void ItemAdded(object collection, object item);
+		void ItemRemoved(object collection, object item);
 	}
 }
 

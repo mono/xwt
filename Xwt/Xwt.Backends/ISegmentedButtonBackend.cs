@@ -28,9 +28,9 @@ namespace Xwt.Backends
 {
 	public interface ISegmentedButtonBackend : IWidgetBackend
 	{
-		void AddChildButton (int index, Button button);
-		void RemoveChildButton (int index);
-		void ReplaceChildButton (int index, Button button);
+		void AddChildButton(int index, Button button);
+		void RemoveChildButton(int index);
+		void ReplaceChildButton(int index, Button button);
 		int Spacing { get; set; }
 	}
 }

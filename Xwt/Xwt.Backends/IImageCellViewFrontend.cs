@@ -28,7 +28,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IImageCellViewFrontend: ICellViewFrontend
+	public interface IImageCellViewFrontend : ICellViewFrontend
 	{
 		Image Image { get; }
 	}

@@ -35,11 +35,13 @@ namespace Xwt.WPFBackend
 	{
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
-			if (e.Property.Name == "IsVisible" && IsVisible) {
-				foreach (var column in ((GridView)ListView.View).Columns) {
-					if (!Double.IsNaN (column.Width))
+			if (e.Property.Name == "IsVisible" && IsVisible)
+			{
+				foreach (var column in ((GridView)ListView.View).Columns)
+				{
+					if (!Double.IsNaN(column.Width))
 						continue;
-					
+
 					column.Width = column.ActualWidth;
 					column.Width = Double.NaN;
 				}
@@ -49,16 +51,18 @@ namespace Xwt.WPFBackend
 		}
 
 		private ExListView view;
-		protected ExListView ListView {
-			get {
+		protected ExListView ListView
+		{
+			get
+			{
 				if (this.view == null)
-					this.view = FindListView ((FrameworkElement) VisualParent);
+					this.view = FindListView((FrameworkElement)VisualParent);
 
 				return this.view;
 			}
 		}
 
-		private ExListView FindListView (FrameworkElement element)
+		private ExListView FindListView(FrameworkElement element)
 		{
 			if (element == null)
 				return null;
@@ -67,13 +71,13 @@ namespace Xwt.WPFBackend
 			if (view != null)
 				return view;
 
-			return FindListView (element.TemplatedParent as FrameworkElement);
+			return FindListView(element.TemplatedParent as FrameworkElement);
 		}
 
-		protected override void OnGotFocus (RoutedEventArgs e)
+		protected override void OnGotFocus(RoutedEventArgs e)
 		{
-			base.OnGotFocus (e);
-			ListView.FocusItem (this);
+			base.OnGotFocus(e);
+			ListView.FocusItem(this);
 		}
 	}
 }

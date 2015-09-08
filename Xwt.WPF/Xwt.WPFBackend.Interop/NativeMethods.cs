@@ -34,41 +34,43 @@ namespace Xwt.WPFBackend.Interop
 {
 	internal static class NativeMethods
 	{
-		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		struct StockIconInfo
 		{
 			internal uint StructureSize;
 			internal IntPtr Handle;
 			internal int ImageIndex;
 			internal int Indentifier;
-			[MarshalAs (UnmanagedType.ByValTStr, SizeConst = 260)]
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
 			internal string Path;
 		}
 
-		[DllImport ("Shell32.dll", CharSet = CharSet.Unicode)]
-		static extern int SHGetStockIconInfo (NativeStockIcon icon, NativeStockIconOptions options,
-		                                               ref StockIconInfo info);
+		[DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
+		static extern int SHGetStockIconInfo(NativeStockIcon icon, NativeStockIconOptions options,
+													   ref StockIconInfo info);
 
-		[DllImport ("User32.dll", SetLastError = true)]
-		static extern bool DestroyIcon (IntPtr handle);
+		[DllImport("User32.dll", SetLastError = true)]
+		static extern bool DestroyIcon(IntPtr handle);
 
-		internal static BitmapSource GetImage (NativeStockIcon icon, NativeStockIconOptions options)
+		internal static BitmapSource GetImage(NativeStockIcon icon, NativeStockIconOptions options)
 		{
 			options |= NativeStockIconOptions.Handle;
 
 			StockIconInfo info = new StockIconInfo();
-			info.StructureSize = (uint) Marshal.SizeOf (typeof (StockIconInfo));
+			info.StructureSize = (uint)Marshal.SizeOf(typeof(StockIconInfo));
 
-			int hresult = SHGetStockIconInfo (icon, options, ref info);
+			int hresult = SHGetStockIconInfo(icon, options, ref info);
 			if (hresult < 0)
-				throw new COMException ("SHGetStockIconInfo failed", hresult);
+				throw new COMException("SHGetStockIconInfo failed", hresult);
 
 			BitmapSource bitmap;
-			try {
-				bitmap = Imaging.CreateBitmapSourceFromHIcon (info.Handle, Int32Rect.Empty, null);
+			try
+			{
+				bitmap = Imaging.CreateBitmapSourceFromHIcon(info.Handle, Int32Rect.Empty, null);
 			}
-			finally {
-				DestroyIcon (info.Handle);
+			finally
+			{
+				DestroyIcon(info.Handle);
 			}
 
 			return bitmap;

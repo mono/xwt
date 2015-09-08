@@ -28,12 +28,12 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IMenuBackend: IBackend
+	public interface IMenuBackend : IBackend
 	{
-		void InsertItem (int index, IMenuItemBackend menuItem);
-		void RemoveItem (IMenuItemBackend menuItem);
-		void Popup ();
-		void Popup (IWidgetBackend widget, double x, double y);
+		void InsertItem(int index, IMenuItemBackend menuItem);
+		void RemoveItem(IMenuItemBackend menuItem);
+		void Popup();
+		void Popup(IWidgetBackend widget, double x, double y);
 	}
 }
 

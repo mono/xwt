@@ -30,8 +30,8 @@ using System.Windows.Markup;
 
 namespace Xwt.Drawing
 {
-	[TypeConverter (typeof(ColorValueConverter))]
-	[ValueSerializer (typeof(ColorValueSerializer))]
+	[TypeConverter(typeof(ColorValueConverter))]
+	[ValueSerializer(typeof(ColorValueSerializer))]
 	[Serializable]
 	public struct Color
 	{
@@ -39,74 +39,92 @@ namespace Xwt.Drawing
 
 		[NonSerialized]
 		HslColor hsl;
-		
-		public double Red {
+
+		public double Red
+		{
 			get { return r; }
-			set { r = Normalize (value); hsl = null; }
+			set { r = Normalize(value); hsl = null; }
 		}
-		
-		public double Green {
+
+		public double Green
+		{
 			get { return g; }
-			set { g = Normalize (value); hsl = null; }
+			set { g = Normalize(value); hsl = null; }
 		}
-		
-		public double Blue {
+
+		public double Blue
+		{
 			get { return b; }
-			set { b = Normalize (value); hsl = null; }
+			set { b = Normalize(value); hsl = null; }
 		}
-		
-		public double Alpha {
+
+		public double Alpha
+		{
 			get { return a; }
-			set { a = Normalize (value); }
+			set { a = Normalize(value); }
 		}
-		
-		public double Hue {
-			get {
+
+		public double Hue
+		{
+			get
+			{
 				return Hsl.H;
 			}
-			set {
-				Hsl = new HslColor (Normalize (value), Hsl.S, Hsl.L);
+			set
+			{
+				Hsl = new HslColor(Normalize(value), Hsl.S, Hsl.L);
 			}
 		}
-		
-		public double Saturation {
-			get {
+
+		public double Saturation
+		{
+			get
+			{
 				return Hsl.S;
 			}
-			set {
-				Hsl = new HslColor (Hsl.H, Normalize (value), Hsl.L);
+			set
+			{
+				Hsl = new HslColor(Hsl.H, Normalize(value), Hsl.L);
 			}
 		}
-		
-		public double Light {
-			get {
+
+		public double Light
+		{
+			get
+			{
 				return Hsl.L;
 			}
-			set {
-				Hsl = new HslColor (Hsl.H, Hsl.S, Normalize (value));
+			set
+			{
+				Hsl = new HslColor(Hsl.H, Hsl.S, Normalize(value));
 			}
 		}
-		
-		double Normalize (double v)
+
+		double Normalize(double v)
 		{
 			if (v < 0) return 0;
 			if (v > 1) return 1;
 			return v;
 		}
-		
-		public double Brightness {
-			get {
-				return System.Math.Sqrt (Red * .241 + Green * .691 + Blue * .068);
+
+		public double Brightness
+		{
+			get
+			{
+				return System.Math.Sqrt(Red * .241 + Green * .691 + Blue * .068);
 			}
 		}
-		
-		HslColor Hsl {
-			get {
+
+		HslColor Hsl
+		{
+			get
+			{
 				if (hsl == null)
 					hsl = (HslColor)this;
 				return hsl;
 			}
-			set {
+			set
+			{
 				hsl = value;
 				Color c = (Color)value;
 				r = c.r;
@@ -114,31 +132,31 @@ namespace Xwt.Drawing
 				g = c.g;
 			}
 		}
-		
-		public Color (double red, double green, double blue): this ()
+
+		public Color(double red, double green, double blue) : this()
 		{
 			Red = red;
 			Green = green;
 			Blue = blue;
 			Alpha = 1f;
 		}
-		
-		public Color (double red, double green, double blue, double alpha): this ()
+
+		public Color(double red, double green, double blue, double alpha) : this()
 		{
 			Red = red;
 			Green = green;
 			Blue = blue;
 			Alpha = alpha;
 		}
-		
-		public Color WithAlpha (double alpha)
+
+		public Color WithAlpha(double alpha)
 		{
 			Color c = this;
 			c.Alpha = alpha;
 			return c;
 		}
-		
-		public Color WithIncreasedLight (double lightIncrement)
+
+		public Color WithIncreasedLight(double lightIncrement)
 		{
 			Color c = this;
 			c.Light += lightIncrement;
@@ -157,9 +175,9 @@ namespace Xwt.Drawing
 		/// are made darker. If the amount is negative, the effect is inversed (colors are
 		/// made less contrasted)
 		/// </remarks>
-		public Color WithIncreasedContrast (double amount)
+		public Color WithIncreasedContrast(double amount)
 		{
-			return WithIncreasedContrast (new Color (0.5, 0.5, 0.5), amount);
+			return WithIncreasedContrast(new Color(0.5, 0.5, 0.5), amount);
 		}
 
 		/// <summary>
@@ -169,7 +187,7 @@ namespace Xwt.Drawing
 		/// <returns>The new color</returns>
 		/// <param name="referenceColor">Reference color.</param>
 		/// <param name="amount">Amount to change (can be positive or negative).</param>
-		public Color WithIncreasedContrast (Color referenceColor, double amount)
+		public Color WithIncreasedContrast(Color referenceColor, double amount)
 		{
 			Color c = this;
 			if (referenceColor.Light > Light)
@@ -178,178 +196,181 @@ namespace Xwt.Drawing
 				c.Light += amount;
 			return c;
 		}
-			
-		public Color BlendWith (Color target, double amount)
+
+		public Color BlendWith(Color target, double amount)
 		{
 			if (amount < 0 || amount > 1)
-				throw new ArgumentException ("Blend amount must be between 0 and 1");
-			return new Color (BlendValue (r, target.r, amount), BlendValue (g, target.g, amount), BlendValue (b, target.b, amount), target.Alpha);
+				throw new ArgumentException("Blend amount must be between 0 and 1");
+			return new Color(BlendValue(r, target.r, amount), BlendValue(g, target.g, amount), BlendValue(b, target.b, amount), target.Alpha);
 		}
-		
-		double BlendValue (double s, double t, double amount)
+
+		double BlendValue(double s, double t, double amount)
 		{
 			return s + (t - s) * amount;
 		}
-	
-		public static Color FromBytes (byte red, byte green, byte blue)
+
+		public static Color FromBytes(byte red, byte green, byte blue)
 		{
-			return FromBytes (red, green, blue, 255);
+			return FromBytes(red, green, blue, 255);
 		}
-		
-		public static Color FromBytes (byte red, byte green, byte blue, byte alpha)
+
+		public static Color FromBytes(byte red, byte green, byte blue, byte alpha)
 		{
-			return new Color {
+			return new Color
+			{
 				Red = ((double)red) / 255.0,
 				Green = ((double)green) / 255.0,
 				Blue = ((double)blue) / 255.0,
 				Alpha = ((double)alpha) / 255.0
 			};
 		}
-		
-		public static Color FromHsl (double h, double s, double l)
+
+		public static Color FromHsl(double h, double s, double l)
 		{
-			return FromHsl (h, s, l, 1);
+			return FromHsl(h, s, l, 1);
 		}
-		
-		public static Color FromHsl (double h, double s, double l, double alpha)
+
+		public static Color FromHsl(double h, double s, double l, double alpha)
 		{
-			HslColor hsl = new HslColor (h, s, l);
+			HslColor hsl = new HslColor(h, s, l);
 			Color c = (Color)hsl;
 			c.Alpha = alpha;
 			c.hsl = hsl;
 			return c;
 		}
-		
-		public static Color FromName (string name)
+
+		public static Color FromName(string name)
 		{
 			Color color;
-			TryParse (name, out color);
+			TryParse(name, out color);
 			return color;
 		}
-		
-		public static bool TryParse (string name, out Color color)
+
+		public static bool TryParse(string name, out Color color)
 		{
 			if (name == null)
-				throw new ArgumentNullException ("name");
+				throw new ArgumentNullException("name");
 
 			uint val;
-			if (name.Length == 0 || !TryParseColourFromHex (name, out val)) {
-				color = default (Color);
+			if (name.Length == 0 || !TryParseColourFromHex(name, out val))
+			{
+				color = default(Color);
 				return false;
 			}
-			color = Color.FromBytes ((byte)(val >> 24), (byte)((val >> 16) & 0xff), (byte)((val >> 8) & 0xff), (byte)(val & 0xff));
+			color = Color.FromBytes((byte)(val >> 24), (byte)((val >> 16) & 0xff), (byte)((val >> 8) & 0xff), (byte)(val & 0xff));
 			return true;
 		}
-		
 
-		static bool TryParseColourFromHex (string str, out uint val)
+
+		static bool TryParseColourFromHex(string str, out uint val)
 		{
 			val = 0;
-			
+
 			if (str[0] != '#' || str.Length > 9)
 				return false;
-			
-			if (!uint.TryParse (str.Substring (1), System.Globalization.NumberStyles.HexNumber, null, out val))
+
+			if (!uint.TryParse(str.Substring(1), System.Globalization.NumberStyles.HexNumber, null, out val))
 				return false;
-			
+
 			val = val << ((9 - str.Length) * 4);
-			
+
 			if (str.Length <= 7)
 				val |= 0xff;
-			
+
 			return true;
 		}
-		
-		public static bool operator == (Color c1, Color c2)
+
+		public static bool operator ==(Color c1, Color c2)
 		{
 			return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
 		}
-		
-		public static bool operator != (Color c1, Color c2)
+
+		public static bool operator !=(Color c1, Color c2)
 		{
 			return c1.r != c2.r || c1.g != c2.g || c1.b != c2.b || c1.a != c2.a;
 		}
-		
-		public override bool Equals (object o)
+
+		public override bool Equals(object o)
 		{
 			if (!(o is Color))
 				return false;
-		
-			return (this == (Color) o);
+
+			return (this == (Color)o);
 		}
-		
-		public override int GetHashCode ()
+
+		public override int GetHashCode()
 		{
-			unchecked {
-				var hash = r.GetHashCode ();
-				hash = (hash * 397) ^ g.GetHashCode ();
-				hash = (hash * 397) ^ b.GetHashCode ();
-				hash = (hash * 397) ^ a.GetHashCode ();
+			unchecked
+			{
+				var hash = r.GetHashCode();
+				hash = (hash * 397) ^ g.GetHashCode();
+				hash = (hash * 397) ^ b.GetHashCode();
+				hash = (hash * 397) ^ a.GetHashCode();
 				return hash;
 			}
 		}
-		
-		public override string ToString ()
+
+		public override string ToString()
 		{
-			return string.Format ("[Color: Red={0}, Green={1}, Blue={2}, Alpha={3}]", Red, Green, Blue, Alpha);
+			return string.Format("[Color: Red={0}, Green={1}, Blue={2}, Alpha={3}]", Red, Green, Blue, Alpha);
 		}
 
-		public string ToHexString ()
+		public string ToHexString()
 		{
-			return "#" + ((int)(Red * 255)).ToString ("x2") + ((int)(Green * 255)).ToString ("x2") + ((int)(Blue * 255)).ToString ("x2") + ((int)(Alpha * 255)).ToString ("x2");
+			return "#" + ((int)(Red * 255)).ToString("x2") + ((int)(Green * 255)).ToString("x2") + ((int)(Blue * 255)).ToString("x2") + ((int)(Alpha * 255)).ToString("x2");
 		}
 	}
 
-	class ColorValueConverter: TypeConverter
+	class ColorValueConverter : TypeConverter
 	{
-		static readonly ColorValueSerializer serializer = new ColorValueSerializer ();
+		static readonly ColorValueSerializer serializer = new ColorValueSerializer();
 
-		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 		{
 			return destinationType == typeof(string);
 		}
-		
-		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
+
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			return sourceType == typeof(string);
 		}
 
-		public override object ConvertTo (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+		public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
 		{
-			return serializer.ConvertToString (value, null);
+			return serializer.ConvertToString(value, null);
 		}
 
-		public override object ConvertFrom (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+		public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
 		{
-			return serializer.ConvertFromString ((string)value, null);
+			return serializer.ConvertFromString((string)value, null);
 		}
 	}
-	
-	class ColorValueSerializer: ValueSerializer
+
+	class ColorValueSerializer : ValueSerializer
 	{
-		public override bool CanConvertFromString (string value, IValueSerializerContext context)
+		public override bool CanConvertFromString(string value, IValueSerializerContext context)
 		{
 			return true;
 		}
-		
-		public override bool CanConvertToString (object value, IValueSerializerContext context)
+
+		public override bool CanConvertToString(object value, IValueSerializerContext context)
 		{
 			return true;
 		}
-		
-		public override string ConvertToString (object value, IValueSerializerContext context)
+
+		public override string ConvertToString(object value, IValueSerializerContext context)
 		{
-			Color s = (Color) value;
-			return s.ToHexString ();
+			Color s = (Color)value;
+			return s.ToHexString();
 		}
-		
-		public override object ConvertFromString (string value, IValueSerializerContext context)
+
+		public override object ConvertFromString(string value, IValueSerializerContext context)
 		{
 			Color c;
-			if (Color.TryParse (value, out c))
+			if (Color.TryParse(value, out c))
 				return c;
 			else
-				throw new InvalidOperationException ("Could not parse color value: " + value);
+				throw new InvalidOperationException("Could not parse color value: " + value);
 		}
 	}
 }

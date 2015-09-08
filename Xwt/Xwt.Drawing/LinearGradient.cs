@@ -29,11 +29,11 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public sealed class LinearGradient: Gradient
+	public sealed class LinearGradient : Gradient
 	{
 		double xStart, yStart, xEnd, yEnd;
 
-		public LinearGradient (double xStart, double yStart, double xEnd, double yEnd)
+		public LinearGradient(double xStart, double yStart, double xEnd, double yEnd)
 		{
 			this.xStart = xStart;
 			this.xEnd = xEnd;
@@ -41,9 +41,9 @@ namespace Xwt.Drawing
 			this.yEnd = yEnd;
 		}
 
-		protected override object CreateGradientBackend (GradientBackendHandler handler)
+		protected override object CreateGradientBackend(GradientBackendHandler handler)
 		{
-			return handler.CreateLinear (xStart, yStart, xEnd, yEnd);
+			return handler.CreateLinear(xStart, yStart, xEnd, yEnd);
 		}
 	}
 }

@@ -7,98 +7,105 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof (IPasswordEntryBackend))]
+	[BackendType(typeof(IPasswordEntryBackend))]
 	public class PasswordEntry : Widget
 	{
 		EventHandler changed, activated;
 
-		static PasswordEntry ()
+		static PasswordEntry()
 		{
-			MapEvent (PasswordEntryEvent.Changed, typeof (PasswordEntry), "OnChanged");
-			MapEvent (PasswordEntryEvent.Activated, typeof (PasswordEntry), "OnActivated");
+			MapEvent(PasswordEntryEvent.Changed, typeof(PasswordEntry), "OnChanged");
+			MapEvent(PasswordEntryEvent.Activated, typeof(PasswordEntry), "OnActivated");
 		}
 
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IPasswordEntryEventSink
 		{
-			public void OnChanged ()
+			public void OnChanged()
 			{
-				((PasswordEntry) Parent).OnChanged (EventArgs.Empty);
+				((PasswordEntry)Parent).OnChanged(EventArgs.Empty);
 			}
 
-			public void OnActivated ()
+			public void OnActivated()
 			{
-				((PasswordEntry) Parent).OnActivated (EventArgs.Empty);
+				((PasswordEntry)Parent).OnActivated(EventArgs.Empty);
 			}
 
-			public override Size GetDefaultNaturalSize ()
+			public override Size GetDefaultNaturalSize()
 			{
 				return DefaultNaturalSizes.PasswordEntry;
 			}
 		}
 
-		public PasswordEntry ()
+		public PasswordEntry()
 		{
 		}
 
-		protected override BackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
 
 		IPasswordEntryBackend Backend
 		{
-			get { return (IPasswordEntryBackend) BackendHost.Backend; }
+			get { return (IPasswordEntryBackend)BackendHost.Backend; }
 		}
 
-		[DefaultValue ("")]
-		public string Password {
+		[DefaultValue("")]
+		public string Password
+		{
 			get { return Backend.Password; }
 			set { Backend.Password = value; }
 		}
 
-		public System.Security.SecureString SecurePassword {
+		public System.Security.SecureString SecurePassword
+		{
 			get { return Backend.SecurePassword; }
 		}
 
-		[DefaultValue ("")]
-		public string PlaceholderText {
+		[DefaultValue("")]
+		public string PlaceholderText
+		{
 			get { return Backend.PlaceholderText; }
 			set { Backend.PlaceholderText = value; }
 		}
 
-		protected virtual void OnChanged (EventArgs e)
+		protected virtual void OnChanged(EventArgs e)
 		{
 			if (changed != null)
-				changed (this, e);
+				changed(this, e);
 		}
 
 		public event EventHandler Changed
 		{
-			add {
-				BackendHost.OnBeforeEventAdd (PasswordEntryEvent.Changed, changed);
+			add
+			{
+				BackendHost.OnBeforeEventAdd(PasswordEntryEvent.Changed, changed);
 				changed += value;
 			}
-			remove {
+			remove
+			{
 				changed -= value;
-				BackendHost.OnAfterEventRemove (PasswordEntryEvent.Changed, changed);
+				BackendHost.OnAfterEventRemove(PasswordEntryEvent.Changed, changed);
 			}
 		}
 
-		protected virtual void OnActivated (EventArgs e)
+		protected virtual void OnActivated(EventArgs e)
 		{
 			if (activated != null)
-				activated (this, e);
+				activated(this, e);
 		}
 
 		public event EventHandler Activated
 		{
-			add {
-				BackendHost.OnBeforeEventAdd (PasswordEntryEvent.Activated, activated);
+			add
+			{
+				BackendHost.OnBeforeEventAdd(PasswordEntryEvent.Activated, activated);
 				activated += value;
 			}
-			remove {
+			remove
+			{
 				activated -= value;
-				BackendHost.OnAfterEventRemove (PasswordEntryEvent.Activated, activated);
+				BackendHost.OnAfterEventRemove(PasswordEntryEvent.Activated, activated);
 			}
 		}
 	}

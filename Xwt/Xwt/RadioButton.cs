@@ -32,9 +32,9 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	[BackendType (typeof(IRadioButtonBackend))]
+	[BackendType(typeof(IRadioButtonBackend))]
 	[ContentProperty("Content")]
-	public class RadioButton: Widget
+	public class RadioButton : Widget
 	{
 		Widget content;
 		string label = "";
@@ -44,243 +44,269 @@ namespace Xwt
 		EventHandler activeChanged;
 		EventHandler activeSet;
 
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IRadioButtonEventSink
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IRadioButtonEventSink
 		{
-			public void OnClicked ()
+			public void OnClicked()
 			{
-				((RadioButton)Parent).OnClicked (EventArgs.Empty);
+				((RadioButton)Parent).OnClicked(EventArgs.Empty);
 			}
-			public void OnToggled ()
+			public void OnToggled()
 			{
-				((RadioButton)Parent).OnActiveChanged (EventArgs.Empty);
+				((RadioButton)Parent).OnActiveChanged(EventArgs.Empty);
 			}
 		}
-		
-		static RadioButton ()
+
+		static RadioButton()
 		{
-			MapEvent (RadioButtonEvent.Clicked, typeof(RadioButton), "OnClicked");
-			MapEvent (RadioButtonEvent.ActiveChanged, typeof(RadioButton), "OnActiveChanged");
-			MapEvent (RadioButtonEvent.ActiveChanged, typeof(RadioButton), "OnActivated");
+			MapEvent(RadioButtonEvent.Clicked, typeof(RadioButton), "OnClicked");
+			MapEvent(RadioButtonEvent.ActiveChanged, typeof(RadioButton), "OnActiveChanged");
+			MapEvent(RadioButtonEvent.ActiveChanged, typeof(RadioButton), "OnActivated");
 		}
-		
-		public RadioButton ()
+
+		public RadioButton()
 		{
 		}
-		
-		public RadioButton (string label)
+
+		public RadioButton(string label)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 		}
-		
-		public RadioButton (Widget content)
+
+		public RadioButton(Widget content)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Content = content;
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		IRadioButtonBackend Backend {
-			get { return (IRadioButtonBackend) BackendHost.Backend; }
+
+		IRadioButtonBackend Backend
+		{
+			get { return (IRadioButtonBackend)BackendHost.Backend; }
 		}
-		
-		[DefaultValue ("")]
-		public string Label {
+
+		[DefaultValue("")]
+		public string Label
+		{
 			get { return label; }
-			set {
+			set
+			{
 				label = value;
-				Backend.SetContent (label);
-				OnPreferredSizeChanged ();
+				Backend.SetContent(label);
+				OnPreferredSizeChanged();
 			}
 		}
-		
-		[DefaultValue (null)]
-		public new Widget Content {
+
+		[DefaultValue(null)]
+		public new Widget Content
+		{
 			get { return content; }
-			set {
+			set
+			{
 				if (content != null)
-					UnregisterChild (content);
+					UnregisterChild(content);
 				content = value;
 				if (content != null)
-					RegisterChild (content);
-				Backend.SetContent ((IWidgetBackend)GetBackend (content));
-				OnPreferredSizeChanged ();
+					RegisterChild(content);
+				Backend.SetContent((IWidgetBackend)GetBackend(content));
+				OnPreferredSizeChanged();
 			}
 		}
-		
-		public RadioButtonGroup Group {
-			get {
+
+		public RadioButtonGroup Group
+		{
+			get
+			{
 				if (radioGroup == null)
-					Group = new RadioButtonGroup () { GroupBackend = Backend.Group };
+					Group = new RadioButtonGroup() { GroupBackend = Backend.Group };
 				return radioGroup;
 			}
-			set {
+			set
+			{
 				if (radioGroup != null)
-					radioGroup.Remove (this);
+					radioGroup.Remove(this);
 				radioGroup = value;
 				if (radioGroup == null)
-					radioGroup = new RadioButtonGroup ();
+					radioGroup = new RadioButtonGroup();
 
 				if (radioGroup.GroupBackend == null)
 					radioGroup.GroupBackend = Backend.Group;
 				else
 					Backend.Group = radioGroup.GroupBackend;
-				radioGroup.Add (this);
+				radioGroup.Add(this);
 			}
 		}
-		
-		[DefaultValue (false)]
-		public bool Active {
+
+		[DefaultValue(false)]
+		public bool Active
+		{
 			get { return Backend.Active; }
-			set {
+			set
+			{
 				if (!value && Active && radioGroup != null)
-					radioGroup.ResetSelection ();
+					radioGroup.ResetSelection();
 				Backend.Active = value;
 			}
 		}
-		
-		protected virtual void OnClicked (EventArgs e)
+
+		protected virtual void OnClicked(EventArgs e)
 		{
 			if (clicked != null)
-				clicked (this, e);
+				clicked(this, e);
 		}
-		
-		protected virtual void OnActiveChanged (EventArgs e)
+
+		protected virtual void OnActiveChanged(EventArgs e)
 		{
 			if (activeChanged != null)
-				activeChanged (this, e);
+				activeChanged(this, e);
 		}
 
-		protected virtual void OnActivated (EventArgs e)
+		protected virtual void OnActivated(EventArgs e)
 		{
 			if (activeSet != null)
-				activeSet (this, e);
+				activeSet(this, e);
 		}
-		
-		public event EventHandler Clicked {
-			add {
-				BackendHost.OnBeforeEventAdd (RadioButtonEvent.Clicked, clicked);
+
+		public event EventHandler Clicked
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(RadioButtonEvent.Clicked, clicked);
 				clicked += value;
 			}
-			remove {
+			remove
+			{
 				clicked -= value;
-				BackendHost.OnAfterEventRemove (RadioButtonEvent.Clicked, clicked);
-			}
-		}
-		
-		public event EventHandler ActiveChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (RadioButtonEvent.ActiveChanged, activeChanged);
-				activeChanged += value;
-			}
-			remove {
-				activeChanged -= value;
-				BackendHost.OnAfterEventRemove (RadioButtonEvent.ActiveChanged, activeChanged);
+				BackendHost.OnAfterEventRemove(RadioButtonEvent.Clicked, clicked);
 			}
 		}
 
-		public event EventHandler Activated {
-			add {
+		public event EventHandler ActiveChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(RadioButtonEvent.ActiveChanged, activeChanged);
+				activeChanged += value;
+			}
+			remove
+			{
+				activeChanged -= value;
+				BackendHost.OnAfterEventRemove(RadioButtonEvent.ActiveChanged, activeChanged);
+			}
+		}
+
+		public event EventHandler Activated
+		{
+			add
+			{
 				if (activeSet == null)
 					ActiveChanged += HandleActiveChanged;
 				activeSet += value;
 			}
-			remove {
+			remove
+			{
 				activeSet -= value;
 				if (activeSet == null)
 					ActiveChanged -= HandleActiveChanged;
 			}
 		}
 
-		void HandleActiveChanged (object sender, EventArgs e)
+		void HandleActiveChanged(object sender, EventArgs e)
 		{
 			if (Active)
-				OnActivated (e);
+				OnActivated(e);
 		}
 	}
 
-	
+
 	public class RadioButtonGroup
 	{
 		internal object GroupBackend;
 
-		List<RadioButton> items = new List<RadioButton> ();
+		List<RadioButton> items = new List<RadioButton>();
 		EventHandler activeEvent;
 		RadioButton activeRadioButton;
 		bool eventsEnabled;
 
-		public RadioButton ActiveRadioButton {
-			get {
+		public RadioButton ActiveRadioButton
+		{
+			get
+			{
 				if (eventsEnabled)
 					return activeRadioButton;
-				else {
-					EnableActiveEvent ();
-					return activeRadioButton = items.FirstOrDefault (r => r.Active);
+				else
+				{
+					EnableActiveEvent();
+					return activeRadioButton = items.FirstOrDefault(r => r.Active);
 				}
 			}
 		}
 
-		internal void Add (RadioButton r)
+		internal void Add(RadioButton r)
 		{
-			items.Add (r);
+			items.Add(r);
 			if (eventsEnabled)
 				r.ActiveChanged += HandleActiveChanged;
 		}
 
-		internal void Remove (RadioButton r)
+		internal void Remove(RadioButton r)
 		{
-			items.Remove (r);
+			items.Remove(r);
 			if (eventsEnabled)
 				r.ActiveChanged -= HandleActiveChanged;
 		}
 
-		public event EventHandler ActiveRadioButtonChanged {
-			add {
+		public event EventHandler ActiveRadioButtonChanged
+		{
+			add
+			{
 				if (!eventsEnabled)
-					EnableActiveEvent ();
-				activeEvent += value; 
+					EnableActiveEvent();
+				activeEvent += value;
 			}
-			remove {
+			remove
+			{
 				activeEvent -= value;
 			}
 		}
 
-		public void ClearActive ()
+		public void ClearActive()
 		{
 			if (ActiveRadioButton != null)
 				ActiveRadioButton.Active = false;
 		}
 
-		void EnableActiveEvent ()
+		void EnableActiveEvent()
 		{
-			if (!eventsEnabled) {
+			if (!eventsEnabled)
+			{
 				eventsEnabled = true;
 				foreach (var b in items)
 					b.ActiveChanged += HandleActiveChanged;
 			}
 		}
 
-		void HandleActiveChanged (object sender, EventArgs e)
+		void HandleActiveChanged(object sender, EventArgs e)
 		{
 			if (((RadioButton)sender).Active)
-				SetActive ((RadioButton)sender);
+				SetActive((RadioButton)sender);
 		}
 
-		void SetActive (RadioButton r)
+		void SetActive(RadioButton r)
 		{
 			var old = activeRadioButton;
 			activeRadioButton = r;
 			if (old != r && activeEvent != null)
-				activeEvent (this, EventArgs.Empty);
+				activeEvent(this, EventArgs.Empty);
 		}
 
-		internal void ResetSelection ()
+		internal void ResetSelection()
 		{
-			SetActive (null);
+			SetActive(null);
 		}
 	}
 }

@@ -33,61 +33,63 @@ namespace Xwt
 	/// <summary>
 	/// A list of selectable items
 	/// </summary>
-	[BackendType (typeof(IListBoxBackend))]
-	public class ListBox: Widget
+	[BackendType(typeof(IListBoxBackend))]
+	public class ListBox : Widget
 	{
 		CellViewCollection views;
 		IListDataSource source;
 		ItemCollection itemCollection;
 		SelectionMode mode;
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IListBoxEventSink, ICellContainer
+
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IListBoxEventSink, ICellContainer
 		{
-			public void NotifyCellChanged ()
+			public void NotifyCellChanged()
 			{
-				((ListBox)Parent).OnCellChanged ();
+				((ListBox)Parent).OnCellChanged();
 			}
-			
-			public void OnSelectionChanged ()
+
+			public void OnSelectionChanged()
 			{
-				((ListBox)Parent).OnSelectionChanged (EventArgs.Empty);
+				((ListBox)Parent).OnSelectionChanged(EventArgs.Empty);
 			}
-			
-			public void OnRowActivated (int rowIndex)
+
+			public void OnRowActivated(int rowIndex)
 			{
-				((ListBox)Parent).OnRowActivated (new ListViewRowEventArgs (rowIndex));
+				((ListBox)Parent).OnRowActivated(new ListViewRowEventArgs(rowIndex));
 			}
-			
-			public override Size GetDefaultNaturalSize ()
+
+			public override Size GetDefaultNaturalSize()
 			{
 				return Xwt.Backends.DefaultNaturalSizes.ComboBox;
 			}
 		}
-		
-		static ListBox ()
+
+		static ListBox()
 		{
-			MapEvent (TableViewEvent.SelectionChanged, typeof(ListView), "OnSelectionChanged");
-			MapEvent (ListViewEvent.RowActivated, typeof(ListView), "OnRowActivated");
+			MapEvent(TableViewEvent.SelectionChanged, typeof(ListView), "OnSelectionChanged");
+			MapEvent(ListViewEvent.RowActivated, typeof(ListView), "OnRowActivated");
 		}
 
-		IListBoxBackend Backend {
-			get { return (IListBoxBackend) BackendHost.Backend; }
-		}
-		
-		public ListBox ()
+		IListBoxBackend Backend
 		{
-			views = new CellViewCollection ((ICellContainer)BackendHost);
+			get { return (IListBoxBackend)BackendHost.Backend; }
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		public ListBox()
 		{
-			return new WidgetBackendHost ();
+			views = new CellViewCollection((ICellContainer)BackendHost);
 		}
-		
+
+		protected override BackendHost CreateBackendHost()
+		{
+			return new WidgetBackendHost();
+		}
+
 		/// <summary>
 		/// Views to be used to display the data of the items
 		/// </summary>
-		public CellViewCollection Views {
+		public CellViewCollection Views
+		{
 			get { return views; }
 		}
 
@@ -97,16 +99,21 @@ namespace Xwt
 		/// <remarks>
 		/// The Items collection can only be used when no custom DataSource is set.
 		/// </remarks>
-		public ItemCollection Items {
-			get {
-				if (itemCollection == null) {
-					itemCollection = new ItemCollection ();
+		public ItemCollection Items
+		{
+			get
+			{
+				if (itemCollection == null)
+				{
+					itemCollection = new ItemCollection();
 					DataSource = itemCollection.DataSource;
-					views.Clear ();
-					views.Add (new TextCellView (itemCollection.LabelField));
-				} else {
+					views.Clear();
+					views.Add(new TextCellView(itemCollection.LabelField));
+				}
+				else
+				{
 					if (DataSource != itemCollection.DataSource)
-						throw new InvalidOperationException ("The Items collection can't be used when a custom DataSource is set");
+						throw new InvalidOperationException("The Items collection can't be used when a custom DataSource is set");
 				}
 				return itemCollection;
 			}
@@ -121,21 +128,25 @@ namespace Xwt
 		/// <remarks>
 		/// Then a DataSource is set, the Items collection can't be used.
 		/// </remarks>
-		public IListDataSource DataSource {
+		public IListDataSource DataSource
+		{
 			get { return source; }
-			set {
-				BackendHost.ToolkitEngine.ValidateObject (value);
-				if (source != null) {
+			set
+			{
+				BackendHost.ToolkitEngine.ValidateObject(value);
+				if (source != null)
+				{
 					source.RowChanged -= HandleModelChanged;
 					source.RowDeleted -= HandleModelChanged;
 					source.RowInserted -= HandleModelChanged;
 					source.RowsReordered -= HandleModelChanged;
 				}
-				
-				source = value;
-				Backend.SetSource (source, source is IFrontend ? (IBackend) Toolkit.GetBackend (source) : null);
 
-				if (source != null) {
+				source = value;
+				Backend.SetSource(source, source is IFrontend ? (IBackend)Toolkit.GetBackend(source) : null);
+
+				if (source != null)
+				{
 					source.RowChanged += HandleModelChanged;
 					source.RowDeleted += HandleModelChanged;
 					source.RowInserted += HandleModelChanged;
@@ -149,87 +160,99 @@ namespace Xwt
 			get { return Backend.GridLinesVisible; }
 			set { Backend.GridLinesVisible = value; }
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the vertical scroll policy.
 		/// </summary>
 		/// <value>
 		/// The vertical scroll policy.
 		/// </value>
-		public ScrollPolicy VerticalScrollPolicy {
+		public ScrollPolicy VerticalScrollPolicy
+		{
 			get { return Backend.VerticalScrollPolicy; }
 			set { Backend.VerticalScrollPolicy = value; }
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the horizontal scroll policy.
 		/// </summary>
 		/// <value>
 		/// The horizontal scroll policy.
 		/// </value>
-		public ScrollPolicy HorizontalScrollPolicy {
+		public ScrollPolicy HorizontalScrollPolicy
+		{
 			get { return Backend.HorizontalScrollPolicy; }
 			set { Backend.HorizontalScrollPolicy = value; }
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the selection mode.
 		/// </summary>
 		/// <value>
 		/// The selection mode.
 		/// </value>
-		public SelectionMode SelectionMode {
-			get {
+		public SelectionMode SelectionMode
+		{
+			get
+			{
 				return mode;
 			}
-			set {
+			set
+			{
 				mode = value;
-				Backend.SetSelectionMode (mode);
+				Backend.SetSelectionMode(mode);
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets the selected row.
 		/// </summary>
 		/// <value>
 		/// The selected row.
 		/// </value>
-		public int SelectedRow {
-			get {
+		public int SelectedRow
+		{
+			get
+			{
 				var items = SelectedRows;
 				if (items.Length == 0)
 					return -1;
 				else
-					return items [0];
+					return items[0];
 			}
 		}
-		
-		public object SelectedItem {
-			get {
+
+		public object SelectedItem
+		{
+			get
+			{
 				if (SelectedRow == -1)
 					return null;
-				return Items [SelectedRow];
+				return Items[SelectedRow];
 			}
-			set {
+			set
+			{
 				if (SelectionMode == Xwt.SelectionMode.Multiple)
-					UnselectAll ();
-				var i = Items.IndexOf (value);
+					UnselectAll();
+				var i = Items.IndexOf(value);
 				if (i != -1)
-					SelectRow (i);
+					SelectRow(i);
 				else
-					UnselectAll ();
+					UnselectAll();
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets the selected rows.
 		/// </summary>
 		/// <value>
 		/// The selected rows.
 		/// </value>
-		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-		public int[] SelectedRows {
-			get {
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public int[] SelectedRows
+		{
+			get
+			{
 				return Backend.SelectedRows;
 			}
 		}
@@ -238,15 +261,18 @@ namespace Xwt
 		/// Gets or sets the focused row.
 		/// </summary>
 		/// <value>The row with the keyboard focus.</value>
-		public int FocusedRow {
-			get {
+		public int FocusedRow
+		{
+			get
+			{
 				return Backend.FocusedRow;
 			}
-			set {
+			set
+			{
 				Backend.FocusedRow = value;
 			}
 		}
-		
+
 		/// <summary>
 		/// Selects a row.
 		/// </summary>
@@ -257,104 +283,110 @@ namespace Xwt
 		/// In single selection mode, the row will be selected and the previously selected row will be deselected.
 		/// In multiple selection mode, the row will be added to the set of selected rows.
 		/// </remarks>
-		public void SelectRow (int row)
+		public void SelectRow(int row)
 		{
-			Backend.SelectRow (row);
+			Backend.SelectRow(row);
 		}
-		
+
 		/// <summary>
 		/// Unselects a row.
 		/// </summary>
 		/// <param name='row'>
 		/// A row
 		/// </param>
-		public void UnselectRow (int row)
+		public void UnselectRow(int row)
 		{
-			Backend.UnselectRow (row);
+			Backend.UnselectRow(row);
 		}
-		
+
 		/// <summary>
 		/// Selects all rows
 		/// </summary>
-		public void SelectAll ()
+		public void SelectAll()
 		{
-			Backend.SelectAll ();
+			Backend.SelectAll();
 		}
-		
+
 		/// <summary>
 		/// Clears the selection
 		/// </summary>
-		public void UnselectAll ()
+		public void UnselectAll()
 		{
-			Backend.UnselectAll ();
+			Backend.UnselectAll();
 		}
 
-		public void ScrollToRow (int row)
+		public void ScrollToRow(int row)
 		{
-			Backend.ScrollToRow (row);
+			Backend.ScrollToRow(row);
 		}
-		
-		void HandleModelChanged (object sender, ListRowEventArgs e)
+
+		void HandleModelChanged(object sender, ListRowEventArgs e)
 		{
-			OnPreferredSizeChanged ();
+			OnPreferredSizeChanged();
 		}
-		
-		void OnCellChanged ()
+
+		void OnCellChanged()
 		{
-			Backend.SetViews (views);
+			Backend.SetViews(views);
 		}
-		
+
 		EventHandler selectionChanged;
-		
+
 		/// <summary>
 		/// Occurs when selection changes
 		/// </summary>
-		public event EventHandler SelectionChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (TableViewEvent.SelectionChanged, selectionChanged);
+		public event EventHandler SelectionChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TableViewEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
-			remove {
+			remove
+			{
 				selectionChanged -= value;
-				BackendHost.OnAfterEventRemove (TableViewEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnAfterEventRemove(TableViewEvent.SelectionChanged, selectionChanged);
 			}
 		}
-		
+
 		/// <summary>
 		/// Raises the selection changed event.
 		/// </summary>
 		/// <param name='args'>
 		/// Arguments.
 		/// </param>
-		protected virtual void OnSelectionChanged (EventArgs args)
+		protected virtual void OnSelectionChanged(EventArgs args)
 		{
 			if (selectionChanged != null)
-				selectionChanged (this, args);
+				selectionChanged(this, args);
 		}
 
 		/// <summary>
 		/// Raises the row activated event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		protected virtual void OnRowActivated (ListViewRowEventArgs a)
+		protected virtual void OnRowActivated(ListViewRowEventArgs a)
 		{
 			if (rowActivated != null)
-				rowActivated (this, a);
+				rowActivated(this, a);
 		}
-		
+
 		EventHandler<ListViewRowEventArgs> rowActivated;
-		
+
 		/// <summary>
 		/// Occurs when the user double-clicks on a row
 		/// </summary>
-		public event EventHandler<ListViewRowEventArgs> RowActivated {
-			add {
-				BackendHost.OnBeforeEventAdd (ListViewEvent.RowActivated, rowActivated);
+		public event EventHandler<ListViewRowEventArgs> RowActivated
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(ListViewEvent.RowActivated, rowActivated);
 				rowActivated += value;
 			}
-			remove {
+			remove
+			{
 				rowActivated -= value;
-				BackendHost.OnAfterEventRemove (ListViewEvent.RowActivated, rowActivated);
+				BackendHost.OnAfterEventRemove(ListViewEvent.RowActivated, rowActivated);
 			}
 		}
 	}

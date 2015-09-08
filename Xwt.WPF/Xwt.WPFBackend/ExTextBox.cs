@@ -36,10 +36,10 @@ namespace Xwt.WPFBackend.Utilities
 	{
 		public WidgetBackend Backend { get; set; }
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
+			var s = base.MeasureOverride(constraint);
+			return Backend.MeasureOverride(constraint, s);
 		}
 
 		private bool showFrame = true;
@@ -52,7 +52,7 @@ namespace Xwt.WPFBackend.Utilities
 					return;
 
 				if (value)
-					ClearValue (Control.BorderBrushProperty);
+					ClearValue(Control.BorderBrushProperty);
 				else
 					BorderBrush = null;
 

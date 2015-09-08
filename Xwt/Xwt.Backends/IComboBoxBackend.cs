@@ -27,19 +27,19 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IComboBoxBackend: IWidgetBackend
+	public interface IComboBoxBackend : IWidgetBackend
 	{
-		void SetViews (CellViewCollection views);
-		void SetSource (IListDataSource source, IBackend sourceBackend);
+		void SetViews(CellViewCollection views);
+		void SetSource(IListDataSource source, IBackend sourceBackend);
 		int SelectedRow { get; set; }
 	}
-	
-	public interface IComboBoxEventSink: IWidgetEventSink
+
+	public interface IComboBoxEventSink : IWidgetEventSink
 	{
-		void OnSelectionChanged ();
-		bool RowIsSeparator (int rowIndex);
+		void OnSelectionChanged();
+		bool RowIsSeparator(int rowIndex);
 	}
-	
+
 	public enum ComboBoxEvent
 	{
 		SelectionChanged

@@ -28,13 +28,13 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IImageViewBackend: IWidgetBackend
+	public interface IImageViewBackend : IWidgetBackend
 	{
 		/// <summary>
 		/// Sets the image view to use the supplied image backend.
 		/// </summary>
 		/// <param name="image">An image</param>
-		void SetImage (ImageDescription image);
+		void SetImage(ImageDescription image);
 	}
 }
 

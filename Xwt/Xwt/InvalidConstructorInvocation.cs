@@ -35,9 +35,9 @@ namespace Xwt
 	/// since setting properties usually results in virtual methods being invoked, and those virtual methods may be override in
 	/// subclasses that have not been yet initialized.
 	/// </remarks>
-	public class InvalidConstructorInvocation: InvalidOperationException
+	public class InvalidConstructorInvocation : InvalidOperationException
 	{
-		public InvalidConstructorInvocation (Type type): base ("Subclasses of " + type + " can only invoke the default constructor")
+		public InvalidConstructorInvocation(Type type) : base("Subclasses of " + type + " can only invoke the default constructor")
 		{
 		}
 	}

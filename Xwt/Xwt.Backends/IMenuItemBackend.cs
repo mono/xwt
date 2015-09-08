@@ -29,21 +29,21 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IMenuItemBackend: IBackend
+	public interface IMenuItemBackend : IBackend
 	{
-		void Initialize (IMenuItemEventSink eventSink);
+		void Initialize(IMenuItemEventSink eventSink);
 
 		/// <summary>
 		/// Sets a submenu for this menu item.
 		/// </summary>
 		/// <param name="menu">The menu to use as a submenu of this item.</param>
-		void SetSubmenu (IMenuBackend menu);
+		void SetSubmenu(IMenuBackend menu);
 
 		/// <summary>
 		/// Sets the image to display for the menu item.
 		/// </summary>
 		/// <param name="image">The image backend to set as the image for this menu item.</param>
-		void SetImage (ImageDescription image);
+		void SetImage(ImageDescription image);
 
 		/// <summary>
 		/// Gets or sets the label for the menu item.
@@ -66,12 +66,12 @@ namespace Xwt.Backends
 		/// </summary>
 		bool Visible { get; set; }
 	}
-	
+
 	public interface IMenuItemEventSink
 	{
-		void OnClicked ();
+		void OnClicked();
 	}
-	
+
 	public enum MenuItemEvent
 	{
 		Clicked = 1

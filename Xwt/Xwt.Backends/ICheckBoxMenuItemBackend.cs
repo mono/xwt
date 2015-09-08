@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICheckBoxMenuItemBackend: IMenuItemBackend
+	public interface ICheckBoxMenuItemBackend : IMenuItemBackend
 	{
 		bool Checked { get; set; }
 	}

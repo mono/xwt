@@ -31,29 +31,30 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public sealed class ImageCellView: CellView, IImageCellViewFrontend
+	public sealed class ImageCellView : CellView, IImageCellViewFrontend
 	{
 		Image image;
 
-		public ImageCellView ()
+		public ImageCellView()
 		{
 		}
-		
-		public ImageCellView (IDataField<Image> imageField)
+
+		public ImageCellView(IDataField<Image> imageField)
 		{
 			ImageField = imageField;
 		}
-		
-		public ImageCellView (Image image)
+
+		public ImageCellView(Image image)
 		{
 			this.image = image;
 		}
-		
+
 		public IDataField<Image> ImageField { get; set; }
 
-		[DefaultValue (null)]
-		public Image Image {
-			get { return GetValue (ImageField, image); }
+		[DefaultValue(null)]
+		public Image Image
+		{
+			get { return GetValue(ImageField, image); }
 			set { image = value; }
 		}
 	}

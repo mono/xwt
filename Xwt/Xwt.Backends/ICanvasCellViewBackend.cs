@@ -27,9 +27,9 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICanvasCellViewBackend: ICellViewBackend
+	public interface ICanvasCellViewBackend : ICellViewBackend
 	{
-		void QueueDraw ();
+		void QueueDraw();
 	}
 }
 

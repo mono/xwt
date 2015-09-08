@@ -33,11 +33,11 @@ namespace Xwt.Backends
 		DateTime DateTime { get; set; }
 	}
 
-	public interface IDatePickerEventSink: IWidgetEventSink
+	public interface IDatePickerEventSink : IWidgetEventSink
 	{
-		void ValueChanged ();
+		void ValueChanged();
 	}
-	
+
 	public enum DatePickerEvent
 	{
 		ValueChanged

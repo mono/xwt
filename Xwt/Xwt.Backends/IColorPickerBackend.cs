@@ -27,15 +27,15 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IColorPickerBackend: IWidgetBackend
+	public interface IColorPickerBackend : IWidgetBackend
 	{
 		Color Color { get; set; }
 		bool SupportsAlpha { get; set; }
 		string Title { get; set; }
-		void SetButtonStyle (ButtonStyle style);
+		void SetButtonStyle(ButtonStyle style);
 	}
 
-	public interface IColorPickerEventSink: IColorSelectorEventSink
+	public interface IColorPickerEventSink : IColorSelectorEventSink
 	{
 	}
 

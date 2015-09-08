@@ -38,29 +38,30 @@ namespace Xwt.WPFBackend
 {
 	public class BoxBackend : WidgetBackend, IBoxBackend
 	{
-		public BoxBackend ()
+		public BoxBackend()
 		{
-			Widget = new CustomPanel ();
+			Widget = new CustomPanel();
 		}
 
-		new CustomPanel Widget {
+		new CustomPanel Widget
+		{
 			get { return (CustomPanel)base.Widget; }
 			set { base.Widget = value; }
 		}
 
-		public void Add (IWidgetBackend widget)
+		public void Add(IWidgetBackend widget)
 		{
-			Widget.Children.Add (GetFrameworkElement (widget));
+			Widget.Children.Add(GetFrameworkElement(widget));
 		}
 
-		public void Remove (IWidgetBackend widget)
+		public void Remove(IWidgetBackend widget)
 		{
-			Widget.Children.Remove (GetFrameworkElement (widget));
+			Widget.Children.Remove(GetFrameworkElement(widget));
 		}
 
-		public void SetAllocation (IWidgetBackend [] widget, Rectangle [] rect)
+		public void SetAllocation(IWidgetBackend[] widget, Rectangle[] rect)
 		{
-			Widget.SetAllocation (widget, rect);
+			Widget.SetAllocation(widget, rect);
 		}
 	}
 
@@ -68,8 +69,8 @@ namespace Xwt.WPFBackend
 	// expected behavior of DesiredSize (used in the GetPreferredSize* methods).
 	public class CustomPanel : SWC.Panel, IWpfWidget
 	{
-		IWidgetBackend [] widgets;
-		Rectangle [] rects;
+		IWidgetBackend[] widgets;
+		Rectangle[] rects;
 
 		public WidgetBackend Backend { get; set; }
 
@@ -80,60 +81,63 @@ namespace Xwt.WPFBackend
 
 		public Action<System.Windows.Media.DrawingContext> RenderAction;
 
-		protected override void OnRender (System.Windows.Media.DrawingContext dc)
+		protected override void OnRender(System.Windows.Media.DrawingContext dc)
 		{
 			var render = RenderAction;
 			if (render != null)
-				render (dc);
-			base.OnRender (dc);
+				render(dc);
+			base.OnRender(dc);
 		}
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
+			var s = base.MeasureOverride(constraint);
+			return Backend.MeasureOverride(constraint, s);
 		}
 
-		public void SetAllocation (IWidgetBackend[] widgets, Rectangle[] rects)
+		public void SetAllocation(IWidgetBackend[] widgets, Rectangle[] rects)
 		{
 			this.widgets = widgets;
 			this.rects = rects;
 
-			ArrangeChildren (true);
+			ArrangeChildren(true);
 		}
 
 		// Whenever a control gets a change affecting its size/appearance,
 		// it keep literaly *waiting* for a call to Arrange(), sometimes even if not truly needed.
 		// In this cases ArrangeOverride is called, and we 'refresh' the controls that require it
 		// (this is done by all the containers inheriting from Panel).
-		protected override SW.Size ArrangeOverride (SW.Size finalSize)
+		protected override SW.Size ArrangeOverride(SW.Size finalSize)
 		{
-			ArrangeChildren (false);
-			return base.ArrangeOverride (finalSize);
+			ArrangeChildren(false);
+			return base.ArrangeOverride(finalSize);
 		}
 
-		void ArrangeChildren (bool force)
+		void ArrangeChildren(bool force)
 		{
 			if (widgets == null || rects == null)
 				return;
 
 			// Use the 'widgets' field so we can easily map a control position by looking at 'rects'.
-			for (int i = 0; i < widgets.Length; i++) {
-				var element = WidgetBackend.GetFrameworkElement (widgets [i]);
-				if (!element.IsArrangeValid || force) {
+			for (int i = 0; i < widgets.Length; i++)
+			{
+				var element = WidgetBackend.GetFrameworkElement(widgets[i]);
+				if (!element.IsArrangeValid || force)
+				{
 					// Measure the widget again using the allocation constraints. This is necessary
 					// because WPF widgets my cache some measurement information based on the
 					// constraints provided in the last Measure call (which when calculating the
 					// preferred size is normally set to infinite.
-					var r = rects[i].WithPositiveSize ();
-					if (force) {
+					var r = rects[i].WithPositiveSize();
+					if (force)
+					{
 						// Don't recalculate the size unless a relayout is being forced
-						element.InvalidateMeasure ();
-						element.Measure (new SW.Size (r.Width, r.Height));
+						element.InvalidateMeasure();
+						element.Measure(new SW.Size(r.Width, r.Height));
 					}
-					
-					element.Arrange (r.ToWpfRect ());
-				//	element.UpdateLayout ();
+
+					element.Arrange(r.ToWpfRect());
+					//	element.UpdateLayout ();
 				}
 			}
 		}

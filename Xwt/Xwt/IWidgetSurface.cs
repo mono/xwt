@@ -39,8 +39,8 @@ namespace Xwt
 		/// Relocates the children of the widget, to fit a new size.
 		/// </summary>
 		/// <remarks>Must be called after changing the size of the widget, to relocate its children.</remarks>
-		void Reallocate ();
-		
+		void Reallocate();
+
 		/// <summary>
 		/// Gets the preferred size of the widget
 		/// </summary>
@@ -51,8 +51,8 @@ namespace Xwt
 		/// The returned size is >= 0. If a constraint is specified, the returned size will not
 		/// be bigger than the constraint.
 		/// </remarks>
-		Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint, bool includeMargin = false);
-		
+		Size GetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint, bool includeMargin = false);
+
 		/// <summary>
 		/// Gets the preferred size of the widget
 		/// </summary>
@@ -62,7 +62,7 @@ namespace Xwt
 		/// <remarks>
 		/// The returned size is >= 0
 		/// </remarks>
-		Size GetPreferredSize (bool includeMargin = false);
+		Size GetPreferredSize(bool includeMargin = false);
 
 		/// <summary>
 		/// Gets the native toolkit widget.
@@ -88,7 +88,7 @@ namespace Xwt
 		/// </summary>
 		/// <returns>The placement in rect.</returns>
 		/// <param name="rect">Rect.</param>
-		Rectangle GetPlacementInRect (Rectangle rect);
+		Rectangle GetPlacementInRect(Rectangle rect);
 	}
 }
 

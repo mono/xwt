@@ -31,69 +31,73 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public sealed class ImageBuilder: XwtObject, IDisposable
+	public sealed class ImageBuilder : XwtObject, IDisposable
 	{
 		Context ctx;
 		VectorBackend backend;
 		double width;
 		double height;
 
-		public ImageBuilder (double width, double height)
+		public ImageBuilder(double width, double height)
 		{
-			backend = new VectorContextBackend (ToolkitEngine, width, height);
-			ctx = new Context (backend, ToolkitEngine, ToolkitEngine.VectorImageRecorderContextHandler);
-			ctx.Reset (null);
+			backend = new VectorContextBackend(ToolkitEngine, width, height);
+			ctx = new Context(backend, ToolkitEngine, ToolkitEngine.VectorImageRecorderContextHandler);
+			ctx.Reset(null);
 			this.width = width;
 			this.height = height;
 		}
-		
-		public double Width {
-			get { return width; } 
-		}
-		
-		public double Height {
-			get { return height; }
-		}
-		
-		public void Dispose ()
+
+		public double Width
 		{
-			ctx.Dispose ();
+			get { return width; }
 		}
 
-		public Context Context {
-			get {
+		public double Height
+		{
+			get { return height; }
+		}
+
+		public void Dispose()
+		{
+			ctx.Dispose();
+		}
+
+		public Context Context
+		{
+			get
+			{
 				return ctx;
 			}
 		}
-		
-		public Image ToVectorImage ()
+
+		public Image ToVectorImage()
 		{
-			return new VectorImage (new Size (width, height), backend.ToVectorImageData ());
+			return new VectorImage(new Size(width, height), backend.ToVectorImageData());
 		}
 
-		public BitmapImage ToBitmap (ImageFormat format = ImageFormat.ARGB32)
+		public BitmapImage ToBitmap(ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (format);
+			return ToVectorImage().ToBitmap(format);
 		}
 
-		public BitmapImage ToBitmap (Widget renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		public BitmapImage ToBitmap(Widget renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (renderTarget, format);
+			return ToVectorImage().ToBitmap(renderTarget, format);
 		}
 
-		public BitmapImage ToBitmap (Window renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		public BitmapImage ToBitmap(Window renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (renderTarget, format);
+			return ToVectorImage().ToBitmap(renderTarget, format);
 		}
 
-		public BitmapImage ToBitmap (Screen renderTarget, ImageFormat format = ImageFormat.ARGB32)
+		public BitmapImage ToBitmap(Screen renderTarget, ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (renderTarget, format);
+			return ToVectorImage().ToBitmap(renderTarget, format);
 		}
 
-		public BitmapImage ToBitmap (double scaleFactor, ImageFormat format = ImageFormat.ARGB32)
+		public BitmapImage ToBitmap(double scaleFactor, ImageFormat format = ImageFormat.ARGB32)
 		{
-			return ToVectorImage ().ToBitmap (scaleFactor, format);
+			return ToVectorImage().ToBitmap(scaleFactor, format);
 		}
 	}
 }

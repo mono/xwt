@@ -37,7 +37,8 @@ namespace Xwt.WPFBackend
 	public class ExListBox
 		: SWC.ListBox, IWpfWidget
 	{
-		public WidgetBackend Backend {
+		public WidgetBackend Backend
+		{
 			get;
 			set;
 		}
@@ -52,34 +53,38 @@ namespace Xwt.WPFBackend
 			return new ExListBoxItem();
 		}
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
+			var s = base.MeasureOverride(constraint);
 
-			if (ScrollViewer.GetHorizontalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
+			if (ScrollViewer.GetHorizontalScrollBarVisibility(this) != ScrollBarVisibility.Hidden)
 				s.Width = 0;
-			if (ScrollViewer.GetVerticalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
+			if (ScrollViewer.GetVerticalScrollBarVisibility(this) != ScrollBarVisibility.Hidden)
 				s.Height = SystemParameters.CaptionHeight;
 
-			return Backend.MeasureOverride (constraint, s);
+			return Backend.MeasureOverride(constraint, s);
 		}
 
 		private ListBoxItem focusedItem = null;
-		public ListBoxItem FocusedItem {
-			get {
+		public ListBoxItem FocusedItem
+		{
+			get
+			{
 				return focusedItem;
 			}
-			set {
-				FocusItem (value);
+			set
+			{
+				FocusItem(value);
 			}
 		}
 
 		internal void FocusItem(ListBoxItem item)
 		{
-			if (item != null) {
+			if (item != null)
+			{
 				focusedItem = item;
 				if (!item.IsFocused)
-					item.Focus ();
+					item.Focus();
 			}
 		}
 	}

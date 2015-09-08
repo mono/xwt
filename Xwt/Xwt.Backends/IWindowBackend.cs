@@ -29,11 +29,11 @@ using Xwt;
 
 namespace Xwt.Backends
 {
-	public interface IWindowBackend: IWindowFrameBackend, IChildPlacementHandler
+	public interface IWindowBackend : IWindowFrameBackend, IChildPlacementHandler
 	{
-		void SetChild (IWidgetBackend child);
-		void SetMainMenu (IMenuBackend menu);
-		void SetPadding (double left, double top, double right, double bottom);
+		void SetChild(IWidgetBackend child);
+		void SetMainMenu(IMenuBackend menu);
+		void SetPadding(double left, double top, double right, double bottom);
 
 		/// <summary>
 		/// Get size information about the window
@@ -44,15 +44,15 @@ namespace Xwt.Backends
 		/// <param name="decorationSize">the size of the decorations around
 		/// the content widget. It should include for example the size required
 		/// by the menu bar, dialog button bar, etc.</param>
-		void GetMetrics (out Size minSize, out Size decorationSize);
+		void GetMetrics(out Size minSize, out Size decorationSize);
 
 		/// <summary>
 		/// Sets the minimum size of the window
 		/// </summary>
-		void SetMinSize (Size size);
+		void SetMinSize(Size size);
 	}
-	
-	public interface IWindowEventSink: IWindowFrameEventSink
+
+	public interface IWindowEventSink : IWindowFrameEventSink
 	{
 	}
 }

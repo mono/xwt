@@ -31,25 +31,25 @@ namespace Xwt
 {
 	public static class StockIcons
 	{
-		static Image GetIcon (string id)
+		static Image GetIcon(string id)
 		{
-			var img = Toolkit.CurrentEngine.GetStockIcon (id);
-			img.SetStockSource (id);
+			var img = Toolkit.CurrentEngine.GetStockIcon(id);
+			img.SetStockSource(id);
 			return img;
 		}
 
-		public static Image Error { get { return GetIcon (StockIconId.Error); } }
-		public static Image Warning { get { return GetIcon (StockIconId.Warning); } }
-		public static Image Information { get { return GetIcon (StockIconId.Information); } }
-		public static Image Question { get { return GetIcon (StockIconId.Question); } }
-		public static Image OrientationPortrait { get { return GetIcon (StockIconId.OrientationPortrait); } }
-		public static Image OrientationLandscape { get { return GetIcon (StockIconId.OrientationLandscape); } }
-		public static Image ZoomIn { get { return GetIcon (StockIconId.ZoomIn); } }
-		public static Image ZoomOut { get { return GetIcon (StockIconId.ZoomOut); } }
-		public static Image ZoomFit { get { return GetIcon (StockIconId.ZoomFit); } }
-		public static Image Zoom100 { get { return GetIcon (StockIconId.Zoom100); } }
-		public static Image Add { get { return GetIcon (StockIconId.Add); } }
-		public static Image Remove { get { return GetIcon (StockIconId.Remove); } }
+		public static Image Error { get { return GetIcon(StockIconId.Error); } }
+		public static Image Warning { get { return GetIcon(StockIconId.Warning); } }
+		public static Image Information { get { return GetIcon(StockIconId.Information); } }
+		public static Image Question { get { return GetIcon(StockIconId.Question); } }
+		public static Image OrientationPortrait { get { return GetIcon(StockIconId.OrientationPortrait); } }
+		public static Image OrientationLandscape { get { return GetIcon(StockIconId.OrientationLandscape); } }
+		public static Image ZoomIn { get { return GetIcon(StockIconId.ZoomIn); } }
+		public static Image ZoomOut { get { return GetIcon(StockIconId.ZoomOut); } }
+		public static Image ZoomFit { get { return GetIcon(StockIconId.ZoomFit); } }
+		public static Image Zoom100 { get { return GetIcon(StockIconId.Zoom100); } }
+		public static Image Add { get { return GetIcon(StockIconId.Add); } }
+		public static Image Remove { get { return GetIcon(StockIconId.Remove); } }
 	}
 }
 

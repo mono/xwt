@@ -43,7 +43,7 @@ namespace Xwt.WPFBackend.Utilities
 			this.context = context;
 		}
 
-		public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			Image image = value as Image;
 			if (image == null)
@@ -52,9 +52,9 @@ namespace Xwt.WPFBackend.Utilities
 			return image.ToImageDescription(context);
 		}
 
-		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 	}
 }

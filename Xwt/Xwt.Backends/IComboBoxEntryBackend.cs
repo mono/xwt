@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IComboBoxEntryBackend: IComboBoxBackend
+	public interface IComboBoxEntryBackend : IComboBoxBackend
 	{
 		/// <summary>
 		/// Sets the column that contains the text to be shown in the text entry when an item is selected
@@ -35,8 +35,8 @@ namespace Xwt.Backends
 		/// <param name='column'>
 		/// The column number
 		/// </param>
-		void SetTextColumn (int column);
-		
+		void SetTextColumn(int column);
+
 		/// <summary>
 		/// Gets the backend for the text entry of the combobox
 		/// </summary>
@@ -45,8 +45,8 @@ namespace Xwt.Backends
 		/// </value>
 		ITextEntryBackend TextEntryBackend { get; }
 	}
-	
-	public interface IComboBoxEntryEventSink: IComboBoxEventSink
+
+	public interface IComboBoxEntryEventSink : IComboBoxEventSink
 	{
 	}
 }

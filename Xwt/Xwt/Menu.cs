@@ -30,40 +30,42 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(IMenuBackend))]
-	public class Menu: XwtComponent
+	[BackendType(typeof(IMenuBackend))]
+	public class Menu : XwtComponent
 	{
 		MenuItemCollection items;
-		
-		public Menu ()
+
+		public Menu()
 		{
-			items = new MenuItemCollection (this);
+			items = new MenuItemCollection(this);
 		}
-		
-		internal IMenuBackend Backend {
-			get { return (IMenuBackend) BackendHost.Backend; }
+
+		internal IMenuBackend Backend
+		{
+			get { return (IMenuBackend)BackendHost.Backend; }
 		}
-		
-		public MenuItemCollection Items {
+
+		public MenuItemCollection Items
+		{
 			get { return items; }
 		}
-		
-		internal void InsertItem (int n, MenuItem item)
+
+		internal void InsertItem(int n, MenuItem item)
 		{
-			Backend.InsertItem (n, (IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend (item));
+			Backend.InsertItem(n, (IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
 		}
-		
-		internal void RemoveItem (MenuItem item)
+
+		internal void RemoveItem(MenuItem item)
 		{
-			Backend.RemoveItem ((IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend (item));
+			Backend.RemoveItem((IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
 		}
 
 		/// <summary>
 		/// Shows the menu at the current position of the cursor
 		/// </summary>
-		public void Popup ()
+		public void Popup()
 		{
-			Backend.Popup ();
+			Backend.Popup();
 		}
 
 		/// <summary>
@@ -72,28 +74,31 @@ namespace Xwt
 		/// <param name="parentWidget">Widget upon which to show the menu</param>
 		/// <param name="x">The x coordinate, relative to the widget origin</param>
 		/// <param name="y">The y coordinate, relative to the widget origin</param>
-		public void Popup (Widget parentWidget, double x, double y)
+		public void Popup(Widget parentWidget, double x, double y)
 		{
-			Backend.Popup ((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend (parentWidget), x, y);
+			Backend.Popup((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend(parentWidget), x, y);
 		}
-		
+
 		/// <summary>
 		/// Removes all separators of the menu which follow another separator
 		/// </summary>
-		public void CollapseSeparators ()
+		public void CollapseSeparators()
 		{
 			bool wasSeparator = true;
-			for (int n=0; n<Items.Count; n++) {
-				if (Items[n] is SeparatorMenuItem) {
+			for (int n = 0; n < Items.Count; n++)
+			{
+				if (Items[n] is SeparatorMenuItem)
+				{
 					if (wasSeparator)
-						Items.RemoveAt (n--);
+						Items.RemoveAt(n--);
 					else
 						wasSeparator = true;
-				} else
+				}
+				else
 					wasSeparator = false;
 			}
 			if (Items.Count > 0 && Items[Items.Count - 1] is SeparatorMenuItem)
-				Items.RemoveAt (Items.Count - 1);
+				Items.RemoveAt(Items.Count - 1);
 		}
 	}
 }

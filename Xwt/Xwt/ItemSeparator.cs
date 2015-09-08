@@ -29,9 +29,9 @@ namespace Xwt
 {
 	public class ItemSeparator
 	{
-		public static readonly ItemSeparator Instance = new Xwt.ItemSeparator ();
-		
-		public ItemSeparator ()
+		public static readonly ItemSeparator Instance = new Xwt.ItemSeparator();
+
+		public ItemSeparator()
 		{
 		}
 	}

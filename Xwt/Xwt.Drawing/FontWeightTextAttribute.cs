@@ -31,20 +31,20 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public sealed class FontWeightTextAttribute: TextAttribute
+	public sealed class FontWeightTextAttribute : TextAttribute
 	{
 		public FontWeight Weight { get; set; }
-		
-		public override bool Equals (object t)
+
+		public override bool Equals(object t)
 		{
 			var ot = t as FontWeightTextAttribute;
-			return ot != null && Weight.Equals (ot.Weight) && base.Equals (t);
+			return ot != null && Weight.Equals(ot.Weight) && base.Equals(t);
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			return base.GetHashCode () ^ Weight.GetHashCode ();
+			return base.GetHashCode() ^ Weight.GetHashCode();
 		}
 	}
-	
+
 }

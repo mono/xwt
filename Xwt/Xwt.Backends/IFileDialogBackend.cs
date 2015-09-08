@@ -31,7 +31,7 @@ namespace Xwt.Backends
 	/// <summary>
 	/// A file dialog backend.
 	/// </summary>
-	public interface IFileDialogBackend: IBackend
+	public interface IFileDialogBackend : IBackend
 	{
 		/// <summary>
 		/// Initializes the file dialog. This method can be called multiple times.
@@ -46,13 +46,13 @@ namespace Xwt.Backends
 		/// <param name='initialFileName'>
 		/// File name to show by default. It's only a file name, doesn't need to include a path.
 		/// </param>
-		void Initialize (IEnumerable<FileDialogFilter> filters, bool multiselect, string initialFileName);
-		
+		void Initialize(IEnumerable<FileDialogFilter> filters, bool multiselect, string initialFileName);
+
 		/// <summary>
 		/// Gets or sets the title of the dialog
 		/// </summary>
 		string Title { get; set; }
-			
+
 		/// <summary>
 		/// Gets the name of the file that the user has selected in the dialog
 		/// </summary>
@@ -109,8 +109,8 @@ namespace Xwt.Backends
 		/// The dialog must be shown in modal mode. The method returns when the user clicks on
 		/// OK or Cancel. The dialog must be already closed when this method returns.
 		/// </remarks>
-		bool Run (IWindowFrameBackend parent);
-		
+		bool Run(IWindowFrameBackend parent);
+
 		/// <summary>
 		/// Frees native resources
 		/// </summary>
@@ -118,7 +118,7 @@ namespace Xwt.Backends
 		/// This method is called after Run, so that the backend can release
 		/// the native resources. The Initialize method can be called after Cleanup.
 		/// </remarks>
-		void Cleanup ();
+		void Cleanup();
 	}
 }
 

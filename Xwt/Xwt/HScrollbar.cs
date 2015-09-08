@@ -27,9 +27,9 @@ using System;
 
 namespace Xwt
 {
-	public class HScrollbar: Scrollbar
+	public class HScrollbar : Scrollbar
 	{
-		public HScrollbar (): base (Xwt.Backends.Orientation.Horizontal)
+		public HScrollbar() : base(Xwt.Backends.Orientation.Horizontal)
 		{
 		}
 	}

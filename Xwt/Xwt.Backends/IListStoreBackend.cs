@@ -32,27 +32,27 @@ namespace Xwt.Backends
 	/// <summary>
 	/// A ListStore backend.
 	/// </summary>
-	public interface IListStoreBackend: IListDataSource, IBackend
+	public interface IListStoreBackend : IListDataSource, IBackend
 	{
 		// WARNING: You don't need to implement this backend.
 		// Xwt provides a default implementation.
 		// You only need to implement it if the underlying widget
 		// toolkit has its own list store implementation which
 		// can be plugged into a ListView or ComboBox
-		
+
 		/// <summary>
 		/// Initializes the backend with the given <paramref name="columnTypes"/>.
 		/// </summary>
 		/// <param name="columnTypes">The data types of the columns for this list store.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="columnTypes"/> is <c>null</c>.</exception>
-		void Initialize (Type[] columnTypes);
-		
+		void Initialize(Type[] columnTypes);
+
 		/// <summary>
 		/// Adds a new row and returns the index.
 		/// </summary>
 		/// <returns>The index of the newly added row.</returns>
-		int AddRow ();
-		
+		int AddRow();
+
 		/// <summary>
 		/// Inserts a new row after <paramref name="row"/> and returns the index.
 		/// </summary>
@@ -61,8 +61,8 @@ namespace Xwt.Backends
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="row"/> is &gt;= <see cref="IListDataSource.RowCount" />
 		/// </exception>
-		int InsertRowAfter (int row);
-		
+		int InsertRowAfter(int row);
+
 		/// <summary>
 		/// Inserts a new row before <paramref name="row"/> and returns the index.
 		/// </summary>
@@ -71,8 +71,8 @@ namespace Xwt.Backends
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="row"/> is &gt;= <see cref="IListDataSource.RowCount" />
 		/// </exception>
-		int InsertRowBefore (int row);
-		
+		int InsertRowBefore(int row);
+
 		/// <summary>
 		/// Removes a row at the given index (<paramref name="row"/>).
 		/// </summary>
@@ -80,12 +80,12 @@ namespace Xwt.Backends
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="row"/> is &gt;= <see cref="IListDataSource.RowCount" />
 		/// </exception>
-		void RemoveRow (int row);
+		void RemoveRow(int row);
 
 		/// <summary>
 		/// Removes all rows
 		/// </summary>
-		void Clear ();
+		void Clear();
 	}
 }
 

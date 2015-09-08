@@ -27,27 +27,27 @@ using System;
 
 namespace Xwt.Drawing
 {
-	public class DrawingImage: Image
+	public class DrawingImage : Image
 	{
-		public DrawingImage ()
+		public DrawingImage()
 		{
-			Backend = Toolkit.CurrentEngine.ImageBackendHandler.CreateCustomDrawn (Draw);
-			Init ();
-			NativeRef.SetCustomDrawSource (Draw);
+			Backend = Toolkit.CurrentEngine.ImageBackendHandler.CreateCustomDrawn(Draw);
+			Init();
+			NativeRef.SetCustomDrawSource(Draw);
 		}
 
-		void Draw (object ctx, Rectangle bounds)
+		void Draw(object ctx, Rectangle bounds)
 		{
-			var c = new Context (ctx, ToolkitEngine);
-			c.Reset (null);
-			OnDraw (c, bounds);
+			var c = new Context(ctx, ToolkitEngine);
+			c.Reset(null);
+			OnDraw(c, bounds);
 		}
 
-		protected virtual void OnDraw (Context ctx, Rectangle bounds)
+		protected virtual void OnDraw(Context ctx, Rectangle bounds)
 		{
 		}
 
-		protected override Size GetDefaultSize ()
+		protected override Size GetDefaultSize()
 		{
 			return Size.Zero;
 		}

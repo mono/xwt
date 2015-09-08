@@ -42,29 +42,29 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
-		protected override SW.Size MeasureOverride (SW.Size constraint)
+		protected override SW.Size MeasureOverride(SW.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
+			var s = base.MeasureOverride(constraint);
+			return Backend.MeasureOverride(constraint, s);
 		}
 
-		protected override void OnTextInput (SW.Input.TextCompositionEventArgs e)
+		protected override void OnTextInput(SW.Input.TextCompositionEventArgs e)
 		{
-			base.OnTextInput (e);
-			OnTextChanged (EventArgs.Empty);
+			base.OnTextInput(e);
+			OnTextChanged(EventArgs.Empty);
 		}
 
-		protected override void OnSelectionChanged (SWC.SelectionChangedEventArgs e)
+		protected override void OnSelectionChanged(SWC.SelectionChangedEventArgs e)
 		{
-			base.OnSelectionChanged (e);
-			OnTextChanged (EventArgs.Empty);
+			base.OnSelectionChanged(e);
+			OnTextChanged(EventArgs.Empty);
 		}
 
-		protected virtual void OnTextChanged (EventArgs e)
+		protected virtual void OnTextChanged(EventArgs e)
 		{
 			var changed = TextChanged;
 			if (changed != null)
-				changed (this, e);
+				changed(this, e);
 		}
 	}
 }

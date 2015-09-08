@@ -40,7 +40,7 @@ namespace Xwt
 	/// </summary>
 	public sealed class TransferDataSource
 	{
-		Dictionary<TransferDataType,object> data = new Dictionary<TransferDataType,object> ();
+		Dictionary<TransferDataType, object> data = new Dictionary<TransferDataType, object>();
 
 		/// <summary>
 		/// Gets or sets the data request callback.
@@ -57,20 +57,20 @@ namespace Xwt
 		/// callback will be invoked to get the data for the type.
 		/// </remarks>
 		public DataRequestDelegate DataRequestCallback { get; set; }
-		
+
 		/// <summary>
 		/// Adds a value to the data source
 		/// </summary>
 		/// <param name='value'>
 		/// Value.
 		/// </param>
-		public void AddValue<T> (T value) where T : class
+		public void AddValue<T>(T value) where T : class
 		{
 			if (value == null)
-				throw new ArgumentNullException ("value");
-			data [TransferDataType.FromType (typeof (T))] = value;
+				throw new ArgumentNullException("value");
+			data[TransferDataType.FromType(typeof(T))] = value;
 		}
-		
+
 		/// <summary>
 		/// Registers that the data store contains data of the provided type
 		/// </summary>
@@ -85,11 +85,11 @@ namespace Xwt
 		/// data source. Once the operation is accepted, the DataRequestCallback
 		/// callback will be invoked to get the data for the type.
 		/// </remarks>
-		public void AddType (TransferDataType type)
+		public void AddType(TransferDataType type)
 		{
-			data [type] = null;
+			data[type] = null;
 		}
-		
+
 		/// <summary>
 		/// Registers that the data store contains data of the provided type
 		/// </summary>
@@ -104,17 +104,19 @@ namespace Xwt
 		/// data source. Once the operation is accepted, the DataRequestCallback
 		/// callback will be invoked to get the data for the type.
 		/// </remarks>
-		public void AddType (Type type)
+		public void AddType(Type type)
 		{
-			data [TransferDataType.FromType (type)] = null;
+			data[TransferDataType.FromType(type)] = null;
 		}
-		
+
 		/// <summary>
 		/// Gets the types included in this data source
 		/// </summary>
-		public TransferDataType[] DataTypes {
-			get {
-				return data.Keys.ToArray ();
+		public TransferDataType[] DataTypes
+		{
+			get
+			{
+				return data.Keys.ToArray();
 			}
 		}
 
@@ -127,48 +129,51 @@ namespace Xwt
 		/// <param name='type'>
 		/// A type.
 		/// </param>
-		public object GetValue (TransferDataType type)
+		public object GetValue(TransferDataType type)
 		{
 			object val;
-			if (data.TryGetValue (type, out val)) {
+			if (data.TryGetValue(type, out val))
+			{
 				if (val != null)
 					return val;
 				if (DataRequestCallback != null)
-					return DataRequestCallback (type);
+					return DataRequestCallback(type);
 			}
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Serializes a value to a byte array using <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/> .
 		/// </summary>
 		/// <returns>The serialized value.</returns>
 		/// <param name="val">The value to serialize.</param>
-		public static byte[] SerializeValue (object val)
+		public static byte[] SerializeValue(object val)
 		{
-			using (MemoryStream ms = new MemoryStream ()) {
-				BinaryFormatter bf = new BinaryFormatter ();
-				bf.Serialize (ms, val);
-				return ms.ToArray ();
+			using (MemoryStream ms = new MemoryStream())
+			{
+				BinaryFormatter bf = new BinaryFormatter();
+				bf.Serialize(ms, val);
+				return ms.ToArray();
 			}
 		}
-		
+
 		/// <summary>
 		/// Deserializes a value from a byte array.
 		/// </summary>
 		/// <returns>The deserialized value.</returns>
 		/// <param name="data">The byte array containing the serialized value.</param>
-		public static object DeserializeValue (byte[] data)
+		public static object DeserializeValue(byte[] data)
 		{
-			using (MemoryStream ms = new MemoryStream (data)) {
-				BinaryFormatter bf = new BinaryFormatter ();
-				return bf.Deserialize (ms);
+			using (MemoryStream ms = new MemoryStream(data))
+			{
+				BinaryFormatter bf = new BinaryFormatter();
+				return bf.Deserialize(ms);
 			}
 		}
 	}
-	
+
 	/// <summary>
 	/// Data request delegate, returns the data for a specific transfer data type request.
 	/// </summary>
-	public delegate object DataRequestDelegate (TransferDataType type);
+	public delegate object DataRequestDelegate(TransferDataType type);
 }

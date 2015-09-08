@@ -33,7 +33,7 @@ namespace Xwt.WPFBackend
 		: MenuItemBackend, ISeparatorMenuItemBackend
 	{
 		public SeparatorMenuItemBackend()
-			: base (new SWC.Separator())
+			: base(new SWC.Separator())
 		{
 		}
 	}

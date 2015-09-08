@@ -58,7 +58,7 @@ namespace Xwt.WPFBackend
 			public bool AutodetectDrag;
 			public Rect DragRect = Rect.Empty;
 			// Target
-			public TransferDataType [] TargetTypes = new TransferDataType [0];
+			public TransferDataType[] TargetTypes = new TransferDataType[0];
 		}
 
 		DragDropData dragDropInfo;
@@ -71,66 +71,73 @@ namespace Xwt.WPFBackend
 		// Set to true when calculating the default preferred size of the widget
 		bool calculatingPreferredSize;
 
-		void IWidgetBackend.Initialize (IWidgetEventSink eventSink)
+		void IWidgetBackend.Initialize(IWidgetEventSink eventSink)
 		{
 			this.eventSink = eventSink;
-			Initialize ();
+			Initialize();
 		}
 
-		protected virtual void Initialize ()
-		{
-		}
-		
-		~WidgetBackend ()
-		{
-			Dispose (false);
-		}
-		
-		public void Dispose ()
-		{
-			GC.SuppressFinalize (this);
-			Dispose (true);
-		}
-		
-		protected virtual void Dispose (bool disposing)
+		protected virtual void Initialize()
 		{
 		}
 
-		public IWidgetEventSink EventSink {
+		~WidgetBackend()
+		{
+			Dispose(false);
+		}
+
+		public void Dispose()
+		{
+			GC.SuppressFinalize(this);
+			Dispose(true);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+		}
+
+		public IWidgetEventSink EventSink
+		{
 			get { return eventSink; }
 		}
 
-		public object NativeWidget {
+		public object NativeWidget
+		{
 			get { return Widget; }
 		}
 
-		public new Widget Frontend {
-			get { return (Widget) base.Frontend; }
+		public new Widget Frontend
+		{
+			get { return (Widget)base.Frontend; }
 		}
 
-		public FrameworkElement Widget {
+		public FrameworkElement Widget
+		{
 			get { return widget; }
 			set
 			{
 				widget = value;
 				if (widget is IWpfWidget)
 					((IWpfWidget)widget).Backend = this;
-				widget.InvalidateMeasure ();
+				widget.InvalidateMeasure();
 			}
 		}
 
 		Color? customBackgroundColor;
 
-		public virtual Color BackgroundColor {
-			get {
+		public virtual Color BackgroundColor
+		{
+			get
+			{
 				if (customBackgroundColor.HasValue)
 					return customBackgroundColor.Value;
 
-				return DataConverter.ToXwtColor (GetWidgetColor ());
+				return DataConverter.ToXwtColor(GetWidgetColor());
 			}
-			set {
+			set
+			{
 				customBackgroundColor = value;
-				SetWidgetColor (value);
+				SetWidgetColor(value);
 			}
 		}
 
@@ -139,13 +146,16 @@ namespace Xwt.WPFBackend
 			get { return customBackgroundColor.HasValue; }
 		}
 
-		SWM.Color GetWidgetColor ()
+		SWM.Color GetWidgetColor()
 		{
-			if (Widget is Control) {
+			if (Widget is Control)
+			{
 				var control = (Control)Widget;
 				if (control.Background != null)
 					return ((SWM.SolidColorBrush)control.Background).Color;
-			} else if (Widget is SWC.Panel) {
+			}
+			else if (Widget is SWC.Panel)
+			{
 				var panel = (SWC.Panel)Widget;
 				if (panel.Background != null)
 					return ((SWM.SolidColorBrush)panel.Background).Color;
@@ -154,124 +164,139 @@ namespace Xwt.WPFBackend
 			return SystemColors.ControlColor;
 		}
 
-		protected virtual void SetWidgetColor (Color value)
+		protected virtual void SetWidgetColor(Color value)
 		{
 			if ((Widget is Control))
-				((Control)Widget).Background = ResPool.GetSolidBrush (value);
+				((Control)Widget).Background = ResPool.GetSolidBrush(value);
 			if ((Widget is System.Windows.Controls.Panel))
-				((SWC.Panel)Widget).Background = ResPool.GetSolidBrush (value);
+				((SWC.Panel)Widget).Background = ResPool.GetSolidBrush(value);
 		}
 
-		public bool UsingCustomBackgroundColor {
+		public bool UsingCustomBackgroundColor
+		{
 			get { return customBackgroundColor.HasValue; }
 		}
 
-		public virtual object Font {
-			get { return GetWidgetFont (); }
-			set {
-				SetWidgetFont ((FontData)value);
+		public virtual object Font
+		{
+			get { return GetWidgetFont(); }
+			set
+			{
+				SetWidgetFont((FontData)value);
 			}
 		}
 
-		public double Opacity {
+		public double Opacity
+		{
 			get { return Widget.Opacity; }
 			set { Widget.Opacity = value; }
 		}
 
-		FontData GetWidgetFont ()
+		FontData GetWidgetFont()
 		{
-			if (!(Widget is Control)) {
-				double size = WpfFontBackendHandler.GetPointsFromDeviceUnits (SystemFonts.MessageFontSize);
+			if (!(Widget is Control))
+			{
+				double size = WpfFontBackendHandler.GetPointsFromDeviceUnits(SystemFonts.MessageFontSize);
 
-				return new FontData (SystemFonts.MessageFontFamily, size) {
+				return new FontData(SystemFonts.MessageFontFamily, size)
+				{
 					Style = SystemFonts.MessageFontStyle,
 					Weight = SystemFonts.MessageFontWeight
 				};
 			}
 
-			return FontData.FromControl ((Control)Widget);
+			return FontData.FromControl((Control)Widget);
 		}
 
-		void SetWidgetFont (FontData font)
+		void SetWidgetFont(FontData font)
 		{
 			if (!(Widget is Control))
 				return;
 
 			var control = (Control)Widget;
 			control.FontFamily = font.Family;
-			control.FontSize = font.GetDeviceIndependentPixelSize (control);
+			control.FontSize = font.GetDeviceIndependentPixelSize(control);
 			control.FontStyle = font.Style;
 			control.FontWeight = font.Weight;
 			control.FontStretch = font.Stretch;
 		}
 
-		public bool CanGetFocus {
+		public bool CanGetFocus
+		{
 			get { return Widget.Focusable; }
 			set { Widget.Focusable = value; }
 		}
 
-		public bool HasFocus {
+		public bool HasFocus
+		{
 			get { return Widget.IsFocused; }
 		}
 
-		public void SetFocus ()
+		public void SetFocus()
 		{
 			if (Widget.IsLoaded)
-				Widget.Focus ();
+				Widget.Focus();
 			else
 				Widget.Loaded += DeferredFocus;
 		}
 
-		void DeferredFocus (object sender, RoutedEventArgs e)
+		void DeferredFocus(object sender, RoutedEventArgs e)
 		{
 			Widget.Loaded -= DeferredFocus;
-			Widget.Focus ();
+			Widget.Focus();
 		}
 
-		public virtual bool Sensitive {
+		public virtual bool Sensitive
+		{
 			get { return Widget.IsEnabled; }
 			set { Widget.IsEnabled = value; }
 		}
 
-		public Size Size {
-			get { return new Size (Widget.RenderSize.Width, Widget.RenderSize.Height); }
+		public Size Size
+		{
+			get { return new Size(Widget.RenderSize.Width, Widget.RenderSize.Height); }
 		}
 
-		public virtual bool Visible {
+		public virtual bool Visible
+		{
 			get { return Widget.Visibility == Visibility.Visible; }
 			set { Widget.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
 		}
 
-		public string TooltipText {
-			get { return Widget.ToolTip.ToString (); }
+		public string TooltipText
+		{
+			get { return Widget.ToolTip.ToString(); }
 			set { Widget.ToolTip = value; }
 		}
 
-		public static FrameworkElement GetFrameworkElement (IWidgetBackend backend)
+		public static FrameworkElement GetFrameworkElement(IWidgetBackend backend)
 		{
 			return backend == null ? null : (FrameworkElement)backend.NativeWidget;
 		}
 
-		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
+		public Point ConvertToScreenCoordinates(Point widgetCoordinates)
 		{
-			var p = Widget.PointToScreen (new System.Windows.Point (
+			var p = Widget.PointToScreen(new System.Windows.Point(
 				widgetCoordinates.X, widgetCoordinates.Y));
 
-			return new Point (p.X, p.Y);
+			return new Point(p.X, p.Y);
 		}
 
 		SW.Size lastNaturalSize;
 
-		void GetWidgetDesiredSize (double availableWidth, double availableHeight, out SW.Size size)
+		void GetWidgetDesiredSize(double availableWidth, double availableHeight, out SW.Size size)
 		{
 			// Calculates the desired size of widget.
 
-			if (!Widget.IsMeasureValid) {
-				try {
+			if (!Widget.IsMeasureValid)
+			{
+				try
+				{
 					calculatingPreferredSize = true;
-					Widget.Measure (new System.Windows.Size (availableWidth, availableHeight));
+					Widget.Measure(new System.Windows.Size(availableWidth, availableHeight));
 				}
-				finally {
+				finally
+				{
 					calculatingPreferredSize = false;
 					gettingNaturalSize = false;
 				}
@@ -285,12 +310,12 @@ namespace Xwt.WPFBackend
 		// method doesn't end calling the frontend OnGetPreferredSize method. To avoid it we set
 		// the calculatingPreferredSize flag to true, and we check this flag in MeasureOverride
 
-		public virtual Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+		public virtual Size GetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			SW.Size size;
-			Widget.InvalidateMeasure ();
-			GetWidgetDesiredSize (widthConstraint.IsConstrained ? widthConstraint.AvailableSize : Double.PositiveInfinity, heightConstraint.IsConstrained ? heightConstraint.AvailableSize : Double.PositiveInfinity, out size);
-			return new Size (size.Width, size.Height);
+			Widget.InvalidateMeasure();
+			GetWidgetDesiredSize(widthConstraint.IsConstrained ? widthConstraint.AvailableSize : Double.PositiveInfinity, heightConstraint.IsConstrained ? heightConstraint.AvailableSize : Double.PositiveInfinity, out size);
+			return new Size(size.Width, size.Height);
 		}
 
 		/// <summary>
@@ -299,13 +324,14 @@ namespace Xwt.WPFBackend
 		/// <param name="constraint">Size constraints</param>
 		/// <param name="wpfMeasure">Size returned by the base MeasureOverride</param>
 		/// <returns></returns>
-		public System.Windows.Size MeasureOverride (System.Windows.Size constraint, System.Windows.Size wpfMeasure)
+		public System.Windows.Size MeasureOverride(System.Windows.Size constraint, System.Windows.Size wpfMeasure)
 		{
-			var defNaturalSize = eventSink.GetDefaultNaturalSize ();
+			var defNaturalSize = eventSink.GetDefaultNaturalSize();
 
 			// -2 means use the WPF default, -1 use the XWT default, any other other value is used as custom natural size
 			var nw = DefaultNaturalWidth;
-			if (nw == -1) {
+			if (nw == -1)
+			{
 				nw = defNaturalSize.Width;
 				if (nw == 0)
 					nw = wpfMeasure.Width;
@@ -315,7 +341,8 @@ namespace Xwt.WPFBackend
 				wpfMeasure.Width = nw;
 
 			var nh = DefaultNaturalHeight;
-			if (nh == -1) {
+			if (nh == -1)
+			{
 				nh = defNaturalSize.Height;
 				if (nh == 0)
 					nh = wpfMeasure.Height;
@@ -329,16 +356,17 @@ namespace Xwt.WPFBackend
 			if (calculatingPreferredSize)
 				return wpfMeasure;
 
-			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) != 0) {
-				Context.InvokeUserCode (delegate
-				{
+			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) != 0)
+			{
+				Context.InvokeUserCode(delegate
+			   {
 					// Calculate the preferred width through the frontend if there is an overriden OnGetPreferredWidth, but only do it
 					// if we are not given a constraint. If there is a width constraint, we'll use that constraint value for calculating the height
-					var cw = double.IsPositiveInfinity (constraint.Width) ? SizeConstraint.Unconstrained : constraint.Width;
-					var ch = double.IsPositiveInfinity (constraint.Height) ? SizeConstraint.Unconstrained : constraint.Height;
-					var ws = eventSink.GetPreferredSize (cw, ch);
-					wpfMeasure = new System.Windows.Size (ws.Width, ws.Height);
-				});
+					var cw = double.IsPositiveInfinity(constraint.Width) ? SizeConstraint.Unconstrained : constraint.Width;
+				   var ch = double.IsPositiveInfinity(constraint.Height) ? SizeConstraint.Unconstrained : constraint.Height;
+				   var ws = eventSink.GetPreferredSize(cw, ch);
+				   wpfMeasure = new System.Windows.Size(ws.Width, ws.Height);
+			   });
 			}
 			return wpfMeasure;
 		}
@@ -348,7 +376,8 @@ namespace Xwt.WPFBackend
 		/// or -1 if the XWT defined default has to be used, 
 		/// or -2 if the WPF desired size has to be used (this is the default)
 		/// </summary>
-		protected virtual double DefaultNaturalWidth {
+		protected virtual double DefaultNaturalWidth
+		{
 			get { return -2; }
 		}
 
@@ -362,22 +391,24 @@ namespace Xwt.WPFBackend
 			get { return -2; }
 		}
 
-		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
+		public virtual void UpdateChildPlacement(IWidgetBackend childBackend)
 		{
-			SetChildPlacement (childBackend);
+			SetChildPlacement(childBackend);
 		}
 
-		public static void SetChildPlacement (IWidgetBackend childBackend)
+		public static void SetChildPlacement(IWidgetBackend childBackend)
 		{
 			var w = ((WidgetBackend)childBackend);
-			w.Widget.Margin = new Thickness (w.Frontend.MarginLeft, w.Frontend.MarginTop, w.Frontend.MarginRight, w.Frontend.MarginBottom);
-			switch (w.Frontend.HorizontalPlacement) {
+			w.Widget.Margin = new Thickness(w.Frontend.MarginLeft, w.Frontend.MarginTop, w.Frontend.MarginRight, w.Frontend.MarginBottom);
+			switch (w.Frontend.HorizontalPlacement)
+			{
 				case WidgetPlacement.Start: w.Widget.HorizontalAlignment = HorizontalAlignment.Left; break;
 				case WidgetPlacement.Center: w.Widget.HorizontalAlignment = HorizontalAlignment.Center; break;
 				case WidgetPlacement.End: w.Widget.HorizontalAlignment = HorizontalAlignment.Right; break;
 				case WidgetPlacement.Fill: w.Widget.HorizontalAlignment = HorizontalAlignment.Stretch; break;
 			}
-			switch (w.Frontend.VerticalPlacement) {
+			switch (w.Frontend.VerticalPlacement)
+			{
 				case WidgetPlacement.Start: w.Widget.VerticalAlignment = VerticalAlignment.Top; break;
 				case WidgetPlacement.Center: w.Widget.VerticalAlignment = VerticalAlignment.Center; break;
 				case WidgetPlacement.End: w.Widget.VerticalAlignment = VerticalAlignment.Bottom; break;
@@ -385,25 +416,25 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void SetMinSize (double width, double height)
+		public void SetMinSize(double width, double height)
 		{
 			if (width == -1)
-				Widget.ClearValue (FrameworkElement.MinWidthProperty);
+				Widget.ClearValue(FrameworkElement.MinWidthProperty);
 			else
 				Widget.MinWidth = width;
 
 			if (height == -1)
-				Widget.ClearValue (FrameworkElement.MinHeightProperty);
+				Widget.ClearValue(FrameworkElement.MinHeightProperty);
 			else
 				Widget.MinHeight = height;
 		}
 
-		public void SetSizeRequest (double width, double height)
+		public void SetSizeRequest(double width, double height)
 		{
 			// Nothing needs to be done here
 		}
 
-		public void SetCursor (CursorType cursor)
+		public void SetCursor(CursorType cursor)
 		{
 			if (cursor == CursorType.Arrow)
 				Widget.Cursor = Cursors.Arrow;
@@ -436,16 +467,18 @@ namespace Xwt.WPFBackend
 			else
 				Widget.Cursor = Cursors.Arrow;
 		}
-		
-		public virtual void UpdateLayout ()
+
+		public virtual void UpdateLayout()
 		{
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			if (eventId is WidgetEvent) {
+			if (eventId is WidgetEvent)
+			{
 				var ev = (WidgetEvent)eventId;
-				switch (ev) {
+				switch (ev)
+				{
 					case WidgetEvent.KeyPressed:
 						Widget.PreviewKeyDown += WidgetKeyDownHandler;
 						break;
@@ -484,7 +517,8 @@ namespace Xwt.WPFBackend
 						break;
 				}
 
-				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
+				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0)
+				{
 					// Enabling a drag&drop event for the first time
 					Widget.DragOver += WidgetDragOverHandler;
 					Widget.Drop += WidgetDropHandler;
@@ -495,11 +529,13 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			if (eventId is WidgetEvent) {
+			if (eventId is WidgetEvent)
+			{
 				var ev = (WidgetEvent)eventId;
-				switch (ev) {
+				switch (ev)
+				{
 					case WidgetEvent.KeyPressed:
 						Widget.PreviewKeyDown -= WidgetKeyDownHandler;
 						break;
@@ -534,7 +570,8 @@ namespace Xwt.WPFBackend
 
 				enabledEvents &= ~ev;
 
-				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
+				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0)
+				{
 					// All drag&drop events have been disabled
 					Widget.DragOver -= WidgetDragOverHandler;
 					Widget.Drop -= WidgetDropHandler;
@@ -547,7 +584,7 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				PresentationSource source = PresentationSource.FromVisual (Widget);
+				PresentationSource source = PresentationSource.FromVisual(Widget);
 				if (source == null)
 					return 1;
 
@@ -560,7 +597,7 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				PresentationSource source = PresentationSource.FromVisual (Widget);
+				PresentationSource source = PresentationSource.FromVisual(Widget);
 				if (source == null)
 					return 1;
 
@@ -569,44 +606,47 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		void WidgetKeyDownHandler (object sender, System.Windows.Input.KeyEventArgs e)
+		void WidgetKeyDownHandler(object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			KeyEventArgs args;
-			if (MapToXwtKeyArgs (e, out args)) {
-				Context.InvokeUserCode (delegate {
-					eventSink.OnKeyPressed (args);
-				});
-				if (args.Handled)
-					e.Handled = true;
-			}
-		}
-
-		void WidgetKeyUpHandler (object sender, System.Windows.Input.KeyEventArgs e)
-		{
-			KeyEventArgs args;
-			if (MapToXwtKeyArgs (e, out args)) {
-				Context.InvokeUserCode (delegate
+			if (MapToXwtKeyArgs(e, out args))
+			{
+				Context.InvokeUserCode(delegate
 				{
-					eventSink.OnKeyReleased (args);
+					eventSink.OnKeyPressed(args);
 				});
 				if (args.Handled)
 					e.Handled = true;
 			}
 		}
 
-		bool MapToXwtKeyArgs (System.Windows.Input.KeyEventArgs e, out KeyEventArgs result)
+		void WidgetKeyUpHandler(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			KeyEventArgs args;
+			if (MapToXwtKeyArgs(e, out args))
+			{
+				Context.InvokeUserCode(delegate
+			   {
+				   eventSink.OnKeyReleased(args);
+			   });
+				if (args.Handled)
+					e.Handled = true;
+			}
+		}
+
+		bool MapToXwtKeyArgs(System.Windows.Input.KeyEventArgs e, out KeyEventArgs result)
 		{
 			result = null;
 
-			var key = KeyboardUtil.TranslateToXwtKey (e.Key);
+			var key = KeyboardUtil.TranslateToXwtKey(e.Key);
 			if ((int)key == 0)
 				return false;
 
-			result = new KeyEventArgs (key, (int)e.Key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
+			result = new KeyEventArgs(key, (int)e.Key, KeyboardUtil.GetModifiers(), e.IsRepeat, e.Timestamp);
 			return true;
 		}
 
-		void WidgetPreviewTextInputHandler (object sender, System.Windows.Input.TextCompositionEventArgs e)
+		void WidgetPreviewTextInputHandler(object sender, System.Windows.Input.TextCompositionEventArgs e)
 		{
 			PreviewTextInputEventArgs args = new PreviewTextInputEventArgs(e.Text);
 			Context.InvokeUserCode(delegate
@@ -617,52 +657,56 @@ namespace Xwt.WPFBackend
 				e.Handled = true;
 		}
 
-		void WidgetMouseDownHandler (object o, MouseButtonEventArgs e)
+		void WidgetMouseDownHandler(object o, MouseButtonEventArgs e)
 		{
-			var args = ToXwtButtonArgs (e);
-			Context.InvokeUserCode (delegate () {
-				eventSink.OnButtonPressed (args);
-			});
-			if (args.Handled)
-				e.Handled = true;
-		}
-
-		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
-		{
-			var args = ToXwtButtonArgs (e);
-			Context.InvokeUserCode (delegate ()
+			var args = ToXwtButtonArgs(e);
+			Context.InvokeUserCode(delegate ()
 			{
-				eventSink.OnButtonReleased (args);
+				eventSink.OnButtonPressed(args);
 			});
 			if (args.Handled)
 				e.Handled = true;
 		}
 
-		ButtonEventArgs ToXwtButtonArgs (MouseButtonEventArgs e)
+		void WidgetMouseUpHandler(object o, MouseButtonEventArgs e)
 		{
-			var pos = e.GetPosition (Widget);
-			return new ButtonEventArgs () {
+			var args = ToXwtButtonArgs(e);
+			Context.InvokeUserCode(delegate ()
+		   {
+			   eventSink.OnButtonReleased(args);
+		   });
+			if (args.Handled)
+				e.Handled = true;
+		}
+
+		ButtonEventArgs ToXwtButtonArgs(MouseButtonEventArgs e)
+		{
+			var pos = e.GetPosition(Widget);
+			return new ButtonEventArgs()
+			{
 				X = pos.X,
 				Y = pos.Y,
 				MultiplePress = e.ClickCount,
-				Button = e.ChangedButton.ToXwtButton ()
+				Button = e.ChangedButton.ToXwtButton()
 			};
 		}
 
-		void WidgetGotFocusHandler (object o, RoutedEventArgs e)
+		void WidgetGotFocusHandler(object o, RoutedEventArgs e)
 		{
-			Context.InvokeUserCode (this.eventSink.OnGotFocus);
+			Context.InvokeUserCode(this.eventSink.OnGotFocus);
 		}
 
-		void WidgetLostFocusHandler (object o, RoutedEventArgs e)
+		void WidgetLostFocusHandler(object o, RoutedEventArgs e)
 		{
-			Context.InvokeUserCode (eventSink.OnLostFocus);
+			Context.InvokeUserCode(eventSink.OnLostFocus);
 		}
 
-		DragDropData DragDropInfo {
-			get {
+		DragDropData DragDropInfo
+		{
+			get
+			{
 				if (dragDropInfo == null)
-					dragDropInfo = new DragDropData ();
+					dragDropInfo = new DragDropData();
 
 				return dragDropInfo;
 			}
@@ -674,37 +718,40 @@ namespace Xwt.WPFBackend
 
 		private SW.Window GetParentWindow()
 		{
-			return Widget.GetParentWindow ();
+			return Widget.GetParentWindow();
 		}
 
-		public void DragStart (DragStartData data)
+		public void DragStart(DragStartData data)
 		{
 			if (data.Data == null)
-				throw new ArgumentNullException ("data");
-			
+				throw new ArgumentNullException("data");
+
 			DataObject dataObj = data.Data.ToDataObject();
 
-			if (data.ImageBackend != null) {
-				AdornedWindow = GetParentWindow ();
+			if (data.ImageBackend != null)
+			{
+				AdornedWindow = GetParentWindow();
 				AdornedWindow.AllowDrop = true;
 
 				var e = (UIElement)AdornedWindow.Content;
 
-				Adorner = new ImageAdorner (e, data.ImageBackend);
+				Adorner = new ImageAdorner(e, data.ImageBackend);
 
-				AdornedLayer = AdornerLayer.GetAdornerLayer (e);
-				AdornedLayer.Add (Adorner);
+				AdornedLayer = AdornerLayer.GetAdornerLayer(e);
+				AdornedLayer.Add(Adorner);
 
 				AdornedWindow.DragOver += AdornedWindowOnDragOver;
 			}
 
-			Widget.Dispatcher.BeginInvoke ((Action)(() => {
-				var effect = DragDrop.DoDragDrop (Widget, dataObj, data.DragAction.ToWpfDropEffect ());
+			Widget.Dispatcher.BeginInvoke((Action)(() =>
+			{
+				var effect = DragDrop.DoDragDrop(Widget, dataObj, data.DragAction.ToWpfDropEffect());
 
-				OnDragFinished (this, new DragFinishedEventArgs (effect == DragDropEffects.Move));
+				OnDragFinished(this, new DragFinishedEventArgs(effect == DragDropEffects.Move));
 
-				if (Adorner != null) {
-					AdornedLayer.Remove (Adorner);
+				if (Adorner != null)
+				{
+					AdornedLayer.Remove(Adorner);
 					AdornedLayer = null;
 					Adorner = null;
 
@@ -715,42 +762,42 @@ namespace Xwt.WPFBackend
 			}));
 		}
 
-		private void AdornedWindowOnDragOver (object sender, System.Windows.DragEventArgs e)
+		private void AdornedWindowOnDragOver(object sender, System.Windows.DragEventArgs e)
 		{
-			WidgetDragOverHandler (sender, e);
+			WidgetDragOverHandler(sender, e);
 		}
 
-		public void SetDragTarget (TransferDataType [] types, DragDropAction dragAction)
+		public void SetDragTarget(TransferDataType[] types, DragDropAction dragAction)
 		{
-			DragDropInfo.TargetTypes = types == null ? new TransferDataType [0] : types;
+			DragDropInfo.TargetTypes = types == null ? new TransferDataType[0] : types;
 			Widget.AllowDrop = true;
 		}
 
-		public void SetDragSource (TransferDataType [] types, DragDropAction dragAction)
+		public void SetDragSource(TransferDataType[] types, DragDropAction dragAction)
 		{
 			if (DragDropInfo.AutodetectDrag)
 				return; // Drag auto detect has been already activated.
 
 			DragDropInfo.AutodetectDrag = true;
-			DragDropInfo.TargetTypes = types == null ? new TransferDataType [0] : types;
+			DragDropInfo.TargetTypes = types == null ? new TransferDataType[0] : types;
 			Widget.MouseUp += WidgetMouseUpForDragHandler;
 			Widget.MouseMove += WidgetMouseMoveForDragHandler;
 		}
 
-		private void SetupDragRect (MouseEventArgs e)
+		private void SetupDragRect(MouseEventArgs e)
 		{
 			var width = SystemParameters.MinimumHorizontalDragDistance;
 			var height = SystemParameters.MinimumVerticalDragDistance;
-			var loc = e.GetPosition (Widget);
-			DragDropInfo.DragRect = new Rect (loc.X - width / 2, loc.Y - height / 2, width, height);
+			var loc = e.GetPosition(Widget);
+			DragDropInfo.DragRect = new Rect(loc.X - width / 2, loc.Y - height / 2, width, height);
 		}
 
-		void WidgetMouseUpForDragHandler (object o, EventArgs e)
+		void WidgetMouseUpForDragHandler(object o, EventArgs e)
 		{
 			DragDropInfo.DragRect = Rect.Empty;
 		}
 
-		void WidgetMouseMoveForDragHandler (object o, MouseEventArgs e)
+		void WidgetMouseMoveForDragHandler(object o, MouseEventArgs e)
 		{
 			if ((enabledEvents & WidgetEvent.DragStarted) == 0)
 				return;
@@ -758,25 +805,27 @@ namespace Xwt.WPFBackend
 				return;
 
 			if (DragDropInfo.DragRect.IsEmpty)
-				SetupDragRect (e);
+				SetupDragRect(e);
 
-			if (DragDropInfo.DragRect.Contains (e.GetPosition (Widget)))
+			if (DragDropInfo.DragRect.Contains(e.GetPosition(Widget)))
 				return;
 
 			DragStartData dragData = null;
-			Context.InvokeUserCode (delegate {
-				dragData = eventSink.OnDragStarted ();
+			Context.InvokeUserCode(delegate
+			{
+				dragData = eventSink.OnDragStarted();
 			});
 
 			if (dragData != null)
-				DragStart (dragData);
+				DragStart(dragData);
 
 			DragDropInfo.DragRect = Rect.Empty;
 		}
 
-		static DragDropAction DetectDragAction (DragDropKeyStates keys)
+		static DragDropAction DetectDragAction(DragDropKeyStates keys)
 		{
-			if ((keys & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey) {
+			if ((keys & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
+			{
 				if ((keys & DragDropKeyStates.ShiftKey) == DragDropKeyStates.ShiftKey)
 					return DragDropAction.Link;
 				else
@@ -786,76 +835,87 @@ namespace Xwt.WPFBackend
 			return DragDropAction.Move;
 		}
 
-		static void FillDataStore (TransferDataStore store, IDataObject data, TransferDataType [] types)
+		static void FillDataStore(TransferDataStore store, IDataObject data, TransferDataType[] types)
 		{
-			foreach (var type in types) {
-				string format = type.ToWpfDataFormat ();
-				if (!data.GetDataPresent (format)) {
+			foreach (var type in types)
+			{
+				string format = type.ToWpfDataFormat();
+				if (!data.GetDataPresent(format))
+				{
 					// This is a workaround to support type names which don't include the assembly name.
 					// It eases integration with Windows DND.
-					format = NormalizeTypeName (format);
-					if (!data.GetDataPresent (format))
+					format = NormalizeTypeName(format);
+					if (!data.GetDataPresent(format))
 						continue;
 				}
 
-				var value = data.GetData (format);
+				var value = data.GetData(format);
 				if (type == TransferDataType.Text)
-					store.AddText ((string)value);
-				else if (type == TransferDataType.Uri) {
-					var uris = ((string [])value).Select (f => new Uri (f)).ToArray ();
-					store.AddUris (uris);
-				} else if (value is byte[])
-					store.AddValue (type, (byte[]) value);
+					store.AddText((string)value);
+				else if (type == TransferDataType.Uri)
+				{
+					var uris = ((string[])value).Select(f => new Uri(f)).ToArray();
+					store.AddUris(uris);
+				}
+				else if (value is byte[])
+					store.AddValue(type, (byte[])value);
 				else
-					store.AddValue (type, value);
+					store.AddValue(type, value);
 			}
 		}
 
-		static string NormalizeTypeName (string dataType)
+		static string NormalizeTypeName(string dataType)
 		{
 			// If the string is a fully qualified type name, strip the assembly name
-			int i = dataType.IndexOf (',');
+			int i = dataType.IndexOf(',');
 			if (i == -1)
 				return dataType;
-			string asmName = dataType.Substring (i + 1).Trim ();
-			try {
-				new System.Reflection.AssemblyName (asmName);
+			string asmName = dataType.Substring(i + 1).Trim();
+			try
+			{
+				new System.Reflection.AssemblyName(asmName);
 			}
-			catch {
+			catch
+			{
 				return dataType;
 			}
-			return dataType.Substring (0, i).Trim ();
+			return dataType.Substring(0, i).Trim();
 		}
 
-		protected virtual void OnDragFinished (object sender, DragFinishedEventArgs e)
+		protected virtual void OnDragFinished(object sender, DragFinishedEventArgs e)
 		{
-			Context.InvokeUserCode (delegate {
-				this.eventSink.OnDragFinished (e);
+			Context.InvokeUserCode(delegate
+			{
+				this.eventSink.OnDragFinished(e);
 			});
 		}
 
-		protected virtual void OnDragOver (object sender, DragOverEventArgs e)
+		protected virtual void OnDragOver(object sender, DragOverEventArgs e)
 		{
-			Context.InvokeUserCode (delegate {
-				eventSink.OnDragOver (e);
+			Context.InvokeUserCode(delegate
+			{
+				eventSink.OnDragOver(e);
 			});
 		}
 
-		protected virtual void OnDragLeave (object sender, EventArgs e)
+		protected virtual void OnDragLeave(object sender, EventArgs e)
 		{
-			Context.InvokeUserCode (delegate {
-				eventSink.OnDragLeave (e);
+			Context.InvokeUserCode(delegate
+			{
+				eventSink.OnDragLeave(e);
 			});
 		}
 
-		void WidgetDragOverHandler (object sender, System.Windows.DragEventArgs e)
+		void WidgetDragOverHandler(object sender, System.Windows.DragEventArgs e)
 		{
-			if (Adorner != null) {
-				var w = GetParentWindow ();
+			if (Adorner != null)
+			{
+				var w = GetParentWindow();
 				var v = (UIElement)w.Content;
 
-				if (w != AdornedWindow) {
-					AdornedLayer.Remove (Adorner);
+				if (w != AdornedWindow)
+				{
+					AdornedLayer.Remove(Adorner);
 
 					AdornedWindow.AllowDrop = false;
 					AdornedWindow.DragOver -= AdornedWindowOnDragOver;
@@ -864,93 +924,105 @@ namespace Xwt.WPFBackend
 					AdornedWindow.AllowDrop = true;
 					AdornedWindow.DragOver += AdornedWindowOnDragOver;
 
-					AdornedLayer = AdornerLayer.GetAdornerLayer (v);
-					AdornedLayer.Add (Adorner);
+					AdornedLayer = AdornerLayer.GetAdornerLayer(v);
+					AdornedLayer.Add(Adorner);
 				}
 
-				Adorner.Offset = e.GetPosition (v);
+				Adorner.Offset = e.GetPosition(v);
 			}
-			CheckDrop (sender, e);
+			CheckDrop(sender, e);
 		}
 
-		void CheckDrop (object sender, System.Windows.DragEventArgs e)
+		void CheckDrop(object sender, System.Windows.DragEventArgs e)
 		{
-			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
-			var pos = e.GetPosition (Widget).ToXwtPoint ();
-			var proposedAction = DetectDragAction (e.KeyStates);
+			var types = e.Data.GetFormats().Select(t => t.ToXwtTransferType()).ToArray();
+			var pos = e.GetPosition(Widget).ToXwtPoint();
+			var proposedAction = DetectDragAction(e.KeyStates);
 
 			e.Handled = true; // Prevent default handlers from being used.
 
-			if ((enabledEvents & WidgetEvent.DragOverCheck) > 0) {
-				var checkArgs = new DragOverCheckEventArgs (pos, types, proposedAction);
-				Context.InvokeUserCode (delegate {
-					eventSink.OnDragOverCheck (checkArgs);
+			if ((enabledEvents & WidgetEvent.DragOverCheck) > 0)
+			{
+				var checkArgs = new DragOverCheckEventArgs(pos, types, proposedAction);
+				Context.InvokeUserCode(delegate
+				{
+					eventSink.OnDragOverCheck(checkArgs);
 				});
-				if (checkArgs.AllowedAction == DragDropAction.None) {
+				if (checkArgs.AllowedAction == DragDropAction.None)
+				{
 					e.Effects = currentDragEffect = DragDropEffects.None;
 					return;
 				}
-				if (checkArgs.AllowedAction != DragDropAction.Default) {
-					e.Effects = currentDragEffect = checkArgs.AllowedAction.ToWpfDropEffect ();
+				if (checkArgs.AllowedAction != DragDropAction.Default)
+				{
+					e.Effects = currentDragEffect = checkArgs.AllowedAction.ToWpfDropEffect();
 					return;
 				}
 			}
 
-			if ((enabledEvents & WidgetEvent.DragOver) > 0) {
-				var store = new TransferDataStore ();
-				FillDataStore (store, e.Data, DragDropInfo.TargetTypes);
+			if ((enabledEvents & WidgetEvent.DragOver) > 0)
+			{
+				var store = new TransferDataStore();
+				FillDataStore(store, e.Data, DragDropInfo.TargetTypes);
 
-				var args = new DragOverEventArgs (pos, store, proposedAction);
-				OnDragOver (sender, args);
-				if (args.AllowedAction == DragDropAction.None) {
+				var args = new DragOverEventArgs(pos, store, proposedAction);
+				OnDragOver(sender, args);
+				if (args.AllowedAction == DragDropAction.None)
+				{
 					e.Effects = currentDragEffect = DragDropEffects.None;
 					return;
 				}
-				if (args.AllowedAction != DragDropAction.Default) {
-					e.Effects = currentDragEffect = args.AllowedAction.ToWpfDropEffect ();
+				if (args.AllowedAction != DragDropAction.Default)
+				{
+					e.Effects = currentDragEffect = args.AllowedAction.ToWpfDropEffect();
 					return;
 				}
 			}
 
-			e.Effects = currentDragEffect = proposedAction.ToWpfDropEffect ();
+			e.Effects = currentDragEffect = proposedAction.ToWpfDropEffect();
 		}
 
-		void WidgetDropHandler (object sender, System.Windows.DragEventArgs e)
+		void WidgetDropHandler(object sender, System.Windows.DragEventArgs e)
 		{
 			// Do a DragOverCheck before proceeding to the drop. This is required since in some cases the DragOver
 			// handler may not be called.
-			CheckDrop (sender, e);
+			CheckDrop(sender, e);
 			if (e.Effects == DragDropEffects.None)
 				return;
 
-			WidgetDragLeaveHandler (sender, e);
+			WidgetDragLeaveHandler(sender, e);
 
-			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
-			var pos = e.GetPosition (Widget).ToXwtPoint ();
+			var types = e.Data.GetFormats().Select(t => t.ToXwtTransferType()).ToArray();
+			var pos = e.GetPosition(Widget).ToXwtPoint();
 			var actualEffect = currentDragEffect;
 
 			e.Handled = true; // Prevent default handlers from being used.
 			e.Effects = DragDropEffects.None;
 
-			if ((enabledEvents & WidgetEvent.DragDropCheck) > 0) {
-				var checkArgs = new DragCheckEventArgs (pos, types, actualEffect.ToXwtDropAction ());
-				bool res = Context.InvokeUserCode (delegate {
-					eventSink.OnDragDropCheck (checkArgs);
+			if ((enabledEvents & WidgetEvent.DragDropCheck) > 0)
+			{
+				var checkArgs = new DragCheckEventArgs(pos, types, actualEffect.ToXwtDropAction());
+				bool res = Context.InvokeUserCode(delegate
+				{
+					eventSink.OnDragDropCheck(checkArgs);
 				});
 
-				if (checkArgs.Result == DragDropResult.Canceled || !res) {
+				if (checkArgs.Result == DragDropResult.Canceled || !res)
+				{
 					e.Effects = DragDropEffects.None;
 					return;
 				}
 			}
 
-			if ((enabledEvents & WidgetEvent.DragDrop) > 0) {
-				var store = new TransferDataStore ();
-				FillDataStore (store, e.Data, DragDropInfo.TargetTypes);
+			if ((enabledEvents & WidgetEvent.DragDrop) > 0)
+			{
+				var store = new TransferDataStore();
+				FillDataStore(store, e.Data, DragDropInfo.TargetTypes);
 
-				var args = new DragEventArgs (pos, store, actualEffect.ToXwtDropAction ());
-				Context.InvokeUserCode (delegate {
-					eventSink.OnDragDrop (args);
+				var args = new DragEventArgs(pos, store, actualEffect.ToXwtDropAction());
+				Context.InvokeUserCode(delegate
+				{
+					eventSink.OnDragDrop(args);
 				});
 
 				if (args.Success)
@@ -958,26 +1030,27 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		void WidgetDragLeaveHandler (object sender, System.Windows.DragEventArgs e)
+		void WidgetDragLeaveHandler(object sender, System.Windows.DragEventArgs e)
 		{
-			OnDragLeave (sender, e);
+			OnDragLeave(sender, e);
 		}
 
-		private void WidgetMouseEnteredHandler (object sender, MouseEventArgs e)
+		private void WidgetMouseEnteredHandler(object sender, MouseEventArgs e)
 		{
-			Context.InvokeUserCode (eventSink.OnMouseEntered);
+			Context.InvokeUserCode(eventSink.OnMouseEntered);
 		}
 
-		private void WidgetMouseExitedHandler (object sender, MouseEventArgs e)
+		private void WidgetMouseExitedHandler(object sender, MouseEventArgs e)
 		{
-			Context.InvokeUserCode (eventSink.OnMouseExited);
+			Context.InvokeUserCode(eventSink.OnMouseExited);
 		}
 
-		private void WidgetMouseMoveHandler (object sender, MouseEventArgs e)
+		private void WidgetMouseMoveHandler(object sender, MouseEventArgs e)
 		{
-			var p = e.GetPosition (Widget);
+			var p = e.GetPosition(Widget);
 			var a = new MouseMovedEventArgs(e.Timestamp, p.X, p.Y);
-			Context.InvokeUserCode (() => {
+			Context.InvokeUserCode(() =>
+			{
 				eventSink.OnMouseMoved(a);
 			});
 			if (a.Handled)
@@ -986,20 +1059,23 @@ namespace Xwt.WPFBackend
 
 		private int mouseScrollCumulation = 0;
 
-		private void WidgetMouseWheelHandler (object sender, MouseWheelEventArgs e)
+		private void WidgetMouseWheelHandler(object sender, MouseWheelEventArgs e)
 		{
 			mouseScrollCumulation += e.Delta;
 			int jumps = mouseScrollCumulation / 120;
 			mouseScrollCumulation %= 120;
 			var p = e.GetPosition(Widget);
-			Context.InvokeUserCode (delegate {
-				for (int i = 0; i < jumps; i++) {
+			Context.InvokeUserCode(delegate
+			{
+				for (int i = 0; i < jumps; i++)
+				{
 					var a = new MouseScrolledEventArgs(e.Timestamp, p.X, p.Y, ScrollDirection.Up);
 					eventSink.OnMouseScrolled(a);
 					if (a.Handled)
 						e.Handled = true;
 				}
-				for (int i = 0; i > jumps; i--) {
+				for (int i = 0; i > jumps; i--)
+				{
 					var a = new MouseScrolledEventArgs(e.Timestamp, p.X, p.Y, ScrollDirection.Down);
 					eventSink.OnMouseScrolled(a);
 					if (a.Handled)
@@ -1008,10 +1084,10 @@ namespace Xwt.WPFBackend
 			});
 		}
 
-		private void WidgetOnSizeChanged (object sender, SizeChangedEventArgs e)
+		private void WidgetOnSizeChanged(object sender, SizeChangedEventArgs e)
 		{
 			if (Widget.IsVisible)
-				Context.InvokeUserCode (this.eventSink.OnBoundsChanged);
+				Context.InvokeUserCode(this.eventSink.OnBoundsChanged);
 		}
 	}
 

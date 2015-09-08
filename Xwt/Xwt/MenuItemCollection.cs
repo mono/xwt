@@ -29,41 +29,41 @@ using System.Collections.ObjectModel;
 
 namespace Xwt
 {
-	public class MenuItemCollection: Collection<MenuItem>
+	public class MenuItemCollection : Collection<MenuItem>
 	{
 		Menu parent;
-		
-		internal MenuItemCollection (Menu parent)
+
+		internal MenuItemCollection(Menu parent)
 		{
 			this.parent = parent;
 		}
-		
-		protected override void InsertItem (int index, MenuItem item)
+
+		protected override void InsertItem(int index, MenuItem item)
 		{
-			base.InsertItem (index, item);
-			parent.InsertItem (index, item);
+			base.InsertItem(index, item);
+			parent.InsertItem(index, item);
 		}
-		
-		protected override void RemoveItem (int index)
+
+		protected override void RemoveItem(int index)
 		{
 			var item = this[index];
-			base.RemoveItem (index);
-			parent.RemoveItem (item);
+			base.RemoveItem(index);
+			parent.RemoveItem(item);
 		}
-		
-		protected override void SetItem (int index, MenuItem item)
+
+		protected override void SetItem(int index, MenuItem item)
 		{
 			var oldItem = this[index];
-			base.SetItem (index, item);
-			parent.RemoveItem (oldItem);
-			parent.InsertItem (index, item);
+			base.SetItem(index, item);
+			parent.RemoveItem(oldItem);
+			parent.InsertItem(index, item);
 		}
-		
-		protected override void ClearItems ()
+
+		protected override void ClearItems()
 		{
 			foreach (var item in this)
-				parent.RemoveItem (item);
-			base.ClearItems ();
+				parent.RemoveItem(item);
+			base.ClearItems();
 		}
 	}
 }

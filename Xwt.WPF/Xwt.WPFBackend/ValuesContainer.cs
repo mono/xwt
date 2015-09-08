@@ -32,40 +32,41 @@ namespace Xwt.WPFBackend
 	internal class ValuesContainer
 		: INotifyPropertyChanged
 	{
-		internal ValuesContainer (int size)
+		internal ValuesContainer(int size)
 		{
 			if (size < 0)
-				throw new ArgumentOutOfRangeException ();
+				throw new ArgumentOutOfRangeException();
 
 			this.values = new object[size];
 		}
 
-		internal ValuesContainer (object[] values)
+		internal ValuesContainer(object[] values)
 		{
 			if (values == null)
-				throw new ArgumentNullException ("values");
+				throw new ArgumentNullException("values");
 
 			this.values = values;
 		}
 
 		public virtual event PropertyChangedEventHandler PropertyChanged;
 
-		public object this[int index] {
-			get { return this.values [index]; }
+		public object this[int index]
+		{
+			get { return this.values[index]; }
 			set
 			{
-				this.values [index] = value;
-				OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
+				this.values[index] = value;
+				OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
 			}
 		}
 
 		protected readonly object[] values;
 
-		protected void OnPropertyChanged (PropertyChangedEventArgs e)
+		protected void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			var handler = this.PropertyChanged;
 			if (handler != null)
-				handler (this, e);
+				handler(this, e);
 		}
 	}
 }

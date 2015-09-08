@@ -43,69 +43,75 @@ namespace Xwt.WPFBackend
 	class RichTextViewBackend
 		: WidgetBackend, IRichTextViewBackend
 	{
-		public new IRichTextViewEventSink EventSink {
-			get { return (IRichTextViewEventSink) base.EventSink; }
+		public new IRichTextViewEventSink EventSink
+		{
+			get { return (IRichTextViewEventSink)base.EventSink; }
 		}
 
 		public new ExRichTextBox Widget
 		{
-			get { return (ExRichTextBox) base.Widget; }
+			get { return (ExRichTextBox)base.Widget; }
 			set { base.Widget = value; }
 		}
 
-		public RichTextViewBackend ()
+		public RichTextViewBackend()
 		{
-			Widget = new ExRichTextBox ();
-			Widget.BorderThickness = new System.Windows.Thickness (0);
+			Widget = new ExRichTextBox();
+			Widget.BorderThickness = new System.Windows.Thickness(0);
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
-			if (eventId is RichTextViewEvent) {
-				switch ((RichTextViewEvent) eventId) {
-				case RichTextViewEvent.NavigateToUrl:
-						Widget.AddHandler (Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler (HyperlinkNavigated), true);
+			base.EnableEvent(eventId);
+			if (eventId is RichTextViewEvent)
+			{
+				switch ((RichTextViewEvent)eventId)
+				{
+					case RichTextViewEvent.NavigateToUrl:
+						Widget.AddHandler(Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler(HyperlinkNavigated), true);
 						break;
 				}
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
-			if (eventId is RichTextViewEvent) {
-				switch ((RichTextViewEvent) eventId) {
-				case RichTextViewEvent.NavigateToUrl:
-						Widget.RemoveHandler (Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler (HyperlinkNavigated));
+			base.DisableEvent(eventId);
+			if (eventId is RichTextViewEvent)
+			{
+				switch ((RichTextViewEvent)eventId)
+				{
+					case RichTextViewEvent.NavigateToUrl:
+						Widget.RemoveHandler(Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler(HyperlinkNavigated));
 						break;
 				}
 			}
 		}
 
-		void HyperlinkNavigated (object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+		void HyperlinkNavigated(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
 		{
-			Context.InvokeUserCode (() => {
-				EventSink.OnNavigateToUrl (e.Uri);
+			Context.InvokeUserCode(() =>
+			{
+				EventSink.OnNavigateToUrl(e.Uri);
 				e.Handled = true;
 			});
 		}
 
-		public IRichTextBuffer CreateBuffer ()
+		public IRichTextBuffer CreateBuffer()
 		{
-			return new RichTextBuffer ();
+			return new RichTextBuffer();
 		}
 
-		public void SetBuffer (IRichTextBuffer buffer)
+		public void SetBuffer(IRichTextBuffer buffer)
 		{
 			var buf = buffer as RichTextBuffer;
 			if (buf == null)
-				throw new ArgumentException ("Passed buffer is of incorrect type", "buffer");
+				throw new ArgumentException("Passed buffer is of incorrect type", "buffer");
 
 			if (Widget.Document != null)
-				Widget.Document.ClearValue (FlowDocument.PageWidthProperty);
-			Widget.Document = buf.ToFlowDocument ();
-			Widget.Document.SetBinding (FlowDocument.PageWidthProperty, new Binding ("ActualWidth") { Source = Widget });
+				Widget.Document.ClearValue(FlowDocument.PageWidthProperty);
+			Widget.Document = buf.ToFlowDocument();
+			Widget.Document.SetBinding(FlowDocument.PageWidthProperty, new Binding("ActualWidth") { Source = Widget });
 			Widget.IsDocumentEnabled = true;
 			Widget.Document.IsEnabled = true;
 			Widget.IsReadOnly = true;
@@ -120,37 +126,40 @@ namespace Xwt.WPFBackend
 			XmlWriter writer;
 			FlowDocument doc;
 
-			public RichTextBuffer ()
+			public RichTextBuffer()
 			{
-				builder = new StringBuilder ();
-				writer = XmlWriter.Create (builder, new XmlWriterSettings () { OmitXmlDeclaration = true, NewLineOnAttributes = true, Indent = true, IndentChars = "\t" });
-				writer.WriteStartElement ("FlowDocument", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
+				builder = new StringBuilder();
+				writer = XmlWriter.Create(builder, new XmlWriterSettings() { OmitXmlDeclaration = true, NewLineOnAttributes = true, Indent = true, IndentChars = "\t" });
+				writer.WriteStartElement("FlowDocument", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
 			}
 
-			public void EmitText (string text)
+			public void EmitText(string text)
 			{
 				if (string.IsNullOrEmpty(text))
 					return;
 
-				var lines = text.Split (new[] { Environment.NewLine }, StringSplitOptions.None);
+				var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 				var first = true;
-				foreach (var line in lines) {
-					if (!first) {
-						writer.WriteStartElement ("LineBreak");
-						writer.WriteEndElement ();
+				foreach (var line in lines)
+				{
+					if (!first)
+					{
+						writer.WriteStartElement("LineBreak");
+						writer.WriteEndElement();
 					}
-					if (!string.IsNullOrEmpty (line)) {
-						writer.WriteElementString ("Run", line);
+					if (!string.IsNullOrEmpty(line))
+					{
+						writer.WriteElementString("Run", line);
 					}
 					first = false;
 				}
 			}
 
-			public void EmitStartHeader (int level)
+			public void EmitStartHeader(int level)
 			{
-				EmitStartParagraph (0);
-				writer.WriteStartElement ("Span");
-				writer.WriteAttributeString ("FontSize", (FontSize + HeaderIncrement * level).ToString ());
+				EmitStartParagraph(0);
+				writer.WriteStartElement("Span");
+				writer.WriteAttributeString("FontSize", (FontSize + HeaderIncrement * level).ToString());
 			}
 
 			public void EmitEndHeader()
@@ -159,35 +168,35 @@ namespace Xwt.WPFBackend
 				EmitEndParagraph();
 			}
 
-			public void EmitOpenList ()
+			public void EmitOpenList()
 			{
-				writer.WriteStartElement ("List");
+				writer.WriteStartElement("List");
 			}
 
-			public void EmitOpenBullet ()
+			public void EmitOpenBullet()
 			{
-				writer.WriteStartElement ("ListItem");
-				EmitStartParagraph (0);
+				writer.WriteStartElement("ListItem");
+				EmitStartParagraph(0);
 			}
 
-			public void EmitCloseBullet ()
+			public void EmitCloseBullet()
 			{
-				writer.WriteEndElement ();
-				writer.WriteEndElement ();
+				writer.WriteEndElement();
+				writer.WriteEndElement();
 			}
 
-			public void EmitCloseList ()
+			public void EmitCloseList()
 			{
 				// Close the list
-				writer.WriteEndElement ();
+				writer.WriteEndElement();
 			}
 
-			public void EmitStartLink (string href, string title)
+			public void EmitStartLink(string href, string title)
 			{
-				writer.WriteStartElement ("Hyperlink");
-				writer.WriteAttributeString ("NavigateUri", href);
-				if (!string.IsNullOrEmpty (title))
-					writer.WriteAttributeString ("ToolTip", title);
+				writer.WriteStartElement("Hyperlink");
+				writer.WriteAttributeString("NavigateUri", href);
+				if (!string.IsNullOrEmpty(title))
+					writer.WriteAttributeString("ToolTip", title);
 			}
 
 			public void EmitEndLink()
@@ -196,79 +205,81 @@ namespace Xwt.WPFBackend
 			}
 
 			int rtbCounter;
-			public void EmitCodeBlock (string code)
+			public void EmitCodeBlock(string code)
 			{
-				writer.WriteStartElement ("BlockUIContainer");
-				writer.WriteAttributeString ("Margin", "15");
+				writer.WriteStartElement("BlockUIContainer");
+				writer.WriteAttributeString("Margin", "15");
 
 				string name = "rtb" + (rtbCounter++);
 
-				writer.WriteStartElement ("RichTextBox");
-				writer.WriteAttributeString ("Name", name);
-				writer.WriteAttributeString ("HorizontalScrollBarVisibility", "Hidden");
+				writer.WriteStartElement("RichTextBox");
+				writer.WriteAttributeString("Name", name);
+				writer.WriteAttributeString("HorizontalScrollBarVisibility", "Hidden");
 
-				writer.WriteStartElement ("FlowDocument");
+				writer.WriteStartElement("FlowDocument");
 				//writer.WriteAttributeString ("PageWidth", "1000");
-				writer.WriteAttributeString ("PageWidth", "{Binding ElementName=" + name + ",Path=ActualWidth}");
-				writer.WriteStartElement ("Paragraph");
+				writer.WriteAttributeString("PageWidth", "{Binding ElementName=" + name + ",Path=ActualWidth}");
+				writer.WriteStartElement("Paragraph");
 
-				writer.WriteAttributeString ("xml", "space", null, "preserve");
-				writer.WriteAttributeString ("FontFamily", "Global Monospace");
-				writer.WriteString (code);
+				writer.WriteAttributeString("xml", "space", null, "preserve");
+				writer.WriteAttributeString("FontFamily", "Global Monospace");
+				writer.WriteString(code);
 
-				writer.WriteEndElement ();
-				writer.WriteEndElement ();
-				writer.WriteEndElement ();
-				writer.WriteEndElement ();
+				writer.WriteEndElement();
+				writer.WriteEndElement();
+				writer.WriteEndElement();
+				writer.WriteEndElement();
 			}
 
-			public void EmitText (string text, RichTextInlineStyle style)
+			public void EmitText(string text, RichTextInlineStyle style)
 			{
-				switch (style) {
-				case RichTextInlineStyle.Bold:
-				case RichTextInlineStyle.Italic:
-					writer.WriteStartElement (style.ToString ());
-					EmitText (text);
-					break;
+				switch (style)
+				{
+					case RichTextInlineStyle.Bold:
+					case RichTextInlineStyle.Italic:
+						writer.WriteStartElement(style.ToString());
+						EmitText(text);
+						break;
 
-				case RichTextInlineStyle.Monospace:
-					writer.WriteStartElement ("Run");
-					writer.WriteAttributeString ("FontFamily", "Global Monospace");
-					writer.WriteString (text);
-					break;
+					case RichTextInlineStyle.Monospace:
+						writer.WriteStartElement("Run");
+						writer.WriteAttributeString("FontFamily", "Global Monospace");
+						writer.WriteString(text);
+						break;
 
-				default:
-					EmitText (text);
-					return;
+					default:
+						EmitText(text);
+						return;
 				}
-				writer.WriteEndElement ();
+				writer.WriteEndElement();
 			}
 
-			public void EmitStartParagraph (int indentLevel)
+			public void EmitStartParagraph(int indentLevel)
 			{
 				//FIXME: indentLevel
-				writer.WriteStartElement ("Paragraph");
+				writer.WriteStartElement("Paragraph");
 			}
 
-			public void EmitEndParagraph ()
+			public void EmitEndParagraph()
 			{
-				writer.WriteEndElement ();
+				writer.WriteEndElement();
 			}
 
-			public void EmitHorizontalRuler ()
+			public void EmitHorizontalRuler()
 			{
 				writer.WriteStartElement("BlockUIContainer");
-				writer.WriteAttributeString ("Margin", "0,0,0,0");
+				writer.WriteAttributeString("Margin", "0,0,0,0");
 				writer.WriteElementString("Separator", "");
 				writer.WriteEndElement();
 			}
 
-			public FlowDocument ToFlowDocument ()
+			public FlowDocument ToFlowDocument()
 			{
-				if (doc == null) {
-					writer.WriteEndElement ();
-					writer.Flush ();
-					doc = (FlowDocument) XamlReader.Parse (builder.ToString ());
+				if (doc == null)
+				{
+					writer.WriteEndElement();
+					writer.Flush();
+					doc = (FlowDocument)XamlReader.Parse(builder.ToString());
 					builder = null;
 					writer = null;
 				}

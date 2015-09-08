@@ -39,70 +39,70 @@ namespace Xwt.WPFBackend
 	public class WpfTextLayoutBackendHandler
 		: TextLayoutBackendHandler
 	{
-		public override object Create ()
+		public override object Create()
 		{
-			return new TextLayoutBackend ();
+			return new TextLayoutBackend();
 		}
 
-		public override void SetWidth (object backend, double value)
+		public override void SetWidth(object backend, double value)
 		{
 			var t = (TextLayoutBackend)backend;
 			t.SetWidth(value);
 		}
 
-		public override void SetHeight (object backend, double value)
+		public override void SetHeight(object backend, double value)
 		{
 			var t = (TextLayoutBackend)backend;
 			t.SetHeight(value);
 		}
 
-		public override void SetText (object backend, string text)
+		public override void SetText(object backend, string text)
 		{
 			var t = (TextLayoutBackend)backend;
 			t.SetText(text);
 		}
 
-		public override void SetFont (object backend, Font font)
+		public override void SetFont(object backend, Font font)
 		{
 			var t = (TextLayoutBackend)backend;
-			t.SetFont (font);
+			t.SetFont(font);
 		}
 
-		public override void SetTrimming (object backend, Xwt.Drawing.TextTrimming textTrimming)
+		public override void SetTrimming(object backend, Xwt.Drawing.TextTrimming textTrimming)
 		{
 			var t = (TextLayoutBackend)backend;
 			t.SetTrimming(textTrimming);
 		}
 
-		public override Size GetSize (object backend)
+		public override Size GetSize(object backend)
 		{
 			var t = (TextLayoutBackend)backend;
-			return new Size (t.FormattedText.WidthIncludingTrailingWhitespace, t.FormattedText.Height);
+			return new Size(t.FormattedText.WidthIncludingTrailingWhitespace, t.FormattedText.Height);
 		}
 
-		public override Point GetCoordinateFromIndex (object backend, int index)
+		public override Point GetCoordinateFromIndex(object backend, int index)
 		{
 			return Point.Zero;
 		}
 
-		public override int GetIndexFromCoordinates (object backend, double x, double y)
+		public override int GetIndexFromCoordinates(object backend, double x, double y)
 		{
 			return 0;
 		}
 
-		public override double GetBaseline (object backend)
+		public override double GetBaseline(object backend)
 		{
 			var t = (TextLayoutBackend)backend;
 			return t.FormattedText.Baseline;
 		}
 
-		public override void AddAttribute (object backend, TextAttribute attribute)
+		public override void AddAttribute(object backend, TextAttribute attribute)
 		{
 			var t = (TextLayoutBackend)backend;
 			t.AddAttribute(attribute);
 		}
 
-		public override void ClearAttributes (object backend)
+		public override void ClearAttributes(object backend)
 		{
 			var t = (TextLayoutBackend)backend;
 			t.ClearAttributes();
@@ -127,7 +127,7 @@ namespace Xwt.WPFBackend
 			get
 			{
 				if (formattedText == null || needsRebuild)
-					Rebuild ();
+					Rebuild();
 				return formattedText;
 			}
 		}
@@ -181,7 +181,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		void ApplyFont ()
+		void ApplyFont()
 		{
 			var f = (FontData)Toolkit.GetBackend(Font);
 			FormattedText.SetFontFamily(f.Family);
@@ -201,7 +201,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		void ApplyTrimming ()
+		void ApplyTrimming()
 		{
 			switch (textTrimming)
 			{
@@ -216,7 +216,8 @@ namespace Xwt.WPFBackend
 
 		public void SetDefaultForeground(SolidColorBrush fg)
 		{
-			if (fg.Color != brush.Color) {
+			if (fg.Color != brush.Color)
+			{
 				brush = fg;
 				needsRebuild = true;
 			}
@@ -231,7 +232,7 @@ namespace Xwt.WPFBackend
 				ApplyAttribute(attribute);
 		}
 
-		public void ClearAttributes ()
+		public void ClearAttributes()
 		{
 			attributes = null;
 			needsRebuild = true;
@@ -272,7 +273,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void Rebuild ()
+		public void Rebuild()
 		{
 			needsRebuild = false;
 			var dir = System.Windows.FlowDirection.LeftToRight;

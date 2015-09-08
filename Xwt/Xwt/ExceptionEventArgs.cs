@@ -29,7 +29,7 @@ namespace Xwt
 {
 	public sealed class ExceptionEventArgs : EventArgs
 	{
-		public ExceptionEventArgs (Exception exception)
+		public ExceptionEventArgs(Exception exception)
 		{
 			this.exception = exception;
 		}

@@ -36,18 +36,21 @@ namespace Xwt
 
 	internal static class CheckBoxStateOperations
 	{
-		public static bool IsValid (this CheckBoxState state) {
-			switch(state) {
-			case CheckBoxState.Off:
-			case CheckBoxState.On:
-			case CheckBoxState.Mixed:
-				return true;
-			default:
-				return false;
+		public static bool IsValid(this CheckBoxState state)
+		{
+			switch (state)
+			{
+				case CheckBoxState.Off:
+				case CheckBoxState.On:
+				case CheckBoxState.Mixed:
+					return true;
+				default:
+					return false;
 			}
 		}
 
-		public static CheckBoxState ToCheckBoxState (this bool active) {
+		public static CheckBoxState ToCheckBoxState(this bool active)
+		{
 			return active ? CheckBoxState.On : CheckBoxState.Off;
 		}
 	}

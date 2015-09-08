@@ -41,14 +41,14 @@ namespace Xwt.WPFBackend
 
 		public ScrollPolicy VerticalScrollPolicy
 		{
-			get { return GetScrollPolicy (ScrollViewer.VerticalScrollBarVisibility); }
-			set { ScrollViewer.VerticalScrollBarVisibility = GetScrollVisibility (value); }
+			get { return GetScrollPolicy(ScrollViewer.VerticalScrollBarVisibility); }
+			set { ScrollViewer.VerticalScrollBarVisibility = GetScrollVisibility(value); }
 		}
 
 		public ScrollPolicy HorizontalScrollPolicy
 		{
-			get { return GetScrollPolicy (ScrollViewer.HorizontalScrollBarVisibility); }
-			set { ScrollViewer.HorizontalScrollBarVisibility = GetScrollVisibility (value); }
+			get { return GetScrollPolicy(ScrollViewer.HorizontalScrollBarVisibility); }
+			set { ScrollViewer.HorizontalScrollBarVisibility = GetScrollVisibility(value); }
 		}
 
 		IScrollControlBackend vscrollControl;
@@ -71,7 +71,7 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				return VerticalScrollPolicy != ScrollPolicy.Never ? - 1 : -2;
+				return VerticalScrollPolicy != ScrollPolicy.Never ? -1 : -2;
 			}
 		}
 
@@ -93,7 +93,7 @@ namespace Xwt.WPFBackend
 					return;
 
 				if (value)
-					ScrollViewer.ClearValue (Control.BorderBrushProperty);
+					ScrollViewer.ClearValue(Control.BorderBrushProperty);
 				else
 					ScrollViewer.BorderBrush = null;
 
@@ -101,35 +101,37 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void SetChild (IWidgetBackend child)
+		public void SetChild(IWidgetBackend child)
 		{
 			// Remove the old child before adding the new one
 			// The child has to be removed from the viewport
 
-			if (ScrollViewer.Content != null) {
+			if (ScrollViewer.Content != null)
+			{
 				var port = (CustomScrollViewPort)ScrollViewer.Content;
-				port.Children.Remove (port.Children[0]);
+				port.Children.Remove(port.Children[0]);
 			}
 
 			if (child == null)
 				return;
 
-			SetChildPlacement (child);
+			SetChildPlacement(child);
 			ScrollAdjustmentBackend vbackend = null, hbackend = null;
 			var widget = (WidgetBackend)child;
 
-			if (widget.EventSink.SupportsCustomScrolling ()) {
-				vscrollControl = vbackend = new ScrollAdjustmentBackend ();
-				hscrollControl = hbackend = new ScrollAdjustmentBackend ();
+			if (widget.EventSink.SupportsCustomScrolling())
+			{
+				vscrollControl = vbackend = new ScrollAdjustmentBackend();
+				hscrollControl = hbackend = new ScrollAdjustmentBackend();
 			}
-			ScrollViewer.Content = new CustomScrollViewPort (widget.NativeWidget, vbackend, hbackend);
+			ScrollViewer.Content = new CustomScrollViewPort(widget.NativeWidget, vbackend, hbackend);
 			ScrollViewer.CanContentScroll = true;
 
 			if (vbackend != null)
-				widget.EventSink.SetScrollAdjustments (hbackend, vbackend);
+				widget.EventSink.SetScrollAdjustments(hbackend, vbackend);
 		}
-		
-		public void SetChildSize (Size s)
+
+		public void SetChildSize(Size s)
 		{
 
 		}
@@ -138,31 +140,35 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				return new Rectangle (	ScrollViewer.HorizontalOffset,
+				return new Rectangle(ScrollViewer.HorizontalOffset,
 										ScrollViewer.VerticalOffset,
 										ScrollViewer.ViewportWidth,
 										ScrollViewer.ViewportHeight);
 			}
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
+			base.EnableEvent(eventId);
 
-			if (eventId is ScrollViewEvent) {
-				switch ((ScrollViewEvent)eventId) {
+			if (eventId is ScrollViewEvent)
+			{
+				switch ((ScrollViewEvent)eventId)
+				{
 					case ScrollViewEvent.VisibleRectChanged:
 						break;
 				}
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
 			base.DisableEvent(eventId);
 
-			if (eventId is ScrollViewEvent) {
-				switch ((ScrollViewEvent)eventId) {
+			if (eventId is ScrollViewEvent)
+			{
+				switch ((ScrollViewEvent)eventId)
+				{
 					case ScrollViewEvent.VisibleRectChanged:
 						break;
 				}
@@ -171,13 +177,14 @@ namespace Xwt.WPFBackend
 
 		protected ScrollViewer ScrollViewer
 		{
-			get { return (ScrollViewer) Widget; }
+			get { return (ScrollViewer)Widget; }
 			set { Widget = value; }
 		}
 
-		private ScrollBarVisibility GetScrollVisibility (ScrollPolicy policy)
+		private ScrollBarVisibility GetScrollVisibility(ScrollPolicy policy)
 		{
-			switch (policy) {
+			switch (policy)
+			{
 				case ScrollPolicy.Always:
 					return ScrollBarVisibility.Visible;
 				case ScrollPolicy.Automatic:
@@ -190,9 +197,10 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		private ScrollPolicy GetScrollPolicy (ScrollBarVisibility visibility)
+		private ScrollPolicy GetScrollPolicy(ScrollBarVisibility visibility)
 		{
-			switch (visibility) {
+			switch (visibility)
+			{
 				case ScrollBarVisibility.Auto:
 					return ScrollPolicy.Automatic;
 				case ScrollBarVisibility.Visible:

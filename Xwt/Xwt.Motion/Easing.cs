@@ -30,29 +30,30 @@ using System.Diagnostics;
 
 namespace Xwt.Motion
 {
-	
+
 	public class Easing
 	{
-		public static readonly Easing Linear = new Easing (x => x);
-		
-		public static readonly Easing SinOut = new Easing (x => Math.Sin (x * Math.PI * 0.5f));
-		public static readonly Easing SinIn = new Easing (x => 1.0f - Math.Cos (x * Math.PI * 0.5f));
-		public static readonly Easing SinInOut = new Easing (x => -Math.Cos (Math.PI * x) / 2.0f + 0.5f);
-		
-		public static readonly Easing CubicIn = new Easing (x => x * x * x);
-		public static readonly Easing CubicOut = new Easing (x => Math.Pow (x - 1.0f, 3.0f) + 1.0f);
-		public static readonly Easing CubicInOut = new Easing (x => x < 0.5f ? Math.Pow (x * 2.0f, 3.0f) / 2.0f :
-			(Math.Pow ((x-1)*2.0f, 3.0f) + 2.0f) / 2.0f);
-		
+		public static readonly Easing Linear = new Easing(x => x);
+
+		public static readonly Easing SinOut = new Easing(x => Math.Sin(x * Math.PI * 0.5f));
+		public static readonly Easing SinIn = new Easing(x => 1.0f - Math.Cos(x * Math.PI * 0.5f));
+		public static readonly Easing SinInOut = new Easing(x => -Math.Cos(Math.PI * x) / 2.0f + 0.5f);
+
+		public static readonly Easing CubicIn = new Easing(x => x * x * x);
+		public static readonly Easing CubicOut = new Easing(x => Math.Pow(x - 1.0f, 3.0f) + 1.0f);
+		public static readonly Easing CubicInOut = new Easing(x => x < 0.5f ? Math.Pow(x * 2.0f, 3.0f) / 2.0f :
+		   (Math.Pow((x - 1) * 2.0f, 3.0f) + 2.0f) / 2.0f);
+
 		public static readonly Easing BounceOut;
 		public static readonly Easing BounceIn;
-		
-		public static readonly Easing SpringIn = new Easing (x => x * x * ((1.70158f + 1) * x - 1.70158f));
-		public static readonly Easing SpringOut = new Easing (x => (x - 1) * (x - 1) * ((1.70158f + 1) * (x - 1) + 1.70158f) + 1);
-		
-		static Easing ()
+
+		public static readonly Easing SpringIn = new Easing(x => x * x * ((1.70158f + 1) * x - 1.70158f));
+		public static readonly Easing SpringOut = new Easing(x => (x - 1) * (x - 1) * ((1.70158f + 1) * (x - 1) + 1.70158f) + 1);
+
+		static Easing()
 		{
-			BounceOut = new Easing (p => {
+			BounceOut = new Easing(p =>
+			{
 				if (p < (1 / 2.75f))
 				{
 					return 7.5625f * p * p;
@@ -60,37 +61,37 @@ namespace Xwt.Motion
 				else if (p < (2 / 2.75f))
 				{
 					p -= (1.5f / 2.75f);
-					
+
 					return 7.5625f * p * p + .75f;
 				}
 				else if (p < (2.5f / 2.75f))
 				{
 					p -= (2.25f / 2.75f);
-					
+
 					return 7.5625f * p * p + .9375f;
 				}
 				else
 				{
 					p -= (2.625f / 2.75f);
-					
+
 					return 7.5625f * p * p + .984375f;
 				}
 			});
-			
-			BounceIn = new Easing (p => 1.0f - BounceOut.Func (p));
+
+			BounceIn = new Easing(p => 1.0f - BounceOut.Func(p));
 		}
 
-		internal Func<double, double> Func { get; private set; } 
+		internal Func<double, double> Func { get; private set; }
 
-		public Easing (Func<double, double> easingFunc)
+		public Easing(Func<double, double> easingFunc)
 		{
 			Func = easingFunc;
 		}
 
-		public static implicit operator Easing (Func<double, double> func)
+		public static implicit operator Easing(Func<double, double> func)
 		{
-			return new Easing (func);
+			return new Easing(func);
 		}
 	}
-	
+
 }

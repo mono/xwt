@@ -7,10 +7,10 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-    class CanvasCellViewBackend: CellViewBackend, ICanvasCellViewBackend
-    {
-        public void QueueDraw()
-        {
-        }
-    }
+	class CanvasCellViewBackend : CellViewBackend, ICanvasCellViewBackend
+	{
+		public void QueueDraw()
+		{
+		}
+	}
 }

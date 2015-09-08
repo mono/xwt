@@ -27,13 +27,13 @@ using System;
 
 namespace Xwt
 {
-	public class TreeViewRowEventArgs: EventArgs
+	public class TreeViewRowEventArgs : EventArgs
 	{
-		public TreeViewRowEventArgs (TreePosition position)
+		public TreeViewRowEventArgs(TreePosition position)
 		{
 			Position = position;
 		}
-		
+
 		public TreePosition Position { get; private set; }
 	}
 }

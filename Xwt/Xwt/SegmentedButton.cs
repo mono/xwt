@@ -36,86 +36,95 @@ namespace Xwt
 	/// <summary>
 	/// A segmented button is an horizontal row of button homogeneously sized
 	/// </summary>
-	[BackendType (typeof(ISegmentedButtonBackend))]
+	[BackendType(typeof(ISegmentedButtonBackend))]
 	public class SegmentedButton : Widget
 	{
 		class ButtonCollection : Collection<Button>
 		{
 			SegmentedButton parent;
 
-			ISegmentedButtonBackend Backend {
-				get {
+			ISegmentedButtonBackend Backend
+			{
+				get
+				{
 					return parent.Backend;
 				}
 			}
 
-			internal ButtonCollection (SegmentedButton parent)
+			internal ButtonCollection(SegmentedButton parent)
 			{
 				this.parent = parent;
 			}
 
-			protected override void InsertItem (int index, Button item)
+			protected override void InsertItem(int index, Button item)
 			{
-				parent.RegisterChild (item);
-				Backend.AddChildButton (index, item);
-				base.InsertItem (index, item);
+				parent.RegisterChild(item);
+				Backend.AddChildButton(index, item);
+				base.InsertItem(index, item);
 			}
 
-			protected override void RemoveItem (int index)
+			protected override void RemoveItem(int index)
 			{
-				parent.UnregisterChild (this [index]);
-				Backend.RemoveChildButton (index);
-				base.RemoveItem (index);
+				parent.UnregisterChild(this[index]);
+				Backend.RemoveChildButton(index);
+				base.RemoveItem(index);
 			}
 
-			protected override void SetItem (int index, Button item)
+			protected override void SetItem(int index, Button item)
 			{
-				parent.UnregisterChild (this [index]);
-				parent.RegisterChild (item);
-				Backend.ReplaceChildButton (index, item);
-				base.SetItem (index, item);
+				parent.UnregisterChild(this[index]);
+				parent.RegisterChild(item);
+				Backend.ReplaceChildButton(index, item);
+				base.SetItem(index, item);
 			}
 
-			protected override void ClearItems ()
+			protected override void ClearItems()
 			{
-				for (int i = 0; i < Count; i++) {
-					parent.UnregisterChild (this [i]);
-					Backend.RemoveChildButton (i);
+				for (int i = 0; i < Count; i++)
+				{
+					parent.UnregisterChild(this[i]);
+					Backend.RemoveChildButton(i);
 				}
-				base.ClearItems ();
+				base.ClearItems();
 			}
 		}
 
 		ButtonCollection items;
 
-		public SegmentedButton ()
+		public SegmentedButton()
 		{
 		}
 
-		public SegmentedButton (IEnumerable<Button> buttons)
+		public SegmentedButton(IEnumerable<Button> buttons)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			foreach (var button in buttons)
-				Items.Add (button);
+				Items.Add(button);
 		}
 
-		ISegmentedButtonBackend Backend {
-			get { return (ISegmentedButtonBackend) BackendHost.Backend; }
+		ISegmentedButtonBackend Backend
+		{
+			get { return (ISegmentedButtonBackend)BackendHost.Backend; }
 		}
 
-		public Collection<Button> Items {
-			get {
+		public Collection<Button> Items
+		{
+			get
+			{
 				if (items == null)
-					items = new ButtonCollection (this);
+					items = new ButtonCollection(this);
 				return items;
 			}
 		}
 
-		public int ButtonDefaultSpacing {
-			get {
+		public int ButtonDefaultSpacing
+		{
+			get
+			{
 				return Backend.Spacing;
 			}
-			set {
+			set
+			{
 				Backend.Spacing = value;
 			}
 		}

@@ -39,32 +39,35 @@ namespace Xwt.WPFBackend
 {
 	public class LinkLabelBackend : WidgetBackend, ILinkLabelBackend
 	{
-		public LinkLabelBackend ()
+		public LinkLabelBackend()
 		{
-			Widget = new WpfLinkLabel ();
+			Widget = new WpfLinkLabel();
 		}
 
-		new ILinkLabelEventSink EventSink {
-			get { return (ILinkLabelEventSink) base.EventSink; }
+		new ILinkLabelEventSink EventSink
+		{
+			get { return (ILinkLabelEventSink)base.EventSink; }
 		}
 
-		new WpfLinkLabel Widget {
-			get { return (WpfLinkLabel) base.Widget; }
+		new WpfLinkLabel Widget
+		{
+			get { return (WpfLinkLabel)base.Widget; }
 			set { base.Widget = value; }
 		}
 
-		public Uri Uri {
+		public Uri Uri
+		{
 			get { return Widget.Hyperlink.NavigateUri; }
 			set { Widget.Hyperlink.NavigateUri = value; }
 		}
 
 		public string Text
 		{
-			get { return (string) Widget.Content; }
+			get { return (string)Widget.Content; }
 			set
 			{
 				Widget.Text.Text = value;
-				Widget.InvalidateMeasure ();
+				Widget.InvalidateMeasure();
 			}
 		}
 
@@ -74,8 +77,8 @@ namespace Xwt.WPFBackend
 
 		public Alignment TextAlignment
 		{
-			get { return DataConverter.ToXwtAlignment (Widget.HorizontalContentAlignment); }
-			set { Widget.HorizontalContentAlignment = DataConverter.ToWpfAlignment (value); }
+			get { return DataConverter.ToXwtAlignment(Widget.HorizontalContentAlignment); }
+			set { Widget.HorizontalContentAlignment = DataConverter.ToWpfAlignment(value); }
 		}
 
 		// TODO
@@ -85,7 +88,8 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
-		public WrapMode Wrap {
+		public WrapMode Wrap
+		{
 			get;
 			set;
 		}
@@ -94,42 +98,47 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				return Widget.Foreground.ToXwtColor ();
+				return Widget.Foreground.ToXwtColor();
 			}
 			set
 			{
-				Widget.Foreground = ResPool.GetSolidBrush (value);
+				Widget.Foreground = ResPool.GetSolidBrush(value);
 			}
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
-			if (eventId is LinkLabelEvent) {
-				switch ((LinkLabelEvent) eventId) {
-				case LinkLabelEvent.NavigateToUrl:
-					Widget.Hyperlink.Click += HandleClicked;
-					break;
+			base.EnableEvent(eventId);
+			if (eventId is LinkLabelEvent)
+			{
+				switch ((LinkLabelEvent)eventId)
+				{
+					case LinkLabelEvent.NavigateToUrl:
+						Widget.Hyperlink.Click += HandleClicked;
+						break;
 				}
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
-			if (eventId is LinkLabelEvent) {
-				switch ((LinkLabelEvent) eventId) {
-				case LinkLabelEvent.NavigateToUrl:
-					Widget.Hyperlink.Click -= HandleClicked;
-					break;
+			base.DisableEvent(eventId);
+			if (eventId is LinkLabelEvent)
+			{
+				switch ((LinkLabelEvent)eventId)
+				{
+					case LinkLabelEvent.NavigateToUrl:
+						Widget.Hyperlink.Click -= HandleClicked;
+						break;
 				}
 			}
 		}
 
-		void HandleClicked (object sender, EventArgs e)
+		void HandleClicked(object sender, EventArgs e)
 		{
-			Context.InvokeUserCode (() => {
-				EventSink.OnNavigateToUrl (Uri);
+			Context.InvokeUserCode(() =>
+			{
+				EventSink.OnNavigateToUrl(Uri);
 			});
 		}
 	}
@@ -138,28 +147,30 @@ namespace Xwt.WPFBackend
 	{
 		public WidgetBackend Backend { get; set; }
 
-		public System.Windows.Documents.Hyperlink Hyperlink {
-			get; set;
-		}
-
-		public Run Text {
-			get; set;
-		}
-
-		public WpfLinkLabel ()
+		public System.Windows.Documents.Hyperlink Hyperlink
 		{
-			Text = new Run ();
-			Hyperlink = new System.Windows.Documents.Hyperlink (Text);
+			get; set;
+		}
 
-			var content = new TextBlock ();
-			content.Inlines.Add (Hyperlink);
+		public Run Text
+		{
+			get; set;
+		}
+
+		public WpfLinkLabel()
+		{
+			Text = new Run();
+			Hyperlink = new System.Windows.Documents.Hyperlink(Text);
+
+			var content = new TextBlock();
+			content.Inlines.Add(Hyperlink);
 			Content = content;
 		}
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
+			var s = base.MeasureOverride(constraint);
+			return Backend.MeasureOverride(constraint, s);
 		}
 	}
 }

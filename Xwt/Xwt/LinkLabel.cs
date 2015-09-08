@@ -31,97 +31,109 @@ namespace Xwt
 {
 	public class NavigateToUrlEventArgs : EventArgs
 	{
-		public bool Handled {
+		public bool Handled
+		{
 			get; private set;
 		}
 
-		public Uri Uri {
+		public Uri Uri
+		{
 			get; private set;
 		}
 
-		public NavigateToUrlEventArgs (Uri uri)
+		public NavigateToUrlEventArgs(Uri uri)
 		{
 			Uri = uri;
 		}
 
-		public void SetHandled ()
+		public void SetHandled()
 		{
 			Handled = true;
 		}
 	}
 
-	[BackendType (typeof(ILinkLabelBackend))]
-	public class LinkLabel: Label
+	[BackendType(typeof(ILinkLabelBackend))]
+	public class LinkLabel : Label
 	{
 		protected new class WidgetBackendHost : Label.WidgetBackendHost, ILinkLabelEventSink
 		{
-			public void OnNavigateToUrl (Uri uri)
+			public void OnNavigateToUrl(Uri uri)
 			{
-				((LinkLabel) Parent).OnNavigateToUrl (new NavigateToUrlEventArgs (uri));
+				((LinkLabel)Parent).OnNavigateToUrl(new NavigateToUrlEventArgs(uri));
 			}
 		}
 
 		EventHandler<NavigateToUrlEventArgs> navigateToUrl;
-		public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl {
-			add {
-				BackendHost.OnBeforeEventAdd (LinkLabelEvent.NavigateToUrl, navigateToUrl);
+		public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(LinkLabelEvent.NavigateToUrl, navigateToUrl);
 				navigateToUrl += value;
 			}
-			remove {
+			remove
+			{
 				navigateToUrl -= value;
-				BackendHost.OnAfterEventRemove (LinkLabelEvent.NavigateToUrl, navigateToUrl);
+				BackendHost.OnAfterEventRemove(LinkLabelEvent.NavigateToUrl, navigateToUrl);
 			}
 		}
 
-		ILinkLabelBackend Backend {
-			get { return (ILinkLabelBackend) BackendHost.Backend; }
+		ILinkLabelBackend Backend
+		{
+			get { return (ILinkLabelBackend)BackendHost.Backend; }
 		}
 
-		public Uri Uri {
+		public Uri Uri
+		{
 			get { return Backend.Uri; }
-			set {
+			set
+			{
 				Backend.Uri = value;
-				if (value != null) {
+				if (value != null)
+				{
 					// add a dummy handler so the default action is enabled
 					NavigateToUrl += DummyHandleNavigateToUrl;
-				} else {
+				}
+				else
+				{
 					NavigateToUrl -= DummyHandleNavigateToUrl;
 				}
 			}
 		}
 
-		static LinkLabel ()
+		static LinkLabel()
 		{
-			MapEvent (LinkLabelEvent.NavigateToUrl, typeof (LinkLabel), "OnNavigateToUrl");
+			MapEvent(LinkLabelEvent.NavigateToUrl, typeof(LinkLabel), "OnNavigateToUrl");
 		}
 
-		public LinkLabel ()
+		public LinkLabel()
 		{
 		}
 
-		public LinkLabel (string text)
+		public LinkLabel(string text)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Text = text;
 		}
 
-		protected override BackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
 
-		protected virtual void OnNavigateToUrl (NavigateToUrlEventArgs e)
+		protected virtual void OnNavigateToUrl(NavigateToUrlEventArgs e)
 		{
 			if (navigateToUrl != null)
-				navigateToUrl (this, e);
+				navigateToUrl(this, e);
 
-			if (!e.Handled && e.Uri != null) {
-				Desktop.OpenUrl (e.Uri);
-				e.SetHandled ();
+			if (!e.Handled && e.Uri != null)
+			{
+				Desktop.OpenUrl(e.Uri);
+				e.SetHandled();
 			}
 		}
 
-		static void DummyHandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)
+		static void DummyHandleNavigateToUrl(object sender, NavigateToUrlEventArgs e)
 		{
 		}
 	}

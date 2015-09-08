@@ -40,72 +40,76 @@ namespace Xwt
 	/// </summary>
 	public class DragOperation
 	{
-		TransferDataSource data = new TransferDataSource ();
+		TransferDataSource data = new TransferDataSource();
 		Widget source;
 		DragDropAction action;
 		bool started;
 		Image image;
 		double hotX;
 		double hotY;
-		
+
 		/// <summary>
 		/// Occurs when the drag operation has finished.
 		/// </summary>
 		public event EventHandler<DragFinishedEventArgs> Finished;
-		
+
 		/// <summary>
 		/// Initializes a new <see cref="Xwt.DragOperation"/> from a specified widget.
 		/// </summary>
 		/// <param name="w">The widget to start the drag operation from.</param>
-		internal DragOperation (Widget w)
+		internal DragOperation(Widget w)
 		{
 			source = w;
 			AllowedActions = DragDropAction.All;
 		}
-		
+
 		/// <summary>
 		/// A bitmask of the allowed drag actions for this drag.
 		/// </summary>
-		public DragDropAction AllowedActions {
-			get { return action; } 
-			set {
+		public DragDropAction AllowedActions
+		{
+			get { return action; }
+			set
+			{
 				if (started)
-					throw new InvalidOperationException ("The drag action must be set before starting the drag operation");
+					throw new InvalidOperationException("The drag action must be set before starting the drag operation");
 				action = value;
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets the data collection of data transferred by this drag.
 		/// </summary>
 		/// <value>The data.</value>
-		public TransferDataSource Data {
+		public TransferDataSource Data
+		{
 			get { return data; }
 		}
-		
+
 		/// <summary>
 		/// Sets the drag image.
 		/// </summary>
 		/// <param name="image">The drag Image.</param>
 		/// <param name="hotX">The image hotspot X coordinate.</param>
 		/// <param name="hotY">The image hotspot Y coordinate.</param>
-		public void SetDragImage (Image image, double hotX, double hotY)
+		public void SetDragImage(Image image, double hotX, double hotY)
 		{
 			if (started)
-				throw new InvalidOperationException ("The drag image must be set before starting the drag operation");
+				throw new InvalidOperationException("The drag image must be set before starting the drag operation");
 			this.image = image;
 			this.hotX = hotX;
 			this.hotY = hotY;
 		}
-		
+
 		/// <summary>
 		/// Start this drag operation.
 		/// </summary>
-		public void Start ()
+		public void Start()
 		{
-			if (!started) {
+			if (!started)
+			{
 				started = true;
-				source.DragStart (GetStartData ());
+				source.DragStart(GetStartData());
 			}
 		}
 
@@ -113,27 +117,27 @@ namespace Xwt
 		/// Notifies subscriptors that the drag operation is finished.
 		/// </summary>
 		/// <param name="args">The drag finished arguments.</param>
-		internal void NotifyFinished (DragFinishedEventArgs args)
+		internal void NotifyFinished(DragFinishedEventArgs args)
 		{
 			if (Finished != null)
-				Finished (this, args);
+				Finished(this, args);
 		}
-		
+
 		/// <summary>
 		/// Gets the arguments for the starting drag operation.
 		/// </summary>
 		/// <returns>The drag start arguments.</returns>
 		/// <exception cref="System.InvalidOperationException">The drag image is not set.</exception>
-		internal DragStartData GetStartData ()
+		internal DragStartData GetStartData()
 		{
 			if (image == null)
-				throw new InvalidOperationException ("The drag image must be set before starting the drag operation");
-			image.InitForToolkit (source.Surface.ToolkitEngine);
-			return new DragStartData (data, action, image.ToBitmap ().GetBackend (), hotX, hotY);
+				throw new InvalidOperationException("The drag image must be set before starting the drag operation");
+			image.InitForToolkit(source.Surface.ToolkitEngine);
+			return new DragStartData(data, action, image.ToBitmap().GetBackend(), hotX, hotY);
 		}
-		
+
 	}
-	
+
 	/// <summary>
 	/// Interface implemented by data stores containing data for drag &amp; drop and copy &amp; paste operations
 	/// </summary>
@@ -157,27 +161,27 @@ namespace Xwt
 		/// </summary>
 		/// <value>The transferred image.</value>
 		Xwt.Drawing.Image Image { get; }
-		
+
 		/// <summary>
 		/// Gets the value identified by a specific transfer data type.
 		/// </summary>
 		/// <returns>The transferred value, or <c>null</c> if the store contains no value with the specific type.</returns>
 		/// <param name="type">The specific transfer data type.</param>
-		object GetValue (TransferDataType type);
+		object GetValue(TransferDataType type);
 
 		/// <summary>
 		/// Gets the value identified by a specific <see cref="System.Type"/>.
 		/// </summary>
 		/// <returns>The transferred value.</returns>
 		/// <typeparam name="T">The Type of the transferred value.</typeparam>
-		T GetValue<T> () where T:class;
+		T GetValue<T>() where T : class;
 
 		/// <summary>
 		/// Determines whether a value of the specified type is transferred.
 		/// </summary>
 		/// <returns><c>true</c> if this store contains a value of the specified type; otherwise, <c>false</c>.</returns>
 		/// <param name="type">The specific transfer data type.</param>
-		bool HasType (TransferDataType type);
+		bool HasType(TransferDataType type);
 	}
 }
 

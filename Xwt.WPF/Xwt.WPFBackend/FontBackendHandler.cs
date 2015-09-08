@@ -40,140 +40,145 @@ namespace Xwt.WPFBackend
 {
 	public class WpfFontBackendHandler : FontBackendHandler
 	{
-		public override object GetSystemDefaultFont ()
+		public override object GetSystemDefaultFont()
 		{
-			double size = GetPointsFromDeviceUnits (SW.SystemFonts.MessageFontSize);
+			double size = GetPointsFromDeviceUnits(SW.SystemFonts.MessageFontSize);
 
-			return new FontData (SW.SystemFonts.MessageFontFamily, size) {
+			return new FontData(SW.SystemFonts.MessageFontFamily, size)
+			{
 				Style = SW.SystemFonts.MessageFontStyle,
 				Weight = SW.SystemFonts.MessageFontWeight
 			};
 		}
 
-		public override IEnumerable<string> GetInstalledFonts ()
+		public override IEnumerable<string> GetInstalledFonts()
 		{
-			return System.Windows.Media.Fonts.SystemFontFamilies.Select (f => f.Source);
+			return System.Windows.Media.Fonts.SystemFontFamilies.Select(f => f.Source);
 		}
 
-		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
+		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces(string family)
 		{
-			var wpfFamily = new FontFamily (family);
-			foreach (var face in wpfFamily.GetTypefaces ()) {
-				var langCurrent = SW.Markup.XmlLanguage.GetLanguage (CultureInfo.CurrentCulture.IetfLanguageTag);
-				var langInvariant = SW.Markup.XmlLanguage.GetLanguage ("en-us");;
+			var wpfFamily = new FontFamily(family);
+			foreach (var face in wpfFamily.GetTypefaces())
+			{
+				var langCurrent = SW.Markup.XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
+				var langInvariant = SW.Markup.XmlLanguage.GetLanguage("en-us"); ;
 				string name;
-				if (face.FaceNames.TryGetValue (langCurrent, out name) || face.FaceNames.TryGetValue (langInvariant, out name)) {
-					var fontData = new FontData (wpfFamily, 0) {
+				if (face.FaceNames.TryGetValue(langCurrent, out name) || face.FaceNames.TryGetValue(langInvariant, out name))
+				{
+					var fontData = new FontData(wpfFamily, 0)
+					{
 						Style = face.Style,
 						Weight = face.Weight,
 						Stretch = face.Stretch
 					};
-					yield return new KeyValuePair<string, object> (name, fontData);
+					yield return new KeyValuePair<string, object>(name, fontData);
 				}
 			}
 			yield break;
 		}
 
-		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
+		public override object Create(string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			size = GetPointsFromDeviceUnits (size);
-			return new FontData (new FontFamily (fontName), size) {
-				Style = style.ToWpfFontStyle (),
-				Weight = weight.ToWpfFontWeight (),
-				Stretch = stretch.ToWpfFontStretch ()
+			size = GetPointsFromDeviceUnits(size);
+			return new FontData(new FontFamily(fontName), size)
+			{
+				Style = style.ToWpfFontStyle(),
+				Weight = weight.ToWpfFontWeight(),
+				Stretch = stretch.ToWpfFontStretch()
 			};
 		}
 
-		[System.Runtime.InteropServices.DllImport ("gdi32.dll")]
-		static extern int AddFontResourceEx (string lpszFilename, uint fl, System.IntPtr pdv);
+		[System.Runtime.InteropServices.DllImport("gdi32.dll")]
+		static extern int AddFontResourceEx(string lpszFilename, uint fl, System.IntPtr pdv);
 
-		public override bool RegisterFontFromFile (string fontPath)
+		public override bool RegisterFontFromFile(string fontPath)
 		{
-			return AddFontResourceEx (fontPath, 0x10 /* FR_PRIVATE */, System.IntPtr.Zero) > 0;
+			return AddFontResourceEx(fontPath, 0x10 /* FR_PRIVATE */, System.IntPtr.Zero) > 0;
 		}
 
-		public override object Copy (object handle)
+		public override object Copy(object handle)
 		{
 			var font = (FontData)handle;
-			return font.Clone ();
+			return font.Clone();
 		}
 
-		public override object SetSize (object handle, double size)
+		public override object SetSize(object handle, double size)
 		{
 			var font = (FontData)handle;
-			font = font.Clone ();
-			font.Size = GetPointsFromDeviceUnits (size);
+			font = font.Clone();
+			font.Size = GetPointsFromDeviceUnits(size);
 			return font;
 		}
 
-		public override object SetFamily (object handle, string family)
+		public override object SetFamily(object handle, string family)
 		{
 			var font = (FontData)handle;
-			font = font.Clone ();
-			font.Family = new FontFamily (family);
+			font = font.Clone();
+			font.Family = new FontFamily(family);
 			return font;
 		}
 
-		public override object SetStyle (object handle, FontStyle style)
+		public override object SetStyle(object handle, FontStyle style)
 		{
 			var font = (FontData)handle;
-			font = font.Clone ();
-			font.Style = DataConverter.ToWpfFontStyle (style);
+			font = font.Clone();
+			font.Style = DataConverter.ToWpfFontStyle(style);
 			return font;
 		}
 
-		public override object SetWeight (object handle, FontWeight weight)
+		public override object SetWeight(object handle, FontWeight weight)
 		{
 			var font = (FontData)handle;
-			font = font.Clone ();
-			font.Weight = DataConverter.ToWpfFontWeight (weight);
+			font = font.Clone();
+			font.Weight = DataConverter.ToWpfFontWeight(weight);
 			return font;
 		}
 
-		public override object SetStretch (object handle, FontStretch stretch)
+		public override object SetStretch(object handle, FontStretch stretch)
 		{
 			var font = (FontData)handle;
-			font = font.Clone ();
-			font.Stretch = DataConverter.ToWpfFontStretch (stretch);
+			font = font.Clone();
+			font.Stretch = DataConverter.ToWpfFontStretch(stretch);
 			return font;
 		}
 
-		public override double GetSize (object handle)
+		public override double GetSize(object handle)
 		{
 			var font = (FontData)handle;
-			return GetDeviceUnitsFromPoints (font.Size);
+			return GetDeviceUnitsFromPoints(font.Size);
 		}
 
-		public override string GetFamily (object handle)
+		public override string GetFamily(object handle)
 		{
 			var font = (FontData)handle;
 			return font.Family.Source;
 		}
 
-		public override FontStyle GetStyle (object handle)
+		public override FontStyle GetStyle(object handle)
 		{
 			var font = (FontData)handle;
-			return DataConverter.ToXwtFontStyle (font.Style);
+			return DataConverter.ToXwtFontStyle(font.Style);
 		}
 
-		public override FontStretch GetStretch (object handle)
+		public override FontStretch GetStretch(object handle)
 		{
 			var font = (FontData)handle;
-			return DataConverter.ToXwtFontStretch (font.Stretch);
+			return DataConverter.ToXwtFontStretch(font.Stretch);
 		}
 
-		public override FontWeight GetWeight (object handle)
+		public override FontWeight GetWeight(object handle)
 		{
 			var font = (FontData)handle;
-			return DataConverter.ToXwtFontWeight (font.Weight);
+			return DataConverter.ToXwtFontWeight(font.Weight);
 		}
 
-		internal static double GetDeviceUnitsFromPoints (double points)
+		internal static double GetDeviceUnitsFromPoints(double points)
 		{
 			return points * (96d / 72d);
 		}
 
-		internal static double GetPointsFromDeviceUnits (double deviceUnits)
+		internal static double GetPointsFromDeviceUnits(double deviceUnits)
 		{
 			return deviceUnits * (72d / 96d);
 		}
@@ -181,14 +186,14 @@ namespace Xwt.WPFBackend
 
 	internal class FontData
 	{
-		public FontData (FontFamily family, double size)
+		public FontData(FontFamily family, double size)
 		{
 			Family = family;
 			Size = size;
 		}
 
-		public FontData (string family, double size) :
-			this (new FontFamily (family), size)
+		public FontData(string family, double size) :
+			this(new FontFamily(family), size)
 		{
 		}
 
@@ -198,31 +203,33 @@ namespace Xwt.WPFBackend
 		public SW.FontStyle Style { get; set; }
 		public SW.FontStretch Stretch { get; set; }
 
-		public double GetDeviceIndependentPixelSize (SW.Controls.Control control)
+		public double GetDeviceIndependentPixelSize(SW.Controls.Control control)
 		{
-			return WpfFontBackendHandler.GetDeviceUnitsFromPoints (Size);
+			return WpfFontBackendHandler.GetDeviceUnitsFromPoints(Size);
 		}
 
-		public double GetDeviceIndependentPixelSize ()
+		public double GetDeviceIndependentPixelSize()
 		{
-			return WpfFontBackendHandler.GetDeviceUnitsFromPoints (Size);
+			return WpfFontBackendHandler.GetDeviceUnitsFromPoints(Size);
 		}
 
-		public static FontData FromControl (SW.Controls.Control control)
+		public static FontData FromControl(SW.Controls.Control control)
 		{
-			double size = WpfFontBackendHandler.GetPointsFromDeviceUnits (control.FontSize);
+			double size = WpfFontBackendHandler.GetPointsFromDeviceUnits(control.FontSize);
 
-			return new FontData (control.FontFamily, size) {
-				Style = control.FontStyle,				
+			return new FontData(control.FontFamily, size)
+			{
+				Style = control.FontStyle,
 				Stretch = control.FontStretch,
 				Weight = control.FontWeight
 			};
 		}
 
 		// Didn't implement IClone on purpose (recommended by the Framework Design guidelines)
-		public FontData Clone ()
+		public FontData Clone()
 		{
-			return new FontData (Family, Size) {
+			return new FontData(Family, Size)
+			{
 				Style = Style,
 				Stretch = Stretch,
 				Weight = Weight

@@ -48,7 +48,7 @@ namespace Xwt.WPFBackend
 	{
 		public ExTreeView()
 		{
-			SelectedItems = new ObservableCollection<object> ();
+			SelectedItems = new ObservableCollection<object>();
 			Loaded += new RoutedEventHandler(ExTreeView_Loaded);
 		}
 
@@ -78,24 +78,24 @@ namespace Xwt.WPFBackend
 			get { return this.view; }
 		}
 
-		public static readonly DependencyProperty SelectionModeProperty = DependencyProperty.Register ("SelectionMode",
-			typeof (System.Windows.Controls.SelectionMode), typeof (ExTreeView),
-			new UIPropertyMetadata (System.Windows.Controls.SelectionMode.Single, OnSelectionModePropertyChanged));
+		public static readonly DependencyProperty SelectionModeProperty = DependencyProperty.Register("SelectionMode",
+			typeof(System.Windows.Controls.SelectionMode), typeof(ExTreeView),
+			new UIPropertyMetadata(System.Windows.Controls.SelectionMode.Single, OnSelectionModePropertyChanged));
 
 		public System.Windows.Controls.SelectionMode SelectionMode
 		{
-			get { return (System.Windows.Controls.SelectionMode) GetValue (SelectionModeProperty); }
-			set { SetValue (SelectionModeProperty, value); }
+			get { return (System.Windows.Controls.SelectionMode)GetValue(SelectionModeProperty); }
+			set { SetValue(SelectionModeProperty, value); }
 		}
 
-		public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register ("SelectedItems",
-			typeof (IList), typeof (ExTreeView),
-			new UIPropertyMetadata (OnSelectedItemsPropertyChanged));
+		public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register("SelectedItems",
+			typeof(IList), typeof(ExTreeView),
+			new UIPropertyMetadata(OnSelectedItemsPropertyChanged));
 
 		public IList SelectedItems
 		{
-			get { return (IList) GetValue (SelectedItemsProperty); }
-			set { SetValue (SelectedItemsProperty, value); }
+			get { return (IList)GetValue(SelectedItemsProperty); }
+			set { SetValue(SelectedItemsProperty, value); }
 		}
 
 		public void SelectAllExpanded()
@@ -103,9 +103,10 @@ namespace Xwt.WPFBackend
 			if (Items == null || Items.Count == 0)
 				return;
 
-			foreach (object item in Items) {
-				var treeItem = ((ExTreeViewItem) ItemContainerGenerator.ContainerFromItem (item));
-				treeItem.SelectChildren ((i,t) => t.IsExpanded);
+			foreach (object item in Items)
+			{
+				var treeItem = ((ExTreeViewItem)ItemContainerGenerator.ContainerFromItem(item));
+				treeItem.SelectChildren((i, t) => t.IsExpanded);
 			}
 		}
 
@@ -117,11 +118,13 @@ namespace Xwt.WPFBackend
 			SelectedItems.Clear();
 		}
 
-		public ExTreeViewItem ContainerFromObject (object item)
+		public ExTreeViewItem ContainerFromObject(object item)
 		{
 			ExTreeViewItem treeItem = null;
-			TraverseTree ((o,i) => {
-				if (o == item) {
+			TraverseTree((o, i) =>
+			{
+				if (o == item)
+				{
 					treeItem = i;
 					return false;
 				}
@@ -132,48 +135,49 @@ namespace Xwt.WPFBackend
 			return treeItem;
 		}
 
-		protected override bool IsItemItsOwnContainerOverride (object item)
+		protected override bool IsItemItsOwnContainerOverride(object item)
 		{
 			return item is ExTreeViewItem;
 		}
 
 		protected override DependencyObject GetContainerForItemOverride()
 		{
-			return new ExTreeViewItem (this);
+			return new ExTreeViewItem(this);
 		}
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
-	    {
-	        var s = base.MeasureOverride (constraint);
-	        if (ScrollViewer.GetHorizontalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
-	            s.Width = 0;
-	        if (ScrollViewer.GetVerticalScrollBarVisibility (this) != ScrollBarVisibility.Hidden)
-	            s.Height = SystemParameters.CaptionHeight;
-
-	        return Backend.MeasureOverride (constraint, s);
-	    }
-
-		protected virtual void OnSelectionModeChanged (DependencyPropertyChangedEventArgs e)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			System.Windows.Controls.SelectionMode oldMode = (System.Windows.Controls.SelectionMode) e.OldValue;
+			var s = base.MeasureOverride(constraint);
+			if (ScrollViewer.GetHorizontalScrollBarVisibility(this) != ScrollBarVisibility.Hidden)
+				s.Width = 0;
+			if (ScrollViewer.GetVerticalScrollBarVisibility(this) != ScrollBarVisibility.Hidden)
+				s.Height = SystemParameters.CaptionHeight;
+
+			return Backend.MeasureOverride(constraint, s);
+		}
+
+		protected virtual void OnSelectionModeChanged(DependencyPropertyChangedEventArgs e)
+		{
+			System.Windows.Controls.SelectionMode oldMode = (System.Windows.Controls.SelectionMode)e.OldValue;
 
 			object lastSelected = SelectedItem;
 
-			if (oldMode == System.Windows.Controls.SelectionMode.Multiple) {
-				UnselectAll ();
+			if (oldMode == System.Windows.Controls.SelectionMode.Multiple)
+			{
+				UnselectAll();
 				if (lastSelected != null)
-					SelectedItems.Add (lastSelected);
+					SelectedItems.Add(lastSelected);
 			}
 		}
 
-		protected virtual void OnSelectedItemsChanged (EventArgs e)
+		protected virtual void OnSelectedItemsChanged(EventArgs e)
 		{
 			var handler = SelectedItemsChanged;
 			if (handler != null)
-				handler (this, e);
+				handler(this, e);
 		}
 
-		protected virtual void OnSelectedItemsPropertyChanged (DependencyPropertyChangedEventArgs e)
+		protected virtual void OnSelectedItemsPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			var oldNotifying = e.OldValue as INotifyCollectionChanged;
 			if (oldNotifying != null)
@@ -184,108 +188,117 @@ namespace Xwt.WPFBackend
 				newNotifying.CollectionChanged += SelectedItemsCollectionChanged;
 		}
 
-		private bool TraverseTree (Func<object, ExTreeViewItem, bool> action, ExTreeViewItem parent = null)
+		private bool TraverseTree(Func<object, ExTreeViewItem, bool> action, ExTreeViewItem parent = null)
 		{
 			ItemContainerGenerator g = ItemContainerGenerator;
 			IEnumerable items = Items;
-			if (parent != null) {
+			if (parent != null)
+			{
 				items = parent.Items;
 				g = parent.ItemContainerGenerator;
 			}
 
-			foreach (object item in items) {
-				var treeItem = (ExTreeViewItem)g.ContainerFromItem (item);
-				if (treeItem == null) {
+			foreach (object item in items)
+			{
+				var treeItem = (ExTreeViewItem)g.ContainerFromItem(item);
+				if (treeItem == null)
+				{
 					var ig = (IItemContainerGenerator)g;
-					using (ig.StartAt (new GeneratorPosition (-1, 1), GeneratorDirection.Forward)) {
-						ig.GenerateNext ();
+					using (ig.StartAt(new GeneratorPosition(-1, 1), GeneratorDirection.Forward))
+					{
+						ig.GenerateNext();
 					}
-					treeItem = (ExTreeViewItem)g.ContainerFromItem (item);
+					treeItem = (ExTreeViewItem)g.ContainerFromItem(item);
 					if (treeItem == null)
 						continue;
 				}
 
-				if (!action (item, treeItem))
+				if (!action(item, treeItem))
 					return false;
-				
-				if (!TraverseTree (action, treeItem))
+
+				if (!TraverseTree(action, treeItem))
 					return false;
 			}
 
 			return true;
 		}
 
-		private ExTreeViewItem GetTreeItem (object item)
+		private ExTreeViewItem GetTreeItem(object item)
 		{
-			return (ExTreeViewItem) ItemContainerGenerator.ContainerFromItem (item);
+			return (ExTreeViewItem)ItemContainerGenerator.ContainerFromItem(item);
 		}
 
 		private static readonly PropertyInfo IsSelectionChangeActiveProperty =
-			typeof (System.Windows.Controls.TreeView).GetProperty ("IsSelectionChangeActive", BindingFlags.NonPublic | BindingFlags.Instance);
+			typeof(System.Windows.Controls.TreeView).GetProperty("IsSelectionChangeActive", BindingFlags.NonPublic | BindingFlags.Instance);
 
-		private void SelectedItemsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		private void SelectedItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
-			bool changeActive = (bool)IsSelectionChangeActiveProperty.GetValue (this, null);
+			bool changeActive = (bool)IsSelectionChangeActiveProperty.GetValue(this, null);
 			if (!changeActive)
-				IsSelectionChangeActiveProperty.SetValue (this, true, null);
+				IsSelectionChangeActiveProperty.SetValue(this, true, null);
 
-			switch (e.Action) {
-			case NotifyCollectionChangedAction.Reset:
-				var selectedItems = new HashSet<object> (SelectedItems.Cast<object> ());
-				TraverseTree ((o, i) => {
-					i.IsSelected = selectedItems.Remove (o);
-					return true;
-				});
-
-				foreach (object item in SelectedItems)
-					GetTreeItem (item).IsSelected = true;
-			break;
-
-			default:
-				if (!changeActive && SelectionMode == System.Windows.Controls.SelectionMode.Single) {
-					if (SelectedItems.Count > 0)
-						SelectedItems.Clear();
-					if (e.NewItems != null && e.NewItems.Count > 0)
-						SelectedItems.Add (e.NewItems [0]);
-				}
-
-				if (e.NewItems != null || e.OldItems != null) {
-					HashSet<object> newItems = (e.NewItems != null)
-												? new HashSet<object> (e.NewItems.Cast<object> ())
-												: new HashSet<object> ();
-
-					HashSet<object> oldItems = (e.OldItems != null)
-												? new HashSet<object> (e.OldItems.Cast<object> ())
-												: new HashSet<object> ();
-					
-					TraverseTree ((o, ti) => {
-						if (newItems.Remove (o))
-							ti.IsSelected = true;
-						else if (SelectionMode == SWC.SelectionMode.Single || oldItems.Remove (o))
-							ti.IsSelected = false;
-
-						return (newItems.Count + oldItems.Count > 0);
+			switch (e.Action)
+			{
+				case NotifyCollectionChangedAction.Reset:
+					var selectedItems = new HashSet<object>(SelectedItems.Cast<object>());
+					TraverseTree((o, i) =>
+					{
+						i.IsSelected = selectedItems.Remove(o);
+						return true;
 					});
-				}
-				break;
+
+					foreach (object item in SelectedItems)
+						GetTreeItem(item).IsSelected = true;
+					break;
+
+				default:
+					if (!changeActive && SelectionMode == System.Windows.Controls.SelectionMode.Single)
+					{
+						if (SelectedItems.Count > 0)
+							SelectedItems.Clear();
+						if (e.NewItems != null && e.NewItems.Count > 0)
+							SelectedItems.Add(e.NewItems[0]);
+					}
+
+					if (e.NewItems != null || e.OldItems != null)
+					{
+						HashSet<object> newItems = (e.NewItems != null)
+													? new HashSet<object>(e.NewItems.Cast<object>())
+													: new HashSet<object>();
+
+						HashSet<object> oldItems = (e.OldItems != null)
+													? new HashSet<object>(e.OldItems.Cast<object>())
+													: new HashSet<object>();
+
+						TraverseTree((o, ti) =>
+						{
+							if (newItems.Remove(o))
+								ti.IsSelected = true;
+							else if (SelectionMode == SWC.SelectionMode.Single || oldItems.Remove(o))
+								ti.IsSelected = false;
+
+							return (newItems.Count + oldItems.Count > 0);
+						});
+					}
+					break;
 			}
 
-			OnSelectedItemsChanged (EventArgs.Empty);
+			OnSelectedItemsChanged(EventArgs.Empty);
 
 			if (!changeActive)
-				IsSelectionChangeActiveProperty.SetValue (this, changeActive, null);
+				IsSelectionChangeActiveProperty.SetValue(this, changeActive, null);
 		}
 
-		private static void OnSelectedItemsPropertyChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+		private static void OnSelectedItemsPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
 		{
-			var view = (ExTreeView) dependencyObject;
-			view.OnSelectedItemsPropertyChanged (e);
+			var view = (ExTreeView)dependencyObject;
+			view.OnSelectedItemsPropertyChanged(e);
 		}
 
-		private static void OnSelectionModePropertyChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+		private static void OnSelectionModePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
 		{
-			var view = (ExTreeView) dependencyObject;
-			view.OnSelectionModeChanged (e);
+			var view = (ExTreeView)dependencyObject;
+			view.OnSelectionModeChanged(e);
 		}
 
 		public void SelectItem(object item)
@@ -379,12 +392,15 @@ namespace Xwt.WPFBackend
 		}
 
 		private ExTreeViewItem focusedTreeViewItem = null;
-		public ExTreeViewItem FocusedItem {
-			get {
+		public ExTreeViewItem FocusedItem
+		{
+			get
+			{
 				return focusedTreeViewItem;
 			}
-			set {
-				FocusItem (value);
+			set
+			{
+				FocusItem(value);
 			}
 		}
 

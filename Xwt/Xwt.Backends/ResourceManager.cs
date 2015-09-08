@@ -31,70 +31,81 @@ namespace Xwt.Backends
 	static class ResourceManager
 	{
 		static bool finalized;
-		static Dictionary<object,Action<object>> resources = new Dictionary<object,Action<object>> ();
-		static Dictionary<object,Action<object>> freedResources = new Dictionary<object,Action<object>> ();
+		static Dictionary<object, Action<object>> resources = new Dictionary<object, Action<object>>();
+		static Dictionary<object, Action<object>> freedResources = new Dictionary<object, Action<object>>();
 
-		public static void RegisterResource (object res, Action<object> disposeCallback = null)
+		public static void RegisterResource(object res, Action<object> disposeCallback = null)
 		{
 			if (finalized)
 				return;
 			lock (resources)
-				resources [res] = disposeCallback;
+				resources[res] = disposeCallback;
 		}
 
-		public static bool FreeResource (object res)
+		public static bool FreeResource(object res)
 		{
 			if (finalized || res == null)
 				return true;
 
-			lock (resources) {
+			lock (resources)
+			{
 				Action<object> disposer;
-				if (!resources.TryGetValue (res, out disposer))
+				if (!resources.TryGetValue(res, out disposer))
 					return false;
 
-				resources.Remove (res);
+				resources.Remove(res);
 
-				if (System.Threading.Thread.CurrentThread == Application.UIThread) {
-					DisposeResource (res, disposer);
-				} else {
-					lock (freedResources) {
+				if (System.Threading.Thread.CurrentThread == Application.UIThread)
+				{
+					DisposeResource(res, disposer);
+				}
+				else
+				{
+					lock (freedResources)
+					{
 						if (freedResources.Count == 0)
-							Application.Invoke (DisposeResources);
-						freedResources [res] = disposer;
+							Application.Invoke(DisposeResources);
+						freedResources[res] = disposer;
 					}
 				}
 				return true;
 			}
 		}
 
-		static void DisposeResource (object res, Action<object> disposer)
+		static void DisposeResource(object res, Action<object> disposer)
 		{
-			try {
+			try
+			{
 				if (disposer != null)
-					disposer (res);
+					disposer(res);
 				else if (res is IDisposable)
-					((IDisposable)res).Dispose ();
-			} catch (Exception ex) {
-				Application.NotifyException (ex);
+					((IDisposable)res).Dispose();
+			}
+			catch (Exception ex)
+			{
+				Application.NotifyException(ex);
 			}
 		}
 
-		internal static void DisposeResources ()
+		internal static void DisposeResources()
 		{
-			lock (freedResources) {
+			lock (freedResources)
+			{
 				if (finalized)
 					return;
-				foreach (var r in freedResources) {
-					DisposeResource (r.Key, r.Value);
+				foreach (var r in freedResources)
+				{
+					DisposeResource(r.Key, r.Value);
 				}
-				freedResources.Clear ();
+				freedResources.Clear();
 			}
 		}
 
-		internal static void Dispose ()
+		internal static void Dispose()
 		{
-			lock (freedResources) {
-				DisposeResources ();
+			lock (freedResources)
+			{
+				DisposeResources();
 				finalized = true;
 			}
 		}

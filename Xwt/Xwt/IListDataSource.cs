@@ -48,7 +48,7 @@ namespace Xwt
 		/// <para><paramref name="column"/> is &gt;= the number of columns (<see cref="ColumnTypes"/>).</para>
 		/// </exception>
 		/// <seealso cref="SetValue"/>
-		object GetValue (int row, int column);
+		object GetValue(int row, int column);
 
 		/// <summary>
 		/// Sets the value at the specified <paramref name="row"/> and <paramref name="column"/>.
@@ -61,13 +61,13 @@ namespace Xwt
 		/// <para>-- or --</para>
 		/// <para><paramref name="column"/> is &gt;= the number of columns (<see cref="ColumnTypes"/>).</para>
 		/// </exception>
-		void SetValue (int row, int column, object value);
+		void SetValue(int row, int column, object value);
 
 		/// <summary>
 		/// Gets the column types of this data source.
 		/// </summary>
 		Type[] ColumnTypes { get; }
-		
+
 		/// <summary>
 		/// Raised when a row is inserted into the data source.
 		/// </summary>
@@ -88,28 +88,30 @@ namespace Xwt
 		/// </summary>
 		event EventHandler<ListRowOrderEventArgs> RowsReordered;
 	}
-	
-	public class ListRowEventArgs: EventArgs
+
+	public class ListRowEventArgs : EventArgs
 	{
-		public ListRowEventArgs (int row)
+		public ListRowEventArgs(int row)
 		{
 			Row = row;
 		}
-		
-		public int Row {
+
+		public int Row
+		{
 			get;
 			private set;
 		}
 	}
-	
-	public class ListRowOrderEventArgs: ListRowEventArgs
+
+	public class ListRowOrderEventArgs : ListRowEventArgs
 	{
-		public ListRowOrderEventArgs (int parentRow, int[] rows): base (parentRow)
+		public ListRowOrderEventArgs(int parentRow, int[] rows) : base(parentRow)
 		{
 			ChildrenOrder = rows;
 		}
-		
-		public int[] ChildrenOrder {
+
+		public int[] ChildrenOrder
+		{
 			get;
 			private set;
 		}
@@ -126,7 +128,7 @@ namespace Xwt
 		/// </summary>
 		/// <returns>The value.</returns>
 		/// <param name="field">Field.</param>
-		object GetValue (IDataField field);
+		object GetValue(IDataField field);
 	}
 }
 

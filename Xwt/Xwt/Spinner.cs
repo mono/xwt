@@ -30,27 +30,31 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	[BackendType (typeof(ISpinnerBackend))]
+	[BackendType(typeof(ISpinnerBackend))]
 	public class Spinner : Widget
 	{
-		ISpinnerBackend Backend {
-			get { return (ISpinnerBackend) BackendHost.Backend; }
+		ISpinnerBackend Backend
+		{
+			get { return (ISpinnerBackend)BackendHost.Backend; }
 		}
 
-		public Spinner ()
+		public Spinner()
 		{
 		}
 
-		[DefaultValue (false)]
-		public bool Animate {
-			get {
+		[DefaultValue(false)]
+		public bool Animate
+		{
+			get
+			{
 				return Backend.IsAnimating;
 			}
-			set {
+			set
+			{
 				if (value)
-					Backend.StartAnimation ();
+					Backend.StartAnimation();
 				else
-					Backend.StopAnimation ();
+					Backend.StopAnimation();
 			}
 		}
 	}

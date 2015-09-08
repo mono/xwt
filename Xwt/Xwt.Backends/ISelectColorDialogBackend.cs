@@ -55,12 +55,12 @@ namespace Xwt.Backends
 		/// The dialog must be shown in modal mode. The method returns when the user clicks on
 		/// OK or Cancel. The dialog must be already closed when this method returns.
 		/// </remarks>
-		bool Run (IWindowFrameBackend parent, string title, bool supportsAlpha);
-		
+		bool Run(IWindowFrameBackend parent, string title, bool supportsAlpha);
+
 		/// <summary>
 		/// Frees native resources
 		/// </summary>
-		void Dispose ();	
+		void Dispose();
 	}
 }
 

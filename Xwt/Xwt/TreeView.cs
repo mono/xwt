@@ -34,122 +34,129 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ITreeViewBackend))]
-	public class TreeView: Widget, IColumnContainer, IScrollableWidget
+	[BackendType(typeof(ITreeViewBackend))]
+	public class TreeView : Widget, IColumnContainer, IScrollableWidget
 	{
 		ListViewColumnCollection columns;
 		ITreeDataSource dataSource;
 		SelectionMode mode;
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost<TreeView,ITreeViewBackend>, ITreeViewEventSink
+
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost<TreeView, ITreeViewBackend>, ITreeViewEventSink
 		{
-			protected override void OnBackendCreated ()
+			protected override void OnBackendCreated()
 			{
-				base.OnBackendCreated ();
-				Backend.Initialize (this);
-				Parent.columns.Attach (Backend);
-			}
-			
-			public void OnSelectionChanged ()
-			{
-				((TreeView)Parent).OnSelectionChanged (EventArgs.Empty);
-			}
-			
-			public void OnRowActivated (TreePosition position)
-			{
-				((TreeView)Parent).OnRowActivated (new TreeViewRowEventArgs (position));
+				base.OnBackendCreated();
+				Backend.Initialize(this);
+				Parent.columns.Attach(Backend);
 			}
 
-			public void OnRowExpanded (TreePosition position)
+			public void OnSelectionChanged()
 			{
-				((TreeView)Parent).OnRowExpanded (new TreeViewRowEventArgs (position));
-			}
-			
-			public void OnRowExpanding (TreePosition position)
-			{
-				((TreeView)Parent).OnRowExpanding (new TreeViewRowEventArgs (position));
+				((TreeView)Parent).OnSelectionChanged(EventArgs.Empty);
 			}
 
-			public void OnRowCollapsed (TreePosition position)
+			public void OnRowActivated(TreePosition position)
 			{
-				((TreeView)Parent).OnRowCollapsed (new TreeViewRowEventArgs (position));
+				((TreeView)Parent).OnRowActivated(new TreeViewRowEventArgs(position));
 			}
 
-			public void OnRowCollapsing (TreePosition position)
+			public void OnRowExpanded(TreePosition position)
 			{
-				((TreeView)Parent).OnRowCollapsing (new TreeViewRowEventArgs (position));
+				((TreeView)Parent).OnRowExpanded(new TreeViewRowEventArgs(position));
 			}
 
-			public override Size GetDefaultNaturalSize ()
+			public void OnRowExpanding(TreePosition position)
+			{
+				((TreeView)Parent).OnRowExpanding(new TreeViewRowEventArgs(position));
+			}
+
+			public void OnRowCollapsed(TreePosition position)
+			{
+				((TreeView)Parent).OnRowCollapsed(new TreeViewRowEventArgs(position));
+			}
+
+			public void OnRowCollapsing(TreePosition position)
+			{
+				((TreeView)Parent).OnRowCollapsing(new TreeViewRowEventArgs(position));
+			}
+
+			public override Size GetDefaultNaturalSize()
 			{
 				return Xwt.Backends.DefaultNaturalSizes.TreeView;
 			}
 		}
-		
-		static TreeView ()
+
+		static TreeView()
 		{
-			MapEvent (TableViewEvent.SelectionChanged, typeof(TreeView), "OnSelectionChanged");
-			MapEvent (TreeViewEvent.RowActivated, typeof(TreeView), "OnRowActivated");
-			MapEvent (TreeViewEvent.RowExpanded, typeof(TreeView), "OnRowExpanded");
-			MapEvent (TreeViewEvent.RowExpanding, typeof(TreeView), "OnRowExpanding");
-			MapEvent (TreeViewEvent.RowCollapsed, typeof(TreeView), "OnRowCollapsed");
-			MapEvent (TreeViewEvent.RowCollapsing, typeof(TreeView), "OnRowCollapsing");
+			MapEvent(TableViewEvent.SelectionChanged, typeof(TreeView), "OnSelectionChanged");
+			MapEvent(TreeViewEvent.RowActivated, typeof(TreeView), "OnRowActivated");
+			MapEvent(TreeViewEvent.RowExpanded, typeof(TreeView), "OnRowExpanded");
+			MapEvent(TreeViewEvent.RowExpanding, typeof(TreeView), "OnRowExpanding");
+			MapEvent(TreeViewEvent.RowCollapsed, typeof(TreeView), "OnRowCollapsed");
+			MapEvent(TreeViewEvent.RowCollapsing, typeof(TreeView), "OnRowCollapsing");
 		}
-	
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xwt.TreeView"/> class.
 		/// </summary>
-		public TreeView ()
+		public TreeView()
 		{
-			columns = new ListViewColumnCollection (this);
+			columns = new ListViewColumnCollection(this);
 			VerticalScrollPolicy = HorizontalScrollPolicy = ScrollPolicy.Automatic;
 		}
-		
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xwt.TreeView"/> class.
 		/// </summary>
 		/// <param name='source'>
 		/// Data source
 		/// </param>
-		public TreeView (ITreeDataSource source): this ()
+		public TreeView(ITreeDataSource source) : this()
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			DataSource = source;
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		ITreeViewBackend Backend {
-			get { return (ITreeViewBackend) BackendHost.Backend; }
+
+		ITreeViewBackend Backend
+		{
+			get { return (ITreeViewBackend)BackendHost.Backend; }
 		}
-		
-		public ScrollPolicy VerticalScrollPolicy {
+
+		public ScrollPolicy VerticalScrollPolicy
+		{
 			get { return Backend.VerticalScrollPolicy; }
 			set { Backend.VerticalScrollPolicy = value; }
 		}
-		
-		public ScrollPolicy HorizontalScrollPolicy {
+
+		public ScrollPolicy HorizontalScrollPolicy
+		{
 			get { return Backend.HorizontalScrollPolicy; }
 			set { Backend.HorizontalScrollPolicy = value; }
 		}
 
 		ScrollControl verticalScrollAdjustment;
-		public ScrollControl VerticalScrollControl {
-			get {
+		public ScrollControl VerticalScrollControl
+		{
+			get
+			{
 				if (verticalScrollAdjustment == null)
-					verticalScrollAdjustment = new ScrollControl (Backend.CreateVerticalScrollControl ());
+					verticalScrollAdjustment = new ScrollControl(Backend.CreateVerticalScrollControl());
 				return verticalScrollAdjustment;
 			}
 		}
 
 		ScrollControl horizontalScrollAdjustment;
-		public ScrollControl HorizontalScrollControl {
-			get {
+		public ScrollControl HorizontalScrollControl
+		{
+			get
+			{
 				if (horizontalScrollAdjustment == null)
-					horizontalScrollAdjustment = new ScrollControl (Backend.CreateHorizontalScrollControl ());
+					horizontalScrollAdjustment = new ScrollControl(Backend.CreateHorizontalScrollControl());
 				return horizontalScrollAdjustment;
 			}
 		}
@@ -160,25 +167,31 @@ namespace Xwt
 		/// <value>
 		/// The columns.
 		/// </value>
-		public ListViewColumnCollection Columns {
-			get {
+		public ListViewColumnCollection Columns
+		{
+			get
+			{
 				return columns;
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the data source.
 		/// </summary>
 		/// <value>
 		/// The data source.
 		/// </value>
-		public ITreeDataSource DataSource {
-			get {
+		public ITreeDataSource DataSource
+		{
+			get
+			{
 				return dataSource;
 			}
-			set {
-				if (dataSource != value) {
-					Backend.SetSource (value, value is IFrontend ? (IBackend)BackendHost.ToolkitEngine.GetSafeBackend (value) : null);
+			set
+			{
+				if (dataSource != value)
+				{
+					Backend.SetSource(value, value is IFrontend ? (IBackend)BackendHost.ToolkitEngine.GetSafeBackend(value) : null);
 					dataSource = value;
 				}
 			}
@@ -190,11 +203,14 @@ namespace Xwt
 		/// <value>
 		/// <c>true</c> if headers are visible; otherwise, <c>false</c>.
 		/// </value>
-		public bool HeadersVisible {
-			get {
+		public bool HeadersVisible
+		{
+			get
+			{
 				return Backend.HeadersVisible;
 			}
-			set {
+			set
+			{
 				Backend.HeadersVisible = value;
 			}
 		}
@@ -204,20 +220,23 @@ namespace Xwt
 			get { return Backend.GridLinesVisible; }
 			set { Backend.GridLinesVisible = value; }
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the selection mode.
 		/// </summary>
 		/// <value>
 		/// The selection mode.
 		/// </value>
-		public SelectionMode SelectionMode {
-			get {
+		public SelectionMode SelectionMode
+		{
+			get
+			{
 				return mode;
 			}
-			set {
+			set
+			{
 				mode = value;
-				Backend.SetSelectionMode (mode);
+				Backend.SetSelectionMode(mode);
 			}
 		}
 
@@ -229,36 +248,42 @@ namespace Xwt
 		/// <value>
 		/// The current event row.
 		/// </value>
-		public TreePosition CurrentEventRow {
-			get {
+		public TreePosition CurrentEventRow
+		{
+			get
+			{
 				return Backend.CurrentEventRow;
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets the selected row.
 		/// </summary>
 		/// <value>
 		/// The selected row.
 		/// </value>
-		public TreePosition SelectedRow {
-			get {
+		public TreePosition SelectedRow
+		{
+			get
+			{
 				var items = SelectedRows;
 				if (items.Length == 0)
 					return null;
 				else
-					return items [0];
+					return items[0];
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets the selected rows.
 		/// </summary>
 		/// <value>
 		/// The selected rows.
 		/// </value>
-		public TreePosition[] SelectedRows {
-			get {
+		public TreePosition[] SelectedRows
+		{
+			get
+			{
 				return Backend.SelectedRows;
 			}
 		}
@@ -267,53 +292,56 @@ namespace Xwt
 		/// Gets or sets the focused row.
 		/// </summary>
 		/// <value>The row with the keyboard focus.</value>
-		public TreePosition FocusedRow {
-			get {
+		public TreePosition FocusedRow
+		{
+			get
+			{
 				return Backend.FocusedRow;
 			}
-			set {
+			set
+			{
 				Backend.FocusedRow = value;
 			}
 		}
-		
+
 		/// <summary>
 		/// Selects a row.
 		/// </summary>
 		/// <param name='pos'>
 		/// Position of the row
 		/// </param>
-		public void SelectRow (TreePosition pos)
+		public void SelectRow(TreePosition pos)
 		{
-			Backend.SelectRow (pos);
+			Backend.SelectRow(pos);
 		}
-		
+
 		/// <summary>
 		/// Unselects a row.
 		/// </summary>
 		/// <param name='pos'>
 		/// Position of the row
 		/// </param>
-		public void UnselectRow (TreePosition pos)
+		public void UnselectRow(TreePosition pos)
 		{
-			Backend.UnselectRow (pos);
+			Backend.UnselectRow(pos);
 		}
-		
+
 		/// <summary>
 		/// Selects all rows
 		/// </summary>
-		public void SelectAll ()
+		public void SelectAll()
 		{
-			Backend.SelectAll ();
+			Backend.SelectAll();
 		}
-		
+
 		/// <summary>
 		/// Unselects all rows
 		/// </summary>
-		public void UnselectAll ()
+		public void UnselectAll()
 		{
-			Backend.UnselectAll ();
+			Backend.UnselectAll();
 		}
-		
+
 		/// <summary>
 		/// Determines whether the row at the specified position is selected
 		/// </summary>
@@ -323,11 +351,11 @@ namespace Xwt
 		/// <param name='pos'>
 		/// Row position
 		/// </param>
-		public bool IsRowSelected (TreePosition pos)
+		public bool IsRowSelected(TreePosition pos)
 		{
-			return Backend.IsRowSelected (pos);
+			return Backend.IsRowSelected(pos);
 		}
-		
+
 		/// <summary>
 		/// Determines whether the row at the specified position is expanded
 		/// </summary>
@@ -337,11 +365,11 @@ namespace Xwt
 		/// <param name='pos'>
 		/// Row position
 		/// </param>
-		public bool IsRowExpanded (TreePosition pos)
+		public bool IsRowExpanded(TreePosition pos)
 		{
-			return Backend.IsRowExpanded (pos);
+			return Backend.IsRowExpanded(pos);
 		}
-		
+
 		/// <summary>
 		/// Expands a row.
 		/// </summary>
@@ -351,36 +379,38 @@ namespace Xwt
 		/// <param name='expandChildren'>
 		/// If True, all children are recursively expanded
 		/// </param>
-		public void ExpandRow (TreePosition pos, bool expandChildren)
+		public void ExpandRow(TreePosition pos, bool expandChildren)
 		{
-			Backend.ExpandRow (pos, expandChildren);
+			Backend.ExpandRow(pos, expandChildren);
 		}
-		
+
 		/// <summary>
 		/// Collapses a row.
 		/// </summary>
 		/// <param name='pos'>
 		/// Position of the row
 		/// </param>
-		public void CollapseRow (TreePosition pos)
+		public void CollapseRow(TreePosition pos)
 		{
-			Backend.CollapseRow (pos);
+			Backend.CollapseRow(pos);
 		}
 
 		/// <summary>
 		/// Recursively expands all nodes of the tree
 		/// </summary>
-		public void ExpandAll ()
+		public void ExpandAll()
 		{
-			if (DataSource != null) {
-				var nc = DataSource.GetChildrenCount (null);
-				for (int n=0; n<nc; n++) {
-					var p = DataSource.GetChild (null, n);
-					Backend.ExpandRow (p, true);
+			if (DataSource != null)
+			{
+				var nc = DataSource.GetChildrenCount(null);
+				for (int n = 0; n < nc; n++)
+				{
+					var p = DataSource.GetChild(null, n);
+					Backend.ExpandRow(p, true);
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Saves the status of the tree
 		/// </summary>
@@ -396,11 +426,11 @@ namespace Xwt
 		/// The provided field is used to generate an identifier for each row. When restoring the
 		/// status, those ids are used to find matching rows.
 		/// </remarks>
-		public TreeViewStatus SaveStatus (IDataField idField)
+		public TreeViewStatus SaveStatus(IDataField idField)
 		{
-			return new TreeViewStatus (this, idField.Index);
+			return new TreeViewStatus(this, idField.Index);
 		}
-		
+
 		/// <summary>
 		/// Restores the status of the tree
 		/// </summary>
@@ -411,61 +441,66 @@ namespace Xwt
 		/// The status information includes node expansion and selection status. The provided object
 		/// must have been generated with a SaveStatus call on this same tree.
 		/// </remarks>
-		public void RestoreStatus (TreeViewStatus status)
+		public void RestoreStatus(TreeViewStatus status)
 		{
-			status.Load (this);
+			status.Load(this);
 		}
-		
-		public void ScrollToRow (TreePosition pos)
+
+		public void ScrollToRow(TreePosition pos)
 		{
-			Backend.ScrollToRow (pos);
+			Backend.ScrollToRow(pos);
 		}
-		
-		public void ExpandToRow (TreePosition pos)
+
+		public void ExpandToRow(TreePosition pos)
 		{
-			Backend.ExpandToRow (pos);
+			Backend.ExpandToRow(pos);
 		}
-		
-		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
+
+		public bool GetDropTargetRow(double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
-			return Backend.GetDropTargetRow (x, y, out pos, out nodePosition);
+			return Backend.GetDropTargetRow(x, y, out pos, out nodePosition);
 		}
-		
-		internal protected sealed override bool SupportsCustomScrolling {
-			get {
+
+		internal protected sealed override bool SupportsCustomScrolling
+		{
+			get
+			{
 				return false;
 			}
 		}
-		
-		void IColumnContainer.NotifyColumnsChanged ()
+
+		void IColumnContainer.NotifyColumnsChanged()
 		{
 		}
-		
+
 		/// <summary>
 		/// Raises the selection changed event.
 		/// </summary>
 		/// <param name='a'>
 		/// Event arguments
 		/// </param>
-		protected virtual void OnSelectionChanged (EventArgs a)
+		protected virtual void OnSelectionChanged(EventArgs a)
 		{
 			if (selectionChanged != null)
-				selectionChanged (this, a);
+				selectionChanged(this, a);
 		}
-		
+
 		EventHandler selectionChanged;
-		
+
 		/// <summary>
 		/// Occurs when the selection changes
 		/// </summary>
-		public event EventHandler SelectionChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (TableViewEvent.SelectionChanged, selectionChanged);
+		public event EventHandler SelectionChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TableViewEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
-			remove {
+			remove
+			{
 				selectionChanged -= value;
-				BackendHost.OnAfterEventRemove (TableViewEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnAfterEventRemove(TableViewEvent.SelectionChanged, selectionChanged);
 			}
 		}
 
@@ -473,77 +508,86 @@ namespace Xwt
 		/// Raises the row activated event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		protected virtual void OnRowActivated (TreeViewRowEventArgs a)
+		protected virtual void OnRowActivated(TreeViewRowEventArgs a)
 		{
 			if (rowActivated != null)
-				rowActivated (this, a);
+				rowActivated(this, a);
 		}
-		
+
 		EventHandler<TreeViewRowEventArgs> rowActivated;
 
 		/// <summary>
 		/// Occurs when the user double-clicks on a row
 		/// </summary>
-		public event EventHandler<TreeViewRowEventArgs> RowActivated {
-			add {
-				BackendHost.OnBeforeEventAdd (TreeViewEvent.RowActivated, rowActivated);
+		public event EventHandler<TreeViewRowEventArgs> RowActivated
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TreeViewEvent.RowActivated, rowActivated);
 				rowActivated += value;
 			}
-			remove {
+			remove
+			{
 				rowActivated -= value;
-				BackendHost.OnAfterEventRemove (TreeViewEvent.RowActivated, rowActivated);
+				BackendHost.OnAfterEventRemove(TreeViewEvent.RowActivated, rowActivated);
 			}
 		}
-		
+
 		/// <summary>
 		/// Raises the row expanding event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		protected virtual void OnRowExpanding (TreeViewRowEventArgs a)
+		protected virtual void OnRowExpanding(TreeViewRowEventArgs a)
 		{
 			if (rowExpanding != null)
-				rowExpanding (this, a);
+				rowExpanding(this, a);
 		}
-		
+
 		EventHandler<TreeViewRowEventArgs> rowExpanding;
-		
+
 		/// <summary>
 		/// Occurs just before a row is expanded
 		/// </summary>
-		public event EventHandler<TreeViewRowEventArgs> RowExpanding {
-			add {
-				BackendHost.OnBeforeEventAdd (TreeViewEvent.RowExpanding, rowExpanding);
+		public event EventHandler<TreeViewRowEventArgs> RowExpanding
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TreeViewEvent.RowExpanding, rowExpanding);
 				rowExpanding += value;
 			}
-			remove {
+			remove
+			{
 				rowExpanding -= value;
-				BackendHost.OnAfterEventRemove (TreeViewEvent.RowExpanding, rowExpanding);
+				BackendHost.OnAfterEventRemove(TreeViewEvent.RowExpanding, rowExpanding);
 			}
 		}
-		
+
 		/// <summary>
 		/// Raises the row expanding event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		protected virtual void OnRowExpanded (TreeViewRowEventArgs a)
+		protected virtual void OnRowExpanded(TreeViewRowEventArgs a)
 		{
 			if (rowExpanded != null)
-				rowExpanded (this, a);
+				rowExpanded(this, a);
 		}
-		
+
 		EventHandler<TreeViewRowEventArgs> rowExpanded;
-		
+
 		/// <summary>
 		/// Occurs just before a row is expanded
 		/// </summary>
-		public event EventHandler<TreeViewRowEventArgs> RowExpanded {
-			add {
-				BackendHost.OnBeforeEventAdd (TreeViewEvent.RowExpanded, rowExpanded);
+		public event EventHandler<TreeViewRowEventArgs> RowExpanded
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TreeViewEvent.RowExpanded, rowExpanded);
 				rowExpanded += value;
 			}
-			remove {
+			remove
+			{
 				rowExpanded -= value;
-				BackendHost.OnAfterEventRemove (TreeViewEvent.RowExpanded, rowExpanded);
+				BackendHost.OnAfterEventRemove(TreeViewEvent.RowExpanded, rowExpanded);
 			}
 		}
 
@@ -551,10 +595,10 @@ namespace Xwt
 		/// Raises the row collapsing event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		protected virtual void OnRowCollapsing (TreeViewRowEventArgs a)
+		protected virtual void OnRowCollapsing(TreeViewRowEventArgs a)
 		{
 			if (rowCollapsing != null)
-				rowCollapsing (this, a);
+				rowCollapsing(this, a);
 		}
 
 		EventHandler<TreeViewRowEventArgs> rowCollapsing;
@@ -562,14 +606,17 @@ namespace Xwt
 		/// <summary>
 		/// Occurs just before a row is collapsed.
 		/// </summary>
-		public event EventHandler<TreeViewRowEventArgs> RowCollapsing {
-			add {
-				BackendHost.OnBeforeEventAdd (TreeViewEvent.RowCollapsing, rowCollapsing);
+		public event EventHandler<TreeViewRowEventArgs> RowCollapsing
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TreeViewEvent.RowCollapsing, rowCollapsing);
 				rowCollapsing += value;
 			}
-			remove {
+			remove
+			{
 				rowCollapsing -= value;
-				BackendHost.OnAfterEventRemove (TreeViewEvent.RowCollapsing, rowCollapsing);
+				BackendHost.OnAfterEventRemove(TreeViewEvent.RowCollapsing, rowCollapsing);
 			}
 		}
 
@@ -577,10 +624,10 @@ namespace Xwt
 		/// Raises the row collapsing event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		protected virtual void OnRowCollapsed (TreeViewRowEventArgs a)
+		protected virtual void OnRowCollapsed(TreeViewRowEventArgs a)
 		{
 			if (rowCollapsed != null)
-				rowCollapsed (this, a);
+				rowCollapsed(this, a);
 		}
 
 		EventHandler<TreeViewRowEventArgs> rowCollapsed;
@@ -588,28 +635,31 @@ namespace Xwt
 		/// <summary>
 		/// Occurs just before a row is collapsed
 		/// </summary>
-		public event EventHandler<TreeViewRowEventArgs> RowCollapsed {
-			add {
-				BackendHost.OnBeforeEventAdd (TreeViewEvent.RowCollapsed, rowCollapsed);
+		public event EventHandler<TreeViewRowEventArgs> RowCollapsed
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TreeViewEvent.RowCollapsed, rowCollapsed);
 				rowCollapsed += value;
 			}
-			remove {
+			remove
+			{
 				rowCollapsed -= value;
-				BackendHost.OnAfterEventRemove (TreeViewEvent.RowCollapsed, rowCollapsed);
+				BackendHost.OnAfterEventRemove(TreeViewEvent.RowCollapsed, rowCollapsed);
 			}
 		}
 	}
-	
+
 	interface IColumnContainer
 	{
-		void NotifyColumnsChanged ();
+		void NotifyColumnsChanged();
 	}
-	
+
 	interface ICellContainer
 	{
-		void NotifyCellChanged ();
+		void NotifyCellChanged();
 	}
-	
+
 
 }
 

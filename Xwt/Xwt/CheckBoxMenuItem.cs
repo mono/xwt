@@ -29,31 +29,33 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ICheckBoxMenuItemBackend))]
-	public class CheckBoxMenuItem: MenuItem
+	[BackendType(typeof(ICheckBoxMenuItemBackend))]
+	public class CheckBoxMenuItem : MenuItem
 	{
-		public CheckBoxMenuItem ()
+		public CheckBoxMenuItem()
 		{
 		}
-		
-		public CheckBoxMenuItem (Command command): base (command)
+
+		public CheckBoxMenuItem(Command command) : base(command)
 		{
-			VerifyConstructorCall (this);
-			LoadCommandProperties (command);
+			VerifyConstructorCall(this);
+			LoadCommandProperties(command);
 		}
-		
-		public CheckBoxMenuItem (string label)
+
+		public CheckBoxMenuItem(string label)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 		}
-		
-		ICheckBoxMenuItemBackend Backend {
-			get { return (ICheckBoxMenuItemBackend) this.BackendHost.Backend; }
+
+		ICheckBoxMenuItemBackend Backend
+		{
+			get { return (ICheckBoxMenuItemBackend)this.BackendHost.Backend; }
 		}
-		
-		[DefaultValue (true)]
-		public bool Checked {
+
+		[DefaultValue(true)]
+		public bool Checked
+		{
 			get { return Backend.Checked; }
 			set { Backend.Checked = value; }
 		}

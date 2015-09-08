@@ -66,67 +66,72 @@ namespace Xwt.WPFBackend
 				if (this.filters.Count == 0 || this.dialog.FilterIndex < 1)
 					return null;
 
-				return this.filters [this.dialog.FilterIndex - 1];
+				return this.filters[this.dialog.FilterIndex - 1];
 			}
 
-			set { this.dialog.FilterIndex = this.filters.IndexOf (value); }
+			set { this.dialog.FilterIndex = this.filters.IndexOf(value); }
 		}
 
-		public bool Run (IWindowFrameBackend parent)
+		public bool Run(IWindowFrameBackend parent)
 		{
 			bool? ok;
 
 			WindowBackend windowBackend = parent as WindowBackend;
-			if (windowBackend != null){
-				ok = this.dialog.ShowDialog (windowBackend.Window);				
-			} else {
-				ok = this.dialog.ShowDialog ();
+			if (windowBackend != null)
+			{
+				ok = this.dialog.ShowDialog(windowBackend.Window);
+			}
+			else
+			{
+				ok = this.dialog.ShowDialog();
 			}
 
 			return ok.HasValue && ok.Value;
 		}
 
-		public void Cleanup ()
+		public void Cleanup()
 		{
 			this.dialog = null;
 		}
 
-		public virtual void Initialize (IEnumerable<FileDialogFilter> newFilters, bool multiselect, string initialFileName)
+		public virtual void Initialize(IEnumerable<FileDialogFilter> newFilters, bool multiselect, string initialFileName)
 		{
-			Initialize (newFilters, initialFileName);
+			Initialize(newFilters, initialFileName);
 		}
 
 		private List<FileDialogFilter> filters;
 		protected T dialog;
 
-		protected void Initialize (IEnumerable<FileDialogFilter> newFilters, string initialFileName)
+		protected void Initialize(IEnumerable<FileDialogFilter> newFilters, string initialFileName)
 		{
 			this.filters = newFilters.ToList();
-			this.dialog.Filter = GetFilters (this.filters);
+			this.dialog.Filter = GetFilters(this.filters);
 
 			this.dialog.FileName = initialFileName;
 		}
 
-		private string GetFilters (IEnumerable<FileDialogFilter> filters)
+		private string GetFilters(IEnumerable<FileDialogFilter> filters)
 		{
 			StringBuilder builder = new StringBuilder();
-			foreach (FileDialogFilter filter in filters) {
+			foreach (FileDialogFilter filter in filters)
+			{
 				if (builder.Length > 0)
-					builder.Append ("|");
+					builder.Append("|");
 
-				builder.Append (filter.Name);
-				builder.Append ("|");
+				builder.Append(filter.Name);
+				builder.Append("|");
 
 				int i = 0;
-				foreach (var pattern in filter.Patterns) {
+				foreach (var pattern in filter.Patterns)
+				{
 					if (i++ > 0)
-						builder.Append (";");
+						builder.Append(";");
 
-					builder.Append (pattern);
+					builder.Append(pattern);
 				}
 			}
 
-			return builder.ToString ();
+			return builder.ToString();
 		}
 	}
 }

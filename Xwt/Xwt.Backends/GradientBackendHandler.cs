@@ -29,11 +29,11 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public abstract class GradientBackendHandler: DisposableResourceBackendHandler
+	public abstract class GradientBackendHandler : DisposableResourceBackendHandler
 	{
-		public abstract object CreateLinear (double x0, double y0, double x1, double y1);
-		public abstract object CreateRadial (double cx0, double cy0, double radius0, double cx1, double cy1, double radius1);
-		public abstract void AddColorStop (object backend, double position, Color color);
+		public abstract object CreateLinear(double x0, double y0, double x1, double y1);
+		public abstract object CreateRadial(double cx0, double cy0, double radius0, double cx1, double cy1, double radius1);
+		public abstract void AddColorStop(object backend, double position, Color color);
 	}
 }
 

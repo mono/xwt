@@ -33,37 +33,37 @@ namespace Xwt.WPFBackend
 	internal class DelegatedCommand<T>
 		: DelegatedCommand
 	{
-		public DelegatedCommand (Action<T> execute)
-			: base (s => execute ((T)s))
+		public DelegatedCommand(Action<T> execute)
+			: base(s => execute((T)s))
 		{
 			if (execute == null)
-				throw new ArgumentNullException ("execute");
+				throw new ArgumentNullException("execute");
 		}
 
-		public DelegatedCommand (Action<T> execute, Func<T, bool> canExecute)
-			: base (s => execute ((T)s), s => canExecute ((T)s))
+		public DelegatedCommand(Action<T> execute, Func<T, bool> canExecute)
+			: base(s => execute((T)s), s => canExecute((T)s))
 		{
 			if (execute == null)
-				throw new ArgumentNullException ("execute");
+				throw new ArgumentNullException("execute");
 			if (canExecute == null)
-				throw new ArgumentNullException ("canExecute");
+				throw new ArgumentNullException("canExecute");
 		}
 	}
 
 	internal class DelegatedCommand
 		: ICommand
 	{
-		public DelegatedCommand (Action<object> execute)
-			: this (execute, s => true)
+		public DelegatedCommand(Action<object> execute)
+			: this(execute, s => true)
 		{
 		}
 
-		public DelegatedCommand (Action<object> execute, Func<object, bool> canExecute)
+		public DelegatedCommand(Action<object> execute, Func<object, bool> canExecute)
 		{
 			if (execute == null)
-				throw new ArgumentNullException ("execute");
+				throw new ArgumentNullException("execute");
 			if (canExecute == null)
-				throw new ArgumentNullException ("canExecute");
+				throw new ArgumentNullException("canExecute");
 
 			this.execute = execute;
 			this.canExecute = canExecute;
@@ -76,40 +76,40 @@ namespace Xwt.WPFBackend
 				if (this.listeners.Count == 0)
 					CommandManager.RequerySuggested += RequerySuggested;
 
-				this.listeners.Add (value);
+				this.listeners.Add(value);
 			}
 
 			remove
 			{
-				this.listeners.Remove (value);
+				this.listeners.Remove(value);
 
 				if (this.listeners.Count == 0)
 					CommandManager.RequerySuggested -= RequerySuggested;
 			}
 		}
 
-		public void Execute (object parameter)
+		public void Execute(object parameter)
 		{
-			this.execute (parameter);
+			this.execute(parameter);
 		}
 
-		public bool CanExecute (object parameter)
+		public bool CanExecute(object parameter)
 		{
-			return this.canExecute (parameter);
+			return this.canExecute(parameter);
 		}
 
 		public void NotifyExecutabilityChanged()
 		{
 			for (int i = 0; i < this.listeners.Count; ++i)
-				this.listeners [i] (this, EventArgs.Empty);
+				this.listeners[i](this, EventArgs.Empty);
 		}
 
 		private readonly Action<object> execute;
 		private readonly Func<object, bool> canExecute;
 
-		private readonly List<EventHandler> listeners = new List<EventHandler> ();
+		private readonly List<EventHandler> listeners = new List<EventHandler>();
 
-		private void RequerySuggested (object sender, EventArgs eventArgs)
+		private void RequerySuggested(object sender, EventArgs eventArgs)
 		{
 			NotifyExecutabilityChanged();
 		}

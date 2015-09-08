@@ -31,10 +31,11 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(IPopoverBackend))]
+	[BackendType(typeof(IPopoverBackend))]
 	public class Popover : XwtComponent
 	{
-		public enum Position {
+		public enum Position
+		{
 			Top,
 			Bottom,
 			/*Left,
@@ -47,145 +48,162 @@ namespace Xwt
 
 		EventHandler closedEvent;
 
-		static Popover ()
+		static Popover()
 		{
-			MapEvent (PopoverEvent.Closed, typeof(Popover), "OnClosed");
+			MapEvent(PopoverEvent.Closed, typeof(Popover), "OnClosed");
 		}
 
-		protected class PopoverBackendHost: BackendHost<Popover,IPopoverBackend>, IPopoverEventSink
+		protected class PopoverBackendHost : BackendHost<Popover, IPopoverBackend>, IPopoverEventSink
 		{
-			protected override void OnBackendCreated ()
+			protected override void OnBackendCreated()
 			{
-				base.OnBackendCreated ();
-				Backend.Initialize (this);
+				base.OnBackendCreated();
+				Backend.Initialize(this);
 			}
 
-			public void OnClosed ()
+			public void OnClosed()
 			{
-				((Popover)Parent).OnClosed ();
+				((Popover)Parent).OnClosed();
 			}
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new PopoverBackendHost ();
-		}
-		
-		IPopoverBackend Backend {
-			get { return ((PopoverBackendHost) BackendHost).Backend; } 
+			return new PopoverBackendHost();
 		}
 
-		public Popover ()
+		IPopoverBackend Backend
+		{
+			get { return ((PopoverBackendHost)BackendHost).Backend; }
+		}
+
+		public Popover()
 		{
 		}
 
-		public Popover (Widget content)
+		public Popover(Widget content)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Content = content;
 		}
-		
-		public Widget Content {
+
+		public Widget Content
+		{
 			get { return content; }
-			set {
+			set
+			{
 				if (shown)
-					throw new InvalidOperationException ("The content widget can't be changed while the popover is visible");
+					throw new InvalidOperationException("The content widget can't be changed while the popover is visible");
 				content = value;
 			}
 		}
 
-		public WidgetSpacing Padding {
+		public WidgetSpacing Padding
+		{
 			get { return padding; }
-			set {
+			set
+			{
 				padding = value;
-				UpdatePadding ();
+				UpdatePadding();
 			}
 		}
 
-		public double PaddingLeft {
+		public double PaddingLeft
+		{
 			get { return padding.Left; }
-			set {
+			set
+			{
 				padding.Left = value;
-				UpdatePadding (); 
+				UpdatePadding();
 			}
 		}
 
-		public double PaddingRight {
+		public double PaddingRight
+		{
 			get { return padding.Right; }
-			set {
+			set
+			{
 				padding.Right = value;
-				UpdatePadding (); 
+				UpdatePadding();
 			}
 		}
 
-		public double PaddingTop {
+		public double PaddingTop
+		{
 			get { return padding.Top; }
-			set {
+			set
+			{
 				padding.Top = value;
-				UpdatePadding (); 
+				UpdatePadding();
 			}
 		}
 
-		public double PaddingBottom {
+		public double PaddingBottom
+		{
 			get { return padding.Bottom; }
-			set {
+			set
+			{
 				padding.Bottom = value;
-				UpdatePadding (); 
+				UpdatePadding();
 			}
 		}
 
-		public Color BackgroundColor {
+		public Color BackgroundColor
+		{
 			get { return Backend.BackgroundColor; }
 			set { Backend.BackgroundColor = value; }
 		}
 
-		void UpdatePadding ()
+		void UpdatePadding()
 		{
 		}
 
-		public void Show (Position arrowPosition, Widget referenceWidget)
+		public void Show(Position arrowPosition, Widget referenceWidget)
 		{
-			Show (arrowPosition, referenceWidget, Xwt.Rectangle.Zero);
+			Show(arrowPosition, referenceWidget, Xwt.Rectangle.Zero);
 		}
 
-		public void Show (Position arrowPosition, Widget referenceWidget, Xwt.Rectangle positionRect)
+		public void Show(Position arrowPosition, Widget referenceWidget, Xwt.Rectangle positionRect)
 		{
 			if (content == null)
-				throw new InvalidOperationException ("A child widget source must be set before running the Popover");
-			Backend.Show (arrowPosition, referenceWidget, positionRect, content);
+				throw new InvalidOperationException("A child widget source must be set before running the Popover");
+			Backend.Show(arrowPosition, referenceWidget, positionRect, content);
 			shown = true;
 		}
 
-		public void Hide ()
+		public void Hide()
 		{
-			Backend.Hide ();
+			Backend.Hide();
 		}
-		
-		protected override void Dispose (bool disposing)
+
+		protected override void Dispose(bool disposing)
 		{
-			base.Dispose (disposing);
-			
+			base.Dispose(disposing);
+
 			// Don't dispose the backend if this object is being finalized
 			// The backend has to handle the finalizing on its own
 			if (disposing && BackendHost.BackendCreated)
-				Backend.Dispose ();
+				Backend.Dispose();
 		}
 
-		protected virtual void OnClosed ()
+		protected virtual void OnClosed()
 		{
 			shown = false;
 			if (closedEvent != null)
-				closedEvent (this, EventArgs.Empty);
+				closedEvent(this, EventArgs.Empty);
 		}
-		
-		public event EventHandler Closed {
-			add {
-				BackendHost.OnBeforeEventAdd (PopoverEvent.Closed, closedEvent);
+
+		public event EventHandler Closed
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(PopoverEvent.Closed, closedEvent);
 				closedEvent += value;
 			}
-			remove {
+			remove
+			{
 				closedEvent -= value;
-				BackendHost.OnAfterEventRemove (PopoverEvent.Closed, closedEvent);
+				BackendHost.OnAfterEventRemove(PopoverEvent.Closed, closedEvent);
 			}
 		}
 	}

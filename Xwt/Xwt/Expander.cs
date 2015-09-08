@@ -6,84 +6,96 @@ using System.Windows.Markup;
 
 namespace Xwt
 {
-	[BackendType (typeof(IExpanderBackend))]
+	[BackendType(typeof(IExpanderBackend))]
 	[ContentProperty("Content")]
-	public class Expander: Widget
+	public class Expander : Widget
 	{
 		EventHandler expandChanged;
 		Xwt.Widget child;
 
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IExpandEventSink
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IExpandEventSink
 		{
-			public void ExpandChanged ()
+			public void ExpandChanged()
 			{
-				((Expander)Parent).OnExpandChanged (EventArgs.Empty);
+				((Expander)Parent).OnExpandChanged(EventArgs.Empty);
 			}
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		IExpanderBackend Backend {
+
+		IExpanderBackend Backend
+		{
 			get { return (IExpanderBackend)BackendHost.Backend; }
 		}
 
-		public Expander ()
+		public Expander()
 		{
 		}
 
-		[DefaultValue ("")]
-		public string Label {
-			get {
+		[DefaultValue("")]
+		public string Label
+		{
+			get
+			{
 				return Backend.Label ?? "";
 			}
-			set {
+			set
+			{
 				Backend.Label = value;
-				OnPreferredSizeChanged ();
+				OnPreferredSizeChanged();
 			}
 		}
 
-		[DefaultValue (false)]
-		public bool Expanded {
-			get {
+		[DefaultValue(false)]
+		public bool Expanded
+		{
+			get
+			{
 				return Backend.Expanded;
 			}
-			set {
+			set
+			{
 				Backend.Expanded = value;
-				OnPreferredSizeChanged ();
+				OnPreferredSizeChanged();
 			}
 		}
 
-		[DefaultValue (null)]
-		public new Widget Content {
+		[DefaultValue(null)]
+		public new Widget Content
+		{
 			get { return child; }
-			set {
+			set
+			{
 				if (child != null)
-					UnregisterChild (child);
+					UnregisterChild(child);
 				child = value;
 				if (child != null)
-					RegisterChild (child);
-				Backend.SetContent ((IWidgetBackend)GetBackend (child));
-				OnPreferredSizeChanged ();
+					RegisterChild(child);
+				Backend.SetContent((IWidgetBackend)GetBackend(child));
+				OnPreferredSizeChanged();
 			}
 		}
 
-		protected void OnExpandChanged (EventArgs args)
+		protected void OnExpandChanged(EventArgs args)
 		{
 			if (expandChanged != null)
-				expandChanged (this, args);
+				expandChanged(this, args);
 		}
 
-		public event EventHandler ExpandChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (ExpandEvent.ExpandChanged, expandChanged);
+		public event EventHandler ExpandChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(ExpandEvent.ExpandChanged, expandChanged);
 				expandChanged += value;
 			}
-			remove {
+			remove
+			{
 				expandChanged -= value;
-				BackendHost.OnAfterEventRemove (ExpandEvent.ExpandChanged, expandChanged);
+				BackendHost.OnAfterEventRemove(ExpandEvent.ExpandChanged, expandChanged);
 			}
 		}
 	}

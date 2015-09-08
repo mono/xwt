@@ -31,9 +31,9 @@ namespace Xwt
 	/// <summary>
 	/// Button event arguments, containing information about pressed/released mouse buttons.
 	/// </summary>
-	public class ButtonEventArgs: EventArgs
+	public class ButtonEventArgs : EventArgs
 	{
-		public ButtonEventArgs ()
+		public ButtonEventArgs()
 		{
 		}
 
@@ -55,7 +55,7 @@ namespace Xwt
 		/// the backend from activating the button.
 		/// </remarks>
 		public bool Handled { get; set; }
-		
+
 		/// <summary>
 		/// Gets or sets the X coordinate of the mouse cursor (relative to the widget receiving the event).
 		/// </summary>
@@ -71,8 +71,9 @@ namespace Xwt
 		/// <summary>
 		/// Location of the mouse cursor (in widget coordinates).
 		/// </summary>
-		public Point Position {
-			get { return new Point (X, Y); }
+		public Point Position
+		{
+			get { return new Point(X, Y); }
 		}
 
 		/// <summary>

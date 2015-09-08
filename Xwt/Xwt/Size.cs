@@ -29,139 +29,149 @@ using System.ComponentModel;
 using System.Windows.Markup;
 using System.Globalization;
 
-namespace Xwt {
-	
-	[TypeConverter (typeof(SizeValueConverter))]
-	[ValueSerializer (typeof(SizeValueSerializer))]
+namespace Xwt
+{
+
+	[TypeConverter(typeof(SizeValueConverter))]
+	[ValueSerializer(typeof(SizeValueSerializer))]
 	[Serializable]
 	public struct Size
-	{		
+	{
 		double width, height;
 
-		public static readonly Size Zero = new Size (0d, 0d);
+		public static readonly Size Zero = new Size(0d, 0d);
 
-		public Size (double width, double height)
+		public Size(double width, double height)
 		{
 			this.width = width;
 			this.height = height;
 		}
 
-		public bool IsZero {
-			get {
+		public bool IsZero
+		{
+			get
+			{
 				return ((width == 0) && (height == 0));
 			}
 		}
-		
-		[DefaultValue (0d)]
-		public double Width {
-			get {
+
+		[DefaultValue(0d)]
+		public double Width
+		{
+			get
+			{
 				return width;
 			}
-			set {
+			set
+			{
 				width = value;
 			}
 		}
 
-		[DefaultValue (0d)]
-		public double Height {
-			get {
+		[DefaultValue(0d)]
+		public double Height
+		{
+			get
+			{
 				return height;
 			}
-			set {
+			set
+			{
 				height = value;
 			}
 		}
 
-		public static Size operator + (Size s1, Size s2)
+		public static Size operator +(Size s1, Size s2)
 		{
-			return new Size (s1.width + s2.width, s1.height + s2.height);
+			return new Size(s1.width + s2.width, s1.height + s2.height);
 		}
-		
-		public static Size operator - (Size s1, Size s2)
+
+		public static Size operator -(Size s1, Size s2)
 		{
-			return new Size (s1.width - s2.width, s1.height - s2.height);
+			return new Size(s1.width - s2.width, s1.height - s2.height);
 		}
-		
-		public static bool operator == (Size s1, Size s2)
+
+		public static bool operator ==(Size s1, Size s2)
 		{
 			return (s1.width == s2.width) && (s1.height == s2.height);
 		}
-		
-		public static bool operator != (Size s1, Size s2)
+
+		public static bool operator !=(Size s1, Size s2)
 		{
 			return (s1.width != s2.width) || (s1.height != s2.height);
 		}
-		
-		public static explicit operator Point (Size size) 
+
+		public static explicit operator Point(Size size)
 		{
-			return new Point (size.Width, size.Height);
+			return new Point(size.Width, size.Height);
 		}
-		
-		public static explicit operator Distance (Size size) 
+
+		public static explicit operator Distance(Size size)
 		{
-			return new Distance (size.Width, size.Height);
+			return new Distance(size.Width, size.Height);
 		}
-		
-		public override bool Equals (object ob)
+
+		public override bool Equals(object ob)
 		{
 			return (ob is Size) && this == (Size)ob;
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			unchecked {
-				return (width.GetHashCode () * 397) ^ height.GetHashCode ();
+			unchecked
+			{
+				return (width.GetHashCode() * 397) ^ height.GetHashCode();
 			}
 		}
 
-		public override string ToString ()
+		public override string ToString()
 		{
-			return String.Format ("{{Width={0} Height={1}}}", width.ToString (CultureInfo.InvariantCulture), height.ToString (CultureInfo.InvariantCulture));
+			return String.Format("{{Width={0} Height={1}}}", width.ToString(CultureInfo.InvariantCulture), height.ToString(CultureInfo.InvariantCulture));
 		}
 	}
-	
-	class SizeValueConverter: TypeConverter
+
+	class SizeValueConverter : TypeConverter
 	{
-		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 		{
 			return destinationType == typeof(string);
 		}
-		
-		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
+
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			return sourceType == typeof(string);
 		}
 	}
-	
-	class SizeValueSerializer: ValueSerializer
+
+	class SizeValueSerializer : ValueSerializer
 	{
-		public override bool CanConvertFromString (string value, IValueSerializerContext context)
+		public override bool CanConvertFromString(string value, IValueSerializerContext context)
 		{
 			return true;
 		}
-		
-		public override bool CanConvertToString (object value, IValueSerializerContext context)
+
+		public override bool CanConvertToString(object value, IValueSerializerContext context)
 		{
 			return true;
 		}
-		
-		public override string ConvertToString (object value, IValueSerializerContext context)
+
+		public override string ConvertToString(object value, IValueSerializerContext context)
 		{
-			Size s = (Size) value;
-			return s.Width.ToString () + "," + s.Height.ToString ();
+			Size s = (Size)value;
+			return s.Width.ToString() + "," + s.Height.ToString();
 		}
-		
-		public override object ConvertFromString (string value, IValueSerializerContext context)
+
+		public override object ConvertFromString(string value, IValueSerializerContext context)
 		{
-			int i = value.IndexOf (',');
+			int i = value.IndexOf(',');
 			if (i == -1)
 				return Size.Zero;
 			double w, h;
-			if (!double.TryParse (value.Substring (0, i), NumberStyles.Any, CultureInfo.InvariantCulture, out w))
+			if (!double.TryParse(value.Substring(0, i), NumberStyles.Any, CultureInfo.InvariantCulture, out w))
 				return Size.Zero;
-			if (!double.TryParse (value.Substring (i+1), NumberStyles.Any, CultureInfo.InvariantCulture, out h))
+			if (!double.TryParse(value.Substring(i + 1), NumberStyles.Any, CultureInfo.InvariantCulture, out h))
 				return Size.Zero;
-			return new Size (w, h);
+			return new Size(w, h);
 		}
 	}
 }

@@ -27,10 +27,10 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IRadioButtonBackend: IWidgetBackend
+	public interface IRadioButtonBackend : IWidgetBackend
 	{
-		void SetContent (IWidgetBackend widget);
-		void SetContent (string label);
+		void SetContent(IWidgetBackend widget);
+		void SetContent(string label);
 
 		/// <summary>
 		/// Gets or sets the group of the radio button
@@ -52,13 +52,13 @@ namespace Xwt.Backends
 		/// </summary>
 		bool Active { get; set; }
 	}
-	
-	public interface IRadioButtonEventSink: IWidgetEventSink
+
+	public interface IRadioButtonEventSink : IWidgetEventSink
 	{
-		void OnClicked ();
-		void OnToggled ();
+		void OnClicked();
+		void OnToggled();
 	}
-	
+
 	public enum RadioButtonEvent
 	{
 		Clicked = 1,

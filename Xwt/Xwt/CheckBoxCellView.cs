@@ -34,7 +34,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public sealed class CheckBoxCellView: CellView, ICheckBoxCellViewFrontend
+	public sealed class CheckBoxCellView : CellView, ICheckBoxCellViewFrontend
 	{
 		CheckBoxState state;
 		bool editable;
@@ -45,57 +45,68 @@ namespace Xwt
 		public IDataField<bool> EditableField { get; set; }
 		public IDataField<bool> AllowMixedField { get; set; }
 
-		public CheckBoxCellView ()
+		public CheckBoxCellView()
 		{
 		}
-		
-		public CheckBoxCellView (IDataField<CheckBoxState> field)
+
+		public CheckBoxCellView(IDataField<CheckBoxState> field)
 		{
 			StateField = field;
 		}
 
-		public CheckBoxCellView (IDataField<bool> field)
+		public CheckBoxCellView(IDataField<bool> field)
 		{
 			ActiveField = field;
 		}
 
-		[DefaultValue (false)]
-		public bool Active {
+		[DefaultValue(false)]
+		public bool Active
+		{
 			get { return State == CheckBoxState.On; }
-			set { State = value.ToCheckBoxState (); }
+			set { State = value.ToCheckBoxState(); }
 		}
 
-		[DefaultValue (CheckBoxState.Off)]
-		public CheckBoxState State {
-			get {
+		[DefaultValue(CheckBoxState.Off)]
+		public CheckBoxState State
+		{
+			get
+			{
 				if (StateField != null)
-					return GetValue (StateField, state);
-				return GetValue (ActiveField).ToCheckBoxState ();
+					return GetValue(StateField, state);
+				return GetValue(ActiveField).ToCheckBoxState();
 			}
-			set {
-				if (!value.IsValid ()) {
-					throw new ArgumentOutOfRangeException ("Invalid checkbox state");
+			set
+			{
+				if (!value.IsValid())
+				{
+					throw new ArgumentOutOfRangeException("Invalid checkbox state");
 				}
 				state = value;
 			}
 		}
-		
-		[DefaultValue (false)]
-		public bool Editable {
-			get {
-				return GetValue (EditableField, editable);
+
+		[DefaultValue(false)]
+		public bool Editable
+		{
+			get
+			{
+				return GetValue(EditableField, editable);
 			}
-			set {
+			set
+			{
 				editable = value;
 			}
 		}
 
-		[DefaultValue (false)]
-		public bool AllowMixed {
-			get {
-				return GetValue (AllowMixedField, allowMixed);
+		[DefaultValue(false)]
+		public bool AllowMixed
+		{
+			get
+			{
+				return GetValue(AllowMixedField, allowMixed);
 			}
-			set {
+			set
+			{
 				allowMixed = value;
 			}
 		}
@@ -106,11 +117,12 @@ namespace Xwt
 		/// Raises the toggled event
 		/// </summary>
 		/// <returns><c>true</c>, if the event was handled, <c>false</c> otherwise.</returns>
-		public bool RaiseToggled ()
+		public bool RaiseToggled()
 		{
-			if (Toggled != null) {
-				var args = new WidgetEventArgs ();
-				Toggled (this, args);
+			if (Toggled != null)
+			{
+				var args = new WidgetEventArgs();
+				Toggled(this, args);
 				return args.Handled;
 			}
 			return false;

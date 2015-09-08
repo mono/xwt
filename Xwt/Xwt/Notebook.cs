@@ -30,99 +30,106 @@ using System.Windows.Markup;
 
 namespace Xwt
 {
-	[BackendType (typeof(INotebookBackend))]
-	public class Notebook: Widget
+	[BackendType(typeof(INotebookBackend))]
+	public class Notebook : Widget
 	{
 		ChildrenCollection<NotebookTab> tabs;
 		EventHandler currentTabChanged;
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, INotebookEventSink, ICollectionEventSink<NotebookTab>, IContainerEventSink<NotebookTab>
+
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, INotebookEventSink, ICollectionEventSink<NotebookTab>, IContainerEventSink<NotebookTab>
 		{
-			public void AddedItem (NotebookTab item, int index)
+			public void AddedItem(NotebookTab item, int index)
 			{
-				((Notebook)Parent).OnAdd (item);
+				((Notebook)Parent).OnAdd(item);
 			}
-			
-			public void RemovedItem (NotebookTab item, int index)
+
+			public void RemovedItem(NotebookTab item, int index)
 			{
-				((Notebook)Parent).OnRemove (item.Child);
+				((Notebook)Parent).OnRemove(item.Child);
 			}
-			
-			public void ChildChanged (NotebookTab child, string hint)
+
+			public void ChildChanged(NotebookTab child, string hint)
 			{
-				((Notebook)Parent).Backend.UpdateLabel (child, hint);
-				((Notebook)Parent).OnPreferredSizeChanged ();
+				((Notebook)Parent).Backend.UpdateLabel(child, hint);
+				((Notebook)Parent).OnPreferredSizeChanged();
 			}
-			
-			public void ChildReplaced (NotebookTab child, Widget oldWidget, Widget newWidget)
+
+			public void ChildReplaced(NotebookTab child, Widget oldWidget, Widget newWidget)
 			{
-				((Notebook)Parent).OnReplaceChild (child, oldWidget, newWidget);
+				((Notebook)Parent).OnReplaceChild(child, oldWidget, newWidget);
 			}
-			
-			public void OnCurrentTabChanged ()
+
+			public void OnCurrentTabChanged()
 			{
-				((Notebook)Parent).OnCurrentTabChanged (EventArgs.Empty);
+				((Notebook)Parent).OnCurrentTabChanged(EventArgs.Empty);
 			}
 		}
-		
-		static Notebook ()
+
+		static Notebook()
 		{
-			MapEvent (NotebookEvent.CurrentTabChanged, typeof(Notebook), "OnCurrentTabChanged");
+			MapEvent(NotebookEvent.CurrentTabChanged, typeof(Notebook), "OnCurrentTabChanged");
 		}
-		
-		public Notebook ()
+
+		public Notebook()
 		{
-			tabs = new ChildrenCollection <NotebookTab> ((WidgetBackendHost) BackendHost);
+			tabs = new ChildrenCollection<NotebookTab>((WidgetBackendHost)BackendHost);
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		INotebookBackend Backend {
-			get { return (INotebookBackend) BackendHost.Backend; }
-		}
-		
-		public void Add (Widget w, string label)
+
+		INotebookBackend Backend
 		{
-			NotebookTab t = new NotebookTab ((WidgetBackendHost)BackendHost, w);
+			get { return (INotebookBackend)BackendHost.Backend; }
+		}
+
+		public void Add(Widget w, string label)
+		{
+			NotebookTab t = new NotebookTab((WidgetBackendHost)BackendHost, w);
 			t.Label = label;
-			tabs.Add (t);
+			tabs.Add(t);
 		}
-		
-		void OnRemove (Widget child)
+
+		void OnRemove(Widget child)
 		{
-			UnregisterChild (child);
-			Backend.Remove ((IWidgetBackend)GetBackend (child));
-			OnPreferredSizeChanged ();
+			UnregisterChild(child);
+			Backend.Remove((IWidgetBackend)GetBackend(child));
+			OnPreferredSizeChanged();
 		}
-		
-		void OnAdd (NotebookTab tab)
+
+		void OnAdd(NotebookTab tab)
 		{
-			RegisterChild (tab.Child);
-			Backend.Add ((IWidgetBackend)GetBackend (tab.Child), tab);
-			OnPreferredSizeChanged ();
+			RegisterChild(tab.Child);
+			Backend.Add((IWidgetBackend)GetBackend(tab.Child), tab);
+			OnPreferredSizeChanged();
 		}
-		
-		void OnReplaceChild (NotebookTab tab, Widget oldWidget, Widget newWidget)
+
+		void OnReplaceChild(NotebookTab tab, Widget oldWidget, Widget newWidget)
 		{
 			if (oldWidget != null)
-				OnRemove (oldWidget);
-			OnAdd (tab);
+				OnRemove(oldWidget);
+			OnAdd(tab);
 		}
-		
-		public ChildrenCollection<NotebookTab> Tabs {
+
+		public ChildrenCollection<NotebookTab> Tabs
+		{
 			get { return tabs; }
 		}
-		
-		public NotebookTab CurrentTab {
-			get {
-				return tabs [Backend.CurrentTab];
+
+		public NotebookTab CurrentTab
+		{
+			get
+			{
+				return tabs[Backend.CurrentTab];
 			}
-			set {
-				for (int n=0; n<tabs.Count; n++) {
-					if (tabs[n] == value) {
+			set
+			{
+				for (int n = 0; n < tabs.Count; n++)
+				{
+					if (tabs[n] == value)
+					{
 						Backend.CurrentTab = n;
 						return;
 					}
@@ -130,71 +137,83 @@ namespace Xwt
 				CurrentTabIndex = -1;
 			}
 		}
-		
-		public int CurrentTabIndex {
+
+		public int CurrentTabIndex
+		{
 			get { return Backend.CurrentTab; }
 			set { Backend.CurrentTab = value; }
 		}
 
-		public NotebookTabOrientation TabOrientation {
+		public NotebookTabOrientation TabOrientation
+		{
 			get { return Backend.TabOrientation; }
 			set { Backend.TabOrientation = value; }
 		}
-		
-		protected virtual void OnCurrentTabChanged (EventArgs e)
+
+		protected virtual void OnCurrentTabChanged(EventArgs e)
 		{
 			if (currentTabChanged != null)
-				currentTabChanged (this, e);
+				currentTabChanged(this, e);
 		}
-		
-		public event EventHandler CurrentTabChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (NotebookEvent.CurrentTabChanged, currentTabChanged);
+
+		public event EventHandler CurrentTabChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(NotebookEvent.CurrentTabChanged, currentTabChanged);
 				currentTabChanged += value;
 			}
-			remove {
+			remove
+			{
 				currentTabChanged -= value;
-				BackendHost.OnAfterEventRemove (NotebookEvent.CurrentTabChanged, currentTabChanged);
+				BackendHost.OnAfterEventRemove(NotebookEvent.CurrentTabChanged, currentTabChanged);
 			}
 		}
 	}
-	
+
 	[ContentProperty("Child")]
 	public class NotebookTab
 	{
 		IContainerEventSink<NotebookTab> parent;
 		string label;
 		Widget child;
-		
-		internal NotebookTab (IContainerEventSink<NotebookTab> parent, Widget child)
+
+		internal NotebookTab(IContainerEventSink<NotebookTab> parent, Widget child)
 		{
 			this.child = child;
 			this.parent = parent;
 		}
-		
-		public string Label {
-			get {
+
+		public string Label
+		{
+			get
+			{
 				return label;
 			}
-			set {
+			set
+			{
 				label = value;
-				parent.ChildChanged (this, "Label");
+				parent.ChildChanged(this, "Label");
 			}
 		}
-		
-		public Widget Child {
-			get {
+
+		public Widget Child
+		{
+			get
+			{
 				return child;
 			}
-			set {
+			set
+			{
 				var oldVal = child;
 				child = value;
-				parent.ChildReplaced (this, oldVal, value);
+				parent.ChildReplaced(this, oldVal, value);
 			}
 		}
 	}
 
-	public enum NotebookTabOrientation {
+	public enum NotebookTabOrientation
+	{
 		Top,
 		Left,
 		Right,

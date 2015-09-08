@@ -32,8 +32,8 @@ namespace Xwt.Motion
 {
 	public interface IAnimatable
 	{
-		void BatchBegin ();
-		void BatchCommit ();
+		void BatchBegin();
+		void BatchCommit();
 	}
-	
+
 }

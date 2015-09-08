@@ -30,49 +30,49 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class ChildrenCollection<T>: Collection<T>
+	public class ChildrenCollection<T> : Collection<T>
 	{
 		ICollectionEventSink<T> eventSink;
-		
-		public ChildrenCollection (ICollectionEventSink<T> eventSink)
+
+		public ChildrenCollection(ICollectionEventSink<T> eventSink)
 		{
 			this.eventSink = eventSink;
 		}
-		
-		protected override void InsertItem (int index, T item)
+
+		protected override void InsertItem(int index, T item)
 		{
-			base.InsertItem (index, item);
-			eventSink.AddedItem (item, index);
+			base.InsertItem(index, item);
+			eventSink.AddedItem(item, index);
 		}
-		
-		protected override void RemoveItem (int index)
+
+		protected override void RemoveItem(int index)
 		{
 			T item = this[index];
-			base.RemoveItem (index);
-			eventSink.RemovedItem (item, index);
+			base.RemoveItem(index);
+			eventSink.RemovedItem(item, index);
 		}
-		
-		protected override void SetItem (int index, T item)
+
+		protected override void SetItem(int index, T item)
 		{
 			T oldItem = this[index];
-			base.SetItem (index, item);
-			eventSink.RemovedItem (oldItem, index);
-			eventSink.AddedItem (item, index);
+			base.SetItem(index, item);
+			eventSink.RemovedItem(oldItem, index);
+			eventSink.AddedItem(item, index);
 		}
-		
-		protected override void ClearItems ()
+
+		protected override void ClearItems()
 		{
-			List<T> items = new List<T> (this);
-			base.ClearItems ();
-			for (int n=0; n<items.Count; n++)
-				eventSink.RemovedItem (items[n], n);
+			List<T> items = new List<T>(this);
+			base.ClearItems();
+			for (int n = 0; n < items.Count; n++)
+				eventSink.RemovedItem(items[n], n);
 		}
 	}
-	
+
 	public interface ICollectionEventSink<T>
 	{
-		void AddedItem (T item, int index);
-		void RemovedItem (T item, int index);
+		void AddedItem(T item, int index);
+		void RemovedItem(T item, int index);
 	}
 }
 

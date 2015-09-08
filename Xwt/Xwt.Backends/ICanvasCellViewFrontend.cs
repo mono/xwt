@@ -28,12 +28,12 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICanvasCellViewFrontend: ICellViewFrontend
+	public interface ICanvasCellViewFrontend : ICellViewFrontend
 	{
 		ApplicationContext ApplicationContext { get; }
-		void Draw (object ctxBackend, Rectangle cellArea);
-		Rectangle GetDrawingAreaForBounds (Rectangle cellBounds);
-		Size GetRequiredSize ();
+		void Draw(object ctxBackend, Rectangle cellArea);
+		Rectangle GetDrawingAreaForBounds(Rectangle cellBounds);
+		Size GetRequiredSize();
 	}
 
 	public class CellViewStatus

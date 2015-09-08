@@ -29,9 +29,9 @@ using System.Collections.ObjectModel;
 
 namespace Xwt
 {
-	public class WidgetCollection: Collection<Widget>
+	public class WidgetCollection : Collection<Widget>
 	{
-		public WidgetCollection ()
+		public WidgetCollection()
 		{
 		}
 	}

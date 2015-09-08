@@ -33,7 +33,7 @@ namespace Xwt
 		Flat,
 		Borderless
 	}
-	
+
 	public enum ButtonType
 	{
 		Normal,

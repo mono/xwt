@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ISaveFileDialogBackend: IFileDialogBackend
+	public interface ISaveFileDialogBackend : IFileDialogBackend
 	{
 	}
 }

@@ -34,12 +34,13 @@ namespace Xwt.WPFBackend
 	public class ImageAdorner
 		: Adorner
 	{
-		public ImageAdorner (UIElement owner, object image)
-			: base (owner)
+		public ImageAdorner(UIElement owner, object image)
+			: base(owner)
 		{
-			var source = DataConverter.AsImageSource (image);
-			this.child = new Image {
-			    Source = source,
+			var source = DataConverter.AsImageSource(image);
+			this.child = new Image
+			{
+				Source = source,
 				Width = source.Width,
 				Height = source.Height
 			};
@@ -50,34 +51,34 @@ namespace Xwt.WPFBackend
 			set
 			{
 				this.offset = value;
-				UpdatePosition ();
+				UpdatePosition();
 			}
 		}
 
-		public override GeneralTransform GetDesiredTransform (GeneralTransform transform)
+		public override GeneralTransform GetDesiredTransform(GeneralTransform transform)
 		{
 			GeneralTransformGroup result = new GeneralTransformGroup();
-			result.Children.Add (transform);
-			result.Children.Add (new TranslateTransform (this.offset.X, this.offset.Y));
+			result.Children.Add(transform);
+			result.Children.Add(new TranslateTransform(this.offset.X, this.offset.Y));
 			return result;
 		}
 
 		private System.Windows.Point offset;
 		private readonly UIElement child;
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-		    this.child.Measure (constraint);
-		    return this.child.DesiredSize;
+			this.child.Measure(constraint);
+			return this.child.DesiredSize;
 		}
 
-		protected override System.Windows.Size ArrangeOverride (System.Windows.Size finalSize)
+		protected override System.Windows.Size ArrangeOverride(System.Windows.Size finalSize)
 		{
-		    this.child.Arrange (new Rect (this.child.DesiredSize));
-		    return finalSize;
+			this.child.Arrange(new Rect(this.child.DesiredSize));
+			return finalSize;
 		}
 
-		protected override Visual GetVisualChild (int index)
+		protected override Visual GetVisualChild(int index)
 		{
 			return this.child;
 		}
@@ -89,9 +90,9 @@ namespace Xwt.WPFBackend
 
 		protected void UpdatePosition()
 		{
-			AdornerLayer layer = (AdornerLayer) Parent;
+			AdornerLayer layer = (AdornerLayer)Parent;
 			if (layer != null)
-				layer.Update (AdornedElement);
+				layer.Update(AdornedElement);
 		}
 	}
 }

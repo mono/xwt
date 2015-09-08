@@ -43,28 +43,32 @@ namespace Xwt.WPFBackend
 		{
 			ListView = new ExListView();
 			ListView.View = this.view;
-        }
-
-		public ScrollViewer ScrollViewer {
-			get {
-	            Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(ListView, 0) as Decorator;
-	            if (border != null)
-	                return border.Child as ScrollViewer;
-	            else
-	                return null;
-	        }
-        }
-
-        public int CurrentEventRow { get; set;  }
-		
-		public ScrollPolicy VerticalScrollPolicy {
-			get { return ScrollViewer.GetVerticalScrollBarVisibility (this.ListView).ToXwtScrollPolicy (); }
-			set { ScrollViewer.SetVerticalScrollBarVisibility (ListView, value.ToWpfScrollBarVisibility ()); }
 		}
 
-		public ScrollPolicy HorizontalScrollPolicy {
-			get { return ScrollViewer.GetHorizontalScrollBarVisibility (this.ListView).ToXwtScrollPolicy (); }
-			set { ScrollViewer.SetHorizontalScrollBarVisibility (ListView, value.ToWpfScrollBarVisibility ()); }
+		public ScrollViewer ScrollViewer
+		{
+			get
+			{
+				Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(ListView, 0) as Decorator;
+				if (border != null)
+					return border.Child as ScrollViewer;
+				else
+					return null;
+			}
+		}
+
+		public int CurrentEventRow { get; set; }
+
+		public ScrollPolicy VerticalScrollPolicy
+		{
+			get { return ScrollViewer.GetVerticalScrollBarVisibility(this.ListView).ToXwtScrollPolicy(); }
+			set { ScrollViewer.SetVerticalScrollBarVisibility(ListView, value.ToWpfScrollBarVisibility()); }
+		}
+
+		public ScrollPolicy HorizontalScrollPolicy
+		{
+			get { return ScrollViewer.GetHorizontalScrollBarVisibility(this.ListView).ToXwtScrollPolicy(); }
+			set { ScrollViewer.SetHorizontalScrollBarVisibility(ListView, value.ToWpfScrollBarVisibility()); }
 		}
 
 		public IScrollControlBackend CreateVerticalScrollControl()
@@ -76,8 +80,8 @@ namespace Xwt.WPFBackend
 		{
 			return new ScrollControlBackend(ScrollViewer, false);
 		}
-       
-        private bool borderVisible = true;
+
+		private bool borderVisible = true;
 		public bool BorderVisible
 		{
 			get { return this.borderVisible; }
@@ -87,7 +91,7 @@ namespace Xwt.WPFBackend
 					return;
 
 				if (value)
-					ListView.ClearValue (Control.BorderBrushProperty);
+					ListView.ClearValue(Control.BorderBrushProperty);
 				else
 					ListView.BorderBrush = null;
 
@@ -95,203 +99,227 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public bool HeadersVisible {
+		public bool HeadersVisible
+		{
 			get { return this.headersVisible; }
-			set {
+			set
+			{
 				this.headersVisible = value;
-				if (value) {
-				    if (this.view.ColumnHeaderContainerStyle != null)
-						this.view.ColumnHeaderContainerStyle.Setters.Remove (HideHeadersSetter);
-				} else {
+				if (value)
+				{
+					if (this.view.ColumnHeaderContainerStyle != null)
+						this.view.ColumnHeaderContainerStyle.Setters.Remove(HideHeadersSetter);
+				}
+				else
+				{
 					if (this.view.ColumnHeaderContainerStyle == null)
 						this.view.ColumnHeaderContainerStyle = new Style();
 
-					this.view.ColumnHeaderContainerStyle.Setters.Add (HideHeadersSetter);
+					this.view.ColumnHeaderContainerStyle.Setters.Add(HideHeadersSetter);
 				}
 			}
 		}
 
 		GridLines gridLinesVisible;
-		public GridLines GridLinesVisible {
-			get {
+		public GridLines GridLinesVisible
+		{
+			get
+			{
 				return gridLinesVisible;
 			}
-			set {
+			set
+			{
 				gridLinesVisible = value;
 				// we support only horizontal grid lines for now
 				// vertical lines are tricky and have to be drawn manually...
-				if (value == GridLines.None) {
-					if (this.ListView.ItemContainerStyle != null) {
-						this.ListView.ItemContainerStyle.Setters.Remove (GridHorizontalSetter);
-						this.ListView.ItemContainerStyle.Setters.Remove (BorderBrushSetter);
+				if (value == GridLines.None)
+				{
+					if (this.ListView.ItemContainerStyle != null)
+					{
+						this.ListView.ItemContainerStyle.Setters.Remove(GridHorizontalSetter);
+						this.ListView.ItemContainerStyle.Setters.Remove(BorderBrushSetter);
 					}
-				} else {
+				}
+				else
+				{
 					if (this.ListView.ItemContainerStyle == null)
-						this.ListView.ItemContainerStyle = new Style ();
+						this.ListView.ItemContainerStyle = new Style();
 
-					this.ListView.ItemContainerStyle.Setters.Add (GridHorizontalSetter);
-					this.ListView.ItemContainerStyle.Setters.Add (BorderBrushSetter);
+					this.ListView.ItemContainerStyle.Setters.Add(GridHorizontalSetter);
+					this.ListView.ItemContainerStyle.Setters.Add(BorderBrushSetter);
 				}
 			}
 		}
 
-		public int[] SelectedRows {
-			get { return ListView.SelectedItems.Cast<object>().Select (ListView.Items.IndexOf).ToArray (); }
+		public int[] SelectedRows
+		{
+			get { return ListView.SelectedItems.Cast<object>().Select(ListView.Items.IndexOf).ToArray(); }
 		}
 
-		public int FocusedRow {
-			get {
+		public int FocusedRow
+		{
+			get
+			{
 				if (ListView.FocusedItem != null)
 					return ListView.ItemContainerGenerator.IndexFromContainer(ListView.FocusedItem);
 				return -1;
 			}
-			set {
+			set
+			{
 				ListViewItem item = null;
-				if (value >= 0) {
+				if (value >= 0)
+				{
 					item = ListView.ItemContainerGenerator.ContainerFromIndex(value) as ListViewItem;
 				}
 				ListView.FocusItem(item);
 			}
 		}
 
-		public object AddColumn (ListViewColumn col)
+		public object AddColumn(ListViewColumn col)
 		{
-			var column = new GridViewColumn ();
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Context, Frontend, col.Views) };
+			var column = new GridViewColumn();
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
 			if (col.HeaderView != null)
-				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Context, Frontend, col.HeaderView) };
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
 
-			this.view.Columns.Add (column);
+			this.view.Columns.Add(column);
 
 			return column;
 		}
 
-		public void RemoveColumn (ListViewColumn col, object handle)
+		public void RemoveColumn(ListViewColumn col, object handle)
 		{
-			this.view.Columns.Remove ((GridViewColumn) handle);
+			this.view.Columns.Remove((GridViewColumn)handle);
 		}
 
-		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
+		public void UpdateColumn(ListViewColumn col, object handle, ListViewColumnChange change)
 		{
-			var column = (GridViewColumn) handle;
-            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
+			var column = (GridViewColumn)handle;
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
 			if (col.HeaderView != null)
-                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
 		}
 
-		public void SetSelectionMode (SelectionMode mode)
+		public void SetSelectionMode(SelectionMode mode)
 		{
-			switch (mode) {
-			case SelectionMode.Single:
-				ListView.SelectionMode = SWC.SelectionMode.Single;
-				break;
+			switch (mode)
+			{
+				case SelectionMode.Single:
+					ListView.SelectionMode = SWC.SelectionMode.Single;
+					break;
 
-			case SelectionMode.Multiple:
-				ListView.SelectionMode = SWC.SelectionMode.Extended;
-				break;
+				case SelectionMode.Multiple:
+					ListView.SelectionMode = SWC.SelectionMode.Extended;
+					break;
 			}
 		}
 
-		public void SelectAll ()
+		public void SelectAll()
 		{
 			ListView.SelectAll();
 		}
 
-		public void UnselectAll ()
+		public void UnselectAll()
 		{
 			ListView.UnselectAll();
 		}
 
-		public void ScrollToRow (int row)
+		public void ScrollToRow(int row)
 		{
-			ListView.ScrollIntoView (ListView.Items [row]);
+			ListView.ScrollIntoView(ListView.Items[row]);
 		}
 
-		public void SetSource (IListDataSource source, IBackend sourceBackend)
+		public void SetSource(IListDataSource source, IBackend sourceBackend)
 		{
 			var dataSource = sourceBackend as ListDataSource;
 			if (dataSource != null)
 				ListView.ItemsSource = dataSource;
 			else
-				ListView.ItemsSource = new ListSourceNotifyWrapper (source);
+				ListView.ItemsSource = new ListSourceNotifyWrapper(source);
 		}
 
-		public void SelectRow (int pos)
+		public void SelectRow(int pos)
 		{
-			object item = ListView.Items [pos];
+			object item = ListView.Items[pos];
 			if (ListView.SelectionMode == System.Windows.Controls.SelectionMode.Single)
 				ListView.SelectedItem = item;
 			else
-				ListView.SelectedItems.Add (item);
+				ListView.SelectedItems.Add(item);
 		}
 
-		public void UnselectRow (int pos)
+		public void UnselectRow(int pos)
 		{
-			object item = ListView.Items [pos];
+			object item = ListView.Items[pos];
 			if (ListView.SelectionMode == System.Windows.Controls.SelectionMode.Extended)
-				ListView.SelectedItems.Remove (item);
+				ListView.SelectedItems.Remove(item);
 			else if (ListView.SelectedItem == item)
 				ListView.SelectedItem = null;
 		}
 
 		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
-			if (eventId is TableViewEvent) {
-				switch ((TableViewEvent)eventId) {
-				case TableViewEvent.SelectionChanged:
-					ListView.SelectionChanged += OnSelectionChanged;
-					break;
+			base.EnableEvent(eventId);
+			if (eventId is TableViewEvent)
+			{
+				switch ((TableViewEvent)eventId)
+				{
+					case TableViewEvent.SelectionChanged:
+						ListView.SelectionChanged += OnSelectionChanged;
+						break;
 				}
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
-			if (eventId is TableViewEvent) {
-				switch ((TableViewEvent)eventId) {
-				case TableViewEvent.SelectionChanged:
-					ListView.SelectionChanged -= OnSelectionChanged;
-					break;
+			base.DisableEvent(eventId);
+			if (eventId is TableViewEvent)
+			{
+				switch ((TableViewEvent)eventId)
+				{
+					case TableViewEvent.SelectionChanged:
+						ListView.SelectionChanged -= OnSelectionChanged;
+						break;
 				}
 			}
 		}
 
-		private void OnSelectionChanged (object sender, SelectionChangedEventArgs e)
+		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			Context.InvokeUserCode (ListViewEventSink.OnSelectionChanged);
+			Context.InvokeUserCode(ListViewEventSink.OnSelectionChanged);
 		}
 
 		private bool headersVisible;
 		private readonly GridView view = new GridView();
 
-		protected ExListView ListView {
-			get { return (ExListView) Widget; }
+		protected ExListView ListView
+		{
+			get { return (ExListView)Widget; }
 			set { Widget = value; }
 		}
 
-		protected IListViewEventSink ListViewEventSink {
-			get { return (IListViewEventSink) EventSink; }
+		protected IListViewEventSink ListViewEventSink
+		{
+			get { return (IListViewEventSink)EventSink; }
 		}
 
-		private static readonly Setter HideHeadersSetter = new Setter (UIElement.VisibilityProperty, Visibility.Collapsed);
-		private static readonly Setter GridHorizontalSetter = new Setter (ListViewItem.BorderThicknessProperty, new Thickness (0, 0, 0, 1));
-		private static readonly Setter BorderBrushSetter = new Setter (ListViewItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
+		private static readonly Setter HideHeadersSetter = new Setter(UIElement.VisibilityProperty, Visibility.Collapsed);
+		private static readonly Setter GridHorizontalSetter = new Setter(ListViewItem.BorderThicknessProperty, new Thickness(0, 0, 0, 1));
+		private static readonly Setter BorderBrushSetter = new Setter(ListViewItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
 
 
-        public int GetRowAtPosition(Point p)
-        {
-            throw new NotImplementedException();
-        }
+		public int GetRowAtPosition(Point p)
+		{
+			throw new NotImplementedException();
+		}
 
-        public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

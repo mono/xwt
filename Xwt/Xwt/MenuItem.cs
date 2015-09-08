@@ -32,76 +32,80 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
-	[BackendType (typeof(IMenuItemBackend))]
-	public class MenuItem: XwtComponent, ICellContainer
+	[BackendType(typeof(IMenuItemBackend))]
+	public class MenuItem : XwtComponent, ICellContainer
 	{
 		CellViewCollection cells;
 		Menu subMenu;
 		EventHandler clicked;
 		Image image;
-		
-		protected class MenuItemBackendHost: BackendHost<MenuItem,IMenuItemBackend>, IMenuItemEventSink
+
+		protected class MenuItemBackendHost : BackendHost<MenuItem, IMenuItemBackend>, IMenuItemEventSink
 		{
-			protected override void OnBackendCreated ()
+			protected override void OnBackendCreated()
 			{
-				base.OnBackendCreated ();
-				Backend.Initialize (this);
+				base.OnBackendCreated();
+				Backend.Initialize(this);
 			}
-			
-			public void OnClicked ()
+
+			public void OnClicked()
 			{
-				Parent.DoClick ();
+				Parent.DoClick();
 			}
 		}
-		
-		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+
+		protected override Xwt.Backends.BackendHost CreateBackendHost()
 		{
-			return new MenuItemBackendHost ();
+			return new MenuItemBackendHost();
 		}
-		
-		static MenuItem ()
+
+		static MenuItem()
 		{
-			MapEvent (MenuItemEvent.Clicked, typeof(MenuItem), "OnClicked");
+			MapEvent(MenuItemEvent.Clicked, typeof(MenuItem), "OnClicked");
 		}
-		
-		public MenuItem ()
+
+		public MenuItem()
 		{
 			if (!IsSeparator)
 				UseMnemonic = true;
 		}
-		
-		public MenuItem (Command command)
+
+		public MenuItem(Command command)
 		{
-			VerifyConstructorCall (this);
-			LoadCommandProperties (command);
+			VerifyConstructorCall(this);
+			LoadCommandProperties(command);
 		}
-		
-		public MenuItem (string label)
+
+		public MenuItem(string label)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 		}
 
-		protected void LoadCommandProperties (Command command)
+		protected void LoadCommandProperties(Command command)
 		{
 			Label = command.Label;
 			Image = command.Icon;
 		}
-		
-		IMenuItemBackend Backend {
-			get { return (IMenuItemBackend) base.BackendHost.Backend; }
+
+		IMenuItemBackend Backend
+		{
+			get { return (IMenuItemBackend)base.BackendHost.Backend; }
 		}
 
-		bool IsSeparator {
+		bool IsSeparator
+		{
 			get { return this is SeparatorMenuItem; }
 		}
-		
-		[DefaultValue ("")]
-		public string Label {
+
+		[DefaultValue("")]
+		public string Label
+		{
 			get { return Backend.Label; }
-			set {
+			set
+			{
 				if (IsSeparator)
-					throw new NotSupportedException ();
+					throw new NotSupportedException();
 				Backend.Label = value;
 			}
 		}
@@ -115,94 +119,107 @@ namespace Xwt
 		/// interpreted as the mnemonic for that Label.
 		/// </remarks>
 		[DefaultValue(true)]
-		public bool UseMnemonic { 
+		public bool UseMnemonic
+		{
 			get { return Backend.UseMnemonic; }
-			set {
+			set
+			{
 				if (IsSeparator)
-					throw new NotSupportedException ();
+					throw new NotSupportedException();
 				Backend.UseMnemonic = value;
 			}
 		}
-		
-		[DefaultValue (true)]
-		public bool Sensitive {
+
+		[DefaultValue(true)]
+		public bool Sensitive
+		{
 			get { return Backend.Sensitive; }
 			set { Backend.Sensitive = value; }
 		}
-		
-		[DefaultValue (true)]
-		public bool Visible {
+
+		[DefaultValue(true)]
+		public bool Visible
+		{
 			get { return Backend.Visible; }
 			set { Backend.Visible = value; }
 		}
-		
-		public Image Image {
+
+		public Image Image
+		{
 			get { return image; }
-			set {
+			set
+			{
 				if (IsSeparator)
-					throw new NotSupportedException ();
-				image = value; 
+					throw new NotSupportedException();
+				image = value;
 				if (!IsSeparator)
-					Backend.SetImage (image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null);
+					Backend.SetImage(image != null ? image.GetImageDescription(BackendHost.ToolkitEngine) : ImageDescription.Null);
 			}
 		}
-		
-		public void Show ()
+
+		public void Show()
 		{
 			Visible = true;
 		}
-		
-		public void Hide ()
+
+		public void Hide()
 		{
 			Visible = false;
 		}
-		
-		public CellViewCollection Cells {
-			get {
+
+		public CellViewCollection Cells
+		{
+			get
+			{
 				if (cells == null)
-					cells = new CellViewCollection (this);
+					cells = new CellViewCollection(this);
 				return cells;
 			}
 		}
-		
-		public Menu SubMenu {
+
+		public Menu SubMenu
+		{
 			get { return subMenu; }
-			set {
+			set
+			{
 				if (IsSeparator)
-					throw new NotSupportedException ();
-				Backend.SetSubmenu ((IMenuBackend)BackendHost.ToolkitEngine.GetSafeBackend (value));
+					throw new NotSupportedException();
+				Backend.SetSubmenu((IMenuBackend)BackendHost.ToolkitEngine.GetSafeBackend(value));
 				subMenu = value;
 			}
 		}
-		
-		public void NotifyCellChanged ()
+
+		public void NotifyCellChanged()
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
-		
-		internal virtual void DoClick ()
+
+		internal virtual void DoClick()
 		{
-			OnClicked (EventArgs.Empty);
+			OnClicked(EventArgs.Empty);
 		}
-		
-		protected virtual void OnClicked (EventArgs e)
+
+		protected virtual void OnClicked(EventArgs e)
 		{
 			if (clicked != null)
-				clicked (this, e);
+				clicked(this, e);
 		}
-		
-		public event EventHandler Clicked {
-			add {
-				base.BackendHost.OnBeforeEventAdd (MenuItemEvent.Clicked, clicked);
+
+		public event EventHandler Clicked
+		{
+			add
+			{
+				base.BackendHost.OnBeforeEventAdd(MenuItemEvent.Clicked, clicked);
 				clicked += value;
 			}
-			remove {
+			remove
+			{
 				clicked -= value;
-				base.BackendHost.OnAfterEventRemove (MenuItemEvent.Clicked, clicked);
+				base.BackendHost.OnAfterEventRemove(MenuItemEvent.Clicked, clicked);
 			}
 		}
 	}
-	
+
 	public enum MenuItemType
 	{
 		Normal,

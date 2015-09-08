@@ -39,50 +39,56 @@ namespace Xwt
 	{
 		Toolkit toolkit;
 
-		public XwtTaskScheduler (Toolkit toolkit)
+		public XwtTaskScheduler(Toolkit toolkit)
 		{
 			this.toolkit = toolkit;
 		}
 
-		protected override void QueueTask (Task task)
+		protected override void QueueTask(Task task)
 		{
 			if (Application.UIThread != null)
-				Xwt.Application.Invoke (() => toolkit.Invoke (() => TryExecuteTask (task)));
+				Xwt.Application.Invoke(() => toolkit.Invoke(() => TryExecuteTask(task)));
 			else
-				TryExecuteTask (task);
+				TryExecuteTask(task);
 		}
 
-		protected override System.Collections.Generic.IEnumerable<Task> GetScheduledTasks ()
+		protected override System.Collections.Generic.IEnumerable<Task> GetScheduledTasks()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		protected override bool TryDequeue (Task task)
+		protected override bool TryDequeue(Task task)
 		{
 			return false;
 		}
 
-		protected override bool TryExecuteTaskInline (Task task, bool taskWasPreviouslyQueued)
+		protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
 		{
 			bool success = true;
 
-			if (Application.UIThread != null && Application.UIThread.ManagedThreadId != Thread.CurrentThread.ManagedThreadId) {
-				var evt = new ManualResetEvent (false);
-				Xwt.Application.Invoke (() => {
-					success = TryExecuteTask (task);
-					Thread.MemoryBarrier ();
-					evt.Set ();
+			if (Application.UIThread != null && Application.UIThread.ManagedThreadId != Thread.CurrentThread.ManagedThreadId)
+			{
+				var evt = new ManualResetEvent(false);
+				Xwt.Application.Invoke(() =>
+				{
+					success = TryExecuteTask(task);
+					Thread.MemoryBarrier();
+					evt.Set();
 				});
-				evt.WaitOne ();
-			} else {
-				success = TryExecuteTask (task);
+				evt.WaitOne();
+			}
+			else
+			{
+				success = TryExecuteTask(task);
 			}
 
 			return success;
 		}
 
-		public override int MaximumConcurrencyLevel {
-			get {
+		public override int MaximumConcurrencyLevel
+		{
+			get
+			{
 				return 1;
 			}
 		}

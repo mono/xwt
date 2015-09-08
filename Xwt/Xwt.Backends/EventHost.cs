@@ -37,8 +37,8 @@ namespace Xwt.Backends
 	/// </summary>
 	public class EventHost
 	{
-		static Dictionary<Type, List<EventMap>> overridenEventMap = new Dictionary<Type, List<EventMap>> ();
-		static Dictionary<Type, HashSet<object>> overridenEvents = new Dictionary<Type, HashSet<object>> ();
+		static Dictionary<Type, List<EventMap>> overridenEventMap = new Dictionary<Type, List<EventMap>>();
+		static Dictionary<Type, HashSet<object>> overridenEvents = new Dictionary<Type, HashSet<object>>();
 
 		/// <summary>
 		/// Maps an event handler of an Xwt component to an event identifier.
@@ -47,18 +47,20 @@ namespace Xwt.Backends
 		/// like <see cref="Xwt.Backends.WidgetEvent"/>, identifying component specific events).</param>
 		/// <param name="type">The Xwt component type.</param>
 		/// <param name="methodName">The <see cref="System.Reflection.MethodInfo.Name"/> of the event handler.</param>
-		public static void MapEvent (object eventId, Type type, string methodName)
+		public static void MapEvent(object eventId, Type type, string methodName)
 		{
 			List<EventMap> events;
-			if (!overridenEventMap.TryGetValue (type, out events)) {
-				events = new List<EventMap> ();
-				overridenEventMap [type] = events;
+			if (!overridenEventMap.TryGetValue(type, out events))
+			{
+				events = new List<EventMap>();
+				overridenEventMap[type] = events;
 			}
-			EventMap emap = new EventMap () {
+			EventMap emap = new EventMap()
+			{
 				MethodName = methodName,
 				EventId = eventId
 			};
-			events.Add (emap);
+			events.Add(emap);
 		}
 
 		/// <summary>
@@ -67,33 +69,37 @@ namespace Xwt.Backends
 		/// <returns>The default enabled events for a Xwt widget type.</returns>
 		/// <param name="type">The Xwt widgets type.</param>
 		/// <param name="customEnabledEvents">Function that gets the custom enabled events.</param>
-		public static HashSet<object> GetDefaultEnabledEvents (Type type, Func<IEnumerable<object>> customEnabledEvents)
+		public static HashSet<object> GetDefaultEnabledEvents(Type type, Func<IEnumerable<object>> customEnabledEvents)
 		{
 			HashSet<object> defaultEnabledEvents;
-			if (!overridenEvents.TryGetValue (type, out defaultEnabledEvents)) {
-				defaultEnabledEvents = new HashSet<object> ();
+			if (!overridenEvents.TryGetValue(type, out defaultEnabledEvents))
+			{
+				defaultEnabledEvents = new HashSet<object>();
 				Type t = type;
-				while (t != typeof(Component) && t != typeof(Object)) {
+				while (t != typeof(Component) && t != typeof(Object))
+				{
 					List<EventMap> emaps;
-					if (overridenEventMap.TryGetValue (t, out emaps)) {
-						foreach (var emap in emaps) {
-							if (IsOverriden (emap, type, t))
-								defaultEnabledEvents.Add (emap.EventId);
+					if (overridenEventMap.TryGetValue(t, out emaps))
+					{
+						foreach (var emap in emaps)
+						{
+							if (IsOverriden(emap, type, t))
+								defaultEnabledEvents.Add(emap.EventId);
 						}
 					}
 					t = t.BaseType;
 				}
-				defaultEnabledEvents.UnionWith (customEnabledEvents ());
-				overridenEvents [type] = defaultEnabledEvents;
+				defaultEnabledEvents.UnionWith(customEnabledEvents());
+				overridenEvents[type] = defaultEnabledEvents;
 			}
 			return defaultEnabledEvents;
 		}
 
-		static bool IsOverriden (EventMap emap, Type thisType, Type t)
+		static bool IsOverriden(EventMap emap, Type thisType, Type t)
 		{
-			var method = thisType.GetMethod (emap.MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			var method = thisType.GetMethod(emap.MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			if (method == null)
-				throw new InvalidOperationException ("Invalid event mapping: method '" + emap.MethodName + "' not found in type '" + t + "'");
+				throw new InvalidOperationException("Invalid event mapping: method '" + emap.MethodName + "' not found in type '" + t + "'");
 			return method.DeclaringType != t;
 		}
 
@@ -110,10 +116,10 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
 		/// <param name="eventDelegate">The subscribing handler delegate.</param>
-		public void OnBeforeEventAdd (object eventId, Delegate eventDelegate)
+		public void OnBeforeEventAdd(object eventId, Delegate eventDelegate)
 		{
-			if (eventDelegate == null && !DefaultEnabledEvents.Contains (eventId))
-				OnEnableEvent (eventId);
+			if (eventDelegate == null && !DefaultEnabledEvents.Contains(eventId))
+				OnEnableEvent(eventId);
 		}
 
 		/// <summary>
@@ -121,17 +127,17 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
 		/// <param name="eventDelegate">The handler delegate to remove from the event.</param>
-		public void OnAfterEventRemove (object eventId, Delegate eventDelegate)
+		public void OnAfterEventRemove(object eventId, Delegate eventDelegate)
 		{
-			if (eventDelegate == null && !DefaultEnabledEvents.Contains (eventId))
-				OnDisableEvent (eventId);
+			if (eventDelegate == null && !DefaultEnabledEvents.Contains(eventId))
+				OnDisableEvent(eventId);
 		}
 
 		/// <summary>
 		/// Enables an event with the specified identifier.
 		/// </summary>
 		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
-		protected virtual void OnEnableEvent (object eventId)
+		protected virtual void OnEnableEvent(object eventId)
 		{
 		}
 
@@ -139,7 +145,7 @@ namespace Xwt.Backends
 		/// Disables an event with the specified identifier.
 		/// </summary>
 		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
-		protected virtual void OnDisableEvent (object eventId)
+		protected virtual void OnDisableEvent(object eventId)
 		{
 		}
 
@@ -147,7 +153,7 @@ namespace Xwt.Backends
 		/// Gets the events which are enabled by default for this cell view
 		/// </summary>
 		/// <returns>The enabled events (must be valid event enum values)</returns>
-		protected virtual IEnumerable<object> GetDefaultEnabledEvents ()
+		protected virtual IEnumerable<object> GetDefaultEnabledEvents()
 		{
 			yield break;
 		}
@@ -156,14 +162,17 @@ namespace Xwt.Backends
 		/// Gets the default enabled events.
 		/// </summary>
 		/// <value>The default enabled events.</value>
-		internal HashSet<object> DefaultEnabledEvents {
-			get {
-				if (defaultEnabledEvents == null) {
-					defaultEnabledEvents = GetDefaultEnabledEvents (Parent.GetType (), GetDefaultEnabledEvents);
+		internal HashSet<object> DefaultEnabledEvents
+		{
+			get
+			{
+				if (defaultEnabledEvents == null)
+				{
+					defaultEnabledEvents = GetDefaultEnabledEvents(Parent.GetType(), GetDefaultEnabledEvents);
 				}
 				return defaultEnabledEvents;
 			}
 		}
 	}
-	
+
 }

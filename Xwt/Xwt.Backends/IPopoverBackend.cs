@@ -33,14 +33,14 @@ namespace Xwt.Backends
 	public interface IPopoverBackend : IBackend, IDisposable
 	{
 		Color BackgroundColor { get; set; }
-		void Initialize (IPopoverEventSink sink);
-		void Show (Popover.Position arrowPosition, Widget referenceWidget, Xwt.Rectangle positionRect, Xwt.Widget child);
-		void Hide ();
+		void Initialize(IPopoverEventSink sink);
+		void Show(Popover.Position arrowPosition, Widget referenceWidget, Xwt.Rectangle positionRect, Xwt.Widget child);
+		void Hide();
 	}
 
 	public interface IPopoverEventSink
 	{
-		void OnClosed ();
+		void OnClosed();
 	}
 
 	public enum PopoverEvent

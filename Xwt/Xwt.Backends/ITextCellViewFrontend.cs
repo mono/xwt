@@ -27,14 +27,14 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ITextCellViewFrontend: ICellViewFrontend
+	public interface ITextCellViewFrontend : ICellViewFrontend
 	{
 		string Markup { get; }
 		string Text { get; }
 		bool Editable { get; }
 		EllipsizeMode Ellipsize { get; }
-		
-		bool RaiseTextChanged ();
+
+		bool RaiseTextChanged();
 
 		IDataField TextField { get; set; }
 	}

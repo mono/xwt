@@ -48,38 +48,40 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
 			// HACK: This is a hack to fix a size calculation issue with buttons.
 			// For some reason, base.MeasureOverride doesn't return the correct size
 			// when using infinite,infinite as constraint, unless a previous call with
 			// concrete numbers has been made.
-			base.MeasureOverride (new System.Windows.Size (0, 0));
+			base.MeasureOverride(new System.Windows.Size(0, 0));
 
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
+			var s = base.MeasureOverride(constraint);
+			return Backend.MeasureOverride(constraint, s);
 		}
 
-		private void OnChecked (object sender, RoutedEventArgs routedEventArgs)
+		private void OnChecked(object sender, RoutedEventArgs routedEventArgs)
 		{
 			if (!IsChecked.HasValue || !IsChecked.Value)
 				return;
 
-			var args = new MenuOpeningEventArgs ();
+			var args = new MenuOpeningEventArgs();
 
 			var opening = this.MenuOpening;
 			if (opening != null)
-				opening (this, args);
+				opening(this, args);
 
 			var menu = args.ContextMenu;
-			if (menu == null) {
+			if (menu == null)
+			{
 				IsChecked = false;
 				return;
 			}
-			
+
 			string text = Content as string;
-			if (!String.IsNullOrWhiteSpace (text)) {
-				SWC.MenuItem selected = menu.Items.OfType<SWC.MenuItem>().FirstOrDefault (i => i.Header as string == text);
+			if (!String.IsNullOrWhiteSpace(text))
+			{
+				SWC.MenuItem selected = menu.Items.OfType<SWC.MenuItem>().FirstOrDefault(i => i.Header as string == text);
 				if (selected != null)
 					selected.IsChecked = true;
 			}
@@ -91,7 +93,7 @@ namespace Xwt.WPFBackend
 			menu.IsOpen = true;
 		}
 
-		private void OnMenuClosed (object sender, RoutedEventArgs e)
+		private void OnMenuClosed(object sender, RoutedEventArgs e)
 		{
 			var menu = sender as SWC.ContextMenu;
 			if (menu != null)

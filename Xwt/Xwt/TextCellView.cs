@@ -33,7 +33,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public sealed class TextCellView: CellView, ITextCellViewFrontend
+	public sealed class TextCellView : CellView, ITextCellViewFrontend
 	{
 		string text;
 		string markup;
@@ -45,59 +45,71 @@ namespace Xwt
 		public IDataField<bool> EditableField { get; set; }
 		public IDataField<EllipsizeMode> EllipsizeField { get; set; }
 
-		public TextCellView ()
+		public TextCellView()
 		{
 		}
-		
-		public TextCellView (IDataField textField)
+
+		public TextCellView(IDataField textField)
 		{
 			TextField = textField;
 		}
-		
-		public TextCellView (string text)
+
+		public TextCellView(string text)
 		{
 			this.text = text;
 		}
-		
-		[DefaultValue (null)]
-		public string Text {
-			get {
+
+		[DefaultValue(null)]
+		public string Text
+		{
+			get
+			{
 				if (TextField != null && DataSource != null)
-					return Convert.ToString (DataSource.GetValue (TextField));
+					return Convert.ToString(DataSource.GetValue(TextField));
 				else
 					return text;
 			}
-			set {
+			set
+			{
 				text = value;
 			}
 		}
 
-		[DefaultValue (null)]
-		public string Markup {
-			get {
-				return GetValue (MarkupField, markup);
+		[DefaultValue(null)]
+		public string Markup
+		{
+			get
+			{
+				return GetValue(MarkupField, markup);
 			}
-			set {
+			set
+			{
 				markup = value;
 			}
 		}
 
-		[DefaultValue (false)]
-		public bool Editable {
-			get {
-				return GetValue (EditableField, editable);
+		[DefaultValue(false)]
+		public bool Editable
+		{
+			get
+			{
+				return GetValue(EditableField, editable);
 			}
-			set {
+			set
+			{
 				editable = value;
 			}
 		}
 
-		[DefaultValue (EllipsizeMode.None)]
-		public EllipsizeMode Ellipsize {
-			get {
-				return GetValue (EllipsizeField, ellipsize);
+		[DefaultValue(EllipsizeMode.None)]
+		public EllipsizeMode Ellipsize
+		{
+			get
+			{
+				return GetValue(EllipsizeField, ellipsize);
 			}
-			set {
+			set
+			{
 				ellipsize = value;
 			}
 		}
@@ -107,11 +119,12 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler<WidgetEventArgs> TextChanged;
 
-		bool ITextCellViewFrontend.RaiseTextChanged ()
+		bool ITextCellViewFrontend.RaiseTextChanged()
 		{
-			if (TextChanged != null) {
-				var args = new WidgetEventArgs ();
-				TextChanged (this, args);
+			if (TextChanged != null)
+			{
+				var args = new WidgetEventArgs();
+				TextChanged(this, args);
 				return args.Handled;
 			}
 			return false;

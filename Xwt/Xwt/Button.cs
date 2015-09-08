@@ -31,8 +31,8 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	[BackendType (typeof(IButtonBackend))]
-	public class Button: Widget
+	[BackendType(typeof(IButtonBackend))]
+	public class Button : Widget
 	{
 		EventHandler clicked;
 		ButtonStyle style = ButtonStyle.Normal;
@@ -41,65 +41,68 @@ namespace Xwt
 		string label;
 		bool useMnemonic = true;
 		ContentPosition imagePosition = ContentPosition.Left;
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IButtonEventSink
+
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IButtonEventSink
 		{
-			protected override void OnBackendCreated ()
+			protected override void OnBackendCreated()
 			{
-				base.OnBackendCreated ();
-				((IButtonBackend)Backend).SetButtonStyle (((Button)Parent).style);
+				base.OnBackendCreated();
+				((IButtonBackend)Backend).SetButtonStyle(((Button)Parent).style);
 			}
-			
-			public void OnClicked ()
+
+			public void OnClicked()
 			{
-				((Button)Parent).OnClicked (EventArgs.Empty);
+				((Button)Parent).OnClicked(EventArgs.Empty);
 			}
 		}
-		
-		static Button ()
+
+		static Button()
 		{
-			MapEvent (ButtonEvent.Clicked, typeof(Button), "OnClicked");
+			MapEvent(ButtonEvent.Clicked, typeof(Button), "OnClicked");
 		}
-		
-		public Button ()
+
+		public Button()
 		{
 		}
-		
-		public Button (string label)
+
+		public Button(string label)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 		}
-		
-		public Button (Image img, string label)
+
+		public Button(Image img, string label)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 			Image = img;
 		}
-		
-		public Button (Image img)
+
+		public Button(Image img)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Image = img;
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		IButtonBackend Backend {
-			get { return (IButtonBackend) BackendHost.Backend; }
+
+		IButtonBackend Backend
+		{
+			get { return (IButtonBackend)BackendHost.Backend; }
 		}
-		
-		[DefaultValue ("")]
-		public string Label {
+
+		[DefaultValue("")]
+		public string Label
+		{
 			get { return label ?? ""; }
-			set {
+			set
+			{
 				label = value;
-				Backend.SetContent (label, UseMnemonic, image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
-				OnPreferredSizeChanged ();
+				Backend.SetContent(label, UseMnemonic, image != null ? image.GetImageDescription(BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
+				OnPreferredSizeChanged();
 			}
 		}
 
@@ -112,71 +115,83 @@ namespace Xwt
 		/// interpreted as the mnemonic for that Label.
 		/// </remarks>
 		[DefaultValue(true)]
-		public bool UseMnemonic { 
+		public bool UseMnemonic
+		{
 			get { return useMnemonic; }
 			set
-			{ 
+			{
 				if (useMnemonic == value)
 					return;
-				Backend.SetContent (label, value, image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
+				Backend.SetContent(label, value, image != null ? image.GetImageDescription(BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
 				useMnemonic = value;
 			}
 		}
 
-		[DefaultValue (null)]
-		public Image Image {
+		[DefaultValue(null)]
+		public Image Image
+		{
 			get { return image; }
-			set {
+			set
+			{
 				image = value;
-				Backend.SetContent (label, UseMnemonic, image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
-				OnPreferredSizeChanged ();
+				Backend.SetContent(label, UseMnemonic, image != null ? image.GetImageDescription(BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
+				OnPreferredSizeChanged();
 			}
 		}
-		
-		[DefaultValue (ContentPosition.Left)]
-		public ContentPosition ImagePosition {
+
+		[DefaultValue(ContentPosition.Left)]
+		public ContentPosition ImagePosition
+		{
 			get { return imagePosition; }
-			set {
+			set
+			{
 				imagePosition = value;
-				Backend.SetContent (label, UseMnemonic, image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
-				OnPreferredSizeChanged ();
+				Backend.SetContent(label, UseMnemonic, image != null ? image.GetImageDescription(BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
+				OnPreferredSizeChanged();
 			}
 		}
-		
-		[DefaultValue (ButtonStyle.Normal)]
-		public ButtonStyle Style {
+
+		[DefaultValue(ButtonStyle.Normal)]
+		public ButtonStyle Style
+		{
 			get { return style; }
-			set {
+			set
+			{
 				style = value;
-				Backend.SetButtonStyle (style);
-				OnPreferredSizeChanged ();
+				Backend.SetButtonStyle(style);
+				OnPreferredSizeChanged();
 			}
 		}
-		
-		[DefaultValue (ButtonType.Normal)]
-		public ButtonType Type {
+
+		[DefaultValue(ButtonType.Normal)]
+		public ButtonType Type
+		{
 			get { return type; }
-			set {
+			set
+			{
 				type = value;
-				Backend.SetButtonType (type);
-				OnPreferredSizeChanged ();
+				Backend.SetButtonType(type);
+				OnPreferredSizeChanged();
 			}
 		}
-		
-		protected virtual void OnClicked (EventArgs e)
+
+		protected virtual void OnClicked(EventArgs e)
 		{
 			if (clicked != null)
-				clicked (this, e);
+				clicked(this, e);
 		}
-		
-		public event EventHandler Clicked {
-			add {
-				BackendHost.OnBeforeEventAdd (ButtonEvent.Clicked, clicked);
+
+		public event EventHandler Clicked
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(ButtonEvent.Clicked, clicked);
 				clicked += value;
 			}
-			remove {
+			remove
+			{
 				clicked -= value;
-				BackendHost.OnAfterEventRemove (ButtonEvent.Clicked, clicked);
+				BackendHost.OnAfterEventRemove(ButtonEvent.Clicked, clicked);
 			}
 		}
 	}

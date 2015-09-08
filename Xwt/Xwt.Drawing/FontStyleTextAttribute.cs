@@ -31,20 +31,20 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public sealed class FontStyleTextAttribute: TextAttribute
+	public sealed class FontStyleTextAttribute : TextAttribute
 	{
 		public FontStyle Style { get; set; }
-		
-		public override bool Equals (object t)
+
+		public override bool Equals(object t)
 		{
 			var ot = t as FontStyleTextAttribute;
-			return ot != null && Style.Equals (ot.Style) && base.Equals (t);
+			return ot != null && Style.Equals(ot.Style) && base.Equals(t);
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			return base.GetHashCode () ^ Style.GetHashCode ();
+			return base.GetHashCode() ^ Style.GetHashCode();
 		}
 	}
-	
+
 }

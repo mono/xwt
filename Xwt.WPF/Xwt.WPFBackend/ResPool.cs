@@ -39,19 +39,20 @@ namespace Xwt.WPFBackend
 {
 	public static class ResPool
 	{
-		static Dictionary<Color, SolidColorBrush> solidBrushes = new Dictionary<Color, SolidColorBrush> ();
+		static Dictionary<Color, SolidColorBrush> solidBrushes = new Dictionary<Color, SolidColorBrush>();
 
-		public static SolidColorBrush GetSolidBrush (Xwt.Drawing.Color color)
+		public static SolidColorBrush GetSolidBrush(Xwt.Drawing.Color color)
 		{
-			return GetSolidBrush (DataConverter.ToWpfColor (color));
+			return GetSolidBrush(DataConverter.ToWpfColor(color));
 		}
 
-		public static SolidColorBrush GetSolidBrush (Color color)
+		public static SolidColorBrush GetSolidBrush(Color color)
 		{
-			lock (solidBrushes) {
+			lock (solidBrushes)
+			{
 				SolidColorBrush brush;
-				if (!solidBrushes.TryGetValue (color, out brush))
-					solidBrushes [color] = brush = new SolidColorBrush (color);
+				if (!solidBrushes.TryGetValue(color, out brush))
+					solidBrushes[color] = brush = new SolidColorBrush(color);
 
 				return brush;
 			}

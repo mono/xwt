@@ -30,68 +30,73 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class ObjectCollection<T>: Collection<T>
+	public class ObjectCollection<T> : Collection<T>
 	{
 		ICollectionListener listener;
-		Action<T,bool> changeHandler;
+		Action<T, bool> changeHandler;
 
-		protected ObjectCollection (ICollectionListener listener)
+		protected ObjectCollection(ICollectionListener listener)
 		{
 			this.listener = listener;
 		}
 
-		protected ObjectCollection (Action<T,bool> changeHandler)
+		protected ObjectCollection(Action<T, bool> changeHandler)
 		{
 			this.changeHandler = changeHandler;
 		}
 
-		protected override void InsertItem (int index, T item)
+		protected override void InsertItem(int index, T item)
 		{
-			base.InsertItem (index, item);
+			base.InsertItem(index, item);
 			if (listener != null)
-				listener.ItemAdded (this, item);
+				listener.ItemAdded(this, item);
 			if (changeHandler != null)
-				changeHandler (item, true);
+				changeHandler(item, true);
 		}
 
-		protected override void RemoveItem (int index)
+		protected override void RemoveItem(int index)
 		{
-			T ob = Items [index];
-			base.RemoveItem (index);
+			T ob = Items[index];
+			base.RemoveItem(index);
 			if (listener != null)
-				listener.ItemRemoved (this, ob);
+				listener.ItemRemoved(this, ob);
 			if (changeHandler != null)
-				changeHandler (ob, false);
+				changeHandler(ob, false);
 		}
 
-		protected override void SetItem (int index, T item)
+		protected override void SetItem(int index, T item)
 		{
-			T ob = Items [index];
-			base.SetItem (index, item);
-			if (listener != null) {
-				listener.ItemRemoved (this, ob);
-				listener.ItemAdded (this, item);
+			T ob = Items[index];
+			base.SetItem(index, item);
+			if (listener != null)
+			{
+				listener.ItemRemoved(this, ob);
+				listener.ItemAdded(this, item);
 			}
-			if (changeHandler != null) {
-				changeHandler (ob, false);
-				changeHandler (item, false);
+			if (changeHandler != null)
+			{
+				changeHandler(ob, false);
+				changeHandler(item, false);
 			}
 		}
 
-		protected override void ClearItems ()
+		protected override void ClearItems()
 		{
-			List<T> copy = new List<T> (Items);
-			if (listener != null) {
-				base.ClearItems ();
+			List<T> copy = new List<T>(Items);
+			if (listener != null)
+			{
+				base.ClearItems();
 				foreach (var c in copy)
-					listener.ItemRemoved (this, c);
-			} else if (changeHandler != null) {
-				base.ClearItems ();
+					listener.ItemRemoved(this, c);
+			}
+			else if (changeHandler != null)
+			{
+				base.ClearItems();
 				foreach (var c in copy)
-					changeHandler (c, false);
+					changeHandler(c, false);
 			}
 			else
-				base.ClearItems ();
+				base.ClearItems();
 		}
 	}
 }

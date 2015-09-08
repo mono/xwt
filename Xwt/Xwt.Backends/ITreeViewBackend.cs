@@ -29,29 +29,29 @@ using Xwt;
 
 namespace Xwt.Backends
 {
-	public interface ITreeViewBackend: ITableViewBackend
+	public interface ITreeViewBackend : ITableViewBackend
 	{
-		void SetSource (ITreeDataSource source, IBackend sourceBackend);
+		void SetSource(ITreeDataSource source, IBackend sourceBackend);
 		TreePosition[] SelectedRows { get; }
-		void SelectRow (TreePosition pos);
-		void UnselectRow (TreePosition pos);
+		void SelectRow(TreePosition pos);
+		void UnselectRow(TreePosition pos);
 		TreePosition FocusedRow { get; set; }
-		
-		bool IsRowSelected (TreePosition pos);
-		bool IsRowExpanded (TreePosition pos);
-		void ExpandRow (TreePosition pos, bool expandChildren);
-		void CollapseRow (TreePosition pos);
-		void ScrollToRow (TreePosition pos);
-		void ExpandToRow (TreePosition pos);
-		
+
+		bool IsRowSelected(TreePosition pos);
+		bool IsRowExpanded(TreePosition pos);
+		void ExpandRow(TreePosition pos, bool expandChildren);
+		void CollapseRow(TreePosition pos);
+		void ScrollToRow(TreePosition pos);
+		void ExpandToRow(TreePosition pos);
+
 		bool HeadersVisible { get; set; }
 		GridLines GridLinesVisible { get; set; }
-		
-		bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition);
+
+		bool GetDropTargetRow(double x, double y, out RowDropPosition pos, out TreePosition nodePosition);
 
 		TreePosition CurrentEventRow { get; }
 	}
-	
+
 	public enum ListViewColumnChange
 	{
 		Title,
@@ -62,7 +62,7 @@ namespace Xwt.Backends
 		SortIndicatorVisible,
 		Alignment
 	}
-	
+
 	public enum TreeViewEvent
 	{
 		RowActivated,
@@ -72,13 +72,13 @@ namespace Xwt.Backends
 		RowCollapsed
 	}
 
-	public interface ITreeViewEventSink: ITableViewEventSink
+	public interface ITreeViewEventSink : ITableViewEventSink
 	{
-		void OnRowActivated (TreePosition position);
-		void OnRowExpanding (TreePosition position);
-		void OnRowExpanded (TreePosition position);
-		void OnRowCollapsing (TreePosition position);
-		void OnRowCollapsed (TreePosition position);
+		void OnRowActivated(TreePosition position);
+		void OnRowExpanding(TreePosition position);
+		void OnRowExpanded(TreePosition position);
+		void OnRowCollapsing(TreePosition position);
+		void OnRowCollapsed(TreePosition position);
 	}
 }
 

@@ -35,9 +35,10 @@ namespace Xwt.Motion
 	internal class Ticker
 	{
 		static Ticker ticker;
-		public static Ticker Default {
+		public static Ticker Default
+		{
 			internal set { ticker = value; }
-			get { return ticker ?? (ticker = new Ticker ()); }
+			get { return ticker ?? (ticker = new Ticker()); }
 		}
 
 		readonly List<Tuple<int, Func<long, bool>>> timeouts;
@@ -46,86 +47,91 @@ namespace Xwt.Motion
 		readonly Stopwatch stopwatch;
 		IDisposable timer;
 
-		internal Ticker ()
+		internal Ticker()
 		{
 			count = 0;
-			timeouts = new List<Tuple<int, Func<long, bool>>> ();
-			stopwatch = new Stopwatch ();
+			timeouts = new List<Tuple<int, Func<long, bool>>>();
+			stopwatch = new Stopwatch();
 		}
 
-		bool HandleElapsed ()
-		{	
-			if (timeouts.Count > 0) {
-				SendSignals ();
-				stopwatch.Reset ();
-				stopwatch.Start ();
+		bool HandleElapsed()
+		{
+			if (timeouts.Count > 0)
+			{
+				SendSignals();
+				stopwatch.Reset();
+				stopwatch.Start();
 			}
 			return enabled;
 		}
 
-		protected void SendSignals (int timestep = -1)
+		protected void SendSignals(int timestep = -1)
 		{
 			long step = (timestep >= 0) ? timestep : stopwatch.ElapsedMilliseconds;
-			stopwatch.Reset ();
-			stopwatch.Start ();
+			stopwatch.Reset();
+			stopwatch.Start();
 
-			var localCopy = new List<Tuple<int, Func<long, bool>>> (timeouts);
-			foreach (var timeout in localCopy) {
-				bool remove = !timeout.Item2 (step);
+			var localCopy = new List<Tuple<int, Func<long, bool>>>(timeouts);
+			foreach (var timeout in localCopy)
+			{
+				bool remove = !timeout.Item2(step);
 				if (remove)
-					timeouts.RemoveAll (t => t.Item1 == timeout.Item1);
+					timeouts.RemoveAll(t => t.Item1 == timeout.Item1);
 			}
 
-			if (!timeouts.Any ()) {
+			if (!timeouts.Any())
+			{
 				enabled = false;
-				Disable ();
+				Disable();
 			}
 		}
 
-		void Enable ()
+		void Enable()
 		{
-			stopwatch.Reset ();
-			stopwatch.Start ();
-			EnableTimer ();
+			stopwatch.Reset();
+			stopwatch.Start();
+			EnableTimer();
 		}
 
-		void Disable ()
+		void Disable()
 		{
-			stopwatch.Reset ();
-			DisableTimer ();
+			stopwatch.Reset();
+			DisableTimer();
 		}
 
-		protected virtual void EnableTimer ()
+		protected virtual void EnableTimer()
 		{
-			timer = Xwt.Application.TimeoutInvoke (16, HandleElapsed);
+			timer = Xwt.Application.TimeoutInvoke(16, HandleElapsed);
 		}
 
-		protected virtual void DisableTimer ()
+		protected virtual void DisableTimer()
 		{
-			timer.Dispose ();
+			timer.Dispose();
 			timer = null;
 		}
 
-		public virtual int Insert (Func<long, bool> timeout)
+		public virtual int Insert(Func<long, bool> timeout)
 		{
 			count++;
-			timeouts.Add (new Tuple<int,Func<long, bool>> (count, timeout));
+			timeouts.Add(new Tuple<int, Func<long, bool>>(count, timeout));
 
-			if (!enabled) {
+			if (!enabled)
+			{
 				enabled = true;
-				Enable ();
+				Enable();
 			}
 
 			return count;
 		}
 
-		public virtual void Remove (int handle)
+		public virtual void Remove(int handle)
 		{
-			timeouts.RemoveAll (t => t.Item1 == handle);
+			timeouts.RemoveAll(t => t.Item1 == handle);
 
-			if (!timeouts.Any ()) {
+			if (!timeouts.Any())
+			{
 				enabled = false;
-				Disable ();
+				Disable();
 			}
 		}
 	}
@@ -138,14 +144,14 @@ namespace Xwt.Motion
 		public Easing Easing { get; set; }
 		public bool Loop { get; set; }
 		public string Handle { get; set; }
-		
+
 		public event EventHandler ValueUpdated;
 		public event EventHandler Finished;
 
 		int timer;
 		long lastMilliseconds;
-		
-		public Tweener (uint length, uint rate)
+
+		public Tweener(uint length, uint rate)
 		{
 			Value = 0.0f;
 			Length = length;
@@ -153,40 +159,42 @@ namespace Xwt.Motion
 			Rate = rate;
 			Easing = Easing.Linear;
 		}
-		
-		~Tweener ()
+
+		~Tweener()
 		{
 			if (timer != 0)
-				Ticker.Default.Remove (timer);
+				Ticker.Default.Remove(timer);
 			timer = 0;
 		}
-		
-		public void Start ()
+
+		public void Start()
 		{
-			Pause ();
+			Pause();
 
 			lastMilliseconds = 0;
-			timer = Ticker.Default.Insert (step => {
+			timer = Ticker.Default.Insert(step =>
+			{
 				var ms = step + lastMilliseconds;
 
-				double rawValue = Math.Min (1.0f, ms / (double) Length);
-				Value = Easing.Func (rawValue);
+				double rawValue = Math.Min(1.0f, ms / (double)Length);
+				Value = Easing.Func(rawValue);
 
 				lastMilliseconds = ms;
 
 				if (ValueUpdated != null)
-					ValueUpdated (this, EventArgs.Empty);
-				
+					ValueUpdated(this, EventArgs.Empty);
+
 				if (rawValue >= 1.0f)
 				{
-					if (Loop) {
+					if (Loop)
+					{
 						lastMilliseconds = 0;
 						Value = 0.0f;
 						return true;
 					}
-					
+
 					if (Finished != null)
-						Finished (this, EventArgs.Empty);
+						Finished(this, EventArgs.Empty);
 					Value = 0.0f;
 					timer = 0;
 					return false;
@@ -194,20 +202,21 @@ namespace Xwt.Motion
 				return true;
 			});
 		}
-		
-		public void Stop ()
+
+		public void Stop()
 		{
-			Pause ();
+			Pause();
 			Value = 1.0f;
 			if (Finished != null)
-				Finished (this, EventArgs.Empty);
+				Finished(this, EventArgs.Empty);
 			Value = 0.0f;
 		}
-		
-		public void Pause ()
-		{	
-			if (timer != 0) {
-				Ticker.Default.Remove (timer);
+
+		public void Pause()
+		{
+			if (timer != 0)
+			{
+				Ticker.Default.Remove(timer);
 				timer = 0;
 			}
 		}

@@ -34,7 +34,7 @@ namespace Xwt.WPFBackend
 		public ComboBoxEntryBackend()
 		{
 			ComboBox.IsEditable = true;
-			this.textBackend = new ComboBoxTextEntryBackend (ComboBox);
+			this.textBackend = new ComboBoxTextEntryBackend(ComboBox);
 		}
 
 		public ITextEntryBackend TextEntryBackend
@@ -42,7 +42,7 @@ namespace Xwt.WPFBackend
 			get { return this.textBackend; }
 		}
 
-		public void SetTextColumn (int column)
+		public void SetTextColumn(int column)
 		{
 			if (ComboBox.DisplayMemberPath != null)
 				ComboBox.DisplayMemberPath = ".[" + column + "]";

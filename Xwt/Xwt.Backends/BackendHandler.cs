@@ -31,7 +31,7 @@ namespace Xwt.Backends
 {
 	public abstract class BackendHandler
 	{
-		internal void Initialize (Toolkit toolkit)
+		internal void Initialize(Toolkit toolkit)
 		{
 			ApplicationContext = toolkit.Context;
 		}

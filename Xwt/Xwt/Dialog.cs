@@ -30,66 +30,70 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
-	[BackendType (typeof(IDialogBackend))]
-	public class Dialog: Window
+	[BackendType(typeof(IDialogBackend))]
+	public class Dialog : Window
 	{
 		DialogButtonCollection commands;
 		Command resultCommand;
 		bool loopEnded;
-		
-		public Dialog ()
+
+		public Dialog()
 		{
-			commands = new DialogButtonCollection ((WindowBackendHost)BackendHost);
+			commands = new DialogButtonCollection((WindowBackendHost)BackendHost);
 		}
-		
-		protected new class WindowBackendHost: Window.WindowBackendHost, ICollectionListener, IDialogEventSink
+
+		protected new class WindowBackendHost : Window.WindowBackendHost, ICollectionListener, IDialogEventSink
 		{
-			new Dialog Parent { get { return (Dialog) base.Parent; } }
-			
-			public virtual void ItemAdded (object collection, object item)
+			new Dialog Parent { get { return (Dialog)base.Parent; } }
+
+			public virtual void ItemAdded(object collection, object item)
 			{
-				if (collection == Parent.commands) {
+				if (collection == Parent.commands)
+				{
 					((DialogButton)item).ParentDialog = Parent;
-					Parent.Backend.SetButtons (Parent.commands);
+					Parent.Backend.SetButtons(Parent.commands);
 				}
 			}
 
-			public virtual void ItemRemoved (object collection, object item)
+			public virtual void ItemRemoved(object collection, object item)
 			{
-				if (collection == Parent.commands) {
+				if (collection == Parent.commands)
+				{
 					((DialogButton)item).ParentDialog = null;
-					Parent.Backend.SetButtons (Parent.commands);
+					Parent.Backend.SetButtons(Parent.commands);
 				}
 			}
-			
-			public void OnDialogButtonClicked (DialogButton btn)
+
+			public void OnDialogButtonClicked(DialogButton btn)
 			{
-				btn.RaiseClicked ();
+				btn.RaiseClicked();
 				if (btn.Command != null)
-					Parent.OnCommandActivated (btn.Command);
+					Parent.OnCommandActivated(btn.Command);
 			}
 
-			public override bool OnCloseRequested ()
+			public override bool OnCloseRequested()
 			{
-				return Parent.RequestClose ();
+				return Parent.RequestClose();
 			}
 
-			protected override System.Collections.Generic.IEnumerable<object> GetDefaultEnabledEvents ()
+			protected override System.Collections.Generic.IEnumerable<object> GetDefaultEnabledEvents()
 			{
 				yield return WindowFrameEvent.CloseRequested;
 			}
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WindowBackendHost ();
+			return new WindowBackendHost();
 		}
-		
-		IDialogBackend Backend {
-			get { return (IDialogBackend) BackendHost.Backend; } 
+
+		IDialogBackend Backend
+		{
+			get { return (IDialogBackend)BackendHost.Backend; }
 		}
-		
-		public DialogButtonCollection Buttons {
+
+		public DialogButtonCollection Buttons
+		{
 			get { return commands; }
 		}
 
@@ -97,93 +101,100 @@ namespace Xwt
 		/// Called when a dialog button is clicked
 		/// </summary>
 		/// <param name="cmd">The command</param>
-		protected virtual void OnCommandActivated (Command cmd)
+		protected virtual void OnCommandActivated(Command cmd)
 		{
-			Respond (cmd);
+			Respond(cmd);
 		}
-		
-		public Command Run ()
+
+		public Command Run()
 		{
-			return Run (null);
+			return Run(null);
 		}
-		
-		public Command Run (WindowFrame parent)
+
+		public Command Run(WindowFrame parent)
 		{
-			BackendHost.ToolkitEngine.ValidateObject (parent);
+			BackendHost.ToolkitEngine.ValidateObject(parent);
 			if (parent != null)
 				TransientFor = parent;
-			AdjustSize ();
+			AdjustSize();
 
 			loopEnded = false;
-			BackendHost.ToolkitEngine.InvokePlatformCode (delegate {
-				Backend.RunLoop ((IWindowFrameBackend) Toolkit.GetBackend (parent));
+			BackendHost.ToolkitEngine.InvokePlatformCode(delegate
+			{
+				Backend.RunLoop((IWindowFrameBackend)Toolkit.GetBackend(parent));
 			});
 			return resultCommand;
 		}
 
 		bool responding;
 		bool requestingClose;
-		
-		public void Respond (Command cmd)
+
+		public void Respond(Command cmd)
 		{
 			resultCommand = cmd;
 			responding = true;
-			if (!loopEnded && !requestingClose) {
-				Backend.EndLoop ();
+			if (!loopEnded && !requestingClose)
+			{
+				Backend.EndLoop();
 			}
 		}
 
-		bool RequestClose ()
+		bool RequestClose()
 		{
 			requestingClose = true;
-			try {
-				if (OnCloseRequested ()) {
+			try
+			{
+				if (OnCloseRequested())
+				{
 					if (!responding)
 						resultCommand = null;
 					loopEnded = true;
 					return true;
-				} else
+				}
+				else
 					return false;
-			} finally {
+			}
+			finally
+			{
 				responding = false;
 				requestingClose = false;
 			}
 		}
-		
-		public void EnableCommand (Command cmd)
+
+		public void EnableCommand(Command cmd)
 		{
-			var btn = Buttons.GetCommandButton (cmd);
+			var btn = Buttons.GetCommandButton(cmd);
 			if (btn != null)
 				btn.Sensitive = true;
 		}
-		
-		public void DisableCommand (Command cmd)
+
+		public void DisableCommand(Command cmd)
 		{
-			var btn = Buttons.GetCommandButton (cmd);
+			var btn = Buttons.GetCommandButton(cmd);
 			if (btn != null)
 				btn.Sensitive = false;
 		}
-		
-		public void ShowCommand (Command cmd)
+
+		public void ShowCommand(Command cmd)
 		{
-			var btn = Buttons.GetCommandButton (cmd);
+			var btn = Buttons.GetCommandButton(cmd);
 			if (btn != null)
 				btn.Visible = true;
 		}
-		
-		public void HideCommand (Command cmd)
+
+		public void HideCommand(Command cmd)
 		{
-			var btn = Buttons.GetCommandButton (cmd);
+			var btn = Buttons.GetCommandButton(cmd);
 			if (btn != null)
 				btn.Visible = false;
 		}
-		
-		internal void UpdateButton (DialogButton btn)
+
+		internal void UpdateButton(DialogButton btn)
 		{
-			Backend.UpdateButton (btn);
+			Backend.UpdateButton(btn);
 		}
 	}
-	
+
 	public class DialogButton
 	{
 		Command command;
@@ -192,96 +203,111 @@ namespace Xwt
 		bool visible = true;
 		bool sensitive = true;
 		internal Dialog ParentDialog;
-		
-		public DialogButton (string label)
+
+		public DialogButton(string label)
 		{
 			this.label = label;
 		}
-		
-		public DialogButton (string label, Command cmd)
+
+		public DialogButton(string label, Command cmd)
 		{
 			this.label = label;
 			this.command = cmd;
 		}
-		
-		public DialogButton (string label, Image icon)
+
+		public DialogButton(string label, Image icon)
 		{
 			this.label = label;
 			this.image = icon;
 		}
-		
-		public DialogButton (string label, Image icon, Command cmd)
+
+		public DialogButton(string label, Image icon, Command cmd)
 		{
 			this.label = label;
 			this.command = cmd;
 			this.image = icon;
 		}
-		
-		public DialogButton (Command cmd)
+
+		public DialogButton(Command cmd)
 		{
 			this.command = cmd;
 		}
-		
-		public Command Command {
+
+		public Command Command
+		{
 			get { return command; }
 		}
-		
-		public string Label {
-			get {
+
+		public string Label
+		{
+			get
+			{
 				if (label != null)
 					return label;
 				if (command != null)
 					return command.Label;
 				return "";
 			}
-			set {
+			set
+			{
 				label = value;
-				if (ParentDialog != null) {
-					ParentDialog.UpdateButton (this);
+				if (ParentDialog != null)
+				{
+					ParentDialog.UpdateButton(this);
 				}
 			}
 		}
-		
-		public Image Image {
-			get {
+
+		public Image Image
+		{
+			get
+			{
 				if (image != null)
 					return image;
 				return null;
 			}
-			set {
+			set
+			{
 				image = value;
-				if (ParentDialog != null) {
-					ParentDialog.UpdateButton (this);
+				if (ParentDialog != null)
+				{
+					ParentDialog.UpdateButton(this);
 				}
 			}
 		}
-		
-		public bool Visible { 
+
+		public bool Visible
+		{
 			get { return visible; }
-			set {
+			set
+			{
 				visible = value;
-				if (ParentDialog != null) {
-					ParentDialog.UpdateButton (this);
+				if (ParentDialog != null)
+				{
+					ParentDialog.UpdateButton(this);
 				}
 			}
 		}
-		
-		public bool Sensitive { 
+
+		public bool Sensitive
+		{
 			get { return sensitive; }
-			set {
+			set
+			{
 				sensitive = value;
-				if (ParentDialog != null) {
-					ParentDialog.UpdateButton (this);
+				if (ParentDialog != null)
+				{
+					ParentDialog.UpdateButton(this);
 				}
 			}
 		}
-		
-		internal void RaiseClicked ()
+
+		internal void RaiseClicked()
 		{
 			if (Clicked != null)
-				Clicked (this, EventArgs.Empty);
+				Clicked(this, EventArgs.Empty);
 		}
-		
+
 		public event EventHandler Clicked;
 	}
 }

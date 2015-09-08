@@ -36,7 +36,7 @@ namespace Xwt.Backends
 		/// <param name='dir'>
 		/// Orientation of the slider
 		/// </param>
-		void Initialize (Orientation dir);
+		void Initialize(Orientation dir);
 
 		double Value { get; set; }
 		double MinimumValue { get; set; }
@@ -45,12 +45,12 @@ namespace Xwt.Backends
 		bool SnapToTicks { get; set; }
 		double SliderPosition { get; }
 	}
-	
-	public interface ISliderEventSink: IWidgetEventSink
+
+	public interface ISliderEventSink : IWidgetEventSink
 	{
-		void ValueChanged ();
+		void ValueChanged();
 	}
-	
+
 	public enum SliderEvent
 	{
 		ValueChanged

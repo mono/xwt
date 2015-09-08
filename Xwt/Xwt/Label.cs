@@ -31,132 +31,150 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	[BackendType (typeof(ILabelBackend))]
-	public class Label: Widget
+	[BackendType(typeof(ILabelBackend))]
+	public class Label : Widget
 	{
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, ILabelEventSink
 		{
-			public void OnLinkClicked (Uri target)
+			public void OnLinkClicked(Uri target)
 			{
-				((Label) Parent).OnLinkClicked (new LinkEventArgs (target));
+				((Label)Parent).OnLinkClicked(new LinkEventArgs(target));
 			}
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
 
-		ILabelBackend Backend {
-			get { return (ILabelBackend) BackendHost.Backend; }
+		ILabelBackend Backend
+		{
+			get { return (ILabelBackend)BackendHost.Backend; }
 		}
 
-		static Label ()
+		static Label()
 		{
-			MapEvent (LabelEvent.LinkClicked, typeof (Label), "OnLinkClicked");
+			MapEvent(LabelEvent.LinkClicked, typeof(Label), "OnLinkClicked");
 		}
-		
-		public Label ()
+
+		public Label()
 		{
 		}
-		
-		public Label (string text)
+
+		public Label(string text)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Backend.Text = text;
 		}
 
-		[DefaultValue ("")]
-		public string Text {
+		[DefaultValue("")]
+		public string Text
+		{
 			get { return Backend.Text; }
-			set {
-				Backend.Text = value; 
-				OnPreferredSizeChanged ();
+			set
+			{
+				Backend.Text = value;
+				OnPreferredSizeChanged();
 			}
 		}
 
 		string markup;
-		public string Markup {
+		public string Markup
+		{
 			get { return markup; }
-			set {
+			set
+			{
 				markup = value;
-				var t = FormattedText.FromMarkup (markup);
-				Backend.SetFormattedText (t);
+				var t = FormattedText.FromMarkup(markup);
+				Backend.SetFormattedText(t);
 			}
 		}
 
-		public Color TextColor {
+		public Color TextColor
+		{
 			get { return Backend.TextColor; }
 			set { Backend.TextColor = value; }
 		}
 
-		[DefaultValue (Alignment.Start)]
-		public Alignment TextAlignment {
+		[DefaultValue(Alignment.Start)]
+		public Alignment TextAlignment
+		{
 			get { return Backend.TextAlignment; }
-			set {
-				Backend.TextAlignment = value; 
-				OnPreferredSizeChanged ();
-			}
-		}
-		
-		[DefaultValue (EllipsizeMode.None)]
-		public EllipsizeMode Ellipsize {
-			get { return Backend.Ellipsize; }
-			set {
-				Backend.Ellipsize = value;
-				OnPreferredSizeChanged ();
+			set
+			{
+				Backend.TextAlignment = value;
+				OnPreferredSizeChanged();
 			}
 		}
 
-		[DefaultValue (WrapMode.None)]
-		public WrapMode Wrap {
-			get { return Backend.Wrap; }
-			set {
-				Backend.Wrap = value;
-				OnPreferredSizeChanged ();
+		[DefaultValue(EllipsizeMode.None)]
+		public EllipsizeMode Ellipsize
+		{
+			get { return Backend.Ellipsize; }
+			set
+			{
+				Backend.Ellipsize = value;
+				OnPreferredSizeChanged();
 			}
 		}
-		
-		protected virtual void OnLinkClicked (LinkEventArgs e)
+
+		[DefaultValue(WrapMode.None)]
+		public WrapMode Wrap
+		{
+			get { return Backend.Wrap; }
+			set
+			{
+				Backend.Wrap = value;
+				OnPreferredSizeChanged();
+			}
+		}
+
+		protected virtual void OnLinkClicked(LinkEventArgs e)
 		{
 			if (linkClicked != null)
-				linkClicked (this, e);
+				linkClicked(this, e);
 
-			if (!e.Handled && e.Target != null) {
-				Desktop.OpenUrl (e.Target);
-				e.SetHandled ();
+			if (!e.Handled && e.Target != null)
+			{
+				Desktop.OpenUrl(e.Target);
+				e.SetHandled();
 			}
 		}
-		
+
 		EventHandler<LinkEventArgs> linkClicked;
-		public event EventHandler<LinkEventArgs> LinkClicked {
-			add {
-				BackendHost.OnBeforeEventAdd (LabelEvent.LinkClicked, linkClicked);
+		public event EventHandler<LinkEventArgs> LinkClicked
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(LabelEvent.LinkClicked, linkClicked);
 				linkClicked += value;
 			}
-			remove {
+			remove
+			{
 				linkClicked -= value;
-				BackendHost.OnAfterEventRemove (LabelEvent.LinkClicked, linkClicked);
+				BackendHost.OnAfterEventRemove(LabelEvent.LinkClicked, linkClicked);
 			}
 		}
 	}
 
 	public sealed class LinkEventArgs : EventArgs
 	{
-		public LinkEventArgs (Uri target)
+		public LinkEventArgs(Uri target)
 		{
 			Target = target;
 		}
 
-		public bool Handled {
+		public bool Handled
+		{
 			get; private set;
 		}
 
-		public Uri Target {
+		public Uri Target
+		{
 			get; private set;
 		}
 
-		public void SetHandled ()
+		public void SetHandled()
 		{
 			Handled = true;
 		}

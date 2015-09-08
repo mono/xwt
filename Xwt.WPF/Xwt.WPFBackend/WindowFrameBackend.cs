@@ -43,29 +43,29 @@ namespace Xwt.WPFBackend
 		WindowFrame frontend;
 		bool resizable = true;
 
-		public WindowFrameBackend ()
+		public WindowFrameBackend()
 		{
 		}
 
-		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
+		void IBackend.InitializeBackend(object frontend, ApplicationContext context)
 		{
-			this.frontend = (WindowFrame) frontend;
+			this.frontend = (WindowFrame)frontend;
 			Context = context;
 		}
 
-		void IWindowFrameBackend.Initialize (IWindowFrameEventSink eventSink)
+		void IWindowFrameBackend.Initialize(IWindowFrameEventSink eventSink)
 		{
 			this.eventSink = eventSink;
-			Initialize ();
+			Initialize();
 		}
 
 		public ApplicationContext Context { get; private set; }
 
-		public virtual void Initialize ()
+		public virtual void Initialize()
 		{
 		}
 
-		public virtual void Dispose ()
+		public virtual void Dispose()
 		{
 			if (Window.Dispatcher.CheckAccess())
 			{
@@ -77,23 +77,26 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public bool Close ()
+		public bool Close()
 		{
 			closePerformed = true;
-			Window.Close ();
+			Window.Close();
 			return closePerformed;
 		}
 
-		public System.Windows.Window Window {
+		public System.Windows.Window Window
+		{
 			get { return window; }
 			set { window = value; }
 		}
 
-		public virtual bool HasMenu {
-			get { return false;  }
+		public virtual bool HasMenu
+		{
+			get { return false; }
 		}
 
-		protected WindowFrame Frontend {
+		protected WindowFrame Frontend
+		{
 			get { return frontend; }
 		}
 
@@ -102,35 +105,43 @@ namespace Xwt.WPFBackend
 			get { return eventSink; }
 		}
 
-		bool IWindowFrameBackend.Decorated {
+		bool IWindowFrameBackend.Decorated
+		{
 			get { return window.WindowStyle != WindowStyle.None; }
-			set {
+			set
+			{
 				window.WindowStyle = value ? WindowStyle.SingleBorderWindow : WindowStyle.None;
-				UpdateResizeMode ();
+				UpdateResizeMode();
 			}
 		}
 
-		bool IWindowFrameBackend.ShowInTaskbar {
+		bool IWindowFrameBackend.ShowInTaskbar
+		{
 			get { return window.ShowInTaskbar; }
 			set { window.ShowInTaskbar = value; }
 		}
 
-		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
+		void IWindowFrameBackend.SetTransientFor(IWindowFrameBackend window)
 		{
-			this.Window.Owner = ((WindowFrameBackend) window).Window;
+			this.Window.Owner = ((WindowFrameBackend)window).Window;
 		}
 
-		bool IWindowFrameBackend.Resizable {
-			get {
+		bool IWindowFrameBackend.Resizable
+		{
+			get
+			{
 				return resizable;
 			}
-			set {
-				if (value != resizable) {
+			set
+			{
+				if (value != resizable)
+				{
 					resizable = value;
-					UpdateResizeMode ();
+					UpdateResizeMode();
 					var bounds = Bounds;
 					window.ResizeMode = value ? ResizeMode.CanResize : ResizeMode.NoResize;
-					if (window.IsLoaded && bounds != Bounds) {
+					if (window.IsLoaded && bounds != Bounds)
+					{
 						// The size of the border of resizable windows is different from fixed windows.
 						// If we change the resize mode, the border size will change, and the client
 						// area will then change. Here, we restore the client area to the size it
@@ -141,25 +152,27 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		void UpdateResizeMode ()
+		void UpdateResizeMode()
 		{
 			var m = resizable && window.WindowStyle == WindowStyle.SingleBorderWindow ? ResizeMode.CanResize : ResizeMode.NoResize;
-			if (m != window.ResizeMode) {
+			if (m != window.ResizeMode)
+			{
 				window.ResizeMode = m;
-				OnResizeModeChanged ();
+				OnResizeModeChanged();
 			}
 		}
 
-		protected virtual void OnResizeModeChanged ()
+		protected virtual void OnResizeModeChanged()
 		{
 		}
 
-		public void SetIcon (ImageDescription imageBackend)
+		public void SetIcon(ImageDescription imageBackend)
 		{
-			window.Icon = imageBackend.ToImageSource ();
+			window.Icon = imageBackend.ToImageSource();
 		}
 
-		string IWindowFrameBackend.Title {
+		string IWindowFrameBackend.Title
+		{
 			get { return window.Title; }
 			set { window.Title = value; }
 		}
@@ -167,18 +180,19 @@ namespace Xwt.WPFBackend
 		bool IWindowFrameBackend.Visible
 		{
 			get { return window.Visibility == Visibility.Visible; }
-			set {
+			set
+			{
 				if (value)
-					window.Show ();
+					window.Show();
 				else
-					window.Hide ();
+					window.Hide();
 			}
 		}
 
 		bool IWindowFrameBackend.Sensitive
 		{
 			get { return window.IsEnabled; }
-			set { window.IsEnabled = value;	}
+			set { window.IsEnabled = value; }
 		}
 
 		public double Opacity
@@ -187,47 +201,54 @@ namespace Xwt.WPFBackend
 			set { window.Opacity = value; }
 		}
 
-		void IWindowFrameBackend.Present ()
+		void IWindowFrameBackend.Present()
 		{
-			window.Activate ();
+			window.Activate();
 		}
-		
-		bool IWindowFrameBackend.FullScreen {
-			get {
-				return window.WindowState == WindowState.Maximized 
+
+		bool IWindowFrameBackend.FullScreen
+		{
+			get
+			{
+				return window.WindowState == WindowState.Maximized
 					&& window.ResizeMode == ResizeMode.NoResize;
 			}
-			set {
-				if (value) {
+			set
+			{
+				if (value)
+				{
 					window.WindowState = WindowState.Maximized;
 					window.ResizeMode = ResizeMode.NoResize;
 				}
-				else {
+				else
+				{
 					window.WindowState = WindowState.Normal;
 					window.ResizeMode = ResizeMode.CanResize;
 				}
 			}
 		}
 
-		object IWindowFrameBackend.Screen {
-			get {
+		object IWindowFrameBackend.Screen
+		{
+			get
+			{
 				var sb = Bounds;
-				return System.Windows.Forms.Screen.FromRectangle (new System.Drawing.Rectangle ((int)sb.X, (int)sb.Y, (int)sb.Width, (int)sb.Height));
+				return System.Windows.Forms.Screen.FromRectangle(new System.Drawing.Rectangle((int)sb.X, (int)sb.Y, (int)sb.Width, (int)sb.Height));
 			}
 		}
 
-		public void Move (double x, double y)
+		public void Move(double x, double y)
 		{
-			var value = ToNonClientRect (new Rectangle (x, y, 1, 1));
+			var value = ToNonClientRect(new Rectangle(x, y, 1, 1));
 			window.Top = value.Top;
 			window.Left = value.Left;
-			Context.InvokeUserCode (delegate
-			{
-				eventSink.OnBoundsChanged (Bounds);
-			});
+			Context.InvokeUserCode(delegate
+		   {
+			   eventSink.OnBoundsChanged(Bounds);
+		   });
 		}
 
-		public void SetSize (double width, double height)
+		public void SetSize(double width, double height)
 		{
 			var r = Bounds;
 			r.Width = width;
@@ -235,28 +256,34 @@ namespace Xwt.WPFBackend
 			Bounds = r;
 		}
 
-		public virtual Rectangle Bounds {
-			get {
-				double width = Double.IsNaN (window.Width) ? window.ActualWidth : window.Width;
-				double height = Double.IsNaN (window.Height) ? window.ActualHeight : window.Height;
-				return ToClientRect (new Rectangle (window.Left, window.Top, width, height));
+		public virtual Rectangle Bounds
+		{
+			get
+			{
+				double width = Double.IsNaN(window.Width) ? window.ActualWidth : window.Width;
+				double height = Double.IsNaN(window.Height) ? window.ActualHeight : window.Height;
+				return ToClientRect(new Rectangle(window.Left, window.Top, width, height));
 			}
-			set {
-				value = ToNonClientRect (value);
+			set
+			{
+				value = ToNonClientRect(value);
 				window.Top = value.Top;
 				window.Left = value.Left;
 				window.Width = value.Width;
 				window.Height = value.Height;
-				Context.InvokeUserCode (delegate {
-					eventSink.OnBoundsChanged (Bounds);
+				Context.InvokeUserCode(delegate
+				{
+					eventSink.OnBoundsChanged(Bounds);
 				});
 			}
 		}
 
-		public virtual void EnableEvent (object eventId)
+		public virtual void EnableEvent(object eventId)
 		{
-			if (eventId is WindowFrameEvent) {
-				switch ((WindowFrameEvent)eventId) {
+			if (eventId is WindowFrameEvent)
+			{
+				switch ((WindowFrameEvent)eventId)
+				{
 					case WindowFrameEvent.BoundsChanged:
 						window.LocationChanged += BoundsChangedHandler;
 						window.SizeChanged += BoundsChangedHandler;
@@ -277,10 +304,12 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public virtual void DisableEvent (object eventId)
+		public virtual void DisableEvent(object eventId)
 		{
-			if (eventId is WindowFrameEvent) {
-				switch ((WindowFrameEvent)eventId) {
+			if (eventId is WindowFrameEvent)
+			{
+				switch ((WindowFrameEvent)eventId)
+				{
 					case WindowFrameEvent.BoundsChanged:
 						window.LocationChanged -= BoundsChangedHandler;
 						window.SizeChanged -= BoundsChangedHandler;
@@ -301,43 +330,45 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		private void ClosedHandler (object sender, EventArgs e)
+		private void ClosedHandler(object sender, EventArgs e)
 		{
 			if (!InhibitCloseRequested)
-				Context.InvokeUserCode (eventSink.OnClosed);
+				Context.InvokeUserCode(eventSink.OnClosed);
 		}
 
-		void BoundsChangedHandler (object o, EventArgs args)
+		void BoundsChangedHandler(object o, EventArgs args)
 		{
-			Context.InvokeUserCode (delegate () {
-				eventSink.OnBoundsChanged (Bounds);
+			Context.InvokeUserCode(delegate ()
+			{
+				eventSink.OnBoundsChanged(Bounds);
 			});
 		}
 
-		private void ShownHandler (object sender, DependencyPropertyChangedEventArgs e)
+		private void ShownHandler(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			// delay shown event until window is loaded
-			if (!window.IsLoaded) {
-				window.Loaded += (sender2, e2) => ShownHandler (sender, e);
+			if (!window.IsLoaded)
+			{
+				window.Loaded += (sender2, e2) => ShownHandler(sender, e);
 				return;
 			}
-			if((bool)e.NewValue)
+			if ((bool)e.NewValue)
 			{
-				Context.InvokeUserCode (delegate ()
-				{
-					eventSink.OnShown ();
-				});
+				Context.InvokeUserCode(delegate ()
+			   {
+				   eventSink.OnShown();
+			   });
 			}
 		}
 
-		private void HiddenHandler (object sender, DependencyPropertyChangedEventArgs e)
+		private void HiddenHandler(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			if((bool)e.NewValue == false)
+			if ((bool)e.NewValue == false)
 			{
-				Context.InvokeUserCode (delegate ()
-				{
-					eventSink.OnHidden ();
-				});
+				Context.InvokeUserCode(delegate ()
+			   {
+				   eventSink.OnHidden();
+			   });
 			}
 		}
 
@@ -345,26 +376,26 @@ namespace Xwt.WPFBackend
 
 		bool closePerformed;
 
-		private void ClosingHandler (object sender, System.ComponentModel.CancelEventArgs e)
+		private void ClosingHandler(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			if (InhibitCloseRequested)
 				return;
-			Context.InvokeUserCode (delegate ()
-			{
-				e.Cancel = !eventSink.OnCloseRequested ();
-				closePerformed = !e.Cancel;
-			});
+			Context.InvokeUserCode(delegate ()
+		   {
+			   e.Cancel = !eventSink.OnCloseRequested();
+			   closePerformed = !e.Cancel;
+		   });
 		}
 
-		Size GetBorderSize ()
+		Size GetBorderSize()
 		{
 			if (window.ResizeMode == ResizeMode.CanResize)
-				return new Size (SystemParameters.ResizeFrameVerticalBorderWidth, SystemParameters.ResizeFrameHorizontalBorderHeight);
+				return new Size(SystemParameters.ResizeFrameVerticalBorderWidth, SystemParameters.ResizeFrameHorizontalBorderHeight);
 			else
-				return new Size (SystemParameters.FixedFrameVerticalBorderWidth, SystemParameters.FixedFrameHorizontalBorderHeight);
+				return new Size(SystemParameters.FixedFrameVerticalBorderWidth, SystemParameters.FixedFrameHorizontalBorderHeight);
 		}
 
-		protected Rectangle ToNonClientRect (Rectangle rect)
+		protected Rectangle ToNonClientRect(Rectangle rect)
 		{
 			// WARNING: SystemParameters.ResizeFrameHorizontalBorderHeight is known to return invalid values in some cases, due to
 			// a workaround in the Windows API to support legacy applications running on Aero.
@@ -374,48 +405,52 @@ namespace Xwt.WPFBackend
 			var size = rect.Size;
 			var loc = rect.Location;
 
-			var border = GetBorderSize ();
+			var border = GetBorderSize();
 			size.Height += border.Height * 2;
 			size.Width += border.Width * 2;
 			loc.X -= border.Width;
 			loc.Y -= border.Height;
 
-			if (((IWindowFrameBackend)this).Decorated) {
+			if (((IWindowFrameBackend)this).Decorated)
+			{
 				size.Height += SystemParameters.WindowCaptionHeight;
 				loc.Y -= SystemParameters.WindowCaptionHeight;
 			}
-			if (HasMenu) {
+			if (HasMenu)
+			{
 				size.Height += SystemParameters.MenuBarHeight;
 				loc.Y -= SystemParameters.MenuBarHeight;
 			}
 
-			return new Rectangle (loc, size);
+			return new Rectangle(loc, size);
 		}
 
-		protected Rectangle ToClientRect (Rectangle rect)
+		protected Rectangle ToClientRect(Rectangle rect)
 		{
 			var size = rect.Size;
 			var loc = rect.Location;
 
-			var border = GetBorderSize ();
+			var border = GetBorderSize();
 			size.Height -= border.Height * 2;
 			size.Width -= border.Width * 2;
 			loc.X += border.Width;
 			loc.Y += border.Height;
 
-			if (((IWindowFrameBackend)this).Decorated) {
-                size.Height -= SystemParameters.WindowCaptionHeight;
-                loc.Y += SystemParameters.WindowCaptionHeight;
+			if (((IWindowFrameBackend)this).Decorated)
+			{
+				size.Height -= SystemParameters.WindowCaptionHeight;
+				loc.Y += SystemParameters.WindowCaptionHeight;
 			}
-			if (HasMenu) {
+			if (HasMenu)
+			{
 				size.Height -= SystemParameters.MenuBarHeight;
 				loc.Y += SystemParameters.MenuBarHeight;
 			}
 
-			size.Width = Math.Max (0, size.Width);
-			size.Height = Math.Max (0, size.Height);
+			size.Width = Math.Max(0, size.Width);
+			size.Height = Math.Max(0, size.Height);
 
-			return new Rectangle (loc, size);
+			return new Rectangle(loc, size);
 		}
 	}
 }

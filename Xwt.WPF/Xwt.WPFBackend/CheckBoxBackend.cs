@@ -38,10 +38,10 @@ namespace Xwt.WPFBackend
 	{
 		public CheckBoxBackend()
 		{
-			Widget = new WindowsCheckBox ();
+			Widget = new WindowsCheckBox();
 		}
 
-		public void SetContent (IWidgetBackend widget)
+		public void SetContent(IWidgetBackend widget)
 		{
 			if (widget == null)
 				CheckBox.Content = null;
@@ -49,14 +49,15 @@ namespace Xwt.WPFBackend
 				CheckBox.Content = widget.NativeWidget;
 		}
 
-		public void SetContent (string label)
+		public void SetContent(string label)
 		{
 			CheckBox.Content = new TextBlock { Text = label };
 		}
 
 		public CheckBoxState State
 		{
-			get {
+			get
+			{
 				if (!CheckBox.IsChecked.HasValue)
 					return CheckBoxState.Mixed;
 				else if (CheckBox.IsChecked.Value)
@@ -64,7 +65,8 @@ namespace Xwt.WPFBackend
 				else
 					return CheckBoxState.Off;
 			}
-			set {
+			set
+			{
 				if (value == CheckBoxState.Mixed)
 					CheckBox.IsChecked = null;
 				else
@@ -78,58 +80,62 @@ namespace Xwt.WPFBackend
 			set { CheckBox.IsThreeState = value; }
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
-			if (eventId is CheckBoxEvent) {
-				switch ((CheckBoxEvent)eventId) {
-				case CheckBoxEvent.Clicked:
-					CheckBox.Click += OnClicked;
-					break;
+			base.EnableEvent(eventId);
+			if (eventId is CheckBoxEvent)
+			{
+				switch ((CheckBoxEvent)eventId)
+				{
+					case CheckBoxEvent.Clicked:
+						CheckBox.Click += OnClicked;
+						break;
 
-				case CheckBoxEvent.Toggled:
-					CheckBox.Checked += OnChecked;
-					CheckBox.Unchecked += OnChecked;
-					break;
+					case CheckBoxEvent.Toggled:
+						CheckBox.Checked += OnChecked;
+						CheckBox.Unchecked += OnChecked;
+						break;
 				}
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
-			if (eventId is CheckBoxEvent) {
-				switch ((CheckBoxEvent)eventId) {
-				case CheckBoxEvent.Clicked:
-					CheckBox.Click -= OnClicked;
-					break;
+			base.DisableEvent(eventId);
+			if (eventId is CheckBoxEvent)
+			{
+				switch ((CheckBoxEvent)eventId)
+				{
+					case CheckBoxEvent.Clicked:
+						CheckBox.Click -= OnClicked;
+						break;
 
-				case CheckBoxEvent.Toggled:
-					CheckBox.Checked -= OnChecked;
-					CheckBox.Unchecked -= OnChecked;
-					break;
+					case CheckBoxEvent.Toggled:
+						CheckBox.Checked -= OnChecked;
+						CheckBox.Unchecked -= OnChecked;
+						break;
 				}
 			}
 		}
 
-		private void OnChecked (object sender, RoutedEventArgs routedEventArgs)
+		private void OnChecked(object sender, RoutedEventArgs routedEventArgs)
 		{
-			Context.InvokeUserCode (CheckBoxEventSink.OnToggled);
+			Context.InvokeUserCode(CheckBoxEventSink.OnToggled);
 		}
 
-		private void OnClicked (object sender, RoutedEventArgs e)
+		private void OnClicked(object sender, RoutedEventArgs e)
 		{
-			Context.InvokeUserCode (CheckBoxEventSink.OnClicked);
+			Context.InvokeUserCode(CheckBoxEventSink.OnClicked);
 		}
 
 		protected ICheckBoxEventSink CheckBoxEventSink
 		{
-			get { return (ICheckBoxEventSink) EventSink; }
+			get { return (ICheckBoxEventSink)EventSink; }
 		}
 
 		protected WindowsCheckBox CheckBox
 		{
-			get { return (WindowsCheckBox) Widget; }
+			get { return (WindowsCheckBox)Widget; }
 		}
 	}
 }

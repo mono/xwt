@@ -28,54 +28,57 @@ using System;
 using System.Collections;
 using System.Globalization;
 
-namespace Xwt {
+namespace Xwt
+{
 
 	[Serializable]
-	public struct Point {
+	public struct Point
+	{
 
 		public double X { get; set; }
 		public double Y { get; set; }
 
-		public static Point Zero = new Point ();
+		public static Point Zero = new Point();
 
-		public override string ToString ()
+		public override string ToString()
 		{
-			return String.Format ("{{X={0} Y={1}}}", X.ToString (CultureInfo.InvariantCulture), Y.ToString (CultureInfo.InvariantCulture));
+			return String.Format("{{X={0} Y={1}}}", X.ToString(CultureInfo.InvariantCulture), Y.ToString(CultureInfo.InvariantCulture));
 		}
-		
-		public Point (double x, double y): this ()
+
+		public Point(double x, double y) : this()
 		{
 			this.X = x;
 			this.Y = y;
 		}
-		
-		public Point (Size sz): this ()
+
+		public Point(Size sz) : this()
 		{
 			this.X = sz.Width;
 			this.Y = sz.Height;
 		}
-		
-		public override bool Equals (object o)
+
+		public override bool Equals(object o)
 		{
 			if (!(o is Point))
 				return false;
-		
-			return (this == (Point) o);
+
+			return (this == (Point)o);
 		}
-		
-		public override int GetHashCode ()
+
+		public override int GetHashCode()
 		{
-			unchecked {
-				return (X.GetHashCode () * 397) ^ Y.GetHashCode ();
+			unchecked
+			{
+				return (X.GetHashCode() * 397) ^ Y.GetHashCode();
 			}
 		}
 
-		public Point Offset (Point offset)
+		public Point Offset(Point offset)
 		{
-			return Offset (offset.X, offset.Y);
+			return Offset(offset.X, offset.Y);
 		}
-		
-		public Point Offset (double dx, double dy)
+
+		public Point Offset(double dx, double dy)
 		{
 			Point p = this;
 			p.X += dx;
@@ -83,41 +86,43 @@ namespace Xwt {
 			return p;
 		}
 
-		public Point Round ()
+		public Point Round()
 		{
-			return new Point (
-				Math.Round (X),
-				Math.Round (Y)
+			return new Point(
+				Math.Round(X),
+				Math.Round(Y)
 			);
 		}
 
-		public bool IsEmpty {
-			get {
+		public bool IsEmpty
+		{
+			get
+			{
 				return ((X == 0) && (Y == 0));
 			}
 		}
-		
-		public static explicit operator Size (Point pt)
+
+		public static explicit operator Size(Point pt)
 		{
-			return new Size (pt.X, pt.Y);
+			return new Size(pt.X, pt.Y);
 		}
-		
-		public static Point operator + (Point pt, Size sz)
+
+		public static Point operator +(Point pt, Size sz)
 		{
-			return new Point (pt.X + sz.Width, pt.Y + sz.Height);
+			return new Point(pt.X + sz.Width, pt.Y + sz.Height);
 		}
-		
-		public static Point operator - (Point pt, Size sz)
+
+		public static Point operator -(Point pt, Size sz)
 		{
-			return new Point (pt.X - sz.Width, pt.Y - sz.Height);
+			return new Point(pt.X - sz.Width, pt.Y - sz.Height);
 		}
-		
-		public static bool operator == (Point pt_a, Point pt_b)
+
+		public static bool operator ==(Point pt_a, Point pt_b)
 		{
 			return ((pt_a.X == pt_b.X) && (pt_a.Y == pt_b.Y));
 		}
-		
-		public static bool operator != (Point pt_a, Point pt_b)
+
+		public static bool operator !=(Point pt_a, Point pt_b)
 		{
 			return ((pt_a.X != pt_b.X) || (pt_a.Y != pt_b.Y));
 		}

@@ -7,22 +7,23 @@ using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
-	class SliderBackend: WidgetBackend, ISliderBackend
+	class SliderBackend : WidgetBackend, ISliderBackend
 	{
 		bool onValueChangedEnabled;
 
 		#region ISliderBackend Members
 
-		public void Initialize (Orientation dir)
+		public void Initialize(Orientation dir)
 		{
-			Widget = new System.Windows.Controls.Slider () {
+			Widget = new System.Windows.Controls.Slider()
+			{
 				Orientation = dir == Orientation.Horizontal ? SWC.Orientation.Horizontal : SWC.Orientation.Vertical,
 			};
 			Widget.MouseWheel += HandleMouseWheel;
 			Slider.ValueChanged += ValueChanged;
 		}
 
-		void HandleMouseWheel (object sender, System.Windows.Input.MouseWheelEventArgs e)
+		void HandleMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
 		{
 			if (e.Handled == true)
 				return;
@@ -47,27 +48,29 @@ namespace Xwt.WPFBackend
 			get { return (ISliderEventSink)EventSink; }
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
+			base.EnableEvent(eventId);
 			if (eventId is SliderEvent)
 				onValueChangedEnabled = true;
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
+			base.DisableEvent(eventId);
 			if (eventId is SliderEvent)
 				onValueChangedEnabled = false;
 		}
 
-		void ValueChanged (object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+		void ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
 		{
-			if (SnapToTicks && Math.Abs (StepIncrement) > double.Epsilon)
+			if (SnapToTicks && Math.Abs(StepIncrement) > double.Epsilon)
 			{
-				var offset = Math.Abs (Value) % StepIncrement;
-				if (Math.Abs (offset) > double.Epsilon) {
-					if (offset > StepIncrement / 2) {
+				var offset = Math.Abs(Value) % StepIncrement;
+				if (Math.Abs(offset) > double.Epsilon)
+				{
+					if (offset > StepIncrement / 2)
+					{
 						if (Value >= 0)
 							Value += -offset + StepIncrement;
 						else
@@ -75,14 +78,14 @@ namespace Xwt.WPFBackend
 					}
 					else
 						if (Value >= 0)
-							Value -= offset;
-						else
-							Value += offset;
+						Value -= offset;
+					else
+						Value += offset;
 				}
 			}
 
 			if (onValueChangedEnabled)
-				Context.InvokeUserCode (SliderEventSink.ValueChanged);
+				Context.InvokeUserCode(SliderEventSink.ValueChanged);
 		}
 
 		public double Value
@@ -106,7 +109,7 @@ namespace Xwt.WPFBackend
 			set
 			{
 				Slider.Minimum = value;
-				UpdateTicks ();
+				UpdateTicks();
 			}
 		}
 
@@ -119,45 +122,59 @@ namespace Xwt.WPFBackend
 			set
 			{
 				Slider.Maximum = value;
-				UpdateTicks ();
+				UpdateTicks();
 			}
 		}
 
 		double stepIncrement;
-		public double StepIncrement {
+		public double StepIncrement
+		{
 			get { return stepIncrement; }
-			set { 
+			set
+			{
 				stepIncrement = value;
-				UpdateTicks ();
+				UpdateTicks();
 			}
 		}
 
 		bool snapToTicks;
-		public bool SnapToTicks {
+		public bool SnapToTicks
+		{
 			get { return snapToTicks; }
-			set {
+			set
+			{
 				snapToTicks = value;
-				UpdateTicks ();
-				if (value) {
+				UpdateTicks();
+				if (value)
+				{
 					Slider.TickPlacement = SWC.Primitives.TickPlacement.BottomRight;
-				} else {
+				}
+				else
+				{
 					Slider.TickPlacement = SWC.Primitives.TickPlacement.None;
 				}
 			}
 		}
 
-		public double SliderPosition {
-			get {
+		public double SliderPosition
+		{
+			get
+			{
 				double prct = 0;
-				if (MinimumValue >= 0) {
+				if (MinimumValue >= 0)
+				{
 					prct = (Value / (MaximumValue - MinimumValue));
-				} else if (MaximumValue <= 0) {
-					prct = (Math.Abs (Value) / Math.Abs (MinimumValue - MaximumValue));
-				} else if (MinimumValue < 0) {
+				}
+				else if (MaximumValue <= 0)
+				{
+					prct = (Math.Abs(Value) / Math.Abs(MinimumValue - MaximumValue));
+				}
+				else if (MinimumValue < 0)
+				{
 					if (Value >= 0)
 						prct = 0.5 + ((Value / 2) / MaximumValue);
 					else
-						prct = 0.5 - Math.Abs ((Value / 2) / MinimumValue);
+						prct = 0.5 - Math.Abs((Value / 2) / MinimumValue);
 				}
 
 				double orientationSize = 0;
@@ -175,26 +192,36 @@ namespace Xwt.WPFBackend
 		void UpdateTicks()
 		{
 
-			Slider.Ticks.Clear ();
-			if (SnapToTicks) {
-				if (MinimumValue >= 0) {
+			Slider.Ticks.Clear();
+			if (SnapToTicks)
+			{
+				if (MinimumValue >= 0)
+				{
 					var ticksCount = (int)((MaximumValue - MinimumValue) / StepIncrement) + 1;
-					for (int i = 0; i < ticksCount; i++) {
-						Slider.Ticks.Add (MinimumValue + (i * StepIncrement));
+					for (int i = 0; i < ticksCount; i++)
+					{
+						Slider.Ticks.Add(MinimumValue + (i * StepIncrement));
 					}
-				} else if (MaximumValue <= 0) {
+				}
+				else if (MaximumValue <= 0)
+				{
 					var ticksCount = (int)((MaximumValue - MinimumValue) / StepIncrement) + 1;
-					for (int i = 0; i < ticksCount; i++) {
-						Slider.Ticks.Add (-(i * StepIncrement));
+					for (int i = 0; i < ticksCount; i++)
+					{
+						Slider.Ticks.Add(-(i * StepIncrement));
 					}
-				} else if (MinimumValue < 0) {
+				}
+				else if (MinimumValue < 0)
+				{
 					var ticksCount = (int)(MaximumValue / StepIncrement) + 1;
-					for (int i = 0; i < ticksCount; i++) {
-						Slider.Ticks.Add (i * StepIncrement);
+					for (int i = 0; i < ticksCount; i++)
+					{
+						Slider.Ticks.Add(i * StepIncrement);
 					}
 					var ticksCountN = (int)(Math.Abs(MinimumValue) / StepIncrement) + 1;
-					for (int i = 1; i < ticksCountN; i++) {
-						Slider.Ticks.Add (-(i * StepIncrement));
+					for (int i = 1; i < ticksCountN; i++)
+					{
+						Slider.Ticks.Add(-(i * StepIncrement));
 					}
 				}
 			}

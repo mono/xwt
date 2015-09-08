@@ -32,16 +32,18 @@ namespace Xwt.WPFBackend
 	public class ExListBoxItem : ListBoxItem
 	{
 		private ExListBox view;
-		protected ExListBox ListBox {
-			get {
+		protected ExListBox ListBox
+		{
+			get
+			{
 				if (this.view == null)
-					this.view = FindListBox ((FrameworkElement) VisualParent);
+					this.view = FindListBox((FrameworkElement)VisualParent);
 
 				return this.view;
 			}
 		}
 
-		private ExListBox FindListBox (FrameworkElement element)
+		private ExListBox FindListBox(FrameworkElement element)
 		{
 			if (element == null)
 				return null;
@@ -50,13 +52,13 @@ namespace Xwt.WPFBackend
 			if (view != null)
 				return view;
 
-			return FindListBox (element.TemplatedParent as FrameworkElement);
-		} 
+			return FindListBox(element.TemplatedParent as FrameworkElement);
+		}
 
-		protected override void OnGotFocus (RoutedEventArgs e)
+		protected override void OnGotFocus(RoutedEventArgs e)
 		{
-			base.OnGotFocus (e);
-			ListBox.FocusItem (this);
+			base.OnGotFocus(e);
+			ListBox.FocusItem(this);
 		}
 	}
 }

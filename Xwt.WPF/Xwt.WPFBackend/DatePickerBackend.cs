@@ -37,7 +37,7 @@ namespace Xwt.WPFBackend
 	{
 		public DatePickerBackend()
 		{
-			Widget = new WindowsDatePicker();			
+			Widget = new WindowsDatePicker();
 		}
 
 		protected WindowsDatePicker DatePicker
@@ -49,7 +49,7 @@ namespace Xwt.WPFBackend
 		{
 			get { return (IDatePickerEventSink)base.EventSink; }
 		}
-		
+
 		public DateTime DateTime
 		{
 			get
@@ -88,6 +88,6 @@ namespace Xwt.WPFBackend
 			{
 				EventSink.ValueChanged();
 			});
-		}		
+		}
 	}
 }

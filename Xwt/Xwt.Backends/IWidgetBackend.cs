@@ -32,13 +32,13 @@ namespace Xwt.Backends
 	/// <summary>
 	/// The Xwt widget backend base interface. All Xwt widget backends implement it.
 	/// </summary>
-	public interface IWidgetBackend: IBackend
+	public interface IWidgetBackend : IBackend
 	{
 		/// <summary>
 		/// Initialize the backend with the specified EventSink.
 		/// </summary>
 		/// <param name="eventSink">The frontend event sink (usually the <see cref="Xwt.Backends.BackendHost"/> of the frontend).</param>
-		void Initialize (IWidgetEventSink eventSink);
+		void Initialize(IWidgetEventSink eventSink);
 
 		/// <summary>
 		/// Releases all resources used by the widget
@@ -49,8 +49,8 @@ namespace Xwt.Backends
 		/// When a widget that has children is disposed, the Dispose method is called on all
 		/// backends of all widgets in the children hierarchy.
 		/// </remarks>
-		void Dispose ();
-		
+		void Dispose();
+
 		/// <summary>
 		/// Gets or sets a value indicating whether this widget is visible.
 		/// </summary>
@@ -92,8 +92,8 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The screen coordinates.</returns>
 		/// <param name="widgetCoordinates">The relative widget coordinates.</param>
-		Point ConvertToScreenCoordinates (Point widgetCoordinates);
-		
+		Point ConvertToScreenCoordinates(Point widgetCoordinates);
+
 		/// <summary>
 		/// Sets the minimum size of the widget
 		/// </summary>
@@ -103,24 +103,24 @@ namespace Xwt.Backends
 		/// <param name='height'>
 		/// Minimum height. If the value is -1, it means no minimum height.
 		/// </param>
-		void SetMinSize (double width, double height);
+		void SetMinSize(double width, double height);
 
 		/// <summary>
 		/// Sets the size request / natural size of this widget.
 		/// </summary>
 		/// <param name="width">Natural width, or -1 if no custom natural width has been set.</param>
 		/// <param name="height">Natural height, or -1 if no custom natural height has been set.</param>
-		void SetSizeRequest (double width, double height);
-		
+		void SetSizeRequest(double width, double height);
+
 		/// <summary>
 		/// Sets the focus on this widget.
 		/// </summary>
-		void SetFocus ();
-		
+		void SetFocus();
+
 		/// <summary>
 		/// Updates the layout of this widget.
 		/// </summary>
-		void UpdateLayout ();
+		void UpdateLayout();
 
 		/// <summary>
 		/// Gets the preferred size of this widget.
@@ -128,22 +128,22 @@ namespace Xwt.Backends
 		/// <returns>The widgets preferred size.</returns>
 		/// <param name="widthConstraint">Width constraint.</param>
 		/// <param name="heightConstraint">Height constraint.</param>
-		Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint);
+		Size GetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint);
 
 		/// <summary>
 		/// Gets the native toolkit widget.
 		/// </summary>
 		/// <value>The native widget.</value>
 		object NativeWidget { get; }
-		
+
 		/// <summary>
 		/// Starts a drag operation originated in this widget
 		/// </summary>
 		/// <param name='data'>
 		/// Drag operation arguments
 		/// </param>
-		void DragStart (DragStartData data);
-		
+		void DragStart(DragStartData data);
+
 		/// <summary>
 		/// Sets up a widget so that XWT will start a drag operation when the user clicks and drags on the widget.
 		/// </summary>
@@ -156,8 +156,8 @@ namespace Xwt.Backends
 		/// <remarks>
 		/// When a drag operation is started, the backend should fire the OnDragStarted event
 		/// </remarks>
-		void SetDragSource (TransferDataType[] types, DragDropAction dragAction);
-		
+		void SetDragSource(TransferDataType[] types, DragDropAction dragAction);
+
 		/// <summary>
 		/// Sets a widget as a potential drop destination
 		/// </summary>
@@ -167,8 +167,8 @@ namespace Xwt.Backends
 		/// <param name='dragAction'>
 		/// Bitmask of possible actions for a drop on this widget
 		/// </param>
-		void SetDragTarget (TransferDataType[] types, DragDropAction dragAction);
-		
+		void SetDragTarget(TransferDataType[] types, DragDropAction dragAction);
+
 		/// <summary>
 		/// Gets or sets the native font of this widget.
 		/// </summary>
@@ -186,16 +186,16 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <value>The tooltip text.</value>
 		string TooltipText { get; set; }
-		
+
 		/// <summary>
 		/// Sets the cursor shape to be used when the mouse is over the widget
 		/// </summary>
 		/// <param name='cursorType'>
 		/// The cursor type.
 		/// </param>
-		void SetCursor (CursorType cursorType);
+		void SetCursor(CursorType cursorType);
 	}
-	
+
 	/// <summary>
 	/// The widget event sink routes backend events to the frontend
 	/// </summary>
@@ -215,7 +215,7 @@ namespace Xwt.Backends
 		/// the action data should be provided using <see cref="OnDragOver"/>. If the proposed action
 		/// is not allowed, the backend should not allow the user to perform the drop action.
 		/// </remarks>
-		void OnDragOverCheck (DragOverCheckEventArgs args);
+		void OnDragOverCheck(DragOverCheckEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that the mouse is moved over the widget in a drag operation,
@@ -228,7 +228,7 @@ namespace Xwt.Backends
 		/// item is dropped by setting <see cref="Xwt.DragOverEventArgs.AllowedAction"/>. If the proposed action
 		/// is not allowed, the backend should not perform the drop action.
 		/// </remarks>
-		void OnDragOver (DragOverEventArgs args);
+		void OnDragOver(DragOverEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that there is a pending drop operation, to check whether it is allowed.
@@ -241,7 +241,7 @@ namespace Xwt.Backends
 		/// The backend should abort the drop operation, if the result is <see cref="Xwt.DragDropResult.Canceled"/>,
 		/// or provide more information including actual data using <see cref="OnDragDrop"/> otherwise.
 		/// </remarks>
-		void OnDragDropCheck (DragCheckEventArgs args);
+		void OnDragDropCheck(DragCheckEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend of a drop operation to perform.
@@ -252,19 +252,19 @@ namespace Xwt.Backends
 		/// The frontend will set <see cref="Xwt.DragEventArgs.Success"/> to <c>true</c> when the drop
 		/// was successful, <c>false</c> otherwise.
 		/// </remarks>
-		void OnDragDrop (DragEventArgs args);
+		void OnDragDrop(DragEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that the mouse is leaving the widget in a drag operation.
 		/// </summary>
-		void OnDragLeave (EventArgs args);
-		
+		void OnDragLeave(EventArgs args);
+
 		/// <summary>
 		/// Notifies the frontend that the drag&amp;drop operation has finished.
 		/// </summary>
 		/// <param name="args">The event arguments.</param>
-		void OnDragFinished (DragFinishedEventArgs args);
-		
+		void OnDragFinished(DragFinishedEventArgs args);
+
 		/// <summary>
 		/// Notifies the frontend about a starting drag operation and retrieves the data for the drag&amp;drop operation.
 		/// </summary>
@@ -272,69 +272,69 @@ namespace Xwt.Backends
 		/// The information about the starting drag operation and the data to be transferred,
 		/// or <c>null</c> to abort dragging.
 		/// </returns>
-		DragStartData OnDragStarted ();
+		DragStartData OnDragStarted();
 
 		/// <summary>
 		/// Notifies the frontend that a key has been pressed.
 		/// </summary>
 		/// <param name="args">The Key arguments.</param>
-		void OnKeyPressed (KeyEventArgs args);
+		void OnKeyPressed(KeyEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that a key has been released.
 		/// </summary>
 		/// <param name="args">The Key arguments.</param>
-		void OnKeyReleased (KeyEventArgs args);
+		void OnKeyReleased(KeyEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that a text has been entered.
 		/// </summary>
 		/// <param name="args">The text input arguments.</param>
-		void OnPreviewTextInput (PreviewTextInputEventArgs args);
+		void OnPreviewTextInput(PreviewTextInputEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that the widget has received the focus.
 		/// </summary>
-		void OnGotFocus ();
+		void OnGotFocus();
 
 		/// <summary>
 		/// Notifies the frontend that the widget has lost the focus.
 		/// </summary>
-		void OnLostFocus ();
+		void OnLostFocus();
 
 		/// <summary>
 		/// Notifies the frontend that the mouse has entered the widget.
 		/// </summary>
-		void OnMouseEntered ();
+		void OnMouseEntered();
 
 		/// <summary>
 		/// Notifies the frontend that the mouse has left the widget.
 		/// </summary>
-		void OnMouseExited ();
+		void OnMouseExited();
 
 		/// <summary>
 		/// Notifies the frontend that a mouse button has been pressed.
 		/// </summary>
 		/// <param name="args">The button arguments.</param>
-		void OnButtonPressed (ButtonEventArgs args);
+		void OnButtonPressed(ButtonEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that a mouse button has been released.
 		/// </summary>
 		/// <param name="args">The button arguments.</param>
-		void OnButtonReleased (ButtonEventArgs args);
+		void OnButtonReleased(ButtonEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that the mouse has moved.
 		/// </summary>
 		/// <param name="args">The mouse movement arguments.</param>
-		void OnMouseMoved (MouseMovedEventArgs args);
+		void OnMouseMoved(MouseMovedEventArgs args);
 
 		/// <summary>
 		/// Notifies the frontend that the widget bounds have changed.
 		/// </summary>
-		void OnBoundsChanged ();
-		
+		void OnBoundsChanged();
+
 		/// <summary>
 		/// Notifies the frontend about a scroll action.
 		/// </summary>
@@ -353,7 +353,7 @@ namespace Xwt.Backends
 		/// from the backend using <see cref="Xwt.Backends.IWidgetBackend.GetPreferredSize"/> and adjust it
 		/// optionally.
 		/// </remarks>
-		Size GetPreferredSize (SizeConstraint widthConstraint = default(SizeConstraint), SizeConstraint heightConstraint = default(SizeConstraint));
+		Size GetPreferredSize(SizeConstraint widthConstraint = default(SizeConstraint), SizeConstraint heightConstraint = default(SizeConstraint));
 
 		/// <summary>
 		/// Notifies the frontend that the preferred size of this widget has changed
@@ -367,7 +367,7 @@ namespace Xwt.Backends
 		/// widget changes on its own, for example if the size of a button changes as
 		/// a result of clicking on it.
 		/// </remarks>
-		void OnPreferredSizeChanged ();
+		void OnPreferredSizeChanged();
 
 		/// <summary>
 		/// Gets a value indicating whether the frontend supports custom scrolling.
@@ -377,15 +377,15 @@ namespace Xwt.Backends
 		/// If the frontend supports custom scrolling, the backend must set the scroll adjustments
 		/// using <see cref="SetScrollAdjustments"/> to allow the frontend to handle scrolling.
 		/// </remarks>
-		bool SupportsCustomScrolling ();
+		bool SupportsCustomScrolling();
 
 		/// <summary>
 		/// Sets the scroll adjustments for custom scrolling.
 		/// </summary>
 		/// <param name="horizontal">The horizontal adjustment backend.</param>
 		/// <param name="vertical">The vertical adjustment backend.</param>
-		void SetScrollAdjustments (IScrollAdjustmentBackend horizontal, IScrollAdjustmentBackend vertical);
-		
+		void SetScrollAdjustments(IScrollAdjustmentBackend horizontal, IScrollAdjustmentBackend vertical);
+
 		/// <summary>
 		/// Gets the default natural size of the widget
 		/// </summary>
@@ -397,10 +397,10 @@ namespace Xwt.Backends
 		/// size for the widget. There may be widgets for which XWT can't provide
 		/// a default natural width or height, in which case it return 0.
 		/// </remarks>
-		Size GetDefaultNaturalSize ();
+		Size GetDefaultNaturalSize();
 	}
 
-	
+
 	/// <summary>
 	/// Event identifiers supported by all Xwt widgets to subscribe to
 	/// </summary>
@@ -446,7 +446,7 @@ namespace Xwt.Backends
 		/// <summary>  The widget can/wants to be notified of text input events. </summary>
 		PreviewTextInput = 1 << 18
 	}
-	
+
 	/// <summary>
 	/// Arguments for a starting drag&amp;drop operation.
 	/// </summary>
@@ -481,7 +481,7 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <value>The image hotspot Y coordinate.</value>
 		public double HotY { get; private set; }
-		
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xwt.Backends.DragStartData"/> class.
 		/// </summary>
@@ -490,7 +490,7 @@ namespace Xwt.Backends
 		/// <param name="imageBackend">The image backend of the drag image.</param>
 		/// <param name="hotX">The image hotspot X coordinate.</param>
 		/// <param name="hotY">The image hotspot Y coordinate.</param>
-		internal DragStartData (TransferDataSource data, DragDropAction action, object imageBackend, double hotX, double hotY)
+		internal DragStartData(TransferDataSource data, DragDropAction action, object imageBackend, double hotX, double hotY)
 		{
 			Data = data;
 			DragAction = action;

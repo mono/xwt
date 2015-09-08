@@ -39,7 +39,7 @@ namespace Xwt.WPFBackend
 
 	public static class KeyboardUtil
 	{
-		public static ModifierKeys GetModifiers ()
+		public static ModifierKeys GetModifiers()
 		{
 			var modifiers = ModifierKeys.None;
 			var wpfModifiers = Keyboard.Modifiers;
@@ -65,11 +65,12 @@ namespace Xwt.WPFBackend
 		// * ShiftLock, MetaLeft, MetaRight
 		// * SuperLeft, SuperRight (likely not mappeable for Windows)
 		// * Less, Greater, Question, At
-		public static Key TranslateToXwtKey (WpfKey key)
+		public static Key TranslateToXwtKey(WpfKey key)
 		{
 			// Letter keys
-			if (key >= WpfKey.A && key <= WpfKey.Z) {
-				bool upperCase = Keyboard.IsKeyToggled (WpfKey.CapsLock);
+			if (key >= WpfKey.A && key <= WpfKey.Z)
+			{
+				bool upperCase = Keyboard.IsKeyToggled(WpfKey.CapsLock);
 				if ((Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Shift) > 0)
 					upperCase = !upperCase;
 				return upperCase ? (Key)(key + U_Pos) : (Key)(key + L_Pos);
@@ -86,8 +87,9 @@ namespace Xwt.WPFBackend
 			if (key >= WpfKey.F1 && key <= WpfKey.F10)
 				return (Key)(key + F_Pos);
 
-			bool isShiftToggled = Keyboard.IsKeyToggled (WpfKey.LeftShift) || Keyboard.IsKeyToggled (WpfKey.RightShift);
-			switch (key) {
+			bool isShiftToggled = Keyboard.IsKeyToggled(WpfKey.LeftShift) || Keyboard.IsKeyToggled(WpfKey.RightShift);
+			switch (key)
+			{
 				case WpfKey.Cancel: return Key.Cancel;
 				case WpfKey.Back: return Key.BackSpace;
 				case WpfKey.Tab: return Key.Tab;

@@ -28,7 +28,7 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	public class ProgressBarBackend: WidgetBackend, IProgressBarBackend
+	public class ProgressBarBackend : WidgetBackend, IProgressBarBackend
 	{
 		protected override void Initialize()
 		{
@@ -43,9 +43,9 @@ namespace Xwt.WPFBackend
 			progressBar.IsIndeterminate = false;
 		}
 
-		public void SetFraction (double fraction)
+		public void SetFraction(double fraction)
 		{
-			var widget = (System.Windows.Controls.ProgressBar) Widget;
+			var widget = (System.Windows.Controls.ProgressBar)Widget;
 
 			if (widget.Value == fraction)
 				return;
@@ -53,8 +53,9 @@ namespace Xwt.WPFBackend
 			widget.Value = fraction;
 		}
 
-		public void SetIndeterminate (bool value) {
-			var widget = (System.Windows.Controls.ProgressBar) Widget;
+		public void SetIndeterminate(bool value)
+		{
+			var widget = (System.Windows.Controls.ProgressBar)Widget;
 
 			if (widget.IsIndeterminate == value)
 				return;

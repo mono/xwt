@@ -6,11 +6,11 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	class WpfKeyboardHandler: KeyboardHandler
+	class WpfKeyboardHandler : KeyboardHandler
 	{
 		public override ModifierKeys CurrentModifiers
 		{
-			get { return KeyboardUtil.GetModifiers (); }
+			get { return KeyboardUtil.GetModifiers(); }
 		}
 	}
 }

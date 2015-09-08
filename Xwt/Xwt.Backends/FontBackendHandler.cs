@@ -30,66 +30,77 @@ using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
-	public abstract class FontBackendHandler: BackendHandler
+	public abstract class FontBackendHandler : BackendHandler
 	{
 		Font systemFont;
 		Font systemMonospaceFont;
 		Font systemSerifFont;
 		Font systemSansSerifFont;
 
-		internal Font SystemFont {
-			get {
+		internal Font SystemFont
+		{
+			get
+			{
 				if (systemFont == null)
-					systemFont = new Font (GetSystemDefaultFont (), ApplicationContext.Toolkit);
+					systemFont = new Font(GetSystemDefaultFont(), ApplicationContext.Toolkit);
 				return systemFont;
 			}
 		}
 
-		internal Font SystemMonospaceFont {
-			get {
-				if (systemMonospaceFont == null) {
-					var f = GetSystemDefaultMonospaceFont ();
+		internal Font SystemMonospaceFont
+		{
+			get
+			{
+				if (systemMonospaceFont == null)
+				{
+					var f = GetSystemDefaultMonospaceFont();
 					if (f != null)
-						systemMonospaceFont = new Font (f, ApplicationContext.Toolkit);
+						systemMonospaceFont = new Font(f, ApplicationContext.Toolkit);
 					else
-						systemMonospaceFont = SystemFont.WithFamily ("Courier New, Courier, monospace");
+						systemMonospaceFont = SystemFont.WithFamily("Courier New, Courier, monospace");
 				}
 				return systemMonospaceFont;
 			}
 		}
 
-		internal Font SystemSerifFont {
-			get {
-				if (systemSerifFont == null) {
-					var f = GetSystemDefaultSerifFont ();
+		internal Font SystemSerifFont
+		{
+			get
+			{
+				if (systemSerifFont == null)
+				{
+					var f = GetSystemDefaultSerifFont();
 					if (f != null)
-						systemSerifFont = new Font (f, ApplicationContext.Toolkit);
+						systemSerifFont = new Font(f, ApplicationContext.Toolkit);
 					else
-						systemSerifFont = SystemFont.WithFamily ("Times New Roman, Times, serif");
+						systemSerifFont = SystemFont.WithFamily("Times New Roman, Times, serif");
 				}
 				return systemSerifFont;
 			}
 		}
 
-		internal Font SystemSansSerifFont {
-			get {
-				if (systemSansSerifFont == null) {
-					var f = GetSystemDefaultSansSerifFont ();
+		internal Font SystemSansSerifFont
+		{
+			get
+			{
+				if (systemSansSerifFont == null)
+				{
+					var f = GetSystemDefaultSansSerifFont();
 					if (f != null)
-						systemSansSerifFont = new Font (f, ApplicationContext.Toolkit);
+						systemSansSerifFont = new Font(f, ApplicationContext.Toolkit);
 					else
-						systemSansSerifFont = SystemFont.WithFamily ("Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif");
+						systemSansSerifFont = SystemFont.WithFamily("Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif");
 				}
 				return systemSansSerifFont;
 			}
 		}
 
-		public abstract object GetSystemDefaultFont ();
+		public abstract object GetSystemDefaultFont();
 
 		/// <summary>
 		/// Gets the system default serif font, or null if there is no default for such font
 		/// </summary>
-		public virtual object GetSystemDefaultSerifFont ()
+		public virtual object GetSystemDefaultSerifFont()
 		{
 			return null;
 		}
@@ -97,7 +108,7 @@ namespace Xwt.Backends
 		/// <summary>
 		/// Gets the system default sans-serif font, or null if there is no default for such font
 		/// </summary>
-		public virtual object GetSystemDefaultSansSerifFont ()
+		public virtual object GetSystemDefaultSansSerifFont()
 		{
 			return null;
 		}
@@ -105,14 +116,14 @@ namespace Xwt.Backends
 		/// <summary>
 		/// Gets the system default monospace font, or null if there is no default for such font
 		/// </summary>
-		public virtual object GetSystemDefaultMonospaceFont ()
+		public virtual object GetSystemDefaultMonospaceFont()
 		{
 			return null;
 		}
 
-		public abstract IEnumerable<string> GetInstalledFonts ();
+		public abstract IEnumerable<string> GetInstalledFonts();
 
-		public abstract IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family);
+		public abstract IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces(string family);
 
 		/// <summary>
 		/// Creates a new font. Returns null if the font family is not available in the system
@@ -122,7 +133,7 @@ namespace Xwt.Backends
 		/// <param name="style">Style</param>
 		/// <param name="weight">Weight</param>
 		/// <param name="stretch">Stretch</param>
-		public abstract object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch);
+		public abstract object Create(string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch);
 
 		/// <summary>
 		/// Register a font file with the system font manager that is then accessible through Create. The font is only
@@ -130,22 +141,22 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns><c>true</c>, if font from file was registered, <c>false</c> otherwise.</returns>
 		/// <param name="fontPath">Font path.</param>
-		public abstract bool RegisterFontFromFile (string fontPath);
+		public abstract bool RegisterFontFromFile(string fontPath);
 
-		public abstract object Copy (object handle);
-		
-		public abstract object SetSize (object handle, double size);
-		public abstract object SetFamily (object handle, string family);
-		public abstract object SetStyle (object handle, FontStyle style);
-		public abstract object SetWeight (object handle, FontWeight weight);
-		public abstract object SetStretch (object handle, FontStretch stretch);
-		
-		public abstract double GetSize (object handle);
-		public abstract string GetFamily (object handle);
-		public abstract FontStyle GetStyle (object handle);
-		public abstract FontWeight GetWeight (object handle);
-		public abstract FontStretch GetStretch (object handle);
-		
+		public abstract object Copy(object handle);
+
+		public abstract object SetSize(object handle, double size);
+		public abstract object SetFamily(object handle, string family);
+		public abstract object SetStyle(object handle, FontStyle style);
+		public abstract object SetWeight(object handle, FontWeight weight);
+		public abstract object SetStretch(object handle, FontStretch stretch);
+
+		public abstract double GetSize(object handle);
+		public abstract string GetFamily(object handle);
+		public abstract FontStyle GetStyle(object handle);
+		public abstract FontWeight GetWeight(object handle);
+		public abstract FontStretch GetStretch(object handle);
+
 	}
 }
 

@@ -28,20 +28,20 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface INotebookBackend: IWidgetBackend, IChildPlacementHandler
+	public interface INotebookBackend : IWidgetBackend, IChildPlacementHandler
 	{
-		void Add (IWidgetBackend widget, NotebookTab tab);
-		void Remove (IWidgetBackend widget);
-		void UpdateLabel (NotebookTab tab, string hint);
+		void Add(IWidgetBackend widget, NotebookTab tab);
+		void Remove(IWidgetBackend widget);
+		void UpdateLabel(NotebookTab tab, string hint);
 		int CurrentTab { get; set; }
 		NotebookTabOrientation TabOrientation { get; set; }
 	}
-	
-	public interface INotebookEventSink: IWidgetEventSink
+
+	public interface INotebookEventSink : IWidgetEventSink
 	{
-		void OnCurrentTabChanged ();
+		void OnCurrentTabChanged();
 	}
-	
+
 	public enum NotebookEvent
 	{
 		CurrentTabChanged

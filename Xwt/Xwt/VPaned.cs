@@ -28,9 +28,9 @@ using System;
 
 namespace Xwt
 {
-	public class VPaned: Paned
+	public class VPaned : Paned
 	{
-		public VPaned (): base (Xwt.Backends.Orientation.Vertical)
+		public VPaned() : base(Xwt.Backends.Orientation.Vertical)
 		{
 		}
 	}

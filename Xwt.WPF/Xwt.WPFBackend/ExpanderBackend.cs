@@ -34,17 +34,19 @@ namespace Xwt.WPFBackend
 		{
 			Widget = new SWC.Expander();
 
-			Widget.Expanded += delegate {
-				System.Windows.Application.Current.Dispatcher.BeginInvoke ((System.Action)delegate ()
-				{
-					EventSink.OnPreferredSizeChanged ();
-				});
+			Widget.Expanded += delegate
+			{
+				System.Windows.Application.Current.Dispatcher.BeginInvoke((System.Action)delegate ()
+			   {
+				   EventSink.OnPreferredSizeChanged();
+			   });
 			};
-			Widget.Collapsed += delegate {
-				System.Windows.Application.Current.Dispatcher.BeginInvoke ((System.Action)delegate ()
-				{
-					EventSink.OnPreferredSizeChanged ();
-				});
+			Widget.Collapsed += delegate
+			{
+				System.Windows.Application.Current.Dispatcher.BeginInvoke((System.Action)delegate ()
+			   {
+				   EventSink.OnPreferredSizeChanged();
+			   });
 			};
 		}
 
@@ -61,20 +63,24 @@ namespace Xwt.WPFBackend
 
 		public string Label
 		{
-			get {
+			get
+			{
 				return Widget.Header.ToString();
 			}
-			set {
+			set
+			{
 				Widget.Header = value;
 			}
 		}
 
 		public bool Expanded
 		{
-			get {
+			get
+			{
 				return Widget.IsExpanded;
 			}
-			set {
+			set
+			{
 				Widget.IsExpanded = value;
 			}
 		}

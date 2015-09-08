@@ -27,26 +27,27 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IScrollViewBackend: IWidgetBackend, IChildPlacementHandler, IScrollableWidgetBackend
+	public interface IScrollViewBackend : IWidgetBackend, IChildPlacementHandler, IScrollableWidgetBackend
 	{
-		void SetChild (IWidgetBackend child);
-		
-		bool BorderVisible {
+		void SetChild(IWidgetBackend child);
+
+		bool BorderVisible
+		{
 			get;
 			set;
 		}
-		
+
 		Rectangle VisibleRect { get; }
-		
-		void SetChildSize (Size size);
+
+		void SetChildSize(Size size);
 	}
-	
-	public interface IScrollViewEventSink: IWidgetEventSink
+
+	public interface IScrollViewEventSink : IWidgetEventSink
 	{
-		void OnVisibleRectChanged ();
+		void OnVisibleRectChanged();
 	}
-	
-	
+
+
 	public enum ScrollViewEvent
 	{
 		VisibleRectChanged = 1

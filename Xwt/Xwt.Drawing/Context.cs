@@ -30,60 +30,63 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public sealed class Context: DrawingPath
+	public sealed class Context : DrawingPath
 	{
 		ContextBackendHandler handler;
 		Pattern pattern;
 		double globalAlpha = 1;
-		Stack<double> alphaStack = new Stack<double> ();
-		
-		internal Context (object backend, Toolkit toolkit): this (backend, toolkit, toolkit.ContextBackendHandler)
+		Stack<double> alphaStack = new Stack<double>();
+
+		internal Context(object backend, Toolkit toolkit) : this(backend, toolkit, toolkit.ContextBackendHandler)
 		{
 		}
 
-		internal Context (object backend, Toolkit toolkit, ContextBackendHandler handler): base (backend, toolkit, handler)
+		internal Context(object backend, Toolkit toolkit, ContextBackendHandler handler) : base(backend, toolkit, handler)
 		{
 			this.handler = handler;
 		}
 
-		internal ContextBackendHandler Handler {
+		internal ContextBackendHandler Handler
+		{
 			get { return handler; }
 		}
 
-		internal void Reset (Widget forWidget)
+		internal void Reset(Widget forWidget)
 		{
 		}
-		
+
 		/// <summary>
 		/// Makes a copy of the current state of the Context and saves it on an internal stack of saved states.
 		/// When Restore() is called, it will be restored to the saved state. 
 		/// Multiple calls to Save() and Restore() can be nested; 
 		/// each call to Restore() restores the state from the matching paired save().
 		/// </summary>
-		public void Save ()
+		public void Save()
 		{
-			handler.Save (Backend);
-			alphaStack.Push (globalAlpha);
+			handler.Save(Backend);
+			alphaStack.Push(globalAlpha);
 		}
-		
-		public void Restore ()
+
+		public void Restore()
 		{
-			handler.Restore (Backend);
+			handler.Restore(Backend);
 			if (alphaStack.Count > 0)
-				globalAlpha = alphaStack.Pop ();
+				globalAlpha = alphaStack.Pop();
 		}
-		
-		public double GlobalAlpha {
+
+		public double GlobalAlpha
+		{
 			get { return globalAlpha; }
-			set {
+			set
+			{
 				globalAlpha = value;
-				handler.SetGlobalAlpha (Backend, globalAlpha);
+				handler.SetGlobalAlpha(Backend, globalAlpha);
 			}
 		}
-		
-		public void SetColor (Color color)
+
+		public void SetColor(Color color)
 		{
-			handler.SetColor (Backend, color);
+			handler.SetColor(Backend, color);
 		}
 
 		/// <summary>
@@ -97,99 +100,99 @@ namespace Xwt.Drawing
 		/// so a temporary restriction of the clip region can be achieved by calling clip() within a save()/restore() pair. 
 		/// The only other means of increasing the size of the clip region is reset_clip().
 		/// </summary>
-		public void Clip ()
+		public void Clip()
 		{
-			handler.Clip (Backend);
-		}
-		
-		public void ClipPreserve ()
-		{
-			handler.ClipPreserve (Backend);
-		}
-		
-		public void Fill ()
-		{
-			handler.Fill (Backend);
-		}
-		
-		public void FillPreserve ()
-		{
-			handler.FillPreserve (Backend);
+			handler.Clip(Backend);
 		}
 
-		public void NewPath ()
+		public void ClipPreserve()
 		{
-			handler.NewPath (Backend);
+			handler.ClipPreserve(Backend);
 		}
 
-		public void Stroke ()
+		public void Fill()
 		{
-			handler.Stroke (Backend);
-		}
-		
-		public void StrokePreserve ()
-		{
-			handler.StrokePreserve (Backend);
-		}
-		
-		public void SetLineWidth (double width)
-		{
-			handler.SetLineWidth (Backend, width);
-		}
-		
-		public void DrawTextLayout (TextLayout layout, Point location)
-		{
-			handler.DrawTextLayout (Backend, layout, location.X, location.Y);
-		}
-		
-		public void DrawTextLayout (TextLayout layout, double x, double y)
-		{
-			handler.DrawTextLayout (Backend, layout, x, y);
+			handler.Fill(Backend);
 		}
 
-		public void DrawImage (Image img, Point location, double alpha = 1)
+		public void FillPreserve()
 		{
-			DrawImage (img, location.X, location.Y, alpha);
+			handler.FillPreserve(Backend);
 		}
-		
-		public void DrawImage (Image img, double x, double y, double alpha = 1)
+
+		public void NewPath()
+		{
+			handler.NewPath(Backend);
+		}
+
+		public void Stroke()
+		{
+			handler.Stroke(Backend);
+		}
+
+		public void StrokePreserve()
+		{
+			handler.StrokePreserve(Backend);
+		}
+
+		public void SetLineWidth(double width)
+		{
+			handler.SetLineWidth(Backend, width);
+		}
+
+		public void DrawTextLayout(TextLayout layout, Point location)
+		{
+			handler.DrawTextLayout(Backend, layout, location.X, location.Y);
+		}
+
+		public void DrawTextLayout(TextLayout layout, double x, double y)
+		{
+			handler.DrawTextLayout(Backend, layout, x, y);
+		}
+
+		public void DrawImage(Image img, Point location, double alpha = 1)
+		{
+			DrawImage(img, location.X, location.Y, alpha);
+		}
+
+		public void DrawImage(Image img, double x, double y, double alpha = 1)
 		{
 			if (!img.HasFixedSize)
-				throw new InvalidOperationException ("Image doesn't have a fixed size");
+				throw new InvalidOperationException("Image doesn't have a fixed size");
 
-			var idesc = img.GetImageDescription (ToolkitEngine);
+			var idesc = img.GetImageDescription(ToolkitEngine);
 			idesc.Alpha *= alpha;
-			handler.DrawImage (Backend, idesc, x, y);
+			handler.DrawImage(Backend, idesc, x, y);
 		}
 
-		public void DrawImage (Image img, Rectangle rect, double alpha = 1)
+		public void DrawImage(Image img, Rectangle rect, double alpha = 1)
 		{
-			DrawImage (img, rect.X, rect.Y, rect.Width, rect.Height, alpha);
+			DrawImage(img, rect.X, rect.Y, rect.Width, rect.Height, alpha);
 		}
-		
-		public void DrawImage (Image img, double x, double y, double width, double height, double alpha = 1)
+
+		public void DrawImage(Image img, double x, double y, double width, double height, double alpha = 1)
 		{
 			if (width <= 0 || height <= 0)
 				return;
-			var idesc = img.GetImageDescription (ToolkitEngine);
+			var idesc = img.GetImageDescription(ToolkitEngine);
 			idesc.Alpha *= alpha;
-			idesc.Size = new Size (width, height);
-			handler.DrawImage (Backend, idesc, x, y);
-		}
-		
-		public void DrawImage (Image img, Rectangle srcRect, Rectangle destRect)
-		{
-			DrawImage (img, srcRect, destRect, 1);
+			idesc.Size = new Size(width, height);
+			handler.DrawImage(Backend, idesc, x, y);
 		}
 
-		public void DrawImage (Image img, Rectangle srcRect, Rectangle destRect, double alpha)
+		public void DrawImage(Image img, Rectangle srcRect, Rectangle destRect)
+		{
+			DrawImage(img, srcRect, destRect, 1);
+		}
+
+		public void DrawImage(Image img, Rectangle srcRect, Rectangle destRect, double alpha)
 		{
 			if (!img.HasFixedSize)
-				throw new InvalidOperationException ("Image doesn't have a fixed size");
+				throw new InvalidOperationException("Image doesn't have a fixed size");
 
-			var idesc = img.GetImageDescription (ToolkitEngine);
+			var idesc = img.GetImageDescription(ToolkitEngine);
 			idesc.Alpha *= alpha;
-			handler.DrawImage (Backend, idesc, srcRect, destRect);
+			handler.DrawImage(Backend, idesc, srcRect, destRect);
 		}
 
 		/// <summary>
@@ -203,24 +206,24 @@ namespace Xwt.Drawing
 		/// The rotation of the axes takes places after any existing transformation of user space.
 		/// The rotation direction for positive angles is from the positive X axis toward the positive Y axis.
 		/// </remarks>
-		public void Rotate (double angle)
+		public void Rotate(double angle)
 		{
-			handler.Rotate (Backend, angle);
+			handler.Rotate(Backend, angle);
 		}
-		
-		public void Scale (double scaleX, double scaleY)
+
+		public void Scale(double scaleX, double scaleY)
 		{
-			handler.Scale (Backend, scaleX, scaleY);
+			handler.Scale(Backend, scaleX, scaleY);
 		}
-		
-		public void Translate (double tx, double ty)
+
+		public void Translate(double tx, double ty)
 		{
-			handler.Translate (Backend, tx, ty);
+			handler.Translate(Backend, tx, ty);
 		}
-		
-		public void Translate (Point p)
+
+		public void Translate(Point p)
 		{
-			handler.Translate (Backend, p.X, p.Y);
+			handler.Translate(Backend, p.X, p.Y);
 		}
 
 		/// <summary>
@@ -230,26 +233,26 @@ namespace Xwt.Drawing
 		/// This enables any 'non-standard' transforms (eg skew, reflection) to be used for drawing,
 		/// and provides the link to the extra transform capabilities provided by Xwt.Drawing.Matrix
 		/// </remarks>
-		public void ModifyCTM (Matrix transform)
+		public void ModifyCTM(Matrix transform)
 		{
-			handler.ModifyCTM (Backend, transform);
+			handler.ModifyCTM(Backend, transform);
 		}
 
 		/// <summary>
 		/// Returns a copy of the current transformation matrix (CTM)
 		/// </summary>
-		public Matrix GetCTM ()
+		public Matrix GetCTM()
 		{
-			return handler.GetCTM (Backend);
+			return handler.GetCTM(Backend);
 		}
 
 		/// <summary>
 		/// Transforms the point (x, y) by the current transformation matrix (CTM)
 		/// </summary>
-		public void TransformPoint (ref double x, ref double y)
+		public void TransformPoint(ref double x, ref double y)
 		{
-			Matrix m = GetCTM ();
-			Point p = m.Transform (new Point (x, y));
+			Matrix m = GetCTM();
+			Point p = m.Transform(new Point(x, y));
 			x = p.X;
 			y = p.Y;
 		}
@@ -257,63 +260,64 @@ namespace Xwt.Drawing
 		/// <summary>
 		/// Transforms the point (x, y) by the current transformation matrix (CTM)
 		/// </summary>
-		public Point TransformPoint (Point p)
+		public Point TransformPoint(Point p)
 		{
-			Matrix m = GetCTM ();
-			return m.Transform (p);
+			Matrix m = GetCTM();
+			return m.Transform(p);
 		}
-		
+
 		/// <summary>
 		/// Transforms the distance (dx, dy) by the scale and rotation elements (only) of the CTM
 		/// </summary>
-		public void TransformDistance (ref double dx, ref double dy)
+		public void TransformDistance(ref double dx, ref double dy)
 		{
-			Matrix m = GetCTM ();
-			Point p = m.TransformVector (new Point (dx, dy));
+			Matrix m = GetCTM();
+			Point p = m.TransformVector(new Point(dx, dy));
 			dx = p.X;
 			dy = p.Y;
 		}
-		
+
 		/// <summary>
 		/// Transforms the distance (dx, dy) by the scale and rotation elements (only) of the CTM
 		/// </summary>
-		public Distance TransformDistance (Distance distance)
+		public Distance TransformDistance(Distance distance)
 		{
 			double dx = distance.Dx;
 			double dy = distance.Dy;
-			TransformDistance (ref dx, ref dy);
-			return new Distance (dx, dy);
+			TransformDistance(ref dx, ref dy);
+			return new Distance(dx, dy);
 		}
 
 		/// <summary>
 		/// Transforms the array of points by the current transformation matrix (CTM)
 		/// </summary>
-		public void TransformPoints (Point[] points)
+		public void TransformPoints(Point[] points)
 		{
-			Matrix m = GetCTM ();
-			m.Transform (points);
+			Matrix m = GetCTM();
+			m.Transform(points);
 		}
 
 		/// <summary>
 		/// Transforms the array of distances by the scale and rotation elements (only) of the CTM
 		/// </summary>
-		public void TransformDistances (Distance[] vectors)
+		public void TransformDistances(Distance[] vectors)
 		{
 			Point p;
-			Matrix m = GetCTM ();
-			for (int i = 0; i < vectors.Length; ++i) {
+			Matrix m = GetCTM();
+			for (int i = 0; i < vectors.Length; ++i)
+			{
 				p = (Point)vectors[i];
-				m.TransformVector (p);
+				m.TransformVector(p);
 				vectors[i].Dx = p.X;
 				vectors[i].Dy = p.Y;
 			}
 		}
 
-		public bool IsPointInStroke (Point p)
+		public bool IsPointInStroke(Point p)
 		{
-			return IsPointInStroke (p.X, p.Y);
+			return IsPointInStroke(p.X, p.Y);
 		}
-		
+
 		/// <summary>
 		/// Tests whether the given point is inside the area that would be affected if Stroke were called on this Context.
 		/// </summary>
@@ -326,19 +330,21 @@ namespace Xwt.Drawing
 		/// <param name='y'>
 		/// The y coordinate.
 		/// </param>
-		public bool IsPointInStroke (double x, double y)
+		public bool IsPointInStroke(double x, double y)
 		{
-			return handler.IsPointInStroke (Backend, x, y);
+			return handler.IsPointInStroke(Backend, x, y);
 		}
 
-		public Pattern Pattern {
+		public Pattern Pattern
+		{
 			get { return pattern; }
-			set {
+			set
+			{
 				pattern = value;
-				handler.SetPattern (Backend, value);
+				handler.SetPattern(Backend, value);
 			}
 		}
-		
+
 		/// <summary>
 		/// Sets the dash pattern to be used by stroke().
 		/// A dash pattern is specified by dashes, an array of positive values. 
@@ -355,13 +361,14 @@ namespace Xwt.Drawing
 		/// <param name='pattern'>
 		/// Pattern.
 		/// </param>
-		public void SetLineDash (double offset, params double[] pattern)
+		public void SetLineDash(double offset, params double[] pattern)
 		{
-			handler.SetLineDash (Backend, offset, pattern);
+			handler.SetLineDash(Backend, offset, pattern);
 		}
 
-		internal double ScaleFactor {
-			get { return handler.GetScaleFactor (Backend); }
+		internal double ScaleFactor
+		{
+			get { return handler.GetScaleFactor(Backend); }
 		}
 	}
 }

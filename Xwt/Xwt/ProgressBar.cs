@@ -31,46 +31,52 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	[BackendType (typeof(IProgressBarBackend))]
+	[BackendType(typeof(IProgressBarBackend))]
 	public class ProgressBar : Widget
 	{
 		double fraction = 0.0;
 		bool indeterminate = false;
-		
-		public ProgressBar ()
+
+		public ProgressBar()
 		{
-		}
-		
-		protected override BackendHost CreateBackendHost ()
-		{
-			return new WidgetBackendHost ();
-		}
-		
-		IProgressBarBackend Backend {
-			get { return (IProgressBarBackend) BackendHost.Backend; }
 		}
 
-		[DefaultValue (0d)]
-		public double Fraction {
+		protected override BackendHost CreateBackendHost()
+		{
+			return new WidgetBackendHost();
+		}
+
+		IProgressBarBackend Backend
+		{
+			get { return (IProgressBarBackend)BackendHost.Backend; }
+		}
+
+		[DefaultValue(0d)]
+		public double Fraction
+		{
 			get { return fraction; }
-			set {
+			set
+			{
 				// TODO: allow any value, by implementing MinValue and MaxValue properties
 				// and then adjusting the fraction to a [0.0..1.0] range only in the Gtk backend
 				if (value < 0.0 || value > 1.0)
-					throw new NotSupportedException ("Fraction value can only be in the [0.0..1.0] range");
+					throw new NotSupportedException("Fraction value can only be in the [0.0..1.0] range");
 
 				fraction = value;
-				Backend.SetFraction (fraction);
+				Backend.SetFraction(fraction);
 			}
 		}
 
-		[DefaultValue (false)]
-		public bool Indeterminate {
+		[DefaultValue(false)]
+		public bool Indeterminate
+		{
 			get { return indeterminate; }
-			set {
-				if (indeterminate != value) {
+			set
+			{
+				if (indeterminate != value)
+				{
 					indeterminate = value;
-					Backend.SetIndeterminate (value);
+					Backend.SetIndeterminate(value);
 				}
 			}
 		}

@@ -31,20 +31,21 @@ namespace Xwt
 	/// <summary>
 	/// Mouse scroll directions.
 	/// </summary>
-	public enum ScrollDirection {
+	public enum ScrollDirection
+	{
 		Up,
 		Down,
 		Left,
 		Right
 	}
 
-	public class MouseScrolledEventArgs: EventArgs
+	public class MouseScrolledEventArgs : EventArgs
 	{
-		public MouseScrolledEventArgs (long timestamp, double x, double y, ScrollDirection direction)
+		public MouseScrolledEventArgs(long timestamp, double x, double y, ScrollDirection direction)
 		{
 			X = x;
 			Y = y;
-			Timestamp  = timestamp;
+			Timestamp = timestamp;
 			Direction = direction;
 		}
 
@@ -82,8 +83,9 @@ namespace Xwt
 		/// <summary>
 		/// Location of the mouse cursor (in widget coordinates).
 		/// </summary>
-		public Point Position {
-			get { return new Point (X, Y); }
+		public Point Position
+		{
+			get { return new Point(X, Y); }
 		}
 
 		/// <summary>

@@ -27,43 +27,43 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IEmbeddedWidgetBackend: IWidgetBackend
+	public interface IEmbeddedWidgetBackend : IWidgetBackend
 	{
-		void SetContent (object nativeWidget);
+		void SetContent(object nativeWidget);
 	}
 
-	[BackendType (typeof(IEmbeddedWidgetBackend))]
-	internal class EmbeddedNativeWidget: Widget
+	[BackendType(typeof(IEmbeddedWidgetBackend))]
+	internal class EmbeddedNativeWidget : Widget
 	{
 		object nativeWidget;
 		Widget sourceWidget;
 
-		class EmbeddedNativeWidgetBackendHost: WidgetBackendHost<EmbeddedNativeWidget,IEmbeddedWidgetBackend>
+		class EmbeddedNativeWidgetBackendHost : WidgetBackendHost<EmbeddedNativeWidget, IEmbeddedWidgetBackend>
 		{
-			protected override void OnBackendCreated ()
+			protected override void OnBackendCreated()
 			{
-				Backend.SetContent (Parent.nativeWidget);
-				base.OnBackendCreated ();
+				Backend.SetContent(Parent.nativeWidget);
+				base.OnBackendCreated();
 			}
 		}
 
-		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		protected override Xwt.Backends.BackendHost CreateBackendHost()
 		{
-			return new EmbeddedNativeWidgetBackendHost ();
+			return new EmbeddedNativeWidgetBackendHost();
 		}
 
-		public void Initialize (object nativeWidget, Widget sourceWidget)
+		public void Initialize(object nativeWidget, Widget sourceWidget)
 		{
 			this.nativeWidget = nativeWidget;
 			this.sourceWidget = sourceWidget;
 		}
-		
-		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+
+		protected override Size OnGetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (sourceWidget != null)
-				return sourceWidget.Surface.GetPreferredSize (widthConstraint, heightConstraint);
+				return sourceWidget.Surface.GetPreferredSize(widthConstraint, heightConstraint);
 			else
-				return base.OnGetPreferredSize (widthConstraint, heightConstraint);
+				return base.OnGetPreferredSize(widthConstraint, heightConstraint);
 		}
 	}
 }

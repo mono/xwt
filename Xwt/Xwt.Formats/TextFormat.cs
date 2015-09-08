@@ -33,11 +33,11 @@ namespace Xwt.Formats
 {
 	public abstract class TextFormat
 	{
-		public static readonly TextFormat Markdown = new MarkdownTextFormat ();
-		public static readonly TextFormat Plain = new PlainTextFormat ();
+		public static readonly TextFormat Markdown = new MarkdownTextFormat();
+		public static readonly TextFormat Plain = new PlainTextFormat();
 
 		// Parses the given input stream into the given buffer
-		public abstract void Parse (Stream input, IRichTextBuffer buffer);
+		public abstract void Parse(Stream input, IRichTextBuffer buffer);
 	}
 }
 

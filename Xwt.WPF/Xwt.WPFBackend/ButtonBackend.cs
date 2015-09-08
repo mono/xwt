@@ -40,96 +40,103 @@ namespace Xwt.WPFBackend
 {
 	public class ButtonBackend : WidgetBackend, IButtonBackend
 	{
-		public ButtonBackend ()
-			: this (new WpfButton ())
+		public ButtonBackend()
+			: this(new WpfButton())
 		{
 		}
 
-		protected ButtonBackend (ButtonBase impl)
+		protected ButtonBackend(ButtonBase impl)
 		{
 			if (impl == null)
-				throw new ArgumentNullException ("impl");
+				throw new ArgumentNullException("impl");
 
 			Widget = impl;
 		}
 
-		protected ButtonBase Button {
+		protected ButtonBase Button
+		{
 			get { return (ButtonBase)Widget; }
 		}
 
-		protected new IButtonEventSink EventSink {
+		protected new IButtonEventSink EventSink
+		{
 			get { return (IButtonEventSink)base.EventSink; }
 		}
 
-		public void SetButtonStyle (ButtonStyle style) {
+		public void SetButtonStyle(ButtonStyle style)
+		{
 			switch (style)
 			{
 				case ButtonStyle.Normal:
-					Button.ClearValue (SWC.Control.BackgroundProperty);
-					Button.ClearValue (SWC.Control.BorderThicknessProperty);
-					Button.ClearValue (SWC.Control.BorderBrushProperty);
+					Button.ClearValue(SWC.Control.BackgroundProperty);
+					Button.ClearValue(SWC.Control.BorderThicknessProperty);
+					Button.ClearValue(SWC.Control.BorderBrushProperty);
 					break;
 				case ButtonStyle.Flat:
 					Button.Background = Brushes.Transparent;
 					Button.BorderBrush = Brushes.Transparent;
 					break;
 				case ButtonStyle.Borderless:
-					Button.ClearValue (SWC.Control.BackgroundProperty);
-					Button.BorderThickness = new Thickness (0);
+					Button.ClearValue(SWC.Control.BackgroundProperty);
+					Button.BorderThickness = new Thickness(0);
 					Button.BorderBrush = Brushes.Transparent;
 					break;
 			}
-			Button.InvalidateMeasure ();
+			Button.InvalidateMeasure();
 		}
 
-		public virtual void SetButtonType (ButtonType type) {
-			switch (type) {
-			case ButtonType.Normal:
-				Button.Style = null;
-				break;
+		public virtual void SetButtonType(ButtonType type)
+		{
+			switch (type)
+			{
+				case ButtonType.Normal:
+					Button.Style = null;
+					break;
 
-			case ButtonType.DropDown:
-				Button.Style = (Style) ButtonResources ["NormalDropDown"];
-				break;
+				case ButtonType.DropDown:
+					Button.Style = (Style)ButtonResources["NormalDropDown"];
+					break;
 			}
 
-			Button.InvalidateMeasure ();
+			Button.InvalidateMeasure();
 		}
 
-		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position)
+		public void SetContent(string label, bool useMnemonic, ImageDescription image, ContentPosition position)
 		{
-			var accessText = new SWC.AccessText ();
+			var accessText = new SWC.AccessText();
 			accessText.Text = label;
 			if (image.IsNull)
 				if (useMnemonic)
 					Button.Content = accessText;
 				else
-					Button.Content = accessText.Text.Replace ("_", "__");
-			else {
-				SWC.DockPanel grid = new SWC.DockPanel ();
+					Button.Content = accessText.Text.Replace("_", "__");
+			else
+			{
+				SWC.DockPanel grid = new SWC.DockPanel();
 
-				var imageCtrl = new ImageBox (Context);
+				var imageCtrl = new ImageBox(Context);
 				imageCtrl.ImageSource = image;
 
-				SWC.DockPanel.SetDock (imageCtrl, DataConverter.ToWpfDock (position));
-				grid.Children.Add (imageCtrl);
+				SWC.DockPanel.SetDock(imageCtrl, DataConverter.ToWpfDock(position));
+				grid.Children.Add(imageCtrl);
 
-				if (!string.IsNullOrEmpty (label)) {
-					SWC.Label labelCtrl = new SWC.Label ();
+				if (!string.IsNullOrEmpty(label))
+				{
+					SWC.Label labelCtrl = new SWC.Label();
 					if (useMnemonic)
 						labelCtrl.Content = accessText;
 					else
 						labelCtrl.Content = label;
-					grid.Children.Add (labelCtrl);
+					grid.Children.Add(labelCtrl);
 				}
 				Button.Content = grid;
 			}
-			Button.InvalidateMeasure ();
+			Button.InvalidateMeasure();
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
+			base.EnableEvent(eventId);
 			if (eventId is ButtonEvent)
 			{
 				switch ((ButtonEvent)eventId)
@@ -139,9 +146,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
+			base.DisableEvent(eventId);
 			if (eventId is ButtonEvent)
 			{
 				switch ((ButtonEvent)eventId)
@@ -151,9 +158,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		void HandleWidgetClicked (object sender, EventArgs e)
+		void HandleWidgetClicked(object sender, EventArgs e)
 		{
-			Context.InvokeUserCode (EventSink.OnClicked);
+			Context.InvokeUserCode(EventSink.OnClicked);
 		}
 
 		private static ResourceDictionary buttonsDictionary;
@@ -161,9 +168,10 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				if (buttonsDictionary == null) {
-					Uri uri = new Uri ("pack://application:,,,/Xwt.WPF;component/XWT.WPFBackend/Buttons.xaml");
-					buttonsDictionary = (ResourceDictionary)XamlReader.Load (System.Windows.Application.GetResourceStream (uri).Stream);
+				if (buttonsDictionary == null)
+				{
+					Uri uri = new Uri("pack://application:,,,/Xwt.WPF;component/XWT.WPFBackend/Buttons.xaml");
+					buttonsDictionary = (ResourceDictionary)XamlReader.Load(System.Windows.Application.GetResourceStream(uri).Stream);
 				}
 
 				return buttonsDictionary;
@@ -175,15 +183,15 @@ namespace Xwt.WPFBackend
 	{
 		public WidgetBackend Backend { get; set; }
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
+			var s = base.MeasureOverride(constraint);
+			return Backend.MeasureOverride(constraint, s);
 		}
 
-		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
+		protected override System.Windows.Size ArrangeOverride(System.Windows.Size arrangeBounds)
 		{
-			return base.ArrangeOverride (arrangeBounds);
+			return base.ArrangeOverride(arrangeBounds);
 		}
 	}
 }

@@ -27,16 +27,16 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IToggleButtonBackend: IButtonBackend
+	public interface IToggleButtonBackend : IButtonBackend
 	{
 		bool Active { get; set; }
 	}
-	
-	public interface IToggleButtonEventSink: IButtonEventSink
+
+	public interface IToggleButtonEventSink : IButtonEventSink
 	{
-		void OnToggled ();
+		void OnToggled();
 	}
-	
+
 	public enum ToggleButtonEvent
 	{
 		Toggled

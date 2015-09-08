@@ -28,9 +28,9 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class VSlider: Slider
+	public class VSlider : Slider
 	{
-		public VSlider (): base (Orientation.Vertical)
+		public VSlider() : base(Orientation.Vertical)
 		{
 		}
 	}

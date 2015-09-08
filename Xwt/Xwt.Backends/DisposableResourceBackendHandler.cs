@@ -27,13 +27,14 @@ using System;
 
 namespace Xwt.Backends
 {
-	public class DisposableResourceBackendHandler: BackendHandler
+	public class DisposableResourceBackendHandler : BackendHandler
 	{
-		public virtual bool DisposeHandleOnUiThread {
+		public virtual bool DisposeHandleOnUiThread
+		{
 			get { return false; }
 		}
 
-		public virtual void Dispose (object backend)
+		public virtual void Dispose(object backend)
 		{
 		}
 	}

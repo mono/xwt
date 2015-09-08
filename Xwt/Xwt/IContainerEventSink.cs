@@ -30,8 +30,8 @@ namespace Xwt
 {
 	public interface IContainerEventSink<T>
 	{
-		void ChildChanged (T child, string hint);
-		void ChildReplaced (T child, Widget oldWidget, Widget newWidget);
+		void ChildChanged(T child, string hint);
+		void ChildReplaced(T child, Widget oldWidget, Widget newWidget);
 	}
 }
 

@@ -28,12 +28,12 @@ using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
-	public interface IAlertDialogBackend: IDisposable
+	public interface IAlertDialogBackend : IDisposable
 	{
-		void Initialize (ApplicationContext context);
+		void Initialize(ApplicationContext context);
 
-		Command Run (WindowFrame transientFor, MessageDescription message);
-		
+		Command Run(WindowFrame transientFor, MessageDescription message);
+
 		bool ApplyToAll { get; }
 	}
 }

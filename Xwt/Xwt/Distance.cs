@@ -33,86 +33,95 @@ namespace Xwt
 	public struct Distance
 	{
 		double dx, dy;
-		
-		public static readonly Distance Zero = new Distance (0d, 0d);
-		
-		public Distance (double dx, double dy)
+
+		public static readonly Distance Zero = new Distance(0d, 0d);
+
+		public Distance(double dx, double dy)
 		{
 			this.dx = dx;
 			this.dy = dy;
 		}
-		
-		public bool IsZero {
-			get {
+
+		public bool IsZero
+		{
+			get
+			{
 				return ((dx == 0) && (dy == 0));
 			}
 		}
-		
-		[DefaultValue (0d)]
-		public double Dx {
-			get {
+
+		[DefaultValue(0d)]
+		public double Dx
+		{
+			get
+			{
 				return dx;
 			}
-			set {
+			set
+			{
 				dx = value;
 			}
 		}
-		
-		[DefaultValue (0d)]
-		public double Dy {
-			get {
+
+		[DefaultValue(0d)]
+		public double Dy
+		{
+			get
+			{
 				return dy;
 			}
-			set {
+			set
+			{
 				dy = value;
 			}
 		}
-		
-		public static Distance operator + (Distance d1, Distance d2)
+
+		public static Distance operator +(Distance d1, Distance d2)
 		{
-			return new Distance (d1.dx + d2.dx, d1.dy + d2.dy);
+			return new Distance(d1.dx + d2.dx, d1.dy + d2.dy);
 		}
-		
-		public static Distance operator - (Distance d1, Distance d2)
+
+		public static Distance operator -(Distance d1, Distance d2)
 		{
-			return new Distance (d1.dx - d2.dx, d1.dy - d2.dy);
+			return new Distance(d1.dx - d2.dx, d1.dy - d2.dy);
 		}
-		
-		public static bool operator == (Distance d1, Distance d2)
+
+		public static bool operator ==(Distance d1, Distance d2)
 		{
 			return (d1.dx == d2.dx) && (d1.dy == d2.dy);
 		}
-		
-		public static bool operator != (Distance d1, Distance d2)
+
+		public static bool operator !=(Distance d1, Distance d2)
 		{
 			return (d1.dx != d2.dx) || (d1.dy != d2.dy);
 		}
-		
-		public static explicit operator Point (Distance distance) 
+
+		public static explicit operator Point(Distance distance)
 		{
-			return new Point (distance.dx, distance.dx);
+			return new Point(distance.dx, distance.dx);
 		}
-		
-		public static explicit operator Size (Distance distance) 
+
+		public static explicit operator Size(Distance distance)
 		{
-			return new Size (distance.dx, distance.dx);
+			return new Size(distance.dx, distance.dx);
 		}
-		
-		public override bool Equals (object ob)
+
+		public override bool Equals(object ob)
 		{
 			return (ob is Distance) && this == (Distance)ob;
 		}
-		
-		public override int GetHashCode ()
+
+		public override int GetHashCode()
 		{
-			unchecked {
-				return (dx.GetHashCode () * 397) ^ dy.GetHashCode ();
+			unchecked
+			{
+				return (dx.GetHashCode() * 397) ^ dy.GetHashCode();
 			}
 		}
-		
-		public override string ToString ()
+
+		public override string ToString()
 		{
-			return String.Format ("{{Dx={0} Dy={1}}}", dx.ToString (CultureInfo.InvariantCulture), dy.ToString (CultureInfo.InvariantCulture));
+			return String.Format("{{Dx={0} Dy={1}}}", dx.ToString(CultureInfo.InvariantCulture), dy.ToString(CultureInfo.InvariantCulture));
 		}
 	}
 }

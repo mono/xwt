@@ -10,9 +10,9 @@ using System;
 
 namespace Xwt
 {
-	public class ToolkitNotInitializedException: Exception
+	public class ToolkitNotInitializedException : Exception
 	{
-		public ToolkitNotInitializedException (): base ("XWT has not been initialized")
+		public ToolkitNotInitializedException() : base("XWT has not been initialized")
 		{
 		}
 	}

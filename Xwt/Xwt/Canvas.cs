@@ -34,31 +34,33 @@ using System.Linq;
 
 namespace Xwt
 {
-	[BackendType (typeof(ICanvasBackend))]
-	public class Canvas: Widget
+	[BackendType(typeof(ICanvasBackend))]
+	public class Canvas : Widget
 	{
-		Dictionary<Widget,Rectangle> positions;
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICanvasEventSink
+		Dictionary<Widget, Rectangle> positions;
+
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, ICanvasEventSink
 		{
-			public void OnDraw (object context, Rectangle dirtyRect)
+			public void OnDraw(object context, Rectangle dirtyRect)
 			{
 				Context ctx = null;
-				try {
-					ctx = new Context (context, ToolkitEngine);
-					ctx.Reset (Parent);
-					((Canvas)Parent).OnDraw (ctx, dirtyRect);
+				try
+				{
+					ctx = new Context(context, ToolkitEngine);
+					ctx.Reset(Parent);
+					((Canvas)Parent).OnDraw(ctx, dirtyRect);
 				}
-				finally {
-					ctx.Dispose ();
+				finally
+				{
+					ctx.Dispose();
 				}
 			}
 		}
-		
-		public Canvas ()
+
+		public Canvas()
 		{
 		}
-		
+
 		/// <summary>
 		/// Adds a child widget.
 		/// </summary>
@@ -69,9 +71,9 @@ namespace Xwt
 		/// The widget is placed in the canvas area, at the position (0,0)
 		/// using the preferred size of the widget
 		/// </remarks>
-		public void AddChild (Widget w)
+		public void AddChild(Widget w)
 		{
-			AddChild (w, 0, 0);
+			AddChild(w, 0, 0);
 		}
 
 		/// <summary>
@@ -90,12 +92,12 @@ namespace Xwt
 		/// The widget is placed in the canvas area, at the specified coordinates,
 		/// using the preferred size of the widget
 		/// </remarks>
-		public void AddChild (Widget w, double x, double y)
+		public void AddChild(Widget w, double x, double y)
 		{
-			var s = w.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.Unconstrained);
-			AddChild (w, new Rectangle (x, y, s.Width, s.Height));
+			var s = w.Surface.GetPreferredSize(SizeConstraint.Unconstrained, SizeConstraint.Unconstrained);
+			AddChild(w, new Rectangle(x, y, s.Width, s.Height));
 		}
-		
+
 		/// <summary>
 		/// Adds a child widget.
 		/// </summary>
@@ -109,17 +111,17 @@ namespace Xwt
 		/// The widget is placed in the canvas area, in the specified coordinates and
 		/// using the specified size
 		/// </remarks>
-		public void AddChild (Widget widget, Rectangle bounds)
+		public void AddChild(Widget widget, Rectangle bounds)
 		{
 			if (positions == null)
-				positions = new Dictionary<Widget,Rectangle> ();
-			
-			positions [widget] = bounds;
-			var bk = (IWidgetBackend)Widget.GetBackend (widget);
-			RegisterChild (widget);
-			Backend.AddChild (bk, bounds);
+				positions = new Dictionary<Widget, Rectangle>();
+
+			positions[widget] = bounds;
+			var bk = (IWidgetBackend)Widget.GetBackend(widget);
+			RegisterChild(widget);
+			Backend.AddChild(bk, bounds);
 		}
-		
+
 		/// <summary>
 		/// Removes a child widget
 		/// </summary>
@@ -127,13 +129,13 @@ namespace Xwt
 		/// The widget to remove. The widget must have been previously added using AddChild.
 		/// </param>
 		/// <exception cref="System.ArgumentException">If the widget is not a child of this canvas</exception>
-		public void RemoveChild (Widget widget)
+		public void RemoveChild(Widget widget)
 		{
-			UnregisterChild (widget);
-			positions.Remove (widget);
-			Backend.RemoveChild ((IWidgetBackend)Widget.GetBackend (widget));
+			UnregisterChild(widget);
+			positions.Remove(widget);
+			Backend.RemoveChild((IWidgetBackend)Widget.GetBackend(widget));
 		}
-		
+
 		/// <summary>
 		/// Sets the position and size of a child widget
 		/// </summary>
@@ -144,25 +146,26 @@ namespace Xwt
 		/// New bounds, in container coordinates
 		/// </param>
 		/// <exception cref="System.ArgumentException">If the widget is not a child of this canvas</exception>
-		public void SetChildBounds (Widget widget, Rectangle bounds)
+		public void SetChildBounds(Widget widget, Rectangle bounds)
 		{
-			if (positions == null || !positions.ContainsKey (widget))
-				throw new ArgumentException ("Widget is not a child of the canvas");
-			
-			positions [widget] = bounds;
-			Backend.SetChildBounds ((IWidgetBackend)Widget.GetBackend (widget), bounds);
+			if (positions == null || !positions.ContainsKey(widget))
+				throw new ArgumentException("Widget is not a child of the canvas");
+
+			positions[widget] = bounds;
+			Backend.SetChildBounds((IWidgetBackend)Widget.GetBackend(widget), bounds);
 		}
-		
+
 		/// <summary>
 		/// Gets the children.
 		/// </summary>
 		/// <value>
 		/// The children.
 		/// </value>
-		public IEnumerable<Widget> Children {
+		public IEnumerable<Widget> Children
+		{
 			get { return Surface.Children; }
 		}
-		
+
 		/// <summary>
 		/// Gets the bounds of a child widget
 		/// </summary>
@@ -173,38 +176,39 @@ namespace Xwt
 		/// The widget
 		/// </param>
 		/// <exception cref="System.ArgumentException">If the widget is not a child of this canvas</exception>
-		public Rectangle GetChildBounds (Widget widget)
+		public Rectangle GetChildBounds(Widget widget)
 		{
 			Rectangle rect;
-			if (positions != null && positions.TryGetValue (widget, out rect))
+			if (positions != null && positions.TryGetValue(widget, out rect))
 				return rect;
-			throw new ArgumentException ("Widget is not a child of the canvas");
+			throw new ArgumentException("Widget is not a child of the canvas");
 		}
 
 		/// <summary>
 		/// Removes all children of the Canvas
 		/// </summary>
-		public void Clear ()
+		public void Clear()
 		{
-			foreach (var c in Children.ToArray ())
-				RemoveChild (c);
+			foreach (var c in Children.ToArray())
+				RemoveChild(c);
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		ICanvasBackend Backend {
-			get { return (ICanvasBackend) BackendHost.Backend; }
+
+		ICanvasBackend Backend
+		{
+			get { return (ICanvasBackend)BackendHost.Backend; }
 		}
-		
+
 		/// <summary>
 		/// Invalidates and forces the redraw of the whole area of the widget
 		/// </summary>
-		public void QueueDraw ()
+		public void QueueDraw()
 		{
-			Backend.QueueDraw ();
+			Backend.QueueDraw();
 		}
 
 		/// <summary>
@@ -213,9 +217,9 @@ namespace Xwt
 		/// <param name='rect'>
 		/// Area to invalidate
 		/// </param>
-		public void QueueDraw (Rectangle rect)
+		public void QueueDraw(Rectangle rect)
 		{
-			Backend.QueueDraw (rect);
+			Backend.QueueDraw(rect);
 		}
 
 		/// <summary>
@@ -224,20 +228,22 @@ namespace Xwt
 		/// <param name='ctx'>
 		/// Drawing context
 		/// </param>
-		protected virtual void OnDraw (Context ctx, Rectangle dirtyRect)
+		protected virtual void OnDraw(Context ctx, Rectangle dirtyRect)
 		{
 		}
-		
+
 		/// <summary>
 		/// Bounds of the area where content can be drawn
 		/// </summary>
 		/// <value>
 		/// The bounds.
 		/// </value>
-		public Rectangle Bounds {
-			get {
+		public Rectangle Bounds
+		{
+			get
+			{
 				var s = Size;
-				return new Rectangle (0, 0, s.Width, s.Height); 
+				return new Rectangle(0, 0, s.Width, s.Height);
 			}
 		}
 	}

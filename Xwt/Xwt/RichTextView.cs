@@ -35,19 +35,20 @@ using Xwt.Formats;
 
 namespace Xwt
 {
-	[BackendType (typeof(IRichTextViewBackend))]
+	[BackendType(typeof(IRichTextViewBackend))]
 	public class RichTextView : Widget
 	{
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IRichTextViewEventSink
 		{
-			public void OnNavigateToUrl (Uri uri)
+			public void OnNavigateToUrl(Uri uri)
 			{
-				((RichTextView) Parent).OnNavigateToUrl (new NavigateToUrlEventArgs (uri));
+				((RichTextView)Parent).OnNavigateToUrl(new NavigateToUrlEventArgs(uri));
 			}
 		}
 
-		IRichTextViewBackend Backend {
-			get { return (IRichTextViewBackend) BackendHost.Backend; }
+		IRichTextViewBackend Backend
+		{
+			get { return (IRichTextViewBackend)BackendHost.Backend; }
 		}
 
 		EventHandler<NavigateToUrlEventArgs> navigateToUrl;
@@ -55,54 +56,55 @@ namespace Xwt
 		{
 			add
 			{
-				BackendHost.OnBeforeEventAdd (RichTextViewEvent.NavigateToUrl, navigateToUrl);
+				BackendHost.OnBeforeEventAdd(RichTextViewEvent.NavigateToUrl, navigateToUrl);
 				navigateToUrl += value;
 			}
 			remove
 			{
 				navigateToUrl -= value;
-				BackendHost.OnAfterEventRemove (RichTextViewEvent.NavigateToUrl, navigateToUrl);
+				BackendHost.OnAfterEventRemove(RichTextViewEvent.NavigateToUrl, navigateToUrl);
 			}
 		}
 
-		public RichTextView ()
+		public RichTextView()
 		{
 			NavigateToUrl += delegate { }; // ensure the virtual method is always called
 		}
 
-		public void LoadFile (string fileName, TextFormat format)
+		public void LoadFile(string fileName, TextFormat format)
 		{
-			using (var stream = new FileStream (fileName, FileMode.Open, FileAccess.Read))
-				LoadStream (stream, format);
+			using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+				LoadStream(stream, format);
 		}
 
-		public void LoadText (string text, TextFormat format)
+		public void LoadText(string text, TextFormat format)
 		{
-			using (var stream = new MemoryStream (Encoding.UTF8.GetBytes (text), false))
-				LoadStream (stream, format);
+			using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text), false))
+				LoadStream(stream, format);
 		}
 
-		public virtual void LoadStream (Stream input, TextFormat format)
+		public virtual void LoadStream(Stream input, TextFormat format)
 		{
-			var buffer = Backend.CreateBuffer ();
-			format.Parse (input, buffer);
-			Backend.SetBuffer (buffer);
-			OnPreferredSizeChanged ();
+			var buffer = Backend.CreateBuffer();
+			format.Parse(input, buffer);
+			Backend.SetBuffer(buffer);
+			OnPreferredSizeChanged();
 		}
 
-		protected override BackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
 
-		protected virtual void OnNavigateToUrl (NavigateToUrlEventArgs e)
+		protected virtual void OnNavigateToUrl(NavigateToUrlEventArgs e)
 		{
 			if (navigateToUrl != null)
-				navigateToUrl (this, e);
+				navigateToUrl(this, e);
 
-			if (!e.Handled && e.Uri != null) {
-				Desktop.OpenUrl (e.Uri);
-				e.SetHandled ();
+			if (!e.Handled && e.Uri != null)
+			{
+				Desktop.OpenUrl(e.Uri);
+				e.SetHandled();
 			}
 		}
 	}
@@ -119,11 +121,11 @@ namespace Xwt
 			set
 			{
 				markdown = value;
-				LoadText (value, TextFormat.Markdown);
+				LoadText(value, TextFormat.Markdown);
 			}
 		}
 
-		public MarkdownView ()
+		public MarkdownView()
 		{
 			Markdown = string.Empty;
 		}

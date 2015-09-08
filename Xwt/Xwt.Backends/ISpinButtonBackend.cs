@@ -37,16 +37,16 @@ namespace Xwt.Backends
 		double MinimumValue { get; set; }
 		double MaximumValue { get; set; }
 		double IncrementValue { get; set; }
-		void SetButtonStyle (ButtonStyle style);
+		void SetButtonStyle(ButtonStyle style);
 		string IndeterminateMessage { get; set; }
 		bool IsIndeterminate { get; set; }
 	}
 
-	public interface ISpinButtonEventSink: IWidgetEventSink
+	public interface ISpinButtonEventSink : IWidgetEventSink
 	{
-		void ValueChanged ();
+		void ValueChanged();
 	}
-	
+
 	public enum SpinButtonEvent
 	{
 		ValueChanged

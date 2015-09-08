@@ -34,42 +34,43 @@ namespace Xwt.WPFBackend
 	public class WpfImageBuilderBackendHandler
 		: ImageBuilderBackendHandler
 	{
-		class ImageBuilder: DrawingVisual
+		class ImageBuilder : DrawingVisual
 		{
 			public int Width;
 			public int Height;
 			public DrawingContext Context;
 		}
 
-		public override object CreateImageBuilder (int width, int height, ImageFormat format)
+		public override object CreateImageBuilder(int width, int height, ImageFormat format)
 		{
-			return new ImageBuilder () {
+			return new ImageBuilder()
+			{
 				Width = width,
 				Height = height
 			};
 		}
 
-		public override object CreateContext (object backend)
+		public override object CreateContext(object backend)
 		{
 			var visual = (ImageBuilder)backend;
-			visual.Context = new DrawingContext (visual.RenderOpen (), visual.GetScaleFactor ());
+			visual.Context = new DrawingContext(visual.RenderOpen(), visual.GetScaleFactor());
 			return visual.Context;
 		}
 
-		public override object CreateImage (object backend)
+		public override object CreateImage(object backend)
 		{
 			var visual = (ImageBuilder)backend;
-			var ratios = visual.GetPixelRatios ();
-			visual.Context.Dispose ();
-			var bmp = new RenderTargetBitmap (visual.Width, visual.Height, ratios.Height * 96, ratios.Width * 96, PixelFormats.Pbgra32);
+			var ratios = visual.GetPixelRatios();
+			visual.Context.Dispose();
+			var bmp = new RenderTargetBitmap(visual.Width, visual.Height, ratios.Height * 96, ratios.Width * 96, PixelFormats.Pbgra32);
 			bmp.Render(visual);
-			return new WpfImage (bmp);
+			return new WpfImage(bmp);
 		}
 
-		public override void Dispose (object backend)
+		public override void Dispose(object backend)
 		{
 			var bmp = (ImageBuilder)backend;
-			bmp.Context.Dispose ();
+			bmp.Context.Dispose();
 		}
 	}
 }

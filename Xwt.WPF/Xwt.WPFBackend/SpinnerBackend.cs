@@ -14,27 +14,29 @@ namespace Xwt.WPFBackend
 {
 	public class SpinnerBackend : WidgetBackend, ISpinnerBackend
 	{
-		new WpfSpinButton Widget {
-			get { return (WpfSpinButton) base.Widget; }
+		new WpfSpinButton Widget
+		{
+			get { return (WpfSpinButton)base.Widget; }
 			set { base.Widget = value; }
 		}
-		public SpinnerBackend ()
+		public SpinnerBackend()
 		{
-			Widget = new WpfSpinButton ();
+			Widget = new WpfSpinButton();
 		}
 
-		public bool IsAnimating {
-			get { return Widget.Storyboard.GetIsPaused (); }
-		}
-		
-		public void StartAnimation ()
+		public bool IsAnimating
 		{
-			Widget.Storyboard.Begin ();
+			get { return Widget.Storyboard.GetIsPaused(); }
 		}
 
-		public void StopAnimation ()
+		public void StartAnimation()
 		{
-			Widget.Storyboard.Stop ();
+			Widget.Storyboard.Begin();
+		}
+
+		public void StopAnimation()
+		{
+			Widget.Storyboard.Stop();
 		}
 	}
 
@@ -55,72 +57,78 @@ namespace Xwt.WPFBackend
 			0.25
 		};
 
-		public Storyboard Storyboard {
+		public Storyboard Storyboard
+		{
 			get; private set;
 		}
-		
-		public WidgetBackend Backend {
+
+		public WidgetBackend Backend
+		{
 			get; set;
 		}
 
-		public WpfSpinButton ()
+		public WpfSpinButton()
 		{
 			Width = 25;
 			Height = 25;
-			Background = new SolidColorBrush (Colors.Transparent);
-			Storyboard = new Storyboard { RepeatBehavior = RepeatBehavior.Forever, Duration = TimeSpan.FromMilliseconds (Duration) };
+			Background = new SolidColorBrush(Colors.Transparent);
+			Storyboard = new Storyboard { RepeatBehavior = RepeatBehavior.Forever, Duration = TimeSpan.FromMilliseconds(Duration) };
 
-			for (int i = 0; i < 360; i += 30) {
+			for (int i = 0; i < 360; i += 30)
+			{
 				// Create the rectangle and centre it in our widget
-				var rect = new WpfRectangle { Width = 2, Height = 8, Fill = new SolidColorBrush (Colors.Black), RadiusX = 1, RadiusY = 1, Opacity = Values[0] };
-				WpfCanvas.SetTop (rect, (Height - rect.Height) / 2);
-				WpfCanvas.SetLeft (rect, Width / 2);
+				var rect = new WpfRectangle { Width = 2, Height = 8, Fill = new SolidColorBrush(Colors.Black), RadiusX = 1, RadiusY = 1, Opacity = Values[0] };
+				WpfCanvas.SetTop(rect, (Height - rect.Height) / 2);
+				WpfCanvas.SetLeft(rect, Width / 2);
 
 				// Rotate the element by 'i' degrees, creating a circle out of all the elements
-				var group = new TransformGroup ();
-				group.Children.Add (new RotateTransform (i, 0.5, -6));
-				group.Children.Add (new TranslateTransform (0, 10));
+				var group = new TransformGroup();
+				group.Children.Add(new RotateTransform(i, 0.5, -6));
+				group.Children.Add(new TranslateTransform(0, 10));
 				rect.RenderTransform = group;
 
 				// Set the animation
-				var timeline = new DoubleAnimationUsingKeyFrames ();
-				Storyboard.SetTarget (timeline, rect);
-				Storyboard.SetTargetProperty (timeline, new PropertyPath ("Opacity"));
+				var timeline = new DoubleAnimationUsingKeyFrames();
+				Storyboard.SetTarget(timeline, rect);
+				Storyboard.SetTargetProperty(timeline, new PropertyPath("Opacity"));
 
 				var offset = Duration * (i / 360.0);
-				for (int j = 0; j < StartTimes.Length; j++) {
+				for (int j = 0; j < StartTimes.Length; j++)
+				{
 					var start = (StartTimes[j] + offset) % Duration;
-					timeline.KeyFrames.Add (new EasingDoubleKeyFrame { KeyTime = KeyTime.FromTimeSpan (TimeSpan.FromMilliseconds (start)), Value = Values[j] });
+					timeline.KeyFrames.Add(new EasingDoubleKeyFrame { KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(start)), Value = Values[j] });
 				}
-				Storyboard.Children.Add (timeline);
-				Children.Add (rect);
+				Storyboard.Children.Add(timeline);
+				Children.Add(rect);
 			}
 		}
 
-		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeSize)
+		protected override System.Windows.Size ArrangeOverride(System.Windows.Size arrangeSize)
 		{
 			double dx = 0, dy = 0;
 			double width = arrangeSize.Width, height = arrangeSize.Height;
-			if (width > height) {
+			if (width > height)
+			{
 				dx = (width - height) / 2;
 				width = height;
 			}
-			else if (height > width) {
+			else if (height > width)
+			{
 				dy = (height - width) / 2;
 				height = width;
 			}
-			TransformGroup tg = new TransformGroup ();
-			tg.Children.Add (new ScaleTransform (width / 25d, height / 25d));
-			tg.Children.Add (new TranslateTransform (dx, dy));
+			TransformGroup tg = new TransformGroup();
+			tg.Children.Add(new ScaleTransform(width / 25d, height / 25d));
+			tg.Children.Add(new TranslateTransform(dx, dy));
 			RenderTransform = tg;
-			return base.ArrangeOverride (arrangeSize);
+			return base.ArrangeOverride(arrangeSize);
 		}
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			base.MeasureOverride (constraint);
-			var s = new System.Windows.Size (25, 25);
-			return Backend.MeasureOverride (constraint, s);
+			base.MeasureOverride(constraint);
+			var s = new System.Windows.Size(25, 25);
+			return Backend.MeasureOverride(constraint, s);
 		}
 	}
 }

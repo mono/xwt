@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IRadioButtonMenuItemBackend: IMenuItemBackend
+	public interface IRadioButtonMenuItemBackend : IMenuItemBackend
 	{
 		bool Checked { get; set; }
 	}

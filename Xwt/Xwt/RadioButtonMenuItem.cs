@@ -31,75 +31,83 @@ using System.Linq;
 
 namespace Xwt
 {
-	[BackendType (typeof(IRadioButtonMenuItemBackend))]
-	public class RadioButtonMenuItem: MenuItem
+	[BackendType(typeof(IRadioButtonMenuItemBackend))]
+	public class RadioButtonMenuItem : MenuItem
 	{
 		RadioButtonMenuItemGroup radioGroup;
-		
-		public RadioButtonMenuItem ()
+
+		public RadioButtonMenuItem()
 		{
 		}
-		
-		public RadioButtonMenuItem (Command command)
+
+		public RadioButtonMenuItem(Command command)
 		{
-			VerifyConstructorCall (this);
-			LoadCommandProperties (command);
+			VerifyConstructorCall(this);
+			LoadCommandProperties(command);
 		}
-		
-		public RadioButtonMenuItem (string label)
+
+		public RadioButtonMenuItem(string label)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 		}
-		
-		IRadioButtonMenuItemBackend Backend {
-			get { return (IRadioButtonMenuItemBackend) BackendHost.Backend; }
+
+		IRadioButtonMenuItemBackend Backend
+		{
+			get { return (IRadioButtonMenuItemBackend)BackendHost.Backend; }
 		}
-		
-		[DefaultValue (true)]
-		public bool Checked {
+
+		[DefaultValue(true)]
+		public bool Checked
+		{
 			get { return Backend.Checked; }
-			set {
+			set
+			{
 				Backend.Checked = value;
 				if (value)
-					ValidateCheckedValue ();
+					ValidateCheckedValue();
 			}
 		}
-		
-		public RadioButtonMenuItemGroup Group {
+
+		public RadioButtonMenuItemGroup Group
+		{
 			get { return radioGroup; }
-			set {
+			set
+			{
 				if (radioGroup != null)
-					radioGroup.Items.Remove (this);
+					radioGroup.Items.Remove(this);
 				radioGroup = value;
-				if (radioGroup != null) {
-					radioGroup.Items.Add (this);
+				if (radioGroup != null)
+				{
+					radioGroup.Items.Add(this);
 					if (Checked)
-						ValidateCheckedValue ();
+						ValidateCheckedValue();
 				}
 			}
 		}
-		
-		internal override void DoClick ()
+
+		internal override void DoClick()
 		{
-			ValidateCheckedValue ();
-			base.DoClick ();
+			ValidateCheckedValue();
+			base.DoClick();
 		}
-		
-		void ValidateCheckedValue ()
+
+		void ValidateCheckedValue()
 		{
-			if (radioGroup != null) {
-				foreach (var rb in radioGroup.Items.OfType<RadioButtonMenuItem> ()) {
+			if (radioGroup != null)
+			{
+				foreach (var rb in radioGroup.Items.OfType<RadioButtonMenuItem>())
+				{
 					if (rb != this && rb.Checked)
 						rb.Checked = false;
 				}
 			}
 		}
 	}
-	
+
 	public class RadioButtonMenuItemGroup
 	{
-		internal List<object> Items = new List<object> ();
+		internal List<object> Items = new List<object>();
 	}
 }
 

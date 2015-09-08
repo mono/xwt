@@ -31,41 +31,41 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class CellViewCollection: Collection<CellView>
+	public class CellViewCollection : Collection<CellView>
 	{
 		ICellContainer parent;
-		
-		internal CellViewCollection (ICellContainer parent)
+
+		internal CellViewCollection(ICellContainer parent)
 		{
 			this.parent = parent;
 		}
-		
-		protected override void InsertItem (int index, CellView item)
+
+		protected override void InsertItem(int index, CellView item)
 		{
-			base.InsertItem (index, item);
+			base.InsertItem(index, item);
 			if (parent != null)
-				parent.NotifyCellChanged ();
+				parent.NotifyCellChanged();
 		}
-		
-		protected override void RemoveItem (int index)
+
+		protected override void RemoveItem(int index)
 		{
-			base.RemoveItem (index);
+			base.RemoveItem(index);
 			if (parent != null)
-				parent.NotifyCellChanged ();
+				parent.NotifyCellChanged();
 		}
-		
-		protected override void SetItem (int index, CellView item)
+
+		protected override void SetItem(int index, CellView item)
 		{
-			base.SetItem (index, item);
+			base.SetItem(index, item);
 			if (parent != null)
-				parent.NotifyCellChanged ();
+				parent.NotifyCellChanged();
 		}
-		
-		protected override void ClearItems ()
+
+		protected override void ClearItems()
 		{
-			base.ClearItems ();
+			base.ClearItems();
 			if (parent != null)
-				parent.NotifyCellChanged ();
+				parent.NotifyCellChanged();
 		}
 	}
 }

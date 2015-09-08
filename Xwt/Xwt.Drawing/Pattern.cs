@@ -29,40 +29,43 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public abstract class Pattern: XwtObject, IDisposable
+	public abstract class Pattern : XwtObject, IDisposable
 	{
 		DisposableResourceBackendHandler handler;
 
-		internal Pattern ()
+		internal Pattern()
 		{
 		}
 
-		internal void SetBackend (DisposableResourceBackendHandler handler, object backend)
+		internal void SetBackend(DisposableResourceBackendHandler handler, object backend)
 		{
-			if (this.handler != null) {
-				Dispose ();
-				GC.ReRegisterForFinalize (this);
+			if (this.handler != null)
+			{
+				Dispose();
+				GC.ReRegisterForFinalize(this);
 			}
 			Backend = backend;
 			this.handler = handler;
 			if (handler.DisposeHandleOnUiThread)
-				ResourceManager.RegisterResource (backend, handler.Dispose);
+				ResourceManager.RegisterResource(backend, handler.Dispose);
 			else
-				GC.SuppressFinalize (this);
+				GC.SuppressFinalize(this);
 		}
 
-		~Pattern ()
+		~Pattern()
 		{
-			ResourceManager.FreeResource (Backend);
+			ResourceManager.FreeResource(Backend);
 		}
 
-		public void Dispose ()
+		public void Dispose()
 		{
-			if (handler.DisposeHandleOnUiThread) {
-				GC.SuppressFinalize (this);
-				ResourceManager.FreeResource (Backend);
-			} else
-				handler.Dispose (Backend);
+			if (handler.DisposeHandleOnUiThread)
+			{
+				GC.SuppressFinalize(this);
+				ResourceManager.FreeResource(Backend);
+			}
+			else
+				handler.Dispose(Backend);
 		}
 	}
 }

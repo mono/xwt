@@ -10,7 +10,7 @@ using Xwt.WPFBackend.Utilities;
 
 namespace Xwt.WPFBackend
 {
-	class EmbedNativeWidgetBackend: WidgetBackend, IEmbeddedWidgetBackend
+	class EmbedNativeWidgetBackend : WidgetBackend, IEmbeddedWidgetBackend
 	{
 		public void SetContent(object nativeWidget)
 		{

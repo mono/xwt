@@ -37,100 +37,107 @@ namespace Xwt.Backends
 	/// For example, XWT has an implementation of a color selector. If a backend
 	/// doesn't have native color selector, the XWT one will be used. 
 	/// </remarks>
-	public class XwtWidgetBackend: Widget, IWidgetBackend
+	public class XwtWidgetBackend : Widget, IWidgetBackend
 	{
-		protected Widget Frontend {
+		protected Widget Frontend
+		{
 			get; private set;
 		}
-		
-		protected IWidgetEventSink EventSink {
+
+		protected IWidgetEventSink EventSink
+		{
 			get; private set;
 		}
-		
-		public XwtWidgetBackend ()
+
+		public XwtWidgetBackend()
 		{
 		}
 
 		#region IBackend implementation
-		void IBackend.InitializeBackend (object frontend, ApplicationContext toolkit)
+		void IBackend.InitializeBackend(object frontend, ApplicationContext toolkit)
 		{
-			Frontend = (Widget) frontend;
+			Frontend = (Widget)frontend;
 		}
 
-		public virtual void EnableEvent (object eventId)
+		public virtual void EnableEvent(object eventId)
 		{
 		}
 
-		public virtual void DisableEvent (object eventId)
+		public virtual void DisableEvent(object eventId)
 		{
 		}
 		#endregion
 
 		#region IWidgetBackend implementation
-		public virtual void Initialize (IWidgetEventSink eventSink)
+		public virtual void Initialize(IWidgetEventSink eventSink)
 		{
 			EventSink = eventSink;
 		}
 
-		void IWidgetBackend.SetMinSize (double width, double height)
+		void IWidgetBackend.SetMinSize(double width, double height)
 		{
 			MinWidth = width;
 			MinHeight = height;
 		}
 
-		void IWidgetBackend.SetSizeRequest (double width, double height)
+		void IWidgetBackend.SetSizeRequest(double width, double height)
 		{
 			WidthRequest = width;
 			HeightRequest = height;
 		}
 
-		void IWidgetBackend.UpdateLayout ()
+		void IWidgetBackend.UpdateLayout()
 		{
-			Surface.Reallocate ();
+			Surface.Reallocate();
 		}
 
-		Size IWidgetBackend.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+		Size IWidgetBackend.GetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			return Surface.GetPreferredSize (widthConstraint, heightConstraint);
+			return Surface.GetPreferredSize(widthConstraint, heightConstraint);
 		}
 
-		void IWidgetBackend.SetDragSource (TransferDataType[] types, DragDropAction dragAction)
+		void IWidgetBackend.SetDragSource(TransferDataType[] types, DragDropAction dragAction)
 		{
-			this.SetDragSource (dragAction, types);
+			this.SetDragSource(dragAction, types);
 		}
 
-		void IWidgetBackend.SetDragTarget (TransferDataType[] types, DragDropAction dragAction)
+		void IWidgetBackend.SetDragTarget(TransferDataType[] types, DragDropAction dragAction)
 		{
-			this.SetDragDropTarget (dragAction, types);
+			this.SetDragDropTarget(dragAction, types);
 		}
 
-		void IWidgetBackend.SetCursor (CursorType cursorType)
+		void IWidgetBackend.SetCursor(CursorType cursorType)
 		{
 			Cursor = cursorType;
 		}
 
-		object IWidgetBackend.Font {
-			get {
-				return XwtObject.GetBackend (Font);
+		object IWidgetBackend.Font
+		{
+			get
+			{
+				return XwtObject.GetBackend(Font);
 			}
-			set {
-				Font = new Xwt.Drawing.Font (value);
+			set
+			{
+				Font = new Xwt.Drawing.Font(value);
 			}
 		}
 
-		public IWidgetBackend NativeBackend {
+		public IWidgetBackend NativeBackend
+		{
 			get { return BackendHost.Backend; }
 		}
-		
-		object IWidgetBackend.NativeWidget {
+
+		object IWidgetBackend.NativeWidget
+		{
 			get { return BackendHost.Backend.NativeWidget; }
 		}
-		
-		void IWidgetBackend.DragStart (DragStartData data)
+
+		void IWidgetBackend.DragStart(DragStartData data)
 		{
-			BackendHost.Backend.DragStart (data);
+			BackendHost.Backend.DragStart(data);
 		}
-		
+
 		#endregion
 	}
 }

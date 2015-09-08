@@ -27,15 +27,16 @@ using System;
 
 namespace Xwt.Backends
 {
-	[AttributeUsage (AttributeTargets.Class)]
-	public class BackendTypeAttribute: Attribute
+	[AttributeUsage(AttributeTargets.Class)]
+	public class BackendTypeAttribute : Attribute
 	{
-		public BackendTypeAttribute (Type type)
+		public BackendTypeAttribute(Type type)
 		{
 			Type = type;
 		}
 
-		public Type Type {
+		public Type Type
+		{
 			get;
 			private set;
 		}

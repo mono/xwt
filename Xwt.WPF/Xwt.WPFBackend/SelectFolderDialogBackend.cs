@@ -38,13 +38,13 @@ namespace Xwt.WPFBackend
 	public class SelectFolderDialogBackend
 		: Backend, ISelectFolderDialogBackend
 	{
-		public void Initialize (bool multiselect)
+		public void Initialize(bool multiselect)
 		{
 			if (multiselect)
 				throw new NotSupportedException();
 
 			this.dialog = new WindowsFolderBrowserDialog();
-			
+
 		}
 
 		public string Title
@@ -63,10 +63,12 @@ namespace Xwt.WPFBackend
 			get { return new[] { Folder }; }
 		}
 
-		public bool CanCreateFolders {
+		public bool CanCreateFolders
+		{
 			get { return dialog != null ? dialog.ShowNewFolderButton : false; }
-			set { 
- 				if (dialog != null)
+			set
+			{
+				if (dialog != null)
 					dialog.ShowNewFolderButton = value;
 			}
 		}
@@ -76,24 +78,24 @@ namespace Xwt.WPFBackend
 			get
 			{
 				string current = Folder;
-				if (String.IsNullOrEmpty (current))
+				if (String.IsNullOrEmpty(current))
 					return null;
 
-				string dir = Path.GetDirectoryName (current);
-				return (String.IsNullOrEmpty (dir) ? current : dir);
+				string dir = Path.GetDirectoryName(current);
+				return (String.IsNullOrEmpty(dir) ? current : dir);
 			}
 			set { this.dialog.SelectedPath = value; }
 		}
 
-		public bool Run (IWindowFrameBackend parent)
+		public bool Run(IWindowFrameBackend parent)
 		{
 			if (parent != null)
-				return (this.dialog.ShowDialog (new WpfWin32Window (((WindowFrameBackend) parent).Window)) == DialogResult.OK);
+				return (this.dialog.ShowDialog(new WpfWin32Window(((WindowFrameBackend)parent).Window)) == DialogResult.OK);
 			else
-				return (this.dialog.ShowDialog () == DialogResult.OK);
+				return (this.dialog.ShowDialog() == DialogResult.OK);
 		}
 
-		public void Cleanup ()
+		public void Cleanup()
 		{
 			this.dialog.Dispose();
 		}
@@ -103,9 +105,9 @@ namespace Xwt.WPFBackend
 		private class WpfWin32Window
 			: IWin32Window
 		{
-			public WpfWin32Window (System.Windows.Window window)
+			public WpfWin32Window(System.Windows.Window window)
 			{
-				this.helper = new WindowInteropHelper (window);
+				this.helper = new WindowInteropHelper(window);
 			}
 
 			public IntPtr Handle

@@ -28,9 +28,9 @@ using System;
 
 namespace Xwt
 {
-	public class HBox: Box
+	public class HBox : Box
 	{
-		public HBox (): base (Xwt.Backends.Orientation.Horizontal)
+		public HBox() : base(Xwt.Backends.Orientation.Horizontal)
 		{
 		}
 	}

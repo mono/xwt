@@ -28,10 +28,10 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ISeparatorMenuItemBackend))]
-	public class SeparatorMenuItem: MenuItem
+	[BackendType(typeof(ISeparatorMenuItemBackend))]
+	public class SeparatorMenuItem : MenuItem
 	{
-		public SeparatorMenuItem ()
+		public SeparatorMenuItem()
 		{
 		}
 	}

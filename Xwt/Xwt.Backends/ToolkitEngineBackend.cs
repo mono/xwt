@@ -36,8 +36,8 @@ namespace Xwt.Backends
 {
 	public abstract class ToolkitEngineBackend
 	{
-		Dictionary<Type,Type> backendTypes;
-		Dictionary<Type,Type> backendTypesByFrontend;
+		Dictionary<Type, Type> backendTypes;
+		Dictionary<Type, Type> backendTypesByFrontend;
 		Toolkit toolkit;
 		bool isGuest;
 
@@ -46,16 +46,17 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <param name="toolkit">Toolkit to initialize.</param>
 		/// <param name="isGuest">If set to <c>true</c> the toolkit will be initialized as guest of another toolkit.</param>
-		internal void Initialize (Toolkit toolkit, bool isGuest)
+		internal void Initialize(Toolkit toolkit, bool isGuest)
 		{
 			this.toolkit = toolkit;
 			this.isGuest = isGuest;
-			if (backendTypes == null) {
-				backendTypes = new Dictionary<Type, Type> ();
-				backendTypesByFrontend = new Dictionary<Type, Type> ();
-				InitializeBackends ();
+			if (backendTypes == null)
+			{
+				backendTypes = new Dictionary<Type, Type>();
+				backendTypesByFrontend = new Dictionary<Type, Type>();
+				InitializeBackends();
 			}
-			InitializeApplication ();
+			InitializeApplication();
 		}
 
 		/// <summary>
@@ -63,16 +64,17 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The toolkit backend.</returns>
 		/// <typeparam name="T">The Type of the toolkit backend.</typeparam>
-		public static T GetToolkitBackend<T> () where T : ToolkitEngineBackend
+		public static T GetToolkitBackend<T>() where T : ToolkitEngineBackend
 		{
-			return (T)Toolkit.GetToolkitBackend (typeof (T));
+			return (T)Toolkit.GetToolkitBackend(typeof(T));
 		}
 
 		/// <summary>
 		/// Gets the application context.
 		/// </summary>
 		/// <value>The application context.</value>
-		public ApplicationContext ApplicationContext {
+		public ApplicationContext ApplicationContext
+		{
 			get { return toolkit.Context; }
 		}
 
@@ -82,14 +84,15 @@ namespace Xwt.Backends
 		/// <remarks>
 		/// A toolkit is a guest toolkit when it is loaded after the main toolkit of an application
 		/// </remarks>
-		public bool IsGuest {
+		public bool IsGuest
+		{
 			get { return isGuest; }
 		}
 
 		/// <summary>
 		/// Initializes the application.
 		/// </summary>
-		public virtual void InitializeApplication ()
+		public virtual void InitializeApplication()
 		{
 		}
 
@@ -100,24 +103,24 @@ namespace Xwt.Backends
 		/// Don't do any toolkit initialization there, do them in InitializeApplication.
 		/// Override to register the backend classes, by calling RegisterBackend() methods.
 		/// </remarks>
-		public virtual void InitializeBackends ()
+		public virtual void InitializeBackends()
 		{
 		}
 
 		/// <summary>
 		/// Runs the main GUI loop
 		/// </summary>
-		public abstract void RunApplication ();
-		
+		public abstract void RunApplication();
+
 		/// <summary>
 		/// Exits the main GUI loop
 		/// </summary>
-		public abstract void ExitApplication ();
+		public abstract void ExitApplication();
 
 		/// <summary>
 		/// Releases all resource used by the <see cref="Xwt.Backends.ToolkitEngineBackend"/> object.
 		/// </summary>
-		public virtual void Dispose ()
+		public virtual void Dispose()
 		{
 		}
 
@@ -126,7 +129,7 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <param name="action">The action to invoke.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="action"/> is <c>null</c>.</exception>
-		public abstract void InvokeAsync (Action action);
+		public abstract void InvokeAsync(Action action);
 
 		/// <summary>
 		/// Begins invoking <paramref name="action"/> on a timer period of <paramref name="timeSpan"/>.
@@ -136,15 +139,15 @@ namespace Xwt.Backends
 		/// <returns>An identifying object that can be used to cancel the timer with <seealso cref="CancelTimerInvoke"/>.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="action"/> is <c>null</c>.</exception>
 		/// <seealso cref="CancelTimerInvoke"/>
-		public abstract object TimerInvoke (Func<bool> action, TimeSpan timeSpan);
+		public abstract object TimerInvoke(Func<bool> action, TimeSpan timeSpan);
 
 		/// <summary>
 		/// Cancels an invoke timer started from <see cref="TimerInvoke"/>.
 		/// </summary>
 		/// <param name="id">The unique object returned from <see cref="TimerInvoke"/>.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="id"/> is <c>null</c>.</exception>
-		public abstract void CancelTimerInvoke (object id);
-		
+		public abstract void CancelTimerInvoke(object id);
+
 		/// <summary>
 		/// Gets a reference to the native widget wrapped by an XWT widget
 		/// </summary>
@@ -154,8 +157,8 @@ namespace Xwt.Backends
 		/// <param name='w'>
 		/// A widget
 		/// </param>
-		public abstract object GetNativeWidget (Widget w);
-		
+		public abstract object GetNativeWidget(Widget w);
+
 		/// <summary>
 		/// Gets a reference to the image object wrapped by an XWT Image
 		/// </summary>
@@ -165,16 +168,16 @@ namespace Xwt.Backends
 		/// <param name='image'>
 		/// An image.
 		/// </param>
-		public virtual object GetNativeImage (Image image)
+		public virtual object GetNativeImage(Image image)
 		{
-			return Toolkit.GetBackend (image);
+			return Toolkit.GetBackend(image);
 		}
 
 		/// <summary>
 		/// Dispatches pending events in the UI event queue
 		/// </summary>
-		public abstract void DispatchPendingEvents ();
-		
+		public abstract void DispatchPendingEvents();
+
 		/// <summary>
 		/// Gets the backend for a native window.
 		/// </summary>
@@ -184,8 +187,8 @@ namespace Xwt.Backends
 		/// <param name='nativeWindow'>
 		/// A native window reference.
 		/// </param>
-		public abstract IWindowFrameBackend GetBackendForWindow (object nativeWindow);
-		
+		public abstract IWindowFrameBackend GetBackendForWindow(object nativeWindow);
+
 		/// <summary>
 		/// Gets the native parent window of a widget
 		/// </summary>
@@ -199,7 +202,7 @@ namespace Xwt.Backends
 		/// This method is used by XWT to get the window of a widget, when the widget is
 		/// embedded in a native application
 		/// </remarks>
-		public virtual object GetNativeParentWindow (Widget w)
+		public virtual object GetNativeParentWindow(Widget w)
 		{
 			return null;
 		}
@@ -209,7 +212,7 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The backend for context.</returns>
 		/// <param name="nativeContext">The native context.</param>
-		public virtual object GetBackendForContext (object nativeWidget, object nativeContext)
+		public virtual object GetBackendForContext(object nativeWidget, object nativeContext)
 		{
 			return nativeContext;
 		}
@@ -219,7 +222,7 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The image backend .</returns>
 		/// <param name="nativeImage">The native image.</param>
-		public virtual object GetBackendForImage (object nativeImage)
+		public virtual object GetBackendForImage(object nativeImage)
 		{
 			return nativeImage;
 		}
@@ -230,14 +233,15 @@ namespace Xwt.Backends
 		/// <value>
 		/// <c>true</c> if the engine backend handles size negotiation; otherwise, <c>false</c>.
 		/// </value>
-		public virtual bool HandlesSizeNegotiation {
+		public virtual bool HandlesSizeNegotiation
+		{
 			get { return false; }
 		}
 
-		void CheckInitialized ()
+		void CheckInitialized()
 		{
 			if (backendTypes == null)
-				throw new InvalidOperationException ("XWT toolkit not initialized");
+				throw new InvalidOperationException("XWT toolkit not initialized");
 		}
 
 		/// <summary>
@@ -245,23 +249,24 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The backend for the specified frontend.</returns>
 		/// <param name="frontendType">The Frontend type.</param>
-		internal IBackend CreateBackendForFrontend (Type frontendType)
+		internal IBackend CreateBackendForFrontend(Type frontendType)
 		{
-			CheckInitialized ();
+			CheckInitialized();
 
 			Type bt = null;
-			if (!backendTypesByFrontend.TryGetValue (frontendType, out bt)) {
-				var attr = (BackendTypeAttribute) Attribute.GetCustomAttribute (frontendType, typeof(BackendTypeAttribute), true);
+			if (!backendTypesByFrontend.TryGetValue(frontendType, out bt))
+			{
+				var attr = (BackendTypeAttribute)Attribute.GetCustomAttribute(frontendType, typeof(BackendTypeAttribute), true);
 				if (attr == null || attr.Type == null)
-					throw new InvalidOperationException ("Backend type not specified for type: " + frontendType);
-				if (!typeof(IBackend).IsAssignableFrom (attr.Type))
-					throw new InvalidOperationException ("Backend type for frontend '" + frontendType + "' is not a IBackend implementation");
-				backendTypes.TryGetValue (attr.Type, out bt);
-				backendTypesByFrontend [frontendType] = bt;
+					throw new InvalidOperationException("Backend type not specified for type: " + frontendType);
+				if (!typeof(IBackend).IsAssignableFrom(attr.Type))
+					throw new InvalidOperationException("Backend type for frontend '" + frontendType + "' is not a IBackend implementation");
+				backendTypes.TryGetValue(attr.Type, out bt);
+				backendTypesByFrontend[frontendType] = bt;
 			}
 			if (bt == null)
 				return null;
-			return (IBackend) Activator.CreateInstance (bt);
+			return (IBackend)Activator.CreateInstance(bt);
 		}
 
 		/// <summary>
@@ -269,18 +274,18 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The backend.</returns>
 		/// <param name="backendType">The Backend type.</param>
-		internal object CreateBackend (Type backendType)
+		internal object CreateBackend(Type backendType)
 		{
-			CheckInitialized ();
+			CheckInitialized();
 			Type bt = null;
-			
-			if (!backendTypes.TryGetValue (backendType, out bt))
+
+			if (!backendTypes.TryGetValue(backendType, out bt))
 				return null;
-			var res = Activator.CreateInstance (bt);
-			if (!backendType.IsInstanceOfType (res))
-				throw new InvalidOperationException ("Invalid backend type. Expected '" + backendType + "' found '" + res.GetType () + "'");
+			var res = Activator.CreateInstance(bt);
+			if (!backendType.IsInstanceOfType(res))
+				throw new InvalidOperationException("Invalid backend type. Expected '" + backendType + "' found '" + res.GetType() + "'");
 			if (res is BackendHandler)
-				((BackendHandler)res).Initialize (toolkit);
+				((BackendHandler)res).Initialize(toolkit);
 			return res;
 		}
 
@@ -289,9 +294,9 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The backend.</returns>
 		/// <typeparam name="T">The Backend type.</typeparam>
-		internal T CreateBackend<T> ()
+		internal T CreateBackend<T>()
 		{
-			return (T) CreateBackend (typeof(T));
+			return (T)CreateBackend(typeof(T));
 		}
 
 		/// <summary>
@@ -299,10 +304,10 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <typeparam name="Backend">The backend Type</typeparam>
 		/// <typeparam name="Implementation">The Xwt interface implemented by the backend</typeparam>
-		public void RegisterBackend<Backend, Implementation> () where Implementation: Backend
+		public void RegisterBackend<Backend, Implementation>() where Implementation : Backend
 		{
-			CheckInitialized ();
-			backendTypes [typeof(Backend)] = typeof(Implementation);
+			CheckInitialized();
+			backendTypes[typeof(Backend)] = typeof(Implementation);
 		}
 
 		/// <summary>
@@ -311,9 +316,9 @@ namespace Xwt.Backends
 		/// <returns>The Xwt frontend.</returns>
 		/// <param name="backend">The backend.</param>
 		/// <typeparam name="T">The frontend type.</typeparam>
-		public T CreateFrontend<T> (object backend)
+		public T CreateFrontend<T>(object backend)
 		{
-			return (T) Activator.CreateInstance (typeof(T), backend);
+			return (T)Activator.CreateInstance(typeof(T), backend);
 		}
 
 		/// <summary>
@@ -325,9 +330,9 @@ namespace Xwt.Backends
 		/// <remarks>
 		/// The default implementation does the invocation using InvokeAsync.
 		/// </remarks>			
-		public virtual void InvokeBeforeMainLoop (Action action)
+		public virtual void InvokeBeforeMainLoop(Action action)
 		{
-			InvokeAsync (action);
+			InvokeAsync(action);
 		}
 
 		/// <summary>
@@ -337,16 +342,16 @@ namespace Xwt.Backends
 		/// <param name="w">The widget.</param>
 		/// <remarks>This funciton is used to determine if a widget is a child of another non-XWT widget
 		/// </remarks>
-		public abstract bool HasNativeParent (Widget w);
+		public abstract bool HasNativeParent(Widget w);
 
 		/// <summary>
 		/// Renders a widget into a bitmap
 		/// </summary>
 		/// <param name="w">A widget</param>
 		/// <returns>An image backend</returns>
-		public virtual object RenderWidget (Widget w)
+		public virtual object RenderWidget(Widget w)
 		{
-			throw new NotSupportedException ();
+			throw new NotSupportedException();
 		}
 
 		/// <summary>
@@ -356,7 +361,7 @@ namespace Xwt.Backends
 		/// <param name="img">Image.</param>
 		/// <param name="x">The x coordinate.</param>
 		/// <param name="y">The y coordinate.</param>
-		public virtual void RenderImage (object nativeWidget, object nativeContext, ImageDescription img, double x, double y)
+		public virtual void RenderImage(object nativeWidget, object nativeContext, ImageDescription img, double x, double y)
 		{
 		}
 
@@ -364,7 +369,8 @@ namespace Xwt.Backends
 		/// Gets the information about Xwt features supported by the toolkit.
 		/// </summary>
 		/// <value>The supported features.</value>
-		public virtual ToolkitFeatures SupportedFeatures {
+		public virtual ToolkitFeatures SupportedFeatures
+		{
 			get { return ToolkitFeatures.All; }
 		}
 	}

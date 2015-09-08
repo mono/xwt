@@ -28,16 +28,16 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IWindowFrameBackend: IBackend
+	public interface IWindowFrameBackend : IBackend
 	{
-		void Initialize (IWindowFrameEventSink eventSink);
-		void Dispose ();
+		void Initialize(IWindowFrameEventSink eventSink);
+		void Dispose();
 
 		/// <summary>
 		/// Size and position of the window content in screen coordinates
 		/// </summary>
 		Rectangle Bounds { get; set; }
-		void Move (double x, double y);
+		void Move(double x, double y);
 
 		/// <summary>
 		/// Sets the size of the window
@@ -50,24 +50,24 @@ namespace Xwt.Backends
 		/// </param>
 		/// <remarks>
 		/// </remarks>
-		void SetSize (double width, double height);
+		void SetSize(double width, double height);
 
 		bool Visible { get; set; }
 		bool Sensitive { get; set; }
-		string Title { get; set; }		
+		string Title { get; set; }
 		bool Decorated { get; set; }
 		bool ShowInTaskbar { get; set; }
-		void SetTransientFor (IWindowFrameBackend window);
+		void SetTransientFor(IWindowFrameBackend window);
 		bool Resizable { get; set; }
 		double Opacity { get; set; }
 
-		void SetIcon (ImageDescription image);
-		
+		void SetIcon(ImageDescription image);
+
 		/// <summary>
 		/// Presents a window to the user. This may mean raising the window in the stacking order,
 		/// deiconifying it, moving it to the current desktop, and/or giving it the keyboard focus
 		/// </summary>
-		void Present ();
+		void Present();
 
 		/// <summary>
 		/// Closes the window
@@ -79,7 +79,7 @@ namespace Xwt.Backends
 		/// so there is no guarantee that the window will actually close.
 		/// This method doesn't dispose the window. The Dispose method has to be called.
 		/// </remarks>
-		bool Close ();
+		bool Close();
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this window is in full screen mode
@@ -93,14 +93,14 @@ namespace Xwt.Backends
 		/// <value>The screen.</value>
 		object Screen { get; }
 	}
-	
+
 	public interface IWindowFrameEventSink
 	{
-		void OnBoundsChanged (Rectangle bounds);
-		void OnShown ();
-		void OnHidden ();
-		bool OnCloseRequested ();
-		void OnClosed ();
+		void OnBoundsChanged(Rectangle bounds);
+		void OnShown();
+		void OnHidden();
+		bool OnCloseRequested();
+		void OnClosed();
 	}
 
 	[Flags]

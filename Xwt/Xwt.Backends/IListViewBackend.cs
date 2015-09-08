@@ -28,32 +28,32 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IListViewBackend: ITableViewBackend
+	public interface IListViewBackend : ITableViewBackend
 	{
-		void SetSource (IListDataSource source, IBackend sourceBackend);
+		void SetSource(IListDataSource source, IBackend sourceBackend);
 		int[] SelectedRows { get; }
 		int FocusedRow { get; set; }
-		void SelectRow (int pos);
-		void UnselectRow (int pos);
-		void ScrollToRow (int row);
+		void SelectRow(int pos);
+		void UnselectRow(int pos);
+		void ScrollToRow(int row);
 
 		bool BorderVisible { get; set; }
 		GridLines GridLinesVisible { get; set; }
 		bool HeadersVisible { get; set; }
 
-		int GetRowAtPosition (Point p);
-		Rectangle GetCellBounds (int row, CellView cell, bool includeMargin);
+		int GetRowAtPosition(Point p);
+		Rectangle GetCellBounds(int row, CellView cell, bool includeMargin);
 		int CurrentEventRow { get; }
 	}
-	
+
 	public enum ListViewEvent
 	{
 		RowActivated
 	}
 
-	public interface IListViewEventSink: ITableViewEventSink
+	public interface IListViewEventSink : ITableViewEventSink
 	{
-		void OnRowActivated (int rowIndex);
+		void OnRowActivated(int rowIndex);
 	}
 }
 

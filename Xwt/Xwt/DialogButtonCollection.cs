@@ -31,57 +31,57 @@ using System.Linq;
 
 namespace Xwt
 {
-	public class DialogButtonCollection: Collection<DialogButton>
+	public class DialogButtonCollection : Collection<DialogButton>
 	{
 		ICollectionListener listener;
-		
-		public DialogButtonCollection (ICollectionListener listener)
+
+		public DialogButtonCollection(ICollectionListener listener)
 		{
 			this.listener = listener;
 		}
-		
-		public void Add (params Command[] commands)
+
+		public void Add(params Command[] commands)
 		{
 			foreach (var c in commands)
-				Add (new DialogButton (c));
+				Add(new DialogButton(c));
 		}
-		
-		public DialogButton GetCommandButton (Command cmd)
+
+		public DialogButton GetCommandButton(Command cmd)
 		{
-			return this.FirstOrDefault (b => b.Command == cmd);
+			return this.FirstOrDefault(b => b.Command == cmd);
 		}
-		
-		protected override void InsertItem (int index, DialogButton item)
+
+		protected override void InsertItem(int index, DialogButton item)
 		{
-			base.InsertItem (index, item);
+			base.InsertItem(index, item);
 			if (listener != null)
-				listener.ItemAdded (this, item);
+				listener.ItemAdded(this, item);
 		}
-		
-		protected override void RemoveItem (int index)
+
+		protected override void RemoveItem(int index)
 		{
-			object ob = this [index];
-			base.RemoveItem (index);
+			object ob = this[index];
+			base.RemoveItem(index);
 			if (listener != null)
-				listener.ItemRemoved (this, ob);
+				listener.ItemRemoved(this, ob);
 		}
-		
-		protected override void SetItem (int index, DialogButton item)
+
+		protected override void SetItem(int index, DialogButton item)
 		{
-			object ob = this [index];
-			base.SetItem (index, item);
+			object ob = this[index];
+			base.SetItem(index, item);
 			if (listener != null)
-				listener.ItemRemoved (this, ob);
+				listener.ItemRemoved(this, ob);
 			if (listener != null)
-				listener.ItemAdded (this, item);
+				listener.ItemAdded(this, item);
 		}
-		
-		protected override void ClearItems ()
+
+		protected override void ClearItems()
 		{
-			List<DialogButton> copy = new List<DialogButton> (this);
-			base.ClearItems ();
+			List<DialogButton> copy = new List<DialogButton>(this);
+			base.ClearItems();
 			foreach (var c in copy)
-				listener.ItemRemoved (this, c);
+				listener.ItemRemoved(this, c);
 		}
 	}
 }

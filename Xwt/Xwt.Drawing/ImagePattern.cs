@@ -29,11 +29,11 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public sealed class ImagePattern: Pattern
+	public sealed class ImagePattern : Pattern
 	{
-		public ImagePattern (Image image)
+		public ImagePattern(Image image)
 		{
-			SetBackend (ToolkitEngine.ImagePatternBackendHandler, ToolkitEngine.ImagePatternBackendHandler.Create (image != null ? image.GetImageDescription (ToolkitEngine) : ImageDescription.Null));
+			SetBackend(ToolkitEngine.ImagePatternBackendHandler, ToolkitEngine.ImagePatternBackendHandler.Create(image != null ? image.GetImageDescription(ToolkitEngine) : ImageDescription.Null));
 		}
 	}
 }

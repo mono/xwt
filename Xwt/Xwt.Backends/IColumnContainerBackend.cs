@@ -30,9 +30,9 @@ namespace Xwt.Backends
 {
 	public interface IColumnContainerBackend
 	{
-		object AddColumn (ListViewColumn col);
-		void RemoveColumn (ListViewColumn col, object handle);
-		void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change);
+		object AddColumn(ListViewColumn col);
+		void RemoveColumn(ListViewColumn col, object handle);
+		void UpdateColumn(ListViewColumn col, object handle, ListViewColumnChange change);
 	}
 }
 

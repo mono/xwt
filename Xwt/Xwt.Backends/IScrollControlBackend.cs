@@ -34,7 +34,7 @@ namespace Xwt.Backends
 	/// XWT supports creating standalone ScrollAdjustment instances, but toolkits don't need to provide
 	/// a backend for those cases, since XWT uses a default platform-agnostic implementation. 
 	/// </remarks>
-	public interface IScrollControlBackend: IBackend
+	public interface IScrollControlBackend : IBackend
 	{
 		/// <summary>
 		/// Called to initialize the backend
@@ -42,8 +42,8 @@ namespace Xwt.Backends
 		/// <param name='eventSink'>
 		/// The event sink to be used to report events
 		/// </param>
-		void Initialize (IScrollControlEventSink eventSink);
-		
+		void Initialize(IScrollControlEventSink eventSink);
+
 		/// <summary>
 		/// Gets or sets the current position of the scrollbar.
 		/// </summary>
@@ -108,9 +108,9 @@ namespace Xwt.Backends
 		/// <summary>
 		/// Raised when the position of the scrollbar changes
 		/// </summary>
-		void OnValueChanged ();
+		void OnValueChanged();
 	}
-	
+
 	public enum ScrollControlEvent
 	{
 		ValueChanged

@@ -29,98 +29,113 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ISpinButtonBackend))]
+	[BackendType(typeof(ISpinButtonBackend))]
 	public class SpinButton : Widget
 	{
 		ButtonStyle style;
 
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ISpinButtonEventSink
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, ISpinButtonEventSink
 		{
-			public void ValueChanged ()
+			public void ValueChanged()
 			{
-				((SpinButton)Parent).OnValueChanged (EventArgs.Empty);
+				((SpinButton)Parent).OnValueChanged(EventArgs.Empty);
 			}
 		}
-		
-		ISpinButtonBackend Backend {
-			get { return (ISpinButtonBackend) BackendHost.Backend; }
-		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		ISpinButtonBackend Backend
 		{
-			return new WidgetBackendHost ();
+			get { return (ISpinButtonBackend)BackendHost.Backend; }
 		}
 
-		public double ClimbRate {
+		protected override BackendHost CreateBackendHost()
+		{
+			return new WidgetBackendHost();
+		}
+
+		public double ClimbRate
+		{
 			get { return Backend.ClimbRate; }
 			set { Backend.ClimbRate = value; }
 		}
 
-		public int Digits {
+		public int Digits
+		{
 			get { return Backend.Digits; }
 			set { Backend.Digits = value; }
 		}
 
-		public double Value {
+		public double Value
+		{
 			get { return Backend.Value; }
 			set { Backend.Value = value; }
 		}
 
-		public bool Wrap {
+		public bool Wrap
+		{
 			get { return Backend.Wrap; }
 			set { Backend.Wrap = value; }
 		}
 
-		public double MinimumValue {
+		public double MinimumValue
+		{
 			get { return Backend.MinimumValue; }
 			set { Backend.MinimumValue = value; }
 		}
 
-		public double MaximumValue {
+		public double MaximumValue
+		{
 			get { return Backend.MaximumValue; }
 			set { Backend.MaximumValue = value; }
 		}
 
-		public double IncrementValue {
+		public double IncrementValue
+		{
 			get { return Backend.IncrementValue; }
 			set { Backend.IncrementValue = value; }
 		}
 
-		public ButtonStyle Style {
+		public ButtonStyle Style
+		{
 			get { return style; }
-			set {
+			set
+			{
 				style = value;
-				Backend.SetButtonStyle (style);
-				OnPreferredSizeChanged ();
+				Backend.SetButtonStyle(style);
+				OnPreferredSizeChanged();
 			}
 		}
 
-		public string IndeterminateMessage {
+		public string IndeterminateMessage
+		{
 			get { return Backend.IndeterminateMessage; }
 			set { Backend.IndeterminateMessage = value; }
 		}
 
-		public bool IsIndeterminate {
+		public bool IsIndeterminate
+		{
 			get { return Backend.IsIndeterminate; }
 			set { Backend.IsIndeterminate = value; }
 		}
-		
-		protected virtual void OnValueChanged (EventArgs e)
+
+		protected virtual void OnValueChanged(EventArgs e)
 		{
 			if (valueChanged != null)
-				valueChanged (this, e);
+				valueChanged(this, e);
 		}
 
 		EventHandler valueChanged;
-		
-		public event EventHandler ValueChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (SpinButtonEvent.ValueChanged, valueChanged);
+
+		public event EventHandler ValueChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(SpinButtonEvent.ValueChanged, valueChanged);
 				valueChanged += value;
 			}
-			remove {
+			remove
+			{
 				valueChanged -= value;
-				BackendHost.OnAfterEventRemove (SpinButtonEvent.ValueChanged, valueChanged);
+				BackendHost.OnAfterEventRemove(SpinButtonEvent.ValueChanged, valueChanged);
 			}
 		}
 	}

@@ -28,17 +28,17 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IColorSelectorBackend: IWidgetBackend
+	public interface IColorSelectorBackend : IWidgetBackend
 	{
 		Color Color { get; set; }
 		bool SupportsAlpha { get; set; }
 	}
-	
-	public interface IColorSelectorEventSink: IWidgetEventSink
+
+	public interface IColorSelectorEventSink : IWidgetEventSink
 	{
-		void OnColorChanged ();
+		void OnColorChanged();
 	}
-	
+
 	public enum ColorSelectorEvent
 	{
 		ColorChanged

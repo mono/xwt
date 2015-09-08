@@ -28,18 +28,18 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICanvasBackend: IWidgetBackend
+	public interface ICanvasBackend : IWidgetBackend
 	{
 		/// <summary>
 		/// Invalidates and forces the redraw of the whole area of the widget
 		/// </summary>
-		void QueueDraw ();
-		
+		void QueueDraw();
+
 		/// <summary>
 		/// Invalidates and forces the redraw of a rectangular area of the widget
 		/// </summary>
-		void QueueDraw (Rectangle rect);
-		
+		void QueueDraw(Rectangle rect);
+
 		/// <summary>
 		/// Adds a child widget.
 		/// </summary>
@@ -53,8 +53,8 @@ namespace Xwt.Backends
 		/// The widget is placed in the canvas area, in the specified coordinates and
 		/// using the specified size
 		/// </remarks>
-		void AddChild (IWidgetBackend widget, Rectangle bounds);
-		
+		void AddChild(IWidgetBackend widget, Rectangle bounds);
+
 		/// <summary>
 		/// Sets the position and size of a child widget
 		/// </summary>
@@ -65,8 +65,8 @@ namespace Xwt.Backends
 		/// New bounds, in container coordinates
 		/// </param>
 		/// <exception cref="System.InvalidOperationException">If the widget is not a child of this canvas</exception>
-		void SetChildBounds (IWidgetBackend widget, Rectangle bounds);
-		
+		void SetChildBounds(IWidgetBackend widget, Rectangle bounds);
+
 		/// <summary>
 		/// Removes a child widget
 		/// </summary>
@@ -74,10 +74,10 @@ namespace Xwt.Backends
 		/// The widget to remove. The widget must have been previously added using AddChild.
 		/// </param>
 		/// <exception cref="System.InvalidOperationException">If the widget is not a child of this canvas</exception>
-		void RemoveChild (IWidgetBackend widget);
+		void RemoveChild(IWidgetBackend widget);
 	}
-	
-	public interface ICanvasEventSink: IWidgetEventSink
+
+	public interface ICanvasEventSink : IWidgetEventSink
 	{
 		/// <summary>
 		/// Raises the draw event.
@@ -85,7 +85,7 @@ namespace Xwt.Backends
 		/// <param name='context'>
 		/// Drawing context
 		/// </param>
-		void OnDraw (object context, Rectangle dirtyRect);
+		void OnDraw(object context, Rectangle dirtyRect);
 	}
 }
 

@@ -33,17 +33,17 @@ namespace Xwt.WPFBackend.Utilities
 	internal class TypeToStringConverter
 		: IValueConverter
 	{
-		public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null)
 				return null;
 
-			return (value as Type ?? value.GetType ()).Name;
+			return (value as Type ?? value.GetType()).Name;
 		}
 
-		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 	}
 }

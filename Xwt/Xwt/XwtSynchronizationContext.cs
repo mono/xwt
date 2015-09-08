@@ -32,54 +32,64 @@ namespace Xwt
 	{
 		static SynchronizationContext previous_context;
 
-		static XwtSynchronizationContext ()
+		static XwtSynchronizationContext()
 		{
 			AutoInstall = true;
 			previous_context = SynchronizationContext.Current;
 		}
 
-		public static bool AutoInstall {
+		public static bool AutoInstall
+		{
 			get;
 			set;
 		}
 
-		public override void Post (SendOrPostCallback d, object state)
+		public override void Post(SendOrPostCallback d, object state)
 		{
-			Application.Invoke (() => d.Invoke (state));
+			Application.Invoke(() => d.Invoke(state));
 		}
 
-		public override void Send (SendOrPostCallback d, object state)
+		public override void Send(SendOrPostCallback d, object state)
 		{
-			if (Application.UIThread != null && Application.UIThread.ManagedThreadId != Thread.CurrentThread.ManagedThreadId) {
-				var evt = new ManualResetEventSlim (false);
+			if (Application.UIThread != null && Application.UIThread.ManagedThreadId != Thread.CurrentThread.ManagedThreadId)
+			{
+				var evt = new ManualResetEventSlim(false);
 				Exception exception = null;
-				Application.Invoke (() => {
-					try {
-						d.Invoke (state);
-					} catch (Exception ex) {
+				Application.Invoke(() =>
+				{
+					try
+					{
+						d.Invoke(state);
+					}
+					catch (Exception ex)
+					{
 						exception = ex;
-					} finally {
-						Thread.MemoryBarrier ();
-						evt.Set ();
+					}
+					finally
+					{
+						Thread.MemoryBarrier();
+						evt.Set();
 					}
 				});
-				evt.Wait ();
+				evt.Wait();
 				if (exception != null)
 					throw exception;
-			} else {
-				d.Invoke (state);
+			}
+			else
+			{
+				d.Invoke(state);
 			}
 		}
 
-		public static void Uninstall ()
+		public static void Uninstall()
 		{
 			if (previous_context == null)
-				previous_context = new SynchronizationContext ();
+				previous_context = new SynchronizationContext();
 
-			SynchronizationContext.SetSynchronizationContext (previous_context);
+			SynchronizationContext.SetSynchronizationContext(previous_context);
 		}
 
-		public void Dispose ()
+		public void Dispose()
 		{
 		}
 	}

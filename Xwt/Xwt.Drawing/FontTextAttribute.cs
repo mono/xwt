@@ -31,29 +31,32 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public sealed class FontTextAttribute: TextAttribute
+	public sealed class FontTextAttribute : TextAttribute
 	{
 		Font font;
 
-		public Font Font {
-			get {
+		public Font Font
+		{
+			get
+			{
 				return font ?? Font.SystemFont;
 			}
-			set {
+			set
+			{
 				font = value;
 			}
 		}
 
-		public override bool Equals (object t)
+		public override bool Equals(object t)
 		{
 			var ot = t as FontTextAttribute;
-			return ot != null && Font.Equals (ot.Font) && base.Equals (t);
+			return ot != null && Font.Equals(ot.Font) && base.Equals(t);
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			return base.GetHashCode () ^ Font.GetHashCode ();
+			return base.GetHashCode() ^ Font.GetHashCode();
 		}
 	}
-	
+
 }

@@ -28,121 +28,135 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(IScrollViewBackend))]
-	public class ScrollView: Widget, IScrollableWidget
+	[BackendType(typeof(IScrollViewBackend))]
+	public class ScrollView : Widget, IScrollableWidget
 	{
 		Widget child;
 		EventHandler visibleRectChanged;
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IScrollViewEventSink
+
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IScrollViewEventSink
 		{
-			public void OnVisibleRectChanged ()
+			public void OnVisibleRectChanged()
 			{
-				((ScrollView)Parent).OnVisibleRectChanged (EventArgs.Empty);
+				((ScrollView)Parent).OnVisibleRectChanged(EventArgs.Empty);
 			}
-			
-			public override Size GetDefaultNaturalSize ()
+
+			public override Size GetDefaultNaturalSize()
 			{
 				return Xwt.Backends.DefaultNaturalSizes.ScrollView;
 			}
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		IScrollViewBackend Backend {
+
+		IScrollViewBackend Backend
+		{
 			get { return (IScrollViewBackend)BackendHost.Backend; }
 		}
-		
-		public ScrollView ()
+
+		public ScrollView()
 		{
 			HorizontalScrollPolicy = ScrollPolicy.Automatic;
 			VerticalScrollPolicy = ScrollPolicy.Automatic;
 		}
-		
-		public ScrollView (Widget child): this ()
+
+		public ScrollView(Widget child) : this()
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Content = child;
 		}
-		
-		public new Widget Content {
+
+		public new Widget Content
+		{
 			get { return child; }
-			set {
+			set
+			{
 				if (child != null)
-					UnregisterChild (child);
+					UnregisterChild(child);
 				child = value;
 				if (child != null)
-					RegisterChild (child);
-				Backend.SetChild ((IWidgetBackend)GetBackend (child));
-				OnPreferredSizeChanged ();
+					RegisterChild(child);
+				Backend.SetChild((IWidgetBackend)GetBackend(child));
+				OnPreferredSizeChanged();
 			}
 		}
-		
-		protected override void OnReallocate ()
+
+		protected override void OnReallocate()
 		{
 			if (child != null && !child.SupportsCustomScrolling)
-				Backend.SetChildSize (child.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.Unconstrained));
-			base.OnReallocate ();
+				Backend.SetChildSize(child.Surface.GetPreferredSize(SizeConstraint.Unconstrained, SizeConstraint.Unconstrained));
+			base.OnReallocate();
 		}
-		
-		public ScrollPolicy VerticalScrollPolicy {
+
+		public ScrollPolicy VerticalScrollPolicy
+		{
 			get { return Backend.VerticalScrollPolicy; }
-			set { Backend.VerticalScrollPolicy = value; OnPreferredSizeChanged (); }
+			set { Backend.VerticalScrollPolicy = value; OnPreferredSizeChanged(); }
 		}
-		
-		public ScrollPolicy HorizontalScrollPolicy {
+
+		public ScrollPolicy HorizontalScrollPolicy
+		{
 			get { return Backend.HorizontalScrollPolicy; }
-			set { Backend.HorizontalScrollPolicy = value; OnPreferredSizeChanged (); }
+			set { Backend.HorizontalScrollPolicy = value; OnPreferredSizeChanged(); }
 		}
 
 		ScrollControl verticalScrollAdjustment;
-		public ScrollControl VerticalScrollControl {
-			get {
+		public ScrollControl VerticalScrollControl
+		{
+			get
+			{
 				if (verticalScrollAdjustment == null)
-					verticalScrollAdjustment = new ScrollControl (Backend.CreateVerticalScrollControl ());
+					verticalScrollAdjustment = new ScrollControl(Backend.CreateVerticalScrollControl());
 				return verticalScrollAdjustment;
 			}
 		}
 
 		ScrollControl horizontalScrollAdjustment;
-		public ScrollControl HorizontalScrollControl {
-			get {
+		public ScrollControl HorizontalScrollControl
+		{
+			get
+			{
 				if (horizontalScrollAdjustment == null)
-					horizontalScrollAdjustment = new ScrollControl (Backend.CreateHorizontalScrollControl ());
+					horizontalScrollAdjustment = new ScrollControl(Backend.CreateHorizontalScrollControl());
 				return horizontalScrollAdjustment;
 			}
 		}
 
-		public Rectangle VisibleRect {
+		public Rectangle VisibleRect
+		{
 			get { return Backend.VisibleRect; }
 		}
-		
-		public bool BorderVisible {
+
+		public bool BorderVisible
+		{
 			get { return Backend.BorderVisible; }
 			set { Backend.BorderVisible = value; }
 		}
-		
-		public event EventHandler VisibleRectChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (ScrollViewEvent.VisibleRectChanged, visibleRectChanged);
+
+		public event EventHandler VisibleRectChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(ScrollViewEvent.VisibleRectChanged, visibleRectChanged);
 				visibleRectChanged += value;
 			}
-			remove {
+			remove
+			{
 				visibleRectChanged -= value;
-				BackendHost.OnAfterEventRemove (ScrollViewEvent.VisibleRectChanged, visibleRectChanged);
+				BackendHost.OnAfterEventRemove(ScrollViewEvent.VisibleRectChanged, visibleRectChanged);
 			}
 		}
-		
-		protected virtual void OnVisibleRectChanged (EventArgs e)
+
+		protected virtual void OnVisibleRectChanged(EventArgs e)
 		{
 			if (visibleRectChanged != null)
-				visibleRectChanged (this, e);
+				visibleRectChanged(this, e);
 		}
 	}
-	
+
 	public enum ScrollPolicy
 	{
 		Always,

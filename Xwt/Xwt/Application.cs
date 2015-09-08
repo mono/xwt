@@ -45,7 +45,8 @@ namespace Xwt
 		/// <remarks>
 		/// The Xwt task scheduler marshals every Task to the Xwt GUI thread without concurrency.
 		/// </remarks>
-		public static TaskScheduler UITaskScheduler {
+		public static TaskScheduler UITaskScheduler
+		{
 			get { return Toolkit.CurrentEngine.Scheduler; }
 		}
 
@@ -53,11 +54,13 @@ namespace Xwt
 		/// The main GUI loop.
 		/// </summary>
 		/// <value>The main loop.</value>
-		public static UILoop MainLoop {
+		public static UILoop MainLoop
+		{
 			get { return mainLoop; }
 		}
 
-		internal static System.Threading.Thread UIThread {
+		internal static System.Threading.Thread UIThread
+		{
 			get;
 			private set;
 		}
@@ -65,20 +68,20 @@ namespace Xwt
 		/// <summary>
 		/// Initialize Xwt with the best matching toolkit for the current platform.
 		/// </summary>
-		public static void Initialize ()
+		public static void Initialize()
 		{
 			if (engine != null)
 				return;
-			Initialize (null);
+			Initialize(null);
 		}
-		
+
 		/// <summary>
 		/// Initialize Xwt with the specified type.
 		/// </summary>
 		/// <param name="type">The toolkit type.</param>
-		public static void Initialize (ToolkitType type)
+		public static void Initialize(ToolkitType type)
 		{
-			Initialize (Toolkit.GetBackendType (type));
+			Initialize(Toolkit.GetBackendType(type));
 			toolkit.Type = type;
 		}
 
@@ -86,41 +89,41 @@ namespace Xwt
 		/// Initialize Xwt with the specified backend type.
 		/// </summary>
 		/// <param name="backendType">The <see cref="Type.FullName"/> of the backend type.</param>
-		public static void Initialize (string backendType)
-		{			
+		public static void Initialize(string backendType)
+		{
 			if (engine != null)
 				return;
 
-			toolkit = Toolkit.Load (backendType, false);
-			toolkit.SetActive ();
+			toolkit = Toolkit.Load(backendType, false);
+			toolkit.SetActive();
 			engine = toolkit.Backend;
-			mainLoop = new UILoop (toolkit);
+			mainLoop = new UILoop(toolkit);
 
 			UIThread = System.Threading.Thread.CurrentThread;
 
-			toolkit.EnterUserCode ();
+			toolkit.EnterUserCode();
 		}
-		
+
 		/// <summary>
 		/// Initializes Xwt as guest, embedded into an other existing toolkit.
 		/// </summary>
 		/// <param name="type">The toolkit type.</param>
-		public static void InitializeAsGuest (ToolkitType type)
+		public static void InitializeAsGuest(ToolkitType type)
 		{
-			Initialize (type);
-			toolkit.ExitUserCode (null);
+			Initialize(type);
+			toolkit.ExitUserCode(null);
 		}
-		
+
 		/// <summary>
 		/// Initializes Xwt as guest, embedded into an other existing toolkit.
 		/// </summary>
 		/// <param name="backendType">The <see cref="Type.FullName"/> of the backend type.</param>
-		public static void InitializeAsGuest (string backendType)
+		public static void InitializeAsGuest(string backendType)
 		{
 			if (backendType == null)
-				throw new ArgumentNullException ("backendType");
-			Initialize (backendType);
-			toolkit.ExitUserCode (null);
+				throw new ArgumentNullException("backendType");
+			Initialize(backendType);
+			toolkit.ExitUserCode(null);
 		}
 
 		/// <summary>
@@ -130,39 +133,41 @@ namespace Xwt
 		/// Blocks until the main GUI loop exits. Use <see cref="Application.Exit"/>
 		/// to stop the Xwt application.
 		/// </remarks>
-		public static void Run ()
+		public static void Run()
 		{
 			if (XwtSynchronizationContext.AutoInstall)
-			if (SynchronizationContext.Current == null || 
-			    (!((engine.IsGuest) || (SynchronizationContext.Current is XwtSynchronizationContext))))
-				SynchronizationContext.SetSynchronizationContext (new XwtSynchronizationContext ());
+				if (SynchronizationContext.Current == null ||
+					(!((engine.IsGuest) || (SynchronizationContext.Current is XwtSynchronizationContext))))
+					SynchronizationContext.SetSynchronizationContext(new XwtSynchronizationContext());
 
-			toolkit.InvokePlatformCode (delegate {
-				engine.RunApplication ();
+			toolkit.InvokePlatformCode(delegate
+			{
+				engine.RunApplication();
 			});
 		}
-		
+
 		/// <summary>
 		/// Exits the Xwt application.
 		/// </summary>
-		public static void Exit ()
+		public static void Exit()
 		{
-			toolkit.InvokePlatformCode (delegate {
-				engine.ExitApplication ();
+			toolkit.InvokePlatformCode(delegate
+			{
+				engine.ExitApplication();
 			});
 
 			if (SynchronizationContext.Current is XwtSynchronizationContext)
-				XwtSynchronizationContext.Uninstall ();
+				XwtSynchronizationContext.Uninstall();
 		}
 
 		/// <summary>
 		/// Releases all resources used by the application
 		/// </summary>
 		/// <remarks>This method must be called before the application process ends</remarks>
-		public static void Dispose ()
+		public static void Dispose()
 		{
-			ResourceManager.Dispose ();
-			Toolkit.DisposeAll ();
+			ResourceManager.Dispose();
+			Toolkit.DisposeAll();
 		}
 
 
@@ -172,22 +177,26 @@ namespace Xwt
 		/// <param name='action'>
 		/// The action to execute.
 		/// </param>
-		public static void Invoke (Action action)
+		public static void Invoke(Action action)
 		{
 			if (action == null)
-				throw new ArgumentNullException ("action");
+				throw new ArgumentNullException("action");
 
-			engine.InvokeAsync (delegate {
-				try {
-					toolkit.EnterUserCode ();
-					action ();
-					toolkit.ExitUserCode (null);
-				} catch (Exception ex) {
-					toolkit.ExitUserCode (ex);
+			engine.InvokeAsync(delegate
+			{
+				try
+				{
+					toolkit.EnterUserCode();
+					action();
+					toolkit.ExitUserCode(null);
+				}
+				catch (Exception ex)
+				{
+					toolkit.ExitUserCode(ex);
 				}
 			});
 		}
-		
+
 		/// <summary>
 		/// Invokes an action in the GUI thread after the provided time span
 		/// </summary>
@@ -203,16 +212,16 @@ namespace Xwt
 		/// if the timer can be discarded.
 		/// The execution of the funciton can be canceled by disposing the returned object.
 		/// </remarks>
-		public static IDisposable TimeoutInvoke (int ms, Func<bool> action)
+		public static IDisposable TimeoutInvoke(int ms, Func<bool> action)
 		{
 			if (action == null)
-				throw new ArgumentNullException ("action");
+				throw new ArgumentNullException("action");
 			if (ms < 0)
-				throw new ArgumentException ("ms can't be negative");
+				throw new ArgumentException("ms can't be negative");
 
-			return TimeoutInvoke (TimeSpan.FromMilliseconds (ms), action);
+			return TimeoutInvoke(TimeSpan.FromMilliseconds(ms), action);
 		}
-		
+
 		/// <summary>
 		/// Invokes an action in the GUI thread after the provided time span
 		/// </summary>
@@ -228,22 +237,26 @@ namespace Xwt
 		/// if the timer can be discarded.
 		/// The execution of the funciton can be canceled by disposing the returned object.
 		/// </remarks>
-		public static IDisposable TimeoutInvoke (TimeSpan timeSpan, Func<bool> action)
+		public static IDisposable TimeoutInvoke(TimeSpan timeSpan, Func<bool> action)
 		{
 			if (action == null)
-				throw new ArgumentNullException ("action");
+				throw new ArgumentNullException("action");
 			if (timeSpan.Ticks < 0)
-				throw new ArgumentException ("timeSpan can't be negative");
+				throw new ArgumentException("timeSpan can't be negative");
 
-			Timer t = new Timer ();
-			t.Id = engine.TimerInvoke (delegate {
+			Timer t = new Timer();
+			t.Id = engine.TimerInvoke(delegate
+			{
 				bool res = false;
-				try {
-					toolkit.EnterUserCode ();
-					res = action ();
-					toolkit.ExitUserCode (null);
-				} catch (Exception ex) {
-					toolkit.ExitUserCode (ex);
+				try
+				{
+					toolkit.EnterUserCode();
+					res = action();
+					toolkit.ExitUserCode(null);
+				}
+				catch (Exception ex)
+				{
+					toolkit.ExitUserCode(ex);
 				}
 				return res;
 			}, timeSpan);
@@ -254,9 +267,9 @@ namespace Xwt
 		/// Create a toolkit specific status icon.
 		/// </summary>
 		/// <returns>The status icon.</returns>
-		public static StatusIcon CreateStatusIcon ()
+		public static StatusIcon CreateStatusIcon()
 		{
-			return new StatusIcon ();
+			return new StatusIcon();
 		}
 
 		/// <summary>
@@ -265,13 +278,13 @@ namespace Xwt
 		/// <remarks>Subscribe to handle uncaught exceptions, which could
 		/// otherwise block or stop the application.</remarks>
 		public static event EventHandler<ExceptionEventArgs> UnhandledException;
-		
-		class Timer: IDisposable
+
+		class Timer : IDisposable
 		{
 			public object Id;
-			public void Dispose ()
+			public void Dispose()
 			{
-				Application.engine.CancelTimerInvoke (Id);
+				Application.engine.CancelTimerInvoke(Id);
 			}
 		}
 
@@ -279,16 +292,16 @@ namespace Xwt
 		/// Notifies about unhandled exceptions using the UnhandledException event.
 		/// </summary>
 		/// <param name="ex">The unhandled Exception.</param>
-		internal static void NotifyException (Exception ex)
+		internal static void NotifyException(Exception ex)
 		{
 			var unhandledException = UnhandledException;
 			if (unhandledException != null)
 			{
-				unhandledException (null, new ExceptionEventArgs (ex));
+				unhandledException(null, new ExceptionEventArgs(ex));
 			}
 			else
 			{
-				Console.WriteLine (ex);
+				Console.WriteLine(ex);
 			}
 		}
 	}
@@ -300,7 +313,7 @@ namespace Xwt
 	{
 		Toolkit toolkit;
 
-		internal UILoop (Toolkit toolkit)
+		internal UILoop(Toolkit toolkit)
 		{
 			this.toolkit = toolkit;
 		}
@@ -308,13 +321,16 @@ namespace Xwt
 		/// <summary>
 		/// Dispatches pending events in the GUI event queue
 		/// </summary>
-		public void DispatchPendingEvents ()
+		public void DispatchPendingEvents()
 		{
-			try {
-				toolkit.ExitUserCode (null);
-				toolkit.Backend.DispatchPendingEvents ();
-			} finally {
-				toolkit.EnterUserCode ();
+			try
+			{
+				toolkit.ExitUserCode(null);
+				toolkit.Backend.DispatchPendingEvents();
+			}
+			finally
+			{
+				toolkit.EnterUserCode();
 			}
 		}
 
@@ -323,11 +339,11 @@ namespace Xwt
 		/// the main GUI loop is about to proceed with its next iteration.
 		/// </summary>
 		/// <param name="action">Action to execute.</param>
-		public void QueueExitAction (Action action)
+		public void QueueExitAction(Action action)
 		{
 			if (action == null)
-				throw new ArgumentNullException ("action");
-			toolkit.QueueExitAction (action);
+				throw new ArgumentNullException("action");
+			toolkit.QueueExitAction(action);
 		}
 	}
 

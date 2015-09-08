@@ -27,9 +27,9 @@ using System;
 
 namespace Xwt.Backends
 {
-	public abstract class ImagePatternBackendHandler: DisposableResourceBackendHandler
+	public abstract class ImagePatternBackendHandler : DisposableResourceBackendHandler
 	{
-		public abstract object Create (ImageDescription img);
+		public abstract object Create(ImageDescription img);
 	}
 }
 

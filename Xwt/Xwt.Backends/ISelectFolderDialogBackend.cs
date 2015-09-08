@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ISelectFolderDialogBackend: IBackend
+	public interface ISelectFolderDialogBackend : IBackend
 	{
 		/// <summary>
 		/// Initializes the folder selector dialog. This method can be called multiple times.
@@ -35,13 +35,13 @@ namespace Xwt.Backends
 		/// <param name='multiselect'>
 		/// Value indicating whether the user can select multiple folders
 		/// </param>
-		void Initialize (bool multiselect);
-		
+		void Initialize(bool multiselect);
+
 		/// <summary>
 		/// Gets or sets the title of the dialog
 		/// </summary>
 		string Title { get; set; }
-			
+
 		/// <summary>
 		/// Gets the path of the folder that the user has selected in the dialog
 		/// </summary>
@@ -95,8 +95,8 @@ namespace Xwt.Backends
 		/// The dialog must be shown in modal mode. The method returns when the user clicks on
 		/// OK or Cancel. The dialog must be already closed when this method returns.
 		/// </remarks>
-		bool Run (IWindowFrameBackend parent);
-		
+		bool Run(IWindowFrameBackend parent);
+
 		/// <summary>
 		/// Frees native resources
 		/// </summary>
@@ -104,7 +104,7 @@ namespace Xwt.Backends
 		/// This method is called after Run, so that the backend can release
 		/// the native resources. The Initialize method can be called after Cleanup.
 		/// </remarks>
-		void Cleanup ();	
+		void Cleanup();
 	}
 }
 

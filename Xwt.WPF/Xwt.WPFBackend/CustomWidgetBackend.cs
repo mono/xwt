@@ -37,17 +37,19 @@ namespace Xwt.WPFBackend
 
 		public CustomWidgetBackend()
 		{
-			Widget = new ExUserControl ();
+			Widget = new ExUserControl();
 		}
 
-		public void SetContent (IWidgetBackend widget)
+		public void SetContent(IWidgetBackend widget)
 		{
-			if (widget != null) {
-				SetChildPlacement (widget);
+			if (widget != null)
+			{
+				SetChildPlacement(widget);
 				child = (Widget)((WidgetBackend)widget).Frontend;
 				UserControl.Content = widget.NativeWidget;
 			}
-			else {
+			else
+			{
 				child = null;
 				UserControl.Content = null;
 			}
@@ -55,15 +57,15 @@ namespace Xwt.WPFBackend
 
 		protected UserControl UserControl
 		{
-			get { return (UserControl) Widget; }
+			get { return (UserControl)Widget; }
 		}
 
 		// The size of the container is the size of the child,
 		// so we redirect size calculations to the child.
 
-		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+		public override Size GetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			return child != null ? child.Surface.GetPreferredSize (widthConstraint, heightConstraint) : Size.Zero;
+			return child != null ? child.Surface.GetPreferredSize(widthConstraint, heightConstraint) : Size.Zero;
 		}
 	}
 
@@ -75,17 +77,17 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
-		protected override SW.Size ArrangeOverride (SW.Size arrangeBounds)
+		protected override SW.Size ArrangeOverride(SW.Size arrangeBounds)
 		{
-			var s = base.ArrangeOverride (arrangeBounds);
-			Backend.Frontend.Surface.Reallocate ();
+			var s = base.ArrangeOverride(arrangeBounds);
+			Backend.Frontend.Surface.Reallocate();
 			return s;
 		}
 
-		protected override SW.Size MeasureOverride (SW.Size constraint)
+		protected override SW.Size MeasureOverride(SW.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
+			var s = base.MeasureOverride(constraint);
+			return Backend.MeasureOverride(constraint, s);
 		}
 	}
 }

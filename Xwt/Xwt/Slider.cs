@@ -29,84 +29,94 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ISliderBackend))]
+	[BackendType(typeof(ISliderBackend))]
 	public abstract class Slider : Widget
 	{
 		Orientation orientation;
 
-		internal Slider (Orientation orientation)
+		internal Slider(Orientation orientation)
 		{
 			this.orientation = orientation;
 		}
 
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost<Slider,ISliderBackend>, ISliderEventSink
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost<Slider, ISliderBackend>, ISliderEventSink
 		{
-			protected override void OnBackendCreated ()
+			protected override void OnBackendCreated()
 			{
-				Backend.Initialize (Parent.orientation);
-				base.OnBackendCreated ();
+				Backend.Initialize(Parent.orientation);
+				base.OnBackendCreated();
 			}
 
-			public void ValueChanged ()
+			public void ValueChanged()
 			{
-				((Slider)Parent).OnValueChanged (EventArgs.Empty);
+				((Slider)Parent).OnValueChanged(EventArgs.Empty);
 			}
 		}
 
-		ISliderBackend Backend {
-			get { return (ISliderBackend) BackendHost.Backend; }
-		}
-		
-		protected override BackendHost CreateBackendHost ()
+		ISliderBackend Backend
 		{
-			return new WidgetBackendHost ();
+			get { return (ISliderBackend)BackendHost.Backend; }
 		}
 
-		public double Value {
+		protected override BackendHost CreateBackendHost()
+		{
+			return new WidgetBackendHost();
+		}
+
+		public double Value
+		{
 			get { return Backend.Value; }
 			set { Backend.Value = value; }
 		}
 
-		public double MinimumValue {
+		public double MinimumValue
+		{
 			get { return Backend.MinimumValue; }
 			set { Backend.MinimumValue = value; }
 		}
 
-		public double MaximumValue {
+		public double MaximumValue
+		{
 			get { return Backend.MaximumValue; }
 			set { Backend.MaximumValue = value; }
 		}
 
-		public double StepIncrement {
+		public double StepIncrement
+		{
 			get { return Backend.StepIncrement; }
 			set { Backend.StepIncrement = value; }
 		}
 
-		public bool SnapToTicks {
+		public bool SnapToTicks
+		{
 			get { return Backend.SnapToTicks; }
 			set { Backend.SnapToTicks = value; }
 		}
 
-		public double SliderPosition {
+		public double SliderPosition
+		{
 			get { return Backend.SliderPosition; }
 		}
 
-		protected virtual void OnValueChanged (EventArgs e)
+		protected virtual void OnValueChanged(EventArgs e)
 		{
 			if (valueChanged != null)
-				valueChanged (this, e);
+				valueChanged(this, e);
 		}
-		
+
 		EventHandler valueChanged;
-		
-		public event EventHandler ValueChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (SliderEvent.ValueChanged, valueChanged);
+
+		public event EventHandler ValueChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(SliderEvent.ValueChanged, valueChanged);
 				valueChanged += value;
 			}
-			remove {
+			remove
+			{
 				valueChanged -= value;
-				BackendHost.OnAfterEventRemove (SliderEvent.ValueChanged, valueChanged);
+				BackendHost.OnAfterEventRemove(SliderEvent.ValueChanged, valueChanged);
 			}
 		}
 	}

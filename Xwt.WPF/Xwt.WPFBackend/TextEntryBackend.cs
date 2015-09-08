@@ -41,23 +41,25 @@ namespace Xwt.WPFBackend
 		bool multiline;
 		string placeholderText;
 
-		PlaceholderTextAdorner Adorner {
+		PlaceholderTextAdorner Adorner
+		{
 			get; set;
 		}
 
 		public TextEntryBackend()
 		{
 			Widget = new ExTextBox { IsReadOnlyCaretVisible = true };
-			TextBox.Loaded += delegate {
-				Adorner = new PlaceholderTextAdorner (TextBox);
-				var layer = AdornerLayer.GetAdornerLayer (TextBox);
+			TextBox.Loaded += delegate
+			{
+				Adorner = new PlaceholderTextAdorner(TextBox);
+				var layer = AdornerLayer.GetAdornerLayer(TextBox);
 				if (layer != null)
-					layer.Add (Adorner);
+					layer.Add(Adorner);
 				if (!String.IsNullOrEmpty(placeholderText))
 					Adorner.PlaceholderText = placeholderText;
 			};
 			TextBox.VerticalContentAlignment = VerticalAlignment.Center;
-		}        
+		}
 
 		protected override double DefaultNaturalWidth
 		{
@@ -72,15 +74,18 @@ namespace Xwt.WPFBackend
 
 		public virtual Alignment TextAlignment
 		{
-			get { return DataConverter.ToXwtAlignment (TextBox.TextAlignment); }
-			set { TextBox.TextAlignment = DataConverter.ToTextAlignment (value); }
+			get { return DataConverter.ToXwtAlignment(TextBox.TextAlignment); }
+			set { TextBox.TextAlignment = DataConverter.ToTextAlignment(value); }
 		}
 
-		public string PlaceholderText {
-			get {
+		public string PlaceholderText
+		{
+			get
+			{
 				return placeholderText;
 			}
-			set {
+			set
+			{
 				placeholderText = value;
 				if (Adorner != null)
 					Adorner.PlaceholderText = value;
@@ -99,54 +104,72 @@ namespace Xwt.WPFBackend
 			set { TextBox.ShowFrame = value; }
 		}
 
-		public int CursorPosition {
-			get {
+		public int CursorPosition
+		{
+			get
+			{
 				return TextBox.SelectionStart;
 			}
-			set {
+			set
+			{
 				TextBox.SelectionStart = value;
 			}
 		}
 
-		public int SelectionStart {
-			get {
+		public int SelectionStart
+		{
+			get
+			{
 				return TextBox.SelectionStart;
 			}
-			set {
+			set
+			{
 				TextBox.Focus();
 				TextBox.Select(value, SelectionLength);
 			}
 		}
 
-		public int SelectionLength {
-			get {
+		public int SelectionLength
+		{
+			get
+			{
 				return TextBox.SelectionLength;
 			}
-			set {
+			set
+			{
 				TextBox.Focus();
 				TextBox.Select(SelectionStart, value);
 			}
 		}
 
-		public string SelectedText {
-			get {
+		public string SelectedText
+		{
+			get
+			{
 				return TextBox.SelectedText;
 			}
-			set {
+			set
+			{
 				TextBox.SelectedText = value;
 			}
 		}
 
-		public bool MultiLine {
+		public bool MultiLine
+		{
 			get { return multiline; }
-			set {
-				if (multiline != value) {
+			set
+			{
+				if (multiline != value)
+				{
 					multiline = value;
-					if (multiline) {
+					if (multiline)
+					{
 						TextBox.VerticalContentAlignment = VerticalAlignment.Top;
 						TextBox.AcceptsReturn = true;
 						TextBox.TextWrapping = TextWrapping.Wrap;
-					} else {
+					}
+					else
+					{
 						TextBox.VerticalContentAlignment = VerticalAlignment.Center;
 						TextBox.AcceptsReturn = false;
 						TextBox.TextWrapping = TextWrapping.NoWrap;
@@ -155,13 +178,13 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void SetCompletions (string[] completions)
+		public void SetCompletions(string[] completions)
 		{
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
+			base.EnableEvent(eventId);
 
 			if (eventId is TextEntryEvent)
 			{
@@ -181,9 +204,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
+			base.DisableEvent(eventId);
 
 			if (eventId is TextEntryEvent)
 			{
@@ -204,27 +227,28 @@ namespace Xwt.WPFBackend
 
 		protected ExTextBox TextBox
 		{
-			get { return (ExTextBox) Widget; }
+			get { return (ExTextBox)Widget; }
 		}
 
-		protected new ITextEntryEventSink EventSink {
+		protected new ITextEntryEventSink EventSink
+		{
 			get { return (ITextEntryEventSink)base.EventSink; }
 		}
-		
+
 		private void OnActivated(object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			if (e.Key == System.Windows.Input.Key.Enter || e.Key == System.Windows.Input.Key.Return)
-				Context.InvokeUserCode (EventSink.OnActivated);
+				Context.InvokeUserCode(EventSink.OnActivated);
 		}
 
-		private void OnTextChanged (object s, TextChangedEventArgs e)
+		private void OnTextChanged(object s, TextChangedEventArgs e)
 		{
-			Context.InvokeUserCode (EventSink.OnChanged);
+			Context.InvokeUserCode(EventSink.OnChanged);
 		}
 
-		private void OnSelectionChanged (object s, EventArgs e)
+		private void OnSelectionChanged(object s, EventArgs e)
 		{
-			Context.InvokeUserCode (EventSink.OnSelectionChanged);
+			Context.InvokeUserCode(EventSink.OnSelectionChanged);
 		}
 	}
 }

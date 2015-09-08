@@ -46,152 +46,153 @@ namespace Xwt.WPFBackend
 
 		public static WPFEngine Instance { get; private set; }
 
-		public WPFEngine ()
+		public WPFEngine()
 		{
 			Instance = this;
 		}
 
-		public override void InitializeApplication ()
+		public override void InitializeApplication()
 		{
 			application = System.Windows.Application.Current;
 
 			if (application == null)
-				application = new System.Windows.Application ();
+				application = new System.Windows.Application();
 
 			application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-			RegisterBackend<IWindowBackend, WindowBackend> ();
-			RegisterBackend<IDialogBackend, DialogBackend> ();
-			RegisterBackend<INotebookBackend, NotebookBackend> ();
-			RegisterBackend<IMenuBackend, MenuBackend> ();
-			RegisterBackend<IMenuItemBackend, MenuItemBackend> ();
-			RegisterBackend<ICheckBoxMenuItemBackend, CheckboxMenuItemBackend> ();
-			RegisterBackend<IRadioButtonMenuItemBackend, RadioButtonMenuItemBackend> ();
-			RegisterBackend<ISeparatorMenuItemBackend, SeparatorMenuItemBackend> ();
-			RegisterBackend<IBoxBackend, BoxBackend> ();
-			RegisterBackend<ILabelBackend, LabelBackend> ();
-			RegisterBackend<ITextEntryBackend, TextEntryBackend> ();
-			RegisterBackend<IButtonBackend, ButtonBackend> ();
-			RegisterBackend<IToggleButtonBackend, ToggleButtonBackend> ();
-			RegisterBackend<IMenuButtonBackend, MenuButtonBackend> ();
-			RegisterBackend<ICheckBoxBackend, CheckBoxBackend> ();
-			RegisterBackend<ITreeViewBackend, TreeViewBackend> ();
-			RegisterBackend<ITreeStoreBackend, TreeStoreBackend> ();
-			RegisterBackend<IImageViewBackend, ImageViewBackend> ();
-			RegisterBackend<ISeparatorBackend, SeparatorBackend> ();
-			RegisterBackend<ImageBackendHandler, ImageHandler> ();
-			RegisterBackend<FontBackendHandler, WpfFontBackendHandler> ();
-			RegisterBackend<ClipboardBackend, WpfClipboardBackend> ();
-			RegisterBackend<IComboBoxBackend, ComboBoxBackend> ();
-			RegisterBackend<IComboBoxEntryBackend, ComboBoxEntryBackend> ();
-			RegisterBackend<IScrollViewBackend, ScrollViewBackend> ();
-			RegisterBackend<IFrameBackend, FrameBackend> ();
-			RegisterBackend<ICanvasBackend, CanvasBackend> ();
-			RegisterBackend<ContextBackendHandler, WpfContextBackendHandler> ();
-			RegisterBackend<DrawingPathBackendHandler, WpfContextBackendHandler> ();
-			RegisterBackend<GradientBackendHandler, WpfGradientBackendHandler> ();
-			RegisterBackend<TextLayoutBackendHandler, WpfTextLayoutBackendHandler> ();
-			RegisterBackend<ICustomWidgetBackend, CustomWidgetBackend> ();
-			RegisterBackend<IPanedBackend, PanedBackend> ();
-			RegisterBackend<IScrollAdjustmentBackend, ScrollAdjustmentBackend> ();
-			RegisterBackend<IOpenFileDialogBackend, OpenFileDialogBackend> ();
-			RegisterBackend<ISaveFileDialogBackend, SaveFileDialogBackend> ();
-			RegisterBackend<ISelectFolderDialogBackend, SelectFolderDialogBackend> ();
-			RegisterBackend<IAlertDialogBackend, AlertDialogBackend> ();
-			RegisterBackend<ImageBuilderBackendHandler, WpfImageBuilderBackendHandler> ();
-			RegisterBackend<ImagePatternBackendHandler, WpfImagePatternBackendHandler> ();
-			RegisterBackend<IListViewBackend, ListViewBackend> ();
-			RegisterBackend<IListStoreBackend, ListDataSource> ();
-			RegisterBackend<IListBoxBackend, ListBoxBackend> ();
-			RegisterBackend<IPopoverBackend, PopoverBackend> ();
-			RegisterBackend<IProgressBarBackend, ProgressBarBackend> ();
-			RegisterBackend<IRichTextViewBackend, RichTextViewBackend> ();
-			RegisterBackend<ILinkLabelBackend, LinkLabelBackend> ();
-			RegisterBackend<ISpinnerBackend, SpinnerBackend> ();
+			RegisterBackend<IWindowBackend, WindowBackend>();
+			RegisterBackend<IDialogBackend, DialogBackend>();
+			RegisterBackend<INotebookBackend, NotebookBackend>();
+			RegisterBackend<IMenuBackend, MenuBackend>();
+			RegisterBackend<IMenuItemBackend, MenuItemBackend>();
+			RegisterBackend<ICheckBoxMenuItemBackend, CheckboxMenuItemBackend>();
+			RegisterBackend<IRadioButtonMenuItemBackend, RadioButtonMenuItemBackend>();
+			RegisterBackend<ISeparatorMenuItemBackend, SeparatorMenuItemBackend>();
+			RegisterBackend<IBoxBackend, BoxBackend>();
+			RegisterBackend<ILabelBackend, LabelBackend>();
+			RegisterBackend<ITextEntryBackend, TextEntryBackend>();
+			RegisterBackend<IButtonBackend, ButtonBackend>();
+			RegisterBackend<IToggleButtonBackend, ToggleButtonBackend>();
+			RegisterBackend<IMenuButtonBackend, MenuButtonBackend>();
+			RegisterBackend<ICheckBoxBackend, CheckBoxBackend>();
+			RegisterBackend<ITreeViewBackend, TreeViewBackend>();
+			RegisterBackend<ITreeStoreBackend, TreeStoreBackend>();
+			RegisterBackend<IImageViewBackend, ImageViewBackend>();
+			RegisterBackend<ISeparatorBackend, SeparatorBackend>();
+			RegisterBackend<ImageBackendHandler, ImageHandler>();
+			RegisterBackend<FontBackendHandler, WpfFontBackendHandler>();
+			RegisterBackend<ClipboardBackend, WpfClipboardBackend>();
+			RegisterBackend<IComboBoxBackend, ComboBoxBackend>();
+			RegisterBackend<IComboBoxEntryBackend, ComboBoxEntryBackend>();
+			RegisterBackend<IScrollViewBackend, ScrollViewBackend>();
+			RegisterBackend<IFrameBackend, FrameBackend>();
+			RegisterBackend<ICanvasBackend, CanvasBackend>();
+			RegisterBackend<ContextBackendHandler, WpfContextBackendHandler>();
+			RegisterBackend<DrawingPathBackendHandler, WpfContextBackendHandler>();
+			RegisterBackend<GradientBackendHandler, WpfGradientBackendHandler>();
+			RegisterBackend<TextLayoutBackendHandler, WpfTextLayoutBackendHandler>();
+			RegisterBackend<ICustomWidgetBackend, CustomWidgetBackend>();
+			RegisterBackend<IPanedBackend, PanedBackend>();
+			RegisterBackend<IScrollAdjustmentBackend, ScrollAdjustmentBackend>();
+			RegisterBackend<IOpenFileDialogBackend, OpenFileDialogBackend>();
+			RegisterBackend<ISaveFileDialogBackend, SaveFileDialogBackend>();
+			RegisterBackend<ISelectFolderDialogBackend, SelectFolderDialogBackend>();
+			RegisterBackend<IAlertDialogBackend, AlertDialogBackend>();
+			RegisterBackend<ImageBuilderBackendHandler, WpfImageBuilderBackendHandler>();
+			RegisterBackend<ImagePatternBackendHandler, WpfImagePatternBackendHandler>();
+			RegisterBackend<IListViewBackend, ListViewBackend>();
+			RegisterBackend<IListStoreBackend, ListDataSource>();
+			RegisterBackend<IListBoxBackend, ListBoxBackend>();
+			RegisterBackend<IPopoverBackend, PopoverBackend>();
+			RegisterBackend<IProgressBarBackend, ProgressBarBackend>();
+			RegisterBackend<IRichTextViewBackend, RichTextViewBackend>();
+			RegisterBackend<ILinkLabelBackend, LinkLabelBackend>();
+			RegisterBackend<ISpinnerBackend, SpinnerBackend>();
 			RegisterBackend<DesktopBackend, WpfDesktopBackend>();
 			RegisterBackend<IExpanderBackend, ExpanderBackend>();
 			RegisterBackend<IDatePickerBackend, DatePickerBackend>();
 			RegisterBackend<ISelectColorDialogBackend, SelectColorDialogBackend>();
 			RegisterBackend<IRadioButtonBackend, RadioButtonBackend>();
 			RegisterBackend<ISpinButtonBackend, SpinButtonBackend>();
-			RegisterBackend<ISliderBackend, SliderBackend> ();
-			RegisterBackend<IScrollbarBackend, ScrollbarBackend> ();
+			RegisterBackend<ISliderBackend, SliderBackend>();
+			RegisterBackend<IScrollbarBackend, ScrollbarBackend>();
 			RegisterBackend<IEmbeddedWidgetBackend, EmbedNativeWidgetBackend>();
-			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
-			RegisterBackend<IWebViewBackend, WebViewBackend> ();
-			RegisterBackend<KeyboardHandler, WpfKeyboardHandler> ();
+			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend>();
+			RegisterBackend<IWebViewBackend, WebViewBackend>();
+			RegisterBackend<KeyboardHandler, WpfKeyboardHandler>();
 		}
 
 		public override void DispatchPendingEvents()
 		{
-			application.Dispatcher.Invoke ((Action)(() => { }), DispatcherPriority.Background);
+			application.Dispatcher.Invoke((Action)(() => { }), DispatcherPriority.Background);
 		}
 
-		public override void RunApplication ()
+		public override void RunApplication()
 		{
-			application.Run ();
+			application.Run();
 		}
 
-		public override void ExitApplication ()
+		public override void ExitApplication()
 		{
 			application.Shutdown();
 		}
 
-		public override void InvokeAsync (Action action)
+		public override void InvokeAsync(Action action)
 		{
 			if (action == null)
-				throw new ArgumentNullException ("action");
+				throw new ArgumentNullException("action");
 
-			application.Dispatcher.BeginInvoke (action, new object [0]);
+			application.Dispatcher.BeginInvoke(action, new object[0]);
 		}
 
-		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
+		public override object TimerInvoke(Func<bool> action, TimeSpan timeSpan)
 		{
 			if (action == null)
-				throw new ArgumentNullException ("action");
+				throw new ArgumentNullException("action");
 
-			return Timeout.Add (action, timeSpan, application.Dispatcher);
+			return Timeout.Add(action, timeSpan, application.Dispatcher);
 		}
 
-		public override void CancelTimerInvoke (object id)
+		public override void CancelTimerInvoke(object id)
 		{
 			if (id == null)
-				throw new ArgumentNullException ("id");
+				throw new ArgumentNullException("id");
 
-			Timeout.CancelTimeout ((uint)id);
+			Timeout.CancelTimeout((uint)id);
 		}
 
-		public override IWindowFrameBackend GetBackendForWindow (object nativeWindow)
+		public override IWindowFrameBackend GetBackendForWindow(object nativeWindow)
 		{
-			return new WindowFrameBackend () {
-				Window = (System.Windows.Window) nativeWindow
+			return new WindowFrameBackend()
+			{
+				Window = (System.Windows.Window)nativeWindow
 			};
 		}
 
-		public override object GetBackendForImage (object nativeImage)
+		public override object GetBackendForImage(object nativeImage)
 		{
 			if (nativeImage is WpfImage)
 				return nativeImage;
-			return ImageHandler.LoadFromImageSource ((System.Windows.Media.ImageSource) nativeImage);
+			return ImageHandler.LoadFromImageSource((System.Windows.Media.ImageSource)nativeImage);
 		}
 
-		public override object GetBackendForContext (object nativeWidget, object nativeContext)
+		public override object GetBackendForContext(object nativeWidget, object nativeContext)
 		{
-			return new DrawingContext (
+			return new DrawingContext(
 				(System.Windows.Media.DrawingContext)nativeContext,
-				((System.Windows.Media.Visual)nativeWidget).GetScaleFactor ()
+				((System.Windows.Media.Visual)nativeWidget).GetScaleFactor()
 			);
 		}
 
-		public override object GetNativeWidget (Widget w)
+		public override object GetNativeWidget(Widget w)
 		{
-			var backend = (IWpfWidgetBackend) Toolkit.GetBackend (w);
+			var backend = (IWpfWidgetBackend)Toolkit.GetBackend(w);
 			return backend.Widget;
 		}
 
-		public override object GetNativeParentWindow (Widget w)
+		public override object GetNativeParentWindow(Widget w)
 		{
-			var backend = (IWpfWidgetBackend)Toolkit.GetBackend (w);
+			var backend = (IWpfWidgetBackend)Toolkit.GetBackend(w);
 
 			FrameworkElement e = backend.Widget;
 			while ((e = e.Parent as FrameworkElement) != null)
@@ -200,31 +201,34 @@ namespace Xwt.WPFBackend
 
 			return null;
 		}
-		
-		public override bool HasNativeParent (Widget w)
+
+		public override bool HasNativeParent(Widget w)
 		{
 
-			var b = (IWidgetBackend) Toolkit.GetBackend (w);
+			var b = (IWidgetBackend)Toolkit.GetBackend(w);
 			if (b is XwtWidgetBackend)
 				b = ((XwtWidgetBackend)b).NativeBackend;
 			IWpfWidgetBackend wb = (IWpfWidgetBackend)b;
 			return wb.Widget.Parent != null;
 		}
 
-		public override object GetNativeImage (Image image)
+		public override object GetNativeImage(Image image)
 		{
-			return DataConverter.AsImageSource (Toolkit.GetBackend (image));
+			return DataConverter.AsImageSource(Toolkit.GetBackend(image));
 		}
 
-		public override object RenderWidget (Widget widget)
+		public override object RenderWidget(Widget widget)
 		{
-			try {
-				var w = ((WidgetBackend)widget.GetBackend ()).Widget;
-				RenderTargetBitmap rtb = new RenderTargetBitmap ((int)w.ActualWidth, (int)w.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+			try
+			{
+				var w = ((WidgetBackend)widget.GetBackend()).Widget;
+				RenderTargetBitmap rtb = new RenderTargetBitmap((int)w.ActualWidth, (int)w.ActualHeight, 96, 96, PixelFormats.Pbgra32);
 				rtb.Render(w);
 				return new WpfImage(rtb);
-			} catch (Exception ex) {
-				throw new InvalidOperationException ("Rendering element not supported", ex);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException("Rendering element not supported", ex);
 			}
 		}
 	}

@@ -28,13 +28,13 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IBoxBackend: IWidgetBackend
+	public interface IBoxBackend : IWidgetBackend
 	{
-		void Add (IWidgetBackend widget);
-		void Remove (IWidgetBackend widget);
-		void SetAllocation (IWidgetBackend[] widget, Rectangle[] rect);
+		void Add(IWidgetBackend widget);
+		void Remove(IWidgetBackend widget);
+		void SetAllocation(IWidgetBackend[] widget, Rectangle[] rect);
 	}
-	
+
 	public enum Orientation
 	{
 		Horizontal,

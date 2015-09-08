@@ -35,7 +35,7 @@ namespace Xwt.WPFBackend
 		: ButtonBackend, IToggleButtonBackend
 	{
 		public ToggleButtonBackend()
-			:base (new SWCP.ToggleButton())
+			: base(new SWCP.ToggleButton())
 		{
 		}
 
@@ -45,9 +45,9 @@ namespace Xwt.WPFBackend
 			set { ToggleButton.IsChecked = value; }
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
+			base.EnableEvent(eventId);
 
 			if (eventId is ToggleButtonEvent)
 			{
@@ -61,9 +61,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
+			base.DisableEvent(eventId);
 
 			if (eventId is ToggleButtonEvent)
 			{
@@ -79,17 +79,17 @@ namespace Xwt.WPFBackend
 
 		protected new IToggleButtonEventSink EventSink
 		{
-			get { return (IToggleButtonEventSink) base.EventSink; }
+			get { return (IToggleButtonEventSink)base.EventSink; }
 		}
 
 		protected SWCP.ToggleButton ToggleButton
 		{
-			get { return (SWCP.ToggleButton) NativeWidget; }
+			get { return (SWCP.ToggleButton)NativeWidget; }
 		}
 
-		private void OnButtonToggled (object s, RoutedEventArgs e)
+		private void OnButtonToggled(object s, RoutedEventArgs e)
 		{
-			Context.InvokeUserCode (EventSink.OnToggled);
+			Context.InvokeUserCode(EventSink.OnToggled);
 		}
 	}
 }

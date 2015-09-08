@@ -33,77 +33,81 @@ namespace Xwt
 		// Since a constraint of '0' is valid, we use NegativeInfinity as a marker for constraint=0.
 		double value;
 
-		public static readonly SizeConstraint Unconstrained = new SizeConstraint (); 
+		public static readonly SizeConstraint Unconstrained = new SizeConstraint();
 
-		static public implicit operator SizeConstraint (double size)
+		static public implicit operator SizeConstraint(double size)
 		{
-			return new SizeConstraint () { AvailableSize = size };
+			return new SizeConstraint() { AvailableSize = size };
 		}
 
-		public static SizeConstraint WithSize (double size)
+		public static SizeConstraint WithSize(double size)
 		{
-			return new SizeConstraint () { AvailableSize = size };
+			return new SizeConstraint() { AvailableSize = size };
 		}
 
-		public double AvailableSize {
-			get {
-				if (double.IsNegativeInfinity (value))
+		public double AvailableSize
+		{
+			get
+			{
+				if (double.IsNegativeInfinity(value))
 					return 0;
 				else
 					return value;
 			}
-			set {
- 				if (value <= 0)
+			set
+			{
+				if (value <= 0)
 					this.value = double.NegativeInfinity;
 				else
-					this.value = value; 
+					this.value = value;
 			}
 		}
 
-		public bool IsConstrained {
+		public bool IsConstrained
+		{
 			get { return value != 0; }
 		}
 
-		public static bool operator == (SizeConstraint s1, SizeConstraint s2)
+		public static bool operator ==(SizeConstraint s1, SizeConstraint s2)
 		{
 			return (s1.value == s2.value);
 		}
 
-		public static bool operator != (SizeConstraint s1, SizeConstraint s2)
+		public static bool operator !=(SizeConstraint s1, SizeConstraint s2)
 		{
 			return (s1.value != s2.value);
 		}
-		
-		public static SizeConstraint operator + (SizeConstraint c, double s)
+
+		public static SizeConstraint operator +(SizeConstraint c, double s)
 		{
 			if (!c.IsConstrained)
 				return c;
 			else
-				return SizeConstraint.WithSize (c.AvailableSize + s);
+				return SizeConstraint.WithSize(c.AvailableSize + s);
 		}
 
-		public static SizeConstraint operator - (SizeConstraint c, double s)
+		public static SizeConstraint operator -(SizeConstraint c, double s)
 		{
 			if (!c.IsConstrained)
 				return c;
 			else
-				return SizeConstraint.WithSize (Math.Max (c.AvailableSize - s, 0));
+				return SizeConstraint.WithSize(Math.Max(c.AvailableSize - s, 0));
 		}
 
-		public override bool Equals (object ob)
+		public override bool Equals(object ob)
 		{
 			return (ob is SizeConstraint) && this == (SizeConstraint)ob;
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			return value.GetHashCode ();
+			return value.GetHashCode();
 		}
 
-		public override string ToString ()
+		public override string ToString()
 		{
 			if (IsConstrained)
-				return AvailableSize.ToString ();
+				return AvailableSize.ToString();
 			else
 				return "Unconstrained";
 		}

@@ -36,11 +36,11 @@ namespace Xwt.WPFBackend
 	{
 		public SeparatorBackend()
 		{
-			Separator = new WindowsRectangle ();
+			Separator = new WindowsRectangle();
 			Separator.Stroke = Brushes.DarkGray;
 		}
 
-		public void Initialize (Orientation dir)
+		public void Initialize(Orientation dir)
 		{
 			this.direction = dir;
 		}
@@ -49,16 +49,16 @@ namespace Xwt.WPFBackend
 
 		protected WindowsRectangle Separator
 		{
-			get { return (WindowsRectangle) Widget; }
+			get { return (WindowsRectangle)Widget; }
 			set { Widget = value; }
 		}
 
-		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
+		public override Size GetPreferredSize(SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			if (this.direction == Orientation.Vertical)
-				return new Size (1, heightConstraint.IsConstrained ? heightConstraint.AvailableSize : 0);
+				return new Size(1, heightConstraint.IsConstrained ? heightConstraint.AvailableSize : 0);
 			else
-				return new Size (widthConstraint.IsConstrained ? widthConstraint.AvailableSize : 0, 1);
+				return new Size(widthConstraint.IsConstrained ? widthConstraint.AvailableSize : 0, 1);
 		}
 	}
 }

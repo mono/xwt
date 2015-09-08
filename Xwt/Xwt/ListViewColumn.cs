@@ -49,7 +49,7 @@ namespace Xwt
 		Descending
 	}
 
-	public class ListViewColumn: ICellContainer
+	public class ListViewColumn : ICellContainer
 	{
 		CellViewCollection views;
 		string title;
@@ -58,65 +58,75 @@ namespace Xwt
 
 		internal IColumnContainerBackend Parent { get; set; }
 		internal object Handle { get; set; }
-		
-		public ListViewColumn ()
+
+		public ListViewColumn()
 		{
-			views = new CellViewCollection (this);
+			views = new CellViewCollection(this);
 		}
-		
-		public ListViewColumn (string title): this ()
-		{
-			Title = title;
-		}
-		
-		public ListViewColumn (string title, CellView cellView): this ()
+
+		public ListViewColumn(string title) : this()
 		{
 			Title = title;
-			Views.Add (cellView);
 		}
-		
-		[DefaultValue (null)]
-		public CellView HeaderView {
-			get {
+
+		public ListViewColumn(string title, CellView cellView) : this()
+		{
+			Title = title;
+			Views.Add(cellView);
+		}
+
+		[DefaultValue(null)]
+		public CellView HeaderView
+		{
+			get
+			{
 				return headerView;
 			}
-			set {
+			set
+			{
 				headerView = value;
 				if (Parent != null)
-					Parent.UpdateColumn (this, Handle, ListViewColumnChange.Title);
+					Parent.UpdateColumn(this, Handle, ListViewColumnChange.Title);
 			}
 		}
-		
-		public string Title {
-			get {
+
+		public string Title
+		{
+			get
+			{
 				return this.title;
 			}
-			set {
+			set
+			{
 				title = value;
 				if (Parent != null)
-					Parent.UpdateColumn (this, Handle, ListViewColumnChange.Title);
+					Parent.UpdateColumn(this, Handle, ListViewColumnChange.Title);
 			}
 		}
 
-		public Alignment Alignment {
-			get {
+		public Alignment Alignment
+		{
+			get
+			{
 				return alignment;
 			}
-			set {
+			set
+			{
 				alignment = value;
 				if (Parent != null)
-					Parent.UpdateColumn (this, Handle, ListViewColumnChange.Alignment);
+					Parent.UpdateColumn(this, Handle, ListViewColumnChange.Alignment);
 			}
 		}
 
-		public CellViewCollection Views {
+		public CellViewCollection Views
+		{
 			get { return views; }
 		}
-		
-		void ICellContainer.NotifyCellChanged ()
+
+		void ICellContainer.NotifyCellChanged()
 		{
 			if (Parent != null)
-				Parent.UpdateColumn (this, Handle, ListViewColumnChange.Cells);
+				Parent.UpdateColumn(this, Handle, ListViewColumnChange.Cells);
 		}
 
 		bool isResizeable;
@@ -125,14 +135,17 @@ namespace Xwt
 		/// Gets or sets a value indicating whether this column is user resizeable.
 		/// </summary>
 		/// <value><c>true</c> if this column is user resizeable; otherwise, <c>false</c>.</value>
-		public bool CanResize {
-			get {
+		public bool CanResize
+		{
+			get
+			{
 				return isResizeable;
 			}
-			set {
+			set
+			{
 				isResizeable = value;
 				if (Parent != null)
-					Parent.UpdateColumn (this, Handle, ListViewColumnChange.CanResize);
+					Parent.UpdateColumn(this, Handle, ListViewColumnChange.CanResize);
 			}
 		}
 
@@ -141,14 +154,17 @@ namespace Xwt
 		/// <summary>
 		/// The direction the sort indicator should show.
 		/// </summary>
-		public ColumnSortDirection SortDirection {
-			get {
+		public ColumnSortDirection SortDirection
+		{
+			get
+			{
 				return sortDirection;
 			}
-			set {
+			set
+			{
 				sortDirection = value;
 				if (Parent != null)
-					Parent.UpdateColumn (this, Handle, ListViewColumnChange.SortDirection);
+					Parent.UpdateColumn(this, Handle, ListViewColumnChange.SortDirection);
 			}
 		}
 
@@ -157,14 +173,17 @@ namespace Xwt
 		/// <summary>
 		/// The column that is used for sorting if the column is selected for sorting.
 		/// </summary>
-		public IDataField SortDataField {
-			get {
+		public IDataField SortDataField
+		{
+			get
+			{
 				return sortDataField;
 			}
-			set {
+			set
+			{
 				sortDataField = value;
 				if (Parent != null)
-					Parent.UpdateColumn (this, Handle, ListViewColumnChange.SortDataField);
+					Parent.UpdateColumn(this, Handle, ListViewColumnChange.SortDataField);
 			}
 		}
 
@@ -173,14 +192,17 @@ namespace Xwt
 		/// <summary>
 		/// Gets or sets a value indicating whether a sort indicator is shown.
 		/// </summary>
-		public bool SortIndicatorVisible {
-			get {
+		public bool SortIndicatorVisible
+		{
+			get
+			{
 				return isSortIndicatorShown;
 			}
-			set {
+			set
+			{
 				isSortIndicatorShown = value;
 				if (Parent != null)
-					Parent.UpdateColumn (this, Handle, ListViewColumnChange.SortIndicatorVisible);
+					Parent.UpdateColumn(this, Handle, ListViewColumnChange.SortIndicatorVisible);
 			}
 		}
 	}

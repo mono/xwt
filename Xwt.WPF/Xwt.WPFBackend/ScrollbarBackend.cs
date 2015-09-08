@@ -13,42 +13,43 @@ namespace Xwt.WPFBackend
 
 		#region IScrollbarBackend Members
 
-		public void Initialize (Orientation dir)
+		public void Initialize(Orientation dir)
 		{
-			Widget = new System.Windows.Controls.Primitives.ScrollBar () {
+			Widget = new System.Windows.Controls.Primitives.ScrollBar()
+			{
 				Orientation = dir == Orientation.Horizontal ? SWC.Orientation.Horizontal : SWC.Orientation.Vertical
 			};
-        }
+		}
 
-        public override void EnableEvent(object eventId)
-        {
-            base.EnableEvent(eventId);
-            if (eventId is ScrollAdjustmentEvent)
-            {
-                if (((ScrollAdjustmentEvent)eventId) == ScrollAdjustmentEvent.ValueChanged)
-                    Scrollbar.Scroll += Scrollbar_Scroll;
-            }
-        }
+		public override void EnableEvent(object eventId)
+		{
+			base.EnableEvent(eventId);
+			if (eventId is ScrollAdjustmentEvent)
+			{
+				if (((ScrollAdjustmentEvent)eventId) == ScrollAdjustmentEvent.ValueChanged)
+					Scrollbar.Scroll += Scrollbar_Scroll;
+			}
+		}
 
-        public override void DisableEvent(object eventId)
-        {
-            base.DisableEvent(eventId);
-            if (eventId is ScrollAdjustmentEvent)
-            {
-                if (((ScrollAdjustmentEvent)eventId) == ScrollAdjustmentEvent.ValueChanged)
-                    Scrollbar.Scroll -= Scrollbar_Scroll;
-            }
-        }
+		public override void DisableEvent(object eventId)
+		{
+			base.DisableEvent(eventId);
+			if (eventId is ScrollAdjustmentEvent)
+			{
+				if (((ScrollAdjustmentEvent)eventId) == ScrollAdjustmentEvent.ValueChanged)
+					Scrollbar.Scroll -= Scrollbar_Scroll;
+			}
+		}
 
-        void Scrollbar_Scroll(object sender, SWC.Primitives.ScrollEventArgs e)
-        {
-            this.Context.InvokeUserCode(delegate
-            {
-                eventSink.OnValueChanged();
-            });
-        }
+		void Scrollbar_Scroll(object sender, SWC.Primitives.ScrollEventArgs e)
+		{
+			this.Context.InvokeUserCode(delegate
+			{
+				eventSink.OnValueChanged();
+			});
+		}
 
-		public IScrollAdjustmentBackend CreateAdjustment ()
+		public IScrollAdjustmentBackend CreateAdjustment()
 		{
 			return this;
 		}
@@ -62,9 +63,9 @@ namespace Xwt.WPFBackend
 
 		#region IScrollAdjustmentBackend Members
 
-		public void Initialize (IScrollAdjustmentEventSink eventSink)
+		public void Initialize(IScrollAdjustmentEventSink eventSink)
 		{
-            this.eventSink = eventSink;
+			this.eventSink = eventSink;
 		}
 
 		public double Value
@@ -79,7 +80,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void SetRange (double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value)
+		public void SetRange(double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value)
 		{
 			Scrollbar.Minimum = lowerValue;
 			Scrollbar.Maximum = upperValue;

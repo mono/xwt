@@ -53,9 +53,9 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ISeparatorBackend: IWidgetBackend
+	public interface ISeparatorBackend : IWidgetBackend
 	{
-		void Initialize (Orientation dir);
+		void Initialize(Orientation dir);
 	}
 }
 

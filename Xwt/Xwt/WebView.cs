@@ -32,7 +32,7 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	[BackendType (typeof(IWebViewBackend))]
+	[BackendType(typeof(IWebViewBackend))]
 	public class WebView : Widget
 	{
 		EventHandler loading;
@@ -43,182 +43,202 @@ namespace Xwt
 
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IWebViewEventSink
 		{
-			public bool OnNavigateToUrl (string url)
+			public bool OnNavigateToUrl(string url)
 			{
-				var args = new NavigateToUrlEventArgs (new Uri(url, UriKind.RelativeOrAbsolute));
-				((WebView)Parent).OnNavigateToUrl (args);
+				var args = new NavigateToUrlEventArgs(new Uri(url, UriKind.RelativeOrAbsolute));
+				((WebView)Parent).OnNavigateToUrl(args);
 				return args.Handled;
 			}
 
-			public void OnLoading ()
+			public void OnLoading()
 			{
-				((WebView)Parent).OnLoading (EventArgs.Empty);
+				((WebView)Parent).OnLoading(EventArgs.Empty);
 			}
 
-			public void OnLoaded ()
+			public void OnLoaded()
 			{
-				((WebView)Parent).OnLoaded (EventArgs.Empty);
+				((WebView)Parent).OnLoaded(EventArgs.Empty);
 			}
 
-			public void OnTitleChanged ()
+			public void OnTitleChanged()
 			{
-				((WebView)Parent).OnTitleChanged (EventArgs.Empty);
+				((WebView)Parent).OnTitleChanged(EventArgs.Empty);
 			}
 		}
 
-		static WebView ()
+		static WebView()
 		{
-			MapEvent (WebViewEvent.Loading, typeof(WebView), "OnLoading");
-			MapEvent (WebViewEvent.Loaded, typeof(WebView), "OnLoaded");
-			MapEvent (WebViewEvent.NavigateToUrl, typeof(WebView), "OnNavigateToUrl");
-			MapEvent (WebViewEvent.TitleChanged, typeof(WebView), "OnTitleChanged");
+			MapEvent(WebViewEvent.Loading, typeof(WebView), "OnLoading");
+			MapEvent(WebViewEvent.Loaded, typeof(WebView), "OnLoaded");
+			MapEvent(WebViewEvent.NavigateToUrl, typeof(WebView), "OnNavigateToUrl");
+			MapEvent(WebViewEvent.TitleChanged, typeof(WebView), "OnTitleChanged");
 		}
 
-		public WebView ()
+		public WebView()
 		{
 		}
 
-		public WebView (string url)
+		public WebView(string url)
 		{
 			Url = url;
 		}
 
-		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+		protected override Xwt.Backends.BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
 
-		IWebViewBackend Backend {
-			get { return (IWebViewBackend) BackendHost.Backend; }
+		IWebViewBackend Backend
+		{
+			get { return (IWebViewBackend)BackendHost.Backend; }
 		}
 
 		[DefaultValue("")]
-		public string Url {
-			get { 
-				if (!String.IsNullOrEmpty (Backend.Url))
+		public string Url
+		{
+			get
+			{
+				if (!String.IsNullOrEmpty(Backend.Url))
 					url = Backend.Url;
 				return url;
 			}
-			set {
-		 		url = value;
+			set
+			{
+				url = value;
 				Backend.Url = url;
 			}
 		}
 
 		[DefaultValue("")]
-		public string Title {
+		public string Title
+		{
 			get { return Backend.Title ?? ""; }
 		}
 
 		[DefaultValue(0.0)]
-		public double LoadProgress {
+		public double LoadProgress
+		{
 			get { return Backend.LoadProgress; }
 		}
 
 		[DefaultValue(false)]
-		public bool CanGoBack {
+		public bool CanGoBack
+		{
 			get { return Backend.CanGoBack; }
 		}
 
 		[DefaultValue(false)]
-		public bool CanGoForward {
+		public bool CanGoForward
+		{
 			get { return Backend.CanGoForward; }
 		}
 
-		public void GoBack ()
+		public void GoBack()
 		{
-			Backend.GoBack ();
+			Backend.GoBack();
 		}
 
-		public void GoForward ()
+		public void GoForward()
 		{
-			Backend.GoForward ();
+			Backend.GoForward();
 		}
 
-		public void Reload ()
+		public void Reload()
 		{
-			Backend.Reload ();
+			Backend.Reload();
 		}
 
-		public void StopLoading ()
+		public void StopLoading()
 		{
-			Backend.StopLoading ();
+			Backend.StopLoading();
 		}
 
-		public void LoadHtml (string content, string base_uri)
+		public void LoadHtml(string content, string base_uri)
 		{
-			Backend.LoadHtml (content, base_uri);
+			Backend.LoadHtml(content, base_uri);
 		}
 
-		protected virtual void OnLoading (EventArgs e)
+		protected virtual void OnLoading(EventArgs e)
 		{
 			if (loading != null)
-				loading (this, e);
+				loading(this, e);
 		}
 
-		public event EventHandler Loading {
-			add {
-				BackendHost.OnBeforeEventAdd (WebViewEvent.Loading, loading);
+		public event EventHandler Loading
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(WebViewEvent.Loading, loading);
 				loading += value;
 			}
 
-			remove {
+			remove
+			{
 				loading -= value;
-				BackendHost.OnAfterEventRemove (WebViewEvent.Loading, loading);
+				BackendHost.OnAfterEventRemove(WebViewEvent.Loading, loading);
 			}
 		}
 
-		protected virtual void OnLoaded (EventArgs e)
+		protected virtual void OnLoaded(EventArgs e)
 		{
 			if (loaded != null)
-				loaded (this, e);
+				loaded(this, e);
 		}
 
-		public event EventHandler Loaded {
-			add {
-				BackendHost.OnBeforeEventAdd (WebViewEvent.Loaded, loaded);
+		public event EventHandler Loaded
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(WebViewEvent.Loaded, loaded);
 				loaded += value;
 			}
 
-			remove {
+			remove
+			{
 				loaded -= value;
-				BackendHost.OnAfterEventRemove (WebViewEvent.Loaded, loaded);
+				BackendHost.OnAfterEventRemove(WebViewEvent.Loaded, loaded);
 			}
 		}
 
-		protected virtual void OnNavigateToUrl (NavigateToUrlEventArgs e)
+		protected virtual void OnNavigateToUrl(NavigateToUrlEventArgs e)
 		{
 			if (navigateToUrl != null)
-				navigateToUrl (this, e);
+				navigateToUrl(this, e);
 		}
 
-		public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl {
-			add {
-				BackendHost.OnBeforeEventAdd (WebViewEvent.NavigateToUrl, navigateToUrl);
+		public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(WebViewEvent.NavigateToUrl, navigateToUrl);
 				navigateToUrl += value;
 			}
 
-			remove {
+			remove
+			{
 				navigateToUrl -= value;
-				BackendHost.OnAfterEventRemove (WebViewEvent.NavigateToUrl, navigateToUrl);
+				BackendHost.OnAfterEventRemove(WebViewEvent.NavigateToUrl, navigateToUrl);
 			}
 		}
 
-		protected virtual void OnTitleChanged (EventArgs e)
+		protected virtual void OnTitleChanged(EventArgs e)
 		{
 			if (titleChanged != null)
-				titleChanged (this, e);
+				titleChanged(this, e);
 		}
 
-		public event EventHandler TitleChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (WebViewEvent.TitleChanged, titleChanged);
+		public event EventHandler TitleChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(WebViewEvent.TitleChanged, titleChanged);
 				titleChanged += value;
 			}
 
-			remove {
+			remove
+			{
 				titleChanged -= value;
-				BackendHost.OnAfterEventRemove (WebViewEvent.TitleChanged, titleChanged);
+				BackendHost.OnAfterEventRemove(WebViewEvent.TitleChanged, titleChanged);
 			}
 		}
 	}

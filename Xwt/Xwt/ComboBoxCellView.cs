@@ -31,8 +31,9 @@ using Xwt.Drawing;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
-namespace Xwt {
-	public sealed class ComboBoxCellView: CellView
+namespace Xwt
+{
+	public sealed class ComboBoxCellView : CellView
 	{
 	}
 }

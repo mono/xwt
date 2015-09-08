@@ -29,62 +29,71 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public enum DatePickerStyle {
+	public enum DatePickerStyle
+	{
 		Time,
 		Date,
 		DateTime
 	}
-	
-	[BackendType (typeof(IDatePickerBackend))]
+
+	[BackendType(typeof(IDatePickerBackend))]
 	public class DatePicker : Widget
 	{
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IDatePickerEventSink
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IDatePickerEventSink
 		{
-			public void ValueChanged ()
+			public void ValueChanged()
 			{
-				((DatePicker)Parent).OnValueChanged (EventArgs.Empty);
+				((DatePicker)Parent).OnValueChanged(EventArgs.Empty);
 			}
 		}
-		
-		IDatePickerBackend Backend {
-			get { return (IDatePickerBackend) BackendHost.Backend; }
-		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		IDatePickerBackend Backend
 		{
-			return new WidgetBackendHost ();
+			get { return (IDatePickerBackend)BackendHost.Backend; }
 		}
-		
-		public DateTime DateTime {
-			get {
+
+		protected override BackendHost CreateBackendHost()
+		{
+			return new WidgetBackendHost();
+		}
+
+		public DateTime DateTime
+		{
+			get
+			{
 				return Backend.DateTime;
 			}
-			set {
+			set
+			{
 				Backend.DateTime = value;
 			}
 		}
-		
-		public DatePickerStyle Style {
+
+		public DatePickerStyle Style
+		{
 			get;
 			set;
 		}
-		
-		protected virtual void OnValueChanged (EventArgs e)
+
+		protected virtual void OnValueChanged(EventArgs e)
 		{
 			if (valueChanged != null)
-				valueChanged (this, e);
+				valueChanged(this, e);
 		}
 
 		EventHandler valueChanged;
-		
-		public event EventHandler ValueChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (DatePickerEvent.ValueChanged, valueChanged);
+
+		public event EventHandler ValueChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(DatePickerEvent.ValueChanged, valueChanged);
 				valueChanged += value;
 			}
-			remove {
+			remove
+			{
 				valueChanged -= value;
-				BackendHost.OnAfterEventRemove (DatePickerEvent.ValueChanged, valueChanged);
+				BackendHost.OnAfterEventRemove(DatePickerEvent.ValueChanged, valueChanged);
 			}
 		}
 	}

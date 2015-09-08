@@ -43,88 +43,91 @@ namespace Xwt.WPFBackend
 	{
 		static DialogBackend()
 		{
-			var panelFactory = new FrameworkElementFactory (typeof (StackPanel));
-			panelFactory.SetValue (StackPanel.OrientationProperty, SWC.Orientation.Horizontal);
-			panelFactory.SetValue (StackPanel.MarginProperty, new Thickness (0, 7, 7, 7));
+			var panelFactory = new FrameworkElementFactory(typeof(StackPanel));
+			panelFactory.SetValue(StackPanel.OrientationProperty, SWC.Orientation.Horizontal);
+			panelFactory.SetValue(StackPanel.MarginProperty, new Thickness(0, 7, 7, 7));
 
-			PanelTemplate = new ItemsPanelTemplate (panelFactory);
+			PanelTemplate = new ItemsPanelTemplate(panelFactory);
 
-			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MarginProperty, new Thickness (7, 0, 0, 0)));
-			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MinWidthProperty, 80d));
+			ButtonStyle.Setters.Add(new Setter(FrameworkElement.MarginProperty, new Thickness(7, 0, 0, 0)));
+			ButtonStyle.Setters.Add(new Setter(FrameworkElement.MinWidthProperty, 80d));
 		}
 
 		private DelegatedCommand cmd;
 
 		public DialogBackend()
 		{
-			cmd = new DelegatedCommand<DialogButton> (OnButtonClicked);
+			cmd = new DelegatedCommand<DialogButton>(OnButtonClicked);
 
 			this.buttonContainer.ItemsPanel = PanelTemplate;
-			this.buttonContainer.ItemTemplateSelector =  new DialogButtonTemplateSelector (ButtonStyle, cmd);
+			this.buttonContainer.ItemTemplateSelector = new DialogButtonTemplateSelector(ButtonStyle, cmd);
 			this.buttonContainer.ItemsSource = this.buttons;
 			this.buttonContainer.HorizontalAlignment = HorizontalAlignment.Right;
 
-			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
-			separator = new SWC.Separator ();
+			this.rootPanel.RowDefinitions.Add(new RowDefinition { Height = new GridLength(0, GridUnitType.Auto) });
+			separator = new SWC.Separator();
 			separator.Visibility = Visibility.Collapsed;
-			Grid.SetRow (separator, 2);
-			this.rootPanel.Children.Add (separator);
+			Grid.SetRow(separator, 2);
+			this.rootPanel.Children.Add(separator);
 
-			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
-			Grid.SetRow (this.buttonContainer, 3);
-			this.rootPanel.Children.Add (this.buttonContainer);
+			this.rootPanel.RowDefinitions.Add(new RowDefinition { Height = new GridLength(0, GridUnitType.Auto) });
+			Grid.SetRow(this.buttonContainer, 3);
+			this.rootPanel.Children.Add(this.buttonContainer);
 			this.buttonContainer.Visibility = Visibility.Collapsed;
 		}
 
-		public override void SetMinSize (Size s)
+		public override void SetMinSize(Size s)
 		{
 			// Take into account the size of the button bar and the separator
 
-			buttonContainer.InvalidateMeasure ();
-			buttonContainer.Measure (new System.Windows.Size (double.PositiveInfinity, double.PositiveInfinity));
-			separator.InvalidateMeasure ();
-			separator.Measure (new System.Windows.Size (double.PositiveInfinity, double.PositiveInfinity));
+			buttonContainer.InvalidateMeasure();
+			buttonContainer.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
+			separator.InvalidateMeasure();
+			separator.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
 			s.Height += buttonContainer.DesiredSize.Height + separator.DesiredSize.Height;
 			s.Width = System.Math.Max(buttonContainer.DesiredSize.Width, separator.DesiredSize.Width);
-			base.SetMinSize (s);
+			base.SetMinSize(s);
 		}
 
-		public void SetButtons (IEnumerable<DialogButton> newButtons)
+		public void SetButtons(IEnumerable<DialogButton> newButtons)
 		{
 			this.buttons.Clear();
-			foreach (var button in newButtons) {
-				this.buttons.Add (button);
+			foreach (var button in newButtons)
+			{
+				this.buttons.Add(button);
 			}
-			UpdateSeparatorVisibility ();
+			UpdateSeparatorVisibility();
 		}
 
-		public void UpdateButton (DialogButton updatedButton)
+		public void UpdateButton(DialogButton updatedButton)
 		{
-			for (int i = 0; i < this.buttons.Count; ++i) {
-				var button = this.buttons [i];
-				if (button == updatedButton) {
-					this.buttons.RemoveAt (i);
-					this.buttons.Insert (i, updatedButton);
+			for (int i = 0; i < this.buttons.Count; ++i)
+			{
+				var button = this.buttons[i];
+				if (button == updatedButton)
+				{
+					this.buttons.RemoveAt(i);
+					this.buttons.Insert(i, updatedButton);
 					break;
 				}
 			}
-			UpdateSeparatorVisibility ();
+			UpdateSeparatorVisibility();
 		}
 
-		void UpdateSeparatorVisibility ()
+		void UpdateSeparatorVisibility()
 		{
-			buttonContainer.Visibility = separator.Visibility = buttons.Any (b => b.Visible) ? Visibility.Visible : Visibility.Collapsed;
+			buttonContainer.Visibility = separator.Visibility = buttons.Any(b => b.Visible) ? Visibility.Visible : Visibility.Collapsed;
 		}
 
-		public void RunLoop (IWindowFrameBackend parent)
+		public void RunLoop(IWindowFrameBackend parent)
 		{
 			if (parent != null)
-				Window.Owner = ((WindowFrameBackend) parent).Window;
+				Window.Owner = ((WindowFrameBackend)parent).Window;
 			Window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-			Window.ShowDialog ();
+			Window.ShowDialog();
 		}
 
-		public void EndLoop ()
+		public void EndLoop()
 		{
 			InhibitCloseRequested = true;
 			Window.Close();
@@ -132,73 +135,74 @@ namespace Xwt.WPFBackend
 		}
 
 		private readonly ItemsControl buttonContainer = new ItemsControl();
-		private readonly ObservableCollection<DialogButton> buttons = new ObservableCollection<DialogButton> ();
+		private readonly ObservableCollection<DialogButton> buttons = new ObservableCollection<DialogButton>();
 		readonly SWC.Separator separator;
 
-		protected IDialogEventSink DialogEventSink {
-			get { return (IDialogEventSink) EventSink; }
+		protected IDialogEventSink DialogEventSink
+		{
+			get { return (IDialogEventSink)EventSink; }
 		}
 
-		private void OnButtonClicked (DialogButton button)
+		private void OnButtonClicked(DialogButton button)
 		{
-			Context.InvokeUserCode (() => DialogEventSink.OnDialogButtonClicked (button));
+			Context.InvokeUserCode(() => DialogEventSink.OnDialogButtonClicked(button));
 		}
 
 		private static readonly ItemsPanelTemplate PanelTemplate;
-		private static readonly Style ButtonStyle = new Style (typeof (SWC.Button));
+		private static readonly Style ButtonStyle = new Style(typeof(SWC.Button));
 
 		private class DialogButtonTemplateSelector
 			: DataTemplateSelector
 		{
-			static void SetupButtonFactory (FrameworkElementFactory factory, Style style, ICommand command)
+			static void SetupButtonFactory(FrameworkElementFactory factory, Style style, ICommand command)
 			{
-				factory.SetBinding (UIElement.IsEnabledProperty, new Binding ("Sensitive"));
-				factory.SetBinding (UIElement.VisibilityProperty, new Binding ("Visible") { Converter = VisibilityConverter });
-				factory.SetValue (FrameworkElement.StyleProperty, style);
-				factory.SetValue (ButtonBase.CommandProperty, command);
-				factory.SetBinding (ButtonBase.CommandParameterProperty, new Binding ());
+				factory.SetBinding(UIElement.IsEnabledProperty, new Binding("Sensitive"));
+				factory.SetBinding(UIElement.VisibilityProperty, new Binding("Visible") { Converter = VisibilityConverter });
+				factory.SetValue(FrameworkElement.StyleProperty, style);
+				factory.SetValue(ButtonBase.CommandProperty, command);
+				factory.SetBinding(ButtonBase.CommandParameterProperty, new Binding());
 			}
 
-			public DialogButtonTemplateSelector (Style style, ICommand command)
+			public DialogButtonTemplateSelector(Style style, ICommand command)
 			{
-				var buttonFactory = new FrameworkElementFactory (typeof (SWC.Button));
-				SetupButtonFactory (buttonFactory, style, command);
-				buttonFactory.SetBinding (ContentControl.ContentProperty, new Binding ("Label"));
+				var buttonFactory = new FrameworkElementFactory(typeof(SWC.Button));
+				SetupButtonFactory(buttonFactory, style, command);
+				buttonFactory.SetBinding(ContentControl.ContentProperty, new Binding("Label"));
 
 				this.normalTemplate = new DataTemplate { VisualTree = buttonFactory };
 
-				buttonFactory = new FrameworkElementFactory (typeof (SWC.Button));
-				SetupButtonFactory (buttonFactory, style, command);
+				buttonFactory = new FrameworkElementFactory(typeof(SWC.Button));
+				SetupButtonFactory(buttonFactory, style, command);
 
-				var contentFactory = new FrameworkElementFactory (typeof (DockPanel));
+				var contentFactory = new FrameworkElementFactory(typeof(DockPanel));
 
-				var imageFactory = new FrameworkElementFactory (typeof (Image));
-				imageFactory.SetBinding (Image.SourceProperty, new Binding ("Image.NativeWidget"));
-				imageFactory.SetValue (DockPanel.DockProperty, Dock.Left);
+				var imageFactory = new FrameworkElementFactory(typeof(Image));
+				imageFactory.SetBinding(Image.SourceProperty, new Binding("Image.NativeWidget"));
+				imageFactory.SetValue(DockPanel.DockProperty, Dock.Left);
 
-				contentFactory.AppendChild (imageFactory);
+				contentFactory.AppendChild(imageFactory);
 
-				var textFactory = new FrameworkElementFactory (typeof (TextBlock));
-				textFactory.SetBinding (TextBlock.TextProperty, new Binding ("Label"));
-				textFactory.SetValue (DockPanel.DockProperty, Dock.Right);
+				var textFactory = new FrameworkElementFactory(typeof(TextBlock));
+				textFactory.SetBinding(TextBlock.TextProperty, new Binding("Label"));
+				textFactory.SetValue(DockPanel.DockProperty, Dock.Right);
 
-				contentFactory.AppendChild (textFactory);
+				contentFactory.AppendChild(textFactory);
 
-				buttonFactory.AppendChild (contentFactory);
+				buttonFactory.AppendChild(contentFactory);
 
 				this.imageTemplate = new DataTemplate { VisualTree = buttonFactory };
 			}
 
-			public override DataTemplate SelectTemplate (object item, DependencyObject container)
+			public override DataTemplate SelectTemplate(object item, DependencyObject container)
 			{
 				var button = item as DialogButton;
 				if (button == null)
-					return base.SelectTemplate (item, container);
+					return base.SelectTemplate(item, container);
 
 				return (button.Image == null) ? this.normalTemplate : this.imageTemplate;
 			}
 
-			private static readonly BooleanToVisibilityConverter VisibilityConverter = new BooleanToVisibilityConverter ();
+			private static readonly BooleanToVisibilityConverter VisibilityConverter = new BooleanToVisibilityConverter();
 			private readonly DataTemplate imageTemplate;
 			private readonly DataTemplate normalTemplate;
 		}

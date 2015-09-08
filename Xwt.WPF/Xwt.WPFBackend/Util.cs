@@ -31,19 +31,19 @@ namespace Xwt.WPFBackend
 {
 	public static class Util
 	{
-		public static Size GetPixelRatios (this Visual self)
+		public static Size GetPixelRatios(this Visual self)
 		{
-			var source = PresentationSource.FromVisual (self);
+			var source = PresentationSource.FromVisual(self);
 			if (source == null)
-				return new Size (1, 1);
+				return new Size(1, 1);
 
 			Matrix m = source.CompositionTarget.TransformToDevice;
-			return new Size (m.M11, m.M22);
+			return new Size(m.M11, m.M22);
 		}
 
-		public static double GetScaleFactor (this Visual self)
+		public static double GetScaleFactor(this Visual self)
 		{
-			PresentationSource source = PresentationSource.FromVisual (self);
+			PresentationSource source = PresentationSource.FromVisual(self);
 			if (source == null)
 				return 1;
 
@@ -53,29 +53,31 @@ namespace Xwt.WPFBackend
 
 		public static HorizontalAlignment ToWpfHorizontalAlignment(Alignment alignment)
 		{
-			switch (alignment) {
-			case Alignment.Start:
-				return HorizontalAlignment.Left;
-			case Alignment.Center:
-				return HorizontalAlignment.Center;
-			case Alignment.End:
-				return HorizontalAlignment.Right;
+			switch (alignment)
+			{
+				case Alignment.Start:
+					return HorizontalAlignment.Left;
+				case Alignment.Center:
+					return HorizontalAlignment.Center;
+				case Alignment.End:
+					return HorizontalAlignment.Right;
 			}
 
 			throw new InvalidOperationException("Invalid alignment value: " + alignment);
-        }
+		}
 
-		public static System.Windows.Window GetParentWindow (this FrameworkElement element)
+		public static System.Windows.Window GetParentWindow(this FrameworkElement element)
 		{
 			FrameworkElement current = element;
-			while (current != null) {
+			while (current != null)
+			{
 				if (current is System.Windows.Window)
 					return (System.Windows.Window)current;
 
-				current = VisualTreeHelper.GetParent (current) as FrameworkElement;
+				current = VisualTreeHelper.GetParent(current) as FrameworkElement;
 			}
 
 			return null;
 		}
-    }
+	}
 }

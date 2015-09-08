@@ -38,163 +38,165 @@ namespace Xwt
 		internal TreePosition ParentPos;
 		internal int Index;
 	}
-	
+
 	public class TreeNavigator
 	{
 		ITreeStoreBackend backend;
 		TreePosition pos;
-		
-		internal TreeNavigator (ITreeStoreBackend backend, TreePosition pos)
+
+		internal TreeNavigator(ITreeStoreBackend backend, TreePosition pos)
 		{
 			this.backend = backend;
 			this.pos = pos;
 		}
-		
-		public TreePosition CurrentPosition {
+
+		public TreePosition CurrentPosition
+		{
 			get { return pos; }
 		}
-		
-		public TreeNavigator Clone ()
+
+		public TreeNavigator Clone()
 		{
-			return new TreeNavigator (backend, pos);
+			return new TreeNavigator(backend, pos);
 		}
-		
-		bool CommitPos (TreePosition newPosition)
+
+		bool CommitPos(TreePosition newPosition)
 		{
-			if (newPosition != null) {
+			if (newPosition != null)
+			{
 				pos = newPosition;
 				return true;
 			}
 			else
 				return false;
 		}
-		
-		public bool MoveToFirst ()
+
+		public bool MoveToFirst()
 		{
-			return CommitPos (backend.GetChild (null, 0));
+			return CommitPos(backend.GetChild(null, 0));
 		}
 
-		public bool MoveNext ()
+		public bool MoveNext()
 		{
-			return CommitPos (backend.GetNext (pos));
+			return CommitPos(backend.GetNext(pos));
 		}
 
-		public bool MovePrevious ()
+		public bool MovePrevious()
 		{
-			return CommitPos (backend.GetPrevious (pos));
+			return CommitPos(backend.GetPrevious(pos));
 		}
 
-		public bool MoveToChild ()
+		public bool MoveToChild()
 		{
-			return CommitPos (backend.GetChild (pos, 0));
+			return CommitPos(backend.GetChild(pos, 0));
 		}
 
-		public bool MoveToParent ()
+		public bool MoveToParent()
 		{
-			return CommitPos (backend.GetParent (pos));
+			return CommitPos(backend.GetParent(pos));
 		}
 
-		public bool MoveToFirstSibling ()
+		public bool MoveToFirstSibling()
 		{
-			return CommitPos (backend.GetChild (backend.GetParent (pos), 0));
+			return CommitPos(backend.GetChild(backend.GetParent(pos), 0));
 		}
 
-		public bool MoveToLastSibling ()
+		public bool MoveToLastSibling()
 		{
-			return CommitPos (backend.GetChild (backend.GetParent (pos), backend.GetChildrenCount (backend.GetParent (pos)) - 1));
+			return CommitPos(backend.GetChild(backend.GetParent(pos), backend.GetChildrenCount(backend.GetParent(pos)) - 1));
 		}
 
-		public TreeNavigator InsertBefore ()
+		public TreeNavigator InsertBefore()
 		{
-			pos = backend.InsertBefore (pos);
-			return this;
-		}
-		
-		public TreeNavigator InsertAfter ()
-		{
-			pos = backend.InsertAfter (pos);
-			return this;
-		}
-		
-		public TreeNavigator AddChild ()
-		{
-			pos = backend.AddChild (pos);
-			return this;
-		}
-		
-		public TreeNavigator SetValue<T> (IDataField<T> field, T data)
-		{
-			backend.SetValue (pos, field.Index, data);
-			return this;
-		}
-		
-
-		public TreeNavigator SetValues<T1,T2> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2)
-		{
-			SetValue (column1, value1);
-			SetValue (column2, value2);
+			pos = backend.InsertBefore(pos);
 			return this;
 		}
 
-		public TreeNavigator SetValues<T1,T2,T3> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2, IDataField<T3> column3, T3 value3)
+		public TreeNavigator InsertAfter()
 		{
-			SetValue (column1, value1);
-			SetValue (column2, value2);
-			SetValue (column3, value3);
+			pos = backend.InsertAfter(pos);
 			return this;
 		}
 
-		public TreeNavigator SetValues<T1,T2,T3,T4> (
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
+		public TreeNavigator AddChild()
+		{
+			pos = backend.AddChild(pos);
+			return this;
+		}
+
+		public TreeNavigator SetValue<T>(IDataField<T> field, T data)
+		{
+			backend.SetValue(pos, field.Index, data);
+			return this;
+		}
+
+
+		public TreeNavigator SetValues<T1, T2>(int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2)
+		{
+			SetValue(column1, value1);
+			SetValue(column2, value2);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1, T2, T3>(int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2, IDataField<T3> column3, T3 value3)
+		{
+			SetValue(column1, value1);
+			SetValue(column2, value2);
+			SetValue(column3, value3);
+			return this;
+		}
+
+		public TreeNavigator SetValues<T1, T2, T3, T4>(
+			IDataField<T1> column1, T1 value1,
+			IDataField<T2> column2, T2 value2,
 			IDataField<T3> column3, T3 value3,
 			IDataField<T4> column4, T4 value4
 		)
 		{
-			SetValue (column1, value1);
-			SetValue (column2, value2);
-			SetValue (column3, value3);
-			SetValue (column4, value4);
+			SetValue(column1, value1);
+			SetValue(column2, value2);
+			SetValue(column3, value3);
+			SetValue(column4, value4);
 			return this;
 		}
 
-		public TreeNavigator SetValues<T1,T2,T3,T4,T5> (
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
+		public TreeNavigator SetValues<T1, T2, T3, T4, T5>(
+			IDataField<T1> column1, T1 value1,
+			IDataField<T2> column2, T2 value2,
 			IDataField<T3> column3, T3 value3,
 			IDataField<T4> column4, T4 value4,
 			IDataField<T5> column5, T5 value5
 		)
 		{
-			SetValue (column1, value1);
-			SetValue (column2, value2);
-			SetValue (column3, value3);
-			SetValue (column4, value4);
-			SetValue (column5, value5);
+			SetValue(column1, value1);
+			SetValue(column2, value2);
+			SetValue(column3, value3);
+			SetValue(column4, value4);
+			SetValue(column5, value5);
 			return this;
 		}
 
-		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6> (
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
+		public TreeNavigator SetValues<T1, T2, T3, T4, T5, T6>(
+			IDataField<T1> column1, T1 value1,
+			IDataField<T2> column2, T2 value2,
 			IDataField<T3> column3, T3 value3,
 			IDataField<T4> column4, T4 value4,
 			IDataField<T5> column5, T5 value5,
 			IDataField<T6> column6, T6 value6
 		)
 		{
-			SetValue (column1, value1);
-			SetValue (column2, value2);
-			SetValue (column3, value3);
-			SetValue (column4, value4);
-			SetValue (column5, value5);
-			SetValue (column6, value6);
+			SetValue(column1, value1);
+			SetValue(column2, value2);
+			SetValue(column3, value3);
+			SetValue(column4, value4);
+			SetValue(column5, value5);
+			SetValue(column6, value6);
 			return this;
 		}
 
-		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6,T7> (
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
+		public TreeNavigator SetValues<T1, T2, T3, T4, T5, T6, T7>(
+			IDataField<T1> column1, T1 value1,
+			IDataField<T2> column2, T2 value2,
 			IDataField<T3> column3, T3 value3,
 			IDataField<T4> column4, T4 value4,
 			IDataField<T5> column5, T5 value5,
@@ -202,19 +204,19 @@ namespace Xwt
 			IDataField<T7> column7, T7 value7
 		)
 		{
-			SetValue (column1, value1);
-			SetValue (column2, value2);
-			SetValue (column3, value3);
-			SetValue (column4, value4);
-			SetValue (column5, value5);
-			SetValue (column6, value6);
-			SetValue (column7, value7);
+			SetValue(column1, value1);
+			SetValue(column2, value2);
+			SetValue(column3, value3);
+			SetValue(column4, value4);
+			SetValue(column5, value5);
+			SetValue(column6, value6);
+			SetValue(column7, value7);
 			return this;
 		}
 
-		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6,T7,T8> (
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
+		public TreeNavigator SetValues<T1, T2, T3, T4, T5, T6, T7, T8>(
+			IDataField<T1> column1, T1 value1,
+			IDataField<T2> column2, T2 value2,
 			IDataField<T3> column3, T3 value3,
 			IDataField<T4> column4, T4 value4,
 			IDataField<T5> column5, T5 value5,
@@ -223,20 +225,20 @@ namespace Xwt
 			IDataField<T8> column8, T8 value8
 		)
 		{
-			SetValue (column1, value1);
-			SetValue (column2, value2);
-			SetValue (column3, value3);
-			SetValue (column4, value4);
-			SetValue (column5, value5);
-			SetValue (column6, value6);
-			SetValue (column7, value7);
-			SetValue (column8, value8);
+			SetValue(column1, value1);
+			SetValue(column2, value2);
+			SetValue(column3, value3);
+			SetValue(column4, value4);
+			SetValue(column5, value5);
+			SetValue(column6, value6);
+			SetValue(column7, value7);
+			SetValue(column8, value8);
 			return this;
 		}
 
-		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6,T7,T8,T9> (
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
+		public TreeNavigator SetValues<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
+			IDataField<T1> column1, T1 value1,
+			IDataField<T2> column2, T2 value2,
 			IDataField<T3> column3, T3 value3,
 			IDataField<T4> column4, T4 value4,
 			IDataField<T5> column5, T5 value5,
@@ -246,21 +248,21 @@ namespace Xwt
 			IDataField<T9> column9, T9 value9
 		)
 		{
-			SetValue (column1, value1);
-			SetValue (column2, value2);
-			SetValue (column3, value3);
-			SetValue (column4, value4);
-			SetValue (column5, value5);
-			SetValue (column6, value6);
-			SetValue (column7, value7);
-			SetValue (column8, value8);
-			SetValue (column9, value9);
+			SetValue(column1, value1);
+			SetValue(column2, value2);
+			SetValue(column3, value3);
+			SetValue(column4, value4);
+			SetValue(column5, value5);
+			SetValue(column6, value6);
+			SetValue(column7, value7);
+			SetValue(column8, value8);
+			SetValue(column9, value9);
 			return this;
 		}
 
-		public TreeNavigator SetValues<T1,T2,T3,T4,T5,T6,T7,T8,T9,T10> (
-			IDataField<T1> column1, T1 value1, 
-			IDataField<T2> column2, T2 value2, 
+		public TreeNavigator SetValues<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
+			IDataField<T1> column1, T1 value1,
+			IDataField<T2> column2, T2 value2,
 			IDataField<T3> column3, T3 value3,
 			IDataField<T4> column4, T4 value4,
 			IDataField<T5> column5, T5 value5,
@@ -271,36 +273,37 @@ namespace Xwt
 			IDataField<T10> column10, T10 value10
 		)
 		{
-			SetValue (column1, value1);
-			SetValue (column2, value2);
-			SetValue (column3, value3);
-			SetValue (column4, value4);
-			SetValue (column5, value5);
-			SetValue (column6, value6);
-			SetValue (column7, value7);
-			SetValue (column8, value8);
-			SetValue (column9, value9);
-			SetValue (column10, value10);
+			SetValue(column1, value1);
+			SetValue(column2, value2);
+			SetValue(column3, value3);
+			SetValue(column4, value4);
+			SetValue(column5, value5);
+			SetValue(column6, value6);
+			SetValue(column7, value7);
+			SetValue(column8, value8);
+			SetValue(column9, value9);
+			SetValue(column10, value10);
 			return this;
 		}
 
-		public T GetValue<T> (IDataField<T> field)
+		public T GetValue<T>(IDataField<T> field)
 		{
-			var value = backend.GetValue (pos, field.Index);
+			var value = backend.GetValue(pos, field.Index);
 			return value == null ? default(T) : (T)value;
 		}
-		
-		public void Remove ()
+
+		public void Remove()
 		{
-			backend.Remove (pos);
+			backend.Remove(pos);
 		}
-		
-		public void RemoveChildren ()
+
+		public void RemoveChildren()
 		{
-			TreePosition child = backend.GetChild (pos, 0);
-			while (child != null) {
-				backend.Remove (child);
-				child = backend.GetChild (pos, 0);
+			TreePosition child = backend.GetChild(pos, 0);
+			while (child != null)
+			{
+				backend.Remove(child);
+				child = backend.GetChild(pos, 0);
 			}
 		}
 	}

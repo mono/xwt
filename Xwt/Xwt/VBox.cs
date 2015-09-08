@@ -28,9 +28,9 @@ using System;
 
 namespace Xwt
 {
-	public class VBox: Box
+	public class VBox : Box
 	{
-		public VBox (): base (Xwt.Backends.Orientation.Vertical)
+		public VBox() : base(Xwt.Backends.Orientation.Vertical)
 		{
 		}
 	}

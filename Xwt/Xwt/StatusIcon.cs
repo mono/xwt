@@ -32,38 +32,41 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(IStatusIconBackend))]
+	[BackendType(typeof(IStatusIconBackend))]
 	public class StatusIcon : XwtComponent
 	{
 		Image image;
 		Menu menu;
-		
-		internal StatusIcon ()
+
+		internal StatusIcon()
 		{
 		}
 
-		public Menu Menu {
+		public Menu Menu
+		{
 			get { return menu; }
-			set { menu = value; Backend.SetMenu (Menu.Backend); }
+			set { menu = value; Backend.SetMenu(Menu.Backend); }
 		}
 
-		public Image Image {
-			get { return image; }
-			set { image = value; Backend.SetImage (image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null); }
-		}
-
-		IStatusIconBackend Backend {
-			get { return (IStatusIconBackend) BackendHost.Backend; }
-		}
-		
-		protected override void Dispose (bool disposing)
+		public Image Image
 		{
-			base.Dispose (disposing);
-			
+			get { return image; }
+			set { image = value; Backend.SetImage(image != null ? image.GetImageDescription(BackendHost.ToolkitEngine) : ImageDescription.Null); }
+		}
+
+		IStatusIconBackend Backend
+		{
+			get { return (IStatusIconBackend)BackendHost.Backend; }
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+
 			// Don't dispose the backend if this object is being finalized
 			// The backend has to handle the finalizing on its own
 			if (disposing && BackendHost.BackendCreated)
-				Backend.Dispose ();
+				Backend.Dispose();
 		}
 	}
 }

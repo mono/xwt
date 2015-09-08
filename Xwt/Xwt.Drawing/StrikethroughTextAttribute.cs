@@ -31,26 +31,26 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	
-	public sealed class StrikethroughTextAttribute: TextAttribute
+
+	public sealed class StrikethroughTextAttribute : TextAttribute
 	{
-		public StrikethroughTextAttribute ()
+		public StrikethroughTextAttribute()
 		{
 			Strikethrough = true;
 		}
 
 		public bool Strikethrough { get; set; }
 
-		public override bool Equals (object ob)
+		public override bool Equals(object ob)
 		{
 			var t = ob as StrikethroughTextAttribute;
-			return t != null && t.Strikethrough == Strikethrough && base.Equals (ob);
+			return t != null && t.Strikethrough == Strikethrough && base.Equals(ob);
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			return base.GetHashCode () ^ Strikethrough.GetHashCode ();
+			return base.GetHashCode() ^ Strikethrough.GetHashCode();
 		}
 	}
-	
+
 }

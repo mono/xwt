@@ -29,15 +29,15 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class CanvasCellView: CellView, ICanvasCellViewFrontend
+	public class CanvasCellView : CellView, ICanvasCellViewFrontend
 	{
-		public CanvasCellView ()
+		public CanvasCellView()
 		{
 		}
 
-		protected void QueueDraw ()
+		protected void QueueDraw()
 		{
-			((ICanvasCellViewBackend)BackendHost.Backend).QueueDraw ();
+			((ICanvasCellViewBackend)BackendHost.Backend).QueueDraw();
 		}
 
 		/// <summary>
@@ -46,42 +46,44 @@ namespace Xwt
 		/// <param name='ctx'>
 		/// Drawing context
 		/// </param>
-		protected virtual void OnDraw (Context ctx, Rectangle cellArea)
+		protected virtual void OnDraw(Context ctx, Rectangle cellArea)
 		{
 		}
 
-		protected virtual Rectangle OnGetDrawingAreaForBounds (Rectangle cellBounds)
+		protected virtual Rectangle OnGetDrawingAreaForBounds(Rectangle cellBounds)
 		{
 			return cellBounds;
 		}
 
-		protected virtual Size OnGetRequiredSize ()
+		protected virtual Size OnGetRequiredSize()
 		{
-			return new Size ();
+			return new Size();
 		}
-		
+
 		#region ICanvasCellRenderer implementation
 
-		void ICanvasCellViewFrontend.Draw (object ctxBackend, Rectangle cellArea)
+		void ICanvasCellViewFrontend.Draw(object ctxBackend, Rectangle cellArea)
 		{
-			using (var ctx = new Context (ctxBackend, Toolkit.CurrentEngine)) {
-				ctx.Reset (null);
-				OnDraw (ctx, cellArea);
+			using (var ctx = new Context(ctxBackend, Toolkit.CurrentEngine))
+			{
+				ctx.Reset(null);
+				OnDraw(ctx, cellArea);
 			}
 		}
 
-		Rectangle ICanvasCellViewFrontend.GetDrawingAreaForBounds (Rectangle cellBounds)
+		Rectangle ICanvasCellViewFrontend.GetDrawingAreaForBounds(Rectangle cellBounds)
 		{
-			return OnGetDrawingAreaForBounds (cellBounds);
+			return OnGetDrawingAreaForBounds(cellBounds);
 		}
 
-		Size ICanvasCellViewFrontend.GetRequiredSize ()
+		Size ICanvasCellViewFrontend.GetRequiredSize()
 		{
-			return OnGetRequiredSize ();
+			return OnGetRequiredSize();
 		}
 
-		ApplicationContext ICanvasCellViewFrontend.ApplicationContext {
-			get { return new ApplicationContext (Toolkit.CurrentEngine); }
+		ApplicationContext ICanvasCellViewFrontend.ApplicationContext
+		{
+			get { return new ApplicationContext(Toolkit.CurrentEngine); }
 		}
 
 		#endregion

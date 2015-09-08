@@ -34,7 +34,7 @@ namespace Xwt.Backends
 	/// XWT supports creating standalone ScrollAdjustment instances, but toolkits don't need to provide
 	/// a backend for those cases, since XWT uses a default platform-agnostic implementation. 
 	/// </remarks>
-	public interface IScrollAdjustmentBackend: IBackend
+	public interface IScrollAdjustmentBackend : IBackend
 	{
 		/// <summary>
 		/// Called to initialize the backend
@@ -42,8 +42,8 @@ namespace Xwt.Backends
 		/// <param name='eventSink'>
 		/// The event sink to be used to report events
 		/// </param>
-		void Initialize (IScrollAdjustmentEventSink eventSink);
-		
+		void Initialize(IScrollAdjustmentEventSink eventSink);
+
 		/// <summary>
 		/// Gets or sets the current position of the scrollbar.
 		/// </summary>
@@ -56,7 +56,7 @@ namespace Xwt.Backends
 		/// Value must be >= LowerValue and &lt;= (UpperValue - PageSize).
 		/// </remarks>
 		double Value { get; set; }
-		
+
 		/// <summary>
 		/// Sets the scroll range and the inital value
 		/// </summary>
@@ -67,7 +67,7 @@ namespace Xwt.Backends
 		/// to the next page (when the scrollbar supports it)</param>
 		/// <param name="stepIncrement">How much the Value is incremented/decremented when you click on the down/up button in the scrollbar</param>
 		/// <param name="value">Value.</param>
-		void SetRange (double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value);
+		void SetRange(double lowerValue, double upperValue, double pageSize, double pageIncrement, double stepIncrement, double value);
 	}
 
 	public interface IScrollAdjustmentEventSink
@@ -75,9 +75,9 @@ namespace Xwt.Backends
 		/// <summary>
 		/// Raised when the position of the scrollbar changes
 		/// </summary>
-		void OnValueChanged ();
+		void OnValueChanged();
 	}
-	
+
 	public enum ScrollAdjustmentEvent
 	{
 		ValueChanged

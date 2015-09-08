@@ -42,16 +42,16 @@ namespace Xwt
 	/// <summary>
 	/// Spacing/Margin around a widget.
 	/// </summary>
-	[TypeConverter (typeof(WidgetSpacingValueConverter))]
-	[ValueSerializer (typeof(WidgetSpacingValueSerializer))]
+	[TypeConverter(typeof(WidgetSpacingValueConverter))]
+	[ValueSerializer(typeof(WidgetSpacingValueSerializer))]
 	public struct WidgetSpacing
 	{
-		static public implicit operator WidgetSpacing (double value)
+		static public implicit operator WidgetSpacing(double value)
 		{
-			return new WidgetSpacing (value, value, value, value);
+			return new WidgetSpacing(value, value, value, value);
 		}
 
-		public WidgetSpacing (double left = 0, double top = 0, double right = 0, double bottom = 0): this ()
+		public WidgetSpacing(double left = 0, double top = 0, double right = 0, double bottom = 0) : this()
 		{
 			Left = left;
 			Top = top;
@@ -70,13 +70,13 @@ namespace Xwt
 		/// </summary>
 		/// <value>The spance on the bottom side.</value>
 		public double Bottom { get; internal set; }
-	
+
 		/// <summary>
 		/// Gets the space on the right side of a widget.
 		/// </summary>
 		/// <value>The spance on the right side.</value>
 		public double Right { get; internal set; }
-	
+
 		/// <summary>
 		/// Gets the space on the top side of a widget.
 		/// </summary>
@@ -87,15 +87,17 @@ namespace Xwt
 		/// Gets the horizontal spacing (left + right) of a widget.
 		/// </summary>
 		/// <value>The horizontal spacing.</value>
-		public double HorizontalSpacing {
+		public double HorizontalSpacing
+		{
 			get { return Left + Right; }
 		}
-		
+
 		/// <summary>
 		/// Gets the vertical spacing (top + bottom) of a widget.
 		/// </summary>
 		/// <value>The vertical spacing.</value>
-		public double VerticalSpacing {
+		public double VerticalSpacing
+		{
 			get { return Top + Bottom; }
 		}
 
@@ -104,7 +106,7 @@ namespace Xwt
 		/// </summary>
 		/// <returns>The spacing for an orientation.</returns>
 		/// <param name="orientation">The orientation.</param>
-		public double GetSpacingForOrientation (Orientation orientation)
+		public double GetSpacingForOrientation(Orientation orientation)
 		{
 			if (orientation == Orientation.Vertical)
 				return Top + Bottom;
@@ -113,65 +115,66 @@ namespace Xwt
 		}
 	}
 
-	
-	class WidgetSpacingValueConverter: TypeConverter
+
+	class WidgetSpacingValueConverter : TypeConverter
 	{
-		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 		{
 			return destinationType == typeof(string);
 		}
-		
-		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
+
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			return sourceType == typeof(string);
 		}
 	}
-	
-	class WidgetSpacingValueSerializer: ValueSerializer
+
+	class WidgetSpacingValueSerializer : ValueSerializer
 	{
-		public override bool CanConvertFromString (string value, IValueSerializerContext context)
+		public override bool CanConvertFromString(string value, IValueSerializerContext context)
 		{
 			return true;
 		}
-		
-		public override bool CanConvertToString (object value, IValueSerializerContext context)
+
+		public override bool CanConvertToString(object value, IValueSerializerContext context)
 		{
 			return true;
 		}
-		
-		public override string ConvertToString (object value, IValueSerializerContext context)
+
+		public override string ConvertToString(object value, IValueSerializerContext context)
 		{
-			WidgetSpacing s = (WidgetSpacing) value;
+			WidgetSpacing s = (WidgetSpacing)value;
 			if (s.Left == s.Right && s.Right == s.Top && s.Top == s.Bottom)
-				return s.Left.ToString (CultureInfo.InvariantCulture);
+				return s.Left.ToString(CultureInfo.InvariantCulture);
 			if (s.Bottom != 0)
-				return s.Left.ToString (CultureInfo.InvariantCulture) + " " + s.Top.ToString (CultureInfo.InvariantCulture) + " " + s.Right.ToString (CultureInfo.InvariantCulture) + " " + s.Bottom.ToString (CultureInfo.InvariantCulture);
+				return s.Left.ToString(CultureInfo.InvariantCulture) + " " + s.Top.ToString(CultureInfo.InvariantCulture) + " " + s.Right.ToString(CultureInfo.InvariantCulture) + " " + s.Bottom.ToString(CultureInfo.InvariantCulture);
 			if (s.Right != 0)
-				return s.Left.ToString (CultureInfo.InvariantCulture) + " " + s.Top.ToString (CultureInfo.InvariantCulture) + " " + s.Right.ToString (CultureInfo.InvariantCulture);
-			return s.Left.ToString (CultureInfo.InvariantCulture) + " " + s.Top.ToString (CultureInfo.InvariantCulture);
+				return s.Left.ToString(CultureInfo.InvariantCulture) + " " + s.Top.ToString(CultureInfo.InvariantCulture) + " " + s.Right.ToString(CultureInfo.InvariantCulture);
+			return s.Left.ToString(CultureInfo.InvariantCulture) + " " + s.Top.ToString(CultureInfo.InvariantCulture);
 		}
-		
-		public override object ConvertFromString (string value, IValueSerializerContext context)
+
+		public override object ConvertFromString(string value, IValueSerializerContext context)
 		{
-			WidgetSpacing c = new WidgetSpacing ();
-			string[] values = value.Split (new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			WidgetSpacing c = new WidgetSpacing();
+			string[] values = value.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			if (values.Length == 0)
 				return c;
 
 			double v;
-			if (double.TryParse (values [0], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
+			if (double.TryParse(values[0], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
 				c.Left = v;
 
-			if (value.Length == 1) {
+			if (value.Length == 1)
+			{
 				c.Top = c.Right = c.Bottom = v;
 				return c;
 			}
 
-			if (value.Length >= 2 && double.TryParse (values [1], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
+			if (value.Length >= 2 && double.TryParse(values[1], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
 				c.Top = v;
-			if (value.Length >= 3 && double.TryParse (values [2], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
+			if (value.Length >= 3 && double.TryParse(values[2], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
 				c.Right = v;
-			if (value.Length >= 4 && double.TryParse (values [3], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
+			if (value.Length >= 4 && double.TryParse(values[3], NumberStyles.Any, CultureInfo.InvariantCulture, out v))
 				c.Bottom = v;
 			return c;
 		}

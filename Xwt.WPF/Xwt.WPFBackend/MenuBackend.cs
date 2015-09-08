@@ -41,78 +41,83 @@ namespace Xwt.WPFBackend
 	{
 		List<MenuItemBackend> items;
 
-		public override void InitializeBackend (object frontend, ApplicationContext context)
+		public override void InitializeBackend(object frontend, ApplicationContext context)
 		{
-			base.InitializeBackend (frontend, context);
-			items = new List<MenuItemBackend> ();
+			base.InitializeBackend(frontend, context);
+			items = new List<MenuItemBackend>();
 		}
 
-		public IList<MenuItemBackend> Items {
-			get {
+		public IList<MenuItemBackend> Items
+		{
+			get
+			{
 				return items;
 			}
 		}
 
-		public MenuItemBackend ParentItem {
+		public MenuItemBackend ParentItem
+		{
 			get;
 			set;
 		}
 
-		public WindowBackend ParentWindow {
+		public WindowBackend ParentWindow
+		{
 			get;
 			set;
 		}
 
-		public void InsertItem (int index, IMenuItemBackend item)
+		public void InsertItem(int index, IMenuItemBackend item)
 		{
 			var itemBackend = (MenuItemBackend)item;
-			items.Insert (index, itemBackend);
+			items.Insert(index, itemBackend);
 			if (ParentItem != null && ParentItem.MenuItem != null)
-				ParentItem.MenuItem.Items.Insert (index, itemBackend.Item);
+				ParentItem.MenuItem.Items.Insert(index, itemBackend.Item);
 			else if (ParentWindow != null)
-				ParentWindow.mainMenu.Items.Insert (index, itemBackend.Item);
+				ParentWindow.mainMenu.Items.Insert(index, itemBackend.Item);
 			else if (this.menu != null)
-				this.menu.Items.Insert (index, itemBackend.Item);
+				this.menu.Items.Insert(index, itemBackend.Item);
 		}
 
-		public void RemoveItem (IMenuItemBackend item)
+		public void RemoveItem(IMenuItemBackend item)
 		{
 			var itemBackend = (MenuItemBackend)item;
-			items.Remove (itemBackend);
+			items.Remove(itemBackend);
 			if (ParentItem != null)
-				ParentItem.MenuItem.Items.Remove (itemBackend.Item);
+				ParentItem.MenuItem.Items.Remove(itemBackend.Item);
 			else if (ParentWindow != null)
-				ParentWindow.mainMenu.Items.Remove (itemBackend.Item);
+				ParentWindow.mainMenu.Items.Remove(itemBackend.Item);
 			else if (this.menu != null)
-				this.menu.Items.Remove (itemBackend.Item);
+				this.menu.Items.Remove(itemBackend.Item);
 		}
 
-		public void RemoveFromParentItem ()
+		public void RemoveFromParentItem()
 		{
 			if (ParentItem == null)
 				return;
 
-			ParentItem.MenuItem.Items.Clear ();
+			ParentItem.MenuItem.Items.Clear();
 			ParentItem = null;
 		}
 
-		public void Popup ()
+		public void Popup()
 		{
-			var menu = CreateContextMenu ();
+			var menu = CreateContextMenu();
 			menu.Placement = PlacementMode.MousePoint;
 			menu.IsOpen = true;
 		}
 
-		public void Popup (IWidgetBackend widget, double x, double y)
+		public void Popup(IWidgetBackend widget, double x, double y)
 		{
-			var menu = CreateContextMenu ();
-			menu.PlacementTarget = (UIElement) widget.NativeWidget;
+			var menu = CreateContextMenu();
+			menu.PlacementTarget = (UIElement)widget.NativeWidget;
 			menu.Placement = PlacementMode.Relative;
 
 			double hratio = 1;
 			double vratio = 1;
-			PresentationSource source = PresentationSource.FromVisual ((Visual)widget.NativeWidget);
-			if (source != null) {
+			PresentationSource source = PresentationSource.FromVisual((Visual)widget.NativeWidget);
+			if (source != null)
+			{
 				Matrix m = source.CompositionTarget.TransformToDevice;
 				hratio = m.M11;
 				vratio = m.M22;
@@ -126,10 +131,11 @@ namespace Xwt.WPFBackend
 		private ContextMenu menu;
 		internal ContextMenu CreateContextMenu()
 		{
-			if (this.menu == null) {
-				this.menu = new ContextMenu ();
+			if (this.menu == null)
+			{
+				this.menu = new ContextMenu();
 				foreach (var item in Items)
-					this.menu.Items.Add (item.Item);
+					this.menu.Items.Add(item.Item);
 			}
 
 			return menu;

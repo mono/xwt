@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ITextEntryBackend: IWidgetBackend
+	public interface ITextEntryBackend : IWidgetBackend
 	{
 		string Text { get; set; }
 		Alignment TextAlignment { get; set; }
@@ -39,16 +39,16 @@ namespace Xwt.Backends
 		int SelectionStart { get; set; }
 		int SelectionLength { get; set; }
 		string SelectedText { get; set; }
-		void SetCompletions (string[] completions);
+		void SetCompletions(string[] completions);
 	}
-	
-	public interface ITextEntryEventSink: IWidgetEventSink
+
+	public interface ITextEntryEventSink : IWidgetEventSink
 	{
-		void OnChanged ();
-		void OnActivated ();
-		void OnSelectionChanged ();
+		void OnChanged();
+		void OnActivated();
+		void OnSelectionChanged();
 	}
-	
+
 	public enum TextEntryEvent
 	{
 		Changed,

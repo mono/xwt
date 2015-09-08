@@ -28,53 +28,54 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public class DrawingPath: XwtObject, IDisposable
+	public class DrawingPath : XwtObject, IDisposable
 	{
 		DrawingPathBackendHandler handler;
 
-		public DrawingPath ()
+		public DrawingPath()
 		{
 			handler = Toolkit.CurrentEngine.VectorImageRecorderContextHandler;
-			Backend = handler.CreatePath ();
-			Init ();
+			Backend = handler.CreatePath();
+			Init();
 		}
 
-		internal DrawingPath (object backend, Toolkit toolkit, DrawingPathBackendHandler h): base (backend, toolkit)
+		internal DrawingPath(object backend, Toolkit toolkit, DrawingPathBackendHandler h) : base(backend, toolkit)
 		{
 			handler = h;
-			Init ();
+			Init();
 		}
 
-		void Init ()
+		void Init()
 		{
 			if (handler.DisposeHandleOnUiThread)
-				ResourceManager.RegisterResource (Backend, handler.Dispose);
+				ResourceManager.RegisterResource(Backend, handler.Dispose);
 			else
-				GC.SuppressFinalize (this);
-		}
-		
-		public void Dispose ()
-		{
-			if (handler.DisposeHandleOnUiThread) {
-				GC.SuppressFinalize (this);
-				ResourceManager.FreeResource (Backend);
-			}
-			else
-				handler.Dispose (Backend);
+				GC.SuppressFinalize(this);
 		}
 
-		~DrawingPath ()
+		public void Dispose()
 		{
-			ResourceManager.FreeResource (Backend);
+			if (handler.DisposeHandleOnUiThread)
+			{
+				GC.SuppressFinalize(this);
+				ResourceManager.FreeResource(Backend);
+			}
+			else
+				handler.Dispose(Backend);
+		}
+
+		~DrawingPath()
+		{
+			ResourceManager.FreeResource(Backend);
 		}
 
 		/// <summary>
 		/// Copies the current drawing path.
 		/// </summary>
 		/// <returns>A new DrawingPath instance that is a copy of the current drawing path.</returns>
-		public DrawingPath CopyPath ()
+		public DrawingPath CopyPath()
 		{
-			return new DrawingPath (handler.CopyPath (Backend), ToolkitEngine, handler);
+			return new DrawingPath(handler.CopyPath(Backend), ToolkitEngine, handler);
 		}
 
 		/// <summary>
@@ -104,11 +105,11 @@ namespace Xwt.Drawing
 		/// <param name='angle2'>
 		/// Angle2 in degrees
 		/// </param>
-		public void Arc (double xc, double yc, double radius, double angle1, double angle2)
+		public void Arc(double xc, double yc, double radius, double angle1, double angle2)
 		{
 			if (radius <= 0)
-				throw new ArgumentException ("Radius must be greater than zero");
-			handler.Arc (Backend, xc, yc, radius, angle1, angle2);
+				throw new ArgumentException("Radius must be greater than zero");
+			handler.Arc(Backend, xc, yc, radius, angle1, angle2);
 		}
 
 		/// <summary>
@@ -138,19 +139,19 @@ namespace Xwt.Drawing
 		/// <param name='angle2'>
 		/// Angle2 in degrees
 		/// </param>
-		public void ArcNegative (double xc, double yc, double radius, double angle1, double angle2)
+		public void ArcNegative(double xc, double yc, double radius, double angle1, double angle2)
 		{
-			handler.ArcNegative (Backend, xc, yc, radius, angle1, angle2);
+			handler.ArcNegative(Backend, xc, yc, radius, angle1, angle2);
 		}
 
-		public void ClosePath ()
+		public void ClosePath()
 		{
-			handler.ClosePath (Backend);
+			handler.ClosePath(Backend);
 		}
 
-		public void CurveTo (Point p1, Point p2, Point p3)
+		public void CurveTo(Point p1, Point p2, Point p3)
 		{
-			CurveTo (p1.X, p1.Y, p2.X, p2.Y, p3.X, p3.Y);
+			CurveTo(p1.X, p1.Y, p2.X, p2.Y, p3.X, p3.Y);
 		}
 
 		/// <summary>
@@ -175,24 +176,24 @@ namespace Xwt.Drawing
 		/// <param name='y3'>
 		/// Y3.
 		/// </param>
-		public void CurveTo (double x1, double y1, double x2, double y2, double x3, double y3)
+		public void CurveTo(double x1, double y1, double x2, double y2, double x3, double y3)
 		{
-			handler.CurveTo (Backend, x1, y1, x2, y2, x3, y3);
+			handler.CurveTo(Backend, x1, y1, x2, y2, x3, y3);
 		}
 
-		public void LineTo (Point p)
+		public void LineTo(Point p)
 		{
-			LineTo (p.X, p.Y);
+			LineTo(p.X, p.Y);
 		}
 
-		public void LineTo (double x, double y)
+		public void LineTo(double x, double y)
 		{
-			handler.LineTo (Backend, x, y);
+			handler.LineTo(Backend, x, y);
 		}
 
-		public void MoveTo (Point p)
+		public void MoveTo(Point p)
 		{
-			MoveTo (p.X, p.Y);
+			MoveTo(p.X, p.Y);
 		}
 
 		/// <summary>
@@ -205,37 +206,37 @@ namespace Xwt.Drawing
 		/// <param name='y'>
 		/// Y.
 		/// </param>
-		public void MoveTo (double x, double y)
+		public void MoveTo(double x, double y)
 		{
-			handler.MoveTo (Backend, x, y);
+			handler.MoveTo(Backend, x, y);
 		}
 
-		public void Rectangle (Rectangle rectangle)
+		public void Rectangle(Rectangle rectangle)
 		{
-			Rectangle (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+			Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
 		}
 
-		public void Rectangle (Point p, double width, double height)
+		public void Rectangle(Point p, double width, double height)
 		{
-			Rectangle (p.X, p.Y, width, height);
+			Rectangle(p.X, p.Y, width, height);
 		}
 
-		public void Rectangle (double x, double y, double width, double height)
+		public void Rectangle(double x, double y, double width, double height)
 		{
-			handler.Rectangle (Backend, x, y, width, height);
+			handler.Rectangle(Backend, x, y, width, height);
 		}
 
-		public void RoundRectangle (Rectangle rectangle, double radius)
+		public void RoundRectangle(Rectangle rectangle, double radius)
 		{
-			RoundRectangle (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, radius);
+			RoundRectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, radius);
 		}
 
-		public void RoundRectangle (Point p, double width, double height, double radius)
+		public void RoundRectangle(Point p, double width, double height, double radius)
 		{
-			RoundRectangle (p.X, p.Y, width, height, radius);
+			RoundRectangle(p.X, p.Y, width, height, radius);
 		}
 
-		public void RoundRectangle (double x, double y, double width, double height, double radius)
+		public void RoundRectangle(double x, double y, double width, double height, double radius)
 		{
 			if (radius > width - radius)
 				radius = width / 2;
@@ -243,40 +244,40 @@ namespace Xwt.Drawing
 				radius = height / 2;
 
 			// top-left corner
-			MoveTo (x + radius, y);
+			MoveTo(x + radius, y);
 
 			// top edge
-			LineTo (x + width - radius, y);
+			LineTo(x + width - radius, y);
 
 			// top-right corner
 			if (radius > 0)
-				Arc (x + width - radius, y + radius, radius, -90, 0);
+				Arc(x + width - radius, y + radius, radius, -90, 0);
 
 			// right edge
-			LineTo (x + width, y + height - radius);
+			LineTo(x + width, y + height - radius);
 
 			// bottom-right corner
 			if (radius > 0)
-				Arc (x + width - radius, y + height - radius, radius, 0, 90);
+				Arc(x + width - radius, y + height - radius, radius, 0, 90);
 
 			// bottom edge
-			LineTo (x + radius, y + height);
+			LineTo(x + radius, y + height);
 
 			// bottom-left corner
 			if (radius > 0)
-				Arc (x + radius, y + height - radius, radius, 90, 180);
+				Arc(x + radius, y + height - radius, radius, 90, 180);
 
 			// left edge
-			LineTo (x, y + radius);
+			LineTo(x, y + radius);
 
 			// top-left corner
 			if (radius > 0)
-				Arc (x + radius, y + radius, radius, 180, 270);
+				Arc(x + radius, y + radius, radius, 180, 270);
 		}
 
-		public void RelCurveTo (Distance d1, Distance d2, Distance d3)
+		public void RelCurveTo(Distance d1, Distance d2, Distance d3)
 		{
-			RelCurveTo (d1.Dx, d1.Dy, d2.Dx, d2.Dy, d3.Dx, d3.Dy);
+			RelCurveTo(d1.Dx, d1.Dy, d2.Dx, d2.Dy, d3.Dx, d3.Dy);
 		}
 
 		/// <summary>
@@ -306,14 +307,14 @@ namespace Xwt.Drawing
 		/// <param name='dy3'>
 		/// Dy3.
 		/// </param>
-		public void RelCurveTo (double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
+		public void RelCurveTo(double dx1, double dy1, double dx2, double dy2, double dx3, double dy3)
 		{
-			handler.RelCurveTo (Backend, dx1, dy1, dx2, dy2, dx3, dy3);
+			handler.RelCurveTo(Backend, dx1, dy1, dx2, dy2, dx3, dy3);
 		}
 
-		public void RelLineTo (Distance d)
+		public void RelLineTo(Distance d)
 		{
-			RelLineTo (d.Dx, d.Dy);
+			RelLineTo(d.Dx, d.Dy);
 		}
 
 		/// <summary>
@@ -329,9 +330,9 @@ namespace Xwt.Drawing
 		/// <param name='dy'>
 		/// Dy.
 		/// </param>
-		public void RelLineTo (double dx, double dy)
+		public void RelLineTo(double dx, double dy)
 		{
-			handler.RelLineTo (Backend, dx, dy);
+			handler.RelLineTo(Backend, dx, dy);
 		}
 
 		/// <summary>
@@ -343,14 +344,14 @@ namespace Xwt.Drawing
 		/// <param name='d'>
 		/// D.
 		/// </param>
-		public void RelMoveTo (Distance d)
+		public void RelMoveTo(Distance d)
 		{
-			RelMoveTo (d.Dx, d.Dy);
+			RelMoveTo(d.Dx, d.Dy);
 		}
 
-		public void RelMoveTo (double dx, double dy)
+		public void RelMoveTo(double dx, double dy)
 		{
-			handler.RelMoveTo (Backend, dx, dy);
+			handler.RelMoveTo(Backend, dx, dy);
 		}
 
 		/// <summary>
@@ -359,21 +360,24 @@ namespace Xwt.Drawing
 		/// <param name='p'>
 		/// The path to append.
 		/// </param>
-		public void AppendPath (DrawingPath p)
+		public void AppendPath(DrawingPath p)
 		{
 			if (p is Context)
-				throw new NotSupportedException ("Can't directly append a Context object to a path");
-			if (!(handler is VectorImageRecorderContextHandler) && (p.Backend is VectorBackend)) {
+				throw new NotSupportedException("Can't directly append a Context object to a path");
+			if (!(handler is VectorImageRecorderContextHandler) && (p.Backend is VectorBackend))
+			{
 				var c = (VectorBackend)p.Backend;
-				ToolkitEngine.VectorImageRecorderContextHandler.Draw (handler, Backend, c.ToVectorImageData ());
-			} else {
-				handler.AppendPath (Backend, p.Backend);
+				ToolkitEngine.VectorImageRecorderContextHandler.Draw(handler, Backend, c.ToVectorImageData());
+			}
+			else
+			{
+				handler.AppendPath(Backend, p.Backend);
 			}
 		}
 
-		public bool IsPointInFill (Point p)
+		public bool IsPointInFill(Point p)
 		{
-			return IsPointInFill (p.X, p.Y);
+			return IsPointInFill(p.X, p.Y);
 		}
 
 		/// <summary>
@@ -388,9 +392,9 @@ namespace Xwt.Drawing
 		/// <param name='y'>
 		/// The y coordinate.
 		/// </param>
-		public bool IsPointInFill (double x, double y)
+		public bool IsPointInFill(double x, double y)
 		{
-			return handler.IsPointInFill (Backend, x, y);
+			return handler.IsPointInFill(Backend, x, y);
 		}
 	}
 }

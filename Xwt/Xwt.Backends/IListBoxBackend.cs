@@ -30,18 +30,18 @@ namespace Xwt.Backends
 	/// <summary>
 	/// ListBox backend
 	/// </summary>
-	public interface IListBoxBackend: IWidgetBackend, IScrollableWidgetBackend
+	public interface IListBoxBackend : IWidgetBackend, IScrollableWidgetBackend
 	{
-		void SetViews (CellViewCollection views);
-		void SetSource (IListDataSource source, IBackend sourceBackend);
-		void SetSelectionMode (SelectionMode mode);
-		void SelectAll ();
-		void UnselectAll ();
+		void SetViews(CellViewCollection views);
+		void SetSource(IListDataSource source, IBackend sourceBackend);
+		void SetSelectionMode(SelectionMode mode);
+		void SelectAll();
+		void UnselectAll();
 		int[] SelectedRows { get; }
 		int FocusedRow { get; set; }
-		void SelectRow (int pos);
-		void UnselectRow (int pos);
-		void ScrollToRow (int row);
+		void SelectRow(int pos);
+		void UnselectRow(int pos);
+		void ScrollToRow(int row);
 		bool GridLinesVisible { get; set; }
 	}
 
@@ -51,7 +51,7 @@ namespace Xwt.Backends
 	/// <remarks>
 	/// Event IDs: ListViewEvent, TableViewEvent
 	/// </remarks>
-	public interface IListBoxEventSink: IListViewEventSink
+	public interface IListBoxEventSink : IListViewEventSink
 	{
 	}
 }

@@ -28,18 +28,18 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IFrameBackend: IWidgetBackend, IChildPlacementHandler
+	public interface IFrameBackend : IWidgetBackend, IChildPlacementHandler
 	{
 		string Label { get; set; }
 		Color BorderColor { get; set; }
-		
-		void SetFrameType (FrameType type);
-		void SetContent (IWidgetBackend child);
-		void SetBorderSize (double left, double right, double top, double bottom);
-		void SetPadding (double left, double right, double top, double bottom);
+
+		void SetFrameType(FrameType type);
+		void SetContent(IWidgetBackend child);
+		void SetBorderSize(double left, double right, double top, double bottom);
+		void SetPadding(double left, double right, double top, double bottom);
 	}
-	
-	public interface IFrameEventSink: IWidgetEventSink
+
+	public interface IFrameEventSink : IWidgetEventSink
 	{
 	}
 }

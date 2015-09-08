@@ -33,10 +33,10 @@ namespace Xwt.WPFBackend
 	internal class ListSourceNotifyWrapper
 		: IEnumerable, INotifyCollectionChanged
 	{
-		public ListSourceNotifyWrapper (IListDataSource source)
+		public ListSourceNotifyWrapper(IListDataSource source)
 		{
 			if (source == null)
-				throw new ArgumentNullException ("source");
+				throw new ArgumentNullException("source");
 
 			this.source = source;
 			this.source.RowInserted += OnRowsUpdated;
@@ -47,30 +47,31 @@ namespace Xwt.WPFBackend
 
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-		public IEnumerator GetEnumerator ()
+		public IEnumerator GetEnumerator()
 		{
 			int cols = this.source.ColumnTypes.Length;
-			for (int i = 0; i < this.source.RowCount; ++i) {
+			for (int i = 0; i < this.source.RowCount; ++i)
+			{
 				object[] row = new object[cols];
 				for (int c = 0; c < row.Length; ++c)
-					row [c] = this.source.GetValue (i, c);
+					row[c] = this.source.GetValue(i, c);
 
 				yield return row;
 			}
 		}
 
 		private readonly IListDataSource source;
-		
-		private void OnRowsUpdated (object sender, ListRowEventArgs e)
+
+		private void OnRowsUpdated(object sender, ListRowEventArgs e)
 		{
-			OnCollectionChanged (new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Reset));
+			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 
-		private void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
+		private void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
 		{
 			var changed = this.CollectionChanged;
 			if (changed != null)
-				changed (this, e);
+				changed(this, e);
 		}
 	}
 }

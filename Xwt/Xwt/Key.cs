@@ -133,7 +133,7 @@ namespace Xwt
 		F8 = 0xffc5,
 		F9 = 0xffc6,
 		F10 = 0xffc7,
-		
+
 		Insert = 0xff63,
 		ScrollLock = 0xff14,
 		SysReq = 0xff15,

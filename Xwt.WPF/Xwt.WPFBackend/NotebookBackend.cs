@@ -38,117 +38,131 @@ namespace Xwt.WPFBackend
 {
 	public class NotebookBackend : WidgetBackend, INotebookBackend
 	{
-		public NotebookBackend ()
+		public NotebookBackend()
 		{
-			TabControl = new WpfNotebook ();
+			TabControl = new WpfNotebook();
 		}
 
-		public int CurrentTab {
+		public int CurrentTab
+		{
 			get { return TabControl.SelectedIndex; }
 			set { TabControl.SelectedIndex = value; }
 		}
 
-		public Xwt.NotebookTabOrientation TabOrientation {
-			get {
+		public Xwt.NotebookTabOrientation TabOrientation
+		{
+			get
+			{
 				Xwt.NotebookTabOrientation tabPos = Xwt.NotebookTabOrientation.Top;
-				Enum.TryParse (TabControl.TabStripPlacement.ToString (), out tabPos);
+				Enum.TryParse(TabControl.TabStripPlacement.ToString(), out tabPos);
 				return tabPos;
 			}
-			set {
+			set
+			{
 				SWC.Dock tabPos = SWC.Dock.Top;
-				Enum.TryParse (value.ToString (), out tabPos);
+				Enum.TryParse(value.ToString(), out tabPos);
 				TabControl.TabStripPlacement = tabPos;
 			}
 		}
 
-		public void Add (IWidgetBackend widget, NotebookTab tab)
+		public void Add(IWidgetBackend widget, NotebookTab tab)
 		{
 			UIElement element = (UIElement)widget.NativeWidget;
-			TabItem ti = new TabItem {
+			TabItem ti = new TabItem
+			{
 				Content = element,
 				Header = tab.Label,
 				Tag = tab
 			};
 
 			FrameworkElement felement = element as FrameworkElement;
-			if (felement != null) {
+			if (felement != null)
+			{
 				felement.Tag = widget;
 				felement.Loaded += OnContentLoaded;
 			}
 
-			TabControl.Items.Add (ti);
-			
+			TabControl.Items.Add(ti);
+
 			if (TabControl.SelectedIndex == -1)
 				TabControl.SelectedIndex = 0;
 		}
 
-		public void Remove (IWidgetBackend widget)
+		public void Remove(IWidgetBackend widget)
 		{
 			UIElement element = widget.NativeWidget as UIElement;
 			if (element == null)
-				throw new ArgumentException ();
+				throw new ArgumentException();
 
 			FrameworkElement felement = element as FrameworkElement;
 			if (felement != null)
 				felement.Loaded -= OnContentLoaded;
-			
-			for (int i = 0; i < TabControl.Items.Count; ++i) {
-				TabItem tab = (TabItem)TabControl.Items [i];
-				if (tab.Content == widget.NativeWidget) {
-					TabControl.Items.RemoveAt (i);
+
+			for (int i = 0; i < TabControl.Items.Count; ++i)
+			{
+				TabItem tab = (TabItem)TabControl.Items[i];
+				if (tab.Content == widget.NativeWidget)
+				{
+					TabControl.Items.RemoveAt(i);
 					break;
 				}
 			}
 		}
 
-		public void UpdateLabel (NotebookTab tab, string hint)
+		public void UpdateLabel(NotebookTab tab, string hint)
 		{
-			TabItem item = TabControl.Items.Cast<TabItem> ().FirstOrDefault (t => t.Tag == tab);
+			TabItem item = TabControl.Items.Cast<TabItem>().FirstOrDefault(t => t.Tag == tab);
 			if (item != null)
 				item.Header = tab.Label;
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
-			if (eventId is NotebookEvent) {
-				switch ((NotebookEvent)eventId) {
-				case NotebookEvent.CurrentTabChanged:
-					TabControl.SelectionChanged += OnCurrentTabChanged;
-					break;
+			base.EnableEvent(eventId);
+			if (eventId is NotebookEvent)
+			{
+				switch ((NotebookEvent)eventId)
+				{
+					case NotebookEvent.CurrentTabChanged:
+						TabControl.SelectionChanged += OnCurrentTabChanged;
+						break;
 				}
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
-			if (eventId is NotebookEvent) {
-				switch ((NotebookEvent)eventId) {
-				case NotebookEvent.CurrentTabChanged:
-					TabControl.SelectionChanged -= OnCurrentTabChanged;
-					break;
+			base.DisableEvent(eventId);
+			if (eventId is NotebookEvent)
+			{
+				switch ((NotebookEvent)eventId)
+				{
+					case NotebookEvent.CurrentTabChanged:
+						TabControl.SelectionChanged -= OnCurrentTabChanged;
+						break;
 				}
 			}
 		}
 
-		private void OnCurrentTabChanged (object sender, SelectionChangedEventArgs e)
+		private void OnCurrentTabChanged(object sender, SelectionChangedEventArgs e)
 		{
-			Context.InvokeUserCode (NotebookEventSink.OnCurrentTabChanged);
+			Context.InvokeUserCode(NotebookEventSink.OnCurrentTabChanged);
 		}
 
-		protected TabControl TabControl {
+		protected TabControl TabControl
+		{
 			get { return (TabControl)Widget; }
 			set { Widget = value; }
 		}
 
-		protected INotebookEventSink NotebookEventSink {
-			get { return (INotebookEventSink) EventSink; }
+		protected INotebookEventSink NotebookEventSink
+		{
+			get { return (INotebookEventSink)EventSink; }
 		}
 
-		private void OnContentLoaded (object sender, RoutedEventArgs routedEventArgs)
+		private void OnContentLoaded(object sender, RoutedEventArgs routedEventArgs)
 		{
-			WidgetBackend backend = (WidgetBackend)((FrameworkElement) sender).Tag;
+			WidgetBackend backend = (WidgetBackend)((FrameworkElement)sender).Tag;
 
 			var surface = backend.Frontend as IWidgetSurface;
 			if (surface == null)
@@ -162,10 +176,10 @@ namespace Xwt.WPFBackend
 	{
 		public WidgetBackend Backend { get; set; }
 
-		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
-			var s = base.MeasureOverride (constraint);
-			return Backend.MeasureOverride (constraint, s);
+			var s = base.MeasureOverride(constraint);
+			return Backend.MeasureOverride(constraint, s);
 		}
 	}
 }

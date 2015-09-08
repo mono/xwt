@@ -33,26 +33,30 @@ namespace Xwt.WPFBackend
 	internal class TreeStoreNode
 		: ValuesContainer, TreePosition
 	{
-		public TreeStoreNode (object[] values, TreeStoreNode parent)
-			: base (values)
+		public TreeStoreNode(object[] values, TreeStoreNode parent)
+			: base(values)
 		{
 			Parent = parent;
 		}
 
-		public TreeStoreNode Parent {
+		public TreeStoreNode Parent
+		{
 			get;
 			private set;
 		}
 
-		public ObservableCollection<TreeStoreNode> Children {
-			get { return this.children ?? (this.children = new ObservableCollection<TreeStoreNode> ()); }
+		public ObservableCollection<TreeStoreNode> Children
+		{
+			get { return this.children ?? (this.children = new ObservableCollection<TreeStoreNode>()); }
 		}
 
 		private bool isExpanded;
 
-		public bool IsExpanded {
+		public bool IsExpanded
+		{
 			get { return this.isExpanded; }
-			set {
+			set
+			{
 				if (Parent != null && value)
 					Parent.IsExpanded = true;
 
@@ -60,7 +64,7 @@ namespace Xwt.WPFBackend
 					return;
 
 				this.isExpanded = value;
-				OnPropertyChanged (new PropertyChangedEventArgs ("IsExpanded"));
+				OnPropertyChanged(new PropertyChangedEventArgs("IsExpanded"));
 			}
 		}
 

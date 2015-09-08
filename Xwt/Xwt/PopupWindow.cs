@@ -29,7 +29,7 @@ namespace Xwt
 {
 	public class PopupWindow
 	{
-		public PopupWindow ()
+		public PopupWindow()
 		{
 		}
 	}

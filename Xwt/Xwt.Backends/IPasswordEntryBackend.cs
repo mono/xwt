@@ -11,8 +11,8 @@ namespace Xwt.Backends
 
 	public interface IPasswordEntryEventSink : IWidgetEventSink
 	{
-		void OnChanged ();
-		void OnActivated ();
+		void OnChanged();
+		void OnActivated();
 	}
 
 	public enum PasswordEntryEvent

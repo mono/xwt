@@ -33,54 +33,58 @@ namespace Xwt
 {
 	public interface ITreeDataSource
 	{
-		TreePosition GetParent (TreePosition pos);
-		TreePosition GetChild (TreePosition pos, int index);
-		int GetChildrenCount (TreePosition pos);
-		object GetValue (TreePosition pos, int column);
-		void SetValue (TreePosition pos, int column, object value);
+		TreePosition GetParent(TreePosition pos);
+		TreePosition GetChild(TreePosition pos, int index);
+		int GetChildrenCount(TreePosition pos);
+		object GetValue(TreePosition pos, int column);
+		void SetValue(TreePosition pos, int column, object value);
 		Type[] ColumnTypes { get; }
-		
+
 		event EventHandler<TreeNodeEventArgs> NodeInserted;
 		event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		event EventHandler<TreeNodeEventArgs> NodeChanged;
 		event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
 	}
-	
-	public class TreeNodeEventArgs: EventArgs
+
+	public class TreeNodeEventArgs : EventArgs
 	{
-		public TreeNodeEventArgs (TreePosition node)
+		public TreeNodeEventArgs(TreePosition node)
 		{
 			Node = node;
 		}
-		
-		public TreePosition Node {
+
+		public TreePosition Node
+		{
 			get;
 			private set;
 		}
 	}
-	
-	public class TreeNodeChildEventArgs: TreeNodeEventArgs
+
+	public class TreeNodeChildEventArgs : TreeNodeEventArgs
 	{
-		public TreeNodeChildEventArgs (TreePosition parent, int childIndex): base (parent)
+		public TreeNodeChildEventArgs(TreePosition parent, int childIndex) : base(parent)
 		{
 			ChildIndex = childIndex;
 		}
-		
-		public int ChildIndex {
+
+		public int ChildIndex
+		{
 			get;
 			private set;
 		}
 	}
-	
-	public class TreeNodeOrderEventArgs: TreeNodeEventArgs
+
+	public class TreeNodeOrderEventArgs : TreeNodeEventArgs
 	{
-		public TreeNodeOrderEventArgs (TreePosition parentNode, int[] childrenOrder): base (parentNode)
+		public TreeNodeOrderEventArgs(TreePosition parentNode, int[] childrenOrder) : base(parentNode)
 		{
 			ChildrenOrder = childrenOrder;
 		}
-		
-		public int[] ChildrenOrder {
+
+		public int[] ChildrenOrder
+		{
 			get;
 			private set;
 		}
-	}}
+	}
+}

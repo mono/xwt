@@ -34,20 +34,20 @@ namespace Xwt.Backends
 		string Title { get; }
 		double LoadProgress { get; }
 		bool CanGoBack { get; }
-		void GoBack ();
+		void GoBack();
 		bool CanGoForward { get; }
-		void GoForward ();
-		void Reload ();
-		void StopLoading ();
-		void LoadHtml (string content, string base_uri);
+		void GoForward();
+		void Reload();
+		void StopLoading();
+		void LoadHtml(string content, string base_uri);
 	}
 
 	public interface IWebViewEventSink : IWidgetEventSink
 	{
-		void OnLoaded ();
-		void OnLoading ();
-		bool OnNavigateToUrl (string url);
-		void OnTitleChanged ();
+		void OnLoaded();
+		void OnLoading();
+		bool OnNavigateToUrl(string url);
+		void OnTitleChanged();
 	}
 
 	public enum WebViewEvent

@@ -29,75 +29,80 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
-	[BackendType (typeof(IToggleButtonBackend))]
-	public class ToggleButton: Button
+	[BackendType(typeof(IToggleButtonBackend))]
+	public class ToggleButton : Button
 	{
 		EventHandler toggledEvent;
-		
-		protected new class WidgetBackendHost: Button.WidgetBackendHost, IToggleButtonEventSink
+
+		protected new class WidgetBackendHost : Button.WidgetBackendHost, IToggleButtonEventSink
 		{
-			public void OnToggled ()
+			public void OnToggled()
 			{
-				((ToggleButton)Parent).OnToggled (EventArgs.Empty);
+				((ToggleButton)Parent).OnToggled(EventArgs.Empty);
 			}
 		}
-		
-		static ToggleButton ()
+
+		static ToggleButton()
 		{
-			MapEvent (ToggleButtonEvent.Toggled, typeof(ToggleButton), "OnToggled");
+			MapEvent(ToggleButtonEvent.Toggled, typeof(ToggleButton), "OnToggled");
 		}
-		
-		public ToggleButton ()
+
+		public ToggleButton()
 		{
 		}
-		
-		public ToggleButton (string label)
+
+		public ToggleButton(string label)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 		}
-		
-		public ToggleButton (Image img, string label)
+
+		public ToggleButton(Image img, string label)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 			Image = img;
 		}
-		
-		public ToggleButton (Image img)
+
+		public ToggleButton(Image img)
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Image = img;
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		IToggleButtonBackend Backend {
-			get { return (IToggleButtonBackend) BackendHost.Backend; }
+
+		IToggleButtonBackend Backend
+		{
+			get { return (IToggleButtonBackend)BackendHost.Backend; }
 		}
-		
-		public bool Active {
+
+		public bool Active
+		{
 			get { return Backend.Active; }
 			set { Backend.Active = value; }
 		}
-		
-		protected void OnToggled (EventArgs a)
+
+		protected void OnToggled(EventArgs a)
 		{
 			if (toggledEvent != null)
-				toggledEvent (this, a);
+				toggledEvent(this, a);
 		}
-		
-		public event EventHandler Toggled {
-			add {
-				BackendHost.OnBeforeEventAdd (ToggleButtonEvent.Toggled, toggledEvent);
+
+		public event EventHandler Toggled
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(ToggleButtonEvent.Toggled, toggledEvent);
 				toggledEvent += value;
 			}
-			remove {
+			remove
+			{
 				toggledEvent -= value;
-				BackendHost.OnAfterEventRemove (ToggleButtonEvent.Toggled, toggledEvent);
+				BackendHost.OnAfterEventRemove(ToggleButtonEvent.Toggled, toggledEvent);
 			}
 		}
 	}

@@ -43,30 +43,33 @@ namespace Xwt.WPFBackend
 			Loaded += OnLoaded;
 		}
 
-		public ExTreeViewItem (ExTreeView view)
+		public ExTreeViewItem(ExTreeView view)
 			: this()
 		{
 			this.view = view;
 		}
 
-		protected override void OnExpanded (RoutedEventArgs e)
+		protected override void OnExpanded(RoutedEventArgs e)
 		{
 			var node = (TreeStoreNode)DataContext;
-			view.Backend.Context.InvokeUserCode (delegate {
-				((ITreeViewEventSink)view.Backend.EventSink).OnRowExpanding (node);
+			view.Backend.Context.InvokeUserCode(delegate
+			{
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowExpanding(node);
 			});
 
-			base.OnExpanded (e);
+			base.OnExpanded(e);
 
-			view.Backend.Context.InvokeUserCode (delegate {
-				((ITreeViewEventSink)view.Backend.EventSink).OnRowExpanded (node);
+			view.Backend.Context.InvokeUserCode(delegate
+			{
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowExpanded(node);
 			});
 		}
 
 		protected override void OnCollapsed(RoutedEventArgs e)
 		{
 			var node = DataContext as TreeStoreNode;
-			if (node == null) {
+			if (node == null)
+			{
 				return;
 			}
 			if (!IsExpanded)
@@ -74,19 +77,24 @@ namespace Xwt.WPFBackend
 				{
 					return i != this;
 				});
-			view.Backend.Context.InvokeUserCode (delegate {
-				((ITreeViewEventSink)view.Backend.EventSink).OnRowCollapsing (node);
+			view.Backend.Context.InvokeUserCode(delegate
+			{
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowCollapsing(node);
 			});
 			base.OnCollapsed(e);
-			view.Backend.Context.InvokeUserCode (delegate {
-				((ITreeViewEventSink)view.Backend.EventSink).OnRowCollapsed (node);
+			view.Backend.Context.InvokeUserCode(delegate
+			{
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowCollapsed(node);
 			});
 		}
 
-		public int Level {
-			get {
-				if (this.level == -1) {
-					ExTreeViewItem parent = ItemsControlFromItemContainer (this) as ExTreeViewItem;
+		public int Level
+		{
+			get
+			{
+				if (this.level == -1)
+				{
+					ExTreeViewItem parent = ItemsControlFromItemContainer(this) as ExTreeViewItem;
 					this.level = (parent != null) ? parent.Level + 1 : 0;
 				}
 
@@ -94,27 +102,29 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void SelectChildren (Func<object, ExTreeViewItem, bool> selector)
+		public void SelectChildren(Func<object, ExTreeViewItem, bool> selector)
 		{
 			if (selector(this.DataContext, this))
-				TreeView.SelectedItems.Add (DataContext);
+				TreeView.SelectedItems.Add(DataContext);
 
-			foreach (var item in Items) {
+			foreach (var item in Items)
+			{
 				var treeItem = (ExTreeViewItem)ItemContainerGenerator.ContainerFromItem(item);
-				if (treeItem != null && selector (item, treeItem))
-					treeItem.SelectChildren (selector);
+				if (treeItem != null && selector(item, treeItem))
+					treeItem.SelectChildren(selector);
 			}
 		}
 
-		public void UnselectChildren (Func<object, ExTreeViewItem, bool> selector)
+		public void UnselectChildren(Func<object, ExTreeViewItem, bool> selector)
 		{
 			if (selector(this.DataContext, this))
 				TreeView.SelectedItems.Remove(DataContext);
 
-			foreach (var item in Items) {
+			foreach (var item in Items)
+			{
 				var treeItem = (ExTreeViewItem)ItemContainerGenerator.ContainerFromItem(item);
-				if (treeItem != null && selector (item, treeItem))
-					treeItem.UnselectChildren (selector);
+				if (treeItem != null && selector(item, treeItem))
+					treeItem.UnselectChildren(selector);
 			}
 		}
 
@@ -123,10 +133,11 @@ namespace Xwt.WPFBackend
 
 		protected override DependencyObject GetContainerForItemOverride()
 		{
-			return new ExTreeViewItem (this.view);
+			return new ExTreeViewItem(this.view);
 		}
 
-		protected override void OnMouseLeftButtonDown (MouseButtonEventArgs e) {
+		protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+		{
 			view.SelectItem(this);
 			e.Handled = true;
 			base.OnMouseLeftButtonDown(e);
@@ -147,24 +158,26 @@ namespace Xwt.WPFBackend
 		private void FindParent()
 		{
 			FrameworkElement e = this;
-			while (this.view == null && e != null) {
+			while (this.view == null && e != null)
+			{
 				this.view = e.Parent as ExTreeView;
 				e = (FrameworkElement)e.Parent;
 			}
 		}
 
-		private void OnLoaded (object sender, RoutedEventArgs routedEventArgs)
+		private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 		{
-			ItemsControl parent = ItemsControlFromItemContainer (this);
+			ItemsControl parent = ItemsControlFromItemContainer(this);
 			if (parent == null)
 				return;
 
-			int index = parent.Items.IndexOf (DataContext);
+			int index = parent.Items.IndexOf(DataContext);
 			if (index != parent.Items.Count - 1)
 				return;
 
-			foreach (var column in this.view.View.Columns) {
-				if (Double.IsNaN (column.Width))
+			foreach (var column in this.view.View.Columns)
+			{
+				if (Double.IsNaN(column.Width))
 					column.Width = column.ActualWidth;
 
 				column.Width = Double.NaN;

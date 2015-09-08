@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ISearchTextEntryBackend: ITextEntryBackend
+	public interface ISearchTextEntryBackend : ITextEntryBackend
 	{
 	}
 }

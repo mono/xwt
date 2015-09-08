@@ -30,7 +30,7 @@ namespace Xwt
 	/// <summary>
 	/// Key event arguments, containing information about pressed/released keys.
 	/// </summary>
-	public class KeyEventArgs: EventArgs
+	public class KeyEventArgs : EventArgs
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xwt.KeyEventArgs"/> class.
@@ -39,14 +39,14 @@ namespace Xwt
 		/// <param name="modifiers">The modifier keys.</param>
 		/// <param name="isRepeat">the key has been pressed more then once.</param>
 		/// <param name="timestamp">The timestamp of the key event.</param>
-		public KeyEventArgs (Key key, ModifierKeys modifiers, bool isRepeat, long timestamp)
+		public KeyEventArgs(Key key, ModifierKeys modifiers, bool isRepeat, long timestamp)
 		{
 			this.Key = key;
 			this.Modifiers = modifiers;
 			this.IsRepeat = isRepeat;
 			this.Timestamp = timestamp;
 		}
-		
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xwt.KeyEventArgs"/> class.
 		/// </summary>
@@ -55,12 +55,12 @@ namespace Xwt
 		/// <param name="modifiers">The modifier keys.</param>
 		/// <param name="isRepeat">the key has been pressed more then once.</param>
 		/// <param name="timestamp">The timestamp of the key event.</param>
-		public KeyEventArgs (Key key, int nativeKeyCode, ModifierKeys modifiers, bool isRepeat, long timestamp)
-			: this (key, modifiers, isRepeat, timestamp)
+		public KeyEventArgs(Key key, int nativeKeyCode, ModifierKeys modifiers, bool isRepeat, long timestamp)
+			: this(key, modifiers, isRepeat, timestamp)
 		{
 			this.NativeKeyCode = nativeKeyCode;
 		}
-		
+
 		/// <summary>
 		/// Gets the key.
 		/// </summary>
@@ -72,25 +72,25 @@ namespace Xwt
 		/// </summary>
 		/// <value>The native key code.</value>
 		public int NativeKeyCode { get; private set; }
-		
+
 		/// <summary>
 		/// Gets the modifier keys.
 		/// </summary>
 		/// <value>The modifier keys.</value>
 		public ModifierKeys Modifiers { get; private set; }
-		
+
 		/// <summary>
 		/// Gets a value indicating whether the key has been pressed more then once.
 		/// </summary>
 		/// <value><c>true</c> if the key has been pressed more then once; otherwise, <c>false</c>.</value>
 		public bool IsRepeat { get; private set; }
-		
+
 		/// <summary>
 		/// Gets the time when this event occurred.
 		/// </summary>
 		/// <value>The timestamp of the event.</value>
 		public long Timestamp { get; private set; }
-		
+
 		/// <summary>
 		/// Gets or sets a value indicating whether this event has been handled.
 		/// </summary>

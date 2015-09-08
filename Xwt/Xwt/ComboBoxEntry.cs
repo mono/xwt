@@ -28,77 +28,82 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(IComboBoxEntryBackend))]
-	public class ComboBoxEntry: ComboBox
+	[BackendType(typeof(IComboBoxEntryBackend))]
+	public class ComboBoxEntry : ComboBox
 	{
 		TextEntry entry;
 		IDataField<object> textField;
-		
-		protected new class WidgetBackendHost: ComboBox.WidgetBackendHost
+
+		protected new class WidgetBackendHost : ComboBox.WidgetBackendHost
 		{
-			protected override void OnBackendCreated ()
+			protected override void OnBackendCreated()
 			{
-				base.OnBackendCreated ();
-				((IComboBoxEntryBackend)Backend).SetTextColumn (0);
+				base.OnBackendCreated();
+				((IComboBoxEntryBackend)Backend).SetTextColumn(0);
 			}
 		}
-		
-		public ComboBoxEntry ()
+
+		public ComboBoxEntry()
 		{
-			entry = new CustomComboTextEntry (Backend.TextEntryBackend);
+			entry = new CustomComboTextEntry(Backend.TextEntryBackend);
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		IComboBoxEntryBackend Backend {
-			get { return (IComboBoxEntryBackend) BackendHost.Backend; }
+
+		IComboBoxEntryBackend Backend
+		{
+			get { return (IComboBoxEntryBackend)BackendHost.Backend; }
 		}
-		
-		public TextEntry TextEntry {
-			get {
+
+		public TextEntry TextEntry
+		{
+			get
+			{
 				return entry;
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the column that contains the text to be shown in the text entry when an item is selected
 		/// </summary>
 		/// <value>
 		/// The text field.
 		/// </value>
-		public IDataField<object> TextField {
+		public IDataField<object> TextField
+		{
 			get { return textField; }
-			set {
+			set
+			{
 				textField = value;
 				if (value != null)
-					Backend.SetTextColumn (value.Index);
+					Backend.SetTextColumn(value.Index);
 				else
-					Backend.SetTextColumn (0);
+					Backend.SetTextColumn(0);
 			}
 		}
 	}
-	
-	class CustomComboTextEntry: TextEntry
+
+	class CustomComboTextEntry : TextEntry
 	{
 		ITextEntryBackend backend;
-		
-		protected new class WidgetBackendHost: TextEntry.WidgetBackendHost
+
+		protected new class WidgetBackendHost : TextEntry.WidgetBackendHost
 		{
-			protected override IBackend OnCreateBackend ()
+			protected override IBackend OnCreateBackend()
 			{
 				return ((CustomComboTextEntry)Parent).backend;
 			}
 		}
-		
-		protected override Xwt.Backends.BackendHost CreateBackendHost ()
+
+		protected override Xwt.Backends.BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		public CustomComboTextEntry (ITextEntryBackend backend)
+
+		public CustomComboTextEntry(ITextEntryBackend backend)
 		{
 			this.backend = backend;
 		}

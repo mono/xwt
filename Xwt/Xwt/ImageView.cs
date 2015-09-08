@@ -30,32 +30,35 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	[BackendType (typeof(IImageViewBackend))]
-	public class ImageView: Widget
+	[BackendType(typeof(IImageViewBackend))]
+	public class ImageView : Widget
 	{
 		Image image;
-		
-		public ImageView ()
+
+		public ImageView()
 		{
-		}
-		
-		public ImageView (Image image)
-		{
-			VerifyConstructorCall (this);
-			Image = image;
-		}
-		
-		IImageViewBackend Backend {
-			get { return (IImageViewBackend) BackendHost.Backend; }
 		}
 
-		[DefaultValue (null)]
-		public Image Image {
+		public ImageView(Image image)
+		{
+			VerifyConstructorCall(this);
+			Image = image;
+		}
+
+		IImageViewBackend Backend
+		{
+			get { return (IImageViewBackend)BackendHost.Backend; }
+		}
+
+		[DefaultValue(null)]
+		public Image Image
+		{
 			get { return image; }
-			set {
+			set
+			{
 				image = value;
-				Backend.SetImage (image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null); 
-				OnPreferredSizeChanged ();
+				Backend.SetImage(image != null ? image.GetImageDescription(BackendHost.ToolkitEngine) : ImageDescription.Null);
+				OnPreferredSizeChanged();
 			}
 		}
 	}

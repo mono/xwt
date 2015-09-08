@@ -27,13 +27,13 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IMenuButtonBackend: IButtonBackend
+	public interface IMenuButtonBackend : IButtonBackend
 	{
 	}
-	
-	public interface IMenuButtonEventSink: IButtonEventSink
+
+	public interface IMenuButtonEventSink : IButtonEventSink
 	{
-		IMenuBackend OnCreateMenu ();
+		IMenuBackend OnCreateMenu();
 	}
 }
 

@@ -30,79 +30,83 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
-	[BackendType (typeof(IMenuButtonBackend))]
-	public class MenuButton: Button
+	[BackendType(typeof(IMenuButtonBackend))]
+	public class MenuButton : Button
 	{
 		Menu menu;
 		Func<Menu> creator;
-		
-		protected new class WidgetBackendHost: Button.WidgetBackendHost, IMenuButtonEventSink
+
+		protected new class WidgetBackendHost : Button.WidgetBackendHost, IMenuButtonEventSink
 		{
-			public IMenuBackend OnCreateMenu ()
+			public IMenuBackend OnCreateMenu()
 			{
-				return ((MenuButton)Parent).CreateMenu ();
+				return ((MenuButton)Parent).CreateMenu();
 			}
 		}
-		
-		public MenuButton ()
+
+		public MenuButton()
 		{
 			ImagePosition = ContentPosition.Right;
 			Type = ButtonType.DropDown;
 		}
-		
-		public MenuButton (string label) : this ()
+
+		public MenuButton(string label) : this()
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 		}
-		
-		public MenuButton (Image img, string label) : this ()
+
+		public MenuButton(Image img, string label) : this()
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Label = label;
 			Image = img;
 		}
-		
-		public MenuButton (Image img) : this ()
+
+		public MenuButton(Image img) : this()
 		{
-			VerifyConstructorCall (this);
+			VerifyConstructorCall(this);
 			Image = img;
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		IMenuButtonBackend Backend {
-			get { return (IMenuButtonBackend) BackendHost.Backend; }
+
+		IMenuButtonBackend Backend
+		{
+			get { return (IMenuButtonBackend)BackendHost.Backend; }
 		}
-		
-		public Menu Menu {
+
+		public Menu Menu
+		{
 			get { return menu; }
 			set { menu = value; }
 		}
-		
-		public Func<Menu> MenuSource {
+
+		public Func<Menu> MenuSource
+		{
 			get { return creator; }
 			set { creator = value; }
 		}
-		
-		IMenuBackend CreateMenu ()
+
+		IMenuBackend CreateMenu()
 		{
 			Menu menu = null;
-			BackendHost.ToolkitEngine.Invoke (delegate {
+			BackendHost.ToolkitEngine.Invoke(delegate
+			{
 				menu = OnCreateMenu();
 			});
-			return ((IMenuBackend)BackendHost.ToolkitEngine.GetSafeBackend (menu));
+			return ((IMenuBackend)BackendHost.ToolkitEngine.GetSafeBackend(menu));
 		}
-		
-		protected virtual Menu OnCreateMenu ()
+
+		protected virtual Menu OnCreateMenu()
 		{
 			if (menu != null)
 				return menu;
 			if (creator != null)
-				return creator ();
+				return creator();
 			return null;
 		}
 	}

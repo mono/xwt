@@ -36,54 +36,57 @@ namespace Xwt.WPFBackend
 {
 	static class Timeout
 	{
-		public static uint Add (Func<bool> action, TimeSpan interval, Dispatcher dispatcher)
+		public static uint Add(Func<bool> action, TimeSpan interval, Dispatcher dispatcher)
 		{
-			var timer = new DispatcherTimer (DispatcherPriority.Normal, dispatcher);
+			var timer = new DispatcherTimer(DispatcherPriority.Normal, dispatcher);
 			timer.Interval = interval;
-			timer.Tick += delegate {
-				if (!action ())
+			timer.Tick += delegate
+			{
+				if (!action())
 					timer.IsEnabled = false;
 			};
 
-			uint id = RegisterTimer (timer);
+			uint id = RegisterTimer(timer);
 			timer.IsEnabled = true;
 
 			return id;
 		}
 
-		public static void CancelTimeout (uint id)
+		public static void CancelTimeout(uint id)
 		{
-			var timer = UnregisterTimer (id);
+			var timer = UnregisterTimer(id);
 			if (timer != null)
 				timer.IsEnabled = false;
 		}
 
-		static uint RegisterTimer (DispatcherTimer timer)
+		static uint RegisterTimer(DispatcherTimer timer)
 		{
-			lock (locker) {
-				while (timers.ContainsKey (counter))
+			lock (locker)
+			{
+				while (timers.ContainsKey(counter))
 					counter++;
 
-				timers [counter] = timer;
+				timers[counter] = timer;
 				return counter++;
 			}
 		}
 
-		static DispatcherTimer UnregisterTimer (uint id)
+		static DispatcherTimer UnregisterTimer(uint id)
 		{
-			lock (locker) {
-				if (!timers.ContainsKey (id))
+			lock (locker)
+			{
+				if (!timers.ContainsKey(id))
 					return null;
 
-				var timer = timers [id];
-				timers.Remove (id);
+				var timer = timers[id];
+				timers.Remove(id);
 
 				return timer;
 			}
 		}
 
-		static Dictionary<uint, DispatcherTimer> timers = new Dictionary<uint, DispatcherTimer> ();
+		static Dictionary<uint, DispatcherTimer> timers = new Dictionary<uint, DispatcherTimer>();
 		static uint counter;
-		static object locker = new object ();
+		static object locker = new object();
 	}
 }

@@ -32,19 +32,19 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class CellView: XwtComponent, ICellViewFrontend
+	public class CellView : XwtComponent, ICellViewFrontend
 	{
 		Widget container;
 
-		static CellView ()
+		static CellView()
 		{
-			EventHost.MapEvent (WidgetEvent.KeyPressed, typeof(CellView), "OnKeyPressed");
-			EventHost.MapEvent (WidgetEvent.KeyReleased, typeof(CellView), "OnKeyReleased");
-			EventHost.MapEvent (WidgetEvent.MouseEntered, typeof(CellView), "OnMouseEntered");
-			EventHost.MapEvent (WidgetEvent.MouseExited, typeof(CellView), "OnMouseExited");
-			EventHost.MapEvent (WidgetEvent.ButtonPressed, typeof(CellView), "OnButtonPressed");
-			EventHost.MapEvent (WidgetEvent.ButtonReleased, typeof(CellView), "OnButtonReleased");
-			EventHost.MapEvent (WidgetEvent.MouseMoved, typeof(CellView), "OnMouseMoved");
+			EventHost.MapEvent(WidgetEvent.KeyPressed, typeof(CellView), "OnKeyPressed");
+			EventHost.MapEvent(WidgetEvent.KeyReleased, typeof(CellView), "OnKeyReleased");
+			EventHost.MapEvent(WidgetEvent.MouseEntered, typeof(CellView), "OnMouseEntered");
+			EventHost.MapEvent(WidgetEvent.MouseExited, typeof(CellView), "OnMouseExited");
+			EventHost.MapEvent(WidgetEvent.ButtonPressed, typeof(CellView), "OnButtonPressed");
+			EventHost.MapEvent(WidgetEvent.ButtonReleased, typeof(CellView), "OnButtonReleased");
+			EventHost.MapEvent(WidgetEvent.MouseMoved, typeof(CellView), "OnMouseMoved");
 		}
 
 		/// <summary>
@@ -52,95 +52,98 @@ namespace Xwt
 		/// </summary>
 		/// <returns>The default cell view.</returns>
 		/// <param name="field">Field.</param>
-		public static CellView GetDefaultCellView (IDataField field)
+		public static CellView GetDefaultCellView(IDataField field)
 		{
 			if (field.Index == -1)
-				throw new InvalidOperationException ("Field must be bound to a data source");
+				throw new InvalidOperationException("Field must be bound to a data source");
 			if (field.FieldType == typeof(bool))
-				return new CheckBoxCellView ((IDataField<bool>)field);
+				return new CheckBoxCellView((IDataField<bool>)field);
 			else if (field.FieldType == typeof(CheckBoxState))
-				return new CheckBoxCellView ((IDataField<CheckBoxState>)field);
+				return new CheckBoxCellView((IDataField<CheckBoxState>)field);
 			else if (field.FieldType == typeof(Image))
-				return new ImageCellView ((IDataField<Image>)field);
-			return new TextCellView (field);
+				return new ImageCellView((IDataField<Image>)field);
+			return new TextCellView(field);
 		}
 
-		protected override BackendHost CreateBackendHost ()
+		protected override BackendHost CreateBackendHost()
 		{
-			return new CellViewBackendHost ();
+			return new CellViewBackendHost();
 		}
 
-		protected new CellViewBackendHost BackendHost {
-			get { return (CellViewBackendHost) base.BackendHost; }
+		protected new CellViewBackendHost BackendHost
+		{
+			get { return (CellViewBackendHost)base.BackendHost; }
 		}
 
-		ICellViewBackend Backend {
-			get { return (ICellViewBackend) base.BackendHost.Backend; }
+		ICellViewBackend Backend
+		{
+			get { return (ICellViewBackend)base.BackendHost.Backend; }
 		}
 
-		protected class CellViewBackendHost: BackendHost<CellView,ICellViewBackend>, ICellViewEventSink
+		protected class CellViewBackendHost : BackendHost<CellView, ICellViewBackend>, ICellViewEventSink
 		{
 			HashSet<object> enabledEvents;
 
-			protected override void OnEnableEvent (object eventId)
+			protected override void OnEnableEvent(object eventId)
 			{
 				if (enabledEvents == null)
-					enabledEvents = new HashSet<object> ();
-				enabledEvents.Add (eventId);
-				base.OnEnableEvent (eventId);
+					enabledEvents = new HashSet<object>();
+				enabledEvents.Add(eventId);
+				base.OnEnableEvent(eventId);
 			}
 
-			protected override void OnDisableEvent (object eventId)
+			protected override void OnDisableEvent(object eventId)
 			{
 				if (enabledEvents != null)
-					enabledEvents.Remove (eventId);
-				base.OnDisableEvent (eventId);
+					enabledEvents.Remove(eventId);
+				base.OnDisableEvent(eventId);
 			}
 
-			public void AttachBackend (ICellViewBackend backend)
+			public void AttachBackend(ICellViewBackend backend)
 			{
-				SetCustomBackend (backend);
-				if (enabledEvents != null) {
+				SetCustomBackend(backend);
+				if (enabledEvents != null)
+				{
 					foreach (var e in enabledEvents)
-						Backend.EnableEvent (e);
+						Backend.EnableEvent(e);
 				}
 			}
 
 			#region ICellViewEventSink implementation
 
-			public void OnKeyPressed (KeyEventArgs args)
+			public void OnKeyPressed(KeyEventArgs args)
 			{
-				Parent.OnKeyPressed (args);
+				Parent.OnKeyPressed(args);
 			}
 
-			public void OnKeyReleased (KeyEventArgs args)
+			public void OnKeyReleased(KeyEventArgs args)
 			{
-				Parent.OnKeyReleased (args);
+				Parent.OnKeyReleased(args);
 			}
 
-			public void OnMouseEntered ()
+			public void OnMouseEntered()
 			{
-				Parent.OnMouseEntered ();
+				Parent.OnMouseEntered();
 			}
 
-			public void OnMouseExited ()
+			public void OnMouseExited()
 			{
-				Parent.OnMouseExited ();
+				Parent.OnMouseExited();
 			}
 
-			public void OnMouseMoved (MouseMovedEventArgs args)
+			public void OnMouseMoved(MouseMovedEventArgs args)
 			{
-				Parent.OnMouseMoved (args);
+				Parent.OnMouseMoved(args);
 			}
 
-			public void OnButtonPressed (ButtonEventArgs args)
+			public void OnButtonPressed(ButtonEventArgs args)
 			{
-				Parent.OnButtonPressed (args);
+				Parent.OnButtonPressed(args);
 			}
 
-			public void OnButtonReleased (ButtonEventArgs args)
+			public void OnButtonReleased(ButtonEventArgs args)
 			{
-				Parent.OnButtonReleased (args);
+				Parent.OnButtonReleased(args);
 			}
 
 			#endregion
@@ -156,50 +159,56 @@ namespace Xwt
 
 		public IDataField<bool> VisibleField { get; set; }
 
-		[DefaultValue (true)]
-		public bool Visible {
-			get { return GetValue (VisibleField, visible); }
+		[DefaultValue(true)]
+		public bool Visible
+		{
+			get { return GetValue(VisibleField, visible); }
 			set { visible = value; }
 		}
 
-		ICellViewEventSink ICellViewFrontend.Load (ICellDataSource dataSource)
+		ICellViewEventSink ICellViewFrontend.Load(ICellDataSource dataSource)
 		{
 			DataSource = dataSource;
-			OnDataChanged ();
+			OnDataChanged();
 			return BackendHost;
 		}
 
-		void ICellViewFrontend.Unload ()
+		void ICellViewFrontend.Unload()
 		{
 		}
 
-		void ICellViewFrontend.AttachBackend (Widget container, ICellViewBackend backend)
+		void ICellViewFrontend.AttachBackend(Widget container, ICellViewBackend backend)
 		{
 			this.container = container;
-			BackendHost.AttachBackend (backend);
+			BackendHost.AttachBackend(backend);
 		}
 
-		void ICellViewFrontend.DetachBackend ()
+		void ICellViewFrontend.DetachBackend()
 		{
 		}
 
-		public Widget ParentWidget {
+		public Widget ParentWidget
+		{
 			get { return container; }
 		}
 
-		protected Rectangle Bounds {
+		protected Rectangle Bounds
+		{
 			get { return Backend.CellBounds; }
 		}
 
-		protected Rectangle BackgroundBounds {
+		protected Rectangle BackgroundBounds
+		{
 			get { return Backend.BackgroundBounds; }
 		}
 
-		protected bool Selected {
+		protected bool Selected
+		{
 			get { return Backend.Selected; }
 		}
 
-		protected bool HasFocus {
+		protected bool HasFocus
+		{
 			get { return Backend.HasFocus; }
 		}
 
@@ -210,11 +219,12 @@ namespace Xwt
 		/// <param name="field">Field.</param>
 		/// <param name="defaultValue">Default value to be returned if the field has no value</param>
 		/// <typeparam name="T">Type of the value</typeparam>
-		protected T GetValue<T> (IDataField<T> field, T defaultValue = default(T))
+		protected T GetValue<T>(IDataField<T> field, T defaultValue = default(T))
 		{
-			if (DataSource != null && field != null) {
-				var result = DataSource.GetValue (field);
-				return result == null || result == DBNull.Value ? defaultValue : (T) result;
+			if (DataSource != null && field != null)
+			{
+				var result = DataSource.GetValue(field);
+				return result == null || result == DBNull.Value ? defaultValue : (T)result;
 			}
 			return defaultValue;
 		}
@@ -222,7 +232,7 @@ namespace Xwt
 		/// <summary>
 		/// Invoked when the data source changes
 		/// </summary>
-		protected virtual void OnDataChanged ()
+		protected virtual void OnDataChanged()
 		{
 		}
 
@@ -234,46 +244,46 @@ namespace Xwt
 		public event EventHandler<ButtonEventArgs> ButtonPressed;
 		public event EventHandler<ButtonEventArgs> ButtonReleased;
 
-		internal protected virtual void OnKeyPressed (KeyEventArgs args)
+		internal protected virtual void OnKeyPressed(KeyEventArgs args)
 		{
 			if (KeyPressed != null)
-				KeyPressed (this, args);
+				KeyPressed(this, args);
 		}
 
-		internal protected virtual void OnKeyReleased (KeyEventArgs args)
+		internal protected virtual void OnKeyReleased(KeyEventArgs args)
 		{
 			if (KeyReleased != null)
-				KeyReleased (this, args);
+				KeyReleased(this, args);
 		}
 
-		internal protected virtual void OnMouseEntered ()
+		internal protected virtual void OnMouseEntered()
 		{
 			if (MouseEntered != null)
-				MouseEntered (this, EventArgs.Empty);
+				MouseEntered(this, EventArgs.Empty);
 		}
 
-		internal protected virtual void OnMouseExited ()
+		internal protected virtual void OnMouseExited()
 		{
 			if (MouseExited != null)
-				MouseExited (this, EventArgs.Empty);
+				MouseExited(this, EventArgs.Empty);
 		}
 
-		internal protected virtual void OnMouseMoved (MouseMovedEventArgs args)
+		internal protected virtual void OnMouseMoved(MouseMovedEventArgs args)
 		{
 			if (MouseMoved != null)
-				MouseMoved (this, args);
+				MouseMoved(this, args);
 		}
 
-		internal protected virtual void OnButtonPressed (ButtonEventArgs args)
+		internal protected virtual void OnButtonPressed(ButtonEventArgs args)
 		{
 			if (ButtonPressed != null)
-				ButtonPressed (this, args);
+				ButtonPressed(this, args);
 		}
 
-		internal protected virtual void OnButtonReleased (ButtonEventArgs args)
+		internal protected virtual void OnButtonReleased(ButtonEventArgs args)
 		{
 			if (ButtonReleased != null)
-				ButtonReleased (this, args);
+				ButtonReleased(this, args);
 		}
 	}
 }

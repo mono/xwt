@@ -50,64 +50,68 @@ namespace Xwt.WPFBackend
 		//
 		// Rect/Point
 		//
-		public static Rectangle ToXwtRect (this SW.Rect rect)
+		public static Rectangle ToXwtRect(this SW.Rect rect)
 		{
-			return new Rectangle (rect.X, rect.Y, rect.Width, rect.Height);
+			return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
-		public static SW.Rect ToWpfRect (this Rectangle rect)
+		public static SW.Rect ToWpfRect(this Rectangle rect)
 		{
-			return new SW.Rect (rect.X, rect.Y, rect.Width, rect.Height);
+			return new SW.Rect(rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
-		public static Int32Rect ToInt32Rect (this Rectangle rect)
+		public static Int32Rect ToInt32Rect(this Rectangle rect)
 		{
-			return new Int32Rect ((int) rect.X, (int) rect.Y, (int) rect.Width, (int) rect.Height);
+			return new Int32Rect((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
 		}
 
-		public static Point ToXwtPoint (this SW.Point point)
+		public static Point ToXwtPoint(this SW.Point point)
 		{
-			return new Point (point.X, point.Y);
+			return new Point(point.X, point.Y);
 		}
 
-		public static SW.Point ToWpfPoint (this Point point)
+		public static SW.Point ToWpfPoint(this Point point)
 		{
-			return new SW.Point (point.X, point.Y);
+			return new SW.Point(point.X, point.Y);
 		}
 
 		//
 		// Alignment
 		//
-		public static Alignment ToXwtAlignment (this SW.HorizontalAlignment alignment)
+		public static Alignment ToXwtAlignment(this SW.HorizontalAlignment alignment)
 		{
-			switch (alignment) {
+			switch (alignment)
+			{
 				case SW.HorizontalAlignment.Left: return Alignment.Start;
 				case SW.HorizontalAlignment.Center: return Alignment.Center;
 				default: return Alignment.End;
 			}
 		}
 
-		public static Alignment ToXwtAlignment (this SW.TextAlignment alignment)
+		public static Alignment ToXwtAlignment(this SW.TextAlignment alignment)
 		{
-			switch (alignment) {
+			switch (alignment)
+			{
 				case SW.TextAlignment.Left: return Alignment.Start;
 				case SW.TextAlignment.Center: return Alignment.Center;
 				default: return Alignment.End;
 			}
 		}
 
-		public static SW.HorizontalAlignment ToWpfAlignment (this Alignment alignment)
+		public static SW.HorizontalAlignment ToWpfAlignment(this Alignment alignment)
 		{
-			switch (alignment) {
+			switch (alignment)
+			{
 				case Alignment.Start: return SW.HorizontalAlignment.Left;
 				case Alignment.Center: return SW.HorizontalAlignment.Center;
 				default: return SW.HorizontalAlignment.Right;
 			}
 		}
 
-		public static SW.TextAlignment ToTextAlignment (this Alignment alignment)
+		public static SW.TextAlignment ToTextAlignment(this Alignment alignment)
 		{
-			switch (alignment) {
+			switch (alignment)
+			{
 				case Alignment.Start: return SW.TextAlignment.Left;
 				case Alignment.Center: return SW.TextAlignment.Center;
 				default: return SW.TextAlignment.Right;
@@ -117,12 +121,12 @@ namespace Xwt.WPFBackend
 		//
 		// Color
 		//
-		public static Color ToXwtColor (this SW.Media.Color color)
+		public static Color ToXwtColor(this SW.Media.Color color)
 		{
-			return Color.FromBytes (color.R, color.G, color.B, color.A);
+			return Color.FromBytes(color.R, color.G, color.B, color.A);
 		}
 
-		public static Color ToXwtColor (this SW.Media.Brush brush)
+		public static Color ToXwtColor(this SW.Media.Brush brush)
 		{
 			var solidBrush = brush as SW.Media.SolidColorBrush;
 			if (solidBrush == null)
@@ -131,16 +135,16 @@ namespace Xwt.WPFBackend
 			return solidBrush.Color.ToXwtColor();
 		}
 
-		public static SW.Media.Color ToWpfColor (this Color color)
+		public static SW.Media.Color ToWpfColor(this Color color)
 		{
-			return SW.Media.Color.FromArgb (
+			return SW.Media.Color.FromArgb(
 				(byte)(color.Alpha * 255.0),
 				(byte)(color.Red * 255.0),
 				(byte)(color.Green * 255.0),
 				(byte)(color.Blue * 255.0));
 		}
 
-		public static FontStyle ToXwtFontStyle (this SW.FontStyle value)
+		public static FontStyle ToXwtFontStyle(this SW.FontStyle value)
 		{
 			// No, SW.FontStyles is not an enum
 			if (value == SW.FontStyles.Italic) return FontStyle.Italic;
@@ -149,15 +153,15 @@ namespace Xwt.WPFBackend
 			return FontStyle.Normal;
 		}
 
-		public static SW.FontStyle ToWpfFontStyle (this FontStyle value)
+		public static SW.FontStyle ToWpfFontStyle(this FontStyle value)
 		{
 			if (value == FontStyle.Italic) return SW.FontStyles.Italic;
 			if (value == FontStyle.Oblique) return SW.FontStyles.Oblique;
-			
+
 			return SW.FontStyles.Normal;
 		}
 
-		public static FontStretch ToXwtFontStretch (this SW.FontStretch value)
+		public static FontStretch ToXwtFontStretch(this SW.FontStretch value)
 		{
 			// No, SW.FontStretches is not an enum
 			if (value == SW.FontStretches.UltraCondensed) return FontStretch.UltraCondensed;
@@ -172,7 +176,7 @@ namespace Xwt.WPFBackend
 			return FontStretch.Normal;
 		}
 
-		public static SW.FontStretch ToWpfFontStretch (this FontStretch value)
+		public static SW.FontStretch ToWpfFontStretch(this FontStretch value)
 		{
 			if (value == FontStretch.UltraCondensed) return SW.FontStretches.UltraCondensed;
 			if (value == FontStretch.ExtraCondensed) return SW.FontStretches.ExtraCondensed;
@@ -186,7 +190,7 @@ namespace Xwt.WPFBackend
 			return SW.FontStretches.Normal;
 		}
 
-		public static FontWeight ToXwtFontWeight (this SW.FontWeight value)
+		public static FontWeight ToXwtFontWeight(this SW.FontWeight value)
 		{
 			// No, SW.FontWeights is not an enum
 			// Extra/Ultra and Demi/Semi are equal
@@ -209,7 +213,7 @@ namespace Xwt.WPFBackend
 			return FontWeight.Normal;
 		}
 
-		public static SW.FontWeight ToWpfFontWeight (this FontWeight value)
+		public static SW.FontWeight ToWpfFontWeight(this FontWeight value)
 		{
 			if (value == FontWeight.Thin) return SW.FontWeights.Thin;
 			if (value == FontWeight.Ultralight) return SW.FontWeights.UltraLight;
@@ -222,13 +226,13 @@ namespace Xwt.WPFBackend
 			if (value == FontWeight.Ultrabold) return SW.FontWeights.UltraBold;
 			if (value == FontWeight.Heavy) return SW.FontWeights.Black;
 			if (value == FontWeight.Ultraheavy) return SW.FontWeights.UltraBlack;
-			
+
 			return SW.FontWeights.Normal;
 		}
 
 		// Dock
 
-		public static SW.Controls.Dock ToWpfDock (this ContentPosition value)
+		public static SW.Controls.Dock ToWpfDock(this ContentPosition value)
 		{
 			if (value == ContentPosition.Left) return SW.Controls.Dock.Left;
 			if (value == ContentPosition.Top) return SW.Controls.Dock.Top;
@@ -241,9 +245,10 @@ namespace Xwt.WPFBackend
 		// Mouse/Pointer Button
 		//
 
-		public static PointerButton ToXwtButton (this MouseButton value)
+		public static PointerButton ToXwtButton(this MouseButton value)
 		{
-			switch (value) {
+			switch (value)
+			{
 				case MouseButton.Left: return PointerButton.Left;
 				case MouseButton.Middle: return PointerButton.Middle;
 				case MouseButton.Right: return PointerButton.Right;
@@ -254,9 +259,10 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public static MouseButton ToWpfButton (this PointerButton value)
+		public static MouseButton ToWpfButton(this PointerButton value)
 		{
-			switch (value) {
+			switch (value)
+			{
 				case PointerButton.Left: return MouseButton.Left;
 				case PointerButton.Middle: return MouseButton.Middle;
 				case PointerButton.Right: return MouseButton.Right;
@@ -267,24 +273,24 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		[DllImport ("gdi32")]
-		private static extern int DeleteObject (IntPtr o);
+		[DllImport("gdi32")]
+		private static extern int DeleteObject(IntPtr o);
 
-		public static SWM.ImageSource AsImageSource (object nativeImage)
+		public static SWM.ImageSource AsImageSource(object nativeImage)
 		{
 			var source = nativeImage as WpfImage;
 			return source.MainFrame;
 		}
 
-		public static SWM.ImageSource ToImageSource (this Xwt.Backends.ImageDescription img)
+		public static SWM.ImageSource ToImageSource(this Xwt.Backends.ImageDescription img)
 		{
-			return AsImageSource (img.Backend);
+			return AsImageSource(img.Backend);
 		}
 
 		//
 		// Drag and Drop
 		//
-		public static DragDropAction ToXwtDropAction (this DragDropEffects value)
+		public static DragDropAction ToXwtDropAction(this DragDropEffects value)
 		{
 			var action = DragDropAction.None;
 			if ((value & DragDropEffects.Copy) > 0) action |= DragDropAction.Copy;
@@ -293,7 +299,7 @@ namespace Xwt.WPFBackend
 			return action;
 		}
 
-		public static DragDropEffects ToWpfDropEffect (this DragDropAction value)
+		public static DragDropEffects ToWpfDropEffect(this DragDropAction value)
 		{
 			var effects = DragDropEffects.None;
 			if ((value & DragDropAction.Copy) > 0) effects |= DragDropEffects.Copy;
@@ -302,7 +308,7 @@ namespace Xwt.WPFBackend
 			return effects;
 		}
 
-		public static string ToWpfDataFormat (this TransferDataType type)
+		public static string ToWpfDataFormat(this TransferDataType type)
 		{
 			if (type == TransferDataType.Text) return DataFormats.UnicodeText;
 			if (type == TransferDataType.Rtf) return DataFormats.Rtf;
@@ -312,21 +318,22 @@ namespace Xwt.WPFBackend
 			return type.Id;
 		}
 
-		public static TransferDataType ToXwtTransferType (this string type)
+		public static TransferDataType ToXwtTransferType(this string type)
 		{
 			if (type == DataFormats.UnicodeText) return TransferDataType.Text;
 			if (type == DataFormats.Rtf) return TransferDataType.Rtf;
 			if (type == DataFormats.FileDrop) return TransferDataType.Uri;
 			if (type == DataFormats.Bitmap) return TransferDataType.Image;
 			if (type == DataFormats.Html) return TransferDataType.Html;
-			return TransferDataType.FromId (type);
+			return TransferDataType.FromId(type);
 		}
 
 		// Scrollbar visibility
 
-		public static SWC.ScrollBarVisibility ToWpfScrollBarVisibility (this ScrollPolicy policy)
+		public static SWC.ScrollBarVisibility ToWpfScrollBarVisibility(this ScrollPolicy policy)
 		{
-			switch (policy) {
+			switch (policy)
+			{
 				case ScrollPolicy.Always:
 					return SWC.ScrollBarVisibility.Visible;
 				case ScrollPolicy.Automatic:
@@ -335,13 +342,14 @@ namespace Xwt.WPFBackend
 					return SWC.ScrollBarVisibility.Hidden;
 
 				default:
-					throw new NotSupportedException ();
+					throw new NotSupportedException();
 			}
 		}
 
-		public static ScrollPolicy ToXwtScrollPolicy (this SWC.ScrollBarVisibility visibility)
+		public static ScrollPolicy ToXwtScrollPolicy(this SWC.ScrollBarVisibility visibility)
 		{
-			switch (visibility) {
+			switch (visibility)
+			{
 				case SWC.ScrollBarVisibility.Auto:
 					return ScrollPolicy.Automatic;
 				case SWC.ScrollBarVisibility.Visible:
@@ -350,24 +358,27 @@ namespace Xwt.WPFBackend
 					return ScrollPolicy.Never;
 
 				default:
-					throw new NotSupportedException ();
+					throw new NotSupportedException();
 			}
 		}
 
-		public static DataObject ToDataObject (this TransferDataSource data)
+		public static DataObject ToDataObject(this TransferDataSource data)
 		{
-			var retval = new DataObject ();
-			foreach (var type in data.DataTypes) {
-				var value = data.GetValue (type);
+			var retval = new DataObject();
+			foreach (var type in data.DataTypes)
+			{
+				var value = data.GetValue(type);
 
 				if (type == TransferDataType.Text)
-					retval.SetText ((string)value);
-				else if (type == TransferDataType.Uri) {
-					var uris = new StringCollection ();
-					uris.Add (((Uri)value).LocalPath);
-					retval.SetFileDropList (uris);
-				} else
-					retval.SetData (type.Id, TransferDataSource.SerializeValue (value));
+					retval.SetText((string)value);
+				else if (type == TransferDataType.Uri)
+				{
+					var uris = new StringCollection();
+					uris.Add(((Uri)value).LocalPath);
+					retval.SetFileDropList(uris);
+				}
+				else
+					retval.SetData(type.Id, TransferDataSource.SerializeValue(value));
 			}
 
 			return retval;

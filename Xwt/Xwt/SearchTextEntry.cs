@@ -28,8 +28,8 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ISearchTextEntryBackend))]
-	public class SearchTextEntry: TextEntry
+	[BackendType(typeof(ISearchTextEntryBackend))]
+	public class SearchTextEntry : TextEntry
 	{
 	}
 }

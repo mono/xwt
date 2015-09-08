@@ -28,7 +28,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IPanedBackend: IWidgetBackend, IChildPlacementHandler
+	public interface IPanedBackend : IWidgetBackend, IChildPlacementHandler
 	{
 		/// <summary>
 		/// Initializes the paned
@@ -36,8 +36,8 @@ namespace Xwt.Backends
 		/// <param name='dir'>
 		/// Orientation of the paned
 		/// </param>
-		void Initialize (Orientation dir);
-		
+		void Initialize(Orientation dir);
+
 		/// <summary>
 		/// Gets or sets the position of the panel separator
 		/// </summary>
@@ -45,7 +45,7 @@ namespace Xwt.Backends
 		/// The position.
 		/// </value>
 		double Position { get; set; }
-		
+
 		/// <summary>
 		/// Sets the content of a panel
 		/// </summary>
@@ -58,8 +58,8 @@ namespace Xwt.Backends
 		/// <param name='resize'>
 		/// If set to <c>true</c> the panel is resized when the Paned view is resized
 		/// </param>
-		void SetPanel (int panel, IWidgetBackend widget, bool resize, bool shrink);
-		
+		void SetPanel(int panel, IWidgetBackend widget, bool resize, bool shrink);
+
 		/// <summary>
 		/// Updates the panel settings
 		/// </summary>
@@ -69,22 +69,22 @@ namespace Xwt.Backends
 		/// <param name='resize'>
 		/// If set to <c>true</c> the panel is resized when the Paned view is resized
 		/// </param>
-		void UpdatePanel (int panel, bool resize, bool shrink);
-		
+		void UpdatePanel(int panel, bool resize, bool shrink);
+
 		/// <summary>
 		/// Removes the content of a panel.
 		/// </summary>
 		/// <param name='panel'>
 		/// Panel number: 1 or 2
 		/// </param>
-		void RemovePanel (int panel);
+		void RemovePanel(int panel);
 	}
-	
-	public interface IPanedEventSink: IWidgetEventSink
+
+	public interface IPanedEventSink : IWidgetEventSink
 	{
-		void OnPositionChanged ();
+		void OnPositionChanged();
 	}
-	
+
 	public enum PanedEvent
 	{
 		PositionChanged

@@ -37,29 +37,30 @@ using System.Linq;
 
 namespace Xwt.Drawing
 {
-	[TypeConverter (typeof(FontValueConverter))]
-	[ValueSerializer (typeof(FontValueSerializer))]
-	public sealed class Font: XwtObject
+	[TypeConverter(typeof(FontValueConverter))]
+	[ValueSerializer(typeof(FontValueSerializer))]
+	public sealed class Font : XwtObject
 	{
 		FontBackendHandler handler;
 
-		internal Font (object backend): this (backend, null)
+		internal Font(object backend) : this(backend, null)
 		{
 		}
-		
-		internal Font (object backend, Toolkit toolkit)
+
+		internal Font(object backend, Toolkit toolkit)
 		{
 			if (toolkit != null)
 				ToolkitEngine = toolkit;
 			handler = ToolkitEngine.FontBackendHandler;
 			if (backend == null)
-				throw new ArgumentNullException ("backend");
+				throw new ArgumentNullException("backend");
 			Backend = backend;
 		}
 
-		internal void InitForToolkit (Toolkit tk)
+		internal void InitForToolkit(Toolkit tk)
 		{
-			if (ToolkitEngine != tk) {
+			if (ToolkitEngine != tk)
+			{
 				// Gather existing font property before switching handler
 				var fname = Family;
 				var size = Size;
@@ -68,8 +69,8 @@ namespace Xwt.Drawing
 				var stretch = Stretch;
 				ToolkitEngine = tk;
 				handler = tk.FontBackendHandler;
-				var fb = handler.Create (fname, size, style, weight, stretch);
-				Backend = fb ?? handler.GetSystemDefaultFont ();
+				var fb = handler.Create(fname, size, style, weight, stretch);
+				Backend = fb ?? handler.GetSystemDefaultFont();
 			}
 		}
 
@@ -79,16 +80,17 @@ namespace Xwt.Drawing
 		/// </summary>
 		/// <returns><c>true</c>, if font from file was registered, <c>false</c> otherwise.</returns>
 		/// <param name="fontPath">Font path.</param>
-		public static bool RegisterFontFromFile (string fontPath)
+		public static bool RegisterFontFromFile(string fontPath)
 		{
-			return RegisterFontFromFile (fontPath, Toolkit.CurrentEngine);
+			return RegisterFontFromFile(fontPath, Toolkit.CurrentEngine);
 		}
 
-		static bool RegisterFontFromFile (string fontPath, Toolkit toolkit)
+		static bool RegisterFontFromFile(string fontPath, Toolkit toolkit)
 		{
 			var handler = toolkit.FontBackendHandler;
-			var result = handler.RegisterFontFromFile (fontPath);
-			if (result) {
+			var result = handler.RegisterFontFromFile(fontPath);
+			if (result)
+			{
 				installedFonts = null;
 				installedFontsArray = null;
 			}
@@ -113,13 +115,13 @@ namespace Xwt.Drawing
 		/// If SIZE is missing, the size in the resulting font description will be set to the default font size.
 		/// If the font doesn't exist, it returns the system font.
 		/// </remarks>
-		public static Font FromName (string name)
+		public static Font FromName(string name)
 		{
 			var toolkit = Toolkit.CurrentEngine;
-			return FromName (name, toolkit);
+			return FromName(name, toolkit);
 		}
 
-		internal static Font FromName (string name, Toolkit toolkit)
+		internal static Font FromName(string name, Toolkit toolkit)
 		{
 			var handler = toolkit.FontBackendHandler;
 
@@ -128,21 +130,22 @@ namespace Xwt.Drawing
 			FontWeight weight = FontWeight.Normal;
 			FontStretch stretch = FontStretch.Normal;
 
-			int i = name.LastIndexOf (' ');
+			int i = name.LastIndexOf(' ');
 			int lasti = name.Length;
-			do {
-				string token = name.Substring (i + 1, lasti - i - 1);
+			do
+			{
+				string token = name.Substring(i + 1, lasti - i - 1);
 				FontStyle st;
 				FontWeight fw;
 				FontStretch fs;
 				double siz;
-				if (double.TryParse (token, NumberStyles.Any, CultureInfo.InvariantCulture, out siz)) // Try parsing the number first, since Enum.TryParse can also parse numbers
+				if (double.TryParse(token, NumberStyles.Any, CultureInfo.InvariantCulture, out siz)) // Try parsing the number first, since Enum.TryParse can also parse numbers
 					size = siz;
-				else if (Enum.TryParse<FontStyle> (token, true, out st) && st != FontStyle.Normal)
+				else if (Enum.TryParse<FontStyle>(token, true, out st) && st != FontStyle.Normal)
 					style = st;
-				else if (Enum.TryParse<FontWeight> (token, true, out fw) && fw != FontWeight.Normal)
+				else if (Enum.TryParse<FontWeight>(token, true, out fw) && fw != FontWeight.Normal)
 					weight = fw;
-				else if (Enum.TryParse<FontStretch> (token, true, out fs) && fs != FontStretch.Normal)
+				else if (Enum.TryParse<FontStretch>(token, true, out fs) && fs != FontStretch.Normal)
 					stretch = fs;
 				else if (token.Length > 0)
 					break;
@@ -151,93 +154,105 @@ namespace Xwt.Drawing
 				if (i <= 0)
 					break;
 
-				i = name.LastIndexOf (' ', i - 1);
+				i = name.LastIndexOf(' ', i - 1);
 			} while (true);
 
-			string fname = lasti > 0 ? name.Substring (0, lasti) : string.Empty;
-			fname = fname.Length > 0 ? GetSupportedFont (fname) : Font.SystemFont.Family;
+			string fname = lasti > 0 ? name.Substring(0, lasti) : string.Empty;
+			fname = fname.Length > 0 ? GetSupportedFont(fname) : Font.SystemFont.Family;
 
 			if (size == -1)
 				size = SystemFont.Size;
 
-			var fb = handler.Create (fname, size, style, weight, stretch);
+			var fb = handler.Create(fname, size, style, weight, stretch);
 			if (fb != null)
-				return new Font (fb, toolkit);
+				return new Font(fb, toolkit);
 			else
 				return Font.SystemFont;
 		}
 
-		static string GetSupportedFont (string fontNames)
+		static string GetSupportedFont(string fontNames)
 		{
-			LoadInstalledFonts ();
+			LoadInstalledFonts();
 
-			int i = fontNames.IndexOf (',');
-			if (i == -1) {
-				var f = fontNames.Trim ();
+			int i = fontNames.IndexOf(',');
+			if (i == -1)
+			{
+				var f = fontNames.Trim();
 				string nf;
-				if (installedFonts.TryGetValue (f, out nf))
+				if (installedFonts.TryGetValue(f, out nf))
 					return nf;
 				else
-					return GetDefaultFont (f);
+					return GetDefaultFont(f);
 			}
 
-			string[] names = fontNames.Split (new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
+			string[] names = fontNames.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			if (names.Length == 0)
-				throw new ArgumentException ("Font family name not provided");
+				throw new ArgumentException("Font family name not provided");
 
-			foreach (var name in names) {
-				var n = name.Trim ();
-				if (installedFonts.ContainsKey (n))
+			foreach (var name in names)
+			{
+				var n = name.Trim();
+				if (installedFonts.ContainsKey(n))
 					return n;
 			}
-			return GetDefaultFont (fontNames.Trim (' ',','));
+			return GetDefaultFont(fontNames.Trim(' ', ','));
 		}
 
-		static string GetDefaultFont (string unknownFont)
+		static string GetDefaultFont(string unknownFont)
 		{
-			Console.WriteLine ("Font '" + unknownFont + "' not available in the system. Using '" + Font.SystemFont.Family + "' instead");
+			Console.WriteLine("Font '" + unknownFont + "' not available in the system. Using '" + Font.SystemFont.Family + "' instead");
 			return Font.SystemFont.Family;
 		}
 
-		static Dictionary<string,string> installedFonts;
+		static Dictionary<string, string> installedFonts;
 		static ReadOnlyCollection<string> installedFontsArray;
 
 
-		static void LoadInstalledFonts ()
+		static void LoadInstalledFonts()
 		{
-			if (installedFonts == null) {
-				installedFonts = new Dictionary<string,string> (StringComparer.OrdinalIgnoreCase);
-				foreach (var f in Toolkit.CurrentEngine.FontBackendHandler.GetInstalledFonts ())
-					installedFonts [f] = f;
-				installedFontsArray = new ReadOnlyCollection<string> (installedFonts.Values.ToArray ());
+			if (installedFonts == null)
+			{
+				installedFonts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+				foreach (var f in Toolkit.CurrentEngine.FontBackendHandler.GetInstalledFonts())
+					installedFonts[f] = f;
+				installedFontsArray = new ReadOnlyCollection<string>(installedFonts.Values.ToArray());
 			}
 		}
 
-		public static ReadOnlyCollection<string> AvailableFontFamilies {
-			get {
-				LoadInstalledFonts ();
+		public static ReadOnlyCollection<string> AvailableFontFamilies
+		{
+			get
+			{
+				LoadInstalledFonts();
 				return installedFontsArray;
 			}
 		}
 
-		public static Font SystemFont {
+		public static Font SystemFont
+		{
 			get { return Toolkit.CurrentEngine.FontBackendHandler.SystemFont; }
 		}
 
-		public static Font SystemMonospaceFont {
-			get {
+		public static Font SystemMonospaceFont
+		{
+			get
+			{
 				return Toolkit.CurrentEngine.FontBackendHandler.SystemMonospaceFont;
 			}
 		}
 
-		public static Font SystemSerifFont {
-			get {
+		public static Font SystemSerifFont
+		{
+			get
+			{
 				return Toolkit.CurrentEngine.FontBackendHandler.SystemSerifFont;
 			}
 		}
 
-		public static Font SystemSansSerifFont {
-			get {
+		public static Font SystemSansSerifFont
+		{
+			get
+			{
 				return Toolkit.CurrentEngine.FontBackendHandler.SystemSansSerifFont;
 			}
 		}
@@ -253,10 +268,10 @@ namespace Xwt.Drawing
 		/// fallback to a system default variant. GetAvailableFontFaces helps to retrieve
 		/// only valid combinations for a specific font family.
 		/// </remarks>
-		public static ReadOnlyCollection<FontFace> GetAvailableFontFaces (string fontFamily)
+		public static ReadOnlyCollection<FontFace> GetAvailableFontFaces(string fontFamily)
 		{
-			fontFamily = GetSupportedFont (fontFamily);
-			return new ReadOnlyCollection<FontFace>(Toolkit.CurrentEngine.FontBackendHandler.GetAvailableFamilyFaces(fontFamily).Select (f => new FontFace(f.Key, f.Value)).ToList ());
+			fontFamily = GetSupportedFont(fontFamily);
+			return new ReadOnlyCollection<FontFace>(Toolkit.CurrentEngine.FontBackendHandler.GetAvailableFamilyFaces(fontFamily).Select(f => new FontFace(f.Key, f.Value)).ToList());
 		}
 
 		/// <summary>
@@ -269,9 +284,9 @@ namespace Xwt.Drawing
 		/// fallback to a system default variant. GetAvailableFontFaces helps to retrieve
 		/// only valid combinations for a specific font family.
 		/// </remarks>
-		public ReadOnlyCollection<FontFace> GetAvailableFontFaces ()
+		public ReadOnlyCollection<FontFace> GetAvailableFontFaces()
 		{
-			return GetAvailableFontFaces (Family);
+			return GetAvailableFontFaces(Family);
 		}
 
 		/// <summary>
@@ -279,84 +294,94 @@ namespace Xwt.Drawing
 		/// </summary>
 		/// <returns>The new font</returns>
 		/// <param name="fontFamily">A comma separated list of families</param>
-		public Font WithFamily (string fontFamily)
+		public Font WithFamily(string fontFamily)
 		{
-			fontFamily = GetSupportedFont (fontFamily);
-			return new Font (ToolkitEngine.FontBackendHandler.SetFamily (Backend, fontFamily), ToolkitEngine);
+			fontFamily = GetSupportedFont(fontFamily);
+			return new Font(ToolkitEngine.FontBackendHandler.SetFamily(Backend, fontFamily), ToolkitEngine);
 		}
-		
-		public string Family {
-			get {
-				return handler.GetFamily (Backend);
+
+		public string Family
+		{
+			get
+			{
+				return handler.GetFamily(Backend);
 			}
 		}
-		
+
 		/// <summary>
 		/// Font size. It can be points or pixels, depending on the value of the SizeUnit property
 		/// </summary>
-		public double Size {
-			get {
-				return handler.GetSize (Backend);
+		public double Size
+		{
+			get
+			{
+				return handler.GetSize(Backend);
 			}
 		}
 
-		public Font WithSize (double size)
+		public Font WithSize(double size)
 		{
-			return new Font (handler.SetSize (Backend, size));
-		}
-		
-		public Font WithScaledSize (double scale)
-		{
-			return new Font (handler.SetSize (Backend, Size * scale), ToolkitEngine);
-		}
-		
-		public FontStyle Style {
-			get {
-				return handler.GetStyle (Backend);
-			}
-		}
-		
-		public Font WithStyle (FontStyle style)
-		{
-			return new Font (handler.SetStyle (Backend, style), ToolkitEngine);
-		}
-		
-		public FontWeight Weight {
-			get {
-				return handler.GetWeight (Backend);
-			}
-		}
-		
-		public Font WithWeight (FontWeight weight)
-		{
-			return new Font (handler.SetWeight (Backend, weight), ToolkitEngine);
-		}
-		
-		public FontStretch Stretch {
-			get {
-				return handler.GetStretch (Backend);
-			}
-		}
-		
-		public Font WithStretch (FontStretch stretch)
-		{
-			return new Font (handler.SetStretch (Backend, stretch), ToolkitEngine);
+			return new Font(handler.SetSize(Backend, size));
 		}
 
-		public override string ToString ()
+		public Font WithScaledSize(double scale)
 		{
-			StringBuilder sb = new StringBuilder (Family);
+			return new Font(handler.SetSize(Backend, Size * scale), ToolkitEngine);
+		}
+
+		public FontStyle Style
+		{
+			get
+			{
+				return handler.GetStyle(Backend);
+			}
+		}
+
+		public Font WithStyle(FontStyle style)
+		{
+			return new Font(handler.SetStyle(Backend, style), ToolkitEngine);
+		}
+
+		public FontWeight Weight
+		{
+			get
+			{
+				return handler.GetWeight(Backend);
+			}
+		}
+
+		public Font WithWeight(FontWeight weight)
+		{
+			return new Font(handler.SetWeight(Backend, weight), ToolkitEngine);
+		}
+
+		public FontStretch Stretch
+		{
+			get
+			{
+				return handler.GetStretch(Backend);
+			}
+		}
+
+		public Font WithStretch(FontStretch stretch)
+		{
+			return new Font(handler.SetStretch(Backend, stretch), ToolkitEngine);
+		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder(Family);
 			if (Style != FontStyle.Normal)
-				sb.Append (' ').Append (Style);
+				sb.Append(' ').Append(Style);
 			if (Weight != FontWeight.Normal)
-				sb.Append (' ').Append (Weight);
+				sb.Append(' ').Append(Weight);
 			if (Stretch != FontStretch.Normal)
-				sb.Append (' ').Append (Stretch);
-			sb.Append (' ').Append (Size.ToString (CultureInfo.InvariantCulture));
-			return sb.ToString ();
+				sb.Append(' ').Append(Stretch);
+			sb.Append(' ').Append(Size.ToString(CultureInfo.InvariantCulture));
+			return sb.ToString();
 		}
 
-		public override bool Equals (object obj)
+		public override bool Equals(object obj)
 		{
 			var other = obj as Font;
 			if (other == null)
@@ -365,9 +390,9 @@ namespace Xwt.Drawing
 			return Family == other.Family && Style == other.Style && Weight == other.Weight && Stretch == other.Stretch && Size == other.Size;
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			return ToString().GetHashCode ();
+			return ToString().GetHashCode();
 		}
 	}
 
@@ -394,16 +419,16 @@ namespace Xwt.Drawing
 		/// <value>The <see cref="Xwt.Drawing.Font"/> representation of the font variant/face .</value>
 		public Font Font { get; private set; }
 
-		internal FontFace (string name, Font font)
+		internal FontFace(string name, Font font)
 		{
 			Name = name;
 			Font = font;
 		}
 
-		internal FontFace (string name, object backend)
+		internal FontFace(string name, object backend)
 		{
 			Name = name;
-			Font = new Font (backend);
+			Font = new Font(backend);
 		}
 	}
 
@@ -413,7 +438,7 @@ namespace Xwt.Drawing
 		Oblique,
 		Italic
 	}
-	
+
 	public enum FontWeight
 	{
 		/// The thin weight (100)
@@ -441,7 +466,7 @@ namespace Xwt.Drawing
 		/// The ultra heavy weight (1000)
 		Ultraheavy = 1000
 	}
-	
+
 	public enum FontStretch
 	{
 		/// <summary>
@@ -482,40 +507,40 @@ namespace Xwt.Drawing
 		UltraExpanded
 	}
 
-	
-	class FontValueConverter: TypeConverter
+
+	class FontValueConverter : TypeConverter
 	{
-		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 		{
 			return destinationType == typeof(string);
 		}
-		
-		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
+
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			return sourceType == typeof(string);
 		}
 	}
-	
-	class FontValueSerializer: ValueSerializer
+
+	class FontValueSerializer : ValueSerializer
 	{
-		public override bool CanConvertFromString (string value, IValueSerializerContext context)
+		public override bool CanConvertFromString(string value, IValueSerializerContext context)
 		{
 			return true;
 		}
-		
-		public override bool CanConvertToString (object value, IValueSerializerContext context)
+
+		public override bool CanConvertToString(object value, IValueSerializerContext context)
 		{
 			return true;
 		}
-		
-		public override string ConvertToString (object value, IValueSerializerContext context)
+
+		public override string ConvertToString(object value, IValueSerializerContext context)
 		{
-			return value.ToString ();
+			return value.ToString();
 		}
-		
-		public override object ConvertFromString (string value, IValueSerializerContext context)
+
+		public override object ConvertFromString(string value, IValueSerializerContext context)
 		{
-			return Font.FromName (value);
+			return Font.FromName(value);
 		}
 	}
 }

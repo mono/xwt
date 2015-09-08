@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IScrollbarBackend: IWidgetBackend
+	public interface IScrollbarBackend : IWidgetBackend
 	{
 		/// <summary>
 		/// Initializes the paned
@@ -35,13 +35,13 @@ namespace Xwt.Backends
 		/// <param name='dir'>
 		/// Orientation of the paned
 		/// </param>
-		void Initialize (Orientation dir);
+		void Initialize(Orientation dir);
 
 		/// <summary>
 		/// Gets the adjustment object bound to the scrollbar
 		/// </summary>
 		/// <returns>The adjustment.</returns>
-		IScrollAdjustmentBackend CreateAdjustment ();
+		IScrollAdjustmentBackend CreateAdjustment();
 	}
 }
 

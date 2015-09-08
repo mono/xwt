@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt
 {
-	public class WidgetEventArgs: EventArgs
+	public class WidgetEventArgs : EventArgs
 	{
 		/// <summary>
 		/// Gets or sets a value indicating whether the event has been handled.

@@ -34,10 +34,10 @@ using SW = System.Windows;
 
 namespace Xwt.WPFBackend
 {
-	internal class DrawingContext:IDisposable
+	internal class DrawingContext : IDisposable
 	{
-		Stack<ContextData> pushes = new Stack<ContextData> ();
-		TransformGroup transforms = new TransformGroup ();
+		Stack<ContextData> pushes = new Stack<ContextData>();
+		TransformGroup transforms = new TransformGroup();
 		int pushCount;
 		bool disposed;
 		bool positionSet;
@@ -54,8 +54,10 @@ namespace Xwt.WPFBackend
 		public PathFigure Path { get; private set; }
 		public SWM.Pen Pen { get; private set; }
 
-		public SWM.Brush Brush {
-			get {
+		public SWM.Brush Brush
+		{
+			get
+			{
 				return patternBrush ?? colorBrush;
 			}
 		}
@@ -70,11 +72,13 @@ namespace Xwt.WPFBackend
 
 		public SWM.Matrix CurrentTransform
 		{
-			get {
+			get
+			{
 				TransformCollection children = transforms.Children;
 				Matrix ctm = Matrix.Identity;
-				foreach (Transform t in children) {
-					ctm.Prepend (t.Value);
+				foreach (Transform t in children)
+				{
+					ctm.Prepend(t.Value);
 				};
 				return ctm;
 			}
@@ -92,43 +96,44 @@ namespace Xwt.WPFBackend
 
 		public System.Windows.Media.DrawingContext Context { get; private set; }
 
-		internal DrawingContext (System.Windows.Media.DrawingContext dc, double scaleFactor)
+		internal DrawingContext(System.Windows.Media.DrawingContext dc, double scaleFactor)
 		{
 			Context = dc;
 			ScaleFactor = scaleFactor;
-			AllocatePen (Color.FromRgb (0, 0, 0), 1, DashStyles.Solid);
-			ResetPath ();
+			AllocatePen(Color.FromRgb(0, 0, 0), 1, DashStyles.Solid);
+			ResetPath();
 		}
 
-		internal DrawingContext (DrawingContext context)
+		internal DrawingContext(DrawingContext context)
 		{
 			Context = context.Context;
 
 			if (context.Pen != null)
-				AllocatePen (context.colorBrush.Color, context.Pen.Thickness, context.Pen.DashStyle);
+				AllocatePen(context.colorBrush.Color, context.Pen.Thickness, context.Pen.DashStyle);
 
 			patternBrush = context.patternBrush;
 
-			geometry = (PathGeometry) context.Geometry.Clone ();
+			geometry = (PathGeometry)context.Geometry.Clone();
 			Path = geometry.Figures[geometry.Figures.Count - 1];
 			positionSet = context.positionSet;
 		}
 
 		internal DrawingContext()
 		{
-			ResetPath ();
+			ResetPath();
 		}
 
-		public void AppendPath (DrawingContext context)
+		public void AppendPath(DrawingContext context)
 		{
 			foreach (var f in context.Geometry.Figures)
-				geometry.Figures.Add (f.Clone ());
+				geometry.Figures.Add(f.Clone());
 			Path = context.geometry.Figures[context.geometry.Figures.Count - 1];
 		}
 
-		public void Save ()
+		public void Save()
 		{
-			var cd = new ContextData () {
+			var cd = new ContextData()
+			{
 				Thickness = Pen.Thickness,
 				CurrentColor = colorBrush.Color,
 				PushCount = pushCount,
@@ -136,93 +141,98 @@ namespace Xwt.WPFBackend
 				DashStyle = Pen.DashStyle,
 				TransformCount = transforms.Children.Count,
 			};
-			pushes.Push (cd);
+			pushes.Push(cd);
 			pushCount = 0;
 		}
 
-		public void Restore ()
+		public void Restore()
 		{
 			if (pushes.Count == 0)
 				return;
 
 			for (int n = 0; n < pushCount; n++)
-				Context.Pop ();
+				Context.Pop();
 
-			var cd = pushes.Pop ();
+			var cd = pushes.Pop();
 			pushCount = cd.PushCount;
 
 			while (transforms.Children.Count > cd.TransformCount)
-				transforms.Children.RemoveAt (transforms.Children.Count - 1);
+				transforms.Children.RemoveAt(transforms.Children.Count - 1);
 
-			AllocatePen (cd.CurrentColor, cd.Thickness, cd.DashStyle);
+			AllocatePen(cd.CurrentColor, cd.Thickness, cd.DashStyle);
 			patternBrush = cd.Pattern;
 		}
 
-		public void NotifyPush ()
+		public void NotifyPush()
 		{
 			pushCount++;
 		}
 
-		public void PushTransform (Transform t)
+		public void PushTransform(Transform t)
 		{
-			Context.PushTransform (t);
-			transforms.Children.Add (t);
+			Context.PushTransform(t);
+			transforms.Children.Add(t);
 			pushCount++;
 		}
 
-		public void SetColor (Color color)
+		public void SetColor(Color color)
 		{
 			patternBrush = null;
-			AllocatePen (color, Pen != null ? Pen.Thickness : 1, Pen != null ? Pen.DashStyle : DashStyles.Solid);
+			AllocatePen(color, Pen != null ? Pen.Thickness : 1, Pen != null ? Pen.DashStyle : DashStyles.Solid);
 		}
 
-		public void SetThickness (double t)
+		public void SetThickness(double t)
 		{
 			var ds = Pen.DashStyle;
-			if (ds != DashStyles.Solid) {
-				var dashes = Pen.DashStyle.Dashes.Clone ();
+			if (ds != DashStyles.Solid)
+			{
+				var dashes = Pen.DashStyle.Dashes.Clone();
 				for (int n = 0; n < dashes.Count; n++)
 					dashes[n] = (dashes[n] * Pen.Thickness) / t;
 				var offset = (Pen.DashStyle.Offset * Pen.Thickness) / t;
-				ds = new DashStyle (dashes, offset);
+				ds = new DashStyle(dashes, offset);
 			}
-			AllocatePen (colorBrush.Color, t, ds);
+			AllocatePen(colorBrush.Color, t, ds);
 		}
 
-		internal void SetDash (double offset, double[] pattern)
+		internal void SetDash(double offset, double[] pattern)
 		{
-			DashStyle ds = new DashStyle (pattern.Select (d => d / Pen.Thickness), offset);
-			AllocatePen (colorBrush.Color, Pen.Thickness, ds);
+			DashStyle ds = new DashStyle(pattern.Select(d => d / Pen.Thickness), offset);
+			AllocatePen(colorBrush.Color, Pen.Thickness, ds);
 		}
 
-		void AllocatePen (Color color, double thickness, DashStyle dashStyle)
+		void AllocatePen(Color color, double thickness, DashStyle dashStyle)
 		{
-			if (colorBrush != null && color == colorBrush.Color) {
-				if (Pen.Thickness != thickness || !dashStyle.Equals (Pen.DashStyle))
-					Pen = new SWM.Pen (colorBrush, thickness) {
+			if (colorBrush != null && color == colorBrush.Color)
+			{
+				if (Pen.Thickness != thickness || !dashStyle.Equals(Pen.DashStyle))
+					Pen = new SWM.Pen(colorBrush, thickness)
+					{
 						DashStyle = dashStyle
 					};
 			}
 			else
 			{
-				colorBrush = new SolidColorBrush (color);
-				Pen = new SWM.Pen (colorBrush, thickness) {
+				colorBrush = new SolidColorBrush(color);
+				Pen = new SWM.Pen(colorBrush, thickness)
+				{
 					DashStyle = dashStyle
 				};
 			}
 			Pen.DashCap = PenLineCap.Flat;
 		}
 
-		public void SetPattern (Brush brush)
+		public void SetPattern(Brush brush)
 		{
 			patternBrush = brush;
 		}
 
-		public void NewFigure (SW.Point p)
+		public void NewFigure(SW.Point p)
 		{
-			if (Path.Segments.Count > 0) {
-				Path = new PathFigure ();
-				geometry.Figures.Add (Path);
+			if (Path.Segments.Count > 0)
+			{
+				Path = new PathFigure();
+				geometry.Figures.Add(Path);
 			}
 			LastFigureStart = p;
 			EndPoint = p;
@@ -230,52 +240,57 @@ namespace Xwt.WPFBackend
 			positionSet = true;
 		}
 
-		public void ConnectToLastFigure (SW.Point p, bool stroke)
+		public void ConnectToLastFigure(SW.Point p, bool stroke)
 		{
-			if (EndPoint != p) {
+			if (EndPoint != p)
+			{
 				var pathIsOpen = Path.Segments.Count != 0 || geometry.Figures.Count > 1 || positionSet;
-				if (pathIsOpen) {
-				//	LastFigureStart = p;
-					Path.Segments.Add (new LineSegment (p, stroke));
+				if (pathIsOpen)
+				{
+					//	LastFigureStart = p;
+					Path.Segments.Add(new LineSegment(p, stroke));
 				}
 				else
-					NewFigure (p);
+					NewFigure(p);
 			}
 			if (!stroke)
 				LastFigureStart = p;
 		}
 
-		public void ResetPath ()
+		public void ResetPath()
 		{
-			Path = new PathFigure ();
-			geometry = new PathGeometry ();
-			geometry.Figures.Add (Path);
-			Path.StartPoint = EndPoint = new SW.Point (0, 0);
+			Path = new PathFigure();
+			geometry = new PathGeometry();
+			geometry.Figures.Add(Path);
+			Path.StartPoint = EndPoint = new SW.Point(0, 0);
 			positionSet = false;
 		}
 
-		public PathGeometry Geometry {
+		public PathGeometry Geometry
+		{
 			get { return geometry; }
 		}
 
-		public SW.Point GetStartPoint ()
+		public SW.Point GetStartPoint()
 		{
 			if (Path.Segments.Count == 0)
 				return Path.StartPoint;
 			var last = Path.Segments[0];
 			if (last is LineSegment)
 				return ((LineSegment)last).Point;
-			if (last is PolyLineSegment) {
+			if (last is PolyLineSegment)
+			{
 				var p = ((PolyLineSegment)last).Points;
 				return p[0];
 			}
 			return Path.StartPoint;
 		}
 
-		public void Dispose ()
+		public void Dispose()
 		{
-			if (!disposed) {
-				Context.Close ();
+			if (!disposed)
+			{
+				Context.Close();
 				disposed = true;
 			}
 		}

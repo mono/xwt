@@ -32,26 +32,27 @@ using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
-	public abstract class ImageBackendHandler: DisposableResourceBackendHandler
+	public abstract class ImageBackendHandler : DisposableResourceBackendHandler
 	{
-		public virtual object CreateBackend ()
+		public virtual object CreateBackend()
 		{
-			throw new NotSupportedException ();
+			throw new NotSupportedException();
 		}
-		
-		public virtual object LoadFromResource (Assembly asm, string name)
+
+		public virtual object LoadFromResource(Assembly asm, string name)
 		{
-			using (var s = asm.GetManifestResourceStream (name)) {
+			using (var s = asm.GetManifestResourceStream(name))
+			{
 				if (s == null)
-					throw new InvalidOperationException ("Resource not found: " + name);
-				return LoadFromStream (s);
+					throw new InvalidOperationException("Resource not found: " + name);
+				return LoadFromStream(s);
 			}
 		}
-		
-		public virtual object LoadFromFile (string file)
+
+		public virtual object LoadFromFile(string file)
 		{
-			using (var s = File.OpenRead (file))
-				return LoadFromStream (s);
+			using (var s = File.OpenRead(file))
+				return LoadFromStream(s);
 		}
 
 		/// <summary>
@@ -59,9 +60,9 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <returns>The custom drawn.</returns>
 		/// <param name="drawCallback">The callback to be used to draw the image. The arguments are: the context backend, the bounds where to draw</param>
-		public virtual object CreateCustomDrawn (ImageDrawCallback drawCallback)
+		public virtual object CreateCustomDrawn(ImageDrawCallback drawCallback)
 		{
-			throw new NotSupportedException ();
+			throw new NotSupportedException();
 		}
 
 		/// <summary>
@@ -70,27 +71,27 @@ namespace Xwt.Backends
 		/// <returns>The image backend</returns>
 		/// <param name="images">Backends of the different image representations</param>
 		/// <remarks>The first image of the list if the reference image, the one with scale factor = 1</remarks>
-		public virtual object CreateMultiResolutionImage (IEnumerable<object> images)
+		public virtual object CreateMultiResolutionImage(IEnumerable<object> images)
 		{
-			throw new NotSupportedException ();
-		}
-		
-		public virtual object CreateMultiSizeIcon (IEnumerable<object> images)
-		{
-			throw new NotSupportedException ();
+			throw new NotSupportedException();
 		}
 
-		public abstract object LoadFromStream (Stream stream);
+		public virtual object CreateMultiSizeIcon(IEnumerable<object> images)
+		{
+			throw new NotSupportedException();
+		}
 
-		public abstract void SaveToStream (object backend, System.IO.Stream stream, ImageFileType fileType);
+		public abstract object LoadFromStream(Stream stream);
 
-		public abstract Image GetStockIcon (string id);
+		public abstract void SaveToStream(object backend, System.IO.Stream stream, ImageFileType fileType);
+
+		public abstract Image GetStockIcon(string id);
 
 		/// <summary>
 		/// Determines whether this instance is a bitmap
 		/// </summary>
 		/// <param name="handle">Image handle</param>
-		public abstract bool IsBitmap (object handle);
+		public abstract bool IsBitmap(object handle);
 
 		/// <summary>
 		/// Converts an image to a bitmap of the specified size
@@ -99,14 +100,14 @@ namespace Xwt.Backends
 		/// <param name="handle">Image handle.</param>
 		/// <param name="width">Width.</param>
 		/// <param name="height">Height.</param>
-		public abstract object ConvertToBitmap (object handle, double width, double height, double scaleFactor, ImageFormat format);
+		public abstract object ConvertToBitmap(object handle, double width, double height, double scaleFactor, ImageFormat format);
 
 		/// <summary>
 		/// Returns True if the image has multiple representations of different sizes.
 		/// </summary>
 		/// <param name="handle">Image handle.</param>
 		/// <remarks>For example, it would return True for a .ico file which as several representations of the image in different sizes</remarks>
-		public abstract bool HasMultipleSizes (object handle);
+		public abstract bool HasMultipleSizes(object handle);
 
 		/// <summary>
 		/// Gets the size of an image
@@ -117,26 +118,27 @@ namespace Xwt.Backends
 		/// This method should return a size of (0,0) if the image doesn't have an intrinsic size.
 		/// For example: if the image is a vecor image, or if is an icon composed of images of different sizes.
 		/// </remarks>
-		public abstract Size GetSize (object handle);
-		
-		public abstract object CopyBitmap (object handle);
+		public abstract Size GetSize(object handle);
 
-		public abstract void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY);
+		public abstract object CopyBitmap(object handle);
 
-		public abstract object CropBitmap (object handle, int srcX, int srcY, int width, int height);
+		public abstract void CopyBitmapArea(object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY);
 
-		public abstract void SetBitmapPixel (object handle, int x, int y, Color color);
-		
-		public abstract Color GetBitmapPixel (object handle, int x, int y);
+		public abstract object CropBitmap(object handle, int srcX, int srcY, int width, int height);
+
+		public abstract void SetBitmapPixel(object handle, int x, int y, Color color);
+
+		public abstract Color GetBitmapPixel(object handle, int x, int y);
 	}
 
-	public delegate void ImageDrawCallback (object contextBackend, Rectangle bounds);
+	public delegate void ImageDrawCallback(object contextBackend, Rectangle bounds);
 
 	public struct ImageDescription
 	{
-		public static ImageDescription Null = new ImageDescription ();
+		public static ImageDescription Null = new ImageDescription();
 
-		public bool IsNull {
+		public bool IsNull
+		{
 			get { return Backend == null; }
 		}
 

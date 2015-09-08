@@ -43,25 +43,26 @@ namespace Xwt.WPFBackend
 		public FrameBackend()
 		{
 			ExGrid grid = new ExGrid();
-			grid.Children.Add (this.groupBox = new SWC.GroupBox ());
-			grid.Children.Add (this.flippedGroupBox = new SWC.GroupBox ());
+			grid.Children.Add(this.groupBox = new SWC.GroupBox());
+			grid.Children.Add(this.flippedGroupBox = new SWC.GroupBox());
 			groupBox.SizeChanged += delegate (object sender, SizeChangedEventArgs e)
 			{
 				flippedGroupBox.RenderSize = groupBox.RenderSize;
 			};
 
-			this.flippedGroupBox.SetBinding (UIElement.IsEnabledProperty, new Binding ("IsEnabled") { Source = this.groupBox });
-			this.flippedGroupBox.SetBinding (Control.BorderBrushProperty, new Binding ("BorderBrush") { Source = this.groupBox });
-			this.flippedGroupBox.SetBinding (Control.BorderThicknessProperty,
-				new Binding ("BorderThickness") {
+			this.flippedGroupBox.SetBinding(UIElement.IsEnabledProperty, new Binding("IsEnabled") { Source = this.groupBox });
+			this.flippedGroupBox.SetBinding(Control.BorderBrushProperty, new Binding("BorderBrush") { Source = this.groupBox });
+			this.flippedGroupBox.SetBinding(Control.BorderThicknessProperty,
+				new Binding("BorderThickness")
+				{
 					Source = this.groupBox,
-					Converter =  new HFlippedBorderThicknessConverter ()
+					Converter = new HFlippedBorderThicknessConverter()
 				});
 
-			this.flippedGroupBox.RenderTransformOrigin = new System.Windows.Point (0.5, 0.5);
-			this.flippedGroupBox.RenderTransform = new ScaleTransform (-1, 1);
+			this.flippedGroupBox.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+			this.flippedGroupBox.RenderTransform = new ScaleTransform(-1, 1);
 			this.flippedGroupBox.Focusable = false;
-			SWC.Panel.SetZIndex (this.flippedGroupBox, -1);
+			SWC.Panel.SetZIndex(this.flippedGroupBox, -1);
 
 			Widget = grid;
 		}
@@ -77,7 +78,7 @@ namespace Xwt.WPFBackend
 				this.label = value;
 				GroupBox.Header = value;
 
-				this.flippedGroupBox.Visibility = String.IsNullOrEmpty (value) ? Visibility.Visible : Visibility.Collapsed;
+				this.flippedGroupBox.Visibility = String.IsNullOrEmpty(value) ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 
@@ -89,22 +90,23 @@ namespace Xwt.WPFBackend
 				if (this.frameType == FrameType.WidgetBox)
 					return;
 
-				GroupBox.BorderBrush = new SolidColorBrush (value.ToWpfColor ());
+				GroupBox.BorderBrush = new SolidColorBrush(value.ToWpfColor());
 			}
 		}
 
-		public void SetFrameType (FrameType type)
+		public void SetFrameType(FrameType type)
 		{
 			this.frameType = type;
-			
-			if (type == FrameType.WidgetBox) {
-				GroupBox.ClearValue (Control.BorderThicknessProperty);
-				GroupBox.ClearValue (Control.BorderBrushProperty);
-				GroupBox.ClearValue (Control.PaddingProperty);
+
+			if (type == FrameType.WidgetBox)
+			{
+				GroupBox.ClearValue(Control.BorderThicknessProperty);
+				GroupBox.ClearValue(Control.BorderBrushProperty);
+				GroupBox.ClearValue(Control.PaddingProperty);
 			}
 		}
 
-		public void SetContent (IWidgetBackend child)
+		public void SetContent(IWidgetBackend child)
 		{
 			if (child == null)
 			{
@@ -117,23 +119,24 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void SetBorderSize (double left, double right, double top, double bottom)
+		public void SetBorderSize(double left, double right, double top, double bottom)
 		{
 			if (this.frameType == FrameType.WidgetBox)
 				return;
 
-			GroupBox.BorderThickness = new Thickness (left, top, right, bottom);
+			GroupBox.BorderThickness = new Thickness(left, top, right, bottom);
 		}
 
-		public void SetPadding (double left, double right, double top, double bottom)
+		public void SetPadding(double left, double right, double top, double bottom)
 		{
 			if (this.frameType == FrameType.WidgetBox)
 				return;
 
-			GroupBox.Padding = new Thickness (left, top, right, bottom);
+			GroupBox.Padding = new Thickness(left, top, right, bottom);
 		}
 
-		private SWC.GroupBox GroupBox {
+		private SWC.GroupBox GroupBox
+		{
 			get { return this.groupBox; }
 		}
 
@@ -146,9 +149,9 @@ namespace Xwt.WPFBackend
 		private class HFlippedBorderThicknessConverter
 			: IValueConverter
 		{
-			public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+			public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 			{
-				Thickness t = (Thickness) value;
+				Thickness t = (Thickness)value;
 				double right = t.Right;
 				t.Right = t.Left;
 				t.Left = right;
@@ -156,9 +159,9 @@ namespace Xwt.WPFBackend
 				return t;
 			}
 
-			public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+			public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 			{
-				throw new NotImplementedException ();
+				throw new NotImplementedException();
 			}
 		}
 	}

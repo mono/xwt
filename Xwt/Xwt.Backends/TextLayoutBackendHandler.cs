@@ -31,22 +31,22 @@ using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
-	public abstract class TextLayoutBackendHandler: DisposableResourceBackendHandler
+	public abstract class TextLayoutBackendHandler : DisposableResourceBackendHandler
 	{
-		public abstract object Create ();
+		public abstract object Create();
 
-		public abstract void SetWidth (object backend, double value);
-		public abstract void SetHeight (object backend, double value);
-		public abstract void SetText (object backend, string text);
-		public abstract void SetFont (object backend, Font font);
-		public abstract void SetTrimming (object backend, TextTrimming textTrimming);
-		public abstract Size GetSize (object backend);
-		public abstract int GetIndexFromCoordinates (object backend, double x, double y);
-		public abstract Point GetCoordinateFromIndex (object backend, int index);
-		public abstract double GetBaseline (object backend);
+		public abstract void SetWidth(object backend, double value);
+		public abstract void SetHeight(object backend, double value);
+		public abstract void SetText(object backend, string text);
+		public abstract void SetFont(object backend, Font font);
+		public abstract void SetTrimming(object backend, TextTrimming textTrimming);
+		public abstract Size GetSize(object backend);
+		public abstract int GetIndexFromCoordinates(object backend, double x, double y);
+		public abstract Point GetCoordinateFromIndex(object backend, int index);
+		public abstract double GetBaseline(object backend);
 
-		public abstract void AddAttribute (object backend, TextAttribute attribute);
-		public abstract void ClearAttributes (object backend);
+		public abstract void AddAttribute(object backend, TextAttribute attribute);
+		public abstract void ClearAttributes(object backend);
 	}
 }
 

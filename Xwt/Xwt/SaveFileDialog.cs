@@ -28,14 +28,14 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ISaveFileDialogBackend))]
-	public class SaveFileDialog: FileDialog
+	[BackendType(typeof(ISaveFileDialogBackend))]
+	public class SaveFileDialog : FileDialog
 	{
-		public SaveFileDialog ()
+		public SaveFileDialog()
 		{
 		}
-		
-		public SaveFileDialog (string title): base (title)
+
+		public SaveFileDialog(string title) : base(title)
 		{
 		}
 	}

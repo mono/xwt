@@ -29,166 +29,186 @@ using System.ComponentModel;
 
 namespace Xwt
 {
-	[BackendType (typeof(ITextEntryBackend))]
-	public class TextEntry: Widget
+	[BackendType(typeof(ITextEntryBackend))]
+	public class TextEntry : Widget
 	{
 		EventHandler changed, activated, selectionChanged;
-		
-		static TextEntry ()
+
+		static TextEntry()
 		{
-			MapEvent (TextEntryEvent.Changed, typeof(TextEntry), "OnChanged");
-			MapEvent (TextEntryEvent.Activated, typeof(TextEntry), "OnActivated");
-			MapEvent (TextEntryEvent.SelectionChanged, typeof(TextEntry), "OnSelectionChanged");
+			MapEvent(TextEntryEvent.Changed, typeof(TextEntry), "OnChanged");
+			MapEvent(TextEntryEvent.Activated, typeof(TextEntry), "OnActivated");
+			MapEvent(TextEntryEvent.SelectionChanged, typeof(TextEntry), "OnSelectionChanged");
 		}
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ITextEntryEventSink
+
+		protected new class WidgetBackendHost : Widget.WidgetBackendHost, ITextEntryEventSink
 		{
-			public void OnChanged ()
+			public void OnChanged()
 			{
-				((TextEntry)Parent).OnChanged (EventArgs.Empty);
+				((TextEntry)Parent).OnChanged(EventArgs.Empty);
 			}
 
-			public void OnActivated ()
+			public void OnActivated()
 			{
-				((TextEntry)Parent).OnActivated (EventArgs.Empty);
+				((TextEntry)Parent).OnActivated(EventArgs.Empty);
 			}
 
-			public void OnSelectionChanged ()
+			public void OnSelectionChanged()
 			{
-				((TextEntry)Parent).OnSelectionChanged (EventArgs.Empty);
+				((TextEntry)Parent).OnSelectionChanged(EventArgs.Empty);
 			}
-			
-			public override Size GetDefaultNaturalSize ()
+
+			public override Size GetDefaultNaturalSize()
 			{
 				return DefaultNaturalSizes.TextEntry;
 			}
 		}
-		
-		public TextEntry ()
+
+		public TextEntry()
 		{
 		}
-		
-		protected override BackendHost CreateBackendHost ()
+
+		protected override BackendHost CreateBackendHost()
 		{
-			return new WidgetBackendHost ();
+			return new WidgetBackendHost();
 		}
-		
-		ITextEntryBackend Backend {
-			get { return (ITextEntryBackend) BackendHost.Backend; }
+
+		ITextEntryBackend Backend
+		{
+			get { return (ITextEntryBackend)BackendHost.Backend; }
 		}
-		
-		[DefaultValue ("")]
-		public string Text {
+
+		[DefaultValue("")]
+		public string Text
+		{
 			get { return Backend.Text; }
 			set { Backend.Text = value; }
 		}
 
-		public Alignment TextAlignment {
+		public Alignment TextAlignment
+		{
 			get { return Backend.TextAlignment; }
 			set { Backend.TextAlignment = value; }
 		}
 
-		[DefaultValue ("")]
-		public string PlaceholderText {
+		[DefaultValue("")]
+		public string PlaceholderText
+		{
 			get { return Backend.PlaceholderText; }
 			set { Backend.PlaceholderText = value; }
 		}
-		
-		[DefaultValue (false)]
-		public bool ReadOnly {
+
+		[DefaultValue(false)]
+		public bool ReadOnly
+		{
 			get { return Backend.ReadOnly; }
 			set { Backend.ReadOnly = value; }
 		}
-		
-		[DefaultValue (true)]
-		public bool ShowFrame {
+
+		[DefaultValue(true)]
+		public bool ShowFrame
+		{
 			get { return Backend.ShowFrame; }
 			set { Backend.ShowFrame = value; }
 		}
 
-		[DefaultValue (0)]
-		public int CursorPosition {
+		[DefaultValue(0)]
+		public int CursorPosition
+		{
 			get { return Backend.CursorPosition; }
 			set { Backend.CursorPosition = value; }
 		}
 
-		[DefaultValue (0)]
-		public int SelectionStart {
+		[DefaultValue(0)]
+		public int SelectionStart
+		{
 			get { return Backend.SelectionStart; }
 			set { Backend.SelectionStart = value; }
 		}
 
-		[DefaultValue (0)]
-		public int SelectionLength {
+		[DefaultValue(0)]
+		public int SelectionLength
+		{
 			get { return Backend.SelectionLength; }
 			set { Backend.SelectionLength = value; }
 		}
 
-		[DefaultValue ("")]
-		public string SelectedText {
+		[DefaultValue("")]
+		public string SelectedText
+		{
 			get { return Backend.SelectedText; }
 			set { Backend.SelectedText = value; }
 		}
-		
-		[DefaultValue (true)]
-		public bool MultiLine {
+
+		[DefaultValue(true)]
+		public bool MultiLine
+		{
 			get { return Backend.MultiLine; }
 			set { Backend.MultiLine = value; }
 		}
 
-		public void SetCompletions (string[] completions)
+		public void SetCompletions(string[] completions)
 		{
-			Backend.SetCompletions (completions);
+			Backend.SetCompletions(completions);
 		}
 
-		protected virtual void OnChanged (EventArgs e)
+		protected virtual void OnChanged(EventArgs e)
 		{
 			if (changed != null)
-				changed (this, e);
+				changed(this, e);
 		}
-		
-		public event EventHandler Changed {
-			add {
-				BackendHost.OnBeforeEventAdd (TextEntryEvent.Changed, changed);
+
+		public event EventHandler Changed
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TextEntryEvent.Changed, changed);
 				changed += value;
 			}
-			remove {
+			remove
+			{
 				changed -= value;
-				BackendHost.OnAfterEventRemove (TextEntryEvent.Changed, changed);
+				BackendHost.OnAfterEventRemove(TextEntryEvent.Changed, changed);
 			}
 		}
 
-		protected virtual void OnSelectionChanged (EventArgs e)
+		protected virtual void OnSelectionChanged(EventArgs e)
 		{
 			if (selectionChanged != null)
-				selectionChanged (this, e);
+				selectionChanged(this, e);
 		}
 
-		public event EventHandler SelectionChanged {
-			add {
-				BackendHost.OnBeforeEventAdd (TextEntryEvent.SelectionChanged, selectionChanged);
+		public event EventHandler SelectionChanged
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TextEntryEvent.SelectionChanged, selectionChanged);
 				selectionChanged += value;
 			}
-			remove {
+			remove
+			{
 				selectionChanged -= value;
-				BackendHost.OnAfterEventRemove (TextEntryEvent.SelectionChanged, selectionChanged);
+				BackendHost.OnAfterEventRemove(TextEntryEvent.SelectionChanged, selectionChanged);
 			}
 		}
 
-		protected virtual void OnActivated (EventArgs e)
+		protected virtual void OnActivated(EventArgs e)
 		{
 			if (activated != null)
-				activated (this, e);
+				activated(this, e);
 		}
 
-		public event EventHandler Activated {
-			add {
-				BackendHost.OnBeforeEventAdd (TextEntryEvent.Activated, activated);
+		public event EventHandler Activated
+		{
+			add
+			{
+				BackendHost.OnBeforeEventAdd(TextEntryEvent.Activated, activated);
 				activated += value;
 			}
-			remove {
+			remove
+			{
 				activated -= value;
-				BackendHost.OnAfterEventRemove (TextEntryEvent.Activated, activated);
+				BackendHost.OnAfterEventRemove(TextEntryEvent.Activated, activated);
 			}
 		}
 	}

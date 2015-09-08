@@ -29,8 +29,8 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType (typeof(ISelectFolderDialogBackend))]
-	public sealed class SelectFolderDialog: XwtComponent
+	[BackendType(typeof(ISelectFolderDialogBackend))]
+	public sealed class SelectFolderDialog : XwtComponent
 	{
 		bool running;
 		bool multiselect;
@@ -39,64 +39,74 @@ namespace Xwt
 		string title = "";
 		string folder;
 		string[] folders = new string[0];
-		
-		public SelectFolderDialog ()
+
+		public SelectFolderDialog()
 		{
 		}
 
-		public SelectFolderDialog (string title)
+		public SelectFolderDialog(string title)
 		{
 			this.title = title;
 		}
 
-		ISelectFolderDialogBackend Backend {
-			get { return (ISelectFolderDialogBackend) BackendHost.Backend; }
+		ISelectFolderDialogBackend Backend
+		{
+			get { return (ISelectFolderDialogBackend)BackendHost.Backend; }
 		}
-		
-		public string Title {
-			get {
+
+		public string Title
+		{
+			get
+			{
 				return title ?? "";
 			}
-			set {
+			set
+			{
 				title = value ?? "";
 				if (running)
 					Backend.Title = title;
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets the path of the folder that the user has selected in the dialog
 		/// </summary>
 		/// <value>
 		/// The path of the folder, or null if no selection was made
 		/// </value>
-		public string Folder {
+		public string Folder
+		{
 			get { return running ? Backend.Folder : folder; }
 		}
-		
+
 		/// <summary>
 		/// Gets the paths of the folders that the user has selected in the dialog
 		/// </summary>
 		/// <value>
 		/// The names of the files
 		/// </value>
-		public string[] Folders {
-			get {
+		public string[] Folders
+		{
+			get
+			{
 				return running ? Backend.Folders : folders;
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the folder whose contents are shown in the dialog
 		/// </summary>
 		/// <value>
 		/// The current folder.
 		/// </value>
-		public string CurrentFolder {
-			get {
+		public string CurrentFolder
+		{
+			get
+			{
 				return running ? Backend.CurrentFolder : currentFolder;
 			}
-			set {
+			set
+			{
 				if (running)
 					Backend.CurrentFolder = value;
 				else
@@ -108,9 +118,11 @@ namespace Xwt
 		/// Gets or sets a value indicating whether this instance can create folders.
 		/// </summary>
 		/// <value><c>true</c> if this instance can create folders; otherwise, <c>false</c>.</value>
-		public bool CanCreateFolders {
+		public bool CanCreateFolders
+		{
 			get { return running ? Backend.CanCreateFolders : canCreateFolders; }
-			set {
+			set
+			{
 				if (running)
 					Backend.CanCreateFolders = value;
 				else
@@ -124,48 +136,52 @@ namespace Xwt
 		/// <value>
 		/// <c>true</c> if multiselection is allowed; otherwise, <c>false</c>.
 		/// </value>
-		public bool Multiselect {
+		public bool Multiselect
+		{
 			get { return multiselect; }
-			set { CheckNotRunning (); multiselect = value; }
+			set { CheckNotRunning(); multiselect = value; }
 		}
 
-		void CheckNotRunning ()
+		void CheckNotRunning()
 		{
 			if (running)
-				throw new InvalidOperationException ("Options can't be modified when the dialog is running");
-		}
- 
-		/// <summary>
-		/// Shows the dialog.
-		/// </summary>
-		public bool Run ()
-		{
-			return Run (null);
+				throw new InvalidOperationException("Options can't be modified when the dialog is running");
 		}
 
 		/// <summary>
 		/// Shows the dialog.
 		/// </summary>
-		public bool Run (WindowFrame parentWindow)
+		public bool Run()
 		{
-			try {
+			return Run(null);
+		}
+
+		/// <summary>
+		/// Shows the dialog.
+		/// </summary>
+		public bool Run(WindowFrame parentWindow)
+		{
+			try
+			{
 				running = true;
-				Backend.Initialize (multiselect);
-				if (!string.IsNullOrEmpty (currentFolder))
+				Backend.Initialize(multiselect);
+				if (!string.IsNullOrEmpty(currentFolder))
 					Backend.CurrentFolder = currentFolder;
-				if (!string.IsNullOrEmpty (title))
+				if (!string.IsNullOrEmpty(title))
 					Backend.Title = title;
 				Backend.CanCreateFolders = canCreateFolders;
-				return Backend.Run ((IWindowFrameBackend)BackendHost.ToolkitEngine.GetSafeBackend (parentWindow));
-			} finally {
+				return Backend.Run((IWindowFrameBackend)BackendHost.ToolkitEngine.GetSafeBackend(parentWindow));
+			}
+			finally
+			{
 				currentFolder = Backend.CurrentFolder;
 				folder = Backend.Folder;
-				folders = Backend.Folders; 
+				folders = Backend.Folders;
 				currentFolder = Backend.CurrentFolder;
 				running = false;
-				Backend.Cleanup ();
+				Backend.Cleanup();
 			}
-		}	
+		}
 	}
 }
 

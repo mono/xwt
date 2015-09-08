@@ -32,21 +32,22 @@ namespace Xwt.WPFBackend
 	{
 		protected object frontend;
 
-		public virtual void InitializeBackend (object frontend, ApplicationContext context)
+		public virtual void InitializeBackend(object frontend, ApplicationContext context)
 		{
 			this.frontend = frontend;
 			Context = context;
 		}
 
-		public virtual void EnableEvent (object eventId)
+		public virtual void EnableEvent(object eventId)
 		{
 		}
 
-		public virtual void DisableEvent (object eventId)
+		public virtual void DisableEvent(object eventId)
 		{
 		}
 
-		public object Frontend {
+		public object Frontend
+		{
 			get { return frontend; }
 		}
 

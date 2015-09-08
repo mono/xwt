@@ -36,13 +36,13 @@ namespace Xwt.Backends
 		/// Returns the vertical adjustment for the widget. Called only once.
 		/// </summary>
 		/// <returns>The vertical scroll adjustment.</returns>
-		IScrollControlBackend CreateVerticalScrollControl ();
+		IScrollControlBackend CreateVerticalScrollControl();
 
 		/// <summary>
 		/// Returns the horizontal adjustment for the widget. Called only once.
 		/// </summary>
 		/// <returns>The horizontal scroll adjustment.</returns>
-		IScrollControlBackend CreateHorizontalScrollControl ();
+		IScrollControlBackend CreateHorizontalScrollControl();
 	}
 }
 

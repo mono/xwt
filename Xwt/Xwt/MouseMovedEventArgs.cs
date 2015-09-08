@@ -31,7 +31,7 @@ namespace Xwt
 	/// <summary>
 	/// Mouse moved event arguments, containing information about mouse movements.
 	/// </summary>
-	public class MouseMovedEventArgs: EventArgs
+	public class MouseMovedEventArgs : EventArgs
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xwt.MouseMovedEventArgs"/> class.
@@ -39,13 +39,13 @@ namespace Xwt
 		/// <param name="timestamp">The timestamp of the event.</param>
 		/// <param name="x">The X coordinate of the cursor.</param>
 		/// <param name="y">The Y coordinate of the cursor.</param>
-		public MouseMovedEventArgs (long timestamp, double x, double y)
+		public MouseMovedEventArgs(long timestamp, double x, double y)
 		{
 			X = x;
 			Y = y;
-			Timestamp  = timestamp;
+			Timestamp = timestamp;
 		}
-		
+
 		/// <summary>
 		/// Gets or sets a value indicating whether this event has been handled
 		/// </summary>
@@ -72,8 +72,9 @@ namespace Xwt
 		/// <summary>
 		/// Location of the mouse cursor (in widget coordinates).
 		/// </summary>
-		public Point Position {
-			get { return new Point (X, Y); }
+		public Point Position
+		{
+			get { return new Point(X, Y); }
 		}
 
 		/// <summary>

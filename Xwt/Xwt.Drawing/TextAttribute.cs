@@ -36,25 +36,25 @@ namespace Xwt.Drawing
 		public int StartIndex { get; set; }
 		public int Count { get; set; }
 
-		internal TextAttribute ()
+		internal TextAttribute()
 		{
 		}
 
-		public TextAttribute Clone ()
+		public TextAttribute Clone()
 		{
-			return (TextAttribute)MemberwiseClone ();
+			return (TextAttribute)MemberwiseClone();
 		}
 
-		public override bool Equals (object ob)
+		public override bool Equals(object ob)
 		{
 			var t = ob as TextAttribute;
-			return t != null && t.GetType () == GetType () && t.StartIndex == StartIndex && t.Count == Count;
+			return t != null && t.GetType() == GetType() && t.StartIndex == StartIndex && t.Count == Count;
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			return GetType().GetHashCode () ^ StartIndex ^ Count;
+			return GetType().GetHashCode() ^ StartIndex ^ Count;
 		}
 	}
-	
+
 }

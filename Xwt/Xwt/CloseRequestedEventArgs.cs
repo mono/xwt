@@ -30,7 +30,7 @@ namespace Xwt
 {
 	public sealed class CloseRequestedEventArgs : EventArgs
 	{
-		public CloseRequestedEventArgs ()
+		public CloseRequestedEventArgs()
 		{
 			AllowClose = true;
 		}

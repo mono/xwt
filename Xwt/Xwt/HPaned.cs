@@ -28,9 +28,9 @@ using System;
 
 namespace Xwt
 {
-	public class HPaned: Paned
+	public class HPaned : Paned
 	{
-		public HPaned (): base (Xwt.Backends.Orientation.Horizontal)
+		public HPaned() : base(Xwt.Backends.Orientation.Horizontal)
 		{
 		}
 	}

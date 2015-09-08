@@ -30,13 +30,13 @@ namespace Xwt
 	/// <summary>
 	/// Object representing a physical screen
 	/// </summary>
-	public class Screen: XwtObject
+	public class Screen : XwtObject
 	{
-		internal Screen (object backend): this (backend, null)
+		internal Screen(object backend) : this(backend, null)
 		{
 		}
-		
-		internal Screen (object backend, Toolkit toolkit): base (backend, toolkit)
+
+		internal Screen(object backend, Toolkit toolkit) : base(backend, toolkit)
 		{
 		}
 
@@ -44,18 +44,22 @@ namespace Xwt
 		/// Bounds of the screen, including the dock area (and menu bar on Mac) 
 		/// </summary>
 		/// <value>The bounds.</value>
-		public Rectangle Bounds {
-			get {
-				return ToolkitEngine.DesktopBackend.GetScreenBounds (Backend);
+		public Rectangle Bounds
+		{
+			get
+			{
+				return ToolkitEngine.DesktopBackend.GetScreenBounds(Backend);
 			}
 		}
 
 		/// <summary>
 		/// Bounds of the screen, not including the dock area (or menu bar on Mac) 
 		/// </summary>
-		public Rectangle VisibleBounds {
-			get {
-				return ToolkitEngine.DesktopBackend.GetScreenVisibleBounds (Backend);
+		public Rectangle VisibleBounds
+		{
+			get
+			{
+				return ToolkitEngine.DesktopBackend.GetScreenVisibleBounds(Backend);
 			}
 		}
 
@@ -63,9 +67,11 @@ namespace Xwt
 		/// Gets the name of the device.
 		/// </summary>
 		/// <value>The name of the device.</value>
-		public string DeviceName {
-			get {
-				return ToolkitEngine.DesktopBackend.GetScreenDeviceName (Backend);
+		public string DeviceName
+		{
+			get
+			{
+				return ToolkitEngine.DesktopBackend.GetScreenDeviceName(Backend);
 			}
 		}
 
@@ -74,9 +80,11 @@ namespace Xwt
 		/// </summary>
 		/// <value><c>true</c> if this instance is the primary screen; otherwise, <c>false</c>.</value>
 		/// <remarks>The primary screen is considered the screen where the 'main desktop' lives.</remarks>
-		public bool IsPrimary {
-			get {
-				return ToolkitEngine.DesktopBackend.IsPrimaryScreen (Backend);
+		public bool IsPrimary
+		{
+			get
+			{
+				return ToolkitEngine.DesktopBackend.IsPrimaryScreen(Backend);
 			}
 		}
 
@@ -84,9 +92,11 @@ namespace Xwt
 		/// Gets the screen scale factor.
 		/// </summary>
 		/// <value>This is the scale of user space pixels in relation to phisical pixels. The normal value is 1. In a retina display the value is 2.</value>
-		public double ScaleFactor {
-			get {
-				return ToolkitEngine.DesktopBackend.GetScaleFactor (Backend);
+		public double ScaleFactor
+		{
+			get
+			{
+				return ToolkitEngine.DesktopBackend.GetScaleFactor(Backend);
 			}
 		}
 	}

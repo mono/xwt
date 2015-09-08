@@ -55,13 +55,13 @@ namespace Xwt.WPFBackend
 		public event DependencyPropertyChangedEventHandler CellViewChanged;
 
 		public static readonly DependencyProperty CellViewBackendProperty =
-            DependencyProperty.Register("CellViewBackend", typeof(CellViewBackend),
-            typeof(CanvasCellViewPanel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnCellViewChanged)));
+			DependencyProperty.Register("CellViewBackend", typeof(CellViewBackend),
+			typeof(CanvasCellViewPanel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnCellViewChanged)));
 
-        public CellViewBackend CellViewBackend
+		public CellViewBackend CellViewBackend
 		{
-            get { return (CellViewBackend)GetValue(CellViewBackendProperty); }
-            set { SetValue(CellViewBackendProperty, value); }
+			get { return (CellViewBackend)GetValue(CellViewBackendProperty); }
+			set { SetValue(CellViewBackendProperty, value); }
 		}
 
 		public static void OnCellViewChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -76,25 +76,25 @@ namespace Xwt.WPFBackend
 			if (this.CellViewChanged != null)
 				this.CellViewChanged(this, e);
 		}
-		
+
 		protected override void OnRender(System.Windows.Media.DrawingContext dc)
 		{
 			base.OnRender(dc);
-            CellViewBackend.Load (this);
-            CellViewBackend.ApplicationContext.InvokeUserCode(delegate
+			CellViewBackend.Load(this);
+			CellViewBackend.ApplicationContext.InvokeUserCode(delegate
 			{
 				DrawingContext ctx = new DrawingContext(dc, 1);
-                ((ICanvasCellViewFrontend)CellViewBackend.CellView).Draw(ctx, new Rectangle(this.RenderTransform.Value.OffsetX, this.RenderTransform.Value.OffsetY, this.RenderSize.Width, this.RenderSize.Height));
+				((ICanvasCellViewFrontend)CellViewBackend.CellView).Draw(ctx, new Rectangle(this.RenderTransform.Value.OffsetX, this.RenderTransform.Value.OffsetY, this.RenderSize.Width, this.RenderSize.Height));
 			});
 		}
 
 		protected override System.Windows.Size MeasureOverride(System.Windows.Size constraint)
 		{
 			var size = new System.Windows.Size();
-            CellViewBackend.Load(this);
-            CellViewBackend.ApplicationContext.InvokeUserCode(delegate
+			CellViewBackend.Load(this);
+			CellViewBackend.ApplicationContext.InvokeUserCode(delegate
 			{
-                var s = ((ICanvasCellViewFrontend)CellViewBackend.CellView).GetRequiredSize();
+				var s = ((ICanvasCellViewFrontend)CellViewBackend.CellView).GetRequiredSize();
 				size = new System.Windows.Size(s.Width, s.Height);
 			});
 			if (size.Width > constraint.Width)

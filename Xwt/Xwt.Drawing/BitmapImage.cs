@@ -27,62 +27,65 @@ using System;
 
 namespace Xwt.Drawing
 {
-	public class BitmapImage: Image
+	public class BitmapImage : Image
 	{
 		Size pixelSize;
 
-		public BitmapImage (BitmapImage image): base (image.ToolkitEngine.ImageBackendHandler.CopyBitmap (image.Backend), image.ToolkitEngine)
+		public BitmapImage(BitmapImage image) : base(image.ToolkitEngine.ImageBackendHandler.CopyBitmap(image.Backend), image.ToolkitEngine)
 		{
 			pixelSize = image.pixelSize;
 		}
-		
-		internal BitmapImage (object backend, Size size, Toolkit toolkit): base (backend, toolkit)
+
+		internal BitmapImage(object backend, Size size, Toolkit toolkit) : base(backend, toolkit)
 		{
 			Size = size;
-			pixelSize = ToolkitEngine.ImageBackendHandler.GetSize (backend);
+			pixelSize = ToolkitEngine.ImageBackendHandler.GetSize(backend);
 		}
-		
-		internal BitmapImage (Image origImage): base (origImage)
+
+		internal BitmapImage(Image origImage) : base(origImage)
 		{
 			// shares the backend of the image
 		}
 
-		void MakeWrittable ()
+		void MakeWrittable()
 		{
 			// If the bitmap only has one reference, that reference is the one held by this instance, so
 			// no other image is referencing this one. In that case, the bitmap can be safely modified.
 			// On the other hand, if the bitmap is being referenced by another image, an local copy
 			// has to be made
 
-			if (NativeRef.ReferenceCount > 1) {
-				Backend = ToolkitEngine.ImageBackendHandler.CopyBitmap (Backend);
-				NativeRef.ReleaseReference (true);
-				NativeRef = new NativeImageRef (Backend, ToolkitEngine);
+			if (NativeRef.ReferenceCount > 1)
+			{
+				Backend = ToolkitEngine.ImageBackendHandler.CopyBitmap(Backend);
+				NativeRef.ReleaseReference(true);
+				NativeRef = new NativeImageRef(Backend, ToolkitEngine);
 			}
 		}
-		
-		public void SetPixel (int x, int y, Color color)
+
+		public void SetPixel(int x, int y, Color color)
 		{
-			MakeWrittable ();
+			MakeWrittable();
 			var nr = NativeRef;
-			do {
-				nr.Toolkit.ImageBackendHandler.SetBitmapPixel (nr.Backend, x, y, color);
+			do
+			{
+				nr.Toolkit.ImageBackendHandler.SetBitmapPixel(nr.Backend, x, y, color);
 				nr = nr.NextRef;
 			} while (nr != NativeRef);
 		}
-		
-		public Color GetPixel (int x, int y)
+
+		public Color GetPixel(int x, int y)
 		{
-			return ToolkitEngine.ImageBackendHandler.GetBitmapPixel (Backend, x, y);
+			return ToolkitEngine.ImageBackendHandler.GetBitmapPixel(Backend, x, y);
 		}
-		
-		public void CopyArea (int srcX, int srcY, int width, int height, BitmapImage dest, int destX, int destY)
+
+		public void CopyArea(int srcX, int srcY, int width, int height, BitmapImage dest, int destX, int destY)
 		{
-			dest.MakeWrittable ();
+			dest.MakeWrittable();
 			var nr = dest.NativeRef;
-			do {
-				InitForToolkit (nr.Toolkit);
-				nr.Toolkit.ImageBackendHandler.CopyBitmapArea (Backend, srcX, srcY, width, height, nr.Backend, destX, destY);
+			do
+			{
+				InitForToolkit(nr.Toolkit);
+				nr.Toolkit.ImageBackendHandler.CopyBitmapArea(Backend, srcX, srcY, width, height, nr.Backend, destX, destY);
 			} while (nr != dest.NativeRef);
 		}
 
@@ -93,32 +96,35 @@ namespace Xwt.Drawing
 		/// <param name="y">Y coordinate, in physical pixels</param>
 		/// <param name="pixelWidth">Width, in physical pixels</param>
 		/// <param name="pixelHeight">Height, in physical pixels</param>
-		public BitmapImage Crop (int x, int y, int pixelWidth, int pixelHeight)
+		public BitmapImage Crop(int x, int y, int pixelWidth, int pixelHeight)
 		{
-			var scaleX = Math.Truncate (PixelWidth / Width);
-			var scaleY = Math.Truncate (PixelHeight / Height);
-			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, x, y, pixelWidth, pixelHeight), new Size (pixelWidth / scaleX, pixelHeight / scaleY), ToolkitEngine);
+			var scaleX = Math.Truncate(PixelWidth / Width);
+			var scaleY = Math.Truncate(PixelHeight / Height);
+			return new BitmapImage(ToolkitEngine.ImageBackendHandler.CropBitmap(Backend, x, y, pixelWidth, pixelHeight), new Size(pixelWidth / scaleX, pixelHeight / scaleY), ToolkitEngine);
 		}
 
 		/// <summary>
 		/// Creates a crop of the image
 		/// </summary>
-		public BitmapImage Crop (Rectangle pixelRect)
+		public BitmapImage Crop(Rectangle pixelRect)
 		{
-			var scaleX = Math.Truncate (PixelWidth / Width);
-			var scaleY = Math.Truncate (PixelHeight / Height);
-			return new BitmapImage (ToolkitEngine.ImageBackendHandler.CropBitmap (Backend, (int)pixelRect.X, (int)pixelRect.Y, (int)pixelRect.Width, (int)pixelRect.Height), new Size (pixelRect.Width / scaleX, pixelRect.Height / scaleY), ToolkitEngine);
+			var scaleX = Math.Truncate(PixelWidth / Width);
+			var scaleY = Math.Truncate(PixelHeight / Height);
+			return new BitmapImage(ToolkitEngine.ImageBackendHandler.CropBitmap(Backend, (int)pixelRect.X, (int)pixelRect.Y, (int)pixelRect.Width, (int)pixelRect.Height), new Size(pixelRect.Width / scaleX, pixelRect.Height / scaleY), ToolkitEngine);
 		}
 
-		public Size PixelSize {
+		public Size PixelSize
+		{
 			get { return pixelSize; }
 		}
 
-		public double PixelWidth {
+		public double PixelWidth
+		{
 			get { return pixelSize.Width; }
 		}
-		
-		public double PixelHeight {
+
+		public double PixelHeight
+		{
 			get { return pixelSize.Height; }
 		}
 	}

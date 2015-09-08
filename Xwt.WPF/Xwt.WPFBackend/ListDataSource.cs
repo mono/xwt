@@ -56,94 +56,99 @@ namespace Xwt.WPFBackend
 			get { return this.columnTypes; }
 		}
 
-		public void Initialize (Type[] types)
+		public void Initialize(Type[] types)
 		{
 			if (types == null)
-				throw new ArgumentNullException ("types");
+				throw new ArgumentNullException("types");
 
 			this.columnTypes = types;
 		}
 
-		public int AddRow ()
+		public int AddRow()
 		{
-			this.rows.Add (new ValuesContainer (this.columnTypes.Length));
+			this.rows.Add(new ValuesContainer(this.columnTypes.Length));
 			int index = this.rows.Count - 1;
 
-			OnRowInserted (new ListRowEventArgs (index));
+			OnRowInserted(new ListRowEventArgs(index));
 
 			return index;
 		}
 
-		public int InsertRowAfter (int row)
+		public int InsertRowAfter(int row)
 		{
 			row++;
 
 			if (row > this.rows.Count)
-				throw new ArgumentOutOfRangeException ("row");
+				throw new ArgumentOutOfRangeException("row");
 
 			if (row == this.rows.Count)
-				return AddRow ();
+				return AddRow();
 
-			this.rows.Insert (row, new ValuesContainer (this.columnTypes.Length));
+			this.rows.Insert(row, new ValuesContainer(this.columnTypes.Length));
 
-			OnRowInserted (new ListRowEventArgs (row));
+			OnRowInserted(new ListRowEventArgs(row));
 
 			return row;
 		}
 
-		public int InsertRowBefore (int row)
+		public int InsertRowBefore(int row)
 		{
 			if (row > this.rows.Count)
-				throw new ArgumentOutOfRangeException ("row");
+				throw new ArgumentOutOfRangeException("row");
 
 			if (row == this.rows.Count)
-				return AddRow ();
+				return AddRow();
 
 			row--;
-			this.rows.Insert (row, new ValuesContainer (this.columnTypes.Length));
+			this.rows.Insert(row, new ValuesContainer(this.columnTypes.Length));
 
-			OnRowInserted (new ListRowEventArgs (row));
+			OnRowInserted(new ListRowEventArgs(row));
 
 			return row;
 		}
 
-		public void RemoveRow (int row)
+		public void RemoveRow(int row)
 		{
 			if (row >= this.rows.Count)
-				throw new ArgumentOutOfRangeException ("row");
+				throw new ArgumentOutOfRangeException("row");
 
-			this.rows.RemoveAt (row);
+			this.rows.RemoveAt(row);
 
-			OnRowDeleted (new ListRowEventArgs (row));
+			OnRowDeleted(new ListRowEventArgs(row));
 		}
 
-		public object GetValue (int row, int column)
+		public object GetValue(int row, int column)
 		{
 			if (row >= this.rows.Count)
-				throw new ArgumentOutOfRangeException ("row");
+				throw new ArgumentOutOfRangeException("row");
 			if (column >= this.ColumnTypes.Length)
-				throw new ArgumentOutOfRangeException ("column");
+				throw new ArgumentOutOfRangeException("column");
 
-			return this.rows [row] [column];
+			return this.rows[row][column];
 		}
 
-		public void SetValue (int row, int column, object value)
+		public void SetValue(int row, int column, object value)
 		{
 			int rowsInserted = 0;
-			while (row >= this.rows.Count) {
-				this.rows.Add (new ValuesContainer (this.columnTypes.Length));
+			while (row >= this.rows.Count)
+			{
+				this.rows.Add(new ValuesContainer(this.columnTypes.Length));
 				rowsInserted++;
 			}
 
 			ValuesContainer orow = this.rows[row];
 			orow[column] = value;
 
-			if (rowsInserted == 0) {
-				OnRowChanged (new ListRowEventArgs (row));
-			} else {
-				for (int i = rowsInserted; i > 0; --i) {
+			if (rowsInserted == 0)
+			{
+				OnRowChanged(new ListRowEventArgs(row));
+			}
+			else
+			{
+				for (int i = rowsInserted; i > 0; --i)
+				{
 					int r = rowsInserted - i;
-					OnRowInserted (new ListRowEventArgs (r));
+					OnRowInserted(new ListRowEventArgs(r));
 				}
 			}
 		}
@@ -153,46 +158,47 @@ namespace Xwt.WPFBackend
 			int count = this.rows.Count;
 			this.rows.Clear();
 
-			for (int i = 0; i < count; i++) {
-				OnRowDeleted (new ListRowEventArgs (i));
+			for (int i = 0; i < count; i++)
+			{
+				OnRowDeleted(new ListRowEventArgs(i));
 			}
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
 		}
 
-		public IEnumerator GetEnumerator ()
+		public IEnumerator GetEnumerator()
 		{
-			return this.rows.GetEnumerator ();
+			return this.rows.GetEnumerator();
 		}
 
-		private readonly ObservableCollection<ValuesContainer> rows = new ObservableCollection<ValuesContainer> ();
+		private readonly ObservableCollection<ValuesContainer> rows = new ObservableCollection<ValuesContainer>();
 		private Type[] columnTypes;
 
-		private void OnRowInserted (ListRowEventArgs e)
+		private void OnRowInserted(ListRowEventArgs e)
 		{
 			var inserted = RowInserted;
 			if (inserted != null)
-			    inserted (this, e);
+				inserted(this, e);
 		}
 
-		private void OnRowChanged (ListRowEventArgs e)
+		private void OnRowChanged(ListRowEventArgs e)
 		{
 			var changed = RowChanged;
 			if (changed != null)
-				changed (this, e);
+				changed(this, e);
 		}
 
-		private void OnRowDeleted (ListRowEventArgs e)
+		private void OnRowDeleted(ListRowEventArgs e)
 		{
 			var deleted = RowDeleted;
 			if (deleted != null)
-				deleted (this, e);
+				deleted(this, e);
 		}
 	}
 }

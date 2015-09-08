@@ -32,97 +32,103 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class ListViewColumnCollection: Collection<ListViewColumn>
+	public class ListViewColumnCollection : Collection<ListViewColumn>
 	{
 		IColumnContainer parent;
 		IColumnContainerBackend container;
-		
-		internal ListViewColumnCollection (IColumnContainer parent)
+
+		internal ListViewColumnCollection(IColumnContainer parent)
 		{
 			this.parent = parent;
 		}
-		
-		internal void Attach (IColumnContainerBackend container)
+
+		internal void Attach(IColumnContainerBackend container)
 		{
 			this.container = container;
-			foreach (var col in this) {
+			foreach (var col in this)
+			{
 				col.Parent = container;
-				col.Handle = container.AddColumn (col);
+				col.Handle = container.AddColumn(col);
 			}
 		}
-		
-		public ListViewColumn Add (string title, params IDataField[] fields)
+
+		public ListViewColumn Add(string title, params IDataField[] fields)
 		{
-			ListViewColumn col = new ListViewColumn (title);
+			ListViewColumn col = new ListViewColumn(title);
 			foreach (var f in fields)
-				col.Views.Add (CellView.GetDefaultCellView (f));
-			base.Add (col);
-			return col;
-		}
-		
-		public ListViewColumn Add (string title, params CellView[] cells)
-		{
-			ListViewColumn col = new ListViewColumn (title);
-			foreach (var c in cells)
-				col.Views.Add (c);
-			base.Add (col);
+				col.Views.Add(CellView.GetDefaultCellView(f));
+			base.Add(col);
 			return col;
 		}
 
-		public new ListViewColumn Add (ListViewColumn col)
+		public ListViewColumn Add(string title, params CellView[] cells)
 		{
-			base.Add (col);
+			ListViewColumn col = new ListViewColumn(title);
+			foreach (var c in cells)
+				col.Views.Add(c);
+			base.Add(col);
 			return col;
 		}
-		
-		protected override void InsertItem (int index, ListViewColumn item)
+
+		public new ListViewColumn Add(ListViewColumn col)
+		{
+			base.Add(col);
+			return col;
+		}
+
+		protected override void InsertItem(int index, ListViewColumn item)
 		{
 			if (item.Parent != null)
-				throw new InvalidOperationException ("Column already belongs to a list or tree");
-			if (container != null) {
-				item.Handle = container.AddColumn (item);
+				throw new InvalidOperationException("Column already belongs to a list or tree");
+			if (container != null)
+			{
+				item.Handle = container.AddColumn(item);
 				item.Parent = container;
 			}
-			base.InsertItem (index, item);
-			parent.NotifyColumnsChanged ();
+			base.InsertItem(index, item);
+			parent.NotifyColumnsChanged();
 		}
-		
-		protected override void RemoveItem (int index)
+
+		protected override void RemoveItem(int index)
 		{
-			if (container != null) {
+			if (container != null)
+			{
 				var col = this[index];
-				container.RemoveColumn (col, col.Handle);
+				container.RemoveColumn(col, col.Handle);
 				col.Parent = null;
 			}
-			base.RemoveItem (index);
-			parent.NotifyColumnsChanged ();
+			base.RemoveItem(index);
+			parent.NotifyColumnsChanged();
 		}
-		
-		protected override void SetItem (int index, ListViewColumn item)
+
+		protected override void SetItem(int index, ListViewColumn item)
 		{
 			if (item.Parent != null)
-				throw new InvalidOperationException ("Column already belongs to a list or tree");
-			if (container != null) {
+				throw new InvalidOperationException("Column already belongs to a list or tree");
+			if (container != null)
+			{
 				var col = this[index];
-				container.RemoveColumn (col, col.Handle);
+				container.RemoveColumn(col, col.Handle);
 				col.Parent = null;
-				item.Handle = container.AddColumn (item);
+				item.Handle = container.AddColumn(item);
 				item.Parent = container;
 			}
-			base.SetItem (index, item);
-			parent.NotifyColumnsChanged ();
+			base.SetItem(index, item);
+			parent.NotifyColumnsChanged();
 		}
-		
-		protected override void ClearItems ()
+
+		protected override void ClearItems()
 		{
-			if (container != null) {
-				foreach (var col in this) {
-					container.RemoveColumn (col, col.Handle);
+			if (container != null)
+			{
+				foreach (var col in this)
+				{
+					container.RemoveColumn(col, col.Handle);
 					col.Parent = null;
 				}
 			}
-			base.ClearItems ();
-			parent.NotifyColumnsChanged ();
+			base.ClearItems();
+			parent.NotifyColumnsChanged();
 		}
 	}
 }

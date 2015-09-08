@@ -31,21 +31,21 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	
-	public sealed class ColorTextAttribute: TextAttribute
+
+	public sealed class ColorTextAttribute : TextAttribute
 	{
 		public Color Color { get; set; }
 
-		public override bool Equals (object t)
+		public override bool Equals(object t)
 		{
 			var ot = t as ColorTextAttribute;
-			return ot != null && Color == ot.Color && base.Equals (t);
+			return ot != null && Color == ot.Color && base.Equals(t);
 		}
 
-		public override int GetHashCode ()
+		public override int GetHashCode()
 		{
-			return base.GetHashCode () ^ Color.GetHashCode ();
+			return base.GetHashCode() ^ Color.GetHashCode();
 		}
 	}
-	
+
 }

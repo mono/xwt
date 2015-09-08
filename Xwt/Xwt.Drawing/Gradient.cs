@@ -31,38 +31,39 @@ using Xwt.Backends;
 
 namespace Xwt.Drawing
 {
-	public abstract class Gradient: Pattern
+	public abstract class Gradient : Pattern
 	{
 		List<KeyValuePair<double, Color>> stops;
 
-		public Gradient AddColorStop (double pos, Color color)
+		public Gradient AddColorStop(double pos, Color color)
 		{
-			ToolkitEngine.GradientBackendHandler.AddColorStop (Backend, pos, color);
-			(stops ?? (stops = new List<KeyValuePair<double, Color>> ())).Add (new KeyValuePair<double, Color> (pos, color));
+			ToolkitEngine.GradientBackendHandler.AddColorStop(Backend, pos, color);
+			(stops ?? (stops = new List<KeyValuePair<double, Color>>())).Add(new KeyValuePair<double, Color>(pos, color));
 			return this;
 		}
 
-		public void InitForToolkit (Toolkit t)
+		public void InitForToolkit(Toolkit t)
 		{
-			if (ToolkitEngine != t) {
+			if (ToolkitEngine != t)
+			{
 				var handler = t.GradientBackendHandler;
-				var backend = CreateGradientBackend (handler);
-				SetBackend (handler, backend);
+				var backend = CreateGradientBackend(handler);
+				SetBackend(handler, backend);
 				if (stops != null)
 					foreach (var stop in stops)
-						handler.AddColorStop (backend, stop.Key, stop.Value);
+						handler.AddColorStop(backend, stop.Key, stop.Value);
 			}
 		}
 
-		protected override object OnCreateBackend ()
+		protected override object OnCreateBackend()
 		{
 			var handler = ToolkitEngine.GradientBackendHandler;
-			var backend = CreateGradientBackend (handler);
-			SetBackend (handler, backend);
+			var backend = CreateGradientBackend(handler);
+			SetBackend(handler, backend);
 			return backend;
 		}
 
-		protected abstract object CreateGradientBackend (GradientBackendHandler handler);
+		protected abstract object CreateGradientBackend(GradientBackendHandler handler);
 	}
 }
 

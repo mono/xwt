@@ -42,8 +42,10 @@ namespace Xwt.WPFBackend
 			ListBox.DisplayMemberPath = ".[0]";
 		}
 
-		public ScrollViewer ScrollViewer {
-			get {
+		public ScrollViewer ScrollViewer
+		{
+			get
+			{
 				Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(ListBox, 0) as Decorator;
 				if (border != null)
 					return border.Child as ScrollViewer;
@@ -53,40 +55,47 @@ namespace Xwt.WPFBackend
 		}
 
 		bool gridLinesVisible;
-		public bool GridLinesVisible {
-			get {
+		public bool GridLinesVisible
+		{
+			get
+			{
 				return gridLinesVisible;
 			}
-			set {
+			set
+			{
 				gridLinesVisible = value;
-				if (!value) {
-					if (this.ListBox.ItemContainerStyle != null) {
-						this.ListBox.ItemContainerStyle.Setters.Remove (GridHorizontalSetter);
-						this.ListBox.ItemContainerStyle.Setters.Remove (BorderBrushSetter);
+				if (!value)
+				{
+					if (this.ListBox.ItemContainerStyle != null)
+					{
+						this.ListBox.ItemContainerStyle.Setters.Remove(GridHorizontalSetter);
+						this.ListBox.ItemContainerStyle.Setters.Remove(BorderBrushSetter);
 					}
-				} else {
+				}
+				else
+				{
 					if (this.ListBox.ItemContainerStyle == null)
-						this.ListBox.ItemContainerStyle = new Style ();
+						this.ListBox.ItemContainerStyle = new Style();
 
-					this.ListBox.ItemContainerStyle.Setters.Add (GridHorizontalSetter);
-					this.ListBox.ItemContainerStyle.Setters.Add (BorderBrushSetter);
+					this.ListBox.ItemContainerStyle.Setters.Add(GridHorizontalSetter);
+					this.ListBox.ItemContainerStyle.Setters.Add(BorderBrushSetter);
 				}
 			}
 		}
 
-		private static readonly Setter GridHorizontalSetter = new Setter (ListBoxItem.BorderThicknessProperty, new Thickness (0, 0, 0, 1));
-		private static readonly Setter BorderBrushSetter = new Setter (ListBoxItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
+		private static readonly Setter GridHorizontalSetter = new Setter(ListBoxItem.BorderThicknessProperty, new Thickness(0, 0, 0, 1));
+		private static readonly Setter BorderBrushSetter = new Setter(ListBoxItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
 
 		public ScrollPolicy VerticalScrollPolicy
 		{
-			get { return ScrollViewer.GetVerticalScrollBarVisibility (ListBox).ToXwtScrollPolicy(); }
-			set { ScrollViewer.SetVerticalScrollBarVisibility (ListBox, value.ToWpfScrollBarVisibility ()); }
+			get { return ScrollViewer.GetVerticalScrollBarVisibility(ListBox).ToXwtScrollPolicy(); }
+			set { ScrollViewer.SetVerticalScrollBarVisibility(ListBox, value.ToWpfScrollBarVisibility()); }
 		}
 
 		public ScrollPolicy HorizontalScrollPolicy
 		{
-			get { return ScrollViewer.GetHorizontalScrollBarVisibility (ListBox).ToXwtScrollPolicy (); }
-			set { ScrollViewer.SetVerticalScrollBarVisibility (ListBox, value.ToWpfScrollBarVisibility ()); }
+			get { return ScrollViewer.GetHorizontalScrollBarVisibility(ListBox).ToXwtScrollPolicy(); }
+			set { ScrollViewer.SetVerticalScrollBarVisibility(ListBox, value.ToWpfScrollBarVisibility()); }
 		}
 
 		public IScrollControlBackend CreateVerticalScrollControl()
@@ -99,121 +108,133 @@ namespace Xwt.WPFBackend
 			return new ScrollControlBackend(ScrollViewer, false);
 		}
 
-		public void SetViews (CellViewCollection views)
+		public void SetViews(CellViewCollection views)
 		{
 			ListBox.DisplayMemberPath = null;
-            ListBox.ItemTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, views) };
+			ListBox.ItemTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, views) };
 		}
 
-		public void SetSource (IListDataSource source, IBackend sourceBackend)
+		public void SetSource(IListDataSource source, IBackend sourceBackend)
 		{
 			var dataSource = sourceBackend as ListDataSource;
 			if (dataSource != null)
 				ListBox.ItemsSource = dataSource;
 			else
-				ListBox.ItemsSource = new ListSourceNotifyWrapper (source);
+				ListBox.ItemsSource = new ListSourceNotifyWrapper(source);
 		}
 
-		public void SetSelectionMode (SelectionMode mode)
+		public void SetSelectionMode(SelectionMode mode)
 		{
-			switch (mode) {
-			case SelectionMode.Single:
-				ListBox.SelectionMode = System.Windows.Controls.SelectionMode.Single;
-				break;
-			case SelectionMode.Multiple:
-				ListBox.SelectionMode = System.Windows.Controls.SelectionMode.Extended;
-				break;
+			switch (mode)
+			{
+				case SelectionMode.Single:
+					ListBox.SelectionMode = System.Windows.Controls.SelectionMode.Single;
+					break;
+				case SelectionMode.Multiple:
+					ListBox.SelectionMode = System.Windows.Controls.SelectionMode.Extended;
+					break;
 			}
 		}
 
-		public void SelectAll ()
+		public void SelectAll()
 		{
 			ListBox.SelectAll();
 		}
 
-		public void UnselectAll ()
+		public void UnselectAll()
 		{
 			ListBox.UnselectAll();
 		}
 
-		public void ScrollToRow (int row)
+		public void ScrollToRow(int row)
 		{
-			ListBox.ScrollIntoView (ListBox.Items [row]);
+			ListBox.ScrollIntoView(ListBox.Items[row]);
 		}
 
-		public int[] SelectedRows {
-			get { return ListBox.SelectedItems.Cast<object>().Select (ListBox.Items.IndexOf).ToArray(); }
+		public int[] SelectedRows
+		{
+			get { return ListBox.SelectedItems.Cast<object>().Select(ListBox.Items.IndexOf).ToArray(); }
 		}
 
-		public int FocusedRow {
-			get {
+		public int FocusedRow
+		{
+			get
+			{
 				if (ListBox.FocusedItem != null)
 					return ListBox.ItemContainerGenerator.IndexFromContainer(ListBox.FocusedItem);
 				return -1;
 			}
-			set {
+			set
+			{
 				ListBoxItem item = null;
-				if (value >= 0) {
+				if (value >= 0)
+				{
 					item = ListBox.ItemContainerGenerator.ContainerFromIndex(value) as ListBoxItem;
 				}
 				ListBox.FocusItem(item);
 			}
 		}
 
-		public void SelectRow (int pos)
+		public void SelectRow(int pos)
 		{
-			object item = ListBox.Items [pos];
+			object item = ListBox.Items[pos];
 			if (ListBox.SelectionMode == System.Windows.Controls.SelectionMode.Single)
 				ListBox.SelectedItem = item;
 			else
-				ListBox.SelectedItems.Add (item);
+				ListBox.SelectedItems.Add(item);
 		}
 
-		public void UnselectRow (int pos)
+		public void UnselectRow(int pos)
 		{
-			object item = ListBox.Items [pos];
+			object item = ListBox.Items[pos];
 			if (ListBox.SelectionMode == System.Windows.Controls.SelectionMode.Extended)
-				ListBox.SelectedItems.Remove (item);
+				ListBox.SelectedItems.Remove(item);
 			else if (ListBox.SelectedItem == item)
 				ListBox.SelectedItem = null;
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent (eventId);
-			if (eventId is TableViewEvent) {
-				switch ((TableViewEvent)eventId) {
-				case TableViewEvent.SelectionChanged:
-					ListBox.SelectionChanged += OnSelectionChanged;
-					break;
+			base.EnableEvent(eventId);
+			if (eventId is TableViewEvent)
+			{
+				switch ((TableViewEvent)eventId)
+				{
+					case TableViewEvent.SelectionChanged:
+						ListBox.SelectionChanged += OnSelectionChanged;
+						break;
 				}
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
-			base.DisableEvent (eventId);
-			if (eventId is TableViewEvent) {
-				switch ((TableViewEvent)eventId) {
-				case TableViewEvent.SelectionChanged:
-					ListBox.SelectionChanged -= OnSelectionChanged;
-					break;
+			base.DisableEvent(eventId);
+			if (eventId is TableViewEvent)
+			{
+				switch ((TableViewEvent)eventId)
+				{
+					case TableViewEvent.SelectionChanged:
+						ListBox.SelectionChanged -= OnSelectionChanged;
+						break;
 				}
 			}
 		}
 
-		private void OnSelectionChanged (object sender, SelectionChangedEventArgs e)
+		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			ListBoxEventSink.OnSelectionChanged();
 		}
 
-		protected ExListBox ListBox {
-			get { return (ExListBox) Widget; }
+		protected ExListBox ListBox
+		{
+			get { return (ExListBox)Widget; }
 			set { Widget = value; }
 		}
 
-		protected IListBoxEventSink ListBoxEventSink {
-			get { return (IListBoxEventSink) EventSink; }
+		protected IListBoxEventSink ListBoxEventSink
+		{
+			get { return (IListBoxEventSink)EventSink; }
 		}
 	}
 }

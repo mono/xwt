@@ -38,13 +38,13 @@ namespace Xwt.WPFBackend
 		{
 		}
 
-		protected override void Initialize ()
+		protected override void Initialize()
 		{
-			base.Initialize ();
-			Widget = new ImageBox (Context);
+			base.Initialize();
+			Widget = new ImageBox(Context);
 		}
 
-		public void SetImage (ImageDescription image)
+		public void SetImage(ImageDescription image)
 		{
 			Image.ImageSource = image;
 		}

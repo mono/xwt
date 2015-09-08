@@ -17,7 +17,7 @@ namespace Xwt.Backends
 
 	public interface ILinkLabelEventSink : IWidgetEventSink
 	{
-		void OnNavigateToUrl (Uri uri);
+		void OnNavigateToUrl(Uri uri);
 	}
 
 	public enum LinkLabelEvent

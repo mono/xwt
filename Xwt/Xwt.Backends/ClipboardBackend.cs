@@ -27,15 +27,15 @@ using System;
 
 namespace Xwt.Backends
 {
-	public abstract class ClipboardBackend: BackendHandler
+	public abstract class ClipboardBackend : BackendHandler
 	{
-		public abstract void Clear ();
-		public abstract void SetData (TransferDataType type, Func<object> dataSource);
-		
-		public abstract bool IsTypeAvailable (TransferDataType type);
-		public abstract object GetData (TransferDataType type);
-		public abstract IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state);
-		public abstract object EndGetData (IAsyncResult ares);
+		public abstract void Clear();
+		public abstract void SetData(TransferDataType type, Func<object> dataSource);
+
+		public abstract bool IsTypeAvailable(TransferDataType type);
+		public abstract object GetData(TransferDataType type);
+		public abstract IAsyncResult BeginGetData(TransferDataType type, AsyncCallback callback, object state);
+		public abstract object EndGetData(IAsyncResult ares);
 	}
 }
 

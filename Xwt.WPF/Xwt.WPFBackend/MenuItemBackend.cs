@@ -48,53 +48,61 @@ namespace Xwt.WPFBackend
 		string label;
 		bool useMnemonic;
 
-		public MenuItemBackend ()
-			: this (new SWC.MenuItem())
+		public MenuItemBackend()
+			: this(new SWC.MenuItem())
 		{
 		}
 
-		protected MenuItemBackend (object item)
+		protected MenuItemBackend(object item)
 		{
 			this.item = item;
 			this.menuItem = item as SWC.MenuItem;
 			useMnemonic = true;
 		}
 
-		public void Initialize (IMenuItemEventSink eventSink)
+		public void Initialize(IMenuItemEventSink eventSink)
 		{
 			this.eventSink = eventSink;
 		}
 
-		public object Item {
+		public object Item
+		{
 			get { return this.item; }
 		}
 
-		public SWC.MenuItem MenuItem {
+		public SWC.MenuItem MenuItem
+		{
 			get { return this.menuItem; }
 		}
 
-		public IMenuItemEventSink EventSink {
+		public IMenuItemEventSink EventSink
+		{
 			get { return eventSink; }
 		}
 
-		public bool Checked {
+		public bool Checked
+		{
 			get { return this.menuItem.IsCheckable && this.menuItem.IsChecked; }
-			set {
+			set
+			{
 				if (!this.menuItem.IsCheckable)
 					return;
 				this.menuItem.IsChecked = value;
 			}
 		}
 
-		public string Label {
+		public string Label
+		{
 			get { return label; }
-			set {
+			set
+			{
 				label = value;
-				menuItem.Header = UseMnemonic ? value : value.Replace ("_", "__");
+				menuItem.Header = UseMnemonic ? value : value.Replace("_", "__");
 			}
 		}
 
-		public bool UseMnemonic {
+		public bool UseMnemonic
+		{
 			get { return useMnemonic; }
 			set
 			{
@@ -103,30 +111,34 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public bool Sensitive {
+		public bool Sensitive
+		{
 			get { return this.menuItem.IsEnabled; }
 			set { this.menuItem.IsEnabled = value; }
 		}
 
-		public bool Visible {
+		public bool Visible
+		{
 			get { return this.menuItem.IsVisible; }
 			set { this.menuItem.Visibility = (value) ? Visibility.Visible : Visibility.Collapsed; }
 		}
 
-		public void SetImage (ImageDescription imageBackend)
+		public void SetImage(ImageDescription imageBackend)
 		{
 			if (imageBackend.IsNull)
 				this.menuItem.Icon = null;
 			else
-				this.menuItem.Icon = new ImageBox (Context) { ImageSource = imageBackend };
+				this.menuItem.Icon = new ImageBox(Context) { ImageSource = imageBackend };
 		}
 
-		public void SetSubmenu (IMenuBackend menu)
+		public void SetSubmenu(IMenuBackend menu)
 		{
-			if (menu == null) {
-				this.menuItem.Items.Clear ();
-				if (subMenu != null) {
-					subMenu.RemoveFromParentItem ();
+			if (menu == null)
+			{
+				this.menuItem.Items.Clear();
+				if (subMenu != null)
+				{
+					subMenu.RemoveFromParentItem();
 					subMenu = null;
 				}
 
@@ -134,18 +146,19 @@ namespace Xwt.WPFBackend
 			}
 
 			var menuBackend = (MenuBackend)menu;
-			menuBackend.RemoveFromParentItem ();
+			menuBackend.RemoveFromParentItem();
 
 			foreach (var itemBackend in menuBackend.Items)
-				this.menuItem.Items.Add (itemBackend.Item);
+				this.menuItem.Items.Add(itemBackend.Item);
 
 			menuBackend.ParentItem = this;
 			subMenu = menuBackend;
 		}
 
-		public void SetType (MenuItemType type)
+		public void SetType(MenuItemType type)
 		{
-			switch (type) {
+			switch (type)
+			{
 				case MenuItemType.RadioButton:
 				case MenuItemType.CheckBox:
 					this.menuItem.IsCheckable = true;
@@ -158,13 +171,15 @@ namespace Xwt.WPFBackend
 			this.type = type;
 		}
 
-		public override void EnableEvent (object eventId)
+		public override void EnableEvent(object eventId)
 		{
 			if (menuItem == null)
 				return;
 
-			if (eventId is MenuItemEvent) {
-				switch ((MenuItemEvent)eventId) {
+			if (eventId is MenuItemEvent)
+			{
+				switch ((MenuItemEvent)eventId)
+				{
 					case MenuItemEvent.Clicked:
 						this.menuItem.Click += MenuItemClickHandler;
 						break;
@@ -172,13 +187,15 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void DisableEvent (object eventId)
+		public override void DisableEvent(object eventId)
 		{
 			if (menuItem == null)
 				return;
 
-			if (eventId is MenuItemEvent) {
-				switch ((MenuItemEvent)eventId) {
+			if (eventId is MenuItemEvent)
+			{
+				switch ((MenuItemEvent)eventId)
+				{
 					case MenuItemEvent.Clicked:
 						this.menuItem.Click -= MenuItemClickHandler;
 						break;
@@ -186,9 +203,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		void MenuItemClickHandler (object sender, EventArgs args)
+		void MenuItemClickHandler(object sender, EventArgs args)
 		{
-			Context.InvokeUserCode (eventSink.OnClicked);
+			Context.InvokeUserCode(eventSink.OnClicked);
 		}
 	}
 }

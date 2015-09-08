@@ -35,8 +35,8 @@ namespace Xwt
 		Color color = Colors.Transparent;
 		string title = "";
 		bool supportsAlpha;
-		
-		public SelectColorDialog ()
+
+		public SelectColorDialog()
 		{
 		}
 
@@ -46,7 +46,7 @@ namespace Xwt
 		/// <param name='title'>
 		/// Title of the dialog
 		/// </param>
-		public SelectColorDialog (string title)
+		public SelectColorDialog(string title)
 		{
 			this.title = title;
 		}
@@ -54,7 +54,8 @@ namespace Xwt
 		/// <summary>
 		/// Gets or sets the title of the dialog
 		/// </summary>
-		public string Title {
+		public string Title
+		{
 			get { return title ?? ""; }
 			set { title = value ?? ""; }
 		}
@@ -62,37 +63,42 @@ namespace Xwt
 		/// <summary>
 		/// Gets or sets the selected color
 		/// </summary>
-		public Color Color {
+		public Color Color
+		{
 			get { return color; }
 			set { color = value; }
 		}
-		
-		public bool SupportsAlpha {
+
+		public bool SupportsAlpha
+		{
 			get { return supportsAlpha; }
 			set { supportsAlpha = value; }
-		}
-		
-		/// <summary>
-		/// Shows the dialog.
-		/// </summary>
-		public bool Run ()
-		{
-			return Run (null);
 		}
 
 		/// <summary>
 		/// Shows the dialog.
 		/// </summary>
-		public bool Run (WindowFrame parentWindow)
+		public bool Run()
 		{
-			var backend = Toolkit.CurrentEngine.Backend.CreateBackend<ISelectColorDialogBackend> ();
-			try {
+			return Run(null);
+		}
+
+		/// <summary>
+		/// Shows the dialog.
+		/// </summary>
+		public bool Run(WindowFrame parentWindow)
+		{
+			var backend = Toolkit.CurrentEngine.Backend.CreateBackend<ISelectColorDialogBackend>();
+			try
+			{
 				if (color != Colors.Transparent)
 					backend.Color = color;
-				return backend.Run ((IWindowFrameBackend)Toolkit.CurrentEngine.GetSafeBackend (parentWindow), title, supportsAlpha);
-			} finally {
+				return backend.Run((IWindowFrameBackend)Toolkit.CurrentEngine.GetSafeBackend(parentWindow), title, supportsAlpha);
+			}
+			finally
+			{
 				color = backend.Color;
-				backend.Dispose ();
+				backend.Dispose();
 			}
 		}
 	}
