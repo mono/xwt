@@ -29,6 +29,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Xwt.Backends;
+using System.Linq;
 
 namespace Xwt.WPFBackend
 {
@@ -171,7 +172,23 @@ namespace Xwt.WPFBackend
 			return this.rows.GetEnumerator ();
 		}
 
-		private readonly ObservableCollection<ValuesContainer> rows = new ObservableCollection<ValuesContainer> ();
+		public void Sort(int column, ColumnSortDirection direction)
+		{
+			ObservableCollection<ValuesContainer> sortedRows;
+            if (direction == ColumnSortDirection.Ascending)
+			{
+				sortedRows = new ObservableCollection<ValuesContainer>(rows.OrderBy(x => x[column]));
+			}
+			else
+			{ sortedRows = new ObservableCollection<ValuesContainer>(rows.OrderByDescending(x => x[column])); }
+
+			rows.Clear();
+			foreach(var singleRow in sortedRows)
+			{ rows.Add(singleRow); }
+		}
+
+		private ObservableCollection<ValuesContainer> rows = new ObservableCollection<ValuesContainer>();
+
 		private Type[] columnTypes;
 
 		private void OnRowInserted (ListRowEventArgs e)

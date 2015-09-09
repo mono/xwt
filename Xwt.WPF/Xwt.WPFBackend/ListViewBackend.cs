@@ -41,6 +41,12 @@ namespace Xwt.WPFBackend
 		: WidgetBackend, IListViewBackend
 	{
 		Dictionary<CellView,CellInfo> cellViews = new Dictionary<CellView, CellInfo> ();
+		private Dictionary<GridViewColumnHeader, GridViewColumn> headerAndColumnPairs = new Dictionary<GridViewColumnHeader, GridViewColumn>();
+		public ListViewBackend()
+		{
+			ListView = new ExListView();
+			ListView.View = this.view;
+		}
 
 		class CellInfo {
 			public ListViewColumn Column;
@@ -170,7 +176,13 @@ namespace Xwt.WPFBackend
 			if (col.HeaderView != null)
 				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Context, Frontend, col.HeaderView) };
 			else
-				column.Header = col.Title;
+			{
+				GridViewColumnHeader header = new GridViewColumnHeader();
+				headerAndColumnPairs.Add(header, column);
+				header.Content = col.Title;
+				header.Click += Header_Click;
+				column.Header = header;
+			}
 
 			this.view.Columns.Add (column);
 
@@ -179,21 +191,47 @@ namespace Xwt.WPFBackend
 			return column;
 		}
 
-		public void RemoveColumn (ListViewColumn col, object handle)
+		private void Header_Click(object sender, RoutedEventArgs e)
+		{
+			GridViewColumn handle = headerAndColumnPairs[sender as GridViewColumnHeader];
+			ListViewEventSink.ColumnHeaderClicked(handle);
+		}
+
+		public void RemoveColumn(ListViewColumn col, object handle)
 		{
 			this.view.Columns.Remove ((GridViewColumn) handle);
 		}
 
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
-			var column = (GridViewColumn) handle;
-            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
-			if (col.HeaderView != null)
-                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
-			else
-				column.Header = col.Title;
+			var column = (GridViewColumn)handle;
+			switch (change)
+			{
+				case ListViewColumnChange.Title:
+					if (col.HeaderView != null)
+						column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
+					else
+						column.Header = col.Title;
 
-			MapColumn (col, column);
+					break;
+				case ListViewColumnChange.Cells:
+					column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
+					break;
+				case ListViewColumnChange.CanResize:
+					break;
+				case ListViewColumnChange.SortDirection:
+					int colIndex = col.SortDataField.Index;
+					(ListView.ItemsSource as ListDataSource).Sort(colIndex, col.SortDirection);
+					break;
+				case ListViewColumnChange.SortDataField:
+					break;
+				case ListViewColumnChange.SortIndicatorVisible:
+					break;
+				case ListViewColumnChange.Alignment:
+					break;
+				default:
+					break;
+			}
 		}
 
 		void MapColumn (ListViewColumn col, GridViewColumn handle)

@@ -84,6 +84,11 @@ namespace Xwt
 			{
 				return Xwt.Backends.DefaultNaturalSizes.TreeView;
 			}
+
+			public void ColumnHeaderClicked(object handle)
+			{
+				return; // treeview sorting todo
+			}
 		}
 		
 		static TreeView ()
