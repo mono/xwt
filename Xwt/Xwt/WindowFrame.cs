@@ -274,11 +274,11 @@ namespace Xwt
 		/// Gets or sets a value indicating whether this window is iconified (true) or normal (false).
 		/// </summary>
 		/// <value><c>true</c> if the window is iconified; otherwise, <c>false</c>.</value>
-		public bool Iconify {
-			get { return WindowState == WindowState.Icon; }
+		public bool Iconified {
+			get { return WindowState == WindowState.Iconified; }
 			set {
 				if (value)
-					Backend.WindowState = WindowState.Icon;
+					Backend.WindowState = WindowState.Iconified;
 				else
 					Backend.WindowState = WindowState.Normal;
 			}

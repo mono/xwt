@@ -162,7 +162,7 @@ namespace Xwt.Mac
 					return Xwt.WindowState.Normal;
 
 				if ((StyleMask & NSWindowStyle.Miniaturizable) != 0) {
-					return Xwt.WindowState.Icon;
+					return Xwt.WindowState.Iconified;
 				} else if ((StyleMask & NSWindowStyle.FullScreenWindow) != 0) {
 					return Xwt.WindowState.FullScreen;
 				} else {
@@ -173,7 +173,7 @@ namespace Xwt.Mac
 				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
 					return;
 
-				if ((value == Xwt.WindowState.Icon) && ((StyleMask & NSWindowStyle.Miniaturizable) == 0)) {
+				if ((value == Xwt.WindowState.Iconified) && ((StyleMask & NSWindowStyle.Miniaturizable) == 0)) {
 					// Currently not iconified.
 					MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr (
 						Handle,

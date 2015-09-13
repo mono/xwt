@@ -188,7 +188,7 @@ namespace Xwt.WPFBackend
 			get {
 				switch (this.window.WindowState) {
 					case System.Windows.WindowState.Minimized:
-						return Xwt.WindowState.Icon;
+						return Xwt.WindowState.Iconified;
 						break;
 					case System.Windows.WindowState.Maximized:
 						return Xwt.WindowState.FullScreen;
@@ -200,7 +200,7 @@ namespace Xwt.WPFBackend
 			}
 			set {
 				switch (value) {
-					case Xwt.WindowState.Icon:
+					case Xwt.WindowState.Iconified:
 						this.window.WindowState = System.Windows.WindowState.Minimized;
 						break;
 					case Xwt.WindowState.FullScreen:

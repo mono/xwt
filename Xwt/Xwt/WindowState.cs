@@ -12,7 +12,7 @@ namespace Xwt
 	public enum WindowState
 	{
 		Normal,
-		Icon,				// Minimized.
+		Iconified,				// Minimized.
 		FullScreen		// Maximized.
 	}
 }

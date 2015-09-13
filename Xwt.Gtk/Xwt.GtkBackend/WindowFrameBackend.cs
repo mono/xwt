@@ -231,10 +231,10 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				switch (value) {
-					case Xwt.WindowState.Icon:
-						if (this.currentWindowState != Xwt.WindowState.Icon) {
+					case Xwt.WindowState.Iconified:
+						if (this.currentWindowState != Xwt.WindowState.Iconified) {
 							this.Window.Iconify();
-							this.currentWindowState = Xwt.WindowState.Icon;
+							this.currentWindowState = Xwt.WindowState.Iconified;
 						}
 						break;
 					case Xwt.WindowState.FullScreen:
@@ -244,7 +244,7 @@ namespace Xwt.GtkBackend
 						}
 						break;
 					default:
-						if (this.currentWindowState == Xwt.WindowState.Icon) {
+						if (this.currentWindowState == Xwt.WindowState.Iconified) {
 							this.Window.Deiconify();
 							this.currentWindowState = Xwt.WindowState.Normal;
 						}
