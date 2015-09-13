@@ -13,6 +13,7 @@ namespace Xwt
 	{
 		Normal,
 		Iconified,				// Minimized.
-		FullScreen		// Maximized.
+		Maximized,
+		FullScreen
 	}
 }

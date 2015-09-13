@@ -191,8 +191,9 @@ namespace Xwt.WPFBackend
 						return Xwt.WindowState.Iconified;
 						break;
 					case System.Windows.WindowState.Maximized:
-						return Xwt.WindowState.FullScreen;
-						break;
+						if (window.WindowStyle == WindowStyle.SingleBorderWindow)
+							return Xwt.WindowState.FullScreen;
+						return  Xwt.WindowState.Maximized;
 					default:
 						return Xwt.WindowState.Normal;
 						break;
@@ -202,6 +203,9 @@ namespace Xwt.WPFBackend
 				switch (value) {
 					case Xwt.WindowState.Iconified:
 						this.window.WindowState = System.Windows.WindowState.Minimized;
+						break;
+					case Xwt.WindowState.Maximized:
+							this.window.WindowState = System.Windows.WindowState.Maximized;
 						break;
 					case Xwt.WindowState.FullScreen:
 						this.window.WindowState = System.Windows.WindowState.Maximized;

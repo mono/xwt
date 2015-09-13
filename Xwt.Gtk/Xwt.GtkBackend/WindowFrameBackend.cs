@@ -237,6 +237,12 @@ namespace Xwt.GtkBackend
 							this.currentWindowState = Xwt.WindowState.Iconified;
 						}
 						break;
+					case Xwt.WindowState.Maximized:
+						if (this.currentWindowState != Xwt.WindowState.Maximized) {
+							this.Window.Maximize ();
+							this.currentWindowState = Xwt.WindowState.Maximized;
+						}
+						break;
 					case Xwt.WindowState.FullScreen:
 						if (this.currentWindowState != Xwt.WindowState.FullScreen) {
 							this.Window.Fullscreen();
@@ -246,6 +252,10 @@ namespace Xwt.GtkBackend
 					default:
 						if (this.currentWindowState == Xwt.WindowState.Iconified) {
 							this.Window.Deiconify();
+							this.currentWindowState = Xwt.WindowState.Normal;
+						}
+						if (this.currentWindowState == Xwt.WindowState.Maximized) {
+							this.Window.Unmaximize();
 							this.currentWindowState = Xwt.WindowState.Normal;
 						}
 						if (this.currentWindowState == Xwt.WindowState.FullScreen) {

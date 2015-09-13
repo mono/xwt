@@ -37,9 +37,24 @@ namespace Samples
 			bp.Clicked += delegate {
 				Window w = new Window ();
 				w.Decorated = false;
-				Button c = new Button ("This is a window");
+				Button c = new Button ("Close");
 //				c.Margin.SetAll (10);
-				w.Content = c;
+
+				VBox box = new VBox();
+				var biconifiy = new Button ("Iconify");
+				var bmaximize = new Button ("Maximize");
+				var bfullscreen = new Button ("Fullscreen");
+
+				biconifiy.Clicked += (sender, e) => w.Iconified = !w.Iconified;
+				bmaximize.Clicked += (sender, e) => w.Maximized = !w.Maximized;
+				bfullscreen.Clicked += (sender, e) => w.FullScreen = !w.FullScreen;
+
+				box.PackStart (biconifiy);
+				box.PackStart (bmaximize);
+				box.PackStart (bfullscreen);
+				box.PackStart (c);
+
+				w.Content = box;
 				c.Clicked += delegate {
 					w.Dispose ();
 				};
