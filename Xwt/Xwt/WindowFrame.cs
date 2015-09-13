@@ -275,8 +275,13 @@ namespace Xwt
 		/// </summary>
 		/// <value><c>true</c> if the window is iconified; otherwise, <c>false</c>.</value>
 		public bool Iconify {
-			get { return Backend.Iconify; }
-			set { Backend.Iconify = value; }
+			get { return WindowState == WindowState.Icon; }
+			set {
+				if (value)
+					Backend.WindowState = WindowState.Icon;
+				else
+					Backend.WindowState = WindowState.Normal;
+			}
 		}
 
 		/// <summary>
@@ -284,8 +289,13 @@ namespace Xwt
 		/// </summary>
 		/// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
 		public bool FullScreen {
-			get { return Backend.FullScreen; }
-			set { Backend.FullScreen = value; }
+			get { return WindowState == WindowState.FullScreen; }
+			set {
+				if (value)
+					Backend.WindowState = WindowState.FullScreen;
+				else
+					Backend.WindowState = WindowState.Normal;
+			}
 		}
 
 		/// <summary>

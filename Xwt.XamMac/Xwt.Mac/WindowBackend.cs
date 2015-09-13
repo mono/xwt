@@ -155,41 +155,6 @@ namespace Xwt.Mac
 		public void SetFocus ()
 		{
 		}
-
-		bool IWindowFrameBackend.Iconify {
-			get {
-				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
-					return false;
-
-				return (WindowState == Xwt.WindowState.Icon);
-			}
-			set {
-				if (value == true) {
-					WindowState = Xwt.WindowState.Icon;
-				} else {
-					WindowState = Xwt.WindowState.Normal;
-				}
-			}
-		}
-		
-		bool IWindowFrameBackend.FullScreen {
-			get {
-				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
-					return false;
-
-				return (WindowState == Xwt.WindowState.FullScreen);
-			}
-			set {
-				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
-					return;
-
-				if (value == true) {
-					WindowState = Xwt.WindowState.FullScreen;
-				} else {
-					WindowState = Xwt.WindowState.Normal;
-				}
-			}
-		}
 		
 		public Xwt.WindowState WindowState {
 			get {

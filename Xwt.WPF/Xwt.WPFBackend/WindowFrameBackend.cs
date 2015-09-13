@@ -183,33 +183,6 @@ namespace Xwt.WPFBackend
 		{
 			window.Activate ();
 		}
-
-		
-		bool IWindowFrameBackend.Iconify {
-			get {
-				return (WindowState == Xwt.WindowState.Icon);
-			}
-			set {
-				if (value == true) {
-					WindowState = Xwt.WindowState.Icon;
-				} else {
-					WindowState = Xwt.WindowState.Normal;
-				}
-			}
-		}
-		
-		bool IWindowFrameBackend.FullScreen {
-			get {
-				return (WindowState == Xwt.WindowState.FullScreen);
-			}
-			set {
-				if (value == true) {
-					WindowState = Xwt.WindowState.FullScreen;
-				} else {
-					WindowState = Xwt.WindowState.Normal;
-				}
-			}
-		}
 		
 		public Xwt.WindowState WindowState {
 			get {
