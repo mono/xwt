@@ -156,46 +156,66 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public Xwt.WindowState WindowState {
+		public WindowState WindowState {
 			get {
 				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
-					return Xwt.WindowState.Normal;
+					return WindowState.Normal;
 
-				if ((StyleMask & NSWindowStyle.Miniaturizable) != 0) {
-					return Xwt.WindowState.Iconified;
-				} else if ((StyleMask & NSWindowStyle.FullScreenWindow) != 0) {
-					return Xwt.WindowState.FullScreen;
-				} else {
-					return Xwt.WindowState.Normal;
-				}
+				if (isWindowSateDelayed) // rare case while "unfullscreening"
+					return delayedWindowState;
+				if (IsMiniaturized)
+					return WindowState.Iconified;
+				if ((StyleMask & NSWindowStyle.FullScreenWindow) != 0)
+					return WindowState.FullScreen;
+				if (IsZoomed)
+					return WindowState.Maximized;
+				else
+					return WindowState.Normal;
 			}
 			set {
 				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
 					return;
 
-				if ((value == Xwt.WindowState.Iconified) && ((StyleMask & NSWindowStyle.Miniaturizable) == 0)) {
+				if ((value != Xwt.WindowState.FullScreen) && ((StyleMask & NSWindowStyle.FullScreenWindow) != 0)) {
+					// always unfullscreen first
+					// and delay setting new state
+					ToggleFullScreen (this);
+					CollectionBehavior &= ~NSWindowCollectionBehavior.FullScreenPrimary;
+					isWindowSateDelayed = true;
+					delayedWindowState = value;
+					DidExitFullScreen += DelayedSetWindowState;
+					return;
+				}
+
+
+				if ((value == Xwt.WindowState.Iconified) && !IsMiniaturized) {
 					// Currently not iconified.
-					MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr (
-						Handle,
-						MonoMac.ObjCRuntime.Selector.GetHandle ("toggleMiniaturize:"),
-						IntPtr.Zero);
+					Miniaturize (this);
 				} else if ((value == Xwt.WindowState.FullScreen) && ((StyleMask & NSWindowStyle.FullScreenWindow) == 0)) {
 					// Currently not full screen.
-					// Does this not work ? "ToggleFullScreen"
-					ToggleFullScreen (null);
+					CollectionBehavior |= NSWindowCollectionBehavior.FullScreenPrimary;
+					ToggleFullScreen (this);
+				} else if ((value == Xwt.WindowState.Maximized) && !IsZoomed) {
+					// Currently not maximized.
+					PerformZoom (this);
 				} else {
-					if ((StyleMask & NSWindowStyle.Miniaturizable) != 0) {
+					if (IsMiniaturized)
 						// Currently iconified.
-						MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr (
-							Handle,
-							MonoMac.ObjCRuntime.Selector.GetHandle ("toggleMiniaturize:"),
-							IntPtr.Zero);
-					} else if ((StyleMask & NSWindowStyle.FullScreenWindow) != 0) {
+						Deminiaturize (this);
+					else if (IsZoomed)
 						// Currently full screen.
-						ToggleFullScreen (null);
-					}
+						PerformZoom (this);
 				}
 			}
+		}
+
+		bool isWindowSateDelayed;
+		WindowState delayedWindowState;
+		void DelayedSetWindowState (object sender, EventArgs args)
+		{
+			WindowState = delayedWindowState;
+			DidExitFullScreen -= DelayedSetWindowState;
+			isWindowSateDelayed = false;
 		}
 
 		object IWindowFrameBackend.Screen {
