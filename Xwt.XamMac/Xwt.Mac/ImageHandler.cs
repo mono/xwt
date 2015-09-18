@@ -342,6 +342,13 @@ namespace Xwt.Mac
 		{
 			return new CustomImage (actx, drawCallback);
 		}
+
+		#if !MONOMAC
+		public override NSObject Copy (NSZone zone)
+		{
+			return new CustomImage (actx, drawCallback);
+		}
+		#endif
 	}
 }
 
