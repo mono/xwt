@@ -29,6 +29,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -151,6 +152,8 @@
     <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\CalendarBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\FontSelectorBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SelectFontDialogBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

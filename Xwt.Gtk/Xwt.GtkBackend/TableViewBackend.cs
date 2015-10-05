@@ -496,7 +496,17 @@ namespace Xwt.GtkBackend
 		{
 			backend = b;
 		}
-		
+
+		static CustomTreeView ()
+		{
+			// On Mac we want to be able to handle the backspace key (labeled "delete") in a custom way
+			// through a normal keypressed event but a default binding prevents this from happening because
+			// it maps it to "select-cursor-parent". However, that event is also bound to Ctrl+Backspace anyway
+			// so we can just kill one of those binding
+			if (Platform.IsMac)
+				GtkWorkarounds.RemoveKeyBindingFromClass (Gtk.TreeView.GType, Gdk.Key.BackSpace, Gdk.ModifierType.None);
+		}
+
 		protected override void OnDragDataDelete (Gdk.DragContext context)
 		{
 			// This method is override to avoid the default implementation

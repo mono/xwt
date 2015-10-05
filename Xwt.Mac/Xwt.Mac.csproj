@@ -22,13 +22,15 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>MONOMAC</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -287,6 +289,10 @@
     <Compile Include="..\Xwt.XamMac\Xwt.Mac\CalendarBackend.cs">
       <Link>Xwt.Mac\CalendarBackend.cs</Link>
     </Compile>
+    <Compile Include="..\Xwt.XamMac\Xwt.Mac\SelectFontDialogBackend.cs">
+      <Link>Xwt.Mac\SelectFontDialogBackend.cs</Link>
+    </Compile>
+    <Compile Include="Xwt.Mac\NSStringAttributeKey.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

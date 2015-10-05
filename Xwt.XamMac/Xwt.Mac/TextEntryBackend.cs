@@ -63,6 +63,7 @@ namespace Xwt.Mac
 				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view);
 				MultiLine = false;
 			}
+			Widget.StringValue = string.Empty;
 
 			canGetFocus = Widget.AcceptsFirstResponder ();
 			Frontend.MouseEntered += delegate {

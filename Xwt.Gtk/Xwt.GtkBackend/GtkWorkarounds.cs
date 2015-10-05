@@ -1283,6 +1283,18 @@ namespace Xwt.GtkBackend
 		{
 			g_signal_stop_emission_by_name (gobject.Handle, signalid);
 		}
+
+		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr gtk_binding_set_find (string setName);
+		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern void gtk_binding_entry_remove (IntPtr bindingSet, uint keyval, Gdk.ModifierType modifiers);
+
+		public static void RemoveKeyBindingFromClass (GLib.GType gtype, Gdk.Key key, Gdk.ModifierType modifiers)
+		{
+			var bindingSet = gtk_binding_set_find (gtype.ToString ());
+			if (bindingSet != IntPtr.Zero)
+				gtk_binding_entry_remove (bindingSet, (uint)key, modifiers);
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>

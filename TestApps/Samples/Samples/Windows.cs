@@ -141,6 +141,21 @@ namespace Samples
 					MessageDialog.ShowMessage ("A color has been selected!", dlg.Color.ToString ());
 			};
 
+			b = new Button ("Show Select Font dialog");
+			PackStart (b);
+			b.Clicked += delegate {
+				SelectFontDialog dlg = new SelectFontDialog ();
+				if (dlg.Run (ParentWindow)) {
+					Dialog d = new Dialog ();
+					d.Title = "A font has been selected!";
+					d.Content = new Label (dlg.SelectedFont.ToString ());
+					d.Content.Font = dlg.SelectedFont;
+					d.Buttons.Add (new DialogButton (Command.Ok));
+					d.Run (this.ParentWindow);
+					d.Dispose ();
+				}
+			};
+
 			b = new Button("Show window shown event");
 			PackStart(b);
 			b.Clicked += delegate

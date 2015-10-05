@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG XWT_GTK3</DefineConstants>
+    <DefineConstants>DEBUG;XWT_GTK3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
@@ -24,12 +24,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>True</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>bin\Debug</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <DefineConstants>XWT_GTK3</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -154,6 +155,9 @@
     <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\CalendarBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\SelectFontDialogBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\Gtk3FontChooserDialog.cs" />
+    <Compile Include="Xwt.GtkBackend\FontSelectorBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

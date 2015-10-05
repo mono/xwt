@@ -25,6 +25,25 @@
 // THE SOFTWARE.
 using System;
 
+namespace Xwt
+{
+	/// <summary>
+	/// Specifies how a wrapped native wiget fits into the Xwt layout system.
+	/// </summary>
+	public enum NativeWidgetSizing
+	{
+		/// <summary>
+		/// The Widget reports no preferred size. A size must either be explicitly set or assigned by the parent.
+		/// </summary>
+		External,
+
+		/// <summary>
+		/// The Widget reports the preferred size determined by the default Widget backend.
+		/// </summary>
+		DefaultPreferredSize
+	}
+}
+
 namespace Xwt.Backends
 {
 	public interface IEmbeddedWidgetBackend: IWidgetBackend
@@ -37,6 +56,7 @@ namespace Xwt.Backends
 	{
 		object nativeWidget;
 		Widget sourceWidget;
+		NativeWidgetSizing sizing;
 
 		class EmbeddedNativeWidgetBackendHost: WidgetBackendHost<EmbeddedNativeWidget,IEmbeddedWidgetBackend>
 		{
@@ -52,10 +72,11 @@ namespace Xwt.Backends
 			return new EmbeddedNativeWidgetBackendHost ();
 		}
 
-		public void Initialize (object nativeWidget, Widget sourceWidget)
+		public void Initialize (object nativeWidget, Widget sourceWidget, NativeWidgetSizing preferredSizing)
 		{
 			this.nativeWidget = nativeWidget;
 			this.sourceWidget = sourceWidget;
+			this.sizing = preferredSizing;
 		}
 		
 		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
@@ -63,7 +84,7 @@ namespace Xwt.Backends
 			if (sourceWidget != null)
 				return sourceWidget.Surface.GetPreferredSize (widthConstraint, heightConstraint);
 			else
-				return Size.Zero;
+				return sizing == NativeWidgetSizing.External ? Size.Zero : base.OnGetPreferredSize (widthConstraint, heightConstraint);
 		}
 	}
 }
