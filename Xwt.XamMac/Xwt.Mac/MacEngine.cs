@@ -205,6 +205,15 @@ namespace Xwt.Mac
 			return wb.Widget;
 		}
 
+		public override object GetNativeImage (Xwt.Drawing.Image image)
+		{
+			if (image == null)
+				return null;
+			var img = (NSImage)base.GetNativeImage (image);
+			img.Size = new CGSize ((nfloat)image.Size.Width, (nfloat)image.Size.Height);
+			return img;
+		}
+
 		public override bool HasNativeParent (Widget w)
 		{
 			var wb = GetNativeBackend (w);
