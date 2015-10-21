@@ -64,6 +64,8 @@ namespace Xwt.Drawing
 		public Image (Image image): base (image.Backend, image.ToolkitEngine)
 		{
 			NativeRef = image.NativeRef;
+			requestedSize = image.requestedSize;
+			requestedAlpha = image.requestedAlpha;
 			Init ();
 		}
 
