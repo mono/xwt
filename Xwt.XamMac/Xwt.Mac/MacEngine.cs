@@ -210,6 +210,10 @@ namespace Xwt.Mac
 			if (image == null)
 				return null;
 			var img = (NSImage)base.GetNativeImage (image);
+			if (img is CustomImage) {
+				var idesc = image.ToImageDescription (ApplicationContext);
+				((CustomImage)img).Image = idesc;
+			}
 			img.Size = new CGSize ((nfloat)image.Size.Width, (nfloat)image.Size.Height);
 			return img;
 		}

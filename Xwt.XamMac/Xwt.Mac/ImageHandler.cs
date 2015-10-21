@@ -301,6 +301,8 @@ namespace Xwt.Mac
 		ApplicationContext actx;
 		NSCustomImageRep imgRep;
 
+		internal ImageDescription Image = ImageDescription.Null;
+
 		public CustomImage (ApplicationContext actx, ImageDrawCallback drawCallback)
 		{
 			this.actx = actx;
@@ -334,7 +336,7 @@ namespace Xwt.Mac
 		{
 			var s = ctx.Size != CGSize.Empty ? ctx.Size : Size;
 			actx.InvokeUserCode (delegate {
-				drawCallback (ctx, new Rectangle (0, 0, s.Width, s.Height), ImageDescription.Null);
+				drawCallback (ctx, new Rectangle (0, 0, s.Width, s.Height), Image);
 			});
 		}
 

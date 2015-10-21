@@ -293,8 +293,10 @@ namespace Xwt.Mac
 				return null;
 			var img = (NSImage)idesc.Backend;
 			if (img is CustomImage)
+			if (img is CustomImage) {
 				img = ((CustomImage)img).Clone ();
-			else {
+				((CustomImage)img).Image = idesc;
+			} else {
 				img = (NSImage)img.Copy ();
 			}
 			img.Size = new CGSize ((nfloat)idesc.Size.Width, (nfloat)idesc.Size.Height);
