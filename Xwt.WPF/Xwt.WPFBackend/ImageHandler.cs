@@ -298,7 +298,7 @@ namespace Xwt.WPFBackend
 		public int Stride;
 		public bool PixelWritePending;
 
-		ImageFrame[] frames;
+		ImageFrame[] frames = new ImageFrame[0];
 
 		public WpfImage (ImageSource image)
 		{
