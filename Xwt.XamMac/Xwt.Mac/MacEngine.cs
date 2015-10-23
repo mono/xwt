@@ -211,6 +211,7 @@ namespace Xwt.Mac
 				return null;
 			var img = (NSImage)base.GetNativeImage (image);
 			if (img is CustomImage) {
+				img = ((CustomImage)img).Clone ();
 				var idesc = image.ToImageDescription (ApplicationContext);
 				((CustomImage)img).Image = idesc;
 			}
