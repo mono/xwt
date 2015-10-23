@@ -66,7 +66,7 @@ namespace Xwt.Drawing
 				}
 				var noMatches = img.Item2.Length - matches;
 				if (matches > bestMatches || (matches == bestMatches && noMatches < bestNoMatches)) {
-					best = img.Item1.WithStyles (img.Item2);
+					best = img.Item1;
 					bestMatches = matches;
 					bestNoMatches = noMatches;
 				}

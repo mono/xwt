@@ -229,6 +229,7 @@ namespace Xwt.Drawing
 				throw new InvalidOperationException ("Image doesn't have a fixed size");
 
 			var idesc = img.GetImageDescription (ToolkitEngine);
+			idesc.Styles = Styles.ToArray ();
 			idesc.Alpha *= alpha;
 			handler.DrawImage (Backend, idesc, x, y);
 		}
@@ -243,6 +244,7 @@ namespace Xwt.Drawing
 			if (width <= 0 || height <= 0)
 				return;
 			var idesc = img.GetImageDescription (ToolkitEngine);
+			idesc.Styles = Styles.ToArray ();
 			idesc.Alpha *= alpha;
 			idesc.Size = new Size (width, height);
 			handler.DrawImage (Backend, idesc, x, y);
@@ -259,6 +261,7 @@ namespace Xwt.Drawing
 				throw new InvalidOperationException ("Image doesn't have a fixed size");
 
 			var idesc = img.GetImageDescription (ToolkitEngine);
+			idesc.Styles = Styles.ToArray ();
 			idesc.Alpha *= alpha;
 			handler.DrawImage (Backend, idesc, srcRect, destRect);
 		}
