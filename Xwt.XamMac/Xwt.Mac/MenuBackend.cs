@@ -74,12 +74,12 @@ namespace Xwt.Mac
 		public void Popup ()
 		{
 			var evt = NSApplication.SharedApplication.CurrentEvent;
-			NSMenu.PopUpContextMenu (this, evt, evt.Window.ContentView, AppKit.NSFont.MenuFontOfSize (12));
+			NSMenu.PopUpContextMenu (this, evt, evt.Window.ContentView, NSFont.MenuFontOfSize (12));
 		}
 		
 		public void Popup (IWidgetBackend widget, double x, double y)
 		{
-			NSMenu.PopUpContextMenu (this, NSApplication.SharedApplication.CurrentEvent, ((ViewBackend)widget).Widget, AppKit.NSFont.MenuFontOfSize (12));
+			NSMenu.PopUpContextMenu (this, NSApplication.SharedApplication.CurrentEvent, ((ViewBackend)widget).Widget, NSFont.MenuFontOfSize (12));
 		}
 	}
 }
