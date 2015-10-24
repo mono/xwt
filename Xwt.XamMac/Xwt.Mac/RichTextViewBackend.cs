@@ -55,6 +55,7 @@ namespace Xwt.Mac
 	public class RichTextViewBackend : ViewBackend <NSTextView, IRichTextViewEventSink>, IRichTextViewBackend
 	{
 		NSFont font;
+		MacRichTextBuffer currentBuffer;
 
 		public override object Font {
 			get { return base.Font; }
@@ -113,13 +114,28 @@ namespace Xwt.Mac
 			// with the 'style' attribute for the 'body' element - not sure why that happens
 			return new MacRichTextBuffer (font ?? Widget.Font);
 		}
-		
+
+		public bool ReadOnly { 
+			get { 
+				return !Widget.Editable;
+			}
+			set {
+				Widget.Editable = !value;
+			}
+		}
+
+		public IRichTextBuffer CurrentBuffer {
+			get {
+				return currentBuffer;
+			}
+		}
+
 		public void SetBuffer (IRichTextBuffer buffer)
 		{
 			var macBuffer = buffer as MacRichTextBuffer;
 			if (macBuffer == null)
 				throw new ArgumentException ("Passed buffer is of incorrect type", "buffer");
-
+			currentBuffer = macBuffer;
 			var tview = ViewObject as MacTextView;
 			if (tview == null)
 				return;
@@ -295,6 +311,12 @@ namespace Xwt.Mac
 			Marshal.FreeHGlobal (docAttributesPtr);
 
 			return attrString;
+		}
+
+		public string PlainText {
+			get {
+				return text.ToString ();
+			}
 		}
 
 		public void EmitText (string text, RichTextInlineStyle style)

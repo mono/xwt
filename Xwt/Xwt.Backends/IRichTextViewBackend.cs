@@ -24,6 +24,10 @@ namespace Xwt.Backends
 
 		// Display the passed buffer
 		void SetBuffer (IRichTextBuffer buffer);
+
+		bool ReadOnly { get; set; }
+
+		IRichTextBuffer CurrentBuffer { get; }
 	}
 
 	public interface IRichTextBuffer
@@ -56,6 +60,8 @@ namespace Xwt.Backends
 
 		// Emit an horizontal ruler
 		void EmitHorizontalRuler ();
+
+		string PlainText { get;}
 	}
 
 	public interface IRichTextViewEventSink : IWidgetEventSink
