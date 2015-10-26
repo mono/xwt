@@ -150,6 +150,21 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public IRichTextBuffer CurrentBuffer {
+			get {
+				return Widget.Buffer as RichTextBuffer;
+			}
+		}
+
+		public bool ReadOnly { 
+			get { 
+				return !Widget.Editable;
+			}
+			set {
+				Widget.Editable = !value;
+			}
+		}
+
 		void HandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)
 		{
 			if (NavigateToUrlEnabled) {
@@ -213,6 +228,12 @@ namespace Xwt.GtkBackend
 				Links = new List<Link> ();
 				openHeaders = new Stack<StartState> ();
 				openLinks = new Stack<Link> ();
+			}
+
+			public string PlainText {
+				get {
+					return Text;
+				}
 			}
 
 			public void EmitText (string text, RichTextInlineStyle style)

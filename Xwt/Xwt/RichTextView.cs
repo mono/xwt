@@ -90,6 +90,24 @@ namespace Xwt
 			OnPreferredSizeChanged ();
 		}
 
+		public string PlainText {
+			get {
+				IRichTextBuffer currentBuffer = Backend.CurrentBuffer;
+				if (currentBuffer == null)
+					return null;
+				return currentBuffer.PlainText;				
+			}
+		}
+
+		public bool ReadOnly {
+			get {
+				return Backend.ReadOnly;
+			}
+			set {
+				Backend.ReadOnly = value;
+			}
+		}
+
 		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
