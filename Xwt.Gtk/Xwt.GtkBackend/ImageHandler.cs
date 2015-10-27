@@ -68,6 +68,8 @@ namespace Xwt.GtkBackend
 
 		public override object CreateMultiSizeIcon (IEnumerable<object> images)
 		{
+			if (images.Count () == 1)
+				return images.Cast<GtkImage> ().First ();
 			var frames = images.Cast<GtkImage> ().SelectMany (img => img.Frames);
 			return new GtkImage (frames);
 		}
