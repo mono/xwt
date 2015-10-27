@@ -130,7 +130,7 @@ namespace Xwt.Backends
 		public abstract Color GetBitmapPixel (object handle, int x, int y);
 	}
 
-	public delegate void ImageDrawCallback (object contextBackend, Rectangle bounds, ImageDescription idesc);
+	public delegate void ImageDrawCallback (object contextBackend, Rectangle bounds, ImageDescription idesc, Toolkit toolkit);
 
 	public struct ImageDescription
 	{

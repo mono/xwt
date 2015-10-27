@@ -336,7 +336,7 @@ namespace Xwt.Mac
 		{
 			var s = ctx.Size != CGSize.Empty ? ctx.Size : Size;
 			actx.InvokeUserCode (delegate {
-				drawCallback (ctx, new Rectangle (0, 0, s.Width, s.Height), Image);
+				drawCallback (ctx, new Rectangle (0, 0, s.Width, s.Height), Image, actx.Toolkit);
 			});
 		}
 

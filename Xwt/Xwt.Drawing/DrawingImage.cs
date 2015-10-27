@@ -37,9 +37,9 @@ namespace Xwt.Drawing
 			NativeRef.SetCustomDrawSource (Draw);
 		}
 
-		void Draw (object ctx, Rectangle bounds, ImageDescription idesc)
+		void Draw (object ctx, Rectangle bounds, ImageDescription idesc, Toolkit toolkit)
 		{
-			var c = new Context (ctx, ToolkitEngine);
+			var c = new Context (ctx, toolkit);
 			if (idesc.Styles != null) {
 				foreach (var s in idesc.Styles)
 					c.SetStyle (s);
