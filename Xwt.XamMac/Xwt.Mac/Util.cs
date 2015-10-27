@@ -292,7 +292,6 @@ namespace Xwt.Mac
 			if (idesc.IsNull)
 				return null;
 			var img = (NSImage)idesc.Backend;
-			if (img is CustomImage)
 			if (img is CustomImage) {
 				img = ((CustomImage)img).Clone ();
 				((CustomImage)img).Image = idesc;
