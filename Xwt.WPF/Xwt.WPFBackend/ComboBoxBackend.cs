@@ -67,7 +67,7 @@ namespace Xwt.WPFBackend
 			ComboBox.DisplayMemberPath = ".[0]";
 			//ComboBox.ItemTemplate = DefaultTemplate;
 			ComboBox.ItemContainerStyle = ContainerStyle;
-        }
+		}
 
 		public void SetViews (CellViewCollection views)
 		{
