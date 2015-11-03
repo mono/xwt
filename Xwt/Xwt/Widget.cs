@@ -590,7 +590,10 @@ namespace Xwt
 		/// <value>The widgets name.</value>
 		/// <remarks>The name can be used to identify this widget by e.g. designers.</remarks>
 		[DefaultValue (null)]
-		public string Name { get; set; }
+		public string Name {
+			get { return Backend.Name; }
+			set { Backend.Name = value; }
+		}
 		
 		/// <summary>
 		/// Gets the parent widget of this <see cref="Xwt.Widget"/>.

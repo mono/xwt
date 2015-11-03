@@ -114,6 +114,11 @@ namespace Xwt.GtkBackend
 				return eventBox ?? (Gtk.Widget) Widget;
 			}
 		}
+
+		public string Name {
+			get { return Widget.Name; }
+			set { Widget.Name = value; }
+		}
 		
 		public virtual bool Visible {
 			get { return Widget.Visible; }
