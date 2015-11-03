@@ -54,12 +54,6 @@ namespace Xwt.WPFBackend
 			public int ColumnIndex;
 		}
 
-		public ListViewBackend()
-		{
-			ListView = new ExListView();
-			ListView.View = this.view;
-        }
-
 		public ScrollViewer ScrollViewer {
 			get {
 	            Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(ListView, 0) as Decorator;
