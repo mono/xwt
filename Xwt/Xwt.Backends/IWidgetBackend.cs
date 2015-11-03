@@ -64,6 +64,11 @@ namespace Xwt.Backends
 		bool Sensitive { get; set; }
 
 		/// <summary>
+		/// Gets or sets the name of this widget.
+		/// </summary>
+		string Name { get; set; }
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this widget can get focus.
 		/// </summary>
 		/// <value><c>true</c> if this instance can get focus; otherwise, <c>false</c>.</value>
