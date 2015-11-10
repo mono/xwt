@@ -90,7 +90,7 @@ namespace Xwt.WPFBackend
 
 		public override object CreateMultiSizeIcon (IEnumerable<object> images)
 		{
-			return new WpfImage (images.Cast<WpfImage> ().SelectMany (i => i.Frames));
+			return new WpfImage (images.Cast<WpfImage> ());
 		}
 
 		public override void SaveToStream (object backend, Stream stream, Drawing.ImageFileType fileType)
@@ -311,11 +311,27 @@ namespace Xwt.WPFBackend
 		public WpfImage (IEnumerable<ImageSource> images)
 		{
 			this.frames = images.Select (f => new ImageFrame (f)).ToArray ();
+			if (frames.Length == 0)
+				throw new InvalidOperationException();
 		}
 
 		public WpfImage (IEnumerable<ImageFrame> frames)
 		{
 			this.frames = frames.ToArray ();
+			if (this.frames.Length == 0)
+				throw new InvalidOperationException();
+		}
+
+		public WpfImage (IEnumerable<WpfImage> images)
+		{
+			var first = images.First ();
+			if (first.drawCallback != null)
+				drawCallback = first.drawCallback;
+			else {
+				this.frames = images.SelectMany (i => i.Frames).ToArray ();
+				if (this.frames.Length == 0)
+					throw new InvalidOperationException ();
+			}
 		}
 
 		public WpfImage (ImageDrawCallback drawCallback)
@@ -330,7 +346,7 @@ namespace Xwt.WPFBackend
 
 		public ImageSource MainFrame
 		{
-			get { return frames[0].ImageSource; }
+			get { return frames.Length > 0 ? frames[0].ImageSource : null; }
 			set { frames[0].ImageSource = value; }
 		}
 

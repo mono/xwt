@@ -214,7 +214,8 @@ namespace Xwt.WPFBackend
 
 		public override object GetNativeImage (Image image)
 		{
-			return DataConverter.AsImageSource (Toolkit.GetBackend (image));
+			var source = (WpfImage)Toolkit.GetBackend (image);
+			return source.MainFrame ?? source.GetBestFrame (ApplicationContext, 1, image.Width, image.Height, true);
 		}
 
 		public override object RenderWidget (Widget widget)
