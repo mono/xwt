@@ -40,10 +40,8 @@ namespace Xwt.Drawing
 		void Draw (object ctx, Rectangle bounds, ImageDescription idesc, Toolkit toolkit)
 		{
 			var c = new Context (ctx, toolkit);
-			if (idesc.Styles != null) {
-				foreach (var s in idesc.Styles)
-					c.SetStyle (s);
-			}
+			if (idesc.Styles != StyleSet.Empty)
+				c.SetStyles (idesc.Styles);
 			c.Reset (null);
 			OnDraw (c, bounds);
 		}

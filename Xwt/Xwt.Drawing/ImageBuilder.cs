@@ -41,7 +41,10 @@ namespace Xwt.Drawing
 		public ImageBuilder (double width, double height)
 		{
 			backend = new VectorContextBackend (ToolkitEngine, width, height);
-			ctx = new Context (backend, ToolkitEngine, ToolkitEngine.VectorImageRecorderContextHandler);
+
+			// Don't set the global styles to the context. The global styles will be used when rendering the image
+			ctx = new Context (backend, ToolkitEngine, ToolkitEngine.VectorImageRecorderContextHandler, false);
+
 			ctx.Reset (null);
 			this.width = width;
 			this.height = height;

@@ -27,6 +27,7 @@
 
 using System;
 using Xwt.Drawing;
+using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
@@ -83,6 +84,8 @@ namespace Xwt.Backends
 		public abstract void SetGlobalAlpha (object backend, double globalAlpha);
 
 		public abstract double GetScaleFactor (object backend);
+
+		public abstract void SetStyles (object backend, StyleSet styles);
 	}
 }
 

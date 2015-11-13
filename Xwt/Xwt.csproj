@@ -9,6 +9,8 @@
     <AssemblyName>Xwt</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -334,6 +336,7 @@
     <Compile Include="Xwt.Backends\IFontSelectorBackend.cs" />
     <Compile Include="Xwt\SelectFontDialog.cs" />
     <Compile Include="Xwt.Backends\ISelectFontDialogBackend.cs" />
+    <Compile Include="Xwt.Drawing\StyleSet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

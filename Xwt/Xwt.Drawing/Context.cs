@@ -36,30 +36,31 @@ namespace Xwt.Drawing
 		ContextBackendHandler handler;
 		Pattern pattern;
 		double globalAlpha = 1;
-		HashSet<string> styles;
-		bool stylesSetIsShared;
+		StyleSet styles;
 
 		static HashSet<string> registeredStyles = new HashSet<string> ();
-		static HashSet<string> globalStyles = new HashSet<string> ();
+		static StyleSet globalStyles = StyleSet.Empty;
 
 		Stack<SavedContext> contextStack = new Stack<SavedContext> ();
 
 		class SavedContext
 		{
 			public double Alpha;
-			public HashSet<string> Styles;
-			public bool StylesSetIsShared;
+			public StyleSet Styles;
 		}
 		
 		internal Context (object backend, Toolkit toolkit): this (backend, toolkit, toolkit.ContextBackendHandler)
 		{
 		}
 
-		internal Context (object backend, Toolkit toolkit, ContextBackendHandler handler): base (backend, toolkit, handler)
+		internal Context (object backend, Toolkit toolkit, ContextBackendHandler handler, bool getGlobalStyles = true): base (backend, toolkit, handler)
 		{
 			this.handler = handler;
-			styles = globalStyles;
-			stylesSetIsShared = true;
+			if (getGlobalStyles) {
+				styles = globalStyles;
+				if (styles != StyleSet.Empty)
+					handler.SetStyles (Backend, styles);
+			}
 		}
 
 		internal ContextBackendHandler Handler {
@@ -82,11 +83,7 @@ namespace Xwt.Drawing
 			contextStack.Push (new SavedContext {
 				Alpha = globalAlpha,
 				Styles = styles,
-				StylesSetIsShared = stylesSetIsShared
 			});
-
-			// The styles hash set is now shared with the previous context
-			stylesSetIsShared = true;
 		}
 		
 		public void Restore ()
@@ -95,8 +92,10 @@ namespace Xwt.Drawing
 			if (contextStack.Count > 0) {
 				var info = contextStack.Pop ();
 				globalAlpha = info.Alpha;
-				styles = info.Styles;
-				stylesSetIsShared = info.StylesSetIsShared;
+				if (styles != info.Styles) {
+					styles = info.Styles;
+					handler.SetStyles (Backend, styles);
+				}
 			}
 		}
 		
@@ -108,17 +107,22 @@ namespace Xwt.Drawing
 			}
 		}
 
+		internal void SetStyles (StyleSet styles)
+		{
+			this.styles = this.styles.AddRange (styles);
+			handler.SetStyles (Backend, this.styles);
+		}
+
 		public void SetStyle (string style)
 		{
 			if (string.IsNullOrEmpty (style))
 				throw new ArgumentException ("style can't be empty");
 			
-			MakeStylesCollectionModifiable ();
-
 			if (style[0] == '!')
-				styles.Remove (style.Substring (1));
+				styles = styles.Remove (style.Substring (1));
 			else
-				styles.Add (style);
+				styles = styles.Add (style);
+			handler.SetStyles (Backend, styles);
 		}
 		
 		public void ClearStyle (string style)
@@ -126,10 +130,14 @@ namespace Xwt.Drawing
 			if (string.IsNullOrEmpty (style))
 				throw new ArgumentException ("style can't be empty");
 
-			if (style != null) {
-				MakeStylesCollectionModifiable ();
-				styles.Remove (style);
-			}
+			styles = styles.Remove (style);
+			handler.SetStyles (Backend, styles);
+		}
+
+		public void ClearAllStyles ()
+		{
+			styles = StyleSet.Empty;
+			handler.SetStyles (Backend, styles);
 		}
 
 		public bool HasStyle (string name)
@@ -140,15 +148,6 @@ namespace Xwt.Drawing
 		public IEnumerable<string> Styles {
 			get {
 				return styles;
-			}
-		}
-
-		void MakeStylesCollectionModifiable ()
-		{
-			if (stylesSetIsShared) {
-				// Make a copy of the styles collection
-				stylesSetIsShared = false;
-				styles = new HashSet<string> (styles);
 			}
 		}
 
@@ -229,7 +228,6 @@ namespace Xwt.Drawing
 				throw new InvalidOperationException ("Image doesn't have a fixed size");
 
 			var idesc = img.GetImageDescription (ToolkitEngine);
-			idesc.Styles = idesc.Styles != null ? styles.Union (idesc.Styles).ToArray () : styles.ToArray();
 			idesc.Alpha *= alpha;
 			handler.DrawImage (Backend, idesc, x, y);
 		}
@@ -244,7 +242,6 @@ namespace Xwt.Drawing
 			if (width <= 0 || height <= 0)
 				return;
 			var idesc = img.GetImageDescription (ToolkitEngine);
-			idesc.Styles = idesc.Styles != null ? styles.Union (idesc.Styles).ToArray () : styles.ToArray();
 			idesc.Alpha *= alpha;
 			idesc.Size = new Size (width, height);
 			handler.DrawImage (Backend, idesc, x, y);
@@ -261,7 +258,6 @@ namespace Xwt.Drawing
 				throw new InvalidOperationException ("Image doesn't have a fixed size");
 
 			var idesc = img.GetImageDescription (ToolkitEngine);
-			idesc.Styles = idesc.Styles != null ? styles.Union (idesc.Styles).ToArray () : styles.ToArray();
 			idesc.Alpha *= alpha;
 			handler.DrawImage (Backend, idesc, srcRect, destRect);
 		}
@@ -457,17 +453,13 @@ namespace Xwt.Drawing
 		{
 			// Make a copy of the collection since it may be referenced from context instances,
 			// which don't expect the collection to change
-			globalStyles = new HashSet<string> (globalStyles);
-			globalStyles.Add (style);
+			globalStyles = globalStyles.Add (style);
 			NotifyGlobalStylesChanged ();
 		}
 
 		public static void ClearGlobalStyle (string style)
 		{
-			// Make a copy of the collection since it may be referenced from context instances,
-			// which don't expect the collection to change
-			globalStyles = new HashSet<string> (globalStyles);
-			globalStyles.Remove (style);
+			globalStyles = globalStyles.Remove (style);
 			NotifyGlobalStylesChanged ();
 		}
 

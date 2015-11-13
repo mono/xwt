@@ -143,7 +143,7 @@ namespace Xwt.Backends
 		public object Backend { get; set; }
 		public Size Size { get; set; }
 		public double Alpha { get; set; }
-		public string [] Styles { get; set; }
+		public StyleSet Styles { get; set; }
 	}
 }
 
