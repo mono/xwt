@@ -96,6 +96,7 @@ namespace Xwt.Drawing
 		RelLineTo,
 		RelMoveTo,
 		AppendPath,
+		SetStyles,
 		End
 	}
 
@@ -576,6 +577,13 @@ namespace Xwt.Drawing
 			ctx.Doubles.Add (globalAlpha);
 		}
 
+		public override void SetStyles (object backend, StyleSet styles)
+		{
+			var ctx = (VectorBackend)backend;
+			ctx.Commands.Add (DrawingCommand.SetStyles);
+			ctx.Objects.Add (styles);
+		}
+
 		public override bool IsPointInFill (object backend, double x, double y)
 		{
 			var ctx = (VectorBackend)backend;
@@ -725,6 +733,9 @@ namespace Xwt.Drawing
 					break;
 				case DrawingCommand.Translate:
 					handler.Translate (ctx, cm.Doubles [di++], cm.Doubles [di++]);
+					break;
+				case DrawingCommand.SetStyles:
+					handler.SetStyles (ctx, (StyleSet)cm.Objects [oi++]);
 					break;
 				}
 			}

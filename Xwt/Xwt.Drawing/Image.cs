@@ -39,7 +39,7 @@ namespace Xwt.Drawing
 		internal Size requestedSize;
 		internal NativeImageRef NativeRef;
 		internal double requestedAlpha = 1;
-		internal string [] styles;
+		internal StyleSet styles;
 
 		internal static int[] SupportedScales = { 2 };
 
@@ -548,7 +548,7 @@ namespace Xwt.Drawing
 		public Image WithStyles (params string[] styles)
 		{
 			return new Image (this) {
-				styles = styles
+				styles = StyleSet.Empty.AddRange (styles)
 			};
 		}
 
