@@ -264,7 +264,7 @@ namespace Xwt.WPFBackend
 		{
 			var c = (DrawingContext) backend;
 			WpfImage bmp = (WpfImage) img.Backend;
-
+			img.Styles = img.Styles.AddRange(c.Styles);
 			bmp.Draw (ApplicationContext, c.Context, c.ScaleFactor, x, y, img);
 		}
 
@@ -273,7 +273,8 @@ namespace Xwt.WPFBackend
 			var c = (DrawingContext) backend;
 			WpfImage bmp = (WpfImage)img.Backend;
 
-			c.Context.PushClip (new RectangleGeometry (destRect.ToWpfRect ()));
+			img.Styles = img.Styles.AddRange(c.Styles);
+			c.Context.PushClip(new RectangleGeometry(destRect.ToWpfRect()));
 			c.Context.PushTransform (new TranslateTransform (destRect.X - srcRect.X, destRect.Y - srcRect.Y));
 			var sw = destRect.Width / srcRect.Width;
 			var sh = destRect.Height / srcRect.Height;
@@ -345,6 +346,12 @@ namespace Xwt.WPFBackend
         {
 			var c = (DrawingContext)backend;
 			return c.Geometry.StrokeContains (c.Pen, new SW.Point (x, y));
+		}
+
+		public override void SetStyles(object backend, StyleSet styles)
+		{
+			var c = (DrawingContext)backend;
+			c.Styles = styles;
 		}
 
 		public override void Dispose (object backend)
