@@ -284,7 +284,6 @@ namespace Xwt.WPFBackend
 					writer.WriteEndElement ();
 					writer.Flush ();
 					doc = (FlowDocument) XamlReader.Parse (builder.ToString ());
-					builder = null;
 					writer = null;
 				}
 				return doc;
