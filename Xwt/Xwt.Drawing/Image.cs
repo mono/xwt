@@ -66,6 +66,7 @@ namespace Xwt.Drawing
 			NativeRef = image.NativeRef;
 			requestedSize = image.requestedSize;
 			requestedAlpha = image.requestedAlpha;
+			styles = image.styles;
 			Init ();
 		}
 
