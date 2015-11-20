@@ -28,8 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
-
+using System.Windows.Threading;
 using Xwt.Backends;
 
 
@@ -65,8 +66,12 @@ namespace Xwt.WPFBackend
 		}
 
 		public virtual void Dispose ()
-		{	
-			Window.Close ();
+		{
+			if (Window.Dispatcher.CheckAccess ()) {
+				Window.Close ();
+			} else {
+				Window.Dispatcher.Invoke (DispatcherPriority.Normal, new ThreadStart (Window.Close));
+			}
 		}
 
 		public bool Close ()

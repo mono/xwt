@@ -43,6 +43,7 @@ namespace Xwt.WPFBackend
 	class RichTextViewBackend
 		: WidgetBackend, IRichTextViewBackend
 	{
+		RichTextBuffer currentBuffer;
 		public new IRichTextViewEventSink EventSink {
 			get { return (IRichTextViewEventSink) base.EventSink; }
 		}
@@ -91,6 +92,11 @@ namespace Xwt.WPFBackend
 			});
 		}
 
+		public IRichTextBuffer CurrentBuffer {
+			get	{
+				return currentBuffer;
+			}
+		}
 		public IRichTextBuffer CreateBuffer ()
 		{
 			return new RichTextBuffer ();
@@ -101,7 +107,7 @@ namespace Xwt.WPFBackend
 			var buf = buffer as RichTextBuffer;
 			if (buf == null)
 				throw new ArgumentException ("Passed buffer is of incorrect type", "buffer");
-
+			currentBuffer = buf;
 			if (Widget.Document != null)
 				Widget.Document.ClearValue (FlowDocument.PageWidthProperty);
 			Widget.Document = buf.ToFlowDocument ();
@@ -109,6 +115,15 @@ namespace Xwt.WPFBackend
 			Widget.IsDocumentEnabled = true;
 			Widget.Document.IsEnabled = true;
 			Widget.IsReadOnly = true;
+		}
+
+		public bool ReadOnly { 
+			get {
+				return Widget.IsReadOnly;
+			} 
+			set {
+				Widget.IsReadOnly = value;
+			}
 		}
 
 		class RichTextBuffer : IRichTextBuffer
@@ -269,10 +284,15 @@ namespace Xwt.WPFBackend
 					writer.WriteEndElement ();
 					writer.Flush ();
 					doc = (FlowDocument) XamlReader.Parse (builder.ToString ());
-					builder = null;
 					writer = null;
 				}
 				return doc;
+			}
+
+			public string PlainText { 
+				get {
+					return builder.ToString ();
+				}
 			}
 		}
 
