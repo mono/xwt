@@ -463,8 +463,8 @@ namespace Xwt.WPFBackend
 				// When an image is a single bitmap that doesn't have the same intrinsic size as the drawing size, dc.DrawImage makes a very poor job of down/up scaling it.
 				// Thus we handle this manually by using a TransformedBitmap to handle the conversion in a better way when it's needed.
 
-				var scaledWidth = idesc.Size.Height * scaleFactor;
-				var scaledHeight = idesc.Size.Width * scaleFactor;
+				var scaledWidth = idesc.Size.Width * scaleFactor;
+				var scaledHeight = idesc.Size.Height * scaleFactor;
 				if (bmpImage != null && (Math.Abs (bmpImage.PixelHeight - scaledHeight) > 0.001 || Math.Abs (bmpImage.PixelWidth - scaledWidth) > 0.001))
 					f = new TransformedBitmap (bmpImage, new ScaleTransform (scaledWidth / bmpImage.PixelWidth, scaledHeight / bmpImage.PixelHeight));
 
