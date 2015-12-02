@@ -59,6 +59,7 @@ namespace Xwt.WPFBackend
 			Initialize ();
 		}
 
+		public object Tag { get { return window.Tag; } set { window.Tag = value; } }
 		public ApplicationContext Context { get; private set; }
 
 		public virtual void Initialize ()

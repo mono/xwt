@@ -92,6 +92,8 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <value>The screen.</value>
 		object Screen { get; }
+
+		object Tag { get; set; }
 	}
 	
 	public interface IWindowFrameEventSink
