@@ -76,7 +76,7 @@ namespace Xwt
 		/// <summary>
 		/// A value, that can be used to identify this component
 		/// </summary>
-		public object Tag { get; set; }
+		public virtual object Tag { get; set; }
 
 		/// <summary>
 		/// Maps an event handler of an Xwt component to an event identifier.

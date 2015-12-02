@@ -72,7 +72,7 @@ namespace Xwt
 		bool pendingReallocation;
 		Image icon;
 		WindowFrame transientFor;
-		
+		public override object Tag { get { return Backend.Tag; } set { Backend.Tag = value; } }
 		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
 		{
 			protected override void OnBackendCreated ()
@@ -83,7 +83,9 @@ namespace Xwt
 				Parent.size = Backend.Bounds.Size;
 				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
 			}
+
 			
+
 			public void OnBoundsChanged (Rectangle bounds)
 			{
 				Parent.OnBoundsChanged (new BoundsChangedEventArgs () { Bounds = bounds });
