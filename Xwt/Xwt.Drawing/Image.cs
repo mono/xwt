@@ -1045,6 +1045,8 @@ namespace Xwt.Drawing
 						yield return fn;
 				}
 			} else {
+				if (Path.DirectorySeparatorChar == '\\') // windows)
+					baseName = Path.GetFileName (baseName);
 				var files = Directory.GetFiles (Path.GetDirectoryName (fileName), baseName + "*" + ext);
 				foreach (var f in files)
 					yield return f;
