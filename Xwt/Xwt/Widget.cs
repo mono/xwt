@@ -590,7 +590,7 @@ namespace Xwt
 		/// <value>The widgets name.</value>
 		/// <remarks>The name can be used to identify this widget by e.g. designers.</remarks>
 		[DefaultValue (null)]
-		public string Name {
+		public override string Name {
 			get { return Backend.Name; }
 			set { Backend.Name = value; }
 		}
