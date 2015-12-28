@@ -34,6 +34,11 @@ namespace Xwt.Backends
 		void Dispose ();
 
 		/// <summary>
+		/// Gets or sets the name of the window.
+		/// </summary>
+		string Name { get; set; }
+
+		/// <summary>
 		/// Size and position of the window content in screen coordinates
 		/// </summary>
 		Rectangle Bounds { get; set; }

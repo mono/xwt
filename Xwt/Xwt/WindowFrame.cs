@@ -151,6 +151,19 @@ namespace Xwt
 		protected new WindowBackendHost BackendHost {
 			get { return (WindowBackendHost) base.BackendHost; }
 		}
+
+		/// <summary>
+		/// Gets or sets the name (not title) of this window.
+		/// </summary>
+		/// <value>The window name.</value>
+		/// <remarks>The name can be used to identify this window by e.g. designers.
+		/// The name of the window is not visible to the user. Use the Title property
+		/// to modify the visible window title.</remarks>
+		[DefaultValue (null)]
+		public override string Name {
+			get { return Backend.Name; }
+			set { Backend.Name = value; }
+		}
 		
 		public Rectangle ScreenBounds {
 			get {
