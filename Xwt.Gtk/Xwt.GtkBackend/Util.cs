@@ -171,6 +171,11 @@ namespace Xwt.GtkBackend
 					}
 					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
 				}
+				else if (type == TransferDataType.Image) {
+					Gtk.TargetList list = new Gtk.TargetList ();
+					list.AddImageTargets (id, true);
+					entries = (Gtk.TargetEntry[])list;
+				}
 				else {
 					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type.Id, false), 0, id) };
 				}
