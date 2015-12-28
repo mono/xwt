@@ -86,7 +86,7 @@ namespace Xwt.GtkBackend
 			if (type == TransferDataType.Text)
 				return clipboard.WaitForText ();
 			if (type == TransferDataType.Image)
-				return new Xwt.Drawing.Image (new GtkImage (clipboard.WaitForImage()), Toolkit.CurrentEngine);
+				return ApplicationContext.Toolkit.WrapImage (new GtkImage (clipboard.WaitForImage()));
 			
 			TransferDataStore store = new TransferDataStore ();
 			
