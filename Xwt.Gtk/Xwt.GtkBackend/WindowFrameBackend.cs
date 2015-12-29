@@ -45,10 +45,13 @@ namespace Xwt.GtkBackend
 		public Gtk.Window Window {
 			get { return window; }
 			set {
-				if (window != null)
+				if (window != null) {
 					window.Realized -= HandleRealized;
+					window.WindowStateEvent -= HandleWindowStateEvent;
+				}
 				window = value;
 				window.Realized += HandleRealized;
+				window.WindowStateEvent += HandleWindowStateEvent;
 			}
 		}
 
@@ -56,6 +59,7 @@ namespace Xwt.GtkBackend
 		{
 			if (opacity != 1d)
 				window.GdkWindow.Opacity = opacity;
+			UpdateWindowState (currentState);
 		}
 		
 		protected WindowFrame Frontend {
@@ -223,48 +227,64 @@ namespace Xwt.GtkBackend
 				Window.Resizable = value;
 			}
 		}
-		
+
+		WindowState currentState;
 		public WindowState WindowState {
 			get {
-				var currGdkState = Window.GdkWindow.State;
-				if (currGdkState.HasFlag (Gdk.WindowState.Iconified))
-					return WindowState.Iconified;
-				if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen))
-					return WindowState.FullScreen;
-				if (currGdkState.HasFlag (Gdk.WindowState.Maximized))
-					return WindowState.Maximized;
-				return Xwt.WindowState.Normal;
+				return currentState;
 			}
 			set {
-				var currGdkState = Window.GdkWindow.State;
-				switch (value) {
-					case Xwt.WindowState.Iconified:
-						if (!currGdkState.HasFlag (Gdk.WindowState.Iconified))
-							Window.Iconify();
-						break;
-					case Xwt.WindowState.FullScreen:
-						if (!currGdkState.HasFlag (Gdk.WindowState.Fullscreen)) {
-							if (currGdkState.HasFlag (Gdk.WindowState.Maximized)) // unmaximize first
-								Window.Unmaximize();
-							Window.Fullscreen ();
-						}
-						break;
-					case Xwt.WindowState.Maximized:
-						if (!currGdkState.HasFlag (Gdk.WindowState.Maximized)) {
-							if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen)) // unfullscreen first
-								Window.Unfullscreen();
-							Window.Maximize ();
-						}
-						break;
-					default:
-						if (currGdkState.HasFlag (Gdk.WindowState.Iconified))
-							Window.Deiconify();
-						if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen))
-							Window.Unfullscreen();
-						if (currGdkState.HasFlag (Gdk.WindowState.Maximized))
-							Window.Unmaximize();
-						break;
-				}
+				currentState = value;
+				if (Window.IsRealized)
+					UpdateWindowState (value);
+			}
+		}
+
+		void HandleWindowStateEvent (object o, Gtk.WindowStateEventArgs args)
+		{
+			var currGdkState = args.Event.NewWindowState;
+			if (currGdkState.HasFlag (Gdk.WindowState.Iconified))
+				currentState = WindowState.Iconified;
+			else if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen))
+				currentState = WindowState.FullScreen;
+			else if (currGdkState.HasFlag (Gdk.WindowState.Maximized))
+				currentState = WindowState.Maximized;
+			else
+				currentState = Xwt.WindowState.Normal;
+		}
+
+		void UpdateWindowState (WindowState value)
+		{
+			if (window == null || !window.IsRealized || window.GdkWindow == null)
+				throw new InvalidOperationException ("Window is not realized");
+			var currGdkState = Window.GdkWindow.State;
+			switch (value) {
+				case Xwt.WindowState.Iconified:
+					if (!currGdkState.HasFlag (Gdk.WindowState.Iconified))
+						Window.Iconify ();
+					break;
+				case Xwt.WindowState.FullScreen:
+					if (!currGdkState.HasFlag (Gdk.WindowState.Fullscreen)) {
+						if (currGdkState.HasFlag (Gdk.WindowState.Maximized)) // unmaximize first
+							Window.Unmaximize ();
+						Window.Fullscreen ();
+					}
+					break;
+				case Xwt.WindowState.Maximized:
+					if (!currGdkState.HasFlag (Gdk.WindowState.Maximized)) {
+						if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen)) // unfullscreen first
+							Window.Unfullscreen ();
+						Window.Maximize ();
+					}
+					break;
+				default:
+					if (currGdkState.HasFlag (Gdk.WindowState.Iconified))
+						Window.Deiconify ();
+					if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen))
+						Window.Unfullscreen ();
+					if (currGdkState.HasFlag (Gdk.WindowState.Maximized))
+						Window.Unmaximize ();
+					break;
 			}
 		}
 
