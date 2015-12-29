@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt;
+using Xwt.Drawing;
 
 namespace Samples
 {
@@ -74,6 +75,27 @@ namespace Samples
 				else
 					destComplex.Text = "Data not found";
 			};
+			PackStart (box);
+			PackStart (new HSeparator ());
+
+			var destImage = new ImageView (Image.FromResource (GetType (), "cow.jpg"));
+			box = new HBox ();
+			b = new Button ("Copy Image");
+			box.PackStart (b);
+			b.Clicked += delegate {
+				Clipboard.SetData (TransferDataType.Image, destImage.Image);
+			};
+			b = new Button ("Paste Image");
+			box.PackStart (b);
+			b.Clicked += delegate {
+				Image img = Clipboard.GetImage ();
+				if (img != null)
+					destImage.Image = img;
+			};
+			PackStart (box);
+
+			box = new HBox ();
+			box.PackStart (destImage);
 			PackStart (box);
 		}
 	}
