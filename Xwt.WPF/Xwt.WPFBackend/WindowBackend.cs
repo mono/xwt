@@ -35,6 +35,7 @@ using System.Windows.Controls;
 using SW = System.Windows;
 
 using Xwt.Backends;
+using Xwt.WPF.Xwt.WPFBackend.Utilities;
 
 namespace Xwt.WPFBackend
 {
@@ -240,7 +241,7 @@ namespace Xwt.WPFBackend
 				if (PresentationSource.FromVisual (c) == null)
 					return new Rectangle (initialX, initialY, w, h);
 				else {
-					var p = c.PointToScreen (new SW.Point (0, 0));
+					var p = c.PointToScreenDpiAware (new SW.Point (0, 0));
 					return new Rectangle (p.X, p.Y, w, h);
 				}
 			}
@@ -295,7 +296,7 @@ namespace Xwt.WPFBackend
 				return;
 
 			var c = (FrameworkElement)Content;
-			var p = c.PointToScreen (new SW.Point (0, 0));
+			var p = c.PointToScreenDpiAware (new SW.Point (0, 0));
 			var left = p.X - Left;
 			var top = p.Y - Top;
 			frameBorder = new WidgetSpacing (left, top, windowWidth - c.ActualWidth - left, windowHeight - c.ActualHeight - top);
