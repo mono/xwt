@@ -260,30 +260,22 @@ namespace Xwt.GtkBackend
 			var currGdkState = Window.GdkWindow.State;
 			switch (value) {
 				case Xwt.WindowState.Iconified:
-					if (!currGdkState.HasFlag (Gdk.WindowState.Iconified))
-						Window.Iconify ();
+					Window.Iconify ();
 					break;
 				case Xwt.WindowState.FullScreen:
-					if (!currGdkState.HasFlag (Gdk.WindowState.Fullscreen)) {
-						if (currGdkState.HasFlag (Gdk.WindowState.Maximized)) // unmaximize first
-							Window.Unmaximize ();
-						Window.Fullscreen ();
-					}
+					if (currGdkState.HasFlag (Gdk.WindowState.Maximized)) // unmaximize first
+						Window.Unmaximize ();
+					Window.Fullscreen ();
 					break;
 				case Xwt.WindowState.Maximized:
-					if (!currGdkState.HasFlag (Gdk.WindowState.Maximized)) {
-						if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen)) // unfullscreen first
-							Window.Unfullscreen ();
-						Window.Maximize ();
-					}
+					if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen)) // unfullscreen first
+						Window.Unfullscreen ();
+					Window.Maximize ();
 					break;
 				default:
-					if (currGdkState.HasFlag (Gdk.WindowState.Iconified))
-						Window.Deiconify ();
-					if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen))
-						Window.Unfullscreen ();
-					if (currGdkState.HasFlag (Gdk.WindowState.Maximized))
-						Window.Unmaximize ();
+					Window.Deiconify ();
+					Window.Unfullscreen ();
+					Window.Unmaximize ();
 					break;
 			}
 		}
