@@ -51,6 +51,18 @@ namespace Xwt.WPFBackend
 			return m.M11;
 		}
 
+		public static System.Windows.Point PointToScreenDpiAware(this Visual visual, System.Windows.Point point)
+		{
+			point = visual.PointToScreen(point);
+
+			PresentationSource source = PresentationSource.FromVisual(visual);
+
+			double scaleFactorX = source.CompositionTarget.TransformToDevice.M11;
+			double scaleFactorY = source.CompositionTarget.TransformToDevice.M22;
+
+			return new System.Windows.Point(point.X / scaleFactorX, point.Y / scaleFactorY);
+		}
+
 		public static HorizontalAlignment ToWpfHorizontalAlignment(Alignment alignment)
 		{
 			switch (alignment) {

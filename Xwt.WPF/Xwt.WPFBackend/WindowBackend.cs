@@ -35,7 +35,6 @@ using System.Windows.Controls;
 using SW = System.Windows;
 
 using Xwt.Backends;
-using Xwt.WPF.Xwt.WPFBackend.Utilities;
 
 namespace Xwt.WPFBackend
 {

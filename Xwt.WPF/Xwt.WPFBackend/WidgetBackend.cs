@@ -39,7 +39,6 @@ using SWC = System.Windows.Controls; // When we need to resolve ambigituies.
 using SW = System.Windows; // When we need to resolve ambigituies.
 
 using Xwt.Backends;
-using Xwt.WPF.Xwt.WPFBackend.Utilities;
 using Color = Xwt.Drawing.Color;
 
 namespace Xwt.WPFBackend

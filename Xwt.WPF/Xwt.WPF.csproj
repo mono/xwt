@@ -54,7 +54,6 @@
     <Compile Include="Xwt.WPFBackend.Utilities\CellUtil.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\ImageToImageSourceConverter.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\TypeToStringConverter.cs" />
-    <Compile Include="Xwt.WPFBackend.Utilities\VisualExtensions.cs" />
     <Compile Include="Xwt.WPFBackend\AlertDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\Backend.cs" />
     <Compile Include="Xwt.WPFBackend\BooleanToValueConverter.cs" />
