@@ -321,6 +321,7 @@ namespace Xwt.Mac
 		class CustomCell : NSTextFieldCell
 		{
 			CustomEditor editor;
+			NSObject selChangeObserver;
 			public ApplicationContext Context {
 				get; set;
 			}
@@ -343,8 +344,16 @@ namespace Xwt.Mac
 						FieldEditor = true,
 						Editable = true,
 					};
+					selChangeObserver = NSNotificationCenter.DefaultCenter.AddObserver (new NSString ("NSTextViewDidChangeSelectionNotification"), HandleSelectionDidChange, editor);
 				}
 				return editor;
+			}
+
+			void HandleSelectionDidChange (NSNotification notif)
+			{
+				Context.InvokeUserCode (delegate {
+					EventSink.OnSelectionChanged ();
+				});
 			}
 
 			public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
