@@ -30,9 +30,11 @@ using System;
 #if MONOMAC
 using nint = System.Int32;
 using nfloat = System.Single;
+using CGRect = System.Drawing.RectangleF;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
 #else
+using CoreGraphics;
 using Foundation;
 using AppKit;
 #endif
@@ -60,7 +62,7 @@ namespace Xwt.Mac
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else {
 				var view = new CustomTextField (EventSink, ApplicationContext);
-				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view);
+				ViewObject = view;
 				MultiLine = false;
 			}
 			Widget.StringValue = string.Empty;
@@ -81,15 +83,11 @@ namespace Xwt.Mac
 		
 		protected override void OnSizeToFit ()
 		{
-			Container.SizeToFit ();
-		}
-
-		CustomAlignedContainer Container {
-			get { return base.Widget as CustomAlignedContainer; }
+			Widget.SizeToFit ();
 		}
 
 		public new NSTextField Widget {
-			get { return (ViewObject is MacComboBox) ? (NSTextField)ViewObject : (NSTextField) Container.Child; }
+			get { return (NSTextField)ViewObject; }
 		}
 
 		protected override Size GetNaturalSize ()
@@ -162,7 +160,6 @@ namespace Xwt.Mac
 					Widget.Cell.Scrollable = true;
 					Widget.Cell.Wraps = false;
 				}
-				Container.ExpandVertically = value;
 			}
 		}
 
@@ -275,23 +272,29 @@ namespace Xwt.Mac
 			}
 		}
 		#endregion
+
+		public override Drawing.Color BackgroundColor {
+			get {
+				return Widget.BackgroundColor.ToXwtColor ();
+			}
+			set {
+				Widget.BackgroundColor = value.ToNSColor ();
+			}
+		}
 	}
 	
 	class CustomTextField: NSTextField, IViewObject
 	{
 		ITextEntryEventSink eventSink;
 		ApplicationContext context;
-		CustomCell cell;
 
 		public CustomTextField (ITextEntryEventSink eventSink, ApplicationContext context)
 		{
 			this.context = context;
 			this.eventSink = eventSink;
-			this.Cell = cell = new CustomCell {
+			Cell = new CustomCell {
 				BezelStyle = NSTextFieldBezelStyle.Square,
 				Bezeled = true,
-				DrawsBackground = true,
-				BackgroundColor = NSColor.White,
 				Editable = true,
 				EventSink = eventSink,
 				Context = context,
@@ -339,11 +342,38 @@ namespace Xwt.Mac
 						EventSink = this.EventSink,
 						FieldEditor = true,
 						Editable = true,
-						DrawsBackground = true,
-						BackgroundColor = NSColor.White,
 					};
 				}
 				return editor;
+			}
+
+			public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
+			{
+				base.DrawInteriorWithFrame (VerticalCenteredRectForBounds(cellFrame), inView);
+			}
+
+			public override void EditWithFrame (CGRect aRect, NSView inView, NSText editor, NSObject delegateObject, NSEvent theEvent)
+			{
+				base.EditWithFrame (VerticalCenteredRectForBounds(aRect), inView, editor, delegateObject, theEvent);
+			}
+
+			public override void SelectWithFrame (CGRect aRect, NSView inView, NSText editor, NSObject delegateObject, nint selStart, nint selLength)
+			{
+				base.SelectWithFrame (VerticalCenteredRectForBounds(aRect), inView, editor, delegateObject, selStart, selLength);
+			}
+
+			CGRect VerticalCenteredRectForBounds (CGRect aRect)
+			{
+				// multiline entries should always align on top
+				if (!UsesSingleLineMode)
+					return aRect;
+
+				var textHeight = CellSizeForBounds (aRect).Height;
+				var offset = (aRect.Height - textHeight) / 2;
+				if (offset < 0) // do nothing if the frame is too small
+					return aRect;
+				aRect.Inflate (0.0f, -(nfloat)offset);
+				return aRect;
 			}
 		}
 
