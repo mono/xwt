@@ -68,7 +68,9 @@ namespace Xwt.GtkBackend
 			if (image.IsNull)
 				return;
 			var pix = ((GtkImage)image.Backend);
-			pix.Draw (Context, cr, Util.GetScaleFactor (widget), cell_area.X, cell_area.Y, image);
+			int x_offset, y_offset, width, height;
+			GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+			pix.Draw (Context, cr, Util.GetScaleFactor (widget), cell_area.X + x_offset, cell_area.Y + y_offset, image);
 
 		}
 
@@ -80,7 +82,11 @@ namespace Xwt.GtkBackend
 				width = (int) image.Size.Width;
 				height = (int) image.Size.Height;
 			}
-			x_offset = y_offset = 0;
+			if (!cell_area.IsEmpty && width > 0 && height > 0) {
+				x_offset = (int)Math.Max (0, Xalign * (cell_area.Width - width));
+				y_offset = (int)Math.Max (0, Yalign * (cell_area.Height - height));
+			} else
+				x_offset = y_offset = 0;
 		}
 	}
 }
