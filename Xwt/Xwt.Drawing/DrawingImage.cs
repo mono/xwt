@@ -43,7 +43,10 @@ namespace Xwt.Drawing
 			if (idesc.Styles != StyleSet.Empty)
 				c.SetStyles (idesc.Styles);
 			c.Reset (null);
+			c.Save ();
+			c.GlobalAlpha = idesc.Alpha;
 			OnDraw (c, bounds);
+			c.Restore ();
 		}
 
 		protected virtual void OnDraw (Context ctx, Rectangle bounds)
