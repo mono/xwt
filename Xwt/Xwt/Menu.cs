@@ -26,7 +26,7 @@
 
 using System;
 using Xwt.Backends;
-
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -34,6 +34,21 @@ namespace Xwt
 	public class Menu: XwtComponent
 	{
 		MenuItemCollection items;
+
+		/// <summary>
+		/// Gets or sets the font of the menu.
+		/// </summary>
+		/// <value>
+		/// The font.
+		/// </value>
+		public Font Font {
+			get {
+				return new Font (Backend.Font, BackendHost.ToolkitEngine);
+			}
+			set {
+				Backend.Font = BackendHost.ToolkitEngine.GetSafeBackend (value);
+			}
+		}
 		
 		public Menu ()
 		{
