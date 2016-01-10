@@ -69,7 +69,7 @@ namespace Xwt.GtkBackend
 				return;
 			var pix = ((GtkImage)image.Backend);
 			int x_offset, y_offset, width, height;
-			GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
+			OnGetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
 			pix.Draw (Context, cr, Util.GetScaleFactor (widget), cell_area.X + x_offset, cell_area.Y + y_offset, image);
 
 		}
