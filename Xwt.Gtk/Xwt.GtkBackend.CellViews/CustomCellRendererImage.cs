@@ -40,6 +40,9 @@ namespace Xwt.GtkBackend
 		public CustomCellRendererImage ()
 		{
 			renderer = new ImageRenderer ();
+			#if XWT_GTK3
+			renderer.Xalign = renderer.Yalign = 0.5f;
+			#endif
 			CellRenderer = renderer;
 		}
 
