@@ -55,6 +55,7 @@ namespace Samples
 
 			var subMenu = new MenuItem ("Submenu");
 			subMenu.SubMenu = new Menu ();
+			subMenu.SubMenu.Font = subMenu.SubMenu.Font.WithSize (20).WithWeight (Xwt.Drawing.FontWeight.Bold);
 			var subZoomIn = new MenuItem (new Command ("Zoom+", StockIcons.ZoomIn));
 			var subZoomOut = new MenuItem (new Command ("Zoom-", StockIcons.ZoomOut));
 			subMenu.SubMenu.Items.Add (subZoomIn);

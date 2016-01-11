@@ -281,6 +281,11 @@ namespace Xwt.Mac
 		object ITablePosition.Position {
 			get { return Position; }
 		}
+
+		public override NSObject Copy ()
+		{
+			return new TreeItem { Position = this.Position };
+		}
 	}
 	
 	

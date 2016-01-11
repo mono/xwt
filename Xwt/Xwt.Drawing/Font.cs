@@ -425,7 +425,7 @@ namespace Xwt.Drawing
 		/// The semi light weight (350)
 		Semilight = 350,
 		/// The book weight (380)
-		Book = 350,
+		Book = 380,
 		/// The default weight (400)
 		Normal = 400,
 		/// The medium weight (500)

@@ -142,6 +142,8 @@ namespace Xwt.Mac
 					viewObject.Backend = this;
 			}
 		}
+
+		public string Name { get; set; }
 		
 		public bool Visible {
 			get { return !Widget.Hidden; }

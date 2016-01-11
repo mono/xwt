@@ -74,9 +74,17 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Gets or sets the name of this component.
+		/// </summary>
+		/// <value>The components name.</value>
+		/// <remarks>The name can be used to identify this component by e.g. designers.</remarks>
+		[DefaultValue (null)]
+		virtual public string Name { get; set; }
+
+		/// <summary>
 		/// A value, that can be used to identify this component
 		/// </summary>
-		public object Tag { get; set; }
+		virtual public object Tag { get; set; }
 
 		/// <summary>
 		/// Maps an event handler of an Xwt component to an event identifier.

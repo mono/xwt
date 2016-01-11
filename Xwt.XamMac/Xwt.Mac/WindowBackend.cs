@@ -105,6 +105,8 @@ namespace Xwt.Mac
 				return this;
 			}
 		}
+
+		public string Name { get; set; }
 		
 		internal void InternalShow ()
 		{

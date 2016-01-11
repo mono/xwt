@@ -156,6 +156,11 @@ namespace Xwt.WPFBackend
 			window.Icon = imageBackend.ToImageSource ();
 		}
 
+		string IWindowFrameBackend.Name {
+			get { return window.Name; }
+			set { window.Name = value; }
+		}
+
 		string IWindowFrameBackend.Title {
 			get { return window.Title; }
 			set { window.Title = value; }
