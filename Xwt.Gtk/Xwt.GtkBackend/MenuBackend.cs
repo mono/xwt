@@ -80,7 +80,7 @@ namespace Xwt.GtkBackend
 			set {
 				customFont = (Pango.FontDescription) value;
 				foreach (var item in menu.AllChildren) {
-					var bin = item as Gtk.Bin;
+					var bin = item as Gtk.Container;
 					if (bin != null)
 						foreach (Gtk.Widget w in bin.Children)
 							w.ModifyFont (customFont);
