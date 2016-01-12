@@ -197,11 +197,13 @@ namespace Xwt.Drawing
 			var name = fileName.Substring (0, fileName.Length - ext.Length);
 			var altImages = new List<Tuple<string,ImageTagSet,bool,object>> ();
 
-			foreach (var r in loader.GetAlternativeFiles (fileName, name, ext)) {
+			foreach (var r in loader.GetAlternativeFiles (fileName, name, ext).OrderBy(altName => altName)) {
 				int scale;
 				ImageTagSet fileTags;
 				if (ParseImageHints (name, r, ext, out scale, out fileTags) && (tagFilter == null || tagFilter.Equals (fileTags))) {
 					fileTags = new ImageTagSet (fileTags.AsArray.Intersect (Context.RegisteredStyles).ToArray ());
+					if (altImages.Select (t => t.Item2).Contains (fileTags))
+						continue;
 					var rim = loader.LoadImage (r);
 					if (rim != null)
 						altImages.Add (new Tuple<string, ImageTagSet, bool, object> (r, fileTags, scale > 1, rim));
