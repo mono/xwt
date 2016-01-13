@@ -182,6 +182,15 @@ namespace Xwt.Drawing
 			}
 		}
 
+		/// <summary>
+		/// Get the distance in pixels between the top of the layout bounds and the first line's meanline (usually equivalent to the baseline minus half of the x-height)
+		/// </summary>
+		public double Meanline {
+			get {
+				return handler.GetMeanline (Backend);
+			}
+		}
+
 		public TextTrimming Trimming {
 			get { return textTrimming; }
 			set { textTrimming = value; handler.SetTrimming (Backend, value); }

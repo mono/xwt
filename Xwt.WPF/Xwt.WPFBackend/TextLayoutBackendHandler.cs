@@ -96,6 +96,15 @@ namespace Xwt.WPFBackend
 			return t.FormattedText.Baseline;
 		}
 
+		public override double GetMeanline (object backend)
+		{
+			var t = (TextLayoutBackend)backend;
+			var fd = (FontData)Toolkit.GetBackend(t.Font);
+			var tf = new Typeface (fd.Family, fd.Style, fd.Weight, fd.Stretch);
+
+			return t.FormattedText.Baseline + tf.StrikethroughPosition * fd.Size;
+		}
+
 		public override void AddAttribute (object backend, TextAttribute attribute)
 		{
 			var t = (TextLayoutBackend)backend;
