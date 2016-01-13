@@ -1007,8 +1007,9 @@ namespace Xwt.Drawing
 
 		public override IEnumerable<string> GetAlternativeFiles (string fileName, string baseName, string ext)
 		{
-			foreach (var r in assembly.GetManifestResourceNames ())
-				yield return r;
+			return assembly.GetManifestResourceNames ().Where (f =>
+				f.StartsWith (baseName, StringComparison.Ordinal) &&
+				f.EndsWith (ext, StringComparison.Ordinal));
 		}
 
 		public override Image WrapImage (string fileName, ImageTagSet tags, object img, Size reqSize)
