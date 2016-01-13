@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	class ThemedImage: DrawingImage
+	public class ThemedImage: DrawingImage
 	{
 		List<Tuple<Image, string []>> images;
 
