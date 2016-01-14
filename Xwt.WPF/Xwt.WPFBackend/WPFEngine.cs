@@ -209,7 +209,7 @@ namespace Xwt.WPFBackend
 			if (b is XwtWidgetBackend)
 				b = ((XwtWidgetBackend)b).NativeBackend;
 			IWpfWidgetBackend wb = (IWpfWidgetBackend)b;
-			return wb.Widget.Parent != null;
+			return VisualTreeHelper.GetParent (wb.Widget) != null;
 		}
 
 		public override object GetNativeImage (Image image)
