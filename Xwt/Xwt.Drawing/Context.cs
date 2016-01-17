@@ -109,7 +109,7 @@ namespace Xwt.Drawing
 
 		internal void SetStyles (StyleSet styles)
 		{
-			this.styles = this.styles.AddRange (styles);
+			this.styles = this.styles.AddRange (styles.Intersect (RegisteredStyles).ToArray ());
 			handler.SetStyles (Backend, this.styles);
 		}
 
