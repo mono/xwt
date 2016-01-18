@@ -830,6 +830,8 @@ namespace Xwt.Drawing
 
 		public NativeImageRef LoadForToolkit (Toolkit targetToolkit)
 		{
+			if (Toolkit == targetToolkit)
+				return this;
 			NativeImageRef newRef = null;
 			var r = NextRef;
 			while (r != this) {
