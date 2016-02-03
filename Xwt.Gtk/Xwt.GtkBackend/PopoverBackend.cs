@@ -304,6 +304,9 @@ namespace Xwt.GtkBackend
 		
 		public void Dispose ()
 		{
+			if (popover.TransientFor != null)
+				popover.TransientFor.FocusInEvent -= HandleParentFocusInEvent;
+
 			popover.Destroy ();
 			popover.Dispose ();
 		}
