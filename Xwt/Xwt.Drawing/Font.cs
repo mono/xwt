@@ -302,7 +302,7 @@ namespace Xwt.Drawing
 
 		public Font WithSize (double size)
 		{
-			return new Font (handler.SetSize (Backend, size));
+			return new Font (handler.SetSize (Backend, size), ToolkitEngine);
 		}
 		
 		public Font WithScaledSize (double scale)
