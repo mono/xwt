@@ -214,6 +214,16 @@ namespace Xwt.GtkBackend
 				return Pango.Units.ToPixels (iter.Baseline);
 		}
 
+		public override double GetMeanline (object backend)
+		{
+			var tl = (PangoBackend)backend;
+			var baseline = 0;
+			using (var iter = tl.Layout.Iter)
+				baseline = iter.Baseline;
+			var font = tl.Layout.Context.LoadFont (tl.Layout.FontDescription);
+			return Pango.Units.ToPixels (baseline - font.GetMetrics (Pango.Language.Default).StrikethroughPosition);
+		}
+
 		public override void Dispose (object backend)
 		{
 			var tl = (IDisposable) backend;

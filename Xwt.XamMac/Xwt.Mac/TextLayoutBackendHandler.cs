@@ -146,6 +146,12 @@ namespace Xwt.Mac
 			}
 		}
 
+		public override double GetMeanline (object backend)
+		{
+			LayoutInfo li = (LayoutInfo)backend;
+			return GetBaseline (backend) - li.Font.XHeight / 2;
+		}
+
 		static CTFrame CreateFrame (LayoutInfo li)
 		{
 			if (string.IsNullOrEmpty (li.Text))
