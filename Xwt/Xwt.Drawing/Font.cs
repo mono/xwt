@@ -302,7 +302,7 @@ namespace Xwt.Drawing
 
 		public Font WithSize (double size)
 		{
-			return new Font (handler.SetSize (Backend, size));
+			return new Font (handler.SetSize (Backend, size), ToolkitEngine);
 		}
 		
 		public Font WithScaledSize (double scale)
@@ -341,6 +341,20 @@ namespace Xwt.Drawing
 		public Font WithStretch (FontStretch stretch)
 		{
 			return new Font (handler.SetStretch (Backend, stretch), ToolkitEngine);
+		}
+
+		public Font WithSettings (Font fromFont)
+		{
+			return WithSettings (fromFont.Size, fromFont.Style, fromFont.Weight, fromFont.Stretch);
+		}
+
+		public Font WithSettings (double size, FontStyle style, FontWeight weight, FontStretch stretch)
+		{
+			var newHandler = handler.SetSize (Backend, size);
+			newHandler = handler.SetStyle (Backend, style);
+			newHandler = handler.SetWeight (Backend, weight);
+			newHandler = handler.SetStretch (Backend, stretch);
+			return new Font (newHandler, ToolkitEngine);
 		}
 
 		public override string ToString ()
