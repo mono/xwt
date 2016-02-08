@@ -343,6 +343,20 @@ namespace Xwt.Drawing
 			return new Font (handler.SetStretch (Backend, stretch), ToolkitEngine);
 		}
 
+		public Font WithSettings (Font fromFont)
+		{
+			return WithSettings (fromFont.Size, fromFont.Style, fromFont.Weight, fromFont.Stretch);
+		}
+
+		public Font WithSettings (double size, FontStyle style, FontWeight weight, FontStretch stretch)
+		{
+			var newHandler = handler.SetSize (Backend, size);
+			newHandler = handler.SetStyle (Backend, style);
+			newHandler = handler.SetWeight (Backend, weight);
+			newHandler = handler.SetStretch (Backend, stretch);
+			return new Font (newHandler, ToolkitEngine);
+		}
+
 		public override string ToString ()
 		{
 			StringBuilder sb = new StringBuilder (Family);
