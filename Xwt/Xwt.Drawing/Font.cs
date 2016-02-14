@@ -181,13 +181,8 @@ namespace Xwt.Drawing
 			string[] names = fontNames.Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries);
 			if (names.Length == 0)
 				throw new ArgumentException ("Font family name not provided");
-
-			foreach (var name in names) {
-				var n = name.Trim ();
-				if (installedFonts.ContainsKey (n))
-					return true;
-			}
-			return false;
+			
+			return names.Any (name => installedFonts.ContainsKey (name.Trim ()));
 		}
 
 		static string GetSupportedFont (string fontNames)
