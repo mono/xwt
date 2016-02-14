@@ -177,8 +177,6 @@ namespace Xwt.Mac
 			}
 
 			var s = CellSize;
-			if (s.Height > source.RowHeight)
-				source.RowHeight = s.Height;
 		}
 
 		IEnumerable<ICellRenderer> VisibleCells {
