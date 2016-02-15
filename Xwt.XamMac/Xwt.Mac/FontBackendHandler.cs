@@ -55,7 +55,7 @@ namespace Xwt.Mac
 		public override object GetSystemDefaultMonospaceFont ()
 		{
 			var font = NSFont.SystemFontOfSize (0);
-			return Create ("Menlo", font.PointSize, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal);
+			return Create (GetDefaultMonospaceFontNames(Desktop.DesktopType), font.PointSize, FontStyle.Normal, FontWeight.Normal, FontStretch.Normal);
 		}
 
 		public override IEnumerable<string> GetInstalledFonts ()
