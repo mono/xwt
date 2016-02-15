@@ -55,11 +55,11 @@ namespace Xwt.Backends
 					{
 						switch(Desktop.DesktopType) {
 							case DesktopType.Linux:
-								systemSerifFont = SystemFont.WithFamily ("FreeMono, Nimbus Mono L, Courier New, Courier, monospace");
+								systemMonospaceFont = SystemFont.WithFamily ("FreeMono, Nimbus Mono L, Courier New, Courier, monospace");
 							break;
 
 							case DesktopType.Mac:
-								systemSerifFont = SystemFont.WithFamily ("Menlo, Monaco, Courier New, Courier, monospace");
+								systemMonospaceFont = SystemFont.WithFamily ("Menlo, Monaco, Courier New, Courier, monospace");
 							break;
 
 							default:
@@ -109,11 +109,11 @@ namespace Xwt.Backends
 					{
 						switch(Desktop.DesktopType) {
 							case DesktopType.Linux:
-								systemSerifFont = SystemFont.WithFamily ("FreeSans, Nimbus Sans L, Garuda, Utkal, Arial, Helvetica, sans-serif");
+								systemSansSerifFont = SystemFont.WithFamily ("FreeSans, Nimbus Sans L, Garuda, Utkal, Arial, Helvetica, sans-serif");
 							break;
 
 							case DesktopType.Mac:
-								systemSerifFont = SystemFont.WithFamily ("SF UI Text, Helvetica Neue, Helvetica, Lucida Grande, Lucida Sans Unicode, Arial, sans-serif");
+								systemSansSerifFont = SystemFont.WithFamily ("SF UI Text, Helvetica Neue, Helvetica, Lucida Grande, Lucida Sans Unicode, Arial, sans-serif");
 							break;
 
 							default:
