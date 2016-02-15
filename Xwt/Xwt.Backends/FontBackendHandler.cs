@@ -52,7 +52,21 @@ namespace Xwt.Backends
 					if (f != null)
 						systemMonospaceFont = new Font (f, ApplicationContext.Toolkit);
 					else
-						systemMonospaceFont = SystemFont.WithFamily ("Courier New, Courier, monospace");
+					{
+						switch(Desktop.DesktopType) {
+							case DesktopType.Linux:
+								systemMonospaceFont = SystemFont.WithFamily ("FreeMono, Nimbus Mono L, Courier New, Courier, monospace");
+							break;
+
+							case DesktopType.Mac:
+								systemMonospaceFont = SystemFont.WithFamily ("Menlo, Monaco, Courier New, Courier, monospace");
+							break;
+
+							default:
+								systemMonospaceFont = SystemFont.WithFamily ("Lucida Console, Courier New, Courier, monospace");
+								break;
+						}
+					}
 				}
 				return systemMonospaceFont;
 			}
@@ -65,7 +79,21 @@ namespace Xwt.Backends
 					if (f != null)
 						systemSerifFont = new Font (f, ApplicationContext.Toolkit);
 					else
-						systemSerifFont = SystemFont.WithFamily ("Times New Roman, Times, serif");
+					{
+						switch(Desktop.DesktopType) {
+							case DesktopType.Linux:
+								systemSerifFont = SystemFont.WithFamily ("FreeSerif, Bitstream Vera Serif, DejaVu Serif, Likhan, Norasi, Rekha, Times New Roman, Times, serif");
+								break;
+
+							case DesktopType.Mac:
+								systemSerifFont = SystemFont.WithFamily ("Georgia, Palatino, Times New Roman, Times, serif");
+								break;
+
+							default:
+								systemSerifFont = SystemFont.WithFamily ("Times New Roman, Times, serif");
+								break;
+						}
+					}
 				}
 				return systemSerifFont;
 			}
@@ -78,7 +106,21 @@ namespace Xwt.Backends
 					if (f != null)
 						systemSansSerifFont = new Font (f, ApplicationContext.Toolkit);
 					else
-						systemSansSerifFont = SystemFont.WithFamily ("Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif");
+					{
+						switch(Desktop.DesktopType) {
+							case DesktopType.Linux:
+								systemSansSerifFont = SystemFont.WithFamily ("FreeSans, Nimbus Sans L, Garuda, Utkal, Arial, Helvetica, sans-serif");
+							break;
+
+							case DesktopType.Mac:
+								systemSansSerifFont = SystemFont.WithFamily ("SF UI Text, Helvetica Neue, Helvetica, Lucida Grande, Lucida Sans Unicode, Arial, sans-serif");
+							break;
+
+							default:
+								systemSansSerifFont = SystemFont.WithFamily ("Segoe UI, Tahoma, Arial, Helvetica, Lucida Sans Unicode, Lucida Grande, sans-serif");
+								break;
+						}
+					}
 				}
 				return systemSansSerifFont;
 			}
