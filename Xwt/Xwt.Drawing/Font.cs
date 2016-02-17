@@ -350,11 +350,11 @@ namespace Xwt.Drawing
 
 		public Font WithSettings (double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			var newHandler = handler.SetSize (Backend, size);
-			newHandler = handler.SetStyle (Backend, style);
-			newHandler = handler.SetWeight (Backend, weight);
-			newHandler = handler.SetStretch (Backend, stretch);
-			return new Font (newHandler, ToolkitEngine);
+			var backend = handler.SetSize (Backend, size);
+			backend = handler.SetStyle (backend, style);
+			backend = handler.SetWeight (backend, weight);
+			backend = handler.SetStretch (backend, stretch);
+			return new Font (backend, ToolkitEngine);
 		}
 
 		public override string ToString ()
