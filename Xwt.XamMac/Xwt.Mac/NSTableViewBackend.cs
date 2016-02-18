@@ -49,9 +49,24 @@ namespace Xwt.Mac
 		protected ApplicationContext context;
 		NSTrackingArea trackingArea;	// Captures Mouse Entered, Exited, and Moved events
 
+		class ListDelegate: NSTableViewDelegate
+		{
+			public override nfloat GetRowHeight (NSTableView tableView, nint row)
+			{
+				var height = tableView.RowHeight;
+				for (int i = 0; i < tableView.ColumnCount; i++) {
+					var cell = tableView.GetCell (i, row);
+					if (cell != null)
+						height = (nfloat) Math.Max (height, cell.CellSize.Height);
+				}
+				return height;
+			}
+		}
+
 		public NSTableViewBackend(IWidgetEventSink eventSink, ApplicationContext context) {
 			this.context = context;
 			this.eventSink = eventSink;
+			this.Delegate = new ListDelegate () ;
 		}
 
 
