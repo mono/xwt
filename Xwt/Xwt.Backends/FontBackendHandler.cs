@@ -37,6 +37,48 @@ namespace Xwt.Backends
 		Font systemSerifFont;
 		Font systemSansSerifFont;
 
+		protected static string GetDefaultMonospaceFontNames (DesktopType forDesktop)
+		{
+			switch(Desktop.DesktopType) {
+				case DesktopType.Linux:
+					return "FreeMono, Nimbus Mono L, Courier New, Courier, monospace";
+
+				case DesktopType.Mac:
+					return "Menlo, Monaco, Courier New, Courier, monospace";
+
+				default:
+					return "Lucida Console, Courier New, Courier, monospace";
+			}
+		}
+
+		protected static string GetDefaultSerifFontNames (DesktopType forDesktop)
+		{
+			switch(forDesktop) {
+				case DesktopType.Linux:
+				return "FreeSerif, Bitstream Vera Serif, DejaVu Serif, Likhan, Norasi, Rekha, Times New Roman, Times, serif";
+
+				case DesktopType.Mac:
+				return "Georgia, Palatino, Times New Roman, Times, serif";
+
+				default:
+				return "Times New Roman, Times, serif";
+			}
+		}
+
+		protected static string GetDefaultSansSerifFontNames (DesktopType forDesktop)
+		{
+			switch(forDesktop) {
+				case DesktopType.Linux:
+				return "FreeSans, Nimbus Sans L, Garuda, Utkal, Arial, Helvetica, sans-serif";
+
+				case DesktopType.Mac:
+				return "SF UI Text, Helvetica Neue, Helvetica, Lucida Grande, Lucida Sans Unicode, Arial, sans-serif";
+
+				default:
+				return "Segoe UI, Tahoma, Arial, Helvetica, Lucida Sans Unicode, Lucida Grande, sans-serif";
+			}
+		}
+
 		internal Font SystemFont {
 			get {
 				if (systemFont == null)
@@ -52,21 +94,7 @@ namespace Xwt.Backends
 					if (f != null)
 						systemMonospaceFont = new Font (f, ApplicationContext.Toolkit);
 					else
-					{
-						switch(Desktop.DesktopType) {
-							case DesktopType.Linux:
-								systemMonospaceFont = SystemFont.WithFamily ("FreeMono, Nimbus Mono L, Courier New, Courier, monospace");
-							break;
-
-							case DesktopType.Mac:
-								systemMonospaceFont = SystemFont.WithFamily ("Menlo, Monaco, Courier New, Courier, monospace");
-							break;
-
-							default:
-								systemMonospaceFont = SystemFont.WithFamily ("Lucida Console, Courier New, Courier, monospace");
-								break;
-						}
-					}
+						systemMonospaceFont = SystemFont.WithFamily (GetDefaultMonospaceFontNames(Desktop.DesktopType));
 				}
 				return systemMonospaceFont;
 			}
@@ -79,21 +107,7 @@ namespace Xwt.Backends
 					if (f != null)
 						systemSerifFont = new Font (f, ApplicationContext.Toolkit);
 					else
-					{
-						switch(Desktop.DesktopType) {
-							case DesktopType.Linux:
-								systemSerifFont = SystemFont.WithFamily ("FreeSerif, Bitstream Vera Serif, DejaVu Serif, Likhan, Norasi, Rekha, Times New Roman, Times, serif");
-								break;
-
-							case DesktopType.Mac:
-								systemSerifFont = SystemFont.WithFamily ("Georgia, Palatino, Times New Roman, Times, serif");
-								break;
-
-							default:
-								systemSerifFont = SystemFont.WithFamily ("Times New Roman, Times, serif");
-								break;
-						}
-					}
+						systemSerifFont = SystemFont.WithFamily (GetDefaultSerifFontNames(Desktop.DesktopType));
 				}
 				return systemSerifFont;
 			}
@@ -106,21 +120,7 @@ namespace Xwt.Backends
 					if (f != null)
 						systemSansSerifFont = new Font (f, ApplicationContext.Toolkit);
 					else
-					{
-						switch(Desktop.DesktopType) {
-							case DesktopType.Linux:
-								systemSansSerifFont = SystemFont.WithFamily ("FreeSans, Nimbus Sans L, Garuda, Utkal, Arial, Helvetica, sans-serif");
-							break;
-
-							case DesktopType.Mac:
-								systemSansSerifFont = SystemFont.WithFamily ("SF UI Text, Helvetica Neue, Helvetica, Lucida Grande, Lucida Sans Unicode, Arial, sans-serif");
-							break;
-
-							default:
-								systemSansSerifFont = SystemFont.WithFamily ("Segoe UI, Tahoma, Arial, Helvetica, Lucida Sans Unicode, Lucida Grande, sans-serif");
-								break;
-						}
-					}
+						systemSansSerifFont = SystemFont.WithFamily (GetDefaultSansSerifFontNames(Desktop.DesktopType));
 				}
 				return systemSansSerifFont;
 			}
