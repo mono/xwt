@@ -121,6 +121,8 @@ namespace Xwt.Drawing
 
 		internal static Font FromName (string name, Toolkit toolkit)
 		{
+			if (string.IsNullOrWhiteSpace (name))
+				throw new ArgumentNullException (nameof (name), "Font name cannot be null or empty");
 			var handler = toolkit.FontBackendHandler;
 
 			double size = -1;
@@ -131,13 +133,18 @@ namespace Xwt.Drawing
 			int i = name.LastIndexOf (' ');
 			int lasti = name.Length;
 			do {
+				if (lasti > 0 && IsFontSupported (name.Substring (0, lasti)))
+					break;
+				
 				string token = name.Substring (i + 1, lasti - i - 1);
 				FontStyle st;
 				FontWeight fw;
 				FontStretch fs;
 				double siz;
-				if (double.TryParse (token, NumberStyles.Any, CultureInfo.InvariantCulture, out siz)) // Try parsing the number first, since Enum.TryParse can also parse numbers
-					size = siz;
+				if (double.TryParse (token, NumberStyles.Any, CultureInfo.InvariantCulture, out siz)) { // Try parsing the number first, since Enum.TryParse can also parse numbers
+					if (size == -1) // take only first number
+						size = siz;
+				}
 				else if (Enum.TryParse<FontStyle> (token, true, out st) && st != FontStyle.Normal)
 					style = st;
 				else if (Enum.TryParse<FontWeight> (token, true, out fw) && fw != FontWeight.Normal)
@@ -165,6 +172,17 @@ namespace Xwt.Drawing
 				return new Font (fb, toolkit);
 			else
 				return Font.SystemFont;
+		}
+
+		static bool IsFontSupported (string fontNames)
+		{
+			LoadInstalledFonts ();
+
+			string[] names = fontNames.Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries);
+			if (names.Length == 0)
+				throw new ArgumentException ("Font family name not provided");
+			
+			return names.Any (name => installedFonts.ContainsKey (name.Trim ()));
 		}
 
 		static string GetSupportedFont (string fontNames)
@@ -195,7 +213,8 @@ namespace Xwt.Drawing
 
 		static string GetDefaultFont (string unknownFont)
 		{
-			Console.WriteLine ("Font '" + unknownFont + "' not available in the system. Using '" + Font.SystemFont.Family + "' instead");
+			if (unknownFont != Font.SystemFont.Family) // ignore rare case when the default system font is not registered
+				Console.WriteLine ("Font '" + unknownFont + "' not available in the system. Using '" + Font.SystemFont.Family + "' instead");
 			return Font.SystemFont.Family;
 		}
 
