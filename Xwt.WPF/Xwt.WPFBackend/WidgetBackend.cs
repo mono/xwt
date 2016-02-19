@@ -248,8 +248,16 @@ namespace Xwt.WPFBackend
 		}
 
 		public string TooltipText {
-			get { return Widget.ToolTip.ToString (); }
-			set { Widget.ToolTip = value; }
+			get { return Widget.ToolTip == null ? null : ((ToolTip)Widget.ToolTip).Content.ToString (); }
+			set {
+				var tp = Widget.ToolTip as ToolTip;
+				if (tp == null)
+					Widget.ToolTip = tp = new ToolTip ();
+				tp.Content = value ?? string.Empty;
+				ToolTipService.SetIsEnabled (Widget, value != null);
+				if (tp.IsOpen && value == null)
+					tp.IsOpen = false;
+			}
 		}
 
 		public static FrameworkElement GetFrameworkElement (IWidgetBackend backend)
