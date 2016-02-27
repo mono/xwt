@@ -383,6 +383,13 @@ namespace Xwt
 
 		internal virtual void SetBackendSize (double width, double height)
 		{
+			//Fix problem of change Width or Height property
+			if (width == -1)
+        			width = Width;
+
+		        if (height == -1)
+		        	height = Height;
+
 			Backend.SetSize (width, height);
 		}
 
