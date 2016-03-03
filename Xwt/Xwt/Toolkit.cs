@@ -512,31 +512,20 @@ namespace Xwt
 
 				// If the font instance is a system font, we swap instances
 				// to not corrupt the backend of the singletons
-				if (font.ToolkitEngine != null) {
+				if (font.ToolkitEngine != this) {
 					var fbh = font.ToolkitEngine.FontBackendHandler;
-					if (font.Family == fbh.SystemFont.Family) {
-						if (font == fbh.SystemFont)
-							return FontBackendHandler.SystemFont;
-						return FontBackendHandler.SystemFont.WithSettings (font);
-					}
-					if (font.Family == fbh.SystemMonospaceFont.Family) {
-						if (font == fbh.SystemMonospaceFont)
-							return FontBackendHandler.SystemMonospaceFont;
-						return FontBackendHandler.SystemMonospaceFont.WithSettings (font);
-					}
-					if (font.Family == fbh.SystemSansSerifFont.Family) {
-						if (font == fbh.SystemSansSerifFont)
-							return FontBackendHandler.SystemSansSerifFont;
-						return FontBackendHandler.SystemSansSerifFont.WithSettings (font);
-					}
-					if (font.Family == fbh.SystemSerifFont.Family) {
-						if (font == fbh.SystemSerifFont)
-							return FontBackendHandler.SystemSerifFont;
-						return FontBackendHandler.SystemSerifFont.WithSettings (font);
-					}
+					if (font == fbh.SystemFont)
+						font = FontBackendHandler.SystemFont;
+					if (font == fbh.SystemMonospaceFont)
+						font = FontBackendHandler.SystemMonospaceFont;
+					if (font == fbh.SystemSansSerifFont)
+						font = FontBackendHandler.SystemSansSerifFont;
+					if (font == fbh.SystemSerifFont)
+						font = FontBackendHandler.SystemSerifFont;
 				}
 
 				font.InitForToolkit (this);
+				obj = font;
 			} else if (obj is Gradient) {
 				((Gradient)obj).InitForToolkit (this);
 			} else if (obj is IFrontend) {

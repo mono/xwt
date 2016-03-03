@@ -66,10 +66,22 @@ namespace Xwt.Drawing
 				var style = Style;
 				var weight = Weight;
 				var stretch = Stretch;
+				var oldHandler = ToolkitEngine.FontBackendHandler;
 				ToolkitEngine = tk;
 				handler = tk.FontBackendHandler;
-				var fb = handler.Create (fname, size, style, weight, stretch);
-				Backend = fb ?? handler.GetSystemDefaultFont ();
+
+				if (fname == oldHandler.SystemFont.Family)
+					Backend = handler.WithSettings (handler.SystemFont.Backend, size, style, weight, stretch);
+				else if (fname == oldHandler.SystemMonospaceFont.Family)
+					Backend = handler.WithSettings (handler.SystemMonospaceFont.Backend, size, style, weight, stretch);
+				else if (fname == oldHandler.SystemSansSerifFont.Family)
+					Backend = handler.WithSettings (handler.SystemSansSerifFont.Backend, size, style, weight, stretch);
+				else if (fname == oldHandler.SystemSerifFont.Family)
+					Backend = handler.WithSettings (handler.SystemSerifFont.Backend, size, style, weight, stretch);
+				else {
+					var fb = handler.Create (fname, size, style, weight, stretch);
+					Backend = fb ?? handler.GetSystemDefaultFont ();
+				}
 			}
 		}
 

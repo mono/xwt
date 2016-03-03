@@ -174,6 +174,15 @@ namespace Xwt.Backends
 		/// <param name="fontPath">Font path.</param>
 		public abstract bool RegisterFontFromFile (string fontPath);
 
+		internal object WithSettings (object handle, double size, FontStyle style, FontWeight weight, FontStretch stretch)
+		{
+			var backend = SetSize (Copy (handle), size);
+			backend = SetStyle (backend, style);
+			backend = SetWeight (backend, weight);
+			backend = SetStretch (backend, stretch);
+			return backend;
+		}
+
 		public abstract object Copy (object handle);
 		
 		public abstract object SetSize (object handle, double size);
