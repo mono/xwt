@@ -292,12 +292,13 @@ namespace Xwt.Mac
 	{
 		ITextEntryEventSink eventSink;
 		ApplicationContext context;
+		CustomCell cell;
 
 		public CustomTextField (ITextEntryEventSink eventSink, ApplicationContext context)
 		{
 			this.context = context;
 			this.eventSink = eventSink;
-			Cell = new CustomCell {
+			this.Cell = cell = new CustomCell {
 				BezelStyle = NSTextFieldBezelStyle.Square,
 				Bezeled = true,
 				Editable = true,
