@@ -23,7 +23,7 @@ namespace Xwt.Mac
 		{
 			base.Initialize ();
 			var view = new CustomSecureTextField (EventSink, ApplicationContext);
-			ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view);
+			ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view) { DrawsBackground = false };
 		}
 
 		protected override void OnSizeToFit ()
@@ -66,6 +66,17 @@ namespace Xwt.Mac
 			}
 			set {
 				((NSTextFieldCell)Widget.Cell).PlaceholderString = value ?? string.Empty;
+			}
+		}
+
+		public override Drawing.Color BackgroundColor {
+			get {
+				return Widget.BackgroundColor.ToXwtColor ();
+			}
+			set {
+				Widget.BackgroundColor = value.ToNSColor ();
+				Widget.Cell.DrawsBackground = true;
+				Widget.Cell.BackgroundColor = value.ToNSColor ();
 			}
 		}
 	}
