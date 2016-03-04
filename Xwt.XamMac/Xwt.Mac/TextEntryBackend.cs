@@ -62,7 +62,8 @@ namespace Xwt.Mac
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else {
 				var view = new CustomTextField (EventSink, ApplicationContext);
-				ViewObject = view;
+				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view) { DrawsBackground = false };
+				Container.ExpandVertically = true;
 				MultiLine = false;
 			}
 			Widget.StringValue = string.Empty;
@@ -83,11 +84,15 @@ namespace Xwt.Mac
 		
 		protected override void OnSizeToFit ()
 		{
-			Widget.SizeToFit ();
+			Container.SizeToFit ();
+		}
+
+		CustomAlignedContainer Container {
+			get { return base.Widget as CustomAlignedContainer; }
 		}
 
 		public new NSTextField Widget {
-			get { return (NSTextField)ViewObject; }
+			get { return (ViewObject is MacComboBox) ? (NSTextField)ViewObject : (NSTextField) Container.Child; }
 		}
 
 		protected override Size GetNaturalSize ()
