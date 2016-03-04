@@ -284,6 +284,8 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.BackgroundColor = value.ToNSColor ();
+				Widget.Cell.DrawsBackground = true;
+				Widget.Cell.BackgroundColor = value.ToNSColor ();
 			}
 		}
 	}
