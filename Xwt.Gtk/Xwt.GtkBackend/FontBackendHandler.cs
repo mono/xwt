@@ -44,8 +44,8 @@ namespace Xwt.GtkBackend
 
 		public override object GetSystemDefaultFont ()
 		{
-			var la = new Gtk.Label ("");
-			return la.Style.FontDescription;
+			var style = Gtk.Rc.GetStyleByPaths (Gtk.Settings.Default, null, null, Gtk.Label.GType);
+			return style.FontDescription;
 		}
 
 		public override IEnumerable<string> GetInstalledFonts ()
