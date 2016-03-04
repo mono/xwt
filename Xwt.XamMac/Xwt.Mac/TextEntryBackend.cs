@@ -151,7 +151,7 @@ namespace Xwt.Mac
 			get {
 				if (Widget is MacComboBox)
 					return false;
-				return Widget.Cell.UsesSingleLineMode;
+				return !Widget.Cell.UsesSingleLineMode;
 			}
 			set {
 				if (Widget is MacComboBox)
