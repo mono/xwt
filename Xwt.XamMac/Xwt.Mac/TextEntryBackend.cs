@@ -384,10 +384,10 @@ namespace Xwt.Mac
 
 				var textHeight = CellSizeForBounds (aRect).Height;
 				var offset = (aRect.Height - textHeight) / 2;
-				if (offset < 0) // do nothing if the frame is too small
+				if (offset <= 0) // do nothing if the frame is too small
 					return aRect;
-				aRect.Inflate (0.0f, -(nfloat)offset);
-				return aRect;
+				var rect = new Rectangle (aRect.X, aRect.Y, aRect.Width, aRect.Height).Inflate (0.0, -offset);
+				return rect.ToCGRect ();
 			}
 		}
 
