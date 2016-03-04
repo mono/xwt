@@ -190,7 +190,11 @@ namespace Xwt.GtkBackend
 				result = Gtk.IconTheme.Default.LoadIcon (stockId, (int)width, (Gtk.IconLookupFlags)0);
 
 			if (result == null) {
-//				return CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
+				#if XWT_GTK3
+				// TODO: GTK3: render a custom gtk-missing-image icon if the stock icon
+				//       if Gtk.Stock.MissingImage can not be loaded 
+				return CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
+				#else
 				int w = (int) width;
 				int h = (int) height;
 				Gdk.Pixmap pmap = new Gdk.Pixmap (Gdk.Screen.Default.RootWindow, w, h);
@@ -204,6 +208,7 @@ namespace Xwt.GtkBackend
 				pmap.DrawLine (gc, (w / 4), (h / 4), ((w - 1) - (w / 4)), ((h - 1) - (h / 4)));
 				pmap.DrawLine (gc, ((w - 1) - (w / 4)), (h / 4), (w / 4), ((h - 1) - (h / 4)));
 				return Gdk.Pixbuf.FromDrawable (pmap, pmap.Colormap, 0, 0, 0, 0, w, h);
+				#endif
 			}
 			return result;
 		}
