@@ -57,6 +57,7 @@ namespace Xwt.Mac
 		{
 			this.context = context;
 			this.eventSink = eventSink;
+			DrawsBackground = true;
 		}
 
 		public ViewBackend Backend { get; set; }
@@ -64,6 +65,8 @@ namespace Xwt.Mac
 		public NSView View {
 			get { return this; }
 		}
+
+		public bool DrawsBackground { get; set; }
 
 		public override bool IsFlipped {
 			get {
@@ -78,11 +81,13 @@ namespace Xwt.Mac
 
 		public override void DrawRect (CGRect dirtyRect)
 		{
-			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+			if (DrawsBackground) {
+				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 
-			//fill BackgroundColor
-			ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
-			ctx.FillRect (Bounds);
+				//fill BackgroundColor
+				ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
+				ctx.FillRect (Bounds);
+			}
 		}
 
 		public override void UpdateTrackingAreas ()
