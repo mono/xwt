@@ -99,7 +99,7 @@ namespace Xwt.WPFBackend
 		public override double GetMeanline (object backend)
 		{
 			var t = (TextLayoutBackend)backend;
-			var fd = (FontData)Toolkit.GetBackend(t.Font);
+			var fd = (FontData)ApplicationContext.Toolkit.GetSafeBackend(t.Font);
 			var tf = new Typeface (fd.Family, fd.Style, fd.Weight, fd.Stretch);
 
 			return t.FormattedText.Baseline + tf.StrikethroughPosition * fd.Size;
