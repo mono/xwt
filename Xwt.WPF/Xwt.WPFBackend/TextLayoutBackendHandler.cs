@@ -41,7 +41,7 @@ namespace Xwt.WPFBackend
 	{
 		public override object Create ()
 		{
-			return new TextLayoutBackend ();
+			return new TextLayoutBackend (ApplicationContext);
 		}
 
 		public override void SetWidth (object backend, double value)
@@ -131,6 +131,13 @@ namespace Xwt.WPFBackend
 		Xwt.Drawing.TextTrimming? textTrimming;
 		bool needsRebuild;
 
+		readonly ApplicationContext ApplicationContext;
+
+		public TextLayoutBackend (ApplicationContext actx)
+		{
+			this.ApplicationContext = actx;
+		}
+
 		public System.Windows.Media.FormattedText FormattedText
 		{
 			get
@@ -192,7 +199,7 @@ namespace Xwt.WPFBackend
 
 		void ApplyFont ()
 		{
-			var f = (FontData)Toolkit.GetBackend(Font);
+			var f = (FontData)ApplicationContext.Toolkit.GetSafeBackend (Font);
 			FormattedText.SetFontFamily(f.Family);
 			FormattedText.SetFontSize(f.GetDeviceIndependentPixelSize());
 			FormattedText.SetFontStretch(f.Stretch);

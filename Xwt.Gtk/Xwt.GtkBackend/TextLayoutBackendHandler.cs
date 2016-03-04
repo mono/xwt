@@ -147,7 +147,7 @@ namespace Xwt.GtkBackend
 		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			var tl = (PangoBackend)backend;
-			tl.Layout.FontDescription = (Pango.FontDescription)Toolkit.GetBackend (font);
+			tl.Layout.FontDescription = (Pango.FontDescription)ApplicationContext.Toolkit.GetSafeBackend (font);
 		}
 		
 		public override void SetWidth (object backend, double value)

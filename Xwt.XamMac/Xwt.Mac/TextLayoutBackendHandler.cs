@@ -73,7 +73,7 @@ namespace Xwt.Mac
 		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Font = ((FontData)Toolkit.GetBackend (font)).Font;
+			li.Font = ((FontData)ApplicationContext.Toolkit.GetSafeBackend (font)).Font;
 		}
 		
 		public override void SetWidth (object backend, double value)
