@@ -232,8 +232,10 @@ namespace Xwt.WPFBackend
 		public void SetSize (double width, double height)
 		{
 			var r = Bounds;
-			r.Width = width;
-			r.Height = height;
+			if (width >= 0)
+				r.Width = width;
+			if (height >= 0)
+				r.Height = height;
 			Bounds = r;
 		}
 
