@@ -172,7 +172,7 @@ namespace Xwt.GtkBackend
 		internal static Gdk.Pixbuf CreateBitmap (string stockId, double width, double height, double scaleFactor)
 		{
 			Gdk.Pixbuf result = null;
-			
+
 			Gtk.IconSet iconset = Gtk.IconFactory.LookupDefault (stockId);
 			if (iconset != null) {
 				// Find the size that better fits the requested size
@@ -190,13 +190,31 @@ namespace Xwt.GtkBackend
 				result = Gtk.IconTheme.Default.LoadIcon (stockId, (int)width, (Gtk.IconLookupFlags)0);
 
 			if (result == null) {
-				#if XWT_GTK3
-				// TODO: GTK3: render a custom gtk-missing-image icon if the stock icon
-				//       if Gtk.Stock.MissingImage can not be loaded 
-				return CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
-				#else
+				// render a custom gtk-missing-image icon 
+				// if Gtk.Stock.MissingImage is not found 
 				int w = (int) width;
 				int h = (int) height;
+				#if XWT_GTK3
+				Cairo.ImageSurface s = new Cairo.ImageSurface(Cairo.Format.ARGB32, w, h);
+				Cairo.Context cr = new Cairo.Context (s);
+				cr.SetSourceRGB (255, 255, 255);
+				cr.Rectangle (0, 0, w, h);
+				cr.Fill ();
+				cr.SetSourceRGB (0, 0, 0);
+				cr.LineWidth = 1;
+				cr.Rectangle (0.5, 0.5, w-1, h-1);
+				cr.Stroke ();
+				cr.SetSourceRGB (255, 0, 0);
+				cr.LineWidth = 3;
+				cr.LineCap = Cairo.LineCap.Round;
+				cr.LineJoin = Cairo.LineJoin.Round;
+				cr.MoveTo (w / 4, h / 4);
+				cr.LineTo ((w - 1) - w / 4, (h - 1) - h / 4);
+				cr.MoveTo (w / 4, (h - 1) - h / 4);
+				cr.LineTo ((w - 1) - w / 4, h / 4);
+				cr.Stroke ();
+				result = Gtk3Extensions.GetFromSurface (s, 0, 0, w, h);
+				#else
 				Gdk.Pixmap pmap = new Gdk.Pixmap (Gdk.Screen.Default.RootWindow, w, h);
 				Gdk.GC gc = new Gdk.GC (pmap);
 				gc.RgbFgColor = new Gdk.Color (255, 255, 255);
@@ -207,7 +225,7 @@ namespace Xwt.GtkBackend
 				gc.RgbFgColor = new Gdk.Color (255, 0, 0);
 				pmap.DrawLine (gc, (w / 4), (h / 4), ((w - 1) - (w / 4)), ((h - 1) - (h / 4)));
 				pmap.DrawLine (gc, ((w - 1) - (w / 4)), (h / 4), (w / 4), ((h - 1) - (h / 4)));
-				return Gdk.Pixbuf.FromDrawable (pmap, pmap.Colormap, 0, 0, 0, 0, w, h);
+				result = Gdk.Pixbuf.FromDrawable (pmap, pmap.Colormap, 0, 0, 0, 0, w, h);
 				#endif
 			}
 			return result;
