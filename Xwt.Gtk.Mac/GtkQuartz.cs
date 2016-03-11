@@ -1,10 +1,10 @@
 ﻿//
-// GtkMacEngine.cs
+// GtkQuartz.cs
 //
 // Author:
-//       Lluis Sanchez Gual <lluis@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
+// Copyright (c) 2016 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt.GtkBackend;
-using Xwt.Backends;
+using System.Runtime.InteropServices;
+using AppKit;
 
 namespace Xwt.Gtk.Mac
 {
-	public class MacPlatformBackend: GtkPlatformBackend
+	public static class GtkQuartz
 	{
-		public override void Initialize (ToolkitEngineBackend toolit)
+		const string LIBQUARTZ = "libgtk-quartz-2.0.dylib";
+
+		public static NSWindow GetWindow (global::Gtk.Window window)
 		{
-			toolit.RegisterBackend <IWebViewBackend,WebViewBackend> ();
-			toolit.RegisterBackend <DesktopBackend,GtkMacDesktopBackend> ();
-			toolit.RegisterBackend <FontBackendHandler,GtkMacFontBackendHandler> ();
-			toolit.RegisterBackend <IPopoverBackend,GtkMacPopoverBackend> ();
+			if (window.GdkWindow == null)
+				return null;
+			var ptr = gdk_quartz_window_get_nswindow (window.GdkWindow.Handle);
+			if (ptr == IntPtr.Zero)
+				return null;
+			return ObjCRuntime.Runtime.GetNSObject<NSWindow> (ptr);
 		}
+
+		public static NSView GetView (global::Gtk.Widget widget)
+		{
+			var ptr = gdk_quartz_window_get_nsview (widget.GdkWindow.Handle);
+			if (ptr == IntPtr.Zero)
+				return null;
+			return ObjCRuntime.Runtime.GetNSObject<NSView> (ptr);
+		}
+
+		[DllImport (LIBQUARTZ)]
+		static extern IntPtr gdk_quartz_window_get_nsview (IntPtr window);
+
+		[DllImport (LIBQUARTZ)]
+		static extern IntPtr gdk_quartz_window_get_nswindow (IntPtr window);
 	}
 }
 
