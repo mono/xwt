@@ -138,7 +138,6 @@ namespace Xwt.GtkBackend
 					cr.Paint ();
 				} else { // render background with our parent window
 					cr.Save ();
-					var scale = GtkWorkarounds.GetScaleFactor (Content);
 					int x, y, tx, ty;
 					tx = ty = 0;
 					GdkWindow.GetPosition (out x, out y);
@@ -164,9 +163,8 @@ namespace Xwt.GtkBackend
 						cr.Paint ();
 					}
 					if (!transientAllocation.IsEmpty) { // is not empty only if we have a valid target
-						var pbf = TransientFor.GdkWindow.ToPixbuf (0, 0, (int)(transientAllocation.Width * scale), (int)(transientAllocation.Height));
-						cr.Translate ((tx - x), (ty - y));
-						cr.Scale (w / (w * scale), h / (h * scale));
+						var pbf = TransientFor.GdkWindow.ToPixbuf (0, 0, (int)(transientAllocation.Width), (int)(transientAllocation.Height));
+						cr.Translate (tx - x, ty - y);
 						Gdk.CairoHelper.SetSourcePixbuf (cr, pbf, 0, 0);
 						cr.Operator = Operator.Over;
 						cr.Paint ();
