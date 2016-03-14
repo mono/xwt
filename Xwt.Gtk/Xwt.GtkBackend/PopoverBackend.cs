@@ -127,16 +127,52 @@ namespace Xwt.GtkBackend
 
 			protected override bool OnDrawn (Context cr)
 			{
+				bool withRoot = true;
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
 				
 				// We clear the surface with a transparent color if possible
-				if (supportAlpha)
+				if (supportAlpha) {
 					cr.SetSourceRGBA (1.0, 1.0, 1.0, 0.0);
-				else
-					cr.SetSourceRGB (1.0, 1.0, 1.0);
-				cr.Operator = Operator.Source;
-				cr.Paint ();
+					cr.Operator = Operator.Source;
+					cr.Paint ();
+				} else { // render background with our parent window
+					cr.Save ();
+					var scale = GtkWorkarounds.GetScaleFactor (Content);
+					int x, y, tx, ty;
+					tx = ty = 0;
+					GdkWindow.GetPosition (out x, out y);
+
+					var rootAllocation = new Rectangle (x, y, Allocation.Width, Allocation.Height);
+					var transientAllocation = Rectangle.Zero;
+
+					// using the target window allows us to simulate transparency and
+					// draw with alpha. But this is only possible if the TransientFor window
+					// is set and if we don't exceed its bounds.
+					if (TransientFor != null && TransientFor.GdkWindow != null) {
+						TransientFor.GdkWindow.GetPosition (out tx, out ty);
+						transientAllocation = new Rectangle (tx, ty, TransientFor.Allocation.Width, TransientFor.Allocation.Height);
+						withRoot = !transientAllocation.Contains (rootAllocation);
+					}
+
+					// if we have no parent window or need to draw outside of its bounds, the
+					// root window needs to be rendered first to fill clean/invalid areas.
+					if (withRoot) {
+						var pbf = RootWindow.ToPixbuf (x, y, Allocation.Width, Allocation.Height);
+						Gdk.CairoHelper.SetSourcePixbuf (cr, pbf, 0, 0);
+						cr.Operator = Operator.Source;
+						cr.Paint ();
+					}
+					if (!transientAllocation.IsEmpty) { // is not empty only if we have a valid target
+						var pbf = TransientFor.GdkWindow.ToPixbuf (0, 0, (int)(transientAllocation.Width * scale), (int)(transientAllocation.Height));
+						cr.Translate ((tx - x), (ty - y));
+						cr.Scale (w / (w * scale), h / (h * scale));
+						Gdk.CairoHelper.SetSourcePixbuf (cr, pbf, 0, 0);
+						cr.Operator = Operator.Over;
+						cr.Paint ();
+					}
+					cr.Restore ();
+				}
 
 				cr.LineWidth = GtkWorkarounds.GetScaleFactor (Content) > 1 ? 2 : 1;
 				var bounds = new Xwt.Rectangle (cr.LineWidth / 2, cr.LineWidth / 2, w - cr.LineWidth, h - cr.LineWidth);
@@ -152,14 +188,21 @@ namespace Xwt.GtkBackend
 				// We draw the rectangle path
 				DrawTriangle (cr);
 
-				// We use it
-				if (supportAlpha)
+				// disable alpha if we are out of parents bounds without real alpha support
+				// otherwise we would get artifacts when the popup sesizes (root window will
+				// contain the popoup -  from the previous drawing - shining through our
+				// new background with alpha)
+				if ((!supportAlpha && withRoot)) {
+					cr.SetSourceRGB (170d / 255d, 170d / 255d, 170d / 255d);
+					cr.StrokePreserve ();
+					cr.SetSourceRGB (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B);
+					cr.Fill ();
+				} else {
 					cr.SetSourceRGBA (0.0, 0.0, 0.0, 0.2);
-				else
-					cr.SetSourceRGB (238d / 255d, 238d / 255d, 238d / 255d);
-				cr.StrokePreserve ();
-				cr.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
-				cr.Fill ();
+					cr.StrokePreserve ();
+					cr.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
+					cr.Fill ();
+				}
 
 				return base.OnDrawn (cr);
 			}
@@ -242,10 +285,21 @@ namespace Xwt.GtkBackend
 
 			var parent = (WindowFrameBackend)Toolkit.GetBackend (reference.ParentWindow);
 			if (popover.TransientFor != parent.Window) {
-				if (popover.TransientFor != null)
+				if (popover.TransientFor != null) {
 					popover.TransientFor.FocusInEvent -= HandleParentFocusInEvent;
+					#if XWT_GTK3
+					popover.TransientFor.Drawn -= HandleParentExposeEvent;
+					#else
+					popover.TransientFor.ExposeEvent -= HandleParentExposeEvent;
+					#endif
+				}
 				popover.TransientFor = parent.Window;
 				popover.TransientFor.FocusInEvent += HandleParentFocusInEvent;
+				#if XWT_GTK3
+				popover.TransientFor.Drawn += HandleParentExposeEvent;
+				#else
+				popover.TransientFor.ExposeEvent += HandleParentExposeEvent;
+				#endif
 			}
 
 			popover.Hidden += (o, args) => sink.OnClosed ();
@@ -302,6 +356,11 @@ namespace Xwt.GtkBackend
 		void HandleParentFocusInEvent (object o, FocusInEventArgs args)
 		{
 			Hide ();
+		}
+
+		void HandleParentExposeEvent (object o, EventArgs args)
+		{
+			popover.QueueDraw ();
 		}
 
 		public void Hide ()
