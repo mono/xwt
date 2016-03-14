@@ -1,10 +1,10 @@
 ﻿//
-// GtkMacEngine.cs
+// GtkMacPopoverBackend.cs
 //
 // Author:
-//       Lluis Sanchez Gual <lluis@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
-// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
+// Copyright (c) 2016 Vsevolod Kukol
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,18 +25,25 @@
 // THE SOFTWARE.
 using System;
 using Xwt.GtkBackend;
-using Xwt.Backends;
+using GTK = Gtk;
 
 namespace Xwt.Gtk.Mac
 {
-	public class MacPlatformBackend: GtkPlatformBackend
+	public class GtkMacPopoverBackend : PopoverBackend
 	{
-		public override void Initialize (ToolkitEngineBackend toolit)
+		public override void Initialize (Backends.IPopoverEventSink sink)
 		{
-			toolit.RegisterBackend <IWebViewBackend,WebViewBackend> ();
-			toolit.RegisterBackend <DesktopBackend,GtkMacDesktopBackend> ();
-			toolit.RegisterBackend <FontBackendHandler,GtkMacFontBackendHandler> ();
-			toolit.RegisterBackend <IPopoverBackend,GtkMacPopoverBackend> ();
+			base.Initialize (sink);
+			Popover.Shown += RemoveShadow;
+		}
+
+		static void RemoveShadow (object sender, EventArgs e)
+		{
+			var popover = sender as GTK.Window;
+			if (popover != null) {
+				var window = GtkQuartz.GetWindow (popover);
+				window.HasShadow = false;
+			}
 		}
 	}
 }
