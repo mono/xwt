@@ -57,6 +57,15 @@ namespace Xwt.GtkBackend
 			base.SetFocus ();
 			TextEntry.GrabFocus ();
 		}
+
+		public override bool ShowFrame {
+			get {
+				return searchEntry.HasFrame;
+			}
+			set {
+				searchEntry.HasFrame = value;
+			}
+		}
 	}
 
 	class SearchEntry : Gtk.EventBox
@@ -153,6 +162,7 @@ namespace Xwt.GtkBackend
 			BuildMenu ();
 
 			NoShowAll = true;
+			GtkWorkarounds.SetTransparentBgHint (this, true);
 		}
 
 		public Xwt.Drawing.Image FilterButtonPixbuf {
@@ -416,7 +426,10 @@ namespace Xwt.GtkBackend
 			var alloc = new Gdk.Rectangle (alignment.Allocation.X, box.Allocation.Y, alignment.Allocation.Width, box.Allocation.Height);
 
 			if (hasFrame && (!roundedShape || (roundedShape && !customRoundedShapeDrawing))) {
-				Gtk.Style.PaintShadow (entry.Style, GdkWindow, Gtk.StateType.Normal, Gtk.ShadowType.In,
+				if (!Platform.IsWindows && !Platform.IsMac)
+					Gtk.Style.PaintFlatBox (Style, GdkWindow, entry.State, Gtk.ShadowType.None,
+										evnt.Area, this, "entry_bg", alloc.X + 2, alloc.Y + 2, alloc.Width - 4, alloc.Height - 4);
+				Gtk.Style.PaintShadow (entry.Style, GdkWindow, entry.State, entry.ShadowType,
 					evnt.Area, entry, "entry", alloc.X, alloc.Y, alloc.Width, alloc.Height);
 				/*				using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
 					ctx.LineWidth = 1;
@@ -425,7 +438,7 @@ namespace Xwt.GtkBackend
 					ctx.Stroke ();
 				}*/
 			}
-			else if (!roundedShape) {
+			else if (!roundedShape || !customRoundedShapeDrawing) {
 				using (var ctx = Gdk.CairoHelper.Create (GdkWindow)) {
 					ctx.RoundedRectangle (alloc.X + 0.5, alloc.Y + 0.5, alloc.Width - 1, alloc.Height - 1, 4);
 					ctx.SetSourceColor (entry.Style.Base (Gtk.StateType.Normal).ToCairoColor ());
@@ -674,6 +687,8 @@ namespace Xwt.GtkBackend
 
 				parent.StyleSet += OnParentStyleSet;
 				WidthChars = 1;
+
+				GtkWorkarounds.SetTransparentBgHint (this, true);
 			}
 
 			private void OnParentStyleSet (object o, EventArgs args)

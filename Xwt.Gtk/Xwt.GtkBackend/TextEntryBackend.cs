@@ -93,7 +93,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public bool ShowFrame {
+		public virtual bool ShowFrame {
 			get {
 				return Widget.HasFrame;
 			}
