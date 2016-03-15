@@ -1299,7 +1299,7 @@ namespace Xwt.GtkBackend
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_object_set_data (IntPtr raw, IntPtr key, IntPtr data);
 
-		public static void SetData<T> (Gtk.Object gtkobject, string key, T data) where T : struct
+		public static void SetData<T> (GLib.Object gtkobject, string key, T data) where T : struct
 		{
 			IntPtr pkey = GLib.Marshaller.StringToPtrGStrdup (key);
 			IntPtr pdata = Marshal.AllocHGlobal (Marshal.SizeOf (data));
