@@ -544,8 +544,7 @@ namespace Xwt
 		/// <exception cref="InvalidOperationException">The component belongs to a different toolkit</exception>
 		public object GetSafeBackend (object obj)
 		{
-			ValidateObject (obj);
-			return GetBackend (obj);
+			return GetBackend (ValidateObject (obj));
 		}
 
 		/// <summary>
