@@ -130,14 +130,16 @@ namespace Xwt.GtkBackend
 				bool withRoot = true;
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
-				
+				var scale = GtkWorkarounds.GetScaleFactor (this);
+
+				cr.Save ();
+
 				// We clear the surface with a transparent color if possible
 				if (supportAlpha) {
 					cr.SetSourceRGBA (1.0, 1.0, 1.0, 0.0);
 					cr.Operator = Operator.Source;
 					cr.Paint ();
 				} else { // render background with our parent window
-					cr.Save ();
 					int x, y, tx, ty;
 					tx = ty = 0;
 					GdkWindow.GetPosition (out x, out y);
@@ -157,22 +159,26 @@ namespace Xwt.GtkBackend
 					// if we have no parent window or need to draw outside of its bounds, the
 					// root window needs to be rendered first to fill clean/invalid areas.
 					if (withRoot) {
-						var pbf = RootWindow.ToPixbuf (x, y, Allocation.Width, Allocation.Height);
-						Gdk.CairoHelper.SetSourcePixbuf (cr, pbf, 0, 0);
-						cr.Operator = Operator.Source;
-						cr.Paint ();
+						if (!cr.DrawWindow (RootWindow, x, y, w, h, Operator.Source)) {
+							cr.SetSourceRGB (1.0, 1.0, 1.0);
+							cr.Operator = Operator.Source;
+							cr.Paint ();
+						}
 					}
 					if (!transientAllocation.IsEmpty) { // is not empty only if we have a valid target
-						var pbf = TransientFor.GdkWindow.ToPixbuf (0, 0, (int)(transientAllocation.Width), (int)(transientAllocation.Height));
-						cr.Translate (tx - x, ty - y);
-						Gdk.CairoHelper.SetSourcePixbuf (cr, pbf, 0, 0);
-						cr.Operator = Operator.Over;
-						cr.Paint ();
+						// FIXME: Calculate the HiDPI decoration border offset (now hardcoded 0.5)
+						if (scale > 1 && TransientFor.Decorated)
+							cr.Translate (0.5, 0);
+						if (!cr.DrawWindow (TransientFor.GdkWindow, x - tx, y - ty, w, h, Operator.Over)) {
+							cr.SetSourceRGB (1.0, 1.0, 1.0);
+							cr.Operator = Operator.Source;
+							cr.Paint ();
+						}
 					}
-					cr.Restore ();
 				}
+				cr.Restore ();
 
-				cr.LineWidth = GtkWorkarounds.GetScaleFactor (Content) > 1 ? 2 : 1;
+				cr.LineWidth = scale > 1 ? 2 : 1;
 				var bounds = new Xwt.Rectangle (cr.LineWidth / 2, cr.LineWidth / 2, w - cr.LineWidth, h - cr.LineWidth);
 				var calibratedRect = RecalibrateChildRectangle (bounds);
 				// Fill it with one round rectangle

@@ -1105,6 +1105,9 @@ namespace Xwt.GtkBackend
 		static extern double gtk_widget_get_scale_factor (IntPtr widget);
 
 		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
+		static extern double gdk_window_get_scale_factor (IntPtr window);
+
+		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
 		static extern double gdk_screen_get_monitor_scale_factor (IntPtr widget, int monitor);
 
 		[DllImport (GtkInterop.LIBGOBJECT, CallingConvention = CallingConvention.Cdecl)]
@@ -1179,6 +1182,20 @@ namespace Xwt.GtkBackend
 			return 1;
 		}
 		
+		public static double GetScaleFactor (this Gdk.Window w)
+		{
+			if (!supportsHiResIcons)
+				return 1;
+
+			try {
+				return gdk_window_get_scale_factor (w.Handle);
+			} catch (DllNotFoundException) {
+			} catch (EntryPointNotFoundException) {
+			}
+			supportsHiResIcons = false;
+			return 1;
+		}
+
 		public static double GetScaleFactor (this Gdk.Screen screen, int monitor)
 		{
 			if (!supportsHiResIcons)
@@ -1313,6 +1330,80 @@ namespace Xwt.GtkBackend
 		public static void SetTransparentBgHint (this Gtk.Widget widget, bool enable)
 		{
 			SetData (widget, "transparent-bg-hint", enable);
+		}
+
+		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
+		static extern void gdk_cairo_set_source_window (IntPtr cr, IntPtr window, int x, int y);
+
+		public static bool SetSourceWindow (this Cairo.Context cr, Gdk.Window window, int x, int y)
+		{
+			if (!(GtkMajorVersion <= 2 && GtkMinorVersion < 24)) {
+				try {
+					gdk_cairo_set_source_window (cr.Handle, window.Handle, x, y);
+					return true;
+				} catch (DllNotFoundException) {
+				} catch (EntryPointNotFoundException) {
+				}
+			}
+			return false;
+		}
+
+		public static bool DrawWindow (this Cairo.Context cr, Gdk.Window window, double src_x, double src_y, double width, double height, Cairo.Operator op)
+		{
+			// HACK: RootWindow has always a scale factor of 0 on Mac
+			double scale = 1;
+			if (Platform.IsMac && window == window.Screen.RootWindow)
+				scale = window.Screen.GetScaleFactor (window.Screen.GetMonitorAtWindow (window));
+			else scale = window.GetScaleFactor ();
+
+			if (!(GtkMajorVersion <= 2 && GtkMinorVersion < 24)) {
+				try {
+					cr.Save ();
+					cr.Translate (-src_x, -src_y);
+					gdk_cairo_set_source_window (cr.Handle, window.Handle, 0, 0);
+					cr.Operator = op;
+					cr.Paint ();
+					cr.Restore ();
+					return true;
+				} catch (DllNotFoundException) {
+				} catch (EntryPointNotFoundException) {
+				}
+			}
+
+			// FIXME: Pixbuf.FromDrawable does not support HiDPI
+			if (scale > 1)
+				return false;
+
+			Gdk.Pixbuf pbf = null;
+			int w = (int)width, h = (int)height;
+			// Pixbuf.FromDrawable does not support negaive coordinates,
+			// render the whole window in this case
+			if (src_x < 0 || src_y < 0) {
+				window.GetSize (out w, out h);
+				pbf = window.ToPixbuf (0, 0, w, h);
+			} else {
+				// Render only the requested area, or the whole window
+				// if it is the RootWindow (retrieving its size takes longer than
+				// actually rendering it)
+				if (window != window.Screen.RootWindow) {
+					window.GetSize (out w, out h);
+					w = w - (int)src_x;
+					h = h - (int)src_y;
+				}
+				pbf = window.ToPixbuf ((int)src_x, (int)src_y, w, h);
+			}
+			if (pbf != null) {
+				cr.Save ();
+				cr.Scale (1 / scale, 1 / scale);
+				if (src_x < 0 || src_y < 0)
+					cr.Translate (-src_x, -src_y);
+				Gdk.CairoHelper.SetSourcePixbuf (cr, pbf, 0, 0);
+				cr.Operator = op;
+				cr.Paint ();
+				cr.Restore ();
+				return true;
+			}
+			return false;
 		}
 	}
 	
