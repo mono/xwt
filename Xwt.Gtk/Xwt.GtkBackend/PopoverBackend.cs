@@ -128,6 +128,7 @@ namespace Xwt.GtkBackend
 			protected override bool OnDrawn (Context cr)
 			{
 				bool withRoot = true;
+				bool fakeAlphaFailed = false;
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
 				var scale = GtkWorkarounds.GetScaleFactor (this);
@@ -163,6 +164,7 @@ namespace Xwt.GtkBackend
 							cr.SetSourceRGB (1.0, 1.0, 1.0);
 							cr.Operator = Operator.Source;
 							cr.Paint ();
+							fakeAlphaFailed = true;
 						}
 					}
 					if (!transientAllocation.IsEmpty) { // is not empty only if we have a valid target
@@ -173,16 +175,23 @@ namespace Xwt.GtkBackend
 							cr.SetSourceRGB (1.0, 1.0, 1.0);
 							cr.Operator = Operator.Source;
 							cr.Paint ();
+							fakeAlphaFailed = true;
 						}
 					}
 				}
 				cr.Restore ();
 
-				cr.LineWidth = scale > 1 ? 2 : 1;
+				cr.LineWidth = scale > 1 && !fakeAlphaFailed ? 2 : 1;
 				var bounds = new Xwt.Rectangle (cr.LineWidth / 2, cr.LineWidth / 2, w - cr.LineWidth, h - cr.LineWidth);
 				var calibratedRect = RecalibrateChildRectangle (bounds);
-				// Fill it with one round rectangle
-				RoundRectangle (cr, calibratedRect, radius);
+
+				// without any alpha support, we fill the whole window
+				if (fakeAlphaFailed) {
+					cr.Rectangle (bounds.X, bounds.Y, bounds.Width, bounds.Height);
+					cr.SetSourceRGB (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B);
+					cr.FillPreserve ();
+				} else // Fill it with one round rectangle
+					RoundRectangle (cr, calibratedRect, radius);
 				
 				// Triangle
 				// We first begin by positionning ourselves at the top-center or bottom center of the previous rectangle
@@ -192,20 +201,25 @@ namespace Xwt.GtkBackend
 				// We draw the rectangle path
 				DrawTriangle (cr);
 
-				// disable alpha if we are out of parents bounds without real alpha support
-				// otherwise we would get artifacts when the popup sesizes (root window will
-				// contain the popoup -  from the previous drawing - shining through our
-				// new background with alpha)
-				if ((!supportAlpha && withRoot)) {
+				if (fakeAlphaFailed) {
 					cr.SetSourceRGB (170d / 255d, 170d / 255d, 170d / 255d);
-					cr.StrokePreserve ();
-					cr.SetSourceRGB (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B);
-					cr.Fill ();
+					cr.Stroke ();
 				} else {
-					cr.SetSourceRGBA (0.0, 0.0, 0.0, 0.2);
-					cr.StrokePreserve ();
-					cr.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
-					cr.Fill ();
+					// disable alpha if we are out of parents bounds without real alpha support
+					// otherwise we would get artifacts when the popup resizes (root window will
+					// contain the popoup -  from the previous drawing - shining through our
+					// new background with alpha)
+					if ((!supportAlpha && withRoot)) {
+						cr.SetSourceRGB (170d / 255d, 170d / 255d, 170d / 255d);
+						cr.StrokePreserve ();
+						cr.SetSourceRGB (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B);
+						cr.Fill ();
+					} else {
+						cr.SetSourceRGBA (0.0, 0.0, 0.0, 0.2);
+						cr.StrokePreserve ();
+						cr.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
+						cr.Fill ();
+					}
 				}
 
 				return base.OnDrawn (cr);
