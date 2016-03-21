@@ -1356,7 +1356,7 @@ namespace Xwt.GtkBackend
 				scale = window.Screen.GetScaleFactor (window.Screen.GetMonitorAtWindow (window));
 			else scale = window.GetScaleFactor ();
 
-			if (!(GtkMajorVersion <= 2 && GtkMinorVersion < 24)) {
+			if (!Platform.IsMac && !Platform.IsWindows && !(GtkMajorVersion <= 2 && GtkMinorVersion < 24)) {
 				try {
 					cr.Save ();
 					cr.Translate (-src_x, -src_y);
