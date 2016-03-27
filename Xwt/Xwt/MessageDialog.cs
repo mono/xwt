@@ -100,8 +100,14 @@ namespace Xwt
 		
 		public static bool Confirm (string primaryText, string secondaryText, Command button)
 		{
-			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, Command.Cancel, button) == button;
+			return Confirm (RootWindow, primaryText, secondaryText, button);
 		}
+
+		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, Command button)
+		{
+			return GenericAlert (window, StockIcons.Question, primaryText, secondaryText, Command.Cancel, button) == button;
+		}
+
 		public static bool Confirm (string primaryText, Command button, bool confirmIsDefault)
 		{
 			return Confirm (primaryText, null, button, confirmIsDefault);
