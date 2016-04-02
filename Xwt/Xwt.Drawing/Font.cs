@@ -80,7 +80,7 @@ namespace Xwt.Drawing
 					Backend = handler.WithSettings (handler.SystemSerifFont.Backend, size, style, weight, stretch);
 				else {
 					var fb = handler.Create (fname, size, style, weight, stretch);
-					Backend = fb ?? handler.GetSystemDefaultFont ();
+					Backend = fb ?? handler.WithSettings(handler.GetSystemDefaultFont (), size, style, weight, stretch);
 				}
 			}
 		}

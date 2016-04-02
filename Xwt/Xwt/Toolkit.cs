@@ -514,14 +514,14 @@ namespace Xwt
 				// to not corrupt the backend of the singletons
 				if (font.ToolkitEngine != this) {
 					var fbh = font.ToolkitEngine.FontBackendHandler;
-					if (font == fbh.SystemFont)
-						font = FontBackendHandler.SystemFont;
-					if (font == fbh.SystemMonospaceFont)
-						font = FontBackendHandler.SystemMonospaceFont;
-					if (font == fbh.SystemSansSerifFont)
-						font = FontBackendHandler.SystemSansSerifFont;
-					if (font == fbh.SystemSerifFont)
-						font = FontBackendHandler.SystemSerifFont;
+					if (font.Family == fbh.SystemFont.Family)
+						font = FontBackendHandler.SystemFont.WithSettings (font);
+					if (font.Family == fbh.SystemMonospaceFont.Family)
+						font = FontBackendHandler.SystemMonospaceFont.WithSettings (font);
+					if (font.Family == fbh.SystemSansSerifFont.Family)
+						font = FontBackendHandler.SystemSansSerifFont.WithSettings (font);
+					if (font.Family == fbh.SystemSerifFont.Family)
+						font = FontBackendHandler.SystemSerifFont.WithSettings (font);
 				}
 
 				font.InitForToolkit (this);

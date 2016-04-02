@@ -129,7 +129,7 @@ namespace Xwt.Drawing
 
 		public Font Font {
 			get { return font; }
-			set { font = value; handler.SetFont (Backend, value); }
+			set { font = value; handler.SetFont (Backend, (Font)ToolkitEngine.ValidateObject (value)); }
 		}
 
 		public string Text {
