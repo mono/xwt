@@ -70,8 +70,7 @@ namespace Xwt.Mac
 
 		public override Point GetMouseLocation ()
 		{
-			var loc = NSEvent.CurrentMouseLocation;
-			return new Point (loc.X, loc.Y);
+			return ToDesktopPoint (NSEvent.CurrentMouseLocation);
 		}
 
 		public override IEnumerable<object> GetScreens ()
@@ -82,6 +81,14 @@ namespace Xwt.Mac
 		public override bool IsPrimaryScreen (object backend)
 		{
 			return NSScreen.Screens[0] == (NSScreen) backend;
+		}
+
+		public static Point ToDesktopPoint (CGPoint loc)
+		{
+			var result = new Point (loc.X, desktopBounds.Height - loc.Y);
+			if (desktopBounds.Y < 0)
+				result.Y += desktopBounds.Y;
+			return result;
 		}
 
 		public static Rectangle ToDesktopRect (CGRect r)
