@@ -225,9 +225,9 @@ namespace Xwt.WPFBackend
 				return img.Height;
 		}
 
-		public override object ConvertToBitmap (object img, ImageDescription idesc, double scaleFactor, Xwt.Drawing.ImageFormat format)
+		public override object ConvertToBitmap (ImageDescription idesc, double scaleFactor, Xwt.Drawing.ImageFormat format)
 		{
-			var wpfImage = (WpfImage)img;
+			var wpfImage = (WpfImage)idesc.Backend;
 			return new WpfImage (wpfImage.GetBestFrame (ApplicationContext, scaleFactor, idesc, true));
 		}
 

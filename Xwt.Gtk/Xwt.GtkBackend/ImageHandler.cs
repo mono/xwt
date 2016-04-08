@@ -162,9 +162,9 @@ namespace Xwt.GtkBackend
 			return !img.HasMultipleSizes;
 		}
 
-		public override object ConvertToBitmap (object handle, ImageDescription idesc, double scaleFactor, ImageFormat format)
+		public override object ConvertToBitmap (ImageDescription idesc, double scaleFactor, ImageFormat format)
 		{
-			var img = (GtkImage) handle;
+			var img = (GtkImage) idesc.Backend;
 			var f = new GtkImage.ImageFrame (img.GetBestFrame (ApplicationContext, scaleFactor, idesc, true), (int)idesc.Size.Width, (int)idesc.Size.Height, true);
 			return new GtkImage (new GtkImage.ImageFrame [] { f });
 		}

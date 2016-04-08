@@ -128,14 +128,14 @@ namespace Xwt.Mac
 			return img != null && img.Representations ().OfType<NSBitmapImageRep> ().Any ();
 		}
 
-		public override object ConvertToBitmap (object handle, ImageDescription idesc, double scaleFactor, ImageFormat format)
+		public override object ConvertToBitmap (ImageDescription idesc, double scaleFactor, ImageFormat format)
 		{
 			double width = idesc.Size.Width;
 			double height = idesc.Size.Height;
 			int pixelWidth = (int)(width * scaleFactor);
 			int pixelHeight = (int)(height * scaleFactor);
 
-			if (handle is CustomImage) {
+			if (idesc.Backend is CustomImage) {
 				var flags = CGBitmapFlags.ByteOrderDefault;
 				int bytesPerRow;
 				switch (format) {
@@ -164,7 +164,7 @@ namespace Xwt.Mac
 					ScaleFactor = scaleFactor
 				};
 
-				var ci = (CustomImage)handle;
+				var ci = (CustomImage)idesc.Backend;
 				ci.DrawInContext (ctx, idesc);
 
 				var img = new NSImage (((CGBitmapContext)bmp).ToImage (), new CGSize (pixelWidth, pixelHeight));
@@ -177,7 +177,7 @@ namespace Xwt.Mac
 				return im;
 			}
 			else {
-				NSImage img = (NSImage)handle;
+				NSImage img = (NSImage)idesc.Backend;
 				NSBitmapImageRep bitmap = img.Representations ().OfType<NSBitmapImageRep> ().FirstOrDefault ();
 				if (bitmap == null) {
 					var imageData = img.AsTiff ();
@@ -187,7 +187,7 @@ namespace Xwt.Mac
 					im.Size = new CGSize ((nfloat)width, (nfloat)height);
 					return im;
 				}
-				return handle;
+				return idesc.Backend;
 			}
 		}
 		

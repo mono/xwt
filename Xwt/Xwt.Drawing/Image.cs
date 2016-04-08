@@ -701,9 +701,10 @@ namespace Xwt.Drawing
 			var idesc = new ImageDescription {
 				Alpha = requestedAlpha,
 				Size = s,
-				Styles = styles
+				Styles = styles,
+				Backend = Backend
 			};
-			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, idesc, scaleFactor, format);
+			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (idesc, scaleFactor, format);
 			return new BitmapImage (bmp, s, ToolkitEngine);
 		}
 
