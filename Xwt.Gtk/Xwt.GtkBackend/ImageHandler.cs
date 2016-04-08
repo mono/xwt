@@ -162,10 +162,10 @@ namespace Xwt.GtkBackend
 			return !img.HasMultipleSizes;
 		}
 
-		public override object ConvertToBitmap (object handle, double width, double height, double scaleFactor, ImageFormat format)
+		public override object ConvertToBitmap (object handle, ImageDescription idesc, double scaleFactor, ImageFormat format)
 		{
 			var img = (GtkImage) handle;
-			var f = new GtkImage.ImageFrame (img.GetBestFrame (ApplicationContext, scaleFactor, width, height, true), (int)width, (int)height, true);
+			var f = new GtkImage.ImageFrame (img.GetBestFrame (ApplicationContext, scaleFactor, idesc, true), (int)idesc.Size.Width, (int)idesc.Size.Height, true);
 			return new GtkImage (new GtkImage.ImageFrame [] { f });
 		}
 
@@ -364,33 +364,40 @@ namespace Xwt.GtkBackend
 
 		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, Gtk.Widget w, double width, double height, bool forceExactSize)
 		{
-			return GetBestFrame (actx, Util.GetScaleFactor (w), width, height, forceExactSize);
+			return GetBestFrame (actx, Util.GetScaleFactor (w), new ImageDescription { Alpha = 1, Size = new Size (width, height) }, forceExactSize);
 		}
 
 		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, double scaleFactor, double width, double height, bool forceExactSize)
 		{
-			var f = FindFrame ((int)width, (int)height, scaleFactor);
-			if (f == null || (forceExactSize && (f.Width != (int)width || f.Height != (int)height)))
-				return RenderFrame (actx, scaleFactor, width, height);
+			return GetBestFrame (actx, scaleFactor, new ImageDescription { Alpha = 1, Size = new Size (width, height) }, forceExactSize);
+		}
+
+		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, Gtk.Widget w, ImageDescription idesc, bool forceExactSize)
+		{
+			return GetBestFrame (actx, Util.GetScaleFactor (w), idesc, forceExactSize);
+		}
+
+		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, double scaleFactor, ImageDescription idesc, bool forceExactSize)
+		{
+			var f = FindFrame ((int)idesc.Size.Width, (int)idesc.Size.Height, scaleFactor);
+			if (f == null || (forceExactSize && (f.Width != (int)idesc.Size.Width || f.Height != (int)idesc.Size.Height)))
+				return RenderFrame (actx, scaleFactor, idesc);
 			else
 				return f;
 		}
 
-		Gdk.Pixbuf RenderFrame (ApplicationContext actx, double scaleFactor, double width, double height)
+		Gdk.Pixbuf RenderFrame (ApplicationContext actx, double scaleFactor, ImageDescription idesc)
 		{
-			var swidth = Math.Max ((int)(width * scaleFactor), 1);
-			var sheight = Math.Max ((int)(height * scaleFactor), 1);
+			var swidth = Math.Max ((int)(idesc.Size.Width * scaleFactor), 1);
+			var sheight = Math.Max ((int)(idesc.Size.Height * scaleFactor), 1);
 
 			using (var sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, swidth, sheight))
 			using (var ctx = new Cairo.Context (sf)) {
-				ImageDescription idesc = new ImageDescription () {
-					Alpha = 1,
-					Size = new Size (width, height)
-				};
 				ctx.Scale (scaleFactor, scaleFactor);
 				Draw (actx, ctx, scaleFactor, 0, 0, idesc);
-				var f = new ImageFrame (ImageBuilderBackend.CreatePixbuf (sf), Math.Max((int)width,1), Math.Max((int)height,1), true);
-				AddFrame (f);
+				var f = new ImageFrame (ImageBuilderBackend.CreatePixbuf (sf), Math.Max ((int)idesc.Size.Width, 1), Math.Max ((int)idesc.Size.Height, 1), true);
+				if (drawCallback == null)
+					AddFrame (f);
 				return f.Pixbuf;
 			}
 		}

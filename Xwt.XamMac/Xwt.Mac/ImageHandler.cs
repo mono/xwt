@@ -128,8 +128,10 @@ namespace Xwt.Mac
 			return img != null && img.Representations ().OfType<NSBitmapImageRep> ().Any ();
 		}
 
-		public override object ConvertToBitmap (object handle, double width, double height, double scaleFactor, ImageFormat format)
+		public override object ConvertToBitmap (object handle, ImageDescription idesc, double scaleFactor, ImageFormat format)
 		{
+			double width = idesc.Size.Width;
+			double height = idesc.Size.Height;
 			int pixelWidth = (int)(width * scaleFactor);
 			int pixelHeight = (int)(height * scaleFactor);
 
@@ -163,7 +165,7 @@ namespace Xwt.Mac
 				};
 
 				var ci = (CustomImage)handle;
-				ci.DrawInContext (ctx);
+				ci.DrawInContext (ctx, idesc);
 
 				var img = new NSImage (((CGBitmapContext)bmp).ToImage (), new CGSize (pixelWidth, pixelHeight));
 				var imageData = img.AsTiff ();
@@ -329,10 +331,15 @@ namespace Xwt.Mac
 				Context = ctx,
 				InverseViewTransform = ctx.GetCTM ().Invert ()
 			};
-			DrawInContext (backend);
+			DrawInContext (backend, Image);
 		}
 
 		internal void DrawInContext (CGContextBackend ctx)
+		{
+			DrawInContext (ctx, Image);
+		}
+
+		internal void DrawInContext (CGContextBackend ctx, ImageDescription idesc)
 		{
 			var s = ctx.Size != CGSize.Empty ? ctx.Size : Size;
 			actx.InvokeUserCode (delegate {

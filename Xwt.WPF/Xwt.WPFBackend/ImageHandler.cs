@@ -225,20 +225,20 @@ namespace Xwt.WPFBackend
 				return img.Height;
 		}
 
-		public override object ConvertToBitmap (object img, double width, double height, double scaleFactor, Xwt.Drawing.ImageFormat format)
+		public override object ConvertToBitmap (object img, ImageDescription idesc, double scaleFactor, Xwt.Drawing.ImageFormat format)
 		{
 			var wpfImage = (WpfImage)img;
-			return new WpfImage (wpfImage.GetBestFrame (ApplicationContext, scaleFactor, width, height, true));
+			return new WpfImage (wpfImage.GetBestFrame (ApplicationContext, scaleFactor, idesc, true));
 		}
 
 		public override bool HasMultipleSizes (object handle)
 		{
-			return false;
+			return ((WpfImage)handle).HasMultipleSizes;
 		}
 
 		public override bool IsBitmap (object handle)
 		{
-			return true;
+			return !HasMultipleSizes (handle);
 		}
 
 		public override Size GetSize (object handle)
@@ -423,19 +423,22 @@ namespace Xwt.WPFBackend
 
 		public ImageSource GetBestFrame (ApplicationContext actx, double scaleFactor, double width, double height, bool forceExactSize)
 		{
+			return GetBestFrame (actx, scaleFactor, new ImageDescription { Alpha = 1.0, Size = new Size (width, height) }, forceExactSize);
+		}
+
+		public ImageSource GetBestFrame (ApplicationContext actx, double scaleFactor, ImageDescription idesc, bool forceExactSize)
+		{
+			double width = idesc.Size.Width;
+			double height = idesc.Size.Height;
 			var f = FindFrame (width, height, scaleFactor);
 			if (f == null || (forceExactSize && (Math.Abs (f.Width - width * scaleFactor) > 0.01 || Math.Abs (f.Height - height * scaleFactor) > 0.01)))
-				return RenderFrame (actx, scaleFactor, width, height);
+				return RenderFrame (actx, scaleFactor, idesc);
 			else
 				return f;
 		}
 
-		ImageSource RenderFrame (ApplicationContext actx, double scaleFactor, double width, double height)
+		ImageSource RenderFrame (ApplicationContext actx, double scaleFactor, ImageDescription idesc)
 		{
-			ImageDescription idesc = new ImageDescription () {
-				Alpha = 1,
-				Size = new Size (width, height)
-			};
 			SWM.DrawingVisual visual = new SWM.DrawingVisual ();
 			using (SWM.DrawingContext ctx = visual.RenderOpen ()) {
 				ctx.PushTransform (new ScaleTransform (scaleFactor, scaleFactor));
@@ -443,11 +446,12 @@ namespace Xwt.WPFBackend
 				ctx.Pop ();
 			}
 
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)(width * scaleFactor), (int)(height * scaleFactor), 96, 96, PixelFormats.Pbgra32);
+			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)(idesc.Size.Width * scaleFactor), (int)(idesc.Size.Height * scaleFactor), 96, 96, PixelFormats.Pbgra32);
 			bmp.Render (visual);
 
-			var f = new ImageFrame (bmp, width, height);
-			AddFrame (f);
+			var f = new ImageFrame (bmp, idesc.Size.Width, idesc.Size.Height);
+			if (drawCallback == null)
+				AddFrame (f);
 			return bmp;
 		}
 
