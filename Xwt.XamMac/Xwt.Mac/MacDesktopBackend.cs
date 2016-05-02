@@ -30,6 +30,7 @@ using System.Collections.Generic;
 #if MONOMAC
 using nint = System.Int32;
 using nfloat = System.Single;
+using CGPoint = System.Drawing.PointF;
 using CGRect = System.Drawing.RectangleF;
 using MonoMac.AppKit;
 #else
