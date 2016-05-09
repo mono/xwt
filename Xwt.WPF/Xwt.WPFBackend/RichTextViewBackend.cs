@@ -291,11 +291,11 @@ namespace Xwt.WPFBackend
 
 			public string PlainText { 
 				get {
-					return builder.ToString ();
+					var flowDoc = ToFlowDocument();
+					string text = new TextRange (flowDoc.ContentStart, flowDoc.ContentEnd).Text;
+					return text;
 				}
 			}
 		}
-
-
 	}
 }
