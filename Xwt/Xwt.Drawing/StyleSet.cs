@@ -105,6 +105,19 @@ namespace Xwt.Drawing
 			};
 		}
 
+		public StyleSet RemoveAll (string [] styles)
+		{
+			if (styles == null || styles.Length == 0)
+				return this;
+
+			if (this.styles == null)
+				return this;
+
+			return new StyleSet {
+				styles = this.styles.Except (styles).ToArray ()
+			};
+		}
+
 		public IEnumerator<string> GetEnumerator ()
 		{
 			if (styles == null)
