@@ -240,6 +240,17 @@ namespace Xwt.Mac
 			throw new NotImplementedException ();
 		}
 
+		public override object GetNativeWindow (IWindowFrameBackend backend)
+		{
+			if (backend == null)
+				return null;
+			if (backend.Window is NSWindow)
+				return backend.Window;
+			if (Desktop.DesktopType == DesktopType.Mac && Toolkit.NativeEngine == ApplicationContext.Toolkit)
+				return Runtime.GetNSObject (backend.NativeHandle) as NSWindow;
+			return null;
+		}
+
 		public override object GetBackendForContext (object nativeWidget, object nativeContext)
 		{
 			return new CGContextBackend {

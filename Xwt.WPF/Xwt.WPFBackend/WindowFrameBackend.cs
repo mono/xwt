@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using Xwt.Backends;
 
@@ -39,6 +40,7 @@ namespace Xwt.WPFBackend
 	public class WindowFrameBackend : IWindowFrameBackend
 	{
 		System.Windows.Window window;
+		WindowInteropHelper interopHelper;
 		IWindowFrameEventSink eventSink;
 		WindowFrame frontend;
 		bool resizable = true;
@@ -83,7 +85,20 @@ namespace Xwt.WPFBackend
 
 		public System.Windows.Window Window {
 			get { return window; }
-			set { window = value; }
+			set {
+				window = value;
+				interopHelper = new WindowInteropHelper(window);
+			}
+		}
+
+		object IWindowFrameBackend.Window
+		{
+			get { return window; }
+		}
+
+		public IntPtr NativeHandle
+		{
+			get { return interopHelper != null ? interopHelper.Handle : IntPtr.Zero; }
 		}
 
 		public virtual bool HasMenu {
@@ -112,9 +127,15 @@ namespace Xwt.WPFBackend
 			set { window.ShowInTaskbar = value; }
 		}
 
-		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
+		public void SetTransientFor (IWindowFrameBackend window)
 		{
-			this.Window.Owner = ((WindowFrameBackend) window).Window;
+			var wpfBackend = window as WindowFrameBackend;
+			if (wpfBackend != null)
+				Window.Owner = wpfBackend.Window;
+			else if (window != null)
+				interopHelper.Owner = window.NativeHandle;
+			else
+				Window.Owner = null;
 		}
 
 		bool IWindowFrameBackend.Resizable {

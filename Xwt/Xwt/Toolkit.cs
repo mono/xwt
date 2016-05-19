@@ -35,6 +35,7 @@ namespace Xwt
 	public sealed class Toolkit: IFrontend
 	{
 		static Toolkit currentEngine;
+		static Toolkit nativeEngine;
 		static Dictionary<Type, Toolkit> toolkits = new Dictionary<Type, Toolkit> ();
 
 		ToolkitEngineBackend backend;
@@ -74,6 +75,35 @@ namespace Xwt
 		/// <value>The engine currently used by Xwt.</value>
 		public static Toolkit CurrentEngine {
 			get { return currentEngine; }
+		}
+
+		/// <summary>
+		/// Gets the native platform toolkit engine.
+		/// </summary>
+		/// <value>The native engine.</value>
+		public static Toolkit NativeEngine {
+			get {
+				if (nativeEngine == null) {
+					switch (Desktop.DesktopType) {
+						case DesktopType.Linux:
+							// don't mix Gtk2 and Gtk3
+							if (CurrentEngine != null && (CurrentEngine.Type == ToolkitType.Gtk || CurrentEngine.Type == ToolkitType.Gtk3))
+								nativeEngine = CurrentEngine;
+							else if (!TryLoad (ToolkitType.Gtk3, out nativeEngine))
+								TryLoad (ToolkitType.Gtk, out nativeEngine);
+							break;
+						case DesktopType.Windows:
+							TryLoad (ToolkitType.Wpf, out nativeEngine);
+							break;
+						case DesktopType.Mac:
+							TryLoad (ToolkitType.XamMac, out nativeEngine);
+							break;
+					}
+				}
+				if (nativeEngine == null)
+					nativeEngine = CurrentEngine;
+				return nativeEngine;
+			}
 		}
 
 		/// <summary>
@@ -308,6 +338,36 @@ namespace Xwt
 			ValidateObject (w);
 			w.SetExtractedAsNative ();
 			return backend.GetNativeWidget (w);
+		}
+
+		/// <summary>
+		/// Gets a reference to the native window wrapped by an Xwt window
+		/// </summary>
+		/// <returns>The native window currently used by Xwt for the specific window, or null.</returns>
+		/// <param name="w">The Xwt window.</param>
+		/// <remarks>
+		/// If the window backend belongs to a different toolkit and the current toolkit is the
+		/// native toolkit for the current platform, GetNativeWindow will return the underlying
+		/// native window, or null if the operation is not supported for the current toolkit.
+		/// </remarks>
+		public object GetNativeWindow (WindowFrame w)
+		{
+			return backend.GetNativeWindow (w);
+		}
+
+		/// <summary>
+		/// Gets a reference to the native platform window used by the specified backend.
+		/// </summary>
+		/// <returns>The native window currently used by Xwt for the specific window, or null.</returns>
+		/// <param name="w">The Xwt window.</param>
+		/// <remarks>
+		/// If the window backend belongs to a different toolkit and the current toolkit is the
+		/// native toolkit for the current platform, GetNativeWindow will return the underlying
+		/// native window, or null if the operation is not supported for the current toolkit.
+		/// </remarks>
+		public object GetNativeWindow (IWindowFrameBackend w)
+		{
+			return backend.GetNativeWindow (w);
 		}
 
 		/// <summary>
