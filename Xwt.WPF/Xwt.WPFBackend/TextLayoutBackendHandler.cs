@@ -102,7 +102,7 @@ namespace Xwt.WPFBackend
 			var fd = (FontData)ApplicationContext.Toolkit.GetSafeBackend(t.Font);
 			var tf = new Typeface (fd.Family, fd.Style, fd.Weight, fd.Stretch);
 
-			return t.FormattedText.Baseline + tf.StrikethroughPosition * fd.Size;
+			return t.FormattedText.Baseline - tf.StrikethroughPosition * WpfFontBackendHandler.GetDeviceUnitsFromPoints (fd.Size);
 		}
 
 		public override void AddAttribute (object backend, TextAttribute attribute)
