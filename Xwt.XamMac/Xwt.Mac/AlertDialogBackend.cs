@@ -54,7 +54,7 @@ namespace Xwt.Mac
 		{
 		}
 
-		public void Initialize (ApplicationContext actx)
+		public virtual void Initialize (ApplicationContext actx)
 		{
 			Context = actx;
 		}
