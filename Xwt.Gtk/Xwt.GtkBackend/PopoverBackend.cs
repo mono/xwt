@@ -127,22 +127,71 @@ namespace Xwt.GtkBackend
 
 			protected override bool OnDrawn (Context cr)
 			{
+				bool withRoot = true;
+				bool fakeAlphaFailed = false;
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
-				
-				// We clear the surface with a transparent color if possible
-				if (supportAlpha)
-					cr.SetSourceRGBA (1.0, 1.0, 1.0, 0.0);
-				else
-					cr.SetSourceRGB (1.0, 1.0, 1.0);
-				cr.Operator = Operator.Source;
-				cr.Paint ();
+				var scale = GtkWorkarounds.GetScaleFactor (this);
 
-				cr.LineWidth = GtkWorkarounds.GetScaleFactor (Content) > 1 ? 2 : 1;
+				cr.Save ();
+
+				// We clear the surface with a transparent color if possible
+				if (supportAlpha) {
+					cr.SetSourceRGBA (1.0, 1.0, 1.0, 0.0);
+					cr.Operator = Operator.Source;
+					cr.Paint ();
+				} else { // render background with our parent window
+					int x, y, tx, ty;
+					tx = ty = 0;
+					GdkWindow.GetPosition (out x, out y);
+
+					var rootAllocation = new Rectangle (x, y, Allocation.Width, Allocation.Height);
+					var transientAllocation = Rectangle.Zero;
+
+					// using the target window allows us to simulate transparency and
+					// draw with alpha. But this is only possible if the TransientFor window
+					// is set and if we don't exceed its bounds.
+					if (TransientFor != null && TransientFor.GdkWindow != null) {
+						TransientFor.GdkWindow.GetPosition (out tx, out ty);
+						transientAllocation = new Rectangle (tx, ty, TransientFor.Allocation.Width, TransientFor.Allocation.Height);
+						withRoot = !transientAllocation.Contains (rootAllocation);
+					}
+
+					// if we have no parent window or need to draw outside of its bounds, the
+					// root window needs to be rendered first to fill clean/invalid areas.
+					if (withRoot) {
+						if (!cr.DrawWindow (RootWindow, x, y, w, h, Operator.Source)) {
+							cr.SetSourceRGB (1.0, 1.0, 1.0);
+							cr.Operator = Operator.Source;
+							cr.Paint ();
+							fakeAlphaFailed = true;
+						}
+					}
+					if (!transientAllocation.IsEmpty) { // is not empty only if we have a valid target
+						// FIXME: Calculate the HiDPI decoration border offset (now hardcoded 0.5)
+						if (scale > 1 && TransientFor.Decorated)
+							cr.Translate (0.5, 0);
+						if (!cr.DrawWindow (TransientFor.GdkWindow, x - tx, y - ty, w, h, Operator.Over)) {
+							cr.SetSourceRGB (1.0, 1.0, 1.0);
+							cr.Operator = Operator.Source;
+							cr.Paint ();
+							fakeAlphaFailed = true;
+						}
+					}
+				}
+				cr.Restore ();
+
+				cr.LineWidth = scale > 1 && !fakeAlphaFailed ? 2 : 1;
 				var bounds = new Xwt.Rectangle (cr.LineWidth / 2, cr.LineWidth / 2, w - cr.LineWidth, h - cr.LineWidth);
 				var calibratedRect = RecalibrateChildRectangle (bounds);
-				// Fill it with one round rectangle
-				RoundRectangle (cr, calibratedRect, radius);
+
+				// without any alpha support, we fill the whole window
+				if (fakeAlphaFailed) {
+					cr.Rectangle (bounds.X, bounds.Y, bounds.Width, bounds.Height);
+					cr.SetSourceRGB (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B);
+					cr.FillPreserve ();
+				} else // Fill it with one round rectangle
+					RoundRectangle (cr, calibratedRect, radius);
 				
 				// Triangle
 				// We first begin by positionning ourselves at the top-center or bottom center of the previous rectangle
@@ -152,14 +201,26 @@ namespace Xwt.GtkBackend
 				// We draw the rectangle path
 				DrawTriangle (cr);
 
-				// We use it
-				if (supportAlpha)
-					cr.SetSourceRGBA (0.0, 0.0, 0.0, 0.2);
-				else
-					cr.SetSourceRGB (238d / 255d, 238d / 255d, 238d / 255d);
-				cr.StrokePreserve ();
-				cr.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
-				cr.Fill ();
+				if (fakeAlphaFailed) {
+					cr.SetSourceRGB (170d / 255d, 170d / 255d, 170d / 255d);
+					cr.Stroke ();
+				} else {
+					// disable alpha if we are out of parents bounds without real alpha support
+					// otherwise we would get artifacts when the popup resizes (root window will
+					// contain the popoup -  from the previous drawing - shining through our
+					// new background with alpha)
+					if ((!supportAlpha && withRoot)) {
+						cr.SetSourceRGB (170d / 255d, 170d / 255d, 170d / 255d);
+						cr.StrokePreserve ();
+						cr.SetSourceRGB (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B);
+						cr.Fill ();
+					} else {
+						cr.SetSourceRGBA (0.0, 0.0, 0.0, 0.2);
+						cr.StrokePreserve ();
+						cr.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
+						cr.Fill ();
+					}
+				}
 
 				return base.OnDrawn (cr);
 			}
@@ -242,10 +303,21 @@ namespace Xwt.GtkBackend
 
 			var parent = (WindowFrameBackend)Toolkit.GetBackend (reference.ParentWindow);
 			if (popover.TransientFor != parent.Window) {
-				if (popover.TransientFor != null)
+				if (popover.TransientFor != null) {
 					popover.TransientFor.FocusInEvent -= HandleParentFocusInEvent;
+					#if XWT_GTK3
+					popover.TransientFor.Drawn -= HandleParentExposeEvent;
+					#else
+					popover.TransientFor.ExposeEvent -= HandleParentExposeEvent;
+					#endif
+				}
 				popover.TransientFor = parent.Window;
 				popover.TransientFor.FocusInEvent += HandleParentFocusInEvent;
+				#if XWT_GTK3
+				popover.TransientFor.Drawn += HandleParentExposeEvent;
+				#else
+				popover.TransientFor.ExposeEvent += HandleParentExposeEvent;
+				#endif
 			}
 
 			popover.Hidden += (o, args) => sink.OnClosed ();
@@ -302,6 +374,11 @@ namespace Xwt.GtkBackend
 		void HandleParentFocusInEvent (object o, FocusInEventArgs args)
 		{
 			Hide ();
+		}
+
+		void HandleParentExposeEvent (object o, EventArgs args)
+		{
+			popover.QueueDraw ();
 		}
 
 		public void Hide ()
