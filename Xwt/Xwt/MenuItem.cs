@@ -39,6 +39,7 @@ namespace Xwt
 		Menu subMenu;
 		EventHandler clicked;
 		Image image;
+		Accelerator accel;
 		
 		protected class MenuItemBackendHost: BackendHost<MenuItem,IMenuItemBackend>, IMenuItemEventSink
 		{
@@ -86,6 +87,7 @@ namespace Xwt
 		{
 			Label = command.Label;
 			Image = command.Icon;
+			Accelerator = command.Accelerator;
 		}
 		
 		IMenuItemBackend Backend {
@@ -144,6 +146,14 @@ namespace Xwt
 				image = value; 
 				if (!IsSeparator)
 					Backend.SetImage (image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null);
+			}
+		}
+
+		public Accelerator Accelerator {
+			get { return accel; }
+			set {
+				Backend.SetAccelerator (value);
+				accel = value;
 			}
 		}
 		

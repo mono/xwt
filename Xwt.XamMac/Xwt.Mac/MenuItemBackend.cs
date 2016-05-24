@@ -99,6 +99,11 @@ namespace Xwt.Mac
 		{
 			item.Image = image.ToNSImage ();
 		}
+
+		public void SetAccelerator (Accelerator accel)
+		{
+
+		}
 		
 		public bool Visible {
 			get {

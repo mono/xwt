@@ -39,9 +39,10 @@ namespace Samples
 			
 			var file = new MenuItem ("_File");
 			file.SubMenu = new Menu ();
-			file.SubMenu.Items.Add (new MenuItem ("_Open"));
-			file.SubMenu.Items.Add (new MenuItem ("_New"));
+			file.SubMenu.Items.Add (new MenuItem ("_Open") { Accelerator = new Accelerator (ModifierKeys.Control, Key.O) });
+			file.SubMenu.Items.Add (new MenuItem ("_New") { Accelerator = new Accelerator (ModifierKeys.Control, Key.N) });
 			MenuItem mi = new MenuItem ("_Close");
+			mi.Accelerator = new Accelerator (ModifierKeys.Control, Key.W);
 			mi.Clicked += delegate {
 				Application.Exit();
 			};
@@ -50,9 +51,9 @@ namespace Samples
 			
 			var edit = new MenuItem ("_Edit");
 			edit.SubMenu = new Menu ();
-			edit.SubMenu.Items.Add (new MenuItem ("_Copy"));
-			edit.SubMenu.Items.Add (new MenuItem ("Cu_t"));
-			edit.SubMenu.Items.Add (new MenuItem ("_Paste"));
+			edit.SubMenu.Items.Add (new MenuItem ("_Copy") { Accelerator = new Accelerator (ModifierKeys.Control, Key.C) });
+			edit.SubMenu.Items.Add (new MenuItem ("Cu_t") { Accelerator = new Accelerator (ModifierKeys.Control, Key.X) });
+			edit.SubMenu.Items.Add (new MenuItem ("_Paste") { Accelerator = new Accelerator (ModifierKeys.Control, Key.V) });
 			menu.Items.Add (edit);
 			
 			MainMenu = menu;

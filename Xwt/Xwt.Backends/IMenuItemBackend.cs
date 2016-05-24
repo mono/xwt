@@ -46,6 +46,12 @@ namespace Xwt.Backends
 		void SetImage (ImageDescription image);
 
 		/// <summary>
+		/// Sets the accelerator keys for the menu item.
+		/// </summary>
+		/// <param name="accel">Accelerator to use for this item.</param>
+		void SetAccelerator (Accelerator accel);
+
+		/// <summary>
 		/// Gets or sets the label for the menu item.
 		/// </summary>
 		string Label { get; set; }
