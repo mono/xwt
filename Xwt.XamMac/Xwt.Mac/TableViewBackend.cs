@@ -273,7 +273,12 @@ namespace Xwt.Mac
 		{
 			Table.ScrollRowToVisible (row);
 		}
-		
+
+		public void StartEditingCell (int row, CellView cell)
+		{
+			// TODO
+		}
+
 		public abstract object GetValue (object pos, int nField);
 		
 		public abstract void SetValue (object pos, int nField, object value);

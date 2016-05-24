@@ -86,8 +86,9 @@ namespace Samples
 			AddSample (w, "ListBox", typeof(ListBoxSample));
 			AddSample (w, "LinkLabels", typeof(LinkLabels));
 			var listView = AddSample (w, "ListView", typeof(ListView1));
-			AddSample (listView, "Editable checkboxes", typeof(ListView2));
+			AddSample (listView, "Editable Checkboxes", typeof(ListView2));
 			AddSample (listView, "Cell Bounds", typeof(ListViewCellBounds));
+			AddSample (listView, "Editable Entries", typeof (ListViewEntries));
 			AddSample (w, "Markdown", typeof (MarkDownSample));
 			AddSample (w, "Menu", typeof(MenuSamples));
 			AddSample (w, "Mnemonics", typeof (Mnemonics));

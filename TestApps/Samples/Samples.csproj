@@ -113,6 +113,7 @@
     <Compile Include="Samples\TreeViewCellBounds.cs" />
     <Compile Include="Samples\CalendarSample.cs" />
     <Compile Include="Samples\FontSelectorSample.cs" />
+    <Compile Include="Samples\ListViewEntries.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

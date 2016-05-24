@@ -241,6 +241,11 @@ namespace Xwt.WPFBackend
 			ListView.ScrollIntoView (ListView.Items [row]);
 		}
 
+		public void StartEditingCell (int row, CellView cell)
+		{
+			// TODO
+		}
+
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
 			var dataSource = sourceBackend as ListDataSource;
