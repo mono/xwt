@@ -306,11 +306,14 @@ namespace Xwt.Mac
 			launched = true;
 			foreach (var w in pendingWindows)
 				w.InternalShow ();
+		}
 
+		public override void WillFinishLaunching(NSNotification notification)
+		{
 			NSAppleEventManager eventManager = NSAppleEventManager.SharedAppleEventManager;
 			eventManager.SetEventHandler (this, new Selector ("handleGetURLEvent:withReplyEvent:"), AEEventClass.Internet, AEEventID.GetUrl);
 		}
-			
+
 		[Export("handleGetURLEvent:withReplyEvent:")]
 		void HandleGetUrlEvent(NSAppleEventDescriptor descriptor, NSAppleEventDescriptor reply)
 		{
