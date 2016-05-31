@@ -337,6 +337,8 @@
     <Compile Include="Xwt\SelectFontDialog.cs" />
     <Compile Include="Xwt.Backends\ISelectFontDialogBackend.cs" />
     <Compile Include="Xwt.Drawing\StyleSet.cs" />
+    <Compile Include="Xwt\FileSelector.cs" />
+    <Compile Include="Xwt.Backends\IFileSelectorBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
