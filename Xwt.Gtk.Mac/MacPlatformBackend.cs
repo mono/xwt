@@ -26,6 +26,7 @@
 using System;
 using Xwt.GtkBackend;
 using Xwt.Backends;
+using AppKit;
 
 namespace Xwt.Gtk.Mac
 {
@@ -33,10 +34,18 @@ namespace Xwt.Gtk.Mac
 	{
 		public override void Initialize (ToolkitEngineBackend toolit)
 		{
+			var ds = System.Threading.Thread.GetNamedDataSlot ("NSApplication.Initialized");
+			if (System.Threading.Thread.GetData (ds) == null) {
+				System.Threading.Thread.SetData (ds, true);
+				NSApplication.Init ();
+			}
+
 			toolit.RegisterBackend <IWebViewBackend,WebViewBackend> ();
 			toolit.RegisterBackend <DesktopBackend,GtkMacDesktopBackend> ();
 			toolit.RegisterBackend <FontBackendHandler,GtkMacFontBackendHandler> ();
 			toolit.RegisterBackend <IPopoverBackend,GtkMacPopoverBackend> ();
+			toolit.RegisterBackend <IOpenFileDialogBackend, GtkMacOpenFileDialogBackend> ();
+			toolit.RegisterBackend <ISaveFileDialogBackend, GtkMacSaveFileDialogBackend> ();
 		}
 	}
 }

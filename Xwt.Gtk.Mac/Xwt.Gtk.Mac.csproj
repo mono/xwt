@@ -47,6 +47,8 @@
     <Compile Include="GtkMacFontBackendHandler.cs" />
     <Compile Include="GtkQuartz.cs" />
     <Compile Include="GtkMacPopoverBackend.cs" />
+    <Compile Include="GtkMacOpenFileDialogBackend.cs" />
+    <Compile Include="GtkMacSaveFileDialogBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
