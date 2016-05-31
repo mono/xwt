@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 
 namespace Xwt.GtkBackend
 {
@@ -41,6 +42,20 @@ namespace Xwt.GtkBackend
 			var prop = view.GetType ().GetProperty ("Handle");
 			var handle = prop.GetValue (view, null);
 			return new Gtk.Widget (gtk_ns_view_new ((IntPtr)handle));
+		}
+
+		public static Gtk.Window GetGtkWindow (object window)
+		{
+			if (window == null)
+				return null;
+			
+			var prop = window.GetType ().GetProperty ("Handle");
+			var handle = prop.GetValue (window, null);
+			if (handle is IntPtr) {
+				var toplevels = Gtk.Window.ListToplevels ();
+				return toplevels.FirstOrDefault (w => w.IsRealized && GtkWorkarounds.GetGtkWindowNativeHandle (w) == (IntPtr)handle);
+			}
+			return null;
 		}
 	}
 }

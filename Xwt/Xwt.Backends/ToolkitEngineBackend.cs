@@ -185,6 +185,25 @@ namespace Xwt.Backends
 		/// A native window reference.
 		/// </param>
 		public abstract IWindowFrameBackend GetBackendForWindow (object nativeWindow);
+
+		/// <summary>
+		/// Gets a native window reference from an Xwt window.
+		/// </summary>
+		/// <returns> The native window object. </returns>
+		/// <param name='window'> The Xwt window. </param>
+		public virtual object GetNativeWindow (WindowFrame window)
+		{
+			if (window == null)
+				return null;
+			return GetNativeWindow (window.GetBackend () as IWindowFrameBackend);
+		}
+
+		/// <summary>
+		/// Gets a native window reference from an Xwt window backend.
+		/// </summary>
+		/// <returns> The native window object. </returns>
+		/// <param name='backend'> The Xwt window backend. </param>
+		public abstract object GetNativeWindow (IWindowFrameBackend backend);
 		
 		/// <summary>
 		/// Gets the native parent window of a widget

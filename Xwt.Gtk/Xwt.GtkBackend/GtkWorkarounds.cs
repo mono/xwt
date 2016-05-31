@@ -1314,6 +1314,20 @@ namespace Xwt.GtkBackend
 		{
 			SetData (widget, "transparent-bg-hint", enable);
 		}
+
+		[DllImport (GtkInterop.LIBGTK)]
+		static extern IntPtr gdk_x11_drawable_get_xid (IntPtr window);
+
+		public static IntPtr GetGtkWindowNativeHandle (Gtk.Window window)
+		{
+			if (window?.GdkWindow == null)
+				return IntPtr.Zero;
+			if (Platform.IsMac)
+				return gdk_quartz_window_get_nswindow (window.GdkWindow.Handle);
+			if (Platform.IsWindows)
+				return gdk_win32_drawable_get_handle (window.GdkWindow.Handle);
+			return gdk_x11_drawable_get_xid (window.GdkWindow.Handle);
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>

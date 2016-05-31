@@ -119,7 +119,7 @@ namespace Xwt.WPFBackend
 		public void RunLoop (IWindowFrameBackend parent)
 		{
 			if (parent != null)
-				Window.Owner = ((WindowFrameBackend) parent).Window;
+				SetTransientFor(parent);
 			Window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			Window.ShowDialog ();
 		}

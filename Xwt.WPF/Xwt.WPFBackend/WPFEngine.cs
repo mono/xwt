@@ -169,6 +169,11 @@ namespace Xwt.WPFBackend
 			};
 		}
 
+		public override object GetNativeWindow (IWindowFrameBackend backend)
+		{
+			return backend?.Window as System.Windows.Window;
+		}
+
 		public override object GetBackendForImage (object nativeImage)
 		{
 			if (nativeImage is WpfImage)

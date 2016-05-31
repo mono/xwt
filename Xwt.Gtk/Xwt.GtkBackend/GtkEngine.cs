@@ -269,6 +269,15 @@ namespace Xwt.GtkBackend
 			return win;
 		}
 
+		public override object GetNativeWindow (IWindowFrameBackend backend)
+		{
+			if (backend.Window is Gtk.Window)
+				return backend.Window;
+			if (Platform.IsMac)
+				return GtkMacInterop.GetGtkWindow (backend.Window);
+			return null;
+		}
+
 		public override object GetBackendForImage (object nativeImage)
 		{
 			if (nativeImage is Gdk.Pixbuf)

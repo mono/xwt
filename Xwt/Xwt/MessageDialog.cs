@@ -86,9 +86,17 @@ namespace Xwt
 		{
 			ShowMessage (RootWindow, primaryText, secondaryText);
 		}
+		public static void ShowMessage (string primaryText, string secondaryText, Drawing.Image icon)
+		{
+			ShowMessage (RootWindow, primaryText, secondaryText, icon);
+		}
 		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText)
 		{
 			GenericAlert (parent, StockIcons.Information, primaryText, secondaryText, Command.Ok);
+		}
+		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText, Drawing.Image icon)
+		{
+			GenericAlert (parent, icon, primaryText, secondaryText, Command.Ok);
 		}
 		#endregion
 		
@@ -103,9 +111,19 @@ namespace Xwt
 			return Confirm (RootWindow, primaryText, secondaryText, button);
 		}
 
+		public static bool Confirm (string primaryText, string secondaryText, Drawing.Image icon, Command button)
+		{
+			return Confirm (RootWindow, primaryText, secondaryText, icon, button);
+		}
+
 		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, Command button)
 		{
 			return GenericAlert (window, StockIcons.Question, primaryText, secondaryText, Command.Cancel, button) == button;
+		}
+
+		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, Drawing.Image icon, Command button)
+		{
+			return GenericAlert (window, icon, primaryText, secondaryText, Command.Cancel, button) == button;
 		}
 
 		public static bool Confirm (string primaryText, Command button, bool confirmIsDefault)
@@ -116,6 +134,11 @@ namespace Xwt
 		public static bool Confirm (string primaryText, string secondaryText, Command button, bool confirmIsDefault)
 		{
 			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
+		}
+
+		public static bool Confirm (string primaryText, string secondaryText, Drawing.Image icon, Command button, bool confirmIsDefault)
+		{
+			return GenericAlert (RootWindow, icon, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
 		}
 		
 		public static bool Confirm (ConfirmationMessage message)
@@ -134,6 +157,12 @@ namespace Xwt
 		{
 			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, buttons);
 		}
+
+		public static Command AskQuestion (string primaryText, string secondaryText, Drawing.Image icon, params Command [] buttons)
+		{
+			return GenericAlert (RootWindow, icon, primaryText, secondaryText, buttons);
+		}
+
 		public static Command AskQuestion (string primaryText, int defaultButton, params Command[] buttons)
 		{
 			return AskQuestion (primaryText, null, defaultButton, buttons);
@@ -142,6 +171,11 @@ namespace Xwt
 		public static Command AskQuestion (string primaryText, string secondaryText, int defaultButton, params Command[] buttons)
 		{
 			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, defaultButton, buttons);
+		}
+
+		public static Command AskQuestion (string primaryText, string secondaryText, Drawing.Image icon, int defaultButton, params Command [] buttons)
+		{
+			return GenericAlert (RootWindow, icon, primaryText, secondaryText, defaultButton, buttons);
 		}
 		
 		public static Command AskQuestion (QuestionMessage message)
