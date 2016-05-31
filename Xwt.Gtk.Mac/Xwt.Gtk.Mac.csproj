@@ -49,6 +49,7 @@
     <Compile Include="GtkMacPopoverBackend.cs" />
     <Compile Include="GtkMacOpenFileDialogBackend.cs" />
     <Compile Include="GtkMacSaveFileDialogBackend.cs" />
+    <Compile Include="GtkMacSelectFolderBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

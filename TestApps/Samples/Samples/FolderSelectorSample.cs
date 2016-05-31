@@ -1,10 +1,10 @@
 ﻿//
-// GtkMacEngine.cs
+// FolderSelectorSample.cs
 //
 // Author:
 //       Lluis Sanchez Gual <lluis@xamarin.com>
 //
-// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
+// Copyright (c) 2016 Xamarin, Inc (http://www.xamarin.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,29 +24,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt.GtkBackend;
-using Xwt.Backends;
-using AppKit;
+using Xwt;
 
-namespace Xwt.Gtk.Mac
+namespace Samples
 {
-	public class MacPlatformBackend: GtkPlatformBackend
+	public class FolderSelectorSample: VBox
 	{
-		public override void Initialize (ToolkitEngineBackend toolit)
+		public FolderSelectorSample ()
 		{
-			var ds = System.Threading.Thread.GetNamedDataSlot ("NSApplication.Initialized");
-			if (System.Threading.Thread.GetData (ds) == null) {
-				System.Threading.Thread.SetData (ds, true);
-				NSApplication.Init ();
-			}
-
-			toolit.RegisterBackend <IWebViewBackend,WebViewBackend> ();
-			toolit.RegisterBackend <DesktopBackend,GtkMacDesktopBackend> ();
-			toolit.RegisterBackend <FontBackendHandler,GtkMacFontBackendHandler> ();
-			toolit.RegisterBackend <IPopoverBackend,GtkMacPopoverBackend> ();
-			toolit.RegisterBackend <IOpenFileDialogBackend, GtkMacOpenFileDialogBackend> ();
-			toolit.RegisterBackend <ISaveFileDialogBackend, GtkMacSaveFileDialogBackend> ();
-			toolit.RegisterBackend <ISelectFolderDialogBackend, GtkMacSelectFolderBackend> ();
+			FolderSelector fsel;
+			Label label;
+			PackStart (new Label ("An open file selector:"));
+			PackStart (fsel = new FolderSelector ());
+			PackStart (label = new Label ());
+			fsel.FolderChanged += (sender, e) => { label.Text = "Folder changed: " + fsel.Folder; };
 		}
 	}
 }

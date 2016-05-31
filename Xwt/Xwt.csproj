@@ -339,6 +339,8 @@
     <Compile Include="Xwt.Drawing\StyleSet.cs" />
     <Compile Include="Xwt\FileSelector.cs" />
     <Compile Include="Xwt.Backends\IFileSelectorBackend.cs" />
+    <Compile Include="Xwt\FolderSelector.cs" />
+    <Compile Include="Xwt.Backends\IFolderSelectorBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
