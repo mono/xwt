@@ -161,7 +161,6 @@ namespace Xwt
 		FileDialogFilterCollection filters;
 		FileDialogFilter activeFilter;
 		string currentFolder;
-		string fileName;
 		bool enableFileChangedEvent;
 		string title;
 
@@ -171,7 +170,7 @@ namespace Xwt
 		
 			var box = new HBox ();
 			entry = new TextEntry ();
-			entry.ReadOnly = true;
+			entry.Changed += (sender, e) => NotifyFileChange ();
 			box.PackStart (entry, true);
 
 			var btn = new Button ("...");
@@ -210,14 +209,14 @@ namespace Xwt
 		}
 
 		public string FileName {
-			get { return dialog != null ? dialog.FileName : fileName; }
+			get { return dialog != null ? dialog.FileName : entry.Text; }
+			set { entry.Text = value; }
+		}
 
-			set {
-				fileName = value;
-				entry.Text = value;
-				if (enableFileChangedEvent)
-					EventSink.OnFileChanged ();
-			}
+		void NotifyFileChange ()
+		{
+			if (enableFileChangedEvent)
+				EventSink.OnFileChanged ();
 		}
 
 		public FileSelectionMode FileSelectionMode { get; set; }

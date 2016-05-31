@@ -131,7 +131,6 @@ namespace Xwt
 		TextEntry entry;
 		SelectFolderDialog dialog;
 		string currentFolder;
-		string folderName;
 		bool enableFolderChangedEvent;
 		string title;
 		bool canCreateFolders;
@@ -140,7 +139,7 @@ namespace Xwt
 		{
 			var box = new HBox ();
 			entry = new TextEntry ();
-			entry.ReadOnly = true;
+			entry.Changed += (sender, e) => NotifyFolderChange ();
 			box.PackStart (entry, true);
 
 			var btn = new Button ("...");
@@ -162,14 +161,14 @@ namespace Xwt
 		}
 
 		public string Folder {
-			get { return dialog != null ? dialog.Folder : folderName; }
+			get { return dialog != null ? dialog.Folder : entry.Text; }
+			set { entry.Text = value; }
+		}
 
-			set {
-				folderName = value;
-				entry.Text = value;
-				if (enableFolderChangedEvent)
-					EventSink.OnFolderChanged ();
-			}
+		void NotifyFolderChange ()
+		{
+			if (enableFolderChangedEvent)
+				EventSink.OnFolderChanged ();
 		}
 
 		protected new IFolderSelectorEventSink EventSink {
