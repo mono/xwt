@@ -125,7 +125,7 @@ namespace Xwt.GtkBackend
 		{
 			// GTK adds a border to the root widget, for some unknown reason
 			((Gtk.Container)Window.Child).BorderWidth = 0;
-			var p = ApplicationContext.Toolkit.GetNativeWindow (parent) as Gtk.Window;
+			Gtk.Window p = parent != null ? ApplicationContext.Toolkit.GetNativeWindow (parent) as Gtk.Window : null;
 
 			bool keepRunning;
 			do {
