@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Xwt.Drawing;
+using System.Runtime.InteropServices;
 
 namespace Xwt.GtkBackend
 {
@@ -271,7 +272,16 @@ namespace Xwt.GtkBackend
 
 		void MarkDestroyed (Widget w)
 		{
-			var bk = (WidgetBackend) Toolkit.GetBackend (w);
+			var wbk = Toolkit.GetBackend (w);
+			var bk = wbk as WidgetBackend;
+			if (bk == null) {
+				var ew = wbk as Xwt.Widget;
+				if (ew == null)
+					return;
+				bk = Toolkit.GetBackend (ew) as WidgetBackend;
+				if (bk == null)
+					return;
+			}
 			bk.destroyed = true;
 			foreach (var c in w.Surface.Children)
 				MarkDestroyed (c);
