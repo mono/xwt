@@ -70,10 +70,19 @@ namespace Xwt.GtkBackend
 		{
 			if (image.IsNull)
 				return;
-			var pix = ((GtkImage)image.Backend);
+			var img = image;
+			if ((flags & CellRendererState.Selected) != 0) {
+				img = new ImageDescription {
+					Backend = img.Backend,
+					Size = img.Size,
+					Alpha = img.Alpha,
+					Styles = img.Styles.Add ("sel")
+				};
+			}
+			var pix = ((GtkImage)img.Backend);
 			int x_offset, y_offset, width, height;
 			this.GetSize (widget, ref cell_area, out x_offset, out y_offset, out width, out height);
-			pix.Draw (Context, cr, Util.GetScaleFactor (widget), cell_area.X + x_offset, cell_area.Y + y_offset, image);
+			pix.Draw (Context, cr, Util.GetScaleFactor (widget), cell_area.X + x_offset, cell_area.Y + y_offset, img);
 
 		}
 
