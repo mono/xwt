@@ -698,7 +698,13 @@ namespace Xwt.Drawing
 		public BitmapImage ToBitmap (double scaleFactor, ImageFormat format = ImageFormat.ARGB32)
 		{
 			var s = GetFixedSize ();
-			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, s.Width, s.Height, scaleFactor, format);
+			var idesc = new ImageDescription {
+				Alpha = requestedAlpha,
+				Size = s,
+				Styles = styles,
+				Backend = Backend
+			};
+			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (idesc, scaleFactor, format);
 			return new BitmapImage (bmp, s, ToolkitEngine);
 		}
 

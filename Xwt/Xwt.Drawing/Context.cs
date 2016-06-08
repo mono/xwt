@@ -110,6 +110,7 @@ namespace Xwt.Drawing
 		internal void SetStyles (StyleSet styles)
 		{
 			this.styles = this.styles.AddRange (styles.Intersect (RegisteredStyles).ToArray ());
+			this.styles = this.styles.RemoveAll (styles.Where (s => s.StartsWith ("-", StringComparison.Ordinal)).Select (s => s.TrimStart ('-')).ToArray ());
 			handler.SetStyles (Backend, this.styles);
 		}
 
