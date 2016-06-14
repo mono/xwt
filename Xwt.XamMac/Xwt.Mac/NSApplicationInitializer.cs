@@ -1,10 +1,10 @@
 ﻿//
-// GtkPlatformBackend.cs
+// NSApplicationInitializer.cs
 //
 // Author:
 //       Lluis Sanchez Gual <lluis@xamarin.com>
 //
-// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
+// Copyright (c) 2016 Xamarin, Inc (http://www.xamarin.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,20 +23,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
-using Xwt.Backends;
 
-namespace Xwt.GtkBackend
+#if MONOMAC
+using MonoMac.AppKit;
+#else
+using AppKit;
+#endif
+
+
+namespace Xwt.Mac
 {
-	public class GtkPlatformBackend
+	static class NSApplicationInitializer
 	{
-		public virtual void Initialize (ToolkitEngineBackend toolit)
+		public static void Initialize ()
 		{
-		}
-
-		public virtual Type GetBackendImplementationType (Type backendType)
-		{
-			return null;
+			var ds = System.Threading.Thread.GetNamedDataSlot ("NSApplication.Initialized");
+			if (System.Threading.Thread.GetData (ds) == null) {
+				System.Threading.Thread.SetData (ds, true);
+				NSApplication.Init ();
+			}
 		}
 	}
 }

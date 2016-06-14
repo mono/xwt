@@ -7,6 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.Gtk.Mac</RootNamespace>
     <AssemblyName>Xwt.Gtk.Mac</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +52,9 @@
     <Compile Include="GtkMacOpenFileDialogBackend.cs" />
     <Compile Include="GtkMacSaveFileDialogBackend.cs" />
     <Compile Include="GtkMacSelectFolderBackend.cs" />
+    <Compile Include="..\Xwt.XamMac\Xwt.Mac\NSApplicationInitializer.cs">
+      <Link>NSApplicationInitializer.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

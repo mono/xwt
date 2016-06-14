@@ -33,6 +33,10 @@ namespace Xwt.Gtk.Mac
 {
 	public class GtkMacSelectFolderBackend: NSOpenPanel, ISelectFolderDialogBackend
 	{
+		public GtkMacSelectFolderBackend ()
+		{
+		}
+
 		#region ISelectFolderDialogBackend implementation
 		public void Initialize (bool multiselect)
 		{

@@ -57,11 +57,7 @@ namespace Xwt.Mac
 		
 		public override void InitializeApplication ()
 		{
-			var ds = System.Threading.Thread.GetNamedDataSlot ("NSApplication.Initialized");
-			if (System.Threading.Thread.GetData (ds) == null) {
-				System.Threading.Thread.SetData (ds, true);
-				NSApplication.Init ();
-			}
+			NSApplicationInitializer.Initialize ();
 
 			//Hijack ();
 			if (pool != null)

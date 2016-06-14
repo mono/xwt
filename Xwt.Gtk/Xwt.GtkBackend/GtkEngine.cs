@@ -360,6 +360,17 @@ namespace Xwt.GtkBackend
 				return f;
 			}
 		}
+
+
+		protected override Type GetBackendImplementationType (Type backendType)
+		{
+			if (platformBackend != null) {
+				var bt = platformBackend.GetBackendImplementationType (backendType);
+				if (bt != null)
+					return bt;
+			}
+			return base.GetBackendImplementationType (backendType);
+		}
 	}
 	
 	public interface IGtkContainer

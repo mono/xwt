@@ -293,6 +293,9 @@
       <Link>Xwt.Mac\SelectFontDialogBackend.cs</Link>
     </Compile>
     <Compile Include="Xwt.Mac\NSStringAttributeKey.cs" />
+    <Compile Include="..\Xwt.XamMac\Xwt.Mac\NSApplicationInitializer.cs">
+      <Link>Xwt.Mac\NSApplicationInitializer.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
