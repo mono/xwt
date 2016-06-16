@@ -341,6 +341,7 @@
     <Compile Include="Xwt.Backends\IFileSelectorBackend.cs" />
     <Compile Include="Xwt\FolderSelector.cs" />
     <Compile Include="Xwt.Backends\IFolderSelectorBackend.cs" />
+    <Compile Include="Xwt\ToolkitDefaults.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

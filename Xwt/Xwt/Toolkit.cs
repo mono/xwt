@@ -42,6 +42,7 @@ namespace Xwt
 		ApplicationContext context;
 		XwtTaskScheduler scheduler;
 		ToolkitType toolkitType;
+		ToolkitDefaults defaults;
 
 		int inUserCode;
 		Queue<Action> exitActions = new Queue<Action> ();
@@ -326,6 +327,18 @@ namespace Xwt
 		internal void SetActive ()
 		{
 			currentEngine = this;
+		}
+
+		/// <summary>
+		/// Gets the defaults for the current toolkit.
+		/// </summary>
+		/// <value>The toolkit defaults.</value>
+		public ToolkitDefaults Defaults {
+			get {
+				if (defaults == null)
+					defaults = new ToolkitDefaults ();
+				return defaults;
+			}
 		}
 
 		/// <summary>
