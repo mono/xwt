@@ -175,6 +175,13 @@ namespace Xwt.GtkBackend
 			get; set;
 		}
 
+		public bool HasCompletions {
+			get {
+				var widgetCompletion = Widget.Completion;
+				return widgetCompletion == null || widgetCompletion.Model == null;
+			}
+		}
+
 		/// <summary>
 		/// Set the list of completions that will be shown by the entry
 		/// </summary>
