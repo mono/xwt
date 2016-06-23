@@ -169,6 +169,10 @@ namespace Xwt.WPFBackend
 
 		public bool MultiLine { get; set; }
 
+		public bool HasCompletions {
+			get { return false; }
+		}
+
 		public void SetCompletions(string[] completions)
 		{
 			// TODO
