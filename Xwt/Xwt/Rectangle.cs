@@ -104,8 +104,8 @@ namespace Xwt
 		
 		public bool Contains (double x, double y)
 		{
-			return ((x >= Left) && (x < Right) && 
-				(y >= Top) && (y < Bottom));
+			return ((x >= Left) && (x <= Right) && 
+				(y >= Top) && (y <= Bottom));
 		}
 		
 		public bool IntersectsWith (Rectangle r)
