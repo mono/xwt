@@ -37,6 +37,9 @@ namespace Samples
 			PackStart (new Label("An open file selector:"));
 			PackStart (fsel = new FileSelector ());
 			PackStart (label = new Label ());
+
+			fsel.Filters.Add (new FileDialogFilter ("Xwt files", "*.xwt"));
+			fsel.Filters.Add (new FileDialogFilter ("All files", "*.*"));
 			fsel.FileChanged += (sender, e) => { label.Text = "File changed: " + fsel.FileName; };
 
 			FileSelector fsel2;

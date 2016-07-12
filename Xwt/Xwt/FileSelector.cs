@@ -158,7 +158,6 @@ namespace Xwt
 	{
 		TextEntry entry;
 		FileDialog dialog;
-		FileDialogFilterCollection filters;
 		FileDialogFilter activeFilter;
 		string currentFolder;
 		bool enableFileChangedEvent;
@@ -166,8 +165,6 @@ namespace Xwt
 
 		public DefaultFileSelectorBackend ()
 		{
-			filters = new FileDialogFilterCollection (null);
-		
 			var box = new HBox ();
 			entry = new TextEntry ();
 			entry.Changed += (sender, e) => NotifyFileChange ();
@@ -187,8 +184,11 @@ namespace Xwt
 					return activeFilter;
 			}
 			set {
+				var filters = ((FileSelector)Frontend).Filters;
+
 				if (!filters.Contains (value))
 					throw new ArgumentException ("The active filter must be one of the filters included in the Filters collection");
+
 				if (dialog != null)
 					dialog.ActiveFilter = value;
 				else
@@ -265,6 +265,8 @@ namespace Xwt
 				dialog = new SaveFileDialog ();
 
 			try {
+				var filters = ((FileSelector)Frontend).Filters;
+
 				foreach (var f in filters)
 					dialog.Filters.Add (f);
 				if (!string.IsNullOrEmpty (currentFolder))
