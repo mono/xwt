@@ -74,7 +74,7 @@ namespace Xwt
 				last = i;
 				i = markup.IndexOf ('<', i + 1);
 			}
-			sb.Append (markup.Substring (last, markup.Length - last));
+			sb.Append (markup, last, markup.Length - last);
 			Text = sb.ToString ();
 		}
 
