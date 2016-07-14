@@ -9,8 +9,6 @@
     <AssemblyName>Xwt.Gtk</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -155,6 +153,7 @@
     <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\CalendarBackend.cs" />
     <Compile Include="Xwt.GtkBackend\FontSelectorBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\FolderSelectorBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SelectFontDialogBackend.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererComboBox.cs" />
   </ItemGroup>

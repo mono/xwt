@@ -76,6 +76,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IImageViewBackend, ImageViewBackend> ();
 			RegisterBackend<IAlertDialogBackend, AlertDialogBackend> ();
 			RegisterBackend<ICheckBoxBackend, CheckBoxBackend> ();
+			RegisterBackend<IFolderSelectorBackend, FolderSelectorBackend> ();
 			RegisterBackend<IFrameBackend, FrameBackend> ();
 			RegisterBackend<ISeparatorBackend, SeparatorBackend> ();
 			RegisterBackend<IDialogBackend, DialogBackend> ();
