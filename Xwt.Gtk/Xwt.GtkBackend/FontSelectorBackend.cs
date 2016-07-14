@@ -92,6 +92,81 @@ namespace Xwt.GtkBackend
 		}
 	}
 
+#if XWT_GTK3
+	public class GtkFontSelection: Gtk.Widget
+	{
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		private static extern IntPtr gtk_font_chooser_widget_new ();
+
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		private static extern string gtk_font_chooser_get_font (IntPtr fontchooser);
+
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		private static extern void gtk_font_chooser_set_font (IntPtr fontchooser, string fontname);
+
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		private static extern string gtk_font_chooser_get_preview_text (IntPtr fontchooser);
+
+		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		private static extern void gtk_font_chooser_set_preview_text (IntPtr fontchooser, string text);
+
+		private string _oldFontName;
+
+		public GtkFontSelection() : base(gtk_font_chooser_widget_new())
+		{
+			_oldFontName = FontName;
+			
+			// Font activated doesn't tell us when the user
+			// just selects the font, it requires for the font
+			// to be double clicked or selected with keyboard
+			// so we need to check button release event as well.
+			FontActivated += CheckFontChanged;
+			ButtonReleaseEvent += CheckFontChanged;
+		}
+
+		public string FontName {
+			get {
+				return gtk_font_chooser_get_font (Handle);
+			}
+			set {
+				gtk_font_chooser_set_font (Handle, value);
+			}
+		}
+
+		public string PreviewText {
+			get {
+				return gtk_font_chooser_get_preview_text (Handle);
+			}
+			set {
+				gtk_font_chooser_set_preview_text (Handle, value);
+			}
+		}
+
+		private void CheckFontChanged (object o, EventArgs args)
+		{
+			if (_oldFontName != FontName) {
+				_oldFontName = FontName;
+
+				if (FontChanged != null)
+					FontChanged (this, EventArgs.Empty);
+			}
+		}
+
+		public event EventHandler FontActivated
+		{
+			add
+			{
+				this.AddSignalHandler("font-activated", value, typeof(EventArgs));
+			}
+			remove
+			{
+				this.RemoveSignalHandler("font-activated", value);
+			}
+		}
+
+		public event EventHandler FontChanged;
+	}
+#else
 	public class GtkFontSelection: Gtk.FontSelection
 	{
 		public event EventHandler FontChanged;
@@ -101,11 +176,7 @@ namespace Xwt.GtkBackend
 			// there is no special font changed event
 			// check whether the font changed on every redraw of the preview entry
 			var entry = GetPreviewEntry();
-			#if XWT_GTK3
-			entry.Drawn += HandleExposeEvent;
-			#else
 			entry.ExposeEvent += HandleExposeEvent;
-			#endif
 		}
 
 		string cachedFontName = String.Empty;
@@ -132,5 +203,6 @@ namespace Xwt.GtkBackend
 			return result;
 		}
 	}
+#endif
 }
 
