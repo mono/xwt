@@ -41,6 +41,10 @@ namespace Xwt.WPFBackend
 		static PropertyInfo titleProperty;
 		static bool canGetDocumentTitle = true;
 
+		static PropertyInfo silentProperty;
+		static FieldInfo mshtmlBrowserField;
+		static bool canDisableJsErrors = true;
+
 		public WebViewBackend () : this (new SWC.WebBrowser ())
 		{
 		}
@@ -216,12 +220,33 @@ namespace Xwt.WPFBackend
 		void HandleNavigated (object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
 			LoadProgress = 0;
+			DisableJsErrors(view);
 			if (e.Uri != null)
 				this.url = e.Uri.AbsoluteUri;
 			if (enableLoadingEvent)
 				Context.InvokeUserCode (delegate {
 					EventSink.OnLoading ();
 				});
+		}
+
+		static void DisableJsErrors(SWC.WebBrowser browser)
+		{
+			try
+			{
+				if (silentProperty == null && canDisableJsErrors)
+				{
+					// get the MSHTML.IWebBrowser2 instance field
+					mshtmlBrowserField = typeof(SWC.WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
+					silentProperty = mshtmlBrowserField.FieldType.GetProperty("Silent");
+					canDisableJsErrors = silentProperty != null;
+				}
+				if (canDisableJsErrors)
+					silentProperty.SetValue(mshtmlBrowserField.GetValue(browser), true, null);
+			}
+			catch
+			{
+				canDisableJsErrors = false;
+			}
 		}
 	}
 }
