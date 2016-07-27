@@ -96,6 +96,7 @@ namespace Xwt.WPFBackend
 		public void LoadHtml (string content, string base_uri)
 		{
 			view.NavigateToString (content);
+			url = base_uri;
 		}
 
 		string prevTitle = String.Empty;
@@ -151,9 +152,11 @@ namespace Xwt.WPFBackend
 		void HandleNavigating (object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
 		{
 			if (enableNavigatingEvent) {
-				var url = e.Uri.AbsoluteUri;
+				var newurl = string.Empty;
+				if (e.Uri != null)
+					newurl = e.Uri.AbsoluteUri;
 				Context.InvokeUserCode (delegate {
-					e.Cancel = EventSink.OnNavigateToUrl (url);
+					e.Cancel = EventSink.OnNavigateToUrl (newurl);
 				});
 			}
 		}
@@ -172,7 +175,8 @@ namespace Xwt.WPFBackend
 		void HandleNavigated (object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
 			LoadProgress = 0;
-			url = e.Uri.AbsoluteUri;
+			if (e.Uri != null)
+				this.url = e.Uri.AbsoluteUri;
 			if (enableLoadingEvent)
 				Context.InvokeUserCode (delegate {
 					EventSink.OnLoading ();
