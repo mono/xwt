@@ -28,9 +28,11 @@ using System.Runtime.InteropServices;
 
 namespace Xwt.GtkBackend.WebKit
 {
-
-
+	#if XWT_GTK3
+	public class WebView : Gtk.Container, Gtk.IScrollable
+	#else
 	public class WebView : Gtk.Container
+	#endif
 	{
 		public WebView(IntPtr raw) : base(raw)
 		{
@@ -72,6 +74,63 @@ namespace Xwt.GtkBackend.WebKit
 				webkit_web_view_set_full_content_zoom(Handle, value);
 			}
 		}
+
+		#if XWT_GTK3 // Gtk.IScrollable
+		[GLib.Property ("hadjustment")]
+		public Gtk.Adjustment Hadjustment {
+			get {
+				using (GLib.Value property = GetProperty ("hadjustment")) {
+					return property.Val as Gtk.Adjustment;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("hadjustment", val);
+				}
+			}
+		}
+		[GLib.Property ("vadjustment")]
+		public Gtk.Adjustment Vadjustment {
+			get {
+				using (GLib.Value property = GetProperty ("vadjustment")) {
+					return property.Val as Gtk.Adjustment;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("vadjustment", val);
+				}
+			}
+		}
+
+		[GLib.Property ("hscroll-policy")]
+		public Gtk.ScrollablePolicy HscrollPolicy {
+			get {
+				using (GLib.Value property = GetProperty ("hscroll-policy")) {
+					return (Gtk.ScrollablePolicy)property.Val;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("hscroll-policy", val);
+				}
+			}
+		}
+
+		[GLib.Property ("vscroll-policy")]
+		public Gtk.ScrollablePolicy VscrollPolicy {
+			get {
+				using (GLib.Value property = GetProperty ("vscroll-policy")) {
+					return (Gtk.ScrollablePolicy)property.Val;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("vscroll-policy", val);
+				}
+			}
+		}
+		#endif
 
 		public void StopLoading() {
 			webkit_web_view_stop_loading(Handle);
