@@ -26,7 +26,7 @@
 // THE SOFTWARE.
 
 using System;
-using System.Windows;
+using System.Reflection;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
 
@@ -37,6 +37,13 @@ namespace Xwt.WPFBackend
 		string url;
 		SWC.WebBrowser view;
 		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
+
+		static PropertyInfo titleProperty;
+		static bool canGetDocumentTitle = true;
+
+		static PropertyInfo silentProperty;
+		static FieldInfo mshtmlBrowserField;
+		static bool canDisableJsErrors = true;
 
 		public WebViewBackend () : this (new SWC.WebBrowser ())
 		{
@@ -96,11 +103,50 @@ namespace Xwt.WPFBackend
 		public void LoadHtml (string content, string base_uri)
 		{
 			view.NavigateToString (content);
+			url = base_uri;
 		}
 
 		string prevTitle = String.Empty;
 
-		public string Title { get; private set; }
+		public string Title
+		{
+			get
+			{
+				if (view.Document != null && titleProperty == null && canGetDocumentTitle)
+				{
+					var mshtmlDocType = view.Document.GetType();
+					// Get the property with the document Title,
+					// property name depends on .NET Version
+					titleProperty = mshtmlDocType?.GetProperty("Title") ?? mshtmlDocType?.GetProperty("IHTMLDocument2_nameProp");
+					canGetDocumentTitle = titleProperty == null;
+				}
+
+				string title = null;
+				if (canGetDocumentTitle)
+				{
+					try
+					{
+						title = titleProperty.GetValue(view.Document, null) as string;
+					}
+					catch
+					{
+						canGetDocumentTitle = false;
+					}
+				}
+				// try to get the title using a script, if reflection fails
+				if (title == null)
+				{
+					#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+					try
+					{
+						title = (string)view.InvokeScript("eval", "document.title.toString()");
+					}
+					catch { }
+					#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+				}
+				return title;
+			}
+		}
 
 		protected new IWebViewEventSink EventSink {
 			get { return (IWebViewEventSink)base.EventSink; }
@@ -151,9 +197,11 @@ namespace Xwt.WPFBackend
 		void HandleNavigating (object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
 		{
 			if (enableNavigatingEvent) {
-				var url = e.Uri.AbsoluteUri;
+				var newurl = string.Empty;
+				if (e.Uri != null)
+					newurl = e.Uri.AbsoluteUri;
 				Context.InvokeUserCode (delegate {
-					e.Cancel = EventSink.OnNavigateToUrl (url);
+					e.Cancel = EventSink.OnNavigateToUrl (newurl);
 				});
 			}
 		}
@@ -163,7 +211,7 @@ namespace Xwt.WPFBackend
 			LoadProgress = 1;
 			if (enableLoadedEvent)
 				Context.InvokeUserCode (EventSink.OnLoaded);
-			Title = (string)view.InvokeScript("eval", "document.title.toString()");
+
 			if (enableTitleChangedEvent && (prevTitle != Title))
 				Context.InvokeUserCode (EventSink.OnTitleChanged);
 			prevTitle = Title;
@@ -172,11 +220,33 @@ namespace Xwt.WPFBackend
 		void HandleNavigated (object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
 			LoadProgress = 0;
-			url = e.Uri.AbsoluteUri;
+			DisableJsErrors(view);
+			if (e.Uri != null)
+				this.url = e.Uri.AbsoluteUri;
 			if (enableLoadingEvent)
 				Context.InvokeUserCode (delegate {
 					EventSink.OnLoading ();
 				});
+		}
+
+		static void DisableJsErrors(SWC.WebBrowser browser)
+		{
+			try
+			{
+				if (silentProperty == null && canDisableJsErrors)
+				{
+					// get the MSHTML.IWebBrowser2 instance field
+					mshtmlBrowserField = typeof(SWC.WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
+					silentProperty = mshtmlBrowserField.FieldType.GetProperty("Silent");
+					canDisableJsErrors = silentProperty != null;
+				}
+				if (canDisableJsErrors)
+					silentProperty.SetValue(mshtmlBrowserField.GetValue(browser), true, null);
+			}
+			catch
+			{
+				canDisableJsErrors = false;
+			}
 		}
 	}
 }
