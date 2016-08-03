@@ -201,7 +201,7 @@ namespace Xwt.Gtk.Windows
 				loadProgress = 1;
 				HandleLoaded(view, EventArgs.Empty);
 			}
-			else if (e.MaximumProgress == 0)
+			else if (e.MaximumProgress == 0 || e.MaximumProgress < e.CurrentProgress)
 				loadProgress = 1;
 			else
 				loadProgress = (double)e.CurrentProgress / (double)e.MaximumProgress;
