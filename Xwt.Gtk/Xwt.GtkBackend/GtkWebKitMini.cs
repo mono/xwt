@@ -216,6 +216,16 @@ namespace Xwt.GtkBackend.WebKit
 			}
 		}
 
+		[GLib.Signal ("context-menu")]
+		public event EventHandler<ContextMenuArgs> ContextMenu {
+			add {
+				this.AddSignalHandler ("context-menu", value, typeof (ContextMenuArgs));
+			}
+			remove {
+				this.RemoveSignalHandler ("context-menu", value);
+			}
+		}
+
 		static WebView ()
 		{
 			Initialize ();
@@ -378,6 +388,30 @@ namespace Xwt.GtkBackend.WebKit
 		{
 			get {
 				return (string)Args [1];
+			}
+		}
+	}
+
+	public class ContextMenuArgs : GLib.SignalArgs
+	{
+		public Gtk.Widget DefaultMenu {
+			get {
+				return Args [0] as Gtk.Widget;
+			}
+			set {
+				Args [0] = value;
+			}
+		}
+
+		public GLib.Object HitTestResult {
+			get {
+				return Args [1] as GLib.Object;
+			}
+		}
+
+		public bool TriggeredWithKeyboard {
+			get {
+				return (bool)Args [2];
 			}
 		}
 	}

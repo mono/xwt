@@ -59,7 +59,9 @@ namespace Xwt.Mac
 		public override void Initialize()
 		{
 			base.Initialize ();
-			ViewObject = new MacWebView ();
+			ViewObject = new MacWebView {
+				UIDelegate = new XwtWebUIDelegate (this)
+			};
 		}
 
 		public string Url {
@@ -92,6 +94,8 @@ namespace Xwt.Mac
 				return Widget.CanGoForward ();
 			}
 		}
+
+		public bool ContextMenuEnabled { get; set; }
 
 		public void GoBack ()
 		{
@@ -193,6 +197,23 @@ namespace Xwt.Mac
 
 		public NSView View {
 			get { return this; }
+		}
+	}
+
+	class XwtWebUIDelegate : WebUIDelegate
+	{
+		readonly WebViewBackend backend;
+
+		public XwtWebUIDelegate (WebViewBackend backend)
+		{
+			this.backend = backend;
+		}
+
+		public override NSMenuItem [] UIGetContextMenuItems (WebKitView sender, NSDictionary forElement, NSMenuItem [] defaultMenuItems)
+		{
+			if (backend.ContextMenuEnabled)
+				return defaultMenuItems;
+			return null;
 		}
 	}
 }

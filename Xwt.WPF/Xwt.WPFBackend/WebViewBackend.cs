@@ -80,6 +80,8 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool ContextMenuEnabled { get; set; }
+
 		public void GoBack ()
 		{
 			view.GoBack ();
@@ -206,9 +208,32 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		bool HandleContextMenu (object arg)
+		{
+			return ContextMenuEnabled;
+		}
+
+		object currentDocument;
+
 		void HandleLoadCompleted (object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
 			LoadProgress = 1;
+
+			if (currentDocument != view.Document) {
+				var mshtmlDocType = view.Document.GetType ().GetInterface ("HTMLDocumentEvents2_Event");
+
+				var evnt = mshtmlDocType?.GetEvent ("oncontextmenu");
+
+				Func<object, bool> handler = HandleContextMenu;
+				var del = Delegate.CreateDelegate (evnt.EventHandlerType, handler.Target, handler.Method);
+
+				if (currentDocument != null)
+					evnt.RemoveEventHandler (currentDocument, del);
+
+				currentDocument = view.Document;
+				evnt.AddEventHandler (currentDocument, del);
+			}
+
 			if (enableLoadedEvent)
 				Context.InvokeUserCode (EventSink.OnLoaded);
 

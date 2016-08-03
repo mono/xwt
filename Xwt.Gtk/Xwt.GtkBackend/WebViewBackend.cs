@@ -44,6 +44,7 @@ namespace Xwt.GtkBackend
 			base.Initialize ();
 
 			view = new WebKit.WebView ();
+			view.ContextMenu += HandleContextMenuRequest;
 			Widget = view;
 			Widget.Show ();
 		}
@@ -78,6 +79,8 @@ namespace Xwt.GtkBackend
 				return view.CanGoForward ();
 			}
 		}
+
+		public bool ContextMenuEnabled { get; set; }
 
 		public void GoBack ()
 		{
@@ -161,6 +164,11 @@ namespace Xwt.GtkBackend
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnTitleChanged ();
 			});
+		}
+
+		void HandleContextMenuRequest (object sender, ContextMenuArgs e)
+		{
+			e.RetVal = !ContextMenuEnabled;
 		}
 	}
 }

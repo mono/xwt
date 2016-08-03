@@ -76,6 +76,7 @@ namespace Xwt
 
 		public WebView ()
 		{
+			ContextMenuEnabled = true;
 		}
 
 		public WebView (string url)
@@ -123,6 +124,12 @@ namespace Xwt
 		[DefaultValue(false)]
 		public bool CanGoForward {
 			get { return Backend.CanGoForward; }
+		}
+
+		[DefaultValue (true)]
+		public bool ContextMenuEnabled {
+			get { return Backend.ContextMenuEnabled; }
+			set { Backend.ContextMenuEnabled = value; }
 		}
 
 		public void GoBack ()

@@ -116,6 +116,8 @@ namespace Xwt.Gtk.Windows
 			}
 		}
 
+		public bool ContextMenuEnabled { get; set; }
+
 		public void GoBack ()
 		{
 			view.GoBack ();
@@ -231,12 +233,27 @@ namespace Xwt.Gtk.Windows
 				});
 		}
 
+		SWF.HtmlDocument currentDocument;
+
 		void HandleLoaded (object sender, EventArgs e)
 		{
+			if (currentDocument != view.Document) {
+				if (currentDocument != null)
+					view.Document.ContextMenuShowing -= HandleContextMenu;
+
+				currentDocument = view.Document;
+				view.Document.ContextMenuShowing += HandleContextMenu;
+			}
+
 			if (enableLoadedEvent)
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnLoaded ();
 				});
+		}
+
+		void HandleContextMenu (object sender, SWF.HtmlElementEventArgs e)
+		{
+			e.ReturnValue = ContextMenuEnabled;
 		}
 	}
 }

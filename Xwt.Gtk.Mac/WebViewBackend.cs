@@ -28,6 +28,7 @@ using System;
 using Xwt.GtkBackend;
 using Xwt.Backends;
 using Foundation;
+using AppKit;
 
 namespace Xwt.Gtk.Mac
 {
@@ -45,6 +46,7 @@ namespace Xwt.Gtk.Mac
 			base.Initialize ();
 
 			view = new WebKit.WebView ();
+			view.UIDelegate = new XwtWebUIDelegate (this);
 			Widget = GtkMacInterop.NSViewToGtkWidget (view);
 			Widget.Show ();
 		}
@@ -79,6 +81,8 @@ namespace Xwt.Gtk.Mac
 				return view.CanGoForward ();
 			}
 		}
+
+		public bool ContextMenuEnabled { get; set; }
 
 		public void GoBack ()
 		{
@@ -171,6 +175,24 @@ namespace Xwt.Gtk.Mac
 				EventSink.OnTitleChanged ();
 			});
 		}
+
+		class XwtWebUIDelegate : WebKit.WebUIDelegate
+		{
+			readonly WebViewBackend backend;
+
+			public XwtWebUIDelegate (WebViewBackend backend)
+			{
+				this.backend = backend;
+			}
+
+			public override NSMenuItem [] UIGetContextMenuItems (WebKit.WebView sender, NSDictionary forElement, NSMenuItem [] defaultMenuItems)
+			{
+				if (backend.ContextMenuEnabled)
+					return defaultMenuItems;
+				return null;
+			}
+		}
+
 		#endregion
 	}
 }
