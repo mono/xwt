@@ -210,9 +210,11 @@ namespace Xwt.Gtk.Windows
 		void HandleNavigating (object sender, SWF.WebBrowserNavigatingEventArgs e)
 		{
 			if (enableNavigatingEvent) {
-				var url = e.Url.AbsoluteUri;
+				var newurl = string.Empty;
+				if (e.Url != null)
+					newurl = e.Url.AbsoluteUri;
 				ApplicationContext.InvokeUserCode (delegate {
-					e.Cancel = EventSink.OnNavigateToUrl (url);
+					e.Cancel = EventSink.OnNavigateToUrl (newurl);
 				});
 			}
 		}
