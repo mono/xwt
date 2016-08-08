@@ -177,8 +177,7 @@ namespace Xwt.GtkBackend
 
 		public bool HasCompletions {
 			get {
-				var widgetCompletion = Widget.Completion;
-				return widgetCompletion == null || widgetCompletion.Model == null;
+				return Widget?.Completion?.Model != null;
 			}
 		}
 
