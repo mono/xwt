@@ -26,6 +26,8 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections;
+using System.Linq;
 using System.Reflection;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
@@ -37,6 +39,7 @@ namespace Xwt.WPFBackend
 		string url;
 		SWC.WebBrowser view;
 		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
+		string customCss;
 
 		static PropertyInfo titleProperty;
 		static bool canGetDocumentTitle = true;
@@ -82,7 +85,21 @@ namespace Xwt.WPFBackend
 
 		public bool ContextMenuEnabled { get; set; }
 
-		public string CustomCss { get; set; }
+		public string CustomCss
+		{
+			get
+			{
+				return customCss;
+			}
+			set
+			{
+				if (customCss != value)
+				{
+					customCss = value;
+					SetCustomCss();
+				}
+			}
+		}
 
 		public void GoBack ()
 		{
@@ -236,6 +253,8 @@ namespace Xwt.WPFBackend
 				evnt.AddEventHandler (currentDocument, del);
 			}
 
+			SetCustomCss ();
+
 			if (enableLoadedEvent)
 				Context.InvokeUserCode (EventSink.OnLoaded);
 
@@ -273,6 +292,67 @@ namespace Xwt.WPFBackend
 			catch
 			{
 				canDisableJsErrors = false;
+			}
+		}
+
+		static MethodInfo IHTMLDocument_getElementsByName;
+		static MethodInfo IHTMLDocument_createElement;
+		static MethodInfo IHTMLElement_contains;
+		static MethodInfo IHTMLElement_insertAdjacentElement;
+		static PropertyInfo IHTMLElement_innerHTML;
+		static PropertyInfo IHTMLElement_outerHTML;
+		object customCssNode;
+
+		void SetCustomCss()
+		{
+			var mainDocument = view.Document;
+			if (mainDocument == null)
+				return;
+
+			if (IHTMLDocument_getElementsByName == null) {
+				var mshtmlDocType = mainDocument.GetType();
+				IHTMLDocument_getElementsByName = mshtmlDocType?.GetMethod("getElementsByTagName");
+				IHTMLDocument_createElement = mshtmlDocType?.GetMethod("createElement");
+			}
+
+			var head = (IHTMLDocument_getElementsByName.Invoke(mainDocument, new object[] { "head" }) as IEnumerable)?.Cast <object> ().FirstOrDefault ();
+
+			if (head == null)
+			{
+				customCssNode = null;
+				return;
+			}
+
+			if (IHTMLElement_contains == null)
+			{
+				var mshtmlHeadType = head.GetType();
+				IHTMLElement_contains = mshtmlHeadType.GetMethod("contains");
+				IHTMLElement_insertAdjacentElement = mshtmlHeadType.GetMethod("insertAdjacentElement");
+			}
+
+			if (customCssNode != null && (bool)IHTMLElement_contains.Invoke(head, new object[] { customCssNode }) != true)
+				customCssNode = null;
+
+			if (!string.IsNullOrEmpty(CustomCss))
+			{
+				if (customCssNode == null)
+				{
+					customCssNode = IHTMLDocument_createElement.Invoke(mainDocument, new object[] { "style" });
+
+					if (IHTMLElement_innerHTML == null)
+					{
+						var mshtmlCssType = customCssNode.GetType();
+						IHTMLElement_innerHTML = mshtmlCssType.GetProperty("innerHTML");
+						IHTMLElement_outerHTML = mshtmlCssType.GetProperty("outerHTML");
+					}
+                    IHTMLElement_insertAdjacentElement.Invoke(head, new object[] { "afterBegin", customCssNode });
+				}
+                IHTMLElement_innerHTML.SetValue(customCssNode, customCss, null);
+            }
+			else if (customCssNode != null)
+			{
+				IHTMLElement_outerHTML.SetValue(customCssNode, string.Empty, null);
+				customCssNode = null;
 			}
 		}
 	}
