@@ -26,7 +26,7 @@
 // THE SOFTWARE.
 
 using System;
-using System.Threading;
+using System.Linq;
 using System.Runtime.InteropServices;
 using SWF = System.Windows.Forms;
 using Xwt.GtkBackend;
@@ -41,6 +41,8 @@ namespace Xwt.Gtk.Windows
 		string url;
 		Socket socket;
 		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
+		SWF.HtmlElement customCssNode;
+		string customCss;
 
 		[DllImportAttribute("user32.dll", EntryPoint = "SetParent")]
 		internal static extern System.IntPtr SetParent([InAttribute] System.IntPtr hwndChild, [InAttribute] System.IntPtr hwndNewParent);
@@ -119,7 +121,18 @@ namespace Xwt.Gtk.Windows
 
 		public bool ContextMenuEnabled { get; set; }
 
-		public string CustomCss { get; set; }
+		public string CustomCss {
+			get {
+				return customCss;
+			}
+			set {
+				if (customCss != value)
+				{
+					customCss = value;
+					SetCustomCss();
+				}
+			}
+		}
 
 		public void GoBack ()
 		{
@@ -248,6 +261,7 @@ namespace Xwt.Gtk.Windows
 				currentDocument = view.Document;
 				view.Document.ContextMenuShowing += HandleContextMenu;
 			}
+			SetCustomCss();
 
 			if (enableLoadedEvent)
 				ApplicationContext.InvokeUserCode (delegate {
@@ -258,6 +272,40 @@ namespace Xwt.Gtk.Windows
 		void HandleContextMenu (object sender, SWF.HtmlElementEventArgs e)
 		{
 			e.ReturnValue = ContextMenuEnabled;
+		}
+
+		void SetCustomCss ()
+		{
+			var mainDocument = view.Document;
+			var head = mainDocument?.GetElementsByTagName("head")?[0];
+
+			if (head == null)
+			{
+				customCssNode = null;
+				return;
+			}
+
+			// reuse node reference only if the document did not change and still contains the injected node
+			if (customCssNode != null && !head.Children.Cast<SWF.HtmlElement>().Contains(customCssNode))
+				customCssNode = null;
+
+			if (!string.IsNullOrEmpty(CustomCss))
+			{
+				if (customCssNode == null)
+				{
+					customCssNode = mainDocument.CreateElement("style");
+					customCssNode.SetAttribute("type", "text/css");
+					head.InsertAdjacentElement(SWF.HtmlElementInsertionOrientation.AfterBegin, customCssNode);
+				}
+				if (customCssNode.InnerHtml != customCss)
+					customCssNode.InnerHtml = customCss;
+			}
+			else if (customCssNode != null)
+			{
+				if (head.Children.Cast<SWF.HtmlElement>().Contains(customCssNode))
+					customCssNode.OuterHtml = string.Empty;
+				customCssNode = null;
+			}
 		}
 	}
 }
