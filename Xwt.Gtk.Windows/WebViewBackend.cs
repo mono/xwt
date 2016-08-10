@@ -74,6 +74,7 @@ namespace Xwt.Gtk.Windows
 			view.Navigating += HandleNavigating;
 			view.Navigated += HandleNavigated;
 			view.DocumentTitleChanged += HandleDocumentTitleChanged;
+			view.DocumentCompleted += HandleDocumentCompleted;
 			if (url != null)
 				view.Navigate (url);
 		}
@@ -142,6 +143,7 @@ namespace Xwt.Gtk.Windows
 
 		public void LoadHtml (string content, string base_uri)
 		{
+			loadProgress = 0;
 			view.DocumentText = content;
 		}
 
@@ -199,11 +201,9 @@ namespace Xwt.Gtk.Windows
 
 		void HandleProgressChanged (object sender, SWF.WebBrowserProgressChangedEventArgs e)
 		{
-			if (e.CurrentProgress == -1) {
-				loadProgress = 1;
-				HandleLoaded(view, EventArgs.Empty);
-			}
-			else if (e.MaximumProgress == 0 || e.MaximumProgress < e.CurrentProgress)
+			if (e.CurrentProgress == -1)
+				return;
+			if (e.MaximumProgress == 0 || e.MaximumProgress < e.CurrentProgress)
 				loadProgress = 1;
 			else
 				loadProgress = (double)e.CurrentProgress / (double)e.MaximumProgress;
@@ -239,7 +239,7 @@ namespace Xwt.Gtk.Windows
 
 		SWF.HtmlDocument currentDocument;
 
-		void HandleLoaded (object sender, EventArgs e)
+		void HandleDocumentCompleted (object sender, SWF.WebBrowserDocumentCompletedEventArgs e)
 		{
 			if (currentDocument != view.Document) {
 				if (currentDocument != null)
