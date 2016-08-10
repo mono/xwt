@@ -131,6 +131,8 @@ namespace Samples
 				"Lorem ipsum dolor sit amet.</p>" +
 				"</body></html>";
 			wb.LoadHtml (html, "sample.html");
+			wb.CustomCss =
+				"body {\n    color: red;\n    background-color: black;\n}";
 		}
 
 		public void UpdateProgress (object sender, ElapsedEventArgs args)

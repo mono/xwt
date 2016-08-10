@@ -132,6 +132,12 @@ namespace Xwt
 			set { Backend.ContextMenuEnabled = value; }
 		}
 
+		[DefaultValue (null)]
+		public string CustomCss {
+			get { return Backend.CustomCss; }
+			set { Backend.CustomCss = value; }
+		}
+
 		public void GoBack ()
 		{
 			Backend.GoBack ();

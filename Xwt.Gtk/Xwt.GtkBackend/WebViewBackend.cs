@@ -82,6 +82,8 @@ namespace Xwt.GtkBackend
 
 		public bool ContextMenuEnabled { get; set; }
 
+		public string CustomCss { get; set; }
+
 		public void GoBack ()
 		{
 			view.GoBack ();
