@@ -29,12 +29,15 @@ using Xwt.GtkBackend;
 using Xwt.Backends;
 using Foundation;
 using AppKit;
+using System.Linq;
 
 namespace Xwt.Gtk.Mac
 {
 	public class WebViewBackend : WidgetBackend, IWebViewBackend
 	{
 		WebKit.WebView view;
+		WebKit.DomElement customCssNode;
+		string customCss;
 
 		public WebViewBackend ()
 		{
@@ -84,7 +87,26 @@ namespace Xwt.Gtk.Mac
 
 		public bool ContextMenuEnabled { get; set; }
 
-		public string CustomCss { get; set; }
+		public string CustomCss {
+			get {
+				return customCss;
+			}
+			set {
+				if (customCss != value) {
+					if (string.IsNullOrEmpty (customCss) && !string.IsNullOrEmpty (value))
+						view.FinishedLoad += HandleFinishedLoadForCss;
+					else if (string.IsNullOrEmpty (value))
+						view.FinishedLoad -= HandleFinishedLoadForCss;
+					customCss = value;
+					SetCustomCss ();
+				}
+			}
+		}
+
+		void HandleFinishedLoadForCss (object sender, WebKit.WebFrameEventArgs e)
+		{
+			SetCustomCss ();
+		}
 
 		public void GoBack ()
 		{
@@ -134,7 +156,7 @@ namespace Xwt.Gtk.Mac
 			if (eventId is WebViewEvent) {
 				switch ((WebViewEvent)eventId) {
 					case WebViewEvent.NavigateToUrl: view.StartedProvisionalLoad -= HandleStartedProvisionalLoad; break;
-					case WebViewEvent.Loading: view.CommitedLoad += HandleLoadStarted; break;
+					case WebViewEvent.Loading: view.CommitedLoad -= HandleLoadStarted; break;
 					case WebViewEvent.Loaded: view.FinishedLoad -= HandleLoadFinished; break;
 					case WebViewEvent.TitleChanged: view.ReceivedTitle -= HandleTitleChanged; break;
 				}
@@ -166,6 +188,8 @@ namespace Xwt.Gtk.Mac
 
 		void HandleLoadFinished (object o, EventArgs args)
 		{
+			SetCustomCss ();
+
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnLoaded ();
 			});
@@ -176,6 +200,41 @@ namespace Xwt.Gtk.Mac
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnTitleChanged ();
 			});
+		}
+
+		void SetCustomCss ()
+		{
+			var mainDocument = view.MainFrameDocument ?? view.MainFrame.DomDocument;
+			var head = mainDocument?.DocumentElement?.GetElementsByTagName ("head")? [0];
+
+			if (head == null) {
+				customCssNode = null;
+				return;
+			}
+
+			// reuse node reference only if the document did not change and still contains the injected node
+			if (customCssNode != null && !head.ChildNodes.Contains (customCssNode))
+				customCssNode = null;
+
+			if (!string.IsNullOrEmpty (CustomCss)) {
+				if (customCssNode == null) {
+					customCssNode = mainDocument.CreateElement ("style");
+					customCssNode.SetAttribute ("type", "text/css");
+					if (head.ChildNodes.Count > 0)
+						head.InsertBefore (customCssNode, head.FirstChild);
+					else
+						head.AppendChild (customCssNode);
+				}
+				if (customCssNode.FirstChild != null)
+					customCssNode.ReplaceChild (mainDocument.CreateTextNode (customCss), customCssNode.FirstChild);
+				else
+					customCssNode.AppendChild (mainDocument.CreateTextNode (customCss));
+			} else if (customCssNode != null) {
+				if (head.ChildNodes.Contains (customCssNode) == true)
+					head.RemoveChild (customCssNode);
+				customCssNode.Dispose ();
+				customCssNode = null;
+			}
 		}
 
 		class XwtWebUIDelegate : WebKit.WebUIDelegate

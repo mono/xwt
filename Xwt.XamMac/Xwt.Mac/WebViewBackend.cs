@@ -27,6 +27,7 @@
 
 using System;
 using Xwt.Backends;
+using System.Linq;
 
 #if MONOMAC
 using nint = System.Int32;
@@ -46,6 +47,9 @@ namespace Xwt.Mac
 {
 	public class WebViewBackend : ViewBackend<WebKitView, IWebViewEventSink>, IWebViewBackend
 	{
+		DomElement customCssNode;
+		string customCss;
+
 		public WebViewBackend ()
 		{
 		}
@@ -97,7 +101,26 @@ namespace Xwt.Mac
 
 		public bool ContextMenuEnabled { get; set; }
 
-		public string CustomCss { get; set; }
+		public string CustomCss {
+			get {
+				return customCss;
+			}
+			set {
+				if (customCss != value) {
+					if (string.IsNullOrEmpty (customCss) && !string.IsNullOrEmpty (value))
+						Widget.FinishedLoad += HandleFinishedLoadForCss;
+					else if (string.IsNullOrEmpty (value))
+						Widget.FinishedLoad -= HandleFinishedLoadForCss;
+					customCss = value;
+					SetCustomCss ();
+				}
+			}
+		}
+
+		void HandleFinishedLoadForCss (object sender, WebFrameEventArgs e)
+		{
+			SetCustomCss ();
+		}
 
 		public void GoBack ()
 		{
@@ -179,6 +202,7 @@ namespace Xwt.Mac
 
 		void HandleLoadFinished (object o, EventArgs args)
 		{
+			SetCustomCss ();
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnLoaded ();
 			});
@@ -191,6 +215,41 @@ namespace Xwt.Mac
 			});
 		}
 		#endregion
+
+		void SetCustomCss ()
+		{
+			var mainDocument = Widget.MainFrameDocument ?? Widget.MainFrame.DomDocument;
+			var head = mainDocument?.DocumentElement?.GetElementsByTagName ("head")? [0];
+
+			if (head == null) {
+				customCssNode = null;
+				return;
+			}
+
+			// reuse node reference only if the document did not change and still contains the injected node
+			if (customCssNode != null && !head.ChildNodes.Contains (customCssNode))
+				customCssNode = null;
+
+			if (!string.IsNullOrEmpty (CustomCss)) {
+				if (customCssNode == null) {
+					customCssNode = mainDocument.CreateElement ("style");
+					customCssNode.SetAttribute ("type", "text/css");
+					if (head.ChildNodes.Count > 0)
+						head.InsertBefore (customCssNode, head.FirstChild);
+					else
+						head.AppendChild (customCssNode);
+				}
+				if (customCssNode.FirstChild != null)
+					customCssNode.ReplaceChild (mainDocument.CreateTextNode (customCss), customCssNode.FirstChild);
+				else
+					customCssNode.AppendChild (mainDocument.CreateTextNode (customCss));
+			} else if (customCssNode != null) {
+				if (head.ChildNodes.Contains (customCssNode) == true)
+					head.RemoveChild (customCssNode);
+				customCssNode.Dispose ();
+				customCssNode = null;
+			}
+		}
 	}
 
 	class MacWebView : WebKitView, IViewObject
