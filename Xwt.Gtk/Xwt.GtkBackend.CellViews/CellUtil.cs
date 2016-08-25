@@ -74,7 +74,7 @@ namespace Xwt.GtkBackend
 				throw new NotSupportedException ("Unknown cell view type: " + view.GetType ());
 
 			crd.Initialize (view, col, target);
-			col.PackStart (target, crd.CellRenderer, false);
+			col.PackStart (target, crd.CellRenderer, true);
 			col.SetCellDataFunc (target, crd.CellRenderer, (cellLayout, cell, treeModel, iter) => crd.LoadData (treeModel, iter));
 			view.AttachBackend (widget, crd);
 			return crd;
