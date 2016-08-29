@@ -99,8 +99,8 @@ namespace Xwt.Mac
 					w = (nfloat)Math.Max (w, size.Width);
 				}
 			}
-			columnHandle.MinWidth = w;
-			columnHandle.Width = w;
+			columnHandle.MinWidth = (nfloat)Math.Ceiling (w);
+			columnHandle.Width = (nfloat)Math.Ceiling (w);
 		}
 	}
 }
