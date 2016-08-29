@@ -101,6 +101,15 @@ namespace Xwt.Mac
 
 		public bool ContextMenuEnabled { get; set; }
 
+		public bool ScrollBarsEnabled {
+			get {
+				return Widget.MainFrame.FrameView.AllowsScrolling;
+			}
+			set {
+				Widget.MainFrame.FrameView.AllowsScrolling = value;
+			}
+		}
+
 		public string CustomCss {
 			get {
 				return customCss;

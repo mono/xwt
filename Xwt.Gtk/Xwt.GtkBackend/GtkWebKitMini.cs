@@ -75,6 +75,20 @@ namespace Xwt.GtkBackend.WebKit
 			}
 		}
 
+		[GLib.Property ("self-scrolling")]
+		public bool SelfScrolling {
+			get {
+				using (GLib.Value property = GetProperty ("self-scrolling")) {
+					return (bool) property.Val;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("self-scrolling", val);
+				}
+			}
+		}
+
 		#if XWT_GTK3 // Gtk.IScrollable
 		[GLib.Property ("hadjustment")]
 		public Gtk.Adjustment Hadjustment {
@@ -89,6 +103,7 @@ namespace Xwt.GtkBackend.WebKit
 				}
 			}
 		}
+
 		[GLib.Property ("vadjustment")]
 		public Gtk.Adjustment Vadjustment {
 			get {

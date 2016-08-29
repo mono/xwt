@@ -82,6 +82,15 @@ namespace Xwt.GtkBackend
 
 		public bool ContextMenuEnabled { get; set; }
 
+		public bool ScrollBarsEnabled {
+			get {
+				return view.SelfScrolling;
+			}
+			set {
+				view.SelfScrolling = value;
+			}
+		}
+
 		public string CustomCss { get; set; }
 
 		public void GoBack ()

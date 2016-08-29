@@ -134,6 +134,15 @@ namespace Xwt.Gtk.Windows
 			}
 		}
 
+		public bool ScrollBarsEnabled {
+			get {
+				return view.ScrollBarsEnabled;
+			}
+			set {
+				view.ScrollBarsEnabled = value;
+			}
+		}
+
 		public void GoBack ()
 		{
 			view.GoBack ();
