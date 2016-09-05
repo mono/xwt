@@ -174,6 +174,16 @@ namespace Xwt.Mac
 		{
 			UpdateChildSize ();
 		}
+
+		public override Drawing.Color BackgroundColor {
+			get {
+				return Widget.BackgroundColor.ToXwtColor ();
+			}
+			set {
+				base.BackgroundColor = value;
+				Widget.BackgroundColor = value.ToNSColor ();
+			}
+		}
 	}
 	
 	class CustomScrollView: NSScrollView, IViewObject
