@@ -107,7 +107,7 @@ namespace Xwt.Mac
 		{
 			buttonBox.Clear ();
 
-			foreach (var b in buttonList) {
+			foreach (var b in buttonList.Reverse ()) {
 				var button = new Button { Font = Font.SystemFont };
 				var tb = b;
 				button.Clicked += delegate {
