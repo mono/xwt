@@ -90,6 +90,9 @@ namespace Xwt.Mac
 				case ContentPosition.Top: Widget.ImagePosition = NSCellImagePosition.ImageAbove; break;
 				case ContentPosition.Center: Widget.ImagePosition = string.IsNullOrEmpty (label) ? NSCellImagePosition.ImageOnly : NSCellImagePosition.ImageOverlaps; break;
 				}
+			} else {
+				Widget.ImagePosition = NSCellImagePosition.NoImage;
+				Widget.Image = null;
 			}
 			SetButtonStyle (currentStyle);
 			ResetFittingSize ();
