@@ -151,6 +151,11 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public bool Selectable {
+			get { return Label.Selectable; }
+			set { Label.Selectable = value; }
+		}
+
 		public void SetFormattedText (FormattedText text)
 		{
 			Label.Text = text.Text;
