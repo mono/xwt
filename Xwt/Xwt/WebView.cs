@@ -77,6 +77,7 @@ namespace Xwt
 		public WebView ()
 		{
 			ContextMenuEnabled = true;
+			ScrollBarsEnabled = true;
 		}
 
 		public WebView (string url)
