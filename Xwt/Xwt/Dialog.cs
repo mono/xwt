@@ -245,6 +245,8 @@ namespace Xwt
 			get {
 				if (image != null)
 					return image;
+				if (command != null)
+					return command.Icon;
 				return null;
 			}
 			set {
