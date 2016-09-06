@@ -26,27 +26,29 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections;
-using System.Linq;
 using System.Reflection;
-using SWC = System.Windows.Controls;
+using System.Runtime.InteropServices.ComTypes;
 using Xwt.Backends;
+using Xwt.NativeMSHTML;
+using Xwt.WPFBackend.Interop;
+using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
-	public class WebViewBackend : WidgetBackend, IWebViewBackend
+	public class WebViewBackend : WidgetBackend, IWebViewBackend, IDocHostUIHandler
 	{
 		string url;
 		SWC.WebBrowser view;
 		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
-		string customCss;
+
+		ICustomDoc currentDocument;
+		static object mshtmlBrowser;
 
 		static PropertyInfo titleProperty;
-		static bool canGetDocumentTitle = true;
-
 		static PropertyInfo silentProperty;
+		static MethodInfo stopMethod;
 		static FieldInfo mshtmlBrowserField;
-		static bool canDisableJsErrors = true;
+		static Type mshtmlDocType;
 
 		public WebViewBackend () : this (new SWC.WebBrowser ())
 		{
@@ -58,15 +60,63 @@ namespace Xwt.WPFBackend
 			view.Navigating += HandleNavigating;
 			view.Navigated += HandleNavigated;
 			view.LoadCompleted += HandleLoadCompleted;
+			view.Loaded += HandleViewLoaded;
 			Widget = view;
+			view.Navigate ("about:blank"); // force Document initialization
+			Title = string.Empty;
+		}
+
+		void UpdateDocumentRef()
+		{
+			if (currentDocument != view.Document)
+			{
+				var doc = view.Document as ICustomDoc;
+				if (doc != null)
+				{
+					doc.SetUIHandler(this);
+					if (mshtmlDocType == null)
+						mshtmlDocType = view.Document.GetType();
+				}
+				if (currentDocument != null)
+					currentDocument.SetUIHandler(null);
+				currentDocument = doc;
+			}
+		}
+
+		void HandleViewLoaded(object sender, System.Windows.RoutedEventArgs e)
+		{
+			// get the MSHTML.IWebBrowser2 instance field
+			if (mshtmlBrowserField == null)
+				mshtmlBrowserField = typeof(SWC.WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
+
+			if (mshtmlBrowser == null)
+				mshtmlBrowser = mshtmlBrowserField.GetValue(view);
+
+			if (silentProperty == null)
+				silentProperty = mshtmlBrowserField?.FieldType?.GetProperty("Silent");
+
+			if (stopMethod == null)
+				stopMethod = mshtmlBrowserField?.FieldType?.GetMethod("Stop");
+
+			if (!string.IsNullOrEmpty(url))
+				view.Navigate(url);
+
+			DisableJsErrors();
+			UpdateDocumentRef();
 		}
 
 		public string Url {
 			get { return url; }
 			set {
 				url = value;
-				view.Navigate (url);
+				if (view.IsLoaded)
+					view.Navigate(url);
 			}
+		}
+
+		public string Title
+		{
+			get; private set;
 		}
 
 		public double LoadProgress { get; protected set; }
@@ -87,21 +137,7 @@ namespace Xwt.WPFBackend
 
 		public bool ScrollBarsEnabled { get; set; }
 
-		public string CustomCss
-		{
-			get
-			{
-				return customCss;
-			}
-			set
-			{
-				if (customCss != value)
-				{
-					customCss = value;
-					SetCustomCss();
-				}
-			}
-		}
+		public string CustomCss { get; set; }
 
 		public void GoBack ()
 		{
@@ -120,55 +156,47 @@ namespace Xwt.WPFBackend
 
 		public void StopLoading ()
 		{
-			view.InvokeScript ("eval", "document.execCommand('Stop');");
+			if (stopMethod != null)
+				stopMethod.Invoke(mshtmlBrowser, null);
+			else
+				view.InvokeScript ("eval", "document.execCommand('Stop');");
 		}
 
 		public void LoadHtml (string content, string base_uri)
 		{
 			view.NavigateToString (content);
-			url = base_uri;
+			url = string.Empty;
 		}
 
-		string prevTitle = String.Empty;
-
-		public string Title
+		string GetTitle()
 		{
-			get
+			if (titleProperty == null)
 			{
-				if (view.Document != null && titleProperty == null && canGetDocumentTitle)
-				{
-					var mshtmlDocType = view.Document.GetType();
-					// Get the property with the document Title,
-					// property name depends on .NET Version
-					titleProperty = mshtmlDocType?.GetProperty("Title") ?? mshtmlDocType?.GetProperty("IHTMLDocument2_nameProp");
-					canGetDocumentTitle = titleProperty == null;
-				}
+				// Get the property with the document Title,
+				// property name depends on .NET/mshtml Version
+				titleProperty = mshtmlDocType?.GetProperty("Title") ?? mshtmlDocType?.GetProperty("IHTMLDocument2_title");
+			}
 
-				string title = null;
-				if (canGetDocumentTitle)
+			string title = null;
+			if (titleProperty != null)
+			{
+				try
 				{
-					try
-					{
-						title = titleProperty.GetValue(view.Document, null) as string;
-					}
-					catch
-					{
-						canGetDocumentTitle = false;
-					}
+					title = titleProperty.GetValue(view.Document, null) as string;
 				}
-				// try to get the title using a script, if reflection fails
-				if (title == null)
-				{
-					#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+				catch {
+					// try to get the title using a script, if reflection fails
 					try
 					{
 						title = (string)view.InvokeScript("eval", "document.title.toString()");
 					}
+					#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
 					catch { }
 					#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 				}
-				return title;
 			}
+
+			return title;
 		}
 
 		protected new IWebViewEventSink EventSink {
@@ -229,134 +257,117 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		bool HandleContextMenu (object arg)
-		{
-			return ContextMenuEnabled;
-		}
-
-		object currentDocument;
-
-		void HandleLoadCompleted (object sender, System.Windows.Navigation.NavigationEventArgs e)
-		{
-			LoadProgress = 1;
-
-			if (currentDocument != view.Document) {
-				var mshtmlDocType = view.Document.GetType ().GetInterface ("HTMLDocumentEvents2_Event");
-
-				var evnt = mshtmlDocType?.GetEvent ("oncontextmenu");
-
-				Func<object, bool> handler = HandleContextMenu;
-				var del = Delegate.CreateDelegate (evnt.EventHandlerType, handler.Target, handler.Method);
-
-				if (currentDocument != null)
-					evnt.RemoveEventHandler (currentDocument, del);
-
-				currentDocument = view.Document;
-				evnt.AddEventHandler (currentDocument, del);
-			}
-
-			SetCustomCss ();
-
-			if (enableLoadedEvent)
-				Context.InvokeUserCode (EventSink.OnLoaded);
-
-			if (enableTitleChangedEvent && (prevTitle != Title))
-				Context.InvokeUserCode (EventSink.OnTitleChanged);
-			prevTitle = Title;
-		}
-
-		void HandleNavigated (object sender, System.Windows.Navigation.NavigationEventArgs e)
+		void HandleNavigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
 			LoadProgress = 0;
-			DisableJsErrors(view);
-			if (e.Uri != null)
+			if (e.Uri != null && view.IsLoaded)
 				this.url = e.Uri.AbsoluteUri;
 			if (enableLoadingEvent)
-				Context.InvokeUserCode (delegate {
-					EventSink.OnLoading ();
+				Context.InvokeUserCode(delegate
+				{
+					EventSink.OnLoading();
 				});
 		}
 
-		static void DisableJsErrors(SWC.WebBrowser browser)
+		void HandleLoadCompleted (object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
-			try
-			{
-				if (silentProperty == null && canDisableJsErrors)
-				{
-					// get the MSHTML.IWebBrowser2 instance field
-					mshtmlBrowserField = typeof(SWC.WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
-					silentProperty = mshtmlBrowserField.FieldType.GetProperty("Silent");
-					canDisableJsErrors = silentProperty != null;
-				}
-				if (canDisableJsErrors)
-					silentProperty.SetValue(mshtmlBrowserField.GetValue(browser), true, null);
-			}
-			catch
-			{
-				canDisableJsErrors = false;
-			}
+			UpdateDocumentRef();
+
+			LoadProgress = 1;
+
+			if (enableLoadedEvent)
+				Context.InvokeUserCode (EventSink.OnLoaded);
 		}
 
-		static MethodInfo IHTMLDocument_getElementsByName;
-		static MethodInfo IHTMLDocument_createElement;
-		static MethodInfo IHTMLElement_contains;
-		static MethodInfo IHTMLElement_insertAdjacentElement;
-		static PropertyInfo IHTMLElement_innerHTML;
-		static PropertyInfo IHTMLElement_outerHTML;
-		object customCssNode;
-
-		void SetCustomCss()
+		static void DisableJsErrors()
 		{
-			var mainDocument = view.Document;
-			if (mainDocument == null)
-				return;
+			if (silentProperty != null)
+				silentProperty.SetValue(mshtmlBrowser, true, null);
+		}
 
-			if (IHTMLDocument_getElementsByName == null) {
-				var mshtmlDocType = mainDocument.GetType();
-				IHTMLDocument_getElementsByName = mshtmlDocType?.GetMethod("getElementsByTagName");
-				IHTMLDocument_createElement = mshtmlDocType?.GetMethod("createElement");
-			}
+		#region IDocHostUIHandler implementation
 
-			var head = (IHTMLDocument_getElementsByName.Invoke(mainDocument, new object[] { "head" }) as IEnumerable)?.Cast <object> ().FirstOrDefault ();
+		int IDocHostUIHandler.ShowContextMenu(int dwID, ref tagPOINT ppt, object pcmdtReserved, object pdispReserved)
+		{
+			return (int)(ContextMenuEnabled ? HResult.S_FALSE : HResult.S_OK);
+		}
 
-			if (head == null)
-			{
-				customCssNode = null;
-				return;
-			}
-
-			if (IHTMLElement_contains == null)
-			{
-				var mshtmlHeadType = head.GetType();
-				IHTMLElement_contains = mshtmlHeadType.GetMethod("contains");
-				IHTMLElement_insertAdjacentElement = mshtmlHeadType.GetMethod("insertAdjacentElement");
-			}
-
-			if (customCssNode != null && (bool)IHTMLElement_contains.Invoke(head, new object[] { customCssNode }) != true)
-				customCssNode = null;
-
+		void IDocHostUIHandler.GetHostInfo(ref DOCHOSTUIINFO pInfo)
+		{
+			if (!ScrollBarsEnabled)
+				pInfo.dwFlags = (int)(DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER);
+			else
+				pInfo.dwFlags = 0;
 			if (!string.IsNullOrEmpty(CustomCss))
-			{
-				if (customCssNode == null)
-				{
-					customCssNode = IHTMLDocument_createElement.Invoke(mainDocument, new object[] { "style" });
+				pInfo.pchHostCss = CustomCss;
+		}
 
-					if (IHTMLElement_innerHTML == null)
-					{
-						var mshtmlCssType = customCssNode.GetType();
-						IHTMLElement_innerHTML = mshtmlCssType.GetProperty("innerHTML");
-						IHTMLElement_outerHTML = mshtmlCssType.GetProperty("outerHTML");
-					}
-                    IHTMLElement_insertAdjacentElement.Invoke(head, new object[] { "afterBegin", customCssNode });
-				}
-                IHTMLElement_innerHTML.SetValue(customCssNode, customCss, null);
-            }
-			else if (customCssNode != null)
+		void IDocHostUIHandler.ShowUI(int dwID, ref object pActiveObject, ref object pCommandTarget, ref object pFrame, ref object pDoc)
+		{
+		}
+
+		void IDocHostUIHandler.HideUI()
+		{
+		}
+
+		void IDocHostUIHandler.UpdateUI()
+		{
+			var newTitle = GetTitle();
+			if (newTitle != Title)
 			{
-				IHTMLElement_outerHTML.SetValue(customCssNode, string.Empty, null);
-				customCssNode = null;
+				Title = newTitle;
+				if (enableTitleChangedEvent)
+					Context.InvokeUserCode(EventSink.OnTitleChanged);
 			}
 		}
+
+		void IDocHostUIHandler.EnableModeless(bool fEnable)
+		{
+		}
+
+		void IDocHostUIHandler.OnDocWindowActivate(bool fActivate)
+		{
+		}
+
+		void IDocHostUIHandler.OnFrameWindowActivate(bool fActivate)
+		{
+		}
+
+		void IDocHostUIHandler.ResizeBorder(ref LPCRECT prcBorder, object pUIWindow, bool fFrameWindow)
+		{
+		}
+
+		int IDocHostUIHandler.TranslateAccelerator(ref LPMSG lpMsg, ref Guid pguidCmdGroup, uint nCmdID)
+		{
+			return (int)HResult.S_FALSE;
+		}
+
+		void IDocHostUIHandler.GetOptionKeyPath(ref string pchKey, uint dw)
+		{
+		}
+
+		int IDocHostUIHandler.GetDropTarget(int pDropTarget, ref int ppDropTarget)
+		{
+			return (int)HResult.S_FALSE;
+		}
+
+		void IDocHostUIHandler.GetExternal(out object ppDispatch)
+		{
+			throw new NotImplementedException();
+		}
+
+		int IDocHostUIHandler.TranslateUrl(uint dwTranslate, string pchURLIn, ref string ppchURLOut)
+		{
+			return (int)HResult.S_FALSE;
+		}
+
+		IDataObject IDocHostUIHandler.FilterDataObject(IDataObject pDO)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 	}
+
 }
 

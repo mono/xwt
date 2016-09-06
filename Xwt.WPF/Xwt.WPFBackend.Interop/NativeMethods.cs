@@ -32,6 +32,12 @@ using System.Windows.Media.Imaging;
 
 namespace Xwt.WPFBackend.Interop
 {
+	enum HResult
+	{
+		S_OK = 0x00000000,
+		S_FALSE = 0x00000001,
+	}
+
 	internal static class NativeMethods
 	{
 		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Unicode)]

@@ -28,21 +28,22 @@
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using SWF = System.Windows.Forms;
 using Xwt.GtkBackend;
 using Xwt.Backends;
+using Xwt.NativeMSHTML;
 using Gtk;
 
 namespace Xwt.Gtk.Windows
 {
-	public class WebViewBackend : WidgetBackend, IWebViewBackend
+	public class WebViewBackend : WidgetBackend, IWebViewBackend, IDocHostUIHandler
 	{
 		SWF.WebBrowser view;
 		string url;
 		Socket socket;
 		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
-		SWF.HtmlElement customCssNode;
-		string customCss;
+		bool initialized;
 
 		[DllImportAttribute("user32.dll", EntryPoint = "SetParent")]
 		internal static extern System.IntPtr SetParent([InAttribute] System.IntPtr hwndChild, [InAttribute] System.IntPtr hwndNewParent);
@@ -51,34 +52,39 @@ namespace Xwt.Gtk.Windows
 		{
 			base.Initialize ();
 
-			socket = new Socket ();
-			Widget = socket;
-
-			this.Widget.Realized += HandleGtkRealized;
-			this.Widget.SizeAllocated += HandleGtkSizeAllocated;
-
-            Widget.Show();
-		}
-
-		void HandleGtkRealized (object sender, EventArgs e)
-		{
-			var size = new System.Drawing.Size (Widget.WidthRequest, Widget.HeightRequest);
-
-			view = new SWF.WebBrowser ();
+			view = new SWF.WebBrowser();
 			view.ScriptErrorsSuppressed = true;
 			view.AllowWebBrowserDrop = false;
-			view.Size = size;
-			var browser_handle = view.Handle;
-			IntPtr window_handle = (IntPtr)socket.Id;
-			SetParent (browser_handle, window_handle);
 
 			view.ProgressChanged += HandleProgressChanged;
 			view.Navigating += HandleNavigating;
 			view.Navigated += HandleNavigated;
 			view.DocumentTitleChanged += HandleDocumentTitleChanged;
 			view.DocumentCompleted += HandleDocumentCompleted;
-			if (url != null)
-				view.Navigate (url);
+			view.Navigate("about:blank"); // force Document initialization
+
+			socket = new Socket ();
+			Widget = socket;
+
+			this.Widget.Realized += HandleGtkRealized;
+			this.Widget.SizeAllocated += HandleGtkSizeAllocated;
+
+			Widget.Show();
+		}
+
+		void HandleGtkRealized (object sender, EventArgs e)
+		{
+			var size = new System.Drawing.Size (Widget.WidthRequest, Widget.HeightRequest);
+			view.Size = size;
+
+			var browser_handle = view.Handle;
+			IntPtr window_handle = (IntPtr)socket.Id;
+			SetParent (browser_handle, window_handle);
+
+			// load requested url if the view is still not initialized
+			// otherwise it would already have been loaded
+			if (!initialized && url != null)
+				view.Navigate(url);
 		}
 
 		void HandleGtkSizeAllocated (object sender, SizeAllocatedArgs e)
@@ -89,7 +95,7 @@ namespace Xwt.Gtk.Windows
 
 		public string Url {
 			get {
-				if (view != null && !String.IsNullOrEmpty(view.Url.AbsoluteUri))
+				if (view?.Url != null)
 					url = view.Url.AbsoluteUri;
 				return url;
 			}
@@ -121,27 +127,9 @@ namespace Xwt.Gtk.Windows
 
 		public bool ContextMenuEnabled { get; set; }
 
-		public string CustomCss {
-			get {
-				return customCss;
-			}
-			set {
-				if (customCss != value)
-				{
-					customCss = value;
-					SetCustomCss();
-				}
-			}
-		}
+		public string CustomCss { get; set; }
 
-		public bool ScrollBarsEnabled {
-			get {
-				return view.ScrollBarsEnabled;
-			}
-			set {
-				view.ScrollBarsEnabled = value;
-			}
-		}
+		public bool ScrollBarsEnabled { get; set; }
 
 		public void GoBack ()
 		{
@@ -253,6 +241,7 @@ namespace Xwt.Gtk.Windows
 
 		void HandleNavigated (object sender, SWF.WebBrowserNavigatedEventArgs e)
 		{
+			UpdateDocumentRef();
 			if (enableLoadingEvent)
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnLoading ();
@@ -261,16 +250,35 @@ namespace Xwt.Gtk.Windows
 
 		SWF.HtmlDocument currentDocument;
 
+		void UpdateDocumentRef()
+		{
+			if (currentDocument != view.Document)
+			{
+				var doc = view.Document.DomDocument as ICustomDoc;
+				if (doc != null)
+					doc.SetUIHandler(this);
+				if (currentDocument != null)
+				{
+					var oldDoc = view.Document.DomDocument as ICustomDoc;
+					if (oldDoc != null)
+						oldDoc.SetUIHandler(null);
+				}
+				currentDocument = view.Document;
+			}
+
+			// on initialization we load "about:blank" to initialize the document,
+			// in that case we load the requested url
+			if (currentDocument != null && !initialized)
+			{
+				initialized = true;
+				if (url != null)
+					view.Navigate(url);
+			}
+		}
+
 		void HandleDocumentCompleted (object sender, SWF.WebBrowserDocumentCompletedEventArgs e)
 		{
-			if (currentDocument != view.Document) {
-				if (currentDocument != null)
-					view.Document.ContextMenuShowing -= HandleContextMenu;
-
-				currentDocument = view.Document;
-				view.Document.ContextMenuShowing += HandleContextMenu;
-			}
-			SetCustomCss();
+			UpdateDocumentRef();
 
 			if (enableLoadedEvent)
 				ApplicationContext.InvokeUserCode (delegate {
@@ -278,44 +286,79 @@ namespace Xwt.Gtk.Windows
 				});
 		}
 
-		void HandleContextMenu (object sender, SWF.HtmlElementEventArgs e)
+		#region IDocHostUIHandler implementation
+		int IDocHostUIHandler.ShowContextMenu(int dwID, ref tagPOINT ppt, object pcmdtReserved, object pdispReserved)
 		{
-			e.ReturnValue = ContextMenuEnabled;
+			return (int)(ContextMenuEnabled ? HResult.S_FALSE : HResult.S_OK);
 		}
 
-		void SetCustomCss ()
+		void IDocHostUIHandler.GetHostInfo(ref DOCHOSTUIINFO pInfo)
 		{
-			var mainDocument = view.Document;
-			var head = mainDocument?.GetElementsByTagName("head")?[0];
-
-			if (head == null)
-			{
-				customCssNode = null;
-				return;
-			}
-
-			// reuse node reference only if the document did not change and still contains the injected node
-			if (customCssNode != null && !head.Children.Cast<SWF.HtmlElement>().Contains(customCssNode))
-				customCssNode = null;
-
+			if (!ScrollBarsEnabled)
+				pInfo.dwFlags = (int)(DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER);
+			else
+				pInfo.dwFlags = 0;
 			if (!string.IsNullOrEmpty(CustomCss))
-			{
-				if (customCssNode == null)
-				{
-					customCssNode = mainDocument.CreateElement("style");
-					customCssNode.SetAttribute("type", "text/css");
-					head.InsertAdjacentElement(SWF.HtmlElementInsertionOrientation.AfterBegin, customCssNode);
-				}
-				if (customCssNode.InnerHtml != customCss)
-					customCssNode.InnerHtml = customCss;
-			}
-			else if (customCssNode != null)
-			{
-				if (head.Children.Cast<SWF.HtmlElement>().Contains(customCssNode))
-					customCssNode.OuterHtml = string.Empty;
-				customCssNode = null;
-			}
+				pInfo.pchHostCss = CustomCss;
 		}
+
+		void IDocHostUIHandler.ShowUI(int dwID, ref object pActiveObject, ref object pCommandTarget, ref object pFrame, ref object pDoc)
+		{
+		}
+
+		void IDocHostUIHandler.HideUI()
+		{
+		}
+
+		void IDocHostUIHandler.UpdateUI()
+		{
+		}
+
+		void IDocHostUIHandler.EnableModeless(bool fEnable)
+		{
+		}
+
+		void IDocHostUIHandler.OnDocWindowActivate(bool fActivate)
+		{
+		}
+
+		void IDocHostUIHandler.OnFrameWindowActivate(bool fActivate)
+		{
+		}
+
+		void IDocHostUIHandler.ResizeBorder(ref LPCRECT prcBorder, object pUIWindow, bool fFrameWindow)
+		{
+		}
+
+		int IDocHostUIHandler.TranslateAccelerator(ref LPMSG lpMsg, ref Guid pguidCmdGroup, uint nCmdID)
+		{
+			return (int)HResult.S_FALSE;
+		}
+
+		void IDocHostUIHandler.GetOptionKeyPath(ref string pchKey, uint dw)
+		{
+		}
+
+		int IDocHostUIHandler.GetDropTarget(int pDropTarget, ref int ppDropTarget)
+		{
+			return (int)HResult.S_FALSE;
+		}
+
+		void IDocHostUIHandler.GetExternal(out object ppDispatch)
+		{
+			throw new NotImplementedException();
+		}
+
+		int IDocHostUIHandler.TranslateUrl(uint dwTranslate, string pchURLIn, ref string ppchURLOut)
+		{
+			return (int)HResult.S_FALSE;
+		}
+
+		IDataObject IDocHostUIHandler.FilterDataObject(IDataObject pDO)
+		{
+			throw new NotImplementedException();
+		}
+		#endregion
 	}
 }
 
