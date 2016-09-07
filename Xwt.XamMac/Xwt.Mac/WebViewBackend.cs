@@ -179,7 +179,7 @@ namespace Xwt.Mac
 			if (eventId is WebViewEvent) {
 				switch ((WebViewEvent)eventId) {
 					case WebViewEvent.NavigateToUrl: Widget.StartedProvisionalLoad -= HandleStartedProvisionalLoad; break;
-					case WebViewEvent.Loading: Widget.CommitedLoad += HandleLoadStarted; break;
+					case WebViewEvent.Loading: Widget.CommitedLoad -= HandleLoadStarted; break;
 					case WebViewEvent.Loaded: Widget.FinishedLoad -= HandleLoadFinished; break;
 					case WebViewEvent.TitleChanged: Widget.ReceivedTitle -= HandleTitleChanged; break;
 				}
