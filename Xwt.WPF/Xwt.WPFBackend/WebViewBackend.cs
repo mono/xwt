@@ -40,6 +40,7 @@ namespace Xwt.WPFBackend
 		string url;
 		SWC.WebBrowser view;
 		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
+		bool initialized;
 
 		ICustomDoc currentDocument;
 		static object mshtmlBrowser;
@@ -81,6 +82,15 @@ namespace Xwt.WPFBackend
 					currentDocument.SetUIHandler(null);
 				currentDocument = doc;
 			}
+
+			// on initialization we load "about:blank" to initialize the document,
+			// in that case we load the requested url
+			if (currentDocument != null && !initialized)
+			{
+				initialized = true;
+				if (!string.IsNullOrEmpty (url))
+					view.Navigate(url);
+			}
 		}
 
 		void HandleViewLoaded(object sender, System.Windows.RoutedEventArgs e)
@@ -98,18 +108,24 @@ namespace Xwt.WPFBackend
 			if (stopMethod == null)
 				stopMethod = mshtmlBrowserField?.FieldType?.GetMethod("Stop");
 
-			if (!string.IsNullOrEmpty(url))
+			// load requested url if the view is still not initialized
+			// otherwise it would already have been loaded
+			if (!initialized && !string.IsNullOrEmpty(url))
+			{
+				initialized = true;
 				view.Navigate(url);
+			}
 
 			DisableJsErrors();
 			UpdateDocumentRef();
 		}
 
 		public string Url {
-			get { return url; }
+			get {
+				return url; }
 			set {
 				url = value;
-				if (view.IsLoaded)
+				if (initialized && view.IsLoaded)
 					view.Navigate(url);
 			}
 		}

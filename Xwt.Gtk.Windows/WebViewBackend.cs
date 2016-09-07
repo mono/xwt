@@ -74,17 +74,12 @@ namespace Xwt.Gtk.Windows
 
 		void HandleGtkRealized (object sender, EventArgs e)
 		{
-			var size = new System.Drawing.Size (Widget.WidthRequest, Widget.HeightRequest);
+			var size = new System.Drawing.Size (Widget.Allocation.Width, Widget.Allocation.Height);
 			view.Size = size;
 
 			var browser_handle = view.Handle;
 			IntPtr window_handle = (IntPtr)socket.Id;
 			SetParent (browser_handle, window_handle);
-
-			// load requested url if the view is still not initialized
-			// otherwise it would already have been loaded
-			if (!initialized && url != null)
-				view.Navigate(url);
 		}
 
 		void HandleGtkSizeAllocated (object sender, SizeAllocatedArgs e)
@@ -95,13 +90,13 @@ namespace Xwt.Gtk.Windows
 
 		public string Url {
 			get {
-				if (view?.Url != null)
+				if (initialized && view?.Url != null)
 					url = view.Url.AbsoluteUri;
 				return url;
 			}
 			set {
 				url = value;
-				if (view != null)
+				if (initialized && view != null)
 					view.Navigate (url);
 			}
 		}
@@ -271,7 +266,7 @@ namespace Xwt.Gtk.Windows
 			if (currentDocument != null && !initialized)
 			{
 				initialized = true;
-				if (url != null)
+				if (!string.IsNullOrEmpty (url))
 					view.Navigate(url);
 			}
 		}
