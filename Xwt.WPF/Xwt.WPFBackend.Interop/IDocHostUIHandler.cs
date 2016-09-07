@@ -60,15 +60,21 @@ namespace Xwt.NativeMSHTML
 		DOCHOSTUIFLAG_NOTHEME = 0x00080000,
 		DOCHOSTUIFLAG_NOPICS = 0x00100000,
 		DOCHOSTUIFLAG_NO3DOUTERBORDER = 0x00200000,
-		DOCHOSTUIFLAG_DISABLE_EDIT_NS_FIXUP = 0x400000,
-		DOCHOSTUIFLAG_LOCAL_MACHINE_ACCESS_CHECK = 0x800000,
-		DOCHOSTUIFLAG_DISABLE_UNTRUSTEDPROTOCOL = 0x1000000
+		DOCHOSTUIFLAG_DISABLE_EDIT_NS_FIXUP = 0x00400000,
+		DOCHOSTUIFLAG_LOCAL_MACHINE_ACCESS_CHECK = 0x00800000,
+		DOCHOSTUIFLAG_DISABLE_UNTRUSTEDPROTOCOL = 0x01000000,
+		DOCHOSTUIFLAG_HOST_NAVIGATES = 0x02000000,
+		DOCHOSTUIFLAG_ENABLE_REDIRECT_NOTIFICATION = 0x04000000,
+		DOCHOSTUIFLAG_USE_WINDOWLESS_SELECTCONTROL = 0x08000000,
+		DOCHOSTUIFLAG_USE_WINDOWED_SELECTCONTROL = 0x10000000,
+		DOCHOSTUIFLAG_ENABLE_ACTIVEX_INACTIVATE_MODE = 0x20000000,
+		DOCHOSTUIFLAG_DPI_AWARE = 0x40000000
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
 	struct DOCHOSTUIINFO
 	{
-		public int cbSize;
+		public UIntPtr cbSize;
 		public int dwFlags;
 		public int dwDoubleClick;
 		[MarshalAs(UnmanagedType.BStr)]
@@ -78,30 +84,30 @@ namespace Xwt.NativeMSHTML
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	struct LPMSG
+	struct MSG
 	{
 		public IntPtr hwnd;
 		public uint message;
-		public uint wParam;
-		public int lParam;
+		public UIntPtr wParam;
+		public IntPtr lParam;
 		public uint time;
-		public tagPOINT pt;
+		public POINT pt;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
-	struct LPCRECT
+	[StructLayout(LayoutKind.Sequential)]
+	struct RECT
 	{
-		public int left;
-		public int top;
-		public int right;
-		public int bottom;
+		public IntPtr left;
+		public IntPtr top;
+		public IntPtr right;
+		public IntPtr bottom;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
-	struct tagPOINT
+	[StructLayout(LayoutKind.Sequential)]
+	struct POINT
 	{
-		public int x;
-		public int y;
+		public IntPtr x;
+		public IntPtr y;
 	}
 
 	[ComImport, Guid("3050F3F0-98B5-11CF-BB82-00AA00BDCE0B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -116,15 +122,15 @@ namespace Xwt.NativeMSHTML
 	{
 		[PreserveSig]
 		int ShowContextMenu(
-			int dwID,
-			ref tagPOINT ppt,
+			uint dwID,
+			ref POINT ppt,
 			[MarshalAs(UnmanagedType.IUnknown)]  object pcmdtReserved,
 			[MarshalAs(UnmanagedType.IDispatch)] object pdispReserved
 		);
 
 		void GetHostInfo (ref DOCHOSTUIINFO pInfo);
 
-		void ShowUI (int dwID, ref object pActiveObject, ref object pCommandTarget, ref object pFrame, ref object pDoc);
+		void ShowUI (uint dwID, ref object pActiveObject, ref object pCommandTarget, ref object pFrame, ref object pDoc);
 
 		void HideUI ();
 
@@ -136,15 +142,18 @@ namespace Xwt.NativeMSHTML
 
 		void OnFrameWindowActivate ([In, MarshalAs(UnmanagedType.Bool)] bool fActivate);
 
-		void ResizeBorder (ref LPCRECT prcBorder, object pUIWindow, [In, MarshalAs(UnmanagedType.Bool)] bool fFrameWindow);
+		void ResizeBorder (ref RECT prcBorder, object pUIWindow, [In, MarshalAs(UnmanagedType.Bool)] bool fFrameWindow);
 
 		[PreserveSig]
-		int TranslateAccelerator (ref LPMSG lpMsg, ref Guid pguidCmdGroup, uint nCmdID);
+		int TranslateAccelerator (ref MSG lpMsg, ref Guid pguidCmdGroup, uint nCmdID);
 
 		void GetOptionKeyPath ([MarshalAs(UnmanagedType.BStr)] ref string pchKey, uint dw);
 
 		[PreserveSig]
-		int GetDropTarget (int pDropTarget, ref int ppDropTarget);
+		int GetDropTarget (
+			[In, MarshalAs(UnmanagedType.Interface)] object pDropTarget,
+			[Out, MarshalAs(UnmanagedType.Interface)] out object ppDropTarget
+		);
 
 		void GetExternal ([MarshalAs(UnmanagedType.IDispatch)] out object ppDispatch);
 

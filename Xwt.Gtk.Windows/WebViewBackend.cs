@@ -287,7 +287,7 @@ namespace Xwt.Gtk.Windows
 		}
 
 		#region IDocHostUIHandler implementation
-		int IDocHostUIHandler.ShowContextMenu(int dwID, ref tagPOINT ppt, object pcmdtReserved, object pdispReserved)
+		int IDocHostUIHandler.ShowContextMenu(uint dwID, ref POINT ppt, object pcmdtReserved, object pdispReserved)
 		{
 			return (int)(ContextMenuEnabled ? HResult.S_FALSE : HResult.S_OK);
 		}
@@ -302,7 +302,7 @@ namespace Xwt.Gtk.Windows
 				pInfo.pchHostCss = CustomCss;
 		}
 
-		void IDocHostUIHandler.ShowUI(int dwID, ref object pActiveObject, ref object pCommandTarget, ref object pFrame, ref object pDoc)
+		void IDocHostUIHandler.ShowUI(uint dwID, ref object pActiveObject, ref object pCommandTarget, ref object pFrame, ref object pDoc)
 		{
 		}
 
@@ -326,11 +326,11 @@ namespace Xwt.Gtk.Windows
 		{
 		}
 
-		void IDocHostUIHandler.ResizeBorder(ref LPCRECT prcBorder, object pUIWindow, bool fFrameWindow)
+		void IDocHostUIHandler.ResizeBorder(ref RECT prcBorder, object pUIWindow, bool fFrameWindow)
 		{
 		}
 
-		int IDocHostUIHandler.TranslateAccelerator(ref LPMSG lpMsg, ref Guid pguidCmdGroup, uint nCmdID)
+		int IDocHostUIHandler.TranslateAccelerator(ref MSG lpMsg, ref Guid pguidCmdGroup, uint nCmdID)
 		{
 			return (int)HResult.S_FALSE;
 		}
@@ -339,8 +339,9 @@ namespace Xwt.Gtk.Windows
 		{
 		}
 
-		int IDocHostUIHandler.GetDropTarget(int pDropTarget, ref int ppDropTarget)
+		int IDocHostUIHandler.GetDropTarget(object pDropTarget, out object ppDropTarget)
 		{
+			ppDropTarget = pDropTarget;
 			return (int)HResult.S_FALSE;
 		}
 
