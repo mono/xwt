@@ -74,7 +74,8 @@ namespace Xwt.Gtk.Windows
 
 		void HandleGtkRealized (object sender, EventArgs e)
 		{
-			var size = new System.Drawing.Size (Widget.Allocation.Width, Widget.Allocation.Height);
+			var scale = GtkWorkarounds.GetScaleFactor(Widget);
+			var size = new System.Drawing.Size((int)(Widget.Allocation.Width * scale), (int)(Widget.Allocation.Height * scale));
 			view.Size = size;
 
 			var browser_handle = view.Handle;
@@ -84,7 +85,8 @@ namespace Xwt.Gtk.Windows
 
 		void HandleGtkSizeAllocated (object sender, SizeAllocatedArgs e)
 		{
-			var size = new System.Drawing.Size(e.Allocation.Width, e.Allocation.Height);
+			var scale = GtkWorkarounds.GetScaleFactor(Widget);
+			var size = new System.Drawing.Size((int)(e.Allocation.Width * scale), (int)(e.Allocation.Height * scale));
 			view.Size = size;
 		}
 
@@ -289,8 +291,9 @@ namespace Xwt.Gtk.Windows
 
 		void IDocHostUIHandler.GetHostInfo(ref DOCHOSTUIINFO pInfo)
 		{
+			pInfo.dwFlags = DOCHOSTUIFLAG.DOCHOSTUIFLAG_DPI_AWARE;
 			if (!ScrollBarsEnabled)
-				pInfo.dwFlags = DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER;
+				pInfo.dwFlags = pInfo.dwFlags | DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER;
 			if (!string.IsNullOrEmpty(CustomCss))
 				pInfo.pchHostCss = CustomCss;
 		}

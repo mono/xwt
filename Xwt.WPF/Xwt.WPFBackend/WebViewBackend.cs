@@ -310,8 +310,9 @@ namespace Xwt.WPFBackend
 
 		void IDocHostUIHandler.GetHostInfo(ref DOCHOSTUIINFO pInfo)
 		{
+			pInfo.dwFlags = DOCHOSTUIFLAG.DOCHOSTUIFLAG_DPI_AWARE;
 			if (!ScrollBarsEnabled)
-				pInfo.dwFlags = DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER;
+				pInfo.dwFlags = pInfo.dwFlags | DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER;
 			if (!string.IsNullOrEmpty(CustomCss))
 				pInfo.pchHostCss = CustomCss;
 		}
