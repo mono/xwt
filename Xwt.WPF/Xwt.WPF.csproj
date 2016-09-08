@@ -153,6 +153,7 @@
     <Compile Include="Xwt.WPFBackend\WebViewBackend.cs" />
     <Compile Include="Xwt.WPFBackend\ScrollControlBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CalendarBackend.cs" />
+    <Compile Include="Xwt.WPFBackend.Interop\IDocHostUIHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

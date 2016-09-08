@@ -40,6 +40,9 @@ namespace Xwt.Backends
 		void Reload ();
 		void StopLoading ();
 		void LoadHtml (string content, string base_uri);
+		bool ContextMenuEnabled { get; set; }
+		bool ScrollBarsEnabled { get; set; }
+		string CustomCss { get; set; }
 	}
 
 	public interface IWebViewEventSink : IWidgetEventSink

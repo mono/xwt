@@ -22,6 +22,12 @@ using System.Runtime.InteropServices;
 
 namespace Xwt.Gtk.Windows
 {
+	enum HResult
+	{
+		S_OK = 0x00000000,
+		S_FALSE = 0x00000001,
+	}
+
 	public static class Win32
 	{
 		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Auto)]

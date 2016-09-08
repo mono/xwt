@@ -27,23 +27,29 @@
 
 using System;
 using System.Reflection;
-using SWC = System.Windows.Controls;
+using System.Runtime.InteropServices.ComTypes;
 using Xwt.Backends;
+using Xwt.NativeMSHTML;
+using Xwt.WPFBackend.Interop;
+using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
-	public class WebViewBackend : WidgetBackend, IWebViewBackend
+	public class WebViewBackend : WidgetBackend, IWebViewBackend, IDocHostUIHandler
 	{
 		string url;
 		SWC.WebBrowser view;
 		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
+		bool initialized;
+
+		ICustomDoc currentDocument;
+		static object mshtmlBrowser;
 
 		static PropertyInfo titleProperty;
-		static bool canGetDocumentTitle = true;
-
 		static PropertyInfo silentProperty;
+		static MethodInfo stopMethod;
 		static FieldInfo mshtmlBrowserField;
-		static bool canDisableJsErrors = true;
+		static Type mshtmlDocType;
 
 		public WebViewBackend () : this (new SWC.WebBrowser ())
 		{
@@ -55,15 +61,78 @@ namespace Xwt.WPFBackend
 			view.Navigating += HandleNavigating;
 			view.Navigated += HandleNavigated;
 			view.LoadCompleted += HandleLoadCompleted;
+			view.Loaded += HandleViewLoaded;
 			Widget = view;
+			view.Navigate ("about:blank"); // force Document initialization
+			Title = string.Empty;
+		}
+
+		void UpdateDocumentRef()
+		{
+			if (currentDocument != view.Document)
+			{
+				var doc = view.Document as ICustomDoc;
+				if (doc != null)
+				{
+					doc.SetUIHandler(this);
+					if (mshtmlDocType == null)
+						mshtmlDocType = view.Document.GetType();
+				}
+				if (currentDocument != null)
+					currentDocument.SetUIHandler(null);
+				currentDocument = doc;
+			}
+
+			// on initialization we load "about:blank" to initialize the document,
+			// in that case we load the requested url
+			if (currentDocument != null && !initialized)
+			{
+				initialized = true;
+				if (!string.IsNullOrEmpty (url))
+					view.Navigate(url);
+			}
+		}
+
+		void HandleViewLoaded(object sender, System.Windows.RoutedEventArgs e)
+		{
+			// get the MSHTML.IWebBrowser2 instance field
+			if (mshtmlBrowserField == null)
+				mshtmlBrowserField = typeof(SWC.WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
+
+			if (mshtmlBrowser == null)
+				mshtmlBrowser = mshtmlBrowserField.GetValue(view);
+
+			if (silentProperty == null)
+				silentProperty = mshtmlBrowserField?.FieldType?.GetProperty("Silent");
+
+			if (stopMethod == null)
+				stopMethod = mshtmlBrowserField?.FieldType?.GetMethod("Stop");
+
+			// load requested url if the view is still not initialized
+			// otherwise it would already have been loaded
+			if (!initialized && !string.IsNullOrEmpty(url))
+			{
+				initialized = true;
+				view.Navigate(url);
+			}
+
+			DisableJsErrors();
+			UpdateDocumentRef();
 		}
 
 		public string Url {
-			get { return url; }
+			get {
+				return url; }
 			set {
 				url = value;
-				view.Navigate (url);
+				if (initialized && view.IsLoaded)
+					view.Navigate(url);
 			}
+		}
+
+		public string Title
+		{
+			get; private set;
 		}
 
 		public double LoadProgress { get; protected set; }
@@ -79,6 +148,12 @@ namespace Xwt.WPFBackend
 				return view.CanGoForward;
 			}
 		}
+
+		public bool ContextMenuEnabled { get; set; }
+
+		public bool ScrollBarsEnabled { get; set; }
+
+		public string CustomCss { get; set; }
 
 		public void GoBack ()
 		{
@@ -97,55 +172,47 @@ namespace Xwt.WPFBackend
 
 		public void StopLoading ()
 		{
-			view.InvokeScript ("eval", "document.execCommand('Stop');");
+			if (stopMethod != null)
+				stopMethod.Invoke(mshtmlBrowser, null);
+			else
+				view.InvokeScript ("eval", "document.execCommand('Stop');");
 		}
 
 		public void LoadHtml (string content, string base_uri)
 		{
 			view.NavigateToString (content);
-			url = base_uri;
+			url = string.Empty;
 		}
 
-		string prevTitle = String.Empty;
-
-		public string Title
+		string GetTitle()
 		{
-			get
+			if (titleProperty == null)
 			{
-				if (view.Document != null && titleProperty == null && canGetDocumentTitle)
-				{
-					var mshtmlDocType = view.Document.GetType();
-					// Get the property with the document Title,
-					// property name depends on .NET Version
-					titleProperty = mshtmlDocType?.GetProperty("Title") ?? mshtmlDocType?.GetProperty("IHTMLDocument2_nameProp");
-					canGetDocumentTitle = titleProperty == null;
-				}
+				// Get the property with the document Title,
+				// property name depends on .NET/mshtml Version
+				titleProperty = mshtmlDocType?.GetProperty("Title") ?? mshtmlDocType?.GetProperty("IHTMLDocument2_title");
+			}
 
-				string title = null;
-				if (canGetDocumentTitle)
+			string title = null;
+			if (titleProperty != null)
+			{
+				try
 				{
-					try
-					{
-						title = titleProperty.GetValue(view.Document, null) as string;
-					}
-					catch
-					{
-						canGetDocumentTitle = false;
-					}
+					title = titleProperty.GetValue(view.Document, null) as string;
 				}
-				// try to get the title using a script, if reflection fails
-				if (title == null)
-				{
-					#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+				catch {
+					// try to get the title using a script, if reflection fails
 					try
 					{
 						title = (string)view.InvokeScript("eval", "document.title.toString()");
 					}
+					#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
 					catch { }
 					#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 				}
-				return title;
 			}
+
+			return title;
 		}
 
 		protected new IWebViewEventSink EventSink {
@@ -206,48 +273,117 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		void HandleLoadCompleted (object sender, System.Windows.Navigation.NavigationEventArgs e)
-		{
-			LoadProgress = 1;
-			if (enableLoadedEvent)
-				Context.InvokeUserCode (EventSink.OnLoaded);
-
-			if (enableTitleChangedEvent && (prevTitle != Title))
-				Context.InvokeUserCode (EventSink.OnTitleChanged);
-			prevTitle = Title;
-		}
-
-		void HandleNavigated (object sender, System.Windows.Navigation.NavigationEventArgs e)
+		void HandleNavigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
 			LoadProgress = 0;
-			DisableJsErrors(view);
-			if (e.Uri != null)
+			if (e.Uri != null && view.IsLoaded)
 				this.url = e.Uri.AbsoluteUri;
 			if (enableLoadingEvent)
-				Context.InvokeUserCode (delegate {
-					EventSink.OnLoading ();
+				Context.InvokeUserCode(delegate
+				{
+					EventSink.OnLoading();
 				});
 		}
 
-		static void DisableJsErrors(SWC.WebBrowser browser)
+		void HandleLoadCompleted (object sender, System.Windows.Navigation.NavigationEventArgs e)
 		{
-			try
+			UpdateDocumentRef();
+
+			LoadProgress = 1;
+
+			if (enableLoadedEvent)
+				Context.InvokeUserCode (EventSink.OnLoaded);
+		}
+
+		static void DisableJsErrors()
+		{
+			if (silentProperty != null)
+				silentProperty.SetValue(mshtmlBrowser, true, null);
+		}
+
+		#region IDocHostUIHandler implementation
+
+		int IDocHostUIHandler.ShowContextMenu(DOCHOSTUICONTEXTMENU dwID, ref POINT ppt, object pcmdtReserved, object pdispReserved)
+		{
+			return (int)(ContextMenuEnabled ? HResult.S_FALSE : HResult.S_OK);
+		}
+
+		void IDocHostUIHandler.GetHostInfo(ref DOCHOSTUIINFO pInfo)
+		{
+			if (!ScrollBarsEnabled)
+				pInfo.dwFlags = DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER;
+			if (!string.IsNullOrEmpty(CustomCss))
+				pInfo.pchHostCss = CustomCss;
+		}
+
+		void IDocHostUIHandler.ShowUI(uint dwID, ref object pActiveObject, ref object pCommandTarget, ref object pFrame, ref object pDoc)
+		{
+		}
+
+		void IDocHostUIHandler.HideUI()
+		{
+		}
+
+		void IDocHostUIHandler.UpdateUI()
+		{
+			var newTitle = GetTitle();
+			if (newTitle != Title)
 			{
-				if (silentProperty == null && canDisableJsErrors)
-				{
-					// get the MSHTML.IWebBrowser2 instance field
-					mshtmlBrowserField = typeof(SWC.WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
-					silentProperty = mshtmlBrowserField.FieldType.GetProperty("Silent");
-					canDisableJsErrors = silentProperty != null;
-				}
-				if (canDisableJsErrors)
-					silentProperty.SetValue(mshtmlBrowserField.GetValue(browser), true, null);
-			}
-			catch
-			{
-				canDisableJsErrors = false;
+				Title = newTitle;
+				if (enableTitleChangedEvent)
+					Context.InvokeUserCode(EventSink.OnTitleChanged);
 			}
 		}
+
+		void IDocHostUIHandler.EnableModeless(bool fEnable)
+		{
+		}
+
+		void IDocHostUIHandler.OnDocWindowActivate(bool fActivate)
+		{
+		}
+
+		void IDocHostUIHandler.OnFrameWindowActivate(bool fActivate)
+		{
+		}
+
+		void IDocHostUIHandler.ResizeBorder(ref RECT prcBorder, object pUIWindow, bool fFrameWindow)
+		{
+		}
+
+		int IDocHostUIHandler.TranslateAccelerator(ref MSG lpMsg, ref Guid pguidCmdGroup, uint nCmdID)
+		{
+			return (int)HResult.S_FALSE;
+		}
+
+		void IDocHostUIHandler.GetOptionKeyPath(out string pchKey, uint dw)
+		{
+			pchKey = null;
+		}
+
+		int IDocHostUIHandler.GetDropTarget(object pDropTarget, out object ppDropTarget)
+		{
+			ppDropTarget = pDropTarget;
+			return (int)HResult.S_FALSE;
+		}
+
+		void IDocHostUIHandler.GetExternal(out object ppDispatch)
+		{
+			ppDispatch = null;
+		}
+
+		int IDocHostUIHandler.TranslateUrl(uint dwTranslate, string pchURLIn, out string ppchURLOut)
+		{
+			ppchURLOut = pchURLIn;
+			return (int)HResult.S_FALSE;
+		}
+		int IDocHostUIHandler.FilterDataObject(IDataObject pDO, out IDataObject ppDORet)
+		{
+			ppDORet = null;
+			return (int)HResult.S_FALSE;
+		}
+
+		#endregion
 	}
 }
 
