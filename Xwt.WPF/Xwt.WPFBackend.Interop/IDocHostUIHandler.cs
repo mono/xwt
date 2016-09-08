@@ -29,7 +29,7 @@ using System.Runtime.InteropServices.ComTypes;
 
 namespace Xwt.NativeMSHTML
 {
-	enum DOCHOSTUIDBLCLK
+	enum DOCHOSTUIDBLCLK : uint
 	{
 		DOCHOSTUIDBLCLK_DEFAULT = 0,
 		DOCHOSTUIDBLCLK_SHOWPROPERTIES = 1,
@@ -37,7 +37,7 @@ namespace Xwt.NativeMSHTML
 	}
 
 	[Flags]
-	enum DOCHOSTUIFLAG
+	enum DOCHOSTUIFLAG : uint
 	{
 		DOCHOSTUIFLAG_DIALOG = 0x00000001,
 		DOCHOSTUIFLAG_DISABLE_HELP_MENU = 0x00000002,
@@ -71,19 +71,38 @@ namespace Xwt.NativeMSHTML
 		DOCHOSTUIFLAG_DPI_AWARE = 0x40000000
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
+	enum DOCHOSTUICONTEXTMENU : uint
+	{
+		CONTEXT_MENU_DEFAULT = 0,
+		CONTEXT_MENU_IMAGE = 1,
+		CONTEXT_MENU_CONTROL = 2,
+		CONTEXT_MENU_TABLE = 3,
+		CONTEXT_MENU_TEXTSELECT = 4,
+		CONTEXT_MENU_ANCHOR = 5,
+		CONTEXT_MENU_UNKNOWN = 6,
+		CONTEXT_MENU_IMGDYNSRC = 7,
+		CONTEXT_MENU_DEBUG = 8,
+		CONTEXT_MENU_VSCROLL = 9,
+		CONTEXT_MENU_HSCROLL = 10,
+		CONTEXT_MENU_MEDIA = 11
+	}
+
+	[StructLayout (LayoutKind.Sequential)]
 	struct DOCHOSTUIINFO
 	{
-		public UIntPtr cbSize;
-		public int dwFlags;
-		public int dwDoubleClick;
-		[MarshalAs(UnmanagedType.BStr)]
+		[MarshalAs (UnmanagedType.U4)]
+		public uint cbSize;
+		[MarshalAs (UnmanagedType.U4)]
+		public DOCHOSTUIFLAG dwFlags;
+		[MarshalAs (UnmanagedType.U4)]
+		public DOCHOSTUIDBLCLK dwDoubleClick;
+		[MarshalAs (UnmanagedType.LPWStr)]
 		public string pchHostCss;
-		[MarshalAs(UnmanagedType.BStr)]
+		[MarshalAs (UnmanagedType.LPWStr)]
 		public string pchHostNS;
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
+	[StructLayout (LayoutKind.Sequential)]
 	struct MSG
 	{
 		public IntPtr hwnd;
@@ -94,7 +113,7 @@ namespace Xwt.NativeMSHTML
 		public POINT pt;
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
+	[StructLayout (LayoutKind.Sequential)]
 	struct RECT
 	{
 		public IntPtr left;
@@ -103,28 +122,29 @@ namespace Xwt.NativeMSHTML
 		public IntPtr bottom;
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
+	[StructLayout (LayoutKind.Sequential)]
 	struct POINT
 	{
 		public IntPtr x;
 		public IntPtr y;
 	}
 
-	[ComImport, Guid("3050F3F0-98B5-11CF-BB82-00AA00BDCE0B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	[ComImport, Guid ("3050F3F0-98B5-11CF-BB82-00AA00BDCE0B"), InterfaceType (ComInterfaceType.InterfaceIsIUnknown)]
 	interface ICustomDoc
 	{
 		[PreserveSig]
 		int SetUIHandler (IDocHostUIHandler pUIHandler);
 	}
 
-	[ComImport, Guid("BD3F23C0-D43E-11CF-893B-00AA00BDCE1A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	[ComImport, Guid ("BD3F23C0-D43E-11CF-893B-00AA00BDCE1A"), InterfaceType (ComInterfaceType.InterfaceIsIUnknown)]
 	interface IDocHostUIHandler
 	{
 		[PreserveSig]
-		int ShowContextMenu(
-			uint dwID,
+		[return: MarshalAs(UnmanagedType.Error)]
+		int ShowContextMenu (
+			[MarshalAs(UnmanagedType.U4)] DOCHOSTUICONTEXTMENU dwID,
 			ref POINT ppt,
-			[MarshalAs(UnmanagedType.IUnknown)]  object pcmdtReserved,
+			[MarshalAs(UnmanagedType.IUnknown)] object pcmdtReserved,
 			[MarshalAs(UnmanagedType.IDispatch)] object pdispReserved
 		);
 
@@ -142,28 +162,33 @@ namespace Xwt.NativeMSHTML
 
 		void OnFrameWindowActivate ([In, MarshalAs(UnmanagedType.Bool)] bool fActivate);
 
-		void ResizeBorder (ref RECT prcBorder, object pUIWindow, [In, MarshalAs(UnmanagedType.Bool)] bool fFrameWindow);
+		void ResizeBorder (ref RECT prcBorder, object pUIWindow, [In, MarshalAs (UnmanagedType.Bool)] bool fFrameWindow);
 
 		[PreserveSig]
+		[return: MarshalAs (UnmanagedType.Error)]
 		int TranslateAccelerator (ref MSG lpMsg, ref Guid pguidCmdGroup, uint nCmdID);
 
-		void GetOptionKeyPath ([MarshalAs(UnmanagedType.BStr)] ref string pchKey, uint dw);
+		void GetOptionKeyPath ([MarshalAs(UnmanagedType.BStr)] out string pchKey, uint dw);
 
 		[PreserveSig]
+		[return: MarshalAs (UnmanagedType.Error)]
 		int GetDropTarget (
-			[In, MarshalAs(UnmanagedType.Interface)] object pDropTarget,
-			[Out, MarshalAs(UnmanagedType.Interface)] out object ppDropTarget
+			[In, MarshalAs (UnmanagedType.Interface)] object pDropTarget,
+			[Out, MarshalAs (UnmanagedType.Interface)] out object ppDropTarget
 		);
 
-		void GetExternal ([MarshalAs(UnmanagedType.IDispatch)] out object ppDispatch);
+		void GetExternal ([MarshalAs (UnmanagedType.IDispatch)] out object ppDispatch);
 
 		[PreserveSig]
+		[return: MarshalAs (UnmanagedType.Error)]
 		int TranslateUrl (
 			uint dwTranslate,
-			[MarshalAs(UnmanagedType.BStr)] string pchURLIn,
-			[MarshalAs(UnmanagedType.BStr)] ref string ppchURLOut
+			[MarshalAs (UnmanagedType.BStr)] string pchURLIn,
+			[MarshalAs (UnmanagedType.BStr)] out string ppchURLOut
 		);
 
-		IDataObject FilterDataObject (IDataObject pDO);
+		[PreserveSig]
+		[return: MarshalAs (UnmanagedType.Error)]
+		int FilterDataObject (IDataObject pDO, out IDataObject pDOppDORet);
 	}
 }

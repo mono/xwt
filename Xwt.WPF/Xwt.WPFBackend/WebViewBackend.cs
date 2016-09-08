@@ -303,7 +303,7 @@ namespace Xwt.WPFBackend
 
 		#region IDocHostUIHandler implementation
 
-		int IDocHostUIHandler.ShowContextMenu(uint dwID, ref POINT ppt, object pcmdtReserved, object pdispReserved)
+		int IDocHostUIHandler.ShowContextMenu(DOCHOSTUICONTEXTMENU dwID, ref POINT ppt, object pcmdtReserved, object pdispReserved)
 		{
 			return (int)(ContextMenuEnabled ? HResult.S_FALSE : HResult.S_OK);
 		}
@@ -311,9 +311,7 @@ namespace Xwt.WPFBackend
 		void IDocHostUIHandler.GetHostInfo(ref DOCHOSTUIINFO pInfo)
 		{
 			if (!ScrollBarsEnabled)
-				pInfo.dwFlags = (int)(DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER);
-			else
-				pInfo.dwFlags = 0;
+				pInfo.dwFlags = DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER;
 			if (!string.IsNullOrEmpty(CustomCss))
 				pInfo.pchHostCss = CustomCss;
 		}
@@ -358,8 +356,9 @@ namespace Xwt.WPFBackend
 			return (int)HResult.S_FALSE;
 		}
 
-		void IDocHostUIHandler.GetOptionKeyPath(ref string pchKey, uint dw)
+		void IDocHostUIHandler.GetOptionKeyPath(out string pchKey, uint dw)
 		{
+			pchKey = null;
 		}
 
 		int IDocHostUIHandler.GetDropTarget(object pDropTarget, out object ppDropTarget)
@@ -370,21 +369,21 @@ namespace Xwt.WPFBackend
 
 		void IDocHostUIHandler.GetExternal(out object ppDispatch)
 		{
-			throw new NotImplementedException();
+			ppDispatch = null;
 		}
 
-		int IDocHostUIHandler.TranslateUrl(uint dwTranslate, string pchURLIn, ref string ppchURLOut)
+		int IDocHostUIHandler.TranslateUrl(uint dwTranslate, string pchURLIn, out string ppchURLOut)
 		{
+			ppchURLOut = pchURLIn;
 			return (int)HResult.S_FALSE;
 		}
-
-		IDataObject IDocHostUIHandler.FilterDataObject(IDataObject pDO)
+		int IDocHostUIHandler.FilterDataObject(IDataObject pDO, out IDataObject ppDORet)
 		{
-			throw new NotImplementedException();
+			ppDORet = null;
+			return (int)HResult.S_FALSE;
 		}
 
 		#endregion
 	}
-
 }
 
