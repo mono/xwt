@@ -125,6 +125,11 @@ namespace Xwt.WPFBackend
 				this.menuItem.Icon = new ImageBox (Context) { ImageSource = imageBackend };
 		}
 
+		public void SetAccelerator (Accelerator accel)
+		{
+			
+		}
+
 		public void SetSubmenu (IMenuBackend menu)
 		{
 			if (menu == null) {

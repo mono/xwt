@@ -30,7 +30,7 @@ namespace Xwt
 {
 	public class Command
 	{
-		public Command (string id) : this (id, id)
+		public Command (string label) : this (label, label)
 		{
 		}
 
@@ -38,22 +38,43 @@ namespace Xwt
 		{
 		}
 
-		public Command (string id, string label, Image icon) : this (id, label)
+		public Command (string label, Accelerator accel) : this (label, label, accel)
+		{
+		}
+
+		public Command (string label, Image icon, Accelerator accel) : this (label, label, icon, accel)
+		{
+		}
+
+		public Command (string id, string label, Image icon) : this (id, label, icon, Accelerator.None)
+		{
+			
+		}
+
+		public Command (string id, string label, Image icon, Accelerator accel) : this (id, label, accel)
 		{
 			Icon = icon;
 		}
 
-		public Command (string id, string label)
+		public Command (string id, string label) : this (id, label, Accelerator.None)
+		{
+
+		}
+
+		public Command (string id, string label, Accelerator accel)
 		{
 			Id = id;
 			Label = label;
+			Accelerator = accel;
 		}
-		
+
 		public string Id { get; private set; }
 		
 		public string Label { get; private set; }
 		
 		public Image Icon { get; private set; }
+
+		public Accelerator Accelerator { get; private set; }
 		
 		public bool IsStockButton { get; private set; }
 		

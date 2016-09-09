@@ -32,6 +32,8 @@ namespace Xwt.GtkBackend
 {
 	public class WindowBackend: WindowFrameBackend, IWindowBackend, IConstraintProvider
 	{
+		internal static Gtk.AccelGroup AccelGroup = new Gtk.AccelGroup ();
+
 		Gtk.Alignment alignment;
 		Gtk.MenuBar mainMenu;
 		Gtk.VBox mainBox;
@@ -39,6 +41,7 @@ namespace Xwt.GtkBackend
 		public override void Initialize ()
 		{
 			Window = new Gtk.Window ("");
+			Window.AddAccelGroup (AccelGroup);
 			Window.Add (CreateMainLayout ());
 		}
 		

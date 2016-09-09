@@ -40,6 +40,7 @@ namespace Xwt.GtkBackend
 		List<MenuItemEvent> enabledEvents;
 		bool changingCheck;
 		ApplicationContext context;
+		Gtk.AccelKey accelKey;
 		
 		public MenuItemBackend ()
 			: this (new Gtk.ImageMenuItem (""))
@@ -85,6 +86,26 @@ namespace Xwt.GtkBackend
 			}
 			else
 				it.Image = null;
+		}
+
+		public void SetAccelerator (Accelerator accel)
+		{
+			if (accelKey.Key != 0)
+				item.RemoveAccelerator (WindowBackend.AccelGroup, (uint)accelKey.Key, accelKey.AccelMods);
+
+			if (accel != null && accel != Accelerator.None) {
+				Gdk.ModifierType modifiers = 0;
+				if ((accel.Modifiers & ModifierKeys.Shift) != 0)
+					modifiers |= Gdk.ModifierType.ShiftMask;
+				if ((accel.Modifiers & ModifierKeys.Control) != 0)
+					modifiers |= Gdk.ModifierType.ControlMask;
+				if ((accel.Modifiers & ModifierKeys.Alt) != 0)
+					modifiers |= Gdk.ModifierType.Mod1Mask;
+
+				accelKey = new Gtk.AccelKey ((Gdk.Key)accel.Key, modifiers,
+				                             Gtk.AccelFlags.Visible | Gtk.AccelFlags.Locked);
+				item.AddAccelerator ("activate", WindowBackend.AccelGroup, accelKey);
+			}
 		}
 
 		public string Label {
