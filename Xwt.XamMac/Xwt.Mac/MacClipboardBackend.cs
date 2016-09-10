@@ -81,7 +81,7 @@ namespace Xwt.Mac
 			if (type == TransferDataType.Text)
 				return data.ToString ();
 			if (type == TransferDataType.Image)
-				return new NSImage (data);
+				return ApplicationContext.Toolkit.WrapImage (new NSImage (data));
 
 			unsafe {
 				var bytes = new byte [data.Length];
@@ -117,7 +117,11 @@ namespace Xwt.Mac
 		{
 			NSData data;
 			var obj = DataSource ();
-			if (obj is NSImage)
+			if (obj is Xwt.Drawing.Image) {
+				var bmp = ((Xwt.Drawing.Image)obj).ToBitmap ();
+				data = ((NSImage)Toolkit.GetBackend (bmp)).AsTiff ();
+			}
+			else if (obj is NSImage)
 				data = ((NSImage)obj).AsTiff ();
 			else if (obj is Uri)
 				data = NSData.FromUrl ((NSUrl)((Uri)obj));
