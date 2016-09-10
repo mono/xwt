@@ -132,6 +132,19 @@ namespace Xwt.WPFBackend
 			base.OnMouseLeftButtonDown(e);
 		}
 
+		protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
+		{
+			if ((view.Backend as TreeViewBackend)?.RowActivatedEventEnabled == true && IsSelected)
+			{
+				var node = (TreeStoreNode)DataContext;
+				view.Backend.Context.InvokeUserCode(delegate
+				{
+					((ITreeViewEventSink)view.Backend.EventSink).OnRowActivated(node);
+				});
+			}
+			base.OnMouseDoubleClick(e);
+		}
+
 		private ExTreeView TreeView
 		{
 			get
