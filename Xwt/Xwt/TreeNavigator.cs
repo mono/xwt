@@ -127,16 +127,15 @@ namespace Xwt
 			backend.SetValue (pos, field.Index, data);
 			return this;
 		}
-		
 
-		public TreeNavigator SetValues<T1,T2> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2)
+		public TreeNavigator SetValues<T1,T2> (IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2)
 		{
 			SetValue (column1, value1);
 			SetValue (column2, value2);
 			return this;
 		}
 
-		public TreeNavigator SetValues<T1,T2,T3> (int row, IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2, IDataField<T3> column3, T3 value3)
+		public TreeNavigator SetValues<T1,T2,T3> (IDataField<T1> column1, T1 value1, IDataField<T2> column2, T2 value2, IDataField<T3> column3, T3 value3)
 		{
 			SetValue (column1, value1);
 			SetValue (column2, value2);
