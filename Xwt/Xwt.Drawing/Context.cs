@@ -233,6 +233,16 @@ namespace Xwt.Drawing
 			handler.DrawImage (Backend, idesc, x, y);
 		}
 
+		public void DrawImage (Image img, double[] x, double[] y, double alpha = 1)
+		{
+			if (!img.HasFixedSize)
+				throw new InvalidOperationException("Image doesn't have a fixed size");
+
+			var idesc = img.GetImageDescription(ToolkitEngine);
+			idesc.Alpha *= alpha;
+			handler.DrawImage(Backend, idesc, x, y);
+		}
+
 		public void DrawImage (Image img, Rectangle rect, double alpha = 1)
 		{
 			DrawImage (img, rect.X, rect.Y, rect.Width, rect.Height, alpha);

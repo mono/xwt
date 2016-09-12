@@ -663,13 +663,28 @@ namespace Xwt
 		/// <param name="nativeWidget">The native widget.</param>
 		/// <param name="nativeContext">The native context.</param>
 		/// <param name="img">The Image to render.</param>
-		/// <param name="x">The destinate x coordinate.</param>
-		/// <param name="y">The destinate y coordinate.</param>
+		/// <param name="x">The destination x coordinate.</param>
+		/// <param name="y">The destination y coordinate.</param>
 		public void RenderImage (object nativeWidget, object nativeContext, Image img, double x, double y)
 		{
 			ValidateObject (img);
 			img.GetFixedSize (); // Ensure that it has a size
 			backend.RenderImage (nativeWidget, nativeContext, img.GetImageDescription (this), x, y);
+		}
+
+		/// <summary>
+		/// Renders an image to the provided native drawing context
+		/// </summary>
+		/// <param name="nativeWidget">The native widget.</param>
+		/// <param name="nativeContext">The native context.</param>
+		/// <param name="img">The Image to render.</param>
+		/// <param name="x">The destination x coordinates.</param>
+		/// <param name="y">The destination y coordinates.</param>
+		public void RenderImage(object nativeWidget, object nativeContext, Image img, double[] x, double[] y)
+		{
+			ValidateObject(img);
+			img.GetFixedSize(); // Ensure that it has a size
+			backend.RenderImage(nativeWidget, nativeContext, img.GetImageDescription(this), x, y);
 		}
 
 		/// <summary>

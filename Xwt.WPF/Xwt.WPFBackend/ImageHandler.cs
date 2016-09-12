@@ -494,6 +494,40 @@ namespace Xwt.WPFBackend
 					dc.Pop ();
 			}
 		}
+
+		public void Draw(ApplicationContext actx, SWM.DrawingContext dc, double scaleFactor, double[] x, double[] y, ImageDescription idesc)
+		{
+			if (drawCallback != null)
+			{
+				DrawingContext c = new DrawingContext(dc, scaleFactor);
+				actx.InvokeUserCode(delegate
+				{
+					for (int i = 0; i < x.Length; ++i)
+						drawCallback(c, new Rectangle(x[i], y[i], idesc.Size.Width, idesc.Size.Height), idesc, actx.Toolkit);
+				});
+			}
+			else {
+				if (idesc.Alpha < 1)
+					dc.PushOpacity(idesc.Alpha);
+
+				var f = GetBestFrame(actx, scaleFactor, idesc.Size.Width, idesc.Size.Height, false);
+				var bmpImage = f as BitmapSource;
+
+				// When an image is a single bitmap that doesn't have the same intrinsic size as the drawing size, dc.DrawImage makes a very poor job of down/up scaling it.
+				// Thus we handle this manually by using a TransformedBitmap to handle the conversion in a better way when it's needed.
+
+				var scaledWidth = idesc.Size.Width * scaleFactor;
+				var scaledHeight = idesc.Size.Height * scaleFactor;
+				if (bmpImage != null && (Math.Abs(bmpImage.PixelHeight - scaledHeight) > 0.001 || Math.Abs(bmpImage.PixelWidth - scaledWidth) > 0.001))
+					f = new TransformedBitmap(bmpImage, new ScaleTransform(scaledWidth / bmpImage.PixelWidth, scaledHeight / bmpImage.PixelHeight));
+
+				for (int i = 0; i < x.Length; ++i)
+					dc.DrawImage(f, new Rect(x[i], y[i], idesc.Size.Width, idesc.Size.Height));
+
+				if (idesc.Alpha < 1)
+					dc.Pop();
+			}
+		}
 	}
 
 	public class ImageBox : System.Windows.Controls.Canvas

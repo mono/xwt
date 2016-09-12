@@ -508,6 +508,18 @@ namespace Xwt.Drawing
 			ctx.Doubles.Add (y);
 		}
 
+		public override void DrawImage(object backend, ImageDescription img, double[] x, double[] y)
+		{
+			var ctx = (VectorBackend)backend;
+			for (int i = 0; i < x.Length; ++i)
+			{
+				ctx.Commands.Add(DrawingCommand.DrawImage);
+				ctx.Images.Add(img);
+				ctx.Doubles.Add(x[i]);
+				ctx.Doubles.Add(y[i]);
+			}
+		}
+
 		public override void DrawImage (object backend, ImageDescription img, Xwt.Rectangle srcRect, Xwt.Rectangle destRect)
 		{
 			var ctx = (VectorBackend)backend;

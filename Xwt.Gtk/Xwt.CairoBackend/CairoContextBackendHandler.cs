@@ -328,6 +328,18 @@ namespace Xwt.CairoBackend
 
 			pix.Draw (ApplicationContext, ctx.Context, ctx.ScaleFactor, x, y, img);
 		}
+
+		public override void DrawImage(object backend, ImageDescription img, double[] x, double[] y)
+		{
+			CairoContextBackend ctx = (CairoContextBackend)backend;
+
+			img.Alpha *= ctx.GlobalAlpha;
+			img.Styles = img.Styles.AddRange(ctx.Styles);
+
+			var pix = (Xwt.GtkBackend.GtkImage)img.Backend;
+
+			pix.Draw(ApplicationContext, ctx.Context, ctx.ScaleFactor, x, y, img);
+		}
 		
 		public override void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect)
 		{

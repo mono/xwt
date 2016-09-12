@@ -268,6 +268,14 @@ namespace Xwt.WPFBackend
 			bmp.Draw (ApplicationContext, c.Context, c.ScaleFactor, x, y, img);
 		}
 
+		public override void DrawImage(object backend, ImageDescription img, double[] x, double[] y)
+		{
+			var c = (DrawingContext)backend;
+			WpfImage bmp = (WpfImage)img.Backend;
+			img.Styles = img.Styles.AddRange(c.Styles);
+			bmp.Draw(ApplicationContext, c.Context, c.ScaleFactor, x, y, img);
+		}
+
 		public override void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect)
 		{
 			var c = (DrawingContext) backend;

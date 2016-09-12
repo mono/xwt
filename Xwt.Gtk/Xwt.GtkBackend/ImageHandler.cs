@@ -441,6 +441,44 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public void Draw(ApplicationContext actx, Cairo.Context ctx, double scaleFactor, double[] x, double[] y, ImageDescription idesc)
+		{
+			if (stockId != null)
+			{
+				ImageFrame frame = null;
+				if (frames != null)
+					frame = frames.FirstOrDefault(f => f.Width == (int)idesc.Size.Width && f.Height == (int)idesc.Size.Height && f.Scale == scaleFactor);
+				if (frame == null)
+				{
+					frame = new ImageFrame(ImageHandler.CreateBitmap(stockId, idesc.Size.Width, idesc.Size.Height, scaleFactor), (int)idesc.Size.Width, (int)idesc.Size.Height, false);
+					frame.Scale = scaleFactor;
+					AddFrame(frame);
+				}
+				DrawPixbuf(ctx, frame.Pixbuf, x, y, idesc);
+			}
+			else if (drawCallback != null)
+			{
+				CairoContextBackend c = new CairoContextBackend(scaleFactor)
+				{
+					Context = ctx
+				};
+				if (actx != null)
+				{
+					actx.InvokeUserCode(delegate
+					{
+						for (int i = 0; i < x.Length; ++i) 
+							drawCallback(c, new Rectangle(x[i], y[i], idesc.Size.Width, idesc.Size.Height), idesc, actx.Toolkit);
+					});
+				}
+				else
+					for (int i = 0; i < x.Length; ++i)
+						drawCallback(c, new Rectangle(x[i], y[i], idesc.Size.Width, idesc.Size.Height), idesc, Toolkit.CurrentEngine);
+			}
+			else {
+				DrawPixbuf(ctx, GetBestFrame(actx, scaleFactor, idesc.Size.Width, idesc.Size.Height, false), x, y, idesc);
+			}
+		}
+
 		void DrawPixbuf (Cairo.Context ctx, Gdk.Pixbuf img, double x, double y, ImageDescription idesc)
 		{
 			ctx.Save ();
@@ -466,6 +504,40 @@ namespace Xwt.GtkBackend
 			else
 				ctx.PaintWithAlpha (idesc.Alpha);
 			ctx.Restore ();
+		}
+
+		void DrawPixbuf(Cairo.Context ctx, Gdk.Pixbuf img, double[] x, double[] y, ImageDescription idesc)
+		{
+			ctx.Save();
+			Gdk.CairoHelper.SetSourcePixbuf(ctx, img, 0, 0);
+			ctx.Scale(idesc.Size.Width / (double)img.Width, idesc.Size.Height / (double)img.Height);
+
+#pragma warning disable 618
+			using (var p = ctx.Source)
+			{
+				var pattern = p as Cairo.SurfacePattern;
+				if (pattern != null)
+				{
+					if (idesc.Size.Width > img.Width || idesc.Size.Height > img.Height)
+					{
+						// Fixes blur issue when rendering on an image surface
+						pattern.Filter = Cairo.Filter.Fast;
+					}
+					else
+						pattern.Filter = Cairo.Filter.Good;
+				}
+			}
+#pragma warning restore 618
+
+			for (int i = 0; i < x.Length; ++i)
+			{
+				ctx.MoveTo(x[i], y[i]);
+				if (idesc.Alpha >= 1)
+					ctx.Paint();
+				else
+					ctx.PaintWithAlpha(idesc.Alpha);
+			}
+			ctx.Restore();
 		}
 	}
 

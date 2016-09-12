@@ -391,6 +391,17 @@ namespace Xwt.Backends
 		}
 
 		/// <summary>
+		/// Renders an image at the provided native context
+		/// </summary>
+		/// <param name="nativeContext">Native context.</param>
+		/// <param name="img">Image.</param>
+		/// <param name="x">The x coordinates.</param>
+		/// <param name="y">The y coordinates.</param>
+		public virtual void RenderImage(object nativeWidget, object nativeContext, ImageDescription img, double[] x, double[] y)
+		{
+		}
+
+		/// <summary>
 		/// Gets the information about Xwt features supported by the toolkit.
 		/// </summary>
 		/// <value>The supported features.</value>

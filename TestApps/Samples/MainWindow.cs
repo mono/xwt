@@ -118,6 +118,7 @@ namespace Samples
 			AddSample (n, "Figures", typeof(DrawingFigures));
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
 			AddSample (n, "Images and Patterns", typeof(DrawingPatternsAndImages));
+			AddSample (n, "Fast Image Drawing", typeof(FastDraw));
 			AddSample (n, "Text", typeof(DrawingText));
 			AddSample (n, "Partial Images", typeof (PartialImages));
 			AddSample (n, "Custom Drawn Image", typeof (ImageScaling));
