@@ -48,6 +48,16 @@ namespace Xwt.GtkBackend
 				Widget.Show ();
 				return;
 			}
+
+			Type frameworkElement = Type.GetType ("System.Windows.FrameworkElement, PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", false);
+			Type windowsHelper = Type.GetType ("Xwt.Gtk.Windows.GtkWin32Interop, Xwt.Gtk.Windows", false);
+			if (frameworkElement != null && windowsHelper != null && frameworkElement.IsInstanceOfType (nativeWidget)) {
+				var factoryMethod = windowsHelper.GetMethod ("ControlToGtkWidget",
+				                                             System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+				Widget = (Gtk.Widget)factoryMethod.Invoke (null, new [] { nativeWidget });
+				Widget.Show ();
+				return;
+			}
 		}
 	}
 }
