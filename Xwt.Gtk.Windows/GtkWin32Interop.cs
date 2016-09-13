@@ -284,6 +284,8 @@ namespace Xwt.Gtk.Windows
 			{
 				base.OnDestroyed ();
 
+				wpfControl.GotKeyboardFocus -= OnGotFocus;
+				wpfControl.KeyDown -= OnKeyDown;
 				wpfWidgetHost.Dispose ();
 			}
 
