@@ -156,13 +156,29 @@ namespace Xwt.Mac
 		{
 			Visible = true;
 			modalSessionRunning = true;
+			var win = parent as NSWindow ?? Toolkit.CurrentEngine.GetNativeWindow (parent) as NSWindow;
+			if (win != null) {
+				win.AddChildWindow (this, NSWindowOrderingMode.Above);
+				// always use NSWindow for alignment when running in guest mode and
+				// don't rely on AddChildWindow to position the window correctly
+				if (!(parent is WindowBackend)) {
+					var parentBounds = MacDesktopBackend.ToDesktopRect (win.ContentRectFor (win.Frame));
+					var bounds = ((IWindowFrameBackend)this).Bounds;
+					bounds.X = parentBounds.Center.X - (Frame.Width / 2);
+					bounds.Y = parentBounds.Center.Y - (Frame.Height / 2);
+					((IWindowFrameBackend)this).Bounds = bounds;
+				}
+			}
 			NSApplication.SharedApplication.RunModalForWindow (this);
 		}
 
 		public void EndLoop ()
 		{
 			modalSessionRunning = false;
+			if (ParentWindow != null)
+				ParentWindow.RemoveChildWindow (this);
 			NSApplication.SharedApplication.StopModal ();
+			OrderOut (this);
 		}
 
 		#endregion
