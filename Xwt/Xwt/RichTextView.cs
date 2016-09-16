@@ -108,6 +108,15 @@ namespace Xwt
 			}
 		}
 
+		public bool Selectable {
+			get {
+				return Backend.Selectable;
+			}
+			set {
+				Backend.Selectable = value;
+			}
+		}
+
 		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();

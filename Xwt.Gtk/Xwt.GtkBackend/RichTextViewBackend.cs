@@ -165,6 +165,15 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public bool Selectable {
+			get {
+				return Widget.Sensitive;
+			}
+			set {
+				Widget.Sensitive = value;
+			}
+		}
+
 		void HandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)
 		{
 			if (NavigateToUrlEnabled) {

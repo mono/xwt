@@ -124,6 +124,19 @@ namespace Xwt.Mac
 			}
 		}
 
+		public bool Selectable {
+			get {
+				return Widget.Selectable;
+			}
+			set {
+				Widget.Selectable = value;
+				// force NSTextView not to draw its (white) background
+				// making it look like a label, which is the default Gtk/Wpf behaviour
+				// the background color can still be set manually with the BackgroundColor property
+				Widget.DrawsBackground = value;
+			}
+		}
+
 		public IRichTextBuffer CurrentBuffer {
 			get {
 				return currentBuffer;

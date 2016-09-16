@@ -27,6 +27,8 @@ namespace Xwt.Backends
 
 		bool ReadOnly { get; set; }
 
+		bool Selectable { get; set; }
+
 		IRichTextBuffer CurrentBuffer { get; }
 	}
 

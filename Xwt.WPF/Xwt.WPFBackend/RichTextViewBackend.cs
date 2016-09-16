@@ -30,6 +30,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using Xwt.Backends;
@@ -41,6 +42,9 @@ namespace Xwt.WPFBackend
 		: WidgetBackend, IRichTextViewBackend
 	{
 		RichTextBuffer currentBuffer;
+		bool selectable;
+		readonly double defaultSelectionOpacity;
+
 		public new IRichTextViewEventSink EventSink {
 			get { return (IRichTextViewEventSink) base.EventSink; }
 		}
@@ -54,6 +58,7 @@ namespace Xwt.WPFBackend
 		public RichTextViewBackend ()
 		{
 			Widget = new ExRichTextBox ();
+			defaultSelectionOpacity = Widget.SelectionOpacity;
 			Widget.BorderThickness = new System.Windows.Thickness (0);
 		}
 
@@ -120,6 +125,22 @@ namespace Xwt.WPFBackend
 			} 
 			set {
 				Widget.IsReadOnly = value;
+			}
+		}
+
+		public bool Selectable {
+			get {
+				return selectable;
+			}
+			set {
+				selectable = value;
+				if (selectable) {
+					Widget.Cursor = Cursors.IBeam;
+					Widget.SelectionOpacity = defaultSelectionOpacity;
+				} else {
+					Widget.Cursor = Cursors.Arrow;
+					Widget.SelectionOpacity = 0;
+				}
 			}
 		}
 
