@@ -349,6 +349,11 @@ namespace Xwt.GtkBackend
 			{
 				//FIXME
 			}
+
+			public void EmitText (FormattedText markup)
+			{
+				EmitText (markup.Text, RichTextInlineStyle.Normal);
+			}
 		}
 	}
 }

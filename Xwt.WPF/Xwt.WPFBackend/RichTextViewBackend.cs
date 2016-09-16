@@ -259,6 +259,11 @@ namespace Xwt.WPFBackend
 				writer.WriteEndElement ();
 			}
 
+			public void EmitText (FormattedText text)
+			{
+				EmitText (text.Text, RichTextInlineStyle.Normal);
+			}
+
 			public void EmitStartParagraph (int indentLevel)
 			{
 				//FIXME: indentLevel

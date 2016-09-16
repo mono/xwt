@@ -146,5 +146,24 @@ namespace Xwt
 			Markdown = string.Empty;
 		}
 	}
+
+	public class MarkupView : RichTextView
+	{
+		string markup;
+		public string Markup {
+			get {
+				return markup;
+			}
+			set {
+				markup = value;
+				LoadText (value, TextFormat.Markup);
+			}
+		}
+
+		public MarkupView ()
+		{
+			Markup = string.Empty;
+		}
+	}
 }
 

@@ -357,6 +357,11 @@ namespace Xwt.Mac
 				xmlWriter.WriteEndElement ();
 		}
 
+		public void EmitText (FormattedText text)
+		{
+			EmitText (text.Text, RichTextInlineStyle.Normal);
+		}
+
 		public void EmitStartHeader (int level)
 		{
 			if (level < 1)

@@ -34,6 +34,7 @@ namespace Xwt.Backends
 	{
 		// Emit text using specified style mask
 		void EmitText (string text, RichTextInlineStyle style);
+		void EmitText (FormattedText text);
 
 		// Emit a header (h1, h2, ...)
 		void EmitStartHeader (int level);
