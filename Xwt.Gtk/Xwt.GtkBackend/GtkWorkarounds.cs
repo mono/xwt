@@ -1345,6 +1345,103 @@ namespace Xwt.GtkBackend
 			var strPtr = gtk_selection_data_get_uris (data.Handle);
 			return GLib.Marshaller.PtrToStringArrayGFree (strPtr);
 		}
+
+		public static bool GetTagForAttributes (this Pango.AttrIterator iter, string name, out Gtk.TextTag tag)
+		{
+			tag = new Gtk.TextTag (name);
+			bool result = false;
+			Pango.Attribute attr;
+
+			if (iter.SafeGet (Pango.AttrType.Family, out attr)) {
+				tag.Family = ((Pango.AttrFamily)attr).Family;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Style, out attr)) {
+				tag.Style = ((Pango.AttrStyle)attr).Style;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Style, out attr)) {
+				tag.Style = ((Pango.AttrStyle)attr).Style;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Weight, out attr)) {
+				tag.Weight = ((Pango.AttrWeight)attr).Weight;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Variant, out attr)) {
+				tag.Variant = ((Pango.AttrVariant)attr).Variant;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Stretch, out attr)) {
+				tag.Stretch = ((Pango.AttrStretch)attr).Stretch;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.FontDesc, out attr)) {
+				tag.FontDesc = ((Pango.AttrFontDesc)attr).Desc;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Foreground, out attr)) {
+				tag.Foreground = ((Pango.AttrForeground)attr).Color.ToString ();
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Background, out attr)) {
+				tag.Background = ((Pango.AttrBackground)attr).Color.ToString ();
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Underline, out attr)) {
+				tag.Underline = ((Pango.AttrUnderline)attr).Underline;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Strikethrough, out attr)) {
+				tag.Strikethrough = ((Pango.AttrStrikethrough)attr).Strikethrough;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Strikethrough, out attr)) {
+				tag.Strikethrough = ((Pango.AttrStrikethrough)attr).Strikethrough;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Rise, out attr)) {
+				tag.Rise = ((Pango.AttrRise)attr).Rise;
+				result = true;
+			}
+
+			if (iter.SafeGet (Pango.AttrType.Scale, out attr)) {
+				tag.Scale = ((Pango.AttrScale)attr).Scale;
+				result = true;
+			}
+
+			return result;
+		}
+
+		[DllImport (GtkInterop.LIBPANGO, CallingConvention = CallingConvention.Cdecl)]
+		private static extern IntPtr pango_attr_iterator_get (IntPtr raw, int type);
+
+		public static bool SafeGet (this Pango.AttrIterator iter, Pango.AttrType type, out Pango.Attribute attr)
+		{
+			attr = null;
+			try {
+				IntPtr raw = pango_attr_iterator_get (iter.Handle, (int)type);
+				if (raw != IntPtr.Zero) {
+					attr = Pango.Attribute.GetAttribute (raw);
+					return true;
+				} else
+					return false;
+			} catch {
+				return false;
+			}
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>
