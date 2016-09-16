@@ -359,7 +359,46 @@ namespace Xwt.Mac
 
 		public void EmitText (FormattedText text)
 		{
+			#if MONOMAC
+			// FIXME: MonoMac does not expose the required API
 			EmitText (text.Text, RichTextInlineStyle.Normal);
+			#else
+			if (text.Attributes.Count == 0) {
+				EmitText (text.Text, RichTextInlineStyle.Normal);
+				return;
+			}
+			var s = text.ToAttributedString ();
+			var options = new NSAttributedStringDocumentAttributes ();
+			options.DocumentType = NSDocumentType.HTML;
+			var exclude = NSArray.FromObjects (new [] { "doctype", "html", "head", "meta", "xml", "body", "p" });
+			options.Dictionary [NSExcludedElementsDocumentAttribute] = exclude;
+			NSError err;
+			var d = s.GetData (new NSRange (0, s.Length), options, out err);
+			var str = (string)NSString.FromData (d, NSStringEncoding.UTF8);
+
+
+			//bool first = true;
+			foreach (string line in str.Split (lineSplitChars, StringSplitOptions.None)) {
+				//if (!first) {
+				//	xmlWriter.WriteStartElement ("br");
+				//	xmlWriter.WriteEndElement ();
+				//} else
+				//	first = false;
+				xmlWriter.WriteRaw (line);
+			}
+			#endif
+		}
+
+		private static readonly IntPtr _AppKitHandle = Dlfcn.dlopen ("/System/Library/Frameworks/AppKit.framework/AppKit", 0);
+
+		private static NSString _NSExcludedElementsDocumentAttribute;
+		private static NSString NSExcludedElementsDocumentAttribute {
+			get {
+				if (_NSExcludedElementsDocumentAttribute == null) {
+					_NSExcludedElementsDocumentAttribute = Dlfcn.GetStringConstant (_AppKitHandle, "NSExcludedElementsDocumentAttribute");
+				}
+				return _NSExcludedElementsDocumentAttribute;
+			}
 		}
 
 		public void EmitStartHeader (int level)
