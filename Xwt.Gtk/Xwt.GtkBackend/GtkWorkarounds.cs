@@ -1328,6 +1328,23 @@ namespace Xwt.GtkBackend
 				return gdk_win32_drawable_get_handle (window.GdkWindow.Handle);
 			return gdk_x11_drawable_get_xid (window.GdkWindow.Handle);
 		}
+
+		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		private static extern bool gtk_selection_data_set_uris(IntPtr raw, IntPtr[] uris);
+
+		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		private static extern IntPtr gtk_selection_data_get_uris(IntPtr raw);
+
+		public static bool SetUris(this Gtk.SelectionData data, string[] uris)
+		{
+			return gtk_selection_data_set_uris(data.Handle, GLib.Marshaller.StringArrayToNullTermPointer(uris));
+		}
+
+		public static string[] GetUris(this Gtk.SelectionData data)
+		{
+			var strPtr = gtk_selection_data_get_uris (data.Handle);
+			return GLib.Marshaller.PtrToStringArrayGFree (strPtr);
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>
