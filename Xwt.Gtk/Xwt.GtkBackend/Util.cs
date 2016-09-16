@@ -91,7 +91,7 @@ namespace Xwt.GtkBackend
 			else if (data.TargetsIncludeImage (false))
 				target.AddImage (context.Toolkit.WrapImage (data.Pixbuf));
 			else if (type == TransferDataType.Uri) {
-				var uris = System.Text.Encoding.UTF8.GetString (data.Data).Split ('\n').Where (u => !string.IsNullOrEmpty(u)).Select (u => new Uri (u)).ToArray ();
+				var uris = System.Text.Encoding.UTF8.GetString (data.Data).Split ('\n').Where (u => !(string.IsNullOrEmpty(u) || u == "\0")).Select (u => new Uri (u)).ToArray ();
 				target.AddUris (uris);
 			}
 			else
