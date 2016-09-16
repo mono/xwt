@@ -50,7 +50,12 @@ namespace Xwt.GtkBackend
 
 		public override IEnumerable<string> GetInstalledFonts ()
 		{
-			return systemContext.FontMap.Families.Select (f => f.Name);
+			var fontNames = systemContext.FontMap.Families.Select (f => f.Name);
+			if (Platform.IsMac) {
+				var macFonts = new string [] { "-apple-system-font", ".AppleSystemUIFont" }.AsEnumerable ();
+				return macFonts.Concat (fontNames);
+			}
+			return fontNames;
 		}
 
 		public override IEnumerable<KeyValuePair<string, object>> GetAvailableFamilyFaces (string family)
@@ -65,6 +70,8 @@ namespace Xwt.GtkBackend
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
+			if (Platform.IsMac && fontName == ".AppleSystemUIFont")
+				fontName = "-apple-system-font";
 			return FontDescription.FromString (fontName + ", " + style + " " + weight + " " + stretch + " " + size.ToString (CultureInfo.InvariantCulture));
 		}
 

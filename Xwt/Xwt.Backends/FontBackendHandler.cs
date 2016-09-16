@@ -72,7 +72,7 @@ namespace Xwt.Backends
 				return "FreeSans, Nimbus Sans L, Garuda, Utkal, Arial, Helvetica, sans-serif";
 
 				case DesktopType.Mac:
-				return "SF UI Text, Helvetica Neue, Helvetica, Lucida Grande, Lucida Sans Unicode, Arial, sans-serif";
+				return "-apple-system-font, .AppleSystemUIFont, Helvetica Neue, Helvetica, Lucida Grande, Lucida Sans Unicode, Arial, sans-serif";
 
 				default:
 				return "Segoe UI, Tahoma, Arial, Helvetica, Lucida Sans Unicode, Lucida Grande, sans-serif";
