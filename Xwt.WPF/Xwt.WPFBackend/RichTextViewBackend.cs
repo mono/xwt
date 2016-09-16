@@ -308,7 +308,23 @@ namespace Xwt.WPFBackend
 
 			public void EmitText (FormattedText markup)
 			{
-				EmitText (markup.Text, RichTextInlineStyle.Normal);
+				InlineCollection block;
+				var inlineCreated = GetOrCreateInline(out block);
+
+				var atts = new List<Drawing.TextAttribute>(markup.Attributes);
+				atts.Sort((a, b) =>
+				{
+					var c = a.StartIndex.CompareTo(b.StartIndex);
+					if (c == 0)
+						c = -(a.Count.CompareTo(b.Count));
+					return c;
+				});
+
+				int i = 0, attrIndex = 0;
+				GenerateBlocks(block, markup.Text, ref i, markup.Text.Length, atts, ref attrIndex);
+
+				if (inlineCreated)
+					EmitEndParagraph();
 			}
 
 			Paragraph EmitStartParagraph ()
@@ -348,6 +364,88 @@ namespace Xwt.WPFBackend
 				get {
 					string text = new TextRange (doc.ContentStart, doc.ContentEnd).Text;
 					return text;
+				}
+			}
+
+			void GenerateBlocks(InlineCollection col, string text, ref int i, int spanEnd, List<Drawing.TextAttribute> attributes, ref int attrIndex)
+			{
+				while (attrIndex < attributes.Count)
+				{
+					var at = attributes[attrIndex];
+					if (at.StartIndex > spanEnd)
+					{
+						FlushText(col, text, ref i, spanEnd);
+						return;
+					}
+
+					FlushText(col, text, ref i, at.StartIndex);
+
+					var s = new Span();
+
+					if (at is Drawing.BackgroundTextAttribute)
+					{
+						s.Background = new SolidColorBrush(((Drawing.BackgroundTextAttribute)at).Color.ToWpfColor());
+					}
+					else if (at is Drawing.FontWeightTextAttribute)
+					{
+						s.FontWeight = ((Drawing.FontWeightTextAttribute)at).Weight.ToWpfFontWeight();
+					}
+					else if (at is Drawing.FontStyleTextAttribute)
+					{
+						s.FontStyle = ((Drawing.FontStyleTextAttribute)at).Style.ToWpfFontStyle();
+					}
+					else if (at is Drawing.UnderlineTextAttribute)
+					{
+						var xa = (Drawing.UnderlineTextAttribute)at;
+						var dec = new TextDecoration(TextDecorationLocation.Underline, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+						s.TextDecorations.Add(dec);
+					}
+					else if (at is Drawing.StrikethroughTextAttribute)
+					{
+						var xa = (Drawing.StrikethroughTextAttribute)at;
+						var dec = new TextDecoration(TextDecorationLocation.Strikethrough, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+						s.TextDecorations.Add(dec);
+					}
+					else if (at is Drawing.FontTextAttribute)
+					{
+						var xa = (Drawing.FontTextAttribute)at;
+						s.FontFamily = new FontFamily(xa.Font.Family);
+						s.FontSize = WpfFontBackendHandler.GetPointsFromDeviceUnits(xa.Font.Size);
+						s.FontStretch = xa.Font.Stretch.ToWpfFontStretch();
+						s.FontStyle = xa.Font.Style.ToWpfFontStyle();
+						s.FontWeight = xa.Font.Weight.ToWpfFontWeight();
+					}
+					else if (at is Drawing.ColorTextAttribute)
+					{
+						s.Foreground = new SolidColorBrush(((Drawing.ColorTextAttribute)at).Color.ToWpfColor());
+					}
+					else if (at is Drawing.LinkTextAttribute)
+					{
+						var link = new Hyperlink()
+						{
+							NavigateUri = ((Drawing.LinkTextAttribute)at).Target
+						};
+						s = link;
+					}
+
+					col.Add(s);
+
+					var max = i + at.Count;
+					if (max > spanEnd)
+						max = spanEnd;
+
+					attrIndex++;
+					GenerateBlocks(s.Inlines, text, ref i, i + at.Count, attributes, ref attrIndex);
+				}
+				FlushText(col, text, ref i, spanEnd);
+			}
+
+			void FlushText(InlineCollection col, string text, ref int i, int pos)
+			{
+				if (pos > i)
+				{
+					col.Add(text.Substring(i, pos - i));
+					i = pos;
 				}
 			}
 		}
