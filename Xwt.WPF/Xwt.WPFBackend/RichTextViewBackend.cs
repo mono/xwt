@@ -144,6 +144,16 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public int LineSpacing {
+			get {
+				return Widget.LineSpacing;
+			}
+
+			set {
+				Widget.LineSpacing = value;
+			}
+		}
+
 		class RichTextBuffer : IRichTextBuffer
 		{
 			const int FontSize = 16;

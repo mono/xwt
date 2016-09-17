@@ -174,6 +174,16 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public int LineSpacing {
+			get {
+				return Widget.PixelsInsideWrap;
+			}
+			set {
+				Widget.PixelsInsideWrap = value;
+				Widget.PixelsBelowLines = value;
+			}
+		}
+
 		void HandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)
 		{
 			if (NavigateToUrlEnabled) {

@@ -117,6 +117,15 @@ namespace Xwt
 			}
 		}
 
+		public int LineSpacing {
+			get {
+				return Backend.LineSpacing;
+			}
+			set {
+				Backend.LineSpacing = value;
+			}
+		}
+
 		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();

@@ -80,6 +80,9 @@ namespace Xwt.Mac
 			ViewObject = tv;
 			tv.VerticallyResizable = false;
 			tv.HorizontallyResizable = false;
+			// Use cached font since Widget.Font size increases for each LoadText... It has to do
+			// with the 'style' attribute for the 'body' element - not sure why that happens
+			font = tv.Font;
 		}
 
 		double CalcHeight (double width)
@@ -110,9 +113,7 @@ namespace Xwt.Mac
 
 		public IRichTextBuffer CreateBuffer ()
 		{
-			// Use cached font since Widget.Font size increases for each LoadText... It has to do
-			// with the 'style' attribute for the 'body' element - not sure why that happens
-			return new MacRichTextBuffer (font ?? Widget.Font);
+			return new MacRichTextBuffer ();
 		}
 
 		public bool ReadOnly { 
@@ -137,9 +138,27 @@ namespace Xwt.Mac
 			}
 		}
 
+		int? lineSpacing = null;
+		public int LineSpacing {
+			get {
+				return lineSpacing.HasValue ? (int)lineSpacing : 0;
+			}
+			set {
+				lineSpacing = value;
+
+				if (currentBuffer != null)
+					Widget.TextStorage.SetString (currentBuffer.ToAttributedString (font, lineSpacing));
+			}
+		}
+
 		public IRichTextBuffer CurrentBuffer {
 			get {
 				return currentBuffer;
+			}
+			private set {
+				if (currentBuffer != null)
+					currentBuffer.Dispose ();
+				currentBuffer = value as MacRichTextBuffer;
 			}
 		}
 
@@ -148,12 +167,12 @@ namespace Xwt.Mac
 			var macBuffer = buffer as MacRichTextBuffer;
 			if (macBuffer == null)
 				throw new ArgumentException ("Passed buffer is of incorrect type", "buffer");
-			currentBuffer = macBuffer;
+			CurrentBuffer = macBuffer;
 			var tview = ViewObject as MacTextView;
 			if (tview == null)
 				return;
 
-			tview.TextStorage.SetString (macBuffer.ToAttributedString ());
+			tview.TextStorage.SetString (macBuffer.ToAttributedString (font, lineSpacing));
 		}
 
 		public override void EnableEvent (object eventId)
@@ -178,6 +197,13 @@ namespace Xwt.Mac
 			if (tview == null)
 				return;
 			tview.DisableEvent ((RichTextViewEvent)eventId);
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (currentBuffer != null)
+				currentBuffer.Dispose ();
+			base.Dispose (disposing);
 		}
 	}
 
@@ -250,26 +276,41 @@ namespace Xwt.Mac
 		}
 	}
 
-	class MacRichTextBuffer : IRichTextBuffer
+	class MacRichTextBuffer : IRichTextBuffer, IDisposable
 	{
 		const int HeaderIncrement = 8;
 
 		static readonly string[] lineSplitChars = new string[] { Environment.NewLine };
 		static readonly IntPtr selInitWithHTMLDocumentAttributes_Handle = Selector.GetHandle ("initWithHTML:documentAttributes:");
 
-		StringBuilder text;
-		XmlWriter xmlWriter;
+		readonly StringBuilder text;
+		readonly XmlWriter xmlWriter;
 		Stack <int> paragraphIndent;
 
-		public MacRichTextBuffer (NSFont font)
+		public MacRichTextBuffer ()
 		{
 			text = new StringBuilder ();
 			xmlWriter = XmlWriter.Create (text, new XmlWriterSettings {
 				OmitXmlDeclaration = true,
 				Encoding = Encoding.UTF8,
 				Indent = true,
+				IndentChars = "\t",
+				ConformanceLevel = ConformanceLevel.Fragment
+			});
+		}
+
+		public NSAttributedString ToAttributedString (NSFont font, int? lineSpacing)
+		{
+			xmlWriter.Flush ();
+
+			var finaltext = new StringBuilder ();
+			var finalxmlWriter = XmlWriter.Create (finaltext, new XmlWriterSettings {
+				OmitXmlDeclaration = true,
+				Encoding = Encoding.UTF8,
+				Indent = true,
 				IndentChars = "\t"
 			});
+
 
 			float fontSize;
 			string fontFamily;
@@ -282,31 +323,34 @@ namespace Xwt.Mac
 				fontFamily = "sans-serif";
 			}
 
-			xmlWriter.WriteDocType ("html", "-//W3C//DTD XHTML 1.0", "Strict//EN", null);
-			xmlWriter.WriteStartElement ("html");
-			xmlWriter.WriteStartElement ("meta");
-			xmlWriter.WriteAttributeString ("http-equiv", "Content-Type");
-			xmlWriter.WriteAttributeString ("content", "text/html; charset=utf-8");
-			xmlWriter.WriteEndElement ();
-			xmlWriter.WriteStartElement ("body");
-			xmlWriter.WriteAttributeString ("style", String.Format ("font-family: {0}; font-size: {1}", fontFamily, fontSize));
-		}
+			finalxmlWriter.WriteDocType ("html", "-//W3C//DTD XHTML 1.0", "Strict//EN", null);
+			finalxmlWriter.WriteStartElement ("html");
+			finalxmlWriter.WriteStartElement ("meta");
+			finalxmlWriter.WriteAttributeString ("http-equiv", "Content-Type");
+			finalxmlWriter.WriteAttributeString ("content", "text/html; charset=utf-8");
+			finalxmlWriter.WriteEndElement ();
+			finalxmlWriter.WriteStartElement ("body");
 
-		public NSAttributedString ToAttributedString ()
-		{
-			xmlWriter.WriteEndElement (); // body
-			xmlWriter.WriteEndElement (); // html
-			xmlWriter.Flush ();
-			if (text == null || text.Length == 0)
+			string style = String.Format ("font-family: {0}; font-size: {1}", fontFamily, fontSize);
+			if (lineSpacing.HasValue)
+				style += "; line-height: " + (lineSpacing.Value + fontSize) + "px";
+
+			finalxmlWriter.WriteAttributeString ("style", style);
+			finalxmlWriter.WriteRaw (text.ToString ());
+			finalxmlWriter.WriteEndElement (); // body
+			finalxmlWriter.WriteEndElement (); // html
+			finalxmlWriter.Flush ();
+
+			if (finaltext == null || finaltext.Length == 0)
 				return new NSAttributedString (String.Empty);
 
 			NSDictionary docAttributes;
 			try {
-				return CreateStringFromHTML (text.ToString (), out docAttributes);
+				return CreateStringFromHTML (finaltext.ToString (), out docAttributes);
 			} finally {
-				text = null;
-				xmlWriter.Dispose ();
-				xmlWriter = null;
+				finaltext = null;
+				finalxmlWriter.Dispose ();
+				finalxmlWriter = null;
 				docAttributes = null;
 			}
 		}
@@ -501,6 +545,11 @@ namespace Xwt.Mac
 		{
 			xmlWriter.WriteStartElement ("hr");
 			xmlWriter.WriteEndElement ();
+		}
+
+		public void Dispose ()
+		{
+			xmlWriter.Dispose ();
 		}
 	}
 }

@@ -29,6 +29,8 @@ namespace Xwt.Backends
 
 		bool Selectable { get; set; }
 
+		int LineSpacing { get; set; }
+
 		IRichTextBuffer CurrentBuffer { get; }
 	}
 
