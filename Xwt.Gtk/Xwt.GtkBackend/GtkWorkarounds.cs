@@ -1350,96 +1350,112 @@ namespace Xwt.GtkBackend
 		{
 			tag = new Gtk.TextTag (name);
 			bool result = false;
-			Pango.Attribute attr;
 
-			if (iter.SafeGet (Pango.AttrType.Family, out attr)) {
-				tag.Family = ((Pango.AttrFamily)attr).Family;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Family)) {
+				if (attr != null) {
+					tag.Family = ((Pango.AttrFamily)attr).Family;
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Style, out attr)) {
-				tag.Style = ((Pango.AttrStyle)attr).Style;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Style)) {
+				if (attr != null) {
+					tag.Style = ((Pango.AttrStyle)attr).Style;
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Style, out attr)) {
-				tag.Style = ((Pango.AttrStyle)attr).Style;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Weight)) {
+				if (attr != null) {
+					tag.Weight = ((Pango.AttrWeight)attr).Weight;
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Weight, out attr)) {
-				tag.Weight = ((Pango.AttrWeight)attr).Weight;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Variant)) {
+				if (attr != null) {
+					tag.Variant = ((Pango.AttrVariant)attr).Variant;
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Variant, out attr)) {
-				tag.Variant = ((Pango.AttrVariant)attr).Variant;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Stretch)) {
+				if (attr != null) {
+					tag.Stretch = ((Pango.AttrStretch)attr).Stretch;
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Stretch, out attr)) {
-				tag.Stretch = ((Pango.AttrStretch)attr).Stretch;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.FontDesc)) {
+				if (attr != null) {
+					tag.FontDesc = ((Pango.AttrFontDesc)attr).Desc;
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.FontDesc, out attr)) {
-				tag.FontDesc = ((Pango.AttrFontDesc)attr).Desc;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Foreground)) {
+				if (attr != null) {
+					tag.Foreground = ((Gdk.PangoAttrEmbossColor)attr).Color.ToString ();
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Foreground, out attr)) {
-				tag.Foreground = ((Pango.AttrForeground)attr).Color.ToString ();
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Background)) {
+				if (attr != null) {
+					tag.Background = ((Gdk.PangoAttrEmbossColor)attr).Color.ToString ();
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Background, out attr)) {
-				tag.Background = ((Pango.AttrBackground)attr).Color.ToString ();
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Underline)) {
+				if (attr != null) {
+					tag.Underline = ((Pango.AttrUnderline)attr).Underline;
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Underline, out attr)) {
-				tag.Underline = ((Pango.AttrUnderline)attr).Underline;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Strikethrough)) {
+				if (attr != null) {
+					tag.Strikethrough = ((Pango.AttrStrikethrough)attr).Strikethrough;
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Strikethrough, out attr)) {
-				tag.Strikethrough = ((Pango.AttrStrikethrough)attr).Strikethrough;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Rise)) {
+				if (attr != null) {
+					tag.Rise = ((Pango.AttrRise)attr).Rise;
+					result = true;
+				}
 			}
 
-			if (iter.SafeGet (Pango.AttrType.Strikethrough, out attr)) {
-				tag.Strikethrough = ((Pango.AttrStrikethrough)attr).Strikethrough;
-				result = true;
-			}
-
-			if (iter.SafeGet (Pango.AttrType.Rise, out attr)) {
-				tag.Rise = ((Pango.AttrRise)attr).Rise;
-				result = true;
-			}
-
-			if (iter.SafeGet (Pango.AttrType.Scale, out attr)) {
-				tag.Scale = ((Pango.AttrScale)attr).Scale;
-				result = true;
+			using (var attr = iter.SafeGetCopy (Pango.AttrType.Scale)) {
+				if (attr != null) {
+					tag.Scale = ((Pango.AttrScale)attr).Scale;
+					result = true;
+				}
 			}
 
 			return result;
 		}
 
 		[DllImport (GtkInterop.LIBPANGO, CallingConvention = CallingConvention.Cdecl)]
+		private static extern IntPtr pango_attribute_copy (IntPtr raw);
+
+		[DllImport (GtkInterop.LIBPANGO, CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr pango_attr_iterator_get (IntPtr raw, int type);
 
-		public static bool SafeGet (this Pango.AttrIterator iter, Pango.AttrType type, out Pango.Attribute attr)
+		public static Pango.Attribute SafeGetCopy (this Pango.AttrIterator iter, Pango.AttrType type)
 		{
-			attr = null;
 			try {
 				IntPtr raw = pango_attr_iterator_get (iter.Handle, (int)type);
 				if (raw != IntPtr.Zero) {
-					attr = Pango.Attribute.GetAttribute (raw);
-					return true;
+					var copy = pango_attribute_copy (raw);
+					var attr = Pango.Attribute.GetAttribute (copy);
+					return attr;
 				} else
-					return false;
+					return null;
 			} catch {
-				return false;
+				return null;
 			}
 		}
 	}
