@@ -699,11 +699,20 @@ namespace Xwt.GtkBackend
 
 			private void RefreshGC ()
 			{
+				if (text_gc == null)
+					return;
+
+				text_gc.Dispose ();
 				text_gc = null;
 			}
 
 			protected override void OnDestroyed ()
 			{
+				RefreshGC();
+				if (layout != null) {
+					layout.Dispose ();
+					layout = null;
+				}
 				parent.StyleSet -= OnParentStyleSet;
 				base.OnDestroyed ();
 			}
