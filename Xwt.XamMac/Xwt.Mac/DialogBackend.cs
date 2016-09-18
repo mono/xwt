@@ -154,6 +154,10 @@ namespace Xwt.Mac
 
 		public void RunLoop (IWindowFrameBackend parent)
 		{
+			if (parent != null)
+				StyleMask &= ~NSWindowStyle.Miniaturizable;
+			else
+				StyleMask |= NSWindowStyle.Miniaturizable;
 			Visible = true;
 			modalSessionRunning = true;
 			var win = parent as NSWindow ?? Toolkit.CurrentEngine.GetNativeWindow (parent) as NSWindow;
