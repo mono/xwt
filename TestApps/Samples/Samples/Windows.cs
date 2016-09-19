@@ -74,6 +74,8 @@ namespace Samples
 				d.Buttons.Add (new DialogButton (Command.Cancel));
 				d.Buttons.Add (new DialogButton (Command.Ok));
 
+				d.DefaultCommand = custom;
+
 				d.CommandActivated += (sender, e) => {
 					if (e.Command == custom) {
 						e.Handled = !MessageDialog.Confirm ("Really close?", Command.Close);

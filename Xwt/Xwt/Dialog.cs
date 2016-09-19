@@ -186,6 +186,20 @@ namespace Xwt
 			Backend.UpdateButton (btn);
 		}
 
+		public Command DefaultCommand {
+			get {
+				return Backend.DefaultButton?.Command;
+			}
+			set {
+				var btn = Buttons.GetCommandButton (value);
+				if (btn == null) {
+					Buttons.Add (value);
+					btn = Buttons.GetCommandButton (value);
+				}
+				Backend.DefaultButton = btn;
+			}
+		}
+
 		public event EventHandler<DialogCommandActivatedEventArgs> CommandActivated;
 	}
 	
