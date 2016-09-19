@@ -115,7 +115,10 @@ namespace Xwt.Mac
 				};
 				button.MinWidth = 77; // Dialog buttons have a minimal width of 77px on Mac
 
-				buttonBox.PackEnd (button);
+				if (b.PackOrigin == PackOrigin.End)
+					buttonBox.PackEnd (button);
+				else
+					buttonBox.PackStart (button);
 				buttons [b] = button;
 				UpdateButton (b, button);
 			}
