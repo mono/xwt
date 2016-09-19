@@ -64,7 +64,7 @@ namespace Xwt.GtkBackend
 					b.Destroy ();
 				}
 			}
-			dialogButtons = newButtons.ToArray ();
+			dialogButtons = newButtons.OrderBy (b => b.PackOrigin).ToArray ();
 			buttons = new Gtk.Button [dialogButtons.Length];
 			
 			for (int n=0; n<dialogButtons.Length; n++) {
