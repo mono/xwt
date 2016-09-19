@@ -382,35 +382,36 @@ namespace Xwt.GtkBackend
 
 			public void EmitText (FormattedText markup)
 			{
-				var list = new FastPangoAttrList ();
-				var indexer = new TextIndexer (markup.Text);
-				list.AddAttributes (indexer, markup.Attributes);
-
-				var attrList = new Pango.AttrList (list.Handle);
-				var iter = EndIter;
-				var mark = CreateMark (null, iter, false);
-				var attrIter = attrList.Iterator;
-
-				do {
-					int start, end;
-
-					attrIter.Range (out start, out end);
-
-					if (end == int.MaxValue) // last chunk
-						end = markup.Text.Length - 1;
-					if (end <= start)
-						break;
-
-					Gtk.TextTag tag;
-					if (attrIter.GetTagForAttributes (null, out tag)) {
-						TagTable.Add (tag);
-						InsertWithTags (ref iter, markup.Text.Substring (start, end - start), tag);
-					} else
-						Insert (ref iter, markup.Text.Substring (start, end - start));
-
-					iter = GetIterAtMark (mark);
+				using (var list = new FastPangoAttrList ()) {
+					var indexer = new TextIndexer (markup.Text);
+					list.AddAttributes (indexer, markup.Attributes);
+	
+					var attrList = GLib.Opaque.GetOpaque (list.Handle, false) as Pango.AttrList;
+					var iter = EndIter;
+					var mark = CreateMark (null, iter, false);
+					var attrIter = attrList.Iterator;
+	
+					do {
+						int start, end;
+	
+						attrIter.Range (out start, out end);
+	
+						if (end == int.MaxValue) // last chunk
+							end = markup.Text.Length - 1;
+						if (end <= start)
+							break;
+	
+						Gtk.TextTag tag;
+						if (attrIter.GetTagForAttributes (null, out tag)) {
+							TagTable.Add (tag);
+							InsertWithTags (ref iter, markup.Text.Substring (start, end - start), tag);
+						} else
+							Insert (ref iter, markup.Text.Substring (start, end - start));
+	
+						iter = GetIterAtMark (mark);
+					}
+					while (attrIter.Next ());
 				}
-				while (attrIter.Next ());
 			}
 		}
 	}
