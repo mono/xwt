@@ -45,9 +45,15 @@ namespace Xwt.WPFBackend
 		{
 			var panelFactory = new FrameworkElementFactory (typeof (StackPanel));
 			panelFactory.SetValue (StackPanel.OrientationProperty, SWC.Orientation.Horizontal);
-			panelFactory.SetValue (StackPanel.MarginProperty, new Thickness (0, 7, 7, 7));
+			panelFactory.SetValue (FrameworkElement.MarginProperty, new Thickness (0, 7, 7, 7));
 
-			PanelTemplate = new ItemsPanelTemplate (panelFactory);
+			rightPanelTemplate = new ItemsPanelTemplate (panelFactory);
+
+			panelFactory = new FrameworkElementFactory(typeof(StackPanel));
+			panelFactory.SetValue(StackPanel.OrientationProperty, SWC.Orientation.Horizontal);
+			panelFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 7, 0, 7));
+
+			leftPanelTemplate = new ItemsPanelTemplate(panelFactory);
 
 			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MarginProperty, new Thickness (7, 0, 0, 0)));
 			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MinWidthProperty, 80d));
@@ -59,10 +65,15 @@ namespace Xwt.WPFBackend
 		{
 			cmd = new DelegatedCommand<DialogButton> (OnButtonClicked);
 
-			this.buttonContainer.ItemsPanel = PanelTemplate;
-			this.buttonContainer.ItemTemplateSelector =  new DialogButtonTemplateSelector (ButtonStyle, cmd);
-			this.buttonContainer.ItemsSource = this.buttons;
-			this.buttonContainer.HorizontalAlignment = HorizontalAlignment.Right;
+			this.leftButtonContainer.ItemsPanel = leftPanelTemplate;
+			this.leftButtonContainer.ItemTemplateSelector = new DialogButtonTemplateSelector(ButtonStyle, cmd);
+			this.leftButtonContainer.ItemsSource = this.leftButtons;
+			this.leftButtonContainer.HorizontalAlignment = HorizontalAlignment.Left;
+
+			this.rightButtonContainer.ItemsPanel = rightPanelTemplate;
+			this.rightButtonContainer.ItemTemplateSelector = new DialogButtonTemplateSelector(ButtonStyle, cmd);
+			this.rightButtonContainer.ItemsSource = this.rightButtons;
+			this.rightButtonContainer.HorizontalAlignment = HorizontalAlignment.Right;
 
 			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
 			separator = new SWC.Separator ();
@@ -70,10 +81,19 @@ namespace Xwt.WPFBackend
 			Grid.SetRow (separator, 2);
 			this.rootPanel.Children.Add (separator);
 
-			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
-			Grid.SetRow (this.buttonContainer, 3);
-			this.rootPanel.Children.Add (this.buttonContainer);
-			this.buttonContainer.Visibility = Visibility.Collapsed;
+			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength(0, GridUnitType.Auto) });
+
+			this.buttonContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto  });
+			this.buttonContainer.ColumnDefinitions.Add(new ColumnDefinition ());
+			this.buttonContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto  });
+			Grid.SetColumn(this.leftButtonContainer, 0);
+			Grid.SetColumn(this.rightButtonContainer, 2);
+			this.buttonContainer.Children.Add(this.leftButtonContainer);
+			this.buttonContainer.Children.Add(this.rightButtonContainer);
+
+			Grid.SetRow (buttonContainer, 3);
+			this.rootPanel.Children.Add (buttonContainer);
+			buttonContainer.Visibility = Visibility.Collapsed;
 		}
 
 		public override void SetMinSize (Size s)
@@ -91,20 +111,32 @@ namespace Xwt.WPFBackend
 
 		public void SetButtons (IEnumerable<DialogButton> newButtons)
 		{
-			this.buttons.Clear();
-			foreach (var button in newButtons) {
-				this.buttons.Add (button);
+			this.leftButtons.Clear();
+			foreach (var button in newButtons.Where(b => b.PackOrigin == PackOrigin.Start)) {
+				this.leftButtons.Add(button);
+			}
+			this.rightButtons.Clear();
+			foreach (var button in newButtons.Where(b => b.PackOrigin == PackOrigin.End)) {
+				this.rightButtons.Add(button);
 			}
 			UpdateSeparatorVisibility ();
 		}
 
 		public void UpdateButton (DialogButton updatedButton)
 		{
-			for (int i = 0; i < this.buttons.Count; ++i) {
-				var button = this.buttons [i];
+			for (int i = 0; i < this.leftButtons.Count; ++i) {
+				var button = this.leftButtons [i];
 				if (button == updatedButton) {
-					this.buttons.RemoveAt (i);
-					this.buttons.Insert (i, updatedButton);
+					this.leftButtons.RemoveAt (i);
+					this.leftButtons.Insert (i, updatedButton);
+					break;
+				}
+			}
+			for (int i = 0; i < this.rightButtons.Count; ++i) {
+				var button = this.rightButtons[i];
+				if (button == updatedButton) {
+					this.rightButtons.RemoveAt(i);
+					this.rightButtons.Insert(i, updatedButton);
 					break;
 				}
 			}
@@ -113,7 +145,7 @@ namespace Xwt.WPFBackend
 
 		void UpdateSeparatorVisibility ()
 		{
-			buttonContainer.Visibility = separator.Visibility = buttons.Any (b => b.Visible) ? Visibility.Visible : Visibility.Collapsed;
+			buttonContainer.Visibility = separator.Visibility = leftButtons.Concat(rightButtons).Any (b => b.Visible) ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		public void RunLoop (IWindowFrameBackend parent)
@@ -131,8 +163,11 @@ namespace Xwt.WPFBackend
 			InhibitCloseRequested = false;
 		}
 
-		private readonly ItemsControl buttonContainer = new ItemsControl();
-		private readonly ObservableCollection<DialogButton> buttons = new ObservableCollection<DialogButton> ();
+		private readonly Grid buttonContainer = new Grid();
+		private readonly ItemsControl rightButtonContainer = new ItemsControl();
+		private readonly ItemsControl leftButtonContainer = new ItemsControl();
+		private readonly ObservableCollection<DialogButton> rightButtons = new ObservableCollection<DialogButton>();
+		private readonly ObservableCollection<DialogButton> leftButtons = new ObservableCollection<DialogButton>();
 		readonly SWC.Separator separator;
 
 		protected IDialogEventSink DialogEventSink {
@@ -144,7 +179,8 @@ namespace Xwt.WPFBackend
 			Context.InvokeUserCode (() => DialogEventSink.OnDialogButtonClicked (button));
 		}
 
-		private static readonly ItemsPanelTemplate PanelTemplate;
+		private static readonly ItemsPanelTemplate leftPanelTemplate;
+		private static readonly ItemsPanelTemplate rightPanelTemplate;
 		private static readonly Style ButtonStyle = new Style (typeof (SWC.Button));
 
 		private class DialogButtonTemplateSelector
