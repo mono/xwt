@@ -190,6 +190,7 @@ namespace Xwt
 		Image image;
 		bool visible = true;
 		bool sensitive = true;
+		PackOrigin packOrigin = PackOrigin.End;
 		internal Dialog ParentDialog;
 		
 		public DialogButton (string label)
@@ -271,6 +272,16 @@ namespace Xwt
 			get { return sensitive; }
 			set {
 				sensitive = value;
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
+			}
+		}
+
+		public PackOrigin PackOrigin {
+			get { return packOrigin; }
+			set {
+				packOrigin = value;
 				if (ParentDialog != null) {
 					ParentDialog.UpdateButton (this);
 				}
