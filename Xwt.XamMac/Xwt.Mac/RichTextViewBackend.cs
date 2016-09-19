@@ -138,6 +138,16 @@ namespace Xwt.Mac
 			}
 		}
 
+		public override Drawing.Color BackgroundColor {
+			get {
+				return base.BackgroundColor;
+			}
+			set {
+				base.BackgroundColor = value;
+				Widget.BackgroundColor = value.ToNSColor ();
+			}
+		}
+
 		int? lineSpacing = null;
 		public int LineSpacing {
 			get {
