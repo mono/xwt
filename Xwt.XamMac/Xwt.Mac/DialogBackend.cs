@@ -54,9 +54,21 @@ namespace Xwt.Mac
 		Widget dialogChild;
 		Size minSize;
 		Dictionary<DialogButton,Button> buttons = new Dictionary<DialogButton, Button> ();
+		DialogButton defaultButton;
 		WidgetSpacing buttonBoxPadding = new WidgetSpacing (12, 6, 12, 12);
 
 		bool modalSessionRunning;
+
+		public DialogButton DefaultButton {
+			get {
+				return defaultButton;
+			}
+
+			set {
+				defaultButton = value;
+				SetButtons (buttons.Keys.ToArray ());
+			}
+		}
 
 		public DialogBackend ()
 		{
@@ -107,7 +119,7 @@ namespace Xwt.Mac
 		{
 			buttonBox.Clear ();
 
-			foreach (var b in buttonList.Reverse ()) {
+			foreach (var b in buttonList.OrderBy (b => b == DefaultButton).Reverse ()) {
 				var button = new Button { Font = Font.SystemFont };
 				var tb = b;
 				button.Clicked += delegate {
@@ -153,6 +165,10 @@ namespace Xwt.Mac
 			realButton.WidthRequest = -1;
 			var s = realButton.Surface.GetPreferredSize ();
 			realButton.WidthRequest = s.Width + 16;
+			if (b == defaultButton) {
+				var nativeButton = realButton.Surface.NativeWidget as NSButton;
+				nativeButton.Window.DefaultButtonCell = nativeButton.Cell;
+			}
 		}
 
 		public void RunLoop (IWindowFrameBackend parent)
