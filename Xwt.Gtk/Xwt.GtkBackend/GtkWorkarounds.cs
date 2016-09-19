@@ -1395,14 +1395,22 @@ namespace Xwt.GtkBackend
 
 			using (var attr = iter.SafeGetCopy (Pango.AttrType.Foreground)) {
 				if (attr != null) {
+					#if XWT_GTK3
+					tag.Foreground = ((Pango.AttrForeground)attr).Color.ToString();
+					#else
 					tag.Foreground = ((Gdk.PangoAttrEmbossColor)attr).Color.ToString ();
+					#endif
 					result = true;
 				}
 			}
 
 			using (var attr = iter.SafeGetCopy (Pango.AttrType.Background)) {
 				if (attr != null) {
+				#if XWT_GTK3
+					tag.Foreground = ((Pango.AttrBackground)attr).Color.ToString();
+					#else
 					tag.Background = ((Gdk.PangoAttrEmbossColor)attr).Color.ToString ();
+					#endif
 					result = true;
 				}
 			}
