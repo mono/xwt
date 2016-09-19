@@ -184,6 +184,17 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		protected override void OnSetBackgroundColor(Drawing.Color color)
+		{
+			base.OnSetBackgroundColor(color);
+			Widget.SetBackgroundColor(Gtk.StateType.Normal, color);
+			Widget.SetBackgroundColor(Gtk.StateType.Insensitive, color);
+			#if !XWT_GTK3
+			Widget.ModifyBase(Gtk.StateType.Normal, color.ToGtkValue());
+			Widget.ModifyBase(Gtk.StateType.Insensitive, color.ToGtkValue());
+			#endif
+		}
+
 		void HandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)
 		{
 			if (NavigateToUrlEnabled) {
