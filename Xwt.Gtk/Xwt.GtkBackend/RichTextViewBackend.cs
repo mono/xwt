@@ -165,6 +165,36 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public bool Selectable {
+			get {
+				return Widget.Sensitive;
+			}
+			set {
+				Widget.Sensitive = value;
+			}
+		}
+
+		public int LineSpacing {
+			get {
+				return Widget.PixelsInsideWrap;
+			}
+			set {
+				Widget.PixelsInsideWrap = value;
+				Widget.PixelsBelowLines = value;
+			}
+		}
+
+		protected override void OnSetBackgroundColor(Drawing.Color color)
+		{
+			base.OnSetBackgroundColor(color);
+			Widget.SetBackgroundColor(Gtk.StateType.Normal, color);
+			Widget.SetBackgroundColor(Gtk.StateType.Insensitive, color);
+			#if !XWT_GTK3
+			Widget.ModifyBase(Gtk.StateType.Normal, color.ToGtkValue());
+			Widget.ModifyBase(Gtk.StateType.Insensitive, color.ToGtkValue());
+			#endif
+		}
+
 		void HandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)
 		{
 			if (NavigateToUrlEnabled) {
@@ -348,6 +378,40 @@ namespace Xwt.GtkBackend
 			public void EmitHorizontalRuler ()
 			{
 				//FIXME
+			}
+
+			public void EmitText (FormattedText markup)
+			{
+				using (var list = new FastPangoAttrList ()) {
+					var indexer = new TextIndexer (markup.Text);
+					list.AddAttributes (indexer, markup.Attributes);
+	
+					var attrList = GLib.Opaque.GetOpaque (list.Handle, typeof(Pango.AttrList), false) as Pango.AttrList;
+					var iter = EndIter;
+					var mark = CreateMark (null, iter, false);
+					var attrIter = attrList.Iterator;
+	
+					do {
+						int start, end;
+	
+						attrIter.Range (out start, out end);
+	
+						if (end == int.MaxValue) // last chunk
+							end = markup.Text.Length - 1;
+						if (end <= start)
+							break;
+	
+						Gtk.TextTag tag;
+						if (attrIter.GetTagForAttributes (null, out tag)) {
+							TagTable.Add (tag);
+							InsertWithTags (ref iter, markup.Text.Substring (start, end - start), tag);
+						} else
+							Insert (ref iter, markup.Text.Substring (start, end - start));
+	
+						iter = GetIterAtMark (mark);
+					}
+					while (attrIter.Next ());
+				}
 			}
 		}
 	}

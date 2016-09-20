@@ -117,7 +117,7 @@ namespace Xwt.WPFBackend
 					s.TextDecorations.Add (dec);
 				}
 				else if (at is Drawing.StrikethroughTextAttribute) {
-					var xa = (Drawing.UnderlineTextAttribute)at;
+					var xa = (Drawing.StrikethroughTextAttribute)at;
 					var dec = new TextDecoration (TextDecorationLocation.Strikethrough, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
 					s.TextDecorations.Add (dec);
 				}

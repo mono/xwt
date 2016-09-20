@@ -35,6 +35,7 @@ namespace Xwt.Formats
 	{
 		public static readonly TextFormat Markdown = new MarkdownTextFormat ();
 		public static readonly TextFormat Plain = new PlainTextFormat ();
+		public static readonly TextFormat Markup = new MarkupTextFormat ();
 
 		// Parses the given input stream into the given buffer
 		public abstract void Parse (Stream input, IRichTextBuffer buffer);
