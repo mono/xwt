@@ -386,7 +386,7 @@ namespace Xwt.GtkBackend
 					var indexer = new TextIndexer (markup.Text);
 					list.AddAttributes (indexer, markup.Attributes);
 	
-					var attrList = GLib.Opaque.GetOpaque (list.Handle, false) as Pango.AttrList;
+					var attrList = GLib.Opaque.GetOpaque (list.Handle, typeof(Pango.AttrList), false) as Pango.AttrList;
 					var iter = EndIter;
 					var mark = CreateMark (null, iter, false);
 					var attrIter = attrList.Iterator;
