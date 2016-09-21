@@ -160,10 +160,10 @@ namespace Xwt.GtkBackend
 
 		public bool Selectable {
 			get {
-				return Widget.Sensitive;
+				return Widget.Selectable;
 			}
 			set {
-				Widget.Sensitive = value;
+				Widget.Selectable = value;
 			}
 		}
 
@@ -452,8 +452,19 @@ namespace Xwt.GtkBackend
 
 		class GtkTextView : Gtk.TextView
 		{
+			bool selectable = true;
 			Link activeLink;
 			Gdk.Cursor defaultCursor, handCursor;
+
+			public bool Selectable {
+				get {
+					return selectable;
+				}
+				set {
+					selectable = value;
+					UpdateBackground ();
+				}
+			}
 
 			public new RichTextBuffer Buffer {
 				get {
@@ -500,10 +511,19 @@ namespace Xwt.GtkBackend
 				} else if (activeLink != null) {
 					activeLink = null;
 					TooltipText = null;
-					GetWindow (Gtk.TextWindowType.Text).Cursor = DefaultCursor;
+					SetDefaultCursor ();
 				}
 
-				return base.OnMotionNotifyEvent (evnt);
+				if (selectable)
+					return base.OnMotionNotifyEvent (evnt);
+				return true;
+			}
+
+			protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
+			{
+				if (selectable)
+					return base.OnButtonPressEvent (evnt);
+				return true;
 			}
 
 			protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
@@ -514,7 +534,9 @@ namespace Xwt.GtkBackend
 					if (link?.Href != null)
 						NavigateToUrl?.Invoke (this, new NavigateToUrlEventArgs (link.Href));
 				}
-				return base.OnButtonReleaseEvent (evnt);
+				if (selectable)
+					return base.OnButtonReleaseEvent (evnt);
+				return true;
 			}
 
 			Link GetLinkAtPos (double mousex, double mousey)
@@ -530,9 +552,25 @@ namespace Xwt.GtkBackend
 				return null;
 			}
 
+			protected override void OnStateChanged (Gtk.StateType previous_state)
+			{
+				base.OnStateChanged (previous_state);
+				SetDefaultCursor ();
+				UpdateBackground ();
+			}
+
+			protected override void OnGrabNotify (bool was_grabbed)
+			{
+				base.OnGrabNotify (was_grabbed);
+				if (!was_grabbed)
+					SetDefaultCursor ();
+			}
+
 			protected override void OnRealized ()
 			{
 				base.OnRealized ();
+				SetDefaultCursor ();
+				UpdateBackground ();
 				UpdateLinkColor ();
 			}
 
@@ -540,6 +578,15 @@ namespace Xwt.GtkBackend
 			{
 				base.OnStyleSet (previous_style);
 				UpdateLinkColor ();
+			}
+
+			void SetDefaultCursor ()
+			{
+				if (!IsRealized)
+					return;
+				Gdk.Cursor cursor = Sensitive && Selectable ? DefaultCursor : null;
+				GetWindow (Gtk.TextWindowType.Text).Cursor = cursor;
+
 			}
 
 			void UpdateLinkColor ()
@@ -551,6 +598,19 @@ namespace Xwt.GtkBackend
 					color = Colors.Blue.ToGtkValue ();
 				foreach (var linkTag in Buffer.Links.Keys)
 					linkTag.ForegroundGdk = color;
+			}
+
+			void UpdateBackground ()
+			{
+				if (!IsRealized)
+					return;
+				var state = Selectable ? State : Gtk.StateType.Insensitive;
+
+				var bg = Style.Background (state);
+				var bbg = Style.Base (state);
+
+				GetWindow (Gtk.TextWindowType.Widget).Background = bg;
+				GetWindow (Gtk.TextWindowType.Text).Background = bbg;
 			}
 		}
 	}
