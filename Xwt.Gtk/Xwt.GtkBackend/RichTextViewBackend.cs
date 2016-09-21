@@ -35,6 +35,7 @@ namespace Xwt.GtkBackend
 	public class RichTextViewBackend : WidgetBackend, IRichTextViewBackend
 	{
 		Gtk.TextTagTable table;
+		static readonly Gdk.Color defaultLinkColor = Colors.Blue.ToGtkValue ();
 
 		int ParagraphSpacing {
 			get {
@@ -368,7 +369,7 @@ namespace Xwt.GtkBackend
 				var link = openLinks.Pop ();
 				var tag = new Gtk.TextTag (null);
 				tag.Underline = Pango.Underline.Single;
-				tag.ForegroundGdk = Colors.Blue.ToGtkValue ();
+				tag.ForegroundGdk = defaultLinkColor;
 				TagTable.Add (tag);
 				ApplyTag (tag, GetIterAtMark (link.StartMark), EndIter);
 				Links[tag] = link;
@@ -429,7 +430,7 @@ namespace Xwt.GtkBackend
 							Uri.TryCreate (markup.Text.Substring (xa.StartIndex, xa.Count), UriKind.RelativeOrAbsolute, out uri);
 						var link = new Link { Href = uri };
 						tag.Underline = Pango.Underline.Single;
-						tag.ForegroundGdk = Colors.Blue.ToGtkValue ();
+						tag.ForegroundGdk = defaultLinkColor;
 						Links [tag] = link;
 					}
 
@@ -586,7 +587,7 @@ namespace Xwt.GtkBackend
 					return;
 				var color = (Gdk.Color) StyleGetProperty ("link-color");
 				if (color.Equals (Gdk.Color.Zero))
-					color = Colors.Blue.ToGtkValue ();
+					color = defaultLinkColor;
 				foreach (var linkTag in Buffer.Links.Keys)
 					linkTag.ForegroundGdk = color;
 			}
