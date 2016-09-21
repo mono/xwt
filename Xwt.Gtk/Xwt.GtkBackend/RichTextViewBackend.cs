@@ -530,6 +530,28 @@ namespace Xwt.GtkBackend
 				return null;
 			}
 
+			protected override void OnRealized ()
+			{
+				base.OnRealized ();
+				UpdateLinkColor ();
+			}
+
+			protected override void OnStyleSet (Gtk.Style previous_style)
+			{
+				base.OnStyleSet (previous_style);
+				UpdateLinkColor ();
+			}
+
+			void UpdateLinkColor ()
+			{
+				if (!IsRealized)
+					return;
+				var color = (Gdk.Color) StyleGetProperty ("link-color");
+				if (color.Equals (Gdk.Color.Zero))
+					color = Colors.Blue.ToGtkValue ();
+				foreach (var linkTag in Buffer.Links.Keys)
+					linkTag.ForegroundGdk = color;
+			}
 		}
 	}
 }
