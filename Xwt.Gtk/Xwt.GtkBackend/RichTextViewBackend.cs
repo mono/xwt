@@ -35,7 +35,6 @@ namespace Xwt.GtkBackend
 	public class RichTextViewBackend : WidgetBackend, IRichTextViewBackend
 	{
 		Gtk.TextTagTable table;
-		LinkLabel [] links;
 
 		int ParagraphSpacing {
 			get {
@@ -45,13 +44,9 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		bool NavigateToUrlEnabled {
-			get; set;
-		}
-
 		public RichTextViewBackend ()
 		{
-			Widget = new Gtk.TextView ();
+			Widget = new GtkTextView ();
 			Widget.Show ();
 			ReadOnly = true;
 			Widget.WrapMode = Gtk.WrapMode.Word;
@@ -100,9 +95,9 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		protected new Gtk.TextView Widget {
+		private new GtkTextView Widget {
 			get {
-				return (Gtk.TextView)base.Widget;
+				return (GtkTextView)base.Widget;
 			}
 			set {
 				base.Widget = value;
@@ -115,7 +110,7 @@ namespace Xwt.GtkBackend
 			if (eventId is RichTextViewEvent) {
 				switch ((RichTextViewEvent) eventId) {
 				case RichTextViewEvent.NavigateToUrl:
-					NavigateToUrlEnabled = true;
+					Widget.NavigateToUrl += HandleNavigateToUrl;
 					break;
 				}
 			}
@@ -127,7 +122,7 @@ namespace Xwt.GtkBackend
 			if (eventId is RichTextViewEvent) {
 				switch ((RichTextViewEvent) eventId) {
 				case RichTextViewEvent.NavigateToUrl:
-					NavigateToUrlEnabled = false;
+					Widget.NavigateToUrl -= HandleNavigateToUrl;
 					break;
 				}
 			}
@@ -144,23 +139,7 @@ namespace Xwt.GtkBackend
 			if (buf == null)
 				throw new ArgumentException ("Passed buffer is of incorrect type", "buffer");
 
-			if (links != null) {
-				foreach (var link in links)
-					link.NavigateToUrl -= HandleNavigateToUrl;
-			}
-
 			Widget.Buffer = buf;
-			links = new LinkLabel [buf.Links.Count];
-			for (var i = 0; i < links.Length; i++) {
-				var link = buf.Links [i];
-				var label = new LinkLabel (link.Text)
-				{
-					Uri = link.Href
-				};
-				label.NavigateToUrl += HandleNavigateToUrl;
-				Widget.AddChildAtAnchor ((Gtk.Widget) ApplicationContext.Toolkit.GetNativeWidget (label), link.Anchor);
-				links [i] = label;
-			}
 		}
 
 		public IRichTextBuffer CurrentBuffer {
@@ -224,16 +203,15 @@ namespace Xwt.GtkBackend
 
 		void HandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)
 		{
-			if (NavigateToUrlEnabled) {
-				((IRichTextViewEventSink) EventSink).OnNavigateToUrl (e.Uri);
-				e.SetHandled ();
-			}
+			ApplicationContext.InvokeUserCode (delegate {
+				((IRichTextViewEventSink)EventSink).OnNavigateToUrl (e.Uri);
+			});
 		}
 
-		struct Link {
-			public string Text;
+		class Link {
+			public string Title;
 			public Uri Href;
-			public Gtk.TextChildAnchor Anchor;
+			public Gtk.TextMark StartMark;
 		}
 
 		class RichTextBuffer : Gtk.TextBuffer, IRichTextBuffer
@@ -270,7 +248,7 @@ namespace Xwt.GtkBackend
 				}
 			}
 
-			public List<Link> Links {
+			public Dictionary<Gtk.TextTag, Link> Links {
 				get; private set;
 			}
 
@@ -288,7 +266,7 @@ namespace Xwt.GtkBackend
 
 			public RichTextBuffer (Gtk.TextTagTable table) : base (table)
 			{
-				Links = new List<Link> ();
+				Links = new Dictionary<Gtk.TextTag, Link> ();
 				openHeaders = new Stack<StartState> ();
 				openLinks = new Stack<Link> ();
 			}
@@ -301,14 +279,6 @@ namespace Xwt.GtkBackend
 
 			public void EmitText (string text, RichTextInlineStyle style)
 			{
-				//FIXME: it would be nice to have real styled text in a link, but for now short circuit it
-				if (openLinks.Count != 0) {
-					var link = openLinks.Pop ();
-					link.Text += text;
-					openLinks.Push (link);
-					return;
-				}
-
 				var iterEnd = EndIter;
 				var m = CreateMark (null, iterEnd, true);
 				Insert (ref iterEnd, text);
@@ -379,9 +349,7 @@ namespace Xwt.GtkBackend
 
 			public void EmitStartLink (string href, string title)
 			{
-				//FIXME: it would be nice to support title
 				var iter = EndIter;
-				var anchor = CreateChildAnchor (ref iter);
 
 				Uri uri;
 				if (!Uri.TryCreate (href, UriKind.RelativeOrAbsolute, out uri))
@@ -389,15 +357,21 @@ namespace Xwt.GtkBackend
 
 				openLinks.Push (new Link ()
 				{
-					Text = string.Empty,
+					Title = title,
 					Href = uri,
-					Anchor = anchor
+					StartMark = CreateMark (null, iter, true),
 				});
 			}
 
 			public void EmitEndLink ()
 			{
-				Links.Add (openLinks.Pop ());
+				var link = openLinks.Pop ();
+				var tag = new Gtk.TextTag (null);
+				tag.Underline = Pango.Underline.Single;
+				tag.ForegroundGdk = Colors.Blue.ToGtkValue ();
+				TagTable.Add (tag);
+				ApplyTag (tag, GetIterAtMark (link.StartMark), EndIter);
+				Links[tag] = link;
 			}
 
 			public void EmitCodeBlock (string code)
@@ -449,8 +423,14 @@ namespace Xwt.GtkBackend
 						var xa = (FontTextAttribute)attr;
 						tag.FontDesc = (Pango.FontDescription)Toolkit.GetBackend (xa.Font);
 					} else if (attr is LinkTextAttribute) {
+						var xa = (LinkTextAttribute)attr;
+						Uri uri = xa.Target;
+						if (uri == null)
+							Uri.TryCreate (markup.Text.Substring (xa.StartIndex, xa.Count), UriKind.RelativeOrAbsolute, out uri);
+						var link = new Link { Href = uri };
 						tag.Underline = Pango.Underline.Single;
 						tag.ForegroundGdk = Colors.Blue.ToGtkValue ();
+						Links [tag] = link;
 					}
 
 					TagTable.Add (tag);
@@ -459,6 +439,97 @@ namespace Xwt.GtkBackend
 				}
 				DeleteMark (textmark);
 			}
+
+			public override void Dispose ()
+			{
+				if (Links != null) {
+					Links.Clear ();
+					Links = null;
+				}
+				base.Dispose ();
+			}
+		}
+
+		class GtkTextView : Gtk.TextView
+		{
+			Link activeLink;
+			Gdk.Cursor defaultCursor, handCursor;
+
+			public new RichTextBuffer Buffer {
+				get {
+					return base.Buffer as RichTextBuffer;
+				}
+				set {
+					var buffer = value as RichTextBuffer;
+					if (buffer == null)
+						throw new InvalidOperationException ();
+					base.Buffer = buffer;
+				}
+			}
+
+			public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl;
+
+			Gdk.Cursor DefaultCursor {
+				get {
+					if (defaultCursor == null)
+						defaultCursor = new Gdk.Cursor (Gdk.CursorType.Xterm);
+					return defaultCursor;
+				}
+			}
+
+			Gdk.Cursor HandCursor {
+				get {
+					if (handCursor == null)
+						handCursor = new Gdk.Cursor (Gdk.CursorType.Hand1);
+					return handCursor;
+				}
+			}
+
+			protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
+			{
+				Link link = GetLinkAtPos (evnt.X, evnt.Y);
+				if (link != null) {
+					if (activeLink == null) {
+						TooltipText = link.Title;
+
+						GetWindow (Gtk.TextWindowType.Text).Cursor = HandCursor;
+					} else if (activeLink.Title != link.Title) {
+						TooltipText = link.Title;
+					}
+					activeLink = link;
+				} else if (activeLink != null) {
+					activeLink = null;
+					TooltipText = null;
+					GetWindow (Gtk.TextWindowType.Text).Cursor = DefaultCursor;
+				}
+
+				return base.OnMotionNotifyEvent (evnt);
+			}
+
+			protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
+			{
+				if (NavigateToUrl != null && (PointerButton)evnt.Button == PointerButton.Left) {
+					Link link = activeLink ?? GetLinkAtPos (evnt.X, evnt.Y);
+
+					if (link?.Href != null)
+						NavigateToUrl?.Invoke (this, new NavigateToUrlEventArgs (link.Href));
+				}
+				return base.OnButtonReleaseEvent (evnt);
+			}
+
+			Link GetLinkAtPos (double mousex, double mousey)
+			{
+				int x, y;
+				WindowToBufferCoords (Gtk.TextWindowType.Text, (int)mousex, (int)mousey, out x, out y);
+				var iter = GetIterAtLocation (x, y);
+				foreach (var l in Buffer.Links) {
+					if (iter.HasTag (l.Key)) {
+						return l.Value;
+					}
+				}
+				return null;
+			}
+
 		}
 	}
 }
