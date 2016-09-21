@@ -343,6 +343,7 @@
     <Compile Include="Xwt\FolderSelector.cs" />
     <Compile Include="Xwt.Backends\IFolderSelectorBackend.cs" />
     <Compile Include="Xwt\ToolkitDefaults.cs" />
+    <Compile Include="Xwt.Backends\IComboBoxCellViewFrontend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
