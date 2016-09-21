@@ -53,7 +53,7 @@ namespace Xwt.GtkBackend
 		{
 			Widget = new Gtk.TextView ();
 			Widget.Show ();
-			Widget.Editable = false;
+			ReadOnly = true;
 			Widget.WrapMode = Gtk.WrapMode.Word;
 			InitTagTable ();
 		}
@@ -175,6 +175,7 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				Widget.Editable = !value;
+				Widget.CursorVisible = !value;
 			}
 		}
 
