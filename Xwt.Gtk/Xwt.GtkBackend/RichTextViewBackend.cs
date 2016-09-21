@@ -439,15 +439,6 @@ namespace Xwt.GtkBackend
 				}
 				DeleteMark (textmark);
 			}
-
-			public override void Dispose ()
-			{
-				if (Links != null) {
-					Links.Clear ();
-					Links = null;
-				}
-				base.Dispose ();
-			}
 		}
 
 		class GtkTextView : Gtk.TextView
