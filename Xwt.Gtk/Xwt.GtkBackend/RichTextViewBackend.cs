@@ -37,6 +37,14 @@ namespace Xwt.GtkBackend
 		Gtk.TextTagTable table;
 		LinkLabel [] links;
 
+		int ParagraphSpacing {
+			get {
+				var font = Font as Pango.FontDescription;
+				var size = font.SizeIsAbsolute ? font.Size : font.Size / Pango.Scale.PangoScale;
+				return (int)size / 4; // default to 1/4 of the font size
+			}
+		}
+
 		bool NavigateToUrlEnabled {
 			get; set;
 		}
@@ -84,6 +92,11 @@ namespace Xwt.GtkBackend
 				Family = "Monospace",
 				Indent = 14,
 				WrapMode = Gtk.WrapMode.None
+			});
+			table.Add (new Gtk.TextTag ("p") {
+				Size = 1,
+				PixelsAboveLines = Math.Max (LineSpacing, ParagraphSpacing),
+				PixelsBelowLines = Math.Max (LineSpacing, ParagraphSpacing),
 			});
 		}
 
@@ -181,6 +194,19 @@ namespace Xwt.GtkBackend
 			set {
 				Widget.PixelsInsideWrap = value;
 				Widget.PixelsBelowLines = value;
+				var tag = table.Lookup ("p");
+				tag.PixelsBelowLines = tag.PixelsAboveLines = Math.Max (value, ParagraphSpacing);
+			}
+		}
+
+		public override object Font {
+			get {
+				return base.Font;
+			}
+			set {
+				base.Font = value;
+				var tag = table.Lookup ("p");
+				tag.PixelsBelowLines = tag.PixelsAboveLines = Math.Max (LineSpacing, ParagraphSpacing);
 			}
 		}
 
@@ -219,9 +245,15 @@ namespace Xwt.GtkBackend
 			void BreakParagraph ()
 			{
 				if (needsParagraphBreak) {
-					var end = EndIter;
-					Insert (ref end, NewLine);
-					Insert (ref end, NewLine);
+					var iterEnd = EndIter;
+					Insert (ref iterEnd, NewLine);
+
+					var m = CreateMark (null, iterEnd, true);
+					Insert (ref iterEnd, NewLine);
+					var iterStart = GetIterAtMark (m);
+					ApplyTag ("p", iterStart, iterEnd);
+					DeleteMark (m);
+
 					needsParagraphBreak = false;
 					return;
 				}
