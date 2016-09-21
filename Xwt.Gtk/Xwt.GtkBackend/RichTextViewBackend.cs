@@ -28,7 +28,7 @@ using System.Collections.Generic;
 
 using Xwt;
 using Xwt.Backends;
-
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -415,36 +415,49 @@ namespace Xwt.GtkBackend
 
 			public void EmitText (FormattedText markup)
 			{
-				using (var list = new FastPangoAttrList ()) {
-					var indexer = new TextIndexer (markup.Text);
-					list.AddAttributes (indexer, markup.Attributes);
-	
-					var attrList = GLib.Opaque.GetOpaque (list.Handle, typeof(Pango.AttrList), false) as Pango.AttrList;
-					var iter = EndIter;
-					var mark = CreateMark (null, iter, false);
-					var attrIter = attrList.Iterator;
-	
-					do {
-						int start, end;
-	
-						attrIter.Range (out start, out end);
-	
-						if (end == int.MaxValue) // last chunk
-							end = markup.Text.Length - 1;
-						if (end <= start)
-							break;
-	
-						Gtk.TextTag tag;
-						if (attrIter.GetTagForAttributes (null, out tag)) {
-							TagTable.Add (tag);
-							InsertWithTags (ref iter, markup.Text.Substring (start, end - start), tag);
-						} else
-							Insert (ref iter, markup.Text.Substring (start, end - start));
-	
-						iter = GetIterAtMark (mark);
+				var iterEnd = EndIter;
+				var textmark = CreateMark (null, iterEnd, true);
+				Insert (ref iterEnd, markup.Text);
+
+				foreach (var attr in markup.Attributes) {
+					var iterEndAttr = GetIterAtMark (textmark);
+					iterEndAttr.ForwardChars (attr.StartIndex);
+					var attrStart = CreateMark (null, iterEndAttr, true);
+					iterEndAttr.ForwardChars (attr.Count);
+
+					var tag = new Gtk.TextTag (null);
+
+					if (attr is BackgroundTextAttribute) {
+						var xa = (BackgroundTextAttribute)attr;
+						tag.BackgroundGdk = xa.Color.ToGtkValue ();
+					} else if (attr is ColorTextAttribute) {
+						var xa = (ColorTextAttribute)attr;
+						tag.ForegroundGdk = xa.Color.ToGtkValue ();
+					} else if (attr is FontWeightTextAttribute) {
+						var xa = (FontWeightTextAttribute)attr;
+						tag.Weight = (Pango.Weight)(int)xa.Weight;
+					} else if (attr is FontStyleTextAttribute) {
+						var xa = (FontStyleTextAttribute)attr;
+						tag.Style = (Pango.Style)(int)xa.Style;
+					} else if (attr is UnderlineTextAttribute) {
+						var xa = (UnderlineTextAttribute)attr;
+						tag.Underline = xa.Underline ? Pango.Underline.Single : Pango.Underline.None;
+					} else if (attr is StrikethroughTextAttribute) {
+						var xa = (StrikethroughTextAttribute)attr;
+						tag.Strikethrough = xa.Strikethrough;
+					} else if (attr is FontTextAttribute) {
+						var xa = (FontTextAttribute)attr;
+						tag.FontDesc = (Pango.FontDescription)Toolkit.GetBackend (xa.Font);
+					} else if (attr is LinkTextAttribute) {
+						tag.Underline = Pango.Underline.Single;
+						tag.ForegroundGdk = Colors.Blue.ToGtkValue ();
 					}
-					while (attrIter.Next ());
+
+					TagTable.Add (tag);
+					ApplyTag (tag, GetIterAtMark (attrStart), iterEndAttr);
+					DeleteMark (attrStart);
 				}
+				DeleteMark (textmark);
 			}
 		}
 	}
