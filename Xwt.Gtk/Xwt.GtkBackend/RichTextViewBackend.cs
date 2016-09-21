@@ -28,24 +28,28 @@ using System.Collections.Generic;
 
 using Xwt;
 using Xwt.Backends;
-
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
 	public class RichTextViewBackend : WidgetBackend, IRichTextViewBackend
 	{
 		Gtk.TextTagTable table;
-		LinkLabel [] links;
+		static readonly Gdk.Color defaultLinkColor = Colors.Blue.ToGtkValue ();
 
-		bool NavigateToUrlEnabled {
-			get; set;
+		int ParagraphSpacing {
+			get {
+				var font = Font as Pango.FontDescription;
+				var size = font.SizeIsAbsolute ? font.Size : font.Size / Pango.Scale.PangoScale;
+				return (int)size / 4; // default to 1/4 of the font size
+			}
 		}
 
 		public RichTextViewBackend ()
 		{
-			Widget = new Gtk.TextView ();
+			Widget = new GtkTextView ();
 			Widget.Show ();
-			Widget.Editable = false;
+			ReadOnly = true;
 			Widget.WrapMode = Gtk.WrapMode.Word;
 			InitTagTable ();
 		}
@@ -85,11 +89,16 @@ namespace Xwt.GtkBackend
 				Indent = 14,
 				WrapMode = Gtk.WrapMode.None
 			});
+			table.Add (new Gtk.TextTag ("p") {
+				Size = 1,
+				PixelsAboveLines = Math.Max (LineSpacing, ParagraphSpacing),
+				PixelsBelowLines = Math.Max (LineSpacing, ParagraphSpacing),
+			});
 		}
 
-		protected new Gtk.TextView Widget {
+		private new GtkTextView Widget {
 			get {
-				return (Gtk.TextView)base.Widget;
+				return (GtkTextView)base.Widget;
 			}
 			set {
 				base.Widget = value;
@@ -102,7 +111,7 @@ namespace Xwt.GtkBackend
 			if (eventId is RichTextViewEvent) {
 				switch ((RichTextViewEvent) eventId) {
 				case RichTextViewEvent.NavigateToUrl:
-					NavigateToUrlEnabled = true;
+					Widget.NavigateToUrl += HandleNavigateToUrl;
 					break;
 				}
 			}
@@ -114,7 +123,7 @@ namespace Xwt.GtkBackend
 			if (eventId is RichTextViewEvent) {
 				switch ((RichTextViewEvent) eventId) {
 				case RichTextViewEvent.NavigateToUrl:
-					NavigateToUrlEnabled = false;
+					Widget.NavigateToUrl -= HandleNavigateToUrl;
 					break;
 				}
 			}
@@ -131,23 +140,7 @@ namespace Xwt.GtkBackend
 			if (buf == null)
 				throw new ArgumentException ("Passed buffer is of incorrect type", "buffer");
 
-			if (links != null) {
-				foreach (var link in links)
-					link.NavigateToUrl -= HandleNavigateToUrl;
-			}
-
 			Widget.Buffer = buf;
-			links = new LinkLabel [buf.Links.Count];
-			for (var i = 0; i < links.Length; i++) {
-				var link = buf.Links [i];
-				var label = new LinkLabel (link.Text)
-				{
-					Uri = link.Href
-				};
-				label.NavigateToUrl += HandleNavigateToUrl;
-				Widget.AddChildAtAnchor ((Gtk.Widget) ApplicationContext.Toolkit.GetNativeWidget (label), link.Anchor);
-				links [i] = label;
-			}
 		}
 
 		public IRichTextBuffer CurrentBuffer {
@@ -162,15 +155,16 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				Widget.Editable = !value;
+				Widget.CursorVisible = !value;
 			}
 		}
 
 		public bool Selectable {
 			get {
-				return Widget.Sensitive;
+				return Widget.Selectable;
 			}
 			set {
-				Widget.Sensitive = value;
+				Widget.Selectable = value;
 			}
 		}
 
@@ -181,6 +175,19 @@ namespace Xwt.GtkBackend
 			set {
 				Widget.PixelsInsideWrap = value;
 				Widget.PixelsBelowLines = value;
+				var tag = table.Lookup ("p");
+				tag.PixelsBelowLines = tag.PixelsAboveLines = Math.Max (value, ParagraphSpacing);
+			}
+		}
+
+		public override object Font {
+			get {
+				return base.Font;
+			}
+			set {
+				base.Font = value;
+				var tag = table.Lookup ("p");
+				tag.PixelsBelowLines = tag.PixelsAboveLines = Math.Max (LineSpacing, ParagraphSpacing);
 			}
 		}
 
@@ -197,16 +204,15 @@ namespace Xwt.GtkBackend
 
 		void HandleNavigateToUrl (object sender, NavigateToUrlEventArgs e)
 		{
-			if (NavigateToUrlEnabled) {
-				((IRichTextViewEventSink) EventSink).OnNavigateToUrl (e.Uri);
-				e.SetHandled ();
-			}
+			ApplicationContext.InvokeUserCode (delegate {
+				((IRichTextViewEventSink)EventSink).OnNavigateToUrl (e.Uri);
+			});
 		}
 
-		struct Link {
-			public string Text;
+		class Link {
+			public string Title;
 			public Uri Href;
-			public Gtk.TextChildAnchor Anchor;
+			public Gtk.TextMark StartMark;
 		}
 
 		class RichTextBuffer : Gtk.TextBuffer, IRichTextBuffer
@@ -219,9 +225,15 @@ namespace Xwt.GtkBackend
 			void BreakParagraph ()
 			{
 				if (needsParagraphBreak) {
-					var end = EndIter;
-					Insert (ref end, NewLine);
-					Insert (ref end, NewLine);
+					var iterEnd = EndIter;
+					Insert (ref iterEnd, NewLine);
+
+					var m = CreateMark (null, iterEnd, true);
+					Insert (ref iterEnd, NewLine);
+					var iterStart = GetIterAtMark (m);
+					ApplyTag ("p", iterStart, iterEnd);
+					DeleteMark (m);
+
 					needsParagraphBreak = false;
 					return;
 				}
@@ -237,7 +249,7 @@ namespace Xwt.GtkBackend
 				}
 			}
 
-			public List<Link> Links {
+			public Dictionary<Gtk.TextTag, Link> Links {
 				get; private set;
 			}
 
@@ -255,7 +267,7 @@ namespace Xwt.GtkBackend
 
 			public RichTextBuffer (Gtk.TextTagTable table) : base (table)
 			{
-				Links = new List<Link> ();
+				Links = new Dictionary<Gtk.TextTag, Link> ();
 				openHeaders = new Stack<StartState> ();
 				openLinks = new Stack<Link> ();
 			}
@@ -268,14 +280,6 @@ namespace Xwt.GtkBackend
 
 			public void EmitText (string text, RichTextInlineStyle style)
 			{
-				//FIXME: it would be nice to have real styled text in a link, but for now short circuit it
-				if (openLinks.Count != 0) {
-					var link = openLinks.Pop ();
-					link.Text += text;
-					openLinks.Push (link);
-					return;
-				}
-
 				var iterEnd = EndIter;
 				var m = CreateMark (null, iterEnd, true);
 				Insert (ref iterEnd, text);
@@ -346,9 +350,7 @@ namespace Xwt.GtkBackend
 
 			public void EmitStartLink (string href, string title)
 			{
-				//FIXME: it would be nice to support title
 				var iter = EndIter;
-				var anchor = CreateChildAnchor (ref iter);
 
 				Uri uri;
 				if (!Uri.TryCreate (href, UriKind.RelativeOrAbsolute, out uri))
@@ -356,15 +358,21 @@ namespace Xwt.GtkBackend
 
 				openLinks.Push (new Link ()
 				{
-					Text = string.Empty,
+					Title = title,
 					Href = uri,
-					Anchor = anchor
+					StartMark = CreateMark (null, iter, true),
 				});
 			}
 
 			public void EmitEndLink ()
 			{
-				Links.Add (openLinks.Pop ());
+				var link = openLinks.Pop ();
+				var tag = new Gtk.TextTag (null);
+				tag.Underline = Pango.Underline.Single;
+				tag.ForegroundGdk = defaultLinkColor;
+				TagTable.Add (tag);
+				ApplyTag (tag, GetIterAtMark (link.StartMark), EndIter);
+				Links[tag] = link;
 			}
 
 			public void EmitCodeBlock (string code)
@@ -382,36 +390,219 @@ namespace Xwt.GtkBackend
 
 			public void EmitText (FormattedText markup)
 			{
-				using (var list = new FastPangoAttrList ()) {
-					var indexer = new TextIndexer (markup.Text);
-					list.AddAttributes (indexer, markup.Attributes);
-	
-					var attrList = GLib.Opaque.GetOpaque (list.Handle, typeof(Pango.AttrList), false) as Pango.AttrList;
-					var iter = EndIter;
-					var mark = CreateMark (null, iter, false);
-					var attrIter = attrList.Iterator;
-	
-					do {
-						int start, end;
-	
-						attrIter.Range (out start, out end);
-	
-						if (end == int.MaxValue) // last chunk
-							end = markup.Text.Length - 1;
-						if (end <= start)
-							break;
-	
-						Gtk.TextTag tag;
-						if (attrIter.GetTagForAttributes (null, out tag)) {
-							TagTable.Add (tag);
-							InsertWithTags (ref iter, markup.Text.Substring (start, end - start), tag);
-						} else
-							Insert (ref iter, markup.Text.Substring (start, end - start));
-	
-						iter = GetIterAtMark (mark);
+				var iterEnd = EndIter;
+				var textmark = CreateMark (null, iterEnd, true);
+				Insert (ref iterEnd, markup.Text);
+
+				foreach (var attr in markup.Attributes) {
+					var iterEndAttr = GetIterAtMark (textmark);
+					iterEndAttr.ForwardChars (attr.StartIndex);
+					var attrStart = CreateMark (null, iterEndAttr, true);
+					iterEndAttr.ForwardChars (attr.Count);
+
+					var tag = new Gtk.TextTag (null);
+
+					if (attr is BackgroundTextAttribute) {
+						var xa = (BackgroundTextAttribute)attr;
+						tag.BackgroundGdk = xa.Color.ToGtkValue ();
+					} else if (attr is ColorTextAttribute) {
+						var xa = (ColorTextAttribute)attr;
+						tag.ForegroundGdk = xa.Color.ToGtkValue ();
+					} else if (attr is FontWeightTextAttribute) {
+						var xa = (FontWeightTextAttribute)attr;
+						tag.Weight = (Pango.Weight)(int)xa.Weight;
+					} else if (attr is FontStyleTextAttribute) {
+						var xa = (FontStyleTextAttribute)attr;
+						tag.Style = (Pango.Style)(int)xa.Style;
+					} else if (attr is UnderlineTextAttribute) {
+						var xa = (UnderlineTextAttribute)attr;
+						tag.Underline = xa.Underline ? Pango.Underline.Single : Pango.Underline.None;
+					} else if (attr is StrikethroughTextAttribute) {
+						var xa = (StrikethroughTextAttribute)attr;
+						tag.Strikethrough = xa.Strikethrough;
+					} else if (attr is FontTextAttribute) {
+						var xa = (FontTextAttribute)attr;
+						tag.FontDesc = (Pango.FontDescription)Toolkit.GetBackend (xa.Font);
+					} else if (attr is LinkTextAttribute) {
+						var xa = (LinkTextAttribute)attr;
+						Uri uri = xa.Target;
+						if (uri == null)
+							Uri.TryCreate (markup.Text.Substring (xa.StartIndex, xa.Count), UriKind.RelativeOrAbsolute, out uri);
+						var link = new Link { Href = uri };
+						tag.Underline = Pango.Underline.Single;
+						tag.ForegroundGdk = defaultLinkColor;
+						Links [tag] = link;
 					}
-					while (attrIter.Next ());
+
+					TagTable.Add (tag);
+					ApplyTag (tag, GetIterAtMark (attrStart), iterEndAttr);
+					DeleteMark (attrStart);
 				}
+				DeleteMark (textmark);
+			}
+		}
+
+		class GtkTextView : Gtk.TextView
+		{
+			bool selectable = true;
+			Link activeLink;
+			Gdk.Cursor defaultCursor, handCursor;
+
+			public bool Selectable {
+				get {
+					return selectable;
+				}
+				set {
+					selectable = value;
+					UpdateBackground ();
+				}
+			}
+
+			public new RichTextBuffer Buffer {
+				get {
+					return base.Buffer as RichTextBuffer;
+				}
+				set {
+					var buffer = value as RichTextBuffer;
+					if (buffer == null)
+						throw new InvalidOperationException ();
+					base.Buffer = buffer;
+				}
+			}
+
+			public event EventHandler<NavigateToUrlEventArgs> NavigateToUrl;
+
+			Gdk.Cursor DefaultCursor {
+				get {
+					if (defaultCursor == null)
+						defaultCursor = new Gdk.Cursor (Gdk.CursorType.Xterm);
+					return defaultCursor;
+				}
+			}
+
+			Gdk.Cursor HandCursor {
+				get {
+					if (handCursor == null)
+						handCursor = new Gdk.Cursor (Gdk.CursorType.Hand1);
+					return handCursor;
+				}
+			}
+
+			protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
+			{
+				Link link = GetLinkAtPos (evnt.X, evnt.Y);
+				if (link != null) {
+					if (activeLink == null) {
+						TooltipText = link.Title;
+
+						GetWindow (Gtk.TextWindowType.Text).Cursor = HandCursor;
+					} else if (activeLink.Title != link.Title) {
+						TooltipText = link.Title;
+					}
+					activeLink = link;
+				} else if (activeLink != null) {
+					activeLink = null;
+					TooltipText = null;
+					SetDefaultCursor ();
+				}
+
+				if (selectable)
+					return base.OnMotionNotifyEvent (evnt);
+				return true;
+			}
+
+			protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
+			{
+				if (selectable)
+					return base.OnButtonPressEvent (evnt);
+				return true;
+			}
+
+			protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
+			{
+				if (NavigateToUrl != null && (PointerButton)evnt.Button == PointerButton.Left) {
+					Link link = activeLink ?? GetLinkAtPos (evnt.X, evnt.Y);
+
+					if (link?.Href != null)
+						NavigateToUrl?.Invoke (this, new NavigateToUrlEventArgs (link.Href));
+				}
+				if (selectable)
+					return base.OnButtonReleaseEvent (evnt);
+				return true;
+			}
+
+			Link GetLinkAtPos (double mousex, double mousey)
+			{
+				int x, y;
+				WindowToBufferCoords (Gtk.TextWindowType.Text, (int)mousex, (int)mousey, out x, out y);
+				var iter = GetIterAtLocation (x, y);
+				foreach (var l in Buffer.Links) {
+					if (iter.HasTag (l.Key)) {
+						return l.Value;
+					}
+				}
+				return null;
+			}
+
+			protected override void OnStateChanged (Gtk.StateType previous_state)
+			{
+				base.OnStateChanged (previous_state);
+				SetDefaultCursor ();
+				UpdateBackground ();
+			}
+
+			protected override void OnGrabNotify (bool was_grabbed)
+			{
+				base.OnGrabNotify (was_grabbed);
+				if (!was_grabbed)
+					SetDefaultCursor ();
+			}
+
+			protected override void OnRealized ()
+			{
+				base.OnRealized ();
+				SetDefaultCursor ();
+				UpdateBackground ();
+				UpdateLinkColor ();
+			}
+
+			protected override void OnStyleSet (Gtk.Style previous_style)
+			{
+				base.OnStyleSet (previous_style);
+				UpdateLinkColor ();
+			}
+
+			void SetDefaultCursor ()
+			{
+				if (!IsRealized)
+					return;
+				Gdk.Cursor cursor = Sensitive && Selectable ? DefaultCursor : null;
+				GetWindow (Gtk.TextWindowType.Text).Cursor = cursor;
+
+			}
+
+			void UpdateLinkColor ()
+			{
+				if (!IsRealized)
+					return;
+				var color = (Gdk.Color) StyleGetProperty ("link-color");
+				if (color.Equals (Gdk.Color.Zero))
+					color = defaultLinkColor;
+				foreach (var linkTag in Buffer.Links.Keys)
+					linkTag.ForegroundGdk = color;
+			}
+
+			void UpdateBackground ()
+			{
+				if (!IsRealized)
+					return;
+				var state = Selectable ? State : Gtk.StateType.Insensitive;
+
+				var bg = Style.Background (state);
+				var bbg = Style.Base (state);
+
+				GetWindow (Gtk.TextWindowType.Widget).Background = bg;
+				GetWindow (Gtk.TextWindowType.Text).Background = bbg;
 			}
 		}
 	}

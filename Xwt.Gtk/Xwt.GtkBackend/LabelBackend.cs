@@ -47,6 +47,8 @@ namespace Xwt.GtkBackend
 			Label.Show ();
 			Label.Xalign = 0;
 			Label.Yalign = 0.5f;
+			Label.Realized += HandleStyleUpdate;
+			Label.StyleSet += HandleStyleUpdate;
 		}
 		
 		new ILabelEventSink EventSink {
@@ -156,10 +158,17 @@ namespace Xwt.GtkBackend
 			set { Label.Selectable = value; }
 		}
 
+		FormattedText formattedText;
 		public void SetFormattedText (FormattedText text)
 		{
 			Label.Text = text.Text;
+			formattedText = text;
 			var list = new FastPangoAttrList ();
+			if (Label.IsRealized) {
+				var color = (Gdk.Color)Label.StyleGetProperty ("link-color");
+				if (!color.Equals (Gdk.Color.Zero))
+					list.DefaultLinkColor = color;
+			}
 			indexer = new TextIndexer (text.Text);
 			list.AddAttributes (indexer, text.Attributes);
 			gtk_label_set_attributes (Label.Handle, list.Handle);
@@ -183,6 +192,14 @@ namespace Xwt.GtkBackend
 			if (links == null || links.Count == 0) {
 				links = null;
 				indexer = null;
+			}
+		}
+
+		void HandleStyleUpdate (object sender, EventArgs e)
+		{
+			// force text update with updated link color
+			if (Label.IsRealized && formattedText != null) {
+				SetFormattedText (formattedText);
 			}
 		}
 
