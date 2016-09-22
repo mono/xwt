@@ -139,9 +139,9 @@ namespace Xwt.GtkBackend
 				contentWidget.ShowAll ();
 				Widget.Label = null;
 				Widget.Image = contentWidget;
-				if (expandButtonContent) {
-					var alignment = Widget.Child as Gtk.Alignment;
-					if (alignment != null) {
+				var alignment = Widget.Child as Gtk.Alignment;
+				if (alignment != null) {
+					if (expandButtonContent) {
 						var box = alignment.Child as Gtk.Box;
 						if (box != null) {
 							alignment.Xscale = 1;
@@ -149,6 +149,11 @@ namespace Xwt.GtkBackend
 							if (labelWidget != null)
 								labelWidget.Xalign = 0;
 						}
+					} else if (position == ContentPosition.Left && (contentWidget is Gtk.Box)) {
+						// in case the button is wider than its natural size and has text and an image on the left,
+						// optimize its alignment to make the text more centered.
+						// FIXME: more sophisticated size calculation
+						alignment.Xalign = 0.475f;
 					}
 				}
 				if (labelWidget != null) {
