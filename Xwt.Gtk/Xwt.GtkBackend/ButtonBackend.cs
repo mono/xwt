@@ -62,6 +62,7 @@ namespace Xwt.GtkBackend
 		protected override void OnSetBackgroundColor (Color color)
 		{
 			Widget.SetBackgroundColor (color);
+			Widget.SetBackgroundColor (Gtk.StateType.Prelight, color);
 		}
 
 		public override object Font {
