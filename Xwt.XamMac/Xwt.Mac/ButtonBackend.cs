@@ -32,11 +32,13 @@ using Xwt.Drawing;
 using nint = System.Int32;
 using nfloat = System.Single;
 using MonoMac.AppKit;
+using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
 using CGRect = System.Drawing.RectangleF;
 #else
 using AppKit;
 using CoreGraphics;
+using Foundation;
 #endif
 
 namespace Xwt.Mac
@@ -76,7 +78,15 @@ namespace Xwt.Mac
 			}
 			if (useMnemonic)
 				label = label.RemoveMnemonic ();
-			Widget.Title = label ?? "";
+			if (customLabelColor.HasValue) {
+				var ns = new NSMutableAttributedString (label);
+				ns.BeginEditing ();
+				var r = new NSRange (0, label.Length);
+				ns.AddAttribute (NSStringAttributeKey.ForegroundColor, customLabelColor.Value.ToNSColor (), r);
+				ns.EndEditing ();
+				Widget.AttributedTitle = ns;
+			} else
+				Widget.Title = label ?? "";
 			if (string.IsNullOrEmpty (label))
 				imagePosition = ContentPosition.Center;
 			if (!image.IsNull) {
@@ -158,6 +168,20 @@ namespace Xwt.Mac
 		public override Color BackgroundColor {
 			get { return ((MacButton)Widget).BackgroundColor; }
 			set { ((MacButton)Widget).BackgroundColor = value; }
+		}
+
+		Color? customLabelColor;
+		public Color LabelColor {
+			get { return customLabelColor.HasValue ? customLabelColor.Value : NSColor.ControlText.ToXwtColor (); }
+			set {
+				customLabelColor = value;
+				var ns = new NSMutableAttributedString (Widget.Title);
+				ns.BeginEditing ();
+				var r = new NSRange (0, Widget.Title.Length);
+				ns.AddAttribute (NSStringAttributeKey.ForegroundColor, customLabelColor.Value.ToNSColor (), r);
+				ns.EndEditing ();
+				Widget.AttributedTitle = ns;
+			}
 		}
 	}
 	
