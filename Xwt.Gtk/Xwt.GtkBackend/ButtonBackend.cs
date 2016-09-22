@@ -74,6 +74,8 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				customLabelColor = value;
+				Widget.SetForegroundColor (value);
+				Widget.SetForegroundColor (Gtk.StateType.Prelight, value);
 				if (labelWidget != null) {
 					labelWidget.SetForegroundColor (value);
 					labelWidget.SetForegroundColor (Gtk.StateType.Prelight, value);
