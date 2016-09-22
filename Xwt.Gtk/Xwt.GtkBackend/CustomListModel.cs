@@ -59,7 +59,11 @@ namespace Xwt.GtkBackend
 			source.RowsReordered += HandleRowsReordered;
 		}
 
+		#if XWT_GTK3
+		protected override void Dispose(bool disposing)
+		#else
 		public override void Dispose ()
+		#endif
 		{
 			base.Dispose ();
 			source.RowChanged -= HandleRowChanged;

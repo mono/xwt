@@ -127,6 +127,7 @@
     <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererImage.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererText.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererToggle.cs" />
+    <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererComboBox.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\Gtk3CellRendererCustom.cs" />
     <Compile Include="Xwt.GtkBackend\CustomListModel.cs" />
     <Compile Include="Xwt.GtkBackend\ListBoxBackend.cs" />
