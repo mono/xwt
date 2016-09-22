@@ -165,6 +165,36 @@ namespace Xwt.GtkBackend
 			widget.OverrideBackgroundColor (state, color.ToGtkRgbaValue ());
 		}
 
+		public static Xwt.Drawing.Color GetForegroundColor (this Gtk.Widget widget)
+		{
+			return widget.GetForegroundColor (Gtk.StateType.Normal);
+		}
+
+		public static Xwt.Drawing.Color GetForegroundColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			return widget.GetForegroundColor (state.ToGtk3StateFlags ());
+		}
+
+		public static Xwt.Drawing.Color GetForegroundColor (this Gtk.Widget widget, Gtk.StateFlags state)
+		{
+			return widget.StyleContext.GetColor (state).ToXwtValue ();
+		}
+
+		public static void SetForegroundColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
+		{
+			widget.SetForegroundColor (Gtk.StateType.Normal, color);
+		}
+
+		public static void SetForegroundColor (this Gtk.Widget widget, Gtk.StateType state, Xwt.Drawing.Color color)
+		{
+			widget.SetForegroundColor (state.ToGtk3StateFlags (), color);
+		}
+
+		public static void SetForegroundColor (this Gtk.Widget widget, Gtk.StateFlags state, Xwt.Drawing.Color color)
+		{
+			widget.OverrideColor (state, color.ToGtkRgbaValue ());
+		}
+
 		public static Gtk.StateFlags ToGtk3StateFlags (this Gtk.StateType state)
 		{
 			switch (state)

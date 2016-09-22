@@ -37,6 +37,7 @@ namespace Xwt.GtkBackend
 		protected bool ignoreClickEvents;
 		ImageDescription image;
 		Pango.FontDescription customFont;
+		Gtk.Label labelWidget;
 		
 		public ButtonBackend ()
 		{
@@ -63,6 +64,21 @@ namespace Xwt.GtkBackend
 		{
 			Widget.SetBackgroundColor (color);
 			Widget.SetBackgroundColor (Gtk.StateType.Prelight, color);
+		}
+
+		Color? customLabelColor;
+
+		public virtual Color LabelColor {
+			get {
+				return customLabelColor.HasValue ? customLabelColor.Value : Widget.Style.Foreground (Gtk.StateType.Normal).ToXwtValue ();
+			}
+			set {
+				customLabelColor = value;
+				if (labelWidget != null) {
+					labelWidget.SetForegroundColor (value);
+					labelWidget.SetForegroundColor (Gtk.StateType.Prelight, value);
+				}
+			}
 		}
 
 		public override object Font {
@@ -103,7 +119,7 @@ namespace Xwt.GtkBackend
 			if (image.Backend != null)
 				imageWidget = new ImageBox (ApplicationContext, image.WithDefaultSize (Gtk.IconSize.Button));
 
-			Gtk.Label labelWidget = null;
+			labelWidget = null;
 
 			if (label != null && imageWidget == null) {
 				contentWidget = labelWidget = new Gtk.Label (label);
@@ -161,6 +177,10 @@ namespace Xwt.GtkBackend
 					labelWidget.UseUnderline = useMnemonic;
 					if (customFont != null)
 						labelWidget.ModifyFont (customFont);
+					if (customLabelColor.HasValue) {
+						labelWidget.SetForegroundColor (customLabelColor.Value);
+						labelWidget.SetForegroundColor (Gtk.StateType.Prelight, customLabelColor.Value);
+					}
 				}
 			} else
 				Widget.Label = null;
