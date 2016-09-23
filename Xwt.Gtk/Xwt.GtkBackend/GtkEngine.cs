@@ -152,8 +152,8 @@ namespace Xwt.GtkBackend
 
 		public override void Dispose ()
 		{
-			base.Dispose ();
 			GtkTextLayoutBackendHandler.DisposeResources ();
+			base.Dispose();
 		}
 
 		public override void RunApplication ()

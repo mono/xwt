@@ -65,11 +65,11 @@ namespace Xwt.GtkBackend
 		public override void Dispose ()
 		#endif
 		{
-			base.Dispose ();
 			source.RowChanged -= HandleRowChanged;
 			source.RowDeleted -= HandleRowDeleted;
 			source.RowInserted -= HandleRowInserted;
 			source.RowsReordered -= HandleRowsReordered;
+			base.Dispose();
 		}
 
 		void HandleRowsReordered (object sender, ListRowOrderEventArgs e)
