@@ -490,21 +490,31 @@ namespace Xwt.Mac
 			}
 		}
 
+		static readonly Selector selConvertSizeToBacking = new Selector ("convertSizeToBacking:");
+
 		public static void DrawWithColorTransform (this NSView view, Color? color, Action drawDelegate)
 		{
 			if (color.HasValue) {
-				if (view.Frame.Size.Width <= 0 || view.Frame.Size.Height <= 0)
+				var size = view.Frame.Size;
+				if (size.Width <= 0 || size.Height <= 0)
 					return;
 
 				// render view to image
-				var image = new NSImage(view.Frame.Size);
+				var image = new NSImage(size);
 				image.LockFocusFlipped(!view.IsFlipped);
 				drawDelegate ();
 				image.UnlockFocus();
 
 				// create Core image for transformation
-				var rr = new CGRect(0, 0, view.Frame.Size.Width, view.Frame.Size.Height);
-				var ciImage = CIImage.FromCGImage(image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
+				var ciImage = CIImage.FromCGImage(image.CGImage);
+
+				CGSize displaySize;
+				#pragma warning disable iOSAndMacApiUsageIssue
+				if (view.RespondsToSelector (selConvertSizeToBacking))
+					displaySize = view.ConvertSizeToBacking (size);
+				else
+					displaySize = view.ConvertSizeToBase (size);
+				#pragma warning restore iOSAndMacApiUsageIssue
 
 				// apply color matrix
 				var transformColor = new CIColorMatrix();
@@ -516,7 +526,7 @@ namespace Xwt.Mac
 				ciImage = (CIImage)transformColor.ValueForKey(new NSString("outputImage"));
 
 				var ciCtx = CIContext.FromContext(NSGraphicsContext.CurrentContext.GraphicsPort, null);
-				ciCtx.DrawImage (ciImage, rr, rr);
+				ciCtx.DrawImage (ciImage, new CGRect (CGPoint.Empty, size), new CGRect (CGPoint.Empty, displaySize));
 			} else
 				drawDelegate();
 		}
