@@ -579,7 +579,7 @@ namespace Xwt.Mac
 		public void SetDragTarget (TransferDataType[] types, DragDropAction dragAction)
 		{
 			SetupForDragDrop (Widget.GetType ());
-			var dtypes = types.Select (t => ToNSDragType (t)).ToArray ();
+			var dtypes = types.Select (ToNSDragType).ToArray ();
 			Widget.RegisterForDraggedTypes (dtypes);
 		}
 		
@@ -596,7 +596,7 @@ namespace Xwt.Mac
 			var backend = ob.Backend;
 			
 			NSDraggingInfo di = (NSDraggingInfo) Runtime.GetNSObject (dragInfo);
-			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
+			var types = di.DraggingPasteboard.Types.Select (ToXwtDragType).ToArray ();
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
 			if ((backend.currentEvents & WidgetEvent.DragOverCheck) != 0) {
@@ -642,7 +642,7 @@ namespace Xwt.Mac
 			var backend = ob.Backend;
 			
 			NSDraggingInfo di = (NSDraggingInfo) Runtime.GetNSObject (dragInfo);
-			var types = di.DraggingPasteboard.Types.Select (t => ToXwtDragType (t)).ToArray ();
+			var types = di.DraggingPasteboard.Types.Select (ToXwtDragType).ToArray ();
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
 			if ((backend.currentEvents & WidgetEvent.DragDropCheck) != 0) {

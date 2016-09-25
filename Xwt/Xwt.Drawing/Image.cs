@@ -309,7 +309,7 @@ namespace Xwt.Drawing
 				}
 				return new ThemedImage (newImages);
 			} else {
-				var img = new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (allImages.Select (i => i.GetBackend ())));
+				var img = new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiSizeIcon (allImages.Select (ExtensionMethods.GetBackend)));
 
 				if (allImages.All (i => i.NativeRef.HasNativeSource)) {
 					var sources = allImages.Select (i => i.NativeRef.NativeSource).ToArray ();
@@ -323,7 +323,7 @@ namespace Xwt.Drawing
 		{
 			if (Toolkit.CurrentEngine == null)
 				throw new ToolkitNotInitializedException ();
-			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiResolutionImage (images.Select (i => i.GetBackend ())));
+			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiResolutionImage (images.Select (ExtensionMethods.GetBackend)));
 		}
 
 		public static Image FromFile (string file)
