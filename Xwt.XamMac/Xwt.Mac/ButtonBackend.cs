@@ -79,9 +79,11 @@ namespace Xwt.Mac
 			if (useMnemonic)
 				label = label.RemoveMnemonic ();
 			if (customLabelColor.HasValue) {
-				var ns = new NSMutableAttributedString (label);
+				Widget.Title = label;
+				var ns = new NSMutableAttributedString (Widget.AttributedTitle);
 				ns.BeginEditing ();
 				var r = new NSRange (0, label.Length);
+				ns.RemoveAttribute (NSStringAttributeKey.ForegroundColor, r);
 				ns.AddAttribute (NSStringAttributeKey.ForegroundColor, customLabelColor.Value.ToNSColor (), r);
 				ns.EndEditing ();
 				Widget.AttributedTitle = ns;
@@ -175,9 +177,10 @@ namespace Xwt.Mac
 			get { return customLabelColor.HasValue ? customLabelColor.Value : NSColor.ControlText.ToXwtColor (); }
 			set {
 				customLabelColor = value;
-				var ns = new NSMutableAttributedString (Widget.Title);
+				var ns = new NSMutableAttributedString (Widget.AttributedTitle);
 				ns.BeginEditing ();
 				var r = new NSRange (0, Widget.Title.Length);
+				ns.RemoveAttribute (NSStringAttributeKey.ForegroundColor, r);
 				ns.AddAttribute (NSStringAttributeKey.ForegroundColor, customLabelColor.Value.ToNSColor (), r);
 				ns.EndEditing ();
 				Widget.AttributedTitle = ns;
