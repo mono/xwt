@@ -34,6 +34,7 @@ namespace Xwt.GtkBackend
 	public class DialogBackend: WindowBackend, IDialogBackend
 	{
 		DialogButton[] dialogButtons;
+		DialogButton defaultButton;
 		Gtk.Button[] buttons;
 		
 		public DialogBackend ()
@@ -55,7 +56,17 @@ namespace Xwt.GtkBackend
 		new IDialogEventSink EventSink {
 			get { return (IDialogEventSink) base.EventSink; }
 		}
-		
+
+		public DialogButton DefaultButton {
+			get {
+				return defaultButton;
+			}
+			set {
+				defaultButton = value;
+				SetButtons (dialogButtons);
+			}
+		}
+
 		public void SetButtons (IEnumerable<DialogButton> newButtons)
 		{
 			if (buttons != null) {
@@ -64,7 +75,9 @@ namespace Xwt.GtkBackend
 					b.Destroy ();
 				}
 			}
-			dialogButtons = newButtons.ToArray ();
+			dialogButtons = newButtons
+				.OrderBy (b => b.PackOrigin)
+				.OrderBy (b => b == DefaultButton).ToArray ();
 			buttons = new Gtk.Button [dialogButtons.Length];
 			
 			for (int n=0; n<dialogButtons.Length; n++) {
@@ -76,6 +89,10 @@ namespace Xwt.GtkBackend
 				UpdateButton (db, b);
 				buttons[n] = b;
 				buttons[n].Clicked += HandleButtonClicked;
+				if (db == DefaultButton) {
+					b.CanDefault = true;
+					b.GrabDefault ();
+				}
 			}
 			UpdateActionAreaVisibility ();
 		}
