@@ -508,14 +508,14 @@ namespace Xwt.GtkBackend
 
 				if (selectable)
 					return base.OnMotionNotifyEvent (evnt);
-				return true;
+				return false;
 			}
 
 			protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
 			{
 				if (selectable)
 					return base.OnButtonPressEvent (evnt);
-				return true;
+				return false;
 			}
 
 			protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
@@ -528,7 +528,7 @@ namespace Xwt.GtkBackend
 				}
 				if (selectable)
 					return base.OnButtonReleaseEvent (evnt);
-				return true;
+				return false;
 			}
 
 			Link GetLinkAtPos (double mousex, double mousey)
