@@ -24,12 +24,21 @@ namespace Xwt.Backends
 
 		// Display the passed buffer
 		void SetBuffer (IRichTextBuffer buffer);
+
+		bool ReadOnly { get; set; }
+
+		bool Selectable { get; set; }
+
+		int LineSpacing { get; set; }
+
+		IRichTextBuffer CurrentBuffer { get; }
 	}
 
 	public interface IRichTextBuffer
 	{
 		// Emit text using specified style mask
 		void EmitText (string text, RichTextInlineStyle style);
+		void EmitText (FormattedText text);
 
 		// Emit a header (h1, h2, ...)
 		void EmitStartHeader (int level);
@@ -56,6 +65,8 @@ namespace Xwt.Backends
 
 		// Emit an horizontal ruler
 		void EmitHorizontalRuler ();
+
+		string PlainText { get;}
 	}
 
 	public interface IRichTextViewEventSink : IWidgetEventSink

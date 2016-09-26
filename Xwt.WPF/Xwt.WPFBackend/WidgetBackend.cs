@@ -39,7 +39,6 @@ using SWC = System.Windows.Controls; // When we need to resolve ambigituies.
 using SW = System.Windows; // When we need to resolve ambigituies.
 
 using Xwt.Backends;
-
 using Color = Xwt.Drawing.Color;
 
 namespace Xwt.WPFBackend
@@ -178,6 +177,12 @@ namespace Xwt.WPFBackend
 			set { Widget.Opacity = value; }
 		}
 
+		public string Name
+		{
+			get { return Widget.Name; }
+			set { Widget.Name = value; }
+		}
+
 		FontData GetWidgetFont ()
 		{
 			if (!(Widget is Control)) {
@@ -243,8 +248,16 @@ namespace Xwt.WPFBackend
 		}
 
 		public string TooltipText {
-			get { return Widget.ToolTip.ToString (); }
-			set { Widget.ToolTip = value; }
+			get { return Widget.ToolTip == null ? null : ((ToolTip)Widget.ToolTip).Content.ToString (); }
+			set {
+				var tp = Widget.ToolTip as ToolTip;
+				if (tp == null)
+					Widget.ToolTip = tp = new ToolTip ();
+				tp.Content = value ?? string.Empty;
+				ToolTipService.SetIsEnabled (Widget, value != null);
+				if (tp.IsOpen && value == null)
+					tp.IsOpen = false;
+			}
 		}
 
 		public static FrameworkElement GetFrameworkElement (IWidgetBackend backend)
@@ -254,7 +267,7 @@ namespace Xwt.WPFBackend
 
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
-			var p = Widget.PointToScreen (new System.Windows.Point (
+			var p = Widget.PointToScreenDpiAware (new System.Windows.Point (
 				widgetCoordinates.X, widgetCoordinates.Y));
 
 			return new Point (p.X, p.Y);

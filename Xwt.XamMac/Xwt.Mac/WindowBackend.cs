@@ -80,6 +80,14 @@ namespace Xwt.Mac
 			Center ();
 		}
 
+		object IWindowFrameBackend.Window {
+			get { return this; }
+		}
+
+		public IntPtr NativeHandle {
+			get { return Handle; }
+		}
+
 		public IWindowFrameEventSink EventSink {
 			get { return (IWindowFrameEventSink)eventSink; }
 		}
@@ -105,6 +113,8 @@ namespace Xwt.Mac
 				return this;
 			}
 		}
+
+		public string Name { get; set; }
 		
 		internal void InternalShow ()
 		{

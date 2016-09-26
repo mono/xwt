@@ -90,7 +90,7 @@ namespace Xwt.WPFBackend
 
 		public override object CreateMultiSizeIcon (IEnumerable<object> images)
 		{
-			return new WpfImage (images.Cast<WpfImage> ().SelectMany (i => i.Frames));
+			return new WpfImage (images.Cast<WpfImage> ());
 		}
 
 		public override void SaveToStream (object backend, Stream stream, Drawing.ImageFileType fileType)
@@ -124,10 +124,10 @@ namespace Xwt.WPFBackend
 
 			switch (id) {
 				case StockIconId.Add:
-					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.list-add.png"))
+					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.add-16.png"))
 						return LoadFromStream (s);
 				case StockIconId.Remove:
-					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.list-remove.png"))
+					using (var s = typeof (ImageHandler).Assembly.GetManifestResourceStream ("Xwt.WPF.icons.remove-16.png"))
 						return LoadFromStream (s);
 
 				case StockIconId.Error:
@@ -225,20 +225,20 @@ namespace Xwt.WPFBackend
 				return img.Height;
 		}
 
-		public override object ConvertToBitmap (object img, double width, double height, double scaleFactor, Xwt.Drawing.ImageFormat format)
+		public override object ConvertToBitmap (ImageDescription idesc, double scaleFactor, Xwt.Drawing.ImageFormat format)
 		{
-			var wpfImage = (WpfImage)img;
-			return new WpfImage (wpfImage.GetBestFrame (ApplicationContext, scaleFactor, width, height, true));
+			var wpfImage = (WpfImage)idesc.Backend;
+			return new WpfImage (wpfImage.GetBestFrame (ApplicationContext, scaleFactor, idesc, true));
 		}
 
 		public override bool HasMultipleSizes (object handle)
 		{
-			return false;
+			return ((WpfImage)handle).HasMultipleSizes;
 		}
 
 		public override bool IsBitmap (object handle)
 		{
-			return true;
+			return !HasMultipleSizes (handle);
 		}
 
 		public override Size GetSize (object handle)
@@ -298,7 +298,7 @@ namespace Xwt.WPFBackend
 		public int Stride;
 		public bool PixelWritePending;
 
-		ImageFrame[] frames;
+		ImageFrame[] frames = new ImageFrame[0];
 
 		public WpfImage (ImageSource image)
 		{
@@ -311,11 +311,27 @@ namespace Xwt.WPFBackend
 		public WpfImage (IEnumerable<ImageSource> images)
 		{
 			this.frames = images.Select (f => new ImageFrame (f)).ToArray ();
+			if (frames.Length == 0)
+				throw new InvalidOperationException();
 		}
 
 		public WpfImage (IEnumerable<ImageFrame> frames)
 		{
 			this.frames = frames.ToArray ();
+			if (this.frames.Length == 0)
+				throw new InvalidOperationException();
+		}
+
+		public WpfImage (IEnumerable<WpfImage> images)
+		{
+			var first = images.First ();
+			if (first.drawCallback != null)
+				drawCallback = first.drawCallback;
+			else {
+				this.frames = images.SelectMany (i => i.Frames).ToArray ();
+				if (this.frames.Length == 0)
+					throw new InvalidOperationException ();
+			}
 		}
 
 		public WpfImage (ImageDrawCallback drawCallback)
@@ -330,7 +346,7 @@ namespace Xwt.WPFBackend
 
 		public ImageSource MainFrame
 		{
-			get { return frames[0].ImageSource; }
+			get { return frames.Length > 0 ? frames[0].ImageSource : null; }
 			set { frames[0].ImageSource = value; }
 		}
 
@@ -407,19 +423,22 @@ namespace Xwt.WPFBackend
 
 		public ImageSource GetBestFrame (ApplicationContext actx, double scaleFactor, double width, double height, bool forceExactSize)
 		{
+			return GetBestFrame (actx, scaleFactor, new ImageDescription { Alpha = 1.0, Size = new Size (width, height) }, forceExactSize);
+		}
+
+		public ImageSource GetBestFrame (ApplicationContext actx, double scaleFactor, ImageDescription idesc, bool forceExactSize)
+		{
+			double width = idesc.Size.Width;
+			double height = idesc.Size.Height;
 			var f = FindFrame (width, height, scaleFactor);
 			if (f == null || (forceExactSize && (Math.Abs (f.Width - width * scaleFactor) > 0.01 || Math.Abs (f.Height - height * scaleFactor) > 0.01)))
-				return RenderFrame (actx, scaleFactor, width, height);
+				return RenderFrame (actx, scaleFactor, idesc);
 			else
 				return f;
 		}
 
-		ImageSource RenderFrame (ApplicationContext actx, double scaleFactor, double width, double height)
+		ImageSource RenderFrame (ApplicationContext actx, double scaleFactor, ImageDescription idesc)
 		{
-			ImageDescription idesc = new ImageDescription () {
-				Alpha = 1,
-				Size = new Size (width, height)
-			};
 			SWM.DrawingVisual visual = new SWM.DrawingVisual ();
 			using (SWM.DrawingContext ctx = visual.RenderOpen ()) {
 				ctx.PushTransform (new ScaleTransform (scaleFactor, scaleFactor));
@@ -427,11 +446,12 @@ namespace Xwt.WPFBackend
 				ctx.Pop ();
 			}
 
-			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)(width * scaleFactor), (int)(height * scaleFactor), 96, 96, PixelFormats.Pbgra32);
+			SWMI.RenderTargetBitmap bmp = new SWMI.RenderTargetBitmap ((int)(idesc.Size.Width * scaleFactor), (int)(idesc.Size.Height * scaleFactor), 96, 96, PixelFormats.Pbgra32);
 			bmp.Render (visual);
 
-			var f = new ImageFrame (bmp, width, height);
-			AddFrame (f);
+			var f = new ImageFrame (bmp, idesc.Size.Width, idesc.Size.Height);
+			if (drawCallback == null)
+				AddFrame (f);
 			return bmp;
 		}
 
@@ -450,7 +470,7 @@ namespace Xwt.WPFBackend
 			if (drawCallback != null) {
 				DrawingContext c = new DrawingContext (dc, scaleFactor);
 				actx.InvokeUserCode (delegate {
-					drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height));
+					drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height), idesc, actx.Toolkit);
 				});
 			}
 			else {
@@ -459,8 +479,15 @@ namespace Xwt.WPFBackend
 
 				var f = GetBestFrame (actx, scaleFactor, idesc.Size.Width, idesc.Size.Height, false);
 				var bmpImage = f as BitmapSource;
-				if (bmpImage != null && (bmpImage.PixelHeight != idesc.Size.Height || bmpImage.PixelWidth != idesc.Size.Width))
-					f = new TransformedBitmap (bmpImage, new ScaleTransform (idesc.Size.Width / bmpImage.PixelWidth, idesc.Size.Height / bmpImage.PixelHeight));
+
+				// When an image is a single bitmap that doesn't have the same intrinsic size as the drawing size, dc.DrawImage makes a very poor job of down/up scaling it.
+				// Thus we handle this manually by using a TransformedBitmap to handle the conversion in a better way when it's needed.
+
+				var scaledWidth = idesc.Size.Width * scaleFactor;
+				var scaledHeight = idesc.Size.Height * scaleFactor;
+				if (bmpImage != null && (Math.Abs (bmpImage.PixelHeight - scaledHeight) > 0.001 || Math.Abs (bmpImage.PixelWidth - scaledWidth) > 0.001))
+					f = new TransformedBitmap (bmpImage, new ScaleTransform (scaledWidth / bmpImage.PixelWidth, scaledHeight / bmpImage.PixelHeight));
+
 				dc.DrawImage (f, new Rect (x, y, idesc.Size.Width, idesc.Size.Height));
 
 				if (idesc.Alpha < 1)

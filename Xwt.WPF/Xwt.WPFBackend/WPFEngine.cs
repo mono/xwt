@@ -169,6 +169,11 @@ namespace Xwt.WPFBackend
 			};
 		}
 
+		public override object GetNativeWindow (IWindowFrameBackend backend)
+		{
+			return backend?.Window as System.Windows.Window;
+		}
+
 		public override object GetBackendForImage (object nativeImage)
 		{
 			if (nativeImage is WpfImage)
@@ -209,12 +214,13 @@ namespace Xwt.WPFBackend
 			if (b is XwtWidgetBackend)
 				b = ((XwtWidgetBackend)b).NativeBackend;
 			IWpfWidgetBackend wb = (IWpfWidgetBackend)b;
-			return wb.Widget.Parent != null;
+			return VisualTreeHelper.GetParent (wb.Widget) != null;
 		}
 
 		public override object GetNativeImage (Image image)
 		{
-			return DataConverter.AsImageSource (Toolkit.GetBackend (image));
+			var source = (WpfImage)Toolkit.GetBackend (image);
+			return source.MainFrame ?? source.GetBestFrame (ApplicationContext, 1, image.Width, image.Height, true);
 		}
 
 		public override object RenderWidget (Widget widget)
@@ -227,6 +233,15 @@ namespace Xwt.WPFBackend
 			} catch (Exception ex) {
 				throw new InvalidOperationException ("Rendering element not supported", ex);
 			}
+		}
+
+		public override void RenderImage (object nativeWidget, object nativeContext, ImageDescription img, double x, double y)
+		{
+			WpfImage im = (WpfImage)img.Backend;
+			System.Windows.Media.DrawingContext dc = nativeContext as System.Windows.Media.DrawingContext;
+			FrameworkElement w = (FrameworkElement)nativeWidget;
+			if (dc != null)
+				im.Draw (ApplicationContext, dc, Util.GetScaleFactor (w), x, y, img);
 		}
 	}
 }

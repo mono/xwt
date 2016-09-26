@@ -129,7 +129,7 @@ namespace Xwt.Drawing
 
 		public Font Font {
 			get { return font; }
-			set { font = value; handler.SetFont (Backend, value); }
+			set { font = value; handler.SetFont (Backend, (Font)ToolkitEngine.ValidateObject (value)); }
 		}
 
 		public string Text {
@@ -179,6 +179,15 @@ namespace Xwt.Drawing
 		public double Baseline {
 			get {
 				return handler.GetBaseline (Backend);
+			}
+		}
+
+		/// <summary>
+		/// Get the distance in pixels between the top of the layout bounds and the first line's meanline (usually equivalent to the baseline minus half of the x-height)
+		/// </summary>
+		public double Meanline {
+			get {
+				return handler.GetMeanline (Backend);
 			}
 		}
 

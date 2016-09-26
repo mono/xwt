@@ -11,3 +11,5 @@ obj
 *.mdb
 .DS_Store
 test-results
+.nuget/
+packages/

@@ -57,7 +57,8 @@ namespace Xwt.Mac
 		
 		public override void InitializeApplication ()
 		{
-			NSApplication.Init ();
+			NSApplicationInitializer.Initialize ();
+
 			//Hijack ();
 			if (pool != null)
 				pool.Dispose ();
@@ -205,6 +206,20 @@ namespace Xwt.Mac
 			return wb.Widget;
 		}
 
+		public override object GetNativeImage (Xwt.Drawing.Image image)
+		{
+			if (image == null)
+				return null;
+			var img = (NSImage)base.GetNativeImage (image);
+			if (img is CustomImage) {
+				img = ((CustomImage)img).Clone ();
+				var idesc = image.ToImageDescription (ApplicationContext);
+				((CustomImage)img).Image = idesc;
+			}
+			img.Size = new CGSize ((nfloat)image.Size.Width, (nfloat)image.Size.Height);
+			return img;
+		}
+
 		public override bool HasNativeParent (Widget w)
 		{
 			var wb = GetNativeBackend (w);
@@ -224,6 +239,17 @@ namespace Xwt.Mac
 		public override Xwt.Backends.IWindowFrameBackend GetBackendForWindow (object nativeWindow)
 		{
 			throw new NotImplementedException ();
+		}
+
+		public override object GetNativeWindow (IWindowFrameBackend backend)
+		{
+			if (backend == null)
+				return null;
+			if (backend.Window is NSWindow)
+				return backend.Window;
+			if (Desktop.DesktopType == DesktopType.Mac && Toolkit.NativeEngine == ApplicationContext.Toolkit)
+				return Runtime.GetNSObject (backend.NativeHandle) as NSWindow;
+			return null;
 		}
 
 		public override object GetBackendForContext (object nativeWidget, object nativeContext)
@@ -292,11 +318,14 @@ namespace Xwt.Mac
 			launched = true;
 			foreach (var w in pendingWindows)
 				w.InternalShow ();
+		}
 
+		public override void WillFinishLaunching(NSNotification notification)
+		{
 			NSAppleEventManager eventManager = NSAppleEventManager.SharedAppleEventManager;
 			eventManager.SetEventHandler (this, new Selector ("handleGetURLEvent:withReplyEvent:"), AEEventClass.Internet, AEEventID.GetUrl);
 		}
-			
+
 		[Export("handleGetURLEvent:withReplyEvent:")]
 		void HandleGetUrlEvent(NSAppleEventDescriptor descriptor, NSAppleEventDescriptor reply)
 		{

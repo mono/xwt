@@ -35,12 +35,14 @@ namespace Xwt
 	public sealed class Toolkit: IFrontend
 	{
 		static Toolkit currentEngine;
+		static Toolkit nativeEngine;
 		static Dictionary<Type, Toolkit> toolkits = new Dictionary<Type, Toolkit> ();
 
 		ToolkitEngineBackend backend;
 		ApplicationContext context;
 		XwtTaskScheduler scheduler;
 		ToolkitType toolkitType;
+		ToolkitDefaults defaults;
 
 		int inUserCode;
 		Queue<Action> exitActions = new Queue<Action> ();
@@ -74,6 +76,35 @@ namespace Xwt
 		/// <value>The engine currently used by Xwt.</value>
 		public static Toolkit CurrentEngine {
 			get { return currentEngine; }
+		}
+
+		/// <summary>
+		/// Gets the native platform toolkit engine.
+		/// </summary>
+		/// <value>The native engine.</value>
+		public static Toolkit NativeEngine {
+			get {
+				if (nativeEngine == null) {
+					switch (Desktop.DesktopType) {
+						case DesktopType.Linux:
+							// don't mix Gtk2 and Gtk3
+							if (CurrentEngine != null && (CurrentEngine.Type == ToolkitType.Gtk || CurrentEngine.Type == ToolkitType.Gtk3))
+								nativeEngine = CurrentEngine;
+							else if (!TryLoad (ToolkitType.Gtk3, out nativeEngine))
+								TryLoad (ToolkitType.Gtk, out nativeEngine);
+							break;
+						case DesktopType.Windows:
+							TryLoad (ToolkitType.Wpf, out nativeEngine);
+							break;
+						case DesktopType.Mac:
+							TryLoad (ToolkitType.XamMac, out nativeEngine);
+							break;
+					}
+				}
+				if (nativeEngine == null)
+					nativeEngine = CurrentEngine;
+				return nativeEngine;
+			}
 		}
 
 		/// <summary>
@@ -299,6 +330,18 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Gets the defaults for the current toolkit.
+		/// </summary>
+		/// <value>The toolkit defaults.</value>
+		public ToolkitDefaults Defaults {
+			get {
+				if (defaults == null)
+					defaults = new ToolkitDefaults ();
+				return defaults;
+			}
+		}
+
+		/// <summary>
 		/// Gets a reference to the native widget wrapped by an Xwt widget
 		/// </summary>
 		/// <returns>The native widget currently used by Xwt for the specific widget.</returns>
@@ -308,6 +351,36 @@ namespace Xwt
 			ValidateObject (w);
 			w.SetExtractedAsNative ();
 			return backend.GetNativeWidget (w);
+		}
+
+		/// <summary>
+		/// Gets a reference to the native window wrapped by an Xwt window
+		/// </summary>
+		/// <returns>The native window currently used by Xwt for the specific window, or null.</returns>
+		/// <param name="w">The Xwt window.</param>
+		/// <remarks>
+		/// If the window backend belongs to a different toolkit and the current toolkit is the
+		/// native toolkit for the current platform, GetNativeWindow will return the underlying
+		/// native window, or null if the operation is not supported for the current toolkit.
+		/// </remarks>
+		public object GetNativeWindow (WindowFrame w)
+		{
+			return backend.GetNativeWindow (w);
+		}
+
+		/// <summary>
+		/// Gets a reference to the native platform window used by the specified backend.
+		/// </summary>
+		/// <returns>The native window currently used by Xwt for the specific window, or null.</returns>
+		/// <param name="w">The Xwt window.</param>
+		/// <remarks>
+		/// If the window backend belongs to a different toolkit and the current toolkit is the
+		/// native toolkit for the current platform, GetNativeWindow will return the underlying
+		/// native window, or null if the operation is not supported for the current toolkit.
+		/// </remarks>
+		public object GetNativeWindow (IWindowFrameBackend w)
+		{
+			return backend.GetNativeWindow (w);
 		}
 
 		/// <summary>
@@ -512,19 +585,20 @@ namespace Xwt
 
 				// If the font instance is a system font, we swap instances
 				// to not corrupt the backend of the singletons
-				if (font.ToolkitEngine != null) {
+				if (font.ToolkitEngine != this) {
 					var fbh = font.ToolkitEngine.FontBackendHandler;
-					if (font == fbh.SystemFont)
-						return FontBackendHandler.SystemFont;
-					if (font == fbh.SystemMonospaceFont)
-						return FontBackendHandler.SystemMonospaceFont;
-					if (font == fbh.SystemSansSerifFont)
-						return FontBackendHandler.SystemSansSerifFont;
-					if (font == fbh.SystemSerifFont)
-						return FontBackendHandler.SystemSerifFont;
+					if (font.Family == fbh.SystemFont.Family)
+						font = FontBackendHandler.SystemFont.WithSettings (font);
+					if (font.Family == fbh.SystemMonospaceFont.Family)
+						font = FontBackendHandler.SystemMonospaceFont.WithSettings (font);
+					if (font.Family == fbh.SystemSansSerifFont.Family)
+						font = FontBackendHandler.SystemSansSerifFont.WithSettings (font);
+					if (font.Family == fbh.SystemSerifFont.Family)
+						font = FontBackendHandler.SystemSerifFont.WithSettings (font);
 				}
 
 				font.InitForToolkit (this);
+				obj = font;
 			} else if (obj is Gradient) {
 				((Gradient)obj).InitForToolkit (this);
 			} else if (obj is IFrontend) {
@@ -543,8 +617,7 @@ namespace Xwt
 		/// <exception cref="InvalidOperationException">The component belongs to a different toolkit</exception>
 		public object GetSafeBackend (object obj)
 		{
-			ValidateObject (obj);
-			return GetBackend (obj);
+			return GetBackend (ValidateObject (obj));
 		}
 
 		/// <summary>

@@ -162,6 +162,15 @@ namespace Xwt.WPFBackend
 			this.type = type;
 		}
 
+		internal void SetFont (FontData font)
+		{
+			MenuItem.FontFamily = font.Family;
+			MenuItem.FontSize = font.GetDeviceIndependentPixelSize(MenuItem);
+			MenuItem.FontStyle = font.Style;
+			MenuItem.FontWeight = font.Weight;
+			MenuItem.FontStretch = font.Stretch;
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			if (menuItem == null)

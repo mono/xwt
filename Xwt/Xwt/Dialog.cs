@@ -109,7 +109,6 @@ namespace Xwt
 		
 		public Command Run (WindowFrame parent)
 		{
-			BackendHost.ToolkitEngine.ValidateObject (parent);
 			if (parent != null)
 				TransientFor = parent;
 			AdjustSize ();
@@ -246,6 +245,8 @@ namespace Xwt
 			get {
 				if (image != null)
 					return image;
+				if (command != null)
+					return command.Icon;
 				return null;
 			}
 			set {

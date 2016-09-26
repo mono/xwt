@@ -74,6 +74,8 @@ namespace Xwt.GtkBackend
 				var bmp = ((Image)val).ToBitmap ();
 				data.SetPixbuf (((GtkImage)Toolkit.GetBackend (bmp)).Frames[0].Pixbuf);
 			}
+			else if (val is Uri)
+				data.SetUris(new string[] { ((Uri)val).AbsolutePath });
 			else {
 				var at = Gdk.Atom.Intern (atomType, false);
 				data.Set (at, 0, TransferDataSource.SerializeValue (val));
@@ -90,10 +92,8 @@ namespace Xwt.GtkBackend
 				target.AddText (data.Text);
 			else if (data.TargetsIncludeImage (false))
 				target.AddImage (context.Toolkit.WrapImage (data.Pixbuf));
-			else if (type == TransferDataType.Uri) {
-				var uris = System.Text.Encoding.UTF8.GetString (data.Data).Split ('\n').Where (u => !string.IsNullOrEmpty(u)).Select (u => new Uri (u)).ToArray ();
-				target.AddUris (uris);
-			}
+			else if (type == TransferDataType.Uri)
+				target.AddUris (data.GetUris().Where(u => !string.IsNullOrEmpty(u)).Select(u => new Uri(u)).ToArray());
 			else
 				target.AddValue (type, data.Data);
 			return true;
@@ -170,6 +170,11 @@ namespace Xwt.GtkBackend
 						atom = Gdk.Atom.Intern ("text/html", false);
 					}
 					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
+				}
+				else if (type == TransferDataType.Image) {
+					Gtk.TargetList list = new Gtk.TargetList ();
+					list.AddImageTargets (id, true);
+					entries = (Gtk.TargetEntry[])list;
 				}
 				else {
 					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type.Id, false), 0, id) };

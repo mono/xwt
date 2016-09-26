@@ -69,7 +69,19 @@ namespace Xwt.Mac
 			public override void ItemWillCollapse (NSNotification notification)
 			{
 				Backend.EventSink.OnRowCollapsing (((TreeItem)notification.UserInfo["NSObject"]).Position);
-			}		
+			}
+
+			public override nfloat GetRowHeight (NSOutlineView outlineView, NSObject item)
+			{
+				var height = outlineView.RowHeight;
+				var row = outlineView.RowForItem (item);
+				for (int i = 0; i < outlineView.ColumnCount; i++) {
+					var cell = outlineView.GetCell (i, row);
+					if (cell != null)
+						height = (nfloat) Math.Max (height, cell.CellSize.Height);
+				}
+				return height;
+			}
 		}
 		
 		NSOutlineView Tree {
@@ -280,6 +292,11 @@ namespace Xwt.Mac
 		
 		object ITablePosition.Position {
 			get { return Position; }
+		}
+
+		public override NSObject Copy ()
+		{
+			return new TreeItem { Position = this.Position };
 		}
 	}
 	

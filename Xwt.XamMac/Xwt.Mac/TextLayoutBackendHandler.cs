@@ -73,7 +73,7 @@ namespace Xwt.Mac
 		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Font = ((FontData)Toolkit.GetBackend (font)).Font;
+			li.Font = ((FontData)ApplicationContext.Toolkit.GetSafeBackend (font)).Font;
 		}
 		
 		public override void SetWidth (object backend, double value)
@@ -144,6 +144,12 @@ namespace Xwt.Mac
 				line.GetTypographicBounds (out ascent, out descent, out leading);
 				return (double)ascent;
 			}
+		}
+
+		public override double GetMeanline (object backend)
+		{
+			LayoutInfo li = (LayoutInfo)backend;
+			return GetBaseline (backend) - li.Font.XHeight / 2;
 		}
 
 		static CTFrame CreateFrame (LayoutInfo li)

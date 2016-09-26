@@ -59,7 +59,7 @@ namespace Xwt
 
 		static DatePicker ()
 		{
-			MapEvent (DatePickerEvent.ValueChanged, typeof (Label), "OnValueChanged");
+			MapEvent (DatePickerEvent.ValueChanged, typeof (DatePicker), "OnValueChanged");
 		}
 
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IDatePickerEventSink

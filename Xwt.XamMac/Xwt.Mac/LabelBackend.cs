@@ -95,10 +95,14 @@ namespace Xwt.Mac
 			}
 		}
 
+		public bool Selectable {
+			get { return Widget.Selectable; }
+			set { Widget.Selectable = value; }
+		}
+
 		public void SetFormattedText (FormattedText text)
 		{
 			Widget.AllowsEditingTextAttributes = true;
-			Widget.Selectable = true;
 			Widget.AttributedStringValue = text.ToAttributedString ();
 		}
 

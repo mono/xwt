@@ -48,6 +48,13 @@ namespace Xwt.WPFBackend
 				throw new ArgumentNullException ("dataSource");
 			if (type == TransferDataType.Html) {
 				WindowsClipboard.SetData (type.ToWpfDataFormat (), GenerateCFHtml (dataSource ().ToString ()));
+			} else if (type == TransferDataType.Image) {
+				var img = dataSource() as Xwt.Drawing.Image;
+				if (img != null)
+				{
+					var src = img.ToBitmap().GetBackend() as WpfImage;
+					WindowsClipboard.SetData (type.ToWpfDataFormat (), src.MainFrame);
+				}
 			} else {
 				WindowsClipboard.SetData (type.ToWpfDataFormat (), dataSource ());
 			}
@@ -96,7 +103,11 @@ namespace Xwt.WPFBackend
 			if (!IsTypeAvailable (type))
 				return null;
 
-			return WindowsClipboard.GetData (type.ToWpfDataFormat ());
+			var data = WindowsClipboard.GetData (type.ToWpfDataFormat ());
+
+			if (type == TransferDataType.Image)
+				return ApplicationContext.Toolkit.WrapImage(ImageHandler.LoadFromImageSource((System.Windows.Media.ImageSource)data));
+			return data;
 		}
 
 		public override IAsyncResult BeginGetData (TransferDataType type, AsyncCallback callback, object state)

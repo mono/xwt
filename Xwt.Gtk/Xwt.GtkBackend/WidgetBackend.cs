@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Xwt.Drawing;
+using System.Runtime.InteropServices;
 
 namespace Xwt.GtkBackend
 {
@@ -113,6 +114,11 @@ namespace Xwt.GtkBackend
 			get {
 				return eventBox ?? (Gtk.Widget) Widget;
 			}
+		}
+
+		public string Name {
+			get { return Widget.Name; }
+			set { Widget.Name = value; }
 		}
 		
 		public virtual bool Visible {
@@ -256,7 +262,7 @@ namespace Xwt.GtkBackend
 		
 		protected virtual void Dispose (bool disposing)
 		{
-			if (Widget != null && disposing && Widget.Parent == null && !destroyed) {
+			if (Widget != null && disposing && !destroyed) {
 				MarkDestroyed (Frontend);
 				Widget.Destroy ();
 			}
@@ -266,7 +272,16 @@ namespace Xwt.GtkBackend
 
 		void MarkDestroyed (Widget w)
 		{
-			var bk = (WidgetBackend) Toolkit.GetBackend (w);
+			var wbk = Toolkit.GetBackend (w);
+			var bk = wbk as WidgetBackend;
+			if (bk == null) {
+				var ew = wbk as Xwt.Widget;
+				if (ew == null)
+					return;
+				bk = Toolkit.GetBackend (ew) as WidgetBackend;
+				if (bk == null)
+					return;
+			}
 			bk.destroyed = true;
 			foreach (var c in w.Surface.Children)
 				MarkDestroyed (c);

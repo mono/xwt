@@ -27,6 +27,7 @@
 
 using System;
 using Xwt.Backends;
+using System.Linq;
 
 #if MONOMAC
 using nint = System.Int32;
@@ -46,6 +47,9 @@ namespace Xwt.Mac
 {
 	public class WebViewBackend : ViewBackend<WebKitView, IWebViewEventSink>, IWebViewBackend
 	{
+		DomElement customCssNode;
+		string customCss;
+
 		public WebViewBackend ()
 		{
 		}
@@ -59,7 +63,9 @@ namespace Xwt.Mac
 		public override void Initialize()
 		{
 			base.Initialize ();
-			ViewObject = new MacWebView ();
+			ViewObject = new MacWebView {
+				UIDelegate = new XwtWebUIDelegate (this)
+			};
 		}
 
 		public string Url {
@@ -91,6 +97,38 @@ namespace Xwt.Mac
 			get {
 				return Widget.CanGoForward ();
 			}
+		}
+
+		public bool ContextMenuEnabled { get; set; }
+
+		public bool ScrollBarsEnabled {
+			get {
+				return Widget.MainFrame.FrameView.AllowsScrolling;
+			}
+			set {
+				Widget.MainFrame.FrameView.AllowsScrolling = value;
+			}
+		}
+
+		public string CustomCss {
+			get {
+				return customCss;
+			}
+			set {
+				if (customCss != value) {
+					if (string.IsNullOrEmpty (customCss) && !string.IsNullOrEmpty (value))
+						Widget.FinishedLoad += HandleFinishedLoadForCss;
+					else if (string.IsNullOrEmpty (value))
+						Widget.FinishedLoad -= HandleFinishedLoadForCss;
+					customCss = value;
+					SetCustomCss ();
+				}
+			}
+		}
+
+		void HandleFinishedLoadForCss (object sender, WebFrameEventArgs e)
+		{
+			SetCustomCss ();
 		}
 
 		public void GoBack ()
@@ -141,7 +179,7 @@ namespace Xwt.Mac
 			if (eventId is WebViewEvent) {
 				switch ((WebViewEvent)eventId) {
 					case WebViewEvent.NavigateToUrl: Widget.StartedProvisionalLoad -= HandleStartedProvisionalLoad; break;
-					case WebViewEvent.Loading: Widget.CommitedLoad += HandleLoadStarted; break;
+					case WebViewEvent.Loading: Widget.CommitedLoad -= HandleLoadStarted; break;
 					case WebViewEvent.Loaded: Widget.FinishedLoad -= HandleLoadFinished; break;
 					case WebViewEvent.TitleChanged: Widget.ReceivedTitle -= HandleTitleChanged; break;
 				}
@@ -173,6 +211,7 @@ namespace Xwt.Mac
 
 		void HandleLoadFinished (object o, EventArgs args)
 		{
+			SetCustomCss ();
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnLoaded ();
 			});
@@ -185,6 +224,41 @@ namespace Xwt.Mac
 			});
 		}
 		#endregion
+
+		void SetCustomCss ()
+		{
+			var mainDocument = Widget.MainFrameDocument ?? Widget.MainFrame.DomDocument;
+			var head = mainDocument?.DocumentElement?.GetElementsByTagName ("head")? [0];
+
+			if (head == null) {
+				customCssNode = null;
+				return;
+			}
+
+			// reuse node reference only if the document did not change and still contains the injected node
+			if (customCssNode != null && !head.ChildNodes.Contains (customCssNode))
+				customCssNode = null;
+
+			if (!string.IsNullOrEmpty (CustomCss)) {
+				if (customCssNode == null) {
+					customCssNode = mainDocument.CreateElement ("style");
+					customCssNode.SetAttribute ("type", "text/css");
+					if (head.ChildNodes.Count > 0)
+						head.InsertBefore (customCssNode, head.FirstChild);
+					else
+						head.AppendChild (customCssNode);
+				}
+				if (customCssNode.FirstChild != null)
+					customCssNode.ReplaceChild (mainDocument.CreateTextNode (customCss), customCssNode.FirstChild);
+				else
+					customCssNode.AppendChild (mainDocument.CreateTextNode (customCss));
+			} else if (customCssNode != null) {
+				if (head.ChildNodes.Contains (customCssNode) == true)
+					head.RemoveChild (customCssNode);
+				customCssNode.Dispose ();
+				customCssNode = null;
+			}
+		}
 	}
 
 	class MacWebView : WebKitView, IViewObject
@@ -193,6 +267,23 @@ namespace Xwt.Mac
 
 		public NSView View {
 			get { return this; }
+		}
+	}
+
+	class XwtWebUIDelegate : WebUIDelegate
+	{
+		readonly WebViewBackend backend;
+
+		public XwtWebUIDelegate (WebViewBackend backend)
+		{
+			this.backend = backend;
+		}
+
+		public override NSMenuItem [] UIGetContextMenuItems (WebKitView sender, NSDictionary forElement, NSMenuItem [] defaultMenuItems)
+		{
+			if (backend.ContextMenuEnabled)
+				return defaultMenuItems;
+			return null;
 		}
 	}
 }

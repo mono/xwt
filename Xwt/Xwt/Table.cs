@@ -151,7 +151,7 @@ namespace Xwt
 				widget.MarginLeft = marginLeft;
 			if (marginTop != -1)
 				widget.MarginTop = marginTop;
-			if (marginTop != -1)
+			if (marginRight != -1)
 				widget.MarginRight = marginRight;
 			if (marginBottom != -1)
 				widget.MarginBottom = marginBottom;

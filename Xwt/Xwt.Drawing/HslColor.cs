@@ -75,31 +75,29 @@ namespace Xwt.Drawing
 			} else {
 				double temp2 = hsl.L <= 0.5 ? hsl.L * (1.0 + hsl.S) : hsl.L + hsl.S -(hsl.L * hsl.S);
 				double temp1 = 2.0 * hsl.L - temp2;
-				
-				double[] t3 = new double[] { hsl.H + 1.0 / 3.0, hsl.H, hsl.H - 1.0 / 3.0};
-				double[] clr= new double[] { 0, 0, 0};
-				for (int i = 0; i < 3; i++) {
-					if (t3[i] < 0)
-						t3[i] += 1.0;
-					if (t3[i] > 1)
-						t3[i]-=1.0;
-					if (6.0 * t3[i] < 1.0)
-						clr[i] = temp1 + (temp2 - temp1) * t3[i] * 6.0;
-					else if (2.0 * t3[i] < 1.0)
-						clr[i] = temp2;
-					else if (3.0 * t3[i] < 2.0)
-						clr[i] = (temp1 + (temp2 - temp1) * ((2.0 / 3.0) - t3[i]) * 6.0);
-					else
-						clr[i] = temp1;
-				}
-				
-				r = clr[0];
-				g = clr[1];
-				b = clr[2];
+
+				r = ConvertVector(temp2, temp1, hsl.H + 1.0 / 3.0);
+				g = ConvertVector(temp2, temp1, hsl.H);
+				b = ConvertVector(temp2, temp1, hsl.H - 1.0 / 3.0);
 			}
 			return new Color (r, g, b);
 		}
-		
+
+		static double ConvertVector(double temp2, double temp1, double x)
+		{
+			if (x < 0)
+				x += 1.0;
+			if (x > 1)
+				x -= 1.0;
+			if (6.0 * x < 1.0)
+				return temp1 + (temp2 - temp1) * x * 6.0;
+			if (2.0 * x < 1.0)
+				return temp2;
+			if (3.0 * x < 2.0)
+				return (temp1 + (temp2 - temp1) * ((2.0 / 3.0) - x) * 6.0);
+			return temp1;
+		}
+
 		public static implicit operator HslColor (Color color)
 		{
 			return new HslColor (color);

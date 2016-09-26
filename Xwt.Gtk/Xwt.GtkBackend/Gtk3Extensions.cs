@@ -58,6 +58,20 @@ namespace Xwt.GtkBackend
 			widget.SetStateFlags(Gtk.StateFlags.Normal, true);
 		}
 
+		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr gdk_pixbuf_get_from_surface (IntPtr surface, int src_x, int src_y, int width, int height);
+
+		public static Gdk.Pixbuf GetFromSurface (Cairo.Surface surface, int src_x, int src_y, int width, int height)
+		{
+			IntPtr raw_ret = gdk_pixbuf_get_from_surface (surface.Handle, src_x, src_y, width, height);
+			Gdk.Pixbuf ret;
+			if (raw_ret == IntPtr.Zero)
+				ret = null;
+			else
+				ret = (Gdk.Pixbuf)GLib.Object.GetObject (raw_ret);
+			return ret;
+		}
+
 		[DllImport (GtkInterop.LIBGDK)]
 		static extern IntPtr gdk_pixbuf_get_from_window(IntPtr win, int src_x, int src_y, int width, int height);
 
@@ -149,6 +163,36 @@ namespace Xwt.GtkBackend
 		public static void SetBackgroundColor (this Gtk.Widget widget, Gtk.StateFlags state, Xwt.Drawing.Color color)
 		{
 			widget.OverrideBackgroundColor (state, color.ToGtkRgbaValue ());
+		}
+
+		public static Xwt.Drawing.Color GetForegroundColor (this Gtk.Widget widget)
+		{
+			return widget.GetForegroundColor (Gtk.StateType.Normal);
+		}
+
+		public static Xwt.Drawing.Color GetForegroundColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			return widget.GetForegroundColor (state.ToGtk3StateFlags ());
+		}
+
+		public static Xwt.Drawing.Color GetForegroundColor (this Gtk.Widget widget, Gtk.StateFlags state)
+		{
+			return widget.StyleContext.GetColor (state).ToXwtValue ();
+		}
+
+		public static void SetForegroundColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
+		{
+			widget.SetForegroundColor (Gtk.StateType.Normal, color);
+		}
+
+		public static void SetForegroundColor (this Gtk.Widget widget, Gtk.StateType state, Xwt.Drawing.Color color)
+		{
+			widget.SetForegroundColor (state.ToGtk3StateFlags (), color);
+		}
+
+		public static void SetForegroundColor (this Gtk.Widget widget, Gtk.StateFlags state, Xwt.Drawing.Color color)
+		{
+			widget.OverrideColor (state, color.ToGtkRgbaValue ());
 		}
 
 		public static Gtk.StateFlags ToGtk3StateFlags (this Gtk.StateType state)

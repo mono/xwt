@@ -62,6 +62,7 @@ namespace Xwt.GtkBackend
 	internal class FastPangoAttrList : IDisposable
 	{
 		IntPtr list;
+		public Gdk.Color DefaultLinkColor = Colors.Blue.ToGtkValue ();
 
 		public FastPangoAttrList ()
 		{
@@ -108,8 +109,9 @@ namespace Xwt.GtkBackend
 				AddFontAttribute ((Pango.FontDescription)Toolkit.GetBackend (xa.Font), start, end);
 			}
 			else if (attr is LinkTextAttribute) {
+				// TODO: support "link-color" style prop for TextLayoutBackendHandler and CellRendererText
 				AddUnderlineAttribute (Pango.Underline.Single, start, end);
-				AddForegroundAttribute (Colors.Blue.ToGtkValue (), start, end);
+				AddForegroundAttribute (DefaultLinkColor, start, end);
 			}
 		}
 

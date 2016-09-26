@@ -71,20 +71,47 @@ namespace Xwt.GtkBackend
 				item.Submenu = m;
 			}
 		}
-		
+
+		ImageDescription? defImage, selImage;
+
 		public void SetImage (ImageDescription image)
 		{
 			Gtk.ImageMenuItem it = item as Gtk.ImageMenuItem;
 			if (it == null)
 				return;
 			if (!image.IsNull) {
+				if (defImage == null)
+					item.StateChanged += ImageMenuItemStateChanged;
+				defImage = image;
+				selImage = new ImageDescription {
+					Backend = image.Backend,
+					Size = image.Size,
+					Alpha = image.Alpha,
+					Styles = image.Styles.Add ("sel")
+				};
 				var img = new ImageBox (context, image);
 				img.ShowAll ();
 				it.Image = img;
 				GtkWorkarounds.ForceImageOnMenuItem (it);
-			}
-			else
+			} else {
+				if (defImage.HasValue) {
+					item.StateChanged -= ImageMenuItemStateChanged;
+					defImage = selImage = null;
+				}
 				it.Image = null;
+			}
+		}
+
+		void ImageMenuItemStateChanged (object o, Gtk.StateChangedArgs args)
+		{
+			var it = item as Gtk.ImageMenuItem;
+			var image = it?.Image as ImageBox;
+			if (image == null || selImage == null || defImage == null)
+				return;
+			if (it.State == Gtk.StateType.Prelight)
+				image.Image = selImage.Value;
+			else if (args.PreviousState == Gtk.StateType.Prelight)
+				image.Image = defImage.Value;
 		}
 
 		public string Label {

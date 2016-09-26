@@ -40,6 +40,7 @@ namespace Xwt.WPFBackend
 	public class MenuBackend : Backend, IMenuBackend
 	{
 		List<MenuItemBackend> items;
+		FontData customFont;
 
 		public override void InitializeBackend (object frontend, ApplicationContext context)
 		{
@@ -63,9 +64,24 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
+		public virtual object Font {
+			get {
+				if (customFont == null)
+					return FontData.FromControl (Items.Count > 0 ? Items[0].MenuItem : new System.Windows.Controls.MenuItem());
+				return customFont;
+			}
+			set {
+				customFont = (FontData)value;
+				foreach (var item in Items)
+					item.SetFont (customFont);
+			}
+		}
+
 		public void InsertItem (int index, IMenuItemBackend item)
 		{
 			var itemBackend = (MenuItemBackend)item;
+			if (customFont != null)
+				itemBackend.SetFont(customFont);
 			items.Insert (index, itemBackend);
 			if (ParentItem != null && ParentItem.MenuItem != null)
 				ParentItem.MenuItem.Items.Insert (index, itemBackend.Item);

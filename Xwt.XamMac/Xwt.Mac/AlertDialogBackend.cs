@@ -54,7 +54,7 @@ namespace Xwt.Mac
 		{
 		}
 
-		public void Initialize (ApplicationContext actx)
+		public virtual void Initialize (ApplicationContext actx)
 		{
 			Context = actx;
 		}
@@ -118,7 +118,7 @@ namespace Xwt.Mac
 				AccessoryView.SetFrameSize (optionsSize);
 			}
 
-			var win = (WindowBackend)Toolkit.GetBackend (transientFor);
+			var win = Toolkit.CurrentEngine.GetNativeWindow (transientFor) as NSWindow;
 			if (win != null)
 				return sortedButtons [(int)this.RunSheetModal (win) - 1000];
 			return sortedButtons [(int)this.RunModal () - 1000];

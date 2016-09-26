@@ -33,6 +33,11 @@ namespace Xwt.GtkBackend
 		public virtual void Initialize (ToolkitEngineBackend toolit)
 		{
 		}
+
+		public virtual Type GetBackendImplementationType (Type backendType)
+		{
+			return null;
+		}
 	}
 }
 

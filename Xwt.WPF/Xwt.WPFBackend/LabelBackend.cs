@@ -72,6 +72,8 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool Selectable { get; set; } // TODO: this is only supported on Win10 with UWP?
+
 		public void SetFormattedText (FormattedText text)
 		{
 			var atts = new List<Drawing.TextAttribute> (text.Attributes);
@@ -115,7 +117,7 @@ namespace Xwt.WPFBackend
 					s.TextDecorations.Add (dec);
 				}
 				else if (at is Drawing.StrikethroughTextAttribute) {
-					var xa = (Drawing.UnderlineTextAttribute)at;
+					var xa = (Drawing.StrikethroughTextAttribute)at;
 					var dec = new TextDecoration (TextDecorationLocation.Strikethrough, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
 					s.TextDecorations.Add (dec);
 				}

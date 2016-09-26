@@ -62,10 +62,7 @@ namespace Samples
 			var title = new Label ("Title: ");
 			PackStart (title);
 
-			var wbscroll = new ScrollView (wb);
-			wbscroll.VerticalScrollPolicy = ScrollPolicy.Automatic;
-			wbscroll.HorizontalScrollPolicy = ScrollPolicy.Automatic;
-			PackStart (wbscroll, true);
+			PackStart (wb, true);
 
 			pg.Fraction = 0.0;
 			var timer = new Timer (100);
@@ -131,6 +128,8 @@ namespace Samples
 				"Lorem ipsum dolor sit amet.</p>" +
 				"</body></html>";
 			wb.LoadHtml (html, "sample.html");
+			wb.CustomCss =
+				"body {\n    color: red;\n    background-color: black;\n}";
 		}
 
 		public void UpdateProgress (object sender, ElapsedEventArgs args)

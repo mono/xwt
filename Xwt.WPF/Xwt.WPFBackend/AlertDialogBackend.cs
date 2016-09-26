@@ -63,9 +63,9 @@ namespace Xwt.WPFBackend
 					message.Text = message.Text + "\r\n\r\n" + message.SecondaryText;
 					message.SecondaryText = String.Empty;
 				}
-				var wb = (WindowFrameBackend)Toolkit.GetBackend (transientFor);
-				if (wb != null) {
-					this.dialogResult = MessageBox.Show (wb.Window, message.Text, message.SecondaryText,
+				var parent =  Toolkit.CurrentEngine.GetNativeWindow(transientFor) as System.Windows.Window;
+				if (parent != null) {
+					this.dialogResult = MessageBox.Show (parent, message.Text, message.SecondaryText,
 														this.buttons, this.icon, this.defaultResult, this.options);
 				}
 				else {

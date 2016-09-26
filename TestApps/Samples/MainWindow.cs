@@ -73,6 +73,8 @@ namespace Samples
 			AddSample (w, "CheckBox", typeof(Checkboxes));
 			AddSample (w, "Clipboard", typeof(ClipboardSample));
 			AddSample (w, "ColorSelector", typeof(ColorSelectorSample));
+			AddSample (w, "FileSelector", typeof (FileSelectorSample));
+			AddSample (w, "FolderSelector", typeof (FolderSelectorSample));
 			AddSample (w, "FontSelector", typeof(FontSelectorSample));
 			AddSample (w, "ComboBox", typeof(ComboBoxes));
 			AddSample (w, "DatePicker", typeof(DatePickerSample));
@@ -80,13 +82,16 @@ namespace Samples
 			AddSample (w, "Expander", typeof (ExpanderSample));
 			AddSample (w, "Progress bars", typeof(ProgressBarSample));
 			AddSample (w, "Frames", typeof(Frames));
-			AddSample (w, "Images", typeof(Images));
+			var images = AddSample (w, "Images", typeof(Images));
+			AddSample (images, "Themed", typeof(ThemedImages));
 			AddSample (w, "Labels", typeof(Labels));
 			AddSample (w, "ListBox", typeof(ListBoxSample));
 			AddSample (w, "LinkLabels", typeof(LinkLabels));
 			var listView = AddSample (w, "ListView", typeof(ListView1));
-			AddSample (listView, "Editable checkboxes", typeof(ListView2));
+			AddSample (listView, "Editable Checkboxes", typeof(ListView2));
 			AddSample (listView, "Cell Bounds", typeof(ListViewCellBounds));
+			AddSample (listView, "Editable Entries", typeof (ListViewEntries));
+			AddSample (listView, "ComboBox", typeof (ListViewCombos));
 			AddSample (w, "Markdown", typeof (MarkDownSample));
 			AddSample (w, "Menu", typeof(MenuSamples));
 			AddSample (w, "Mnemonics", typeof (Mnemonics));

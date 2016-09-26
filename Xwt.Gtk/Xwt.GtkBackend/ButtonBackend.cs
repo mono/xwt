@@ -37,6 +37,7 @@ namespace Xwt.GtkBackend
 		protected bool ignoreClickEvents;
 		ImageDescription image;
 		Pango.FontDescription customFont;
+		Gtk.Label labelWidget;
 		
 		public ButtonBackend ()
 		{
@@ -62,6 +63,24 @@ namespace Xwt.GtkBackend
 		protected override void OnSetBackgroundColor (Color color)
 		{
 			Widget.SetBackgroundColor (color);
+			Widget.SetBackgroundColor (Gtk.StateType.Prelight, color);
+		}
+
+		Color? customLabelColor;
+
+		public virtual Color LabelColor {
+			get {
+				return customLabelColor.HasValue ? customLabelColor.Value : Widget.Style.Foreground (Gtk.StateType.Normal).ToXwtValue ();
+			}
+			set {
+				customLabelColor = value;
+				Widget.SetForegroundColor (value);
+				Widget.SetForegroundColor (Gtk.StateType.Prelight, value);
+				if (labelWidget != null) {
+					labelWidget.SetForegroundColor (value);
+					labelWidget.SetForegroundColor (Gtk.StateType.Prelight, value);
+				}
+			}
 		}
 
 		public override object Font {
@@ -102,7 +121,7 @@ namespace Xwt.GtkBackend
 			if (image.Backend != null)
 				imageWidget = new ImageBox (ApplicationContext, image.WithDefaultSize (Gtk.IconSize.Button));
 
-			Gtk.Label labelWidget = null;
+			labelWidget = null;
 
 			if (label != null && imageWidget == null) {
 				contentWidget = labelWidget = new Gtk.Label (label);
@@ -139,9 +158,9 @@ namespace Xwt.GtkBackend
 				contentWidget.ShowAll ();
 				Widget.Label = null;
 				Widget.Image = contentWidget;
-				if (expandButtonContent) {
-					var alignment = Widget.Child as Gtk.Alignment;
-					if (alignment != null) {
+				var alignment = Widget.Child as Gtk.Alignment;
+				if (alignment != null) {
+					if (expandButtonContent) {
 						var box = alignment.Child as Gtk.Box;
 						if (box != null) {
 							alignment.Xscale = 1;
@@ -149,12 +168,21 @@ namespace Xwt.GtkBackend
 							if (labelWidget != null)
 								labelWidget.Xalign = 0;
 						}
+					} else if (position == ContentPosition.Left && (contentWidget is Gtk.Box)) {
+						// in case the button is wider than its natural size and has text and an image on the left,
+						// optimize its alignment to make the text more centered.
+						// FIXME: more sophisticated size calculation
+						alignment.Xalign = 0.475f;
 					}
 				}
 				if (labelWidget != null) {
 					labelWidget.UseUnderline = useMnemonic;
 					if (customFont != null)
 						labelWidget.ModifyFont (customFont);
+					if (customLabelColor.HasValue) {
+						labelWidget.SetForegroundColor (customLabelColor.Value);
+						labelWidget.SetForegroundColor (Gtk.StateType.Prelight, customLabelColor.Value);
+					}
 				}
 			} else
 				Widget.Label = null;
