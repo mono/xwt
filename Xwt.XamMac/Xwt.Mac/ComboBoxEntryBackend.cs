@@ -40,7 +40,6 @@ namespace Xwt.Mac
 {
 	public class ComboBoxEntryBackend: ViewBackend<NSComboBox,IComboBoxEventSink>, IComboBoxEntryBackend
 	{
-		IListDataSource source;
 		ComboDataSource tsource;
 		TextEntryBackend entryBackend;
 		int textColumn;
@@ -78,7 +77,6 @@ namespace Xwt.Mac
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
-			this.source = source;
 			tsource = new ComboDataSource (source);
 			tsource.TextColumn = textColumn;
 			Widget.UsesDataSource = true;
@@ -103,7 +101,7 @@ namespace Xwt.Mac
 		#endregion
 	}
 	
-	class MacComboBox: NSComboBox, IViewObject
+	class MacComboBox: NSComboBox, IViewObject, INSComboBoxDelegate
 	{
 		IComboBoxEventSink eventSink;
 		ITextEntryEventSink entryEventSink;
@@ -116,6 +114,7 @@ namespace Xwt.Mac
 		{
 			this.context = context;
 			this.eventSink = eventSink;
+			Delegate = this;
 		}
 		
 		public void SetEntryEventSink (ITextEntryEventSink entryEventSink)
@@ -130,7 +129,18 @@ namespace Xwt.Mac
 		}
 
 		public ViewBackend Backend { get; set; }
-		
+
+		[Export ("comboBoxSelectionDidChange:")]
+		public new void SelectionChanged (NSNotification notification)
+		{
+			if (entryEventSink != null) {
+				context.InvokeUserCode (delegate {
+					entryEventSink.OnChanged ();
+					eventSink.OnSelectionChanged ();
+				});
+			}
+		}
+
 		public override void DidChange (NSNotification notification)
 		{
 			base.DidChange (notification);
@@ -263,6 +273,7 @@ namespace Xwt.Mac
 	
 	class ComboDataSource: NSComboBoxDataSource
 	{
+		NSComboBox comboBox;
 		IListDataSource source;
 		
 		public int TextColumn;
@@ -270,16 +281,54 @@ namespace Xwt.Mac
 		public ComboDataSource (IListDataSource source)
 		{
 			this.source = source;
+
+			source.RowChanged += SourceChanged;
+			source.RowDeleted += SourceChanged;
+			source.RowInserted += SourceChanged;
+			source.RowsReordered += SourceChanged;
+		}
+
+		void SourceChanged (object sender, ListRowEventArgs e)
+		{
+			// FIXME: we need to find a more efficient way
+			comboBox?.ReloadData ();
 		}
 		
 		public override NSObject ObjectValueForItem (NSComboBox comboBox, nint index)
 		{
+			SetComboBox (comboBox);
 			return NSObject.FromObject (source.GetValue ((int) index, TextColumn));
 		}
 		
 		public override nint ItemCount (NSComboBox comboBox)
 		{
+			SetComboBox (comboBox);
 			return source.RowCount;
+		}
+
+		void SetComboBox (NSComboBox comboBox)
+		{
+			if (this.comboBox == null) {
+				this.comboBox = comboBox;
+				source.RowChanged += SourceChanged;
+				source.RowDeleted += SourceChanged;
+				source.RowInserted += SourceChanged;
+				source.RowsReordered += SourceChanged;
+			}
+			if (this.comboBox != comboBox)
+				throw new InvalidOperationException ("This ComboDataSource is already bound to an other ComboBox");
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (source != null) {
+				source.RowChanged -= SourceChanged;
+				source.RowDeleted -= SourceChanged;
+				source.RowInserted -= SourceChanged;
+				source.RowsReordered -= SourceChanged;
+				source = null;
+			}
+			base.Dispose (disposing);
 		}
 	}
 }
