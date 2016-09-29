@@ -280,6 +280,55 @@ namespace Xwt.Mac
 			return true;
 		}
 
+		#if !MONOMAC
+		public override void MouseUp (NSEvent theEvent)
+		{
+			if (!Selectable) {
+				var uri = GetLinkAtPos (theEvent);
+				string linkUrl = uri?.AbsoluteString ?? null;
+				if (!string.IsNullOrEmpty (linkUrl)) {
+					Uri url = null;
+					if (string.IsNullOrWhiteSpace (linkUrl) || !Uri.TryCreate (linkUrl, UriKind.RelativeOrAbsolute, out url))
+						url = null;
+
+					context.InvokeUserCode (delegate {
+						eventSink.OnNavigateToUrl (url);
+					});
+				}
+			}
+			base.MouseUp (theEvent);
+		}
+
+
+		NSUrl GetLinkAtPos (NSEvent theEvent)
+		{
+			var i = GetCharacterIndex (Window.ConvertRectToScreen (new CGRect (theEvent.LocationInWindow, CGSize.Empty)).Location);
+			if (i >= 0) {
+				NSRange r;
+				var attr = TextStorage.GetAttribute (NSStringAttributeKey.Link, (nint)i, out r) as NSUrl;
+				if (attr != null && r.Length > 0)
+					return attr;
+			}
+			return null;
+		}
+		public override void ResetCursorRects ()
+		{
+			base.ResetCursorRects ();
+			// NSTextView sets the link cursors only in selectable mode
+			// Do the same when Selectable == false
+			if (!Selectable && TextStorage?.Length > 0) {
+				TextStorage.EnumerateAttributes (new NSRange (0, TextStorage.Length), NSAttributedStringEnumeration.None, (NSDictionary attrs, NSRange range, ref bool stop) => {
+					stop = false;
+					if (attrs.ContainsKey (NSStringAttributeKey.Link)) {
+						var rects = RectsForCharacterRange (range);
+						for (nuint i = 0; i < rects.Count; i++)
+							AddCursorRect (rects.GetItem<NSValue> (i).CGRectValue, NSCursor.PointingHandCursor);
+					}
+				});
+			}
+		}
+		#endif
+
 		void CommonInit ()
 		{
 			Editable = false;
