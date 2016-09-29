@@ -100,8 +100,12 @@ namespace Xwt.Mac
 		}
 		#endregion
 	}
-	
-	class MacComboBox: NSComboBox, IViewObject, INSComboBoxDelegate
+
+	#if MONOMAC
+	class MacComboBox: NSComboBox, IViewObject
+	#else
+	class MacComboBox : NSComboBox, IViewObject, INSComboBoxDelegate
+	#endif
 	{
 		IComboBoxEventSink eventSink;
 		ITextEntryEventSink entryEventSink;
@@ -114,7 +118,9 @@ namespace Xwt.Mac
 		{
 			this.context = context;
 			this.eventSink = eventSink;
+			#if !MONOMAC
 			Delegate = this;
+			#endif
 		}
 		
 		public void SetEntryEventSink (ITextEntryEventSink entryEventSink)
@@ -130,6 +136,7 @@ namespace Xwt.Mac
 
 		public ViewBackend Backend { get; set; }
 
+		#if !MONOMAC
 		[Export ("comboBoxSelectionDidChange:")]
 		public new void SelectionChanged (NSNotification notification)
 		{
@@ -140,6 +147,7 @@ namespace Xwt.Mac
 				});
 			}
 		}
+		#endif
 
 		public override void DidChange (NSNotification notification)
 		{
