@@ -165,7 +165,10 @@ namespace Xwt.GtkBackend
 			formattedText = text;
 			var list = new FastPangoAttrList ();
 			if (Label.IsRealized) {
-				var color = (Gdk.Color)Label.StyleGetProperty ("link-color");
+				var color = Gdk.Color.Zero;
+				var colorVal = Label.StyleGetProperty ("link-color");
+				if (colorVal is Gdk.Color)
+					color = (Gdk.Color)colorVal;
 				if (!color.Equals (Gdk.Color.Zero))
 					list.DefaultLinkColor = color;
 			}
