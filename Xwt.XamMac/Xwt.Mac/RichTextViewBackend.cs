@@ -281,6 +281,20 @@ namespace Xwt.Mac
 		}
 
 		#if !MONOMAC
+		public override void ViewDidMoveToWindow ()
+		{
+			base.ViewDidMoveToWindow ();
+			if (MacSystemInformation.OsVersion < MacSystemInformation.Mavericks)
+				return;
+			// FIXME: the NSAppearance does not define a color for links,
+			//        this may change in the future, but for now use the fallback color
+			if (Window?.EffectiveAppearance?.Name == NSAppearance.NameVibrantDark) {
+				var ns = new NSMutableDictionary (LinkTextAttributes);
+				ns [NSStringAttributeKey.ForegroundColor] = Backend.Frontend.Surface.ToolkitEngine.Defaults.FallbackLinkColor.ToNSColor ();
+				LinkTextAttributes = ns;
+			}
+		}
+
 		public override void MouseUp (NSEvent theEvent)
 		{
 			if (!Selectable) {
