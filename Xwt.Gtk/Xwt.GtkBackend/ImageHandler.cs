@@ -521,9 +521,17 @@ namespace Xwt.GtkBackend
 		{
 			if (image.IsNull)
 				return true;
+			var a = Allocation;
 
-			int x = (int)(((float)Allocation.Width - (float)image.Size.Width) * xalign);
-			int y = (int)(((float)Allocation.Height - (float)image.Size.Height) * yalign);
+			// HACK: Gtk sends sometimes an expose/draw event while the widget reallocates.
+			//       In that case we would draw in the wrong area, which may lead to artifacts
+			//       if no other widget updates it. Alternative: we could clip the
+			//       allocation bounds, but this may have other issues.
+			if (a.Width == 1 && a.Height == 1 && a.X == -1 && a.Y == -1) // the allocation coordinates on reallocation
+				return base.OnDrawn (cr);
+
+			int x = (int)(((float)a.Width - (float)image.Size.Width) * xalign);
+			int y = (int)(((float)a.Height - (float)image.Size.Height) * yalign);
 			if (x < 0) x = 0;
 			if (y < 0) y = 0;
 			((GtkImage)image.Backend).Draw (actx, cr, Util.GetScaleFactor (this), x, y, image);

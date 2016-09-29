@@ -39,6 +39,8 @@ namespace Xwt.Backends
 		/// Called when the properties of a button have changed
 		/// </summary>
 		void UpdateButton (DialogButton btn);
+
+		DialogButton DefaultButton { get; set; }
 		
 		/// <summary>
 		/// Shows the dialog and starts running the gui loop. The method has to return when EndLoop is called.

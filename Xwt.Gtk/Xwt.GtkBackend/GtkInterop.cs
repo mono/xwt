@@ -62,7 +62,7 @@ namespace Xwt.GtkBackend
 	internal class FastPangoAttrList : IDisposable
 	{
 		IntPtr list;
-		public Gdk.Color DefaultLinkColor = Colors.Blue.ToGtkValue ();
+		public Gdk.Color DefaultLinkColor = Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToGtkValue ();
 
 		public FastPangoAttrList ()
 		{
