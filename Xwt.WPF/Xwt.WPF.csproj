@@ -157,6 +157,7 @@
     <Compile Include="Xwt.WPFBackend\ScrollControlBackend.cs" />
     <Compile Include="Xwt.WPFBackend\CalendarBackend.cs" />
     <Compile Include="Xwt.WPFBackend.Interop\IDocHostUIHandler.cs" />
+    <Compile Include="Xwt.WPFBackend.CellViews\RadioButtonCellViewBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
