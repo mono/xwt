@@ -132,6 +132,7 @@
     <Compile Include="Xwt.Mac\CalendarBackend.cs" />
     <Compile Include="Xwt.Mac\SelectFontDialogBackend.cs" />
     <Compile Include="Xwt.Mac\NSApplicationInitializer.cs" />
+    <Compile Include="Xwt.Mac.CellViews\RadioButtonTableCell.cs" />
     <Compile Include="Xwt.Mac\GtkQuartz.cs" />
     <Compile Include="Xwt.Mac\PopupWindowBackend.cs" />
   </ItemGroup>
