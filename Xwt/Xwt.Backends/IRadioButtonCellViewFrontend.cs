@@ -1,10 +1,10 @@
-//
-// ICheckBoxCellViewFrontend.cs
+﻿//
+// IRadioButtonCellViewFrontend.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Vsevolod Kukol <sevoku@microsoft.com>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2016 Microsoft Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,16 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 
 namespace Xwt.Backends
 {
-	public interface ICheckBoxCellViewFrontend: IToggleCellViewFrontend
+	public interface IRadioButtonCellViewFrontend: IToggleCellViewFrontend
 	{
-		CheckBoxState State { get; }
-		bool AllowMixed { get; }
-
-		IDataField<CheckBoxState> StateField { get; }
 	}
 }
-
