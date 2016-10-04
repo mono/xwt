@@ -46,13 +46,31 @@ namespace Xwt.Mac
 			Title = "";
 		}
 
+		public override NSCellStateValue State {
+			get {
+				return base.State;
+			}
+			set {
+				if (base.State != value)
+					stateChanging = true;
+				base.State = value;
+			}
+		}
+
+		bool stateChanging;
 		void HandleActivated (object sender, EventArgs e)
 		{
-			var cellView = Frontend;
-			CellContainer.SetCurrentEventRow ();
-			if (cellView.Editable && !cellView.RaiseToggled () && cellView.ActiveField != null) {
-				CellContainer.SetValue (cellView.ActiveField, State != NSCellStateValue.Off);
+			if (State == NSCellStateValue.On && stateChanging) {
+				var cellView = Frontend;
+				CellContainer.SetCurrentEventRow ();
+				Frontend.Load (CellContainer);
+				if (cellView.Editable && !cellView.RaiseToggled ()) {
+					if (cellView.ActiveField != null)
+						CellContainer.SetValue (cellView.ActiveField, State != NSCellStateValue.Off);
+				} else
+					base.State = NSCellStateValue.Off;
 			}
+			stateChanging = false;
 		}
 
 		public RadioButtonTableCell (IntPtr p): base (p)
@@ -70,7 +88,7 @@ namespace Xwt.Mac
 		public void Fill ()
 		{
 			var cellView = Frontend;
-			State = cellView.Active ? NSCellStateValue.On : NSCellStateValue.Off;
+			base.State = cellView.Active ? NSCellStateValue.On : NSCellStateValue.Off;
 			Editable = cellView.Editable;
 		}
 
