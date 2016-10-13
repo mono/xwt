@@ -202,6 +202,7 @@ namespace Xwt.Mac
 				ParentWindow.RemoveChildWindow (this);
 			NSApplication.SharedApplication.StopModal ();
 			OrderOut (this);
+			Close (); // ensure that the NSWindow is released and not only hidden
 		}
 
 		#endregion
