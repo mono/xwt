@@ -229,28 +229,40 @@ namespace Xwt.GtkBackend
 		}
 
 		WindowState currentState;
+		WindowState previousState;
 		public WindowState WindowState {
 			get {
 				return currentState;
 			}
 			set {
-				currentState = value;
 				if (Window.IsRealized)
 					UpdateWindowState (value);
+				currentState = value;
+			}
+		}
+
+		public WindowState PreviousWindowState {
+			get {
+				return previousState;
 			}
 		}
 
 		void HandleWindowStateEvent (object o, Gtk.WindowStateEventArgs args)
 		{
+			WindowState newState;
 			var currGdkState = args.Event.NewWindowState;
 			if (currGdkState.HasFlag (Gdk.WindowState.Iconified))
-				currentState = WindowState.Iconified;
+				newState = WindowState.Iconified;
 			else if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen))
-				currentState = WindowState.FullScreen;
+				newState = WindowState.FullScreen;
 			else if (currGdkState.HasFlag (Gdk.WindowState.Maximized))
-				currentState = WindowState.Maximized;
+				newState = WindowState.Maximized;
 			else
-				currentState = Xwt.WindowState.Normal;
+				newState = Xwt.WindowState.Normal;
+			if (newState != currentState) {
+				previousState = currentState;
+				currentState = newState;
+			}
 		}
 
 		void UpdateWindowState (WindowState value)
@@ -258,6 +270,8 @@ namespace Xwt.GtkBackend
 			if (window == null || !window.IsRealized || window.GdkWindow == null)
 				throw new InvalidOperationException ("Window is not realized");
 			var currGdkState = Window.GdkWindow.State;
+			if (currentState != value)
+				previousState = currentState;
 			switch (value) {
 				case Xwt.WindowState.Iconified:
 					Window.Iconify ();
