@@ -55,6 +55,7 @@ namespace Xwt.Mac
 		ViewBackend child;
 		NSView childView;
 		bool sensitive = true;
+		bool preservePreviousState;
 		
 		public WindowBackend (IntPtr ptr): base (ptr)
 		{
@@ -73,11 +74,20 @@ namespace Xwt.Mac
 			// TODO: do it only if mouse move events are enabled in a widget
 			AcceptsMouseMovedEvents = true;
 
-			WillClose += delegate {
-				OnClosed ();
-			};
+			WillClose += (sender, e) => OnClosed ();
+
+			WillEnterFullScreen += (sender, e) => WillChangeWindowState (WindowState.FullScreen);
+			WillExitFullScreen += (sender, e) => WillChangeWindowState (WindowState.Normal);
+			WillMiniaturize += (sender, e) => WillChangeWindowState (WindowState.Iconified);
+			DidDeminiaturize += (sender, e) => DidChangeWindowState (WindowState.Iconified);
 
 			Center ();
+		}
+
+		public override void Zoom (NSObject sender)
+		{
+			WillChangeWindowState (WindowState.Maximized);
+			base.Zoom (sender);
 		}
 
 		public IWindowFrameEventSink EventSink {
@@ -155,6 +165,26 @@ namespace Xwt.Mac
 		public void SetFocus ()
 		{
 		}
+
+		public WindowState PreviousWindowState { get; private set; }
+
+		void WillChangeWindowState (WindowState nextState)
+		{
+			if (preservePreviousState)
+				return;
+			var currentState = WindowState;
+			if (currentState != nextState)
+				PreviousWindowState = currentState;
+		}
+
+		void DidChangeWindowState (WindowState previousState)
+		{
+			if (preservePreviousState)
+				return;
+			
+			if (PreviousWindowState != previousState)
+				PreviousWindowState = previousState;
+		}
 		
 		public WindowState WindowState {
 			get {
@@ -175,6 +205,9 @@ namespace Xwt.Mac
 			set {
 				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
 					return;
+
+				WillChangeWindowState (value);
+				preservePreviousState = true;
 
 				if ((value != Xwt.WindowState.FullScreen) && ((StyleMask & NSWindowStyle.FullScreenWindow) != 0)) {
 					// always unfullscreen first
@@ -206,6 +239,7 @@ namespace Xwt.Mac
 						// Currently full screen.
 						PerformZoom (this);
 				}
+				preservePreviousState = false;
 			}
 		}
 
@@ -216,6 +250,7 @@ namespace Xwt.Mac
 			WindowState = delayedWindowState;
 			DidExitFullScreen -= DelayedSetWindowState;
 			isWindowSateDelayed = false;
+			preservePreviousState = false;
 		}
 
 		object IWindowFrameBackend.Screen {
