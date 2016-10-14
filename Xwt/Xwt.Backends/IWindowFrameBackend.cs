@@ -88,6 +88,12 @@ namespace Xwt.Backends
 		WindowState WindowState { get; set; }
 
 		/// <summary>
+		/// Gets the last state of the window, before WindowState changed.
+		/// </summary>
+		/// <value>The previous state of the window.</value>
+		WindowState PreviousWindowState { get; }
+
+		/// <summary>
 		/// Gets the screen on which most of the area of this window is placed
 		/// </summary>
 		/// <value>The screen.</value>

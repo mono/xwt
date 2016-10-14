@@ -279,8 +279,12 @@ namespace Xwt
 			set {
 				if (value)
 					Backend.WindowState = WindowState.Iconified;
-				else
-					Backend.WindowState = WindowState.Normal;
+				else {
+					if (PreviousWindowState == WindowState.Iconified)
+						Backend.WindowState = WindowState.Normal;
+					else
+						Backend.WindowState = PreviousWindowState;
+				}
 			}
 		}
 
@@ -293,8 +297,12 @@ namespace Xwt
 			set {
 				if (value)
 					Backend.WindowState = WindowState.Maximized;
-				else
-					Backend.WindowState = WindowState.Normal;
+				else {
+					if (PreviousWindowState == WindowState.Maximized)
+						Backend.WindowState = WindowState.Normal;
+					else
+						Backend.WindowState = PreviousWindowState;
+				}
 			}
 		}
 
@@ -307,8 +315,12 @@ namespace Xwt
 			set {
 				if (value)
 					Backend.WindowState = WindowState.FullScreen;
-				else
-					Backend.WindowState = WindowState.Normal;
+				else {
+					if (PreviousWindowState == WindowState.FullScreen)
+						Backend.WindowState = WindowState.Normal;
+					else
+						Backend.WindowState = PreviousWindowState;
+				}
 			}
 		}
 
@@ -319,6 +331,14 @@ namespace Xwt
 		public WindowState WindowState {
 			get { return Backend.WindowState; }
 			set { Backend.WindowState = value; }
+		}
+
+		/// <summary>
+		/// Gets the last state of the window, before WindowState changed.
+		/// </summary>
+		/// <value>The previous state of the window.</value>
+		public WindowState PreviousWindowState {
+			get { return Backend.PreviousWindowState; }
 		}
 
 		/// <summary>
