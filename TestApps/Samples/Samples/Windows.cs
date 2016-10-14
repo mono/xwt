@@ -37,24 +37,9 @@ namespace Samples
 			bp.Clicked += delegate {
 				Window w = new Window ();
 				w.Decorated = false;
-				Button c = new Button ("Close");
+				Button c = new Button ("This is a window");
 //				c.Margin.SetAll (10);
-
-				VBox box = new VBox();
-				var biconifiy = new Button ("Iconify");
-				var bmaximize = new Button ("Maximize");
-				var bfullscreen = new Button ("Fullscreen");
-
-				biconifiy.Clicked += (sender, e) => w.Iconified = !w.Iconified;
-				bmaximize.Clicked += (sender, e) => w.Maximized = !w.Maximized;
-				bfullscreen.Clicked += (sender, e) => w.FullScreen = !w.FullScreen;
-
-				box.PackStart (biconifiy);
-				box.PackStart (bmaximize);
-				box.PackStart (bfullscreen);
-				box.PackStart (c);
-
-				w.Content = box;
+				w.Content = c;
 				c.Clicked += delegate {
 					w.Dispose ();
 				};
@@ -208,7 +193,42 @@ namespace Samples
 			b.Clicked += delegate
 			{
 				var dialog = new Dialog ();
-				dialog.Content = new Label ("Hello World");
+
+
+				VBox box = new VBox ();
+				var biconifiy = new Button ("Iconify");
+				var bmaximize = new Button ("Maximize");
+				var bfullscreen = new Button ("Fullscreen");
+				var brestore = new Button ("Restore " + dialog.PreviousWindowState);
+
+				biconifiy.Clicked += (sender, e) => {
+					dialog.Iconified = !dialog.Iconified;
+					brestore.Label = "Restore " + dialog.PreviousWindowState;
+				};
+				bmaximize.Clicked += (sender, e) => {
+					dialog.Maximized = !dialog.Maximized;
+					brestore.Label = "Restore " + dialog.PreviousWindowState;
+				};
+				bfullscreen.Clicked += (sender, e) => {
+					dialog.FullScreen = !dialog.FullScreen;
+					brestore.Label = "Restore " + dialog.PreviousWindowState;
+				};
+				brestore.Clicked += (sender, e) => {
+					dialog.WindowState = dialog.PreviousWindowState;
+					brestore.Label = "Restore " + dialog.PreviousWindowState;
+				};
+
+				dialog.BoundsChanged += (sender, e) => {
+					brestore.Label = "Restore " + dialog.PreviousWindowState;
+				};
+
+				box.PackStart (new Label ("Hello World"));
+				box.PackStart (biconifiy);
+				box.PackStart (bmaximize);
+				box.PackStart (bfullscreen);
+				box.PackStart (brestore);
+
+				dialog.Content = box;
 				dialog.Run ();
 				dialog.Shown += (sender, args) => this.ParentWindow.Sensitive = false;
 				dialog.Closed += (sender, args) => this.ParentWindow.Sensitive = true;
