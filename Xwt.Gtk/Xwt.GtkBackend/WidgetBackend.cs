@@ -779,8 +779,8 @@ namespace Xwt.GtkBackend
 			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
 			return new MouseScrolledEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y, direction);
 		}
-        
 
+		[GLib.ConnectBefore]
 		void HandleWidgetFocusOutEvent (object o, Gtk.FocusOutEventArgs args)
 		{
 			ApplicationContext.InvokeUserCode (delegate {
@@ -788,6 +788,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
+		[GLib.ConnectBefore]
 		void HandleWidgetFocusInEvent (object o, EventArgs args)
 		{
 			if (!CanGetFocus)
@@ -797,6 +798,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
+		[GLib.ConnectBefore]
 		void HandleLeaveNotifyEvent (object o, Gtk.LeaveNotifyEventArgs args)
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
@@ -806,6 +808,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
+		[GLib.ConnectBefore]
 		void HandleEnterNotifyEvent (object o, Gtk.EnterNotifyEventArgs args)
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
@@ -817,6 +820,7 @@ namespace Xwt.GtkBackend
 
 		protected virtual void OnEnterNotifyEvent (Gtk.EnterNotifyEventArgs args) {}
 
+		[GLib.ConnectBefore]
 		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
 		{
 			var a = GetMouseMovedEventArgs (args);
@@ -835,6 +839,7 @@ namespace Xwt.GtkBackend
 			return new MouseMovedEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y);
 		}
 
+		[GLib.ConnectBefore]
 		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
 		{
 			var a = GetButtonReleaseEventArgs (args);
