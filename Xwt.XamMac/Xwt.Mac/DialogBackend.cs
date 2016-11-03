@@ -198,11 +198,13 @@ namespace Xwt.Mac
 		public void EndLoop ()
 		{
 			modalSessionRunning = false;
-			if (ParentWindow != null)
-				ParentWindow.RemoveChildWindow (this);
-			NSApplication.SharedApplication.StopModal ();
+			var parent = ParentWindow;
+			if (parent != null)
+				parent.RemoveChildWindow (this);
 			OrderOut (this);
-			Close (); // ensure that the NSWindow is released and not only hidden
+			NSApplication.SharedApplication.StopModal ();
+			if (parent != null)
+				parent.MakeKeyAndOrderFront (parent);
 		}
 
 		#endregion
