@@ -82,6 +82,15 @@ namespace Xwt.GtkBackend
 
 		public bool ContextMenuEnabled { get; set; }
 
+		public bool DrawsBackground {
+			get {
+				return !view.Transparent;
+			}
+			set {
+				view.Transparent = !value;
+			}
+		}
+
 		public bool ScrollBarsEnabled {
 			get {
 				return view.SelfScrolling;

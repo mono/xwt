@@ -126,6 +126,8 @@ namespace Xwt.Gtk.Windows
 
 		public bool ScrollBarsEnabled { get; set; }
 
+		public bool DrawsBackground { get; set; }
+
 		public void GoBack ()
 		{
 			view.GoBack ();

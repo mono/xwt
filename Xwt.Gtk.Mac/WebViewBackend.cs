@@ -87,6 +87,15 @@ namespace Xwt.Gtk.Mac
 
 		public bool ContextMenuEnabled { get; set; }
 
+		public bool DrawsBackground {
+			get {
+				return view.DrawsBackground;
+			}
+			set {
+				view.DrawsBackground = value;
+			}
+		}
+
 		public bool ScrollBarsEnabled {
 			get {
 				return view.MainFrame.FrameView.AllowsScrolling;

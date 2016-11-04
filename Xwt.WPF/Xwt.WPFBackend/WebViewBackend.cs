@@ -153,6 +153,8 @@ namespace Xwt.WPFBackend
 
 		public bool ScrollBarsEnabled { get; set; }
 
+		public bool DrawsBackground { get; set; }
+
 		public string CustomCss { get; set; }
 
 		public void GoBack ()

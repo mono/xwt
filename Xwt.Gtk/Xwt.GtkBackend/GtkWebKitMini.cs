@@ -89,6 +89,20 @@ namespace Xwt.GtkBackend.WebKit
 			}
 		}
 
+		[GLib.Property ("transparent")]
+		public bool Transparent {
+			get {
+				using (GLib.Value property = GetProperty ("transparent")) {
+					return (bool)property.Val;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("transparent", val);
+				}
+			}
+		}
+
 		#if XWT_GTK3 // Gtk.IScrollable
 		[GLib.Property ("hadjustment")]
 		public Gtk.Adjustment Hadjustment {
