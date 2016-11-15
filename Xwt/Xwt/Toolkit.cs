@@ -29,6 +29,7 @@ using Xwt.Drawing;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using Mono.Unix;
 
 namespace Xwt
 {
@@ -206,7 +207,7 @@ namespace Xwt
 				}
 			}
 
-			throw new InvalidOperationException ("Xwt engine not found");
+			throw new InvalidOperationException (Catalog.GetString ("Xwt engine not found"));
 		}
 
 		/// <summary>
@@ -260,7 +261,7 @@ namespace Xwt
 			if (t != null)
 				return t.FullTypeName;
 
-			throw new ArgumentException ("Invalid toolkit type");
+			throw new ArgumentException (Catalog.GetString ("Invalid toolkit type"));
 		}
 
 		bool LoadBackend (string type, bool isGuest, bool throwIfFails)
@@ -281,11 +282,11 @@ namespace Xwt
 			}
 			catch (Exception ex) {
 				if (throwIfFails)
-					throw new Exception ("Toolkit could not be loaded", ex);
+					throw new Exception (Catalog.GetString ("Toolkit could not be loaded"), ex);
 				Application.NotifyException (ex);
 			}
 			if (throwIfFails)
-				throw new Exception ("Toolkit could not be loaded");
+				throw new Exception (Catalog.GetString ("Toolkit could not be loaded"));
 			return false;
 		}
 
@@ -603,7 +604,7 @@ namespace Xwt
 				((Gradient)obj).InitForToolkit (this);
 			} else if (obj is IFrontend) {
 				if (((IFrontend)obj).ToolkitEngine != this)
-					throw new InvalidOperationException ("Object belongs to a different toolkit");
+					throw new InvalidOperationException (Catalog.GetString ("Object belongs to a different toolkit"));
 			}
 			return obj;
 		}
@@ -633,7 +634,7 @@ namespace Xwt
 			else if (obj == null)
 				return null;
 			else
-				throw new InvalidOperationException ("Object doesn't have a backend");
+				throw new InvalidOperationException (Catalog.GetString ("Object doesn't have a backend"));
 		}
 
 		/// <summary>

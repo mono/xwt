@@ -27,6 +27,7 @@
 using System;
 
 using Xwt.Backends;
+using Mono.Unix;
 
 namespace Xwt
 {
@@ -47,7 +48,7 @@ namespace Xwt
 		/// Initializes a new instance of the <see cref="Xwt.XwtObject"/> class.
 		/// </summary>
 		/// <param name="backend">The object backend.</param>
-		protected XwtObject (object backend): this (backend, Toolkit.CurrentEngine)
+		protected XwtObject (object backend) : this (backend, Toolkit.CurrentEngine)
 		{
 		}
 		
@@ -97,7 +98,7 @@ namespace Xwt
 			if (backend == null) {
 				backend = OnCreateBackend ();
 				if (backend == null)
-					throw new InvalidOperationException ("No backend found for widget: " + GetType ());
+					throw new InvalidOperationException (Catalog.GetString (string.Format ("No backend found for widget: {0}", GetType ())));
 				OnBackendCreated ();
 			}
 		}

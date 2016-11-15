@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xwt.Backends;
 using Xwt.Drawing;
+using Mono.Unix;
 
 namespace Xwt
 {
@@ -175,7 +176,7 @@ namespace Xwt
 			spnSize.MinimumValue = 1;
 			spnSize.MaximumValue = 800;
 			spnSize.IncrementValue = 1;
-			PreviewText = "The quick brown fox jumps over the lazy dog.";
+			PreviewText = Catalog.GetString ("The quick brown fox jumps over the lazy dog.");
 
 			spnSize.ValueChanged += (sender, e) => {
 				if (DefaultFontSizes.Contains (spnSize.Value)) {

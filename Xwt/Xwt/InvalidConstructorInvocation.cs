@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Mono.Unix;
 
 namespace Xwt
 {
@@ -37,7 +38,7 @@ namespace Xwt
 	/// </remarks>
 	public class InvalidConstructorInvocation: InvalidOperationException
 	{
-		public InvalidConstructorInvocation (Type type): base ("Subclasses of " + type + " can only invoke the default constructor")
+		public InvalidConstructorInvocation (Type type) : base (Catalog.GetString (string.Format ("Subclasses of {0} can only invoke the default constructor", type)))
 		{
 		}
 	}

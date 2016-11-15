@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
+using Mono.Unix;
 
 
 namespace Xwt
@@ -132,7 +133,7 @@ namespace Xwt
 		void CheckNotRunning ()
 		{
 			if (running)
-				throw new InvalidOperationException ("Options can't be modified when the dialog is running");
+				throw new InvalidOperationException (Catalog.GetString ("Options can't be modified when the dialog is running"));
 		}
  
 		/// <summary>

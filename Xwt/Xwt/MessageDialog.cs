@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Xwt.Backends;
+using Mono.Unix;
 
 
 namespace Xwt
@@ -255,7 +256,7 @@ namespace Xwt
 			foreach (var op in Options)
 				if (op.Id == id)
 					return op.Value;
-			throw new ArgumentException ("Invalid option id");
+			throw new ArgumentException (Catalog.GetString ("Invalid option id"));
 		}
 		
 		public void SetOptionValue (string id, bool value)
@@ -266,7 +267,7 @@ namespace Xwt
 					return;
 				}
 			}
-			throw new ArgumentException ("Invalid option id");
+			throw new ArgumentException (Catalog.GetString ("Invalid option id"));
 		}
 	}
 	
