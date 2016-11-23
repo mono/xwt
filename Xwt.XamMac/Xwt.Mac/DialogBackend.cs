@@ -86,6 +86,14 @@ namespace Xwt.Mac
 			ContentView.AddSubview (buttonBoxView);
 		}
 
+		[Export ("cancelOperation:")]
+		void HandleCancelOperation (NSObject semder)
+		{
+			PerformClose (this);
+			//FIXME: should we check whether there is a Command.Cancel button and
+			//       respond with the command instead of a simple close (null response)?
+		}
+
 		protected override void OnClosed ()
 		{
 			base.OnClosed ();
