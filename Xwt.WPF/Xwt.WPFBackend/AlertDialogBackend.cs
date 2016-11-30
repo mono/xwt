@@ -105,6 +105,8 @@ namespace Xwt.WPFBackend
 					check.Toggled += (sender, e) => message.SetOptionValue(option.Id, check.Active);
 				}
 				dlg.Buttons.Add (message.Buttons.ToArray ());
+				if (message.DefaultButton >= 0 && message.DefaultButton < message.Buttons.Count)
+					dlg.DefaultCommand = message.Buttons[message.DefaultButton];
 				if (mainBox.Surface.GetPreferredSize (true).Width > 480) {
 					text.Wrap = WrapMode.Word;
 					if (stext != null)
