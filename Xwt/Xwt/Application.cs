@@ -37,6 +37,7 @@ namespace Xwt
 		static Toolkit toolkit;
 		static ToolkitEngineBackend engine;
 		static UILoop mainLoop;
+		static ITranslationCatalog translationCatalog;
 
 		/// <summary>
 		/// Gets the task scheduler of the current engine.
@@ -60,6 +61,17 @@ namespace Xwt
 		internal static System.Threading.Thread UIThread {
 			get;
 			private set;
+		}
+
+		public static ITranslationCatalog TranslationCatalog {
+			get {
+				if (translationCatalog == null)
+					translationCatalog = new DefaultTranslationCatalog();
+				return translationCatalog;
+			}
+			set {
+				translationCatalog = value;
+			}
 		}
 
 		/// <summary>
