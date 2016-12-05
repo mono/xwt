@@ -430,6 +430,19 @@ namespace Xwt
 				currentEngine = oldEngine;
 			}
 		}
+
+		internal void InvokeAndThrow (Action a)
+		{
+			var oldEngine = currentEngine;
+			try {
+				currentEngine = this;
+				EnterUserCode();
+				a();
+			} finally {
+				ExitUserCode(null);
+				currentEngine = oldEngine;
+			}
+		}
 		
 		/// <summary>
 		/// Invokes an action after the user code has been processed.
