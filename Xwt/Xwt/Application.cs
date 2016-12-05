@@ -187,6 +187,80 @@ namespace Xwt
 				}
 			});
 		}
+
+		/// <summary>
+		/// Invokes an action in the GUI thread.
+		/// </summary>
+		public static Task InvokeAsync(Action action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof (action));
+			var ts = new TaskCompletionSource<int>();
+			if (UIThread == Thread.CurrentThread)
+			{
+				try {
+					toolkit.EnterUserCode();
+					action();
+					ts.SetResult(0);
+				} catch (Exception ex) {
+					ts.SetException(ex);
+				} finally {
+					toolkit.ExitUserCode(null);
+				}
+			}
+			else
+			{
+				engine.InvokeAsync(delegate
+				{
+					try {
+						toolkit.EnterUserCode();
+						action();
+						ts.SetResult(0);
+					} catch (Exception ex) {
+						ts.SetException(ex);
+					} finally {
+						toolkit.ExitUserCode(null);
+					}
+				});
+			}
+			return ts.Task;
+		}
+
+		/// <summary>
+		/// Invokes a function in the GUI thread.
+		/// </summary>
+		public static Task<T> InvokeAsync<T>(Func<T> func)
+		{
+			if (func == null)
+				throw new ArgumentNullException(nameof(func));
+			var ts = new TaskCompletionSource<T>();
+			if (UIThread == Thread.CurrentThread)
+			{
+				try {
+					toolkit.EnterUserCode();
+					ts.SetResult(func());
+				} catch (Exception ex) {
+					ts.SetException(ex);
+				} finally {
+					toolkit.ExitUserCode(null);
+				}
+			}
+			else
+			{
+				engine.InvokeAsync(delegate
+				{
+					try {
+						toolkit.EnterUserCode();
+						ts.SetResult(func());
+					} catch (Exception ex) {
+						ts.SetException(ex);
+					} finally {
+						toolkit.ExitUserCode(null);
+					}
+				});
+			}
+			return ts.Task;
+		}
 		
 		/// <summary>
 		/// Invokes an action in the GUI thread after the provided time span
