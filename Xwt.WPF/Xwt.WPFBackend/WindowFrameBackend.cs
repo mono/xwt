@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -37,7 +38,7 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	public class WindowFrameBackend : IWindowFrameBackend
+	public class WindowFrameBackend : IWindowFrameBackend, IDispatcherBackend
 	{
 		System.Windows.Window window;
 		WindowInteropHelper interopHelper;
@@ -441,6 +442,41 @@ namespace Xwt.WPFBackend
 			size.Height = Math.Max (0, size.Height);
 
 			return new Rectangle (loc, size);
+		}
+
+		Task IDispatcherBackend.InvokeAsync(Action action)
+		{
+			var ts = new TaskCompletionSource<int>();
+			var result = Window.Dispatcher.BeginInvoke((Action)delegate
+			{
+				try
+				{
+					action();
+					ts.SetResult(0);
+				}
+				catch (Exception ex)
+				{
+					ts.SetException(ex);
+				}
+			}, null);
+			return ts.Task;
+		}
+
+		Task<T> IDispatcherBackend.InvokeAsync<T>(Func<T> func)
+		{
+			var ts = new TaskCompletionSource<T>();
+			var result = Window.Dispatcher.BeginInvoke((Action)delegate
+			{
+				try
+				{
+					ts.SetResult(func());
+				}
+				catch (Exception ex)
+				{
+					ts.SetException(ex);
+				}
+			}, null);
+			return ts.Task;
 		}
 	}
 }
