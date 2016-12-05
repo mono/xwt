@@ -131,20 +131,16 @@ namespace Xwt
 		{
 			if (func == null)
 				throw new ArgumentNullException(nameof(func));
+			Func<T> funcCall = () =>
+					{
+						T result = default(T);
+						backendHost.ToolkitEngine.InvokeAndThrow(() => result = func());
+						return result;
+					};
 			var dispatcher = backendHost.Backend as IDispatcherBackend;
 			if (dispatcher != null)
-				return dispatcher.InvokeAsync(() =>
-					{
-						T result = default(T);
-						backendHost.ToolkitEngine.InvokeAndThrow(() => result = func());
-						return result;
-					});
-			return Application.InvokeAsync(() =>
-					{
-						T result = default(T);
-						backendHost.ToolkitEngine.InvokeAndThrow(() => result = func());
-						return result;
-					});
+				return dispatcher.InvokeAsync(funcCall);
+			return Application.InvokeAsync(funcCall);
 		}
 
 		#region ISynchronizeInvoke implementation
@@ -197,29 +193,20 @@ namespace Xwt
 
 		internal void Invoke (Delegate method, object[] args)
 		{
-			if (dispatcher != null) {
-				dispatcher.InvokeAsync (delegate {
-					try {
-						AsyncState = method.DynamicInvoke(args);
-					} catch (Exception ex) {
-						Exception = ex;
-					} finally {
-						IsCompleted = true;
-						asyncResetEvent.Set ();
-					}
-				});
-			} else {
-				Application.Invoke (delegate {
-					try {
-						AsyncState = method.DynamicInvoke(args);
-					} catch (Exception ex){
-						Exception = ex;
-					} finally {
-						IsCompleted = true;
-						asyncResetEvent.Set ();
-					}
-				});
-			}
+			Action methodCall = () => {
+				try {
+					AsyncState = method.DynamicInvoke(args);
+				} catch (Exception ex) {
+					Exception = ex;
+				} finally {
+					IsCompleted = true;
+					asyncResetEvent.Set ();
+				}
+			};
+			if (dispatcher != null)
+				dispatcher.InvokeAsync (methodCall);
+			else
+				Application.Invoke (methodCall);
 		}
 
 		#region IAsyncResult implementation

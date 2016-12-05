@@ -195,9 +195,10 @@ namespace Xwt
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof (action));
+
 			var ts = new TaskCompletionSource<int>();
-			if (UIThread == Thread.CurrentThread)
-			{
+
+			Action actionCall = () => {
 				try {
 					toolkit.EnterUserCode();
 					action();
@@ -207,22 +208,12 @@ namespace Xwt
 				} finally {
 					toolkit.ExitUserCode(null);
 				}
-			}
+			};
+
+			if (UIThread == Thread.CurrentThread)
+				actionCall();
 			else
-			{
-				engine.InvokeAsync(delegate
-				{
-					try {
-						toolkit.EnterUserCode();
-						action();
-						ts.SetResult(0);
-					} catch (Exception ex) {
-						ts.SetException(ex);
-					} finally {
-						toolkit.ExitUserCode(null);
-					}
-				});
-			}
+				engine.InvokeAsync(actionCall);
 			return ts.Task;
 		}
 
@@ -233,9 +224,10 @@ namespace Xwt
 		{
 			if (func == null)
 				throw new ArgumentNullException(nameof(func));
+			
 			var ts = new TaskCompletionSource<T>();
-			if (UIThread == Thread.CurrentThread)
-			{
+
+			Action funcCall = () => {
 				try {
 					toolkit.EnterUserCode();
 					ts.SetResult(func());
@@ -244,21 +236,12 @@ namespace Xwt
 				} finally {
 					toolkit.ExitUserCode(null);
 				}
-			}
+			};
+
+			if (UIThread == Thread.CurrentThread)
+				funcCall();
 			else
-			{
-				engine.InvokeAsync(delegate
-				{
-					try {
-						toolkit.EnterUserCode();
-						ts.SetResult(func());
-					} catch (Exception ex) {
-						ts.SetException(ex);
-					} finally {
-						toolkit.ExitUserCode(null);
-					}
-				});
-			}
+				engine.InvokeAsync(funcCall);
 			return ts.Task;
 		}
 		
