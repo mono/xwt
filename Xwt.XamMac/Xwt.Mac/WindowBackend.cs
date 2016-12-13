@@ -245,7 +245,10 @@ namespace Xwt.Mac
 		bool IWindowFrameBackend.Close ()
 		{
 			closePerformed = true;
-			PerformClose (this);
+			if ((StyleMask & NSWindowStyle.Titled) != 0 && (StyleMask & NSWindowStyle.Closable) != 0)
+				PerformClose(this);
+			else
+				Close ();
 			return closePerformed;
 		}
 		
