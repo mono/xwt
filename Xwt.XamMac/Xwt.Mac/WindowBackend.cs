@@ -470,6 +470,9 @@ namespace Xwt.Mac
 				this.disposing = true;
 				try
 				{
+					if (VisibilityEventsEnabled() && ContentView != null)
+						ContentView.RemoveObserver(this, HiddenProperty);
+					
 					// HACK: Xamarin.Mac/MonoMac limitation: no direct way to release a window manually
 					// A NSWindow instance will be removed from NSApplication.SharedApplication.Windows
 					// only if it is being closed with ReleasedWhenClosed set to true but not on Dispose
