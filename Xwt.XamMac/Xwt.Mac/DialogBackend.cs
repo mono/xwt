@@ -210,6 +210,7 @@ namespace Xwt.Mac
 			if (parent != null)
 				parent.RemoveChildWindow (this);
 			OrderOut (this);
+			Close();
 			NSApplication.SharedApplication.StopModal ();
 			if (parent != null)
 				parent.MakeKeyAndOrderFront (parent);
