@@ -128,12 +128,13 @@ namespace Xwt.Mac
 
 		public bool Visible {
 			get {
-				return !ContentView.Hidden;
+				return IsVisible;
 			}
 			set {
 				if (value)
-					MacEngine.App.ShowWindow (this);
-				ContentView.Hidden = !value;
+					MacEngine.App.ShowWindow(this);
+				ContentView.Hidden = !value; // handle shown/hidden events
+				IsVisible = value;
 			}
 		}
 
