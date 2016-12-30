@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Carlos Alberto Cortez <calberto.cortez@gmail.com>
+//       Konrad M. Kruczynski <kkruczynski@antmicro.com>
 // 
 // Copyright (c) 2011 Carlos Alberto Cortez
+// Copyright (c) 2016 Antmicro Ltd
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -209,6 +211,11 @@ namespace Xwt.WPFBackend
 		{
 			get { return window.Opacity; }
 			set { window.Opacity = value; }
+		}
+
+		public bool HasFocus
+		{
+			get { return window.IsActive; }
 		}
 
 		void IWindowFrameBackend.Present ()
