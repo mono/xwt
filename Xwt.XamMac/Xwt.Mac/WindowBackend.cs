@@ -4,9 +4,11 @@
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 //       Andres G. Aragoneses <andres.aragoneses@7digital.com>
+//       Konrad M. Kruczynski <kkruczynski@antmicro.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // Copyright (c) 2012 7Digital Media Ltd
+// Copyright (c) 2016 Antmicro Ltd
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -153,18 +155,11 @@ namespace Xwt.Mac
 					child.UpdateSensitiveStatus (child.Widget, sensitive);
 			}
 		}
-		
-		public virtual bool CanGetFocus {
-			get { return true; }
-			set { }
-		}
-		
-		public virtual bool HasFocus {
-			get { return false; }
-		}
-		
-		public void SetFocus ()
-		{
+
+		public bool HasFocus {
+			get {
+				return IsKeyWindow;
+			}
 		}
 
 		public bool FullScreen {
