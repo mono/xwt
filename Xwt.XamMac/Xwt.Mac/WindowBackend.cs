@@ -4,9 +4,11 @@
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 //       Andres G. Aragoneses <andres.aragoneses@7digital.com>
+//       Konrad M. Kruczynski <kkruczynski@antmicro.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // Copyright (c) 2012 7Digital Media Ltd
+// Copyright (c) 2016 Antmicro Ltd
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -128,12 +130,13 @@ namespace Xwt.Mac
 
 		public bool Visible {
 			get {
-				return !ContentView.Hidden;
+				return IsVisible;
 			}
 			set {
 				if (value)
-					MacEngine.App.ShowWindow (this);
-				ContentView.Hidden = !value;
+					MacEngine.App.ShowWindow(this);
+				ContentView.Hidden = !value; // handle shown/hidden events
+				IsVisible = value;
 			}
 		}
 
@@ -152,18 +155,11 @@ namespace Xwt.Mac
 					child.UpdateSensitiveStatus (child.Widget, sensitive);
 			}
 		}
-		
-		public virtual bool CanGetFocus {
-			get { return true; }
-			set { }
-		}
-		
-		public virtual bool HasFocus {
-			get { return false; }
-		}
-		
-		public void SetFocus ()
-		{
+
+		public bool HasFocus {
+			get {
+				return IsKeyWindow;
+			}
 		}
 
 		public bool FullScreen {
@@ -244,7 +240,10 @@ namespace Xwt.Mac
 		bool IWindowFrameBackend.Close ()
 		{
 			closePerformed = true;
-			PerformClose (this);
+			if ((StyleMask & NSWindowStyle.Titled) != 0 && (StyleMask & NSWindowStyle.Closable) != 0)
+				PerformClose(this);
+			else
+				Close ();
 			return closePerformed;
 		}
 		
@@ -453,17 +452,50 @@ namespace Xwt.Mac
 		#endregion
 
 		static Selector closeSel = new Selector ("close");
+		#if MONOMAC
+		static Selector retainSel = new Selector("retain");
+		#endif
 
-		bool disposing;
+		bool disposing, disposed;
 
-		void IWindowFrameBackend.Dispose ()
+		protected override void Dispose(bool disposing)
 		{
-			disposing = true;
-			try {
-				Messaging.void_objc_msgSend (this.Handle, closeSel.Handle);
-			} finally {
-				disposing = false;
+			if (!disposed && disposing)
+			{
+				this.disposing = true;
+				try
+				{
+					if (VisibilityEventsEnabled() && ContentView != null)
+						ContentView.RemoveObserver(this, HiddenProperty);
+					
+					// HACK: Xamarin.Mac/MonoMac limitation: no direct way to release a window manually
+					// A NSWindow instance will be removed from NSApplication.SharedApplication.Windows
+					// only if it is being closed with ReleasedWhenClosed set to true but not on Dispose
+					// and there is no managed way to tell Cocoa to release the window manually (and to
+					// remove it from the active window list).
+					// see also: https://bugzilla.xamarin.com/show_bug.cgi?id=45298
+					// WORKAROUND:
+					// bump native reference count by calling DangerousRetain()
+					// base.Dispose will now unref the window correctly without crashing
+					#if MONOMAC
+					Messaging.void_objc_msgSend(this.Handle, retainSel.Handle);
+					#else
+					DangerousRetain();
+					#endif
+					// tell Cocoa to release the window on Close
+					ReleasedWhenClosed = true;
+					// Close the window (Cocoa will do its job even if the window is already closed)
+					Messaging.void_objc_msgSend (this.Handle, closeSel.Handle);
+				} finally {
+					this.disposing = false;
+					this.disposed = true;
+				}
 			}
+			if (controller != null) {
+				controller.Dispose ();
+				controller = null;
+			}
+			base.Dispose (disposing);
 		}
 		
 		public void DragStart (TransferDataSource data, DragDropAction dragAction, object dragImage, double xhot, double yhot)

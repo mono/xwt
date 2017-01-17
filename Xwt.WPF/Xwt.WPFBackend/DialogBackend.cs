@@ -203,6 +203,7 @@ namespace Xwt.WPFBackend
 				factory.SetBinding (UIElement.IsEnabledProperty, new Binding ("Button.Sensitive"));
 				factory.SetBinding (UIElement.VisibilityProperty, new Binding ("Button.Visible") { Converter = VisibilityConverter });
 				factory.SetBinding (SWC.Button.IsDefaultProperty, new Binding ("IsDefault"));
+				factory.SetBinding (SWC.Button.IsCancelProperty, new Binding("IsCancel"));
 				factory.SetValue (FrameworkElement.StyleProperty, style);
 				factory.SetValue (ButtonBase.CommandProperty, command);
 				factory.SetBinding (ButtonBase.CommandParameterProperty, new Binding ());
@@ -257,6 +258,8 @@ namespace Xwt.WPFBackend
 			public DialogButton Button { get; private set; }
 
 			public bool IsDefault { get; private set; }
+
+			public bool IsCancel { get { return Button.Command == Command.Cancel; } }
 
 			public WpfDialogButton(DialogButton button, bool isDefault = false)
 			{
