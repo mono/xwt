@@ -29,6 +29,7 @@ using Xwt.Drawing;
 using Xwt.Backends;
 using System.ComponentModel;
 using System.Collections.Generic;
+using Mono.Unix;
 
 namespace Xwt
 {
@@ -55,7 +56,7 @@ namespace Xwt
 		public static CellView GetDefaultCellView (IDataField field)
 		{
 			if (field.Index == -1)
-				throw new InvalidOperationException ("Field must be bound to a data source");
+				throw new InvalidOperationException (Catalog.GetString ("Field must be bound to a data source"));
 			if (field.FieldType == typeof(bool))
 				return new CheckBoxCellView ((IDataField<bool>)field);
 			else if (field.FieldType == typeof(CheckBoxState))

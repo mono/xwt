@@ -31,6 +31,7 @@ using System.IO;
 using Xwt.Drawing;
 
 using System.Collections.Generic;
+using Mono.Unix;
 
 namespace Xwt.Backends
 {
@@ -256,7 +257,7 @@ namespace Xwt.Backends
 		void CheckInitialized ()
 		{
 			if (backendTypes == null)
-				throw new InvalidOperationException ("XWT toolkit not initialized");
+				throw new InvalidOperationException (Catalog.GetString ("XWT toolkit not initialized"));
 		}
 
 		/// <summary>
@@ -272,9 +273,9 @@ namespace Xwt.Backends
 			if (!backendTypesByFrontend.TryGetValue (frontendType, out bt)) {
 				var attr = (BackendTypeAttribute) Attribute.GetCustomAttribute (frontendType, typeof(BackendTypeAttribute), true);
 				if (attr == null || attr.Type == null)
-					throw new InvalidOperationException ("Backend type not specified for type: " + frontendType);
+					throw new InvalidOperationException (Catalog.GetString (string.Format ("Backend type not specified for type: {0}", frontendType)));
 				if (!typeof(IBackend).IsAssignableFrom (attr.Type))
-					throw new InvalidOperationException ("Backend type for frontend '" + frontendType + "' is not a IBackend implementation");
+					throw new InvalidOperationException (Catalog.GetString (string.Format ("Backend type for frontend '{0}' is not a IBackend implementation", frontendType)));
 				bt = GetBackendImplementationType (attr.Type);
 				backendTypesByFrontend [frontendType] = bt;
 			}
@@ -296,7 +297,7 @@ namespace Xwt.Backends
 				return null;
 			var res = Activator.CreateInstance (bt);
 			if (!backendType.IsInstanceOfType (res))
-				throw new InvalidOperationException ("Invalid backend type. Expected '" + backendType + "' found '" + res.GetType () + "'");
+				throw new InvalidOperationException (Catalog.GetString (string.Format ("Invalid backend type. Expected '{0}' found '{1}'", backendType, res.GetType ())));
 			if (res is BackendHandler)
 				((BackendHandler)res).Initialize (toolkit);
 			return res;

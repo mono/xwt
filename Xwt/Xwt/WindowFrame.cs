@@ -57,6 +57,7 @@ using Xwt.Backends;
 using System.ComponentModel;
 using Xwt.Drawing;
 using Xwt.Motion;
+using Mono.Unix;
 
 namespace Xwt
 {
@@ -123,7 +124,7 @@ namespace Xwt
 		public WindowFrame ()
 		{
 			if (!(base.BackendHost is WindowBackendHost))
-				throw new InvalidOperationException ("CreateBackendHost for WindowFrame did not return a WindowBackendHost instance");
+				throw new InvalidOperationException (Catalog.GetString ("CreateBackendHost for WindowFrame did not return a WindowBackendHost instance"));
 		}
 		
 		public WindowFrame (string title): this ()
@@ -305,7 +306,7 @@ namespace Xwt
 		public Screen Screen {
 			get {
 				if (!Visible)
-					throw new InvalidOperationException ("The window is not visible");
+					throw new InvalidOperationException (Catalog.GetString ("The window is not visible"));
 				return Desktop.GetScreen (Backend.Screen);
 			}
 		}

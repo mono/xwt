@@ -29,6 +29,7 @@ using System.IO;
 using System.Reflection;
 using Xwt.Drawing;
 using System.Collections.Generic;
+using Mono.Unix;
 
 namespace Xwt.Backends
 {
@@ -43,7 +44,7 @@ namespace Xwt.Backends
 		{
 			using (var s = asm.GetManifestResourceStream (name)) {
 				if (s == null)
-					throw new InvalidOperationException ("Resource not found: " + name);
+					throw new InvalidOperationException (Catalog.GetString (string.Format ("Resource not found: {0}", name)));
 				return LoadFromStream (s);
 			}
 		}

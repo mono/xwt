@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using Mono.Unix;
 
 namespace Xwt
 {
@@ -189,7 +190,7 @@ namespace Xwt
 					allowedAction = value;
 					break;
 				default:
-					throw new ArgumentException ("Allowed action must be one of Copy, Link, Move, None or Default");
+					throw new ArgumentException (Catalog.GetString ("Allowed action must be one of Copy, Link, Move, None or Default"));
 				}
 			}
 		}

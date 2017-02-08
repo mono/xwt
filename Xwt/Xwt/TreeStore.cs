@@ -30,6 +30,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Xwt.Backends;
 using System.ComponentModel;
+using Mono.Unix;
 
 
 namespace Xwt
@@ -58,10 +59,10 @@ namespace Xwt
 		
 		public TreeStore (params IDataField[] fields)
 		{
-			for (int n=0; n<fields.Length; n++) {
-				if (fields[n].Index != -1)
-					throw new InvalidOperationException ("DataField object already belongs to another data store");
-				((IDataFieldInternal)fields[n]).SetIndex (n);
+			for (int n = 0; n < fields.Length; n++) {
+				if (fields [n].Index != -1)
+					throw new InvalidOperationException (Catalog.GetString ("DataField object already belongs to another data store"));
+				((IDataFieldInternal)fields [n]).SetIndex (n);
 			}
 			this.fields = fields;
 		}
@@ -272,7 +273,7 @@ namespace Xwt
 					}
 				}
 				if (np.NodeIndex == -1)
-					throw new InvalidOperationException ("Invalid node position");
+					throw new InvalidOperationException (Catalog.GetString ("Invalid node position"));
 				np.StoreVersion = version;
 			}
 			return np;

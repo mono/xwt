@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using System.ComponentModel;
+using Mono.Unix;
 
 
 namespace Xwt
@@ -86,7 +87,7 @@ namespace Xwt
 					ItemsSource = itemCollection.DataSource;
 				} else {
 					if (ItemsSource != itemCollection.DataSource)
-						throw new InvalidOperationException ("The Items collection can't be used when a custom DataSource is set");
+						throw new InvalidOperationException (Catalog.GetString ("The Items collection can't be used when a custom DataSource is set"));
 				}
 				return itemCollection;
 			}

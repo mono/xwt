@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Mono.Unix;
 using Xwt.Drawing;
 
 namespace Xwt
@@ -57,22 +58,22 @@ namespace Xwt
 		
 		public bool IsStockButton { get; private set; }
 		
-		public static Command Ok = new Command ("Ok");
-		public static Command Cancel = new Command ("Cancel");
-		public static Command Yes = new Command ("Yes");
-		public static Command No = new Command ("No");
-		public static Command Close = new Command ("Close");
-		public static Command Delete = new Command ("Delete");
-		public static Command Add = new Command ("Add");
-		public static Command Remove = new Command ("Remove");
-		public static Command Clear = new Command ("Clear");
-		public static Command Copy = new Command ("Copy");
-		public static Command Cut = new Command ("Cut");
-		public static Command Paste = new Command ("Paste");
-		public static Command Save = new Command ("Save");
-		public static Command SaveAs = new Command ("SaveAs");
-		public static Command Stop = new Command ("Stop");
-		public static Command Apply = new Command ("Apply");
+		public static Command Ok = new Command (Catalog.GetString ("Ok"));
+		public static Command Cancel = new Command (Catalog.GetString ("Cancel"));
+		public static Command Yes = new Command (Catalog.GetString ("Yes"));
+		public static Command No = new Command (Catalog.GetString ("No"));
+		public static Command Close = new Command (Catalog.GetString ("Close"));
+		public static Command Delete = new Command (Catalog.GetString ("Delete"));
+		public static Command Add = new Command (Catalog.GetString ("Add"));
+		public static Command Remove = new Command (Catalog.GetString ("Remove"));
+		public static Command Clear = new Command (Catalog.GetString ("Clear"));
+		public static Command Copy = new Command (Catalog.GetString ("Copy"));
+		public static Command Cut = new Command (Catalog.GetString ("Cut"));
+		public static Command Paste = new Command (Catalog.GetString ("Paste"));
+		public static Command Save = new Command (Catalog.GetString ("Save"));
+		public static Command SaveAs = new Command (Catalog.GetString ("SaveAs"));
+		public static Command Stop = new Command (Catalog.GetString ("Stop"));
+		public static Command Apply = new Command (Catalog.GetString ("Apply"));
 
 		public override string ToString ()
 		{
