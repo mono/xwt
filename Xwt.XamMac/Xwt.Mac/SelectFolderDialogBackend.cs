@@ -52,7 +52,7 @@ namespace Xwt.Mac
 			this.CanChooseDirectories = true;
 			this.CanCreateDirectories = false;
 			
-			this.Prompt = "Select " + (multiselect ? "Directories" : "Directory" );
+			this.Prompt = Application.TranslationCatalog.GetPluralString("Select Directory", "Select Directories", multiselect ? 2 : 1);
 			
 		}
 

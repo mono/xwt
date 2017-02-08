@@ -42,7 +42,7 @@ namespace Xwt.Gtk.Mac
 			if (!string.IsNullOrEmpty (initialFileName))
 				this.DirectoryUrl = new NSUrl (initialFileName, true);
 
-			this.Prompt = "Select File";
+			this.Prompt = Application.TranslationCatalog.GetString("Select File");
 		}
 
 		public bool Run (IWindowFrameBackend parent)

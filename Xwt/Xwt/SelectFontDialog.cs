@@ -32,8 +32,8 @@ namespace Xwt
 	public sealed class SelectFontDialog
 	{
 		Font font = Font.SystemFont;
-		string title = "Select a font";
-		string previewText = "The quick brown fox jumps over the lazy dog.";
+		string title = Application.TranslationCatalog.GetString("Select a font");
+		string previewText = Application.TranslationCatalog.GetString("The quick brown fox jumps over the lazy dog.");
 
 		public SelectFontDialog ()
 		{

@@ -44,7 +44,7 @@ namespace Xwt.Gtk.Mac
 			this.CanChooseFiles = false;
 			this.CanChooseDirectories = true;
 
-			this.Prompt = "Select Folder" + (multiselect ? "s" : "");
+			this.Prompt = Application.TranslationCatalog.GetPluralString("Select Folder", "Select Folders", multiselect ? 2 : 1);
 		}
 
 		public bool Run (IWindowFrameBackend parent)

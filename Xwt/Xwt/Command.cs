@@ -57,22 +57,22 @@ namespace Xwt
 		
 		public bool IsStockButton { get; private set; }
 		
-		public static Command Ok = new Command ("Ok");
-		public static Command Cancel = new Command ("Cancel");
-		public static Command Yes = new Command ("Yes");
-		public static Command No = new Command ("No");
-		public static Command Close = new Command ("Close");
-		public static Command Delete = new Command ("Delete");
-		public static Command Add = new Command ("Add");
-		public static Command Remove = new Command ("Remove");
-		public static Command Clear = new Command ("Clear");
-		public static Command Copy = new Command ("Copy");
-		public static Command Cut = new Command ("Cut");
-		public static Command Paste = new Command ("Paste");
-		public static Command Save = new Command ("Save");
-		public static Command SaveAs = new Command ("SaveAs");
-		public static Command Stop = new Command ("Stop");
-		public static Command Apply = new Command ("Apply");
+		public static Command Ok = new Command ("Ok", Application.TranslationCatalog.GetString("Ok"));
+		public static Command Cancel = new Command ("Cancel", Application.TranslationCatalog.GetString("Cancel"));
+		public static Command Yes = new Command ("Yes", Application.TranslationCatalog.GetString("Yes"));
+		public static Command No = new Command ("No", Application.TranslationCatalog.GetString("No"));
+		public static Command Close = new Command ("Close", Application.TranslationCatalog.GetString("Close"));
+		public static Command Delete = new Command ("Delete", Application.TranslationCatalog.GetString("Delete"));
+		public static Command Add = new Command ("Add", Application.TranslationCatalog.GetString("Add"));
+		public static Command Remove = new Command ("Remove", Application.TranslationCatalog.GetString("Remove"));
+		public static Command Clear = new Command ("Clear", Application.TranslationCatalog.GetString("Clear"));
+		public static Command Copy = new Command ("Copy", Application.TranslationCatalog.GetString("Copy"));
+		public static Command Cut = new Command ("Cut", Application.TranslationCatalog.GetString("Cut"));
+		public static Command Paste = new Command ("Paste", Application.TranslationCatalog.GetString("Paste"));
+		public static Command Save = new Command ("Save", Application.TranslationCatalog.GetString("Save"));
+		public static Command SaveAs = new Command ("SaveAs", Application.TranslationCatalog.GetString("Save As"));
+		public static Command Stop = new Command ("Stop", Application.TranslationCatalog.GetString("Stop"));
+		public static Command Apply = new Command ("Apply", Application.TranslationCatalog.GetString("Apply"));
 
 		public override string ToString ()
 		{
