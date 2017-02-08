@@ -93,6 +93,20 @@ namespace Xwt.Backends
 		Size Size { get; }
 
 		/// <summary>
+		/// Converts widget relative coordinates to its parents coordinates.
+		/// </summary>
+		/// <returns>The parent coordinates.</returns>
+		/// <param name="widgetCoordinates">The relative widget coordinates.</param>
+		Point ConvertToParentCoordinates (Point widgetCoordinates);
+
+		/// <summary>
+		/// Converts widget relative coordinates to its parent window coordinates.
+		/// </summary>
+		/// <returns>The window coordinates.</returns>
+		/// <param name="widgetCoordinates">The relative widget coordinates.</param>
+		Point ConvertToWindowCoordinates (Point widgetCoordinates);
+
+		/// <summary>
 		/// Converts widget relative coordinates to screen coordinates.
 		/// </summary>
 		/// <returns>The screen coordinates.</returns>

@@ -98,6 +98,11 @@ namespace Xwt.Mac
 		{
 			return new Rectangle (v.WidgetX(), v.WidgetY(), v.WidgetWidth(), v.WidgetHeight());
 		}
+
+		public static Point WidgetLocation (this NSView v)
+		{
+			return new Point (v.WidgetX (), v.WidgetY ());
+		}
 		
 		public static void SetWidgetBounds (this NSView v, Rectangle rect)
 		{
@@ -159,6 +164,21 @@ namespace Xwt.Mac
 		public static CGRect ToCGRect (this Rectangle r)
 		{
 			return new CGRect ((nfloat)r.X, (nfloat)r.Y, (nfloat)r.Width, (nfloat)r.Height);
+		}
+
+		public static Rectangle ToXwtRect (this CGRect r)
+		{
+			return new Rectangle (r.X, r.Y, r.Width, r.Height);
+		}
+
+		public static CGPoint ToCGPoint (this Point r)
+		{
+			return new CGPoint ((nfloat)r.X, (nfloat)r.Y);
+		}
+
+		public static Point ToXwtPoint (this CGPoint p)
+		{
+			return new Point (p.X, p.Y);
 		}
 
 		// /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/IconsCore.h

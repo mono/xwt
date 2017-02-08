@@ -306,6 +306,22 @@ namespace Xwt.GtkBackend
 				return dragDropInfo;
 			}
 		}
+
+		public Point ConvertToParentCoordinates (Point widgetCoordinates)
+		{
+			int x = 0, y = 0;
+			if (RootWidget?.Parent != null)
+				Widget.TranslateCoordinates (RootWidget.Parent, x, y, out x, out y);
+			return new Point (x, y);
+		}
+
+		public Point ConvertToWindowCoordinates (Point widgetCoordinates)
+		{
+			int x = 0, y = 0;
+			if (RootWidget?.Toplevel != null)
+				Widget.TranslateCoordinates (RootWidget.Toplevel, x, y, out x, out y);
+			return new Point (x, y);
+		}
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{

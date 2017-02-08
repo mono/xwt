@@ -420,7 +420,20 @@ namespace Xwt.Mac
 		}
 		
 		#region IWidgetBackend implementation
-		
+
+		public Point ConvertToParentCoordinates (Point widgetCoordinates)
+		{
+			var location =  Widget.WidgetLocation ();
+			location.X += widgetCoordinates.X;
+			location.Y += widgetCoordinates.Y;
+			return location;
+		}
+
+		public Point ConvertToWindowCoordinates (Point widgetCoordinates)
+		{
+			return Widget.ConvertPointToView (widgetCoordinates.ToCGPoint (), null).ToXwtPoint ();
+		}
+
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
 			var lo = Widget.ConvertPointToView (new CGPoint ((nfloat)widgetCoordinates.X, (nfloat)widgetCoordinates.Y), null);

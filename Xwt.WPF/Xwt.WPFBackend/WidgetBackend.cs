@@ -266,6 +266,18 @@ namespace Xwt.WPFBackend
 			return backend == null ? null : (FrameworkElement)backend.NativeWidget;
 		}
 
+		public Point ConvertToParentCoordinates (Point widgetCoordinates)
+		{
+			var p = Widget.TranslatePoint (widgetCoordinates.ToWpfPoint (), Frontend.Parent.Surface.NativeWidget as UIElement);
+			return p.ToXwtPoint ();
+		}
+
+		public Point ConvertToWindowCoordinates (Point widgetCoordinates)
+		{
+			var p = Widget.TranslatePoint (widgetCoordinates.ToWpfPoint (), GetParentWindow ());
+			return p.ToXwtPoint ();
+		}
+
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
 			var p = Widget.PointToScreenDpiAware (new System.Windows.Point (
