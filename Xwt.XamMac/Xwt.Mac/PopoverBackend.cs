@@ -37,21 +37,26 @@ namespace Xwt.Mac
 {
 	public class PopoverBackend : IPopoverBackend
 	{
+		public ApplicationContext ApplicationContext { get; set; }
+		public IPopoverEventSink EventSink { get; set; }
+		internal bool EnableCloseEvent { get; private set; }
 		NSPopover popover;
 
-		class FactoryViewController : NSViewController
+		class FactoryViewController : NSViewController, INSPopoverDelegate
 		{
-			readonly Widget child;
+			public Widget Child { get; private set; }
+			public PopoverBackend Backend { get; private set; }
 			public CGColor BackgroundColor { get; set; }
 
-			public FactoryViewController (Widget child) : base (null, null)
+			public FactoryViewController (PopoverBackend backend, Widget child) : base (null, null)
 			{
-				this.child = child;
+				Child = child;
+				Backend = backend;
 			}
 
 			public override void LoadView ()
 			{
-				var backend = (ViewBackend)Toolkit.GetBackend (child);
+				var backend = (ViewBackend)Toolkit.GetBackend (Child);
 				View = backend.Widget;
 
 				if (View.Layer == null)
@@ -65,7 +70,14 @@ namespace Xwt.Mac
 
 			void ForceChildLayout ()
 			{
-				((IWidgetSurface)child).Reallocate ();
+				((IWidgetSurface)Child).Reallocate ();
+			}
+
+			[Export ("popoverDidClose:")]
+			public virtual void DidClose (NSNotification notification)
+			{
+				if (Backend?.EnableCloseEvent == true)
+					Backend.ApplicationContext.InvokeUserCode (Backend.EventSink.OnClosed);
 			}
 		}
 
@@ -73,18 +85,34 @@ namespace Xwt.Mac
 
 		public void Initialize (IPopoverEventSink sink)
 		{
+			EventSink = sink;
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			ApplicationContext = context;
 		}
 
 		public void EnableEvent (object eventId)
 		{
+			if (eventId is PopoverEvent) {
+				switch ((PopoverEvent)eventId) {
+				case PopoverEvent.Closed:
+					EnableCloseEvent = true;
+					break;
+				}
+			}
 		}
 
 		public void DisableEvent (object eventId)
 		{
+			if (eventId is PopoverEvent) {
+				switch ((PopoverEvent)eventId) {
+				case PopoverEvent.Closed:
+					EnableCloseEvent = false;
+					break;
+				}
+			}
 		}
 
 		public void Show (Popover.Position orientation, Widget referenceWidget, Rectangle positionRect, Widget child)
@@ -100,7 +128,14 @@ namespace Xwt.Mac
 				positionRect.Height = 1;
 
 			DestroyPopover ();
-			popover = MakePopover (child, BackgroundColor);
+
+			popover = new NSPopover {
+				Behavior = NSPopoverBehavior.Transient
+			};
+			var controller = new FactoryViewController (this, child) { BackgroundColor = BackgroundColor.ToCGColor () };
+			popover.ContentViewController = controller;
+			popover.WeakDelegate = controller;
+
 			popover.Show (positionRect.ToCGRect (),
 				      reference,
 				      ToRectEdge (orientation));
@@ -129,7 +164,7 @@ namespace Xwt.Mac
 		{
 			return new NSPopover {
 				Behavior = NSPopoverBehavior.Transient,
-				ContentViewController = new FactoryViewController (child)
+				ContentViewController = new FactoryViewController (null, child)
 			};
 		}
 
@@ -137,7 +172,7 @@ namespace Xwt.Mac
 		{
 			return new NSPopover {
 				Behavior = NSPopoverBehavior.Transient,
-				ContentViewController = new FactoryViewController (child) { BackgroundColor = backgroundColor.ToCGColor () }
+				ContentViewController = new FactoryViewController (null, child) { BackgroundColor = backgroundColor.ToCGColor () }
 			};
 		}
 
