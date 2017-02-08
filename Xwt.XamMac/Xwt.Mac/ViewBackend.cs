@@ -214,7 +214,12 @@ namespace Xwt.Mac
 				return Widget.ToolTip;
 			}
 			set {
-				Widget.ToolTip = value;
+				if (value != null)
+					Widget.ToolTip = value;
+				else if (Widget.ToolTip != null) {
+					Widget.ToolTip = string.Empty;
+					Widget.RemoveAllToolTips ();
+				}
 			}
 		}
 		
