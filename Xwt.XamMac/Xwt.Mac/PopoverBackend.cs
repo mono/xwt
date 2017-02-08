@@ -3,6 +3,7 @@
 //
 // Author:
 //       Jérémie Laval <jeremie.laval@xamarin.com>
+//       Vsevolod Kukol <sevoku@microsoft.com>
 //
 // Copyright (c) 2012 Xamarin, Inc.
 //
@@ -88,7 +89,6 @@ namespace Xwt.Mac
 
 		public void Show (Popover.Position orientation, Widget referenceWidget, Rectangle positionRect, Widget child)
 		{
-			popover = MakePopover (child, BackgroundColor);
 			ViewBackend backend = (ViewBackend)Toolkit.GetBackend (referenceWidget);
 			var reference = backend.Widget;
 
@@ -99,6 +99,8 @@ namespace Xwt.Mac
 			if (Math.Abs (positionRect.Height) < double.Epsilon)
 				positionRect.Height = 1;
 
+			DestroyPopover ();
+			popover = MakePopover (child, BackgroundColor);
 			popover.Show (positionRect.ToCGRect (),
 				      reference,
 				      ToRectEdge (orientation));
@@ -106,12 +108,21 @@ namespace Xwt.Mac
 
 		public void Hide ()
 		{
-			popover.Close ();
+			DestroyPopover ();
 		}
 
 		public void Dispose ()
 		{
-			popover.Close ();
+			DestroyPopover ();
+		}
+
+		void DestroyPopover ()
+		{
+			if (popover != null) {
+				popover.Close ();
+				popover.Dispose ();
+				popover = null;
+			}
 		}
 
 		public static NSPopover MakePopover (Widget child)
