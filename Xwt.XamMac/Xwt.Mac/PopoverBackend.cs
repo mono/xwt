@@ -37,70 +37,41 @@ namespace Xwt.Mac
 	public class PopoverBackend : IPopoverBackend
 	{
 		NSPopover popover;
-		public event EventHandler Closed;
 
 		class FactoryViewController : NSViewController
 		{
-			Xwt.Widget child;
-			NSView view;
+			readonly Widget child;
 			public CGColor BackgroundColor { get; set; }
 
-			public FactoryViewController (Xwt.Widget child) : base (null, null)
+			public FactoryViewController (Widget child) : base (null, null)
 			{
 				this.child = child;
 			}
 
-			// Called when created from unmanaged code
-			public FactoryViewController (IntPtr handle) : base (handle)
-			{
-			}
-			
-			// Called when created directly from a XIB file
-			[Export ("initWithCoder:")]
-			public FactoryViewController (NSCoder coder) : base (coder)
-			{
-			}
-			
 			public override void LoadView ()
 			{
 				var backend = (ViewBackend)Toolkit.GetBackend (child);
-				view = ((ViewBackend)backend).NativeWidget as NSView;
+				View = backend.Widget;
 
-				if (view.Layer == null)
-					view.WantsLayer = true;
+				if (View.Layer == null)
+					View.WantsLayer = true;
 				if (BackgroundColor != null)
-					view.Layer.BackgroundColor = BackgroundColor;
+					View.Layer.BackgroundColor = BackgroundColor;
 				backend.SetAutosizeMode (true);
 				ForceChildLayout ();
 				// FIXME: unset when the popover is closed
 			}
-			
+
 			void ForceChildLayout ()
 			{
 				((IWidgetSurface)child).Reallocate ();
-			}
-			
-			public override NSView View {
-				get {
-					if (view == null)
-						LoadView ();
-					return view;
-				}
-				set {
-					if (value == null)
-						return;
-					view = value;
-				}
 			}
 		}
 
 		public Color BackgroundColor { get; set; }
 
-		IPopoverEventSink sink;
-		
 		public void Initialize (IPopoverEventSink sink)
 		{
-			this.sink = sink;
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
@@ -115,7 +86,7 @@ namespace Xwt.Mac
 		{
 		}
 
-		public void Show (Xwt.Popover.Position orientation, Xwt.Widget referenceWidget, Xwt.Rectangle positionRect, Xwt.Widget child)
+		public void Show (Popover.Position orientation, Widget referenceWidget, Rectangle positionRect, Widget child)
 		{
 			popover = MakePopover (child, BackgroundColor);
 			ViewBackend backend = (ViewBackend)Toolkit.GetBackend (referenceWidget);
@@ -129,8 +100,8 @@ namespace Xwt.Mac
 				positionRect.Height = 1;
 
 			popover.Show (positionRect.ToCGRect (),
-			              reference,
-			              ToRectEdge (orientation));
+				      reference,
+				      ToRectEdge (orientation));
 		}
 
 		public void Hide ()
@@ -143,7 +114,7 @@ namespace Xwt.Mac
 			popover.Close ();
 		}
 
-		public static NSPopover MakePopover (Xwt.Widget child)
+		public static NSPopover MakePopover (Widget child)
 		{
 			return new NSPopover {
 				Behavior = NSPopoverBehavior.Transient,
@@ -151,20 +122,19 @@ namespace Xwt.Mac
 			};
 		}
 
-		public static NSPopover MakePopover (Xwt.Widget child, Color backgroundColor)
+		public static NSPopover MakePopover (Widget child, Color backgroundColor)
 		{
 			return new NSPopover {
 				Behavior = NSPopoverBehavior.Transient,
 				ContentViewController = new FactoryViewController (child) { BackgroundColor = backgroundColor.ToCGColor () }
 			};
 		}
-		
-		public static NSRectEdge ToRectEdge (Xwt.Popover.Position pos)
+
+		public static NSRectEdge ToRectEdge (Popover.Position pos)
 		{
 			switch (pos) {
 			case Popover.Position.Top:
 				return NSRectEdge.MaxYEdge;
-			case Popover.Position.Bottom:
 			default:
 				return NSRectEdge.MinYEdge;
 			}
