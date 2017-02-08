@@ -118,7 +118,7 @@ namespace Xwt.Mac
 				AccessoryView.SetFrameSize (optionsSize);
 			}
 
-			var win = Toolkit.CurrentEngine.GetNativeWindow (transientFor) as NSWindow;
+			var win = Context.Toolkit.GetNativeWindow (transientFor) as NSWindow;
 			if (win != null)
 				return sortedButtons [(int)this.RunSheetModal (win) - 1000];
 			return sortedButtons [(int)this.RunModal () - 1000];

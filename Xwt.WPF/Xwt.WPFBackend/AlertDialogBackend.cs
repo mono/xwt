@@ -39,6 +39,7 @@ namespace Xwt.WPFBackend
 		MessageBoxImage icon;
 		MessageBoxOptions options;
 		MessageBoxResult defaultResult;
+		ApplicationContext context;
 
 		public AlertDialogBackend()
 		{
@@ -50,6 +51,7 @@ namespace Xwt.WPFBackend
 
 		public void Initialize (ApplicationContext actx)
 		{
+			context = actx;
 		}
 
 		public Command Run (WindowFrame transientFor, MessageDescription message)
@@ -63,7 +65,7 @@ namespace Xwt.WPFBackend
 					message.Text = message.Text + "\r\n\r\n" + message.SecondaryText;
 					message.SecondaryText = String.Empty;
 				}
-				var parent =  Toolkit.CurrentEngine.GetNativeWindow(transientFor) as System.Windows.Window;
+				var parent =  context.Toolkit.GetNativeWindow(transientFor) as System.Windows.Window;
 				if (parent != null) {
 					this.dialogResult = MessageBox.Show (parent, message.Text, message.SecondaryText,
 														this.buttons, this.icon, this.defaultResult, this.options);
