@@ -102,40 +102,21 @@ namespace Xwt.Mac
 
 		ISpinButtonEventSink eventSink;
 
-
-		class RelativeTextField : NSTextField
-		{
-			NSView reference;
-
-			public RelativeTextField (NSView reference)
-			{
-				this.reference = reference;
-			}
-
-			public override void ResizeWithOldSuperviewSize (CGSize oldSize)
-			{
-				base.ResizeWithOldSuperviewSize (oldSize);
-				SetFrameSize (new CGSize (reference.Frame.Left, Frame.Size.Height));
-			}
-		}
-
 		public MacSpinButton (ISpinButtonEventSink eventSink, ApplicationContext context) : base (eventSink, context)
 		{
 			this.eventSink = eventSink;
 			formater = new NSNumberFormatter ();
 			stepper = new NSStepper ();
-			input = new RelativeTextField (stepper);
+			input = new NSTextField ();
 			input.Formatter = formater;
 			input.DoubleValue = 0;
 			input.Alignment = NSTextAlignment.Right;
 			formater.NumberStyle = NSNumberFormatterStyle.Decimal;
-			stepper.Activated += HandleStepperChanged;;
+			stepper.Activated += HandleStepperChanged;
 			input.Changed += HandleTextChanged;
 			input.DoCommandBySelector = DoCommandBySelector;
 
 			AutoresizesSubviews = true;
-			stepper.AutoresizingMask = NSViewResizingMask.MinXMargin;
-			input.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.MaxXMargin;
 
 			AddSubview (input);
 			AddSubview (stepper);
@@ -148,15 +129,20 @@ namespace Xwt.Mac
 
 			var minHeight = (nfloat)Math.Max (stepper.Frame.Height, input.Frame.Height);
 			var minWidth = input.Frame.Width + stepper.Frame.Width;
-			minWidth = (nfloat)Math.Max (minWidth, 55);
-			var stepperX = minWidth - (stepper.Frame.Width);
-			var stepperY = (minHeight - stepper.Frame.Height) / 2;
-			var inputX = 0;
-			var inputY = (minHeight - input.Frame.Height) / 2;
-
+			minWidth = (nfloat)Math.Max (minWidth, 60);
 			SetFrameSize (new CGSize (minWidth, minHeight));
+		}
+
+		public override void ResizeSubviewsWithOldSize (CGSize oldSize)
+		{
+			stepper.SizeToFit ();
+			var stepperX = Frame.Width - (stepper.Frame.Width);
+			var stepperY = (Frame.Height - stepper.Frame.Height) / 2;
 			stepper.Frame = new CGRect (stepperX, stepperY, stepper.Frame.Width, stepper.Frame.Height);
-			input.Frame = new CGRect (inputX, inputY, minWidth - (stepper.Frame.Width), input.Frame.Height);
+
+			var inputX = 0;
+			var inputY = (Frame.Height - input.Frame.Height) / 2;
+			input.Frame = new CGRect (inputX, inputY, Frame.Width - stepper.Frame.Width, input.Frame.Height);
 		}
 
 		public override void ScrollWheel (NSEvent theEvent)
