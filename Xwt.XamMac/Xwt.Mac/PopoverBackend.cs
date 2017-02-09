@@ -60,7 +60,7 @@ namespace Xwt.Mac
 
 			public override void LoadView ()
 			{
-				View = new NSView ();
+				View = new ContainerView (this);
 				View.AddSubview (NativeChild);
 
 				WidgetSpacing padding = 0;
@@ -72,6 +72,24 @@ namespace Xwt.Mac
 					NSLayoutConstraint.Create (NativeChild, NSLayoutAttribute.Top, NSLayoutRelation.Equal, View, NSLayoutAttribute.Top, 1, (nfloat)padding.Top),
 					NSLayoutConstraint.Create (NativeChild, NSLayoutAttribute.Bottom, NSLayoutRelation.Equal, View, NSLayoutAttribute.Bottom, 1, -(nfloat)padding.Bottom),
 				});
+			}
+
+			class ContainerView : NSView
+			{
+				FactoryViewController controller;
+				public ContainerView (FactoryViewController controller)
+				{
+					this.controller = controller;
+				}
+				
+				#if !MONOMAC
+				public override bool AllowsVibrancy {
+					get {
+						// disable vibrancy for custom background
+						return controller.BackgroundColor == null ? base.AllowsVibrancy : false;
+					}
+				}
+				#endif
 			}
 
 			[Export ("popoverWillShow:")]
@@ -159,12 +177,18 @@ namespace Xwt.Mac
 
 			DestroyPopover ();
 
-			popover = new NSPopover {
+			popover = new NSAppearanceCustomizationPopover {
 				Behavior = NSPopoverBehavior.Transient
 			};
 			var controller = new FactoryViewController (this, child) { BackgroundColor = backgroundColor };
 			popover.ContentViewController = controller;
 			popover.WeakDelegate = controller;
+
+			#if !MONOMAC
+			// if the reference has a custom appearance, use it for the popover
+			if (popover is INSAppearanceCustomization && reference.EffectiveAppearance.Name != NSAppearance.NameAqua)
+				((INSAppearanceCustomization)popover).SetAppearance (reference.EffectiveAppearance);
+			#endif
 
 			popover.Show (positionRect.ToCGRect (),
 				      reference,
@@ -219,6 +243,14 @@ namespace Xwt.Mac
 			default:
 				return NSRectEdge.MinYEdge;
 			}
+		}
+
+		#if MONOMAC
+		public class NSAppearanceCustomizationPopover : NSPopover
+		#else
+		public class NSAppearanceCustomizationPopover : NSPopover, INSAppearanceCustomization
+		#endif
+		{
 		}
 	}
 }

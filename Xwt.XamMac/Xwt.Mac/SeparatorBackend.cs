@@ -54,6 +54,17 @@ namespace Xwt.Mac
 		public NSView View {
 			get { return this; }
 		}
+
+		#if !MONOMAC
+		public override bool AllowsVibrancy {
+			get {
+				// we don't support vibrancy
+				if (EffectiveAppearance.AllowsVibrancy)
+					return false;
+				return base.AllowsVibrancy;
+			}
+		}
+		#endif
 	}
 }
 

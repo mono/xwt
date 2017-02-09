@@ -245,6 +245,17 @@ namespace Xwt.Mac
 		{
 			return false;
 		}
+
+		#if !MONOMAC
+		public override bool AllowsVibrancy {
+			get {
+				// we don't support vibrancy
+				if (EffectiveAppearance.AllowsVibrancy)
+					return false;
+				return base.AllowsVibrancy;
+			}
+		}
+		#endif
 	}
 
 	class CustomTextFieldCell: NSTextFieldCell
