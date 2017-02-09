@@ -168,12 +168,12 @@ namespace Xwt.Mac
 			ViewBackend backend = (ViewBackend)Toolkit.GetBackend (referenceWidget);
 			var reference = backend.Widget;
 
-			// If the position rect is empty, the coordinates of the rect will be ignored.
-			// Width and Height of the rect must be > Epsilon, for the positioning to function correctly.
+			// If the rect is empty, the coordinates of the rect will be ignored.
+			// Set the width and height, for the positioning to function correctly.
 			if (Math.Abs (positionRect.Width) < double.Epsilon)
-				positionRect.Width = 1;
+				positionRect.Width = referenceWidget.Size.Width;
 			if (Math.Abs (positionRect.Height) < double.Epsilon)
-				positionRect.Height = 1;
+				positionRect.Height = referenceWidget.Size.Height;
 
 			DestroyPopover ();
 
