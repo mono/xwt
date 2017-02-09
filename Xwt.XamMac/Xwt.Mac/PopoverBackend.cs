@@ -37,6 +37,7 @@ namespace Xwt.Mac
 {
 	public class PopoverBackend : IPopoverBackend
 	{
+		public Popover Frontend { get; private set; }
 		public ApplicationContext ApplicationContext { get; set; }
 		public IPopoverEventSink EventSink { get; set; }
 		internal bool EnableCloseEvent { get; private set; }
@@ -68,6 +69,8 @@ namespace Xwt.Mac
 					View.Layer.BackgroundColor = BackgroundColor;
 
 				WidgetSpacing padding = 0;
+				if (Backend != null)
+					padding = Backend.Frontend.Padding;
 				View.AddConstraints (new NSLayoutConstraint [] {
 					NSLayoutConstraint.Create (NativeChild, NSLayoutAttribute.Left, NSLayoutRelation.Equal, View, NSLayoutAttribute.Left, 1, (nfloat)padding.Left),
 					NSLayoutConstraint.Create (NativeChild, NSLayoutAttribute.Right, NSLayoutRelation.Equal, View, NSLayoutAttribute.Right, 1, -(nfloat)padding.Right),
@@ -82,6 +85,8 @@ namespace Xwt.Mac
 				ChildBackend.SetAutosizeMode (true);
 				Child.Surface.Reallocate ();
 				WidgetSpacing padding = 0;
+				if (Backend != null)
+					padding = Backend.Frontend.Padding;
 				NativeChild.SetFrameOrigin (new CGPoint ((nfloat)padding.Left, (nfloat)padding.Top));
 			}
 
@@ -106,6 +111,7 @@ namespace Xwt.Mac
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			ApplicationContext = context;
+			Frontend = frontend as Popover;
 		}
 
 		public void EnableEvent (object eventId)
