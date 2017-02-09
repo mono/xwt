@@ -70,7 +70,7 @@ namespace Xwt.GtkBackend
 				case Gtk.FileChooserAction.SelectFolder:
 				case Gtk.FileChooserAction.CreateFolder:
 					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);
-					dialog.AddButton ("Select Folder", Gtk.ResponseType.Ok);
+					dialog.AddButton (Application.TranslationCatalog.GetString("Select"), Gtk.ResponseType.Ok);
 					break;
 				case Gtk.FileChooserAction.Save:
 					dialog.AddButton (Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);

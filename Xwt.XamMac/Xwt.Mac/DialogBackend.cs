@@ -86,6 +86,14 @@ namespace Xwt.Mac
 			ContentView.AddSubview (buttonBoxView);
 		}
 
+		[Export ("cancelOperation:")]
+		void HandleCancelOperation (NSObject semder)
+		{
+			PerformClose (this);
+			//FIXME: should we check whether there is a Command.Cancel button and
+			//       respond with the command instead of a simple close (null response)?
+		}
+
 		protected override void OnClosed ()
 		{
 			base.OnClosed ();
@@ -179,7 +187,7 @@ namespace Xwt.Mac
 				StyleMask |= NSWindowStyle.Miniaturizable;
 			Visible = true;
 			modalSessionRunning = true;
-			var win = parent as NSWindow ?? Toolkit.CurrentEngine.GetNativeWindow (parent) as NSWindow;
+			var win = parent as NSWindow ?? ApplicationContext.Toolkit.GetNativeWindow (parent) as NSWindow;
 			if (win != null) {
 				win.AddChildWindow (this, NSWindowOrderingMode.Above);
 				// always use NSWindow for alignment when running in guest mode and
@@ -198,10 +206,14 @@ namespace Xwt.Mac
 		public void EndLoop ()
 		{
 			modalSessionRunning = false;
-			if (ParentWindow != null)
-				ParentWindow.RemoveChildWindow (this);
-			NSApplication.SharedApplication.StopModal ();
+			var parent = ParentWindow;
+			if (parent != null)
+				parent.RemoveChildWindow (this);
 			OrderOut (this);
+			Close();
+			NSApplication.SharedApplication.StopModal ();
+			if (parent != null)
+				parent.MakeKeyAndOrderFront (parent);
 		}
 
 		#endregion

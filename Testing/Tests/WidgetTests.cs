@@ -300,6 +300,7 @@ namespace Xwt
 				Assert.AreEqual (defh, w.Size.Height, "fw2");
 			}
 		}
+
 		[Test]
 		public void Coordinates ()
 		{
@@ -315,6 +316,7 @@ namespace Xwt
 				ShowWindow (win);
 
 				Assert.AreEqual (win.ScreenBounds.Inflate (-padding,-padding), w.ScreenBounds);
+				Assert.AreEqual (w.ParentBounds.Location, new Point (padding, padding));
 			}
 		}
 

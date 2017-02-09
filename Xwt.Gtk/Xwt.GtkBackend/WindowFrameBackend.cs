@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Konrad M. Kruczynski <kkruczynski@antmicro.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2016 Antmicro Ltd
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -202,6 +204,12 @@ namespace Xwt.GtkBackend
 				opacity = value;
 				if (Window.GdkWindow != null)
 					Window.GdkWindow.Opacity = value;
+			}
+		}
+
+		bool IWindowFrameBackend.HasFocus {
+			get {
+				return Window.HasToplevelFocus;
 			}
 		}
 

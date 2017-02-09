@@ -306,6 +306,22 @@ namespace Xwt.GtkBackend
 				return dragDropInfo;
 			}
 		}
+
+		public Point ConvertToParentCoordinates (Point widgetCoordinates)
+		{
+			int x = 0, y = 0;
+			if (RootWidget?.Parent != null)
+				Widget.TranslateCoordinates (RootWidget.Parent, x, y, out x, out y);
+			return new Point (x, y);
+		}
+
+		public Point ConvertToWindowCoordinates (Point widgetCoordinates)
+		{
+			int x = 0, y = 0;
+			if (RootWidget?.Toplevel != null)
+				Widget.TranslateCoordinates (RootWidget.Toplevel, x, y, out x, out y);
+			return new Point (x, y);
+		}
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
@@ -779,8 +795,8 @@ namespace Xwt.GtkBackend
 			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
 			return new MouseScrolledEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y, direction);
 		}
-        
 
+		[GLib.ConnectBefore]
 		void HandleWidgetFocusOutEvent (object o, Gtk.FocusOutEventArgs args)
 		{
 			ApplicationContext.InvokeUserCode (delegate {
@@ -788,6 +804,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
+		[GLib.ConnectBefore]
 		void HandleWidgetFocusInEvent (object o, EventArgs args)
 		{
 			if (!CanGetFocus)
@@ -797,6 +814,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
+		[GLib.ConnectBefore]
 		void HandleLeaveNotifyEvent (object o, Gtk.LeaveNotifyEventArgs args)
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
@@ -806,6 +824,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
+		[GLib.ConnectBefore]
 		void HandleEnterNotifyEvent (object o, Gtk.EnterNotifyEventArgs args)
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
@@ -817,6 +836,7 @@ namespace Xwt.GtkBackend
 
 		protected virtual void OnEnterNotifyEvent (Gtk.EnterNotifyEventArgs args) {}
 
+		[GLib.ConnectBefore]
 		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
 		{
 			var a = GetMouseMovedEventArgs (args);
@@ -835,6 +855,7 @@ namespace Xwt.GtkBackend
 			return new MouseMovedEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y);
 		}
 
+		[GLib.ConnectBefore]
 		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
 		{
 			var a = GetButtonReleaseEventArgs (args);

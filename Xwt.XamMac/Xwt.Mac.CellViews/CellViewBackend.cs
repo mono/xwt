@@ -36,7 +36,7 @@ using AppKit;
 
 namespace Xwt.Mac
 {
-	public class CellViewBackend: ICellViewBackend
+	public class CellViewBackend: ICellViewBackend, ICanvasCellViewBackend
 	{
 		NSTableView table;
 		int column;
@@ -72,6 +72,11 @@ namespace Xwt.Mac
 
 		public virtual void DisableEvent (object eventId)
 		{
+		}
+
+		public void QueueDraw ()
+		{
+			// nothing to be done here, NSTableView should handle this
 		}
 
 		public Rectangle CellBounds {

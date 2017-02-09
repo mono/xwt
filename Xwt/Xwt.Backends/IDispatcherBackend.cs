@@ -1,11 +1,10 @@
-//
-// IWebViewBackend.cs
+﻿//
+// IDispatcherBackend.cs
 //
 // Author:
-//       Cody Russell <cody@xamarin.com>
-//       Vsevolod Kukol <sevo@sevo.org>
+//       Vsevolod Kukol <sevoku@microsoft.com>
 //
-// Copyright (c) 2014 Xamarin Inc.
+// Copyright (c) 2016 (c) Microsoft Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,40 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Threading.Tasks;
 
 namespace Xwt.Backends
 {
-	public interface IWebViewBackend : IWidgetBackend
+	/// <summary>
+	/// Backends implementing IDispatcherBackend support/need component based thread synchronization
+	/// </summary>
+	public interface IDispatcherBackend
 	{
-		string Url { get; set; }
-		string Title { get; }
-		double LoadProgress { get; }
-		bool CanGoBack { get; }
-		void GoBack ();
-		bool CanGoForward { get; }
-		void GoForward ();
-		void Reload ();
-		void StopLoading ();
-		void LoadHtml (string content, string base_uri);
-		bool ContextMenuEnabled { get; set; }
-		bool DrawsBackground { get; set; }
-		bool ScrollBarsEnabled { get; set; }
-		string CustomCss { get; set; }
-	}
-
-	public interface IWebViewEventSink : IWidgetEventSink
-	{
-		void OnLoaded ();
-		void OnLoading ();
-		bool OnNavigateToUrl (string url);
-		void OnTitleChanged ();
-	}
-
-	public enum WebViewEvent
-	{
-		Loaded = 1,
-		Loading = 2,
-		NavigateToUrl = 3,
-		TitleChanged = 4,
+		Task InvokeAsync (Action action);
+		Task<T> InvokeAsync<T> (Func<T> action);
 	}
 }

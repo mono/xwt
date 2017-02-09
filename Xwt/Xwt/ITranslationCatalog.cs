@@ -1,11 +1,10 @@
-//
-// IWebViewBackend.cs
+﻿//
+// ITranslationCatalog.cs
 //
 // Author:
-//       Cody Russell <cody@xamarin.com>
-//       Vsevolod Kukol <sevo@sevo.org>
+//       Vsevolod Kukol <sevoku@microsoft.com>
 //
-// Copyright (c) 2014 Xamarin Inc.
+// Copyright (c) 2016 (c) Microsoft Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,40 +24,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface IWebViewBackend : IWidgetBackend
+	public interface ITranslationCatalog
 	{
-		string Url { get; set; }
-		string Title { get; }
-		double LoadProgress { get; }
-		bool CanGoBack { get; }
-		void GoBack ();
-		bool CanGoForward { get; }
-		void GoForward ();
-		void Reload ();
-		void StopLoading ();
-		void LoadHtml (string content, string base_uri);
-		bool ContextMenuEnabled { get; set; }
-		bool DrawsBackground { get; set; }
-		bool ScrollBarsEnabled { get; set; }
-		string CustomCss { get; set; }
+		string GetString(string str);
+		string GetPluralString(string singular, string plural, int number);
 	}
 
-	public interface IWebViewEventSink : IWidgetEventSink
+	class DefaultTranslationCatalog : ITranslationCatalog
 	{
-		void OnLoaded ();
-		void OnLoading ();
-		bool OnNavigateToUrl (string url);
-		void OnTitleChanged ();
-	}
+		public string GetString(string str)
+		{
+			return str;
+		}
 
-	public enum WebViewEvent
-	{
-		Loaded = 1,
-		Loading = 2,
-		NavigateToUrl = 3,
-		TitleChanged = 4,
+		public string GetPluralString(string singular, string plural, int number)
+		{
+			return number == 1 ? singular : plural;
+		}
 	}
 }

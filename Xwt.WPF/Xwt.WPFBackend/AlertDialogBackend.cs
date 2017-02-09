@@ -39,6 +39,7 @@ namespace Xwt.WPFBackend
 		MessageBoxImage icon;
 		MessageBoxOptions options;
 		MessageBoxResult defaultResult;
+		ApplicationContext context;
 
 		public AlertDialogBackend()
 		{
@@ -50,12 +51,13 @@ namespace Xwt.WPFBackend
 
 		public void Initialize (ApplicationContext actx)
 		{
+			context = actx;
 		}
 
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{
 			this.icon = GetIcon (message.Icon);
-			if (ConvertButtons (message.Buttons, out buttons)) {
+			if (ConvertButtons (message.Buttons, out buttons) && message.Options.Count == 0) {
 				// Use a system message box
 				if (message.SecondaryText == null)
 					message.SecondaryText = String.Empty;
@@ -63,7 +65,7 @@ namespace Xwt.WPFBackend
 					message.Text = message.Text + "\r\n\r\n" + message.SecondaryText;
 					message.SecondaryText = String.Empty;
 				}
-				var parent =  Toolkit.CurrentEngine.GetNativeWindow(transientFor) as System.Windows.Window;
+				var parent =  context.Toolkit.GetNativeWindow(transientFor) as System.Windows.Window;
 				if (parent != null) {
 					this.dialogResult = MessageBox.Show (parent, message.Text, message.SecondaryText,
 														this.buttons, this.icon, this.defaultResult, this.options);
@@ -98,7 +100,15 @@ namespace Xwt.WPFBackend
 					};
 					box.PackStart (stext);
 				}
+				foreach (var option in message.Options) {
+					var check = new CheckBox (option.Text);
+					check.Active = option.Value;
+					box.PackStart(check);
+					check.Toggled += (sender, e) => message.SetOptionValue(option.Id, check.Active);
+				}
 				dlg.Buttons.Add (message.Buttons.ToArray ());
+				if (message.DefaultButton >= 0 && message.DefaultButton < message.Buttons.Count)
+					dlg.DefaultCommand = message.Buttons[message.DefaultButton];
 				if (mainBox.Surface.GetPreferredSize (true).Width > 480) {
 					text.Wrap = WrapMode.Word;
 					if (stext != null)

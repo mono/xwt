@@ -214,7 +214,12 @@ namespace Xwt.Mac
 				return Widget.ToolTip;
 			}
 			set {
-				Widget.ToolTip = value;
+				if (value != null)
+					Widget.ToolTip = value;
+				else if (Widget.ToolTip != null) {
+					Widget.ToolTip = string.Empty;
+					Widget.RemoveAllToolTips ();
+				}
 			}
 		}
 		
@@ -415,7 +420,20 @@ namespace Xwt.Mac
 		}
 		
 		#region IWidgetBackend implementation
-		
+
+		public Point ConvertToParentCoordinates (Point widgetCoordinates)
+		{
+			var location =  Widget.WidgetLocation ();
+			location.X += widgetCoordinates.X;
+			location.Y += widgetCoordinates.Y;
+			return location;
+		}
+
+		public Point ConvertToWindowCoordinates (Point widgetCoordinates)
+		{
+			return Widget.ConvertPointToView (widgetCoordinates.ToCGPoint (), null).ToXwtPoint ();
+		}
+
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
 			var lo = Widget.ConvertPointToView (new CGPoint ((nfloat)widgetCoordinates.X, (nfloat)widgetCoordinates.Y), null);

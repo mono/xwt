@@ -138,39 +138,39 @@ namespace Xwt
 			VBox entryBox = new VBox ();
 			Table entryTable = new Table ();
 			
-			entryTable.Add (new Label ("Color:"), 0, 0);
+			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Color:")), 0, 0);
 			entryTable.Add (colorBox, 1, 0, colspan:4);
 			entryTable.Add (new HSeparator (), 0, 1, colspan:5);
 			
 			int r = 2;
-			entryTable.Add (new Label ("Hue:"), 0, r);
+			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Hue:")), 0, r);
 			entryTable.Add (hueEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 360, Digits = 0, IncrementValue = 1 }, 1, r++);
 			
-			entryTable.Add (new Label ("Saturation:"), 0, r);
+			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Saturation:")), 0, r);
 			entryTable.Add (satEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 100, Digits = 0, IncrementValue = 1 }, 1, r++);
 			
-			entryTable.Add (new Label ("Light:"), 0, r);
+			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Light:")), 0, r);
 			entryTable.Add (lightEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 100, Digits = 0, IncrementValue = 1 }, 1, r++);
 			
 			r = 2;
-			entryTable.Add (new Label ("Red:"), 3, r);
+			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Red:")), 3, r);
 			entryTable.Add (redEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
 			
-			entryTable.Add (new Label ("Green:"), 3, r);
+			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Green:")), 3, r);
 			entryTable.Add (greenEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
 			
-			entryTable.Add (new Label ("Blue:"), 3, r);
+			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Blue:")), 3, r);
 			entryTable.Add (blueEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
 			
 			Label label;
 			entryTable.Add (alphaSeparator = new HSeparator (), 0, r++, colspan:5);
-			entryTable.Add (label = new Label ("Opacity:"), 0, r);
+			entryTable.Add (label = new Label (Application.TranslationCatalog.GetString("Opacity:")), 0, r);
 			entryTable.Add (alphaSlider = new HSlider () {
 				MinimumValue = 0, MaximumValue = 255,  }, 1, r, colspan: 3);
 			entryTable.Add (alphaEntry = new SpinButton () { 

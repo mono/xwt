@@ -31,7 +31,7 @@ using System.Globalization;
 namespace Xwt
 {
 	[Serializable]
-	public struct Rectangle
+	public struct Rectangle : IEquatable<Rectangle>
 	{
 		public double X { get; set; }
 		public double Y { get; set; }
@@ -68,6 +68,11 @@ namespace Xwt
 				return false;
 		
 			return (this == (Rectangle) o);
+		}
+
+		public bool Equals(Rectangle other)
+		{
+			return this == other;
 		}
 		
 		public override int GetHashCode ()

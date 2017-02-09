@@ -76,7 +76,7 @@ namespace Xwt.GtkBackend
 		{			
 			GtkAlertDialog alertDialog = new GtkAlertDialog (context, message);
 			alertDialog.FocusButton (message.DefaultButton);
-			var win = Toolkit.CurrentEngine.GetNativeWindow (transientFor) as Gtk.Window;
+			var win = context.Toolkit.GetNativeWindow (transientFor) as Gtk.Window;
 			MessageService.ShowCustomDialog (alertDialog, win);
 			if (alertDialog.ApplyToAll)
 				ApplyToAll = true;

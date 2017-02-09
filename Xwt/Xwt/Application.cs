@@ -37,6 +37,7 @@ namespace Xwt
 		static Toolkit toolkit;
 		static ToolkitEngineBackend engine;
 		static UILoop mainLoop;
+		static ITranslationCatalog translationCatalog;
 
 		/// <summary>
 		/// Gets the task scheduler of the current engine.
@@ -60,6 +61,17 @@ namespace Xwt
 		internal static System.Threading.Thread UIThread {
 			get;
 			private set;
+		}
+
+		public static ITranslationCatalog TranslationCatalog {
+			get {
+				if (translationCatalog == null)
+					translationCatalog = new DefaultTranslationCatalog();
+				return translationCatalog;
+			}
+			set {
+				translationCatalog = value;
+			}
 		}
 
 		/// <summary>
@@ -186,6 +198,63 @@ namespace Xwt
 					toolkit.ExitUserCode (ex);
 				}
 			});
+		}
+
+		/// <summary>
+		/// Invokes an action in the GUI thread.
+		/// </summary>
+		public static Task InvokeAsync(Action action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof (action));
+
+			var ts = new TaskCompletionSource<int>();
+
+			Action actionCall = () => {
+				try {
+					toolkit.EnterUserCode();
+					action();
+					ts.SetResult(0);
+				} catch (Exception ex) {
+					ts.SetException(ex);
+				} finally {
+					toolkit.ExitUserCode(null);
+				}
+			};
+
+			if (UIThread == Thread.CurrentThread)
+				actionCall();
+			else
+				engine.InvokeAsync(actionCall);
+			return ts.Task;
+		}
+
+		/// <summary>
+		/// Invokes a function in the GUI thread.
+		/// </summary>
+		public static Task<T> InvokeAsync<T>(Func<T> func)
+		{
+			if (func == null)
+				throw new ArgumentNullException(nameof(func));
+			
+			var ts = new TaskCompletionSource<T>();
+
+			Action funcCall = () => {
+				try {
+					toolkit.EnterUserCode();
+					ts.SetResult(func());
+				} catch (Exception ex) {
+					ts.SetException(ex);
+				} finally {
+					toolkit.ExitUserCode(null);
+				}
+			};
+
+			if (UIThread == Thread.CurrentThread)
+				funcCall();
+			else
+				engine.InvokeAsync(funcCall);
+			return ts.Task;
 		}
 		
 		/// <summary>

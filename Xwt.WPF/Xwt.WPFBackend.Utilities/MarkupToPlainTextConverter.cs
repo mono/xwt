@@ -1,10 +1,10 @@
-// 
-// ListBoxBackend.cs
+﻿// 
+// ImageToImageSourceConveter.cs
 //  
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//		 Jérémie Laval <jeremie.laval@xamarin.com>
 // 
-// Copyright (c) 2012 Xamarin Inc
+// Copyright (c) 2016 Microsoft, Inc.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,52 +23,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using System.Globalization;
+using System.Windows.Data;
+using Xwt.Drawing;
 using Xwt.Backends;
 
 
-namespace Xwt.GtkBackend
+namespace Xwt.WPFBackend.Utilities
 {
-	public class ListBoxBackend: ListViewBackend, IListBoxBackend
+	class MarkupToPlainTextConverter : IValueConverter
 	{
-		Gtk.TreeViewColumn theColumn;
-		
-		public ListBoxBackend ()
+		public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
 		{
+			return Xwt.FormattedText.FromMarkup ((string)value).Text;
 		}
 
-		public new bool GridLinesVisible {
-			get {
-				return (base.GridLinesVisible == Xwt.GridLines.Horizontal || base.GridLinesVisible == Xwt.GridLines.Both);
-			}
-			set {
-				base.GridLinesVisible = value ?  Xwt.GridLines.Horizontal : Xwt.GridLines.None;
-			}
-		}
-		
-		protected new IListBoxEventSink EventSink {
-			get { return (IListBoxEventSink)((WidgetBackend)this).EventSink; }
-		}
-		
-		public override void Initialize ()
+		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			base.Initialize ();
-			Widget.HeadersVisible = false;
-			
-			theColumn = new Gtk.TreeViewColumn ();
-			Widget.AppendColumn (theColumn);
-			
-			var cr = new Gtk.CellRendererText ();
-			theColumn.PackStart (cr, false);
-			theColumn.AddAttribute (cr, "text", 0);
-		}
-
-		public void SetViews (CellViewCollection views)
-		{
-			theColumn.Clear ();
-			foreach (var v in views)
-				CellUtil.CreateCellRenderer (ApplicationContext, Frontend, this, theColumn, v);
+			throw new NotImplementedException ();
 		}
 	}
 }
-

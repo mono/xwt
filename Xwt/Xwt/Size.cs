@@ -34,7 +34,7 @@ namespace Xwt {
 	[TypeConverter (typeof(SizeValueConverter))]
 	[ValueSerializer (typeof(SizeValueSerializer))]
 	[Serializable]
-	public struct Size
+	public struct Size : IEquatable<Size>
 	{		
 		double width, height;
 
@@ -115,6 +115,11 @@ namespace Xwt {
 		public override bool Equals (object ob)
 		{
 			return (ob is Size) && this == (Size)ob;
+		}
+
+		public bool Equals(Size other)
+		{
+			return this == other;
 		}
 
 		public override int GetHashCode ()
