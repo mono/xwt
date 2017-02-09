@@ -274,28 +274,6 @@ namespace Xwt.Mac
 			}
 		}
 
-		public static NSPopover MakePopover (Widget child)
-		{
-			var popover = new NSPopover {
-				Behavior = NSPopoverBehavior.Transient
-			};
-			var controller = new FactoryViewController (null, child, popover);
-			popover.ContentViewController = controller;
-			popover.WeakDelegate = controller;
-			return popover;
-		}
-
-		public static NSPopover MakePopover (Widget child, Color backgroundColor)
-		{
-			var popover = new NSPopover {
-				Behavior = NSPopoverBehavior.Transient
-			};
-			var controller = new FactoryViewController (null, child, popover) { BackgroundColor = backgroundColor.ToCGColor () };
-			popover.ContentViewController = controller;
-			popover.WeakDelegate = controller;
-			return popover;
-		}
-
 		public static NSRectEdge ToRectEdge (Popover.Position pos)
 		{
 			switch (pos) {
