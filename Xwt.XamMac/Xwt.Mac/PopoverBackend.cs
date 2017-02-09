@@ -26,6 +26,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using AppKit;
 using CoreGraphics;
 using Foundation;
@@ -45,22 +46,32 @@ namespace Xwt.Mac
 
 		class FactoryViewController : NSViewController, INSPopoverDelegate
 		{
+			// Always retain the object in a cache until it closes. This
+			// guarantees that neither the NSPopover nor the native FactoryViewController
+			// can be GC'ed until after it has closed.
+			static readonly HashSet<FactoryViewController> Cache = new HashSet<FactoryViewController> ();
+
 			public Widget Child { get; private set; }
 			public PopoverBackend Backend { get; private set; }
 			public CGColor BackgroundColor { get; set; }
 			public ViewBackend ChildBackend { get; private set; }
 			public NSView NativeChild { get { return ChildBackend?.Widget; } }
+			bool shown;
+			NSPopover parent;
 
-			public FactoryViewController (PopoverBackend backend, Widget child) : base (null, null)
+			public FactoryViewController (PopoverBackend backend, Widget child, NSPopover parentPopover) : base (null, null)
 			{
 				Child = child;
 				ChildBackend = Toolkit.GetBackend (Child) as ViewBackend;
 				Backend = backend;
+				parent = parentPopover;
+				Cache.Add (this);
 			}
 
 			public override void LoadView ()
 			{
 				View = new ContainerView (this);
+				NativeChild.RemoveFromSuperview ();
 				View.AddSubview (NativeChild);
 
 				WidgetSpacing padding = 0;
@@ -95,6 +106,8 @@ namespace Xwt.Mac
 			[Export ("popoverWillShow:")]
 			public void WillShow (NSNotification notification)
 			{
+				if (parent != notification.Object)
+					return;
 				ChildBackend.SetAutosizeMode (true);
 				Child.Surface.Reallocate ();
 				if (BackgroundColor != null) {
@@ -106,16 +119,42 @@ namespace Xwt.Mac
 				if (Backend != null)
 					padding = Backend.Frontend.Padding;
 				NativeChild.SetFrameOrigin (new CGPoint ((nfloat)padding.Left, (nfloat)padding.Top));
+				shown = true;
 			}
 
 			[Export ("popoverDidClose:")]
 			public virtual void DidClose (NSNotification notification)
 			{
-				NativeChild.SetFrameOrigin (new CGPoint (0, 0));
-				ChildBackend.SetAutosizeMode (false);
+				// verify that this is called for the parent popover
+				// without being disposed
+				if (parent != notification.Object)
+					return;
+				Dispose ();
+			}
 
-				if (Backend?.EnableCloseEvent == true)
-					Backend.ApplicationContext.InvokeUserCode (Backend.EventSink.OnClosed);
+			protected override void Dispose (bool disposing)
+			{
+				if (disposing)
+					RemoveChild ();
+				if (parent != null) {
+					Cache.Remove (this);
+					parent = null;
+					if (Backend?.EnableCloseEvent == true && shown)
+						Backend.ApplicationContext.InvokeUserCode (Backend.EventSink.OnClosed);
+				}
+				shown = false;
+				base.Dispose (disposing);
+			}
+
+			void RemoveChild ()
+			{
+				if (Child != null) {
+					NativeChild.RemoveFromSuperview ();
+					NativeChild.SetFrameOrigin (new CGPoint (0, 0));
+					ChildBackend.SetAutosizeMode (false);
+					Child = null;
+					ChildBackend = null;
+				}
 			}
 		}
 
@@ -196,7 +235,7 @@ namespace Xwt.Mac
 			popover = new NSAppearanceCustomizationPopover {
 				Behavior = NSPopoverBehavior.Transient
 			};
-			var controller = new FactoryViewController (this, child) { BackgroundColor = backgroundColor };
+			var controller = new FactoryViewController (this, child, popover) { BackgroundColor = backgroundColor };
 			popover.ContentViewController = controller;
 			popover.WeakDelegate = controller;
 
@@ -225,6 +264,11 @@ namespace Xwt.Mac
 		{
 			if (popover != null) {
 				popover.Close ();
+				var controller = popover.WeakDelegate as FactoryViewController;
+				if (controller != null) {
+					popover.WeakDelegate = null;
+					controller.Dispose ();
+				}
 				popover.Dispose ();
 				popover = null;
 			}
@@ -232,23 +276,24 @@ namespace Xwt.Mac
 
 		public static NSPopover MakePopover (Widget child)
 		{
-			var controller = new FactoryViewController (null, child);
-			return new NSPopover {
-				Behavior = NSPopoverBehavior.Transient,
-				ContentViewController = controller,
-				WeakDelegate = controller
+			var popover = new NSPopover {
+				Behavior = NSPopoverBehavior.Transient
 			};
+			var controller = new FactoryViewController (null, child, popover);
+			popover.ContentViewController = controller;
+			popover.WeakDelegate = controller;
+			return popover;
 		}
 
 		public static NSPopover MakePopover (Widget child, Color backgroundColor)
 		{
-
-			var controller = new FactoryViewController (null, child) { BackgroundColor = backgroundColor.ToCGColor () };
-			return new NSPopover {
-				Behavior = NSPopoverBehavior.Transient,
-				ContentViewController = controller,
-				WeakDelegate = controller
+			var popover = new NSPopover {
+				Behavior = NSPopoverBehavior.Transient
 			};
+			var controller = new FactoryViewController (null, child, popover) { BackgroundColor = backgroundColor.ToCGColor () };
+			popover.ContentViewController = controller;
+			popover.WeakDelegate = controller;
+			return popover;
 		}
 
 		public static NSRectEdge ToRectEdge (Popover.Position pos)
