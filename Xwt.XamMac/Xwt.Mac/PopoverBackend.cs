@@ -47,35 +47,50 @@ namespace Xwt.Mac
 			public Widget Child { get; private set; }
 			public PopoverBackend Backend { get; private set; }
 			public CGColor BackgroundColor { get; set; }
+			public ViewBackend ChildBackend { get; private set; }
+			public NSView NativeChild { get { return ChildBackend?.Widget; } }
 
 			public FactoryViewController (PopoverBackend backend, Widget child) : base (null, null)
 			{
 				Child = child;
+				ChildBackend = Toolkit.GetBackend (Child) as ViewBackend;
 				Backend = backend;
 			}
 
 			public override void LoadView ()
 			{
-				var backend = (ViewBackend)Toolkit.GetBackend (Child);
-				View = backend.Widget;
+				View = new NSView ();
+				View.AddSubview (NativeChild);
 
 				if (View.Layer == null)
 					View.WantsLayer = true;
 				if (BackgroundColor != null)
 					View.Layer.BackgroundColor = BackgroundColor;
-				backend.SetAutosizeMode (true);
-				ForceChildLayout ();
-				// FIXME: unset when the popover is closed
+
+				WidgetSpacing padding = 0;
+				View.AddConstraints (new NSLayoutConstraint [] {
+					NSLayoutConstraint.Create (NativeChild, NSLayoutAttribute.Left, NSLayoutRelation.Equal, View, NSLayoutAttribute.Left, 1, (nfloat)padding.Left),
+					NSLayoutConstraint.Create (NativeChild, NSLayoutAttribute.Right, NSLayoutRelation.Equal, View, NSLayoutAttribute.Right, 1, -(nfloat)padding.Right),
+					NSLayoutConstraint.Create (NativeChild, NSLayoutAttribute.Top, NSLayoutRelation.Equal, View, NSLayoutAttribute.Top, 1, (nfloat)padding.Top),
+					NSLayoutConstraint.Create (NativeChild, NSLayoutAttribute.Bottom, NSLayoutRelation.Equal, View, NSLayoutAttribute.Bottom, 1, -(nfloat)padding.Bottom),
+				});
 			}
 
-			void ForceChildLayout ()
+			[Export ("popoverWillShow:")]
+			public void WillShow (NSNotification notification)
 			{
-				((IWidgetSurface)Child).Reallocate ();
+				ChildBackend.SetAutosizeMode (true);
+				Child.Surface.Reallocate ();
+				WidgetSpacing padding = 0;
+				NativeChild.SetFrameOrigin (new CGPoint ((nfloat)padding.Left, (nfloat)padding.Top));
 			}
 
 			[Export ("popoverDidClose:")]
 			public virtual void DidClose (NSNotification notification)
 			{
+				NativeChild.SetFrameOrigin (new CGPoint (0, 0));
+				ChildBackend.SetAutosizeMode (false);
+
 				if (Backend?.EnableCloseEvent == true)
 					Backend.ApplicationContext.InvokeUserCode (Backend.EventSink.OnClosed);
 			}
