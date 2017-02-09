@@ -165,8 +165,24 @@ namespace Xwt.Mac
 
 		public void Show (Popover.Position orientation, Widget referenceWidget, Rectangle positionRect, Widget child)
 		{
-			ViewBackend backend = (ViewBackend)Toolkit.GetBackend (referenceWidget);
-			var reference = backend.Widget;
+			var refBackend = Toolkit.GetBackend (referenceWidget) as IWidgetBackend;
+			NSView refView = (refBackend as ViewBackend)?.Widget;
+
+			if (refView == null) {
+				if (referenceWidget.Surface.ToolkitEngine.Type == ToolkitType.Gtk) {
+					try {
+						refView = GtkQuartz.GetView (refBackend.NativeWidget);
+						var rLocation = refView.ConvertRectToView (refView.Frame, null).Location.ToXwtPoint ();
+						if (referenceWidget.WindowBounds.Location != rLocation) {
+							positionRect.X += referenceWidget.WindowBounds.Location.X - rLocation.X;
+							positionRect.Y += referenceWidget.WindowBounds.Location.Y - rLocation.Y;
+						}
+					} catch (Exception ex) {
+						throw new ArgumentException ("Widget belongs to an unsupported Toolkit", nameof (referenceWidget), ex);
+					}
+				} else if (referenceWidget.Surface.ToolkitEngine != ApplicationContext.Toolkit)
+					throw new ArgumentException ("Widget belongs to an unsupported Toolkit", nameof (referenceWidget));
+			}
 
 			// If the rect is empty, the coordinates of the rect will be ignored.
 			// Set the width and height, for the positioning to function correctly.
@@ -186,12 +202,12 @@ namespace Xwt.Mac
 
 			#if !MONOMAC
 			// if the reference has a custom appearance, use it for the popover
-			if (popover is INSAppearanceCustomization && reference.EffectiveAppearance.Name != NSAppearance.NameAqua)
-				((INSAppearanceCustomization)popover).SetAppearance (reference.EffectiveAppearance);
+			if (popover is INSAppearanceCustomization && refView.EffectiveAppearance.Name != NSAppearance.NameAqua)
+				((INSAppearanceCustomization)popover).SetAppearance (refView.EffectiveAppearance);
 			#endif
 
 			popover.Show (positionRect.ToCGRect (),
-				      reference,
+				      refView,
 				      ToRectEdge (orientation));
 		}
 
