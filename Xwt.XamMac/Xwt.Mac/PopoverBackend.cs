@@ -183,17 +183,22 @@ namespace Xwt.Mac
 
 		public static NSPopover MakePopover (Widget child)
 		{
+			var controller = new FactoryViewController (null, child);
 			return new NSPopover {
 				Behavior = NSPopoverBehavior.Transient,
-				ContentViewController = new FactoryViewController (null, child)
+				ContentViewController = controller,
+				WeakDelegate = controller
 			};
 		}
 
 		public static NSPopover MakePopover (Widget child, Color backgroundColor)
 		{
+
+			var controller = new FactoryViewController (null, child) { BackgroundColor = backgroundColor.ToCGColor () };
 			return new NSPopover {
 				Behavior = NSPopoverBehavior.Transient,
-				ContentViewController = new FactoryViewController (null, child) { BackgroundColor = backgroundColor.ToCGColor () }
+				ContentViewController = controller,
+				WeakDelegate = controller
 			};
 		}
 
