@@ -78,7 +78,7 @@ namespace Xwt
 		protected override void InsertItem (int index, ListViewColumn item)
 		{
 			if (item.Parent != null)
-				throw new InvalidOperationException ("Column already belongs to a list or tree");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Column already belongs to a list or tree"));
 			if (container != null) {
 				item.Handle = container.AddColumn (item);
 				item.Parent = container;
@@ -101,7 +101,7 @@ namespace Xwt
 		protected override void SetItem (int index, ListViewColumn item)
 		{
 			if (item.Parent != null)
-				throw new InvalidOperationException ("Column already belongs to a list or tree");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Column already belongs to a list or tree"));
 			if (container != null) {
 				var col = this[index];
 				container.RemoveColumn (col, col.Handle);

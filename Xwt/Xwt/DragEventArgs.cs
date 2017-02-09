@@ -189,7 +189,7 @@ namespace Xwt
 					allowedAction = value;
 					break;
 				default:
-					throw new ArgumentException ("Allowed action must be one of Copy, Link, Move, None or Default");
+					throw new ArgumentException (Application.TranslationCatalog.GetString ("Allowed action must be one of Copy, Link, Move, None or Default"));
 				}
 			}
 		}

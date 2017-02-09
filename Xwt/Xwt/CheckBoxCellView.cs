@@ -74,7 +74,7 @@ namespace Xwt
 			}
 			set {
 				if (!value.IsValid ()) {
-					throw new ArgumentOutOfRangeException ("Invalid checkbox state");
+					throw new ArgumentOutOfRangeException (Application.TranslationCatalog.GetString ("Invalid checkbox state"));
 				}
 				state = value;
 			}

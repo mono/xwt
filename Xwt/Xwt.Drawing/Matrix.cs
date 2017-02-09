@@ -133,7 +133,7 @@ namespace Xwt.Drawing
 		public void Invert ()
 		{
 			if (!HasInverse)
-				throw new InvalidOperationException ("Transform is not invertible.");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Transform is not invertible."));
 
 			var d = Determinant;
 

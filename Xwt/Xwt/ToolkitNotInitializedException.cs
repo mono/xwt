@@ -12,7 +12,7 @@ namespace Xwt
 {
 	public class ToolkitNotInitializedException: Exception
 	{
-		public ToolkitNotInitializedException (): base ("XWT has not been initialized")
+		public ToolkitNotInitializedException (): base (Application.TranslationCatalog.GetString ("XWT has not been initialized"))
 		{
 		}
 	}

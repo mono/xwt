@@ -60,7 +60,7 @@ namespace Xwt
 		{
 			for (int n=0; n<fields.Length; n++) {
 				if (fields[n].Index != -1)
-					throw new InvalidOperationException ("DataField object already belongs to another data store");
+					throw new InvalidOperationException (Application.TranslationCatalog.GetString ("DataField object already belongs to another data store"));
 				((IDataFieldInternal)fields[n]).SetIndex (n);
 			}
 			this.fields = fields;
@@ -272,7 +272,7 @@ namespace Xwt
 					}
 				}
 				if (np.NodeIndex == -1)
-					throw new InvalidOperationException ("Invalid node position");
+					throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Invalid node position"));
 				np.StoreVersion = version;
 			}
 			return np;

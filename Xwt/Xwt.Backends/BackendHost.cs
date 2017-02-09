@@ -165,7 +165,7 @@ namespace Xwt.Backends
 			else if (backend == null) {
 				backend = OnCreateBackend ();
 				if (backend == null)
-					throw new InvalidOperationException ("No backend found for object: " + Parent.GetType ());
+					throw new InvalidOperationException (Application.TranslationCatalog.GetString (string.Format ("No backend found for object: {0}", Parent.GetType ())));
 				backend.InitializeBackend (Parent, engine.Context);
 				OnBackendCreated ();
 			}

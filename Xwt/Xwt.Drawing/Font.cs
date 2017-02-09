@@ -134,7 +134,7 @@ namespace Xwt.Drawing
 		internal static Font FromName (string name, Toolkit toolkit)
 		{
 			if (string.IsNullOrWhiteSpace (name))
-				throw new ArgumentNullException (nameof (name), "Font name cannot be null or empty");
+				throw new ArgumentNullException (nameof (name), Application.TranslationCatalog.GetString ("Font name cannot be null or empty"));
 			var handler = toolkit.FontBackendHandler;
 
 			double size = -1;
@@ -192,7 +192,7 @@ namespace Xwt.Drawing
 
 			string[] names = fontNames.Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries);
 			if (names.Length == 0)
-				throw new ArgumentException ("Font family name not provided");
+				throw new ArgumentException (Application.TranslationCatalog.GetString ("Font family name not provided"));
 			
 			return names.Any (name => installedFonts.ContainsKey (name.Trim ()));
 		}
@@ -213,7 +213,7 @@ namespace Xwt.Drawing
 
 			string[] names = fontNames.Split (new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
 			if (names.Length == 0)
-				throw new ArgumentException ("Font family name not provided");
+				throw new ArgumentException (Application.TranslationCatalog.GetString ("Font family name not provided"));
 
 			foreach (var name in names) {
 				var n = name.Trim ();
@@ -226,7 +226,7 @@ namespace Xwt.Drawing
 		static string GetDefaultFont (string unknownFont)
 		{
 			if (unknownFont != Font.SystemFont.Family) // ignore rare case when the default system font is not registered
-				Console.WriteLine ("Font '" + unknownFont + "' not available in the system. Using '" + Font.SystemFont.Family + "' instead");
+				Console.WriteLine (Application.TranslationCatalog.GetString (string.Format ("Font '{0}' not available in the system. Using '{1}' instead", unknownFont, Font.SystemFont.Family)));
 			return Font.SystemFont.Family;
 		}
 

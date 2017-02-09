@@ -57,7 +57,7 @@ namespace Xwt
 				// TODO: allow any value, by implementing MinValue and MaxValue properties
 				// and then adjusting the fraction to a [0.0..1.0] range only in the Gtk backend
 				if (value < 0.0 || value > 1.0)
-					throw new NotSupportedException ("Fraction value can only be in the [0.0..1.0] range");
+					throw new NotSupportedException (Application.TranslationCatalog.GetString ("Fraction value can only be in the [0.0..1.0] range"));
 
 				fraction = value;
 				Backend.SetFraction (fraction);

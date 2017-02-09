@@ -145,7 +145,7 @@ namespace Xwt
 			get { return running ? Backend.ActiveFilter : activeFilter; }
 			set {
 				if (!filters.Contains (value))
-					throw new ArgumentException ("The active filter must be one of the filters included in the Filters collection");
+					throw new ArgumentException (Application.TranslationCatalog.GetString ("The active filter must be one of the filters included in the Filters collection"));
 				if (running)
 					Backend.ActiveFilter = value;
 				else
@@ -156,7 +156,7 @@ namespace Xwt
 		void CheckNotRunning ()
 		{
 			if (running)
-				throw new InvalidOperationException ("Options can't be modified when the dialog is running");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Options can't be modified when the dialog is running"));
 		}
  
 
