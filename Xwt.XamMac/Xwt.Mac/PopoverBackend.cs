@@ -63,11 +63,6 @@ namespace Xwt.Mac
 				View = new NSView ();
 				View.AddSubview (NativeChild);
 
-				if (View.Layer == null)
-					View.WantsLayer = true;
-				if (BackgroundColor != null)
-					View.Layer.BackgroundColor = BackgroundColor;
-
 				WidgetSpacing padding = 0;
 				if (Backend != null)
 					padding = Backend.Frontend.Padding;
@@ -84,6 +79,11 @@ namespace Xwt.Mac
 			{
 				ChildBackend.SetAutosizeMode (true);
 				Child.Surface.Reallocate ();
+				if (BackgroundColor != null) {
+					if (View.Window.ContentView.Superview.Layer == null)
+						View.Window.ContentView.Superview.WantsLayer = true;
+					View.Window.ContentView.Superview.Layer.BackgroundColor = BackgroundColor;
+				}
 				WidgetSpacing padding = 0;
 				if (Backend != null)
 					padding = Backend.Frontend.Padding;
@@ -101,7 +101,16 @@ namespace Xwt.Mac
 			}
 		}
 
-		public Color BackgroundColor { get; set; }
+		CGColor backgroundColor;
+
+		public Color BackgroundColor {
+			get {
+				return (backgroundColor ?? NSColor.WindowBackground.CGColor).ToXwtColor ();
+			}
+			set {
+				backgroundColor = value.ToCGColor ();
+			}
+		}
 
 		public void Initialize (IPopoverEventSink sink)
 		{
@@ -153,7 +162,7 @@ namespace Xwt.Mac
 			popover = new NSPopover {
 				Behavior = NSPopoverBehavior.Transient
 			};
-			var controller = new FactoryViewController (this, child) { BackgroundColor = BackgroundColor.ToCGColor () };
+			var controller = new FactoryViewController (this, child) { BackgroundColor = backgroundColor };
 			popover.ContentViewController = controller;
 			popover.WeakDelegate = controller;
 
