@@ -104,7 +104,9 @@ namespace Xwt.Mac
 
 		public override void RightMouseDown (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
@@ -116,7 +118,9 @@ namespace Xwt.Mac
 
 		public override void RightMouseUp (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
@@ -128,7 +132,9 @@ namespace Xwt.Mac
 
 		public override void MouseDown (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
@@ -140,7 +146,9 @@ namespace Xwt.Mac
 
 		public override void MouseUp (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
@@ -166,7 +174,9 @@ namespace Xwt.Mac
 
 		public override void MouseMoved (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
 			context.InvokeUserCode (delegate {
 				eventSink.OnMouseMoved (args);
@@ -175,7 +185,9 @@ namespace Xwt.Mac
 
 		public override void MouseDragged (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
 			context.InvokeUserCode (delegate {
 				eventSink.OnMouseMoved (args);
