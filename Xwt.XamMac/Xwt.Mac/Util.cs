@@ -550,6 +550,17 @@ namespace Xwt.Mac
 			} else
 				drawDelegate();
 		}
+
+		public static CGPoint ConvertPointFromEvent(this NSView view, NSEvent theEvent)
+		{
+			var point = theEvent.LocationInWindow;
+			if (theEvent.WindowNumber != view.Window.WindowNumber)
+			{
+				point = theEvent.Window.ConvertBaseToScreen(point);
+				point = view.Window.ConvertScreenToBase(point);
+			}
+			return view.ConvertPointFromView(point, null);
+		}
 	}
 
 	public interface ICopiableObject
