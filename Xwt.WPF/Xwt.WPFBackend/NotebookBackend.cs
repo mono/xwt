@@ -61,12 +61,30 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool ExpandTabLabels {
+			get {
+				return ((WpfNotebook)TabControl).ExpandTabLabels;
+			}
+			set {
+				((WpfNotebook)TabControl).ExpandTabLabels = value;
+			}
+		}
+
 		public void Add (IWidgetBackend widget, NotebookTab tab)
 		{
 			UIElement element = (UIElement)widget.NativeWidget;
-			TabItem ti = new TabItem {
+
+			var header = new SWC.StackPanel { Orientation = SWC.Orientation.Horizontal };
+			var headerImage = new ImageBox (Context);
+			headerImage.ImageSource = tab.Image;
+			if (!tab.Image.IsNull)
+				headerImage.Margin = new Thickness (0, 0, 5, 0);
+			header.Children.Add (headerImage);
+			header.Children.Add (new SWC.TextBlock () { Text = tab.Label, VerticalAlignment = VerticalAlignment.Center });
+
+			WpfTabItem ti = new WpfTabItem {
 				Content = element,
-				Header = tab.Label,
+				Header = header,
 				Tag = tab
 			};
 
@@ -104,8 +122,21 @@ namespace Xwt.WPFBackend
 		public void UpdateLabel (NotebookTab tab, string hint)
 		{
 			TabItem item = TabControl.Items.Cast<TabItem> ().FirstOrDefault (t => t.Tag == tab);
-			if (item != null)
-				item.Header = tab.Label;
+			if (item != null) {
+				if (hint == "Label") {
+					var headerText = ((SWC.StackPanel)item.Header).Children [1] as SWC.TextBlock;
+					if (headerText != null)
+						headerText.Text = tab.Label;
+				}
+				if (hint == "Image") {
+					var headerImage = ((SWC.StackPanel)item.Header).Children [0] as ImageBox;
+					if (headerImage != null) {
+						headerImage.ImageSource = tab.Image;
+						if (!tab.Image.IsNull)
+							headerImage.Margin = new Thickness (0, 0, 5, 0);
+					}
+				}
+			}
 		}
 
 		public override void EnableEvent (object eventId)
@@ -162,10 +193,54 @@ namespace Xwt.WPFBackend
 	{
 		public WidgetBackend Backend { get; set; }
 
+		bool expandTabLabels;
+		public bool ExpandTabLabels {
+			get {
+				return expandTabLabels;
+			}
+			set {
+				expandTabLabels = value;
+				foreach (var tab in Items.Cast<TabItem> ())
+					tab.InvalidateMeasure ();
+			}
+		}
+
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
 			var s = base.MeasureOverride (constraint);
 			return Backend.MeasureOverride (constraint, s);
 		}
+	}
+
+
+	class WpfTabItem: SWC.TabItem
+	{
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+
+			var parentNB = Parent as WpfNotebook;
+
+			if (parentNB != null && parentNB.ExpandTabLabels) {
+				if (parentNB.TabStripPlacement == Dock.Top ||
+				    parentNB.TabStripPlacement == Dock.Bottom) {
+					if (double.IsInfinity (constraint.Width))
+						return s;
+					var countBorders = (parentNB.BorderThickness.Left + parentNB.BorderThickness.Right) * (parentNB.Items.Count);
+					var expandedSize = (constraint.Width - countBorders) / parentNB.Items.Count;
+					if (s.Width < expandedSize)
+						s.Width = expandedSize;
+				} else {
+					if (double.IsInfinity (constraint.Height))
+						return s;
+					var countBorders = (parentNB.BorderThickness.Top + parentNB.BorderThickness.Bottom) * (parentNB.Items.Count + 1);
+					var expandedSize = (constraint.Height - countBorders) / parentNB.Items.Count;
+					if (s.Height < expandedSize)
+						s.Height = expandedSize;
+				}
+			}
+			return s;
+		}
+
 	}
 }
