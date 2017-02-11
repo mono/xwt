@@ -9,9 +9,9 @@
 		<description>
 Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
 
-This package contains the Mac/Cocoa toolkit backend for Xwt based applications targeting OS X.
+This package contains the Xamarin.Mac based Mac/Cocoa toolkit backend for Xwt applications targeting OS X.
 
-Xwt.Mac requires Xamarin Studio to be installed.
+Xwt.XamMac requires Xamarin.Mac to be installed.
 		</description>
 		<releaseNotes></releaseNotes>
 		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/master/LICENSE.txt</licenseUrl>

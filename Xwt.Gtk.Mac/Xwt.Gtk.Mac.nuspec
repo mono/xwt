@@ -2,14 +2,14 @@
 <package>
 	<metadata>
 		<id>$id$</id>
-		<title>Xwt.Gtk2.Windows</title>
+		<title>Xwt.Gtk2.Mac</title>
 		<version>$version$</version>
 		<authors>Lluis Sanchez</authors>
 		<summary>$description$</summary>
 		<description>
 Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
 
-This package contains the GTK toolkit backend for Xwt based applications targeting GTK2 on Windows.
+This package contains the GTK toolkit backend for Xwt based applications targeting GTK2 on Mac.
 
 Xwt.Gtk requires gtk-sharp (https://github.com/mono/gtk-sharp/). The Windows installation package can be obtained from http://www.monodevelop.com/download/#win.
 		</description>
