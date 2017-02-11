@@ -35,7 +35,7 @@ namespace MixedGtkMacTest
 
 		public AppWindow ()
 		{
-			nativeToolkit = Toolkit.Load (ToolkitType.Cocoa);
+			nativeToolkit = Toolkit.Load (ToolkitType.XamMac);
 
 			HBox box = new HBox ();
 			var b = new Button ("Gtk Test Window");

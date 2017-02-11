@@ -33,7 +33,7 @@ namespace Xwt
 		[SetUp]
 		public void Init ()
 		{
-			Application.Initialize (Xwt.ToolkitType.Cocoa);
+			Application.Initialize (Xwt.ToolkitType.XamMac);
 			ReferenceImageManager.Init ("MacTestRunner");
 		}
 
