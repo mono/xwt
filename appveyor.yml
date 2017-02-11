@@ -24,6 +24,8 @@ build_script:
 - nuget restore
 - msbuild Xwt\Xwt.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - msbuild Xwt.Gtk\Xwt.Gtk.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+- msbuild Xwt.Gtk.Windows\Xwt.Gtk.Windows.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+- msbuild Xwt.Gtk.Mac\Xwt.Gtk.Mac.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - msbuild Xwt.Gtk\Xwt.Gtk3.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - msbuild Xwt.WPF\Xwt.WPF.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - msbuild Xwt.XamMac\Xwt.XamMac.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
