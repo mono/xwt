@@ -32,6 +32,8 @@ build_script:
 - mkdir nuget
 - NuGet pack Xwt\Xwt.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - NuGet pack Xwt.Gtk\Xwt.Gtk.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
+- NuGet pack Xwt.Gtk.Windows\Xwt.Gtk.Windows.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
+- NuGet pack Xwt.Gtk.Mac\Xwt.Gtk.Mac.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - NuGet pack Xwt.Gtk\Xwt.Gtk3.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - NuGet pack Xwt.WPF\Xwt.WPF.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - NuGet pack Xwt.XamMac\Xwt.XamMac.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
