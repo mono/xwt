@@ -26,11 +26,13 @@ build_script:
 - msbuild Xwt.Gtk\Xwt.Gtk.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - msbuild Xwt.Gtk\Xwt.Gtk3.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - msbuild Xwt.WPF\Xwt.WPF.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+- msbuild Xwt.XamMac\Xwt.XamMac.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - mkdir nuget
 - NuGet pack Xwt\Xwt.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - NuGet pack Xwt.Gtk\Xwt.Gtk.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - NuGet pack Xwt.Gtk\Xwt.Gtk3.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - NuGet pack Xwt.WPF\Xwt.WPF.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
+- NuGet pack Xwt.XamMac\Xwt.XamMac.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - dir nuget
 test_script:
 - ps: >-
