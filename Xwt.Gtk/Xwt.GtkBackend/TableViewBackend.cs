@@ -58,6 +58,9 @@ namespace Xwt.GtkBackend
 			var sw = new Gtk.ScrolledWindow ();
 			sw.ShadowType = Gtk.ShadowType.In;
 			sw.Child = new CustomTreeView (this);
+			Gdk.RGBA selectedColor = sw.Child.StyleContext.GetBackgroundColor(StateFlags.Selected);
+			sw.Child.SetBackgroundColor(StateFlags.Normal, Xwt.Drawing.Colors.Transparent);
+			sw.Child.SetBackgroundColor(StateFlags.Selected, new Xwt.Drawing.Color(selectedColor.Red, selectedColor.Green, selectedColor.Blue, selectedColor.Alpha));
 			sw.Child.Show ();
 			sw.Show ();
 			base.Widget = sw;
