@@ -25,17 +25,9 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using MonoMac.AppKit;
-#else
 using AppKit;
 using CoreGraphics;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {

@@ -25,21 +25,11 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-using Xwt.Drawing;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
-using CGRect = System.Drawing.RectangleF;
-#else
 using AppKit;
 using CoreGraphics;
 using Foundation;
-#endif
+using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -124,28 +114,16 @@ namespace Xwt.Mac
 						Widget.BezelStyle = NSBezelStyle.RegularSquare;
 					else
 						Widget.BezelStyle = NSBezelStyle.Rounded;
-#if MONOMAC
-					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
-#else
 					Widget.ShowsBorderOnlyWhileMouseInside = false;
-#endif
 					break;
 				case ButtonStyle.Borderless:
 				case ButtonStyle.Flat:
 					Widget.BezelStyle = NSBezelStyle.ShadowlessSquare;
-#if MONOMAC
-					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
-#else
 					Widget.ShowsBorderOnlyWhileMouseInside = true;
-#endif
 					break;
 				}
 			}
 		}
-		
-#if MONOMAC
-		protected static Selector selSetShowsBorderOnlyWhileMouseInside = new Selector ("setShowsBorderOnlyWhileMouseInside:");
-#endif
 
 		public void SetButtonType (ButtonType type)
 		{

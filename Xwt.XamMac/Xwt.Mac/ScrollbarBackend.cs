@@ -23,19 +23,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using Xwt.Backends;
 
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.AppKit;
-#else
+using System;
 using AppKit;
 using CoreGraphics;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {

@@ -25,30 +25,16 @@
 // THE SOFTWARE.
 
 using System;
-using System.Linq;
-using Xwt.Backends;
-using System.Drawing;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Xwt.Drawing;
 using System.IO;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-using MonoMac.CoreGraphics;
-#else
-using Foundation;
+using System.Linq;
+using System.Runtime.InteropServices;
 using AppKit;
 using CoreGraphics;
+using Foundation;
 using ObjCRuntime;
-#endif
+using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -352,12 +338,10 @@ namespace Xwt.Mac
 			return new CustomImage (actx, drawCallback);
 		}
 
-		#if !MONOMAC
 		public override NSObject Copy (NSZone zone)
 		{
 			return new CustomImage (actx, drawCallback);
 		}
-		#endif
 	}
 }
 
