@@ -92,15 +92,13 @@ namespace Xwt.Mac
 				{
 					this.controller = controller;
 				}
-				
-				#if !MONOMAC
+
 				public override bool AllowsVibrancy {
 					get {
 						// disable vibrancy for custom background
 						return controller.BackgroundColor == null ? base.AllowsVibrancy : false;
 					}
 				}
-				#endif
 			}
 
 			[Export ("popoverWillShow:")]
@@ -237,13 +235,11 @@ namespace Xwt.Mac
 			};
 			var controller = new FactoryViewController (this, child, popover) { BackgroundColor = backgroundColor };
 			popover.ContentViewController = controller;
-			popover.WeakDelegate = controller;
+			popover.Delegate = controller;
 
-			#if !MONOMAC
 			// if the reference has a custom appearance, use it for the popover
 			if (popover is INSAppearanceCustomization && refView.EffectiveAppearance.Name != NSAppearance.NameAqua)
 				((INSAppearanceCustomization)popover).SetAppearance (refView.EffectiveAppearance);
-			#endif
 
 			popover.Show (positionRect.ToCGRect (),
 				      refView,
@@ -264,9 +260,9 @@ namespace Xwt.Mac
 		{
 			if (popover != null) {
 				popover.Close ();
-				var controller = popover.WeakDelegate as FactoryViewController;
+				var controller = popover.Delegate as FactoryViewController;
 				if (controller != null) {
-					popover.WeakDelegate = null;
+					popover.Delegate = null;
 					controller.Dispose ();
 				}
 				popover.Dispose ();
@@ -284,11 +280,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		#if MONOMAC
-		public class NSAppearanceCustomizationPopover : NSPopover
-		#else
 		public class NSAppearanceCustomizationPopover : NSPopover, INSAppearanceCustomization
-		#endif
 		{
 		}
 	}
