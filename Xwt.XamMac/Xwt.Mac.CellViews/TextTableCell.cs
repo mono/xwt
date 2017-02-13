@@ -26,15 +26,8 @@
 
 
 using System;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.AppKit;
-#else
 using AppKit;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {

@@ -1,23 +1,9 @@
 using System;
-
-using Xwt;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-using CGSize = System.Drawing.SizeF;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-#else
-using Foundation;
 using AppKit;
-using ObjCRuntime;
 using CoreGraphics;
-#endif
+using Foundation;
+using ObjCRuntime;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -302,11 +288,7 @@ namespace Xwt.Mac
 			if (animating) {
 				NSAnimation animation = new NSViewAnimation (new [] {
 					NSDictionary.FromObjectsAndKeys (
-#if MONOMAC
-						new object[] { this, NSValue.FromRectangleF (Frame), NSValue.FromRectangleF (newFrame) },
-#else
 						new object[] { this, NSValue.FromCGRect (Frame), NSValue.FromCGRect (newFrame) },
-#endif
 						new object[] { NSViewAnimation.TargetKey, NSViewAnimation.StartFrameKey, NSViewAnimation.EndFrameKey }
 					)
 				});

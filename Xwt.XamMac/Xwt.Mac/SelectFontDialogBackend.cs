@@ -23,16 +23,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using Xwt.Backends;
-using Xwt.Drawing;
 
-#if MONOMAC
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-#else
 using AppKit;
 using Foundation;
-#endif
+using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {

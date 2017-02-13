@@ -25,21 +25,10 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGSize = System.Drawing.SizeF;
-using CGRect = System.Drawing.RectangleF;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-using MonoMac.CoreGraphics;
-#else
 using AppKit;
-using ObjCRuntime;
 using CoreGraphics;
-#endif
+using ObjCRuntime;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -227,11 +216,7 @@ namespace Xwt.Mac
 			if (expandVertically)
 				Child.Frame = new CGRect (0, 0, Frame.Width, Frame.Height);
 			else {
-#if MONOMAC
-				Child.Frame = new System.Drawing.RectangleF (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
-#else
 				Child.Frame = new CGRect (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
-#endif
 			}
 			Child.NeedsDisplay = true;
 		}

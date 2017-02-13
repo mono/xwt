@@ -52,7 +52,7 @@ namespace Xwt
 			new KnownBackend { Type = ToolkitType.Gtk3, TypeName = "Xwt.GtkBackend.GtkEngine, Xwt.Gtk3" },
 			new KnownBackend { Type = ToolkitType.Gtk, TypeName = "Xwt.GtkBackend.GtkEngine, Xwt.Gtk" },
 			new KnownBackend { Type = ToolkitType.XamMac, TypeName = "Xwt.Mac.MacEngine, Xwt.XamMac" },
-			new KnownBackend { Type = ToolkitType.Cocoa, TypeName = "Xwt.Mac.MacEngine, Xwt.Mac" },
+			new KnownBackend { Type = ToolkitType.Cocoa, TypeName = "Xwt.Mac.MacEngine, Xwt.XamMac" },
 			new KnownBackend { Type = ToolkitType.Wpf, TypeName = "Xwt.WPFBackend.WPFEngine, Xwt.WPF" },
 		};
 

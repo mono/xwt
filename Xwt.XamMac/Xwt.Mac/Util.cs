@@ -25,31 +25,14 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Text;
-using Xwt.Backends;
-using Xwt.Drawing;
-
-#if MONOMAC
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.AppKit;
-using MonoMac.CoreGraphics;
-using MonoMac.CoreImage;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
-#else
 using AppKit;
 using CoreGraphics;
 using CoreImage;
 using Foundation;
 using ObjCRuntime;
-#endif
-
-using RectangleF = System.Drawing.RectangleF;
-using SizeF = System.Drawing.SizeF;
+using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -204,13 +187,13 @@ namespace Xwt.Mac
 		}
 		*/
 
-		public static SizeF ToIconSize (IconSize size)
+		public static CGSize ToIconSize (IconSize size)
 		{
 			switch (size) {
-			case IconSize.Small: return new SizeF (16f, 16f);
-			case IconSize.Large: return new SizeF (64f, 64f);
+			case IconSize.Small: return new CGSize (16f, 16f);
+			case IconSize.Large: return new CGSize (64f, 64f);
 			}
-			return new SizeF (32f, 32f);
+			return new CGSize (32f, 32f);
 		}
 
 		public static string ToUTI (this TransferDataType dt)
@@ -228,73 +211,14 @@ namespace Xwt.Mac
 
 			return dt.Id;
 		}
-
-#if MONOMAC
-		static Selector selCopyWithZone = new Selector ("copyWithZone:");
-		static DateTime lastCopyPoolDrain = DateTime.Now;
-		static List<object> copyPool = new List<object> ();
-
-		/// <summary>
-		/// Implements the NSCopying protocol in a class. The class must implement ICopiableObject.
-		/// The method ICopiableObject.CopyFrom will be called to make the copy of the object
-		/// </summary>
-		/// <typeparam name="T">Type for which to enable copying</typeparam>
-		public static void MakeCopiable<T> () where T:ICopiableObject
-		{
-			Class c = new Class (typeof(T));
-			c.AddMethod (selCopyWithZone.Handle, new Func<IntPtr, IntPtr, IntPtr, IntPtr> (MakeCopy), "i@:@");
-		}
-		
-		static IntPtr MakeCopy (IntPtr sender, IntPtr sel, IntPtr zone)
-		{
-			var thisOb = (ICopiableObject) Runtime.GetNSObject (sender);
-
-			// Makes a copy of the object by calling the default implementation of copyWithZone
-			IntPtr copyHandle = Messaging.IntPtr_objc_msgSendSuper_IntPtr(((NSObject)thisOb).SuperHandle, selCopyWithZone.Handle, zone);
-			var copyOb = (ICopiableObject) Runtime.GetNSObject (copyHandle);
-
-			// Copy of managed data
-			copyOb.CopyFrom (thisOb);
-
-			// Copied objects are for internal use of the Cocoa framework. We need to keep a reference of the
-			// managed object until the the framework doesn't need it anymore.
-
-			if ((DateTime.Now - lastCopyPoolDrain).TotalSeconds > 2)
-				DrainObjectCopyPool ();
-
-			copyPool.Add (copyOb);
-
-			return ((NSObject)copyOb).Handle;
-		}
-
-		public static void DrainObjectCopyPool ()
-		{
-			// Objects in the pool have been created by Cocoa, so there should be no managed references
-			// other than the ones we keep in the pool. An object can be removed from the pool if it
-			// has only 1 reference left (the managed one)
-
-			List<NSObject> markedForDelete = new List<NSObject> ();
-			
-			foreach (NSObject ob in copyPool) {
-				var count = ob.RetainCount;
-				if (count == 1)
-					markedForDelete.Add (ob);
-			}
-			foreach (NSObject ob in markedForDelete)
-				copyPool.Remove (ob);
-
-			lastCopyPoolDrain = DateTime.Now;
-		}
-#else
-		public static void MakeCopiable<T> () where T:ICopiableObject
+		/*public static void MakeCopiable<T> () where T:ICopiableObject
 		{
 			// Nothing to do for XamMac
 		}
 		public static void DrainObjectCopyPool ()
 		{
 			// Nothing to do for XamMac
-		}
-#endif
+		}*/
 
 		public static NSBitmapImageFileType ToMacFileType (this ImageFileType type)
 		{

@@ -32,13 +32,13 @@ underlying platform.   These are the engines that are supported on
 each platform:
 
 * Windows: WPF engine, Gtk engine (using Gtk#)
-* MacOS X: Cocoa engine (using MonoMac) and Gtk engine (using Gtk#)
+* MacOS X: Cocoa engine (using Xamarin.Mac) and Gtk engine (using Gtk#)
 * Linux: Gtk engine (using Gtk#)
 
 This means for example that you can write code for Xwt on Windows that
 can be hosted on an existing WPF application (like Visual Studio) or
 an existing Gtk# application (like MonoDevelop).   Or on Mac, you can
-host Xwt on an existing Cocoa/MonoMac application or you can host it
+host Xwt on an existing Cocoa/Xamarin.Mac application or you can host it
 in our own MonoDevelop IDE.
 
 Getting Started
@@ -58,7 +58,7 @@ to pick the libraries that you want to use in your project.
 * Windows+Gtk: Xwt.dll + Xwt.Gtk.dll (requires Gtk#)
 * Linux+Gtk: Xwt.dll + Xwt.Gtk.dll (requires Gtk#)
 * Mac+Gtk: Xwt.dll + Xwt.Gtk.dll (requires Gtk#)
-* Mac+Cocoa: Xwt.dll + Xwt.Mac.dll (requires MonoMac.dll)
+* Mac+Cocoa: Xwt.dll + Xwt.XamMac.dll (requires Xamarin.Mac.dll)
 
 Hello World
 -----------
@@ -180,14 +180,14 @@ binding to the native toolkit. You can pass an optional parameter to
 this method that specifies the full type name to load as the backend.
 
 For example, you can force the initialization of the backend to be
-specifically Gtk+ or specifically MonoMac based on MacOS.   This is
+specifically Gtk+ or specifically Xamarin.Mac based on MacOS.   This is
 currently done like this:
 
 	Application.Initialize ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0");
 
 or:
 
-	Application.Initialize ("Xwt.Mac.MacEngine, Xwt.Mac, Version=1.0.0.0");
+	Application.Initialize ("Xwt.Mac.MacEngine, Xwt.XamMac, Version=1.0.0.0");
 
 As you saw from the Hello World sample, toplevel windows are created
 by creating an instance of the "Xwt.Window" class.   This class
