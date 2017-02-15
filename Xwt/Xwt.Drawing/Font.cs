@@ -241,6 +241,10 @@ namespace Xwt.Drawing
 				foreach (var f in Toolkit.CurrentEngine.FontBackendHandler.GetInstalledFonts ())
 					installedFonts [f] = f;
 				installedFontsArray = new ReadOnlyCollection<string> (installedFonts.Values.ToArray ());
+				// add dummy font names for unit tests, the names are not exposed to users
+				// see the FontNameWith* tests (Testing/Tests/FontTests.cs) for details
+				installedFonts.Add("____FakeTestFont 72", "Arial");
+				installedFonts.Add("____FakeTestFont Rounded MT Bold", "Arial");
 			}
 		}
 
