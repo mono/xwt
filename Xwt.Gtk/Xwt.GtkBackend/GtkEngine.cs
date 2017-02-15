@@ -50,6 +50,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<ILabelBackend, LabelBackend> ();
 			RegisterBackend<IBoxBackend, BoxBackend> ();
 			RegisterBackend<IButtonBackend, ButtonBackend> ();
+			RegisterBackend<IFileSelectorBackend, FileSelectorBackend> ();
 			RegisterBackend<INotebookBackend, NotebookBackend> ();
 			RegisterBackend<ITreeViewBackend, TreeViewBackend> ();
 			RegisterBackend<ITreeStoreBackend, TreeStoreBackend> ();
