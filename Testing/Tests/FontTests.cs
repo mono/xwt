@@ -234,7 +234,7 @@ namespace Xwt
 		{
 			var font = "Avenir Next";
 
-			InitBlank (150, 200);
+			InitBlank (250, 400);
 			TextLayout la = new TextLayout ();
 			double y = 0;
 
