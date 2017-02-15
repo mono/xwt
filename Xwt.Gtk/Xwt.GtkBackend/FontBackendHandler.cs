@@ -70,8 +70,6 @@ namespace Xwt.GtkBackend
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			if (Platform.IsMac && fontName == ".AppleSystemUIFont")
-				fontName = "-apple-system-font";
 			return FontDescription.FromString (fontName + ", " + style + " " + weight + " " + stretch + " " + size.ToString (CultureInfo.InvariantCulture));
 		}
 

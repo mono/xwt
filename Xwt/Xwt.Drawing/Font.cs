@@ -189,15 +189,16 @@ namespace Xwt.Drawing
 				return Font.SystemFont;
 		}
 
-		static bool IsFontSupported (string fontNames)
+		static bool IsFontSupported (string fontName)
 		{
-			LoadInstalledFonts ();
-
-			string[] names = fontNames.Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries);
-			if (names.Length == 0)
-				throw new ArgumentException ("Font family name not provided");
+			if (fontName == null)
+				throw new ArgumentNullException(nameof (fontName), "Font family name not provided");
+			if (fontName == string.Empty)
+				return false;
 			
-			return names.Any (name => installedFonts.ContainsKey (name.Trim ()));
+			LoadInstalledFonts ();
+			
+			return installedFonts.ContainsKey (fontName.Trim ());
 		}
 
 		static string GetSupportedFont (string fontNames)
@@ -244,6 +245,10 @@ namespace Xwt.Drawing
 				foreach (var f in Toolkit.CurrentEngine.FontBackendHandler.GetInstalledFonts ())
 					installedFonts [f] = f;
 				installedFontsArray = new ReadOnlyCollection<string> (installedFonts.Values.ToArray ());
+				// add dummy font names for unit tests, the names are not exposed to users
+				// see the FontNameWith* tests (Testing/Tests/FontTests.cs) for details
+				installedFonts.Add("____FakeTestFont 72", "Arial");
+				installedFonts.Add("____FakeTestFont Rounded MT Bold", "Arial");
 			}
 		}
 
