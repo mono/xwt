@@ -111,7 +111,7 @@ namespace Xwt
 			get { return Backend.State; }
 			set {
 				if (!value.IsValid ())
-					throw new ArgumentOutOfRangeException ("Invalid check box state value");
+					throw new ArgumentOutOfRangeException (Application.TranslationCatalog.GetString ("Invalid check box state value"));
 				Backend.State = value;
 			}
 		}

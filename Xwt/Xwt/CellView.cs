@@ -55,7 +55,7 @@ namespace Xwt
 		public static CellView GetDefaultCellView (IDataField field)
 		{
 			if (field.Index == -1)
-				throw new InvalidOperationException ("Field must be bound to a data source");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Field must be bound to a data source"));
 			if (field.FieldType == typeof(bool))
 				return new CheckBoxCellView ((IDataField<bool>)field);
 			else if (field.FieldType == typeof(CheckBoxState))

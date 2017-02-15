@@ -93,7 +93,7 @@ namespace Xwt.Backends
 		{
 			var method = thisType.GetMethod (emap.MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			if (method == null)
-				throw new InvalidOperationException ("Invalid event mapping: method '" + emap.MethodName + "' not found in type '" + t + "'");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString (string.Format ("Invalid event mapping: method '{0}' not found in type '{1}'", emap.MethodName, t)));
 			return method.DeclaringType != t;
 		}
 

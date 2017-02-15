@@ -117,7 +117,7 @@ namespace Xwt.Drawing
 		public void SetStyle (string style)
 		{
 			if (string.IsNullOrEmpty (style))
-				throw new ArgumentException ("style can't be empty");
+				throw new ArgumentException (Application.TranslationCatalog.GetString ("style can't be empty"));
 			
 			if (style[0] == '!')
 				styles = styles.Remove (style.Substring (1));
@@ -129,7 +129,7 @@ namespace Xwt.Drawing
 		public void ClearStyle (string style)
 		{
 			if (string.IsNullOrEmpty (style))
-				throw new ArgumentException ("style can't be empty");
+				throw new ArgumentException (Application.TranslationCatalog.GetString ("style can't be empty"));
 
 			styles = styles.Remove (style);
 			handler.SetStyles (Backend, styles);
@@ -226,7 +226,7 @@ namespace Xwt.Drawing
 		public void DrawImage (Image img, double x, double y, double alpha = 1)
 		{
 			if (!img.HasFixedSize)
-				throw new InvalidOperationException ("Image doesn't have a fixed size");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Image doesn't have a fixed size"));
 
 			var idesc = img.GetImageDescription (ToolkitEngine);
 			idesc.Alpha *= alpha;
@@ -256,7 +256,7 @@ namespace Xwt.Drawing
 		public void DrawImage (Image img, Rectangle srcRect, Rectangle destRect, double alpha)
 		{
 			if (!img.HasFixedSize)
-				throw new InvalidOperationException ("Image doesn't have a fixed size");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Image doesn't have a fixed size"));
 
 			var idesc = img.GetImageDescription (ToolkitEngine);
 			idesc.Alpha *= alpha;

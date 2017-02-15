@@ -132,7 +132,7 @@ namespace Xwt
 		void CheckNotRunning ()
 		{
 			if (running)
-				throw new InvalidOperationException ("Options can't be modified when the dialog is running");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Options can't be modified when the dialog is running"));
 		}
  
 		/// <summary>

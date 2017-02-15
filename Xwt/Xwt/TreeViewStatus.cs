@@ -76,7 +76,7 @@ namespace Xwt
 		internal void Load (TreeView tree)
 		{
 			if (this.tree != tree)
-				throw new InvalidOperationException ("Invalid tree instance. The status can only be restored on the tree that generated the status object.");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("Invalid tree instance. The status can only be restored on the tree that generated the status object."));
 			Load (state, null);
 		}
 		

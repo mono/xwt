@@ -147,7 +147,7 @@ namespace Xwt
 		public void SetChildBounds (Widget widget, Rectangle bounds)
 		{
 			if (positions == null || !positions.ContainsKey (widget))
-				throw new ArgumentException ("Widget is not a child of the canvas");
+				throw new ArgumentException (Application.TranslationCatalog.GetString ("Widget is not a child of the canvas"));
 			
 			positions [widget] = bounds;
 			Backend.SetChildBounds ((IWidgetBackend)Widget.GetBackend (widget), bounds);
@@ -178,7 +178,7 @@ namespace Xwt
 			Rectangle rect;
 			if (positions != null && positions.TryGetValue (widget, out rect))
 				return rect;
-			throw new ArgumentException ("Widget is not a child of the canvas");
+			throw new ArgumentException (Application.TranslationCatalog.GetString ("Widget is not a child of the canvas"));
 		}
 
 		/// <summary>

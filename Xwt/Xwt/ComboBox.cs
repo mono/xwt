@@ -86,7 +86,7 @@ namespace Xwt
 					ItemsSource = itemCollection.DataSource;
 				} else {
 					if (ItemsSource != itemCollection.DataSource)
-						throw new InvalidOperationException ("The Items collection can't be used when a custom DataSource is set");
+						throw new InvalidOperationException (Application.TranslationCatalog.GetString ("The Items collection can't be used when a custom DataSource is set"));
 				}
 				return itemCollection;
 			}

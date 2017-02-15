@@ -437,7 +437,7 @@ namespace Xwt
 			}
 			set {
 				if (value < 0)
-					throw new ArgumentException ("Position can't be negative");
+					throw new ArgumentException (Application.TranslationCatalog.GetString ("Position can't be negative"));
 				position = value;
 				parent.ChildChanged (this, "Position");
 			}

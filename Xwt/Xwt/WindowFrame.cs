@@ -123,7 +123,7 @@ namespace Xwt
 		public WindowFrame ()
 		{
 			if (!(base.BackendHost is WindowBackendHost))
-				throw new InvalidOperationException ("CreateBackendHost for WindowFrame did not return a WindowBackendHost instance");
+				throw new InvalidOperationException (Application.TranslationCatalog.GetString ("CreateBackendHost for WindowFrame did not return a WindowBackendHost instance"));
 		}
 		
 		public WindowFrame (string title): this ()
@@ -305,7 +305,7 @@ namespace Xwt
 		public Screen Screen {
 			get {
 				if (!Visible)
-					throw new InvalidOperationException ("The window is not visible");
+					throw new InvalidOperationException (Application.TranslationCatalog.GetString ("The window is not visible"));
 				return Desktop.GetScreen (Backend.Screen);
 			}
 		}

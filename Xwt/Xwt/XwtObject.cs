@@ -97,7 +97,7 @@ namespace Xwt
 			if (backend == null) {
 				backend = OnCreateBackend ();
 				if (backend == null)
-					throw new InvalidOperationException ("No backend found for widget: " + GetType ());
+					throw new InvalidOperationException (Application.TranslationCatalog.GetString (string.Format ("No backend found for widget: {0}", GetType ())));
 				OnBackendCreated ();
 			}
 		}
