@@ -17,8 +17,13 @@ namespace WpfTestRunner
 			list.Add ("-nothread");
 			if (!list.Contains (typeof (Program).Assembly.Location))
 				list.Add (typeof (Program).Assembly.Location);
+			
+			bool skipImageVerification = list.Remove ("-no-image-verify");
+
 			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
-			ReferenceImageManager.ShowImageVerifier ();
+
+			if (!skipImageVerification)
+				ReferenceImageManager.ShowImageVerifier ();
 		}
 	}
 }

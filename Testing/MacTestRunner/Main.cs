@@ -16,8 +16,13 @@ namespace MacTest
 			list.Add ("-nothread");
 			//			if (!list.Contains (typeof (MainClass).Assembly.Location))
 			//	list.Add (typeof (MainClass).Assembly.Location);
+
+			bool skipImageVerification = list.Remove ("-no-image-verify");
+
 			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
-			ReferenceImageManager.ShowImageVerifier ();
+
+			if (!skipImageVerification)
+				ReferenceImageManager.ShowImageVerifier ();
 		}
 	}
 }	
