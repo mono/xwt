@@ -9,7 +9,7 @@ namespace WpfTestRunner
 	class Program
 	{
 		[STAThread]
-		static void Main (string[] args)
+		static int Main (string[] args)
 		{
 			var list = new List<string> (args);
 			list.Add ("-domain=None");
@@ -20,10 +20,12 @@ namespace WpfTestRunner
 			
 			bool skipImageVerification = list.Remove ("-no-image-verify");
 
-			NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
+			var res = NUnit.ConsoleRunner.Runner.Main (list.ToArray ());
 
 			if (!skipImageVerification)
 				ReferenceImageManager.ShowImageVerifier ();
+
+			return res;
 		}
 	}
 }
