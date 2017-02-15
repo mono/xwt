@@ -139,17 +139,17 @@
     <EmbeddedResource Include="Tests\ninep-tt.9.png">
       <LogicalName>ninep-tt.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-ss.9%402x.png">
-      <LogicalName>ninep-ss.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-ss%402x.9.png">
+      <LogicalName>ninep-ss@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-st.9%402x.png">
-      <LogicalName>ninep-st.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-st%402x.9.png">
+      <LogicalName>ninep-st@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-ts.9%402x.png">
-      <LogicalName>ninep-ts.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-ts%402x.9.png">
+      <LogicalName>ninep-ts@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-tt.9%402x.png">
-      <LogicalName>ninep-tt.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-tt%402x.9.png">
+      <LogicalName>ninep-tt@2x.9.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
