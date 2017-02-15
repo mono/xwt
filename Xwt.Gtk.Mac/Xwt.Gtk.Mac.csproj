@@ -31,6 +31,10 @@
     <ConsolePause>false</ConsolePause>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup>
+    <XamMacPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\x86_64\full\Xamarin.Mac.dll</XamMacPath>
+    <XamMacPath Condition="Exists('$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll')">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll</XamMacPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -39,7 +43,7 @@
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Drawing" />
     <Reference Include="Xamarin.Mac">
-      <HintPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\x86_64\full\Xamarin.Mac.dll</HintPath>
+      <HintPath>$(XamMacPath)</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
