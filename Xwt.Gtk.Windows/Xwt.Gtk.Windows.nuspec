@@ -2,25 +2,26 @@
 <package>
 	<metadata>
 		<id>$id$</id>
-		<title>$title$</title>
+		<title>Xwt.Gtk2.Windows</title>
 		<version>$version$</version>
 		<authors>Lluis Sanchez</authors>
 		<summary>$description$</summary>
 		<description>
 Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
 
-This package contains the Mac/Cocoa toolkit backend for Xwt based applications targeting OS X.
+This package contains the GTK toolkit backend for Xwt based applications targeting GTK2 on Windows.
 
-Xwt.Mac requires Xamarin Studio to be installed.
+Xwt.Gtk requires gtk-sharp (https://github.com/mono/gtk-sharp/). The Windows installation package can be obtained from http://www.monodevelop.com/download/#win.
 		</description>
 		<releaseNotes></releaseNotes>
 		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/master/LICENSE.txt</licenseUrl>
 		<projectUrl>https://github.com/mono/xwt/</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<copyright>$copyright$</copyright>
-		<tags>xwt cross platform gui ui toolkit framework desktop mac osx monomac cocoa</tags>
+		<tags>xwt cross platform gui ui toolkit framework desktop gtk gtk2</tags>
 		<dependencies>
 			<dependency id="Xwt" version="[$version$]"/>
+			<dependency id="Xwt.Gtk" version="[$version$]"/>
 		</dependencies>
 	</metadata>
 	<files>

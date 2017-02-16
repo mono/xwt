@@ -25,20 +25,11 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
 using System.Collections.Generic;
-
-#if MONOMAC
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGPoint = System.Drawing.PointF;
-#else
 using AppKit;
-using Foundation;
 using CoreGraphics;
-#endif
+using Foundation;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {

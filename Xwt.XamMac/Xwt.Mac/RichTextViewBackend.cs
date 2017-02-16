@@ -23,32 +23,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
-
-
-using Xwt;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nuint = System.UInt32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-#else
-using Foundation;
 using AppKit;
-using ObjCRuntime;
 using CoreGraphics;
-#endif
+using Foundation;
+using ObjCRuntime;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -280,7 +265,6 @@ namespace Xwt.Mac
 			return true;
 		}
 
-		#if !MONOMAC
 		public override void ViewDidMoveToWindow ()
 		{
 			base.ViewDidMoveToWindow ();
@@ -341,7 +325,6 @@ namespace Xwt.Mac
 				});
 			}
 		}
-		#endif
 
 		void CommonInit ()
 		{
@@ -422,7 +405,7 @@ namespace Xwt.Mac
 				return CreateStringFromHTML (finaltext.ToString (), out docAttributes);
 			} finally {
 				finaltext = null;
-				finalxmlWriter.Dispose ();
+				((IDisposable)finalxmlWriter).Dispose ();
 				finalxmlWriter = null;
 				docAttributes = null;
 			}
@@ -489,10 +472,6 @@ namespace Xwt.Mac
 
 		public void EmitText (FormattedText text)
 		{
-			#if MONOMAC
-			// FIXME: MonoMac does not expose the required API
-			EmitText (text.Text, RichTextInlineStyle.Normal);
-			#else
 			if (text.Attributes.Count == 0) {
 				EmitText (text.Text, RichTextInlineStyle.Normal);
 				return;
@@ -516,7 +495,6 @@ namespace Xwt.Mac
 				//	first = false;
 				xmlWriter.WriteRaw (line);
 			}
-			#endif
 		}
 
 		private static readonly IntPtr _AppKitHandle = Dlfcn.dlopen ("/System/Library/Frameworks/AppKit.framework/AppKit", 0);
@@ -622,7 +600,7 @@ namespace Xwt.Mac
 
 		public void Dispose ()
 		{
-			xmlWriter.Dispose ();
+			((IDisposable)xmlWriter).Dispose ();
 		}
 	}
 }

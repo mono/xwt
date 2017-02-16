@@ -26,31 +26,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Xml;
-using Xwt;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-using MonoMac.CoreGraphics;
-using MonoMac.CoreAnimation;
-#else
-using Foundation;
 using AppKit;
-using ObjCRuntime;
 using CoreGraphics;
-using CoreAnimation;
-#endif
+using Foundation;
+using ObjCRuntime;
+using Xwt.Backends;
 
 
 namespace Xwt.Mac
@@ -511,8 +493,6 @@ namespace Xwt.Mac
 		{	var s = Frontend.Surface.GetPreferredSize ();
 			Widget.SetFrameSize (new CGSize ((nfloat)s.Width, (nfloat)s.Height));
 		}
-
-		NSObject gotFocusObserver;
 		
 		public virtual void EnableEvent (object eventId)
 		{

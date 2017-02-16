@@ -56,7 +56,8 @@ namespace Xwt
 		public Frame ()
 		{
 		}
-		
+
+		[Obsolete ("Use Xwt.FrameBox")]
 		public Frame (FrameType frameType)
 		{
 			VerifyConstructorCall (this);

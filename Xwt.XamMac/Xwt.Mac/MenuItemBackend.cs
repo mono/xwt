@@ -25,22 +25,13 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
 using System.Collections.Generic;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-#else
-using Foundation;
 using AppKit;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public class MenuItemBackend: IMenuItemBackend
+	public class MenuItemBackend : IMenuItemBackend
 	{
 		NSMenuItem item;
 		IMenuItemEventSink eventSink;
@@ -48,26 +39,27 @@ namespace Xwt.Mac
 		ApplicationContext context;
 		string label;
 		bool useMnemonic;
-		
-		public MenuItemBackend (): this (new NSMenuItem ())
+
+		public MenuItemBackend() : this(new NSMenuItem())
 		{
 		}
-		
-		public MenuItemBackend (NSMenuItem item)
+
+		public MenuItemBackend(NSMenuItem item)
 		{
 			this.item = item;
 		}
-		
-		public NSMenuItem Item {
+
+		public NSMenuItem Item
+		{
 			get { return item; }
 		}
-		
-		public void Initialize (IMenuItemEventSink eventSink)
+
+		public void Initialize(IMenuItemEventSink eventSink)
 		{
 			this.eventSink = eventSink;
 		}
 
-		public void SetSubmenu (IMenuBackend menu)
+		public void SetSubmenu(IMenuBackend menu)
 		{
 			if (menu == null)
 				item.Submenu = null;
@@ -75,92 +67,110 @@ namespace Xwt.Mac
 				item.Submenu = ((MenuBackend)menu);
 		}
 
-		public string Label {
-			get {
+		public string Label
+		{
+			get
+			{
 				return label;
 			}
-			set {
-				item.Title = UseMnemonic ? value.RemoveMnemonic () : value;
+			set
+			{
+				item.Title = UseMnemonic ? value.RemoveMnemonic() : value;
 				label = value;
 			}
 		}
 
-		public bool UseMnemonic {
-			get {
+		public bool UseMnemonic
+		{
+			get
+			{
 				return useMnemonic;
 			}
-			set { 
+			set
+			{
 				useMnemonic = value;
 				Label = label ?? string.Empty;
 			}
 		}
-		
-		public void SetImage (ImageDescription image)
+
+		public void SetImage(ImageDescription image)
 		{
-			item.Image = image.ToNSImage ();
+			item.Image = image.ToNSImage();
 		}
-		
-		public bool Visible {
-			get {
+
+		public bool Visible
+		{
+			get
+			{
 				return !item.Hidden;
 			}
-			set {
+			set
+			{
 				item.Hidden = !value;
 			}
 		}
-		
-		public bool Sensitive {
-			get {
+
+		public bool Sensitive
+		{
+			get
+			{
 				return item.Enabled;
 			}
-			set {
+			set
+			{
 				item.Enabled = value;
 			}
 		}
-		
-		public bool Checked {
-			get {
+
+		public bool Checked
+		{
+			get
+			{
 				return item.State == NSCellStateValue.On;
 			}
-			set {
+			set
+			{
 				if (value)
 					item.State = NSCellStateValue.On;
 				else
 					item.State = NSCellStateValue.Off;
 			}
 		}
-		
+
 		#region IBackend implementation
-		public void InitializeBackend (object frontend, ApplicationContext context)
+		public void InitializeBackend(object frontend, ApplicationContext context)
 		{
 			this.context = context;
 		}
 
-		public void EnableEvent (object eventId)
+		public void EnableEvent(object eventId)
 		{
-			if (eventId is MenuItemEvent) {
+			if (eventId is MenuItemEvent)
+			{
 				if (enabledEvents == null)
-					enabledEvents = new List<MenuItemEvent> ();
-				enabledEvents.Add ((MenuItemEvent)eventId);
+					enabledEvents = new List<MenuItemEvent>();
+				enabledEvents.Add((MenuItemEvent)eventId);
 				if ((MenuItemEvent)eventId == MenuItemEvent.Clicked)
 					item.Activated += HandleItemActivated;
 			}
 		}
 
-		public void DisableEvent (object eventId)
+		public void DisableEvent(object eventId)
 		{
-			if (eventId is MenuItemEvent) {
-				enabledEvents.Remove ((MenuItemEvent)eventId);
+			if (eventId is MenuItemEvent)
+			{
+				enabledEvents.Remove((MenuItemEvent)eventId);
 				if ((MenuItemEvent)eventId == MenuItemEvent.Clicked)
 					item.Activated -= HandleItemActivated;
 			}
 		}
 		#endregion
-		
-		void HandleItemActivated (object sender, EventArgs e)
+
+		void HandleItemActivated(object sender, EventArgs e)
 		{
-			context.InvokeUserCode (delegate {
-				eventSink.OnClicked ();
+			context.InvokeUserCode(delegate
+			{
+				eventSink.OnClicked();
 			});
 		}
 	}

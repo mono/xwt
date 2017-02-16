@@ -31,7 +31,7 @@ namespace Xwt
 	[BackendType (typeof(ICalendarBackend))]
 	public class Calendar : Widget
 	{
-		EventHandler valueChanged, doubleClick;
+		EventHandler valueChanged;
 
 		static Calendar ()
 		{

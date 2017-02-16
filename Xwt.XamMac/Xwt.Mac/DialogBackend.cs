@@ -24,35 +24,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Linq;
-using Xwt.Backends;
-using Xwt.Drawing;
 using System.Collections.Generic;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.CoreGraphics;
-#else
-using Foundation;
+using System.Linq;
 using AppKit;
 using CoreGraphics;
-#endif
+using Foundation;
+using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
 	public class DialogBackend: WindowBackend, IDialogBackend
 	{
-		NSView mainBox;
 		HBox buttonBox;
 		NSView buttonBoxView;
-		Widget dialogChild;
-		Size minSize;
 		Dictionary<DialogButton,Button> buttons = new Dictionary<DialogButton, Button> ();
 		DialogButton defaultButton;
 		WidgetSpacing buttonBoxPadding = new WidgetSpacing (12, 6, 12, 12);
@@ -142,8 +127,6 @@ namespace Xwt.Mac
 				buttons [b] = button;
 				UpdateButton (b, button);
 			}
-			if (minSize != Size.Zero)
-				SetMinSize (minSize);
 		}
 
 		void OnClicked (DialogButton button)
@@ -157,8 +140,6 @@ namespace Xwt.Mac
 			Button realButton;
 			if (buttons.TryGetValue (b, out realButton)) {
 				UpdateButton (b, realButton);
-				if (minSize != Size.Zero)
-					SetMinSize (minSize);
 			}
 		}
 
