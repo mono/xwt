@@ -602,7 +602,7 @@ namespace Xwt.WPFBackend
 		void WidgetKeyDownHandler (object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			KeyEventArgs args;
-			if (MapToXwtKeyArgs (e, out args)) {
+			if (e.MapToXwtKeyArgs (out args)) {
 				Context.InvokeUserCode (delegate {
 					eventSink.OnKeyPressed (args);
 				});
@@ -614,7 +614,7 @@ namespace Xwt.WPFBackend
 		void WidgetKeyUpHandler (object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			KeyEventArgs args;
-			if (MapToXwtKeyArgs (e, out args)) {
+			if (e.MapToXwtKeyArgs (out args)) {
 				Context.InvokeUserCode (delegate
 				{
 					eventSink.OnKeyReleased (args);
@@ -622,18 +622,6 @@ namespace Xwt.WPFBackend
 				if (args.Handled)
 					e.Handled = true;
 			}
-		}
-
-		bool MapToXwtKeyArgs (System.Windows.Input.KeyEventArgs e, out KeyEventArgs result)
-		{
-			result = null;
-
-			var key = KeyboardUtil.TranslateToXwtKey (e.Key);
-			if ((int)key == 0)
-				return false;
-
-			result = new KeyEventArgs (key, (int)e.Key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
-			return true;
 		}
 
 		void WidgetPreviewTextInputHandler (object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -649,7 +637,7 @@ namespace Xwt.WPFBackend
 
 		void WidgetMouseDownHandler (object o, MouseButtonEventArgs e)
 		{
-			var args = ToXwtButtonArgs (e);
+			var args = e.ToXwtButtonArgs (Widget);
 			Context.InvokeUserCode (delegate () {
 				eventSink.OnButtonPressed (args);
 			});
@@ -659,24 +647,13 @@ namespace Xwt.WPFBackend
 
 		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
 		{
-			var args = ToXwtButtonArgs (e);
+			var args = e.ToXwtButtonArgs (Widget);
 			Context.InvokeUserCode (delegate ()
 			{
 				eventSink.OnButtonReleased (args);
 			});
 			if (args.Handled)
 				e.Handled = true;
-		}
-
-		ButtonEventArgs ToXwtButtonArgs (MouseButtonEventArgs e)
-		{
-			var pos = e.GetPosition (Widget);
-			return new ButtonEventArgs () {
-				X = pos.X,
-				Y = pos.Y,
-				MultiplePress = e.ClickCount,
-				Button = e.ChangedButton.ToXwtButton ()
-			};
 		}
 
 		void WidgetGotFocusHandler (object o, RoutedEventArgs e)
