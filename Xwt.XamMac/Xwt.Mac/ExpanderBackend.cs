@@ -224,12 +224,10 @@ namespace Xwt.Mac
 	{
 		internal const float DefaultCollapsedHeight = 1f;
 		bool expanded;
-		float otherHeight;
 
 		public CollapsibleBox ()
 		{
 			expanded = false;
-			otherHeight = DefaultCollapsedHeight;
 			TitlePosition = NSTitlePosition.NoTitle;
 			BorderType = NSBorderType.NoBorder;
 			BoxType = NSBoxType.NSBoxPrimary;

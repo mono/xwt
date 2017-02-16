@@ -493,8 +493,6 @@ namespace Xwt.Mac
 		{	var s = Frontend.Surface.GetPreferredSize ();
 			Widget.SetFrameSize (new CGSize ((nfloat)s.Width, (nfloat)s.Height));
 		}
-
-		NSObject gotFocusObserver;
 		
 		public virtual void EnableEvent (object eventId)
 		{
