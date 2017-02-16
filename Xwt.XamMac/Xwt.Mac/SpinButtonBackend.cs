@@ -118,7 +118,7 @@ namespace Xwt.Mac
 		{
 			this.eventSink = eventSink;
 			formater = new NSNumberFormatter ();
-			stepper = new NSStepper ();
+			stepper = new VibrancyStepper ();
 			input = new NSTextField ();
 			input.Formatter = formater;
 			input.DoubleValue = 0;
@@ -331,6 +331,20 @@ namespace Xwt.Mac
 				case SpinButtonEvent.ValueChanged: enableValueChangedEvent = false; break;
 				}
 			}
+		}
+
+		class VibrancyStepper : NSStepper
+		{
+			#if !MONOMAC
+			public override bool AllowsVibrancy {
+				get {
+					// we don't support vibrancy
+					if (EffectiveAppearance.AllowsVibrancy)
+						return false;
+					return base.AllowsVibrancy;
+				}
+			}
+			#endif
 		}
 	}
 }
