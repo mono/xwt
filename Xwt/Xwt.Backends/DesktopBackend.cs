@@ -93,8 +93,6 @@ namespace Xwt.Backends
 			});
 		}
 
-		Xwt.Drawing.Image blankImage;
-
 		public virtual void OpenFile (string filename)
 		{
 			Process.Start ("file://" + filename);
