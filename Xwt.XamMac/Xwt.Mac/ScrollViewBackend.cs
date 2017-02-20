@@ -45,14 +45,48 @@ namespace Xwt.Mac
 			Widget.HasVerticalScroller = true;
 			Widget.AutoresizesSubviews = true;
 		}
-		
-		protected override Size GetNaturalSize ()
+
+		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			return EventSink.GetDefaultNaturalSize ();
+			var s = EventSink.GetDefaultNaturalSize ();
+
+			if (child == null)
+				return s;
+			
+			if (widthConstraint.IsConstrained)
+				s.Width = widthConstraint.AvailableSize;
+			if (heightConstraint.IsConstrained)
+				s.Height = heightConstraint.AvailableSize;
+
+			var childWidthConstraint = horizontalScrollPolicy == ScrollPolicy.Never ? widthConstraint : SizeConstraint.Unconstrained;
+			var childHeightConstraint = verticalScrollPolicy == ScrollPolicy.Never ? heightConstraint : SizeConstraint.Unconstrained;
+			var schild = ((ViewBackend)child).Frontend.Surface.GetPreferredSize (childWidthConstraint, childHeightConstraint, true);
+
+			if (horizontalScrollPolicy == ScrollPolicy.Never)
+				s.Width = Math.Max (s.Width, schild.Width);
+			if (verticalScrollPolicy == ScrollPolicy.Never)
+				s.Height = Math.Max (s.Height, schild.Height);
+			return s;
+		}
+
+		protected override Size CalcFittingSize()
+		{
+			var s = Frontend.Surface.GetPreferredSize ();
+			s.Width = Math.Max (s.Width, Widget.ContentView.Frame.Size.Width);
+			s.Height = Math.Max (s.Height, Widget.ContentView.Frame.Size.Height);
+			return s;
+		}
+
+		protected override void OnSizeToFit ()
+		{
+			base.OnSizeToFit ();
+			UpdateChildSize ();
 		}
 		
 		public void SetChild (IWidgetBackend child)
 		{
+			RemoveChildPlacement (Widget.DocumentView as NSView);
+			
 			this.child = child;
 			ViewBackend backend = (ViewBackend) child;
 			if (backend.EventSink.SupportsCustomScrolling ()) {
@@ -73,7 +107,7 @@ namespace Xwt.Mac
 				clipView = new NormalClipView ();
 				clipView.Scrolled += OnScrolled;
 				Widget.ContentView = clipView;
-				Widget.DocumentView = backend.Widget;
+				Widget.DocumentView = GetWidgetWithPlacement (child);
 				UpdateChildSize ();
 			}
 		}
@@ -147,30 +181,26 @@ namespace Xwt.Mac
 		{
 			if (child == null)
 				return;
+			var widthConstraint = SizeConstraint.Unconstrained;
+			var heightConstraint = SizeConstraint.Unconstrained;
 
-			if (Widget.ContentView is CustomClipView) {
-			} else {
-				NSView view = (NSView)Widget.DocumentView;
-				ViewBackend c = (ViewBackend)child;
-				Size s;
-				if (horizontalScrollPolicy == ScrollPolicy.Never) {
-					s = c.Frontend.Surface.GetPreferredSize (SizeConstraint.WithSize (Widget.ContentView.Frame.Width), SizeConstraint.Unconstrained);
-				}
-				else if (verticalScrollPolicy == ScrollPolicy.Never) {
-					s = c.Frontend.Surface.GetPreferredSize (SizeConstraint.Unconstrained, SizeConstraint.WithSize (Widget.ContentView.Frame.Width));
-				}
-				else {
-					s = c.Frontend.Surface.GetPreferredSize ();
-				}
-				var w = Math.Max (s.Width, Widget.ContentView.Frame.Width);
-				var h = Math.Max (s.Height, Widget.ContentView.Frame.Height);
-				view.Frame = new CGRect (view.Frame.X, view.Frame.Y, (nfloat)w, (nfloat)h);
-			}
+			if (horizontalScrollPolicy == ScrollPolicy.Never)
+				widthConstraint = SizeConstraint.WithSize (Widget.ContentView.Frame.Width);
+			if (verticalScrollPolicy == ScrollPolicy.Never)
+				heightConstraint = SizeConstraint.WithSize (Widget.ContentView.Frame.Height);
+			var size = ((ViewBackend)child).Frontend.Surface.GetPreferredSize (widthConstraint, heightConstraint, true);
+
+			size.Width = Math.Max(size.Width, Widget.ContentView.Frame.Width);
+			size.Height = Math.Max(size.Height, Widget.ContentView.Frame.Height);
+			((NSView)(Widget.DocumentView)).SetFrameSize (size.ToCGSize ());
 		}
 		
 		public void SetChildSize (Size s)
 		{
+			// ScrollView child calculation does not take scrolling policies into account
+			// UpdateChildSize () will reallocate based on child request and the current policies
 			UpdateChildSize ();
+			SizeToFit ();
 		}
 
 		public override Drawing.Color BackgroundColor {
