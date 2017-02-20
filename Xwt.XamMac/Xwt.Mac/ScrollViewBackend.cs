@@ -129,9 +129,13 @@ namespace Xwt.Mac
 		
 		public bool BorderVisible {
 			get {
-				return false;
+				return Widget.BorderType != NSBorderType.NoBorder;
 			}
 			set {
+				if (value)
+					Widget.BorderType = NSBorderType.BezelBorder;
+				else
+					Widget.BorderType = NSBorderType.NoBorder;
 			}
 		}
 
