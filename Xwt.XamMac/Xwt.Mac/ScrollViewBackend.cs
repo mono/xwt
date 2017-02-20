@@ -59,6 +59,7 @@ namespace Xwt.Mac
 				var vs = new ScrollAdjustmentBackend (Widget, true);
 				var hs = new ScrollAdjustmentBackend (Widget, false);
 				CustomClipView clipView = new CustomClipView (hs, vs);
+				clipView.Scrolled += OnScrolled;
 				Widget.ContentView = clipView;
 				var dummy = new DummyClipView ();
 				dummy.AddSubview (backend.Widget);
@@ -119,6 +120,7 @@ namespace Xwt.Mac
 				((ScrollControlBackend)vertScroll).NotifyValueChanged ();
 			if (horScroll is ScrollControlBackend)
 				((ScrollControlBackend)horScroll).NotifyValueChanged ();
+			ApplicationContext.InvokeUserCode (EventSink.OnVisibleRectChanged);
 		}
 
 		public Rectangle VisibleRect {
@@ -210,6 +212,7 @@ namespace Xwt.Mac
 	
 	class CustomClipView: NSClipView
 	{
+		public event EventHandler Scrolled;
 		ScrollAdjustmentBackend hScroll;
 		ScrollAdjustmentBackend vScroll;
 		double currentX;
@@ -270,6 +273,8 @@ namespace Xwt.Mac
 
 			hScroll.NotifyValueChanged ();
 			vScroll.NotifyValueChanged ();
+			if (Scrolled != null)
+				Scrolled (this, EventArgs.Empty);
 		}
 
 		public void UpdateDocumentSize ()
