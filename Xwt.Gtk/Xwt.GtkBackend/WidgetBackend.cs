@@ -43,8 +43,6 @@ namespace Xwt.GtkBackend
 		IWidgetEventSink eventSink;
 		WidgetEvent enabledEvents;
 		bool destroyed;
-		SizeConstraint currentWidthConstraint = SizeConstraint.Unconstrained;
-		SizeConstraint currentHeightConstraint = SizeConstraint.Unconstrained;
 
 		bool minSizeSet;
 		
@@ -295,8 +293,6 @@ namespace Xwt.GtkBackend
 
 		public void SetSizeConstraints (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			currentWidthConstraint = widthConstraint;
-			currentHeightConstraint = heightConstraint;
 		}
 		
 		DragDropData DragDropInfo {

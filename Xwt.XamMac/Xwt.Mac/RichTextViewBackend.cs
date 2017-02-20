@@ -405,7 +405,7 @@ namespace Xwt.Mac
 				return CreateStringFromHTML (finaltext.ToString (), out docAttributes);
 			} finally {
 				finaltext = null;
-				finalxmlWriter.Dispose ();
+				((IDisposable)finalxmlWriter).Dispose ();
 				finalxmlWriter = null;
 				docAttributes = null;
 			}
@@ -600,7 +600,7 @@ namespace Xwt.Mac
 
 		public void Dispose ()
 		{
-			xmlWriter.Dispose ();
+			((IDisposable)xmlWriter).Dispose ();
 		}
 	}
 }

@@ -36,11 +36,8 @@ namespace Xwt.Mac
 {
 	public class DialogBackend: WindowBackend, IDialogBackend
 	{
-		NSView mainBox;
 		HBox buttonBox;
 		NSView buttonBoxView;
-		Widget dialogChild;
-		Size minSize;
 		Dictionary<DialogButton,Button> buttons = new Dictionary<DialogButton, Button> ();
 		DialogButton defaultButton;
 		WidgetSpacing buttonBoxPadding = new WidgetSpacing (12, 6, 12, 12);
@@ -130,8 +127,6 @@ namespace Xwt.Mac
 				buttons [b] = button;
 				UpdateButton (b, button);
 			}
-			if (minSize != Size.Zero)
-				SetMinSize (minSize);
 		}
 
 		void OnClicked (DialogButton button)
@@ -145,8 +140,6 @@ namespace Xwt.Mac
 			Button realButton;
 			if (buttons.TryGetValue (b, out realButton)) {
 				UpdateButton (b, realButton);
-				if (minSize != Size.Zero)
-					SetMinSize (minSize);
 			}
 		}
 

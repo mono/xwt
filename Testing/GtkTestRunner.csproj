@@ -18,6 +18,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -27,6 +28,7 @@
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -137,17 +139,17 @@
     <EmbeddedResource Include="Tests\ninep-tt.9.png">
       <LogicalName>ninep-tt.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-ss.9%402x.png">
-      <LogicalName>ninep-ss.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-ss%402x.9.png">
+      <LogicalName>ninep-ss@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-st.9%402x.png">
-      <LogicalName>ninep-st.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-st%402x.9.png">
+      <LogicalName>ninep-st@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-ts.9%402x.png">
-      <LogicalName>ninep-ts.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-ts%402x.9.png">
+      <LogicalName>ninep-ts@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-tt.9%402x.png">
-      <LogicalName>ninep-tt.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-tt%402x.9.png">
+      <LogicalName>ninep-tt@2x.9.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

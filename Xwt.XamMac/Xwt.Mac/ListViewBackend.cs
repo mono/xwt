@@ -149,10 +149,6 @@ namespace Xwt.Mac
 			CurrentEventRow = (int)pos;
 		}
 
-		// TODO
-		public bool BorderVisible { get; set; }
-
-
 		public int GetRowAtPosition (Point p)
 		{
 			return (int) Table.GetRow (new CGPoint ((nfloat)p.X, (nfloat)p.Y));

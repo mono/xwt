@@ -139,6 +139,11 @@ namespace Xwt.Mac
 			return new Color (cs[0], cs[1], cs[2], col.Alpha);
 		}
 
+		public static CGSize ToCGSize (this Size s)
+		{
+			return new CGSize ((nfloat)s.Width, (nfloat)s.Height);
+		}
+
 		public static Size ToXwtSize (this CGSize s)
 		{
 			return new Size (s.Width, s.Height);

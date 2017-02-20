@@ -60,7 +60,7 @@ namespace Xwt.Mac
 		double value;
 		double lowerValue;
 		double upperValue;
-		double pageIncrement;
+		//double pageIncrement;
 		double stepIncrement;
 		double pageSize;
 
@@ -136,7 +136,7 @@ namespace Xwt.Mac
 			this.lowerValue = lowerValue;
 			this.upperValue = upperValue;
 			this.pageSize = pageSize;
-			this.pageIncrement = pageIncrement;
+			//this.pageIncrement = pageIncrement;
 			this.stepIncrement = stepIncrement;
 			this.value = value;
 
