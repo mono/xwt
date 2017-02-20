@@ -123,7 +123,9 @@ namespace Xwt.Mac
 
 		public Rectangle VisibleRect {
 			get {
-				return Rectangle.Zero;
+				if (Widget.ContentView == null)
+					return Rectangle.Zero;
+				return Widget.ContentView.DocumentVisibleRect ().ToXwtRect ();
 			}
 		}
 		
