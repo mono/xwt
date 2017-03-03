@@ -135,6 +135,7 @@ namespace Samples
 
 			var windows = AddSample (null, "Windows", typeof(Windows));
 			AddSample (windows, "Message Dialogs", typeof(MessageDialogs));
+			AddSample (windows, "Popup Windows", typeof(PopupWindows));
 			
 			AddSample (null, "Screens", typeof (ScreensSample));
 
