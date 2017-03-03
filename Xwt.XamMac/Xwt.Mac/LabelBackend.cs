@@ -91,8 +91,12 @@ namespace Xwt.Mac
 
 		public void SetFormattedText (FormattedText text)
 		{
+			// HACK: wrapping needs to be enabled in order to display Attributed string correctly on Mac
+			if (Wrap == WrapMode.None)
+				Wrap = WrapMode.Character;
 			Widget.AllowsEditingTextAttributes = true;
 			Widget.AttributedStringValue = text.ToAttributedString ();
+			ResetFittingSize ();
 		}
 
 		public Xwt.Drawing.Color TextColor {
