@@ -46,10 +46,15 @@ namespace Xwt
 		{
 			return new WindowBackendHost ();
 		}
-		
-		public Window ()
+
+		public Window () : this (12)
 		{
-			Padding = 12;
+		}
+		
+		internal Window (WidgetSpacing initialPadding)
+		{
+			if (!initialPadding.IsZero)
+				Padding = initialPadding;
 		}
 		
 		IWindowBackend Backend {
