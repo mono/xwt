@@ -346,6 +346,7 @@
     <Compile Include="Xwt.Backends\IComboBoxCellViewFrontend.cs" />
     <Compile Include="Xwt.Backends\IDispatcherBackend.cs" />
     <Compile Include="Xwt\ITranslationCatalog.cs" />
+    <Compile Include="Xwt.Backends\IPopupWindowBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
