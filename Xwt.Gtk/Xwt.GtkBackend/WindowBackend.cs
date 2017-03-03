@@ -27,20 +27,48 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.CairoBackend;
 using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
-	public class WindowBackend: WindowFrameBackend, IWindowBackend, IConstraintProvider
+	public class WindowBackend: WindowFrameBackend, IWindowBackend, IPopupWindowBackend, IConstraintProvider
 	{
 		Gtk.Alignment alignment;
 		Gtk.MenuBar mainMenu;
 		Gtk.VBox mainBox;
+		PopupWindow.PopupType? windowType;
 		
 		public override void Initialize ()
 		{
-			Window = new Gtk.Window ("");
+			if (!windowType.HasValue)
+				Window = new Gtk.Window ("");
+			else {
+				Window = new GtkPopoverWindow (windowType == PopupWindow.PopupType.Tooltip ? Gtk.WindowType.Popup : Gtk.WindowType.Toplevel);
+				Window.AppPaintable = true;
+				Window.SkipPagerHint = true;
+				Window.SkipTaskbarHint = true;
+				switch (windowType) {
+				case PopupWindow.PopupType.Utility:
+					Window.TypeHint = Gdk.WindowTypeHint.Utility;
+					break;
+				case PopupWindow.PopupType.Tooltip:
+					Window.TypeHint = Gdk.WindowTypeHint.Tooltip;
+					Window.Decorated = false;
+					break;
+				case PopupWindow.PopupType.Menu:
+					Window.TypeHint = Gdk.WindowTypeHint.PopupMenu;
+					Window.Decorated = false;
+					break;
+				}
+			}
 			Window.Add (CreateMainLayout ());
+		}
+
+		public void Initialize(IWindowFrameEventSink sink, PopupWindow.PopupType type)
+		{
+			windowType = type;
+			((IWindowFrameBackend)this).Initialize(sink);
 		}
 		
 		protected virtual Gtk.Widget CreateMainLayout ()
@@ -131,6 +159,8 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				backgroundColor = value;
+				if (Window is GtkPopoverWindow)
+					((GtkPopoverWindow)Window).BackgroundColor = value.ToCairoColor ();
 				Window.SetBackgroundColor (value);
 			}
 		}

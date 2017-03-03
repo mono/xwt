@@ -28,24 +28,48 @@ using Cairo;
 
 namespace Xwt.GtkBackend
 {
-	public abstract class GtkPopoverWindow : Gtk.Window
+	public class GtkPopoverWindow : Gtk.Window
 	{
-		protected bool supportAlpha;
+		bool supportAlpha;
+		protected bool SupportAlpha {
+			get {
+				return supportAlpha;
+			}
+			private set {
+				if (supportAlpha != value) {
+					supportAlpha = value;
+					OnSupportAlphaChanged ();
+				}
+			}
+		}
 
-		protected GtkPopoverWindow (Gtk.WindowType type) : base (type)
-		{}
+		protected virtual void OnSupportAlphaChanged ()
+		{
+			QueueDraw ();
+		}
+
+		public Color? BackgroundColor { get; set; }
+
+		public GtkPopoverWindow (Gtk.WindowType type) : base (type)
+		{
+			UpdateColorMap ();
+		}
+
+		void UpdateColorMap ()
+		{
+			// To check if the display supports alpha channels, get the colormap
+			var colormap = Screen.RgbaColormap;
+			if (colormap == null) {
+				colormap = Screen.RgbColormap;
+				SupportAlpha = false;
+			} else
+				SupportAlpha = true;
+			Colormap = colormap;
+		}
 
 		protected override void OnScreenChanged (Gdk.Screen previous_screen)
 		{
-			// To check if the display supports alpha channels, get the colormap
-			var colormap = this.Screen.RgbaColormap;
-			if (colormap == null) {
-				colormap = this.Screen.RgbColormap;
-				supportAlpha = false;
-			} else {
-				supportAlpha = true;
-			}
-			this.Colormap = colormap;
+			UpdateColorMap ();
 			base.OnScreenChanged (previous_screen);
 		}
 
@@ -57,6 +81,15 @@ namespace Xwt.GtkBackend
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			using (Context ctx = Gdk.CairoHelper.Create (this.GdkWindow)) {
+				if (BackgroundColor.HasValue) {
+					// We clear the surface with a transparent color if possible
+					if (SupportAlpha && BackgroundColor.Value.A < 1.0)
+						ctx.SetSourceRGBA (BackgroundColor.Value.R, BackgroundColor.Value.G, BackgroundColor.Value.B, BackgroundColor.Value.A);
+					else
+						ctx.SetSourceRGB (BackgroundColor.Value.R, BackgroundColor.Value.G, BackgroundColor.Value.B);
+					ctx.Operator = Operator.Source;
+					ctx.Paint ();
+				}
 				OnDrawn (ctx);
 			}
 
