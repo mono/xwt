@@ -188,6 +188,11 @@ namespace Xwt.WPFBackend
 		{
 			Window.ResetBorderSize ();
 		}
+
+		public Xwt.Drawing.Color BackgroundColor {
+			get { return Window.Background.ToXwtColor (); }
+			set { Window.Background = ResPool.GetSolidBrush (value); }
+		}
 	}
 
 	class WpfWindow : System.Windows.Window
