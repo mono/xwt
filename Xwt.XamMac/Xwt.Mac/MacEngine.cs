@@ -126,6 +126,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IColorPickerBackend, ColorPickerBackend> ();
 			RegisterBackend <Xwt.Backends.ICalendarBackend,CalendarBackend> ();
 			RegisterBackend <Xwt.Backends.ISelectFontDialogBackend, SelectFontDialogBackend> ();
+			RegisterBackend <Xwt.Backends.IPopupWindowBackend, PopupWindowBackend> ();
 		}
 
 		public override void RunApplication ()
