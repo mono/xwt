@@ -146,9 +146,9 @@ namespace Xwt.GtkBackend
 		public virtual void SetSize (double width, double height)
 		{
 			Window.SetDefaultSize ((int)width, (int)height);
-			if (width == -1)
+			if (width <= 0)
 				width = Bounds.Width;
-			if (height == -1)
+			if (height <= 0)
 				height = Bounds.Height;
 			requestedSize = new Size (width, height);
 			Window.Resize ((int)width, (int)height);
