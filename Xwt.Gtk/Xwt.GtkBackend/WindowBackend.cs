@@ -27,6 +27,7 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -120,6 +121,18 @@ namespace Xwt.GtkBackend
 		{
 			width = RequestedSize.Width;
 			height = RequestedSize.Height;
+		}
+
+		Color? backgroundColor;
+
+		Color IWindowBackend.BackgroundColor {
+			get {
+				return backgroundColor ?? Window.GetBackgroundColor ();
+			}
+			set {
+				backgroundColor = value;
+				Window.SetBackgroundColor (value);
+			}
 		}
 	}
 

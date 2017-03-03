@@ -26,7 +26,7 @@
 
 using System;
 using Xwt.Backends;
-
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -59,6 +59,11 @@ namespace Xwt
 		public WindowLocation InitialLocation {
 			get { return initialLocation; }
 			set { initialLocation = value; }
+		}
+
+		public Color BackgroundColor {
+			get { return Backend.BackgroundColor; }
+			set { Backend.BackgroundColor = value; }
 		}
 
 		public WidgetSpacing Padding {
