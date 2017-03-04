@@ -129,8 +129,12 @@ namespace Xwt.Mac
 
 		public static Color ToXwtColor (this NSColor col)
 		{
-			col = col.UsingColorSpace (DeviceRGBString);
-			return new Color (col.RedComponent, col.GreenComponent, col.BlueComponent, col.AlphaComponent);
+			var calibrated = col.UsingColorSpace (DeviceRGBString);
+			if (calibrated != null)
+				return new Color (calibrated.RedComponent, calibrated.GreenComponent, calibrated.BlueComponent, calibrated.AlphaComponent);
+			// some system colors can not be calibrated and UsingColorSpace returns null.
+			// Use CGColor in this case, which should match the device already.
+			return col.CGColor.ToXwtColor();
 		}
 		
 		public static Color ToXwtColor (this CGColor col)
