@@ -81,6 +81,7 @@ namespace Xwt.GtkBackend
 
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
+			bool handled;
 			using (Context ctx = Gdk.CairoHelper.Create (this.GdkWindow)) {
 				if (BackgroundColor.HasValue) {
 					// We clear the surface with a transparent color if possible
@@ -91,11 +92,10 @@ namespace Xwt.GtkBackend
 					ctx.Operator = Operator.Source;
 					ctx.Paint ();
 				}
-				OnDraw (ctx);
+				handled = OnDraw (ctx);
 			}
 
-			base.OnExposeEvent (evnt);
-			return false;
+			return handled || base.OnExposeEvent (evnt);
 		}
 	}
 }
