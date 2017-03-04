@@ -52,6 +52,7 @@ namespace Xwt.GtkBackend
 
 		public GtkPopoverWindow (Gtk.WindowType type) : base (type)
 		{
+			AppPaintable = true;
 			UpdateColorMap ();
 		}
 
@@ -73,7 +74,7 @@ namespace Xwt.GtkBackend
 			base.OnScreenChanged (previous_screen);
 		}
 
-		protected virtual bool OnDrawn (Cairo.Context cr)
+		protected virtual bool OnDraw (Cairo.Context cr)
 		{
 			return false;
 		}
@@ -90,7 +91,7 @@ namespace Xwt.GtkBackend
 					ctx.Operator = Operator.Source;
 					ctx.Paint ();
 				}
-				OnDrawn (ctx);
+				OnDraw (ctx);
 			}
 
 			base.OnExposeEvent (evnt);

@@ -45,7 +45,6 @@ namespace Xwt.GtkBackend
 				Window = new Gtk.Window ("");
 			else {
 				Window = new GtkPopoverWindow (windowType == PopupWindow.PopupType.Tooltip ? Gtk.WindowType.Popup : Gtk.WindowType.Toplevel);
-				Window.AppPaintable = true;
 				Window.SkipPagerHint = true;
 				Window.SkipTaskbarHint = true;
 				switch (windowType) {
