@@ -145,7 +145,7 @@ namespace Xwt.GtkBackend
 			}
 
 
-			protected override bool OnDrawn (Context cr)
+			protected override bool OnDraw (Context cr)
 			{
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
@@ -173,7 +173,7 @@ namespace Xwt.GtkBackend
 				cr.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
 				cr.Fill ();
 
-				return base.OnDrawn (cr);
+				return base.OnDraw (cr);
 			}
 			
 			void DrawTriangle (Context ctx)
