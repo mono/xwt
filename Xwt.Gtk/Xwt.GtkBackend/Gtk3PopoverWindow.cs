@@ -97,7 +97,6 @@ namespace Xwt.GtkBackend
 
 		protected sealed override bool OnDrawn (Context cr)
 		{
-			cr.Restore ();
 			if (BackgroundColor.HasValue)
 			{
 				// We clear the surface with a transparent color if possible
@@ -108,8 +107,10 @@ namespace Xwt.GtkBackend
 				cr.Operator = Operator.Source;
 				cr.Paint();
 			}
-			OnDraw(cr);
-			return base.OnDrawn (cr);
+			var handled = OnDraw (cr);
+			cr.Restore();
+
+			return handled || base.OnDrawn (cr);
 		}
 	}
 }
