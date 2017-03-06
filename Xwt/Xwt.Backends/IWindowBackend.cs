@@ -26,11 +26,13 @@
 
 using System;
 using Xwt;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
 	public interface IWindowBackend: IWindowFrameBackend, IChildPlacementHandler
 	{
+		Color BackgroundColor { get; set; }
 		void SetChild (IWidgetBackend child);
 		void SetMainMenu (IMenuBackend menu);
 		void SetPadding (double left, double top, double right, double bottom);
