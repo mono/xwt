@@ -42,7 +42,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
-	public class PopupWindowBackend : NSPanel, IPopupWindowBackend
+	public class PopupWindowBackend : NSPanel, IPopupWindowBackend, IUtilityWindowBackend
 	{
 		WindowBackendController controller;
 		IWindowFrameEventSink eventSink;
@@ -51,6 +51,7 @@ namespace Xwt.Mac
 		NSView childView;
 		IWindowFrameBackend transientParent;
 		bool sensitive = true;
+		bool isPopup = false;
 		PopupWindow.PopupType windowType;
 
 		public PopupWindowBackend ()
@@ -71,7 +72,9 @@ namespace Xwt.Mac
 
 		public override bool CanBecomeKeyWindow {
 			get {
-				return windowType != PopupWindow.PopupType.Tooltip;
+				if (!isPopup)
+					return true;
+				return (windowType != PopupWindow.PopupType.Tooltip);
 			}
 		}
 
@@ -96,29 +99,28 @@ namespace Xwt.Mac
 		public void Initialize (IWindowFrameEventSink eventSink)
 		{
 			this.eventSink = eventSink;
+			this.isPopup = false;
+			UpdateWindowStyle ();
 		}
 
 		public void Initialize (IWindowFrameEventSink eventSink, PopupWindow.PopupType windowType)
 		{
+			this.isPopup = true;
+			this.eventSink = eventSink;
 			this.windowType = windowType;
 			UpdateWindowStyle ();
-			Initialize (eventSink);
 		}
 
 		void UpdateWindowStyle ()
 		{
 			StyleMask |= NSWindowStyle.Closable | NSWindowStyle.Miniaturizable | NSWindowStyle.Utility;
 
-			switch (windowType) {
-			case PopupWindow.PopupType.Utility:
+			if (!isPopup) {
 				StyleMask |= NSWindowStyle.Resizable;
 				TitleVisibility = NSWindowTitleVisibility.Visible;
 				Level = NSWindowLevel.Floating;
 				FloatingPanel = true;
-				break;
-
-			case PopupWindow.PopupType.Tooltip:
-			case PopupWindow.PopupType.Menu:
+			} else {
 				StyleMask |= NSWindowStyle.FullSizeContentView;
 				MovableByWindowBackground = true;
 				TitlebarAppearsTransparent = true;
@@ -132,8 +134,6 @@ namespace Xwt.Mac
 					Level = NSWindowLevel.ScreenSaver;
 				else
 					Level = NSWindowLevel.PopUpMenu;
-
-				break;
 			}
 		}
 
@@ -443,7 +443,7 @@ namespace Xwt.Mac
 
 			transientParent = window;
 
-			if (windowType == PopupWindow.PopupType.Utility)
+			if (!isPopup)
 				Level = window == null ? NSWindowLevel.Floating : NSWindowLevel.ModalPanel;
 
 			if (ParentWindow != null)
