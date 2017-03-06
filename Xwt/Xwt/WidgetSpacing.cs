@@ -44,8 +44,10 @@ namespace Xwt
 	/// </summary>
 	[TypeConverter (typeof(WidgetSpacingValueConverter))]
 	[ValueSerializer (typeof(WidgetSpacingValueSerializer))]
-	public struct WidgetSpacing
+	public struct WidgetSpacing : IEquatable<WidgetSpacing>
 	{
+		public static WidgetSpacing Zero = new WidgetSpacing ();
+
 		static public implicit operator WidgetSpacing (double value)
 		{
 			return new WidgetSpacing (value, value, value, value);
@@ -99,6 +101,12 @@ namespace Xwt
 			get { return Top + Bottom; }
 		}
 
+		public bool IsZero {
+			get {
+				return ((Left == 0) && (Right == 0) && (Top == 0) && (Bottom == 0));
+			}
+		}
+
 		/// <summary>
 		/// Get the spacing of a widget for the specified orientation.
 		/// </summary>
@@ -110,6 +118,41 @@ namespace Xwt
 				return Top + Bottom;
 			else
 				return Left + Right;
+		}
+
+		// Equality
+		public override bool Equals (object o)
+		{
+			if (!(o is WidgetSpacing))
+				return false;
+
+			return (this == (WidgetSpacing)o);
+		}
+
+		public bool Equals (WidgetSpacing other)
+		{
+			return this == other;
+		}
+
+		public override int GetHashCode ()
+		{
+			unchecked {
+				var hash = Left.GetHashCode ();
+				hash = (hash * 397) ^ Right.GetHashCode ();
+				hash = (hash * 397) ^ Top.GetHashCode ();
+				hash = (hash * 397) ^ Bottom.GetHashCode ();
+				return hash;
+			}
+		}
+
+		public static bool operator == (WidgetSpacing s1, WidgetSpacing s2)
+		{
+			return ((s1.Left == s2.Left) && (s1.Right == s2.Right) && (s1.Top == s2.Top) && (s1.Bottom == s2.Bottom));
+		}
+
+		public static bool operator != (WidgetSpacing s1, WidgetSpacing s2)
+		{
+			return !(s1 == s2);
 		}
 	}
 

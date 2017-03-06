@@ -1,22 +1,21 @@
-// 
-// PopupWindow.cs
-//  
+﻿//
+// UtilityWindow.cs
+//
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
 //       Vsevolod Kukol <sevoku@microsoft.com>
-// 
-// Copyright (c) 2011 Xamarin Inc
-// 
+//
+// Copyright (c) 2017 Microsoft Corporation
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,47 +25,23 @@
 // THE SOFTWARE.
 
 using Xwt.Backends;
-
 namespace Xwt
 {
-	[BackendType (typeof (IPopupWindowBackend))]
-	public class PopupWindow : Window
+	[BackendType (typeof (IUtilityWindowBackend))]
+	public class UtilityWindow : Window
 	{
-		public enum PopupType
+		public UtilityWindow () : base (0)
 		{
-			Tooltip,
-			Menu
-		}
-
-		readonly PopupType type;
-
-		public PopupType Type { get { return type; } }
-
-		public PopupWindow () : this (PopupType.Tooltip)
-		{
-		}
-
-		public PopupWindow (PopupType type) : base (0)
-		{
-			this.type = type;
-			switch (type) {
-			case PopupType.Tooltip:
-			case PopupType.Menu:
-				ShowInTaskbar = false;
-				InitialLocation = WindowLocation.CenterParent;
-				Resizable = false;
-				break;
-			}
 		}
 
 		protected new class WindowBackendHost : Window.WindowBackendHost
 		{
-			new PopupWindow Parent { get { return (PopupWindow)base.Parent; } }
+			new UtilityWindow Parent { get { return (UtilityWindow)base.Parent; } }
 
 			protected override void OnBackendCreated ()
 			{
 				base.OnBackendCreated ();
-				((IPopupWindowBackend)Backend).Initialize (this, Parent.Type);
+				((IUtilityWindowBackend)Backend).Initialize (this);
 			}
 		}
 
@@ -75,9 +50,8 @@ namespace Xwt
 			return new WindowBackendHost ();
 		}
 
-		IPopupWindowBackend Backend {
-			get { return (IPopupWindowBackend)BackendHost.Backend; }
+		IUtilityWindowBackend Backend {
+			get { return (IUtilityWindowBackend)BackendHost.Backend; }
 		}
 	}
 }
-

@@ -133,6 +133,7 @@
     <Compile Include="Xwt.Mac\SelectFontDialogBackend.cs" />
     <Compile Include="Xwt.Mac\NSApplicationInitializer.cs" />
     <Compile Include="Xwt.Mac\GtkQuartz.cs" />
+    <Compile Include="Xwt.Mac\PopupWindowBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

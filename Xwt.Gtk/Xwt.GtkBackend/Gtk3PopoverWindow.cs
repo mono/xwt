@@ -28,31 +28,89 @@ using Cairo;
 
 namespace Xwt.GtkBackend
 {
-	public abstract class GtkPopoverWindow : Gtk.Window
+	public class GtkPopoverWindow : Gtk.Window
 	{
 		protected bool supportAlpha = true;
-
-		protected GtkPopoverWindow (Gtk.WindowType type) : base (type)
-		{}
-
-		protected override void OnScreenChanged (Gdk.Screen previous_screen)
+		protected bool SupportAlpha
 		{
-			// To check if the display supports alpha channels, get the colormap
-			var visual = this.Screen.RgbaVisual;
-			if (visual == null) {
-				visual = this.Screen.SystemVisual;
-				supportAlpha = false;
-			} else {
-				supportAlpha = true;
+			get
+			{
+				return supportAlpha;
 			}
-			this.Visual = visual;
-			base.OnScreenChanged (previous_screen);
+			private set
+			{
+				if (supportAlpha != value)
+				{
+					supportAlpha = value;
+					OnSupportAlphaChanged();
+				}
+			}
 		}
 
-		protected override bool OnDrawn (Context cr)
+		protected virtual void OnSupportAlphaChanged()
 		{
-			cr.Restore ();
-			return base.OnDrawn (cr);
+			QueueDraw();
+		}
+
+		Color? backgroundColor;
+
+		public Color? BackgroundColor
+		{
+			get { return backgroundColor; }
+			set {
+				backgroundColor = value;
+				// HACK: with AppPaintable == false Gtk3 doesn't draw the default background.
+				//       Set AppPaintable = true only if a color is not null and is transparent.
+				AppPaintable = backgroundColor?.A < 1.0;
+			}
+		}
+
+		public GtkPopoverWindow (Gtk.WindowType type) : base (type)
+		{
+			UpdateColorMap();
+		}
+
+		void UpdateColorMap()
+		{
+			// To check if the display supports alpha channels, get the colormap
+			var visual = Screen.RgbaVisual;
+			if (visual == null)
+			{
+				visual = Screen.SystemVisual;
+				SupportAlpha = false;
+			}
+			else
+				SupportAlpha = true;
+			Visual = visual;
+		}
+
+		protected override void OnScreenChanged(Gdk.Screen previous_screen)
+		{
+			UpdateColorMap();
+			base.OnScreenChanged(previous_screen);
+		}
+
+		protected virtual bool OnDraw (Cairo.Context cr)
+		{
+			return false;
+		}
+
+		protected sealed override bool OnDrawn (Context cr)
+		{
+			if (BackgroundColor.HasValue)
+			{
+				// We clear the surface with a transparent color if possible
+				if (SupportAlpha && BackgroundColor.Value.A < 1.0)
+					cr.SetSourceRGBA(BackgroundColor.Value.R, BackgroundColor.Value.G, BackgroundColor.Value.B, BackgroundColor.Value.A);
+				else
+					cr.SetSourceRGB(BackgroundColor.Value.R, BackgroundColor.Value.G, BackgroundColor.Value.B);
+				cr.Operator = Operator.Source;
+				cr.Paint();
+			}
+			var handled = OnDraw (cr);
+			cr.Restore();
+
+			return handled || base.OnDrawn (cr);
 		}
 	}
 }

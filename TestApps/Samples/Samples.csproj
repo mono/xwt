@@ -117,6 +117,7 @@
     <Compile Include="Samples\FileSelectorSample.cs" />
     <Compile Include="Samples\FolderSelectorSample.cs" />
     <Compile Include="Samples\ListViewCombos.cs" />
+    <Compile Include="Samples\PopupWindows.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

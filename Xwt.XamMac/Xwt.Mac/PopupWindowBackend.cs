@@ -1,14 +1,16 @@
-// 
-// WindowBackend.cs
-//  
+﻿//
+// PopupWindowBackend.cs
+//
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
 //       Andres G. Aragoneses <andres.aragoneses@7digital.com>
 //       Konrad M. Kruczynski <kkruczynski@antmicro.com>
+//       Vsevolod Kukol <sevoku@microsoft.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // Copyright (c) 2012 7Digital Media Ltd
 // Copyright (c) 2016 Antmicro Ltd
+// Copyright (c) 2017 (c) Microsoft Corporation
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,26 +38,24 @@ using ObjCRuntime;
 using Xwt.Backends;
 using Xwt.Drawing;
 
+// TODO: Merge back with WindowBackend and reuse code
+
 namespace Xwt.Mac
 {
-	public class WindowBackend: NSWindow, IWindowBackend
+	public class PopupWindowBackend : NSPanel, IPopupWindowBackend, IUtilityWindowBackend
 	{
 		WindowBackendController controller;
 		IWindowFrameEventSink eventSink;
 		Window frontend;
 		ViewBackend child;
 		NSView childView;
+		IWindowFrameBackend transientParent;
 		bool sensitive = true;
-		
-		public WindowBackend (IntPtr ptr): base (ptr)
+		bool isPopup = false;
+		PopupWindow.PopupType windowType;
+
+		public PopupWindowBackend ()
 		{
-		}
-		
-		public WindowBackend ()
-		{
-			this.controller = new WindowBackendController ();
-			controller.Window = this;
-			StyleMask |= NSWindowStyle.Resizable | NSWindowStyle.Closable | NSWindowStyle.Miniaturizable;
 			AutorecalculatesKeyViewLoop = true;
 
 			ContentView.AutoresizesSubviews = true;
@@ -68,7 +68,14 @@ namespace Xwt.Mac
 				OnClosed ();
 			};
 
-			Center ();
+		}
+
+		public override bool CanBecomeKeyWindow {
+			get {
+				if (!isPopup)
+					return true;
+				return (windowType != PopupWindow.PopupType.Tooltip);
+			}
 		}
 
 		object IWindowFrameBackend.Window {
@@ -92,13 +99,56 @@ namespace Xwt.Mac
 		public void Initialize (IWindowFrameEventSink eventSink)
 		{
 			this.eventSink = eventSink;
+			this.isPopup = false;
+			UpdateWindowStyle ();
 		}
-		
+
+		public void Initialize (IWindowFrameEventSink eventSink, PopupWindow.PopupType windowType)
+		{
+			this.isPopup = true;
+			this.eventSink = eventSink;
+			this.windowType = windowType;
+			UpdateWindowStyle ();
+		}
+
+		void UpdateWindowStyle ()
+		{
+			StyleMask |= NSWindowStyle.Closable | NSWindowStyle.Miniaturizable | NSWindowStyle.Utility;
+
+			if (!isPopup) {
+				StyleMask |= NSWindowStyle.Resizable;
+				TitleVisibility = NSWindowTitleVisibility.Visible;
+				Level = NSWindowLevel.Floating;
+				FloatingPanel = true;
+			} else {
+				StyleMask |= NSWindowStyle.FullSizeContentView;
+				MovableByWindowBackground = true;
+				TitlebarAppearsTransparent = true;
+				TitleVisibility = NSWindowTitleVisibility.Hidden;
+				this.StandardWindowButton (NSWindowButton.CloseButton).Hidden = true;
+				this.StandardWindowButton (NSWindowButton.MiniaturizeButton).Hidden = true;
+				this.StandardWindowButton (NSWindowButton.ZoomButton).Hidden = true;
+
+				if (windowType == PopupWindow.PopupType.Tooltip)
+					// NSWindowLevel.ScreenSaver overlaps menus, this allows showing tooltips above menus
+					Level = NSWindowLevel.ScreenSaver;
+				else
+					Level = NSWindowLevel.PopUpMenu;
+			}
+		}
+
+		public override void MouseExited (NSEvent theEvent)
+		{
+			if (windowType == PopupWindow.PopupType.Tooltip)
+				Visible = false;
+			base.MouseExited (theEvent);
+		}
+
 		public ApplicationContext ApplicationContext {
 			get;
 			private set;
 		}
-		
+
 		public object NativeWidget {
 			get {
 				return this;
@@ -106,14 +156,10 @@ namespace Xwt.Mac
 		}
 
 		public string Name { get; set; }
-		
-		internal void InternalShow ()
-		{
-			MakeKeyAndOrderFront (MacEngine.App);
-		}
-		
+
 		public void Present ()
 		{
+			Visible = true;
 			MakeKeyAndOrderFront (MacEngine.App);
 		}
 
@@ -122,10 +168,18 @@ namespace Xwt.Mac
 				return IsVisible;
 			}
 			set {
-				if (value)
-					MacEngine.App.ShowWindow(this);
 				ContentView.Hidden = !value; // handle shown/hidden events
 				IsVisible = value;
+
+				if (transientParent != null) {
+					var win = transientParent as NSWindow ?? ApplicationContext.Toolkit.GetNativeWindow (transientParent) as NSWindow;
+					if (win != null) {
+						if (value)
+							win.AddChildWindow (this, NSWindowOrderingMode.Above);
+						else
+							win.RemoveChildWindow (this);
+					}
+				}
 			}
 		}
 
@@ -134,12 +188,17 @@ namespace Xwt.Mac
 			set { AlphaValue = (float)value; }
 		}
 
-		Color IWindowBackend.BackgroundColor {
+		Color? backgroundColor;
+		public new Color BackgroundColor {
 			get {
-				return BackgroundColor.ToXwtColor ();
+				if (backgroundColor.HasValue)
+					return backgroundColor.Value;
+				return base.BackgroundColor.ToXwtColor ();
 			}
 			set {
-				BackgroundColor = value.ToNSColor ();
+				backgroundColor = value;
+				base.BackgroundColor = value.ToNSColor ();
+				IsOpaque = false;
 			}
 		}
 
@@ -365,6 +424,7 @@ namespace Xwt.Mac
 					StyleMask |= NSWindowStyle.Titled;
 				else
 					StyleMask &= ~(NSWindowStyle.Titled | NSWindowStyle.Borderless);
+				HasShadow = value;
 			}
 		}
 		
@@ -378,8 +438,23 @@ namespace Xwt.Mac
 
 		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
 		{
-			// Generally, TransientFor is used to implement dialog, we reproduce the assumption here
-			Level = window == null ? NSWindowLevel.Normal : NSWindowLevel.ModalPanel;
+			if (transientParent == window)
+				return;
+
+			transientParent = window;
+
+			if (!isPopup)
+				Level = window == null ? NSWindowLevel.Floating : NSWindowLevel.ModalPanel;
+
+			if (ParentWindow != null)
+				ParentWindow.RemoveChildWindow (this);
+
+			// add to parent now, only if already visible
+			if (window != null && IsVisible) {
+				var win = window as NSWindow ?? ApplicationContext.Toolkit.GetNativeWindow (window) as NSWindow;
+				if (win != null)
+					win.AddChildWindow (this, NSWindowOrderingMode.Above);
+			}
 		}
 
 		bool IWindowFrameBackend.Resizable {
@@ -401,8 +476,9 @@ namespace Xwt.Mac
 
 		void IWindowFrameBackend.Move (double x, double y)
 		{
-			var r = FrameRectFor (new CGRect ((nfloat)x, (nfloat)y, Frame.Width, Frame.Height));
-			SetFrame (r, true);
+			var r = MacDesktopBackend.FromDesktopRect (new Rectangle (x, y, Frame.Width, Frame.Height));
+			r = FrameRectFor (r);
+			SetFrameOrigin (r.Location);
 		}
 		
 		void IWindowFrameBackend.SetSize (double width, double height)
@@ -535,13 +611,6 @@ namespace Xwt.Mac
 				frame.Height -= (nfloat) (frontend.Padding.VerticalSpacing);
 				childView.Frame = frame;
 			}
-		}
-	}
-	
-	public partial class WindowBackendController : NSWindowController
-	{
-		public WindowBackendController ()
-		{
 		}
 	}
 }
