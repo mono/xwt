@@ -38,7 +38,7 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	public class WindowBackend : WindowFrameBackend, IWindowBackend, IPopupWindowBackend
+	public class WindowBackend : WindowFrameBackend, IWindowBackend, IPopupWindowBackend, IUtilityWindowBackend
 	{
 		protected Grid rootPanel;
 		public System.Windows.Controls.Menu mainMenu;
@@ -69,13 +69,16 @@ namespace Xwt.WPFBackend
 		{
 			base.Initialize ();
 			Window.Frontend = (Window) Frontend;
+			if (Frontend is UtilityWindow)
+				defaultWindowStyle = WindowStyle.ToolWindow;
+			Decorated = true;
 		}
 
 		public void Initialize(IWindowFrameEventSink sink, PopupWindow.PopupType type)
 		{
 			Initialize ();
 			defaultWindowStyle = WindowStyle.ToolWindow;
-			Decorated = type == PopupWindow.PopupType.Utility;
+			Decorated = false;
 		}
 
 		// A Grid with a single column, and two rows (menu and child control).
