@@ -33,21 +33,21 @@ namespace Samples
 		public PopupWindows ()
 		{
 			var btn1 = new Button ("Show Utility Window");
-			PopupWindow popup1 = null;
+			UtilityWindow utility = null;
 			btn1.Clicked += (sender, e) => {
-				if (popup1 == null) {
-					popup1 = new PopupWindow ();
-					popup1.TransientFor = ParentWindow;
-					popup1.InitialLocation = WindowLocation.CenterParent;
-					popup1.Title = "Utility";
+				if (utility == null) {
+					utility = new UtilityWindow ();
+					utility.TransientFor = ParentWindow;
+					utility.InitialLocation = WindowLocation.CenterParent;
+					utility.Title = "Utility";
 					var content = new VBox ();
 					content.PackStart (new Label ("Utility Window"));
 					var btn = new Button ("Close");
-					btn.Clicked += delegate { popup1.Close (); };
+					btn.Clicked += delegate { utility.Close (); };
 					content.PackStart (btn);
-					popup1.Content = content;
+					utility.Content = content;
 				}
-				popup1.Show ();
+				utility.Show ();
 			};
 
 			PackStart (btn1);
