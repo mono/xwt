@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using AppKit;
 using CoreGraphics;
 using CoreText;
@@ -42,11 +43,18 @@ namespace Xwt.Mac
 			public NSFont Font;
 			public float? Width, Height;
 			public TextTrimming TextTrimming;
+			readonly public List<TextAttribute> Attributes = new List<TextAttribute> ();
+			readonly public ApplicationContext ApplicationContext;
+
+			public LayoutInfo (ApplicationContext actx)
+			{
+				ApplicationContext = actx;
+			}
 		}
 		
 		public override object Create ()
 		{
-			return new LayoutInfo ();
+			return new LayoutInfo (ApplicationContext);
 		}
 		
 		public override void SetText (object backend, string text)
@@ -153,19 +161,77 @@ namespace Xwt.Mac
 
 		static NSAttributedString CreateAttributedString (LayoutInfo li, string overrideText = null)
 		{
+			if (overrideText != null || li.Attributes.Count == 0)
+				return CreateAttributedString (overrideText ?? li.Text, li.Font);
+
+			var ns = new NSMutableAttributedString (li.Text);
+			ns.BeginEditing ();
+			var r = new NSRange (0, li.Text.Length);
+			if (li.Font != null)
+				ns.AddAttribute (CTStringAttributeKey.Font, li.Font, r);
+			ns.AddAttribute (CTStringAttributeKey.ForegroundColorFromContext, new NSNumber (true), r);
+
+			foreach (var att in li.Attributes) {
+				r = new NSRange (att.StartIndex, att.Count);
+				if (att is BackgroundTextAttribute) {
+					var xa = (BackgroundTextAttribute)att;
+					ns.AddAttribute (CTStringAttributeKey.BackgroundColor, xa.Color.ToNSColor (), r);
+				} else if (att is ColorTextAttribute) {
+					var xa = (ColorTextAttribute)att;
+					// FIXME: CTStringAttributeKey.ForegroundColor has no effect
+					ns.AddAttribute (CTStringAttributeKey.ForegroundColor, xa.Color.ToNSColor (), r);
+				} else if (att is UnderlineTextAttribute) {
+					var xa = (UnderlineTextAttribute)att;
+					var style = xa.Underline ? CTUnderlineStyle.Single : CTUnderlineStyle.None;
+					ns.AddAttribute (CTStringAttributeKey.UnderlineStyle, NSNumber.FromInt32 ((int)style), r);
+				} else if (att is FontStyleTextAttribute) {
+					var xa = (FontStyleTextAttribute)att;
+					if (xa.Style == FontStyle.Italic) {
+						ns.ApplyFontTraits (NSFontTraitMask.Italic, r);
+					} else if (xa.Style == FontStyle.Oblique) {
+						// FIXME: CoreText has no Obliqueness support
+					} else {
+						// FIXME: CoreText has no Obliqueness support
+						ns.ApplyFontTraits (NSFontTraitMask.Unitalic, r);
+					}
+				} else if (att is FontWeightTextAttribute) {
+					var xa = (FontWeightTextAttribute)att;
+					NSRange er;
+					// get the effective font to modify for the given range
+					var ft = ns.GetAttribute (CTStringAttributeKey.Font, att.StartIndex, out er, r) as NSFont;
+					ft = ft.WithWeight (xa.Weight);
+					ns.AddAttribute (CTStringAttributeKey.Font, ft, r);
+				} else if (att is LinkTextAttribute) {
+					ns.AddAttribute (CTStringAttributeKey.ForegroundColor, Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToNSColor (), r);
+					ns.AddAttribute (CTStringAttributeKey.UnderlineStyle, NSNumber.FromInt32 ((int)CTUnderlineStyle.Single), r);
+				} else if (att is StrikethroughTextAttribute) {
+					//FIXME: CoreText has no Strikethrough support
+				} else if (att is FontTextAttribute) {
+					var xa = (FontTextAttribute)att;
+					var nf = ((FontData)li.ApplicationContext.Toolkit.GetSafeBackend (xa.Font)).Font;
+					ns.AddAttribute (CTStringAttributeKey.Font, nf, r);
+				}
+			}
+
+			ns.EndEditing ();
+			return ns;
+		}
+
+		static NSAttributedString CreateAttributedString (string text, NSFont font)
+		{
 			NSDictionary dict;
-			if (li.Font != null) {
+			if (font != null) {
 				dict = NSDictionary.FromObjectsAndKeys (
-					new object[] { li.Font, new NSNumber (true) },
-					new object[] { CTStringAttributeKey.Font, CTStringAttributeKey.ForegroundColorFromContext }
+					new object [] { font, new NSNumber (true) },
+					new object [] { CTStringAttributeKey.Font, CTStringAttributeKey.ForegroundColorFromContext }
 				);
 			} else {
 				dict = NSDictionary.FromObjectsAndKeys (
-					new object[] { new NSNumber (true) },
-					new object[] { CTStringAttributeKey.ForegroundColorFromContext }
+					new object [] { new NSNumber (true) },
+					new object [] { CTStringAttributeKey.ForegroundColorFromContext }
 				);
 			}
-			return new NSAttributedString (overrideText ?? li.Text, dict);
+			return new NSAttributedString (text, dict);
 		}
 		
 		internal static void Draw (CGContext ctx, object layout, double x, double y)
@@ -200,10 +266,14 @@ namespace Xwt.Mac
 
 		public override void AddAttribute (object backend, TextAttribute attribute)
 		{
+			LayoutInfo li = (LayoutInfo)backend;
+			li.Attributes.Add (attribute);
 		}
 
 		public override void ClearAttributes (object backend)
 		{
+			LayoutInfo li = (LayoutInfo)backend;
+			li.Attributes.Clear ();
 		}
 		
 		public override int GetIndexFromCoordinates (object backend, double x, double y)
