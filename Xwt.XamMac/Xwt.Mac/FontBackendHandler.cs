@@ -72,7 +72,7 @@ namespace Xwt.Mac
 			var names = fontName.Split (new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
 			NSFont f = null;
 			foreach (var name in names) {
-				f = NSFontManager.SharedFontManager.FontWithFamily (name.Trim (), t, GetWeightValue (weight), (float)size);
+				f = NSFontManager.SharedFontManager.FontWithFamily (name.Trim (), t, weight.ToMacValue (), (float)size);
 				if (f != null) break;
 			}
 			if (f == null) return null;
@@ -222,11 +222,7 @@ namespace Xwt.Mac
 		{
 			FontData f = (FontData) handle;
 			f = f.Copy ();
-			int w = GetWeightValue (weight);
-			var traits = NSFontManager.SharedFontManager.TraitsOfFont (f.Font);
-			traits |= weight >= FontWeight.Bold ? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
-			traits &= weight >= FontWeight.Bold ? ~NSFontTraitMask.Unbold : ~NSFontTraitMask.Bold;
-			f.Font = NSFontManager.SharedFontManager.FontWithFamily (f.Font.FamilyName, traits, w, f.Font.PointSize);
+			f.Font = f.Font.WithWeight (weight);
 			f.Weight = weight;
 			return f;
 		}
