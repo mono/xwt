@@ -78,6 +78,33 @@ namespace Xwt
 		IPopupWindowBackend Backend {
 			get { return (IPopupWindowBackend)BackendHost.Backend; }
 		}
+
+		bool shown;
+		internal override void AdjustSize ()
+		{
+			if (Resizable || !shown) {
+				base.AdjustSize ();
+				shown = true;
+				return;
+			}
+			Size mMinSize, mDecorationsSize;
+			Backend.GetMetrics (out mMinSize, out mDecorationsSize);
+
+			var ws = mDecorationsSize;
+			if (Content != null) {
+				IWidgetSurface s = Content.Surface;
+				ws += s.GetPreferredSize (true);
+			}
+			ws.Width += Padding.HorizontalSpacing;
+			ws.Height += Padding.VerticalSpacing;
+
+			if (ws.Width<mMinSize.Width)
+				ws.Width = mMinSize.Width;
+			if (ws.Height<mMinSize.Height)
+				ws.Height = mMinSize.Height;
+
+			Backend.SetSize (ws.Width, ws.Height);
+		}
 	}
 }
 
