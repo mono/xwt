@@ -95,7 +95,7 @@ namespace Xwt.Mac
 			//      only the visible rows are reloaded.
 			source.RowInserted += (sender, e) => Table.ReloadData();
 			source.RowDeleted += (sender, e) => Table.ReloadData();
-			source.RowChanged += (sender, e) => Table.ReloadData();
+			source.RowChanged += (sender, e) => Table.ReloadData (NSIndexSet.FromIndex (e.Row), NSIndexSet.FromNSRange (new NSRange(0, Table.ColumnCount - 1)));
 			source.RowsReordered += (sender, e) => Table.ReloadData();
 		}
 		
