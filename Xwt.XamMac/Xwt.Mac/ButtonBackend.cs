@@ -248,7 +248,6 @@ namespace Xwt.Mac
 			}
 		}
 
-		#if !MONOMAC
 		public override bool AllowsVibrancy {
 			get {
 				// we don't support vibrancy
@@ -276,7 +275,6 @@ namespace Xwt.Mac
 				return base.EffectiveAppearance;
 			}
 		}
-		#endif
 
 		class ColoredButtonCell : NSButtonCell
 		{
