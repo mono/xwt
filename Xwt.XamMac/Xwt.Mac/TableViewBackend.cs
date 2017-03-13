@@ -25,19 +25,10 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
 using System.Collections.Generic;
-using System.Linq;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-#else
-using Foundation;
 using AppKit;
-#endif
+using Foundation;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -66,12 +57,6 @@ namespace Xwt.Mac
 			ViewObject = scroll;
 			Widget.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			Widget.AutoresizesSubviews = true;
-		}
-
-		protected override void Dispose (bool disposing)
-		{
-			base.Dispose (disposing);
-			Util.DrainObjectCopyPool ();
 		}
 		
 		public ScrollPolicy VerticalScrollPolicy {
@@ -273,7 +258,12 @@ namespace Xwt.Mac
 		{
 			Table.ScrollRowToVisible (row);
 		}
-		
+
+		public void StartEditingCell (int row, CellView cell)
+		{
+			// TODO
+		}
+
 		public abstract object GetValue (object pos, int nField);
 		
 		public abstract void SetValue (object pos, int nField, object value);

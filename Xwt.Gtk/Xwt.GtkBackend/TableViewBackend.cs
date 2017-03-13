@@ -246,7 +246,10 @@ namespace Xwt.GtkBackend
 
 		protected Gtk.TreeViewColumn GetCellColumn (CellView cell)
 		{
-			return cellViews [cell].Column;
+			CellInfo ci;
+			if (cellViews.TryGetValue (cell, out ci))
+				return ci.Column;
+			return null;
 		}
 
 		#region ICellRendererTarget implementation

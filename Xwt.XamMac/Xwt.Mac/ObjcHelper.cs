@@ -26,14 +26,7 @@
 
 using System;
 using System.Runtime.InteropServices;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.ObjCRuntime;
-#else
 using ObjCRuntime;
-#endif
 
 namespace Xwt.Mac
 {

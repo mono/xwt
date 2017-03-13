@@ -25,19 +25,11 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-using Xwt.Drawing;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-using CGRect = System.Drawing.RectangleF;
-#else
 using AppKit;
 using CoreGraphics;
-#endif
+using Foundation;
+using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -76,7 +68,17 @@ namespace Xwt.Mac
 			}
 			if (useMnemonic)
 				label = label.RemoveMnemonic ();
-			Widget.Title = label ?? "";
+			if (customLabelColor.HasValue) {
+				Widget.Title = label;
+				var ns = new NSMutableAttributedString (Widget.AttributedTitle);
+				ns.BeginEditing ();
+				var r = new NSRange (0, label.Length);
+				ns.RemoveAttribute (NSStringAttributeKey.ForegroundColor, r);
+				ns.AddAttribute (NSStringAttributeKey.ForegroundColor, customLabelColor.Value.ToNSColor (), r);
+				ns.EndEditing ();
+				Widget.AttributedTitle = ns;
+			} else
+				Widget.Title = label ?? "";
 			if (string.IsNullOrEmpty (label))
 				imagePosition = ContentPosition.Center;
 			if (!image.IsNull) {
@@ -90,6 +92,9 @@ namespace Xwt.Mac
 				case ContentPosition.Top: Widget.ImagePosition = NSCellImagePosition.ImageAbove; break;
 				case ContentPosition.Center: Widget.ImagePosition = string.IsNullOrEmpty (label) ? NSCellImagePosition.ImageOnly : NSCellImagePosition.ImageOverlaps; break;
 				}
+			} else {
+				Widget.ImagePosition = NSCellImagePosition.NoImage;
+				Widget.Image = null;
 			}
 			SetButtonStyle (currentStyle);
 			ResetFittingSize ();
@@ -109,28 +114,16 @@ namespace Xwt.Mac
 						Widget.BezelStyle = NSBezelStyle.RegularSquare;
 					else
 						Widget.BezelStyle = NSBezelStyle.Rounded;
-#if MONOMAC
-					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, false);
-#else
 					Widget.ShowsBorderOnlyWhileMouseInside = false;
-#endif
 					break;
 				case ButtonStyle.Borderless:
 				case ButtonStyle.Flat:
 					Widget.BezelStyle = NSBezelStyle.ShadowlessSquare;
-#if MONOMAC
-					Messaging.void_objc_msgSend_bool (Widget.Handle, selSetShowsBorderOnlyWhileMouseInside.Handle, true);
-#else
 					Widget.ShowsBorderOnlyWhileMouseInside = true;
-#endif
 					break;
 				}
 			}
 		}
-		
-#if MONOMAC
-		protected static Selector selSetShowsBorderOnlyWhileMouseInside = new Selector ("setShowsBorderOnlyWhileMouseInside:");
-#endif
 
 		public void SetButtonType (ButtonType type)
 		{
@@ -155,6 +148,21 @@ namespace Xwt.Mac
 		public override Color BackgroundColor {
 			get { return ((MacButton)Widget).BackgroundColor; }
 			set { ((MacButton)Widget).BackgroundColor = value; }
+		}
+
+		Color? customLabelColor;
+		public Color LabelColor {
+			get { return customLabelColor.HasValue ? customLabelColor.Value : NSColor.ControlText.ToXwtColor (); }
+			set {
+				customLabelColor = value;
+				var ns = new NSMutableAttributedString (Widget.AttributedTitle);
+				ns.BeginEditing ();
+				var r = new NSRange (0, Widget.Title.Length);
+				ns.RemoveAttribute (NSStringAttributeKey.ForegroundColor, r);
+				ns.AddAttribute (NSStringAttributeKey.ForegroundColor, customLabelColor.Value.ToNSColor (), r);
+				ns.EndEditing ();
+				Widget.AttributedTitle = ns;
+			}
 		}
 	}
 	
@@ -237,6 +245,34 @@ namespace Xwt.Mac
 			}
 			set {
 				((ColoredButtonCell)Cell).Color = value;
+			}
+		}
+
+		public override bool AllowsVibrancy {
+			get {
+				// we don't support vibrancy
+				if (EffectiveAppearance.AllowsVibrancy)
+					return false;
+				return base.AllowsVibrancy;
+			}
+		}
+
+		NSButtonType buttonType = NSButtonType.MomentaryPushIn;
+		public override void SetButtonType (NSButtonType aType)
+		{
+			buttonType = aType;
+			base.SetButtonType (aType);
+		}
+
+		public override NSAppearance EffectiveAppearance {
+			get {
+				// HACK: if vibrancy is enabled (inside popover) radios/checks don't handle background drawing correctly
+				// FIXME: this fix doesn't work for the vibrant light theme, the label background is wrong if
+				//        the window background is set to a custom color
+				if (base.EffectiveAppearance.AllowsVibrancy &&
+				    (buttonType == NSButtonType.Switch || buttonType == NSButtonType.Radio))
+					Cell.BackgroundStyle = base.EffectiveAppearance.Name.Contains ("Dark") ? NSBackgroundStyle.Dark : NSBackgroundStyle.Light;
+				return base.EffectiveAppearance;
 			}
 		}
 

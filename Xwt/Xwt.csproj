@@ -9,6 +9,8 @@
     <AssemblyName>Xwt</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -27,6 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -261,6 +264,7 @@
     <Compile Include="Xwt.Drawing\DrawingImage.cs" />
     <Compile Include="Xwt.Drawing\BitmapImage.cs" />
     <Compile Include="Xwt.Formats\PlainTextFormat.cs" />
+    <Compile Include="Xwt.Formats\MarkupTextFormat.cs" />
     <Compile Include="Xwt.Drawing\ImageFileType.cs" />
     <Compile Include="Xwt\Slider.cs" />
     <Compile Include="Xwt.Backends\ISliderBackend.cs" />
@@ -327,11 +331,22 @@
     <Compile Include="Xwt\XwtSynchronizationContext.cs" />
     <Compile Include="Xwt\Calendar.cs" />
     <Compile Include="Xwt.Backends\ICalendarBackend.cs" />
+    <Compile Include="Xwt.Drawing\ThemedImage.cs" />
+    <Compile Include="Xwt.Drawing\IImageLoader.cs" />
     <Compile Include="Xwt\FontSelector.cs" />
     <Compile Include="Xwt.Backends\IFontSelectorBackend.cs" />
     <Compile Include="Xwt\SelectFontDialog.cs" />
     <Compile Include="Xwt.Backends\ISelectFontDialogBackend.cs" />
     <Compile Include="Xwt\WindowState.cs" />
+    <Compile Include="Xwt.Drawing\StyleSet.cs" />
+    <Compile Include="Xwt\FileSelector.cs" />
+    <Compile Include="Xwt.Backends\IFileSelectorBackend.cs" />
+    <Compile Include="Xwt\FolderSelector.cs" />
+    <Compile Include="Xwt.Backends\IFolderSelectorBackend.cs" />
+    <Compile Include="Xwt\ToolkitDefaults.cs" />
+    <Compile Include="Xwt.Backends\IComboBoxCellViewFrontend.cs" />
+    <Compile Include="Xwt.Backends\IDispatcherBackend.cs" />
+    <Compile Include="Xwt\ITranslationCatalog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

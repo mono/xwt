@@ -123,7 +123,7 @@ namespace Xwt.GtkBackend
 			}
 			
 			if (message.AllowApplyToAll) {
-				Gtk.CheckButton check = new Gtk.CheckButton ("Apply to all");
+				Gtk.CheckButton check = new Gtk.CheckButton (Xwt.Application.TranslationCatalog.GetString("Apply to all"));
 				this.AddContent (check, false, false, 0);
 				check.Toggled += delegate {
 					ApplyToAll = check.Active;

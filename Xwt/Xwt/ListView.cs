@@ -236,6 +236,16 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Focuses and starts editing a cell, so the user can start interacting with it
+		/// </summary>
+		/// <param name="row">Row</param>
+		/// <param name="cell">Cell to edit</param>
+		public void StartEditingCell (int row, CellView cell)
+		{
+			Backend.StartEditingCell (row, cell);
+		}
+
+		/// <summary>
 		/// Returns the row at the given widget coordinates
 		/// </summary>
 		/// <returns>The row index</returns>

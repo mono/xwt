@@ -27,19 +27,9 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.AppKit;
-#else
 using AppKit;
 using CoreGraphics;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -49,9 +39,24 @@ namespace Xwt.Mac
 		protected ApplicationContext context;
 		NSTrackingArea trackingArea;	// Captures Mouse Entered, Exited, and Moved events
 
+		class ListDelegate: NSTableViewDelegate
+		{
+			public override nfloat GetRowHeight (NSTableView tableView, nint row)
+			{
+				var height = tableView.RowHeight;
+				for (int i = 0; i < tableView.ColumnCount; i++) {
+					var cell = tableView.GetCell (i, row);
+					if (cell != null)
+						height = (nfloat) Math.Max (height, cell.CellSize.Height);
+				}
+				return height;
+			}
+		}
+
 		public NSTableViewBackend(IWidgetEventSink eventSink, ApplicationContext context) {
 			this.context = context;
 			this.eventSink = eventSink;
+			this.Delegate = new ListDelegate () ;
 		}
 
 

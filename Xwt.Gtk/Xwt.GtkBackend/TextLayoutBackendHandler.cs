@@ -147,7 +147,7 @@ namespace Xwt.GtkBackend
 		public override void SetFont (object backend, Xwt.Drawing.Font font)
 		{
 			var tl = (PangoBackend)backend;
-			tl.Layout.FontDescription = (Pango.FontDescription)Toolkit.GetBackend (font);
+			tl.Layout.FontDescription = (Pango.FontDescription)ApplicationContext.Toolkit.GetSafeBackend (font);
 		}
 		
 		public override void SetWidth (object backend, double value)
@@ -212,6 +212,16 @@ namespace Xwt.GtkBackend
 			// Just get the first line
 			using (var iter = tl.Layout.Iter)
 				return Pango.Units.ToPixels (iter.Baseline);
+		}
+
+		public override double GetMeanline (object backend)
+		{
+			var tl = (PangoBackend)backend;
+			var baseline = 0;
+			using (var iter = tl.Layout.Iter)
+				baseline = iter.Baseline;
+			var font = tl.Layout.Context.LoadFont (tl.Layout.FontDescription);
+			return Pango.Units.ToPixels (baseline - font.GetMetrics (Pango.Language.Default).StrikethroughPosition);
 		}
 
 		public override void Dispose (object backend)

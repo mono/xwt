@@ -46,6 +46,8 @@ namespace Xwt.WPFBackend
 		SWM.Brush patternBrush;
 		SWM.SolidColorBrush colorBrush;
 
+		public Xwt.Drawing.StyleSet Styles { get; set; }
+
 		public double ScaleFactor { get; set; }
 
 		public SW.Point LastFigureStart { get; set; }

@@ -26,24 +26,12 @@
 
 
 using System;
-using Xwt.Backends;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-#else
-using Foundation;
 using AppKit;
 using CoreGraphics;
-#endif
+using Foundation;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -61,11 +49,6 @@ namespace Xwt.Mac
 			get {
 				return cells;
 			}
-		}
-
-		static CompositeCell ()
-		{
-			Util.MakeCopiable<CompositeCell> ();
 		}
 
 		public CompositeCell (ApplicationContext context, Orientation dir, ICellSource source)
@@ -104,14 +87,12 @@ namespace Xwt.Mac
 			source.SetCurrentEventRow (tablePosition.Position);
 		}
 
-#if !MONOMAC
 		public override NSObject Copy (NSZone zone)
 		{
 			var ob = (ICopiableObject) base.Copy (zone);
 			ob.CopyFrom (this);
 			return (NSObject) ob;
 		}
-#endif
 
 		void ICopiableObject.CopyFrom (object other)
 		{
@@ -177,8 +158,6 @@ namespace Xwt.Mac
 			}
 
 			var s = CellSize;
-			if (s.Height > source.RowHeight)
-				source.RowHeight = s.Height;
 		}
 
 		IEnumerable<ICellRenderer> VisibleCells {

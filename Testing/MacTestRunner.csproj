@@ -28,9 +28,10 @@
     <EnableCodeSigning>False</EnableCodeSigning>
     <CreatePackage>False</CreatePackage>
     <UseRefCounting>false</UseRefCounting>
+    <Profiling>false</Profiling>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -44,6 +45,8 @@
     <CreatePackage>True</CreatePackage>
     <CodeSigningKey>Developer ID Application</CodeSigningKey>
     <UseRefCounting>false</UseRefCounting>
+    <Profiling>false</Profiling>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -67,7 +70,7 @@
       <HintPath>..\packages\NUnit.Runners.2.6.4\tools\lib\nunit-console-runner.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Mac">
-      <HintPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\i386\full\Xamarin.Mac.dll</HintPath>
+      <HintPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\x86_64\full\Xamarin.Mac.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -258,17 +261,17 @@
     <EmbeddedResource Include="Tests\ninep-tt.9.png">
       <LogicalName>ninep-tt.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-ss.9%402x.png">
-      <LogicalName>ninep-ss.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-ss%402x.9.png">
+      <LogicalName>ninep-ss@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-st.9%402x.png">
-      <LogicalName>ninep-st.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-st%402x.9.png">
+      <LogicalName>ninep-st@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-ts.9%402x.png">
-      <LogicalName>ninep-ts.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-ts%402x.9.png">
+      <LogicalName>ninep-ts@2x.9.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\ninep-tt.9%402x.png">
-      <LogicalName>ninep-tt.9@2x.png</LogicalName>
+    <EmbeddedResource Include="Tests\ninep-tt%402x.9.png">
+      <LogicalName>ninep-tt@2x.9.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="MacTestRunner\ReferenceImages\NinePatchStretchStretchDefaultSize.png">
       <LogicalName>NinePatchStretchStretchDefaultSize.png</LogicalName>

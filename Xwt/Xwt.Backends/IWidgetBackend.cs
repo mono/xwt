@@ -64,6 +64,11 @@ namespace Xwt.Backends
 		bool Sensitive { get; set; }
 
 		/// <summary>
+		/// Gets or sets the name of this widget.
+		/// </summary>
+		string Name { get; set; }
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this widget can get focus.
 		/// </summary>
 		/// <value><c>true</c> if this instance can get focus; otherwise, <c>false</c>.</value>
@@ -86,6 +91,20 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <value>The size.</value>
 		Size Size { get; }
+
+		/// <summary>
+		/// Converts widget relative coordinates to its parents coordinates.
+		/// </summary>
+		/// <returns>The parent coordinates.</returns>
+		/// <param name="widgetCoordinates">The relative widget coordinates.</param>
+		Point ConvertToParentCoordinates (Point widgetCoordinates);
+
+		/// <summary>
+		/// Converts widget relative coordinates to its parent window coordinates.
+		/// </summary>
+		/// <returns>The window coordinates.</returns>
+		/// <param name="widgetCoordinates">The relative widget coordinates.</param>
+		Point ConvertToWindowCoordinates (Point widgetCoordinates);
 
 		/// <summary>
 		/// Converts widget relative coordinates to screen coordinates.

@@ -73,6 +73,14 @@ namespace Samples
 				d.Buttons.Add (new DialogButton ("Custom OK", Command.Ok));
 				d.Buttons.Add (new DialogButton (Command.Cancel));
 				d.Buttons.Add (new DialogButton (Command.Ok));
+
+				d.DefaultCommand = custom;
+
+				d.CommandActivated += (sender, e) => {
+					if (e.Command == custom) {
+						e.Handled = !MessageDialog.Confirm ("Really close?", Command.Close);
+					}
+				};
 				
 				var r = d.Run (this.ParentWindow);
 				db.Label = "Result: " + (r != null ? r.Label : "(Closed)");

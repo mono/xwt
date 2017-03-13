@@ -45,9 +45,15 @@ namespace Xwt.WPFBackend
 		{
 			var panelFactory = new FrameworkElementFactory (typeof (StackPanel));
 			panelFactory.SetValue (StackPanel.OrientationProperty, SWC.Orientation.Horizontal);
-			panelFactory.SetValue (StackPanel.MarginProperty, new Thickness (0, 7, 7, 7));
+			panelFactory.SetValue (FrameworkElement.MarginProperty, new Thickness (0, 7, 7, 7));
 
-			PanelTemplate = new ItemsPanelTemplate (panelFactory);
+			rightPanelTemplate = new ItemsPanelTemplate (panelFactory);
+
+			panelFactory = new FrameworkElementFactory(typeof(StackPanel));
+			panelFactory.SetValue(StackPanel.OrientationProperty, SWC.Orientation.Horizontal);
+			panelFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 7, 0, 7));
+
+			leftPanelTemplate = new ItemsPanelTemplate(panelFactory);
 
 			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MarginProperty, new Thickness (7, 0, 0, 0)));
 			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MinWidthProperty, 80d));
@@ -57,12 +63,17 @@ namespace Xwt.WPFBackend
 
 		public DialogBackend()
 		{
-			cmd = new DelegatedCommand<DialogButton> (OnButtonClicked);
+			cmd = new DelegatedCommand<WpfDialogButton> (OnButtonClicked);
 
-			this.buttonContainer.ItemsPanel = PanelTemplate;
-			this.buttonContainer.ItemTemplateSelector =  new DialogButtonTemplateSelector (ButtonStyle, cmd);
-			this.buttonContainer.ItemsSource = this.buttons;
-			this.buttonContainer.HorizontalAlignment = HorizontalAlignment.Right;
+			this.leftButtonContainer.ItemsPanel = leftPanelTemplate;
+			this.leftButtonContainer.ItemTemplateSelector = new DialogButtonTemplateSelector(ButtonStyle, cmd);
+			this.leftButtonContainer.ItemsSource = this.leftButtons;
+			this.leftButtonContainer.HorizontalAlignment = HorizontalAlignment.Left;
+
+			this.rightButtonContainer.ItemsPanel = rightPanelTemplate;
+			this.rightButtonContainer.ItemTemplateSelector = new DialogButtonTemplateSelector(ButtonStyle, cmd);
+			this.rightButtonContainer.ItemsSource = this.rightButtons;
+			this.rightButtonContainer.HorizontalAlignment = HorizontalAlignment.Right;
 
 			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
 			separator = new SWC.Separator ();
@@ -70,10 +81,19 @@ namespace Xwt.WPFBackend
 			Grid.SetRow (separator, 2);
 			this.rootPanel.Children.Add (separator);
 
-			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength (0, GridUnitType.Auto) });
-			Grid.SetRow (this.buttonContainer, 3);
-			this.rootPanel.Children.Add (this.buttonContainer);
-			this.buttonContainer.Visibility = Visibility.Collapsed;
+			this.rootPanel.RowDefinitions.Add (new RowDefinition { Height = new GridLength(0, GridUnitType.Auto) });
+
+			this.buttonContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto  });
+			this.buttonContainer.ColumnDefinitions.Add(new ColumnDefinition ());
+			this.buttonContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto  });
+			Grid.SetColumn(this.leftButtonContainer, 0);
+			Grid.SetColumn(this.rightButtonContainer, 2);
+			this.buttonContainer.Children.Add(this.leftButtonContainer);
+			this.buttonContainer.Children.Add(this.rightButtonContainer);
+
+			Grid.SetRow (buttonContainer, 3);
+			this.rootPanel.Children.Add (buttonContainer);
+			buttonContainer.Visibility = Visibility.Collapsed;
 		}
 
 		public override void SetMinSize (Size s)
@@ -91,20 +111,32 @@ namespace Xwt.WPFBackend
 
 		public void SetButtons (IEnumerable<DialogButton> newButtons)
 		{
-			this.buttons.Clear();
-			foreach (var button in newButtons) {
-				this.buttons.Add (button);
+			this.leftButtons.Clear();
+			foreach (var button in newButtons.Where(b => b.PackOrigin == PackOrigin.Start && b != defaultButton)) {
+				this.leftButtons.Add(new WpfDialogButton(button));
+			}
+			this.rightButtons.Clear();
+			foreach (var button in newButtons.Where(b => b.PackOrigin == PackOrigin.End).OrderBy(b => b == DefaultButton)) {
+				this.rightButtons.Add(new WpfDialogButton(button, button == DefaultButton));
 			}
 			UpdateSeparatorVisibility ();
 		}
 
 		public void UpdateButton (DialogButton updatedButton)
 		{
-			for (int i = 0; i < this.buttons.Count; ++i) {
-				var button = this.buttons [i];
-				if (button == updatedButton) {
-					this.buttons.RemoveAt (i);
-					this.buttons.Insert (i, updatedButton);
+			for (int i = 0; i < this.leftButtons.Count; ++i) {
+				var button = this.leftButtons [i];
+				if (button.Button == updatedButton) {
+					this.leftButtons.RemoveAt (i);
+					this.leftButtons.Insert (i, new WpfDialogButton(updatedButton, updatedButton == DefaultButton));
+					break;
+				}
+			}
+			for (int i = 0; i < this.rightButtons.Count; ++i) {
+				var button = this.rightButtons[i];
+				if (button.Button == updatedButton) {
+					this.rightButtons.RemoveAt(i);
+					this.rightButtons.Insert(i, new WpfDialogButton(updatedButton, updatedButton == DefaultButton));
 					break;
 				}
 			}
@@ -113,13 +145,13 @@ namespace Xwt.WPFBackend
 
 		void UpdateSeparatorVisibility ()
 		{
-			buttonContainer.Visibility = separator.Visibility = buttons.Any (b => b.Visible) ? Visibility.Visible : Visibility.Collapsed;
+			buttonContainer.Visibility = separator.Visibility = leftButtons.Concat(rightButtons).Any (b => b.Button.Visible) ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		public void RunLoop (IWindowFrameBackend parent)
 		{
 			if (parent != null)
-				Window.Owner = ((WindowFrameBackend) parent).Window;
+				SetTransientFor(parent);
 			Window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			Window.ShowDialog ();
 		}
@@ -131,20 +163,36 @@ namespace Xwt.WPFBackend
 			InhibitCloseRequested = false;
 		}
 
-		private readonly ItemsControl buttonContainer = new ItemsControl();
-		private readonly ObservableCollection<DialogButton> buttons = new ObservableCollection<DialogButton> ();
+		private readonly Grid buttonContainer = new Grid();
+		private readonly ItemsControl rightButtonContainer = new ItemsControl();
+		private readonly ItemsControl leftButtonContainer = new ItemsControl();
+		private readonly ObservableCollection<WpfDialogButton> rightButtons = new ObservableCollection<WpfDialogButton>();
+		private readonly ObservableCollection<WpfDialogButton> leftButtons = new ObservableCollection<WpfDialogButton>();
 		readonly SWC.Separator separator;
+		DialogButton defaultButton;
 
 		protected IDialogEventSink DialogEventSink {
 			get { return (IDialogEventSink) EventSink; }
 		}
 
-		private void OnButtonClicked (DialogButton button)
+		public DialogButton DefaultButton
 		{
-			Context.InvokeUserCode (() => DialogEventSink.OnDialogButtonClicked (button));
+			get {
+				return defaultButton;
+			}
+			set {
+				defaultButton = value;
+				SetButtons(leftButtons.Concat(rightButtons).Select(b => b.Button).ToArray());
+			}
 		}
 
-		private static readonly ItemsPanelTemplate PanelTemplate;
+		private void OnButtonClicked (WpfDialogButton button)
+		{
+			Context.InvokeUserCode (() => DialogEventSink.OnDialogButtonClicked (button.Button));
+		}
+
+		private static readonly ItemsPanelTemplate leftPanelTemplate;
+		private static readonly ItemsPanelTemplate rightPanelTemplate;
 		private static readonly Style ButtonStyle = new Style (typeof (SWC.Button));
 
 		private class DialogButtonTemplateSelector
@@ -152,8 +200,10 @@ namespace Xwt.WPFBackend
 		{
 			static void SetupButtonFactory (FrameworkElementFactory factory, Style style, ICommand command)
 			{
-				factory.SetBinding (UIElement.IsEnabledProperty, new Binding ("Sensitive"));
-				factory.SetBinding (UIElement.VisibilityProperty, new Binding ("Visible") { Converter = VisibilityConverter });
+				factory.SetBinding (UIElement.IsEnabledProperty, new Binding ("Button.Sensitive"));
+				factory.SetBinding (UIElement.VisibilityProperty, new Binding ("Button.Visible") { Converter = VisibilityConverter });
+				factory.SetBinding (SWC.Button.IsDefaultProperty, new Binding ("IsDefault"));
+				factory.SetBinding (SWC.Button.IsCancelProperty, new Binding("IsCancel"));
 				factory.SetValue (FrameworkElement.StyleProperty, style);
 				factory.SetValue (ButtonBase.CommandProperty, command);
 				factory.SetBinding (ButtonBase.CommandParameterProperty, new Binding ());
@@ -163,7 +213,7 @@ namespace Xwt.WPFBackend
 			{
 				var buttonFactory = new FrameworkElementFactory (typeof (SWC.Button));
 				SetupButtonFactory (buttonFactory, style, command);
-				buttonFactory.SetBinding (ContentControl.ContentProperty, new Binding ("Label"));
+				buttonFactory.SetBinding (ContentControl.ContentProperty, new Binding ("Button.Label"));
 
 				this.normalTemplate = new DataTemplate { VisualTree = buttonFactory };
 
@@ -173,13 +223,13 @@ namespace Xwt.WPFBackend
 				var contentFactory = new FrameworkElementFactory (typeof (DockPanel));
 
 				var imageFactory = new FrameworkElementFactory (typeof (Image));
-				imageFactory.SetBinding (Image.SourceProperty, new Binding ("Image.NativeWidget"));
+				imageFactory.SetBinding (Image.SourceProperty, new Binding ("Button.Image.NativeWidget"));
 				imageFactory.SetValue (DockPanel.DockProperty, Dock.Left);
 
 				contentFactory.AppendChild (imageFactory);
 
 				var textFactory = new FrameworkElementFactory (typeof (TextBlock));
-				textFactory.SetBinding (TextBlock.TextProperty, new Binding ("Label"));
+				textFactory.SetBinding (TextBlock.TextProperty, new Binding ("Button.Label"));
 				textFactory.SetValue (DockPanel.DockProperty, Dock.Right);
 
 				contentFactory.AppendChild (textFactory);
@@ -191,16 +241,31 @@ namespace Xwt.WPFBackend
 
 			public override DataTemplate SelectTemplate (object item, DependencyObject container)
 			{
-				var button = item as DialogButton;
+				var button = item as WpfDialogButton;
 				if (button == null)
 					return base.SelectTemplate (item, container);
 
-				return (button.Image == null) ? this.normalTemplate : this.imageTemplate;
+				return (button.Button.Image == null) ? this.normalTemplate : this.imageTemplate;
 			}
 
 			private static readonly BooleanToVisibilityConverter VisibilityConverter = new BooleanToVisibilityConverter ();
 			private readonly DataTemplate imageTemplate;
 			private readonly DataTemplate normalTemplate;
+		}
+
+		class WpfDialogButton
+		{
+			public DialogButton Button { get; private set; }
+
+			public bool IsDefault { get; private set; }
+
+			public bool IsCancel { get { return Button.Command == Command.Cancel; } }
+
+			public WpfDialogButton(DialogButton button, bool isDefault = false)
+			{
+				Button = button;
+				IsDefault = isDefault;
+			}
 		}
 	}
 }

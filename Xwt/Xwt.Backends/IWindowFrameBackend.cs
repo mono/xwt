@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Konrad M. Kruczynski <kkruczynski@antmicro.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2016 Antmicro Ltd
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +36,11 @@ namespace Xwt.Backends
 		void Dispose ();
 
 		/// <summary>
+		/// Gets or sets the name of the window.
+		/// </summary>
+		string Name { get; set; }
+
+		/// <summary>
 		/// Size and position of the window content in screen coordinates
 		/// </summary>
 		Rectangle Bounds { get; set; }
@@ -60,6 +67,7 @@ namespace Xwt.Backends
 		void SetTransientFor (IWindowFrameBackend window);
 		bool Resizable { get; set; }
 		double Opacity { get; set; }
+		bool HasFocus { get; }
 
 		void SetIcon (ImageDescription image);
 		
@@ -98,6 +106,22 @@ namespace Xwt.Backends
 		/// </summary>
 		/// <value>The screen.</value>
 		object Screen { get; }
+
+		/// <summary>
+		/// Gets the reference to the native window.
+		/// </summary>
+		/// <value>The native window.</value>
+		object Window { get; }
+
+		/// <summary>
+		/// Gets the system handle of the native Window.
+		/// </summary>
+		/// <value>The native handle.</value>
+		/// <remarks>
+		/// The native handle is the platform specific (Cocoa, X, Win32, etc.) window handle,
+		/// which is not necessarily the handle of the toolkit window.
+		/// </remarks>
+		IntPtr NativeHandle { get; }
 	}
 	
 	public interface IWindowFrameEventSink

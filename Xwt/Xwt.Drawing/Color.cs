@@ -33,7 +33,7 @@ namespace Xwt.Drawing
 	[TypeConverter (typeof(ColorValueConverter))]
 	[ValueSerializer (typeof(ColorValueSerializer))]
 	[Serializable]
-	public struct Color
+	public struct Color : IEquatable<Color>
 	{
 		double r, g, b, a;
 
@@ -277,6 +277,11 @@ namespace Xwt.Drawing
 		
 			return (this == (Color) o);
 		}
+
+		public bool Equals(Color other)
+		{
+			return this == other;
+		}
 		
 		public override int GetHashCode ()
 		{
@@ -294,9 +299,14 @@ namespace Xwt.Drawing
 			return string.Format ("[Color: Red={0}, Green={1}, Blue={2}, Alpha={3}]", Red, Green, Blue, Alpha);
 		}
 
-		public string ToHexString ()
+		public string ToHexString (bool withAlpha = true)
 		{
-			return "#" + ((int)(Red * 255)).ToString ("x2") + ((int)(Green * 255)).ToString ("x2") + ((int)(Blue * 255)).ToString ("x2") + ((int)(Alpha * 255)).ToString ("x2");
+			var rgb = "#" + ((int)(Red * 255)).ToString ("x2") + ((int)(Green * 255)).ToString ("x2") + ((int)(Blue * 255)).ToString ("x2");
+
+			if (withAlpha)
+				return rgb + ((int)(Alpha * 255)).ToString ("x2");
+			else
+				return rgb;
 		}
 	}
 

@@ -99,7 +99,11 @@ namespace Xwt
 		/// <param name="cmd">The command</param>
 		protected virtual void OnCommandActivated (Command cmd)
 		{
-			Respond (cmd);
+			var args = new DialogCommandActivatedEventArgs (cmd);
+			if (CommandActivated != null)
+				CommandActivated (this, args);
+			if (!args.Handled)
+				Respond (cmd);
 		}
 		
 		public Command Run ()
@@ -109,7 +113,6 @@ namespace Xwt
 		
 		public Command Run (WindowFrame parent)
 		{
-			BackendHost.ToolkitEngine.ValidateObject (parent);
 			if (parent != null)
 				TransientFor = parent;
 			AdjustSize ();
@@ -182,6 +185,22 @@ namespace Xwt
 		{
 			Backend.UpdateButton (btn);
 		}
+
+		public Command DefaultCommand {
+			get {
+				return Backend.DefaultButton?.Command;
+			}
+			set {
+				var btn = Buttons.GetCommandButton (value);
+				if (btn == null) {
+					Buttons.Add (value);
+					btn = Buttons.GetCommandButton (value);
+				}
+				Backend.DefaultButton = btn;
+			}
+		}
+
+		public event EventHandler<DialogCommandActivatedEventArgs> CommandActivated;
 	}
 	
 	public class DialogButton
@@ -191,6 +210,7 @@ namespace Xwt
 		Image image;
 		bool visible = true;
 		bool sensitive = true;
+		PackOrigin packOrigin = PackOrigin.End;
 		internal Dialog ParentDialog;
 		
 		public DialogButton (string label)
@@ -246,6 +266,8 @@ namespace Xwt
 			get {
 				if (image != null)
 					return image;
+				if (command != null)
+					return command.Icon;
 				return null;
 			}
 			set {
@@ -275,6 +297,16 @@ namespace Xwt
 				}
 			}
 		}
+
+		public PackOrigin PackOrigin {
+			get { return packOrigin; }
+			set {
+				packOrigin = value;
+				if (ParentDialog != null) {
+					ParentDialog.UpdateButton (this);
+				}
+			}
+		}
 		
 		internal void RaiseClicked ()
 		{
@@ -283,6 +315,18 @@ namespace Xwt
 		}
 		
 		public event EventHandler Clicked;
+	}
+
+	public class DialogCommandActivatedEventArgs : EventArgs
+	{
+		public Command Command { get; }
+
+		public bool Handled { get; set; }
+
+		public DialogCommandActivatedEventArgs (Command command)
+		{
+			Command = command;
+		}
 	}
 }
 

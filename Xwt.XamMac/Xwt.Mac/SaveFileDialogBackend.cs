@@ -23,18 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using Xwt.Backends;
 
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-#else
 using AppKit;
 using Foundation;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -50,7 +42,7 @@ namespace Xwt.Mac
 			if (!string.IsNullOrEmpty (initialFileName))
 				this.DirectoryUrl = new NSUrl (initialFileName,true);
 
-			this.Prompt = "Select File";
+			this.Prompt = Application.TranslationCatalog.GetString("Select File");
 		}
 
 		public bool Run (IWindowFrameBackend parent)

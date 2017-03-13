@@ -59,6 +59,19 @@ namespace Xwt.GtkBackend
 			source.RowsReordered += HandleRowsReordered;
 		}
 
+		#if XWT_GTK3
+		protected override void Dispose(bool disposing)
+		#else
+		public override void Dispose ()
+		#endif
+		{
+			source.RowChanged -= HandleRowChanged;
+			source.RowDeleted -= HandleRowDeleted;
+			source.RowInserted -= HandleRowInserted;
+			source.RowsReordered -= HandleRowsReordered;
+			base.Dispose();
+		}
+
 		void HandleRowsReordered (object sender, ListRowOrderEventArgs e)
 		{
 			var p = new Gtk.TreePath (new int[] { e.Row });

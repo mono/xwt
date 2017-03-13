@@ -24,20 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using AppKit;
+using CoreGraphics;
 using Xwt.Backends;
 using Xwt.Drawing;
-using System.Drawing;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.CoreGraphics;
-using MonoMac.AppKit;
-#else
-using CoreGraphics;
-using AppKit;
-#endif
 
 namespace Xwt.Mac
 {

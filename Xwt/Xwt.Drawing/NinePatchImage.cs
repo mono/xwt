@@ -96,7 +96,7 @@ namespace Xwt.Drawing
 				padBottom = bitmap.Height - 2 - padTop - sec.Size;
 			}
 
-			Padding = new WidgetSpacing (padLeft, padTop, padRight, padBottom);
+			Padding = new WidgetSpacing (padLeft / frame.ScaleFactor, padTop / frame.ScaleFactor, padRight / frame.ScaleFactor, padBottom / frame.ScaleFactor);
 
 			frame.StretchableWidth = frame.HorizontalSections.Where (s => s.Mode != RenderMode.Fixed).Sum (s => s.Size);
 			frame.StretchableHeight = frame.VerticalSections.Where (s => s.Mode != RenderMode.Fixed).Sum (s => s.Size);

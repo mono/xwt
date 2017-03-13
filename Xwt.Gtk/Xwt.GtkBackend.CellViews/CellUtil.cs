@@ -70,7 +70,9 @@ namespace Xwt.GtkBackend
 			else if (view is ICanvasCellViewFrontend) {
 				crd = new CustomCellRenderer ();
 			}
-			else
+			else if (view is IComboBoxCellViewFrontend) {
+				crd = new CustomCellRendererComboBox ();
+			} else
 				throw new NotSupportedException ("Unknown cell view type: " + view.GetType ());
 
 			crd.Initialize (view, col, target);
@@ -132,7 +134,7 @@ namespace Xwt.GtkBackend
 
 				TreePosition toggledItem = null;
 
-				var pathParts = path.Split (':').Select (part => int.Parse (part));
+				var pathParts = path.Split (':').Select (int.Parse);
 
 				foreach (int pathPart in pathParts) {
 					toggledItem = treeFrontend.DataSource.GetChild (toggledItem, pathPart);

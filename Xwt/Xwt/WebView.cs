@@ -76,6 +76,8 @@ namespace Xwt
 
 		public WebView ()
 		{
+			ContextMenuEnabled = true;
+			ScrollBarsEnabled = true;
 		}
 
 		public WebView (string url)
@@ -123,6 +125,38 @@ namespace Xwt
 		[DefaultValue(false)]
 		public bool CanGoForward {
 			get { return Backend.CanGoForward; }
+		}
+
+		[DefaultValue (true)]
+		public bool ContextMenuEnabled {
+			get { return Backend.ContextMenuEnabled; }
+			set { Backend.ContextMenuEnabled = value; }
+		}
+
+		[DefaultValue (true)]
+		public bool DrawsBackground {
+			get { return Backend.DrawsBackground; }
+			set { Backend.DrawsBackground = value; }
+		}
+
+		[DefaultValue (null)]
+		public string CustomCss {
+			get { return Backend.CustomCss; }
+			set { Backend.CustomCss = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:Xwt.WebView"/> has own scroll bars.
+		/// </summary>
+		/// <value><c>true</c> if the scroll bars are enabled; otherwise, <c>false</c>.</value>
+		/// <remarks>
+		/// By default all WebView backends support scrolling and don't need to be packed into a
+		/// ScrollView. Setting this to <c>false</c> will disable the internal scrolling feature.
+		/// </remarks>
+		[DefaultValue (true)]
+		public bool ScrollBarsEnabled {
+			get { return Backend.ScrollBarsEnabled; }
+			set { Backend.ScrollBarsEnabled = value; }
 		}
 
 		public void GoBack ()

@@ -130,6 +130,13 @@ namespace Xwt
 					Widget.QueueWindowSizeNegotiation (this);
 			}
 		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (Content != null)
+				Content.Dispose ();
+			base.Dispose (disposing);
+		}
 		
 		protected override void OnReallocate ()
 		{

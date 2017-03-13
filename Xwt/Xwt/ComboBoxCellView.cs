@@ -27,12 +27,102 @@
 
 
 using System;
-using Xwt.Drawing;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
+using System.ComponentModel;
+using Xwt.Backends;
 
-namespace Xwt {
-	public sealed class ComboBoxCellView: CellView
+namespace Xwt 
+{
+	public sealed class ComboBoxCellView : CellView, IComboBoxCellViewFrontend
 	{
+		bool editable;
+		string selectedText;
+		ItemCollection items;
+		IListDataSource itemsSource;
+
+		public IDataField<string> SelectedTextField { get; set; }
+		public IDataField<int> SelectedIndexField { get; set; }
+		public IDataField<object> SelectedItemField { get; set; }
+		public IDataField<bool> EditableField { get; set; }
+		public IDataField<ItemCollection> ItemsField { get; set; }
+		public IDataField<IListDataSource> ItemsSourceField { get; set; }
+
+		public ComboBoxCellView ()
+		{
+		}
+
+		public ComboBoxCellView (IDataField<string> field)
+		{
+			SelectedTextField = field;
+		}
+
+		[DefaultValue ("")]
+		public string SelectedText {
+			get {
+				if (SelectedTextField != null)
+					return GetValue (SelectedTextField, selectedText);
+				if (SelectedIndexField != null) {
+					var s = ItemsSource;
+					var row = GetValue (SelectedIndexField, -1);
+					if (row != -1)
+						return s.GetValue (row, 0).ToString ();
+				}
+				return selectedText;
+			}
+			set {
+				selectedText = value;
+			}
+		}
+
+		[DefaultValue (false)]
+		public bool Editable {
+			get {
+				return GetValue (EditableField, editable);
+			}
+			set {
+				editable = value;
+			}
+		}
+
+		[DefaultValue (null)]
+		public ItemCollection Items {
+			get {
+				if (ItemsField != null)
+					return GetValue (ItemsField, null);
+				if (items == null)
+					items = new ItemCollection ();
+				return items;
+			}
+			set {
+				items = value;
+			}
+		}
+
+		[DefaultValue (null)]
+		public IListDataSource ItemsSource {
+			get {
+				if (items != null || ItemsField != null)
+					return GetValue (ItemsField, items).DataSource;
+				return GetValue (ItemsSourceField, itemsSource);
+			}
+			set {
+				itemsSource = value;
+			}
+		}
+
+		public event EventHandler<WidgetEventArgs> SelectionChanged;
+
+		/// <summary>
+		/// Raises the SelectionChanged event
+		/// </summary>
+		/// <returns><c>true</c>, if the event was handled, <c>false</c> otherwise.</returns>
+		public bool RaiseSelectionChanged ()
+		{
+			if (SelectionChanged != null) {
+				var args = new WidgetEventArgs ();
+				SelectionChanged (this, args);
+				return args.Handled;
+			}
+			return false;
+		}
 	}
 }

@@ -36,6 +36,7 @@ namespace Xwt.Backends
 		void SelectRow (int pos);
 		void UnselectRow (int pos);
 		void ScrollToRow (int row);
+		void StartEditingCell (int row, CellView cell);
 
 		bool BorderVisible { get; set; }
 		GridLines GridLinesVisible { get; set; }

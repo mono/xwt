@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -39,7 +40,6 @@ using SWC = System.Windows.Controls; // When we need to resolve ambigituies.
 using SW = System.Windows; // When we need to resolve ambigituies.
 
 using Xwt.Backends;
-
 using Color = Xwt.Drawing.Color;
 
 namespace Xwt.WPFBackend
@@ -178,6 +178,12 @@ namespace Xwt.WPFBackend
 			set { Widget.Opacity = value; }
 		}
 
+		public string Name
+		{
+			get { return Widget.Name; }
+			set { Widget.Name = value; }
+		}
+
 		FontData GetWidgetFont ()
 		{
 			if (!(Widget is Control)) {
@@ -243,8 +249,16 @@ namespace Xwt.WPFBackend
 		}
 
 		public string TooltipText {
-			get { return Widget.ToolTip.ToString (); }
-			set { Widget.ToolTip = value; }
+			get { return Widget.ToolTip == null ? null : ((ToolTip)Widget.ToolTip).Content.ToString (); }
+			set {
+				var tp = Widget.ToolTip as ToolTip;
+				if (tp == null)
+					Widget.ToolTip = tp = new ToolTip ();
+				tp.Content = value ?? string.Empty;
+				ToolTipService.SetIsEnabled (Widget, value != null);
+				if (tp.IsOpen && value == null)
+					tp.IsOpen = false;
+			}
 		}
 
 		public static FrameworkElement GetFrameworkElement (IWidgetBackend backend)
@@ -252,9 +266,21 @@ namespace Xwt.WPFBackend
 			return backend == null ? null : (FrameworkElement)backend.NativeWidget;
 		}
 
+		public Point ConvertToParentCoordinates (Point widgetCoordinates)
+		{
+			var p = Widget.TranslatePoint (widgetCoordinates.ToWpfPoint (), Frontend.Parent.Surface.NativeWidget as UIElement);
+			return p.ToXwtPoint ();
+		}
+
+		public Point ConvertToWindowCoordinates (Point widgetCoordinates)
+		{
+			var p = Widget.TranslatePoint (widgetCoordinates.ToWpfPoint (), GetParentWindow ());
+			return p.ToXwtPoint ();
+		}
+
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
-			var p = Widget.PointToScreen (new System.Windows.Point (
+			var p = Widget.PointToScreenDpiAware (new System.Windows.Point (
 				widgetCoordinates.X, widgetCoordinates.Y));
 
 			return new Point (p.X, p.Y);
@@ -879,7 +905,7 @@ namespace Xwt.WPFBackend
 
 		void CheckDrop (object sender, System.Windows.DragEventArgs e)
 		{
-			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
+			var types = e.Data.GetFormats ().Select (DataConverter.ToXwtTransferType).ToArray ();
 			var pos = e.GetPosition (Widget).ToXwtPoint ();
 			var proposedAction = DetectDragAction (e.KeyStates);
 
@@ -929,7 +955,7 @@ namespace Xwt.WPFBackend
 
 			WidgetDragLeaveHandler (sender, e);
 
-			var types = e.Data.GetFormats ().Select (t => t.ToXwtTransferType ()).ToArray ();
+			var types = e.Data.GetFormats ().Select (DataConverter.ToXwtTransferType).ToArray ();
 			var pos = e.GetPosition (Widget).ToXwtPoint ();
 			var actualEffect = currentDragEffect;
 
@@ -1017,9 +1043,44 @@ namespace Xwt.WPFBackend
 			if (Widget.IsVisible)
 				Context.InvokeUserCode (this.eventSink.OnBoundsChanged);
 		}
+
+		Task IDispatcherBackend.InvokeAsync(Action action)
+		{
+			var ts = new TaskCompletionSource<int>();
+			var result = Widget.Dispatcher.BeginInvoke((Action)delegate
+			{
+				try
+				{
+					action();
+					ts.SetResult(0);
+				}
+				catch (Exception ex)
+				{
+					ts.SetException(ex);
+				}
+			}, null);
+			return ts.Task;
+		}
+
+		Task<T> IDispatcherBackend.InvokeAsync<T>(Func<T> func)
+		{
+			var ts = new TaskCompletionSource<T>();
+			var result = Widget.Dispatcher.BeginInvoke((Action)delegate
+			{
+				try
+				{
+					ts.SetResult(func());
+				}
+				catch (Exception ex)
+				{
+					ts.SetException(ex);
+				}
+			}, null);
+			return ts.Task;
+		}
 	}
 
-	public interface IWpfWidgetBackend
+	public interface IWpfWidgetBackend : IDispatcherBackend
 	{
 		FrameworkElement Widget { get; }
 	}

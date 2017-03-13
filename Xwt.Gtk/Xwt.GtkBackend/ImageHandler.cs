@@ -68,6 +68,8 @@ namespace Xwt.GtkBackend
 
 		public override object CreateMultiSizeIcon (IEnumerable<object> images)
 		{
+			if (images.Count () == 1)
+				return images.Cast<GtkImage> ().First ();
 			var frames = images.Cast<GtkImage> ().SelectMany (img => img.Frames);
 			return new GtkImage (frames);
 		}
@@ -160,17 +162,17 @@ namespace Xwt.GtkBackend
 			return !img.HasMultipleSizes;
 		}
 
-		public override object ConvertToBitmap (object handle, double width, double height, double scaleFactor, ImageFormat format)
+		public override object ConvertToBitmap (ImageDescription idesc, double scaleFactor, ImageFormat format)
 		{
-			var img = (GtkImage) handle;
-			var f = new GtkImage.ImageFrame (img.GetBestFrame (ApplicationContext, scaleFactor, width, height, true), (int)width, (int)height, true);
+			var img = (GtkImage) idesc.Backend;
+			var f = new GtkImage.ImageFrame (img.GetBestFrame (ApplicationContext, scaleFactor, idesc, true), (int)idesc.Size.Width, (int)idesc.Size.Height, true);
 			return new GtkImage (new GtkImage.ImageFrame [] { f });
 		}
 
 		internal static Gdk.Pixbuf CreateBitmap (string stockId, double width, double height, double scaleFactor)
 		{
 			Gdk.Pixbuf result = null;
-			
+
 			Gtk.IconSet iconset = Gtk.IconFactory.LookupDefault (stockId);
 			if (iconset != null) {
 				// Find the size that better fits the requested size
@@ -187,8 +189,46 @@ namespace Xwt.GtkBackend
 			if (result == null && Gtk.IconTheme.Default.HasIcon (stockId))
 				result = Gtk.IconTheme.Default.LoadIcon (stockId, (int)width, (Gtk.IconLookupFlags)0);
 
-			if (result == null) {
-				return CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
+			if (result == null)
+			{
+				// render a custom gtk-missing-image icon 
+				// if Gtk.Stock.MissingImage is not found 
+				int w = (int)width;
+				int h = (int)height;
+				#if XWT_GTK3
+				Cairo.ImageSurface s = new Cairo.ImageSurface(Cairo.Format.ARGB32, w, h);
+				Cairo.Context cr = new Cairo.Context(s);
+				cr.SetSourceRGB(255, 255, 255);
+				cr.Rectangle(0, 0, w, h);
+				cr.Fill();
+				cr.SetSourceRGB(0, 0, 0);
+				cr.LineWidth = 1;
+				cr.Rectangle(0.5, 0.5, w - 1, h - 1);
+				cr.Stroke();
+				cr.SetSourceRGB(255, 0, 0);
+				cr.LineWidth = 3;
+				cr.LineCap = Cairo.LineCap.Round;
+				cr.LineJoin = Cairo.LineJoin.Round;
+				cr.MoveTo(w / 4, h / 4);
+				cr.LineTo((w - 1) - w / 4, (h - 1) - h / 4);
+				cr.MoveTo(w / 4, (h - 1) - h / 4);
+				cr.LineTo((w - 1) - w / 4, h / 4);
+				cr.Stroke();
+				result = Gtk3Extensions.GetFromSurface(s, 0, 0, w, h);
+				#else
+				using (Gdk.Pixmap pmap = new Gdk.Pixmap (Gdk.Screen.Default.RootWindow, w, h))
+				using (Gdk.GC gc = new Gdk.GC (pmap)) {
+					gc.RgbFgColor = new Gdk.Color (255, 255, 255);
+					pmap.DrawRectangle (gc, true, 0, 0, w, h);
+					gc.RgbFgColor = new Gdk.Color (0, 0, 0);
+					pmap.DrawRectangle (gc, false, 0, 0, (w - 1), (h - 1));
+					gc.SetLineAttributes (3, Gdk.LineStyle.Solid, Gdk.CapStyle.Round, Gdk.JoinStyle.Round);
+					gc.RgbFgColor = new Gdk.Color (255, 0, 0);
+					pmap.DrawLine (gc, (w / 4), (h / 4), ((w - 1) - (w / 4)), ((h - 1) - (h / 4)));
+					pmap.DrawLine (gc, ((w - 1) - (w / 4)), (h / 4), (w / 4), ((h - 1) - (h / 4)));
+					result = Gdk.Pixbuf.FromDrawable (pmap, pmap.Colormap, 0, 0, 0, 0, w, h);
+				}
+				#endif
 			}
 			return result;
 		}
@@ -326,33 +366,40 @@ namespace Xwt.GtkBackend
 
 		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, Gtk.Widget w, double width, double height, bool forceExactSize)
 		{
-			return GetBestFrame (actx, Util.GetScaleFactor (w), width, height, forceExactSize);
+			return GetBestFrame (actx, Util.GetScaleFactor (w), new ImageDescription { Alpha = 1, Size = new Size (width, height) }, forceExactSize);
 		}
 
 		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, double scaleFactor, double width, double height, bool forceExactSize)
 		{
-			var f = FindFrame ((int)width, (int)height, scaleFactor);
-			if (f == null || (forceExactSize && (f.Width != (int)width || f.Height != (int)height)))
-				return RenderFrame (actx, scaleFactor, width, height);
+			return GetBestFrame (actx, scaleFactor, new ImageDescription { Alpha = 1, Size = new Size (width, height) }, forceExactSize);
+		}
+
+		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, Gtk.Widget w, ImageDescription idesc, bool forceExactSize)
+		{
+			return GetBestFrame (actx, Util.GetScaleFactor (w), idesc, forceExactSize);
+		}
+
+		public Gdk.Pixbuf GetBestFrame (ApplicationContext actx, double scaleFactor, ImageDescription idesc, bool forceExactSize)
+		{
+			var f = FindFrame ((int)idesc.Size.Width, (int)idesc.Size.Height, scaleFactor);
+			if (f == null || (forceExactSize && (f.Width != (int)idesc.Size.Width || f.Height != (int)idesc.Size.Height)))
+				return RenderFrame (actx, scaleFactor, idesc);
 			else
 				return f;
 		}
 
-		Gdk.Pixbuf RenderFrame (ApplicationContext actx, double scaleFactor, double width, double height)
+		Gdk.Pixbuf RenderFrame (ApplicationContext actx, double scaleFactor, ImageDescription idesc)
 		{
-			var swidth = Math.Max ((int)(width * scaleFactor), 1);
-			var sheight = Math.Max ((int)(height * scaleFactor), 1);
+			var swidth = Math.Max ((int)(idesc.Size.Width * scaleFactor), 1);
+			var sheight = Math.Max ((int)(idesc.Size.Height * scaleFactor), 1);
 
 			using (var sf = new Cairo.ImageSurface (Cairo.Format.ARGB32, swidth, sheight))
 			using (var ctx = new Cairo.Context (sf)) {
-				ImageDescription idesc = new ImageDescription () {
-					Alpha = 1,
-					Size = new Size (width, height)
-				};
 				ctx.Scale (scaleFactor, scaleFactor);
 				Draw (actx, ctx, scaleFactor, 0, 0, idesc);
-				var f = new ImageFrame (ImageBuilderBackend.CreatePixbuf (sf), Math.Max((int)width,1), Math.Max((int)height,1), true);
-				AddFrame (f);
+				var f = new ImageFrame (ImageBuilderBackend.CreatePixbuf (sf), Math.Max ((int)idesc.Size.Width, 1), Math.Max ((int)idesc.Size.Height, 1), true);
+				if (drawCallback == null)
+					AddFrame (f);
 				return f.Pixbuf;
 			}
 		}
@@ -386,10 +433,10 @@ namespace Xwt.GtkBackend
 				};
 				if (actx != null) {
 					actx.InvokeUserCode (delegate {
-						drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height));
+						drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height), idesc, actx.Toolkit);
 					});
 				} else
-					drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height));
+					drawCallback (c, new Rectangle (x, y, idesc.Size.Width, idesc.Size.Height), idesc, Toolkit.CurrentEngine);
 			}
 			else {
 				DrawPixbuf (ctx, GetBestFrame (actx, scaleFactor, idesc.Size.Width, idesc.Size.Height, false), x, y, idesc);
@@ -474,9 +521,17 @@ namespace Xwt.GtkBackend
 		{
 			if (image.IsNull)
 				return true;
+			var a = Allocation;
 
-			int x = (int)(((float)Allocation.Width - (float)image.Size.Width) * xalign);
-			int y = (int)(((float)Allocation.Height - (float)image.Size.Height) * yalign);
+			// HACK: Gtk sends sometimes an expose/draw event while the widget reallocates.
+			//       In that case we would draw in the wrong area, which may lead to artifacts
+			//       if no other widget updates it. Alternative: we could clip the
+			//       allocation bounds, but this may have other issues.
+			if (a.Width == 1 && a.Height == 1 && a.X == -1 && a.Y == -1) // the allocation coordinates on reallocation
+				return base.OnDrawn (cr);
+
+			int x = (int)(((float)a.Width - (float)image.Size.Width) * xalign);
+			int y = (int)(((float)a.Height - (float)image.Size.Height) * yalign);
 			if (x < 0) x = 0;
 			if (y < 0) y = 0;
 			((GtkImage)image.Backend).Draw (actx, cr, Util.GetScaleFactor (this), x, y, image);

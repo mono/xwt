@@ -25,31 +25,14 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Text;
-using Xwt.Backends;
-using Xwt.Drawing;
-
-#if MONOMAC
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.AppKit;
-using MonoMac.CoreGraphics;
-using MonoMac.CoreImage;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
-#else
 using AppKit;
 using CoreGraphics;
 using CoreImage;
 using Foundation;
 using ObjCRuntime;
-#endif
-
-using RectangleF = System.Drawing.RectangleF;
-using SizeF = System.Drawing.SizeF;
+using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -98,6 +81,11 @@ namespace Xwt.Mac
 		{
 			return new Rectangle (v.WidgetX(), v.WidgetY(), v.WidgetWidth(), v.WidgetHeight());
 		}
+
+		public static Point WidgetLocation (this NSView v)
+		{
+			return new Point (v.WidgetX (), v.WidgetY ());
+		}
 		
 		public static void SetWidgetBounds (this NSView v, Rectangle rect)
 		{
@@ -141,14 +129,23 @@ namespace Xwt.Mac
 
 		public static Color ToXwtColor (this NSColor col)
 		{
-			col = col.UsingColorSpace (DeviceRGBString);
-			return new Color (col.RedComponent, col.GreenComponent, col.BlueComponent, col.AlphaComponent);
+			var calibrated = col.UsingColorSpace (DeviceRGBString);
+			if (calibrated != null)
+				return new Color (calibrated.RedComponent, calibrated.GreenComponent, calibrated.BlueComponent, calibrated.AlphaComponent);
+			// some system colors can not be calibrated and UsingColorSpace returns null.
+			// Use CGColor in this case, which should match the device already.
+			return col.CGColor.ToXwtColor();
 		}
 		
 		public static Color ToXwtColor (this CGColor col)
 		{
 			var cs = col.Components;
 			return new Color (cs[0], cs[1], cs[2], col.Alpha);
+		}
+
+		public static CGSize ToCGSize (this Size s)
+		{
+			return new CGSize ((nfloat)s.Width, (nfloat)s.Height);
 		}
 
 		public static Size ToXwtSize (this CGSize s)
@@ -159,6 +156,21 @@ namespace Xwt.Mac
 		public static CGRect ToCGRect (this Rectangle r)
 		{
 			return new CGRect ((nfloat)r.X, (nfloat)r.Y, (nfloat)r.Width, (nfloat)r.Height);
+		}
+
+		public static Rectangle ToXwtRect (this CGRect r)
+		{
+			return new Rectangle (r.X, r.Y, r.Width, r.Height);
+		}
+
+		public static CGPoint ToCGPoint (this Point r)
+		{
+			return new CGPoint ((nfloat)r.X, (nfloat)r.Y);
+		}
+
+		public static Point ToXwtPoint (this CGPoint p)
+		{
+			return new Point (p.X, p.Y);
 		}
 
 		// /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/IconsCore.h
@@ -184,13 +196,13 @@ namespace Xwt.Mac
 		}
 		*/
 
-		public static SizeF ToIconSize (IconSize size)
+		public static CGSize ToIconSize (IconSize size)
 		{
 			switch (size) {
-			case IconSize.Small: return new SizeF (16f, 16f);
-			case IconSize.Large: return new SizeF (64f, 64f);
+			case IconSize.Small: return new CGSize (16f, 16f);
+			case IconSize.Large: return new CGSize (64f, 64f);
 			}
-			return new SizeF (32f, 32f);
+			return new CGSize (32f, 32f);
 		}
 
 		public static string ToUTI (this TransferDataType dt)
@@ -208,73 +220,14 @@ namespace Xwt.Mac
 
 			return dt.Id;
 		}
-
-#if MONOMAC
-		static Selector selCopyWithZone = new Selector ("copyWithZone:");
-		static DateTime lastCopyPoolDrain = DateTime.Now;
-		static List<object> copyPool = new List<object> ();
-
-		/// <summary>
-		/// Implements the NSCopying protocol in a class. The class must implement ICopiableObject.
-		/// The method ICopiableObject.CopyFrom will be called to make the copy of the object
-		/// </summary>
-		/// <typeparam name="T">Type for which to enable copying</typeparam>
-		public static void MakeCopiable<T> () where T:ICopiableObject
-		{
-			Class c = new Class (typeof(T));
-			c.AddMethod (selCopyWithZone.Handle, new Func<IntPtr, IntPtr, IntPtr, IntPtr> (MakeCopy), "i@:@");
-		}
-		
-		static IntPtr MakeCopy (IntPtr sender, IntPtr sel, IntPtr zone)
-		{
-			var thisOb = (ICopiableObject) Runtime.GetNSObject (sender);
-
-			// Makes a copy of the object by calling the default implementation of copyWithZone
-			IntPtr copyHandle = Messaging.IntPtr_objc_msgSendSuper_IntPtr(((NSObject)thisOb).SuperHandle, selCopyWithZone.Handle, zone);
-			var copyOb = (ICopiableObject) Runtime.GetNSObject (copyHandle);
-
-			// Copy of managed data
-			copyOb.CopyFrom (thisOb);
-
-			// Copied objects are for internal use of the Cocoa framework. We need to keep a reference of the
-			// managed object until the the framework doesn't need it anymore.
-
-			if ((DateTime.Now - lastCopyPoolDrain).TotalSeconds > 2)
-				DrainObjectCopyPool ();
-
-			copyPool.Add (copyOb);
-
-			return ((NSObject)copyOb).Handle;
-		}
-
-		public static void DrainObjectCopyPool ()
-		{
-			// Objects in the pool have been created by Cocoa, so there should be no managed references
-			// other than the ones we keep in the pool. An object can be removed from the pool if it
-			// has only 1 reference left (the managed one)
-
-			List<NSObject> markedForDelete = new List<NSObject> ();
-			
-			foreach (NSObject ob in copyPool) {
-				var count = ob.RetainCount;
-				if (count == 1)
-					markedForDelete.Add (ob);
-			}
-			foreach (NSObject ob in markedForDelete)
-				copyPool.Remove (ob);
-
-			lastCopyPoolDrain = DateTime.Now;
-		}
-#else
-		public static void MakeCopiable<T> () where T:ICopiableObject
+		/*public static void MakeCopiable<T> () where T:ICopiableObject
 		{
 			// Nothing to do for XamMac
 		}
 		public static void DrainObjectCopyPool ()
 		{
 			// Nothing to do for XamMac
-		}
-#endif
+		}*/
 
 		public static NSBitmapImageFileType ToMacFileType (this ImageFileType type)
 		{
@@ -292,9 +245,10 @@ namespace Xwt.Mac
 			if (idesc.IsNull)
 				return null;
 			var img = (NSImage)idesc.Backend;
-			if (img is CustomImage)
+			if (img is CustomImage) {
 				img = ((CustomImage)img).Clone ();
-			else {
+				((CustomImage)img).Image = idesc;
+			} else {
 				img = (NSImage)img.Copy ();
 			}
 			img.Size = new CGSize ((nfloat)idesc.Size.Width, (nfloat)idesc.Size.Height);
@@ -305,6 +259,45 @@ namespace Xwt.Mac
 		public static int ToUnderlineStyle (FontStyle style)
 		{
 			return 1;
+		}
+
+		public static int ToMacValue (this FontWeight weight)
+		{
+			switch (weight) {
+			case FontWeight.Thin:
+				return 1;
+			case FontWeight.Ultralight:
+				return 2;
+			case FontWeight.Light:
+				return 3;
+			case FontWeight.Book:
+				return 4;
+			case FontWeight.Normal:
+				return 5;
+			case FontWeight.Medium:
+				return 6;
+			case FontWeight.Semibold:
+				return 8;
+			case FontWeight.Bold:
+				return 9;
+			case FontWeight.Ultrabold:
+				return 10;
+			case FontWeight.Heavy:
+				return 11;
+			case FontWeight.Ultraheavy:
+				return 12;
+			default:
+				return 13;
+			}
+		}
+
+		public static NSFont WithWeight (this NSFont font, FontWeight weight)
+		{
+			int w = weight.ToMacValue ();
+			var traits = NSFontManager.SharedFontManager.TraitsOfFont (font);
+			traits |= weight >= FontWeight.Bold? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
+			traits &= weight >= FontWeight.Bold? ~NSFontTraitMask.Unbold : ~NSFontTraitMask.Bold;
+			return NSFontManager.SharedFontManager.FontWithFamily (font.FamilyName, traits, w, font.PointSize);
 		}
 
 		static Selector applyFontTraits = new Selector ("applyFontTraits:range:");
@@ -346,8 +339,9 @@ namespace Xwt.Mac
 				}
 				else if (att is LinkTextAttribute) {
 					var xa = (LinkTextAttribute)att;
-					ns.AddAttribute (NSStringAttributeKey.Link, new NSUrl (xa.Target.ToString ()), r);
-					ns.AddAttribute (NSStringAttributeKey.ForegroundColor, NSColor.Blue, r);
+					if (xa.Target != null)
+						ns.AddAttribute (NSStringAttributeKey.Link, new NSUrl (xa.Target.ToString ()), r);
+					ns.AddAttribute (NSStringAttributeKey.ForegroundColor, Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToNSColor (), r);
 					ns.AddAttribute (NSStringAttributeKey.UnderlineStyle, NSNumber.FromInt32 ((int)NSUnderlineStyle.Single), r);
 				}
 				else if (att is StrikethroughTextAttribute) {
@@ -489,21 +483,31 @@ namespace Xwt.Mac
 			}
 		}
 
+		static readonly Selector selConvertSizeToBacking = new Selector ("convertSizeToBacking:");
+
 		public static void DrawWithColorTransform (this NSView view, Color? color, Action drawDelegate)
 		{
 			if (color.HasValue) {
-				if (view.Frame.Size.Width <= 0 || view.Frame.Size.Height <= 0)
+				var size = view.Frame.Size;
+				if (size.Width <= 0 || size.Height <= 0)
 					return;
 
 				// render view to image
-				var image = new NSImage(view.Frame.Size);
+				var image = new NSImage(size);
 				image.LockFocusFlipped(!view.IsFlipped);
 				drawDelegate ();
 				image.UnlockFocus();
 
 				// create Core image for transformation
-				var rr = new CGRect(0, 0, view.Frame.Size.Width, view.Frame.Size.Height);
-				var ciImage = CIImage.FromCGImage(image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
+				var ciImage = CIImage.FromCGImage(image.CGImage);
+
+				CGSize displaySize;
+				#pragma warning disable iOSAndMacApiUsageIssue
+				if (view.RespondsToSelector (selConvertSizeToBacking))
+					displaySize = view.ConvertSizeToBacking (size);
+				else
+					displaySize = view.ConvertSizeToBase (size);
+				#pragma warning restore iOSAndMacApiUsageIssue
 
 				// apply color matrix
 				var transformColor = new CIColorMatrix();
@@ -515,9 +519,20 @@ namespace Xwt.Mac
 				ciImage = (CIImage)transformColor.ValueForKey(new NSString("outputImage"));
 
 				var ciCtx = CIContext.FromContext(NSGraphicsContext.CurrentContext.GraphicsPort, null);
-				ciCtx.DrawImage (ciImage, rr, rr);
+				ciCtx.DrawImage (ciImage, new CGRect (CGPoint.Empty, size), new CGRect (CGPoint.Empty, displaySize));
 			} else
 				drawDelegate();
+		}
+
+		public static CGPoint ConvertPointFromEvent(this NSView view, NSEvent theEvent)
+		{
+			var point = theEvent.LocationInWindow;
+			if (theEvent.WindowNumber != view.Window.WindowNumber)
+			{
+				point = theEvent.Window.ConvertBaseToScreen(point);
+				point = view.Window.ConvertScreenToBase(point);
+			}
+			return view.ConvertPointFromView(point, null);
 		}
 	}
 

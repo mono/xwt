@@ -1,23 +1,35 @@
+//
+// SpinButtonBackend.cs
+//
+// Author:
+//       Jérémie Laval <jeremie.laval@xamarin.com>
+//
+// Copyright (c) 2012 Xamarin Inc
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 using System;
-
-using Xwt.Backends;
-
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-#else
-using Foundation;
 using AppKit;
 using CoreGraphics;
+using Foundation;
 using ObjCRuntime;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -102,40 +114,21 @@ namespace Xwt.Mac
 
 		ISpinButtonEventSink eventSink;
 
-
-		class RelativeTextField : NSTextField
-		{
-			NSView reference;
-
-			public RelativeTextField (NSView reference)
-			{
-				this.reference = reference;
-			}
-
-			public override void ResizeWithOldSuperviewSize (CGSize oldSize)
-			{
-				base.ResizeWithOldSuperviewSize (oldSize);
-				SetFrameSize (new CGSize (reference.Frame.Left, Frame.Size.Height));
-			}
-		}
-
 		public MacSpinButton (ISpinButtonEventSink eventSink, ApplicationContext context) : base (eventSink, context)
 		{
 			this.eventSink = eventSink;
 			formater = new NSNumberFormatter ();
-			stepper = new NSStepper ();
-			input = new RelativeTextField (stepper);
+			stepper = new VibrancyStepper ();
+			input = new NSTextField ();
 			input.Formatter = formater;
 			input.DoubleValue = 0;
 			input.Alignment = NSTextAlignment.Right;
 			formater.NumberStyle = NSNumberFormatterStyle.Decimal;
-			stepper.Activated += HandleStepperChanged;;
+			stepper.Activated += HandleStepperChanged;
 			input.Changed += HandleTextChanged;
 			input.DoCommandBySelector = DoCommandBySelector;
 
 			AutoresizesSubviews = true;
-			stepper.AutoresizingMask = NSViewResizingMask.MinXMargin;
-			input.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.MaxXMargin;
 
 			AddSubview (input);
 			AddSubview (stepper);
@@ -148,15 +141,20 @@ namespace Xwt.Mac
 
 			var minHeight = (nfloat)Math.Max (stepper.Frame.Height, input.Frame.Height);
 			var minWidth = input.Frame.Width + stepper.Frame.Width;
-			minWidth = (nfloat)Math.Max (minWidth, 55);
-			var stepperX = minWidth - (stepper.Frame.Width);
-			var stepperY = (minHeight - stepper.Frame.Height) / 2;
-			var inputX = 0;
-			var inputY = (minHeight - input.Frame.Height) / 2;
-
+			minWidth = (nfloat)Math.Max (minWidth, 60);
 			SetFrameSize (new CGSize (minWidth, minHeight));
+		}
+
+		public override void ResizeSubviewsWithOldSize (CGSize oldSize)
+		{
+			stepper.SizeToFit ();
+			var stepperX = Frame.Width - (stepper.Frame.Width);
+			var stepperY = (Frame.Height - stepper.Frame.Height) / 2;
 			stepper.Frame = new CGRect (stepperX, stepperY, stepper.Frame.Width, stepper.Frame.Height);
-			input.Frame = new CGRect (inputX, inputY, minWidth - (stepper.Frame.Width), input.Frame.Height);
+
+			var inputX = 0;
+			var inputY = (Frame.Height - input.Frame.Height) / 2;
+			input.Frame = new CGRect (inputX, inputY, Frame.Width - stepper.Frame.Width, input.Frame.Height);
 		}
 
 		public override void ScrollWheel (NSEvent theEvent)
@@ -331,6 +329,18 @@ namespace Xwt.Mac
 			if (eventId is SpinButtonEvent) {
 				switch ((SpinButtonEvent)eventId) {
 				case SpinButtonEvent.ValueChanged: enableValueChangedEvent = false; break;
+				}
+			}
+		}
+
+		class VibrancyStepper : NSStepper
+		{
+			public override bool AllowsVibrancy {
+				get {
+					// we don't support vibrancy
+					if (EffectiveAppearance.AllowsVibrancy)
+						return false;
+					return base.AllowsVibrancy;
 				}
 			}
 		}

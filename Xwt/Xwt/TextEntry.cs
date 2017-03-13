@@ -136,6 +136,11 @@ namespace Xwt
 			set { Backend.MultiLine = value; }
 		}
 
+		[DefaultValue (false)]
+		public bool HasCompletions {
+			get { return Backend.HasCompletions; }
+		}
+
 		public void SetCompletions (string[] completions)
 		{
 			Backend.SetCompletions (completions);

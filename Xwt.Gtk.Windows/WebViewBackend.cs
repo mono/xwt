@@ -26,21 +26,24 @@
 // THE SOFTWARE.
 
 using System;
-using System.Threading;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using SWF = System.Windows.Forms;
 using Xwt.GtkBackend;
 using Xwt.Backends;
+using Xwt.NativeMSHTML;
 using Gtk;
 
 namespace Xwt.Gtk.Windows
 {
-	public class WebViewBackend : WidgetBackend, IWebViewBackend
+	public class WebViewBackend : WidgetBackend, IWebViewBackend, IDocHostUIHandler
 	{
 		SWF.WebBrowser view;
 		string url;
 		Socket socket;
 		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
+		bool initialized;
 
 		[DllImportAttribute("user32.dll", EntryPoint = "SetParent")]
 		internal static extern System.IntPtr SetParent([InAttribute] System.IntPtr hwndChild, [InAttribute] System.IntPtr hwndNewParent);
@@ -49,50 +52,53 @@ namespace Xwt.Gtk.Windows
 		{
 			base.Initialize ();
 
+			view = new SWF.WebBrowser();
+			view.ScriptErrorsSuppressed = true;
+			view.AllowWebBrowserDrop = false;
+
+			view.ProgressChanged += HandleProgressChanged;
+			view.Navigating += HandleNavigating;
+			view.Navigated += HandleNavigated;
+			view.DocumentTitleChanged += HandleDocumentTitleChanged;
+			view.DocumentCompleted += HandleDocumentCompleted;
+			view.DocumentText = ""; // force Document initialization
+
 			socket = new Socket ();
 			Widget = socket;
 
 			this.Widget.Realized += HandleGtkRealized;
 			this.Widget.SizeAllocated += HandleGtkSizeAllocated;
 
-            Widget.Show();
+			Widget.Show();
 		}
 
 		void HandleGtkRealized (object sender, EventArgs e)
 		{
-			var size = new System.Drawing.Size (Widget.WidthRequest, Widget.HeightRequest);
-
-			view = new SWF.WebBrowser ();
-			view.ScriptErrorsSuppressed = true;
-			view.AllowWebBrowserDrop = false;
+			var scale = GtkWorkarounds.GetScaleFactor(Widget);
+			var size = new System.Drawing.Size((int)(Widget.Allocation.Width * scale), (int)(Widget.Allocation.Height * scale));
 			view.Size = size;
+
 			var browser_handle = view.Handle;
 			IntPtr window_handle = (IntPtr)socket.Id;
 			SetParent (browser_handle, window_handle);
-
-			view.ProgressChanged += HandleProgressChanged;
-			view.Navigating += HandleNavigating;
-			view.Navigated += HandleNavigated;
-			view.DocumentTitleChanged += HandleDocumentTitleChanged;
-			if (url != null)
-				view.Navigate (url);
 		}
 
 		void HandleGtkSizeAllocated (object sender, SizeAllocatedArgs e)
 		{
-			var size = new System.Drawing.Size(e.Allocation.Width, e.Allocation.Height);
+			var scale = GtkWorkarounds.GetScaleFactor(Widget);
+			var size = new System.Drawing.Size((int)(e.Allocation.Width * scale), (int)(e.Allocation.Height * scale));
 			view.Size = size;
 		}
 
 		public string Url {
 			get {
-				if (view != null && !String.IsNullOrEmpty(view.Url.AbsoluteUri))
+				if (initialized && view?.Url != null)
 					url = view.Url.AbsoluteUri;
 				return url;
 			}
 			set {
 				url = value;
-				if (view != null)
+				if (initialized && view != null)
 					view.Navigate (url);
 			}
 		}
@@ -116,6 +122,14 @@ namespace Xwt.Gtk.Windows
 			}
 		}
 
+		public bool ContextMenuEnabled { get; set; }
+
+		public string CustomCss { get; set; }
+
+		public bool ScrollBarsEnabled { get; set; }
+
+		public bool DrawsBackground { get; set; }
+
 		public void GoBack ()
 		{
 			view.GoBack ();
@@ -138,6 +152,7 @@ namespace Xwt.Gtk.Windows
 
 		public void LoadHtml (string content, string base_uri)
 		{
+			loadProgress = 0;
 			view.DocumentText = content;
 		}
 
@@ -195,11 +210,9 @@ namespace Xwt.Gtk.Windows
 
 		void HandleProgressChanged (object sender, SWF.WebBrowserProgressChangedEventArgs e)
 		{
-			if (e.CurrentProgress == -1) {
-				loadProgress = 1;
-				HandleLoaded(view, EventArgs.Empty);
-			}
-			else if (e.MaximumProgress == 0)
+			if (e.CurrentProgress == -1)
+				return;
+			if (e.MaximumProgress == 0 || e.MaximumProgress < e.CurrentProgress)
 				loadProgress = 1;
 			else
 				loadProgress = (double)e.CurrentProgress / (double)e.MaximumProgress;
@@ -208,9 +221,11 @@ namespace Xwt.Gtk.Windows
 		void HandleNavigating (object sender, SWF.WebBrowserNavigatingEventArgs e)
 		{
 			if (enableNavigatingEvent) {
-				var url = e.Url.AbsoluteUri;
+				var newurl = string.Empty;
+				if (e.Url != null)
+					newurl = e.Url.AbsoluteUri;
 				ApplicationContext.InvokeUserCode (delegate {
-					e.Cancel = EventSink.OnNavigateToUrl (url);
+					e.Cancel = EventSink.OnNavigateToUrl (newurl);
 				});
 			}
 		}
@@ -225,19 +240,127 @@ namespace Xwt.Gtk.Windows
 
 		void HandleNavigated (object sender, SWF.WebBrowserNavigatedEventArgs e)
 		{
+			UpdateDocumentRef();
 			if (enableLoadingEvent)
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnLoading ();
 				});
 		}
 
-		void HandleLoaded (object sender, EventArgs e)
+		SWF.HtmlDocument currentDocument;
+
+		void UpdateDocumentRef()
 		{
+			if (currentDocument != view.Document)
+			{
+				var doc = view.Document.DomDocument as ICustomDoc;
+				if (doc != null)
+					doc.SetUIHandler(this);
+				if (currentDocument != null)
+				{
+					var oldDoc = view.Document.DomDocument as ICustomDoc;
+					if (oldDoc != null)
+						oldDoc.SetUIHandler(null);
+				}
+				currentDocument = view.Document;
+			}
+
+			// on initialization we load "about:blank" to initialize the document,
+			// in that case we load the requested url
+			if (currentDocument != null && !initialized)
+			{
+				initialized = true;
+				if (!string.IsNullOrEmpty (url))
+					view.Navigate(url);
+			}
+		}
+
+		void HandleDocumentCompleted (object sender, SWF.WebBrowserDocumentCompletedEventArgs e)
+		{
+			UpdateDocumentRef();
+
 			if (enableLoadedEvent)
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnLoaded ();
 				});
 		}
+
+		#region IDocHostUIHandler implementation
+		int IDocHostUIHandler.ShowContextMenu (DOCHOSTUICONTEXTMENU dwID, ref POINT ppt, object pcmdtReserved, object pdispReserved)
+		{
+			return (int)(ContextMenuEnabled ? HResult.S_FALSE : HResult.S_OK);
+		}
+
+		void IDocHostUIHandler.GetHostInfo(ref DOCHOSTUIINFO pInfo)
+		{
+			pInfo.dwFlags = DOCHOSTUIFLAG.DOCHOSTUIFLAG_DPI_AWARE;
+			if (!ScrollBarsEnabled)
+				pInfo.dwFlags = pInfo.dwFlags | DOCHOSTUIFLAG.DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG.DOCHOSTUIFLAG_NO3DOUTERBORDER;
+			if (!string.IsNullOrEmpty(CustomCss))
+				pInfo.pchHostCss = CustomCss;
+		}
+
+		void IDocHostUIHandler.ShowUI(uint dwID, ref object pActiveObject, ref object pCommandTarget, ref object pFrame, ref object pDoc)
+		{
+		}
+
+		void IDocHostUIHandler.HideUI()
+		{
+		}
+
+		void IDocHostUIHandler.UpdateUI()
+		{
+		}
+
+		void IDocHostUIHandler.EnableModeless(bool fEnable)
+		{
+		}
+
+		void IDocHostUIHandler.OnDocWindowActivate(bool fActivate)
+		{
+		}
+
+		void IDocHostUIHandler.OnFrameWindowActivate(bool fActivate)
+		{
+		}
+
+		void IDocHostUIHandler.ResizeBorder(ref RECT prcBorder, object pUIWindow, bool fFrameWindow)
+		{
+		}
+
+		int IDocHostUIHandler.TranslateAccelerator(ref MSG lpMsg, ref Guid pguidCmdGroup, uint nCmdID)
+		{
+			return (int)HResult.S_FALSE;
+		}
+
+		void IDocHostUIHandler.GetOptionKeyPath(out string pchKey, uint dw)
+		{
+			pchKey = null;
+		}
+
+		int IDocHostUIHandler.GetDropTarget(object pDropTarget, out object ppDropTarget)
+		{
+			ppDropTarget = pDropTarget;
+			return (int)HResult.S_FALSE;
+		}
+
+		void IDocHostUIHandler.GetExternal(out object ppDispatch)
+		{
+			ppDispatch = null;
+		}
+
+		int IDocHostUIHandler.TranslateUrl(uint dwTranslate, string pchURLIn, out string ppchURLOut)
+		{
+			ppchURLOut = pchURLIn;
+			return (int)HResult.S_FALSE;
+		}
+
+		int IDocHostUIHandler.FilterDataObject(IDataObject pDO, out IDataObject ppDORet)
+		{
+			ppDORet = null;
+			return (int)HResult.S_FALSE;
+		}
+		#endregion
 	}
 }
 

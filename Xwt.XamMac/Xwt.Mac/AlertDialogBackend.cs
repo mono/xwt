@@ -25,20 +25,9 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-
-#if MONOMAC
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using System.Drawing;
-#else
 using AppKit;
-using Foundation;
 using CoreGraphics;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -54,7 +43,7 @@ namespace Xwt.Mac
 		{
 		}
 
-		public void Initialize (ApplicationContext actx)
+		public virtual void Initialize (ApplicationContext actx)
 		{
 			Context = actx;
 		}
@@ -118,7 +107,7 @@ namespace Xwt.Mac
 				AccessoryView.SetFrameSize (optionsSize);
 			}
 
-			var win = (WindowBackend)Toolkit.GetBackend (transientFor);
+			var win = Context.Toolkit.GetNativeWindow (transientFor) as NSWindow;
 			if (win != null)
 				return sortedButtons [(int)this.RunSheetModal (win) - 1000];
 			return sortedButtons [(int)this.RunModal () - 1000];

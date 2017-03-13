@@ -230,11 +230,45 @@ namespace Xwt
 		}
 
 		[Test]
+		public void FontNameWithNumber()
+		{
+			var font = Font.FromName("____FakeTestFont 72");
+			Assert.AreEqual("Arial", font.Family);
+			Assert.AreNotEqual(72d, font.Size); // 72 is part of the font name and not the size
+		}
+
+		[Test]
+		public void FontNameWithNumberAndStyles()
+		{
+			var font = Font.FromName("____FakeTestFont 72 18 Bold");
+			Assert.AreEqual("Arial", font.Family);
+			Assert.AreEqual(18d, font.Size);
+			Assert.AreEqual(FontWeight.Bold, font.Weight);
+		}
+
+		[Test]
+		public void FontNameWithWeight()
+		{
+			var font = Font.FromName("____FakeTestFont Rounded MT Bold");
+			Assert.AreEqual("Arial", font.Family);
+			Assert.AreNotEqual(FontWeight.Bold, font.Weight); // Bold is part of the name and not the weight
+		}
+
+		[Test]
+		public void FontNameWithWeightAndStyles()
+		{
+			var font = Font.FromName("____FakeTestFont Rounded MT Bold Bold 18");
+			Assert.AreEqual("Arial", font.Family);
+			Assert.AreEqual(18d, font.Size);
+			Assert.AreEqual(FontWeight.Bold, font.Weight); // Bold is part of the name and the weight
+		}
+
+		//[Test]
 		public void RenderWeight ()
 		{
 			var font = "Avenir Next";
 
-			InitBlank (150, 200);
+			InitBlank (250, 400);
 			TextLayout la = new TextLayout ();
 			double y = 0;
 

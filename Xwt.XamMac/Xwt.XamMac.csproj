@@ -7,6 +7,10 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.Mac</RootNamespace>
     <AssemblyName>Xwt.XamMac</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -20,11 +24,16 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>False</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <XamMacPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\x86_64\full\Xamarin.Mac.dll</XamMacPath>
+    <XamMacPath Condition="Exists('$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll')">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll</XamMacPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -33,7 +42,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="Xamarin.Mac">
-      <HintPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\i386\full\Xamarin.Mac.dll</HintPath>
+      <HintPath>$(XamMacPath)</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +131,8 @@
     <Compile Include="Xwt.Mac\OutlineViewBackend.cs" />
     <Compile Include="Xwt.Mac\CalendarBackend.cs" />
     <Compile Include="Xwt.Mac\SelectFontDialogBackend.cs" />
+    <Compile Include="Xwt.Mac\NSApplicationInitializer.cs" />
+    <Compile Include="Xwt.Mac\GtkQuartz.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -146,17 +157,53 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <EmbeddedResource Include="icons\zoom-in.png">
-      <LogicalName>zoom-in.png</LogicalName>
+    <EmbeddedResource Include="icons\zoom-in-16.png">
+      <LogicalName>zoom-in-16.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="icons\zoom-in%402x.png">
-      <LogicalName>zoom-in@2x.png</LogicalName>
+    <EmbeddedResource Include="icons\zoom-in-16%402x.png">
+      <LogicalName>zoom-in-16@2x.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="icons\zoom-out.png">
-      <LogicalName>zoom-out.png</LogicalName>
+    <EmbeddedResource Include="icons\zoom-in-16~dark.png">
+      <LogicalName>zoom-in-16~dark.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="icons\zoom-out%402x.png">
-      <LogicalName>zoom-out@2x.png</LogicalName>
+    <EmbeddedResource Include="icons\zoom-in-16~dark%402x.png">
+      <LogicalName>zoom-in-16~dark@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-in-16~dark~sel.png">
+      <LogicalName>zoom-in-16~dark~sel.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-in-16~dark~sel%402x.png">
+      <LogicalName>zoom-in-16~dark~sel@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-in-16~sel.png">
+      <LogicalName>zoom-in-16~sel.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-in-16~sel%402x.png">
+      <LogicalName>zoom-in-16~sel@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out-16.png">
+      <LogicalName>zoom-out-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out-16%402x.png">
+      <LogicalName>zoom-out-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out-16~dark.png">
+      <LogicalName>zoom-out-16~dark.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out-16~dark%402x.png">
+      <LogicalName>zoom-out-16~dark@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out-16~dark~sel.png">
+      <LogicalName>zoom-out-16~dark~sel.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out-16~dark~sel%402x.png">
+      <LogicalName>zoom-out-16~dark~sel@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out-16~sel.png">
+      <LogicalName>zoom-out-16~sel.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\zoom-out-16~sel%402x.png">
+      <LogicalName>zoom-out-16~sel@2x.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

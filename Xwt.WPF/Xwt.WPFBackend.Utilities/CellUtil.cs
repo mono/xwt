@@ -89,7 +89,10 @@ namespace Xwt.WPFBackend.Utilities
 				else
 				{
 					factory = new FrameworkElementFactory(typeof(SWC.TextBlock));
-					if (textView.TextField != null)
+
+					if (textView.MarkupField != null)
+						factory.SetBinding(SWC.TextBlock.TextProperty, new Binding(dataPath + "[" + textView.MarkupField.Index + "]") { Converter = new MarkupToPlainTextConverter () });
+					else if (textView.TextField != null)
 						factory.SetBinding(SWC.TextBlock.TextProperty, new Binding(dataPath + "[" + textView.TextField.Index + "]"));
 					else
 						factory.SetValue(SWC.TextBlock.TextProperty, textView.Text);

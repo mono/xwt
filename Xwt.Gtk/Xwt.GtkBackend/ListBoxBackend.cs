@@ -69,31 +69,6 @@ namespace Xwt.GtkBackend
 			foreach (var v in views)
 				CellUtil.CreateCellRenderer (ApplicationContext, Frontend, this, theColumn, v);
 		}
-		
-		public override void EnableEvent (object eventId)
-		{
-			base.EnableEvent (eventId);
-			if (eventId is TableViewEvent) {
-				if (((TableViewEvent)eventId) == TableViewEvent.SelectionChanged)
-					Widget.Selection.Changed += HandleWidgetSelectionChanged;
-			}
-		}
-		
-		public override void DisableEvent (object eventId)
-		{
-			base.DisableEvent (eventId);
-			if (eventId is TableViewEvent) {
-				if (((TableViewEvent)eventId) == TableViewEvent.SelectionChanged)
-					Widget.Selection.Changed -= HandleWidgetSelectionChanged;
-			}
-		}
-
-		void HandleWidgetSelectionChanged (object sender, EventArgs e)
-		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnSelectionChanged ();
-			});
-		}
 	}
 }
 

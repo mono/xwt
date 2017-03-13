@@ -25,17 +25,9 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-#else
-using Foundation;
 using AppKit;
-#endif
+using Foundation;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -107,7 +99,7 @@ namespace Xwt.Mac
 			var range = new NSRange (0, attrStr.Length);
 
 			var singleUnderlineStyle = NSNumber.FromInt32 ((int)NSUnderlineStyle.Single);
-			attrStr.AddAttribute (NSStringAttributeKey.ForegroundColor, NSColor.Blue, range);
+			attrStr.AddAttribute (NSStringAttributeKey.ForegroundColor, Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToNSColor (), range);
 			attrStr.AddAttribute (NSStringAttributeKey.UnderlineStyle, singleUnderlineStyle, range);
 
 			return attrStr;

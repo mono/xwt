@@ -1,18 +1,5 @@
-using System;
-using Xwt.Backends;
-using Xwt.Drawing;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-#else
-using Foundation;
 using AppKit;
-using ObjCRuntime;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {

@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Xwt.Backends;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Xwt
 {
@@ -74,9 +75,17 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Gets or sets the name of this component.
+		/// </summary>
+		/// <value>The components name.</value>
+		/// <remarks>The name can be used to identify this component by e.g. designers.</remarks>
+		[DefaultValue (null)]
+		virtual public string Name { get; set; }
+
+		/// <summary>
 		/// A value, that can be used to identify this component
 		/// </summary>
-		public object Tag { get; set; }
+		virtual public object Tag { get; set; }
 
 		/// <summary>
 		/// Maps an event handler of an Xwt component to an event identifier.
@@ -101,11 +110,44 @@ namespace Xwt
 				throw new InvalidConstructorInvocation (typeof(T));
 		}
 
+
+		/// <summary>
+		/// Invokes an action in the GUI thread.
+		/// </summary>
+		public Task InvokeAsync(Action action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+			var dispatcher = backendHost.Backend as IDispatcherBackend;
+			if (dispatcher != null)
+				return dispatcher.InvokeAsync(() => backendHost.ToolkitEngine.InvokeAndThrow(action));
+			return Application.InvokeAsync(() => backendHost.ToolkitEngine.InvokeAndThrow(action));
+		}
+
+		/// <summary>
+		/// Invokes a function in the GUI thread.
+		/// </summary>
+		public Task<T> InvokeAsync<T>(Func<T> func)
+		{
+			if (func == null)
+				throw new ArgumentNullException(nameof(func));
+			Func<T> funcCall = () =>
+					{
+						T result = default(T);
+						backendHost.ToolkitEngine.InvokeAndThrow(() => result = func());
+						return result;
+					};
+			var dispatcher = backendHost.Backend as IDispatcherBackend;
+			if (dispatcher != null)
+				return dispatcher.InvokeAsync(funcCall);
+			return Application.InvokeAsync(funcCall);
+		}
+
 		#region ISynchronizeInvoke implementation
 
 		IAsyncResult ISynchronizeInvoke.BeginInvoke (Delegate method, object[] args)
 		{
-			var asyncResult = new AsyncInvokeResult ();
+			var asyncResult = new AsyncInvokeResult (backendHost.Backend);
 			asyncResult.Invoke (method, args);
 			return asyncResult;
 		}
@@ -141,24 +183,30 @@ namespace Xwt
 	class AsyncInvokeResult : IAsyncResult
 	{
 		ManualResetEventSlim asyncResetEvent = new ManualResetEventSlim (false);
+		IDispatcherBackend dispatcher;
 
-		public AsyncInvokeResult ()
+		public AsyncInvokeResult(IBackend backend)
 		{
-			this.asyncResetEvent = new ManualResetEventSlim ();
+			dispatcher = backend as IDispatcherBackend;
+			this.asyncResetEvent = new ManualResetEventSlim();
 		}
 
 		internal void Invoke (Delegate method, object[] args)
 		{
-			Application.Invoke (delegate {
+			Action methodCall = () => {
 				try {
 					AsyncState = method.DynamicInvoke(args);
-				} catch (Exception ex){
+				} catch (Exception ex) {
 					Exception = ex;
 				} finally {
 					IsCompleted = true;
 					asyncResetEvent.Set ();
 				}
-			});
+			};
+			if (dispatcher != null)
+				dispatcher.InvokeAsync (methodCall);
+			else
+				Application.Invoke (methodCall);
 		}
 
 		#region IAsyncResult implementation

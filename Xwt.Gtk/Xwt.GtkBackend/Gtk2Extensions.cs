@@ -145,6 +145,46 @@ namespace Xwt.GtkBackend
 				widget.ModifyBg (Gtk.StateType.Normal, color.ToGtkValue ());
 		}
 
+		public static Xwt.Drawing.Color GetForegroundColor (this Gtk.Widget widget)
+		{
+			return widget.GetForegroundColor (Gtk.StateType.Normal);
+		}
+
+		public static Xwt.Drawing.Color GetForegroundColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			return widget.Style.Foreground (state).ToXwtValue ();
+		}
+
+		public static void SetForegroundColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
+		{
+			widget.SetForegroundColor (Gtk.StateType.Normal, color);
+		}
+
+		public static void SetForegroundColor (this Gtk.Widget widget, Gtk.StateType state, Xwt.Drawing.Color color)
+		{
+			widget.ModifyFg (state, color.ToGtkValue ());
+		}
+
+		public static Xwt.Drawing.Color GetTextColor (this Gtk.Widget widget)
+		{
+			return widget.GetTextColor (Gtk.StateType.Normal);
+		}
+
+		public static Xwt.Drawing.Color GetTextColor (this Gtk.Widget widget, Gtk.StateType state)
+		{
+			return widget.Style.Text (state).ToXwtValue ();
+		}
+
+		public static void SetTextColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
+		{
+			widget.SetTextColor (Gtk.StateType.Normal, color);
+		}
+
+		public static void SetTextColor (this Gtk.Widget widget, Gtk.StateType state, Xwt.Drawing.Color color)
+		{
+			widget.ModifyText (state, color.ToGtkValue ());
+		}
+
 		public static string GetText (this Gtk.TextInsertedArgs args)
 		{
 			return args.Text;

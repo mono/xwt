@@ -24,18 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using Xwt.Backends;
 using System;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-#else
-using Foundation;
 using AppKit;
-#endif
+using CoreGraphics;
+using Foundation;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -60,7 +53,8 @@ namespace Xwt.Mac
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else {
 				var view = new CustomTextField (EventSink, ApplicationContext);
-				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view);
+				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view) { DrawsBackground = false };
+				Container.ExpandVertically = true;
 				MultiLine = false;
 			}
 			Widget.StringValue = string.Empty;
@@ -123,6 +117,8 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.Editable = !value;
+				if (value)
+					Widget.AbortEditing ();
 			}
 		}
 
@@ -148,7 +144,7 @@ namespace Xwt.Mac
 			get {
 				if (Widget is MacComboBox)
 					return false;
-				return Widget.Cell.UsesSingleLineMode;
+				return !Widget.Cell.UsesSingleLineMode;
 			}
 			set {
 				if (Widget is MacComboBox)
@@ -162,7 +158,6 @@ namespace Xwt.Mac
 					Widget.Cell.Scrollable = true;
 					Widget.Cell.Wraps = false;
 				}
-				Container.ExpandVertically = value;
 			}
 		}
 
@@ -239,6 +234,10 @@ namespace Xwt.Mac
 			}
 		}
 
+		public bool HasCompletions {
+			get { return false; }
+		}
+
 		public void SetCompletions (string[] completions)
 		{
 		}
@@ -275,13 +274,26 @@ namespace Xwt.Mac
 			}
 		}
 		#endregion
+
+		public override Drawing.Color BackgroundColor {
+			get {
+				return Widget.BackgroundColor.ToXwtColor ();
+			}
+			set {
+				Widget.BackgroundColor = value.ToNSColor ();
+				Widget.Cell.DrawsBackground = true;
+				Widget.Cell.BackgroundColor = value.ToNSColor ();
+			}
+		}
 	}
 	
 	class CustomTextField: NSTextField, IViewObject
 	{
 		ITextEntryEventSink eventSink;
 		ApplicationContext context;
+		#pragma warning disable CS0414 // The private field is assigned but its value is never used
 		CustomCell cell;
+		#pragma warning disable CS0414
 
 		public CustomTextField (ITextEntryEventSink eventSink, ApplicationContext context)
 		{
@@ -290,8 +302,6 @@ namespace Xwt.Mac
 			this.Cell = cell = new CustomCell {
 				BezelStyle = NSTextFieldBezelStyle.Square,
 				Bezeled = true,
-				DrawsBackground = true,
-				BackgroundColor = NSColor.White,
 				Editable = true,
 				EventSink = eventSink,
 				Context = context,
@@ -318,6 +328,7 @@ namespace Xwt.Mac
 		class CustomCell : NSTextFieldCell
 		{
 			CustomEditor editor;
+			NSObject selChangeObserver;
 			public ApplicationContext Context {
 				get; set;
 			}
@@ -339,11 +350,46 @@ namespace Xwt.Mac
 						EventSink = this.EventSink,
 						FieldEditor = true,
 						Editable = true,
-						DrawsBackground = true,
-						BackgroundColor = NSColor.White,
 					};
+					selChangeObserver = NSNotificationCenter.DefaultCenter.AddObserver (new NSString ("NSTextViewDidChangeSelectionNotification"), HandleSelectionDidChange, editor);
 				}
 				return editor;
+			}
+
+			void HandleSelectionDidChange (NSNotification notif)
+			{
+				Context.InvokeUserCode (delegate {
+					EventSink.OnSelectionChanged ();
+				});
+			}
+
+			public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
+			{
+				base.DrawInteriorWithFrame (VerticalCenteredRectForBounds(cellFrame), inView);
+			}
+
+			public override void EditWithFrame (CGRect aRect, NSView inView, NSText editor, NSObject delegateObject, NSEvent theEvent)
+			{
+				base.EditWithFrame (VerticalCenteredRectForBounds(aRect), inView, editor, delegateObject, theEvent);
+			}
+
+			public override void SelectWithFrame (CGRect aRect, NSView inView, NSText editor, NSObject delegateObject, nint selStart, nint selLength)
+			{
+				base.SelectWithFrame (VerticalCenteredRectForBounds(aRect), inView, editor, delegateObject, selStart, selLength);
+			}
+
+			CGRect VerticalCenteredRectForBounds (CGRect aRect)
+			{
+				// multiline entries should always align on top
+				if (!UsesSingleLineMode)
+					return aRect;
+
+				var textHeight = CellSizeForBounds (aRect).Height;
+				var offset = (aRect.Height - textHeight) / 2;
+				if (offset <= 0) // do nothing if the frame is too small
+					return aRect;
+				var rect = new Rectangle (aRect.X, aRect.Y, aRect.Width, aRect.Height).Inflate (0.0, -offset);
+				return rect.ToCGRect ();
 			}
 		}
 

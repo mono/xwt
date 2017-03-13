@@ -28,9 +28,11 @@ using System.Runtime.InteropServices;
 
 namespace Xwt.GtkBackend.WebKit
 {
-
-
+	#if XWT_GTK3
+	public class WebView : Gtk.Container, Gtk.IScrollable
+	#else
 	public class WebView : Gtk.Container
+	#endif
 	{
 		public WebView(IntPtr raw) : base(raw)
 		{
@@ -72,6 +74,92 @@ namespace Xwt.GtkBackend.WebKit
 				webkit_web_view_set_full_content_zoom(Handle, value);
 			}
 		}
+
+		[GLib.Property ("self-scrolling")]
+		public bool SelfScrolling {
+			get {
+				using (GLib.Value property = GetProperty ("self-scrolling")) {
+					return (bool) property.Val;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("self-scrolling", val);
+				}
+			}
+		}
+
+		[GLib.Property ("transparent")]
+		public bool Transparent {
+			get {
+				using (GLib.Value property = GetProperty ("transparent")) {
+					return (bool)property.Val;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("transparent", val);
+				}
+			}
+		}
+
+		#if XWT_GTK3 // Gtk.IScrollable
+		[GLib.Property ("hadjustment")]
+		public Gtk.Adjustment Hadjustment {
+			get {
+				using (GLib.Value property = GetProperty ("hadjustment")) {
+					return property.Val as Gtk.Adjustment;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("hadjustment", val);
+				}
+			}
+		}
+
+		[GLib.Property ("vadjustment")]
+		public Gtk.Adjustment Vadjustment {
+			get {
+				using (GLib.Value property = GetProperty ("vadjustment")) {
+					return property.Val as Gtk.Adjustment;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("vadjustment", val);
+				}
+			}
+		}
+
+		[GLib.Property ("hscroll-policy")]
+		public Gtk.ScrollablePolicy HscrollPolicy {
+			get {
+				using (GLib.Value property = GetProperty ("hscroll-policy")) {
+					return (Gtk.ScrollablePolicy)property.Val;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("hscroll-policy", val);
+				}
+			}
+		}
+
+		[GLib.Property ("vscroll-policy")]
+		public Gtk.ScrollablePolicy VscrollPolicy {
+			get {
+				using (GLib.Value property = GetProperty ("vscroll-policy")) {
+					return (Gtk.ScrollablePolicy)property.Val;
+				}
+			}
+			set {
+				using (GLib.Value val = new GLib.Value (value)) {
+					SetProperty ("vscroll-policy", val);
+				}
+			}
+		}
+		#endif
 
 		public void StopLoading() {
 			webkit_web_view_stop_loading(Handle);
@@ -154,6 +242,16 @@ namespace Xwt.GtkBackend.WebKit
 			}
 			remove {
 				this.RemoveSignalHandler ("title-changed", value);
+			}
+		}
+
+		[GLib.Signal ("context-menu")]
+		public event EventHandler<ContextMenuArgs> ContextMenu {
+			add {
+				this.AddSignalHandler ("context-menu", value, typeof (ContextMenuArgs));
+			}
+			remove {
+				this.RemoveSignalHandler ("context-menu", value);
 			}
 		}
 
@@ -319,6 +417,30 @@ namespace Xwt.GtkBackend.WebKit
 		{
 			get {
 				return (string)Args [1];
+			}
+		}
+	}
+
+	public class ContextMenuArgs : GLib.SignalArgs
+	{
+		public Gtk.Widget DefaultMenu {
+			get {
+				return Args [0] as Gtk.Widget;
+			}
+			set {
+				Args [0] = value;
+			}
+		}
+
+		public GLib.Object HitTestResult {
+			get {
+				return Args [1] as GLib.Object;
+			}
+		}
+
+		public bool TriggeredWithKeyboard {
+			get {
+				return (bool)Args [2];
 			}
 		}
 	}

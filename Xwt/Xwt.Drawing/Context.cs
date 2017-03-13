@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Xwt.Backends;
 
@@ -35,15 +36,31 @@ namespace Xwt.Drawing
 		ContextBackendHandler handler;
 		Pattern pattern;
 		double globalAlpha = 1;
-		Stack<double> alphaStack = new Stack<double> ();
+		StyleSet styles;
+
+		static HashSet<string> registeredStyles = new HashSet<string> ();
+		static StyleSet globalStyles = StyleSet.Empty;
+
+		Stack<SavedContext> contextStack = new Stack<SavedContext> ();
+
+		class SavedContext
+		{
+			public double Alpha;
+			public StyleSet Styles;
+		}
 		
 		internal Context (object backend, Toolkit toolkit): this (backend, toolkit, toolkit.ContextBackendHandler)
 		{
 		}
 
-		internal Context (object backend, Toolkit toolkit, ContextBackendHandler handler): base (backend, toolkit, handler)
+		internal Context (object backend, Toolkit toolkit, ContextBackendHandler handler, bool getGlobalStyles = true): base (backend, toolkit, handler)
 		{
 			this.handler = handler;
+			if (getGlobalStyles) {
+				styles = globalStyles;
+				if (styles != StyleSet.Empty)
+					handler.SetStyles (Backend, styles);
+			}
 		}
 
 		internal ContextBackendHandler Handler {
@@ -63,14 +80,23 @@ namespace Xwt.Drawing
 		public void Save ()
 		{
 			handler.Save (Backend);
-			alphaStack.Push (globalAlpha);
+			contextStack.Push (new SavedContext {
+				Alpha = globalAlpha,
+				Styles = styles,
+			});
 		}
 		
 		public void Restore ()
 		{
 			handler.Restore (Backend);
-			if (alphaStack.Count > 0)
-				globalAlpha = alphaStack.Pop ();
+			if (contextStack.Count > 0) {
+				var info = contextStack.Pop ();
+				globalAlpha = info.Alpha;
+				if (styles != info.Styles) {
+					styles = info.Styles;
+					handler.SetStyles (Backend, styles);
+				}
+			}
 		}
 		
 		public double GlobalAlpha {
@@ -80,7 +106,52 @@ namespace Xwt.Drawing
 				handler.SetGlobalAlpha (Backend, globalAlpha);
 			}
 		}
+
+		internal void SetStyles (StyleSet styles)
+		{
+			this.styles = this.styles.AddRange (styles.Intersect (RegisteredStyles).ToArray ());
+			this.styles = this.styles.RemoveAll (styles.Where (s => s.StartsWith ("-", StringComparison.Ordinal)).Select (s => s.TrimStart ('-')).ToArray ());
+			handler.SetStyles (Backend, this.styles);
+		}
+
+		public void SetStyle (string style)
+		{
+			if (string.IsNullOrEmpty (style))
+				throw new ArgumentException ("style can't be empty");
+			
+			if (style[0] == '!')
+				styles = styles.Remove (style.Substring (1));
+			else
+				styles = styles.Add (style);
+			handler.SetStyles (Backend, styles);
+		}
 		
+		public void ClearStyle (string style)
+		{
+			if (string.IsNullOrEmpty (style))
+				throw new ArgumentException ("style can't be empty");
+
+			styles = styles.Remove (style);
+			handler.SetStyles (Backend, styles);
+		}
+
+		public void ClearAllStyles ()
+		{
+			styles = StyleSet.Empty;
+			handler.SetStyles (Backend, styles);
+		}
+
+		public bool HasStyle (string name)
+		{
+			return styles.Contains (name);
+		}
+
+		public IEnumerable<string> Styles {
+			get {
+				return styles;
+			}
+		}
+
 		public void SetColor (Color color)
 		{
 			handler.SetColor (Backend, color);
@@ -363,6 +434,55 @@ namespace Xwt.Drawing
 		internal double ScaleFactor {
 			get { return handler.GetScaleFactor (Backend); }
 		}
+
+		public static void RegisterStyles (params string[] styleNames)
+		{
+			registeredStyles.UnionWith (styleNames);
+		}
+
+		public static void UnregisterStyles (params string[] styleNames)
+		{
+			registeredStyles.ExceptWith (styleNames);
+		}
+
+		public static bool HasGlobalStyle (string style)
+		{
+			return globalStyles.Contains (style);
+		}
+
+		public static void SetGlobalStyle (string style)
+		{
+			// Make a copy of the collection since it may be referenced from context instances,
+			// which don't expect the collection to change
+			globalStyles = globalStyles.Add (style);
+			NotifyGlobalStylesChanged ();
+		}
+
+		public static void ClearGlobalStyle (string style)
+		{
+			globalStyles = globalStyles.Remove (style);
+			NotifyGlobalStylesChanged ();
+		}
+
+		public static IEnumerable<string> RegisteredStyles {
+			get {
+				return registeredStyles;
+			}
+		}
+
+		public static IEnumerable<string> GlobalStyles {
+			get {
+				return globalStyles;
+			}
+		}
+
+		static void NotifyGlobalStylesChanged ()
+		{
+			if (GlobalStylesChanged != null)
+				GlobalStylesChanged (null, EventArgs.Empty);
+		}
+
+		public static event EventHandler GlobalStylesChanged;
 	}
 }
 

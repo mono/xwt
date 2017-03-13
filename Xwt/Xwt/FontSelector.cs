@@ -175,7 +175,7 @@ namespace Xwt
 			spnSize.MinimumValue = 1;
 			spnSize.MaximumValue = 800;
 			spnSize.IncrementValue = 1;
-			PreviewText = "The quick brown fox jumps over the lazy dog.";
+			PreviewText = Application.TranslationCatalog.GetString("The quick brown fox jumps over the lazy dog.");
 
 			spnSize.ValueChanged += (sender, e) => {
 				if (DefaultFontSizes.Contains (spnSize.Value)) {
@@ -211,15 +211,15 @@ namespace Xwt
 			};
 
 			VBox familyBox = new VBox ();
-			familyBox.PackStart (new Label ("Font:"));
+			familyBox.PackStart (new Label (Application.TranslationCatalog.GetString("Font:")));
 			familyBox.PackStart (listFonts, true);
 
 			VBox styleBox = new VBox ();
-			styleBox.PackStart (new Label ("Style:"));
+			styleBox.PackStart (new Label (Application.TranslationCatalog.GetString("Style:")));
 			styleBox.PackStart (listFace, true);
 
 			VBox sizeBox = new VBox ();
-			sizeBox.PackStart (new Label ("Size:"));
+			sizeBox.PackStart (new Label (Application.TranslationCatalog.GetString("Size:")));
 			sizeBox.PackStart (spnSize);
 			sizeBox.PackStart (listSize, true);
 
@@ -232,7 +232,7 @@ namespace Xwt
 			mainBox.MinWidth = 350;
 			mainBox.MinHeight = 300;
 			mainBox.PackStart (fontBox, true);
-			mainBox.PackStart (new Label ("Preview:"));
+			mainBox.PackStart (new Label (Application.TranslationCatalog.GetString("Preview:")));
 			mainBox.PackStart (previewText);
 
 			Content = mainBox;

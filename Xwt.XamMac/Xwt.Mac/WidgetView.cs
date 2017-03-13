@@ -26,19 +26,9 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.CoreGraphics;
-using MonoMac.AppKit;
-using CGRect = System.Drawing.RectangleF;
-using CGSize = System.Drawing.SizeF;
-#else
 using AppKit;
 using CoreGraphics;
-#endif
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
@@ -57,6 +47,7 @@ namespace Xwt.Mac
 		{
 			this.context = context;
 			this.eventSink = eventSink;
+			DrawsBackground = true;
 		}
 
 		public ViewBackend Backend { get; set; }
@@ -64,6 +55,8 @@ namespace Xwt.Mac
 		public NSView View {
 			get { return this; }
 		}
+
+		public bool DrawsBackground { get; set; }
 
 		public override bool IsFlipped {
 			get {
@@ -78,11 +71,13 @@ namespace Xwt.Mac
 
 		public override void DrawRect (CGRect dirtyRect)
 		{
-			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+			if (DrawsBackground) {
+				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 
-			//fill BackgroundColor
-			ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
-			ctx.FillRect (Bounds);
+				//fill BackgroundColor
+				ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
+				ctx.FillRect (Bounds);
+			}
 		}
 
 		public override void UpdateTrackingAreas ()
@@ -99,7 +94,9 @@ namespace Xwt.Mac
 
 		public override void RightMouseDown (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
@@ -111,7 +108,9 @@ namespace Xwt.Mac
 
 		public override void RightMouseUp (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
@@ -123,7 +122,9 @@ namespace Xwt.Mac
 
 		public override void MouseDown (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
@@ -135,7 +136,9 @@ namespace Xwt.Mac
 
 		public override void MouseUp (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
 			args.Y = p.Y;
@@ -161,7 +164,9 @@ namespace Xwt.Mac
 
 		public override void MouseMoved (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
 			context.InvokeUserCode (delegate {
 				eventSink.OnMouseMoved (args);
@@ -170,7 +175,9 @@ namespace Xwt.Mac
 
 		public override void MouseDragged (NSEvent theEvent)
 		{
-			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
+			CGPoint p = this.ConvertPointFromEvent(theEvent);
+			if (!Bounds.Contains(p))
+				return;
 			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
 			context.InvokeUserCode (delegate {
 				eventSink.OnMouseMoved (args);

@@ -31,7 +31,7 @@ using System.Globalization;
 namespace Xwt {
 
 	[Serializable]
-	public struct Point {
+	public struct Point : IEquatable<Point> {
 
 		public double X { get; set; }
 		public double Y { get; set; }
@@ -61,6 +61,11 @@ namespace Xwt {
 				return false;
 		
 			return (this == (Point) o);
+		}
+
+		public bool Equals(Point other)
+		{
+			return this == other;
 		}
 		
 		public override int GetHashCode ()

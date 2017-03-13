@@ -3,8 +3,10 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Konrad M. Kruczynski <kkruczynski@antmicro.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
+// Copyright (c) 2016 Antmicro Ltd
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -151,6 +153,19 @@ namespace Xwt
 		protected new WindowBackendHost BackendHost {
 			get { return (WindowBackendHost) base.BackendHost; }
 		}
+
+		/// <summary>
+		/// Gets or sets the name (not title) of this window.
+		/// </summary>
+		/// <value>The window name.</value>
+		/// <remarks>The name can be used to identify this window by e.g. designers.
+		/// The name of the window is not visible to the user. Use the Title property
+		/// to modify the visible window title.</remarks>
+		[DefaultValue (null)]
+		public override string Name {
+			get { return Backend.Name; }
+			set { Backend.Name = value; }
+		}
 		
 		public Rectangle ScreenBounds {
 			get {
@@ -269,6 +284,10 @@ namespace Xwt
 			get { return Backend.Opacity; }
 			set { Backend.Opacity = value; }
 		}
+
+		public bool HasFocus {
+			get { return Backend.HasFocus; }
+		}
 		
 		/// <summary>
 		/// Gets or sets a value indicating whether this window is iconified (true) or normal (false).
@@ -371,6 +390,8 @@ namespace Xwt
 		/// </summary>
 		public void Present ()
 		{
+			if (!Visible)
+				AdjustSize ();
 			Backend.Present ();
 		}
 

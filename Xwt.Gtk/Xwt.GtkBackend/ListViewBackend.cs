@@ -96,6 +96,13 @@ namespace Xwt.GtkBackend
 			ScrollToRow (it);
 		}
 
+		public void StartEditingCell (int row, CellView cell)
+		{
+			var col = GetCellColumn (cell);
+			if (col != null)
+				Widget.SetCursor (new Gtk.TreePath (new [] { row }), col, true);
+		}
+
 		public int[] SelectedRows {
 			get {
 				var sel = Widget.Selection.GetSelectedRows ();

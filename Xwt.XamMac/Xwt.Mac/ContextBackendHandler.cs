@@ -26,24 +26,11 @@
 // THE SOFTWARE.
 
 using System;
-using Xwt.Backends;
-
-using Xwt.Drawing;
-using System.Drawing;
 using System.Collections.Generic;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.CoreGraphics;
-using MonoMac.AppKit;
-#else
-using CoreGraphics;
 using AppKit;
-#endif
+using CoreGraphics;
+using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -54,6 +41,7 @@ namespace Xwt.Mac
 		public Stack<ContextStatus> StatusStack = new Stack<ContextStatus> ();
 		public ContextStatus CurrentStatus = new ContextStatus ();
 		public double ScaleFactor = 1;
+		public StyleSet Styles;
 	}
 
 	class ContextStatus
@@ -91,6 +79,11 @@ namespace Xwt.Mac
 		public override void SetGlobalAlpha (object backend, double alpha)
 		{
 			((CGContextBackend)backend).Context.SetAlpha ((float)alpha);
+		}
+
+		public override void SetStyles (object backend, StyleSet styles)
+		{
+			((CGContextBackend)backend).Styles = styles;
 		}
 
 		public override void Arc (object backend, double xc, double yc, double radius, double angle1, double angle2)
@@ -298,8 +291,14 @@ namespace Xwt.Mac
 
 		public override void DrawImage (object backend, ImageDescription img, Rectangle srcRect, Rectangle destRect)
 		{
-			CGContext ctx = ((CGContextBackend)backend).Context;
+			var cb = (CGContextBackend)backend;
+			CGContext ctx = cb.Context;
+
+			// Add the styles that have been globaly set to the context
+			img.Styles = img.Styles.AddRange (cb.Styles);
+			
 			NSImage image = img.ToNSImage ();
+
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)img.Alpha);
 

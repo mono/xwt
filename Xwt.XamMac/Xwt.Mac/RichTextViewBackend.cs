@@ -23,38 +23,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
-
-
-using Xwt;
-using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nuint = System.UInt32;
-using nfloat = System.Single;
-using CGRect = System.Drawing.RectangleF;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-#else
-using Foundation;
 using AppKit;
-using ObjCRuntime;
 using CoreGraphics;
-#endif
+using Foundation;
+using ObjCRuntime;
+using Xwt.Backends;
 
 namespace Xwt.Mac
 {
 	public class RichTextViewBackend : ViewBackend <NSTextView, IRichTextViewEventSink>, IRichTextViewBackend
 	{
 		NSFont font;
+		MacRichTextBuffer currentBuffer;
 
 		public override object Font {
 			get { return base.Font; }
@@ -79,6 +65,9 @@ namespace Xwt.Mac
 			ViewObject = tv;
 			tv.VerticallyResizable = false;
 			tv.HorizontallyResizable = false;
+			// Use cached font since Widget.Font size increases for each LoadText... It has to do
+			// with the 'style' attribute for the 'body' element - not sure why that happens
+			font = tv.Font;
 		}
 
 		double CalcHeight (double width)
@@ -109,22 +98,76 @@ namespace Xwt.Mac
 
 		public IRichTextBuffer CreateBuffer ()
 		{
-			// Use cached font since Widget.Font size increases for each LoadText... It has to do
-			// with the 'style' attribute for the 'body' element - not sure why that happens
-			return new MacRichTextBuffer (font ?? Widget.Font);
+			return new MacRichTextBuffer ();
 		}
-		
+
+		public bool ReadOnly { 
+			get { 
+				return !Widget.Editable;
+			}
+			set {
+				Widget.Editable = !value;
+			}
+		}
+
+		public bool Selectable {
+			get {
+				return Widget.Selectable;
+			}
+			set {
+				Widget.Selectable = value;
+				// force NSTextView not to draw its (white) background
+				// making it look like a label, which is the default Gtk/Wpf behaviour
+				// the background color can still be set manually with the BackgroundColor property
+				Widget.DrawsBackground = value;
+			}
+		}
+
+		public override Drawing.Color BackgroundColor {
+			get {
+				return base.BackgroundColor;
+			}
+			set {
+				base.BackgroundColor = value;
+				Widget.BackgroundColor = value.ToNSColor ();
+			}
+		}
+
+		int? lineSpacing = null;
+		public int LineSpacing {
+			get {
+				return lineSpacing.HasValue ? (int)lineSpacing : 0;
+			}
+			set {
+				lineSpacing = value;
+
+				if (currentBuffer != null)
+					Widget.TextStorage.SetString (currentBuffer.ToAttributedString (font, lineSpacing));
+			}
+		}
+
+		public IRichTextBuffer CurrentBuffer {
+			get {
+				return currentBuffer;
+			}
+			private set {
+				if (currentBuffer != null)
+					currentBuffer.Dispose ();
+				currentBuffer = value as MacRichTextBuffer;
+			}
+		}
+
 		public void SetBuffer (IRichTextBuffer buffer)
 		{
 			var macBuffer = buffer as MacRichTextBuffer;
 			if (macBuffer == null)
 				throw new ArgumentException ("Passed buffer is of incorrect type", "buffer");
-
+			CurrentBuffer = macBuffer;
 			var tview = ViewObject as MacTextView;
 			if (tview == null)
 				return;
 
-			tview.TextStorage.SetString (macBuffer.ToAttributedString ());
+			tview.TextStorage.SetString (macBuffer.ToAttributedString (font, lineSpacing));
 		}
 
 		public override void EnableEvent (object eventId)
@@ -149,6 +192,13 @@ namespace Xwt.Mac
 			if (tview == null)
 				return;
 			tview.DisableEvent ((RichTextViewEvent)eventId);
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (currentBuffer != null)
+				currentBuffer.Dispose ();
+			base.Dispose (disposing);
 		}
 	}
 
@@ -215,32 +265,108 @@ namespace Xwt.Mac
 			return true;
 		}
 
+		public override void ViewDidMoveToWindow ()
+		{
+			base.ViewDidMoveToWindow ();
+			if (MacSystemInformation.OsVersion < MacSystemInformation.Mavericks)
+				return;
+			// FIXME: the NSAppearance does not define a color for links,
+			//        this may change in the future, but for now use the fallback color
+			if (Window?.EffectiveAppearance?.Name == NSAppearance.NameVibrantDark) {
+				var ns = new NSMutableDictionary (LinkTextAttributes);
+				ns [NSStringAttributeKey.ForegroundColor] = Backend.Frontend.Surface.ToolkitEngine.Defaults.FallbackLinkColor.ToNSColor ();
+				LinkTextAttributes = ns;
+			}
+		}
+
+		public override void MouseUp (NSEvent theEvent)
+		{
+			if (!Selectable) {
+				var uri = GetLinkAtPos (theEvent);
+				string linkUrl = uri?.AbsoluteString ?? null;
+				if (!string.IsNullOrEmpty (linkUrl)) {
+					Uri url = null;
+					if (string.IsNullOrWhiteSpace (linkUrl) || !Uri.TryCreate (linkUrl, UriKind.RelativeOrAbsolute, out url))
+						url = null;
+
+					context.InvokeUserCode (delegate {
+						eventSink.OnNavigateToUrl (url);
+					});
+				}
+			}
+			base.MouseUp (theEvent);
+		}
+
+
+		NSUrl GetLinkAtPos (NSEvent theEvent)
+		{
+			var i = GetCharacterIndex (Window.ConvertRectToScreen (new CGRect (theEvent.LocationInWindow, CGSize.Empty)).Location);
+			if (i >= 0) {
+				NSRange r;
+				var attr = TextStorage.GetAttribute (NSStringAttributeKey.Link, (nint)i, out r) as NSUrl;
+				if (attr != null && r.Length > 0)
+					return attr;
+			}
+			return null;
+		}
+		public override void ResetCursorRects ()
+		{
+			base.ResetCursorRects ();
+			// NSTextView sets the link cursors only in selectable mode
+			// Do the same when Selectable == false
+			if (!Selectable && TextStorage?.Length > 0) {
+				TextStorage.EnumerateAttributes (new NSRange (0, TextStorage.Length), NSAttributedStringEnumeration.None, (NSDictionary attrs, NSRange range, ref bool stop) => {
+					stop = false;
+					if (attrs.ContainsKey (NSStringAttributeKey.Link)) {
+						var rects = RectsForCharacterRange (range);
+						for (nuint i = 0; i < rects.Count; i++)
+							AddCursorRect (rects.GetItem<NSValue> (i).CGRectValue, NSCursor.PointingHandCursor);
+					}
+				});
+			}
+		}
+
 		void CommonInit ()
 		{
 			Editable = false;
 		}
 	}
 
-	class MacRichTextBuffer : IRichTextBuffer
+	class MacRichTextBuffer : IRichTextBuffer, IDisposable
 	{
 		const int HeaderIncrement = 8;
 
 		static readonly string[] lineSplitChars = new string[] { Environment.NewLine };
 		static readonly IntPtr selInitWithHTMLDocumentAttributes_Handle = Selector.GetHandle ("initWithHTML:documentAttributes:");
 
-		StringBuilder text;
-		XmlWriter xmlWriter;
+		readonly StringBuilder text;
+		readonly XmlWriter xmlWriter;
 		Stack <int> paragraphIndent;
 
-		public MacRichTextBuffer (NSFont font)
+		public MacRichTextBuffer ()
 		{
 			text = new StringBuilder ();
 			xmlWriter = XmlWriter.Create (text, new XmlWriterSettings {
 				OmitXmlDeclaration = true,
 				Encoding = Encoding.UTF8,
 				Indent = true,
+				IndentChars = "\t",
+				ConformanceLevel = ConformanceLevel.Fragment
+			});
+		}
+
+		public NSAttributedString ToAttributedString (NSFont font, int? lineSpacing)
+		{
+			xmlWriter.Flush ();
+
+			var finaltext = new StringBuilder ();
+			var finalxmlWriter = XmlWriter.Create (finaltext, new XmlWriterSettings {
+				OmitXmlDeclaration = true,
+				Encoding = Encoding.UTF8,
+				Indent = true,
 				IndentChars = "\t"
 			});
+
 
 			float fontSize;
 			string fontFamily;
@@ -253,31 +379,34 @@ namespace Xwt.Mac
 				fontFamily = "sans-serif";
 			}
 
-			xmlWriter.WriteDocType ("html", "-//W3C//DTD XHTML 1.0", "Strict//EN", null);
-			xmlWriter.WriteStartElement ("html");
-			xmlWriter.WriteStartElement ("meta");
-			xmlWriter.WriteAttributeString ("http-equiv", "Content-Type");
-			xmlWriter.WriteAttributeString ("content", "text/html; charset=utf-8");
-			xmlWriter.WriteEndElement ();
-			xmlWriter.WriteStartElement ("body");
-			xmlWriter.WriteAttributeString ("style", String.Format ("font-family: {0}; font-size: {1}", fontFamily, fontSize));
-		}
+			finalxmlWriter.WriteDocType ("html", "-//W3C//DTD XHTML 1.0", "Strict//EN", null);
+			finalxmlWriter.WriteStartElement ("html");
+			finalxmlWriter.WriteStartElement ("meta");
+			finalxmlWriter.WriteAttributeString ("http-equiv", "Content-Type");
+			finalxmlWriter.WriteAttributeString ("content", "text/html; charset=utf-8");
+			finalxmlWriter.WriteEndElement ();
+			finalxmlWriter.WriteStartElement ("body");
 
-		public NSAttributedString ToAttributedString ()
-		{
-			xmlWriter.WriteEndElement (); // body
-			xmlWriter.WriteEndElement (); // html
-			xmlWriter.Flush ();
-			if (text == null || text.Length == 0)
+			string style = String.Format ("font-family: {0}; font-size: {1}", fontFamily, fontSize);
+			if (lineSpacing.HasValue)
+				style += "; line-height: " + (lineSpacing.Value + fontSize) + "px";
+
+			finalxmlWriter.WriteAttributeString ("style", style);
+			finalxmlWriter.WriteRaw (text.ToString ());
+			finalxmlWriter.WriteEndElement (); // body
+			finalxmlWriter.WriteEndElement (); // html
+			finalxmlWriter.Flush ();
+
+			if (finaltext == null || finaltext.Length == 0)
 				return new NSAttributedString (String.Empty);
 
 			NSDictionary docAttributes;
 			try {
-				return CreateStringFromHTML (text.ToString (), out docAttributes);
+				return CreateStringFromHTML (finaltext.ToString (), out docAttributes);
 			} finally {
-				text = null;
-				xmlWriter.Dispose ();
-				xmlWriter = null;
+				finaltext = null;
+				((IDisposable)finalxmlWriter).Dispose ();
+				finalxmlWriter = null;
 				docAttributes = null;
 			}
 		}
@@ -295,6 +424,12 @@ namespace Xwt.Mac
 			Marshal.FreeHGlobal (docAttributesPtr);
 
 			return attrString;
+		}
+
+		public string PlainText {
+			get {
+				return text.ToString ();
+			}
 		}
 
 		public void EmitText (string text, RichTextInlineStyle style)
@@ -333,6 +468,45 @@ namespace Xwt.Mac
 
 			if (haveStyle)
 				xmlWriter.WriteEndElement ();
+		}
+
+		public void EmitText (FormattedText text)
+		{
+			if (text.Attributes.Count == 0) {
+				EmitText (text.Text, RichTextInlineStyle.Normal);
+				return;
+			}
+			var s = text.ToAttributedString ();
+			var options = new NSAttributedStringDocumentAttributes ();
+			options.DocumentType = NSDocumentType.HTML;
+			var exclude = NSArray.FromObjects (new [] { "doctype", "html", "head", "meta", "xml", "body", "p" });
+			options.Dictionary [NSExcludedElementsDocumentAttribute] = exclude;
+			NSError err;
+			var d = s.GetData (new NSRange (0, s.Length), options, out err);
+			var str = (string)NSString.FromData (d, NSStringEncoding.UTF8);
+
+
+			//bool first = true;
+			foreach (string line in str.Split (lineSplitChars, StringSplitOptions.None)) {
+				//if (!first) {
+				//	xmlWriter.WriteStartElement ("br");
+				//	xmlWriter.WriteEndElement ();
+				//} else
+				//	first = false;
+				xmlWriter.WriteRaw (line);
+			}
+		}
+
+		private static readonly IntPtr _AppKitHandle = Dlfcn.dlopen ("/System/Library/Frameworks/AppKit.framework/AppKit", 0);
+
+		private static NSString _NSExcludedElementsDocumentAttribute;
+		private static NSString NSExcludedElementsDocumentAttribute {
+			get {
+				if (_NSExcludedElementsDocumentAttribute == null) {
+					_NSExcludedElementsDocumentAttribute = Dlfcn.GetStringConstant (_AppKitHandle, "NSExcludedElementsDocumentAttribute");
+				}
+				return _NSExcludedElementsDocumentAttribute;
+			}
 		}
 
 		public void EmitStartHeader (int level)
@@ -422,6 +596,11 @@ namespace Xwt.Mac
 		{
 			xmlWriter.WriteStartElement ("hr");
 			xmlWriter.WriteEndElement ();
+		}
+
+		public void Dispose ()
+		{
+			((IDisposable)xmlWriter).Dispose ();
 		}
 	}
 }
