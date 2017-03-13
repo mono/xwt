@@ -302,7 +302,7 @@ namespace Xwt.Mac
 
 		static Selector applyFontTraits = new Selector ("applyFontTraits:range:");
 
-		public static NSAttributedString ToAttributedString (this FormattedText ft)
+		public static NSMutableAttributedString ToAttributedString (this FormattedText ft)
 		{
 			NSMutableAttributedString ns = new NSMutableAttributedString (ft.Text);
 			ns.BeginEditing ();
@@ -355,6 +355,22 @@ namespace Xwt.Mac
 					ns.AddAttribute (NSStringAttributeKey.Font, nf, r);
 				}
 			}
+			ns.EndEditing ();
+			return ns;
+		}
+
+
+		public static NSMutableAttributedString WithAlignment (this NSMutableAttributedString ns, NSTextAlignment alignment)
+		{
+			if (ns == null)
+				return null;
+			
+			ns.BeginEditing ();
+			var r = new NSRange (0, ns.Length);
+			ns.RemoveAttribute (NSStringAttributeKey.ParagraphStyle, r);
+			var pstyle = NSParagraphStyle.DefaultParagraphStyle.MutableCopy () as NSMutableParagraphStyle;
+			pstyle.Alignment = alignment;
+			ns.AddAttribute (NSStringAttributeKey.ParagraphStyle, pstyle, r);
 			ns.EndEditing ();
 			return ns;
 		}

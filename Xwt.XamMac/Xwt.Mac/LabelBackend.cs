@@ -96,10 +96,10 @@ namespace Xwt.Mac
 			if (Wrap == WrapMode.None)
 				Wrap = WrapMode.Character;
 			Widget.AllowsEditingTextAttributes = true;
-			Widget.AttributedStringValue = text.ToAttributedString ();
-
-			if (TextAlignment != Alignment.Start)
-				SetAlignmentAttribute ();
+			if (TextAlignment == Alignment.Start)
+				Widget.AttributedStringValue = text.ToAttributedString ();
+			else
+				Widget.AttributedStringValue = text.ToAttributedString ().WithAlignment (Widget.Alignment);
 
 			ResetFittingSize ();
 		}
@@ -115,23 +115,9 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.Alignment = value.ToNSTextAlignment ();
-				SetAlignmentAttribute ();
+				if (Widget.AttributedStringValue != null)
+					Widget.AttributedStringValue = (Widget.AttributedStringValue.MutableCopy () as NSMutableAttributedString).WithAlignment (Widget.Alignment);
 			}
-		}
-
-		void SetAlignmentAttribute ()
-		{
-			if (Widget.AttributedStringValue == null)
-				return;
-			var ns = new NSMutableAttributedString (Widget.AttributedStringValue);
-			ns.BeginEditing ();
-			var r = new NSRange (0, ns.Length);
-			ns.RemoveAttribute (NSStringAttributeKey.ParagraphStyle, r);
-			var pstyle = NSParagraphStyle.DefaultParagraphStyle.MutableCopy () as NSMutableParagraphStyle;
-			pstyle.Alignment = Widget.Alignment;
-			ns.AddAttribute (NSStringAttributeKey.ParagraphStyle, pstyle, r);
-			ns.EndEditing ();
-			Widget.AttributedStringValue = ns;
 		}
 		
 		public EllipsizeMode Ellipsize {
