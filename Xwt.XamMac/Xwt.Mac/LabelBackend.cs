@@ -27,6 +27,7 @@
 using System;
 using AppKit;
 using CoreGraphics;
+using Foundation;
 using ObjCRuntime;
 using Xwt.Backends;
 
@@ -95,7 +96,11 @@ namespace Xwt.Mac
 			if (Wrap == WrapMode.None)
 				Wrap = WrapMode.Character;
 			Widget.AllowsEditingTextAttributes = true;
-			Widget.AttributedStringValue = text.ToAttributedString ();
+			if (TextAlignment == Alignment.Start)
+				Widget.AttributedStringValue = text.ToAttributedString ();
+			else
+				Widget.AttributedStringValue = text.ToAttributedString ().WithAlignment (Widget.Alignment);
+
 			ResetFittingSize ();
 		}
 
@@ -110,6 +115,8 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.Alignment = value.ToNSTextAlignment ();
+				if (Widget.AttributedStringValue != null)
+					Widget.AttributedStringValue = (Widget.AttributedStringValue.MutableCopy () as NSMutableAttributedString).WithAlignment (Widget.Alignment);
 			}
 		}
 		
