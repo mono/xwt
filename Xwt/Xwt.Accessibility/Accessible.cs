@@ -32,6 +32,7 @@ namespace Xwt.Accessibility
 	public sealed class Accessible : IFrontend
 	{
 		readonly XwtComponent parentComponent;
+		readonly object parentNativeObject;
 
 		readonly AccessibleBackendHost backendHost;
 
@@ -47,8 +48,11 @@ namespace Xwt.Accessibility
 			
 			protected override void OnBackendCreated ()
 			{
-				var parentBackend = Parent.parentComponent.GetBackend () as IWidgetBackend;
-				Backend.Initialize (parentBackend, this);
+				var parentBackend = Parent.parentComponent?.GetBackend () as IWidgetBackend;
+				if (parentBackend != null)
+					Backend.Initialize (parentBackend, this);
+				else
+					Backend.Initialize (Parent.parentNativeObject, this);
 			}
 
 			public bool OnPress ()
@@ -59,7 +63,18 @@ namespace Xwt.Accessibility
 
 		internal Accessible (Widget parent)
 		{
+			if (parent == null)
+				throw new ArgumentNullException (nameof (parent));
 			parentComponent = parent;
+			backendHost = new AccessibleBackendHost ();
+			backendHost.Parent = this;
+		}
+
+		internal Accessible (object nativeParent)
+		{
+			if (nativeParent == null)
+				throw new ArgumentNullException (nameof (nativeParent));
+			parentNativeObject = nativeParent;
 			backendHost = new AccessibleBackendHost ();
 			backendHost.Parent = this;
 		}

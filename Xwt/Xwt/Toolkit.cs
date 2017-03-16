@@ -588,6 +588,11 @@ namespace Xwt
 			return new Context (backend.GetBackendForContext (nativeWidget, nativeContext), this);
 		}
 
+		public Accessibility.Accessible WrapAccessible (object nativeAccessibleObject)
+		{
+			return new Accessibility.Accessible (nativeAccessibleObject);
+		}
+
 		/// <summary>
 		/// Validates that the backend of an Xwt component belongs to the currently loaded toolkit.
 		/// </summary>
