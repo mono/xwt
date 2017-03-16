@@ -350,11 +350,11 @@ namespace Xwt.Mac
 		{
 			StringBuilder sb = new StringBuilder (Font.FamilyName);
 			if (Style != FontStyle.Normal)
-				sb.Append (' ').Append (Style);
+				sb.Append (' ').Append (Style.ToString ());
 			if (Weight != FontWeight.Normal)
-				sb.Append (' ').Append (Weight);
+				sb.Append (' ').Append (Weight.ToString ());
 			if (Stretch != FontStretch.Normal)
-				sb.Append (' ').Append (Stretch);
+				sb.Append (' ').Append (Stretch.ToString ());
 			sb.Append (' ').Append (Font.PointSize.ToString (CultureInfo.InvariantCulture));
 			return sb.ToString ();
 		}
