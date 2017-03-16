@@ -114,6 +114,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<ICalendarBackend, CalendarBackend> ();
 			RegisterBackend<IFontSelectorBackend, FontSelectorBackend> ();
 			RegisterBackend<ISelectFontDialogBackend, SelectFontDialogBackend> ();
+			RegisterBackend<IAccessibleBackend, AccessibleBackend> ();
 
 			string typeName = null;
 			string asmName = null;
