@@ -28,6 +28,7 @@ using System;
 using AppKit;
 using CoreGraphics;
 using Foundation;
+using Xwt.Accessibility;
 using Xwt.Backends;
 using Xwt.Drawing;
 
@@ -166,7 +167,7 @@ namespace Xwt.Mac
 		}
 	}
 	
-	class MacButton: NSButton, IViewObject
+	class MacButton: NSButton, IViewObject, INSAccessibleEventSource
 	{
 		//
 		// This is necessary since the Activated event for NSControl in AppKit does 
@@ -284,6 +285,17 @@ namespace Xwt.Mac
 			{
 				controlView.DrawWithColorTransform(Color, delegate { base.DrawBezelWithFrame (frame, controlView); });
 			}
+		}
+
+		public Func<bool> PerformAccessiblePressDelegate { get; set; }
+
+		public override bool AccessibilityPerformPress ()
+		{
+			if (PerformAccessiblePressDelegate != null) {
+				if (PerformAccessiblePressDelegate ())
+					return true;
+			}
+			return base.AccessibilityPerformPress ();
 		}
 	}
 }
