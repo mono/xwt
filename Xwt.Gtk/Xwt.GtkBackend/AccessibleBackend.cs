@@ -39,7 +39,7 @@ namespace Xwt.GtkBackend
 		{
 		}
 
-		public void InitializeAccessible (IAccessibleEventSink eventSink)
+		public void Initialize (IAccessibleEventSink eventSink)
 		{
 			this.eventSink = eventSink;
 		}
@@ -51,7 +51,7 @@ namespace Xwt.GtkBackend
 			backend = parent.GetBackend () as WidgetBackend;
 		}
 
-		public Rectangle AccessibleBounds {
+		public Rectangle Bounds {
 			get {
 				int x = 0, y = 0, w = 0, h = 0;
 				(backend.Widget.Accessible as Atk.Component)?.GetExtents (out x, out y, out w, out h, Atk.CoordType.Screen);
@@ -62,7 +62,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public string AccessibleDescription {
+		public string Description {
 			get {
 				return backend.Widget.Accessible.Description;
 			}
@@ -71,7 +71,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public string AccessibleLabel {
+		public string Label {
 			get {
 				return backend.Widget.Accessible.Name;
 			}
@@ -80,7 +80,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public Role AccessibleRole {
+		public Role Role {
 			get {
 				return backend.Widget.Accessible.Role.ToXwtRole ();
 			}
@@ -90,11 +90,11 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public string AccessibleRoleDescription { get; set; }
+		public string RoleDescription { get; set; }
 
-		public string AccessibleTitle { get; set; }
+		public string Title { get; set; }
 
-		public string AccessibleValue {
+		public string Value {
 			get {
 				if (backend.Widget.Accessible is Atk.Value) {
 					GLib.Value val = GLib.Value.Empty;

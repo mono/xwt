@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System;
 using AppKit;
 using CoreGraphics;
 using Xwt.Backends;
@@ -68,13 +69,48 @@ namespace Xwt.Mac
 			else
 				return base.GetNaturalSize ();
 		}
+
+		public override bool CanGetFocus {
+			get {
+				return base.CanGetFocus;
+			}
+			set {
+				((CustomWidgetView)ViewObject).CanGetFocus = value;
+				base.CanGetFocus = value;
+			}
+		}
 	}
 
-	class CustomWidgetView: WidgetView
+	class CustomWidgetView: WidgetView, INSAccessibleEventSource
 	{
 		public CustomWidgetView (IWidgetEventSink eventSink, ApplicationContext context) : base (eventSink, context)
 		{
 		}
+		bool canGetFocus;
+
+		public bool CanGetFocus {
+			get {
+				return canGetFocus;
+			}
+
+			set {
+				canGetFocus = value;
+			}
+		}
+
+		public override bool BecomeFirstResponder ()
+		{
+			var res = base.BecomeFirstResponder ();
+			base.AccessibilityFocused = res;
+			return res;
+		}
+
+		public override bool AcceptsFirstResponder ()
+		{
+			return CanGetFocus;
+		}
+
+		public Func<bool> PerformAccessiblePressDelegate { get; set; }
 
 		public override void SetFrameSize (CGSize newSize)
 		{
@@ -83,6 +119,20 @@ namespace Xwt.Mac
 				return;
 			Subviews [0].SetFrameSize (newSize);
 			Backend.Frontend.Surface.Reallocate ();
+		}
+
+		public override bool RespondsToSelector (ObjCRuntime.Selector sel)
+		{
+			return base.RespondsToSelector (sel);
+		}
+
+		public override bool AccessibilityPerformPress ()
+		{
+			if (PerformAccessiblePressDelegate != null) {
+				if (PerformAccessiblePressDelegate ())
+					return true;
+			}
+			return base.AccessibilityPerformPress ();
 		}
 	}
 }

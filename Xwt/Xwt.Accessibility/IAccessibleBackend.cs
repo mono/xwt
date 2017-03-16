@@ -30,28 +30,28 @@ namespace Xwt.Backends
 {
 	public interface IAccessibleBackend : IBackend
 	{
-		void InitializeAccessible (IAccessibleEventSink eventSink);
+		void Initialize (IAccessibleEventSink eventSink);
 
 		bool IsAccessible { get; set; }
 
-		string AccessibleLabel { get; set; }
+		string Label { get; set; }
 
-		string AccessibleTitle { get; set; }
+		string Title { get; set; }
 
-		string AccessibleDescription { get; set; }
+		string Description { get; set; }
 
-		string AccessibleValue { get; set; }
+		string Value { get; set; }
 
-		Rectangle AccessibleBounds { get; set; }
+		Rectangle Bounds { get; set; }
 
-		Role AccessibleRole { get; set; }
+		Role Role { get; set; }
 
-		string AccessibleRoleDescription { get; set; }
+		string RoleDescription { get; set; }
 	}
 
 	public interface IAccessibleEventSink
 	{
-		bool OnAccessiblePress ();
+		bool OnPress ();
 		//void OnPerformAccessibleAction (AccessibleActionEventArgs args);
 	}
 

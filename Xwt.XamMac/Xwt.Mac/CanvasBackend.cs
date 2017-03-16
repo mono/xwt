@@ -119,6 +119,15 @@ namespace Xwt.Mac
 				eventSink.OnDraw (backend, new Rectangle (dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height));
 			});
 		}
+
+		public override Foundation.NSObject AccessibilityProxy {
+			get {
+				return base.AccessibilityProxy;
+			}
+			set {
+				base.AccessibilityProxy = value;
+			}
+		}
 	}
 }
 

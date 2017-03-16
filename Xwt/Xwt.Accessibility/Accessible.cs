@@ -37,7 +37,7 @@ namespace Xwt.Accessibility
 		{
 			accessibleBackend = backend ?? new DefaultNoOpAccessibleBackend ();
 			accessibleBackend.InitializeBackend (owner, owner.Surface.ToolkitEngine.Context);
-			accessibleBackend.InitializeAccessible (this);
+			accessibleBackend.Initialize (this);
 		}
 
 		public bool IsAccessible {
@@ -51,68 +51,68 @@ namespace Xwt.Accessibility
 
 		public string Label {
 			get {
-				return accessibleBackend.AccessibleLabel;
+				return accessibleBackend.Label;
 			}
 			set {
-				accessibleBackend.AccessibleLabel = value;
+				accessibleBackend.Label = value;
 			}
 		}
 
 		public string Title {
 			get {
-				return accessibleBackend.AccessibleTitle;
+				return accessibleBackend.Title;
 			}
 			set {
-				accessibleBackend.AccessibleTitle = value;
+				accessibleBackend.Title = value;
 			}
 		}
 
 		public string Description {
 			get {
-				return accessibleBackend.AccessibleDescription;
+				return accessibleBackend.Description;
 			}
 			set {
-				accessibleBackend.AccessibleDescription = value;
+				accessibleBackend.Description = value;
 			}
 		}
 
 		public string Value {
 			get {
-				return accessibleBackend.AccessibleValue;
+				return accessibleBackend.Value;
 			}
 			set {
-				accessibleBackend.AccessibleValue = value;
+				accessibleBackend.Value = value;
 			}
 		}
 
 		public Rectangle Bounds {
 			get {
-				return accessibleBackend.AccessibleBounds;
+				return accessibleBackend.Bounds;
 			}
 			set {
-				accessibleBackend.AccessibleBounds = value;
+				accessibleBackend.Bounds = value;
 			}
 		}
 
 		public Role Role {
 			get {
-				return accessibleBackend.AccessibleRole;
+				return accessibleBackend.Role;
 			}
 			set {
-				accessibleBackend.AccessibleRole = value;
+				accessibleBackend.Role = value;
 			}
 		}
 
 		public string RoleDescription {
 			get {
-				return accessibleBackend.AccessibleRoleDescription;
+				return accessibleBackend.RoleDescription;
 			}
 			set {
-				accessibleBackend.AccessibleRoleDescription = value;
+				accessibleBackend.RoleDescription = value;
 			}
 		}
 
-		bool IAccessibleEventSink.OnAccessiblePress ()
+		bool IAccessibleEventSink.OnPress ()
 		{
 			var args = new WidgetEventArgs ();
 			press?.Invoke (this, args);
@@ -136,19 +136,19 @@ namespace Xwt.Accessibility
 
 	class DefaultNoOpAccessibleBackend : IAccessibleBackend
 	{
-		public Rectangle AccessibleBounds { get; set; }
+		public Rectangle Bounds { get; set; }
 
-		public string AccessibleDescription { get; set; }
+		public string Description { get; set; }
 
-		public string AccessibleLabel { get; set; }
+		public string Label { get; set; }
 
-		public Role AccessibleRole { get; set; }
+		public Role Role { get; set; }
 
-		public string AccessibleRoleDescription { get; set; }
+		public string RoleDescription { get; set; }
 
-		public string AccessibleTitle { get; set; }
+		public string Title { get; set; }
 
-		public string AccessibleValue { get; set; }
+		public string Value { get; set; }
 
 		public bool IsAccessible { get; set; }
 
@@ -160,7 +160,7 @@ namespace Xwt.Accessibility
 		{
 		}
 
-		public void InitializeAccessible (IAccessibleEventSink eventSink)
+		public void Initialize (IAccessibleEventSink eventSink)
 		{
 		}
 

@@ -41,7 +41,7 @@ namespace Xwt.Mac
 		IAccessibleEventSink eventSink;
 		ApplicationContext context;
 
-		public void InitializeAccessible (IAccessibleEventSink eventSink)
+		public void Initialize (IAccessibleEventSink eventSink)
 		{
 			this.eventSink = eventSink;
 			eventProxy = backend.Widget as INSAccessibleEventSource;
@@ -58,12 +58,12 @@ namespace Xwt.Mac
 		{
 			bool res = false;
 			context.InvokeUserCode (() => {
-				res = eventSink.OnAccessiblePress ();
+				res = eventSink.OnPress ();
 			});
 			return res;
 		}
 
-		string IAccessibleBackend.AccessibleLabel {
+		string IAccessibleBackend.Label {
 			get {
 				return backend.Widget.AccessibilityLabel;
 			}
@@ -72,7 +72,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		string IAccessibleBackend.AccessibleTitle {
+		string IAccessibleBackend.Title {
 			get {
 				return backend.Widget.AccessibilityTitle;
 			}
@@ -81,7 +81,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		string IAccessibleBackend.AccessibleDescription {
+		string IAccessibleBackend.Description {
 			get {
 				return backend.Widget.AccessibilityHelp;
 			}
@@ -100,7 +100,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		string IAccessibleBackend.AccessibleValue {
+		string IAccessibleBackend.Value {
 			get {
 				return backend.Widget.AccessibilityValue.ToString ();
 			}
@@ -110,7 +110,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		Rectangle IAccessibleBackend.AccessibleBounds {
+		Rectangle IAccessibleBackend.Bounds {
 			get {
 				return backend.Widget.AccessibilityFrame.ToXwtRect ();
 			}
@@ -120,7 +120,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		Role IAccessibleBackend.AccessibleRole {
+		Role IAccessibleBackend.Role {
 			get {
 				return Util.GetXwtRole (backend.Widget);
 			}
@@ -130,7 +130,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		string IAccessibleBackend.AccessibleRoleDescription {
+		string IAccessibleBackend.RoleDescription {
 			get {
 				return backend.Widget.AccessibilityRoleDescription;
 			}
