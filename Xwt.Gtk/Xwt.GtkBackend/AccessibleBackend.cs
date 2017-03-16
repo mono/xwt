@@ -31,7 +31,7 @@ namespace Xwt.GtkBackend
 {
 	public class AccessibleBackend : IAccessibleBackend
 	{
-		WidgetBackend backend;
+		Gtk.Widget widget;
 		IAccessibleEventSink eventSink;
 		ApplicationContext context;
 
@@ -44,49 +44,61 @@ namespace Xwt.GtkBackend
 			this.eventSink = eventSink;
 		}
 
+		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
+		{
+			var backend = parentWidget as WidgetBackend;
+			Initialize (backend?.Widget, eventSink);
+		}
+
+		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
+		{
+			this.eventSink = eventSink;
+			widget = parentWidget as Gtk.Widget;
+			if (widget == null)
+				throw new ArgumentException ("The widget is not a Gtk.Widget.", nameof (parentWidget));
+		}
+
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			this.context = context;
-			var parent = (XwtComponent)frontend;
-			backend = parent.GetBackend () as WidgetBackend;
 		}
 
 		public Rectangle Bounds {
 			get {
 				int x = 0, y = 0, w = 0, h = 0;
-				(backend.Widget.Accessible as Atk.Component)?.GetExtents (out x, out y, out w, out h, Atk.CoordType.Screen);
+				(widget.Accessible as Atk.Component)?.GetExtents (out x, out y, out w, out h, Atk.CoordType.Screen);
 				return new Rectangle (x, y, w, h);
 			}
 			set {
-				(backend.Widget.Accessible as Atk.Component)?.SetExtents ((int)value.X, (int)value.Y, (int)value.Width, (int)value.Height, Atk.CoordType.Screen);
+				(widget.Accessible as Atk.Component)?.SetExtents ((int)value.X, (int)value.Y, (int)value.Width, (int)value.Height, Atk.CoordType.Screen);
 			}
 		}
 
 		public string Description {
 			get {
-				return backend.Widget.Accessible.Description;
+				return widget.Accessible.Description;
 			}
 			set {
-				backend.Widget.Accessible.Description = value;
+				widget.Accessible.Description = value;
 			}
 		}
 
 		public string Label {
 			get {
-				return backend.Widget.Accessible.Name;
+				return widget.Accessible.Name;
 			}
 			set {
-				backend.Widget.Accessible.Name = value;
+				widget.Accessible.Name = value;
 			}
 		}
 
 		public Role Role {
 			get {
-				return backend.Widget.Accessible.Role.ToXwtRole ();
+				return widget.Accessible.Role.ToXwtRole ();
 			}
 
 			set {
-				backend.Widget.Accessible.Role = value.ToAtkRole ();
+				widget.Accessible.Role = value.ToAtkRole ();
 			}
 		}
 
@@ -96,23 +108,23 @@ namespace Xwt.GtkBackend
 
 		public string Value {
 			get {
-				if (backend.Widget.Accessible is Atk.Value) {
+				if (widget.Accessible is Atk.Value) {
 					GLib.Value val = GLib.Value.Empty;
-					(backend.Widget.Accessible as Atk.Value)?.GetCurrentValue (ref val);
+					(widget.Accessible as Atk.Value)?.GetCurrentValue (ref val);
 					return val.Val.ToString ();
 				}
-				if (backend.Widget.Accessible is Atk.Text) {
-					var atkText = (backend.Widget.Accessible as Atk.Text);
+				if (widget.Accessible is Atk.Text) {
+					var atkText = (widget.Accessible as Atk.Text);
 					return atkText?.GetText (0, atkText.CharacterCount - 1);
 				}
 				return null;
 			}
 			set {
-				if (backend.Widget.Accessible is Atk.Value) {
+				if (widget.Accessible is Atk.Value) {
 					GLib.Value val = GLib.Value.Empty;
-					(backend.Widget.Accessible as Atk.Value)?.SetCurrentValue (new GLib.Value (value));
-				} else if (backend.Widget.Accessible is Atk.EditableText) {
-					var atkText = (backend.Widget.Accessible as Atk.EditableText);
+					(widget.Accessible as Atk.Value)?.SetCurrentValue (new GLib.Value (value));
+				} else if (widget.Accessible is Atk.EditableText) {
+					var atkText = (widget.Accessible as Atk.EditableText);
 					atkText.TextContents = value;
 				}
 			}
@@ -120,12 +132,12 @@ namespace Xwt.GtkBackend
 
 		public bool IsAccessible {
 			get {
-				return backend.Widget.Accessible?.Role != Atk.Role.Invalid;
+				return widget.Accessible?.Role != Atk.Role.Invalid;
 			}
 			set {
 				// TODO
-				//if (backend.Widget.Accessible != null)
-				//	return backend.Widget.Accessible.Role = Atk.Role.Invalid;
+				//if (widget.Accessible != null)
+				//	return widget.Accessible.Role = Atk.Role.Invalid;
 			}
 		}
 

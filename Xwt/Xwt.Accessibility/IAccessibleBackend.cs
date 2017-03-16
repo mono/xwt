@@ -30,7 +30,9 @@ namespace Xwt.Backends
 {
 	public interface IAccessibleBackend : IBackend
 	{
-		void Initialize (IAccessibleEventSink eventSink);
+		void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink);
+
+		void Initialize (object parentWidget, IAccessibleEventSink eventSink);
 
 		bool IsAccessible { get; set; }
 

@@ -29,90 +29,128 @@ using Xwt.Backends;
 namespace Xwt.Accessibility
 {
 	[BackendType (typeof (IAccessibleBackend))]
-	public sealed class Accessible : IAccessibleEventSink
+	public sealed class Accessible : IFrontend
 	{
-		readonly IAccessibleBackend accessibleBackend;
+		readonly XwtComponent parentComponent;
 
-		internal Accessible (Widget owner, IAccessibleBackend backend)
+		readonly AccessibleBackendHost backendHost;
+
+		class AccessibleBackendHost : BackendHost<Accessible, IAccessibleBackend>, IAccessibleEventSink
 		{
-			accessibleBackend = backend ?? new DefaultNoOpAccessibleBackend ();
-			accessibleBackend.InitializeBackend (owner, owner.Surface.ToolkitEngine.Context);
-			accessibleBackend.Initialize (this);
+			protected override IBackend OnCreateBackend ()
+			{
+				var b = base.OnCreateBackend ();
+				if (b == null)
+					b = new DefaultNoOpAccessibleBackend ();
+				return b;
+			}
+			
+			protected override void OnBackendCreated ()
+			{
+				var parentBackend = Parent.parentComponent.GetBackend () as IWidgetBackend;
+				Backend.Initialize (parentBackend, this);
+			}
+
+			public bool OnPress ()
+			{
+				return Parent.OnPress ();
+			}
+		}
+
+		internal Accessible (Widget parent)
+		{
+			parentComponent = parent;
+			backendHost = new AccessibleBackendHost ();
+			backendHost.Parent = this;
+		}
+
+		IAccessibleBackend Backend {
+			get { return backendHost.Backend; }
+		}
+
+		object IFrontend.Backend {
+			get {
+				return Backend;
+			}
+		}
+
+		Toolkit IFrontend.ToolkitEngine {
+			get { return backendHost.ToolkitEngine; }
 		}
 
 		public bool IsAccessible {
 			get {
-				return accessibleBackend.IsAccessible;
+				return Backend.IsAccessible;
 			}
 			set {
-				accessibleBackend.IsAccessible = value;
+				Backend.IsAccessible = value;
 			}
 		}
 
 		public string Label {
 			get {
-				return accessibleBackend.Label;
+				return Backend.Label;
 			}
 			set {
-				accessibleBackend.Label = value;
+				Backend.Label = value;
 			}
 		}
 
 		public string Title {
 			get {
-				return accessibleBackend.Title;
+				return Backend.Title;
 			}
 			set {
-				accessibleBackend.Title = value;
+				Backend.Title = value;
 			}
 		}
 
 		public string Description {
 			get {
-				return accessibleBackend.Description;
+				return Backend.Description;
 			}
 			set {
-				accessibleBackend.Description = value;
+				Backend.Description = value;
 			}
 		}
 
 		public string Value {
 			get {
-				return accessibleBackend.Value;
+				return Backend.Value;
 			}
 			set {
-				accessibleBackend.Value = value;
+				Backend.Value = value;
 			}
 		}
 
 		public Rectangle Bounds {
 			get {
-				return accessibleBackend.Bounds;
+				return Backend.Bounds;
 			}
 			set {
-				accessibleBackend.Bounds = value;
+				Backend.Bounds = value;
 			}
 		}
 
 		public Role Role {
 			get {
-				return accessibleBackend.Role;
+				return Backend.Role;
 			}
 			set {
-				accessibleBackend.Role = value;
+				Backend.Role = value;
 			}
 		}
 
 		public string RoleDescription {
 			get {
-				return accessibleBackend.RoleDescription;
+				return Backend.RoleDescription;
 			}
 			set {
-				accessibleBackend.RoleDescription = value;
+				Backend.RoleDescription = value;
 			}
 		}
 
-		bool IAccessibleEventSink.OnPress ()
+		bool OnPress ()
 		{
 			var args = new WidgetEventArgs ();
 			press?.Invoke (this, args);
@@ -122,14 +160,12 @@ namespace Xwt.Accessibility
 		event EventHandler<WidgetEventArgs> press;
 		public event EventHandler<WidgetEventArgs> Press {
 			add {
-				if (press == null)
-					accessibleBackend?.EnableEvent (AccessibleEvent.Press);
+				backendHost.OnBeforeEventAdd (AccessibleEvent.Press, press);
 				press += value;
 			}
 			remove {
 				press -= value;
-				if (press == null)
-					accessibleBackend?.DisableEvent (AccessibleEvent.Press);
+				backendHost.OnAfterEventRemove (AccessibleEvent.Press, press);
 			}
 		}
 	}
@@ -160,7 +196,11 @@ namespace Xwt.Accessibility
 		{
 		}
 
-		public void Initialize (IAccessibleEventSink eventSink)
+		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
+		{
+		}
+
+		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
 		{
 		}
 

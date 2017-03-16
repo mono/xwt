@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using AppKit;
 using Foundation;
 using Xwt.Accessibility;
 using Xwt.Backends;
@@ -37,21 +38,30 @@ namespace Xwt.Mac
 	public class AccessibleBackend : IAccessibleBackend
 	{
 		INSAccessibleEventSource eventProxy;
-		ViewBackend backend;
+		INSAccessibility widget;
 		IAccessibleEventSink eventSink;
 		ApplicationContext context;
 
-		public void Initialize (IAccessibleEventSink eventSink)
+		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
+		{
+			var parentBackend = parentWidget as ViewBackend;
+			Initialize (parentBackend?.Widget, eventSink);
+		}
+
+		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
 		{
 			this.eventSink = eventSink;
-			eventProxy = backend.Widget as INSAccessibleEventSource;
+			widget = parentWidget as INSAccessibility;
+			if (widget == null)
+				throw new ArgumentException ("The widget does not implement INSAccessibility.", nameof (parentWidget));
+			eventProxy = widget as INSAccessibleEventSource;
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			this.context = context;
-			var parent = (XwtComponent)frontend;
-			backend = parent.GetBackend () as ViewBackend;
+			if (!(frontend is Accessible))
+				throw new ArgumentException ("Invalid frontend type. Expected '" + typeof (Accessible) + "' found '" + frontend.GetType () + "'");
 		}
 
 		bool PerformPress ()
@@ -65,77 +75,77 @@ namespace Xwt.Mac
 
 		string IAccessibleBackend.Label {
 			get {
-				return backend.Widget.AccessibilityLabel;
+				return widget.AccessibilityLabel;
 			}
 			set {
-				backend.Widget.AccessibilityLabel = value;
+				widget.AccessibilityLabel = value;
 			}
 		}
 
 		string IAccessibleBackend.Title {
 			get {
-				return backend.Widget.AccessibilityTitle;
+				return widget.AccessibilityTitle;
 			}
 			set {
-				backend.Widget.AccessibilityTitle = value;
+				widget.AccessibilityTitle = value;
 			}
 		}
 
 		string IAccessibleBackend.Description {
 			get {
-				return backend.Widget.AccessibilityHelp;
+				return widget.AccessibilityHelp;
 			}
 			set {
-				backend.Widget.AccessibilityHelp = value;
+				widget.AccessibilityHelp = value;
 			}
 		}
 
 		bool IAccessibleBackend.IsAccessible {
 			get {
-				return backend.Widget.AccessibilityElement;
+				return widget.AccessibilityElement;
 			}
 
 			set {
-				backend.Widget.AccessibilityElement = value;
+				widget.AccessibilityElement = value;
 			}
 		}
 
 		string IAccessibleBackend.Value {
 			get {
-				return backend.Widget.AccessibilityValue.ToString ();
+				return widget.AccessibilityValue.ToString ();
 			}
 
 			set {
-				backend.Widget.AccessibilityValue = new NSString (value);
+				widget.AccessibilityValue = new NSString (value);
 			}
 		}
 
 		Rectangle IAccessibleBackend.Bounds {
 			get {
-				return backend.Widget.AccessibilityFrame.ToXwtRect ();
+				return widget.AccessibilityFrame.ToXwtRect ();
 			}
 
 			set {
-				backend.Widget.AccessibilityFrame = value.ToCGRect ();
+				widget.AccessibilityFrame = value.ToCGRect ();
 			}
 		}
 
 		Role IAccessibleBackend.Role {
 			get {
-				return Util.GetXwtRole (backend.Widget);
+				return Util.GetXwtRole (widget);
 			}
 			set {
-				backend.Widget.AccessibilityRole = value.GetMacRole ();
-				backend.Widget.AccessibilitySubrole = value.GetMacSubrole ();
+				widget.AccessibilityRole = value.GetMacRole ();
+				widget.AccessibilitySubrole = value.GetMacSubrole ();
 			}
 		}
 
 		string IAccessibleBackend.RoleDescription {
 			get {
-				return backend.Widget.AccessibilityRoleDescription;
+				return widget.AccessibilityRoleDescription;
 			}
 			set {
-				backend.Widget.AccessibilityRoleDescription = value;
+				widget.AccessibilityRoleDescription = value;
 			}
 		}
 

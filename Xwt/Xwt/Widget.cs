@@ -327,8 +327,7 @@ namespace Xwt
 		public Accessible Accessible {
 			get {
 				if (accessible == null) {
-					var abackend = BackendHost.EngineBackend.CreateBackendForFrontend (typeof (Accessible)) as IAccessibleBackend;
-					accessible = new Accessible (this, abackend);
+					accessible = new Accessible (this);
 				}
 				return accessible;
 			}
