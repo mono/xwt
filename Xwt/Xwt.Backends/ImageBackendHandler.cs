@@ -119,6 +119,13 @@ namespace Xwt.Backends
 		/// </remarks>
 		public abstract Size GetSize (object handle);
 		
+		/// <summary>
+		/// Gets the size of an image without loading the entire file.
+		/// </summary>
+		/// <param name="file">The path to the image</param>
+		/// <returns>The size of the image</returns>
+		public abstract Size GetSize (string file);
+
 		public abstract object CopyBitmap (object handle);
 
 		public abstract void CopyBitmapArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY);
