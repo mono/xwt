@@ -45,6 +45,7 @@ namespace Xwt.Mac
 		ViewBackend child;
 		NSView childView;
 		bool sensitive = true;
+		bool preservePreviousState;
 		
 		public WindowBackend (IntPtr ptr): base (ptr)
 		{
@@ -63,11 +64,20 @@ namespace Xwt.Mac
 			// TODO: do it only if mouse move events are enabled in a widget
 			AcceptsMouseMovedEvents = true;
 
-			WillClose += delegate {
-				OnClosed ();
-			};
+			WillClose += (sender, e) => OnClosed ();
+
+			WillEnterFullScreen += (sender, e) => WillChangeWindowState (WindowState.FullScreen);
+			WillExitFullScreen += (sender, e) => WillChangeWindowState (WindowState.Normal);
+			WillMiniaturize += (sender, e) => WillChangeWindowState (WindowState.Iconified);
+			DidDeminiaturize += (sender, e) => DidChangeWindowState (WindowState.Iconified);
 
 			Center ();
+		}
+
+		public override void Zoom (NSObject sender)
+		{
+			WillChangeWindowState (WindowState.Maximized);
+			base.Zoom (sender);
 		}
 
 		object IWindowFrameBackend.Window {
@@ -150,21 +160,91 @@ namespace Xwt.Mac
 			}
 		}
 
-		public bool FullScreen {
+		public WindowState PreviousWindowState { get; private set; }
+
+		void WillChangeWindowState (WindowState nextState)
+		{
+			if (preservePreviousState)
+				return;
+			var currentState = WindowState;
+			if (currentState != nextState)
+				PreviousWindowState = currentState;
+		}
+
+		void DidChangeWindowState (WindowState previousState)
+		{
+			if (preservePreviousState)
+				return;
+			
+			if (PreviousWindowState != previousState)
+				PreviousWindowState = previousState;
+		}
+		
+		public WindowState WindowState {
 			get {
 				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
-					return false;
+					return WindowState.Normal;
 
-				return (StyleMask & NSWindowStyle.FullScreenWindow) != 0;
-
+				if (isWindowSateDelayed) // rare case while "unfullscreening"
+					return delayedWindowState;
+				if (IsMiniaturized)
+					return WindowState.Iconified;
+				if ((StyleMask & NSWindowStyle.FullScreenWindow) != 0)
+					return WindowState.FullScreen;
+				if (IsZoomed)
+					return WindowState.Maximized;
+				else
+					return WindowState.Normal;
 			}
 			set {
 				if (MacSystemInformation.OsVersion < MacSystemInformation.Lion)
 					return;
 
-				if (value != ((StyleMask & NSWindowStyle.FullScreenWindow) != 0))
-					ToggleFullScreen (null);
+				WillChangeWindowState (value);
+				preservePreviousState = true;
+
+				if ((value != Xwt.WindowState.FullScreen) && ((StyleMask & NSWindowStyle.FullScreenWindow) != 0)) {
+					// always unfullscreen first
+					// and delay setting new state
+					ToggleFullScreen (this);
+					CollectionBehavior &= ~NSWindowCollectionBehavior.FullScreenPrimary;
+					isWindowSateDelayed = true;
+					delayedWindowState = value;
+					DidExitFullScreen += DelayedSetWindowState;
+					return;
+				}
+
+
+				if ((value == Xwt.WindowState.Iconified) && !IsMiniaturized) {
+					// Currently not iconified.
+					Miniaturize (this);
+				} else if ((value == Xwt.WindowState.FullScreen) && ((StyleMask & NSWindowStyle.FullScreenWindow) == 0)) {
+					// Currently not full screen.
+					CollectionBehavior |= NSWindowCollectionBehavior.FullScreenPrimary;
+					ToggleFullScreen (this);
+				} else if ((value == Xwt.WindowState.Maximized) && !IsZoomed) {
+					// Currently not maximized.
+					PerformZoom (this);
+				} else {
+					if (IsMiniaturized)
+						// Currently iconified.
+						Deminiaturize (this);
+					else if (IsZoomed)
+						// Currently full screen.
+						PerformZoom (this);
+				}
+				preservePreviousState = false;
 			}
+		}
+
+		bool isWindowSateDelayed;
+		WindowState delayedWindowState;
+		void DelayedSetWindowState (object sender, EventArgs args)
+		{
+			WindowState = delayedWindowState;
+			DidExitFullScreen -= DelayedSetWindowState;
+			isWindowSateDelayed = false;
+			preservePreviousState = false;
 		}
 
 		object IWindowFrameBackend.Screen {

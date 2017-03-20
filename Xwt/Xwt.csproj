@@ -337,6 +337,7 @@
     <Compile Include="Xwt.Backends\IFontSelectorBackend.cs" />
     <Compile Include="Xwt\SelectFontDialog.cs" />
     <Compile Include="Xwt.Backends\ISelectFontDialogBackend.cs" />
+    <Compile Include="Xwt\WindowState.cs" />
     <Compile Include="Xwt.Drawing\StyleSet.cs" />
     <Compile Include="Xwt\FileSelector.cs" />
     <Compile Include="Xwt.Backends\IFileSelectorBackend.cs" />

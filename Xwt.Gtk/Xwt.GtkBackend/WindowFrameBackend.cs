@@ -48,10 +48,13 @@ namespace Xwt.GtkBackend
 		public Gtk.Window Window {
 			get { return window; }
 			set {
-				if (window != null)
+				if (window != null) {
 					window.Realized -= HandleRealized;
+					window.WindowStateEvent -= HandleWindowStateEvent;
+				}
 				window = value;
 				window.Realized += HandleRealized;
+				window.WindowStateEvent += HandleWindowStateEvent;
 			}
 		}
 
@@ -71,6 +74,7 @@ namespace Xwt.GtkBackend
 		{
 			if (opacity != 1d)
 				window.GdkWindow.Opacity = opacity;
+			UpdateWindowState (currentState);
 		}
 		
 		protected WindowFrame Frontend {
@@ -268,19 +272,69 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		bool fullScreen;
-		bool IWindowFrameBackend.FullScreen {
+		WindowState currentState;
+		WindowState previousState;
+		public WindowState WindowState {
 			get {
-				return fullScreen;
+				return currentState;
 			}
 			set {
-				if (value != fullScreen) {
-					fullScreen = value;
-					if (fullScreen)
-						Window.Fullscreen ();
-					else
+				if (Window.IsRealized)
+					UpdateWindowState (value);
+				currentState = value;
+			}
+		}
+
+		public WindowState PreviousWindowState {
+			get {
+				return previousState;
+			}
+		}
+
+		void HandleWindowStateEvent (object o, Gtk.WindowStateEventArgs args)
+		{
+			WindowState newState;
+			var currGdkState = args.Event.NewWindowState;
+			if (currGdkState.HasFlag (Gdk.WindowState.Iconified))
+				newState = WindowState.Iconified;
+			else if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen))
+				newState = WindowState.FullScreen;
+			else if (currGdkState.HasFlag (Gdk.WindowState.Maximized))
+				newState = WindowState.Maximized;
+			else
+				newState = Xwt.WindowState.Normal;
+			if (newState != currentState) {
+				previousState = currentState;
+				currentState = newState;
+			}
+		}
+
+		void UpdateWindowState (WindowState value)
+		{
+			if (window == null || !window.IsRealized || window.GdkWindow == null)
+				throw new InvalidOperationException ("Window is not realized");
+			var currGdkState = Window.GdkWindow.State;
+			if (currentState != value)
+				previousState = currentState;
+			switch (value) {
+				case Xwt.WindowState.Iconified:
+					Window.Iconify ();
+					break;
+				case Xwt.WindowState.FullScreen:
+					if (currGdkState.HasFlag (Gdk.WindowState.Maximized)) // unmaximize first
+						Window.Unmaximize ();
+					Window.Fullscreen ();
+					break;
+				case Xwt.WindowState.Maximized:
+					if (currGdkState.HasFlag (Gdk.WindowState.Fullscreen)) // unfullscreen first
 						Window.Unfullscreen ();
-				}
+					Window.Maximize ();
+					break;
+				default:
+					Window.Deiconify ();
+					Window.Unfullscreen ();
+					Window.Unmaximize ();
+					break;
 			}
 		}
 
