@@ -386,7 +386,15 @@ namespace Xwt.Drawing
 			else
 				return Path.GetExtension (fileName);
 		}
-		
+
+		public static Size GetSize (string file)
+		{
+			var toolkit = Toolkit.CurrentEngine;
+			if (toolkit == null)
+				throw new ToolkitNotInitializedException ();
+			return toolkit.ImageBackendHandler.GetSize (file);
+		}
+
 		public void Save (string file, ImageFileType fileType)
 		{
 			using (var f = File.OpenWrite (file))
