@@ -302,7 +302,7 @@ namespace Xwt.Mac
 
 		static Selector applyFontTraits = new Selector ("applyFontTraits:range:");
 
-		public static NSAttributedString ToAttributedString (this FormattedText ft)
+		public static NSMutableAttributedString ToAttributedString (this FormattedText ft)
 		{
 			NSMutableAttributedString ns = new NSMutableAttributedString (ft.Text);
 			ns.BeginEditing ();
@@ -339,7 +339,8 @@ namespace Xwt.Mac
 				}
 				else if (att is LinkTextAttribute) {
 					var xa = (LinkTextAttribute)att;
-					ns.AddAttribute (NSStringAttributeKey.Link, new NSUrl (xa.Target.ToString ()), r);
+					if (xa.Target != null)
+						ns.AddAttribute (NSStringAttributeKey.Link, new NSUrl (xa.Target.ToString ()), r);
 					ns.AddAttribute (NSStringAttributeKey.ForegroundColor, Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToNSColor (), r);
 					ns.AddAttribute (NSStringAttributeKey.UnderlineStyle, NSNumber.FromInt32 ((int)NSUnderlineStyle.Single), r);
 				}
@@ -354,6 +355,22 @@ namespace Xwt.Mac
 					ns.AddAttribute (NSStringAttributeKey.Font, nf, r);
 				}
 			}
+			ns.EndEditing ();
+			return ns;
+		}
+
+
+		public static NSMutableAttributedString WithAlignment (this NSMutableAttributedString ns, NSTextAlignment alignment)
+		{
+			if (ns == null)
+				return null;
+			
+			ns.BeginEditing ();
+			var r = new NSRange (0, ns.Length);
+			ns.RemoveAttribute (NSStringAttributeKey.ParagraphStyle, r);
+			var pstyle = NSParagraphStyle.DefaultParagraphStyle.MutableCopy () as NSMutableParagraphStyle;
+			pstyle.Alignment = alignment;
+			ns.AddAttribute (NSStringAttributeKey.ParagraphStyle, pstyle, r);
 			ns.EndEditing ();
 			return ns;
 		}

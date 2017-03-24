@@ -83,6 +83,12 @@ namespace Xwt.Mac
 			return new CustomImage (ApplicationContext, drawCallback);
 		}
 
+		public override Size GetSize (string file)
+		{
+			using (var rep = NSImageRep.ImageRepFromFile (file))
+				return rep.Size.ToXwtSize ();
+		}
+
 		public override Xwt.Drawing.Image GetStockIcon (string id)
 		{
 			NSImage img;

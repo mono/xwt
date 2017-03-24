@@ -128,6 +128,13 @@ namespace Xwt.GtkBackend
 			return ((GtkImage)handle).HasMultipleSizes;
 		}
 
+		public override Size GetSize (string file)
+		{
+			int width, height;
+			Gdk.Pixbuf.GetFileInfo (file, out width, out height);
+			return new Size (width, height);
+		}
+
 		public override Size GetSize (object handle)
 		{
 			var pix = handle as GtkImage;

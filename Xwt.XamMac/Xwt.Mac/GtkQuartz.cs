@@ -25,14 +25,8 @@
 // THE SOFTWARE.
 using System;
 using System.Runtime.InteropServices;
-
-#if MONOMAC
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
-#else
 using AppKit;
 using ObjCRuntime;
-#endif
 
 namespace Xwt.Mac
 {

@@ -29,6 +29,7 @@
 using System;
 using AppKit;
 using CoreGraphics;
+using Foundation;
 using Xwt.Backends;
 
 namespace Xwt.Mac
@@ -53,10 +54,82 @@ namespace Xwt.Mac
 			}
 		}
 
+		public override NSObject WeakDataSource {
+			get { return base.WeakDataSource; }
+			set {
+				base.WeakDataSource = value;
+				AutosizeColumns ();
+			}
+		}
+
+		public override void AddColumn (NSTableColumn tableColumn)
+		{
+			base.AddColumn (tableColumn);
+			AutosizeColumns ();
+		}
+
+		internal void AutosizeColumns ()
+		{
+			foreach (var col in TableColumns ())
+				AutosizeColumn (col);
+		}
+
+		void AutosizeColumn (NSTableColumn tableColumn)
+		{
+			var column = IndexOfColumn (tableColumn);
+			if (tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing)) {
+				var s = tableColumn.HeaderCell.CellSize;
+				for (int i = 0; i < base.RowCount; i++) {
+					var cell = base.GetCell (column, i);
+					s.Width = (nfloat)Math.Max (s.Width, cell.CellSize.Width);
+				}
+				if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.UserResizingMask))
+					tableColumn.MinWidth = s.Width;
+				if (column < ColumnCount - 1)
+					tableColumn.Width = s.Width;
+			}
+		}
+
+		nint IndexOfColumn (NSTableColumn tableColumn)
+		{
+			nint icol = -1;
+			foreach (var col in TableColumns ()) {
+				icol++;
+				if (col == tableColumn)
+					return icol;
+			}
+			return icol;
+		}
+
+		public override void ReloadData ()
+		{
+			base.ReloadData ();
+			QueueColumnResize ();
+		}
+
+		public override void ReloadData (NSIndexSet rowIndexes, NSIndexSet columnIndexes)
+		{
+			base.ReloadData (rowIndexes, columnIndexes);
+			QueueColumnResize ();
+		}
+
+		bool columnResizeQueued;
+		void QueueColumnResize ()
+		{
+			if (!columnResizeQueued) {
+				columnResizeQueued = true;
+				Application.MainLoop.QueueExitAction (delegate {
+					columnResizeQueued = false;
+					AutosizeColumns ();
+				});
+			}
+		}
+
 		public NSTableViewBackend(IWidgetEventSink eventSink, ApplicationContext context) {
 			this.context = context;
 			this.eventSink = eventSink;
-			this.Delegate = new ListDelegate () ;
+			this.Delegate = new ListDelegate ();
+			AllowsColumnReordering = false;
 		}
 
 

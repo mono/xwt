@@ -442,9 +442,6 @@ namespace Xwt.Mac
 		#endregion
 
 		static Selector closeSel = new Selector ("close");
-		#if MONOMAC
-		static Selector retainSel = new Selector("retain");
-		#endif
 
 		bool disposing, disposed;
 

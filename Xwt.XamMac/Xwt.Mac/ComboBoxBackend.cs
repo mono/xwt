@@ -203,7 +203,6 @@ namespace Xwt.Mac
 				AddCursorRect (Bounds, Backend.Cursor);
 		}
 
-		#if !MONOMAC
 		public override bool AllowsVibrancy {
 			get {
 				// we don't support vibrancy
@@ -212,7 +211,6 @@ namespace Xwt.Mac
 				return base.AllowsVibrancy;
 			}
 		}
-		#endif
 	}
 }
 

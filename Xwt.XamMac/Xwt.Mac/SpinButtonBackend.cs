@@ -335,7 +335,6 @@ namespace Xwt.Mac
 
 		class VibrancyStepper : NSStepper
 		{
-			#if !MONOMAC
 			public override bool AllowsVibrancy {
 				get {
 					// we don't support vibrancy
@@ -344,7 +343,6 @@ namespace Xwt.Mac
 					return base.AllowsVibrancy;
 				}
 			}
-			#endif
 		}
 	}
 }

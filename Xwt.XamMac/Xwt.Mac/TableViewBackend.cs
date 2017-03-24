@@ -191,6 +191,9 @@ namespace Xwt.Mac
 			var hc = new NSTableHeaderCell ();
 			hc.Title = col.Title ?? "";
 			tcol.HeaderCell = hc;
+			tcol.HeaderCell.Alignment = col.Alignment.ToNSTextAlignment();
+			tcol.ResizingMask = col.CanResize ? NSTableColumnResizing.UserResizingMask : NSTableColumnResizing.Autoresizing;
+			tcol.SizeToFit();
 			Widget.InvalidateIntrinsicContentSize ();
 			return tcol;
 		}
@@ -207,8 +210,25 @@ namespace Xwt.Mac
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			NSTableColumn tcol = (NSTableColumn) handle;
-			var c = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.IndexOf (tcol));
-			tcol.DataCell = c;
+
+			switch (change) {
+				case ListViewColumnChange.CanResize:
+					tcol.ResizingMask = col.CanResize ? NSTableColumnResizing.UserResizingMask : NSTableColumnResizing.Autoresizing;
+					break;
+				case ListViewColumnChange.Cells:
+					var c = CellUtil.CreateCell(ApplicationContext, Table, this, col.Views, cols.IndexOf(tcol));
+					c.Alignment = col.Alignment.ToNSTextAlignment();
+					tcol.DataCell = c;
+					break;
+				case ListViewColumnChange.Title:
+					tcol.HeaderCell.Title = col.Title ?? string.Empty;
+					if (!col.CanResize)
+						tcol.SizeToFit();
+					break;
+				case ListViewColumnChange.Alignment:
+					tcol.HeaderCell.Alignment = col.Alignment.ToNSTextAlignment();
+					break;
+			}
 		}
 
 		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)

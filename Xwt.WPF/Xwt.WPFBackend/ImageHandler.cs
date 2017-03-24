@@ -241,6 +241,12 @@ namespace Xwt.WPFBackend
 			return !HasMultipleSizes (handle);
 		}
 
+		public override Size GetSize (string file)
+		{
+			var frame = BitmapFrame.Create (new Uri (file), BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
+			return new Size (frame.PixelWidth, frame.PixelHeight);
+		}
+
 		public override Size GetSize (object handle)
 		{
 			var source = (WpfImage) handle;
