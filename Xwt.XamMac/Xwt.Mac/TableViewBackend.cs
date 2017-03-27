@@ -48,6 +48,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			Table = CreateView ();
+			Table.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Sequential;
 			scroll = new ScrollView ();
 			clipView = new NormalClipView ();
 			clipView.Scrolled += OnScrolled;
@@ -192,7 +193,16 @@ namespace Xwt.Mac
 			hc.Title = col.Title ?? "";
 			tcol.HeaderCell = hc;
 			tcol.HeaderCell.Alignment = col.Alignment.ToNSTextAlignment();
-			tcol.ResizingMask = col.CanResize ? NSTableColumnResizing.UserResizingMask : NSTableColumnResizing.Autoresizing;
+
+
+			if (col.CanResize)
+				tcol.ResizingMask |= NSTableColumnResizing.UserResizingMask;
+			else
+				tcol.ResizingMask &= ~NSTableColumnResizing.UserResizingMask;
+			if (col.Expands)
+				tcol.ResizingMask |= NSTableColumnResizing.Autoresizing;
+			else
+				tcol.ResizingMask &= ~NSTableColumnResizing.Autoresizing;
 			tcol.SizeToFit();
 			Widget.InvalidateIntrinsicContentSize ();
 			return tcol;
@@ -213,7 +223,16 @@ namespace Xwt.Mac
 
 			switch (change) {
 				case ListViewColumnChange.CanResize:
-					tcol.ResizingMask = col.CanResize ? NSTableColumnResizing.UserResizingMask : NSTableColumnResizing.Autoresizing;
+					if (col.CanResize)
+						tcol.ResizingMask |= NSTableColumnResizing.UserResizingMask;
+					else
+						tcol.ResizingMask &= ~NSTableColumnResizing.UserResizingMask;
+					break;
+				case ListViewColumnChange.Expanding:
+					if (col.Expands)
+						tcol.ResizingMask |= NSTableColumnResizing.Autoresizing;
+					else
+						tcol.ResizingMask &= ~NSTableColumnResizing.Autoresizing;
 					break;
 				case ListViewColumnChange.Cells:
 					var c = CellUtil.CreateCell(ApplicationContext, Table, this, col.Views, cols.IndexOf(tcol));
