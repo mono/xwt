@@ -98,7 +98,7 @@ namespace Xwt.WPFBackend.Utilities
 						factory.SetValue(SWC.TextBlock.TextProperty, textView.Text);
 				}
 
-                var cb = new CellViewBackend();
+                var cb = new TextCellViewBackend();
                 cb.Initialize(view, factory, parent as ICellRendererTarget);
 				fr.AttachBackend(parent.Frontend, cb);
 				return factory;
