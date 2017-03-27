@@ -33,6 +33,11 @@ namespace Xwt.WPFBackend
 	public class ExListViewItem
 		: ListViewItem
 	{
+		public ExListViewItem ()
+		{
+			HorizontalContentAlignment = HorizontalAlignment.Stretch;
+		}
+
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			if (e.Property.Name == "IsVisible" && IsVisible) {
