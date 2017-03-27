@@ -148,6 +148,7 @@ namespace Xwt.GtkBackend
 			tc.Title = col.Title;
 			tc.Resizable = col.CanResize;
 			tc.Alignment = col.Alignment.ToGtkAlignment ();
+			tc.Expand = col.Expands;
 			tc.SortIndicator = col.SortIndicatorVisible;
 			tc.SortOrder = (SortType)col.SortDirection;
 			if (col.SortDataField != null)
@@ -211,6 +212,9 @@ namespace Xwt.GtkBackend
 					break;
 				case ListViewColumnChange.Alignment:
 					tc.Alignment = col.Alignment.ToGtkAlignment ();
+					break;
+				case ListViewColumnChange.Expanding:
+					tc.Expand = col.Expands;
 					break;
 			}
 		}
