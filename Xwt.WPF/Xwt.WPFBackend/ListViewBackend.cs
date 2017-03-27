@@ -167,9 +167,9 @@ namespace Xwt.WPFBackend
 		public object AddColumn (ListViewColumn col)
 		{
 			var column = new GridViewColumn ();
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Context, Frontend, col.Views) };
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Context, this, col.Views) };
 			if (col.HeaderView != null)
-				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Context, Frontend, col.HeaderView) };
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Context, this, col.HeaderView) };
 			else
 				column.Header = col.Title;
 
@@ -188,9 +188,9 @@ namespace Xwt.WPFBackend
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			var column = (GridViewColumn) handle;
-            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
+            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, this, col.Views) };
 			if (col.HeaderView != null)
-                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
+                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, this, col.HeaderView) };
 			else
 				column.Header = col.Title;
 
@@ -369,9 +369,11 @@ namespace Xwt.WPFBackend
 			return index;
 		}
 
-		void ICellRendererTarget.SetCurrentEventRowForElement (FrameworkElement sender)
+		void ICellRendererTarget.SetCurrentEventRow (object dataItem)
 		{
-			CurrentEventRow = GetRowForElement (sender);
+			var item = dataItem as ValuesContainer;
+			var container = ListView.ItemContainerGenerator.ContainerFromItem (item);
+			CurrentEventRow = ListView.ItemContainerGenerator.IndexFromContainer (container);
 		}
 
         public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)

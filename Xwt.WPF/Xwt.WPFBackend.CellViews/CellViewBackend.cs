@@ -61,8 +61,9 @@ namespace Xwt.WPFBackend
 
         public void SetCurrentEventRow ()
         {
-            if (rendererTarget != null)
-                rendererTarget.SetCurrentEventRowForElement (CurrentElement);
+            if (currentElement.DataContext == null)
+                return;
+            rendererTarget?.SetCurrentEventRow (currentElement.DataContext);
         }
 
         public CellView CellView { get; set; }

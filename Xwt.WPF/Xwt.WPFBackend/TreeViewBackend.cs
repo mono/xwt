@@ -238,7 +238,7 @@ namespace Xwt.WPFBackend
 				break;
 
 			case ListViewColumnChange.Cells:
-                var cellTemplate = CellUtil.CreateBoundColumnTemplate(Context, Frontend, column.Views);
+                var cellTemplate = CellUtil.CreateBoundColumnTemplate(Context, this, column.Views);
 
 				col.CellTemplate = new DataTemplate { VisualTree = cellTemplate };
 
@@ -556,9 +556,9 @@ namespace Xwt.WPFBackend
 			return (element.DataContext as TreeStoreNode);
 		}
 
-		void ICellRendererTarget.SetCurrentEventRowForElement (FrameworkElement sender)
+		void ICellRendererTarget.SetCurrentEventRow (object dataItem)
 		{
-			CurrentEventRow = GetRowForElement (sender);
+			CurrentEventRow = dataItem as TreePosition;
 		}
 
 		public Rectangle GetCellBounds (TreePosition pos, CellView cell, bool includeMargin)
