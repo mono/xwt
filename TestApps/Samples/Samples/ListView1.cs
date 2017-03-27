@@ -21,8 +21,9 @@ namespace Samples
 			ListStore store = new ListStore (name, icon, text, icon2, progress);
 			list.DataSource = store;
 			list.Columns.Add ("Name", icon, name);
-			list.Columns.Add ("Text", icon2, text);
+			list.Columns.Add ("Text", new TextCellView (text, true), new ImageCellView (icon2));
 			list.Columns.Add ("Progress", new TextCellView () { TextField = text }, new CustomCell () { ValueField = progress });
+			list.Columns[1].CanResize = true;
 
 			var png = Image.FromResource (typeof(App), "class.png");
 
