@@ -48,13 +48,25 @@ namespace Xwt
 		public TextCellView ()
 		{
 		}
+
+		public TextCellView (bool expands) : base (expands)
+		{
+		}
+
+		public TextCellView (IDataField textField) : this (textField, false)
+		{
+		}
 		
-		public TextCellView (IDataField textField)
+		public TextCellView (IDataField textField, bool expands) : base (expands)
 		{
 			TextField = textField;
 		}
+
+		public TextCellView (string text) : this (text, false)
+		{
+		}
 		
-		public TextCellView (string text)
+		public TextCellView (string text, bool expand) : base(expand)
 		{
 			this.text = text;
 		}

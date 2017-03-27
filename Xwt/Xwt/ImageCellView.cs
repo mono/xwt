@@ -38,13 +38,25 @@ namespace Xwt
 		public ImageCellView ()
 		{
 		}
+
+		public ImageCellView (bool expand) : base (expand)
+		{
+		}
+
+		public ImageCellView(IDataField<Image> imageField) : this (imageField, false)
+		{
+		}
 		
-		public ImageCellView (IDataField<Image> imageField)
+		public ImageCellView (IDataField<Image> imageField, bool expand) : base (expand)
 		{
 			ImageField = imageField;
 		}
+
+		public ImageCellView (Image image) : this (image, false)
+		{
+		}
 		
-		public ImageCellView (Image image)
+		public ImageCellView (Image image, bool expand) : base (expand)
 		{
 			this.image = image;
 		}

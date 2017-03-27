@@ -35,6 +35,10 @@ namespace Xwt
 		{
 		}
 
+		public CanvasCellView (bool expand) : base (expand)
+		{
+		}
+
 		protected void QueueDraw ()
 		{
 			((ICanvasCellViewBackend)BackendHost.Backend).QueueDraw ();

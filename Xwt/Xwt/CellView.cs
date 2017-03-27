@@ -35,6 +35,7 @@ namespace Xwt
 	public class CellView: XwtComponent, ICellViewFrontend
 	{
 		Widget container;
+		readonly bool expands;
 
 		static CellView ()
 		{
@@ -45,6 +46,15 @@ namespace Xwt
 			EventHost.MapEvent (WidgetEvent.ButtonPressed, typeof(CellView), "OnButtonPressed");
 			EventHost.MapEvent (WidgetEvent.ButtonReleased, typeof(CellView), "OnButtonReleased");
 			EventHost.MapEvent (WidgetEvent.MouseMoved, typeof(CellView), "OnMouseMoved");
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="T:Xwt.CellView"/>.
+		/// </summary>
+		/// <param name="expands">If set to <c>true</c> the cell expands to fill all available horizontal space.</param>
+		protected CellView (bool expands = false)
+		{
+			this.expands = expands;
 		}
 
 		/// <summary>
@@ -201,6 +211,14 @@ namespace Xwt
 
 		protected bool HasFocus {
 			get { return Backend.HasFocus; }
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:Xwt.CellView"/> expands to fill all available horizontal space.
+		/// </summary>
+		/// <value><c>true</c> if the cell expands horizontally; otherwise, <c>false</c>.</value>
+		public bool Expands {
+			get { return expands; }
 		}
 
 		/// <summary>

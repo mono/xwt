@@ -50,7 +50,15 @@ namespace Xwt
 		{
 		}
 
-		public ComboBoxCellView (IDataField<string> field)
+		public ComboBoxCellView (bool expand) : base (expand)
+		{
+		}
+
+		public ComboBoxCellView (IDataField<string> field) : this (field, false)
+		{
+		}
+
+		public ComboBoxCellView (IDataField<string> field, bool expand) : base (expand)
 		{
 			SelectedTextField = field;
 		}
