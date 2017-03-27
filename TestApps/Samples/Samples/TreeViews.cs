@@ -63,6 +63,9 @@ namespace Samples
 			view.Columns.Add ("Check", checkCellView);
 			view.Columns.Add ("Item", text);
 			view.Columns.Add ("Desc", desc);
+			view.Columns[2].Expands = true; // expand third column, aligning last column to the right side
+			view.Columns[2].CanResize = true;
+			view.Columns[3].CanResize = true;
 			
 			store.AddNode ().SetValue (text, "One").SetValue (desc, "First").SetValue (triState, CheckBoxState.Mixed);
 			store.AddNode ().SetValue (text, "Two").SetValue (desc, "Second").AddChild ()
