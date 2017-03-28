@@ -27,6 +27,7 @@
 
 using System;
 using Xwt.Backends;
+using Xwt.CairoBackend;
 using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
@@ -131,6 +132,8 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				backgroundColor = value;
+				if (Window is GtkPopoverWindow)
+					((GtkPopoverWindow)Window).BackgroundColor = value.ToCairoColor ();
 				Window.SetBackgroundColor (value);
 			}
 		}

@@ -46,8 +46,17 @@ namespace Xwt.GtkBackend
 			WidgetSpacing padding;
 			Gtk.Alignment alignment;
 			int arrowDelta;
+			Color backgroundColor;
 
-			public Color BackgroundColor { get; set; }
+			public new Color BackgroundColor {
+				get {
+					return backgroundColor;
+				}
+				set {
+					backgroundColor = value;
+					UpdateBaseColor ();
+				}
+			}
 
 			public Xwt.Popover.Position ArrowPosition {
 				get {
@@ -114,8 +123,19 @@ namespace Xwt.GtkBackend
 				this.alignment = new Gtk.Alignment (0, 0, 1, 1);
 				this.alignment.Show ();
 				this.Add (alignment);
+			}
 
-				OnScreenChanged (null);
+			protected override void OnSupportAlphaChanged ()
+			{
+				UpdateBaseColor ();
+			}
+
+			void UpdateBaseColor ()
+			{
+				if (SupportAlpha)
+					base.BackgroundColor = Drawing.Colors.Transparent.ToCairoColor ();
+				else
+					base.BackgroundColor = BackgroundColor;
 			}
 
 			protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -125,18 +145,10 @@ namespace Xwt.GtkBackend
 			}
 
 
-			protected override bool OnDrawn (Context cr)
+			protected override bool OnDraw (Context cr)
 			{
 				int w, h;
 				this.GdkWindow.GetSize (out w, out h);
-				
-				// We clear the surface with a transparent color if possible
-				if (supportAlpha)
-					cr.SetSourceRGBA (1.0, 1.0, 1.0, 0.0);
-				else
-					cr.SetSourceRGB (1.0, 1.0, 1.0);
-				cr.Operator = Operator.Source;
-				cr.Paint ();
 
 				cr.LineWidth = GtkWorkarounds.GetScaleFactor (Content) > 1 ? 2 : 1;
 				var bounds = new Xwt.Rectangle (cr.LineWidth / 2, cr.LineWidth / 2, w - cr.LineWidth, h - cr.LineWidth);
@@ -153,7 +165,7 @@ namespace Xwt.GtkBackend
 				DrawTriangle (cr);
 
 				// We use it
-				if (supportAlpha)
+				if (SupportAlpha)
 					cr.SetSourceRGBA (0.0, 0.0, 0.0, 0.2);
 				else
 					cr.SetSourceRGB (238d / 255d, 238d / 255d, 238d / 255d);
@@ -161,7 +173,7 @@ namespace Xwt.GtkBackend
 				cr.SetSourceRGBA (BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
 				cr.Fill ();
 
-				return base.OnDrawn (cr);
+				return base.OnDraw (cr);
 			}
 			
 			void DrawTriangle (Context ctx)
