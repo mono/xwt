@@ -35,7 +35,7 @@ namespace Xwt
 	public class CellView: XwtComponent, ICellViewFrontend
 	{
 		Widget container;
-		readonly bool expands;
+		bool expands;
 
 		static CellView ()
 		{
@@ -219,6 +219,7 @@ namespace Xwt
 		/// <value><c>true</c> if the cell expands horizontally; otherwise, <c>false</c>.</value>
 		public bool Expands {
 			get { return expands; }
+			internal set { expands = value; }
 		}
 
 		/// <summary>

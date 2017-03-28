@@ -67,5 +67,11 @@ namespace Xwt
 			if (parent != null)
 				parent.NotifyCellChanged ();
 		}
+
+		public void Add (CellView item, bool expands)
+		{
+			item.Expands = expands;
+			Add (item);
+		}
 	}
 }
