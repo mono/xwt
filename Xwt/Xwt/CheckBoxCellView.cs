@@ -48,25 +48,13 @@ namespace Xwt
 		public CheckBoxCellView ()
 		{
 		}
-
-		public CheckBoxCellView(bool expand) : base (expand)
-		{
-		}
 		
-		public CheckBoxCellView (IDataField<CheckBoxState> field) : this (field, false)
-		{
-		}
-
-		public CheckBoxCellView(IDataField<bool> field) : this (field, false)
-		{
-		}
-
-		public CheckBoxCellView(IDataField<CheckBoxState> field, bool expand) : base (expand)
+		public CheckBoxCellView (IDataField<CheckBoxState> field)
 		{
 			StateField = field;
 		}
 
-		public CheckBoxCellView(IDataField<bool> field, bool expand) : base (expand)
+		public CheckBoxCellView (IDataField<bool> field)
 		{
 			ActiveField = field;
 		}

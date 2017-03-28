@@ -49,15 +49,6 @@ namespace Xwt
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="T:Xwt.CellView"/>.
-		/// </summary>
-		/// <param name="expands">If set to <c>true</c> the cell expands to fill all available horizontal space.</param>
-		protected CellView (bool expands = false)
-		{
-			this.expands = expands;
-		}
-
-		/// <summary>
 		/// Gets the default cell view for the provided field type
 		/// </summary>
 		/// <returns>The default cell view.</returns>
