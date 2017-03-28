@@ -34,6 +34,7 @@ using CoreGraphics;
 using Foundation;
 using ObjCRuntime;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -131,6 +132,15 @@ namespace Xwt.Mac
 		public double Opacity {
 			get { return AlphaValue; }
 			set { AlphaValue = (float)value; }
+		}
+
+		Color IWindowBackend.BackgroundColor {
+			get {
+				return BackgroundColor.ToXwtColor ();
+			}
+			set {
+				BackgroundColor = value.ToNSColor ();
+			}
 		}
 
 		public bool Sensitive {
