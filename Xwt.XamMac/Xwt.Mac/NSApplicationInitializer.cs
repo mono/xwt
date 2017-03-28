@@ -35,6 +35,7 @@ namespace Xwt.Mac
 			var ds = System.Threading.Thread.GetNamedDataSlot ("NSApplication.Initialized");
 			if (System.Threading.Thread.GetData (ds) == null) {
 				System.Threading.Thread.SetData (ds, true);
+				NSApplication.IgnoreMissingAssembliesDuringRegistration = true;
 				NSApplication.Init ();
 			}
 		}
