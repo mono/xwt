@@ -42,10 +42,9 @@ namespace Xwt.WPFBackend.Utilities
 		{
 			if (views.Count == 1)
                 return CreateBoundCellRenderer(ctx, parent, views[0], dataPath);
-			
-			FrameworkElementFactory container = new FrameworkElementFactory (typeof (StackPanel));
-			container.SetValue (StackPanel.OrientationProperty, System.Windows.Controls.Orientation.Horizontal);
 
+			FrameworkElementFactory container = new FrameworkElementFactory (typeof (Grid));
+			int i = 0;
 			foreach (CellView view in views) {
 				var factory = CreateBoundCellRenderer(ctx, parent, view, dataPath);
 
@@ -60,7 +59,15 @@ namespace Xwt.WPFBackend.Utilities
 				else if (!view.Visible)
 					factory.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
 
-				container.AppendChild(factory);
+				factory.SetValue (FrameworkElement.HorizontalAlignmentProperty, view.Expands ? HorizontalAlignment.Stretch : HorizontalAlignment.Left);
+				factory.SetValue (Grid.ColumnProperty, i);
+				var column = new FrameworkElementFactory (typeof (ColumnDefinition));
+				column.SetValue (ColumnDefinition.WidthProperty, new GridLength (1, view.Expands ? GridUnitType.Star : GridUnitType.Auto));
+
+				container.AppendChild (column);
+				container.AppendChild (factory);
+
+				i++;
 			}
 
 			return container;

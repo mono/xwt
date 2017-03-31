@@ -77,17 +77,16 @@ namespace Xwt.Mac
 		void AutosizeColumn (NSTableColumn tableColumn)
 		{
 			var column = IndexOfColumn (tableColumn);
-			if (tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing)) {
-				var s = tableColumn.HeaderCell.CellSize;
-				for (int i = 0; i < base.RowCount; i++) {
+
+			var s = tableColumn.HeaderCell.CellSize;
+			if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.UserResizingMask)) {
+				for (int i = 0; i < base.RowCount; i++)
+				{
 					var cell = base.GetCell (column, i);
 					s.Width = (nfloat)Math.Max (s.Width, cell.CellSize.Width);
 				}
-				if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.UserResizingMask))
-					tableColumn.MinWidth = s.Width;
-				if (column < ColumnCount - 1)
-					tableColumn.Width = s.Width;
 			}
+			tableColumn.MinWidth = s.Width;
 		}
 
 		nint IndexOfColumn (NSTableColumn tableColumn)

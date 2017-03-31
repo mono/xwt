@@ -35,6 +35,7 @@ namespace Xwt
 	public class CellView: XwtComponent, ICellViewFrontend
 	{
 		Widget container;
+		bool expands;
 
 		static CellView ()
 		{
@@ -201,6 +202,15 @@ namespace Xwt
 
 		protected bool HasFocus {
 			get { return Backend.HasFocus; }
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:Xwt.CellView"/> expands to fill all available horizontal space.
+		/// </summary>
+		/// <value><c>true</c> if the cell expands horizontally; otherwise, <c>false</c>.</value>
+		public bool Expands {
+			get { return expands; }
+			internal set { expands = value; }
 		}
 
 		/// <summary>
