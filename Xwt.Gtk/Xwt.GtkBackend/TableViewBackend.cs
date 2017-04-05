@@ -163,8 +163,10 @@ namespace Xwt.GtkBackend
 		{
 			if (col.HeaderView == null)
 				tc.Title = col.Title;
-			else
+			else {
 				tc.Widget = CellUtil.CreateCellRenderer (ApplicationContext, col.HeaderView);
+				tc.Widget?.Show ();
+			}
 		}
 		
 		void MapColumn (ListViewColumn col, Gtk.TreeViewColumn tc)
