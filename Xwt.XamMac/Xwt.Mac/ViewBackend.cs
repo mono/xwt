@@ -141,20 +141,22 @@ namespace Xwt.Mac
 			get { return sensitive; }
 			set {
 				sensitive = value;
-				UpdateSensitiveStatus (Widget, sensitive && ParentIsSensitive ());
+				UpdateSensitiveStatus (Widget, sensitive && ParentIsSensitive (Widget));
 			}
 		}
 
-		bool ParentIsSensitive ()
+		static bool ParentIsSensitive (NSView view)
 		{
-			IViewObject parent = Widget.Superview as IViewObject;
+			var parent = view.Superview;
+			if ((parent as NSControl)?.Enabled == false)
+				return false;
 			if (parent == null) {
-				var wb = Widget.Window as WindowBackend;
+				var wb = view.Window as WindowBackend;
 				return wb == null || wb.Sensitive;
 			}
-			if (!parent.Backend.Sensitive)
+			if ((parent as IViewObject)?.Backend.Sensitive == false)
 				return false;
-			return parent.Backend.ParentIsSensitive ();
+			return ParentIsSensitive (parent);
 		}
 
 		internal void UpdateSensitiveStatus (NSView view, bool parentIsSensitive)
