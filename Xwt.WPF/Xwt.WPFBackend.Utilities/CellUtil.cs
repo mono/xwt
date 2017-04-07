@@ -38,7 +38,7 @@ namespace Xwt.WPFBackend.Utilities
 	{
 		static readonly Thickness CellMargins = new Thickness (2);
 
-		internal static FrameworkElementFactory CreateBoundColumnTemplate (ApplicationContext ctx, Widget parent, CellViewCollection views, string dataPath = ".")
+		internal static FrameworkElementFactory CreateBoundColumnTemplate (ApplicationContext ctx, WidgetBackend parent, CellViewCollection views, string dataPath = ".")
 		{
 			if (views.Count == 1)
                 return CreateBoundCellRenderer(ctx, parent, views[0], dataPath);
@@ -72,7 +72,7 @@ namespace Xwt.WPFBackend.Utilities
 
 			return container;
 		}
-		internal static FrameworkElementFactory CreateBoundCellRenderer (ApplicationContext ctx, Widget parent, CellView view, string dataPath = ".")
+		internal static FrameworkElementFactory CreateBoundCellRenderer (ApplicationContext ctx, WidgetBackend parent, CellView view, string dataPath = ".")
 		{
             ICellViewFrontend fr = view;
 			TextCellView textView = view as TextCellView;
@@ -105,9 +105,9 @@ namespace Xwt.WPFBackend.Utilities
 						factory.SetValue(SWC.TextBlock.TextProperty, textView.Text);
 				}
 
-                var cb = new CellViewBackend();
-                cb.Initialize(view, factory);
-                fr.AttachBackend(parent, cb);
+                var cb = new TextCellViewBackend();
+                cb.Initialize(view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend(parent.Frontend, cb);
 				return factory;
 			}
 
@@ -123,8 +123,8 @@ namespace Xwt.WPFBackend.Utilities
 				}
 
                 var cb = new CellViewBackend();
-                cb.Initialize(view, factory);
-                fr.AttachBackend(parent, cb);
+                cb.Initialize(view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend(parent.Frontend, cb);
                 return factory;
 			}
 
@@ -135,8 +135,8 @@ namespace Xwt.WPFBackend.Utilities
                 FrameworkElementFactory factory = new FrameworkElementFactory(typeof(CanvasCellViewPanel));
 				factory.SetValue(CanvasCellViewPanel.CellViewBackendProperty, cb);
 
-                cb.Initialize(view, factory);
-                fr.AttachBackend(parent, cb);
+                cb.Initialize(view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend(parent.Frontend, cb);
                 return factory;
 			}
 			
@@ -152,13 +152,18 @@ namespace Xwt.WPFBackend.Utilities
 				if (cellView.ActiveField != null)
 					factory.SetBinding (SWC.CheckBox.IsCheckedProperty, new Binding (dataPath + "[" + cellView.ActiveField.Index + "]"));
 
-				var cb = new CellViewBackend ();
-				cb.Initialize (view, factory);
-				fr.AttachBackend (parent, cb);
+				var cb = new CheckBoxCellViewBackend ();
+				cb.Initialize (view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend (parent.Frontend, cb);
 				return factory;
 			}
 
 			throw new NotImplementedException ();
 		}
+	}
+
+	public interface ICellRendererTarget
+	{
+		void SetCurrentEventRow (object dataItem);
 	}
 }

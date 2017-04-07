@@ -88,14 +88,16 @@ namespace Xwt
 				if (enabledEvents == null)
 					enabledEvents = new HashSet<object> ();
 				enabledEvents.Add (eventId);
-				base.OnEnableEvent (eventId);
+				if (BackendCreated)
+					base.OnEnableEvent (eventId);
 			}
 
 			protected override void OnDisableEvent (object eventId)
 			{
 				if (enabledEvents != null)
 					enabledEvents.Remove (eventId);
-				base.OnDisableEvent (eventId);
+				if (BackendCreated)
+					base.OnDisableEvent (eventId);
 			}
 
 			public void AttachBackend (ICellViewBackend backend)
@@ -236,54 +238,131 @@ namespace Xwt
 		{
 		}
 
-		public event EventHandler<KeyEventArgs> KeyPressed;
-		public event EventHandler<KeyEventArgs> KeyReleased;
-		public event EventHandler MouseEntered;
-		public event EventHandler MouseExited;
-		public event EventHandler<MouseMovedEventArgs> MouseMoved;
-		public event EventHandler<ButtonEventArgs> ButtonPressed;
-		public event EventHandler<ButtonEventArgs> ButtonReleased;
+		EventHandler<KeyEventArgs> keyPressed;
+		EventHandler<KeyEventArgs> keyReleased;
+		EventHandler mouseEntered;
+		EventHandler mouseExited;
+		EventHandler<MouseMovedEventArgs> mouseMoved;
+		EventHandler<ButtonEventArgs> buttonPressed;
+		EventHandler<ButtonEventArgs> buttonReleased;
+
+		public event EventHandler<KeyEventArgs> KeyPressed {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.KeyPressed, keyPressed);
+				keyPressed += value;
+			}
+			remove {
+				keyPressed -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.KeyPressed, keyPressed);
+			}
+		}
+
+		public event EventHandler<KeyEventArgs> KeyReleased {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.KeyReleased, keyReleased);
+				keyReleased += value;
+			}
+			remove {
+				keyReleased -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.KeyReleased, keyReleased);
+			}
+		}
+
+		public event EventHandler MouseEntered {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.MouseEntered, mouseEntered);
+				mouseEntered += value;
+			}
+			remove {
+				mouseEntered -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.MouseEntered, mouseEntered);
+			}
+		}
+
+		public event EventHandler MouseExited {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.MouseExited, mouseExited);
+				mouseExited += value;
+			}
+			remove {
+				mouseExited -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.MouseExited, mouseExited);
+			}
+		}
+
+		public event EventHandler<ButtonEventArgs> ButtonPressed {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.ButtonPressed, buttonPressed);
+				buttonPressed += value;
+			}
+			remove {
+				buttonPressed -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.ButtonPressed, buttonPressed);
+			}
+		}
+
+		public event EventHandler<ButtonEventArgs> ButtonReleased {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.ButtonReleased, buttonReleased);
+				buttonReleased += value;
+			}
+			remove {
+				buttonReleased -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.ButtonReleased, buttonReleased);
+			}
+		}
+
+		public event EventHandler<MouseMovedEventArgs> MouseMoved {
+			add {
+				BackendHost.OnBeforeEventAdd (WidgetEvent.MouseMoved, mouseMoved);
+				mouseMoved += value;
+			}
+			remove {
+				mouseMoved -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.MouseMoved, mouseMoved);
+			}
+		}
 
 		internal protected virtual void OnKeyPressed (KeyEventArgs args)
 		{
-			if (KeyPressed != null)
-				KeyPressed (this, args);
+			if (keyPressed != null)
+				keyPressed (this, args);
 		}
 
 		internal protected virtual void OnKeyReleased (KeyEventArgs args)
 		{
-			if (KeyReleased != null)
-				KeyReleased (this, args);
+			if (keyReleased != null)
+				keyReleased (this, args);
 		}
 
 		internal protected virtual void OnMouseEntered ()
 		{
-			if (MouseEntered != null)
-				MouseEntered (this, EventArgs.Empty);
+			if (mouseEntered != null)
+				mouseEntered (this, EventArgs.Empty);
 		}
 
 		internal protected virtual void OnMouseExited ()
 		{
-			if (MouseExited != null)
-				MouseExited (this, EventArgs.Empty);
+			if (mouseExited != null)
+				mouseExited (this, EventArgs.Empty);
 		}
 
 		internal protected virtual void OnMouseMoved (MouseMovedEventArgs args)
 		{
-			if (MouseMoved != null)
-				MouseMoved (this, args);
+			if (mouseMoved != null)
+				mouseMoved (this, args);
 		}
 
 		internal protected virtual void OnButtonPressed (ButtonEventArgs args)
 		{
-			if (ButtonPressed != null)
-				ButtonPressed (this, args);
+			if (buttonPressed != null)
+				buttonPressed (this, args);
 		}
 
 		internal protected virtual void OnButtonReleased (ButtonEventArgs args)
 		{
-			if (ButtonReleased != null)
-				ButtonReleased (this, args);
+			if (buttonReleased != null)
+				buttonReleased (this, args);
 		}
 	}
 }

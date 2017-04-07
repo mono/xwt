@@ -11,6 +11,7 @@ namespace Xwt.WPFBackend
     {
         public void QueueDraw()
         {
+            CurrentElement.InvalidateVisual ();
         }
     }
 }

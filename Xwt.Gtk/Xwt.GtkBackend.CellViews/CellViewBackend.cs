@@ -37,6 +37,9 @@ namespace Xwt.GtkBackend
 		ICellRendererTarget rendererTarget;
 		object target;
 		bool buttonReleaseSubscribed;
+		WidgetEvent enabledEvents;
+		bool enabledMouseEvents;
+		bool mouseInsideCell;
 
 		public CellViewBackend ()
 		{
@@ -76,10 +79,12 @@ namespace Xwt.GtkBackend
 		public virtual void EnableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent) {
+				WidgetEvent ev = (WidgetEvent) eventId;
 				switch ((WidgetEvent)eventId) {
 				case WidgetEvent.MouseMoved:
-					rendererTarget.EventRootWidget.AddEvents ((int)Gdk.EventMask.PointerMotionMask);
-					rendererTarget.EventRootWidget.MotionNotifyEvent += HandleMotionNotifyEvent;
+				case WidgetEvent.MouseEntered:
+				case WidgetEvent.MouseExited:
+					EnableMouseEvents ();
 					break;
 				case WidgetEvent.ButtonPressed:
 					rendererTarget.EventRootWidget.AddEvents ((int)Gdk.EventMask.ButtonPressMask);
@@ -89,17 +94,29 @@ namespace Xwt.GtkBackend
 					rendererTarget.EventRootWidget.AddEvents ((int)Gdk.EventMask.ButtonReleaseMask);
 					rendererTarget.EventRootWidget.ButtonReleaseEvent += HandleButtonReleaseEvent;
 					buttonReleaseSubscribed = true;
+						break;
+				case WidgetEvent.KeyPressed:
+					EnableMouseEvents ();
+					rendererTarget.EventRootWidget.KeyPressEvent += HandleKeyPressEvent;
+					break;
+				case WidgetEvent.KeyReleased:
+					EnableMouseEvents ();
+					rendererTarget.EventRootWidget.KeyReleaseEvent += HandleKeyReleaseEvent;
 					break;
 				}
+				enabledEvents |= ev;
 			}
 		}
 
 		public virtual void DisableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent) {
+				WidgetEvent ev = (WidgetEvent) eventId;
 				switch ((WidgetEvent)eventId) {
 				case WidgetEvent.MouseMoved:
-					rendererTarget.EventRootWidget.MotionNotifyEvent -= HandleMotionNotifyEvent;
+				case WidgetEvent.MouseEntered:
+				case WidgetEvent.MouseExited:
+					DisableMouseEvents ();
 					break;
 				case WidgetEvent.ButtonPressed:
 					rendererTarget.EventRootWidget.ButtonPressEvent -= HandleButtonPressEvent;
@@ -108,7 +125,41 @@ namespace Xwt.GtkBackend
 					rendererTarget.EventRootWidget.ButtonReleaseEvent -= HandleButtonReleaseEvent;
 					buttonReleaseSubscribed = false;
 					break;
+				case WidgetEvent.KeyPressed:
+					DisableMouseEvents ();
+					rendererTarget.EventRootWidget.KeyPressEvent -= HandleKeyPressEvent;
+					break;
+				case WidgetEvent.KeyReleased:
+					DisableMouseEvents ();
+					rendererTarget.EventRootWidget.KeyReleaseEvent -= HandleKeyReleaseEvent;
+					break;
 				}
+				enabledEvents &= ~ev;
+			}
+		}
+
+		void EnableMouseEvents ()
+		{
+			if (!enabledMouseEvents) {
+				rendererTarget.EventRootWidget.AddEvents ((int)Gdk.EventMask.PointerMotionMask);
+				rendererTarget.EventRootWidget.MotionNotifyEvent += HandleMotionNotifyEvent;
+				enabledMouseEvents = true;
+			}
+		}
+
+		void DisableMouseEvents ()
+		{
+			if ((enabledEvents & WidgetEvent.MouseMoved) == WidgetEvent.MouseMoved ||
+			    (enabledEvents & WidgetEvent.MouseEntered) == WidgetEvent.MouseEntered ||
+			    (enabledEvents & WidgetEvent.MouseExited) == WidgetEvent.MouseExited ||
+			    (enabledEvents & WidgetEvent.KeyPressed) == WidgetEvent.KeyPressed ||
+			    (enabledEvents & WidgetEvent.KeyReleased) == WidgetEvent.KeyReleased)
+			{
+				return;
+			}
+			if (enabledMouseEvents) {
+				rendererTarget.EventRootWidget.MotionNotifyEvent -= HandleMotionNotifyEvent;
+				enabledMouseEvents = false;
 			}
 		}
 
@@ -197,12 +248,64 @@ namespace Xwt.GtkBackend
 				var rect = rendererTarget.GetCellBounds (target, CellRenderer, iter);
 
 				if (rect.Contains (cx, cy)) {
-					ApplicationContext.InvokeUserCode (delegate {
-						LoadData (rendererTarget.Model, iter);
+					if (enabledEvents.HasFlag (WidgetEvent.MouseMoved))
+						ApplicationContext.InvokeUserCode (delegate {
+							LoadData (rendererTarget.Model, iter);
 						EventSink.OnMouseMoved (new MouseMovedEventArgs (args.Event.Time, cx, cy));
+						});
+
+					if (!mouseInsideCell) {
+						mouseInsideCell = true;
+						if (enabledEvents.HasFlag (WidgetEvent.MouseEntered))
+							ApplicationContext.InvokeUserCode (delegate {
+								LoadData (rendererTarget.Model, iter);
+								EventSink.OnMouseEntered ();
+							});
+					} 
+				} else if (mouseInsideCell) {
+					mouseInsideCell = false;
+					if (enabledEvents.HasFlag (WidgetEvent.MouseExited))
+						ApplicationContext.InvokeUserCode (delegate {
+						LoadData (rendererTarget.Model, iter);
+						EventSink.OnMouseExited ();
 					});
 				}
+			} else if (mouseInsideCell) {
+				mouseInsideCell = false;
+				if (enabledEvents.HasFlag (WidgetEvent.MouseExited))
+					ApplicationContext.InvokeUserCode (delegate {
+					LoadData (rendererTarget.Model, iter);
+					EventSink.OnMouseExited ();
+				});
 			}
+		}
+
+		[GLib.ConnectBefore]
+		void HandleKeyPressEvent (object o, Gtk.KeyPressEventArgs args)
+		{
+			if (!mouseInsideCell) return;
+
+			Key k = (Key)args.Event.KeyValue;
+			ModifierKeys m = args.Event.State.ToXwtValue ();
+
+			KeyEventArgs kargs = new KeyEventArgs (k, (int)args.Event.KeyValue, m, false, (long)args.Event.Time);
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnKeyPressed (kargs);
+			});
+		}
+
+		[GLib.ConnectBefore]
+		void HandleKeyReleaseEvent (object o, Gtk.KeyReleaseEventArgs args)
+		{
+			if (!mouseInsideCell) return;
+
+			Key k = (Key)args.Event.KeyValue;
+			ModifierKeys m = args.Event.State.ToXwtValue ();
+
+			KeyEventArgs kargs = new KeyEventArgs (k, (int)args.Event.KeyValue, m, false, (long)args.Event.Time);
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnKeyReleased (kargs);
+			});
 		}
 
 		public void LoadData (TreeModel model, Gtk.TreeIter iter)
