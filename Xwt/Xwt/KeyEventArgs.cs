@@ -60,6 +60,21 @@ namespace Xwt
 		{
 			this.NativeKeyCode = nativeKeyCode;
 		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Xwt.KeyEventArgs"/> class.
+		/// </summary>
+		/// <param name="key">The key.</param>
+		/// <param name="nativeKeyCode">The native key code.</param>
+		/// <param name="textInput">Gets textinput of pressed key.</param>
+		/// <param name="modifiers">The modifier keys.</param>
+		/// <param name="isRepeat">the key has been pressed more then once.</param>
+		/// <param name="timestamp">The timestamp of the key event.</param>
+		public KeyEventArgs (Key key, int nativeKeyCode, string textInput, ModifierKeys modifiers, bool isRepeat, long timestamp)
+			: this (key, nativeKeyCode, modifiers, isRepeat, timestamp)
+		{
+			this.TextInput = textInput;
+		}
 		
 		/// <summary>
 		/// Gets the key.
@@ -72,6 +87,12 @@ namespace Xwt
 		/// </summary>
 		/// <value>The native key code.</value>
 		public int NativeKeyCode { get; private set; }
+
+		/// <summary>
+		/// Gets the text input.
+		/// </summary>
+		/// <value>The text input.</value>
+		public string TextInput { get; private set; }
 		
 		/// <summary>
 		/// Gets the modifier keys.

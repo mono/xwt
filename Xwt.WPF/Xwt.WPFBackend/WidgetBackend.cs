@@ -632,7 +632,7 @@ namespace Xwt.WPFBackend
 			if ((int)key == 0)
 				return false;
 
-			result = new KeyEventArgs (key, (int)e.Key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
+			result = new KeyEventArgs (key, (int)e.Key, Xwt.WPFBackend.Interop.NativeMethods.GetCharFromKey(e.Key).ToString(), KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
 			return true;
 		}
 
