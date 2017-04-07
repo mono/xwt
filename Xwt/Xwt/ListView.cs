@@ -27,7 +27,7 @@
 using System;
 using Xwt.Backends;
 using System.ComponentModel;
-
+using System.Linq;
 
 namespace Xwt
 {
@@ -60,6 +60,11 @@ namespace Xwt
 			{
 				return Xwt.Backends.DefaultNaturalSizes.ListView;
 			}
+
+			public void ColumnHeaderClicked(object handle)
+			{
+				Parent.ColumnHeaderClicked(handle);				
+			}
 		}
 		
 		static ListView ()
@@ -87,6 +92,12 @@ namespace Xwt
 		
 		IListViewBackend Backend {
 			get { return (IListViewBackend) BackendHost.Backend; }
+		}
+
+		public void ColumnHeaderClicked(object handle)
+		{
+			var column = columns.Where(col => col.Handle == handle).First();
+			column.SortDirection = (column.SortDirection == ColumnSortDirection.Ascending ? ColumnSortDirection.Descending : ColumnSortDirection.Ascending);
 		}
 
 		public bool BorderVisible

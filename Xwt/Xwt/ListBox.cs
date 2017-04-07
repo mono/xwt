@@ -62,6 +62,11 @@ namespace Xwt
 			{
 				return Xwt.Backends.DefaultNaturalSizes.ComboBox;
 			}
+
+			public void ColumnHeaderClicked(object handle)
+			{
+				return; // listbox sorting todo
+			}
 		}
 		
 		static ListBox ()

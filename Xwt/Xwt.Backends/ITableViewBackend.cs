@@ -38,6 +38,7 @@ namespace Xwt.Backends
 	public interface ITableViewEventSink: IWidgetEventSink
 	{
 		void OnSelectionChanged ();
+		void ColumnHeaderClicked(object handle);
 	}
 	
 	public enum TableViewEvent
