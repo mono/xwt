@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using AppKit;
 using CoreGraphics;
 using Foundation;
@@ -70,8 +71,11 @@ namespace Xwt.Mac
 
 		internal void AutosizeColumns ()
 		{
-			foreach (var col in TableColumns ())
+			var columns = TableColumns ();
+			foreach (var col in columns)
 				AutosizeColumn (col);
+			if (columns.Any (c => c.ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing)))
+				SizeToFit ();
 		}
 
 		void AutosizeColumn (NSTableColumn tableColumn)
@@ -85,6 +89,8 @@ namespace Xwt.Mac
 					var cell = base.GetCell (column, i);
 					s.Width = (nfloat)Math.Max (s.Width, cell.CellSize.Width);
 				}
+				if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing))
+					tableColumn.Width = s.Width;
 			}
 			tableColumn.MinWidth = s.Width;
 		}
