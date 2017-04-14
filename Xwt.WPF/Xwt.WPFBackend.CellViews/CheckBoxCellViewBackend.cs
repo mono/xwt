@@ -24,8 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using Xwt.Backends;
-using System.Windows;
 using System;
+using System.Windows.Data;
+using System.Globalization;
+using System.Windows;
 using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
@@ -34,17 +36,62 @@ namespace Xwt.WPFBackend
 	{
 		public override void OnInitialize (CellView cellView, FrameworkElementFactory factory)
 		{
-			factory.AddHandler (SWC.Primitives.ToggleButton.CheckedEvent, new RoutedEventHandler (HandleChecked));
-			factory.AddHandler (SWC.Primitives.ToggleButton.UncheckedEvent, new RoutedEventHandler (HandleChecked));
+			factory.AddHandler (CheckBoxCell.ToggleEvent, new RoutedEventHandler (HandleToggled));
 			base.OnInitialize (cellView, factory);
 		}
 
-		void HandleChecked(object sender, EventArgs e)
+		void HandleToggled(object sender, RoutedEventArgs e)
 		{
 			var view = (ICheckBoxCellViewFrontend) CellView;
 			Load(sender as FrameworkElement);
 			SetCurrentEventRow ();
-			view.RaiseToggled ();
+			e.Handled = view.RaiseToggled ();
+		}
+	}
+
+	class CheckBoxCell : SWC.CheckBox
+	{
+		public static readonly RoutedEvent ToggleEvent = EventManager.RegisterRoutedEvent ("Toggle", RoutingStrategy.Bubble, typeof (RoutedEventHandler), typeof (ToggleButton));
+
+		public event RoutedEventHandler Toggle {
+			add { AddHandler (ToggleEvent, value); }
+			remove { RemoveHandler (ToggleEvent, value); }
+		}
+
+		protected virtual void OnToggle (RoutedEventArgs e)
+		{
+			RaiseEvent (e);
+		}
+
+		protected override void OnToggle ()
+		{
+			var args = new RoutedEventArgs (ToggleEvent);
+			OnToggle (args);
+			if (!args.Handled)
+				base.OnToggle ();
+		}
+	}
+
+	class CheckBoxStateToBoolConverter : IValueConverter
+	{
+		public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var svalue = value as CheckBoxState?;
+			switch (svalue) {
+			case CheckBoxState.On:
+				return true;
+			case CheckBoxState.Off:
+				return false;
+			}
+			return null;
+		}
+
+		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var bvalue = value as bool?;
+			if (!bvalue.HasValue)
+				return CheckBoxState.Mixed;
+			return bvalue.Value ? CheckBoxState.On : CheckBoxState.Off;
 		}
 	}
 }
