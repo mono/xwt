@@ -245,9 +245,23 @@ namespace Xwt.GtkBackend
 		{
 		}
 
+		public void Show (Xwt.Popover.Position orientation, object reference, Xwt.Rectangle positionRect, Widget child)
+		{
+			var nativeReference = reference as Gtk.Widget;
+			if (nativeReference == null)
+				return;
+			Show (orientation, nativeReference, positionRect, child);
+		}
+
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget reference, Xwt.Rectangle positionRect, Widget child)
 		{
-			popover.Content = (Gtk.Widget)((WidgetBackend)Toolkit.GetBackend (child)).NativeWidget;
+			var nativeReference = (Gtk.Widget)((WidgetBackend)Toolkit.GetBackend (child)).NativeWidget;
+			Show (orientation, nativeReference, positionRect, child);
+		}
+
+		public void Show (Xwt.Popover.Position orientation, Gtk.Widget reference, Xwt.Rectangle positionRect, Widget child)
+		{
+			popover.Content = reference;
 			popover.ArrowPosition = orientation;
 			popover.BackgroundColor = BackgroundColor.ToCairoColor ();
 			popover.Padding = frontend.Padding;
@@ -262,10 +276,10 @@ namespace Xwt.GtkBackend
 
 			popover.Hidden += (o, args) => sink.OnClosed ();
 
-			var screenBounds = reference.ScreenBounds;
+			var screenBounds = reference.Allocation;
 			if (positionRect == Rectangle.Zero)
-				positionRect = new Rectangle (Point.Zero, screenBounds.Size);
-			positionRect = positionRect.Offset (screenBounds.Location);
+				positionRect = new Rectangle (0, 0, screenBounds.Size.Width, screenBounds.Height);
+			positionRect = positionRect.Offset (screenBounds.Location.X, screenBounds.Y);
 			popover.Show ();
 			popover.Present ();
 			popover.GrabFocus ();

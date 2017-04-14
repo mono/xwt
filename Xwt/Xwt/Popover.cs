@@ -143,9 +143,22 @@ namespace Xwt
 		{
 		}
 
+		public void Show (Position arrowPosition, object referenceWidget)
+		{
+			Show (arrowPosition, referenceWidget, Xwt.Rectangle.Zero);
+		}
+
 		public void Show (Position arrowPosition, Widget referenceWidget)
 		{
 			Show (arrowPosition, referenceWidget, Xwt.Rectangle.Zero);
+		}
+
+		public void Show (Position arrowPosition, object referenceWidget, Xwt.Rectangle positionRect)
+		{
+			if (content == null)
+				throw new InvalidOperationException ("A child widget source must be set before running the Popover");
+			Backend.Show (arrowPosition, referenceWidget, positionRect, content);
+			shown = true;
 		}
 
 		public void Show (Position arrowPosition, Widget referenceWidget, Xwt.Rectangle positionRect)

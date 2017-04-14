@@ -94,7 +94,19 @@ namespace Xwt.WPFBackend
 			EventSink = sink;
 		}
 
+		public void Show (Xwt.Popover.Position orientation, object reference, Xwt.Rectangle positionRect, Widget child)
+		{
+			var nativeReference = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (reference);
+			Show (orientation, nativeReference, positionRect, child);
+		}
+
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget reference, Xwt.Rectangle positionRect, Widget child)
+		{
+			var nativeReference = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (reference);
+			Show (orientation, nativeReference, positionRect, child);
+		}
+
+		void Show (Xwt.Popover.Position orientation, System.Windows.FrameworkElement reference, Xwt.Rectangle positionRect, Widget child)
 		{
 			ActualPosition = orientation;
 			Border.Child = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (child);
@@ -111,7 +123,7 @@ namespace Xwt.WPFBackend
 					new System.Windows.Controls.Primitives.CustomPopupPlacement (location, System.Windows.Controls.Primitives.PopupPrimaryAxis.Horizontal)
 				};
 			};
-			NativeWidget.PlacementTarget = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (reference);
+			NativeWidget.PlacementTarget = reference;
 			NativeWidget.IsOpen = true;
 		}
 
