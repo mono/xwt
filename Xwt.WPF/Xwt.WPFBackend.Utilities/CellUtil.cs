@@ -142,14 +142,21 @@ namespace Xwt.WPFBackend.Utilities
 			
 			CheckBoxCellView cellView = view as CheckBoxCellView;
 			if (cellView != null) {
-				FrameworkElementFactory factory = new FrameworkElementFactory (typeof(SWC.CheckBox));
+				FrameworkElementFactory factory = new FrameworkElementFactory (typeof(CheckBoxCell));
 				if (cellView.EditableField == null)
 					factory.SetValue (FrameworkElement.IsEnabledProperty, cellView.Editable);
 				else
 					factory.SetBinding (SWC.CheckBox.IsEnabledProperty, new Binding (dataPath + "[" + cellView.EditableField.Index + "]"));
 
-				factory.SetValue (SWC.CheckBox.IsThreeStateProperty, cellView.AllowMixed);
-				if (cellView.ActiveField != null)
+				if (cellView.AllowMixedField == null)
+					factory.SetValue(SWC.CheckBox.IsThreeStateProperty, cellView.AllowMixed);
+				else
+					factory.SetBinding(SWC.CheckBox.IsThreeStateProperty, new Binding(dataPath + "[" + cellView.AllowMixedField.Index + "]"));
+
+				if (cellView.StateField != null)
+					factory.SetBinding(SWC.CheckBox.IsCheckedProperty,
+						new Binding(dataPath + "[" + cellView.StateField.Index + "]") { Converter = new CheckBoxStateToBoolConverter() });
+				else if (cellView.ActiveField != null)
 					factory.SetBinding (SWC.CheckBox.IsCheckedProperty, new Binding (dataPath + "[" + cellView.ActiveField.Index + "]"));
 
 				var cb = new CheckBoxCellViewBackend ();
