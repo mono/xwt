@@ -349,6 +349,7 @@
     <Compile Include="Xwt.Backends\IPopupWindowBackend.cs" />
     <Compile Include="Xwt\UtilityWindow.cs" />
     <Compile Include="Xwt.Backends\IUtilityWindowBackend.cs" />
+    <Compile Include="Xwt\TextChangedEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

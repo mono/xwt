@@ -62,7 +62,7 @@ namespace Xwt.GtkBackend
 			SetCurrentEventRow ();
 			var view = (ITextCellViewFrontend) Frontend;
 
-			if (!view.RaiseTextChanged () && view.TextField != null) {
+			if (!view.RaiseTextChanged (args.NewText) && view.TextField != null) {
 				Gtk.TreeIter iter;
 				if (TreeModel.GetIterFromString (out iter, args.Path))
 					CellUtil.SetModelValue (TreeModel, iter, view.TextField.Index, view.TextField.FieldType, args.NewText);

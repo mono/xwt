@@ -42,7 +42,7 @@ namespace Xwt.WPFBackend
 			var view = (ITextCellViewFrontend)CellView;
 			Load (sender as FrameworkElement);
 			SetCurrentEventRow ();
-			routedEventArgs.Handled = view.RaiseTextChanged ();
+			routedEventArgs.Handled = view.RaiseTextChanged (view.Text);
 		}
 	}
 }
