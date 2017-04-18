@@ -65,16 +65,16 @@ namespace Xwt.WPFBackend
 
 		public WpfSpinButton ()
 		{
-			Width = 25;
-			Height = 25;
+			var width = 25;
+			var height = 25;
 			Background = new SolidColorBrush (Colors.Transparent);
 			Storyboard = new Storyboard { RepeatBehavior = RepeatBehavior.Forever, Duration = TimeSpan.FromMilliseconds (Duration) };
 
 			for (int i = 0; i < 360; i += 30) {
 				// Create the rectangle and centre it in our widget
 				var rect = new WpfRectangle { Width = 2, Height = 8, Fill = new SolidColorBrush (Colors.Black), RadiusX = 1, RadiusY = 1, Opacity = Values[0] };
-				WpfCanvas.SetTop (rect, (Height - rect.Height) / 2);
-				WpfCanvas.SetLeft (rect, Width / 2);
+				WpfCanvas.SetTop (rect, (height - rect.Height) / 2);
+				WpfCanvas.SetLeft (rect, (width - rect.Width) / 2);
 
 				// Rotate the element by 'i' degrees, creating a circle out of all the elements
 				var group = new TransformGroup ();
@@ -118,9 +118,24 @@ namespace Xwt.WPFBackend
 
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
 		{
-			base.MeasureOverride (constraint);
-			var s = new System.Windows.Size (25, 25);
-			return Backend.MeasureOverride (constraint, s);
+			var s = base.MeasureOverride (constraint);
+			s.Width = Math.Max (s.Width, MinWidth == 0 ? 25 : MinWidth); // use requested MinWidth or default to 25
+			s.Height = Math.Max (s.Height, MinHeight == 0 ? 25 : MinHeight); // use requested MinHeight or default to 25
+			var widthRequest = Backend.Frontend.WidthRequest;
+			var heightRequest = Backend.Frontend.HeightRequest;
+			double sizeRequest;
+			if (widthRequest > -1 && heightRequest > -1)
+				// if both dimensions are contrained align size to the smallest
+				sizeRequest = Math.Min (heightRequest, widthRequest);
+			else
+				// otherwise align to the constrained dimension
+				sizeRequest = Math.Max (heightRequest, widthRequest);
+			if (sizeRequest > -1)
+				s.Width = s.Height = sizeRequest;
+			else
+				// without a size request grow to fit the highest Min size
+				s.Width = s.Height = Math.Max (s.Width, s.Height);
+			return s;
 		}
 	}
 }
