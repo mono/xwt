@@ -203,7 +203,11 @@ namespace Xwt.Mac
 		public void Show (Popover.Position orientation, Widget referenceWidget, Rectangle positionRect, Widget child)
 		{
 			var refBackend = Toolkit.GetBackend (referenceWidget) as IWidgetBackend;
-			NSView refView = (refBackend as ViewBackend)?.Widget;
+
+			NSView refView = (refBackend as EmbedNativeWidgetBackend)?.InnerView;
+
+			if (refView == null)
+				refView = (refBackend as ViewBackend)?.Widget;
 
 			if (refView == null) {
 				if (referenceWidget.Surface.ToolkitEngine.Type == ToolkitType.Gtk) {
