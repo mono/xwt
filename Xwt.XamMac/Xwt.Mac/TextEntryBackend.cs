@@ -325,6 +325,22 @@ namespace Xwt.Mac
 			});
 		}
 
+		public override string StringValue
+		{
+			get { return base.StringValue; }
+			set {
+				if (base.StringValue != value)
+				{
+					base.StringValue = value;
+					context.InvokeUserCode (delegate
+					{
+						eventSink.OnChanged ();
+						eventSink.OnSelectionChanged ();
+					});
+				}
+			}
+		}
+
 		class CustomCell : NSTextFieldCell
 		{
 			CustomEditor editor;
