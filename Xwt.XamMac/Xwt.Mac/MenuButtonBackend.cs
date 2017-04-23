@@ -73,9 +73,7 @@ namespace Xwt.Mac
 
 			PullsDown = true;
 			Activated += delegate {
-				context.InvokeUserCode (delegate {
-					eventSink.OnClicked ();
-				});
+                context.InvokeUserCode (eventSink.OnClicked);
 			};
 
 			NSNotificationCenter.DefaultCenter.AddObserver ((NSString)"NSPopUpButtonWillPopUpNotification", CreateMenu, this);

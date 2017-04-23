@@ -109,9 +109,7 @@ namespace Xwt.Mac
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnValueChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnValueChanged);
 		}
 	}
 

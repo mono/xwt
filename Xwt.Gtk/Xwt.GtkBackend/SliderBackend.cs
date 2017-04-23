@@ -94,9 +94,7 @@ namespace Xwt.GtkBackend
 			}
 
 			if (onValueChangedEnabled)
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.ValueChanged ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.ValueChanged);
 		}
 
 		public double Value {

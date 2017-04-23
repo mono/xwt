@@ -108,9 +108,7 @@ namespace Xwt.Mac
 		{
 			this.context = context;
 			this.eventSink = eventSink;
-			Activated += (sender, e) => context.InvokeUserCode (delegate {
-				eventSink.OnActivated ();
-			});
+			Activated += (sender, e) => context.InvokeUserCode (eventSink.OnActivated);
 		}
 
 		public NSView View {
@@ -124,9 +122,7 @@ namespace Xwt.Mac
 		public override void DidChange (NSNotification notification)
 		{
 			base.DidChange (notification);
-			context.InvokeUserCode (delegate {
-				eventSink.OnChanged ();
-			});
+            context.InvokeUserCode (eventSink.OnChanged);
 		}
 	}
 }

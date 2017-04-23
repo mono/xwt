@@ -95,16 +95,12 @@ namespace Xwt.GtkBackend
 		
 		void HandleClicked (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnClicked ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnClicked);
 		}
 		
 		void HandleToggled (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnToggled ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnToggled);
 		}
 
 		#region IRadioButtonBackend implementation

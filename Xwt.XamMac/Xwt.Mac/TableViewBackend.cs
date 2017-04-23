@@ -171,9 +171,7 @@ namespace Xwt.Mac
 
 		void HandleTreeSelectionDidChange (NSNotification notif)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnSelectionChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
 		}
 		
 		public void SetSelectionMode (SelectionMode mode)

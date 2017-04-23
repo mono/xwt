@@ -137,9 +137,7 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetSelectionChanged (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnSelectionChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
 		}
 		
 		public object AddColumn (ListViewColumn col)

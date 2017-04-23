@@ -88,9 +88,7 @@ namespace Xwt.Backends
 		/// <remarks>To be called by the subclass when there is a change in the configuration of screens</remarks>
 		public void OnScreensChanged ()
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				Desktop.NotifyScreensChanged ();
-			});
+			ApplicationContext.InvokeUserCode (Desktop.NotifyScreensChanged);
 		}
 
 		public virtual void OpenFile (string filename)

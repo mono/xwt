@@ -108,9 +108,7 @@ namespace Xwt.WPFBackend
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			Context.InvokeUserCode (delegate {
-				EventSink.OnValueChanged ();
-			});
+			Context.InvokeUserCode (EventSink.OnValueChanged);
 		}
 	}
 }

@@ -51,9 +51,7 @@ namespace Xwt.Mac
 		{
 			if (lastValue != Value) {
 				lastValue = Value;
-				appContext.InvokeUserCode (delegate {
-					eventSink.OnValueChanged ();
-				});
+				appContext.InvokeUserCode (eventSink.OnValueChanged);
 			}
 		}
 

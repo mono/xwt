@@ -68,9 +68,7 @@ namespace Xwt.Mac
 			ViewObject = new PopUpButton ();
 			Widget.Menu = new NSMenu ();
 			Widget.Activated += delegate {
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnSelectionChanged ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
 				Widget.SynchronizeTitleAndSelectedItem ();
 				ResetFittingSize ();
 			};
@@ -167,9 +165,7 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.SelectItem (value);
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnSelectionChanged ();
-				});
+                ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
 				Widget.SynchronizeTitleAndSelectedItem ();
 				ResetFittingSize ();
 			}

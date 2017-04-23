@@ -83,9 +83,7 @@ namespace Xwt.GtkBackend
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.ValueChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.ValueChanged);
 		}
 
 		public double ClimbRate {

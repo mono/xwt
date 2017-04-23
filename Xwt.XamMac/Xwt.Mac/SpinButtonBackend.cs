@@ -178,9 +178,7 @@ namespace Xwt.Mac
 			
 			input.DoubleValue = stepper.DoubleValue;
 			if (enableValueChangedEvent) {
-				Backend.ApplicationContext.InvokeUserCode (delegate {
-					eventSink.ValueChanged ();
-				});
+				Backend.ApplicationContext.InvokeUserCode (eventSink.ValueChanged);
 			}
 		}
 
@@ -189,9 +187,7 @@ namespace Xwt.Mac
 			isIndeterminate = false;
 			stepper.DoubleValue = input.DoubleValue;
 			if (enableValueChangedEvent) {
-				Backend.ApplicationContext.InvokeUserCode (delegate {
-					eventSink.ValueChanged ();
-				});
+				Backend.ApplicationContext.InvokeUserCode (eventSink.ValueChanged);
 			}
 		}
 
@@ -237,9 +233,7 @@ namespace Xwt.Mac
 				stepper.DoubleValue = value;
 				input.DoubleValue = value;
 				if (enableValueChangedEvent) {
-					Backend.ApplicationContext.InvokeUserCode (delegate {
-						eventSink.ValueChanged ();
-					});
+					Backend.ApplicationContext.InvokeUserCode (eventSink.ValueChanged);
 				}
 			}
 		}
