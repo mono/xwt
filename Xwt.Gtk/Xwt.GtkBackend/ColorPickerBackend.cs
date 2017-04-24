@@ -116,9 +116,7 @@ namespace Xwt.GtkBackend
 
 		void HandleColorSet (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnColorChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnColorChanged);
 		}
 	}
 }

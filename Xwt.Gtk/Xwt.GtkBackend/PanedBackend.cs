@@ -113,9 +113,7 @@ namespace Xwt.GtkBackend
 
 		void HandleMove (object o, GLib.NotifyArgs args)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnPositionChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnPositionChanged);
 		}
 	}
 }

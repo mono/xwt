@@ -203,9 +203,7 @@ namespace Xwt.Mac
 		public MacButton (IRadioButtonEventSink eventSink, ApplicationContext context)
 		{
 			Activated += delegate {
-				context.InvokeUserCode (delegate {
-					eventSink.OnClicked ();
-				});
+				context.InvokeUserCode (eventSink.OnClicked);
 				OnActivatedInternal ();
 			};
 		}

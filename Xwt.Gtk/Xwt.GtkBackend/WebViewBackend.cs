@@ -167,23 +167,17 @@ namespace Xwt.GtkBackend
 
 		void HandleLoadStarted (object o, EventArgs args)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnLoading ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnLoading);
 		}
 
 		void HandleLoadFinished (object o, EventArgs args)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnLoaded ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnLoaded);
 		}
 
 		void HandleTitleChanged (object sender, WebKit.TitleChangedArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnTitleChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnTitleChanged);
 		}
 
 		void HandleContextMenuRequest (object sender, ContextMenuArgs e)

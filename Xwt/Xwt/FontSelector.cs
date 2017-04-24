@@ -247,9 +247,7 @@ namespace Xwt
 				spnSize.Value = selectedFont.Size;
 
 			if (enableFontChangedEvent)
-				Application.Invoke (delegate {
-				EventSink.OnFontChanged ();
-			});
+				Application.Invoke (EventSink.OnFontChanged);
 		}
 
 		void UpdateFaceList (Font font)

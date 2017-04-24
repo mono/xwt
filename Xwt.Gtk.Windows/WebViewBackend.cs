@@ -233,18 +233,14 @@ namespace Xwt.Gtk.Windows
 		void HandleDocumentTitleChanged (object sender, EventArgs e)
 		{
 			if (enableTitleChangedEvent)
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnTitleChanged ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnTitleChanged);
 		}
 
 		void HandleNavigated (object sender, SWF.WebBrowserNavigatedEventArgs e)
 		{
 			UpdateDocumentRef();
 			if (enableLoadingEvent)
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnLoading ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnLoading);
 		}
 
 		SWF.HtmlDocument currentDocument;
@@ -280,9 +276,7 @@ namespace Xwt.Gtk.Windows
 			UpdateDocumentRef();
 
 			if (enableLoadedEvent)
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnLoaded ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnLoaded);
 		}
 
 		#region IDocHostUIHandler implementation

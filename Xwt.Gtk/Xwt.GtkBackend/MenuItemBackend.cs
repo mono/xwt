@@ -237,9 +237,7 @@ namespace Xwt.GtkBackend
 		void HandleItemActivated (object sender, EventArgs e)
 		{
 			if (!changingCheck) {
-				context.InvokeUserCode (delegate {
-					eventSink.OnClicked ();
-				});
+				context.InvokeUserCode (eventSink.OnClicked);
 			}
 		}
 	}

@@ -184,12 +184,8 @@ namespace Xwt
 			box.PackStart (entryBox);
 			Content = box;
 			
-			hsBox.SelectionChanged += delegate {
-				HandleColorBoxSelectionChanged ();
-			};
-			lightBox.SelectionChanged += delegate {
-				HandleColorBoxSelectionChanged ();
-			};
+			hsBox.SelectionChanged += HandleColorBoxSelectionChanged;
+			lightBox.SelectionChanged += HandleColorBoxSelectionChanged;
 			
 			hueEntry.ValueChanged += HandleHslChanged;
 			satEntry.ValueChanged += HandleHslChanged;
@@ -250,7 +246,7 @@ namespace Xwt
 			HandleColorChanged ();
 		}
 
-		void HandleColorBoxSelectionChanged ()
+		void HandleColorBoxSelectionChanged (object sender, EventArgs args)
 		{
 			currentColor = Color.FromHsl (
 				hsBox.SelectedColor.Hue,
@@ -350,9 +346,7 @@ namespace Xwt
 		void HandleColorChanged ()
 		{
 			if (enableColorChangedEvent)
-			Application.Invoke (delegate {
-				EventSink.OnColorChanged ();
-			});
+			Application.Invoke (EventSink.OnColorChanged);
 		}
 	}
 	

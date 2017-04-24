@@ -277,18 +277,14 @@ namespace Xwt.GtkBackend
 
 		void HandleActivated (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnActivated ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnActivated);
 		}
 
 		bool enableSelectionChangedEvent;
 		void HandleSelectionChanged ()
 		{
 			if (enableSelectionChangedEvent)
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnSelectionChanged ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
 		}
 
 		void HandleMoveCursor (object sender, EventArgs e)

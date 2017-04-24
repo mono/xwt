@@ -72,9 +72,7 @@ namespace Xwt.GtkBackend
 
 		void HandleFontChanged (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnFontChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnFontChanged);
 		}
 
 		public Xwt.Drawing.Font SelectedFont {

@@ -79,9 +79,7 @@ namespace Xwt.GtkBackend
 
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			context.InvokeUserCode (delegate {
-				eventSink.OnValueChanged ();
-			});
+			context.InvokeUserCode (eventSink.OnValueChanged);
 		}
 		#endregion
 

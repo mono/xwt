@@ -95,9 +95,7 @@ namespace Xwt.Mac
 		{
 			if (lastState != Widget.State) {
 				lastState = Widget.State;
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnToggled ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnToggled);
 			}
 		}
 

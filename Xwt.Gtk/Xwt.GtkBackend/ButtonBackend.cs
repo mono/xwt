@@ -235,9 +235,7 @@ namespace Xwt.GtkBackend
 		void HandleWidgetClicked (object sender, EventArgs e)
 		{
 			if (!ignoreClickEvents) {
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnClicked ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnClicked);
 			}
 		}
 		

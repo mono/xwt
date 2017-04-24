@@ -330,16 +330,12 @@ namespace Xwt.GtkBackend
 		
 		void HandleHidden (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnHidden ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnHidden);
 		}
 
 		void HandleShown (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnShown ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnShown);
 		}
 
 		[GLib.ConnectBefore]

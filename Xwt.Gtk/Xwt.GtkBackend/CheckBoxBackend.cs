@@ -154,9 +154,7 @@ namespace Xwt.GtkBackend
 			}
 
 			if (toggleEventEnabled) {
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnToggled ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnToggled);
 			}
 		}
 
@@ -165,9 +163,7 @@ namespace Xwt.GtkBackend
 			if (internalActiveUpdate)
 				return;
 			
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnClicked ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnClicked);
 		}
 	}
 }

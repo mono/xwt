@@ -210,16 +210,12 @@ namespace Xwt.Mac
 
 		public override void MouseEntered (NSEvent theEvent)
 		{
-			context.InvokeUserCode (delegate {
-				eventSink.OnMouseEntered ();
-			});
+			context.InvokeUserCode (eventSink.OnMouseEntered);
 		}
 
 		public override void MouseExited (NSEvent theEvent)
 		{
-			context.InvokeUserCode (delegate {
-				eventSink.OnMouseExited ();
-			});
+			context.InvokeUserCode (eventSink.OnMouseExited);
 		}
 
 		public override void MouseMoved (NSEvent theEvent)
