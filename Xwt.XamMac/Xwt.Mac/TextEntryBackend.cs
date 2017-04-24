@@ -372,7 +372,7 @@ namespace Xwt.Mac
 
 			void HandleSelectionDidChange (NSNotification notif)
 			{
-                Context.InvokeUserCode (EventSink.OnSelectionChanged);
+				Context.InvokeUserCode (EventSink.OnSelectionChanged);
 			}
 
 			public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)

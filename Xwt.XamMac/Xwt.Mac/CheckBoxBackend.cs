@@ -93,7 +93,7 @@ namespace Xwt.Mac
 				Widget.AllowsMixedState = false;
 			if (currentState != Widget.State) {
 				currentState = Widget.State;
-                ApplicationContext.InvokeUserCode (EventSink.OnToggled);
+				ApplicationContext.InvokeUserCode (EventSink.OnToggled);
 			}
 		}
 		#endregion

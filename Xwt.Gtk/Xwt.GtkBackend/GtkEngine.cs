@@ -239,7 +239,7 @@ namespace Xwt.GtkBackend
 			if (timeSpan.TotalMilliseconds < 0)
 				throw new ArgumentException ("Timer period must be >=0", "timeSpan");
 
-            return GLib.Timeout.Add ((uint) timeSpan.TotalMilliseconds, action.Invoke);
+			return GLib.Timeout.Add ((uint) timeSpan.TotalMilliseconds, action.Invoke);
 		}
 
 		public override void CancelTimerInvoke (object id)

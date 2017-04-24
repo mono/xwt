@@ -72,12 +72,12 @@ namespace Xwt.GtkBackend
 
 		void HandleChanged (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (() => EventSink.OnChanged());
+			ApplicationContext.InvokeUserCode (EventSink.OnChanged);
 		}
 
 		void HandleActivated (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (() => EventSink.OnActivated());
+			ApplicationContext.InvokeUserCode (EventSink.OnActivated);
 		}
 	}
 }

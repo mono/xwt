@@ -335,7 +335,7 @@ namespace Xwt.GtkBackend
 
 		void HandleShown (object sender, EventArgs e)
 		{
-            ApplicationContext.InvokeUserCode (EventSink.OnShown);
+			ApplicationContext.InvokeUserCode (EventSink.OnShown);
 		}
 
 		[GLib.ConnectBefore]

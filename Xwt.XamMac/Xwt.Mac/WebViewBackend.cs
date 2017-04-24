@@ -203,7 +203,7 @@ namespace Xwt.Mac
 
 		void HandleLoadStarted (object o, EventArgs args)
 		{
-            ApplicationContext.InvokeUserCode (EventSink.OnLoading);
+			ApplicationContext.InvokeUserCode (EventSink.OnLoading);
 		}
 
 		void HandleLoadFinished (object o, EventArgs args)

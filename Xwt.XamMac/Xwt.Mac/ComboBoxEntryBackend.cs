@@ -219,13 +219,13 @@ namespace Xwt.Mac
 		{
 			base.MouseEntered (theEvent);
 			checkMouseMovement = true;
-            context.InvokeUserCode (eventSink.OnMouseEntered);
+			context.InvokeUserCode (eventSink.OnMouseEntered);
 		}
 
 		public override void MouseExited (NSEvent theEvent)
 		{
 			base.MouseExited (theEvent);
-            context.InvokeUserCode (eventSink.OnMouseExited);
+			context.InvokeUserCode (eventSink.OnMouseExited);
 			checkMouseMovement = false;
 			HandleSelectionChanged ();
 		}
@@ -252,7 +252,7 @@ namespace Xwt.Mac
 			    cacheSelectionLength != CurrentEditor.SelectedRange.Length) {
 				cacheSelectionStart = (int)CurrentEditor.SelectedRange.Location;
 				cacheSelectionLength = (int)CurrentEditor.SelectedRange.Length;
-                context.InvokeUserCode (entryEventSink.OnSelectionChanged);
+				context.InvokeUserCode (entryEventSink.OnSelectionChanged);
 			}
 		}
 	}

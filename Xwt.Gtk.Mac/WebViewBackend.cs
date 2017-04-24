@@ -211,7 +211,7 @@ namespace Xwt.Gtk.Mac
 
 		void HandleTitleChanged (object sender, WebKit.WebFrameTitleEventArgs e)
 		{
-            ApplicationContext.InvokeUserCode (EventSink.OnTitleChanged);
+			ApplicationContext.InvokeUserCode (EventSink.OnTitleChanged);
 		}
 
 		void SetCustomCss ()

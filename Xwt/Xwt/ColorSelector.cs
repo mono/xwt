@@ -246,7 +246,7 @@ namespace Xwt
 			HandleColorChanged ();
 		}
 
-        void HandleColorBoxSelectionChanged (object sender, EventArgs args)
+		void HandleColorBoxSelectionChanged (object sender, EventArgs args)
 		{
 			currentColor = Color.FromHsl (
 				hsBox.SelectedColor.Hue,

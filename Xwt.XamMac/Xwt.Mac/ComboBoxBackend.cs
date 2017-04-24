@@ -165,7 +165,7 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.SelectItem (value);
-                ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
+				ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
 				Widget.SynchronizeTitleAndSelectedItem ();
 				ResetFittingSize ();
 			}

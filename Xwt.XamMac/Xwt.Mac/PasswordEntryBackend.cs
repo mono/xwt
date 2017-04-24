@@ -122,7 +122,7 @@ namespace Xwt.Mac
 		public override void DidChange (NSNotification notification)
 		{
 			base.DidChange (notification);
-            context.InvokeUserCode (eventSink.OnChanged);
+			context.InvokeUserCode (eventSink.OnChanged);
 		}
 	}
 }
