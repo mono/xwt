@@ -12,7 +12,7 @@ namespace Xwt.WPFBackend
 {
 	class EmbedNativeWidgetBackend: WidgetBackend, IEmbeddedWidgetBackend
 	{
-		public void SetContent(object nativeWidget)
+		public void SetContent(object nativeWidget, bool reparent)
 		{
 			if (nativeWidget is FrameworkElement)
 				Widget = (FrameworkElement)nativeWidget;
