@@ -13,7 +13,7 @@ namespace Xwt.Mac
 
 		}
 
-		public NSView InnerView {
+		public NSView EmbeddedView {
 			get { return innerView; }
 		}
 

@@ -204,7 +204,7 @@ namespace Xwt.Mac
 		{
 			var refBackend = Toolkit.GetBackend (referenceWidget) as IWidgetBackend;
 
-			NSView refView = (refBackend as EmbedNativeWidgetBackend)?.InnerView;
+			NSView refView = (refBackend as EmbedNativeWidgetBackend)?.EmbeddedView;
 
 			if (refView == null)
 				refView = (refBackend as ViewBackend)?.Widget;
