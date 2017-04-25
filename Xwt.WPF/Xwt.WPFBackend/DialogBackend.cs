@@ -153,6 +153,7 @@ namespace Xwt.WPFBackend
 			if (parent != null)
 				SetTransientFor(parent);
 			Window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+			Window.Topmost = true;
 			Window.ShowDialog ();
 		}
 
