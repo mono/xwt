@@ -34,7 +34,7 @@ namespace Xwt.GtkBackend
 		{
 		}
 
-		public void SetContent (object nativeWidget)
+		public void SetContent (object nativeWidget, bool reparent)
 		{
 			if (nativeWidget is Gtk.Widget) {
 				Widget = (Gtk.Widget)nativeWidget;

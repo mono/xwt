@@ -48,12 +48,13 @@ namespace Xwt.Backends
 {
 	public interface IEmbeddedWidgetBackend: IWidgetBackend
 	{
-		void SetContent (object nativeWidget);
+		void SetContent (object nativeWidget, bool reparent);
 	}
 
 	[BackendType (typeof(IEmbeddedWidgetBackend))]
 	internal class EmbeddedNativeWidget: Widget
 	{
+		bool reparent;
 		object nativeWidget;
 		Widget sourceWidget;
 		NativeWidgetSizing sizing;
@@ -62,7 +63,7 @@ namespace Xwt.Backends
 		{
 			protected override void OnBackendCreated ()
 			{
-				Backend.SetContent (Parent.nativeWidget);
+				Backend.SetContent (Parent.nativeWidget, Parent.reparent);
 				base.OnBackendCreated ();
 			}
 		}
@@ -72,11 +73,12 @@ namespace Xwt.Backends
 			return new EmbeddedNativeWidgetBackendHost ();
 		}
 
-		public void Initialize (object nativeWidget, Widget sourceWidget, NativeWidgetSizing preferredSizing)
+		public void Initialize (object nativeWidget, Widget sourceWidget, NativeWidgetSizing preferredSizing, bool reparent)
 		{
 			this.nativeWidget = nativeWidget;
 			this.sourceWidget = sourceWidget;
 			this.sizing = preferredSizing;
+			this.reparent = reparent;
 		}
 		
 		protected override Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
