@@ -657,6 +657,21 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Gets the bounds of a native widget in screen coordinates.
+		/// </summary>
+		/// <returns>The screen bounds relative to <see cref="P:Xwt.Desktop.Bounds"/>.</returns>
+		/// <param name="nativeWidget">The native widget.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="nativeWidget"/> is <c>null</c>.</exception>
+		/// <exception cref="NotSupportedException">This toolkit does not support this operation.</exception>
+		/// <exception cref="InvalidOperationException"><paramref name="nativeWidget"/> does not belong to this toolkit.</exception>
+		public Rectangle GetScreenBounds (object nativeWidget)
+		{
+			if (nativeWidget == null)
+				throw new ArgumentNullException (nameof(nativeWidget));
+			return backend.GetScreenBounds(nativeWidget);
+		}
+
+		/// <summary>
 		/// Creates an Xwt frontend for a backend.
 		/// </summary>
 		/// <returns>The Xwt frontend.</returns>
