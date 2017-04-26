@@ -39,6 +39,7 @@ namespace Xwt
 	{
 		static Screen[] screens;
 		static Screen primary;
+		static Toolkit currentEngine;
 
 		static Desktop ()
 		{
@@ -111,9 +112,10 @@ namespace Xwt
 
 		static void SetupScreens ()
 		{
-			if (screens == null) {
-				screens = Toolkit.CurrentEngine.DesktopBackend.GetScreens ().Select (s => new Screen (s)).ToArray ();
-				primary = screens.FirstOrDefault (s => s.IsPrimary);
+			if (screens == null || currentEngine != Toolkit.CurrentEngine) {
+				currentEngine = Toolkit.CurrentEngine;
+				screens = currentEngine.DesktopBackend.GetScreens().Select(s => new Screen(s)).ToArray();
+				primary = screens.FirstOrDefault(s => s.IsPrimary);
 			}
 		}
 

@@ -391,6 +391,18 @@ namespace Xwt.Backends
 		}
 
 		/// <summary>
+		/// Gets the bounds of a native widget in screen coordinates.
+		/// </summary>
+		/// <returns>The screen bounds relative to <see cref="P:Xwt.Desktop.Bounds"/>.</returns>
+		/// <param name="nativeWidget">The native widget.</param>
+		/// <exception cref="NotSupportedException">This toolkit does not support this operation.</exception>
+		/// <exception cref="InvalidOperationException"><paramref name="nativeWidget"/> does not belong to this toolkit.</exception>
+		public virtual Rectangle GetScreenBounds (object nativeWidget)
+		{
+			throw new NotSupportedException();
+		}
+
+		/// <summary>
 		/// Gets the information about Xwt features supported by the toolkit.
 		/// </summary>
 		/// <value>The supported features.</value>

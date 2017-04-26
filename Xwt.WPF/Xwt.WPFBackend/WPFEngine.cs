@@ -245,6 +245,15 @@ namespace Xwt.WPFBackend
 			if (dc != null)
 				im.Draw (ApplicationContext, dc, Util.GetScaleFactor (w), x, y, img);
 		}
+
+		public override Rectangle GetScreenBounds (object nativeWidget)
+		{
+			var widget = nativeWidget as FrameworkElement;
+			if (widget == null)
+				throw new InvalidOperationException("Widget belongs to a different toolkit");
+			var p = widget.PointToScreenDpiAware (new System.Windows.Point(0, 0)).ToXwtPoint ();
+			return new Rectangle(p, new Size (widget.RenderSize.Width, widget.RenderSize.Height));
+		}
 	}
 }
 

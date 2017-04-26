@@ -347,6 +347,20 @@ namespace Xwt.GtkBackend
 				gim.Draw (ApplicationContext, ctx, Util.GetScaleFactor (w), x, y, img);
 		}
 
+		public override Rectangle GetScreenBounds (object nativeWidget)
+		{
+			var widget = nativeWidget as Gtk.Widget;
+			if (widget == null)
+				throw new InvalidOperationException ("Widget belongs to a different toolkit");
+
+			int x = 0, y = 0;
+			widget.GdkWindow?.GetOrigin (out x, out y);
+			var a = widget.Allocation;
+			x += a.X;
+			y += a.Y;
+			return new Rectangle (x, y, widget.Allocation.Width, widget.Allocation.Height);
+		}
+
 		public override ToolkitFeatures SupportedFeatures {
 			get {
 				var f = ToolkitFeatures.All;
