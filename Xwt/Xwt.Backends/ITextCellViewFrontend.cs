@@ -34,7 +34,7 @@ namespace Xwt.Backends
 		bool Editable { get; }
 		EllipsizeMode Ellipsize { get; }
 		
-		bool RaiseTextChanged ();
+		bool RaiseTextChanged (string text);
 
 		IDataField TextField { get; set; }
 	}

@@ -107,10 +107,11 @@ namespace Xwt
 		/// </summary>
 		public event EventHandler<WidgetEventArgs> TextChanged;
 
-		bool ITextCellViewFrontend.RaiseTextChanged ()
+		bool ITextCellViewFrontend.RaiseTextChanged (string newValue)
 		{
 			if (TextChanged != null) {
 				var args = new WidgetEventArgs ();
+				args.Text = newValue;
 				TextChanged (this, args);
 				return args.Handled;
 			}
