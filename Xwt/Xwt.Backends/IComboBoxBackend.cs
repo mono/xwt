@@ -29,9 +29,12 @@ namespace Xwt.Backends
 {
 	public interface IComboBoxBackend: IWidgetBackend
 	{
-		void SetViews (CellViewCollection views);
-		void SetSource (IListDataSource source, IBackend sourceBackend);
+		void SetViews(CellViewCollection views);
+		void SetSource(IListDataSource source, IBackend sourceBackend);
+		void SetIsEditable(bool isEditable);
 		int SelectedRow { get; set; }
+
+		string SelectedText { get; }
 	}
 	
 	public interface IComboBoxEventSink: IWidgetEventSink

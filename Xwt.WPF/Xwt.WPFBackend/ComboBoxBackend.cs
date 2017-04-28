@@ -75,7 +75,12 @@ namespace Xwt.WPFBackend
 			ComboBox.ItemTemplate = GetDataTemplate (views);
 		}
 
-		public void SetSource (IListDataSource source, IBackend sourceBackend)
+		public void SetIsEditable(bool isEditable)
+		{
+			ComboBox.IsEditable = isEditable;
+		}
+
+		public void SetSource(IListDataSource source, IBackend sourceBackend)
 		{
 			var dataSource = sourceBackend as ListDataSource;
 			if (dataSource != null)
@@ -90,7 +95,12 @@ namespace Xwt.WPFBackend
 			set { ComboBox.SelectedIndex = value; }
 		}
 
-		public override void EnableEvent (object eventId)
+		public string SelectedText
+		{
+			get { return ComboBox.Text; }			
+		}
+
+		public override void EnableEvent(object eventId)
 		{
 			base.EnableEvent (eventId);
 			

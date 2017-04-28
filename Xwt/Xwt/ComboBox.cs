@@ -73,8 +73,14 @@ namespace Xwt
 		{
 			return new WidgetBackendHost ();
 		}
-		
-		public CellViewCollection Views {
+
+		public void SetIsEditable(bool value)
+		{
+			Backend.SetIsEditable(value);
+		}
+
+		public CellViewCollection Views
+		{
 			get { return views; }
 		}
 		
@@ -144,8 +150,11 @@ namespace Xwt
 		public string SelectedText {
 			get {
 				if (Backend.SelectedRow == -1)
-					return null;
-				return (string)Items.DataSource.GetValue (Backend.SelectedRow, 0);
+				{
+					return Backend.SelectedText;
+				}
+
+				return (string)Items.DataSource.GetValue(Backend.SelectedRow, 0);
 			}
 			set {
 				SelectedIndex = Items.IndexOf (withLabel: value);
