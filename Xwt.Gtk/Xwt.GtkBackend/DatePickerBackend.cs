@@ -228,7 +228,7 @@ namespace Xwt.GtkBackend
 					return;
 
 				if (selectedComponent == DateTimeComponent.None)
-					SelectComponent (componentsSorted.Last ());
+					SelectComponent (componentsSorted [componentsSorted.Count - 1]);
 
 				if (Adjustment.Value > currentValue.Ticks)
 					DateTime = currentValue.AddComponent (selectedComponent, 1);
