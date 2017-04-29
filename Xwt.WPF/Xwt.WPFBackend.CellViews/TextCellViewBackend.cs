@@ -40,9 +40,18 @@ namespace Xwt.WPFBackend
 		void OnTextChanged (object sender, SWC.TextChangedEventArgs routedEventArgs)
 		{
 			var view = (ITextCellViewFrontend)CellView;
-			Load (sender as FrameworkElement);
+			var cell = sender as SWC.TextBox;
+			Load (cell);
 			SetCurrentEventRow ();
-			routedEventArgs.Handled = view.RaiseTextChanged (view.Text);
+			routedEventArgs.Handled = view.RaiseTextChanged (cell.Text);
+			if (routedEventArgs.Handled) {
+				var cursorPos = cell.SelectionStart;
+				cell.Text = view.Text;
+				cell.SelectionStart = cursorPos;
+			} else {
+				var e = cell.GetBindingExpression (SWC.TextBox.TextProperty);
+				e?.UpdateSource();
+			}
 		}
 	}
 }
