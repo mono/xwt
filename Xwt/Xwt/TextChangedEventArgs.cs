@@ -1,10 +1,10 @@
-//
-// ITextCellViewFrontend.cs
+﻿//
+// TextChangedEventArgs.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Marius Ungureanu <maungu@microsoft.com>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2017 Microsoft Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface ITextCellViewFrontend: ICellViewFrontend
-	{
-		string Markup { get; }
-		string Text { get; }
-		bool Editable { get; }
-		EllipsizeMode Ellipsize { get; }
-		
-		bool RaiseTextChanged (string newText);
-
-		IDataField TextField { get; set; }
-	}
+    public class TextChangedEventArgs : WidgetEventArgs
+    {
+        public string NewText { get; }
+        public TextChangedEventArgs(string newText)
+        {
+            NewText = newText;
+        }
+    }
 }
-
