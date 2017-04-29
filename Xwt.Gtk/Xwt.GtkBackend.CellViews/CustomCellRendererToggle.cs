@@ -42,19 +42,28 @@ namespace Xwt.GtkBackend
 
 		protected override void OnLoadData ()
 		{
-			var view = (ICheckBoxCellViewFrontend) Frontend;
-			renderer.Inconsistent = view.State == CheckBoxState.Mixed;
-			renderer.Active = view.State == CheckBoxState.On;
+			var view = (IToggleCellViewFrontend)Frontend;
 			renderer.Activatable = view.Editable;
 			renderer.Visible = view.Visible;
+
+			var check = view as ICheckBoxCellViewFrontend;
+			if (check != null) {
+				renderer.Inconsistent = check.State == CheckBoxState.Mixed;
+				renderer.Active = check.State == CheckBoxState.On;
+			}
+			var radio = view as IRadioButtonCellViewFrontend;
+			if (radio != null) {
+				renderer.Radio = true;
+				renderer.Active = radio.Active;
+			}
 		}
 
 		void HandleToggled (object o, ToggledArgs args)
 		{
 			SetCurrentEventRow ();
 
-			var view = (ICheckBoxCellViewFrontend) Frontend;
-			IDataField field = (IDataField) view.StateField ?? view.ActiveField;
+			var view = (IToggleCellViewFrontend) Frontend;
+			IDataField field = (IDataField)(view as ICheckBoxCellViewFrontend)?.StateField ?? view.ActiveField;
 
 			if (!view.RaiseToggled () && (field != null)) {
 				Type type = field.FieldType;
@@ -63,7 +72,7 @@ namespace Xwt.GtkBackend
 				if (TreeModel.GetIterFromString (out iter, args.Path)) {
 					CheckBoxState newState;
 
-					if (view.AllowMixed && type == typeof(CheckBoxState)) {
+					if (type == typeof(CheckBoxState) && ((ICheckBoxCellViewFrontend)view).AllowMixed) {
 						if (renderer.Inconsistent)
 							newState = CheckBoxState.Off;
 						else if (renderer.Active)

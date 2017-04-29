@@ -165,6 +165,27 @@ namespace Xwt.WPFBackend.Utilities
 				return factory;
 			}
 
+			var radioButton = view as RadioButtonCellView;
+			if (radioButton != null)
+			{
+				FrameworkElementFactory factory = new FrameworkElementFactory(typeof(UngroupedRadioButton));
+				if (radioButton.EditableField == null)
+					factory.SetValue(UIElement.IsEnabledProperty, radioButton.Editable);
+				else
+					factory.SetBinding(UIElement.IsEnabledProperty, new Binding(dataPath + "[" + radioButton.EditableField.Index + "]"));
+
+				factory.SetValue(SWC.Primitives.ToggleButton.IsThreeStateProperty, false);
+				if (radioButton.ActiveField == null)
+					factory.SetValue(SWC.Primitives.ToggleButton.IsCheckedProperty, radioButton.Active);
+				else
+					factory.SetBinding(SWC.Primitives.ToggleButton.IsCheckedProperty, new Binding(dataPath + "[" + radioButton.ActiveField.Index + "]"));
+
+				var cb = new RadioButtonCellViewBackend ();
+				cb.Initialize(view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend(parent.Frontend, cb);
+				return factory;
+			}
+
 			throw new NotImplementedException ();
 		}
 	}

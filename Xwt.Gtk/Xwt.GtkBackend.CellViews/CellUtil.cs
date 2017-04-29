@@ -61,7 +61,7 @@ namespace Xwt.GtkBackend
 			if (view is ITextCellViewFrontend) {
 				crd = new CustomCellRendererText ();
 			}
-			else if (view is ICheckBoxCellViewFrontend) {
+			else if (view is ICheckBoxCellViewFrontend || view is IRadioButtonCellViewFrontend) {
 				crd = new CustomCellRendererToggle ();
 			}
 			else if (view is IImageCellViewFrontend) {
