@@ -32,13 +32,16 @@ namespace Samples
 	{
 		DataField<CheckBoxState> triState = new DataField<CheckBoxState>();
 		DataField<bool> check = new DataField<bool>();
+		DataField<bool> option1 = new DataField<bool> ();
+		DataField<bool> option2 = new DataField<bool> ();
+		DataField<bool> option3 = new DataField<bool> ();
 		DataField<string> text = new DataField<string> ();
 		DataField<string> desc = new DataField<string> ();
 		
 		public TreeViews ()
 		{
 			TreeView view = new TreeView ();
-			TreeStore store = new TreeStore (triState, check, text, desc);
+			TreeStore store = new TreeStore (triState, check, option1, option2, option3, text, desc);
 			view.GridLinesVisible = GridLines.Both;
 			
 			var triStateCellView = new CheckBoxCellView (triState) { Editable = true, AllowMixed = true };
@@ -56,13 +59,46 @@ namespace Samples
 					MessageDialog.ShowError("CurrentEventRow is null. This is not supposed to happen");
 				}
 				else {
-					store.GetNavigatorAt(view.CurrentEventRow).SetValue(text, "Toggled");
+					store.GetNavigatorAt(view.CurrentEventRow).SetValue(text, "Toggled " + checkCellView.Active);
 				}
 			};
+			var optionCellView1 = new RadioButtonCellView (option1) { Editable = true };
+			optionCellView1.Toggled += (object sender, WidgetEventArgs e) => {
+				if (view.CurrentEventRow == null) {
+					MessageDialog.ShowError ("CurrentEventRow is null. This is not supposed to happen");
+				} else {
+					store.GetNavigatorAt (view.CurrentEventRow).SetValue (option2, optionCellView1.Active);
+				}
+			};
+			var optionCellView2 = new RadioButtonCellView (option2) { Editable = true };
+			optionCellView2.Toggled += (object sender, WidgetEventArgs e) => {
+				if (view.CurrentEventRow == null) {
+					MessageDialog.ShowError ("CurrentEventRow is null. This is not supposed to happen");
+				} else {
+					store.GetNavigatorAt (view.CurrentEventRow).SetValue (option1, optionCellView2.Active);
+				}
+			};
+
+			TreePosition initialActive = null;
+			var optionCellView3 = new RadioButtonCellView (option3) { Editable = true };
+			optionCellView3.Toggled += (object sender, WidgetEventArgs e) => {
+				if (view.CurrentEventRow == null) {
+					MessageDialog.ShowError ("CurrentEventRow is null. This is not supposed to happen");
+				} else {
+					if (initialActive != null)
+						store.GetNavigatorAt (initialActive).SetValue (option3, false);
+					initialActive = view.CurrentEventRow;
+				}
+			};
+
 			view.Columns.Add ("TriCheck", triStateCellView);
 			view.Columns.Add ("Check", checkCellView);
+			view.Columns.Add ("Radio", optionCellView1, optionCellView2, optionCellView3);
 			view.Columns.Add ("Item", text);
 			view.Columns.Add ("Desc", desc);
+			view.Columns[2].Expands = true; // expand third column, aligning last column to the right side
+			view.Columns[2].CanResize = true;
+			view.Columns[3].CanResize = true;
 			
 			store.AddNode ().SetValue (text, "One").SetValue (desc, "First").SetValue (triState, CheckBoxState.Mixed);
 			store.AddNode ().SetValue (text, "Two").SetValue (desc, "Second").AddChild ()

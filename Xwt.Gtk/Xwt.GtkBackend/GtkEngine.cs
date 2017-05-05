@@ -114,6 +114,8 @@ namespace Xwt.GtkBackend
 			RegisterBackend<ICalendarBackend, CalendarBackend> ();
 			RegisterBackend<IFontSelectorBackend, FontSelectorBackend> ();
 			RegisterBackend<ISelectFontDialogBackend, SelectFontDialogBackend> ();
+			RegisterBackend<IPopupWindowBackend, PopupWindowBackend> ();
+			RegisterBackend<IUtilityWindowBackend, UtilityWindowBackend> ();
 
 			string typeName = null;
 			string asmName = null;
@@ -237,9 +239,7 @@ namespace Xwt.GtkBackend
 			if (timeSpan.TotalMilliseconds < 0)
 				throw new ArgumentException ("Timer period must be >=0", "timeSpan");
 
-			return GLib.Timeout.Add ((uint) timeSpan.TotalMilliseconds, delegate {
-				return action ();
-			});
+			return GLib.Timeout.Add ((uint) timeSpan.TotalMilliseconds, action.Invoke);
 		}
 
 		public override void CancelTimerInvoke (object id)
@@ -345,6 +345,20 @@ namespace Xwt.GtkBackend
 			Gtk.Widget w = (Gtk.Widget)nativeWidget;
 			if (ctx != null)
 				gim.Draw (ApplicationContext, ctx, Util.GetScaleFactor (w), x, y, img);
+		}
+
+		public override Rectangle GetScreenBounds (object nativeWidget)
+		{
+			var widget = nativeWidget as Gtk.Widget;
+			if (widget == null)
+				throw new InvalidOperationException ("Widget belongs to a different toolkit");
+
+			int x = 0, y = 0;
+			widget.GdkWindow?.GetOrigin (out x, out y);
+			var a = widget.Allocation;
+			x += a.X;
+			y += a.Y;
+			return new Rectangle (x, y, widget.Allocation.Width, widget.Allocation.Height);
 		}
 
 		public override ToolkitFeatures SupportedFeatures {

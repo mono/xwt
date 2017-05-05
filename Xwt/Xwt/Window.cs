@@ -26,7 +26,7 @@
 
 using System;
 using Xwt.Backends;
-
+using Xwt.Drawing;
 
 namespace Xwt
 {
@@ -46,10 +46,15 @@ namespace Xwt
 		{
 			return new WindowBackendHost ();
 		}
-		
-		public Window ()
+
+		public Window () : this (12)
 		{
-			Padding = 12;
+		}
+		
+		internal Window (WidgetSpacing initialPadding)
+		{
+			if (!initialPadding.IsZero)
+				Padding = initialPadding;
 		}
 		
 		IWindowBackend Backend {
@@ -59,6 +64,11 @@ namespace Xwt
 		public WindowLocation InitialLocation {
 			get { return initialLocation; }
 			set { initialLocation = value; }
+		}
+
+		public Color BackgroundColor {
+			get { return Backend.BackgroundColor; }
+			set { Backend.BackgroundColor = value; }
 		}
 
 		public WidgetSpacing Padding {
@@ -133,7 +143,7 @@ namespace Xwt
 
 		protected override void Dispose (bool disposing)
 		{
-			if (Content != null)
+			if (disposing && Content != null)
 				Content.Dispose ();
 			base.Dispose (disposing);
 		}

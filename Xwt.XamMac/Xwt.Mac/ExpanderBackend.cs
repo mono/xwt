@@ -22,9 +22,7 @@ namespace Xwt.Mac
 			Widget.Expander.DisclosureToggled += (sender, e) => {
 				ResetFittingSize ();
 				NotifyPreferredSizeChanged ();
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.ExpandChanged ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.ExpandChanged);
 			};
 		}
 

@@ -27,6 +27,7 @@
 using System;
 using AppKit;
 using CoreGraphics;
+using Foundation;
 using ObjCRuntime;
 using Xwt.Backends;
 
@@ -91,8 +92,16 @@ namespace Xwt.Mac
 
 		public void SetFormattedText (FormattedText text)
 		{
+			// HACK: wrapping needs to be enabled in order to display Attributed string correctly on Mac
+			if (Wrap == WrapMode.None)
+				Wrap = WrapMode.Character;
 			Widget.AllowsEditingTextAttributes = true;
-			Widget.AttributedStringValue = text.ToAttributedString ();
+			if (TextAlignment == Alignment.Start)
+				Widget.AttributedStringValue = text.ToAttributedString ();
+			else
+				Widget.AttributedStringValue = text.ToAttributedString ().WithAlignment (Widget.Alignment);
+
+			ResetFittingSize ();
 		}
 
 		public Xwt.Drawing.Color TextColor {
@@ -106,6 +115,8 @@ namespace Xwt.Mac
 			}
 			set {
 				Widget.Alignment = value.ToNSTextAlignment ();
+				if (Widget.AttributedStringValue != null)
+					Widget.AttributedStringValue = (Widget.AttributedStringValue.MutableCopy () as NSMutableAttributedString).WithAlignment (Widget.Alignment);
 			}
 		}
 		
@@ -244,6 +255,15 @@ namespace Xwt.Mac
 		public override bool AcceptsFirstResponder ()
 		{
 			return false;
+		}
+
+		public override bool AllowsVibrancy {
+			get {
+				// we don't support vibrancy
+				if (EffectiveAppearance.AllowsVibrancy)
+					return false;
+				return base.AllowsVibrancy;
+			}
 		}
 	}
 

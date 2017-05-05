@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Vsevolod Kukol <sevoku@microsoft.com>
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -23,14 +24,86 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+
+using Xwt.Backends;
 
 namespace Xwt
 {
-	public class PopupWindow
+	[BackendType (typeof (IPopupWindowBackend))]
+	public class PopupWindow : Window
 	{
-		public PopupWindow ()
+		public enum PopupType
 		{
+			Tooltip,
+			Menu
+		}
+
+		readonly PopupType type;
+
+		public PopupType Type { get { return type; } }
+
+		public PopupWindow () : this (PopupType.Tooltip)
+		{
+		}
+
+		public PopupWindow (PopupType type) : base (0)
+		{
+			this.type = type;
+			switch (type) {
+			case PopupType.Tooltip:
+			case PopupType.Menu:
+				ShowInTaskbar = false;
+				InitialLocation = WindowLocation.CenterParent;
+				Resizable = false;
+				break;
+			}
+		}
+
+		protected new class WindowBackendHost : Window.WindowBackendHost
+		{
+			new PopupWindow Parent { get { return (PopupWindow)base.Parent; } }
+
+			protected override void OnBackendCreated ()
+			{
+				base.OnBackendCreated ();
+				((IPopupWindowBackend)Backend).Initialize (this, Parent.Type);
+			}
+		}
+
+		protected override BackendHost CreateBackendHost ()
+		{
+			return new WindowBackendHost ();
+		}
+
+		IPopupWindowBackend Backend {
+			get { return (IPopupWindowBackend)BackendHost.Backend; }
+		}
+
+		bool shown;
+		internal override void AdjustSize ()
+		{
+			if (Resizable || !shown) {
+				base.AdjustSize ();
+				shown = true;
+				return;
+			}
+			Size mMinSize, mDecorationsSize;
+			Backend.GetMetrics (out mMinSize, out mDecorationsSize);
+
+			var ws = mDecorationsSize;
+			if (Content != null) {
+				IWidgetSurface s = Content.Surface;
+				ws += s.GetPreferredSize (true);
+			}
+			ws.Width += Padding.HorizontalSpacing;
+			ws.Height += Padding.VerticalSpacing;
+
+			if (ws.Width<mMinSize.Width)
+				ws.Width = mMinSize.Width;
+			if (ws.Height<mMinSize.Height)
+				ws.Height = mMinSize.Height;
+
+			Backend.SetSize (ws.Width, ws.Height);
 		}
 	}
 }

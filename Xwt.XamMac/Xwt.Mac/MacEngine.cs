@@ -126,6 +126,8 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IColorPickerBackend, ColorPickerBackend> ();
 			RegisterBackend <Xwt.Backends.ICalendarBackend,CalendarBackend> ();
 			RegisterBackend <Xwt.Backends.ISelectFontDialogBackend, SelectFontDialogBackend> ();
+			RegisterBackend <Xwt.Backends.IPopupWindowBackend, PopupWindowBackend> ();
+			RegisterBackend <Xwt.Backends.IUtilityWindowBackend, PopupWindowBackend> ();
 		}
 
 		public override void RunApplication ()
@@ -164,9 +166,7 @@ namespace Xwt.Mac
 			if (action == null)
 				throw new ArgumentNullException ("action");
 
-			NSRunLoop.Main.BeginInvokeOnMainThread (delegate {
-				action ();
-			});
+			NSRunLoop.Main.BeginInvokeOnMainThread (action);
 		}
 		
 		public override object TimerInvoke (Func<bool> action, TimeSpan timeSpan)
@@ -273,6 +273,16 @@ namespace Xwt.Mac
 			im.AddRepresentation (imageRep);
 			im.Size = new CGSize ((nfloat)view.Bounds.Width, (nfloat)view.Bounds.Height);
 			return im;
+		}
+
+		public override Rectangle GetScreenBounds (object nativeWidget)
+		{
+			var widget = nativeWidget as NSView;
+			if (widget == null)
+				throw new InvalidOperationException ("Widget belongs to a different toolkit");
+			var lo = widget.ConvertPointToView (new CGPoint(0, 0), null);
+			lo = widget.Window.ConvertRectToScreen (new CGRect (lo, CGSize.Empty)).Location;
+			return MacDesktopBackend.ToDesktopRect (new CGRect (lo.X, lo.Y, widget.Frame.Width, widget.Frame.Height));
 		}
 	}
 

@@ -128,6 +128,15 @@ namespace Xwt.GtkBackend
 
 		public void Move (double x, double y)
 		{
+			#if !XWT_GTK3
+			// HACK: some WMs will show the window at a default location and move it
+			//       to its final location after the window has already been shown,
+			//       causing the window to flicker in some cases.
+			//       Setting an initial Allocation often helps to show the window
+			//       at the desired location initially (but not always).
+			if (!Window.Visible)
+				Window.Allocation = new Gdk.Rectangle ((int)x, (int)y, Window.Allocation.Width, Window.Allocation.Height);
+			#endif
 			Window.Move ((int)x, (int)y);
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnBoundsChanged (Bounds);
@@ -137,9 +146,9 @@ namespace Xwt.GtkBackend
 		public virtual void SetSize (double width, double height)
 		{
 			Window.SetDefaultSize ((int)width, (int)height);
-			if (width == -1)
+			if (width <= 0)
 				width = Bounds.Width;
-			if (height == -1)
+			if (height <= 0)
 				height = Bounds.Height;
 			requestedSize = new Size (width, height);
 			Window.Resize ((int)width, (int)height);
@@ -159,6 +168,15 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				requestedSize = value.Size;
+				#if !XWT_GTK3
+				// HACK: some WMs will show the window at a default location and move it
+				//       to its final location after the window has already been shown,
+				//       causing the window to flicker in some cases.
+				//       Setting an initial Allocation often helps to show the window
+				//       at the desired location initially (but not always).
+				if (!Window.Visible)
+					Window.Allocation = new Gdk.Rectangle ((int)value.X, (int)value.Y, (int)value.Width, (int)value.Height);
+				#endif
 				Window.Move ((int)value.X, (int)value.Y);
 				Window.Resize ((int)value.Width, (int)value.Height);
 				Window.SetDefaultSize ((int)value.Width, (int)value.Height);
@@ -312,16 +330,12 @@ namespace Xwt.GtkBackend
 		
 		void HandleHidden (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnHidden ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnHidden);
 		}
 
 		void HandleShown (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnShown ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnShown);
 		}
 
 		[GLib.ConnectBefore]

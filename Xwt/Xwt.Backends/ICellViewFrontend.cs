@@ -34,6 +34,7 @@ namespace Xwt.Backends
 		ICellViewEventSink Load (ICellDataSource dataSource);
 		void Unload ();
 		bool Visible { get; }
+		bool Expands { get; }
 	}
 
 	public interface ICellViewProvider

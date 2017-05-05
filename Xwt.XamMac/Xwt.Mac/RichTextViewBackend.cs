@@ -84,7 +84,8 @@ namespace Xwt.Mac
 
 		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
-			var width = (double) Widget.TextStorage.Size.Width;
+			// set initial width to 0 to force text wrapping if inside ScrollView with disabled horizontal scrolling
+			var width = (Widget.EnclosingScrollView?.HasHorizontalScroller == false) ? 0 : (double)Widget.TextStorage.Size.Width;
 			if (widthConstraint.IsConstrained)
 				width = widthConstraint.AvailableSize;
 			if (minWidth != -1 && minWidth > width)

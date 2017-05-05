@@ -38,13 +38,14 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	public class WindowBackend : WindowFrameBackend, IWindowBackend
+	public class WindowBackend : WindowFrameBackend, IWindowBackend, IPopupWindowBackend, IUtilityWindowBackend
 	{
 		protected Grid rootPanel;
 		public System.Windows.Controls.Menu mainMenu;
 		MenuBackend mainMenuBackend;
 		FrameworkElement widget;
 		DockPanel contentBox;
+		WindowStyle defaultWindowStyle = WindowStyle.SingleBorderWindow;
 
 		public WindowBackend ()
 		{
@@ -68,6 +69,16 @@ namespace Xwt.WPFBackend
 		{
 			base.Initialize ();
 			Window.Frontend = (Window) Frontend;
+			if (Frontend is UtilityWindow)
+				defaultWindowStyle = WindowStyle.ToolWindow;
+			Decorated = true;
+		}
+
+		public void Initialize(IWindowFrameEventSink sink, PopupWindow.PopupType type)
+		{
+			Initialize ();
+			defaultWindowStyle = WindowStyle.ToolWindow;
+			Decorated = false;
 		}
 
 		// A Grid with a single column, and two rows (menu and child control).
@@ -84,6 +95,18 @@ namespace Xwt.WPFBackend
 			grid.RowDefinitions.Add (contentRow);
 
 			return grid;
+		}
+
+		public override bool Decorated
+		{
+			get { return base.Decorated; }
+			set
+			{
+				base.Decorated = value;
+				if (value)
+					Window.WindowStyle = defaultWindowStyle;
+				Window.AllowsTransparency = Window.WindowStyle == WindowStyle.None && BackgroundColor.Alpha < 1.0;
+			}
 		}
 
 		public override bool HasMenu {
@@ -187,6 +210,14 @@ namespace Xwt.WPFBackend
 		protected override void OnResizeModeChanged ()
 		{
 			Window.ResetBorderSize ();
+		}
+
+		public Xwt.Drawing.Color BackgroundColor {
+			get { return Window.Background.ToXwtColor (); }
+			set {
+				Window.Background = ResPool.GetSolidBrush (value);
+				Window.AllowsTransparency = Window.WindowStyle == WindowStyle.None && value.Alpha < 1.0;
+			}
 		}
 	}
 

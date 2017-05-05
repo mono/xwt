@@ -203,9 +203,7 @@ namespace Xwt.Mac
 		public MacButton (IRadioButtonEventSink eventSink, ApplicationContext context)
 		{
 			Activated += delegate {
-				context.InvokeUserCode (delegate {
-					eventSink.OnClicked ();
-				});
+				context.InvokeUserCode (eventSink.OnClicked);
 				OnActivatedInternal ();
 			};
 		}
@@ -245,6 +243,34 @@ namespace Xwt.Mac
 			}
 			set {
 				((ColoredButtonCell)Cell).Color = value;
+			}
+		}
+
+		public override bool AllowsVibrancy {
+			get {
+				// we don't support vibrancy
+				if (EffectiveAppearance.AllowsVibrancy)
+					return false;
+				return base.AllowsVibrancy;
+			}
+		}
+
+		NSButtonType buttonType = NSButtonType.MomentaryPushIn;
+		public override void SetButtonType (NSButtonType aType)
+		{
+			buttonType = aType;
+			base.SetButtonType (aType);
+		}
+
+		public override NSAppearance EffectiveAppearance {
+			get {
+				// HACK: if vibrancy is enabled (inside popover) radios/checks don't handle background drawing correctly
+				// FIXME: this fix doesn't work for the vibrant light theme, the label background is wrong if
+				//        the window background is set to a custom color
+				if (base.EffectiveAppearance.AllowsVibrancy &&
+				    (buttonType == NSButtonType.Switch || buttonType == NSButtonType.Radio))
+					Cell.BackgroundStyle = base.EffectiveAppearance.Name.Contains ("Dark") ? NSBackgroundStyle.Dark : NSBackgroundStyle.Light;
+				return base.EffectiveAppearance;
 			}
 		}
 

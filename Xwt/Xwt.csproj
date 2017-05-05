@@ -345,8 +345,15 @@
     <Compile Include="Xwt.Backends\IFolderSelectorBackend.cs" />
     <Compile Include="Xwt\ToolkitDefaults.cs" />
     <Compile Include="Xwt.Backends\IComboBoxCellViewFrontend.cs" />
+    <Compile Include="Xwt\RadioButtonCellView.cs" />
+    <Compile Include="Xwt.Backends\IRadioButtonCellViewFrontend.cs" />
+    <Compile Include="Xwt.Backends\IToggleCellViewFrontend.cs" />
     <Compile Include="Xwt.Backends\IDispatcherBackend.cs" />
     <Compile Include="Xwt\ITranslationCatalog.cs" />
+    <Compile Include="Xwt.Backends\IPopupWindowBackend.cs" />
+    <Compile Include="Xwt\UtilityWindow.cs" />
+    <Compile Include="Xwt.Backends\IUtilityWindowBackend.cs" />
+    <Compile Include="Xwt\TextChangedEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

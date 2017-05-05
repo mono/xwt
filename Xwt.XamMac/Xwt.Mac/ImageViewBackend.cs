@@ -28,8 +28,16 @@ using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public class ImageViewBackend: ViewBackend<NSImageView,IWidgetEventSink>, IImageViewBackend
+	public class ImageViewBackend: ViewBackend<NSView,IWidgetEventSink>, IImageViewBackend
 	{
+		CustomAlignedContainer Container {
+			get { return (CustomAlignedContainer)base.Widget; }
+		}
+
+		public new NSImageView Widget {
+			get { return (NSImageView)Container.Child; }
+		}
+
 		public ImageViewBackend ()
 		{
 		}
@@ -37,7 +45,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			ViewObject = new CustomNSImageView ();
+			ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, new NSImageView ());
 		}
 
 		protected override Size GetNaturalSize ()
@@ -55,24 +63,6 @@ namespace Xwt.Mac
 
 			Widget.Image = image.ToNSImage ();
 			Widget.SetFrameSize (Widget.Image.Size);
-		}
-	}
-	
-	class CustomNSImageView: NSImageView, IViewObject
-	{
-		public NSView View {
-			get {
-				return this;
-			}
-		}
-
-		public ViewBackend Backend { get; set; }
-
-		public override void ResetCursorRects ()
-		{
-			base.ResetCursorRects ();
-			if (Backend.Cursor != null)
-				AddCursorRect (Bounds, Backend.Cursor);
 		}
 	}
 }

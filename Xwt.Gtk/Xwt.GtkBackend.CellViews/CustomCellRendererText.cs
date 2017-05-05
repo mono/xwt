@@ -32,6 +32,7 @@ namespace Xwt.GtkBackend
 	public class CustomCellRendererText: CellViewBackend
 	{
 		Gtk.CellRendererText cellRenderer;
+		bool mixedMarkupText;
 
 		public CustomCellRendererText ()
 		{
@@ -50,8 +51,11 @@ namespace Xwt.GtkBackend
 				atts.AddAttributes (new TextIndexer (tx.Text), tx.Attributes);
 				cellRenderer.Attributes = new Pango.AttrList (atts.Handle);
 				atts.Dispose ();
+				mixedMarkupText = true;
 			} else {
 				cellRenderer.Text = view.Text;
+				if (mixedMarkupText)
+					cellRenderer.Attributes = new Pango.AttrList ();
 			}
 			cellRenderer.Editable = view.Editable;
 			cellRenderer.Ellipsize = view.Ellipsize.ToGtkValue ();
@@ -62,7 +66,7 @@ namespace Xwt.GtkBackend
 			SetCurrentEventRow ();
 			var view = (ITextCellViewFrontend) Frontend;
 
-			if (!view.RaiseTextChanged () && view.TextField != null) {
+			if (!view.RaiseTextChanged (args.NewText) && view.TextField != null) {
 				Gtk.TreeIter iter;
 				if (TreeModel.GetIterFromString (out iter, args.Path))
 					CellUtil.SetModelValue (TreeModel, iter, view.TextField.Index, view.TextField.FieldType, args.NewText);

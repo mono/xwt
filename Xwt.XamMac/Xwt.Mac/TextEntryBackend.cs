@@ -228,9 +228,7 @@ namespace Xwt.Mac
 			    cacheSelectionLength != SelectionLength) {
 				cacheSelectionStart = SelectionStart;
 				cacheSelectionLength = SelectionLength;
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnSelectionChanged ();
-				});
+                ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
 			}
 		}
 
@@ -325,6 +323,22 @@ namespace Xwt.Mac
 			});
 		}
 
+		public override string StringValue
+		{
+			get { return base.StringValue; }
+			set {
+				if (base.StringValue != value)
+				{
+					base.StringValue = value;
+					context.InvokeUserCode (delegate
+					{
+						eventSink.OnChanged ();
+						eventSink.OnSelectionChanged ();
+					});
+				}
+			}
+		}
+
 		class CustomCell : NSTextFieldCell
 		{
 			CustomEditor editor;
@@ -358,9 +372,7 @@ namespace Xwt.Mac
 
 			void HandleSelectionDidChange (NSNotification notif)
 			{
-				Context.InvokeUserCode (delegate {
-					EventSink.OnSelectionChanged ();
-				});
+				Context.InvokeUserCode (EventSink.OnSelectionChanged);
 			}
 
 			public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)

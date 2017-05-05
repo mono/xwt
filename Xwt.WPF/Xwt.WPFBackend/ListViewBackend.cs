@@ -39,7 +39,7 @@ using System.Windows.Input;
 namespace Xwt.WPFBackend
 {
 	public class ListViewBackend
-		: WidgetBackend, IListViewBackend
+		: WidgetBackend, IListViewBackend, ICellRendererTarget
 	{
 		Dictionary<CellView,CellInfo> cellViews = new Dictionary<CellView, CellInfo> ();
 
@@ -167,9 +167,9 @@ namespace Xwt.WPFBackend
 		public object AddColumn (ListViewColumn col)
 		{
 			var column = new GridViewColumn ();
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Context, Frontend, col.Views) };
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Context, this, col.Views) };
 			if (col.HeaderView != null)
-				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Context, Frontend, col.HeaderView) };
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Context, this, col.HeaderView) };
 			else
 				column.Header = col.Title;
 
@@ -188,9 +188,9 @@ namespace Xwt.WPFBackend
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			var column = (GridViewColumn) handle;
-            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
+            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, this, col.Views) };
 			if (col.HeaderView != null)
-                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
+                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, this, col.HeaderView) };
 			else
 				column.Header = col.Title;
 
@@ -346,6 +346,13 @@ namespace Xwt.WPFBackend
 			var result = VisualTreeHelper.HitTest (ListView, new System.Windows.Point (p.X, p.Y)) as PointHitTestResult;
 
 			var element = (result != null) ? result.VisualHit as FrameworkElement : null;
+
+			return GetRowForElement (element);
+        }
+
+		int GetRowForElement (FrameworkElement sender)
+		{
+			var element = sender;
 			while (element != null) {
 				if (element is ExListViewItem)
 					break;
@@ -360,7 +367,14 @@ namespace Xwt.WPFBackend
 
 			int index = ListView.ItemContainerGenerator.IndexFromContainer(element);
 			return index;
-        }
+		}
+
+		void ICellRendererTarget.SetCurrentEventRow (object dataItem)
+		{
+			var item = dataItem as ValuesContainer;
+			var container = ListView.ItemContainerGenerator.ContainerFromItem (item);
+			CurrentEventRow = ListView.ItemContainerGenerator.IndexFromContainer (container);
+		}
 
         public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
         {

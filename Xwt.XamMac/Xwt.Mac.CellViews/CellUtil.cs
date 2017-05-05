@@ -53,6 +53,8 @@ namespace Xwt.Mac
 				cr = new CanvasTableCell ();
 			else if (cell is ICheckBoxCellViewFrontend)
 				cr = new CheckBoxTableCell ();
+			else if (cell is IRadioButtonCellViewFrontend)
+				cr = new RadioButtonTableCell ();
 			else
 				throw new NotImplementedException ();
 			cr.Backend = new CellViewBackend (table, column);

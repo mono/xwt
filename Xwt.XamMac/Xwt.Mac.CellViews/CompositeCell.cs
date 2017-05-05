@@ -223,8 +223,13 @@ namespace Xwt.Mac
 		
 		public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
 		{
+			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+			ctx.SaveState ();
+			ctx.AddRect (cellFrame);
+			ctx.Clip ();
 			foreach (CellPos cp in GetCells(cellFrame))
 				cp.Cell.DrawInteriorWithFrame (cp.Frame, inView);
+			ctx.RestoreState ();
 		}
 		
 		public override void Highlight (bool flag, CGRect withFrame, NSView inView)
@@ -275,13 +280,35 @@ namespace Xwt.Mac
 		IEnumerable<CellPos> GetCells (CGRect cellFrame)
 		{
 			if (direction == Orientation.Horizontal) {
-				foreach (NSCell c in VisibleCells) {
-					var s = c.CellSize;
-					var w = (nfloat) Math.Min ((nfloat)cellFrame.Width, (nfloat)s.Width);
-					var f = new CGRect (cellFrame.X, cellFrame.Y, w, cellFrame.Height);
-					cellFrame.X += w;
-					cellFrame.Width -= w;
-					yield return new CellPos () { Cell = c, Frame = f };
+
+				int nexpands = 0;
+				double requiredSize = 0;
+				double availableSize = cellFrame.Width;
+
+				var sizes = new Dictionary<ICellRenderer, double> ();
+
+				// Get the natural size of each child
+				foreach (var bp in VisibleCells) {
+					var s = ((NSCell)bp).CellSize;
+					sizes [bp] = s.Width;
+					requiredSize += s.Width;
+					if (bp.Backend.Frontend.Expands)
+						nexpands++;
+				}
+
+				double remaining = availableSize - requiredSize;
+				if (remaining > 0) {
+					var expandRemaining = new SizeSplitter (remaining, nexpands);
+					foreach (var bp in VisibleCells) {
+						if (bp.Backend.Frontend.Expands)
+							sizes [bp] += (nfloat)expandRemaining.NextSizePart ();
+					}
+				}
+
+				double x = cellFrame.X;
+				foreach (var s in sizes) {
+					yield return new CellPos () { Cell = (NSCell)s.Key, Frame = new CGRect (x, cellFrame.Y, s.Value, cellFrame.Height) };
+					x += s.Value;
 				}
 			} else {
 				nfloat y = cellFrame.Y;
@@ -298,6 +325,32 @@ namespace Xwt.Mac
 		{
 			public NSCell Cell;
 			public CGRect Frame;
+		}
+
+		class SizeSplitter
+		{
+			int rem;
+			int part;
+
+			public SizeSplitter (double total, int numParts)
+			{
+				if (numParts > 0)
+				{
+					part = ((int)total) / numParts;
+					rem = ((int)total) % numParts;
+				}
+			}
+
+			public double NextSizePart ()
+			{
+				if (rem > 0)
+				{
+					rem--;
+					return part + 1;
+				}
+				else
+					return part;
+			}
 		}
 	}
 }

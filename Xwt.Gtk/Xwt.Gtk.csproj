@@ -158,6 +158,8 @@
     <Compile Include="Xwt.GtkBackend\FontSelectorBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SelectFontDialogBackend.cs" />
     <Compile Include="Xwt.GtkBackend.CellViews\CustomCellRendererComboBox.cs" />
+    <Compile Include="Xwt.GtkBackend\PopupWindowBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\UtilityWindowBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

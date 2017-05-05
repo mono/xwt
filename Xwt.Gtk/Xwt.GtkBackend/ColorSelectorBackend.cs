@@ -71,9 +71,7 @@ namespace Xwt.GtkBackend
 
 		void HandleColorChanged (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnColorChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnColorChanged);
 		}
 
 		public Xwt.Drawing.Color Color {

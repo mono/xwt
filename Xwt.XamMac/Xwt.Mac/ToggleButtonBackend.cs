@@ -67,9 +67,7 @@ namespace Xwt.Mac
 					break;
 				}
 				lastState = Widget.State;
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnToggled ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnToggled);
 			}
 		}
 	}

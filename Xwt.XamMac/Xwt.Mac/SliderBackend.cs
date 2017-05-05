@@ -202,6 +202,15 @@ namespace Xwt.Mac
 				((MacSliderCell)Cell).StepIncrement = value;
 			}
 		}
+
+		public override bool AllowsVibrancy {
+			get {
+				// we don't support vibrancy
+				if (EffectiveAppearance.AllowsVibrancy)
+					return false;
+				return base.AllowsVibrancy;
+			}
+		}
 	}
 
 	public class MacSliderCell : NSSliderCell

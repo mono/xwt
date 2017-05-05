@@ -661,9 +661,7 @@ namespace Xwt.GtkBackend
 		{
 			if (Widget.Allocation != lastAllocation) {
 				lastAllocation = Widget.Allocation;
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnBoundsChanged ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnBoundsChanged);
 			}
 		}
 
@@ -795,9 +793,7 @@ namespace Xwt.GtkBackend
 		[GLib.ConnectBefore]
 		void HandleWidgetFocusOutEvent (object o, Gtk.FocusOutEventArgs args)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnLostFocus ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnLostFocus);
 		}
 
 		[GLib.ConnectBefore]
@@ -805,9 +801,7 @@ namespace Xwt.GtkBackend
 		{
 			if (!CanGetFocus)
 				return;
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnGotFocus ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnGotFocus);
 		}
 
 		[GLib.ConnectBefore]
@@ -815,9 +809,7 @@ namespace Xwt.GtkBackend
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
 				return;
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnMouseExited ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnMouseExited);
 		}
 
 		[GLib.ConnectBefore]
@@ -825,9 +817,7 @@ namespace Xwt.GtkBackend
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
 				return;
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnMouseEntered ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnMouseEntered);
 		}
 
 		protected virtual void OnEnterNotifyEvent (Gtk.EnterNotifyEventArgs args) {}

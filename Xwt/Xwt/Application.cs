@@ -149,9 +149,7 @@ namespace Xwt
 			    (!((engine.IsGuest) || (SynchronizationContext.Current is XwtSynchronizationContext))))
 				SynchronizationContext.SetSynchronizationContext (new XwtSynchronizationContext ());
 
-			toolkit.InvokePlatformCode (delegate {
-				engine.RunApplication ();
-			});
+			toolkit.InvokePlatformCode (engine.RunApplication);
 		}
 		
 		/// <summary>
@@ -159,9 +157,7 @@ namespace Xwt
 		/// </summary>
 		public static void Exit ()
 		{
-			toolkit.InvokePlatformCode (delegate {
-				engine.ExitApplication ();
-			});
+			toolkit.InvokePlatformCode (engine.ExitApplication);
 
 			if (SynchronizationContext.Current is XwtSynchronizationContext)
 				XwtSynchronizationContext.Uninstall ();

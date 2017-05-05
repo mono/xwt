@@ -118,7 +118,7 @@ namespace Xwt.Mac
 		{
 			this.eventSink = eventSink;
 			formater = new NSNumberFormatter ();
-			stepper = new NSStepper ();
+			stepper = new VibrancyStepper ();
 			input = new NSTextField ();
 			input.Formatter = formater;
 			input.DoubleValue = 0;
@@ -178,9 +178,7 @@ namespace Xwt.Mac
 			
 			input.DoubleValue = stepper.DoubleValue;
 			if (enableValueChangedEvent) {
-				Backend.ApplicationContext.InvokeUserCode (delegate {
-					eventSink.ValueChanged ();
-				});
+				Backend.ApplicationContext.InvokeUserCode (eventSink.ValueChanged);
 			}
 		}
 
@@ -189,9 +187,7 @@ namespace Xwt.Mac
 			isIndeterminate = false;
 			stepper.DoubleValue = input.DoubleValue;
 			if (enableValueChangedEvent) {
-				Backend.ApplicationContext.InvokeUserCode (delegate {
-					eventSink.ValueChanged ();
-				});
+				Backend.ApplicationContext.InvokeUserCode (eventSink.ValueChanged);
 			}
 		}
 
@@ -237,9 +233,7 @@ namespace Xwt.Mac
 				stepper.DoubleValue = value;
 				input.DoubleValue = value;
 				if (enableValueChangedEvent) {
-					Backend.ApplicationContext.InvokeUserCode (delegate {
-						eventSink.ValueChanged ();
-					});
+					Backend.ApplicationContext.InvokeUserCode (eventSink.ValueChanged);
 				}
 			}
 		}
@@ -329,6 +323,18 @@ namespace Xwt.Mac
 			if (eventId is SpinButtonEvent) {
 				switch ((SpinButtonEvent)eventId) {
 				case SpinButtonEvent.ValueChanged: enableValueChangedEvent = false; break;
+				}
+			}
+		}
+
+		class VibrancyStepper : NSStepper
+		{
+			public override bool AllowsVibrancy {
+				get {
+					// we don't support vibrancy
+					if (EffectiveAppearance.AllowsVibrancy)
+						return false;
+					return base.AllowsVibrancy;
 				}
 			}
 		}

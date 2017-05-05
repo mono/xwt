@@ -27,16 +27,12 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ICheckBoxCellViewFrontend: ICellViewFrontend
+	public interface ICheckBoxCellViewFrontend: IToggleCellViewFrontend
 	{
 		CheckBoxState State { get; }
-		bool Editable { get; }
 		bool AllowMixed { get; }
 
-		bool RaiseToggled ();
-
 		IDataField<CheckBoxState> StateField { get; }
-		IDataField<bool> ActiveField { get; }
 	}
 }
 

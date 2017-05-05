@@ -105,12 +105,12 @@ namespace Xwt
 		/// <summary>
 		/// Occurs when the text of the cell is modified.
 		/// </summary>
-		public event EventHandler<WidgetEventArgs> TextChanged;
+		public event EventHandler<TextChangedEventArgs> TextChanged;
 
-		bool ITextCellViewFrontend.RaiseTextChanged ()
+		bool ITextCellViewFrontend.RaiseTextChanged (string newText)
 		{
 			if (TextChanged != null) {
-				var args = new WidgetEventArgs ();
+				var args = new TextChangedEventArgs (newText);
 				TextChanged (this, args);
 				return args.Handled;
 			}

@@ -199,25 +199,19 @@ namespace Xwt.Gtk.Mac
 
 		void HandleLoadStarted (object o, EventArgs args)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnLoading ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnLoading);
 		}
 
 		void HandleLoadFinished (object o, EventArgs args)
 		{
 			SetCustomCss ();
 
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnLoaded ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnLoaded);
 		}
 
 		void HandleTitleChanged (object sender, WebKit.WebFrameTitleEventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnTitleChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnTitleChanged);
 		}
 
 		void SetCustomCss ()

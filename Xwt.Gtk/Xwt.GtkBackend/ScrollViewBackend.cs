@@ -124,9 +124,7 @@ namespace Xwt.GtkBackend
 		[GLib.ConnectBefore]
 		void HandleValueChanged (object sender, EventArgs e)
 		{
-			ApplicationContext.InvokeUserCode (delegate {
-				EventSink.OnVisibleRectChanged ();
-			});
+			ApplicationContext.InvokeUserCode (EventSink.OnVisibleRectChanged);
 		}
 		
 		public Rectangle VisibleRect {

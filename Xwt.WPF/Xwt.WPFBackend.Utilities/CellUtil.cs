@@ -38,14 +38,13 @@ namespace Xwt.WPFBackend.Utilities
 	{
 		static readonly Thickness CellMargins = new Thickness (2);
 
-		internal static FrameworkElementFactory CreateBoundColumnTemplate (ApplicationContext ctx, Widget parent, CellViewCollection views, string dataPath = ".")
+		internal static FrameworkElementFactory CreateBoundColumnTemplate (ApplicationContext ctx, WidgetBackend parent, CellViewCollection views, string dataPath = ".")
 		{
 			if (views.Count == 1)
                 return CreateBoundCellRenderer(ctx, parent, views[0], dataPath);
-			
-			FrameworkElementFactory container = new FrameworkElementFactory (typeof (StackPanel));
-			container.SetValue (StackPanel.OrientationProperty, System.Windows.Controls.Orientation.Horizontal);
 
+			FrameworkElementFactory container = new FrameworkElementFactory (typeof (Grid));
+			int i = 0;
 			foreach (CellView view in views) {
 				var factory = CreateBoundCellRenderer(ctx, parent, view, dataPath);
 
@@ -60,12 +59,20 @@ namespace Xwt.WPFBackend.Utilities
 				else if (!view.Visible)
 					factory.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
 
-				container.AppendChild(factory);
+				factory.SetValue (FrameworkElement.HorizontalAlignmentProperty, view.Expands ? HorizontalAlignment.Stretch : HorizontalAlignment.Left);
+				factory.SetValue (Grid.ColumnProperty, i);
+				var column = new FrameworkElementFactory (typeof (ColumnDefinition));
+				column.SetValue (ColumnDefinition.WidthProperty, new GridLength (1, view.Expands ? GridUnitType.Star : GridUnitType.Auto));
+
+				container.AppendChild (column);
+				container.AppendChild (factory);
+
+				i++;
 			}
 
 			return container;
 		}
-		internal static FrameworkElementFactory CreateBoundCellRenderer (ApplicationContext ctx, Widget parent, CellView view, string dataPath = ".")
+		internal static FrameworkElementFactory CreateBoundCellRenderer (ApplicationContext ctx, WidgetBackend parent, CellView view, string dataPath = ".")
 		{
             ICellViewFrontend fr = view;
 			TextCellView textView = view as TextCellView;
@@ -98,9 +105,9 @@ namespace Xwt.WPFBackend.Utilities
 						factory.SetValue(SWC.TextBlock.TextProperty, textView.Text);
 				}
 
-                var cb = new CellViewBackend();
-                cb.Initialize(view, factory);
-                fr.AttachBackend(parent, cb);
+                var cb = new TextCellViewBackend();
+                cb.Initialize(view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend(parent.Frontend, cb);
 				return factory;
 			}
 
@@ -116,8 +123,8 @@ namespace Xwt.WPFBackend.Utilities
 				}
 
                 var cb = new CellViewBackend();
-                cb.Initialize(view, factory);
-                fr.AttachBackend(parent, cb);
+                cb.Initialize(view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend(parent.Frontend, cb);
                 return factory;
 			}
 
@@ -128,30 +135,63 @@ namespace Xwt.WPFBackend.Utilities
                 FrameworkElementFactory factory = new FrameworkElementFactory(typeof(CanvasCellViewPanel));
 				factory.SetValue(CanvasCellViewPanel.CellViewBackendProperty, cb);
 
-                cb.Initialize(view, factory);
-                fr.AttachBackend(parent, cb);
+                cb.Initialize(view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend(parent.Frontend, cb);
                 return factory;
 			}
 			
 			CheckBoxCellView cellView = view as CheckBoxCellView;
 			if (cellView != null) {
-				FrameworkElementFactory factory = new FrameworkElementFactory (typeof(SWC.CheckBox));
+				FrameworkElementFactory factory = new FrameworkElementFactory (typeof(CheckBoxCell));
 				if (cellView.EditableField == null)
 					factory.SetValue (FrameworkElement.IsEnabledProperty, cellView.Editable);
 				else
 					factory.SetBinding (SWC.CheckBox.IsEnabledProperty, new Binding (dataPath + "[" + cellView.EditableField.Index + "]"));
 
-				factory.SetValue (SWC.CheckBox.IsThreeStateProperty, cellView.AllowMixed);
-				if (cellView.ActiveField != null)
+				if (cellView.AllowMixedField == null)
+					factory.SetValue(SWC.CheckBox.IsThreeStateProperty, cellView.AllowMixed);
+				else
+					factory.SetBinding(SWC.CheckBox.IsThreeStateProperty, new Binding(dataPath + "[" + cellView.AllowMixedField.Index + "]"));
+
+				if (cellView.StateField != null)
+					factory.SetBinding(SWC.CheckBox.IsCheckedProperty,
+						new Binding(dataPath + "[" + cellView.StateField.Index + "]") { Converter = new CheckBoxStateToBoolConverter() });
+				else if (cellView.ActiveField != null)
 					factory.SetBinding (SWC.CheckBox.IsCheckedProperty, new Binding (dataPath + "[" + cellView.ActiveField.Index + "]"));
 
-				var cb = new CellViewBackend ();
-				cb.Initialize (view, factory);
-				fr.AttachBackend (parent, cb);
+				var cb = new CheckBoxCellViewBackend ();
+				cb.Initialize (view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend (parent.Frontend, cb);
+				return factory;
+			}
+
+			var radioButton = view as RadioButtonCellView;
+			if (radioButton != null)
+			{
+				FrameworkElementFactory factory = new FrameworkElementFactory(typeof(UngroupedRadioButton));
+				if (radioButton.EditableField == null)
+					factory.SetValue(UIElement.IsEnabledProperty, radioButton.Editable);
+				else
+					factory.SetBinding(UIElement.IsEnabledProperty, new Binding(dataPath + "[" + radioButton.EditableField.Index + "]"));
+
+				factory.SetValue(SWC.Primitives.ToggleButton.IsThreeStateProperty, false);
+				if (radioButton.ActiveField == null)
+					factory.SetValue(SWC.Primitives.ToggleButton.IsCheckedProperty, radioButton.Active);
+				else
+					factory.SetBinding(SWC.Primitives.ToggleButton.IsCheckedProperty, new Binding(dataPath + "[" + radioButton.ActiveField.Index + "]"));
+
+				var cb = new RadioButtonCellViewBackend ();
+				cb.Initialize(view, factory, parent as ICellRendererTarget);
+				fr.AttachBackend(parent.Frontend, cb);
 				return factory;
 			}
 
 			throw new NotImplementedException ();
 		}
+	}
+
+	public interface ICellRendererTarget
+	{
+		void SetCurrentEventRow (object dataItem);
 	}
 }
