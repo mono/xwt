@@ -40,11 +40,9 @@ namespace Xwt.WPFBackend.Utilities
 
 		internal static FrameworkElementFactory CreateBoundColumnTemplate (ApplicationContext ctx, WidgetBackend parent, CellViewCollection views, string dataPath = ".")
 		{
-			if (views.Count == 1)
-                return CreateBoundCellRenderer(ctx, parent, views[0], dataPath);
-
 			FrameworkElementFactory container = new FrameworkElementFactory (typeof (Grid));
-			int i = 0;
+
+			int i = 0;
 			foreach (CellView view in views) {
 				var factory = CreateBoundCellRenderer(ctx, parent, view, dataPath);
 
