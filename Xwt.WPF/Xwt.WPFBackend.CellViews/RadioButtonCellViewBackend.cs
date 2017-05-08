@@ -52,8 +52,6 @@ namespace Xwt.WPFBackend
 		public UngroupedRadioButton()
 		{
 			GroupName = Guid.NewGuid().ToString();
-			IsThreeState = false;
-			IsChecked = false;
 		}
 
 		public static readonly RoutedEvent ToggleEvent = EventManager.RegisterRoutedEvent("Toggle", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(UngroupedRadioButton));
