@@ -33,6 +33,8 @@ namespace Xwt.Mac
 {
 	class ImageTableCell: NSImageCell, ICellRenderer
 	{
+		bool visible = true;
+
 		public ImageTableCell ()
 		{
 		}
@@ -52,6 +54,7 @@ namespace Xwt.Mac
 		public void Fill ()
 		{
 			ObjectValue = Frontend.Image.ToImageDescription (CellContainer.Context).ToNSImage ();
+			visible = Frontend.Visible;
 		}
 		
 		public override CGSize CellSize {
@@ -62,6 +65,19 @@ namespace Xwt.Mac
 				else
 					return base.CellSize;
 			}
+		}
+
+		public override CGSize CellSizeForBounds (CGRect bounds)
+		{
+			if (visible)
+				return base.CellSizeForBounds (bounds);
+			return CGSize.Empty;
+		}
+
+		public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
+		{
+			if (visible)
+				base.DrawInteriorWithFrame (cellFrame, inView);
 		}
 		
 		public void CopyFrom (object other)
