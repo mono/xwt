@@ -223,6 +223,13 @@ namespace Xwt.Mac
 		
 		public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
 		{
+			// FIXME: although ObjectValue seems to be set and Fill called correctly,
+			//        the table flickers without an additional Fill call, especially
+			//        on expansion/collapsing with partially hidden cells (row wise).
+			//        Cocoa seems to be resetting some NSCell bits, which may be
+			//        related to the deprecated NSCell mode.
+			if (tablePosition != null)
+				Fill ();
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 			ctx.SaveState ();
 			ctx.AddRect (cellFrame);
