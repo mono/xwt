@@ -533,9 +533,11 @@ namespace Xwt.GtkBackend
 				int x, y;
 				WindowToBufferCoords (Gtk.TextWindowType.Text, (int)mousex, (int)mousey, out x, out y);
 				var iter = GetIterAtLocation (x, y);
-				foreach (var l in Buffer.Links) {
-					if (iter.HasTag (l.Key)) {
-						return l.Value;
+				if (Buffer != null) {
+					foreach (var l in Buffer.Links) {
+						if (iter.HasTag (l.Key)) {
+							return l.Value;
+						}
 					}
 				}
 				return null;
@@ -585,8 +587,9 @@ namespace Xwt.GtkBackend
 				var color = (Gdk.Color) StyleGetProperty ("link-color");
 				if (color.Equals (Gdk.Color.Zero))
 					color = Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToGtkValue ();
-				foreach (var linkTag in Buffer.Links.Keys)
-					linkTag.ForegroundGdk = color;
+				if (Buffer != null)
+					foreach (var linkTag in Buffer.Links.Keys)
+						linkTag.ForegroundGdk = color;
 			}
 
 			void UpdateBackground ()
