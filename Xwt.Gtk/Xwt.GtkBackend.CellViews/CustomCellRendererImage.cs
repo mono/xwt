@@ -50,7 +50,8 @@ namespace Xwt.GtkBackend
 		{
 			var view = (IImageCellViewFrontend)Frontend;
 			renderer.Context = ApplicationContext;
-			renderer.Image = view.Image.ToImageDescription (ApplicationContext);
+			var image = view.Image.ToImageDescription (ApplicationContext);
+			renderer.Image = image.Size.IsZero ? image.WithDefaultSize (Gtk.IconSize.Menu) : image;
 		}
 	}
 
