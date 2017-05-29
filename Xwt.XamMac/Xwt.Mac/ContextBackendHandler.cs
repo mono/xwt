@@ -296,8 +296,6 @@ namespace Xwt.Mac
 
 			// Add the styles that have been globaly set to the context
 			img.Styles = img.Styles.AddRange (cb.Styles);
-			
-			NSImage image = img.ToNSImage ();
 
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)img.Alpha);
@@ -309,12 +307,14 @@ namespace Xwt.Mac
 			ctx.TranslateCTM ((float)(destRect.X - (srcRect.X * rx)), (float)(destRect.Y - (srcRect.Y * ry)));
 			ctx.ScaleCTM ((float)rx, (float)ry);
 
+			NSImage image = (NSImage)img.Backend;
 			if (image is CustomImage) {
-				((CustomImage)image).DrawInContext ((CGContextBackend)backend);
+				((CustomImage)image).DrawInContext ((CGContextBackend)backend, img);
 			} else {
-				var rr = new CGRect (0, 0, image.Size.Width, image.Size.Height);
+				var size = new CGSize ((nfloat)img.Size.Width, (nfloat)img.Size.Height);
+				var rr = new CGRect (0, 0, size.Width, size.Height);
 				ctx.ScaleCTM (1f, -1f);
-				ctx.DrawImage (new CGRect (0, -image.Size.Height, image.Size.Width, image.Size.Height), image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
+				ctx.DrawImage (new CGRect (0, -size.Height, size.Width, size.Height), image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
 			}
 
 			ctx.RestoreState ();

@@ -333,7 +333,7 @@ namespace Xwt.Mac
 
 		internal void DrawInContext (CGContextBackend ctx, ImageDescription idesc)
 		{
-			var s = ctx.Size != CGSize.Empty ? ctx.Size : Size;
+			var s = ctx.Size != CGSize.Empty ? ctx.Size : new CGSize (idesc.Size.Width, idesc.Size.Height);
 			actx.InvokeUserCode (delegate {
 				drawCallback (ctx, new Rectangle (0, 0, s.Width, s.Height), idesc, actx.Toolkit);
 			});
