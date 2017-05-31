@@ -38,7 +38,7 @@ namespace Xwt.Mac
 		public CGContext Context;
 		public CGSize Size;
 		public CGAffineTransform? InverseViewTransform;
-		public ContextStatus CurrentStatus;
+		public ContextStatus CurrentStatus = new ContextStatus ();
 		public double ScaleFactor = 1;
 		public StyleSet Styles;
 	}
