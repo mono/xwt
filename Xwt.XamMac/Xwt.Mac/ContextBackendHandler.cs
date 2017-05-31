@@ -73,7 +73,7 @@ namespace Xwt.Mac
 		{
 			var ct = (CGContextBackend) backend;
 			ct.Context.RestoreState ();
-			if (ct.CurrentStatus != null) {
+			if (ct.CurrentStatus.Previous != null) {
 				ct.CurrentStatus = ct.CurrentStatus.Previous;
 			}
 		}
