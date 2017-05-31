@@ -38,8 +38,7 @@ namespace Xwt.Mac
 		public CGContext Context;
 		public CGSize Size;
 		public CGAffineTransform? InverseViewTransform;
-		public Stack<ContextStatus> StatusStack = new Stack<ContextStatus> ();
-		public ContextStatus CurrentStatus = new ContextStatus ();
+		public ContextStatus CurrentStatus;
 		public double ScaleFactor = 1;
 		public StyleSet Styles;
 	}
@@ -47,6 +46,7 @@ namespace Xwt.Mac
 	class ContextStatus
 	{
 		public object Pattern;
+		public ContextStatus Previous;
 	}
 
 	public class MacContextBackendHandler: ContextBackendHandler
@@ -63,17 +63,19 @@ namespace Xwt.Mac
 		{
 			var ct = (CGContextBackend) backend;
 			ct.Context.SaveState ();
-			ct.StatusStack.Push (ct.CurrentStatus);
-			var newStatus = new ContextStatus ();
-			newStatus.Pattern = ct.CurrentStatus.Pattern;
-			ct.CurrentStatus = newStatus;
+			ct.CurrentStatus = new ContextStatus {
+				Pattern = ct.CurrentStatus.Pattern,
+				Previous = ct.CurrentStatus,
+			};
 		}
 		
 		public override void Restore (object backend)
 		{
 			var ct = (CGContextBackend) backend;
 			ct.Context.RestoreState ();
-			ct.CurrentStatus = ct.StatusStack.Pop ();
+			if (ct.CurrentStatus != null) {
+				ct.CurrentStatus = ct.CurrentStatus.Previous;
+			}
 		}
 
 		public override void SetGlobalAlpha (object backend, double alpha)
