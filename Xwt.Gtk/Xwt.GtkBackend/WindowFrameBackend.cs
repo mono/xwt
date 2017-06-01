@@ -100,25 +100,33 @@ namespace Xwt.GtkBackend
 			Initialize ();
 
 			#if !XWT_GTK3
-			Window.SizeRequested += delegate(object o, Gtk.SizeRequestedArgs args) {
-				if (!Window.Resizable) {
-					int w = args.Requisition.Width, h = args.Requisition.Height;
-					if (w < (int) requestedSize.Width)
-						w = (int) requestedSize.Width;
-					if (h < (int) requestedSize.Height)
-						h = (int) requestedSize.Height;
-					args.Requisition = new Gtk.Requisition () { Width = w, Height = h };
-				}
-			};
+			Window.SizeRequested += OnSizeRequested;
 			#endif
 		}
-		
+
+		#if !XWT_GTK3
+		void OnSizeRequested (object o, Gtk.SizeRequestedArgs args)
+		{
+			if (!Window.Resizable) {
+				int w = args.Requisition.Width, h = args.Requisition.Height;
+				if (w < (int)requestedSize.Width)
+					w = (int)requestedSize.Width;
+				if (h < (int)requestedSize.Height)
+					h = (int)requestedSize.Height;
+				args.Requisition = new Gtk.Requisition () { Width = w, Height = h };
+			}
+		}
+		#endif
+
 		public virtual void Initialize ()
 		{
 		}
 		
 		public virtual void Dispose ()
 		{
+			#if !XWT_GTK3
+			Window.SizeRequested -= OnSizeRequested;
+			#endif
 			Window.Destroy ();
 		}
 		
