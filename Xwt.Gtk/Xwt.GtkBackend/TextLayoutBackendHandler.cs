@@ -79,10 +79,7 @@ namespace Xwt.GtkBackend
 				set {
 					text = value ?? String.Empty;;
 					indexer = null;
-					if (attributes != null) {
-						attributes.Dispose ();
-						attributes = null;
-					}
+					ClearAttributes ();
 				}
 			}
 			
