@@ -55,7 +55,6 @@ namespace Xwt.GtkBackend
 		void IPopupWindowBackend.Initialize (IWindowFrameEventSink sink, PopupWindow.PopupType type)
 		{
 			windowType = type;
-			((IWindowFrameBackend)this).Initialize (sink);
 		}
 	}
 }
