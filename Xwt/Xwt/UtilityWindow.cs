@@ -37,12 +37,6 @@ namespace Xwt
 		protected new class WindowBackendHost : Window.WindowBackendHost
 		{
 			new UtilityWindow Parent { get { return (UtilityWindow)base.Parent; } }
-
-			protected override void OnBackendCreated ()
-			{
-				base.OnBackendCreated ();
-				((IUtilityWindowBackend)Backend).Initialize (this);
-			}
 		}
 
 		protected override BackendHost CreateBackendHost ()
