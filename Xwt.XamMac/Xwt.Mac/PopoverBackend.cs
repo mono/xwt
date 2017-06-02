@@ -200,6 +200,22 @@ namespace Xwt.Mac
 			}
 		}
 
+		public void Show (Popover.Position orientation, object reference, Rectangle positionRect, Widget child)
+		{
+			var refView = reference as NSView;
+			if (refView == null)
+				return;
+
+			// If the rect is empty, the coordinates of the rect will be ignored.
+			// Set the width and height, for the positioning to function correctly.
+			if (Math.Abs (positionRect.Width) < double.Epsilon)
+				positionRect.Width = refView.Frame.Size.Width;
+			if (Math.Abs (positionRect.Height) < double.Epsilon)
+				positionRect.Height = refView.Frame.Size.Height;
+			
+			Show (orientation, refView, positionRect, child);
+		}
+
 		public void Show (Popover.Position orientation, Widget referenceWidget, Rectangle positionRect, Widget child)
 		{
 			var refBackend = Toolkit.GetBackend (referenceWidget) as IWidgetBackend;
@@ -218,20 +234,25 @@ namespace Xwt.Mac
 							positionRect.X += referenceWidget.WindowBounds.Location.X - rLocation.X;
 							positionRect.Y += referenceWidget.WindowBounds.Location.Y - rLocation.Y;
 						}
+
+						// If the rect is empty, the coordinates of the rect will be ignored.
+						// Set the width and height, for the positioning to function correctly.
+						if (Math.Abs (positionRect.Width) < double.Epsilon)
+							positionRect.Width = referenceWidget.Size.Width;
+						if (Math.Abs (positionRect.Height) < double.Epsilon)
+							positionRect.Height = referenceWidget.Size.Height;
+
 					} catch (Exception ex) {
 						throw new ArgumentException ("Widget belongs to an unsupported Toolkit", nameof (referenceWidget), ex);
 					}
 				} else if (referenceWidget.Surface.ToolkitEngine != ApplicationContext.Toolkit)
 					throw new ArgumentException ("Widget belongs to an unsupported Toolkit", nameof (referenceWidget));
 			}
+			Show (orientation, refView, positionRect, child);
+		}
 
-			// If the rect is empty, the coordinates of the rect will be ignored.
-			// Set the width and height, for the positioning to function correctly.
-			if (Math.Abs (positionRect.Width) < double.Epsilon)
-				positionRect.Width = referenceWidget.Size.Width;
-			if (Math.Abs (positionRect.Height) < double.Epsilon)
-				positionRect.Height = referenceWidget.Size.Height;
-
+		void Show (Popover.Position orientation, NSView refView, Rectangle positionRect, Widget child)
+		{
 			DestroyPopover ();
 
 			popover = new NSAppearanceCustomizationPopover {
