@@ -65,8 +65,8 @@ namespace Xwt
 
 			protected override void OnBackendCreated ()
 			{
-				base.OnBackendCreated ();
 				((IPopupWindowBackend)Backend).Initialize (this, Parent.Type);
+				base.OnBackendCreated ();
 			}
 		}
 

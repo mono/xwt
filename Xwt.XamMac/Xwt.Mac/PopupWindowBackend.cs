@@ -95,20 +95,28 @@ namespace Xwt.Mac
 			this.ApplicationContext = context;
 			this.frontend = (Window) frontend;
 		}
+
+		bool backendInitiaized;
 		
 		public void Initialize (IWindowFrameEventSink eventSink)
 		{
-			this.eventSink = eventSink;
-			this.isPopup = false;
-			UpdateWindowStyle ();
+			if (!backendInitiaized) {
+				this.eventSink = eventSink;
+				this.isPopup = false;
+				UpdateWindowStyle();
+				backendInitiaized = true;
+			}
 		}
 
 		public void Initialize (IWindowFrameEventSink eventSink, PopupWindow.PopupType windowType)
 		{
-			this.isPopup = true;
-			this.eventSink = eventSink;
-			this.windowType = windowType;
-			UpdateWindowStyle ();
+			if (!backendInitiaized) {
+				this.eventSink = eventSink;
+				this.isPopup = true;
+				this.windowType = windowType;
+				UpdateWindowStyle();
+				backendInitiaized = true;
+			}
 		}
 
 		void UpdateWindowStyle ()
