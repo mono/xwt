@@ -235,6 +235,12 @@ namespace Xwt.GtkBackend
 				else if (Adjustment.Value < currentValue.Ticks)
 					DateTime = currentValue.AddComponent (selectedComponent, -1);
 			}
+
+			public override void Dispose()
+			{
+				Adjustment.ValueChanged -= HandleValueChanged;
+				base.Dispose();
+			}
 			
 			protected override int OnOutput ()
 			{

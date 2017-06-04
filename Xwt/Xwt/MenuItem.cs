@@ -201,6 +201,18 @@ namespace Xwt
 				base.BackendHost.OnAfterEventRemove (MenuItemEvent.Clicked, clicked);
 			}
 		}
+
+		protected override void Dispose(bool release_all)
+		{
+			base.Dispose(release_all);
+
+			if (BackendHost.BackendCreated)
+			{
+				var disposable = Backend as IDisposable;
+				if (disposable != null)
+					disposable.Dispose();
+			}
+		}
 	}
 	
 	public enum MenuItemType

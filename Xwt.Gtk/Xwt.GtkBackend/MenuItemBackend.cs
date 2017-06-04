@@ -32,12 +32,11 @@ using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
-	public class MenuItemBackend: IMenuItemBackend
+	public class MenuItemBackend: IMenuItemBackend, IDisposable
 	{
 		IMenuItemEventSink eventSink;
 		Gtk.MenuItem item;
 		Gtk.Label label;
-		List<MenuItemEvent> enabledEvents;
 		bool changingCheck;
 		ApplicationContext context;
 		
@@ -214,12 +213,33 @@ namespace Xwt.GtkBackend
 			this.context = context;
 		}
 
+		~MenuItemBackend ()
+		{
+			Dispose(false);
+		}
+
+		public void Dispose ()
+		{
+			GC.SuppressFinalize(this);
+			Dispose(true);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (eventList != null) {
+				foreach (var ev in eventList.ToArray ())
+					DisableEvent (ev);
+			}
+			label = null;
+		}
+
+		List<object> eventList;
 		public void EnableEvent (object eventId)
 		{
 			if (eventId is MenuItemEvent) {
-				if (enabledEvents == null)
-					enabledEvents = new List<MenuItemEvent> ();
-				enabledEvents.Add ((MenuItemEvent)eventId);
+				if (eventList == null)
+					eventList = new List<object> ();
+				eventList.Add ((MenuItemEvent)eventId);
 				if ((MenuItemEvent)eventId == MenuItemEvent.Clicked)
 					item.Activated += HandleItemActivated;
 			}
@@ -228,7 +248,7 @@ namespace Xwt.GtkBackend
 		public void DisableEvent (object eventId)
 		{
 			if (eventId is MenuItemEvent) {
-				enabledEvents.Remove ((MenuItemEvent)eventId);
+				eventList?.Remove ((MenuItemEvent)eventId);
 				if ((MenuItemEvent)eventId == MenuItemEvent.Clicked)
 					item.Activated -= HandleItemActivated;
 			}

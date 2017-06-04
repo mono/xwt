@@ -261,6 +261,10 @@ namespace Xwt.GtkBackend
 		protected virtual void Dispose (bool disposing)
 		{
 			if (Widget != null && disposing && !destroyed) {
+				if (eventList != null)
+					foreach (var ev in eventList.ToArray ())
+						DisableEvent (ev);
+				
 				MarkDestroyed (Frontend);
 				Widget.Destroy ();
 			}
@@ -484,7 +488,8 @@ namespace Xwt.GtkBackend
 				eventBox.Add (Widget);
 			}
 		}
-		
+
+		List<object> eventList;
 		public virtual void EnableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent) {
@@ -573,6 +578,9 @@ namespace Xwt.GtkBackend
 				}
 				enabledEvents |= ev;
 			}
+			if (eventList == null)
+				eventList = new List<object> ();
+			eventList.Add (eventId);
 		}
 		
 		public virtual void DisableEvent (object eventId)
@@ -654,6 +662,7 @@ namespace Xwt.GtkBackend
 					EventsRootWidget.Events &= ~Gdk.EventMask.FocusChangeMask;
 				}
 			}
+			eventList?.Remove (eventId);
 		}
 
 		Gdk.Rectangle lastAllocation;
