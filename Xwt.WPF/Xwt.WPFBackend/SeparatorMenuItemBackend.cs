@@ -35,6 +35,32 @@ namespace Xwt.WPFBackend
 		public SeparatorMenuItemBackend()
 			: base (new SWC.Separator())
 		{
+            _visible = true;   
 		}
-	}
+
+        public MenuBackend Parent { get; set; }
+
+        private bool _visible;
+        private int _savedIndex;
+
+        public new bool Visible
+        {
+            get { return _visible; }
+            set { SetVisibilit(value); }
+        }
+
+        private void SetVisibilit(bool value)
+        {
+            _visible = value;
+            if (!_visible)
+            {
+                _savedIndex = Parent.Items.IndexOf(this);
+                Parent.RemoveItem(this);
+            }
+            else
+            {
+                Parent.InsertItem(_savedIndex, this);
+            }
+        }
+    }
 }
