@@ -83,14 +83,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public string Label {
-			get {
-				return widget.Accessible.Name;
-			}
-			set {
-				widget.Accessible.Name = value;
-			}
-		}
+		public string Label { get; set; }
 
 		public Role Role {
 			get {
