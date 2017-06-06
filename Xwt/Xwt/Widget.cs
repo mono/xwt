@@ -36,6 +36,7 @@ using System.Reflection;
 using System.Xaml;
 using System.Linq;
 using Xwt.Motion;
+using Xwt.Accessibility;
 
 namespace Xwt
 {
@@ -319,6 +320,16 @@ namespace Xwt
 					foreach (var c in DirectChildren)
 						c.Dispose ();
 				}
+			}
+		}
+
+		Accessible accessible;
+		public Accessible Accessible {
+			get {
+				if (accessible == null) {
+					accessible = new Accessible (this);
+				}
+				return accessible;
 			}
 		}
 		

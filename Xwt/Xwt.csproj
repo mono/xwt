@@ -349,6 +349,9 @@
     <Compile Include="Xwt.Backends\IToggleCellViewFrontend.cs" />
     <Compile Include="Xwt.Backends\IDispatcherBackend.cs" />
     <Compile Include="Xwt\ITranslationCatalog.cs" />
+    <Compile Include="Xwt.Accessibility\Accessible.cs" />
+    <Compile Include="Xwt.Accessibility\IAccessibleBackend.cs" />
+    <Compile Include="Xwt.Accessibility\Role.cs" />
     <Compile Include="Xwt.Backends\IPopupWindowBackend.cs" />
     <Compile Include="Xwt\UtilityWindow.cs" />
     <Compile Include="Xwt.Backends\IUtilityWindowBackend.cs" />
@@ -367,4 +370,7 @@
   </ProjectExtensions>
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Xwt.Accessibility\" />
+  </ItemGroup>
 </Project>

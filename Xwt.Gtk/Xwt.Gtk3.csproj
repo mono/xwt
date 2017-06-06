@@ -160,6 +160,7 @@
     <Compile Include="Xwt.GtkBackend\SelectFontDialogBackend.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk3FontChooserDialog.cs" />
     <Compile Include="Xwt.GtkBackend\FontSelectorBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\AccessibleBackend.cs" />
     <Compile Include="Xwt.GtkBackend\PopupWindowBackend.cs" />
     <Compile Include="Xwt.GtkBackend\UtilityWindowBackend.cs" />
   </ItemGroup>
