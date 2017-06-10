@@ -27,6 +27,18 @@ using System;
 using Xwt.Accessibility;
 using Xwt.Backends;
 
+#if XWT_GTK3
+using AtkComponent = Atk.IComponent;
+using AtkValue = Atk.IValue;
+using AtkText = Atk.IText;
+using AtkEditableText = Atk.IEditableText;
+#else
+using AtkComponent = Atk.Component;
+using AtkValue = Atk.Value;
+using AtkText = Atk.Text;
+using AtkEditableText = Atk.EditableText;
+#endif
+
 namespace Xwt.GtkBackend
 {
 	public class AccessibleBackend : IAccessibleBackend
@@ -66,11 +78,11 @@ namespace Xwt.GtkBackend
 		public Rectangle Bounds {
 			get {
 				int x = 0, y = 0, w = 0, h = 0;
-				(widget.Accessible as Atk.Component)?.GetExtents (out x, out y, out w, out h, Atk.CoordType.Screen);
+				(widget.Accessible as AtkComponent)?.GetExtents (out x, out y, out w, out h, Atk.CoordType.Screen);
 				return new Rectangle (x, y, w, h);
 			}
 			set {
-				(widget.Accessible as Atk.Component)?.SetExtents ((int)value.X, (int)value.Y, (int)value.Width, (int)value.Height, Atk.CoordType.Screen);
+				(widget.Accessible as AtkComponent)?.SetExtents ((int)value.X, (int)value.Y, (int)value.Width, (int)value.Height, Atk.CoordType.Screen);
 			}
 		}
 
@@ -101,23 +113,23 @@ namespace Xwt.GtkBackend
 
 		public string Value {
 			get {
-				if (widget.Accessible is Atk.Value) {
+				if (widget.Accessible is AtkValue) {
 					GLib.Value val = GLib.Value.Empty;
-					(widget.Accessible as Atk.Value)?.GetCurrentValue (ref val);
+					(widget.Accessible as AtkValue)?.GetCurrentValue (ref val);
 					return val.Val.ToString ();
 				}
-				if (widget.Accessible is Atk.Text) {
-					var atkText = (widget.Accessible as Atk.Text);
+				if (widget.Accessible is AtkText) {
+					var atkText = (widget.Accessible as AtkText);
 					return atkText?.GetText (0, atkText.CharacterCount - 1);
 				}
 				return null;
 			}
 			set {
-				if (widget.Accessible is Atk.Value) {
+				if (widget.Accessible is AtkValue) {
 					GLib.Value val = GLib.Value.Empty;
-					(widget.Accessible as Atk.Value)?.SetCurrentValue (new GLib.Value (value));
-				} else if (widget.Accessible is Atk.EditableText) {
-					var atkText = (widget.Accessible as Atk.EditableText);
+					(widget.Accessible as AtkValue)?.SetCurrentValue (new GLib.Value (value));
+				} else if (widget.Accessible is AtkEditableText) {
+					var atkText = (widget.Accessible as AtkEditableText);
 					atkText.TextContents = value;
 				}
 			}
