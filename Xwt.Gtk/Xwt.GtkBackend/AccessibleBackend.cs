@@ -43,7 +43,7 @@ namespace Xwt.GtkBackend
 {
 	public class AccessibleBackend : IAccessibleBackend
 	{
-		Gtk.Widget widget;
+		protected Gtk.Widget widget;
 		IAccessibleEventSink eventSink;
 		ApplicationContext context;
 
@@ -95,7 +95,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public string Label { get; set; }
+		public virtual string Label { get; set; }
 
 		public Role Role {
 			get {

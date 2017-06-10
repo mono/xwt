@@ -42,6 +42,7 @@ namespace Xwt.Gtk.Mac
 			toolit.RegisterBackend <IOpenFileDialogBackend, GtkMacOpenFileDialogBackend> ();
 			toolit.RegisterBackend <ISaveFileDialogBackend, GtkMacSaveFileDialogBackend> ();
 			toolit.RegisterBackend <ISelectFolderDialogBackend, GtkMacSelectFolderBackend> ();
+			toolit.RegisterBackend <IAccessibleBackend, GtkMacAccessibleBackend> ();
 		}
 
 		public override Type GetBackendImplementationType (Type backendType)
@@ -49,7 +50,8 @@ namespace Xwt.Gtk.Mac
 			if (backendType == typeof (IOpenFileDialogBackend) ||
 			    backendType == typeof (ISaveFileDialogBackend) ||
 			    backendType == typeof (ISelectFolderDialogBackend) ||
-			    backendType == typeof (IWebViewBackend))
+			    backendType == typeof (IWebViewBackend) ||
+			    backendType == typeof (IAccessibleBackend))
 				Xwt.Mac.NSApplicationInitializer.Initialize ();
 			return base.GetBackendImplementationType (backendType);
 		}
