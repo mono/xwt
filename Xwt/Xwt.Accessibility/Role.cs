@@ -42,6 +42,7 @@ namespace Xwt.Accessibility
 		Custom,
 		//Dialog,
 		Disclosure, // ATK_ROLE_ARROW
+		Filler,
 		//Grid,
 		Group, //ATK_ROLE_PANEL
 		Image,

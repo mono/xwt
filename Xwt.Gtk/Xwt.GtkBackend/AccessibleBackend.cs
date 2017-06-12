@@ -97,6 +97,15 @@ namespace Xwt.GtkBackend
 
 		public virtual string Label { get; set; }
 
+		public string Identifier {
+			get {
+				return widget.Accessible.Name;
+			}
+			set {
+				widget.Accessible.Name = value;
+			}
+		}
+
 		public Role Role {
 			get {
 				return widget.Accessible.Role.ToXwtRole ();

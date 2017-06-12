@@ -102,6 +102,15 @@ namespace Xwt.Accessibility
 			}
 		}
 
+		public string Identifier {
+			get {
+				return Backend.Identifier;
+			}
+			set {
+				Backend.Identifier = value;
+			}
+		}
+
 		public string Label {
 			get {
 				return Backend.Label;
@@ -190,6 +199,8 @@ namespace Xwt.Accessibility
 		public Rectangle Bounds { get; set; }
 
 		public string Description { get; set; }
+
+		public string Identifier { get; set; }
 
 		public string Label { get; set; }
 

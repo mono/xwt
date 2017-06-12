@@ -73,6 +73,15 @@ namespace Xwt.Mac
 			return res;
 		}
 
+		string IAccessibleBackend.Identifier {
+			get {
+				return widget.AccessibilityIdentifier;
+			}
+			set {
+				widget.AccessibilityIdentifier = value;
+			}
+		}
+
 		string IAccessibleBackend.Label {
 			get {
 				return widget.AccessibilityLabel;
@@ -135,8 +144,13 @@ namespace Xwt.Mac
 				return Util.GetXwtRole (widget);
 			}
 			set {
-				widget.AccessibilityRole = value.GetMacRole ();
-				widget.AccessibilitySubrole = value.GetMacSubrole ();
+				if (value == Role.Filler) {
+					widget.AccessibilityElement = false;
+				} else {
+					widget.AccessibilityElement = true;
+					widget.AccessibilityRole = value.GetMacRole ();
+					widget.AccessibilitySubrole = value.GetMacSubrole ();
+				}
 			}
 		}
 
