@@ -36,6 +36,8 @@ namespace Xwt.Backends
 
 		bool IsAccessible { get; set; }
 
+		string Identifier { get; set; }
+
 		string Label { get; set; }
 
 		string Title { get; set; }

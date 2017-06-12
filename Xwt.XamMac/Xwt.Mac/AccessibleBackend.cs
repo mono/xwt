@@ -73,6 +73,15 @@ namespace Xwt.Mac
 			return res;
 		}
 
+		string IAccessibleBackend.Identifier {
+			get {
+				return widget.AccessibilityIdentifier;
+			}
+			set {
+				widget.AccessibilityIdentifier = value;
+			}
+		}
+
 		string IAccessibleBackend.Label {
 			get {
 				return widget.AccessibilityLabel;
