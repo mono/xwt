@@ -135,8 +135,13 @@ namespace Xwt.Mac
 				return Util.GetXwtRole (widget);
 			}
 			set {
-				widget.AccessibilityRole = value.GetMacRole ();
-				widget.AccessibilitySubrole = value.GetMacSubrole ();
+				if (value == Role.Filler) {
+					widget.AccessibilityElement = false;
+				} else {
+					widget.AccessibilityElement = true;
+					widget.AccessibilityRole = value.GetMacRole ();
+					widget.AccessibilitySubrole = value.GetMacSubrole ();
+				}
 			}
 		}
 
