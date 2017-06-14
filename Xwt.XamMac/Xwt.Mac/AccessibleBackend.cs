@@ -129,6 +129,16 @@ namespace Xwt.Mac
 			}
 		}
 
+		Uri IAccessibleBackend.Uri {
+			get {
+				return new Uri (widget.AccessibilityUrl.AbsoluteString);
+			}
+
+			set {
+				widget.AccessibilityUrl = new NSUrl (value.AbsoluteUri);
+			}
+		}
+
 		Rectangle IAccessibleBackend.Bounds {
 			get {
 				return widget.AccessibilityFrame.ToXwtRect ();
