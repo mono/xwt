@@ -145,9 +145,9 @@ namespace Xwt
 		public static void Run ()
 		{
 			if (XwtSynchronizationContext.AutoInstall)
-			if (SynchronizationContext.Current == null || 
-			    (!((engine.IsGuest) || (SynchronizationContext.Current is XwtSynchronizationContext))))
-                SynchronizationContext.SetSynchronizationContext (toolkit.SynchronizationContext);
+			if (SynchronizationContext.Current == null ||
+				(!((engine.IsGuest) || (SynchronizationContext.Current is XwtSynchronizationContext))))
+					SynchronizationContext.SetSynchronizationContext (toolkit.SynchronizationContext);
 
 			toolkit.InvokePlatformCode (engine.RunApplication);
 		}
