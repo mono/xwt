@@ -29,6 +29,7 @@ using Xwt.Drawing;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Xwt
 {
@@ -43,6 +44,7 @@ namespace Xwt
 		XwtTaskScheduler scheduler;
 		ToolkitType toolkitType;
 		ToolkitDefaults defaults;
+        XwtSynchronizationContext synchronizationContext;
 
 		int inUserCode;
 		Queue<Action> exitActions = new Queue<Action> ();
@@ -151,9 +153,18 @@ namespace Xwt
 
 		private Toolkit ()
 		{
-			context = new ApplicationContext (this);
+            synchronizationContext = new XwtSynchronizationContext (this);
+            context = new ApplicationContext (this);
 			scheduler = new XwtTaskScheduler (this);
 		}
+
+        /// <summary>
+        /// Gets a synchronization context for this toolkit.
+        /// </summary>
+        /// <value>The synchronization context.</value>
+        public XwtSynchronizationContext SynchronizationContext {
+            get { return synchronizationContext; }
+        }
 
 		/// <summary>
 		/// Gets or sets the type of the toolkit.
@@ -410,6 +421,21 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Switches the current context to the context of this toolkit
+		/// </summary>
+		/// <returns>The previous context, or null if the context did not change.</returns>
+		SynchronizationContext SwitchContext ()
+		{
+			var current = System.Threading.SynchronizationContext.Current;
+			if ((current as XwtSynchronizationContext)?.TargetToolkit == this)
+				return null;
+			else {
+				System.Threading.SynchronizationContext.SetSynchronizationContext (SynchronizationContext);
+				return current;
+			}
+		}
+
+		/// <summary>
 		/// Invokes the specified action using this toolkit.
 		/// </summary>
 		/// <param name="a">The action to invoke in the context of this toolkit.</param>
@@ -423,6 +449,8 @@ namespace Xwt
 		public bool Invoke (Action a)
 		{
 			var oldEngine = currentEngine;
+			SynchronizationContext oldContext = SwitchContext ();
+
 			try {
 				currentEngine = this;
 				EnterUserCode ();
@@ -434,27 +462,71 @@ namespace Xwt
 				return false;
 			} finally {
 				currentEngine = oldEngine;
+                if (oldContext != null)
+                    System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
+            }
+		}
+
+		public T Invoke<T> (Func<T> func)
+		{
+			var oldEngine = currentEngine;
+			SynchronizationContext oldContext = SwitchContext ();
+
+			try {
+				currentEngine = this;
+				EnterUserCode ();
+				var res = func ();
+				ExitUserCode (null);
+				return res;
+			} catch (Exception ex) {
+				ExitUserCode (ex);
+				return default (T);
+			} finally {
+				currentEngine = oldEngine;
+				if (oldContext != null)
+					System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
 			}
 		}
 
 		internal void InvokeAndThrow (Action a)
 		{
 			var oldEngine = currentEngine;
+			SynchronizationContext oldContext = SwitchContext ();
+
 			try {
 				currentEngine = this;
-				EnterUserCode();
-				a();
+				EnterUserCode ();
+				a ();
 			} finally {
-				ExitUserCode(null);
+				ExitUserCode (null);
 				currentEngine = oldEngine;
+				if (oldContext != null)
+					System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
 			}
 		}
-		
-		/// <summary>
-		/// Invokes an action after the user code has been processed.
-		/// </summary>
-		/// <param name="a">The action to invoke after processing user code.</param>
-		internal void InvokePlatformCode (Action a)
+
+		internal T InvokeAndThrow<T> (Func<T> func)
+		{
+			var oldEngine = currentEngine;
+			SynchronizationContext oldContext = SwitchContext ();
+
+			try {
+				currentEngine = this;
+				EnterUserCode ();
+				return func ();
+			} finally {
+				ExitUserCode (null);
+				currentEngine = oldEngine;
+				if (oldContext != null)
+					System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
+			}
+		}
+
+        /// <summary>
+        /// Invokes an action after the user code has been processed.
+        /// </summary>
+        /// <param name="a">The action to invoke after processing user code.</param>
+        internal void InvokePlatformCode (Action a)
 		{
 			int prevCount = inUserCode;
 			try {
