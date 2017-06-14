@@ -147,6 +147,15 @@ namespace Xwt.Accessibility
 			}
 		}
 
+		public Uri Uri {
+			get {
+				return Backend.Uri;
+			}
+			set {
+				Backend.Uri = value;
+			}
+		}
+
 		public Rectangle Bounds {
 			get {
 				return Backend.Bounds;
@@ -211,6 +220,8 @@ namespace Xwt.Accessibility
 		public string Title { get; set; }
 
 		public string Value { get; set; }
+
+		public Uri Uri { get; set; }
 
 		public bool IsAccessible { get; set; }
 

@@ -46,6 +46,8 @@ namespace Xwt.Backends
 
 		string Value { get; set; }
 
+		Uri Uri { get; set; }
+
 		Rectangle Bounds { get; set; }
 
 		Role Role { get; set; }
