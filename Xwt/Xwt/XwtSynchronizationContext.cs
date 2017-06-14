@@ -25,11 +25,14 @@
 // THE SOFTWARE.
 using System;
 using System.Threading;
+using Xwt.Backends;
 
 namespace Xwt
 {
 	public class XwtSynchronizationContext : SynchronizationContext, IDisposable
 	{
+		Toolkit toolkit;
+
 		static SynchronizationContext previous_context;
 
 		static XwtSynchronizationContext ()
@@ -43,9 +46,22 @@ namespace Xwt
 			set;
 		}
 
+		public XwtSynchronizationContext ()
+		{
+		}
+
+		internal XwtSynchronizationContext (Toolkit toolkit)
+		{
+			this.toolkit = toolkit;
+		}
+
+		internal Toolkit TargetToolkit {
+			get { return toolkit; }
+		}
+
 		public override void Post (SendOrPostCallback d, object state)
 		{
-			Application.Invoke (() => d.Invoke (state));
+			Application.Invoke (() => d.Invoke (state), toolkit);
 		}
 
 		public override void Send (SendOrPostCallback d, object state)
@@ -62,7 +78,7 @@ namespace Xwt
 						Thread.MemoryBarrier ();
 						evt.Set ();
 					}
-				});
+				}, toolkit);
 				evt.Wait ();
 				if (exception != null)
 					throw exception;
@@ -81,6 +97,11 @@ namespace Xwt
 
 		public void Dispose ()
 		{
+		}
+
+		public override SynchronizationContext CreateCopy ()
+		{
+			return new XwtSynchronizationContext (toolkit);
 		}
 	}
 }
