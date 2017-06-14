@@ -44,7 +44,7 @@ namespace Xwt
 		XwtTaskScheduler scheduler;
 		ToolkitType toolkitType;
 		ToolkitDefaults defaults;
-        XwtSynchronizationContext synchronizationContext;
+		XwtSynchronizationContext synchronizationContext;
 
 		int inUserCode;
 		Queue<Action> exitActions = new Queue<Action> ();
@@ -153,18 +153,18 @@ namespace Xwt
 
 		private Toolkit ()
 		{
-            synchronizationContext = new XwtSynchronizationContext (this);
-            context = new ApplicationContext (this);
+			synchronizationContext = new XwtSynchronizationContext (this);
+			context = new ApplicationContext (this);
 			scheduler = new XwtTaskScheduler (this);
 		}
 
-        /// <summary>
-        /// Gets a synchronization context for this toolkit.
-        /// </summary>
-        /// <value>The synchronization context.</value>
-        public XwtSynchronizationContext SynchronizationContext {
-            get { return synchronizationContext; }
-        }
+		/// <summary>
+		/// Gets a synchronization context for this toolkit.
+		/// </summary>
+		/// <value>The synchronization context.</value>
+		public XwtSynchronizationContext SynchronizationContext {
+			get { return synchronizationContext; }
+		}
 
 		/// <summary>
 		/// Gets or sets the type of the toolkit.
@@ -462,9 +462,9 @@ namespace Xwt
 				return false;
 			} finally {
 				currentEngine = oldEngine;
-                if (oldContext != null)
-                    System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
-            }
+				if (oldContext != null)
+					System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
+			}
 		}
 
 		public T Invoke<T> (Func<T> func)
@@ -522,11 +522,11 @@ namespace Xwt
 			}
 		}
 
-        /// <summary>
-        /// Invokes an action after the user code has been processed.
-        /// </summary>
-        /// <param name="a">The action to invoke after processing user code.</param>
-        internal void InvokePlatformCode (Action a)
+		/// <summary>
+		/// Invokes an action after the user code has been processed.
+		/// </summary>
+		/// <param name="a">The action to invoke after processing user code.</param>
+		internal void InvokePlatformCode (Action a)
 		{
 			int prevCount = inUserCode;
 			try {
