@@ -144,6 +144,8 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public virtual Uri Uri { get; set; }
+
 		public bool IsAccessible {
 			get {
 				return widget.Accessible?.Role != Atk.Role.Invalid;

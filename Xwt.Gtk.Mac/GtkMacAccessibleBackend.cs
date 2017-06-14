@@ -63,5 +63,25 @@ namespace Xwt.Gtk.Mac
 				nsa.AccessibilityLabel = value;
 			}
 		}
+
+		public override Uri Uri {
+			get {
+				var nsa = GetNSAccessibilityElement (widget.Accessible);
+				if (nsa == null) {
+					return null;
+				}
+
+				var url = nsa.AccessibilityUrl;
+				return new Uri (url.AbsoluteString);
+			}
+			set {
+				var nsa = GetNSAccessibilityElement (widget.Accessible);
+				if (nsa == null) {
+					return;
+				}
+
+				nsa.AccessibilityUrl = new NSUrl (value.AbsoluteUri);
+			}
+		}
 	}
 }
