@@ -250,7 +250,7 @@ namespace Xwt.Drawing
 				installedFonts.Add("____FakeTestFont 72", "Arial");
 				installedFonts.Add ("____FakeTestFont Rounded MT Bold", "Arial");
 				// HACK: add font mapping for patched pango SF Font support
-				installedFonts.Add ("-apple-system-font", ".AppleSystemUIFont");
+				installedFonts ["-apple-system-font"] = ".AppleSystemUIFont";
 			}
 		}
 
