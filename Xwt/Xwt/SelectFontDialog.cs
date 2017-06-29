@@ -95,7 +95,7 @@ namespace Xwt
 				backend.SelectedFont = SelectedFont;
 				backend.Title = Title;
 				backend.PreviewText = PreviewText;
-				return backend.Run ((IWindowFrameBackend)Toolkit.CurrentEngine.GetSafeBackend (parentWindow));
+				return backend.Run ((IWindowFrameBackend)Toolkit.GetBackend (parentWindow));
 			} catch (Exception ex) {
 				Console.WriteLine (ex);
 				return false;
