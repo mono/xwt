@@ -55,8 +55,8 @@ namespace Xwt.GtkBackend
 			if (supportsAlpha)
 				dlg.ColorSelection.CurrentAlpha = (ushort) (((double)ushort.MaxValue) * color.Alpha);
 		
-			var p = (WindowFrameBackend) parent;
-			int result = MessageService.RunCustomDialog (dlg, p != null ? p.Window : null);
+			var p = parent != null ? Toolkit.CurrentEngine.GetNativeWindow (parent) as Gtk.Window : null;
+			int result = MessageService.RunCustomDialog (dlg, p);
 			
 			if (result == (int) Gtk.ResponseType.Ok) {
 				color = dlg.ColorSelection.CurrentColor.ToXwtValue ();

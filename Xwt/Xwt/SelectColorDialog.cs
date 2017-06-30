@@ -89,7 +89,7 @@ namespace Xwt
 			try {
 				if (color != Colors.Transparent)
 					backend.Color = color;
-				return backend.Run ((IWindowFrameBackend)Toolkit.CurrentEngine.GetSafeBackend (parentWindow), title, supportsAlpha);
+				return backend.Run ((IWindowFrameBackend)Toolkit.GetBackend (parentWindow), title, supportsAlpha);
 			} finally {
 				color = backend.Color;
 				backend.Dispose ();

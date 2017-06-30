@@ -78,8 +78,8 @@ namespace Xwt.GtkBackend
 			if (SelectedFont != null)
 				dlg.SetFontName (SelectedFont.ToString ());
 
-			var p = (WindowFrameBackend)parent;
-			int result = MessageService.RunCustomDialog (dlg, p != null ? p.Window : null);
+			var p = parent != null ? Toolkit.CurrentEngine.GetNativeWindow (parent) as Gtk.Window : null;
+			int result = MessageService.RunCustomDialog (dlg, p);
 
 			if (result == (int)Gtk.ResponseType.Ok) {
 				SelectedFont = Font.FromName (dlg.FontName);
