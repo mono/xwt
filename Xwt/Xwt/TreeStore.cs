@@ -447,5 +447,10 @@ namespace Xwt
 		public void DisableEvent (object eventId)
 		{
 		}
+		
+        protected virtual void OnNodesReordered(ListRowOrderEventArgs e)
+        {
+            if (NodesReordered != null) System.Diagnostics.Debug.WriteLine($"No support for {nameof(NodesReordered)} events from {nameof(DefaultTreeStoreBackend)}, sorry.");
+        }
 	}
 }
