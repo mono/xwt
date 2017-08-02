@@ -57,5 +57,23 @@ namespace Xwt.Mac
 
 		[DllImport (LIBOBJC_DYLIB, EntryPoint="objc_msgSend")]
 		public static extern void void_objc_msgSend_bool (IntPtr handle, IntPtr sel, bool a1);
+
+		//[DllImport (LIBOBJC_DYLIB, EntryPoint = "objc_msgSend")]
+		//public static extern long Int64_objc_msgSend (IntPtr receiver, IntPtr selector);
+
+		//[DllImport (LIBOBJC_DYLIB, EntryPoint = "objc_msgSend")]
+		//public static extern int int_objc_msgSend (IntPtr receiver, IntPtr selector);
+
+		[DllImport (LIBOBJC_DYLIB, EntryPoint = "objc_msgSend")]
+		public static extern void void_objc_msgSend_int (IntPtr receiver, IntPtr selector, int arg1);
+
+		[DllImport (LIBOBJC_DYLIB, EntryPoint = "objc_msgSend")]
+		public static extern void void_objc_msgSend_Int64 (IntPtr receiver, IntPtr selector, long arg1);
+
+		//[DllImport (LIBOBJC_DYLIB, EntryPoint = "objc_msgSendSuper")]
+		//public static extern void void_objc_msgSendSuper_int (IntPtr receiver, IntPtr selector, int arg1);
+
+		//[DllImport (LIBOBJC_DYLIB, EntryPoint = "objc_msgSendSuper")]
+		//public static extern void void_objc_msgSendSuper_Int64 (IntPtr receiver, IntPtr selector, long arg1);
 	}
 }

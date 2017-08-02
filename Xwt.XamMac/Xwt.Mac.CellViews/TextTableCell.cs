@@ -24,25 +24,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
-using System;
 using AppKit;
+using Foundation;
 using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	class TextTableCell: NSCell, ICellRenderer
+	class TextTableCell : NSTextField, ICellRenderer
 	{
-		bool visible = true;
-
-
-		public TextTableCell (): base ("")
+		public TextTableCell ()
 		{
-			Wraps = false;
-		}
-		
-		public TextTableCell (IntPtr p): base (p)
-		{
+			Editable = false;
+			Bezeled = false;
+			DrawsBackground = false;
 		}
 		
 		ITextCellViewFrontend Frontend {
@@ -59,20 +53,18 @@ namespace Xwt.Mac
 				AttributedStringValue = FormattedText.FromMarkup (Frontend.Markup).ToAttributedString ();
 			else
 				StringValue = Frontend.Text ?? "";
-			visible = Frontend.Visible;
+			Hidden = !Frontend.Visible;
 		}
-
-		public override CoreGraphics.CGSize CellSizeForBounds (CoreGraphics.CGRect bounds)
-		{
-			if (visible)
-				return base.CellSizeForBounds (bounds);
-			return CoreGraphics.CGSize.Empty;
-		}
-
-		public override void DrawInteriorWithFrame (CoreGraphics.CGRect cellFrame, NSView inView)
-		{
-			if (visible)
-				base.DrawInteriorWithFrame (cellFrame, inView);
+		
+		public virtual NSBackgroundStyle BackgroundStyle {
+			[Export ("backgroundStyle")]
+			get {
+				return Cell.BackgroundStyle;
+			}
+			[Export ("setBackgroundStyle:")]
+			set {
+				Cell.BackgroundStyle = value;
+			}
 		}
 
 		public void CopyFrom (object other)

@@ -33,15 +33,22 @@ namespace Xwt.Mac
 {
 	static class CellUtil
 	{
-		public static NSCell CreateCell (ApplicationContext context, NSTableView table, ICellSource source, ICollection<CellView> cells, int column)
+		public static CompositeCell CreateCellView (ApplicationContext context, NSTableView table, ICellSource source, ICollection<CellView> cells, int column)
 		{
-			CompositeCell c = new CompositeCell (context, Orientation.Horizontal, source);
+			CompositeCell c = new CompositeCell (context, source);
 			foreach (var cell in cells)
-				c.AddCell ((ICellRenderer) CreateCell (table, c, cell, column));
+				c.AddCell ((ICellRenderer) CreateCellView (table, cell, column));
 			return c;
 		}
+
+		public static void UpdateCellView (CompositeCell cellView, NSTableView table, ICollection<CellView> cells, int column)
+		{
+			cellView.ClearCells ();
+			foreach (var cell in cells)
+				cellView.AddCell ((ICellRenderer) CreateCellView (table, cell, column));
+		}
 		
-		static NSCell CreateCell (NSTableView table, CompositeCell source, CellView cell, int column)
+		static NSView CreateCellView (NSTableView table, CellView cell, int column)
 		{
 			ICellRenderer cr = null;
 
@@ -57,10 +64,21 @@ namespace Xwt.Mac
 				cr = new RadioButtonTableCell ();
 			else
 				throw new NotImplementedException ();
-			cr.Backend = new CellViewBackend (table, column);
 			ICellViewFrontend fr = cell;
-			fr.AttachBackend (null, cr.Backend);
-			return (NSCell)cr;
+			CellViewBackend backend = null;
+			try {
+				//FIXME: although the cell views are based on XwtComponent, they don't implement
+				//       the dynamic registration based backend creation and there is no way to
+				//       identify whether the frontend has already a valid backend.
+				backend = cell.GetBackend () as CellViewBackend;
+			} catch (InvalidOperationException) { }
+
+			if (backend == null) {
+				cr.Backend = new CellViewBackend (table, column);
+				fr.AttachBackend (null, cr.Backend);
+			} else
+				cr.Backend = backend;
+			return (NSView)cr;
 		}
 	}
 }

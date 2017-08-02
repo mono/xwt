@@ -25,27 +25,18 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.AppKit;
-#else
 using AppKit;
-#endif
 
 namespace Xwt.Mac
 {
-	class RadioButtonTableCell: NSButtonCell, ICellRenderer
+	class RadioButtonTableCell: NSButton, ICellRenderer
 	{
-		bool visible = true;
-
 		public RadioButtonTableCell ()
 		{
 			SetButtonType (NSButtonType.Radio);
 			AllowsMixedState = false;
 			Activated += HandleActivated;
-			Title = "";
+			Title = string.Empty;
 		}
 
 		public override NSCellStateValue State {
@@ -53,30 +44,19 @@ namespace Xwt.Mac
 				return base.State;
 			}
 			set {
-				if (base.State != value)
-					stateChanging = true;
-				base.State = value;
+				// don't let Cocoa set the state for us
 			}
 		}
 
-		bool stateChanging;
 		void HandleActivated (object sender, EventArgs e)
 		{
-			if (State == NSCellStateValue.On && stateChanging) {
-				var cellView = Frontend;
-				CellContainer.SetCurrentEventRow ();
-				Frontend.Load (CellContainer);
-				if (cellView.Editable && !cellView.RaiseToggled ()) {
-					if (cellView.ActiveField != null)
-						CellContainer.SetValue (cellView.ActiveField, State != NSCellStateValue.Off);
-				} else
-					base.State = NSCellStateValue.Off;
+			Backend.Load (this);
+			var cellView = Frontend;
+			CellContainer.SetCurrentEventRow ();
+			if (!cellView.RaiseToggled ()) {
+				if (cellView.ActiveField != null)
+					CellContainer.SetValue (cellView.ActiveField, true);
 			}
-			stateChanging = false;
-		}
-
-		public RadioButtonTableCell (IntPtr p): base (p)
-		{
 		}
 
 		IRadioButtonCellViewFrontend Frontend {
@@ -91,21 +71,8 @@ namespace Xwt.Mac
 		{
 			var cellView = Frontend;
 			base.State = cellView.Active ? NSCellStateValue.On : NSCellStateValue.Off;
-			Editable = cellView.Editable;
-			visible = cellView.Visible;
-		}
-
-		public override CoreGraphics.CGSize CellSizeForBounds (CoreGraphics.CGRect bounds)
-		{
-			if (visible)
-				return base.CellSizeForBounds (bounds);
-			return CoreGraphics.CGSize.Empty;
-		}
-
-		public override void DrawInteriorWithFrame (CoreGraphics.CGRect cellFrame, NSView inView)
-		{
-			if (visible)
-				base.DrawInteriorWithFrame (cellFrame, inView);
+			Enabled = cellView.Editable;
+			Hidden = !cellView.Visible;
 		}
 
 		public void CopyFrom (object other)

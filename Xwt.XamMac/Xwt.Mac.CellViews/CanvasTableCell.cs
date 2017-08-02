@@ -30,19 +30,11 @@ using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	class CanvasTableCell: NSCell, ICellRenderer
+	class CanvasTableCell: NSView, ICellRenderer
 	{
-		bool visible = true;
-
-		public CanvasTableCell (IntPtr p): base (p)
-		{
-		}
-
-		public CanvasTableCell ()
-		{
-		}
-
 		public CompositeCell CellContainer { get; set; }
+
+		public CellViewBackend Backend { get; set; }
 
 		public void CopyFrom (object other)
 		{
@@ -52,44 +44,38 @@ namespace Xwt.Mac
 
 		public void Fill ()
 		{
-			visible = Frontend.Visible;
+			Hidden = !Frontend.Visible;
 		}
 		
 		ICanvasCellViewFrontend Frontend {
 			get { return (ICanvasCellViewFrontend) Backend.Frontend; }
 		}
 
-		public CellViewBackend Backend { get; set; }
-
-
-		public override CGSize CellSizeForBounds (CGRect bounds)
-		{
-			if (!visible)
-				return CGSize.Empty;
-			var size = new CGSize ();
-			Frontend.ApplicationContext.InvokeUserCode (delegate {
-				var s = Frontend.GetRequiredSize ();
-				size = new CGSize ((nfloat)s.Width, (nfloat)s.Height);
-			});
-			if (size.Width > bounds.Width)
-				size.Width = bounds.Width;
-			if (size.Height > bounds.Height)
-				size.Height = bounds.Height;
-			return size;
+		public override CGSize FittingSize {
+			get {
+				var size = CGSize.Empty;
+				Frontend.ApplicationContext.InvokeUserCode (delegate {
+					var s = Frontend.GetRequiredSize ();
+					size = new CGSize ((nfloat)s.Width, (nfloat)s.Height);
+				});
+				return size;
+			}
 		}
 
-		public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
+		public override void DrawRect (CGRect dirtyRect)
 		{
-			if (!visible)
-				return;
-			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
-			
-			var backend = new CGContextBackend {
-				Context = ctx,
-				InverseViewTransform = ctx.GetCTM ().Invert ()
-			};
+			Backend.Load (this);
 			Frontend.ApplicationContext.InvokeUserCode (delegate {
-				Frontend.Draw (backend, new Rectangle (cellFrame.X, cellFrame.Y, cellFrame.Width, cellFrame.Height));
+				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+
+				var backend = new CGContextBackend {
+					Context = ctx,
+					InverseViewTransform = ctx.GetCTM ().Invert ()
+				};
+				var bounds = Backend.CellBounds;
+				backend.Context.ClipToRect (dirtyRect);
+				backend.Context.TranslateCTM ((nfloat)(-bounds.X), (nfloat)(-bounds.Y));
+				Frontend.Draw (backend, new Rectangle (bounds.X, bounds.Y, bounds.Width, bounds.Height));
 			});
 		}
 	}

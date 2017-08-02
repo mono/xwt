@@ -78,22 +78,13 @@ namespace Xwt.Mac
 		{
 			var column = IndexOfColumn (tableColumn);
 
-			var s = tableColumn.HeaderCell.CellSize;
+			var contentWidth = tableColumn.HeaderCell.CellSize.Width;
 			if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.UserResizingMask)) {
-				for (int i = 0; i < base.RowCount; i++) {
-					var cell = GetCell (column, i);
-					if (column == 0)
-					{ // first column contains expanders
-						var f = GetCellFrame (column, i);
-						s.Width = (nfloat)Math.Max (s.Width, f.X + cell.CellSize.Width);
-					}
-					else
-						s.Width = (nfloat)Math.Max (s.Width, cell.CellSize.Width);
-				}
+				contentWidth = Delegate.GetSizeToFitColumnWidth (this, column);
 				if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing))
-					tableColumn.Width = s.Width;
+					tableColumn.Width = contentWidth;
 			}
-			tableColumn.MinWidth = s.Width;
+			tableColumn.MinWidth = contentWidth;
 		}
 
 		nint IndexOfColumn (NSTableColumn tableColumn)

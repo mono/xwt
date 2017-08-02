@@ -28,6 +28,8 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using AppKit;
 using CoreGraphics;
 using Foundation;
@@ -37,12 +39,56 @@ namespace Xwt.Mac
 {
 	public class ListViewBackend: TableViewBackend<NSTableView, IListViewEventSink>, IListViewBackend
 	{
+		class ListDelegate: NSTableViewDelegate
+		{
+			public ListViewBackend Backend;
+			
+			public override nfloat GetRowHeight (NSTableView tableView, nint row)
+			{
+				// GetView() and GetRowView() can't be used here, hence we use cached
+				// sizes calculated by the backend or calcuate the height using the template view
+				nfloat height = Backend.RowHeights[(int)row];
+				if (height <= -1)
+					height = Backend.RowHeights [(int)row] = Backend.CalcRowHeight (row, false);
+				return height;
+			}
+
+			public override NSView GetViewForItem (NSTableView tableView, NSTableColumn tableColumn, nint row)
+			{
+				var col = tableColumn as TableColumn;
+				var cell = tableView.MakeView (tableColumn.Identifier, this);
+				if (cell == null)
+					cell = col.CreateNewView ();
+				return cell;
+			}
+
+			public override nfloat GetSizeToFitColumnWidth (NSTableView tableView, nint column)
+			{
+				var tableColumn = Backend.Columns[(int)column] as TableColumn;
+				var width = tableColumn.HeaderCell.CellSize.Width;
+
+				CompositeCell templateCell = null;
+				for (int i = 0; i < tableView.RowCount; i++) {
+					var cellView = tableView.GetView (column, i, false) as CompositeCell;
+					if (cellView == null) { // use template for invisible rows
+						cellView = templateCell ?? (templateCell = (tableColumn as TableColumn)?.DataView?.Copy () as CompositeCell);
+						if (cellView != null)
+							cellView.ObjectValue = NSNumber.FromInt32 (i);
+					}
+					width = (nfloat)Math.Max (width, cellView.FittingSize.Width);
+				}
+				return width;
+			}
+		}
+
 		IListDataSource source;
 		ListSource tsource;
 
 		protected override NSTableView CreateView ()
 		{
-			return new NSTableViewBackend (EventSink, ApplicationContext);
+			var listView = new NSTableViewBackend (EventSink, ApplicationContext);
+			listView.Delegate = new ListDelegate { Backend = this };
+			return listView;
 		}
 
 		protected override string SelectionChangeEventName {
@@ -87,16 +133,59 @@ namespace Xwt.Mac
 		public virtual void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
 			this.source = source;
+
+			RowHeights = new List<nfloat> ();
+			for (int i = 0; i < source.RowCount; i++)
+				RowHeights.Add (-1);
+
 			tsource = new ListSource (source);
 			Table.DataSource = tsource;
 
 			//TODO: Reloading single rows would be slightly more efficient.
 			//      According to NSTableView.ReloadData() documentation,
 			//      only the visible rows are reloaded.
-			source.RowInserted += (sender, e) => Table.ReloadData();
-			source.RowDeleted += (sender, e) => Table.ReloadData();
-			source.RowChanged += (sender, e) => Table.ReloadData (NSIndexSet.FromIndex (e.Row), NSIndexSet.FromNSRange (new NSRange(0, Table.ColumnCount - 1)));
-			source.RowsReordered += (sender, e) => Table.ReloadData();
+			source.RowInserted += (sender, e) => {
+				RowHeights.Insert (e.Row, -1);
+				Table.ReloadData ();
+			};
+			source.RowDeleted += (sender, e) => {
+				RowHeights.RemoveAt (e.Row);
+				Table.ReloadData ();
+			};
+			source.RowChanged += (sender, e) => {
+				UpdateRowHeight (e.Row);
+				Table.ReloadData (NSIndexSet.FromIndex (e.Row), NSIndexSet.FromNSRange (new NSRange (0, Table.ColumnCount)));
+			};
+			source.RowsReordered += (sender, e) => { RowHeights.Clear (); Table.ReloadData (); };
+		}
+		
+		List<nfloat> RowHeights = new List<nfloat> ();
+		bool updatingRowHeight;
+		public void UpdateRowHeight (nint row)
+		{
+			if (updatingRowHeight)
+				return;
+			RowHeights[(int)row] = CalcRowHeight (row);
+			Table.NoteHeightOfRowsWithIndexesChanged (NSIndexSet.FromIndex (row));
+		}
+
+		nfloat CalcRowHeight (nint row, bool tryReuse = true)
+		{
+			updatingRowHeight = true;
+			var height = Table.RowHeight;
+
+			for (int i = 0; i < Columns.Count; i++) {
+				CompositeCell cell = tryReuse ? Table.GetView (i, row, false) as CompositeCell : null;
+				if (cell == null)
+					cell = (Columns [i] as TableColumn)?.DataView as CompositeCell;
+
+				if (cell != null) {
+					cell.ObjectValue = NSNumber.FromNInt (row);
+					height = (nfloat)Math.Max (height, cell.FittingSize.Height);
+				}
+			}
+			updatingRowHeight = false;
+			return height;
 		}
 		
 		public int[] SelectedRows {

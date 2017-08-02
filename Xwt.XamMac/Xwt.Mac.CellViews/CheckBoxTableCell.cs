@@ -25,35 +25,62 @@
 // THE SOFTWARE.
 using System;
 using AppKit;
+using Foundation;
 using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	class CheckBoxTableCell: NSButtonCell, ICellRenderer
+	class CheckBoxTableCell: NSButton, ICellRenderer
 	{
-		bool visible = true;
-
 		public CheckBoxTableCell ()
 		{
 			SetButtonType (NSButtonType.Switch);
 			Activated += HandleActivated;
-			Title = "";
+			Title = string.Empty;
+		}
+
+		public override NSCellStateValue State {
+			get {
+				return base.State;
+			}
+			set {
+				// don't let Cocoa set the state for us
+			}
 		}
 
 		void HandleActivated (object sender, EventArgs e)
 		{
+			Backend.Load (this);
 			var cellView = Frontend;
+			var nextState = State; // store new state internally set by Cocoa
+			base.State = cellView.State.ToMacState (); // reset state to previous state from store
 			CellContainer.SetCurrentEventRow ();
-			if (cellView.Editable && !cellView.RaiseToggled () && (cellView.StateField != null || cellView.ActiveField != null)) {
+			if (!cellView.RaiseToggled ()) {
 				if (cellView.StateField != null)
-					CellContainer.SetValue (cellView.StateField, State.ToXwtState ());
+					CellContainer.SetValue (cellView.StateField, nextState.ToXwtState ());
 				else if (cellView.ActiveField != null)
-					CellContainer.SetValue (cellView.ActiveField, State != NSCellStateValue.Off);
+					CellContainer.SetValue (cellView.ActiveField, nextState != NSCellStateValue.Off);
 			}
 		}
 
-		public CheckBoxTableCell (IntPtr p): base (p)
+		NSCellStateValue GetNextState ()
 		{
+			if (!AllowsMixedState) {
+				switch (State) {
+					case NSCellStateValue.Off:
+					case NSCellStateValue.Mixed:
+						return NSCellStateValue.On;
+					default: return NSCellStateValue.Off;
+				}
+			} else {
+				switch (State) {
+					case NSCellStateValue.Off:
+						return NSCellStateValue.Mixed;
+					case NSCellStateValue.Mixed:
+						return NSCellStateValue.On;
+					default: return NSCellStateValue.Off;
+				}
+			}
 		}
 
 		ICheckBoxCellViewFrontend Frontend {
@@ -68,22 +95,20 @@ namespace Xwt.Mac
 		{
 			var cellView = Frontend;
 			AllowsMixedState = cellView.AllowMixed || cellView.State == CheckBoxState.Mixed;
-			State = cellView.State.ToMacState ();
-			Editable = cellView.Editable;
-			visible = cellView.Visible;
+			base.State = cellView.State.ToMacState ();
+			Enabled = cellView.Editable;
+			Hidden = !cellView.Visible;
 		}
-
-		public override CoreGraphics.CGSize CellSizeForBounds (CoreGraphics.CGRect bounds)
-		{
-			if (visible)
-				return base.CellSizeForBounds (bounds);
-			return CoreGraphics.CGSize.Empty;
-		}
-
-		public override void DrawInteriorWithFrame (CoreGraphics.CGRect cellFrame, NSView inView)
-		{
-			if (visible)
-				base.DrawInteriorWithFrame (cellFrame, inView);
+		
+		public virtual NSBackgroundStyle BackgroundStyle {
+			[Export ("backgroundStyle")]
+			get {
+				return Cell.BackgroundStyle;
+			}
+			[Export ("setBackgroundStyle:")]
+			set {
+				Cell.BackgroundStyle = value;
+			}
 		}
 
 		public void CopyFrom (object other)

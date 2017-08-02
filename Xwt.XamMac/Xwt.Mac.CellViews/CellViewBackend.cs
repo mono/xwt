@@ -30,79 +30,75 @@ namespace Xwt.Mac
 {
 	public class CellViewBackend: ICellViewBackend, ICanvasCellViewBackend
 	{
-		NSTableView table;
-		int column;
-
 		public CellViewBackend (NSTableView table, int column)
 		{
-			this.table = table;
-			this.column = column;
+			Table = table;
+			Column = column;
 		}
-
-		public ICellViewFrontend Frontend { get; private set; }
 
 		public virtual void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			Frontend = (ICellViewFrontend)frontend;
+			Context = context;
 		}
 
-		public NSCell CurrentCell { get; set; }
+		public ICellViewFrontend Frontend { get; private set; }
 
-		public int Column {
-			get {
-				return column;
-			}
+		public ICellViewEventSink EventSink { get; private set; }
+
+		public ApplicationContext Context { get; private set; }
+
+		internal NSView CurrentCellView { get; private set; }
+
+		public int Column { get; private set; }
+
+		public NSTableView Table { get; internal set; }
+
+		internal ITablePosition CurrentPosition { get; private set; }
+
+		internal void Load (ICellRenderer cell)
+		{
+			CurrentCellView = (NSView)cell;
+			CurrentPosition = cell.CellContainer.TablePosition;
+			EventSink = Frontend.Load (cell.CellContainer);
 		}
-
-		public int CurrentRow { get; set; }
-
-		internal ITablePosition CurrentPosition { get; set; }
-
+		
 		public virtual void EnableEvent (object eventId)
 		{
 		}
-
+		
 		public virtual void DisableEvent (object eventId)
 		{
 		}
 
 		public void QueueDraw ()
 		{
-			// nothing to be done here, NSTableView should handle this
+			CurrentCellView.NeedsDisplay = true;
 		}
 
 		public Rectangle CellBounds {
 			get {
-				if (CurrentPosition is TableRow) {
-					var r = table.GetCellFrame (column, ((TableRow)CurrentPosition).Row);
-					r = ((ICellRenderer)CurrentCell).CellContainer.GetCellRect (r, CurrentCell);
-					return new Rectangle (r.X, r.Y, r.Width, r.Height);
-				}
-				return Rectangle.Zero;
+				return CurrentCellView.ConvertRectToView (CurrentCellView.Frame, Table).ToXwtRect ();
 			}
 		}
 
 		public Rectangle BackgroundBounds {
 			get {
-				// TODO
-				return CellBounds;
+				return CurrentCellView.ConvertRectToView (CurrentCellView.Frame, ((ICellRenderer)CurrentCellView).CellContainer.Superview).ToXwtRect ();
 			}
 		}
 
 		public bool Selected {
 			get {
-				if (CurrentPosition is TableRow) {
-					return table.IsRowSelected (((TableRow)CurrentPosition).Row);
-				}
-				// TODO
-				return false;
+				if (CurrentPosition is TableRow)
+					return Table.IsRowSelected (((TableRow)CurrentPosition).Row);
+				return Table.IsRowSelected (Table.RowForView (CurrentCellView));
 			}
 		}
 
 		public bool HasFocus {
 			get {
-				// TODO
-				return false;
+				return CurrentCellView?.Window != null && CurrentCellView.Window.FirstResponder == CurrentCellView;
 			}
 		}
 	}

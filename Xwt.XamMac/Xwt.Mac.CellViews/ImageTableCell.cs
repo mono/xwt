@@ -1,4 +1,4 @@
-// 
+﻿// 
 // ImageTableCell.cs
 //  
 // Author:
@@ -26,25 +26,14 @@
 
 using System;
 using AppKit;
-using CoreGraphics;
 using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	class ImageTableCell: NSImageCell, ICellRenderer
+	class ImageTableCell : NSImageView, ICellRenderer
 	{
-		bool visible = true;
-
-		public ImageTableCell ()
-		{
-		}
-		
-		public ImageTableCell (IntPtr p): base (p)
-		{
-		}
-		
 		IImageCellViewFrontend Frontend {
-			get { return (IImageCellViewFrontend) Backend.Frontend; }
+			get { return (IImageCellViewFrontend)Backend.Frontend; }
 		}
 
 		public CellViewBackend Backend { get; set; }
@@ -53,33 +42,29 @@ namespace Xwt.Mac
 
 		public void Fill ()
 		{
-			ObjectValue = Frontend.Image.ToImageDescription (CellContainer.Context).ToNSImage ();
-			visible = Frontend.Visible;
+			if (Frontend.Image != null) {
+				Image = Frontend.Image.ToImageDescription (Backend.Context).ToNSImage ();
+				SetFrameSize (Image.Size);
+			} else
+				SetFrameSize (CoreGraphics.CGSize.Empty);
+			Hidden = !Frontend.Visible;
 		}
-		
-		public override CGSize CellSize {
+
+		public override CoreGraphics.CGSize FittingSize {
 			get {
-				NSImage img = ObjectValue as NSImage;
-				if (img != null)
-					return img.Size;
-				else
-					return base.CellSize;
+				if (Image == null)
+					return base.FittingSize;
+				return Image.Size;
 			}
 		}
 
-		public override CGSize CellSizeForBounds (CGRect bounds)
+		public override void SizeToFit()
 		{
-			if (visible)
-				return base.CellSizeForBounds (bounds);
-			return CGSize.Empty;
+			base.SizeToFit();
+			if (Frame.Size.IsEmpty && Image != null)
+				SetFrameSize (Image.Size);
 		}
 
-		public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
-		{
-			if (visible)
-				base.DrawInteriorWithFrame (cellFrame, inView);
-		}
-		
 		public void CopyFrom (object other)
 		{
 			var ob = (ImageTableCell)other;
@@ -87,4 +72,3 @@ namespace Xwt.Mac
 		}
 	}
 }
-
