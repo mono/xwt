@@ -32,6 +32,7 @@ namespace Xwt.Mac
 {
 	class TextTableCell : NSTextField, ICellRenderer
 	{
+		NSTrackingArea trackingArea;
 		public TextTableCell ()
 		{
 			Editable = false;
@@ -46,6 +47,8 @@ namespace Xwt.Mac
 		public CellViewBackend Backend { get; set; }
 
 		public CompositeCell CellContainer { get; set; }
+
+		public NSView CellView { get { return this; } }
 
 		public void Fill ()
 		{
@@ -71,6 +74,89 @@ namespace Xwt.Mac
 		{
 			var ob = (TextTableCell)other;
 			Backend = ob.Backend;
+		}
+
+		public override void UpdateTrackingAreas ()
+		{
+			if (trackingArea != null) {
+				RemoveTrackingArea (trackingArea);
+				trackingArea.Dispose ();
+			}
+			var options = NSTrackingAreaOptions.MouseMoved | NSTrackingAreaOptions.ActiveInKeyWindow | NSTrackingAreaOptions.MouseEnteredAndExited;
+			trackingArea = new NSTrackingArea (Bounds, options, this, null);
+			AddTrackingArea (trackingArea);
+		}
+
+		public override void RightMouseDown (NSEvent theEvent)
+		{
+			if (!this.HandleMouseDown (theEvent))
+				base.RightMouseDown (theEvent); 
+		}
+
+		public override void RightMouseUp (NSEvent theEvent)
+		{
+			if (!this.HandleMouseUp (theEvent))
+				base.RightMouseUp (theEvent); 
+		}
+
+		public override void MouseDown (NSEvent theEvent)
+		{
+			if (!this.HandleMouseDown (theEvent))
+				base.MouseDown (theEvent); 
+		}
+
+		public override void MouseUp (NSEvent theEvent)
+		{
+			if (!this.HandleMouseUp (theEvent))
+				base.MouseUp (theEvent); 
+		}
+
+		public override void OtherMouseDown (NSEvent theEvent)
+		{
+			if (!this.HandleMouseDown (theEvent))
+				base.OtherMouseDown (theEvent);
+		}
+
+		public override void OtherMouseUp (NSEvent theEvent)
+		{
+			if (!this.HandleMouseUp (theEvent))
+				base.OtherMouseUp (theEvent);
+		}
+
+		public override void MouseEntered (NSEvent theEvent)
+		{
+			this.HandleMouseEntered (theEvent);
+				base.MouseEntered (theEvent);
+		}
+
+		public override void MouseExited (NSEvent theEvent)
+		{
+			this.HandleMouseExited (theEvent);
+				base.MouseExited (theEvent);
+		}
+
+		public override void MouseMoved (NSEvent theEvent)
+		{
+			if (!this.HandleMouseMoved (theEvent))
+				base.MouseMoved (theEvent);
+		}
+
+		public override void MouseDragged (NSEvent theEvent)
+		{
+			if (!this.HandleMouseMoved (theEvent))
+				base.MouseDragged (theEvent);
+		}
+
+		public override void KeyDown (NSEvent theEvent)
+		{
+			if (!this.HandleKeyDown (theEvent))
+				base.KeyDown (theEvent);
+		}
+
+		public override void KeyUp (NSEvent theEvent)
+		{
+			if (!this.HandleKeyUp (theEvent))
+				base.KeyUp (theEvent);
 		}
 	}
 }

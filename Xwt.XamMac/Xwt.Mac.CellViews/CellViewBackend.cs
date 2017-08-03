@@ -30,6 +30,8 @@ namespace Xwt.Mac
 {
 	public class CellViewBackend: ICellViewBackend, ICanvasCellViewBackend
 	{
+		WidgetEvent enabledEvents;
+
 		public CellViewBackend (NSTableView table, int column)
 		{
 			Table = table;
@@ -65,10 +67,19 @@ namespace Xwt.Mac
 		
 		public virtual void EnableEvent (object eventId)
 		{
+			if (eventId is WidgetEvent)
+				enabledEvents |= (WidgetEvent)eventId;
 		}
 		
 		public virtual void DisableEvent (object eventId)
 		{
+			if (eventId is WidgetEvent)
+				enabledEvents &= ~(WidgetEvent)eventId;
+		}
+
+		public bool GetIsEventEnabled (WidgetEvent eventId)
+		{
+			return enabledEvents.HasFlag (eventId);
 		}
 
 		public void QueueDraw ()
