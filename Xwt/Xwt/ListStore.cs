@@ -387,7 +387,7 @@ namespace Xwt
 		{
 			int count = list.Count;
 			list.Clear ();
-			for (int n=0; n<count; n++) {
+			for (int n=count-1; n>=0; n--) {
 				if (RowDeleted != null)
 					RowDeleted (this, new ListRowEventArgs (n));
 			}
