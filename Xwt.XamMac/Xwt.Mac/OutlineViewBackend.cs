@@ -151,7 +151,7 @@ namespace Xwt.Mac
 		{
 			if (!columnResizeQueued) {
 				columnResizeQueued = true;
-				Application.MainLoop.QueueExitAction (delegate {
+				(context.Toolkit.GetSafeBackend (context.Toolkit) as ToolkitEngineBackend).InvokeBeforeMainLoop (delegate {
 					columnResizeQueued = false;
 					AutosizeColumns ();
 				});
