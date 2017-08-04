@@ -257,36 +257,37 @@ namespace Xwt.Mac
 			double requiredSize = 0;
 			double availableSize = cellFrame.Width;
 
-			var sizes = new Dictionary<ICellRenderer, double> ();
+			var visibleCells = VisibleCells.ToArray ();
+			var sizes = new double [visibleCells.Length];
 
 			// Get the natural size of each child
-			foreach (var bp in VisibleCells) {
-				var v = bp as NSView;
+			for (int i = 0; i < visibleCells.Length; i++) {
+				var v = visibleCells[i] as NSView;
 				var s = v.FittingSize;
 				if (s.IsEmpty && SizeToFit (v))
 					s = v.Frame.Size;
-				sizes [bp] = s.Width;
+				sizes [i] = s.Width;
 				requiredSize += s.Width;
-				if (bp.Backend.Frontend.Expands)
+				if (visibleCells [i].Backend.Frontend.Expands)
 					nexpands++;
 			}
 
 			double remaining = availableSize - requiredSize;
 			if (remaining > 0) {
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
-				foreach (var bp in VisibleCells) {
-					if (bp.Backend.Frontend.Expands)
-						sizes [bp] += (nfloat)expandRemaining.NextSizePart ();
+				for (int i = 0; i < visibleCells.Length; i++) {
+					if (visibleCells [i].Backend.Frontend.Expands)
+						sizes [i] += (nfloat)expandRemaining.NextSizePart ();
 				}
 			}
 
 			double x = cellFrame.X;
-			foreach (var s in sizes) {
-				var cell = (NSView)s.Key;
+			for (int i = 0; i < visibleCells.Length; i++) {
+				var cell = (NSView)visibleCells [i];
 				var height = cell.FittingSize.Height;
 				var y = (cellFrame.Height - height) / 2;
-				yield return new CellPos () { Cell = cell, Frame = new CGRect (x, y, s.Value, height) };
-				x += s.Value;
+				yield return new CellPos { Cell = cell, Frame = new CGRect (x, y, sizes [i], height) };
+				x += sizes [i];
 			}
 		}
 
