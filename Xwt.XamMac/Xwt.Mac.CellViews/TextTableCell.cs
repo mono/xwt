@@ -43,6 +43,15 @@ namespace Xwt.Mac
 		ITextCellViewFrontend Frontend {
 			get { return (ITextCellViewFrontend) Backend.Frontend; }
 		}
+
+		public override bool AllowsVibrancy {
+			get {
+				// we don't support vibrancy
+				if (EffectiveAppearance.AllowsVibrancy)
+					return false;
+				return base.AllowsVibrancy;
+			}
+		}
 		
 		public CellViewBackend Backend { get; set; }
 
