@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using AppKit;
+using CoreGraphics;
 using Foundation;
 using Xwt.Backends;
 
@@ -406,6 +407,45 @@ namespace Xwt.Mac
 				HeaderCell.Alignment = col.Alignment.ToNSTextAlignment ();
 				break;
 			}
+		}
+	}
+
+	class TableRowView : NSTableRowView
+	{
+
+		public override bool Selected {
+			get {
+				return base.Selected;
+			}
+			set {
+				base.Selected = value;
+				// the first time NSTableView is presented the background
+				// may be drawn already and it will not be redrawn even
+				// if Selection has been changed.
+				NeedsDisplay = true;
+			}
+		}
+
+		public override void DrawSelection (CGRect dirtyRect)
+		{
+			if (EffectiveAppearance.Name == NSAppearance.NameVibrantDark &&
+			    SelectionHighlightStyle != NSTableViewSelectionHighlightStyle.None) {
+				(Selected ? NSColor.AlternateSelectedControl : BackgroundColor).SetFill ();
+				var path = NSBezierPath.FromRect (dirtyRect);
+				path.Fill ();
+			} else
+				base.DrawSelection (dirtyRect);
+		}
+
+		public override void DrawBackground (CGRect dirtyRect)
+		{
+			if (Selected && EffectiveAppearance.Name == NSAppearance.NameVibrantDark &&
+				SelectionHighlightStyle != NSTableViewSelectionHighlightStyle.None) {
+				(Selected ? NSColor.AlternateSelectedControl : BackgroundColor).SetFill ();
+				var path = NSBezierPath.FromRect (dirtyRect);
+				path.Fill ();
+			} else
+				base.DrawBackground (dirtyRect);
 		}
 	}
 	

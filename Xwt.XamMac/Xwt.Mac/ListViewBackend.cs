@@ -53,6 +53,11 @@ namespace Xwt.Mac
 				return height;
 			}
 
+			public override NSTableRowView CoreGetRowView (NSTableView tableView, nint row)
+			{
+				return tableView.GetRowView (row, false) ?? new TableRowView ();
+			}
+
 			public override NSView GetViewForItem (NSTableView tableView, NSTableColumn tableColumn, nint row)
 			{
 				var col = tableColumn as TableColumn;

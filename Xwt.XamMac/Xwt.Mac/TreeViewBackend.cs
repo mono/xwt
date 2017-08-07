@@ -72,6 +72,11 @@ namespace Xwt.Mac
 				return height;
 			}
 
+			public override NSTableRowView RowViewForItem (NSOutlineView outlineView, NSObject item)
+			{
+				return outlineView.GetRowView (outlineView.RowForItem (item), false) ?? new TableRowView ();
+			}
+
 			public override NSView GetView (NSOutlineView outlineView, NSTableColumn tableColumn, NSObject item)
 			{
 				var col = tableColumn as TableColumn;
