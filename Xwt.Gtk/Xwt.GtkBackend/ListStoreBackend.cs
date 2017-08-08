@@ -50,6 +50,9 @@ namespace Xwt.GtkBackend
 				if (RowChanged != null)
 					RowChanged (this, new ListRowEventArgs (args.Path.Indices[0]));
 			};
+			store.RowsReordered += (o, args) => {
+				if (RowsReordered != null) System.Diagnostics.Debug.WriteLine ($"No support for {nameof (RowsReordered)} events from {nameof (ListStoreBackend)}, sorry.");
+			};
 			return store;
 		}
 		

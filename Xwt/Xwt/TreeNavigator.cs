@@ -33,12 +33,6 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public struct NodePosition
-	{
-		internal TreePosition ParentPos;
-		internal int Index;
-	}
-	
 	public class TreeNavigator
 	{
 		ITreeStoreBackend backend;
