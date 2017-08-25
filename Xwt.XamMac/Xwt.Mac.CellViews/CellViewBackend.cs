@@ -105,6 +105,13 @@ namespace Xwt.Mac
 				return false;
 			}
 		}
+
+		public bool IsHighlighted {
+			get {
+				// TODO
+				return false;
+			}
+		}
 	}
 }
 
