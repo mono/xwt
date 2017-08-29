@@ -85,6 +85,10 @@ namespace Xwt
 		}
 
 		#endregion
+
+		protected bool IsHighlighted {
+			get { return ((ICanvasCellViewBackend)BackendHost.Backend).IsHighlighted; }
+		}
 	}
 }
 
