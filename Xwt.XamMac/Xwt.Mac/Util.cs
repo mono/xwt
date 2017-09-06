@@ -240,6 +240,21 @@ namespace Xwt.Mac
 			}
 		}
 
+		public static bool TriggersContextMenu (this NSEvent theEvent)
+		{
+			if (theEvent.ButtonNumber == 1 &&
+					(NSEvent.CurrentPressedMouseButtons & 1 | NSEvent.CurrentPressedMouseButtons & 4) == 0) {
+				return true;
+			}
+
+			if (theEvent.ButtonNumber == 0 && (theEvent.ModifierFlags & NSEventModifierMask.ControlKeyMask) != 0 &&
+					(NSEvent.CurrentPressedMouseButtons & 2 | NSEvent.CurrentPressedMouseButtons & 4) == 0) {
+				return true;
+			}
+
+			return false;
+		}
+
 		public static NSImage ToNSImage (this ImageDescription idesc)
 		{
 			if (idesc.IsNull)

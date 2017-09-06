@@ -164,6 +164,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = PointerButton.Right;
+			args.IsContextMenuTrigger = theEvent.TriggersContextMenu ();
 			context.InvokeUserCode (delegate {
 				eventSink.OnButtonPressed (args);
 			});
@@ -190,6 +191,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = PointerButton.Left;
+			args.IsContextMenuTrigger = theEvent.TriggersContextMenu ();
 			context.InvokeUserCode (delegate {
 				eventSink.OnButtonPressed (args);
 			});
