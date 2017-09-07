@@ -119,7 +119,7 @@ namespace Xwt.Mac
 						line.Dispose ();
 					}
 
-					result.Width = Math.Max (result.Width, l.GetTypographicBounds ());
+					result.Width = Math.Max (result.Width, GetLineWidth (l));
 					result.Height += lineHeight;
 
 					// clean up after ourselves as we go
@@ -268,7 +268,7 @@ namespace Xwt.Mac
 							.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis);
 						line.Dispose ();
 					} else if (li.Width.HasValue && li.TextAlignment != Alignment.Start) {
-						var tx = li.Width.Value - ln.GetTypographicBounds ();
+						var tx = li.Width.Value - GetLineWidth (ln);
 						if (li.TextAlignment == Alignment.Center)
 							tx /= 2d;
 						ctx.TextPosition = new CGPoint ((nfloat)tx, 0);
@@ -306,6 +306,12 @@ namespace Xwt.Mac
 		public override void Dispose (object backend)
 		{
 			// nothing
+		}
+
+		static double GetLineWidth (CTLine l)
+		{
+			// Pango does not consider trailing whitespace in its size
+			return l.GetTypographicBounds () - l.TrailingWhitespaceWidth;
 		}
 	}
 }
