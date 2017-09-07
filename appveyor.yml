@@ -1,4 +1,6 @@
 version: 0.2.{build}
+pull_requests:
+  do_not_increment_build_number: true
 branches:
   only:
   - master
@@ -12,7 +14,7 @@ assembly_info:
   file: '**\AssemblyInfo.*'
   assembly_version: '{version}'
   assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
+  assembly_informational_version: '{version}-{branch}'
 
 install:
 - if not exist gtk-sharp-2.12.42.msi appveyor DownloadFile https://dl.xamarin.com/GTKforWindows/Windows/gtk-sharp-2.12.42.msi
@@ -69,3 +71,9 @@ test_script:
 artifacts:
 - path: nuget\*.nupkg
   name: Xwt-$(APPVEYOR_BUILD_VERSION)
+deploy:
+- provider: NuGet
+  api_key:
+    secure: ooWYE8nr4DVG4lhsjcKm1W+b3WypDt92UypwP4tdTOsPtS0W6wblwKZyF+VgcDwoTEmtrRa8obMxoGuFiy4Teb72h/cZBx4uPMHGvf4ArLo=
+  on:
+    branch: master
