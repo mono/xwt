@@ -43,6 +43,7 @@ namespace Xwt.Mac
 			public NSFont Font;
 			public float? Width, Height;
 			public TextTrimming TextTrimming;
+			public Alignment TextAlignment;
 			readonly public List<TextAttribute> Attributes = new List<TextAttribute> ();
 			readonly public ApplicationContext ApplicationContext;
 
@@ -87,6 +88,12 @@ namespace Xwt.Mac
 			li.TextTrimming = value;
 		}
 
+		public override void SetAlignment (object backend, Alignment alignment)
+		{
+			LayoutInfo li = (LayoutInfo)backend;
+			li.TextAlignment = alignment;
+		}
+
 		public override Size GetSize (object backend)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
@@ -112,7 +119,7 @@ namespace Xwt.Mac
 						line.Dispose ();
 					}
 
-					result.Width = Math.Max (result.Width, l.GetTypographicBounds ());
+					result.Width = Math.Max (result.Width, GetLineWidth (l));
 					result.Height += lineHeight;
 
 					// clean up after ourselves as we go
@@ -253,12 +260,22 @@ namespace Xwt.Mac
 				ctx.TranslateCTM ((float)x, (float)y + li.Font.Ascender);
 				foreach (var line in frame.GetLines ()) {
 					ctx.TextPosition = CGPoint.Empty;
-					if (ellipsize) // we need to create a new CTLine here because the framesetter already truncated the text for the line
-						new CTLine (CreateAttributedString (li, li.Text.Substring ((int)line.StringRange.Location)))
-							.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis).Draw (ctx);
-					else
-						line.Draw (ctx);
+					// Determine final line
+					var ln = line;
+					if (ellipsize) {
+						// we need to create a new CTLine here because the framesetter already truncated the text for the line
+						ln = new CTLine (CreateAttributedString (li, li.Text.Substring ((int)line.StringRange.Location)))
+							.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis);
+						line.Dispose ();
+					} else if (li.Width.HasValue && li.TextAlignment != Alignment.Start) {
+						var tx = li.Width.Value - GetLineWidth (ln);
+						if (li.TextAlignment == Alignment.Center)
+							tx /= 2d;
+						ctx.TextPosition = new CGPoint ((nfloat)tx, 0);
+					}
+					ln.Draw (ctx);
 					ctx.TranslateCTM (0, lineHeight);
+					ln.Dispose ();
 				}
 				ctx.RestoreState ();
 			}
@@ -289,6 +306,12 @@ namespace Xwt.Mac
 		public override void Dispose (object backend)
 		{
 			// nothing
+		}
+
+		static double GetLineWidth (CTLine l)
+		{
+			// Pango does not consider trailing whitespace in its size
+			return l.GetTypographicBounds () - l.TrailingWhitespaceWidth;
 		}
 	}
 }

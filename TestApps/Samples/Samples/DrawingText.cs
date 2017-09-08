@@ -150,36 +150,60 @@ namespace Samples
 
 			
 			// Text boces
-			
+
+			x = 10;
 			y = 180;
 			
 			// Without wrapping
 			
 			TextLayout tl = new TextLayout (this);
 			tl.Text = "Stright text";
-			DrawText (ctx, tl, ref y);
+			DrawText (ctx, tl, ref x, ref y);
 
 			// With wrapping
 			
 			tl = new TextLayout (this);
 			tl.Text = "The quick brown fox jumps over the lazy dog";
 			tl.Width = 100;
-			DrawText (ctx, tl, ref y);
+			DrawText (ctx, tl, ref x, ref y);
 
 			// With blank lines
 			
 			tl = new TextLayout (this);
 			tl.Text = "\nEmpty line above\nLine break above\n\nEmpty line above\n\n\nTwo empty lines above\nEmpty line below\n";
 			tl.Width = 200;
-			DrawText (ctx, tl, ref y);
+			DrawText (ctx, tl, ref x, ref y);
 
+			// With wrapping and center alignment
+
+			tl = new TextLayout (this);
+			tl.Text = "This text should be centered";
+			tl.Width = 100;
+			tl.TextAlignment = Alignment.Center;
+			DrawText (ctx, tl, ref x, ref y);
+
+			// With wrapping and right alignment
+
+			tl = new TextLayout (this);
+			tl.Text = "This text should be right aligned";
+			tl.Width = 50;
+			tl.TextAlignment = Alignment.End;
+			DrawText (ctx, tl, ref x, ref y);
 		}	
 		
-		void DrawText (Context ctx, TextLayout tl, ref double y)
+		void DrawText (Context ctx, TextLayout tl, ref double x, ref double y)
 		{
-			double x = 10;
+			var dx = 0d;
 			var s = tl.GetSize ();
-			var rect = new Rectangle (x, y, s.Width, s.Height).Inflate (0.5, 0.5);
+			switch (tl.TextAlignment) {
+			case Alignment.Center:
+				dx = Math.Round ((tl.Width - s.Width) / 2);
+				break;
+			case Alignment.End:
+				dx = tl.Width - s.Width;
+				break;
+			}
+			var rect = new Rectangle (x + dx, y, s.Width, s.Height).Inflate (0.5, 0.5);
 			ctx.SetLineWidth (1);
 			ctx.SetColor (Colors.Blue);
 			ctx.Rectangle (rect);
@@ -188,6 +212,10 @@ namespace Samples
 			ctx.DrawTextLayout (tl, x, y);
 			
 			y += s.Height + 20;
+			if (y > 400) {
+				y = 180;
+				x += 150;
+			}
 		}
 	}
 }
