@@ -191,8 +191,6 @@ namespace Xwt.WPFBackend
 			if (parent != null) {
 				items = parent.Items;
 				g = parent.ItemContainerGenerator;
-			} else {
-				UpdateLayout ();
 			}
 
 			foreach (object item in items) {
