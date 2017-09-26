@@ -50,6 +50,7 @@ namespace Xwt
 		}
 
 		[Test]
+		[Ignore("Disabling this test because the fix it relies on breaks the treeview. See https://bugzilla.xamarin.com/show_bug.cgi?id=58917 for more details")]
 		public void HiddenTree ()
 		{
 			var f = new DataField<string> ();
