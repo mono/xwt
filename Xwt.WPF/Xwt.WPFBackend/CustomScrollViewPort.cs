@@ -1,4 +1,4 @@
-﻿//
+//
 // CustomScrollViewPort.cs
 //
 // Author:
@@ -315,10 +315,12 @@ namespace Xwt.WPFBackend
 				return child.DesiredSize;
 			}
 			else {
-				// We don't use the child size here, but WPF requires Measure to
-				// be called for all children of a widget in the container's MeasureOverride
+				// We only use child size for the dimensions that scrolling is disabled. This
+				//  allows the child to properly influence the measure of the scroll view in that
+				//  case.
 				child.Measure (InfiniteSize);
-				return new WSize (0, 0);
+				var sz = child.DesiredSize;
+				return new WSize (CanHorizontallyScroll? 0 : sz.Width, CanVerticallyScroll? 0 : sz.Height);
 			}
 		}
 
