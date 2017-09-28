@@ -50,7 +50,7 @@ namespace Xwt.WPFBackend
 			//TODO: Support alpha + create custom WPF solution?
 			dialog.Title = title;
 			if (parent != null)
-				return (this.dialog.ShowDialog(new WpfWin32Window(((WindowFrameBackend)parent).Window)) == DialogResult.OK);
+				return (this.dialog.ShowDialog(new XwtWin32Window(parent)) == DialogResult.OK);
 			else
 				return (this.dialog.ShowDialog() == DialogResult.OK);
 		}
@@ -87,22 +87,6 @@ namespace Xwt.WPFBackend
 				}
 				return hookProc;
 			}
-		}
-
-		private class WpfWin32Window
-			: IWin32Window
-		{
-			public WpfWin32Window(System.Windows.Window window)
-			{
-				this.helper = new WindowInteropHelper(window);
-			}
-
-			public IntPtr Handle
-			{
-				get { return this.helper.Handle; }
-			}
-
-			private readonly WindowInteropHelper helper;
 		}
 	}
 }

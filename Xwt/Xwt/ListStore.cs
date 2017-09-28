@@ -392,6 +392,11 @@ namespace Xwt
 					RowDeleted (this, new ListRowEventArgs (n));
 			}
 		}
+
+		protected virtual void OnRowsReordered(ListRowOrderEventArgs e)
+		{
+			if (RowsReordered != null) System.Diagnostics.Debug.WriteLine($"No support for {nameof(RowsReordered)} events from {nameof(DefaultListStoreBackend)}, sorry.");
+		}	
 	}
 }
 

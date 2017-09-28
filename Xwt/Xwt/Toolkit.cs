@@ -282,7 +282,6 @@ namespace Xwt
 			catch (Exception ex) {
 				if (throwIfFails)
 					throw new Exception ("Toolkit could not be loaded", ex);
-				Application.NotifyException (ex);
 			}
 			if (throwIfFails)
 				throw new Exception ("Toolkit could not be loaded");
@@ -586,6 +585,11 @@ namespace Xwt
 		public Context WrapContext (object nativeWidget, object nativeContext)
 		{
 			return new Context (backend.GetBackendForContext (nativeWidget, nativeContext), this);
+		}
+
+		public Accessibility.Accessible WrapAccessible (object nativeAccessibleObject)
+		{
+			return new Accessibility.Accessible (nativeAccessibleObject);
 		}
 
 		/// <summary>

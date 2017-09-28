@@ -1296,6 +1296,11 @@ namespace Xwt.GtkBackend
 				gtk_binding_entry_remove (bindingSet, (uint)key, modifiers);
 		}
 
+		public static IntPtr GetData (GLib.Object o, string name)
+		{
+			return g_object_get_data (o.Handle, name);
+		}
+
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_object_set_data (IntPtr raw, IntPtr key, IntPtr data);
 

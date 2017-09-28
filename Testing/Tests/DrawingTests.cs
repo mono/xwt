@@ -916,6 +916,46 @@ namespace Xwt
 			CheckImage ("TextTrimmingEllipsis.png");
 		}
 
+		[Test]
+		public void TextAlignmentEnd ()
+		{
+			// Transform is saved
+			InitBlank (100, 100);
+			var la = new TextLayout ();
+			la.Font = Font.FromName ("Arial 12");
+			la.Text = "One Two Three Four Five Six Seven Eight Nine";
+			la.Width = 90;
+			la.TextAlignment = Alignment.End;
+			var s = la.GetSize ();
+			context.Rectangle (95.5 - s.Width, 5.5, s.Width, s.Height);
+			context.SetColor (Colors.Blue);
+			context.Stroke ();
+
+			context.SetColor (Colors.Black);
+			context.DrawTextLayout (la, 5, 5);
+			CheckImage ("TextAlignmentEnd.png");
+		}
+
+		[Test]
+		public void TextAlignmentCenter ()
+		{
+			// Transform is saved
+			InitBlank (100, 100);
+			var la = new TextLayout ();
+			la.Font = Font.FromName ("Arial 12");
+			la.Text = "One Two Three Four Five Six Seven Eight Nine";
+			la.Width = 90;
+			la.TextAlignment = Alignment.Center;
+			var s = la.GetSize ();
+			context.Rectangle (Math.Round ((90 - s.Width) / 2) + 5.5, 5.5, s.Width, s.Height);
+			context.SetColor (Colors.Blue);
+			context.Stroke ();
+
+			context.SetColor (Colors.Black);
+			context.DrawTextLayout (la, 5, 5);
+			CheckImage ("TextAlignmentCenter.png");
+		}
+
 		#endregion
 
 		#region Paths

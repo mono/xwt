@@ -894,6 +894,8 @@ namespace Xwt.GtkBackend
 				a.MultiplePress = 3;
 			else
 				a.MultiplePress = 1;
+
+			a.IsContextMenuTrigger = args.Event.TriggersContextMenu ();
 			return a;
 		}
 		

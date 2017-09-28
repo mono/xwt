@@ -229,7 +229,8 @@ namespace Xwt.GtkBackend
 						var a = new ButtonEventArgs {
 							X = args.Event.X,
 							Y = args.Event.Y,
-							Button = (PointerButton) args.Event.Button
+							Button = (PointerButton) args.Event.Button,
+							IsContextMenuTrigger = args.Event.TriggersContextMenu ()
 						};
 						EventSink.OnButtonPressed (a);
 						if (a.Handled)

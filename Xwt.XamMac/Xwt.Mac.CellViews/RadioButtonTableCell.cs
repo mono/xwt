@@ -38,6 +38,8 @@ namespace Xwt.Mac
 {
 	class RadioButtonTableCell: NSButtonCell, ICellRenderer
 	{
+		bool visible = true;
+
 		public RadioButtonTableCell ()
 		{
 			SetButtonType (NSButtonType.Radio);
@@ -90,6 +92,20 @@ namespace Xwt.Mac
 			var cellView = Frontend;
 			base.State = cellView.Active ? NSCellStateValue.On : NSCellStateValue.Off;
 			Editable = cellView.Editable;
+			visible = cellView.Visible;
+		}
+
+		public override CoreGraphics.CGSize CellSizeForBounds (CoreGraphics.CGRect bounds)
+		{
+			if (visible)
+				return base.CellSizeForBounds (bounds);
+			return CoreGraphics.CGSize.Empty;
+		}
+
+		public override void DrawInteriorWithFrame (CoreGraphics.CGRect cellFrame, NSView inView)
+		{
+			if (visible)
+				base.DrawInteriorWithFrame (cellFrame, inView);
 		}
 
 		public void CopyFrom (object other)

@@ -38,7 +38,6 @@ namespace Xwt.Mac
 		public CGContext Context;
 		public CGSize Size;
 		public CGAffineTransform? InverseViewTransform;
-		public Stack<ContextStatus> StatusStack = new Stack<ContextStatus> ();
 		public ContextStatus CurrentStatus = new ContextStatus ();
 		public double ScaleFactor = 1;
 		public StyleSet Styles;
@@ -47,6 +46,8 @@ namespace Xwt.Mac
 	class ContextStatus
 	{
 		public object Pattern;
+		public double GlobalAlpha = 1;
+		public ContextStatus Previous;
 	}
 
 	public class MacContextBackendHandler: ContextBackendHandler
@@ -63,22 +64,27 @@ namespace Xwt.Mac
 		{
 			var ct = (CGContextBackend) backend;
 			ct.Context.SaveState ();
-			ct.StatusStack.Push (ct.CurrentStatus);
-			var newStatus = new ContextStatus ();
-			newStatus.Pattern = ct.CurrentStatus.Pattern;
-			ct.CurrentStatus = newStatus;
+			ct.CurrentStatus = new ContextStatus {
+				Pattern = ct.CurrentStatus.Pattern,
+				GlobalAlpha = ct.CurrentStatus.GlobalAlpha,
+				Previous = ct.CurrentStatus,
+			};
 		}
-		
+
 		public override void Restore (object backend)
 		{
 			var ct = (CGContextBackend) backend;
 			ct.Context.RestoreState ();
-			ct.CurrentStatus = ct.StatusStack.Pop ();
+			if (ct.CurrentStatus.Previous != null) {
+				ct.CurrentStatus = ct.CurrentStatus.Previous;
+			}
 		}
 
 		public override void SetGlobalAlpha (object backend, double alpha)
 		{
-			((CGContextBackend)backend).Context.SetAlpha ((float)alpha);
+			var ct = (CGContextBackend) backend;
+			ct.CurrentStatus.GlobalAlpha = alpha;
+			ct.Context.SetAlpha ((float)alpha);
 		}
 
 		public override void SetStyles (object backend, StyleSet styles)
@@ -296,8 +302,7 @@ namespace Xwt.Mac
 
 			// Add the styles that have been globaly set to the context
 			img.Styles = img.Styles.AddRange (cb.Styles);
-			
-			NSImage image = img.ToNSImage ();
+			img.Alpha *= cb.CurrentStatus.GlobalAlpha;
 
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)img.Alpha);
@@ -309,12 +314,14 @@ namespace Xwt.Mac
 			ctx.TranslateCTM ((float)(destRect.X - (srcRect.X * rx)), (float)(destRect.Y - (srcRect.Y * ry)));
 			ctx.ScaleCTM ((float)rx, (float)ry);
 
+			NSImage image = (NSImage)img.Backend;
 			if (image is CustomImage) {
-				((CustomImage)image).DrawInContext ((CGContextBackend)backend);
+				((CustomImage)image).DrawInContext ((CGContextBackend)backend, img);
 			} else {
-				var rr = new CGRect (0, 0, image.Size.Width, image.Size.Height);
+				var size = new CGSize ((nfloat)img.Size.Width, (nfloat)img.Size.Height);
+				var rr = new CGRect (0, 0, size.Width, size.Height);
 				ctx.ScaleCTM (1f, -1f);
-				ctx.DrawImage (new CGRect (0, -image.Size.Height, image.Size.Width, image.Size.Height), image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
+				ctx.DrawImage (new CGRect (0, -size.Height, size.Width, size.Height), image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
 			}
 
 			ctx.RestoreState ();

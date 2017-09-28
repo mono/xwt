@@ -1,10 +1,10 @@
 ﻿//
-// ICanvasCellViewBackend.cs
+// AccessibleBackendHandler.cs
 //
 // Author:
-//       Lluis Sanchez Gual <lluis@xamarin.com>
+//       Vsevolod Kukol <sevoku@microsoft.com>
 //
-// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
+// Copyright (c) 2017 Microsoft Corporation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,46 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Accessibility;
 
 namespace Xwt.Backends
 {
-	public interface ICanvasCellViewBackend: ICellViewBackend
+	public interface IAccessibleBackend : IBackend
 	{
-		void QueueDraw ();
-		bool IsHighlighted { get; }
+		void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink);
+
+		void Initialize (object parentWidget, IAccessibleEventSink eventSink);
+
+		bool IsAccessible { get; set; }
+
+		string Identifier { get; set; }
+
+		string Label { get; set; }
+
+		string Title { get; set; }
+
+		string Description { get; set; }
+
+		string Value { get; set; }
+
+		Uri Uri { get; set; }
+
+		Rectangle Bounds { get; set; }
+
+		Role Role { get; set; }
+
+		string RoleDescription { get; set; }
+	}
+
+	public interface IAccessibleEventSink
+	{
+		bool OnPress ();
+		//void OnPerformAccessibleAction (AccessibleActionEventArgs args);
+	}
+
+	public enum AccessibleEvent
+	{
+		Press,
+		//PerformAction,
 	}
 }
-

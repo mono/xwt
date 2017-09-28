@@ -38,6 +38,8 @@ namespace Xwt.GtkBackend
 		List<Gtk.FileFilter> gtkFilters;
 		List<FileDialogFilter> filters;
 
+		public ApplicationContext ApplicationContext { get; private set; }
+
 		public FileDialogBackend (Gtk.FileChooserAction action)
 		{
 			this.action = action;
@@ -45,6 +47,7 @@ namespace Xwt.GtkBackend
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			ApplicationContext = context;
 		}
 		
 		public void EnableEvent (object eventId)
@@ -127,8 +130,8 @@ namespace Xwt.GtkBackend
 		
 		public bool Run (IWindowFrameBackend parent)
 		{
-			var p = (WindowFrameBackend) parent;
-			int result = MessageService.RunCustomDialog (dialog, p != null ? p.Window : null);
+			var p = parent != null ? ApplicationContext.Toolkit.GetNativeWindow (parent) as Gtk.Window : null;
+			int result = MessageService.RunCustomDialog (dialog, p);
 			return result == (int) Gtk.ResponseType.Ok;
 		}
 		

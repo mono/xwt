@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <DebugSymbols>true</DebugSymbols>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -350,6 +352,9 @@
     <Compile Include="Xwt.Backends\IToggleCellViewFrontend.cs" />
     <Compile Include="Xwt.Backends\IDispatcherBackend.cs" />
     <Compile Include="Xwt\ITranslationCatalog.cs" />
+    <Compile Include="Xwt.Accessibility\Accessible.cs" />
+    <Compile Include="Xwt.Accessibility\IAccessibleBackend.cs" />
+    <Compile Include="Xwt.Accessibility\Role.cs" />
     <Compile Include="Xwt.Backends\IPopupWindowBackend.cs" />
     <Compile Include="Xwt\UtilityWindow.cs" />
     <Compile Include="Xwt.Backends\IUtilityWindowBackend.cs" />
@@ -366,6 +371,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup />
 </Project>

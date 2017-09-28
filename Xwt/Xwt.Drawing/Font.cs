@@ -248,7 +248,9 @@ namespace Xwt.Drawing
 				// add dummy font names for unit tests, the names are not exposed to users
 				// see the FontNameWith* tests (Testing/Tests/FontTests.cs) for details
 				installedFonts.Add("____FakeTestFont 72", "Arial");
-				installedFonts.Add("____FakeTestFont Rounded MT Bold", "Arial");
+				installedFonts.Add ("____FakeTestFont Rounded MT Bold", "Arial");
+				// HACK: add font mapping for patched pango SF Font support
+				installedFonts ["-apple-system-font"] = ".AppleSystemUIFont";
 			}
 		}
 

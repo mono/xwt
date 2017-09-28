@@ -36,6 +36,7 @@ using System.Reflection;
 using System.Xaml;
 using System.Linq;
 using Xwt.Motion;
+using Xwt.Accessibility;
 
 namespace Xwt
 {
@@ -319,6 +320,16 @@ namespace Xwt
 					foreach (var c in DirectChildren)
 						c.Dispose ();
 				}
+			}
+		}
+
+		Accessible accessible;
+		public Accessible Accessible {
+			get {
+				if (accessible == null) {
+					accessible = new Accessible (this);
+				}
+				return accessible;
 			}
 		}
 		
@@ -1739,7 +1750,7 @@ namespace Xwt
 				return;
 
 			if (w.Surface.ToolkitEngine != Surface.ToolkitEngine)
-				throw new InvalidOperationException ("Widget belongs to a different toolkit");
+				throw new InvalidOperationException (string.Format ("Widget belongs to toolkit '{0}' but it should belong to '{1}'.", w.Surface.ToolkitEngine, Surface.ToolkitEngine));
 
 			var wback = w.Backend as XwtWidgetBackend;
 

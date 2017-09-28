@@ -80,6 +80,12 @@ namespace Xwt
 		/// </summary>
 		/// <value>The number of the presses of the same button.</value>
 		public int MultiplePress { get; set; }
+
+		/// <summary>
+		/// Gets or sets value indicating whether context menu should be shown
+		/// </summary>
+		/// <value><c>true</c> if this context menu should be shown; otherwise, <c>false</c>.</value>
+		public bool IsContextMenuTrigger { get; set; }
 	}
 }
 

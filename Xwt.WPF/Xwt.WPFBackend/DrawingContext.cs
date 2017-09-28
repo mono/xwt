@@ -36,7 +36,7 @@ namespace Xwt.WPFBackend
 {
 	internal class DrawingContext:IDisposable
 	{
-		Stack<ContextData> pushes = new Stack<ContextData> ();
+		ContextData stackTop;
 		TransformGroup transforms = new TransformGroup ();
 		int pushCount;
 		bool disposed;
@@ -90,6 +90,7 @@ namespace Xwt.WPFBackend
 			public DashStyle DashStyle;
 			public Brush Pattern;
 			public int TransformCount;
+			public ContextData Previous;
 		}
 
 		public System.Windows.Media.DrawingContext Context { get; private set; }
@@ -137,20 +138,22 @@ namespace Xwt.WPFBackend
 				Pattern = patternBrush,
 				DashStyle = Pen.DashStyle,
 				TransformCount = transforms.Children.Count,
+				Previous = stackTop,
 			};
-			pushes.Push (cd);
+			stackTop = cd;
 			pushCount = 0;
 		}
 
 		public void Restore ()
 		{
-			if (pushes.Count == 0)
+			if (stackTop == null)
 				return;
 
 			for (int n = 0; n < pushCount; n++)
 				Context.Pop ();
 
-			var cd = pushes.Pop ();
+			var cd = stackTop;
+			stackTop = stackTop.Previous;
 			pushCount = cd.PushCount;
 
 			while (transforms.Children.Count > cd.TransformCount)

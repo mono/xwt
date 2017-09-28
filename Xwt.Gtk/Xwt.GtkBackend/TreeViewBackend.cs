@@ -171,6 +171,7 @@ namespace Xwt.GtkBackend
 					GLib.Source.Remove (expandTimer);
 				if (path != null) {
 					expandTimer = GLib.Timeout.Add (600, delegate {
+						expandTimer = 0;
 						Widget.ExpandRow (path, false);
 						return false;
 					});

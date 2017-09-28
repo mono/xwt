@@ -425,8 +425,16 @@ namespace Xwt.GtkBackend
 		{
 			if (stockId != null) {
 				ImageFrame frame = null;
-				if (frames != null)
-					frame = frames.FirstOrDefault (f => f.Width == (int) idesc.Size.Width && f.Height == (int) idesc.Size.Height && f.Scale == scaleFactor);
+
+				// PERF: lambdas capture here, this is a hot path.
+				if (frames != null) {
+					foreach (var f in frames) {
+						if (f.Width == (int)idesc.Size.Width && f.Height == (int)idesc.Size.Height && f.Scale == scaleFactor) {
+							frame = f;
+							break;
+						}
+					}
+				}
 				if (frame == null) {
 					frame = new ImageFrame (ImageHandler.CreateBitmap (stockId, idesc.Size.Width, idesc.Size.Height, scaleFactor), (int)idesc.Size.Width, (int)idesc.Size.Height, false);
 					frame.Scale = scaleFactor;
@@ -494,6 +502,7 @@ namespace Xwt.GtkBackend
 			this.SetHasWindow (false);
 			this.SetAppPaintable (true);
 			this.actx = actx;
+			Accessible.Role = Atk.Role.Image;
 		}
 
 		public ImageDescription Image {

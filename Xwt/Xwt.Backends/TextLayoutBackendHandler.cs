@@ -40,6 +40,7 @@ namespace Xwt.Backends
 		public abstract void SetText (object backend, string text);
 		public abstract void SetFont (object backend, Font font);
 		public abstract void SetTrimming (object backend, TextTrimming textTrimming);
+		public abstract void SetAlignment (object backend, Alignment alignment);
 		public abstract Size GetSize (object backend);
 		public abstract int GetIndexFromCoordinates (object backend, double x, double y);
 		public abstract Point GetCoordinateFromIndex (object backend, int index);

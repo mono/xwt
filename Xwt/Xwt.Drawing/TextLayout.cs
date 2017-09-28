@@ -40,6 +40,7 @@ namespace Xwt.Drawing
 		string text;
 		double width = -1;
 		double height = -1;
+		Alignment textAlignment;
 		TextTrimming textTrimming;
 		List<TextAttribute> attributes;
 
@@ -109,6 +110,8 @@ namespace Xwt.Drawing
 					handler.SetWidth (Backend, width);
 				if (height != -1)
 					handler.SetHeight (Backend, height);
+				if (textAlignment != default(Alignment))
+					handler.SetAlignment (Backend, textAlignment);
 				if (attributes != null && attributes.Count > 0)
 					foreach (var attr in attributes)
 						handler.AddAttribute (Backend, attr);
@@ -122,6 +125,7 @@ namespace Xwt.Drawing
 				Height = height,
 				Text = text,
 				Font = font,
+				TextAlignment = textAlignment,
 				TextTrimming = textTrimming,
 				Attributes = attributes != null ? new List<TextAttribute> (attributes) : null
 			};
@@ -158,6 +162,15 @@ namespace Xwt.Drawing
 		public double Height {
 			get { return this.height; }
 			set { this.height = value; handler.SetHeight (Backend, value); }
+		}
+
+		/// <summary>
+		/// Gets or sets the text alignment when drawn with multiple lines.
+		/// </summary>
+		/// <value>The text alignment.</value>
+		public Alignment TextAlignment {
+			get { return textAlignment; }
+			set { textAlignment = value; handler.SetAlignment (Backend, value); }
 		}
 
 		/// <summary>
@@ -336,6 +349,7 @@ namespace Xwt.Drawing
 		public double Height = -1;
 		public string Text;
 		public Font Font;
+		public Alignment TextAlignment;
 		public TextTrimming TextTrimming;
 		public List<TextAttribute> Attributes;
 
@@ -351,6 +365,8 @@ namespace Xwt.Drawing
 				la.Font = Font;
 			if (TextTrimming != default(TextTrimming))
 				la.Trimming = TextTrimming;
+			if (TextAlignment != default(Alignment))
+				la.TextAlignment = TextAlignment;
 			if (Attributes != null) {
 				foreach (var at in Attributes)
 					la.AddAttribute (at);
@@ -359,7 +375,7 @@ namespace Xwt.Drawing
 
 		public bool Equals (TextLayoutData other)
 		{
-			if (Width != other.Width || Height != other.Height || Text != other.Text || Font != other.Font || TextTrimming != other.TextTrimming)
+			if (Width != other.Width || Height != other.Height || Text != other.Text || Font != other.Font || TextTrimming != other.TextTrimming || TextAlignment != other.TextAlignment)
 				return false;
 			if (Attributes == null && other.Attributes == null)
 				return true;

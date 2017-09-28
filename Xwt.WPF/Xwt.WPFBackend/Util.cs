@@ -26,6 +26,7 @@
 using System.Windows;
 using System.Windows.Media;
 using System;
+using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
@@ -89,5 +90,19 @@ namespace Xwt.WPFBackend
 
 			return null;
 		}
-    }
+	}
+
+	class XwtWin32Window : System.Windows.Forms.IWin32Window
+	{
+		public XwtWin32Window (IWindowFrameBackend window)
+		{
+			this.window = window;
+		}
+
+		public IntPtr Handle {
+			get { return window.NativeHandle; }
+		}
+
+		readonly IWindowFrameBackend window;
+	}
 }

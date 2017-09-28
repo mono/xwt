@@ -13,5 +13,11 @@ namespace Xwt.WPFBackend
         {
             CurrentElement.InvalidateVisual ();
         }
+
+        public bool IsHighlighted {
+            get {
+                return false;
+            }
+        }
     }
 }

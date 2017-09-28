@@ -65,20 +65,29 @@ namespace Xwt.WPFBackend
 			get { return (WpfWindow)base.Window; }
 		}
 
+		bool initialized;
+
 		public override void Initialize ()
 		{
-			base.Initialize ();
-			Window.Frontend = (Window) Frontend;
-			if (Frontend is UtilityWindow)
-				defaultWindowStyle = WindowStyle.ToolWindow;
-			Decorated = true;
+			if (!initialized) {
+				base.Initialize();
+				Window.Frontend = (Window)Frontend;
+				if (Frontend is UtilityWindow)
+					defaultWindowStyle = WindowStyle.ToolWindow;
+				Decorated = true;
+				initialized = true;
+			}
 		}
 
 		public void Initialize(IWindowFrameEventSink sink, PopupWindow.PopupType type)
 		{
-			Initialize ();
-			defaultWindowStyle = WindowStyle.ToolWindow;
-			Decorated = false;
+			if (!initialized) {
+				base.Initialize();
+				Window.Frontend = (Window)Frontend;
+				defaultWindowStyle = WindowStyle.ToolWindow;
+				Decorated = false;
+				initialized = true;
+			}
 		}
 
 		// A Grid with a single column, and two rows (menu and child control).

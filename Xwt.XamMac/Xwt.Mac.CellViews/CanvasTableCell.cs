@@ -32,6 +32,8 @@ namespace Xwt.Mac
 {
 	class CanvasTableCell: NSCell, ICellRenderer
 	{
+		bool visible = true;
+
 		public CanvasTableCell (IntPtr p): base (p)
 		{
 		}
@@ -50,6 +52,7 @@ namespace Xwt.Mac
 
 		public void Fill ()
 		{
+			visible = Frontend.Visible;
 		}
 		
 		ICanvasCellViewFrontend Frontend {
@@ -61,6 +64,8 @@ namespace Xwt.Mac
 
 		public override CGSize CellSizeForBounds (CGRect bounds)
 		{
+			if (!visible)
+				return CGSize.Empty;
 			var size = new CGSize ();
 			Frontend.ApplicationContext.InvokeUserCode (delegate {
 				var s = Frontend.GetRequiredSize ();
@@ -75,6 +80,8 @@ namespace Xwt.Mac
 
 		public override void DrawInteriorWithFrame (CGRect cellFrame, NSView inView)
 		{
+			if (!visible)
+				return;
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 			
 			var backend = new CGContextBackend {

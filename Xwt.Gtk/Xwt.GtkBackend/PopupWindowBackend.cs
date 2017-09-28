@@ -34,8 +34,6 @@ namespace Xwt.GtkBackend
 
 		public override void Initialize ()
 		{
-			Window = new GtkPopoverWindow (Gtk.WindowType.Toplevel);
-			Window.TypeHint = Gdk.WindowTypeHint.Utility;
 			Window = new GtkPopoverWindow (windowType == PopupWindow.PopupType.Tooltip ? Gtk.WindowType.Popup : Gtk.WindowType.Toplevel);
 
 			switch (windowType) {
@@ -57,7 +55,6 @@ namespace Xwt.GtkBackend
 		void IPopupWindowBackend.Initialize (IWindowFrameEventSink sink, PopupWindow.PopupType type)
 		{
 			windowType = type;
-			((IWindowFrameBackend)this).Initialize (sink);
 		}
 	}
 }

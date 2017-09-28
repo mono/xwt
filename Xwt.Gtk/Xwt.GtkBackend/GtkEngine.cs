@@ -114,6 +114,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<ICalendarBackend, CalendarBackend> ();
 			RegisterBackend<IFontSelectorBackend, FontSelectorBackend> ();
 			RegisterBackend<ISelectFontDialogBackend, SelectFontDialogBackend> ();
+			RegisterBackend<IAccessibleBackend, AccessibleBackend> ();
 			RegisterBackend<IPopupWindowBackend, PopupWindowBackend> ();
 			RegisterBackend<IUtilityWindowBackend, UtilityWindowBackend> ();
 
@@ -227,7 +228,8 @@ namespace Xwt.GtkBackend
 			if (action == null)
 				throw new ArgumentNullException ("action");
 
-			Gtk.Application.Invoke (delegate {
+			// Switch to no Invoke(Action) once a gtk# release is done.
+			Gtk.Application.Invoke ((o, args) => {
 				action ();
 			});
 		}
