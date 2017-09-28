@@ -529,12 +529,15 @@ namespace Xwt
 		internal void InvokePlatformCode (Action a)
 		{
 			int prevCount = inUserCode;
+			var originalEngine = currentEngine;
 			try {
 				inUserCode = 1;
 				ExitUserCode (null);
-				a ();
+				currentEngine = Application.MainLoop.Engine;
+				a();
 			} finally {
 				inUserCode = prevCount;
+				currentEngine = originalEngine;
 			}
 		}
 		
