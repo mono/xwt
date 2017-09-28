@@ -224,7 +224,10 @@ namespace Xwt
 				message.Icon.InitForToolkit (Toolkit.CurrentEngine);
 
 			using (backend) {
-				var res = backend.Run (parent ?? RootWindow, message);
+				Command res = null;
+				Toolkit.CurrentEngine.InvokePlatformCode (delegate {
+					res = backend.Run (parent ?? RootWindow, message);
+				});
 				
 				if (backend.ApplyToAll)
 					message.ApplyToAllButton = res;
