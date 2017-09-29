@@ -156,7 +156,12 @@ namespace Xwt
 				if (!string.IsNullOrEmpty (title))
 					Backend.Title = title;
 				Backend.CanCreateFolders = canCreateFolders;
-				return Backend.Run ((IWindowFrameBackend)Toolkit.GetBackend (parentWindow));
+
+				bool result = false;
+				BackendHost.ToolkitEngine.InvokePlatformCode (delegate {
+					result = Backend.Run ((IWindowFrameBackend)Toolkit.GetBackend (parentWindow));
+				});
+				return result;
 			} finally {
 				currentFolder = Backend.CurrentFolder;
 				folder = Backend.Folder;

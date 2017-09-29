@@ -361,6 +361,7 @@ namespace Xwt
 	public class UILoop
 	{
 		Toolkit toolkit;
+		public Toolkit Engine { get { return toolkit; }}
 
 		internal UILoop (Toolkit toolkit)
 		{
