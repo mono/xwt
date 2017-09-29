@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 
 namespace Xwt.GtkBackend
 {
@@ -33,6 +34,13 @@ namespace Xwt.GtkBackend
 		{
 			if (!IsReallocating)
 				QueueResize ();
+		}
+
+		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		{
+			base.OnSizeRequested (ref requisition);
+			foreach (var c in children.Keys.ToArray ())
+				c.SizeRequest ();
 		}
 	}
 }
