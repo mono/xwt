@@ -1,5 +1,5 @@
 ﻿//
-// Test.cs
+// ContextSwitchTests.cs
 //
 // Author:
 //       Lluis Sanchez <llsan@microsoft.com>
@@ -41,6 +41,9 @@ namespace CoreTests
 		[Test]
 		public void AsyncContextSwitch ()
 		{
+			// Test that after an await, the current toolkit is changed to
+			// the toolkit active before the await.
+
 			Exception error = null;
 			Application.UnhandledException += (object sender, ExceptionEventArgs e) => {
 				error = e.ErrorException;
@@ -113,6 +116,10 @@ namespace CoreTests
 		[Test]
 		public void AppInvokeCapturesToolkit ()
 		{
+			// Test that Application.TimeoutInvoke() will invoke the callback in
+			// the context of the active toolkit, even though the event is always
+			// dispatched using the primary toolkit.
+
 			Exception error = null;
 			Application.UnhandledException += (object sender, ExceptionEventArgs e) => {
 				error = e.ErrorException;
@@ -154,6 +161,8 @@ namespace CoreTests
 		[Test]
 		public void TaskWaitRestoresMainToolkit ()
 		{
+			// Test that the main toolkit is restored when executing out-of-band UI events
+
 			Exception error = null;
 			Application.UnhandledException += (object sender, ExceptionEventArgs e) => {
 				error = e.ErrorException;
@@ -221,6 +230,8 @@ namespace CoreTests
 		[Test]
 		public void EventLoopPumpInMainToolkit ()
 		{
+			// Test that the main toolkit is always active when pumping the event loop.
+
 			Exception error = null;
 			Application.UnhandledException += (object sender, ExceptionEventArgs e) => {
 				error = e.ErrorException;

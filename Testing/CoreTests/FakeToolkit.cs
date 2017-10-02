@@ -99,17 +99,6 @@ namespace CoreTests
 			}, timeSpan);
 		}
 
-		void ScheduleTimerInvoke (CancellationTokenSource cts, Func<bool> action, TimeSpan timeSpan)
-		{
-			Task.Delay (timeSpan, cts.Token).ContinueWith (t => {
-				InvokeAsync (delegate {
-					if (action ())
-						ScheduleTimerInvoke (cts, action, timeSpan);
-				});
-				DispatchPendingEvents ();
-			}, TaskContinuationOptions.NotOnCanceled);
-		}
-
 		public override void CancelTimerInvoke (object id)
 		{
 			((CancellationTokenSource)id).Cancel ();
