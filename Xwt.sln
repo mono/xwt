@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk.Windows", "Xwt.Gtk.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk3", "Xwt.Gtk\Xwt.Gtk3.csproj", "{3B25FD1F-CEBA-4450-8893-DC330FDB56A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreTests", "Testing\CoreTests\CoreTests.csproj", "{F0C03C12-F08A-4378-958D-86DD4CFE966F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -255,6 +257,28 @@ Global
 		{E95833C9-90AA-4366-9262-0A1BED148249}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E95833C9-90AA-4366-9262-0A1BED148249}.XamMac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E95833C9-90AA-4366-9262-0A1BED148249}.XamMac-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Mac-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Win-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Win-Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Win-Debug|x86.Build.0 = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Debug|x86.Build.0 = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Linux-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Linux-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Linux-Debug|x86.Build.0 = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Mac-Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Mac-Debug|x86.Build.0 = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Release|x86.ActiveCfg = Release|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Release|x86.Build.0 = Release|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.XamMac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.XamMac-Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BC764278-4141-483C-8643-2EA8C40373B2} = {164E1FED-7688-4AE9-B19B-012F8784F9DD}
@@ -268,6 +292,7 @@ Global
 		{88C04B85-B69B-47B4-AB9F-64F6DD4E0897} = {83D74DDF-581E-4E2A-AE02-F4047A5B96C7}
 		{C1DF0C90-0C4C-4AB5-A45C-A1805587A844} = {83D74DDF-581E-4E2A-AE02-F4047A5B96C7}
 		{22524E1F-A94D-4204-AD90-A5FFE73970EC} = {83D74DDF-581E-4E2A-AE02-F4047A5B96C7}
+		{F0C03C12-F08A-4378-958D-86DD4CFE966F} = {164E1FED-7688-4AE9-B19B-012F8784F9DD}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
@@ -277,26 +302,8 @@ Global
 		$3.Text = @\n${FileName}\n \nAuthor:\n      ${AuthorName} <${AuthorEmail}>\n\nCopyright (c) ${Year} ${CopyrightHolder}\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.
 		$0.TextStylePolicy = $4
 		$4.FileWidth = 80
-		$4.IndentWidth = 3
 		$4.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $5
-		$5.IndentSwitchSection = False
-		$5.NewLinesForBracesInProperties = False
-		$5.NewLinesForBracesInAccessors = False
-		$5.NewLinesForBracesInAnonymousMethods = False
-		$5.NewLinesForBracesInControlBlocks = False
-		$5.NewLinesForBracesInAnonymousTypes = False
-		$5.NewLinesForBracesInObjectCollectionArrayInitializers = False
-		$5.NewLinesForBracesInLambdaExpressionBody = False
-		$5.NewLineForElse = False
-		$5.NewLineForCatch = False
-		$5.NewLineForFinally = False
-		$5.NewLineForMembersInObjectInit = False
-		$5.NewLineForMembersInAnonymousTypes = False
-		$5.NewLineForClausesInQuery = False
-		$5.SpacingAfterMethodDeclarationName = True
-		$5.SpaceAfterMethodCallName = True
-		$5.SpaceBeforeOpenSquareBracket = True
 		$5.scope = text/x-csharp
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution

@@ -303,7 +303,7 @@ namespace Xwt
 				throw new ArgumentException ("timeSpan can't be negative");
 
 			// Capture the current toolkit. It will be used in the invocation
-			var targetToolkit = toolkit;
+			var targetToolkit = Toolkit.CurrentEngine;
 
 			Timer t = new Timer ();
 			t.Id = engine.TimerInvoke (delegate {
@@ -373,12 +373,9 @@ namespace Xwt
 		/// </summary>
 		public void DispatchPendingEvents ()
 		{
-			try {
-				toolkit.ExitUserCode (null);
+			Toolkit.CurrentEngine.InvokePlatformCode (delegate {
 				toolkit.Backend.DispatchPendingEvents ();
-			} finally {
-				toolkit.EnterUserCode ();
-			}
+			});
 		}
 
 		/// <summary>

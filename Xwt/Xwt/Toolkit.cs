@@ -423,15 +423,31 @@ namespace Xwt
 		/// <summary>
 		/// Switches the current context to the context of this toolkit
 		/// </summary>
-		/// <returns>The previous context, or null if the context did not change.</returns>
-		SynchronizationContext SwitchContext ()
+		ToolkitContext SwitchContext ()
 		{
 			var current = System.Threading.SynchronizationContext.Current;
-			if ((current as XwtSynchronizationContext)?.TargetToolkit == this)
-				return null;
-			else {
+
+			// Store the current engine and the current context (which is not necessarily the context of the engine)
+			var currentContext = new ToolkitContext {
+				SynchronizationContext = current,
+				Engine = currentEngine
+			};
+
+			currentEngine = this;
+			if ((current as XwtSynchronizationContext)?.TargetToolkit != this)
 				System.Threading.SynchronizationContext.SetSynchronizationContext (SynchronizationContext);
-				return current;
+			return currentContext;
+		}
+
+		struct ToolkitContext
+		{
+			public SynchronizationContext SynchronizationContext;
+			public Toolkit Engine;
+
+			public void Restore ()
+			{
+				Toolkit.currentEngine = Engine;
+				System.Threading.SynchronizationContext.SetSynchronizationContext (SynchronizationContext);
 			}
 		}
 
@@ -448,11 +464,8 @@ namespace Xwt
 		/// <returns><c>true</c> if the action has been executed sucessfully; otherwise, <c>false</c>.</returns>
 		public bool Invoke (Action a)
 		{
-			var oldEngine = currentEngine;
-			SynchronizationContext oldContext = SwitchContext ();
-
+			ToolkitContext currentContext = SwitchContext ();
 			try {
-				currentEngine = this;
 				EnterUserCode ();
 				a ();
 				ExitUserCode (null);
@@ -461,19 +474,14 @@ namespace Xwt
 				ExitUserCode (ex);
 				return false;
 			} finally {
-				currentEngine = oldEngine;
-				if (oldContext != null)
-					System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
+				currentContext.Restore ();
 			}
 		}
 
 		public T Invoke<T> (Func<T> func)
 		{
-			var oldEngine = currentEngine;
-			SynchronizationContext oldContext = SwitchContext ();
-
+			ToolkitContext currentContext = SwitchContext ();
 			try {
-				currentEngine = this;
 				EnterUserCode ();
 				var res = func ();
 				ExitUserCode (null);
@@ -482,43 +490,32 @@ namespace Xwt
 				ExitUserCode (ex);
 				return default (T);
 			} finally {
-				currentEngine = oldEngine;
-				if (oldContext != null)
-					System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
+				currentContext.Restore ();
 			}
 		}
 
 		internal void InvokeAndThrow (Action a)
 		{
-			var oldEngine = currentEngine;
-			SynchronizationContext oldContext = SwitchContext ();
-
+			var currentContext = SwitchContext ();
 			try {
-				currentEngine = this;
 				EnterUserCode ();
 				a ();
 			} finally {
 				ExitUserCode (null);
-				currentEngine = oldEngine;
-				if (oldContext != null)
-					System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
+				currentContext.Restore ();
 			}
 		}
 
 		internal T InvokeAndThrow<T> (Func<T> func)
 		{
-			var oldEngine = currentEngine;
-			SynchronizationContext oldContext = SwitchContext ();
-
+			var currentContext = SwitchContext ();
 			try {
 				currentEngine = this;
 				EnterUserCode ();
 				return func ();
 			} finally {
 				ExitUserCode (null);
-				currentEngine = oldEngine;
-				if (oldContext != null)
-					System.Threading.SynchronizationContext.SetSynchronizationContext (oldContext);
+				currentContext.Restore ();
 			}
 		}
 
@@ -529,15 +526,15 @@ namespace Xwt
 		internal void InvokePlatformCode (Action a)
 		{
 			int prevCount = inUserCode;
-			var originalEngine = currentEngine;
+			inUserCode = 1;
+			ExitUserCode (null);
+			var currentContext = Application.MainLoop.Engine.SwitchContext ();
+
 			try {
-				inUserCode = 1;
-				ExitUserCode (null);
-				currentEngine = Application.MainLoop.Engine;
 				a();
 			} finally {
 				inUserCode = prevCount;
-				currentEngine = originalEngine;
+				currentContext.Restore ();
 			}
 		}
 		
