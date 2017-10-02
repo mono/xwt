@@ -54,9 +54,13 @@ test_script:
 - ps: >-
     msbuild Xwt.sln /p:Configuration="Win-Debug" /p:Platform="Any Cpu" /verbosity:quiet
 
-    nunit-console-x86.exe --framework=4.0 -domain=None -noshadow -nothread Testing\bin\WpfTestRunner.exe
-
     $wc = New-Object 'System.Net.WebClient'
+
+    nunit-console-x86.exe --framework=4.0 -domain=None -noshadow -nothread Testing\CoreTests\bin\Debug\CoreTests.dll
+
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
+
+    nunit-console-x86.exe --framework=4.0 -domain=None -noshadow -nothread Testing\bin\WpfTestRunner.exe
 
     $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
 
