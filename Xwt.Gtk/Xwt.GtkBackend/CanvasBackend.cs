@@ -141,7 +141,7 @@ namespace Xwt.GtkBackend
 			lastAllocation = allocation;
 			var dx = VisibleWindow ? 0 : allocation.X;
 			var dy = VisibleWindow ? 0 : allocation.Y;
-			foreach (var cr in children) {
+			foreach (var cr in children.ToArray()) {
 				var r = cr.Value;
 				var w = (int) Math.Max (r.Width, 0);
 				var h = (int) Math.Max (r.Height, 0);

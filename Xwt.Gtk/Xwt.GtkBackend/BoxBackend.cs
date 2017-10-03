@@ -145,7 +145,7 @@ namespace Xwt.GtkBackend
 			} catch {
 				IsReallocating = false;
 			}
-			foreach (var cr in children) {
+			foreach (var cr in children.ToArray()) {
 				var r = cr.Value.Rect;
 				cr.Key.SizeAllocate (new Gdk.Rectangle (allocation.X + (int)r.X, allocation.Y + (int)r.Y, (int)r.Width, (int)r.Height));
 			}

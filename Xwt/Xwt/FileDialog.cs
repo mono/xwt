@@ -182,7 +182,11 @@ namespace Xwt
 					Backend.ActiveFilter = activeFilter;
 				if (!string.IsNullOrEmpty (title))
 					Backend.Title = title;
-				return Backend.Run ((IWindowFrameBackend)Toolkit.GetBackend (parentWindow));
+				bool result = false;
+				BackendHost.ToolkitEngine.InvokePlatformCode (delegate {
+					result = Backend.Run ((IWindowFrameBackend)Toolkit.GetBackend (parentWindow));
+				});
+				return result;
 			} finally {
 				currentFolder = Backend.CurrentFolder;
 				activeFilter = Backend.ActiveFilter;

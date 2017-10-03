@@ -145,9 +145,9 @@ namespace Xwt
 		public static void Run ()
 		{
 			if (XwtSynchronizationContext.AutoInstall)
-			if (SynchronizationContext.Current == null || 
-			    (!((engine.IsGuest) || (SynchronizationContext.Current is XwtSynchronizationContext))))
-				SynchronizationContext.SetSynchronizationContext (new XwtSynchronizationContext ());
+			if (SynchronizationContext.Current == null ||
+				(!((engine.IsGuest) || (SynchronizationContext.Current is XwtSynchronizationContext))))
+					SynchronizationContext.SetSynchronizationContext (toolkit.SynchronizationContext);
 
 			toolkit.InvokePlatformCode (engine.RunApplication);
 		}
@@ -182,17 +182,19 @@ namespace Xwt
 		/// </param>
 		public static void Invoke (Action action)
 		{
-			if (action == null)
-				throw new ArgumentNullException ("action");
+			Invoke (action, toolkit);
+		}
 
-			engine.InvokeAsync (delegate {
-				try {
-					toolkit.EnterUserCode ();
-					action ();
-					toolkit.ExitUserCode (null);
-				} catch (Exception ex) {
-					toolkit.ExitUserCode (ex);
-				}
+		internal static void Invoke (Action action, Toolkit targetToolkit)
+		{
+			if (action == null)
+				throw new ArgumentNullException (nameof (action));
+
+			if (targetToolkit == null)
+				targetToolkit = toolkit;
+
+			targetToolkit.Backend.InvokeAsync (delegate {
+				targetToolkit.Invoke (action);
 			});
 		}
 
@@ -204,17 +206,17 @@ namespace Xwt
 			if (action == null)
 				throw new ArgumentNullException(nameof (action));
 
-			var ts = new TaskCompletionSource<int>();
+			// Capture the current toolkit. It will be used in the invocation
+			var targetToolkit = toolkit;
+
+			var ts = new TaskCompletionSource<int> ();
 
 			Action actionCall = () => {
 				try {
-					toolkit.EnterUserCode();
-					action();
-					ts.SetResult(0);
+					targetToolkit.InvokeAndThrow (action);
+					ts.SetResult (0);
 				} catch (Exception ex) {
-					ts.SetException(ex);
-				} finally {
-					toolkit.ExitUserCode(null);
+					ts.SetException (ex);
 				}
 			};
 
@@ -232,17 +234,17 @@ namespace Xwt
 		{
 			if (func == null)
 				throw new ArgumentNullException(nameof(func));
-			
+
+			// Capture the current toolkit. It will be used in the invocation
+			var targetToolkit = toolkit;
+
 			var ts = new TaskCompletionSource<T>();
 
 			Action funcCall = () => {
 				try {
-					toolkit.EnterUserCode();
-					ts.SetResult(func());
+					ts.SetResult (targetToolkit.InvokeAndThrow (func));
 				} catch (Exception ex) {
 					ts.SetException(ex);
-				} finally {
-					toolkit.ExitUserCode(null);
 				}
 			};
 
@@ -296,21 +298,16 @@ namespace Xwt
 		public static IDisposable TimeoutInvoke (TimeSpan timeSpan, Func<bool> action)
 		{
 			if (action == null)
-				throw new ArgumentNullException ("action");
+				throw new ArgumentNullException (nameof (action));
 			if (timeSpan.Ticks < 0)
 				throw new ArgumentException ("timeSpan can't be negative");
 
+			// Capture the current toolkit. It will be used in the invocation
+			var targetToolkit = Toolkit.CurrentEngine;
+
 			Timer t = new Timer ();
 			t.Id = engine.TimerInvoke (delegate {
-				bool res = false;
-				try {
-					toolkit.EnterUserCode ();
-					res = action ();
-					toolkit.ExitUserCode (null);
-				} catch (Exception ex) {
-					toolkit.ExitUserCode (ex);
-				}
-				return res;
+				return targetToolkit.Invoke (action);
 			}, timeSpan);
 			return t;
 		}
@@ -364,6 +361,7 @@ namespace Xwt
 	public class UILoop
 	{
 		Toolkit toolkit;
+		public Toolkit Engine { get { return toolkit; }}
 
 		internal UILoop (Toolkit toolkit)
 		{
@@ -375,12 +373,9 @@ namespace Xwt
 		/// </summary>
 		public void DispatchPendingEvents ()
 		{
-			try {
-				toolkit.ExitUserCode (null);
+			Toolkit.CurrentEngine.InvokePlatformCode (delegate {
 				toolkit.Backend.DispatchPendingEvents ();
-			} finally {
-				toolkit.EnterUserCode ();
-			}
+			});
 		}
 
 		/// <summary>
