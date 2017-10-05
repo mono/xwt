@@ -230,8 +230,10 @@ namespace Xwt.GtkBackend
 
 	internal class TextIndexer
 	{
-		int[] indexToByteIndex;
-		int[] byteIndexToIndex;
+		static readonly List<int> emptyList = new List<int> ();
+		static readonly int [] emptyArray = new int [0];
+		int [] indexToByteIndex;
+		List<int> byteIndexToIndex;
 
 		public TextIndexer (string text)
 		{
@@ -255,24 +257,27 @@ namespace Xwt.GtkBackend
 
 		public void SetupTables (string text)
 		{
-			if (text == null) {
-				this.indexToByteIndex = new int[0];
-				this.byteIndexToIndex = new int[0];
+			if (string.IsNullOrEmpty (text)) {
+				this.indexToByteIndex = emptyArray;
+				this.byteIndexToIndex = emptyList;
 				return;
 			}
 
-			var arr = text.ToCharArray ();
 			int byteIndex = 0;
-			int[] indexToByteIndex = new int[arr.Length];
-			var byteIndexToIndex = new List<int> ();
-			for (int i = 0; i < arr.Length; i++) {
-				indexToByteIndex[i] = byteIndex;
-				byteIndex += System.Text.Encoding.UTF8.GetByteCount (arr, i, 1);
-				while (byteIndexToIndex.Count < byteIndex)
-					byteIndexToIndex.Add (i);
+			int [] indexToByteIndex = new int [text.Length];
+			var byteIndexToIndex = new System.Collections.Generic.List<int> (text.Length);
+			unsafe {
+				fixed (char* p = text) {
+					for (int i = 0; i < text.Length; i++) {
+						indexToByteIndex[i] = byteIndex;
+						byteIndex += System.Text.Encoding.UTF8.GetByteCount (p + i, 1);
+						while (byteIndexToIndex.Count < byteIndex)
+							byteIndexToIndex.Add (i);
+					}
+				}
 			}
 			this.indexToByteIndex = indexToByteIndex;
-			this.byteIndexToIndex = byteIndexToIndex.ToArray ();
+			this.byteIndexToIndex = byteIndexToIndex;
 		}
 	}
 }
