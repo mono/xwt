@@ -228,7 +228,7 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	internal class TextIndexer
+	public class TextIndexer
 	{
 		static readonly List<int> emptyList = new List<int> ();
 		static readonly int [] emptyArray = new int [0];
