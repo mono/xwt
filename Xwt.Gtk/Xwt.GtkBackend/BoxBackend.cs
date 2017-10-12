@@ -142,7 +142,7 @@ namespace Xwt.GtkBackend
 			try {
 				IsReallocating = true;
 				OnReallocate ();
-			} catch {
+			} finally {
 				IsReallocating = false;
 			}
 			foreach (var cr in children.ToArray()) {
