@@ -120,7 +120,7 @@ namespace Xwt.WPFBackend
 			// Use the 'widgets' field so we can easily map a control position by looking at 'rects'.
 			for (int i = 0; i < widgets.Length; i++) {
 				var element = WidgetBackend.GetFrameworkElement (widgets [i]);
-				if (!element.IsArrangeValid || force) {
+				if (!element.IsArrangeValid || !element.IsMeasureValid || force) {
 					// Measure the widget again using the allocation constraints. This is necessary
 					// because WPF widgets my cache some measurement information based on the
 					// constraints provided in the last Measure call (which when calculating the
