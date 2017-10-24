@@ -260,6 +260,10 @@ namespace Xwt.WPFBackend
 						return (newItems.Count + oldItems.Count > 0);
 					});
 				}
+
+				if (!changeActive) {
+					shiftStart = GetTreeItem (SelectedItems [0]);
+				}
 				break;
 			}
 
@@ -318,6 +322,8 @@ namespace Xwt.WPFBackend
 				SelectedItems.Clear();
 			if (ShiftPressed)
 			{
+				if (shiftStart == null)
+					shiftStart = item;
 				if (shiftEnd != null)//Erase previous selection of shift
 					foreach (var forEachItem in GetItemsBetween(shiftStart, shiftEnd))
 						SelectedItems.Remove(forEachItem.DataContext);
