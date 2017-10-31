@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using AppKit;
 using Foundation;
 using Xwt.Accessibility;
@@ -171,6 +172,50 @@ namespace Xwt.Mac
 			set {
 				widget.AccessibilityRoleDescription = value;
 			}
+		}
+
+		public void AddChild (object nativeChild)
+		{
+			var accessible = nativeChild as INSAccessibility;
+			if (accessible == null) {
+				throw new ArgumentException ($"{nativeChild.GetType ().ToString ()} - should be INSAccessibility", nameof (nativeChild));
+			}
+
+			var child = nativeChild as NSAccessibilityElement;
+			var element = widget as NSAccessibilityElement;
+			if (element != null && child != null) {
+				element.AccessibilityAddChildElement (child);
+			} else {
+				var children = accessible.AccessibilityChildren;
+				if (children == null || children.Length == 0) {
+					accessible.AccessibilityChildren = new NSObject[] {(NSObject)accessible};
+				} else {
+					var length = children.Length;
+					var newChildren = new NSObject[children.Length + 1];
+					Array.Copy (children, newChildren, children.Length);
+					accessible.AccessibilityChildren = newChildren;
+				}
+			}
+		}
+
+		public void RemoveChild (object nativeChild)
+		{
+			var accessible = widget as INSAccessibility;
+			if (accessible == null) {
+				return;
+			}
+
+			accessible.AccessibilityChildren = accessible.AccessibilityChildren.Where(c => c != nativeChild).ToArray ();
+		}
+
+		public void RemoveAllChildren ()
+		{
+			var accessible = widget as INSAccessibility;
+			if (accessible == null) {
+				return;
+			}
+
+			accessible.AccessibilityChildren = null;
 		}
 
 		public void EnableEvent (object eventId)

@@ -183,6 +183,16 @@ namespace Xwt.Accessibility
 			}
 		}
 
+		public void AddChild (object nativeChild)
+		{
+			Backend.AddChild (nativeChild);
+		}
+
+		public void RemoveChild (object nativeChild)
+		{
+			Backend.RemoveChild (nativeChild);
+		}
+
 		bool OnPress ()
 		{
 			var args = new WidgetEventArgs ();
@@ -224,6 +234,18 @@ namespace Xwt.Accessibility
 		public Uri Uri { get; set; }
 
 		public bool IsAccessible { get; set; }
+
+		public void AddChild (object nativeChild)
+		{
+		}
+
+		public void RemoveChild (object nativeChild)
+		{
+		}
+
+		public void RemoveAllChildren ()
+		{
+		}
 
 		public void DisableEvent (object eventId)
 		{
