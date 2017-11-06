@@ -584,7 +584,10 @@ namespace Xwt.GtkBackend
 			{
 				if (!IsRealized)
 					return;
-				var color = (Gdk.Color) StyleGetProperty ("link-color");
+				var objColor = StyleGetProperty ("link-color");
+				var color = Gdk.Color.Zero;
+				if (objColor != null)
+					color = (Gdk.Color) objColor;
 				if (color.Equals (Gdk.Color.Zero))
 					color = Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToGtkValue ();
 				if (Buffer != null)
