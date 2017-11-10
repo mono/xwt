@@ -645,6 +645,11 @@ namespace Xwt.WPFBackend
 				e.Handled = true;
 		}
 
+		internal void WidgetMouseDownForDragHandler(object o, MouseButtonEventArgs e)
+		{
+			SetupDragRect(e);
+		}
+
 		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
 		{
 			var args = e.ToXwtButtonArgs (Widget);
@@ -742,6 +747,7 @@ namespace Xwt.WPFBackend
 			DragDropInfo.TargetTypes = types == null ? new TransferDataType [0] : types;
 			Widget.MouseUp += WidgetMouseUpForDragHandler;
 			Widget.MouseMove += WidgetMouseMoveForDragHandler;
+			Widget.MouseDown += WidgetMouseDownForDragHandler;
 		}
 
 		private void SetupDragRect (MouseEventArgs e)
@@ -752,7 +758,7 @@ namespace Xwt.WPFBackend
 			DragDropInfo.DragRect = new Rect (loc.X - width / 2, loc.Y - height / 2, width, height);
 		}
 
-		void WidgetMouseUpForDragHandler (object o, EventArgs e)
+		internal void WidgetMouseUpForDragHandler (object o, EventArgs e)
 		{
 			DragDropInfo.DragRect = Rect.Empty;
 		}
@@ -765,7 +771,7 @@ namespace Xwt.WPFBackend
 				return;
 
 			if (DragDropInfo.DragRect.IsEmpty)
-				SetupDragRect (e);
+				return;
 
 			if (DragDropInfo.DragRect.Contains (e.GetPosition (Widget)))
 				return;

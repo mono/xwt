@@ -133,6 +133,7 @@ namespace Xwt.WPFBackend
 		{
 			if (!view.SelectedItems.Contains (this.DataContext) || CtrlPressed)
 				view.SelectItem (this);
+			view.Backend.WidgetMouseDownForDragHandler (this, e);
 			e.Handled = true;
 			base.OnMouseLeftButtonDown (e);
 		}
@@ -141,6 +142,7 @@ namespace Xwt.WPFBackend
 		{
 			if (view.SelectedItems.Contains (this.DataContext) && !CtrlPressed)
 				view.SelectItem (this);
+			view.Backend.WidgetMouseUpForDragHandler(this, e);
 			e.Handled = true;
 			base.OnMouseLeftButtonUp (e);
 		}
