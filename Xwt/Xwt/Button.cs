@@ -167,6 +167,11 @@ namespace Xwt
 			get { return Backend.LabelColor; }
 			set { Backend.LabelColor = value; }
 		}
+
+		public bool IsDefault {
+			get { return Backend.IsDefault; }
+			set { Backend.IsDefault = value; }
+		}
 		
 		protected virtual void OnClicked (EventArgs e)
 		{
