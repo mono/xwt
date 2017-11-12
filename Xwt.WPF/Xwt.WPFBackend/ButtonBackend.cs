@@ -135,6 +135,8 @@ namespace Xwt.WPFBackend
 			set { Button.Foreground = ResPool.GetSolidBrush (value.ToWpfColor()); }
 		}
 
+		public bool IsDefault { get; set; } //TODO: Default Button
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
