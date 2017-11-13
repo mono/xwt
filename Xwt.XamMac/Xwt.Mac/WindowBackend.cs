@@ -29,6 +29,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using AppKit;
 using CoreGraphics;
 using Foundation;
@@ -110,11 +111,27 @@ namespace Xwt.Mac
 		internal void InternalShow ()
 		{
 			MakeKeyAndOrderFront (MacEngine.App);
+			if (ParentWindow != null)
+			{
+				if (!ParentWindow.ChildWindows.Contains(this))
+					ParentWindow.AddChildWindow(this, NSWindowOrderingMode.Above);
+
+				// always use NSWindow for alignment when running in guest mode and
+				// don't rely on AddChildWindow to position the window correctly
+				if (frontend.InitialLocation == WindowLocation.CenterParent && !(ParentWindow is WindowBackend))
+				{
+					var parentBounds = MacDesktopBackend.ToDesktopRect(ParentWindow.ContentRectFor(ParentWindow.Frame));
+					var bounds = ((IWindowFrameBackend)this).Bounds;
+					bounds.X = parentBounds.Center.X - (Frame.Width / 2);
+					bounds.Y = parentBounds.Center.Y - (Frame.Height / 2);
+					((IWindowFrameBackend)this).Bounds = bounds;
+				}
+			}
 		}
 		
 		public void Present ()
 		{
-			MakeKeyAndOrderFront (MacEngine.App);
+			InternalShow();
 		}
 
 		public bool Visible {
@@ -238,6 +255,8 @@ namespace Xwt.Mac
 				PerformClose(this);
 			else
 				Close ();
+			if (ParentWindow != null)
+				ParentWindow.RemoveChildWindow(this);
 			return closePerformed;
 		}
 		
@@ -378,8 +397,21 @@ namespace Xwt.Mac
 
 		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
 		{
-			// Generally, TransientFor is used to implement dialog, we reproduce the assumption here
-			Level = window == null ? NSWindowLevel.Normal : NSWindowLevel.ModalPanel;
+			if (!((IWindowFrameBackend)this).ShowInTaskbar)
+				StyleMask &= ~NSWindowStyle.Miniaturizable;
+
+			var win = window as NSWindow ?? ApplicationContext.Toolkit.GetNativeWindow(window) as NSWindow;
+
+			if (ParentWindow != win) {
+				// remove from the previous parent
+				if (ParentWindow != null)
+					ParentWindow.RemoveChildWindow(this);
+
+				ParentWindow = win;
+				// A window must be visible to be added to a parent. See InternalShow().
+				if (Visible)
+					ParentWindow.AddChildWindow(this, NSWindowOrderingMode.Above);
+			}
 		}
 
 		bool IWindowFrameBackend.Resizable {
