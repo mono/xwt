@@ -135,7 +135,17 @@ namespace Xwt.WPFBackend
 			set { Button.Foreground = ResPool.GetSolidBrush (value.ToWpfColor()); }
 		}
 
-		public bool IsDefault { get; set; } //TODO: Default Button
+		bool isDefault;
+		public virtual bool IsDefault {
+			get { return (Button as SWC.Button)?.IsDefault ?? isDefault; }
+			set {
+				var button = Button as SWC.Button;
+				if (button != null)
+					button.IsDefault = value;
+				else
+					isDefault = value; // just cache the value
+			}
+		}
 
 		public override void EnableEvent (object eventId)
 		{
