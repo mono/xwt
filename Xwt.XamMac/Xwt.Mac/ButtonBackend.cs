@@ -143,6 +143,17 @@ namespace Xwt.Mac
 				break;
 			}
 		}
+		bool isDefault;
+		public bool IsDefault {
+			get { return isDefault; }
+			set {
+				isDefault = value;
+				if (Widget.Window != null && Widget.Window.DefaultButtonCell != Widget.Cell)
+					Widget.Window.DefaultButtonCell = Widget.Cell;
+			}
+		}
+
+
 		
 		#endregion
 
@@ -221,6 +232,12 @@ namespace Xwt.Mac
 
 		public void DisableEvent (ButtonEvent ev)
 		{
+		}
+
+		public override void ViewDidMoveToWindow ()
+		{
+			if ((Backend as ButtonBackend)?.IsDefault == true && Window != null)
+				Window.DefaultButtonCell = Cell;
 		}
 
 		void OnActivatedInternal ()
