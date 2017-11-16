@@ -168,6 +168,16 @@ namespace Samples
 				Console.WriteLine("Collapsed: " + val);
 			};
 
+			RadioButtonGroup group = new RadioButtonGroup ();
+			foreach (SelectionMode mode in Enum.GetValues(typeof (SelectionMode))) {
+				var radio = new RadioButton (mode.ToString ());
+				radio.Group = group;
+				radio.Activated += delegate {
+					view.SelectionMode = mode;
+				};
+				PackStart (radio);
+			}
+
 			int addCounter = 0;
 			view.KeyPressed += (sender, e) => {
 				if (e.Key == Key.Insert) {
