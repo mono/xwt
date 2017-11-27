@@ -222,6 +222,8 @@ namespace Xwt.Mac
 				Cursor = NSCursor.CrosshairCursor;
 			else if (cursor == CursorType.Hand)
 				Cursor = NSCursor.OpenHandCursor;
+			else if (cursor == CursorType.Hand2)
+				Cursor = NSCursor.PointingHandCursor;
 			else if (cursor == CursorType.IBeam)
 				Cursor = NSCursor.IBeamCursor;
 			else if (cursor == CursorType.ResizeDown)
@@ -241,6 +243,10 @@ namespace Xwt.Mac
 				Cursor = NSCursor.ArrowCursor;
 			else if (cursor == CursorType.Move)
 				Cursor = NSCursor.ClosedHandCursor;
+			else if (cursor == CursorType.DragCopy)
+				Cursor = NSCursor.DragCopyCursor;
+			else if (cursor == CursorType.NotAllowed)
+				Cursor = NSCursor.OperationNotAllowedCursor;
 			else
 				Cursor = NSCursor.ArrowCursor;
 		}

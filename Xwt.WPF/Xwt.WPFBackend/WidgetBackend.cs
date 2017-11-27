@@ -439,7 +439,7 @@ namespace Xwt.WPFBackend
 				Widget.Cursor = Cursors.Arrow;
 			else if (cursor == CursorType.Crosshair)
 				Widget.Cursor = Cursors.Cross;
-			else if (cursor == CursorType.Hand)
+			else if (cursor == CursorType.Hand || cursor == CursorType.Hand2)
 				Widget.Cursor = Cursors.Hand;
 			else if (cursor == CursorType.IBeam)
 				Widget.Cursor = Cursors.IBeam;
@@ -455,6 +455,10 @@ namespace Xwt.WPFBackend
 				Widget.Cursor = Cursors.SizeWE;
 			else if (cursor == CursorType.ResizeLeftRight)
 				widget.Cursor = Cursors.SizeWE;
+			else if (cursor == CursorType.ResizeNE || cursor == CursorType.ResizeSW)
+				widget.Cursor = Cursors.SizeNESW;
+			else if (cursor == CursorType.ResizeNW || cursor == CursorType.ResizeSE)
+				widget.Cursor = Cursors.SizeNWSE;
 			else if (cursor == CursorType.Move)
 				widget.Cursor = Cursors.SizeAll;
 			else if (cursor == CursorType.Wait)
@@ -463,6 +467,8 @@ namespace Xwt.WPFBackend
 				widget.Cursor = Cursors.Help;
 			else if (cursor == CursorType.Invisible)
 				widget.Cursor = Cursors.None;
+			else if (cursor == CursorType.NotAllowed)
+				widget.Cursor = Cursors.No;
 			else
 				Widget.Cursor = Cursors.Arrow;
 		}
