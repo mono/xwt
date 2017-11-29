@@ -7,6 +7,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>MixedGtkMacTest</RootNamespace>
     <AssemblyName>MixedGtkMacTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
