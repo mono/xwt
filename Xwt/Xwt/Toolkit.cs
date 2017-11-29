@@ -832,6 +832,7 @@ namespace Xwt
 	{
 		public NativeWindowFrame (IWindowFrameBackend backend)
 		{
+			owned = false;
 			BackendHost.SetCustomBackend (backend);
 		}
 	}
