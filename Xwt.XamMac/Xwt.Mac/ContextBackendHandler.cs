@@ -46,6 +46,7 @@ namespace Xwt.Mac
 	class ContextStatus
 	{
 		public object Pattern;
+		public double GlobalAlpha = 1;
 		public ContextStatus Previous;
 	}
 
@@ -65,10 +66,11 @@ namespace Xwt.Mac
 			ct.Context.SaveState ();
 			ct.CurrentStatus = new ContextStatus {
 				Pattern = ct.CurrentStatus.Pattern,
+				GlobalAlpha = ct.CurrentStatus.GlobalAlpha,
 				Previous = ct.CurrentStatus,
 			};
 		}
-		
+
 		public override void Restore (object backend)
 		{
 			var ct = (CGContextBackend) backend;
@@ -80,7 +82,9 @@ namespace Xwt.Mac
 
 		public override void SetGlobalAlpha (object backend, double alpha)
 		{
-			((CGContextBackend)backend).Context.SetAlpha ((float)alpha);
+			var ct = (CGContextBackend) backend;
+			ct.CurrentStatus.GlobalAlpha = alpha;
+			ct.Context.SetAlpha ((float)alpha);
 		}
 
 		public override void SetStyles (object backend, StyleSet styles)
@@ -298,6 +302,7 @@ namespace Xwt.Mac
 
 			// Add the styles that have been globaly set to the context
 			img.Styles = img.Styles.AddRange (cb.Styles);
+			img.Alpha *= cb.CurrentStatus.GlobalAlpha;
 
 			ctx.SaveState ();
 			ctx.SetAlpha ((float)img.Alpha);

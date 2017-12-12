@@ -29,6 +29,7 @@ using System.Text;
 using AppKit;
 using CoreGraphics;
 using CoreImage;
+using CoreText;
 using Foundation;
 using ObjCRuntime;
 using Xwt.Backends;
@@ -238,6 +239,21 @@ namespace Xwt.Mac
 			default:
 				throw new NotSupportedException ();
 			}
+		}
+
+		public static bool TriggersContextMenu (this NSEvent theEvent)
+		{
+			if (theEvent.ButtonNumber == 1 &&
+					(NSEvent.CurrentPressedMouseButtons & 1 | NSEvent.CurrentPressedMouseButtons & 4) == 0) {
+				return true;
+			}
+
+			if (theEvent.ButtonNumber == 0 && (theEvent.ModifierFlags & NSEventModifierMask.ControlKeyMask) != 0 &&
+					(NSEvent.CurrentPressedMouseButtons & 2 | NSEvent.CurrentPressedMouseButtons & 4) == 0) {
+				return true;
+			}
+
+			return false;
 		}
 
 		public static NSImage ToNSImage (this ImageDescription idesc)

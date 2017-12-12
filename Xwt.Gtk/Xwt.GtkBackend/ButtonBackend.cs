@@ -47,8 +47,12 @@ namespace Xwt.GtkBackend
 		{
 			NeedsEventBox = false;
 			Widget = new Gtk.Button ();
+			Widget.Realized += (o, arg) =>
+			{
+				if (Widget.IsRealized && Widget.CanDefault)
+					Widget.GrabDefault();
+			};
 			base.Widget.Show ();
-			
 		}
 		
 		protected new Gtk.Button Widget {
@@ -81,6 +85,11 @@ namespace Xwt.GtkBackend
 					labelWidget.SetForegroundColor (Gtk.StateType.Prelight, value);
 				}
 			}
+		}
+
+		public virtual bool IsDefault {
+			get { return Widget.CanDefault; }
+			set { Widget.CanDefault = value; }
 		}
 
 		public override object Font {

@@ -1,4 +1,6 @@
 version: 0.2.{build}
+pull_requests:
+  do_not_increment_build_number: true
 branches:
   only:
   - master
@@ -52,9 +54,13 @@ test_script:
 - ps: >-
     msbuild Xwt.sln /p:Configuration="Win-Debug" /p:Platform="Any Cpu" /verbosity:quiet
 
-    nunit-console-x86.exe --framework=4.0 -domain=None -noshadow -nothread Testing\bin\WpfTestRunner.exe
-
     $wc = New-Object 'System.Net.WebClient'
+
+    nunit-console-x86.exe --framework=4.0 -domain=None -noshadow -nothread Testing\CoreTests\bin\Debug\CoreTests.dll
+
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
+
+    nunit-console-x86.exe --framework=4.0 -domain=None -noshadow -nothread Testing\bin\WpfTestRunner.exe
 
     $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
 
@@ -69,3 +75,10 @@ test_script:
 artifacts:
 - path: nuget\*.nupkg
   name: Xwt-$(APPVEYOR_BUILD_VERSION)
+deploy:
+- provider: NuGet
+  api_key:
+    secure: C0hKv2gXXCmE0YzVK8ZuY6o32lC6gYQqcNCPEoGyRki0lODQawgIgFnH0XgMjjX2
+  skip_symbols: true
+  on:
+    branch: master

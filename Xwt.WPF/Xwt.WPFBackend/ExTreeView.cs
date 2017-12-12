@@ -195,15 +195,8 @@ namespace Xwt.WPFBackend
 
 			foreach (object item in items) {
 				var treeItem = (ExTreeViewItem)g.ContainerFromItem (item);
-				if (treeItem == null) {
-					var ig = (IItemContainerGenerator)g;
-					using (ig.StartAt (new GeneratorPosition (-1, 1), GeneratorDirection.Forward)) {
-						ig.GenerateNext ();
-					}
-					treeItem = (ExTreeViewItem)g.ContainerFromItem (item);
-					if (treeItem == null)
-						continue;
-				}
+				if (treeItem == null)
+					continue;
 
 				if (!action (item, treeItem))
 					return false;
@@ -257,7 +250,7 @@ namespace Xwt.WPFBackend
 					HashSet<object> oldItems = (e.OldItems != null)
 												? new HashSet<object> (e.OldItems.Cast<object> ())
 												: new HashSet<object> ();
-					
+
 					TraverseTree ((o, ti) => {
 						if (newItems.Remove (o))
 							ti.IsSelected = true;
@@ -325,12 +318,18 @@ namespace Xwt.WPFBackend
 				SelectedItems.Clear();
 			if (ShiftPressed)
 			{
+				if (shiftStart == null)
+					shiftStart = item;
 				if (shiftEnd != null)//Erase previous selection of shift
 					foreach (var forEachItem in GetItemsBetween(shiftStart, shiftEnd))
 						SelectedItems.Remove(forEachItem.DataContext);
 				shiftEnd = item;
-				foreach (var forEachItem in GetItemsBetween(shiftStart, shiftEnd))
-					SelectedItems.Add(forEachItem.DataContext);
+				if (this.SelectionMode == SWC.SelectionMode.Single) {
+					SelectedItems.Add(item.DataContext);
+				} else {
+					foreach (var forEachItem in GetItemsBetween(shiftStart, shiftEnd))
+						SelectedItems.Add(forEachItem.DataContext);
+				}
 			}
 			else
 			{

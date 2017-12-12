@@ -29,6 +29,7 @@ using Xwt.Backends;
 using Gtk;
 using System.Collections.Generic;
 using System.Linq;
+using Gdk;
 #if XWT_GTK3
 using TreeModel = Gtk.ITreeModel;
 #endif
@@ -498,10 +499,14 @@ namespace Xwt.GtkBackend
 	class CustomTreeView: Gtk.TreeView
 	{
 		WidgetBackend backend;
-		
+		TreePath delayedSelection;
+		TreeViewColumn delayedSelectionColumn;
+
 		public CustomTreeView (WidgetBackend b)
 		{
 			backend = b;
+			base.DragBegin += (_, __) =>
+				delayedSelection = null;
 		}
 
 		static CustomTreeView ()
@@ -514,6 +519,41 @@ namespace Xwt.GtkBackend
 				GtkWorkarounds.RemoveKeyBindingFromClass (Gtk.TreeView.GType, Gdk.Key.BackSpace, Gdk.ModifierType.None);
 		}
 
+		protected override bool OnButtonPressEvent (EventButton evnt)
+		{
+			// If we are clicking on already selected row, delay the selection until we are certain that
+			// the user is not starting a DragDrop operation. 
+			// This is needed to allow user to drag multiple selected rows.
+			TreePath treePath;
+			TreeViewColumn column;
+			GetPathAtPos ((int)evnt.X, (int)evnt.Y, out treePath, out column);
+			var ctrlShiftMask = (evnt.State & (Gdk.ModifierType.ShiftMask | Gdk.ModifierType.ControlMask | Gdk.ModifierType.Mod2Mask));
+			if (evnt.Button == 1 && this.Selection.PathIsSelected (treePath) && ctrlShiftMask == 0) {
+				delayedSelection = treePath;
+				delayedSelectionColumn = column;
+				Selection.SelectFunction = (_, __, ___, ____) => false;
+				var result = false;
+				try {
+					result = base.OnButtonPressEvent (evnt);
+				} finally {
+					Selection.SelectFunction = (_, __, ___, ____) => true;
+				}
+				return result;
+			}
+			return base.OnButtonPressEvent (evnt);
+		}
+
+		protected override bool OnButtonReleaseEvent (EventButton evnt)
+		{
+			// Now, if mouse hadn't moved, we are certain that this was just a click. Proceed as usual.
+			if (delayedSelection != null) {
+				SetCursor (delayedSelection, delayedSelectionColumn, false);
+				delayedSelection = null;
+				delayedSelectionColumn = null;
+			}
+			return base.OnButtonReleaseEvent (evnt);
+		}
+
 		protected override void OnDragDataDelete (Gdk.DragContext context)
 		{
 			// This method is override to avoid the default implementation
@@ -523,4 +563,3 @@ namespace Xwt.GtkBackend
 		}
 	}
 }
-

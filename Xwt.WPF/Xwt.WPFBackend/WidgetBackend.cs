@@ -439,7 +439,7 @@ namespace Xwt.WPFBackend
 				Widget.Cursor = Cursors.Arrow;
 			else if (cursor == CursorType.Crosshair)
 				Widget.Cursor = Cursors.Cross;
-			else if (cursor == CursorType.Hand)
+			else if (cursor == CursorType.Hand || cursor == CursorType.Hand2)
 				Widget.Cursor = Cursors.Hand;
 			else if (cursor == CursorType.IBeam)
 				Widget.Cursor = Cursors.IBeam;
@@ -455,6 +455,10 @@ namespace Xwt.WPFBackend
 				Widget.Cursor = Cursors.SizeWE;
 			else if (cursor == CursorType.ResizeLeftRight)
 				widget.Cursor = Cursors.SizeWE;
+			else if (cursor == CursorType.ResizeNE || cursor == CursorType.ResizeSW)
+				widget.Cursor = Cursors.SizeNESW;
+			else if (cursor == CursorType.ResizeNW || cursor == CursorType.ResizeSE)
+				widget.Cursor = Cursors.SizeNWSE;
 			else if (cursor == CursorType.Move)
 				widget.Cursor = Cursors.SizeAll;
 			else if (cursor == CursorType.Wait)
@@ -463,6 +467,8 @@ namespace Xwt.WPFBackend
 				widget.Cursor = Cursors.Help;
 			else if (cursor == CursorType.Invisible)
 				widget.Cursor = Cursors.None;
+			else if (cursor == CursorType.NotAllowed)
+				widget.Cursor = Cursors.No;
 			else
 				Widget.Cursor = Cursors.Arrow;
 		}
@@ -645,6 +651,11 @@ namespace Xwt.WPFBackend
 				e.Handled = true;
 		}
 
+		internal void WidgetMouseDownForDragHandler(object o, MouseButtonEventArgs e)
+		{
+			SetupDragRect(e);
+		}
+
 		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
 		{
 			var args = e.ToXwtButtonArgs (Widget);
@@ -742,6 +753,7 @@ namespace Xwt.WPFBackend
 			DragDropInfo.TargetTypes = types == null ? new TransferDataType [0] : types;
 			Widget.MouseUp += WidgetMouseUpForDragHandler;
 			Widget.MouseMove += WidgetMouseMoveForDragHandler;
+			Widget.MouseDown += WidgetMouseDownForDragHandler;
 		}
 
 		private void SetupDragRect (MouseEventArgs e)
@@ -752,7 +764,7 @@ namespace Xwt.WPFBackend
 			DragDropInfo.DragRect = new Rect (loc.X - width / 2, loc.Y - height / 2, width, height);
 		}
 
-		void WidgetMouseUpForDragHandler (object o, EventArgs e)
+		internal void WidgetMouseUpForDragHandler (object o, EventArgs e)
 		{
 			DragDropInfo.DragRect = Rect.Empty;
 		}
@@ -765,7 +777,7 @@ namespace Xwt.WPFBackend
 				return;
 
 			if (DragDropInfo.DragRect.IsEmpty)
-				SetupDragRect (e);
+				return;
 
 			if (DragDropInfo.DragRect.Contains (e.GetPosition (Widget)))
 				return;

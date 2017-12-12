@@ -37,6 +37,7 @@ namespace Xwt.GtkBackend
 		Rectangle backgroundArea;
 		bool isSelected;
 		bool hasFocus;
+		bool isPrelit;
 		bool isDrawing;
 
 		public override void Initialize (ICellViewFrontend cellView, ICellRendererTarget rendererTarget, object target)
@@ -52,8 +53,10 @@ namespace Xwt.GtkBackend
 		{
 			this.cellArea = ca;
 			this.backgroundArea = ba;
-			isSelected = (flags & Gtk.CellRendererState.Selected) != 0;
-			hasFocus = (flags & Gtk.CellRendererState.Focused) != 0;
+			isSelected = (flags & CellRendererState.Selected) != 0;
+			hasFocus = (flags & CellRendererState.Focused) != 0;
+			isPrelit = (flags & CellRendererState.Prelit) != 0;
+
 			isDrawing = true;
 		}
 
@@ -91,6 +94,14 @@ namespace Xwt.GtkBackend
 				if (isDrawing)
 					return hasFocus;
 				return base.HasFocus;
+			}
+		}
+
+		public bool IsHighlighted {
+			get {
+				if (isDrawing)
+					return isPrelit;
+				return false;
 			}
 		}
 	}

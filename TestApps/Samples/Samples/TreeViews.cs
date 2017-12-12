@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using Xwt;
+using Xwt.Drawing;
 
 namespace Samples
 {
@@ -147,6 +148,8 @@ namespace Samples
 			view.DragStarted += delegate(object sender, DragStartedEventArgs e) {
 				var val = store.GetNavigatorAt (view.SelectedRow).GetValue (text);
 				e.DragOperation.Data.AddValue (val);
+				var img = Image.FromResource(GetType(), "class.png");
+				e.DragOperation.SetDragImage(img, (int)img.Size.Width, (int)img.Size.Height);
 				e.DragOperation.Finished += delegate(object s, DragFinishedEventArgs args) {
 					Console.WriteLine ("D:" + args.DeleteSource);
 				};
@@ -167,6 +170,16 @@ namespace Samples
 				var val = store.GetNavigatorAt (e.Position).GetValue (text);
 				Console.WriteLine("Collapsed: " + val);
 			};
+
+			RadioButtonGroup group = new RadioButtonGroup ();
+			foreach (SelectionMode mode in Enum.GetValues(typeof (SelectionMode))) {
+				var radio = new RadioButton (mode.ToString ());
+				radio.Group = group;
+				radio.Activated += delegate {
+					view.SelectionMode = mode;
+				};
+				PackStart (radio);
+			}
 
 			int addCounter = 0;
 			view.KeyPressed += (sender, e) => {

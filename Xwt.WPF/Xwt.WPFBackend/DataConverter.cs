@@ -380,7 +380,8 @@ namespace Xwt.WPFBackend
 				X = pos.X,
 				Y = pos.Y,
 				MultiplePress = e.ClickCount,
-				Button = e.ChangedButton.ToXwtButton ()
+				Button = e.ChangedButton.ToXwtButton (),
+				IsContextMenuTrigger = e.ChangedButton == MouseButton.Right && e.RightButton == MouseButtonState.Released
 			};
 		}
 

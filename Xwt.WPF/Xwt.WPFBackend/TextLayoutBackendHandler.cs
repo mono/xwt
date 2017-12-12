@@ -68,6 +68,12 @@ namespace Xwt.WPFBackend
 			t.SetFont (font);
 		}
 
+		public override void SetAlignment(object backend, Alignment alignment)
+		{
+			var t = (TextLayoutBackend)backend;
+			t.SetAlignment (alignment);
+		}
+
 		public override void SetTrimming (object backend, Xwt.Drawing.TextTrimming textTrimming)
 		{
 			var t = (TextLayoutBackend)backend;
@@ -129,6 +135,7 @@ namespace Xwt.WPFBackend
 		double height;
 		string text = String.Empty;
 		Xwt.Drawing.TextTrimming? textTrimming;
+		Xwt.Alignment? textAlignment;
 		bool needsRebuild;
 
 		readonly ApplicationContext ApplicationContext;
@@ -205,6 +212,21 @@ namespace Xwt.WPFBackend
 			FormattedText.SetFontStretch(f.Stretch);
 			FormattedText.SetFontStyle(f.Style);
 			FormattedText.SetFontWeight(f.Weight);
+		}
+
+		public void SetAlignment(Xwt.Alignment textAlignment)
+		{
+			if (this.textAlignment != textAlignment)
+			{
+				this.textAlignment = textAlignment;
+				if (formattedText != null)
+					ApplyAlignment();
+			}
+		}
+
+		void ApplyAlignment()
+		{
+			FormattedText.TextAlignment = DataConverter.ToTextAlignment (textAlignment ?? Alignment.Start);
 		}
 
 		public void SetTrimming(Xwt.Drawing.TextTrimming textTrimming)
@@ -299,6 +321,8 @@ namespace Xwt.WPFBackend
 				formattedText.MaxTextHeight = height;
 			if (Font != null)
 				ApplyFont();
+			if (textAlignment != null)
+				ApplyAlignment();
 			if (textTrimming != null)
 				ApplyTrimming();
 
