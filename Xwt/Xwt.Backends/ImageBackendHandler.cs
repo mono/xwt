@@ -43,7 +43,7 @@ namespace Xwt.Backends
 		{
 			using (var s = asm.GetManifestResourceStream (name)) {
 				if (s == null)
-					throw new InvalidOperationException ("Resource not found: " + name);
+					return null;
 				return LoadFromStream (s);
 			}
 		}
