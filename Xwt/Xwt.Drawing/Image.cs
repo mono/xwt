@@ -191,6 +191,9 @@ namespace Xwt.Drawing
 				throw new ToolkitNotInitializedException ();
 
 			var img = loader.LoadImage (fileName);
+			if (img == null)
+				return null;
+
 			var reqSize = toolkit.ImageBackendHandler.GetSize (img);
 
 			var ext = GetExtension (fileName);
@@ -1014,8 +1017,6 @@ namespace Xwt.Drawing
 		public override object LoadImage (string fileName)
 		{
 			var img = toolkit.ImageBackendHandler.LoadFromResource (assembly, fileName);
-			if (img == null)
-				throw new InvalidOperationException ("Resource not found: " + fileName);
 			return img;
 		}
 
