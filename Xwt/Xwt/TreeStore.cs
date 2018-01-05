@@ -37,7 +37,7 @@ namespace Xwt
 	[BackendType (typeof(ITreeStoreBackend))]
 	public class TreeStore: XwtComponent, ITreeDataSource
 	{
-		IDataField[] fields;
+		readonly IDataField[] fields;
 		
 		class TreeStoreBackendHost: BackendHost<TreeStore,ITreeStoreBackend>
 		{
@@ -68,6 +68,11 @@ namespace Xwt
 		
 		ITreeStoreBackend Backend {
 			get { return (ITreeStoreBackend)BackendHost.Backend; }
+		}
+
+		public void SetSortField (IDataField field, ColumnSortDirection order)
+		{
+			Backend.SetSortField (field, order);
 		}
 		
 		public TreeNavigator GetFirstNode ()
@@ -228,6 +233,38 @@ namespace Xwt
 				return ParentList.GetHashCode () ^ NodeId;
 			}
 		}
+
+		class NodeComparer : IComparer<Node>
+		{
+
+			readonly int fieldIndex;
+
+			readonly ColumnSortDirection direction;
+
+			public NodeComparer (int fieldIndex, ColumnSortDirection direction)
+			{
+				this.fieldIndex = fieldIndex;
+				this.direction = direction;
+
+			}
+
+			#region IComparer implementation
+
+			public int Compare (Node x, Node y)
+			{
+				var xData = x.Data [fieldIndex] as IComparable;
+				if (xData != null) {
+					if (direction == ColumnSortDirection.Ascending)
+						return xData.CompareTo (y.Data [fieldIndex]);
+					return -xData.CompareTo (y.Data [fieldIndex]);
+				}
+				// TODO: What to do here?
+				return 0;
+			}
+
+			#endregion
+
+		}
 		
 		class NodeList: List<Node>
 		{
@@ -235,10 +272,13 @@ namespace Xwt
 		}
 		
 		Type[] columnTypes;
-		NodeList rootNodes = new NodeList ();
+		readonly NodeList rootNodes = new NodeList ();
 		int version;
 		int nextNodeId;
-		
+
+		int sortFieldId = -1;
+		ColumnSortDirection columnSortDirection;
+
 		public event EventHandler<TreeNodeEventArgs> NodeInserted;
 		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
@@ -257,7 +297,46 @@ namespace Xwt
 		{
 			rootNodes.Clear ();
 		}
-		
+
+		public void SetSortField (IDataField field, ColumnSortDirection direction)
+		{
+			if (sortFieldId != field.Index) {
+				sortFieldId = field.Index;
+				columnSortDirection = direction;
+				Sort (rootNodes, true);
+			}
+		}
+
+		void Sort (NodeList toSort, bool recurse = false)
+		{
+			DoSort (toSort, recurse);
+			version++;
+		}
+
+		void DoSort (NodeList toSort, bool recurse = false)
+		{
+			var oldPositions = new Dictionary<Node, int> ();
+			int i = 0;
+			foreach (var node in toSort) {
+				oldPositions.Add (node, i++);
+			}
+
+			toSort.Sort (new NodeComparer(sortFieldId, columnSortDirection));
+
+			var oldIndexes = new int[toSort.Count];
+			for (int j = 0; j < toSort.Count; j++) {
+				oldIndexes [j] = oldPositions [toSort [j]];
+			}
+			if (NodesReordered != null) {
+				NodesReordered (this, new TreeNodeOrderEventArgs (toSort.Parent, oldIndexes));
+			}
+
+			if (!recurse)
+				return;
+			foreach (var child in toSort)
+				DoSort (child.Children, true);
+		}
+
 		NodePosition GetPosition (TreePosition pos)
 		{
 			if (pos == null)
@@ -289,6 +368,7 @@ namespace Xwt
 			node.Data [column] = value;
 			if (NodeChanged != null)
 				NodeChanged (this, new TreeNodeEventArgs (pos));
+			Sort (n.ParentList);
 		}
 
 		public object GetValue (TreePosition pos, int column)
@@ -353,13 +433,13 @@ namespace Xwt
 			np.ParentList.Insert (np.NodeIndex, nn);
 			version++;
 			
-			// Update the NodePosition since it is now invalid
-			np.NodeIndex++;
-			np.StoreVersion = version;
-			
 			var node = new NodePosition () { ParentList = np.ParentList, NodeId = nn.NodeId, NodeIndex = np.NodeIndex - 1, StoreVersion = version };
 			if (NodeInserted != null)
 				NodeInserted (this, new TreeNodeEventArgs (node));
+			
+			// Don't update the NodePosition. We cannot know what index will be correct after sorting.
+			Sort (np.ParentList);
+
 			return node;
 		}
 
@@ -372,12 +452,13 @@ namespace Xwt
 			np.ParentList.Insert (np.NodeIndex + 1, nn);
 			version++;
 			
-			// Update the provided position is still valid
-			np.StoreVersion = version;
-			
 			var node = new NodePosition () { ParentList = np.ParentList, NodeId = nn.NodeId, NodeIndex = np.NodeIndex + 1, StoreVersion = version };
 			if (NodeInserted != null)
 				NodeInserted (this, new TreeNodeEventArgs (node));
+			
+			// Don't update the NodePosition. We cannot know what index will be correct after sorting.
+			Sort (np.ParentList);
+
 			return node;
 		}
 		

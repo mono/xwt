@@ -183,7 +183,30 @@ namespace Xwt.WPFBackend
 			this.topNodes.Clear();
 		}
 
-		public IEnumerator GetEnumerator ()
+		#region Sorting handling
+
+		public void SetSortField(IDataField field, ColumnSortDirection order)
+		{
+			SortField = field;
+			SortOrder = order;
+			OnSortOptionsChanged(new SortingOptionsEventArgs(field, order));
+		}
+
+		public event EventHandler<SortingOptionsEventArgs> SortOptionsChanged;
+
+		protected virtual void OnSortOptionsChanged(SortingOptionsEventArgs e)
+		{
+			var handler = SortOptionsChanged;
+			if (handler != null) handler(this, e);
+		}
+
+		public ColumnSortDirection SortOrder { get; private set; }
+
+		public IDataField SortField { get; private set; }
+
+		#endregion
+
+        public IEnumerator GetEnumerator ()
 		{
 			return this.topNodes.GetEnumerator ();
 		}
@@ -235,5 +258,18 @@ namespace Xwt.WPFBackend
 			if (handler != null)
 				handler (this, e);
 		}
+	}
+
+	public class SortingOptionsEventArgs : EventArgs
+	{
+		public SortingOptionsEventArgs(IDataField sortingField, ColumnSortDirection sortOrder)
+		{
+			SortField = sortingField;
+			SortOrder = sortOrder;
+		}
+
+		public ColumnSortDirection SortOrder { get; private set; }
+
+		public IDataField SortField { get; private set; }
 	}
 }
