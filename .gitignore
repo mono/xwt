@@ -13,3 +13,5 @@ obj
 test-results
 .nuget/
 packages/
+.vs/
+
