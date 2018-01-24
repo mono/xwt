@@ -528,7 +528,7 @@ namespace Xwt.GtkBackend
 			TreeViewColumn column;
 			GetPathAtPos ((int)evnt.X, (int)evnt.Y, out treePath, out column);
 			var ctrlShiftMask = (evnt.State & (Gdk.ModifierType.ShiftMask | Gdk.ModifierType.ControlMask | Gdk.ModifierType.Mod2Mask));
-			if (evnt.Button == 1 && this.Selection.PathIsSelected (treePath) && ctrlShiftMask == 0) {
+			if (treePath != null && evnt.Button == 1 && this.Selection.PathIsSelected (treePath) && ctrlShiftMask == 0) {
 				delayedSelection = treePath;
 				delayedSelectionColumn = column;
 				Selection.SelectFunction = (_, __, ___, ____) => false;
