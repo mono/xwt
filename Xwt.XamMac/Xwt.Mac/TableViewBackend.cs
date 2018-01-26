@@ -218,7 +218,7 @@ namespace Xwt.Mac
 			var container = Table.GetView (cellBackend.Column, row, false) as CompositeCell;
 			if (container != null) {
 				var cellView = container.GetCellViewForBackend (cellBackend);
-				rect = cellView.ConvertRectToView (new CoreGraphics.CGRect (new CoreGraphics.CGPoint (0, 0), cellView.Frame.Size), Table).ToXwtRect ();
+				rect = cellView.ConvertRectToView (new CGRect (CGPoint.Empty, cellView.Frame.Size), Table).ToXwtRect ();
 				rect.Y -= scroll.DocumentVisibleRect.Y;
 				rect.X -= scroll.DocumentVisibleRect.X;
 			}

@@ -181,7 +181,7 @@ namespace Xwt.Mac
 				c.Fill ();
 			}
 
-			foreach (var c in GetCells (new CGRect (new CGPoint (0, 0), Frame.Size))) {
+			foreach (var c in GetCells (new CGRect (CGPoint.Empty, Frame.Size))) {
 				c.Cell.Frame = c.Frame;
 				c.Cell.NeedsDisplay = true;
 			}
