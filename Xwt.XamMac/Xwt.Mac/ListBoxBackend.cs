@@ -32,7 +32,7 @@ namespace Xwt.Mac
 {
 	public class ListBoxBackend: ListViewBackend, IListBoxBackend
 	{
-		ListViewColumn column = new ListViewColumn ();
+		readonly ListViewColumn column = new ListViewColumn { Expands = true };
 		NSTableColumn columnHandle;
 
 		public ListBoxBackend ()

@@ -25,27 +25,20 @@
 // THE SOFTWARE.
 using System;
 using Xwt.Backends;
-
-#if MONOMAC
-using nint = System.Int32;
-using nfloat = System.Single;
-using MonoMac.AppKit;
-#else
 using AppKit;
-#endif
 
 namespace Xwt.Mac
 {
-	class RadioButtonTableCell: NSButtonCell, ICellRenderer
+	class RadioButtonTableCell: NSButton, ICellRenderer
 	{
-		bool visible = true;
+		NSTrackingArea trackingArea;
 
 		public RadioButtonTableCell ()
 		{
 			SetButtonType (NSButtonType.Radio);
 			AllowsMixedState = false;
 			Activated += HandleActivated;
-			Title = "";
+			Title = string.Empty;
 		}
 
 		public override NSCellStateValue State {
@@ -53,30 +46,19 @@ namespace Xwt.Mac
 				return base.State;
 			}
 			set {
-				if (base.State != value)
-					stateChanging = true;
-				base.State = value;
+				// don't let Cocoa set the state for us
 			}
 		}
 
-		bool stateChanging;
 		void HandleActivated (object sender, EventArgs e)
 		{
-			if (State == NSCellStateValue.On && stateChanging) {
-				var cellView = Frontend;
-				CellContainer.SetCurrentEventRow ();
-				Frontend.Load (CellContainer);
-				if (cellView.Editable && !cellView.RaiseToggled ()) {
-					if (cellView.ActiveField != null)
-						CellContainer.SetValue (cellView.ActiveField, State != NSCellStateValue.Off);
-				} else
-					base.State = NSCellStateValue.Off;
+			Backend.Load (this);
+			var cellView = Frontend;
+			CellContainer.SetCurrentEventRow ();
+			if (!cellView.RaiseToggled ()) {
+				if (cellView.ActiveField != null)
+					CellContainer.SetValue (cellView.ActiveField, true);
 			}
-			stateChanging = false;
-		}
-
-		public RadioButtonTableCell (IntPtr p): base (p)
-		{
 		}
 
 		IRadioButtonCellViewFrontend Frontend {
@@ -87,31 +69,103 @@ namespace Xwt.Mac
 
 		public CompositeCell CellContainer { get; set; }
 
+		public NSView CellView { get { return this; } }
+
 		public void Fill ()
 		{
 			var cellView = Frontend;
 			base.State = cellView.Active ? NSCellStateValue.On : NSCellStateValue.Off;
-			Editable = cellView.Editable;
-			visible = cellView.Visible;
-		}
-
-		public override CoreGraphics.CGSize CellSizeForBounds (CoreGraphics.CGRect bounds)
-		{
-			if (visible)
-				return base.CellSizeForBounds (bounds);
-			return CoreGraphics.CGSize.Empty;
-		}
-
-		public override void DrawInteriorWithFrame (CoreGraphics.CGRect cellFrame, NSView inView)
-		{
-			if (visible)
-				base.DrawInteriorWithFrame (cellFrame, inView);
+			Enabled = cellView.Editable;
+			Hidden = !cellView.Visible;
 		}
 
 		public void CopyFrom (object other)
 		{
 			var ob = (RadioButtonTableCell)other;
 			Backend = ob.Backend;
+		}
+
+		public override void UpdateTrackingAreas ()
+		{
+			if (trackingArea != null) {
+				RemoveTrackingArea (trackingArea);
+				trackingArea.Dispose ();
+			}
+			var options = NSTrackingAreaOptions.MouseMoved | NSTrackingAreaOptions.ActiveInKeyWindow | NSTrackingAreaOptions.MouseEnteredAndExited;
+			trackingArea = new NSTrackingArea (Bounds, options, this, null);
+			AddTrackingArea (trackingArea);
+		}
+
+		public override void RightMouseDown (NSEvent theEvent)
+		{
+			if (!this.HandleMouseDown (theEvent))
+				base.RightMouseDown (theEvent); 
+		}
+
+		public override void RightMouseUp (NSEvent theEvent)
+		{
+			if (!this.HandleMouseUp (theEvent))
+				base.RightMouseUp (theEvent); 
+		}
+
+		public override void MouseDown (NSEvent theEvent)
+		{
+			if (!this.HandleMouseDown (theEvent))
+				base.MouseDown (theEvent); 
+		}
+
+		public override void MouseUp (NSEvent theEvent)
+		{
+			if (!this.HandleMouseUp (theEvent))
+				base.MouseUp (theEvent); 
+		}
+
+		public override void OtherMouseDown (NSEvent theEvent)
+		{
+			if (!this.HandleMouseDown (theEvent))
+				base.OtherMouseDown (theEvent);
+		}
+
+		public override void OtherMouseUp (NSEvent theEvent)
+		{
+			if (!this.HandleMouseUp (theEvent))
+				base.OtherMouseUp (theEvent);
+		}
+
+		public override void MouseEntered (NSEvent theEvent)
+		{
+			this.HandleMouseEntered (theEvent);
+				base.MouseEntered (theEvent);
+		}
+
+		public override void MouseExited (NSEvent theEvent)
+		{
+			this.HandleMouseExited (theEvent);
+				base.MouseExited (theEvent);
+		}
+
+		public override void MouseMoved (NSEvent theEvent)
+		{
+			if (!this.HandleMouseMoved (theEvent))
+				base.MouseMoved (theEvent);
+		}
+
+		public override void MouseDragged (NSEvent theEvent)
+		{
+			if (!this.HandleMouseMoved (theEvent))
+				base.MouseDragged (theEvent);
+		}
+
+		public override void KeyDown (NSEvent theEvent)
+		{
+			if (!this.HandleKeyDown (theEvent))
+				base.KeyDown (theEvent);
+		}
+
+		public override void KeyUp (NSEvent theEvent)
+		{
+			if (!this.HandleKeyUp (theEvent))
+				base.KeyUp (theEvent);
 		}
 	}
 }

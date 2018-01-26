@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using AppKit;
 
 namespace Xwt.Mac
 {
@@ -33,6 +35,6 @@ namespace Xwt.Mac
 		object GetValue (object pos, int nField);
 		void SetValue (object pos, int nField, object value);
 		void SetCurrentEventRow (object pos);
-		nfloat RowHeight { get; set; }
+		List<NSTableColumn> Columns { get; }
 	}
 }

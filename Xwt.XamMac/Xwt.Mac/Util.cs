@@ -567,6 +567,18 @@ namespace Xwt.Mac
 			return view.ConvertPointFromView(point, null);
 		}
 
+		public static PointerButton GetPointerButton (this NSEvent theEvent)
+		{
+			switch (theEvent.ButtonNumber) {
+			case 0: return PointerButton.Left;
+			case 1: return PointerButton.Right;
+			case 2: return PointerButton.Middle;
+			case 3: return PointerButton.ExtendedButton1;
+			case 4: return PointerButton.ExtendedButton2;
+			}
+			return (PointerButton)0;
+		}
+
 		public static Accessibility.Role GetXwtRole (INSAccessibility widget)
 		{
 			var r = widget.AccessibilityRole;

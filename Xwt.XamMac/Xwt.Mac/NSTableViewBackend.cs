@@ -32,6 +32,7 @@ using AppKit;
 using CoreGraphics;
 using Foundation;
 using Xwt.Backends;
+using ObjCRuntime;
 
 namespace Xwt.Mac
 {
@@ -40,20 +41,6 @@ namespace Xwt.Mac
 		IWidgetEventSink eventSink;
 		protected ApplicationContext context;
 		NSTrackingArea trackingArea;	// Captures Mouse Entered, Exited, and Moved events
-
-		class ListDelegate: NSTableViewDelegate
-		{
-			public override nfloat GetRowHeight (NSTableView tableView, nint row)
-			{
-				var height = tableView.RowHeight;
-				for (int i = 0; i < tableView.ColumnCount; i++) {
-					var cell = tableView.GetCell (i, row);
-					if (cell != null)
-						height = (nfloat) Math.Max (height, cell.CellSize.Height);
-				}
-				return height;
-			}
-		}
 
 		public override NSObject WeakDataSource {
 			get { return base.WeakDataSource; }
@@ -82,17 +69,13 @@ namespace Xwt.Mac
 		{
 			var column = IndexOfColumn (tableColumn);
 
-			var s = tableColumn.HeaderCell.CellSize;
+			var contentWidth = tableColumn.HeaderCell.CellSize.Width;
 			if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.UserResizingMask)) {
-				for (int i = 0; i < base.RowCount; i++)
-				{
-					var cell = base.GetCell (column, i);
-					s.Width = (nfloat)Math.Max (s.Width, cell.CellSize.Width);
-				}
+				contentWidth = Delegate.GetSizeToFitColumnWidth (this, column);
 				if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing))
-					tableColumn.Width = s.Width;
+					tableColumn.Width = contentWidth;
 			}
-			tableColumn.MinWidth = s.Width;
+			tableColumn.MinWidth = contentWidth;
 		}
 
 		nint IndexOfColumn (NSTableColumn tableColumn)
@@ -123,7 +106,7 @@ namespace Xwt.Mac
 		{
 			if (!columnResizeQueued) {
 				columnResizeQueued = true;
-				Application.MainLoop.QueueExitAction (delegate {
+				(context.Toolkit.GetSafeBackend (context.Toolkit) as ToolkitEngineBackend).InvokeBeforeMainLoop (delegate {
 					columnResizeQueued = false;
 					AutosizeColumns ();
 				});
@@ -133,7 +116,6 @@ namespace Xwt.Mac
 		public NSTableViewBackend(IWidgetEventSink eventSink, ApplicationContext context) {
 			this.context = context;
 			this.eventSink = eventSink;
-			this.Delegate = new ListDelegate ();
 			AllowsColumnReordering = false;
 		}
 

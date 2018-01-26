@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using AppKit;
+using CoreGraphics;
 using Foundation;
 using Xwt.Backends;
 
@@ -40,11 +41,15 @@ namespace Xwt.Mac
 		ScrollView scroll;
 		NSObject selChangeObserver;
 		NormalClipView clipView;
-		
-		public TableViewBackend ()
-		{
+
+		List<NSTableColumn> ICellSource.Columns {
+			get { return cols; }
 		}
-		
+
+		protected List<NSTableColumn> Columns {
+			get { return cols; }
+		}
+
 		public override void Initialize ()
 		{
 			Table = CreateView ();
@@ -181,28 +186,10 @@ namespace Xwt.Mac
 
 		public virtual NSTableColumn AddColumn (ListViewColumn col)
 		{
-			var tcol = new NSTableColumn ();
-			tcol.Editable = true;
+			var tcol = new TableColumn (ApplicationContext, this, Table);
 			cols.Add (tcol);
-			var c = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.Count - 1);
-			tcol.DataCell = c;
+			tcol.UpdateColumn (col);
 			Table.AddColumn (tcol);
-			var hc = new NSTableHeaderCell ();
-			hc.Title = col.Title ?? "";
-			tcol.HeaderCell = hc;
-			tcol.HeaderCell.Alignment = col.Alignment.ToNSTextAlignment();
-
-
-			if (col.CanResize)
-				tcol.ResizingMask |= NSTableColumnResizing.UserResizingMask;
-			else
-				tcol.ResizingMask &= ~NSTableColumnResizing.UserResizingMask;
-			if (col.Expands)
-				tcol.ResizingMask |= NSTableColumnResizing.Autoresizing;
-			else
-				tcol.ResizingMask &= ~NSTableColumnResizing.Autoresizing;
-			tcol.SizeToFit();
-			Widget.InvalidateIntrinsicContentSize ();
 			return tcol;
 		}
 		object IColumnContainerBackend.AddColumn (ListViewColumn col)
@@ -212,72 +199,41 @@ namespace Xwt.Mac
 		
 		public void RemoveColumn (ListViewColumn col, object handle)
 		{
-			Table.RemoveColumn ((NSTableColumn)handle);
+			var tcol = (NSTableColumn)handle;
+			cols.Remove (tcol);
+			Table.RemoveColumn (tcol);
 		}
 
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
-			NSTableColumn tcol = (NSTableColumn) handle;
-
-			switch (change) {
-				case ListViewColumnChange.CanResize:
-					if (col.CanResize)
-						tcol.ResizingMask |= NSTableColumnResizing.UserResizingMask;
-					else
-						tcol.ResizingMask &= ~NSTableColumnResizing.UserResizingMask;
-					break;
-				case ListViewColumnChange.Expanding:
-					if (col.Expands)
-						tcol.ResizingMask |= NSTableColumnResizing.Autoresizing;
-					else
-						tcol.ResizingMask &= ~NSTableColumnResizing.Autoresizing;
-					break;
-				case ListViewColumnChange.Cells:
-					var c = CellUtil.CreateCell(ApplicationContext, Table, this, col.Views, cols.IndexOf(tcol));
-					c.Alignment = col.Alignment.ToNSTextAlignment();
-					tcol.DataCell = c;
-					break;
-				case ListViewColumnChange.Title:
-					tcol.HeaderCell.Title = col.Title ?? string.Empty;
-					if (!col.CanResize)
-						tcol.SizeToFit();
-					break;
-				case ListViewColumnChange.Alignment:
-					tcol.HeaderCell.Alignment = col.Alignment.ToNSTextAlignment();
-					break;
-			}
+			var tcol = handle as TableColumn;
+			if (tcol != null)
+				tcol.UpdateColumn (col, change);
 		}
 
 		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
 		{
+			var rect = Rectangle.Zero;
 			var cellBackend = cell.GetBackend () as CellViewBackend;
-			var r = Table.GetCellFrame (cellBackend.Column, row);
-			var container = Table.GetCell (cellBackend.Column, row) as CompositeCell;
-			r = container.GetCellRect (r, (NSCell)cellBackend.CurrentCell);
-			r.Y -= scroll.DocumentVisibleRect.Y;
-			r.X -= scroll.DocumentVisibleRect.X;
-			if (HeadersVisible)
-				r.Y += Table.HeaderView.Frame.Height;
-			return new Rectangle (r.X, r.Y, r.Width, r.Height);
+			var container = Table.GetView (cellBackend.Column, row, false) as CompositeCell;
+			if (container != null) {
+				var cellView = container.GetCellViewForBackend (cellBackend);
+				rect = cellView.ConvertRectToView (new CGRect (CGPoint.Empty, cellView.Frame.Size), Table).ToXwtRect ();
+				rect.Y -= scroll.DocumentVisibleRect.Y;
+				rect.X -= scroll.DocumentVisibleRect.X;
+			}
+			return rect;
 		}
 
 		public Rectangle GetRowBounds (int row, bool includeMargin)
 		{
 			var rect = Rectangle.Zero;
-			var columns = Table.TableColumns ();
-
-			for (int i = 0; i < columns.Length; i++)
-			{
-				var r = Table.GetCellFrame (i, row);
-				if (rect == Rectangle.Zero)
-					rect = new Rectangle (r.X, r.Y, r.Width, r.Height);
-				else
-					rect = rect.Union (new Rectangle (r.X, r.Y, r.Width, r.Height));
+			var rowView = Table.GetRowView (row, false);
+			if (rowView != null) {
+				rect = rowView.Frame.ToXwtRect ();
+				rect.Y -= scroll.DocumentVisibleRect.Y;
+				rect.X -= scroll.DocumentVisibleRect.X;
 			}
-			rect.Y -= scroll.DocumentVisibleRect.Y;
-			rect.X -= scroll.DocumentVisibleRect.X;
-			if (HeadersVisible)
-				rect.Y += Table.HeaderView.Frame.Height;
 			return rect;
 		}
 
@@ -307,11 +263,6 @@ namespace Xwt.Mac
 
 		public abstract void SetCurrentEventRow (object pos);
 
-		nfloat ICellSource.RowHeight {
-			get { return Table.RowHeight; }
-			set { Table.RowHeight = value; }
-		}
-		
 		public bool BorderVisible {
 			get { return scroll.BorderType == NSBorderType.BezelBorder;}
 			set {
@@ -337,6 +288,164 @@ namespace Xwt.Mac
 		{
 			get { return Table.GridStyleMask.ToXwtValue (); }
 			set { Table.GridStyleMask = value.ToMacValue (); }
+		}
+	}
+
+	class TableColumn : NSTableColumn
+	{
+		readonly ICellSource backend;
+		readonly ApplicationContext context;
+
+		public CompositeCell DataView { get; private set; }
+
+		List<WeakReference> CachedViews = new List<WeakReference> ();
+
+		public TableColumn (ApplicationContext context, ICellSource backend, NSTableView table)
+		{
+			this.context = context;
+			Identifier = GetHashCode ().ToString (); // this is used to identify cached views
+			this.backend = backend;
+			TableView = table;
+		}
+
+		public CompositeCell CreateNewView ()
+		{
+			CleanViewCache ();
+			var view = DataView.Copy () as CompositeCell;
+			view.Identifier = Identifier;
+			// Cocoa will manage the native views in the background and eventually dispose
+			// them without letting us know. In order to keep track of the active views
+			// we store a weak ref for each view to not disturb the internal Cocoa caching login.
+			CachedViews.Add (new WeakReference (view));
+			return view;
+		}
+
+		void UpdateCachedViews (ICollection<CellView> cells)
+		{
+			if (CachedViews.Count == 0)
+				return;
+			var col = backend.Columns.IndexOf (this);
+			foreach (var cached in CachedViews) {
+				// update only the alive and not disposed views
+				if (cached.IsAlive) {
+					var view = cached.Target as CompositeCell;
+					if (view?.IsDisposed == false)
+						CellUtil.UpdateCellView (view, TableView, cells, col);
+				}
+			}
+
+			CleanViewCache ();
+		}
+
+		void CleanViewCache ()
+		{
+			// remove any GCd and/or disposed views
+			CachedViews.RemoveAll (c => {
+				if (!c.IsAlive)
+					return true;
+				var cell = c.Target as CompositeCell;
+				if (cell == null || cell.IsDisposed)
+					return true;
+				return false;
+			});
+		}
+
+		public void UpdateColumn (ListViewColumn col)
+		{
+			Editable = true;
+			var hc = new NSTableHeaderCell {
+				Title = col.Title ?? string.Empty
+			};
+			HeaderCell = hc;
+			HeaderCell.Alignment = col.Alignment.ToNSTextAlignment ();
+
+			DataView = CellUtil.CreateCellView (context, TableView, backend, col.Views, backend.Columns.IndexOf (this));
+			DataView.Identifier = Identifier;
+			UpdateCachedViews (col.Views);
+
+			if (col.CanResize)
+				ResizingMask |= NSTableColumnResizing.UserResizingMask;
+			else
+				ResizingMask &= ~NSTableColumnResizing.UserResizingMask;
+			if (col.Expands)
+				ResizingMask |= NSTableColumnResizing.Autoresizing;
+			else
+				ResizingMask &= ~NSTableColumnResizing.Autoresizing;
+			SizeToFit ();
+			TableView?.InvalidateIntrinsicContentSize ();
+		}
+
+		public void UpdateColumn (ListViewColumn col, ListViewColumnChange change)
+		{
+			if (TableView == null)
+				throw new InvalidOperationException ("Add the column to a table first");
+			switch (change) {
+			case ListViewColumnChange.CanResize:
+				if (col.CanResize)
+					ResizingMask |= NSTableColumnResizing.UserResizingMask;
+				else
+					ResizingMask &= ~NSTableColumnResizing.UserResizingMask;
+				break;
+			case ListViewColumnChange.Expanding:
+				if (col.Expands)
+					ResizingMask |= NSTableColumnResizing.Autoresizing;
+				else
+					ResizingMask &= ~NSTableColumnResizing.Autoresizing;
+				break;
+			case ListViewColumnChange.Cells:
+				DataView = CellUtil.CreateCellView (context, TableView, backend, col.Views, backend.Columns.IndexOf (this));
+				DataView.Identifier = Identifier;
+				UpdateCachedViews (col.Views);
+				TableView.ReloadData ();
+				break;
+			case ListViewColumnChange.Title:
+				HeaderCell.Title = col.Title ?? string.Empty;
+				if (!col.CanResize)
+					SizeToFit ();
+				break;
+			case ListViewColumnChange.Alignment:
+				HeaderCell.Alignment = col.Alignment.ToNSTextAlignment ();
+				break;
+			}
+		}
+	}
+
+	class TableRowView : NSTableRowView
+	{
+
+		public override bool Selected {
+			get {
+				return base.Selected;
+			}
+			set {
+				base.Selected = value;
+				// the first time NSTableView is presented the background
+				// may be drawn already and it will not be redrawn even
+				// if Selection has been changed.
+				NeedsDisplay = true;
+			}
+		}
+
+		public override void DrawSelection (CGRect dirtyRect)
+		{
+			if (EffectiveAppearance.Name == NSAppearance.NameVibrantDark &&
+			    SelectionHighlightStyle != NSTableViewSelectionHighlightStyle.None) {
+				(Selected ? NSColor.AlternateSelectedControl : BackgroundColor).SetFill ();
+				var path = NSBezierPath.FromRect (dirtyRect);
+				path.Fill ();
+			} else
+				base.DrawSelection (dirtyRect);
+		}
+
+		public override void DrawBackground (CGRect dirtyRect)
+		{
+			if (Selected && EffectiveAppearance.Name == NSAppearance.NameVibrantDark &&
+				SelectionHighlightStyle != NSTableViewSelectionHighlightStyle.None) {
+				(Selected ? NSColor.AlternateSelectedControl : BackgroundColor).SetFill ();
+				var path = NSBezierPath.FromRect (dirtyRect);
+				path.Fill ();
+			} else
+				base.DrawBackground (dirtyRect);
 		}
 	}
 	

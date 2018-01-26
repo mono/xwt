@@ -27,21 +27,29 @@
 using System;
 using System.Collections.Generic;
 using AppKit;
+using CoreGraphics;
 using Xwt.Backends;
 
 namespace Xwt.Mac
 {
 	static class CellUtil
 	{
-		public static NSCell CreateCell (ApplicationContext context, NSTableView table, ICellSource source, ICollection<CellView> cells, int column)
+		public static CompositeCell CreateCellView (ApplicationContext context, NSTableView table, ICellSource source, ICollection<CellView> cells, int column)
 		{
-			CompositeCell c = new CompositeCell (context, Orientation.Horizontal, source);
+			CompositeCell c = new CompositeCell (context, source);
 			foreach (var cell in cells)
-				c.AddCell ((ICellRenderer) CreateCell (table, c, cell, column));
+				c.AddCell ((ICellRenderer) CreateCellView (table, cell, column));
 			return c;
 		}
+
+		public static void UpdateCellView (CompositeCell cellView, NSTableView table, ICollection<CellView> cells, int column)
+		{
+			cellView.ClearCells ();
+			foreach (var cell in cells)
+				cellView.AddCell ((ICellRenderer) CreateCellView (table, cell, column));
+		}
 		
-		static NSCell CreateCell (NSTableView table, CompositeCell source, CellView cell, int column)
+		static NSView CreateCellView (NSTableView table, CellView cell, int column)
 		{
 			ICellRenderer cr = null;
 
@@ -57,10 +65,119 @@ namespace Xwt.Mac
 				cr = new RadioButtonTableCell ();
 			else
 				throw new NotImplementedException ();
-			cr.Backend = new CellViewBackend (table, column);
 			ICellViewFrontend fr = cell;
-			fr.AttachBackend (null, cr.Backend);
-			return (NSCell)cr;
+			CellViewBackend backend = null;
+			try {
+				//FIXME: although the cell views are based on XwtComponent, they don't implement
+				//       the dynamic registration based backend creation and there is no way to
+				//       identify whether the frontend has already a valid backend.
+				backend = cell.GetBackend () as CellViewBackend;
+			} catch (InvalidOperationException) { }
+
+			if (backend == null) {
+				cr.Backend = new CellViewBackend (table, column);
+				fr.AttachBackend (null, cr.Backend);
+			} else
+				cr.Backend = backend;
+			return (NSView)cr;
+		}
+
+		public static bool HandleMouseDown (this ICellRenderer cell, NSEvent theEvent)
+		{
+			if (cell.Backend.GetIsEventEnabled (WidgetEvent.ButtonPressed)) {
+				CGPoint p = cell.CellView.ConvertPointFromEvent (theEvent);
+				if (cell.CellView.Bounds.Contains (p)) {
+					cell.Backend.Load (cell);
+					cell.CellContainer.SetCurrentEventRow ();
+					ButtonEventArgs args = new ButtonEventArgs {
+						X = p.X,
+						Y = p.Y,
+						Button = theEvent.GetPointerButton(),
+						MultiplePress = (int)theEvent.ClickCount
+					};
+					cell.Backend.Context.InvokeUserCode (() => cell.Backend.EventSink.OnButtonPressed (args));
+					return args.Handled;
+				}
+			}
+			return false;
+		}
+
+		public static bool HandleMouseUp (this ICellRenderer cell, NSEvent theEvent)
+		{
+			if (cell.Backend.GetIsEventEnabled (WidgetEvent.ButtonReleased)) {
+				CGPoint p = cell.CellView.ConvertPointFromEvent (theEvent);
+				if (cell.CellView.Bounds.Contains (p)) {
+					cell.Backend.Load (cell);
+					cell.CellContainer.SetCurrentEventRow ();
+					ButtonEventArgs args = new ButtonEventArgs {
+						X = p.X,
+						Y = p.Y,
+						Button = theEvent.GetPointerButton (),
+						MultiplePress = (int)theEvent.ClickCount
+					};
+					cell.Backend.Context.InvokeUserCode (() => cell.Backend.EventSink.OnButtonReleased (args));
+					return args.Handled;
+				}
+			}
+			return false;
+		}
+
+		public static void HandleMouseEntered (this ICellRenderer cell, NSEvent theEvent)
+		{
+			if (cell.Backend.GetIsEventEnabled (WidgetEvent.MouseEntered)) {
+				cell.Backend.Load (cell);
+				cell.CellContainer.SetCurrentEventRow ();
+				cell.Backend.Context.InvokeUserCode (cell.Backend.EventSink.OnMouseEntered);
+			}
+		}
+
+		public static void HandleMouseExited (this ICellRenderer cell, NSEvent theEvent)
+		{
+			if (cell.Backend.GetIsEventEnabled (WidgetEvent.MouseExited)) {
+				cell.Backend.Load (cell);
+				cell.CellContainer.SetCurrentEventRow ();
+				cell.Backend.Context.InvokeUserCode (cell.Backend.EventSink.OnMouseExited);
+			}
+		}
+
+		public static bool HandleMouseMoved (this ICellRenderer cell, NSEvent theEvent)
+		{
+			if (cell.Backend.GetIsEventEnabled (WidgetEvent.MouseMoved)) {
+				CGPoint p = cell.CellView.ConvertPointFromEvent (theEvent);
+				if (cell.CellView.Bounds.Contains (p)) {
+					cell.Backend.Load (cell);
+					cell.CellContainer.SetCurrentEventRow ();
+					var offset = cell.Backend.CellBounds.Location;
+					MouseMovedEventArgs args = new MouseMovedEventArgs ((long)TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X + offset.X, p.Y + offset.Y);
+					cell.Backend.Context.InvokeUserCode (() => cell.Backend.EventSink.OnMouseMoved (args));
+					return args.Handled;
+				}
+			}
+			return false;
+		}
+
+		public static bool HandleKeyDown (this ICellRenderer cell, NSEvent theEvent)
+		{
+			if (cell.Backend.GetIsEventEnabled (WidgetEvent.KeyPressed)) {
+				cell.Backend.Load (cell);
+				cell.CellContainer.SetCurrentEventRow ();
+				var keyArgs = theEvent.ToXwtKeyEventArgs ();
+				cell.Backend.Context.InvokeUserCode (() => cell.Backend.EventSink.OnKeyPressed (keyArgs));
+				return keyArgs.Handled;
+			}
+			return false;
+		}
+
+		public static bool HandleKeyUp (this ICellRenderer cell, NSEvent theEvent)
+		{
+			if (cell.Backend.GetIsEventEnabled (WidgetEvent.KeyReleased)) {
+				cell.Backend.Load (cell);
+				cell.CellContainer.SetCurrentEventRow ();
+				var keyArgs = theEvent.ToXwtKeyEventArgs ();
+				cell.Backend.Context.InvokeUserCode (() => cell.Backend.EventSink.OnKeyReleased (keyArgs));
+				return keyArgs.Handled;
+			}
+			return false;
 		}
 	}
 }
