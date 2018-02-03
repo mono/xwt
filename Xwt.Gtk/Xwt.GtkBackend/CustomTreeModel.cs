@@ -33,7 +33,7 @@ using TreeModelImplementor = Gtk.ITreeModelImplementor;
 
 namespace Xwt.GtkBackend
 {
-	public class CustomTreeModel: TreeModelImplementor
+	public class CustomTreeModel: GLib.Object, TreeModelImplementor
 	{
 
 		ITreeDataSource source;
@@ -56,12 +56,6 @@ namespace Xwt.GtkBackend
 		
 		public Gtk.TreeModelAdapter Store {
 			get { return adapter; }
-		}
-		
-		public IntPtr Handle {
-			get {
-				return IntPtr.Zero;
-			}
 		}
 		
         Gtk.TreeIter IterFromNode (TreePosition node)
