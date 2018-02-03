@@ -49,6 +49,11 @@ namespace Xwt
 		{
 			Index = -1;
 		}
+
+		public DataField (int index)
+		{
+			Index = index;
+		}
 		
 		public int Index { get; private set; }
 
