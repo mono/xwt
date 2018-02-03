@@ -74,6 +74,9 @@ namespace Xwt.GtkBackend
 		TreePosition NodeFromIter (Gtk.TreeIter iter)
 		{
 			TreePosition node;
+			if (iter.UserData == IntPtr.Zero) {
+				return null;
+			}
 			GCHandle gch = (GCHandle)iter.UserData;
 			nodeHash.TryGetValue (gch, out node);
 			return node;
@@ -172,8 +175,6 @@ namespace Xwt.GtkBackend
 			TreePosition pos = NodeFromIter (iter);
 			TreePosition parent = source.GetParent (pos);
 			int i = GetIndex (parent, pos);
-			if (source.GetChildrenCount (parent) >= i)
-				return false;
 			pos = source.GetChild (parent, i + 1);
 			if (pos != null) {
 				iter = IterFromNode (pos);
@@ -229,20 +230,22 @@ namespace Xwt.GtkBackend
 			if (pos != null) {
 				iter = IterFromNode (pos);
 				return true;
-			} else
-				return false;
+			}
+
+			return false;
 		}
 
 		public bool IterParent (out Gtk.TreeIter iter, Gtk.TreeIter child)
         {
             iter = Gtk.TreeIter.Zero;
-			TreePosition pos = NodeFromIter (iter);
+			TreePosition pos = NodeFromIter (child);
 			pos = source.GetParent (pos);
 			if (pos != null) {
 				iter = IterFromNode (pos);
 				return true;
-			} else
-				return false;
+			}
+
+			return false;
 		}
 
 		public void RefNode (Gtk.TreeIter iter)
