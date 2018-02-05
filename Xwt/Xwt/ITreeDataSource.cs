@@ -48,12 +48,22 @@ namespace Xwt
 	
 	public class TreeNodeEventArgs: EventArgs
 	{
-		public TreeNodeEventArgs (TreePosition node)
+		public TreeNodeEventArgs (TreePosition node): this (node, -1)
+		{
+		}
+
+		public TreeNodeEventArgs (TreePosition node, int childIndex)
 		{
 			Node = node;
+			ChildIndex = childIndex;
 		}
 		
 		public TreePosition Node {
+			get;
+			private set;
+		}
+
+		public int ChildIndex {
 			get;
 			private set;
 		}
@@ -61,12 +71,19 @@ namespace Xwt
 	
 	public class TreeNodeChildEventArgs: TreeNodeEventArgs
 	{
-		public TreeNodeChildEventArgs (TreePosition parent, int childIndex): base (parent)
+		[Obsolete ("Use the constructor that takes the child object")]
+		public TreeNodeChildEventArgs (TreePosition parent, int childIndex): base (parent, childIndex)
 		{
-			ChildIndex = childIndex;
+		}
+
+#pragma warning disable CS0618 // Type or member is obsolete
+		public TreeNodeChildEventArgs (TreePosition parent, int childIndex, TreePosition child): this (parent, childIndex)
+#pragma warning restore CS0618 // Type or member is obsolete
+		{
+			Child = child;
 		}
 		
-		public int ChildIndex {
+		public TreePosition Child {
 			get;
 			private set;
 		}
@@ -74,7 +91,7 @@ namespace Xwt
 	
 	public class TreeNodeOrderEventArgs: TreeNodeEventArgs
 	{
-		public TreeNodeOrderEventArgs (TreePosition parentNode, int[] childrenOrder): base (parentNode)
+		public TreeNodeOrderEventArgs (TreePosition parentNode, int[] childrenOrder): base (parentNode, -1)
 		{
 			ChildrenOrder = childrenOrder;
 		}

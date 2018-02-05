@@ -29,6 +29,9 @@
     <CreatePackage>False</CreatePackage>
     <UseRefCounting>false</UseRefCounting>
     <Profiling>false</Profiling>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <LinkMode>None</LinkMode>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -47,6 +50,8 @@
     <UseRefCounting>false</UseRefCounting>
     <Profiling>false</Profiling>
     <DebugSymbols>true</DebugSymbols>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
