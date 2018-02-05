@@ -34,6 +34,7 @@ namespace Xwt.GtkBackend
 	{
 		Gtk.TreePath autoExpandPath;
 		uint expandTimer;
+		CustomTreeModel customModel;
 
 		protected new ITreeViewEventSink EventSink {
 			get { return (ITreeViewEventSink)base.EventSink; }
@@ -91,9 +92,9 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeIter it;
 			if (Widget.Model.GetIter (out it, args.Path)) {
-				CurrentEventRow = new IterPos (-1, it);
+				CurrentEventRow = GetPositionFromIter (-1, it);
 				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnRowExpanded (new IterPos (-1, it));
+					EventSink.OnRowExpanded (GetPositionFromIter (-1, it));
 				});
 			}
 		}
@@ -102,9 +103,9 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeIter it;
 			if (Widget.Model.GetIter (out it, args.Path)) {
-				CurrentEventRow = new IterPos (-1, it);
+				CurrentEventRow = GetPositionFromIter (-1, it);
 				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnRowExpanding (new IterPos (-1, it));
+					EventSink.OnRowExpanding (GetPositionFromIter (-1, it));
 				});
 			}
 		}
@@ -113,9 +114,9 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeIter it;
 			if (Widget.Model.GetIter (out it, args.Path)) {
-				CurrentEventRow = new IterPos (-1, it);
+				CurrentEventRow = GetPositionFromIter (-1, it);
 				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnRowCollapsed (new IterPos (-1, it));
+					EventSink.OnRowCollapsed (GetPositionFromIter (-1, it));
 				});
 			}
 		}
@@ -124,9 +125,9 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeIter it;
 			if (Widget.Model.GetIter (out it, args.Path)) {
-				CurrentEventRow = new IterPos (-1, it);
+				CurrentEventRow = GetPositionFromIter (-1, it);
 				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnRowCollapsing (new IterPos (-1, it));
+					EventSink.OnRowCollapsing (GetPositionFromIter (-1, it));
 				});
 			}
 		}
@@ -135,9 +136,9 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeIter it;
 			if (Widget.Model.GetIter (out it, args.Path)) {
-				CurrentEventRow = new IterPos (-1, it);
+				CurrentEventRow = GetPositionFromIter (-1, it);
 				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnRowActivated (new IterPos (-1, it));
+					EventSink.OnRowActivated (GetPositionFromIter (-1, it));
 				});
 			}
 		}
@@ -195,9 +196,10 @@ namespace Xwt.GtkBackend
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
 			TreeStoreBackend b = sourceBackend as TreeStoreBackend;
+			customModel = null;
 			if (b == null) {
-				CustomTreeModel model = new CustomTreeModel (source);
-				Widget.Model = model.Store;
+				customModel = new CustomTreeModel (source);
+				Widget.Model = customModel.Store;
 			} else
 				Widget.Model = b.Store;
 		}
@@ -205,11 +207,11 @@ namespace Xwt.GtkBackend
 		public TreePosition[] SelectedRows {
 			get {
 				var rows = Widget.Selection.GetSelectedRows ();
-				IterPos[] sel = new IterPos [rows.Length];
+				TreePosition[] sel = new TreePosition [rows.Length];
 				for (int i = 0; i < rows.Length; i++) {
 					Gtk.TreeIter it;
 					Widget.Model.GetIter (out it, rows[i]);
-					sel[i] = new IterPos (-1, it);
+					sel[i] = GetPositionFromIter (-1, it);
 				}
 				return sel;
 			}
@@ -223,13 +225,13 @@ namespace Xwt.GtkBackend
 
 				Gtk.TreeIter it;
 				if (path != null && Widget.Model.GetIter (out it, path))
-					return new IterPos (-1, it);
+					return GetPositionFromIter (-1, it);
 				return null;
 			}
 			set {
 				Gtk.TreePath path = new Gtk.TreePath(new [] { int.MaxValue }); // set invalid path to unfocus
 				if (value != null)
-					path = Widget.Model.GetPath (((IterPos)value).Iter);
+					path = Widget.Model.GetPath (GetIterFromPosition (value));
 				Widget.SetCursor (path, null, false);
 			}
 		}
@@ -241,42 +243,42 @@ namespace Xwt.GtkBackend
 		
 		public void SelectRow (TreePosition pos)
 		{
-			Widget.Selection.SelectIter (((IterPos)pos).Iter);
+			Widget.Selection.SelectIter (GetIterFromPosition (pos));
 		}
 		
 		public void UnselectRow (TreePosition pos)
 		{
-			Widget.Selection.UnselectIter (((IterPos)pos).Iter);
+			Widget.Selection.UnselectIter (GetIterFromPosition (pos));
 		}
 		
 		public bool IsRowSelected (TreePosition pos)
 		{
-			return Widget.Selection.IterIsSelected (((IterPos)pos).Iter);
+			return Widget.Selection.IterIsSelected (GetIterFromPosition (pos));
 		}
 		
 		public bool IsRowExpanded (TreePosition pos)
 		{
-			return Widget.GetRowExpanded (Widget.Model.GetPath (((IterPos)pos).Iter));
+			return Widget.GetRowExpanded (Widget.Model.GetPath (GetIterFromPosition (pos)));
 		}
 		
 		public void ExpandRow (TreePosition pos, bool expandedChildren)
 		{
-			Widget.ExpandRow (Widget.Model.GetPath (((IterPos)pos).Iter), expandedChildren);
+			Widget.ExpandRow (Widget.Model.GetPath (GetIterFromPosition (pos)), expandedChildren);
 		}
 		
 		public void CollapseRow (TreePosition pos)
 		{
-			Widget.CollapseRow (Widget.Model.GetPath (((IterPos)pos).Iter));
+			Widget.CollapseRow (Widget.Model.GetPath (GetIterFromPosition (pos)));
 		}
 		
 		public void ScrollToRow (TreePosition pos)
 		{
-			ScrollToRow (((IterPos)pos).Iter);
+			ScrollToRow (GetIterFromPosition (pos));
 		}
 		
 		public void ExpandToRow (TreePosition pos)
 		{
-			Widget.ExpandToPath (Widget.Model.GetPath (((IterPos)pos).Iter));
+			Widget.ExpandToPath (Widget.Model.GetPath (GetIterFromPosition (pos)));
 		}
 		
 		public bool HeadersVisible {
@@ -300,7 +302,7 @@ namespace Xwt.GtkBackend
 			
 			Gtk.TreeIter it;
 			Widget.Model.GetIter (out it, path);
-			nodePosition = new IterPos (-1, it);
+			nodePosition = GetPositionFromIter (-1, it);
 			switch (tpos) {
 			case Gtk.TreeViewDropPosition.After: pos = RowDropPosition.After; break;
 			case Gtk.TreeViewDropPosition.Before: pos = RowDropPosition.Before; break;
@@ -315,7 +317,7 @@ namespace Xwt.GtkBackend
 			if (path != null) {
 				Gtk.TreeIter iter;
 				Widget.Model.GetIter (out iter, path);
-				return new IterPos (-1, iter);
+				return GetPositionFromIter (-1, iter);
 			}
 			return null;
 		}
@@ -324,7 +326,7 @@ namespace Xwt.GtkBackend
 		{
 			var col = GetCellColumn (cell);
 			var cr = GetCellRenderer (cell);
-			Gtk.TreeIter iter = ((IterPos)pos).Iter;
+			Gtk.TreeIter iter = GetIterFromPosition (pos);
 
 			var rect = includeMargin ? ((ICellRendererTarget)this).GetCellBackgroundBounds (col, cr, iter) : ((ICellRendererTarget)this).GetCellBounds (col, cr, iter);
 			return rect;
@@ -332,7 +334,7 @@ namespace Xwt.GtkBackend
 
 		public Rectangle GetRowBounds (TreePosition pos, bool includeMargin)
 		{
-			Gtk.TreeIter iter = ((IterPos)pos).Iter;
+			Gtk.TreeIter iter = GetIterFromPosition (pos);
 			Rectangle rect = includeMargin ? GetRowBackgroundBounds (iter) : GetRowBounds (iter);
 			return rect;
 		}
@@ -350,6 +352,22 @@ namespace Xwt.GtkBackend
 			}
 
 			CurrentEventRow = toggledItem;
+		}
+
+		TreePosition GetPositionFromIter (int treeVersion, Gtk.TreeIter iter)
+		{
+			if (customModel != null) {
+				customModel.NodeFromIter (iter, out var pos);
+				return pos;
+			}
+			return new IterPos (treeVersion, iter);
+		}
+
+		Gtk.TreeIter GetIterFromPosition (TreePosition position)
+		{
+			if (customModel != null)
+				return customModel.IterFromNode (position);
+			return ((IterPos)position).Iter;
 		}
 	}
 }
