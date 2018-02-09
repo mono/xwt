@@ -218,6 +218,12 @@ namespace Samples
 			};
 			PackStart (removeButton);
 
+			Button clearButton = new Button("Clear");
+			clearButton.Clicked += delegate (object sender, EventArgs e) {
+				store.Clear();
+			};
+			PackStart(clearButton);
+
 			var label = new Label ();
 			PackStart (label);
 
