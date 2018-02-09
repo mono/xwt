@@ -44,6 +44,7 @@ namespace Xwt
 		event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		event EventHandler<TreeNodeEventArgs> NodeChanged;
 		event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
+		event EventHandler Cleared;
 	}
 	
 	public class TreeNodeEventArgs: EventArgs
