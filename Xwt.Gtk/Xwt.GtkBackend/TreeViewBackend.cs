@@ -357,7 +357,8 @@ namespace Xwt.GtkBackend
 		TreePosition GetPositionFromIter (int treeVersion, Gtk.TreeIter iter)
 		{
 			if (customModel != null) {
-				customModel.NodeFromIter (iter, out var pos);
+				TreePosition pos;
+				customModel.NodeFromIter (iter, out pos);
 				return pos;
 			}
 			return new IterPos (treeVersion, iter);
