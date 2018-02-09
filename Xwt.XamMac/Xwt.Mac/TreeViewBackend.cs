@@ -150,6 +150,7 @@ namespace Xwt.Mac
 				UpdateRowHeight (item);
 			};
 			source.NodesReordered += (sender, e) => Tree.ReloadItem (tsource.GetItem (e.Node), true);
+			source.Cleared += (sender, e) => Tree.ReloadData ();
 		}
 		
 		public override object GetValue (object pos, int nField)
