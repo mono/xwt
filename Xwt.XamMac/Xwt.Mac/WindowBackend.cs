@@ -560,7 +560,7 @@ namespace Xwt.Mac
 			if (child != null) {
 				frame.X += (nfloat) frontend.Padding.Left;
 				frame.Width -= (nfloat) (frontend.Padding.HorizontalSpacing);
-				frame.Y += (nfloat) frontend.Padding.Top;
+				frame.Y += (nfloat) (childView.IsFlipped ? frontend.Padding.Bottom : frontend.Padding.Top);
 				frame.Height -= (nfloat) (frontend.Padding.VerticalSpacing);
 				childView.Frame = frame;
 			}
