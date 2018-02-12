@@ -107,7 +107,8 @@ namespace Xwt.GtkBackend
 		void CacheIndex (TreePosition node, int index)
 		{
 			// Stores the index of a node
-			if (handleHash.TryGetValue (node, out var data))
+			NodeData data;
+			if (handleHash.TryGetValue (node, out data))
 				data.Index = index;
 		}
 		
@@ -163,7 +164,8 @@ namespace Xwt.GtkBackend
 			if (e.Node != null && !handleHash.ContainsKey (e.Node))
 				return;
 
-			if (e.Child != null && handleHash.TryGetValue (e.Child, out var data)) {
+			NodeData data;
+			if (e.Child != null && handleHash.TryGetValue (e.Child, out data)) {
 				// Increase the model stamp since the node is gone and there may
 				// be iters referencing that node. Increasing the stamp will
 				// invalidate all those nodes
@@ -220,7 +222,8 @@ namespace Xwt.GtkBackend
 
 		public Gtk.TreePath GetPath (Gtk.TreeIter iter)
 		{
-			if (NodeFromIter (iter, out var pos))
+			TreePosition pos;
+			if (NodeFromIter (iter, out pos))
 				return GetPath (pos);
 			return Gtk.TreePath.NewFirst ();
 		}
@@ -258,7 +261,8 @@ namespace Xwt.GtkBackend
 
 		public void GetValue (Gtk.TreeIter iter, int column, ref GLib.Value value)
 		{
-			if (!NodeFromIter (iter, out var pos)) {
+			TreePosition pos;
+			if (!NodeFromIter (iter, out pos)) {
 				value = GLib.Value.Empty;
 				return;
 			}
@@ -271,7 +275,8 @@ namespace Xwt.GtkBackend
 
 		public bool IterNext (ref Gtk.TreeIter iter)
 		{
-			if (!NodeFromIter (iter, out var pos))
+			TreePosition pos;
+			if (!NodeFromIter (iter, out pos))
 				return false;
 			TreePosition parent = source.GetParent (pos);
 			int i = GetIndex (parent, pos);
@@ -288,7 +293,8 @@ namespace Xwt.GtkBackend
 		#if XWT_GTK3
 		public bool IterPrevious (ref Gtk.TreeIter iter)
 		{
-			if (!NodeFromIter (iter, out var pos))
+			TreePosition pos;
+			if (!NodeFromIter (iter, out pos))
 				return false;
 			TreePosition parent = source.GetParent (pos);
 			int i = GetIndex (parent, pos);
@@ -304,7 +310,8 @@ namespace Xwt.GtkBackend
 		public bool IterChildren (out Gtk.TreeIter iter, Gtk.TreeIter parent)
         {
 			iter = parent;
-			if (!NodeFromIter (parent, out var pos))
+			TreePosition pos;
+			if (!NodeFromIter (parent, out pos))
 				return false;
 			pos = source.GetChild (pos, 0);
 			if (pos != null) {
@@ -316,14 +323,16 @@ namespace Xwt.GtkBackend
 
 		public bool IterHasChild (Gtk.TreeIter iter)
 		{
-			if (!NodeFromIter (iter, out var pos))
+			TreePosition pos;
+			if (!NodeFromIter (iter, out pos))
 				return false;
 			return source.GetChildrenCount (pos) != 0;
 		}
 
 		public int IterNChildren (Gtk.TreeIter iter)
 		{
-			if (!NodeFromIter (iter, out var pos))
+			TreePosition pos;
+			if (!NodeFromIter (iter, out pos))
 				return 0;
 			return source.GetChildrenCount (pos);
 		}
@@ -331,7 +340,8 @@ namespace Xwt.GtkBackend
 		public bool IterNthChild (out Gtk.TreeIter iter, Gtk.TreeIter parent, int n)
         {
 			iter = parent;
-			if (!NodeFromIter (parent, out var pos))
+			TreePosition pos;
+			if (!NodeFromIter (parent, out pos))
 				return false;
 			pos = source.GetChild (pos, n);
 			if (pos != null) {
@@ -344,7 +354,8 @@ namespace Xwt.GtkBackend
 		public bool IterParent (out Gtk.TreeIter iter, Gtk.TreeIter child)
         {
 			iter = child;
-			if (!NodeFromIter (iter, out var pos))
+			TreePosition pos;
+			if (!NodeFromIter (iter, out pos))
 				return false;
 			if (pos != null)
 				pos = source.GetParent (pos);
