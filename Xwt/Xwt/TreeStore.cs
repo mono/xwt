@@ -167,6 +167,11 @@ namespace Xwt
 			add { Backend.NodesReordered += value; }
 			remove { Backend.NodesReordered -= value; }
 		}
+		event EventHandler ITreeDataSource.Cleared
+		{
+			add { Backend.Cleared += value; }
+			remove { Backend.Cleared -= value; }
+		}
 		
 		TreePosition ITreeDataSource.GetChild (TreePosition pos, int index)
 		{
@@ -243,6 +248,7 @@ namespace Xwt
 		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
 		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
+		public event EventHandler Cleared;
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
@@ -256,6 +262,8 @@ namespace Xwt
 		public void Clear ()
 		{
 			rootNodes.Clear ();
+			if (Cleared != null)
+				Cleared (this, EventArgs.Empty);
 		}
 		
 		NodePosition GetPosition (TreePosition pos)

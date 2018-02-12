@@ -49,6 +49,7 @@ namespace Xwt.WPFBackend
 		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
 		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
+		public event EventHandler Cleared;
 
 		public Type[] ColumnTypes
 		{
@@ -181,6 +182,7 @@ namespace Xwt.WPFBackend
 		public void Clear ()
 		{
 			this.topNodes.Clear();
+			Cleared?.Invoke(this, EventArgs.Empty);
 		}
 
 		public IEnumerator GetEnumerator ()
