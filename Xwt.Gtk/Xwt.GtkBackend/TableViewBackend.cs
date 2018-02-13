@@ -521,24 +521,27 @@ namespace Xwt.GtkBackend
 
 		protected override bool OnButtonPressEvent (EventButton evnt)
 		{
-			// If we are clicking on already selected row, delay the selection until we are certain that
-			// the user is not starting a DragDrop operation. 
-			// This is needed to allow user to drag multiple selected rows.
-			TreePath treePath;
-			TreeViewColumn column;
-			GetPathAtPos ((int)evnt.X, (int)evnt.Y, out treePath, out column);
-			var ctrlShiftMask = (evnt.State & (Gdk.ModifierType.ShiftMask | Gdk.ModifierType.ControlMask | Gdk.ModifierType.Mod2Mask));
-			if (treePath != null && evnt.Button == 1 && this.Selection.PathIsSelected (treePath) && ctrlShiftMask == 0) {
-				delayedSelection = treePath;
-				delayedSelectionColumn = column;
-				Selection.SelectFunction = (_, __, ___, ____) => false;
-				var result = false;
-				try {
-					result = base.OnButtonPressEvent (evnt);
-				} finally {
-					Selection.SelectFunction = (_, __, ___, ____) => true;
+			if (Selection.Mode == Gtk.SelectionMode.Multiple) {
+				// If we are clicking on already selected row, delay the selection until we are certain that
+				// the user is not starting a DragDrop operation. 
+				// This is needed to allow user to drag multiple selected rows.
+				TreePath treePath;
+				TreeViewColumn column;
+				GetPathAtPos ((int)evnt.X, (int)evnt.Y, out treePath, out column);
+
+				var ctrlShiftMask = (evnt.State & (Gdk.ModifierType.ShiftMask | Gdk.ModifierType.ControlMask | Gdk.ModifierType.Mod2Mask));
+				if (treePath != null && evnt.Button == 1 && this.Selection.PathIsSelected (treePath) && this.Selection.CountSelectedRows() > 1 && ctrlShiftMask == 0) {
+					delayedSelection = treePath;
+					delayedSelectionColumn = column;
+					Selection.SelectFunction = (_, __, ___, ____) => false;
+					var result = false;
+					try {
+						result = base.OnButtonPressEvent (evnt);
+					} finally {
+						Selection.SelectFunction = (_, __, ___, ____) => true;
+					}
+					return result;
 				}
-				return result;
 			}
 			return base.OnButtonPressEvent (evnt);
 		}
