@@ -51,6 +51,11 @@ namespace Xwt.Backends
 		string Label { get; set; }
 
 		/// <summary>
+		/// Gets or sets the tooltip text for the menu item.
+		/// </summary>
+		string TooltipText { get; set; }
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="Xwt.Backends.IMenuItemBackend"/> use a mnemonic.
 		/// </summary>
 		/// <value><c>true</c> if it use a mnemonic; otherwise, <c>false</c>.</value>
