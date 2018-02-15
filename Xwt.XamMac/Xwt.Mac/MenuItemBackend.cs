@@ -80,6 +80,18 @@ namespace Xwt.Mac
 			}
 		}
 
+		public string TooltipText
+		{
+			get
+			{
+				return item.ToolTip;
+			}
+			set
+			{
+				item.ToolTip = value;
+			}
+		}
+
 		public bool UseMnemonic
 		{
 			get
