@@ -126,6 +126,15 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public string TooltipText {
+			get {
+				return item.TooltipText;
+			}
+			set {
+				item.TooltipText = value;
+			}
+		}
+
 		public bool UseMnemonic {
 			get { return label.UseUnderline; }
 			set { label.UseUnderline = value; }
