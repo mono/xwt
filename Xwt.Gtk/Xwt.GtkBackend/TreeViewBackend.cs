@@ -280,7 +280,16 @@ namespace Xwt.GtkBackend
 		{
 			Widget.ExpandToPath (Widget.Model.GetPath (GetIterFromPosition (pos)));
 		}
-		
+
+		public bool BorderVisible {
+			get {
+				return ScrolledWindow.ShadowType != Gtk.ShadowType.None;
+			}
+			set {
+				ScrolledWindow.ShadowType = value ? Gtk.ShadowType.In : Gtk.ShadowType.None;
+			}
+		}
+
 		public bool HeadersVisible {
 			get {
 				return Widget.HeadersVisible;

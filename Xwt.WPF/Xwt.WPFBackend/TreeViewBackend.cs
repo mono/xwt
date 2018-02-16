@@ -116,6 +116,15 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool BorderVisible {
+			get {
+				return ScrollViewer.BorderThickness.Left != 0;
+			}
+			set {
+				ScrollViewer.BorderThickness = value ? new Thickness (1) : new Thickness (0);
+			}
+		}
+
 		private bool headersVisible = true;
 		public bool HeadersVisible {
 			get { return this.headersVisible; }
