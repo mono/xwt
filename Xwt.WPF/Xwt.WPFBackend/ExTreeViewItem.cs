@@ -131,18 +131,38 @@ namespace Xwt.WPFBackend
 
 		protected override void OnMouseLeftButtonDown (MouseButtonEventArgs e)
 		{
+			var args = e.ToXwtButtonArgs (view.Backend.Widget);
+			view.Backend.Context.InvokeUserCode (delegate () {
+				view.Backend.EventSink.OnButtonPressed (args);
+			});
+			if (args.Handled) {
+				e.Handled = true;
+				return;
+			}
+
 			if (!view.SelectedItems.Contains (this.DataContext) || CtrlPressed)
 				view.SelectItem (this);
 			view.Backend.WidgetMouseDownForDragHandler (this, e);
+
 			e.Handled = true;
 			base.OnMouseLeftButtonDown (e);
 		}
 
 		protected override void OnMouseLeftButtonUp (MouseButtonEventArgs e)
 		{
+			var args = e.ToXwtButtonArgs (view.Backend.Widget);
+			view.Backend.Context.InvokeUserCode (delegate () {
+				view.Backend.EventSink.OnButtonReleased (args);
+			});
+			if (args.Handled) {
+				e.Handled = true;
+				return;
+			}
+
 			if (view.SelectedItems.Contains (this.DataContext) && !CtrlPressed)
 				view.SelectItem (this);
 			view.Backend.WidgetMouseUpForDragHandler(this, e);
+
 			e.Handled = true;
 			base.OnMouseLeftButtonUp (e);
 		}
