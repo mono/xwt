@@ -12,6 +12,7 @@
     <SuppressXamMacMigration>True</SuppressXamMacMigration>
     <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
     <TestRunnerCommand>bin\MacTestRunner.app</TestRunnerCommand>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>

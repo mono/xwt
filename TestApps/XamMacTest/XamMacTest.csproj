@@ -27,6 +27,8 @@
     <UseSGen>False</UseSGen>
     <UseRefCounting>false</UseRefCounting>
     <Profiling>false</Profiling>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <LinkMode>None</LinkMode>
     <AOTMode>None</AOTMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -44,6 +46,8 @@
     <UseRefCounting>false</UseRefCounting>
     <Profiling>false</Profiling>
     <DebugSymbols>true</DebugSymbols>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <LinkMode>None</LinkMode>
     <AOTMode>None</AOTMode>
   </PropertyGroup>
   <ItemGroup>
