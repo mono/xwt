@@ -41,7 +41,7 @@ namespace Xwt.Mac
 		public NSView CellView { get { return this; } }
 
 		// Since 10.12 or 10.13 views inside tables flip on data reload.
-		// IsFlipped enforces the correct oriantation of the layer.
+		// IsFlipped enforces the correct orientation of the layer.
 		public override bool IsFlipped { get { return true; } }
 
 		public void CopyFrom (object other)
