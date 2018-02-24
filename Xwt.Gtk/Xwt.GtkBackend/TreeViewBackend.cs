@@ -298,6 +298,15 @@ namespace Xwt.GtkBackend
 				Widget.HeadersVisible = value;
 			}
 		}
+
+		public bool UseAlternatingRowColors {
+			get {
+				return Widget.RulesHint;
+			}
+			set {
+				Widget.RulesHint = value;
+			}
+		}
 		
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
