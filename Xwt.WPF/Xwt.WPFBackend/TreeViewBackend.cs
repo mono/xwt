@@ -153,6 +153,15 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool UseAlternatingRowColors {
+			get {
+				return Tree.AlternationCount == 2;
+			}
+			set {
+				Tree.AlternationCount = value ? 2 : 0;
+			}
+		}
+
 		public void SelectRow (TreePosition pos)
 		{
 			Tree.SelectedItems.Add (pos);

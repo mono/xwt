@@ -270,6 +270,11 @@ namespace Xwt.Mac
 			}
 		}
 
+		public bool UseAlternatingRowColors {
+			get { return Table.UsesAlternatingRowBackgroundColors; }
+			set { Table.UsesAlternatingRowBackgroundColors = value; }
+		}
+
 		public bool HeadersVisible {
 			get {
 				return Table.HeaderView != null;
