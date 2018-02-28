@@ -184,6 +184,10 @@ namespace Xwt.GtkBackend
 		{
 		}
 
+		public void QueueResize (object target, Gtk.TreeIter iter)
+		{
+		}
+
 		#endregion
 	}
 }

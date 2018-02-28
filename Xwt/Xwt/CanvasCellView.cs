@@ -41,6 +41,15 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Signals that the size of the cell may have changed, and the row
+		/// that contains it may need to be resized
+		/// </summary>
+		protected void QueueResize ()
+		{
+			((ICanvasCellViewBackend)BackendHost.Backend).QueueResize ();
+		}
+
+		/// <summary>
 		/// Called when the cell needs to be redrawn
 		/// </summary>
 		/// <param name='ctx'>

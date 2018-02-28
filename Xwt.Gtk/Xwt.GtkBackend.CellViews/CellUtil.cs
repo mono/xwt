@@ -158,6 +158,7 @@ namespace Xwt.GtkBackend
 		Gtk.Widget EventRootWidget { get; }
 		bool GetCellPosition (Gtk.CellRenderer r, int ex, int ey, out int cx, out int cy, out Gtk.TreeIter iter);
 		void QueueDraw (object target, Gtk.TreeIter iter);
+		void QueueResize (object target, Gtk.TreeIter iter);
 		TreeModel Model { get; }
 		Gtk.TreeIter PressedIter { get; set; }
 		CellViewBackend PressedCell { get; set; }

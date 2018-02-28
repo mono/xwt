@@ -366,6 +366,11 @@ namespace Xwt.GtkBackend
 		{
 			rendererTarget.QueueDraw (target, CurrentIter);
 		}
+
+		public void QueueResize ()
+		{
+			rendererTarget.QueueResize (target, CurrentIter);
+		}
 	}
 }
 

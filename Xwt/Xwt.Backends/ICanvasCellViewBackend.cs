@@ -30,6 +30,7 @@ namespace Xwt.Backends
 	public interface ICanvasCellViewBackend: ICellViewBackend
 	{
 		void QueueDraw ();
+		void QueueResize ();
 		bool IsHighlighted { get; }
 	}
 }

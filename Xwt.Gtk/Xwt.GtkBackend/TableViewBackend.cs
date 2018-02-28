@@ -497,6 +497,12 @@ namespace Xwt.GtkBackend
 			Widget.QueueDrawArea (x, y, r.Width, r.Height);
 		}
 
+		public void QueueResize (object target, Gtk.TreeIter iter)
+		{
+			var path = Widget.Model.GetPath (iter);
+			Widget.Model.EmitRowChanged (path, iter);
+		}
+
 		#endregion
 	}
 	
