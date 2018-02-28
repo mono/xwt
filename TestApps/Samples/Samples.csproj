@@ -119,6 +119,7 @@
     <Compile Include="Samples\ListViewCombos.cs" />
     <Compile Include="Samples\PopupWindows.cs" />
     <Compile Include="Samples\TreeViewCustomStore.cs" />
+    <Compile Include="Samples\TreeViewEvents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -197,6 +198,30 @@
     <EmbeddedResource Include="..\..\Xwt.XamMac\icons\zoom-in-16~sel%402x.png">
       <Link>icons\zoom-in-16~sel%402x.png</Link>
       <LogicalName>zoom-in-16~sel@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\add-simple-16.png">
+      <LogicalName>add-simple-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\add-simple-16%402x.png">
+      <LogicalName>add-simple-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\remove-simple-16.png">
+      <LogicalName>remove-simple-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\remove-simple-16%402x.png">
+      <LogicalName>remove-simple-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\remove-simple-disabled-16.png">
+      <LogicalName>remove-simple-disabled-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\remove-simple-disabled-16%402x.png">
+      <LogicalName>remove-simple-disabled-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\add-simple-disabled-16.png">
+      <LogicalName>add-simple-disabled-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\add-simple-disabled-16%402x.png">
+      <LogicalName>add-simple-disabled-16@2x.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
