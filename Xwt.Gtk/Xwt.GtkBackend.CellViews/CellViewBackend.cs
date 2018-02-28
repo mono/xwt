@@ -190,10 +190,11 @@ namespace Xwt.GtkBackend
 			if (!buttonReleaseSubscribed)
 				rendererTarget.EventRootWidget.ButtonReleaseEvent -= HandleButtonReleaseEvent;
 
-			var rect = rendererTarget.GetCellBounds (target, CellRenderer, iter);
+			var rect = rendererTarget.GetCellBackgroundBounds (target, CellRenderer, iter);
 			if (captured || rect.Contains (cx, cy)) {
 				ApplicationContext.InvokeUserCode (delegate {
 					LoadData (rendererTarget.Model, iter);
+					SetCurrentEventRow ();
 					var a = new ButtonEventArgs {
 						X = args.Event.X,
 						Y = args.Event.Y,
@@ -212,7 +213,7 @@ namespace Xwt.GtkBackend
 			int cx, cy;
 			Gtk.TreeIter iter;
 			if (rendererTarget.GetCellPosition (CellRenderer, (int)args.Event.X, (int)args.Event.Y, out cx, out cy, out iter)) {
-				var rect = rendererTarget.GetCellBounds (target, CellRenderer, iter);
+				var rect = rendererTarget.GetCellBackgroundBounds (target, CellRenderer, iter);
 				if (rect.Contains (cx, cy)) {
 					rendererTarget.PressedIter = iter;
 					rendererTarget.PressedCell = this;
@@ -226,6 +227,7 @@ namespace Xwt.GtkBackend
 					}
 					ApplicationContext.InvokeUserCode (delegate {
 						LoadData (rendererTarget.Model, iter);
+						SetCurrentEventRow ();
 						var a = new ButtonEventArgs {
 							X = args.Event.X,
 							Y = args.Event.Y,
@@ -246,13 +248,14 @@ namespace Xwt.GtkBackend
 			int cx, cy;
 			Gtk.TreeIter iter;
 			if (rendererTarget.GetCellPosition (CellRenderer, (int)args.Event.X, (int)args.Event.Y, out cx, out cy, out iter)) {
-				var rect = rendererTarget.GetCellBounds (target, CellRenderer, iter);
+				var rect = rendererTarget.GetCellBackgroundBounds (target, CellRenderer, iter);
 
 				if (rect.Contains (cx, cy)) {
 					if (enabledEvents.HasFlag (WidgetEvent.MouseMoved))
 						ApplicationContext.InvokeUserCode (delegate {
 							LoadData (rendererTarget.Model, iter);
-						EventSink.OnMouseMoved (new MouseMovedEventArgs (args.Event.Time, cx, cy));
+							SetCurrentEventRow ();
+							EventSink.OnMouseMoved (new MouseMovedEventArgs (args.Event.Time, cx, cy));
 						});
 
 					if (!mouseInsideCell) {
@@ -260,6 +263,7 @@ namespace Xwt.GtkBackend
 						if (enabledEvents.HasFlag (WidgetEvent.MouseEntered))
 							ApplicationContext.InvokeUserCode (delegate {
 								LoadData (rendererTarget.Model, iter);
+								SetCurrentEventRow ();
 								EventSink.OnMouseEntered ();
 							});
 					} 
@@ -268,6 +272,7 @@ namespace Xwt.GtkBackend
 					if (enabledEvents.HasFlag (WidgetEvent.MouseExited))
 						ApplicationContext.InvokeUserCode (delegate {
 						LoadData (rendererTarget.Model, iter);
+						SetCurrentEventRow ();
 						EventSink.OnMouseExited ();
 					});
 				}
