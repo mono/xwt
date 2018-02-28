@@ -239,6 +239,7 @@ namespace Xwt.GtkBackend
 		public void SetSelectionMode (SelectionMode mode)
 		{
 			switch (mode) {
+			case SelectionMode.None: Widget.Selection.Mode = Gtk.SelectionMode.None; break;
 			case SelectionMode.Single: Widget.Selection.Mode = Gtk.SelectionMode.Single; break;
 			case SelectionMode.Multiple: Widget.Selection.Mode = Gtk.SelectionMode.Multiple; break;
 			}
@@ -474,8 +475,11 @@ namespace Xwt.GtkBackend
 			if (!Widget.Model.GetIterFromString (out it, path.ToString ()))
 				return false;
 
+			var cellArea = Widget.GetCellArea (path, col);
+
 			int sp, w;
 			if (col.CellGetPosition (r, out sp, out w)) {
+				sp += cellArea.X;
 				if (cellx >= sp && cellx < sp + w) {
 					Widget.ConvertBinWindowToWidgetCoords (ex, ey, out cx, out cy);
 					return true;
