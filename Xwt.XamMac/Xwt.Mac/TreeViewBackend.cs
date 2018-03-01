@@ -108,6 +108,11 @@ namespace Xwt.Mac
 				}
 				return width;
 			}
+
+			public override NSIndexSet GetSelectionIndexes(NSOutlineView outlineView, NSIndexSet proposedSelectionIndexes)
+			{
+				return Backend.SelectionMode != SelectionMode.None ? proposedSelectionIndexes : new NSIndexSet();
+			}
 		}
 		
 		NSOutlineView Tree {

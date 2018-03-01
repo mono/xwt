@@ -178,10 +178,15 @@ namespace Xwt.Mac
 		{
 			ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
 		}
+
+		public SelectionMode SelectionMode { get; private set; }
 		
 		public void SetSelectionMode (SelectionMode mode)
 		{
+			SelectionMode = mode;
 			Table.AllowsMultipleSelection = mode == SelectionMode.Multiple;
+			if (mode == SelectionMode.None && Table.SelectedRowCount > 0)
+				UnselectAll ();
 		}
 
 		public virtual NSTableColumn AddColumn (ListViewColumn col)
