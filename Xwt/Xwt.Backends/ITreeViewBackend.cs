@@ -48,6 +48,7 @@ namespace Xwt.Backends
 		bool HeadersVisible { get; set; }
 		GridLines GridLinesVisible { get; set; }
 		bool UseAlternatingRowColors { get; set; }
+		bool AnimationsEnabled { get; set; }
 		
 		bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition);
 
