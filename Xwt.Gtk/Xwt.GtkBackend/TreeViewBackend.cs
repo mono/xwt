@@ -204,6 +204,8 @@ namespace Xwt.GtkBackend
 				Widget.Model = b.Store;
 		}
 
+		public bool AnimationsEnabled { get; set; }
+
 		public TreePosition[] SelectedRows {
 			get {
 				var rows = Widget.Selection.GetSelectedRows ();
