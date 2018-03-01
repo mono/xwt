@@ -478,7 +478,7 @@ namespace Xwt.GtkBackend
 			var cellArea = Widget.GetCellArea (path, col);
 			var cellx = ex - cellArea.X;
 
-			var renderers = col.CellRenderers;
+			var renderers = col.GetCellRenderers ();
 			int i = Array.IndexOf (renderers, r);
 
 			int rendererX, rendererWidth;
