@@ -465,10 +465,11 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeViewColumn col;
 			Gtk.TreePath path;
+			int _cellx, _celly;
 			cx = cy = 0;
 			it = Gtk.TreeIter.Zero;
 
-			if (!Widget.GetPathAtPos (ex, ey, out path, out col, out _, out _))
+			if (!Widget.GetPathAtPos (ex, ey, out path, out col, out _cellx, out _celly))
 				return false;
 
 			if (!Widget.Model.GetIter (out it, path))
@@ -483,9 +484,10 @@ namespace Xwt.GtkBackend
 			int rendererX, rendererWidth;
 			if (col.CellGetPosition (r, out rendererX, out rendererWidth)) {
 				if (i < renderers.Length - 1) {
+					int nextX, _w;
 					// The width returned by CellGetPosition is not reliable. Calculate the width
 					// by getting the position of the next renderer.
-					if (col.CellGetPosition (renderers [i + 1], out var nextX, out _))
+					if (col.CellGetPosition (renderers [i + 1], out nextX, out _w))
 						rendererWidth = nextX - rendererX;
 				} else {
 					// Last renderer of the column. Its width is what's left in the cell area.
