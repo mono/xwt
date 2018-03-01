@@ -162,6 +162,8 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public bool AnimationsEnabled { get; set; }
+
 		public void SelectRow (TreePosition pos)
 		{
 			Tree.SelectedItems.Add (pos);
