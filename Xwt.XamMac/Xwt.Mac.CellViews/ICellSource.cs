@@ -35,6 +35,7 @@ namespace Xwt.Mac
 		object GetValue (object pos, int nField);
 		void SetValue (object pos, int nField, object value);
 		void SetCurrentEventRow (object pos);
+		void InvalidateRowHeight (object pos);
 		List<NSTableColumn> Columns { get; }
 	}
 }

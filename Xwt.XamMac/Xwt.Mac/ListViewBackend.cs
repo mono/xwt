@@ -168,6 +168,11 @@ namespace Xwt.Mac
 			};
 			source.RowsReordered += (sender, e) => { RowHeights.Clear (); Table.ReloadData (); };
 		}
+
+		public override void InvalidateRowHeight (object pos)
+		{
+			UpdateRowHeight((int)pos);
+		}
 		
 		List<nfloat> RowHeights = new List<nfloat> ();
 		bool updatingRowHeight;

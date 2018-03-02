@@ -88,6 +88,11 @@ namespace Xwt.Mac
 			source.SetCurrentEventRow (tablePosition.Position);
 		}
 
+		public void InvalidateRowHeight ()
+		{
+			source.InvalidateRowHeight (tablePosition.Position);
+		}
+
 		public override NSObject Copy ()
 		{
 			var ob = (ICopiableObject)base.Copy ();

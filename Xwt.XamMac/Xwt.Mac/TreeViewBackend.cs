@@ -168,6 +168,11 @@ namespace Xwt.Mac
 			source.SetValue ((TreePosition)pos, nField, value);
 		}
 
+		public override void InvalidateRowHeight (object pos)
+		{
+			UpdateRowHeight (tsource.GetItem((TreePosition)pos));
+		}
+
 		Dictionary<TreeItem, nfloat> RowHeights = new Dictionary<TreeItem, nfloat> ();
 		bool updatingRowHeight;
 

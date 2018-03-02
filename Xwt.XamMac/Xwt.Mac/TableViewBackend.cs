@@ -268,6 +268,8 @@ namespace Xwt.Mac
 
 		public abstract void SetCurrentEventRow (object pos);
 
+		public abstract void InvalidateRowHeight (object pos);
+
 		public bool BorderVisible {
 			get { return scroll.BorderType == NSBorderType.BezelBorder;}
 			set {
