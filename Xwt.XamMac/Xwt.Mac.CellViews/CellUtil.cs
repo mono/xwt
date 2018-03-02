@@ -89,9 +89,10 @@ namespace Xwt.Mac
 				if (cell.CellView.Bounds.Contains (p)) {
 					cell.Backend.Load (cell);
 					cell.CellContainer.SetCurrentEventRow ();
+					var offset = cell.Backend.CellBounds.Location;
 					ButtonEventArgs args = new ButtonEventArgs {
-						X = p.X,
-						Y = p.Y,
+						X = p.X + offset.X,
+						Y = p.Y + offset.Y,
 						Button = theEvent.GetPointerButton(),
 						MultiplePress = (int)theEvent.ClickCount
 					};
@@ -109,9 +110,10 @@ namespace Xwt.Mac
 				if (cell.CellView.Bounds.Contains (p)) {
 					cell.Backend.Load (cell);
 					cell.CellContainer.SetCurrentEventRow ();
+					var offset = cell.Backend.CellBounds.Location;
 					ButtonEventArgs args = new ButtonEventArgs {
-						X = p.X,
-						Y = p.Y,
+						X = p.X + offset.X,
+						Y = p.Y + offset.Y,
 						Button = theEvent.GetPointerButton (),
 						MultiplePress = (int)theEvent.ClickCount
 					};
