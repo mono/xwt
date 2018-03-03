@@ -186,7 +186,7 @@ namespace Samples
 			var node = GetValue (NodeField);
 			var status = GetViewStatus (node);
 			expanderRect = Rectangle.Zero;
-			cellArea = BackgroundBounds;
+			cellArea = Bounds;
 			layout = new TextLayout ();
 			layout.Text = node.Text;
 			var textSize = layout.GetSize ();
@@ -194,7 +194,7 @@ namespace Samples
 				layout.Width = Math.Max (1, cellArea.Width - addImage.Width - MoreLinkSpacing);
 				if (!status.Expanded)
 					layout.Trimming = TextTrimming.WordElipsis;
-				var expanderX = cellArea.X + cellArea.Width - addImage.Width;
+				var expanderX = cellArea.Right - addImage.Width;
 				if (expanderX > 0)
 					expanderRect = new Rectangle (expanderX, cellArea.Y, addImage.Width, addImage.Height);
 			}
