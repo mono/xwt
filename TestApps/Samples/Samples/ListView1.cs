@@ -172,10 +172,12 @@ namespace Samples
 
 		protected override void OnMouseMoved (MouseMovedEventArgs args)
 		{
-			var data = GetValue (ValueField);
-			data.Value = (int) (100 * ((args.X - Bounds.X) / Bounds.Width));
-			data.YPos = args.Y - Bounds.Y;
-			QueueDraw ();
+			if (Bounds.Contains (args.Position)) {
+				var data = GetValue (ValueField);
+				data.Value = Math.Min (100, (int)(100 * ((args.X - Bounds.X) / Bounds.Width)));
+				data.YPos = args.Y - Bounds.Y;
+				QueueDraw ();
+			}
 			base.OnMouseMoved (args);
 		}
 
