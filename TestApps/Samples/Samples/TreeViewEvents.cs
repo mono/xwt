@@ -102,7 +102,8 @@ namespace Samples
 
 		ViewStatus GetViewStatus (TextNode node)
 		{
-			if (!viewStatus.TryGetValue (node, out var status))
+			ViewStatus status;
+			if (!viewStatus.TryGetValue (node, out status))
 				status = viewStatus [node] = new ViewStatus ();
 			return status;
 		}
@@ -202,7 +203,9 @@ namespace Samples
 
 		protected override void OnMouseMoved (MouseMovedEventArgs args)
 		{
-			CalcLayout (out var layout, out var cellArea, out var expanderRect);
+			TextLayout layout;
+			Rectangle cellArea, expanderRect;
+			CalcLayout (out layout, out cellArea, out expanderRect);
 
 			if (expanderRect != Rectangle.Zero && expanderRect.Contains (args.Position)) {
 				pointerPosition = args.Position;
@@ -229,7 +232,9 @@ namespace Samples
 
 		protected override void OnButtonPressed (ButtonEventArgs args)
 		{
-			CalcLayout (out var layout, out var cellArea, out var expanderRect);
+			TextLayout layout;
+			Rectangle cellArea, expanderRect;
+			CalcLayout (out layout, out cellArea, out expanderRect);
 
 			var node = GetValue (NodeField);
 			var status = GetViewStatus (node);
