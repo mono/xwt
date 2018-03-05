@@ -68,34 +68,26 @@ namespace Xwt.Mac
 		internal void AutosizeColumns ()
 		{
 			var columns = TableColumns ();
-			foreach (var col in columns)
-				AutosizeColumn (col);
-			if (columns.Any (c => c.ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing)))
+			if (columns.Length == 1 && columns[0].ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing))
+				return;
+			var needsSizeToFit = false;
+			for (nint i = 0; i < columns.Length; i++) {
+				AutosizeColumn (columns[i], i);
+				needsSizeToFit |= columns[i].ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing);
+			}
+			if (needsSizeToFit)
 				SizeToFit ();
 		}
 
-		void AutosizeColumn (NSTableColumn tableColumn)
+		void AutosizeColumn (NSTableColumn tableColumn, nint colIndex)
 		{
-			var column = IndexOfColumn (tableColumn);
-
 			var contentWidth = tableColumn.HeaderCell.CellSize.Width;
 			if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.UserResizingMask)) {
-				contentWidth = Delegate.GetSizeToFitColumnWidth (this, column);
+				contentWidth = Delegate.GetSizeToFitColumnWidth (this, colIndex);
 				if (!tableColumn.ResizingMask.HasFlag (NSTableColumnResizing.Autoresizing))
 					tableColumn.Width = contentWidth;
 			}
 			tableColumn.MinWidth = contentWidth;
-		}
-
-		nint IndexOfColumn (NSTableColumn tableColumn)
-		{
-			nint icol = -1;
-			foreach (var col in TableColumns ()) {
-				icol++;
-				if (col == tableColumn)
-					return icol;
-			}
-			return icol;
 		}
 
 		public override void ExpandItem (NSObject item)
