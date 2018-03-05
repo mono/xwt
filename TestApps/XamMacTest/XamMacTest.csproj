@@ -28,6 +28,7 @@
     <UseRefCounting>false</UseRefCounting>
     <Profiling>false</Profiling>
     <AOTMode>None</AOTMode>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,6 +46,7 @@
     <Profiling>false</Profiling>
     <DebugSymbols>true</DebugSymbols>
     <AOTMode>None</AOTMode>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
