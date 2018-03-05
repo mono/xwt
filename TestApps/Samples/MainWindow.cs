@@ -110,6 +110,7 @@ namespace Samples
 			var treeview = AddSample (w, "TreeView", typeof(TreeViews));
 			AddSample (treeview, "Cell Bounds", typeof(TreeViewCellBounds));
 			AddSample (treeview, "Custom Data Source", typeof (TreeViewCustomStore));
+			AddSample (treeview, "Tree View Events", typeof (TreeViewEvents));
 			AddSample (w, "WebView", typeof(WebViewSample));
 
 			var n = AddSample (null, "Drawing", null);

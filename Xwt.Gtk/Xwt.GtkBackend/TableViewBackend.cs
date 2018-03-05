@@ -239,6 +239,7 @@ namespace Xwt.GtkBackend
 		public void SetSelectionMode (SelectionMode mode)
 		{
 			switch (mode) {
+			case SelectionMode.None: Widget.Selection.Mode = Gtk.SelectionMode.None; break;
 			case SelectionMode.Single: Widget.Selection.Mode = Gtk.SelectionMode.Single; break;
 			case SelectionMode.Multiple: Widget.Selection.Mode = Gtk.SelectionMode.Multiple; break;
 			}
@@ -464,19 +465,36 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.TreeViewColumn col;
 			Gtk.TreePath path;
-			int cellx, celly;
+			int _cellx, _celly;
 			cx = cy = 0;
 			it = Gtk.TreeIter.Zero;
 
-			if (!Widget.GetPathAtPos (ex, ey, out path, out col, out cellx, out celly))
+			if (!Widget.GetPathAtPos (ex, ey, out path, out col, out _cellx, out _celly))
 				return false;
 
-			if (!Widget.Model.GetIterFromString (out it, path.ToString ()))
+			if (!Widget.Model.GetIter (out it, path))
 				return false;
 
-			int sp, w;
-			if (col.CellGetPosition (r, out sp, out w)) {
-				if (cellx >= sp && cellx < sp + w) {
+			var cellArea = Widget.GetCellArea (path, col);
+			var cellx = ex - cellArea.X;
+
+			var renderers = col.GetCellRenderers ();
+			int i = Array.IndexOf (renderers, r);
+
+			int rendererX, rendererWidth;
+			if (col.CellGetPosition (r, out rendererX, out rendererWidth)) {
+				if (i < renderers.Length - 1) {
+					int nextX, _w;
+					// The width returned by CellGetPosition is not reliable. Calculate the width
+					// by getting the position of the next renderer.
+					if (col.CellGetPosition (renderers [i + 1], out nextX, out _w))
+						rendererWidth = nextX - rendererX;
+				} else {
+					// Last renderer of the column. Its width is what's left in the cell area.
+					rendererWidth = cellArea.Width - rendererX;
+				}
+				
+				if (cellx >= rendererX && cellx < rendererX + rendererWidth) {
 					Widget.ConvertBinWindowToWidgetCoords (ex, ey, out cx, out cy);
 					return true;
 				}
@@ -491,6 +509,12 @@ namespace Xwt.GtkBackend
 			int x, y;
 			Widget.ConvertBinWindowToWidgetCoords (r.X, r.Y, out x, out y);
 			Widget.QueueDrawArea (x, y, r.Width, r.Height);
+		}
+
+		public void QueueResize (object target, Gtk.TreeIter iter)
+		{
+			var path = Widget.Model.GetPath (iter);
+			Widget.Model.EmitRowChanged (path, iter);
 		}
 
 		#endregion

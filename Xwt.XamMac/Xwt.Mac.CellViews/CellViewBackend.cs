@@ -87,6 +87,12 @@ namespace Xwt.Mac
 			CurrentCellView.NeedsDisplay = true;
 		}
 
+		public void QueueResize ()
+		{
+			CurrentCellView.NeedsDisplay = true;
+			((ICellRenderer)CurrentCellView).CellContainer.InvalidateRowHeight ();
+		}
+
 		public Rectangle CellBounds {
 			get {
 				return CurrentCellView.ConvertRectToView (CurrentCellView.Frame, Table).ToXwtRect ();

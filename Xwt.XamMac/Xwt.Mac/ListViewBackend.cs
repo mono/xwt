@@ -84,6 +84,11 @@ namespace Xwt.Mac
 				}
 				return width;
 			}
+
+			public override NSIndexSet GetSelectionIndexes(NSTableView tableView, NSIndexSet proposedSelectionIndexes)
+			{
+				return Backend.SelectionMode != SelectionMode.None ? proposedSelectionIndexes : new NSIndexSet();
+			}
 		}
 
 		IListDataSource source;
@@ -162,6 +167,11 @@ namespace Xwt.Mac
 				Table.ReloadData (NSIndexSet.FromIndex (e.Row), NSIndexSet.FromNSRange (new NSRange (0, Table.ColumnCount)));
 			};
 			source.RowsReordered += (sender, e) => { RowHeights.Clear (); Table.ReloadData (); };
+		}
+
+		public override void InvalidateRowHeight (object pos)
+		{
+			UpdateRowHeight((int)pos);
 		}
 		
 		List<nfloat> RowHeights = new List<nfloat> ();

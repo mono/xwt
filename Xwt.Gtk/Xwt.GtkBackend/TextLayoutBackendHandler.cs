@@ -198,7 +198,7 @@ namespace Xwt.GtkBackend
 		{
 			var tl = (PangoBackend) backend;
 			int index, trailing;
-			tl.Layout.XyToIndex ((int)x, (int)y, out index, out trailing);
+			tl.Layout.XyToIndex (Pango.Units.FromPixels ((int)x), Pango.Units.FromPixels ((int)y), out index, out trailing);
 			return tl.TextIndexer.ByteIndexToIndex (index);
 		}
 

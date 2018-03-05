@@ -31,7 +31,8 @@ namespace Xwt
 	public enum SelectionMode
 	{
 		Single,
-		Multiple
+		Multiple,
+		None
 	}
 }
 

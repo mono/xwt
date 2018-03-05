@@ -108,6 +108,11 @@ namespace Xwt.Mac
 				}
 				return width;
 			}
+
+			public override NSIndexSet GetSelectionIndexes(NSOutlineView outlineView, NSIndexSet proposedSelectionIndexes)
+			{
+				return Backend.SelectionMode != SelectionMode.None ? proposedSelectionIndexes : new NSIndexSet();
+			}
 		}
 		
 		OutlineViewBackend Tree {
@@ -170,6 +175,11 @@ namespace Xwt.Mac
 		public override void SetValue (object pos, int nField, object value)
 		{
 			source.SetValue ((TreePosition)pos, nField, value);
+		}
+
+		public override void InvalidateRowHeight (object pos)
+		{
+			UpdateRowHeight (tsource.GetItem((TreePosition)pos));
 		}
 
 		Dictionary<TreeItem, nfloat> RowHeights = new Dictionary<TreeItem, nfloat> ();

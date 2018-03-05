@@ -178,10 +178,15 @@ namespace Xwt.Mac
 		{
 			ApplicationContext.InvokeUserCode (EventSink.OnSelectionChanged);
 		}
+
+		public SelectionMode SelectionMode { get; private set; }
 		
 		public void SetSelectionMode (SelectionMode mode)
 		{
+			SelectionMode = mode;
 			Table.AllowsMultipleSelection = mode == SelectionMode.Multiple;
+			if (mode == SelectionMode.None && Table.SelectedRowCount > 0)
+				UnselectAll ();
 		}
 
 		public virtual NSTableColumn AddColumn (ListViewColumn col)
@@ -262,6 +267,8 @@ namespace Xwt.Mac
 		public abstract void SetValue (object pos, int nField, object value);
 
 		public abstract void SetCurrentEventRow (object pos);
+
+		public abstract void InvalidateRowHeight (object pos);
 
 		public bool BorderVisible {
 			get { return scroll.BorderType == NSBorderType.BezelBorder;}
