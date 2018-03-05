@@ -59,6 +59,12 @@ namespace Xwt.Mac
 			}
 		}
 
+		bool animationsEnabled = true;
+		public bool AnimationsEnabled {
+			get { return animationsEnabled; }
+			set { animationsEnabled = value; }
+		}
+
 		public override void AddColumn (NSTableColumn tableColumn)
 		{
 			base.AddColumn (tableColumn);
@@ -92,26 +98,48 @@ namespace Xwt.Mac
 
 		public override void ExpandItem (NSObject item)
 		{
+			BeginExpandCollapseAnimation ();
 			base.ExpandItem (item);
+			EndExpandCollapseAnimation ();
 			QueueColumnResize ();
 		}
 
 		public override void ExpandItem (NSObject item, bool expandChildren)
 		{
+			BeginExpandCollapseAnimation ();
 			base.ExpandItem (item, expandChildren);
+			EndExpandCollapseAnimation ();
 			QueueColumnResize ();
 		}
 
 		public override void CollapseItem (NSObject item)
 		{
+			BeginExpandCollapseAnimation ();
 			base.CollapseItem (item);
+			EndExpandCollapseAnimation ();
 			QueueColumnResize ();
 		}
 
 		public override void CollapseItem (NSObject item, bool collapseChildren)
 		{
+			BeginExpandCollapseAnimation ();
 			base.CollapseItem (item, collapseChildren);
+			EndExpandCollapseAnimation ();
 			QueueColumnResize ();
+		}
+
+		void BeginExpandCollapseAnimation ()
+		{
+			if (!AnimationsEnabled) {
+				NSAnimationContext.BeginGrouping ();
+				NSAnimationContext.CurrentContext.Duration = 0;
+			}
+		}
+
+		void EndExpandCollapseAnimation ()
+		{
+			if (!AnimationsEnabled)
+				NSAnimationContext.EndGrouping ();
 		}
 
 		public override void ReloadData ()

@@ -110,8 +110,8 @@ namespace Xwt.Mac
 			}
 		}
 		
-		NSOutlineView Tree {
-			get { return (NSOutlineView) Table; }
+		OutlineViewBackend Tree {
+			get { return (OutlineViewBackend) Table; }
 		}
 		
 		protected override NSTableView CreateView ()
@@ -119,6 +119,15 @@ namespace Xwt.Mac
 			var t = new OutlineViewBackend (EventSink, ApplicationContext);
 			t.Delegate = new TreeDelegate () { Backend = this };
 			return t;
+		}
+
+		public bool AnimationsEnabled {
+			get {
+				return Tree.AnimationsEnabled;
+			}
+			set {
+				Tree.AnimationsEnabled = value;
+			}
 		}
 		
 		protected override string SelectionChangeEventName {
