@@ -1,4 +1,4 @@
-﻿//
+//
 // TreeViewBackend.cs
 //
 // Author:
@@ -118,10 +118,10 @@ namespace Xwt.WPFBackend
 
 		public bool BorderVisible {
 			get {
-				return ScrollViewer.BorderThickness.Left != 0;
+				return Tree.BorderThickness.Left != 0;
 			}
 			set {
-				ScrollViewer.BorderThickness = value ? new Thickness (1) : new Thickness (0);
+				Tree.BorderThickness = value ? new Thickness (1) : new Thickness (0);
 			}
 		}
 
