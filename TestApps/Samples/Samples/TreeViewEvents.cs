@@ -48,7 +48,7 @@ namespace Samples
 			tree.Columns.Add (col);
 
 			var node = store.AddNode ().SetValue (nodeField, new TextNode ("Root 1"));
-			var child = node.AddChild ().SetValue (nodeField, new TextNode ("Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text."));
+			var child = node.AddChild ().SetValue (nodeField, new TextNode ("Very long text with NewLines. \n\nVery long text with NewLines.\n\nVery long text. Very long text. Very long text. Very long text."));
 			node = store.AddNode ().SetValue (nodeField, new TextNode ("Root 2"));
 			child = node.AddChild ().SetValue (nodeField, new TextNode ("Short text. Short text. Short text."));
 			child.AddChild ().SetValue (nodeField, new TextNode ("Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text."));
@@ -113,18 +113,26 @@ namespace Samples
 			var node = GetValue (NodeField);
 			var status = GetViewStatus (node);
 
-			TextLayout layout = new TextLayout ();
-			layout.Text = node.Text;
+			var layout = new TextLayout ();
+
+			var index = node.Text.IndexOf('\n');
+			if (!status.Expanded && index > -1) {
+				layout.Text = node.Text.Substring(0, index);
+			} else {
+				layout.Text = node.Text;
+			}
+
 			var textSize = layout.GetSize ();
 
 			// When in expanded mode, the height of the row depends on the width. Since we don't know the width,
 			// let's use the last width that was used for rendering.
 
-			if (status.Expanded && status.LastRenderWidth != 0 && layout.GetSize ().Width > status.LastRenderWidth) {
+			if (status.Expanded && status.LastRenderWidth != 0 && textSize.Width > status.LastRenderWidth) {
 				layout.Width = status.LastRenderWidth - addImage.Width - MoreLinkSpacing;
 				textSize = layout.GetSize ();
 			}
 
+			//in cases when there are multiple lines and they don't execeed the max width we need to care height include the expand
 			status.LastCalculatedHeight = textSize.Height;
 
 			return new Size (30, textSize.Height);
@@ -147,9 +155,14 @@ namespace Samples
 				layout.SetBackground (Colors.LightBlue, Math.Min (selectionStart, selectionEnd), Math.Abs (selectionEnd - selectionStart));
 
 			// Text doesn't fit. We need to render the expand icon
+			if (textSize.Width > cellArea.Width || textSize.Height > cellArea.Height) {
 
-			if (textSize.Width > cellArea.Width) {
-				layout.Width = Math.Max (1, cellArea.Width - addImage.Width - MoreLinkSpacing);
+				layout.Width = Math.Max(1, cellArea.Width - addImage.Width - MoreLinkSpacing);
+
+				if (textSize.Height > cellArea.Height) {
+					layout.Height = cellArea.Height;
+				}
+
 				if (!status.Expanded)
 					layout.Trimming = TextTrimming.WordElipsis;
 				else
