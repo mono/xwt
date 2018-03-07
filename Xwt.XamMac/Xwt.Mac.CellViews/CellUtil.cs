@@ -34,22 +34,22 @@ namespace Xwt.Mac
 {
 	static class CellUtil
 	{
-		public static CompositeCell CreateCellView (ApplicationContext context, NSTableView table, ICellSource source, ICollection<CellView> cells, int column)
+		public static CompositeCell CreateCellView (ApplicationContext context, ICellSource source, ICollection<CellView> cells, int column)
 		{
 			CompositeCell c = new CompositeCell (context, source);
 			foreach (var cell in cells)
-				c.AddCell ((ICellRenderer) CreateCellView (table, cell, column));
+				c.AddCell ((ICellRenderer) CreateCellView (source, cell, column));
 			return c;
 		}
 
-		public static void UpdateCellView (CompositeCell cellView, NSTableView table, ICollection<CellView> cells, int column)
+		public static void UpdateCellView (CompositeCell cellView, ICellSource source, ICollection<CellView> cells, int column)
 		{
 			cellView.ClearCells ();
 			foreach (var cell in cells)
-				cellView.AddCell ((ICellRenderer) CreateCellView (table, cell, column));
+				cellView.AddCell ((ICellRenderer) CreateCellView (source, cell, column));
 		}
 		
-		static NSView CreateCellView (NSTableView table, CellView cell, int column)
+		static NSView CreateCellView (ICellSource source, CellView cell, int column)
 		{
 			ICellRenderer cr = null;
 
@@ -75,8 +75,8 @@ namespace Xwt.Mac
 			} catch (InvalidOperationException) { }
 
 			if (backend == null) {
-				cr.Backend = new CellViewBackend (table, column);
-				fr.AttachBackend (null, cr.Backend);
+				cr.Backend = new CellViewBackend (source.TableView, column);
+				fr.AttachBackend ((source as ViewBackend).Frontend, cr.Backend);
 			} else
 				cr.Backend = backend;
 			return (NSView)cr;
