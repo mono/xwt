@@ -297,7 +297,8 @@ namespace Xwt.Mac
 			double x = 0;
 			foreach (var cellFrame in cellFrames) {
 				var width = cellFrame.Frame.Width;
-				var height = cellFrame.Cell.FittingSize.Height;
+				var canvas = cellFrame.Cell as ICanvasCellRenderer;
+				var height = (canvas != null) ? canvas.GetRequiredSize (SizeConstraint.WithSize (width)).Height : cellFrame.Cell.FittingSize.Height;
 				// y-align only if the cell has a valid height, otherwise we're just recalculating the required size
 				var y = cellSize.Height > 0 ? (cellSize.Height - height) / 2 : 0;
 				cellFrame.Frame = new CGRect (x, y, width, height);

@@ -35,6 +35,11 @@ namespace Xwt.Mac
 		NSView CellView { get; }
 		void Fill ();
 	}
+
+	interface ICanvasCellRenderer : ICellRenderer
+	{
+		Size GetRequiredSize (SizeConstraint widthConstraint);
+	}
 	
 	interface ITablePosition
 	{
