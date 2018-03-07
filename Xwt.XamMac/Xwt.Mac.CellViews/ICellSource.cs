@@ -37,5 +37,6 @@ namespace Xwt.Mac
 		void SetCurrentEventRow (object pos);
 		void InvalidateRowHeight (object pos);
 		List<NSTableColumn> Columns { get; }
+		NSTableView TableView { get; }
 	}
 }
