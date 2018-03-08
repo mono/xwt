@@ -48,7 +48,7 @@ namespace Samples
 			tree.Columns.Add (col);
 
 			var node = store.AddNode ().SetValue (nodeField, new TextNode ("Root 1"));
-			var child = node.AddChild ().SetValue (nodeField, new TextNode ("Very long text with NewLines. \n\nVery long text with NewLines.\n\nVery long text. Very long text. Very long text. Very long text."));
+			var child = node.AddChild ().SetValue (nodeField, new TextNode ("Very long text with NewLines. Very long text with NewLines Very long text with NewLines\n\nVery long text with NewLines.\n\nVery long text. Very long text. Very long text. Very long text."));
 			node = store.AddNode ().SetValue (nodeField, new TextNode ("Root 2"));
 			child = node.AddChild ().SetValue (nodeField, new TextNode ("Short text. Short text. Short text."));
 			child.AddChild ().SetValue (nodeField, new TextNode ("Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text."));
@@ -114,10 +114,9 @@ namespace Samples
 			var status = GetViewStatus (node);
 
 			var layout = new TextLayout ();
-
-			var index = node.Text.IndexOf('\n');
-			if (!status.Expanded && index > -1) {
-				layout.Text = node.Text.Substring(0, index);
+			var newLineIndex = node.Text.IndexOf('\n');
+			if (!status.Expanded && newLineIndex > -1) {
+				layout.Text = node.Text.Substring(0, newLineIndex);
 			} else {
 				layout.Text = node.Text;
 			}
@@ -155,7 +154,7 @@ namespace Samples
 				layout.SetBackground (Colors.LightBlue, Math.Min (selectionStart, selectionEnd), Math.Abs (selectionEnd - selectionStart));
 
 			// Text doesn't fit. We need to render the expand icon
-			if (textSize.Width > cellArea.Width || textSize.Height > cellArea.Height) {
+			if (textSize.Width > cellArea.Width || node.Text.IndexOf('\n') > -1) {
 
 				layout.Width = Math.Max(1, cellArea.Width - addImage.Width - MoreLinkSpacing);
 
@@ -204,7 +203,7 @@ namespace Samples
 			layout = new TextLayout ();
 			layout.Text = node.Text;
 			var textSize = layout.GetSize ();
-			if (textSize.Width > cellArea.Width) {
+			if (textSize.Width > cellArea.Width || node.Text.IndexOf('\n') > -1) {
 				layout.Width = Math.Max (1, cellArea.Width - addImage.Width - MoreLinkSpacing);
 				if (!status.Expanded)
 					layout.Trimming = TextTrimming.WordElipsis;
