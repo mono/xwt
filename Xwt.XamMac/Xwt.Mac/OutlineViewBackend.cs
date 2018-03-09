@@ -128,6 +128,13 @@ namespace Xwt.Mac
 			QueueColumnResize ();
 		}
 
+		public override void NoteHeightOfRowsWithIndexesChanged(NSIndexSet indexSet)
+		{
+			BeginExpandCollapseAnimation();
+			base.NoteHeightOfRowsWithIndexesChanged(indexSet);
+			EndExpandCollapseAnimation();
+		}
+
 		void BeginExpandCollapseAnimation ()
 		{
 			if (!AnimationsEnabled) {
