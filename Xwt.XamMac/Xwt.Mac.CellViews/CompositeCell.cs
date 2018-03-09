@@ -88,9 +88,23 @@ namespace Xwt.Mac
 			source.SetCurrentEventRow (tablePosition.Position);
 		}
 
+		bool recalculatingHeight = false;
 		public void InvalidateRowHeight ()
 		{
-			source.InvalidateRowHeight (tablePosition.Position);
+			if (tablePosition != null && !recalculatingHeight) {
+				recalculatingHeight = true;
+				source.InvalidateRowHeight (tablePosition.Position);
+				recalculatingHeight = false;
+			}
+		}
+
+		public double GetRequiredHeightForWidth (double width)
+		{
+			Fill (false);
+			double height = 0;
+			foreach (var c in GetCells (new CGSize (width, -1)))
+				height = Math.Max (height, c.Frame.Height);
+			return height;
 		}
 
 		public override NSObject Copy ()
@@ -122,7 +136,7 @@ namespace Xwt.Mac
 				AddCell (copy);
 			}
 			if (tablePosition != null)
-				Fill ();
+				Fill (false);
 		}
 
 		public virtual NSObject ObjectValue {
@@ -171,22 +185,30 @@ namespace Xwt.Mac
 				var oldSize = base.Frame.Size;
 				base.Frame = value;
 				if (oldSize != value.Size && tablePosition != null) {
-					foreach (var c in GetCells (new CGRect (CGPoint.Empty, value.Size))) {
+					Fill(false);
+					double height = 0;
+					foreach (var c in GetCells (value.Size)) {
 						c.Cell.Frame = c.Frame;
 						c.Cell.NeedsDisplay = true;
+						height = Math.Max (height, c.Frame.Height);
 					}
+					if (Math.Abs(value.Height - height) > double.Epsilon)
+						InvalidateRowHeight ();
+					
 				}
 			}
 		}
 
-		public void Fill ()
+		public void Fill (bool reallocateCells = true)
 		{
 			foreach (var c in cells) {
 				c.Backend.Load (c);
 				c.Fill ();
 			}
+			if (!reallocateCells || Frame.IsEmpty)
+				return;
 
-			foreach (var c in GetCells (new CGRect (CGPoint.Empty, Frame.Size))) {
+			foreach (var c in GetCells (Frame.Size)) {
 				c.Cell.Frame = c.Frame;
 				c.Cell.NeedsDisplay = true;
 			}
@@ -256,11 +278,11 @@ namespace Xwt.Mac
 			return false;
 		}
 		
-		IEnumerable<CellPos> GetCells (CGRect cellFrame)
+		IEnumerable<CellPos> GetCells (CGSize cellSize)
 		{
 			int nexpands = 0;
 			double requiredSize = 0;
-			double availableSize = cellFrame.Width;
+			double availableSize = cellSize.Width;
 
 			var visibleCells = VisibleCells.ToArray ();
 			var sizes = new double [visibleCells.Length];
@@ -286,11 +308,12 @@ namespace Xwt.Mac
 				}
 			}
 
-			double x = cellFrame.X;
+			double x = 0;
 			for (int i = 0; i < visibleCells.Length; i++) {
 				var cell = (NSView)visibleCells [i];
 				var height = cell.FittingSize.Height;
-				var y = (cellFrame.Height - height) / 2;
+				// y-align only if the cell has a valid height, otherwise we're just recalculating the required size
+				var y = cellSize.Height > 0 ? (cellSize.Height - height) / 2 : 0;
 				yield return new CellPos { Cell = cell, Frame = new CGRect (x, y, sizes [i], height) };
 				x += sizes [i];
 			}
