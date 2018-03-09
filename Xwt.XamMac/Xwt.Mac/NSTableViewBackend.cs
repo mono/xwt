@@ -180,7 +180,7 @@ namespace Xwt.Mac
 		public override void MouseDragged (NSEvent theEvent)
 		{
 			if (!this.HandleMouseMoved (theEvent))
-				base.MouseMoved (theEvent);
+				base.MouseDragged (theEvent);
 		}
 
 		public override void OtherMouseDragged (NSEvent theEvent)
