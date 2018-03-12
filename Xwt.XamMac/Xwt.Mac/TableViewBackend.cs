@@ -30,6 +30,7 @@ using AppKit;
 using CoreGraphics;
 using Foundation;
 using Xwt.Backends;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -302,6 +303,12 @@ namespace Xwt.Mac
 		{
 			get { return Table.GridStyleMask.ToXwtValue (); }
 			set { Table.GridStyleMask = value.ToMacValue (); }
+		}
+
+		public override Color BackgroundColor
+		{
+			get { return Table.BackgroundColor.ToXwtColor (); }
+			set { Table.BackgroundColor = value.ToNSColor (); }
 		}
 	}
 
