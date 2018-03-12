@@ -389,10 +389,9 @@ namespace Xwt.Mac
 	class TreeSource: NSOutlineViewDataSource
 	{
 		ITreeDataSource source;
-		
-		// TODO: remove unused positions
+
 		Dictionary<TreePosition,TreeItem> items = new Dictionary<TreePosition, TreeItem> ();
-		
+
 		public TreeSource (ITreeDataSource source)
 		{
 			this.source = source;
@@ -400,6 +399,12 @@ namespace Xwt.Mac
 			source.NodeInserted += (sender, e) => {
 				if (!items.ContainsKey (e.Node))
 					items.Add (e.Node, new TreeItem { Position = e.Node });
+			};
+			source.NodeDeleted += (sender, e) => {
+				items.Remove (e.Child);
+			};
+			source.Cleared += (sender, e) => {
+				items.Clear ();
 			};
 		}
 		

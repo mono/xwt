@@ -424,6 +424,11 @@ namespace Xwt
 		
 		public void Remove (TreePosition pos)
 		{
+			// Remove all child nodes in reverse order and notify client of each removed child.
+			// This allows clients to keep track of all removed nodes, before the current node
+			// will be removed and invalidated.
+			for (int i = GetChildrenCount (pos) - 1; i >= 0 ; i--)
+				Remove (GetChild (pos, i));
 			NodePosition np = GetPosition (pos);
 			np.ParentList.RemoveAt (np.NodeIndex);
 			var parent = np.ParentList.Parent;
