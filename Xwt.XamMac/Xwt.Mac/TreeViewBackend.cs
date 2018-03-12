@@ -156,14 +156,23 @@ namespace Xwt.Mac
 			tsource = new TreeSource (source);
 			Tree.DataSource = tsource;
 
-			source.NodeInserted += (sender, e) => Tree.ReloadItem (tsource.GetItem (source.GetParent(e.Node)), true);
-			source.NodeDeleted += (sender, e) => Tree.ReloadItem (tsource.GetItem (e.Node), true);
+			source.NodeInserted += (sender, e) => {
+				var parent = tsource.GetItem (source.GetParent (e.Node));
+				Tree.ReloadItem (parent, parent == null || Tree.IsItemExpanded (parent));
+			};
+			source.NodeDeleted += (sender, e) => {
+				var parent = tsource.GetItem (e.Node);
+				Tree.ReloadItem (parent, parent == null || Tree.IsItemExpanded (parent));
+			};
 			source.NodeChanged += (sender, e) => {
 				var item = tsource.GetItem (e.Node);
 				Tree.ReloadItem (item, false);
 				UpdateRowHeight (item);
 			};
-			source.NodesReordered += (sender, e) => Tree.ReloadItem (tsource.GetItem (e.Node), true);
+			source.NodesReordered += (sender, e) => {
+				var parent = tsource.GetItem (e.Node);
+				Tree.ReloadItem (parent, parent == null || Tree.IsItemExpanded (parent));
+			};
 			source.Cleared += (sender, e) => Tree.ReloadData ();
 		}
 		
