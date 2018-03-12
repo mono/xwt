@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using AppKit;
+using CoreGraphics;
 using Foundation;
 using Xwt.Backends;
 
@@ -112,6 +113,16 @@ namespace Xwt.Mac
 			[Export ("setBackgroundStyle:")]
 			set {
 				Cell.BackgroundStyle = value;
+			}
+		}
+
+		static CGSize defaultSize = CGSize.Empty;
+		public override CGSize FittingSize {
+			get {
+				// CheckBox has always the same size, measure it only once
+				if (defaultSize.IsEmpty)
+					defaultSize = base.FittingSize;
+				return defaultSize;
 			}
 		}
 

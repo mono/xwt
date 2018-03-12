@@ -26,6 +26,7 @@
 using System;
 using Xwt.Backends;
 using AppKit;
+using CoreGraphics;
 
 namespace Xwt.Mac
 {
@@ -70,6 +71,16 @@ namespace Xwt.Mac
 		public CompositeCell CellContainer { get; set; }
 
 		public NSView CellView { get { return this; } }
+
+		static CGSize defaultSize = CGSize.Empty;
+		public override CGSize FittingSize {
+			get {
+				// Radio NSButton has always the same size, measure it only once
+				if (defaultSize.IsEmpty)
+					defaultSize = base.FittingSize;
+				return defaultSize;
+			}
+		}
 
 		public void Fill ()
 		{

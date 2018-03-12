@@ -228,8 +228,6 @@ namespace Xwt.Mac
 					continue;
 				var c = (NSView)cell;
 				var s = c.FittingSize;
-				if (s.IsEmpty && SizeToFit (c))
-					s = c.Frame.Size;
 				w += s.Width;
 				if (s.Height > h)
 					h = s.Height;
@@ -265,17 +263,6 @@ namespace Xwt.Mac
 						cell.NeedsDisplay = true;
 			}
 		}
-
-		static readonly Selector sizeToFitSel = new Selector ("sizeToFit");
-
-		protected virtual bool SizeToFit (NSView view)
-		{
-			if (view.RespondsToSelector (sizeToFitSel)) {
-				Messaging.void_objc_msgSend (view.Handle, sizeToFitSel.Handle);
-				return true;
-			}
-			return false;
-		}
 		
 		List <CellPos> GetCells (CGSize cellSize)
 		{
@@ -293,8 +280,6 @@ namespace Xwt.Mac
 				cellFrames.Add (cellPos);
 				var view = cellPos.Cell;
 				var size = view.FittingSize;
-				if (size.IsEmpty && SizeToFit (view))
-					size = view.Frame.Size;
 				cellPos.Frame.Width = size.Width;
 				requiredSize += size.Width;
 				if (((ICellRenderer)cellPos.Cell).Backend.Frontend.Expands)
