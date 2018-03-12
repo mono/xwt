@@ -40,8 +40,15 @@ namespace Samples
 			var tree = new TreeView (store);
 			tree.HeadersVisible = false;
 			tree.SelectionMode = SelectionMode.None;
+			tree.AnimationsEnabled = false;
+			tree.ButtonPressed += (s, e) =>
+			{
+				// disable internal selection/dragging logic, which might collide with the mouse handling in this example
+				if (e.Button == PointerButton.Left)
+					e.Handled = true;
+			};
 
-			var col = new ListViewColumn ();
+			var col = new ListViewColumn () { Expands = true };
 			var cellView = new ExpandableTextCellView ();
 			cellView.NodeField = nodeField;
 			col.Views.Add (cellView, true);

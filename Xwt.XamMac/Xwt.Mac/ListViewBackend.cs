@@ -96,7 +96,7 @@ namespace Xwt.Mac
 
 		protected override NSTableView CreateView ()
 		{
-			var listView = new NSTableViewBackend (EventSink, ApplicationContext);
+			var listView = new NSTableViewBackend (this);
 			listView.Delegate = new ListDelegate { Backend = this };
 			return listView;
 		}

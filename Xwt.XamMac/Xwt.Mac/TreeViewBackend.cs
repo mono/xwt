@@ -121,7 +121,7 @@ namespace Xwt.Mac
 		
 		protected override NSTableView CreateView ()
 		{
-			var t = new OutlineViewBackend (EventSink, ApplicationContext);
+			var t = new OutlineViewBackend (this);
 			t.Delegate = new TreeDelegate () { Backend = this };
 			return t;
 		}
