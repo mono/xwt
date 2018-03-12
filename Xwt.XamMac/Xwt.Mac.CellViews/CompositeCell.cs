@@ -273,35 +273,34 @@ namespace Xwt.Mac
 			var cellFrames = new List<CellPos> (cells.Count);
 
 			// Get the natural size of each child
-			for (int i = 0; i < cells.Count; i++) {
-				if (!cells [i].Backend.Frontend.Visible)
+			foreach (var cell in cells) {
+				if (!cell.Backend.Frontend.Visible)
 					continue;
-				var cellPos = new CellPos { Cell = (NSView)cells[i], Frame = CGRect.Empty };
+				var cellPos = new CellPos { Cell = (NSView)cell, Frame = CGRect.Empty };
 				cellFrames.Add (cellPos);
-				var view = cellPos.Cell;
-				var size = view.FittingSize;
+				var size = cellPos.Cell.FittingSize;
 				cellPos.Frame.Width = size.Width;
 				requiredSize += size.Width;
-				if (((ICellRenderer)cellPos.Cell).Backend.Frontend.Expands)
+				if (cell.Backend.Frontend.Expands)
 					nexpands++;
 			}
 
 			double remaining = availableSize - requiredSize;
 			if (remaining > 0) {
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
-				for (int i = 0; i < cellFrames.Count; i++) {
-					if (((ICellRenderer)cellFrames [i].Cell).Backend.Frontend.Expands)
-						cellFrames [i].Frame.Width += (nfloat)expandRemaining.NextSizePart ();
+				foreach (var cellFrame in cellFrames) {
+					if (((ICellRenderer)cellFrame.Cell).Backend.Frontend.Expands)
+						cellFrame.Frame.Width += (nfloat)expandRemaining.NextSizePart ();
 				}
 			}
 
 			double x = 0;
-			for (int i = 0; i < cellFrames.Count; i++) {
-				var width = cellFrames [i].Frame.Width;
-				var height = cellFrames [i].Cell.FittingSize.Height;
+			foreach (var cellFrame in cellFrames) {
+				var width = cellFrame.Frame.Width;
+				var height = cellFrame.Cell.FittingSize.Height;
 				// y-align only if the cell has a valid height, otherwise we're just recalculating the required size
 				var y = cellSize.Height > 0 ? (cellSize.Height - height) / 2 : 0;
-				cellFrames [i].Frame = new CGRect (x, y, width, height);
+				cellFrame.Frame = new CGRect (x, y, width, height);
 				x += width;
 			}
 			return cellFrames;
