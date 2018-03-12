@@ -80,9 +80,11 @@ namespace Xwt.Mac
 			public override NSView GetView (NSOutlineView outlineView, NSTableColumn tableColumn, NSObject item)
 			{
 				var col = tableColumn as TableColumn;
-				var cell = outlineView.MakeView (tableColumn.Identifier, this);
+				var cell = outlineView.MakeView (tableColumn.Identifier, this) as CompositeCell;
 				if (cell == null)
 					cell = col.CreateNewView ();
+				if (cell.ObjectValue != item)
+					cell.ObjectValue = item;
 				return cell;
 			}
 
