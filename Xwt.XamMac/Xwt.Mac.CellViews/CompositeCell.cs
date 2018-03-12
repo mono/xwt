@@ -214,10 +214,6 @@ namespace Xwt.Mac
 			}
 		}
 
-		IEnumerable<ICellRenderer> VisibleCells {
-			get { return cells.Where (c => c.Backend.Frontend.Visible); }
-		}
-
 		public NSView GetCellViewForBackend (ICellViewBackend backend)
 		{
 			return cells.FirstOrDefault (c => c.Backend == backend) as NSView;
@@ -227,7 +223,10 @@ namespace Xwt.Mac
 		{
 			nfloat w = 0;
 			nfloat h = 0;
-			foreach (NSView c in VisibleCells) {
+			foreach (var cell in cells) {
+				if (!cell.Backend.Frontend.Visible)
+					continue;
+				var c = (NSView)cell;
 				var s = c.FittingSize;
 				if (s.IsEmpty && SizeToFit (c))
 					s = c.Frame.Size;
@@ -278,45 +277,49 @@ namespace Xwt.Mac
 			return false;
 		}
 		
-		IEnumerable<CellPos> GetCells (CGSize cellSize)
+		List <CellPos> GetCells (CGSize cellSize)
 		{
 			int nexpands = 0;
 			double requiredSize = 0;
 			double availableSize = cellSize.Width;
 
-			var visibleCells = VisibleCells.ToArray ();
-			var sizes = new double [visibleCells.Length];
+			var cellFrames = new List<CellPos> (cells.Count);
 
 			// Get the natural size of each child
-			for (int i = 0; i < visibleCells.Length; i++) {
-				var v = visibleCells[i] as NSView;
-				var s = v.FittingSize;
-				if (s.IsEmpty && SizeToFit (v))
-					s = v.Frame.Size;
-				sizes [i] = s.Width;
-				requiredSize += s.Width;
-				if (visibleCells [i].Backend.Frontend.Expands)
+			for (int i = 0; i < cells.Count; i++) {
+				if (!cells [i].Backend.Frontend.Visible)
+					continue;
+				var cellPos = new CellPos { Cell = (NSView)cells[i], Frame = CGRect.Empty };
+				cellFrames.Add (cellPos);
+				var view = cellPos.Cell;
+				var size = view.FittingSize;
+				if (size.IsEmpty && SizeToFit (view))
+					size = view.Frame.Size;
+				cellPos.Frame.Width = size.Width;
+				requiredSize += size.Width;
+				if (((ICellRenderer)cellPos.Cell).Backend.Frontend.Expands)
 					nexpands++;
 			}
 
 			double remaining = availableSize - requiredSize;
 			if (remaining > 0) {
 				var expandRemaining = new SizeSplitter (remaining, nexpands);
-				for (int i = 0; i < visibleCells.Length; i++) {
-					if (visibleCells [i].Backend.Frontend.Expands)
-						sizes [i] += (nfloat)expandRemaining.NextSizePart ();
+				for (int i = 0; i < cellFrames.Count; i++) {
+					if (((ICellRenderer)cellFrames [i].Cell).Backend.Frontend.Expands)
+						cellFrames [i].Frame.Width += (nfloat)expandRemaining.NextSizePart ();
 				}
 			}
 
 			double x = 0;
-			for (int i = 0; i < visibleCells.Length; i++) {
-				var cell = (NSView)visibleCells [i];
-				var height = cell.FittingSize.Height;
+			for (int i = 0; i < cellFrames.Count; i++) {
+				var width = cellFrames [i].Frame.Width;
+				var height = cellFrames [i].Cell.FittingSize.Height;
 				// y-align only if the cell has a valid height, otherwise we're just recalculating the required size
 				var y = cellSize.Height > 0 ? (cellSize.Height - height) / 2 : 0;
-				yield return new CellPos { Cell = cell, Frame = new CGRect (x, y, sizes [i], height) };
-				x += sizes [i];
+				cellFrames [i].Frame = new CGRect (x, y, width, height);
+				x += width;
 			}
+			return cellFrames;
 		}
 
 		class CellPos
