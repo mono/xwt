@@ -26,6 +26,7 @@
 
 using System;
 using AppKit;
+using CoreGraphics;
 using Xwt.Backends;
 
 namespace Xwt.Mac
@@ -57,14 +58,13 @@ namespace Xwt.Mac
 		public override CoreGraphics.CGSize FittingSize {
 			get {
 				if (Image == null)
-					return base.FittingSize;
+					return CGSize.Empty;
 				return Image.Size;
 			}
 		}
 
 		public override void SizeToFit()
 		{
-			base.SizeToFit();
 			if (Frame.Size.IsEmpty && Image != null)
 				SetFrameSize (Image.Size);
 		}

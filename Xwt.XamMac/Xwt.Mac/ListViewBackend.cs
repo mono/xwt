@@ -191,12 +191,12 @@ namespace Xwt.Mac
 
 			for (int i = 0; i < Columns.Count; i++) {
 				CompositeCell cell = tryReuse ? Table.GetView (i, row, false) as CompositeCell : null;
-				if (cell == null)
+				if (cell == null) {
 					cell = (Columns [i] as TableColumn)?.DataView as CompositeCell;
-
-				if (cell != null) {
 					cell.ObjectValue = NSNumber.FromNInt (row);
 					height = (nfloat)Math.Max (height, cell.FittingSize.Height);
+				} else {
+					height = (nfloat)Math.Max (height, cell.GetRequiredHeightForWidth (cell.Frame.Width));
 				}
 			}
 			updatingRowHeight = false;
