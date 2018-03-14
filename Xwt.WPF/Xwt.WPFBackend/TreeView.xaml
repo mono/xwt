@@ -66,7 +66,7 @@
 					<Condition Property="IsSelected" Value="False" />
 					<Condition Property="IsFocused" Value="False" />
 				</MultiTrigger.Conditions>
-				<Setter Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}" />
+				<Setter Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource Self}, Path=Background}" />
 			</MultiTrigger>
 		</Style.Triggers>
 	</Style>
