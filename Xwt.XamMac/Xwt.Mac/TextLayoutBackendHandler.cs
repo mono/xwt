@@ -37,19 +37,286 @@ namespace Xwt.Mac
 {
 	public class MacTextLayoutBackendHandler: TextLayoutBackendHandler
 	{
-		class LayoutInfo
+		class LayoutInfo : IDisposable
 		{
-			public string Text = String.Empty;
-			public NSFont Font;
-			public float? Width, Height;
-			public TextTrimming TextTrimming;
-			public Alignment TextAlignment;
-			readonly public List<TextAttribute> Attributes = new List<TextAttribute> ();
-			readonly public ApplicationContext ApplicationContext;
+			string text = String.Empty;
+			NSFont font;
+			float? width, height;
+			TextTrimming textTrimming;
+			Alignment textAlignment;
+			readonly public List<TextAttribute> Attributes;
+			readonly ApplicationContext ApplicationContext;
+			readonly NSTextStorage TextStorage;
+			readonly NSTextContainer TextContainer;
+
+			public string Text
+			{
+				get { return text; }
+				set {
+					text = value;
+					Attributes.Clear ();
+					ResetAttributes ();
+				}
+			}
+
+			public NSFont Font
+			{
+				get { return font; }
+				set {
+					font = value;
+					ResetAttributes ();
+				}
+			}
+
+			public TextTrimming TextTrimming
+			{
+				get { return textTrimming; }
+				set {
+					textTrimming = value;
+					ResetAttributes ();
+				}
+			}
+
+			public Alignment TextAlignment
+			{
+				get { return textAlignment; }
+				set
+				{
+					textAlignment = value;
+					ResetAttributes ();
+				}
+			}
+
+			public float? Width
+			{
+				get { return width; }
+				set
+				{
+					width = value;
+					TextContainer.Size = new CGSize (value ?? double.MaxValue, TextContainer.Size.Height);
+				}
+			}
+
+			public float? Height
+			{
+				get { return height; }
+				set
+				{
+					height = value;
+					TextContainer.Size = new CGSize (TextContainer.Size.Width, value ?? double.MaxValue);
+				}
+			}
 
 			public LayoutInfo (ApplicationContext actx)
 			{
 				ApplicationContext = actx;
+				Attributes = new List<TextAttribute> ();
+				TextStorage = new NSTextStorage ();
+				TextContainer = new NSTextContainer {
+					LineFragmentPadding = 0.0f
+				};
+			}
+
+			public void AddAttribute (TextAttribute attribute)
+			{
+				Attributes.Add (attribute);
+				AddAttributeInternal (attribute);
+			}
+
+			public void ClearAttributes ()
+			{
+				Attributes.Clear ();
+				ResetAttributes ();
+			}
+
+			void ResetAttributes ()
+			{
+				// clear user attributes
+				TextStorage.SetAttributes (new NSDictionary (), new NSRange (0, TextStorage.Length));
+
+				var r = new NSRange (0, Text.Length);
+
+				TextStorage.SetString (new NSAttributedString (Text));
+				TextStorage.SetAlignment (TextAlignment.ToNSTextAlignment (), r);
+
+				if (Font != null)
+					// set a global font
+					TextStorage.AddAttribute (NSStringAttributeKey.Font, Font, r);
+
+				// paragraph style
+				TextContainer.LineBreakMode = TextTrimming == TextTrimming.WordElipsis ? NSLineBreakMode.TruncatingTail : NSLineBreakMode.ByWordWrapping;
+				var pstyle = NSParagraphStyle.DefaultParagraphStyle.MutableCopy () as NSMutableParagraphStyle;
+				pstyle.Alignment = TextAlignment.ToNSTextAlignment ();
+				if (TextTrimming == TextTrimming.WordElipsis)
+					pstyle.LineBreakMode = NSLineBreakMode.TruncatingTail;
+				TextStorage.AddAttribute (NSStringAttributeKey.ParagraphStyle, pstyle, r);
+
+				// restore user attributes
+				foreach (var att in Attributes)
+					AddAttributeInternal (att);
+			}
+
+			void AddAttributeInternal (TextAttribute attribute)
+			{
+				var r = new NSRange (attribute.StartIndex, attribute.Count);
+
+				if (attribute is BackgroundTextAttribute)
+				{
+					var xa = (BackgroundTextAttribute)attribute;
+					TextStorage.AddAttribute (NSStringAttributeKey.BackgroundColor, xa.Color.ToNSColor (), r);
+				}
+				else if (attribute is ColorTextAttribute)
+				{
+					var xa = (ColorTextAttribute)attribute;
+					TextStorage.AddAttribute (NSStringAttributeKey.ForegroundColor, xa.Color.ToNSColor (), r);
+				}
+				else if (attribute is UnderlineTextAttribute)
+				{
+					var xa = (UnderlineTextAttribute)attribute;
+					var style = xa.Underline ? NSUnderlineStyle.Single : NSUnderlineStyle.None;
+					TextStorage.AddAttribute(NSStringAttributeKey.UnderlineStyle, NSNumber.FromInt32 ((int)style), r);
+				}
+				else if (attribute is FontStyleTextAttribute)
+				{
+					var xa = (FontStyleTextAttribute)attribute;
+					if (xa.Style == FontStyle.Italic)
+					{
+						TextStorage.ApplyFontTraits (NSFontTraitMask.Italic, r);
+					}
+					else if (xa.Style == FontStyle.Oblique)
+					{
+						// copy Pango.Style.Oblique behaviour (25% skew)
+						TextStorage.AddAttribute (NSStringAttributeKey.Obliqueness, NSNumber.FromFloat ((float)0.25), r);
+					}
+					else
+					{
+						TextStorage.RemoveAttribute (NSStringAttributeKey.Obliqueness, r);
+						TextStorage.ApplyFontTraits (NSFontTraitMask.Unitalic, r);
+					}
+				}
+				else if (attribute is FontWeightTextAttribute)
+				{
+					var xa = (FontWeightTextAttribute)attribute;
+					NSRange er;
+					// get the effective font to modify for the given range
+					var ft = TextStorage.GetAttribute (NSStringAttributeKey.Font, attribute.StartIndex, out er, r) as NSFont;
+					ft = ft.WithWeight (xa.Weight);
+					TextStorage.AddAttribute (NSStringAttributeKey.Font, ft, r);
+				}
+				else if (attribute is LinkTextAttribute)
+				{
+					TextStorage.AddAttribute (NSStringAttributeKey.ForegroundColor, Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToNSColor (), r);
+					TextStorage.AddAttribute (NSStringAttributeKey.UnderlineStyle, NSNumber.FromInt32 ((int)NSUnderlineStyle.Single), r);
+				}
+				else if (attribute is StrikethroughTextAttribute)
+				{
+					var xa = (StrikethroughTextAttribute)attribute;
+					var style = xa.Strikethrough ? NSUnderlineStyle.Single : NSUnderlineStyle.None;
+					TextStorage.AddAttribute (NSStringAttributeKey.StrikethroughStyle, NSNumber.FromInt32 ((int)style), r);
+				}
+				else if (attribute is FontTextAttribute)
+				{
+					var xa = (FontTextAttribute)attribute;
+					var nf = ((FontData)ApplicationContext.Toolkit.GetSafeBackend (xa.Font)).Font;
+					TextStorage.AddAttribute (NSStringAttributeKey.Font, nf, r);
+				}
+			}
+
+			public void Draw (CGContext ctx, CGColor foregroundColor, double x, double y)
+			{
+				bool tempForegroundSet = false;
+				NSRange r = new NSRange ();
+				// if no color attribute is set for the whole string,
+				// NSLayoutManager will use the default control foreground color.
+				// Set a forground color attribute with the current CGContext stroke color instead.
+				if (foregroundColor != null && (TextStorage.GetAttribute(NSStringAttributeKey.ForegroundColor, 0, out r) == null || r.Length < Text.Length))
+				{
+					TextStorage.AddAttribute (NSStringAttributeKey.ForegroundColor, NSColor.FromCGColor (foregroundColor), r);
+					tempForegroundSet = true;
+				}
+
+				ctx.SaveState ();
+				NSGraphicsContext.GlobalSaveGraphicsState ();
+				var nsContext = NSGraphicsContext.FromCGContext (ctx, true);
+				NSGraphicsContext.CurrentContext = nsContext;
+
+				using (var TextLayout = new NSLayoutManager ())
+				{
+					TextLayout.AddTextContainer (TextContainer);
+					TextStorage.AddLayoutManager (TextLayout);
+
+					TextLayout.DrawBackgroundForGlyphRange (new NSRange(0, Text.Length), new CGPoint (x, y));
+					TextLayout.DrawGlyphsForGlyphRange (new NSRange(0, Text.Length), new CGPoint (x, y));
+					TextStorage.RemoveLayoutManager (TextLayout);
+					TextLayout.RemoveTextContainer (0);
+				}
+
+				// reset foreground color change
+				if (tempForegroundSet && r.Length > 0)
+					TextStorage.RemoveAttribute (NSStringAttributeKey.ForegroundColor, r);
+
+				NSGraphicsContext.GlobalRestoreGraphicsState ();
+				ctx.RestoreState ();
+			}
+
+			public CGSize GetSize ()
+			{
+				using (var TextLayout = new NSLayoutManager ())
+				{
+					TextLayout.AddTextContainer (TextContainer);
+					TextStorage.AddLayoutManager (TextLayout);
+					TextLayout.GlyphRangeForBoundingRect (new CGRect (CGPoint.Empty, TextContainer.Size), TextContainer);
+					var s = TextLayout.GetUsedRectForTextContainer (TextContainer);
+					TextStorage.RemoveLayoutManager (TextLayout);
+					TextLayout.RemoveTextContainer (0);
+					return s.Size;
+				}
+			}
+
+			public double GetBaseLine ()
+			{
+				using (var line = new CTLine (TextStorage))
+				{
+					nfloat ascent, descent, leading;
+					line.GetTypographicBounds (out ascent, out descent, out leading);
+					return ascent;
+				}
+			}
+
+			public nuint GetIndexFromCoordinates (double x, double y)
+			{
+				using (var TextLayout = new NSLayoutManager ())
+				{
+					TextLayout.AddTextContainer (TextContainer);
+					TextStorage.AddLayoutManager (TextLayout);
+					TextLayout.GlyphRangeForBoundingRect (new CGRect (CGPoint.Empty, TextContainer.Size), TextContainer);
+					nfloat fraction = 0;
+					var index = TextLayout.CharacterIndexForPoint (new CGPoint (x, y), TextContainer, ref fraction);
+					TextStorage.RemoveLayoutManager (TextLayout);
+					TextLayout.RemoveTextContainer (0);
+					return index;
+				}
+			}
+
+			public CGPoint GetCoordinateFromIndex(int index)
+			{
+				using (var TextLayout = new NSLayoutManager ())
+				{
+					TextLayout.AddTextContainer (TextContainer);
+					TextStorage.AddLayoutManager (TextLayout);
+					TextLayout.GlyphRangeForBoundingRect (new CGRect (CGPoint.Empty, TextContainer.Size), TextContainer);
+					var glyphIndex = TextLayout.GlyphIndexForCharacterAtIndex (index);
+					var p = TextLayout.LocationForGlyphAtIndex ((nint)glyphIndex);
+					TextStorage.RemoveLayoutManager (TextLayout);
+					TextLayout.RemoveTextContainer (0);
+					return p;
+				}
+			}
+
+			public void Dispose ()
+			{
+				TextStorage.Dispose ();
+				TextContainer.Dispose ();
 			}
 		}
 		
@@ -64,7 +331,7 @@ namespace Xwt.Mac
 			li.Text = text == null ? String.Empty : text.Replace ("\r\n", "\n");
 		}
 
-		public override void SetFont (object backend, Xwt.Drawing.Font font)
+		public override void SetFont (object backend, Font font)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
 			li.Font = ((FontData)ApplicationContext.Toolkit.GetSafeBackend (font)).Font;
@@ -82,10 +349,10 @@ namespace Xwt.Mac
 			li.Height = value < 0 ? null : (float?)value;
 		}
 		
-		public override void SetTrimming (object backend, TextTrimming value)
+		public override void SetTrimming (object backend, TextTrimming textTrimming)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.TextTrimming = value;
+			li.TextTrimming = textTrimming;
 		}
 
 		public override void SetAlignment (object backend, Alignment alignment)
@@ -97,53 +364,13 @@ namespace Xwt.Mac
 		public override Size GetSize (object backend)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			using (CTFrame frame = CreateFrame (li)) {
-				if (frame == null)
-					return Size.Zero;
-
-				Size result = Size.Zero;
-				CTLine [] lines = frame.GetLines ();
-				nfloat lineHeight = li.Font.Ascender - li.Font.Descender + li.Font.Leading;
-
-				CTLine ellipsis = null;
-				bool ellipsize = li.Width.HasValue && li.TextTrimming == TextTrimming.WordElipsis;
-				if (ellipsize)
-					ellipsis = new CTLine (CreateAttributedString (li, "..."));
-
-				// try to approximate Pango's layout
-				foreach (var line in lines) {
-					var l = line;
-					if (ellipsize) { // we need to create a new CTLine here because the framesetter already truncated the text for the line
-						l = new CTLine (CreateAttributedString (li, li.Text.Substring ((int)line.StringRange.Location)))
-							.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis);
-						line.Dispose ();
-					}
-
-					result.Width = Math.Max (result.Width, GetLineWidth (l));
-					result.Height += lineHeight;
-
-					// clean up after ourselves as we go
-					l.Dispose ();
-				}
-
-				// CoreText throws away trailing line breaks..
-				if (li.Text.EndsWith ("\n"))
-					result.Height += lineHeight;
-
-				result.Width = Math.Ceiling (result.Width);
-				result.Height = Math.Ceiling (result.Height);
-				return result;
-			}
+			return li.GetSize().ToXwtSize();
 		}
 
 		public override double GetBaseline (object backend)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			using (var line = new CTLine (CreateAttributedString (li))) {
-				nfloat ascent, descent, leading;
-				line.GetTypographicBounds (out ascent, out descent, out leading);
-				return (double)ascent;
-			}
+			return li.GetBaseLine();
 		}
 
 		public override double GetMeanline (object backend)
@@ -151,167 +378,40 @@ namespace Xwt.Mac
 			LayoutInfo li = (LayoutInfo)backend;
 			return GetBaseline (backend) - li.Font.XHeight / 2;
 		}
-
-		static CTFrame CreateFrame (LayoutInfo li)
-		{
-			if (string.IsNullOrEmpty (li.Text))
-				return null;
-
-			using (CTFramesetter framesetter = new CTFramesetter (CreateAttributedString (li))) {
-				CGPath path = new CGPath ();
-				bool ellipsize = li.Width.HasValue && li.TextTrimming == TextTrimming.WordElipsis;
-				path.AddRect (new CGRect (0, 0, li.Width.HasValue && !ellipsize ? li.Width.Value : float.MaxValue, li.Height ?? float.MaxValue));
-
-				return framesetter.GetFrame (new NSRange (0, li.Text.Length), path, null);
-			}
-		}
-
-		static NSAttributedString CreateAttributedString (LayoutInfo li, string overrideText = null)
-		{
-			if (overrideText != null || li.Attributes.Count == 0)
-				return CreateAttributedString (overrideText ?? li.Text, li.Font);
-
-			var ns = new NSMutableAttributedString (li.Text);
-			ns.BeginEditing ();
-			var r = new NSRange (0, li.Text.Length);
-			if (li.Font != null)
-				ns.AddAttribute (CTStringAttributeKey.Font, li.Font, r);
-			ns.AddAttribute (CTStringAttributeKey.ForegroundColorFromContext, new NSNumber (true), r);
-
-			foreach (var att in li.Attributes) {
-				r = new NSRange (att.StartIndex, att.Count);
-				if (att is BackgroundTextAttribute) {
-					var xa = (BackgroundTextAttribute)att;
-					ns.AddAttribute (CTStringAttributeKey.BackgroundColor, xa.Color.ToNSColor (), r);
-				} else if (att is ColorTextAttribute) {
-					var xa = (ColorTextAttribute)att;
-					// FIXME: CTStringAttributeKey.ForegroundColor has no effect
-					ns.AddAttribute (CTStringAttributeKey.ForegroundColor, xa.Color.ToNSColor (), r);
-				} else if (att is UnderlineTextAttribute) {
-					var xa = (UnderlineTextAttribute)att;
-					var style = xa.Underline ? CTUnderlineStyle.Single : CTUnderlineStyle.None;
-					ns.AddAttribute (CTStringAttributeKey.UnderlineStyle, NSNumber.FromInt32 ((int)style), r);
-				} else if (att is FontStyleTextAttribute) {
-					var xa = (FontStyleTextAttribute)att;
-					if (xa.Style == FontStyle.Italic) {
-						ns.ApplyFontTraits (NSFontTraitMask.Italic, r);
-					} else if (xa.Style == FontStyle.Oblique) {
-						// FIXME: CoreText has no Obliqueness support
-					} else {
-						// FIXME: CoreText has no Obliqueness support
-						ns.ApplyFontTraits (NSFontTraitMask.Unitalic, r);
-					}
-				} else if (att is FontWeightTextAttribute) {
-					var xa = (FontWeightTextAttribute)att;
-					NSRange er;
-					// get the effective font to modify for the given range
-					var ft = ns.GetAttribute (CTStringAttributeKey.Font, att.StartIndex, out er, r) as NSFont;
-					ft = ft.WithWeight (xa.Weight);
-					ns.AddAttribute (CTStringAttributeKey.Font, ft, r);
-				} else if (att is LinkTextAttribute) {
-					ns.AddAttribute (CTStringAttributeKey.ForegroundColor, Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToNSColor (), r);
-					ns.AddAttribute (CTStringAttributeKey.UnderlineStyle, NSNumber.FromInt32 ((int)CTUnderlineStyle.Single), r);
-				} else if (att is StrikethroughTextAttribute) {
-					//FIXME: CoreText has no Strikethrough support
-				} else if (att is FontTextAttribute) {
-					var xa = (FontTextAttribute)att;
-					var nf = ((FontData)li.ApplicationContext.Toolkit.GetSafeBackend (xa.Font)).Font;
-					ns.AddAttribute (CTStringAttributeKey.Font, nf, r);
-				}
-			}
-
-			ns.EndEditing ();
-			return ns;
-		}
-
-		static NSAttributedString CreateAttributedString (string text, NSFont font)
-		{
-			NSDictionary dict;
-			if (font != null) {
-				dict = NSDictionary.FromObjectsAndKeys (
-					new object [] { font, new NSNumber (true) },
-					new object [] { CTStringAttributeKey.Font, CTStringAttributeKey.ForegroundColorFromContext }
-				);
-			} else {
-				dict = NSDictionary.FromObjectsAndKeys (
-					new object [] { new NSNumber (true) },
-					new object [] { CTStringAttributeKey.ForegroundColorFromContext }
-				);
-			}
-			return new NSAttributedString (text, dict);
-		}
 		
-		internal static void Draw (CGContext ctx, object layout, double x, double y)
+		internal static void Draw (CGContextBackend ctx, object layout, double x, double y)
 		{
 			LayoutInfo li = (LayoutInfo)layout;
-			using (CTFrame frame = CreateFrame (li)) {
-				if (frame == null)
-					return;
-
-				CTLine ellipsis = null;
-				bool ellipsize = li.Width.HasValue && li.TextTrimming == TextTrimming.WordElipsis;
-				if (ellipsize)
-					ellipsis = new CTLine (CreateAttributedString (li, "..."));
-
-				nfloat lineHeight = li.Font.Ascender - li.Font.Descender + li.Font.Leading;
-
-				ctx.SaveState ();
-				ctx.TextMatrix = CGAffineTransform.MakeScale (1f, -1f);
-				ctx.TranslateCTM ((float)x, (float)y + li.Font.Ascender);
-				foreach (var line in frame.GetLines ()) {
-					ctx.TextPosition = CGPoint.Empty;
-					// Determine final line
-					var ln = line;
-					if (ellipsize) {
-						// we need to create a new CTLine here because the framesetter already truncated the text for the line
-						ln = new CTLine (CreateAttributedString (li, li.Text.Substring ((int)line.StringRange.Location)))
-							.GetTruncatedLine (li.Width.Value, CTLineTruncation.End, ellipsis);
-						line.Dispose ();
-					} else if (li.Width.HasValue && li.TextAlignment != Alignment.Start) {
-						var tx = li.Width.Value - GetLineWidth (ln);
-						if (li.TextAlignment == Alignment.Center)
-							tx /= 2d;
-						ctx.TextPosition = new CGPoint ((nfloat)tx, 0);
-					}
-					ln.Draw (ctx);
-					ctx.TranslateCTM (0, lineHeight);
-					ln.Dispose ();
-				}
-				ctx.RestoreState ();
-			}
+			li.Draw (ctx.Context, ctx.CurrentStatus.GlobalColor, x, y);
 		}
 
 		public override void AddAttribute (object backend, TextAttribute attribute)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Attributes.Add (attribute);
+			li.AddAttribute (attribute);
 		}
 
 		public override void ClearAttributes (object backend)
 		{
 			LayoutInfo li = (LayoutInfo)backend;
-			li.Attributes.Clear ();
+			li.ClearAttributes ();
 		}
 		
 		public override int GetIndexFromCoordinates (object backend, double x, double y)
 		{
-			return 0;
+			LayoutInfo li = (LayoutInfo)backend;
+			return (int)li.GetIndexFromCoordinates (x, y);
 		}
 		
 		public override Point GetCoordinateFromIndex (object backend, int index)
 		{
-			return new Point (0,0);
+			LayoutInfo li = (LayoutInfo)backend;
+			return li.GetCoordinateFromIndex (index).ToXwtPoint ();
 		}
 
 		public override void Dispose (object backend)
 		{
-			// nothing
-		}
-
-		static double GetLineWidth (CTLine l)
-		{
-			// Pango does not consider trailing whitespace in its size
-			return l.GetTypographicBounds () - l.TrailingWhitespaceWidth;
+			((LayoutInfo)backend).Dispose ();
 		}
 	}
 }

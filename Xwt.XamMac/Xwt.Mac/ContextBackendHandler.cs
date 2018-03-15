@@ -47,6 +47,7 @@ namespace Xwt.Mac
 	{
 		public object Pattern;
 		public double GlobalAlpha = 1;
+		public CGColor GlobalColor = null;
 		public ContextStatus Previous;
 	}
 
@@ -67,6 +68,7 @@ namespace Xwt.Mac
 			ct.CurrentStatus = new ContextStatus {
 				Pattern = ct.CurrentStatus.Pattern,
 				GlobalAlpha = ct.CurrentStatus.GlobalAlpha,
+				GlobalColor = ct.CurrentStatus.GlobalColor,
 				Previous = ct.CurrentStatus,
 			};
 		}
@@ -217,6 +219,8 @@ namespace Xwt.Mac
 		{
 			CGContextBackend gc = (CGContextBackend)backend;
 			gc.CurrentStatus.Pattern = null;
+			// Store the current color for TextLayout using NSLayoutManager
+			gc.CurrentStatus.GlobalColor = color.ToCGColor ();
 			CGContext ctx = gc.Context;
 			ctx.SetFillColorSpace (Util.DeviceRGBColorSpace);
 			ctx.SetStrokeColorSpace (Util.DeviceRGBColorSpace);
@@ -285,7 +289,7 @@ namespace Xwt.Mac
 			CGContext ctx = ((CGContextBackend)backend).Context;
 			SetupContextForDrawing (ctx);
 			var li = ApplicationContext.Toolkit.GetSafeBackend (layout);
-			MacTextLayoutBackendHandler.Draw (ctx, li, x, y);
+			MacTextLayoutBackendHandler.Draw ((CGContextBackend)backend, li, x, y);
 		}
 
 		public override void DrawImage (object backend, ImageDescription img, double x, double y)
