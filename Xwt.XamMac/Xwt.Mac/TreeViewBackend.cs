@@ -248,6 +248,7 @@ namespace Xwt.Mac
 			}
 			set {
 				SelectRow (value);
+				ScrollToRow (value);
 			}
 		}
 
