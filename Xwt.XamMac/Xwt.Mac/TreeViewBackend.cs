@@ -306,12 +306,19 @@ namespace Xwt.Mac
 		public void ExpandToRow (TreePosition pos)
 		{
 			var p = source.GetParent (pos);
+			if (p == null)
+				return;
+			var s = new Stack<TreePosition> ();
 			while (p != null) {
-				var it = tsource.GetItem (p);
+				s.Push (p);
+				p = source.GetParent (p);
+			}
+
+			while (s.Count > 0) {
+				var it = tsource.GetItem (s.Pop ());
 				if (it == null)
 					break;
 				Tree.ExpandItem (it, false);
-				p = source.GetParent (p);
 			}
 		}
 
