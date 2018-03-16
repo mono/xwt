@@ -695,6 +695,11 @@ namespace Xwt.WPFBackend
 			return Widget.GetParentWindow ();
 		}
 
+		private SW.Window GetParentOrMainWindow ()
+		{
+			return Widget.GetParentOrMainWindow ();
+		}
+
 		public void DragStart (DragStartData data)
 		{
 			if (data.Data == null)
@@ -703,7 +708,7 @@ namespace Xwt.WPFBackend
 			DataObject dataObj = data.Data.ToDataObject();
 
 			if (data.ImageBackend != null) {
-				AdornedWindow = GetParentWindow ();
+				AdornedWindow = GetParentOrMainWindow ();
 				AdornedWindow.AllowDrop = true;
 
 				var e = (UIElement)AdornedWindow.Content;
@@ -870,7 +875,7 @@ namespace Xwt.WPFBackend
 		void WidgetDragOverHandler (object sender, System.Windows.DragEventArgs e)
 		{
 			if (Adorner != null) {
-				var w = GetParentWindow ();
+				var w = GetParentOrMainWindow ();
 				var v = (UIElement)w.Content;
 
 				if (w != AdornedWindow) {
