@@ -53,6 +53,8 @@ namespace Xwt.Backends
 		Role Role { get; set; }
 
 		string RoleDescription { get; set; }
+
+		void AddChild (object accessible);
 	}
 
 	public interface IAccessibleEventSink

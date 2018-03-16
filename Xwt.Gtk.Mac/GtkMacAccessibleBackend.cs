@@ -83,5 +83,25 @@ namespace Xwt.Gtk.Mac
 				nsa.AccessibilityUrl = new NSUrl (value.AbsoluteUri);
 			}
 		}
+
+		public override void AddChild(object childAccessible)
+		{
+			if (!(childAccessible is INSAccessibility)) {
+				throw new ArgumentException ("Not an INSAccessibility", nameof (childAccessible));
+			}
+
+			var nsa = GetNSAccessibilityElement (widget.Accessible);
+			if (nsa == null) {
+				return;
+			}
+
+			var accessibilityElement = nsa as NSAccessibilityElement;
+			var childElement = childAccessible as NSAccessibilityElement;
+			if (accessibilityElement != null && childElement != null) {
+				accessibilityElement.AccessibilityAddChildElement (childElement);
+			} else {
+				throw new NotSupportedException ();
+			}
+		}
 	}
 }

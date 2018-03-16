@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using AppKit;
 using Foundation;
 using Xwt.Accessibility;
@@ -171,6 +172,19 @@ namespace Xwt.Mac
 			set {
 				widget.AccessibilityRoleDescription = value;
 			}
+		}
+
+		public void AddChild (object nativeAccessible)
+		{
+			var nativeObject = nativeAccessible as NSObject;
+
+			if (nativeObject == null) {
+				throw new ArgumentException ("Not NSObject", nameof (nativeAccessible));
+			}
+
+			var children = widget.AccessibilityChildren.ToList ();
+			children.Add (nativeObject);
+			widget.AccessibilityChildren = children.ToArray ();
 		}
 
 		public void EnableEvent (object eventId)
