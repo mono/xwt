@@ -244,5 +244,17 @@ namespace Xwt.Accessibility
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 		}
+
+		public void AddChild (object nativeAccessible)
+		{
+		}
+
+		public void RemoveChild (object nativeAccessible)
+		{
+		}
+
+		public void RemoveAllChildren ()
+		{
+		}
 	}
 }

@@ -24,7 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-
+using System.Linq;
 using AppKit;
 using Foundation;
 using ObjCRuntime;
@@ -82,6 +82,54 @@ namespace Xwt.Gtk.Mac
 
 				nsa.AccessibilityUrl = new NSUrl (value.AbsoluteUri);
 			}
+		}
+
+		public override void AddChild(object childAccessible)
+		{
+			if (!(childAccessible is INSAccessibility)) {
+				throw new ArgumentException ("Not an INSAccessibility", nameof (childAccessible));
+			}
+
+			var nsa = GetNSAccessibilityElement (widget.Accessible);
+			if (nsa == null) {
+				return;
+			}
+
+			var accessibilityElement = nsa as NSAccessibilityElement;
+			var childElement = childAccessible as NSAccessibilityElement;
+			if (accessibilityElement != null && childElement != null) {
+				accessibilityElement.AccessibilityAddChildElement (childElement);
+			} else {
+				throw new NotSupportedException ();
+			}
+		}
+
+		public override void RemoveChild (object nativeAccessible)
+		{
+			var nativeObject = nativeAccessible as NSObject;
+
+			if (nativeObject == null) {
+				throw new ArgumentException ("Not NSObject", nameof (nativeAccessible));
+			}
+
+			var nsa = GetNSAccessibilityElement (widget.Accessible);
+			if (nsa == null) {
+				return;
+			}
+
+			var children = nsa.AccessibilityChildren.ToList ();
+			children.Remove (nativeObject);
+			nsa.AccessibilityChildren = children.ToArray ();
+		}
+
+		public override void RemoveAllChildren ()
+		{
+			var nsa = GetNSAccessibilityElement (widget.Accessible);
+			if (nsa == null) {
+				return;
+			}
+
+			nsa.AccessibilityChildren = null;
 		}
 	}
 }
