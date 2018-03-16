@@ -90,6 +90,21 @@ namespace Xwt.WPFBackend
 
 			return null;
 		}
+
+		/// <summary>
+		/// Get the the parent System.Windows.Window. If that fails for whatever reason (which can happen if the WPF
+		/// visual tree isn't rooted with a System.Windows.Window, like in the case where it's rooted in a WinForms
+		/// component), then fallback to returning the WPF MainWindow.
+		/// <param name="element">WPF element</param>
+		/// <returns>ancestor System.Windows.Window or MainWindow</returns>
+		public static System.Windows.Window GetParentOrMainWindow (this FrameworkElement element)
+		{
+			System.Windows.Window parentWindow = GetParentWindow (element);
+			if (parentWindow != null)
+				return parentWindow;
+
+			return System.Windows.Application.Current.MainWindow;
+		}
 	}
 
 	class XwtWin32Window : System.Windows.Forms.IWin32Window
