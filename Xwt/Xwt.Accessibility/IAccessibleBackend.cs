@@ -53,6 +53,10 @@ namespace Xwt.Backends
 		Role Role { get; set; }
 
 		string RoleDescription { get; set; }
+
+		void AddChild (object nativeAccessible);
+		void RemoveChild (object nativeAccessible);
+		void RemoveAllChildren ();
 	}
 
 	public interface IAccessibleEventSink
