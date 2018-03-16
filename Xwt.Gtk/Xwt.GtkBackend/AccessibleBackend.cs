@@ -146,6 +146,10 @@ namespace Xwt.GtkBackend
 
 		public virtual Uri Uri { get; set; }
 
+		public virtual void AddChild (object childAccessible)
+		{
+		}
+
 		public bool IsAccessible {
 			get {
 				return widget.Accessible?.Role != Atk.Role.Invalid;
