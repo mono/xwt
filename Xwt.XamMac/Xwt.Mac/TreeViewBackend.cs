@@ -168,8 +168,10 @@ namespace Xwt.Mac
 			};
 			source.NodeChanged += (sender, e) => {
 				var item = tsource.GetItem (e.Node);
-				Tree.ReloadItem (item, false);
-				UpdateRowHeight (item);
+				if (item != null) {
+					Tree.ReloadItem (item, false);
+					UpdateRowHeight (item);
+				}
 			};
 			source.NodesReordered += (sender, e) => {
 				var parent = tsource.GetItem (e.Node);
