@@ -249,6 +249,8 @@ namespace Xwt.Mac
 				Cursor = NSCursor.OperationNotAllowedCursor;
 			else
 				Cursor = NSCursor.ArrowCursor;
+			// immediately invalidate cursor rects, if the view is visible
+			ViewObject?.View?.Window?.InvalidateCursorRectsForView(ViewObject.View);
 		}
 		
 		~ViewBackend ()
