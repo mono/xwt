@@ -64,9 +64,17 @@ namespace Xwt
 			return cellBounds;
 		}
 
+		[Obsolete("Use OnGetRequiredSize (SizeConstraint widthConstraint)")]
 		protected virtual Size OnGetRequiredSize ()
 		{
 			return new Size ();
+		}
+
+		protected virtual Size OnGetRequiredSize (SizeConstraint widthConstraint)
+		{
+			#pragma warning disable 618
+			return OnGetRequiredSize ();
+			#pragma warning restore 618
 		}
 		
 		#region ICanvasCellRenderer implementation
@@ -86,7 +94,12 @@ namespace Xwt
 
 		Size ICanvasCellViewFrontend.GetRequiredSize ()
 		{
-			return OnGetRequiredSize ();
+			return OnGetRequiredSize (SizeConstraint.Unconstrained);
+		}
+
+		Size ICanvasCellViewFrontend.GetRequiredSize (SizeConstraint widthConstraint)
+		{
+			return OnGetRequiredSize (widthConstraint);
 		}
 
 		ApplicationContext ICanvasCellViewFrontend.ApplicationContext {

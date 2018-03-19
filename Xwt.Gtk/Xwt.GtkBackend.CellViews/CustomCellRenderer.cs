@@ -156,8 +156,9 @@ namespace Xwt.GtkBackend
 		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
 			Size size = new Size ();
+			var widthConstraint = cell_area.Width > 0 ? SizeConstraint.WithSize(cell_area.Width) : SizeConstraint.Unconstrained;
 			CellView.ApplicationContext.InvokeUserCode (delegate {
-				size = CellView.GetRequiredSize ();
+				size = CellView.GetRequiredSize (widthConstraint);
 			});
 			width = (int) size.Width;
 			height = (int) size.Height;

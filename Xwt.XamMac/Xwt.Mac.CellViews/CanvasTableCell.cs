@@ -30,7 +30,7 @@ using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	class CanvasTableCell: NSView, ICellRenderer
+	class CanvasTableCell: NSView, ICanvasCellRenderer
 	{
 		NSTrackingArea trackingArea;
 
@@ -63,11 +63,20 @@ namespace Xwt.Mac
 			get {
 				var size = CGSize.Empty;
 				Frontend.ApplicationContext.InvokeUserCode (delegate {
-					var s = Frontend.GetRequiredSize ();
+					var s = Frontend.GetRequiredSize (SizeConstraint.Unconstrained);
 					size = new CGSize ((nfloat)s.Width, (nfloat)s.Height);
 				});
 				return size;
 			}
+		}
+
+		public Size GetRequiredSize(SizeConstraint widthConstraint)
+		{
+			var size = Size.Zero;
+			Frontend.ApplicationContext.InvokeUserCode (delegate {
+				size = Frontend.GetRequiredSize (widthConstraint);
+			});
+			return size;
 		}
 
 		public override void DrawRect (CGRect dirtyRect)

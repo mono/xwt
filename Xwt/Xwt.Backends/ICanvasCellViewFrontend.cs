@@ -33,7 +33,9 @@ namespace Xwt.Backends
 		ApplicationContext ApplicationContext { get; }
 		void Draw (object ctxBackend, Rectangle cellArea);
 		Rectangle GetDrawingAreaForBounds (Rectangle cellBounds);
+		[Obsolete("Use GetRequiredSize (SizeConstraint)")]
 		Size GetRequiredSize ();
+		Size GetRequiredSize (SizeConstraint widthConstraint);
 	}
 
 	public class CellViewStatus
