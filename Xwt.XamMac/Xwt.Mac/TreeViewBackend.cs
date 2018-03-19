@@ -164,7 +164,9 @@ namespace Xwt.Mac
 			};
 			source.NodeDeleted += (sender, e) => {
 				var parent = tsource.GetItem (e.Node);
-				RowHeights.Remove (tsource.GetItem (e.Child));
+				var item = tsource.GetItem(e.Child);
+				if (item != null)
+					RowHeights.Remove (null);
 				Tree.ReloadItem (parent, parent == null || Tree.IsItemExpanded (parent));
 			};
 			source.NodeChanged += (sender, e) => {
