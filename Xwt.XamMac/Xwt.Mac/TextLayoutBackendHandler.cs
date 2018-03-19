@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using AppKit;
 using CoreGraphics;
 using CoreText;
@@ -129,7 +130,7 @@ namespace Xwt.Mac
 				ResetAttributes ();
 			}
 
-			void ResetAttributes ()
+			void ResetAttributes (NSColor foregroundColorOverride = null)
 			{
 				// clear user attributes
 				TextStorage.SetAttributes (new NSDictionary (), new NSRange (0, TextStorage.Length));
@@ -150,6 +151,10 @@ namespace Xwt.Mac
 				if (TextTrimming == TextTrimming.WordElipsis)
 					pstyle.LineBreakMode = NSLineBreakMode.TruncatingTail;
 				TextStorage.AddAttribute (NSStringAttributeKey.ParagraphStyle, pstyle, r);
+
+				// set foreground color override
+				if (foregroundColorOverride != null)
+					TextStorage.AddAttribute(NSStringAttributeKey.ForegroundColor, foregroundColorOverride, r);
 
 				// restore user attributes
 				foreach (var att in Attributes)
@@ -225,13 +230,14 @@ namespace Xwt.Mac
 			public void Draw (CGContext ctx, CGColor foregroundColor, double x, double y)
 			{
 				bool tempForegroundSet = false;
-				NSRange r = new NSRange ();
 				// if no color attribute is set for the whole string,
 				// NSLayoutManager will use the default control foreground color.
-				// Set a forground color attribute with the current CGContext stroke color instead.
-				if (foregroundColor != null && (TextStorage.GetAttribute(NSStringAttributeKey.ForegroundColor, 0, out r) == null || r.Length < Text.Length))
+				// To override the default color we need to apply the current CGContext stroke color
+				// before all other attributes are set, otherwise it will remove all other foreground colors.
+				if (foregroundColor != null && !Attributes.Any (a => a is ColorTextAttribute && a.StartIndex == 0 && a.Count == Text.Length))
 				{
-					TextStorage.AddAttribute (NSStringAttributeKey.ForegroundColor, NSColor.FromCGColor (foregroundColor), r);
+					// FIXME: we need to find a better way to accomplish this without the need to reset all attributes.
+					ResetAttributes(NSColor.FromCGColor(foregroundColor));
 					tempForegroundSet = true;
 				}
 
@@ -252,8 +258,8 @@ namespace Xwt.Mac
 				}
 
 				// reset foreground color change
-				if (tempForegroundSet && r.Length > 0)
-					TextStorage.RemoveAttribute (NSStringAttributeKey.ForegroundColor, r);
+				if (tempForegroundSet)
+					ResetAttributes();
 
 				NSGraphicsContext.GlobalRestoreGraphicsState ();
 				ctx.RestoreState ();
