@@ -38,6 +38,9 @@ namespace Xwt.Mac
 		ITreeDataSource source;
 		TreeSource tsource;
 
+		List<Dictionary<TreePosition, nfloat>> ColumnRowWidths = new List<Dictionary<TreePosition, nfloat>> ();
+		Dictionary<TreeItem, nfloat> RowHeights = new Dictionary<TreeItem, nfloat> ();
+
 		class TreeDelegate: NSOutlineViewDelegate
 		{
 			public TreeViewBackend Backend;
@@ -95,17 +98,23 @@ namespace Xwt.Mac
 
 				CompositeCell templateCell = null;
 				for (int i = 0; i < outlineView.RowCount; i++) {
-					var cellView = outlineView.GetView (column, i, false) as CompositeCell;
-					if (cellView == null) { // use template for invisible rows
-						cellView = templateCell ?? (templateCell = (tableColumn as TableColumn)?.DataView?.Copy () as CompositeCell);
-						if (cellView != null)
-							cellView.ObjectValue = outlineView.ItemAtRow (i);
-					}
-					if (cellView != null) {
-						if (column == 0) // first column contains expanders
-							width = (nfloat)Math.Max (width, cellView.Frame.X + cellView.FittingSize.Width);
-						else
-							width = (nfloat)Math.Max (width, cellView.FittingSize.Width);
+					nfloat cellWidth;
+					var item = (TreeItem)outlineView.ItemAtRow (i);
+					if (Backend.ColumnRowWidths[(int)column].TryGetValue (item.Position, out cellWidth) && cellWidth > -1)
+						width = (nfloat)Math.Max (width, cellWidth);
+					else {
+						var cellView = outlineView.GetView (column, i, false) as CompositeCell;
+						if (cellView == null) { // use template for invisible rows
+							cellView = templateCell ?? (templateCell = (tableColumn as TableColumn)?.DataView as CompositeCell);
+							if (cellView != null)
+								cellView.ObjectValue = item;
+						}
+						if (cellView != null) {
+							// first column contains expanders
+							cellWidth = column == 0 ? cellView.Frame.X + cellView.FittingSize.Width : cellView.FittingSize.Width;
+							Backend.ColumnRowWidths[(int)column][item.Position] = cellWidth;
+							width = (nfloat)Math.Max (width, cellWidth);
+						}
 					}
 				}
 				return width;
@@ -148,7 +157,16 @@ namespace Xwt.Mac
 			NSTableColumn tcol = base.AddColumn (col);
 			if (Tree.OutlineTableColumn == null)
 				Tree.OutlineTableColumn = tcol;
+			ColumnRowWidths.Add (new Dictionary<TreePosition, nfloat> ());
 			return tcol;
+		}
+
+		public override void RemoveColumn (ListViewColumn col, object handle)
+		{
+			var tcol = (NSTableColumn)handle;
+			var index = Columns.IndexOf (tcol);
+			ColumnRowWidths.RemoveAt (index);
+			base.RemoveColumn (col, handle);
 		}
 		
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
@@ -163,6 +181,8 @@ namespace Xwt.Mac
 				Tree.ReloadItem (parent, parent == null || Tree.IsItemExpanded (parent));
 			};
 			source.NodeDeleted += (sender, e) => {
+				foreach (var colWidths in ColumnRowWidths)
+					colWidths.Remove (e.Child);
 				var parent = tsource.GetItem (e.Node);
 				var item = tsource.GetItem(e.Child);
 				if (item != null)
@@ -173,17 +193,24 @@ namespace Xwt.Mac
 				var item = tsource.GetItem (e.Node);
 				if (item != null) {
 					Tree.ReloadItem (item, false);
+					foreach (var colWidths in ColumnRowWidths)
+						colWidths [e.Node] = -1;
 					UpdateRowHeight (item);
 				}
 			};
 			source.NodesReordered += (sender, e) => {
 				var parent = tsource.GetItem (e.Node);
+				foreach (var colWidths in ColumnRowWidths)
+					for (int i = 0; i < source.GetChildrenCount (e.Node); i++)
+						colWidths [source.GetChild (e.Node, i)] = -1;
 				Tree.ReloadItem (parent, parent == null || Tree.IsItemExpanded (parent));
 			};
 			source.Cleared += (sender, e) =>
 			{
 				Tree.ReloadData ();
 				RowHeights.Clear ();
+				foreach (var colWidths in ColumnRowWidths)
+					colWidths.Clear ();
 			};
 		}
 		
@@ -202,7 +229,6 @@ namespace Xwt.Mac
 			UpdateRowHeight (tsource.GetItem((TreePosition)pos));
 		}
 
-		Dictionary<TreeItem, nfloat> RowHeights = new Dictionary<TreeItem, nfloat> ();
 		bool updatingRowHeight;
 
 		void UpdateRowHeight (TreeItem pos)
@@ -213,6 +239,8 @@ namespace Xwt.Mac
 			if (row >= 0) {
 				// calculate new height now by reusing the visible cell to avoid using the template cell with unnecessary data reloads
 				// NOTE: cell reusing is not supported in Delegate.GetRowHeight and would require an other data reload to the template cell
+				foreach (var colWidths in ColumnRowWidths)
+					colWidths [pos.Position] = -1;
 				RowHeights[pos] = CalcRowHeight (pos);
 				Table.NoteHeightOfRowsWithIndexesChanged (NSIndexSet.FromIndex (row));
 			} else // Invalidate the height, to force recalculation in Delegate.GetRowHeight
@@ -226,13 +254,21 @@ namespace Xwt.Mac
 			var row = Tree.RowForItem (pos);
 
 			for (int i = 0; i < Columns.Count; i++) {
+				var col = (TableColumn)Columns [i];
 				CompositeCell cell = tryReuse && row >= 0 ? Tree.GetView (i, row, false) as CompositeCell : null;
 				if (cell == null) {
-					cell = (Columns [i] as TableColumn)?.DataView as CompositeCell;
+					cell = col.DataView;
 					cell.ObjectValue = pos;
 					height = (nfloat)Math.Max (height, cell.FittingSize.Height);
 				} else {
-					height = (nfloat)Math.Max (height, cell.GetRequiredHeightForWidth (cell.Frame.Width));
+					nfloat cellWidth = -1;
+					ColumnRowWidths [i].TryGetValue (pos.Position, out cellWidth);
+					if (cellWidth <= 0)
+						cellWidth = cell.Frame.Width;
+					if (cellWidth <= 0)
+						height = (nfloat)Math.Max (height, cell.FittingSize.Height);
+					else
+						height = (nfloat)Math.Max (height, cell.GetRequiredHeightForWidth (cellWidth));
 				}
 			}
 			updatingRowHeight = false;

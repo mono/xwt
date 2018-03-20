@@ -205,7 +205,7 @@ namespace Xwt.Mac
 			return AddColumn (col);
 		}
 		
-		public void RemoveColumn (ListViewColumn col, object handle)
+		public virtual void RemoveColumn (ListViewColumn col, object handle)
 		{
 			var tcol = (NSTableColumn)handle;
 			cols.Remove (tcol);
