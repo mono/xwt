@@ -213,7 +213,7 @@ namespace Xwt.Mac
 			};
 		}
 
-		public override void InvalidateRowHeight (object pos)
+		public override void QueueResizeRow (object pos)
 		{
 			UpdateRowHeight((int)pos);
 		}
@@ -223,7 +223,10 @@ namespace Xwt.Mac
 		{
 			if (updatingRowHeight)
 				return;
-			foreach (var colWidths in ColumnRowWidths)
+			
+			// FIXME: this won't resize the columns, which might be needed for custom cells
+			// In order to resize horizontally we'll need trigger column autosizing.
+			foreach (var colWidths in ColumnRowWidths) // invalidate widths for full recalculation
 				colWidths[(int)row] = -1;
 			RowHeights[(int)row] = CalcRowHeight (row);
 			Table.NoteHeightOfRowsWithIndexesChanged (NSIndexSet.FromIndex (row));

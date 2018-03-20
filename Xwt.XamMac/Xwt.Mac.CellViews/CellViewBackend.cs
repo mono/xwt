@@ -90,7 +90,7 @@ namespace Xwt.Mac
 		public void QueueResize ()
 		{
 			CurrentCellView.NeedsDisplay = true;
-			((ICellRenderer)CurrentCellView).CellContainer.InvalidateRowHeight ();
+			((ICellRenderer)CurrentCellView).CellContainer.QueueResize ();
 		}
 
 		public Rectangle CellBounds {

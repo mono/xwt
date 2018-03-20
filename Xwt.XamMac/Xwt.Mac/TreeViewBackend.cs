@@ -224,7 +224,7 @@ namespace Xwt.Mac
 			source.SetValue ((TreePosition)pos, nField, value);
 		}
 
-		public override void InvalidateRowHeight (object pos)
+		public override void QueueResizeRow (object pos)
 		{
 			UpdateRowHeight (tsource.GetItem((TreePosition)pos));
 		}
@@ -237,9 +237,11 @@ namespace Xwt.Mac
 				return;
 			var row = Tree.RowForItem (pos);
 			if (row >= 0) {
-				// calculate new height now by reusing the visible cell to avoid using the template cell with unnecessary data reloads
+				// calculate new size now by reusing the visible cell to avoid using the template cell with unnecessary data reloads
 				// NOTE: cell reusing is not supported in Delegate.GetRowHeight and would require an other data reload to the template cell
-				foreach (var colWidths in ColumnRowWidths)
+				// FIXME: this won't resize the columns, which might be needed for custom cells
+				// In order to resize horizontally we'll need trigger column autosizing.
+				foreach (var colWidths in ColumnRowWidths) // invalidate widths for full recalculation
 					colWidths [pos.Position] = -1;
 				RowHeights[pos] = CalcRowHeight (pos);
 				Table.NoteHeightOfRowsWithIndexesChanged (NSIndexSet.FromIndex (row));
