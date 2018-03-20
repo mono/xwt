@@ -156,9 +156,13 @@ namespace Xwt.Mac
 		public override NSTableColumn AddColumn (ListViewColumn col)
 		{
 			NSTableColumn tcol = base.AddColumn (col);
-			var widths = new List<nfloat> ();
-			if (Table.RowCount > 0)
-				widths.InsertRange (0, Enumerable.Repeat<nfloat> (-1f, (int)Table.RowCount));
+			List<nfloat> widths;
+			var rows = (int)Table.RowCount;
+			if (rows > 0) {
+				widths = new List<nfloat> (rows);
+				for (int i = 0; i < rows; ++i) widths.Add (-1f);
+			} else
+				widths = new List<nfloat> ();
 			ColumnRowWidths.Add (widths);
 			return tcol;
 		}
@@ -180,7 +184,7 @@ namespace Xwt.Mac
 				RowHeights.Add (-1);
 			foreach (var colWidths in ColumnRowWidths) {
 				colWidths.Clear ();
-				colWidths.AddRange (Enumerable.Repeat<nfloat> (-1, source.RowCount));
+				for (int i = 0; i < source.RowCount; ++i) colWidths.Add (-1f);
 			}
 
 			tsource = new ListSource (source);
