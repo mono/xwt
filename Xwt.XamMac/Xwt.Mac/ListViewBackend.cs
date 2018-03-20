@@ -61,9 +61,10 @@ namespace Xwt.Mac
 			public override NSView GetViewForItem (NSTableView tableView, NSTableColumn tableColumn, nint row)
 			{
 				var col = tableColumn as TableColumn;
-				var cell = tableView.MakeView (tableColumn.Identifier, this);
+				var cell = tableView.MakeView (tableColumn.Identifier, this) as CompositeCell;
 				if (cell == null)
 					cell = col.CreateNewView ();
+				cell.ObjectValue = NSNumber.FromNInt (row);
 				return cell;
 			}
 
