@@ -135,7 +135,6 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				if (widget.Accessible is AtkValue) {
-					GLib.Value val = GLib.Value.Empty;
 					(widget.Accessible as AtkValue)?.SetCurrentValue (new GLib.Value (value));
 				} else if (widget.Accessible is AtkEditableText) {
 					var atkText = (widget.Accessible as AtkEditableText);
