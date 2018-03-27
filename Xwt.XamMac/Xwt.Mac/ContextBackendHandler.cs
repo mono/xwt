@@ -318,14 +318,16 @@ namespace Xwt.Mac
 			ctx.TranslateCTM ((float)(destRect.X - (srcRect.X * rx)), (float)(destRect.Y - (srcRect.Y * ry)));
 			ctx.ScaleCTM ((float)rx, (float)ry);
 
-			NSImage image = (NSImage)img.Backend;
-			if (image is CustomImage) {
-				((CustomImage)image).DrawInContext ((CGContextBackend)backend, img);
-			} else {
-				var size = new CGSize ((nfloat)img.Size.Width, (nfloat)img.Size.Height);
-				var rr = new CGRect (0, 0, size.Width, size.Height);
-				ctx.ScaleCTM (1f, -1f);
-				ctx.DrawImage (new CGRect (0, -size.Height, size.Width, size.Height), image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
+			NSImage image = img.Backend as NSImage;
+			if (image != null) {
+				if (image is CustomImage) {
+					((CustomImage)image).DrawInContext ((CGContextBackend)backend, img);
+				} else {
+					var size = new CGSize ((nfloat)img.Size.Width, (nfloat)img.Size.Height);
+					var rr = new CGRect (0, 0, size.Width, size.Height);
+					ctx.ScaleCTM (1f, -1f);
+					ctx.DrawImage (new CGRect (0, -size.Height, size.Width, size.Height), image.AsCGImage (ref rr, NSGraphicsContext.CurrentContext, null));
+				}
 			}
 
 			ctx.RestoreState ();
