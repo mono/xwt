@@ -356,6 +356,29 @@ namespace Xwt.Mac
 
 			}
 
+			protected CustomCell(IntPtr ptr) : base(ptr)
+			{
+			}
+
+			/// <summary>
+			/// Like what happens for the ios designer, AppKit can sometimes clone the native `NSTextFieldCell` using the Copy (NSZone)
+			/// method. We *need* to ensure we can create a new managed wrapper for the cloned native object so we need the IntPtr
+			/// constructor. NOTE: By keeping this override in managed we ensure the new wrapper C# object is created ~immediately,
+			/// which makes it easier to debug issues.
+			/// </summary>
+			/// <returns>The copy.</returns>
+			/// <param name="zone">Zone.</param>
+			public override NSObject Copy(NSZone zone)
+			{
+				// Don't remove this override because the comment on this explains why we need this!
+				var newCell = (CustomCell)base.Copy(zone);
+				newCell.editor = editor;
+				newCell.selChangeObserver = selChangeObserver;
+				newCell.Context = Context;
+				newCell.EventSink = EventSink;
+				return newCell;
+			}
+
 			public override NSTextView FieldEditorForView (NSView aControlView)
 			{
 				if (editor == null) {
