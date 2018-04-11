@@ -372,8 +372,6 @@ namespace Xwt.Mac
 			{
 				// Don't remove this override because the comment on this explains why we need this!
 				var newCell = (CustomCell)base.Copy(zone);
-				newCell.editor = editor;
-				newCell.selChangeObserver = selChangeObserver;
 				newCell.Context = Context;
 				newCell.EventSink = EventSink;
 				return newCell;
