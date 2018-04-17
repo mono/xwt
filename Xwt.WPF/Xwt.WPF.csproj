@@ -61,6 +61,7 @@
     <Compile Include="Xwt.WPFBackend.Utilities\ImageToImageSourceConverter.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\MarkupToPlainTextConverter.cs" />
     <Compile Include="Xwt.WPFBackend.Utilities\TypeToStringConverter.cs" />
+    <Compile Include="Xwt.WPFBackend\AccessibleBackend.cs" />
     <Compile Include="Xwt.WPFBackend\AlertDialogBackend.cs" />
     <Compile Include="Xwt.WPFBackend\Backend.cs" />
     <Compile Include="Xwt.WPFBackend\BooleanToValueConverter.cs" />
