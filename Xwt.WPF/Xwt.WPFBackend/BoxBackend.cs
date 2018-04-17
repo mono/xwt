@@ -33,6 +33,7 @@ using SWC = System.Windows.Controls;
 
 using Xwt.Backends;
 using Xwt.Drawing;
+using System.Windows.Automation.Peers;
 
 namespace Xwt.WPFBackend
 {
@@ -134,6 +135,23 @@ namespace Xwt.WPFBackend
 					element.Arrange (r.ToWpfRect ());
 				//	element.UpdateLayout ();
 				}
+			}
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			return new CustomPanelAutomationPeer (this);
+		}
+
+		class CustomPanelAutomationPeer : FrameworkElementAutomationPeer
+		{
+			public CustomPanelAutomationPeer (CustomPanel panel) : base (panel)
+			{
+			}
+
+			protected override AutomationControlType GetAutomationControlTypeCore ()
+			{
+				return AutomationControlType.Pane;
 			}
 		}
 	}

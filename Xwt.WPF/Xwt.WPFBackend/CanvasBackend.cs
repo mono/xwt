@@ -7,6 +7,7 @@ using Xwt.Backends;
 using System.Windows;
 using SWC = System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Automation.Peers;
 
 namespace Xwt.WPFBackend
 {
@@ -17,13 +18,13 @@ namespace Xwt.WPFBackend
 
 		public CanvasBackend ()
 		{
-			Canvas = new CustomPanel ();
+			Canvas = new CustomCanvas (this);
 			Canvas.RenderAction = Render;
 		}
 
-		private CustomPanel Canvas
+		private CustomCanvas Canvas
 		{
-			get { return (CustomPanel)Widget; }
+			get { return (CustomCanvas)Widget; }
 			set { Widget = value; }
 		}
 
@@ -104,5 +105,39 @@ namespace Xwt.WPFBackend
 		}
 
 		#endregion
+	}
+
+	class CustomCanvas : CustomPanel
+	{
+		CanvasBackend backend;
+
+		public CustomCanvas (CanvasBackend backend)
+		{
+			this.backend = backend;
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			return new CustomCanvasAutomationPeer (this);
+		}
+
+		class CustomCanvasAutomationPeer : FrameworkElementAutomationPeer
+		{
+			public CustomCanvasAutomationPeer (CustomCanvas canvas) : base (canvas)
+			{
+			}
+
+			protected override AutomationControlType GetAutomationControlTypeCore ()
+			{
+				var frontend = ((CustomCanvas)Owner)?.backend?.Frontend;
+				if (frontend == null || !frontend.HasAccessible) {
+					System.Diagnostics.Debug.WriteLine ("No a11y info, returning default");
+					return AutomationControlType.Custom;
+				}
+				var role = frontend.Accessible.Role;
+				System.Diagnostics.Debug.WriteLine ("Exporting a11y role {0}", role);
+				return AccessibleBackend.RoleToControlType (role);
+			}
+		}
 	}
 }

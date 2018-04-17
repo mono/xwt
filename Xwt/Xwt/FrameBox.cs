@@ -249,6 +249,12 @@ namespace Xwt
 				canvas.Child = value; 
 			}
 		}
+
+		protected Widget InternalContent {
+			get {
+				return canvas;
+			}
+		}
 	}
 }
 

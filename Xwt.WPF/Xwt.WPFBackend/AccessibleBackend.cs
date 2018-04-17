@@ -31,7 +31,7 @@ namespace Xwt.WPFBackend
 
 		public string Title { get; set; }
 		public string Value { get; set; }
-		public Role Role { get; set; }
+		public Role Role { get; set; } = Role.Custom;
 		public Uri Uri { get; set; }
 		public Rectangle Bounds { get; set; }
 		public string RoleDescription { get; set; }
@@ -71,6 +71,44 @@ namespace Xwt.WPFBackend
 
 		public void RemoveChild (object nativeChild)
 		{
+		}
+
+		public static AutomationControlType RoleToControlType (Role role)
+		{
+			switch (role) {
+			case Role.Button:
+			case Role.MenuButton:
+			case Role.ToggleButton:
+				return AutomationControlType.Button;
+			case Role.CheckBox:
+				return AutomationControlType.CheckBox;
+			case Role.RadioButton:
+			case Role.RadioGroup:
+				return AutomationControlType.RadioButton;
+			case Role.ComboBox:
+				return AutomationControlType.ComboBox;
+			case Role.List:
+				return AutomationControlType.List;
+			case Role.Popup:
+			case Role.ToolTip:
+				return AutomationControlType.ToolTip;
+			case Role.ToolBar:
+				return AutomationControlType.ToolBar;
+			case Role.Label:
+				return AutomationControlType.Text;
+			case Role.Link:
+				return AutomationControlType.Hyperlink;
+			case Role.Image:
+				return AutomationControlType.Image;
+			case Role.Cell:
+				return AutomationControlType.DataItem;
+			case Role.Table:
+				return AutomationControlType.Table;
+			case Role.Paned:
+				return AutomationControlType.Pane;
+			default:
+				return AutomationControlType.Custom;
+			}
 		}
 	}
 }
