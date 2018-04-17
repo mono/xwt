@@ -156,6 +156,21 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public virtual void AddChild (object nativeChild)
+		{
+			// TODO
+		}
+
+		public virtual void RemoveChild (object nativeChild)
+		{
+			// TODO
+		}
+
+		public virtual void RemoveAllChildren ()
+		{
+			// TODO
+		}
+
 		public void DisableEvent (object eventId)
 		{
 			throw new NotImplementedException ();
