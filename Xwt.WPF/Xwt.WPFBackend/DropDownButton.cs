@@ -25,8 +25,10 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls.Primitives;
 using SWC = System.Windows.Controls;
 
@@ -107,6 +109,24 @@ namespace Xwt.WPFBackend
 			{
 				get;
 				set;
+			}
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			return new DropDownButtonAutomationPeer (this);
+		}
+
+		class DropDownButtonAutomationPeer : ToggleButtonAutomationPeer
+		{
+			public DropDownButtonAutomationPeer (DropDownButton owner) : base (owner)
+			{
+			}
+
+			// Don't go into the children of this element
+			protected override List<AutomationPeer> GetChildrenCore ()
+			{
+				return null;
 			}
 		}
 	}
