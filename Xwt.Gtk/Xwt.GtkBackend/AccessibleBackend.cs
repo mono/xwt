@@ -143,6 +143,10 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public Widget LabeledBy {
+			set { /* Not supported */ }
+		}
+
 		public virtual Uri Uri { get; set; }
 
 		public bool IsAccessible {

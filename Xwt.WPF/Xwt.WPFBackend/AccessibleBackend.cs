@@ -28,6 +28,11 @@ namespace Xwt.WPFBackend
 			get { return AutomationProperties.GetHelpText (element); }
 			set { AutomationProperties.SetHelpText (element, value); }
 		}
+		public Widget LabeledBy {
+			set {
+				AutomationProperties.SetLabeledBy (element, (Toolkit.GetBackend (value) as WidgetBackend)?.Widget);
+			}
+		}
 
 		public string Title { get; set; }
 		public string Value { get; set; }

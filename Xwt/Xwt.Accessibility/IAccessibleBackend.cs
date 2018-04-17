@@ -40,6 +40,8 @@ namespace Xwt.Backends
 
 		string Label { get; set; }
 
+		Widget LabeledBy { set; }
+
 		string Title { get; set; }
 
 		string Description { get; set; }

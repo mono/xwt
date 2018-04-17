@@ -174,6 +174,10 @@ namespace Xwt.Mac
 			}
 		}
 
+		Widget IAccessibleBackend.LabeledBy {
+			set { /* Not supported */ }
+		}
+
 		public void AddChild (object nativeChild)
 		{
 			var accessible = nativeChild as INSAccessibility;

@@ -120,6 +120,12 @@ namespace Xwt.Accessibility
 			}
 		}
 
+		public Widget LabeledBy {
+			set {
+				Backend.LabeledBy = value;
+			}
+		}
+
 		public string Title {
 			get {
 				return Backend.Title;
@@ -222,6 +228,8 @@ namespace Xwt.Accessibility
 		public string Identifier { get; set; }
 
 		public string Label { get; set; }
+
+		public Widget LabeledBy { set { } }
 
 		public Role Role { get; set; }
 
