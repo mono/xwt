@@ -51,8 +51,7 @@ namespace Xwt.WPFBackend
 
 		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
 		{
-			var parent = parentWidget as WidgetBackend;
-			Initialize (parent.Widget, eventSink);
+			Initialize (parentWidget.NativeWidget, eventSink);
 		}
 
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
