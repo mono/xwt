@@ -41,6 +41,7 @@ using System.ComponentModel;
 using System.Windows.Controls.Primitives;
 using System.Windows.Automation.Provider;
 using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 
 namespace Xwt.WPFBackend
 {
