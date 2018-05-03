@@ -559,7 +559,7 @@ namespace Xwt.Mac
 		public static CGPoint ConvertPointFromEvent(this NSView view, NSEvent theEvent)
 		{
 			var point = theEvent.LocationInWindow;
-			if (theEvent.WindowNumber != view.Window.WindowNumber)
+			if (view.Window != null && theEvent.WindowNumber != view.Window.WindowNumber)
 			{
 				point = theEvent.Window.ConvertBaseToScreen(point);
 				point = view.Window.ConvertScreenToBase(point);
