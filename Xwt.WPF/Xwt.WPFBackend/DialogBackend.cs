@@ -1,4 +1,4 @@
-﻿//
+//
 // DialogBackend.cs
 //
 // Author:
@@ -64,6 +64,10 @@ namespace Xwt.WPFBackend
 		public DialogBackend()
 		{
 			cmd = new DelegatedCommand<WpfDialogButton> (OnButtonClicked);
+
+			// Surprisingly, the ItemsControls are focusable by default; disable that to fix tab navigation
+			this.leftButtonContainer.Focusable = false;
+			this.rightButtonContainer.Focusable = false;
 
 			this.leftButtonContainer.ItemsPanel = leftPanelTemplate;
 			this.leftButtonContainer.ItemTemplateSelector = new DialogButtonTemplateSelector(ButtonStyle, cmd);
