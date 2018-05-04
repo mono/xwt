@@ -199,6 +199,11 @@ namespace Xwt.Accessibility
 			Backend.RemoveChild (nativeChild);
 		}
 
+		public void RemoveAllChildren ()
+		{
+			Backend.RemoveAllChildren ();
+		}
+
 		bool OnPress ()
 		{
 			var args = new WidgetEventArgs ();

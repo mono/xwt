@@ -8,6 +8,7 @@ using System.Windows;
 using SWC = System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 
 namespace Xwt.WPFBackend
 {
@@ -110,33 +111,77 @@ namespace Xwt.WPFBackend
 	class CustomCanvas : CustomPanel
 	{
 		CanvasBackend backend;
+		CustomCanvasAutomationPeer automationPeer;
 
 		public CustomCanvas (CanvasBackend backend)
 		{
 			this.backend = backend;
 		}
 
-		protected override AutomationPeer OnCreateAutomationPeer ()
-		{
-			return new CustomCanvasAutomationPeer (this);
-		}
+		internal CustomCanvasAutomationPeer AutomationPeer => automationPeer ?? (automationPeer = new CustomCanvasAutomationPeer (this));
 
-		class CustomCanvasAutomationPeer : FrameworkElementAutomationPeer
+		protected override AutomationPeer OnCreateAutomationPeer () => AutomationPeer;
+
+		internal class CustomCanvasAutomationPeer : FrameworkElementAutomationPeer, IInvokeProvider
 		{
+			List<AutomationPeer> childrenPeers = null;
+
 			public CustomCanvasAutomationPeer (CustomCanvas canvas) : base (canvas)
 			{
 			}
 
+			Xwt.Widget Frontend => ((CustomCanvas)Owner)?.backend?.Frontend;
+			AccessibleBackend Accessible => (AccessibleBackend)Toolkit.GetBackend (Frontend.Accessible);
+
 			protected override AutomationControlType GetAutomationControlTypeCore ()
 			{
-				var frontend = ((CustomCanvas)Owner)?.backend?.Frontend;
-				if (frontend == null || !frontend.HasAccessible) {
-					System.Diagnostics.Debug.WriteLine ("No a11y info, returning default");
+				var frontend = Frontend;
+				if (frontend == null || !frontend.HasAccessible)
 					return AutomationControlType.Custom;
-				}
 				var role = frontend.Accessible.Role;
-				System.Diagnostics.Debug.WriteLine ("Exporting a11y role {0}", role);
 				return AccessibleBackend.RoleToControlType (role);
+			}
+
+			public override object GetPattern (PatternInterface patternInterface)
+			{
+				if (patternInterface == PatternInterface.Invoke && Frontend.HasAccessible)
+					return this;
+				return base.GetPattern (patternInterface);
+			}
+
+			public void Invoke ()
+			{
+				var frontend = Frontend;
+				if (frontend.HasAccessible)
+					Accessible.PerformInvoke ();
+			}
+
+			protected override List<AutomationPeer> GetChildrenCore ()
+			{
+				if (childrenPeers != null)
+					return childrenPeers;
+				return base.GetChildrenCore ();
+			}
+
+			public void AddChild (AutomationPeer peer)
+			{
+				if (childrenPeers == null)
+					childrenPeers = new List<AutomationPeer> ();
+				childrenPeers.Add (peer);
+			}
+
+			public void RemoveAllChildren ()
+			{
+				if (childrenPeers == null)
+					return;
+				childrenPeers.Clear ();
+			}
+
+			public void RemoveChild (AutomationPeer peer)
+			{
+				if (childrenPeers == null)
+					return;
+				childrenPeers.Remove (peer);
 			}
 		}
 	}

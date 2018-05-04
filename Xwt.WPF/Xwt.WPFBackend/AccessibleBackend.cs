@@ -13,6 +13,8 @@ namespace Xwt.WPFBackend
 	class AccessibleBackend : IAccessibleBackend
 	{
 		UIElement element;
+		IAccessibleEventSink eventSink;
+		ApplicationContext context;
 
 		public bool IsAccessible { get; set; }
 
@@ -59,22 +61,41 @@ namespace Xwt.WPFBackend
 			this.element = parentWidget as UIElement;
 			if (element == null)
 				throw new ArgumentException ("Widget is not a UIElement");
+			this.eventSink = eventSink;
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			this.context = context;
 		}
 
+		internal void PerformInvoke ()
+		{
+			context.InvokeUserCode (() => eventSink.OnPress ());
+		}
+
+		// The following child methods are only supported for Canvas based widgets
 		public void AddChild (object nativeChild)
 		{
+			var peer = nativeChild as AutomationPeer;
+			var canvas = element as CustomCanvas;
+			if (peer != null && canvas != null)
+				canvas.AutomationPeer?.AddChild (peer);
 		}
 
 		public void RemoveAllChildren ()
 		{
+			var canvas = element as CustomCanvas;
+			if (canvas != null)
+				canvas.AutomationPeer?.RemoveAllChildren ();
 		}
 
 		public void RemoveChild (object nativeChild)
 		{
+			var peer = nativeChild as AutomationPeer;
+			var canvas = element as CustomCanvas;
+			if (peer != null && canvas != null)
+				canvas.AutomationPeer?.RemoveChild (peer);
 		}
 
 		public static AutomationControlType RoleToControlType (Role role)
