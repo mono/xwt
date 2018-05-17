@@ -143,7 +143,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public Widget LabeledBy {
+		public Widget LabelWidget {
 			set { /* Not supported */ }
 		}
 

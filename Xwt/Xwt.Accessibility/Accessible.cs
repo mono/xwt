@@ -36,6 +36,8 @@ namespace Xwt.Accessibility
 
 		readonly AccessibleBackendHost backendHost;
 
+		Widget labelWidget;
+
 		class AccessibleBackendHost : BackendHost<Accessible, IAccessibleBackend>, IAccessibleEventSink
 		{
 			protected override IBackend OnCreateBackend ()
@@ -120,9 +122,11 @@ namespace Xwt.Accessibility
 			}
 		}
 
-		public Widget LabeledBy {
+		public Widget LabelWidget {
+			get { return labelWidget;  }
 			set {
-				Backend.LabeledBy = value;
+				labelWidget = value;
+				Backend.LabelWidget = value;
 			}
 		}
 
@@ -234,7 +238,7 @@ namespace Xwt.Accessibility
 
 		public string Label { get; set; }
 
-		public Widget LabeledBy { set { } }
+		public Widget LabelWidget { set { } }
 
 		public Role Role { get; set; }
 

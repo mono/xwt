@@ -30,7 +30,7 @@ namespace Xwt.WPFBackend
 			get { return AutomationProperties.GetHelpText (element); }
 			set { AutomationProperties.SetHelpText (element, value); }
 		}
-		public Widget LabeledBy {
+		public Widget LabelWidget {
 			set {
 				AutomationProperties.SetLabeledBy (element, (Toolkit.GetBackend (value) as WidgetBackend)?.Widget);
 			}

@@ -174,8 +174,10 @@ namespace Xwt.Mac
 			}
 		}
 
-		Widget IAccessibleBackend.LabeledBy {
-			set { /* Not supported */ }
+		Widget IAccessibleBackend.LabelWidget {
+			set {
+				widget.AccessibilityTitleUIElement = (Toolkit.GetBackend (value) as ViewBackend)?.Widget;
+			}
 		}
 
 		public void AddChild (object nativeChild)
