@@ -108,8 +108,9 @@ namespace Xwt.WPFBackend
 			case Role.CheckBox:
 				return AutomationControlType.CheckBox;
 			case Role.RadioButton:
-			case Role.RadioGroup:
 				return AutomationControlType.RadioButton;
+			case Role.RadioGroup:
+				return AutomationControlType.Group;
 			case Role.ComboBox:
 				return AutomationControlType.ComboBox;
 			case Role.List:
@@ -128,7 +129,7 @@ namespace Xwt.WPFBackend
 			case Role.Cell:
 				return AutomationControlType.DataItem;
 			case Role.Table:
-				return AutomationControlType.Table;
+				return AutomationControlType.DataGrid;
 			case Role.Paned:
 				return AutomationControlType.Pane;
 			default:
