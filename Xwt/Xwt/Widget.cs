@@ -332,10 +332,6 @@ namespace Xwt
 				return accessible;
 			}
 		}
-
-		public bool HasAccessible {
-			get { return accessible != null; }
-		}
 		
 		/// <summary>
 		/// Gets the parent window of the widget.

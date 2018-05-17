@@ -130,29 +130,29 @@ namespace Xwt.WPFBackend
 			{
 			}
 
-			Xwt.Widget Frontend => ((CustomCanvas)Owner)?.backend?.Frontend;
+			CanvasBackend Backend => ((CustomCanvas)Owner)?.backend;
+			Xwt.Widget Frontend => Backend?.Frontend;
 			AccessibleBackend Accessible => (AccessibleBackend)Toolkit.GetBackend (Frontend.Accessible);
 
 			protected override AutomationControlType GetAutomationControlTypeCore ()
 			{
-				var frontend = Frontend;
-				if (frontend == null || !frontend.HasAccessible)
+				var backend = Backend;
+				if (backend == null || !backend.HasAccessibleObject)
 					return AutomationControlType.Custom;
-				var role = frontend.Accessible.Role;
+				var role = Frontend.Accessible.Role;
 				return AccessibleBackend.RoleToControlType (role);
 			}
 
 			public override object GetPattern (PatternInterface patternInterface)
 			{
-				if (patternInterface == PatternInterface.Invoke && Frontend.HasAccessible)
+				if (patternInterface == PatternInterface.Invoke && Backend.HasAccessibleObject)
 					return this;
 				return base.GetPattern (patternInterface);
 			}
 
 			public void Invoke ()
 			{
-				var frontend = Frontend;
-				if (frontend.HasAccessible)
+				if (Backend.HasAccessibleObject)
 					Accessible.PerformInvoke ();
 			}
 

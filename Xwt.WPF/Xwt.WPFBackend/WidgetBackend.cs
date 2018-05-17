@@ -119,6 +119,8 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		internal bool HasAccessibleObject { get; set; }
+
 		Color? customBackgroundColor;
 
 		public virtual Color BackgroundColor {
