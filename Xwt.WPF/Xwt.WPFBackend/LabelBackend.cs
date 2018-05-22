@@ -34,6 +34,7 @@ using SWM = System.Windows.Media;
 using SWD = System.Windows.Documents;
 
 using Xwt.Backends;
+using System.Windows.Automation.Peers;
 
 namespace Xwt.WPFBackend
 {
@@ -241,6 +242,28 @@ namespace Xwt.WPFBackend
 		public SWC.TextBlock TextBlock {
 			get;
 			set;
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			return new WpfLabelAutomationPeer (this);
+		}
+
+		class WpfLabelAutomationPeer : LabelAutomationPeer
+		{
+			public WpfLabelAutomationPeer (WpfLabel owner) : base (owner)
+			{
+			}
+
+			protected override List<AutomationPeer> GetChildrenCore ()
+			{
+				return null;
+			}
+
+			protected override string GetNameCore ()
+			{
+				return ((WpfLabel)Owner).TextBlock.Text;
+			}
 		}
 	}
 }

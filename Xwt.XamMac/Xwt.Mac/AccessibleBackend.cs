@@ -174,6 +174,12 @@ namespace Xwt.Mac
 			}
 		}
 
+		Widget IAccessibleBackend.LabelWidget {
+			set {
+				widget.AccessibilityTitleUIElement = (Toolkit.GetBackend (value) as ViewBackend)?.Widget;
+			}
+		}
+
 		public void AddChild (object nativeChild)
 		{
 			var accessible = nativeChild as INSAccessibility;

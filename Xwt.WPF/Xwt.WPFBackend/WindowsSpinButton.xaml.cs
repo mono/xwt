@@ -39,6 +39,9 @@ using System.Windows.Threading;
 using System.Globalization;
 using System.ComponentModel;
 using System.Windows.Controls.Primitives;
+using System.Windows.Automation.Provider;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 
 namespace Xwt.WPFBackend
 {
@@ -452,6 +455,66 @@ namespace Xwt.WPFBackend
             else
                 DecreaseValue(Increment);
         }
-        #endregion
-    }
+		#endregion
+
+		#region Accessibility
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			return new WindowsSpinButtonAutomationPeer (this);
+		}
+
+		class WindowsSpinButtonAutomationPeer : UserControlAutomationPeer, IRangeValueProvider
+		{
+			public WindowsSpinButtonAutomationPeer (WindowsSpinButton owner) : base (owner)
+			{
+			}
+
+			WindowsSpinButton Button => (WindowsSpinButton)Owner;
+
+			protected override string GetClassNameCore ()
+			{
+				return nameof (WindowsSpinButton);
+			}
+
+			protected override List<AutomationPeer> GetChildrenCore ()
+			{
+				return null;
+			}
+
+			protected override AutomationControlType GetAutomationControlTypeCore ()
+			{
+				return AutomationControlType.Spinner;
+			}
+
+			public override object GetPattern (PatternInterface patternInterface)
+			{
+				if (patternInterface == PatternInterface.RangeValue) {
+					return this;
+				}
+				return base.GetPattern (patternInterface);
+			}
+
+			public void SetValue (double value)
+			{
+				if (IsReadOnly)
+					throw new ElementNotEnabledException ();
+				if (value < Button.MinimumValue || value > Button.MaximumValue)
+					throw new ArgumentOutOfRangeException (nameof (value));
+				Button.Value = value;
+			}
+
+			public double Value => Button.Value;
+
+			public bool IsReadOnly => !Button.IsEnabled;
+
+			public double Maximum => Button.MaximumValue;
+
+			public double Minimum => Button.MinimumValue;
+
+			public double LargeChange => Button.Increment;
+
+			public double SmallChange => Button.Increment;
+		}
+		#endregion
+	}
 }

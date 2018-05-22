@@ -13,6 +13,8 @@ namespace Xwt.WPFBackend
 	class AccessibleBackend : IAccessibleBackend
 	{
 		UIElement element;
+		IAccessibleEventSink eventSink;
+		ApplicationContext context;
 
 		public bool IsAccessible { get; set; }
 
@@ -28,10 +30,15 @@ namespace Xwt.WPFBackend
 			get { return AutomationProperties.GetHelpText (element); }
 			set { AutomationProperties.SetHelpText (element, value); }
 		}
+		public Widget LabelWidget {
+			set {
+				AutomationProperties.SetLabeledBy (element, (Toolkit.GetBackend (value) as WidgetBackend)?.Widget);
+			}
+		}
 
 		public string Title { get; set; }
 		public string Value { get; set; }
-		public Role Role { get; set; }
+		public Role Role { get; set; } = Role.Custom;
 		public Uri Uri { get; set; }
 		public Rectangle Bounds { get; set; }
 		public string RoleDescription { get; set; }
@@ -46,8 +53,10 @@ namespace Xwt.WPFBackend
 
 		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
 		{
-			var parent = parentWidget as WidgetBackend;
-			Initialize (parent.Widget, eventSink);
+			Initialize (parentWidget.NativeWidget, eventSink);
+			var wpfBackend = parentWidget as WidgetBackend;
+			if (wpfBackend != null)
+				wpfBackend.HasAccessibleObject = true;
 		}
 
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
@@ -55,22 +64,80 @@ namespace Xwt.WPFBackend
 			this.element = parentWidget as UIElement;
 			if (element == null)
 				throw new ArgumentException ("Widget is not a UIElement");
+			this.eventSink = eventSink;
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
+			this.context = context;
 		}
 
+		internal void PerformInvoke ()
+		{
+			context.InvokeUserCode (() => eventSink.OnPress ());
+		}
+
+		// The following child methods are only supported for Canvas based widgets
 		public void AddChild (object nativeChild)
 		{
+			var peer = nativeChild as AutomationPeer;
+			var canvas = element as CustomCanvas;
+			if (peer != null && canvas != null)
+				canvas.AutomationPeer?.AddChild (peer);
 		}
 
 		public void RemoveAllChildren ()
 		{
+			var canvas = element as CustomCanvas;
+			if (canvas != null)
+				canvas.AutomationPeer?.RemoveAllChildren ();
 		}
 
 		public void RemoveChild (object nativeChild)
 		{
+			var peer = nativeChild as AutomationPeer;
+			var canvas = element as CustomCanvas;
+			if (peer != null && canvas != null)
+				canvas.AutomationPeer?.RemoveChild (peer);
+		}
+
+		public static AutomationControlType RoleToControlType (Role role)
+		{
+			switch (role) {
+			case Role.Button:
+			case Role.MenuButton:
+			case Role.ToggleButton:
+				return AutomationControlType.Button;
+			case Role.CheckBox:
+				return AutomationControlType.CheckBox;
+			case Role.RadioButton:
+				return AutomationControlType.RadioButton;
+			case Role.RadioGroup:
+				return AutomationControlType.Group;
+			case Role.ComboBox:
+				return AutomationControlType.ComboBox;
+			case Role.List:
+				return AutomationControlType.List;
+			case Role.Popup:
+			case Role.ToolTip:
+				return AutomationControlType.ToolTip;
+			case Role.ToolBar:
+				return AutomationControlType.ToolBar;
+			case Role.Label:
+				return AutomationControlType.Text;
+			case Role.Link:
+				return AutomationControlType.Hyperlink;
+			case Role.Image:
+				return AutomationControlType.Image;
+			case Role.Cell:
+				return AutomationControlType.DataItem;
+			case Role.Table:
+				return AutomationControlType.DataGrid;
+			case Role.Paned:
+				return AutomationControlType.Pane;
+			default:
+				return AutomationControlType.Custom;
+			}
 		}
 	}
 }
