@@ -830,9 +830,8 @@ namespace Xwt
 
 	class NativeWindowFrame: WindowFrame
 	{
-		public NativeWindowFrame (IWindowFrameBackend backend)
+		public NativeWindowFrame (IWindowFrameBackend backend) : base (owned: false)
 		{
-			owned = false;
 			BackendHost.SetCustomBackend (backend);
 		}
 	}
