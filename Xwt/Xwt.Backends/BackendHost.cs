@@ -59,7 +59,7 @@ namespace Xwt.Backends
 	/// <summary>
 	/// The BackendHost is the link between an Xwt frontend and a toolkit backend.
 	/// </summary>
-	public class BackendHost: EventHost
+	public class BackendHost: EventHost, IDisposable
 	{
 		IBackend backend;
 		bool usingCustomBackend;
@@ -131,8 +131,10 @@ namespace Xwt.Backends
 		/// </summary>
 		protected virtual void OnBackendCreated ()
 		{
-			foreach (var ev in DefaultEnabledEvents)
+			foreach (var ev in DefaultEnabledEvents) {
+				enabledEvents.Add (ev);
 				Backend.EnableEvent (ev);
+			}
 		}
 		
 		/// <summary>
@@ -171,12 +173,15 @@ namespace Xwt.Backends
 			}
 		}
 
+		List<object> enabledEvents = new List<object> ();
+
 		/// <summary>
 		/// Enables an event with the specified identifier.
 		/// </summary>
 		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
 		protected override void OnEnableEvent (object eventId)
 		{
+			enabledEvents.Add (eventId);
 			Backend.EnableEvent (eventId);
 		}
 
@@ -186,7 +191,15 @@ namespace Xwt.Backends
 		/// <param name="eventId">Event identifier (must be a valid event enum value).</param>
 		protected override void OnDisableEvent (object eventId)
 		{
+			enabledEvents.Remove (eventId);
 			Backend.DisableEvent (eventId);
+		}
+
+		public void Dispose ()
+		{
+			foreach (var ev in enabledEvents)
+				Backend.DisableEvent (ev);
+			enabledEvents.Clear ();
 		}
 	}
 }

@@ -74,6 +74,12 @@ namespace Xwt
 			get { return backendHost.Backend; }
 		}
 
+		protected override void Dispose(bool release_all)
+		{
+			backendHost.Dispose ();
+			base.Dispose(release_all);
+		}
+
 		/// <summary>
 		/// Gets or sets the name of this component.
 		/// </summary>
