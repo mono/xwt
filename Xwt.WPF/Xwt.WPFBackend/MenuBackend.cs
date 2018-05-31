@@ -1,4 +1,4 @@
-﻿// 
+// 
 // MenuBackend.cs
 //  
 // Author:
@@ -63,6 +63,8 @@ namespace Xwt.WPFBackend
 			get;
 			set;
 		}
+
+		public ContextMenu NativeMenu => menu;
 
 		public virtual object Font {
 			get {
