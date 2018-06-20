@@ -1,4 +1,4 @@
-﻿//
+//
 // DropDownButton.cs
 //
 // Author:
@@ -127,6 +127,11 @@ namespace Xwt.WPFBackend
 			protected override List<AutomationPeer> GetChildrenCore ()
 			{
 				return null;
+			}
+
+			protected override string GetNameCore ()
+			{
+				return nameof (DropDownButton);
 			}
 		}
 	}

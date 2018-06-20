@@ -1,4 +1,4 @@
-﻿// 
+// 
 // BoxBackend.cs
 //  
 // Author:
@@ -153,6 +153,11 @@ namespace Xwt.WPFBackend
 			protected override AutomationControlType GetAutomationControlTypeCore ()
 			{
 				return AutomationControlType.Pane;
+			}
+
+			protected override string GetNameCore ()
+			{
+				return nameof (CustomPanel);
 			}
 		}
 	}
