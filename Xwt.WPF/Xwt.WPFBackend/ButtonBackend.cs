@@ -1,4 +1,4 @@
-﻿// 
+// 
 // ButtonBackend.cs
 //  
 // Author:
@@ -35,7 +35,8 @@ using System.Text.RegularExpressions;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
 using System.Windows.Data;
-
+using System.Collections.Generic;
+using System.Windows.Automation.Peers;
 
 namespace Xwt.WPFBackend
 {
@@ -204,6 +205,28 @@ namespace Xwt.WPFBackend
 		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
 		{
 			return base.ArrangeOverride (arrangeBounds);
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			return new WpfButtonAutomationPeer (this);
+		}
+
+		class WpfButtonAutomationPeer : ButtonAutomationPeer
+		{
+			public WpfButtonAutomationPeer (WpfButton owner) : base (owner)
+			{
+			}
+
+			protected override List<AutomationPeer> GetChildrenCore ()
+			{
+				return null;
+			}
+
+			protected override string GetNameCore ()
+			{
+				return nameof (WpfButton);
+			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -161,6 +161,11 @@ namespace Xwt.WPFBackend
 				if (childrenPeers != null)
 					return childrenPeers;
 				return base.GetChildrenCore ();
+			}
+
+			protected override string GetNameCore ()
+			{
+				return nameof (CustomCanvas);
 			}
 
 			public void AddChild (AutomationPeer peer)
