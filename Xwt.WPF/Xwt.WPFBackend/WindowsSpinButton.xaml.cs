@@ -168,8 +168,8 @@ namespace Xwt.WPFBackend
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(16) });
 
-			//Textbox
-			textBox = new SpinButtonTextBox (this);
+            //Textbox
+            textBox = new SpinButtonTextBox (this);
             textBox.Text = "0";
             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
             textBox.MinWidth = 25;
@@ -249,7 +249,7 @@ namespace Xwt.WPFBackend
 
 	    public TextBox TextBox => textBox;
 
-	    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateTextbox();
         }
@@ -459,19 +459,19 @@ namespace Xwt.WPFBackend
 		#endregion
 
 		#region Accessibility
-	    class SpinButtonTextBox : TextBox
-	    {
-		    WindowsSpinButton spinButton;
+		class SpinButtonTextBox : TextBox
+		{
+			WindowsSpinButton spinButton;
 
 			public SpinButtonTextBox (WindowsSpinButton spinButton)
 			{
 				this.spinButton = spinButton;
 			}
 
-		    protected override AutomationPeer OnCreateAutomationPeer ()
-		    {
-			    return new WindowsSpinButtonAutomationPeer (spinButton);
-		    }
+			protected override AutomationPeer OnCreateAutomationPeer ()
+			{
+				return new WindowsSpinButtonAutomationPeer (spinButton);
+			}
 		}
 
 		class WindowsSpinButtonAutomationPeer : UserControlAutomationPeer, IRangeValueProvider

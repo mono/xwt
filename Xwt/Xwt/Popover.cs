@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using Xwt.Accessibility;
 using Xwt.Drawing;
 
 using Xwt.Backends;
@@ -84,7 +85,17 @@ namespace Xwt
 			VerifyConstructorCall (this);
 			Content = content;
 		}
-		
+
+		Accessible accessible;
+		public Accessible Accessible {
+			get {
+				if (accessible == null) {
+					accessible = new Accessible (this);
+				}
+				return accessible;
+			}
+		}
+
 		public Widget Content {
 			get { return content; }
 			set {

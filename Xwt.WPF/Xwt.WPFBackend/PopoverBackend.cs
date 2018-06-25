@@ -1,4 +1,4 @@
-﻿//
+//
 // PopoverBackend.cs
 //
 // Author:
@@ -58,8 +58,26 @@ namespace Xwt.WPFBackend
 			get { return (Popover)base.frontend; }
 		}
 
-		System.Windows.Controls.Primitives.Popup NativeWidget {
+		public System.Windows.Controls.Primitives.Popup NativeWidget {
 			get; set;
+		}
+
+		/// <summary>
+		/// Search up the visual tree, finding the PopupRoot for the popup.
+		/// </summary>
+		/// <returns>PopupRoot or null if not found for some reason</returns>
+		public FrameworkElement GetPopupRoot ()
+		{
+			FrameworkElement element = Border;
+
+			do {
+				element = (FrameworkElement) VisualTreeHelper.GetParent (element);
+				if (element == null)
+					return null;
+
+				if (element.GetType ().Name == "PopupRoot")
+					return element;
+			} while (true);
 		}
 
 		public PopoverBackend ()
@@ -113,6 +131,15 @@ namespace Xwt.WPFBackend
 			};
 			NativeWidget.PlacementTarget = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (reference);
 			NativeWidget.IsOpen = true;
+
+			// Popups are special in that the automation properties need to be set on the PopupRoot, which only exists when the popup is shown
+			// See https://social.msdn.microsoft.com/Forums/vstudio/en-US/d4ba12c8-7a87-478e-b064-5620f929a0cf/how-to-set-automationid-and-name-for-popup?forum=wpf
+			var accessibleBackend = (AccessibleBackend)Toolkit.GetBackend (Frontend.Accessible);
+			if (accessibleBackend != null) {
+				FrameworkElement popupRoot = GetPopupRoot ();
+				if (popupRoot != null)
+					accessibleBackend.InitAutomationProperties (popupRoot);
+			}
 		}
 
 		void NativeWidget_Closed (object sender, EventArgs e)

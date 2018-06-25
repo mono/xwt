@@ -62,6 +62,11 @@ namespace Xwt.GtkBackend
 			Initialize (backend?.Widget, eventSink);
 		}
 
+		public void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink)
+		{
+			// Not currently supported
+		}
+
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
 		{
 			this.eventSink = eventSink;

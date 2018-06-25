@@ -159,7 +159,6 @@ namespace Xwt.WPFBackend
 				owner.IsChecked = true;
 			}
 
-
 			public void Collapse ()
 			{
 				owner.IsChecked = false;
