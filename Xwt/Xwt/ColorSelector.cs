@@ -137,49 +137,66 @@ namespace Xwt
 			const int entryWidth = 40;
 			VBox entryBox = new VBox ();
 			Table entryTable = new Table ();
-			
+
 			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Color:")), 0, 0);
 			entryTable.Add (colorBox, 1, 0, colspan:4);
 			entryTable.Add (new HSeparator (), 0, 1, colspan:5);
 			
 			int r = 2;
-			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Hue:")), 0, r);
+			var hueLabel = new Label ();
+			entryTable.Add (hueLabel, 0, r);
 			entryTable.Add (hueEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 360, Digits = 0, IncrementValue = 1 }, 1, r++);
-			
-			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Saturation:")), 0, r);
+			SetupEntry (hueEntry, hueLabel, Application.TranslationCatalog.GetString ("Hue"));
+
+			var satLabel = new Label ();
+			entryTable.Add (satLabel, 0, r);
 			entryTable.Add (satEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 100, Digits = 0, IncrementValue = 1 }, 1, r++);
-			
-			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Light:")), 0, r);
+			SetupEntry (satEntry, satLabel, Application.TranslationCatalog.GetString ("Saturation"));
+
+			var lightLabel = new Label ();
+			entryTable.Add (lightLabel, 0, r);
 			entryTable.Add (lightEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 100, Digits = 0, IncrementValue = 1 }, 1, r++);
-			
+			SetupEntry (lightEntry, lightLabel, Application.TranslationCatalog.GetString ("Light"));
+
 			r = 2;
-			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Red:")), 3, r);
+			var redLabel = new Label ();
+			entryTable.Add (redLabel, 3, r);
 			entryTable.Add (redEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
-			
-			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Green:")), 3, r);
+			SetupEntry (redEntry, redLabel, Application.TranslationCatalog.GetString ("Red"));
+
+			var greenLabel = new Label ();
+			entryTable.Add (greenLabel, 3, r);
 			entryTable.Add (greenEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
-			
-			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Blue:")), 3, r);
+			SetupEntry (greenEntry, greenLabel, Application.TranslationCatalog.GetString ("Green"));
+
+			var blueLabel = new Label ();
+			entryTable.Add (blueLabel, 3, r);
 			entryTable.Add (blueEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
-			
-			Label label;
+			SetupEntry (blueEntry, blueLabel, Application.TranslationCatalog.GetString ("Blue"));
+
 			entryTable.Add (alphaSeparator = new HSeparator (), 0, r++, colspan:5);
-			entryTable.Add (label = new Label (Application.TranslationCatalog.GetString("Opacity:")), 0, r);
+			var alphaLabel = new Label ();
+			entryTable.Add (alphaLabel, 0, r);
 			entryTable.Add (alphaSlider = new HSlider () {
 				MinimumValue = 0, MaximumValue = 255,  }, 1, r, colspan: 3);
 			entryTable.Add (alphaEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r);
-			
+			SetupEntry (alphaEntry, alphaLabel, Application.TranslationCatalog.GetString ("Opacity"));
+
+			// Don't allow the slider to get keyboard focus, as it doesn't really work with the keyboard and the opacity
+			// spin button takes its place
+			alphaSlider.CanGetFocus = false;
+
 			alphaControls.Add (alphaSeparator);
-			alphaControls.Add (label);
+			alphaControls.Add (alphaLabel);
 			alphaControls.Add (alphaEntry);
-			
+
 			entryBox.PackStart (entryTable);
 			box.PackStart (entryBox);
 			Content = box;
@@ -197,6 +214,20 @@ namespace Xwt
 			alphaSlider.ValueChanged += HandleAlphaChanged;
 			
 			Color = Colors.White;
+		}
+
+		static void SetupEntry (SpinButton spinButton, Label labelWidget, string labelText)
+		{
+			labelWidget.Text = GetLabelWithColon (labelText);
+
+			spinButton.Accessible.Label = labelText;
+			spinButton.Accessible.LabelWidget = labelWidget;
+		}
+
+		static string GetLabelWithColon (string labelText)
+		{
+			string labelFormat = Application.TranslationCatalog.GetString ("{0}:");
+			return string.Format (labelFormat, labelText);
 		}
 
 		void HandleAlphaChanged (object sender, EventArgs e)
