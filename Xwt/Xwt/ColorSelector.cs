@@ -27,6 +27,7 @@ using System;
 using Xwt.Drawing;
 using Xwt.Backends;
 using System.Collections.Generic;
+using Xwt.Accessibility;
 
 
 namespace Xwt
@@ -192,6 +193,7 @@ namespace Xwt
 			// Don't allow the slider to get keyboard focus, as it doesn't really work with the keyboard and the opacity
 			// spin button takes its place
 			alphaSlider.CanGetFocus = false;
+			alphaSlider.Accessible.Label = Application.TranslationCatalog.GetString ("Opacity");
 
 			alphaControls.Add (alphaSeparator);
 			alphaControls.Add (alphaLabel);
