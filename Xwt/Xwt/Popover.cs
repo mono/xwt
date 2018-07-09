@@ -45,6 +45,7 @@ namespace Xwt
 		WidgetSpacing padding;
 		Widget content;
 		bool shown;
+		Accessible accessible;
 
 		EventHandler closedEvent;
 
@@ -86,7 +87,6 @@ namespace Xwt
 			Content = content;
 		}
 
-		Accessible accessible;
 		public Accessible Accessible {
 			get {
 				if (accessible == null) {

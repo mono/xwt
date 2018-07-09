@@ -64,6 +64,7 @@ namespace Xwt
 		WidgetPlacement alignHorizontal = WidgetPlacement.Fill;
 		bool expandVertical;
 		bool expandHorizontal;
+		Accessible accessible;
 
 		EventHandler<DragOverCheckEventArgs> dragOverCheck;
 		EventHandler<DragOverEventArgs> dragOver;
@@ -323,7 +324,6 @@ namespace Xwt
 			}
 		}
 
-		Accessible accessible;
 		public Accessible Accessible {
 			get {
 				if (accessible == null) {
