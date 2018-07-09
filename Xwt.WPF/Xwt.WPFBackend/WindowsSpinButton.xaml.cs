@@ -459,6 +459,12 @@ namespace Xwt.WPFBackend
 		#endregion
 
 		#region Accessibility
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			return new WindowsSpinButtonAutomationPeer (this);
+		}
+
 		class SpinButtonTextBox : TextBox
 		{
 			WindowsSpinButton spinButton;
@@ -470,7 +476,7 @@ namespace Xwt.WPFBackend
 
 			protected override AutomationPeer OnCreateAutomationPeer ()
 			{
-				return new WindowsSpinButtonAutomationPeer (spinButton);
+				return UIElementAutomationPeer.FromElement (spinButton);
 			}
 		}
 
@@ -499,12 +505,12 @@ namespace Xwt.WPFBackend
 
 			protected override bool IsKeyboardFocusableCore ()
 			{
-				return true;
+				return Button.IsEnabled;
 			}
 
 			protected override bool HasKeyboardFocusCore ()
 			{
-				return Button.TextBox.IsFocused;
+				return Button.IsKeyboardFocusWithin;
 			}
 
 			protected override void SetFocusCore ()
