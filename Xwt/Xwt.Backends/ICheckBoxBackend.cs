@@ -30,7 +30,7 @@ namespace Xwt.Backends
 	public interface ICheckBoxBackend: IWidgetBackend
 	{
 		void SetContent (IWidgetBackend widget);
-		void SetContent (string label);
+		void SetContent (string label, bool useMnemonic);
 
 		/// <summary>
 		/// Gets or sets the state of the checkbox.

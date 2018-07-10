@@ -38,6 +38,7 @@ namespace Xwt
 		EventHandler clicked;
 		EventHandler toggled;
 		string label = "";
+		bool useMnemonic = true;
 		
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICheckBoxEventSink
 		{
@@ -81,8 +82,27 @@ namespace Xwt
 			get { return label; }
 			set {
 				label = value;
-				Backend.SetContent (label);
+				Backend.SetContent (label, useMnemonic);
 				OnPreferredSizeChanged ();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="Xwt.Button"/> uses a mnemonic.
+		/// </summary>
+		/// <value><c>true</c> if it uses a mnemonic; otherwise, <c>false</c>.</value>
+		/// <remarks>
+		/// When set to true, the character after the first underscore character in the Label property value is
+		/// interpreted as the mnemonic for that Label.
+		/// </remarks>
+		[DefaultValue (true)]
+		public bool UseMnemonic {
+			get { return useMnemonic; }
+			set {
+				if (useMnemonic == value)
+					return;
+				Backend.SetContent (label, value);
+				useMnemonic = value;
 			}
 		}
 
@@ -111,7 +131,7 @@ namespace Xwt
 			get { return Backend.State; }
 			set {
 				if (!value.IsValid ())
-					throw new ArgumentOutOfRangeException ("Invalid check box state value");
+					throw new ArgumentOutOfRangeException (nameof(value), "Invalid check box state value");
 				Backend.State = value;
 			}
 		}

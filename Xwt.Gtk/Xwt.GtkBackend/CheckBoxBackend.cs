@@ -84,8 +84,9 @@ namespace Xwt.GtkBackend
 			EventsRootWidget.SetBackgroundColor (color);
 		}
 		
-		public void SetContent (string label)
+		public void SetContent (string label, bool useMnemonic)
 		{
+			Widget.UseUnderline = useMnemonic;
 			Widget.Label = label;
 		}
 		
