@@ -28,6 +28,7 @@ using System;
 using Xwt.Backends;
 using System.Windows.Media;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Xwt.WPFBackend
 {
@@ -53,6 +54,13 @@ namespace Xwt.WPFBackend
 		IPopoverEventSink EventSink {
 			get; set;
 		}
+
+		/// <summary>
+		/// Control, if any, that should get the initial keyboard focus when the popover is shown.
+		/// The control should be inside the popover, but it doesn't necessarily have to be an Xwt
+		/// managed widget.
+		/// </summary>
+		public UIElement InitialFocus { get; set; }
 
 		new Popover Frontend {
 			get { return (Popover)base.frontend; }
@@ -104,6 +112,7 @@ namespace Xwt.WPFBackend
 				Placement = System.Windows.Controls.Primitives.PlacementMode.Custom,
 				StaysOpen = false,
 			};
+			NativeWidget.Opened += NativeWidget_Opened;
 			NativeWidget.Closed += NativeWidget_Closed;
 		}
 
@@ -142,6 +151,12 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		void NativeWidget_Opened (object sender, EventArgs e)
+		{
+			if (InitialFocus != null)
+				InitialFocus.Focus ();
+		}
+
 		void NativeWidget_Closed (object sender, EventArgs e)
 		{
 			Border.Child = null;
@@ -156,8 +171,10 @@ namespace Xwt.WPFBackend
 
 		public void Dispose ()
 		{
-			if (NativeWidget != null)
+			if (NativeWidget != null) {
+				NativeWidget.Opened -= NativeWidget_Opened;
 				NativeWidget.Closed -= NativeWidget_Closed;
+			}
 		}
 	}
 }
