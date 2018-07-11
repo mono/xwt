@@ -88,7 +88,7 @@ namespace Xwt
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="Xwt.Button"/> uses a mnemonic.
+		/// Gets or sets a value indicating whether this <see cref="Xwt.CheckBox"/> uses a mnemonic.
 		/// </summary>
 		/// <value><c>true</c> if it uses a mnemonic; otherwise, <c>false</c>.</value>
 		/// <remarks>
