@@ -49,9 +49,13 @@ namespace Xwt.WPFBackend
 				CheckBox.Content = widget.NativeWidget;
 		}
 
-		public void SetContent (string label)
+		public void SetContent (string label, bool useMnemonic)
 		{
-			CheckBox.Content = new TextBlock { Text = label };
+			if (useMnemonic) {
+				CheckBox.Content = new TextBlock { Text = label };
+			} else {
+				CheckBox.Content = new AccessText { Text = label };
+			}
 		}
 
 		public CheckBoxState State
