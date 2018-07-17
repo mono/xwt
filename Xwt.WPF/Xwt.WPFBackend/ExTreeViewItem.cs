@@ -1,4 +1,4 @@
-﻿//
+//
 // ExTreeViewItem.cs
 //
 // Author:
@@ -26,7 +26,10 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
 using SWC = System.Windows.Controls;
@@ -235,6 +238,32 @@ namespace Xwt.WPFBackend
 			get
 			{
 				return Keyboard.IsKeyDown (WKey.RightCtrl) || Keyboard.IsKeyDown (WKey.LeftCtrl);
+			}
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			return new ExTreeViewItemAutomationPeer (this);
+		}
+
+		class ExTreeViewItemAutomationPeer : TreeViewItemAutomationPeer
+		{
+			public ExTreeViewItemAutomationPeer (ExTreeViewItem owner) : base (owner)
+			{
+			}
+
+			protected override List<AutomationPeer> GetChildrenCore ()
+			{
+				List<AutomationPeer> defaultChildren = base.GetChildrenCore ();
+				if (defaultChildren == null)
+					return null;
+
+				// We only want to include TreeView items in the a11y tree, not their constituent image/text/etc controls -
+				// for one thing including all controls messes up the "item 3 of 5" style counts announced by the
+				// narrator, as those controls would be included in the counts
+				List<AutomationPeer> children = defaultChildren.Where (
+					child => child is TreeViewItemAutomationPeer || child is TreeViewDataItemAutomationPeer).ToList ();
+				return children;
 			}
 		}
 	}
