@@ -181,13 +181,82 @@ namespace Xwt.WPFBackend
 		{
 			get
 			{
-				if (buttonsDictionary == null) {
-					Uri uri = new Uri ("pack://application:,,,/Xwt.WPF;component/XWT.WPFBackend/Buttons.xaml");
-					buttonsDictionary = (ResourceDictionary)XamlReader.Load (System.Windows.Application.GetResourceStream (uri).Stream);
-				}
+				if (buttonsDictionary == null)
+					buttonsDictionary = CreateButtonResources ();
 
 				return buttonsDictionary;
 			}
+		}
+
+		static ResourceDictionary CreateButtonResources ()
+		{
+			// Toggle button template/style
+			var menuDropDownTemplate = new SWC.ControlTemplate (typeof (SWC.Primitives.ToggleButton));
+			menuDropDownTemplate.VisualTree = CreateButtonChromeFactory ();
+			var trigger = new Trigger { Property = SWC.Primitives.ToggleButton.IsKeyboardFocusedProperty, Value = true };
+			trigger.Setters.Add (new Setter (Microsoft.Windows.Themes.ButtonChrome.RenderDefaultedProperty, true, "Chrome"));
+			menuDropDownTemplate.Triggers.Add (trigger);
+			trigger = new Trigger { Property = SWC.Primitives.ToggleButton.IsCheckedProperty, Value = true };
+			trigger.Setters.Add (new Setter (Microsoft.Windows.Themes.ButtonChrome.RenderDefaultedProperty, true, "Chrome"));
+			menuDropDownTemplate.Triggers.Add (trigger);
+			trigger = new Trigger { Property = SWC.Primitives.ToggleButton.IsEnabledProperty, Value = false };
+			trigger.Setters.Add (new Setter (SWC.Primitives.ToggleButton.ForegroundProperty, new System.Windows.Media.SolidColorBrush (System.Windows.Media.Color.FromArgb (0xFF, 0xAD, 0xAD, 0xAD))));
+			menuDropDownTemplate.Triggers.Add (trigger);
+			var menuDropDownStyle = new Style (typeof (SWC.Primitives.ToggleButton));
+			menuDropDownStyle.Setters.Add (new Setter () {
+				Property = SWC.Control.TemplateProperty,
+				Value = menuDropDownTemplate
+			});
+
+			// Button template/style
+			var normalDropDownTemplate = new SWC.ControlTemplate (typeof (SWC.Button));
+			normalDropDownTemplate.VisualTree = CreateButtonChromeFactory ();
+			trigger = new Trigger { Property = SWC.Button.IsKeyboardFocusedProperty, Value = true };
+			trigger.Setters.Add (new Setter (Microsoft.Windows.Themes.ButtonChrome.RenderDefaultedProperty, true, "Chrome"));
+			normalDropDownTemplate.Triggers.Add (trigger);
+			trigger = new Trigger { Property = SWC.Button.IsEnabledProperty, Value = false };
+			trigger.Setters.Add (new Setter (SWC.Button.ForegroundProperty, new System.Windows.Media.SolidColorBrush (System.Windows.Media.Color.FromArgb (0xFF, 0xAD, 0xAD, 0xAD))));
+			normalDropDownTemplate.Triggers.Add (trigger);
+			var normalDropDownStyle = new Style (typeof (SWC.Button));
+			normalDropDownStyle.Setters.Add (new Setter () {
+				Property = SWC.Control.TemplateProperty,
+				Value = normalDropDownTemplate
+			});
+
+			menuDropDownStyle.Seal ();
+			normalDropDownStyle.Seal ();
+
+			var resourceDic = new ResourceDictionary ();
+			resourceDic.Add ("MenuDropDown", menuDropDownStyle);
+			resourceDic.Add ("NormalDropDown", normalDropDownStyle);
+
+			return resourceDic;
+		}
+
+		static FrameworkElementFactory CreateButtonChromeFactory ()
+		{
+			var panel = new FrameworkElementFactory (typeof (SWC.DockPanel));
+			var contentPresenter = new FrameworkElementFactory (typeof (SWC.ContentPresenter));
+			contentPresenter.SetValue (SWC.ContentPresenter.MarginProperty, new Thickness (2, 1, 0, 0));
+			panel.AppendChild (contentPresenter);
+			var path = new FrameworkElementFactory (typeof (System.Windows.Shapes.Path));
+			path.SetValue (System.Windows.Shapes.Path.DataProperty, Geometry.Parse ("M 0 0 L 3.5 4 L 7 0 Z"));
+			path.SetValue (System.Windows.Shapes.Path.FillProperty, Brushes.Black);
+			path.SetValue (System.Windows.Shapes.Path.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+			path.SetValue (System.Windows.Shapes.Path.VerticalAlignmentProperty, VerticalAlignment.Center);
+			path.SetValue (System.Windows.Shapes.Path.MarginProperty, new Thickness (3, 1, 3, 0));
+			path.SetValue (SWC.DockPanel.DockProperty, SWC.Dock.Right);
+			panel.AppendChild (path);
+			var buttonChromeFactory = new FrameworkElementFactory (typeof (Microsoft.Windows.Themes.ButtonChrome));
+			buttonChromeFactory.SetBinding (Microsoft.Windows.Themes.ButtonChrome.BorderBrushProperty, new Binding ("BorderBrush") { RelativeSource = RelativeSource.TemplatedParent });
+			buttonChromeFactory.SetBinding (Microsoft.Windows.Themes.ButtonChrome.BackgroundProperty, new Binding ("Background") { RelativeSource = RelativeSource.TemplatedParent });
+			buttonChromeFactory.SetBinding (Microsoft.Windows.Themes.ButtonChrome.RenderMouseOverProperty, new Binding ("IsMouseOver") { RelativeSource = RelativeSource.TemplatedParent });
+			buttonChromeFactory.SetBinding (Microsoft.Windows.Themes.ButtonChrome.RenderPressedProperty, new Binding ("IsPressed") { RelativeSource = RelativeSource.TemplatedParent });
+			buttonChromeFactory.SetBinding (Microsoft.Windows.Themes.ButtonChrome.RenderDefaultedProperty, new Binding ("Button.IsDefaulted") { RelativeSource = RelativeSource.TemplatedParent });
+			buttonChromeFactory.SetValue (Microsoft.Windows.Themes.ButtonChrome.SnapsToDevicePixelsProperty, true);
+			buttonChromeFactory.Name = "Chrome";
+
+			return buttonChromeFactory;
 		}
 	}
 
