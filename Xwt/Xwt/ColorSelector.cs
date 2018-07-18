@@ -63,7 +63,15 @@ namespace Xwt
 		IColorSelectorBackend Backend {
 			get { return (IColorSelectorBackend) BackendHost.Backend; }
 		}
-		
+
+		/// <summary>
+		/// Gets or sets the color to be used for labels and other UI text
+		/// </summary>
+		public Color TextColor {
+			get { return Backend.TextColor; }
+			set { Backend.TextColor = value; }
+		}
+
 		/// <summary>
 		/// Gets or sets the selected color
 		/// </summary>
@@ -115,6 +123,7 @@ namespace Xwt
 		bool loadingEntries;
 		List<Widget> alphaControls = new List<Widget> ();
 		bool enableColorChangedEvent;
+		List<Label> labelWidgets = new List<Label> ();
 		
 		public DefaultColorSelectorBackend ()
 		{
@@ -139,50 +148,50 @@ namespace Xwt
 			VBox entryBox = new VBox ();
 			Table entryTable = new Table ();
 
-			entryTable.Add (new Label (Application.TranslationCatalog.GetString("Color:")), 0, 0);
+			entryTable.Add (CreateLabel (Application.TranslationCatalog.GetString("Color:")), 0, 0);
 			entryTable.Add (colorBox, 1, 0, colspan:4);
 			entryTable.Add (new HSeparator (), 0, 1, colspan:5);
 			
 			int r = 2;
-			var hueLabel = new Label ();
+			var hueLabel = CreateLabel ();
 			entryTable.Add (hueLabel, 0, r);
 			entryTable.Add (hueEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 360, Digits = 0, IncrementValue = 1 }, 1, r++);
 			SetupEntry (hueEntry, hueLabel, Application.TranslationCatalog.GetString ("Hue"));
 
-			var satLabel = new Label ();
+			var satLabel = CreateLabel ();
 			entryTable.Add (satLabel, 0, r);
 			entryTable.Add (satEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 100, Digits = 0, IncrementValue = 1 }, 1, r++);
 			SetupEntry (satEntry, satLabel, Application.TranslationCatalog.GetString ("Saturation"));
 
-			var lightLabel = new Label ();
+			var lightLabel = CreateLabel ();
 			entryTable.Add (lightLabel, 0, r);
 			entryTable.Add (lightEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 100, Digits = 0, IncrementValue = 1 }, 1, r++);
 			SetupEntry (lightEntry, lightLabel, Application.TranslationCatalog.GetString ("Light"));
 
 			r = 2;
-			var redLabel = new Label ();
+			var redLabel = CreateLabel ();
 			entryTable.Add (redLabel, 3, r);
 			entryTable.Add (redEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
 			SetupEntry (redEntry, redLabel, Application.TranslationCatalog.GetString ("Red"));
 
-			var greenLabel = new Label ();
+			var greenLabel = CreateLabel ();
 			entryTable.Add (greenLabel, 3, r);
 			entryTable.Add (greenEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
 			SetupEntry (greenEntry, greenLabel, Application.TranslationCatalog.GetString ("Green"));
 
-			var blueLabel = new Label ();
+			var blueLabel = CreateLabel ();
 			entryTable.Add (blueLabel, 3, r);
 			entryTable.Add (blueEntry = new SpinButton () { 
 				MinWidth = entryWidth, MinimumValue = 0, MaximumValue = 255, Digits = 0, IncrementValue = 1 }, 4, r++);
 			SetupEntry (blueEntry, blueLabel, Application.TranslationCatalog.GetString ("Blue"));
 
 			entryTable.Add (alphaSeparator = new HSeparator (), 0, r++, colspan:5);
-			var alphaLabel = new Label ();
+			var alphaLabel = CreateLabel ();
 			entryTable.Add (alphaLabel, 0, r);
 			entryTable.Add (alphaSlider = new HSlider () {
 				MinimumValue = 0, MaximumValue = 255,  }, 1, r, colspan: 3);
@@ -218,12 +227,29 @@ namespace Xwt
 			Color = Colors.White;
 		}
 
+		public Color TextColor {
+			get {
+				return labelWidgets[0].TextColor;
+			}
+			set {
+				foreach (Label labelWidget in labelWidgets)
+					labelWidget.TextColor = value;
+			}
+		}
+
 		static void SetupEntry (SpinButton spinButton, Label labelWidget, string labelText)
 		{
 			labelWidget.Text = GetLabelWithColon (labelText);
 
 			spinButton.Accessible.Label = labelText;
 			spinButton.Accessible.LabelWidget = labelWidget;
+		}
+
+		Label CreateLabel (string text = null)
+		{
+			Label label = text == null ? new Label () : new Label (text);
+			labelWidgets.Add (label);
+			return label;
 		}
 
 		static string GetLabelWithColon (string labelText)
