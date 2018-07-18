@@ -114,6 +114,7 @@ namespace Xwt.WPFBackend
 			};
 			NativeWidget.Opened += NativeWidget_Opened;
 			NativeWidget.Closed += NativeWidget_Closed;
+			NativeWidget.PreviewKeyDown += NativeWidget_PreviewKeyDown;
 		}
 
 		public void Initialize (IPopoverEventSink sink)
@@ -161,6 +162,15 @@ namespace Xwt.WPFBackend
 		{
 			Border.Child = null;
 			EventSink.OnClosed ();
+		}
+
+		void NativeWidget_PreviewKeyDown (object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			// Close the popup when Escape is hit
+			if (e.Key == System.Windows.Input.Key.Escape) {
+				NativeWidget.IsOpen = false;
+				e.Handled = true;
+			}
 		}
 
 		public void Hide ()

@@ -260,7 +260,7 @@ namespace Xwt.WPFBackend
 
 				// We only want to include TreeView items in the a11y tree, not their constituent image/text/etc controls -
 				// for one thing including all controls messes up the "item 3 of 5" style counts announced by the
-				// narrator, as those controls would be included in the counts
+				// narrator, as those controls would be include
 				List<AutomationPeer> children = defaultChildren.Where (
 					child => child is TreeViewItemAutomationPeer || child is TreeViewDataItemAutomationPeer).ToList ();
 				return children;
