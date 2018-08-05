@@ -62,6 +62,13 @@ namespace Xwt.WPFBackend
 		/// </summary>
 		public UIElement InitialFocus { get; set; }
 
+		/// <summary>
+		/// If set to true, then the arrow keys can't be used to move focus between controls.
+		/// Regardless of this setting, tab still works to change focus and the arrow keys still
+		/// work inside of controls that use them.
+		/// </summary>
+		public bool DisableArrowKeyNavigation { get; set; }
+
 		new Popover Frontend {
 			get { return (Popover)base.frontend; }
 		}
@@ -154,6 +161,12 @@ namespace Xwt.WPFBackend
 
 		void NativeWidget_Opened (object sender, EventArgs e)
 		{
+			if (DisableArrowKeyNavigation) {
+				FrameworkElement popupRoot = GetPopupRoot ();
+				if (popupRoot != null)
+					KeyboardNavigation.SetDirectionalNavigation (popupRoot, KeyboardNavigationMode.Once);
+			}
+
 			if (InitialFocus != null)
 				InitialFocus.Focus ();
 		}
