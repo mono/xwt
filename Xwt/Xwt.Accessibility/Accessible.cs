@@ -1,4 +1,4 @@
-﻿//
+//
 // Accessible.cs
 //
 // Author:
@@ -50,9 +50,12 @@ namespace Xwt.Accessibility
 			
 			protected override void OnBackendCreated ()
 			{
-				var parentBackend = Parent.parentComponent?.GetBackend () as IWidgetBackend;
-				if (parentBackend != null)
-					Backend.Initialize (parentBackend, this);
+				object parentBackend = Parent.parentComponent?.GetBackend ();
+
+				if (parentBackend is IWidgetBackend)
+					Backend.Initialize ((IWidgetBackend) parentBackend, this);
+				else if (parentBackend is IPopoverBackend)
+					Backend.Initialize ((IPopoverBackend) parentBackend, this);
 				else
 					Backend.Initialize (Parent.parentNativeObject, this);
 			}
@@ -64,6 +67,15 @@ namespace Xwt.Accessibility
 		}
 
 		internal Accessible (Widget parent)
+		{
+			if (parent == null)
+				throw new ArgumentNullException (nameof (parent));
+			parentComponent = parent;
+			backendHost = new AccessibleBackendHost ();
+			backendHost.Parent = this;
+		}
+
+		internal Accessible (Popover parent)
 		{
 			if (parent == null)
 				throw new ArgumentNullException (nameof (parent));
@@ -273,6 +285,10 @@ namespace Xwt.Accessibility
 		}
 
 		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
+		{
+		}
+
+		public void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink)
 		{
 		}
 

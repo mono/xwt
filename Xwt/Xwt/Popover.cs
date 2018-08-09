@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using Xwt.Accessibility;
 using Xwt.Drawing;
 
 using Xwt.Backends;
@@ -44,6 +45,7 @@ namespace Xwt
 		WidgetSpacing padding;
 		Widget content;
 		bool shown;
+		Accessible accessible;
 
 		EventHandler closedEvent;
 
@@ -84,7 +86,16 @@ namespace Xwt
 			VerifyConstructorCall (this);
 			Content = content;
 		}
-		
+
+		public Accessible Accessible {
+			get {
+				if (accessible == null) {
+					accessible = new Accessible (this);
+				}
+				return accessible;
+			}
+		}
+
 		public Widget Content {
 			get { return content; }
 			set {

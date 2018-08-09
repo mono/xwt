@@ -74,6 +74,15 @@ namespace Xwt.GtkBackend
 			ApplicationContext.InvokeUserCode (EventSink.OnColorChanged);
 		}
 
+		public Xwt.Drawing.Color TextColor {
+			get {
+				throw new NotImplementedException ("Gtk ColorSelector doesn't currently support the TextColor property");
+			}
+			set {
+				throw new NotImplementedException ("Gtk ColorSelector doesn't currently support the TextColor property");
+			}
+		}
+
 		public Xwt.Drawing.Color Color {
 			get {
 				var xwtColor = Widget.CurrentColor.ToXwtValue ();

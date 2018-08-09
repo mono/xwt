@@ -1,4 +1,4 @@
-﻿//
+//
 // DropDownButton.cs
 //
 // Author:
@@ -28,7 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 using System.Windows.Controls.Primitives;
 using SWC = System.Windows.Controls;
 
@@ -117,16 +119,57 @@ namespace Xwt.WPFBackend
 			return new DropDownButtonAutomationPeer (this);
 		}
 
-		class DropDownButtonAutomationPeer : ToggleButtonAutomationPeer
+		class DropDownButtonAutomationPeer : ButtonBaseAutomationPeer, IExpandCollapseProvider
 		{
-			public DropDownButtonAutomationPeer (DropDownButton owner) : base (owner)
+			DropDownButton owner;
+
+			public DropDownButtonAutomationPeer (DropDownButton owner) : base(owner)
 			{
+				this.owner = owner;
 			}
 
 			// Don't go into the children of this element
 			protected override List<AutomationPeer> GetChildrenCore ()
 			{
 				return null;
+			}
+
+			protected override string GetClassNameCore ()
+			{
+				return nameof(DropDownButton);
+			}
+
+			///
+			override protected AutomationControlType GetAutomationControlTypeCore ()
+			{
+				return AutomationControlType.Button;
+			}
+
+			/// 
+			override public object GetPattern (PatternInterface patternInterface)
+			{
+				if (patternInterface == PatternInterface.ExpandCollapse)
+					return this;
+				else
+					return base.GetPattern (patternInterface);
+			}
+
+			public void Expand ()
+			{
+				owner.IsChecked = true;
+			}
+
+			public void Collapse ()
+			{
+				owner.IsChecked = false;
+			}
+
+			public ExpandCollapseState ExpandCollapseState {
+				get {
+					if (owner.IsChecked == null)
+						return ExpandCollapseState.Collapsed;
+					else return (bool)owner.IsChecked ? ExpandCollapseState.Expanded : ExpandCollapseState.Collapsed;
+				}
 			}
 		}
 	}
