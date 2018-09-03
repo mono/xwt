@@ -305,6 +305,17 @@ namespace Xwt.Mac
 			AddRepresentation (imgRep);
 		}
 
+		public override CGSize Size
+		{
+			get {
+				return base.Size;
+			}
+			set {
+				base.Size = value;
+				imgRep.Size = value;
+			}
+		}
+
 		[Export ("drawIt:")]
 		public void DrawIt (NSObject ob)
 		{
