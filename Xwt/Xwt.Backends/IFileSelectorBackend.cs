@@ -35,6 +35,11 @@ namespace Xwt.Backends
 		string CurrentFolder { get; set; }
 
 		/// <summary>
+		/// Filters that allow the user to chose the kinds of files the dialog displays.
+		/// </summary>
+		FileDialogFilterCollection Filters { get; }
+
+		/// <summary>
 		/// Gets or sets the active filter.
 		/// </summary>
 		/// <value>The active filter.</value>

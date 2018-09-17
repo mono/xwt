@@ -45,6 +45,18 @@ namespace Samples
 			PackStart (fsel2 = new FileSelector { FileSelectionMode = FileSelectionMode.Save });
 			PackStart (label2 = new Label ());
 			fsel2.FileChanged += (sender, e) => label2.Text = "File changed: " + fsel2.FileName;
+
+			var pdfFormat = new FileDialogFilter ("PDF", "*.pdf");
+			var xlsFormat = new FileDialogFilter ("PNG", "*.png");
+
+			var fsel3 = new FileSelector { FileSelectionMode = FileSelectionMode.Open };
+			fsel3.Filters.Add (pdfFormat);
+			fsel3.Filters.Add (xlsFormat);
+			Label label3;
+			PackStart (new Label ("An Open file selector with filters:") { MarginTop = 12 });
+			PackStart (fsel3);
+			PackStart (label3 = new Label ());
+			fsel3.FileChanged += (sender, e) => label3.Text = "File changed: " + fsel3.FileName;
 		}
 	}
 }
