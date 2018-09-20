@@ -341,7 +341,7 @@ namespace Xwt.Mac
 
 		class CustomCell : NSTextFieldCell
 		{
-			CustomEditor editor;
+			NSTextView editor;
 			NSObject selChangeObserver;
 			public ApplicationContext Context {
 				get; set;
@@ -382,7 +382,7 @@ namespace Xwt.Mac
 			public override NSTextView FieldEditorForView (NSView aControlView)
 			{
 				if (editor == null) {
-					editor = new CustomEditor {
+					editor = new CustomTextFieldCellEditor {
 						Context = this.Context,
 						EventSink = this.EventSink,
 						FieldEditor = true,
@@ -427,64 +427,64 @@ namespace Xwt.Mac
 				return rect.ToCGRect ();
 			}
 		}
+	}
 
-		class CustomEditor : NSTextView
+	class CustomTextFieldCellEditor : NSTextView
+	{
+		public ApplicationContext Context
 		{
-			public ApplicationContext Context {
-				get; set;
-			}
+			get; set;
+		}
 
-			public ITextEntryEventSink EventSink {
-				get; set;
-			}
+		public ITextEntryEventSink EventSink
+		{
+			get; set;
+		}
 
-			public CustomEditor ()
+		public override void KeyDown(NSEvent theEvent)
+		{
+			Context.InvokeUserCode(delegate {
+				EventSink.OnKeyPressed(theEvent.ToXwtKeyEventArgs());
+			});
+			base.KeyDown(theEvent);
+		}
+
+		nint cachedCursorPosition;
+		public override void KeyUp(NSEvent theEvent)
+		{
+			if (cachedCursorPosition != SelectedRange.Location)
 			{
-
-			}
-
-			public override void KeyDown (NSEvent theEvent)
-			{
-				Context.InvokeUserCode (delegate {
-					EventSink.OnKeyPressed (theEvent.ToXwtKeyEventArgs ());
+				cachedCursorPosition = SelectedRange.Location;
+				Context.InvokeUserCode(delegate {
+					EventSink.OnSelectionChanged();
+					EventSink.OnKeyReleased(theEvent.ToXwtKeyEventArgs());
 				});
-				base.KeyDown (theEvent);
 			}
+			base.KeyUp(theEvent);
+		}
 
-			nint cachedCursorPosition;
-			public override void KeyUp (NSEvent theEvent)
+		public override bool BecomeFirstResponder()
+		{
+			var result = base.BecomeFirstResponder();
+			if (result)
 			{
-				if (cachedCursorPosition != SelectedRange.Location) {
-					cachedCursorPosition = SelectedRange.Location;
-					Context.InvokeUserCode (delegate {
-						EventSink.OnSelectionChanged ();
-						EventSink.OnKeyReleased (theEvent.ToXwtKeyEventArgs ());
-					});
-				}
-				base.KeyUp (theEvent);
+				Context.InvokeUserCode(() => {
+					EventSink.OnGotFocus();
+				});
 			}
+			return result;
+		}
 
-			public override bool BecomeFirstResponder ()
+		public override bool ResignFirstResponder()
+		{
+			var result = base.ResignFirstResponder();
+			if (result)
 			{
-				var result = base.BecomeFirstResponder ();
-				if (result) {
-					Context.InvokeUserCode (() => {
-						EventSink.OnGotFocus ();
-					});
-				}
-				return result;
+				Context.InvokeUserCode(() => {
+					EventSink.OnLostFocus();
+				});
 			}
-
-			public override bool ResignFirstResponder ()
-			{
-				var result = base.ResignFirstResponder ();
-				if (result) {
-					Context.InvokeUserCode (() => {
-						EventSink.OnLostFocus ();
-					});
-				}
-				return result;
-			}
+			return result;
 		}
 	}
 }
