@@ -51,7 +51,7 @@ namespace Xwt.Mac
 			base.Initialize ();
 			if (ViewObject is MacComboBox) {
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
-			} else {
+			} else if (ViewObject == null) {
 				var view = new CustomTextField (EventSink, ApplicationContext);
 				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view) { DrawsBackground = false };
 				Container.ExpandVertically = true;

@@ -129,6 +129,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IAccessibleBackend, AccessibleBackend> ();
 			RegisterBackend <Xwt.Backends.IPopupWindowBackend, PopupWindowBackend> ();
 			RegisterBackend <Xwt.Backends.IUtilityWindowBackend, PopupWindowBackend> ();
+			RegisterBackend <Xwt.Backends.ISearchTextEntryBackend, SearchTextEntryBackend> ();
 		}
 
 		public override void RunApplication ()
