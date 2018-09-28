@@ -138,6 +138,7 @@
     <Compile Include="Xwt.Mac\GtkQuartz.cs" />
     <Compile Include="Xwt.Mac\AccessibleBackend.cs" />
     <Compile Include="Xwt.Mac\PopupWindowBackend.cs" />
+    <Compile Include="Xwt.Mac\SearchTextEntryBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
