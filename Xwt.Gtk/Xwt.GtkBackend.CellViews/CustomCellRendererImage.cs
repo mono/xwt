@@ -50,6 +50,7 @@ namespace Xwt.GtkBackend
 		{
 			var view = (IImageCellViewFrontend)Frontend;
 			renderer.Context = ApplicationContext;
+			renderer.Mode = CellRendererMode.Activatable;
 			renderer.Image = view.Image.ToImageDescription (ApplicationContext);
 		}
 	}

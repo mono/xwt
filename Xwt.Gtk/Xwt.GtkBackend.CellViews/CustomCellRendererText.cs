@@ -57,8 +57,8 @@ namespace Xwt.GtkBackend
 				if (mixedMarkupText)
 					cellRenderer.Attributes = new Pango.AttrList ();
 			}
-			cellRenderer.Mode &= ~CellRendererMode.Activatable;
 			cellRenderer.Editable = view.Editable;
+			cellRenderer.Mode = CellRendererMode.Activatable;
 			cellRenderer.Ellipsize = view.Ellipsize.ToGtkValue ();
 		}
 		
