@@ -38,7 +38,7 @@ using Xwt.WPFBackend.Utilities;
 
 namespace Xwt.WPFBackend
 {
-	class RichTextViewBackend
+	public class RichTextViewBackend
 		: WidgetBackend, IRichTextViewBackend
 	{
 		RichTextBuffer currentBuffer;
