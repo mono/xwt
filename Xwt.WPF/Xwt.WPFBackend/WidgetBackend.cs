@@ -142,7 +142,7 @@ namespace Xwt.WPFBackend
 			set
 			{
 				if (widget != null)
-					widget.KeyDown -= Widget_ParentForwarding_PreviewKeyDown;
+					widget.PreviewKeyDown -= Widget_ParentForwarding_PreviewKeyDown;
 
 				widget = value;
 				if (widget is IWpfWidget)
@@ -150,7 +150,7 @@ namespace Xwt.WPFBackend
 				widget.InvalidateMeasure ();
 
 				if (deferParentForwardingSubscription)
-					widget.KeyDown += Widget_ParentForwarding_PreviewKeyDown;
+					widget.PreviewKeyDown += Widget_ParentForwarding_PreviewKeyDown;
 			}
 		}
 
