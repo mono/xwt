@@ -125,6 +125,7 @@ namespace Xwt.WPFBackend
 			} 
 			set {
 				Widget.IsReadOnly = value;
+				ForwardsKeyPressesToParent = value;
 			}
 		}
 
