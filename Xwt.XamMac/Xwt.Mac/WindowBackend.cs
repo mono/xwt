@@ -565,6 +565,8 @@ namespace Xwt.Mac
 				childView.Frame = frame;
 			}
 		}
+
+		public event Action<object> FocusChanged;
 	}
 	
 	public partial class WindowBackendController : NSWindowController
