@@ -30,6 +30,8 @@ namespace Xwt.Mac
 {
 	class MacSystemInformation
 	{
+		public static readonly Version Mojave = new Version(10, 14);
+		public static readonly Version HighSierra = new Version(10, 13);
 		public static readonly Version Sierra = new Version (10, 12);
 		public static readonly Version ElCapitan = new Version (10, 11);
 		public static readonly Version Yosemite = new Version (10, 10);
