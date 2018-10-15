@@ -133,9 +133,14 @@ namespace Xwt.Mac
 				MovableByWindowBackground = true;
 				TitlebarAppearsTransparent = true;
 				TitleVisibility = NSWindowTitleVisibility.Hidden;
-				this.StandardWindowButton (NSWindowButton.CloseButton).Hidden = true;
-				this.StandardWindowButton (NSWindowButton.MiniaturizeButton).Hidden = true;
-				this.StandardWindowButton (NSWindowButton.ZoomButton).Hidden = true;
+				if (MacSystemInformation.OsVersion <= MacSystemInformation.HighSierra)
+				{
+					StandardWindowButton(NSWindowButton.CloseButton).Hidden = true;
+					StandardWindowButton(NSWindowButton.MiniaturizeButton).Hidden = true;
+					StandardWindowButton(NSWindowButton.ZoomButton).Hidden = true;
+				}
+				else
+					StyleMask &= ~(NSWindowStyle.Titled);
 
 				if (windowType == PopupWindow.PopupType.Tooltip)
 					// NSWindowLevel.ScreenSaver overlaps menus, this allows showing tooltips above menus
