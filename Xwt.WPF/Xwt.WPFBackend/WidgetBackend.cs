@@ -79,19 +79,30 @@ namespace Xwt.WPFBackend
 
 		protected virtual void Initialize ()
 		{
-			if (Widget != null)
-				Widget.PreviewKeyDown += Widget_ParentForwarding_PreviewKeyDown;
-			else
-				deferParentForwardingSubscription = true;
 		}
 
+		bool forwardsKeyPressesToParent;
 		/// <summary>
 		/// Widget will bubble a keyboard event up to Parent if "true".
 		/// False by default.
 		/// </summary>
-		protected virtual bool ForwardsKeyPressesToParent { get; set; }
+		protected bool ForwardsKeyPressesToParent
+		{
+			get { return forwardsKeyPressesToParent; }
+			set {
+				if (forwardsKeyPressesToParent == value)
+					return;
 
-		bool deferParentForwardingSubscription;
+				if (value == true && Widget != null)
+					Widget.PreviewKeyDown += Widget_ParentForwarding_PreviewKeyDown;
+
+				if (value == false && Widget != null)
+					Widget.PreviewKeyDown -= Widget_ParentForwarding_PreviewKeyDown;
+
+				forwardsKeyPressesToParent = value;
+			}
+		}
+
 		private void Widget_ParentForwarding_PreviewKeyDown (object sender, SW.Input.KeyEventArgs e)
 		{
 			if (ForwardsKeyPressesToParent
@@ -149,7 +160,7 @@ namespace Xwt.WPFBackend
 					((IWpfWidget)widget).Backend = this;
 				widget.InvalidateMeasure ();
 
-				if (deferParentForwardingSubscription)
+				if (ForwardsKeyPressesToParent)
 					widget.PreviewKeyDown += Widget_ParentForwarding_PreviewKeyDown;
 			}
 		}
