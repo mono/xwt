@@ -37,10 +37,12 @@ namespace Xwt.WPFBackend
 	internal class CustomScrollViewPort
 		: SWC.Panel, IScrollInfo
 	{
-		internal CustomScrollViewPort (object widget, ScrollAdjustmentBackend verticalBackend, ScrollAdjustmentBackend horizontalBackend)
+		internal CustomScrollViewPort (object widget, SWC.ScrollViewer scrollOwner, ScrollAdjustmentBackend verticalBackend, ScrollAdjustmentBackend horizontalBackend)
 		{
 			if (widget == null)
 				throw new ArgumentNullException ("widget");
+
+			ScrollOwner = scrollOwner;
 
 			((FrameworkElement)widget).RenderTransform = this.transform;
 
