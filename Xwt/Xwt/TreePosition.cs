@@ -34,5 +34,6 @@ namespace Xwt
 {
 	public interface TreePosition
 	{
+		string Name { get; set; }
 	}
 }
