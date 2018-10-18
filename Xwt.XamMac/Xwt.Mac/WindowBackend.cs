@@ -566,6 +566,12 @@ namespace Xwt.Mac
 			}
 		}
 
+		public override bool MakeFirstResponder (NSResponder aResponder)
+		{
+			FocusChanged?.Invoke (aResponder);
+			return base.MakeFirstResponder (aResponder);
+		}
+
 		public event Action<object> FocusChanged;
 	}
 	
