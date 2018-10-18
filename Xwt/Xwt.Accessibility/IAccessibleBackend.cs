@@ -34,6 +34,8 @@ namespace Xwt.Backends
 
 		void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink);
 
+		void Initialize (IMenuBackend parentMenu, IAccessibleEventSink eventSink);
+
 		void Initialize (object parentWidget, IAccessibleEventSink eventSink);
 
 		bool IsAccessible { get; set; }

@@ -53,6 +53,9 @@ namespace Samples
 
 			menu.Items.Add (new SeparatorMenuItem ());
 
+			menu.Accessible.Label = "Menu";
+			menu.Accessible.Identifier = nameof(menu);
+
 			var subMenu = new MenuItem ("Submenu");
 			subMenu.SubMenu = new Menu ();
 			subMenu.SubMenu.Font = subMenu.SubMenu.Font.WithSize (20).WithWeight (Xwt.Drawing.FontWeight.Bold);
