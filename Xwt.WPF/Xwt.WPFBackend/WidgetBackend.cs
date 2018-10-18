@@ -222,18 +222,26 @@ namespace Xwt.WPFBackend
 			get { return Widget.IsFocused; }
 		}
 
+		void FocusOnUIThread ()
+		{
+			Widget.Dispatcher.BeginInvoke ((Action) (() =>
+			{
+				Widget.Focus ();
+			}), SW.Threading.DispatcherPriority.Render);
+		}
+
 		public void SetFocus ()
 		{
-			if (Widget.IsLoaded)
-				Widget.Focus ();
-			else
+			if (Widget.IsLoaded) {
+				FocusOnUIThread ();
+			} else
 				Widget.Loaded += DeferredFocus;
 		}
 
 		void DeferredFocus (object sender, RoutedEventArgs e)
 		{
 			Widget.Loaded -= DeferredFocus;
-			Widget.Focus ();
+			FocusOnUIThread ();
 		}
 
 		public virtual bool Sensitive {
