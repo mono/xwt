@@ -80,7 +80,45 @@ namespace Xwt.WPFBackend
 		protected virtual void Initialize ()
 		{
 		}
-		
+
+		bool forwardsKeyPressesToParent;
+		/// <summary>
+		/// Widget will bubble a keyboard event up to Parent if "true".
+		/// False by default.
+		/// </summary>
+		protected bool ForwardsKeyPressesToParent
+		{
+			get { return forwardsKeyPressesToParent; }
+			set {
+				if (forwardsKeyPressesToParent == value)
+					return;
+
+				if (value == true && Widget != null)
+					Widget.PreviewKeyDown += Widget_ParentForwarding_PreviewKeyDown;
+
+				if (value == false && Widget != null)
+					Widget.PreviewKeyDown -= Widget_ParentForwarding_PreviewKeyDown;
+
+				forwardsKeyPressesToParent = value;
+			}
+		}
+
+		private void Widget_ParentForwarding_PreviewKeyDown (object sender, SW.Input.KeyEventArgs e)
+		{
+			if (ForwardsKeyPressesToParent
+				&& (e.Key == SW.Input.Key.Up || e.Key == SW.Input.Key.Down
+				|| e.Key == SW.Input.Key.PageUp || e.Key == SW.Input.Key.PageDown)) {
+				UIElement uiElement = ((UIElement) Frontend?.Parent?.GetBackend ()?.NativeWidget);
+				if (uiElement == null)
+					return;
+
+				var keyEvent = new System.Windows.Input.KeyEventArgs (e.KeyboardDevice,
+					PresentationSource.FromVisual (uiElement), e.Timestamp, e.Key);
+				keyEvent.RoutedEvent = FrameworkElement.KeyDownEvent;
+				uiElement.RaiseEvent (keyEvent);
+			}
+		}
+
 		~WidgetBackend ()
 		{
 			Dispose (false);
@@ -94,6 +132,8 @@ namespace Xwt.WPFBackend
 		
 		protected virtual void Dispose (bool disposing)
 		{
+			if (Widget != null)
+				Widget.PreviewKeyDown -= Widget_ParentForwarding_PreviewKeyDown;
 		}
 
 		public IWidgetEventSink EventSink {
@@ -112,10 +152,16 @@ namespace Xwt.WPFBackend
 			get { return widget; }
 			set
 			{
+				if (widget != null)
+					widget.PreviewKeyDown -= Widget_ParentForwarding_PreviewKeyDown;
+
 				widget = value;
 				if (widget is IWpfWidget)
 					((IWpfWidget)widget).Backend = this;
 				widget.InvalidateMeasure ();
+
+				if (ForwardsKeyPressesToParent)
+					widget.PreviewKeyDown += Widget_ParentForwarding_PreviewKeyDown;
 			}
 		}
 

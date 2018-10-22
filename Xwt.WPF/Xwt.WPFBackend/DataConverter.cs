@@ -393,7 +393,7 @@ namespace Xwt.WPFBackend
 			if ((int)key == 0)
 				return false;
 
-			result = new KeyEventArgs (key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
+			result = new KeyEventArgs (key, (int)e.Key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
 			return true;
 		}
 	}
