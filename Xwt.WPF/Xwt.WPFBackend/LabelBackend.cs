@@ -264,11 +264,6 @@ namespace Xwt.WPFBackend
 			{
 			}
 
-			protected override List<AutomationPeer> GetChildrenCore ()
-			{
-				return null;
-			}
-
 			protected override string GetNameCore ()
 			{
 				return ((WpfLabel)Owner).TextBlock.Text;
