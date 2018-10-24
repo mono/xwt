@@ -64,13 +64,6 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public string Name { get; set; }
-
 		private ObservableCollection<TreeStoreNode> children;
-
-		public override String ToString()
-		{
-			return Name;
-		}
 	}
 }

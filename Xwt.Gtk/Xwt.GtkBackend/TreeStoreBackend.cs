@@ -52,7 +52,6 @@ namespace Xwt.GtkBackend
 		public int LastChildIndex = -1;
 		public int ChildrenCount = -1;
 		public int Version;
-		public string Name { get; set; }
 	}
 	
 	public class TreeStoreBackend: TableStoreBackend, ITreeStoreBackend
