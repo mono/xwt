@@ -35,6 +35,7 @@ using SWD = System.Windows.Documents;
 
 using Xwt.Backends;
 using System.Windows.Automation.Peers;
+using System.Windows.Data;
 
 namespace Xwt.WPFBackend
 {
@@ -226,6 +227,14 @@ namespace Xwt.WPFBackend
 		public WpfLabel ()
 		{
 			TextBlock = new SWC.TextBlock ();
+
+			Binding focusableBinding = new Binding ();
+			focusableBinding.Source = this;
+			focusableBinding.Path = new PropertyPath ("Focusable");
+			focusableBinding.Mode = BindingMode.OneWay;
+			focusableBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+			BindingOperations.SetBinding (TextBlock, SWC.TextBlock.FocusableProperty, focusableBinding);
+
 			Content = TextBlock;
 			Padding = new Thickness (0);
 			VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
