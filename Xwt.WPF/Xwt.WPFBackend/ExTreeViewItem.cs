@@ -43,6 +43,8 @@ namespace Xwt.WPFBackend
 	public class ExTreeViewItem
 		: TreeViewItem
 	{
+		public AutomationPeer AutomationPeer { get; set; }
+
 		public ExTreeViewItem()
 		{
 			Loaded += OnLoaded;
@@ -209,6 +211,9 @@ namespace Xwt.WPFBackend
 
 		private void OnLoaded (object sender, RoutedEventArgs routedEventArgs)
 		{
+			var node = (TreeStoreNode)DataContext;
+			node.Accessible.SetNativeObject(this);
+
 			ItemsControl parent = ItemsControlFromItemContainer (this);
 			if (parent == null)
 				return;
@@ -246,7 +251,7 @@ namespace Xwt.WPFBackend
 
 		protected override AutomationPeer OnCreateAutomationPeer ()
 		{
-			return new ExTreeViewItemAutomationPeer (this);
+			return AutomationPeer ?? new ExTreeViewItemAutomationPeer(this);
 		}
 
 		class ExTreeViewItemAutomationPeer : TreeViewItemAutomationPeer

@@ -38,6 +38,7 @@ using SWC = System.Windows.Controls;
 using WKey = System.Windows.Input.Key;
 using System.Windows.Input;
 using System.Windows.Controls.Primitives;
+using System.Windows.Automation.Peers;
 
 namespace Xwt.WPFBackend
 {
@@ -77,6 +78,8 @@ namespace Xwt.WPFBackend
 		{
 			get { return this.view; }
 		}
+
+		public AutomationPeer AutomationPeer { get; set; }
 
 		public static readonly DependencyProperty SelectionModeProperty = DependencyProperty.Register ("SelectionMode",
 			typeof (System.Windows.Controls.SelectionMode), typeof (ExTreeView),
@@ -470,6 +473,11 @@ namespace Xwt.WPFBackend
 				return p;
 			else
 				return items[indexOfP + 1];
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			return AutomationPeer ?? base.OnCreateAutomationPeer ();
 		}
 	}
 }

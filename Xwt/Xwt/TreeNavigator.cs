@@ -26,10 +26,11 @@
 
 
 using System;
-using Xwt.Drawing;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using Xwt.Drawing;
 using Xwt.Backends;
+using Xwt.Accessibility;
 
 namespace Xwt
 {
@@ -46,6 +47,16 @@ namespace Xwt
 		
 		public TreePosition CurrentPosition {
 			get { return pos; }
+		}
+		
+		Accessible accessible;
+		public Accessible Accessible {
+			get {
+				if (accessible == null) {
+					accessible = new Accessible ();
+				}
+				return accessible;
+			}
 		}
 		
 		public TreeNavigator Clone ()

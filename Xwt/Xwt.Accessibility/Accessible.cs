@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using Xwt.Backends;
 
 namespace Xwt.Accessibility
@@ -32,9 +33,9 @@ namespace Xwt.Accessibility
 	public sealed class Accessible : IFrontend
 	{
 		readonly XwtComponent parentComponent;
-		readonly object parentNativeObject;
+		object parentNativeObject;
 
-		readonly AccessibleBackendHost backendHost;
+		AccessibleBackendHost backendHost;
 
 		Widget labelWidget;
 
@@ -70,6 +71,10 @@ namespace Xwt.Accessibility
 			}
 		}
 
+		internal Accessible ()
+		{
+		}
+
 		internal Accessible (Widget parent): this ((XwtComponent)parent)
 		{
 		}
@@ -98,16 +103,61 @@ namespace Xwt.Accessibility
 
 		internal Accessible (object nativeParent)
 		{
-			if (nativeParent == null)
-				throw new ArgumentNullException (nameof (nativeParent));
-			parentNativeObject = nativeParent;
+			SetNativeObject (nativeParent);
+		}
+
+		public void SetNativeObject (object nativeObject)
+		{
+			if (nativeObject == null)
+				throw new ArgumentNullException (nameof (nativeObject));
+			parentNativeObject = nativeObject;
 			backendHost = new AccessibleBackendHost ();
 			backendHost.Parent = this;
+			if (defaultBackend != null) {
+				SyncBackends (defaultBackend, backendHost.Backend);
+				defaultBackend = null;
+			}
 		}
 
 
+		DefaultNoOpAccessibleBackend defaultBackend;
 		IAccessibleBackend Backend {
-			get { return backendHost.Backend; }
+			get {
+				if (backendHost == null) {
+					if (defaultBackend == null)
+						defaultBackend = new DefaultNoOpAccessibleBackend ();
+					return defaultBackend;
+				}
+
+				return backendHost.Backend;
+			}
+		}
+
+		void SyncBackends (DefaultNoOpAccessibleBackend defaultBackend, IAccessibleBackend newBackend)
+		{
+			if (defaultBackend.Identifier != null)
+				newBackend.Identifier = defaultBackend.Identifier;
+			if (defaultBackend.Label != null)
+				newBackend.Label = defaultBackend.Label;
+			if (defaultBackend.Title != null)
+				newBackend.Title = defaultBackend.Title;
+			if (defaultBackend.Description != null)
+				newBackend.Description = defaultBackend.Description;
+			if (defaultBackend.Value != null)
+				newBackend.Value = defaultBackend.Value;
+			if (defaultBackend.Uri != null)
+				newBackend.Uri = defaultBackend.Uri;
+			if (defaultBackend.Bounds != null)
+				newBackend.Bounds = defaultBackend.Bounds;
+			if (defaultBackend.Role != Role.None)
+				newBackend.Role = defaultBackend.Role;
+			if (defaultBackend.RoleDescription != null)
+				newBackend.RoleDescription = defaultBackend.RoleDescription;
+			foreach (var child in defaultBackend.NativeChildren)
+				newBackend.AddChild (child);
+
+			//todo: newBackend.LabelWidget = prevBackend.LabelWidget;
+			//todo: backend.IsAccessible = defaultBackend.IsAccessible;
 		}
 
 		object IFrontend.Backend {
@@ -265,7 +315,7 @@ namespace Xwt.Accessibility
 
 		public Widget LabelWidget { set { } }
 
-		public Role Role { get; set; }
+		public Role Role { get; set; } = Role.None;
 
 		public string RoleDescription { get; set; }
 
@@ -277,16 +327,21 @@ namespace Xwt.Accessibility
 
 		public bool IsAccessible { get; set; }
 
+		public IList<object> NativeChildren { get; private set; } = new List<object>();
+
 		public void AddChild (object nativeChild)
 		{
+			NativeChildren.Add (nativeChild);
 		}
 
 		public void RemoveChild (object nativeChild)
 		{
+			NativeChildren.Remove (nativeChild);
 		}
 
 		public void RemoveAllChildren ()
 		{
+			NativeChildren.Clear ();
 		}
 
 		public void DisableEvent (object eventId)

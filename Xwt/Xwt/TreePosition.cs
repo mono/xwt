@@ -26,13 +26,22 @@
 
 
 using System;
-using Xwt.Drawing;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using Xwt.Accessibility;
 
 namespace Xwt
 {
-	public interface TreePosition
+	public class TreePosition
 	{
+		Accessible accessible;
+		public Accessible Accessible {
+			get {
+				if (accessible == null) {
+					accessible = new Accessible ();
+				}
+				return accessible;
+			}
+		}
 	}
 }
