@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Xwt.Backends;
 
@@ -70,6 +71,8 @@ namespace Xwt.Accessibility
 				return Parent.OnPress ();
 			}
 		}
+
+		public bool IsInitialized => backendHost != null;
 
 		internal Accessible ()
 		{
@@ -153,9 +156,11 @@ namespace Xwt.Accessibility
 				newBackend.Role = defaultBackend.Role;
 			if (defaultBackend.RoleDescription != null)
 				newBackend.RoleDescription = defaultBackend.RoleDescription;
-			foreach (var child in defaultBackend.NativeChildren)
-				newBackend.AddChild (child);
 
+			if (defaultBackend.GetChildren ().Any ()) {
+				foreach (var child in defaultBackend.GetChildren ())
+					newBackend.AddChild (child);
+			}
 			//todo: newBackend.LabelWidget = prevBackend.LabelWidget;
 			//todo: backend.IsAccessible = defaultBackend.IsAccessible;
 		}
@@ -268,6 +273,11 @@ namespace Xwt.Accessibility
 			}
 		}
 
+		public IEnumerable<object> GetChildren ()
+		{
+			return Backend.GetChildren ();
+		}
+
 		public void AddChild (object nativeChild)
 		{
 			Backend.AddChild (nativeChild);
@@ -327,21 +337,26 @@ namespace Xwt.Accessibility
 
 		public bool IsAccessible { get; set; }
 
-		public IList<object> NativeChildren { get; private set; } = new List<object>();
+		IList<object> nativeChildren = new List<object>();
 
 		public void AddChild (object nativeChild)
 		{
-			NativeChildren.Add (nativeChild);
+			nativeChildren.Add (nativeChild);
 		}
 
 		public void RemoveChild (object nativeChild)
 		{
-			NativeChildren.Remove (nativeChild);
+			nativeChildren.Remove (nativeChild);
 		}
 
 		public void RemoveAllChildren ()
 		{
-			NativeChildren.Clear ();
+			nativeChildren.Clear ();
+		}
+
+		public IEnumerable<object> GetChildren ()
+		{
+			return nativeChildren;
 		}
 
 		public void DisableEvent (object eventId)

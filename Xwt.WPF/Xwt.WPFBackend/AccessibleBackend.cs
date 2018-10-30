@@ -6,17 +6,25 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls.Primitives;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Xwt.Accessibility;
 using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
+	public interface IAutomationPeerCreator
+	{
+		AutomationPeer CreatePeer(UIElement nativeElement);
+	}
+
 	class AccessibleBackend : IAccessibleBackend
 	{
 		UIElement element;
 		IAccessibleEventSink eventSink;
 		ApplicationContext context;
+
+		IList<object> nativeChildren = new List<object> ();
 
 		public bool IsAccessible { get; set; }
 
@@ -136,16 +144,12 @@ namespace Xwt.WPFBackend
 		// The following child methods are only supported for Canvas based widgets
 		public void AddChild (object nativeChild)
 		{
-			var peer = nativeChild as AutomationPeer;
-			if (peer == null)
-				return;
-
-			if (element is CustomCanvas)
-				((CustomCanvas)element).AutomationPeer?.AddChild (peer);
-			else if (element is ExTreeView)
-				((ExTreeView)element).AutomationPeer = peer;
-			else if (element is ExTreeViewItem)
-				((ExTreeViewItem)element).AutomationPeer = peer;
+			if (element is CustomCanvas && nativeChild is AutomationPeer)
+				((CustomCanvas)element).AutomationPeer?.AddChild ((AutomationPeer)nativeChild);
+			if (element is ExTreeView && nativeChild is AutomationPeer)
+				((ExTreeView)element).AutomationPeer = (AutomationPeer)nativeChild;
+			else
+				nativeChildren.Add (nativeChild);
 		}
 
 		public void RemoveAllChildren ()
@@ -154,23 +158,28 @@ namespace Xwt.WPFBackend
 				((CustomCanvas)element).AutomationPeer?.RemoveAllChildren ();
 			else if (element is ExTreeView)
 				((ExTreeView)element).AutomationPeer = null;
-			else if (element is ExTreeViewItem)
-				((ExTreeViewItem)element).AutomationPeer = null;
-
+			else
+				nativeChildren.Clear ();
 		}
 
 		public void RemoveChild (object nativeChild)
 		{
-			var peer = nativeChild as AutomationPeer;
-			if (peer == null)
-				return;
-
-			if (element is CustomCanvas)
-				((CustomCanvas)element).AutomationPeer?.RemoveChild (peer);
-			else if (element is ExTreeView && ((ExTreeView)element).AutomationPeer == peer)
+			if (element is CustomCanvas && nativeChild is AutomationPeer)
+				((CustomCanvas)element).AutomationPeer?.RemoveChild ((AutomationPeer)nativeChild);
+			if (element is ExTreeView && ((ExTreeView)element).AutomationPeer == nativeChild)
 				((ExTreeView)element).AutomationPeer = null;
-			else if (element is ExTreeViewItem && ((ExTreeViewItem)element).AutomationPeer == peer)
-				((ExTreeViewItem)element).AutomationPeer = null;
+			else
+				nativeChildren.Remove (nativeChild);
+		}
+
+		public IEnumerable<object> GetChildren ()
+		{
+			if (element is CustomCanvas)
+				return ((CustomCanvas)element).AutomationPeer.GetChildren ();
+			else if (element is ExTreeView)
+				return new List<object> { ((ExTreeView)element).AutomationPeer };
+			else
+				return nativeChildren;
 		}
 
 		public static AutomationControlType RoleToControlType (Role role)

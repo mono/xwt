@@ -212,7 +212,8 @@ namespace Xwt.WPFBackend
 		private void OnLoaded (object sender, RoutedEventArgs routedEventArgs)
 		{
 			var node = (TreeStoreNode)DataContext;
-			node.Accessible.SetNativeObject(this);
+			if (!node.Accessible.IsInitialized)
+				node.Accessible.SetNativeObject(this);
 
 			ItemsControl parent = ItemsControlFromItemContainer (this);
 			if (parent == null)
@@ -251,7 +252,15 @@ namespace Xwt.WPFBackend
 
 		protected override AutomationPeer OnCreateAutomationPeer ()
 		{
-			return AutomationPeer ?? new ExTreeViewItemAutomationPeer(this);
+			var children = ((TreeStoreNode)DataContext)?.Accessible.GetChildren();
+			if (children != null && children.Count() == 1)
+			{
+				var peerCreator = children?.First() as IAutomationPeerCreator;
+				if (peerCreator != null)
+					return peerCreator.CreatePeer(this);
+			}
+			
+			return new ExTreeViewItemAutomationPeer(this);
 		}
 
 		class ExTreeViewItemAutomationPeer : TreeViewItemAutomationPeer

@@ -49,16 +49,6 @@ namespace Xwt
 			get { return pos; }
 		}
 		
-		Accessible accessible;
-		public Accessible Accessible {
-			get {
-				if (accessible == null) {
-					accessible = new Accessible ();
-				}
-				return accessible;
-			}
-		}
-		
 		public TreeNavigator Clone ()
 		{
 			return new TreeNavigator (backend, pos);
