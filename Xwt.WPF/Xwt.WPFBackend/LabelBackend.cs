@@ -73,6 +73,15 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public new bool CanGetFocus {
+			get {
+				return ((WpfLabel) Widget).TextBlock.Focusable;
+			}
+			set {
+				((WpfLabel) Widget).TextBlock.Focusable = value;
+			}
+		}
+
 		public bool Selectable { get; set; } // TODO: this is only supported on Win10 with UWP?
 
 		public void SetFormattedText (FormattedText text)
@@ -253,11 +262,6 @@ namespace Xwt.WPFBackend
 		{
 			public WpfLabelAutomationPeer (WpfLabel owner) : base (owner)
 			{
-			}
-
-			protected override List<AutomationPeer> GetChildrenCore ()
-			{
-				return null;
 			}
 
 			protected override string GetNameCore ()
