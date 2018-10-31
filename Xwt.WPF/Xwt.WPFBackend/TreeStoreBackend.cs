@@ -88,13 +88,13 @@ namespace Xwt.WPFBackend
 
 		public object GetValue (TreePosition pos, int column)
 		{
-			return ((TreeStoreNode) pos).values[column];
+			return ((TreeStoreNode) pos)[column];
 		}
 
 		public void SetValue (TreePosition pos, int column, object value)
 		{
 			var node = (TreeStoreNode) pos;
-			node.values[column] = value;
+			node[column] = value;
 
 			OnNodeChanged (new TreeNodeEventArgs (pos));
 		}

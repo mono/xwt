@@ -26,11 +26,10 @@
 
 
 using System;
+using Xwt.Drawing;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using Xwt.Drawing;
 using Xwt.Backends;
-using Xwt.Accessibility;
 
 namespace Xwt
 {
