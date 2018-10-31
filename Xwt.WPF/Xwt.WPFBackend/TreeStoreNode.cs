@@ -84,5 +84,16 @@ namespace Xwt.WPFBackend
 			if (handler != null)
 				handler (this, e);
 		}
+
+
+		public override string ToString ()
+		{
+			try {
+				return (string) values[0];
+			} catch {
+				return base.ToString ();
+			}
+		}
+
 	}
 }

@@ -115,6 +115,17 @@ namespace Xwt
 			pos = backend.AddChild (pos);
 			return this;
 		}
+
+		public TreeNavigator GetChild (int index)
+		{
+			var position = backend.GetChild (pos, index);
+			return new TreeNavigator (backend, position);
+		}
+
+		public int GetChildrenCount ()
+		{
+			return backend.GetChildrenCount (pos);
+		}
 		
 		public TreeNavigator SetValue<T> (IDataField<T> field, T data)
 		{
