@@ -57,6 +57,9 @@ namespace Xwt.WPFBackend
 
 		protected override void OnExpanded (RoutedEventArgs e)
 		{
+			if (!(DataContext is TreeStoreNode))
+				return;
+
 			var node = (TreeStoreNode)DataContext;
 			view.Backend.Context.InvokeUserCode (delegate {
 				((ITreeViewEventSink)view.Backend.EventSink).OnRowExpanding (node);
@@ -71,6 +74,9 @@ namespace Xwt.WPFBackend
 
 		protected override void OnCollapsed(RoutedEventArgs e)
 		{
+			if (!(DataContext is TreeStoreNode))
+				return;
+
 			var node = DataContext as TreeStoreNode;
 			if (node == null) {
 				return;
