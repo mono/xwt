@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using AppKit;
 using Foundation;
@@ -238,6 +239,16 @@ namespace Xwt.Mac
 			}
 
 			accessible.AccessibilityChildren = null;
+		}
+
+		public IEnumerable<object> GetChildren ()
+		{
+			var accessible = widget as INSAccessibility;
+			if (accessible == null) {
+				return null;
+			}
+
+			return accessible.AccessibilityChildren;
 		}
 
 		public void EnableEvent (object eventId)
