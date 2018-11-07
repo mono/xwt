@@ -69,10 +69,15 @@ namespace Xwt.GtkBackend
 
 		public void Initialize(IMenuBackend parentMenu, IAccessibleEventSink eventSync)
 		{
-			var menuBackend = (MenuBackend)parentMenu;
-			Initialize(menuBackend.Menu, eventSink);
+			var menuBackend = parentMenu as MenuBackend;
+			Initialize(menuBackend?.Menu, eventSink);
 		}
 
+		public void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink)
+		{
+			var menuItemBackend = parentMenuItem as MenuItemBackend;
+			Initialize (menuItemBackend?.MenuItem, eventSink);
+		}
 
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
 		{

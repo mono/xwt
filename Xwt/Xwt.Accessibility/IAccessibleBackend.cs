@@ -35,6 +35,7 @@ namespace Xwt.Backends
 		void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink);
 
 		void Initialize (IMenuBackend parentMenu, IAccessibleEventSink eventSink);
+		void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink);
 
 		void Initialize (object parentWidget, IAccessibleEventSink eventSink);
 

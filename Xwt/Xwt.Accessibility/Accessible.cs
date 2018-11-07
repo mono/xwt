@@ -58,6 +58,8 @@ namespace Xwt.Accessibility
 					Backend.Initialize ((IPopoverBackend) parentBackend, this);
 				else if (parentBackend is IMenuBackend)
 					Backend.Initialize ((IMenuBackend) parentBackend, this);
+				else if (parentBackend is IMenuItemBackend)
+					Backend.Initialize ((IMenuItemBackend) parentBackend, this);
 				else
 					Backend.Initialize (Parent.parentNativeObject, this);
 			}
@@ -77,6 +79,10 @@ namespace Xwt.Accessibility
 		}
 
 		internal Accessible (Menu parent): this ((XwtComponent)parent)
+		{
+		}
+
+		internal Accessible (MenuItem parent): this ((XwtComponent)parent)
 		{
 		}
 
@@ -301,6 +307,10 @@ namespace Xwt.Accessibility
 
 
 		public void Initialize(IMenuBackend parentMenu, IAccessibleEventSink eventSink)
+		{
+		}
+
+		public void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink)
 		{
 		}
 

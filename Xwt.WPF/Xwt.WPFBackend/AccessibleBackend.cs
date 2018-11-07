@@ -109,6 +109,12 @@ namespace Xwt.WPFBackend
 			Initialize(menuBackend.NativeMenu, eventSink);
 		}
 
+		public void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink)
+		{
+			var menuItemBackend = (MenuItemBackend)parentMenuItem;
+			Initialize (menuItemBackend.MenuItem, eventSink);
+		}
+
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
 		{
 			this.element = parentWidget as UIElement;

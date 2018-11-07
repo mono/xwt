@@ -56,7 +56,13 @@ namespace Xwt.Mac
 
 		public void Initialize (IMenuBackend parentMenu, IAccessibleEventSink eventSink)
 		{
-			Initialize (parentMenu, eventSink);
+			Initialize ((NSMenu)parentMenu, eventSink);
+		}
+
+		public void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink)
+		{
+			var parentBackend = parentMenuItem as MenuItemBackend;
+			Initialize (parentBackend?.Item, eventSink);
 		}
 
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
