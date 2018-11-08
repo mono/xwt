@@ -77,10 +77,7 @@ namespace Xwt.WPFBackend
 			if (!(DataContext is TreeStoreNode))
 				return;
 
-			var node = DataContext as TreeStoreNode;
-			if (node == null) {
-				return;
-			}
+			var node = (TreeStoreNode)DataContext;
 			if (!IsExpanded)
 				UnselectChildren((object o, ExTreeViewItem i) =>
 				{
