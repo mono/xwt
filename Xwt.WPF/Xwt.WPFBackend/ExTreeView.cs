@@ -366,9 +366,8 @@ namespace Xwt.WPFBackend
 			var endIndex = allVisibleItems.IndexOf(endItem);
 
 			// Handle empty selection
-			if (startIndex == -1) {
+			if (startIndex == -1)
 				startIndex = 0;
-			}
 
 			if (endIndex == startIndex)
 				return new List<ExTreeViewItem> { endItem };
