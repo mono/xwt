@@ -191,4 +191,10 @@
     <EmbeddedResource Include="icons\remove-16~disabled.png" />
     <EmbeddedResource Include="icons\remove-16~dark~disabled.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Xwt.WPFBackend\ScrollView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+  </ItemGroup>
 </Project>
