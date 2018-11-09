@@ -270,17 +270,18 @@ namespace Xwt.WPFBackend
 
 		void FocusOnUIThread ()
 		{
-			Widget.Dispatcher.BeginInvoke ((Action) (() =>
-			{
+			// Using Render (7) priority here instead of default Normal (9) so that
+			// the component has some time to initialize and get ready to receive the focus
+			Widget.Dispatcher.BeginInvoke ((Action) (() => {
 				Widget.Focus ();
 			}), SW.Threading.DispatcherPriority.Render);
 		}
 
 		public void SetFocus ()
 		{
-			if (Widget.IsLoaded) {
+			if (Widget.IsLoaded)
 				FocusOnUIThread ();
-			} else
+			else
 				Widget.Loaded += DeferredFocus;
 		}
 
