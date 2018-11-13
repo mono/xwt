@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
+using Xwt.Accessibility;
 
 namespace Xwt
 {
@@ -50,6 +51,16 @@ namespace Xwt
 			}
 		}
 		
+		Accessible accessible;
+		public Accessible Accessible {
+			get {
+				if (accessible == null) {
+					accessible = new Accessible (this);
+				}
+				return accessible;
+			}
+		}
+
 		public Menu ()
 		{
 			items = new MenuItemCollection (this);

@@ -35,7 +35,7 @@ namespace Xwt.Mac
 	{
 		Func<bool> PerformAccessiblePressDelegate { get; set; }
 	}
-	
+
 	public class AccessibleBackend : IAccessibleBackend
 	{
 		INSAccessibleEventSource eventProxy;
@@ -52,6 +52,17 @@ namespace Xwt.Mac
 		public void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink)
 		{
 			// Not currently supported
+		}
+
+		public void Initialize (IMenuBackend parentMenu, IAccessibleEventSink eventSink)
+		{
+			Initialize ((NSMenu)parentMenu, eventSink);
+		}
+
+		public void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink)
+		{
+			var parentBackend = parentMenuItem as MenuItemBackend;
+			Initialize (parentBackend?.Item, eventSink);
 		}
 
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)

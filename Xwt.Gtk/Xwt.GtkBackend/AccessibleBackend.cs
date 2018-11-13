@@ -67,6 +67,18 @@ namespace Xwt.GtkBackend
 			// Not currently supported
 		}
 
+		public void Initialize(IMenuBackend parentMenu, IAccessibleEventSink eventSync)
+		{
+			var menuBackend = parentMenu as MenuBackend;
+			Initialize(menuBackend?.Menu, eventSink);
+		}
+
+		public void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink)
+		{
+			var menuItemBackend = parentMenuItem as MenuItemBackend;
+			Initialize (menuItemBackend?.MenuItem, eventSink);
+		}
+
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
 		{
 			this.eventSink = eventSink;
