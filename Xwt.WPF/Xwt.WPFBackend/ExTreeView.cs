@@ -313,6 +313,9 @@ namespace Xwt.WPFBackend
 
 		public void SelectItem(ExTreeViewItem item)
 		{
+			if (item == null)
+				return;
+
 			FocusItem(item);
 			if (!CtrlPressed)
 				SelectedItems.Clear();
@@ -450,7 +453,12 @@ namespace Xwt.WPFBackend
 			int indexOfP = items.IndexOf(p);
 			if (indexOfP == 0)
 				return p;
-			else
+			else if (indexOfP == -1) {
+				if (items.Count > 0)
+					return items [items.Count - 1];
+
+				return null;
+ 			} else
 				return items[indexOfP - 1];
 		}
 
