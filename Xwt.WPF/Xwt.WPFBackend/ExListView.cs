@@ -27,6 +27,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using SWC = System.Windows.Controls;
+using System.Windows.Automation.Peers;
+using System.Linq;
 
 namespace Xwt.WPFBackend
 {
@@ -74,6 +76,19 @@ namespace Xwt.WPFBackend
 				if (!item.IsFocused)
 					item.Focus ();
 			}
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			var backend = this.Backend as ListViewBackend;
+			var listView = backend?.Frontend as Xwt.ListView;
+
+			if (listView != null) {
+				var peers = listView.Accessible.GetChildren ();
+				if (peers.Any () && peers.First () is AutomationPeer)
+					return peers.First () as AutomationPeer;
+			}
+			return base.OnCreateAutomationPeer ();
 		}
 	}
 }
