@@ -84,9 +84,9 @@ namespace Xwt.WPFBackend
 			var listView = backend?.Frontend as Xwt.ListView;
 
 			if (listView != null) {
-				var peers = listView.Accessible.GetChildren ();
-				if (peers.Any () && peers.First () is AutomationPeer)
-					return peers.First () as AutomationPeer;
+				var peer = listView.Accessible.GetChildren ()?.FirstOrDefault ();
+				if (peer is AutomationPeer)
+					return (AutomationPeer)peer;
 			}
 			return base.OnCreateAutomationPeer ();
 		}
