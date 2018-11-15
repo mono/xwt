@@ -59,7 +59,10 @@ namespace Xwt.GtkBackend
 		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
 		{
 			var backend = parentWidget as WidgetBackend;
-			Initialize (backend?.Widget, eventSink);
+			if (backend is IComboBoxEntryBackend)
+				Initialize ((backend?.Widget as Gtk.Bin)?.Child, eventSink);
+			else
+				Initialize (backend?.Widget, eventSink);
 		}
 
 		public void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink)
