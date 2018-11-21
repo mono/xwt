@@ -196,7 +196,7 @@ namespace Xwt.GtkBackend
 		public virtual IEnumerable<object> GetChildren ()
 		{
 			// TODO
-			return null;
+			return new List<object> ();
 		}
 
 		public void DisableEvent (object eventId)

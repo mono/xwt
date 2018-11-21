@@ -116,12 +116,6 @@ namespace Xwt
 			return this;
 		}
 
-		public TreeNavigator GetChild (int index)
-		{
-			var position = backend.GetChild (pos, index);
-			return new TreeNavigator (backend, position);
-		}
-
 		public int GetChildrenCount ()
 		{
 			return backend.GetChildrenCount (pos);

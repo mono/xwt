@@ -245,7 +245,7 @@ namespace Xwt.Mac
 		{
 			var accessible = widget as INSAccessibility;
 			if (accessible == null) {
-				return null;
+				return new List<object> ();
 			}
 
 			return accessible.AccessibilityChildren;
