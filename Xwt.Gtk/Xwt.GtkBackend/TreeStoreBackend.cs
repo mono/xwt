@@ -27,6 +27,7 @@
 using System;
 using Xwt.Backends;
 using Xwt.Drawing;
+using Xwt.Accessibility;
 using Gtk;
 #if XWT_GTK3
 using TreeModel = Gtk.ITreeModel;
@@ -45,6 +46,13 @@ namespace Xwt.GtkBackend
 		{
 			this.Iter = iter;
 			this.Version = treeVersion;
+		}
+
+		public Accessible Accessible {
+			get {
+				//TODO:
+				return null;
+			}
 		}
 		
 		public Gtk.TreeIter Iter;

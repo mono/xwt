@@ -27,18 +27,26 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Xwt.Accessibility;
 
 namespace Xwt.WPFBackend
 {
 	internal class TreeStoreNode
-		: TreePosition, INotifyPropertyChanged
+		: ValuesContainer, TreePosition
 	{
-		public readonly ValuesContainer values;
-
 		public TreeStoreNode (object[] values, TreeStoreNode parent)
+			: base (values)
 		{
 			Parent = parent;
-			this.values = new ValuesContainer (values);
+		}
+
+		Accessible accessible;
+		public Accessible Accessible {
+			get {
+				if (accessible == null)
+					accessible = new Accessible ();
+				return accessible;
+			}
 		}
 
 		public TreeStoreNode Parent {
@@ -67,33 +75,5 @@ namespace Xwt.WPFBackend
 		}
 
 		private ObservableCollection<TreeStoreNode> children;
-
-		public object this[int index] {
-			get { return this.values [index]; }
-			set
-			{
-				this.values [index] = value;
-				OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
-			}
-		}
-
-		public virtual event PropertyChangedEventHandler PropertyChanged;
-		protected void OnPropertyChanged (PropertyChangedEventArgs e)
-		{
-			var handler = this.PropertyChanged;
-			if (handler != null)
-				handler (this, e);
-		}
-
-
-		public override string ToString ()
-		{
-			try {
-				return (string) values[0];
-			} catch {
-				return base.ToString ();
-			}
-		}
-
 	}
 }

@@ -74,7 +74,7 @@ namespace Xwt.Accessibility
 
 		public bool IsInitialized => backendHost != null;
 
-		internal Accessible ()
+		public Accessible ()
 		{
 		}
 

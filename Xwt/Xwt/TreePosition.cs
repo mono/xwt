@@ -32,16 +32,8 @@ using Xwt.Accessibility;
 
 namespace Xwt
 {
-	public class TreePosition
+	public interface TreePosition
 	{
-		Accessible accessible;
-		public Accessible Accessible {
-			get {
-				if (accessible == null) {
-					accessible = new Accessible ();
-				}
-				return accessible;
-			}
-		}
+		Accessible Accessible { get; }
 	}
 }
