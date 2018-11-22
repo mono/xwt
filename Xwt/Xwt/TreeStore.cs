@@ -29,6 +29,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Xwt.Backends;
+using Xwt.Accessibility;
 using System.ComponentModel;
 
 
@@ -231,6 +232,13 @@ namespace Xwt
 			public override int GetHashCode ()
 			{
 				return ParentList.GetHashCode () ^ NodeId;
+			}
+
+			public Accessible Accessible {
+				get {
+					//TODO:
+					return null;
+				}
 			}
 		}
 		
