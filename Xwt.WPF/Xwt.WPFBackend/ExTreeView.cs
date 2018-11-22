@@ -79,8 +79,6 @@ namespace Xwt.WPFBackend
 			get { return this.view; }
 		}
 
-		public AutomationPeer AutomationPeer { get; set; }
-
 		public static readonly DependencyProperty SelectionModeProperty = DependencyProperty.Register ("SelectionMode",
 			typeof (System.Windows.Controls.SelectionMode), typeof (ExTreeView),
 			new UIPropertyMetadata (System.Windows.Controls.SelectionMode.Single, OnSelectionModePropertyChanged));
@@ -477,7 +475,15 @@ namespace Xwt.WPFBackend
 
 		protected override AutomationPeer OnCreateAutomationPeer ()
 		{
-			return AutomationPeer ?? base.OnCreateAutomationPeer ();
+			var backend = this.Backend as TreeViewBackend;
+			var treeView = backend?.Frontend as Xwt.TreeView;
+
+			if (treeView != null) {
+				var peer = treeView.Accessible.GetChildren ()?.FirstOrDefault ();
+				if (peer is AutomationPeer)
+					return (AutomationPeer)peer;
+			}
+			return base.OnCreateAutomationPeer ();
 		}
 	}
 }

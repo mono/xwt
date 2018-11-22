@@ -146,8 +146,6 @@ namespace Xwt.WPFBackend
 		{
 			if (element is CustomCanvas && nativeChild is AutomationPeer)
 				((CustomCanvas)element).AutomationPeer?.AddChild ((AutomationPeer)nativeChild);
-			if (element is ExTreeView && nativeChild is AutomationPeer)
-				((ExTreeView)element).AutomationPeer = (AutomationPeer)nativeChild;
 			else
 				nativeChildren.Add (nativeChild);
 		}
@@ -156,8 +154,6 @@ namespace Xwt.WPFBackend
 		{
 			if (element is CustomCanvas)
 				((CustomCanvas)element).AutomationPeer?.RemoveAllChildren ();
-			else if (element is ExTreeView)
-				((ExTreeView)element).AutomationPeer = null;
 			else
 				nativeChildren.Clear ();
 		}
@@ -166,8 +162,6 @@ namespace Xwt.WPFBackend
 		{
 			if (element is CustomCanvas && nativeChild is AutomationPeer)
 				((CustomCanvas)element).AutomationPeer?.RemoveChild ((AutomationPeer)nativeChild);
-			if (element is ExTreeView && ((ExTreeView)element).AutomationPeer == nativeChild)
-				((ExTreeView)element).AutomationPeer = null;
 			else
 				nativeChildren.Remove (nativeChild);
 		}
@@ -176,8 +170,6 @@ namespace Xwt.WPFBackend
 		{
 			if (element is CustomCanvas)
 				return ((CustomCanvas)element).AutomationPeer.GetChildren ();
-			else if (element is ExTreeView)
-				return new List<object> { ((ExTreeView)element).AutomationPeer };
 			else
 				return nativeChildren;
 		}
