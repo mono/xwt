@@ -37,6 +37,8 @@ namespace Xwt.Mac
 		{
 		}
 
+		public override bool DisposeHandleOnUiThread => true;
+
 		#region IImageBuilderBackendHandler implementation
 		public override object CreateImageBuilder (int width, int height, ImageFormat format)
 		{
