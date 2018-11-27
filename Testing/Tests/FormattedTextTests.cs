@@ -70,41 +70,37 @@ namespace Xwt
 		public void ParseFontSize ()
 		{
 			//relative checks
-			string currentSpan;
-			FormattedText ft;
-			FontSizeTextAttribute at;
-			float currentSizeValue;
-
 			foreach (var item in new string[] { "smaller", "larger" }) {
-				currentSpan = $"<span size='{item}'>(support-v7)</span>";
-				ft = FormattedText.FromMarkup (currentSpan);
-				Assert.AreEqual (1, ft.Attributes.Count);
-				Assert.IsAssignableFrom<FontSizeTextAttribute> (ft.Attributes[0]);
-				at = (FontSizeTextAttribute)ft.Attributes[0];
-				Assert.AreEqual ((float) Xwt.Drawing.Font.SystemFont.Size, at.Size);
+				AssertFirstAttribute (item, (float)Xwt.Drawing.Font.SystemFont.Size);
 			}
 
+			float currentSizeValue;
 			//absolute size check
 			foreach (var currentSize in FontSizeTextAttribute.SizeAbsoluteValues.Keys) {
 				currentSizeValue = FontSizeTextAttribute.SizeAbsoluteValues[currentSize];
-				currentSpan = $"<span size='{currentSize}'>(support-v7)</span>";
-				ft = FormattedText.FromMarkup (currentSpan);
-				Assert.AreEqual (1, ft.Attributes.Count);
-				Assert.IsAssignableFrom<FontSizeTextAttribute> (ft.Attributes[0]);
-				at = (FontSizeTextAttribute)ft.Attributes[0];
-				Assert.AreEqual (currentSizeValue, at.Size);
+				AssertFirstAttribute (currentSize, currentSizeValue);
 			}
 
-			//numeric value
+			//pango size values
 			currentSizeValue = 14.5f;
-			var pagoSizeValue = currentSizeValue * FontSizeTextAttribute.MaxSize;
-			currentSpan = $"<span size='{pagoSizeValue}'>(support-v7)</span>";
-			ft = FormattedText.FromMarkup (currentSpan);
+			var pagoSizeValue = currentSizeValue * PangoScale;
+			AssertFirstAttribute (pagoSizeValue.ToString (), currentSizeValue);
+
+			//pt values
+			AssertFirstAttribute (currentSizeValue.ToString (), currentSizeValue);
+		}
+
+		void AssertFirstAttribute (string size, float resultSize)
+		{
+			var currentSpan = $"<span size='{size}'>(support-v7)</span>";
+			var ft = FormattedText.FromMarkup (currentSpan);
 			Assert.AreEqual (1, ft.Attributes.Count);
 			Assert.IsAssignableFrom<FontSizeTextAttribute> (ft.Attributes[0]);
-			at = (FontSizeTextAttribute)ft.Attributes[0];
-			Assert.AreEqual (currentSizeValue, at.Size);
+			var at = (FontSizeTextAttribute)ft.Attributes[0];
+			Assert.AreEqual (resultSize, at.Size);
 		}
+
+		const int PangoScale = 1024;
 
 		[Test]
 		public void ParseFontWeight ()
