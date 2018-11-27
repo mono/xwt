@@ -43,13 +43,13 @@ namespace Xwt.Drawing
 		{
 			var mediumSize = (float)Font.SystemFont.Size;
 			var result = new Dictionary<string, float> {
-				{ XXLarge, mediumSize + 3 },
-				{ XLarge, mediumSize + 2 },
-				{ Large, mediumSize + 1 },
+				{ XXLarge, mediumSize + 16 },
+				{ XLarge, mediumSize + 8 },
+				{ Large, mediumSize + 4 },
 				{ Medium, mediumSize },
-				{ Small, mediumSize - 1 },
-				{ XSmall, mediumSize - 2 },
-				{ XXSmall, mediumSize - 3 }
+				{ Small, mediumSize - 2 },
+				{ XSmall, mediumSize - 4 },
+				{ XXSmall, mediumSize - 8 }
 			};
 			return result;
 		}
