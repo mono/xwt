@@ -311,9 +311,16 @@ namespace Xwt.Mac
 		{
 			int w = weight.ToMacValue ();
 			var traits = NSFontManager.SharedFontManager.TraitsOfFont (font);
-			traits |= weight >= FontWeight.Bold? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
-			traits &= weight >= FontWeight.Bold? ~NSFontTraitMask.Unbold : ~NSFontTraitMask.Bold;
+			traits |= weight >= FontWeight.Bold ? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
+			traits &= weight >= FontWeight.Bold ? ~NSFontTraitMask.Unbold : ~NSFontTraitMask.Bold;
 			return NSFontManager.SharedFontManager.FontWithFamily (font.FamilyName, traits, w, font.PointSize);
+		}
+
+		public static NSFont WithSize (this NSFont font, float size)
+		{
+			var w = NSFontManager.SharedFontManager.WeightOfFont (font);
+			var traits = NSFontManager.SharedFontManager.TraitsOfFont (font);
+			return NSFontManager.SharedFontManager.FontWithFamily (font.FamilyName, traits, w, size);
 		}
 
 		static Selector applyFontTraits = new Selector ("applyFontTraits:range:");
@@ -347,12 +354,22 @@ namespace Xwt.Mac
 						ns.AddAttribute (NSStringAttributeKey.Obliqueness, (NSNumber)0.0f, r);
 						Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (IntPtr)(long)NSFontTraitMask.Unitalic, r);
 					}
-				}
+				} 
 				else if (att is FontWeightTextAttribute) {
 					var xa = (FontWeightTextAttribute)att;
 					var trait = xa.Weight >= FontWeight.Bold ? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
 					Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (IntPtr)(long) trait, r);
-				}
+				} 
+				else if (att is FontSizeTextAttribute)
+				{
+					var xa = (FontSizeTextAttribute)att;
+					ns.EnumerateAttribute (new NSString ("NSFontAttributeName"), r, NSAttributedStringEnumeration.None, (NSObject value, NSRange range, ref bool stop) => {
+						var font = value as NSFont;
+						font.WithSize (xa.Size);
+						ns.RemoveAttribute (new NSString ("NSFontAttributeName"), r);
+						ns.AddAttribute (new NSString ("NSFontAttributeName"), font, r);
+					});
+				} 
 				else if (att is LinkTextAttribute) {
 					var xa = (LinkTextAttribute)att;
 					if (xa.Target != null)
@@ -374,6 +391,7 @@ namespace Xwt.Mac
 			ns.EndEditing ();
 			return ns;
 		}
+
 
 
 		public static NSMutableAttributedString WithAlignment (this NSMutableAttributedString ns, NSTextAlignment alignment)
