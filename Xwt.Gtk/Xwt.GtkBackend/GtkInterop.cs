@@ -61,6 +61,8 @@ namespace Xwt.GtkBackend
 	/// </summary>
 	internal class FastPangoAttrList : IDisposable
 	{
+		const float PangoScale = 1024;
+
 		IntPtr list;
 		public Gdk.Color DefaultLinkColor = Toolkit.CurrentEngine.Defaults.FallbackLinkColor.ToGtkValue ();
 
@@ -91,7 +93,11 @@ namespace Xwt.GtkBackend
 			else if (attr is FontWeightTextAttribute) {
 				var xa = (FontWeightTextAttribute)attr;
 				AddWeightAttribute ((Pango.Weight)(int)xa.Weight, start, end);
-			}
+			} 
+			else if (attr is FontSizeTextAttribute) {
+				var xa = (FontSizeTextAttribute)attr;
+				AddFontSizeAttribute ((int) (xa.Size * PangoScale), start, end);
+			} 
 			else if (attr is FontStyleTextAttribute) {
 				var xa = (FontStyleTextAttribute)attr;
 				AddStyleAttribute ((Pango.Style)(int)xa.Style, start, end);
@@ -149,6 +155,11 @@ namespace Xwt.GtkBackend
 			Add (pango_attr_strikethrough_new (strikethrough), start, end);
 		}
 
+		public void AddFontSizeAttribute (int size, uint start, uint end)
+		{
+			Add (pango_attr_size_new_absolute (size), start, end);
+		}
+
 		public void AddFontAttribute (Pango.FontDescription font, uint start, uint end)
 		{
 			Add (pango_attr_font_desc_new (font.Handle), start, end);
@@ -163,6 +174,9 @@ namespace Xwt.GtkBackend
 			}
 			pango_attr_list_insert (list, attribute);
 		}
+
+		[DllImport (GtkInterop.LIBPANGO, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr pango_attr_size_new_absolute (int size);
 
 		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
 		static extern IntPtr pango_attr_style_new (Pango.Style style);
