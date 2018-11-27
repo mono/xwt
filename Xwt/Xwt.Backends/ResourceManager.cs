@@ -31,8 +31,8 @@ namespace Xwt.Backends
 	static class ResourceManager
 	{
 		static bool finalized;
-		static Dictionary<object,Action<object>> resources = new Dictionary<object,Action<object>> ();
-		static Dictionary<object,Action<object>> freedResources = new Dictionary<object,Action<object>> ();
+		static Dictionary<object,Action<object>> resources = new Dictionary<object,Action<object>> (ReferenceEqualsEqualityComparer<object>.Instance);
+		static Dictionary<object,Action<object>> freedResources = new Dictionary<object,Action<object>> (ReferenceEqualsEqualityComparer<object>.Instance);
 
 		public static void RegisterResource (object res, Action<object> disposeCallback = null)
 		{
@@ -97,6 +97,15 @@ namespace Xwt.Backends
 				DisposeResources ();
 				finalized = true;
 			}
+		}
+
+		class ReferenceEqualsEqualityComparer<T> : IEqualityComparer<T> where T : class
+		{
+			public static ReferenceEqualsEqualityComparer<T> Instance = new ReferenceEqualsEqualityComparer<T>();
+
+			public bool Equals(T x, T y) => ReferenceEquals(x, y);
+
+			public int GetHashCode(T obj) => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
 		}
 	}
 }
