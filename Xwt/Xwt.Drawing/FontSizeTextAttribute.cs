@@ -31,7 +31,7 @@ namespace Xwt.Drawing
 {
 	public sealed class FontSizeTextAttribute : TextAttribute
 	{
-		public const float MaxSize = 1024;
+		const float PangoScale = 1024;
 		public const string XXSmall = "xx-small", XSmall = "x-small", Small = "small", Medium = "medium", Large = "large", XLarge = "x-large", XXLarge = "xx-large",
 			Smaller = "smaller", Larger = "larger";
 
@@ -63,12 +63,13 @@ namespace Xwt.Drawing
 		public void SetSize (string value)
 		{
 			OriginalSizeStringValue = value;
-
-			var currentSize = Font.SystemFont.Size;
-
 			float size;
 			if (float.TryParse (value, out size)) {
-				Size = size / MaxSize; //we need convert this to pt. values
+				if (size >= PangoScale) {
+					Size = size / PangoScale; //we need convert this to pt. values
+				} else {
+					Size = size;
+				}
 				return;
 			}
 			if (SizeAbsoluteValues.TryGetValue (value,out size)) {
