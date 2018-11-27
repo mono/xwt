@@ -363,11 +363,15 @@ namespace Xwt.Mac
 				else if (att is FontSizeTextAttribute)
 				{
 					var xa = (FontSizeTextAttribute)att;
-					ns.EnumerateAttribute (new NSString ("NSFontAttributeName"), r, NSAttributedStringEnumeration.None, (NSObject value, NSRange range, ref bool stop) => {
+					ns.EnumerateAttribute (NSStringAttributeKey.Font, r, NSAttributedStringEnumeration.None, (NSObject value, NSRange range, ref bool stop) => {
 						var font = value as NSFont;
-						font.WithSize (xa.Size);
-						ns.RemoveAttribute (new NSString ("NSFontAttributeName"), r);
-						ns.AddAttribute (new NSString ("NSFontAttributeName"), font, r);
+						if (font == null) {
+							font = NSFont.SystemFontOfSize (xa.Size);
+						} else {
+							font = font.WithSize (xa.Size);
+						}
+						ns.RemoveAttribute (NSStringAttributeKey.Font, r);
+						ns.AddAttribute (NSStringAttributeKey.Font, font, r);
 					});
 				} 
 				else if (att is LinkTextAttribute) {
@@ -385,7 +389,19 @@ namespace Xwt.Mac
 				else if (att is FontTextAttribute) {
 					var xa = (FontTextAttribute)att;
 					var nf = ((FontData)Toolkit.GetBackend (xa.Font)).Font;
-					ns.AddAttribute (NSStringAttributeKey.Font, nf, r);
+
+					ns.EnumerateAttribute (NSStringAttributeKey.Font, r, NSAttributedStringEnumeration.None, (NSObject value, NSRange range, ref bool stop) => {
+						var font = value as NSFont;
+						if (font == null) {
+							font = nf;
+						} else {
+							var w = NSFontManager.SharedFontManager.WeightOfFont (font);
+							var traits = NSFontManager.SharedFontManager.TraitsOfFont (font);
+							font = NSFontManager.SharedFontManager.FontWithFamily (nf.FamilyName, traits, w, font.PointSize);
+						}
+						ns.RemoveAttribute (NSStringAttributeKey.Font, r);
+						ns.AddAttribute (NSStringAttributeKey.Font, font, r);
+					});
 				}
 			}
 			ns.EndEditing ();
