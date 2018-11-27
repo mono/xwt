@@ -67,6 +67,46 @@ namespace Xwt
 		}
 
 		[Test]
+		public void ParseFontSize ()
+		{
+			//relative checks
+			string currentSpan;
+			FormattedText ft;
+			FontSizeTextAttribute at;
+			float currentSizeValue;
+
+			foreach (var item in new string[] { "smaller", "larger" }) {
+				currentSpan = $"<span size='{item}'>(support-v7)</span>";
+				ft = FormattedText.FromMarkup (currentSpan);
+				Assert.AreEqual (1, ft.Attributes.Count);
+				Assert.IsAssignableFrom<FontSizeTextAttribute> (ft.Attributes[0]);
+				at = (FontSizeTextAttribute)ft.Attributes[0];
+				Assert.AreEqual ((float) Xwt.Drawing.Font.SystemFont.Size, at.Size);
+			}
+
+			//absolute size check
+			foreach (var currentSize in FontSizeTextAttribute.SizeAbsoluteValues.Keys) {
+				currentSizeValue = FontSizeTextAttribute.SizeAbsoluteValues[currentSize];
+				currentSpan = $"<span size='{currentSize}'>(support-v7)</span>";
+				ft = FormattedText.FromMarkup (currentSpan);
+				Assert.AreEqual (1, ft.Attributes.Count);
+				Assert.IsAssignableFrom<FontSizeTextAttribute> (ft.Attributes[0]);
+				at = (FontSizeTextAttribute)ft.Attributes[0];
+				Assert.AreEqual (currentSizeValue, at.Size);
+			}
+
+			//numeric value
+			currentSizeValue = 14.5f;
+			var pagoSizeValue = currentSizeValue * FontSizeTextAttribute.MaxSize;
+			currentSpan = $"<span size='{pagoSizeValue}'>(support-v7)</span>";
+			ft = FormattedText.FromMarkup (currentSpan);
+			Assert.AreEqual (1, ft.Attributes.Count);
+			Assert.IsAssignableFrom<FontSizeTextAttribute> (ft.Attributes[0]);
+			at = (FontSizeTextAttribute)ft.Attributes[0];
+			Assert.AreEqual (currentSizeValue, at.Size);
+		}
+
+		[Test]
 		public void ParseFontWeight ()
 		{
 			var s = "0<b>12</b><span weight='ultrabold'>34</span><span font-weight='Light'>56</span>";
