@@ -192,6 +192,8 @@ namespace Xwt.WPFBackend.Utilities
 
 		static void BindAccessibleFields (FrameworkElementFactory factory, AccessibleFields accessibleFields, string dataPath)
 		{
+			if (accessibleFields == null)
+				return;
 			if (accessibleFields.Label != null)
 				factory.SetBinding(AutomationPeroperties.Name, new Binding(dataPath + "[" + accessibleFields.Label.Index + "]"));
 			if (accessibleFields.Identifier != null)

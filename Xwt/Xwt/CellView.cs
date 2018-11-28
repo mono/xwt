@@ -166,14 +166,7 @@ namespace Xwt
 			set { visible = value; }
 		}
 
-		AccessibleFields accessibleFields;
-		public AccessibleFields AccessibleFields {
-			get {
-				if (accessibleFields == null)
-					accessibleFields = new AccessibleFields ();
-				return accessibleFields;
-			}
-		}
+		public AccessibleFields AccessibleFields { get; set; }
 
 		ICellViewEventSink ICellViewFrontend.Load (ICellDataSource dataSource)
 		{

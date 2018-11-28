@@ -10,47 +10,59 @@ namespace Xwt.Mac
 	{
 		public static void ApplyAcessibilityProperties (ICellRenderer cell, ICellViewFrontend frontend)
 		{
+			if (frontend.AccessibleFields == null)
+				return;
+
 			INSAccessibility accessibleCell = cell as INSAccessibility;
 			if (accessibleCell == null)
 				return;
 
 			ICellDataSource source = cell.CellContainer;
-			if (frontend.AccessibleFields.Label != null)
-				accessibleCell.AccessibilityLabel = GetValue (source, frontend.AccessibleFields.Label);
-			if (frontend.AccessibleFields.Identifier != null)
-				accessibleCell.AccessibilityIdentifier = GetValue (source, frontend.AccessibleFields.Identifier);
-			if (frontend.AccessibleFields.Description != null)
-				accessibleCell.AccessibilityHelp = GetValue (source, frontend.AccessibleFields.Description);
-			if (frontend.AccessibleFields.Title != null)
-				accessibleCell.AccessibilityTitle = GetValue (source, frontend.AccessibleFields.Title);
-			if (frontend.AccessibleFields.IsAccessible != null)
-				accessibleCell.AccessibilityElement = GetValue (source, frontend.AccessibleFields.IsAccessible);
-			if (frontend.AccessibleFields.Value != null)
-				accessibleCell.AccessibilityValue = new NSString (GetValue (source, frontend.AccessibleFields.Value));
-			if (frontend.AccessibleFields.Uri != null)
-				accessibleCell.AccessibilityUrl = new NSUrl (GetValue (source, frontend.AccessibleFields.Uri).AbsoluteUri);
-			if (frontend.AccessibleFields.Bounds != null)
-				accessibleCell.AccessibilityFrame = GetValue (source, frontend.AccessibleFields.Bounds).ToCGRect ();
+			var label = GetValue (source, frontend.AccessibleFields.Label);
+			if (label != null)
+				accessibleCell.AccessibilityLabel = (string)label;
+			var identifier = GetValue (source, frontend.AccessibleFields.Identifier);
+			if (identifier != null)
+				accessibleCell.AccessibilityIdentifier = (string)identifier;
+			var description = GetValue (source, frontend.AccessibleFields.Description);
+			if (description != null)
+				accessibleCell.AccessibilityHelp = (string)description;
+			var title = GetValue (source, frontend.AccessibleFields.Title);
+			if (title != null)
+				accessibleCell.AccessibilityTitle = (string)title;
+			var isAccessible = GetValue (source, frontend.AccessibleFields.IsAccessible);
+			if (isAccessible != null)
+				accessibleCell.AccessibilityElement = (bool)isAccessible;
+			var value = GetValue (source, frontend.AccessibleFields.Value);
+			if (value != null)
+				accessibleCell.AccessibilityValue = new NSString ((string)value);
+			var uri = GetValue (source, frontend.AccessibleFields.Uri);
+			if (uri != null)
+				accessibleCell.AccessibilityUrl = new NSUrl (((Uri)uri).AbsoluteUri);
+			var bounds = GetValue (source, frontend.AccessibleFields.Bounds);
+			if (bounds != null)
+				accessibleCell.AccessibilityFrame = ((Rectangle)bounds).ToCGRect ();
 			
-			if (frontend.AccessibleFields.Role != null) {
-				var role = GetValue (source, frontend.AccessibleFields.Role);
-				if (role == Role.Filler) {
+			var role = GetValue (source, frontend.AccessibleFields.Role);
+			if (role != null) {
+				if ((Role)role == Role.Filler) {
 					accessibleCell.AccessibilityElement = false;
 				} else {
 					accessibleCell.AccessibilityElement = true;
-					accessibleCell.AccessibilityRole = role.GetMacRole ();
-					accessibleCell.AccessibilitySubrole = role.GetMacSubrole ();
+					accessibleCell.AccessibilityRole = ((Role)role).GetMacRole ();
+					accessibleCell.AccessibilitySubrole = ((Role)role).GetMacSubrole ();
 				}
 			}
-			if (frontend.AccessibleFields.RoleDescription != null)
-				accessibleCell.AccessibilityRoleDescription = GetValue (source, frontend.AccessibleFields.RoleDescription);
+			var roleDescription = GetValue (source, frontend.AccessibleFields.RoleDescription);
+			if (roleDescription != null)
+				accessibleCell.AccessibilityRoleDescription = (string)roleDescription;
 		}
 
-
-		static T GetValue<T> (ICellDataSource source, IDataField<T> field, T defaultValue = default(T))
+		static object GetValue (ICellDataSource source, IDataField field)
 		{
-			var result = source.GetValue (field);
-			return result == null || result == DBNull.Value ? defaultValue : (T) result;
+			if (field == null)
+				return null;
+			return source.GetValue (field);
 		}
 	}
 
