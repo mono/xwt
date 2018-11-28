@@ -67,6 +67,42 @@ namespace Xwt
 		}
 
 		[Test]
+		public void ParseFontSize ()
+		{
+			//relative checks
+			foreach (var item in new string[] { "smaller", "larger" }) {
+				AssertFirstAttribute (item, (float)Xwt.Drawing.Font.SystemFont.Size);
+			}
+
+			float currentSizeValue;
+			//absolute size check
+			foreach (var currentSize in FontSizeTextAttribute.SizeAbsoluteValues.Keys) {
+				currentSizeValue = FontSizeTextAttribute.SizeAbsoluteValues[currentSize];
+				AssertFirstAttribute (currentSize, currentSizeValue);
+			}
+
+			//pango size values
+			currentSizeValue = 14.5f;
+			var pagoSizeValue = currentSizeValue * PangoScale;
+			AssertFirstAttribute (pagoSizeValue.ToString (), currentSizeValue);
+
+			//pt values
+			AssertFirstAttribute (currentSizeValue.ToString (), currentSizeValue);
+		}
+
+		void AssertFirstAttribute (string size, float resultSize)
+		{
+			var currentSpan = $"<span size='{size}'>(support-v7)</span>";
+			var ft = FormattedText.FromMarkup (currentSpan);
+			Assert.AreEqual (1, ft.Attributes.Count);
+			Assert.IsAssignableFrom<FontSizeTextAttribute> (ft.Attributes[0]);
+			var at = (FontSizeTextAttribute)ft.Attributes[0];
+			Assert.AreEqual (resultSize, at.Size);
+		}
+
+		const int PangoScale = 1024;
+
+		[Test]
 		public void ParseFontWeight ()
 		{
 			var s = "0<b>12</b><span weight='ultrabold'>34</span><span font-weight='Light'>56</span>";
