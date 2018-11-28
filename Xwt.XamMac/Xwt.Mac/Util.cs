@@ -311,9 +311,16 @@ namespace Xwt.Mac
 		{
 			int w = weight.ToMacValue ();
 			var traits = NSFontManager.SharedFontManager.TraitsOfFont (font);
-			traits |= weight >= FontWeight.Bold? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
-			traits &= weight >= FontWeight.Bold? ~NSFontTraitMask.Unbold : ~NSFontTraitMask.Bold;
+			traits |= weight >= FontWeight.Bold ? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
+			traits &= weight >= FontWeight.Bold ? ~NSFontTraitMask.Unbold : ~NSFontTraitMask.Bold;
 			return NSFontManager.SharedFontManager.FontWithFamily (font.FamilyName, traits, w, font.PointSize);
+		}
+
+		public static NSFont WithSize (this NSFont font, float size)
+		{
+			var w = NSFontManager.SharedFontManager.WeightOfFont (font);
+			var traits = NSFontManager.SharedFontManager.TraitsOfFont (font);
+			return NSFontManager.SharedFontManager.FontWithFamily (font.FamilyName, traits, w, size);
 		}
 
 		static Selector applyFontTraits = new Selector ("applyFontTraits:range:");
@@ -347,12 +354,26 @@ namespace Xwt.Mac
 						ns.AddAttribute (NSStringAttributeKey.Obliqueness, (NSNumber)0.0f, r);
 						Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (IntPtr)(long)NSFontTraitMask.Unitalic, r);
 					}
-				}
+				} 
 				else if (att is FontWeightTextAttribute) {
 					var xa = (FontWeightTextAttribute)att;
 					var trait = xa.Weight >= FontWeight.Bold ? NSFontTraitMask.Bold : NSFontTraitMask.Unbold;
 					Messaging.void_objc_msgSend_int_NSRange (ns.Handle, applyFontTraits.Handle, (IntPtr)(long) trait, r);
-				}
+				} 
+				else if (att is FontSizeTextAttribute)
+				{
+					var xa = (FontSizeTextAttribute)att;
+					ns.EnumerateAttribute (NSStringAttributeKey.Font, r, NSAttributedStringEnumeration.None, (NSObject value, NSRange range, ref bool stop) => {
+						var font = value as NSFont;
+						if (font == null) {
+							font = NSFont.SystemFontOfSize (xa.Size);
+						} else {
+							font = font.WithSize (xa.Size);
+						}
+						ns.RemoveAttribute (NSStringAttributeKey.Font, r);
+						ns.AddAttribute (NSStringAttributeKey.Font, font, r);
+					});
+				} 
 				else if (att is LinkTextAttribute) {
 					var xa = (LinkTextAttribute)att;
 					if (xa.Target != null)
@@ -368,12 +389,25 @@ namespace Xwt.Mac
 				else if (att is FontTextAttribute) {
 					var xa = (FontTextAttribute)att;
 					var nf = ((FontData)Toolkit.GetBackend (xa.Font)).Font;
-					ns.AddAttribute (NSStringAttributeKey.Font, nf, r);
+
+					ns.EnumerateAttribute (NSStringAttributeKey.Font, r, NSAttributedStringEnumeration.None, (NSObject value, NSRange range, ref bool stop) => {
+						var font = value as NSFont;
+						if (font == null) {
+							font = nf;
+						} else {
+							var w = NSFontManager.SharedFontManager.WeightOfFont (font);
+							var traits = NSFontManager.SharedFontManager.TraitsOfFont (font);
+							font = NSFontManager.SharedFontManager.FontWithFamily (nf.FamilyName, traits, w, font.PointSize);
+						}
+						ns.RemoveAttribute (NSStringAttributeKey.Font, r);
+						ns.AddAttribute (NSStringAttributeKey.Font, font, r);
+					});
 				}
 			}
 			ns.EndEditing ();
 			return ns;
 		}
+
 
 
 		public static NSMutableAttributedString WithAlignment (this NSMutableAttributedString ns, NSTextAlignment alignment)

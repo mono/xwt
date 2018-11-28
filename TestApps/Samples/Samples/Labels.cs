@@ -77,7 +77,7 @@ namespace Samples
 			};
 			PackStart (la);
 
-			la = new Label () { Markup = "Label with <b>bold</b> and <span color='#ff0000'>red</span> text" };
+			la = new Label () { Markup = "Label with <b>bold</b> and <span size=\"xx-small\" font=\"Arial\" color='#ff0000'>red</span> <span size=\"xx-large\" font=\"Tahoma\" color='#00ff00'>green</span> <span size=\"7.3\" color='#0000ff'>blue PT</span> <span size=\"10720\" font=\"Tahoma\" color='#ff0000'>Red Pango</span> text" };
 			PackStart (la);
 			
 			la = new Label () { Markup = "Label with a <a href='http://xamarin.com'>link</a> to a web site." };

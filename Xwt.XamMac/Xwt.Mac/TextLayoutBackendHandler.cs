@@ -216,9 +216,17 @@ namespace Xwt.Mac
 				else if (attribute is StrikethroughTextAttribute)
 				{
 					var xa = (StrikethroughTextAttribute)attribute;
-					var style = xa.Strikethrough ? NSUnderlineStyle.Single : NSUnderlineStyle.None;
+					var style = xa.Strikethrough ? NSUnderlineStyle.Single : NSUnderlineStyle.None; 
 					TextStorage.AddAttribute (NSStringAttributeKey.StrikethroughStyle, NSNumber.FromInt32 ((int)style), r);
-				}
+				} 
+				else if (attribute is FontSizeTextAttribute) 
+				{
+					var xa = (FontSizeTextAttribute)attribute;
+					NSRange er;
+					var ft = TextStorage.GetAttribute (NSStringAttributeKey.Font, attribute.StartIndex, out er, r) as NSFont;
+					ft = ft.WithSize (xa.Size);
+					TextStorage.AddAttribute (NSStringAttributeKey.Font, ft, r);
+				} 
 				else if (attribute is FontTextAttribute)
 				{
 					var xa = (FontTextAttribute)attribute;
