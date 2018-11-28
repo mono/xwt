@@ -34,6 +34,5 @@ namespace Xwt
 {
 	public interface TreePosition
 	{
-		Accessible Accessible { get; }
 	}
 }

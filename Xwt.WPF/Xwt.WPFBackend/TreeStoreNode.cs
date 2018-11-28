@@ -40,15 +40,6 @@ namespace Xwt.WPFBackend
 			Parent = parent;
 		}
 
-		Accessible accessible;
-		public Accessible Accessible {
-			get {
-				if (accessible == null)
-					accessible = new Accessible ();
-				return accessible;
-			}
-		}
-
 		public TreeStoreNode Parent {
 			get;
 			private set;

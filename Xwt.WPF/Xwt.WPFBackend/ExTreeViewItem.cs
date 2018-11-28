@@ -211,10 +211,6 @@ namespace Xwt.WPFBackend
 
 		private void OnLoaded (object sender, RoutedEventArgs routedEventArgs)
 		{
-			var node = (TreeStoreNode)DataContext;
-			if (!node.Accessible.IsInitialized)
-				node.Accessible.SetNativeObject(this);
-
 			ItemsControl parent = ItemsControlFromItemContainer (this);
 			if (parent == null)
 				return;
@@ -252,13 +248,14 @@ namespace Xwt.WPFBackend
 
 		protected override AutomationPeer OnCreateAutomationPeer ()
 		{
-			var children = ((TreeStoreNode)DataContext)?.Accessible.GetChildren();
-			if (children != null && children.Count() == 1)
-			{
-				var peerCreator = children?.First() as IAutomationPeerCreator;
-				if (peerCreator != null)
-					return peerCreator.CreatePeer(this);
-			}
+			//todo: do we need custom automatino peer for ExTreeViewItem?
+			//var children = ((TreeStoreNode)DataContext)?.Accessible.GetChildren();
+			//if (children != null && children.Count() == 1)
+			//{
+			//	var peerCreator = children?.First() as IAutomationPeerCreator;
+			//	if (peerCreator != null)
+			//		return peerCreator.CreatePeer(this);
+			//}
 			
 			return new ExTreeViewItemAutomationPeer(this);
 		}
