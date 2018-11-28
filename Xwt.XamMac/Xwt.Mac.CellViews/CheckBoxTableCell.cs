@@ -103,6 +103,7 @@ namespace Xwt.Mac
 			base.State = cellView.State.ToMacState ();
 			Enabled = cellView.Editable;
 			Hidden = !cellView.Visible;
+			TableCellUtil.ApplyAcessibilityProperties (this, Frontend);
 		}
 		
 		public virtual NSBackgroundStyle BackgroundStyle {
