@@ -32,8 +32,15 @@ namespace Xwt.Drawing
 	public sealed class FontSizeTextAttribute : TextAttribute
 	{
 		const float PangoScale = 1024;
-		public const string XXSmall = "xx-small", XSmall = "x-small", Small = "small", Medium = "medium", Large = "large", XLarge = "x-large", XXLarge = "xx-large",
-			Smaller = "smaller", Larger = "larger";
+		public const string XXSmall = "xx-small",
+			XSmall = "x-small", 
+			Small = "small", 
+			Medium = "medium", 
+			Large = "large", 
+			XLarge = "x-large", 
+			XXLarge = "xx-large",
+			Smaller = "smaller", 
+			Larger = "larger";
 
 		public float Size { get; private set; }
 		public string OriginalSizeStringValue { get; private set; }
