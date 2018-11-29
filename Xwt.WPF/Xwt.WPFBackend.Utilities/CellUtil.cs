@@ -28,6 +28,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Automation;
 using Xwt.Backends;
 using Xwt.Accessibility;
 using SWC = System.Windows.Controls;
@@ -195,11 +196,11 @@ namespace Xwt.WPFBackend.Utilities
 			if (accessibleFields == null)
 				return;
 			if (accessibleFields.Label != null)
-				factory.SetBinding(AutomationPeroperties.Name, new Binding(dataPath + "[" + accessibleFields.Label.Index + "]"));
+				factory.SetBinding(AutomationProperties.NameProperty, new Binding(dataPath + "[" + accessibleFields.Label.Index + "]"));
 			if (accessibleFields.Identifier != null)
-				factory.SetBinding(AutomationPeroperties.Id, new Binding(dataPath + "[" + accessibleFields.Identifier.Index + "]"));
+				factory.SetBinding(AutomationProperties.AutomationIdProperty, new Binding(dataPath + "[" + accessibleFields.Identifier.Index + "]"));
 			if (accessibleFields.Description != null)
-				factory.SetBinding(AutomationPeroperties.HelpText, new Binding(dataPath + "[" + accessibleFields.Description.Index + "]"));
+				factory.SetBinding(AutomationProperties.HelpTextProperty, new Binding(dataPath + "[" + accessibleFields.Description.Index + "]"));
 		}
 	}
 
