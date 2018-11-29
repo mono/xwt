@@ -233,13 +233,6 @@ namespace Xwt
 			{
 				return ParentList.GetHashCode () ^ NodeId;
 			}
-
-			public Accessible Accessible {
-				get {
-					//TODO:
-					return null;
-				}
-			}
 		}
 		
 		class NodeList: List<Node>
