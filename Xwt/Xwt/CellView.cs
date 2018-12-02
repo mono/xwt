@@ -27,6 +27,7 @@
 using System;
 using Xwt.Drawing;
 using Xwt.Backends;
+using Xwt.Accessibility;
 using System.ComponentModel;
 using System.Collections.Generic;
 
@@ -164,6 +165,8 @@ namespace Xwt
 			get { return GetValue (VisibleField, visible); }
 			set { visible = value; }
 		}
+
+		public AccessibleFields AccessibleFields { get; set; }
 
 		ICellViewEventSink ICellViewFrontend.Load (ICellDataSource dataSource)
 		{

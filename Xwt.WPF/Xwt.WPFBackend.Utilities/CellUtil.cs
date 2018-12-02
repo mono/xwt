@@ -28,7 +28,9 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Automation;
 using Xwt.Backends;
+using Xwt.Accessibility;
 using SWC = System.Windows.Controls;
 using SWM = System.Windows.Media;
 
@@ -56,6 +58,8 @@ namespace Xwt.WPFBackend.Utilities
 				}
 				else if (!view.Visible)
 					factory.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
+
+				BindAccessibleFields (factory, view.AccessibleFields, dataPath);
 
 				factory.SetValue (FrameworkElement.HorizontalAlignmentProperty, view.Expands ? HorizontalAlignment.Stretch : HorizontalAlignment.Left);
 				factory.SetValue (Grid.ColumnProperty, i);
@@ -185,6 +189,18 @@ namespace Xwt.WPFBackend.Utilities
 			}
 
 			throw new NotImplementedException ();
+		}
+
+		static void BindAccessibleFields (FrameworkElementFactory factory, AccessibleFields accessibleFields, string dataPath)
+		{
+			if (accessibleFields == null)
+				return;
+			if (accessibleFields.Label != null)
+				factory.SetBinding(AutomationProperties.NameProperty, new Binding(dataPath + "[" + accessibleFields.Label.Index + "]"));
+			if (accessibleFields.Identifier != null)
+				factory.SetBinding(AutomationProperties.AutomationIdProperty, new Binding(dataPath + "[" + accessibleFields.Identifier.Index + "]"));
+			if (accessibleFields.Description != null)
+				factory.SetBinding(AutomationProperties.HelpTextProperty, new Binding(dataPath + "[" + accessibleFields.Description.Index + "]"));
 		}
 	}
 
