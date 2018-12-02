@@ -28,7 +28,7 @@ using AppKit;
 
 namespace Xwt.Mac
 {
-	interface ICellRenderer: ICopiableObject, INSAccessibility
+	interface ICellRenderer: ICopiableObject
 	{
 		CellViewBackend Backend { get; set; }
 		CompositeCell CellContainer { get; set; }

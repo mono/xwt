@@ -18,7 +18,6 @@ namespace Xwt.Accessibility
 		
 		public AccessibleFields ()
 		{
-
 		}
 	}
 }

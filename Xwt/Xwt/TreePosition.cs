@@ -28,7 +28,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using Xwt.Accessibility;
 
 namespace Xwt
 {
