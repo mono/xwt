@@ -159,9 +159,19 @@ namespace Xwt
 		HyperRight = 0xffee,
 
 		Caret = 0xfe52,
+		Exclamation = 0x21,
 		Quote = 0x22,
-		LeftBracket = 0x28,
-		RightBracket = 0x29,
+		Hash = 0x23,
+		Dollar = 0x24,
+		Percentage = 0x25,
+		Ampersand = 0x26,
+		Apostrophe = 0x27,
+		[Obsolete]
+		LeftBracket = 0x28, // Should be LeftParenthesis. [ is a left bracket
+		LeftParenthesis = 0x28,
+		[Obsolete]
+		RightBracket = 0x29, // Should be RightParenthesis. ] is a right bracket
+		RightParenthesis = 0x29,
 		Asterisk = 0x2a,
 		Plus = 0x2b,
 		Comma = 0x2c,
@@ -201,6 +211,15 @@ namespace Xwt
 		X = 0x58,
 		Y = 0x59,
 		Z = 0x5a,
+		LeftSquareBracket = 0x5b,
+		RightSquareBracket = 0x5d,
+		Hat = 0x5e,
+		Underscore = 0x5f,
+		Backtick = 0x60,
+		LeftBrace = 0x7b,
+		Pipe = 0x7c,
+		RightBrace = 0x7d,
+		Tilde = 0x7e
 	}
 }
 
