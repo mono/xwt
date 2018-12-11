@@ -188,6 +188,12 @@ namespace Xwt.GtkBackend
 		{
 		}
 
+		protected override void Dispose(bool disposing)
+		{
+			Widget.RowSeparatorFunc = null;
+			base.Dispose(disposing);
+		}
+
 		#endregion
 	}
 }
