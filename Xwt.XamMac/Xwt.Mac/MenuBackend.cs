@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using AppKit;
+using CoreGraphics;
 using Xwt.Backends;
 
 namespace Xwt.Mac
@@ -66,12 +67,27 @@ namespace Xwt.Mac
 		public void Popup ()
 		{
 			var evt = NSApplication.SharedApplication.CurrentEvent;
-			NSMenu.PopUpContextMenu (this, evt, evt.Window.ContentView);
+			if (evt != null)
+				NSMenu.PopUpContextMenu (this, evt, evt.Window.ContentView);
+			else if (MainWindow?.ContentView != null)
+				Popup (MainWindow.ContentView, MainWindow.MouseLocationOutsideOfEventStream);
+
 		}
 		
 		public void Popup (IWidgetBackend widget, double x, double y)
 		{
-			NSMenu.PopUpContextMenu (this, NSApplication.SharedApplication.CurrentEvent, ((ViewBackend)widget).Widget);
+			Popup (((ViewBackend)widget).Widget, new CGPoint (x, y));
+		}
+
+		void Popup (NSView view, CGPoint point)
+		{
+			this.PopUpMenu (null, point, view);
+		}
+
+		NSWindow MainWindow {
+			get {
+				return NSApplication.SharedApplication.MainWindow;
+			}
 		}
 
 		object IMenuBackend.Font {

@@ -8,8 +8,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WpfTest</RootNamespace>
     <AssemblyName>WpfTest</AssemblyName>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>True</DebugSymbols>

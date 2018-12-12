@@ -27,6 +27,8 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Markup;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Xwt.Drawing
 {
@@ -39,7 +41,7 @@ namespace Xwt.Drawing
 
 		[NonSerialized]
 		HslColor hsl;
-		
+
 		public double Red {
 			get { return r; }
 			set { r = Normalize (value); hsl = null; }
@@ -232,8 +234,17 @@ namespace Xwt.Drawing
 			if (name == null)
 				throw new ArgumentNullException ("name");
 
+			if (name.Length == 0) {
+				color = default (Color);
+				return false;
+			}
+
+			if (name[0] != '#' && Colors.TryGetNamedColor (name, out color)) {
+				return true;
+			}
+
 			uint val;
-			if (name.Length == 0 || !TryParseColourFromHex (name, out val)) {
+			if (!TryParseColourFromHex (name, out val)) {
 				color = default (Color);
 				return false;
 			}

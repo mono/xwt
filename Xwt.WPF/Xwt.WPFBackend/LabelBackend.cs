@@ -35,6 +35,7 @@ using SWD = System.Windows.Documents;
 
 using Xwt.Backends;
 using System.Windows.Automation.Peers;
+using System.Windows.Threading;
 
 namespace Xwt.WPFBackend
 {
@@ -71,6 +72,38 @@ namespace Xwt.WPFBackend
 				Label.TextBlock.Text = value;
 				Widget.InvalidateMeasure();
 			}
+		}
+
+		public new bool CanGetFocus {
+			get {
+				return ((WpfLabel) Widget).TextBlock.Focusable;
+			}
+			set {
+				((WpfLabel) Widget).TextBlock.Focusable = value;
+			}
+		}
+
+		void FocusOnUIThread ()
+		{
+			// Using Render (7) priority here instead of default Normal (9) so that
+			// the component has some time to initialize and get ready to receive the focus
+			Widget.Dispatcher.BeginInvoke ((Action) (() => {
+				((WpfLabel) Widget).TextBlock.Focus ();
+			}), DispatcherPriority.Render);
+		}
+
+		public new void SetFocus ()
+		{
+			if (Widget.IsLoaded)
+				FocusOnUIThread ();
+			else
+				Widget.Loaded += DeferredFocus;
+		}
+
+		void DeferredFocus (object sender, RoutedEventArgs e)
+		{
+			Widget.Loaded -= DeferredFocus;
+			FocusOnUIThread ();
 		}
 
 		public bool Selectable { get; set; } // TODO: this is only supported on Win10 with UWP?
@@ -253,11 +286,6 @@ namespace Xwt.WPFBackend
 		{
 			public WpfLabelAutomationPeer (WpfLabel owner) : base (owner)
 			{
-			}
-
-			protected override List<AutomationPeer> GetChildrenCore ()
-			{
-				return null;
 			}
 
 			protected override string GetNameCore ()

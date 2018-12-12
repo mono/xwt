@@ -38,7 +38,7 @@ using Xwt.WPFBackend.Utilities;
 
 namespace Xwt.WPFBackend
 {
-	class RichTextViewBackend
+	public class RichTextViewBackend
 		: WidgetBackend, IRichTextViewBackend
 	{
 		RichTextBuffer currentBuffer;
@@ -116,7 +116,7 @@ namespace Xwt.WPFBackend
 			Widget.Document.SetBinding (FlowDocument.PageWidthProperty, new Binding ("ActualWidth") { Source = Widget });
 			Widget.IsDocumentEnabled = true;
 			Widget.Document.IsEnabled = true;
-			Widget.IsReadOnly = true;
+			ReadOnly = true;
 		}
 
 		public bool ReadOnly { 
@@ -125,6 +125,7 @@ namespace Xwt.WPFBackend
 			} 
 			set {
 				Widget.IsReadOnly = value;
+				ForwardsKeyPressesToParent = value;
 			}
 		}
 

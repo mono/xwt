@@ -55,8 +55,6 @@ namespace Xwt
 			}
 		}
 
-		FileDialogFilterCollection filters = new FileDialogFilterCollection (null);
-
 		static FileSelector ()
 		{
 			MapEvent (FileSelectorEvent.FileChanged, typeof (FileSelector), "OnFileChanged");
@@ -106,7 +104,7 @@ namespace Xwt
 		/// Filters that allow the user to chose the kinds of files the dialog displays.
 		/// </summary>
 		public FileDialogFilterCollection Filters {
-			get { return filters; }
+			get { return Backend.Filters; }
 		}
 
 		/// <summary>
@@ -206,6 +204,10 @@ namespace Xwt
 				else
 					currentFolder = value;
 			}
+		}
+
+		public FileDialogFilterCollection Filters {
+			get { return filters; }
 		}
 
 		public string FileName {

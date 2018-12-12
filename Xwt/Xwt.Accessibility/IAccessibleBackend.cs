@@ -1,4 +1,4 @@
-﻿//
+//
 // AccessibleBackendHandler.cs
 //
 // Author:
@@ -31,6 +31,11 @@ namespace Xwt.Backends
 	public interface IAccessibleBackend : IBackend
 	{
 		void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink);
+
+		void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink);
+
+		void Initialize (IMenuBackend parentMenu, IAccessibleEventSink eventSink);
+		void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink);
 
 		void Initialize (object parentWidget, IAccessibleEventSink eventSink);
 

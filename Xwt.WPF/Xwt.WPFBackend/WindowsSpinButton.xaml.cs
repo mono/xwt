@@ -1,4 +1,4 @@
-﻿//
+//
 // WindowsSpinButton.cs
 //
 // Author:
@@ -157,7 +157,7 @@ namespace Xwt.WPFBackend
 
         #region General
         Grid mainGrid;
-        TextBox textBox;
+        SpinButtonTextBox textBox;
         RepeatButton buttonUp;
         RepeatButton buttonDown;
         public WindowsSpinButton()
@@ -169,7 +169,7 @@ namespace Xwt.WPFBackend
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(16) });
 
             //Textbox
-            textBox = new TextBox();
+            textBox = new SpinButtonTextBox (this);
             textBox.Text = "0";
             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
             textBox.MinWidth = 25;
@@ -247,6 +247,7 @@ namespace Xwt.WPFBackend
             }
         }
 
+	    public TextBox TextBox => textBox;
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -458,9 +459,25 @@ namespace Xwt.WPFBackend
 		#endregion
 
 		#region Accessibility
+
 		protected override AutomationPeer OnCreateAutomationPeer ()
 		{
 			return new WindowsSpinButtonAutomationPeer (this);
+		}
+
+		class SpinButtonTextBox : TextBox
+		{
+			WindowsSpinButton spinButton;
+
+			public SpinButtonTextBox (WindowsSpinButton spinButton)
+			{
+				this.spinButton = spinButton;
+			}
+
+			protected override AutomationPeer OnCreateAutomationPeer ()
+			{
+				return UIElementAutomationPeer.FromElement (spinButton);
+			}
 		}
 
 		class WindowsSpinButtonAutomationPeer : UserControlAutomationPeer, IRangeValueProvider
@@ -484,6 +501,21 @@ namespace Xwt.WPFBackend
 			protected override AutomationControlType GetAutomationControlTypeCore ()
 			{
 				return AutomationControlType.Spinner;
+			}
+
+			protected override bool IsKeyboardFocusableCore ()
+			{
+				return Button.IsEnabled;
+			}
+
+			protected override bool HasKeyboardFocusCore ()
+			{
+				return Button.IsKeyboardFocusWithin;
+			}
+
+			protected override void SetFocusCore ()
+			{
+				Button.TextBox.Focus ();
 			}
 
 			public override object GetPattern (PatternInterface patternInterface)

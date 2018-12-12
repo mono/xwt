@@ -28,7 +28,7 @@ using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public class CheckBoxBackend: ViewBackend<NSButton,ICheckBoxEventSink>, ICheckBoxBackend
+	public class CheckBoxBackend : ViewBackend<NSButton, ICheckBoxEventSink>, ICheckBoxBackend
 	{
 		bool realAllowMixed;
 		NSCellStateValue currentState = NSCellStateValue.Off;
@@ -45,15 +45,15 @@ namespace Xwt.Mac
 			button.Title = "";
 			button.ActivatedInternal += OnActivated;
 		}
-		
+
 		#region ICheckBoxBackend implementation
 		public void SetContent (IWidgetBackend widget)
 		{
 		}
 
-		public void SetContent (string label)
+		public void SetContent (string label, bool useMnemonic)
 		{
-			Widget.Title = label;
+			Widget.Title = useMnemonic ? label.RemoveMnemonic () : label;
 			ResetFittingSize ();
 		}
 

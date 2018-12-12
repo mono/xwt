@@ -30,6 +30,7 @@ namespace Xwt.Backends
 {
 	public interface IColorSelectorBackend: IWidgetBackend
 	{
+		Color TextColor { get; set; }
 		Color Color { get; set; }
 		bool SupportsAlpha { get; set; }
 	}

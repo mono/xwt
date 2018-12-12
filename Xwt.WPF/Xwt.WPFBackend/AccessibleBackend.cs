@@ -5,6 +5,8 @@ using System.Text;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Xwt.Accessibility;
 using Xwt.Backends;
 
@@ -18,22 +20,57 @@ namespace Xwt.WPFBackend
 
 		public bool IsAccessible { get; set; }
 
+		private string identifier;
 		public string Identifier {
 			get { return AutomationProperties.GetAutomationId (element); }
-			set { AutomationProperties.SetAutomationId (element, value); }
+			set {
+				identifier = value;
+				AutomationProperties.SetAutomationId (element, value);
+			}
 		}
+
+		private string label;
 		public string Label {
 			get { return AutomationProperties.GetName (element); }
-			set { AutomationProperties.SetName (element, value); }
+			set {
+				label = value;
+				AutomationProperties.SetName (element, value);
+			}
 		}
+
+		private string description;
 		public string Description {
 			get { return AutomationProperties.GetHelpText (element); }
-			set { AutomationProperties.SetHelpText (element, value); }
+			set {
+				description = value;
+				AutomationProperties.SetHelpText (element, value);
+			}
 		}
+
+		private Widget labelWidget;
 		public Widget LabelWidget {
 			set {
+				labelWidget = value;
 				AutomationProperties.SetLabeledBy (element, (Toolkit.GetBackend (value) as WidgetBackend)?.Widget);
 			}
+		}
+
+		/// <summary>
+		/// In some cases (just Popovers currently) we need to wait to set the automation properties until the element
+		/// that needs them comes into existence (a PopoverRoot in the case of a Popover, when it's shown).  This is
+		/// used for that delayed initialization.
+		/// </summary>
+		/// <param name="element">UIElement on which to set the properties</param>
+		public void InitAutomationProperties (UIElement element)
+		{
+			if (identifier != null)
+				AutomationProperties.SetAutomationId (element, identifier);
+			if (label != null)
+				AutomationProperties.SetName (element, label);
+			if (description != null)
+				AutomationProperties.SetHelpText (element, description);
+			if (labelWidget != null)
+				AutomationProperties.SetLabeledBy (element, (Toolkit.GetBackend (labelWidget) as WidgetBackend)?.Widget);
 		}
 
 		public string Title { get; set; }
@@ -57,6 +94,25 @@ namespace Xwt.WPFBackend
 			var wpfBackend = parentWidget as WidgetBackend;
 			if (wpfBackend != null)
 				wpfBackend.HasAccessibleObject = true;
+		}
+
+		public void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink)
+		{
+			var popoverBackend = (PopoverBackend) parentPopover;
+			Popup popup = popoverBackend.NativeWidget;
+			Initialize (popup, eventSink);
+		}
+
+		public void Initialize(IMenuBackend parentMenu, IAccessibleEventSink eventSync)
+		{
+			var menuBackend = (MenuBackend)parentMenu;
+			Initialize(menuBackend.NativeMenu, eventSink);
+		}
+
+		public void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink)
+		{
+			var menuItemBackend = (MenuItemBackend)parentMenuItem;
+			Initialize (menuItemBackend.MenuItem, eventSink);
 		}
 
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)

@@ -37,7 +37,11 @@ namespace Samples
 			Label la = new Label ("Right click here to show the context menu");
 			menu = new Menu ();
 			menu.Items.Add (new MenuItem ("One"));
-			menu.Items.Add (new MenuItem ("Two"));
+
+			var menuItem = new MenuItem("Two");
+			menuItem.Accessible.Label = "Menu Item: Two";
+			menu.Items.Add (menuItem);
+
 			menu.Items.Add (new MenuItem ("Three"));
 			menu.Items.Add (new SeparatorMenuItem ());
 
@@ -71,8 +75,11 @@ namespace Samples
 
 		void HandleButtonPressed (object sender, ButtonEventArgs e)
 		{
-			if (e.Button == PointerButton.Right)
-				menu.Popup ();
+			if (e.Button == PointerButton.Right) {
+				menu.Popup();
+				menu.Accessible.Label = "Menu";
+				menu.Accessible.Identifier = nameof(menu);
+			}
 		}
 	}
 }

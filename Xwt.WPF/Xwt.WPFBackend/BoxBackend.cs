@@ -1,4 +1,4 @@
-﻿// 
+// 
 // BoxBackend.cs
 //  
 // Author:
@@ -139,9 +139,13 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public AutomationPeer AutomationPeerOverride { get; set; }
+
 		protected override AutomationPeer OnCreateAutomationPeer ()
 		{
-			return new CustomPanelAutomationPeer (this);
+			if (AutomationPeerOverride != null)
+				return AutomationPeerOverride;
+			else return new CustomPanelAutomationPeer (this);
 		}
 
 		class CustomPanelAutomationPeer : FrameworkElementAutomationPeer

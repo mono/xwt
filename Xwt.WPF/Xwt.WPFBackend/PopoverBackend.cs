@@ -1,4 +1,4 @@
-﻿//
+//
 // PopoverBackend.cs
 //
 // Author:
@@ -28,6 +28,7 @@ using System;
 using Xwt.Backends;
 using System.Windows.Media;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Xwt.WPFBackend
 {
@@ -54,12 +55,44 @@ namespace Xwt.WPFBackend
 			get; set;
 		}
 
+		/// <summary>
+		/// Control, if any, that should get the initial keyboard focus when the popover is shown.
+		/// The control should be inside the popover, but it doesn't necessarily have to be an Xwt
+		/// managed widget.
+		/// </summary>
+		public UIElement InitialFocus { get; set; }
+
+		/// <summary>
+		/// If set to true, then the arrow keys can't be used to move focus between controls.
+		/// Regardless of this setting, tab still works to change focus and the arrow keys still
+		/// work inside of controls that use them.
+		/// </summary>
+		public bool DisableArrowKeyNavigation { get; set; }
+
 		new Popover Frontend {
 			get { return (Popover)base.frontend; }
 		}
 
-		System.Windows.Controls.Primitives.Popup NativeWidget {
+		public System.Windows.Controls.Primitives.Popup NativeWidget {
 			get; set;
+		}
+
+		/// <summary>
+		/// Search up the visual tree, finding the PopupRoot for the popup.
+		/// </summary>
+		/// <returns>PopupRoot or null if not found for some reason</returns>
+		public FrameworkElement GetPopupRoot ()
+		{
+			FrameworkElement element = Border;
+
+			do {
+				element = (FrameworkElement) VisualTreeHelper.GetParent (element);
+				if (element == null)
+					return null;
+
+				if (element.GetType ().Name == "PopupRoot")
+					return element;
+			} while (true);
 		}
 
 		public PopoverBackend ()
@@ -86,7 +119,9 @@ namespace Xwt.WPFBackend
 				Placement = System.Windows.Controls.Primitives.PlacementMode.Custom,
 				StaysOpen = false,
 			};
+			NativeWidget.Opened += NativeWidget_Opened;
 			NativeWidget.Closed += NativeWidget_Closed;
+			NativeWidget.PreviewKeyDown += NativeWidget_PreviewKeyDown;
 		}
 
 		public void Initialize (IPopoverEventSink sink)
@@ -113,12 +148,42 @@ namespace Xwt.WPFBackend
 			};
 			NativeWidget.PlacementTarget = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (reference);
 			NativeWidget.IsOpen = true;
+
+			// Popups are special in that the automation properties need to be set on the PopupRoot, which only exists when the popup is shown
+			// See https://social.msdn.microsoft.com/Forums/vstudio/en-US/d4ba12c8-7a87-478e-b064-5620f929a0cf/how-to-set-automationid-and-name-for-popup?forum=wpf
+			var accessibleBackend = (AccessibleBackend)Toolkit.GetBackend (Frontend.Accessible);
+			if (accessibleBackend != null) {
+				FrameworkElement popupRoot = GetPopupRoot ();
+				if (popupRoot != null)
+					accessibleBackend.InitAutomationProperties (popupRoot);
+			}
+		}
+
+		void NativeWidget_Opened (object sender, EventArgs e)
+		{
+			if (DisableArrowKeyNavigation) {
+				FrameworkElement popupRoot = GetPopupRoot ();
+				if (popupRoot != null)
+					KeyboardNavigation.SetDirectionalNavigation (popupRoot, KeyboardNavigationMode.Once);
+			}
+
+			if (InitialFocus != null)
+				InitialFocus.Focus ();
 		}
 
 		void NativeWidget_Closed (object sender, EventArgs e)
 		{
 			Border.Child = null;
 			EventSink.OnClosed ();
+		}
+
+		void NativeWidget_PreviewKeyDown (object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			// Close the popup when Escape is hit
+			if (e.Key == System.Windows.Input.Key.Escape) {
+				NativeWidget.IsOpen = false;
+				e.Handled = true;
+			}
 		}
 
 		public void Hide ()
@@ -129,8 +194,10 @@ namespace Xwt.WPFBackend
 
 		public void Dispose ()
 		{
-			if (NativeWidget != null)
+			if (NativeWidget != null) {
+				NativeWidget.Opened -= NativeWidget_Opened;
 				NativeWidget.Closed -= NativeWidget_Closed;
+			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿//
+//
 // ValuesContainer.cs
 //
 // Author:
@@ -66,6 +66,17 @@ namespace Xwt.WPFBackend
 			var handler = this.PropertyChanged;
 			if (handler != null)
 				handler (this, e);
+		}
+
+		/// <summary>
+		/// ToString is used by the default ComboBoxItem automation peer to get the automation Name for the item.
+		/// Normally, we want to be the same as the text in the combo, the first value.
+		/// </summary>
+		public override string ToString ()
+		{
+			if (values.Length > 0 && values[0] is string)
+				return (string) values[0];
+			else return base.ToString ();
 		}
 	}
 }
