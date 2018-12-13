@@ -116,6 +116,10 @@ namespace Xwt.Mac
 				if (!ParentWindow.ChildWindows.Contains(this))
 					ParentWindow.AddChildWindow(this, NSWindowOrderingMode.Above);
 
+				ParentWindow.AccessibilityFocused = false;
+				NSApplication.SharedApplication.AccessibilityFocusedWindow = this;
+				AccessibilityFocused = true;
+
 				// always use NSWindow for alignment when running in guest mode and
 				// don't rely on AddChildWindow to position the window correctly
 				if (frontend.InitialLocation == WindowLocation.CenterParent && !(ParentWindow is WindowBackend))
