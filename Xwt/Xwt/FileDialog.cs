@@ -188,12 +188,14 @@ namespace Xwt
 				});
 				return result;
 			} finally {
-				currentFolder = Backend.CurrentFolder;
 				activeFilter = Backend.ActiveFilter;
 				fileName = Backend.FileName;
-				fileNames = Backend.FileNames; 
-				currentFolder = Backend.CurrentFolder;
-				running = false;
+				fileNames = Backend.FileNames;
+                if (fileName != string.Empty)
+                {
+                    currentFolder = Backend.CurrentFolder;
+                }
+                running = false;
 				Backend.Cleanup ();
 			}
 		}
