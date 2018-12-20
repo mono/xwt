@@ -88,7 +88,7 @@ namespace Xwt.Mac
 			base.State = cellView.Active ? NSCellStateValue.On : NSCellStateValue.Off;
 			Enabled = cellView.Editable;
 			Hidden = !cellView.Visible;
-			TableCellUtil.ApplyAcessibilityProperties (this, Frontend);
+			this.ApplyAcessibilityProperties ();
 		}
 
 		public void CopyFrom (object other)
