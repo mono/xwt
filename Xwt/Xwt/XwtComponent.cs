@@ -178,6 +178,14 @@ namespace Xwt
 		}
 
 		#endregion
+
+		public bool IsDisposed { get; private set; } = false;
+
+		protected override void Dispose (bool release_all)
+		{
+			base.Dispose (release_all);
+			IsDisposed = true;
+		}
 	}
 
 	class AsyncInvokeResult : IAsyncResult
