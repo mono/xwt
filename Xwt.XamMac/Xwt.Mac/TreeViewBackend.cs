@@ -246,6 +246,7 @@ namespace Xwt.Mac
 				if (Table.SelectedRowCount > 0) {
 					foreach (var i in Table.SelectedRows) {
 						res [n] = ((TreeItem)Tree.ItemAtRow ((int)i)).Position;
+						n++;
 					}
 				}
 				return res;
