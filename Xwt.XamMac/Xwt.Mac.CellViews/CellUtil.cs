@@ -27,8 +27,10 @@
 using System;
 using System.Collections.Generic;
 using AppKit;
+using Foundation;
 using CoreGraphics;
 using Xwt.Backends;
+using Xwt.Accessibility;
 
 namespace Xwt.Mac
 {
@@ -180,6 +182,60 @@ namespace Xwt.Mac
 				return keyArgs.Handled;
 			}
 			return false;
+		}
+
+		public static void ApplyAcessibilityProperties (this ICellRenderer cell)
+		{
+			var frontend = cell.Backend.Frontend;
+			if (frontend.AccessibleFields == null)
+				return;
+
+			ICellDataSource source = cell.CellContainer;
+			var label = GetValue (source, frontend.AccessibleFields.Label);
+			if (label != null)
+				cell.AccessibilityLabel = (string)label;
+			var identifier = GetValue (source, frontend.AccessibleFields.Identifier);
+			if (identifier != null)
+				cell.AccessibilityIdentifier = (string)identifier;
+			var description = GetValue (source, frontend.AccessibleFields.Description);
+			if (description != null)
+				cell.AccessibilityHelp = (string)description;
+			var title = GetValue (source, frontend.AccessibleFields.Title);
+			if (title != null)
+				cell.AccessibilityTitle = (string)title;
+			var isAccessible = GetValue (source, frontend.AccessibleFields.IsAccessible);
+			if (isAccessible != null)
+				cell.AccessibilityElement = (bool)isAccessible;
+			var value = GetValue (source, frontend.AccessibleFields.Value);
+			if (value != null)
+				cell.AccessibilityValue = new NSString ((string)value);
+			var uri = GetValue (source, frontend.AccessibleFields.Uri);
+			if (uri != null)
+				cell.AccessibilityUrl = new NSUrl (((Uri)uri).AbsoluteUri);
+			var bounds = GetValue (source, frontend.AccessibleFields.Bounds);
+			if (bounds != null)
+				cell.AccessibilityFrame = ((Rectangle)bounds).ToCGRect ();
+			
+			var role = GetValue (source, frontend.AccessibleFields.Role);
+			if (role != null) {
+				if ((Role)role == Role.Filler) {
+					cell.AccessibilityElement = false;
+				} else {
+					cell.AccessibilityElement = true;
+					cell.AccessibilityRole = ((Role)role).GetMacRole ();
+					cell.AccessibilitySubrole = ((Role)role).GetMacSubrole ();
+				}
+			}
+			var roleDescription = GetValue (source, frontend.AccessibleFields.RoleDescription);
+			if (roleDescription != null)
+				cell.AccessibilityRoleDescription = (string)roleDescription;
+		}
+
+		static object GetValue (ICellDataSource source, IDataField field)
+		{
+			if (field == null)
+				return null;
+			return source.GetValue (field);
 		}
 	}
 }
