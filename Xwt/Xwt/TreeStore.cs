@@ -424,6 +424,8 @@ namespace Xwt
 		
 		public void Remove (TreePosition pos)
 		{
+			if (pos == null)
+				return;
 			// Remove all child nodes in reverse order and notify client of each removed child.
 			// This allows clients to keep track of all removed nodes, before the current node
 			// will be removed and invalidated.
