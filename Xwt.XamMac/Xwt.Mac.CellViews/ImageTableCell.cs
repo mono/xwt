@@ -53,6 +53,7 @@ namespace Xwt.Mac
 			} else
 				SetFrameSize (CoreGraphics.CGSize.Empty);
 			Hidden = !Frontend.Visible;
+			this.ApplyAcessibilityProperties ();
 		}
 
 		public override CoreGraphics.CGSize FittingSize {

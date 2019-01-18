@@ -66,6 +66,7 @@ namespace Xwt.Mac
 			else
 				StringValue = Frontend.Text ?? "";
 			Hidden = !Frontend.Visible;
+			this.ApplyAcessibilityProperties ();
 		}
 		
 		public virtual NSBackgroundStyle BackgroundStyle {

@@ -53,6 +53,7 @@ namespace Xwt.Mac
 		public void Fill ()
 		{
 			Hidden = !Frontend.Visible;
+			this.ApplyAcessibilityProperties ();
 		}
 		
 		ICanvasCellViewFrontend Frontend {

@@ -255,6 +255,7 @@ namespace Xwt.WPFBackend
 			buttonChromeFactory.SetBinding (Microsoft.Windows.Themes.ButtonChrome.RenderDefaultedProperty, new Binding ("Button.IsDefaulted") { RelativeSource = RelativeSource.TemplatedParent });
 			buttonChromeFactory.SetValue (Microsoft.Windows.Themes.ButtonChrome.SnapsToDevicePixelsProperty, true);
 			buttonChromeFactory.Name = "Chrome";
+			buttonChromeFactory.AppendChild (panel);
 
 			return buttonChromeFactory;
 		}

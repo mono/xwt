@@ -40,6 +40,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new WidgetView (EventSink, ApplicationContext);
+			CanGetFocus = false;
 		}
 
 		public void Add (IWidgetBackend widget)
