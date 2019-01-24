@@ -94,7 +94,12 @@ namespace Xwt.GtkBackend
 			Add (newWidget);
 			children [newWidget] = r;
 		}
-		
+
+		void UpdateFocusChain (Orientation orientation)
+		{
+			FocusChain = children.OrderBy ((arg) => orientation == Orientation.Horizontal ? arg.Value.Rect.X : arg.Value.Rect.Y).Select (arg => arg.Key).ToArray ();
+		}
+
 		public bool SetAllocation (Gtk.Widget w, Rectangle rect)
 		{
 			WidgetData r;
@@ -102,6 +107,7 @@ namespace Xwt.GtkBackend
 			if (r.Rect != rect) {
 				r.Rect = rect;
 				children [w] = r;
+				UpdateFocusChain (Backend.Frontend is HBox ? Orientation.Horizontal : Orientation.Vertical);
 				return true;
 			} else
 				return false;
