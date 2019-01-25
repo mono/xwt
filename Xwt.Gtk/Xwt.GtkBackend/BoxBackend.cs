@@ -97,7 +97,19 @@ namespace Xwt.GtkBackend
 
 		void UpdateFocusChain (Orientation orientation)
 		{
-			FocusChain = children.OrderBy ((arg) => orientation == Orientation.Horizontal ? arg.Value.Rect.X : arg.Value.Rect.Y).Select (arg => arg.Key).ToArray ();
+			var focusChain = children.Keys.ToArray();
+			Array.Sort (focusChain, (x, y) => {
+				int left, right;
+				if (orientation == Orientation.Horizontal) {
+					left = (int)children[x].Rect.X;
+					right = (int)children[y].Rect.X;
+				} else {
+					left = (int)children[x].Rect.Y;
+					right = (int)children[y].Rect.Y;
+				}
+				return left - right;
+			});
+			FocusChain = focusChain;
 		}
 
 		public bool SetAllocation (Gtk.Widget w, Rectangle rect)
