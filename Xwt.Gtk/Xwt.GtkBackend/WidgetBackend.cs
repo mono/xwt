@@ -320,7 +320,7 @@ namespace Xwt.GtkBackend
 			int x = 0, y = 0;
 			if (RootWidget?.Parent != null)
 				Widget.TranslateCoordinates (RootWidget.Parent, x, y, out x, out y);
-			return new Point (x, y);
+			return new Point (x + widgetCoordinates.X, y + widgetCoordinates.Y);
 		}
 
 		public Point ConvertToWindowCoordinates (Point widgetCoordinates)
@@ -328,7 +328,7 @@ namespace Xwt.GtkBackend
 			int x = 0, y = 0;
 			if (RootWidget?.Toplevel != null)
 				Widget.TranslateCoordinates (RootWidget.Toplevel, x, y, out x, out y);
-			return new Point (x, y);
+			return new Point (x + widgetCoordinates.X, y + widgetCoordinates.Y);
 		}
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)

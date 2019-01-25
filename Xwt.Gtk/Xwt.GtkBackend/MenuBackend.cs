@@ -126,7 +126,10 @@ namespace Xwt.GtkBackend
 		
 		public void Popup (IWidgetBackend widget, double x, double y)
 		{
-			GtkWorkarounds.ShowContextMenu (Menu, ((WidgetBackend)widget).Widget, new Gdk.Rectangle ((int)x, (int)y, 0, 0));
+			var target = widget as WidgetBackend;
+			if (target == null)
+				throw new ArgumentException ("Widget belongs to an unsupported Toolkit", nameof (widget));
+			GtkWorkarounds.ShowContextMenu (Menu, target.Widget, new Gdk.Rectangle ((int)x, (int)y, 0, 0));
 		}
 	}
 }

@@ -124,7 +124,10 @@ namespace Xwt.WPFBackend
 		public void Popup (IWidgetBackend widget, double x, double y)
 		{
 			var menu = CreateContextMenu ();
-			menu.PlacementTarget = (UIElement) widget.NativeWidget;
+			var target = widget.NativeWidget as UIElement;
+			if (target == null)
+				throw new System.ArgumentException ("Widget belongs to an unsupported Toolkit", nameof (widget));
+			menu.PlacementTarget = target;
 			menu.Placement = PlacementMode.Relative;
 
 			double hratio = 1;
