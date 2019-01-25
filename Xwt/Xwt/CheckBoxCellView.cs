@@ -101,6 +101,7 @@ namespace Xwt
 		}
 
 		public event EventHandler<WidgetEventArgs> Toggled;
+		public event EventHandler EditingFinished;
 
 		/// <summary>
 		/// Raises the toggled event
@@ -114,6 +115,11 @@ namespace Xwt
 				return args.Handled;
 			}
 			return false;
+		}
+
+		public void RaiseEditingFinished ()
+		{
+			EditingFinished?.Invoke (this, EventArgs.Empty);
 		}
 	}
 }

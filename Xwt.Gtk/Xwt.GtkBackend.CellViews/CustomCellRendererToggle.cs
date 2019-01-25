@@ -91,6 +91,8 @@ namespace Xwt.GtkBackend
 
 					CellUtil.SetModelValue (TreeModel, iter, field.Index, type, newValue);
 				}
+
+				view.RaiseEditingFinished ();
 			}
 		}
 	}

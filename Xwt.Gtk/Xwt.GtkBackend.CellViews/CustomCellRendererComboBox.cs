@@ -129,6 +129,8 @@ namespace Xwt.GtkBackend
 				}
 				if (view.SelectedTextField != null)
 					CellUtil.SetModelValue (TreeModel, CurrentIter, view.SelectedTextField.Index, typeof (string), args.NewText);
+
+				view.RaiseEditingFinished ();
 			}
 		}
 	}

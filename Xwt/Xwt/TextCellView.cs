@@ -116,5 +116,12 @@ namespace Xwt
 			}
 			return false;
 		}
+
+		public event EventHandler EditingFinished;
+
+		public void RaiseEditingFinished ()
+		{
+			EditingFinished?.Invoke (this, EventArgs.Empty);
+		}
 	}
 }

@@ -25,27 +25,32 @@
 // THE SOFTWARE.
 using System;
 using Xwt;
+using System.Linq;
 
 namespace Samples
 {
 	public class ListViewCombos: VBox
 	{
+		ListStore store;
+		ListView list;
+		DataField<int> indexField;
 		public ListViewCombos ()
 		{
-			ListView list = new ListView ();
-			var indexField = new DataField<int> ();
-
+			list = new ListView ();
+			indexField = new DataField<int> ();
 			var indexField2 = new DataField<int> ();
 			var itemsField = new DataField<ItemCollection> ();
 		
-			ListStore store = new ListStore (indexField, indexField2, itemsField);
+			store = new ListStore (indexField, indexField2, itemsField);
 			list.DataSource = store;
 			list.GridLinesVisible = GridLines.Horizontal;
 
-			var comboCellView = new ComboBoxCellView { Editable = true, SelectedIndexField = indexField };
+			ComboBoxCellView comboCellView = new ComboBoxCellView { Editable = true, SelectedIndexField = indexField };
 			comboCellView.Items.Add (1, "one");
 			comboCellView.Items.Add (2, "two");
 			comboCellView.Items.Add (3, "three");
+
+			comboCellView.EditingFinished += ComboCellView_EditingFinished;
 
 			list.Columns.Add (new ListViewColumn ("List 1", comboCellView));
 
@@ -64,6 +69,14 @@ namespace Samples
 				store.SetValues (r, indexField2, n % 3, itemsField, col);
 			}
 			PackStart (list, true);
+		}
+
+		void ComboCellView_EditingFinished (object sender, EventArgs e)
+		{
+			var cellView = (ComboBoxCellView)sender;
+		    var cellText = store.GetValue (list.SelectedRow, indexField);
+
+			Console.WriteLine ($"Your real value is : {cellText}");
 		}
 	}
 }

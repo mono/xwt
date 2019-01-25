@@ -27,7 +27,7 @@
 namespace Xwt.Backends
 {
 
-	public interface IToggleCellViewFrontend : ICellViewFrontend
+	public interface IToggleCellViewFrontend : ICellViewFrontend, IEditableCellViewFrontend
 	{
 		bool Active { get; }
 		bool Editable { get; }
