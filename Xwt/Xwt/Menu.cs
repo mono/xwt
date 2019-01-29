@@ -100,7 +100,7 @@ namespace Xwt
 		/// <param name="y">The y coordinate, relative to the widget origin</param>
 		public void Popup (Widget parentWidget, double x, double y)
 		{
-			Backend.Popup ((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend (parentWidget), x, y);
+			Backend.Popup (parentWidget.GetBackend (), x, y);
 		}
 		
 		/// <summary>

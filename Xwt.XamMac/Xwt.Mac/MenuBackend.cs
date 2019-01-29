@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using AppKit;
 using CoreGraphics;
 using Xwt.Backends;
@@ -76,7 +77,26 @@ namespace Xwt.Mac
 		
 		public void Popup (IWidgetBackend widget, double x, double y)
 		{
-			Popup (((ViewBackend)widget).Widget, new CGPoint (x, y));
+			var refView = (widget as EmbedNativeWidgetBackend)?.EmbeddedView;
+
+			if (refView == null)
+				refView = (widget as ViewBackend)?.Widget;
+
+			if (refView == null) {
+				try {
+					refView = GtkQuartz.GetView (widget.NativeWidget);
+					// GtkNSView is not necessarily exclusive, translate coords to the ContentView of the window
+					refView = refView.Window.ContentView;
+					var location = widget.ConvertToWindowCoordinates (new Point (x, y)).ToCGPoint ();
+					location = refView.ConvertPointToView (location, null);
+					if (refView.IsFlipped)
+						location.Y = refView.Frame.Height - location.Y;
+					Popup (refView, location);
+				} catch (Exception ex) {
+					throw new ArgumentException ("Widget belongs to an unsupported Toolkit", nameof (widget), ex);
+				}
+			} else
+				Popup (refView, new CGPoint (x, y));
 		}
 
 		void Popup (NSView view, CGPoint point)
