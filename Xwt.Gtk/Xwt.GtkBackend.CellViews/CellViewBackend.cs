@@ -32,7 +32,7 @@ using TreeModel = Gtk.ITreeModel;
 
 namespace Xwt.GtkBackend
 {
-	public class CellViewBackend: ICellViewBackend, ICellDataSource
+	public class CellViewBackend: ICellViewBackend, ICellDataSource, ICellRenderer
 	{
 		ICellRendererTarget rendererTarget;
 		object target;

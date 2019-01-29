@@ -38,7 +38,7 @@ namespace Samples
 			var indexField2 = new DataField<int> ();
 			var itemsField = new DataField<ItemCollection> ();
 		
-			ListStore store = new ListStore (indexField, indexField2, itemsField);
+			var store = new ListStore (indexField, indexField2, itemsField);
 			list.DataSource = store;
 			list.GridLinesVisible = GridLines.Horizontal;
 
@@ -50,6 +50,8 @@ namespace Samples
 			list.Columns.Add (new ListViewColumn ("List 1", comboCellView));
 
 			var comboCellView2 = new ComboBoxCellView { Editable = true, SelectedIndexField = indexField2, ItemsField = itemsField };
+			comboCellView2.MarkupConverter = new CustomMarkupConverter (indexField);
+
 			list.Columns.Add (new ListViewColumn ("List 2", comboCellView2));
 
 			int p = 0;
@@ -64,6 +66,32 @@ namespace Samples
 				store.SetValues (r, indexField2, n % 3, itemsField, col);
 			}
 			PackStart (list, true);
+		}
+	}
+
+	class CustomMarkupConverter : IMarkupConverter
+	{
+		readonly DataField<int> dataField;
+		public CustomMarkupConverter (DataField<int> dataField)
+		{
+			this.dataField = dataField;
+		}
+
+		string GetColor (int index)
+		{
+			switch (index) {
+			case 1:
+				return "#ff0000";
+			case 2:
+				return "#00ff00";
+			}
+			return "#0000ff";
+		}
+
+		public string Convert (string description, ICellRenderer renderer)
+		{
+			var index = (int) renderer.GetValue (dataField);
+			return string.Format ("<b><span color='{1}'>{0}</span></b>", description, GetColor (index));
 		}
 	}
 }

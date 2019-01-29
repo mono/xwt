@@ -32,6 +32,16 @@ using Xwt.Backends;
 
 namespace Xwt 
 {
+	public interface ICellRenderer
+	{
+		object GetValue (IDataField field);
+	}
+
+	public interface IMarkupConverter
+	{
+		string Convert (string description, ICellRenderer renderer);
+	}
+
 	public sealed class ComboBoxCellView : CellView, IComboBoxCellViewFrontend
 	{
 		bool editable;
@@ -45,6 +55,8 @@ namespace Xwt
 		public IDataField<bool> EditableField { get; set; }
 		public IDataField<ItemCollection> ItemsField { get; set; }
 		public IDataField<IListDataSource> ItemsSourceField { get; set; }
+
+		public IMarkupConverter MarkupConverter { get; set; }
 
 		public ComboBoxCellView ()
 		{

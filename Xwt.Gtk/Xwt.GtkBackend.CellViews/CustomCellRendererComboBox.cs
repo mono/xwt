@@ -76,12 +76,17 @@ namespace Xwt.GtkBackend
 		protected override void OnLoadData ()
 		{
 			var view = (IComboBoxCellViewFrontend)Frontend;
-			renderer.Text = view.SelectedText;
 			var source = view.ItemsSource;
 			renderer.Model = GetListModel (source).Store;
 			renderer.TextColumn = 0;
 			renderer.Editable = view.Editable;
 			renderer.Visible = view.Visible;
+
+			if (view.MarkupConverter != null) {
+				renderer.Markup = view.MarkupConverter.Convert (view.SelectedText, this);
+			} else {
+				renderer.Text = view.SelectedText;
+			}
 		}
 
 		CustomListModel GetListModel (IListDataSource source)
