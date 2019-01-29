@@ -155,6 +155,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		//todo: Implement
+		public Drawing.Color TextColor { get; set; }
+
 		class RichTextBuffer : IRichTextBuffer
 		{
 			const int FontSize = 16;

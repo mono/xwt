@@ -6,6 +6,7 @@
 //
 // Copyright (c) 2012 Xamarin, Inc.
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
@@ -32,6 +33,8 @@ namespace Xwt.Backends
 		int LineSpacing { get; set; }
 
 		IRichTextBuffer CurrentBuffer { get; }
+
+		Color TextColor { get; set; }
 	}
 
 	public interface IRichTextBuffer
