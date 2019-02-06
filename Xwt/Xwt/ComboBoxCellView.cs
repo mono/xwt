@@ -36,9 +36,11 @@ namespace Xwt
 	{
 		bool editable;
 		string selectedText;
+		string selectedMarkup;
 		ItemCollection items;
 		IListDataSource itemsSource;
 
+		public IDataField<string> SelectedMarkupField { get; set; }
 		public IDataField<string> SelectedTextField { get; set; }
 		public IDataField<int> SelectedIndexField { get; set; }
 		public IDataField<object> SelectedItemField { get; set; }
@@ -53,6 +55,28 @@ namespace Xwt
 		public ComboBoxCellView (IDataField<string> field)
 		{
 			SelectedTextField = field;
+		}
+
+		[DefaultValue("")]
+		public string SelectedMarkup
+		{
+			get
+			{
+				if (SelectedMarkupField != null)
+					return GetValue(SelectedMarkupField, selectedMarkup);
+				if (SelectedIndexField != null)
+				{
+					var s = ItemsSource;
+					var row = GetValue(SelectedIndexField, -1);
+					if (row != -1)
+						return s.GetValue(row, 2).ToString();
+				}
+				return selectedMarkup;
+			}
+			set
+			{
+				selectedMarkup = value;
+			}
 		}
 
 		[DefaultValue ("")]
@@ -108,6 +132,8 @@ namespace Xwt
 				itemsSource = value;
 			}
 		}
+
+		public bool IsMarkup { get; set; }
 
 		public event EventHandler<WidgetEventArgs> SelectionChanged;
 

@@ -76,7 +76,12 @@ namespace Xwt.GtkBackend
 		protected override void OnLoadData ()
 		{
 			var view = (IComboBoxCellViewFrontend)Frontend;
-			renderer.Text = view.SelectedText;
+			if (view.IsMarkup) {
+				renderer.Markup = view.SelectedMarkup;
+			} else {
+				renderer.Text = renderer.Text;
+			}
+
 			var source = view.ItemsSource;
 			renderer.Model = GetListModel (source).Store;
 			renderer.TextColumn = 0;

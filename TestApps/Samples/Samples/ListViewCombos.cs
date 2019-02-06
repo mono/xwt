@@ -42,10 +42,12 @@ namespace Samples
 			list.DataSource = store;
 			list.GridLinesVisible = GridLines.Horizontal;
 
-			var comboCellView = new ComboBoxCellView { Editable = true, SelectedIndexField = indexField };
-			comboCellView.Items.Add (1, "one");
-			comboCellView.Items.Add (2, "two");
-			comboCellView.Items.Add (3, "three");
+			ComboBoxCellView comboCellView = new ComboBoxCellView { Editable = true, SelectedIndexField = indexField };
+			comboCellView.Items.Add (1, "one", "<span color='#ff0000'>one</span>");
+			comboCellView.Items.Add (2, "two", "<span color='#00ff00'>two</span>");
+			comboCellView.Items.Add (3, "tree", "<span color='#0000ff'>three</span>");
+
+			comboCellView.IsMarkup = true;
 
 			list.Columns.Add (new ListViewColumn ("List 1", comboCellView));
 

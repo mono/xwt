@@ -37,7 +37,9 @@ namespace Xwt.Backends
 		IDataField<IListDataSource> ItemsSourceField { get; }
 
 		string SelectedText { get; }
+		string SelectedMarkup { get; }
 
+		bool IsMarkup { get; set; }
 		bool Editable { get; }
 
 		ItemCollection Items { get; }

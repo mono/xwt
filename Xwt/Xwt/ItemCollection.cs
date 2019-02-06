@@ -37,17 +37,19 @@ namespace Xwt
 	public sealed class ItemCollection: Collection<Object>
 	{
 		ListStore store;
+		DataField<string> markupField = new DataField<string>();
 		DataField<string> labelField = new DataField<string> ();
 		DataField<object> dataField = new DataField<object> ();
 		
 		class ItemWithLabel {
+			public string Markup;
 			public object Item;
 			public string Label;
 		}
 		
 		public ItemCollection ()
 		{
-			store = new ListStore (labelField, dataField);
+			store = new ListStore (labelField, dataField, markupField);
 		}
 		
 		internal DataField<string> LabelField {
@@ -58,14 +60,19 @@ namespace Xwt
 			get { return dataField; }
 		}
 
-		public void Add (object item, string label)
+		internal DataField<string> MarkupField
 		{
-			Add (new ItemWithLabel () { Item = item, Label = label });
+			get { return markupField; }
 		}
 
-		public void Insert (int index, object item, string label)
+		public void Add (object item, string label, string markup = null)
 		{
-			Insert (index, new ItemWithLabel () { Item = item, Label = label });
+			Add (new ItemWithLabel () { Item = item, Label = label, Markup = markup });
+		}
+
+		public void Insert (int index, object item, string label, string markup = null)
+		{
+			Insert (index, new ItemWithLabel () { Item = item, Label = label, Markup = markup });
 		}
 		
 		protected override void InsertItem (int index, object item)
@@ -76,11 +83,13 @@ namespace Xwt
 				store.InsertRowBefore (index);
 				store.SetValue (index, labelField, itl.Label);
 				store.SetValue (index, dataField, itl.Item);
+				store.SetValue(index, markupField, itl.Markup);
 			} else {
 				base.InsertItem (index, item);
 				store.InsertRowBefore (index);
 				store.SetValue (index, labelField, item.ToString ());
 				store.SetValue (index, dataField, item);
+				store.SetValue (index, markupField, item.ToString());
 			}
 		}
 
