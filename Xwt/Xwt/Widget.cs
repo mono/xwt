@@ -634,7 +634,7 @@ namespace Xwt
 		/// Gets or sets the content of this <see cref="Xwt.Widget"/>.
 		/// </summary>
 		/// <value>The content of the widget.</value>
-		protected Widget Content {
+		internal protected Widget Content {
 			get { return contentWidget; }
 			set {
 				ICustomWidgetBackend bk = Backend as ICustomWidgetBackend;

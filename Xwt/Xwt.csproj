@@ -362,6 +362,7 @@
     <Compile Include="Xwt\TextChangedEventArgs.cs" />
     <Compile Include="Xwt.Drawing\FontSizeTextAttribute.cs" />
     <Compile Include="Xwt.Accessibility\AccessibleFields.cs" />
+    <Compile Include="Xwt.Accessibility\XwtAccessibleBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
