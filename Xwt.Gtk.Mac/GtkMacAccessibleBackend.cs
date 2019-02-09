@@ -30,6 +30,7 @@ using Foundation;
 using ObjCRuntime;
 using Xwt.Accessibility;
 using Xwt.GtkBackend;
+using GtkWidget = Gtk.Widget;
 
 namespace Xwt.Gtk.Mac
 {
@@ -62,6 +63,27 @@ namespace Xwt.Gtk.Mac
 					return;
 				}
 				nsa.AccessibilityLabel = value;
+			}
+		}
+
+
+		public override Widget LabelWidget
+		{
+			set
+			{
+				var nsa = GetNSAccessibilityElement(widget.Accessible);
+				if (nsa == null)
+					return;
+
+				NSObject lnsa = null;
+				var label = value?.Surface?.NativeWidget;
+				if (label is NSObject)
+					lnsa = (NSObject)label;
+				else if (label is GtkWidget) {
+					lnsa = GetNSAccessibilityElement(((GtkWidget)label).Accessible) as NSObject;
+				}
+
+				nsa.AccessibilityTitleUIElement = lnsa;
 			}
 		}
 
