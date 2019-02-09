@@ -192,7 +192,10 @@ namespace Xwt.Mac
 
 		Widget IAccessibleBackend.LabelWidget {
 			set {
-				widget.AccessibilityTitleUIElement = (Toolkit.GetBackend (value) as ViewBackend)?.Widget;
+				var view = value.Surface.ToolkitEngine.GetNativeWidget(value) as NSObject;
+				if (view is CustomAlignedContainer)
+					view = ((CustomAlignedContainer)view).Child;
+				widget.AccessibilityTitleUIElement = view;
 			}
 		}
 
