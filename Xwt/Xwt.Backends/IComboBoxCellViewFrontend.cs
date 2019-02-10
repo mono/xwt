@@ -27,9 +27,22 @@ using System;
 
 namespace Xwt.Backends
 {
+	public class EditableCellViewArgs : EventArgs
+	{
+		public EditableCellViewArgs(object oldValue, object newValue)
+		{
+			OldValue = oldValue;
+			NewValue = newValue;
+		}
+
+		public object OldValue { get; set; }
+		public object NewValue { get; set; }
+	}
+
 	public interface IEditableCellViewFrontend
 	{
-		void RaiseEditingFinished ();
+		event EventHandler<EditableCellViewArgs> EditingFinished;
+		void RaiseEditingFinished (EditableCellViewArgs args);
 	}
 
 	public interface IComboBoxCellViewFrontend: ICellViewFrontend, IEditableCellViewFrontend

@@ -76,7 +76,7 @@ namespace Xwt.GtkBackend
 		protected override void OnLoadData ()
 		{
 			var view = (IComboBoxCellViewFrontend)Frontend;
-			renderer.Text = view.SelectedText;
+			lastValue = renderer.Text = view.SelectedText;
 			var source = view.ItemsSource;
 			renderer.Model = GetListModel (source).Store;
 			renderer.TextColumn = 0;
@@ -101,6 +101,8 @@ namespace Xwt.GtkBackend
 			}
 			modelCache = newModel;
 		}
+
+		string lastValue = string.Empty;
 
 		void HandleEdited (object o, Gtk.EditedArgs args)
 		{
@@ -130,7 +132,8 @@ namespace Xwt.GtkBackend
 				if (view.SelectedTextField != null)
 					CellUtil.SetModelValue (TreeModel, CurrentIter, view.SelectedTextField.Index, typeof (string), args.NewText);
 
-				view.RaiseEditingFinished ();
+				view.RaiseEditingFinished (new EditableCellViewArgs (lastValue, args.NewText));
+				lastValue = args.NewText;
 			}
 		}
 	}

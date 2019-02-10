@@ -125,11 +125,11 @@ namespace Xwt
 			return false;
 		}
 
-		public event EventHandler EditingFinished;
+		public event EventHandler<EditableCellViewArgs> EditingFinished;
 
-		public void RaiseEditingFinished ()
+		public void RaiseEditingFinished (EditableCellViewArgs args)
 		{
-			EditingFinished?.Invoke (this, EventArgs.Empty);
+			EditingFinished?.Invoke (this, args);
 		}
 	}
 }

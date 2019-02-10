@@ -101,7 +101,7 @@ namespace Xwt
 		}
 
 		public event EventHandler<WidgetEventArgs> Toggled;
-		public event EventHandler EditingFinished;
+		public event EventHandler<EditableCellViewArgs> EditingFinished;
 
 		/// <summary>
 		/// Raises the toggled event
@@ -117,9 +117,9 @@ namespace Xwt
 			return false;
 		}
 
-		public void RaiseEditingFinished ()
+		public void RaiseEditingFinished (EditableCellViewArgs args)
 		{
-			EditingFinished?.Invoke (this, EventArgs.Empty);
+			EditingFinished?.Invoke (this, args);
 		}
 	}
 }

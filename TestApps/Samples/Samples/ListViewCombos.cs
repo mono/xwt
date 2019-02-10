@@ -71,12 +71,9 @@ namespace Samples
 			PackStart (list, true);
 		}
 
-		void ComboCellView_EditingFinished (object sender, EventArgs e)
+		void ComboCellView_EditingFinished (object sender, Xwt.Backends.EditableCellViewArgs e)
 		{
-			var cellView = (ComboBoxCellView)sender;
-		    var cellText = store.GetValue (list.SelectedRow, indexField);
-
-			Console.WriteLine ($"Your real value is : {cellText}");
+			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
 		}
 	}
 }
