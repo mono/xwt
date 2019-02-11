@@ -69,7 +69,12 @@ namespace Xwt.Mac
 		public void Initialize (object parentWidget, IAccessibleEventSink eventSink)
 		{
 			this.eventSink = eventSink;
-			widget = parentWidget as INSAccessibility;
+			if (parentWidget is EmbedNativeWidgetBackend) // bypass embedding container and bind to the embedded view
+				widget = ((EmbedNativeWidgetBackend)parentWidget).EmbeddedView;
+			else if (parentWidget is CustomAlignedContainer) // bypass alignment containers
+				widget = ((CustomAlignedContainer)parentWidget).Child;
+			if (widget == null)
+				widget = parentWidget as INSAccessibility;
 			if (widget == null)
 				throw new ArgumentException ("The widget does not implement INSAccessibility.", nameof (parentWidget));
 			eventProxy = widget as INSAccessibleEventSource;
@@ -193,7 +198,10 @@ namespace Xwt.Mac
 
 		Widget IAccessibleBackend.LabelWidget {
 			set {
-				widget.AccessibilityTitleUIElement = (Toolkit.GetBackend (value) as ViewBackend)?.Widget;
+				var view = value.Surface.ToolkitEngine.GetNativeWidget(value) as NSObject;
+				if (view is CustomAlignedContainer)
+					view = ((CustomAlignedContainer)view).Child;
+				widget.AccessibilityTitleUIElement = view;
 			}
 		}
 

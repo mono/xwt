@@ -182,7 +182,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public Widget LabelWidget {
+		public virtual Widget LabelWidget {
 			set { /* Not supported */ }
 		}
 

@@ -327,6 +327,35 @@ namespace Xwt.Mac
 			}
 		}
 
+		public override string AccessibilityLabel
+		{
+			get
+			{
+				return base.AccessibilityLabel;
+			}
+
+			set
+			{
+				base.AccessibilityLabel = value;
+				input.AccessibilityLabel = value;
+			}
+		}
+
+		public override NSObject AccessibilityTitleUIElement
+		{
+			get
+			{
+				return base.AccessibilityTitleUIElement;
+			}
+
+			set
+			{
+				base.AccessibilityTitleUIElement = value;
+				input.AccessibilityTitleUIElement = value;
+				stepper.AccessibilityTitleUIElement = value;
+			}
+		}
+
 		class VibrancyStepper : NSStepper
 		{
 			public override bool AllowsVibrancy {

@@ -245,6 +245,7 @@ namespace Xwt.Mac
 		public TextFieldView ()
 		{
 			Cell = cell = new CustomTextFieldCell ();
+			AccessibilityRole = NSAccessibilityRoles.StaticTextRole;
 		}
 
 		public void SetBackgroundColor (CGColor c)
