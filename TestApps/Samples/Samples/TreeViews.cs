@@ -54,7 +54,7 @@ namespace Samples
 					store.GetNavigatorAt(view.CurrentEventRow).SetValue(text, "TriState Toggled");
 				}
 			};
-			triStateCellView.EditingFinished += CellView_EditingFinished;
+			triStateCellView.EditingFinished += CheckBoxCellView_EditingFinished;
 			var checkCellView = new CheckBoxCellView (check) { Editable = true };
 			checkCellView.Toggled += (object sender, WidgetEventArgs e) => {
 				if (view.CurrentEventRow == null) {
@@ -64,7 +64,7 @@ namespace Samples
 					store.GetNavigatorAt(view.CurrentEventRow).SetValue(text, "Toggled " + checkCellView.Active);
 				}
 			};
-			checkCellView.EditingFinished += CellView_EditingFinished;
+			checkCellView.EditingFinished += CheckBoxCellView_EditingFinished;
 			var optionCellView1 = new RadioButtonCellView (option1) { Editable = true };
 			optionCellView1.Toggled += (object sender, WidgetEventArgs e) => {
 				if (view.CurrentEventRow == null) {
@@ -73,7 +73,7 @@ namespace Samples
 					store.GetNavigatorAt (view.CurrentEventRow).SetValue (option2, optionCellView1.Active);
 				}
 			};
-			optionCellView1.EditingFinished += CellView_EditingFinished;
+			optionCellView1.EditingFinished += CheckBoxCellView_EditingFinished;
 
 			var optionCellView2 = new RadioButtonCellView (option2) { Editable = true };
 			optionCellView2.Toggled += (object sender, WidgetEventArgs e) => {
@@ -83,7 +83,7 @@ namespace Samples
 					store.GetNavigatorAt (view.CurrentEventRow).SetValue (option1, optionCellView2.Active);
 				}
 			};
-			optionCellView2.EditingFinished += CellView_EditingFinished;
+			optionCellView2.EditingFinished += CheckBoxCellView_EditingFinished;
 
 			TreePosition initialActive = null;
 			var optionCellView3 = new RadioButtonCellView (option3) { Editable = true };
@@ -96,7 +96,7 @@ namespace Samples
 					initialActive = view.CurrentEventRow;
 				}
 			};
-			optionCellView3.EditingFinished += CellView_EditingFinished;
+			optionCellView3.EditingFinished += CheckBoxCellView_EditingFinished;
 			view.Columns.Add ("TriCheck", triStateCellView);
 			view.Columns.Add ("Check", checkCellView);
 			view.Columns.Add ("Radio", optionCellView1, optionCellView2, optionCellView3);
@@ -235,7 +235,12 @@ namespace Samples
 			view.RowExpanded += (sender, e) => label.Text = "Row expanded: " + store.GetNavigatorAt (e.Position).GetValue (text);
 		}
 
-		void CellView_EditingFinished(object sender, Xwt.Backends.EditableCellViewArgs e)
+		void CheckBoxCellView_EditingFinished (object sender, Xwt.Backends.CellEditingFinishedArgs<Xwt.CheckBoxState> e)
+		{
+			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
+		}
+
+		void StringCellView_EditingFinished(object sender, Xwt.Backends.CellEditingFinishedArgs<string> e)
 		{
 			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
 		}

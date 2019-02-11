@@ -49,12 +49,11 @@ namespace Samples
 			comboCellView.Items.Add (1, "one");
 			comboCellView.Items.Add (2, "two");
 			comboCellView.Items.Add (3, "three");
-
-			comboCellView.EditingFinished += ComboCellView_EditingFinished;
-
+			comboCellView.EditingFinished += TextCellView_EditingFinished;
 			list.Columns.Add (new ListViewColumn ("List 1", comboCellView));
 
 			var comboCellView2 = new ComboBoxCellView { Editable = true, SelectedIndexField = indexField2, ItemsField = itemsField };
+			comboCellView2.EditingFinished += TextCellView_EditingFinished;
 			list.Columns.Add (new ListViewColumn ("List 2", comboCellView2));
 
 			int p = 0;
@@ -71,7 +70,12 @@ namespace Samples
 			PackStart (list, true);
 		}
 
-		void ComboCellView_EditingFinished (object sender, Xwt.Backends.EditableCellViewArgs e)
+		void ComboCellView_EditingFinished (object sender, Xwt.Backends.CellEditingFinishedArgs<CheckBoxState> e)
+		{
+			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
+		}
+
+		void TextCellView_EditingFinished(object sender, Xwt.Backends.CellEditingFinishedArgs<string> e)
 		{
 			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
 		}

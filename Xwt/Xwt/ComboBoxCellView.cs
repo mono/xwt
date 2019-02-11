@@ -125,9 +125,9 @@ namespace Xwt
 			return false;
 		}
 
-		public event EventHandler<EditableCellViewArgs> EditingFinished;
+		public event EventHandler<CellEditingFinishedArgs<string>> EditingFinished;
 
-		public void RaiseEditingFinished (EditableCellViewArgs args)
+		public void RaiseEditingFinished (CellEditingFinishedArgs<string> args)
 		{
 			EditingFinished?.Invoke (this, args);
 		}

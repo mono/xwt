@@ -27,25 +27,25 @@ using System;
 
 namespace Xwt.Backends
 {
-	public class EditableCellViewArgs : EventArgs
+	public class CellEditingFinishedArgs<T> : EventArgs
 	{
-		public EditableCellViewArgs(object oldValue, object newValue)
+		public CellEditingFinishedArgs(T oldValue, T newValue)
 		{
 			OldValue = oldValue;
 			NewValue = newValue;
 		}
 
-		public object OldValue { get; set; }
-		public object NewValue { get; set; }
+		public T OldValue { get; set; }
+		public T NewValue { get; set; }
 	}
 
-	public interface IEditableCellViewFrontend
+	public interface IEditableCellViewFrontend<T>
 	{
-		event EventHandler<EditableCellViewArgs> EditingFinished;
-		void RaiseEditingFinished (EditableCellViewArgs args);
+		event EventHandler<CellEditingFinishedArgs<T>> EditingFinished;
+		void RaiseEditingFinished (CellEditingFinishedArgs<T> args);
 	}
 
-	public interface IComboBoxCellViewFrontend: ICellViewFrontend, IEditableCellViewFrontend
+	public interface IComboBoxCellViewFrontend: ICellViewFrontend, IEditableCellViewFrontend<string>
 	{
 		IDataField<string> SelectedTextField { get; }
 		IDataField<int> SelectedIndexField { get; }

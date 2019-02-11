@@ -75,7 +75,7 @@ namespace Xwt.GtkBackend
 				Gtk.TreeIter iter;
 				if (TreeModel.GetIterFromString (out iter, args.Path))
 					CellUtil.SetModelValue (TreeModel, iter, view.TextField.Index, view.TextField.FieldType, args.NewText);
-				view.RaiseEditingFinished (new EditableCellViewArgs (lastValue, args.NewText));
+				view.RaiseEditingFinished (new CellEditingFinishedArgs<string> (lastValue, args.NewText));
 			}
 		}
 	}

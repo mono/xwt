@@ -80,9 +80,9 @@ namespace Xwt
 			return false;
 		}
 
-		public event EventHandler<EditableCellViewArgs> EditingFinished;
+		public event EventHandler<CellEditingFinishedArgs<CheckBoxState>> EditingFinished;
 
-		public void RaiseEditingFinished (EditableCellViewArgs args)
+		public void RaiseEditingFinished (CellEditingFinishedArgs<CheckBoxState> args)
 		{
 			EditingFinished?.Invoke (this, args);
 		}

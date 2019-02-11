@@ -132,7 +132,7 @@ namespace Xwt.GtkBackend
 				if (view.SelectedTextField != null)
 					CellUtil.SetModelValue (TreeModel, CurrentIter, view.SelectedTextField.Index, typeof (string), args.NewText);
 
-				view.RaiseEditingFinished (new EditableCellViewArgs (lastValue, args.NewText));
+				view.RaiseEditingFinished (new CellEditingFinishedArgs<string> (lastValue, args.NewText));
 				lastValue = args.NewText;
 			}
 		}

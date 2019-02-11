@@ -101,7 +101,7 @@ namespace Xwt
 		}
 
 		public event EventHandler<WidgetEventArgs> Toggled;
-		public event EventHandler<EditableCellViewArgs> EditingFinished;
+		public event EventHandler<CellEditingFinishedArgs<CheckBoxState>> EditingFinished;
 
 		/// <summary>
 		/// Raises the toggled event
@@ -117,7 +117,7 @@ namespace Xwt
 			return false;
 		}
 
-		public void RaiseEditingFinished (EditableCellViewArgs args)
+		public void RaiseEditingFinished (CellEditingFinishedArgs<CheckBoxState> args)
 		{
 			EditingFinished?.Invoke (this, args);
 		}
