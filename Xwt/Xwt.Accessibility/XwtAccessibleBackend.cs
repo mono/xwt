@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using Xwt.Backends;
 
 namespace Xwt.Accessibility
@@ -210,6 +211,11 @@ namespace Xwt.Accessibility
 		public void EnableEvent (object eventId)
 		{
 			nativeBackend.EnableEvent (eventId);
+		}
+
+		public IEnumerable<object> GetChildren()
+		{
+			return nativeBackend.GetChildren ();
 		}
 	}
 }
