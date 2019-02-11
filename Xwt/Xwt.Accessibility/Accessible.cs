@@ -95,6 +95,8 @@ namespace Xwt.Accessibility
 			parentComponent = parent;
 			backendHost = new AccessibleBackendHost ();
 			backendHost.Parent = this;
+			if (parent.GetBackend () is XwtWidgetBackend)
+				backendHost.SetCustomBackend (new XwtAccessibleBackend());
 
 		}
 

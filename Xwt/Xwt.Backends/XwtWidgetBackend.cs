@@ -39,7 +39,7 @@ namespace Xwt.Backends
 	/// </remarks>
 	public class XwtWidgetBackend: Widget, IWidgetBackend
 	{
-		protected Widget Frontend {
+		internal protected Widget Frontend {
 			get; private set;
 		}
 		
