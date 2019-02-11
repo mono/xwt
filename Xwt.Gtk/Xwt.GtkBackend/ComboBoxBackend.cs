@@ -188,9 +188,12 @@ namespace Xwt.GtkBackend
 		{
 		}
 
+		bool disposed;
 		protected override void Dispose(bool disposing)
 		{
-			Widget.RowSeparatorFunc = null;
+			if (disposing && !disposed)
+				Widget.RowSeparatorFunc = null;
+			disposed = true;
 			base.Dispose(disposing);
 		}
 
