@@ -38,6 +38,7 @@ using SWC = System.Windows.Controls;
 using WKey = System.Windows.Input.Key;
 using System.Windows.Input;
 using System.Windows.Controls.Primitives;
+using System.Windows.Automation.Peers;
 
 namespace Xwt.WPFBackend
 {
@@ -471,5 +472,38 @@ namespace Xwt.WPFBackend
 			else
 				return items[indexOfP + 1];
 		}
+
+		protected override AutomationPeer OnCreateAutomationPeer ()
+		{
+			var backend = this.Backend as TreeViewBackend;
+			var treeView = backend?.Frontend as Xwt.TreeView;
+
+			var peer = treeView?.Accessible.GetChildren ()?.FirstOrDefault () as AutomationPeer;
+			if (peer != null)
+				return peer;
+
+			return base.OnCreateAutomationPeer ();
+		}
+
+		internal AutomationPeer CreateChildAutomationPeer (object itemData, TreeViewItem itemView)
+		{
+			var backend = this.Backend as TreeViewBackend;
+			var treeView = backend?.Frontend as Xwt.TreeView;
+
+			var peer = treeView?.Accessible.GetChildren ()?.FirstOrDefault () as ExTreeViewAutomationPeer;
+			if (peer != null)
+				return peer.CreateChildAutomationPeer (itemData, itemView);
+
+			return null;
+		}
+	}
+
+	public abstract class ExTreeViewAutomationPeer: TreeViewAutomationPeer
+	{
+		public ExTreeViewAutomationPeer (SWC.TreeView owner): base (owner)
+		{
+		}
+
+		public abstract TreeViewItemAutomationPeer CreateChildAutomationPeer (object item, TreeViewItem viewItem);
 	}
 }

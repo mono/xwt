@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xwt.Accessibility;
 using Xwt.Backends;
 
@@ -210,6 +212,12 @@ namespace Xwt.GtkBackend
 		public virtual void RemoveAllChildren ()
 		{
 			// TODO
+		}
+
+		public virtual IEnumerable<object> GetChildren ()
+		{
+			// TODO
+			return Enumerable.Empty<object>();
 		}
 
 		public void DisableEvent (object eventId)

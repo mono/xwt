@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xwt.Backends;
 
 namespace Xwt.Accessibility
@@ -218,6 +220,11 @@ namespace Xwt.Accessibility
 			}
 		}
 
+		public IEnumerable<object> GetChildren ()
+		{
+			return Backend.GetChildren ();
+		}
+
 		public void AddChild (object nativeChild)
 		{
 			Backend.AddChild (nativeChild);
@@ -287,6 +294,11 @@ namespace Xwt.Accessibility
 
 		public void RemoveAllChildren ()
 		{
+		}
+
+		public IEnumerable<object> GetChildren ()
+		{
+			return Enumerable.Empty<object>();
 		}
 
 		public void DisableEvent (object eventId)
