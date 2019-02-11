@@ -27,18 +27,6 @@ using System;
 
 namespace Xwt.Backends
 {
-	public class CellEditingFinishedArgs<T> : EventArgs
-	{
-		public CellEditingFinishedArgs(T oldValue, T newValue)
-		{
-			OldValue = oldValue;
-			NewValue = newValue;
-		}
-
-		public T OldValue { get; set; }
-		public T NewValue { get; set; }
-	}
-
 	public interface IEditableCellViewFrontend<T>
 	{
 		event EventHandler<CellEditingFinishedArgs<T>> EditingFinished;

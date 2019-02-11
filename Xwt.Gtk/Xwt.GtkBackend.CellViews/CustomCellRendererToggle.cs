@@ -92,12 +92,22 @@ namespace Xwt.GtkBackend
 						(object) newState : (object) (newState == CheckBoxState.On);
 
 					CellUtil.SetModelValue (TreeModel, iter, field.Index, type, newValue);
-					view.RaiseEditingFinished(new CellEditingFinishedArgs<CheckBoxState> (lastValue, newState));
+
+					if (view is ICheckBoxCellViewFrontend) {
+						((ICheckBoxCellViewFrontend)view).RaiseEditingFinished(new CellEditingFinishedArgs<CheckBoxState>(lastValue, newState));
+					} else if (view is IRadioButtonCellViewFrontend) {
+						((IRadioButtonCellViewFrontend)view).RaiseEditingFinished(new CellEditingFinishedArgs<bool>(lastValue == CheckBoxState.On, newState == CheckBoxState.On));
+					}
+
 					lastValue = newState;
 					return;
 				}
 
-				view.RaiseEditingFinished (new CellEditingFinishedArgs<CheckBoxState> (lastValue, lastValue));
+				if (view is ICheckBoxCellViewFrontend) {
+					((ICheckBoxCellViewFrontend)view).RaiseEditingFinished(new CellEditingFinishedArgs<CheckBoxState>(lastValue, lastValue));
+				} else if (view is IRadioButtonCellViewFrontend) {
+					((IRadioButtonCellViewFrontend)view).RaiseEditingFinished(new CellEditingFinishedArgs<bool>(lastValue == CheckBoxState.On, lastValue == CheckBoxState.On));
+				}
 			}
 		}
 	}

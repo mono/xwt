@@ -26,8 +26,7 @@
 
 namespace Xwt.Backends
 {
-
-	public interface IToggleCellViewFrontend : ICellViewFrontend, IEditableCellViewFrontend<CheckBoxState>
+	public interface IToggleCellViewFrontend : ICellViewFrontend
 	{
 		bool Active { get; }
 		bool Editable { get; }

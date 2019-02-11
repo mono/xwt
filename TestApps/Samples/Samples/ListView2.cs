@@ -37,7 +37,7 @@ namespace Samples
 			list.Columns.Add (new ListViewColumn("Not Editable", new CheckBoxCellView { Editable = false, ActiveField = nonEditableActiveField }));
 
 			Xwt.Backends.IEditableCellViewFrontend<string> stringCellView = new TextCellView { Editable = true, TextField = textField };
-			stringCellView.EditingFinished += StringCellView_EditingFinished;
+			stringCellView.EditingFinished += CellView_EditingFinished;
 			list.Columns.Add (new ListViewColumn("Editable",(CellView) stringCellView));
 
 			cellView = new CheckBoxCellView { EditableField = editableField, ActiveField = somewhatEditableData };
@@ -45,7 +45,7 @@ namespace Samples
 			list.Columns.Add(new ListViewColumn("Somewhat Editable",(CellView) cellView));
 
 			stringCellView = new TextCellView { EditableField = editableField, TextField = textField2 };
-			stringCellView.EditingFinished += StringCellView_EditingFinished;
+			stringCellView.EditingFinished += CellView_EditingFinished;
 
 			list.Columns.Add (new ListViewColumn("Somewhat Editable", (CellView)stringCellView));
 
@@ -64,12 +64,12 @@ namespace Samples
 			PackStart (list, true);
 		}
 
-		void CellView_EditingFinished(object sender, Xwt.Backends.CellEditingFinishedArgs<Xwt.CheckBoxState> e)
+		void CellView_EditingFinished(object sender, Xwt.CellEditingFinishedArgs<Xwt.CheckBoxState> e)
 		{
 			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
 		}
 
-		void StringCellView_EditingFinished(object sender, Xwt.Backends.CellEditingFinishedArgs<string> e)
+		void CellView_EditingFinished(object sender, Xwt.CellEditingFinishedArgs<string> e)
 		{
 			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
 		}
