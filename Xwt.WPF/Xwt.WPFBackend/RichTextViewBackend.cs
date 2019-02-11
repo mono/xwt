@@ -35,6 +35,7 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using Xwt.Backends;
 using Xwt.WPFBackend.Utilities;
+using SWM = System.Windows.Media;
 
 namespace Xwt.WPFBackend
 {
@@ -155,6 +156,20 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		public Xwt.Drawing.Color TextColor {
+			get {
+				SWM.Color color = SystemColors.ControlColor;
+
+				if (Widget.Foreground != null)
+					color = ((SWM.SolidColorBrush) Widget.Foreground).Color;
+
+				return DataConverter.ToXwtColor (color);
+			}
+			set {
+				Widget.Foreground = ResPool.GetSolidBrush (value);
+			}
+		}
+		
 		class RichTextBuffer : IRichTextBuffer
 		{
 			const int FontSize = 16;
