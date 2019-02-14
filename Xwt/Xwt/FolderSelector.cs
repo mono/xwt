@@ -138,11 +138,17 @@ namespace Xwt
 		public DefaultFolderSelectorBackend ()
 		{
 			var box = new HBox ();
+			box.Accessible.IsAccessible = true;
+			box.Accessible.Role = Accessibility.Role.Group;
+			box.Accessible.Title = Application.TranslationCatalog.GetString ("Folder Selector");
+
 			entry = new TextEntry ();
-			entry.Changed += (sender, e) => NotifyFolderChange ();
+			entry.Accessible.Label = Application.TranslationCatalog.GetString ("Path");
+			entry.Changed += (sender, e) => NotifyFolderChange();
 			box.PackStart (entry, true);
 
 			var btn = new Button ("...");
+			btn.Accessible.Label = Application.TranslationCatalog.GetString ("Browse");
 			box.PackStart (btn);
 			btn.Clicked += BtnClicked;
 			Content = box;

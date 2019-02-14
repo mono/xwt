@@ -1,0 +1,5 @@
+<Project>
+
+  <!-- This is empty just to make sure we don't search above the Xwt tree for a Directory.Build.Targets -->
+
+</Project>

@@ -134,6 +134,11 @@ namespace Xwt.Mac
 			}
 		}
 
+		public Drawing.Color TextColor {
+			get { return Widget.TextColor.ToXwtColor (); }
+			set { Widget.TextColor = value.ToNSColor (); }
+		}
+
 		int? lineSpacing = null;
 		public int LineSpacing {
 			get {

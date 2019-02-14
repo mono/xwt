@@ -91,6 +91,8 @@ namespace Xwt.GtkBackend
 			table.Add (new Gtk.TextTag ("p") {
 				SizePoints = Math.Max (LineSpacing, ParagraphSpacing),
 			});
+			
+			table.Add(new Gtk.TextTag ("textColor"));
 		}
 
 		private new GtkTextView Widget {
@@ -174,6 +176,19 @@ namespace Xwt.GtkBackend
 				Widget.PixelsBelowLines = value;
 				var tag = table.Lookup ("p");
 				tag.SizePoints = Math.Max (value, ParagraphSpacing);
+			}
+		}
+
+		public Drawing.Color TextColor {
+			get {
+				var tag = table.Lookup ("textColor");
+				return tag.ForegroundGdk.ToXwtValue ();
+			}
+			set {
+				var tag = table.Lookup ("textColor");
+				tag.ForegroundGdk = value.ToGtkValue ();
+				var buffer = Widget.Buffer;
+				buffer.ApplyTag (tag, buffer.StartIter, buffer.EndIter);
 			}
 		}
 
