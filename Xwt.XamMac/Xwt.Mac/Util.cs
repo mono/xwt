@@ -58,6 +58,28 @@ namespace Xwt.Mac
 			}
 		}
 
+		public static void SetAttributedString (this NSTextView view, NSAttributedString str)
+		{
+			var textColor = view.TextColor;
+			view.TextStorage.SetString (str);
+			
+			// Workaround:
+			// Check if we have ForegroundColor attribute
+			// And if we don't, then apply the previous view's TextColor,
+			// otherwise it would be reset to Black by the line above.
+			var hasForegroundAttr = false;
+			view.TextStorage.EnumerateAttributes (new NSRange (0, view.TextStorage.Length), NSAttributedStringEnumeration.None, (NSDictionary attrs, NSRange range, ref bool stop) => {
+					stop = false;
+					if (attrs.ContainsKey (NSStringAttributeKey.ForegroundColor)) {
+						hasForegroundAttr = true;
+						stop = true;
+					}
+			});
+
+			if (!hasForegroundAttr && textColor != null)
+				view.TextColor = textColor;
+		}
+
 		public static double WidgetX (this NSView v)
 		{
 			return (double) v.Frame.X;
@@ -407,8 +429,6 @@ namespace Xwt.Mac
 			ns.EndEditing ();
 			return ns;
 		}
-
-
 
 		public static NSMutableAttributedString WithAlignment (this NSMutableAttributedString ns, NSTextAlignment alignment)
 		{

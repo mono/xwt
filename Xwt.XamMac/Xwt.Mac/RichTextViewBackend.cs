@@ -148,7 +148,7 @@ namespace Xwt.Mac
 				lineSpacing = value;
 
 				if (currentBuffer != null)
-					Widget.TextStorage.SetString (currentBuffer.ToAttributedString (font, lineSpacing));
+					Widget.SetAttributedString (currentBuffer.ToAttributedString (font, lineSpacing));
 			}
 		}
 
@@ -173,7 +173,8 @@ namespace Xwt.Mac
 			if (tview == null)
 				return;
 
-			tview.TextStorage.SetString (macBuffer.ToAttributedString (font, lineSpacing));
+
+			tview.SetAttributedString (macBuffer.ToAttributedString (font, lineSpacing));
 		}
 
 		public override void EnableEvent (object eventId)
