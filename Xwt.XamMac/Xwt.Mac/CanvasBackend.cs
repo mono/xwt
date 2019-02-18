@@ -92,8 +92,28 @@ namespace Xwt.Mac
 			w.Frame = new CGRect ((nfloat)rect.X, (nfloat)rect.Y, (nfloat)rect.Width, (nfloat)rect.Height);;
 			w.NeedsDisplay = true;
 		}
+
+		bool canGetFocus;
+		public override bool CanGetFocus
+		{
+			get { return canGetFocus; }
+			set { canGetFocus = value; }
+		}
+
+		public override void SetFocus()
+		{
+			if (Widget.Window != null && CanGetFocus)
+				Widget.Window.MakeFirstResponder(Widget);
+		}
+
+		public override bool HasFocus
+		{
+			get {
+				return Widget.Window != null && Widget.Window.FirstResponder == Widget;
+			}
+		}
 	}
-	
+
 	class CanvasView: WidgetView
 	{
 		ICanvasEventSink eventSink;
@@ -127,6 +147,17 @@ namespace Xwt.Mac
 			set {
 				base.AccessibilityProxy = value;
 			}
+		}
+
+		public override bool AcceptsFirstResponder ()
+		{
+			return Backend?.CanGetFocus ?? false;
+		}
+
+		public override bool BecomeFirstResponder()
+		{
+			// this is really required
+			return base.BecomeFirstResponder();
 		}
 	}
 }

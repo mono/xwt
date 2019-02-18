@@ -104,6 +104,27 @@ namespace Xwt.Mac
 		{
 			Widget.SizeToFit ();
 		}
+
+		bool canGetFocus;
+		public override bool CanGetFocus
+		{
+			get { return canGetFocus; }
+			set { canGetFocus = value; }
+		}
+
+		public override void SetFocus()
+		{
+			if (Widget.Input.Window != null && CanGetFocus)
+				Widget.Input.Window.MakeFirstResponder(Widget.Input);
+		}
+
+		public override bool HasFocus
+		{
+			get
+			{
+				return Widget.Window != null && (Widget.Window.FirstResponder == Widget.Input || Widget.Window.FirstResponder == Widget.Stepper);
+			}
+		}
 	}
 
 	public sealed class MacSpinButton : WidgetView
@@ -111,6 +132,9 @@ namespace Xwt.Mac
 		NSStepper stepper;
 		NSTextField input;
 		NSNumberFormatter formater;
+
+		internal NSTextField Input { get { return input; } }
+		internal NSStepper Stepper { get { return stepper; } }
 
 		ISpinButtonEventSink eventSink;
 
@@ -325,6 +349,11 @@ namespace Xwt.Mac
 				case SpinButtonEvent.ValueChanged: enableValueChangedEvent = false; break;
 				}
 			}
+		}
+
+		public override bool AcceptsFirstResponder()
+		{
+			return false;
 		}
 
 		public override string AccessibilityLabel

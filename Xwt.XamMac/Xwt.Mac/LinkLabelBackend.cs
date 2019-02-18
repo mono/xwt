@@ -26,6 +26,7 @@
 
 using System;
 using AppKit;
+using CoreGraphics;
 using Foundation;
 using Xwt.Backends;
 
@@ -41,7 +42,17 @@ namespace Xwt.Mac
 
 		public Uri Uri {
 			get { return uri; }
-			set { uri = value; }
+			set {
+				uri = value;
+				if (value != null) {
+					Widget.AccessibilityRole = NSAccessibilityRoles.LinkRole;
+					Widget.AccessibilityUrl = value;
+				} else {
+					Widget.AccessibilityRole = NSAccessibilityRoles.StaticTextRole;
+					if (Widget.AccessibilityUrl != null)
+						Widget.AccessibilityUrl = new NSUrl (string.Empty);
+				}
+			}
 		}
 
 		public override string Text {
@@ -49,6 +60,7 @@ namespace Xwt.Mac
 			set {
 				base.Text = value;
 				Widget.Cell.AttributedStringValue = GetAttributedString (value);
+				Widget.AccessibilityTitle = value;
 			}
 		}
 
@@ -59,6 +71,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			base.Initialize ();
+			CanGetFocus = true;
 			Widget.AllowsEditingTextAttributes = true;
 		}
 
@@ -104,21 +117,69 @@ namespace Xwt.Mac
 
 			return attrStr;
 		}
+
+		bool canGetFocus;
+		public override bool CanGetFocus
+		{
+			get { return canGetFocus; }
+			set { canGetFocus = value; }
+		}
+
+		public override void SetFocus()
+		{
+			if (Widget.Window != null && CanGetFocus)
+				Widget.Window.MakeFirstResponder(Widget);
+		}
+
+		public override bool HasFocus
+		{
+			get {
+				return Widget.Window != null && Widget.Window.FirstResponder == Widget;
+			}
+		}
 	}
 
 	class LinkLabelView : TextFieldView
 	{
 		public event EventHandler Clicked;
+
+		public LinkLabelView ()
+		{
+			FocusRingType = NSFocusRingType.Default;
+		}
+
 		public override void ResetCursorRects ()
 		{
 			AddCursorRect (Bounds, NSCursor.PointingHandCursor);
 		}
+
 		public override void MouseUp (NSEvent theEvent)
 		{
 			// Unfortunately, cocoa calls MouseUp even if the mouse is not still over this control so we have to check that
 			var location = ConvertPointFromView (theEvent.LocationInWindow, null);
 			if (Clicked != null && IsMouseInRect (location, Cell.DrawingRectForBounds (Bounds)))
 				Clicked (this, EventArgs.Empty);
+		}
+
+		public override void KeyDown (NSEvent theEvent)
+		{
+			var key = theEvent.ToXwtKeyEventArgs ().Key;
+			if ((key == Key.Return || key == Key.Space) && Clicked != null)
+				Clicked(this, EventArgs.Empty);
+			else
+				base.KeyDown(theEvent);
+		}
+
+		public override bool AcceptsFirstResponder ()
+		{
+			return Backend?.CanGetFocus ?? false;
+		}
+
+		public override CGRect FocusRingMaskBounds { get { return Bounds; } }
+
+		public override void DrawFocusRingMask ()
+		{
+			NSGraphicsContext.CurrentContext.GraphicsPort.FillRect (Bounds);
 		}
 	}
 }
