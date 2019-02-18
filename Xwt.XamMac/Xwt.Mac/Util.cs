@@ -58,25 +58,15 @@ namespace Xwt.Mac
 			}
 		}
 
-		public static void SetAttributedString (this NSTextView view, NSAttributedString str)
+		public static void SetAttributedString (this NSTextView view, NSAttributedString str, bool canOverrideTextColor)
 		{
 			var textColor = view.TextColor;
 			view.TextStorage.SetString (str);
 			
 			// Workaround:
-			// Check if we have ForegroundColor attribute
-			// And if we don't, then apply the previous view's TextColor,
+			// Apply the previous view's TextColor,
 			// otherwise it would be reset to Black by the line above.
-			var hasForegroundAttr = false;
-			view.TextStorage.EnumerateAttributes (new NSRange (0, view.TextStorage.Length), NSAttributedStringEnumeration.None, (NSDictionary attrs, NSRange range, ref bool stop) => {
-					stop = false;
-					if (attrs.ContainsKey (NSStringAttributeKey.ForegroundColor)) {
-						hasForegroundAttr = true;
-						stop = true;
-					}
-			});
-
-			if (!hasForegroundAttr && textColor != null)
+			if (canOverrideTextColor && textColor != null)
 				view.TextColor = textColor;
 		}
 
