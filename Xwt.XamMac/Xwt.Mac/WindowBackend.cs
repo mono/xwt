@@ -39,7 +39,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
-	public class WindowBackend: NSWindow, IWindowBackend
+	public class WindowBackend: NSWindow, IWindowBackend, IMacWindowBackend
 	{
 		WindowBackendController controller;
 		IWindowFrameEventSink eventSink;
@@ -107,7 +107,12 @@ namespace Xwt.Mac
 		}
 
 		public string Name { get; set; }
-		
+
+		void IMacWindowBackend.InternalShow ()
+		{
+			InternalShow ();
+		}
+
 		internal void InternalShow ()
 		{
 			MakeKeyAndOrderFront (MacEngine.App);
