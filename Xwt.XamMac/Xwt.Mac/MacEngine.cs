@@ -228,7 +228,7 @@ namespace Xwt.Mac
 
 		public override Xwt.Backends.IWindowFrameBackend GetBackendForWindow (object nativeWindow)
 		{
-			throw new NotImplementedException ();
+			return new WindowFrameBackend ((NSWindow) nativeWindow);
 		}
 
 		public override object GetNativeWindow (IWindowFrameBackend backend)
@@ -291,7 +291,7 @@ namespace Xwt.Mac
 	public class AppDelegate : NSApplicationDelegate
 	{
 		bool launched;
-		List<WindowBackend> pendingWindows = new List<WindowBackend> ();
+		List<IMacWindowBackend> pendingWindows = new List<IMacWindowBackend> ();
 
 		public event EventHandler<TerminationEventArgs> Terminating;
 		public event EventHandler Unhidden;
@@ -304,7 +304,7 @@ namespace Xwt.Mac
 			this.launched = launched;
 		}
 		
-		internal void ShowWindow (WindowBackend w)
+		internal void ShowWindow (IMacWindowBackend w)
 		{
 			if (!launched) {
 				if (!pendingWindows.Contains (w))
