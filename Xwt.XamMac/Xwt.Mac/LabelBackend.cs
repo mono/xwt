@@ -43,6 +43,7 @@ namespace Xwt.Mac
 		protected LabelBackend (IViewObject view)
 		{
 			View = view;
+			view.Backend = this;
 		}
 
 		IViewObject View;
@@ -50,6 +51,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)View);
+			CanGetFocus = false;
 			Widget.StringValue = string.Empty;
 			Widget.Editable = false;
 			Widget.Bezeled = false;
@@ -230,6 +232,11 @@ namespace Xwt.Mac
 				Child.Frame = new CGRect (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
 			}
 			Child.NeedsDisplay = true;
+		}
+
+		public override bool AcceptsFirstResponder()
+		{
+			return false;
 		}
 	}
 	

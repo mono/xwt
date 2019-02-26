@@ -58,6 +58,18 @@ namespace Xwt.Mac
 			}
 		}
 
+		public static void SetAttributedString (this NSTextView view, NSAttributedString str, bool canOverrideTextColor)
+		{
+			var textColor = view.TextColor;
+			view.TextStorage.SetString (str);
+			
+			// Workaround:
+			// Apply the previous view's TextColor,
+			// otherwise it would be reset to Black by the line above.
+			if (canOverrideTextColor && textColor != null)
+				view.TextColor = textColor;
+		}
+
 		public static double WidgetX (this NSView v)
 		{
 			return (double) v.Frame.X;
@@ -407,8 +419,6 @@ namespace Xwt.Mac
 			ns.EndEditing ();
 			return ns;
 		}
-
-
 
 		public static NSMutableAttributedString WithAlignment (this NSMutableAttributedString ns, NSTextAlignment alignment)
 		{
