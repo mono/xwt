@@ -214,7 +214,15 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public override void EnableEvent (object eventId)
+        public bool HasCompletions
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
 			if (eventId is TextBoxEvent) {
@@ -327,6 +335,16 @@ namespace Xwt.GtkBackend
 			}
 			base.Dispose (disposing);
 		}
-	}
+
+        public void SetCompletions(string[] completions)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetCompletionMatchFunc(Func<string, string, bool> matchFunc)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
 
