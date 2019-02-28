@@ -35,9 +35,9 @@ namespace Xwt
 		public TextEntry ()
 		{
 			// TODO: DEPRECATED! Safe to remove?
-			MapEvent (TextEntryEvent.Changed, typeof(TextBox), "OnChanged");
-			MapEvent (TextEntryEvent.Activated, typeof(TextBox), "OnActivated");
-			MapEvent (TextEntryEvent.SelectionChanged, typeof(TextBox), "OnSelectionChanged");
+			MapEvent (TextBoxEvent.Changed, typeof(TextBox), "OnChanged");
+			MapEvent (TextBoxEvent.Activated, typeof(TextBox), "OnActivated");
+			MapEvent (TextBoxEvent.SelectionChanged, typeof(TextBox), "OnSelectionChanged");
 		}
 
 		protected new class WidgetBackendHost: TextBox.WidgetBackendHost, ITextEntryEventSink
