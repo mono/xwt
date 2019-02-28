@@ -103,7 +103,7 @@ namespace Xwt.WPFBackend
 			}
 			else if (AdornedTextBox != null) {
 				multiline = AdornedTextBox.AcceptsReturn;
-				alignment = AdornedTextBox.ReadLocalValue (TextBox.TextAlignmentProperty) !=DependencyProperty.UnsetValue ? AdornedTextBox.TextAlignment : ConvertAlignment (AdornedTextBox.HorizontalContentAlignment);
+				alignment = AdornedTextBox.ReadLocalValue (System.Windows.Controls.TextBox.TextAlignmentProperty) !=DependencyProperty.UnsetValue ? AdornedTextBox.TextAlignment : ConvertAlignment (AdornedTextBox.HorizontalContentAlignment);
 				flowDirection = AdornedTextBox.FlowDirection;
 				fontSize = AdornedTextBox.FontSize;
 				typeFace = AdornedTextBox.FontFamily.GetTypefaces ().FirstOrDefault ();
