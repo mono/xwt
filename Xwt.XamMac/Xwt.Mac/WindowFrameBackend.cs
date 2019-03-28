@@ -37,6 +37,7 @@ namespace Xwt.Mac
 	{
 		IWindowFrameEventSink eventSink;
 		WindowFrame frontend;
+		bool hasExternalDelegate;
 
 		public WindowFrameBackend ()
 		{
@@ -45,6 +46,8 @@ namespace Xwt.Mac
 		public WindowFrameBackend (NSWindow window)
 		{
 			Window = window;
+			// don't replace existing delegates
+			hasExternalDelegate = Window.Delegate != null || Window.WeakDelegate != null;
 		}
 
 		public NSWindow Window { get; set; }
@@ -184,7 +187,7 @@ namespace Xwt.Mac
 					break;
 				case WindowFrameEvent.CloseRequested:
 					// NOTE: this works only if the wrapped window has no delegate
-					if (Window.Delegate == null && Window.WeakDelegate == null) // don't replace existing delegates
+					if (!hasExternalDelegate) // don't replace existing delegates
 						Window.WindowShouldClose = OnShouldClose;
 					else
 						return; // skip eventEnabled update to avoid touching WindowShouldClose when disabling events
