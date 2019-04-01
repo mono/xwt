@@ -157,6 +157,7 @@ namespace Xwt.GtkBackend
 		public void EndLoop ()
 		{
 			Window.Respond (Gtk.ResponseType.Ok);
+			Window.Hide ();
 		}
 
 		public override bool Close ()
