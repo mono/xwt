@@ -183,7 +183,6 @@ namespace Xwt
 
 		protected override void Dispose (bool release_all)
 		{
-			backendHost.ClearEvents (release_all);
 			base.Dispose (release_all);
 			IsDisposed = true;
 		}

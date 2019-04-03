@@ -44,18 +44,17 @@ namespace Xwt
 			{
 				IPanedBackend b = (IPanedBackend) base.OnCreateBackend ();
 				
+				// We always want to listen this event because we use it
+				// to reallocate the children
+				if (!EngineBackend.HandlesSizeNegotiation)
+					b.EnableEvent (PanedEvent.PositionChanged);
+				
 				return b;
 			}
 		
 			protected override void OnBackendCreated ()
 			{
 				Backend.Initialize (Parent.direction);
-
-				// We always want to listen this event because we use it
-				// to reallocate the children
-				if (!EngineBackend.HandlesSizeNegotiation)
-					OnEnableEvent (PanedEvent.PositionChanged);
-
 				base.OnBackendCreated ();
 			}
 				
