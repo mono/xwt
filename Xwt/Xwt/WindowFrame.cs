@@ -74,7 +74,6 @@ namespace Xwt
 		bool pendingReallocation;
 		Image icon;
 		WindowFrame transientFor;
-		protected bool Owned { get; }
 		
 		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
 		{
@@ -84,8 +83,7 @@ namespace Xwt
 				base.OnBackendCreated ();
 				Parent.location = Backend.Bounds.Location;
 				Parent.size = Backend.Bounds.Size;
-				if (Parent.Owned)
-					OnEnableEvent (WindowFrameEvent.BoundsChanged);
+				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
 			}
 			
 			public void OnBoundsChanged (Rectangle bounds)
@@ -122,12 +120,7 @@ namespace Xwt
 			MapEvent (WindowFrameEvent.Closed, typeof(WindowFrame), "OnClosed");
 		}
 
-		protected WindowFrame (bool owned)
-		{
-			Owned = owned;
-		}
-
-		public WindowFrame () : this (owned: true)
+		public WindowFrame ()
 		{
 			if (!(base.BackendHost is WindowBackendHost))
 				throw new InvalidOperationException ("CreateBackendHost for WindowFrame did not return a WindowBackendHost instance");
@@ -144,7 +137,7 @@ namespace Xwt
 			
 			// Don't dispose the backend if this object is being finalized
 			// The backend has to handle the finalizing on its own
-			if (disposing && BackendHost.BackendCreated && Owned)
+			if (disposing && BackendHost.BackendCreated)
 				Backend.Dispose ();
 		}
 		
@@ -410,9 +403,7 @@ namespace Xwt
 		internal virtual Rectangle BackendBounds {
 			get {
 				BackendHost.EnsureBackendLoaded ();
-				if (Owned)
-					return new Rectangle (location, size);
-				return Backend.Bounds;
+				return new Rectangle (location, size);
 			}
 			set {
 				size = value.Size;
