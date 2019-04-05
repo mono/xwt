@@ -37,6 +37,7 @@ namespace Xwt.Mac
 	{
 		IWindowFrameEventSink eventSink;
 		WindowFrame frontend;
+		bool hasExternalDelegate;
 
 		public WindowFrameBackend ()
 		{
@@ -45,6 +46,8 @@ namespace Xwt.Mac
 		public WindowFrameBackend (NSWindow window)
 		{
 			Window = window;
+			// don't replace existing delegates
+			hasExternalDelegate = Window.Delegate != null || Window.WeakDelegate != null;
 		}
 
 		public NSWindow Window { get; set; }
@@ -164,6 +167,7 @@ namespace Xwt.Mac
 		}
 
 		WindowFrameEvent eventsEnabled;
+		NSObject didResizeObserver, didMoveObserver, willCloseObserver;
 
 		void IBackend.EnableEvent (object eventId)
 		{
@@ -171,25 +175,29 @@ namespace Xwt.Mac
 				var @event = (WindowFrameEvent)eventId;
 				switch (@event) {
 				case WindowFrameEvent.BoundsChanged:
-					Window.DidResize += HandleDidResize;
-					Window.DidMove += HandleDidResize;
+					didResizeObserver = NSNotificationCenter.DefaultCenter.AddObserver (NSWindow.ResizedNotification, HandleDidResize, Window);
+					didMoveObserver = NSNotificationCenter.DefaultCenter.AddObserver (NSWindow.MovedNotification, HandleDidResize, Window);
 					break;
 				case WindowFrameEvent.Hidden:
 					EnableVisibilityEvent (@event);
-					Window.WillClose += OnWillClose;
+					willCloseObserver = NSNotificationCenter.DefaultCenter.AddObserver (NSWindow.WillCloseNotification, OnWillClose, Window);
 					break;
 				case WindowFrameEvent.Shown:
 					EnableVisibilityEvent (@event);
 					break;
 				case WindowFrameEvent.CloseRequested:
-					Window.WindowShouldClose = OnShouldClose;
+					// NOTE: this works only if the wrapped window has no delegate
+					if (!hasExternalDelegate) // don't replace existing delegates
+						Window.WindowShouldClose = OnShouldClose;
+					else
+						return; // skip eventEnabled update to avoid touching WindowShouldClose when disabling events
 					break;
 				}
 				eventsEnabled |= @event;
 			}
 		}
 
-		void OnWillClose (object sender, EventArgs args)
+		void OnWillClose (NSNotification note)
 		{
 			OnHidden ();
 		}
@@ -278,11 +286,10 @@ namespace Xwt.Mac
 				eventsEnabled &= ~@event;
 				switch (@event) {
 				case WindowFrameEvent.BoundsChanged:
-					Window.DidResize -= HandleDidResize;
-					Window.DidMove -= HandleDidResize;
+					NSNotificationCenter.DefaultCenter.RemoveObservers (new [] { didResizeObserver, didMoveObserver });
 					break;
 				case WindowFrameEvent.Hidden:
-					Window.WillClose -= OnWillClose;
+					NSNotificationCenter.DefaultCenter.RemoveObserver (willCloseObserver);
 					DisableVisibilityEvent ();
 					break;
 				case WindowFrameEvent.Shown:
@@ -292,7 +299,7 @@ namespace Xwt.Mac
 			}
 		}
 
-		void HandleDidResize (object sender, EventArgs e)
+		void HandleDidResize (NSNotification note)
 		{
 			OnBoundsChanged ();
 		}
@@ -391,12 +398,11 @@ namespace Xwt.Mac
 		{
 			if (!disposed && Window != null) {
 				if (eventsEnabled.HasFlag (WindowFrameEvent.BoundsChanged)) {
-					Window.DidResize -= HandleDidResize;
-					Window.DidMove -= HandleDidResize;
+					NSNotificationCenter.DefaultCenter.RemoveObservers (new [] { didResizeObserver, didMoveObserver });
 				}
 				if (eventsEnabled.HasFlag (WindowFrameEvent.Hidden)) {
 					DisableVisibilityEvent ();
-					Window.WillClose -= OnWillClose;
+					NSNotificationCenter.DefaultCenter.RemoveObserver (willCloseObserver);
 				}
 				if (eventsEnabled.HasFlag (WindowFrameEvent.Shown)) {
 					DisableVisibilityEvent ();
