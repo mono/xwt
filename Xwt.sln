@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk3", "Xwt.Gtk\Xwt.Gtk
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreTests", "Testing\CoreTests\CoreTests.csproj", "{F0C03C12-F08A-4378-958D-86DD4CFE966F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Components", "Xwt.Components\Xwt.Components.csproj", "{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -279,6 +281,28 @@ Global
 		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.Release|x86.Build.0 = Release|Any CPU
 		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.XamMac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F0C03C12-F08A-4378-958D-86DD4CFE966F}.XamMac-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Mac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Mac-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Win-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Win-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Win-Debug|x86.ActiveCfg = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Win-Debug|x86.Build.0 = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Debug|x86.Build.0 = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Linux-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Linux-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Linux-Debug|x86.Build.0 = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Mac-Debug|x86.ActiveCfg = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Mac-Debug|x86.Build.0 = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Release|x86.ActiveCfg = Release|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.Release|x86.Build.0 = Release|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.XamMac-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E23DAA-B0FE-4A6D-9629-74371FDC2FB0}.XamMac-Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BC764278-4141-483C-8643-2EA8C40373B2} = {164E1FED-7688-4AE9-B19B-012F8784F9DD}

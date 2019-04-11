@@ -1,0 +1,238 @@
+﻿//
+// MyClass.cs
+//
+// Author:
+//       jmedrano <josmed@microsoft.com>
+//
+// Copyright (c) 2019 ${CopyrightHolder}
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+using System;
+using System.Collections.Generic;
+using Xwt.Backends;
+
+namespace Xwt
+{
+	public static class MessageDialog
+	{
+		public static WindowFrame RootWindow { get; set; }
+
+		#region ShowError
+		public static void ShowError (string primaryText)
+		{
+			ShowError (RootWindow, primaryText);
+		}
+		public static void ShowError (WindowFrame parent, string primaryText)
+		{
+			ShowError (parent, primaryText, null);
+		}
+		public static void ShowError (string primaryText, string secondaryText)
+		{
+			ShowError (RootWindow, primaryText, secondaryText);
+		}
+		public static void ShowError (WindowFrame parent, string primaryText, string secondaryText)
+		{
+			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.ErrorIcon, primaryText, secondaryText, Command.Ok);
+		}
+		#endregion
+
+		#region ShowWarning
+		public static void ShowWarning (string primaryText)
+		{
+			ShowWarning (RootWindow, primaryText);
+		}
+		public static void ShowWarning (WindowFrame parent, string primaryText)
+		{
+			ShowWarning (parent, primaryText, null);
+		}
+		public static void ShowWarning (string primaryText, string secondaryText)
+		{
+			ShowWarning (RootWindow, primaryText, secondaryText);
+		}
+		public static void ShowWarning (WindowFrame parent, string primaryText, string secondaryText)
+		{
+			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.WarningIcon, primaryText, secondaryText, Command.Ok);
+		}
+		#endregion
+
+
+		#region ShowMessage
+		public static void ShowMessage (string primaryText)
+		{
+			ShowMessage (RootWindow, primaryText);
+		}
+		public static void ShowMessage (WindowFrame parent, string primaryText)
+		{
+			ShowMessage (parent, primaryText, null);
+		}
+		public static void ShowMessage (string primaryText, string secondaryText)
+		{
+			ShowMessage (RootWindow, primaryText, secondaryText);
+		}
+		public static void ShowMessage (string primaryText, string secondaryText, Drawing.Image icon)
+		{
+			ShowMessage (RootWindow, primaryText, secondaryText, icon);
+		}
+		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText)
+		{
+			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.InformationIcon, primaryText, secondaryText, Command.Ok);
+		}
+		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText, Drawing.Image icon)
+		{
+			GenericAlert (parent, icon, primaryText, secondaryText, Command.Ok);
+		}
+		#endregion
+
+		#region Confirm
+		public static bool Confirm (string primaryText, Command button)
+		{
+			return Confirm (primaryText, null, button);
+		}
+
+		public static bool Confirm (string primaryText, string secondaryText, Command button)
+		{
+			return Confirm (RootWindow, primaryText, secondaryText, button);
+		}
+
+		public static bool Confirm (string primaryText, string secondaryText, Drawing.Image icon, Command button)
+		{
+			return Confirm (RootWindow, primaryText, secondaryText, icon, button);
+		}
+
+		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, Command button)
+		{
+			return GenericAlert (window, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, Command.Cancel, button) == button;
+		}
+
+		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, Drawing.Image icon, Command button)
+		{
+			return GenericAlert (window, icon, primaryText, secondaryText, Command.Cancel, button) == button;
+		}
+
+		public static bool Confirm (string primaryText, Command button, bool confirmIsDefault)
+		{
+			return Confirm (primaryText, null, button, confirmIsDefault);
+		}
+
+		public static bool Confirm (string primaryText, string secondaryText, Command button, bool confirmIsDefault)
+		{
+			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
+		}
+
+		public static bool Confirm (string primaryText, string secondaryText, Drawing.Image icon, Command button, bool confirmIsDefault)
+		{
+			return GenericAlert (RootWindow, icon, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
+		}
+
+		public static bool Confirm (ConfirmationMessage message)
+		{
+			return Confirm (RootWindow, message);
+		}
+
+		public static bool Confirm (WindowFrame window, ConfirmationMessage message)
+		{
+			return GenericAlert (window, message) == message.ConfirmButton;
+		}
+		#endregion
+
+		#region AskQuestion
+		public static Command AskQuestion (string primaryText, params Command[] buttons)
+		{
+			return AskQuestion (primaryText, null, buttons);
+		}
+
+		public static Command AskQuestion (string primaryText, string secondaryText, params Command[] buttons)
+		{
+			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, buttons);
+		}
+
+		public static Command AskQuestion (string primaryText, string secondaryText, Drawing.Image icon, params Command[] buttons)
+		{
+			return GenericAlert (RootWindow, icon, primaryText, secondaryText, buttons);
+		}
+
+		public static Command AskQuestion (string primaryText, int defaultButton, params Command[] buttons)
+		{
+			return AskQuestion (primaryText, null, defaultButton, buttons);
+		}
+
+		public static Command AskQuestion (string primaryText, string secondaryText, int defaultButton, params Command[] buttons)
+		{
+			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, defaultButton, buttons);
+		}
+
+		public static Command AskQuestion (string primaryText, string secondaryText, Drawing.Image icon, int defaultButton, params Command[] buttons)
+		{
+			return GenericAlert (RootWindow, icon, primaryText, secondaryText, defaultButton, buttons);
+		}
+
+		public static Command AskQuestion (QuestionMessage message)
+		{
+			return AskQuestion (RootWindow, message);
+		}
+
+		public static Command AskQuestion (WindowFrame window, QuestionMessage message)
+		{
+			return GenericAlert (window, message);
+		}
+		#endregion
+
+		static Command GenericAlert (WindowFrame parent, Xwt.Drawing.Image icon, string primaryText, string secondaryText, params Command[] buttons)
+		{
+			return GenericAlert (parent, icon, primaryText, secondaryText, buttons.Length - 1, buttons);
+		}
+
+		static Command GenericAlert (WindowFrame parent, Xwt.Drawing.Image icon, string primaryText, string secondaryText, int defaultButton, params Command[] buttons)
+		{
+			GenericMessage message = new GenericMessage () {
+				Icon = icon,
+				Text = primaryText,
+				SecondaryText = secondaryText,
+				DefaultButton = defaultButton
+			};
+			foreach (Command but in buttons)
+				message.Buttons.Add (but);
+
+			return GenericAlert (parent, message);
+		}
+
+		static Command GenericAlert (WindowFrame parent, MessageDescription message)
+		{
+			if (message.ApplyToAllButton != null)
+				return message.ApplyToAllButton;
+
+			IAlertDialogBackend backend = Toolkit.CurrentEngine.Backend.CreateBackend<IAlertDialogBackend> ();
+			backend.Initialize (Toolkit.CurrentEngine.Context);
+			if (message.Icon != null)
+				message.Icon.InitForToolkit (Toolkit.CurrentEngine);
+
+			using (backend) {
+				Command res = null;
+				Toolkit.CurrentEngine.InvokePlatformCode (delegate {
+					res = backend.Run (parent ?? MessageDialog.RootWindow, message);
+				});
+
+				if (backend.ApplyToAll)
+					message.ApplyToAllButton = res;
+
+				return res;
+			}
+		}
+	}
+}
