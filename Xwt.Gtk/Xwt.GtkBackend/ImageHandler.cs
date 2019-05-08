@@ -70,6 +70,9 @@ namespace Xwt.GtkBackend
 		{
 			if (images.Count () == 1)
 				return images.Cast<GtkImage> ().First ();
+			var customDrawn = images.Cast<GtkImage> ().FirstOrDefault (img => (img.Frames == null || img.Frames.Length == 0) && img.HasMultipleSizes);
+			if (customDrawn != null)
+				return customDrawn;
 			var frames = images.Cast<GtkImage> ().SelectMany (img => img.Frames);
 			return new GtkImage (frames);
 		}
