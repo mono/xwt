@@ -95,13 +95,23 @@ namespace Xwt.WPFBackend
 			} while (true);
 		}
 
+		void SetupBorderMargin ()
+		{
+			if (Frontend.Padding != 0)
+				return;
+
+			Border.Padding = new Thickness (1, 1, 1, 1);
+			Border.BorderThickness = new Thickness (1);
+			Border.Margin = new Thickness (1);
+		}
+
 		public PopoverBackend ()
 		{
 			Border = new System.Windows.Controls.Border {
-				Padding = new Thickness (15, 10, 15, 15),
-				BorderThickness = new Thickness (1),
-				Margin = new System.Windows.Thickness (10),
-				Effect = new System.Windows.Media.Effects.DropShadowEffect () {
+					Padding = new Thickness (15, 10, 15, 15),
+					BorderThickness = new Thickness (1),
+					Margin = new Thickness (10),
+					Effect = new System.Windows.Media.Effects.DropShadowEffect () {
 					Color = Colors.Black,
 					Direction = 270,
 					BlurRadius = 15,
@@ -132,6 +142,7 @@ namespace Xwt.WPFBackend
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget reference, Xwt.Rectangle positionRect, Widget child)
 		{
 			ActualPosition = orientation;
+			SetupBorderMargin ();
 			Border.Child = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (child);
 			NativeWidget.CustomPopupPlacementCallback = (popupSize, targetSize, offset) => {
 				System.Windows.Point location;
