@@ -96,7 +96,7 @@ namespace Xwt.WPFBackend
 			var node = (TreeStoreNode) pos;
 			node[column] = value;
 
-			OnNodeChanged (new TreeNodeEventArgs (pos));
+			OnNodeChanged (new TreeNodeEventArgs (pos, -1, column));
 		}
 
 		public TreePosition InsertBefore (TreePosition pos)

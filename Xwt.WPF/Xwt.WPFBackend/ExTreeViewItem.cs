@@ -48,6 +48,7 @@ namespace Xwt.WPFBackend
 		{
 			Loaded += OnLoaded;
 			HorizontalContentAlignment = HorizontalAlignment.Stretch;
+			
 		}
 
 		public ExTreeViewItem (ExTreeView view)
@@ -224,6 +225,11 @@ namespace Xwt.WPFBackend
 
 				column.Width = Double.NaN;
 			}
+		}
+
+		public void ExpandColumnWidth (int columnIndex, double toWidth)
+		{
+			this.view.View.Columns [columnIndex].Width = toWidth;
 		}
 
 		protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)

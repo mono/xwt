@@ -49,14 +49,18 @@ namespace Xwt
 	
 	public class TreeNodeEventArgs: EventArgs
 	{
-		public TreeNodeEventArgs (TreePosition node): this (node, -1)
+		public TreeNodeEventArgs (TreePosition node): this (node, -1, -1)
+		{
+		}
+		public TreeNodeEventArgs(TreePosition node, int childIndex) : this (node, childIndex, -1)
 		{
 		}
 
-		public TreeNodeEventArgs (TreePosition node, int childIndex)
+		public TreeNodeEventArgs (TreePosition node, int childIndex, int changedCellIndex)
 		{
 			Node = node;
 			ChildIndex = childIndex;
+			ChangedCellIndex = changedCellIndex;
 		}
 		
 		public TreePosition Node {
@@ -68,6 +72,8 @@ namespace Xwt
 			get;
 			private set;
 		}
+
+		public int ChangedCellIndex { get; private set; }
 	}
 	
 	public class TreeNodeChildEventArgs: TreeNodeEventArgs

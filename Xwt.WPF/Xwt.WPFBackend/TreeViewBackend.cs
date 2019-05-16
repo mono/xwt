@@ -50,6 +50,7 @@ namespace Xwt.WPFBackend
 			public ListViewColumn Column;
 			public int CellIndex;
 			public int ColumnIndex;
+			public int GlobalCellIndex;
 		}
 
 		private static readonly ResourceDictionary TreeResourceDictionary;
@@ -234,6 +235,47 @@ namespace Xwt.WPFBackend
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
 			Tree.ItemsSource = (TreeStoreBackend) sourceBackend;
+			((TreeStoreBackend)sourceBackend).NodeChanged += TreeViewBackend_NodeChanged;
+		}
+
+		private void TreeViewBackend_NodeChanged (object sender, TreeNodeEventArgs e)
+		{
+			var treeView = (TreeView)Frontend;
+			var columns = treeView.Columns;
+
+			var changedCell = cellViews.Where (cv => cv.Value.GlobalCellIndex == e.ChangedCellIndex)
+				.Select (cv => (KeyValuePair<CellView, CellInfo>?)cv)
+				.FirstOrDefault ();
+			if (changedCell == null)
+				return;
+
+			var changedColumnIndex = changedCell.Value.Value.ColumnIndex;
+			var column = columns[changedColumnIndex];
+			var treeViewItem = GetVisibleTreeItem(e.Node);
+			if (treeViewItem == null || !column.Expands || !column.Views.Any ())
+				return;
+
+			double defaultColumnSpacing = 6;
+			var row_bounds = treeView.GetRowBounds(e.Node, false);
+
+			double totalColumnWidth = 0;
+			if (changedColumnIndex == columns.Count - 1) {
+				var cell_bg_bounds = treeView.GetCellBounds(e.Node, column.Views[0], true);
+				totalColumnWidth = row_bounds.Right - cell_bg_bounds.Left + 2 * defaultColumnSpacing;
+			} else {
+				totalColumnWidth = 2 * defaultColumnSpacing;
+				double maxColumnViewWidth = 0;
+				foreach (var cell in column.Views) {
+					var cell_bounds = treeView.GetCellBounds(e.Node, cell, false);
+
+					if (cell_bounds.Width > maxColumnViewWidth)
+						maxColumnViewWidth = cell_bounds.Width;
+				}
+
+				totalColumnWidth += maxColumnViewWidth;
+			}
+
+			treeViewItem.ExpandColumnWidth(changedColumnIndex, totalColumnWidth);
 		}
 
 		public object AddColumn (ListViewColumn column)
@@ -300,7 +342,8 @@ namespace Xwt.WPFBackend
 				cellViews [v] = new CellInfo {
 					Column = col,
 					CellIndex = cellindex,
-					ColumnIndex = colindex
+					ColumnIndex = colindex,
+					GlobalCellIndex = cellViews.Count
 				};
 			}
 		}
@@ -386,6 +429,14 @@ namespace Xwt.WPFBackend
 						break;
 				}
 			}
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (Tree?.ItemsSource != null)
+				((TreeStoreBackend)Tree.ItemsSource).NodeChanged -= TreeViewBackend_NodeChanged;
+
+			base.Dispose(disposing);
 		}
 
 		protected ExTreeView Tree {
