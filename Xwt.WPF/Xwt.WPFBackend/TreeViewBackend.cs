@@ -240,42 +240,49 @@ namespace Xwt.WPFBackend
 
 		private void TreeViewBackend_NodeChanged (object sender, TreeNodeEventArgs e)
 		{
-			var treeView = (TreeView)Frontend;
-			var columns = treeView.Columns;
+			try {
+				var treeView = (TreeView)Frontend;
+				var columns = treeView.Columns;
 
-			var changedCell = cellViews.Where (cv => cv.Value.GlobalCellIndex == e.ChangedCellIndex)
-				.Select (cv => (KeyValuePair<CellView, CellInfo>?)cv)
-				.FirstOrDefault ();
-			if (changedCell == null)
-				return;
+				var changedCell = cellViews.Where (cv => cv.Value.GlobalCellIndex == e.ChangedCellIndex)
+					.Select (cv => (KeyValuePair<CellView, CellInfo>?)cv)
+					.FirstOrDefault ();
+				if (changedCell == null)
+					return;
 
-			var changedColumnIndex = changedCell.Value.Value.ColumnIndex;
-			var column = columns[changedColumnIndex];
-			var treeViewItem = GetVisibleTreeItem(e.Node);
-			if (treeViewItem == null || !column.Expands || !column.Views.Any ())
-				return;
+				var changedColumnIndex = changedCell.Value.Value.ColumnIndex;
+				if (changedColumnIndex < 0 || changedColumnIndex > columns.Count - 1)
+					return;
 
-			double defaultColumnSpacing = 6;
-			var row_bounds = treeView.GetRowBounds(e.Node, false);
+				var column = columns [changedColumnIndex];
+				var treeViewItem = GetVisibleTreeItem (e.Node);
+				if (treeViewItem == null || !column.Expands || !column.Views.Any ())
+					return;
 
-			double totalColumnWidth = 0;
-			if (changedColumnIndex == columns.Count - 1) {
-				var cell_bg_bounds = treeView.GetCellBounds(e.Node, column.Views[0], true);
-				totalColumnWidth = row_bounds.Right - cell_bg_bounds.Left + 2 * defaultColumnSpacing;
-			} else {
-				totalColumnWidth = 2 * defaultColumnSpacing;
-				double maxColumnViewWidth = 0;
-				foreach (var cell in column.Views) {
-					var cell_bounds = treeView.GetCellBounds(e.Node, cell, false);
+				double defaultColumnSpacing = 6;
+				var row_bounds = treeView.GetRowBounds (e.Node, false);
 
-					if (cell_bounds.Width > maxColumnViewWidth)
-						maxColumnViewWidth = cell_bounds.Width;
+				double totalColumnWidth = 0;
+				if (changedColumnIndex == columns.Count - 1) {
+					var cell_bg_bounds = treeView.GetCellBounds (e.Node, column.Views [0], true);
+					totalColumnWidth = row_bounds.Right - cell_bg_bounds.Left + 2 * defaultColumnSpacing;
+				} else {
+					totalColumnWidth = 2 * defaultColumnSpacing;
+					double maxColumnViewWidth = 0;
+					foreach (var cell in column.Views) {
+						var cell_bounds = treeView.GetCellBounds (e.Node, cell, false);
+
+						if (cell_bounds.Width > maxColumnViewWidth)
+							maxColumnViewWidth = cell_bounds.Width;
+					}
+
+					totalColumnWidth += maxColumnViewWidth;
 				}
 
-				totalColumnWidth += maxColumnViewWidth;
+				treeViewItem.ExpandColumnWidth (changedColumnIndex, totalColumnWidth);
+			} catch (Exception ex) {
+				Console.WriteLine ($"[TreeViewBackend_NodeChanged] Exception: {ex}");
 			}
-
-			treeViewItem.ExpandColumnWidth(changedColumnIndex, totalColumnWidth);
 		}
 
 		public object AddColumn (ListViewColumn column)
