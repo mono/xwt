@@ -48,7 +48,6 @@ namespace Xwt.WPFBackend
 		{
 			Loaded += OnLoaded;
 			HorizontalContentAlignment = HorizontalAlignment.Stretch;
-			
 		}
 
 		public ExTreeViewItem (ExTreeView view)

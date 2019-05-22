@@ -244,6 +244,9 @@ namespace Xwt.WPFBackend
 				var treeView = (TreeView)Frontend;
 				var columns = treeView.Columns;
 
+				if (!cellViews.Any ())
+					return;
+
 				var changedCell = cellViews.Where (cv => cv.Value.GlobalCellIndex == e.ChangedCellIndex)
 					.Select (cv => (KeyValuePair<CellView, CellInfo>?)cv)
 					.FirstOrDefault ();
@@ -251,6 +254,8 @@ namespace Xwt.WPFBackend
 					return;
 
 				var changedColumnIndex = changedCell.Value.Value.ColumnIndex;
+				//Debug.WriteLine("changedColumnIndex:" + changedColumnIndex + " e.ChangedCellIndex: " + e.ChangedCellIndex + " columns.Count: " + columns.Count);
+
 				if (changedColumnIndex < 0 || changedColumnIndex > columns.Count - 1)
 					return;
 
@@ -332,9 +337,22 @@ namespace Xwt.WPFBackend
 
 		public void RemoveColumn (ListViewColumn column, object handle)
 		{
+			int removedColumnIndex = Tree.View.Columns.IndexOf ((GridViewColumn)handle);
 			Tree.View.Columns.Remove ((GridViewColumn) handle);
-			foreach (var k in cellViews.Where (e => e.Value.Column == column).Select (e => e.Key).ToArray ())
+
+			var removedColumnCellViews = cellViews.Where (e => e.Value.Column == column);
+			int removedColumnCellViewsCount = removedColumnCellViews.Count ();
+
+			foreach (var k in removedColumnCellViews.Select (e => e.Key).ToArray ())
 				cellViews.Remove (k);
+
+			// Shift cell views column index and global cell indexes following the removed column
+			foreach (var cv in cellViews) {
+				if (cv.Value.ColumnIndex > removedColumnIndex) {
+					cv.Value.ColumnIndex--;
+					cv.Value.GlobalCellIndex -= removedColumnCellViewsCount;
+				}
+			}
 		}
 
 		void MapColumn (ListViewColumn col, GridViewColumn handle)
