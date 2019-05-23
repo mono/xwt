@@ -195,7 +195,7 @@ namespace Xwt
 				widget.MarginRight = marginRight;
 			if (marginBottom != -1)
 				widget.MarginBottom = marginBottom;
-			Pack (widget, expand, align, PackOrigin.Start);
+			Pack (widget, expand, align, ptype);
 		}
 
 		void Pack (Widget widget, bool? expand, WidgetPlacement align, PackOrigin ptype)
