@@ -32,8 +32,20 @@ namespace Xwt
 {
 	public static class MessageDialog
 	{
-		public static WindowFrame RootWindow { get; set; }
-		
+		private static WindowFrame rootWindow;
+
+		public static WindowFrame RootWindow
+		{
+			get {
+				if (Toolkit.CurrentEngine.Defaults.MessageDialog.DefaultRootWindowOverride != null)
+					return Toolkit.CurrentEngine.Defaults.MessageDialog.DefaultRootWindowOverride() ?? rootWindow;
+				return rootWindow;
+			}
+			set {
+				rootWindow = value;
+			}
+		}
+
 		#region ShowError
 		public static void ShowError (string primaryText)
 		{
@@ -520,6 +532,12 @@ namespace Xwt
 				questionIcon = value;
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the default root window override function.
+		/// </summary>
+		/// <value>The root window to be used instead of MessageDialog.RootWindow.</value>
+		public Func<WindowFrame> DefaultRootWindowOverride { get; set; }
 	}
 }
 
