@@ -71,8 +71,16 @@ namespace Xwt.Mac
 			public override void LoadView ()
 			{
 				View = new ContainerView (this);
+
+				string appearance = NativeChild.EffectiveAppearance?.Name;
+
 				NativeChild.RemoveFromSuperview ();
 				View.AddSubview (NativeChild);
+
+				if (!string.IsNullOrEmpty(appearance) && appearance.IndexOf ("Dark", StringComparison.Ordinal) >= 0)
+					View.Appearance = NSAppearance.GetAppearance (NSAppearance.NameDarkAqua);
+				else
+					View.Appearance = NSAppearance.GetAppearance (NSAppearance.NameAqua);
 
 				WidgetSpacing padding = 0;
 				if (Backend != null)
