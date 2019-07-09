@@ -78,7 +78,7 @@ namespace Xwt.Mac
 				View.AddSubview (NativeChild);
 
 				if (!string.IsNullOrEmpty(appearance) && appearance.IndexOf ("Dark", StringComparison.Ordinal) >= 0)
-					View.Appearance = NSAppearance.GetAppearance (NSAppearance.NameDarkAqua);
+					View.Appearance = NSAppearance.GetAppearance (MacSystemInformation.OsVersion < MacSystemInformation.Mojave ? NSAppearance.NameVibrantDark : new NSString("NSAppearanceNameDarkAqua"));
 				else
 					View.Appearance = NSAppearance.GetAppearance (NSAppearance.NameAqua);
 
