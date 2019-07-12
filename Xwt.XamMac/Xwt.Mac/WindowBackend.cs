@@ -243,9 +243,7 @@ namespace Xwt.Mac
 		[Export ("windowWillClose:")]
 		new void WillClose (NSNotification notification)
 		{
-			if (eventsEnabled.HasFlag (WindowFrameEvent.Hidden)) {
-				OnHidden ();
-			}
+			OnHidden ();
 			OnClosed ();
 		}
 
@@ -289,25 +287,27 @@ namespace Xwt.Mac
 		{
 			if (keyPath.ToString () == HiddenProperty.ToString () && ofObject.Equals (ContentView)) {
 				if (ContentView.Hidden) {
-					if (eventsEnabled.HasFlag (WindowFrameEvent.Hidden)) {
-						OnHidden ();
-					}
+					OnHidden ();
 				} else {
-					if (eventsEnabled.HasFlag (WindowFrameEvent.Shown)) {
-						OnShown ();
-					}
+					OnShown ();
 				}
 			}
 		}
 
 		void OnHidden ()
 		{
-			ApplicationContext.InvokeUserCode (eventSink.OnHidden);
+			if (eventsEnabled.HasFlag (WindowFrameEvent.Hidden))
+			{
+				ApplicationContext.InvokeUserCode (eventSink.OnHidden);
+			}
 		}
 
 		void OnShown ()
 		{
-			ApplicationContext.InvokeUserCode (eventSink.OnShown);
+			if (eventsEnabled.HasFlag (WindowFrameEvent.Shown))
+			{
+				ApplicationContext.InvokeUserCode (eventSink.OnShown);
+			}
 		}
 
 		void IBackend.DisableEvent (object eventId)
