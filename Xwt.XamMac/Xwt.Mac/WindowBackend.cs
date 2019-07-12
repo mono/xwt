@@ -66,9 +66,9 @@ namespace Xwt.Mac
 			// TODO: do it only if mouse move events are enabled in a widget
 			AcceptsMouseMovedEvents = true;
 
-			WeakDelegate = this;
-
 			Center ();
+
+			WeakDelegate = this;
 		}
 
 		object IWindowFrameBackend.Window {
