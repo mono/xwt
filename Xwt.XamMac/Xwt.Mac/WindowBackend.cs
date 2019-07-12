@@ -39,7 +39,7 @@ using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
-	public class WindowBackend: NSWindow, IWindowBackend, IMacWindowBackend
+	public class WindowBackend: NSWindow, IWindowBackend, IMacWindowBackend, INSWindowDelegate
 	{
 		WindowBackendController controller;
 		IWindowFrameEventSink eventSink;
@@ -47,7 +47,8 @@ namespace Xwt.Mac
 		ViewBackend child;
 		NSView childView;
 		bool sensitive = true;
-		
+		WindowFrameEvent eventsEnabled;
+
 		public WindowBackend (IntPtr ptr): base (ptr)
 		{
 		}
@@ -65,11 +66,9 @@ namespace Xwt.Mac
 			// TODO: do it only if mouse move events are enabled in a widget
 			AcceptsMouseMovedEvents = true;
 
-			WillClose += delegate {
-				OnClosed ();
-			};
-
 			Center ();
+
+			WeakDelegate = this;
 		}
 
 		object IWindowFrameBackend.Window {
@@ -211,31 +210,41 @@ namespace Xwt.Mac
 			if (eventId is WindowFrameEvent) {
 				var @event = (WindowFrameEvent)eventId;
 				switch (@event) {
-				case WindowFrameEvent.BoundsChanged:
-					DidResize += HandleDidResize;
-					DidMove += HandleDidResize;
-					break;
-				case WindowFrameEvent.Hidden:
-					EnableVisibilityEvent (@event);
-					this.WillClose += OnWillClose;
-					break;
-				case WindowFrameEvent.Shown:
-					EnableVisibilityEvent (@event);
-					break;
-				case WindowFrameEvent.CloseRequested:
-					WindowShouldClose = OnShouldClose;
-					break;
+					case WindowFrameEvent.Hidden:
+					case WindowFrameEvent.Shown:
+						if (!VisibilityEventsEnabled())
+						{
+							ContentView.AddObserver(this, HiddenProperty, NSKeyValueObservingOptions.New, IntPtr.Zero);
+						}
+						break;
 				}
+				eventsEnabled |= @event;
 			}
 		}
-		
-		void OnWillClose (object sender, EventArgs args) {
-			OnHidden ();
+
+		[Export ("windowDidResize:")]
+		new void DidResize (NSNotification notification)
+		{
+			OnBoundsChanged();
 		}
 
-		bool OnShouldClose (NSObject ob)
+		[Export ("windowDidMove:")]
+		new void DidMove (NSNotification notification)
+		{
+			OnBoundsChanged ();
+		}
+
+		[Export("windowShouldClose:")]
+		new bool WindowShouldClose (NSObject sender)
 		{
 			return closePerformed = RequestClose ();
+		}
+
+		[Export ("windowWillClose:")]
+		new void WillClose (NSNotification notification)
+		{
+			OnHidden ();
+			OnClosed ();
 		}
 
 		internal bool RequestClose ()
@@ -267,60 +276,37 @@ namespace Xwt.Mac
 		
 		bool VisibilityEventsEnabled ()
 		{
-			return eventsEnabled != WindowFrameEvent.BoundsChanged;
+			return eventsEnabled.HasFlag(WindowFrameEvent.Hidden) || eventsEnabled.HasFlag(WindowFrameEvent.Shown);
 		}
-		WindowFrameEvent eventsEnabled = WindowFrameEvent.BoundsChanged;
 
 		NSString HiddenProperty {
 			get { return new NSString ("hidden"); }
-		}
-		
-		void EnableVisibilityEvent (WindowFrameEvent ev)
-		{
-			if (!VisibilityEventsEnabled ()) {
-				ContentView.AddObserver (this, HiddenProperty, NSKeyValueObservingOptions.New, IntPtr.Zero);
-			}
-			if (!eventsEnabled.HasFlag (ev)) {
-				eventsEnabled |= ev;
-			}
 		}
 
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
 		{
 			if (keyPath.ToString () == HiddenProperty.ToString () && ofObject.Equals (ContentView)) {
 				if (ContentView.Hidden) {
-					if (eventsEnabled.HasFlag (WindowFrameEvent.Hidden)) {
-						OnHidden ();
-					}
+					OnHidden ();
 				} else {
-					if (eventsEnabled.HasFlag (WindowFrameEvent.Shown)) {
-						OnShown ();
-					}
+					OnShown ();
 				}
 			}
 		}
 
-		void OnHidden () {
-			ApplicationContext.InvokeUserCode (delegate ()
-			{
-				eventSink.OnHidden ();
-			});
-		}
-
-		void OnShown () {
-			ApplicationContext.InvokeUserCode (delegate ()
-			{
-				eventSink.OnShown ();
-			});
-		}
-
-		void DisableVisibilityEvent (WindowFrameEvent ev)
+		void OnHidden ()
 		{
-			if (eventsEnabled.HasFlag (ev)) {
-				eventsEnabled ^= ev;
-				if (!VisibilityEventsEnabled ()) {
-					ContentView.RemoveObserver (this, HiddenProperty);
-				}
+			if (eventsEnabled.HasFlag (WindowFrameEvent.Hidden))
+			{
+				ApplicationContext.InvokeUserCode (eventSink.OnHidden);
+			}
+		}
+
+		void OnShown ()
+		{
+			if (eventsEnabled.HasFlag (WindowFrameEvent.Shown))
+			{
+				ApplicationContext.InvokeUserCode (eventSink.OnShown);
 			}
 		}
 
@@ -328,33 +314,29 @@ namespace Xwt.Mac
 		{
 			if (eventId is WindowFrameEvent) {
 				var @event = (WindowFrameEvent)eventId;
+				eventsEnabled &= ~@event;
 				switch (@event) {
-					case WindowFrameEvent.BoundsChanged:
-						DidResize -= HandleDidResize;
-						DidMove -= HandleDidResize;
-						break;
 					case WindowFrameEvent.Hidden:
-						this.WillClose -= OnWillClose;
-						DisableVisibilityEvent (@event);
-						break;
 					case WindowFrameEvent.Shown:
-						DisableVisibilityEvent (@event);
+						if (!VisibilityEventsEnabled())
+						{
+							ContentView.RemoveObserver(this, HiddenProperty);
+						}
 						break;
 				}
 			}
 		}
 
-		void HandleDidResize (object sender, EventArgs e)
-		{
-			OnBoundsChanged ();
-		}
-
 		protected virtual void OnBoundsChanged ()
 		{
 			LayoutWindow ();
-			ApplicationContext.InvokeUserCode (delegate {
-				eventSink.OnBoundsChanged (((IWindowBackend)this).Bounds);
-			});
+			if (eventsEnabled.HasFlag(WindowFrameEvent.BoundsChanged))
+			{
+				ApplicationContext.InvokeUserCode(delegate
+				{
+					eventSink.OnBoundsChanged(((IWindowBackend)this).Bounds);
+				});
+			}
 		}
 
 		void IWindowBackend.SetChild (IWidgetBackend child)
