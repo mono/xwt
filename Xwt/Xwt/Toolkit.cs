@@ -117,6 +117,14 @@ namespace Xwt
 			get { return toolkits.Values; }
 		}
 
+		public static Toolkit GetToolkit (XwtComponent frame)
+		{
+			if (frame is IFrontend) {
+				return ((IFrontend) frame).ToolkitEngine;
+			}
+			return null;
+		}
+
 		/// <summary>
 		/// Gets the application context.
 		/// </summary>
