@@ -285,7 +285,7 @@ namespace Xwt.Mac
 
 		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
 		{
-			if (keyPath.ToString () == HiddenProperty.ToString () && ofObject.Equals (ContentView)) {
+			if (keyPath.IsEqual (HiddenProperty) && ofObject.Equals (ContentView)) {
 				if (ContentView.Hidden) {
 					OnHidden ();
 				} else {
