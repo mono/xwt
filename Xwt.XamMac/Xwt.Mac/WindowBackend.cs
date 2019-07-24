@@ -432,6 +432,13 @@ namespace Xwt.Mac
 			if (height == -1)
 				height = cr.Height;
 			var r = FrameRectFor (new CGRect ((nfloat)cr.X, (nfloat)cr.Y, (nfloat)width, (nfloat)height));
+
+			// preserve window location, FrameRectFor will not adjust the left-bottom corner automatically
+			var oldFrame = Frame;
+			if (!oldFrame.IsEmpty) {
+				r.Y = (oldFrame.Y + oldFrame.Height) - r.Height;
+			}
+
 			SetFrame (r, true);
 			LayoutWindow ();
 		}
