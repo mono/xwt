@@ -275,11 +275,14 @@ namespace Xwt
 					dialog.ActiveFilter = activeFilter;
 				if (!string.IsNullOrEmpty (title))
 					dialog.Title = title;
-				if (dialog.Run (ParentWindow))
+				if (dialog.Run(ParentWindow)) {
 					FileName = dialog.FileName;
+					currentFolder = dialog.CurrentFolder;
+					// do not update the active filter, since we don't want the
+					// picker to propagate filter changes back to the selector.
+					//activeFilter = dialog.ActiveFilter;
+				}
 			} finally {
-				currentFolder = dialog.CurrentFolder;
-				activeFilter = dialog.ActiveFilter;
 				dialog.Dispose ();
 				dialog = null;
 			}
