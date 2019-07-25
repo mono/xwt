@@ -173,6 +173,7 @@ namespace Xwt
 		/// </summary>
 		public bool Run (WindowFrame parentWindow)
 		{
+			bool result = false;
 			try {
 				running = true;
 				Backend.Initialize (filters, multiselect, initialFileName);
@@ -182,20 +183,18 @@ namespace Xwt
 					Backend.ActiveFilter = activeFilter;
 				if (!string.IsNullOrEmpty (title))
 					Backend.Title = title;
-				bool result = false;
 				BackendHost.ToolkitEngine.InvokePlatformCode (delegate {
 					result = Backend.Run ((IWindowFrameBackend)Toolkit.GetBackend (parentWindow));
 				});
 				return result;
 			} finally {
-				activeFilter = Backend.ActiveFilter;
-				fileName = Backend.FileName;
-				fileNames = Backend.FileNames;
-                if (fileName != string.Empty)
-                {
-                    currentFolder = Backend.CurrentFolder;
-                }
-                running = false;
+				if (result) {
+					activeFilter = Backend.ActiveFilter;
+					fileName = Backend.FileName;
+					fileNames = Backend.FileNames;
+					currentFolder = Backend.CurrentFolder;
+				}
+				running = false;
 				Backend.Cleanup ();
 			}
 		}
