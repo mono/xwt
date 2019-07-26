@@ -23,6 +23,18 @@
     <DebugType>pdbonly</DebugType>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>Xwt.WPF</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Lluis Sanchez</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/mono/xwt/</PackageProjectUrl>
+    <PackageTags>xwt cross platform gui ui toolkit framework desktop wpf</PackageTags>
+    <Description>Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
+        
+This package contains the WPF toolkit backend for Xwt based applications targeting WPF (Windows Presentation Foundation).</Description>
+    <NoBuild>true</NoBuild>
+  </PropertyGroup>
   <ItemGroup>
     <Resource Include="Xwt.WPFBackend\TreeView.xaml">
       <SubType>Designer</SubType>
@@ -61,5 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Xwt.WPFBackend.Utilities\MultiColumnTreeViewItem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath=""/>
+    <None Include="..\README.markdown" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
