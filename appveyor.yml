@@ -6,6 +6,8 @@ branches:
   - master
 skip_tags: true
 
+image: Visual Studio 2019 Preview
+
 configuration: Release
 platform: Any CPU
 
