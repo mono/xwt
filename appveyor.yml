@@ -43,7 +43,7 @@ build_script:
 - msbuild Xwt.WPF\Xwt.WPF.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - msbuild Xwt.XamMac\Xwt.XamMac.csproj /target:Build /property:Configuration=Release;Platform=AnyCPU /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - mkdir nuget
-- NuGet pack Xwt\Xwt.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
+- msbuild Xwt\Xwt.csproj -t:pack -p:Configuration=Release;Platform=AnyCPU -p:PackageVersion=%APPVEYOR_BUILD_VERSION% -p:IncludeSymbols=true -p:PackageOutputPath=..\nuget
 - NuGet pack Xwt.Gtk\Xwt.Gtk.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - NuGet pack Xwt.Gtk.Windows\Xwt.Gtk.Windows.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
 - NuGet pack Xwt.Gtk.Mac\Xwt.Gtk.Mac.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Symbols -OutputDirectory nuget
