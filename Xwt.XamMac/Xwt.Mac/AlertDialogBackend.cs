@@ -108,6 +108,7 @@ namespace Xwt.Mac
 			}
 
 			var win = Context.Toolkit.GetNativeWindow (transientFor) as NSWindow;
+			Window.ReleasedWhenClosed = true;
 			if (win != null)
 				return sortedButtons [(int)this.RunSheetModal (win) - 1000];
 			return sortedButtons [(int)this.RunModal () - 1000];
@@ -115,5 +116,23 @@ namespace Xwt.Mac
 
 		public bool ApplyToAll { get; set; }
 		#endregion
+
+		public override bool ConformsToProtocol (IntPtr protocol)
+		{
+			// HACK: for some reason on systems with a TouchBar this might be called
+			//       after the window has been closed and released, resulting in
+			//       an ObjectDisposedException followed by a crash
+			if (isDisposed)
+				return false;
+
+			return base.ConformsToProtocol (protocol);
+		}
+
+		bool isDisposed;
+		protected override void Dispose (bool disposing)
+		{
+			isDisposed = true;
+			base.Dispose (disposing);
+		}
 	}
 }
