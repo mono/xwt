@@ -34,10 +34,16 @@ namespace Xwt.Mac
 	public class SelectFontDialogBackend : ISelectFontDialogBackend
 	{
 		readonly NSFontPanel fontPanel;
+		ApplicationContext context;
 
 		public SelectFontDialogBackend ()
 		{
 			fontPanel = NSFontPanel.SharedFontPanel;
+		}
+
+		public void Initialize (ApplicationContext actx)
+		{
+			context = actx;
 		}
 
 		public bool Run (IWindowFrameBackend parent)
