@@ -50,6 +50,13 @@ namespace Xwt.Mac
 		{
 			fontPanel.Delegate = new FontPanelDelegate ();
 
+			if (parent != null)
+			{
+				var macParent = parent as NSWindow ?? context.Toolkit.GetNativeWindow (parent) as NSWindow ?? NSApplication.SharedApplication.KeyWindow;
+				if (macParent != null && fontPanel.EffectiveAppearance.Name != macParent.EffectiveAppearance.Name)
+					fontPanel.Appearance = macParent.EffectiveAppearance;
+			}
+
 			if (SelectedFont != null) {
 				NSFontManager.SharedFontManager.SetSelectedFont (((FontData)Toolkit.GetBackend (SelectedFont)).Font, false);
 			}
