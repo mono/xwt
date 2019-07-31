@@ -68,11 +68,13 @@ namespace Xwt.Mac
 				Cache.Add (this);
 			}
 
+			public string EffectiveAppearanceName { get; set; }
+
 			public override void LoadView ()
 			{
 				View = new ContainerView (this);
 
-				string appearance = NativeChild.EffectiveAppearance?.Name;
+				string appearance = EffectiveAppearanceName;
 
 				NativeChild.RemoveFromSuperview ();
 				View.AddSubview (NativeChild);
@@ -250,8 +252,13 @@ namespace Xwt.Mac
 			popover.Delegate = controller;
 
 			// if the reference has a custom appearance, use it for the popover
-			if (popover is INSAppearanceCustomization && refView.EffectiveAppearance.Name != NSAppearance.NameAqua)
-				((INSAppearanceCustomization)popover).SetAppearance (refView.EffectiveAppearance);
+			if (refView.EffectiveAppearance.Name != NSAppearance.NameAqua) {
+
+				controller.EffectiveAppearanceName = refView.EffectiveAppearance.Name;
+
+				if (popover is INSAppearanceCustomization)
+					((INSAppearanceCustomization)popover).SetAppearance (refView.EffectiveAppearance);
+			}
 
 			popover.Show (positionRect.ToCGRect (),
 				      refView,
