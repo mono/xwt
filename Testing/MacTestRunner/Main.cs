@@ -1,5 +1,8 @@
 using Xwt;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.IO;
 
 namespace MacTest
 {
@@ -7,15 +10,14 @@ namespace MacTest
 	{
 		static int Main (string [] args)
 		{
-			//FIXME: remove this once mmp summorts xammac
-			ObjCRuntime.Dlfcn.dlopen ("/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/libxammac.dylib", 0);
-
-			var list = new List<string> (args);
+			var assemblyName = Path.GetFileName(typeof(MainClass).Assembly.Location);
+			var list = new List<string> (args.Where (arg => !arg.StartsWith ("-psn_", System.StringComparison.Ordinal) && !arg.EndsWith(assemblyName, System.StringComparison.Ordinal)));
 			list.Add ("-domain=None");
 			list.Add ("-noshadow");
 			list.Add ("-nothread");
-			//			if (!list.Contains (typeof (MainClass).Assembly.Location))
-			//	list.Add (typeof (MainClass).Assembly.Location);
+
+			if (!list.Contains (typeof (MainClass).Assembly.Location))
+				list.Add (typeof (MainClass).Assembly.Location);
 
 			bool skipImageVerification = list.Remove ("-no-image-verify");
 
