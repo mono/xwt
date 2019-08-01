@@ -27,14 +27,23 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ITextEntryBackend: IWidgetBackend
+	public interface ITextEntryBackend: ITextBoxBackend
+	{
+		[Obsolete("Use ITextAreaBackend instead")]
+		bool MultiLine { get; set; }
+	}
+
+	public interface ITextEntryEventSink: ITextBoxEventSink
+	{
+	}
+
+	public interface ITextBoxBackend: IWidgetBackend
 	{
 		string Text { get; set; }
 		Alignment TextAlignment { get; set; }
 		string PlaceholderText { get; set; }
 		bool ReadOnly { get; set; }
 		bool ShowFrame { get; set; }
-		bool MultiLine { get; set; }
 		int CursorPosition { get; set; }
 		int SelectionStart { get; set; }
 		int SelectionLength { get; set; }
@@ -44,17 +53,27 @@ namespace Xwt.Backends
 		void SetCompletionMatchFunc (Func<string, string, bool> matchFunc);
 	}
 	
-	public interface ITextEntryEventSink: IWidgetEventSink
+	public interface ITextBoxEventSink: IWidgetEventSink
 	{
 		void OnChanged ();
 		void OnActivated ();
 		void OnSelectionChanged ();
 	}
 	
-	public enum TextEntryEvent
+	public enum TextBoxEvent
 	{
 		Changed,
 		Activated,
+		SelectionChanged
+	}
+
+	public enum TextEntryEvent
+	{
+		[Obsolete("Use Xwt.Backends.TextBoxEvent.Changed instead")]
+		Changed,
+		[Obsolete("Use Xwt.Backends.TextBoxEvent.Activated instead")]
+		Activated,
+		[Obsolete("Use Xwt.Backends.TextBoxEvent.SelectionChanged instead")]
 		SelectionChanged
 	}
 }

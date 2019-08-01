@@ -247,7 +247,7 @@ namespace Xwt.WPFBackend
             }
         }
 
-	    public TextBox TextBox => textBox;
+	    public System.Windows.Controls.TextBox TextBox => textBox;
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -465,7 +465,7 @@ namespace Xwt.WPFBackend
 			return new WindowsSpinButtonAutomationPeer (this);
 		}
 
-		class SpinButtonTextBox : TextBox
+		class SpinButtonTextBox : System.Windows.Controls.TextBox
 		{
 			WindowsSpinButton spinButton;
 

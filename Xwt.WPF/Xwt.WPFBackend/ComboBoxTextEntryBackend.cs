@@ -110,7 +110,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		protected TextBox TextBox {
+		protected System.Windows.Controls.TextBox TextBox {
 			get { return combobox.TextBox; }
 		}
 

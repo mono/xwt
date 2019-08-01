@@ -47,7 +47,7 @@ namespace Xwt.WPFBackend
 			set;
 		}
 
-		public TextBox TextBox { get; private set; }
+		public System.Windows.Controls.TextBox TextBox { get; private set; }
 
 		protected override SW.Size MeasureOverride (SW.Size constraint)
 		{
@@ -57,7 +57,7 @@ namespace Xwt.WPFBackend
 
 		void UpdateTextBox ()
 		{
-			var newTextBox = GetTemplateChild(TextBoxTemplateName) as TextBox;
+			var newTextBox = GetTemplateChild(TextBoxTemplateName) as System.Windows.Controls.TextBox;
 			if (TextBox == newTextBox) // no change
 				return;
 			if (TextBox != null)
