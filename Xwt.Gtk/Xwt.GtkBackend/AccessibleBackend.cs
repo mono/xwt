@@ -61,27 +61,7 @@ namespace Xwt.GtkBackend
 		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
 		{
 			var backend = parentWidget as WidgetBackend;
-			Gtk.Widget nativeWidget = null;
-
-			// Needed only for AtkCocoa.
-			if (Platform.IsMac) {
-				// Gtk.ComboBox and Gtk.ComboBoxEntry a11y doesn't work with Gtk/AtkCocoa.
-				// Workaround:
-				// Set a11y properties to their children.
-				// For Gtk.ComboBoxEntry use its Gtk.Entry, for Gtk.ComboBox -- Gtk.ToggleButton.
-				if (backend is IComboBoxEntryBackend) {
-					nativeWidget = (backend?.Widget as Gtk.Bin)?.Child;
-				} else if (backend is IComboBoxBackend) {
-					foreach (var child in ((Gtk.Container)backend.Widget).AllChildren) {
-						if (child is Gtk.ToggleButton) {
-							nativeWidget = (Gtk.Widget)child;
-							break;
-						}
-					}
-				}
-			}
-
-			Initialize (nativeWidget ?? backend?.Widget, eventSink);
+			Initialize (backend?.Widget, eventSink);
 		}
 
 		public void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink)
