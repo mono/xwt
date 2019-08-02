@@ -97,8 +97,8 @@ namespace Xwt
 		public string Label {
 			get { return label ?? ""; }
 			set {
-				label = value;
-				Backend.SetContent (label, UseMnemonic, image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
+				label = value ?? string.Empty;
+				Backend.SetContent (value, UseMnemonic, image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
 				OnPreferredSizeChanged ();
 			}
 		}

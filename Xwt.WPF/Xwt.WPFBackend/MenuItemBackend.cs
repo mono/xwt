@@ -1,4 +1,4 @@
-﻿// 
+// 
 // MenuItemBackend.cs
 //  
 // Author:
@@ -35,11 +35,12 @@ using System.Windows.Controls;
 using SWC = System.Windows.Controls;
 using SWMI = System.Windows.Media.Imaging;
 using Xwt.Backends;
-
+using Xwt.WPFBackend.Utilities;
+using WindowsOrientation = System.Windows.Controls.Orientation;
 
 namespace Xwt.WPFBackend
 {
-	public class MenuItemBackend : Backend, IMenuItemBackend
+	public class MenuItemBackend : WidgetBackend, IMenuItemBackend
 	{
 		UIElement item;
 		SWC.MenuItem menuItem;
@@ -50,7 +51,7 @@ namespace Xwt.WPFBackend
 		bool useMnemonic;
 
 		public MenuItemBackend ()
-			: this (new SWC.MenuItem())
+			: this (new SWC.MenuItem ())
 		{
 		}
 
@@ -82,7 +83,8 @@ namespace Xwt.WPFBackend
 			get {
 				if (this.menuItem == null)
 					return false;
-				return this.menuItem.IsCheckable && this.menuItem.IsChecked; }
+				return this.menuItem.IsCheckable && this.menuItem.IsChecked;
+			}
 			set {
 				if (this.menuItem == null || !this.menuItem.IsCheckable)
 					return;
@@ -94,21 +96,27 @@ namespace Xwt.WPFBackend
 			get { return label; }
 			set {
 				label = value;
-				if (this.menuItem != null)
-					menuItem.Header = UseMnemonic ? value : value.Replace ("_", "__");
+				if (this.menuItem != null && label != null) {
+					var mnemonicValue = UseMnemonic ? value : value.Replace ("_", "__");
+					var formattedText = FormattedText.FromMarkup (value);
+					if (mnemonicValue.CompareTo (formattedText.Text) != 0) {
+						var formattedLabel = new Label (mnemonicValue) { Markup = mnemonicValue };
+						this.menuItem.Header = ((Widget)formattedLabel).GetBackend ()?.NativeWidget;
+					} else {
+						this.menuItem.Header = mnemonicValue;
+					}
+				}
 			}
 		}
 
-		public string TooltipText
-		{
-			get { return menuItem.ToolTip == null ? null : ((ToolTip)menuItem.ToolTip).Content.ToString(); }
-			set
-			{
+		public new string TooltipText {
+			get { return menuItem.ToolTip == null ? null : ((ToolTip)menuItem.ToolTip).Content.ToString (); }
+			set {
 				var tp = menuItem.ToolTip as ToolTip;
 				if (tp == null)
-					menuItem.ToolTip = tp = new ToolTip();
+					menuItem.ToolTip = tp = new ToolTip ();
 				tp.Content = value ?? string.Empty;
-				ToolTipService.SetIsEnabled(menuItem, value != null);
+				ToolTipService.SetIsEnabled (menuItem, value != null);
 				if (tp.IsOpen && value == null)
 					tp.IsOpen = false;
 			}
@@ -116,19 +124,18 @@ namespace Xwt.WPFBackend
 
 		public bool UseMnemonic {
 			get { return useMnemonic; }
-			set
-			{
+			set {
 				useMnemonic = value;
 				Label = label;
 			}
 		}
 
-		public bool Sensitive {
+		public new bool Sensitive {
 			get { return this.item.IsEnabled; }
 			set { this.item.IsEnabled = value; }
 		}
 
-		public bool Visible {
+		public new bool Visible {
 			get { return this.item.IsVisible; }
 			set { this.item.Visibility = (value) ? Visibility.Visible : Visibility.Collapsed; }
 		}
@@ -166,13 +173,13 @@ namespace Xwt.WPFBackend
 		public void SetType (MenuItemType type)
 		{
 			switch (type) {
-				case MenuItemType.RadioButton:
-				case MenuItemType.CheckBox:
-					this.menuItem.IsCheckable = true;
-					break;
-				case MenuItemType.Normal:
-					this.menuItem.IsCheckable = false;
-					break;
+			case MenuItemType.RadioButton:
+			case MenuItemType.CheckBox:
+				this.menuItem.IsCheckable = true;
+				break;
+			case MenuItemType.Normal:
+				this.menuItem.IsCheckable = false;
+				break;
 			}
 
 			this.type = type;
@@ -181,7 +188,7 @@ namespace Xwt.WPFBackend
 		internal void SetFont (FontData font)
 		{
 			MenuItem.FontFamily = font.Family;
-			MenuItem.FontSize = font.GetDeviceIndependentPixelSize(MenuItem);
+			MenuItem.FontSize = font.GetDeviceIndependentPixelSize (MenuItem);
 			MenuItem.FontStyle = font.Style;
 			MenuItem.FontWeight = font.Weight;
 			MenuItem.FontStretch = font.Stretch;
@@ -194,9 +201,9 @@ namespace Xwt.WPFBackend
 
 			if (eventId is MenuItemEvent) {
 				switch ((MenuItemEvent)eventId) {
-					case MenuItemEvent.Clicked:
-						this.menuItem.Click += MenuItemClickHandler;
-						break;
+				case MenuItemEvent.Clicked:
+					this.menuItem.Click += MenuItemClickHandler;
+					break;
 				}
 			}
 		}
@@ -208,9 +215,9 @@ namespace Xwt.WPFBackend
 
 			if (eventId is MenuItemEvent) {
 				switch ((MenuItemEvent)eventId) {
-					case MenuItemEvent.Clicked:
-						this.menuItem.Click -= MenuItemClickHandler;
-						break;
+				case MenuItemEvent.Clicked:
+					this.menuItem.Click -= MenuItemClickHandler;
+					break;
 				}
 			}
 		}
@@ -219,5 +226,6 @@ namespace Xwt.WPFBackend
 		{
 			Context.InvokeUserCode (eventSink.OnClicked);
 		}
+
 	}
 }
