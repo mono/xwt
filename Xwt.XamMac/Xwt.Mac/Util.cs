@@ -292,6 +292,8 @@ namespace Xwt.Mac
 		public static int ToMacValue (this FontWeight weight)
 		{
 			switch (weight) {
+			case FontWeight.Ultrathin:
+				return 0;
 			case FontWeight.Thin:
 				return 1;
 			case FontWeight.Ultralight:
@@ -304,6 +306,8 @@ namespace Xwt.Mac
 				return 5;
 			case FontWeight.Medium:
 				return 6;
+			case FontWeight.Mediumbold:
+				return 7;
 			case FontWeight.Semibold:
 				return 8;
 			case FontWeight.Bold:
@@ -314,8 +318,14 @@ namespace Xwt.Mac
 				return 11;
 			case FontWeight.Ultraheavy:
 				return 12;
-			default:
+			case FontWeight.Semiblack:
 				return 13;
+			case FontWeight.Black:
+				return 14;
+			case FontWeight.Ultrablack:
+				return 15;
+			default:
+				return 15;
 			}
 		}
 

@@ -138,59 +138,30 @@ namespace Xwt.Mac
 			return f;
 		}
 
-		static int GetWeightValue (FontWeight weight)
-		{
-			switch (weight) {
-			case FontWeight.Thin:
-				return 1;
-			case FontWeight.Ultralight:
-				return 2;
-			case FontWeight.Light:
-				return 3;
-			case FontWeight.Book:
-				return 4;
-			case FontWeight.Normal:
-				return 5;
-			case FontWeight.Medium:
-				return 6;
-			case FontWeight.Semibold:
-				return 8;
-			case FontWeight.Bold:
-				return 9;
-			case FontWeight.Ultrabold:
-				return 10;
-			case FontWeight.Heavy:
-				return 11;
-			case FontWeight.Ultraheavy:
-				return 12;
-			default:
-				return 13;
-			}
-		}
+		static FontWeight [] weightLookupTable = {
+			FontWeight.Ultrathin, // 0
+			FontWeight.Thin,
+			FontWeight.Ultralight,
+			FontWeight.Light,
+			FontWeight.Book,
+			FontWeight.Normal, // 5
+			FontWeight.Medium,
+			FontWeight.Mediumbold,
+			FontWeight.Semibold,
+			FontWeight.Bold, // 9
+			FontWeight.Ultrabold,
+			FontWeight.Heavy,
+			FontWeight.Ultraheavy,
+			FontWeight.Semiblack,
+			FontWeight.Black,
+			FontWeight.Ultrablack // 15
+		};
 
-		internal static FontWeight GetWeightFromValue (nint w)
+		internal static FontWeight GetWeightFromValue (nint weightValue)
 		{
-			if (w <= 1)
-				return FontWeight.Thin;
-			if (w == 2)
-				return FontWeight.Ultralight;
-			if (w == 3)
-				return FontWeight.Light;
-			if (w == 4)
-				return FontWeight.Book;
-			if (w == 5)
-				return FontWeight.Normal;
-			if (w == 6)
-				return FontWeight.Medium;
-			if (w <= 8)
-				return FontWeight.Semibold;
-			if (w == 9)
-				return FontWeight.Bold;
-			if (w == 10)
-				return FontWeight.Ultrabold;
-			if (w == 11)
-				return FontWeight.Heavy;
-			return FontWeight.Ultraheavy;
+			if (weightValue < 0 || weightValue >= weightLookupTable.Length)
+				throw new ArgumentOutOfRangeException (nameof (weightValue), "needs to be from 0-" + weightLookupTable.Length + " was:" + weightValue);
+			return weightLookupTable [weightValue];
 		}
 
 		NSFontTraitMask GetStretchTrait (FontStretch stretch)
