@@ -57,6 +57,9 @@ namespace Xwt.WPFBackend
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{
 			this.icon = GetIcon (message.Icon);
+			if(string.IsNullOrEmpty(message.Title))
+				message.Title = (transientFor != null) ? transientFor.Title ?? String.Empty : String.Empty;
+
 			if (ConvertButtons (message.Buttons, out buttons) && message.Options.Count == 0) {
 				// Use a system message box
 				if (message.SecondaryText == null)
@@ -67,11 +70,11 @@ namespace Xwt.WPFBackend
 				}
 				var parent =  context.Toolkit.GetNativeWindow(transientFor) as System.Windows.Window;
 				if (parent != null) {
-					this.dialogResult = MessageBox.Show (parent, message.Text, message.SecondaryText,
+					this.dialogResult = MessageBox.Show (parent, message.Text, message.Title,
 														this.buttons, this.icon, this.defaultResult, this.options);
 				}
 				else {
-					this.dialogResult = MessageBox.Show (message.Text, message.SecondaryText, this.buttons,
+					this.dialogResult = MessageBox.Show (message.Text, message.Title, this.buttons,
 														this.icon, this.defaultResult, this.options);
 				}
 				return ConvertResultToCommand (this.dialogResult);
@@ -81,6 +84,7 @@ namespace Xwt.WPFBackend
 				Dialog dlg = new Dialog ();
 				dlg.Resizable = false;
 				dlg.Padding = 0;
+				dlg.Title = message.Title;
 				HBox mainBox = new HBox { Margin = 25 };
 
 				if (message.Icon != null) {
@@ -90,7 +94,7 @@ namespace Xwt.WPFBackend
 				VBox box = new VBox () { Margin = 3, MarginLeft = 8, Spacing = 15 };
 				mainBox.PackStart (box, true);
 				var text = new Label {
-					Text = message.Text ?? ""
+					Text = message.Text ?? String.Empty
 				};
 				Label stext = null;
 				box.PackStart (text);
