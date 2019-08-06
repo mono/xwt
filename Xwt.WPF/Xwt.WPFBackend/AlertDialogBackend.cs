@@ -61,13 +61,17 @@ namespace Xwt.WPFBackend
 				// Use a system message box
 				if (message.SecondaryText == null)
 					message.SecondaryText = String.Empty;
+				else {
+					message.Text = message.Text + "\r\n\r\n" + message.SecondaryText;
+					message.SecondaryText = String.Empty;
+				}
 				var parent =  context.Toolkit.GetNativeWindow(transientFor) as System.Windows.Window;
 				if (parent != null) {
-					this.dialogResult = MessageBox.Show (parent, message.SecondaryText, message.Text,
-                                                        this.buttons, this.icon, this.defaultResult, this.options);
+					this.dialogResult = MessageBox.Show (parent, message.Text, message.SecondaryText,
+														this.buttons, this.icon, this.defaultResult, this.options);
 				}
 				else {
-					this.dialogResult = MessageBox.Show (message.SecondaryText, message.Text, this.buttons,
+					this.dialogResult = MessageBox.Show (message.Text, message.SecondaryText, this.buttons,
 														this.icon, this.defaultResult, this.options);
 				}
 				return ConvertResultToCommand (this.dialogResult);
@@ -77,7 +81,6 @@ namespace Xwt.WPFBackend
 				Dialog dlg = new Dialog ();
 				dlg.Resizable = false;
 				dlg.Padding = 0;
-				dlg.Title = message.Text ?? String.Empty;
 				HBox mainBox = new HBox { Margin = 25 };
 
 				if (message.Icon != null) {
@@ -86,7 +89,11 @@ namespace Xwt.WPFBackend
 				}
 				VBox box = new VBox () { Margin = 3, MarginLeft = 8, Spacing = 15 };
 				mainBox.PackStart (box, true);
+				var text = new Label {
+					Text = message.Text ?? ""
+				};
 				Label stext = null;
+				box.PackStart (text);
 				if (!string.IsNullOrEmpty (message.SecondaryText)) {
 					stext = new Label {
 						Text = message.SecondaryText
@@ -103,6 +110,7 @@ namespace Xwt.WPFBackend
 				if (message.DefaultButton >= 0 && message.DefaultButton < message.Buttons.Count)
 					dlg.DefaultCommand = message.Buttons[message.DefaultButton];
 				if (mainBox.Surface.GetPreferredSize (true).Width > 480) {
+					text.Wrap = WrapMode.Word;
 					if (stext != null)
 						stext.Wrap = WrapMode.Word;
 					mainBox.WidthRequest = 480;
