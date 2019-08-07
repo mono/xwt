@@ -142,6 +142,20 @@ namespace Xwt.WPFBackend
 			Button.InvalidateMeasure ();
 		}
 
+		public void SetFormattedText (FormattedText text)
+		{
+			SWC.Label labelCtrl = null;
+			if (Button.Content is SWC.DockPanel) {
+				var grid = Button.Content as SWC.DockPanel;
+				labelCtrl = grid.Children[1] as SWC.Label;
+				labelCtrl.TextBlock.ApplyFormattedText (text, null);
+			} else {
+				labelCtrl = new SWC.Label ();
+				labelCtrl.TextBlock.ApplyFormattedText (text, null);
+				Button.Content = labelCtrl;
+			}
+		}
+
 		public Xwt.Drawing.Color LabelColor {
 			get { return Button.Foreground.ToXwtColor (); }
 			set { Button.Foreground = ResPool.GetSolidBrush (value.ToWpfColor ()); }

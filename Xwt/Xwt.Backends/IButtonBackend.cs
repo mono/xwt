@@ -36,8 +36,14 @@ namespace Xwt.Backends
 		void SetButtonStyle (ButtonStyle style);
 		void SetButtonType (ButtonType type);
 		void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position);
+
+		/// <summary>
+		/// Sets the formatted text display for this menu item.
+		/// </summary>
+		/// <param name="text">The text to display with additional markup for formatting <see cref="Xwt.FormattedText"/></param>
+		void SetFormattedText (FormattedText text);
 	}
-	
+
 	public interface IButtonEventSink: IWidgetEventSink
 	{
 		void OnClicked ();

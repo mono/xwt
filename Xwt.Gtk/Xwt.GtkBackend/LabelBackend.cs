@@ -163,18 +163,7 @@ namespace Xwt.GtkBackend
 		{
 			Label.Text = text.Text;
 			formattedText = text;
-			var list = new FastPangoAttrList ();
-			if (Label.IsRealized) {
-				var color = Gdk.Color.Zero;
-				var colorVal = Label.StyleGetProperty ("link-color");
-				if (colorVal is Gdk.Color)
-					color = (Gdk.Color)colorVal;
-				if (!color.Equals (Gdk.Color.Zero))
-					list.DefaultLinkColor = color;
-			}
-			indexer = new TextIndexer (text.Text);
-			list.AddAttributes (indexer, text.Attributes);
-			gtk_label_set_attributes (Label.Handle, list.Handle);
+			text.ApplyToLabel (Label);
 
 			if (links != null)
 				links.Clear ();

@@ -70,8 +70,14 @@ namespace Xwt.Backends
 		/// Gets or sets whether the menu item is visible.
 		/// </summary>
 		bool Visible { get; set; }
+
+		/// <summary>
+		/// Sets the formatted text display for this menu item.
+		/// </summary>
+		/// <param name="text">The text to display with additional markup for formatting <see cref="Xwt.FormattedText"/></param>
+		void SetFormattedText (FormattedText text);
 	}
-	
+
 	public interface IMenuItemEventSink
 	{
 		void OnClicked ();

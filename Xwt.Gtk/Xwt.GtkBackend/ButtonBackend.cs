@@ -220,7 +220,15 @@ namespace Xwt.GtkBackend
 			Button b = (Button) Frontend;
 			SetContent (b.Label, b.UseMnemonic, image, b.ImagePosition);
 		}
-		
+
+		public void SetFormattedText (FormattedText text)
+		{
+			if (labelWidget != null) {
+				labelWidget.Text = text.Text;
+				text.ApplyToLabel (labelWidget);
+			}
+		}
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

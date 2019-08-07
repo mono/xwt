@@ -153,8 +153,11 @@ namespace Xwt.Mac
 			}
 		}
 
+		public void SetFormattedText (FormattedText text)
+		{
+			Widget.AttributedTitle = text.ToAttributedString ();
+		}
 
-		
 		#endregion
 
 		public override Color BackgroundColor {

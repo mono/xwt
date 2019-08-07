@@ -24,9 +24,13 @@
 // THE SOFTWARE.
 
 using System.Windows;
-using System.Windows.Media;
+using SWC = System.Windows.Controls;
+using SWM = System.Windows.Media;
+using SWD = System.Windows.Documents;
+
 using System;
 using Xwt.Backends;
+using System.Collections.Generic;
 
 namespace Xwt.WPFBackend
 {
@@ -104,6 +108,87 @@ namespace Xwt.WPFBackend
 				return parentWindow;
 
 			return System.Windows.Application.Current.MainWindow;
+		}
+
+		internal static void ApplyFormattedText (this SWC.TextBlock textBlock, FormattedText text, System.Windows.Navigation.RequestNavigateEventHandler link_RequestNavigate)
+		{
+			var atts = new List<Drawing.TextAttribute> (text.Attributes);
+			atts.Sort ((a, b) => {
+				var c = a.StartIndex.CompareTo (b.StartIndex);
+				if (c == 0)
+					c = -(a.Count.CompareTo (b.Count));
+				return c;
+			});
+
+			int i = 0, attrIndex = 0;
+			textBlock.Inlines.Clear ();
+
+			GenerateBlocks (textBlock.Inlines, text.Text, ref i, text.Text.Length, atts, ref attrIndex, link_RequestNavigate);
+		}
+
+		internal static void GenerateBlocks (SWD.InlineCollection col, string text, ref int i, int spanEnd, List<Drawing.TextAttribute> attributes, ref int attrIndex, System.Windows.Navigation.RequestNavigateEventHandler link_RequestNavigate)
+		{
+			while (attrIndex < attributes.Count) {
+				var at = attributes[attrIndex];
+				if (at.StartIndex > spanEnd) {
+					FlushText (col, text, ref i, spanEnd);
+					return;
+				}
+
+				FlushText (col, text, ref i, at.StartIndex);
+
+				var s = new SWD.Span ();
+
+				if (at is Drawing.BackgroundTextAttribute) {
+					s.Background = new SWM.SolidColorBrush (((Drawing.BackgroundTextAttribute)at).Color.ToWpfColor ());
+				} else if (at is Drawing.FontWeightTextAttribute) {
+					s.FontWeight = ((Drawing.FontWeightTextAttribute)at).Weight.ToWpfFontWeight ();
+				} else if (at is Drawing.FontStyleTextAttribute) {
+					s.FontStyle = ((Drawing.FontStyleTextAttribute)at).Style.ToWpfFontStyle ();
+				} else if (at is Drawing.UnderlineTextAttribute) {
+					var xa = (Drawing.UnderlineTextAttribute)at;
+					var dec = new TextDecoration (TextDecorationLocation.Underline, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+					s.TextDecorations.Add (dec);
+				} else if (at is Drawing.StrikethroughTextAttribute) {
+					var xa = (Drawing.StrikethroughTextAttribute)at;
+					var dec = new TextDecoration (TextDecorationLocation.Strikethrough, null, 0, TextDecorationUnit.FontRecommended, TextDecorationUnit.FontRecommended);
+					s.TextDecorations.Add (dec);
+				} else if (at is Drawing.FontTextAttribute) {
+					var xa = (Drawing.FontTextAttribute)at;
+					s.FontFamily = new SWM.FontFamily (xa.Font.Family);
+					s.FontSize = WpfFontBackendHandler.GetPointsFromDeviceUnits (xa.Font.Size);
+					s.FontStretch = xa.Font.Stretch.ToWpfFontStretch ();
+					s.FontStyle = xa.Font.Style.ToWpfFontStyle ();
+					s.FontWeight = xa.Font.Weight.ToWpfFontWeight ();
+				} else if (at is Drawing.ColorTextAttribute) {
+					s.Foreground = new SWM.SolidColorBrush (((Drawing.ColorTextAttribute)at).Color.ToWpfColor ());
+				} else if (at is Drawing.LinkTextAttribute) {
+					var link = new SWD.Hyperlink () {
+						NavigateUri = ((Drawing.LinkTextAttribute)at).Target
+					};
+					link.RequestNavigate += link_RequestNavigate;
+					s = link;
+				}
+
+				col.Add (s);
+
+				var max = i + at.Count;
+				if (max > spanEnd)
+					max = spanEnd;
+
+				attrIndex++;
+				GenerateBlocks (s.Inlines, text, ref i, i + at.Count, attributes, ref attrIndex);
+			}
+			FlushText (col, text, ref i, spanEnd);
+		}
+		
+
+		internal static void FlushText (System.Windows.Drawing.InlineCollection col, string text, ref int i, int pos)
+		{
+			if (pos > i) {
+				col.Add (text.Substring (i, pos - i));
+				i = pos;
+			}
 		}
 	}
 

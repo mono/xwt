@@ -103,6 +103,23 @@ namespace Xwt
 			}
 		}
 
+		string markup;
+		/// <summary>
+		/// Gets or sets the text with markuo to display.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="Xwt.FormattedText"/> for supported formatting options.</remarks>
+		[DefaultValue("")]
+		public string Markup {
+			get { return markup; }
+			set {
+				markup = value;
+				var t = FormattedText.FromMarkup (markup);
+				Backend.SetFormattedText (t);
+				OnPreferredSizeChanged ();
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="Xwt.Button"/> uses a mnemonic.
 		/// </summary>

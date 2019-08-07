@@ -116,6 +116,22 @@ namespace Xwt
 			}
 		}
 
+		string markup;
+		/// <summary>
+		/// Gets or sets the text with markuo to display.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="Xwt.FormattedText"/> for supported formatting options.</remarks>
+		[DefaultValue ("")]
+		public string Markup {
+			get { return markup; }
+			set {
+				markup = value;
+				var t = FormattedText.FromMarkup (markup);
+				Backend.SetFormattedText (t);
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the tooltip text.
 		/// </summary>
