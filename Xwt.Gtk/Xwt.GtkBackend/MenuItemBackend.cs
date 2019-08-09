@@ -190,55 +190,55 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		/*		public void SetType (MenuItemType type)
-				{
-					string text = label.Text;
-
-					Gtk.MenuItem newItem = null;
-					switch (type) {
-					case MenuItemType.Normal:
-						if (!(item is Gtk.ImageMenuItem))
-							newItem = new Gtk.ImageMenuItem (text);
-						break;
-					case MenuItemType.CheckBox:
-						if (item.GetType () != typeof(Gtk.CheckMenuItem))
-							newItem = new Gtk.CheckMenuItem (text);
-						break;
-					case MenuItemType.RadioButton:
-						if (!(item is Gtk.RadioMenuItem))
-							newItem = new Gtk.RadioMenuItem (text);
-						break;
-					}
-
-					if (newItem != null) {
-						if ((newItem is Gtk.CheckMenuItem) && (item is Gtk.CheckMenuItem))
-							((Gtk.CheckMenuItem)item).Active = ((Gtk.CheckMenuItem)newItem).Active;
-						newItem.Sensitive = item.Sensitive;
-						if (item.Parent != null) {
-							Gtk.Menu m = (Gtk.Menu)item.Parent;
-							int pos = Array.IndexOf (m.Children, item);
-							m.Insert (newItem, pos);
-							m.Remove (item);
-						}
-						newItem.ShowAll ();
-						if (!item.Visible)
-							newItem.Hide ();
-
-						if (enabledEvents != null) {
-							foreach (var ob in enabledEvents)
-								DisableEvent (ob);
-						}
-
-						item = newItem;
-						label = (Gtk.Label) item.Child;
-
-						if (enabledEvents != null) {
-							foreach (var ob in enabledEvents)
-								EnableEvent (ob);
-						}
-					}
-				}*/
-
+/*		public void SetType (MenuItemType type)
+		{
+			string text = label.Text;
+			
+			Gtk.MenuItem newItem = null;
+			switch (type) {
+			case MenuItemType.Normal:
+				if (!(item is Gtk.ImageMenuItem))
+					newItem = new Gtk.ImageMenuItem (text);
+				break;
+			case MenuItemType.CheckBox:
+				if (item.GetType () != typeof(Gtk.CheckMenuItem))
+					newItem = new Gtk.CheckMenuItem (text);
+				break;
+			case MenuItemType.RadioButton:
+				if (!(item is Gtk.RadioMenuItem))
+					newItem = new Gtk.RadioMenuItem (text);
+				break;
+			}
+			
+			if (newItem != null) {
+				if ((newItem is Gtk.CheckMenuItem) && (item is Gtk.CheckMenuItem))
+					((Gtk.CheckMenuItem)item).Active = ((Gtk.CheckMenuItem)newItem).Active;
+				newItem.Sensitive = item.Sensitive;
+				if (item.Parent != null) {
+					Gtk.Menu m = (Gtk.Menu)item.Parent;
+					int pos = Array.IndexOf (m.Children, item);
+					m.Insert (newItem, pos);
+					m.Remove (item);
+				}
+				newItem.ShowAll ();
+				if (!item.Visible)
+					newItem.Hide ();
+				
+				if (enabledEvents != null) {
+					foreach (var ob in enabledEvents)
+						DisableEvent (ob);
+				}
+				
+				item = newItem;
+				label = (Gtk.Label) item.Child;
+				
+				if (enabledEvents != null) {
+					foreach (var ob in enabledEvents)
+						EnableEvent (ob);
+				}
+			}
+		}*/
+		
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{
 			this.context = context;

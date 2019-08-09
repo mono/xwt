@@ -155,6 +155,7 @@ namespace Xwt.Mac
 
 		public void SetFormattedText (FormattedText text)
 		{
+			Widget.Title = text.Text;
 			Widget.AttributedTitle = text.ToAttributedString ();
 		}
 

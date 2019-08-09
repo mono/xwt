@@ -62,36 +62,35 @@ namespace Xwt.WPFBackend
 			get { return (IButtonEventSink)base.EventSink; }
 		}
 
-		public void SetButtonStyle (ButtonStyle style)
-		{
-			switch (style) {
-			case ButtonStyle.Normal:
-				Button.ClearValue (SWC.Control.BackgroundProperty);
-				Button.ClearValue (SWC.Control.BorderThicknessProperty);
-				Button.ClearValue (SWC.Control.BorderBrushProperty);
-				break;
-			case ButtonStyle.Flat:
-				Button.Background = Brushes.Transparent;
-				Button.BorderBrush = Brushes.Transparent;
-				break;
-			case ButtonStyle.Borderless:
-				Button.ClearValue (SWC.Control.BackgroundProperty);
-				Button.BorderThickness = new Thickness (0);
-				Button.BorderBrush = Brushes.Transparent;
-				break;
+		public void SetButtonStyle (ButtonStyle style) {
+			switch (style)
+			{
+				case ButtonStyle.Normal:
+					Button.ClearValue (SWC.Control.BackgroundProperty);
+					Button.ClearValue (SWC.Control.BorderThicknessProperty);
+					Button.ClearValue (SWC.Control.BorderBrushProperty);
+					break;
+				case ButtonStyle.Flat:
+					Button.Background = Brushes.Transparent;
+					Button.BorderBrush = Brushes.Transparent;
+					break;
+				case ButtonStyle.Borderless:
+					Button.ClearValue (SWC.Control.BackgroundProperty);
+					Button.BorderThickness = new Thickness (0);
+					Button.BorderBrush = Brushes.Transparent;
+					break;
 			}
 			Button.InvalidateMeasure ();
 		}
 
-		public virtual void SetButtonType (ButtonType type)
-		{
+		public virtual void SetButtonType (ButtonType type) {
 			switch (type) {
 			case ButtonType.Normal:
 				Button.Style = null;
 				break;
 
 			case ButtonType.DropDown:
-				Button.Style = (Style)ButtonResources["NormalDropDown"];
+				Button.Style = (Style) ButtonResources ["NormalDropDown"];
 				break;
 			}
 
@@ -101,41 +100,29 @@ namespace Xwt.WPFBackend
 		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position)
 		{
 			var accessText = new SWC.AccessText ();
-			accessText.Text = label ?? string.Empty;
-			var mnemonicValue = useMnemonic ? accessText.Text : accessText.Text.Replace ("_", "__");
-
-			if (image.IsNull) {
-				var formattedText = FormattedText.FromMarkup (mnemonicValue);
-				if (mnemonicValue.CompareTo (formattedText.Text) != 0) {
-					var formattedLabel = new Label (mnemonicValue) { Markup = mnemonicValue };
-					Button.Content = ((Widget)formattedLabel).GetBackend ()?.NativeWidget;
-				} else {
-					Button.Content = mnemonicValue;
-				}
-			} else {
+			accessText.Text = label;
+			if (image.IsNull)
+				if (useMnemonic)
+					Button.Content = accessText;
+				else
+					Button.Content = accessText.Text.Replace ("_", "__");
+			else {
 				SWC.DockPanel grid = new SWC.DockPanel ();
 
-				var imageCtrl = new ImageBox (Context) {
-					ImageSource = image
-				};
+				var imageCtrl = new ImageBox (Context);
+				imageCtrl.ImageSource = image;
 
 				SWC.DockPanel.SetDock (imageCtrl, DataConverter.ToWpfDock (position));
 				grid.Children.Add (imageCtrl);
 
 				if (!string.IsNullOrEmpty (label)) {
 					SWC.Label labelCtrl = new SWC.Label ();
-					var formattedText = FormattedText.FromMarkup (mnemonicValue);
-					if (mnemonicValue.CompareTo (formattedText.Text) != 0) {
-						var formattedLabel = new Label (mnemonicValue) { Markup = mnemonicValue };
-						grid.Children.Add ((UIElement)((Widget)formattedLabel).GetBackend ()?.NativeWidget);
-					} else {
-						if (useMnemonic)
-							labelCtrl.Content = accessText;
-						else
-							labelCtrl.Content = label;
-						labelCtrl.SetBinding (SWC.Label.ForegroundProperty, new Binding ("Foreground") { Source = Button });
-						grid.Children.Add (labelCtrl);
-					}				
+					if (useMnemonic)
+						labelCtrl.Content = accessText;
+					else
+						labelCtrl.Content = label;
+					labelCtrl.SetBinding (SWC.Label.ForegroundProperty, new Binding ("Foreground") { Source = Button });
+					grid.Children.Add (labelCtrl);
 				}
 				Button.Content = grid;
 			}
@@ -156,9 +143,10 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public Xwt.Drawing.Color LabelColor {
-			get { return Button.Foreground.ToXwtColor (); }
-			set { Button.Foreground = ResPool.GetSolidBrush (value.ToWpfColor ()); }
+		public Xwt.Drawing.Color LabelColor
+		{
+			get { return Button.Foreground.ToXwtColor(); }
+			set { Button.Foreground = ResPool.GetSolidBrush (value.ToWpfColor()); }
 		}
 
 		bool isDefault;
@@ -176,9 +164,11 @@ namespace Xwt.WPFBackend
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
-			if (eventId is ButtonEvent) {
-				switch ((ButtonEvent)eventId) {
-				case ButtonEvent.Clicked: Button.Click += HandleWidgetClicked; break;
+			if (eventId is ButtonEvent)
+			{
+				switch ((ButtonEvent)eventId)
+				{
+					case ButtonEvent.Clicked: Button.Click += HandleWidgetClicked; break;
 				}
 			}
 		}
@@ -186,9 +176,11 @@ namespace Xwt.WPFBackend
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			if (eventId is ButtonEvent) {
-				switch ((ButtonEvent)eventId) {
-				case ButtonEvent.Clicked: Button.Click -= HandleWidgetClicked; break;
+			if (eventId is ButtonEvent)
+			{
+				switch ((ButtonEvent)eventId)
+				{
+					case ButtonEvent.Clicked: Button.Click -= HandleWidgetClicked; break;
 				}
 			}
 		}
@@ -199,8 +191,10 @@ namespace Xwt.WPFBackend
 		}
 
 		private static ResourceDictionary buttonsDictionary;
-		protected static ResourceDictionary ButtonResources {
-			get {
+		protected static ResourceDictionary ButtonResources
+		{
+			get
+			{
 				if (buttonsDictionary == null)
 					buttonsDictionary = CreateButtonResources ();
 

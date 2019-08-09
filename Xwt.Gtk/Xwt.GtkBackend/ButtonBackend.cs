@@ -197,6 +197,28 @@ namespace Xwt.GtkBackend
 				Widget.Label = null;
 		}
 		
+		private void SetFormattedContent (FormattedText label, ContentPosition position)
+		{
+			if (label != null && label.Text.Length == 0)
+				label = null;
+
+			Button b = (Button)Frontend;
+			if (label != null && image.Backend == null && b.Type == ButtonType.Normal) {
+				labelWidget = new Gtk.Label ();
+				label.ApplyToLabel (labelWidget);
+				Widget.Image = labelWidget;
+				return;
+			}
+
+			if (b.Type == ButtonType.Disclosure) {
+				return;
+			}
+
+			if (label != null && labelWidget != null) {
+				label.ApplyToLabel (labelWidget);
+			}
+		}
+
 		public void SetButtonStyle (ButtonStyle style)
 		{
 			switch (style) {
@@ -223,10 +245,8 @@ namespace Xwt.GtkBackend
 
 		public void SetFormattedText (FormattedText text)
 		{
-			if (labelWidget != null) {
-				labelWidget.Text = text.Text;
-				text.ApplyToLabel (labelWidget);
-			}
+			SetContent (text.Text, Widget.UseUnderline, this.image, ContentPosition.Center);
+			SetFormattedContent (text, ContentPosition.Center);
 		}
 
 		public override void EnableEvent (object eventId)

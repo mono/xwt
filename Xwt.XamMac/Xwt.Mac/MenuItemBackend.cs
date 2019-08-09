@@ -75,7 +75,7 @@ namespace Xwt.Mac
 			}
 			set
 			{
-				item.Title = UseMnemonic ? value.RemoveMnemonic () : value; ;
+				item.Title = UseMnemonic ? value.RemoveMnemonic() : value;
 				label = value;
 			}
 		}
@@ -153,7 +153,6 @@ namespace Xwt.Mac
 		{
 			item.AttributedTitle = text.ToAttributedString ();
 		}
-
 
 		#region IBackend implementation
 		public void InitializeBackend(object frontend, ApplicationContext context)

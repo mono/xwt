@@ -43,7 +43,7 @@ namespace Xwt.Backends
 		/// <param name="text">The text to display with additional markup for formatting <see cref="Xwt.FormattedText"/></param>
 		void SetFormattedText (FormattedText text);
 	}
-
+	
 	public interface IButtonEventSink: IWidgetEventSink
 	{
 		void OnClicked ();
