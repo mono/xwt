@@ -1,4 +1,4 @@
-﻿// Util.cs
+// Util.cs
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
@@ -36,27 +36,27 @@ namespace Xwt.WPFBackend
 {
 	public static class Util
 	{
-		public static Size GetPixelRatios (this Visual self)
+		public static Size GetPixelRatios (this SWM.Visual self)
 		{
 			var source = PresentationSource.FromVisual (self);
 			if (source == null)
 				return new Size (1, 1);
 
-			Matrix m = source.CompositionTarget.TransformToDevice;
+			SWM.Matrix m = source.CompositionTarget.TransformToDevice;
 			return new Size (m.M11, m.M22);
 		}
 
-		public static double GetScaleFactor (this Visual self)
+		public static double GetScaleFactor (this SWM.Visual self)
 		{
 			PresentationSource source = PresentationSource.FromVisual (self);
 			if (source == null)
 				return 1;
 
-			Matrix m = source.CompositionTarget.TransformToDevice;
+			SWM.Matrix m = source.CompositionTarget.TransformToDevice;
 			return m.M11;
 		}
 
-		public static System.Windows.Point PointToScreenDpiAware(this Visual visual, System.Windows.Point point)
+		public static System.Windows.Point PointToScreenDpiAware(this SWM.Visual visual, System.Windows.Point point)
 		{
 			point = visual.PointToScreen(point);
 
@@ -89,7 +89,7 @@ namespace Xwt.WPFBackend
 				if (current is System.Windows.Window)
 					return (System.Windows.Window)current;
 
-				current = VisualTreeHelper.GetParent (current) as FrameworkElement;
+				current = SWM.VisualTreeHelper.GetParent (current) as FrameworkElement;
 			}
 
 			return null;
@@ -177,13 +177,13 @@ namespace Xwt.WPFBackend
 					max = spanEnd;
 
 				attrIndex++;
-				GenerateBlocks (s.Inlines, text, ref i, i + at.Count, attributes, ref attrIndex);
+				GenerateBlocks (s.Inlines, text, ref i, i + at.Count, attributes, ref attrIndex, link_RequestNavigate);
 			}
 			FlushText (col, text, ref i, spanEnd);
 		}
 		
 
-		internal static void FlushText (System.Windows.Drawing.InlineCollection col, string text, ref int i, int pos)
+		internal static void FlushText (SWD.InlineCollection col, string text, ref int i, int pos)
 		{
 			if (pos > i) {
 				col.Add (text.Substring (i, pos - i));

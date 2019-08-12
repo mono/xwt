@@ -135,15 +135,16 @@ namespace Xwt.WPFBackend
 			if (Button.Content is SWC.DockPanel) {
 				var grid = Button.Content as SWC.DockPanel;
 				labelCtrl = grid.Children[1] as SWC.Label;
-				labelCtrl.TextBlock.ApplyFormattedText (text, null);
 			} else {
 				labelCtrl = new SWC.Label ();
-				labelCtrl.TextBlock.ApplyFormattedText (text, null);
-				Button.Content = labelCtrl;
-			}
-		}
+                Button.Content = labelCtrl;
+            }
+            var textCtrl = new SWC.TextBlock();
+            textCtrl.ApplyFormattedText(text, null);
+            labelCtrl.Content = textCtrl;
+        }
 
-		public Xwt.Drawing.Color LabelColor
+        public Xwt.Drawing.Color LabelColor
 		{
 			get { return Button.Foreground.ToXwtColor(); }
 			set { Button.Foreground = ResPool.GetSolidBrush (value.ToWpfColor()); }

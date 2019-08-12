@@ -219,5 +219,13 @@ namespace Xwt.WPFBackend
 		{
 			Context.InvokeUserCode (eventSink.OnClicked);
 		}
-	}
+
+        public void SetFormattedText (FormattedText text)
+        {
+            var formattedLabel = new System.Windows.Controls.TextBlock();
+            formattedLabel.ApplyFormattedText(text, null);
+  
+            this.menuItem.Header = formattedLabel;
+        }
+    }
 }
