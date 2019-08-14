@@ -804,7 +804,7 @@ namespace Xwt.Mac
 		#endregion
 	}
 
-	sealed class WidgetPlacementWrapper: NSControl, IViewObject
+	sealed class WidgetPlacementWrapper: NSView, IViewObject
 	{
 		NSView child;
 		Widget w;
@@ -866,11 +866,6 @@ namespace Xwt.Mac
 				cheight = s.Height;
 			}
 			child.Frame = new CGRect ((nfloat)cx, (nfloat)cy, (nfloat)cwidth, (nfloat)cheight);
-		}
-
-		public override void SizeToFit ()
-		{
-			base.SizeToFit ();
 		}
 	}
 }
