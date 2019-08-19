@@ -58,7 +58,7 @@ namespace Xwt
 		public static void ShowError(WindowFrame parent, string primaryText, string secondaryText, string title)
 		{
 			if (string.IsNullOrEmpty(title))
-				title = (parent != null) ? parent.Title ?? "Error" : "Error";
+				title = parent?.Title ?? Application.TranslationCatalog.GetString ("Error");
 			GenericAlert(parent, Toolkit.CurrentEngine.Defaults.MessageDialog.ErrorIcon, primaryText, secondaryText, title, Command.Ok);
 		}
 		#endregion
@@ -87,7 +87,7 @@ namespace Xwt
 		public static void ShowWarning(WindowFrame parent, string primaryText, string secondaryText, string title)
 		{
 			if (string.IsNullOrEmpty(title))
-				title = (parent != null) ? parent.Title ?? "Warning" : "Warning";
+				title = parent?.Title ?? Application.TranslationCatalog.GetString ("Warning");
 			GenericAlert(parent, Toolkit.CurrentEngine.Defaults.MessageDialog.WarningIcon, primaryText, secondaryText, title, Command.Ok);
 		}
 		#endregion
@@ -133,7 +133,7 @@ namespace Xwt
 		public static void ShowMessage(WindowFrame parent, string primaryText, string secondaryText, string title, Drawing.Image icon)
 		{
 			if (string.IsNullOrEmpty(title))
-				title = (parent != null) ? parent.Title ?? "Information" : "Information";
+				title = parent?.Title ?? Application.TranslationCatalog.GetString ("Information");
 			GenericAlert(parent, icon, primaryText, secondaryText, title, Command.Ok);
 		}
 		#endregion
