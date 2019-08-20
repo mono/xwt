@@ -190,6 +190,11 @@ namespace Xwt.Mac
 				eventSink.OnClicked();
 			});
 		}
+
+		public void Dispose ()
+		{
+			// Nothing to do here.
+		}
 	}
 }
 
