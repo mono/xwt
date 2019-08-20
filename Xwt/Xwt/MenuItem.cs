@@ -118,7 +118,7 @@ namespace Xwt
 
 		string markup;
 		/// <summary>
-		/// Gets or sets the text with markuo to display.
+		/// Gets or sets the text with markup to display.
 		/// </summary>
 		/// <remarks>
 		/// <see cref="Xwt.FormattedText"/> for supported formatting options.</remarks>
@@ -242,6 +242,12 @@ namespace Xwt
 				clicked -= value;
 				base.BackendHost.OnAfterEventRemove (MenuItemEvent.Clicked, clicked);
 			}
+		}
+
+		protected override void Dispose (bool release_all)
+		{
+			Backend.Dispose ();
+			base.Dispose (release_all);
 		}
 	}
 	

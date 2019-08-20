@@ -137,14 +137,14 @@ namespace Xwt.WPFBackend
 				labelCtrl = grid.Children[1] as SWC.Label;
 			} else {
 				labelCtrl = new SWC.Label ();
-                Button.Content = labelCtrl;
-            }
-            var textCtrl = new SWC.TextBlock();
-            textCtrl.ApplyFormattedText(text, null);
-            labelCtrl.Content = textCtrl;
-        }
+				Button.Content = labelCtrl;
+			}
+			var textCtrl = new SWC.TextBlock();
+			textCtrl.ApplyFormattedText(text, null);
+			labelCtrl.Content = textCtrl;
+		}
 
-        public Xwt.Drawing.Color LabelColor
+		public Xwt.Drawing.Color LabelColor
 		{
 			get { return Button.Foreground.ToXwtColor(); }
 			set { Button.Foreground = ResPool.GetSolidBrush (value.ToWpfColor()); }

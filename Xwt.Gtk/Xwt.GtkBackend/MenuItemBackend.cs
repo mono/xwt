@@ -50,11 +50,6 @@ namespace Xwt.GtkBackend
 		{
 			this.item = item;
 			label = (Gtk.Label) item.Child;
-			if (label != null) {
-				label.Realized += HandleStyleUpdate;
-				label.StyleSet += HandleStyleUpdate;
-			}
-
 			item.ShowAll ();
 		}
 		
@@ -179,14 +174,16 @@ namespace Xwt.GtkBackend
 		{
 			label.Text = text.Text;
 			formattedText = text;
-			text.ApplyToLabel(label);
+			label.Realized += HandleStyleUpdate;
+			label.StyleSet += HandleStyleUpdate;
+			label.ApplyFormattedText(text);
 		}
 
 		void HandleStyleUpdate (object sender, EventArgs e)
 		{
 			// force text update with updated link color
 			if (label.IsRealized && formattedText != null) {
-				SetFormattedText (formattedText);
+				label.ApplyFormattedText (formattedText);
 			}
 		}
 
@@ -268,6 +265,14 @@ namespace Xwt.GtkBackend
 		{
 			if (!changingCheck) {
 				context.InvokeUserCode (eventSink.OnClicked);
+			}
+		}
+
+		public void Dispose ()
+		{
+			if (label != null) {
+				label.Realized -= HandleStyleUpdate;
+				label.StyleSet -= HandleStyleUpdate;
 			}
 		}
 	}

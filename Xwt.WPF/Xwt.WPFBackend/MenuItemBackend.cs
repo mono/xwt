@@ -220,12 +220,17 @@ namespace Xwt.WPFBackend
 			Context.InvokeUserCode (eventSink.OnClicked);
 		}
 
-        public void SetFormattedText (FormattedText text)
-        {
-            var formattedLabel = new System.Windows.Controls.TextBlock();
-            formattedLabel.ApplyFormattedText(text, null);
+		public void SetFormattedText (FormattedText text)
+		{
+			var formattedLabel = new System.Windows.Controls.TextBlock();
+			formattedLabel.ApplyFormattedText(text, null);
   
-            this.menuItem.Header = formattedLabel;
-        }
-    }
+			this.menuItem.Header = formattedLabel;
+		}
+
+		public void Dispose ()
+		{
+			// Nothing to do here.
+		}
+	}
 }

@@ -163,7 +163,7 @@ namespace Xwt.GtkBackend
 		{
 			Label.Text = text.Text;
 			formattedText = text;
-			text.ApplyToLabel (Label);
+			Label.ApplyFormattedText (text);
 
 			if (links != null)
 				links.Clear ();

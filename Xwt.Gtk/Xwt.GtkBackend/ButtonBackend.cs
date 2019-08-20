@@ -197,25 +197,32 @@ namespace Xwt.GtkBackend
 				Widget.Label = null;
 		}
 		
+		FormattedText formattedText = null;
 		private void SetFormattedContent (FormattedText label, ContentPosition position)
 		{
 			if (label != null && label.Text.Length == 0)
-				label = null;
+				return;
 
 			Button b = (Button)Frontend;
-			if (label != null && image.Backend == null && b.Type == ButtonType.Normal) {
-				labelWidget = new Gtk.Label ();
-				label.ApplyToLabel (labelWidget);
+			if (labelWidget == null) {
+				labelWidget = new Gtk.Label (label.Text);
+				Widget.Label = null;
 				Widget.Image = labelWidget;
-				return;
 			}
 
-			if (b.Type == ButtonType.Disclosure) {
-				return;
-			}
+			formattedText = label;
+			labelWidget.ApplyFormattedText (formattedText);
+			labelWidget.ShowAll ();
+			labelWidget.Realized += HandleStyleUpdate;
+			labelWidget.StyleSet += HandleStyleUpdate;
+		}
 
-			if (label != null && labelWidget != null) {
-				label.ApplyToLabel (labelWidget);
+		void HandleStyleUpdate (object sender, EventArgs e)
+		{
+			// force text update with updated link color
+			if (labelWidget.IsRealized && formattedText != null) {
+				labelWidget.ApplyFormattedText (formattedText);
+				labelWidget.ShowAll ();
 			}
 		}
 
@@ -299,6 +306,15 @@ namespace Xwt.GtkBackend
 		{
 			Widget.Child.SizeAllocate (args.Allocation);
 			args.RetVal = true;
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (labelWidget != null) {
+				labelWidget.Realized -= HandleStyleUpdate;
+				labelWidget.StyleSet -= HandleStyleUpdate;
+			}
+			base.Dispose (disposing);
 		}
 	}
 }
