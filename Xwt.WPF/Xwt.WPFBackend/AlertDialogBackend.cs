@@ -57,16 +57,16 @@ namespace Xwt.WPFBackend
 		public Command Run (WindowFrame transientFor, MessageDescription message)
 		{
 			this.icon = GetIcon (message.Icon);
-			if(string.IsNullOrEmpty(message.Title))
-				message.Title = (transientFor != null) ? transientFor.Title ?? String.Empty : String.Empty;
+			if (string.IsNullOrEmpty (message.Title))
+				message.Title = transientFor?.Title ?? string.Empty;
 
 			if (ConvertButtons (message.Buttons, out buttons) && message.Options.Count == 0) {
 				// Use a system message box
 				if (message.SecondaryText == null)
-					message.SecondaryText = String.Empty;
+					message.SecondaryText = string.Empty;
 				else {
 					message.Text = message.Text + "\r\n\r\n" + message.SecondaryText;
-					message.SecondaryText = String.Empty;
+					message.SecondaryText = string.Empty;
 				}
 				var parent =  context.Toolkit.GetNativeWindow(transientFor) as System.Windows.Window;
 				if (parent != null) {
@@ -94,7 +94,7 @@ namespace Xwt.WPFBackend
 				VBox box = new VBox () { Margin = 3, MarginLeft = 8, Spacing = 15 };
 				mainBox.PackStart (box, true);
 				var text = new Label {
-					Text = message.Text ?? String.Empty
+					Text = message.Text ?? string.Empty
 				};
 				Label stext = null;
 				box.PackStart (text);
