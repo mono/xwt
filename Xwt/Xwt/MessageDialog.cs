@@ -49,10 +49,20 @@ namespace Xwt
 		}
 		public static void ShowError (WindowFrame parent, string primaryText, string secondaryText)
 		{
-			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.ErrorIcon, primaryText, secondaryText, Command.Ok);
+			ShowError (parent, primaryText, secondaryText, string.Empty);
+		}
+		public static void ShowError (string primaryText, string secondaryText, string title)
+		{
+			ShowError (RootWindow, primaryText, secondaryText, title);
+		}
+		public static void ShowError (WindowFrame parent, string primaryText, string secondaryText, string title)
+		{
+			if (string.IsNullOrEmpty (title))
+				title = parent?.Title ?? Application.TranslationCatalog.GetString ("Error");
+			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.ErrorIcon, primaryText, secondaryText, title, Command.Ok);
 		}
 		#endregion
-		
+
 		#region ShowWarning
 		public static void ShowWarning (string primaryText)
 		{
@@ -68,11 +78,21 @@ namespace Xwt
 		}
 		public static void ShowWarning (WindowFrame parent, string primaryText, string secondaryText)
 		{
-			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.WarningIcon, primaryText, secondaryText, Command.Ok);
+			ShowWarning (parent, primaryText, secondaryText, string.Empty);
+		}
+		public static void ShowWarning (string primaryText, string secondaryText, string title)
+		{
+			ShowWarning (RootWindow, primaryText, secondaryText, title);
+		}
+		public static void ShowWarning (WindowFrame parent, string primaryText, string secondaryText, string title)
+		{
+			if (string.IsNullOrEmpty(title))
+				title = parent?.Title ?? Application.TranslationCatalog.GetString ("Warning");
+			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.WarningIcon, primaryText, secondaryText, title, Command.Ok);
 		}
 		#endregion
-		
-		
+
+
 		#region ShowMessage
 		public static void ShowMessage (string primaryText)
 		{
@@ -80,26 +100,44 @@ namespace Xwt
 		}
 		public static void ShowMessage (WindowFrame parent, string primaryText)
 		{
-			ShowMessage (parent, primaryText, null);
+			ShowMessage (parent, primaryText, string.Empty);
 		}
 		public static void ShowMessage (string primaryText, string secondaryText)
 		{
 			ShowMessage (RootWindow, primaryText, secondaryText);
 		}
+		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText)
+		{
+			ShowMessage (parent, primaryText, secondaryText, string.Empty);
+		}
+		public static void ShowMessage (string primaryText, string secondaryText, string title)
+		{
+			ShowMessage (RootWindow, primaryText, secondaryText, title);
+		}
+		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText, string title)
+		{
+			ShowMessage (parent, primaryText, secondaryText, title, Toolkit.CurrentEngine.Defaults.MessageDialog.InformationIcon);
+		}
 		public static void ShowMessage (string primaryText, string secondaryText, Drawing.Image icon)
 		{
 			ShowMessage (RootWindow, primaryText, secondaryText, icon);
 		}
-		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText)
-		{
-			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.InformationIcon, primaryText, secondaryText, Command.Ok);
-		}
 		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText, Drawing.Image icon)
 		{
-			GenericAlert (parent, icon, primaryText, secondaryText, Command.Ok);
+			ShowMessage (parent, primaryText, secondaryText, string.Empty, icon);
+		}
+		public static void ShowMessage (string primaryText, string secondaryText, string title, Drawing.Image icon)
+		{
+			ShowMessage (RootWindow, primaryText, secondaryText, title, icon);
+		}
+		public static void ShowMessage(WindowFrame parent, string primaryText, string secondaryText, string title, Drawing.Image icon)
+		{
+			if (string.IsNullOrEmpty (title))
+				title = parent?.Title ?? Application.TranslationCatalog.GetString ("Information");
+			GenericAlert (parent, icon, primaryText, secondaryText, title, Command.Ok);
 		}
 		#endregion
-		
+
 		#region Confirm
 		public static bool Confirm (string primaryText, Command button)
 		{
@@ -111,6 +149,11 @@ namespace Xwt
 			return Confirm (RootWindow, primaryText, secondaryText, button);
 		}
 
+		public static bool Confirm (string primaryText, string secondaryText, string title, Command button)
+		{
+			return Confirm (RootWindow, primaryText, secondaryText, title, button);
+		}
+
 		public static bool Confirm (string primaryText, string secondaryText, Drawing.Image icon, Command button)
 		{
 			return Confirm (RootWindow, primaryText, secondaryText, icon, button);
@@ -118,12 +161,22 @@ namespace Xwt
 
 		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, Command button)
 		{
-			return GenericAlert (window, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, Command.Cancel, button) == button;
+			return Confirm (window, primaryText, secondaryText, string.Empty, button);
+
+		}
+		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, string title, Command button)
+		{
+			return GenericAlert (window, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, title, Command.Cancel, button) == button;
 		}
 
 		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, Drawing.Image icon, Command button)
 		{
-			return GenericAlert (window, icon, primaryText, secondaryText, Command.Cancel, button) == button;
+			return Confirm (window, primaryText, secondaryText, string.Empty, icon, button);
+
+		}
+		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, string title, Drawing.Image icon, Command button)
+		{
+			return GenericAlert (window, icon, primaryText, secondaryText, title, Command.Cancel, button) == button;
 		}
 
 		public static bool Confirm (string primaryText, Command button, bool confirmIsDefault)
@@ -133,14 +186,27 @@ namespace Xwt
 		
 		public static bool Confirm (string primaryText, string secondaryText, Command button, bool confirmIsDefault)
 		{
-			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
+			return Confirm (primaryText, secondaryText, string.Empty, button, confirmIsDefault);
+		}
+
+		public static bool Confirm (string primaryText, string secondaryText, string title, Command button, bool confirmIsDefault)
+		{
+			return Confirm (RootWindow, primaryText, secondaryText, title, button, confirmIsDefault);
+		}
+		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, string title, Command button, bool confirmIsDefault)
+		{
+			return GenericAlert (window, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, title, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
 		}
 
 		public static bool Confirm (string primaryText, string secondaryText, Drawing.Image icon, Command button, bool confirmIsDefault)
 		{
-			return GenericAlert (RootWindow, icon, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
+			return Confirm (primaryText, secondaryText, string.Empty, icon, button, confirmIsDefault);
 		}
-		
+		public static bool Confirm (string primaryText, string secondaryText, string title, Drawing.Image icon, Command button, bool confirmIsDefault)
+		{
+			return GenericAlert (RootWindow, icon, primaryText, secondaryText, title, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
+		}
+
 		public static bool Confirm (ConfirmationMessage message)
 		{
 			return Confirm (RootWindow, message);
@@ -157,17 +223,22 @@ namespace Xwt
 		{
 			return AskQuestion (primaryText, null, buttons);
 		}
-		
 		public static Command AskQuestion (string primaryText, string secondaryText, params Command[] buttons)
 		{
-			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, buttons);
+			return AskQuestion (primaryText, secondaryText, string.Empty, buttons);
 		}
-
+		public static Command AskQuestion (string primaryText, string secondaryText, string title, params Command[] buttons)
+		{
+			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, title, buttons);
+		}
 		public static Command AskQuestion (string primaryText, string secondaryText, Drawing.Image icon, params Command [] buttons)
 		{
-			return GenericAlert (RootWindow, icon, primaryText, secondaryText, buttons);
+			return AskQuestion (primaryText, secondaryText, string.Empty, icon, buttons);
 		}
-
+		public static Command AskQuestion (string primaryText, string secondaryText, string title, Drawing.Image icon, params Command[] buttons)
+		{
+			return GenericAlert (RootWindow, icon, primaryText, secondaryText, title, buttons);
+		}
 		public static Command AskQuestion (string primaryText, int defaultButton, params Command[] buttons)
 		{
 			return AskQuestion (primaryText, null, defaultButton, buttons);
@@ -175,14 +246,21 @@ namespace Xwt
 		
 		public static Command AskQuestion (string primaryText, string secondaryText, int defaultButton, params Command[] buttons)
 		{
-			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, defaultButton, buttons);
+			return AskQuestion (primaryText, secondaryText, string.Empty, defaultButton, buttons);
 		}
-
+		public static Command AskQuestion (string primaryText, string secondaryText, string title, int defaultButton, params Command[] buttons)
+		{
+			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, title, defaultButton, buttons);
+		}
 		public static Command AskQuestion (string primaryText, string secondaryText, Drawing.Image icon, int defaultButton, params Command [] buttons)
 		{
-			return GenericAlert (RootWindow, icon, primaryText, secondaryText, defaultButton, buttons);
+			return AskQuestion (primaryText, secondaryText, string.Empty, icon, defaultButton, buttons);
 		}
-		
+		public static Command AskQuestion (string primaryText, string secondaryText, string title, Drawing.Image icon, int defaultButton, params Command[] buttons)
+		{
+			return GenericAlert (RootWindow, icon, primaryText, secondaryText, title, defaultButton, buttons);
+		}
+
 		public static Command AskQuestion (QuestionMessage message)
 		{
 			return AskQuestion (RootWindow, message);
@@ -194,15 +272,16 @@ namespace Xwt
 		}
 		#endregion
 		
-		static Command GenericAlert (WindowFrame parent, Xwt.Drawing.Image icon, string primaryText, string secondaryText, params Command[] buttons)
+		static Command GenericAlert (WindowFrame parent, Xwt.Drawing.Image icon, string primaryText, string secondaryText, string title, params Command[] buttons)
 		{
-			return GenericAlert (parent, icon, primaryText, secondaryText, buttons.Length - 1, buttons);
+			return GenericAlert (parent, icon, primaryText, secondaryText, title, buttons.Length - 1, buttons);
 		}
 		
-		static Command GenericAlert (WindowFrame parent, Xwt.Drawing.Image icon, string primaryText, string secondaryText, int defaultButton, params Command[] buttons)
+		static Command GenericAlert (WindowFrame parent, Xwt.Drawing.Image icon, string primaryText, string secondaryText, string title, int defaultButton, params Command[] buttons)
 		{
 			GenericMessage message = new GenericMessage () {
 				Icon = icon,
+				Title = title,
 				Text = primaryText,
 				SecondaryText = secondaryText,
 				DefaultButton = defaultButton
@@ -252,7 +331,8 @@ namespace Xwt
 		internal Command ApplyToAllButton { get; set; }
 		
 		public Xwt.Drawing.Image Icon { get; set; }
-		
+
+		public string Title { get; set; }
 		public string Text { get; set; }
 		public string SecondaryText { get; set; }
 		public bool AllowApplyToAll { get; set; }
