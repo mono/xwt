@@ -110,6 +110,10 @@ namespace Xwt.Backends
 		{
 			return null;
 		}
+
+		public virtual void RequestUserAttention (bool critical)
+		{
+		}
 	}
 }
 

@@ -1,10 +1,10 @@
 ﻿//
-// GtkPlatformBackend.cs
+// ToolkitExtensions.cs
 //
 // Author:
-//       Lluis Sanchez Gual <lluis@xamarin.com>
+//       Marius Ungureanu <maungu@microsoft.com>
 //
-// Copyright (c) 2014 Xamarin, Inc (http://www.xamarin.com)
+// Copyright (c) 2019 Microsoft Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,49 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt.Backends;
-
 namespace Xwt.GtkBackend
 {
-	public class GtkPlatformBackend
+	static class ToolkitExtensions
 	{
-		public virtual void Initialize (ToolkitEngineBackend toolit)
+		public static GtkPlatformBackend GetPlatformBackend (this Toolkit toolkit)
 		{
-		}
-
-		public virtual Type GetBackendImplementationType (Type backendType)
-		{
-			return null;
-		}
-
-		public Gdk.Rectangle GetScreenBounds (Gdk.Screen screen, int monitor)
-		{
-			return OnGetScreenBounds(screen ?? Gdk.Screen.Default, monitor);
-		}
-
-		protected virtual Gdk.Rectangle OnGetScreenBounds (Gdk.Screen screen, int monitor)
-		{
-			var r = screen.GetMonitorGeometry (monitor);
-			return new Gdk.Rectangle (r.X, r.Y, r.Width, r.Height);
-		}
-
-		public Gdk.Rectangle GetScreenVisibleBounds (Gdk.Screen screen, int monitor)
-		{
-			return OnGetScreenBounds (screen ?? Gdk.Screen.Default, monitor);
-		}
-
-		protected virtual Gdk.Rectangle OnGetScreenVisibleBounds (Gdk.Screen screen, int monitor)
-		{
-			return OnGetScreenBounds (screen, monitor);
-		}
-
-		public virtual void RequestUserAttention (bool critical)
-		{
-		}
-
-		public virtual void GrabDesktopFocus ()
-		{
+			var gtkEngine = (GtkEngine)toolkit.GetSafeBackend(toolkit);
+			return gtkEngine.platformBackend;
 		}
 	}
 }
-

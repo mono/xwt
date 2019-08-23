@@ -29,6 +29,7 @@ using Xwt.Backends;
 using AppKit;
 using Xwt.Mac;
 using System.Collections.Generic;
+using CoreGraphics;
 
 namespace Xwt.Gtk.Mac
 {
@@ -39,6 +40,7 @@ namespace Xwt.Gtk.Mac
 		{
 			toolit.RegisterBackend <DesktopBackend,GtkMacDesktopBackend> ();
 			toolit.RegisterBackend <FontBackendHandler,GtkMacFontBackendHandler> ();
+			toolit.RegisterBackend <KeyboardHandler, GtkMacKeyboardHandler>();
 			toolit.RegisterBackend <IAccessibleBackend, GtkMacAccessibleBackend> ();
 			toolit.RegisterBackend <IOpenFileDialogBackend, GtkMacOpenFileDialogBackend> ();
 			toolit.RegisterBackend <IPopoverBackend,GtkMacPopoverBackend> ();
@@ -60,6 +62,64 @@ namespace Xwt.Gtk.Mac
 				Xwt.Mac.NSApplicationInitializer.Initialize ();
 			}
 			return base.GetBackendImplementationType (backendType);
+		}
+
+		protected override Gdk.Rectangle OnGetScreenVisibleBounds(Gdk.Screen screen, int monitor)
+		{
+			var screens = NSScreen.Screens;
+			if ((uint)monitor >= screens.Length)
+				return base.GetScreenVisibleBounds(screen, monitor);
+
+			var macScreen = screens[monitor];
+			CGRect visible = macScreen.VisibleFrame;
+			CGRect frame = macScreen.Frame;
+
+			Gdk.Rectangle ygeometry = base.GetScreenVisibleBounds(screen, monitor);
+			Gdk.Rectangle xgeometry = base.GetScreenVisibleBounds(screen, 0);
+
+			// Note: Frame and VisibleFrame rectangles are relative to monitor 0, but we need absolute
+			// coordinates.
+			visible.X += xgeometry.X;
+			frame.X += xgeometry.X;
+
+			// VisibleFrame.Y is the height of the Dock if it is at the bottom of the screen, so in order
+			// to get the menu height, we just figure out the difference between the visibleFrame height
+			// and the actual frame height, then subtract the Dock height.
+			//
+			// We need to swap the Y offset with the menu height because our callers expect the Y offset
+			// to be from the top of the screen, not from the bottom of the screen.
+			double x, y, width, height;
+
+			if (visible.Height < frame.Height)
+			{
+				double dockHeight = visible.Y - frame.Y;
+				double menubarHeight = (frame.Height - visible.Height) - dockHeight;
+
+				height = frame.Height - menubarHeight - dockHeight;
+				y = ygeometry.Y + menubarHeight;
+			}
+			else
+			{
+				height = frame.Height;
+				y = ygeometry.Y;
+			}
+
+			// Takes care of the possibility of the Dock being positioned on the left or right edge of the screen.
+			width = Math.Min(visible.Width, frame.Width);
+			x = Math.Max(visible.X, frame.X);
+
+			return new Gdk.Rectangle((int)x, (int)y, (int)width, (int)height);
+		}
+
+		public override void RequestUserAttention(bool critical)
+		{
+			NSRequestUserAttentionType kind = critical ? NSRequestUserAttentionType.CriticalRequest : NSRequestUserAttentionType.InformationalRequest;
+			NSApplication.SharedApplication.RequestUserAttention(kind);
+		}
+
+		public override void GrabDesktopFocus ()
+		{
+			NSApplication.SharedApplication.ActivateIgnoringOtherApps (flag: true);
 		}
 	}
 }

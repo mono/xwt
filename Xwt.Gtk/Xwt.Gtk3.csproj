@@ -165,6 +165,7 @@
     <Compile Include="Xwt.GtkBackend\AccessibleBackend.cs" />
     <Compile Include="Xwt.GtkBackend\PopupWindowBackend.cs" />
     <Compile Include="Xwt.GtkBackend\UtilityWindowBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ToolkitExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

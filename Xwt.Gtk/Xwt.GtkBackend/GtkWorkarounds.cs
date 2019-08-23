@@ -40,72 +40,9 @@ using GtkTreeModel = Gtk.TreeModel;
 namespace Xwt.GtkBackend
 {
 	public static class GtkWorkarounds
-	{
-		const string LIBOBJC ="/usr/lib/libobjc.dylib";
-		
-		[DllImport (LIBOBJC, EntryPoint = "sel_registerName")]
-		static extern IntPtr sel_registerName (string selector);
-		
-		[DllImport (LIBOBJC, EntryPoint = "objc_getClass")]
-		static extern IntPtr objc_getClass (string klass);
-		
-		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
-		static extern IntPtr objc_msgSend_IntPtr (IntPtr klass, IntPtr selector);
-		
-		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
-		static extern void objc_msgSend_void_bool (IntPtr klass, IntPtr selector, bool arg);
-		
-		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
-		static extern bool objc_msgSend_bool (IntPtr klass, IntPtr selector);
-		
-		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
-		static extern int objc_msgSend_NSInt32_NSInt32 (IntPtr klass, IntPtr selector, int arg);
-
-		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
-		static extern long objc_msgSend_NSInt64_NSInt64 (IntPtr klass, IntPtr selector, long arg);
-		
-		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
-		static extern uint objc_msgSend_NSUInt32 (IntPtr klass, IntPtr selector);
-
-		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend")]
-		static extern ulong objc_msgSend_NSUInt64 (IntPtr klass, IntPtr selector);
-		
-		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend_stret")]
-		static extern void objc_msgSend_CGRect32 (out CGRect32 rect, IntPtr klass, IntPtr selector);
-
-		[DllImport (LIBOBJC, EntryPoint = "objc_msgSend_stret")]
-		static extern void objc_msgSend_CGRect64 (out CGRect64 rect, IntPtr klass, IntPtr selector);
-		
+	{		
 		[DllImport (GtkInterop.LIBGTK)]
 		static extern IntPtr gdk_quartz_window_get_nswindow (IntPtr window);
-
-		struct CGRect32
-		{
-			public float X, Y, Width, Height;
-		}
-
-		struct CGRect64
-		{
-			public double X, Y, Width, Height;
-
-			public CGRect64 (CGRect32 rect32)
-			{
-				X = rect32.X;
-				Y = rect32.Y;
-				Width = rect32.Width;
-				Height = rect32.Height;
-			}
-		}
-
-		static IntPtr cls_NSScreen;
-		static IntPtr sel_screens, sel_objectEnumerator, sel_nextObject, sel_frame, sel_visibleFrame,
-		sel_requestUserAttention, sel_setHasShadow, sel_invalidateShadow, sel_activateIgnoringOtherApps;
-		static IntPtr sharedApp;
-		static IntPtr cls_NSEvent;
-		static IntPtr sel_modifierFlags;
-		
-		const int NSCriticalRequest = 0;
-		const int NSInformationalRequest = 10;
 		
 		static System.Reflection.MethodInfo glibObjectGetProp, glibObjectSetProp;
 		
@@ -113,11 +50,7 @@ namespace Xwt.GtkBackend
 		static bool oldMacKeyHacks = false;
 		
 		static GtkWorkarounds ()
-		{
-			if (Platform.IsMac) {
-				InitMac ();
-			}
-			
+		{			
 			var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
 			glibObjectSetProp = typeof (GLib.Object).GetMethod ("SetProperty", flags);
 			glibObjectGetProp = typeof (GLib.Object).GetMethod ("GetProperty", flags);
@@ -156,184 +89,10 @@ namespace Xwt.GtkBackend
 				mappedKeys.Clear ();
 			};
 		}
-
-		static void InitMac ()
-		{
-			cls_NSScreen = objc_getClass ("NSScreen");
-			cls_NSEvent = objc_getClass ("NSEvent");
-			sel_screens = sel_registerName ("screens");
-			sel_objectEnumerator = sel_registerName ("objectEnumerator");
-			sel_nextObject = sel_registerName ("nextObject");
-			sel_visibleFrame = sel_registerName ("visibleFrame");
-			sel_frame = sel_registerName ("frame");
-			sel_requestUserAttention = sel_registerName ("requestUserAttention:");
-			sel_modifierFlags = sel_registerName ("modifierFlags");
-			sel_activateIgnoringOtherApps = sel_registerName ("activateIgnoringOtherApps:");
-			sel_setHasShadow = sel_registerName ("setHasShadow:");
-			sel_invalidateShadow = sel_registerName ("invalidateShadow");
-			sharedApp = objc_msgSend_IntPtr (objc_getClass ("NSApplication"), sel_registerName ("sharedApplication"));
-		}
-		
-		static Gdk.Rectangle MacGetUsableMonitorGeometry (Gdk.Screen screen, int monitor)
-		{
-			IntPtr array = objc_msgSend_IntPtr (cls_NSScreen, sel_screens);
-			IntPtr iter = objc_msgSend_IntPtr (array, sel_objectEnumerator);
-			Gdk.Rectangle ygeometry = screen.GetMonitorGeometry (monitor);
-			Gdk.Rectangle xgeometry = screen.GetMonitorGeometry (0);
-			IntPtr scrn;
-			int i = 0;
-			
-			while ((scrn = objc_msgSend_IntPtr (iter, sel_nextObject)) != IntPtr.Zero && i < monitor)
-				i++;
-			
-			if (scrn == IntPtr.Zero)
-				return screen.GetMonitorGeometry (monitor);
-
-			CGRect64 visible, frame;
-
-			if (IntPtr.Size == 8) {
-				objc_msgSend_CGRect64 (out visible, scrn, sel_visibleFrame);
-				objc_msgSend_CGRect64 (out frame, scrn, sel_frame);
-			} else {
-				CGRect32 visible32, frame32;
-				objc_msgSend_CGRect32 (out visible32, scrn, sel_visibleFrame);
-				objc_msgSend_CGRect32 (out frame32, scrn, sel_frame);
-				visible = new CGRect64 (visible32);
-				frame = new CGRect64 (frame32);
-			}
-			
-			// Note: Frame and VisibleFrame rectangles are relative to monitor 0, but we need absolute
-			// coordinates.
-			visible.X += xgeometry.X;
-			frame.X += xgeometry.X;
-			
-			// VisibleFrame.Y is the height of the Dock if it is at the bottom of the screen, so in order
-			// to get the menu height, we just figure out the difference between the visibleFrame height
-			// and the actual frame height, then subtract the Dock height.
-			//
-			// We need to swap the Y offset with the menu height because our callers expect the Y offset
-			// to be from the top of the screen, not from the bottom of the screen.
-			double x, y, width, height;
-			
-			if (visible.Height < frame.Height) {
-				double dockHeight = visible.Y - frame.Y;
-				double menubarHeight = (frame.Height - visible.Height) - dockHeight;
-				
-				height = frame.Height - menubarHeight - dockHeight;
-				y = ygeometry.Y + menubarHeight;
-			} else {
-				height = frame.Height;
-				y = ygeometry.Y;
-			}
-			
-			// Takes care of the possibility of the Dock being positioned on the left or right edge of the screen.
-			width = System.Math.Min (visible.Width, frame.Width);
-			x = System.Math.Max (visible.X, frame.X);
-			
-			return new Gdk.Rectangle ((int) x, (int) y, (int) width, (int) height);
-		}
-		
-		static void MacRequestAttention (bool critical)
-		{
-			int kind = critical?  NSCriticalRequest : NSInformationalRequest;
-			if (IntPtr.Size == 8) {
-				objc_msgSend_NSInt64_NSInt64 (sharedApp, sel_requestUserAttention, kind);
-			} else {
-				objc_msgSend_NSInt32_NSInt32 (sharedApp, sel_requestUserAttention, kind);
-			}
-		}
-		
-		public static void GrabDesktopFocus ()
-		{
-			objc_msgSend_void_bool (sharedApp, sel_activateIgnoringOtherApps, true);
-		}
-
-		// Note: we can't reuse RectangleF because the layout is different...
-		[StructLayout (LayoutKind.Sequential)]
-		struct Rect {
-			public int Left;
-			public int Top;
-			public int Right;
-			public int Bottom;
-
-			public int X { get { return Left; } }
-			public int Y { get { return Top; } }
-			public int Width { get { return Right - Left; } }
-			public int Height { get { return Bottom - Top; } }
-		}
-
-		const int MonitorInfoFlagsPrimary = 0x01;
-
-		[StructLayout (LayoutKind.Sequential)]
-		unsafe struct MonitorInfo {
-			public int Size;
-			public Rect Frame;         // Monitor
-			public Rect VisibleFrame;  // Work
-			public int Flags;
-			public fixed byte Device[32];
-		}
-
-		[UnmanagedFunctionPointer (CallingConvention.Winapi)]
-		delegate int EnumMonitorsCallback (IntPtr hmonitor, IntPtr hdc, IntPtr prect, IntPtr user_data);
-
-		[DllImport ("User32.dll")]
-		extern static int EnumDisplayMonitors (IntPtr hdc, IntPtr clip, EnumMonitorsCallback callback, IntPtr user_data);
-
-		[DllImport ("User32.dll")]
-		extern static int GetMonitorInfoA (IntPtr hmonitor, ref MonitorInfo info);
-
-		static Gdk.Rectangle WindowsGetUsableMonitorGeometry (Gdk.Screen screen, int monitor_id)
-		{
-			Gdk.Rectangle geometry = screen.GetMonitorGeometry (monitor_id);
-			List<MonitorInfo> screens = new List<MonitorInfo> ();
-
-			EnumDisplayMonitors (IntPtr.Zero, IntPtr.Zero, delegate (IntPtr hmonitor, IntPtr hdc, IntPtr prect, IntPtr user_data) {
-				var info = new MonitorInfo ();
-
-				unsafe {
-					info.Size = sizeof (MonitorInfo);
-				}
-
-				GetMonitorInfoA (hmonitor, ref info);
-
-				// In order to keep the order the same as Gtk, we need to put the primary monitor at the beginning.
-				if ((info.Flags & MonitorInfoFlagsPrimary) != 0)
-					screens.Insert (0, info);
-				else
-					screens.Add (info);
-
-				return 1;
-			}, IntPtr.Zero);
-
-			MonitorInfo monitor = screens[monitor_id];
-			Rect visible = monitor.VisibleFrame;
-			Rect frame = monitor.Frame;
-
-			// Rebase the VisibleFrame off of Gtk's idea of this monitor's geometry (since they use different coordinate systems)
-			int x = geometry.X + (visible.Left - frame.Left);
-			int width = visible.Width;
-
-			int y = geometry.Y + (visible.Top - frame.Top);
-			int height = visible.Height;
-
-			return new Gdk.Rectangle (x, y, width, height);
-		}
-		
-		public static Gdk.Rectangle GetUsableMonitorGeometry (this Gdk.Screen screen, int monitor)
-		{
-			if (Platform.IsWindows)
-				return WindowsGetUsableMonitorGeometry (screen, monitor);
-
-			if (Platform.IsMac)
-				return MacGetUsableMonitorGeometry (screen, monitor);
-			
-			return screen.GetMonitorGeometry (monitor);
-		}
 		
 		public static int RunDialogWithNotification (Gtk.Dialog dialog)
 		{
-			if (Platform.IsMac)
-				MacRequestAttention (dialog.Modal);
+			Toolkit.CurrentEngine.GetPlatformBackend().RequestUserAttention(dialog.Modal);
 			
 			return dialog.Run ();
 		}
@@ -341,11 +100,8 @@ namespace Xwt.GtkBackend
 		public static void PresentWindowWithNotification (this Gtk.Window window)
 		{
 			window.Present ();
-			
-			if (Platform.IsMac) {
-				var dialog = window as Gtk.Dialog;
-				MacRequestAttention (dialog == null? false : dialog.Modal);
-			}
+
+			Toolkit.CurrentEngine.GetPlatformBackend().RequestUserAttention(window is Gtk.Dialog && window.Modal);
 		}
 		
 		public static GLib.Value GetProperty (this GLib.Object obj, string name)
@@ -380,33 +136,6 @@ namespace Xwt.GtkBackend
 			}
 			
 			return false;
-		}
-
-		public static Gdk.ModifierType GetCurrentKeyModifiers ()
-		{
-			if (Platform.IsMac) {
-				Gdk.ModifierType mtype = Gdk.ModifierType.None;
-				ulong mod;
-				if (IntPtr.Size == 8) {
-					mod = objc_msgSend_NSUInt64 (cls_NSEvent, sel_modifierFlags);
-				} else {
-					mod = objc_msgSend_NSUInt32 (cls_NSEvent, sel_modifierFlags);
-				}
-				if ((mod & (1 << 17)) != 0)
-					mtype |= Gdk.ModifierType.ShiftMask;
-				if ((mod & (1 << 18)) != 0)
-					mtype |= Gdk.ModifierType.ControlMask;
-				if ((mod & (1 << 19)) != 0)
-					mtype |= Gdk.ModifierType.Mod1Mask; // Alt key
-				if ((mod & (1 << 20)) != 0)
-					mtype |= Gdk.ModifierType.Mod2Mask; // Command key
-				return mtype;
-			}
-			else {
-				Gdk.ModifierType mtype;
-				Gtk.Global.GetCurrentEventState (out mtype);
-				return mtype;
-			}
 		}
 		
 		public static void GetPageScrollPixelDeltas (this Gdk.EventScroll evt, double pageSizeX, double pageSizeY,
@@ -482,7 +211,7 @@ namespace Xwt.GtkBackend
 					}
 					Gtk.Requisition request = m.SizeRequest ();
 					var screen = parent.Screen;
-					Gdk.Rectangle geometry = GetUsableMonitorGeometry (screen, screen.GetMonitorAtPoint (x, y));
+					Gdk.Rectangle geometry = Toolkit.CurrentEngine.GetPlatformBackend().GetScreenVisibleBounds(screen, screen.GetMonitorAtPoint (x, y));
 					
 					//whether to push or flip menus that would extend offscreen
 					//FIXME: this is the correct behaviour for mac, check other platforms
@@ -813,26 +542,6 @@ namespace Xwt.GtkBackend
 		public static int BottomInside (this Gdk.Rectangle rect)
 		{
 			return rect.Y + rect.Height - 1;
-		}
-
-		/// <summary>
-		/// Shows or hides the shadow of the window rendered by the native toolkit
-		/// </summary>
-		public static void ShowNativeShadow (Gtk.Window window, bool show)
-		{
-			if (Platform.IsMac) {
-				var ptr = gdk_quartz_window_get_nswindow (window.GdkWindow.Handle);
-				objc_msgSend_void_bool (ptr, sel_setHasShadow, show);
-			}
-		}
-
-		public static void UpdateNativeShadow (Gtk.Window window)
-		{
-			if (!Platform.IsMac)
-				return;
-
-			var ptr = gdk_quartz_window_get_nswindow (window.GdkWindow.Handle);
-			objc_msgSend_IntPtr (ptr, sel_invalidateShadow);
 		}
 
 		[DllImport (GtkInterop.LIBGTKGLUE, CallingConvention = CallingConvention.Cdecl)]

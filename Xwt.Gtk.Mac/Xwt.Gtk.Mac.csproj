@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="GtkMacAccessibleBackend.cs" />
     <Compile Include="GtkMacWindowFrameBackend.cs" />
+    <Compile Include="GtkMacKeyboardHandler.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -36,7 +36,7 @@ namespace Xwt.GtkBackend
 {
 	public class GtkEngine: ToolkitEngineBackend
 	{
-		GtkPlatformBackend platformBackend;
+		internal GtkPlatformBackend platformBackend;
 
 		public override void InitializeApplication ()
 		{
@@ -129,6 +129,7 @@ namespace Xwt.GtkBackend
 				asmName = "Xwt.Gtk.Windows";
 			}
 
+			Type platformType = null;
 			if (typeName != null) {
 				var loc = Path.GetDirectoryName (GetType ().Assembly.Location);
 				loc = Path.Combine (loc, asmName + ".dll");
@@ -144,13 +145,13 @@ namespace Xwt.GtkBackend
 					// Not found
 				}
 
-				Type platformType = asm != null ? asm.GetType (typeName) : null;
-
-				if (platformType != null) {
-					platformBackend = (GtkPlatformBackend)Activator.CreateInstance (platformType);
-					platformBackend.Initialize (this);
-				}
+				platformType = asm?.GetType(typeName);
 			}
+
+			platformType = platformType ?? typeof(GtkPlatformBackend);
+
+			platformBackend = (GtkPlatformBackend)Activator.CreateInstance(platformType);
+			platformBackend.Initialize(this);
 		}
 
 		public override void Dispose ()
@@ -377,14 +378,12 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-
 		protected override Type GetBackendImplementationType (Type backendType)
 		{
-			if (platformBackend != null) {
-				var bt = platformBackend.GetBackendImplementationType (backendType);
-				if (bt != null)
-					return bt;
-			}
+			var bt = platformBackend.GetBackendImplementationType (backendType);
+			if (bt != null)
+				return bt;
+
 			return base.GetBackendImplementationType (backendType);
 		}
 	}

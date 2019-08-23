@@ -66,14 +66,14 @@ namespace Xwt.GtkBackend
 
 		public override Rectangle GetScreenBounds (object backend)
 		{
-			var r = Gdk.Screen.Default.GetMonitorGeometry ((int)backend);
-			return new Rectangle (r.X, r.Y, r.Width, r.Height);
+			var r = ApplicationContext.Toolkit.GetPlatformBackend().GetScreenBounds(Gdk.Screen.Default, (int)backend);
+			return new Rectangle(r.X, r.Y, r.Width, r.Height);
 		}
 
 		public override Rectangle GetScreenVisibleBounds (object backend)
 		{
-			var r = Gdk.Screen.Default.GetUsableMonitorGeometry ((int)backend);
-			return new Rectangle (r.X, r.Y, r.Width, r.Height);
+			var r = ApplicationContext.Toolkit.GetPlatformBackend().GetScreenVisibleBounds (Gdk.Screen.Default, (int)backend);
+			return new Rectangle(r.X, r.Y, r.Width, r.Height);
 		}
 
 		public override string GetScreenDeviceName (object backend)

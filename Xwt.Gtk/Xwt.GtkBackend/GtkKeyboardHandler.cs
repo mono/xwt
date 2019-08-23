@@ -7,7 +7,9 @@ namespace Xwt.GtkBackend
 	{
 		public override ModifierKeys CurrentModifiers {
 			get {
-				return GtkWorkarounds.GetCurrentKeyModifiers ().ToXwtValue ();
+				Gdk.ModifierType mtype;
+				Gtk.Global.GetCurrentEventState(out mtype);
+				return mtype.ToXwtValue ();
 			}
 		}
 	}
