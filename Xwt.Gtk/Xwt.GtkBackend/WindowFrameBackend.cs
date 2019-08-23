@@ -375,9 +375,12 @@ namespace Xwt.GtkBackend
 
 		public void Present ()
 		{
-			if (Platform.IsMac)
-				GtkWorkarounds.GrabDesktopFocus ();
-			Window.Present ();
+			OnPresent();
+		}
+
+		protected virtual void OnPresent ()
+		{
+			Window.Present();
 		}
 
 		public virtual bool Close ()

@@ -64,6 +64,7 @@
       <Link>NSApplicationInitializer.cs</Link>
     </Compile>
     <Compile Include="GtkMacAccessibleBackend.cs" />
+    <Compile Include="GtkMacWindowFrameBackend.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
