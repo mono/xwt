@@ -28,31 +28,35 @@ using Xwt.GtkBackend;
 using Xwt.Backends;
 using AppKit;
 using Xwt.Mac;
+using System.Collections.Generic;
 
 namespace Xwt.Gtk.Mac
 {
 	public class MacPlatformBackend: GtkPlatformBackend
 	{
+
 		public override void Initialize (ToolkitEngineBackend toolit)
 		{
-			toolit.RegisterBackend <IWebViewBackend,WebViewBackend> ();
 			toolit.RegisterBackend <DesktopBackend,GtkMacDesktopBackend> ();
 			toolit.RegisterBackend <FontBackendHandler,GtkMacFontBackendHandler> ();
-			toolit.RegisterBackend <IPopoverBackend,GtkMacPopoverBackend> ();
+			toolit.RegisterBackend <IAccessibleBackend, GtkMacAccessibleBackend> ();
 			toolit.RegisterBackend <IOpenFileDialogBackend, GtkMacOpenFileDialogBackend> ();
+			toolit.RegisterBackend <IPopoverBackend,GtkMacPopoverBackend> ();
 			toolit.RegisterBackend <ISaveFileDialogBackend, GtkMacSaveFileDialogBackend> ();
 			toolit.RegisterBackend <ISelectFolderDialogBackend, GtkMacSelectFolderBackend> ();
-			toolit.RegisterBackend <IAccessibleBackend, GtkMacAccessibleBackend> ();
+			toolit.RegisterBackend <IWebViewBackend,WebViewBackend> ();
 		}
 
 		public override Type GetBackendImplementationType (Type backendType)
 		{
-			if (backendType == typeof (IOpenFileDialogBackend) ||
+			if (backendType == typeof (IAccessibleBackend) ||
+			    backendType == typeof (IOpenFileDialogBackend) ||
 			    backendType == typeof (ISaveFileDialogBackend) ||
 			    backendType == typeof (ISelectFolderDialogBackend) ||
-			    backendType == typeof (IWebViewBackend) ||
-			    backendType == typeof (IAccessibleBackend))
+			    backendType == typeof (IWebViewBackend))
+			{
 				Xwt.Mac.NSApplicationInitializer.Initialize ();
+			}
 			return base.GetBackendImplementationType (backendType);
 		}
 	}
