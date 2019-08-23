@@ -172,11 +172,14 @@ namespace Xwt.GtkBackend
 		FormattedText formattedText = null;
 		public void SetFormattedText (FormattedText text)
 		{
-			label.Text = text.Text;
+			label.Text = text?.Text;
 			formattedText = text;
+			label.Realized -= HandleStyleUpdate;
+			label.StyleSet -= HandleStyleUpdate;
+			label.ApplyFormattedText(text);
 			label.Realized += HandleStyleUpdate;
 			label.StyleSet += HandleStyleUpdate;
-			label.ApplyFormattedText(text);
+
 		}
 
 		void HandleStyleUpdate (object sender, EventArgs e)
@@ -273,6 +276,7 @@ namespace Xwt.GtkBackend
 			if (label != null) {
 				label.Realized -= HandleStyleUpdate;
 				label.StyleSet -= HandleStyleUpdate;
+				label = null;
 			}
 		}
 	}

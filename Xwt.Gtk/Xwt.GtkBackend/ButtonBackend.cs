@@ -130,6 +130,8 @@ namespace Xwt.GtkBackend
 			if (image.Backend != null)
 				imageWidget = new ImageBox (ApplicationContext, image.WithDefaultSize (Gtk.IconSize.Button));
 
+			labelWidget.Realized -= HandleStyleUpdate;
+			labelWidget.StyleSet -= HandleStyleUpdate;
 			labelWidget = null;
 
 			if (label != null && imageWidget == null) {
@@ -209,6 +211,8 @@ namespace Xwt.GtkBackend
 				Widget.Label = null;
 				Widget.Image = labelWidget;
 			}
+			labelWidget.Realized -= HandleStyleUpdate;
+			labelWidget.StyleSet -= HandleStyleUpdate;
 
 			formattedText = label;
 			labelWidget.ApplyFormattedText (formattedText);
@@ -252,7 +256,7 @@ namespace Xwt.GtkBackend
 
 		public void SetFormattedText (FormattedText text)
 		{
-			SetContent (text.Text, Widget.UseUnderline, this.image, ContentPosition.Center);
+			SetContent (text?.Text, Widget.UseUnderline, this.image, ContentPosition.Center);
 			SetFormattedContent (text, ContentPosition.Center);
 		}
 
@@ -310,9 +314,10 @@ namespace Xwt.GtkBackend
 
 		protected override void Dispose (bool disposing)
 		{
-			if (labelWidget != null) {
+			if (disposing && labelWidget != null) {
 				labelWidget.Realized -= HandleStyleUpdate;
 				labelWidget.StyleSet -= HandleStyleUpdate;
+				labelWidget = null;
 			}
 			base.Dispose (disposing);
 		}
