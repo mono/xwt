@@ -119,6 +119,10 @@ namespace Xwt.GtkBackend
 				return label != null ? (label.UseUnderline ? label.LabelProp : label.Text) : "";
 			}
 			set {
+				if (formattedText != null) {
+					formattedText = null;
+					label.ApplyFormattedText (null);
+				}
 				if (label.UseUnderline)
 					label.TextWithMnemonic = value;
 				else
@@ -169,7 +173,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		FormattedText formattedText = null;
+		FormattedText formattedText;
 		public void SetFormattedText (FormattedText text)
 		{
 			label.Text = text?.Text;
