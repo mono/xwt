@@ -75,7 +75,10 @@ namespace Xwt.Mac
 			}
 			set
 			{
-				item.Title = UseMnemonic ? value.RemoveMnemonic() : value;
+				if (item.AttributedTitle != null) // once set, AttributedTitle can not be removed, so let's just use it
+					item.AttributedTitle = new Foundation.NSAttributedString (value.RemoveMnemonic());
+				else
+					item.Title = UseMnemonic ? value.RemoveMnemonic() : value;
 				label = value;
 			}
 		}
