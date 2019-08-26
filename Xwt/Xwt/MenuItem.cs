@@ -246,7 +246,9 @@ namespace Xwt
 
 		protected override void Dispose (bool release_all)
 		{
-			Backend.Dispose ();
+			if (release_all) {
+				Backend.Dispose ();
+			}
 			base.Dispose (release_all);
 		}
 	}
