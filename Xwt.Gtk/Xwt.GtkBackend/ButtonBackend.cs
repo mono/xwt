@@ -36,6 +36,7 @@ namespace Xwt.GtkBackend
 	{
 		protected bool ignoreClickEvents;
 		ImageDescription image;
+		ContentPosition contentPosition;
 		Pango.FontDescription customFont;
 		Gtk.Label labelWidget;
 		
@@ -102,17 +103,24 @@ namespace Xwt.GtkBackend
 				SetButtonType (ButtonType.Normal);
 			}
 		}
-		
+
 		public void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position)
+		{
+			SetContent (label, useMnemonic, image, position, false);
+		}
+
+		void SetContent (string label, bool useMnemonic, ImageDescription image, ContentPosition position, bool forceCustomLabel)
 		{			
 			Widget.UseUnderline = useMnemonic;
 			this.image = image;
+			contentPosition = position;
+			formattedText = null;
 
 			if (label != null && label.Length == 0)
 				label = null;
 			
 			Button b = (Button) Frontend;
-			if (label != null && image.Backend == null && b.Type == ButtonType.Normal) {
+			if (label != null && image.Backend == null && b.Type == ButtonType.Normal && !forceCustomLabel) {
 				Widget.Label = label;
 				return;
 			}
@@ -130,9 +138,12 @@ namespace Xwt.GtkBackend
 			if (image.Backend != null)
 				imageWidget = new ImageBox (ApplicationContext, image.WithDefaultSize (Gtk.IconSize.Button));
 
-			labelWidget.Realized -= HandleStyleUpdate;
-			labelWidget.StyleSet -= HandleStyleUpdate;
-			labelWidget = null;
+			if (labelWidget != null)
+			{
+				labelWidget.Realized -= HandleStyleUpdate;
+				labelWidget.StyleSet -= HandleStyleUpdate;
+				labelWidget = null;
+			}
 
 			if (label != null && imageWidget == null) {
 				contentWidget = labelWidget = new Gtk.Label (label);
@@ -198,37 +209,6 @@ namespace Xwt.GtkBackend
 			} else
 				Widget.Label = null;
 		}
-		
-		FormattedText formattedText = null;
-		private void SetFormattedContent (FormattedText label, ContentPosition position)
-		{
-			if (label != null && label.Text.Length == 0)
-				return;
-
-			Button b = (Button)Frontend;
-			if (labelWidget == null) {
-				labelWidget = new Gtk.Label (label.Text);
-				Widget.Label = null;
-				Widget.Image = labelWidget;
-			}
-			labelWidget.Realized -= HandleStyleUpdate;
-			labelWidget.StyleSet -= HandleStyleUpdate;
-
-			formattedText = label;
-			labelWidget.ApplyFormattedText (formattedText);
-			labelWidget.ShowAll ();
-			labelWidget.Realized += HandleStyleUpdate;
-			labelWidget.StyleSet += HandleStyleUpdate;
-		}
-
-		void HandleStyleUpdate (object sender, EventArgs e)
-		{
-			// force text update with updated link color
-			if (labelWidget.IsRealized && formattedText != null) {
-				labelWidget.ApplyFormattedText (formattedText);
-				labelWidget.ShowAll ();
-			}
-		}
 
 		public void SetButtonStyle (ButtonStyle style)
 		{
@@ -254,10 +234,29 @@ namespace Xwt.GtkBackend
 			SetContent (b.Label, b.UseMnemonic, image, b.ImagePosition);
 		}
 
+		FormattedText formattedText;
 		public void SetFormattedText (FormattedText text)
 		{
-			SetContent (text?.Text, Widget.UseUnderline, this.image, ContentPosition.Center);
-			SetFormattedContent (text, ContentPosition.Center);
+			// set content with a custom label, this will recreate labelWidget
+			SetContent (text?.Text, Widget.UseUnderline, image, contentPosition, true);
+			formattedText = text;
+			if (!string.IsNullOrEmpty (formattedText?.Text))
+			{
+				if (labelWidget.IsRealized)
+					labelWidget.ApplyFormattedText (formattedText);
+				else
+					labelWidget.Realized += HandleStyleUpdate;
+				labelWidget.StyleSet += HandleStyleUpdate;
+			}
+		}
+
+		void HandleStyleUpdate (object sender, EventArgs e)
+		{
+			// force text update with updated link color
+			if (labelWidget.IsRealized && formattedText != null)
+			{
+				labelWidget.ApplyFormattedText (formattedText);
+			}
 		}
 
 		public override void EnableEvent (object eventId)
