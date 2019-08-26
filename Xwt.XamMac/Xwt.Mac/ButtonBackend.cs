@@ -155,7 +155,10 @@ namespace Xwt.Mac
 
 		public void SetFormattedText (FormattedText text)
 		{
-			Widget.AttributedTitle = text.ToAttributedString ();
+			if (text == null || Widget is NSPopUpButton) // NSPopUpButton has no formatting support
+				Widget.Title = text?.Text ?? string.Empty;
+			else
+				Widget.AttributedTitle = text.ToAttributedString();
 		}
 
 		#endregion
