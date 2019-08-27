@@ -1,4 +1,4 @@
-﻿// 
+// 
 // ButtonBackend.cs
 //  
 // Author:
@@ -127,6 +127,21 @@ namespace Xwt.WPFBackend
 				Button.Content = grid;
 			}
 			Button.InvalidateMeasure ();
+		}
+
+		public void SetFormattedText (FormattedText text)
+		{
+			SWC.Label labelCtrl = null;
+			if (Button.Content is SWC.DockPanel) {
+				var grid = Button.Content as SWC.DockPanel;
+				labelCtrl = grid.Children[1] as SWC.Label;
+			} else {
+				labelCtrl = new SWC.Label ();
+				Button.Content = labelCtrl;
+			}
+			var textCtrl = new SWC.TextBlock();
+			textCtrl.ApplyFormattedText(text, null);
+			labelCtrl.Content = textCtrl;
 		}
 
 		public Xwt.Drawing.Color LabelColor

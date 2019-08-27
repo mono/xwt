@@ -121,6 +121,13 @@ namespace Xwt
 			if (Items.Count > 0 && Items[Items.Count - 1] is SeparatorMenuItem)
 				Items.RemoveAt (Items.Count - 1);
 		}
+		protected override void Dispose (bool release_all)
+		{
+			for (int n = 0; n < Items.Count; n++) {
+				Items[n].Dispose ();
+			}
+			base.Dispose (release_all);
+		}
 	}
 }
 

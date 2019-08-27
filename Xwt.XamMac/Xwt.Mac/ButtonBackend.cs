@@ -153,8 +153,14 @@ namespace Xwt.Mac
 			}
 		}
 
+		public void SetFormattedText (FormattedText text)
+		{
+			if (text == null || Widget is NSPopUpButton) // NSPopUpButton has no formatting support
+				Widget.Title = text?.Text ?? string.Empty;
+			else
+				Widget.AttributedTitle = text.ToAttributedString();
+		}
 
-		
 		#endregion
 
 		public override Color BackgroundColor {

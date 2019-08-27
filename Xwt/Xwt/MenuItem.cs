@@ -116,6 +116,22 @@ namespace Xwt
 			}
 		}
 
+		string markup;
+		/// <summary>
+		/// Gets or sets the text with markup to display.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="Xwt.FormattedText"/> for supported formatting options.</remarks>
+		[DefaultValue ("")]
+		public string Markup {
+			get { return markup; }
+			set {
+				markup = value;
+				var t = FormattedText.FromMarkup (markup);
+				Backend.SetFormattedText (t);
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the tooltip text.
 		/// </summary>
@@ -226,6 +242,14 @@ namespace Xwt
 				clicked -= value;
 				base.BackendHost.OnAfterEventRemove (MenuItemEvent.Clicked, clicked);
 			}
+		}
+
+		protected override void Dispose (bool release_all)
+		{
+			if (release_all) {
+				Backend.Dispose ();
+			}
+			base.Dispose (release_all);
 		}
 	}
 	

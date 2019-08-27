@@ -97,8 +97,25 @@ namespace Xwt
 		public string Label {
 			get { return label ?? ""; }
 			set {
-				label = value;
-				Backend.SetContent (label, UseMnemonic, image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
+				label = value ?? string.Empty;
+				Backend.SetContent (value, UseMnemonic, image != null ? image.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null, imagePosition);
+				OnPreferredSizeChanged ();
+			}
+		}
+
+		string markup;
+		/// <summary>
+		/// Gets or sets the text with markup to display.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="Xwt.FormattedText"/> for supported formatting options.</remarks>
+		[DefaultValue("")]
+		public string Markup {
+			get { return markup; }
+			set {
+				markup = value;
+				var t = FormattedText.FromMarkup (markup);
+				Backend.SetFormattedText (t);
 				OnPreferredSizeChanged ();
 			}
 		}

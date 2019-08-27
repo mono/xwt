@@ -49,7 +49,9 @@ namespace Xwt
 		public static FormattedText FromMarkup (string markup)
 		{
 			FormattedText t = new FormattedText ();
-			t.ParseMarkup (markup);
+			if (markup != null) {
+				t.ParseMarkup (markup);
+			}
 			return t;
 		}
 

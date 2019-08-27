@@ -76,7 +76,8 @@ namespace Samples
 			men.Items.Add (new MenuItem ("Second"));
 			men.Items.Add (new MenuItem ("Third"));
 			men.Items.Add (new SeparatorMenuItem ());
-			men.Items.Add (new CheckBoxMenuItem ("Check") { Checked = true });
+			men.Items.Add (new MenuItem () { Markup = "<span color='blue'>Formatted</span> Item" });
+			men.Items.Add (new SeparatorMenuItem ()); men.Items.Add (new CheckBoxMenuItem ("Check") { Checked = true });
 			men.Items.Add (new RadioButtonMenuItem ("Radio") { Checked = true });
 			men.Items.Add (new MenuItem ("With image") { Image = Image.FromResource (typeof(App), "class.png") });
 
@@ -85,7 +86,7 @@ namespace Samples
 			foreach (var mi in men.Items) {
 				var cmi = mi;
 				mi.Clicked += delegate {
-					mb.Label = cmi.Label + " Clicked";
+					mb.Markup = cmi.Markup ?? cmi.Label + " Clicked";
 				};
 			}
 
@@ -118,6 +119,9 @@ namespace Samples
 			b.Type = ButtonType.Help;
 			PackStart (b);
 
+			var fb = new Button ("Formatted Content Button");
+			fb.Markup = "<b>Formatted</b> <span color='blue'>Content</span> Button";
+			PackStart (fb);
 
 			var child = new VBox ();
 			var container = new MyWidget { Content = child };
