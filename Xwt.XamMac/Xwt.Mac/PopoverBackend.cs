@@ -43,6 +43,7 @@ namespace Xwt.Mac
 		public IPopoverEventSink EventSink { get; set; }
 		internal bool EnableCloseEvent { get; private set; }
 		NSPopover popover;
+		FactoryViewController controller;
 
 		class FactoryViewController : NSViewController, INSPopoverDelegate
 		{
@@ -247,7 +248,7 @@ namespace Xwt.Mac
 			popover = new NSAppearanceCustomizationPopover {
 				Behavior = NSPopoverBehavior.Transient
 			};
-			var controller = new FactoryViewController (this, child, popover) { BackgroundColor = backgroundColor };
+			controller = new FactoryViewController (this, child, popover) { BackgroundColor = backgroundColor };
 			popover.ContentViewController = controller;
 			popover.Delegate = controller;
 
@@ -279,13 +280,12 @@ namespace Xwt.Mac
 		{
 			if (popover != null) {
 				popover.Close ();
-				var controller = popover.Delegate as FactoryViewController;
-				if (controller != null) {
-					popover.Delegate = null;
-					controller.Dispose ();
-				}
 				popover.Dispose ();
 				popover = null;
+			}
+			if (controller != null) {
+				controller.Dispose ();
+				controller = null;
 			}
 		}
 
