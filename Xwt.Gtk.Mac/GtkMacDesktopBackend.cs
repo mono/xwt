@@ -35,15 +35,6 @@ namespace Xwt.Gtk.Mac
 {
 	public class GtkMacDesktopBackend: GtkDesktopBackend
 	{
-		//this is a BCD value of the form "xxyz", where x = major, y = minor, z = bugfix
-		//eg. 0x1071 = 10.7.1
-		int systemVersion;
-
-		public GtkMacDesktopBackend ()
-		{
-			systemVersion = Carbon.Gestalt ("sysv");
-		}
-
 		public static Gdk.Pixbuf GetPixbufFromNSImage (NSImage icon, int width, int height)
 		{
 			var rect = new CGRect (0, 0, width, height);
@@ -102,10 +93,6 @@ namespace Xwt.Gtk.Mac
 
 		public override object GetFileIcon (string filename)
 		{
-			//this only works on MacOS 10.6.0 and greater
-			if (systemVersion < 0x1060)
-				return base.GetFileIcon (filename);
-
 			NSImage icon = null;
 
 			if (Path.IsPathRooted (filename) && File.Exists (filename)) {
