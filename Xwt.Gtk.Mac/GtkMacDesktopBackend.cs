@@ -30,19 +30,11 @@ using System.Drawing;
 using System.IO;
 using GTK = global::Gtk;
 using CoreGraphics;
-using Foundation;
 
 namespace Xwt.Gtk.Mac
 {
 	public class GtkMacDesktopBackend: GtkDesktopBackend
 	{
-		NSOperatingSystemVersion systemVersion;
-
-		public GtkMacDesktopBackend ()
-		{
-			systemVersion = NSProcessInfo.ProcessInfo.OperatingSystemVersion;
-		}
-
 		public static Gdk.Pixbuf GetPixbufFromNSImage (NSImage icon, int width, int height)
 		{
 			var rect = new CGRect (0, 0, width, height);
@@ -101,10 +93,6 @@ namespace Xwt.Gtk.Mac
 
 		public override object GetFileIcon (string filename)
 		{
-			//this only works on MacOS 10.6.0 and greater
-			if (systemVersion.Major <= 10 && systemVersion.Minor < 6)
-				return base.GetFileIcon (filename);
-
 			NSImage icon = null;
 
 			if (Path.IsPathRooted (filename) && File.Exists (filename)) {
