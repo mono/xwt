@@ -36,8 +36,6 @@ namespace Xwt.Gtk.Mac
 {
 	public class GtkMacDesktopBackend: GtkDesktopBackend
 	{
-		//this is a BCD value of the form "xxyz", where x = major, y = minor, z = bugfix
-		//eg. 0x1071 = 10.7.1
 		NSOperatingSystemVersion systemVersion;
 
 		public GtkMacDesktopBackend ()
