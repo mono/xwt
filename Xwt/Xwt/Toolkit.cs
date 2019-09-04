@@ -621,6 +621,18 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Wraps a native window into an Xwt window object.
+		/// </summary>
+		/// <returns>An Xwt window with the specified native window backend.</returns>
+		/// <param name="nativeWindow">The native window.</param>
+		public Dialog WrapDialog (object nativeWindow)
+		{
+			if (nativeWindow == null)
+				return null;
+			return new NativeDialog (backend.GetBackendForWindow (nativeWindow));
+		}
+
+		/// <summary>
 		/// Wraps a native widget into an Xwt widget object.
 		/// </summary>
 		/// <returns>An Xwt widget with the specified native widget backend.</returns>
@@ -835,7 +847,15 @@ namespace Xwt
 			BackendHost.SetCustomBackend (backend);
 		}
 	}
-	
+
+	class NativeDialog : Dialog
+	{
+		public NativeDialog (IWindowFrameBackend backend)
+		{
+			BackendHost.SetCustomBackend (backend);
+		}
+	}
+
 	[Flags]
 	public enum ToolkitFeatures: int
 	{
