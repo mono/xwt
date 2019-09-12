@@ -105,7 +105,7 @@ namespace Xwt.Mac
 			return InstallEventHandler (target, handler, new CarbonEventTypeSpec [] { type });
 		}
 
-		static IntPtr InstallApplicationEventHandler (EventDelegate handler, CarbonEventTypeSpec [] types)
+		internal static IntPtr InstallApplicationEventHandler (EventDelegate handler, CarbonEventTypeSpec [] types)
 		{
 			return InstallEventHandler (GetApplicationEventTarget (), handler, types);
 		}

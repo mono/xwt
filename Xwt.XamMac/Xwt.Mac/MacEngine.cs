@@ -301,12 +301,34 @@ namespace Xwt.Mac
 		public event EventHandler<OpenUrlEventArgs> OpenUrl;
 		public event EventHandler<ShowDockMenuArgs> ShowDockMenu;
 
+		public Dictionary<string, int> FilesQueuedForOpening { get; private set; }
+		static AppDelegate self;
+
 		public AppDelegate (bool launched)
 		{
 			this.launched = launched;
+			self = this;
 
 			Console.WriteLine ("Installing AE Handler\n\n\n\n\n");
-			CarbonHelper.InstallApplicationEventHandler (HandleOpenDocuments, CarbonHelper.CarbonEventApple.OpenDocuments);
+			var ret = CarbonHelper.InstallApplicationEventHandler (HandleOpenDocuments, CarbonHelper.CarbonEventApple.OpenDocuments);
+			if (ret == IntPtr.Zero) {
+				Console.WriteLine ("No handler added");
+			} else {
+				Console.WriteLine ("Handler added");
+			}
+
+			CarbonHelper.InstallApplicationEventHandler (HandleOpenUrls, new CarbonHelper.CarbonEventTypeSpec [] {
+								//For some reason GetUrl doesn't take CarbonEventClass.AppleEvent
+								//need to use GURL, GURL
+								new CarbonHelper.CarbonEventTypeSpec (CarbonHelper.CarbonEventClass.Internet, (int)CarbonHelper.CarbonEventApple.GetUrl)
+			});
+
+		}
+
+		static CarbonHelper.CarbonEventHandlerStatus HandleOpenUrls (IntPtr callRef, IntPtr eventRef, IntPtr user_data)
+		{
+			Console.WriteLine ("Got URLS!");
+			return CarbonHelper.CarbonEventHandlerStatus.Handled;
 		}
 
 		static CarbonHelper.CarbonEventHandlerStatus HandleOpenDocuments (IntPtr callRef, IntPtr eventRef, IntPtr user_data)
@@ -319,9 +341,13 @@ namespace Xwt.Mac
 
 				int i = 0;
 				foreach (var doc in docs) {
+					Console.WriteLine ($"{doc.Key}: {doc.Value}");
 					File.WriteAllText ($"/Users/iain/Files{i}.log", $"{doc.Key} : {doc.Value}");
 					i++;
 				}
+
+				self.FilesQueuedForOpening = docs;
+
 				//var args = new ApplicationDocumentEventArgs (docs);
 				//openDocuments (null, args);
 				//return args.HandledStatus;
