@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
 using AppKit;
 using CoreGraphics;
 using Foundation;
@@ -298,12 +300,39 @@ namespace Xwt.Mac
 		public event EventHandler<OpenFilesEventArgs> OpenFilesRequest;
 		public event EventHandler<OpenUrlEventArgs> OpenUrl;
 		public event EventHandler<ShowDockMenuArgs> ShowDockMenu;
-		
+
 		public AppDelegate (bool launched)
 		{
 			this.launched = launched;
+
+			Console.WriteLine ("Installing AE Handler\n\n\n\n\n");
+			CarbonHelper.InstallApplicationEventHandler (HandleOpenDocuments, CarbonHelper.CarbonEventApple.OpenDocuments);
 		}
-		
+
+		static CarbonHelper.CarbonEventHandlerStatus HandleOpenDocuments (IntPtr callRef, IntPtr eventRef, IntPtr user_data)
+		{
+			Console.WriteLine ("Handle open documents");
+			File.WriteAllText ("/Users/iain/FileHandler.log", $"{DateTime.Now} Got files");
+
+			try {
+				var docs = CarbonHelper.GetFileListFromEventRef (eventRef);
+
+				int i = 0;
+				foreach (var doc in docs) {
+					File.WriteAllText ($"/Users/iain/Files{i}.log", $"{doc.Key} : {doc.Value}");
+					i++;
+				}
+				//var args = new ApplicationDocumentEventArgs (docs);
+				//openDocuments (null, args);
+				//return args.HandledStatus;
+			} catch (Exception ex) {
+				System.Console.WriteLine (ex);
+				return CarbonHelper.CarbonEventHandlerStatus.NotHandled;
+			}
+
+			return CarbonHelper.CarbonEventHandlerStatus.Handled;
+		}
+
 		internal void ShowWindow (IMacWindowBackend w)
 		{
 			if (!launched) {
