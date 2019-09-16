@@ -74,12 +74,14 @@ namespace Xwt.GtkBackend
 			ApplicationContext.InvokeUserCode (EventSink.OnColorChanged);
 		}
 
+		///
+		/// TextColor is not currently supported for Gtk.
+		///
 		public Xwt.Drawing.Color TextColor {
 			get {
-				throw new NotImplementedException ("Gtk ColorSelector doesn't currently support the TextColor property");
+				return default(Xwt.Drawing.Color);
 			}
 			set {
-				throw new NotImplementedException ("Gtk ColorSelector doesn't currently support the TextColor property");
 			}
 		}
 
