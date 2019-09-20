@@ -295,7 +295,8 @@ namespace Xwt.Mac
 	{
 		ImageDrawCallback drawCallback;
 		ApplicationContext actx;
-		NSCustomImageRep imgRep;
+		NSCustomImageRep genericRep;
+		static readonly Selector drawSelector = new Selector ("drawIt:");
 
 		internal ImageDescription Image = ImageDescription.Null;
 
@@ -303,8 +304,8 @@ namespace Xwt.Mac
 		{
 			this.actx = actx;
 			this.drawCallback = drawCallback;
-			imgRep = new NSCustomImageRep (new Selector ("drawIt:"), this);
-			AddRepresentation (imgRep);
+			genericRep = new NSCustomImageRep (drawSelector, this);
+			AddRepresentation (genericRep);
 		}
 
 		public override CGSize Size
@@ -313,13 +314,45 @@ namespace Xwt.Mac
 				return base.Size;
 			}
 			set {
+				if (base.Size == value)
+					return;
 				base.Size = value;
-				imgRep.Size = value;
+				if (MacSystemInformation.OsVersion >= MacSystemInformation.Catalina
+					&& !Representations ().Any (rep => rep.Size == value)) {
+					// On Catalina since beta 8 the delegate based rendering is broken
+					// so we need to use a fixed representation for each size
+					var newRep = new NSCustomImageRep (value, false, DrawIt) {
+						Size = value
+					};
+					AddRepresentation (newRep);
+
+					// remove the flexible delegate based representation if in fixed size mode
+					// otherwise Cocoa will always prefer it.
+					if (genericRep != null) {
+						RemoveRepresentation (genericRep);
+						genericRep.Dispose ();
+						genericRep = null;
+					}
+				}
+				if (genericRep != null) {
+					genericRep.Size = value;
+				}
 			}
 		}
 
+		public bool DrawIt (CGRect rect)
+		{
+			DrawIt ();
+			return true;
+		}
+
 		[Export ("drawIt:")]
-		public void DrawIt (NSObject ob)
+		public void DrawIt (NSCustomImageRep ob)
+		{
+			DrawIt ();
+		}
+
+		void DrawIt ()
 		{
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 			if (!NSGraphicsContext.CurrentContext.IsFlipped) {
