@@ -1,381 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <TargetFrameworks>net40</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
     <RootNamespace>Xwt</RootNamespace>
     <AssemblyName>Xwt</AssemblyName>
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>True</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
     <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>Xwt</PackageId>
+    <Authors>Lluis Sanchez</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/mono/xwt/</PackageProjectUrl>
+    <PackageTags>xwt cross platform gui ui toolkit framework desktop wpf mac osx monomac cocoa gtk</PackageTags>
+    <Description>Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono that run on multiple platforms from the same codebase.
+
+Xwt works by exposing one unified API across all environments that is mapped to a set of native controls on each platform.
+
+The framework consists of the frontend (Xwt core) and platform specific backends. Additionally to this core Xwt package you need to add an Xwt toolkit package (Xwt.*) for every platform you want your application to target.</Description>
+    <NoBuild>true</NoBuild>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
     <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Xwt.Backends\IPasswordEntryBackend.cs" />
-    <Compile Include="Xwt\PasswordEntry.cs" />
-    <Compile Include="Xwt\TextInputEventArgs.cs" />
-    <Compile Include="Xwt\Widget.cs" />
-    <Compile Include="Xwt\Window.cs" />
-    <Compile Include="Xwt\Button.cs" />
-    <Compile Include="Xwt\Label.cs" />
-    <Compile Include="Xwt.Backends\IWidgetBackend.cs" />
-    <Compile Include="Xwt.Backends\ILabelBackend.cs" />
-    <Compile Include="Xwt.Backends\IWindowBackend.cs" />
-    <Compile Include="Xwt\Application.cs" />
-    <Compile Include="Xwt.Backends\IBackend.cs" />
-    <Compile Include="Xwt\XwtComponent.cs" />
-    <Compile Include="Xwt\Box.cs" />
-    <Compile Include="Xwt\WidgetCollection.cs" />
-    <Compile Include="Xwt.Backends\IBoxBackend.cs" />
-    <Compile Include="Xwt\HBox.cs" />
-    <Compile Include="Xwt\VBox.cs" />
-    <Compile Include="Xwt\Table.cs" />
-    <Compile Include="Xwt.Backends\IButtonBackend.cs" />
-    <Compile Include="Xwt\Notebook.cs" />
-    <Compile Include="Xwt.Backends\INotebookBackend.cs" />
-    <Compile Include="Xwt\Paned.cs" />
-    <Compile Include="Xwt\VPaned.cs" />
-    <Compile Include="Xwt\HPaned.cs" />
-    <Compile Include="Xwt.Backends\IPanedBackend.cs" />
-    <Compile Include="Xwt\TreeView.cs" />
-    <Compile Include="Xwt\DataStore.cs" />
-    <Compile Include="Xwt\Rectangle.cs" />
-    <Compile Include="Xwt\Point.cs" />
-    <Compile Include="Xwt\Size.cs" />
-    <Compile Include="Xwt\Alignment.cs" />
-    <Compile Include="Xwt.Drawing\Image.cs" />
-    <Compile Include="Xwt\TreeStore.cs" />
-    <Compile Include="Xwt\DataField.cs" />
-    <Compile Include="Xwt\TreeNavigator.cs" />
-    <Compile Include="Xwt\TreePosition.cs" />
-    <Compile Include="Xwt\CellViewCollection.cs" />
-    <Compile Include="Xwt\CellView.cs" />
-    <Compile Include="Xwt\TextCellView.cs" />
-    <Compile Include="Xwt\ComboBoxCellView.cs" />
-    <Compile Include="Xwt.Backends\ITreeViewBackend.cs" />
-    <Compile Include="Xwt.Backends\ITreeStoreBackend.cs" />
-    <Compile Include="Xwt\XwtObject.cs" />
-    <Compile Include="Xwt.Backends\ImageBackendHandler.cs" />
-    <Compile Include="Xwt\ImageCellView.cs" />
-    <Compile Include="Xwt.Drawing\Context.cs" />
-    <Compile Include="Xwt\Distance.cs" />
-    <Compile Include="Xwt\Canvas.cs" />
-    <Compile Include="Xwt.Backends\ICanvasBackend.cs" />
-    <Compile Include="Xwt.Drawing\Color.cs" />
-    <Compile Include="Xwt.Drawing\HslColor.cs" />
-    <Compile Include="Xwt.Drawing\LinearGradient.cs" />
-    <Compile Include="Xwt.Drawing\Pattern.cs" />
-    <Compile Include="Xwt.Drawing\Gradient.cs" />
-    <Compile Include="Xwt.Drawing\RadialGradient.cs" />
-    <Compile Include="Xwt.Drawing\TextLayout.cs" />
-    <Compile Include="Xwt.Drawing\Font.cs" />
-    <Compile Include="Xwt.Drawing\Matrix.cs" />
-    <Compile Include="Xwt\ButtonEventArgs.cs" />
-    <Compile Include="Xwt\MouseMovedEventArgs.cs" />
-    <Compile Include="Xwt\SelectionMode.cs" />
-    <Compile Include="Xwt\ListViewColumn.cs" />
-    <Compile Include="Xwt\ListViewColumnCollection.cs" />
-    <Compile Include="Xwt\ListView.cs" />
-    <Compile Include="Xwt.Backends\IListViewBackend.cs" />
-    <Compile Include="Xwt.Backends\IColumnContainerBackend.cs" />
-    <Compile Include="Xwt\ListStore.cs" />
-    <Compile Include="Xwt.Backends\IListStoreBackend.cs" />
-    <Compile Include="Xwt.Backends\ITableViewBackend.cs" />
-    <Compile Include="Xwt\CheckBoxCellView.cs" />
-    <Compile Include="Xwt.Design\DesignerSurface.cs" />
-    <Compile Include="Xwt.Backends\IDesignerSurfaceBackend.cs" />
-    <Compile Include="Xwt\Menu.cs" />
-    <Compile Include="Xwt\MenuItem.cs" />
-    <Compile Include="Xwt\MenuItemCollection.cs" />
-    <Compile Include="Xwt.Backends\IMenuBackend.cs" />
-    <Compile Include="Xwt.Backends\IMenuItemBackend.cs" />
-    <Compile Include="Xwt\IWidgetSurface.cs" />
-    <Compile Include="Xwt\ChildrenCollection.cs" />
-    <Compile Include="Xwt\IContainerEventSink.cs" />
-    <Compile Include="Xwt\DragDropAction.cs" />
-    <Compile Include="Xwt\DragOperation.cs" />
-    <Compile Include="Xwt\DragEventArgs.cs" />
-    <Compile Include="Xwt\ScrollView.cs" />
-    <Compile Include="Xwt.Backends\IScrollViewBackend.cs" />
-    <Compile Include="Xwt\ButtonStyle.cs" />
-    <Compile Include="Xwt\StockIcons.cs" />
-    <Compile Include="Xwt\IconSize.cs" />
-    <Compile Include="Xwt\ComboBox.cs" />
-    <Compile Include="Xwt\ItemCollection.cs" />
-    <Compile Include="Xwt.Backends\IComboBoxBackend.cs" />
-    <Compile Include="Xwt\Command.cs" />
-    <Compile Include="Xwt\IListDataSource.cs" />
-    <Compile Include="Xwt\ITreeDataSource.cs" />
-    <Compile Include="Xwt\Dialog.cs" />
-    <Compile Include="Xwt.Backends\ICustomWidgetBackend.cs" />
-    <Compile Include="Xwt\PopupWindow.cs" />
-    <Compile Include="Xwt\MenuButton.cs" />
-    <Compile Include="Xwt.Backends\IMenuButtonBackend.cs" />
-    <Compile Include="Xwt\TextEntry.cs" />
-    <Compile Include="Xwt.Backends\ITextEntryBackend.cs" />
-    <Compile Include="Xwt\ToggleButton.cs" />
-    <Compile Include="Xwt.Backends\IToggleButtonBackend.cs" />
-    <Compile Include="Xwt\ImageView.cs" />
-    <Compile Include="Xwt.Backends\IImageViewBackend.cs" />
-    <Compile Include="Xwt\MessageDialog.cs" />
-    <Compile Include="Xwt.Backends\IAlertDialogBackend.cs" />
-    <Compile Include="Xwt\Key.cs" />
-    <Compile Include="Xwt\ModifierKeys.cs" />
-    <Compile Include="Xwt\KeyEventArgs.cs" />
-    <Compile Include="Xwt\WindowFrame.cs" />
-    <Compile Include="Xwt.Backends\IWindowFrameBackend.cs" />
-    <Compile Include="Xwt\CheckBox.cs" />
-    <Compile Include="Xwt.Backends\ICheckBoxBackend.cs" />
-    <Compile Include="Xwt\ContentPosition.cs" />
-    <Compile Include="Xwt.Backends\IFrameBackend.cs" />
-    <Compile Include="Xwt\Separator.cs" />
-    <Compile Include="Xwt.Backends\ISeparatorBackend.cs" />
-    <Compile Include="Xwt\HSeparator.cs" />
-    <Compile Include="Xwt\VSeparator.cs" />
-    <Compile Include="Xwt\ItemSeparator.cs" />
-    <Compile Include="Xwt.Backends\ICollectionListener.cs" />
-    <Compile Include="Xwt.Backends\IDialogBackend.cs" />
-    <Compile Include="Xwt\DialogButtonCollection.cs" />
-    <Compile Include="Xwt\ComboBoxEntry.cs" />
-    <Compile Include="Xwt.Backends\IComboBoxEntryBackend.cs" />
-    <Compile Include="Xwt\TreeViewStatus.cs" />
-    <Compile Include="Xwt\Clipboard.cs" />
-    <Compile Include="Xwt\PointerButton.cs" />
-    <Compile Include="Xwt.Drawing\ImageBuilder.cs" />
-    <Compile Include="Xwt.Drawing\ImageFormat.cs" />
-    <Compile Include="Xwt.Drawing\ImagePattern.cs" />
-    <Compile Include="Xwt\CheckBoxMenuItem.cs" />
-    <Compile Include="Xwt\RadioButtonMenuItem.cs" />
-    <Compile Include="Xwt\SeparatorMenuItem.cs" />
-    <Compile Include="Xwt.Backends\ICheckBoxMenuItemBackend.cs" />
-    <Compile Include="Xwt.Backends\IRadioButtonMenuItemBackend.cs" />
-    <Compile Include="Xwt.Backends\ISeparatorMenuItemBackend.cs" />
-    <Compile Include="Xwt\EllipsizeMode.cs" />
-    <Compile Include="Xwt\RowDropPosition.cs" />
-    <Compile Include="Xwt\OpenFileDialog.cs" />
-    <Compile Include="Xwt\SaveFileDialog.cs" />
-    <Compile Include="Xwt\FileDialog.cs" />
-    <Compile Include="Xwt.Backends\IFileDialogBackend.cs" />
-    <Compile Include="Xwt.Backends\IOpenFileDialogBackend.cs" />
-    <Compile Include="Xwt.Backends\ISaveFileDialogBackend.cs" />
-    <Compile Include="Xwt\FileDialogFilter.cs" />
-    <Compile Include="Xwt\ObjectCollection.cs" />
-    <Compile Include="Xwt.Backends\ISelectFolderDialogBackend.cs" />
-    <Compile Include="Xwt\SelectFolderDialog.cs" />
-    <Compile Include="Xwt\WidgetSpacing.cs" />
-    <Compile Include="Xwt.Drawing\Colors.cs" />
-    <Compile Include="Xwt\TransferDataSource.cs" />
-    <Compile Include="Xwt\TransferDataType.cs" />
-    <Compile Include="Xwt.Backends\TransferDataStore.cs" />
-    <Compile Include="Xwt\CursorType.cs" />
-    <Compile Include="Xwt\SelectColorDialog.cs" />
-    <Compile Include="Xwt.Backends\ISelectColorDialogBackend.cs" />
-    <Compile Include="Xwt\IScrollableWidget.cs" />
-    <Compile Include="Xwt.Backends\IScrollableWidgetBackend.cs" />
-    <Compile Include="Xwt\ListBox.cs" />
-    <Compile Include="Xwt.Backends\IListBoxBackend.cs" />
-    <Compile Include="Xwt.Backends\BackendHost.cs" />
-    <Compile Include="Xwt.Backends\IFrontend.cs" />
-    <Compile Include="Xwt.Backends\DefaultNaturalSizes.cs" />
-    <Compile Include="Xwt\StatusIcon.cs" />
-    <Compile Include="Xwt.Backends\IStatusIconBackend.cs" />
-    <Compile Include="Xwt\ColorSelector.cs" />
-    <Compile Include="Xwt.Backends\IColorSelectorBackend.cs" />
-    <Compile Include="Xwt.Backends\XwtWidgetBackend.cs" />
-    <Compile Include="Xwt\ProgressBar.cs" />
-    <Compile Include="Xwt.Backends\IProgressBarBackend.cs" />
-    <Compile Include="Xwt\Popover.cs" />
-    <Compile Include="Xwt.Backends\IPopoverBackend.cs" />
-    <Compile Include="Xwt.Backends\ISpinButtonBackend.cs" />
-    <Compile Include="Xwt\SpinButton.cs" />
-    <Compile Include="Xwt\DatePicker.cs" />
-    <Compile Include="Xwt.Backends\IDatePickerBackend.cs" />
-    <Compile Include="Xwt\Frame.cs" />
-    <Compile Include="Xwt\Expander.cs" />
-    <Compile Include="Xwt.Backends\IExpandBackend.cs" />
-    <Compile Include="Xwt.Backends\ToolkitEngineBackend.cs" />
-    <Compile Include="Xwt\MouseScrolledEventArgs.cs" />
-    <Compile Include="Xwt\LinkLabel.cs" />
-    <Compile Include="Xwt.Backends\ILinkLabelBackend.cs" />
-    <Compile Include="Xwt\Placement.cs" />
-    <Compile Include="Xwt\Spinner.cs" />
-    <Compile Include="Xwt.Backends\ISpinnerBackend.cs" />
-    <Compile Include="Xwt\CloseRequestedHandler.cs" />
-    <Compile Include="Xwt\CloseRequestedEventArgs.cs" />
-    <Compile Include="Xwt\WrapMode.cs" />
-    <Compile Include="Xwt\XwtTaskScheduler.cs" />
-    <Compile Include="Xwt\ExceptionEventArgs.cs" />
-    <Compile Include="Xwt\RichTextView.cs" />
-    <Compile Include="Xwt.Backends\IRichTextViewBackend.cs" />
-    <Compile Include="Xwt.Formats\TextFormat.cs" />
-    <Compile Include="Xwt.Formats\MarkdownTextFormat.cs" />
-    <Compile Include="Xwt.Backends\ContextBackendHandler.cs" />
-    <Compile Include="Xwt.Backends\BackendHandler.cs" />
-    <Compile Include="Xwt.Backends\GradientBackendHandler.cs" />
-    <Compile Include="Xwt.Backends\FontBackendHandler.cs" />
-    <Compile Include="Xwt.Backends\ImagePatternBackendHandler.cs" />
-    <Compile Include="Xwt.Backends\ImageBuilderBackendHandler.cs" />
-    <Compile Include="Xwt.Backends\TextLayoutBackendHandler.cs" />
-    <Compile Include="Xwt.Backends\ClipboardBackend.cs" />
-    <Compile Include="Xwt.Backends\ApplicationContext.cs" />
-    <Compile Include="Xwt\Toolkit.cs" />
-    <Compile Include="Xwt.Drawing\DrawingPath.cs" />
-    <Compile Include="Xwt.Backends\DrawingPathBackendHandler.cs" />
-    <Compile Include="Xwt\Desktop.cs" />
-    <Compile Include="Xwt\Screen.cs" />
-    <Compile Include="Xwt.Backends\DesktopBackend.cs" />
-    <Compile Include="Xwt.Backends\BackendTypeAttribute.cs" />
-    <Compile Include="Xwt.Backends\IEmbeddedWidgetBackend.cs" />
-    <Compile Include="Xwt\ListViewRowEventArgs.cs" />
-    <Compile Include="Xwt\TreeViewRowEventArgs.cs" />
-    <Compile Include="Xwt\CanvasCellView.cs" />
-    <Compile Include="Xwt\SegmentedButton.cs" />
-    <Compile Include="Xwt.Backends\ISegmentedButtonBackend.cs" />
-    <Compile Include="Xwt\DesktopType.cs" />
-    <Compile Include="Xwt.Backends\StockIconId.cs" />
-    <Compile Include="Xwt.Drawing\DrawingImage.cs" />
-    <Compile Include="Xwt.Drawing\BitmapImage.cs" />
-    <Compile Include="Xwt.Formats\PlainTextFormat.cs" />
-    <Compile Include="Xwt.Formats\MarkupTextFormat.cs" />
-    <Compile Include="Xwt.Drawing\ImageFileType.cs" />
-    <Compile Include="Xwt\Slider.cs" />
-    <Compile Include="Xwt.Backends\ISliderBackend.cs" />
-    <Compile Include="Xwt.Drawing\VectorImage.cs" />
-    <Compile Include="Xwt\RadioButton.cs" />
-    <Compile Include="Xwt.Backends\IRadioButtonBackend.cs" />
-    <Compile Include="Xwt\FormattedText.cs" />
-    <Compile Include="Xwt.Drawing\BackgroundTextAttribute.cs" />
-    <Compile Include="Xwt.Drawing\FontWeightTextAttribute.cs" />
-    <Compile Include="Xwt.Drawing\FontStyleTextAttribute.cs" />
-    <Compile Include="Xwt.Drawing\UnderlineTextAttribute.cs" />
-    <Compile Include="Xwt.Drawing\StrikethroughTextAttribute.cs" />
-    <Compile Include="Xwt.Drawing\FontTextAttribute.cs" />
-    <Compile Include="Xwt.Drawing\ColorTextAttribute.cs" />
-    <Compile Include="Xwt.Drawing\LinkTextAttribute.cs" />
-    <Compile Include="Xwt.Drawing\TextAttribute.cs" />
-    <Compile Include="Xwt\WidgetEventArgs.cs" />
-    <Compile Include="Xwt.Backends\IImageCellViewFrontend.cs" />
-    <Compile Include="Xwt.Backends\ICellViewFrontend.cs" />
-    <Compile Include="Xwt.Backends\ITextCellViewFrontend.cs" />
-    <Compile Include="Xwt.Backends\ICanvasCellViewFrontend.cs" />
-    <Compile Include="Xwt.Backends\ICheckBoxCellViewFrontend.cs" />
-    <Compile Include="Xwt.Backends\ExtensionMethods.cs" />
-    <Compile Include="Xwt\Scrollbar.cs" />
-    <Compile Include="Xwt\HScrollbar.cs" />
-    <Compile Include="Xwt\VScrollbar.cs" />
-    <Compile Include="Xwt.Backends\IScrollbarBackend.cs" />
-    <Compile Include="Xwt\SizeConstraint.cs" />
-    <Compile Include="Xwt\WidgetAlignment.cs" />
-    <Compile Include="Xwt.Backends\IChildPlacementHandler.cs" />
-    <Compile Include="Xwt\TableCalc.cs" />
-    <Compile Include="Xwt\VSlider.cs" />
-    <Compile Include="Xwt\HSlider.cs" />
-    <Compile Include="Xwt.Backends\ResourceManager.cs" />
-    <Compile Include="Xwt.Backends\DisposableResourceBackendHandler.cs" />
-    <Compile Include="Xwt.Motion\Animation.cs" />
-    <Compile Include="Xwt.Motion\AnimationExtensions.cs" />
-    <Compile Include="Xwt.Motion\Easing.cs" />
-    <Compile Include="Xwt.Motion\Tweener.cs" />
-    <Compile Include="Xwt.Motion\IAnimatable.cs" />
-    <Compile Include="Xwt\WindowLocation.cs" />
-    <Compile Include="Xwt.Motion\ObjectTransforms.cs" />
-    <Compile Include="Xwt\CheckBoxState.cs" />
-    <Compile Include="Xwt\InvalidConstructorInvocation.cs" />
-    <Compile Include="Xwt\Keyboard.cs" />
-    <Compile Include="Xwt.Backends\KeyboardHandler.cs" />
-    <Compile Include="Xwt\FrameBox.cs" />
-    <Compile Include="Xwt\ToolkitNotInitializedException.cs" />
-    <Compile Include="Xwt.Drawing\NinePatchImage.cs" />
-    <Compile Include="Xwt\WebView.cs" />
-    <Compile Include="Xwt.Backends\IWebViewBackend.cs" />
-    <Compile Include="Xwt.Backends\IScrollAdjustmentBackend.cs" />
-    <Compile Include="Xwt\ScrollAdjustment.cs" />
-    <Compile Include="Xwt\ScrollControl.cs" />
-    <Compile Include="Xwt.Backends\IScrollControlBackend.cs" />
-    <Compile Include="Xwt.Backends\ICellViewBackend.cs" />
-    <Compile Include="Xwt.Backends\EventHost.cs" />
-    <Compile Include="Xwt.Backends\ICanvasCellViewBackend.cs" />
-    <Compile Include="Xwt\SearchTextEntry.cs" />
-    <Compile Include="Xwt.Backends\ISearchTextEntryBackend.cs" />
-    <Compile Include="Xwt\GridLines.cs" />
-    <Compile Include="Xwt\ColorPicker.cs" />
-    <Compile Include="Xwt.Backends\IColorPickerBackend.cs" />
-    <Compile Include="Xwt\XwtSynchronizationContext.cs" />
-    <Compile Include="Xwt\Calendar.cs" />
-    <Compile Include="Xwt.Backends\ICalendarBackend.cs" />
-    <Compile Include="Xwt.Drawing\ThemedImage.cs" />
-    <Compile Include="Xwt.Drawing\IImageLoader.cs" />
-    <Compile Include="Xwt\FontSelector.cs" />
-    <Compile Include="Xwt.Backends\IFontSelectorBackend.cs" />
-    <Compile Include="Xwt\SelectFontDialog.cs" />
-    <Compile Include="Xwt.Backends\ISelectFontDialogBackend.cs" />
-    <Compile Include="Xwt.Drawing\StyleSet.cs" />
-    <Compile Include="Xwt\FileSelector.cs" />
-    <Compile Include="Xwt.Backends\IFileSelectorBackend.cs" />
-    <Compile Include="Xwt\FolderSelector.cs" />
-    <Compile Include="Xwt.Backends\IFolderSelectorBackend.cs" />
-    <Compile Include="Xwt\ToolkitDefaults.cs" />
-    <Compile Include="Xwt.Backends\IComboBoxCellViewFrontend.cs" />
-    <Compile Include="Xwt\RadioButtonCellView.cs" />
-    <Compile Include="Xwt.Backends\IRadioButtonCellViewFrontend.cs" />
-    <Compile Include="Xwt.Backends\IToggleCellViewFrontend.cs" />
-    <Compile Include="Xwt.Backends\IDispatcherBackend.cs" />
-    <Compile Include="Xwt\ITranslationCatalog.cs" />
-    <Compile Include="Xwt.Accessibility\Accessible.cs" />
-    <Compile Include="Xwt.Accessibility\IAccessibleBackend.cs" />
-    <Compile Include="Xwt.Accessibility\Role.cs" />
-    <Compile Include="Xwt.Backends\IPopupWindowBackend.cs" />
-    <Compile Include="Xwt\UtilityWindow.cs" />
-    <Compile Include="Xwt.Backends\IUtilityWindowBackend.cs" />
-    <Compile Include="Xwt\TextChangedEventArgs.cs" />
-    <Compile Include="Xwt.Drawing\FontSizeTextAttribute.cs" />
-    <Compile Include="Xwt.Accessibility\AccessibleFields.cs" />
-    <Compile Include="Xwt.Accessibility\XwtAccessibleBackend.cs" />
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath=""/>
+    <None Include="..\README.markdown" Pack="true" PackagePath=""/>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
         <Policies>
-          <DotNetNamingPolicy DirectoryNamespaceAssociation="Flat" ResourceNamePolicy="FileFormatDefault" />
+          <DotNetNamingPolicy ResourceNamePolicy="FileFormatDefault" DirectoryNamespaceAssociation="Flat" />
         </Policies>
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
 </Project>

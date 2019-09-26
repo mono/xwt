@@ -1,42 +1,62 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C93D746E-1586-4D4F-B411-BF5A966E6A08}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <TargetFrameworks>net40;net47</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
     <RootNamespace>Xwt.WPF</RootNamespace>
     <AssemblyName>Xwt.WPF</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40'">
+    <DefineConstants>DEBUG;NETFRAMEWORK;NET40</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net47'">
+    <DefineConstants>DEBUG;NETFRAMEWORK;NET47</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
     <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>True</SignAssembly>
+    <PackageId>Xwt.WPF</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Lluis Sanchez</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/mono/xwt/</PackageProjectUrl>
+    <PackageTags>xwt cross platform gui ui toolkit framework desktop wpf</PackageTags>
+    <Description>Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
+        
+This package contains the WPF toolkit backend for Xwt based applications targeting WPF (Windows Presentation Foundation).</Description>
+    <NoBuild>true</NoBuild>
   </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Xwt.WPFBackend\TreeView.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Xwt.WPFBackend\ScrollView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icons\add-16.png" />
+    <EmbeddedResource Include="icons\add-16~dark.png" />
+    <EmbeddedResource Include="icons\add-16~disabled.png" />
+    <EmbeddedResource Include="icons\add-16~dark~disabled.png" />
+    <EmbeddedResource Include="icons\remove-16.png" />
+    <EmbeddedResource Include="icons\remove-16~dark.png" />
+    <EmbeddedResource Include="icons\remove-16~disabled.png" />
+    <EmbeddedResource Include="icons\remove-16~dark~disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xwt\Xwt.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -52,149 +72,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Xwt.WPFBackend.CellViews\CanvasCellViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend.CellViews\CanvasCellViewPanel.cs" />
-    <Compile Include="Xwt.WPFBackend.CellViews\CheckBoxCellViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend.CellViews\CellViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend.CellViews\TextCellViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend.Interop\NativeStockIcon.cs" />
-    <Compile Include="Xwt.WPFBackend.Utilities\CellUtil.cs" />
-    <Compile Include="Xwt.WPFBackend.Utilities\ImageToImageSourceConverter.cs" />
-    <Compile Include="Xwt.WPFBackend.Utilities\MarkupToPlainTextConverter.cs" />
-    <Compile Include="Xwt.WPFBackend.Utilities\TypeToStringConverter.cs" />
-    <Compile Include="Xwt.WPFBackend\AccessibleBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\AlertDialogBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\Backend.cs" />
-    <Compile Include="Xwt.WPFBackend\BooleanToValueConverter.cs" />
-    <Compile Include="Xwt.WPFBackend\ButtonBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\CheckBoxBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\CheckboxMenuItemBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ClipboardBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ComboBoxBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ComboBoxEntryBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ComboBoxTextEntryBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\DatePickerBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\EmbedNativeWidgetBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\PasswordEntryBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\PlaceholderTextAdorner.cs" />
-    <Compile Include="Xwt.WPFBackend\ScrollbarBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\SliderBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\SpinButtonBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\RadioButtonBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ImagePatternBackendHandler.cs" />
-    <Compile Include="Xwt.WPFBackend\GradientBackendHandler.cs" />
-    <Compile Include="Xwt.WPFBackend\SelectColorDialogBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\TextLayoutBackendHandler.cs" />
-    <Compile Include="Xwt.WPFBackend\ImageBuilderBackendHandler.cs" />
-    <Compile Include="Xwt.WPFBackend\DrawingContext.cs" />
-    <Compile Include="Xwt.WPFBackend\ContextBackendHandler.cs" />
-    <Compile Include="Xwt.WPFBackend\ExRichTextBox.cs" />
-    <Compile Include="Xwt.WPFBackend\SaveFileDialogBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\LinkLabelBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\PopoverBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ProgressBarBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\CustomWidgetBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\DelegatedCommand.cs" />
-    <Compile Include="Xwt.WPFBackend\DialogBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\DropDownButton.cs" />
-    <Compile Include="Xwt.WPFBackend\ExComboBox.cs" />
-    <Compile Include="Xwt.WPFBackend\ExGrid.cs" />
-    <Compile Include="Xwt.WPFBackend\ExListBox.cs" />
-    <Compile Include="Xwt.WPFBackend\ExListBoxItem.cs" />
-    <Compile Include="Xwt.WPFBackend\ExListView.cs" />
-    <Compile Include="Xwt.WPFBackend\ExListViewItem.cs" />
-    <Compile Include="Xwt.WPFBackend\ExpanderBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ExScrollViewer.cs" />
-    <Compile Include="Xwt.WPFBackend\ExTextBox.cs" />
-    <Compile Include="Xwt.WPFBackend\ExTreeView.cs" />
-    <Compile Include="Xwt.WPFBackend\ExTreeViewItem.cs" />
-    <Compile Include="Xwt.WPFBackend\FileDialogBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\FrameBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ImageHandler.cs" />
-    <Compile Include="Xwt.WPFBackend.Interop\NativeMethods.cs" />
-    <Compile Include="Xwt.WPFBackend\ImageViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\LabelBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\BoxBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\DataConverter.cs" />
-    <Compile Include="Xwt.WPFBackend\FontBackendHandler.cs" />
-    <Compile Include="Xwt.WPFBackend\KeyboardUtil.cs" />
-    <Compile Include="Xwt.WPFBackend\LevelToIndentConverter.cs" />
-    <Compile Include="Xwt.WPFBackend\ListBoxBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ListDataSource.cs" />
-    <Compile Include="Xwt.WPFBackend\ListSourceNotifyWrapper.cs" />
-    <Compile Include="Xwt.WPFBackend\ListViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\MenuBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\MenuButtonBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\MenuItemBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\OpenFileDialogBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\PanedBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\RadioButtonMenuItemBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ResPool.cs" />
-    <Compile Include="Xwt.WPFBackend\ScrollViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\SelectFolderDialogBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\SeparatorBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\SeparatorMenuItemBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\SpinnerBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\TextEntryBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\Timeout.cs" />
-    <Compile Include="Xwt.WPFBackend\ToggleButtonBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\TreeStoreBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\TreeStoreNode.cs" />
-    <Compile Include="Xwt.WPFBackend\TreeViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ImageAdorner.cs" />
-    <Compile Include="Xwt.WPFBackend\TreeViewDropAdorner.cs" />
-    <Compile Include="Xwt.WPFBackend\Util.cs" />
-    <Compile Include="Xwt.WPFBackend\ValuesContainer.cs" />
-    <Compile Include="Xwt.WPFBackend\CanvasBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\WidgetBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\WindowBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\WindowFrameBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\WPFEngine.cs" />
-    <Compile Include="Xwt.WPFBackend\NotebookBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ScrollAdjustmentBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\CustomScrollViewPort.cs" />
-    <Compile Include="Xwt.WPFBackend\RichTextViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\WpfDesktopBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\WindowsSpinButton.xaml.cs" />
-    <Compile Include="Xwt.WPFBackend\WpfKeyboardHandler.cs" />
-    <Compile Include="Xwt.WPFBackend\WebViewBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\ScrollControlBackend.cs" />
-    <Compile Include="Xwt.WPFBackend\CalendarBackend.cs" />
-    <Compile Include="Xwt.WPFBackend.Interop\IDocHostUIHandler.cs" />
-    <Compile Include="Xwt.WPFBackend.CellViews\RadioButtonCellViewBackend.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\Xwt\Xwt.csproj">
-      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
-      <Name>Xwt</Name>
-    </ProjectReference>
+    <Compile Remove="Xwt.WPFBackend.Utilities\MultiColumnTreeViewItem.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\xwt.snk">
-      <Link>xwt.snk</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Xwt.WPFBackend\TreeView.xaml">
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="icons\add-16.png" />
-    <EmbeddedResource Include="icons\add-16~dark.png" />
-    <EmbeddedResource Include="icons\add-16~disabled.png" />
-    <EmbeddedResource Include="icons\add-16~dark~disabled.png" />
-    <EmbeddedResource Include="icons\remove-16.png" />
-    <EmbeddedResource Include="icons\remove-16~dark.png" />
-    <EmbeddedResource Include="icons\remove-16~disabled.png" />
-    <EmbeddedResource Include="icons\remove-16~dark~disabled.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Xwt.WPFBackend\ScrollView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Resource>
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath=""/>
+    <None Include="..\README.markdown" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
