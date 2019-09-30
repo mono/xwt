@@ -281,7 +281,7 @@ namespace Xwt.GtkBackend
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_label_set_attributes (IntPtr label, IntPtr attrList);
 
-		internal static void ApplyFormattedText(this Gtk.Label label, FormattedText text)
+		internal static TextIndexer ApplyFormattedText(this Gtk.Label label, FormattedText text)
 		{
 			var list = new FastPangoAttrList ();
 			if (text != null) {
@@ -295,8 +295,12 @@ namespace Xwt.GtkBackend
 				}
 				var indexer = new TextIndexer (text.Text);
 				list.AddAttributes (indexer, text.Attributes);
+
+				return indexer;
 			}
 			gtk_label_set_attributes (label.Handle, list.Handle);
+
+			return null;
 		}
 	}
 }
