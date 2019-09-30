@@ -222,12 +222,10 @@ namespace Xwt.GtkBackend
 
 		public void DisableEvent (object eventId)
 		{
-			throw new NotImplementedException ();
 		}
 
 		public void EnableEvent (object eventId)
 		{
-			throw new NotImplementedException ();
 		}
 	}
 }
