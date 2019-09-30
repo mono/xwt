@@ -61,6 +61,8 @@ namespace Xwt.Mac
 			ContentView.AutoresizesSubviews = true;
 			ContentView.Hidden = true;
 
+			AccessibilityRole = NSAccessibilityRoles.PopoverRole;
+
 			// TODO: do it only if mouse move events are enabled in a widget
 			AcceptsMouseMovedEvents = true;
 
