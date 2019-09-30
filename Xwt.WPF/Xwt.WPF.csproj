@@ -33,7 +33,6 @@
     <Description>Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
         
 This package contains the WPF toolkit backend for Xwt based applications targeting WPF (Windows Presentation Foundation).</Description>
-    <NoBuild>true</NoBuild>
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="Xwt.WPFBackend\TreeView.xaml">
