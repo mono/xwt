@@ -125,7 +125,7 @@ namespace Xwt.Mac
 
 		public override void DrawRect (CGRect dirtyRect)
 		{
-			context.InvokeUserCode (delegate {
+			ApplicationContext.InvokeUserCode (delegate {
 				CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 
 				//fill BackgroundColor
