@@ -171,17 +171,22 @@ namespace Xwt.Drawing
 		/// </remarks>
 		public static Image FromResource (Assembly assembly, string resource)
 		{
+			return FromResource (assembly, resource, null);
+		}
+
+		internal static Image FromResource (Assembly assembly, string resource, ImageTagSet tagFilter)
+		{
 			if (assembly == null)
 				throw new ArgumentNullException ("assembly");
 			if (resource == null)
 				throw new ArgumentNullException ("resource");
-			
+
 			var toolkit = Toolkit.CurrentEngine;
 			if (toolkit == null)
 				throw new ToolkitNotInitializedException ();
 
 			var loader = new ResourceImageLoader (toolkit, assembly);
-			return LoadImage (loader, resource, null);
+			return LoadImage (loader, resource, tagFilter);
 		}
 
 		static Image LoadImage (ImageLoader loader, string fileName, ImageTagSet tagFilter)
@@ -196,10 +201,11 @@ namespace Xwt.Drawing
 			var ext = GetExtension (fileName);
 			var name = fileName.Substring (0, fileName.Length - ext.Length);
 			var altImages = new List<Tuple<string,ImageTagSet,bool,object>> ();
-			var tags = Context.RegisteredStyles;
+			int scale;
 
 			foreach (var r in loader.GetAlternativeFiles (fileName, name, ext)) {
-				int scale;
+				if (r == fileName) // loader might include the base filename, make sure to exclude it
+					continue;
 				ImageTagSet fileTags;
 				if (ParseImageHints (name, r, ext, out scale, out fileTags) && (tagFilter == null || tagFilter.Equals (fileTags))) {
 					var rim = loader.LoadImage (r);
@@ -209,7 +215,11 @@ namespace Xwt.Drawing
 			}
 
 			if (altImages.Count > 0) {
-				altImages.Insert (0, new Tuple<string, ImageTagSet, bool, object> (fileName, ImageTagSet.Empty, false, img));
+				// Add the base file only if no tag filter is specified or the tags match
+				ImageTagSet fileTags = null;
+				if (tagFilter == null || tagFilter.IsEmpty || ParseImageHints (name, fileName, ext, out scale, out fileTags) && tagFilter.Equals (fileTags)) {
+					altImages.Insert (0, new Tuple<string, ImageTagSet, bool, object> (fileName, fileTags ?? ImageTagSet.Empty, false, img));
+				}
 				var list = new List<Tuple<Image,string[]>> ();
 				foreach (var imageGroup in altImages.GroupBy (t => t.Item2)) {
 					Image altImg;
@@ -238,13 +248,14 @@ namespace Xwt.Drawing
 		{
 			scale = 1;
 			tags = ImageTagSet.Empty;
+			var firstDelimiter = fileName.IndexOfAny (new [] { '@', '~' });
 
-			if (!fileName.StartsWith (baseName, StringComparison.Ordinal) || fileName.Length <= baseName.Length + 1 || (fileName [baseName.Length] != '@' && fileName [baseName.Length] != '~'))
+			if (!fileName.StartsWith (baseName, StringComparison.Ordinal) || fileName.Length <= baseName.Length + 1 || firstDelimiter <= 0)
 				return false;
 
 			fileName = fileName.Substring (0, fileName.Length - ext.Length);
 
-			int i = baseName.Length;
+			int i = firstDelimiter;
 			if (fileName [i] == '~') {
 				// For example: foo~dark@2x
 				i++;
@@ -328,12 +339,17 @@ namespace Xwt.Drawing
 
 		public static Image FromFile (string file)
 		{
+			return FromFile (file, null);
+		}
+
+		internal static Image FromFile (string file, ImageTagSet tagFilter)
+		{
 			var toolkit = Toolkit.CurrentEngine;
 			if (toolkit == null)
 				throw new ToolkitNotInitializedException ();
 
 			var loader = new FileImageLoader (toolkit);
-			return LoadImage (loader, file, null);
+			return LoadImage (loader, file, tagFilter);
 		}
 
 		static Image CreateComposedNinePatch (Toolkit toolkit, IEnumerable<Tuple<string,ImageTagSet,bool,object>> altImages)
@@ -882,10 +898,10 @@ namespace Xwt.Drawing
 					} else if (s.CustomImageLoader != null) {
 						targetToolkit.Invoke (() => newBackend = Image.FromCustomLoader (s.CustomImageLoader, s.Source, s.Tags).GetBackend());
 					} else if (s.ResourceAssembly != null) {
-						targetToolkit.Invoke (() => newBackend = Image.FromResource (s.ResourceAssembly, s.Source).GetBackend());
+						targetToolkit.Invoke (() => newBackend = Image.FromResource (s.ResourceAssembly, s.Source, s.Tags).GetBackend());
 					}
 					else if (s.Source != null)
-						targetToolkit.Invoke (() => newBackend = Image.FromFile (s.Source).GetBackend());
+						targetToolkit.Invoke (() => newBackend = Image.FromFile (s.Source, s.Tags).GetBackend());
 					else if (s.DrawCallback != null)
 						newBackend = targetToolkit.ImageBackendHandler.CreateCustomDrawn (s.DrawCallback);
 					else if (s.StockId != null)
