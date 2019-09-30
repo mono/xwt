@@ -95,19 +95,37 @@ namespace Xwt.Mac
 
 			set {
 				canGetFocus = value;
+				FocusRingType = value ? NSFocusRingType.Exterior : NSFocusRingType.None;
 			}
 		}
 
 		public override bool BecomeFirstResponder ()
 		{
-			var res = base.BecomeFirstResponder ();
-			base.AccessibilityFocused = res;
-			return res;
+			bool result = CanGetFocus && base.BecomeFirstResponder ();
+			AccessibilityFocused = result;
+			if (result) {
+				// this override unregisters ViewBackend.OnBecomeFirstResponder (),
+				// so we need to fire the user event here
+				ApplicationContext.InvokeUserCode (EventSink.OnGotFocus);
+			}
+			return result;
 		}
 
 		public override bool AcceptsFirstResponder ()
 		{
 			return CanGetFocus;
+		}
+
+		public override CGRect FocusRingMaskBounds {
+			get { return Bounds; }
+		}
+
+		public override void DrawFocusRingMask ()
+		{
+			if (CanGetFocus) {
+				NSGraphics.RectFill (Bounds);
+			}
+			base.DrawFocusRingMask ();
 		}
 
 		public Func<bool> PerformAccessiblePressDelegate { get; set; }
