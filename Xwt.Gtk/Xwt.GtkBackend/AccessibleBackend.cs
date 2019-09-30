@@ -155,9 +155,9 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public string RoleDescription { get; set; }
+		public virtual string RoleDescription { get; set; }
 
-		public string Title { get; set; }
+		public virtual string Title { get; set; }
 
 		public string Value {
 			get {
