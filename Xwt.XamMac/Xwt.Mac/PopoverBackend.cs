@@ -301,6 +301,11 @@ namespace Xwt.Mac
 
 		public class NSAppearanceCustomizationPopover : NSPopover, INSAppearanceCustomization
 		{
+			public NSAppearanceCustomizationPopover ()
+			{ }
+
+			protected NSAppearanceCustomizationPopover (IntPtr handle) : base (handle)
+			{ }
 		}
 	}
 }
