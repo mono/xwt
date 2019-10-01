@@ -34,15 +34,28 @@ namespace Xwt.Mac
 	public class SelectFontDialogBackend : ISelectFontDialogBackend
 	{
 		readonly NSFontPanel fontPanel;
+		ApplicationContext context;
 
 		public SelectFontDialogBackend ()
 		{
 			fontPanel = NSFontPanel.SharedFontPanel;
 		}
 
+		public void Initialize (ApplicationContext actx)
+		{
+			context = actx;
+		}
+
 		public bool Run (IWindowFrameBackend parent)
 		{
 			fontPanel.Delegate = new FontPanelDelegate ();
+
+			if (parent != null)
+			{
+				var macParent = parent as NSWindow ?? context.Toolkit.GetNativeWindow (parent) as NSWindow ?? NSApplication.SharedApplication.KeyWindow;
+				if (macParent != null && fontPanel.EffectiveAppearance.Name != macParent.EffectiveAppearance.Name)
+					fontPanel.Appearance = macParent.EffectiveAppearance;
+			}
 
 			if (SelectedFont != null) {
 				NSFontManager.SharedFontManager.SetSelectedFont (((FontData)Toolkit.GetBackend (SelectedFont)).Font, false);

@@ -29,6 +29,8 @@ namespace Xwt.Backends
 {
 	public interface ISelectFontDialogBackend
 	{
+		void Initialize(ApplicationContext context);
+
 		/// <summary>
 		/// Gets or sets the title of the dialog
 		/// </summary>

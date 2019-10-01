@@ -92,6 +92,7 @@ namespace Xwt
 			if (backend == null)
 				backend = new DefaultSelectFontDialogBackend (parentWindow);
 			try {
+				backend.Initialize (Toolkit.CurrentEngine.Context);
 				backend.SelectedFont = SelectedFont;
 				backend.Title = Title;
 				backend.PreviewText = PreviewText;
@@ -115,6 +116,7 @@ namespace Xwt
 		readonly Dialog fontDialog;
 		readonly WindowFrame parent;
 		readonly FontSelector fontSelector;
+		ApplicationContext context;
 
 		public DefaultSelectFontDialogBackend (WindowFrame parentWindow)
 		{
@@ -133,6 +135,11 @@ namespace Xwt
 
 			fontDialog.Buttons.Add (new DialogButton (Command.Cancel));
 			fontDialog.Buttons.Add (new DialogButton (Command.Ok));
+		}
+
+		public void Initialize(ApplicationContext actx)
+		{
+			context = actx;
 		}
 
 		public Font SelectedFont {

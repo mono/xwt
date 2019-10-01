@@ -70,7 +70,11 @@ namespace Xwt.GtkBackend
 
 		public override object Create (string fontName, double size, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
-			return FontDescription.FromString (fontName + ", " + style + " " + weight + " " + stretch + " " + size.ToString (CultureInfo.InvariantCulture));
+			var result = FontDescription.FromString (fontName + " " + size.ToString (CultureInfo.InvariantCulture));
+			result.Style = (Pango.Style)style;
+			result.Weight = (Pango.Weight)weight;
+			result.Stretch = (Pango.Stretch)stretch;
+			return result;
 		}
 
 		[System.Runtime.InteropServices.DllImport (GtkInterop.LIBFONTCONFIG)]
