@@ -244,13 +244,15 @@ namespace Xwt.Drawing
 			}
 		}
 
+		static readonly char [] tagDelimiters = { '@', '~' };
+
 		static bool ParseImageHints (string baseName, string fileName, string ext, out int scale, out ImageTagSet tags)
 		{
 			scale = 1;
 			tags = ImageTagSet.Empty;
-			var firstDelimiter = fileName.IndexOfAny (new [] { '@', '~' });
+			var firstDelimiter = fileName.IndexOfAny (tagDelimiters);
 
-			if (!fileName.StartsWith (baseName, StringComparison.Ordinal) || fileName.Length <= baseName.Length + 1 || firstDelimiter <= 0)
+			if (firstDelimiter <= 0 || fileName.Length <= baseName.Length + 1 || !fileName.StartsWith (baseName, StringComparison.Ordinal))
 				return false;
 
 			fileName = fileName.Substring (0, fileName.Length - ext.Length);
