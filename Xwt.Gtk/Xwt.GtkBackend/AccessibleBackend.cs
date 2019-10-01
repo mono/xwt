@@ -155,9 +155,9 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public string RoleDescription { get; set; }
+		public virtual string RoleDescription { get; set; }
 
-		public string Title { get; set; }
+		public virtual string Title { get; set; }
 
 		public string Value {
 			get {
@@ -222,12 +222,10 @@ namespace Xwt.GtkBackend
 
 		public void DisableEvent (object eventId)
 		{
-			throw new NotImplementedException ();
 		}
 
 		public void EnableEvent (object eventId)
 		{
-			throw new NotImplementedException ();
 		}
 	}
 }

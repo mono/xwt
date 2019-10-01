@@ -39,7 +39,7 @@ namespace Xwt.Mac
 	public class WidgetView: NSView, IViewObject
 	{
 		IWidgetEventSink eventSink;
-		protected ApplicationContext context;
+		ApplicationContext context;
 
 		NSTrackingArea trackingArea;	// Captures Mouse Entered, Exited, and Moved events
 
@@ -54,6 +54,14 @@ namespace Xwt.Mac
 
 		public NSView View {
 			get { return this; }
+		}
+
+		protected IWidgetEventSink EventSink {
+			get { return eventSink; }
+		}
+
+		protected ApplicationContext ApplicationContext {
+			get { return context; }
 		}
 
 		public bool DrawsBackground { get; set; }

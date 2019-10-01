@@ -66,6 +66,39 @@ namespace Xwt.Gtk.Mac
 			}
 		}
 
+		public override string RoleDescription {
+			get {
+				var nsa = GetNSAccessibilityElement (widget.Accessible);
+				if (nsa == null) {
+					return null;
+				}
+				return nsa.AccessibilityRoleDescription;
+			}
+			set {
+				var nsa = GetNSAccessibilityElement (widget.Accessible);
+				if (nsa == null) {
+					return;
+				}
+				nsa.AccessibilityRoleDescription = value;
+			}
+		}
+
+		public override string Title {
+			get {
+				var nsa = GetNSAccessibilityElement (widget.Accessible);
+				if (nsa == null) {
+					return null;
+				}
+				return nsa.AccessibilityTitle;
+			}
+			set {
+				var nsa = GetNSAccessibilityElement (widget.Accessible);
+				if (nsa == null) {
+					return;
+				}
+				nsa.AccessibilityTitle = value;
+			}
+		}
 
 		public override Widget LabelWidget
 		{
