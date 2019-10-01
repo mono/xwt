@@ -1,5 +1,6 @@
 <Project>
-
-  <!-- This is empty just to make sure we don't search above the Xwt tree for a Directory.Build.Targets -->
-
+  <PropertyGroup>
+    <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">true</InMonoDevelopTree>
+    <TargetFrameworks Condition=" '$(InMonoDevelopTree)' == 'true' ">net472</TargetFrameworks>
+  </PropertyGroup>
 </Project>

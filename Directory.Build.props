@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">true</InMonoDevelopTree>
-    <TargetFrameworkVersion Condition=" '$(InMonoDevelopTree)' == 'true' ">v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(InMonoDevelopTree)' == 'true' ">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworks Condition=" '$(InMonoDevelopTree)' == 'true' ">net472</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
