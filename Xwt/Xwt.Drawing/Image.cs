@@ -339,6 +339,23 @@ namespace Xwt.Drawing
 			return new Image (Toolkit.CurrentEngine.ImageBackendHandler.CreateMultiResolutionImage (images.Select (ExtensionMethods.GetBackend)));
 		}
 
+		/// <summary>
+		/// Create a composed image
+		/// </summary>
+		/// <param name="images">Images to compose to a single image</param>
+		/// <param name="size">Optional size of the new image</param>
+		/// <remarks>
+		/// The images will be rendered on top of eachother aligned to the
+		/// upper left corner.
+		/// With a fixed image size (<see cref="WithSize(Size)"/>) all images will be scaled.
+		/// The size of the first image will be used, if no size is given (<see cref="Size.Zero"/>).
+		/// If the size of the first image is <see cref="Size.Zero"/> too, no scaling will be applied.
+		/// </remarks>
+		public static Image CreateComposedImage (IEnumerable<Image> images, Size size = default (Size))
+		{
+			return new ComposedImage (images, size);
+		}
+
 		public static Image FromFile (string file)
 		{
 			return FromFile (file, null);
