@@ -280,7 +280,6 @@ namespace Xwt.GtkBackend
 			if (label != null) {
 				label.Realized -= HandleStyleUpdate;
 				label.StyleSet -= HandleStyleUpdate;
-				label.Destroy ();
 				label = null;
 			}
 		}
