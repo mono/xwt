@@ -321,7 +321,11 @@ namespace Xwt.Mac
 		[Export ("drawIt:")]
 		public void DrawIt (NSObject ob)
 		{
-			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
+			CGContext ctx = NSGraphicsContext.CurrentContext?.GraphicsPort;
+			// for some reason CurrentContext might be null here, observed on Catalina beta
+			// just abort at this point if that happens, nothing else can be done anyways
+			if (ctx == null)
+				return;
 			if (!NSGraphicsContext.CurrentContext.IsFlipped) {
 				// Custom drawing is done using flipped order, so if the target surface is not flipped, we need to flip it
 				ctx.TranslateCTM (0, Size.Height);
