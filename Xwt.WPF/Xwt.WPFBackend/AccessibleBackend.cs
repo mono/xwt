@@ -12,7 +12,7 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	class AccessibleBackend : IAccessibleBackend
+	partial class AccessibleBackend : IAccessibleBackend
 	{
 		UIElement element;
 		IAccessibleEventSink eventSink;

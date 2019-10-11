@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFrameworks Condition=" '$(InMonoDevelopTree)' == 'true' ">net461;net40;net47</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(InMonoDevelopTree)' == 'true' ">net461;net40;net472</TargetFrameworks>
   </PropertyGroup>
 
 </Project>

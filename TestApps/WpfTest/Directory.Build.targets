@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <InMonoDevelopTree>true</InMonoDevelopTree>
+    <TargetFrameworks>net472</TargetFrameworks>
+  </PropertyGroup>
+</Project>
