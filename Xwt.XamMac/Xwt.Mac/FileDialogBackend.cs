@@ -30,54 +30,79 @@ using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public abstract class FileDialogBackend
-		: NSOpenPanel, IFileDialogBackend
+	public abstract class FileDialogBackend : IFileDialogBackend
 	{
-		public FileDialogBackend ()
-		{
+		NSSavePanel panel;
+
+		protected NSSavePanel Panel {
+			get {
+				if (panel == null) {
+					//TODO: since we use static out-of-proc panels, we should store initial values and reset on Cleanup
+					panel = GetFilePanel ();
+				}
+				return panel;
+			}
 		}
 
 		#region IFileDialogBackend implementation
 		public void Initialize (System.Collections.Generic.IEnumerable<FileDialogFilter> filters, bool multiselect, string initialFileName)
 		{
-			this.AllowsMultipleSelection = multiselect;
-			this.CanChooseFiles = true;
-			this.CanChooseDirectories = false;
 			if (!string.IsNullOrEmpty (initialFileName))
-				this.DirectoryUrl = new NSUrl (initialFileName,true);
-			
-			this.Prompt = Application.TranslationCatalog.GetPluralString ("Select File", "Select Files", multiselect ? 2 : 1);
+				Panel.DirectoryUrl = new NSUrl (initialFileName, true);
+
+			Panel.Prompt = Application.TranslationCatalog.GetPluralString ("Select File", "Select Files", multiselect ? 2 : 1);
+
+			OnInitialize (filters, multiselect, initialFileName);
 		}
+
+		protected virtual void OnInitialize (System.Collections.Generic.IEnumerable<FileDialogFilter> filters, bool multiselect, string initialFileName)
+		{
+		}
+
+		protected abstract NSSavePanel GetFilePanel ();
 
 		public bool Run (IWindowFrameBackend parent)
 		{
-			var returnValue = this.RunModal ();
+			var returnValue = Panel.RunModal ();
 			return returnValue == 1;
 		}
 
 		public void Cleanup ()
 		{
+			//TODO: restore shared panel properties
+		}
 
+		public string Title {
+			get {
+				return Panel.Title;
+			}
+			set {
+				Panel.Title = value;
+			}
 		}
 
 		public string FileName {
 			get {
-				return this.Url == null ? string.Empty :  Url.Path;
+				return Panel.Url == null ? string.Empty : Panel.Url.Path;
 			}
 		}
 
-		public string[] FileNames {
+		public string [] FileNames {
 			get {
-				return this.Urls.Length == 0 ? new string[0] : this.Urls.Select (x=> x.Path).ToArray ();
+				var openPanel = Panel as NSOpenPanel;
+				if (openPanel != null) {
+					return openPanel.Urls.Length == 0 ? new string [0] : openPanel.Urls.Select (x => x.Path).ToArray ();
+				}
+				return new string [] { FileName };
 			}
 		}
 
 		public string CurrentFolder {
 			get {
-				return DirectoryUrl.AbsoluteString;
+				return Panel.DirectoryUrl.AbsoluteString;
 			}
 			set {
-				this.DirectoryUrl = new NSUrl (value,true);
+				Panel.DirectoryUrl = new NSUrl (value, true);
 			}
 		}
 
