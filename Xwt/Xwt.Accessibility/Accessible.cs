@@ -260,6 +260,37 @@ namespace Xwt.Accessibility
 				backendHost.OnAfterEventRemove (AccessibleEvent.Press, press);
 			}
 		}
+
+		/// <param name="polite">(WPF, XamMac, GtkMac) will use AutomationLiveSetting.Polite/NSAccessibilityPriorityLevel.Medium
+		/// if true and AutomationLiveSetting.Assertive/NSAccessibilityPriorityLevel.High otherwise (default)</param>
+		public void MakeAnnouncement (string message, bool polite = false)
+		{
+			Backend.MakeAnnouncement (message, polite);
+		}
+
+		/// <summary>
+		/// Returns true if Narrator, VoiceOver or a third-party accessibility means are in use
+		/// </summary>
+		public bool AccessibilityInUse {
+			get {
+				return Backend.AccessibilityInUse;
+			}
+		}
+
+		/// <summary>
+		/// Supported on XamMac and GtkMac only
+		/// </summary>
+		public event EventHandler AccessibilityInUseChanged
+		{
+			add
+			{
+				Backend.AccessibilityInUseChanged += value;
+			}
+			remove
+			{
+				Backend.AccessibilityInUseChanged -= value;
+			}
+		}
 	}
 
 	class DefaultNoOpAccessibleBackend : IAccessibleBackend
@@ -285,6 +316,12 @@ namespace Xwt.Accessibility
 		public Uri Uri { get; set; }
 
 		public bool IsAccessible { get; set; }
+
+		public bool AccessibilityInUse { get; }
+
+#pragma warning disable 067
+		public event EventHandler AccessibilityInUseChanged;
+#pragma warning restore 067
 
 		public void AddChild (object nativeChild)
 		{
@@ -333,6 +370,10 @@ namespace Xwt.Accessibility
 		}
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
+		{
+		}
+
+		public void MakeAnnouncement(string message, bool polite = false)
 		{
 		}
 	}

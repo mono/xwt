@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using System.Timers;
 using Xwt;
 using Xwt.Drawing;
@@ -33,7 +34,7 @@ namespace Samples
 {
 	public class ProgressBarSample : VBox
 	{
-		Timer timer = new Timer (100);
+		Timer timer = new Timer (3000);
 		ProgressBar determinateProgressBar;
 		ProgressBar indeterminateProgressBar;
 
@@ -49,12 +50,20 @@ namespace Samples
 			timer.Elapsed += Increase;
 			determinateProgressBar = new ProgressBar ();
 			determinateProgressBar.Fraction = 0.0;
+
+			determinateProgressBar.Accessible.AccessibilityInUseChanged += Accessible_AccessibilityInUseChanged;
+
 			PackStart(determinateProgressBar, true);
 			timer.Start ();
 
 			var spinner = new Spinner ();
 			spinner.Animate = true;
 			PackStart (spinner);
+		}
+
+		private void Accessible_AccessibilityInUseChanged (object sender, EventArgs e)
+		{
+			Console.WriteLine ($"Accessible_AccessibilityInUseChanged now the value is {determinateProgressBar.Accessible.AccessibilityInUse}");
 		}
 
 		public void Increase (object sender, ElapsedEventArgs args)
@@ -66,7 +75,12 @@ namespace Samples
 			} else {
 				nextFraction = 0.0;
 			}
-			Application.Invoke ( () => determinateProgressBar.Fraction = nextFraction );
+			Application.Invoke ( () =>
+			{
+				determinateProgressBar.Fraction = nextFraction;
+				determinateProgressBar.Accessible.MakeAnnouncement($"My progress is now {nextFraction * 100} percents");
+				Debug.WriteLine($"AccessibilityInUse: {determinateProgressBar.Accessible.AccessibilityInUse}");
+			} );
 		}
 	}
 }

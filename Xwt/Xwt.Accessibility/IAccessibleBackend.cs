@@ -66,6 +66,10 @@ namespace Xwt.Backends
 		void RemoveChild (object nativeChild);
 		void RemoveAllChildren ();
 		IEnumerable<object> GetChildren ();
+
+		void MakeAnnouncement (string message, bool polite = false);
+		bool AccessibilityInUse { get; }
+		event EventHandler AccessibilityInUseChanged;
 	}
 
 	public interface IAccessibleEventSink

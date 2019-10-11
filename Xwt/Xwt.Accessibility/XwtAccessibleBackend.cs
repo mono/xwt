@@ -37,6 +37,10 @@ namespace Xwt.Accessibility
 		IAccessibleEventSink eventSink;
 		ApplicationContext context;
 
+#pragma warning disable 067
+		public event EventHandler AccessibilityInUseChanged;
+#pragma warning restore 067
+
 		public XwtAccessibleBackend ()
 		{
 		}
@@ -216,6 +220,17 @@ namespace Xwt.Accessibility
 		public IEnumerable<object> GetChildren()
 		{
 			return nativeBackend.GetChildren ();
+		}
+
+		public void MakeAnnouncement (string message, bool polite = false)
+		{
+			nativeBackend.MakeAnnouncement (message, polite);
+		}
+
+		public bool AccessibilityInUse {
+			get {
+				return nativeBackend.AccessibilityInUse;
+			}
 		}
 	}
 }
