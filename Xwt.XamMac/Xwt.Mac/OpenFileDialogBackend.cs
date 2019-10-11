@@ -23,15 +23,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+using System.Collections.Generic;
+using AppKit;
 using Xwt.Backends;
 
 namespace Xwt.Mac
 {
 	public class OpenFileDialogBackend : FileDialogBackend, IOpenFileDialogBackend
 	{
-		public OpenFileDialogBackend ()
+		protected new NSOpenPanel Panel {
+			get {
+				return base.Panel as NSOpenPanel;
+			}
+		}
+
+		protected override NSSavePanel GetFilePanel ()
 		{
+			return NSOpenPanel.OpenPanel;
+		}
+
+		protected override void OnInitialize (IEnumerable<FileDialogFilter> filters, bool multiselect, string initialFileName)
+		{
+			base.OnInitialize (filters, multiselect, initialFileName);
+			Panel.AllowsMultipleSelection = multiselect;
+			Panel.CanChooseFiles = true;
+			Panel.CanChooseDirectories = false;
 		}
 	}
 }

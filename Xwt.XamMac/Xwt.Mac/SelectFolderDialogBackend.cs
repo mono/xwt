@@ -24,51 +24,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Collections.Generic;
 using System.Linq;
 using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public class SelectFolderDialogBackend : FileDialogBackend, ISelectFolderDialogBackend
+	public class SelectFolderDialogBackend : OpenFileDialogBackend, ISelectFolderDialogBackend
 	{
-		public SelectFolderDialogBackend ()
-		{
-		}
 		public void Initialize (bool multiselect)
 		{
-			this.AllowsMultipleSelection = multiselect;
-			this.CanChooseFiles = false;
-			this.CanChooseDirectories = true;
-			this.CanCreateDirectories = false;
-			
-			this.Prompt = Application.TranslationCatalog.GetPluralString("Select Directory", "Select Directories", multiselect ? 2 : 1);
-			
+			Panel.AllowsMultipleSelection = multiselect;
+			Panel.CanChooseFiles = false;
+			Panel.CanChooseDirectories = true;
+			Panel.CanCreateDirectories = false;
+
+			Panel.Prompt = Application.TranslationCatalog.GetPluralString("Select Directory", "Select Directories", multiselect ? 2 : 1);
 		}
 
-		#region ISelectFolderDialogBackend implementation
-
-		#region ISelectFolderDialogBackend implementation
+		protected override void OnInitialize (IEnumerable<FileDialogFilter> filters, bool multiselect, string initialFileName)
+		{
+			Initialize (multiselect);
+		}
 
 		public bool CanCreateFolders {
-			get { return CanCreateDirectories; }
-			set { CanCreateDirectories = value; }
+			get { return Panel.CanCreateDirectories; }
+			set { Panel.CanCreateDirectories = value; }
 		}
-
-		#endregion
 
 		public string Folder {
 			get {
-				return this.Url.Path;
+				return FileName;
 			}
 		}
 
 		public string[] Folders {
 			get {
-				return this.Urls.Select (x=> x.Path).ToArray ();
+				return FileNames;
 			}
 		}
-
-		#endregion
 	}
 }
 
