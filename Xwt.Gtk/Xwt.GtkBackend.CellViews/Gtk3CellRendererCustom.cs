@@ -29,6 +29,9 @@ namespace Xwt.GtkBackend
 {
 	public abstract class GtkCellRendererCustom : Gtk.CellRenderer
 	{
+		[GLib.Property ("text")]
+		public string AccessibleText { get; set; }
+
 		public GtkCellRendererCustom()
 		{
 			// set default padding used by native renderers like Gtk.CellRendererText
