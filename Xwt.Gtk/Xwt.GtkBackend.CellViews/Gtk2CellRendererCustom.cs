@@ -29,6 +29,9 @@ namespace Xwt.GtkBackend
 {
 	public abstract class GtkCellRendererCustom : CellRenderer
 	{
+		[GLib.Property ("text")]
+		public string AccessibleText { get; set; }
+
 		protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
 		{
 			using (var cr = Gdk.CairoHelper.Create (window)) {
