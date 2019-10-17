@@ -34,7 +34,7 @@ using GtkWidget = Gtk.Widget;
 
 namespace Xwt.Gtk.Mac
 {
-	public class GtkMacAccessibleBackend : AccessibleBackend
+	public partial class GtkMacAccessibleBackend : AccessibleBackend
 	{
 		public GtkMacAccessibleBackend ()
 		{

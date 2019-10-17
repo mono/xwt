@@ -142,6 +142,8 @@
     <Compile Include="Xwt.Mac\PopupWindowBackend.cs" />
     <Compile Include="Xwt.Mac\SearchTextEntryBackend.cs" />
     <Compile Include="Xwt.Mac\WindowFrameBackend.cs" />
+    <Compile Include="Xwt.Mac\AccessibleBackend.AccessibilityHelper.cs" />
+    <Compile Include="Xwt.Mac\AccerssibilityHelper.cs" />
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

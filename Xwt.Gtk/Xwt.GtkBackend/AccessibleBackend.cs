@@ -49,6 +49,12 @@ namespace Xwt.GtkBackend
 		IAccessibleEventSink eventSink;
 		ApplicationContext context;
 
+		public virtual event EventHandler AccessibilityInUseChanged;
+		protected virtual void OnAccessibilityInUseChanged (object sender, EventArgs eventArgs)
+		{
+			AccessibilityInUseChanged?.Invoke (sender, eventArgs);
+		}
+
 		public AccessibleBackend ()
 		{
 		}
@@ -199,6 +205,8 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		public virtual bool AccessibilityInUse => false;
+
 		public virtual void AddChild (object nativeChild)
 		{
 			// TODO
@@ -226,6 +234,11 @@ namespace Xwt.GtkBackend
 
 		public void EnableEvent (object eventId)
 		{
+		}
+
+		public virtual void MakeAnnouncement (string message, bool polite = false)
+		{
+			// TODO
 		}
 	}
 }
