@@ -37,7 +37,7 @@ namespace Xwt.Mac
 		Func<bool> PerformAccessiblePressDelegate { get; set; }
 	}
 
-	public class AccessibleBackend : IAccessibleBackend
+	public partial class AccessibleBackend : IAccessibleBackend
 	{
 		INSAccessibleEventSource eventProxy;
 		INSAccessibility widget;
