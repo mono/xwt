@@ -39,9 +39,9 @@ namespace Xwt.Gtk.Mac
 			toolit.RegisterBackend <DesktopBackend,GtkMacDesktopBackend> ();
 			toolit.RegisterBackend <FontBackendHandler,GtkMacFontBackendHandler> ();
 			toolit.RegisterBackend <IPopoverBackend,GtkMacPopoverBackend> ();
-			toolit.RegisterBackend <IOpenFileDialogBackend, GtkMacOpenFileDialogBackend> ();
-			toolit.RegisterBackend <ISaveFileDialogBackend, GtkMacSaveFileDialogBackend> ();
-			toolit.RegisterBackend <ISelectFolderDialogBackend, GtkMacSelectFolderBackend> ();
+			toolit.RegisterBackend <IOpenFileDialogBackend, Xwt.Mac.OpenFileDialogBackend> ();
+			toolit.RegisterBackend <ISaveFileDialogBackend, Xwt.Mac.SaveFileDialogBackend> ();
+			toolit.RegisterBackend <ISelectFolderDialogBackend, Xwt.Mac.SelectFolderDialogBackend> ();
 			toolit.RegisterBackend <IAccessibleBackend, GtkMacAccessibleBackend> ();
 		}
 
