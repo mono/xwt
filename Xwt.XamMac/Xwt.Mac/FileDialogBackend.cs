@@ -26,6 +26,7 @@
 using System.Linq;
 using AppKit;
 using Foundation;
+using ObjCRuntime;
 using Xwt.Backends;
 
 namespace Xwt.Mac
@@ -64,6 +65,12 @@ namespace Xwt.Mac
 		public bool Run (IWindowFrameBackend parent)
 		{
 			var returnValue = Panel.RunModal ();
+			if (parent != null) {
+				var win = parent as NSWindow ?? Runtime.GetNSObject (parent.NativeHandle) as NSWindow;
+				if (win != null) {
+					win.MakeKeyAndOrderFront (win);
+				}
+			}
 			return returnValue == 1;
 		}
 
