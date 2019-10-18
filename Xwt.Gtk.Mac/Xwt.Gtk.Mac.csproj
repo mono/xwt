@@ -59,9 +59,6 @@
     <Compile Include="GtkMacFontBackendHandler.cs" />
     <Compile Include="GtkQuartz.cs" />
     <Compile Include="GtkMacPopoverBackend.cs" />
-    <Compile Include="GtkMacOpenFileDialogBackend.cs" />
-    <Compile Include="GtkMacSaveFileDialogBackend.cs" />
-    <Compile Include="GtkMacSelectFolderBackend.cs" />
     <Compile Include="..\Xwt.XamMac\Xwt.Mac\NSApplicationInitializer.cs">
       <Link>NSApplicationInitializer.cs</Link>
     </Compile>
@@ -69,6 +66,18 @@
     <Compile Include="GtkMacAccessibleBackend.AccessibilityHelper.cs" />
     <Compile Include="..\Xwt.XamMac\Xwt.Mac\AccerssibilityHelper.cs">
       <Link>AccerssibilityHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.XamMac\Xwt.Mac\FileDialogBackend.cs">
+      <Link>FileDialogBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.XamMac\Xwt.Mac\SelectFolderDialogBackend.cs">
+      <Link>SelectFolderDialogBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.XamMac\Xwt.Mac\OpenFileDialogBackend.cs">
+      <Link>OpenFileDialogBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.XamMac\Xwt.Mac\SaveFileDialogBackend.cs">
+      <Link>SaveFileDialogBackend.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="..\BuildHelpers.targets" />
