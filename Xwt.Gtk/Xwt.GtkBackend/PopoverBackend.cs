@@ -175,7 +175,16 @@ namespace Xwt.GtkBackend
 
 				return base.OnDraw (cr);
 			}
-			
+
+			protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
+			{
+				if (evnt.Key == Gdk.Key.Escape) {
+					Hide ();
+					return true;
+				}
+				else return base.OnKeyPressEvent (evnt);
+			}
+
 			void DrawTriangle (Context ctx)
 			{
 				var halfSide = arrowPadding;
