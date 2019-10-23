@@ -283,6 +283,7 @@ namespace Xwt.GtkBackend
 
 		internal static TextIndexer ApplyFormattedText(this Gtk.Label label, FormattedText text)
 		{
+			TextIndexer indexer = null;
 			var list = new FastPangoAttrList ();
 			if (text != null) {
 				if (label.IsRealized) {
@@ -293,14 +294,12 @@ namespace Xwt.GtkBackend
 					if (!color.Equals (Gdk.Color.Zero))
 						list.DefaultLinkColor = color;
 				}
-				var indexer = new TextIndexer (text.Text);
+				indexer = new TextIndexer (text.Text);
 				list.AddAttributes (indexer, text.Attributes);
-
-				return indexer;
 			}
 			gtk_label_set_attributes (label.Handle, list.Handle);
 
-			return null;
+			return indexer;
 		}
 	}
 }
