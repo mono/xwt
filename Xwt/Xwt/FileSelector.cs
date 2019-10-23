@@ -169,10 +169,10 @@ namespace Xwt
 			var box = new HBox ();
 			box.Accessible.IsAccessible = true;
 			box.Accessible.Role = Accessibility.Role.Group;
-			box.Accessible.Description = Application.TranslationCatalog.GetString("File Selector");
+			box.Accessible.Description = Application.TranslationCatalog.GetString("Enter File Selector");
 
 			entry = new TextEntry ();
-			entry.Accessible.Label = Application.TranslationCatalog.GetString ("Path");
+			entry.Accessible.Label = Application.TranslationCatalog.GetString ("Enter File Path");
 			entry.Visible = true;
 			entry.Changed += (sender, e) => NotifyFileChange ();
 			box.PackStart (entry, true);
