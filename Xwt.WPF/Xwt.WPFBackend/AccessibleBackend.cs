@@ -108,7 +108,14 @@ namespace Xwt.WPFBackend
 		public void Initialize(IMenuBackend parentMenu, IAccessibleEventSink eventSync)
 		{
 			var menuBackend = (MenuBackend)parentMenu;
-			Initialize(menuBackend.NativeMenu, eventSink);
+
+			// If the menu hasn't been creaetd yet (true for ContextMenus, generally created on demand
+			// when displayed), then instead set the a11y properties on the DummyAccessibilityUIElement;
+			// they'll be copied to the actual menu later when it's created
+			if (menuBackend.NativeMenu != null)
+				Initialize(menuBackend.NativeMenu, eventSink);
+			else if (menuBackend.DummyAccessibilityUIElement != null)
+				Initialize (menuBackend.DummyAccessibilityUIElement, eventSink);
 		}
 
 		public void Initialize (IMenuItemBackend parentMenuItem, IAccessibleEventSink eventSink)
