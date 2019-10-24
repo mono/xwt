@@ -92,11 +92,10 @@ namespace Xwt.WPFBackend
 
 		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
 		{
-			if (parentWidget.NativeWidget is WpfLabel) {
+			if (parentWidget.NativeWidget is WpfLabel)
 				Initialize (((WpfLabel)parentWidget.NativeWidget).TextBlock, eventSink);
-			} else {
+			else
 				Initialize (parentWidget.NativeWidget, eventSink);
-			}
 			var wpfBackend = parentWidget as WidgetBackend;
 			if (wpfBackend != null)
 				wpfBackend.HasAccessibleObject = true;
