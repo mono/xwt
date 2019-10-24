@@ -305,14 +305,17 @@ namespace Xwt.WPFBackend
 			set { Widget.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
 		}
 
+		FrameworkElement ToolTipOwner => Widget is WpfLabel ? ((WpfLabel)Widget).TextBlock : Widget;
 		public string TooltipText {
-			get { return Widget.ToolTip == null ? null : ((ToolTip)Widget.ToolTip).Content.ToString (); }
+			get {
+				return ToolTipOwner.ToolTip == null ? null : ((ToolTip)ToolTipOwner.ToolTip).Content.ToString ();
+			}
 			set {
-				var tp = Widget.ToolTip as ToolTip;
+				var tp = ToolTipOwner.ToolTip as ToolTip;
 				if (tp == null)
-					Widget.ToolTip = tp = new ToolTip ();
+					ToolTipOwner.ToolTip = tp = new ToolTip ();
 				tp.Content = value ?? string.Empty;
-				ToolTipService.SetIsEnabled (Widget, value != null);
+				ToolTipService.SetIsEnabled (ToolTipOwner, value != null);
 				if (tp.IsOpen && value == null)
 					tp.IsOpen = false;
 			}
