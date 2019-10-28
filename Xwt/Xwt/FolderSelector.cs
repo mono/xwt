@@ -140,10 +140,10 @@ namespace Xwt
 			var box = new HBox ();
 			box.Accessible.IsAccessible = true;
 			box.Accessible.Role = Accessibility.Role.Group;
-			box.Accessible.Title = Application.TranslationCatalog.GetString ("Enter Folder Selector");
+			box.Accessible.Title = Application.TranslationCatalog.GetString ("Folder Selector");
 
 			entry = new TextEntry ();
-			entry.Accessible.Label = Application.TranslationCatalog.GetString ("Enter Folder Path");
+			entry.Accessible.Label = Application.TranslationCatalog.GetString ("Path");
 			entry.Changed += (sender, e) => NotifyFolderChange();
 			box.PackStart (entry, true);
 
