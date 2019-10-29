@@ -71,6 +71,9 @@ namespace Xwt.GtkBackend
 				// Gtk.ComboBoxEntry a11y doesn't work with Gtk/AtkCocoa.
 				// Workaround: Set a11y properties to its Gtk.Entry
 				Initialize ((backend?.Widget as Gtk.Bin)?.Child, eventSink);
+			} else if (backend is TableViewBackend && backend.Widget is Gtk.ScrolledWindow) {
+				// due to special Gtk.TreeView scrolling behaviour we need to apply a11y preferences to the tree
+				Initialize ((backend.Widget as Gtk.ScrolledWindow)?.Child, eventSink);
 			} else
 				Initialize (backend?.Widget, eventSink);
 		}
