@@ -36,6 +36,8 @@ namespace Xwt.Mac
 {
 	public class MacEngine: Xwt.Backends.ToolkitEngineBackend
 	{
+		public static Func<bool, AppDelegate> AppDelegateFactory;
+
 		static AppDelegate appDelegate;
 		static NSAutoreleasePool pool;
 		
@@ -51,7 +53,7 @@ namespace Xwt.Mac
 			if (pool != null)
 				pool.Dispose ();
 			pool = new NSAutoreleasePool ();
-			appDelegate = new AppDelegate (IsGuest);
+			appDelegate = AppDelegateFactory?.Invoke(IsGuest) ?? new AppDelegate (IsGuest);
 			NSApplication.SharedApplication.Delegate = appDelegate;
 
 			// If NSPrincipalClass is not set, set it now. This allows running
