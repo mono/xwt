@@ -105,7 +105,7 @@ namespace Xwt.GtkBackend
 			this.context = context;
 		}
 
-		public Rectangle Bounds {
+		public virtual Rectangle Bounds {
 			get {
 				int x = 0, y = 0, w = 0, h = 0;
 				(widget.Accessible as AtkComponent)?.GetExtents (out x, out y, out w, out h, Atk.CoordType.Screen);
@@ -179,7 +179,7 @@ namespace Xwt.GtkBackend
 
 		public virtual Uri Uri { get; set; }
 
-		public bool IsAccessible {
+		public virtual bool IsAccessible {
 			get {
 				return widget.Accessible?.Role != Atk.Role.Invalid;
 			}
