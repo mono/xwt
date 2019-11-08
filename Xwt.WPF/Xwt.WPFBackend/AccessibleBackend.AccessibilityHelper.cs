@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Windows;
 using Xwt.Backends;
 
 #if NET47
@@ -13,35 +11,16 @@ namespace Xwt.WPFBackend
 {
 	partial class AccessibleBackend : IAccessibleBackend
 	{
-		[DllImport ("user32.dll")]
-		static extern bool SystemParametersInfo (int iAction, int iParam, out bool bActive, int iUpdate);
-
-		static bool Is3rdPartyScreenReaderActive ()
-		{
-			int iAction = 70; // SPI_GETSCREENREADER constant;
-			int iParam = 0;
-			int iUpdate = 0;
-			bool bActive = false;
-			bool bReturn = SystemParametersInfo (iAction, iParam, out bActive, iUpdate);
-			return bReturn && bActive;
-		}
-
-		static bool IsSystemNarratorActive {
+		public bool AccessibilityInUse {
 			get {
 #if NET47
 				// AutomationEvents.AutomationFocusChanged returns false sometimes when the application loses
 				// accessibility focus. So LiveRegionChanged plays fallback role here (it comes as true more reliable).
-				return AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged)
-					|| AutomationPeer.ListenerExists(AutomationEvents.LiveRegionChanged);
+				return AutomationPeer.ListenerExists (AutomationEvents.AutomationFocusChanged)
+					|| AutomationPeer.ListenerExists (AutomationEvents.LiveRegionChanged);
 #else
 				return false;
 #endif
-			}
-		}
-
-		public bool AccessibilityInUse {
-			get {
-				return IsSystemNarratorActive || Is3rdPartyScreenReaderActive ();
 			}
 		}
 
