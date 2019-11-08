@@ -96,12 +96,16 @@ namespace Xwt.WPFBackend
 				var text = new Label {
 					Text = message.Text ?? string.Empty
 				};
+				if (message.IsTextContentFocusable)
+					text.CanGetFocus = true;
 				Label stext = null;
 				box.PackStart (text);
 				if (!string.IsNullOrEmpty (message.SecondaryText)) {
 					stext = new Label {
 						Text = message.SecondaryText
 					};
+					if (message.IsTextContentFocusable)
+						stext.CanGetFocus = true;
 					box.PackStart (stext);
 				}
 				foreach (var option in message.Options) {

@@ -337,7 +337,11 @@ namespace Xwt
 		public string SecondaryText { get; set; }
 		public bool AllowApplyToAll { get; set; }
 		public int DefaultButton { get; set; }
-		
+		/// <summary>
+		/// [WPF-only]
+		/// </summary>
+		public bool IsTextContentFocusable { get; set; } = false;
+
 		public void AddOption (string id, string text, bool setByDefault)
 		{
 			Options.Add (new AlertOption (id, text) { Value = setByDefault });
