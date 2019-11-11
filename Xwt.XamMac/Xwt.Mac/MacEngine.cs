@@ -294,6 +294,7 @@ namespace Xwt.Mac
 		List<IMacWindowBackend> pendingWindows = new List<IMacWindowBackend> ();
 
 		public event EventHandler<TerminationEventArgs> Terminating;
+		public event Action Terminate;
 		public event EventHandler Unhidden;
 		public event EventHandler<OpenFilesEventArgs> OpenFilesRequest;
 		public event EventHandler<OpenUrlEventArgs> OpenUrl;
@@ -360,6 +361,12 @@ namespace Xwt.Mac
 			}
 
 			return NSApplicationTerminateReply.Now;
+		}
+
+		public override void WillTerminate (NSNotification notification)
+		{
+			Terminate?.Invoke ();
+			base.WillTerminate (notification);
 		}
 
 		public override void DidUnhide (NSNotification notification)
