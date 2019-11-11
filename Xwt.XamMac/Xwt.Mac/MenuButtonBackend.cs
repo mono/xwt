@@ -59,6 +59,7 @@ namespace Xwt.Mac
 	{
 		ApplicationContext context;
 		IMenuButtonEventSink eventSink;
+		NSObject willPopupObserver;
 
 		public MacMenuButton (IntPtr p): base (p)
 		{
@@ -76,7 +77,7 @@ namespace Xwt.Mac
 				context.InvokeUserCode (eventSink.OnClicked);
 			};
 
-			NSNotificationCenter.DefaultCenter.AddObserver ((NSString)"NSPopUpButtonWillPopUpNotification", CreateMenu, this);
+			willPopupObserver = NSNotificationCenter.DefaultCenter.AddObserver ((NSString)"NSPopUpButtonWillPopUpNotification", CreateMenu, this);
 			AddItem ("");
 		}
 
@@ -131,7 +132,10 @@ namespace Xwt.Mac
 
 		protected override void Dispose (bool disposing)
 		{
-			NSNotificationCenter.DefaultCenter.RemoveObserver (this);
+			if (willPopupObserver != null) {
+				willPopupObserver.Dispose ();
+				willPopupObserver = null;
+			}
 			base.Dispose (disposing);
 		}
 	}

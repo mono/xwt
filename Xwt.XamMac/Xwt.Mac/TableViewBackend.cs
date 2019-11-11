@@ -170,8 +170,10 @@ namespace Xwt.Mac
 			if (eventId is TableViewEvent) {
 				switch ((TableViewEvent)eventId) {
 				case TableViewEvent.SelectionChanged:
-					if (selChangeObserver != null)
-						NSNotificationCenter.DefaultCenter.RemoveObserver (selChangeObserver);
+					if (selChangeObserver != null) {
+						selChangeObserver.Dispose ();
+						selChangeObserver = null;
+					}
 					break;
 				}
 			}

@@ -286,10 +286,15 @@ namespace Xwt.Mac
 				eventsEnabled &= ~@event;
 				switch (@event) {
 				case WindowFrameEvent.BoundsChanged:
-					NSNotificationCenter.DefaultCenter.RemoveObservers (new [] { didResizeObserver, didMoveObserver });
+					didResizeObserver.Dispose ();
+					didResizeObserver = null;
+
+					didMoveObserver.Dispose ();
+					didMoveObserver = null;
 					break;
 				case WindowFrameEvent.Hidden:
-					NSNotificationCenter.DefaultCenter.RemoveObserver (willCloseObserver);
+					willCloseObserver.Dispose ();
+					willCloseObserver = null;
 					DisableVisibilityEvent ();
 					break;
 				case WindowFrameEvent.Shown:

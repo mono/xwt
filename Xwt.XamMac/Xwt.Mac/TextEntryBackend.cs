@@ -393,6 +393,15 @@ namespace Xwt.Mac
 				return editor;
 			}
 
+			protected override void Dispose (bool disposing)
+			{
+				if (selChangeObserver != null) {
+					selChangeObserver.Dispose ();
+					selChangeObserver = null;
+				}
+				base.Dispose (disposing);
+			}
+
 			void HandleSelectionDidChange (NSNotification notif)
 			{
 				Context.InvokeUserCode (EventSink.OnSelectionChanged);
