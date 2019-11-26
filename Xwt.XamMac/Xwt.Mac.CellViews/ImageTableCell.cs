@@ -28,6 +28,7 @@ using System;
 using AppKit;
 using CoreGraphics;
 using Xwt.Backends;
+using System.Linq;
 
 namespace Xwt.Mac
 {
@@ -44,6 +45,11 @@ namespace Xwt.Mac
 		public CompositeCell CellContainer { get; set; }
 
 		public NSView CellView { get { return this; } }
+
+		public ImageTableCell ()
+		{
+			Cell = new ImageViewCell ();
+		}
 
 		public void Fill ()
 		{
@@ -74,6 +80,21 @@ namespace Xwt.Mac
 		{
 			var ob = (ImageTableCell)other;
 			Backend = ob.Backend;
+		}
+
+		public override NSImage Image {
+			get {
+				return base.Image;
+			}
+			set {
+				base.Image = value;
+				var cell = Cell as ImageViewCell;
+				if (cell != null) {
+					var customImage = value as CustomImage;
+					// don't switch styles automatically if "sel" hes been explicitely set
+					cell.AutoselectImageStyle = !customImage?.Image.Styles.Contains ("sel") ?? false;
+				}
+			}
 		}
 
 		public override void UpdateTrackingAreas ()
@@ -157,6 +178,31 @@ namespace Xwt.Mac
 		{
 			if (!this.HandleKeyUp (theEvent))
 				base.KeyUp (theEvent);
+		}
+	}
+
+	class ImageViewCell : NSImageCell
+	{
+		internal bool AutoselectImageStyle { get; set; }
+
+		public override NSBackgroundStyle BackgroundStyle {
+			get {
+				return base.BackgroundStyle;
+			}
+			set {
+				base.BackgroundStyle = value;
+				if (AutoselectImageStyle) {
+					var customImage = Image as CustomImage;
+					if (customImage != null) {
+						// no need to care about light/dark NSAppearance, BackgroundStyle won't be flipped
+						if (value == NSBackgroundStyle.Dark) {
+							customImage.Image.Styles = customImage.Image.Styles.Add ("sel");
+						} else {
+							customImage.Image.Styles = customImage.Image.Styles.Remove ("sel");
+						}
+					}
+				}
+			}
 		}
 	}
 }
