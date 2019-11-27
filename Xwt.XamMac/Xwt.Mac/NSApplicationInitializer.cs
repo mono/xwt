@@ -32,7 +32,6 @@ namespace Xwt.Mac
 {
 	static class NSApplicationInitializer
 	{
-		[ThreadStatic]
 		static bool initialized;
 
 		public static void Initialize ()
