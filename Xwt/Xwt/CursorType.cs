@@ -25,13 +25,11 @@
 // THE SOFTWARE.
 using System;
 using System.ComponentModel;
-using System.Windows.Markup;
 using System.Collections.Generic;
 
 namespace Xwt
 {
 	[TypeConverter (typeof(CursorTypeValueConverter))]
-	[ValueSerializer (typeof(CursorTypeValueSerializer))]
 	public class CursorType
 	{
 		string id;
@@ -77,32 +75,6 @@ namespace Xwt
 			public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
 			{
 				return sourceType == typeof(string);
-			}
-		}
-		
-		class CursorTypeValueSerializer: ValueSerializer
-		{
-			public override bool CanConvertFromString (string value, IValueSerializerContext context)
-			{
-				return true;
-			}
-			
-			public override bool CanConvertToString (object value, IValueSerializerContext context)
-			{
-				return true;
-			}
-			
-			public override string ConvertToString (object value, IValueSerializerContext context)
-			{
-				CursorType s = (CursorType) value;
-				return s.id;
-			}
-			
-			public override object ConvertFromString (string value, IValueSerializerContext context)
-			{
-				CursorType ct;
-				cursors.TryGetValue (value, out ct);
-				return ct;
 			}
 		}
 

@@ -26,13 +26,11 @@
 
 using System;
 using System.ComponentModel;
-using System.Windows.Markup;
 using System.Globalization;
 
 namespace Xwt {
 	
 	[TypeConverter (typeof(SizeValueConverter))]
-	[ValueSerializer (typeof(SizeValueSerializer))]
 	[Serializable]
 	public struct Size : IEquatable<Size>
 	{		
@@ -145,38 +143,6 @@ namespace Xwt {
 		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
 		{
 			return sourceType == typeof(string);
-		}
-	}
-	
-	class SizeValueSerializer: ValueSerializer
-	{
-		public override bool CanConvertFromString (string value, IValueSerializerContext context)
-		{
-			return true;
-		}
-		
-		public override bool CanConvertToString (object value, IValueSerializerContext context)
-		{
-			return true;
-		}
-		
-		public override string ConvertToString (object value, IValueSerializerContext context)
-		{
-			Size s = (Size) value;
-			return s.Width.ToString () + "," + s.Height.ToString ();
-		}
-		
-		public override object ConvertFromString (string value, IValueSerializerContext context)
-		{
-			int i = value.IndexOf (',');
-			if (i == -1)
-				return Size.Zero;
-			double w, h;
-			if (!double.TryParse (value.Substring (0, i), NumberStyles.Any, CultureInfo.InvariantCulture, out w))
-				return Size.Zero;
-			if (!double.TryParse (value.Substring (i+1), NumberStyles.Any, CultureInfo.InvariantCulture, out h))
-				return Size.Zero;
-			return new Size (w, h);
 		}
 	}
 }

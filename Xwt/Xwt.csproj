@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
@@ -32,11 +32,8 @@ Xwt works by exposing one unified API across all environments that is mapped to 
 The framework consists of the frontend (Xwt core) and platform specific backends. Additionally to this core Xwt package you need to add an Xwt toolkit package (Xwt.*) for every platform you want your application to target.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\LICENSE.txt" Pack="true" PackagePath=""/>
-    <None Include="..\README.markdown" Pack="true" PackagePath=""/>
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="..\README.markdown" Pack="true" PackagePath="" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

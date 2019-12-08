@@ -27,7 +27,6 @@
 using System;
 using Xwt.Backends;
 using System.Xml;
-using System.Xaml;
 using Xwt.Drawing;
 
 namespace Xwt.Design
@@ -43,14 +42,11 @@ namespace Xwt.Design
 		IDesignerSurfaceBackend Backend {
 			get { return (IDesignerSurfaceBackend) BackendHost.Backend; }
 		}
-		
+
+		[Obsolete("Xaml loading is not supported", error: true)]
 		public void Load (XmlReader r)
 		{
-			object o = XamlServices.Load (r);
-			if (!(o is Widget))
-				throw new InvalidOperationException ("Invalid object type. Expected Xwt.Widget, found: " + o.GetType ());
-			widget = (Widget)o;
-			Backend.Load (widget);
+			throw new InvalidOperationException("This support was removed, due to System.Xaml not being available");
 		}
 		
 		public void Load (Widget widget)
@@ -59,10 +55,10 @@ namespace Xwt.Design
 			Backend.Load (widget);
 		}
 		
+		[Obsolete("Xaml loading is not supported", error: true)]
 		public void Save (XmlWriter w)
 		{
-			XamlServices.Save (w, widget);
+			throw new InvalidOperationException("This support was removed, due to System.Xaml not being available");
 		}
 	}
 }
-
