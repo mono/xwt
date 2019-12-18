@@ -38,7 +38,7 @@ namespace Xwt.GtkBackend
 		{
 			get
 			{
-				if (Widget?.Model == null)
+				if (Widget.Model == null)
 					return completes;
 				return entryBackend.TextEntry?.Completion?.Model == Widget.Model;
 			}
@@ -120,6 +120,8 @@ namespace Xwt.GtkBackend
 	{
 		public CustomComboEntryBackend (Gtk.Entry entry)
 		{
+			if (entry == null)
+				throw new ArgumentNullException(nameof(entry));
 			Widget = entry;
 		}
 		
@@ -129,4 +131,3 @@ namespace Xwt.GtkBackend
 		}
 	}
 }
-
