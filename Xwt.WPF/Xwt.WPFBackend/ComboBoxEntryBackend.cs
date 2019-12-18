@@ -48,6 +48,11 @@ namespace Xwt.WPFBackend
 				ComboBox.DisplayMemberPath = ".[" + column + "]";
 		}
 
+		public bool Completes
+		{
+			get; set; //TODO
+		}
+
 		protected override double DefaultNaturalWidth
 		{
 			get

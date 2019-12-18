@@ -91,6 +91,7 @@ namespace Samples
 			c4.TextEntry.SelectionChanged += delegate {
 				la4.Text = "Selected text: " + c4.TextEntry.SelectedText;
 			};
+			c4.Completes = true;
 
 			HBox selBox = new HBox ();
 			Label las = new Label ("Selection:");

@@ -31,6 +31,11 @@ namespace Xwt.GtkBackend
 	public class ComboBoxEntryBackend: ComboBoxBackend, IComboBoxEntryBackend
 	{
 		TextEntryBackend entryBackend;
+
+		public bool Completes
+		{
+			get; set; // implemented in master, change too big for d16-4
+		}
 		
 		protected override Gtk.Widget CreateWidget ()
 		{
