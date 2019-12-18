@@ -31,6 +31,31 @@ namespace Xwt.GtkBackend
 	public class ComboBoxEntryBackend: ComboBoxBackend, IComboBoxEntryBackend
 	{
 		TextEntryBackend entryBackend;
+		int textColumn = 0;
+		bool completes;
+
+		public bool Completes
+		{
+			get
+			{
+				if (Widget?.Model == null)
+					return completes;
+				return entryBackend.TextEntry?.Completion?.Model == Widget.Model;
+			}
+			set
+			{
+				completes = value;
+
+				if (!completes)
+				{
+					// unset model only if not using custom completions through TextEntryBackend
+					if (entryBackend.TextEntry.Completion?.Model == Widget.Model)
+						entryBackend.TextEntry.Completion.Model = null;
+				} else {
+					BindCompletion ();
+				}
+			}
+		}
 		
 		protected override Gtk.Widget CreateWidget ()
 		{
@@ -39,9 +64,43 @@ namespace Xwt.GtkBackend
 			return c;
 		}
 
+		void BindCompletion()
+		{
+			var completion = entryBackend.TextEntry.Completion;
+			if (completion == null) {
+				completion = entryBackend.TextEntry.Completion = GtkBackend.TextEntryBackend.CreateCompletion();
+			}
+			completion.Model = Widget.Model;
+			SyncCompletionColumn (completion, textColumn);
+		}
+
+		static void SyncCompletionColumn (Gtk.EntryCompletion completion, int textColumn)
+		{
+			if (completion.TextColumn != textColumn) {
+				// Gtk.EntryCompletion.TextColumn is using gtk_entry_completion_set_text_column
+				// which will create a new Cell on each change. Since we don't want this "convenience",
+				// we need to use the "text_column" property instead, as suggested in
+				// https://developer.gnome.org/gtk2/stable/GtkEntryCompletion.html#gtk-entry-completion-set-text-column
+				using (GLib.Value val = new GLib.Value(textColumn)) {
+					completion.SetProperty("text_column", val);
+				}
+			}
+		}
+
+		protected override void OnSourceSet()
+		{
+			base.OnSourceSet();
+			if (completes && entryBackend.TextEntry?.Completion?.Model != Widget.Model) {
+				BindCompletion ();
+			}
+		}
+
 		public void SetTextColumn (int column)
 		{
+			textColumn = column;
 			Widget.SetTextColumn (column);
+			if (Completes)
+				SyncCompletionColumn (entryBackend.TextEntry.Completion, textColumn);
 		}
 		
 		public ITextEntryBackend TextEntryBackend {
@@ -59,17 +118,14 @@ namespace Xwt.GtkBackend
 	
 	class CustomComboEntryBackend: TextEntryBackend
 	{
-		Gtk.Entry entry;
-		
 		public CustomComboEntryBackend (Gtk.Entry entry)
 		{
-			this.entry = entry;
+			Widget = entry;
 		}
 		
 		public override void Initialize ()
 		{
-			Widget = entry;
-			entry.Show ();
+			TextEntry.Show ();
 		}
 	}
 }

@@ -115,6 +115,7 @@ namespace Xwt.GtkBackend
 				Widget.Model = model.Store;
 			} else
 				Widget.Model = b.Store;
+			OnSourceSet ();
 		}
 
 		public int SelectedRow {
@@ -126,6 +127,8 @@ namespace Xwt.GtkBackend
 			}
 		}
 		#endregion
+
+		protected virtual void OnSourceSet () { }
 
 		#region ICellRendererTarget implementation
 		public void PackStart (object target, Gtk.CellRenderer cr, bool expand)
