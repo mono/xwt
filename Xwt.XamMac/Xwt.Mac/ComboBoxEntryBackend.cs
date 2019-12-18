@@ -43,7 +43,7 @@ namespace Xwt.Mac
 		public override void Initialize ()
 		{
 			base.Initialize ();
-			ViewObject = new MacComboBox (EventSink, ApplicationContext);
+			ViewObject = new MacComboBox (this);
 		}
 		
 		protected override Size GetNaturalSize ()
@@ -56,7 +56,11 @@ namespace Xwt.Mac
 		public ITextEntryBackend TextEntryBackend {
 			get {
 				if (entryBackend == null)
+				{
 					entryBackend = new Xwt.Mac.TextEntryBackend ((MacComboBox)ViewObject);
+					if (Widget.Delegate is TextFieldDelegate)
+						((TextFieldDelegate)Widget.Delegate).Backend = entryBackend;
+				}
 				return entryBackend;
 			}
 		}
@@ -102,7 +106,31 @@ namespace Xwt.Mac
 		#endregion
 	}
 
-	class MacComboBox : NSComboBox, IViewObject, INSComboBoxDelegate
+	class MacComboBoxDelegate : TextFieldDelegate, INSComboBoxDelegate
+	{
+		WeakReference weakBackend;
+
+		public ComboBoxEntryBackend ComboBoxEntryBackend
+		{
+			get { return weakBackend?.Target as ComboBoxEntryBackend; }
+			set { weakBackend = new WeakReference(value); }
+		}
+
+		[Export("comboBoxSelectionDidChange:")]
+		public void SelectionChanged (NSNotification notification)
+		{
+			var combobackend = ComboBoxEntryBackend;
+			if (combobackend?.EventSink != null)
+			{
+				combobackend.ApplicationContext.InvokeUserCode(delegate {
+					Backend?.EventSink?.OnChanged();
+					combobackend.EventSink.OnSelectionChanged();
+				});
+			}
+		}
+	}
+
+	class MacComboBox : NSComboBox, IViewObject
 	{
 		IComboBoxEventSink eventSink;
 		ITextEntryEventSink entryEventSink;
@@ -111,11 +139,11 @@ namespace Xwt.Mac
 		int cacheSelectionStart, cacheSelectionLength;
 		bool checkMouseMovement;
 
-		public MacComboBox (IComboBoxEventSink eventSink, ApplicationContext context)
+		public MacComboBox (ComboBoxEntryBackend backend)
 		{
-			this.context = context;
-			this.eventSink = eventSink;
-			Delegate = this;
+			context = backend.ApplicationContext;
+			eventSink = backend.EventSink;
+			Delegate = new MacComboBoxDelegate { ComboBoxEntryBackend = backend };
 		}
 		
 		public void SetEntryEventSink (ITextEntryEventSink entryEventSink)
@@ -131,33 +159,11 @@ namespace Xwt.Mac
 
 		public ViewBackend Backend { get; set; }
 
-		[Export ("comboBoxSelectionDidChange:")]
-		public new void SelectionChanged (NSNotification notification)
-		{
-			if (entryEventSink != null) {
-				context.InvokeUserCode (delegate {
-					entryEventSink.OnChanged ();
-					eventSink.OnSelectionChanged ();
-				});
-			}
-		}
-
-		public override void DidChange (NSNotification notification)
-		{
-			base.DidChange (notification);
-			if (entryEventSink != null) {
-				context.InvokeUserCode (delegate {
-					entryEventSink.OnChanged ();
-					entryEventSink.OnSelectionChanged ();
-				});
-			}
-		}
 		public override void KeyUp (NSEvent theEvent)
 		{
 			base.KeyUp (theEvent);
 			HandleSelectionChanged ();
 		}
-
 
 		NSTrackingArea trackingArea;
 		public override void UpdateTrackingAreas ()
