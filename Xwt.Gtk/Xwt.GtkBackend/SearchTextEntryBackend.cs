@@ -36,7 +36,7 @@ namespace Xwt.GtkBackend
 	{
 		SearchEntry searchEntry;
 
-		protected override Gtk.Entry TextEntry {
+		internal protected override Gtk.Entry TextEntry {
 			get {
 				return searchEntry.Entry;
 			}

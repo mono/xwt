@@ -44,6 +44,8 @@ namespace Xwt.Backends
 		/// The text entry backend.
 		/// </value>
 		ITextEntryBackend TextEntryBackend { get; }
+
+		bool Completes { get; set; }
 	}
 	
 	public interface IComboBoxEntryEventSink: IComboBoxEventSink

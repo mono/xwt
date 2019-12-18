@@ -83,6 +83,15 @@ namespace Xwt.Mac
 				Widget.SelectItem (value);
 			}
 		}
+
+		public bool Completes {
+			get {
+				return Widget.Completes;
+			}
+			set {
+				Widget.Completes = value;
+			}
+		}
 		
 		public void SetTextColumn (int column)
 		{
