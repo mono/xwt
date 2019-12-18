@@ -106,7 +106,7 @@ namespace Xwt.Mac
 		#endregion
 	}
 
-	class MacComboBoxDelegate : TextFieldDelegate, INSComboBoxDelegate
+	sealed class MacComboBoxDelegate : TextFieldDelegate, INSComboBoxDelegate
 	{
 		WeakReference weakBackend;
 
@@ -130,7 +130,7 @@ namespace Xwt.Mac
 		}
 	}
 
-	class MacComboBox : NSComboBox, IViewObject
+	sealed class MacComboBox : NSComboBox, IViewObject
 	{
 		IComboBoxEventSink eventSink;
 		ITextEntryEventSink entryEventSink;
@@ -335,4 +335,3 @@ namespace Xwt.Mac
 		}
 	}
 }
-
