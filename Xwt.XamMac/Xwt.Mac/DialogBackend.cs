@@ -180,8 +180,12 @@ namespace Xwt.Mac
 			OrderOut (this);
 			Close();
 			NSApplication.SharedApplication.StopModal ();
-			if (parent != null)
+			if (parent != null) {
 				parent.MakeKeyAndOrderFront (parent);
+				if (parent.AccessibilityFocusedWindow != parent) {
+					parent.AccessibilityFocusedWindow = parent;
+				}
+			}
 		}
 
 		#endregion
