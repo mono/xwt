@@ -130,6 +130,9 @@ namespace Xwt.Mac
 					bounds.Y = parentBounds.Center.Y - (Frame.Height / 2);
 					((IWindowFrameBackend)this).Bounds = bounds;
 				}
+				if (AccessibilityFocusedWindow == ParentWindow) {
+					AccessibilityFocusedWindow = this;
+				}
 			}
 		}
 		
