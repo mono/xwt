@@ -457,7 +457,7 @@ namespace Xwt.Mac
 		{
 			if (str == null)
 				return null;
-			var newText = new StringBuilder ();
+			var newText = new StringBuilder (str.Length);
 			for (int i = 0; i < str.Length; i++) {
 				if (str [i] != '_')
 					newText.Append (str [i]);
@@ -602,7 +602,8 @@ namespace Xwt.Mac
 				transformColor.RVector = new CIVector(0, (float)color.Value.Red, 0);
 				transformColor.GVector = new CIVector((float)color.Value.Green, 0, 0);
 				transformColor.BVector = new CIVector(0, 0, (float)color.Value.Blue);
-				ciImage = (CIImage)transformColor.ValueForKey(new NSString("outputImage"));
+				using (var key = new NSString("outputImage"))
+					ciImage = (CIImage)transformColor.ValueForKey(key);
 
 				var ciCtx = CIContext.FromContext(NSGraphicsContext.CurrentContext.GraphicsPort, null);
 				ciCtx.DrawImage (ciImage, new CGRect (CGPoint.Empty, size), new CGRect (CGPoint.Empty, displaySize));

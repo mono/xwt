@@ -153,7 +153,8 @@ namespace Xwt.Mac
 						FieldEditor = true,
 						Editable = true,
 					};
-					selChangeObserver = NSNotificationCenter.DefaultCenter.AddObserver(new NSString("NSTextViewDidChangeSelectionNotification"), HandleSelectionDidChange, editor);
+					using (var key = new NSString("NSTextViewDidChangeSelectionNotification"))
+						selChangeObserver = NSNotificationCenter.DefaultCenter.AddObserver(key, HandleSelectionDidChange, editor);
 				}
 				return editor;
 			}

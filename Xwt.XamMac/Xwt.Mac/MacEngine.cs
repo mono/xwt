@@ -255,28 +255,29 @@ namespace Xwt.Mac
 		{
 			var until = NSDate.DistantPast;
 			var app = NSApplication.SharedApplication;
-			var p = new NSAutoreleasePool ();
-			while (true) {
-				var ev = app.NextEvent (NSEventMask.AnyEvent, until, NSRunLoop.NSDefaultRunLoopMode, true);
-				if (ev != null)
-					app.SendEvent (ev);
-				else
-					break;
+			using (var p = new NSAutoreleasePool()) {
+				while (true) {
+					var ev = app.NextEvent(NSEventMask.AnyEvent, until, NSRunLoopMode.Default, true);
+					if (ev != null)
+						app.SendEvent(ev);
+					else
+						break;
+				}
 			}
-			p.Dispose ();
 		}
 
 		public override object RenderWidget (Widget w)
 		{
 			var view = ((ViewBackend)w.GetBackend ()).Widget;
 			view.LockFocus ();
-			var img = new NSImage (view.DataWithPdfInsideRect (view.Bounds));
-			var imageData = img.AsTiff ();
-			var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData (imageData);
-			var im = new NSImage ();
-			im.AddRepresentation (imageRep);
-			im.Size = new CGSize ((nfloat)view.Bounds.Width, (nfloat)view.Bounds.Height);
-			return im;
+			using (var img = new NSImage(view.DataWithPdfInsideRect(view.Bounds)))
+			using (var imageData = img.AsTiff()) {
+				var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData(imageData);
+				var im = new NSImage ();
+				im.AddRepresentation (imageRep);
+				im.Size = new CGSize ((nfloat)view.Bounds.Width, (nfloat)view.Bounds.Height);
+				return im;
+			}
 		}
 
 		public override Rectangle GetScreenBounds (object nativeWidget)

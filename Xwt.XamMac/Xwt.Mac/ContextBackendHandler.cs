@@ -275,12 +275,15 @@ namespace Xwt.Mac
 					                         CGPatternTiling.ConstantSpacing, true, c => c.DrawImage (bounds, cgimg));
 				}
 
-				CGContext ctx = gc.Context;
-				var alpha = new[] { (nfloat)pi.Alpha };
-				ctx.SetFillColorSpace (Util.PatternColorSpace);
-				ctx.SetStrokeColorSpace (Util.PatternColorSpace);
-				ctx.SetFillPattern (pattern, alpha);
-				ctx.SetStrokePattern (pattern, alpha);
+				using (pattern)
+				{
+					CGContext ctx = gc.Context;
+					var alpha = new[] { (nfloat)pi.Alpha };
+					ctx.SetFillColorSpace(Util.PatternColorSpace);
+					ctx.SetStrokeColorSpace(Util.PatternColorSpace);
+					ctx.SetFillPattern(pattern, alpha);
+					ctx.SetStrokePattern(pattern, alpha);
+				}
 			}
 		}
 		

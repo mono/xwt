@@ -158,7 +158,9 @@ namespace Xwt.Mac
 			if (eventId is TableViewEvent) {
 				switch ((TableViewEvent)eventId) {
 				case TableViewEvent.SelectionChanged:
-					selChangeObserver = NSNotificationCenter.DefaultCenter.AddObserver (new NSString (SelectionChangeEventName), HandleTreeSelectionDidChange, Table);
+					using (var key = new NSString(SelectionChangeEventName)) {
+						selChangeObserver = NSNotificationCenter.DefaultCenter.AddObserver(key, HandleTreeSelectionDidChange, Table);
+					}
 					break;
 				}
 			}

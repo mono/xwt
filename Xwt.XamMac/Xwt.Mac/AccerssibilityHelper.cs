@@ -105,10 +105,12 @@ namespace Xwt.Mac
 			var nsObject = NSApplication.SharedApplication?.AccessibilityFocusedWindow;
 			if (nsObject == null)
 				return;
-			var dictionary =
-				new NSDictionary(NSAccessibilityNotificationUserInfoKeys.AnnouncementKey, new NSString(message),
-					NSAccessibilityNotificationUserInfoKeys.PriorityKey, polite ? NSAccessibilityPriorityLevel.Medium : NSAccessibilityPriorityLevel.High);
-			NSAccessibility.PostNotification(nsObject, NSAccessibilityNotifications.AnnouncementRequestedNotification, dictionary);
+			using (var msg = new NSString(message))
+			using (var dictionary = new NSDictionary(NSAccessibilityNotificationUserInfoKeys.AnnouncementKey, msg,
+					NSAccessibilityNotificationUserInfoKeys.PriorityKey, polite ? NSAccessibilityPriorityLevel.Medium : NSAccessibilityPriorityLevel.High))
+			{
+				NSAccessibility.PostNotification(nsObject, NSAccessibilityNotifications.AnnouncementRequestedNotification, dictionary);
+			}
 		}
 	}
 }
