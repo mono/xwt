@@ -295,6 +295,15 @@ namespace Xwt.Mac
 		bool launched;
 		List<IMacWindowBackend> pendingWindows = new List<IMacWindowBackend> ();
 
+		public enum LaunchType
+		{
+			Unknown,
+			Normal,
+			LaunchedFromFileManager
+		}
+
+		public LaunchType LaunchReason { get; private set; } = LaunchType.Unknown;
+
 		public event EventHandler<TerminationEventArgs> Terminating;
 		public event EventHandler Unhidden;
 		public event EventHandler<OpenFilesEventArgs> OpenFilesRequest;
@@ -319,6 +328,15 @@ namespace Xwt.Mac
 		public override void DidFinishLaunching (NSNotification notification)
 		{
 			launched = true;
+
+			NSObject val;
+			if (notification.UserInfo.TryGetValue (NSApplication.LaunchIsDefaultLaunchKey, out val)) {
+				var num = val as NSNumber;
+				if (num != null) {
+					LaunchReason = num.BoolValue ? LaunchType.Normal : LaunchType.LaunchedFromFileManager;
+				}
+			}
+
 			foreach (var w in pendingWindows)
 				w.InternalShow ();
 		}
