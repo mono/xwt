@@ -480,8 +480,15 @@ namespace Xwt.Drawing
 			}
 		}
 
+		internal static int GlobalStylesVersion {
+			get { return stylesVersion; }
+		}
+
+		static int stylesVersion;
+
 		static void NotifyGlobalStylesChanged ()
 		{
+			stylesVersion++;
 			if (GlobalStylesChanged != null)
 				GlobalStylesChanged (null, EventArgs.Empty);
 		}
