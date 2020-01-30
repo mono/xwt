@@ -1,4 +1,4 @@
-﻿//
+//
 // ExTreeView.cs
 //
 // Author:
@@ -35,9 +35,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using SWC = System.Windows.Controls;
+using SWM = System.Windows.Media;
 using WKey = System.Windows.Input.Key;
-using System.Windows.Input;
-using System.Windows.Controls.Primitives;
 using System.Windows.Automation.Peers;
 
 namespace Xwt.WPFBackend
@@ -47,13 +46,17 @@ namespace Xwt.WPFBackend
 	public class ExTreeView
 		: SWC.TreeView, IWpfWidget
 	{
-		public ExTreeView()
+		private ScrollViewer scrollViewer;
+		private bool needColumnWidthsUpdate;
+
+		public ExTreeView ()
 		{
 			SelectedItems = new ObservableCollection<object> ();
-			Loaded += new RoutedEventHandler(ExTreeView_Loaded);
+			Loaded += OnLoaded;
+			View.Columns.CollectionChanged += OnColumnsCollectionChanged;
 		}
 
-		void ExTreeView_Loaded(object sender, RoutedEventArgs e)
+		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
 			if (SelectionMode == SWC.SelectionMode.Single)
 			{
@@ -63,6 +66,11 @@ namespace Xwt.WPFBackend
 						SelectItem(Items[0]);
 				}
 			}
+		}
+
+		private void OnColumnsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			UpdateColumnWidths ();
 		}
 
 		public event EventHandler SelectedItemsChanged;
@@ -133,6 +141,24 @@ namespace Xwt.WPFBackend
 			return treeItem;
 		}
 
+		public void UpdateColumnWidths ()
+		{
+			needColumnWidthsUpdate = true;
+			InvalidateVisual ();
+		}
+
+		protected override void OnRenderSizeChanged (SizeChangedInfo sizeInfo)
+		{
+			UpdateColumnWidths ();
+			base.OnRenderSizeChanged (sizeInfo);
+		}
+
+		protected override void OnRender (SWM.DrawingContext drawingContext)
+		{
+			EnsureColumnWidthUpdated ();
+			base.OnRender (drawingContext);
+		}
+
 		protected override bool IsItemItsOwnContainerOverride (object item)
 		{
 			return item is ExTreeViewItem;
@@ -183,6 +209,94 @@ namespace Xwt.WPFBackend
 			var newNotifying = e.NewValue as INotifyCollectionChanged;
 			if (newNotifying != null)
 				newNotifying.CollectionChanged += SelectedItemsCollectionChanged;
+		}
+
+		private void EnsureColumnWidthUpdated ()
+		{
+			if (!needColumnWidthsUpdate)
+				return;
+
+			UpdateExpandableColumnWidths ();
+			needColumnWidthsUpdate = false;
+		}
+
+		private ScrollViewer FindScrollViewer ()
+		{
+			DependencyObject currentObj = this;
+			while (currentObj != null) {
+				var scrollViewer = FindAmongChildren<ScrollViewer> (currentObj);
+				if (scrollViewer == null) {
+					currentObj = SWM.VisualTreeHelper.GetParent (currentObj);
+					continue;
+				}
+
+				scrollViewer.ScrollChanged += OnScrollViewerScrollChanged;
+				return scrollViewer;
+			}
+			return null;
+		}
+
+		private static T FindAmongChildren<T> (DependencyObject obj)
+			where T : DependencyObject
+		{
+			int childrenCount = SWM.VisualTreeHelper.GetChildrenCount (obj);
+			for (int i = 0; i < childrenCount; i++) {
+				var child = SWM.VisualTreeHelper.GetChild (obj, i);
+				if (child is T)
+					return (T) child;
+
+				var result = FindAmongChildren<T> (child);
+				if (result != null)
+					return result;
+			}
+			return null;
+		}
+
+		private void OnScrollViewerScrollChanged (object sender, ScrollChangedEventArgs e)
+		{
+			UpdateColumnWidths ();
+		}
+
+		private double CalculateTreeContentWidth ()
+		{
+			if (scrollViewer == null)
+				scrollViewer = FindScrollViewer ();
+
+			double width = ActualWidth;
+			if (scrollViewer != null) {
+				if (scrollViewer?.ComputedVerticalScrollBarVisibility == Visibility.Visible)
+					width -= SystemParameters.VerticalScrollBarWidth;
+			}
+
+			const double HorizontalMargin = 10; // Prevents horizontal scroll bar to appear before it should
+			return width - HorizontalMargin;
+		}
+
+		private void UpdateExpandableColumnWidths ()
+		{
+			double totalWidth = CalculateTreeContentWidth ();
+			if (totalWidth <= 0.0)
+				return;
+
+			var columns = View.Columns.Select (c => (ExGridViewColumn) c);
+			if (!columns.Any ())
+				return;
+
+			var expandableColumns = columns.Where (c => c.Expands).ToList ();
+			var nonExpandableColumns = columns.Where (c => !c.Expands).ToList ();
+
+			if (expandableColumns.Count == 0) {
+				var lastColumn = columns.Last ();
+				expandableColumns.Add (lastColumn);
+				nonExpandableColumns.Remove (lastColumn);
+			}
+
+			double totalFixedWidth = nonExpandableColumns.Sum (c => c.ActualWidth);
+			double totalWidthForExpanding = totalWidth - totalFixedWidth;
+			double newExpandableWidth = Math.Max (totalWidthForExpanding / expandableColumns.Count, 0.0);
+
+			foreach (var column in expandableColumns)
+				column.SetWidthForced (newExpandableWidth);
 		}
 
 		private bool TraverseTree (Func<object, ExTreeViewItem, bool> action, ExTreeViewItem parent = null)
