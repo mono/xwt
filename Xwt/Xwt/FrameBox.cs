@@ -27,11 +27,9 @@ using System;
 using Xwt.Backends;
 using System.ComponentModel;
 using Xwt.Drawing;
-using System.Windows.Markup;
 
 namespace Xwt
 {
-	[ContentProperty("Content")]
 	public class FrameBox: Widget
 	{
 		WidgetSpacing borderWidth;

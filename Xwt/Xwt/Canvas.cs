@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using Xwt.Backends;
 using Xwt.Drawing;
-using System.Windows.Markup;
 using System.ComponentModel;
 using System.Linq;
 

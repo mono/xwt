@@ -26,14 +26,12 @@
 
 using System;
 using System.ComponentModel;
-using System.Windows.Markup;
 using System.Collections.Generic;
 using System.Globalization;
 
 namespace Xwt.Drawing
 {
 	[TypeConverter (typeof(ColorValueConverter))]
-	[ValueSerializer (typeof(ColorValueSerializer))]
 	[Serializable]
 	public struct Color : IEquatable<Color>
 	{
@@ -323,8 +321,6 @@ namespace Xwt.Drawing
 
 	class ColorValueConverter: TypeConverter
 	{
-		static readonly ColorValueSerializer serializer = new ColorValueSerializer ();
-
 		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
 		{
 			return destinationType == typeof(string);
@@ -337,40 +333,17 @@ namespace Xwt.Drawing
 
 		public override object ConvertTo (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
 		{
-			return serializer.ConvertToString (value, null);
+			Color s = (Color)value;
+			return s.ToHexString();
 		}
 
 		public override object ConvertFrom (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
 		{
-			return serializer.ConvertFromString ((string)value, null);
-		}
-	}
-	
-	class ColorValueSerializer: ValueSerializer
-	{
-		public override bool CanConvertFromString (string value, IValueSerializerContext context)
-		{
-			return true;
-		}
-		
-		public override bool CanConvertToString (object value, IValueSerializerContext context)
-		{
-			return true;
-		}
-		
-		public override string ConvertToString (object value, IValueSerializerContext context)
-		{
-			Color s = (Color) value;
-			return s.ToHexString ();
-		}
-		
-		public override object ConvertFromString (string value, IValueSerializerContext context)
-		{
 			Color c;
-			if (Color.TryParse (value, out c))
+			if (Color.TryParse((string)value, out c))
 				return c;
 			else
-				throw new InvalidOperationException ("Could not parse color value: " + value);
+				throw new InvalidOperationException("Could not parse color value: " + value);
 		}
 	}
 }

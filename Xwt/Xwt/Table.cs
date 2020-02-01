@@ -30,7 +30,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using Xwt.Backends;
-using System.Windows.Markup;
 using Xwt.Drawing;
 
 namespace Xwt
@@ -271,7 +270,6 @@ namespace Xwt
 		}
 	}
 	
-	[ContentProperty("Child")]
 	public class TablePlacement
 	{
 		IContainerEventSink<TablePlacement> parent;

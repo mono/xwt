@@ -26,7 +26,6 @@
 
 using System;
 using Xwt.Backends;
-using System.Windows.Markup;
 
 namespace Xwt
 {
@@ -159,7 +158,6 @@ namespace Xwt
 		}
 	}
 	
-	[ContentProperty("Child")]
 	public class NotebookTab
 	{
 		IContainerEventSink<NotebookTab> parent;

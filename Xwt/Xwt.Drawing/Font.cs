@@ -26,7 +26,6 @@
 
 using System;
 using Xwt.Backends;
-using System.Windows.Markup;
 using System.ComponentModel;
 using System.Text;
 using System.Globalization;
@@ -38,7 +37,6 @@ using System.Linq;
 namespace Xwt.Drawing
 {
 	[TypeConverter (typeof(FontValueConverter))]
-	[ValueSerializer (typeof(FontValueSerializer))]
 	public sealed class Font: XwtObject
 	{
 		FontBackendHandler handler;
@@ -558,29 +556,6 @@ namespace Xwt.Drawing
 		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
 		{
 			return sourceType == typeof(string);
-		}
-	}
-	
-	class FontValueSerializer: ValueSerializer
-	{
-		public override bool CanConvertFromString (string value, IValueSerializerContext context)
-		{
-			return true;
-		}
-		
-		public override bool CanConvertToString (object value, IValueSerializerContext context)
-		{
-			return true;
-		}
-		
-		public override string ConvertToString (object value, IValueSerializerContext context)
-		{
-			return value.ToString ();
-		}
-		
-		public override object ConvertFromString (string value, IValueSerializerContext context)
-		{
-			return Font.FromName (value);
 		}
 	}
 }

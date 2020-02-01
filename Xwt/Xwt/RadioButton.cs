@@ -26,14 +26,12 @@
 using System;
 using System.ComponentModel;
 using Xwt.Backends;
-using System.Windows.Markup;
 using System.Linq;
 using System.Collections.Generic;
 
 namespace Xwt
 {
 	[BackendType (typeof(IRadioButtonBackend))]
-	[ContentProperty("Content")]
 	public class RadioButton: Widget
 	{
 		Widget content;

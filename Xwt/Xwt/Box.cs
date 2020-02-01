@@ -30,7 +30,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using Xwt.Backends;
-using System.Windows.Markup;
 
 namespace Xwt
 {
@@ -415,7 +414,6 @@ namespace Xwt
 		FillAndExpand = 3
 	}
 	
-	[ContentProperty("Child")]
 	public class BoxPlacement
 	{
 		IContainerEventSink<BoxPlacement> parent;

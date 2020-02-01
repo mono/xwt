@@ -27,12 +27,10 @@ using System;
 using Xwt.Backends;
 using System.ComponentModel;
 using Xwt.Drawing;
-using System.Windows.Markup;
 
 namespace Xwt
 {
 	[BackendType (typeof(IFrameBackend))]
-	[ContentProperty("Content")]
 	public class Frame: Widget
 	{
 		Widget child;
