@@ -79,8 +79,8 @@ namespace Xwt.Mac
 		{
 			var gc = (CGContextBackend)backend;
 			using (var img = new NSImage(((CGBitmapContext)gc.Context).ToImage(), gc.Size))
+			using (var imageData = img.AsTiff())
 			{
-				var imageData = img.AsTiff();
 				var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData(imageData);
 				var im = new NSImage();
 				im.AddRepresentation(imageRep);
