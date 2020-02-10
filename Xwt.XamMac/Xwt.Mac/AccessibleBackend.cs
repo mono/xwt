@@ -46,8 +46,8 @@ namespace Xwt.Mac
 
 		public void Initialize (IWidgetBackend parentWidget, IAccessibleEventSink eventSink)
 		{
-			var parentBackend = parentWidget as ViewBackend;
-			Initialize (parentBackend?.Widget, eventSink);
+			var widget = (parentWidget as ICellSource)?.TableView ?? (parentWidget as ViewBackend)?.Widget;
+			Initialize (widget, eventSink);
 		}
 
 		public void Initialize (IPopoverBackend parentPopover, IAccessibleEventSink eventSink)
