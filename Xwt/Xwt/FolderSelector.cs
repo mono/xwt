@@ -146,11 +146,11 @@ namespace Xwt
 			entry = new TextEntry ();
 			entry.Accessible.Title = Application.TranslationCatalog.GetString ("Path");
 			entry.Changed += (sender, e) => NotifyFolderChange();
-			box.PackStart (entry, true);
+			box.PackStart (entry, true, vpos: WidgetPlacement.Center);
 
 			button = new Button ("...");
 			button.Accessible.Title = Application.TranslationCatalog.GetString ("Browse");
-			box.PackStart (button);
+			box.PackStart (button, vpos: WidgetPlacement.Center);
 			button.Clicked += BtnClicked;
 			Content = box;
 
