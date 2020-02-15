@@ -109,10 +109,11 @@ namespace Xwt.Mac
 
 			var imageData = img.AsTiff ();
 			var imageRep = (NSBitmapImageRep) NSBitmapImageRep.ImageRepFromData (imageData);
-			var props = new NSDictionary ();
-			imageData = imageRep.RepresentationUsingTypeProperties (fileType.ToMacFileType (), props);
-			using (var s = imageData.AsStream ()) {
-				s.CopyTo (stream);
+			using (var props = new NSDictionary()) {
+				imageData = imageRep.RepresentationUsingTypeProperties(fileType.ToMacFileType(), props);
+				using (var s = imageData.AsStream()) {
+					s.CopyTo(stream);
+				}
 			}
 		}
 
@@ -161,25 +162,27 @@ namespace Xwt.Mac
 				var ci = (CustomImage)idesc.Backend;
 				ci.DrawInContext (ctx, idesc);
 
-				var img = new NSImage (((CGBitmapContext)bmp).ToImage (), new CGSize (pixelWidth, pixelHeight));
-				var imageData = img.AsTiff ();
-				var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData (imageData);
-				var im = new NSImage ();
-				im.AddRepresentation (imageRep);
-				im.Size = new CGSize ((nfloat)width, (nfloat)height);
-				bmp.Dispose ();
-				return im;
+				using (var img = new NSImage(((CGBitmapContext)bmp).ToImage(), new CGSize(pixelWidth, pixelHeight)))
+				using (var imageData = img.AsTiff()) {
+					var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData(imageData);
+					var im = new NSImage();
+					im.AddRepresentation(imageRep);
+					im.Size = new CGSize((nfloat)width, (nfloat)height);
+					bmp.Dispose();
+					return im;
+				}
 			}
 			else {
 				NSImage img = (NSImage)idesc.Backend;
 				NSBitmapImageRep bitmap = img.Representations ().OfType<NSBitmapImageRep> ().FirstOrDefault ();
 				if (bitmap == null) {
-					var imageData = img.AsTiff ();
-					var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData (imageData);
-					var im = new NSImage ();
-					im.AddRepresentation (imageRep);
-					im.Size = new CGSize ((nfloat)width, (nfloat)height);
-					return im;
+					using (var imageData = img.AsTiff()) {
+						var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData(imageData);
+						var im = new NSImage ();
+						im.AddRepresentation (imageRep);
+						im.Size = new CGSize ((nfloat)width, (nfloat)height);
+						return im;
+					}
 				}
 				return idesc.Backend;
 			}

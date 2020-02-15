@@ -58,9 +58,13 @@ namespace Xwt.Mac
 		{
 			foreach (var nsFace in NSFontManager.SharedFontManager.AvailableMembersOfFontFamily(family)) {
 				var name = NSString.FromHandle(nsFace.ValueAt(1));
-				var weight = ((NSNumber) NSValue.ValueFromPointer (nsFace.ValueAt (2)).NonretainedObjectValue).Int32Value;
-				var traits = (NSFontTraitMask) ((NSNumber)NSValue.ValueFromPointer (nsFace.ValueAt (3)).NonretainedObjectValue).Int32Value;
-				yield return new KeyValuePair<string, object>(name, FontData.FromFamily(family, traits, weight, 0));
+				using (var weightValue = (NSNumber)NSValue.ValueFromPointer(nsFace.ValueAt(2)).NonretainedObjectValue)
+				using (var traitsValue = (NSNumber)NSValue.ValueFromPointer(nsFace.ValueAt(3)).NonretainedObjectValue)
+				{
+					var weight = weightValue.Int32Value;
+					var traits = (NSFontTraitMask)traitsValue.Int32Value;
+					yield return new KeyValuePair<string, object>(name, FontData.FromFamily(family, traits, weight, 0));
+				}
 			}
 			yield break;
 		}
