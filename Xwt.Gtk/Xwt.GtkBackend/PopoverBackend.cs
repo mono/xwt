@@ -341,6 +341,8 @@ namespace Xwt.GtkBackend
 			if (popover.TransientFor != null)
 				popover.TransientFor.FocusInEvent -= HandleParentFocusInEvent;
 
+			popover.Hidden -= PopoverHidden;
+
 			popover.Destroy ();
 			popover.Dispose ();
 		}
