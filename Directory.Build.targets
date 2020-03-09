@@ -2,5 +2,10 @@
   <PropertyGroup>
     <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">true</InMonoDevelopTree>
     <TargetFrameworks>net472</TargetFrameworks>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" Condition=" '$(PackageId)' != '' " />
+  </ItemGroup>
 </Project>
