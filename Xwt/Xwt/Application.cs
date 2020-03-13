@@ -90,7 +90,12 @@ namespace Xwt
 		/// <param name="type">The toolkit type.</param>
 		public static void Initialize (ToolkitType type)
 		{
-			Initialize (Toolkit.GetBackendType (type));
+			Initialize (Toolkit.GetBackendType (type), true);
+		}
+
+		public static void Initialize(ToolkitType type, bool initializeToolkit)
+		{
+			Initialize(Toolkit.GetBackendType(type), initializeToolkit);
 			toolkit.Type = type;
 		}
 
@@ -99,11 +104,16 @@ namespace Xwt
 		/// </summary>
 		/// <param name="backendType">The <see cref="Type.FullName"/> of the backend type.</param>
 		public static void Initialize (string backendType)
+		{
+			Initialize(backendType, true);
+		}
+
+		public static void Initialize (string backendType, bool initializeToolkit)
 		{			
 			if (engine != null)
 				return;
 
-			toolkit = Toolkit.Load (backendType, false);
+			toolkit = Toolkit.Load (backendType, false, initializeToolkit);
 			toolkit.SetActive ();
 			engine = toolkit.Backend;
 			mainLoop = new UILoop (toolkit);
