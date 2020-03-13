@@ -47,20 +47,29 @@ namespace Xwt.Mac
 		
 		public override void InitializeApplication ()
 		{
-			NSApplicationInitializer.Initialize ();
+			if (InitializeToolkit)
+			{
+				NSApplicationInitializer.Initialize();
 
-			//Hijack ();
-			if (pool != null)
-				pool.Dispose ();
-			pool = new NSAutoreleasePool ();
-			appDelegate = AppDelegateFactory?.Invoke(IsGuest) ?? new AppDelegate (IsGuest);
-			NSApplication.SharedApplication.Delegate = appDelegate;
+				//Hijack ();
+				if (pool != null)
+					pool.Dispose();
+				pool = new NSAutoreleasePool();
+				appDelegate = AppDelegateFactory?.Invoke(IsGuest) ?? new AppDelegate(IsGuest);
+				NSApplication.SharedApplication.Delegate = appDelegate;
 
-			// If NSPrincipalClass is not set, set it now. This allows running
-			// the application without a bundle
-			var info = NSBundle.MainBundle.InfoDictionary;
-			if (info.ValueForKey ((NSString)"NSPrincipalClass") == null)
-				info.SetValueForKey ((NSString)"NSApplication", (NSString)"NSPrincipalClass");
+				// If NSPrincipalClass is not set, set it now. This allows running
+				// the application without a bundle
+				var info = NSBundle.MainBundle.InfoDictionary;
+				if (info.ValueForKey((NSString)"NSPrincipalClass") == null)
+					info.SetValueForKey((NSString)"NSApplication", (NSString)"NSPrincipalClass");
+			}
+			else
+			{
+				// Although the AppDelegate does not need to be hijacked, keep this allocated
+				// as there are some non-NSApplicationDelegate methods still used by Xwt
+				appDelegate = new AppDelegate(IsGuest);
+			}
 		}
 
 		public override void InitializeBackends ()
