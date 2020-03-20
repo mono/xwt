@@ -269,7 +269,7 @@ namespace Xwt.GtkBackend
 				popover.TransientFor.FocusInEvent += HandleParentFocusInEvent;
 			}
 
-			popover.Hidden += (o, args) => sink.OnClosed ();
+			popover.Hidden += PopoverHidden;
 
 			var screenBounds = reference.ScreenBounds;
 			if (positionRect == Rectangle.Zero)
@@ -286,6 +286,12 @@ namespace Xwt.GtkBackend
 				UpdatePopoverPosition (positionRect, args.Allocation.Width, args.Allocation.Height);
 				popover.GrabFocus ();
 			};
+		}
+
+		void PopoverHidden (object sender, EventArgs e)
+		{
+			sink.OnClosed ();
+			popover.Hidden -= PopoverHidden;
 		}
 
 		void UpdatePopoverPosition (Rectangle positionRect, int width, int height)
@@ -334,6 +340,8 @@ namespace Xwt.GtkBackend
 		{
 			if (popover.TransientFor != null)
 				popover.TransientFor.FocusInEvent -= HandleParentFocusInEvent;
+
+			popover.Hidden -= PopoverHidden;
 
 			popover.Destroy ();
 			popover.Dispose ();
