@@ -31,7 +31,7 @@ using Xwt.CairoBackend;
 using System.Runtime.InteropServices;
 using System.Linq;
 using System.Collections.Generic;
-
+using  static Xwt.Interop.DllImportGtk;
 
 namespace Xwt.GtkBackend
 {
@@ -192,9 +192,6 @@ namespace Xwt.GtkBackend
 				SetFormattedText (formattedText);
 			}
 		}
-
-		[DllImport (GtkInterop.LIBGTK, CallingConvention=CallingConvention.Cdecl)]
-		static extern void gtk_label_set_attributes (IntPtr label, IntPtr attrList);
 
 		public Xwt.Drawing.Color TextColor {
 			get {

@@ -7,6 +7,7 @@
 // Copyright (c) 2012 Xamarin, Inc.
 using System;
 using System.Runtime.InteropServices;
+using  static Xwt.Interop.DllImportGtk;
 
 using Xwt.Backends;
 
@@ -49,9 +50,6 @@ namespace Xwt.GtkBackend
 		protected Spinner(GLib.GType gtype) : base(gtype) {}
 		#endif
 
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr gtk_spinner_new();
-
 		public Spinner () : base(IntPtr.Zero)
 		{
 			if (GetType () != typeof(Spinner))
@@ -59,7 +57,7 @@ namespace Xwt.GtkBackend
 				this.CreateNativeObject (new string[0], new GLib.Value[0]);
 				return;
 			}
-			this.Raw = Spinner.gtk_spinner_new ();
+			this.Raw = gtk_spinner_new ();
 		}
 
 		[GLib.Property ("active")]
@@ -77,25 +75,17 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_spinner_start(IntPtr raw);
-
 		public void Start()
 		{
 			gtk_spinner_start(Handle);
 		}
 
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_spinner_stop(IntPtr raw);
 
 		public void Stop ()
 		{
 			gtk_spinner_stop(Handle);
 		}
-		
-		[DllImport(GtkInterop.LIBGTK)]
-		static extern IntPtr gtk_spinner_get_type();
-
+	
 		public static new GLib.GType GType { 
 			get {
 				IntPtr raw_ret = gtk_spinner_get_type();

@@ -30,7 +30,8 @@ using Xwt.Drawing;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
-
+using static Xwt.Interop.DllImportPangoCairo;
+using static Xwt.Interop.DllImportFontConfig;
 namespace Xwt.GtkBackend
 {
 	public class GtkFontBackendHandler: FontBackendHandler
@@ -76,12 +77,6 @@ namespace Xwt.GtkBackend
 			result.Stretch = (Pango.Stretch)stretch;
 			return result;
 		}
-
-		[System.Runtime.InteropServices.DllImport (GtkInterop.LIBFONTCONFIG)]
-		static extern bool FcConfigAppFontAddFile (System.IntPtr config, string fontPath);
-
-		[System.Runtime.InteropServices.DllImport (GtkInterop.LIBPANGOCAIRO)]
-		static extern void pango_cairo_font_map_set_default (System.IntPtr fontmap);
 
 		public override bool RegisterFontFromFile (string fontPath)
 		{

@@ -25,18 +25,13 @@
 // THE SOFTWARE.
 using System;
 using System.Runtime.InteropServices;
+using static Xwt.Interop.DllImportGtk;
 
 namespace Xwt.GtkBackend
 {
 	public class Gtk3FontChooserDialog : Gtk.Dialog
 	{
-
-		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr gtk_font_chooser_dialog_new(IntPtr title, IntPtr parent);
-
-		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr gtk_font_chooser_widget_get_type();
-
+		
 		public Gtk3FontChooserDialog (IntPtr raw) : base(raw)
 		{
 		}
