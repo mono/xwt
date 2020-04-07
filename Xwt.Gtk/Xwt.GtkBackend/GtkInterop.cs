@@ -29,6 +29,7 @@ using Gtk;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using Xwt.Drawing;
+using static Xwt.Interop.DllImportPango;
 
 namespace Xwt.GtkBackend
 {
