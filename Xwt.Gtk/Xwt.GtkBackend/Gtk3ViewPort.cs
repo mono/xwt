@@ -82,6 +82,13 @@ namespace Xwt.GtkBackend
 		protected virtual void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 		}
+		
+#if XWT_GTKSHARP3
+
+		bool Gtk.IScrollableImplementor.GetBorder (Gtk.Border border) {
+			return true;
+		}
+#endif
 	}
 }
 

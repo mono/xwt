@@ -1,4 +1,4 @@
-//
+﻿//
 // GtkWebKitMini.cs
 //
 // Author:
@@ -44,6 +44,13 @@ namespace Xwt.GtkBackend.WebKit
 			Raw = webkit_web_view_new();
 		}
 
+#if XWT_GTKSHARP3
+
+		bool Gtk.IScrollable.GetBorder (Gtk.Border border) {
+			return true;
+		}
+#endif
+		
 		public void LoadUri(string uri) {
 			IntPtr native_uri = GLib.Marshaller.StringToPtrGStrdup (uri);
 			webkit_web_view_load_uri(Handle, native_uri);

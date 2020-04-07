@@ -108,13 +108,19 @@ namespace Xwt.GtkBackend
 			Gdk.Rectangle rect = w.Allocation;
 			x += rect.X;
 			y += rect.Y + rect.Height;
-			
+
+#if XWT_GTKSHARP3
+			if (y + mn.ChildRequisition.Height > w.Screen.Height) {
+				y -= mn.ChildRequisition.Height;
+				y -= rect.Height;
+			}
+#else				
 			//if the menu would be off the bottom of the screen, "drop" it upwards
 			if (y + mn.Requisition.Height > w.Screen.Height) {
 				y -= mn.Requisition.Height;
 				y -= rect.Height;
 			}
-			
+#endif			
 			//let GTK reposition the button if it still doesn't fit on the screen
 			push_in = true;
 		}
