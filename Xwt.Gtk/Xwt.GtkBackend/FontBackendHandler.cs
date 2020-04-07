@@ -43,10 +43,17 @@ namespace Xwt.GtkBackend
 			systemContext = Gdk.PangoHelper.ContextGet ();
 		}
 
+		Gtk.Style _style;
+		
 		public override object GetSystemDefaultFont ()
 		{
+#if XWT_GTKSHARP3
+			_style = _style ?? (_style = Gtk.Rc.GetStyle (new Gtk.Label ()));
+			return _style?.FontDesc;
+#else			
 			var style = Gtk.Rc.GetStyleByPaths (Gtk.Settings.Default, null, null, Gtk.Label.GType);
 			return style.FontDescription;
+#endif
 		}
 
 		public override IEnumerable<string> GetInstalledFonts ()

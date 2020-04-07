@@ -75,7 +75,11 @@ namespace Xwt.GtkBackend
 
 		public virtual object Font {
 			get {
+#if XWT_GTKSHARP3				
+				return customFont ?? menu.Style.FontDesc;
+#else
 				return customFont ?? menu.Style.FontDescription;
+#endif
 			}
 			set {
 				customFont = (Pango.FontDescription) value;
