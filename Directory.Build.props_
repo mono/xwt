@@ -3,7 +3,7 @@
   <PropertyGroup>
     <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">true</InMonoDevelopTree>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net472;netstandard2</TargetFrameworks>
   </PropertyGroup>
 
 </Project>

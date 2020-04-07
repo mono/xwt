@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{88C04B85-B69B-47B4-AB9F-64F6DD4E0897}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Samples</RootNamespace>
+    <AssemblyName>Samples</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <ReleaseVersion>18.04</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xaml">
+      <HintPath>..\Xwt\System.Xaml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Samples\ChartSample.cs" />
+    <Compile Include="Samples\Mnemonics.cs" />
+    <Compile Include="Samples\Spinners.cs" />
+    <Compile Include="Samples\LinkLabels.cs" />
+    <Compile Include="Samples\NotebookSample.cs" />
+    <Compile Include="Samples\Boxes.cs" />
+    <Compile Include="Samples\ListView1.cs" />
+    <Compile Include="Samples\DragDrop.cs" />
+    <Compile Include="MainWindow.cs">
+      <DeployService-Deploy>True</DeployService-Deploy>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App.cs">
+      <DeployService-Deploy>True</DeployService-Deploy>
+      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
+    </Compile>
+    <Compile Include="MonoDevelop.Components.Chart\Axis.cs" />
+    <Compile Include="MonoDevelop.Components.Chart\AxisDimension.cs" />
+    <Compile Include="MonoDevelop.Components.Chart\AxisPosition.cs" />
+    <Compile Include="MonoDevelop.Components.Chart\BasicChart.cs" />
+    <Compile Include="MonoDevelop.Components.Chart\ChartCursor.cs" />
+    <Compile Include="MonoDevelop.Components.Chart\DateTimeAxis.cs" />
+    <Compile Include="MonoDevelop.Components.Chart\IntegerAxis.cs" />
+    <Compile Include="MonoDevelop.Components.Chart\Serie.cs" />
+    <Compile Include="MonoDevelop.Components.Chart\TickEnumerator.cs" />
+    <Compile Include="Samples\PartialImages.cs" />
+    <Compile Include="Samples\ScrollWindowSample.cs" />
+    <Compile Include="Samples\ButtonSample.cs" />
+    <Compile Include="Samples\DrawingTransforms.cs" />
+    <Compile Include="Samples\ComboBoxes.cs" />
+    <Compile Include="Samples\Designer.cs" />
+    <Compile Include="Samples\TextInput.cs" />
+    <Compile Include="Samples\Windows.cs" />
+    <Compile Include="Samples\TextEntries.cs" />
+    <Compile Include="Samples\Images.cs" />
+    <Compile Include="Samples\ThemedImages.cs" />
+    <Compile Include="Samples\CanvasWithWidget.cs" />
+    <Compile Include="Samples\Tables.cs" />
+    <Compile Include="Samples\Labels.cs" />
+    <Compile Include="Samples\Colors.cs" />
+    <Compile Include="Samples\Frames.cs" />
+    <Compile Include="Samples\Checkboxes.cs" />
+    <Compile Include="Samples\WidgetEvents.cs" />
+    <Compile Include="Samples\ClipboardSample.cs" />
+    <Compile Include="Samples\MenuSamples.cs" />
+    <Compile Include="Samples\Tooltips.cs" />
+    <Compile Include="Samples\TreeViews.cs" />
+    <Compile Include="Samples\PanedViews.cs" />
+    <Compile Include="Samples\DrawingText.cs" />
+    <Compile Include="Samples\DrawingFigures.cs" />
+    <Compile Include="Samples\DrawingPatternsAndImages.cs" />
+    <Compile Include="Samples\ListBoxSample.cs" />
+    <Compile Include="Samples\ColorSelectorSample.cs" />
+    <Compile Include="Samples\ProgressBarSample.cs" />
+    <Compile Include="Samples\ExpanderSample.cs" />
+    <Compile Include="Samples\Markdown.cs" />
+    <Compile Include="Samples\PopoverSample.cs" />
+    <Compile Include="Samples\ScreensSample.cs" />
+    <Compile Include="Samples\ImageScaling.cs" />
+    <Compile Include="Samples\RadioButtonSample.cs" />
+    <Compile Include="Samples\WidgetRendering.cs" />
+    <Compile Include="Samples\ScrollbarSample.cs" />
+    <Compile Include="Samples\DatePickerSample.cs" />
+    <Compile Include="Samples\SliderSample.cs" />
+    <Compile Include="Samples\ListView2.cs" />
+    <Compile Include="Samples\OpacitySample.cs" />
+    <Compile Include="Samples\PasswordEntries.cs" />
+    <Compile Include="Samples\Image9Patch.cs" />
+    <Compile Include="Samples\WebViewSample.cs" />
+    <Compile Include="Samples\SpinButtonSample.cs" />
+    <Compile Include="Samples\MouseCursors.cs" />
+    <Compile Include="Samples\MessageDialogs.cs" />
+    <Compile Include="Samples\MultithreadingSample.cs" />
+    <Compile Include="Samples\WidgetFocus.cs" />
+    <Compile Include="Samples\ListViewCellBounds.cs" />
+    <Compile Include="Samples\TreeViewCellBounds.cs" />
+    <Compile Include="Samples\CalendarSample.cs" />
+    <Compile Include="Samples\FontSelectorSample.cs" />
+    <Compile Include="Samples\ListViewEntries.cs" />
+    <Compile Include="Samples\FileSelectorSample.cs" />
+    <Compile Include="Samples\FolderSelectorSample.cs" />
+    <Compile Include="Samples\ListViewCombos.cs" />
+    <Compile Include="Samples\PopupWindows.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Xwt\Xwt.csproj">
+      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
+      <Name>Xwt</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="class.png">
+      <LogicalName>class.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="package.png">
+      <LogicalName>package.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Samples\cow.jpg">
+      <LogicalName>cow.jpg</LogicalName>
+      <DeployService-Deploy>True</DeployService-Deploy>
+    </EmbeddedResource>
+    <EmbeddedResource Include="document-generic.png">
+      <LogicalName>document-generic.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="document-generic%402x.png">
+      <LogicalName>document-generic@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="zoom-panel-dark.9.png">
+      <LogicalName>zoom-panel-dark.9.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="zoom-panel-dark%402x.9.png">
+      <LogicalName>zoom-panel-dark@2x.9.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Testing\Tests\ninep-ss.9.png">
+      <Link>Samples\ninep-ss.9.png</Link>
+      <LogicalName>ninep-ss.9.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Testing\Tests\ninep-st.9.png">
+      <Link>Samples\ninep-st.9.png</Link>
+      <LogicalName>ninep-st.9.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Testing\Tests\ninep-ts.9.png">
+      <Link>Samples\ninep-ts.9.png</Link>
+      <LogicalName>ninep-ts.9.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Testing\Tests\ninep-tt.9.png">
+      <Link>Samples\ninep-tt.9.png</Link>
+      <LogicalName>ninep-tt.9.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Xwt.XamMac\icons\zoom-in-16.png">
+      <Link>icons\zoom-in-16.png</Link>
+      <LogicalName>zoom-in-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Xwt.XamMac\icons\zoom-in-16%402x.png">
+      <Link>icons\zoom-in-16%402x.png</Link>
+      <LogicalName>zoom-in-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Xwt.XamMac\icons\zoom-in-16~dark.png">
+      <Link>icons\zoom-in-16~dark.png</Link>
+      <LogicalName>zoom-in-16~dark.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Xwt.XamMac\icons\zoom-in-16~dark%402x.png">
+      <Link>icons\zoom-in-16~dark%402x.png</Link>
+      <LogicalName>zoom-in-16~dark@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Xwt.XamMac\icons\zoom-in-16~dark~sel.png">
+      <Link>icons\zoom-in-16~dark~sel.png</Link>
+      <LogicalName>zoom-in-16~dark~sel.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Xwt.XamMac\icons\zoom-in-16~dark~sel%402x.png">
+      <Link>icons\zoom-in-16~dark~sel%402x.png</Link>
+      <LogicalName>zoom-in-16~dark~sel@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Xwt.XamMac\icons\zoom-in-16~sel.png">
+      <Link>icons\zoom-in-16~sel.png</Link>
+      <LogicalName>zoom-in-16~sel.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Xwt.XamMac\icons\zoom-in-16~sel%402x.png">
+      <Link>icons\zoom-in-16~sel%402x.png</Link>
+      <LogicalName>zoom-in-16~sel@2x.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup />
+</Project>
