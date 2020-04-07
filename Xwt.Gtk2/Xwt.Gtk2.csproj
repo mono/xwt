@@ -1,0 +1,389 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net472</TargetFrameworks>
+    <RootNamespace>Xwt.Gtk</RootNamespace>
+    <AssemblyName>Xwt.Gtk</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType></DebugType>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblySearchPaths>$(AssemblySearchPaths);{GAC}</AssemblySearchPaths>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="Xwt.Gtk.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="gtk-sharp" Version="2.12.0.0" />
+    <Reference Include="glib-sharp" Version="2.12.0.0" />    
+    <Reference Include="atk-sharp" Version="2.12.0.0" />
+    <Reference Include="gdk-sharp" Version="2.12.0.0" />
+    <Reference Include="pango-sharp" Version="2.12.0.0" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Cairo" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xwt\Xwt.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Xwt.Gtk\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\TextLayoutBackendHandler.cs">
+      <Link>Xwt.GtkBackend\TextLayoutBackendHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\MessageService.cs">
+      <Link>Xwt.GtkBackend\MessageService.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ComboBoxBackend.cs">
+      <Link>Xwt.GtkBackend\ComboBoxBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\PanedBackend.cs">
+      <Link>Xwt.GtkBackend\PanedBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\CheckBoxMenuItemBackend.cs">
+      <Link>Xwt.GtkBackend\CheckBoxMenuItemBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\CanvasBackendGtk2.cs">
+      <Link>Xwt.GtkBackend\CanvasBackendGtk2.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\FontSelectorBackend.cs">
+      <Link>Xwt.GtkBackend\FontSelectorBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SpinButtonBackend.cs">
+      <Link>Xwt.GtkBackend\SpinButtonBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\PasswordEntryBackendGtk2.cs">
+      <Link>Xwt.GtkBackend\PasswordEntryBackendGtk2.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\CustomTreeModel.cs">
+      <Link>Xwt.GtkBackend\CustomTreeModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\DialogBackend.cs">
+      <Link>Xwt.GtkBackend\DialogBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\PopoverBackend.cs">
+      <Link>Xwt.GtkBackend\PopoverBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ComboBoxEntryBackend.cs">
+      <Link>Xwt.GtkBackend\ComboBoxEntryBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ScrollAdjustmentBackend.cs">
+      <Link>Xwt.GtkBackend\ScrollAdjustmentBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\MenuItemBackend.cs">
+      <Link>Xwt.GtkBackend\MenuItemBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\StatusIconBackend.cs">
+      <Link>Xwt.GtkBackend\StatusIconBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\DatePickerBackend.cs">
+      <Link>Xwt.GtkBackend\DatePickerBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\WebViewBackend.cs">
+      <Link>Xwt.GtkBackend\WebViewBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\TextEntryBackendGtk2.cs">
+      <Link>Xwt.GtkBackend\TextEntryBackendGtk2.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\HeaderBoxGtk2.cs">
+      <Link>Xwt.GtkBackend\HeaderBoxGtk2.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\GtkWebKitMini.cs">
+      <Link>Xwt.GtkBackend\GtkWebKitMini.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\HeaderBox.cs">
+      <Link>Xwt.GtkBackend\HeaderBox.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\Conversion.cs">
+      <Link>Xwt.GtkBackend\Conversion.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\NotebookBackend.cs">
+      <Link>Xwt.GtkBackend\NotebookBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SelectColorDialogBackend.cs">
+      <Link>Xwt.GtkBackend\SelectColorDialogBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\TreeStoreBackend.cs">
+      <Link>Xwt.GtkBackend\TreeStoreBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\EmbeddedWidgetBackend.cs">
+      <Link>Xwt.GtkBackend\EmbeddedWidgetBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\LinkLabelBackend.cs">
+      <Link>Xwt.GtkBackend\LinkLabelBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\UtilityWindowBackend.cs">
+      <Link>Xwt.GtkBackend\UtilityWindowBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\GtkMacInterop.cs">
+      <Link>Xwt.GtkBackend\GtkMacInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\GtkDesktopBackend.cs">
+      <Link>Xwt.GtkBackend\GtkDesktopBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\BoxBackend.cs">
+      <Link>Xwt.GtkBackend\BoxBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\RadioButtonMenuItemBackend.cs">
+      <Link>Xwt.GtkBackend\RadioButtonMenuItemBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SegmentedButtonBackend.cs">
+      <Link>Xwt.GtkBackend\SegmentedButtonBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ToggleButtonBackend.cs">
+      <Link>Xwt.GtkBackend\ToggleButtonBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\FrameBackend.cs">
+      <Link>Xwt.GtkBackend\FrameBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\LabelBackend.cs">
+      <Link>Xwt.GtkBackend\LabelBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ButtonBackendGtk2.cs">
+      <Link>Xwt.GtkBackend\ButtonBackendGtk2.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\Gtk2DrawingArea.cs">
+      <Link>Xwt.GtkBackend\Gtk2DrawingArea.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\PopupWindowBackend.cs">
+      <Link>Xwt.GtkBackend\PopupWindowBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SeparatorMenuItemBackend.cs">
+      <Link>Xwt.GtkBackend\SeparatorMenuItemBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\Util.cs">
+      <Link>Xwt.GtkBackend\Util.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ColorSelectorBackend.cs">
+      <Link>Xwt.GtkBackend\ColorSelectorBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\GtkPlatformBackend.cs">
+      <Link>Xwt.GtkBackend\GtkPlatformBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\MenuButtonBackend.cs">
+      <Link>Xwt.GtkBackend\MenuButtonBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\WindowFrameBackend.cs">
+      <Link>Xwt.GtkBackend\WindowFrameBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ExpanderBackend.cs">
+      <Link>Xwt.GtkBackend\ExpanderBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ClipboardBackend.cs">
+      <Link>Xwt.GtkBackend\ClipboardBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\GtkWorkarounds.cs">
+      <Link>Xwt.GtkBackend\GtkWorkarounds.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ImageViewBackend.cs">
+      <Link>Xwt.GtkBackend\ImageViewBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SeparatorBackend.cs">
+      <Link>Xwt.GtkBackend\SeparatorBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SelectFontDialogBackend.cs">
+      <Link>Xwt.GtkBackend\SelectFontDialogBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\GtkEngine.cs">
+      <Link>Xwt.GtkBackend\GtkEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\TableViewBackend.cs">
+      <Link>Xwt.GtkBackend\TableViewBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ScrollViewBackend.cs">
+      <Link>Xwt.GtkBackend\ScrollViewBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\PasswordEntryBackend.cs">
+      <Link>Xwt.GtkBackend\PasswordEntryBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\GtkKeyboardHandler.cs">
+      <Link>Xwt.GtkBackend\GtkKeyboardHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\TextEntryBackend.cs">
+      <Link>Xwt.GtkBackend\TextEntryBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SearchTextEntryBackend.cs">
+      <Link>Xwt.GtkBackend\SearchTextEntryBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\AlertDialogBackend.cs">
+      <Link>Xwt.GtkBackend\AlertDialogBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\CalendarBackend.cs">
+      <Link>Xwt.GtkBackend\CalendarBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\CustomListModel.cs">
+      <Link>Xwt.GtkBackend\CustomListModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ScrollControlBackend.cs">
+      <Link>Xwt.GtkBackend\ScrollControlBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\TextWrapper.cs">
+      <Link>Xwt.GtkBackend\TextWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\WindowBackend.cs">
+      <Link>Xwt.GtkBackend\WindowBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ProgressBarBackend.cs">
+      <Link>Xwt.GtkBackend\ProgressBarBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ScrollbarBackend.cs">
+      <Link>Xwt.GtkBackend\ScrollbarBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\RadioButtonBackend.cs">
+      <Link>Xwt.GtkBackend\RadioButtonBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ImageHandler.cs">
+      <Link>Xwt.GtkBackend\ImageHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\DesignerSurfaceBackend.cs">
+      <Link>Xwt.GtkBackend\DesignerSurfaceBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ButtonBackend.cs">
+      <Link>Xwt.GtkBackend\ButtonBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SpinButtonBackendGtk2.cs">
+      <Link>Xwt.GtkBackend\SpinButtonBackendGtk2.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\RichTextViewBackend.cs">
+      <Link>Xwt.GtkBackend\RichTextViewBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\LabelBackendGtk2.cs">
+      <Link>Xwt.GtkBackend\LabelBackendGtk2.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ListViewBackend.cs">
+      <Link>Xwt.GtkBackend\ListViewBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\Gtk2PopoverWindow.cs">
+      <Link>Xwt.GtkBackend\Gtk2PopoverWindow.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\TreeViewBackend.cs">
+      <Link>Xwt.GtkBackend\TreeViewBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\FontBackendHandler.cs">
+      <Link>Xwt.GtkBackend\FontBackendHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\CustomWidgetBackend.cs">
+      <Link>Xwt.GtkBackend\CustomWidgetBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\GtkInterop.cs">
+      <Link>Xwt.GtkBackend\GtkInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\WidgetBackend.cs">
+      <Link>Xwt.GtkBackend\WidgetBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\Gtk2Extensions.cs">
+      <Link>Xwt.GtkBackend\Gtk2Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\Gtk2ViewPort.cs">
+      <Link>Xwt.GtkBackend\Gtk2ViewPort.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ImageBuilderBackend.cs">
+      <Link>Xwt.GtkBackend\ImageBuilderBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\FileDialogBackend.cs">
+      <Link>Xwt.GtkBackend\FileDialogBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ImagePatternBackendHandler.cs">
+      <Link>Xwt.GtkBackend\ImagePatternBackendHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\Platform.cs">
+      <Link>Xwt.GtkBackend\Platform.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SpinnerBackend.cs">
+      <Link>Xwt.GtkBackend\SpinnerBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\GtkAlertDialog.cs">
+      <Link>Xwt.GtkBackend\GtkAlertDialog.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\CanvasBackend.cs">
+      <Link>Xwt.GtkBackend\CanvasBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\SliderBackend.cs">
+      <Link>Xwt.GtkBackend\SliderBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\BoxBackendGtk2.cs">
+      <Link>Xwt.GtkBackend\BoxBackendGtk2.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ListBoxBackend.cs">
+      <Link>Xwt.GtkBackend\ListBoxBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\CheckBoxBackend.cs">
+      <Link>Xwt.GtkBackend\CheckBoxBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\TableStoreBackend.cs">
+      <Link>Xwt.GtkBackend\TableStoreBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\WidgetBackendGtk2.cs">
+      <Link>Xwt.GtkBackend\WidgetBackendGtk2.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ColorPickerBackend.cs">
+      <Link>Xwt.GtkBackend\ColorPickerBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\MenuBackend.cs">
+      <Link>Xwt.GtkBackend\MenuBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\ListStoreBackend.cs">
+      <Link>Xwt.GtkBackend\ListStoreBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend.CellViews\CustomCellRenderer.cs">
+      <Link>Xwt.GtkBackend.CellViews\CustomCellRenderer.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend.CellViews\CellViewBackend.cs">
+      <Link>Xwt.GtkBackend.CellViews\CellViewBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend.CellViews\CustomCellRendererText.cs">
+      <Link>Xwt.GtkBackend.CellViews\CustomCellRendererText.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend.CellViews\Gtk2CellRendererCustom.cs">
+      <Link>Xwt.GtkBackend.CellViews\Gtk2CellRendererCustom.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend.CellViews\CustomCellRendererComboBox.cs">
+      <Link>Xwt.GtkBackend.CellViews\CustomCellRendererComboBox.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend.CellViews\CustomCellRendererImage.cs">
+      <Link>Xwt.GtkBackend.CellViews\CustomCellRendererImage.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend.CellViews\CustomCellRendererToggle.cs">
+      <Link>Xwt.GtkBackend.CellViews\CustomCellRendererToggle.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend.CellViews\CellUtil.cs">
+      <Link>Xwt.GtkBackend.CellViews\CellUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.CairoBackend\CairoConversion.cs">
+      <Link>Xwt.CairoBackend\CairoConversion.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.CairoBackend\CairoGradientBackendHandler.cs">
+      <Link>Xwt.CairoBackend\CairoGradientBackendHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Xwt.CairoBackend\CairoContextBackendHandler.cs">
+      <Link>Xwt.CairoBackend\CairoContextBackendHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\ComboBoxBackend.cs">
+      <Link>Limaki.Extended\ComboBoxBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\GtkClipboardBackend.cs">
+      <Link>Limaki.Extended\GtkClipboardBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\WidgetBackend.cs">
+      <Link>Limaki.Extended\WidgetBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextEntryMultiLineBackend.cs">
+      <Link>Limaki.Extended\TextEntryMultiLineBackend.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Xwt.Gtk\icons\**\*.png" LinkBase="icons" />
+  </ItemGroup>
+</Project>
