@@ -52,6 +52,7 @@ namespace Xwt.Mac
 			Widget.SetFrameSize (new CGSize ((nfloat)s.Width, (nfloat)s.Height)); 
 		}
 
+		// Skip Layer initialization in base to avoid rendering issues. CanvasView.DrawRect will draw the background.
 		public override Xwt.Drawing.Color BackgroundColor { get; set; }
 
 		public Rectangle Bounds {
@@ -163,4 +164,3 @@ namespace Xwt.Mac
 		}
 	}
 }
-
