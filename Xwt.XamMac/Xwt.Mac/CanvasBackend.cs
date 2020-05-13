@@ -52,6 +52,8 @@ namespace Xwt.Mac
 			Widget.SetFrameSize (new CGSize ((nfloat)s.Width, (nfloat)s.Height)); 
 		}
 
+		public override Xwt.Drawing.Color BackgroundColor { get; set; }
+
 		public Rectangle Bounds {
 			get {
 				return new Rectangle (0, 0, view.Frame.Width, view.Frame.Height);
