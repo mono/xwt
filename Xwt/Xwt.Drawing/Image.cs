@@ -1097,7 +1097,7 @@ namespace Xwt.Drawing
 						yield return fn;
 				}
 			} else {
-				var files = Directory.GetFiles (Path.GetDirectoryName (fileName), Path.GetFileName (baseName) + "*" + ext);
+				var files = Directory.EnumerateFiles (Path.GetDirectoryName (fileName), Path.GetFileName (baseName) + "*" + ext);
 				foreach (var f in files)
 					yield return f;
 			}
