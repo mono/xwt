@@ -31,6 +31,7 @@ namespace Xwt.Mac
 	public class CellViewBackend: ICellViewBackend, ICanvasCellViewBackend
 	{
 		WidgetEvent enabledEvents;
+		NSTableRowView currentParentRowView;
 
 		public CellViewBackend (NSTableView table, int column)
 		{
@@ -52,6 +53,16 @@ namespace Xwt.Mac
 
 		internal NSView CurrentCellView { get; private set; }
 
+		internal NSTableRowView CurrentParentRowView {
+			get {
+				if (currentParentRowView == null)
+				{
+					currentParentRowView = GetParentRowView ();
+				}
+				return currentParentRowView;
+			}
+		}
+
 		public int Column { get; private set; }
 
 		public NSTableView Table { get; internal set; }
@@ -62,9 +73,25 @@ namespace Xwt.Mac
 		{
 			CurrentCellView = (NSView)cell;
 			CurrentPosition = cell.CellContainer.TablePosition;
+			currentParentRowView = null;
 			EventSink = Frontend.Load (cell.CellContainer);
 		}
-		
+
+		NSTableRowView GetParentRowView()
+		{
+			var view = CurrentCellView;
+			while (view?.Superview != null)
+			{
+				if (view.Superview is NSTableRowView)
+				{
+					return (NSTableRowView)view.Superview;
+				}
+				view = view.Superview;
+
+			}
+			return null;
+		}
+
 		public virtual void EnableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent)
@@ -121,8 +148,7 @@ namespace Xwt.Mac
 
 		public bool IsHighlighted {
 			get {
-				// TODO
-				return false;
+				return CurrentParentRowView?.Emphasized ?? false;
 			}
 		}
 	}
