@@ -38,6 +38,8 @@ namespace Xwt.GtkBackend
 	{
 		GtkPlatformBackend platformBackend;
 
+		internal GtkPlatformBackend PlatformBackend { get { return platformBackend; } }
+
 		public override void InitializeApplication ()
 		{
 			Gtk.Application.Init ();

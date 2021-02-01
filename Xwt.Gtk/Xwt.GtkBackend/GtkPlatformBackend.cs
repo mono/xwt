@@ -38,6 +38,11 @@ namespace Xwt.GtkBackend
 		{
 			return null;
 		}
+
+		public virtual void EnableNativeTooltip (Gtk.Widget widget)
+        {
+
+        }
 	}
 }
 

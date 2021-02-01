@@ -171,6 +171,8 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				Widget.TooltipText = value;
+				var engine = Toolkit.GetBackend(Frontend.Surface.ToolkitEngine) as GtkEngine;
+				engine?.PlatformBackend?.EnableNativeTooltip(Widget);
 			}
 		}
 		
