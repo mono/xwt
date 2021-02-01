@@ -80,7 +80,7 @@ artifacts:
 deploy:
 - provider: NuGet
   api_key:
-    secure: C0hKv2gXXCmE0YzVK8ZuY6o32lC6gYQqcNCPEoGyRki0lODQawgIgFnH0XgMjjX2
+    secure: q/YdWU2pAOOVJ6CYJV7RGeb0SfbAg949QZrqW3WVbM0WiDSa6lc1P8RNa3WQgc08
   skip_symbols: true
   on:
     branch: master
