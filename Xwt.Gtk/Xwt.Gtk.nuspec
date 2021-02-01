@@ -20,7 +20,9 @@ Xwt.Gtk requires gtk-sharp (https://github.com/mono/gtk-sharp/). The Windows ins
 		<copyright>$copyright$</copyright>
 		<tags>xwt cross platform gui ui toolkit framework desktop gtk gtk2</tags>
 		<dependencies>
-			<dependency id="Xwt" version="[$version$]"/>
+			<group targetFramework=".NETFramework4.7.2">
+			  <dependency id="Xwt" version="[$version$]"/>
+		  </group>
 		</dependencies>
 	</metadata>
 	<files>
