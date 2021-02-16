@@ -252,7 +252,7 @@ namespace Xwt.Drawing
 			tags = ImageTagSet.Empty;
 			var firstDelimiter = fileName.IndexOfAny (tagDelimiters);
 
-			if (firstDelimiter <= 0 || fileName.Length <= baseName.Length + 1 || !fileName.StartsWith (baseName, StringComparison.Ordinal))
+			if (firstDelimiter <= 0 || fileName.Length <= baseName.Length + 1 || !fileName.Substring(0, firstDelimiter).Equals(baseName, StringComparison.Ordinal))
 				return false;
 
 			fileName = fileName.Substring (0, fileName.Length - ext.Length);
