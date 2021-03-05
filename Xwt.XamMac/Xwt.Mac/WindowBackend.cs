@@ -476,6 +476,14 @@ namespace Xwt.Mac
 
 		bool disposing, disposed;
 
+		public event Action<object> FocusChanged;
+
+		public override bool MakeFirstResponder(NSResponder aResponder)
+		{
+			FocusChanged?.Invoke(aResponder);
+			return base.MakeFirstResponder(aResponder);
+		}
+
 		protected override void Dispose(bool disposing)
 		{
 			if (!disposed && disposing)

@@ -37,10 +37,14 @@ namespace Xwt.GtkBackend
 		Gtk.Alignment alignment;
 		Gtk.MenuBar mainMenu;
 		Gtk.VBox mainBox;
-		
+		public event Action<object> FocusChanged;
+
 		public override void Initialize ()
 		{
-			Window = new Gtk.Window ("");
+			Window = new Gtk.Window("");
+			Window.FocusChildSet += (s, e) => {
+				FocusChanged?.Invoke (e.Widget);
+			};
 			Window.Add (CreateMainLayout ());
 		}
 		
