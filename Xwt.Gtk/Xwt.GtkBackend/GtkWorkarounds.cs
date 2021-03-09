@@ -30,6 +30,10 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using static Xwt.Interop.DllImportGtk;
+using static Xwt.Interop.DllImportGdk;
+using static Xwt.Interop.DllImportPango;
+using static Xwt.Interop.DllImportGObj;
 
 #if XWT_GTK3
 using GtkTreeModel = Gtk.ITreeModel;
@@ -433,9 +437,7 @@ namespace Xwt.GtkBackend
 		{
 			adj.Value = System.Math.Max (adj.Lower, System.Math.Min (adj.Value + value, adj.Upper - adj.PageSize));
 		}
-		
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		extern static bool gdk_event_get_scroll_deltas (IntPtr eventScroll, out double deltaX, out double deltaY);
+
 		static bool scrollDeltasNotSupported;
 		
 		public static bool GetEventScrollDeltas (Gdk.EventScroll evt, out double deltaX, out double deltaY)
@@ -551,14 +553,6 @@ namespace Xwt.GtkBackend
 			public Gdk.ModifierType State;
 			public KeyboardShortcut[] Shortcuts;
 		}
-		
-		//introduced in GTK 2.20
-		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
-		extern static void gdk_keymap_add_virtual_modifiers (IntPtr keymap, ref Gdk.ModifierType state);
-		
-		//Custom patch in Mono Mac w/GTK+ 2.24.8+
-		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
-		extern static void gdk_quartz_set_fix_modifiers (bool fix);
 		
 		static Gdk.Keymap keymap = Gdk.Keymap.Default;
 		static Dictionary<ulong,MappedKeys> mappedKeys = new Dictionary<ulong,MappedKeys> ();
@@ -841,7 +835,8 @@ namespace Xwt.GtkBackend
 		static HashSet<Type> fixedContainerTypes;
 		static Dictionary<IntPtr,ForallDelegate> forallCallbacks;
 		static bool containerLeakFixed;
-		
+
+#if GTK2		
 		// Works around BXC #3801 - Managed Container subclasses are incorrectly resurrected, then leak.
 		// It does this by registering an alternative callback for gtksharp_container_override_forall, which
 		// ignores callbacks if the wrapper no longer exists. This means that the objects no longer enter a
@@ -983,6 +978,7 @@ namespace Xwt.GtkBackend
 			
 			return (ForallDelegate) dm.CreateDelegate (typeof (ForallDelegate));
 		}
+#endif
 		
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
 		delegate void ForallDelegate (IntPtr container, bool include_internals, IntPtr cb, IntPtr data);
@@ -1026,12 +1022,6 @@ namespace Xwt.GtkBackend
 
 		static bool canSetOverlayScrollbarPolicy = true;
 
-		[DllImport (GtkInterop.LIBGTK)]
-		static extern void gtk_scrolled_window_set_overlay_policy (IntPtr sw, Gtk.PolicyType hpolicy, Gtk.PolicyType vpolicy);
-
-		[DllImport (GtkInterop.LIBGTK)]
-		static extern void gtk_scrolled_window_get_overlay_policy (IntPtr sw, out Gtk.PolicyType hpolicy, out Gtk.PolicyType vpolicy);
-
 		public static void SetOverlayScrollbarPolicy (Gtk.ScrolledWindow sw, Gtk.PolicyType hpolicy, Gtk.PolicyType vpolicy)
 		{
 			if (!canSetOverlayScrollbarPolicy) {
@@ -1061,9 +1051,6 @@ namespace Xwt.GtkBackend
 			canSetOverlayScrollbarPolicy = false;
 		}
 
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern bool gtk_tree_view_get_tooltip_context (IntPtr raw, ref int x, ref int y, bool keyboard_tip, out IntPtr model, out IntPtr path, IntPtr iter);
-
 		//the GTK# version of this has 'out' instead of 'ref', preventing passing the x,y values in
 		public static bool GetTooltipContext (this Gtk.TreeView tree, ref int x, ref int y, bool keyboardTip,
 			 out GtkTreeModel model, out Gtk.TreePath path, out Gtk.TreeIter iter)
@@ -1079,9 +1066,6 @@ namespace Xwt.GtkBackend
 			return result;
 		}
 
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_image_menu_item_set_always_show_image (IntPtr menuitem, bool alwaysShow);
-
 		public static void ForceImageOnMenuItem (Gtk.ImageMenuItem mi)
 		{
 			if (GtkMajorVersion > 2 || GtkMajorVersion <= 2 && GtkMinorVersion >= 16)
@@ -1094,24 +1078,6 @@ namespace Xwt.GtkBackend
 		#else
 		static bool supportsHiResIcons = true;
 		#endif
-
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_icon_source_set_scale (IntPtr source, double scale);
-
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_icon_source_set_scale_wildcarded (IntPtr source, bool setting);
-
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern double gtk_widget_get_scale_factor (IntPtr widget);
-
-		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
-		static extern double gdk_screen_get_monitor_scale_factor (IntPtr widget, int monitor);
-
-		[DllImport (GtkInterop.LIBGOBJECT, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr g_object_get_data (IntPtr source, string name);
-
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr gtk_icon_set_render_icon_scaled (IntPtr handle, IntPtr style, int direction, int state, int size, IntPtr widget, IntPtr intPtr, ref double scale);
 
 		public static bool SetSourceScale (Gtk.IconSource source, double scale)
 		{
@@ -1275,19 +1241,10 @@ namespace Xwt.GtkBackend
 			#endif
 		}
 
-
-		[DllImport(GtkInterop.LIBGOBJECT, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr g_signal_stop_emission_by_name(IntPtr raw, string name);
-
 		public static void StopSignal (this GLib.Object gobject, string signalid)
 		{
 			g_signal_stop_emission_by_name (gobject.Handle, signalid);
 		}
-
-		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr gtk_binding_set_find (string setName);
-		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_binding_entry_remove (IntPtr bindingSet, uint keyval, Gdk.ModifierType modifiers);
 
 		public static void RemoveKeyBindingFromClass (GLib.GType gtype, Gdk.Key key, Gdk.ModifierType modifiers)
 		{
@@ -1300,9 +1257,6 @@ namespace Xwt.GtkBackend
 		{
 			return g_object_get_data (o.Handle, name);
 		}
-
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_object_set_data (IntPtr raw, IntPtr key, IntPtr data);
 
 		public static void SetData<T> (GLib.Object gtkobject, string key, T data) where T : struct
 		{
@@ -1333,12 +1287,6 @@ namespace Xwt.GtkBackend
 				return gdk_win32_drawable_get_handle (window.GdkWindow.Handle);
 			return gdk_x11_drawable_get_xid (window.GdkWindow.Handle);
 		}
-
-		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		private static extern bool gtk_selection_data_set_uris(IntPtr raw, IntPtr[] uris);
-
-		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr gtk_selection_data_get_uris(IntPtr raw);
 
 		public static bool SetUris(this Gtk.SelectionData data, string[] uris)
 		{
@@ -1450,12 +1398,6 @@ namespace Xwt.GtkBackend
 
 			return result;
 		}
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr pango_attribute_copy (IntPtr raw);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr pango_attr_iterator_get (IntPtr raw, int type);
 
 		public static Pango.Attribute SafeGetCopy (this Pango.AttrIterator iter, Pango.AttrType type)
 		{

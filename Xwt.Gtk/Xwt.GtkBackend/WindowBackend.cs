@@ -93,7 +93,11 @@ namespace Xwt.GtkBackend
 				MenuBackend m = (MenuBackend) menu;
 				mainMenu = m.MenuBar;
 				mainBox.PackStart (mainMenu, false, false, 0);
+#if XWT_GTKSHARP3
+				mainBox.ReorderChild(mainMenu,0);
+#else						
 				((Gtk.Box.BoxChild)mainBox[mainMenu]).Position = 0;
+#endif
 			} else
 				mainMenu = null;
 		}

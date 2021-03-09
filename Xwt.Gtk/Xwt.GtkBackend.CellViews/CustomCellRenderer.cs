@@ -153,6 +153,9 @@ namespace Xwt.GtkBackend
 			Parent.EndDrawing ();
 		}
 
+#if XWT_GTKSHARP3
+		// TODO GTKSHARP
+#else	
 		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
 			Size size = new Size ();
@@ -164,6 +167,7 @@ namespace Xwt.GtkBackend
 			height = (int) size.Height;
 			x_offset = y_offset = 0;
 		}
+#endif
 	}
 }
 

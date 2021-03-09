@@ -29,30 +29,31 @@ using Gtk;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using Xwt.Drawing;
+using static Xwt.Interop.DllImportPango;
 
 namespace Xwt.GtkBackend
 {
 	public static class GtkInterop
 	{
-		internal const string LIBATK          = "libatk-1.0-0.dll";
-		internal const string LIBGLIB         = "libglib-2.0-0.dll";
-		internal const string LIBGOBJECT      = "libgobject-2.0-0.dll";
-		internal const string LIBPANGO        = "libpango-1.0-0.dll";
-		internal const string LIBPANGOCAIRO   = "libpangocairo-1.0-0.dll";
-		internal const string LIBFONTCONFIG   = "fontconfig";
+		public const string LIBATK          = "libatk-1.0-0.dll";
+		public const string LIBGLIB         = "libglib-2.0-0.dll";
+		public const string LIBGOBJECT      = "libgobject-2.0-0.dll";
+		public const string LIBPANGO        = "libpango-1.0-0.dll";
+		public const string LIBPANGOCAIRO   = "libpangocairo-1.0-0.dll";
+		public const string LIBFONTCONFIG   = "fontconfig";
 
 		#if XWT_GTK3
-		internal const string LIBGTK          = "libgtk-3-0.dll";
-		internal const string LIBGDK          = "libgdk-3-0.dll";
-		internal const string LIBGTKGLUE      = "gtksharpglue-3";
-		internal const string LIBGLIBGLUE     = "glibsharpglue-3";
-		internal const string LIBWEBKIT       = "libwebkitgtk-3.0-0.dll";
+		public const string LIBGTK          = "libgtk-3-0.dll";
+		public const string LIBGDK          = "libgdk-3-0.dll";
+		public const string LIBGTKGLUE      = "gtksharpglue-3";
+		public const string LIBGLIBGLUE     = "glibsharpglue-3";
+		public const string LIBWEBKIT       = "libwebkitgtk-3.0-0.dll";
 		#else
-		internal const string LIBGTK          = "libgtk-win32-2.0-0.dll";
-		internal const string LIBGDK          = "libgdk-win32-2.0-0.dll";
-		internal const string LIBGTKGLUE      = "gtksharpglue-2";
-		internal const string LIBGLIBGLUE     = "glibsharpglue-2";
-		internal const string LIBWEBKIT       = "libwebkitgtk-1.0-0.dll";
+		public const string LIBGTK          = "libgtk-win32-2.0-0.dll";
+		public const string LIBGDK          = "libgdk-win32-2.0-0.dll";
+		public const string LIBGTKGLUE      = "gtksharpglue-2";
+		public const string LIBGLIBGLUE     = "glibsharpglue-2";
+		public const string LIBWEBKIT       = "libwebkitgtk-1.0-0.dll";
 		#endif
 	}
 
@@ -174,48 +175,6 @@ namespace Xwt.GtkBackend
 			}
 			pango_attr_list_insert (list, attribute);
 		}
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_size_new_absolute (int size);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_style_new (Pango.Style style);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_stretch_new (Pango.Stretch stretch);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_weight_new (Pango.Weight weight);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_foreground_new (ushort red, ushort green, ushort blue);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_background_new (ushort red, ushort green, ushort blue);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_underline_new (Pango.Underline underline);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_strikethrough_new (bool strikethrough);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_font_desc_new (IntPtr desc);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern IntPtr pango_attr_list_new ();
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern void pango_attr_list_unref (IntPtr list);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern void pango_attr_list_insert (IntPtr list, IntPtr attr);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern void pango_layout_set_attributes (IntPtr layout, IntPtr attrList);
-
-		[DllImport (GtkInterop.LIBPANGO, CallingConvention=CallingConvention.Cdecl)]
-		static extern void pango_attr_list_splice (IntPtr attr_list, IntPtr other, Int32 pos, Int32 len);
 
 		public void Splice (Pango.AttrList attrs, int pos, int len)
 		{

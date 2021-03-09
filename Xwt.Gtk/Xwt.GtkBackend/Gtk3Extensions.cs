@@ -27,6 +27,8 @@
 using Xwt.Backends;
 using System;
 using System.Runtime.InteropServices;
+using static Xwt.Interop.DllImportGtk;
+using static Xwt.Interop.DllImportGdk;
 using Gtk;
 
 namespace Xwt.GtkBackend
@@ -58,9 +60,6 @@ namespace Xwt.GtkBackend
 			widget.SetStateFlags(Gtk.StateFlags.Normal, true);
 		}
 
-		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr gdk_pixbuf_get_from_surface (IntPtr surface, int src_x, int src_y, int width, int height);
-
 		public static Gdk.Pixbuf GetFromSurface (Cairo.Surface surface, int src_x, int src_y, int width, int height)
 		{
 			IntPtr raw_ret = gdk_pixbuf_get_from_surface (surface.Handle, src_x, src_y, width, height);
@@ -71,9 +70,6 @@ namespace Xwt.GtkBackend
 				ret = (Gdk.Pixbuf)GLib.Object.GetObject (raw_ret);
 			return ret;
 		}
-
-		[DllImport (GtkInterop.LIBGDK)]
-		static extern IntPtr gdk_pixbuf_get_from_window(IntPtr win, int src_x, int src_y, int width, int height);
 
 		public static Gdk.Pixbuf ToPixbuf (this Gdk.Window window, int src_x, int src_y, int width, int height)
 		{

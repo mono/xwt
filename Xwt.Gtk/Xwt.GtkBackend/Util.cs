@@ -31,7 +31,8 @@ using Xwt.Backends;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-
+using  static Xwt.Interop.DllImportGtk;
+	
 namespace Xwt.GtkBackend
 {
 	public static class Util
@@ -277,9 +278,6 @@ namespace Xwt.GtkBackend
 		{
 			((IDisposable)cr).Dispose ();
 		}
-
-		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_label_set_attributes (IntPtr label, IntPtr attrList);
 
 		internal static TextIndexer ApplyFormattedText(this Gtk.Label label, FormattedText text)
 		{

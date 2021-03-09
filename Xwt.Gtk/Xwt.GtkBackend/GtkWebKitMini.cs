@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Runtime.InteropServices;
+using static Xwt.Interop.DllImportWebkit;
 
 namespace Xwt.GtkBackend.WebKit
 {
@@ -43,6 +44,13 @@ namespace Xwt.GtkBackend.WebKit
 			Raw = webkit_web_view_new();
 		}
 
+#if XWT_GTKSHARP3
+
+		bool Gtk.IScrollable.GetBorder (Gtk.Border border) {
+			return true;
+		}
+#endif
+		
 		public void LoadUri(string uri) {
 			IntPtr native_uri = GLib.Marshaller.StringToPtrGStrdup (uri);
 			webkit_web_view_load_uri(Handle, native_uri);
@@ -278,51 +286,7 @@ namespace Xwt.GtkBackend.WebKit
 				return ret;
 			}
 		}
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern IntPtr webkit_web_view_new();
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern IntPtr webkit_web_view_get_type();
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern void webkit_web_view_load_uri(IntPtr raw, IntPtr uri);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern IntPtr webkit_web_view_get_uri(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern bool webkit_web_view_get_full_content_zoom(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern void webkit_web_view_set_full_content_zoom(IntPtr raw, bool full_content_zoom);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern void webkit_web_view_stop_loading(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern void webkit_web_view_reload(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern bool webkit_web_view_can_go_back(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern void webkit_web_view_go_back(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern bool webkit_web_view_can_go_forward(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern void webkit_web_view_go_forward(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern void webkit_web_view_load_string (IntPtr raw, IntPtr content, IntPtr mime_type, IntPtr encoding, IntPtr base_uri);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern IntPtr webkit_web_view_get_title(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern double webkit_web_view_get_progress(IntPtr raw);
+	
 
 	}
 
@@ -364,17 +328,7 @@ namespace Xwt.GtkBackend.WebKit
 			WebView.Initialize ();
 		}
 
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern IntPtr webkit_network_request_new(IntPtr uri);
 
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern IntPtr webkit_network_request_get_type();
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern IntPtr webkit_network_request_get_uri(IntPtr raw);
-
-		[DllImport (GtkInterop.LIBWEBKIT)]
-		static extern void webkit_network_request_set_uri(IntPtr raw, IntPtr uri);
 	}
 
 	public enum NavigationResponse {
