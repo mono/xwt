@@ -43,6 +43,7 @@ namespace Xwt.Mac
 			ViewObject = new CustomScrollView ();
 			Widget.HasHorizontalScroller = true;
 			Widget.HasVerticalScroller = true;
+			Widget.AutohidesScrollers = true;
 			Widget.AutoresizesSubviews = true;
 		}
 
