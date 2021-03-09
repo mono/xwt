@@ -14,7 +14,7 @@ This package contains the GTK toolkit backend for Xwt based applications targeti
 Xwt.Gtk requires gtk-sharp (https://github.com/mono/gtk-sharp/). The Windows installation package can be obtained from http://www.monodevelop.com/download/#win.
 		</description>
 		<releaseNotes></releaseNotes>
-		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/master/LICENSE.txt</licenseUrl>
+		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/main/LICENSE.txt</licenseUrl>
 		<projectUrl>https://github.com/mono/xwt/</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<copyright>$copyright$</copyright>
