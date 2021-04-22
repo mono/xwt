@@ -52,9 +52,9 @@ namespace Xwt.Mac
 
 				// Manually register all the currently loaded assemblies.
 				foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-                {
+				{
 					Runtime.RegisterAssembly(assembly);
-                }
+				}
 			}
 		}
 
