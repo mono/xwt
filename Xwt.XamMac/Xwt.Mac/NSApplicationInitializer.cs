@@ -24,7 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 using AppKit;
+using Foundation;
+using ObjCRuntime;
 
 namespace Xwt.Mac
 {
@@ -36,13 +40,33 @@ namespace Xwt.Mac
 			if (System.Threading.Thread.GetData (ds) == null) {
 				System.Threading.Thread.SetData (ds, true);
 
-				// IgnoreMissingAssembliesDuringRegistration is only avalilable in Xamarin.Mac 3.4+
-				// Use reflection to not break builds with older Xamarin.Mac
-				var ignoreMissingAssemblies = typeof (NSApplication).GetField ("IgnoreMissingAssembliesDuringRegistration",
-				                                                               System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-				ignoreMissingAssemblies?.SetValue (null, true);
+				NSApplication.IgnoreMissingAssembliesDuringRegistration = true;
+
+				// Setup a registration handler that does not let Xamarin.Mac register assemblies by default.
+				Runtime.AssemblyRegistration += Runtime_AssemblyRegistration;
+
 				NSApplication.Init ();
+
+				// Register a callback when an assembly is loaded so it's registered in the xammac registrar.
+				AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
+
+				// Manually register all the currently loaded assemblies.
+				foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                {
+					Runtime.RegisterAssembly(assembly);
+                }
 			}
+		}
+
+		private static void Runtime_AssemblyRegistration(object sender, AssemblyRegistrationEventArgs args)
+		{
+			// If we don't do this, Xamarin.Mac will forcefully load all the assemblies referenced from the app startup assembly.
+			args.Register = false;
+		}
+
+		private static void CurrentDomain_AssemblyLoad (object sender, AssemblyLoadEventArgs args)
+		{
+			Runtime.RegisterAssembly(args.LoadedAssembly);
 		}
 	}
 }
