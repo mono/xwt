@@ -190,7 +190,7 @@ namespace Xwt
 		/// <param name="fullTypeName">The <see cref="Type.FullName"/> of the toolkit type.</param>
 		public static Toolkit Load (string fullTypeName)
 		{
-			return Load (fullTypeName, true);
+			return Load (fullTypeName, true, true);
 		}
 
 		/// <summary>
@@ -198,12 +198,13 @@ namespace Xwt
 		/// </summary>
 		/// <param name="fullTypeName">The <see cref="Type.FullName"/> of the toolkit type.</param>
 		/// <param name="isGuest">If set to <c>true</c> the toolkit is loaded as guest of another toolkit.</param>
-		internal static Toolkit Load (string fullTypeName, bool isGuest)
+        /// <param name="initializeToolkit">If set to <c>true</c> the parent toolkit is initialized.</param>
+		internal static Toolkit Load (string fullTypeName, bool isGuest, bool initializeToolkit)
 		{
 			Toolkit t = new Toolkit ();
 
 			if (!string.IsNullOrEmpty (fullTypeName)) {
-				t.LoadBackend (fullTypeName, isGuest, true);
+				t.LoadBackend (fullTypeName, isGuest, initializeToolkit, true);
 				var bk = knownBackends.FirstOrDefault (tk => fullTypeName.StartsWith (tk.TypeName));
 				if (bk != null)
 					t.Type = bk.Type;
@@ -211,7 +212,7 @@ namespace Xwt
 			}
 
 			foreach (var bk in knownBackends) {
-				if (t.LoadBackend (bk.FullTypeName, isGuest, false)) {
+				if (t.LoadBackend (bk.FullTypeName, isGuest, initializeToolkit, false)) {
 					t.Type = bk.Type;
 					return t;
 				}
@@ -232,7 +233,7 @@ namespace Xwt
 
 			Toolkit t = new Toolkit ();
 			t.toolkitType = type;
-			t.LoadBackend (GetBackendType (type), true, true);
+			t.LoadBackend (GetBackendType (type), true, true, true);
 			return t;
 		}
 
@@ -252,7 +253,7 @@ namespace Xwt
 
 			Toolkit t = new Toolkit ();
 			t.toolkitType = type;
-			if (t.LoadBackend (GetBackendType (type), true, false)) {
+			if (t.LoadBackend (GetBackendType (type), true, true, false)) {
 				toolkit = t;
 				return true;
 			}
@@ -274,7 +275,7 @@ namespace Xwt
 			throw new ArgumentException ("Invalid toolkit type");
 		}
 
-		bool LoadBackend (string type, bool isGuest, bool throwIfFails)
+		bool LoadBackend (string type, bool isGuest, bool initializeToolkit, bool throwIfFails)
 		{
 			int i = type.IndexOf (',');
 			string assembly = type.Substring (i+1).Trim ();
@@ -285,7 +286,7 @@ namespace Xwt
 					Type t = asm.GetType (type);
 					if (t != null) {
 						backend = (ToolkitEngineBackend) Activator.CreateInstance (t);
-						Initialize (isGuest);
+						Initialize (isGuest, initializeToolkit);
 						return true;
 					}
 				}
@@ -299,10 +300,10 @@ namespace Xwt
 			return false;
 		}
 
-		void Initialize (bool isGuest)
+		void Initialize (bool isGuest, bool initializeToolkit)
 		{
 			toolkits[Backend.GetType ()] = this;
-			backend.Initialize (this, isGuest);
+			backend.Initialize (this, isGuest, initializeToolkit);
 			ContextBackendHandler = Backend.CreateBackend<ContextBackendHandler> ();
 			GradientBackendHandler = Backend.CreateBackend<GradientBackendHandler> ();
 			TextLayoutBackendHandler = Backend.CreateBackend<TextLayoutBackendHandler> ();
