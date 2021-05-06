@@ -34,6 +34,7 @@ namespace Xwt.Mac
 {
 	static class NSApplicationInitializer
 	{
+		static readonly object lockObject = new object();
 		public static void Initialize ()
 		{
 			var ds = System.Threading.Thread.GetNamedDataSlot ("NSApplication.Initialized");
@@ -51,9 +52,12 @@ namespace Xwt.Mac
 				AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
 
 				// Manually register all the currently loaded assemblies.
-				foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+				lock (lockObject)
 				{
-					Runtime.RegisterAssembly(assembly);
+					foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+					{
+						Runtime.RegisterAssembly(assembly);
+					}
 				}
 			}
 		}
@@ -66,7 +70,10 @@ namespace Xwt.Mac
 
 		private static void CurrentDomain_AssemblyLoad (object sender, AssemblyLoadEventArgs args)
 		{
-			Runtime.RegisterAssembly(args.LoadedAssembly);
+			lock (lockObject)
+			{
+				Runtime.RegisterAssembly(args.LoadedAssembly);
+			}
 		}
 	}
 }
