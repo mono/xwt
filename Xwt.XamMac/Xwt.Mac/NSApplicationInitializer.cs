@@ -66,7 +66,16 @@ namespace Xwt.Mac
 
 		private static void CurrentDomain_AssemblyLoad (object sender, AssemblyLoadEventArgs args)
 		{
-			Runtime.RegisterAssembly(args.LoadedAssembly);
+			try
+			{
+				Runtime.RegisterAssembly(args.LoadedAssembly);
+			}
+			catch (Exception ex)
+			{
+                Console.WriteLine("ASM: " + args?.LoadedAssembly);
+                Console.WriteLine(ex);
+				throw;
+			}
 		}
 	}
 }
