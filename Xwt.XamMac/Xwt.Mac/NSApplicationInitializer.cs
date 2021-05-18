@@ -52,12 +52,9 @@ namespace Xwt.Mac
 				AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
 
 				// Manually register all the currently loaded assemblies.
-				lock (lockObject)
+				foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 				{
-					foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-					{
-						Runtime.RegisterAssembly(assembly);
-					}
+					Runtime.RegisterAssembly(assembly);
 				}
 			}
 		}
@@ -70,9 +67,12 @@ namespace Xwt.Mac
 
 		private static void CurrentDomain_AssemblyLoad (object sender, AssemblyLoadEventArgs args)
 		{
-			lock (lockObject)
+			try
 			{
 				Runtime.RegisterAssembly(args.LoadedAssembly);
+			} catch (Exception e)
+			{
+				Console.Error.WriteLine("Error during static registrar initialization load", e);
 			}
 		}
 	}
