@@ -174,6 +174,17 @@ namespace Xwt
 		}
 
 		/// <summary>
+		/// Exits the Xwt application.
+		/// </summary>
+		public static void Exit(int exitCode)
+		{
+			toolkit.InvokePlatformCode(() => engine.ExitApplication(exitCode));
+
+			if (SynchronizationContext.Current is XwtSynchronizationContext)
+				XwtSynchronizationContext.Uninstall();
+		}
+
+		/// <summary>
 		/// Releases all resources used by the application
 		/// </summary>
 		/// <remarks>This method must be called before the application process ends</remarks>

@@ -155,6 +155,14 @@ namespace Xwt.Mac
 			NSApplication.SharedApplication.Terminate(appDelegate);
 		}
 
+		public override void ExitApplication(int exitCode)
+		{
+			if (exitCode == 0)
+				NSApplication.SharedApplication.Terminate(appDelegate);
+			else
+				Environment.Exit(exitCode);
+		}
+
 		static Selector hijackedSel = new Selector ("hijacked_loadNibNamed:owner:");
 		static Selector originalSel = new Selector ("loadNibNamed:owner:");
 		

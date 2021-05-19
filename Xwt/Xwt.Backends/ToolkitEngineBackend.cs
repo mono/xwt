@@ -123,6 +123,14 @@ namespace Xwt.Backends
 		public abstract void ExitApplication ();
 
 		/// <summary>
+		/// Exits the main GUI loop with an exit code
+		/// </summary>
+		public virtual void ExitApplication(int exitCode)
+		{
+			ExitApplication();
+		}
+
+		/// <summary>
 		/// Releases all resource used by the <see cref="Xwt.Backends.ToolkitEngineBackend"/> object.
 		/// </summary>
 		public virtual void Dispose ()
