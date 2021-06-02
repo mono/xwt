@@ -122,7 +122,7 @@ namespace Xwt
 
 			toolkit.EnterUserCode ();
 		}
-		
+
 		/// <summary>
 		/// Initializes Xwt as guest, embedded into an other existing toolkit.
 		/// </summary>
@@ -143,6 +143,20 @@ namespace Xwt
 				throw new ArgumentNullException ("backendType");
 			Initialize (backendType);
 			toolkit.ExitUserCode (null);
+		}
+
+		public static void InitializeAsGuest(ToolkitType type, bool initializeToolkit)
+		{
+			InitializeAsGuest(Toolkit.GetBackendType(type), initializeToolkit);
+			toolkit.Type = type;
+		}
+
+		public static void InitializeAsGuest(string backendType, bool initializeToolkit)
+		{
+			if (backendType == null)
+				throw new ArgumentNullException("backendType");
+			Initialize(backendType, initializeToolkit);
+			toolkit.ExitUserCode(null);
 		}
 
 		/// <summary>
