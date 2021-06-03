@@ -71,8 +71,10 @@ namespace Xwt.Mac
 		{
 			try
 			{
-				Console.WriteLine("NSApplicationInitializer assembly load - register assembly {0}", args?.LoadedAssembly?.FullName);
+				string fullname = args?.LoadedAssembly?.FullName;
+				Console.WriteLine("NSApplicationInitializer assembly load - register assembly {0}", fullname);
 				Runtime.RegisterAssembly(args.LoadedAssembly);
+				Console.WriteLine("NSApplicationInitializer assembly load - assembly registered {0}", fullname);
 			} catch (Exception e)
 			{
 				Console.Error.WriteLine("Error during static registrar initialization load {0}", e);
