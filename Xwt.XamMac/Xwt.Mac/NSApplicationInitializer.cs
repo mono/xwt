@@ -39,6 +39,7 @@ namespace Xwt.Mac
 		{
 			var ds = System.Threading.Thread.GetNamedDataSlot ("NSApplication.Initialized");
 			if (System.Threading.Thread.GetData (ds) == null) {
+				Console.WriteLine("NSApplicationInitializer.Initialize");
 				System.Threading.Thread.SetData (ds, true);
 
 				NSApplication.IgnoreMissingAssembliesDuringRegistration = true;
@@ -54,6 +55,7 @@ namespace Xwt.Mac
 				// Manually register all the currently loaded assemblies.
 				foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 				{
+					Console.WriteLine("NSApplicationInitializer.Initialize register assembly {0}", assembly.FullName);
 					Runtime.RegisterAssembly(assembly);
 				}
 			}
@@ -69,10 +71,11 @@ namespace Xwt.Mac
 		{
 			try
 			{
+				Console.WriteLine("NSApplicationInitializer assembly load - register assembly {0}", args?.LoadedAssembly?.FullName);
 				Runtime.RegisterAssembly(args.LoadedAssembly);
 			} catch (Exception e)
 			{
-				Console.Error.WriteLine("Error during static registrar initialization load", e);
+				Console.Error.WriteLine("Error during static registrar initialization load {0}", e);
 			}
 		}
 	}
