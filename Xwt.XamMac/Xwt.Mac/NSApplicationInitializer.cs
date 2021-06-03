@@ -72,6 +72,13 @@ namespace Xwt.Mac
 			try
 			{
 				string fullname = args?.LoadedAssembly?.FullName;
+				if (args?.LoadedAssembly?.ReflectionOnly == true)
+				{
+					// ignore.
+					Console.WriteLine("Ignoring reflection only assembly {0}", fullname);
+					return;
+				}
+
 				Console.WriteLine("NSApplicationInitializer assembly load - register assembly {0}", fullname);
 				Runtime.RegisterAssembly(args.LoadedAssembly);
 				Console.WriteLine("NSApplicationInitializer assembly load - assembly registered {0}", fullname);
