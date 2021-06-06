@@ -69,10 +69,18 @@ namespace Xwt.Mac
 		{
 			try
 			{
+				if (args.LoadedAssembly.ReflectionOnly)
+				{
+					// Ignore. Code cannot be executed from reflection only assemblies. They will also fail
+					// to be loaded by Xamarin.Mac's DynamicRegistrar when it calls assembly.GetTypes() without an
+					// AppDomain.ReflectionOnlyAssemblyResolve event handler resolve the dependencies.
+					return;
+				}
 				Runtime.RegisterAssembly(args.LoadedAssembly);
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
-				Console.Error.WriteLine("Error during static registrar initialization load", e);
+				Console.Error.WriteLine("Error during static registrar initialization load {0}", e);
 			}
 		}
 	}
