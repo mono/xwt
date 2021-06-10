@@ -39,12 +39,14 @@ namespace Xwt
 		/// <param name="modifiers">The modifier keys.</param>
 		/// <param name="isRepeat">the key has been pressed more then once.</param>
 		/// <param name="timestamp">The timestamp of the key event.</param>
-		public KeyEventArgs (Key key, ModifierKeys modifiers, bool isRepeat, long timestamp)
+		public KeyEventArgs (Key key, ModifierKeys modifiers, bool isRepeat, long timestamp, string characters = "", string charactersIgnoringModifiers = "")
 		{
 			this.Key = key;
 			this.Modifiers = modifiers;
 			this.IsRepeat = isRepeat;
 			this.Timestamp = timestamp;
+			this.Characters = characters;
+			this.CharactersIgnoringModifiers = charactersIgnoringModifiers;
 		}
 		
 		/// <summary>
@@ -55,8 +57,8 @@ namespace Xwt
 		/// <param name="modifiers">The modifier keys.</param>
 		/// <param name="isRepeat">the key has been pressed more then once.</param>
 		/// <param name="timestamp">The timestamp of the key event.</param>
-		public KeyEventArgs (Key key, int nativeKeyCode, ModifierKeys modifiers, bool isRepeat, long timestamp)
-			: this (key, modifiers, isRepeat, timestamp)
+		public KeyEventArgs (Key key, int nativeKeyCode, ModifierKeys modifiers, bool isRepeat, long timestamp, string characters = "", string charactersIgnoringModifiers = "")
+			: this (key, modifiers, isRepeat, timestamp, characters, charactersIgnoringModifiers)
 		{
 			this.NativeKeyCode = nativeKeyCode;
 		}
@@ -103,6 +105,9 @@ namespace Xwt
 		/// the backend from processing the key and adding the appropriate character to <see cref="Xwt.TextEntry.Text"/>.
 		/// </remarks>
 		public bool Handled { get; set; }
+
+		public string Characters { get; private set; }
+		public string CharactersIgnoringModifiers { get; private set; }
 	}
 }
 
