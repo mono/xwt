@@ -35,7 +35,7 @@ namespace Xwt.Mac
 		{
 			Key key = GetXwtKey(keyEvent);
 			ModifierKeys mod = keyEvent.ModifierFlags.ToXwtValue ();
-			return new KeyEventArgs (key, keyEvent.KeyCode, mod, keyEvent.IsARepeat, (long)TimeSpan.FromSeconds (keyEvent.Timestamp).TotalMilliseconds, keyEvent.Characters, keyEvent.CharactersIgnoringModifiers);
+			return new KeyEventArgs (key, keyEvent.KeyCode, mod, keyEvent.IsARepeat, (long)TimeSpan.FromSeconds (keyEvent.Timestamp).TotalMilliseconds, keyEvent.Characters, keyEvent.CharactersIgnoringModifiers, keyEvent);
 		}
 
 		static Key GetXwtKey (NSEvent keyEvent)
