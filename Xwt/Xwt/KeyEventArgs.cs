@@ -58,7 +58,7 @@ namespace Xwt
 		/// <param name="modifiers">The modifier keys.</param>
 		/// <param name="isRepeat">the key has been pressed more then once.</param>
 		/// <param name="timestamp">The timestamp of the key event.</param>
-		public KeyEventArgs(Key key, ModifierKeys modifiers, bool isRepeat, long timestamp) : this (key, modifiers, isRepeat, timestamp, "", "")
+		public KeyEventArgs(Key key, ModifierKeys modifiers, bool isRepeat, long timestamp) : this (key, modifiers, isRepeat, timestamp, string.Empty, string.Empty)
         {
         }
 
@@ -86,7 +86,7 @@ namespace Xwt
 		/// <param name="modifiers">The modifier keys.</param>
 		/// <param name="isRepeat">the key has been pressed more then once.</param>
 		/// <param name="timestamp">The timestamp of the key event.</param>
-		public KeyEventArgs(Key key, int nativeKeyCode, ModifierKeys modifiers, bool isRepeat, long timestamp) : this (key, nativeKeyCode, modifiers, isRepeat, timestamp, "", "")
+		public KeyEventArgs(Key key, int nativeKeyCode, ModifierKeys modifiers, bool isRepeat, long timestamp) : this (key, nativeKeyCode, modifiers, isRepeat, timestamp, string.Empty, string.Empty)
         {
         }
 
