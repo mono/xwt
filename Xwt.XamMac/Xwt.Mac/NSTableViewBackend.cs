@@ -108,6 +108,10 @@ namespace Xwt.Mac
 		public NSTableViewBackend (ListViewBackend viewBackend) {
 			Backend = viewBackend;
 			AllowsColumnReordering = false;
+			if (MacSystemInformation.OsVersion >= MacSystemInformation.BigSur)
+			{
+				Style = NSTableViewStyle.FullWidth;
+			}
 		}
 
 		public ViewBackend Backend { get; set; }
