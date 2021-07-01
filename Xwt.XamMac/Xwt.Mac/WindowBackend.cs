@@ -472,7 +472,7 @@ namespace Xwt.Mac
 
 		static Selector closeSel = new Selector ("close");
 
-		static readonly bool XamMacDangerousDispose = Version.Parse(Constants.Version) < new Version(5, 6);
+		internal static readonly bool XamMacDangerousDispose = Version.Parse(Constants.Version) < new Version(5, 6);
 
 		bool disposing, disposed;
 
