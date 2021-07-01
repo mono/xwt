@@ -223,7 +223,12 @@ namespace Xwt
 			}
 		}
 
-		public Color BorderColor {
+        public override Color BackgroundColor {
+			get { return canvas.BackgroundColor; }
+			set { canvas.BackgroundColor = value; }
+		}
+
+        public Color BorderColor {
 			get { return borderColor; }
 			set { borderColor = value; canvas.QueueDraw (); }
 		}
