@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using AppKit;
 using CoreGraphics;
 using Foundation;
@@ -52,7 +53,7 @@ namespace Xwt.Mac
 			if (ViewObject is MacComboBox) {
 				((MacComboBox)ViewObject).SetEntryEventSink (EventSink);
 			} else if (ViewObject == null) {
-				var view = new CustomTextField (EventSink, ApplicationContext);
+				var view = new CustomTextField (EventSink, ApplicationContext) { Backend = this };
 				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view) { DrawsBackground = false };
 				Container.ExpandVertically = true;
 				MultiLine = false;
@@ -232,16 +233,51 @@ namespace Xwt.Mac
 			}
 		}
 
+		string[] completions;
+		Func<string, string, bool> completionsMatchFunc;
+
 		public bool HasCompletions {
-			get { return false; }
+			get {
+				return completions?.Length > 0;
+			}
 		}
 
 		public void SetCompletions (string[] completions)
 		{
+			this.completions = completions;
+			if (completions != null) {
+				var entryDelegate = Widget.Delegate;
+				if (entryDelegate == null) {
+					entryDelegate = Widget.Delegate = new TextFieldDelegate ();
+				}
+				if (entryDelegate is TextFieldDelegate) {
+					((TextFieldDelegate)entryDelegate).Backend = this;
+				}
+			}
+			if (completionsMatchFunc == null) {
+				completionsMatchFunc = DefaultCompletionMatchFunc;
+			}
 		}
 
 		public void SetCompletionMatchFunc (Func<string, string, bool> matchFunc)
 		{
+			completionsMatchFunc = matchFunc ?? DefaultCompletionMatchFunc;
+		}
+
+		bool DefaultCompletionMatchFunc (string word, string completion)
+		{
+			if (word == null || completion == null)
+				return false;
+			return completion.StartsWith (word, StringComparison.CurrentCulture);
+		}
+
+		internal string [] GetCompletions (string word)
+		{
+			if (completions?.Length > 0)
+			{
+				return completions.Where (c => completionsMatchFunc(word, c)).ToArray ();
+			}
+			return new string[0];
 		}
 
 		#endregion
@@ -283,6 +319,65 @@ namespace Xwt.Mac
 				Widget.Cell.BackgroundColor = value.ToNSColor ();
 			}
 		}
+
+		protected override void Dispose(bool disposing)
+		{
+			completions = null;
+			base.Dispose (disposing);
+		}
+	}
+
+	class TextFieldDelegate : NSTextFieldDelegate
+	{
+		WeakReference weakBackend;
+
+		public TextEntryBackend Backend
+		{
+			get { return weakBackend?.Target as TextEntryBackend; }
+			set { weakBackend = new WeakReference (value); }
+		}
+
+		public override string[] GetCompletions (NSControl control, NSTextView textView, string[] words, NSRange charRange, ref nint index)
+		{
+			var backend = Backend;
+			if (backend != null)
+			{
+				string word;
+				try {
+					word = textView.String.Substring ((int)charRange.Location, (int)charRange.Length);
+				} catch (ArgumentOutOfRangeException) {
+					return new string[0];
+				}
+				return backend.GetCompletions (word);
+			}
+			return new string[0];
+		}
+
+		bool isCompleting;
+		[Export("controlTextDidChange:")]
+		public void DidChange (NSNotification notification)
+		{
+			var editor = notification.Object as NSTextView ?? (notification.Object as NSTextField)?.CurrentEditor as NSTextView;
+			if (!isCompleting && editor != null && editor.String.Length > 0 && Backend?.HasCompletions == true) {
+				// Cocoa will call DidChange for each completion, even if the text didn't change
+				// avoid an infinite loop with an isCompleting check.
+				isCompleting = true;
+				editor.Complete (null);
+				isCompleting = false;
+			}
+			if (Backend.EventSink != null) {
+				Backend.ApplicationContext.InvokeUserCode (delegate {
+					Backend.EventSink.OnChanged ();
+					Backend.EventSink.OnSelectionChanged ();
+				});
+			}
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			weakBackend = null;
+			base.Dispose(disposing);
+		}
 	}
 	
 	class CustomTextField: NSTextField, IViewObject
@@ -313,15 +408,6 @@ namespace Xwt.Mac
 		}
 
 		public ViewBackend Backend { get; set; }
-		
-		public override void DidChange (NSNotification notification)
-		{
-			base.DidChange (notification);
-			context.InvokeUserCode (delegate {
-				eventSink.OnChanged ();
-				eventSink.OnSelectionChanged ();
-			});
-		}
 
 		public override string StringValue
 		{

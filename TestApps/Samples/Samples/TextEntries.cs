@@ -42,6 +42,16 @@ namespace Samples
 				la.Text = "Text: " + te1.Text;
 			};
 
+			te1.SetCompletions(new string [] {
+				"Lorem",
+				"Ipsum",
+				"Word1",
+				"Word2",
+				"Lorem Ipsum",
+				"Sample",
+				"Text"
+			});
+
 			HBox selBox = new HBox ();
 
 			Label las = new Label ("Selection:");
