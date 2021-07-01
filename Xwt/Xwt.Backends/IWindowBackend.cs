@@ -52,6 +52,8 @@ namespace Xwt.Backends
 		/// Sets the minimum size of the window
 		/// </summary>
 		void SetMinSize (Size size);
+
+		event Action<object> FocusChanged;
 	}
 	
 	public interface IWindowEventSink: IWindowFrameEventSink

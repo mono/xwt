@@ -124,6 +124,11 @@ namespace Xwt
 		{
 			if (!(base.BackendHost is WindowBackendHost))
 				throw new InvalidOperationException ("CreateBackendHost for WindowFrame did not return a WindowBackendHost instance");
+
+			var windowBackend = ((WindowBackendHost)base.BackendHost).Backend as IWindowBackend;
+			if (windowBackend != null) {
+				windowBackend.FocusChanged += OnFocusChanged;
+			}
 		}
 		
 		public WindowFrame (string title): this ()
@@ -144,7 +149,12 @@ namespace Xwt
 		IWindowFrameBackend Backend {
 			get { return (IWindowFrameBackend) BackendHost.Backend; } 
 		}
-		
+
+		public virtual void OnFocusChanged (object focused)
+		{
+
+		}
+
 		protected override BackendHost CreateBackendHost ()
 		{
 			return new WindowBackendHost ();
