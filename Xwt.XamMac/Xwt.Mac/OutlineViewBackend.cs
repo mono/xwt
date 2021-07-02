@@ -42,6 +42,10 @@ namespace Xwt.Mac
 		{
 			Backend = viewBackend;
 			AllowsColumnReordering = false;
+			if (MacSystemInformation.OsVersion >= MacSystemInformation.BigSur)
+			{
+				Style = NSTableViewStyle.FullWidth;
+			}
 		}
 
 		public NSView View {
