@@ -25,31 +25,35 @@
 // THE SOFTWARE.
 using System;
 using Xwt;
+using System.Linq;
 
 namespace Samples
 {
 	public class ListViewCombos: VBox
 	{
+		ListStore store;
+		ListView list;
+		DataField<int> indexField;
 		public ListViewCombos ()
 		{
-			ListView list = new ListView ();
-			var indexField = new DataField<int> ();
-
+			list = new ListView ();
+			indexField = new DataField<int> ();
 			var indexField2 = new DataField<int> ();
 			var itemsField = new DataField<ItemCollection> ();
 		
-			ListStore store = new ListStore (indexField, indexField2, itemsField);
+			store = new ListStore (indexField, indexField2, itemsField);
 			list.DataSource = store;
 			list.GridLinesVisible = GridLines.Horizontal;
 
-			var comboCellView = new ComboBoxCellView { Editable = true, SelectedIndexField = indexField };
+			ComboBoxCellView comboCellView = new ComboBoxCellView { Editable = true, SelectedIndexField = indexField };
 			comboCellView.Items.Add (1, "one");
 			comboCellView.Items.Add (2, "two");
 			comboCellView.Items.Add (3, "three");
-
+			comboCellView.EditingFinished += CellView_EditingFinished;
 			list.Columns.Add (new ListViewColumn ("List 1", comboCellView));
 
 			var comboCellView2 = new ComboBoxCellView { Editable = true, SelectedIndexField = indexField2, ItemsField = itemsField };
+			comboCellView2.EditingFinished += CellView_EditingFinished;
 			list.Columns.Add (new ListViewColumn ("List 2", comboCellView2));
 
 			int p = 0;
@@ -64,6 +68,16 @@ namespace Samples
 				store.SetValues (r, indexField2, n % 3, itemsField, col);
 			}
 			PackStart (list, true);
+		}
+
+		void CellView_EditingFinished (object sender, CellEditingFinishedArgs<CheckBoxState> e)
+		{
+			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
+		}
+
+		void CellView_EditingFinished(object sender, CellEditingFinishedArgs<string> e)
+		{
+			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
 		}
 	}
 }

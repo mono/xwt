@@ -26,7 +26,7 @@
 
 namespace Xwt.Backends
 {
-	public interface IRadioButtonCellViewFrontend: IToggleCellViewFrontend
+	public interface IRadioButtonCellViewFrontend: IToggleCellViewFrontend, IEditableCellViewFrontend<bool>
 	{
 	}
 }

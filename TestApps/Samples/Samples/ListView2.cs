@@ -20,8 +20,8 @@ namespace Samples
 			list.DataSource = store;
 			list.GridLinesVisible = GridLines.Horizontal;
 
-			var checkCellView = new CheckBoxCellView { Editable = true, ActiveField = editableActiveField };
-			checkCellView.Toggled += (sender, e) => {
+			var cellView = new CheckBoxCellView { Editable = true, ActiveField = editableActiveField };
+			cellView.Toggled += (sender, e) => {
 
 				if (list.CurrentEventRow == null) {
 					MessageDialog.ShowError("CurrentEventRow is null. This is not supposed to happen");
@@ -30,12 +30,24 @@ namespace Samples
 					store.SetValue(list.CurrentEventRow, textField, "Toggled");
 				}
 			};
+			cellView.EditingFinished += CellView_EditingFinished;
 
-			list.Columns.Add (new ListViewColumn("Editable", checkCellView));
+			list.Columns.Add (new ListViewColumn("Editable", cellView));
+
 			list.Columns.Add (new ListViewColumn("Not Editable", new CheckBoxCellView { Editable = false, ActiveField = nonEditableActiveField }));
-			list.Columns.Add (new ListViewColumn("Editable", new TextCellView { Editable = true, TextField = textField }));
-			list.Columns.Add(new ListViewColumn("Somewhat Editable", new CheckBoxCellView { EditableField = editableField, ActiveField = somewhatEditableData }));
-			list.Columns.Add (new ListViewColumn("Somewhat Editable", new TextCellView { EditableField = editableField, TextField = textField2 }));
+
+			Xwt.Backends.IEditableCellViewFrontend<string> stringCellView = new TextCellView { Editable = true, TextField = textField };
+			stringCellView.EditingFinished += CellView_EditingFinished;
+			list.Columns.Add (new ListViewColumn("Editable",(CellView) stringCellView));
+
+			cellView = new CheckBoxCellView { EditableField = editableField, ActiveField = somewhatEditableData };
+			cellView.EditingFinished += CellView_EditingFinished;
+			list.Columns.Add(new ListViewColumn("Somewhat Editable",(CellView) cellView));
+
+			stringCellView = new TextCellView { EditableField = editableField, TextField = textField2 };
+			stringCellView.EditingFinished += CellView_EditingFinished;
+
+			list.Columns.Add (new ListViewColumn("Somewhat Editable", (CellView)stringCellView));
 
 			Random rand = new Random ();
 			
@@ -50,6 +62,16 @@ namespace Samples
 				store.SetValue (r, textField2, edit ? "editable" : "not editable");
 			}
 			PackStart (list, true);
+		}
+
+		void CellView_EditingFinished(object sender, Xwt.CellEditingFinishedArgs<Xwt.CheckBoxState> e)
+		{
+			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
+		}
+
+		void CellView_EditingFinished(object sender, Xwt.CellEditingFinishedArgs<string> e)
+		{
+			Console.WriteLine("Your old value was '{0}' and now is '{1}'", e.OldValue, e.NewValue);
 		}
 	}
 }

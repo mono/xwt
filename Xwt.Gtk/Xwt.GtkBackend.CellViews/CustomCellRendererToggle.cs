@@ -58,6 +58,8 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+		CheckBoxState lastValue;
+
 		void HandleToggled (object o, ToggledArgs args)
 		{
 			SetCurrentEventRow ();
@@ -90,6 +92,21 @@ namespace Xwt.GtkBackend
 						(object) newState : (object) (newState == CheckBoxState.On);
 
 					CellUtil.SetModelValue (TreeModel, iter, field.Index, type, newValue);
+
+					if (view is ICheckBoxCellViewFrontend) {
+						((ICheckBoxCellViewFrontend)view).RaiseEditingFinished(new CellEditingFinishedArgs<CheckBoxState>(lastValue, newState));
+					} else if (view is IRadioButtonCellViewFrontend) {
+						((IRadioButtonCellViewFrontend)view).RaiseEditingFinished(new CellEditingFinishedArgs<bool>(lastValue == CheckBoxState.On, newState == CheckBoxState.On));
+					}
+
+					lastValue = newState;
+					return;
+				}
+
+				if (view is ICheckBoxCellViewFrontend) {
+					((ICheckBoxCellViewFrontend)view).RaiseEditingFinished(new CellEditingFinishedArgs<CheckBoxState>(lastValue, lastValue));
+				} else if (view is IRadioButtonCellViewFrontend) {
+					((IRadioButtonCellViewFrontend)view).RaiseEditingFinished(new CellEditingFinishedArgs<bool>(lastValue == CheckBoxState.On, lastValue == CheckBoxState.On));
 				}
 			}
 		}

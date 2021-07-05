@@ -26,7 +26,6 @@
 
 namespace Xwt.Backends
 {
-
 	public interface IToggleCellViewFrontend : ICellViewFrontend
 	{
 		bool Active { get; }

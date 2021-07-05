@@ -1,10 +1,10 @@
-//
-// ICheckBoxCellViewFrontend.cs
+﻿//
+// IComboBoxCellViewFrontend.cs
 //
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
+//       Lluis Sanchez Gual <lluis@xamarin.com>
 //
-// Copyright (c) 2013 Xamarin Inc.
+// Copyright (c) 2016 Xamarin, Inc (http://www.xamarin.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,14 +25,17 @@
 // THE SOFTWARE.
 using System;
 
-namespace Xwt.Backends
+namespace Xwt
 {
-	public interface ICheckBoxCellViewFrontend: IToggleCellViewFrontend, IEditableCellViewFrontend<CheckBoxState>
+	public class CellEditingFinishedArgs<T> : EventArgs
 	{
-		CheckBoxState State { get; }
-		bool AllowMixed { get; }
+		public CellEditingFinishedArgs(T oldValue, T newValue)
+		{
+			OldValue = oldValue;
+			NewValue = newValue;
+		}
 
-		IDataField<CheckBoxState> StateField { get; }
+		public T OldValue { get; set; }
+		public T NewValue { get; set; }
 	}
 }
-
