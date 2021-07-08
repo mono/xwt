@@ -446,17 +446,15 @@ namespace Xwt.Mac
 				// may be drawn already and it will not be redrawn even
 				// if Selection has been changed.
 				NeedsDisplay = true;
-				// Since Big Sur NSTableView doesn't refresh its subviews on selection change
-				if (MacSystemInformation.OsVersion >= MacSystemInformation.BigSur)
+
+				// FIXME: when building using Xcode 12, macOS stops redrawing subviews on selection change
+				// We have always a CompositeCell with Subviews for real cell views
+				foreach (var sub in Subviews)
 				{
-					// We have always a CompositeCell with Subviews for real cell views
-					foreach (var sub in Subviews)
+					sub.NeedsDisplay = true;
+					foreach (var subsub in sub.Subviews)
 					{
-						sub.NeedsDisplay = true;
-						foreach (var subsub in sub.Subviews)
-						{
-							subsub.NeedsDisplay = true;
-						}
+						subsub.NeedsDisplay = true;
 					}
 				}
 			}
