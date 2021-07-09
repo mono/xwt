@@ -92,9 +92,9 @@ namespace Xwt.GtkBackend
 			// dirty fix: do not constrain height on first allocation
 			var force_height = SizeConstraint.Unconstrained;
 			if (IsReallocating)
-				force_height = SizeConstraint.WithSize (Allocation.Width);
+				force_height = SizeConstraint.WithSize (Allocation.Height);
 			var size = OnGetRequisition (SizeConstraint.Unconstrained, force_height);
-			if (size.Height < WidthRequest)
+			if (size.Width < WidthRequest)
 				minimum_width = natural_width = WidthRequest;
 			else
 				minimum_width = natural_width = size.Width;
@@ -112,7 +112,7 @@ namespace Xwt.GtkBackend
 		protected override void OnGetPreferredWidthForHeight (int height, out int minimum_width, out int natural_width)
 		{
 			var size = OnGetRequisition (SizeConstraint.Unconstrained, SizeConstraint.WithSize (height));
-			if (size.Height < WidthRequest)
+			if (size.Width < WidthRequest)
 				minimum_width = natural_width = WidthRequest;
 			else
 				minimum_width = natural_width = size.Width;
