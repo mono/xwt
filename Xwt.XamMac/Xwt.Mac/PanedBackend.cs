@@ -24,88 +24,95 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using AppKit;
+using CoreGraphics;
 using Foundation;
 using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public class PanedBackend: ViewBackend<NSSplitView,IPanedEventSink>, IPanedBackend
+	public class PanedBackend : ViewBackend<NSSplitView, IPanedEventSink>, IPanedBackend
 	{
 		SplitViewDelegate viewDelegate;
 		NSView view1;
 		NSView view2;
-		
-		class SplitViewDelegate: NSSplitViewDelegate
+
+		class SplitViewDelegate : NSSplitViewDelegate
 		{
 			public PanedBackend PanedBackend;
-			
-			public override void DidResizeSubviews (NSNotification notification)
+
+			public override void DidResizeSubviews(NSNotification notification)
 			{
-				PanedBackend.DidResizeSubviews ();
+				PanedBackend.DidResizeSubviews();
 			}
 		}
-		
-		public PanedBackend ()
+
+		public PanedBackend()
 		{
 		}
 
 		#region IPanedBackend implementation
-		public void Initialize (Orientation dir)
+		public void Initialize(Orientation dir)
 		{
-			ViewObject = new CustomSplitView ();
+			ViewObject = new CustomSplitView();
 			if (dir == Orientation.Horizontal)
 				Widget.IsVertical = true;
-			viewDelegate = new SplitViewDelegate () { PanedBackend = this };
+			viewDelegate = new SplitViewDelegate() { PanedBackend = this };
 			Widget.Delegate = viewDelegate;
 		}
 
-		public void SetPanel (int panel, IWidgetBackend widget, bool resize, bool shrink)
+		public void SetPanel(int panel, IWidgetBackend widget, bool resize, bool shrink)
 		{
-			ViewBackend view = (ViewBackend) widget;
-			var w = GetWidgetWithPlacement (view);
-			RemovePanel (panel);
-			Widget.AddSubview (w);
-			Widget.AdjustSubviews ();
+			ViewBackend view = (ViewBackend)widget;
+			var w = GetWidgetWithPlacement(view);
+			RemovePanel(panel);
+			Widget.AddSubview(w);
+			Widget.AdjustSubviews();
 			if (panel == 1)
 				view1 = w;
 			else
 				view2 = w;
-			view.NotifyPreferredSizeChanged ();
-		}
-		
-		void DidResizeSubviews ()
-		{
-			EventSink.OnPositionChanged ();
+			view.NotifyPreferredSizeChanged();
 		}
 
-		public void UpdatePanel (int panel, bool resize, bool shrink)
+		void DidResizeSubviews()
+		{
+			EventSink.OnPositionChanged();
+		}
+
+		public void UpdatePanel(int panel, bool resize, bool shrink)
 		{
 		}
 
-		public void RemovePanel (int panel)
+		public void RemovePanel(int panel)
 		{
-			if (panel == 1) {
-				if (view1 != null) {
-					view1.RemoveFromSuperview ();
-					RemoveChildPlacement (view1);
+			if (panel == 1)
+			{
+				if (view1 != null)
+				{
+					view1.RemoveFromSuperview();
+					RemoveChildPlacement(view1);
 					view1 = null;
 				}
-			} else {
-				if (view2 != null) {
-					view2.RemoveFromSuperview ();
-					RemoveChildPlacement (view2);
+			}
+			else
+			{
+				if (view2 != null)
+				{
+					view2.RemoveFromSuperview();
+					RemoveChildPlacement(view2);
 					view2 = null;
 				}
 			}
 		}
 
-		public override void ReplaceChild (NSView oldChild, NSView newChild)
+		public override void ReplaceChild(NSView oldChild, NSView newChild)
 		{
 			if (view1 != null)
-				view1.RemoveFromSuperview ();
+				view1.RemoveFromSuperview();
 			if (view2 != null)
-				view2.RemoveFromSuperview ();
+				view2.RemoveFromSuperview();
 
 			if (oldChild == view1)
 				view1 = newChild;
@@ -113,30 +120,99 @@ namespace Xwt.Mac
 				view2 = newChild;
 
 			if (view1 != null)
-				Widget.AddSubview (view1);
+				Widget.AddSubview(view1);
 			if (view2 != null)
-				Widget.AddSubview (view2);
+				Widget.AddSubview(view2);
 		}
 
-		public double Position {
-			get {
-				return 0;
+		private double position;
+		public double Position
+		{
+			get
+			{
+				return position;
 			}
-			set {
+			set
+			{
+
+				position = value;
+				this.DidResizeSubviews();
 			}
 		}
 		#endregion
 	}
-	
-	class CustomSplitView: NSSplitView, IViewObject
+
+	class CustomSplitView : NSSplitView, IViewObject
 	{
-		public NSView View {
-			get {
+
+		readonly double initDividerPosition = 220;
+		public event EventHandler<CGRect> OnFrameChanged;
+		bool needsDividerSet;
+
+		public double Position { get; set; }
+
+		public CustomSplitView(double initDividerPosition = 0)
+		{
+			Position = initDividerPosition;
+		}
+
+		public NSView View
+		{
+			get
+			{
 				return this;
 			}
 		}
 
-		public ViewBackend Backend { get; set; }
+		private ViewBackend backend;
+		public ViewBackend Backend
+		{
+			get
+			{
+				return backend;
+			}
+			set
+			{
+				if (value != null)
+				{
+					foreach (var view in ArrangedSubviews)
+					{
+						RemoveArrangedSubview(view);
+					}
+
+					backend = value;
+
+					SetDividerPosition();
+				}
+			}
+		}
+
+		public override CGRect Frame
+		{
+			get
+			{
+				return base.Frame;
+			}
+
+			set
+			{
+				base.Frame = value;
+				if (Frame.Width == 0)
+				{
+					needsDividerSet = true;
+				}
+				else
+				{
+					SetDividerPosition();
+				}
+			}
+		}
+
+		void SetDividerPosition()
+		{
+			SetPositionOfDivider((nfloat)initDividerPosition, 0);
+			needsDividerSet = false;
+		}
 	}
 }
 
