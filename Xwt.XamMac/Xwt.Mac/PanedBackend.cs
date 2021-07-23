@@ -121,14 +121,11 @@ namespace Xwt.Mac
 		}
 
 		private double position;
-		public double Position
-		{
-			get
-			{
+		public double Position{
+			get{
 				return position;
 			}
-			set
-			{
+			set{
 				position = value;
 				this.DidResizeSubviews();
 			}
@@ -141,23 +138,18 @@ namespace Xwt.Mac
 		readonly double initDividerPosition = 220;
 		bool needsDividerSet;
 
-		public NSView View
-		{
-			get
-			{
+		public NSView View{
+			get{
 				return this;
 			}
 		}
 
 		private ViewBackend backend;
-		public ViewBackend Backend
-		{
-			get
-			{
+		public ViewBackend Backend{
+			get{
 				return backend;
 			}
-			set
-			{
+			set{
 				if (value != null)
 				{
 					foreach (var view in ArrangedSubviews)
@@ -171,15 +163,13 @@ namespace Xwt.Mac
 				}
 			}
 		}
-		public override CGRect Frame
-		{
-			get
-			{
+
+		public override CGRect Frame{
+			get{
 				return base.Frame;
 			}
 
-			set
-			{
+			set{
 				base.Frame = value;
 				if (Frame.Width == 0)
 				{
