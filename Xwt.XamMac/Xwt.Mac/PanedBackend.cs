@@ -152,14 +152,17 @@ namespace Xwt.Mac
 			set{
 				if (value != null)
 				{
-					foreach (var view in ArrangedSubviews)
-					{
-						RemoveArrangedSubview(view);
-					}
 
 					backend = value;
-
-					SetDividerPosition();
+					
+					if (Frame.Width == 0)
+					{
+						needsDividerSet = true;
+					}
+					else
+					{
+						SetDividerPosition();
+					}
 				}
 			}
 		}
@@ -171,7 +174,7 @@ namespace Xwt.Mac
 
 			set{
 				base.Frame = value;
-				if (Frame.Width == 0)
+				if (value.Width == 0)
 				{
 					needsDividerSet = true;
 				}
