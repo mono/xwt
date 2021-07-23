@@ -135,7 +135,7 @@ namespace Xwt.Mac
 
 	class CustomSplitView : NSSplitView, IViewObject
 	{
-		readonly double initDividerPosition = 220;
+		readonly nfloat initDividerPosition = 220;
 		bool needsDividerSet;
 
 		public NSView View{
@@ -187,7 +187,7 @@ namespace Xwt.Mac
 
 		void SetDividerPosition()
 		{
-			SetPositionOfDivider((nfloat)initDividerPosition, 0);
+			SetPositionOfDivider(initDividerPosition, 0);
 			needsDividerSet = false;
 		}
 	}
