@@ -361,12 +361,12 @@ namespace Xwt.Mac
 
 		public CustomImage Clone ()
 		{
-			return new CustomImage (actx, drawCallback);
+			return new CustomImage(actx, drawCallback) { Image = Image, Size = Size };
 		}
 
 		public override NSObject Copy (NSZone zone)
 		{
-			return new CustomImage (actx, drawCallback);
+			return new CustomImage (actx, drawCallback) { Image = Image, Size = Size };
 		}
 	}
 }
