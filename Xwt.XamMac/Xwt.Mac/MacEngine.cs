@@ -166,14 +166,6 @@ namespace Xwt.Mac
 		static Selector hijackedSel = new Selector ("hijacked_loadNibNamed:owner:");
 		static Selector originalSel = new Selector ("loadNibNamed:owner:");
 		
-		static void Hijack ()
-		{
-			Class c = ObjcHelper.GetMetaClass ("NSBundle");
-			if (!c.AddMethod (hijackedSel.Handle, new Func<IntPtr, IntPtr, IntPtr, IntPtr,bool>(HijackedLoadNibNamed), "B@:@@"))
-				throw new Exception ("Failed to add method");
-			c.MethodExchange (originalSel.Handle, hijackedSel.Handle);
-		}
-		
 		static bool HijackedLoadNibNamed (IntPtr self, IntPtr sel, IntPtr filePath, IntPtr owner)
 		{
 			var str = (NSString) Runtime.GetNSObject (filePath);

@@ -1,9 +1,21 @@
 <Project>
 
   <PropertyGroup>
-    <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">true</InMonoDevelopTree>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <InMonoDevelopTree>False</InMonoDevelopTree>
+    <Net6>False</Net6>
+    <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">True</InMonoDevelopTree>
+    <Net6 Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\enable_net6')">True</Net6>
+
+    <DotNetFrameworkTarget>net461</DotNetFrameworkTarget>
+    <DotNetCoreTarget>netstandard2.0</DotNetCoreTarget>
+
+    <MacTargetFramework Condition="!$(Net6)">$(DotNetFrameworkTarget)</MacTargetFramework>
+    <MacTargetFramework Condition="$(Net6)">net6.0-macos</MacTargetFramework>
+
+    <TargetFramework Condition="!$(Net6)">$(DotNetFrameworkTarget)</TargetFramework>
+    <TargetFramework Condition="$(Net6)">$(DotNetCoreTarget)</TargetFramework>
+
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
 </Project>
