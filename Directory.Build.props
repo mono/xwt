@@ -4,7 +4,7 @@
     <InMonoDevelopTree>False</InMonoDevelopTree>
     <Net6>False</Net6>
     <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">True</InMonoDevelopTree>
-    <Net6 Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\enable_net6')">True</Net6>
+    <Net6 Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\Net6.props')">True</Net6>
 
     <DotNetFrameworkTarget>net461</DotNetFrameworkTarget>
     <DotNetCoreTarget>netstandard2.0</DotNetCoreTarget>
