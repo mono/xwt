@@ -33,13 +33,22 @@ namespace Xwt.Mac
 	{
 		public static KeyEventArgs ToXwtKeyEventArgs (this NSEvent keyEvent)
 		{
-			Key key = GetXwtKey(keyEvent);
-			ModifierKeys mod = keyEvent.ModifierFlags.ToXwtValue ();
+			NSEventModifierMask mask;
+			Key key = GetXwtKey(keyEvent, out mask);
+			ModifierKeys mod = mask.ToXwtValue ();
 			return new KeyEventArgs (key, keyEvent.KeyCode, mod, keyEvent.IsARepeat, (long)TimeSpan.FromSeconds (keyEvent.Timestamp).TotalMilliseconds, keyEvent.Characters, keyEvent.CharactersIgnoringModifiers, keyEvent);
 		}
 
-		static Key GetXwtKey (NSEvent keyEvent)
+		static Key RemoveShift(Key key, ref NSEventModifierMask mask)
+        {
+			mask &= ~NSEventModifierMask.ShiftKeyMask;
+			return key;
+        }
+
+		static Key GetXwtKey (NSEvent keyEvent, out NSEventModifierMask modMask)
 		{
+			modMask = keyEvent.ModifierFlags;
+
 			// special keys
 			switch (keyEvent.KeyCode) {
 				case 65: return Key.NumPadDecimal;  // kVK_ANSI_KeypadDecimal        = 0x41
@@ -112,34 +121,35 @@ namespace Xwt.Mac
 
 			// character keys: use character comparison, since KeyCode is always US
 			// and does not honor inernationalization like WPF or GTK
-			if (keyEvent.CharactersIgnoringModifiers.Length > 0)
-				switch (keyEvent.CharactersIgnoringModifiers[0]) {
-				case 'A': return Key.A;
-				case 'B': return Key.B;
-				case 'C': return Key.C;
-				case 'D': return Key.D;
-				case 'E': return Key.E;
-				case 'F': return Key.F;
-				case 'G': return Key.G;
-				case 'H': return Key.H;
-				case 'I': return Key.I;
-				case 'J': return Key.J;
-				case 'K': return Key.K;
-				case 'L': return Key.L;
-				case 'M': return Key.M;
-				case 'N': return Key.N;
-				case 'O': return Key.O;
-				case 'P': return Key.P;
-				case 'Q': return Key.Q;
-				case 'R': return Key.R;
-				case 'S': return Key.S;
-				case 'T': return Key.T;
-				case 'U': return Key.U;
-				case 'V': return Key.V;
-				case 'W': return Key.W;
-				case 'X': return Key.X;
-				case 'Y': return Key.Y;
-				case 'Z': return Key.Z;
+			var characters = keyEvent.CharactersIgnoringModifiers;
+			if (characters.Length > 0)
+				switch (characters[0]) {
+				case 'A': return Key.a;
+				case 'B': return Key.b;
+				case 'C': return Key.c;
+				case 'D': return Key.d;
+				case 'E': return Key.e;
+				case 'F': return Key.f;
+				case 'G': return Key.g;
+				case 'H': return Key.h;
+				case 'I': return Key.i;
+				case 'J': return Key.j;
+				case 'K': return Key.k;
+				case 'L': return Key.l;
+				case 'M': return Key.m;
+				case 'N': return Key.n;
+				case 'O': return Key.o;
+				case 'P': return Key.p;
+				case 'Q': return Key.q;
+				case 'R': return Key.r;
+				case 'S': return Key.s;
+				case 'T': return Key.t;
+				case 'U': return Key.u;
+				case 'V': return Key.v;
+				case 'W': return Key.w;
+				case 'X': return Key.x;
+				case 'Y': return Key.y;
+				case 'Z': return Key.z;
 				case 'a': return Key.a;
 				case 'b': return Key.b;
 				case 'c': return Key.c;
@@ -178,24 +188,25 @@ namespace Xwt.Mac
 				case '9': return Key.K9;
 				case '0': return Key.K0;
 
-				case '^': return Key.Caret;
-				case '\'': return Key.Quote;
-				case '(': return Key.LeftBracket;
-				case ')': return Key.RightBracket;
-				case '*': return Key.Asterisk;
-				case '+': return Key.Plus;
-				case ',': return Key.Comma;
-				case '-': return Key.Minus;
-				case '.': return Key.Period;
-				case '/': return Key.Slash;
-				case '\\': return Key.Backslash;
-				case ':': return Key.Colon;
-				case ';': return Key.Semicolon;
-				case '<': return Key.Less;
-				case '>': return Key.Greater;
-				case '=': return Key.Equal;
-				case '?': return Key.Question;
-				case '@': return Key.At;
+				case '^': return RemoveShift(Key.Caret, ref modMask);
+				case '\'': return RemoveShift(Key.Quote, ref modMask);
+				case '(': return RemoveShift(Key.LeftParenthesis, ref modMask);
+				case ')': return RemoveShift(Key.RightParenthesis, ref modMask);
+				case '*': return RemoveShift(Key.Asterisk, ref modMask);
+				case '+': return RemoveShift(Key.Plus, ref modMask);
+				case ',': return RemoveShift(Key.Comma, ref modMask);
+				case '-': return RemoveShift(Key.Minus, ref modMask);
+				case '.': return RemoveShift(Key.Period, ref modMask);
+				case '/': return RemoveShift(Key.Slash, ref modMask);
+				case '\\': return RemoveShift(Key.Backslash, ref modMask);
+				case ':': return RemoveShift(Key.Colon, ref modMask);
+				case ';': return RemoveShift(Key.Semicolon, ref modMask);
+				case '<': return RemoveShift(Key.Less, ref modMask);
+				case '>': return RemoveShift(Key.Greater, ref modMask);
+				case '=': return RemoveShift(Key.Equal, ref modMask);
+				case '?': return RemoveShift(Key.Question, ref modMask);
+				case '@': return RemoveShift(Key.At, ref modMask);
+				case '_': return RemoveShift(Key.Underscore, ref modMask);
 			}
 			return (Key)0;
 		}
