@@ -24,7 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using AppKit;
+using CoreGraphics;
 using Foundation;
 using Xwt.Backends;
 
@@ -35,7 +37,8 @@ namespace Xwt.Mac
 		SplitViewDelegate viewDelegate;
 		NSView view1;
 		NSView view2;
-		
+		double position;
+
 		class SplitViewDelegate: NSSplitViewDelegate
 		{
 			public PanedBackend PanedBackend;
@@ -120,9 +123,12 @@ namespace Xwt.Mac
 
 		public double Position {
 			get {
-				return 0;
+				return position;
 			}
 			set {
+				((CustomSplitView)Widget)?.SetDividerPosition ((nfloat) position);
+				position = value;
+				this.DidResizeSubviews();
 			}
 		}
 		#endregion
@@ -130,6 +136,9 @@ namespace Xwt.Mac
 	
 	class CustomSplitView: NSSplitView, IViewObject
 	{
+		nfloat delayedSetDividerPosition = -1;
+		ViewBackend backend;
+
 		public NSView View {
 			get {
 				return this;
@@ -137,6 +146,46 @@ namespace Xwt.Mac
 		}
 
 		public ViewBackend Backend { get; set; }
+#if NOTNEEDED
+		public ViewBackend Backend {
+			get {
+				return backend;
+			}
+			set {
+				if (value != null) {
+					backend = value;
+
+					if (Frame.Width == 0)
+						needsDividerSet = true;
+					else
+						SetDividerPosition();
+				}
+			}
+		}
+#endif
+
+		public override CGRect Frame
+		{
+			get {
+				return base.Frame;
+			}
+
+			set {
+				base.Frame = value;
+				if (delayedSetDividerPosition != -1 && Frame.Width != 0) {
+					SetPositionOfDivider(delayedSetDividerPosition, 0);
+					delayedSetDividerPosition = -1;
+				}
+			}
+		}
+
+		public void SetDividerPosition(nfloat position)
+        {
+			if (Frame.Width == 0)
+				delayedSetDividerPosition = position;
+			else
+				SetPositionOfDivider(position, 0);
+		}
 	}
 }
 
