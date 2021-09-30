@@ -146,23 +146,6 @@ namespace Xwt.Mac
 		}
 
 		public ViewBackend Backend { get; set; }
-#if NOTNEEDED
-		public ViewBackend Backend {
-			get {
-				return backend;
-			}
-			set {
-				if (value != null) {
-					backend = value;
-
-					if (Frame.Width == 0)
-						needsDividerSet = true;
-					else
-						SetDividerPosition();
-				}
-			}
-		}
-#endif
 
 		public override CGRect Frame
 		{
@@ -180,7 +163,9 @@ namespace Xwt.Mac
 		}
 
 		public void SetDividerPosition(nfloat position)
-        {
+		{
+			// When the split view is first created we need to wait to set the divider position,
+			// until the pane has its full (non zero) width. If set too early, it'll be ignored.
 			if (Frame.Width == 0)
 				delayedSetDividerPosition = position;
 			else
