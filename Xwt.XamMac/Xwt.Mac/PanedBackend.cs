@@ -126,7 +126,7 @@ namespace Xwt.Mac
 				return position;
 			}
 			set {
-				((CustomSplitView)Widget)?.SetDividerPosition ((nfloat) position);
+				((CustomSplitView)Widget)?.SetDividerPosition ((nfloat) value);
 				position = value;
 				this.DidResizeSubviews();
 			}
