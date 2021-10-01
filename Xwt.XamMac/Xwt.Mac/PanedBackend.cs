@@ -137,7 +137,6 @@ namespace Xwt.Mac
 	class CustomSplitView: NSSplitView, IViewObject
 	{
 		nfloat delayedSetDividerPosition = -1;
-		ViewBackend backend;
 
 		public NSView View {
 			get {
