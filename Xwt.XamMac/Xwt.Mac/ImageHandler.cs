@@ -56,7 +56,7 @@ namespace Xwt.Mac
 		
 		public override object LoadFromFile (string file)
 		{
-			return new NSImage (file, lazy: true);
+			return new NSImage (file);
 		}
 
 		public override object CreateMultiResolutionImage (IEnumerable<object> images)
