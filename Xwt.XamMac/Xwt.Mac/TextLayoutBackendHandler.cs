@@ -31,6 +31,7 @@ using AppKit;
 using CoreGraphics;
 using CoreText;
 using Foundation;
+using ObjCRuntime;
 using Xwt.Backends;
 using Xwt.Drawing;
 

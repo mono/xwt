@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using CoreGraphics;
+using ObjCRuntime;
 using Xwt.Backends;
 
 namespace Xwt.Mac

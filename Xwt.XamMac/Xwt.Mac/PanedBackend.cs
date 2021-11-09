@@ -28,6 +28,7 @@ using System;
 using AppKit;
 using CoreGraphics;
 using Foundation;
+using ObjCRuntime;
 using Xwt.Backends;
 
 namespace Xwt.Mac
