@@ -543,23 +543,28 @@ namespace Xwt.Mac
 			lock (typesConfiguredForDragDrop) {
 				if (typesConfiguredForDragDrop.Add (type)) {
 					Class c = new Class (type);
-					c.AddMethod (draggingEnteredSel.Handle, new Func<IntPtr,IntPtr,IntPtr,NSDragOperation> (DraggingEntered), "i@:@");
-					c.AddMethod (draggingUpdatedSel.Handle, new Func<IntPtr,IntPtr,IntPtr,NSDragOperation> (DraggingUpdated), "i@:@");
-					c.AddMethod (draggingExitedSel.Handle, new Action<IntPtr,IntPtr,IntPtr> (DraggingExited), "v@:@");
-					c.AddMethod (prepareForDragOperationSel.Handle, new Func<IntPtr,IntPtr,IntPtr,bool> (PrepareForDragOperation), "B@:@");
-					c.AddMethod (performDragOperationSel.Handle, new Func<IntPtr,IntPtr,IntPtr,bool> (PerformDragOperation), "B@:@");
-					c.AddMethod (concludeDragOperationSel.Handle, new Action<IntPtr,IntPtr,IntPtr> (ConcludeDragOperation), "v@:@");
+					c.AddMethod (draggingEnteredSel.Handle, new DelegateIntPtrIntPtrIntPtrNSDragOperation(DraggingEntered), "i@:@");
+					c.AddMethod (draggingUpdatedSel.Handle, new DelegateIntPtrIntPtrIntPtrNSDragOperation(DraggingUpdated), "i@:@");
+					c.AddMethod (draggingExitedSel.Handle, new DelegateIntPtrIntPtrIntPtrVoid(DraggingExited), "v@:@");
+					c.AddMethod (prepareForDragOperationSel.Handle, new DelegateIntPtrIntPtrIntPtrBool(PrepareForDragOperation), "B@:@");
+					c.AddMethod (performDragOperationSel.Handle, new DelegateIntPtrIntPtrIntPtrBool(PerformDragOperation), "B@:@");
+					c.AddMethod (concludeDragOperationSel.Handle, new DelegateIntPtrIntPtrIntPtrVoid(ConcludeDragOperation), "v@:@");
 				}
 			}
 		}
+
+		delegate bool DelegateIntPtrIntPtrBool(IntPtr p1, IntPtr p2);
+		delegate NSDragOperation DelegateIntPtrIntPtrIntPtrNSDragOperation(IntPtr p1, IntPtr p2, IntPtr p3);
+		delegate void DelegateIntPtrIntPtrIntPtrVoid(IntPtr p1, IntPtr p2, IntPtr p3);
+		delegate bool DelegateIntPtrIntPtrIntPtrBool(IntPtr p1, IntPtr p2, IntPtr p3);
 
 		static void SetupFocusEvents (Type type)
 		{
 			lock (typesConfiguredForFocusEvents) {
 				if (typesConfiguredForFocusEvents.Add (type)) {
 					Class c = new Class (type);
-					c.AddMethod (becomeFirstResponderSel.Handle, new Func<IntPtr,IntPtr,bool> (OnBecomeFirstResponder), "B@:");
-					c.AddMethod (resignFirstResponderSel.Handle, new Func<IntPtr,IntPtr,bool> (OnResignFirstResponder), "B@:");
+					c.AddMethod (becomeFirstResponderSel.Handle, new DelegateIntPtrIntPtrBool(OnBecomeFirstResponder), "B@:");
+					c.AddMethod (resignFirstResponderSel.Handle, new DelegateIntPtrIntPtrBool(OnResignFirstResponder), "B@:");
 				}
 			}
 		}

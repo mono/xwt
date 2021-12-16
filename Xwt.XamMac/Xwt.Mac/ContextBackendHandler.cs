@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using AppKit;
 using CoreGraphics;
+using ObjCRuntime;
 using Xwt.Backends;
 using Xwt.Drawing;
 
