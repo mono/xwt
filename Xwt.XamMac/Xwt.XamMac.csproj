@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.Mac</RootNamespace>
@@ -12,36 +10,18 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DisableImplicitNamespaceImports>True</DisableImplicitNamespaceImports>
     <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>True</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <LangVersion>6</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <DebugSymbols>true</DebugSymbols>
-    <LangVersion>6</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' != 'net6.0-macos' ">
     <XamMacPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\x86_64\full\Xamarin.Mac.dll</XamMacPath>
     <XamMacPath Condition="Exists('\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\64bits\full\Xamarin.Mac.dll')">\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\64bits\full\Xamarin.Mac.dll</XamMacPath>
     <XamMacPath Condition="Exists('$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll')">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll</XamMacPath>
     <XamMacPath Condition="Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll')">$(MSBuildProgramFiles32)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll</XamMacPath>
     <XamMacPath Condition="Exists('$(MSBuildToolsPath)\..\..\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll')">$(MSBuildToolsPath)\..\..\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll</XamMacPath>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net6.0-macos' ">
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
