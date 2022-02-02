@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using Xwt.Drawing;
 using System.Text;
 using System.Globalization;
+using System.Net;
 
 namespace Xwt
 {
@@ -62,7 +63,7 @@ namespace Xwt
 			int last = 0;
 			int i = markup.IndexOf ('<');
 			while (i != -1) {
-				sb.Append (markup, last, i - last);
+				sb.Append (WebUtility.HtmlDecode (markup.Substring (last, i - last)));
 				if (PushSpan (formatStack, markup, sb.Length, ref i)) {
 					last = i;
 					i = markup.IndexOf ('<', i);
@@ -76,7 +77,7 @@ namespace Xwt
 				last = i;
 				i = markup.IndexOf ('<', i + 1);
 			}
-			sb.Append (markup, last, markup.Length - last);
+			sb.Append (WebUtility.HtmlDecode (markup.Substring (last, markup.Length - last)));
 			Text = sb.ToString ();
 		}
 
