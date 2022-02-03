@@ -1,11 +1,14 @@
+trigger:
+- main
+
 pool:
-  vmImage: 'macOS-10.15'
+  vmImage: 'windows-latest'
 
 variables:
 - name: BuildConfiguration
   value: Debug
 - name: TeamName
-  value: WPF
+  value: XWT
 
 steps:
 
