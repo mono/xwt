@@ -2,20 +2,26 @@
 
   <PropertyGroup>
     <InMonoDevelopTree>False</InMonoDevelopTree>
-    <Net6>False</Net6>
     <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">True</InMonoDevelopTree>
-    <Net6 Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\Net6.props')">True</Net6>
 
-    <DotNetFrameworkTarget>net461</DotNetFrameworkTarget>
+    <DotNetFrameworkTarget>net472</DotNetFrameworkTarget>
     <DotNetCoreTarget>netstandard2.0</DotNetCoreTarget>
+    <DotNetMacosTarget>net6.0-macos</DotNetMacosTarget>
 
-    <MacTargetFramework Condition="!$(Net6)">$(DotNetFrameworkTarget)</MacTargetFramework>
-    <MacTargetFramework Condition="$(Net6)">net6.0-macos</MacTargetFramework>
+<!--    <MacTargetFramework Condition="!$(Net6)">$(DotNetFrameworkTarget)</MacTargetFramework>
+    <MacTargetFramework Condition="$(Net6)">$(DotNetMacosTarget)</MacTargetFramework>
 
     <TargetFramework Condition="!$(Net6)">$(DotNetFrameworkTarget)</TargetFramework>
-    <TargetFramework Condition="$(Net6)">$(DotNetCoreTarget)</TargetFramework>
+    <TargetFramework Condition="$(Net6)">$(DotNetCoreTarget)</TargetFramework>-->
 
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <XamMacPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\x86_64\full\Xamarin.Mac.dll</XamMacPath>
+    <XamMacPath Condition="Exists('\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\64bits\full\Xamarin.Mac.dll')">\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\64bits\full\Xamarin.Mac.dll</XamMacPath>
+    <XamMacPath Condition="Exists('$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll')">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll</XamMacPath>
+    <XamMacPath Condition="Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll')">$(MSBuildProgramFiles32)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll</XamMacPath>
+    <XamMacPath Condition="Exists('$(MSBuildToolsPath)\..\..\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll')">$(MSBuildToolsPath)\..\..\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll</XamMacPath>
   </PropertyGroup>
 
 </Project>

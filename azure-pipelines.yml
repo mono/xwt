@@ -1,0 +1,80 @@
+pool:
+  vmImage: 'macOS-10.15'
+
+variables:
+- name: BuildConfiguration
+  value: Debug
+- name: TeamName
+  value: WPF
+
+steps:
+
+- task: MicroBuildSigningPlugin@3
+  displayName: 'Install Signing Plugin'
+  inputs:
+    signType: 'Real'
+    azureSubscription: 'MicroBuild Signing Task (DevDiv)'
+  env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+- task: UseDotNet@2
+  displayName: 'Install .NET 3.1'
+  inputs:
+    packageType: 'sdk'
+    version: '3.1.413'
+
+- task: UseDotNet@2
+  displayName: 'Install .NET 6'
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.100'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build solution Xwt.sln'
+  inputs:
+    command: build
+    arguments: '/p:Configuration=$(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Generate packages'
+  inputs:
+    command: custom
+    custom: pack
+    projects: Xwt.sln
+    arguments: '/p:Configuration=$(BuildConfiguration) -o:bin'
+    nobuild: true
+    workingDirectory: $(Build.SourcesDirectory)
+
+- task: Bash@3
+  displayName: 'Generate package file list'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "<filelist>" > $(build.sourcesdirectory)/bin/files.xml
+      echo " <certificate certnumbers='401405'>" >> $(build.sourcesdirectory)/bin/files.xml
+      find $(build.sourcesdirectory)/bin -name "*.nupkg" -exec echo "  <file srcpath='{}' dstpath='{}'></file>" \; >> $(build.sourcesdirectory)/bin/files.xml
+      echo " </certificate>" >> $(build.sourcesdirectory)/bin/files.xml
+      echo "</filelist>" >> $(build.sourcesdirectory)/bin/files.xml
+    workingDirectory: '$(build.sourcesdirectory)/bin'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Sign packages'
+  inputs:
+    command: 'custom'
+    custom: '$(MBSIGN_APPFOLDER)/ddsignfiles.dll'
+    arguments: '/filelist:$(build.sourcesdirectory)/bin/files.xml'
+
+- task: CopyFiles@1
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(build.sourcesdirectory)/bin'
+    Contents: '*.nupkg'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
+

@@ -7,6 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Samples</RootNamespace>
     <AssemblyName>Samples</AssemblyName>
+    <TargetFrameworks>$(DotNetCoreTarget);$(DotNetFrameworkTarget)</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>

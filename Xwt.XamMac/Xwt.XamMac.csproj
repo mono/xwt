@@ -8,7 +8,7 @@
     <AssemblyName>Xwt.XamMac</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
-    <TargetFramework>$(MacTargetFramework)</TargetFramework>
+    <TargetFrameworks>$(DotNetMacosTarget);$(DotNetFrameworkTarget)</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DisableImplicitNamespaceImports>True</DisableImplicitNamespaceImports>
     <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
@@ -47,7 +47,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
-    <Reference Include="Xamarin.Mac">
+    <Reference Include="Xamarin.Mac" Condition="'$(TargetFramework)' != '$(DotNetMacosTarget)'">
       <HintPath>$(XamMacPath)</HintPath>
     </Reference>
   </ItemGroup>
