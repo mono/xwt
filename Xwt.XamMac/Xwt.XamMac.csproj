@@ -34,7 +34,7 @@
     <DebugSymbols>true</DebugSymbols>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
-  <PropertyGroup>
+  <PropertyGroup Condition="!$(Net6)">
     <XamMacPath>\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\x86_64\full\Xamarin.Mac.dll</XamMacPath>
     <XamMacPath Condition="Exists('\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\64bits\full\Xamarin.Mac.dll')">\Library\Frameworks\Xamarin.Mac.framework\Versions\Current\lib\64bits\full\Xamarin.Mac.dll</XamMacPath>
     <XamMacPath Condition="Exists('$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll')">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\Xamarin.Mac\v2.0\Xamarin.Mac.dll</XamMacPath>
@@ -47,7 +47,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
-    <Reference Include="Xamarin.Mac">
+    <Reference Include="Xamarin.Mac" Condition="!$(Net6)">
       <HintPath>$(XamMacPath)</HintPath>
     </Reference>
   </ItemGroup>
