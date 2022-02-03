@@ -12,13 +12,13 @@ variables:
 
 steps:
 
-- task: MicroBuildSigningPlugin@3
-  displayName: 'Install Signing Plugin'
-  inputs:
-    signType: 'Real'
-    azureSubscription: 'MicroBuild Signing Task (DevDiv)'
-  env:
-      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+#- task: MicroBuildSigningPlugin@3
+#  displayName: 'Install Signing Plugin'
+#  inputs:
+#    signType: 'Real'
+#    azureSubscription: 'MicroBuild Signing Task (DevDiv)'
+#  env:
+#      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 
 - task: UseDotNet@2
   displayName: 'Install .NET 3.1'
@@ -60,12 +60,12 @@ steps:
       echo "</filelist>" >> $(build.sourcesdirectory)/bin/files.xml
     workingDirectory: '$(build.sourcesdirectory)/bin'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Sign packages'
-  inputs:
-    command: 'custom'
-    custom: '$(MBSIGN_APPFOLDER)/ddsignfiles.dll'
-    arguments: '/filelist:$(build.sourcesdirectory)/bin/files.xml'
+#- task: DotNetCoreCLI@2
+#  displayName: 'Sign packages'
+#  inputs:
+#    command: 'custom'
+#    custom: '$(MBSIGN_APPFOLDER)/ddsignfiles.dll'
+#    arguments: '/filelist:$(build.sourcesdirectory)/bin/files.xml'
 
 - task: CopyFiles@1
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
