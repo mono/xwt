@@ -33,6 +33,13 @@ steps:
     version: '6.0.100'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Install macos workload'
+  inputs:
+    command: 'custom'
+    custom: 'workload'
+    arguments: 'install macos'
+
+- task: DotNetCoreCLI@2
   displayName: 'Build solution Xwt.sln'
   inputs:
     command: build
