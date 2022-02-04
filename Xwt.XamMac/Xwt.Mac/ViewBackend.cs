@@ -550,13 +550,12 @@ namespace Xwt.Mac
 			lock (typesConfiguredForDragDrop) {
 				if (typesConfiguredForDragDrop.Add (type)) {
 					Class c = new Class (type);
-                    
-                    c.AddMethod (draggingEnteredSel.Handle, draggingEnteredDelegate, "i@:@");
-                    c.AddMethod (draggingUpdatedSel.Handle, draggingUpdatedDelegate, "i@:@");
-                    c.AddMethod (draggingExitedSel.Handle, draggingExitedDelegate, "v@:@");
-                    c.AddMethod (prepareForDragOperationSel.Handle, prepareForDragOperationDelegate, "B@:@");
-                    c.AddMethod (performDragOperationSel.Handle, performDragOperationDelegate, "B@:@");
-                    c.AddMethod (concludeDragOperationSel.Handle, delegateIntPtrIntPtrIntPtrVoid, "v@:@");
+					c.AddMethod (draggingEnteredSel.Handle, draggingEnteredDelegate, "i@:@");
+					c.AddMethod (draggingUpdatedSel.Handle, draggingUpdatedDelegate, "i@:@");
+					c.AddMethod (draggingExitedSel.Handle, draggingExitedDelegate, "v@:@");
+					c.AddMethod (prepareForDragOperationSel.Handle, prepareForDragOperationDelegate, "B@:@");
+					c.AddMethod (performDragOperationSel.Handle, performDragOperationDelegate, "B@:@");
+					c.AddMethod (concludeDragOperationSel.Handle, delegateIntPtrIntPtrIntPtrVoid, "v@:@");
 				}
 			}
 		}
@@ -575,7 +574,7 @@ namespace Xwt.Mac
 				if (typesConfiguredForFocusEvents.Add (type)) {
 					Class c = new Class (type);
 					c.AddMethod (becomeFirstResponderSel.Handle, onBecomeFirstResponderDelegate, "B@:");
-                    c.AddMethod (resignFirstResponderSel.Handle, onResignFirstResponderDelegate, "B@:");
+					c.AddMethod (resignFirstResponderSel.Handle, onResignFirstResponderDelegate, "B@:");
 				}
 			}
 		}
