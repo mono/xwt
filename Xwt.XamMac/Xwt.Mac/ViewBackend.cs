@@ -540,7 +540,7 @@ namespace Xwt.Mac
 		static DelegateIntPtrIntPtrIntPtrVoid draggingExitedDelegate = new DelegateIntPtrIntPtrIntPtrVoid(DraggingExited);
 		static DelegateIntPtrIntPtrIntPtrBool prepareForDragOperationDelegate = new DelegateIntPtrIntPtrIntPtrBool(PrepareForDragOperation);
 		static DelegateIntPtrIntPtrIntPtrBool performDragOperationDelegate = new DelegateIntPtrIntPtrIntPtrBool(PerformDragOperation);
-		static DelegateIntPtrIntPtrIntPtrVoid delegateIntPtrIntPtrIntPtrVoid = new DelegateIntPtrIntPtrIntPtrVoid(ConcludeDragOperation);
+		static DelegateIntPtrIntPtrIntPtrVoid concludeDragOperationDelegate = new DelegateIntPtrIntPtrIntPtrVoid(ConcludeDragOperation);
 
 		static HashSet<Type> typesConfiguredForDragDrop = new HashSet<Type> ();
 		static HashSet<Type> typesConfiguredForFocusEvents = new HashSet<Type> ();
@@ -555,7 +555,7 @@ namespace Xwt.Mac
 					c.AddMethod (draggingExitedSel.Handle, draggingExitedDelegate, "v@:@");
 					c.AddMethod (prepareForDragOperationSel.Handle, prepareForDragOperationDelegate, "B@:@");
 					c.AddMethod (performDragOperationSel.Handle, performDragOperationDelegate, "B@:@");
-					c.AddMethod (concludeDragOperationSel.Handle, delegateIntPtrIntPtrIntPtrVoid, "v@:@");
+					c.AddMethod (concludeDragOperationSel.Handle, concludeDragOperationDelegate, "v@:@");
 				}
 			}
 		}
