@@ -535,6 +535,13 @@ namespace Xwt.Mac
 		static Selector becomeFirstResponderSel = new Selector ("becomeFirstResponder");
 		static Selector resignFirstResponderSel = new Selector ("resignFirstResponder");
 
+		static DelegateIntPtrIntPtrIntPtrNSDragOperation draggingEnteredDelegate = new DelegateIntPtrIntPtrIntPtrNSDragOperation(DraggingEntered);
+		static DelegateIntPtrIntPtrIntPtrNSDragOperation draggingUpdatedDelegate = new DelegateIntPtrIntPtrIntPtrNSDragOperation(DraggingUpdated);
+		static DelegateIntPtrIntPtrIntPtrVoid draggingExitedDelegate = new DelegateIntPtrIntPtrIntPtrVoid(DraggingExited);
+		static DelegateIntPtrIntPtrIntPtrBool prepareForDragOperationDelegate = new DelegateIntPtrIntPtrIntPtrBool(PrepareForDragOperation);
+		static DelegateIntPtrIntPtrIntPtrBool performDragOperationDelegate = new DelegateIntPtrIntPtrIntPtrBool(PerformDragOperation);
+		static DelegateIntPtrIntPtrIntPtrVoid delegateIntPtrIntPtrIntPtrVoid = new DelegateIntPtrIntPtrIntPtrVoid(ConcludeDragOperation);
+
 		static HashSet<Type> typesConfiguredForDragDrop = new HashSet<Type> ();
 		static HashSet<Type> typesConfiguredForFocusEvents = new HashSet<Type> ();
 
@@ -543,12 +550,13 @@ namespace Xwt.Mac
 			lock (typesConfiguredForDragDrop) {
 				if (typesConfiguredForDragDrop.Add (type)) {
 					Class c = new Class (type);
-					c.AddMethod (draggingEnteredSel.Handle, new DelegateIntPtrIntPtrIntPtrNSDragOperation(DraggingEntered), "i@:@");
-					c.AddMethod (draggingUpdatedSel.Handle, new DelegateIntPtrIntPtrIntPtrNSDragOperation(DraggingUpdated), "i@:@");
-					c.AddMethod (draggingExitedSel.Handle, new DelegateIntPtrIntPtrIntPtrVoid(DraggingExited), "v@:@");
-					c.AddMethod (prepareForDragOperationSel.Handle, new DelegateIntPtrIntPtrIntPtrBool(PrepareForDragOperation), "B@:@");
-					c.AddMethod (performDragOperationSel.Handle, new DelegateIntPtrIntPtrIntPtrBool(PerformDragOperation), "B@:@");
-					c.AddMethod (concludeDragOperationSel.Handle, new DelegateIntPtrIntPtrIntPtrVoid(ConcludeDragOperation), "v@:@");
+                    
+                    c.AddMethod (draggingEnteredSel.Handle, draggingEnteredDelegate, "i@:@");
+                    c.AddMethod (draggingUpdatedSel.Handle, draggingUpdatedDelegate, "i@:@");
+                    c.AddMethod (draggingExitedSel.Handle, draggingExitedDelegate, "v@:@");
+                    c.AddMethod (prepareForDragOperationSel.Handle, prepareForDragOperationDelegate, "B@:@");
+                    c.AddMethod (performDragOperationSel.Handle, performDragOperationDelegate, "B@:@");
+                    c.AddMethod (concludeDragOperationSel.Handle, delegateIntPtrIntPtrIntPtrVoid, "v@:@");
 				}
 			}
 		}
@@ -558,13 +566,16 @@ namespace Xwt.Mac
 		delegate void DelegateIntPtrIntPtrIntPtrVoid(IntPtr p1, IntPtr p2, IntPtr p3);
 		delegate bool DelegateIntPtrIntPtrIntPtrBool(IntPtr p1, IntPtr p2, IntPtr p3);
 
+		static DelegateIntPtrIntPtrBool onBecomeFirstResponderDelegate = new DelegateIntPtrIntPtrBool(OnBecomeFirstResponder);
+		static DelegateIntPtrIntPtrBool onResignFirstResponderDelegate = new DelegateIntPtrIntPtrBool(OnResignFirstResponder);
+
 		static void SetupFocusEvents (Type type)
 		{
 			lock (typesConfiguredForFocusEvents) {
 				if (typesConfiguredForFocusEvents.Add (type)) {
 					Class c = new Class (type);
-					c.AddMethod (becomeFirstResponderSel.Handle, new DelegateIntPtrIntPtrBool(OnBecomeFirstResponder), "B@:");
-					c.AddMethod (resignFirstResponderSel.Handle, new DelegateIntPtrIntPtrBool(OnResignFirstResponder), "B@:");
+					c.AddMethod (becomeFirstResponderSel.Handle, onBecomeFirstResponderDelegate, "B@:");
+                    c.AddMethod (resignFirstResponderSel.Handle, onResignFirstResponderDelegate, "B@:");
 				}
 			}
 		}
