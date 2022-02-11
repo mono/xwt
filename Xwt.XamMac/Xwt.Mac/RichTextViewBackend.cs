@@ -326,7 +326,7 @@ namespace Xwt.Mac
 				TextStorage.EnumerateAttributes (new NSRange (0, TextStorage.Length), NSAttributedStringEnumeration.None, (NSDictionary attrs, NSRange range, ref bool stop) => {
 					stop = false;
 					if (attrs.ContainsKey (NSStringAttributeKey.Link)) {
-						var rects = RectsForCharacterRange (range);
+						var rects = GetRects (range);
 						for (nuint i = 0; i < rects.Count; i++)
 							AddCursorRect (rects.GetItem<NSValue> (i).CGRectValue, NSCursor.PointingHandCursor);
 					}
