@@ -121,7 +121,14 @@ namespace Xwt.Mac
 
 			// character keys: use character comparison, since KeyCode is always US
 			// and does not honor inernationalization like WPF or GTK
-			var characters = keyEvent.CharactersIgnoringModifiers;
+
+			// How non-roman keyboards seem to work in Cocoa, for example a Russian keyboard, is like so
+			// If you press the м key on the keyboard (which is the 'v' key on a roman/english/qwerty keyboard)
+			// keyEvent.Characters and keyEvent.CharactersIgnoringModifers both contain м
+			// If you press the cmd+м on the keyboard, keyEvent.Characters contains a 'v' and keyEvent.CharactersIgnoringModifiers
+			// contains the м
+			// This way it can map cmd+м to paste like on a roman keyboard.
+			var characters = keyEvent.Characters;
 			if (characters.Length > 0)
 				switch (characters[0]) {
 				case 'A': return Key.a;
