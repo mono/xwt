@@ -279,7 +279,8 @@ namespace Xwt.Mac
 			this.source = source;
 		}
 
-		public override bool AcceptDrop (NSTableView tableView, NSDraggingInfo info, nint row, NSTableViewDropOperation dropOperation)
+		[Export("tableView:acceptDrop:row:dropOperation:")]
+		public bool AcceptDrop (NSTableView tableView, INSDraggingInfo info, nint row, NSTableViewDropOperation dropOperation)
 		{
 			return false;
 		}
@@ -307,7 +308,8 @@ namespace Xwt.Mac
 		{
 		}
 
-		public override NSDragOperation ValidateDrop (NSTableView tableView, NSDraggingInfo info, nint row, NSTableViewDropOperation dropOperation)
+		[Export("tableView:validateDrop:proposedRow:proposedDropOperation:")]
+		public NSDragOperation ValidateDrop (NSTableView tableView, INSDraggingInfo info, nint row, NSTableViewDropOperation dropOperation)
 		{
 			return NSDragOperation.None;
 		}
