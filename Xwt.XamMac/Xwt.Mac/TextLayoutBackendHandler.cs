@@ -261,7 +261,7 @@ namespace Xwt.Mac
 					TextStorage.AddLayoutManager (TextLayout);
 
 					TextLayout.DrawBackground (new NSRange(0, Text.Length), new CGPoint (x, y));
-					TextLayout.DrawBackground (new NSRange(0, Text.Length), new CGPoint (x, y));
+					TextLayout.DrawGlyphs (new NSRange(0, Text.Length), new CGPoint (x, y));
 					TextStorage.RemoveLayoutManager (TextLayout);
 					TextLayout.RemoveTextContainer (0);
 				}
