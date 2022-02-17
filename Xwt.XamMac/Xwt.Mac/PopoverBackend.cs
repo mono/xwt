@@ -259,7 +259,7 @@ namespace Xwt.Mac
 				controller.EffectiveAppearanceName = refView.EffectiveAppearance.Name;
 
 				if (popover is INSAppearanceCustomization)
-					((INSAppearanceCustomization)popover).SetAppearance (refView.EffectiveAppearance);
+					((INSAppearanceCustomization)popover).Appearance = refView.EffectiveAppearance;
 			}
 
 			popover.Show (positionRect.ToCGRect (),
@@ -305,7 +305,7 @@ namespace Xwt.Mac
 			public NSAppearanceCustomizationPopover ()
 			{ }
 
-			protected NSAppearanceCustomizationPopover (IntPtr handle) : base (handle)
+			protected NSAppearanceCustomizationPopover (NativeHandle handle) : base (handle)
 			{ }
 		}
 	}

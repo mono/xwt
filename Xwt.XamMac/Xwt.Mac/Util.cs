@@ -438,7 +438,7 @@ namespace Xwt.Mac
 			ns.BeginEditing ();
 			var r = new NSRange (0, ns.Length);
 			ns.RemoveAttribute (NSStringAttributeKey.ParagraphStyle, r);
-			var pstyle = NSParagraphStyle.DefaultParagraphStyle.MutableCopy () as NSMutableParagraphStyle;
+			var pstyle = NSParagraphStyle.Default.MutableCopy () as NSMutableParagraphStyle;
 			pstyle.Alignment = alignment;
 			ns.AddAttribute (NSStringAttributeKey.ParagraphStyle, pstyle, r);
 			ns.EndEditing ();
