@@ -214,7 +214,21 @@ namespace Xwt.Mac
 				case '?': return RemoveShift(Key.Question, ref modMask);
 				case '@': return RemoveShift(Key.At, ref modMask);
 				case '_': return RemoveShift(Key.Underscore, ref modMask);
-			}
+				case '!': return RemoveShift(Key.Exclamation, ref modMask);
+				case '#': return RemoveShift(Key.Hash, ref modMask);
+				case '$': return RemoveShift(Key.Dollar, ref modMask);
+				case '€': return RemoveShift(Key.EuroSign, ref modMask);
+				case '%': return RemoveShift(Key.Percentage, ref modMask);
+				case '&': return RemoveShift(Key.Ampersand, ref modMask);
+				case '[': return RemoveShift(Key.LeftSquareBracket, ref modMask);
+				case ']': return RemoveShift(Key.RightSquareBracket, ref modMask);
+				case '{': return RemoveShift(Key.LeftBrace, ref modMask);
+				case '}': return RemoveShift(Key.RightBrace, ref modMask);
+				case '\"': return RemoveShift(Key.Quote, ref modMask);
+				case '|': return RemoveShift(Key.Pipe, ref modMask);
+				case '`': return RemoveShift(Key.Backtick, ref modMask);
+				case '~': return RemoveShift(Key.Tilde, ref modMask);
+				}
 			return (Key)0;
 		}
 	}
