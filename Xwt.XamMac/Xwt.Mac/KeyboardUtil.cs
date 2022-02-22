@@ -128,7 +128,7 @@ namespace Xwt.Mac
 			// If you press the cmd+м on the keyboard, keyEvent.Characters contains a 'v' and keyEvent.CharactersIgnoringModifiers
 			// contains the м
 			// This way it can map cmd+м to paste like on a roman keyboard.
-			var characters = keyEvent.Characters;
+			var characters = keyEvent.CharactersIgnoringModifiers;
 			if (characters.Length > 0)
 				switch (characters[0]) {
 				case 'A': return Key.a;
