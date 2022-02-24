@@ -217,7 +217,6 @@ namespace Xwt.Mac
 				case '!': return RemoveShift(Key.Exclamation, ref modMask);
 				case '#': return RemoveShift(Key.Hash, ref modMask);
 				case '$': return RemoveShift(Key.Dollar, ref modMask);
-				case '€': return RemoveShift(Key.EuroSign, ref modMask);
 				case '%': return RemoveShift(Key.Percentage, ref modMask);
 				case '&': return RemoveShift(Key.Ampersand, ref modMask);
 				case '[': return RemoveShift(Key.LeftSquareBracket, ref modMask);
@@ -228,6 +227,99 @@ namespace Xwt.Mac
 				case '|': return RemoveShift(Key.Pipe, ref modMask);
 				case '`': return RemoveShift(Key.Backtick, ref modMask);
 				case '~': return RemoveShift(Key.Tilde, ref modMask);
+
+				// Alt+<Key.whatever> and Alt+Shift+<Key.whatever> generate printable characters
+				// so if we want to use them as keyboard shortcuts, we map them back to their
+				// group 0 key. For Alt+Shift+<whatever> we map it to the unshifted key
+				case '¯': return Key.Comma;
+				case '≤': return Key.Comma;
+				case '˘': return Key.Period;
+				case '≥': return Key.Period;
+				case '¿': return Key.Slash;
+				case '÷': return Key.Slash;
+				case 'Ú': return Key.Semicolon;
+				case '…': return Key.Semicolon;
+				case 'æ': return Key.Quote;
+				case 'Æ': return Key.Quote;
+				case '»': return Key.Backslash;
+				case '«': return Key.Backslash;
+				case '“': return Key.LeftSquareBracket;
+				case '”': return Key.LeftSquareBracket;
+				case '‘': return Key.RightSquareBracket;
+				case '’': return Key.RightSquareBracket;
+				case '–': return Key.Minus;
+				case '—': return Key.Minus;
+				case '≠': return Key.Equal;
+				case '±': return Key.Equal;
+
+				case '¡': return Key.K1;
+				case '⁄': return Key.K1;
+				case '€': return Key.K2;
+				case '™': return Key.K2;
+				case '‹': return Key.K3;
+				case '¢': return Key.K4;
+				case '›': return Key.K4;
+				case '∞': return Key.K5;
+				case 'ﬁ': return Key.K5;
+				case '§': return Key.K6;
+				case 'ﬂ': return Key.K6;
+				case '¶': return Key.K7;
+				case '‡': return Key.K7;
+				case '•': return Key.K8;
+				case 'ª': return Key.K9;
+				case '·': return Key.K9;
+				case 'º': return Key.K0;
+
+				case 'å': return Key.a;
+				case 'Å': return Key.a;
+				case '∫': return Key.b;
+				case 'ı': return Key.b;
+				case 'ç': return Key.c;
+				case 'Ç': return Key.c;
+				case '∂': return Key.d;
+				case 'Î': return Key.d;
+				case '´': return Key.e;
+				case '‰': return Key.e;
+				case 'ƒ': return Key.f;
+				case 'Ï': return Key.f;
+				case '©': return Key.g;
+				case 'Ì': return Key.g;
+				case '˙': return Key.h;
+				case 'Ó': return Key.h;
+				case 'È': return Key.i;
+				case '∆': return Key.j;
+				case 'Ô': return Key.j;
+				case '˚': return Key.k;
+				case '': return Key.k;
+				case '¬': return Key.l;
+				case 'Ò': return Key.l;
+				case 'µ': return Key.m;
+				case '˜': return Key.m;
+				case 'ˆ': return Key.n;
+				case 'ø': return Key.o;
+				case 'Ø': return Key.o;
+				case 'π': return Key.p;
+				case '∏': return Key.p;
+				case 'œ': return Key.q;
+				case 'Œ': return Key.q;
+				case '®': return Key.r;
+				case 'Â': return Key.r;
+				case 'ß': return Key.s;
+				case 'Í': return Key.s;
+				case '†': return Key.t;
+				case 'Ê': return Key.t;
+				case '¨': return Key.u;
+				case 'Ë': return Key.u;
+				case '√': return Key.v;
+				case '◊': return Key.v;
+				case '∑': return Key.w;
+				case '„': return Key.w;
+				case '≈': return Key.x;
+				case 'Ù': return Key.x;
+				case '¥': return Key.y;
+				case 'Á': return Key.y;
+				case 'Ω': return Key.z;
+				case 'Û': return Key.z;
 				}
 			return (Key)0;
 		}
