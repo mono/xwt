@@ -33,14 +33,10 @@ namespace Xwt.Mac
 	{
 		public static KeyEventArgs ToXwtKeyEventArgs (this NSEvent keyEvent)
 		{
-			var characters = keyEvent.Characters;
-			var charactersIgnoringModifiers = keyEvent.CharactersIgnoringModifiers;
-			var keyCode = keyEvent.KeyCode;
-			
 			NSEventModifierMask mask;
-			Key key = GetXwtKey(keyEvent, keyCode, characters, charactersIgnoringModifiers, out mask);
+			Key key = GetXwtKey(keyEvent, out mask);
 			ModifierKeys mod = mask.ToXwtValue ();
-			return new KeyEventArgs (key, keyCode, mod, keyEvent.IsARepeat, (long)TimeSpan.FromSeconds (keyEvent.Timestamp).TotalMilliseconds, characters, charactersIgnoringModifiers, keyEvent);
+			return new KeyEventArgs (key, keyEvent.KeyCode, mod, keyEvent.IsARepeat, (long)TimeSpan.FromSeconds (keyEvent.Timestamp).TotalMilliseconds, keyEvent.Characters, keyEvent.CharactersIgnoringModifiers, keyEvent);
 		}
 
 		static Key RemoveShift(Key key, ref NSEventModifierMask mask)
@@ -49,12 +45,12 @@ namespace Xwt.Mac
 			return key;
         }
 
-		static Key GetXwtKey (NSEvent keyEvent, ushort keyCode, string originalCharacters, string charactersIgnoringModifiers, out NSEventModifierMask modMask)
+		static Key GetXwtKey (NSEvent keyEvent, out NSEventModifierMask modMask)
 		{
 			modMask = keyEvent.ModifierFlags;
 
 			// special keys
-			switch (keyCode) {
+			switch (keyEvent.KeyCode) {
 				case 65: return Key.NumPadDecimal;  // kVK_ANSI_KeypadDecimal        = 0x41
 				case 67: return Key.NumPadMultiply; // kVK_ANSI_KeypadMultiply       = 0x43
 				case 69: return Key.NumPadAdd;      // kVK_ANSI_KeypadPlus           = 0x45
@@ -132,7 +128,7 @@ namespace Xwt.Mac
 			// If you press the cmd+м on the keyboard, keyEvent.Characters contains a 'v' and keyEvent.CharactersIgnoringModifiers
 			// contains the м
 			// This way it can map cmd+м to paste like on a roman keyboard.
-			var characters = string.IsNullOrWhiteSpace(originalCharacters) ? charactersIgnoringModifiers : originalCharacters;
+			var characters = string.IsNullOrWhiteSpace(keyEvent.Characters) ? keyEvent.CharactersIgnoringModifiers : keyEvent.Characters;
 			if (characters.Length > 0)
 				switch (characters[0]) {
 				case 'A': return Key.a;
