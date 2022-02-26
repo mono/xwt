@@ -101,12 +101,10 @@ namespace Xwt
 		/// <param name="characters">The character string this event represents</param>
 		/// <param name="charactersIgnoringModifiers">The character string this event represents ignoring any modifier keys that are pressed</param>
         /// <param name="nativeEvent">The native event object</param>
-        /// <param name="hardwareKey">The hardware key pressed</param>
-		public KeyEventArgs(Key key, int nativeKeyCode, ModifierKeys modifiers, bool isRepeat, long timestamp, string characters, string charactersIgnoringModifiers, object nativeEvent, Key hardwareKey)
+		public KeyEventArgs(Key key, int nativeKeyCode, ModifierKeys modifiers, bool isRepeat, long timestamp, string characters, string charactersIgnoringModifiers, object nativeEvent)
 			: this(key, nativeKeyCode, modifiers, isRepeat, timestamp, characters, charactersIgnoringModifiers)
 		{
 			this.NativeEvent = nativeEvent;
-			this.RawKey = hardwareKey;
 		}
 
 		/// <summary>
@@ -169,12 +167,6 @@ namespace Xwt
         /// </summary>
         /// <value>An opaque object representing the event in the native toolkit</value>
 		public object NativeEvent { get; private set; }
-
-		/// <summary>
-        /// Returns the physical key on the keyboard that was pressed according to the
-        /// ANSI standard US keyboard.
-        /// </summary>
-		public Key HardwareKey { get; internal set; }
 	}
 }
 
