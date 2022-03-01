@@ -723,11 +723,18 @@ namespace Xwt.Mac
 		
 		void InitPasteboard (NSPasteboard pb, TransferDataSource data)
 		{
+			bool addedSomething = false;
+
 			pb.ClearContents ();
 			foreach (var t in data.DataTypes) {
 				if (t == TransferDataType.Text) {
 					pb.AddTypes (new string[] { NSPasteboard.NSStringType }, null);
 					pb.SetStringForType ((string)data.GetValue (t), NSPasteboard.NSStringType);
+				}
+				else
+				{
+					pb.AddTypes(new string[] { ToNSDragType(t) }, null);
+					pb.SetStringForType((string)data.GetValue(t), NSPasteboard.NSStringType);
 				}
 			}
 		}
