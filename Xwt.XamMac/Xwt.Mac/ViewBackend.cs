@@ -723,18 +723,20 @@ namespace Xwt.Mac
 		
 		void InitPasteboard (NSPasteboard pb, TransferDataSource data)
 		{
-			bool addedSomething = false;
-
 			pb.ClearContents ();
 			foreach (var t in data.DataTypes) {
+				// Support dragging text internally and externally
 				if (t == TransferDataType.Text) {
-					pb.AddTypes (new string[] { NSPasteboard.NSStringType }, null);
-					pb.SetStringForType ((string)data.GetValue (t), NSPasteboard.NSStringType);
-				}
-				else
-				{
-					pb.AddTypes(new string[] { ToNSDragType(t) }, null);
+					pb.AddTypes(new string[] { NSPasteboard.NSStringType }, null);
 					pb.SetStringForType((string)data.GetValue(t), NSPasteboard.NSStringType);
+				}
+				// For other well known types, we don't currently support dragging them externally
+				else if (t == TransferDataType.Uri || t == TransferDataType.Image || t == TransferDataType.Rtf || t == TransferDataType.Html)
+					;
+				// For internal types, 
+				else {
+					pb.AddTypes(new string[] { t.Id }, null);
+					pb.SetStringForType("internal data", NSPasteboard.NSStringType);
 				}
 			}
 		}
