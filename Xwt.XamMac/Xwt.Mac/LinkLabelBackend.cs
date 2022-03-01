@@ -102,7 +102,7 @@ namespace Xwt.Mac
 		void HandleClicked (object sender, EventArgs e)
 		{
 			ApplicationContext.InvokeUserCode (() => {
-				NSWorkspace.SharedWorkspace.OpenUrl (uri);
+				EventSink.OnNavigateToUrl (uri);
 			});
 		}
 
