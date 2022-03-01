@@ -617,8 +617,9 @@ namespace Xwt.Mac
 			if (ob == null)
 				return NSDragOperation.None;
 			var backend = ob.Backend;
-			
-			INSDraggingInfo di = (INSDraggingInfo) Runtime.GetNSObject (dragInfo);
+
+			//INSDraggingInfo di = (INSDraggingInfo) Runtime.GetNSObject (dragInfo);
+			var di = Runtime.GetINativeObject<INSDraggingInfo>(dragInfo, owns: false);
 			var types = di.DraggingPasteboard.Types.Select (ToXwtDragType).ToArray ();
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
