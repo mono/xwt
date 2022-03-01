@@ -618,8 +618,7 @@ namespace Xwt.Mac
 				return NSDragOperation.None;
 			var backend = ob.Backend;
 
-			//INSDraggingInfo di = (INSDraggingInfo) Runtime.GetNSObject (dragInfo);
-			var di = Runtime.GetINativeObject<INSDraggingInfo>(dragInfo, owns: false);
+			var di = Runtime.GetINativeObject<INSDraggingInfo> (dragInfo, owns: false);
 			var types = di.DraggingPasteboard.Types.Select (ToXwtDragType).ToArray ();
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
@@ -664,8 +663,8 @@ namespace Xwt.Mac
 				return false;
 			
 			var backend = ob.Backend;
-			
-			INSDraggingInfo di = (INSDraggingInfo) Runtime.GetNSObject (dragInfo);
+
+			var di = Runtime.GetINativeObject<INSDraggingInfo> (dragInfo, owns: false);
 			var types = di.DraggingPasteboard.Types.Select (ToXwtDragType).ToArray ();
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
@@ -688,7 +687,7 @@ namespace Xwt.Mac
 			
 			var backend = ob.Backend;
 			
-			INSDraggingInfo di = (INSDraggingInfo) Runtime.GetNSObject (dragInfo);
+			var di = Runtime.GetINativeObject<INSDraggingInfo> (dragInfo, owns: false);
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
 			if ((backend.currentEvents & WidgetEvent.DragDrop) != 0) {
@@ -734,10 +733,10 @@ namespace Xwt.Mac
 				// For other well known types, we don't currently support dragging them externally
 				else if (t == TransferDataType.Uri || t == TransferDataType.Image || t == TransferDataType.Rtf || t == TransferDataType.Html)
 					;
-				// For internal types, 
+				// For internal types, set the data to something arbitrary, which isn't actually used
 				else {
 					pb.AddTypes(new string[] { t.Id }, null);
-					pb.SetStringForType("internal data", NSPasteboard.NSStringType);
+					pb.SetStringForType("internal drag", NSPasteboard.NSStringType);
 				}
 			}
 		}
