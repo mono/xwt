@@ -33,19 +33,16 @@ namespace Xwt.Mac
 	{
 		public static KeyEventArgs ToXwtKeyEventArgs (this NSEvent keyEvent)
 		{
-			NSEventModifierMask mask;
-			Key key = GetXwtKey(keyEvent, out mask);
-			ModifierKeys mod = mask.ToXwtValue ();
-			return new KeyEventArgs (key, keyEvent.KeyCode, mod, keyEvent.IsARepeat, (long)TimeSpan.FromSeconds (keyEvent.Timestamp).TotalMilliseconds, keyEvent.Characters, keyEvent.CharactersIgnoringModifiers, keyEvent);
+			var characters = keyEvent.Characters;
+			var charactersIgnoringModifiers = keyEvent.CharactersIgnoringModifiers;
+			var keyCode = keyEvent.KeyCode;
+			var modifierFlags = keyEvent.ModifierFlags;
+			
+			Key key = GetXwtKey(keyCode);
+			return new KeyEventArgs (key, keyCode, modifierFlags.ToXwtValue(), keyEvent.IsARepeat, (long)TimeSpan.FromSeconds (keyEvent.Timestamp).TotalMilliseconds, characters, charactersIgnoringModifiers, keyEvent);
 		}
 
-		static Key RemoveShift(Key key, ref NSEventModifierMask mask)
-        {
-			mask &= ~NSEventModifierMask.ShiftKeyMask;
-			return key;
-        }
-
-		static Key GetXwtKey (NSEvent keyEvent, out NSEventModifierMask modMask)
+		static Key GetXwtKey (ushort keyCode)
 		{
 			// NSEvent.KeyCode is the physical key pressed according to an ANSI US keyboard.
 			// With this pressing the м key on a Cyrillac keyboard or ㅍ in Korean both return v
@@ -54,10 +51,8 @@ namespace Xwt.Mac
 			// For compatibility reasons the Key field parses Characters/CharactersIgnoringModifiers into a
 			// Xwt.Key enum value, but most of unicode characters are not parsed so KeyEventArgs.Key probably
 			// should be considered obsolete.
-			modMask = keyEvent.ModifierFlags;
-
 			// special keys
-			switch (keyEvent.KeyCode) {
+			switch (keyCode) {
 				case 0: return Key.a;
 				case 1: return Key.s; 
 				case 2: return Key.d; 
