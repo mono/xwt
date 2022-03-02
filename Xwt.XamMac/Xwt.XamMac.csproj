@@ -9,9 +9,16 @@
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
     <TargetFramework>$(MacTargetFramework)</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DisableImplicitNamespaceImports>True</DisableImplicitNamespaceImports>
+
     <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+
+    <AssemblyTitle>Xwt.XamMac</AssemblyTitle>
+    <AssemblyDescription>Xamarin Mac Toolkit for the Xwt UI Framework</AssemblyDescription>
+    <Product>Xwt UI Framework</Product>
+    <Copyright>Microsoft, Inc (https://www.microsoft.com/)</Copyright>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <InformationalVersion>0.1.0.0-prerelease</InformationalVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
