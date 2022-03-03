@@ -404,7 +404,7 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public TreeItem (IntPtr p): base (p)
+		public TreeItem (NativeHandle p): base (p)
 		{
 		}
 		

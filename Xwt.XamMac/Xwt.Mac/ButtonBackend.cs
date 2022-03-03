@@ -28,6 +28,7 @@ using System;
 using AppKit;
 using CoreGraphics;
 using Foundation;
+using ObjCRuntime;
 using Xwt.Accessibility;
 using Xwt.Backends;
 using Xwt.Drawing;
@@ -194,7 +195,7 @@ namespace Xwt.Mac
 		//
 		internal event Action <MacButton> ActivatedInternal;
 
-		public MacButton (IntPtr p): base (p)
+		public MacButton (NativeHandle p): base (p)
 		{
 		}
 		

@@ -29,6 +29,7 @@ using System;
 using AppKit;
 using CoreGraphics;
 using Foundation;
+using ObjCRuntime;
 using Xwt.Backends;
 using Xwt.Drawing;
 
@@ -60,7 +61,7 @@ namespace Xwt.Mac
 		ApplicationContext context;
 		IMenuButtonEventSink eventSink;
 
-		public MacMenuButton (IntPtr p): base (p)
+		public MacMenuButton (NativeHandle p): base (p)
 		{
 		}
 		

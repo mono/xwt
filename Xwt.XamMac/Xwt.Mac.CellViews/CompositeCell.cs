@@ -57,7 +57,7 @@ namespace Xwt.Mac
 			this.source = source;
 		}
 
-		public CompositeCell (IntPtr p) : base (p)
+		public CompositeCell (NativeHandle p) : base (p)
 		{
 		}
 
