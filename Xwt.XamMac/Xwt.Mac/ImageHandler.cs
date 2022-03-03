@@ -51,9 +51,7 @@ namespace Xwt.Mac
 
 		public override object LoadFromStream (Stream stream)
 		{
-			using (NSData data = NSData.FromStream (stream)) {
-				return new NSImage (data);
-			}
+			return NSImage.FromStream (stream);
 		}
 		
 		public override object LoadFromFile (string file)
@@ -71,8 +69,9 @@ namespace Xwt.Mac
 
 		public override object CreateMultiSizeIcon (IEnumerable<object> images)
 		{
-			if (images.Count () == 1)
-				return images.First ();
+			var singleImage = images.SingleOrDefault ();
+			if (singleImage != null)
+				return singleImage;
 
 			NSImage res = new NSImage ();
 			foreach (NSImage img in images)
@@ -251,10 +250,8 @@ namespace Xwt.Mac
 		
 		static NSImage FromResource (string res)
 		{
-			var stream = typeof(ImageHandler).Assembly.GetManifestResourceStream (res);
-			using (stream)
-			using (NSData data = NSData.FromStream (stream)) {
-				return new NSImage (data);
+			using (var stream = typeof(ImageHandler).Assembly.GetManifestResourceStream (res)) {
+				return NSImage.FromStream (stream);
 			}
 		}
 
