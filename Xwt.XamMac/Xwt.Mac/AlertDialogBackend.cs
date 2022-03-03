@@ -27,6 +27,7 @@
 using System;
 using AppKit;
 using CoreGraphics;
+using ObjCRuntime;
 using Xwt.Backends;
 
 namespace Xwt.Mac
@@ -39,7 +40,7 @@ namespace Xwt.Mac
 		{
 		}
 		
-		public AlertDialogBackend (IntPtr intptr)
+		public AlertDialogBackend (NativeHandle intptr)
 		{
 		}
 

@@ -221,7 +221,7 @@ namespace Xwt.Mac
 
 		public ViewBackend Backend { get;  set; }
 
-		public MacTextView (IntPtr p) : base (p)
+		public MacTextView (NativeHandle p) : base (p)
 		{
 			CommonInit ();
 		}

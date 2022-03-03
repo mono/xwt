@@ -283,7 +283,7 @@ namespace Xwt.Mac
 		{
 		}
 
-		protected CustomTextFieldCell (IntPtr ptr) : base (ptr)
+		protected CustomTextFieldCell (NativeHandle ptr) : base (ptr)
 		{
 		}
 

@@ -49,7 +49,7 @@ namespace Xwt.Mac
 		bool sensitive = true;
 		WindowFrameEvent eventsEnabled;
 
-		public WindowBackend (IntPtr ptr): base (ptr)
+		public WindowBackend (NativeHandle ptr): base (ptr)
 		{
 		}
 		

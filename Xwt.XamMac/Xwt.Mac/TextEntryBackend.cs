@@ -28,6 +28,7 @@ using System;
 using AppKit;
 using CoreGraphics;
 using Foundation;
+using ObjCRuntime;
 using Xwt.Backends;
 
 namespace Xwt.Mac
@@ -356,7 +357,7 @@ namespace Xwt.Mac
 
 			}
 
-			protected CustomCell(IntPtr ptr) : base(ptr)
+			protected CustomCell(NativeHandle ptr) : base(ptr)
 			{
 			}
 
