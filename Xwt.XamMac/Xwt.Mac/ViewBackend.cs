@@ -620,7 +620,7 @@ namespace Xwt.Mac
 
 			var di = Runtime.GetINativeObject<INSDraggingInfo> (dragInfo, owns: false);
 			var types = di.DraggingPasteboard.Types.Select (ToXwtDragType).ToArray ();
-			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
+			var pos = backend.Widget.ConvertPointFromView (di.DraggingLocation, null).ToXwtPoint ();
 			
 			if ((backend.currentEvents & WidgetEvent.DragOverCheck) != 0) {
 				var args = new DragOverCheckEventArgs (pos, types, ConvertAction (di.DraggingSourceOperationMask));
