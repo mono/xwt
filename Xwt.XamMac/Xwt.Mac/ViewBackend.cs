@@ -724,19 +724,21 @@ namespace Xwt.Mac
 		void InitPasteboard (NSPasteboard pb, TransferDataSource data)
 		{
 			pb.ClearContents ();
+
 			foreach (var t in data.DataTypes) {
 				// Support dragging text internally and externally
 				if (t == TransferDataType.Text) {
 					pb.AddTypes(new string[] { NSPasteboard.NSStringType }, null);
 					pb.SetStringForType((string)data.GetValue(t), NSPasteboard.NSStringType);
 				}
-				// For other well known types, we don't currently support dragging them externally
+				// For other well known types, we don't currently support dragging them
 				else if (t == TransferDataType.Uri || t == TransferDataType.Image || t == TransferDataType.Rtf || t == TransferDataType.Html)
 					;
-				// For internal types, set the data to something arbitrary, which isn't actually used
+				// For internal types, provided serialized data
 				else {
-					pb.AddTypes(new string[] { t.Id }, null);
-					pb.SetStringForType("internal drag", NSPasteboard.NSStringType);
+					object value = data.GetValue (t);
+					NSData serializedData = NSData.FromArray (TransferDataSource.SerializeValue (value));
+					pb.SetDataForType (serializedData, t.Id);
 				}
 			}
 		}
@@ -892,5 +894,32 @@ namespace Xwt.Mac
 			child.Frame = new CGRect ((nfloat)cx, (nfloat)cy, (nfloat)cwidth, (nfloat)cheight);
 		}
 	}
+
+#if false
+	public class DragPasteboardDataProvider : NSObject, INSPasteboardItemDataProvider
+	{
+		TransferDataSource dataSource;
+
+		DragPasteboardDataProvider(TransferDataSource dataSource)
+        {
+			this.dataSource = dataSource;
+		}
+
+		public void ProvideDataForType (NSPasteboard pasteboard, NSPasteboardItem item, string type)
+		{
+			TransferDataType desiredTransferDataType = TransferDataType.FromId (type);
+
+			// Currently we only support internal types here, transferring their data via serializing
+			object value = dataSource.GetValue (desiredTransferDataType);
+			NSData data = NSData.FromArray (TransferDataSource.SerializeValue (value));
+
+			pasteboard.SetDataForType (data, type);
+		}
+
+		public void FinishedWithDataProvider (NSPasteboard pasteboard)
+		{
+		}
+	}
+#endif
 }
 
