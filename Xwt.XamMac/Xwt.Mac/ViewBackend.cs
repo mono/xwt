@@ -584,8 +584,7 @@ namespace Xwt.Mac
 			if (sdata.Data == null)
 				throw new ArgumentNullException ("data");
 
-			var pasteboardItem = new NSPasteboardItem();
-			InitPasteboardItem(pasteboardItem, sdata.Data);
+			NSPasteboardItem pasteboardItem = CreatePasteboardItem(sdata.Data);
 
 #if false
 			var lo = Widget.ConvertPointToBase(new CGPoint(Widget.Bounds.X, Widget.Bounds.Y));
@@ -739,23 +738,35 @@ namespace Xwt.Mac
 			});
 		}
 
-		void InitPasteboardItem (NSPasteboardItem pasteboardItem, TransferDataSource data)
+		NSPasteboardItem CreatePasteboardItem (TransferDataSource data)
 		{
+			var typesSupported = new List<string>();
+
 			foreach (var t in data.DataTypes) {
 				// Support dragging text internally and externally
 				if (t == TransferDataType.Text) {
-					pasteboardItem.SetStringForType((string)data.GetValue(t), NSPasteboard.NSStringType);
+					typesSupported.Add(NSPasteboard.NSPasteboardTypeString);
+					//pasteboardItem.SetStringForType((string)data.GetValue(t), NSPasteboard.NSStringType);
 				}
 				// For other well known types, we don't currently support dragging them
 				else if (t == TransferDataType.Uri || t == TransferDataType.Image || t == TransferDataType.Rtf || t == TransferDataType.Html)
 					;
 				// For internal types, provided serialized data
 				else {
-					object value = data.GetValue (t);
-					NSData serializedData = NSData.FromArray (TransferDataSource.SerializeValue (value));
-					pasteboardItem.SetDataForType (serializedData, t.Id);
+					typesSupported.Add(t.Id);
+
+					//object value = data.GetValue (t);
+					//NSData serializedData = NSData.FromArray (TransferDataSource.SerializeValue (value));
+					//pasteboardItem.SetDataForType (serializedData, t.Id);
 				}
 			}
+
+			var pasteboardItem = new NSPasteboardItem();
+
+			var dataProvider = new PasteboardDataProvider(data);
+			pasteboardItem.SetDataProviderForTypes(dataProvider, typesSupported.ToArray());
+
+			return pasteboardItem;
 		}
 
 		static void FillDataStore (TransferDataStore store, NSPasteboard pb, string[] types)
@@ -937,32 +948,34 @@ namespace Xwt.Mac
 		}
 	}
 
-
-#if false
-	public class DragPasteboardDataProvider : NSObject, INSPasteboardItemDataProvider
+	public class PasteboardDataProvider : NSObject, INSPasteboardItemDataProvider
 	{
 		TransferDataSource dataSource;
 
-		DragPasteboardDataProvider(TransferDataSource dataSource)
+		public PasteboardDataProvider(TransferDataSource dataSource)
         {
 			this.dataSource = dataSource;
 		}
 
 		public void ProvideDataForType (NSPasteboard pasteboard, NSPasteboardItem item, string type)
 		{
-			TransferDataType desiredTransferDataType = TransferDataType.FromId (type);
-
-			// Currently we only support internal types here, transferring their data via serializing
-			object value = dataSource.GetValue (desiredTransferDataType);
-			NSData data = NSData.FromArray (TransferDataSource.SerializeValue (value));
-
-			pasteboard.SetDataForType (data, type);
+			if (type == NSPasteboard.NSPasteboardTypeString)
+			{
+				pasteboard.SetStringForType((string)dataSource.GetValue(TransferDataType.Text), NSPasteboard.NSPasteboardTypeString);
+			}
+			else
+			{
+				// For internal types, provided serialized data
+				TransferDataType transferDataType = TransferDataType.FromId(type);
+				object value = dataSource.GetValue (transferDataType);
+				NSData serializedData = NSData.FromArray (TransferDataSource.SerializeValue (value));
+				pasteboard.SetDataForType (serializedData, type);
+			}
 		}
 
 		public void FinishedWithDataProvider (NSPasteboard pasteboard)
 		{
 		}
 	}
-#endif
 }
 
