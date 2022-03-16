@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using AppKit;
 using CoreGraphics;
+using Foundation;
 using ObjCRuntime;
 using Xwt.Backends;
 
@@ -74,6 +75,11 @@ namespace Xwt.Mac
 		public override bool IsPrimaryScreen (object backend)
 		{
 			return NSScreen.Screens[0] == (NSScreen) backend;
+		}
+
+		public override void OpenUrl (string url)
+		{
+			NSWorkspace.SharedWorkspace.OpenUrl (new NSUrl (url));
 		}
 
 		public static Point ToDesktopPoint (CGPoint loc)
