@@ -581,18 +581,29 @@ namespace Xwt.Mac
 		
 		public void DragStart (DragStartData sdata)
 		{
-			var lo = Widget.ConvertPointToBase (new CGPoint (Widget.Bounds.X, Widget.Bounds.Y));
-			lo = Widget.Window.ConvertBaseToScreen (lo);
-			var ml = NSEvent.CurrentMouseLocation;
-			var pb = NSPasteboard.FromName (NSPasteboard.NSDragPasteboardName);
-			if (pb == null)
-				throw new InvalidOperationException ("Could not get pasteboard");
 			if (sdata.Data == null)
 				throw new ArgumentNullException ("data");
-			InitPasteboard (pb, sdata.Data);
-			var img = (NSImage)sdata.ImageBackend;
+
+			var pasteboardItem = new NSPasteboardItem();
+			InitPasteboardItem(pasteboardItem, sdata.Data);
+
+#if false
+			var lo = Widget.ConvertPointToBase(new CGPoint(Widget.Bounds.X, Widget.Bounds.Y));
+			lo = Widget.Window.ConvertBaseToScreen(lo);
+			var ml = NSEvent.CurrentMouseLocation;
+
 			var pos = new CGPoint (ml.X - lo.X - (float)sdata.HotX, lo.Y - ml.Y - (float)sdata.HotY + img.Size.Height);
 			Widget.DragImage (img, pos, new CGSize (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
+#endif
+
+			var dragItem = new NSDraggingItem(pasteboardItem);
+
+			var img = (NSImage)sdata.ImageBackend;
+			var frame = new CGRect(0, 0, img.Size.Width, img.Size.Height);
+			dragItem.SetDraggingFrame(frame, img);
+
+			var draggingSource = new DraggingSource (this);
+			Widget.BeginDraggingSession(new[] { dragItem }, NSApplication.SharedApplication.CurrentEvent, draggingSource);
 		}
 		
 		public void SetDragSource (TransferDataType[] types, DragDropAction dragAction)
@@ -720,16 +731,20 @@ namespace Xwt.Mac
 				eventSink.OnDragOver (args);
 			});
 		}
-		
-		void InitPasteboard (NSPasteboard pb, TransferDataSource data)
-		{
-			pb.ClearContents ();
 
+		public virtual void OnDragFinished (DragFinishedEventArgs args)
+		{
+			ApplicationContext.InvokeUserCode(delegate {
+				eventSink.OnDragFinished (args);
+			});
+		}
+
+		void InitPasteboardItem (NSPasteboardItem pasteboardItem, TransferDataSource data)
+		{
 			foreach (var t in data.DataTypes) {
 				// Support dragging text internally and externally
 				if (t == TransferDataType.Text) {
-					pb.AddTypes(new string[] { NSPasteboard.NSStringType }, null);
-					pb.SetStringForType((string)data.GetValue(t), NSPasteboard.NSStringType);
+					pasteboardItem.SetStringForType((string)data.GetValue(t), NSPasteboard.NSStringType);
 				}
 				// For other well known types, we don't currently support dragging them
 				else if (t == TransferDataType.Uri || t == TransferDataType.Image || t == TransferDataType.Rtf || t == TransferDataType.Html)
@@ -738,7 +753,7 @@ namespace Xwt.Mac
 				else {
 					object value = data.GetValue (t);
 					NSData serializedData = NSData.FromArray (TransferDataSource.SerializeValue (value));
-					pb.SetDataForType (serializedData, t.Id);
+					pasteboardItem.SetDataForType (serializedData, t.Id);
 				}
 			}
 		}
@@ -894,6 +909,34 @@ namespace Xwt.Mac
 			child.Frame = new CGRect ((nfloat)cx, (nfloat)cy, (nfloat)cwidth, (nfloat)cheight);
 		}
 	}
+
+	class DraggingSource : NSDraggingSource
+	{
+		WeakReference<ViewBackend> weakViewBackend;
+
+		public DraggingSource(ViewBackend viewBackend)
+		{
+			weakViewBackend = new WeakReference<ViewBackend>(viewBackend);
+		}
+
+		[Export("draggingSession:willBeginAtPoint:")]
+		public void DraggingSessionWillBeginAtPoint(NSDraggingSession session, CGPoint screenPoint)
+		{
+		}
+
+		[Export("draggingSession:endedAtPoint:operation:")]
+		public void DraggingSessionEndedAtPoint(NSDraggingSession session, CGPoint screenPoint, NSDragOperation operation)
+		{
+			if (weakViewBackend.TryGetTarget(out var viewBackend))
+			{
+				bool deleteSource = operation == NSDragOperation.Move || operation == NSDragOperation.Delete;
+				var args = new DragFinishedEventArgs(deleteSource);
+
+				viewBackend.OnDragFinished(args);
+			}
+		}
+	}
+
 
 #if false
 	public class DragPasteboardDataProvider : NSObject, INSPasteboardItemDataProvider
