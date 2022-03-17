@@ -612,7 +612,7 @@ namespace Xwt.Mac
 		public void SetDragTarget (TransferDataType[] types, DragDropAction dragAction)
 		{
 			SetupForDragDrop (Widget.GetType ());
-			var dtypes = types.Select (ToNSDragType).ToArray ();
+			var dtypes = types.Select (ToNSPasteboardType).ToArray ();
 			Widget.RegisterForDraggedTypes (dtypes);
 		}
 		
@@ -746,18 +746,14 @@ namespace Xwt.Mac
 				// Support dragging text internally and externally
 				if (t == TransferDataType.Text) {
 					typesSupported.Add(NSPasteboard.NSPasteboardTypeString);
-					//pasteboardItem.SetStringForType((string)data.GetValue(t), NSPasteboard.NSStringType);
 				}
 				// For other well known types, we don't currently support dragging them
-				else if (t == TransferDataType.Uri || t == TransferDataType.Image || t == TransferDataType.Rtf || t == TransferDataType.Html)
+				else if (t == TransferDataType.Uri || t == TransferDataType.Image || t == TransferDataType.Rtf || t == TransferDataType.Html) {
 					;
+				}
 				// For internal types, provided serialized data
 				else {
-					typesSupported.Add(t.Id);
-
-					//object value = data.GetValue (t);
-					//NSData serializedData = NSData.FromArray (TransferDataSource.SerializeValue (value));
-					//pasteboardItem.SetDataForType (serializedData, t.Id);
+					typesSupported.Add(ToNSPasteboardType(t));
 				}
 			}
 
@@ -812,14 +808,25 @@ namespace Xwt.Mac
 			return res;
 		}
 		
-		static string ToNSDragType (TransferDataType type)
+		public static string ToNSPasteboardType (TransferDataType type)
 		{
 			if (type == TransferDataType.Text) return NSPasteboard.NSStringType;
 			if (type == TransferDataType.Uri) return NSPasteboard.NSFilenamesType;
 			if (type == TransferDataType.Image) return NSPasteboard.NSPictType;
 			if (type == TransferDataType.Rtf) return NSPasteboard.NSRtfType;
 			if (type == TransferDataType.Html) return NSPasteboard.NSHtmlType;
-			return type.Id;
+
+			// Internal types often use an assembly qualified name for the id, which
+			// apparently isn't valid for the pasteboard typename. In that case,
+			// remove everything after the ", " so that just the class full name
+			// forms the pasteboard type name (alphanumeric + periods, no spaces).
+			string pasteboardType = type.Id;
+			int delimiterIndex = pasteboardType.IndexOf(", ");
+			if (delimiterIndex != -1 && delimiterIndex > 0) {
+				pasteboardType = pasteboardType.Substring(0, delimiterIndex);
+			}
+
+			return pasteboardType;
 		}
 		
 		static TransferDataType ToXwtDragType (string type)
@@ -959,17 +966,19 @@ namespace Xwt.Mac
 
 		public void ProvideDataForType (NSPasteboard pasteboard, NSPasteboardItem item, string type)
 		{
-			if (type == NSPasteboard.NSPasteboardTypeString)
-			{
-				pasteboard.SetStringForType((string)dataSource.GetValue(TransferDataType.Text), NSPasteboard.NSPasteboardTypeString);
-			}
-			else
-			{
-				// For internal types, provided serialized data
-				TransferDataType transferDataType = TransferDataType.FromId(type);
-				object value = dataSource.GetValue (transferDataType);
-				NSData serializedData = NSData.FromArray (TransferDataSource.SerializeValue (value));
-				pasteboard.SetDataForType (serializedData, type);
+			foreach (TransferDataType transferDataType in dataSource.DataTypes) {
+				string currentPasteboardType = ViewBackend.ToNSPasteboardType (transferDataType);
+				if (currentPasteboardType == type) {
+					if (transferDataType == TransferDataType.Text) {
+						pasteboard.SetStringForType((string)dataSource.GetValue(transferDataType), NSPasteboard.NSPasteboardTypeString);
+					}
+					else {
+						// For internal types, provided serialized data
+						object value = dataSource.GetValue(transferDataType);
+						NSData serializedData = NSData.FromArray(TransferDataSource.SerializeValue(value));
+						pasteboard.SetDataForType(serializedData, type);
+					}
+				}
 			}
 		}
 
