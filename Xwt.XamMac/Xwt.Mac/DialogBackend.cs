@@ -169,6 +169,13 @@ namespace Xwt.Mac
 		{
 			Visible = true;
 			modalSessionRunning = true;
+
+			NSWindow nsParent = parent.Window as NSWindow;
+			if (nsParent != null && nsParent.IsVisible)
+			{
+				nsParent.AddChildWindow(this, NSWindowOrderingMode.Above);
+			}
+			Util.CenterWindow(this, nsParent);
 			NSApplication.SharedApplication.RunModalForWindow (this);
 		}
 
