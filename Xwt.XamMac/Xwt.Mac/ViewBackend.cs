@@ -953,7 +953,7 @@ namespace Xwt.Mac
 		TransferDataSource dataSource;
 
 		public PasteboardDataProvider(TransferDataSource dataSource)
-        {
+		{
 			this.dataSource = dataSource;
 		}
 
