@@ -108,6 +108,20 @@ namespace Xwt.Mac
 			v.Frame = new CGRect ((nfloat)rect.X, y, (nfloat)rect.Width, (nfloat)rect.Height);
 		}
 
+		public static void CenterWindow(NSWindow nsChild, NSWindow nsParent)
+		{
+			if (nsParent != null && nsParent.IsVisible)
+			{
+				int x = (int)(nsParent.Frame.Left + (nsParent.Frame.Width - nsChild.Frame.Width) / 2);
+				int y = (int)(nsParent.Frame.Top + (nsParent.Frame.Height - nsChild.Frame.Height) / 2);
+				nsChild.SetFrameOrigin(new CGPoint(x, y));
+			}
+			else
+			{
+				nsChild.Center();
+			}
+		}
+
 		public static Alignment ToAlignment (this NSTextAlignment align)
 		{
 			switch (align) {
