@@ -586,17 +586,10 @@ namespace Xwt.Mac
 
 			NSPasteboardItem pasteboardItem = CreatePasteboardItem(sdata.Data);
 
-#if false
-			var lo = Widget.ConvertPointToBase(new CGPoint(Widget.Bounds.X, Widget.Bounds.Y));
-			lo = Widget.Window.ConvertBaseToScreen(lo);
-			var ml = NSEvent.CurrentMouseLocation;
-
-			var pos = new CGPoint (ml.X - lo.X - (float)sdata.HotX, lo.Y - ml.Y - (float)sdata.HotY + img.Size.Height);
-			Widget.DragImage (img, pos, new CGSize (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
-#endif
-
 			var dragItem = new NSDraggingItem(pasteboardItem);
 
+			// Note that the hotspot (sdata.HotX, sdata.HotY) isn't currently supported here, but
+			// current users of this API don't use that anyway
 			var img = (NSImage)sdata.ImageBackend;
 			var frame = new CGRect(0, 0, img.Size.Width, img.Size.Height);
 			dragItem.SetDraggingFrame(frame, img);
@@ -928,7 +921,7 @@ namespace Xwt.Mac
 		}
 	}
 
-	class DraggingSource : NSDraggingSource
+	class DraggingSource : NSObject, INSDraggingSource
 	{
 		WeakReference<ViewBackend> weakViewBackend;
 
@@ -936,7 +929,7 @@ namespace Xwt.Mac
 		{
 			weakViewBackend = new WeakReference<ViewBackend>(viewBackend);
 		}
-
+		
 		[Export("draggingSession:willBeginAtPoint:")]
 		public void DraggingSessionWillBeginAtPoint(NSDraggingSession session, CGPoint screenPoint)
 		{
