@@ -112,6 +112,19 @@ namespace Xwt.Mac
 			Window.ReleasedWhenClosed = true;
 			if (win != null)
 				return sortedButtons [(int)this.RunSheetModal (win) - 1000];
+
+			if (win == null)
+			{
+				//a modal dialog needs parent window so we try take the current key
+				win = NSApplication.SharedApplication.ModalWindow ?? NSApplication.SharedApplication.KeyWindow;
+			}
+			
+			if (win != null)
+			{
+				win.AddChildWindow(this.Window, NSWindowOrderingMode.Above);
+			}
+
+			Util.CenterWindow(this.Window, win);
 			return sortedButtons [(int)this.RunModal () - 1000];
 		}
 
