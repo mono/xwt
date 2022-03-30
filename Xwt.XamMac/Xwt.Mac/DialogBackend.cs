@@ -167,14 +167,21 @@ namespace Xwt.Mac
 
 		public void RunLoop (IWindowFrameBackend parent)
 		{
-			Visible = true;
-			modalSessionRunning = true;
+			NSWindow nsParent = parent?.Window as NSWindow;
+			if (nsParent == null)
+			{
+				//a modal dialog needs parent window so we try take the current key
+				nsParent = NSApplication.SharedApplication.ModalWindow ?? NSApplication.SharedApplication.KeyWindow;
+			}
 
-			NSWindow nsParent = parent.Window as NSWindow;
 			if (nsParent != null && nsParent.IsVisible)
 			{
 				nsParent.AddChildWindow(this, NSWindowOrderingMode.Above);
 			}
+
+			Visible = true;
+			modalSessionRunning = true;
+
 			Util.CenterWindow(this, nsParent);
 			NSApplication.SharedApplication.RunModalForWindow (this);
 		}
