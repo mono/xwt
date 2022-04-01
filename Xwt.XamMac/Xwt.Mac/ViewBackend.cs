@@ -581,18 +581,21 @@ namespace Xwt.Mac
 		
 		public void DragStart (DragStartData sdata)
 		{
-			var lo = Widget.ConvertPointToBase (new CGPoint (Widget.Bounds.X, Widget.Bounds.Y));
-			lo = Widget.Window.ConvertBaseToScreen (lo);
-			var ml = NSEvent.CurrentMouseLocation;
-			var pb = NSPasteboard.FromName (NSPasteboard.NSDragPasteboardName);
-			if (pb == null)
-				throw new InvalidOperationException ("Could not get pasteboard");
 			if (sdata.Data == null)
 				throw new ArgumentNullException ("data");
-			InitPasteboard (pb, sdata.Data);
+
+			NSPasteboardItem pasteboardItem = CreatePasteboardItem(sdata.Data);
+
+			var dragItem = new NSDraggingItem(pasteboardItem);
+
+			// Note that the hotspot (sdata.HotX, sdata.HotY) isn't currently supported here, but
+			// current users of this API don't use that anyway
 			var img = (NSImage)sdata.ImageBackend;
-			var pos = new CGPoint (ml.X - lo.X - (float)sdata.HotX, lo.Y - ml.Y - (float)sdata.HotY + img.Size.Height);
-			Widget.DragImage (img, pos, new CGSize (0, 0), NSApplication.SharedApplication.CurrentEvent, pb, Widget, true);
+			var frame = new CGRect(0, 0, img.Size.Width, img.Size.Height);
+			dragItem.SetDraggingFrame(frame, img);
+
+			var draggingSource = new DraggingSource (this);
+			Widget.BeginDraggingSession(new[] { dragItem }, NSApplication.SharedApplication.CurrentEvent, draggingSource);
 		}
 		
 		public void SetDragSource (TransferDataType[] types, DragDropAction dragAction)
@@ -602,7 +605,7 @@ namespace Xwt.Mac
 		public void SetDragTarget (TransferDataType[] types, DragDropAction dragAction)
 		{
 			SetupForDragDrop (Widget.GetType ());
-			var dtypes = types.Select (ToNSDragType).ToArray ();
+			var dtypes = types.Select (ToNSPasteboardType).ToArray ();
 			Widget.RegisterForDraggedTypes (dtypes);
 		}
 		
@@ -617,10 +620,10 @@ namespace Xwt.Mac
 			if (ob == null)
 				return NSDragOperation.None;
 			var backend = ob.Backend;
-			
-			INSDraggingInfo di = (INSDraggingInfo) Runtime.GetNSObject (dragInfo);
+
+			var di = Runtime.GetINativeObject<INSDraggingInfo> (dragInfo, owns: false);
 			var types = di.DraggingPasteboard.Types.Select (ToXwtDragType).ToArray ();
-			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
+			var pos = backend.Widget.ConvertPointFromView (di.DraggingLocation, null).ToXwtPoint ();
 			
 			if ((backend.currentEvents & WidgetEvent.DragOverCheck) != 0) {
 				var args = new DragOverCheckEventArgs (pos, types, ConvertAction (di.DraggingSourceOperationMask));
@@ -663,8 +666,8 @@ namespace Xwt.Mac
 				return false;
 			
 			var backend = ob.Backend;
-			
-			INSDraggingInfo di = (INSDraggingInfo) Runtime.GetNSObject (dragInfo);
+
+			var di = Runtime.GetINativeObject<INSDraggingInfo> (dragInfo, owns: false);
 			var types = di.DraggingPasteboard.Types.Select (ToXwtDragType).ToArray ();
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
@@ -687,7 +690,7 @@ namespace Xwt.Mac
 			
 			var backend = ob.Backend;
 			
-			INSDraggingInfo di = (INSDraggingInfo) Runtime.GetNSObject (dragInfo);
+			var di = Runtime.GetINativeObject<INSDraggingInfo> (dragInfo, owns: false);
 			var pos = new Point (di.DraggingLocation.X, di.DraggingLocation.Y);
 			
 			if ((backend.currentEvents & WidgetEvent.DragDrop) != 0) {
@@ -720,16 +723,39 @@ namespace Xwt.Mac
 				eventSink.OnDragOver (args);
 			});
 		}
-		
-		void InitPasteboard (NSPasteboard pb, TransferDataSource data)
+
+		public virtual void OnDragFinished (DragFinishedEventArgs args)
 		{
-			pb.ClearContents ();
+			ApplicationContext.InvokeUserCode(delegate {
+				eventSink.OnDragFinished (args);
+			});
+		}
+
+		NSPasteboardItem CreatePasteboardItem (TransferDataSource data)
+		{
+			var typesSupported = new List<string>();
+
 			foreach (var t in data.DataTypes) {
+				// Support dragging text internally and externally
 				if (t == TransferDataType.Text) {
-					pb.AddTypes (new string[] { NSPasteboard.NSStringType }, null);
-					pb.SetStringForType ((string)data.GetValue (t), NSPasteboard.NSStringType);
+					typesSupported.Add(NSPasteboard.NSPasteboardTypeString);
+				}
+				// For other well known types, we don't currently support dragging them
+				else if (t == TransferDataType.Uri || t == TransferDataType.Image || t == TransferDataType.Rtf || t == TransferDataType.Html) {
+					;
+				}
+				// For internal types, provided serialized data
+				else {
+					typesSupported.Add(ToNSPasteboardType(t));
 				}
 			}
+
+			var pasteboardItem = new NSPasteboardItem();
+
+			var dataProvider = new PasteboardDataProvider(data);
+			pasteboardItem.SetDataProviderForTypes(dataProvider, typesSupported.ToArray());
+
+			return pasteboardItem;
 		}
 
 		static void FillDataStore (TransferDataStore store, NSPasteboard pb, string[] types)
@@ -775,14 +801,25 @@ namespace Xwt.Mac
 			return res;
 		}
 		
-		static string ToNSDragType (TransferDataType type)
+		public static string ToNSPasteboardType (TransferDataType type)
 		{
 			if (type == TransferDataType.Text) return NSPasteboard.NSStringType;
 			if (type == TransferDataType.Uri) return NSPasteboard.NSFilenamesType;
 			if (type == TransferDataType.Image) return NSPasteboard.NSPictType;
 			if (type == TransferDataType.Rtf) return NSPasteboard.NSRtfType;
 			if (type == TransferDataType.Html) return NSPasteboard.NSHtmlType;
-			return type.Id;
+
+			// Internal types often use an assembly qualified name for the id, which
+			// apparently isn't valid for the pasteboard typename. In that case,
+			// remove everything after the ", " so that just the class full name
+			// forms the pasteboard type name (alphanumeric + periods, no spaces).
+			string pasteboardType = type.Id;
+			int delimiterIndex = pasteboardType.IndexOf(", ");
+			if (delimiterIndex != -1 && delimiterIndex > 0) {
+				pasteboardType = pasteboardType.Substring(0, delimiterIndex);
+			}
+
+			return pasteboardType;
 		}
 		
 		static TransferDataType ToXwtDragType (string type)
@@ -881,6 +918,65 @@ namespace Xwt.Mac
 				cheight = s.Height;
 			}
 			child.Frame = new CGRect ((nfloat)cx, (nfloat)cy, (nfloat)cwidth, (nfloat)cheight);
+		}
+	}
+
+	class DraggingSource : NSObject, INSDraggingSource
+	{
+		WeakReference<ViewBackend> weakViewBackend;
+
+		public DraggingSource(ViewBackend viewBackend)
+		{
+			weakViewBackend = new WeakReference<ViewBackend>(viewBackend);
+		}
+		
+		[Export("draggingSession:willBeginAtPoint:")]
+		public void DraggingSessionWillBeginAtPoint(NSDraggingSession session, CGPoint screenPoint)
+		{
+		}
+
+		[Export("draggingSession:endedAtPoint:operation:")]
+		public void DraggingSessionEndedAtPoint(NSDraggingSession session, CGPoint screenPoint, NSDragOperation operation)
+		{
+			if (weakViewBackend.TryGetTarget(out var viewBackend))
+			{
+				bool deleteSource = operation == NSDragOperation.Move || operation == NSDragOperation.Delete;
+				var args = new DragFinishedEventArgs(deleteSource);
+
+				viewBackend.OnDragFinished(args);
+			}
+		}
+	}
+
+	public class PasteboardDataProvider : NSObject, INSPasteboardItemDataProvider
+	{
+		TransferDataSource dataSource;
+
+		public PasteboardDataProvider(TransferDataSource dataSource)
+		{
+			this.dataSource = dataSource;
+		}
+
+		public void ProvideDataForType (NSPasteboard pasteboard, NSPasteboardItem item, string type)
+		{
+			foreach (TransferDataType transferDataType in dataSource.DataTypes) {
+				string currentPasteboardType = ViewBackend.ToNSPasteboardType (transferDataType);
+				if (currentPasteboardType == type) {
+					if (transferDataType == TransferDataType.Text) {
+						pasteboard.SetStringForType((string)dataSource.GetValue(transferDataType), NSPasteboard.NSPasteboardTypeString);
+					}
+					else {
+						// For internal types, provided serialized data
+						object value = dataSource.GetValue(transferDataType);
+						NSData serializedData = NSData.FromArray(TransferDataSource.SerializeValue(value));
+						pasteboard.SetDataForType(serializedData, type);
+					}
+				}
+			}
+		}
+
+		public void FinishedWithDataProvider (NSPasteboard pasteboard)
+		{
 		}
 	}
 }
