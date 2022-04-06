@@ -260,7 +260,7 @@ namespace Xwt
 			get { return transientFor; }
 			set {
 				transientFor = value;
-				Backend.SetTransientFor ((IWindowFrameBackend)(value as IFrontend).Backend);
+				Backend.SetTransientFor ((IWindowFrameBackend)(value as IFrontend)?.Backend);
 			}
 		}
 
