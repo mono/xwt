@@ -96,20 +96,17 @@ namespace Xwt.Mac
 		internal void InternalShow ()
 		{
 			Window.MakeKeyAndOrderFront (MacEngine.App);
-			if (Window.ParentWindow != null) {
-				if (!Window.ParentWindow.ChildWindows.Contains (Window))
-					Window.ParentWindow.AddChildWindow (Window, NSWindowOrderingMode.Above);
+			var parentWindow = Window.ParentWindow;
 
-				// always use NSWindow for alignment when running in guest mode and
-				// don't rely on AddChildWindow to position the window correctly
-				if (!(Window.ParentWindow is WindowBackend)) {
-					var parentBounds = MacDesktopBackend.ToDesktopRect (Window.ParentWindow.ContentRectFor (Window.ParentWindow.Frame));
-					var bounds = ((IWindowFrameBackend)this).Bounds;
-					bounds.X = parentBounds.Center.X - (Window.Frame.Width / 2);
-					bounds.Y = parentBounds.Center.Y - (Window.Frame.Height / 2);
-					((IWindowFrameBackend)this).Bounds = bounds;
-				}
+			if (parentWindow != null && Visible)
+			{
+				//if there is any child window we remove it
+				if (!parentWindow.ChildWindows.Contains (Window))
+					parentWindow.AddChildWindow (Window, NSWindowOrderingMode.Above);
 			}
+
+			//we center in any case
+			Util.CenterWindow(Window, parentWindow);
 		}
 
 		public void Present ()
