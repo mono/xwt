@@ -334,20 +334,14 @@ namespace Xwt.Mac
 
 		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend parent)
 		{
+			//TODO: why this?
 			if (!((IWindowFrameBackend)this).ShowInTaskbar)
 				Window.StyleMask &= ~NSWindowStyle.Miniaturizable;
 
-			var win = Window as NSWindow ?? ApplicationContext.Toolkit.GetNativeWindow (parent) as NSWindow;
-
-			if (Window.ParentWindow != win) {
-				// remove from the previous parent
-				if (Window.ParentWindow != null)
-					Window.ParentWindow.RemoveChildWindow (Window);
-
-				Window.ParentWindow = win;
-				// A window must be visible to be added to a parent. See InternalShow().
-				if (Visible)
-					Window.ParentWindow.AddChildWindow (Window, NSWindowOrderingMode.Above);
+			//we try to get the native object from the parameter if not we fallback into the real parent
+			NSWindow nParent = (ApplicationContext.Toolkit.GetNativeWindow(parent) as NSWindow) ?? Window.ParentWindow;
+			if (nParent != Window.ParentWindow) {
+				Window.ParentWindow = nParent;
 			}
 		}
 
