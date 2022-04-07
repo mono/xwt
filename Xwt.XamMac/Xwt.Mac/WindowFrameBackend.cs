@@ -96,19 +96,19 @@ namespace Xwt.Mac
 		internal void InternalShow ()
 		{
 			Window.MakeKeyAndOrderFront (MacEngine.App);
-			if (Window.ParentWindow != null) {
-				if (!Window.ParentWindow.ChildWindows.Contains (Window))
-					Window.ParentWindow.AddChildWindow (Window, NSWindowOrderingMode.Above);
 
-				// always use NSWindow for alignment when running in guest mode and
-				// don't rely on AddChildWindow to position the window correctly
-				if (!(Window.ParentWindow is WindowBackend)) {
-					var parentBounds = MacDesktopBackend.ToDesktopRect (Window.ParentWindow.ContentRectFor (Window.ParentWindow.Frame));
-					var bounds = ((IWindowFrameBackend)this).Bounds;
-					bounds.X = parentBounds.Center.X - (Window.Frame.Width / 2);
-					bounds.Y = parentBounds.Center.Y - (Window.Frame.Height / 2);
-					((IWindowFrameBackend)this).Bounds = bounds;
-				}
+			var parentWindow = Window.ParentWindow;
+			TryAddChildWindowIfVisible(parentWindow, Window);
+			//we center in any case
+			Util.CenterWindow(Window, parentWindow);
+		}
+
+		void TryAddChildWindowIfVisible(NSWindow parentWindow, NSWindow window)
+		{
+			if (parentWindow != null && Visible)
+			{
+				if (!parentWindow.ChildWindows.Contains(window))
+					parentWindow.AddChildWindow(window, NSWindowOrderingMode.Above);
 			}
 		}
 
@@ -334,20 +334,20 @@ namespace Xwt.Mac
 
 		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend parent)
 		{
+			//TODO: why this?
 			if (!((IWindowFrameBackend)this).ShowInTaskbar)
 				Window.StyleMask &= ~NSWindowStyle.Miniaturizable;
 
-			var win = Window as NSWindow ?? ApplicationContext.Toolkit.GetNativeWindow (parent) as NSWindow;
-
-			if (Window.ParentWindow != win) {
+			//we try to get the native object from the parameter if not we fallback into the real parent
+			if (ApplicationContext.Toolkit.GetNativeWindow(parent) is NSWindow nParent && nParent != Window.ParentWindow)
+  			{
 				// remove from the previous parent
 				if (Window.ParentWindow != null)
-					Window.ParentWindow.RemoveChildWindow (Window);
+					Window.ParentWindow.RemoveChildWindow(Window);
 
-				Window.ParentWindow = win;
-				// A window must be visible to be added to a parent. See InternalShow().
-				if (Visible)
-					Window.ParentWindow.AddChildWindow (Window, NSWindowOrderingMode.Above);
+				Window.ParentWindow = nParent;
+
+				TryAddChildWindowIfVisible(nParent, Window);
 			}
 		}
 
