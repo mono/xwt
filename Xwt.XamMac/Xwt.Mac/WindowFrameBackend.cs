@@ -346,10 +346,6 @@ namespace Xwt.Mac
 				if (Window.ParentWindow != null)
 					Window.ParentWindow.RemoveChildWindow(Window);
 
-				// new parent has any associed window we remove it
-				if (nParent.ParentWindow != null)
-					nParent.ParentWindow.RemoveChildWindow(nParent);
-
 				Window.ParentWindow = nParent;
 
 				TryAddChildWindowIfVisible(nParent, Window);
