@@ -107,7 +107,6 @@ namespace Xwt.Mac
         {
 			if (parentWindow != null && Visible)
 			{
-				//if there is any child window we remove it
 				if (!parentWindow.ChildWindows.Contains(window))
 					parentWindow.AddChildWindow(window, NSWindowOrderingMode.Above);
 			}
