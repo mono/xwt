@@ -336,8 +336,16 @@ namespace Xwt.Mac
 				Window.StyleMask &= ~NSWindowStyle.Miniaturizable;
 
 			//we try to get the native object from the parameter if not we fallback into the real parent
-			NSWindow nParent = (ApplicationContext.Toolkit.GetNativeWindow(parent) as NSWindow) ?? Window.ParentWindow;
-			if (nParent != Window.ParentWindow) {
+			if (ApplicationContext.Toolkit.GetNativeWindow(parent) is NSWindow nParent && nParent != Window.ParentWindow)
+            {
+				// remove from the previous parent
+				if (Window.ParentWindow != null)
+					Window.ParentWindow.RemoveChildWindow(Window);
+
+				// new parent has any associed window we remove it
+				if (nParent.ParentWindow != null)
+					nParent.ParentWindow.RemoveChildWindow(nParent);
+
 				Window.ParentWindow = nParent;
 			}
 		}
