@@ -104,7 +104,7 @@ namespace Xwt.Mac
 		}
 
 		void TryAddChildWindowIfVisible(NSWindow parentWindow, NSWindow window)
-        {
+		{
 			if (parentWindow != null && Visible)
 			{
 				if (!parentWindow.ChildWindows.Contains(window))
@@ -340,7 +340,7 @@ namespace Xwt.Mac
 
 			//we try to get the native object from the parameter if not we fallback into the real parent
 			if (ApplicationContext.Toolkit.GetNativeWindow(parent) is NSWindow nParent && nParent != Window.ParentWindow)
-            {
+  			{
 				// remove from the previous parent
 				if (Window.ParentWindow != null)
 					Window.ParentWindow.RemoveChildWindow(Window);
