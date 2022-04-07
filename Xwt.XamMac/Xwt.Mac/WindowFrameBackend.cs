@@ -96,17 +96,21 @@ namespace Xwt.Mac
 		internal void InternalShow ()
 		{
 			Window.MakeKeyAndOrderFront (MacEngine.App);
-			var parentWindow = Window.ParentWindow;
 
+			var parentWindow = Window.ParentWindow;
+			TryAddChildWindowIfVisible(parentWindow, Window);
+			//we center in any case
+			Util.CenterWindow(Window, parentWindow);
+		}
+
+		void TryAddChildWindowIfVisible(NSWindow parentWindow, NSWindow window)
+        {
 			if (parentWindow != null && Visible)
 			{
 				//if there is any child window we remove it
-				if (!parentWindow.ChildWindows.Contains (Window))
-					parentWindow.AddChildWindow (Window, NSWindowOrderingMode.Above);
+				if (!parentWindow.ChildWindows.Contains(window))
+					parentWindow.AddChildWindow(window, NSWindowOrderingMode.Above);
 			}
-
-			//we center in any case
-			Util.CenterWindow(Window, parentWindow);
 		}
 
 		public void Present ()
@@ -347,6 +351,8 @@ namespace Xwt.Mac
 					nParent.ParentWindow.RemoveChildWindow(nParent);
 
 				Window.ParentWindow = nParent;
+
+				TryAddChildWindowIfVisible(nParent, Window);
 			}
 		}
 
