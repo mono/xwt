@@ -206,8 +206,9 @@ namespace Xwt.Mac
 					NSRange er;
 					// get the effective font to modify for the given range
 					var ft = TextStorage.GetAttribute (NSStringAttributeKey.Font, attribute.StartIndex, out er, r) as NSFont;
-					ft = ft.WithWeight (xa.Weight);
-					TextStorage.AddAttribute (NSStringAttributeKey.Font, ft, r);
+					ft = ft?.WithWeight (xa.Weight);
+					if (ft != null)
+						TextStorage.AddAttribute (NSStringAttributeKey.Font, ft, r);
 				}
 				else if (attribute is LinkTextAttribute)
 				{
@@ -225,8 +226,9 @@ namespace Xwt.Mac
 					var xa = (FontSizeTextAttribute)attribute;
 					NSRange er;
 					var ft = TextStorage.GetAttribute (NSStringAttributeKey.Font, attribute.StartIndex, out er, r) as NSFont;
-					ft = ft.WithSize (xa.Size);
-					TextStorage.AddAttribute (NSStringAttributeKey.Font, ft, r);
+					ft = ft?.WithSize (xa.Size);
+					if (ft != null)
+						TextStorage.AddAttribute (NSStringAttributeKey.Font, ft, r);
 				} 
 				else if (attribute is FontTextAttribute)
 				{
