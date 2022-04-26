@@ -174,6 +174,10 @@ namespace Xwt.Mac
 				nsParent = NSApplication.SharedApplication.ModalWindow ?? NSApplication.SharedApplication.KeyWindow;
 			}
 
+			// Next, make this window key before adding it as a child.
+			// This matches behavior in MonoDevelop.Ide.MessageService.RunCustomDialog.
+			MakeKeyAndOrderFront(NSApplication.SharedApplication);
+
 			if (nsParent != null && nsParent.IsVisible)
 			{
 				nsParent.AddChildWindow(this, NSWindowOrderingMode.Above);
