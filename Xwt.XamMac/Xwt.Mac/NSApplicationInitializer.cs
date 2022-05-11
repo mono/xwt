@@ -41,7 +41,9 @@ namespace Xwt.Mac
 			if (System.Threading.Thread.GetData (ds) == null) {
 				System.Threading.Thread.SetData (ds, true);
 
+#if !NET7_0_OR_GREATER
 				NSApplication.IgnoreMissingAssembliesDuringRegistration = true;
+#endif
 
 				// Setup a registration handler that does not let Xamarin.Mac register assemblies by default.
 				Runtime.AssemblyRegistration += Runtime_AssemblyRegistration;
