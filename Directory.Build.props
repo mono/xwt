@@ -1,19 +1,19 @@
 <Project>
+  <Import Project="$(MSBuildThisFileDirectory)..\..\msbuild\NetCore.props" Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\NetCore.props')" />
 
   <PropertyGroup>
     <InMonoDevelopTree>False</InMonoDevelopTree>
-    <Net6>False</Net6>
+    <NetCore>False</NetCore>
     <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">True</InMonoDevelopTree>
-    <Net6 Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\Net6.props')">True</Net6>
+    <NetCore Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\NetCore.props')">True</NetCore>
 
     <DotNetFrameworkTarget>net461</DotNetFrameworkTarget>
     <DotNetCoreTarget>netstandard2.0</DotNetCoreTarget>
 
-    <MacTargetFramework Condition="!$(Net6)">$(DotNetFrameworkTarget)</MacTargetFramework>
-    <MacTargetFramework Condition="$(Net6)">net6.0-macos</MacTargetFramework>
+    <MacTargetFramework Condition="!$(NetCore)">$(DotNetFrameworkTarget)</MacTargetFramework>
 
-    <TargetFramework Condition="!$(Net6)">$(DotNetFrameworkTarget)</TargetFramework>
-    <TargetFramework Condition="$(Net6)">$(DotNetCoreTarget)</TargetFramework>
+    <TargetFramework Condition="!$(NetCore)">$(DotNetFrameworkTarget)</TargetFramework>
+    <TargetFramework Condition="$(NetCore)">$(DotNetCoreTarget)</TargetFramework>
 
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
