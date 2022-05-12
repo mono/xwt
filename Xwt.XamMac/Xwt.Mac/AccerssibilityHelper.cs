@@ -109,7 +109,7 @@ namespace Xwt.Mac
 			using (var dictionary = new NSDictionary(NSAccessibilityNotificationUserInfoKeys.AnnouncementKey, msg,
 					NSAccessibilityNotificationUserInfoKeys.PriorityKey, polite ? NSAccessibilityPriorityLevel.Medium : NSAccessibilityPriorityLevel.High))
 			{
-				NSAccessibility.PostNotification(nsObject, NSAccessibilityNotifications.AnnouncementRequestedNotification, dictionary);
+				NSAccessibility.PostNotification(nsObject, NSView.AnnouncementRequestedNotification, dictionary);
 			}
 		}
 	}
