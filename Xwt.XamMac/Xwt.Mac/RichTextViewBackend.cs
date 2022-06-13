@@ -326,9 +326,13 @@ namespace Xwt.Mac
 				TextStorage.EnumerateAttributes (new NSRange (0, TextStorage.Length), NSAttributedStringEnumeration.None, (NSDictionary attrs, NSRange range, ref bool stop) => {
 					stop = false;
 					if (attrs.ContainsKey (NSStringAttributeKey.Link)) {
-						var rects = GetRects (range);
-						for (nuint i = 0; i < rects.Count; i++)
-							AddCursorRect (rects.GetItem<NSValue> (i).CGRectValue, NSCursor.PointingHandCursor);
+						// TODO: Reimplement this to get proper mouse cursor for link text.
+						//       GetRects comes from NSTextFinderClient, which NSTextView does not officially implement
+						//       so it is no longer bound. However, NSTextView does unofficially support this protocol
+						//       so this could be fixed by manually sending the getRects: message.
+						// var rects = GetRects (range);
+						// for (nuint i = 0; i < rects.Count; i++)
+						// 	AddCursorRect (rects.GetItem<NSValue> (i).CGRectValue, NSCursor.PointingHandCursor);
 					}
 				});
 			}

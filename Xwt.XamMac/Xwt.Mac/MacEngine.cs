@@ -190,8 +190,8 @@ namespace Xwt.Mac
 				if (!action ())
 					timer.Invalidate ();
 			});
-			runLoop.AddTimer (timer, NSRunLoop.NSDefaultRunLoopMode);
-			runLoop.AddTimer (timer, NSRunLoop.NSRunLoopModalPanelMode);
+			runLoop.AddTimer (timer, NSRunLoopMode.Default);
+			runLoop.AddTimer (timer, NSRunLoopMode.ModalPanel);
 			return timer;
 		}
 		

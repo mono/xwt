@@ -612,7 +612,7 @@ namespace Xwt.Mac
 				// apply color matrix
 				var transformColor = new CIColorMatrix();
 				transformColor.SetDefaults();
-				transformColor.Image = ciImage;
+				transformColor.InputImage = ciImage;
 				transformColor.RVector = new CIVector(0, (float)color.Value.Red, 0);
 				transformColor.GVector = new CIVector((float)color.Value.Green, 0, 0);
 				transformColor.BVector = new CIVector(0, 0, (float)color.Value.Blue);

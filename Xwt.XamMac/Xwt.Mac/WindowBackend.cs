@@ -488,7 +488,7 @@ namespace Xwt.Mac
 
 					if (XamMacDangerousDispose) {
 						// HACK: Xamarin.Mac/MonoMac limitation: no direct way to release a window manually
-						// A NSWindow instance will be removed from NSApplication.SharedApplication.Windows
+						// A NSWindow instance will be removed from NSApplication.SharedApplication.DangerousWindows
 						// only if it is being closed with ReleasedWhenClosed set to true but not on Dispose
 						// and there is no managed way to tell Cocoa to release the window manually (and to
 						// remove it from the active window list).
