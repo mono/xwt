@@ -291,15 +291,16 @@ namespace Xwt.Mac
 		
 		public override void ScrollToPoint (CGPoint newOrigin)
 		{
-			base.ScrollToPoint (newOrigin);
 			var v = DocumentView.Subviews [0];
 
 			currentX = newOrigin.X >= 0 ? newOrigin.X : 0;
 			currentY = newOrigin.Y >= 0 ? newOrigin.Y : 0;
-			if (currentX + v.Frame.Width > DocumentView.Frame.Width)
+			if (currentX + v.Frame.Width > DocumentView.Frame.Width && DocumentView.Frame.Width >= v.Frame.Width)
 				currentX = DocumentView.Frame.Width - v.Frame.Width;
-			if (currentY + v.Frame.Height > DocumentView.Frame.Height)
+			if (currentY + v.Frame.Height > DocumentView.Frame.Height && DocumentView.Frame.Height >= v.Frame.Height)
 				currentY = DocumentView.Frame.Height - v.Frame.Height;
+
+			base.ScrollToPoint(new CGPoint(currentX, currentY));
 
 			v.Frame = new CGRect ((nfloat)currentX, (nfloat)currentY, v.Frame.Width, v.Frame.Height);
 
