@@ -41,26 +41,28 @@ namespace Xwt.Mac
 
 		class TreeDelegate: NSOutlineViewDelegate
 		{
+			static readonly NSObject ObjectKey = new NSString("NSObject");
+
 			public TreeViewBackend Backend;
 
 			public override void ItemDidExpand (NSNotification notification)
 			{
-				Backend.EventSink.OnRowExpanded (((TreeItem)notification.UserInfo["NSObject"]).Position);
+				Backend.EventSink.OnRowExpanded (((TreeItem)notification.UserInfo[ObjectKey]).Position);
 			}
 
 			public override void ItemWillExpand (NSNotification notification)
 			{
-				Backend.EventSink.OnRowExpanding (((TreeItem)notification.UserInfo["NSObject"]).Position);
+				Backend.EventSink.OnRowExpanding (((TreeItem)notification.UserInfo[ObjectKey]).Position);
 			}
 
 			public override void ItemDidCollapse (NSNotification notification)
 			{
-				Backend.EventSink.OnRowCollapsed (((TreeItem)notification.UserInfo["NSObject"]).Position);
+				Backend.EventSink.OnRowCollapsed (((TreeItem)notification.UserInfo[ObjectKey]).Position);
 			}
 
 			public override void ItemWillCollapse (NSNotification notification)
 			{
-				Backend.EventSink.OnRowCollapsing (((TreeItem)notification.UserInfo["NSObject"]).Position);
+				Backend.EventSink.OnRowCollapsing (((TreeItem)notification.UserInfo[ObjectKey]).Position);
 			}
 
 			public override nfloat GetRowHeight (NSOutlineView outlineView, NSObject item)
