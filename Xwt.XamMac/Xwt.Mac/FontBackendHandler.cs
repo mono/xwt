@@ -34,6 +34,23 @@ using Foundation;
 using Xwt.Backends;
 using Xwt.Drawing;
 
+namespace Xwt
+{
+	public static class FontExtensions
+	{
+		static bool IsSystemFont(this NSFont font)
+			=> !font.FontDescriptor.FontAttributes.TryGetValue(NSFont.NameAttribute, out var nsoName)
+				|| nsoName is not NSString name
+				|| name.Length == 0
+				|| name[0] == '.';
+
+		public static Font ToXwt(this NSFont font)
+			=> font.IsSystemFont()
+				? Font.SystemFont.WithSize(font.PointSize)
+				: Font.FromName(font.DisplayName).WithSize(font.PointSize);
+	}
+}
+
 namespace Xwt.Mac
 {
 	public class MacFontBackendHandler: FontBackendHandler
