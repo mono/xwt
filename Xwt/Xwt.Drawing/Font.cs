@@ -131,10 +131,8 @@ namespace Xwt.Drawing
 
 		internal static Font FromName (string name, Toolkit toolkit)
 		{
-			if (name == null)
-				throw new ArgumentNullException (nameof (name), "Font name cannot be null");
-			if (name.Length == 0)
-				return toolkit.FontBackendHandler.SystemFont;
+			if (string.IsNullOrEmpty(name))
+				return null;
 			
 			var handler = toolkit.FontBackendHandler;
 
@@ -184,7 +182,7 @@ namespace Xwt.Drawing
 			if (fb != null)
 				return new Font (fb, toolkit);
 			else
-				return Font.SystemFont;
+				return null;
 		}
 
 		static bool IsFontSupported (string fontName)
