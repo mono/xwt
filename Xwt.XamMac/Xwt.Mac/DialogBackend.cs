@@ -178,11 +178,6 @@ namespace Xwt.Mac
 			// This matches behavior in MonoDevelop.Ide.MessageService.RunCustomDialog.
 			MakeKeyAndOrderFront(NSApplication.SharedApplication);
 
-			if (nsParent != null && nsParent.IsVisible)
-			{
-				nsParent.AddChildWindow(this, NSWindowOrderingMode.Above);
-			}
-
 			Visible = true;
 			modalSessionRunning = true;
 
@@ -194,8 +189,7 @@ namespace Xwt.Mac
 		{
 			modalSessionRunning = false;
 			var parent = ParentWindow;
-			if (parent != null)
-				parent.RemoveChildWindow (this);
+		
 			OrderOut (this);
 			Close();
 			NSApplication.SharedApplication.StopModal ();
