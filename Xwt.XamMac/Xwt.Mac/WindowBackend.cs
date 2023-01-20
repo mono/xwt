@@ -117,9 +117,6 @@ namespace Xwt.Mac
 			MakeKeyAndOrderFront (MacEngine.App);
 			if (ParentWindow != null)
 			{
-				if (!ParentWindow.ChildWindows.Contains(this))
-					ParentWindow.AddChildWindow(this, NSWindowOrderingMode.Above);
-
 				// always use NSWindow for alignment when running in guest mode and
 				// don't rely on AddChildWindow to position the window correctly
 				if (frontend.InitialLocation == WindowLocation.CenterParent && !(ParentWindow is WindowBackend))
@@ -272,8 +269,6 @@ namespace Xwt.Mac
 				PerformClose(this);
 			else
 				Close ();
-			if (ParentWindow != null)
-				ParentWindow.RemoveChildWindow(this);
 			return closePerformed;
 		}
 		
@@ -393,14 +388,7 @@ namespace Xwt.Mac
 			var win = window as NSWindow ?? ApplicationContext.Toolkit.GetNativeWindow(window) as NSWindow;
 
 			if (ParentWindow != win) {
-				// remove from the previous parent
-				if (ParentWindow != null)
-					ParentWindow.RemoveChildWindow(this);
-
 				ParentWindow = win;
-				// A window must be visible to be added to a parent. See InternalShow().
-				if (Visible)
-					ParentWindow.AddChildWindow(this, NSWindowOrderingMode.Above);
 			}
 		}
 
