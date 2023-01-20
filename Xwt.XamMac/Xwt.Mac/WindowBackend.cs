@@ -384,12 +384,6 @@ namespace Xwt.Mac
 		{
 			if (!((IWindowFrameBackend)this).ShowInTaskbar)
 				StyleMask &= ~NSWindowStyle.Miniaturizable;
-
-			var win = window as NSWindow ?? ApplicationContext.Toolkit.GetNativeWindow(window) as NSWindow;
-
-			if (ParentWindow != win) {
-				ParentWindow = win;
-			}
 		}
 
 		bool IWindowFrameBackend.Resizable {
