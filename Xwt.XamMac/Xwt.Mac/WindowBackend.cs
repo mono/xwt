@@ -115,11 +115,13 @@ namespace Xwt.Mac
 		internal void InternalShow ()
 		{
 			MakeKeyAndOrderFront (MacEngine.App);
-			if (ParentWindow != null)
+
+			if (weakParentWindow?.TryGetTarget(out var nsWindow) ?? false)
 			{
 				// always use NSWindow for alignment when running in guest mode and
 				// don't rely on AddChildWindow to position the window correctly
-				if (frontend.InitialLocation == WindowLocation.CenterParent && !(ParentWindow is WindowBackend))
+
+				if (frontend.InitialLocation == WindowLocation.CenterParent && !(nsWindow is WindowBackend))
 				{
 					var parentBounds = MacDesktopBackend.ToDesktopRect(ParentWindow.ContentRectFor(ParentWindow.Frame));
 					var bounds = ((IWindowFrameBackend)this).Bounds;
@@ -127,7 +129,9 @@ namespace Xwt.Mac
 					bounds.Y = parentBounds.Center.Y - (Frame.Height / 2);
 					((IWindowFrameBackend)this).Bounds = bounds;
 				}
-				if (AccessibilityFocusedWindow == ParentWindow) {
+
+				if (AccessibilityFocusedWindow == nsWindow)
+				{
 					AccessibilityFocusedWindow = this;
 				}
 			}
@@ -380,10 +384,21 @@ namespace Xwt.Mac
 			}
 		}
 
+		protected WeakReference<NSWindow> weakParentWindow;
+
 		void IWindowFrameBackend.SetTransientFor (IWindowFrameBackend window)
 		{
 			if (!((IWindowFrameBackend)this).ShowInTaskbar)
 				StyleMask &= ~NSWindowStyle.Miniaturizable;
+
+			if (window is NSWindow nsWindow)
+			{
+				weakParentWindow = new WeakReference<NSWindow>(nsWindow);
+			}
+			else
+			{
+				weakParentWindow = null;
+			}
 		}
 
 		bool IWindowFrameBackend.Resizable {

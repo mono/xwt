@@ -174,6 +174,8 @@ namespace Xwt.Mac
 				nsParent = NSApplication.SharedApplication.ModalWindow ?? NSApplication.SharedApplication.KeyWindow;
 			}
 
+			weakParentWindow = new WeakReference<NSWindow>(nsParent);
+
 			// Next, make this window key before adding it as a child.
 			// This matches behavior in MonoDevelop.Ide.MessageService.RunCustomDialog.
 			MakeKeyAndOrderFront(NSApplication.SharedApplication);
@@ -188,8 +190,10 @@ namespace Xwt.Mac
 		public void EndLoop ()
 		{
 			modalSessionRunning = false;
-			var parent = ParentWindow;
-		
+
+			NSWindow parent = null;
+			weakParentWindow?.TryGetTarget(out parent);
+
 			OrderOut (this);
 			Close();
 			NSApplication.SharedApplication.StopModal ();
