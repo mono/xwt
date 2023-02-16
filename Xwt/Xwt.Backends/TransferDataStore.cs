@@ -78,7 +78,7 @@ namespace Xwt.Backends
 		{
 			Type t = Type.GetType (type.Id);
 			if (t != null)
-				data [type] = TransferDataSource.DeserializeValue (value);
+				data [type] = TransferDataSource.DeserializeValue (value, t);
 			else
 				data [type] = value;
 		}
@@ -119,7 +119,7 @@ namespace Xwt.Backends
 			if (ob == null || ob.GetType () == typeof(Type))
 				return (T) ob;
 			if (ob is byte[]) {
-				T val = (T) TransferDataSource.DeserializeValue ((byte[])ob);
+				T val = (T) TransferDataSource.DeserializeValue ((byte[])ob, typeof(T));
 				data[TransferDataType.FromType (typeof(T))] = val;
 				return val;
 			}
