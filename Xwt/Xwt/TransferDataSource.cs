@@ -158,6 +158,28 @@ namespace Xwt
 		{
 			return JsonSerializer.Deserialize (data, type);
 		}
+
+		/// <summary>
+		/// Serializes a value to a byte array using <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/> .
+		/// </summary>
+		/// <returns>The serialized value.</returns>
+		/// <param name="val">The value to serialize.</param>
+		[Obsolete("Use SerializeValue (object val, Type type) instead", true)]
+		public static byte[] SerializeValue(object val)
+		{
+			return new byte[0];
+		}
+
+		/// <summary>
+		/// Deserializes a value from a byte array.
+		/// </summary>
+		/// <returns>The deserialized value.</returns>
+		/// <param name="data">The byte array containing the serialized value.</param>
+		[Obsolete("Use DeserializeValue (byte[] data, Type type) instead", true)]
+		public static object DeserializeValue(byte[] data)
+		{
+			return null;
+		}
 	}
 	
 	/// <summary>
