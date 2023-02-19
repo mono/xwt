@@ -6,7 +6,7 @@
     <InMonoDevelopTree Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\MonoDevelop.AfterCommon.props')">True</InMonoDevelopTree>
     <Net6 Condition="Exists('$(MSBuildThisFileDirectory)..\..\msbuild\Net6.props')">True</Net6>
 
-    <DotNetFrameworkTarget>net461</DotNetFrameworkTarget>
+    <DotNetFrameworkTarget>net472</DotNetFrameworkTarget>
     <DotNetCoreTarget>netstandard2.0</DotNetCoreTarget>
 
     <MacTargetFramework Condition="!$(Net6)">$(DotNetFrameworkTarget)</MacTargetFramework>
