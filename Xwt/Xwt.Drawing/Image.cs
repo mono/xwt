@@ -1009,12 +1009,7 @@ namespace Xwt.Drawing
 		public override bool Equals (object obj)
 		{
 			var other = obj as ImageTagSet;
-			if (other == null || tagsArray.Length != other.tagsArray.Length)
-				return false;
-			for (int n = 0; n < tagsArray.Length; n++)
-				if (tagsArray [n] != other.tagsArray [n])
-					return false;
-			return true;
+			return other != null && tagsArray.SequenceEqual(other.tagsArray);
 		}
 
 		public override int GetHashCode ()
