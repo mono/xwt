@@ -973,6 +973,7 @@ namespace Xwt.Drawing
 		string[] tagsArray;
 
 		public static readonly ImageTagSet Empty = new ImageTagSet (new string[0]);
+		static readonly char[] tagSeparators = { '~' };
 
 		public ImageTagSet (string [] tagsArray)
 		{
@@ -988,7 +989,7 @@ namespace Xwt.Drawing
 
 		public ImageTagSet (string tags)
 		{
-			tagsArray = tags.Split (new [] { '~' }, StringSplitOptions.RemoveEmptyEntries);
+			tagsArray = tags.Split (tagSeparators, StringSplitOptions.RemoveEmptyEntries);
 			Array.Sort (AsArray);
 		}
 
