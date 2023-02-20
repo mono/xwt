@@ -967,13 +967,88 @@ namespace Xwt.Drawing
 		public NativeImageRef NextRef { get; set; }
 	}
 
-	class ImageTagSet
+	sealed class ImageTagCache
+	{
+		/* Some stats from an app using Xwt:
+1474 dark
+1304 contrast
+1296 contrast~dark
+ 846 sel
+ 846 dark~sel
+ 132 disabled
+ 120 dark~disabled
+ 116 contrast~disabled
+ 116 contrast~dark~disabled
+  22 error
+  22 dark~error
+  22 contrast~error
+  22 contrast~dark~error
+  14 contrast~dark~sel
+  12 contrast~sel
+   6 disabled~dark
+   6 dark~contrast
+   2 sel~error
+   2 pressed~dark
+   2 pressed
+   2 hover~dark
+   2 hover
+   2 dark~sel~error
+   2 contrast~sel~error
+   2 active~sel
+   2 active~dark~sel
+   2 active~dark
+   2 active~contrast~dark
+   2 active~contrast
+   2 active
+		*/
+		readonly string[] knownTags = new[] {
+			"~dark",
+			"~contrast",
+			"~contrast~dark",
+			"~sel",
+			"~dark~sel",
+			"~disabled",
+			"~dark~disabled",
+			"~contrast~disabled",
+			"~contrast~dark~disabled",
+		};
+
+		readonly string[][] knownTagArrays = new[] {
+			new[] { "dark", },
+			new[] { "contrast", },
+			new[] { "contrast", "dark", },
+			new[] { "sel", },
+			new[] { "dark", "sel", },
+			new[] { "disabled", },
+			new[] { "dark", "disabled", },
+			new[] { "contrast", "disabled", },
+			new[] { "contrast", "dark", "disabled", }, 
+		};
+
+		static readonly char[] tagSeparators = { '~' };
+		public bool GetTagArray(string tags, out string[] tagArray)
+		{
+			var index = Array.IndexOf(knownTags, tags);
+			tagArray = index >= 0 ? knownTagArrays[index] : SplitTags(tags);
+			return index >= 0;
+		}
+
+		static string[] SplitTags(string tags)
+		{
+			var array = tags.Split(tagSeparators, StringSplitOptions.RemoveEmptyEntries);
+			Array.Sort(array);
+
+			return array;
+		}
+	}
+
+	sealed class ImageTagSet
 	{
 		string tags;
 		string[] tagsArray;
 
 		public static readonly ImageTagSet Empty = new ImageTagSet (new string[0]);
-		static readonly char[] tagSeparators = { '~' };
+		static readonly ImageTagCache imageTagCache;
 
 		public ImageTagSet (string [] tagsArray)
 		{
@@ -989,8 +1064,7 @@ namespace Xwt.Drawing
 
 		public ImageTagSet (string tags)
 		{
-			tagsArray = tags.Split (tagSeparators, StringSplitOptions.RemoveEmptyEntries);
-			Array.Sort (AsArray);
+			imageTagCache.GetTagArray(tags, out tagsArray);
 		}
 
 		public string AsString {
