@@ -31,7 +31,8 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Xwt.Drawing;
 using Xwt.Backends;
-using System.Text.Json;
+using System.Xml.Serialization;
+using System.Text;
 
 namespace Xwt
 {
@@ -140,23 +141,34 @@ namespace Xwt
 		}
 
 		/// <summary>
-		/// Serializes a value to a byte array using <see cref="System.Text.Json.JsonSerializer"/> .
+		/// Serializes a value to a byte array using <see cref="System.Xml.XmlSerializer"/> .
 		/// </summary>
 		/// <returns>The serialized value.</returns>
 		/// <param name="val">The value to serialize.</param>
 		public static byte[] SerializeValue (object val, Type type)
 		{
-			return JsonSerializer.SerializeToUtf8Bytes (val, type);
+			using (var stream = new MemoryStream ()) {
+				using (var writer = new StreamWriter (stream, new UTF8Encoding ())) {
+					var xmlSerializer = new XmlSerializer (type);
+					xmlSerializer.Serialize (writer, val);
+				}
+				return stream.ToArray ();
+			}
 		}
 		
 		/// <summary>
 		/// Deserializes a value from a byte array.
 		/// </summary>
 		/// <returns>The deserialized value.</returns>
-		/// <param name="data">The byte array containing the Utf8 Json serialized value.</param>
+		/// <param name="data">The byte array containing the Utf8 XML serialized value.</param>
 		public static object DeserializeValue (byte[] data, Type type)
 		{
-			return JsonSerializer.Deserialize (data, type);
+			using (var stream = new MemoryStream (data)) {
+				using (var reader = new StreamReader (stream, new UTF8Encoding ())) {
+					var xmlSerializer = new XmlSerializer (type);
+					return xmlSerializer.Deserialize (reader);
+				}
+			}
 		}
 
 		/// <summary>
