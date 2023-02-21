@@ -40,10 +40,10 @@ namespace Xwt.Mac
 {
 	public class ImageHandler: ImageBackendHandler
 	{
-		static readonly IntPtr sel_alloc = new Selector ("alloc").Handle;
-		static readonly IntPtr sel_release = new Selector ("release").Handle;
-		static readonly IntPtr sel_initWithIconRef = new Selector ("initWithIconRef:").Handle;
-		static readonly IntPtr cls_NSImage = new Class (typeof (NSImage)).Handle;
+		static readonly IntPtr sel_alloc = Selector.GetHandle ("alloc");
+		static readonly IntPtr sel_release = Selector.GetHandle ("release");
+		static readonly IntPtr sel_initWithIconRef = Selector.GetHandle ("initWithIconRef:");
+		static readonly IntPtr cls_NSImage = Class.GetHandle(typeof (NSImage));
 
 		static Dictionary<string, NSImage> stockIcons = new Dictionary<string, NSImage> ();
 
