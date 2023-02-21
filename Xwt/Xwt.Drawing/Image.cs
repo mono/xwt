@@ -1066,7 +1066,7 @@ namespace Xwt.Drawing
 		string[] tagsArray;
 
 		public static readonly ImageTagSet Empty = new ImageTagSet (new string[0]);
-		static readonly ImageTagCache imageTagCache;
+		static readonly ImageTagCache imageTagCache = new ImageTagCache();
 		static readonly char[] tagSeparators = { '~' };
 
 		public static ImageTagSet Parse(string tags)
