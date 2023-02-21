@@ -31,6 +31,7 @@ using Xwt.Backends;
 using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Xwt.Drawing
 {
@@ -268,7 +269,7 @@ namespace Xwt.Drawing
 						return false;
 				} else
 					i2 = fileName.Length;
-				tags = new ImageTagSet (fileName.Substring (i, i2 - i));
+				tags = ImageTagSet.Parse (fileName.Substring (i, i2 - i));
 				return true;
 			}
 			else {
@@ -288,7 +289,7 @@ namespace Xwt.Drawing
 					return false;
 				}
 				if (i2 + 2 < fileName.Length)
-					tags = new ImageTagSet (fileName.Substring (i2 + 2));
+					tags = ImageTagSet.Parse (fileName.Substring (i2 + 2));
 				return true;
 			}
 		}
@@ -307,18 +308,23 @@ namespace Xwt.Drawing
 				// If one of the images is themed, then the whole resulting image will be themed.
 				// To create the new image, we group images with the same theme but different size, and we create a multi-size icon for those.
 				// The resulting image is the combination of those multi-size icons.
-				var allThemes = allImages.OfType<ThemedImage> ().SelectMany (i => i.Images).Select (i => new ImageTagSet (i.Item2)).Distinct ().ToArray ();
+				var allThemes = allImages
+					.OfType<ThemedImage> ()
+					.SelectMany (i => i.Images)
+					.Select(i => i.Item2)
+					.Distinct (TagSetEqualityComparer.Instance)
+					.ToArray ();
 				List<Tuple<Image, string []>> newImages = new List<Tuple<Image, string []>> ();
 				foreach (var ts in allThemes) {
 					List<Image> multiSizeImages = new List<Image> ();
 					foreach (var i in allImages) {
 						if (i is ThemedImage)
-							multiSizeImages.Add (((ThemedImage)i).GetImage (ts.AsArray));
+							multiSizeImages.Add (((ThemedImage)i).GetImage (ts));
 						else
 							multiSizeImages.Add (i);
 					}
 					var img = CreateMultiSizeIcon (multiSizeImages);
-					newImages.Add (new Tuple<Image, string []> (img, ts.AsArray));
+					newImages.Add (new Tuple<Image, string[]> (img, ts));
 				}
 				return new ThemedImage (newImages);
 			} else {
@@ -1000,6 +1006,9 @@ namespace Xwt.Drawing
    2 active~contrast~dark
    2 active~contrast
    2 active
+
+		Keep in sync with knownTagArrays.
+		These tag items amount for 97% of the image tags found in images.
 		*/
 		readonly string[] knownTags = new[] {
 			"~dark",
@@ -1013,65 +1022,74 @@ namespace Xwt.Drawing
 			"~contrast~dark~disabled",
 		};
 
-		readonly string[][] knownTagArrays = new[] {
-			new[] { "dark", },
-			new[] { "contrast", },
-			new[] { "contrast", "dark", },
-			new[] { "sel", },
-			new[] { "dark", "sel", },
-			new[] { "disabled", },
-			new[] { "dark", "disabled", },
-			new[] { "contrast", "disabled", },
-			new[] { "contrast", "dark", "disabled", }, 
+		readonly ImageTagSet[] knownTagArrays = new[] {
+			new ImageTagSet(new[] { "dark", }),
+			new ImageTagSet(new[] { "contrast", }),
+			new ImageTagSet(new[] { "contrast", "dark", }),
+			new ImageTagSet(new[] { "sel", }),
+			new ImageTagSet(new[] { "dark", "sel", }),
+			new ImageTagSet(new[] { "disabled", }),
+			new ImageTagSet(new[] { "dark", "disabled", }),
+			new ImageTagSet(new[] { "contrast", "disabled", }),
+			new ImageTagSet(new[] { "contrast", "dark", "disabled", }), 
 		};
 
-		static readonly char[] tagSeparators = { '~' };
-		public bool GetTagArray(string tags, out string[] tagArray)
+		public ImageTagSet TryGetTagSet(string tags)
 		{
 			var index = Array.IndexOf(knownTags, tags);
-			tagArray = index >= 0 ? knownTagArrays[index] : SplitTags(tags);
-			return index >= 0;
-		}
-
-		static string[] SplitTags(string tags)
-		{
-			var array = tags.Split(tagSeparators, StringSplitOptions.RemoveEmptyEntries);
-			Array.Sort(array);
-
-			return array;
+			return index >= 0 ? knownTagArrays[index] : null;
 		}
 	}
 
+	// As much as I don't like the duplication, it's simpler than accessing a static instance every time.
+	class TagSetEqualityComparer : IEqualityComparer<string[]>
+	{
+		public static TagSetEqualityComparer Instance { get; } = new TagSetEqualityComparer();
+
+		public bool Equals(string[] x, string[] y) => x.SequenceEqual(y);
+
+		public int GetHashCode(string[] obj)
+		{
+			unchecked
+			{
+				int c = 0;
+				foreach (var s in obj)
+					c %= s.GetHashCode();
+				return c;
+			}
+		}
+	}
+
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	sealed class ImageTagSet
 	{
-		string tags;
 		string[] tagsArray;
 
 		public static readonly ImageTagSet Empty = new ImageTagSet (new string[0]);
 		static readonly ImageTagCache imageTagCache;
+		static readonly char[] tagSeparators = { '~' };
+
+		public static ImageTagSet Parse(string tags)
+		{
+			return imageTagCache.TryGetTagSet(tags) ?? Create(tags);
+		}
+
+		static ImageTagSet Create(string tags)
+		{
+			var tagArray = tags.Split(tagSeparators, StringSplitOptions.RemoveEmptyEntries);
+			Array.Sort(tagArray);
+
+			return new ImageTagSet(tagArray);
+		}
 
 		public ImageTagSet (string [] tagsArray)
 		{
 			this.tagsArray = tagsArray;
-			Array.Sort (tagsArray);
 		}
 
 		public bool IsEmpty {
 			get {
 				return tagsArray.Length == 0;
-			}
-		}
-
-		public ImageTagSet (string tags)
-		{
-			imageTagCache.GetTagArray(tags, out tagsArray);
-		}
-
-		public string AsString {
-			get {
-				if (tags == null)
-					tags = string.Join ("~", tagsArray);
-				return tags;
 			}
 		}
 
@@ -1096,6 +1114,8 @@ namespace Xwt.Drawing
 				return c;
 			}
 		}
+
+		string DebuggerDisplay => string.Join("~", tagsArray);
 	}
 
 	abstract class ImageLoader
