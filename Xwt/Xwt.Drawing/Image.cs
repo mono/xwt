@@ -32,6 +32,7 @@ using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Xwt.Drawing
 {
@@ -1144,9 +1145,11 @@ namespace Xwt.Drawing
 			return img;
 		}
 
+		ConditionalWeakTable<Assembly, string[]> resourceNamesCache = new ConditionalWeakTable<Assembly, string[]>();
 		public override IEnumerable<string> GetAlternativeFiles (string fileName, string baseName, string ext)
 		{
-			return assembly.GetManifestResourceNames ().Where (f =>
+			var resourceNames = resourceNamesCache.GetValue(assembly, asm => asm.GetManifestResourceNames());
+			return resourceNames.Where (f =>
 				f.StartsWith (baseName, StringComparison.Ordinal) &&
 				f.EndsWith (ext, StringComparison.Ordinal));
 		}
