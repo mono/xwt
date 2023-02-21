@@ -44,6 +44,7 @@ namespace Xwt.Drawing
 		internal StyleSet styles;
 
 		internal static int[] SupportedScales = { 2 };
+		internal static string[] SupportedScalesTags = SupportedScales.Select(scale => "@" + scale + "x").ToArray();
 
 		internal Image ()
 		{
@@ -1183,16 +1184,22 @@ namespace Xwt.Drawing
 
 		public override IEnumerable<string> GetAlternativeFiles (string fileName, string baseName, string ext)
 		{
-			if (!Context.RegisteredStyles.Any ()) {
-				foreach (var s in Image.SupportedScales) {
-					var fn = baseName + "@" + s + "x" + ext;
-					if (File.Exists (fn))
-						yield return fn;
-				}
-			} else {
-				var files = Directory.EnumerateFiles (Path.GetDirectoryName (fileName), Path.GetFileName (baseName) + "*" + ext);
-				foreach (var f in files)
-					yield return f;
+			if (!Context.RegisteredStyles.Any())
+			{
+				return EnumerateFilesForRegisteredStyles(baseName, ext);
+			}
+			else
+			{
+				return Directory.EnumerateFiles(Path.GetDirectoryName(fileName), Path.GetFileName(baseName) + "*" + ext);
+			}
+		}
+
+		IEnumerable<string> EnumerateFilesForRegisteredStyles (string baseName, string ext)
+		{
+			foreach (var scaleTag in Image.SupportedScalesTags) {
+				var fn = baseName + scaleTag + ext;
+				if (File.Exists (fn))
+					yield return fn;
 			}
 		}
 
