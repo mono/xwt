@@ -36,9 +36,6 @@ The framework consists of the frontend (Xwt core) and platform specific backends
     <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\README.markdown" Pack="true" PackagePath="" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="7.0.2" />
-  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
