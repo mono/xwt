@@ -1011,15 +1011,15 @@ namespace Xwt.Drawing
 		These tag items amount for 97% of the image tags found in images.
 		*/
 		readonly string[] knownTags = new[] {
-			"~dark",
-			"~contrast",
-			"~contrast~dark",
-			"~sel",
-			"~dark~sel",
-			"~disabled",
-			"~dark~disabled",
-			"~contrast~disabled",
-			"~contrast~dark~disabled",
+			"dark",
+			"contrast",
+			"contrast~dark",
+			"sel",
+			"dark~sel",
+			"disabled",
+			"dark~disabled",
+			"contrast~disabled",
+			"contrast~dark~disabled",
 		};
 
 		readonly ImageTagSet[] knownTagArrays = new[] {
