@@ -31,7 +31,8 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Xwt.Drawing;
 using Xwt.Backends;
-
+using System.Xml.Serialization;
+using System.Text;
 
 namespace Xwt
 {
@@ -138,18 +139,20 @@ namespace Xwt
 			}
 			return null;
 		}
-		
+
 		/// <summary>
-		/// Serializes a value to a byte array using <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/> .
+		/// Serializes a value to a byte array using <see cref="System.Xml.XmlSerializer"/> .
 		/// </summary>
 		/// <returns>The serialized value.</returns>
 		/// <param name="val">The value to serialize.</param>
-		public static byte[] SerializeValue (object val)
+		public static byte[] SerializeValue (object val, Type type)
 		{
-			using (MemoryStream ms = new MemoryStream ()) {
-				BinaryFormatter bf = new BinaryFormatter ();
-				bf.Serialize (ms, val);
-				return ms.ToArray ();
+			using (var stream = new MemoryStream ()) {
+				using (var writer = new StreamWriter (stream, new UTF8Encoding ())) {
+					var xmlSerializer = new XmlSerializer (type);
+					xmlSerializer.Serialize (writer, val);
+				}
+				return stream.ToArray ();
 			}
 		}
 		
@@ -157,13 +160,37 @@ namespace Xwt
 		/// Deserializes a value from a byte array.
 		/// </summary>
 		/// <returns>The deserialized value.</returns>
-		/// <param name="data">The byte array containing the serialized value.</param>
-		public static object DeserializeValue (byte[] data)
+		/// <param name="data">The byte array containing the Utf8 XML serialized value.</param>
+		public static object DeserializeValue (byte[] data, Type type)
 		{
-			using (MemoryStream ms = new MemoryStream (data)) {
-				BinaryFormatter bf = new BinaryFormatter ();
-				return bf.Deserialize (ms);
+			using (var stream = new MemoryStream (data)) {
+				using (var reader = new StreamReader (stream, new UTF8Encoding ())) {
+					var xmlSerializer = new XmlSerializer (type);
+					return xmlSerializer.Deserialize (reader);
+				}
 			}
+		}
+
+		/// <summary>
+		/// Serializes a value to a byte array using <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/> .
+		/// </summary>
+		/// <returns>The serialized value.</returns>
+		/// <param name="val">The value to serialize.</param>
+		[Obsolete("Use SerializeValue (object val, Type type) instead", true)]
+		public static byte[] SerializeValue(object val)
+		{
+			return new byte[0];
+		}
+
+		/// <summary>
+		/// Deserializes a value from a byte array.
+		/// </summary>
+		/// <returns>The deserialized value.</returns>
+		/// <param name="data">The byte array containing the serialized value.</param>
+		[Obsolete("Use DeserializeValue (byte[] data, Type type) instead", true)]
+		public static object DeserializeValue(byte[] data)
+		{
+			return null;
 		}
 	}
 	
