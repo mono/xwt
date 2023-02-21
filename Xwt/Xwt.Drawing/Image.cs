@@ -1146,7 +1146,7 @@ namespace Xwt.Drawing
 			return img;
 		}
 
-		ConditionalWeakTable<Assembly, string[]> resourceNamesCache = new ConditionalWeakTable<Assembly, string[]>();
+		static ConditionalWeakTable<Assembly, string[]> resourceNamesCache = new ConditionalWeakTable<Assembly, string[]>();
 		public override IEnumerable<string> GetAlternativeFiles (string fileName, string baseName, string ext)
 		{
 			var resourceNames = resourceNamesCache.GetValue(assembly, asm => asm.GetManifestResourceNames());
