@@ -79,7 +79,7 @@ namespace Xwt.GtkBackend
 				data.SetUris(new string[] { ((Uri)val).AbsolutePath });
 			else {
 				var at = Gdk.Atom.Intern (atomType, false);
-				data.Set (at, 0, TransferDataSource.SerializeValue (val));
+				data.Set (at, 0, TransferDataSource.SerializeValue (val, val.GetType()));
 			}
 		}
 		

@@ -373,7 +373,7 @@ namespace Xwt.WPFBackend
 					uris.Add (((Uri)value).LocalPath);
 					retval.SetFileDropList (uris);
 				} else
-					retval.SetData (type.Id, TransferDataSource.SerializeValue (value));
+					retval.SetData (type.Id, TransferDataSource.SerializeValue (value, value.GetType()));
 			}
 
 			return retval;

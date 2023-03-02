@@ -73,6 +73,8 @@ namespace Xwt.Mac
 				widget = ((EmbedNativeWidgetBackend)parentWidget).EmbeddedView;
 			else if (parentWidget is CustomAlignedContainer) // bypass alignment containers
 				widget = ((CustomAlignedContainer)parentWidget).Child;
+			if (widget is NSImageView imageView)
+				widget = imageView.Cell;
 			if (widget == null)
 				widget = parentWidget as INSAccessibility;
 			if (widget == null)

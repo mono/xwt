@@ -968,7 +968,7 @@ namespace Xwt.Mac
 					else {
 						// For internal types, provided serialized data
 						object value = dataSource.GetValue(transferDataType);
-						NSData serializedData = NSData.FromArray(TransferDataSource.SerializeValue(value));
+						NSData serializedData = NSData.FromArray(TransferDataSource.SerializeValue(value, value.GetType()));
 						pasteboard.SetDataForType(serializedData, type);
 					}
 				}
