@@ -65,7 +65,6 @@ namespace Xwt.Mac
 			}
 			
 			nsImage = image.ToNSImage ();
-
 			Widget.Image = nsImage;
 			Widget.SetFrameSize (nsImage.Size);
 		}
