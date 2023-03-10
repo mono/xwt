@@ -53,16 +53,21 @@ namespace Xwt.Mac
 			NSImage img = Widget.Image;
 			return img == null ? Size.Zero : img.Size.ToXwtSize ();
 		}
+		
+		NSImage nsImage; // Needed to keep a ref, otherwise Xam.Mac might GC it and try to resurrect it
 
 		public void SetImage (ImageDescription image)
 		{
 			if (image.IsNull) {
 				Widget.Image = null;
+				nsImage = null;
 				return;
 			}
+			
+			nsImage = image.ToNSImage ();
 
-			Widget.Image = image.ToNSImage ();
-			Widget.SetFrameSize (Widget.Image.Size);
+			Widget.Image = nsImage;
+			Widget.SetFrameSize (nsImage.Size);
 		}
 	}
 }
