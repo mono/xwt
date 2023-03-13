@@ -39,10 +39,10 @@ namespace Xwt
 	public static class FontExtensions
 	{
 		static bool IsSystemFont(this NSFont font)
-			=> !font.FontDescriptor.FontAttributes.TryGetValue(NSFont.NameAttribute, out var nsoName)
-				|| nsoName is not NSString name
-				|| name.Length == 0
-				|| name[0] == '.';
+			=> !(font.FontDescriptor.FontAttributes.TryGetValue(NSFont.NameAttribute, out var nsoName)
+				&& nsoName is NSString name
+				&& name.Length != 0
+				&& name[0] != '.');
 
 		public static Font ToXwt(this NSFont font)
 			=> font.IsSystemFont()
