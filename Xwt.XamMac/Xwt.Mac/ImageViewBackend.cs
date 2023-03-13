@@ -41,7 +41,7 @@ namespace Xwt.Mac
 		public ImageViewBackend ()
 		{
 		}
-		
+
 		public override void Initialize ()
 		{
 			base.Initialize ();
@@ -50,11 +50,10 @@ namespace Xwt.Mac
 
 		protected override Size GetNaturalSize ()
 		{
-			NSImage img = Widget.Image;
-			return img == null ? Size.Zero : img.Size.ToXwtSize ();
+			return nsImage == null ? Size.Zero : nsImage.ToXwtSize ();
 		}
-		
-		NSImage nsImage; // Needed to keep a ref, otherwise Xam.Mac might GC it and try to resurrect it
+
+		NSImage nsImage; // Needed to keep a ref, otherwise Xam.Mac might GC the managed version and then try to resurrect it
 
 		public void SetImage (ImageDescription image)
 		{
@@ -67,6 +66,12 @@ namespace Xwt.Mac
 			nsImage = image.ToNSImage ();
 			Widget.Image = nsImage;
 			Widget.SetFrameSize (nsImage.Size);
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			nsImage = null;
+			base.Dispose(disposing);
 		}
 	}
 }
