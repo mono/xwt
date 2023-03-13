@@ -70,7 +70,9 @@ namespace Xwt.Mac
 
 		protected override void Dispose (bool disposing)
 		{
-			nsImage = null;
+			if (disposing)
+				nsImage = null;
+
 			base.Dispose(disposing);
 		}
 	}
