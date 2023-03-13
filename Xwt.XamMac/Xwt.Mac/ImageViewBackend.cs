@@ -50,7 +50,7 @@ namespace Xwt.Mac
 
 		protected override Size GetNaturalSize ()
 		{
-			return nsImage == null ? Size.Zero : nsImage.ToXwtSize ();
+			return nsImage == null ? Size.Zero : nsImage.Size.ToXwtSize ();
 		}
 
 		NSImage nsImage; // Needed to keep a ref, otherwise Xam.Mac might GC the managed version and then try to resurrect it
