@@ -764,7 +764,7 @@ namespace Xwt
 		/// Gets or sets the background color.
 		/// </summary>
 		/// <value>The background color of the widget.</value>
-		public Color BackgroundColor {
+		public virtual Color BackgroundColor {
 			get { return Backend.BackgroundColor; }
 			set { Backend.BackgroundColor = value; }
 		}
