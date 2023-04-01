@@ -47,6 +47,9 @@ namespace Xwt.WPFBackend
 	public class ExTreeView
 		: SWC.TreeView, IWpfWidget
 	{
+		int deferSelectionChange = 0;
+		IList oldSelectedItems;
+
 		public ExTreeView()
 		{
 			SelectedItems = new ObservableCollection<object> ();
@@ -217,8 +220,50 @@ namespace Xwt.WPFBackend
 		private static readonly PropertyInfo IsSelectionChangeActiveProperty =
 			typeof (System.Windows.Controls.TreeView).GetProperty ("IsSelectionChangeActive", BindingFlags.NonPublic | BindingFlags.Instance);
 
+		void BeginDeferSelectionChanged()
+		{
+			if (deferSelectionChange == 0)
+			{
+				oldSelectedItems = new List<object>(SelectedItems.Count);
+				foreach (var item in SelectedItems)
+				{
+					oldSelectedItems.Add(item);
+				}
+			}
+			deferSelectionChange++;
+		}
+
+		bool SelectionIsRealChanged()
+		{
+			if (oldSelectedItems == null || SelectedItems.Count != oldSelectedItems.Count)
+				return true;
+
+			for (var i = 0; i < SelectedItems.Count; i++)
+			{
+				if (SelectedItems[i] != oldSelectedItems[i])
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		void EndDeferSelectionChanged()
+		{
+			if (deferSelectionChange > 0)
+			{
+				deferSelectionChange--;
+
+				if (deferSelectionChange == 0 && SelectionIsRealChanged())
+				{
+					OnSelectedItemsChanged(EventArgs.Empty);
+				}
+			}
+		}
+
 		private void SelectedItemsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
+			BeginDeferSelectionChanged();
 			bool changeActive = (bool)IsSelectionChangeActiveProperty.GetValue (this, null);
 			if (!changeActive)
 				IsSelectionChangeActiveProperty.SetValue (this, true, null);
@@ -264,7 +309,7 @@ namespace Xwt.WPFBackend
 				break;
 			}
 
-			OnSelectedItemsChanged (EventArgs.Empty);
+			EndDeferSelectionChanged();
 
 			if (!changeActive)
 				IsSelectionChangeActiveProperty.SetValue (this, changeActive, null);
@@ -317,6 +362,7 @@ namespace Xwt.WPFBackend
 			if (item == null)
 				return;
 
+			BeginDeferSelectionChanged();
 			FocusItem(item);
 			if (!CtrlPressed)
 				SelectedItems.Clear();
@@ -344,6 +390,7 @@ namespace Xwt.WPFBackend
 				else
 					SelectedItems.Add(item.DataContext);
 			}
+			EndDeferSelectionChanged();
 		}
 
 		private IEnumerable<ExTreeViewItem> GetAllVisibleItems(ItemsControl itemsControl)
