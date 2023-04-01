@@ -73,16 +73,25 @@ namespace Xwt.Mac
 			{
 				var tableColumn = Backend.Columns[(int)column] as TableColumn;
 				var width = tableColumn.HeaderCell.CellSize.Width;
+				var rowWidths = Backend.ColumnRowWidths[(int)column];
 
 				CompositeCell templateCell = null;
 				for (int i = 0; i < tableView.RowCount; i++) {
+					if (rowWidths[i] > -1)
+						width = (nfloat)Math.Max (width, rowWidths[i]);
+					else {
 					var cellView = tableView.GetView (column, i, false) as CompositeCell;
-					if (cellView == null) { // use template for invisible rows
-						cellView = templateCell ?? (templateCell = (tableColumn as TableColumn)?.DataView?.Copy () as CompositeCell);
-						if (cellView != null)
-							cellView.ObjectValue = NSNumber.FromInt32 (i);
+						if (cellView == null) { // use template for invisible rows
+							cellView = templateCell ?? (templateCell = (tableColumn as TableColumn)?.DataView as CompositeCell);
+							if (cellView != null)
+								cellView.ObjectValue = NSNumber.FromInt32 (i);
+						}
+						if (cellView != null) {
+							var size = cellView.FittingSize;
+							rowWidths[i] = size.Width;
+							width = (nfloat)Math.Max (width, size.Width);
+						}
 					}
-					width = (nfloat)Math.Max (width, cellView.FittingSize.Width);
 				}
 				return width;
 			}
@@ -95,6 +104,9 @@ namespace Xwt.Mac
 
 		IListDataSource source;
 		ListSource tsource;
+
+		List<List<nfloat>> ColumnRowWidths = new List<List<nfloat>> ();
+		List<nfloat> RowHeights = new List<nfloat> ();
 
 		protected override NSTableView CreateView ()
 		{
@@ -141,7 +153,29 @@ namespace Xwt.Mac
 				});
 			}
 		}
-		
+
+		public override NSTableColumn AddColumn (ListViewColumn col)
+		{
+			NSTableColumn tcol = base.AddColumn (col);
+			List<nfloat> widths;
+			var rows = (int)Table.RowCount;
+			if (rows > 0) {
+				widths = new List<nfloat> (rows);
+				for (int i = 0; i < rows; ++i) widths.Add (-1f);
+			} else
+				widths = new List<nfloat> ();
+			ColumnRowWidths.Add (widths);
+			return tcol;
+		}
+
+		public override void RemoveColumn (ListViewColumn col, object handle)
+		{
+			var tcol = (NSTableColumn)handle;
+			var index = Columns.IndexOf (tcol);
+			ColumnRowWidths.RemoveAt (index);
+			base.RemoveColumn (col, handle);
+		}
+
 		public virtual void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
 			this.source = source;
@@ -149,6 +183,10 @@ namespace Xwt.Mac
 			RowHeights = new List<nfloat> ();
 			for (int i = 0; i < source.RowCount; i++)
 				RowHeights.Add (-1);
+			foreach (var colWidths in ColumnRowWidths) {
+				colWidths.Clear ();
+				for (int i = 0; i < source.RowCount; ++i) colWidths.Add (-1f);
+			}
 
 			tsource = new ListSource (source);
 			Table.DataSource = tsource;
@@ -158,30 +196,43 @@ namespace Xwt.Mac
 			//      only the visible rows are reloaded.
 			source.RowInserted += (sender, e) => {
 				RowHeights.Insert (e.Row, -1);
+				foreach (var colWidths in ColumnRowWidths)
+					colWidths.Insert (e.Row, -1);
 				Table.ReloadData ();
 			};
 			source.RowDeleted += (sender, e) => {
 				RowHeights.RemoveAt (e.Row);
+				foreach (var colWidths in ColumnRowWidths)
+					colWidths.RemoveAt (e.Row);
 				Table.ReloadData ();
 			};
 			source.RowChanged += (sender, e) => {
 				UpdateRowHeight (e.Row);
 				Table.ReloadData (NSIndexSet.FromIndex (e.Row), NSIndexSet.FromNSRange (new NSRange (0, Table.ColumnCount)));
 			};
-			source.RowsReordered += (sender, e) => { RowHeights.Clear (); Table.ReloadData (); };
+			source.RowsReordered += (sender, e) => {
+				RowHeights.Clear ();
+				foreach (var colWidths in ColumnRowWidths)
+					colWidths.Clear ();
+				Table.ReloadData ();
+			};
 		}
 
-		public override void InvalidateRowHeight (object pos)
+		public override void QueueResizeRow (object pos)
 		{
 			UpdateRowHeight((int)pos);
 		}
-		
-		List<nfloat> RowHeights = new List<nfloat> ();
+
 		bool updatingRowHeight;
 		public void UpdateRowHeight (nint row)
 		{
 			if (updatingRowHeight)
 				return;
+			
+			// FIXME: this won't resize the columns, which might be needed for custom cells
+			// In order to resize horizontally we'll need trigger column autosizing.
+			foreach (var colWidths in ColumnRowWidths) // invalidate widths for full recalculation
+				colWidths[(int)row] = -1;
 			RowHeights[(int)row] = CalcRowHeight (row);
 			Table.NoteHeightOfRowsWithIndexesChanged (NSIndexSet.FromIndex (row));
 		}

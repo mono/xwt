@@ -207,7 +207,7 @@ namespace Xwt.Mac
 			return AddColumn (col);
 		}
 		
-		public void RemoveColumn (ListViewColumn col, object handle)
+		public virtual void RemoveColumn (ListViewColumn col, object handle)
 		{
 			var tcol = (NSTableColumn)handle;
 			cols.Remove (tcol);
@@ -273,7 +273,7 @@ namespace Xwt.Mac
 
 		public abstract void SetCurrentEventRow (object pos);
 
-		public abstract void InvalidateRowHeight (object pos);
+		public abstract void QueueResizeRow (object pos);
 
 		public bool BorderVisible {
 			get { return scroll.BorderType == NSBorderType.BezelBorder;}

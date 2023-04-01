@@ -89,11 +89,11 @@ namespace Xwt.Mac
 		}
 
 		bool recalculatingHeight = false;
-		public void InvalidateRowHeight ()
+		public void QueueResize ()
 		{
 			if (tablePosition != null && !recalculatingHeight) {
 				recalculatingHeight = true;
-				source.InvalidateRowHeight (tablePosition.Position);
+				source.QueueResizeRow (tablePosition.Position);
 				recalculatingHeight = false;
 			}
 		}
@@ -193,7 +193,7 @@ namespace Xwt.Mac
 						height = Math.Max (height, c.Frame.Height);
 					}
 					if (Math.Abs(value.Height - height) > double.Epsilon)
-						InvalidateRowHeight ();
+						QueueResize ();
 					
 				}
 			}
