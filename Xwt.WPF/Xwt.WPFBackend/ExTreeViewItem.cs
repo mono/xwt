@@ -43,10 +43,8 @@ namespace Xwt.WPFBackend
 	public class ExTreeViewItem
 		: TreeViewItem
 	{
-
-		public ExTreeViewItem()
+		public ExTreeViewItem ()
 		{
-			Loaded += OnLoaded;
 			HorizontalContentAlignment = HorizontalAlignment.Stretch;
 		}
 
@@ -205,24 +203,6 @@ namespace Xwt.WPFBackend
 			while (this.view == null && e != null) {
 				this.view = e.Parent as ExTreeView;
 				e = (FrameworkElement)e.Parent;
-			}
-		}
-
-		private void OnLoaded (object sender, RoutedEventArgs routedEventArgs)
-		{
-			ItemsControl parent = ItemsControlFromItemContainer (this);
-			if (parent == null)
-				return;
-
-			int index = parent.Items.IndexOf (DataContext);
-			if (index != parent.Items.Count - 1)
-				return;
-
-			foreach (var column in this.view.View.Columns) {
-				if (Double.IsNaN (column.Width))
-					column.Width = column.ActualWidth;
-
-				column.Width = Double.NaN;
 			}
 		}
 

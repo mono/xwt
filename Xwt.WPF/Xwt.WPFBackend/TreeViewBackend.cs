@@ -238,7 +238,13 @@ namespace Xwt.WPFBackend
 
 		public object AddColumn (ListViewColumn column)
 		{
-			var col = new GridViewColumn ();
+			if (column.Expands && column.CanResize)
+				column.CanResize = false;
+
+			var col = new ExGridViewColumn (Tree.UpdateColumnWidths) {
+				Expands = column.Expands,
+				CanResize = column.CanResize,
+			};
 
 			UpdateColumn (column, col, ListViewColumnChange.Title);
 
@@ -251,7 +257,7 @@ namespace Xwt.WPFBackend
 
 		public void UpdateColumn (ListViewColumn column, object handle, ListViewColumnChange change)
 		{
-			var col = ((GridViewColumn) handle);
+			var col = (ExGridViewColumn) handle;
 			switch (change) {
 			case ListViewColumnChange.Title:
 				col.Header = column.Title;
@@ -271,12 +277,24 @@ namespace Xwt.WPFBackend
 				}
 
 				MapColumn (column, col);
-
 				break;
+
 			case ListViewColumnChange.Alignment:
 				var style = new Style(typeof(GridViewColumnHeader));
 				style.Setters.Add(new Setter(Control.HorizontalContentAlignmentProperty, Util.ToWpfHorizontalAlignment(column.Alignment)));
 				col.HeaderContainerStyle = style;
+				break;
+
+			case ListViewColumnChange.Expanding:
+				if (column.Expands && column.CanResize)
+					column.CanResize = false;
+				col.Expands = column.Expands;
+				break;
+
+			case ListViewColumnChange.CanResize:
+				if (column.CanResize && column.Expands)
+					column.Expands = false;
+				col.CanResize = column.CanResize;
 				break;
 			}
 		}
