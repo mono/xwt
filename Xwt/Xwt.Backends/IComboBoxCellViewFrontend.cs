@@ -27,7 +27,13 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IComboBoxCellViewFrontend: ICellViewFrontend
+	public interface IEditableCellViewFrontend<T>
+	{
+		event EventHandler<CellEditingFinishedArgs<T>> EditingFinished;
+		void RaiseEditingFinished (CellEditingFinishedArgs<T> args);
+	}
+
+	public interface IComboBoxCellViewFrontend: ICellViewFrontend, IEditableCellViewFrontend<string>
 	{
 		IDataField<string> SelectedTextField { get; }
 		IDataField<int> SelectedIndexField { get; }

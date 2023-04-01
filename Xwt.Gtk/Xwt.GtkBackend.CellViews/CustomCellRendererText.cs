@@ -40,6 +40,8 @@ namespace Xwt.GtkBackend
 			cellRenderer.Edited += HandleEdited;
 		}
 
+		string lastValue;
+
 		protected override void OnLoadData ()
 		{
 			var view = (ITextCellViewFrontend) Frontend;
@@ -57,6 +59,7 @@ namespace Xwt.GtkBackend
 				if (mixedMarkupText)
 					cellRenderer.Attributes = new Pango.AttrList ();
 			}
+			lastValue = cellRenderer.Text;
 			cellRenderer.Editable = view.Editable;
 			if (!cellRenderer.Editable)
 				cellRenderer.Mode = CellRendererMode.Activatable;
@@ -72,6 +75,7 @@ namespace Xwt.GtkBackend
 				Gtk.TreeIter iter;
 				if (TreeModel.GetIterFromString (out iter, args.Path))
 					CellUtil.SetModelValue (TreeModel, iter, view.TextField.Index, view.TextField.FieldType, args.NewText);
+				view.RaiseEditingFinished (new CellEditingFinishedArgs<string> (lastValue, args.NewText));
 			}
 		}
 	}

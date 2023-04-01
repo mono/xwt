@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface ITextCellViewFrontend: ICellViewFrontend
+	public interface ITextCellViewFrontend: ICellViewFrontend, IEditableCellViewFrontend<string>
 	{
 		string Markup { get; }
 		string Text { get; }
