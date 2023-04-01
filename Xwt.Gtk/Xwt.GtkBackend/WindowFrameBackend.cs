@@ -165,13 +165,8 @@ namespace Xwt.GtkBackend
 		public Rectangle Bounds {
 			get {
 				int w, h, x, y;
-				if (Window.GdkWindow != null) {
-					Window.GdkWindow.GetOrigin (out x, out y);
-					Window.GdkWindow.GetSize (out w, out h);
-				} else {
-					Window.GetPosition (out x, out y);
-					Window.GetSize (out w, out h);
-				}
+				Window.GetPosition (out x, out y);
+				Window.GetSize (out w, out h);
 				return new Rectangle (x, y, w, h);
 			}
 			set {

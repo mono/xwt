@@ -256,6 +256,77 @@ namespace Xwt
 				Assert.AreEqual (230, win.Y);
 			}
 		}
+
+		[Test]
+		public void LocationChange ()
+		{
+			using (var win = new Window ()) {
+				win.InitialLocation = WindowLocation.Manual;
+				win.Content = new Label ("Hi there!");
+				win.Location = new Point (210, 230);
+				ShowWindow (win);
+				Assert.AreEqual (210, win.X);
+				Assert.AreEqual (230, win.Y);
+				win.Location = new Point (200, 200);
+				WaitForEvents (100);
+				Assert.AreEqual (200, win.X);
+				Assert.AreEqual (200, win.Y);
+			}
+		}
+
+		[Test]
+		public void LocationChangeWithoutContent ()
+		{
+			using (var win = new Window ()) {
+				win.InitialLocation = WindowLocation.Manual;
+				win.Size = new Size (100, 100);
+				win.Location = new Point (210, 230);
+				ShowWindow (win);
+				Assert.AreEqual (210, win.X);
+				Assert.AreEqual (230, win.Y);
+				Assert.AreEqual (100, win.Width);
+				Assert.AreEqual (100, win.Height);
+				win.Location = new Point (200, 200);
+				WaitForEvents (100);
+				Assert.AreEqual (200, win.X);
+				Assert.AreEqual (200, win.Y);
+				Assert.AreEqual (100, win.Width);
+				Assert.AreEqual (100, win.Height);
+			}
+		}
+
+		[Test]
+		public void LocationChangeWithoutContentAndSize ()
+		{
+			using (var win = new Window ()) {
+				win.InitialLocation = WindowLocation.Manual;
+				win.Location = new Point (210, 230);
+				ShowWindow (win);
+				Assert.AreEqual (210, win.X);
+				Assert.AreEqual (230, win.Y);
+				win.Location = new Point (200, 200);
+				WaitForEvents (100);
+				Assert.AreEqual (200, win.X);
+				Assert.AreEqual (200, win.Y);
+			}
+		}
+
+		[Test]
+		public void LocationPreserve ()
+		{
+			using (var win = new Window ()) {
+				win.InitialLocation = WindowLocation.Manual;
+				win.Content = new Label ("Hi there!");
+				win.Location = new Point (210, 230);
+				ShowWindow (win);
+				Assert.AreEqual (210, win.X);
+				Assert.AreEqual (230, win.Y);
+				win.Location = win.Location;
+				WaitForEvents (100);
+				Assert.AreEqual (210, win.X);
+				Assert.AreEqual (230, win.Y);
+			}
+		}
 	}
 
 	public class SquareBox: Canvas
